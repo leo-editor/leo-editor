@@ -800,14 +800,6 @@ class SpellTabHandler:
                 if k1 >= 0 and s[k1].isdigit():
                     continue
 
-                # Special case: \b, \n, and \t delimit words.
-                #               It's hard to test for this in the regex.
-                if word.startswith(('b', 'n', 't')) and k1 >= 0 and s[k1] == '\\':
-                    word = word[1:]
-                    start += 1
-                    if not word:
-                        continue
-
                 # Special case: f-strings delimited by single quotes.
                 #               Don't bother testing for the obsolete u'xxx' syntax.
                 if word.startswith("f'"):
@@ -820,7 +812,7 @@ class SpellTabHandler:
                 if len(word) < 3:
                     # g.trace('Skip short word', repr(word))
                     continue
-                    
+
                 # Don't check words following `(http|https)://`.
                 i, j = g.getLine(s, ins + start)
                 line = s[i:j]
@@ -828,6 +820,16 @@ class SpellTabHandler:
                 if m and word in m.group(2):
                     # g.trace(f"Skip url word {word:>20} {line[:50]!r}")
                     continue
+
+                # Special case: \b, \n, and \t delimit words.
+                #               It's hard to test for this in the regex.
+                alt_word = None
+                if word.startswith(('b', 'n', 't')) and k1 >= 0 and s[k1] == '\\':
+                    alt_word = word  # Search two ways.
+                    word = word[1:]
+                    start += 1
+                    if not word:
+                        continue
 
                 # Last checks.
                 k2 = ins + start + len(word)
@@ -839,9 +841,20 @@ class SpellTabHandler:
                 if word in self.seen:
                     continue
 
-                # Look up the word!
+                # Look up word and alt_word.
                 try:
                     alts: list[str] = sc.process_word(word)
+
+                    # Look up the alternate word if the word was not found.
+                    if alts and alt_word:
+                        alts2 = sc.process_word(alt_word)
+                        if alts2:
+                            # Add the alt word to the top of alts.
+                            # g.trace(f"alt word not found: {alt_word}")
+                            alts.insert(0, alt_word)
+                        else:
+                            # g.trace(f"Alt word found: {alt_word}")
+                            alts = []  # Done.
                 except ValueError:
                     g.printObj(parts, tag=f"Fail: word: {word!r}")
                     continue
