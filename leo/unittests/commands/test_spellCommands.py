@@ -32,39 +32,47 @@ class TestSpellCommands(LeoUnitTest):
 
             def __init__(self, c: Cmdr) -> None:
                 self.c = c
-                self.d: dict[str, str] = {}
-                ### self.language = 'en_US'
-                ### g.app.spellDict = self.d
+                # This dict simulates what process_word should return.
+                self.d: dict[str, list[str]] = {
+                    'abc9': ['abc'],
+                    'beginx': ['begin'],
+                    "we'lll": ["we'll", 'well'],
+                    "Leo's": ['Leo', 'Leos'],
+                    'selll': ['sell'],
+                }
 
             def process_word(self, word: str) -> list[str]:
-                g.trace(word)
-                return [word]
+                """Retrieve from self.d."""
+                # Assume all words not in self.d are *valid*
+                return self.d.get(word, [word])
 
+        # Monkey-patch the controller into the handler.
         handler = SpellTabHandler(c, tabName='Test Spell Tab')
-        handler.loaded = True
         handler.spellController = TestEnchantWrapper(c)
 
-        # \beginx
-        # \begin
-        # \bibliographystyle{acm}
-        # \bibliography{myBibliography}
-
-        # `PR #3509`: Improve rust importer.
-        # _Insert_indexterm__140664580.txt
-
-        # we'lll we're we'll
         # sel_1  selll_1
         # a_b_c
 
         table = (
              # Should not be checked.
-            'abc9: https://test1',
+            ('abc9: https://test1', 'abc'),
             # Should be checked.
-            "Leo's: https://test2",
+            ("Leo's: https://test2", 'Leo'),
+            ("we'lll", "we'll"),
+            (r'\begin', 'begin'),
+            ('beginx', 'begin'),
+            (r'\beginx', 'begin'),
+            (r'\bibliographystyle{acm}', 'bibliographystyle'),
+            # Tests of munging.
+            ('_Insert_indexterm__140664580.txt', 'Insert_indexterm'),
+            ('sel_1', 'sel'),
+            ('selll_1', 'sell'),
+            ('a_b_c', 'a_b_c'),
         )
-        for word in table:
-            p.b = word + '\n'
-            handler.find()
+        for line, expected in table:
+            p.b = line + '\n'
+            result = handler.find()
+            assert result == expected, (result, expected)
     #@-others
 #@-others
 #@-leo

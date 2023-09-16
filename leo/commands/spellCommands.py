@@ -717,10 +717,14 @@ class SpellTabHandler:
     re_part = re.compile(r'[a-zA-z]+')
     re_http = re.compile(r'.*?(http|https)://(.*?)$')
 
-    def find(self, event: Event = None) -> None:
-        """Find the next unknown word."""
+    def find(self, event: Event = None) -> Optional[str]:
+        """
+        Find the next unknown word.
+
+        Return the word for unit tests.
+        """
         if not self.loaded:
-            return
+            return None
         c, p = self.c, self.c.p
         sc = self.spellController
         w = c.frame.body.wrapper
@@ -732,8 +736,6 @@ class SpellTabHandler:
             # Note: despite the tests below, finditer is a crucial speed boost.
             for m in self.re_word.finditer(s[ins:]):
                 start, word = m.start(0), m.group(0)
-
-                g.trace(start, word)  ###
 
                 # Strip leading and trailing underscores.
                 # sc.process_word throw ValueError otherwise.
@@ -814,14 +816,16 @@ class SpellTabHandler:
                 try:
                     # Note: sc.process_word munges the word!
                     alts: list[str] = sc.process_word(word)
+                    # g.trace('alts', alts)
 
                     # Look up the alternate word if the word was not found.
                     if alts and alt_word:
                         alts2 = sc.process_word(alt_word)
+                        # g.trace('alt_word', alt_word, 'alts2', alts2)
                         if alts2:
                             # Add the alt word to the top of alts.
                             # g.trace(f"alt word not found: {alt_word}")
-                            alts.insert(0, alt_word)
+                            alts.insert(0, alts2[0])
                         else:
                             # g.trace(f"Alt word found: {alt_word}")
                             alts = []  # Done.
@@ -829,6 +833,7 @@ class SpellTabHandler:
                     g.printObj(parts, tag=f"Fail: word: {word!r}")
                     continue
                 if alts:
+                    # g.trace('UPDATE', word, self.tab.__class__.__name__)
                     self.currentWord = word
                     i = ins + start
                     j = i + len(word)
@@ -839,10 +844,12 @@ class SpellTabHandler:
                     w.setSelectionRange(i, j, insert=j)
                     k = g.see_more_lines(s, j, 4)
                     w.see(k)
-                    return
+                    return alts[0]  # For unit tests.
                 # Don't add misspellings.
                 self.seen.add(word)
             # No more misspellings in p
+            if g.unitTesting:
+                return None
             p.moveToThreadNext()
             if p:
                 ins = 0
@@ -853,7 +860,7 @@ class SpellTabHandler:
                 self.tab.fillbox([])
                 c.invalidateFocus()
                 c.bodyWantsFocus()
-                return
+                return None
     #@+node:ekr.20160415033936.1: *5* SpellTabHandler.showMisspelled
     def showMisspelled(self, p: Position) -> None:
         """Show the position p, contracting the tree as needed."""

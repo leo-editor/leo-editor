@@ -450,16 +450,18 @@ class NullGui(LeoGui):
 
     def set_focus(self, commander: str, widget: str) -> None:
         self.focusWidget = widget
-    #@+node:ekr.20230916153234.1: *3* NullGui.createSpellTab (NEW)
+    #@+node:ekr.20230916153234.1: *3* NullGui.createSpellTab
     def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> Any:
 
         class NullSpellTab:
 
             def __init__(self, c: Cmdr, spellHandler: Any, tabName: str) -> None:
                 self.c = c
-                self.fillbox = g.TracingNullObject('NullSpellTab.fillbox')
                 self.spellHandler = spellHandler
                 self.tabName = tabName
+
+            def fillbox(self, alts: list[str], word: str) -> None:
+                pass  # g.trace('alts:', alts, 'word:', word)
 
         return NullSpellTab(c, spellHandler, tabName)
     #@+node:ekr.20070301171901: *3* NullGui.do nothings
