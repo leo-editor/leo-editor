@@ -748,6 +748,7 @@ class SpellTabHandler:
 
     re_word = re.compile(r"(\w+(['`]\w+)?)", flags=re.UNICODE)
     re_part = re.compile(r'[a-zA-z]+')
+    re_http = re.compile(r'.*?(http|https)://(.*?)$')
 
     def find(self, event: Event = None) -> None:
         """Find the next unknown word."""
@@ -819,15 +820,14 @@ class SpellTabHandler:
                 if len(word) < 3:
                     # g.trace('Skip short word', repr(word))
                     continue
-
-                # Ignore non-alpha words in lines containing http.
-                if not word.isalpha():
-                    # g.trace(f"Check non-alpha http word: {word!r}")
-                    i, j = g.getLine(s, ins + start)
-                    line = s[i:j]
-                    if 'http' in line:
-                        # g.trace(f"Skip url {word:>20} {line[:50]!r}")
-                        continue
+                    
+                # Don't check words following `(http|https)://`.
+                i, j = g.getLine(s, ins + start)
+                line = s[i:j]
+                m = self.re_http.match(line)
+                if m and word in m.group(2):
+                    # g.trace(f"Skip url word {word:>20} {line[:50]!r}")
+                    continue
 
                 # Last checks.
                 k2 = ins + start + len(word)
