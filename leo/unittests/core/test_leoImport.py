@@ -115,7 +115,7 @@ class TestLeoImport(BaseTestImporter):
         for kind in ('@clean', '@file'):
             x = leoImport.RecursiveImportController(c,
                 dir_=dir_,
-                kind='@clean',
+                kind=kind,
                 recursive=True,
                 safe_at_file = True,
                 theTypes=['.py'],
