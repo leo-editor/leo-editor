@@ -150,5 +150,13 @@ class TestPlugins(LeoUnitTest):
             except ImportError:
                 pass
     #@-others
+#@+node:ekr.20230917015008.1: ** class TestIndentedTypescript(LeoUnitTest)
+class TestIndentedTypeScript(LeoUnitTest):
+    """General tests of plugoins."""
+    #@+others
+    #@+node:ekr.20230917014735.1: *3* test_indented_plugin.test_event_handlers
+    def test_event_handlers(self):
+        pass
+    #@-others
 #@-others
 #@-leo
