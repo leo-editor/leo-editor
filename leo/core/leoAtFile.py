@@ -403,6 +403,7 @@ class AtFile:
             at.rememberReadPath(c.fullPath(p), p)
         elif p.isAtCleanNode():
             at.readOneAtCleanNode(p)
+        g.doHook('after-reading-external-file', c=c, p=p)
     #@+node:ekr.20220121052056.1: *5* at.readAllSelected
     def readAllSelected(self, root: Position) -> None:  # pragma: no cover
         """Read all @<file> nodes in root's tree."""
@@ -500,6 +501,7 @@ class AtFile:
             else:
                 head = '@nocolor\n'
         p.b = head + g.toUnicode(s, encoding=encoding, reportErrors=True)
+        g.doHook('after-read-external-file', p=p)
         g.doHook('after-edit', p=p)
     #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
     def readOneAtAsisNode(self, p: Position) -> None:  # pragma: no cover
@@ -1080,7 +1082,7 @@ class AtFile:
         This prevents the write-all command from needlessly updating
         the @persistence data, thereby annoyingly changing the .leo file.
         """
-        at = self
+        at, c = self, self.c
         at.root = root
         if p.isAtIgnoreNode():  # pragma: no cover
             # Should have been handled in findFilesToWrite.
@@ -1103,6 +1105,7 @@ class AtFile:
         for pred, func in table:
             if pred():
                 func(p)  # type:ignore
+                g.doHook('before-writing-external-file', c=c, p=p)
                 break
         else:  # pragma: no cover
             g.trace(f"Can not happen: {p.h}")
