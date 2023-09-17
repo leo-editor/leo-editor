@@ -10,10 +10,11 @@ A plugin to edit typescript files using indentation instead of curly brackets.
 Both event handlers will do a check similar to Python's tabnanny module.
 """
 import os
-from typing import Any
+from typing import Any, Optional
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position
+from leo.plugins.importers.typescript import TS_Importer
 assert g
 
 #@+others
@@ -52,31 +53,21 @@ class IndentedTypeScript:
 
     def __init__(self, c: Cmdr) -> None:
         self.c = c
+        self.importer = TS_Importer(c)
 
     #@+others
-    #@+node:ekr.20230917091730.1: *3* IndentedTypeScript.after_read
+    #@+node:ekr.20230917091730.1: *3* IndentedTS.after_read
     def after_read(self, c: Cmdr, p: Position) -> None:
-        assert c == self.c
-        if not p.isAnyAtFileNode():
-            g.trace(f"Not an @<file> node: {p.h}")
+        """Remove curly brackets from the file given by p.h."""
+        contents = self.read(p)
+        if not contents:
             return
-        if not p.h.strip().endswith('.ts'):
-            g.trace(f"Not a .ts file: {p.h}")
-            return
-        path = p.anyAtFileNodeName()
-        if not os.path.exists(path):
-            g.trace(f"File not found: {path!r}")
-            return
-        try:
-            with open(path, 'r') as f:
-                contents = f.read()
-        except Exception:
-            g.trace(f"Exception opening: {path!r}")
-            g.es_exception()
-            return
-        g.trace('Translate:', g.shortFileName(path), 'len(contents):', len(contents))
-        
-    #@+node:ekr.20230917091801.1: *3* IndentedTypeScript.before_write
+        lines = g.splitLines(contents)
+        guide_lines = self.importer.make_guide_lines(lines)
+        assert lines and len(lines) == len(guide_lines)
+        file_name = g.shortFileName(self.p_to_path(p))
+        g.trace(f"{file_name} {len(contents)} chars, {len(lines)} lines")
+    #@+node:ekr.20230917091801.1: *3* IndentedTS.before_write
     def before_write(self, c, p):
         assert c == self.c
         assert p.isAnyAtFileNode(), p.h
@@ -85,6 +76,36 @@ class IndentedTypeScript:
             return
         g.trace(p.h)
         
+    #@+node:ekr.20230917182442.1: *3* IndentedTS.p_to_path
+    def p_to_path(self, p: Position) -> Optional[str]:
+        """
+        Compute a path to a .ts file from p.h.
+        """
+        if not p.isAnyAtFileNode():
+            g.trace(f"Not an @<file> node: {p.h}")
+            return None
+        if not p.h.strip().endswith('.ts'):
+            g.trace(f"Not a .ts file: {p.h}")
+            return None
+        path = p.anyAtFileNodeName()
+        return path
+    #@+node:ekr.20230917181942.1: *3* IndentedTS.read
+    def read(self, p: Position) -> Optional[str]:
+        """Return the contents of the given file."""
+        path = self.p_to_path(p)
+        if not path:
+            return None
+        if not os.path.exists(path):
+            g.trace(f"File not found: {path!r}")
+            return None
+        try:
+            with open(path, 'r') as f:
+                contents = f.read()
+            return contents
+        except Exception:
+            g.trace(f"Exception opening: {path!r}")
+            g.es_exception()
+            return None
     #@-others
 #@-others
 
