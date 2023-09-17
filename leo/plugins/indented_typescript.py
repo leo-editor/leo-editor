@@ -12,6 +12,7 @@ Both event handlers will do a check similar to Python's tabnanny module.
 from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position
 assert g
 
 #@+others
@@ -53,9 +54,11 @@ class IndentedTypeScript:
 
     #@+others
     #@+node:ekr.20230917091730.1: *3* IndentedTypeScript.after_read
-    def after_read(self, c, p):
+    def after_read(self, c: Cmdr, p: Position) -> None:
         assert c == self.c
-        assert p.isAnyAtFileNode(), p.h
+        if not p.isAnyAtFileNode():
+            g.trace(f"Not an @<file> node: {p.h}")
+            return
         if not p.h.strip().endswith('.ts'):
             g.trace(f"Not a .ts file: {p.h}")
             return

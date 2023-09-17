@@ -162,9 +162,10 @@ class TestIndentedTypeScript(LeoUnitTest):
     #@+others
     #@+node:ekr.20230917014735.1: *3* test_its.test_after_read
     def test_after_read(self):
-        c, x = self.c, self.controller
+        c, p, x = self.c, self.c.p, self.controller
         assert c
         assert x
+        x.after_read(c, p)
     #@-others
 #@-others
 #@-leo
