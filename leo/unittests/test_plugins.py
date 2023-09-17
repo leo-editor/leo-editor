@@ -153,10 +153,18 @@ class TestPlugins(LeoUnitTest):
 #@+node:ekr.20230917015008.1: ** class TestIndentedTypescript(LeoUnitTest)
 class TestIndentedTypeScript(LeoUnitTest):
     """General tests of plugoins."""
+
+    def setUp(self):
+        super().setUp()
+        from leo.plugins.indented_typescript import IndentedTypeScript
+        self.controller = IndentedTypeScript(self.c)
+
     #@+others
-    #@+node:ekr.20230917014735.1: *3* test_indented_plugin.test_event_handlers
-    def test_event_handlers(self):
-        pass
+    #@+node:ekr.20230917014735.1: *3* test_its.test_after_read
+    def test_after_read(self):
+        c, x = self.c, self.controller
+        assert c
+        assert x
     #@-others
 #@-others
 #@-leo
