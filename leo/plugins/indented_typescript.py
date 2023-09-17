@@ -9,6 +9,7 @@ A plugin to edit typescript files using indentation instead of curly brackets.
 
 Both event handlers will do a check similar to Python's tabnanny module.
 """
+import os
 from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
@@ -62,7 +63,19 @@ class IndentedTypeScript:
         if not p.h.strip().endswith('.ts'):
             g.trace(f"Not a .ts file: {p.h}")
             return
-        g.trace(p.h)
+        path = p.anyAtFileNodeName()
+        if not os.path.exists(path):
+            g.trace(f"File not found: {path!r}")
+            return
+        try:
+            with open(path, 'r') as f:
+                contents = f.read()
+        except Exception:
+            g.trace(f"Exception opening: {path!r}")
+            g.es_exception()
+            return
+        g.trace('Translate:', g.shortFileName(path), 'len(contents):', len(contents))
+        
     #@+node:ekr.20230917091801.1: *3* IndentedTypeScript.before_write
     def before_write(self, c, p):
         assert c == self.c

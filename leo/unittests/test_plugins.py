@@ -3,6 +3,7 @@
 """General tests of plugins."""
 
 import glob
+import os
 import re
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
@@ -165,6 +166,12 @@ class TestIndentedTypeScript(LeoUnitTest):
         c, p, x = self.c, self.c.p, self.controller
         assert c
         assert x
+
+        ### To do: create a separate test file.
+        # Create an @file node referring to a local (on EKR's machine) .ts file.
+        path = r'c:/Repos/leojs/src/core/leoApp.ts'
+        assert os.path.exists(path), repr(path)
+        p.h = f"@file {path}"
         x.after_read(c, p)
     #@-others
 #@-others
