@@ -823,9 +823,14 @@ class SpellTabHandler:
                         alts2 = sc.process_word(alt_word)
                         # g.trace('alt_word', alt_word, 'alts2', alts2)
                         if alts2:
-                            # Add the alt word to the top of alts.
+                            # Add the top three *new* suggestions to the top of alts.
                             # g.trace(f"alt word not found: {alt_word}")
-                            alts.insert(0, alts2[0])
+                            new_alts = [alts2[i] for i in range(3)
+                                if i < len(alts2) and alts2[i] not in alts
+                            ]
+                            for z in reversed(new_alts):
+                                # g.trace(f"new alt: {z}")
+                                alts.insert(0, z)
                         else:
                             # g.trace(f"Alt word found: {alt_word}")
                             alts = []  # Done.
