@@ -15,7 +15,6 @@ from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.typescript import TS_Importer
-assert g
 
 #@+others
 #@+node:ekr.20230917084259.1: ** top-level (indented_typescript.py)
