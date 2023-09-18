@@ -469,9 +469,9 @@ class Importer:
                     result_line.append(ch)
 
             # End the line and append it to the result.
-            if line.endswith('\n'):
-                result_line.append('\n')
-            result.append(''.join(result_line))
+            # Strip trailing whitespace. It can't affect significant characters.
+            end_s = '\n' if line.endswith('\n') else ''
+            result.append(''.join(result_line).rstrip() + end_s)
         assert len(result) == len(lines)  # A crucial invariant.
         return result
     #@+node:ekr.20230529075138.42: *4* i.get_str_lws

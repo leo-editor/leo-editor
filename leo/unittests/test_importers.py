@@ -405,15 +405,14 @@ class TestC(BaseTestImporter):
 
         # The expected lines preserve characters except for line comments.
         expected_lines = [
-            'i = 1 \n',
-          # 's = "string"\n',
-            's =         \n',
+            'i = 1\n',
+            's =\n',
           # 'if (/* a */1)\n',
             'if (       1)\n',
             '    ;\n',
-            '  \n',
-            '                 \n',
-            '  \n',
+            '\n',
+            '\n',
+            '\n',
             'i = 2\n'
         ]
         result = importer.delete_comments_and_strings(lines)
