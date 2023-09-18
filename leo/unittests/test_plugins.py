@@ -8,7 +8,6 @@ import re
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core.leoPlugins import LeoPluginsController
-assert g
 
 #@+others
 #@+node:ekr.20210907082556.1: ** class TestPlugins(LeoUnitTest)
@@ -156,24 +155,40 @@ class TestIndentedTypeScript(LeoUnitTest):
     """General tests of plugoins."""
 
     def setUp(self):
+
+        from leo.core.leoPlugins import LeoPluginsController
+        from leo.plugins import indented_typescript
+
         super().setUp()
-        from leo.plugins.indented_typescript import IndentedTypeScript
-        self.controller = IndentedTypeScript(self.c)
+
+        # Instantiate a LeoPluginsController. It is usually a g.NullObject.
+        self.controller = indented_typescript.IndentedTypeScript(self.c)
+        g.app.pluginsController = pc = LeoPluginsController()
+        g.app.hookFunction = pc.doPlugins  # Required.
+
+        # Enable the indented_typescript plugin and call init.
+        plugin = pc.loadOnePlugin('leo.plugins.indented_typescript', verbose=False)
+        assert plugin
+
+        # Call onCreate to register handlers.
+        indented_typescript.onCreate(tag='unit-test', keys={'c': self.c})
 
     #@+others
     #@+node:ekr.20230917014735.1: *3* test_its.test_after_read
     def test_after_read(self):
-        c, p, x = self.c, self.c.p, self.controller
-        assert c
-        assert x
-        # Open leo/unittests/typescript_test.ts
+
+        c = self.c
+        p = c.p
+        at = c.atFileCommands
+
+        # Compute the path to typescript_test.ts
         unittest_dir = os.path.dirname(__file__)
         path = os.path.abspath(os.path.join(unittest_dir, 'indented_typescript_test.ts'))
         assert os.path.exists(path), repr(path)
 
         # Remove braces!
         p.h = f"@file {path}"
-        x.after_read(c, p)
+        at.read(p)
     #@-others
 #@-others
 #@-leo

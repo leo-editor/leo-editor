@@ -31,8 +31,9 @@ def onCreate(tag: str, keys: Any) -> None:
     """Instantiate an IndentedTypeScript instance for c."""
     c=keys.get('c')
     if c:
-        # g.trace(c.shortFileName(), g.callers())
         gControllers[c.hash()] = IndentedTypeScript(c)
+    else:
+        g.trace(f"Can not happen. c: {c!r}")
 
 def onAfterRead(tag: str, kwargs: Any) -> None:
     """after-reading-external-file event handler for indented_typescript.py"""
@@ -40,6 +41,8 @@ def onAfterRead(tag: str, kwargs: Any) -> None:
     if c and p:
         controller = gControllers.get(c.hash())
         controller.after_read(c, p)
+    else:
+        g.trace(f"Can not happen. c: {c!r} p: {p!r}")
 
 def onBeforeWrite(tag: str, kwargs: Any) -> None:
     """before-writing-external-file event handler for indented_typescript.py"""
@@ -47,6 +50,8 @@ def onBeforeWrite(tag: str, kwargs: Any) -> None:
     if c and p:
         controller = gControllers.get(c.hash())
         controller.before_write(c, p)
+    else:
+        g.trace(f"Can not happen. c: {c!r} p: {p!r}")
 #@+node:ekr.20230917083456.1: ** class IndentedTypeScript
 class IndentedTypeScript:
     """A class to support indented typescript files."""
@@ -123,10 +128,9 @@ class IndentedTypeScript:
     #@+node:ekr.20230917184608.1: *3* IndentedTS.remove_brackets
     def remove_brackets(self, p: Position) -> None:
         """
-        Using guide lines, remove curly brackets from p.b.
-        Do not remove curly brackets if:
-        - the matched pair is in the same line.
-        - ';' follows '}'
+        The top-level driver for each node.
+        
+        Using guide lines, remove most curly brackets from p.b.
         """
         contents = p.b
         if not contents.strip():
@@ -134,9 +138,9 @@ class IndentedTypeScript:
         lines = g.splitLines(contents)
         guide_lines = self.importer.make_guide_lines(lines)
         assert lines and len(lines) == len(guide_lines)
-        g.trace(f"{p.h} {len(contents)} chars, {len(lines)} lines")
+        # g.trace(f"{p.h} {len(contents)} chars, {len(lines)} lines")
         
-        # The following may raise TypeError
+        # May raise TypeError
         self.check_guide_lines(guide_lines)
 
         ###  To do: compute result_lines.
