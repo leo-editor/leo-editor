@@ -416,7 +416,9 @@ class Importer:
     #@+node:ekr.20230529075138.9: *4* i.delete_comments_and_strings
     def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
         """
-        Delete all comments and strings from the given lines.
+        Delete all comments and strings from the given lines, replacing them
+        with blanks if they might be followed by a non-comment, non-string
+        character on the same line.
 
         The resulting lines form **guide lines**. The input and guide
         lines are "parallel": they have the same number of lines.
@@ -431,38 +433,56 @@ class Importer:
         result = []
         for line in lines:
             result_line, skip_count = [], 0
+
             for i, ch in enumerate(line):
+
                 if ch == '\n':
                     break  # Avoid appending the newline twice.
+
                 if skip_count > 0:
-                    skip_count -= 1  # Skip the character.
+                    # Replace the character with a blank.
+                    result_line.append(' ')
+                    skip_count -= 1
                     continue
+
+                if target and g.match(line, i, target):
+                    result_line.append(' ')
+                    # Clear the target, but skip any remaining characters of the target.
+                    skip_count = max(0, (len(target) - 1))
+                    target = ''
+                    continue
+
                 if target:
-                    if line.startswith(target, i):
-                        if len(target) > 1:
-                            # Skip the remaining characters of the target.
-                            skip_count = len(target) - 1
-                        target = ''  # Begin accumulating characters.
-                elif ch == escape:
+                    result_line.append(' ')
+                    continue
+
+                if ch == escape:
+                    assert skip_count == 0
+                    result_line.append(' ')
                     skip_count = 1
                     continue
-                elif line_comment and line.startswith(line_comment, i):
+
+                if line_comment and line.startswith(line_comment, i):
                     break  # Skip the rest of the line.
-                elif any(line.startswith(z, i) for z in string_delims):
+
+                if any(g.match(line, i, z) for z in string_delims):
                     # Allow multi-character string delimiters.
+                    result_line.append(' ')
                     for z in string_delims:
-                        if line.startswith(z, i):
+                        if g.match(line, i, z):
                             target = z
-                            if len(z) > 1:
-                                skip_count = len(z) - 1
+                            skip_count = max(0, (len(z) - 1))
                             break
-                elif start_comment and line.startswith(start_comment, i):
+                    continue
+
+                if start_comment and g.match(line, i, start_comment):
+                    result_line.append(' ')
                     target = end_comment
-                    if len(start_comment) > 1:
-                        # Skip the remaining characters of the starting comment delim.
-                        skip_count = len(start_comment) - 1
-                else:
-                    result_line.append(ch)
+                    skip_count = max(0, len(start_comment) - 1)
+                    continue
+
+                result_line.append(ch)
+
             # End the line and append it to the result.
             if line.endswith('\n'):
                 result_line.append('\n')

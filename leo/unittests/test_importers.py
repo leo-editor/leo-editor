@@ -402,17 +402,25 @@ class TestC(BaseTestImporter):
             '*/\n',
             'i = 2\n'
         ]
+
+        # The expected lines preserve characters except for line comments.
         expected_lines = [
             'i = 1 \n',
-            's = \n',
-            'if (1)\n',
+          # 's = "string"\n',
+            's =         \n',
+          # 'if (/* a */1)\n',
+            'if (       1)\n',
             '    ;\n',
-            '\n',
-            '\n',
-            '\n',
+            '  \n',
+            '                 \n',
+            '  \n',
             'i = 2\n'
         ]
         result = importer.delete_comments_and_strings(lines)
+        if 0:
+            g.printObj(lines, tag='input lines')
+            g.printObj(result, tag='result')
+            g.printObj(expected_lines, tag='expected')
         self.assertEqual(len(result), len(expected_lines))
         self.assertEqual(result, expected_lines)
     #@+node:ekr.20230511044054.1: *3* TestC.test_find_blocks
