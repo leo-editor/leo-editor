@@ -433,39 +433,27 @@ class Importer:
         result = []
         for line in lines:
             result_line, skip_count = [], 0
-
             for i, ch in enumerate(line):
-
                 if ch == '\n':
                     break  # Avoid appending the newline twice.
-
-                if skip_count > 0:
+                elif skip_count > 0:
                     # Replace the character with a blank.
                     result_line.append(' ')
                     skip_count -= 1
-                    continue
-
-                if target and g.match(line, i, target):
+                elif target:
                     result_line.append(' ')
                     # Clear the target, but skip any remaining characters of the target.
-                    skip_count = max(0, (len(target) - 1))
-                    target = ''
-                    continue
-
-                if target:
-                    result_line.append(' ')
-                    continue
-
-                if ch == escape:
+                    if g.match(line, i, target):
+                        skip_count = max(0, (len(target) - 1))
+                        target = ''
+                elif ch == escape:
                     assert skip_count == 0
                     result_line.append(' ')
                     skip_count = 1
-                    continue
-
-                if line_comment and line.startswith(line_comment, i):
-                    break  # Skip the rest of the line.
-
-                if any(g.match(line, i, z) for z in string_delims):
+                elif line_comment and line.startswith(line_comment, i):
+                    # Skip the rest of the line. It can't contain significant characters.
+                    break
+                elif any(g.match(line, i, z) for z in string_delims):
                     # Allow multi-character string delimiters.
                     result_line.append(' ')
                     for z in string_delims:
@@ -473,15 +461,12 @@ class Importer:
                             target = z
                             skip_count = max(0, (len(z) - 1))
                             break
-                    continue
-
-                if start_comment and g.match(line, i, start_comment):
+                elif start_comment and g.match(line, i, start_comment):
                     result_line.append(' ')
                     target = end_comment
                     skip_count = max(0, len(start_comment) - 1)
-                    continue
-
-                result_line.append(ch)
+                else:
+                    result_line.append(ch)
 
             # End the line and append it to the result.
             if line.endswith('\n'):

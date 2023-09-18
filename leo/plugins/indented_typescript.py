@@ -103,7 +103,7 @@ class IndentedTypeScript:
     def check_guide_lines(self, guide_lines: list[str]) -> None:
         """
         Check that all lines contain at most one unmatched '{' or '}'.
-        If '}' preceeds '{' then only whitespace may appear before '}' and after '{'.
+        If '}' precedes '{' then only whitespace may appear before '}' and after '{'.
         Raise TypeError if there is a problem.
         """
         trace = False
