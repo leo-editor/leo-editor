@@ -88,8 +88,8 @@ class IndentedTypeScript:
 
     def check_guide_lines(self, guide_lines: list[str]) -> bool:
         """
-        Check that all lines contain at most one '{' or '}'.
-        If a line contains both, then '{' must come before '}'.
+        Check that all lines contain at most one unmatched '{' or '}'.
+        If '}' preceeds '{' then only whitespace may appear before '}' and after '{'.
         """
         trace = False
         for i, line0 in enumerate(guide_lines):
@@ -103,7 +103,6 @@ class IndentedTypeScript:
                 g.trace(f"Oops: line {i:4}: {line.strip()}")
                 return False
             if n1 == 1 and n2 == 1 and line.find('{') > line.find('}'):
-                # Nothing
                 m = self.bracket_pat.match(line)
                 if trace and m:
                     g.trace(f"Good: Line {i:4}: {line.strip()}")
