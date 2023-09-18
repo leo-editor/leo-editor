@@ -318,11 +318,6 @@ class AtFile:
         root.clearDirty()
         g.doHook('after-reading-external-file', c=c, p=root)
         return True
-
-
-
-
-
     #@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes
     def deleteUnvisitedNodes(self, root: Position) -> None:  # pragma: no cover
         """
