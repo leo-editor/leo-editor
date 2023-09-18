@@ -316,7 +316,13 @@ class AtFile:
         contents = fromString or file_s
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         root.clearDirty()
+        g.doHook('after-reading-external-file', c=c, p=root)
         return True
+
+
+
+
+
     #@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes
     def deleteUnvisitedNodes(self, root: Position) -> None:  # pragma: no cover
         """
@@ -403,7 +409,6 @@ class AtFile:
             at.rememberReadPath(c.fullPath(p), p)
         elif p.isAtCleanNode():
             at.readOneAtCleanNode(p)
-        g.doHook('after-reading-external-file', c=c, p=p)
     #@+node:ekr.20220121052056.1: *5* at.readAllSelected
     def readAllSelected(self, root: Position) -> None:  # pragma: no cover
         """Read all @<file> nodes in root's tree."""
@@ -470,6 +475,7 @@ class AtFile:
             p.clearDirty()
         else:
             g.doHook('after-auto', c=c, p=p)
+            g.doHook('after-reading-external-file', c=c, p=p)
         return p  # For #451: return p.
     #@+node:ekr.20090225080846.3: *5* at.readOneAtEditNode
     def readOneAtEditNode(self, p: Position) -> None:  # pragma: no cover
@@ -501,8 +507,8 @@ class AtFile:
             else:
                 head = '@nocolor\n'
         p.b = head + g.toUnicode(s, encoding=encoding, reportErrors=True)
-        g.doHook('after-read-external-file', p=p)
         g.doHook('after-edit', p=p)
+        g.doHook('after-reading-external-file', c=c, p=p)
     #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
     def readOneAtAsisNode(self, p: Position) -> None:  # pragma: no cover
         """Read one @asis node. Used only by refresh-from-disk"""
@@ -523,6 +529,7 @@ class AtFile:
         p.b = g.toUnicode(s, encoding=encoding, reportErrors=True)
         if not c.isChanged() and p.b != old_body:
             c.setChanged()
+        g.doHook('after-reading-external-file', c=c, p=p)
     #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
     def readOneAtCleanNode(self, root: Position) -> bool:  # pragma: no cover
         """Update the @clean/@nosent node at root."""
@@ -555,6 +562,7 @@ class AtFile:
         gnx2vnode = at.fileCommands.gnxDict
         contents = ''.join(new_private_lines)
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
+        g.doHook('after-reading-external-file', c=c, p=root)
         return True  # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
     def dump(self, lines: list[str], tag: Any) -> None:  # pragma: no cover
@@ -612,6 +620,7 @@ class AtFile:
             if ok:
                 # Create the private file automatically.
                 at.writeOneAtShadowNode(p)
+                g.doHook('after-reading-external-file', c=c, p=p)
     #@+node:ekr.20080712080505.1: *6* at.importAtShadowNode
     def importAtShadowNode(self, p: Position) -> bool:  # pragma: no cover
         c, ic = self.c, self.c.importCommands
@@ -1082,7 +1091,7 @@ class AtFile:
         This prevents the write-all command from needlessly updating
         the @persistence data, thereby annoyingly changing the .leo file.
         """
-        at, c = self, self.c
+        at = self
         at.root = root
         if p.isAtIgnoreNode():  # pragma: no cover
             # Should have been handled in findFilesToWrite.
@@ -1105,7 +1114,6 @@ class AtFile:
         for pred, func in table:
             if pred():
                 func(p)  # type:ignore
-                g.doHook('before-writing-external-file', c=c, p=p)
                 break
         else:  # pragma: no cover
             g.trace(f"Can not happen: {p.h}")
@@ -1186,6 +1194,9 @@ class AtFile:
             if not fileName or not at.precheck(fileName, root):
                 at.addToOrphanList(root)
                 return
+
+            g.doHook('before-writing-external-file', c=c, p=root)
+
             at.outputList = []
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
@@ -1290,6 +1301,9 @@ class AtFile:
             if not fileName or not at.precheck(fileName, root):
                 at.addToOrphanList(root)
                 return False
+
+            g.doHook('before-writing-external-file', c=c, p=p)
+
             if c.persistenceController:
                 c.persistenceController.update_before_write_foreign_file(root)
             contents = at.writeAtAutoContents(fileName, root)
@@ -1360,6 +1374,9 @@ class AtFile:
             at.sentinels = False
             if not fileName or not at.precheck(fileName, root):
                 return
+
+            g.doHook('before-writing-external-file', c=c, p=root)
+
             at.outputList = []
             at.putFile(root, sentinels=False)
             at.warnAboutOrphandAndIgnoredNodes()
@@ -1391,6 +1408,9 @@ class AtFile:
             if not fileName or not at.precheck(fileName, root):
                 at.addToOrphanList(root)
                 return False
+
+            g.doHook('before-writing-external-file', c=c, p=p)
+
             contents = ''.join([s for s in g.splitLines(p.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
             at.replaceFile(contents, at.encoding, fileName, root)
@@ -1411,6 +1431,9 @@ class AtFile:
                 # Raise dialog warning of data loss.
                 at.addToOrphanList(root)
                 return
+
+            g.doHook('before-writing-external-file', c=c, p=root)
+
             at.outputList = []
             at.putFile(root, sentinels=True)
             at.warnAboutOrphandAndIgnoredNodes()
@@ -1435,6 +1458,9 @@ class AtFile:
             at.sentinels = False
             if not fileName or not at.precheck(fileName, root):
                 return
+
+            g.doHook('before-writing-external-file', c=c, p=root)
+
             at.outputList = []
             at.putFile(root, sentinels=False)
             at.warnAboutOrphandAndIgnoredNodes()
@@ -1476,7 +1502,9 @@ class AtFile:
                 return False
             if not testing and not at.precheck(full_path, root):
                 return False
-            #
+
+            g.doHook('before-writing-external-file', c=c, p=p)
+
             # Bug fix: Leo 4.5.1:
             # use x.markerFromFileName to force the delim to match
             # what is used in x.propagate_changes.

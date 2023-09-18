@@ -36,7 +36,7 @@ def onCreate(tag: str, keys: Any) -> None:
         gControllers[c.hash()] = IndentedTypeScript(c)
 
 def onAfterRead(tag: str, kwargs: Any) -> None:
-    """after-read-external-file event handler for indented_typescript.py"""
+    """after-reading-external-file event handler for indented_typescript.py"""
     c, p = kwargs.get('c'), kwargs.get('p')
     if c and p:
         controller = gControllers.get(c.hash())
@@ -80,7 +80,6 @@ class IndentedTypeScript:
             g.trace(f"Not a .ts file: {p.h}")
             return
         g.trace(p.h)
-        
     #@+node:ekr.20230917185546.1: *3* IndentedTS.check_guide_lines
     # No need to worry about comments in guide lines.
     bracket_pat = re.compile(r'^\s*}.*?{\s*$')
