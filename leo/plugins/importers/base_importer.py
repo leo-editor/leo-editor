@@ -416,12 +416,12 @@ class Importer:
     #@+node:ekr.20230529075138.9: *4* i.delete_comments_and_strings
     def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
         """
-        Return **guide-lines** from the lines, multi-line commands and strings with spaces.
+        Return **guide-lines** from the lines, replacing strings and multi-line
+        comments with spaces, thereby preserving (within the guide-lines) the
+        position of all significant characters.
 
         Analyzing the guide lines instead of the input lines is the simplifying
         trick behind the new importers.
-
-        Guide-lines preserve the position of all significant characters.
 
         The input and guide lines are "parallel": they have the same number of
         lines.
