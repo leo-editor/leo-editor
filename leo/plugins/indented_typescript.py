@@ -9,12 +9,11 @@ A plugin to edit typescript files using indentation instead of curly brackets.
 
 Both event handlers will do a check similar to Python's tabnanny module.
 """
-import os
 import re
-from typing import Any, Optional
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position
+from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.typescript import TS_Importer
 assert g
 
@@ -60,18 +59,29 @@ class IndentedTypeScript:
     #@+node:ekr.20230917091730.1: *3* IndentedTS.after_read
     def after_read(self, c: Cmdr, p: Position) -> None:
         """Remove curly brackets from the file given by p.h."""
-        contents = self.read(p)
-        if not contents:
-            return
-        lines = g.splitLines(contents)
-        guide_lines = self.importer.make_guide_lines(lines)
-        assert lines and len(lines) == len(guide_lines)
-        file_name = g.shortFileName(self.p_to_path(p))
-        g.trace(f"{file_name} {len(contents)} chars, {len(lines)} lines")
-        if not self.check_guide_lines(guide_lines):
-            return
-        result_lines = self.remove_brackets(guide_lines, lines)
-        g.printObj(result_lines, tag='result lines')
+        
+        g.trace(g.shortFileName(p.anyAtFileNodeName()) or p.h)  ###
+        
+        # Backup all bodies in case there is an error.
+        backup_d: dict[VNode, str] = {}  # Keys are vnodes, values are p.b.
+        for p2 in p.self_and_subtree():
+            if p2.gnx not in backup_d:
+                backup_d [p2.v] = p.b
+        
+        # Handle each node separately.
+        try:
+            seen: dict[str, bool] = {}  # Keys are gnxs, values are True.
+            for p2 in p.self_and_subtree():
+                if p2.gnx not in seen:
+                    seen [p2.gnx] = True
+                    self.remove_brackets(p2)
+        except Exception as e:
+            # Restore all body text.
+            for v in backup_d:
+                v.b = backup_d [v]
+            g.es_print(f"Error in indented_typescript plugin: {e}.")
+            g.es_print(f"No changes made to {p.h} and its subtree.")
+                    
     #@+node:ekr.20230917091801.1: *3* IndentedTS.before_write
     def before_write(self, c, p):
         assert c == self.c
@@ -85,10 +95,11 @@ class IndentedTypeScript:
     bracket_pat = re.compile(r'^\s*}.*?{\s*$')
     matched_bracket_pat = re.compile(r'{.*?}\s*')
 
-    def check_guide_lines(self, guide_lines: list[str]) -> bool:
+    def check_guide_lines(self, guide_lines: list[str]) -> None:
         """
         Check that all lines contain at most one unmatched '{' or '}'.
         If '}' preceeds '{' then only whitespace may appear before '}' and after '{'.
+        Raise TypeError if there is a problem.
         """
         trace = False
         for i, line0 in enumerate(guide_lines):
@@ -99,56 +110,37 @@ class IndentedTypeScript:
             n1 = line.count('{')
             n2 = line.count('}')
             if n1 > 1 or n2 > 1:
-                g.trace(f"Oops: line {i:4}: {line.strip()}")
-                return False
+                raise TypeError(f"Too many curly brackets in line {i:4}: {line.strip()}")
             if n1 == 1 and n2 == 1 and line.find('{') > line.find('}'):
                 m = self.bracket_pat.match(line)
-                if trace and m:
-                    g.trace(f"Good: Line {i:4}: {line.strip()}")
                 if not m:
-                    g.trace(f"Oops: Line {i:4}: {line.strip()}")
-                    return False
-        return True
+                    raise TypeError(f"Too invalid curly brackets in line {i:4}: {line.strip()}")
+                if trace:
+                    g.trace(f"Good: Line {i:4}: {line.strip()}")
     #@+node:ekr.20230917184851.1: *3* IndentedTS.find_matching_brackets
     def find_matching_brackets(self, guide_lines: list[str]) -> tuple[int, int]:
         pass
-    #@+node:ekr.20230917182442.1: *3* IndentedTS.p_to_path
-    def p_to_path(self, p: Position) -> Optional[str]:
-        """
-        Compute a path to a .ts file from p.h.
-        """
-        path = p.anyAtFileNodeName()
-        if not (path and path.endswith('.ts')):
-            # g.trace(f"Not a .ts file: {p.h}")
-            return None
-        return path
-    #@+node:ekr.20230917181942.1: *3* IndentedTS.read
-    def read(self, p: Position) -> Optional[str]:
-        """Return the contents of the given file."""
-        path = self.p_to_path(p)
-        if not path:
-            return None
-        if not os.path.exists(path):
-            g.trace(f"File not found: {path!r}")
-            return None
-        try:
-            with open(path, 'r') as f:
-                contents = f.read()
-            return contents
-        except Exception:
-            g.trace(f"Exception opening: {path!r}")
-            g.es_exception()
-            return None
     #@+node:ekr.20230917184608.1: *3* IndentedTS.remove_brackets
-    def remove_brackets(self, guide_lines: list[str], lines: list[str]) -> list[str]:
+    def remove_brackets(self, p: Position) -> None:
         """
-        Using the guide lines, remove curly brackets from lines.
+        Using guide lines, remove curly brackets from p.b.
         Do not remove curly brackets if:
         - the matched pair is in the same line.
         - ';' follows '}'
         """
-        result_lines: list[str] = []
-        return result_lines
+        contents = p.b
+        if not contents.strip():
+            return
+        lines = g.splitLines(contents)
+        guide_lines = self.importer.make_guide_lines(lines)
+        assert lines and len(lines) == len(guide_lines)
+        g.trace(f"{p.h} {len(contents)} chars, {len(lines)} lines")
+        
+        # The following may raise TypeError
+        self.check_guide_lines(guide_lines)
+
+        ###  To do: compute result_lines.
+        # p.b = ''.join(result_lines)
     #@-others
 #@-others
 
