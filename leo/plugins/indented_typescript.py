@@ -117,13 +117,10 @@ class IndentedTypeScript:
         """
         Compute a path to a .ts file from p.h.
         """
-        if not p.isAnyAtFileNode():
-            g.trace(f"Not an @<file> node: {p.h}")
-            return None
-        if not p.h.strip().endswith('.ts'):
-            g.trace(f"Not a .ts file: {p.h}")
-            return None
         path = p.anyAtFileNodeName()
+        if not (path and path.endswith('.ts')):
+            # g.trace(f"Not a .ts file: {p.h}")
+            return None
         return path
     #@+node:ekr.20230917181942.1: *3* IndentedTS.read
     def read(self, p: Position) -> Optional[str]:
