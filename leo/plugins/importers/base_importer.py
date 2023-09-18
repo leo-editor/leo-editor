@@ -416,15 +416,15 @@ class Importer:
     #@+node:ekr.20230529075138.9: *4* i.delete_comments_and_strings
     def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
         """
-        Delete all comments and strings from the given lines, replacing them
-        with blanks if they might be followed by a non-comment, non-string
-        character on the same line.
+        Return **guide-lines** from the lines, multi-line commands and strings with spaces.
 
-        The resulting lines form **guide lines**. The input and guide
-        lines are "parallel": they have the same number of lines.
+        Analyzing the guide lines instead of the input lines is the simplifying
+        trick behind the new importers.
 
-        Analyzing the guide lines instead of the input lines is the
-        simplifying trick behind the new importers.
+        Guide-lines preserve the position of all significant characters.
+
+        The input and guide lines are "parallel": they have the same number of
+        lines.
         """
         string_delims = self.string_list
         line_comment, start_comment, end_comment = g.set_delims_from_language(self.language)
