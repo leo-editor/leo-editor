@@ -1190,7 +1190,11 @@ class AtFile:
                 at.addToOrphanList(root)
                 return
 
-            g.doHook('before-writing-external-file', c=c, p=root)
+            try:
+                g.doHook('before-writing-external-file', c=c, p=root)
+            except Exception:
+                # The hook must print an error message.
+                return
 
             at.outputList = []
             for p in root.self_and_subtree(copy=False):
@@ -1297,7 +1301,11 @@ class AtFile:
                 at.addToOrphanList(root)
                 return False
 
-            g.doHook('before-writing-external-file', c=c, p=p)
+            try:
+                g.doHook('before-writing-external-file', c=c, p=p)
+            except Exception:
+                # The hook must print an error message.
+                return False
 
             if c.persistenceController:
                 c.persistenceController.update_before_write_foreign_file(root)
@@ -1370,7 +1378,11 @@ class AtFile:
             if not fileName or not at.precheck(fileName, root):
                 return
 
-            g.doHook('before-writing-external-file', c=c, p=root)
+            try:
+                g.doHook('before-writing-external-file', c=c, p=root)
+            except Exception:
+                # The hook must print an error message.
+                return
 
             at.outputList = []
             at.putFile(root, sentinels=False)
@@ -1404,7 +1416,11 @@ class AtFile:
                 at.addToOrphanList(root)
                 return False
 
-            g.doHook('before-writing-external-file', c=c, p=p)
+            try:
+                g.doHook('before-writing-external-file', c=c, p=root)
+            except Exception:
+                # The hook must print an error message.
+                return False
 
             contents = ''.join([s for s in g.splitLines(p.b)
                 if at.directiveKind4(s, 0) == at.noDirective])
@@ -1427,7 +1443,11 @@ class AtFile:
                 at.addToOrphanList(root)
                 return
 
-            g.doHook('before-writing-external-file', c=c, p=root)
+            try:
+                g.doHook('before-writing-external-file', c=c, p=root)
+            except Exception:
+                # The hook must print an error message.
+                return
 
             at.outputList = []
             at.putFile(root, sentinels=True)
@@ -1498,7 +1518,11 @@ class AtFile:
             if not testing and not at.precheck(full_path, root):
                 return False
 
-            g.doHook('before-writing-external-file', c=c, p=p)
+            try:
+                g.doHook('before-writing-external-file', c=c, p=p)
+            except Exception:
+                # The hook must print an error message.
+                return False
 
             # Bug fix: Leo 4.5.1:
             # use x.markerFromFileName to force the delim to match
