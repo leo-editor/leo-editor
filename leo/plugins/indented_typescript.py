@@ -10,6 +10,7 @@ A plugin to edit typescript files using indentation instead of curly brackets.
 Both event handlers will do a check similar to Python's tabnanny module.
 """
 import os
+import re
 from typing import Any, Optional
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
@@ -67,6 +68,10 @@ class IndentedTypeScript:
         assert lines and len(lines) == len(guide_lines)
         file_name = g.shortFileName(self.p_to_path(p))
         g.trace(f"{file_name} {len(contents)} chars, {len(lines)} lines")
+        if not self.check_guide_lines(guide_lines):
+            return
+        result_lines = self.remove_brackets(guide_lines, lines)
+        g.printObj(result_lines, tag='result lines')
     #@+node:ekr.20230917091801.1: *3* IndentedTS.before_write
     def before_write(self, c, p):
         assert c == self.c
@@ -76,6 +81,39 @@ class IndentedTypeScript:
             return
         g.trace(p.h)
         
+    #@+node:ekr.20230917185546.1: *3* IndentedTS.check_guide_lines
+    # No need to worry about comments in guide lines.
+    bracket_pat = re.compile(r'^\s*}.*?{\s*$')
+    matched_bracket_pat = re.compile(r'{.*?}\s*')
+
+    def check_guide_lines(self, guide_lines: list[str]) -> bool:
+        """
+        Check that all lines contain at most one '{' or '}'.
+        If a line contains both, then '{' must come before '}'.
+        """
+        trace = False
+        for i, line0 in enumerate(guide_lines):
+            line = re.sub(self.matched_bracket_pat, '', line0)
+            if trace and line != line0:
+                g.trace(f"Sub0: Line {i:4}: {line0.strip()}")
+                g.trace(f"Sub1: Line {i:4}: {line.strip()}")
+            n1 = line.count('{')
+            n2 = line.count('}')
+            if n1 > 1 or n2 > 1:
+                g.trace(f"Oops: line {i:4}: {line.strip()}")
+                return False
+            if n1 == 1 and n2 == 1 and line.find('{') > line.find('}'):
+                # Nothing
+                m = self.bracket_pat.match(line)
+                if trace and m:
+                    g.trace(f"Good: Line {i:4}: {line.strip()}")
+                if not m:
+                    g.trace(f"Oops: Line {i:4}: {line.strip()}")
+                    return False
+        return True
+    #@+node:ekr.20230917184851.1: *3* IndentedTS.find_matching_brackets
+    def find_matching_brackets(self, guide_lines: list[str]) -> tuple[int, int]:
+        pass
     #@+node:ekr.20230917182442.1: *3* IndentedTS.p_to_path
     def p_to_path(self, p: Position) -> Optional[str]:
         """
@@ -106,6 +144,16 @@ class IndentedTypeScript:
             g.trace(f"Exception opening: {path!r}")
             g.es_exception()
             return None
+    #@+node:ekr.20230917184608.1: *3* IndentedTS.remove_brackets
+    def remove_brackets(self, guide_lines: list[str], lines: list[str]) -> list[str]:
+        """
+        Using the guide lines, remove curly brackets from lines.
+        Do not remove curly brackets if:
+        - the matched pair is in the same line.
+        - ';' follows '}'
+        """
+        result_lines: list[str] = []
+        return result_lines
     #@-others
 #@-others
 
