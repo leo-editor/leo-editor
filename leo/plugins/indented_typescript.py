@@ -63,9 +63,7 @@ class IndentedTypeScript:
     #@+node:ekr.20230917091730.1: *3* IndentedTS.after_read
     def after_read(self, c: Cmdr, p: Position) -> None:
         """Remove curly brackets from the file given by p.h."""
-        
-        g.trace(g.shortFileName(p.anyAtFileNodeName()) or p.h)  ###
-        
+
         # Backup all bodies in case there is an error.
         backup_d: dict[VNode, str] = {}  # Keys are vnodes, values are p.b.
         for p2 in p.self_and_subtree():

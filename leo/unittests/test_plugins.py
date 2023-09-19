@@ -174,8 +174,8 @@ class TestIndentedTypeScript(LeoUnitTest):
         indented_typescript.onCreate(tag='unit-test', keys={'c': self.c})
 
     #@+others
-    #@+node:ekr.20230917014735.1: *3* test_its.test_after_read
-    def test_after_read(self):
+    #@+node:ekr.20230917014735.1: *3* test_its.test_atFile_read
+    def test_atFile_read(self):
 
         c = self.c
         p = c.p
@@ -189,6 +189,20 @@ class TestIndentedTypeScript(LeoUnitTest):
         # Remove braces!
         p.h = f"@file {path}"
         at.read(p)
+    #@+node:ekr.20230919025755.1: *3* test_its.test_after_read
+    def test_after_read(self):
+
+        c = self.c
+        p = c.p
+
+        # Compute the path to typescript_test.ts
+        unittest_dir = os.path.dirname(__file__)
+        path = os.path.abspath(os.path.join(unittest_dir, 'indented_typescript_test.ts'))
+        assert os.path.exists(path), repr(path)
+
+        # Remove braces!
+        p.h = f"@file {path}"
+        self.controller.after_read(c, p)
     #@-others
 #@-others
 #@-leo
