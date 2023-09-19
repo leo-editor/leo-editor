@@ -327,8 +327,8 @@ class IndentedTypeScript:
                 this_line = s[:column_number] + ' ' + s[column_number + 1:]
                 result_lines.append(this_line.rstrip() + '\n' if this_line.strip() else '\n')
                     
-        # Remove blank lines. Some will be added later.
-        new_result_lines = []
+        # Remove multiple blank lines. Some will be added later.
+        new_result_lines: list[str] = []
         for i, line in enumerate(result_lines):
             if 0 < i - 1 < len(new_result_lines) and line == '\n' and new_result_lines[i-1] == '\n':
                 pass
