@@ -214,7 +214,7 @@ class TestIndentedTypeScript(LeoUnitTest):
             private _context: vscode.ExtensionContext,
             private _leoUI: LeoUI
         ) { }
-        
+
         const w_config: FontSettings = {
             zoomLevel: Number(w_zoomLevel),
             fontSize: Number(w_fontSize)
