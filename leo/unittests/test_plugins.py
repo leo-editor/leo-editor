@@ -5,6 +5,7 @@
 import glob
 import os
 import re
+import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core.leoPlugins import LeoPluginsController
@@ -200,8 +201,31 @@ class TestIndentedTypeScript(LeoUnitTest):
         path = os.path.abspath(os.path.join(unittest_dir, 'indented_typescript_test.ts'))
         assert os.path.exists(path), repr(path)
 
-        # Remove braces!
+    # Snippets from indented_typescript_test.ts.
+
+    # Contains "over-indented" parenthized lines, a good test for check_indentation.
+        contents = textwrap.dedent(
+    """
+    import { NodeIndices, VNode, Position } from './leoNodes';
+
+    export class Config implements ConfigMembers {
+
+        constructor(
+            private _context: vscode.ExtensionContext,
+            private _leoUI: LeoUI
+        ) { }
+
+        public getFontConfig(): FontSettings {
+            let w_zoomLevel = vscode.workspace.getConfiguration(
+                "window"
+            ).get("zoomLevel");
+
+            return w_config;
+        }
+    }
+    """)
         p.h = f"@file {path}"
+        p.b = contents
         self.controller.after_read(c, p)
     #@-others
 #@-others

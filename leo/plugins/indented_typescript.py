@@ -76,7 +76,7 @@ class IndentedTypeScript:
             for p2 in p.self_and_subtree():
                 if p2.gnx not in seen:
                     seen [p2.gnx] = True
-                    self.remove_brackets(p2)
+                    self.do_remove_brackets(p2)
         except Exception as e:
             # Restore all body text.
             for v in backup_d:
@@ -92,12 +92,31 @@ class IndentedTypeScript:
             g.trace(f"Not a .ts file: {p.h}")
             return
         g.trace(p.h)
-    #@+node:ekr.20230917185546.1: *3* IndentedTS.check_guide_lines
+    #@+node:ekr.20230917184608.1: *3* IndentedTS.do_remove_brackets (top level)
+    def do_remove_brackets(self, p: Position) -> None:
+        """
+        The top-level driver for each node.
+        
+        Using guide lines, remove most curly brackets from p.b.
+        """
+        contents = p.b
+        if not contents.strip():
+            g.trace('Empty!', p.h)
+            return
+        lines = g.splitLines(contents)
+        guide_lines = self.importer.make_guide_lines(lines)
+        assert lines and len(lines) == len(guide_lines)
+        
+        # These may raise TypeError.
+        self.check_guide_lines(guide_lines, p)
+        self.check_indentation(guide_lines, p)
+        self.remove_brackets(guide_lines, lines, p)
+    #@+node:ekr.20230917185546.1: *4* IndentedTS.check_guide_lines
     # No need to worry about comments in guide lines.
     bracket_pat = re.compile(r'^\s*}.*?{\s*$')
     matched_bracket_pat = re.compile(r'{.*?}\s*')
 
-    def check_guide_lines(self, guide_lines: list[str]) -> None:
+    def check_guide_lines(self, guide_lines: list[str], p: Position) -> None:
         """
         Check that all lines contain at most one unmatched '{' or '}'.
         If '}' precedes '{' then only whitespace may appear before '}' and after '{'.
@@ -116,32 +135,40 @@ class IndentedTypeScript:
             if n1 == 1 and n2 == 1 and line.find('{') > line.find('}'):
                 m = self.bracket_pat.match(line)
                 if not m:
-                    raise TypeError(f"Too invalid curly brackets in line {i:4}: {line.strip()}")
+                    raise TypeError(
+                        f"{p.h}: Too invalid curly brackets in line {i:4}: {line.strip()}")
                 if trace:
                     g.trace(f"Good: Line {i:4}: {line.strip()}")
-    #@+node:ekr.20230917184851.1: *3* IndentedTS.find_matching_brackets
-    def find_matching_brackets(self, guide_lines: list[str]) -> tuple[int, int]:
-        pass
-    #@+node:ekr.20230917184608.1: *3* IndentedTS.remove_brackets
-    def remove_brackets(self, p: Position) -> None:
+    #@+node:ekr.20230919030308.1: *4* IndentedTS.check_indentation
+    def check_indentation(self, guide_lines: list[str], p: Position) -> None:
         """
-        The top-level driver for each node.
-        
-        Using guide lines, remove most curly brackets from p.b.
+        Check indentation and correct it if possible.
+        Raise TypeError if not.
         """
-        contents = p.b
-        if not contents.strip():
-            return
-        lines = g.splitLines(contents)
-        guide_lines = self.importer.make_guide_lines(lines)
-        assert lines and len(lines) == len(guide_lines)
-        # g.trace(f"{p.h} {len(contents)} chars, {len(lines)} lines")
-        
-        # May raise TypeError
-        self.check_guide_lines(guide_lines)
-
-        ###  To do: compute result_lines.
-        # p.b = ''.join(result_lines)
+        if p.h.endswith('indented_typescript_test.ts'):
+            # g.printObj(guide_lines, tag=f"check_indentation: {p.h}")
+            g.trace('To do')
+    #@+node:ekr.20230917184851.1: *4* IndentedTS.find_matching_brackets (to do)
+    def find_matching_brackets(self, guide_lines: list[str], p: Position) -> list[tuple[int, int]]:
+        """
+        To do.
+        """
+        ### To do.
+        g.printObj(guide_lines, tag=f"find_matching_brackets: {p.h}")
+        return []
+    #@+node:ekr.20230919030850.1: *4* IndentedTS.remove_brackets (to do)
+    def remove_brackets(self,
+        guide_lines: list[str],
+        lines: list[str],
+        p: Position,
+    ) -> None:
+        """
+        Remove curly brackets from p.b.
+        Raise TypeError if there is a problem.
+        """
+        if p.h.endswith('indented_typescript_test.ts'):
+            # g.printObj(guide_lines, tag=f"remove_brackets: {p.h}")
+            g.trace('To do')
     #@-others
 #@-others
 
