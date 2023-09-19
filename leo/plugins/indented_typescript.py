@@ -245,20 +245,8 @@ class IndentedTypeScript:
                 level += (1 if curly == '{' else -1)
         if level != 0:
             raise TypeError(f"{tag} unmatch brackets")
-        
-        # Pass 2: Check the coming substitutions.
-        for line_number, line in enumerate(guide_lines):
-            for m in re.finditer(curly_pat, line):
-                curly = m.group(0)
-                column_number = m.start()
-                this_info = (curly, line_number, column_number)
-                try:
-                    matching_info = info [this_info]
-                    assert matching_info, tag
-                except KeyError:
-                    raise ValueError(f"no matching info: {this_info}")
                     
-        # Pass 3: Make the substitutions when '}' is seen.
+        # Pass 2: Make the substitutions when '}' is seen.
         result_lines = []
         for line_number, line in enumerate(guide_lines):
 
@@ -276,7 +264,10 @@ class IndentedTypeScript:
             for m in re.finditer(close_curly_pat, line):
                 column_number = m.start()
                 this_info = ('}', line_number, column_number)
-                match_curly, match_line, match_column = info [this_info]
+                try:
+                    match_curly, match_line, match_column = info [this_info]
+                except KeyError:
+                    raise ValueError(f"no matching info: {this_info}")
                 assert match_curly == '{', f"{tag}: wrong matching curly bracket"
 
                 # Don't make the substitution if the match is on the same line.
