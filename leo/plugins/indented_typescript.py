@@ -237,8 +237,20 @@ class IndentedTypeScript:
 
         Raise TypeError if there is a problem.
         """
-        dump = True
-        trace = False
+        # Defaults are all False
+        trace_guide_lines = False
+        trace_lines = False
+        trace_remove = False
+        trace_result_lines = False
+        trace_result_str = False
+        if 1:  # Simple trace at most:
+            trace_result_str = True
+        else:
+            trace_guide_lines = True
+            trace_lines = False
+            trace_remove = True
+            trace_result_lines = True
+        
         tag = 'remove_brackets'
 
         # The stack contains tuples(curly_bracket, line_number, column_number) for each curly bracket.
@@ -270,10 +282,15 @@ class IndentedTypeScript:
                     info [this_info] = top
                 level += (1 if curly == '{' else -1)
         assert level == 0, f"{tag} unmatched brackets"
+        
+        # self.dump_info(info, guide_lines)
+            
                     
         # Pass 2: Make the substitutions when '}' is seen.
         result_lines = []  # Must be empty here.
         for line_number, line in enumerate(guide_lines):
+            
+            # g.trace(line_number, repr(line))
 
             if '}' not in line:
                 # No substitution is possible.
@@ -282,26 +299,24 @@ class IndentedTypeScript:
                 
             # Don't make the substition if '};' appears on the line.
             if self.semicolon_pat.search(line):
-                # g.trace('Skip };', repr(line))
+                g.trace('Skip };', repr(line))
                 result_lines.append(lines[line_number])
                 continue
             
             for m in re.finditer(self.close_curly_pat, line):
                 column_number = m.start()
                 this_info = ('}', line_number, column_number)
-                try:
-                    match_curly, match_line, match_column = info [this_info]
-                except KeyError:
-                    raise ValueError(f"no matching info: {this_info}")
+                assert this_info in info, f"no matching info: {this_info}"
+                match_curly, match_line, match_column = info [this_info]
                 assert match_curly == '{', f"{tag}: wrong matching curly bracket"
 
                 # Don't make the substitution if the match is on the same line.
                 if match_line == line_number:
-                    # g.trace('Same line', repr(line))
+                    g.trace('Same line', repr(line))
                     result_lines.append(lines[line_number])
                     break
               
-                if trace:
+                if trace_remove:
                     print('')
                     print(f"{tag} Remove")
                     print(f"matching: {{ line: {match_line:3} column: {match_column:2} {guide_lines[match_line]!r}")
@@ -309,8 +324,8 @@ class IndentedTypeScript:
 
                 # Make the substitution in the *real* lines.
 
-                # Replace the previous line.
-                s = lines[match_line]
+                # Replace the previous line in result_lines, *not* lines.
+                s = result_lines[match_line]
                 new_line = s[:match_column] + ' ' + s[match_column + 1:]
                 result_lines[match_line] = new_line.rstrip() + '\n' if new_line.strip() else '\n'
 
@@ -320,12 +335,15 @@ class IndentedTypeScript:
                 result_lines.append(this_line.rstrip() + '\n' if this_line.strip() else '\n')
                     
         # Remove blank lines. Some will be added later.
-        result_lines = [f"Node: {p.h}", '\n\n'] + [z for z in result_lines if z.strip()]
-
-        if dump:
-            # g.printObj(lines, f"lines: {p.h}")
-            # g.printObj(result_lines, tag=f"result_lines: {p.h}")
+        result_lines = [f"Node: {p.h}\n\n"] + [z for z in result_lines if z.strip()]
+        if trace_lines:
+            g.printObj(lines, f"lines: {p.h}")
+        if trace_guide_lines:
+            g.printObj(guide_lines, f"guide_lines: {p.h}")
+        if trace_result_str:
             print(''.join(result_lines).rstrip() + '\n')
+        if trace_result_lines:
+            g.printObj(result_lines, tag=f"result_lines: {p.h}")
     #@-others
 #@-others
 

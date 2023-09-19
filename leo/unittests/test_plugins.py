@@ -209,7 +209,7 @@ class TestIndentedTypeScript(LeoUnitTest):
 
     # Contains "over-indented" parenthized lines, a good test for check_indentation.
         contents = textwrap.dedent(
-    """
+    """\
     import { NodeIndices, VNode, Position } from './leoNodes';
 
     export class Config implements ConfigMembers {
@@ -230,6 +230,16 @@ class TestIndentedTypeScript(LeoUnitTest):
             ).get("zoomLevel");
 
             return w_config;
+        }
+
+        public getEncodingFromHeader(fileName: string, s: string): BufferEncoding {
+            if (at.errors) {
+                if (g.unitTesting) {
+                    console.assert(false, g.callers());
+                }
+            } else {
+                at.initReadLine(s);
+            }
         }
     }
     """)
