@@ -191,14 +191,6 @@ class IndentedTypeScript:
                 parens += 1
             for m in re.finditer(paren_pat2, line):
                 parens -= 1
-    #@+node:ekr.20230917184851.1: *4* IndentedTS.find_matching_brackets
-    def find_matching_brackets(self, guide_lines: list[str], p: Position) -> list[tuple[int, int]]:
-        """
-        To do.
-        """
-        ### To do.
-        g.printObj(guide_lines, tag=f"find_matching_brackets: {p.h}")
-        return []
     #@+node:ekr.20230919030850.1: *4* IndentedTS.remove_brackets
     def remove_brackets(self,
         guide_lines: list[str],
