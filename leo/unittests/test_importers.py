@@ -548,7 +548,7 @@ class TestC(BaseTestImporter):
         )
         self.new_run_test(s, expected_results)
     #@-others
-#@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTextImporter)
+#@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTestImporter)
 class TestCoffeescript(BaseTestImporter):
 
     ext = '.coffee'
