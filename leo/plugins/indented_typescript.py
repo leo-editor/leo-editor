@@ -328,7 +328,18 @@ class IndentedTypeScript:
                 result_lines.append(this_line.rstrip() + '\n' if this_line.strip() else '\n')
                     
         # Remove blank lines. Some will be added later.
-        result_lines = [f"Node: {p.h}\n\n"] + [z for z in result_lines if z.strip()]
+        new_result_lines = []
+        for i, line in enumerate(result_lines):
+            if 0 < i - 1 < len(new_result_lines) and line == '\n' and new_result_lines[i-1] == '\n':
+                pass
+            else:
+                new_result_lines.append(line)
+        result_lines = new_result_lines
+        
+        # Add a header for traces.
+        if trace_result_lines or trace_result_str:
+            result_lines = [f"Node: {p.h}\n\n"] + result_lines  # [z for z in result_lines if z.strip()]
+        
         if trace_lines:
             g.printObj(lines, f"lines: {p.h}")
         if trace_guide_lines:
