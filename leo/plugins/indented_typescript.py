@@ -266,7 +266,7 @@ class IndentedTypeScript:
 
             if '}' not in line:
                 # No substitution is possible.
-                result_lines.append(line)
+                result_lines.append(lines[line_number])
                 continue
                 
             # Don't make the substition if '};' appears on the line.
@@ -307,6 +307,7 @@ class IndentedTypeScript:
 
         if trace:  ###
             print('')
+            # g.printObj(lines, f"lines: {p.h}")
             g.printObj(result_lines, tag=f"result_lines: {p.h}")
     #@-others
 #@-others
