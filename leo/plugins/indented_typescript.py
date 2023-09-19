@@ -271,7 +271,7 @@ class IndentedTypeScript:
                 
             # Don't make the substition if '};' appears on the line.
             if semicolon_pat.search(line):
-                g.trace('Skip', repr(line))
+                g.trace('Skip };', repr(line))
                 result_lines.append(lines[line_number])
                 continue
             
