@@ -159,13 +159,13 @@ class IndentedTypeScript:
         paren_pat1, paren_pat2 = re.compile(r'\('), re.compile(r'\)')
         indent_s = ws_char * abs(indent)
         indent_n = len(indent_s)
-        assert indent_n > 0, f"indent_n: {indent_n} {indent_s!r}"
+        assert indent_n > 0, f"check_indentation: can not happen: indent_n: {indent_n} {indent_s!r}"
         
         # The main loop.
         curlies, parens = 0, 0
         for i, line in enumerate(guide_lines):
             m = ws_pat.match(line)
-            assert m, 'check_indentation: can not happen'
+            assert m, 'check_indentation: can not happen: ws_pat does not match'
             lws_s = m.group(0)
             lws = len(lws_s)
 
@@ -175,7 +175,7 @@ class IndentedTypeScript:
             lws_level, lws_remainder = divmod(lws, abs(indent))
             if parens and lws_remainder:
                 # Just issue a warning
-                print(f"Unusual lws in parens: {line!r}")
+                g.trace(f"Unusual lws in parens: {line!r}")
             elif not parens and line.strip():
                 # The lws should be the same as the curly braces level.
                 # Look-ahead to see if *this* line decreases the curly braces level.
