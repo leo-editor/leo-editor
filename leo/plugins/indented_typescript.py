@@ -282,15 +282,10 @@ class IndentedTypeScript:
                     info [this_info] = top
                 level += (1 if curly == '{' else -1)
         assert level == 0, f"{tag} unmatched brackets"
-        
-        # self.dump_info(info, guide_lines)
-            
-                    
+
         # Pass 2: Make the substitutions when '}' is seen.
         result_lines = []  # Must be empty here.
         for line_number, line in enumerate(guide_lines):
-            
-            # g.trace(line_number, repr(line))
 
             if '}' not in line:
                 # No substitution is possible.
