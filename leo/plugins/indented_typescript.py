@@ -294,7 +294,7 @@ class IndentedTypeScript:
                 
             # Don't make the substition if '};' appears on the line.
             if self.semicolon_pat.search(line):
-                g.trace('Skip };', repr(line))
+                # g.trace('Skip };', repr(line))
                 result_lines.append(lines[line_number])
                 continue
             
@@ -307,7 +307,7 @@ class IndentedTypeScript:
 
                 # Don't make the substitution if the match is on the same line.
                 if match_line == line_number:
-                    g.trace('Same line', repr(line))
+                    # g.trace('Same line', repr(line))
                     result_lines.append(lines[line_number])
                     break
               
@@ -317,14 +317,12 @@ class IndentedTypeScript:
                     print(f"matching: {{ line: {match_line:3} column: {match_column:2} {guide_lines[match_line]!r}")
                     print(f"    this: }} line: {line_number:3} column: {column_number:2} {line!r}")
 
-                # Make the substitution in the *real* lines.
-
                 # Replace the previous line in result_lines, *not* lines.
                 s = result_lines[match_line]
                 new_line = s[:match_column] + ' ' + s[match_column + 1:]
                 result_lines[match_line] = new_line.rstrip() + '\n' if new_line.strip() else '\n'
 
-                # Append this line.
+                # Append this *real* line to result_lines.
                 s = lines[line_number]
                 this_line = s[:column_number] + ' ' + s[column_number + 1:]
                 result_lines.append(this_line.rstrip() + '\n' if this_line.strip() else '\n')
