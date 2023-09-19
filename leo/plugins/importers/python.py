@@ -65,7 +65,7 @@ class Python_Importer(Importer):
                 child = p.firstChild()
                 lines = g.splitLines(p.b)
                 for i, line in enumerate(lines):
-                    if line == ' ' * 4 + '@others\n' and child.b.startswith('\n'):
+                    if line.strip().startswith('@others') and child.b.startswith('\n'):
                         p.b = ''.join(lines[:i]) + '\n' + ''.join(lines[i:])
                         child.b = child.b[1:]
                         break
