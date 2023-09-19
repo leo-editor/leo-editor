@@ -153,7 +153,7 @@ class TestPlugins(LeoUnitTest):
     #@-others
 #@+node:ekr.20230917015008.1: ** class TestIndentedTypescript(LeoUnitTest)
 class TestIndentedTypeScript(LeoUnitTest):
-    """General tests of plugoins."""
+    """Tests for the indented_typescript plugin."""
 
     def setUp(self):
 
@@ -214,6 +214,11 @@ class TestIndentedTypeScript(LeoUnitTest):
             private _context: vscode.ExtensionContext,
             private _leoUI: LeoUI
         ) { }
+        
+        const w_config: FontSettings = {
+            zoomLevel: Number(w_zoomLevel),
+            fontSize: Number(w_fontSize)
+        };
 
         public getFontConfig(): FontSettings {
             let w_zoomLevel = vscode.workspace.getConfiguration(

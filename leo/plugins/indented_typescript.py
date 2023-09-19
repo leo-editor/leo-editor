@@ -211,13 +211,11 @@ class IndentedTypeScript:
 
         Raise TypeError if there is a problem.
         """
-        trace = True
+        trace = False
         tag = 'remove_brackets'
         curly_pat = re.compile(r'{|}')
         close_curly_pat = re.compile('}')
         semicolon_pat = re.compile('}\s*;')
-        
-        # g.printObj(guide_lines, tag=f"guide_lines {p.h}")
         
         # The stack contains tuples(curly_bracket, line_number, column_number) for each curly bracket.
         # Note: adding a 'level' entry to these tuples would be tricky.
@@ -271,7 +269,7 @@ class IndentedTypeScript:
                 
             # Don't make the substition if '};' appears on the line.
             if semicolon_pat.search(line):
-                g.trace('Skip };', repr(line))
+                # g.trace('Skip };', repr(line))
                 result_lines.append(lines[line_number])
                 continue
             
@@ -283,7 +281,7 @@ class IndentedTypeScript:
 
                 # Don't make the substitution if the match is on the same line.
                 if match_line == line_number:
-                    g.trace('Same line', repr(line))
+                    # g.trace('Same line', repr(line))
                     result_lines.append(lines[line_number])
                     break
               
@@ -305,10 +303,11 @@ class IndentedTypeScript:
                 this_line = s[:column_number] + ' ' + s[column_number + 1:]
                 result_lines.append(this_line.rstrip() + '\n' if this_line.strip() else '\n')
 
-        if trace:  ###
+        if 1:
             print('')
             # g.printObj(lines, f"lines: {p.h}")
-            g.printObj(result_lines, tag=f"result_lines: {p.h}")
+            # g.printObj(result_lines, tag=f"result_lines: {p.h}")
+            print(''.join(result_lines).rstrip() + '\n')
     #@-others
 #@-others
 
