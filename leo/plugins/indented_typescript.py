@@ -211,16 +211,33 @@ class IndentedTypeScript:
 
         Raise TypeError if there is a problem.
         """
+        tag = 'remove_brackets'
         curly_pat = re.compile(r'{|}')
+        
+        # The stack contains tuples(curly_bracket, line_number, column_number) for each curly bracket.
+        stack: list[tuple[str, int, int]] = []
+        info: dict[tuple, tuple] = {}  # Keys and values are tuples, as above.
+        
+        # Pass 1: Create the info dict.
         level = 0
-        for i, line in enumerate(guide_lines):
+        for line_number, line in enumerate(guide_lines):
             for m in re.finditer(curly_pat, line):
                 curly = m.group(0)
-                g.trace(f" {curly} level: {level} offset: {m.start():3} line: {i:3} {line!r}")
+                column_number = m.start()
+                g.trace(f" {curly} level: {level} column: {column_number:3} line: {line_number:3} {line!r}")
                 if curly == '{':
-                    level += 1
+                    stack.append((curly, line_number, column_number))
+                elif stack:
+                    top = stack[-1]
+                    top_curly, top_line_number, top_column_number = top
+                    assert top_curly == '{', f"{tag} stack mismatch"
+                    this_info = (curly, line_number, column_number)
+                    info [top] = this_info
+                    info [this_info] = top
                 else:
-                    level -= 1
+                    raise TypeError(f"{tag}: stack underflow")
+                level += (1 if curly == '{' else -1)
+        g.printObj(info, tag='info')
     #@-others
 #@-others
 
