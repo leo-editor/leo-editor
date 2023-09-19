@@ -222,6 +222,10 @@ class IndentedTypeScript:
             for m in re.finditer(self.square_pat2, line):
                 squares -= 1
     #@+node:ekr.20230919030850.1: *4* IndentedTS.remove_brackets
+    curlies_pat = re.compile(r'{|}')
+    close_curly_pat = re.compile('}')
+    semicolon_pat = re.compile('}\s*;')
+
     def remove_brackets(self,
         guide_lines: list[str],
         lines: list[str],
@@ -233,43 +237,42 @@ class IndentedTypeScript:
 
         Raise TypeError if there is a problem.
         """
+        dump = True
         trace = False
         tag = 'remove_brackets'
-        curly_pat = re.compile(r'{|}')
-        close_curly_pat = re.compile('}')
-        semicolon_pat = re.compile('}\s*;')
-        
+
         # The stack contains tuples(curly_bracket, line_number, column_number) for each curly bracket.
         # Note: adding a 'level' entry to these tuples would be tricky.
         stack: list[tuple[str, int, int]] = []
         info: dict[tuple, tuple] = {}  # Keys and values are tuples, as above.
         
         # Pass 1: Create the info dict.
-        level = 0  # For traces.
+        level = 0  # To check for unmatched braces.
         for line_number, line in enumerate(guide_lines):
-            for m in re.finditer(curly_pat, line):
+            last_column = 0
+            for m in re.finditer(self.curlies_pat, line):
                 curly = m.group(0)
                 column_number = m.start()
+                assert last_column == 0 or last_column < column_number, f"{tag} unexpected column"
+                assert 0 <= column_number < len(line), f"{tag} column out of range"
+                last_column = column_number
                 # g.trace(f" {curly} level: {level} column: {column_number:3} line: {line_number:3} {line!r}")
                 if curly == '{':
                     stack.append((curly, line_number, column_number))
                 else:
-                    assert curly == '}', f"{tag}"
-                    if stack:
-                        top = stack.pop()
-                        top_curly, top_line_number, top_column_number = top
-                        assert top_curly == '{', f"{tag} stack mismatch"
-                        this_info = (curly, line_number, column_number)
-                        info [top] = this_info
-                        info [this_info] = top
-                    else:
-                        raise TypeError(f"{tag}: stack underflow")
+                    assert curly == '}', f"{tag}: not }}"
+                    assert stack, f"{tag}: stack underflow"
+                    top = stack.pop()
+                    top_curly, top_line_number, top_column_number = top
+                    assert top_curly == '{', f"{tag} stack mismatch"
+                    this_info = (curly, line_number, column_number)
+                    info [top] = this_info
+                    info [this_info] = top
                 level += (1 if curly == '{' else -1)
-        if level != 0:
-            raise TypeError(f"{tag} unmatch brackets")
+        assert level == 0, f"{tag} unmatched brackets"
                     
         # Pass 2: Make the substitutions when '}' is seen.
-        result_lines = []
+        result_lines = []  # Must be empty here.
         for line_number, line in enumerate(guide_lines):
 
             if '}' not in line:
@@ -278,12 +281,12 @@ class IndentedTypeScript:
                 continue
                 
             # Don't make the substition if '};' appears on the line.
-            if semicolon_pat.search(line):
+            if self.semicolon_pat.search(line):
                 # g.trace('Skip };', repr(line))
                 result_lines.append(lines[line_number])
                 continue
             
-            for m in re.finditer(close_curly_pat, line):
+            for m in re.finditer(self.close_curly_pat, line):
                 column_number = m.start()
                 this_info = ('}', line_number, column_number)
                 try:
@@ -315,9 +318,11 @@ class IndentedTypeScript:
                 s = lines[line_number]
                 this_line = s[:column_number] + ' ' + s[column_number + 1:]
                 result_lines.append(this_line.rstrip() + '\n' if this_line.strip() else '\n')
+                    
+        # Remove blank lines. Some will be added later.
+        result_lines = [f"Node: {p.h}", '\n\n'] + [z for z in result_lines if z.strip()]
 
-        if 0:
-            print('')
+        if dump:
             # g.printObj(lines, f"lines: {p.h}")
             # g.printObj(result_lines, tag=f"result_lines: {p.h}")
             print(''.join(result_lines).rstrip() + '\n')
