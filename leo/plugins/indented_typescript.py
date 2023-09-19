@@ -86,6 +86,7 @@ class IndentedTypeScript:
                 v.b = backup_d [v]
             g.es_print(f"Error in indented_typescript plugin: {e}.")
             g.es_print(f"No changes made to {p.h} and its subtree.")
+            g.es_exception()
                     
     #@+node:ekr.20230917091801.1: *3* IndentedTS.before_write
     def before_write(self, c, p):
@@ -104,7 +105,7 @@ class IndentedTypeScript:
         """
         contents = p.b
         if not contents.strip():
-            g.trace('Empty!', p.h)
+            # g.trace('Empty!', p.h)
             return
         lines = g.splitLines(contents)
         guide_lines = self.importer.make_guide_lines(lines)
@@ -112,7 +113,7 @@ class IndentedTypeScript:
         
         # These may raise TypeError.
         self.check_brackets(guide_lines, p)
-        self.check_indentation(guide_lines, indent, p)
+        self.check_indentation(indent, guide_lines, lines, p)
         self.remove_brackets(guide_lines, lines, p)
     #@+node:ekr.20230917185546.1: *4* IndentedTS.check_brackets
     # No need to worry about comments in guide lines.
@@ -143,54 +144,83 @@ class IndentedTypeScript:
                 if trace:
                     g.trace(f"Good: Line {i:4}: {line.strip()}")
     #@+node:ekr.20230919030308.1: *4* IndentedTS.check_indentation
-    def check_indentation(self, guide_lines: list[str], indent: int, p: Position) -> None:
+    curly_pat1, curly_pat2 = re.compile(r'{'), re.compile(r'}')
+    paren_pat1, paren_pat2 = re.compile(r'\('), re.compile(r'\)')
+    square_pat1, square_pat2 = re.compile(r'\['), re.compile(r'\]')
+
+    def check_indentation(self,
+        indent: int,
+        guide_lines: list[str],
+        lines: list[str],
+        p: Position,
+    ) -> None:
         """
         Check indentation and correct it if possible. Raise TypeError if not.
         
         Relax the checks for parenthesized lines.
         """
+        print_header = True
+        tag = 'check_indentation'
         ws_char = ' ' if indent < 0 else '\t'
         ws_pat = re.compile(fr'^[{ws_char}]*')
-        curly_pat1, curly_pat2 = re.compile(r'{'), re.compile(r'}')
-        paren_pat1, paren_pat2 = re.compile(r'\('), re.compile(r'\)')
         indent_s = ws_char * abs(indent)
         indent_n = len(indent_s)
-        assert indent_n > 0, f"check_indentation: can not happen: indent_n: {indent_n} {indent_s!r}"
+        assert indent_n > 0, f"{tag}: bad indent_n: {indent_n} {indent_s!r}"
         
         # The main loop.
-        curlies, parens = 0, 0
+        curlies, squares, parens = 0, 0, 0
         for i, line in enumerate(guide_lines):
-            m = ws_pat.match(line)
-            assert m, 'check_indentation: can not happen: ws_pat does not match'
-            lws_s = m.group(0)
-            lws = len(lws_s)
+            
+            strip_line = line.strip()
 
             # g.trace('lws', lws, '{', curlies, '(', parens, repr(line))
             
-            # Check leading whitepace.
-            lws_level, lws_remainder = divmod(lws, abs(indent))
-            if parens and lws_remainder:
-                # Just issue a warning
-                g.trace(f"Unusual lws in parens: {line!r}")
-            elif not parens and line.strip():
-                # The lws should be the same as the curly braces level.
-                # Look-ahead to see if *this* line decreases the curly braces level.
-                curlies2 = curlies
-                for m in re.finditer(curly_pat2, line):
-                    curlies2 -= 1
-                if curlies2 > 0 and lws_level != curlies2 or lws_remainder:
-                    message = f"Bad indentation: bracket level: {curlies2}, line: {line!r}"
+            # Check leading whitepaces or *original* lines.
+            if not parens and not squares and strip_line:
+                
+                original_line = lines[i]
+                last_line = '' if i == 0 else lines[i-1].strip()
+                m = ws_pat.match(original_line)
+                assert m, f"{tag} check_indentation: ws_pat does not match"
+                lws_s = m.group(0)
+                lws = len(lws_s)
+                lws_level, lws_remainder = divmod(lws, abs(indent))
+        
+                # Hacks to ignore special patterns.
+                if (
+                    strip_line.startswith(('/', '.', '?', ':', '(', '['))
+                    or last_line.endswith(('=', '+'))
+                    or '}' in line or '{' in line
+                ):
+                    ok = lws_remainder == 0
+                else:
+                    ok = lws_level == curlies
+                if not ok:
+                    if print_header:
+                        print(f"\nNode {p.h}\n")
+                        print_header = False
+                    # g.trace(f"lws: {lws_level} rem: {lws_remainder} bracket level: {curlies}")
+                    message = (
+                        f"Bad indentation {lws_level:2} expected {curlies}:\n"
+                        f"line {i:4}: {original_line!r}\n{' '*9}: {line!r}\n"
+                    )
                     print(message)
-                    raise TypeError(message)
+                    if g.unitTesting:
+                        raise TypeError(message)
+
             # Compute levels for the next line.
-            for m in re.finditer(curly_pat1, line):
+            for m in re.finditer(self.curly_pat1, line):
                 curlies += 1
-            for m in re.finditer(curly_pat2, line):
+            for m in re.finditer(self.curly_pat2, line):
                 curlies -= 1
-            for m in re.finditer(paren_pat1, line):
+            for m in re.finditer(self.paren_pat1, line):
                 parens += 1
-            for m in re.finditer(paren_pat2, line):
+            for m in re.finditer(self.paren_pat2, line):
                 parens -= 1
+            for m in re.finditer(self.square_pat1, line):
+                squares += 1
+            for m in re.finditer(self.square_pat2, line):
+                squares -= 1
     #@+node:ekr.20230919030850.1: *4* IndentedTS.remove_brackets
     def remove_brackets(self,
         guide_lines: list[str],
@@ -286,7 +316,7 @@ class IndentedTypeScript:
                 this_line = s[:column_number] + ' ' + s[column_number + 1:]
                 result_lines.append(this_line.rstrip() + '\n' if this_line.strip() else '\n')
 
-        if 1:
+        if 0:
             print('')
             # g.printObj(lines, f"lines: {p.h}")
             # g.printObj(result_lines, tag=f"result_lines: {p.h}")

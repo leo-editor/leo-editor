@@ -182,9 +182,13 @@ class TestIndentedTypeScript(LeoUnitTest):
         p = c.p
         at = c.atFileCommands
 
-        # Compute the path to typescript_test.ts
-        unittest_dir = os.path.dirname(__file__)
-        path = os.path.abspath(os.path.join(unittest_dir, 'indented_typescript_test.ts'))
+        if 1:
+            # Compute local path to leoJS.
+            path = os.path.normpath(r'C:\Repos\leojs\src\core\leoAtFile.ts')
+        else:
+            # Compute the path to typescript_test.ts
+            unittest_dir = os.path.dirname(__file__)
+            path = os.path.normpath(os.path.join(unittest_dir, 'indented_typescript_test.ts'))
         assert os.path.exists(path), repr(path)
 
         # Remove braces!
