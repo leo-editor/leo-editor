@@ -211,23 +211,26 @@ class IndentedTypeScript:
 
         Raise TypeError if there is a problem.
         """
+        trace = True
         tag = 'remove_brackets'
         curly_pat = re.compile(r'{|}')
+        close_curly_pat = re.compile('}')
+        semicolon_pat = re.compile('}\s*;')
         
-        g.printObj(guide_lines, tag=f"guide_lines {p.h}")
+        # g.printObj(guide_lines, tag=f"guide_lines {p.h}")
         
         # The stack contains tuples(curly_bracket, line_number, column_number) for each curly bracket.
+        # Note: adding a 'level' entry to these tuples would be tricky.
         stack: list[tuple[str, int, int]] = []
         info: dict[tuple, tuple] = {}  # Keys and values are tuples, as above.
         
         # Pass 1: Create the info dict.
-        g.trace('===== Pass 1 =====')
-        level = 0
+        level = 0  # For traces.
         for line_number, line in enumerate(guide_lines):
             for m in re.finditer(curly_pat, line):
                 curly = m.group(0)
                 column_number = m.start()
-                g.trace(f" {curly} level: {level} column: {column_number:3} line: {line_number:3} {line!r}")
+                # g.trace(f" {curly} level: {level} column: {column_number:3} line: {line_number:3} {line!r}")
                 if curly == '{':
                     stack.append((curly, line_number, column_number))
                 else:
@@ -242,27 +245,69 @@ class IndentedTypeScript:
                     else:
                         raise TypeError(f"{tag}: stack underflow")
                 level += (1 if curly == '{' else -1)
-        g.printObj(info, tag='info')
         if level != 0:
             raise TypeError(f"{tag} unmatch brackets")
         
-        # Pass 2: Find the substitutions.
-        g.trace('===== Pass 2 =====')
-        
-        level = 0
+        # Pass 2: Check the coming substitutions.
         for line_number, line in enumerate(guide_lines):
             for m in re.finditer(curly_pat, line):
                 curly = m.group(0)
                 column_number = m.start()
-                g.trace(f" {curly} level: {level} column: {column_number:3} line: {line_number:3} {line!r}")
                 this_info = (curly, line_number, column_number)
                 try:
                     matching_info = info [this_info]
-                    g.trace('matching info', matching_info)
+                    assert matching_info, tag
                 except KeyError:
-                    # g.es_exception()
                     raise ValueError(f"no matching info: {this_info}")
-        
+                    
+        # Pass 3: Make the substitutions when '}' is seen.
+        result_lines = []
+        for line_number, line in enumerate(guide_lines):
+
+            if '}' not in line:
+                # No substitution is possible.
+                result_lines.append(line)
+                continue
+                
+            # Don't make the substition if '};' appears on the line.
+            if semicolon_pat.search(line):
+                g.trace('Skip', repr(line))
+                result_lines.append(lines[line_number])
+                continue
+            
+            for m in re.finditer(close_curly_pat, line):
+                column_number = m.start()
+                this_info = ('}', line_number, column_number)
+                match_curly, match_line, match_column = info [this_info]
+                assert match_curly == '{', f"{tag}: wrong matching curly bracket"
+
+                # Don't make the substitution if the match is on the same line.
+                if match_line == line_number:
+                    g.trace('Same line', repr(line))
+                    result_lines.append(lines[line_number])
+                    break
+              
+                if trace:
+                    print('')
+                    print(f"{tag} Remove")
+                    print(f"matching: {{ line: {match_line:3} column: {match_column:2} {guide_lines[match_line]!r}")
+                    print(f"    this: }} line: {line_number:3} column: {column_number:2} {line!r}")
+
+                # Make the substitution in the *real* lines.
+
+                # Replace the previous line.
+                s = lines[match_line]
+                new_line = s[:match_column] + ' ' + s[match_column + 1:]
+                result_lines[match_line] = new_line.rstrip() + '\n' if new_line.strip() else '\n'
+
+                # Append this line.
+                s = lines[line_number]
+                this_line = s[:column_number] + ' ' + s[column_number + 1:]
+                result_lines.append(this_line.rstrip() + '\n' if this_line.strip() else '\n')
+
+        if trace:  ###
+            print('')
+            g.printObj(result_lines, tag=f"result_lines: {p.h}")
     #@-others
 #@-others
 
