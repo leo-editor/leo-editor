@@ -63,6 +63,9 @@ class IndentedTypeScript:
     #@+node:ekr.20230917091730.1: *3* IndentedTS.after_read
     def after_read(self, c: Cmdr, p: Position) -> None:
         """Remove curly brackets from the file given by p.h."""
+        
+        # Compute the indentation only once.
+        indent = g.scanAllAtTabWidthDirectives(c, p) or -4
 
         # Backup all bodies in case there is an error.
         backup_d: dict[VNode, str] = {}  # Keys are vnodes, values are p.b.
@@ -76,7 +79,7 @@ class IndentedTypeScript:
             for p2 in p.self_and_subtree():
                 if p2.gnx not in seen:
                     seen [p2.gnx] = True
-                    self.do_remove_brackets(p2)
+                    self.do_remove_brackets(indent, p2)
         except Exception as e:
             # Restore all body text.
             for v in backup_d:
@@ -93,7 +96,7 @@ class IndentedTypeScript:
             return
         g.trace(p.h)
     #@+node:ekr.20230917184608.1: *3* IndentedTS.do_remove_brackets (top level)
-    def do_remove_brackets(self, p: Position) -> None:
+    def do_remove_brackets(self, indent: int, p: Position) -> None:
         """
         The top-level driver for each node.
         
@@ -109,7 +112,7 @@ class IndentedTypeScript:
         
         # These may raise TypeError.
         self.check_brackets(guide_lines, p)
-        self.check_indentation(guide_lines, p)
+        self.check_indentation(guide_lines, indent, p)
         self.remove_brackets(guide_lines, lines, p)
     #@+node:ekr.20230917185546.1: *4* IndentedTS.check_brackets
     # No need to worry about comments in guide lines.
@@ -140,15 +143,58 @@ class IndentedTypeScript:
                 if trace:
                     g.trace(f"Good: Line {i:4}: {line.strip()}")
     #@+node:ekr.20230919030308.1: *4* IndentedTS.check_indentation
-    def check_indentation(self, guide_lines: list[str], p: Position) -> None:
+    def check_indentation(self, guide_lines: list[str], indent: int, p: Position) -> None:
         """
         Check indentation and correct it if possible. Raise TypeError if not.
         
         Relax the checks for parenthesized lines.
         """
-        trace = p.h.endswith('indented_typescript_test.ts')
-        if trace:
-            g.printObj(guide_lines, tag=f"check_indentation: {p.h}")
+        # trace = False and p.h.endswith('indented_typescript_test.ts')
+        # if trace:
+            # g.printObj(guide_lines, tag=f"check_indentation: {p.h}")
+
+        ws_char = ' ' if indent < 0 else '\t'
+        ws_pat = re.compile(fr'^[{ws_char}]*')
+        curly_pat1, curly_pat2 = re.compile(r'{'), re.compile(r'}')
+        paren_pat1, paren_pat2 = re.compile(r'\('), re.compile(r'\)')
+        indent_s = ws_char * abs(indent)
+        indent_n = len(indent_s)
+        assert indent_n > 0, f"indent_n: {indent_n} {indent_s!r}"
+        
+        # The main loop.
+        curlies, parens = 0, 0
+        for i, line in enumerate(guide_lines):
+            m = ws_pat.match(line)
+            assert m, 'check_indentation: can not happen'
+            lws_s = m.group(0)
+            lws = len(lws_s)
+
+            # g.trace('lws', lws, '{', curlies, '(', parens, repr(line))
+            
+            # Check leading whitepace.
+            lws_level, lws_remainder = divmod(lws, abs(indent))
+            if parens and lws_remainder:
+                # Just issue a warning
+                print(f"Unusual lws in parens: {line!r}")
+            elif not parens and line.strip():
+                # The lws should be the same as the curly braces level.
+                # Look-ahead to see if *this* line decreases the curly braces level.
+                curlies2 = curlies
+                for m in re.finditer(curly_pat2, line):
+                    curlies2 -= 1
+                if curlies2 > 0 and lws_level != curlies2 or lws_remainder:
+                    message = f"Bad indentation: bracket level: {curlies2}, line: {line!r}"
+                    print(message)
+                    raise TypeError(message)
+            # Compute levels for the next line.
+            for m in re.finditer(curly_pat1, line):
+                curlies += 1
+            for m in re.finditer(curly_pat2, line):
+                curlies -= 1
+            for m in re.finditer(paren_pat1, line):
+                parens += 1
+            for m in re.finditer(paren_pat2, line):
+                parens -= 1
     #@+node:ekr.20230917184851.1: *4* IndentedTS.find_matching_brackets (to do)
     def find_matching_brackets(self, guide_lines: list[str], p: Position) -> list[tuple[int, int]]:
         """
