@@ -63,7 +63,7 @@ class IndentedTypeScript:
     #@+node:ekr.20230917091730.1: *3* IndentedTS.after_read
     def after_read(self, c: Cmdr, p: Position) -> None:
         """Remove curly brackets from the file given by p.h."""
-        
+
         # Compute the indentation only once.
         indent = g.scanAllAtTabWidthDirectives(c, p) or -4
 
@@ -72,7 +72,7 @@ class IndentedTypeScript:
         for p2 in p.self_and_subtree():
             if p2.gnx not in backup_d:
                 backup_d [p2.v] = p.b
-        
+
         # Handle each node separately.
         try:
             seen: dict[str, bool] = {}  # Keys are gnxs, values are True.
@@ -87,7 +87,6 @@ class IndentedTypeScript:
             g.es_print(f"Error in indented_typescript plugin: {e}.")
             g.es_print(f"No changes made to {p.h} and its subtree.")
             g.es_exception()
-                    
     #@+node:ekr.20230917091801.1: *3* IndentedTS.before_write
     def before_write(self, c, p):
         assert c == self.c
@@ -110,7 +109,7 @@ class IndentedTypeScript:
         lines = g.splitLines(contents)
         guide_lines = self.importer.make_guide_lines(lines)
         assert lines and len(lines) == len(guide_lines)
-        
+
         # These may raise TypeError.
         self.check_brackets(guide_lines, p)
         self.check_indentation(indent, guide_lines, lines, p)
@@ -166,18 +165,13 @@ class IndentedTypeScript:
         indent_s = ws_char * abs(indent)
         indent_n = len(indent_s)
         assert indent_n > 0, f"{tag}: bad indent_n: {indent_n} {indent_s!r}"
-        
+
         # The main loop.
         curlies, squares, parens = 0, 0, 0
         for i, line in enumerate(guide_lines):
-            
             strip_line = line.strip()
-
-            # g.trace('lws', lws, '{', curlies, '(', parens, repr(line))
-            
             # Check leading whitepaces or *original* lines.
             if not parens and not squares and strip_line:
-                
                 original_line = lines[i]
                 last_line = '' if i == 0 else lines[i-1].strip()
                 m = ws_pat.match(original_line)
@@ -185,7 +179,6 @@ class IndentedTypeScript:
                 lws_s = m.group(0)
                 lws = len(lws_s)
                 lws_level, lws_remainder = divmod(lws, abs(indent))
-        
                 # Hacks to ignore special patterns.
                 if (
                     strip_line.startswith(('/', '.', '?', ':', '(', '['))
@@ -223,8 +216,8 @@ class IndentedTypeScript:
                 squares -= 1
     #@+node:ekr.20230919030850.1: *4* IndentedTS.remove_brackets
     curlies_pat = re.compile(r'{|}')
-    close_curly_pat = re.compile('}')
-    semicolon_pat = re.compile('}\s*;')
+    close_curly_pat = re.compile(r'}')
+    semicolon_pat = re.compile(r'}\s*;')
 
     def remove_brackets(self,
         guide_lines: list[str],
@@ -237,27 +230,14 @@ class IndentedTypeScript:
 
         Raise TypeError if there is a problem.
         """
-        # Defaults are all False
-        trace_guide_lines = False
-        trace_lines = False
-        trace_remove = False
-        trace_result_lines = False
-        trace_result_str = False
-        if 1:  # Simple trace at most:
-            trace_result_str = True
-        else:
-            trace_guide_lines = True
-            trace_lines = False
-            trace_remove = True
-            trace_result_lines = True
-        
+
         tag = 'remove_brackets'
 
         # The stack contains tuples(curly_bracket, line_number, column_number) for each curly bracket.
         # Note: adding a 'level' entry to these tuples would be tricky.
         stack: list[tuple[str, int, int]] = []
         info: dict[tuple, tuple] = {}  # Keys and values are tuples, as above.
-        
+
         # Pass 1: Create the info dict.
         level = 0  # To check for unmatched braces.
         for line_number, line in enumerate(guide_lines):
@@ -291,13 +271,13 @@ class IndentedTypeScript:
                 # No substitution is possible.
                 result_lines.append(lines[line_number])
                 continue
-                
+
             # Don't make the substition if '};' appears on the line.
             if self.semicolon_pat.search(line):
                 # g.trace('Skip };', repr(line))
                 result_lines.append(lines[line_number])
                 continue
-            
+
             for m in re.finditer(self.close_curly_pat, line):
                 column_number = m.start()
                 this_info = ('}', line_number, column_number)
@@ -310,8 +290,8 @@ class IndentedTypeScript:
                     # g.trace('Same line', repr(line))
                     result_lines.append(lines[line_number])
                     break
-              
-                if trace_remove:
+
+                if 0:
                     print('')
                     print(f"{tag} Remove")
                     print(f"matching: {{ line: {match_line:3} column: {match_column:2} {guide_lines[match_line]!r}")
@@ -326,7 +306,7 @@ class IndentedTypeScript:
                 s = lines[line_number]
                 this_line = s[:column_number] + ' ' + s[column_number + 1:]
                 result_lines.append(this_line.rstrip() + '\n' if this_line.strip() else '\n')
-                    
+
         # Remove multiple blank lines. Some will be added later.
         new_result_lines: list[str] = []
         for i, line in enumerate(result_lines):
@@ -335,19 +315,14 @@ class IndentedTypeScript:
             else:
                 new_result_lines.append(line)
         result_lines = new_result_lines
-        
+
         # Add a header for traces.
-        if trace_result_lines or trace_result_str:
-            result_lines = [f"Node: {p.h}\n\n"] + result_lines  # [z for z in result_lines if z.strip()]
-        
-        if trace_lines:
-            g.printObj(lines, f"lines: {p.h}")
-        if trace_guide_lines:
-            g.printObj(guide_lines, f"guide_lines: {p.h}")
-        if trace_result_str:
-            print(''.join(result_lines).rstrip() + '\n')
-        if trace_result_lines:
-            g.printObj(result_lines, tag=f"result_lines: {p.h}")
+        if 0:
+            result_lines = [f"Node: {p.h}\n\n"] + result_lines
+        # g.printObj(lines, f"lines: {p.h}")
+        # g.printObj(guide_lines, f"guide_lines: {p.h}")
+        # print(''.join(result_lines).rstrip() + '\n')
+        # g.printObj(result_lines, tag=f"result_lines: {p.h}")
     #@-others
 #@-others
 
