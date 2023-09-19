@@ -149,10 +149,6 @@ class IndentedTypeScript:
         
         Relax the checks for parenthesized lines.
         """
-        # trace = False and p.h.endswith('indented_typescript_test.ts')
-        # if trace:
-            # g.printObj(guide_lines, tag=f"check_indentation: {p.h}")
-
         ws_char = ' ' if indent < 0 else '\t'
         ws_pat = re.compile(fr'^[{ws_char}]*')
         curly_pat1, curly_pat2 = re.compile(r'{'), re.compile(r'}')
@@ -195,7 +191,7 @@ class IndentedTypeScript:
                 parens += 1
             for m in re.finditer(paren_pat2, line):
                 parens -= 1
-    #@+node:ekr.20230917184851.1: *4* IndentedTS.find_matching_brackets (to do)
+    #@+node:ekr.20230917184851.1: *4* IndentedTS.find_matching_brackets
     def find_matching_brackets(self, guide_lines: list[str], p: Position) -> list[tuple[int, int]]:
         """
         To do.
@@ -203,7 +199,7 @@ class IndentedTypeScript:
         ### To do.
         g.printObj(guide_lines, tag=f"find_matching_brackets: {p.h}")
         return []
-    #@+node:ekr.20230919030850.1: *4* IndentedTS.remove_brackets (to do)
+    #@+node:ekr.20230919030850.1: *4* IndentedTS.remove_brackets (finish)
     def remove_brackets(self,
         guide_lines: list[str],
         lines: list[str],
@@ -211,11 +207,20 @@ class IndentedTypeScript:
     ) -> None:
         """
         Remove curly brackets from p.b.
+        Do not remove matching brackets if ';' follows the closing bracket.
+
         Raise TypeError if there is a problem.
         """
-        if p.h.endswith('indented_typescript_test.ts'):
-            # g.printObj(guide_lines, tag=f"remove_brackets: {p.h}")
-            g.trace('To do')
+        curly_pat = re.compile(r'{|}')
+        level = 0
+        for i, line in enumerate(guide_lines):
+            for m in re.finditer(curly_pat, line):
+                curly = m.group(0)
+                g.trace(f" {curly} level: {level} offset: {m.start():3} line: {i:3} {line!r}")
+                if curly == '{':
+                    level += 1
+                else:
+                    level -= 1
     #@-others
 #@-others
 
