@@ -199,7 +199,7 @@ class IndentedTypeScript:
         ### To do.
         g.printObj(guide_lines, tag=f"find_matching_brackets: {p.h}")
         return []
-    #@+node:ekr.20230919030850.1: *4* IndentedTS.remove_brackets (finish)
+    #@+node:ekr.20230919030850.1: *4* IndentedTS.remove_brackets
     def remove_brackets(self,
         guide_lines: list[str],
         lines: list[str],
@@ -214,11 +214,14 @@ class IndentedTypeScript:
         tag = 'remove_brackets'
         curly_pat = re.compile(r'{|}')
         
+        g.printObj(guide_lines, tag=f"guide_lines {p.h}")
+        
         # The stack contains tuples(curly_bracket, line_number, column_number) for each curly bracket.
         stack: list[tuple[str, int, int]] = []
         info: dict[tuple, tuple] = {}  # Keys and values are tuples, as above.
         
         # Pass 1: Create the info dict.
+        g.trace('===== Pass 1 =====')
         level = 0
         for line_number, line in enumerate(guide_lines):
             for m in re.finditer(curly_pat, line):
@@ -227,17 +230,39 @@ class IndentedTypeScript:
                 g.trace(f" {curly} level: {level} column: {column_number:3} line: {line_number:3} {line!r}")
                 if curly == '{':
                     stack.append((curly, line_number, column_number))
-                elif stack:
-                    top = stack[-1]
-                    top_curly, top_line_number, top_column_number = top
-                    assert top_curly == '{', f"{tag} stack mismatch"
-                    this_info = (curly, line_number, column_number)
-                    info [top] = this_info
-                    info [this_info] = top
                 else:
-                    raise TypeError(f"{tag}: stack underflow")
+                    assert curly == '}', f"{tag}"
+                    if stack:
+                        top = stack.pop()
+                        top_curly, top_line_number, top_column_number = top
+                        assert top_curly == '{', f"{tag} stack mismatch"
+                        this_info = (curly, line_number, column_number)
+                        info [top] = this_info
+                        info [this_info] = top
+                    else:
+                        raise TypeError(f"{tag}: stack underflow")
                 level += (1 if curly == '{' else -1)
         g.printObj(info, tag='info')
+        if level != 0:
+            raise TypeError(f"{tag} unmatch brackets")
+        
+        # Pass 2: Find the substitutions.
+        g.trace('===== Pass 2 =====')
+        
+        level = 0
+        for line_number, line in enumerate(guide_lines):
+            for m in re.finditer(curly_pat, line):
+                curly = m.group(0)
+                column_number = m.start()
+                g.trace(f" {curly} level: {level} column: {column_number:3} line: {line_number:3} {line!r}")
+                this_info = (curly, line_number, column_number)
+                try:
+                    matching_info = info [this_info]
+                    g.trace('matching info', matching_info)
+                except KeyError:
+                    # g.es_exception()
+                    raise ValueError(f"no matching info: {this_info}")
+        
     #@-others
 #@-others
 
