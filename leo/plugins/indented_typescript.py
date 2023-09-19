@@ -108,15 +108,15 @@ class IndentedTypeScript:
         assert lines and len(lines) == len(guide_lines)
         
         # These may raise TypeError.
-        self.check_guide_lines(guide_lines, p)
+        self.check_brackets(guide_lines, p)
         self.check_indentation(guide_lines, p)
         self.remove_brackets(guide_lines, lines, p)
-    #@+node:ekr.20230917185546.1: *4* IndentedTS.check_guide_lines
+    #@+node:ekr.20230917185546.1: *4* IndentedTS.check_brackets
     # No need to worry about comments in guide lines.
     bracket_pat = re.compile(r'^\s*}.*?{\s*$')
     matched_bracket_pat = re.compile(r'{.*?}\s*')
 
-    def check_guide_lines(self, guide_lines: list[str], p: Position) -> None:
+    def check_brackets(self, guide_lines: list[str], p: Position) -> None:
         """
         Check that all lines contain at most one unmatched '{' or '}'.
         If '}' precedes '{' then only whitespace may appear before '}' and after '{'.
@@ -142,12 +142,13 @@ class IndentedTypeScript:
     #@+node:ekr.20230919030308.1: *4* IndentedTS.check_indentation
     def check_indentation(self, guide_lines: list[str], p: Position) -> None:
         """
-        Check indentation and correct it if possible.
-        Raise TypeError if not.
+        Check indentation and correct it if possible. Raise TypeError if not.
+        
+        Relax the checks for parenthesized lines.
         """
-        if p.h.endswith('indented_typescript_test.ts'):
-            # g.printObj(guide_lines, tag=f"check_indentation: {p.h}")
-            g.trace('To do')
+        trace = p.h.endswith('indented_typescript_test.ts')
+        if trace:
+            g.printObj(guide_lines, tag=f"check_indentation: {p.h}")
     #@+node:ekr.20230917184851.1: *4* IndentedTS.find_matching_brackets (to do)
     def find_matching_brackets(self, guide_lines: list[str], p: Position) -> list[tuple[int, int]]:
         """
