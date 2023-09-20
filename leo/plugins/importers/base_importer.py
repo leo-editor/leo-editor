@@ -235,7 +235,7 @@ class Importer:
         children: list[tuple[VNode, Block]] = []
         while blocks:
             parent_v, block = blocks.pop(0)
-            
+
             if trace:
                 print('')
                 g.trace(f"=== loop ===\nparent: {parent.h!r}\n block: {block}")
@@ -244,7 +244,7 @@ class Importer:
             child = parent_v.insertAsLastChild()
             child.h = self.compute_headline(block)
             children.append((child, block))
-            
+
             inner_blocks: list[Block] = self.find_blocks(block.start_body, block.end)
             if trace:
                 print('')
