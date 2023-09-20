@@ -40,6 +40,10 @@ class Block:
         return f"Block: {self.kind} {self.name} {self.start} {self.start_body} {self.end}"
 
     __str__ = __repr__
+
+
+    def dump(self) -> None:
+        g.printObj(self.lines[self.start:self.end], tag=repr(self))
 #@+node:ekr.20230529075138.4: ** class Importer
 class Importer:
     """
