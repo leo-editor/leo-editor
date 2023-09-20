@@ -244,7 +244,7 @@ class Importer:
 
             inner_blocks: list[Block] = self.find_blocks(block.start_body, block.end)
 
-            if 0: ### trace:
+            if 0:  ### trace:
                 print('')
                 g.trace('inner_blocks...', inner_blocks)
 
@@ -259,11 +259,11 @@ class Importer:
 
         for child_v, block in children:
             if trace:
-                # print(f"{child_v.h!r:>30} {block}")
-                g.printObj(self.lines[block.start:block.end], tag=f"{child_v.h!r} {block.start}:{block.end}")
+                print(f"{child_v.h!r:>30} {block}")
+                # g.printObj(self.lines[block.start:block.end], tag=f"{child_v.h!r} {block.start}:{block.end}")
 
             ### To do. Generate code!!!
-        
+
         # # Add any tail lines.
         # result_list.extend(lines[last_end:end])
 
