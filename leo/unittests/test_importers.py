@@ -1791,6 +1791,7 @@ class TestJavascript(BaseTestImporter):
                 s,
             ),
         )
+        # g.printObj(g.splitLines(s), tag='source')
         self.new_run_test(s, expected_results)
     #@+node:ekr.20220814014851.1: *3* TestJavascript.test_comments
     def test_comments(self):
