@@ -1763,8 +1763,8 @@ class TestJavascript(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.36: *3* TestJavascript.test var_equal_function
-    def var_equal_function(self):
+    #@+node:ekr.20210904065459.36: *3* TestJavascript.test_var_equal_function
+    def test_var_equal_function(self):
 
         s = """
             var c3 = (function () {
@@ -1787,8 +1787,22 @@ class TestJavascript(BaseTestImporter):
                 '@language javascript\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'function restart',
-                s
+            (1, 'function c3',
+                'var c3 = (function () {\n'
+                '    @others\n'
+                '\n'
+                '    return c3;\n'
+                '}());\n'
+            ),
+            (2, 'function c3.someFunction',
+                '"use strict";\n'
+                '\n'
+                '// Globals\n'
+                'var c3 = { version: "0.0.1"   };\n'
+                '\n'
+                'c3.someFunction = function () {\n'
+                '    console.log("Just a demo...");\n'
+                '};\n'
             ),
         )
         self.new_run_test(s, expected_results)
