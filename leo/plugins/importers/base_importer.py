@@ -5,18 +5,18 @@
 #@+<< imports, annotations: base_importer.py >>
 #@+node:ekr.20230920091345.1: ** << imports, annotations: base_importer.py >>
 from __future__ import annotations
-import namedtuple
+from collections import namedtuple
 import re
-from typing import TypeAlias, TYPE_CHECKING  ### NamedTuple, 
+from typing import Any, TYPE_CHECKING  ### NamedTuple, TypeAlias, 
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
 
-### Block = tuple[str, str, int, int, int]  # (kind, name, start, start_body, end)
+Block: Any = namedtuple('Block', ['kind', 'name', 'start', 'start_body', 'end'])
 
-Block: TypeAlias = namedtuple(str, str, int, int, int)
+### Block: TypeAlias = namedtuple('Block', ['kind', 'name', 'start', 'start_body', 'end'])
 #@-<< imports, annotations: base_importer.py >>
 
 class ImporterError(Exception):
@@ -134,7 +134,8 @@ class Importer:
             child.b = ''.join(preamble)
             result_list.insert(0, f"{common_lws}{section_name}\n")
             # Adjust this block.
-            blocks[0] = child_kind, child_name, new_start, child_start_body, child_end
+            ### blocks[0] = child_kind, child_name, new_start, child_start_body, child_end
+            blocks[0] = Block(child_kind, child_name, new_start, child_start_body, child_end)
     #@+node:ekr.20230529075138.10: *4* i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
@@ -168,7 +169,7 @@ class Importer:
                     if 1: ### Legacy
                         if min_size == 0 or end - prev_i > min_size:
                             ### results.append((kind, name, prev_i, i, end))
-                            block = namedtuple(kind=kind, name=name, start=prev_i, start_body=i, end=end)
+                            block = Block(kind=kind, name=name, start=prev_i, start_body=i, end=end)
                             results.append(block)
                             i = prev_i = end
                         else:
@@ -216,7 +217,8 @@ class Importer:
     #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative)
     gen_block_level = 0  # For debugging.
 
-    def gen_block(self, block: Block, parent: Position) -> None:
+    ### def gen_block(self, block: Block, parent: Position) -> None:
+    def gen_block(self, parent: Position) -> None:
         """
         Importer.gen_block.
 
@@ -225,42 +227,38 @@ class Importer:
         Five importers override this method to take full control over finding
         blocks.
         """
-        lines = self.lines
-        kind, name, start, start_body, end = block
-        assert start <= start_body <= end, (start, start_body, end)
+        ### lines = self.lines
+        ### kind, name, start, start_body, end = block
+        ### assert start <= start_body <= end, (start, start_body, end)
         self.gen_block_level += 1
 
-        # Find all blocks in the body of this block.
         result_list: list[str] = []
         children: list[tuple[Block, VNode]] = []
-        blocks = self.find_blocks(start_body, end)
-        while blocks:
-            # Generate *this* block. Add inner blocks to the list.
-            # Recursively generate the inner nodes/blocks.
-            last_end = end
-            for block in blocks:
-                ### child_kind, child_name, child_start, child_start_body, child_end = block
-                ## last_end = child_end
-                
-                last_end = block.end
-
-                if 1:  ###
-                    start_body = block.start_body
-                    print('')
-                    print(
-                        f"gen_block: gen inner block. level: {self.gen_block_level} {block}\n"
-                        f"           line {start_body-1}: {self.lines[start_body-1:block.end]!r}"
-                    )
         
-                # Generate the child containing the new block.
-                child = parent.insertAsLastChild()
-                child.h = self.compute_headline(block)
-                children.append((block, child.v))
-                
-            # Add any tail lines.
-            result_list.extend(lines[last_end:end])
-        else:
-            result_list = lines[start:end]
+        ### blocks = self.find_blocks(start_body, end)
+        
+        # 
+        blocks = [Block('outer', 'parent', 0, 0, len(self.lines))]
+        while blocks:
+            block = blocks.pop(0)
+            g.trace(block)
+
+            if 1:  ###
+                start_body = block.start_body
+                print('')
+                print(
+                    f"gen_block: gen inner block. level: {self.gen_block_level} {block}\n"
+                    f"           line {start_body-1}: {self.lines[start_body-1:block.end]!r}"
+                )
+
+            # Generate the child containing the new block.
+            child = parent.insertAsLastChild()
+            child.h = self.compute_headline(block)
+            children.append((block, child.v))
+
+            # # Add any tail lines.
+            # result_list.extend(lines[last_end:end])
+     
             
         # New end logic:
         for child_block, child_v in children:
@@ -286,8 +284,9 @@ class Importer:
             n1, n2 = len(self.lines), len(self.guide_lines)
             assert n1 == n2, (n1, n2)
             # Start the recursion.
-            block = ('outer', 'parent', 0, 0, len(lines))
-            self.gen_block(block, parent=parent)
+            ### block = Block('outer', 'parent', 0, 0, len(lines))
+            ### self.gen_block(block, parent=parent)
+            self.gen_block(parent)
         except ImporterError as e:
             g.trace(f"Importer error: {e}")
             parent.deleteAllChildren()

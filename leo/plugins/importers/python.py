@@ -180,7 +180,8 @@ class Python_Importer(Importer):
             make_node(0, preamble_lines, "preamble")
 
         # Adjust this block.
-        blocks[0] = child_kind, child_name, new_start, child_start_body, child_end
+        ### blocks[0] = child_kind, child_name, new_start, child_start_body, child_end
+        blocks[0] = Block(child_kind, child_name, new_start, child_start_body, child_end)
     #@+node:ekr.20230514140918.1: *3* python_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
@@ -217,7 +218,9 @@ class Python_Importer(Importer):
                     ):
                         pass
                     else:
-                        results.append((kind, name, prev_i, i, end))
+                        ### results.append((kind, name, prev_i, i, end))
+                        block = Block(kind=kind, name=name, start=prev_i, start_body=i, end=end)
+                        results.append(block)
                         i = prev_i = end
                     break
         return results
