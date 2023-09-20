@@ -233,7 +233,7 @@ class Importer:
         while blocks:
             parent_v, block = blocks.pop(0)
 
-            if trace:
+            if 0:  ### trace:
                 print('')
                 g.trace(f"=== loop ===\nparent: {parent.h!r}\n block: {block}")
 
@@ -243,9 +243,11 @@ class Importer:
             children.append((child, block))
 
             inner_blocks: list[Block] = self.find_blocks(block.start_body, block.end)
-            if trace:
+
+            if 0: ### trace:
                 print('')
                 g.trace('inner_blocks...', inner_blocks)
+
             if inner_blocks:
                 for z in inner_blocks:
                     blocks.append((child, z))
@@ -254,9 +256,14 @@ class Importer:
         if trace:
             print('')
             g.trace('Done! children...')
-            for child_v, block in children:
-                print(f"{child_v.h!r:>30} {block}")
 
+        for child_v, block in children:
+            if trace:
+                # print(f"{child_v.h!r:>30} {block}")
+                g.printObj(self.lines[block.start:block.end], tag=f"{child_v.h!r} {block.start}:{block.end}")
+
+            ### To do. Generate code!!!
+        
         # # Add any tail lines.
         # result_list.extend(lines[last_end:end])
 
