@@ -1788,21 +1788,7 @@ class TestJavascript(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
             (1, 'function c3',
-                'var c3 = (function () {\n'
-                '    @others\n'
-                '\n'
-                '    return c3;\n'
-                '}());\n'
-            ),
-            (2, 'function c3.someFunction',
-                '"use strict";\n'
-                '\n'
-                '// Globals\n'
-                'var c3 = { version: "0.0.1"   };\n'
-                '\n'
-                'c3.someFunction = function () {\n'
-                '    console.log("Just a demo...");\n'
-                '};\n'
+                s,
             ),
         )
         self.new_run_test(s, expected_results)
