@@ -7,7 +7,7 @@
 from __future__ import annotations
 from collections import namedtuple
 import re
-from typing import Any, TYPE_CHECKING  ### NamedTuple, TypeAlias, 
+from typing import Any, TYPE_CHECKING  ### NamedTuple, TypeAlias,
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:
@@ -149,7 +149,9 @@ class Importer:
 
         Return a list of Blocks, that is, tuples(kind, name, start, start_body, end).
         """
-        print('')  ###
+        trace = False  ###
+        if trace:
+            print('')  ###
         ### g.trace('Entry', i1, i2)
         min_size = self.minimum_block_size
         i, prev_i, results = i1, i1, []
@@ -160,30 +162,23 @@ class Importer:
             for kind, pattern in self.block_patterns:
                 m = pattern.match(s)
                 if m:
-                    g.trace('match line', i, repr(m.group(0)))
+                    if trace:
+                        g.trace('match line', i, repr(m.group(0)))
                     # cython may include trailing whitespace.
                     name = m.group(1).strip()
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
                     # Don't generate small blocks.
-                    if 1: ### Legacy
-                        if min_size == 0 or end - prev_i > min_size:
-                            ### results.append((kind, name, prev_i, i, end))
-                            block = Block(kind=kind, name=name, start=prev_i, start_body=i, end=end)
-                            results.append(block)
-                            i = prev_i = end
-                        else:
-                            i = end
-                    ### Experimental
-                    # else:
-                        # if min_size == 0 or prev_i == 0 or end - prev_i > min_size:
-                            # results.append((kind, name, prev_i, i, end))
-                            # i = prev_i = end
-                            # results.append((kind, name, max(0, i-1), i, end))
-                        # else:
-                            # i = end
+                    if min_size == 0 or end - prev_i > min_size:
+                        ### results.append((kind, name, prev_i, i, end))
+                        block = Block(kind=kind, name=name, start=prev_i, start_body=i, end=end)
+                        results.append(block)
+                        i = prev_i = end
+                    else:
+                        i = end
                     break  # Go on to the next line.
-        g.trace(i1, i2, 'results', results)
+        if trace:
+            g.trace(i1, i2, 'results', results)
         ### g.printObj(self.lines[i1:i2], tag='find_blocks: results')
         return results
     #@+node:ekr.20230529075138.11: *4* i.find_end_of_block
@@ -198,10 +193,12 @@ class Importer:
         This method assumes that that '{' and '}' delimit blocks.
         Subclasses may override this method as necessary.
         """
+        trace = False  ###
         level = 1  # All blocks start with '{'
         tag = 'find_end_of_block'
-        print(f"  {tag} 1: {i:3} {self.lines[i-1]!r}")  ###
-        assert '{' in self.guide_lines[i-1]
+        if trace:
+            print(f"  {tag} 1: {i:3} {self.lines[i-1]!r}")  ###
+        assert '{' in self.guide_lines[i - 1]
         while i < i2:
             line = self.guide_lines[i]
             i += 1
@@ -211,7 +208,8 @@ class Importer:
                 if ch == '}':
                     level -= 1
                     if level == 0:
-                        print(f"  {tag} 2: {i:3} {self.lines[i-1]!r}")  ###
+                        if trace:
+                            print(f"  {tag} 2: {i:3} {self.lines[i-1]!r}")  ###
                         return i
         return i2
     #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative)
@@ -227,42 +225,43 @@ class Importer:
         Five importers override this method to take full control over finding
         blocks.
         """
-        ### lines = self.lines
-        ### kind, name, start, start_body, end = block
-        ### assert start <= start_body <= end, (start, start_body, end)
+        trace = True
+
         self.gen_block_level += 1
 
+        # Start by looking at all the lines.
+        blocks: list[tuple[VNode, Block]] = [(parent.v, Block('outer', 'parent', 0, 0, len(self.lines)))]
         result_list: list[str] = []
-        children: list[tuple[Block, VNode]] = []
-        
-        ### blocks = self.find_blocks(start_body, end)
-        
-        # 
-        blocks = [Block('outer', 'parent', 0, 0, len(self.lines))]
+        children: list[tuple[VNode, Block]] = []
         while blocks:
-            block = blocks.pop(0)
-            g.trace(block)
-
-            if 1:  ###
-                start_body = block.start_body
+            parent_v, block = blocks.pop(0)
+            
+            if trace:
                 print('')
-                print(
-                    f"gen_block: gen inner block. level: {self.gen_block_level} {block}\n"
-                    f"           line {start_body-1}: {self.lines[start_body-1:block.end]!r}"
-                )
+                g.trace(f"=== loop ===\nparent: {parent.h!r}\n block: {block}")
 
             # Generate the child containing the new block.
-            child = parent.insertAsLastChild()
+            child = parent_v.insertAsLastChild()
             child.h = self.compute_headline(block)
-            children.append((block, child.v))
-
-            # # Add any tail lines.
-            # result_list.extend(lines[last_end:end])
-     
+            children.append((child, block))
             
+            inner_blocks: list[Block] = self.find_blocks(block.start_body, block.end)
+            if trace:
+                print('')
+                g.trace('inner_blocks...', inner_blocks)
+            if inner_blocks:
+                for z in inner_blocks:
+                    blocks.append((child, z))
+
         # New end logic:
-        for child_block, child_v in children:
-            g.trace('block', child_block, 'v', child_v.h)
+        if trace:
+            print('')
+            g.trace('Done! children...')
+            for child_v, block in children:
+                print(f"{child_v.h!r:>30} {block}")
+
+        # # Add any tail lines.
+        # result_list.extend(lines[last_end:end])
 
         # Delete extra leading and trailing whitespace.
         parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
@@ -536,7 +535,7 @@ class Importer:
             self.trace_block(block)
         print('End of Blocks')
         print('')
-        
+
     def trace_block(self, block: Block) -> None:
         """For debugging: trace one block."""
         lines = self.lines
