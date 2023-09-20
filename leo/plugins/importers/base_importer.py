@@ -7,7 +7,7 @@
 from __future__ import annotations
 from collections import namedtuple
 import re
-from typing import Any, TYPE_CHECKING  ### NamedTuple, TypeAlias,
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:
@@ -15,8 +15,6 @@ if TYPE_CHECKING:
     from leo.core.leoNodes import Position, VNode
 
 Block: Any = namedtuple('Block', ['kind', 'name', 'start', 'start_body', 'end'])
-
-### Block: TypeAlias = namedtuple('Block', ['kind', 'name', 'start', 'start_body', 'end'])
 #@-<< imports, annotations: base_importer.py >>
 
 class ImporterError(Exception):
@@ -134,7 +132,6 @@ class Importer:
             child.b = ''.join(preamble)
             result_list.insert(0, f"{common_lws}{section_name}\n")
             # Adjust this block.
-            ### blocks[0] = child_kind, child_name, new_start, child_start_body, child_end
             blocks[0] = Block(child_kind, child_name, new_start, child_start_body, child_end)
     #@+node:ekr.20230529075138.10: *4* i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
@@ -170,7 +167,6 @@ class Importer:
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
                     # Don't generate small blocks.
                     if min_size == 0 or end - prev_i > min_size:
-                        ### results.append((kind, name, prev_i, i, end))
                         block = Block(kind=kind, name=name, start=prev_i, start_body=i, end=end)
                         results.append(block)
                         i = prev_i = end
@@ -285,9 +281,7 @@ class Importer:
             self.guide_lines = self.make_guide_lines(lines)
             n1, n2 = len(self.lines), len(self.guide_lines)
             assert n1 == n2, (n1, n2)
-            # Start the recursion.
-            ### block = Block('outer', 'parent', 0, 0, len(lines))
-            ### self.gen_block(block, parent=parent)
+            # Generate all blocks.
             self.gen_block(parent)
         except ImporterError as e:
             g.trace(f"Importer error: {e}")
