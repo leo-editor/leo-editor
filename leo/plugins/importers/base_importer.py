@@ -5,22 +5,41 @@
 #@+<< imports, annotations: base_importer.py >>
 #@+node:ekr.20230920091345.1: ** << imports, annotations: base_importer.py >>
 from __future__ import annotations
-from collections import namedtuple
 import re
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
 
-Block: Any = namedtuple('Block', ['kind', 'name', 'start', 'start_body', 'end'])
 #@-<< imports, annotations: base_importer.py >>
 
 class ImporterError(Exception):
     pass
 
 #@+others
+#@+node:ekr.20230920130003.1: ** class Block
+class Block:
+
+    """A class containing data about imported blocks."""
+
+    def __init__(self,
+        kind: str, name: str, start: int, start_body: int, end: int, lines: list[str],
+    ) -> None:
+
+        self.kind = kind
+        self.name = name
+        self.start = start
+        self.start_body = start_body
+        self.end = end
+        self.lines = lines
+
+
+    def __repr__(self) -> str:
+        return f"Block: {self.kind} {self.name} {self.start} {self.start_body} {self.end}"
+
+    __str__ = __repr__
 #@+node:ekr.20230529075138.4: ** class Importer
 class Importer:
     """
@@ -108,9 +127,10 @@ class Importer:
 
         Subclasses may override this method as necessary.
         """
-        child_kind, child_name, child_start, child_start_body, child_end = block
-        return f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
-
+        ### child_kind, child_name, child_start, child_start_body, child_end = block
+        ### return f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
+        name_s = block.name or f"unnamed {block.kind}"
+        return f"{block.kind} {name_s}"
     #@+node:ekr.20230612170928.1: *4* i.create_preamble
     def create_preamble(self, blocks: list[Block], parent: Position, result_list: list[str]) -> None:
         """
@@ -122,8 +142,9 @@ class Importer:
         assert parent == self.root
         lines = self.lines
         common_lws = self.compute_common_lws(blocks)
-        child_kind, child_name, child_start, child_start_body, child_end = blocks[0]
-        new_start = max(0, child_start_body - 1)
+        ### child_kind, child_name, child_start, child_start_body, child_end = blocks[0]
+        ### new_start = max(0, child_start_body - 1)
+        new_start = max(0, blocks[0].start_body - 1)
         preamble = lines[:new_start]
         if preamble and any(z for z in preamble):
             child = parent.insertAsLastChild()
@@ -132,7 +153,9 @@ class Importer:
             child.b = ''.join(preamble)
             result_list.insert(0, f"{common_lws}{section_name}\n")
             # Adjust this block.
-            blocks[0] = Block(child_kind, child_name, new_start, child_start_body, child_end)
+            ### blocks[0] = Block(child_kind, child_name, new_start, child_start_body, child_end)
+            block_0 = blocks[0]
+            block_0.start = new_start
     #@+node:ekr.20230529075138.10: *4* i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
@@ -167,7 +190,7 @@ class Importer:
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
                     # Don't generate small blocks.
                     if min_size == 0 or end - prev_i > min_size:
-                        block = Block(kind=kind, name=name, start=prev_i, start_body=i, end=end)
+                        block = Block(kind, name, start=prev_i, start_body=i, end=end, lines=self.lines)
                         results.append(block)
                         i = prev_i = end
                     else:
@@ -217,17 +240,19 @@ class Importer:
 
         Create all descendant blocks and their parent nodes.
 
-        Five importers override this method to take full control over finding
-        blocks.
+        Five importers override this method.
         """
         trace = True
+        ### g.trace('parent.b 1:', parent.h, repr(parent.b))
 
-        # Start by looking at all the lines.
-        blocks: list[tuple[VNode, Block]] = [(parent.v, Block('outer', 'parent', 0, 0, len(self.lines)))]
         result_list: list[str] = []
         children: list[tuple[VNode, Block]] = []
-        while blocks:
-            parent_v, block = blocks.pop(0)
+
+        # Start by looking at all the lines.
+        outer_blocks = self.find_blocks(0, len(self.lines))
+        block_tuples: list[tuple[VNode, Block]] = [(parent.v, block) for block in outer_blocks]
+        while block_tuples:
+            parent_v, block = block_tuples.pop(0)
 
             if 0:  ### trace:
                 print('')
@@ -246,7 +271,7 @@ class Importer:
 
             if inner_blocks:
                 for z in inner_blocks:
-                    blocks.append((child, z))
+                    block_tuples.append((child, z))
 
         # New end logic:
         if trace:
@@ -265,6 +290,8 @@ class Importer:
 
         # Delete extra leading and trailing whitespace.
         parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
+
+        # Note: gen_lines adjusts adds the @language and @tabwidth directives.
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:
         """
@@ -417,8 +444,8 @@ class Importer:
             return ''
         lws_list: list[int] = []
         for block in blocks:
-            kind, name, start, start_body, end = block
-            lines = self.lines[start:end]
+            ### kind, name, start, start_body, end = block
+            lines = self.lines[block.start:block.end]
             for line in lines:
                 stripped_line = line.lstrip()
                 if stripped_line:  # Skip empty lines
@@ -535,10 +562,10 @@ class Importer:
 
     def trace_block(self, block: Block) -> None:
         """For debugging: trace one block."""
-        lines = self.lines
-        kind2, name2, start2, start_body2, end2 = block
-        tag = f"  {kind2:>10} {name2:<20} {start2:4} {start_body2:4} {end2:4}"
-        g.printObj(lines[start2:end2], tag=tag)
+        ### lines = self.lines
+        ### kind2, name2, start2, start_body2, end2 = block
+        tag = f"  {block.kind:>10} {block.name:<20} {block.start} {block.start_body2} {block.end}"
+        g.printObj(block.lines[block.start:block.end], tag=tag)
     #@-others
 #@-others
 #@@language python

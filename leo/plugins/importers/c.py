@@ -66,7 +66,8 @@ class C_Importer(Importer):
                     ):
                         end = self.find_end_of_block(i, i2)
                         assert i1 + 1 <= end <= i2, (i1, end, i2)
-                        block = Block(kind=kind, name=name, start=prev_i, start_body=i, end=end)
+                        ### block = Block(kind=kind, name=name, start=prev_i, start_body=i, end=end)
+                        block = Block(kind, name, start=prev_i, start_body=i + 1, end=end, lines=self.lines)
                         results.append(block)
                         i = prev_i = end
                         break
@@ -81,7 +82,8 @@ class C_Importer(Importer):
                     ):
                         end = self.find_end_of_block(i + 1, i2)
                         assert i1 + 1 <= end <= i2, (i1, end, i2)
-                        block = Block(kind='func', name=name, start=prev_i, start_body=i + 1, end=end)
+                        ### block = Block(kind='func', name=name, start=prev_i, start_body=i + 1, end=end)
+                        block = Block('func', name, start=prev_i, start_body=i + 1, end=end, lines=self.lines)
                         results.append(block)
                         i = prev_i = end
                         break
