@@ -28,16 +28,19 @@ class Block:
         kind: str, name: str, start: int, start_body: int, end: int, lines: list[str],
     ) -> None:
 
+        self.end = end
         self.kind = kind
+        self.lines = lines
         self.name = name
         self.start = start
         self.start_body = start_body
-        self.end = end
-        self.lines = lines
+        self.v: VNode = None
 
 
     def __repr__(self) -> str:
-        return f"Block: {self.kind} {self.name} {self.start} {self.start_body} {self.end}"
+        v_s = self.v.h if self.v else '<no v>'
+        h_s = f"{self.kind} {self.name}"
+        return f"Block: headline: {h_s!r} {self.start} {self.start_body} {self.end} parent: {v_s!r}"
 
     __str__ = __repr__
 
@@ -247,16 +250,32 @@ class Importer:
         Five importers override this method.
         """
         trace = True
-        ### g.trace('parent.b 1:', parent.h, repr(parent.b))
 
         result_list: list[str] = []
-        children: list[tuple[VNode, Block]] = []
+        result_blocks: list[Block] = []
 
         # Start by looking at all the lines.
-        outer_blocks = self.find_blocks(0, len(self.lines))
-        block_tuples: list[tuple[VNode, Block]] = [(parent.v, block) for block in outer_blocks]
-        while block_tuples:
-            parent_v, block = block_tuples.pop(0)
+        # outer_blocks = self.find_blocks(0, len(self.lines))
+        # block_tuples: list[tuple[VNode, Block]] = [(parent.v, block) for block in outer_blocks]
+
+        blocks = self.find_blocks(0, len(self.lines))
+        for block in blocks:
+            block.v = parent.v
+
+        if blocks:
+            # Add indented @others.
+            common_lws = self.compute_common_lws(blocks)
+            result_list.extend([f"{common_lws}@others\n"])
+
+        # Special case: create a preamble node as the first child of the parent.
+        ###
+        if self.allow_preamble:
+            self.create_preamble(blocks, parent, result_list)
+
+        while blocks:
+            block = blocks.pop(0)
+            parent_v = block.v
+            assert parent_v
 
             if 0:  ### trace:
                 print('')
@@ -265,26 +284,29 @@ class Importer:
             # Generate the child containing the new block.
             child = parent_v.insertAsLastChild()
             child.h = self.compute_headline(block)
-            children.append((child, block))
+            result_blocks.append(block)
 
             inner_blocks: list[Block] = self.find_blocks(block.start_body, block.end)
 
             if 0:  ### trace:
                 print('')
                 g.trace('inner_blocks...', inner_blocks)
+                for block in inner_blocks:
+                    block.dump()
 
-            if inner_blocks:
-                for z in inner_blocks:
-                    block_tuples.append((child, z))
+            for block in inner_blocks:
+                block.v = child
+                blocks.append(block)
 
         # New end logic:
         if trace:
             print('')
-            g.trace('Done! children...')
+            g.trace('Done! result_blocks...')
 
-        for child_v, block in children:
+        for block in result_blocks:
             if trace:
-                print(f"{child_v.h!r:>30} {block}")
+                # print(f"{child_v.h!r:>30} {block}")
+                block.dump()
                 # g.printObj(self.lines[block.start:block.end], tag=f"{child_v.h!r} {block.start}:{block.end}")
 
             ### To do. Generate code!!!
@@ -295,7 +317,7 @@ class Importer:
         # Delete extra leading and trailing whitespace.
         parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
 
-        # Note: gen_lines adjusts adds the @language and @tabwidth directives.
+        # Note: i.gen_lines adjusts adds the @language and @tabwidth directives.
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:
         """
