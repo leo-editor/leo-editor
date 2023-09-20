@@ -213,9 +213,8 @@ class Importer:
                         return i
         return i2
     #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative)
-    gen_block_level = 0  # For debugging.
+    ### gen_block_level = 0  # For debugging.
 
-    ### def gen_block(self, block: Block, parent: Position) -> None:
     def gen_block(self, parent: Position) -> None:
         """
         Importer.gen_block.
@@ -226,8 +225,6 @@ class Importer:
         blocks.
         """
         trace = True
-
-        self.gen_block_level += 1
 
         # Start by looking at all the lines.
         blocks: list[tuple[VNode, Block]] = [(parent.v, Block('outer', 'parent', 0, 0, len(self.lines)))]
@@ -265,7 +262,6 @@ class Importer:
 
         # Delete extra leading and trailing whitespace.
         parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
-        self.gen_block_level -= 1
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:
         """
