@@ -265,7 +265,7 @@ class Importer:
             block.parent_block = parent_block
             parent_block.child_blocks.append(block)
 
-        blocks: list[Block] = []  # The todo list.
+        todo_list: list[Block] = []  # The todo list.
         result_blocks: list[Block] = []
 
         # Add an outer block to the results list.
@@ -273,37 +273,37 @@ class Importer:
         result_blocks.append(outer_block)
 
         # Add all outer blocks to the to-do list.
-        blocks = self.find_blocks(0, len(self.lines))
+        todo_list = self.find_blocks(0, len(self.lines))
 
         # Link the blocks to the outer block.
-        for block in blocks:
+        for block in todo_list:
             link_blocks(block, outer_block, parent.v)
 
-        # Handle all blocks on todo list.
-        # This loop adds inner blocks to the list.
-        while blocks:
-            block = blocks.pop(0)
+        # Handle blocks until the to-do list is empty.
+        while todo_list:
+
+            # Get the next block. This will be the parent block of inner blocks.
+            block = todo_list.pop(0)
             parent_v = block.parent_v
-            assert parent_v
 
-            # Add the block to the results.
-            result_blocks.append(block)
-
-            # Create a child node for the new block.
-            # This node will be the parent of the block's inner blocks.
+            # Allocate a new node.
             child_v = parent_v.insertAsLastChild()
             child_v.h = self.compute_headline(block)
 
             # The 'VNode' symbol is only available for type checking.
+            assert parent_v.__class__.__name__ == 'VNode'
             assert child_v.__class__.__name__ == 'VNode'
+
+            # Add the block to the results.
+            result_blocks.append(block)
 
             # Find the inner blocks.
             inner_blocks = self.find_blocks(block.start_body, block.end)
 
-            # Link the blocks and add the inner blocks to the to-do list.
+            # Link inner blocks and add them to the to-do list.
             for inner_block in inner_blocks:
                 link_blocks(inner_block, block, child_v)
-                blocks.append(inner_block)
+                todo_list.append(inner_block)
 
         # Post pass: generate all bodies
         self.generate_all_bodies(parent, outer_block, result_blocks)
