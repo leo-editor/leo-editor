@@ -37,16 +37,31 @@ class Block:
         self.start = start
         self.start_body = start_body
 
-
     def __repr__(self) -> str:
-        v_s = self.parent_v.h if self.parent_v else '<no v>'
-        h_s = f"{self.kind} {self.name}"
-        return f"Block: headline: {h_s!r} {self.start} {self.start_body} {self.end} parent: {v_s!r}"
+        v_s = self.parent_v.h if self.parent_v else '<no parent_v>'
+        kind_name_s = f"{self.kind} {self.name}"
+        return f"Block: kind/name: {kind_name_s!r} {self.start} {self.start_body} {self.end} parent_v: {v_s!r}"
 
     __str__ = __repr__
 
+    def long_repr(self) -> str:
+        v_s = self.parent_v.h if self.parent_v else '<no parent_v>'
+        h_s = f"{self.kind}:{self.name}"
+        if self.parent_block:
+            parent_block_s = f"{self.parent_block.kind} {self.parent_block.name}"
+        else:
+            parent_block_s = '<no parent>'
+        child_blocks = []
+        for child_block in self.child_blocks:
+            child_blocks.append(f"{child_block.kind} {child_block.name}")
+        child_blocks_s = '\n'.join(child_blocks) if child_blocks else '<no children>'
+        return (
+            f"Block: kind:name: {h_s!r} {self.start} {self.start_body} {self.end}\n"
+            f"parent_v: {v_s!r} parent_block: {parent_block_s}\n"
+            f"child_blocks: {child_blocks_s}\n"
+        )
 
-    def dump(self) -> None:
+    def dump_lines(self) -> None:
         g.printObj(self.lines[self.start:self.end], tag=repr(self))
 #@+node:ekr.20230529075138.4: ** class Importer
 class Importer:
@@ -242,79 +257,74 @@ class Importer:
 
         Five importers override this method.
         """
-        trace = True
-
-        result_list: list[str] = []
+        blocks: list[Block] = []  # The todo list.
         result_blocks: list[Block] = []
 
-        # Start by looking at all the lines.
+        # Add an outer block to the results list.
+        outer_block = Block('outer', 'outer-block', 0, 0, len(self.lines), self.lines)
+        result_blocks.append(outer_block)
+
+        def link_blocks(block: Block, parent_block: Block, parent_v: VNode) -> None:
+            """Link parent/child blocks."""
+            block.parent_v = parent_v
+            block.parent_block = parent_block
+            parent_block.child_blocks.append(block)
+
+        # Add all outer blocks to the to-do list.
         blocks = self.find_blocks(0, len(self.lines))
+
+        # Link the blocks to the outer block.
         for block in blocks:
-            block.parent_v = parent.v
+            link_blocks(block, outer_block, parent.v)
 
-        if blocks:
-            # Add indented @others.
-            common_lws = self.compute_common_lws(blocks)
-            result_list.extend([f"{common_lws}@others\n"])
-
-        # Special case: create a preamble node as the first child of the parent.
-        ###
-        if self.allow_preamble:
-            self.create_preamble(blocks, parent, result_list)
-
+        # Continue until there are no blocks on the todo list.
         while blocks:
             block = blocks.pop(0)
             parent_v = block.parent_v
             assert parent_v
 
-            if 0:  ### trace:
-                print('')
-                g.trace(f"=== loop ===\nparent: {parent.h!r}\n block: {block}")
-
-            # Generate the child containing the new block.
-            child = parent_v.insertAsLastChild()
-            child.h = self.compute_headline(block)
+            # Add the node to the results.
             result_blocks.append(block)
 
-            inner_blocks: list[Block] = self.find_blocks(block.start_body, block.end)
+            # Create a child node for the new block.
+            child_v = parent_v.insertAsLastChild()
+            child_v.h = self.compute_headline(block)
+            assert child_v.__class__.__name__ == 'VNode'
 
-            if 0:  ### trace:
-                print('')
-                g.trace('inner_blocks...', inner_blocks)
-                for inner_block in inner_blocks:
-                    inner_block.dump()
+            # Find the inner blocks.
+            inner_blocks = self.find_blocks(block.start_body, block.end)
 
+            # Link the blocks and add the inner blocks to the to-do list.
             for inner_block in inner_blocks:
-                inner_block.parent_block = block
-                inner_block.parent_v = child
-                block.child_blocks.append(inner_block)
+                link_blocks(inner_block, block, child_v)
                 blocks.append(inner_block)
 
-        # New end logic:
-        if trace:
-            print('')
-            g.trace('Done! result_blocks...')
-            for block in result_blocks:
-                print(block)
-                # block.dump()
-
-        # Adjust the range of blocks.
-        self.allocate_blocks(result_blocks)
-
-        self.generate_bodies(parent, result_blocks)
-
-        # Delete extra leading and trailing whitespace.
-        parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
+        # Post pass: generate all bodies
+        self.generate_all_bodies(parent, result_blocks)
 
         # Note: i.gen_lines adjusts adds the @language and @tabwidth directives.
-    #@+node:ekr.20230920165921.1: *5* i.allocate_blocks
-    def allocate_blocks(self, result_blocks: list[Block]) -> None:
-        g.trace()  ###
+    #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies
+    def generate_all_bodies(self, parent: Position, blocks: list[Block]) -> None:
 
+        if 1:
+            print('')
+            g.trace('parent', parent.h, 'Blocks...')
+            print('')
+            for block in blocks:
+                print(block.long_repr())
 
-    #@+node:ekr.20230920165923.1: *5* i.generate_bodies
-    def generate_bodies(self, p: Position, result_blocks: list[Block]) -> None:
-        g.trace(p.h)  ###
+        if self.allow_preamble:
+            result_list: list = []  ### To do.
+            # For python.
+            self.create_preamble(blocks, parent, result_list)
+
+        # if blocks:
+            # # Add indented @others.
+            # common_lws = self.compute_common_lws(blocks)
+            # result_list.extend([f"{common_lws}@others\n"])
+
+        # # Delete extra leading and trailing whitespace.
+        # parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:
         """
