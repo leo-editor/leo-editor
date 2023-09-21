@@ -27,18 +27,19 @@ class Block:
     def __init__(self,
         kind: str, name: str, start: int, start_body: int, end: int, lines: list[str],
     ) -> None:
-
+        self.child_blocks: list[Block] = []
         self.end = end
         self.kind = kind
         self.lines = lines
         self.name = name
+        self.parent_block: Block = None
+        self.parent_v: VNode = None
         self.start = start
         self.start_body = start_body
-        self.v: VNode = None
 
 
     def __repr__(self) -> str:
-        v_s = self.v.h if self.v else '<no v>'
+        v_s = self.parent_v.h if self.parent_v else '<no v>'
         h_s = f"{self.kind} {self.name}"
         return f"Block: headline: {h_s!r} {self.start} {self.start_body} {self.end} parent: {v_s!r}"
 
@@ -233,8 +234,6 @@ class Importer:
                         return i
         return i2
     #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative)
-    ### gen_block_level = 0  # For debugging.
-
     def gen_block(self, parent: Position) -> None:
         """
         Importer.gen_block.
@@ -251,7 +250,7 @@ class Importer:
         # Start by looking at all the lines.
         blocks = self.find_blocks(0, len(self.lines))
         for block in blocks:
-            block.v = parent.v
+            block.parent_v = parent.v
 
         if blocks:
             # Add indented @others.
@@ -265,7 +264,7 @@ class Importer:
 
         while blocks:
             block = blocks.pop(0)
-            parent_v = block.v
+            parent_v = block.parent_v
             assert parent_v
 
             if 0:  ### trace:
@@ -282,12 +281,14 @@ class Importer:
             if 0:  ### trace:
                 print('')
                 g.trace('inner_blocks...', inner_blocks)
-                for block in inner_blocks:
-                    block.dump()
+                for inner_block in inner_blocks:
+                    inner_block.dump()
 
-            for block in inner_blocks:
-                block.v = child
-                blocks.append(block)
+            for inner_block in inner_blocks:
+                inner_block.parent_block = block
+                inner_block.parent_v = child
+                block.child_blocks.append(inner_block)
+                blocks.append(inner_block)
 
         # New end logic:
         if trace:
