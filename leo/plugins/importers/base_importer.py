@@ -277,15 +277,13 @@ class Importer:
             # Get the next block. This will be the parent block of inner blocks.
             block = todo_list.pop(0)
             parent_v = block.parent_v
+            assert isinstance(parent_v, VNode), repr(parent_v)
 
             # Allocate and set block.v
             child_v = parent_v.insertAsLastChild()
             child_v.h = self.compute_headline(block)
             block.v = child_v
-
-            # # The 'VNode' symbol is only available for type checking.
-            # assert parent_v.__class__.__name__ == 'VNode'
-            # assert child_v.__class__.__name__ == 'VNode'
+            assert isinstance(child_v, VNode), repr(child_v)
 
             # Add the block to the results.
             result_blocks.append(block)
@@ -338,9 +336,7 @@ class Importer:
         seen_blocks[outer_block] = True
         while todo_list:
             block = todo_list.pop(0)
-            if 0:
-                print('')
-                print(block.long_repr())
+            # print(block.long_repr())
             assert isinstance(block, Block), repr(block)
             v = block.v
             assert v.__class__.__name__ == 'VNode', repr(v)
@@ -349,7 +345,7 @@ class Importer:
             assert block not in seen_blocks, repr(block)
             seen_blocks[block] = True
 
-            # Make sure we handle each vnode once.
+            # Make sure we handle each VNode once.
             assert v, repr(block)
             assert v not in seen_vnodes, repr(v)
             seen_vnodes[v] = True
@@ -368,8 +364,9 @@ class Importer:
                     children_start = max(0, min(children_start, child_block.start) - 1)
                     children_end = max(children_end, child_block.end)
 
-                g.printObj(block.lines[children_start:children_end],
-                    tag=f"Delete lines: {block.name} {children_start}:{children_end}")
+                if 0:
+                    tag = f"Delete lines: {block.name} {children_start}:{children_end}"
+                    g.printObj(block.lines[children_start:children_end], tag=tag)
 
                 # Replace block.lines[children_start:children_end] by @others
                 block_lines.extend(block.lines[block.start:children_start])
