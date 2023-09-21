@@ -133,7 +133,7 @@ class Python_Importer(Importer):
         assert len(result) == len(lines)  # A crucial invariant.
         return result
     #@+node:ekr.20230612171619.1: *3* python_i.create_preamble
-    def create_preamble(self, blocks: list[Block], parent: Position, result_list: list[str]) -> None:
+    def create_preamble(self, parent: Position, result_blocks: list[Block], result_list: list[str]) -> None:
         """
         Python_Importer.create_preamble:
         Create preamble nodes for the module docstrings and everything else.
@@ -141,10 +141,8 @@ class Python_Importer(Importer):
         assert self.allow_preamble
         assert parent == self.root
         lines = self.lines
-        common_lws = self.compute_common_lws(blocks)
-        ### child_kind, child_name, child_start, child_start_body, child_end = blocks[0]
-        ### new_start = max(0, child_start_body - 1)
-        new_start = max(0, blocks[0].start_body - 1)
+        common_lws = self.compute_common_lws(result_blocks)
+        new_start = max(0, result_blocks[0].start_body - 1)
         preamble_lines = lines[:new_start]
         if not preamble_lines or not any(z for z in preamble_lines):
             return
@@ -181,8 +179,7 @@ class Python_Importer(Importer):
             make_node(0, preamble_lines, "preamble")
 
         # Adjust this block.
-        ### blocks[0] = Block(child_kind, child_name, new_start, child_start_body, child_end, self.lines)
-        block_0 = blocks[0]
+        block_0 = result_blocks[0]
         block_0.start = new_start
     #@+node:ekr.20230514140918.1: *3* python_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:

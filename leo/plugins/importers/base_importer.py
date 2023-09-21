@@ -155,7 +155,7 @@ class Importer:
         name_s = block.name or f"unnamed {block.kind}"
         return f"{block.kind} {name_s}"
     #@+node:ekr.20230612170928.1: *4* i.create_preamble
-    def create_preamble(self, blocks: list[Block], parent: Position, result_list: list[str]) -> None:
+    def create_preamble(self, parent: Position, result_blocks: list[Block], result_list: list[str]) -> None:
         """
         Importer.create_preamble: Create one preamble node.
 
@@ -164,10 +164,8 @@ class Importer:
         assert self.allow_preamble
         assert parent == self.root
         lines = self.lines
-        common_lws = self.compute_common_lws(blocks)
-        ### child_kind, child_name, child_start, child_start_body, child_end = blocks[0]
-        ### new_start = max(0, child_start_body - 1)
-        new_start = max(0, blocks[0].start_body - 1)
+        common_lws = self.compute_common_lws(result_blocks)
+        new_start = max(0, result_blocks[0].start_body - 1)
         preamble = lines[:new_start]
         if preamble and any(z for z in preamble):
             child = parent.insertAsLastChild()
@@ -176,8 +174,7 @@ class Importer:
             child.b = ''.join(preamble)
             result_list.insert(0, f"{common_lws}{section_name}\n")
             # Adjust this block.
-            ### blocks[0] = Block(child_kind, child_name, new_start, child_start_body, child_end)
-            block_0 = blocks[0]
+            block_0 = result_blocks[0]
             block_0.start = new_start
     #@+node:ekr.20230529075138.10: *4* i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
@@ -257,18 +254,18 @@ class Importer:
 
         Five importers override this method.
         """
+        def link_blocks(block: Block, parent_block: Block, parent_v: VNode) -> None:
+            """Link parent/child blocks."""
+            block.parent_v = parent_v
+            block.parent_block = parent_block
+            parent_block.child_blocks.append(block)
+
         blocks: list[Block] = []  # The todo list.
         result_blocks: list[Block] = []
 
         # Add an outer block to the results list.
         outer_block = Block('outer', 'outer-block', 0, 0, len(self.lines), self.lines)
         result_blocks.append(outer_block)
-
-        def link_blocks(block: Block, parent_block: Block, parent_v: VNode) -> None:
-            """Link parent/child blocks."""
-            block.parent_v = parent_v
-            block.parent_block = parent_block
-            parent_block.child_blocks.append(block)
 
         # Add all outer blocks to the to-do list.
         blocks = self.find_blocks(0, len(self.lines))
@@ -277,16 +274,18 @@ class Importer:
         for block in blocks:
             link_blocks(block, outer_block, parent.v)
 
-        # Continue until there are no blocks on the todo list.
+        # Handle all blocks on todo list.
+        # This loop adds inner blocks to the list.
         while blocks:
             block = blocks.pop(0)
             parent_v = block.parent_v
             assert parent_v
 
-            # Add the node to the results.
+            # Add the block to the results.
             result_blocks.append(block)
 
             # Create a child node for the new block.
+            # This node will be the parent of the block's inner blocks.
             child_v = parent_v.insertAsLastChild()
             child_v.h = self.compute_headline(block)
             assert child_v.__class__.__name__ == 'VNode'
@@ -300,23 +299,28 @@ class Importer:
                 blocks.append(inner_block)
 
         # Post pass: generate all bodies
-        self.generate_all_bodies(parent, result_blocks)
+        self.generate_all_bodies(parent, outer_block, result_blocks)
 
         # Note: i.gen_lines adjusts adds the @language and @tabwidth directives.
     #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies
-    def generate_all_bodies(self, parent: Position, blocks: list[Block]) -> None:
+    def generate_all_bodies(self, parent: Position, outer_block: Block, result_blocks: list[Block]) -> None:
+        """
+        Generate all bodies from the given blocks.
+        
+        The outer_block would suffice to do this, but the redundancy allows consistency checks.
+        """
 
         if 1:
             print('')
             g.trace('parent', parent.h, 'Blocks...')
             print('')
-            for block in blocks:
+            for block in result_blocks:
                 print(block.long_repr())
 
         if self.allow_preamble:
             result_list: list = []  ### To do.
             # For python.
-            self.create_preamble(blocks, parent, result_list)
+            self.create_preamble(parent, result_blocks, result_list)
 
         # if blocks:
             # # Add indented @others.
