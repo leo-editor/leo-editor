@@ -293,6 +293,8 @@ class Importer:
             # This node will be the parent of the block's inner blocks.
             child_v = parent_v.insertAsLastChild()
             child_v.h = self.compute_headline(block)
+
+            # The 'VNode' symbol is only available for type checking.
             assert child_v.__class__.__name__ == 'VNode'
 
             # Find the inner blocks.
