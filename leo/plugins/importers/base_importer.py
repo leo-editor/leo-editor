@@ -35,17 +35,18 @@ class Block:
         self.parent_v: VNode = None
         self.start = start
         self.start_body = start_body
-        ### self.v = None
+        self.v: VNode = None
 
     #@+others
     #@+node:ekr.20230921061842.1: *3* Block.__repr__
     def __repr__(self) -> str:
-        v_s = self.parent_v.h if self.parent_v else '<no parent_v>'
         kind_name_s = f"{self.kind} {self.name}"
+        parent_v_s = self.parent_v.h if self.parent_v else '<no parent_v>'
+        v_s = self.v.h if self.v else '<no v>'
         return (
             f"Block: kind/name: {kind_name_s!r} "
             f"{self.start} {self.start_body} {self.end} "
-            f"parent_v: {v_s!r}"
+            f"parent_v: {parent_v_s!r} v: {v_s!r}"
         )
 
     __str__ = __repr__
@@ -275,9 +276,10 @@ class Importer:
             block = todo_list.pop(0)
             parent_v = block.parent_v
 
-            # Allocate a new node for the block.
+            # Allocate and set block.v
             child_v = parent_v.insertAsLastChild()
             child_v.h = self.compute_headline(block)
+            block.v = child_v
 
             # The 'VNode' symbol is only available for type checking.
             assert parent_v.__class__.__name__ == 'VNode'
@@ -291,6 +293,7 @@ class Importer:
 
             # Link inner blocks and add them to the to-do list.
             for inner_block in inner_blocks:
+                # We'll set inner_block.v later!
                 block.child_blocks.append(inner_block)
                 inner_block.parent_v = child_v
                 todo_list.append(inner_block)
@@ -329,7 +332,7 @@ class Importer:
         while todo_list:
             block = todo_list.pop(0)
             assert isinstance(block, Block), repr(block)
-            v = block.parent_v
+            v = block.v
             assert v.__class__.__name__ == 'VNode', repr(v)
 
             # Make sure we handle each block once.
@@ -341,9 +344,9 @@ class Importer:
             assert v not in seen_vnodes, repr(v)
             seen_vnodes[v] = True
 
-            # Create v.b
+            # Create v.b.
             assert self.lines == block.lines
-            g.trace(f"{block.start}:{block.end} {v.h}")
+            g.trace(block)  ###
             # g.printObj(block.lines[block.start:block.end], tag=f"{block.start}:{block.end} {v.h}")
             v.b = ''.join(block.lines[block.start:block.end])  # Wrong in general.
 
@@ -353,8 +356,10 @@ class Importer:
         # Make sure we've seen all blocks and vnodes.
         for block in result_blocks:
             assert block in seen_blocks, block
-            if block.parent_v is not None:
-                assert block.parent_v in seen_vnodes, repr(block.parent_v)
+            if block.v:
+                assert block.v in seen_vnodes, repr(block.v)
+            else:
+                g.trace(block)
 
         if self.allow_preamble:
             result_list: list = []  ### To do.
