@@ -220,7 +220,6 @@ class Python_Importer(Importer):
                     ):
                         pass
                     else:
-                        ### block = Block(kind=kind, name=name, start=prev_i, start_body=i, end=end)
                         block = Block(kind, name, start=prev_i, start_body=i, end=end, lines=self.lines)
                         results.append(block)
                         i = prev_i = end

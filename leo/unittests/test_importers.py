@@ -26,7 +26,7 @@ class BaseTestImporter(LeoUnitTest):
 
     #@+others
     #@+node:ekr.20230526135305.1: *3* BaseTestImporter.check_outline
-    def check_outline(self, p: Position, expected: tuple) -> None:
+    def check_outline(self, p: Position, expected: tuple, brief: bool = False) -> None:
         """
         BaseTestImporter.check_outline.
 
@@ -44,10 +44,17 @@ class BaseTestImporter(LeoUnitTest):
                 except ValueError:
                     assert False  # So we print the actual results.
                 msg = f"FAIL in node {i} {e_h}"
-                self.assertEqual(a_level - p0_level, e_level, msg=msg)
-                if i > 0:  # Don't test top-level headline.
-                    self.assertEqual(e_h, a_h, msg=msg)
-                self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
+                if brief:
+                    if (a_level - p0_level != e_level
+                        or e_h != a_h
+                        or g.splitLines(e_str) != g.splitLines(a_str)
+                    ):
+                        assert False
+                else:
+                    self.assertEqual(a_level - p0_level, e_level, msg=msg)
+                    if i > 0:  # Don't test top-level headline.
+                        self.assertEqual(e_h, a_h, msg=msg)
+                    self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
         except AssertionError:
             # Dump actual results, including bodies.
             self.dump_tree(p, tag='Actual results...')
@@ -90,7 +97,7 @@ class BaseTestImporter(LeoUnitTest):
         p = self.run_test(s)
         self.check_round_trip(p, expected_s or s)
     #@+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
-    def new_run_test(self, s: str, expected_results: tuple) -> None:
+    def new_run_test(self, s: str, expected_results: tuple, brief: bool = False) -> None:
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
@@ -112,7 +119,7 @@ class BaseTestImporter(LeoUnitTest):
         c.importCommands.createOutline(parent.copy(), ext, test_s)
 
         # Dump the actual results on failure and raise AssertionError.
-        self.check_outline(parent, expected_results)
+        self.check_outline(parent, expected_results, brief=brief)
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s: str) -> Position:
         """

@@ -176,10 +176,6 @@ class Importer:
 
         Return a list of Blocks, that is, tuples(kind, name, start, start_body, end).
         """
-        trace = False  ###
-        if trace:
-            print('')  ###
-        ### g.trace('Entry', i1, i2)
         min_size = self.minimum_block_size
         i, prev_i, results = i1, i1, []
         while i < i2:
@@ -189,12 +185,13 @@ class Importer:
             for kind, pattern in self.block_patterns:
                 m = pattern.match(s)
                 if m:
-                    if trace:
-                        g.trace('match line', i, repr(m.group(0)))
+                    ### g.trace('match line', i, repr(m.group(0)))
+
                     # cython may include trailing whitespace.
                     name = m.group(1).strip()
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
+
                     # Don't generate small blocks.
                     if min_size == 0 or end - prev_i > min_size:
                         block = Block(kind, name, start=prev_i, start_body=i, end=end, lines=self.lines)
@@ -203,9 +200,6 @@ class Importer:
                     else:
                         i = end
                     break  # Go on to the next line.
-        if trace:
-            g.trace(i1, i2, 'results', results)
-        ### g.printObj(self.lines[i1:i2], tag='find_blocks: results')
         return results
     #@+node:ekr.20230529075138.11: *4* i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
@@ -255,9 +249,6 @@ class Importer:
         result_blocks: list[Block] = []
 
         # Start by looking at all the lines.
-        # outer_blocks = self.find_blocks(0, len(self.lines))
-        # block_tuples: list[tuple[VNode, Block]] = [(parent.v, block) for block in outer_blocks]
-
         blocks = self.find_blocks(0, len(self.lines))
         for block in blocks:
             block.v = parent.v
@@ -302,22 +293,27 @@ class Importer:
         if trace:
             print('')
             g.trace('Done! result_blocks...')
+            for block in result_blocks:
+                print(block)
+                # block.dump()
 
-        for block in result_blocks:
-            if trace:
-                # print(f"{child_v.h!r:>30} {block}")
-                block.dump()
-                # g.printObj(self.lines[block.start:block.end], tag=f"{child_v.h!r} {block.start}:{block.end}")
+        # Adjust the range of blocks.
+        self.allocate_blocks(result_blocks)
 
-            ### To do. Generate code!!!
-
-        # # Add any tail lines.
-        # result_list.extend(lines[last_end:end])
+        self.generate_bodies(parent, result_blocks)
 
         # Delete extra leading and trailing whitespace.
         parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
 
         # Note: i.gen_lines adjusts adds the @language and @tabwidth directives.
+    #@+node:ekr.20230920165921.1: *5* i.allocate_blocks
+    def allocate_blocks(self, result_blocks: list[Block]) -> None:
+        g.trace()  ###
+
+
+    #@+node:ekr.20230920165923.1: *5* i.generate_bodies
+    def generate_bodies(self, p: Position, result_blocks: list[Block]) -> None:
+        g.trace(p.h)  ###
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:
         """
