@@ -60,7 +60,7 @@ class Block:
         for child_block in self.child_blocks:
             child_blocks.append(f"{child_block.kind} {child_block.name}")
         child_blocks_s = '\n'.join(child_blocks) if child_blocks else '<no children>'
-        return f"Block {repr(self)} \nchild_blocks: {child_blocks_s}\n"
+        return f"{repr(self)} \nchild_blocks: {child_blocks_s}\n"
 
     #@-others
 
@@ -301,16 +301,18 @@ class Importer:
         # Post pass: generate all bodies
         self.generate_all_bodies(parent, outer_block, result_blocks)
 
-        # Note: i.gen_lines adjusts adds the @language and @tabwidth directives.
+        # Note: i.gen_lines adds the @language and @tabwidth directives.
     #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies
     def generate_all_bodies(self, parent: Position, outer_block: Block, result_blocks: list[Block]) -> None:
         """
         Generate all bodies from the given blocks.
 
         The outer_block would suffice to do this, but the redundancy allows consistency checks.
+
+        Generating lines in a post-pass is more flexible.
         """
 
-        # Make sure we only process Block's and VNodes once.
+        # Make sure we only process Blocks and VNodes once.
         seen_blocks: dict[Block, bool] = {}
         seen_vnodes: dict[VNode, bool] = {}
 
@@ -319,18 +321,18 @@ class Importer:
             block0 = result_blocks[0]
             assert outer_block == block0, (repr(outer_block), repr(block0))
 
-        if 0:
-            print('')
-            g.trace('parent', parent.h, 'Blocks...')
-            print('')
-            for block in result_blocks:
-                print(block.long_repr())
+        # Special case the outer block.
+        if outer_block.child_blocks:
+          # i.gen_lines adds the @language and @tabwidth directives.
+            common_lws = self.compute_common_lws(outer_block.child_blocks)
+            parent.v.b = f"{common_lws}@others\n"
 
         # Handle each block, starting from the outer block.
         todo_list: list[Block] = outer_block.child_blocks
         seen_blocks[outer_block] = True
         while todo_list:
             block = todo_list.pop(0)
+            ### print(block.long_repr())
             assert isinstance(block, Block), repr(block)
             v = block.v
             assert v.__class__.__name__ == 'VNode', repr(v)
@@ -346,9 +348,16 @@ class Importer:
 
             # Create v.b.
             assert self.lines == block.lines
-            g.trace(block)  ###
-            # g.printObj(block.lines[block.start:block.end], tag=f"{block.start}:{block.end} {v.h}")
-            v.b = ''.join(block.lines[block.start:block.end])  # Wrong in general.
+
+            # Wrong in general. That's why this method exists!!!
+            block_lines = block.lines[block.start:block.start_body]
+            if block.child_blocks:
+                common_lws = self.compute_common_lws(block.child_blocks)
+                block_lines.append(f"{common_lws}@others\n")
+            block_lines.extend(block.lines[block.start_body:block.end])
+
+            # Delete extra leading and trailing whitespace.
+            v.b = ''.join(block_lines).lstrip('\n').rstrip() + '\n'
 
             # Add all child blocks to the to-do list.
             todo_list.extend(block.child_blocks)
@@ -358,21 +367,11 @@ class Importer:
             assert block in seen_blocks, block
             if block.v:
                 assert block.v in seen_vnodes, repr(block.v)
-            else:
-                g.trace(block)
 
         if self.allow_preamble:
             result_list: list = []  ### To do.
             # For python.
             self.create_preamble(parent, result_blocks, result_list)
-
-        # if blocks:
-            # # Add indented @others.
-            # common_lws = self.compute_common_lws(blocks)
-            # result_list.extend([f"{common_lws}@others\n"])
-
-        # # Delete extra leading and trailing whitespace.
-        # parent.b = ''.join(result_list).lstrip('\n').rstrip() + '\n'
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:
         """
