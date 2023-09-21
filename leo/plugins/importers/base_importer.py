@@ -286,7 +286,7 @@ class Importer:
             block = todo_list.pop(0)
             parent_v = block.parent_v
 
-            # Allocate a new node.
+            # Allocate a new node for the block.
             child_v = parent_v.insertAsLastChild()
             child_v.h = self.compute_headline(block)
 
@@ -317,12 +317,53 @@ class Importer:
         The outer_block would suffice to do this, but the redundancy allows consistency checks.
         """
 
+        # Make sure we only process Block's and VNodes once.
+        seen_blocks: dict[Block, bool] = {}
+        seen_vnodes: dict[VNode, bool] = {}
+
+        # An initial sanity check.
+        if result_blocks:
+            block0 = result_blocks[0]
+            assert outer_block == block0, (repr(outer_block), repr(block0))
+
         if 1:
             print('')
             g.trace('parent', parent.h, 'Blocks...')
             print('')
             for block in result_blocks:
                 print(block.long_repr())
+
+        # Handle each block, starting from the outer block.
+        todo_list: list[Block] = outer_block.child_blocks
+        seen_blocks[outer_block] = True
+        while todo_list:
+            block = todo_list.pop(0)
+            assert isinstance(block, Block), repr(block)
+            v = block.parent_v
+            assert v.__class__.__name__ == 'VNode', repr(v)
+
+            # Make sure we handle each block once.
+            assert block not in seen_blocks, repr(block)
+            seen_blocks[block] = True
+
+            # Make sure we handle each vnode once.
+            assert v, repr(block)
+            assert v not in seen_vnodes, repr(v)
+            seen_vnodes[v] = True
+
+            # Create v.b
+            assert self.lines == block.lines
+            g.printObj(block.lines[block.start:block.end], tag=f"{block.start}:{block.end} {v.h}")
+            v.b = ''.join(block.lines[block.start:block.end])  # Wrong in general.
+
+            # Add all child blocks to the to-do list.
+            todo_list.extend(block.child_blocks)
+
+        # Make sure we've seen all blocks and vnodes.
+        for block in result_blocks:
+            assert block in seen_blocks, block
+            if block.parent_v is not None:
+                assert block.parent_v in seen_vnodes, repr(block.parent_v)
 
         if self.allow_preamble:
             result_list: list = []  ### To do.
