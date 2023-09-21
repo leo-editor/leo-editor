@@ -37,13 +37,18 @@ class Block:
         self.start = start
         self.start_body = start_body
 
+    #@+others
+    #@+node:ekr.20230921061842.1: *3* Block.__repr__
     def __repr__(self) -> str:
         v_s = self.parent_v.h if self.parent_v else '<no parent_v>'
         kind_name_s = f"{self.kind} {self.name}"
         return f"Block: kind/name: {kind_name_s!r} {self.start} {self.start_body} {self.end} parent_v: {v_s!r}"
 
     __str__ = __repr__
-
+    #@+node:ekr.20230921061937.1: *3* Block.dump_lines
+    def dump_lines(self) -> None:
+        g.printObj(self.lines[self.start:self.end], tag=repr(self))
+    #@+node:ekr.20230921061932.1: *3* Block.long_repr
     def long_repr(self) -> str:
         v_s = self.parent_v.h if self.parent_v else '<no parent_v>'
         h_s = f"{self.kind}:{self.name}"
@@ -60,9 +65,9 @@ class Block:
             f"parent_v: {v_s!r} parent_block: {parent_block_s}\n"
             f"child_blocks: {child_blocks_s}\n"
         )
+    #@-others
 
-    def dump_lines(self) -> None:
-        g.printObj(self.lines[self.start:self.end], tag=repr(self))
+
 #@+node:ekr.20230529075138.4: ** class Importer
 class Importer:
     """
