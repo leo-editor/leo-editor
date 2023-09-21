@@ -193,7 +193,6 @@ class Importer:
         Return a list of Blocks.
         """
         min_size = self.minimum_block_size
-        ### i, prev_i, results = i1, i1, []
         i, results = i1, []
         while i < i2:
             s = self.guide_lines[i]
@@ -202,7 +201,6 @@ class Importer:
             for kind, pattern in self.block_patterns:
                 m = pattern.match(s)
                 if m:
-
                     # g.trace('match line', i, repr(m.group(0)))
 
                     # cython may include trailing whitespace.
@@ -334,8 +332,6 @@ class Importer:
         # Special case the outer block.
         common_lws = self.compute_common_lws(outer_block.child_blocks)
         parent.v.b = f"{common_lws}@others\n"
-
-        ### g.printObj(self.lines, tag='all lines')
 
         # Handle each block, starting from the outer block.
         todo_list: list[Block] = outer_block.child_blocks
