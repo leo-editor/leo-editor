@@ -6,13 +6,15 @@
 #@+node:ekr.20230920091345.1: ** << imports, annotations: base_importer.py >>
 from __future__ import annotations
 import re
+import sys
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
+# This import is safe because these imports happen after initing Leo.
+from leo.core.leoNodes import Position, VNode
+
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position, VNode
-
 #@-<< imports, annotations: base_importer.py >>
 
 class ImporterError(Exception):
@@ -60,8 +62,9 @@ class Block:
         for child_block in self.child_blocks:
             child_blocks.append(f"{child_block.kind} {child_block.name}")
         child_blocks_s = '\n'.join(child_blocks) if child_blocks else '<no children>'
-        return f"{repr(self)} \nchild_blocks: {child_blocks_s}\n"
-
+        lines_list = g.objToString(self.lines[self.start:self.end], tag='lines')
+        lines_s = ''.join(lines_list)
+        return f"{repr(self)} \nchild_blocks: {child_blocks_s}\n{lines_s}"
     #@-others
 
 
@@ -187,10 +190,11 @@ class Importer:
 
         Subclasses may override this method for more control.
 
-        Return a list of Blocks, that is, tuples(kind, name, start, start_body, end).
+        Return a list of Blocks.
         """
         min_size = self.minimum_block_size
-        i, prev_i, results = i1, i1, []
+        ### i, prev_i, results = i1, i1, []
+        i, results = i1, []
         while i < i2:
             s = self.guide_lines[i]
             i += 1
@@ -198,7 +202,8 @@ class Importer:
             for kind, pattern in self.block_patterns:
                 m = pattern.match(s)
                 if m:
-                    ### g.trace('match line', i, repr(m.group(0)))
+
+                    # g.trace('match line', i, repr(m.group(0)))
 
                     # cython may include trailing whitespace.
                     name = m.group(1).strip()
@@ -206,12 +211,11 @@ class Importer:
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
 
                     # Don't generate small blocks.
-                    if min_size == 0 or end - prev_i > min_size:
-                        block = Block(kind, name, start=prev_i, start_body=i, end=end, lines=self.lines)
+                    i -= 1  # Restore i!
+                    if min_size == 0 or end - i > min_size:
+                        block = Block(kind, name, start=i, start_body=i + 1, end=end, lines=self.lines)
                         results.append(block)
-                        i = prev_i = end
-                    else:
-                        i = end
+                    i = end
                     break  # Go on to the next line.
         return results
     #@+node:ekr.20230529075138.11: *4* i.find_end_of_block
@@ -281,9 +285,9 @@ class Importer:
             child_v.h = self.compute_headline(block)
             block.v = child_v
 
-            # The 'VNode' symbol is only available for type checking.
-            assert parent_v.__class__.__name__ == 'VNode'
-            assert child_v.__class__.__name__ == 'VNode'
+            # # The 'VNode' symbol is only available for type checking.
+            # assert parent_v.__class__.__name__ == 'VNode'
+            # assert child_v.__class__.__name__ == 'VNode'
 
             # Add the block to the results.
             result_blocks.append(block)
@@ -309,7 +313,7 @@ class Importer:
 
         The outer_block would suffice to do this, but the redundancy allows consistency checks.
 
-        Generating lines in a post-pass is more flexible.
+        Generating lines in a post-pass is more flexible than is possible with recursive code.
         """
 
         # Make sure we only process Blocks and VNodes once.
@@ -321,18 +325,26 @@ class Importer:
             block0 = result_blocks[0]
             assert outer_block == block0, (repr(outer_block), repr(block0))
 
+        # Note: i.gen_lines adds the @language and @tabwidth directives.
+        if not outer_block.child_blocks:
+            # Put everything in p.b.
+            parent.b = ''.join(outer_block.lines).lstrip('\n').rstrip() + '\n'
+            return
+
         # Special case the outer block.
-        if outer_block.child_blocks:
-          # i.gen_lines adds the @language and @tabwidth directives.
-            common_lws = self.compute_common_lws(outer_block.child_blocks)
-            parent.v.b = f"{common_lws}@others\n"
+        common_lws = self.compute_common_lws(outer_block.child_blocks)
+        parent.v.b = f"{common_lws}@others\n"
+
+        ### g.printObj(self.lines, tag='all lines')
 
         # Handle each block, starting from the outer block.
         todo_list: list[Block] = outer_block.child_blocks
         seen_blocks[outer_block] = True
         while todo_list:
             block = todo_list.pop(0)
-            ### print(block.long_repr())
+            if 0:
+                print('')
+                print(block.long_repr())
             assert isinstance(block, Block), repr(block)
             v = block.v
             assert v.__class__.__name__ == 'VNode', repr(v)
@@ -349,12 +361,34 @@ class Importer:
             # Create v.b.
             assert self.lines == block.lines
 
-            # Wrong in general. That's why this method exists!!!
-            block_lines = block.lines[block.start:block.start_body]
+            # This method exists to de these calculations properly in all situations!!!
+            block_lines = block.lines[block.start:block.start]
             if block.child_blocks:
                 common_lws = self.compute_common_lws(block.child_blocks)
+                children_end, children_start = 0, sys.maxsize
+                for child_block in block.child_blocks:
+                    p = Position(child_block.v)
+                    self.remove_common_lws(common_lws, p)
+                    children_start = max(0, min(children_start, child_block.start) - 1)
+                    children_end = max(children_end, child_block.end)
+
+                g.printObj(block.lines[children_start:children_end],
+                    tag=f"Delete lines: {block.name} {children_start}:{children_end}")
+
+                # Replace block.lines[children_start:children_end] by @others
+                block_lines.extend(block.lines[block.start:children_start])
                 block_lines.append(f"{common_lws}@others\n")
-            block_lines.extend(block.lines[block.start_body:block.end])
+                block_lines.extend(block.lines[children_end:])
+
+                # Delete common whitespace from all children.
+                if common_lws:
+                    for child_block in block.child_blocks:
+                        child_lines = child_block.lines
+                        for i, line in enumerate(child_lines):
+                            if line.startswith(common_lws):
+                                child_block.lines[i] = line[len(common_lws) :]
+            else:
+                block_lines.extend(block.lines[block.start:block.end])
 
             # Delete extra leading and trailing whitespace.
             v.b = ''.join(block_lines).lstrip('\n').rstrip() + '\n'

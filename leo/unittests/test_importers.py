@@ -54,6 +54,10 @@ class BaseTestImporter(LeoUnitTest):
                     self.assertEqual(a_level - p0_level, e_level, msg=msg)
                     if i > 0:  # Don't test top-level headline.
                         self.assertEqual(e_h, a_h, msg=msg)
+                    if 0:  # Sometimes good.
+                        if g.splitLines(e_str) != g.splitLines(a_str):
+                            g.printObj(e_str, tag='expected')
+                            g.printObj(a_str, tag='actual')
                     self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
         except AssertionError:
             # Dump actual results, including bodies.
@@ -1773,7 +1777,7 @@ class TestJavascript(BaseTestImporter):
     #@+node:ekr.20210904065459.36: *3* TestJavascript.test_var_equal_function
     def test_var_equal_function(self):
 
-        s = """
+        s = textwrap.dedent("""\
             var c3 = (function () {
                 "use strict";
 
@@ -1786,7 +1790,7 @@ class TestJavascript(BaseTestImporter):
 
                 return c3;
             }());
-        """
+        """)
 
         expected_results = (
             (0, '',  # Ignore the first headline.
@@ -1795,7 +1799,20 @@ class TestJavascript(BaseTestImporter):
                 '@tabwidth -4\n'
             ),
             (1, 'function c3',
-                s,
+                    'var c3 = (function () {\n'
+                    '    "use strict";\n'
+                    '\n'
+                    '    // Globals\n'
+                    '    var c3 = { version: "0.0.1"   };\n'
+                    '    @others\n'
+                    '\n'
+                    '    return c3;\n'
+                    '}());\n'
+            ),
+            (2, 'function c3.someFunction',
+                    'c3.someFunction = function () {\n'
+                    '    console.log("Just a demo...");\n'
+                    '};\n'
             ),
         )
         # g.printObj(g.splitLines(s), tag='source')
