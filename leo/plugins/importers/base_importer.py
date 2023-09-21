@@ -32,7 +32,6 @@ class Block:
         self.kind = kind
         self.lines = lines
         self.name = name
-        ### self.parent_block: Block = None
         self.parent_v: VNode = None
         self.start = start
         self.start_body = start_body
@@ -152,8 +151,6 @@ class Importer:
 
         Subclasses may override this method as necessary.
         """
-        ### child_kind, child_name, child_start, child_start_body, child_end = block
-        ### return f"{child_kind} {child_name}" if child_name else f"unnamed {child_kind}"
         name_s = block.name or f"unnamed {block.kind}"
         return f"{block.kind} {name_s}"
     #@+node:ekr.20230612170928.1: *4* i.create_preamble
@@ -232,7 +229,7 @@ class Importer:
         level = 1  # All blocks start with '{'
         tag = 'find_end_of_block'
         if trace:
-            print(f"  {tag} 1: {i:3} {self.lines[i-1]!r}")  ###
+            print(f"  {tag} 1: {i:3} {self.lines[i-1]!r}")
         assert '{' in self.guide_lines[i - 1]
         while i < i2:
             line = self.guide_lines[i]
@@ -244,7 +241,7 @@ class Importer:
                     level -= 1
                     if level == 0:
                         if trace:
-                            print(f"  {tag} 2: {i:3} {self.lines[i-1]!r}")  ###
+                            print(f"  {tag} 2: {i:3} {self.lines[i-1]!r}")
                         return i
         return i2
     #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative)
@@ -256,13 +253,6 @@ class Importer:
 
         Five importers override this method.
         """
-        if 0:  ###
-            def link_blocks(block: Block, parent_block: Block, parent_v: VNode) -> None:
-                """Link parent/child blocks."""
-                block.parent_v = parent_v
-                block.parent_block = parent_block
-                parent_block.child_blocks.append(block)
-
         todo_list: list[Block] = []  # The todo list.
         result_blocks: list[Block] = []
 
@@ -285,14 +275,12 @@ class Importer:
             block = todo_list.pop(0)
             parent_v = block.parent_v
 
-            g.trace(block)  ###
-
             # Allocate a new node for the block.
             child_v = parent_v.insertAsLastChild()
             child_v.h = self.compute_headline(block)
 
             # The 'VNode' symbol is only available for type checking.
-            ### assert parent_v.__class__.__name__ == 'VNode'
+            assert parent_v.__class__.__name__ == 'VNode'
             assert child_v.__class__.__name__ == 'VNode'
 
             # Add the block to the results.
@@ -650,8 +638,6 @@ class Importer:
 
     def trace_block(self, block: Block) -> None:
         """For debugging: trace one block."""
-        ### lines = self.lines
-        ### kind2, name2, start2, start_body2, end2 = block
         tag = f"  {block.kind:>10} {block.name:<20} {block.start} {block.start_body2} {block.end}"
         g.printObj(block.lines[block.start:block.end], tag=tag)
     #@-others
