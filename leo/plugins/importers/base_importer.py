@@ -306,7 +306,7 @@ class Importer:
     def generate_all_bodies(self, parent: Position, outer_block: Block, result_blocks: list[Block]) -> None:
         """
         Generate all bodies from the given blocks.
-        
+
         The outer_block would suffice to do this, but the redundancy allows consistency checks.
         """
 
@@ -481,7 +481,7 @@ class Importer:
             return ''
         lws_list: list[int] = []
         for block in blocks:
-            ### kind, name, start, start_body, end = block
+            assert self.lines == block.lines
             lines = self.lines[block.start:block.end]
             for line in lines:
                 stripped_line = line.lstrip()
