@@ -32,17 +32,22 @@ class Block:
         self.kind = kind
         self.lines = lines
         self.name = name
-        self.parent_block: Block = None
+        ### self.parent_block: Block = None
         self.parent_v: VNode = None
         self.start = start
         self.start_body = start_body
+        ### self.v = None
 
     #@+others
     #@+node:ekr.20230921061842.1: *3* Block.__repr__
     def __repr__(self) -> str:
         v_s = self.parent_v.h if self.parent_v else '<no parent_v>'
         kind_name_s = f"{self.kind} {self.name}"
-        return f"Block: kind/name: {kind_name_s!r} {self.start} {self.start_body} {self.end} parent_v: {v_s!r}"
+        return (
+            f"Block: kind/name: {kind_name_s!r} "
+            f"{self.start} {self.start_body} {self.end} "
+            f"parent_v: {v_s!r}"
+        )
 
     __str__ = __repr__
     #@+node:ekr.20230921061937.1: *3* Block.dump_lines
@@ -50,21 +55,13 @@ class Block:
         g.printObj(self.lines[self.start:self.end], tag=repr(self))
     #@+node:ekr.20230921061932.1: *3* Block.long_repr
     def long_repr(self) -> str:
-        v_s = self.parent_v.h if self.parent_v else '<no parent_v>'
-        h_s = f"{self.kind}:{self.name}"
-        if self.parent_block:
-            parent_block_s = f"{self.parent_block.kind} {self.parent_block.name}"
-        else:
-            parent_block_s = '<no parent>'
+        """A longer form of Block.__repr__"""
         child_blocks = []
         for child_block in self.child_blocks:
             child_blocks.append(f"{child_block.kind} {child_block.name}")
         child_blocks_s = '\n'.join(child_blocks) if child_blocks else '<no children>'
-        return (
-            f"Block: kind:name: {h_s!r} {self.start} {self.start_body} {self.end}\n"
-            f"parent_v: {v_s!r} parent_block: {parent_block_s}\n"
-            f"child_blocks: {child_blocks_s}\n"
-        )
+        return f"Block {repr(self)} \nchild_blocks: {child_blocks_s}\n"
+
     #@-others
 
 
@@ -259,11 +256,12 @@ class Importer:
 
         Five importers override this method.
         """
-        def link_blocks(block: Block, parent_block: Block, parent_v: VNode) -> None:
-            """Link parent/child blocks."""
-            block.parent_v = parent_v
-            block.parent_block = parent_block
-            parent_block.child_blocks.append(block)
+        if 0:  ###
+            def link_blocks(block: Block, parent_block: Block, parent_v: VNode) -> None:
+                """Link parent/child blocks."""
+                block.parent_v = parent_v
+                block.parent_block = parent_block
+                parent_block.child_blocks.append(block)
 
         todo_list: list[Block] = []  # The todo list.
         result_blocks: list[Block] = []
@@ -277,7 +275,8 @@ class Importer:
 
         # Link the blocks to the outer block.
         for block in todo_list:
-            link_blocks(block, outer_block, parent.v)
+            block.parent_v = parent.v
+            outer_block.child_blocks.append(block)
 
         # Handle blocks until the to-do list is empty.
         while todo_list:
@@ -286,12 +285,14 @@ class Importer:
             block = todo_list.pop(0)
             parent_v = block.parent_v
 
+            g.trace(block)  ###
+
             # Allocate a new node for the block.
             child_v = parent_v.insertAsLastChild()
             child_v.h = self.compute_headline(block)
 
             # The 'VNode' symbol is only available for type checking.
-            assert parent_v.__class__.__name__ == 'VNode'
+            ### assert parent_v.__class__.__name__ == 'VNode'
             assert child_v.__class__.__name__ == 'VNode'
 
             # Add the block to the results.
@@ -302,7 +303,8 @@ class Importer:
 
             # Link inner blocks and add them to the to-do list.
             for inner_block in inner_blocks:
-                link_blocks(inner_block, block, child_v)
+                block.child_blocks.append(inner_block)
+                inner_block.parent_v = child_v
                 todo_list.append(inner_block)
 
         # Post pass: generate all bodies
@@ -326,7 +328,7 @@ class Importer:
             block0 = result_blocks[0]
             assert outer_block == block0, (repr(outer_block), repr(block0))
 
-        if 1:
+        if 0:
             print('')
             g.trace('parent', parent.h, 'Blocks...')
             print('')
@@ -353,7 +355,8 @@ class Importer:
 
             # Create v.b
             assert self.lines == block.lines
-            g.printObj(block.lines[block.start:block.end], tag=f"{block.start}:{block.end} {v.h}")
+            g.trace(f"{block.start}:{block.end} {v.h}")
+            # g.printObj(block.lines[block.start:block.end], tag=f"{block.start}:{block.end} {v.h}")
             v.b = ''.join(block.lines[block.start:block.end])  # Wrong in general.
 
             # Add all child blocks to the to-do list.
