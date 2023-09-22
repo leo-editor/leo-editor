@@ -158,11 +158,15 @@ class Importer:
         name_s = block.name or f"unnamed {block.kind}"
         return f"{block.kind} {name_s}"
     #@+node:ekr.20230612170928.1: *4* i.create_preamble
-    def create_preamble(self, parent: Position, result_blocks: list[Block], result_list: list[str]) -> None:
+    def create_preamble(self, parent: Position, result_blocks: list[Block]) -> None:
         """
-        Importer.create_preamble: Create one preamble node.
+        Importer.create_preamble.
 
-        Subclasses may override this method to create multiple preamble nodes.
+        Create a section reference node for preamble code.
+
+        Insert a corresponding section reference into parent.b.
+
+        Subclasses may override this method to create multiple section reference nodes.
         """
         assert self.allow_preamble
         assert parent == self.root
@@ -175,7 +179,19 @@ class Importer:
             section_name = '<< preamble >>'
             child.h = section_name
             child.b = ''.join(preamble)
-            result_list.insert(0, f"{common_lws}{section_name}\n")
+
+            # Prepend the section reference.
+            parent.b = f"{common_lws}{section_name}\n" + parent.b
+
+            # Remove the preamble from block zero's lines.
+            block0 = result_blocks[0]
+            block0.start = new_start
+            block0.lines = block0.lines[new_start:]
+
+            # Patch the block zero's body text.
+            v = block0.v
+            v.b = ''.join(block0.lines).lstrip('\n').rstrip() + '\n'
+
             # Adjust this block.
             block_0 = result_blocks[0]
             block_0.start = new_start
@@ -396,9 +412,8 @@ class Importer:
                 assert block.v in seen_vnodes, repr(block.v)
 
         if self.allow_preamble:
-            result_list: list = []  ### To do.
-            # For python.
-            self.create_preamble(parent, result_blocks, result_list)
+            assert result_blocks[0].kind == 'outer', result_blocks[0]
+            self.create_preamble(parent, result_blocks[1:])
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:
         """

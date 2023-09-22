@@ -133,10 +133,13 @@ class Python_Importer(Importer):
         assert len(result) == len(lines)  # A crucial invariant.
         return result
     #@+node:ekr.20230612171619.1: *3* python_i.create_preamble
-    def create_preamble(self, parent: Position, result_blocks: list[Block], result_list: list[str]) -> None:
+    def create_preamble(self, parent: Position, result_blocks: list[Block]) -> None:
         """
         Python_Importer.create_preamble:
-        Create preamble nodes for the module docstrings and everything else.
+
+        Create section reference nodes for docstrings and preamble code.
+
+        Insert corresponding section references into parent.b.
         """
         assert self.allow_preamble
         assert parent == self.root
@@ -147,15 +150,26 @@ class Python_Importer(Importer):
         if not preamble_lines or not any(z for z in preamble_lines):
             return
 
-        def make_node(index: int, preamble_lines: list[str], title: str) -> None:
-            child = parent.insertAsLastChild()
+        #@+others  # Define helpers
+        #@+node:ekr.20230922023223.1: *4* function: make_node
+        def make_node(node_lines: list[str], title: str) -> None:
+            """
+            Create a new section definition node and prepend a reference to it parent.b.
+            """
+            # Compute the section name.
             parent_s = os.path.split(parent.h)[1].replace('@file', '').replace('@clean', '').strip()
             section_name = f"<< {parent_s}: {title} >>"
-            child.h = section_name
-            child.b = ''.join(preamble_lines)
-            result_list.insert(index, f"{common_lws}{section_name}\n")
 
+            # Create the child node.
+            child = parent.insertAsFirstChild()
+            child.h = section_name
+            child.b = ''.join(node_lines)
+
+            # Prepend the section reference.
+            parent.b = f"{common_lws}{section_name}\n" + parent.b
+        #@+node:ekr.20230922023225.1: *4* function: find_docstring
         def find_docstring() -> list[str]:
+            """Return the list of lines of a docstring, if any."""
             i = 0
             while i < len(preamble_lines):
                 for delim in ('"""', "'''"):
@@ -168,19 +182,25 @@ class Python_Importer(Importer):
                         return []  # Mal-formed docstring.
                 i += 1
             return []
+        #@-others
 
         docstring_lines = find_docstring()
         if docstring_lines:
-            make_node(0, docstring_lines, "docstring")
+            make_node(docstring_lines, "docstring")
             declaration_lines = preamble_lines[len(docstring_lines) :]
             if declaration_lines:
-                make_node(1, declaration_lines, "declarations")
+                make_node(declaration_lines, "declarations")
         else:
-            make_node(0, preamble_lines, "preamble")
+            make_node(preamble_lines, "preamble")
 
-        # Adjust this block.
-        block_0 = result_blocks[0]
-        block_0.start = new_start
+        # Remove the preamble from block zero's lines.
+        block0 = result_blocks[0]
+        block0.start = new_start
+        block0.lines = block0.lines[new_start:]
+
+        # Patch the block zero's body text.
+        v = block0.v
+        v.b = ''.join(block0.lines).lstrip('\n').rstrip() + '\n'
     #@+node:ekr.20230514140918.1: *3* python_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
