@@ -379,7 +379,6 @@ class Importer:
             tail_lines = self.lines[block.end:]
 
             # This method exists to de these calculations properly in all situations!!!
-            ### block_lines = block.lines[block.start:block.start]
             if block.child_blocks:
                 new_block_lines = []
                 common_lws = self.compute_common_lws(block.child_blocks)
@@ -398,7 +397,6 @@ class Importer:
 
                 # Replace block.lines[children_start:children_end] by @others
                 new_block_lines.extend(block.lines[block.start:children_start])
-                ### block_lines.append(f"{common_lws}@others\n")
                 new_block_lines.extend(block.lines[children_end + 1 :])
                 last_children_end = max(last_children_end, children_end)
 
@@ -411,7 +409,8 @@ class Importer:
                 block.end = block.start + len(new_block_lines)
 
                 # Add an @others directive in the *parent* block.
-                block.parent_v.b = f"{common_lws}@others\n" + block.parent_v.b
+                if '@others' not in block.parent_v.b:
+                    block.parent_v.b = f"{common_lws}@others\n" + block.parent_v.b
 
                 # Delete common whitespace from all children.
                 if common_lws:
@@ -422,7 +421,9 @@ class Importer:
                                 child_block.lines[i] = line[len(common_lws) :]
 
             # Add tail lines to the *parent* block.
-            block.parent_v.b = block.parent_v.b + ''.join(tail_lines).rstrip() + '\n'
+            tail_s = ''.join(tail_lines)
+            if tail_s.strip():
+                block.parent_v.b = block.parent_v.b + tail_s.rstrip() + '\n'
 
             # Set v.b, deleting extra leading and trailing whitespace.
             v.b = ''.join(block.lines[block.start:block.end]).lstrip('\n').rstrip() + '\n'
