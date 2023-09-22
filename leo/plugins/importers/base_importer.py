@@ -157,10 +157,10 @@ class Importer:
         """
         name_s = block.name or f"unnamed {block.kind}"
         return f"{block.kind} {name_s}"
-    #@+node:ekr.20230612170928.1: *4* i.create_preamble
-    def create_preamble(self, parent: Position, result_blocks: list[Block]) -> None:
+    #@+node:ekr.20230612170928.1: *4* i.create_sections
+    def create_sections(self, parent: Position, result_blocks: list[Block]) -> None:
         """
-        Importer.create_preamble.
+        Importer.create_sections.
 
         Create a section reference node for preamble code.
 
@@ -413,7 +413,7 @@ class Importer:
 
         if self.allow_preamble:
             assert result_blocks[0].kind == 'outer', result_blocks[0]
-            self.create_preamble(parent, result_blocks[1:])
+            self.create_sections(parent, result_blocks[1:])
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:
         """

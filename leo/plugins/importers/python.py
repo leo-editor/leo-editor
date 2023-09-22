@@ -132,10 +132,10 @@ class Python_Importer(Importer):
             result.append(''.join(result_line))
         assert len(result) == len(lines)  # A crucial invariant.
         return result
-    #@+node:ekr.20230612171619.1: *3* python_i.create_preamble
-    def create_preamble(self, parent: Position, result_blocks: list[Block]) -> None:
+    #@+node:ekr.20230612171619.1: *3* python_i.create_sections
+    def create_sections(self, parent: Position, result_blocks: list[Block]) -> None:
         """
-        Python_Importer.create_preamble:
+        Python_Importer.create_sections:
 
         Create section reference nodes for docstrings and preamble code.
 
