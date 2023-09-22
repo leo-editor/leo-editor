@@ -147,8 +147,12 @@ class Python_Importer(Importer):
         common_lws = self.compute_common_lws(result_blocks)
         new_start = max(0, result_blocks[0].start_body - 1)
         preamble_lines = lines[:new_start]
+
         if not preamble_lines or not any(z for z in preamble_lines):
             return
+
+        if 0:  ###
+            g.printObj(preamble_lines, tag=f"python_i.create_section: {result_blocks[0].name} preamble")
 
         #@+others  # Define helpers
         #@+node:ekr.20230922023223.1: *4* function: make_node
@@ -165,8 +169,10 @@ class Python_Importer(Importer):
             child.h = section_name
             child.b = ''.join(node_lines)
 
-            # Prepend the section reference.
+            # Prepend the section reference in parent.b.
             parent.b = f"{common_lws}{section_name}\n" + parent.b
+
+            # g.trace(parent.b)
         #@+node:ekr.20230922023225.1: *4* function: find_docstring
         def find_docstring() -> list[str]:
             """Return the list of lines of a docstring, if any."""
@@ -196,7 +202,7 @@ class Python_Importer(Importer):
         # Remove the preamble from block zero's lines.
         block0 = result_blocks[0]
         block0.start = new_start
-        block0.lines = block0.lines[new_start:]
+        block0.lines = block0.lines[new_start:block0.end]
 
         # Patch the block zero's body text.
         v = block0.v
@@ -211,7 +217,8 @@ class Python_Importer(Importer):
 
         Return a list of Blocks, that is, tuples(name, start, start_body, end).
         """
-        i, prev_i, results = i1, i1, []
+        ### i, prev_i, results = i1, i1, []
+        i, results = i1, []
 
         def lws_n(s: str) -> int:
             """Return the length of the leading whitespace for s."""
@@ -230,6 +237,8 @@ class Python_Importer(Importer):
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
 
+                    ### g.printObj(self.lines[i-1:end], tag=f"python_i.find_blocks: {name}")
+
                     # #3517: Don't generated nested defs.
                     if (kind == 'def'
                         and prev_block_line.strip().startswith('def ')
@@ -237,9 +246,10 @@ class Python_Importer(Importer):
                     ):
                         pass
                     else:
-                        block = Block(kind, name, start=prev_i, start_body=i, end=end, lines=self.lines)
+                        i -= 1  # Restore i!
+                        block = Block(kind, name, start=i, start_body=i + 1, end=end, lines=self.lines)
                         results.append(block)
-                        i = prev_i = end
+                        i = end
                     break
         return results
     #@+node:ekr.20230514140918.4: *3* python_i.find_end_of_block

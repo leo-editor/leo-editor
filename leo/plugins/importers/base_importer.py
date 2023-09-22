@@ -46,7 +46,7 @@ class Block:
         parent_v_s = self.parent_v.h if self.parent_v else '<no parent_v>'
         v_s = self.v.h if self.v else '<no v>'
         return (
-            f"Block: kind/name: {kind_name_s!r} "
+            f"\n\nBlock: kind/name: {kind_name_s!r} "
             f"{self.start} {self.start_body} {self.end} "
             f"parent_v: {parent_v_s!r} v: {v_s!r}"
         )
@@ -332,6 +332,12 @@ class Importer:
         seen_blocks: dict[Block, bool] = {}
         seen_vnodes: dict[VNode, bool] = {}
 
+        if 0:  ###
+            print('')
+            print(f"i.generate_all_bodies: {len(result_blocks)} Result blocks...\n")
+            for z in result_blocks:
+                print(z.long_repr())
+
         # An initial sanity check.
         if result_blocks:
             block0 = result_blocks[0]
@@ -350,9 +356,9 @@ class Importer:
         # Handle each block, starting from the outer block.
         todo_list: list[Block] = outer_block.child_blocks
         seen_blocks[outer_block] = True
+        last_children_end = -1
         while todo_list:
             block = todo_list.pop(0)
-            # print(block.long_repr())
             assert isinstance(block, Block), repr(block)
             v = block.v
             assert v.__class__.__name__ == 'VNode', repr(v)
@@ -369,10 +375,16 @@ class Importer:
             # Create v.b.
             assert self.lines == block.lines
 
+            # Remember the tail lines. We'll append them last.
+            tail_lines = self.lines[block.end:]
+
             # This method exists to de these calculations properly in all situations!!!
-            block_lines = block.lines[block.start:block.start]
+            ### block_lines = block.lines[block.start:block.start]
             if block.child_blocks:
+                new_block_lines = []
                 common_lws = self.compute_common_lws(block.child_blocks)
+
+                # Find all lines that will be covered by @others.
                 children_end, children_start = 0, sys.maxsize
                 for child_block in block.child_blocks:
                     p = Position(child_block.v)
@@ -380,14 +392,26 @@ class Importer:
                     children_start = max(0, min(children_start, child_block.start) - 1)
                     children_end = max(children_end, child_block.end)
 
-                if 0:
+                if 0:  ###
                     tag = f"Delete lines: {block.name} {children_start}:{children_end}"
                     g.printObj(block.lines[children_start:children_end], tag=tag)
 
                 # Replace block.lines[children_start:children_end] by @others
-                block_lines.extend(block.lines[block.start:children_start])
-                block_lines.append(f"{common_lws}@others\n")
-                block_lines.extend(block.lines[children_end:])
+                new_block_lines.extend(block.lines[block.start:children_start])
+                ### block_lines.append(f"{common_lws}@others\n")
+                new_block_lines.extend(block.lines[children_end + 1 :])
+                last_children_end = max(last_children_end, children_end)
+
+                if 1:  ###
+                    g.printObj(new_block_lines, tag=f"new_block_lines: {block.name}")
+
+                ### Experimental
+                block.lines = new_block_lines
+                block.start = 0
+                block.end = block.start + len(new_block_lines)
+
+                # Add an @others directive in the *parent* block.
+                block.parent_v.b = f"{common_lws}@others\n" + block.parent_v.b
 
                 # Delete common whitespace from all children.
                 if common_lws:
@@ -396,11 +420,12 @@ class Importer:
                         for i, line in enumerate(child_lines):
                             if line.startswith(common_lws):
                                 child_block.lines[i] = line[len(common_lws) :]
-            else:
-                block_lines.extend(block.lines[block.start:block.end])
 
-            # Delete extra leading and trailing whitespace.
-            v.b = ''.join(block_lines).lstrip('\n').rstrip() + '\n'
+            # Add tail lines to the *parent* block.
+            block.parent_v.b = block.parent_v.b + ''.join(tail_lines).rstrip() + '\n'
+
+            # Set v.b, deleting extra leading and trailing whitespace.
+            v.b = ''.join(block.lines[block.start:block.end]).lstrip('\n').rstrip() + '\n'
 
             # Add all child blocks to the to-do list.
             todo_list.extend(block.child_blocks)
