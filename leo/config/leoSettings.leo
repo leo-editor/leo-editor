@@ -602,6 +602,10 @@
 <v t="ekr.20060127050605"><vh>@int max-undo-stack-size = 0</vh></v>
 <v t="ekr.20050126083026"><vh>@string undo-granularity = None</vh></v>
 </v>
+<v t="peckj.20130514082859.5599"><vh>print settings</vh>
+<v t="peckj.20130514082859.5600"><vh>@string printing-font-size = 12</vh></v>
+<v t="peckj.20130514082859.5601"><vh>@string printing-font-family = DejaVu Sans Mono</vh></v>
+</v>
 </v>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh></v>
@@ -1957,10 +1961,6 @@
 <v t="ekr.20060922110220"><vh>@bool opml-write-uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml-namespace = leo:com:leo-opml-version-1</vh></v>
 </v>
-<v t="peckj.20130514082859.5599"><vh>printing plugin</vh>
-<v t="peckj.20130514082859.5600"><vh>@string printing-font-size = 12</vh></v>
-<v t="peckj.20130514082859.5601"><vh>@string printing-font-family = DejaVu Sans Mono</vh></v>
-</v>
 <v t="tbrown.20130813134319.7223"><vh>richtext plugin</vh>
 <v t="tbrown.20130813134319.7224"><vh>@bool richtext-cke-autosave = False</vh></v>
 <v t="tbrown.20130813181208.23979"><vh>@data richtext-cke-config</vh></v>
@@ -2284,7 +2284,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20230627131213.1"></v>
+<v t="peckj.20130514082859.5599"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11728,7 +11728,7 @@ Leo accepts outline 'paste' data in both XML Leo format, or JSON format</t>
 <t tx="peckj.20130514082859.5599"></t>
 <t tx="peckj.20130514082859.5600">This defines the font size for body text in print outs.
 
-Size is in px.  Default 12.</t>
+Size is in points.  Default 12.</t>
 <t tx="peckj.20130514082859.5601">This determines the font family for print outs.  It's highly recommended
 to choose a monospaced font.
 
