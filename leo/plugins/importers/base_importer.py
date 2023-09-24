@@ -46,9 +46,9 @@ class Block:
         parent_v_s = self.parent_v.h if self.parent_v else '<no parent_v>'
         v_s = self.v.h if self.v else '<no v>'
         return (
-            f"\n\nBlock: kind/name: {kind_name_s!r} "
+            f"Block: kind/name: {kind_name_s!r} "
             f"{self.start} {self.start_body} {self.end} "
-            f"parent_v: {parent_v_s!r} v: {v_s!r}"
+            f"parent_v: {parent_v_s!r} v: {v_s!r}\n"
         )
 
     __str__ = __repr__
@@ -60,11 +60,11 @@ class Block:
         """A longer form of Block.__repr__"""
         child_blocks = []
         for child_block in self.child_blocks:
-            child_blocks.append(f"{child_block.kind} {child_block.name}")
+            child_blocks.append(f"{child_block.kind}:{child_block.name}")
         child_blocks_s = '\n'.join(child_blocks) if child_blocks else '<no children>'
         lines_list = g.objToString(self.lines[self.start:self.end], tag='lines')
         lines_s = ''.join(lines_list)
-        return f"{repr(self)} \nchild_blocks: {child_blocks_s}\n{lines_s}"
+        return f"\n{repr(self)}child_blocks: {child_blocks_s}\n{lines_s}"
     #@-others
 
 
@@ -334,7 +334,7 @@ class Importer:
 
         if 0:  ###
             print('')
-            print(f"i.generate_all_bodies: {len(result_blocks)} Result blocks...\n")
+            print(f"i.generate_all_bodies: {len(result_blocks)} Result blocks...")
             for z in result_blocks:
                 print(z.long_repr())
 
@@ -349,14 +349,13 @@ class Importer:
             parent.b = ''.join(outer_block.lines).lstrip('\n').rstrip() + '\n'
             return
 
-        # Special case the outer block.
+        # There *are* child Blocks, so insert @others in parent.v.b.
         common_lws = self.compute_common_lws(outer_block.child_blocks)
         parent.v.b = f"{common_lws}@others\n"
 
         # Handle each block, starting from the outer block.
         todo_list: list[Block] = outer_block.child_blocks
         seen_blocks[outer_block] = True
-        last_children_end = -1
         while todo_list:
             block = todo_list.pop(0)
             assert isinstance(block, Block), repr(block)
@@ -375,12 +374,8 @@ class Importer:
             # Create v.b.
             assert self.lines == block.lines
 
-            # Remember the tail lines. We'll append them last.
-            tail_lines = self.lines[block.end:]
-
             # This method exists to de these calculations properly in all situations!!!
             if block.child_blocks:
-                new_block_lines = []
                 common_lws = self.compute_common_lws(block.child_blocks)
 
                 # Find all lines that will be covered by @others.
@@ -390,28 +385,22 @@ class Importer:
                     self.remove_common_lws(common_lws, p)
                     children_start = max(0, min(children_start, child_block.start) - 1)
                     children_end = max(children_end, child_block.end)
-
-                if 0:  ###
-                    tag = f"Delete lines: {block.name} {children_start}:{children_end}"
-                    g.printObj(block.lines[children_start:children_end], tag=tag)
-
-                # Replace block.lines[children_start:children_end] by @others
-                new_block_lines.extend(block.lines[block.start:children_start])
-                new_block_lines.extend(block.lines[children_end + 1 :])
-                last_children_end = max(last_children_end, children_end)
-
-                if 1:  ###
-                    g.printObj(new_block_lines, tag=f"new_block_lines: {block.name}")
-
-                ### Experimental
-                block.lines = new_block_lines
-                block.start = 0
-                block.end = block.start + len(new_block_lines)
-
-                # Add an @others directive in the *parent* block.
-                if '@others' not in block.parent_v.b:
-                    block.parent_v.b = f"{common_lws}@others\n" + block.parent_v.b
-
+                    
+                # Compute the 
+                tail_lines = block.lines[children_end:block.end]
+                tail_s = ''.join(tail_lines)
+                if tail_s.strip():
+                    g.printObj(tail_lines, tag=f"tail_lines: {block.name}")
+                    block.parent_v.b = block.parent_v.b + tail_s.rstrip() + '\n'
+                
+                # Delete lines between block.lines[children_start:children_end].
+                block.lines = block.lines[:children_start]
+                g.printObj(block.lines, tag=f"New lines: {block.name}")
+                
+                
+                # Set v.b.
+                v.b = ''.join(block.lines).lstrip('\n').rstrip() + '\n'
+            
                 # Delete common whitespace from all children.
                 if common_lws:
                     for child_block in block.child_blocks:
@@ -419,14 +408,16 @@ class Importer:
                         for i, line in enumerate(child_lines):
                             if line.startswith(common_lws):
                                 child_block.lines[i] = line[len(common_lws) :]
+            else:
+                # Add the *unchanged* tail lines to the *parent* block.
+                tail_lines = self.lines[block.end:]
+                tail_s = ''.join(tail_lines)
+                if tail_s.strip():
+                    g.printObj(tail_lines, tag=f"tail_lines: {block.name}")
+                    block.parent_v.b = block.parent_v.b + tail_s.rstrip() + '\n'
 
-            # Add tail lines to the *parent* block.
-            tail_s = ''.join(tail_lines)
-            if tail_s.strip():
-                block.parent_v.b = block.parent_v.b + tail_s.rstrip() + '\n'
-
-            # Set v.b, deleting extra leading and trailing whitespace.
-            v.b = ''.join(block.lines[block.start:block.end]).lstrip('\n').rstrip() + '\n'
+                # Set v.b, deleting extra leading and trailing whitespace.
+                v.b = ''.join(block.lines[block.start:block.end]).lstrip('\n').rstrip() + '\n'
 
             # Add all child blocks to the to-do list.
             todo_list.extend(block.child_blocks)
