@@ -355,13 +355,15 @@ class NullGui(LeoGui):
     #@+node:ekr.20031218072017.2225: *3* NullGui.__init__
     def __init__(self, guiName: str = 'nullGui') -> None:
         """ctor for the NullGui class."""
+        from leo.plugins.qt_text import QTextEditWrapper
         super().__init__(guiName)
         self.clipboardContents = ''
         self.focusWidget: Widget = None
-        self.script = None
-        self.lastFrame: Widget = None  # The outer frame, to set g.app.log in runMainLoop.
         self.isNullGui = True
         self.idleTimeClass: Any = g.NullObject
+        self.lastFrame: Widget = None  # The outer frame, to set g.app.log in runMainLoop.
+        self.plainTextWidget: Widget = QTextEditWrapper  # For SpellTabHandler class.
+        self.script = None
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs
     def runAboutLeoDialog(self, c: Cmdr, version: str, theCopyright: str, url: str, email: str) -> str:
         return self.simulateDialog("aboutLeoDialog", None)
@@ -448,6 +450,20 @@ class NullGui(LeoGui):
 
     def set_focus(self, commander: str, widget: str) -> None:
         self.focusWidget = widget
+    #@+node:ekr.20230916153234.1: *3* NullGui.createSpellTab
+    def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> Any:
+
+        class NullSpellTab:
+
+            def __init__(self, c: Cmdr, spellHandler: Any, tabName: str) -> None:
+                self.c = c
+                self.spellHandler = spellHandler
+                self.tabName = tabName
+
+            def fillbox(self, alts: list[str], word: str) -> None:
+                pass
+
+        return NullSpellTab(c, spellHandler, tabName)
     #@+node:ekr.20070301171901: *3* NullGui.do nothings
     def alert(self, c: Cmdr, message: str) -> None:
         pass
@@ -800,8 +816,9 @@ class UnitTestGui(NullGui):
     def destroySelf(self) -> None:
         g.app.gui = self.oldGui
     #@+node:ekr.20071128094234.1: *3* UnitTestGui.createSpellTab
-    def createSpellTab(self, c: Cmdr, spellHandler: str, tabName: str) -> None:
+    def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> None:
         pass  # This method keeps pylint happy.
+
     #@+node:ekr.20111001155050.15484: *3* UnitTestGui.runAtIdle
     if 1:  # Huh?
 
