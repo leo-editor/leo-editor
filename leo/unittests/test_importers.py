@@ -4235,7 +4235,7 @@ class TestXML(BaseTestImporter):
         </body>
         </html>
         """
-        
+
         g.printObj(g.splitLines(textwrap.dedent(s)), tag='Input File')  ###
 
         expected_results = (

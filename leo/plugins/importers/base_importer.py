@@ -326,11 +326,74 @@ class Importer:
         The outer_block would suffice to do this, but the redundancy allows consistency checks.
 
         Generating lines in a post-pass is more flexible than is possible with recursive code.
+
+        This method exists to generate lines properly in all situations!
         """
 
         # Make sure we only process Blocks and VNodes once.
         seen_blocks: dict[Block, bool] = {}
         seen_vnodes: dict[VNode, bool] = {}
+
+        # Define helper functions.
+        #@+others
+        #@+node:ekr.20230924155700.1: *6* function: compute_body
+        # def append_lines(lines: list[str], v: VNode, tag: str = None) -> None:
+            # """set b.v from the given lines, doing standard adjustments."""
+            # s = ''.join(lines)
+            # if s.strip():
+                # g.printObj(lines, tag=tag)  ###
+                # v.b = v.b + s.rstrip() + '\n'
+
+        # def set_lines(lines: list[str], v: VNode, tag: str = None) -> None:
+            # """set b.v from the given lines, doing standard adjustments."""
+            # s = ''.join(lines)
+            # if s.strip():
+                # g.printObj(lines, tag=tag)  ###
+                # v.b = s.rstrip() + '\n'
+
+        def compute_body(lines: list[str]) -> str:
+            """Return the regularized body text from the given list of lines."""
+            s = ''.join(lines)
+            return s.rstrip() + '\n' if s.strip() else ''
+        #@+node:ekr.20230924155035.1: *6* function: find_all_child_lines
+        def find_all_child_lines(block: Block) -> tuple[int, int]:
+            """Find all lines that will be covered by @others"""
+            assert block.child_blocks, block
+            start = sys.maxsize
+            end = 0
+            for child_block in block.child_blocks:
+                start = max(0, min(start, child_block.start) - 1)
+                end = max(end, child_block.end)
+            return start, end
+        #@+node:ekr.20230924154050.1: *6* function: handle_block_with_children
+        def handle_block_with_children(block: Block) -> None:
+            """A block with children."""
+            trace = True  ###
+
+            # Remove common lws from all child blocks.
+            common_lws = self.compute_common_lws(block.child_blocks)
+            if common_lws:
+                for child_block in block.child_blocks:
+                    child_block.lines = self.remove_common_lws(common_lws, child_block.lines)
+                    if trace:
+                        g.printObj(child_block.lines, tag=f"Stripped child lines {child_block.name}")
+                    child_block.v.b = compute_body(child_block.lines)
+
+            # Find all lines that will be covered by @others.
+            children_start, children_end = find_all_child_lines(block)
+
+            # The head lines are the lines before children_start
+            block.lines = head_lines = block.lines[:children_start]
+            if trace:
+                g.printObj(head_lines, tag=f"Head lines {block.name}")
+            block.v.b = compute_body(head_lines)
+
+            # Add the tail lines to the parent.
+            tail_lines = block.lines[children_end:block.end]
+            if trace:
+                g.printObj(tail_lines, tag=f"Tail lines {block.name}")
+            block.parent_v.b = block.parent_v.b + compute_body(tail_lines)
+        #@-others
 
         if 0:  ###
             print('')
@@ -358,66 +421,28 @@ class Importer:
         seen_blocks[outer_block] = True
         while todo_list:
             block = todo_list.pop(0)
-            assert isinstance(block, Block), repr(block)
             v = block.v
+            #@+<< check block and v >>
+            #@+node:ekr.20230924154343.1: *6* << check block and v >>
+            assert isinstance(block, Block), repr(block)
+            assert self.lines == block.lines
             assert v.__class__.__name__ == 'VNode', repr(v)
-
-            # Make sure we handle each block once.
-            assert block not in seen_blocks, repr(block)
-            seen_blocks[block] = True
-
-            # Make sure we handle each VNode once.
             assert v, repr(block)
+
+            # Make sure we handle each block and VNode once.
+            assert block not in seen_blocks, repr(block)
             assert v not in seen_vnodes, repr(v)
+            #@-<< check block and v >>
+            seen_blocks[block] = True
             seen_vnodes[v] = True
 
-            # Create v.b.
-            assert self.lines == block.lines
-
-            # This method exists to de these calculations properly in all situations!!!
             if block.child_blocks:
-                common_lws = self.compute_common_lws(block.child_blocks)
-
-                # Find all lines that will be covered by @others.
-                children_end, children_start = 0, sys.maxsize
-                for child_block in block.child_blocks:
-                    p = Position(child_block.v)
-                    self.remove_common_lws(common_lws, p)
-                    children_start = max(0, min(children_start, child_block.start) - 1)
-                    children_end = max(children_end, child_block.end)
-                    
-                # Compute the 
-                tail_lines = block.lines[children_end:block.end]
-                tail_s = ''.join(tail_lines)
-                if tail_s.strip():
-                    g.printObj(tail_lines, tag=f"tail_lines: {block.name}")
-                    block.parent_v.b = block.parent_v.b + tail_s.rstrip() + '\n'
-                
-                # Delete lines between block.lines[children_start:children_end].
-                block.lines = block.lines[:children_start]
-                g.printObj(block.lines, tag=f"New lines: {block.name}")
-                
-                
-                # Set v.b.
-                v.b = ''.join(block.lines).lstrip('\n').rstrip() + '\n'
-            
-                # Delete common whitespace from all children.
-                if common_lws:
-                    for child_block in block.child_blocks:
-                        child_lines = child_block.lines
-                        for i, line in enumerate(child_lines):
-                            if line.startswith(common_lws):
-                                child_block.lines[i] = line[len(common_lws) :]
+                handle_block_with_children(block)
             else:
-                # Add the *unchanged* tail lines to the *parent* block.
                 tail_lines = self.lines[block.end:]
-                tail_s = ''.join(tail_lines)
-                if tail_s.strip():
-                    g.printObj(tail_lines, tag=f"tail_lines: {block.name}")
-                    block.parent_v.b = block.parent_v.b + tail_s.rstrip() + '\n'
-
-                # Set v.b, deleting extra leading and trailing whitespace.
-                v.b = ''.join(block.lines[block.start:block.end]).lstrip('\n').rstrip() + '\n'
+                if 1:
+                    g.printObj(tail_lines, tag=f"Childless tail lines {block.name}")
+                v.b = v.b + compute_body(tail_lines)
 
             # Add all child blocks to the to-do list.
             todo_list.extend(block.child_blocks)
@@ -673,19 +698,19 @@ class Importer:
         m = re.match(r'([ \t]*)', s)
         return m.group(0) if m else ''
     #@+node:ekr.20230529075138.16: *4* i.remove_common_lws
-    def remove_common_lws(self, lws: str, p: Position) -> None:
-        """Remove the given leading whitespace from all lines of p.b."""
+    def remove_common_lws(self, lws: str, lines: list[str]) -> list[str]:
+        """Remove the given leading whitespace from the given lines."""
         if len(lws) == 0:
-            return
+            return lines
         assert lws.isspace(), repr(lws)
         n = len(lws)
-        lines = g.splitLines(p.b)
+        ### lines = g.splitLines(p.b)
         result: list[str] = []
         for line in lines:
             stripped_line = line.strip()
             assert not stripped_line or line.startswith(lws), repr(line)
             result.append(line[n:] if stripped_line else line)
-        p.b = ''.join(result)
+        return result
     #@+node:ekr.20230529075138.17: *4* i.trace_blocks & trace_block
     def trace_blocks(self, blocks: list[Block]) -> None:
         """For debugging: trace the list of blocks."""
