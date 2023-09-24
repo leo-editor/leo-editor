@@ -762,7 +762,6 @@ class SpellTabHandler:
                 else:
                     parts = [word]
                     if not self.re_part.match(word):
-                        # g.trace('Skip non-word', repr(word))
                         continue
 
                 # Ignore the word if numbers precede or follow it.
@@ -781,7 +780,6 @@ class SpellTabHandler:
 
                 # Don't check short words.
                 if len(word) < 3:
-                    # g.trace('Skip short word', repr(word))
                     continue
 
                 # Don't check words following `(http|https)://`.
@@ -789,7 +787,6 @@ class SpellTabHandler:
                 line = s[i:j]
                 m = self.re_http.match(line)
                 if m and word in m.group(2):
-                    # g.trace(f"Skip url word {word:>20} {line[:50]!r}")
                     continue
 
                 # Special case: \b, \n, and \t delimit words.
@@ -816,29 +813,23 @@ class SpellTabHandler:
                 try:
                     # Note: sc.process_word munges the word!
                     alts: list[str] = sc.process_word(word)
-                    # g.trace('alts', alts)
 
                     # Look up the alternate word if the word was not found.
                     if alts and alt_word:
                         alts2 = sc.process_word(alt_word)
-                        # g.trace('alt_word', alt_word, 'alts2', alts2)
                         if alts2:
                             # Add the top three *new* suggestions to the top of alts.
-                            # g.trace(f"alt word not found: {alt_word}")
                             new_alts = [alts2[i] for i in range(3)
                                 if i < len(alts2) and alts2[i] not in alts
                             ]
                             for z in reversed(new_alts):
-                                # g.trace(f"new alt: {z}")
                                 alts.insert(0, z)
                         else:
-                            # g.trace(f"Alt word found: {alt_word}")
                             alts = []  # Done.
                 except ValueError:
                     g.printObj(parts, tag=f"Fail: word: {word!r}")
                     continue
                 if alts:
-                    # g.trace('UPDATE', word, self.tab.__class__.__name__)
                     self.currentWord = word
                     i = ins + start
                     j = i + len(word)

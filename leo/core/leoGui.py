@@ -461,7 +461,7 @@ class NullGui(LeoGui):
                 self.tabName = tabName
 
             def fillbox(self, alts: list[str], word: str) -> None:
-                pass  # g.trace('alts:', alts, 'word:', word)
+                pass
 
         return NullSpellTab(c, spellHandler, tabName)
     #@+node:ekr.20070301171901: *3* NullGui.do nothings
