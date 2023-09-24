@@ -1864,16 +1864,10 @@ def startTracer(limit: int = 0, trace: bool = False, verbose: bool = False) -> C
 #@@nobeautify
 
 tracing_tags: dict[int, str] = {}  # Keys are id's, values are tags.
-tracing_vars: dict[int, list] = {}  # Keys are id's, values are names of ivars.
-# Keys are signatures: '%s.%s:%s' % (tag, attr, callers). Values not important.
-tracing_signatures: dict[str, Any] = {}
-
 class NullObject:
     """An object that does nothing, and does it very well."""
     def __init__(self, ivars: list[str]=None, *args: Any, **kwargs: Any) -> None:
-        if isinstance(ivars, str):
-            ivars = [ivars]
-        tracing_vars [id(self)] = ivars or []
+        pass
     def __call__(self, *args: Any, **keys: Any) -> "NullObject":
         return self
     def __repr__(self) -> str:
@@ -1884,12 +1878,9 @@ class NullObject:
     def __delattr__(self, attr: str) -> None:
         return None
     def __getattr__(self, attr: str) -> Any:
-        if attr in tracing_vars.get(id(self), []):
-            return getattr(self, attr, None)
         return self # Required.
     def __setattr__(self, attr: str, val: Any) -> None:
-        if attr in tracing_vars.get(id(self), []):
-            object.__setattr__(self, attr, val)
+        return None
     # Container methods..
     def __bool__(self) -> bool:
         return False
@@ -1910,38 +1901,27 @@ class NullObject:
 
 class TracingNullObject:
     """Tracing NullObject."""
-    def __init__(self, tag: str, ivars: list[Any]=None, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, tag: str, ivars: list[str]=None, *args: Any, **kwargs: Any) -> None:
         tracing_tags [id(self)] = tag
-        if isinstance(ivars, str):
-            ivars = [ivars]
-        tracing_vars [id(self)] = ivars or []
     def __call__(self, *args: Any, **kwargs: Any) -> "TracingNullObject":
         return self
     def __repr__(self) -> str:
         return f'TracingNullObject: {tracing_tags.get(id(self), "<NO TAG>")}'
     def __str__(self) -> str:
         return f'TracingNullObject: {tracing_tags.get(id(self), "<NO TAG>")}'
-    #
+
     # Attribute access...
     def __delattr__(self, attr: str) -> None:
         return None
     def __getattr__(self, attr: str) -> "TracingNullObject":
-        null_object_print_attr(id(self), attr)
-        if attr in tracing_vars.get(id(self), []):
-            return getattr(self, attr, None)
+        g.null_object_print(id(self), f"attr: {attr}")
         return self # Required.
     def __setattr__(self, attr: str, val: Any) -> None:
-        g.null_object_print(id(self), '__setattr__', attr, val)
-        if attr in tracing_vars.get(id(self), []):
-            object.__setattr__(self, attr, val)
-    #
+        g.null_object_print(id(self), f"__setattr__: {attr} {val!r}")
+
     # All other methods...
     def __bool__(self) -> bool:
-        if 0: # To do: print only once.
-            suppress = ('getShortcut','on_idle', 'setItemText')
-            callers = g.callers(2)
-            if not callers.endswith(suppress):
-                g.null_object_print(id(self), '__bool__')
+        g.null_object_print(id(self), '__bool__')
         return False
     def __contains__(self, item: Any) -> bool:
         g.null_object_print(id(self), '__contains__')
@@ -1961,75 +1941,17 @@ class TracingNullObject:
     def __setitem__(self, key: str, val: Any) -> None:
         g.null_object_print(id(self), '__setitem__')
         # pylint doesn't like trailing return None.
-#@+node:ekr.20190330062625.1: *4* g.null_object_print_attr
-def null_object_print_attr(id_: int, attr: str) -> None:
-    suppress = True
-    suppress_callers: list[str] = []
-    suppress_attrs: list[str] = []
-    if suppress:
-        #@+<< define suppression lists >>
-        #@+node:ekr.20190330072026.1: *5* << define suppression lists >>
-        suppress_callers = [
-            'drawNode', 'drawTopTree', 'drawTree',
-            'contractItem', 'getCurrentItem',
-            'declutter_node',
-            'finishCreate',
-            'initAfterLoad',
-            'show_tips',
-            'writeWaitingLog',
-            # 'set_focus', 'show_tips',
-        ]
-        suppress_attrs = [
-            # Leo...
-            'c.frame.body.wrapper',
-            'c.frame.getIconBar.add',
-            'c.frame.log.createTab',
-            'c.frame.log.enable',
-            'c.frame.log.finishCreate',
-            'c.frame.menu.createMenuBar',
-            'c.frame.menu.finishCreate',
-            # 'c.frame.menu.getMenu',
-            'currentItem',
-            'dw.leo_master.windowTitle',
-            # Pyzo...
-            'pyzo.keyMapper.connect',
-            'pyzo.keyMapper.keyMappingChanged',
-            'pyzo.keyMapper.setShortcut',
-        ]
-        #@-<< define suppression lists >>
-    tag = tracing_tags.get(id_, "<NO TAG>")
-    callers = g.callers(3).split(',')
-    callers = ','.join(callers[:-1])
-    in_callers = any(z in callers for z in suppress_callers)
-    s = f"{tag}.{attr}"
-    if suppress:
-        # Filter traces.
-        if not in_callers and s not in suppress_attrs:
-            g.pr(f"{s:40} {callers}")
-    else:
-        # Print each signature once.  No need to filter!
-        signature = f"{tag}.{attr}:{callers}"
-        if signature not in tracing_signatures:
-            tracing_signatures[signature] = True
-            g.pr(f"{s:40} {callers}")
 #@+node:ekr.20190330072832.1: *4* g.null_object_print
 def null_object_print(id_: int, kind: Any, *args: Any) -> None:
     tag = tracing_tags.get(id_, "<NO TAG>")
     callers = g.callers(3).split(',')
-    callers = ','.join(callers[:-1])
+    callers_s = ','.join(callers[:-1])
     s = f"{kind}.{tag}"
-    signature = f"{s}:{callers}"
-    if 1:
-        # Always print:
-        if args:
-            args_s = ', '.join([repr(z) for z in args])
-            g.pr(f"{s:40} {callers}\n\t\t\targs: {args_s}")
-        else:
-            g.pr(f"{s:40} {callers}")
-    elif signature not in tracing_signatures:
-        # Print each signature once.
-        tracing_signatures[signature] = True
-        g.pr(f"{s:40} {callers}")
+    if args:
+        args_s = ', '.join([repr(z) for z in args])
+        g.pr(f"{s:40} {callers_s}\n\t\t\targs: {args_s}")
+    else:
+        g.pr(f"{s:40} {callers_s}")
 #@+node:ville.20090827174345.9963: *3* class g.UiTypeException & g.assertui
 class UiTypeException(Exception):
     pass
