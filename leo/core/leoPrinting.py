@@ -54,7 +54,7 @@ class PrintingController:
         table = (
             # Clearer w/o f-strings.
             f"h1 {{font-family: {family}}}",
-            f"pre {{font-family: {family}; font-size: {size}px}}",
+            f"pre {{font-family: {family}; font-size: {size}pt}}",
         )
         return '\n'.join(table)
     #@+node:ekr.20150420072955.1: *3* pr.Doc constructors
