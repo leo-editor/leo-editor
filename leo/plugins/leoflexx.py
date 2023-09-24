@@ -1673,7 +1673,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         w = self.root.main_window
         w.tree.set_focus()
     #@-others
-#@+node:ekr.20181119094122.1: *3* class TracingNullObject
+#@+node:ekr.20181119094122.1: *3* class TracingNullObject (leoflexx.py)
 #@@nobeautify
 
 class TracingNullObject:
