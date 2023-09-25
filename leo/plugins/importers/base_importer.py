@@ -328,7 +328,8 @@ class Importer:
         # A dictionary of VNodes containing generated @others directives.
         at_others_dict: dict[VNode, bool] = {}
 
-        # g.printObj(result_blocks, tag='result_blocks')
+        if 0:  # An excellent debugging trace.
+            g.printObj(result_blocks, tag='result_blocks')
 
         # Define helper functions.
         #@+others
@@ -357,39 +358,43 @@ class Importer:
         #@+node:ekr.20230925021502.1: *6* function: handle_childless_block
         def handle_childless_block(block: Block) -> None:
 
-            block_lines = self.lines[block.start:block.end]
-            # dump_lines(block_lines, f"Childless lines {block.name}")
-            assert not v.b, repr(v.b)
-            v.b = compute_body(block_lines)
+            ### g.trace('-----', block.name)
+
+            block.v.b = compute_body(self.lines[block.start:block.end])
         #@+node:ekr.20230924154050.1: *6* function: handle_block_with_children
-        def handle_block_with_children(block: Block) -> None:
+        def handle_block_with_children(block: Block, block_common_lws: str) -> None:
             """A block with children."""
 
-            # Remove common lws from all child blocks.
-            common_lws = self.compute_common_lws(block.child_blocks)
-            if common_lws:
-                for child_block in block.child_blocks:
-                    child_block.lines = self.remove_common_lws(common_lws, child_block.lines)
-                    # dump_lines(child_block.lines, f"Stripped child lines {child_block.name}")
-                    child_block.v.b = compute_body(child_block.lines)
+            ### g.trace('-----', block.name, repr(block_common_lws))  ###
 
             # Find all lines that will be covered by @others.
             children_start, children_end = find_all_child_lines(block)
 
             # Add the head lines to block.v
             head_lines = self.lines[:children_start]
-            # dump_lines(head_lines, f"Head lines {block.name}")
+            ### dump_lines(head_lines, f"Head lines {block.name}")
             block.v.b = compute_body(head_lines)
 
             # Add an @others directive if necessary.
             if block.v not in at_others_dict:
                 at_others_dict[block.v] = True
-                block.v.b = block.v.b + f"{common_lws}@others\n"
+                block.v.b = block.v.b + f"{block_common_lws}@others\n"
 
             # Add the tail lines to block.v
             tail_lines = self.lines[children_end:block.end]
-            # dump_lines(tail_lines, f"Tail lines {block.name}")
+            ### dump_lines(tail_lines, f"Tail lines {block.name}")
             block.v.b = block.v.b + compute_body(tail_lines)
+        #@+node:ekr.20230925071111.1: *6* function: remove_lws_from_blocks
+        def remove_lws_from_blocks(blocks: list[Block], common_lws: str) -> None:
+            """
+            Remove the given lws from all given blocks, replacing self.lines in place.
+            """
+            n = len(self.lines)
+            for block in blocks:
+                lines = self.lines[block.start:block.end]
+                lines2 = self.remove_common_lws(common_lws, lines)
+                self.lines[block.start:block.end] = lines2
+            assert n == len(self.lines)
         #@-others
 
         # An initial sanity check.
@@ -405,8 +410,14 @@ class Importer:
             return
 
         # There *are* child Blocks, so insert @others in parent.v.b.
-        common_lws = self.compute_common_lws(outer_block.child_blocks)
-        parent.v.b = f"{common_lws}@others\n"
+        # outer_common_lws must not be used anywhere else.
+        outer_common_lws = self.compute_common_lws(outer_block.child_blocks)
+        parent.v.b = f"{outer_common_lws}@others\n"
+        if outer_common_lws:
+            for outer_child in outer_block.children:
+                lines = self.lines[outer_child.block.start:outer_child.block.end]
+                lines = self.remove_common_lws(outer_common_lws, lines)
+                outer_child.v.b = lines
 
         # Handle each block, starting from the outer block.
         todo_list: list[Block] = outer_block.child_blocks
@@ -424,14 +435,22 @@ class Importer:
             assert block not in seen_blocks, repr(block)
             assert v not in seen_vnodes, repr(v)
 
-            # Note: Don't *ever* alter either self.lines or block lines.
+            # Note: This method must alter neither self.lines nor block lines.
+            if self.lines != block.lines:
+                g.printObj(self.lines, tag='Assert failed: self.lines')
+                g.printObj(block.lines, tag='Assert failed: block.lines')
             assert self.lines == block.lines
             #@-<< check block and v >>
             seen_blocks[block] = True
             seen_vnodes[v] = True
 
+            # Remove common_lws from self.lines
+            block_common_lws = self.compute_common_lws(block.child_blocks)
+            remove_lws_from_blocks(block.child_blocks, block_common_lws)
+
+            ### g.trace('-----', block.name, repr(block_common_lws))
             if block.child_blocks:
-                handle_block_with_children(block)
+                handle_block_with_children(block, block_common_lws)
             else:
                 handle_childless_block(block)
 
@@ -695,12 +714,14 @@ class Importer:
             return lines
         assert lws.isspace(), repr(lws)
         n = len(lws)
-        ### lines = g.splitLines(p.b)
         result: list[str] = []
         for line in lines:
             stripped_line = line.strip()
-            assert not stripped_line or line.startswith(lws), repr(line)
-            result.append(line[n:] if stripped_line else line)
+            if stripped_line:
+                assert line[:n].isspace(), repr(line)
+                result.append(line[n:])
+            else:
+                result.append(line)
         return result
     #@+node:ekr.20230529075138.17: *4* i.trace_blocks & trace_block
     def trace_blocks(self, blocks: list[Block]) -> None:
