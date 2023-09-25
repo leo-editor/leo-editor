@@ -6,7 +6,6 @@
 #@+node:ekr.20230920091345.1: ** << imports, annotations: base_importer.py >>
 from __future__ import annotations
 import re
-import sys
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
@@ -48,7 +47,7 @@ class Block:
         return (
             f"Block: kind/name: {kind_name_s!r} "
             f"{self.start} {self.start_body} {self.end} "
-            f"parent_v: {parent_v_s!r} v: {v_s!r}\n"
+            f"parent_v: {parent_v_s!r} v: {v_s!r}"
         )
 
     __str__ = __repr__
@@ -64,7 +63,7 @@ class Block:
         child_blocks_s = '\n'.join(child_blocks) if child_blocks else '<no children>'
         lines_list = g.objToString(self.lines[self.start:self.end], tag='lines')
         lines_s = ''.join(lines_list)
-        return f"\n{repr(self)}child_blocks: {child_blocks_s}\n{lines_s}"
+        return f"\n{repr(self)} child_blocks: {child_blocks_s}\n{lines_s}"
     #@-others
 
 
@@ -325,9 +324,11 @@ class Importer:
         # Make sure we only process Blocks and VNodes once.
         seen_blocks: dict[Block, bool] = {}
         seen_vnodes: dict[VNode, bool] = {}
-        
+
         # A dictionary of VNodes containing generated @others directives.
         at_others_dict: dict[VNode, bool] = {}
+
+        # g.printObj(result_blocks, tag='result_blocks')
 
         # Define helper functions.
         #@+others
@@ -337,19 +338,26 @@ class Importer:
             s = ''.join(lines)
             return s.lstrip('\n').rstrip() + '\n' if s.strip() else ''
         #@+node:ekr.20230924170708.1: *6* function: dump_lines
-        def dump_lines(lines, tag):
+        def dump_lines(lines: list[str], tag: str) -> None:
             """For debugging."""
             g.printObj(lines, tag=tag)
         #@+node:ekr.20230924155035.1: *6* function: find_all_child_lines
         def find_all_child_lines(block: Block) -> tuple[int, int]:
             """Find all lines that will be covered by @others"""
             assert block.child_blocks, block
-            start = sys.maxsize
-            end = 0
+            start = block.end + 1
+            end = block.start - 1
             for child_block in block.child_blocks:
-                start = max(0, min(start, child_block.start) - 1)
+                start = min(start, child_block.start)
                 end = max(end, child_block.end)
             return start, end
+        #@+node:ekr.20230925021502.1: *6* function: handle_childless_block
+        def handle_childless_block(block: Block) -> None:
+
+            block_lines = self.lines[block.start:block.end]
+            # dump_lines(block_lines, f"Childless lines {block.name}")
+            assert not v.b, repr(v.b)
+            v.b = compute_body(block_lines)
         #@+node:ekr.20230924154050.1: *6* function: handle_block_with_children
         def handle_block_with_children(block: Block) -> None:
             """A block with children."""
@@ -365,20 +373,20 @@ class Importer:
             # Find all lines that will be covered by @others.
             children_start, children_end = find_all_child_lines(block)
 
-            # Add the head lines.
-            block.lines = head_lines = block.lines[:children_start]
+            # Add the head lines to block.v
+            head_lines = self.lines[:children_start]
             # dump_lines(head_lines, f"Head lines {block.name}")
             block.v.b = compute_body(head_lines)
 
             # Add an @others directive if necessary.
             if block.v not in at_others_dict:
-                at_others_dict [block.v] = True
+                at_others_dict[block.v] = True
                 block.v.b = block.v.b + f"{common_lws}@others\n"
-                
-            # Add the tail lines to the parent.
-            tail_lines = block.lines[children_end:block.end]
+
+            # Add the tail lines to block.v
+            tail_lines = self.lines[children_end:block.end]
             # dump_lines(tail_lines, f"Tail lines {block.name}")
-            block.parent_v.b = block.parent_v.b + compute_body(tail_lines)
+            block.v.b = block.v.b + compute_body(tail_lines)
         #@-others
 
         # An initial sanity check.
@@ -406,13 +414,15 @@ class Importer:
             #@+<< check block and v >>
             #@+node:ekr.20230924154343.1: *6* << check block and v >>
             assert isinstance(block, Block), repr(block)
-            assert self.lines == block.lines
             assert v.__class__.__name__ == 'VNode', repr(v)
             assert v, repr(block)
 
             # Make sure we handle each block and VNode once.
             assert block not in seen_blocks, repr(block)
             assert v not in seen_vnodes, repr(v)
+
+            # Note: Don't *ever* alter either self.lines or block lines.
+            assert self.lines == block.lines
             #@-<< check block and v >>
             seen_blocks[block] = True
             seen_vnodes[v] = True
@@ -420,9 +430,7 @@ class Importer:
             if block.child_blocks:
                 handle_block_with_children(block)
             else:
-                tail_lines = self.lines[block.end:]
-                # dump_lines(tail_lines, f"Childless tail lines {block.name}")
-                v.b = v.b + compute_body(tail_lines)
+                handle_childless_block(block)
 
             # Add all child blocks to the to-do list.
             todo_list.extend(block.child_blocks)
