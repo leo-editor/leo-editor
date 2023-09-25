@@ -200,6 +200,7 @@ class TestC(BaseTestImporter):
                 '}\n'
             ),
             (2, 'func bar',
+                '\n'  ### New.
                 'char bar (float c) {\n'
                 '    ;\n'
                 '}\n'
@@ -3368,7 +3369,7 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20230825071437.1: *3* TestPython.test_post_process
+    #@+node:ekr.20230825071437.1: *3* TestPython.test_post_process (revise)
     def test_post_process(self):
 
         s = '''
@@ -3386,6 +3387,8 @@ class TestPython(BaseTestImporter):
                 pass
 
             '''
+        ### To do: Test multi-line docstring!  ####
+
         expected_results = (
             (0, '',  # Ignore the first headline.
                     '"""Module-level docstring"""\n'
@@ -4241,16 +4244,30 @@ class TestXML(BaseTestImporter):
 
         expected_results = (
             (0, '',  # Ignore level 0 headlines.
+
+                    '<?xml version="1.0" encoding="UTF-8"?>\n'
+                    '<!DOCTYPE note SYSTEM "Note.dtd">\n'
                     '@others\n'
                     '@language xml\n'
                     '@tabwidth -4\n'
+
+                    # Old
+                        # '@others\n'
+                        # '@language xml\n'
+                        # '@tabwidth -4\n'
             ),
             (1, '<html>',
-                    '<?xml version="1.0" encoding="UTF-8"?>\n'
-                    '<!DOCTYPE note SYSTEM "Note.dtd">\n'
+
                     '<html>\n'
-                        '@others\n'
+                    '@others\n'
                     '</html>\n'
+
+                    # Old.
+                    # '<?xml version="1.0" encoding="UTF-8"?>\n'
+                    # '<!DOCTYPE note SYSTEM "Note.dtd">\n'
+                    # '<html>\n'
+                        # '@others\n'
+                    # '</html>\n'
             ),
             (2, '<head>',
                     '<head>\n'

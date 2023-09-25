@@ -141,18 +141,17 @@ class Python_Importer(Importer):
 
         Insert corresponding section references into parent.b.
         """
+        tag = 'python_i.create_section'
         assert self.allow_preamble
         assert parent == self.root
         lines = self.lines
         common_lws = self.compute_common_lws(result_blocks)
-        new_start = max(0, result_blocks[0].start_body - 1)
-        preamble_lines = lines[:new_start]
+        preamble_start = max(0, result_blocks[1].start_body - 1)  ###
+        preamble_lines = lines[:preamble_start]
 
         if not preamble_lines or not any(z for z in preamble_lines):
+            g.trace('NO PREAMBLE')
             return
-
-        if 0:  ###
-            g.printObj(preamble_lines, tag=f"python_i.create_section: {result_blocks[0].name} preamble")
 
         #@+others  # Define helpers
         #@+node:ekr.20230922023223.1: *4* function: make_node
@@ -199,14 +198,16 @@ class Python_Importer(Importer):
         else:
             make_node(preamble_lines, "preamble")
 
-        # Remove the preamble from block zero's lines.
-        block0 = result_blocks[0]
-        block0.start = new_start
-        block0.lines = block0.lines[new_start:block0.end]
+        # The only remaining lines will be the section reference, @others and any tail lines.
 
-        # Patch the block zero's body text.
+        # Put the preamble before @others, if it exists.
+        block0 = result_blocks[0]
         v = block0.v
-        v.b = ''.join(block0.lines).lstrip('\n').rstrip() + '\n'
+        lines = g.splitLines(v.b)
+        if 1:  ###
+            g.printObj(lines, tag=f"{tag} lines: {result_blocks[0].name}")
+        ### new_lines = lines[len(preamble_lines):]
+        ### v.b = self.compute_body(new_lines)
     #@+node:ekr.20230514140918.1: *3* python_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
@@ -366,6 +367,7 @@ class Python_Importer(Importer):
     def postprocess(self, parent: Position) -> None:
         """Python_Importer.postprocess."""
         # See #3514.
+        return  ###
         self.adjust_headlines(parent)
         self.move_docstrings(parent)
         self.adjust_at_others(parent)
