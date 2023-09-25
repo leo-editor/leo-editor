@@ -345,8 +345,11 @@ class Importer:
         def find_all_child_lines(block: Block) -> tuple[int, int]:
             """Find all lines that will be covered by @others"""
             assert block.child_blocks, block
-            start = block.end + 1
-            end = block.start - 1
+            # start = block.end + 1
+            # end = block.start - 1
+            block0 = block.child_blocks[0]
+            start = block0.start
+            end = block0.end
             for child_block in block.child_blocks:
                 start = min(start, child_block.start)
                 end = max(end, child_block.end)
