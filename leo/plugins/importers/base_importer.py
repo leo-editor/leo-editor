@@ -320,41 +320,26 @@ class Importer:
         # Note: i.gen_lines adds the @language and @tabwidth directives.
     #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies
     def generate_all_bodies(self, parent: Position, outer_block: Block, result_blocks: list[Block]) -> None:
-        """
-        Generate all bodies from the given blocks.
-
-        The outer_block would suffice to do this, but the redundancy allows consistency checks.
-
-        Generating lines in a post-pass is more flexible than is possible with recursive code.
-
-        This method exists to generate lines properly in all situations!
-        """
+        """Carefully generate bodies from the given blocks."""
 
         # Make sure we only process Blocks and VNodes once.
         seen_blocks: dict[Block, bool] = {}
         seen_vnodes: dict[VNode, bool] = {}
+        
+        # A dictionary of VNodes containing generated @others directives.
+        at_others_dict: dict[VNode, bool] = {}
 
         # Define helper functions.
         #@+others
         #@+node:ekr.20230924155700.1: *6* function: compute_body
-        # def append_lines(lines: list[str], v: VNode, tag: str = None) -> None:
-            # """set b.v from the given lines, doing standard adjustments."""
-            # s = ''.join(lines)
-            # if s.strip():
-                # g.printObj(lines, tag=tag)  ###
-                # v.b = v.b + s.rstrip() + '\n'
-
-        # def set_lines(lines: list[str], v: VNode, tag: str = None) -> None:
-            # """set b.v from the given lines, doing standard adjustments."""
-            # s = ''.join(lines)
-            # if s.strip():
-                # g.printObj(lines, tag=tag)  ###
-                # v.b = s.rstrip() + '\n'
-
         def compute_body(lines: list[str]) -> str:
             """Return the regularized body text from the given list of lines."""
             s = ''.join(lines)
-            return s.rstrip() + '\n' if s.strip() else ''
+            return s.lstrip('\n').rstrip() + '\n' if s.strip() else ''
+        #@+node:ekr.20230924170708.1: *6* function: dump_lines
+        def dump_lines(lines, tag):
+            """For debugging."""
+            g.printObj(lines, tag=tag)
         #@+node:ekr.20230924155035.1: *6* function: find_all_child_lines
         def find_all_child_lines(block: Block) -> tuple[int, int]:
             """Find all lines that will be covered by @others"""
@@ -368,38 +353,33 @@ class Importer:
         #@+node:ekr.20230924154050.1: *6* function: handle_block_with_children
         def handle_block_with_children(block: Block) -> None:
             """A block with children."""
-            trace = True  ###
 
             # Remove common lws from all child blocks.
             common_lws = self.compute_common_lws(block.child_blocks)
             if common_lws:
                 for child_block in block.child_blocks:
                     child_block.lines = self.remove_common_lws(common_lws, child_block.lines)
-                    if trace:
-                        g.printObj(child_block.lines, tag=f"Stripped child lines {child_block.name}")
+                    # dump_lines(child_block.lines, f"Stripped child lines {child_block.name}")
                     child_block.v.b = compute_body(child_block.lines)
 
             # Find all lines that will be covered by @others.
             children_start, children_end = find_all_child_lines(block)
 
-            # The head lines are the lines before children_start
+            # Add the head lines.
             block.lines = head_lines = block.lines[:children_start]
-            if trace:
-                g.printObj(head_lines, tag=f"Head lines {block.name}")
+            # dump_lines(head_lines, f"Head lines {block.name}")
             block.v.b = compute_body(head_lines)
 
+            # Add an @others directive if necessary.
+            if block.v not in at_others_dict:
+                at_others_dict [block.v] = True
+                block.v.b = block.v.b + f"{common_lws}@others\n"
+                
             # Add the tail lines to the parent.
             tail_lines = block.lines[children_end:block.end]
-            if trace:
-                g.printObj(tail_lines, tag=f"Tail lines {block.name}")
+            # dump_lines(tail_lines, f"Tail lines {block.name}")
             block.parent_v.b = block.parent_v.b + compute_body(tail_lines)
         #@-others
-
-        if 0:  ###
-            print('')
-            print(f"i.generate_all_bodies: {len(result_blocks)} Result blocks...")
-            for z in result_blocks:
-                print(z.long_repr())
 
         # An initial sanity check.
         if result_blocks:
@@ -409,7 +389,8 @@ class Importer:
         # Note: i.gen_lines adds the @language and @tabwidth directives.
         if not outer_block.child_blocks:
             # Put everything in p.b.
-            parent.b = ''.join(outer_block.lines).lstrip('\n').rstrip() + '\n'
+            ### parent.b = ''.join(outer_block.lines).lstrip('\n').rstrip() + '\n'
+            parent.b = compute_body(outer_block.lines)
             return
 
         # There *are* child Blocks, so insert @others in parent.v.b.
@@ -440,8 +421,7 @@ class Importer:
                 handle_block_with_children(block)
             else:
                 tail_lines = self.lines[block.end:]
-                if 1:
-                    g.printObj(tail_lines, tag=f"Childless tail lines {block.name}")
+                # dump_lines(tail_lines, f"Childless tail lines {block.name}")
                 v.b = v.b + compute_body(tail_lines)
 
             # Add all child blocks to the to-do list.
