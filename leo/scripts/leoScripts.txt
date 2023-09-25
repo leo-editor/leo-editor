@@ -1504,6 +1504,167 @@ data = (     # 5 stars
     '2xx8xx4xx',
     '8xx5x6xx2',
 )
+#@+node:ekr.20230925012359.1: *3* script: list all rhythms in a 4/4 measure
+g.cls()
+
+@others  # Define helpers
+        
+total, total_square, total_jazz = 0, 0, 0
+
+for group in range(5):
+
+    n8 = group * 2
+    n4 = compute_quarters(n8)
+    print('')
+    print(f"===== Group {group + 1} =====: {n8} eighth notes, {n4} quarter notes...")
+    print('')
+
+    results = find_patterns(n8)
+    converted = convert_patterns(results)
+    assert len(converted) == len(results)
+    
+    square_patterns = [z for z in results if is_square(z)]
+    jazz_patterns = [z for z in results if not is_square(z)]
+    
+    total += len(results)
+    total_square += len(square_patterns)
+    total_jazz += len(jazz_patterns)
+
+    print(
+        f"{len(results)} total rhythm{g.plural(len(results))}. "
+        f"{len(square_patterns)} square, {len(jazz_patterns)} jazz")
+
+    square_converted = [convert_pattern(z) for z in square_patterns]
+    jazz_converted = [convert_pattern(z) for z in jazz_patterns]
+
+    print('\nSquare:\n')
+    for i, z in enumerate(square_converted):
+        print(f"{i + 1:2} {z!s}")
+    
+    if jazz_patterns:
+        print('\nJazz:\n')
+        for i, z in enumerate(jazz_converted):
+            print(f"{i + 1:2} {z!s}")
+            
+print(f"\nGrand totals: {total} patterns, {total_square} square, {total_jazz} jazz")
+#@+node:ekr.20230925012359.2: *4* compute_quarters
+def compute_quarters(n8) -> int:
+    """
+    Return the quarter notes in the measure containing the given number of
+    eighth notes.
+    """
+    assert (n8 % 2) == 0, (n8, (n8 % 2))
+    return int(4 - n8/2)
+#@+node:ekr.20230925012359.3: *4* convert_pattern and convert_patterns
+def convert_pattern(pattern:str) -> str:
+    """Convert a string of 1s and 0s to a string of dots and dashes"""
+    return pattern.replace('1', '.').replace('0', ' _')
+
+def convert_patterns(patterns: list[int]) -> list[str]:
+    return [convert_pattern(pattern) for pattern in patterns]
+#@+node:ekr.20230925012359.4: *4* find_patterns
+def find_patterns(n8: int) -> list[str]:
+    """
+    Given a desired number of eighth notes in a 4-beat bar, return the
+    padded string representation of all the base-2 numbers (in descending
+    order) representing rhythms contain the given number of eighth notes.
+    
+    As always in this program, 1s represent an eighth note, 0s represent
+    quarter notes.
+    """
+    # Special case.
+    if n8 == 0:
+        return ['0000']
+
+    # Compute a string with n8 leading 1s and n_zeros 
+    n_zeros = compute_quarters(n8)
+    n_s = '1' * n8 + '0' * n_zeros
+    width = n8 + n_zeros
+    
+    # Convert the string to a base-2 number.
+    n = int(n_s, 2)
+    
+    # Count down, accepting only numbers with the desired number of 1s.
+    results = []
+    while n > 0:
+        s = bin(n)[2:]
+        if s.count('1') == n8:
+            pad = '0' * (width - len(s))
+            results.append(pad + s)
+        n -= 1
+    return results
+#@+node:ekr.20230925012359.5: *4* is_square
+def is_square(s) -> bool:
+    """
+    Return True if s represents a square rhythm.
+    """
+    # Remove square patterns (0 or 11) from the left.
+    # s represents a jazz pattern if the remainder ever contains 01.
+    digits = list(s)
+    while digits:
+        if digits[0] == '0':
+            digits = digits[1:]
+            continue
+        tail = ''.join(digits[0:2])
+        # if tail in ('1', '01'):
+        if tail == '10':
+            return False
+        digits = digits[2:]
+    return True
+#@+node:ekr.20230925012913.1: ** Git
+#@+node:ekr.20220319162442.1: *3* script: diff-two-revs-wo-comments
+g.cls()
+
+# Monkey-patched git-diff-pr command.
+import leo.commands.editFileCommands as efc
+
+rev1 = '7fe2cc486153'  # Preveious commit of devel'
+rev2 = 'c4d109012028'  # Last commit of ekr-clean-comments
+x = efc.GitDiffController(c)
+
+@others
+
+# Monkey-patch, with x bound.
+x.make_diff_outlines = make_diff_outlines_ignoring_comments
+x.diff_two_revs(rev1, rev2)
+#@+node:ekr.20220319162442.2: *4* function: make_diff_outlines_ignoring_comments
+def make_diff_outlines_ignoring_comments(c1, c2, fn, rev1='', rev2=''):
+    """Create an outline-oriented diff from the *hidden* outlines c1 and c2."""
+    self = x
+    added, deleted, changed = self.compute_dicts(c1, c2)
+    table = (
+        (added, 'Added'),
+        (deleted, 'Deleted'),
+        (changed, 'Changed'))
+    for d, kind in table:
+        if kind.lower() == 'changed':
+            for key in d:
+                v1, v2 = d.get(key)
+                v1.b = strip_comments(v1.b)
+                v2.b = strip_comments(v2.b)
+        self.create_compare_node(c1, c2, d, kind, rev1, rev2)
+#@+node:ekr.20220319162442.3: *4* function: strip_comments
+def strip_comments(aString):
+    """
+    Strip everything that looks like a comment from aString.
+    It's fine, for now, to ignore strings and docstrings.
+    """
+    result = []
+    lines = g.splitLines(aString)
+    for s in lines:
+        if s.strip().startswith('#@'):
+            # Retain everything that looks like a sentinel.
+            result.append(s)
+        else:
+            # Strip the comment, ignoring the end of the line.
+            i = s.find('#')
+            if i == -1:
+                result.append(s)
+            else:
+                tail = s[:i]
+                if tail.strip():
+                    result.append(tail.rstrip() + '\n')
+    return ''.join(result)
 #@+node:ekr.20150416062327.1: ** Gui
 #@+node:ekr.20120328102352.6948: *3* @@button set-style
 @language rest
@@ -12114,6 +12275,42 @@ for oc in g.app.commanders():
 b.append("c.frame.bringToFront()")
 b.append("c.setLog()")
 tablist.b = '\n'.join(b)
+#@+node:ekr.20201110014825.1: *3* script: add tags for issues
+"""Add tags for all matches of '# #[0-9]+'"""
+g.cls()
+import re
+d_all = {}
+d_added = {}
+tc = c.theTagController
+pat = re.compile(r'# #([0-9]+)')
+for p in c.all_unique_positions():
+    u = p.v.u
+    tags = set(u.get(tc.TAG_LIST_KEY, set([])))
+    for m in pat.finditer(p.b):
+        tag = m.group(1)
+        aSet = d_all.get(tag, set())
+        aSet.add(p.h)
+        d_all [int(tag)] = aSet
+        # Add the tag. tc.add_tag is way too slow.
+        if tag not in tags:
+            tags.add(tag)
+            u[tc.TAG_LIST_KEY] = tags
+            aSet = d_added.get(tag, set())
+            aSet.add(p.h)
+            d_added [int(tag)] = aSet
+if 1: # Print all added tags.
+    print('Added tags...')
+    for key in sorted(d_added):
+        aList = d_added.get(key)
+        for h in sorted(aList):
+            print(f"{key:>8} {h}")
+if 1: # Print all tags.
+    print('All tags...')
+    for key in sorted(d_all):
+        aList = d_all.get(key)
+        for h in sorted(aList):
+            print(f"{key:>8} {h}")
+print('done')
 #@+node:tbrown.20141110113251.1: *3* script: Capture idea / ph. msg / to-do item
 @g.command('x')
 def add_note(args):
@@ -12375,96 +12572,6 @@ def merge_extra_nodes(self,c,p):
         c.setChanged()
         self.changed += 1
         if self.trace: g.trace(h,' --> ',p2.h)
-#@+node:ekr.20071113150213: *3* script: Clone all nodes to child node
-# Clone all nodes specified in the child node called 'to be cloned'
-root = p.copy()
-child = p.firstChild()
-assert(child.h.lower().strip() == 'to be cloned')
-s = child.b
-lines = g.splitLines(s)
-
-for p in c.all_unique_positions():
-    h = p.h.strip()
-    for line in lines:
-        if h == line.strip():
-            print 'found',h
-            clone = p.clone()
-            clone.moveToLastChildOf(root)
-c.redraw()
-#@+node:ekr.20071113150213.1: *4* To be cloned
-# To do
-#@+node:ekr.20141105055521.13: *3* script: Dictionary to Leo outline
-'''
-Transform a dictionary into an outline, so you can navigate through it.
-'''
-
-def dictionary_to_outline(p,dictionary):
-    '''Transform a dictionary into an outline as p's children.'''
-    # g.app.gui.frameFactory.masterFrame.currentWidget().leo_c
-    sorted_keys = sorted([key for key in dictionary])
-    for key in sorted_keys:
-        new_node = p.insertAsLastChild().copy()
-        new_node.h = key
-        if "dict" in str(type(dictionary[key])):
-            self.dictionary_to_outline(new_node,dictionary[key])
-        else:
-            new_node.b = str(dictionary[key])
-#@+node:ekr.20201030065548.4: *3* script: remove-icon-script
-"""Remove icons for the node whose headline is h"""
-h = 'my headline'
-p = g.findNodeAnywhere(c, h)
-if p:
-    c.editCommands.deleteNodeIcons(p=p)
-    c.redraw_now()
-else:
-    g.es_print('not found', h)
-#@+node:ekr.20201110014834.1: *3* script: remove all tags
-"""Remove all tags."""
-g.cls()
-tc = c.theTagController
-for p in c.all_unique_positions():
-    u = p.v.u
-    tags = set(u.get(tc.TAG_LIST_KEY, set([])))
-    for tag in tags:
-        print(f"remove {tag:10} {p.h}")
-        tc.remove_tag(p, tag)
-print('done')
-#@+node:ekr.20201110014825.1: *3* script: add tags for issues
-"""Add tags for all matches of '# #[0-9]+'"""
-g.cls()
-import re
-d_all = {}
-d_added = {}
-tc = c.theTagController
-pat = re.compile(r'# #([0-9]+)')
-for p in c.all_unique_positions():
-    u = p.v.u
-    tags = set(u.get(tc.TAG_LIST_KEY, set([])))
-    for m in pat.finditer(p.b):
-        tag = m.group(1)
-        aSet = d_all.get(tag, set())
-        aSet.add(p.h)
-        d_all [int(tag)] = aSet
-        # Add the tag. tc.add_tag is way too slow.
-        if tag not in tags:
-            tags.add(tag)
-            u[tc.TAG_LIST_KEY] = tags
-            aSet = d_added.get(tag, set())
-            aSet.add(p.h)
-            d_added [int(tag)] = aSet
-if 1: # Print all added tags.
-    print('Added tags...')
-    for key in sorted(d_added):
-        aList = d_added.get(key)
-        for h in sorted(aList):
-            print(f"{key:>8} {h}")
-if 1: # Print all tags.
-    print('All tags...')
-    for key in sorted(d_all):
-        aList = d_all.get(key)
-        for h in sorted(aList):
-            print(f"{key:>8} {h}")
-print('done')
 #@+node:ekr.20051110110853: *3* script: clear all uA's, tnodeLists, etc.
 # Use these with caution.
 #@+node:ekr.20040312021734.1: *4* Clean unused tnodeLists
@@ -12501,6 +12608,24 @@ for p in c.all_positions():
 
 put('done') 
 c.redraw()
+#@+node:ekr.20071113150213: *3* script: Clone all nodes to child node
+# Clone all nodes specified in the child node called 'to be cloned'
+root = p.copy()
+child = p.firstChild()
+assert(child.h.lower().strip() == 'to be cloned')
+s = child.b
+lines = g.splitLines(s)
+
+for p in c.all_unique_positions():
+    h = p.h.strip()
+    for line in lines:
+        if h == line.strip():
+            print 'found',h
+            clone = p.clone()
+            clone.moveToLastChildOf(root)
+c.redraw()
+#@+node:ekr.20071113150213.1: *4* To be cloned
+# To do
 #@+node:ekr.20210118070851.1: *3* script: convert-LeoFind
 """
 Convert defs in LeoFind to pep8 names.
@@ -12587,6 +12712,117 @@ for p in c.all_positions():
             p.setDirty()
             c.setChanged()
 c.redraw()
+#@+node:ekr.20141105055521.13: *3* script: Dictionary to Leo outline
+'''
+Transform a dictionary into an outline, so you can navigate through it.
+'''
+
+def dictionary_to_outline(p,dictionary):
+    '''Transform a dictionary into an outline as p's children.'''
+    # g.app.gui.frameFactory.masterFrame.currentWidget().leo_c
+    sorted_keys = sorted([key for key in dictionary])
+    for key in sorted_keys:
+        new_node = p.insertAsLastChild().copy()
+        new_node.h = key
+        if "dict" in str(type(dictionary[key])):
+            self.dictionary_to_outline(new_node,dictionary[key])
+        else:
+            new_node.b = str(dictionary[key])
+#@+node:ekr.20201110014834.1: *3* script: remove all tags
+"""Remove all tags."""
+g.cls()
+tc = c.theTagController
+for p in c.all_unique_positions():
+    u = p.v.u
+    tags = set(u.get(tc.TAG_LIST_KEY, set([])))
+    for tag in tags:
+        print(f"remove {tag:10} {p.h}")
+        tc.remove_tag(p, tag)
+print('done')
+#@+node:ekr.20201030065548.4: *3* script: remove-icon-script
+"""Remove icons for the node whose headline is h"""
+h = 'my headline'
+p = g.findNodeAnywhere(c, h)
+if p:
+    c.editCommands.deleteNodeIcons(p=p)
+    c.redraw_now()
+else:
+    g.es_print('not found', h)
+#@+node:ekr.20230421070847.1: *3* script: replace kwargs in mode files
+"""Replace default kwargs in all leo/modes files"""
+
+g.cls()
+import glob
+import os
+import re
+
+bool_kwargs = (
+    'at_line_start', 'at_whitespace_end', 'at_word_start',
+    'exclude_match',
+    'no_escape', 'no_line_break', 'no_word_break',
+)
+
+patterns = []
+for bool_arg in bool_kwargs:
+    # Remove kwargs inited to False.
+    pattern1 = re.compile(fr"{bool_arg}=False,")
+    patterns.append((pattern1, ''))
+    pattern2 = re.compile(fr"{bool_arg}=False\)")
+    patterns.append((pattern2, ')'))
+
+delegate_patterns = (
+    # Remove kwargs inited to "".
+    (re.compile(r'delegate="",'), ''),
+    (re.compile(r'delegate=""\)'), ')'),
+)
+cleanup_patterns = [
+    # Remove blank lines between trailing comma and ')'.
+    (re.compile(r',[ ]*(\n[ ]*)*\)', re.MULTILINE), ')'),
+]
+for bool_arg in bool_kwargs:
+    # Remove blank lines between trailing comma and any bool kwarg.
+    pattern3 = re.compile(fr",[ ]*(\n[ ]*)*{bool_arg}")
+    cleanup_patterns.append((pattern3, fr",\n{' '*10}{bool_arg}"))   
+
+for aTuple in delegate_patterns:
+    patterns.append(aTuple)
+for aTuple in cleanup_patterns:
+    patterns.append(aTuple)
+    
+# Exclude these files: @file nodes define them.
+exclude = (
+    'batch.py', 'forth.py', 'html.py',
+    'javascript.py', 'julia.py', 'python.py',
+)
+modes = os.path.normpath(os.path.join(g.app.loadDir, '..', 'modes'))
+paths = glob.glob(f"{modes}{os.sep}*.py")
+paths = [z for z in paths if not any(z2 in z for z2 in exclude)]
+# g.printObj([g.shortFileName(z) for z in paths])
+
+paths = paths[:1]  ###
+for path in paths:  ###
+    with open(path, 'r') as f:
+        contents = f.read()
+    for pattern, repl in patterns:
+        contents =  re.sub(pattern, repl, contents)
+    lines = [z.rstrip() + '\n' for z in g.splitLines(contents)]
+    contents = ''.join(lines)
+    lines = g.splitLines(contents)
+    if 0:
+        g.printObj(lines, tag=path)
+    if 0:
+        g.printObj(list(f"{i+660:3} {z}" for i, z in enumerate(lines[660:])))
+    if 0:
+        contents = contents.replace('  ', ' ')
+        lines = [f"{i:3} {z}" for i, z in enumerate(g.splitLines(contents))
+            if ('colorer.match' in z
+                or ',\n\n' in z
+                or any(z2 in z for z2 in bool_kwargs)
+            )]
+        g.printObj(lines, tag=path)
+    with open(path, 'w') as f:
+        f.write(contents)
+g.es_print('Done!')
 #@+node:tom.20210803133433.1: ** Mind Maps
 #@+node:tom.20210803133500.1: *3* README
 @language rest
@@ -13978,6 +14214,312 @@ for line in section_lines[label_start:]:
     elif kind == 'yaxis':
         plt.ylabel(val)
 
+#@+node:ekr.20211020082938.1: *3* script: display slides
+"""
+Display slides from a folder and its subfolders.
+
+Prompts for a folder containing images, then displays the images.
+
+Plain keys control the display of slides:
+    
+      space: show the next slide.
+  backspace: show the previous slide.
+     escape: end the slideshow
+          =: zoom in
+          -: zoom out
+arrows keys: pan the slide
+          d: prompt to move the slide to the trash
+          h: show the help message
+          m: move the file.
+
+Default settings:
+
+- background_color: black
+- 60 seconds between slides.
+- Start in full-screen mode.
+- Display in random order.
+- Allowed file extensions: ['.jpeg', '.jpg', '.png']
+
+"""
+import os
+import pathlib
+import random
+import textwrap
+from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+
+# Defaults
+background_color = "black"
+delay = 60  # seconds
+extensions = ['.jpeg', '.jpg', '.png']  # Allowed file extensions.
+full_screen = True
+sort_kind = 'random'  # 'date', 'name', 'none', 'random', or 'size'
+height = 900  # Window height (pixels) when not in full screen mode.
+width = 1500  # Window width (pixels) when not un full screen mode.
+
+@others
+
+path = QtWidgets.QFileDialog().getExistingDirectory()
+if path:
+    files_list = get_files(path)
+    if files_list:
+        n = len(files_list)
+        print(f"Found {n} picture{g.plural(n)} in {path}")
+        w = Slides()
+        w.run()
+        print('done')
+    else:
+        print(f"No slides found in {path!r}")
+#@+node:ekr.20211020082938.2: *4* get_files
+def get_files(path):
+    """Return all files in path, including all subdirectories."""
+    global extensions
+    return [
+        str(z) for z in pathlib.Path(path).rglob('*')
+            if z.is_file()
+            and os.path.splitext(str(z))[1].lower() in extensions
+    ]
+#@+node:ekr.20211020082938.3: *4* class Slides
+class Slides(QtWidgets.QWidget):
+
+    scale = 1.0
+    slide_number = -1
+    timer = QtCore.QBasicTimer()
+    
+    @others
+#@+node:ekr.20211020082938.4: *5* Slides.delete
+send_to_trash_warning_given = False
+
+def delete(self):
+    """Issue a prompt and delete the file if the user agrees."""
+    try:
+        from send2trash import send2trash
+    except Exception:
+        if not self.send_to_trash_warning_given:
+            self.send_to_trash_warning_given = True
+            print("Deleting files requires send2trash")
+            print("pip install Send2Trash")
+        return
+    file_name = files_list[self.slide_number]
+    result = g.app.gui.runAskYesNoDialog(c,
+        title = "Delete File?",
+        message = f"Delete file {g.shortFileName(file_name)}?"
+    )
+    if result == 'yes':
+        # Move the file to the trash.
+        send2trash(file_name)
+        del files_list[self.slide_number]
+        print(f"Deleted {file_name}")
+        self.slide_number = max(0, self.slide_number - 1)
+        self.next_slide()
+#@+node:ekr.20211020082938.5: *5* Slides.keyPressEvent
+def keyPressEvent (self, event):
+    
+    i = event.key()
+    s = event.text()
+    mods = event.modifiers()
+    if s == 'd':
+        self.delete()
+    elif s == 'f':
+        self.toggle_full_screen()
+    elif s == 'h':
+        self.show_help()
+    elif s == 'm':
+        self.move_to()
+    elif s == 'n' or i == 32:  # ' '
+        self.next_slide()
+    elif s == 'p' or s == '\b':
+        self.prev_slide()
+    elif s == 'q' or s == '\x1b':  # ESC.
+        self.quit()
+    elif s in '=+':
+        self.zoom_in()
+    elif s == '-':
+        self.zoom_out()
+    elif i == 16777235:
+        self.move_up()
+    elif i == 16777237:
+        self.move_down()
+    elif i == 16777234:
+        self.move_left()
+    elif i == 16777236:
+        self.move_right()
+    else:
+        g.trace(repr(s), i, repr(mods))
+    
+#@+node:ekr.20211020082938.6: *5* Slides.move_up/down/left/right
+def move_down(self):
+    self.scroll_area.scrollContentsBy(0, -200)
+
+def move_left(self):
+    self.scroll_area.scrollContentsBy(-200, 0)
+
+def move_right(self):
+    self.scroll_area.scrollContentsBy(200, 0)
+
+def move_up(self):
+    self.scroll_area.scrollContentsBy(0, 200)
+#@+node:ekr.20211020082938.7: *5* Slides.move_to
+def move_to(self):
+    """Issue a prompt and move the file if the user agrees."""
+    file_name = files_list[self.slide_number]
+    path = QtWidgets.QFileDialog().getExistingDirectory()
+    if path:
+        new_path = os.path.join(path, os.path.basename(file_name))
+        if os.path.exists(new_path):
+            # result = g.app.guirunAskYesNoDialog
+            print("File exists:", new_path)
+        else:
+            pathlib.Path(file_name).rename(new_path)
+            del files_list[self.slide_number]
+            self.slide_number = max(0, self.slide_number - 1)
+            self.next_slide()
+#@+node:ekr.20211020082938.8: *5* Slides.next_slide
+def next_slide(self):
+    if self.slide_number + 1 < len(files_list):
+        self.slide_number += 1  # Don't wrap.
+    self.scale = 1.0
+    self.show_slide()
+#@+node:ekr.20211020082938.9: *5* Slides.prev_slide
+def prev_slide(self):
+    if self.slide_number > 0: # Don't wrap.
+        self.slide_number -= 1
+    self.scale = 1.0
+    self.show_slide()
+#@+node:ekr.20211020082938.10: *5* Slides.quit
+def quit(self):
+    self.timer.stop()
+    self.destroy()
+#@+node:ekr.20211020082938.11: *5* Slides.run & helper
+def run(self):
+    global background_color, delay, full_screen, sort_kind
+    w = self
+    # Init ivars
+    self.delay = delay
+    self.full_screen = not full_screen  # So toggling below works.
+    # Init the widget.
+    w.make_widgets()
+    # Center the widget
+    qtRectangle = w.frameGeometry()
+    centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+    qtRectangle.moveCenter(centerPoint)
+    w.move(qtRectangle.topLeft())
+    # Show the widget.
+    w.showNormal()
+    if full_screen:
+        w.toggle_full_screen()
+    # Show the next slide.
+    self.sort(sort_kind)
+    w.next_slide()  # show_slide resets the timer.
+#@+node:ekr.20211020082938.12: *6* Slides.make_widgets
+def make_widgets(self):
+    
+    global width, height
+    w = self
+
+    # Init the window's attributes.
+    w.setStyleSheet(f"background: {background_color}")
+    w.setGeometry(0, 0, width, height)  # The non-full-screen sizes.
+    
+    # Create the picture area.
+    w.picture = QtWidgets.QLabel('picture', self)
+    
+    # Create the scroll area.
+    w.scroll_area = area =QtWidgets.QScrollArea()
+    area.setWidget(self.picture)
+    AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
+    area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)
+    
+    # Disable scrollbars.
+    ScrollBarPolicy = QtCore.Qt if isQt5 else QtCore.Qt.ScrollBarPolicy
+    area.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
+    area.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
+    
+    # Init the layout.
+    layout = QtWidgets.QVBoxLayout()
+    layout.addWidget(self.scroll_area)
+    w.setLayout(layout)
+#@+node:ekr.20211020082938.13: *5* Slides.show_help
+def show_help(self):
+    """Show the help message."""
+    print(textwrap.dedent('''\
+                    d delete slide
+                    f toggle full screen
+                    h show help
+         n or <space> show next slide
+     p or <backspace> show previous slide
+           q or <esc> end slideshow
+                    + zoom in
+                    - zoom out
+             up arrow scroll up
+           down arrow scroll down
+           left arrow scroll left
+          right arrow scroll right
+    '''))
+#@+node:ekr.20211020082938.14: *5* Slides.show_slide
+def show_slide(self):
+    # Reset the timer.
+    self.timer.stop()
+    self.timer.start(self.delay * 1000.0, self)
+    # Get the file name.
+    file_name = files_list[self.slide_number]
+    # Change the title.
+    self.setWindowTitle(file_name)
+    # Display the picture.
+    pixmap = QtGui.QPixmap(file_name)
+    try:
+        TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
+        image = pixmap.scaledToHeight(
+            self.height() * self.scale,
+            TransformationMode.SmoothTransformation,
+        )
+        self.picture.setPixmap(image)
+        self.picture.adjustSize()
+    except Exception:
+        self.next_slide()
+#@+node:ekr.20211020082938.15: *5* Slides.sort
+def sort(self, sort_kind):
+    """sort files_list based on sort_kind."""
+    global files_list
+    if sort_kind == 'date':
+        print('Sorting by date...')
+        files_list.sort(key = os.path.getmtime)
+    elif sort_kind == 'name':
+        print('Sorting by name...')
+        files_list.sort()
+    elif sort_kind in (None, 'none'):
+        pass
+    elif sort_kind == 'random':
+        print('Randomizing...')
+        random.shuffle(files_list)
+    elif sort_kind == 'size':
+        print('Sorting by size...')
+        files_list.sort(key = os.path.getsize)
+    else:
+        g.trace(f"unknown sort kind: {sort_kind!r}")
+#@+node:ekr.20211020082938.16: *5* Slides.timerEvent
+def timerEvent(self, e=None):
+    self.next_slide()  # show_slide resets the timer.
+#@+node:ekr.20211020082938.17: *5* Slides.toggle_full_screen
+def toggle_full_screen(self):
+    w = self
+    if w.full_screen:
+        w.full_screen = False
+        w.picture.adjustSize()
+        w.showNormal()
+    else:
+        w.full_screen = True
+        WindowState = QtCore.Qt if isQt5 else QtCore.Qt.WindowState
+        w.setWindowState(WindowState.WindowFullScreen)
+        w.picture.setGeometry(0, 0, w.width(), w.height())
+        w.picture.adjustSize()
+#@+node:ekr.20211020082938.18: *5* Slides.zoom_in & zoom_out
+def zoom_in(self):
+    self.scale = self.scale * 1.05
+    self.show_slide()
+    
+def zoom_out(self):
+    self.scale = self.scale * (1.0 / 1.05)
+    self.show_slide()
 #@+node:ekr.20211009081233.1: ** Prototypes
 #@+node:ville.20090508224531.9800: *3* script: Prototype: pos_to_archive, archive_to_pos
 def pos_to_archive(p):
@@ -16730,47 +17272,6 @@ for root, dirs, files in os.walk(path):
             fn = g.os_path_join(root,fn)
             fix(fn)
 print('done')
-#@+node:ekr.20201030065548.2: *3* script: make-annonymous (Dangerous!)
-"""Remove all sensitive material in this outline, except for this node."""
-# Warning: This script is dangerous! Use on a copy of your outline.
-n = 1
-v0 = c.p.v
-for p in c.all_unique_positions():
-    if p.v != v0:
-        p.h = f"node {n}"
-        p.b = ''
-        n += 1
-c.redraw()
-#@+node:ekr.20190307044803.1: *3* script: recursive-clean-lines
-'''
-Recursively clean all lines in a folder.
-
-Do this before importing to @clean.
-'''
-g.cls()
-
-directory = r'C:\apps\pyzo\source\pyzo'
-
-def clean_dir(directory):
-    for path in g.get_files_in_directory(directory, kinds=['.py']):
-        clean_file(path)
-        
-def clean_file(path):
-    with open(path, 'r') as f:
-        file_s = f.read()
-    lines = []
-    for line in g.splitLines(file_s):
-        if line.rstrip():
-            lines.append(line.rstrip())
-        if line.endswith('\n'):
-            lines.append('\n')
-    new_s = ''.join(lines)
-    if file_s != new_s:
-        with open(path, 'w') as f:
-            f.write(new_s)
-            print('wrote: %s' % path)
-    
-clean_dir(directory)
 #@+node:ekr.20200505051752.1: *3* script: clone all files defining cmd
 g.cls()
 
@@ -16931,6 +17432,145 @@ def do_part(p, part):
         '\n',
     ]
     return body_lines, command_lines, headline
+#@+node:ekr.20221105063835.1: *3* script: insert-macros
+"""
+script: Insert text-based macros in python code.
+
+- Add traces at start of each def.
+- Add traces at end of each def.
+- Add traces before each return.
+"""
+# This is prototype code. I have no plans to improve it.
+g.cls()
+import re
+from typing import List
+@others
+
+target = g.findNodeInChildren(c, p, 'macro-test')
+for p in target.self_and_subtree():
+    add_macros(p)
+print('Done!')
+#@+node:ekr.20221105063835.2: *4* add_macros
+def_pat = re.compile(r'^def\s+(\w+)\(.*\).*:')
+ret_pat = re.compile(r'^\s*return\b(.*)')
+
+def add_macros(p):
+    if not p.b.strip():
+        return
+    result: List[str] = []  # List of lines, with added traces.
+    indents: List[int] = []  # Indentation of def statements.
+    names: List[str] = []  # Names of defs.
+    returns: List[bool] = []  # True if def has any minimally indented returns.
+    indent, last_indent = 0, 0
+    for i, line in enumerate(g.splitLines(p.b.rstrip() + '\n')):
+        s = line.lstrip()
+        indent = len(line) - len(s)
+        indent_s = indent * ' '
+        if not s:
+            result.append(line)
+            continue  # Blank lines don't affect indentation.
+        # End any previous def at this level.
+        while indents and indent < last_indent:
+            last_indent = indents.pop()
+            last_name = names.pop()
+            last_return = returns.pop()
+            if not last_return:
+                indent_s = last_indent * ' '
+                result.append(f"{indent_s}g.trace('end {last_name}')\n")
+        def_m = def_pat.match(s)
+        if def_m:
+            # End any previous entry at this level.
+            if indents and indents[-1] == indent:
+                indents.pop()
+                names.pop()
+                returns.pop()
+            # Enter this def.
+            indents.append(indent)
+            name = def_m.group(1)
+            names.append(name)
+            returns.append(False)
+            last_indent = indent
+            indent_s = (indent + 4) * ' '
+            result.append(line)
+            result.append(f"{indent_s}g.trace('enter: {name}')\n")
+            continue
+        ret_m = ret_pat.match(s)
+        if ret_m:
+            if indents:
+                if indents[-1] + 4 == indent:
+                    returns[-1] = True
+                    # g.trace(f"Suppress end trace: {line!r}")
+                val = ret_m.group(1).strip()
+                result.append(f"{indent_s}g.trace('return {val}')\n")
+            else:
+                result.append(f"### Line: {i} Return outside of def. {p.h}\n")
+        result.append(line)
+    if indents:
+        indent_s = (indents[-1] + 4) * ' '
+        name = names[-1]
+        if not returns[-1]:
+            result.append(f"{indent_s}g.trace('end {name}')\n")
+    g.printObj(result, tag=f"{p.h}:")
+#@+node:ekr.20221105063835.3: *4* macro-test
+#@+node:ekr.20221105063835.4: *5* multiple defs
+def test_1():
+    return 'a'
+    
+def test_2():
+    return 'b'
+    
+def test_3():
+    if 1:
+        return 1
+    else:
+        return 2
+#@+node:ekr.20221105063835.5: *5* spam
+def spam():
+    print("spam")
+#@+node:ekr.20221105063835.6: *5* eggs
+def eggs(a=None):
+    print('eggs')
+#@+node:ekr.20201030065548.2: *3* script: make-annonymous (Dangerous!)
+"""Remove all sensitive material in this outline, except for this node."""
+# Warning: This script is dangerous! Use on a copy of your outline.
+n = 1
+v0 = c.p.v
+for p in c.all_unique_positions():
+    if p.v != v0:
+        p.h = f"node {n}"
+        p.b = ''
+        n += 1
+c.redraw()
+#@+node:ekr.20190307044803.1: *3* script: recursive-clean-lines
+'''
+Recursively clean all lines in a folder.
+
+Do this before importing to @clean.
+'''
+g.cls()
+
+directory = r'C:\apps\pyzo\source\pyzo'
+
+def clean_dir(directory):
+    for path in g.get_files_in_directory(directory, kinds=['.py']):
+        clean_file(path)
+        
+def clean_file(path):
+    with open(path, 'r') as f:
+        file_s = f.read()
+    lines = []
+    for line in g.splitLines(file_s):
+        if line.rstrip():
+            lines.append(line.rstrip())
+        if line.endswith('\n'):
+            lines.append('\n')
+    new_s = ''.join(lines)
+    if file_s != new_s:
+        with open(path, 'w') as f:
+            f.write(new_s)
+            print('wrote: %s' % path)
+    
+clean_dir(directory)
 #@+node:ekr.20201030065548.26: *3* script: write @clean node without writing .leo file
 at = c.atFileCommands
 p = g.findNodeAnywhere(c, '@clean at_clean_test.py')
@@ -17841,6 +18481,7 @@ def stripLws(self,s):
 )
 
 #@+node:ekr.20071104221525.91: *5* new-elisp2py-output-
+#@+node:ekr.20230925012840.1: ** --- Recent
 #@+node:ekr.20211020082938.1: ** script: display slides
 """
 Display slides from a folder and its subfolders.
@@ -18153,7 +18794,7 @@ g.cls()
 # Monkey-patched git-diff-pr command.
 import leo.commands.editFileCommands as efc
 
-rev1 = '7fe2cc486153'  # Preveious commit ofdevel'
+rev1 = '7fe2cc486153'  # Preveious commit of devel'
 rev2 = 'c4d109012028'  # Last commit of ekr-clean-comments
 x = efc.GitDiffController(c)
 
@@ -18373,6 +19014,113 @@ for path in paths:  ###
     with open(path, 'w') as f:
         f.write(contents)
 g.es_print('Done!')
+#@+node:ekr.20230925012359.1: ** script: list all rhythms in a 4/4 measure
+g.cls()
+
+@others  # Define helpers
+        
+total, total_square, total_jazz = 0, 0, 0
+
+for group in range(5):
+
+    n8 = group * 2
+    n4 = compute_quarters(n8)
+    print('')
+    print(f"===== Group {group + 1} =====: {n8} eighth notes, {n4} quarter notes...")
+    print('')
+
+    results = find_patterns(n8)
+    converted = convert_patterns(results)
+    assert len(converted) == len(results)
+    
+    square_patterns = [z for z in results if is_square(z)]
+    jazz_patterns = [z for z in results if not is_square(z)]
+    
+    total += len(results)
+    total_square += len(square_patterns)
+    total_jazz += len(jazz_patterns)
+
+    print(
+        f"{len(results)} total rhythm{g.plural(len(results))}. "
+        f"{len(square_patterns)} square, {len(jazz_patterns)} jazz")
+
+    square_converted = [convert_pattern(z) for z in square_patterns]
+    jazz_converted = [convert_pattern(z) for z in jazz_patterns]
+
+    print('\nSquare:\n')
+    for i, z in enumerate(square_converted):
+        print(f"{i + 1:2} {z!s}")
+    
+    if jazz_patterns:
+        print('\nJazz:\n')
+        for i, z in enumerate(jazz_converted):
+            print(f"{i + 1:2} {z!s}")
+            
+print(f"\nGrand totals: {total} patterns, {total_square} square, {total_jazz} jazz")
+#@+node:ekr.20230925012359.2: *3* compute_quarters
+def compute_quarters(n8) -> int:
+    """
+    Return the quarter notes in the measure containing the given number of
+    eighth notes.
+    """
+    assert (n8 % 2) == 0, (n8, (n8 % 2))
+    return int(4 - n8/2)
+#@+node:ekr.20230925012359.3: *3* convert_pattern and convert_patterns
+def convert_pattern(pattern:str) -> str:
+    """Convert a string of 1s and 0s to a string of dots and dashes"""
+    return pattern.replace('1', '.').replace('0', ' _')
+
+def convert_patterns(patterns: list[int]) -> list[str]:
+    return [convert_pattern(pattern) for pattern in patterns]
+#@+node:ekr.20230925012359.4: *3* find_patterns
+def find_patterns(n8: int) -> list[str]:
+    """
+    Given a desired number of eighth notes in a 4-beat bar, return the
+    padded string representation of all the base-2 numbers (in descending
+    order) representing rhythms contain the given number of eighth notes.
+    
+    As always in this program, 1s represent an eighth note, 0s represent
+    quarter notes.
+    """
+    # Special case.
+    if n8 == 0:
+        return ['0000']
+
+    # Compute a string with n8 leading 1s and n_zeros 
+    n_zeros = compute_quarters(n8)
+    n_s = '1' * n8 + '0' * n_zeros
+    width = n8 + n_zeros
+    
+    # Convert the string to a base-2 number.
+    n = int(n_s, 2)
+    
+    # Count down, accepting only numbers with the desired number of 1s.
+    results = []
+    while n > 0:
+        s = bin(n)[2:]
+        if s.count('1') == n8:
+            pad = '0' * (width - len(s))
+            results.append(pad + s)
+        n -= 1
+    return results
+#@+node:ekr.20230925012359.5: *3* is_square
+def is_square(s) -> bool:
+    """
+    Return True if s represents a square rhythm.
+    """
+    # Remove square patterns (0 or 11) from the left.
+    # s represents a jazz pattern if the remainder ever contains 01.
+    digits = list(s)
+    while digits:
+        if digits[0] == '0':
+            digits = digits[1:]
+            continue
+        tail = ''.join(digits[0:2])
+        # if tail in ('1', '01'):
+        if tail == '10':
+            return False
+        digits = digits[2:]
+    return True
 #@-all
 #@@language python
 #@@tabwidth -4
