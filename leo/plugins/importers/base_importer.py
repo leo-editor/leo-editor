@@ -354,14 +354,19 @@ class Importer:
 
         #@+others  # Define helper functions.
         #@+node:ekr.20230926114338.1: *6* function: adjust_blocks
-        def adjust_blocks(blocks: list[Block]) -> None:
+        def adjust_blocks(parent_block: Block, child_blocks: list[Block]) -> None:
             """
             Adjust (child) blocks so that they (mostly) cover self.lines.
+            
+            The only exception: The first child block of the outerblock is not
+            extended for Python (self.allow_preamble is True).
             """
+            block0 = outer_block.child_blocks[0]
             prev = None
-            for i, block in enumerate(blocks):
-                # g.trace(block.name, block.start, block.end)
-                if i == 0 and self.allow_preamble:
+            for child_block in child_blocks:
+                ### if i == 0 and self.allow_preamble:
+                if child_block == block0:
+                    g.trace('Block0:', block0)  ###
                     # Do *not* adjust block[0].start if we are going to call i.create_sections.
                     # i.create_sections will allocates leading lines to new nodes.
                     pass
@@ -370,7 +375,7 @@ class Importer:
                     block.start = prev
                 prev = block.end
 
-            g.printObj(blocks, tag='after adjust_blocks')
+            g.printObj(child_blocks, tag='adjust_blocks: After')
         #@+node:ekr.20230924170708.1: *6* function: dump_lines
         def dump_lines(lines: list[str], tag: str) -> None:
             """For debugging."""
@@ -396,7 +401,7 @@ class Importer:
             children_start, children_end = find_all_child_lines(block)
 
             # Adjust the child blocks so that they cover self.lines.
-            adjust_blocks(block.child_blocks)
+            adjust_blocks(parent_block=block, child_blocks=block.child_blocks)
 
             # Add the head lines to block.v.
             head_lines = self.lines[block.start:children_start]
