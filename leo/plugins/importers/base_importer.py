@@ -343,7 +343,7 @@ class Importer:
             block0 = result_blocks[0]
             assert outer_block == block0, (repr(outer_block), repr(block0))
 
-        if 1:  # An excellent debugging trace.
+        if 0:  # An excellent debugging trace.
             g.printObj(result_blocks, tag='result_blocks')
 
         if 0:  # Another good trace.
@@ -418,6 +418,7 @@ class Importer:
         # Note: i.gen_lines adds the @language and @tabwidth directives.
         if not outer_block.child_blocks:
             # Put everything in p.b.
+            parent.h = self.compute_headline(outer_block)
             parent.b = self.compute_body(outer_block.lines)
             return
 
@@ -450,6 +451,8 @@ class Importer:
             remove_lws_from_blocks(block.child_blocks, block_common_lws)
 
             # Handle the block and any child blocks.
+            if block != outer_block:
+                block.v.h = self.compute_headline(block)
             if block.child_blocks:
                 handle_block_with_children(block, block_common_lws)
             else:
@@ -466,7 +469,6 @@ class Importer:
 
         if self.allow_preamble:
             assert result_blocks[0].kind == 'outer', result_blocks[0]
-            ### self.create_sections(parent, result_blocks[1:])
             self.create_sections(parent, result_blocks)
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:

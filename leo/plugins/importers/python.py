@@ -42,19 +42,26 @@ class Python_Importer(Importer):
 
         Change 'def' to 'function:' for all non-methods.
         """
-        class_pat = re.compile(r'\s*class\s+(\w+)')
+        assert self.language == 'python', self.language
 
-        for p in parent.subtree():
-            if p.h.startswith('def '):
+        for child in parent.subtree():
+            found = False
+            if child.h.startswith('def '):
                 # Look up the tree for the nearest class.
-                for z in p.parents():
-                    m = class_pat.match(z.h)
-                    if m:
-                        p.h = f"{m.group(1)}.{p.h[4:].strip()}"
+                for ancestor in child.parents():
+                    if ancestor == parent:
                         break
-                else:
-                    if self.language == 'python':
-                        p.h = f"function: {p.h[4:].strip()}"
+                    m = self.class_pat.match(ancestor.h)
+                    if m:
+                        found = True
+                        # Replace 'def ' by the class name + '.'
+                        child.h = f"{m.group(1)}.{child.h[4:].strip()}"
+                        ### g.trace('Found', child.h)
+                        break
+                if not found:
+                    # Replace 'def ' by 'function'
+                    child.h = f"function: {child.h[4:].strip()}"
+                    ### g.trace('Not found', child.h)
     #@+node:ekr.20230830113521.1: *3* python_i.adjust_at_others
     def adjust_at_others(self, parent: Position) -> None:
         """
@@ -141,7 +148,6 @@ class Python_Importer(Importer):
 
         Insert corresponding section references into parent.b.
         """
-        tag = 'python_i.create_section'
         assert self.allow_preamble
         assert parent == self.root
         lines = self.lines
@@ -154,24 +160,24 @@ class Python_Importer(Importer):
             return
 
         #@+others  # Define helpers
-        #@+node:ekr.20230922023223.1: *4* function: make_node
-        def make_node(node_lines: list[str], title: str) -> None:
+        #@+node:ekr.20230922023223.1: *4* function: make_section_reference
+        def make_section_reference(headline: str) -> Position:
             """
-            Create a new section definition node and prepend a reference to it parent.b.
+            Create a new section definition node and prepend a reference to it in parent.b.
+            
+            Return the newly-created node.
             """
             # Compute the section name.
             parent_s = os.path.split(parent.h)[1].replace('@file', '').replace('@clean', '').strip()
-            section_name = f"<< {parent_s}: {title} >>"
+            section_name = f"<< {parent_s}: {headline} >>"
 
             # Create the child node.
             child = parent.insertAsFirstChild()
             child.h = section_name
-            child.b = ''.join(node_lines)
 
             # Prepend the section reference in parent.b.
             parent.b = f"{common_lws}{section_name}\n" + parent.b
-
-            # g.trace(parent.b)
+            return child
         #@+node:ekr.20230922023225.1: *4* function: find_docstring
         def find_docstring() -> list[str]:
             """Return the list of lines of a docstring, if any."""
@@ -188,26 +194,25 @@ class Python_Importer(Importer):
                 i += 1
             return []
         #@-others
-
+        
+        # First, remove the preamble lines from parent.b.
+        v = parent.v
+        assert v == result_blocks[0].v
+        lines = g.splitLines(v.b)
+        v.b = self.compute_body(lines[len(preamble_lines):])
+        
+        # Prepend section references to parent.b and create the corresponding section reference nodes.
         docstring_lines = find_docstring()
         if docstring_lines:
-            make_node(docstring_lines, "docstring")
+            docstring_p = make_section_reference("docstring")
+            docstring_p.b = self.compute_body(docstring_lines)
             declaration_lines = preamble_lines[len(docstring_lines) :]
             if declaration_lines:
-                make_node(declaration_lines, "declarations")
+                docstring_p = make_section_reference("declarations")
+                docstring_p.b = self.compute_body(declaration_lines)
         else:
-            make_node(preamble_lines, "preamble")
-
-        # The only remaining lines will be the section reference, @others and any tail lines.
-
-        # Put the preamble before @others, if it exists.
-        block0 = result_blocks[0]
-        v = block0.v
-        lines = g.splitLines(v.b)
-        if 1:  ###
-            g.printObj(lines, tag=f"{tag} lines: {result_blocks[0].name}")
-        ### new_lines = lines[len(preamble_lines):]
-        ### v.b = self.compute_body(new_lines)
+            preamble_p = make_section_reference("preamble")
+            preamble_p.b = self.compute_body(preamble_lines)
     #@+node:ekr.20230514140918.1: *3* python_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
@@ -367,7 +372,6 @@ class Python_Importer(Importer):
     def postprocess(self, parent: Position) -> None:
         """Python_Importer.postprocess."""
         # See #3514.
-        return  ###
         self.adjust_headlines(parent)
         self.move_docstrings(parent)
         self.adjust_at_others(parent)

@@ -47,23 +47,19 @@ class BaseTestImporter(LeoUnitTest):
                 self.assertEqual(a_level - p0_level, e_level, msg=msg)
                 if i > 0:  # Don't test top-level headline.
                     self.assertEqual(e_h, a_h, msg=msg)
-                if 0:  # Sometimes good.
-                    if g.splitLines(e_str) != g.splitLines(a_str):
-                        g.printObj(e_str, tag='expected')
-                        g.printObj(a_str, tag='actual')
                 self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
         except AssertionError:
             # Dump actual results, including bodies.
             print('')
             print(f"Fail: {self.id()}")
             self.dump_tree(p, tag='Actual results...')
-
-            # Dump the exptected results, as in LeoUnitTest.dump_tree.
-            print('Expected results')
-            for (level, headline, body) in expected:
-                print('')
-                print('level:', level, headline)
-                g.printObj(g.splitLines(body))
+            if 0:  # Sometimes good.
+                # Dump the exptected results, as in LeoUnitTest.dump_tree.
+                print('Expected results')
+                for (level, headline, body) in expected:
+                    print('')
+                    print('level:', level, headline)
+                    g.printObj(g.splitLines(body))
             raise
     #@+node:ekr.20220809054555.1: *3* BaseTestImporter.check_round_trip
     def check_round_trip(self, p: Position, s: str) -> None:
@@ -3078,7 +3074,7 @@ class TestPython(BaseTestImporter):
                     '    # Underindented comment in u1.\n'
                     '        pass\n'
             ),
-            (1, 'function: main',
+            (1, 'def main',
                        '# About main.\n'
                        '\n'
                        'def main():\n'
