@@ -1043,7 +1043,7 @@ class TestHtml(BaseTestImporter):
                         '<TABLE id="T666"></TABLE></p> <!-- P2 -->\n'
                     '</div>\n'
             ),
-            
+
             ### Old
             # (3, '<TABLE id="T666"></TABLE></p> <!-- P2 -->',
                     # '<p id="P2">\n'
