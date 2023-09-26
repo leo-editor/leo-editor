@@ -2996,7 +2996,7 @@ class TestPython(BaseTestImporter):
                 def method23():
                     pass
 
-            class UnderindentedComment:
+            class Class3:
             # Outer underindented comment
                 def u1():
                 # Underindented comment in u1.
@@ -3015,7 +3015,6 @@ class TestPython(BaseTestImporter):
             (0, '',  # Ignore the first headline.
                     '<< TestPython.test_general_test_1: preamble >>\n'
                     '@others\n'
-                    '\n'
                     "if __name__ == '__main__':\n"
                     '    main()\n'
                     '@language python\n'
@@ -3069,8 +3068,8 @@ class TestPython(BaseTestImporter):
                        'def method23():\n'
                        '    pass\n'
             ),
-            (1, 'class UnderindentedComment',
-                'class UnderindentedComment:\n'
+            (1, 'class Class3',
+                'class Class3:\n'
                 '@others\n'  # The underindented comments prevents indentaion
             ),
             (2, 'UnderindentedComment.u1',

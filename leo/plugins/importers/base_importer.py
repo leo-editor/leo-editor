@@ -45,8 +45,8 @@ class Block:
         parent_v_s = self.parent_v.h if self.parent_v else '<no parent_v>'
         v_s = self.v.h if self.v else '<no v>'
         return (
-            f"Block: kind/name: {kind_name_s!r} "
-            f"{self.start} {self.start_body} {self.end} "
+            f"Block: kind/name: {kind_name_s!r:20} "
+            f"{self.start:2} {self.start_body:2} {self.end:2} "
             f"parent_v: {parent_v_s!r} v: {v_s!r}"
         )
 
@@ -343,7 +343,7 @@ class Importer:
             block0 = result_blocks[0]
             assert outer_block == block0, (repr(outer_block), repr(block0))
 
-        if 0:  # An excellent debugging trace.
+        if 1:  # An excellent debugging trace.
             g.printObj(result_blocks, tag='result_blocks')
 
         if 0:  # Another good trace.
