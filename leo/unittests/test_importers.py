@@ -1665,9 +1665,9 @@ class TestJavascript(BaseTestImporter):
 
         expected_results = (
             (0, '',  # Ignore the first headline.
-                '@others\n'
-                '@language javascript\n'
-                '@tabwidth -4\n'
+                    '@others\n'
+                    '@language javascript\n'
+                    '@tabwidth -4\n'
             ),
             (1, 'function c3',
                     'var c3 = (function () {\n'
@@ -1676,7 +1676,7 @@ class TestJavascript(BaseTestImporter):
                     '    // Globals\n'
                     '    var c3 = { version: "0.0.1"   };\n'
                     '    @others\n'
-                    '\n'
+                    ### '\n'
                     '    return c3;\n'
                     '}());\n'
             ),
