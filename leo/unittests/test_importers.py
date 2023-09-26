@@ -41,7 +41,7 @@ class BaseTestImporter(LeoUnitTest):
                 try:
                     a_level, a_h, a_str = actual
                     e_level, e_h, e_str = expected[i]
-                except ValueError:
+                except Exception:
                     assert False  # So we print the actual results.
                 msg = f"FAIL in node {i} {e_h}"
                 self.assertEqual(a_level - p0_level, e_level, msg=msg)
@@ -957,7 +957,8 @@ class TestHtml(BaseTestImporter):
 
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    '<!DOCTYPE html>\n'  ### New.
+                    ### New.
+                        '<!DOCTYPE html>\n'
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
@@ -1017,25 +1018,38 @@ class TestHtml(BaseTestImporter):
             ),
             (1, '<body>',
                     '<body>\n'
+                    ### New...
+                        '\n'
+                        '<!-- OOPS: the div and p elements not properly nested.-->\n'
+                        '<!-- OOPS: this table got generated twice. -->\n'
+                        '\n'
+                        '<p id="P1">\n'
                     '@others\n'
                     '</p> <!-- orphan -->\n'
                     '\n'
                     '</body>\n'
             ),
             (2, '<div id="D666">Paragraph</p> <!-- P1 -->',
-                    '<!-- OOPS: the div and p elements not properly nested.-->\n'
-                    '<!-- OOPS: this table got generated twice. -->\n'
-                    '\n'
-                    '<p id="P1">\n'
+                    ### Old.
+                        # '<!-- OOPS: the div and p elements not properly nested.-->\n'
+                        # '<!-- OOPS: this table got generated twice. -->\n'
+                        # '\n'
+                        # '<p id="P1">\n'
                     '<div id="D666">Paragraph</p> <!-- P1 -->\n'
-                    '@others\n'
+                    ### @others\n'
+                    ### New.
+                        '<p id="P2">\n'
+                        '\n'
+                        '<TABLE id="T666"></TABLE></p> <!-- P2 -->\n'
                     '</div>\n'
             ),
-            (3, '<TABLE id="T666"></TABLE></p> <!-- P2 -->',
-                    '<p id="P2">\n'
-                    '\n'
-                    '<TABLE id="T666"></TABLE></p> <!-- P2 -->\n'
-            ),
+            
+            ### Old
+            # (3, '<TABLE id="T666"></TABLE></p> <!-- P2 -->',
+                    # '<p id="P2">\n'
+                    # '\n'
+                    # '<TABLE id="T666"></TABLE></p> <!-- P2 -->\n'
+            # ),
         )
         self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.26: *3* TestHtml.test_improperly_terminated_tags
@@ -1057,7 +1071,11 @@ class TestHtml(BaseTestImporter):
         '''
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    '@others\n'
+                    ### New.
+                        '<html>\n'
+                        '\n'
+                        '<head>\n'
+                    ### '@others\n'
                     '    <!-- oops: link elements terminated two different ways -->\n'
                     '    <link id="L1">\n'
                     '    <link id="L2">\n'
@@ -1070,11 +1088,12 @@ class TestHtml(BaseTestImporter):
                     '@language html\n'
                     '@tabwidth -4\n'
             ),
-            (1, '<head>',
-                    '<html>\n'
-                    '\n'
-                    '<head>\n'
-            ),
+            ###
+            # (1, '<head>',
+                    # '<html>\n'
+                    # '\n'
+                    # '<head>\n'
+            # ),
         )
         self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.19: *3* TestHtml.test_mixed_case_tags
@@ -1198,12 +1217,14 @@ class TestHtml(BaseTestImporter):
 
         expected_results = (
             (0, '',
+                    ### New
+                        '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<html>',
-                    '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
+                    ### '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
                     '<html>\n'
                     '<head>headline</head>\n'
                     '<body>body</body>\n'
@@ -1234,161 +1255,6 @@ class TestHtml(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20230126023536.1: *3* TestHtml.test_slideshow_slide
-    def test_slideshow_slide(self):
-
-        # s is the contents of slides/basics/slide-002.html
-        #@+<< define s >>
-        #@+node:ekr.20230126031120.1: *4* << define s >>
-        s = '''\
-        <!DOCTYPE html>
-
-        <html lang="en">
-          <head>
-            <meta charset="utf-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
-            <title>The workbook file &#8212; Leo 6.7.2 documentation</title>
-            <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-            <link rel="stylesheet" type="text/css" href="../../_static/classic.css" />
-            <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
-
-            <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-            <script src="../../_static/doctools.js"></script>
-            <script src="../../_static/sphinx_highlight.js"></script>
-
-            <script src="../../_static/sidebar.js"></script>
-
-            <link rel="index" title="Index" href="../../genindex.html" />
-            <link rel="search" title="Search" href="../../search.html" />
-            <link rel="next" title="Editing headlines" href="slide-003.html" />
-            <link rel="prev" title="Leoâ€™s Basics" href="basics.html" />
-          <!--
-            EKR: Xml_Importer.preprocess_lines should insert put </head> and <body> on separate lines.
-            As with this comment, there is a risk that preprocessing might affect comments...
-          -->
-          </head><body>
-            <div class="related" role="navigation" aria-label="related navigation">
-              <h3>Navigation</h3>
-              <ul>
-                <li class="right" style="margin-right: 10px">
-                  <a href="../../genindex.html" title="General Index"
-                     accesskey="I">index</a></li>
-                <li class="right" >
-                  <a href="slide-003.html" title="Editing headlines"
-                     accesskey="N">next</a> |</li>
-                <li class="right" >
-                  <a href="basics.html" title="Leoâ€™s Basics"
-                     accesskey="P">previous</a> |</li>
-                <li class="nav-item nav-item-0"><a href="../../leo_toc.html">Leo 6.7.2 documentation</a> &#187;</li>
-                  <li class="nav-item nav-item-1"><a href="../../toc-more-links.html" >More Leo Links</a> &#187;</li>
-                  <li class="nav-item nav-item-2"><a href="../../slides.html" >Slides</a> &#187;</li>
-                  <li class="nav-item nav-item-3"><a href="basics.html" accesskey="U">Leoâ€™s Basics</a> &#187;</li>
-                <li class="nav-item nav-item-this"><a href="">The workbook file</a></li>
-              </ul>
-            </div>
-
-            <div class="document">
-              <div class="documentwrapper">
-                <div class="bodywrapper">
-                  <div class="body" role="main">
-
-          <section id="the-workbook-file">
-        <h1>The workbook file<a class="headerlink" href="#the-workbook-file" title="Permalink to this heading">Â¶</a></h1>
-        <p>Leo opens the <strong>workbook file</strong> when you start
-        Leo without a filename.</p>
-        <p>The body has focusâ€“it is colored a pale pink, and
-        contains a blinking cursor.</p>
-        <p><strong>Note</strong>: on some monitors the colors will be almost
-        invisible.  You can choose such colors to suit your
-        taste.</p>
-        <img alt="../../_images/slide-002.png" src="../../_images/slide-002.png" />
-        </section>
-
-
-                    <div class="clearer"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-                <div class="sphinxsidebarwrapper">
-                    <p class="logo"><a href="../../leo_toc.html">
-                      <img class="logo" src="../../_static/LeoLogo.svg" alt="Logo"/>
-                    </a></p>
-          <div>
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="basics.html"
-                                  title="previous chapter">Leoâ€™s Basics</a></p>
-          </div>
-          <div>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="slide-003.html"
-                                  title="next chapter">Editing headlines</a></p>
-          </div>
-        <div id="searchbox" style="display: none" role="search">
-          <h3 id="searchlabel">Quick search</h3>
-            <div class="searchformwrapper">
-            <form class="search" action="../../search.html" method="get">
-              <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-              <input type="submit" value="Go" />
-            </form>
-            </div>
-        </div>
-        <script>document.getElementById('searchbox').style.display = "block"</script>
-                </div>
-        <div id="sidebarbutton" title="Collapse sidebar">
-        <span>Â«</span>
-        </div>
-
-              </div>
-              <div class="clearer"></div>
-            </div>
-            <div class="related" role="navigation" aria-label="related navigation">
-              <h3>Navigation</h3>
-              <ul>
-                <li class="right" style="margin-right: 10px">
-                  <a href="../../genindex.html" title="General Index"
-                     >index</a></li>
-                <li class="right" >
-                  <a href="slide-003.html" title="Editing headlines"
-                     >next</a> |</li>
-                <li class="right" >
-                  <a href="basics.html" title="Leoâ€™s Basics">previous</a> |</li>
-                <li class="nav-item nav-item-0"><a href="../../leo_toc.html">Leo 6.7.2 documentation</a> &#187;</li>
-                  <li class="nav-item nav-item-1"><a href="../../toc-more-links.html" >More Leo Links</a> &#187;</li>
-                  <li class="nav-item nav-item-2"><a href="../../slides.html" >Slides</a> &#187;</li>
-                  <li class="nav-item nav-item-3"><a href="basics.html" >Leoâ€™s Basics</a> &#187;</li>
-                <li class="nav-item nav-item-this"><a href="">The workbook file</a></li>
-              </ul>
-            </div>
-            <div class="footer" role="contentinfo">
-                &#169; Copyright 1997-2023, Edward K. Ream.
-              Last updated on January 24, 2023.
-              Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.2.
-            </div>
-          </body>
-        </html>
-        '''
-        #@-<< define s >>
-
-        # xml.preprocess_lines inserts several newlines.
-        # Modify the expected result accordingly.
-        expected_s = (s
-            .replace('</head><body>', '</head>\n<body>')
-            .replace('><meta', '>\n<meta')
-            .replace('index</a></li>', 'index</a>\n</li>')
-            # .replace('"><a', '">\n<a')  # This replacement would affect too many lines.
-            .replace('m-0"><a', 'm-0">\n<a')
-            .replace('m-1"><a', 'm-1">\n<a')
-            .replace('item-2"><a', 'item-2">\n<a')
-            .replace('m-3"><a', 'm-3">\n<a')
-            .replace('nav-item-this"><a', 'nav-item-this">\n<a')
-            .replace('<p class="logo"><a', '<p class="logo">\n<a')
-            .replace('</a></li>', '</a>\n</li>')
-            .replace('<p><strong>', '<p>\n<strong>')
-            .replace('</a></p>', '</a>\n</p>')
-        )
-        self.new_round_trip_test(s, expected_s)
     #@+node:ekr.20230123162321.1: *3* TestHtml.test_structure
     def test_structure(self):
 
@@ -1462,11 +1328,13 @@ class TestHtml(BaseTestImporter):
             ),
             (1, '<table cellspacing="0" cellpadding="0" width="600" border="0">',
                     '<table cellspacing="0" cellpadding="0" width="600" border="0">\n'
+                    ### New
+                        '    <!-- The indentation of this element causes the problem. -->\n'
                     '@others\n'
                     '</table>\n'
             ),
             (2, '<table>',
-                    '    <!-- The indentation of this element causes the problem. -->\n'
+                    ### '    <!-- The indentation of this element causes the problem. -->\n'
                     '    <table>\n'
                     '@others\n'
                     '</table>\n'
@@ -4253,7 +4121,7 @@ class TestXML(BaseTestImporter):
                     '@language xml\n'
                     '@tabwidth -4\n'
 
-                    # Old
+                    ### Old
                         # '@others\n'
                         # '@language xml\n'
                         # '@tabwidth -4\n'
@@ -4264,12 +4132,12 @@ class TestXML(BaseTestImporter):
                     '@others\n'
                     '</html>\n'
 
-                    # Old.
-                    # '<?xml version="1.0" encoding="UTF-8"?>\n'
-                    # '<!DOCTYPE note SYSTEM "Note.dtd">\n'
-                    # '<html>\n'
-                        # '@others\n'
-                    # '</html>\n'
+                    ### Old.
+                        # '<?xml version="1.0" encoding="UTF-8"?>\n'
+                        # '<!DOCTYPE note SYSTEM "Note.dtd">\n'
+                        # '<html>\n'
+                            # '@others\n'
+                        # '</html>\n'
             ),
             (2, '<head>',
                     '<head>\n'

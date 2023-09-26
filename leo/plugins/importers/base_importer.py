@@ -394,7 +394,7 @@ class Importer:
 
             # Add the tail lines to block.v
             tail_lines = self.lines[children_end:block.end]
-            
+
             ###block.v.b = block.v.b + self.compute_body(tail_lines)
             tail_s = self.compute_body(tail_lines)
             if tail_s.strip():  ### Experimental.
