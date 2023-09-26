@@ -42,8 +42,7 @@ class Python_Importer(Importer):
 
         Change 'def' to 'function:' for all non-methods.
         """
-        assert self.language == 'python', self.language
-
+        assert self.language == 'python', repr(self.language)
         for child in parent.subtree():
             found = False
             if child.h.startswith('def '):
@@ -56,12 +55,10 @@ class Python_Importer(Importer):
                         found = True
                         # Replace 'def ' by the class name + '.'
                         child.h = f"{m.group(1)}.{child.h[4:].strip()}"
-                        ### g.trace('Found', child.h)
                         break
                 if not found:
                     # Replace 'def ' by 'function'
                     child.h = f"function: {child.h[4:].strip()}"
-                    ### g.trace('Not found', child.h)
     #@+node:ekr.20230830113521.1: *3* python_i.adjust_at_others
     def adjust_at_others(self, parent: Position) -> None:
         """

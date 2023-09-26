@@ -328,22 +328,14 @@ class Importer:
         self.generate_all_bodies(parent, outer_block, result_blocks)
 
         # Note: i.gen_lines adds the @language and @tabwidth directives.
-    #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies
+    #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies ***
     def generate_all_bodies(self, parent: Position, outer_block: Block, result_blocks: list[Block]) -> None:
         """Carefully generate bodies from the given blocks."""
-
         at_others_dict: dict[VNode, bool] = {}  # VNodes containing @others directives.
         seen_blocks: dict[Block, bool] = {}
         seen_vnodes: dict[VNode, bool] = {}
 
-        #@+<< i.generate_all_bodies: initial checks & traces >>
-        #@+node:ekr.20230925133647.1: *6* << i.generate_all_bodies: initial checks & traces >>
-        # An initial sanity check.
-        if result_blocks:
-            block0 = result_blocks[0]
-            assert outer_block == block0, (repr(outer_block), repr(block0))
-
-        if 0:  # An excellent debugging trace.
+        if 1:  # An excellent debugging trace.
             g.printObj(result_blocks, tag='result_blocks')
 
         if 0:  # Another good trace.
@@ -351,8 +343,34 @@ class Importer:
             for z in result_blocks:
                 z.dump_lines()
             print('End of result blocks')
-        #@-<< i.generate_all_bodies: initial checks & traces >>
+
+        #@+<< i.generate_all_bodies: initial checks >>
+        #@+node:ekr.20230925133647.1: *6* << i.generate_all_bodies: initial checks >>
+        # An initial sanity check.
+        if result_blocks:
+            block0 = result_blocks[0]
+            assert outer_block == block0, (repr(outer_block), repr(block0))
+        #@-<< i.generate_all_bodies: initial checks >>
+
         #@+others  # Define helper functions.
+        #@+node:ekr.20230926114338.1: *6* function: adjust_blocks
+        def adjust_blocks(blocks: list[Block]) -> None:
+            """
+            Adjust (child) blocks so that they (mostly) cover self.lines.
+            """
+            prev = None
+            for i, block in enumerate(blocks):
+                # g.trace(block.name, block.start, block.end)
+                if i == 0 and self.allow_preamble:
+                    # Do *not* adjust block[0].start if we are going to call i.create_sections.
+                    # i.create_sections will allocates leading lines to new nodes.
+                    pass
+                else:
+                    # Add previous lines to the block.
+                    block.start = prev
+                prev = block.end
+
+            g.printObj(blocks, tag='after adjust_blocks')
         #@+node:ekr.20230924170708.1: *6* function: dump_lines
         def dump_lines(lines: list[str], tag: str) -> None:
             """For debugging."""
@@ -370,18 +388,15 @@ class Importer:
                 start = min(start, child_block.start)
                 end = max(end, child_block.end)
             return start, end
-        #@+node:ekr.20230925021502.1: *6* function: handle_childless_block
-        def handle_childless_block(block: Block) -> None:
-
-            block.v.b = self.compute_body(self.lines[block.start:block.end])
-
-            ### g.printObj(g.splitLines(block.v.b), tag=f"Childless: {block.name} {block.v.h}")  ###
         #@+node:ekr.20230924154050.1: *6* function: handle_block_with_children
         def handle_block_with_children(block: Block, block_common_lws: str) -> None:
             """A block with children."""
 
             # Find all lines that will be covered by @others.
             children_start, children_end = find_all_child_lines(block)
+
+            # Adjust the child blocks so that they cover self.lines.
+            adjust_blocks(block.child_blocks)
 
             # Add the head lines to block.v.
             head_lines = self.lines[block.start:children_start]
@@ -401,7 +416,7 @@ class Importer:
                 block.v.b = block.v.b.rstrip() + '\n' + tail_s
 
             # Alter block.end.
-            block.end = children_start  ### Experimental.
+            block.end = children_start  ### + len(tail_lines)
         #@+node:ekr.20230925071111.1: *6* function: remove_lws_from_blocks
         def remove_lws_from_blocks(blocks: list[Block], common_lws: str) -> None:
             """
@@ -422,6 +437,7 @@ class Importer:
             parent.b = self.compute_body(outer_block.lines)
             return
 
+        # Start the main loop.
         outer_block.v = parent.v
         todo_list: list[Block] = [outer_block]
         while todo_list:
@@ -436,6 +452,8 @@ class Importer:
             # Make sure we handle each block and VNode once.
             assert block not in seen_blocks, repr(block)
             assert v not in seen_vnodes, repr(v)
+            seen_blocks[block] = True
+            seen_vnodes[v] = True
 
             # Note: This method must alter neither self.lines nor block lines.
             if self.lines != block.lines:
@@ -443,8 +461,6 @@ class Importer:
                 g.printObj(block.lines, tag='Assert failed: block.lines')
             assert self.lines == block.lines
             #@-<< check block and v >>
-            seen_blocks[block] = True
-            seen_vnodes[v] = True
 
             # Remove common_lws from self.lines
             block_common_lws = self.compute_common_lws(block.child_blocks)
@@ -456,19 +472,24 @@ class Importer:
             if block.child_blocks:
                 handle_block_with_children(block, block_common_lws)
             else:
-                handle_childless_block(block)
+                ### handle_childless_block(block)
+                block.v.b = self.compute_body(self.lines[block.start:block.end])
 
             # Add all child blocks to the to-do list.
             todo_list.extend(block.child_blocks)
+
+        #@+<< i.generate_all_bodies: final checks >>
+        #@+node:ekr.20230926105046.1: *6* << i.generate_all_bodies: final checks >>
+        assert result_blocks[0].kind == 'outer', result_blocks[0]
 
         # Make sure we've seen all blocks and vnodes.
         for block in result_blocks:
             assert block in seen_blocks, block
             if block.v:
                 assert block.v in seen_vnodes, repr(block.v)
+        #@-<< i.generate_all_bodies: final checks >>
 
         if self.allow_preamble:
-            assert result_blocks[0].kind == 'outer', result_blocks[0]
             self.create_sections(parent, result_blocks)
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:
