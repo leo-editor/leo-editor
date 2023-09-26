@@ -26,7 +26,7 @@ class BaseTestImporter(LeoUnitTest):
 
     #@+others
     #@+node:ekr.20230526135305.1: *3* BaseTestImporter.check_outline
-    def check_outline(self, p: Position, expected: tuple, brief: bool = False) -> None:
+    def check_outline(self, p: Position, expected: tuple) -> None:
         """
         BaseTestImporter.check_outline.
 
@@ -44,24 +44,26 @@ class BaseTestImporter(LeoUnitTest):
                 except ValueError:
                     assert False  # So we print the actual results.
                 msg = f"FAIL in node {i} {e_h}"
-                if brief:
-                    if (a_level - p0_level != e_level
-                        or e_h != a_h
-                        or g.splitLines(e_str) != g.splitLines(a_str)
-                    ):
-                        assert False
-                else:
-                    self.assertEqual(a_level - p0_level, e_level, msg=msg)
-                    if i > 0:  # Don't test top-level headline.
-                        self.assertEqual(e_h, a_h, msg=msg)
-                    if 0:  # Sometimes good.
-                        if g.splitLines(e_str) != g.splitLines(a_str):
-                            g.printObj(e_str, tag='expected')
-                            g.printObj(a_str, tag='actual')
-                    self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
+                self.assertEqual(a_level - p0_level, e_level, msg=msg)
+                if i > 0:  # Don't test top-level headline.
+                    self.assertEqual(e_h, a_h, msg=msg)
+                if 0:  # Sometimes good.
+                    if g.splitLines(e_str) != g.splitLines(a_str):
+                        g.printObj(e_str, tag='expected')
+                        g.printObj(a_str, tag='actual')
+                self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
         except AssertionError:
             # Dump actual results, including bodies.
+            print('')
+            print(f"Fail: {self.id()}")
             self.dump_tree(p, tag='Actual results...')
+
+            # Dump the exptected results, as in LeoUnitTest.dump_tree.
+            print('Expected results')
+            for (level, headline, body) in expected:
+                print('')
+                print('level:', level, headline)
+                g.printObj(g.splitLines(body))
             raise
     #@+node:ekr.20220809054555.1: *3* BaseTestImporter.check_round_trip
     def check_round_trip(self, p: Position, s: str) -> None:
@@ -123,7 +125,7 @@ class BaseTestImporter(LeoUnitTest):
         c.importCommands.createOutline(parent.copy(), ext, test_s)
 
         # Dump the actual results on failure and raise AssertionError.
-        self.check_outline(parent, expected_results, brief=brief)
+        self.check_outline(parent, expected_results)
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s: str) -> Position:
         """
@@ -200,7 +202,6 @@ class TestC(BaseTestImporter):
                 '}\n'
             ),
             (2, 'func bar',
-                '\n'  ### New.
                 'char bar (float c) {\n'
                 '    ;\n'
                 '}\n'
@@ -956,12 +957,13 @@ class TestHtml(BaseTestImporter):
 
         expected_results = (
             (0, '',  # Ignore the first headline.
+                    '<!DOCTYPE html>\n'  ### New.
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<html>',
-                    '<!DOCTYPE html>\n'
+                    ### '<!DOCTYPE html>\n'
                     '<html>\n'
                     '@others\n'
                     '</html>\n'
@@ -4040,7 +4042,7 @@ class TestTcl (BaseTestImporter):
         expected_results = (
             (0, '',  # Ignore the first headline.
                     '@others\n'
-                    '\n'
+                    ### '\n'
                     ' # Main program\n'
                     '\n'
                     ' if { [info exists argv0] && [string equal $argv0 [info script]] } {\n'

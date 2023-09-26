@@ -380,8 +380,6 @@ class Importer:
         def handle_block_with_children(block: Block, block_common_lws: str) -> None:
             """A block with children."""
 
-            ### g.trace('-----', block.name, repr(block_common_lws))  ###
-
             # Find all lines that will be covered by @others.
             children_start, children_end = find_all_child_lines(block)
 
@@ -396,13 +394,14 @@ class Importer:
 
             # Add the tail lines to block.v
             tail_lines = self.lines[children_end:block.end]
-            block.v.b = block.v.b + self.compute_body(tail_lines)
+            
+            ###block.v.b = block.v.b + self.compute_body(tail_lines)
+            tail_s = self.compute_body(tail_lines)
+            if tail_s.strip():  ### Experimental.
+                block.v.b = block.v.b.rstrip() + '\n' + tail_s
 
             # Alter block.end.
-            ### g.trace('Set block.end', block.name, children_start)
             block.end = children_start  ### Experimental.
-
-            ### g.printObj(g.splitLines(block.v.b), tag=f"Has children: {block.name} {block.v.h}")
         #@+node:ekr.20230925071111.1: *6* function: remove_lws_from_blocks
         def remove_lws_from_blocks(blocks: list[Block], common_lws: str) -> None:
             """
