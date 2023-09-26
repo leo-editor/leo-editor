@@ -215,6 +215,16 @@ class DefaultWrapper(BaseSpellWrapper):
         # Default to ~/.leo/main_spelling_dict.txt
         fn = g.finalize_join(g.app.homeDir, '.leo', 'main_spelling_dict.txt')
         return fn if g.os_path_exists(fn) else None
+    #@+node:ekr.20230926171905.1: *3* default.find_user_dict
+    def find_user_dict(self) -> Optional[str]:
+        """Return the full path to the global dictionary."""
+        c = self.c
+        fn = c.config.getString('enchant-local-dictionary')
+        if fn and g.os_path_exists(fn):
+            return fn
+        # Default to ~/.leo/main_spelling_dict.txt
+        fn = g.finalize_join(g.app.homeDir, '.leo', 'spellpyx.txt')
+        return fn if g.os_path_exists(fn) else None
     #@+node:ekr.20180207073815.1: *3* default.read_words
     def read_words(self, kind: Any, fn: str) -> set[str]:
         """Return all the words from the dictionary file."""
