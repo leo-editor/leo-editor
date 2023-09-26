@@ -164,7 +164,7 @@ class Python_Importer(Importer):
         def make_section_reference(headline: str) -> Position:
             """
             Create a new section definition node and prepend a reference to it in parent.b.
-            
+
             Return the newly-created node.
             """
             # Compute the section name.
@@ -194,13 +194,13 @@ class Python_Importer(Importer):
                 i += 1
             return []
         #@-others
-        
+
         # First, remove the preamble lines from parent.b.
         v = parent.v
         assert v == result_blocks[0].v
         lines = g.splitLines(v.b)
-        v.b = self.compute_body(lines[len(preamble_lines):])
-        
+        v.b = self.compute_body(lines[len(preamble_lines) :])
+
         # Prepend section references to parent.b and create the corresponding section reference nodes.
         docstring_lines = find_docstring()
         if docstring_lines:
