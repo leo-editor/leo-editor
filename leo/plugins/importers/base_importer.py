@@ -331,7 +331,8 @@ class Importer:
     #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies ***
     def generate_all_bodies(self, parent: Position, outer_block: Block, result_blocks: list[Block]) -> None:
         """Carefully generate bodies from the given blocks."""
-        at_others_dict: dict[VNode, bool] = {}  # VNodes containing @others directives.
+        # Keys: VNodes containing @others directives.
+        at_others_dict: dict[VNode, bool] = {}
         seen_blocks: dict[Block, bool] = {}
         seen_vnodes: dict[VNode, bool] = {}
 
@@ -357,24 +358,31 @@ class Importer:
         def adjust_blocks(parent_block: Block, child_blocks: list[Block]) -> None:
             """
             Adjust (child) blocks so that they (mostly) cover self.lines.
-            
-            The only exception: The first child block of the outerblock is not
-            extended for Python (self.allow_preamble is True).
-            """
-            block0 = outer_block.child_blocks[0]
-            prev = None
-            for child_block in child_blocks:
-                ### if i == 0 and self.allow_preamble:
-                if child_block == block0:
-                    g.trace('Block0:', block0)  ###
-                    # Do *not* adjust block[0].start if we are going to call i.create_sections.
-                    # i.create_sections will allocates leading lines to new nodes.
-                    pass
-                else:
-                    # Add previous lines to the block.
-                    block.start = prev
-                prev = block.end
 
+            Let children = parent_block.child_blocks, and child0 = children[0]
+
+
+            1. Handle child0 as follows:
+
+               - If parent_block == outer_block, set child0.start = 0,
+                 but *not* if allow_preamble is True (Python).
+
+               - Otherwise, the @others directive refers to child0.start,
+                 so do *not* adjust child0.start.
+
+            2. For all other children:
+
+                set children[i].start = children[i-1].end
+            """
+            block0 = parent_block.child_blocks[0]
+            prev = block0.end
+            for child_block in child_blocks:
+                if child_block == block0:
+                    if parent_block == outer_block and not self.allow_preamble:
+                        child_block.start = 0
+                else:
+                    child_block.start = prev
+                prev = child_block.end
             g.printObj(child_blocks, tag='adjust_blocks: After')
         #@+node:ekr.20230924170708.1: *6* function: dump_lines
         def dump_lines(lines: list[str], tag: str) -> None:
