@@ -4619,7 +4619,7 @@ If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
 For information about supported languages, see:
 http://pythonhosted.org/pyenchant/tutorial.html#adding-language-dictionaries
 </t>
-<t tx="ekr.20100904095239.8441">Defaults to leo/plugins/spellpyx.txt</t>
+<t tx="ekr.20100904095239.8441">Defaults to ~/.leo/spellpyx.txt</t>
 <t tx="ekr.20100904134301.11000">@language python
 </t>
 <t tx="ekr.20100904134301.11002"># Blanks lines and comments (lines starting with '#') are ignored.
