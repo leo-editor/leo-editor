@@ -34,7 +34,7 @@ class BaseSpellWrapper:
     # pylint: disable=no-member
     # Subclasses set self.c and self.d
     #@+others
-    #@+node:ekr.20150514063305.513: *3* spell.clean_dict
+    #@+node:ekr.20150514063305.513: *3* BaseSpellWrapper.clean_dict
     def clean_dict(self, fn: str) -> None:
         if g.os_path_exists(fn):
             f = open(fn, mode='rb')
@@ -49,7 +49,7 @@ class BaseSpellWrapper:
                 f = open(fn, mode='wb')  # type:ignore
                 f.write(s2)
                 f.close()
-    #@+node:ekr.20180207071114.5: *3* spell.create
+    #@+node:ekr.20180207071114.5: *3* BaseSpellWrapper.create
     def create(self, fn: str) -> None:
         """Create the given file with empty contents."""
         # Make the directories as needed.
@@ -70,25 +70,25 @@ class BaseSpellWrapper:
         except Exception:
             g.error(f"unexpected error creating: {fn}")
             g.es_exception()
-    #@+node:ekr.20180207074613.1: *3* spell.default_dict
+    #@+node:ekr.20180207074613.1: *3* BaseSpellWrapper.default_dict
     def default_dict(self, language: Any) -> dict[str, str]:
 
         try:
             return enchant.Dict(language)
         except Exception:
             return {}
-    #@+node:ekr.20180207073536.1: *3* spell.create_dict_from_file
+    #@+node:ekr.20180207073536.1: *3* BaseSpellWrapper.create_dict_from_file
     def create_dict_from_file(self, fn: str, language: Any) -> dict[str, str]:
 
         try:
             return enchant.DictWithPWL(language, fn)
         except Exception:
             return {}
-    #@+node:ekr.20150514063305.515: *3* spell.ignore
+    #@+node:ekr.20150514063305.515: *3* BaseSpellWrapper.ignore
     def ignore(self, word: str) -> None:
 
         self.d.add_to_session(word)
-    #@+node:ekr.20180209142310.1: *3* spell.show_info
+    #@+node:ekr.20180209142310.1: *3* BaseSpellWrapper.show_info
     def show_info(self) -> None:
 
         g.es_print('pyenchant spell checker')
@@ -110,29 +110,29 @@ class DefaultDict:
         self.words: set[str] = set() if words is None else set(words)
 
     #@+others
-    #@+node:ekr.20180207075740.1: *3* dict.add
+    #@+node:ekr.20180207075740.1: *3* DefaultDict.add
     def add(self, word: str) -> None:
         """Add a word to the dictionary."""
         self.words.add(word)
         self.added_words.add(word)
-    #@+node:ekr.20180207101513.1: *3* dict.add_words_from_dict
+    #@+node:ekr.20180207101513.1: *3* DefaultDict.add_words_from_dict
     def add_words_from_dict(self, kind: str, fn: str, words: Any) -> None:
         """For use by DefaultWrapper."""
         for word in words or []:
             self.words.add(word)
             self.words.add(word.lower())
-    #@+node:ekr.20180207075751.1: *3* dict.add_to_session
+    #@+node:ekr.20180207075751.1: *3* DefaultDict.add_to_session
     def add_to_session(self, word: str) -> None:
 
         self.ignored_words.add(word)
-    #@+node:ekr.20180207080007.1: *3* dict.check
+    #@+node:ekr.20180207080007.1: *3* DefaultDict.check
     def check(self, word: str) -> bool:
         """Return True if the word is in the dict."""
         for s in (word, word.lower(), word.capitalize()):
             if s in self.words or s in self.ignored_words:
                 return True
         return False
-    #@+node:ekr.20180207081634.1: *3* dict.suggest & helpers
+    #@+node:ekr.20180207081634.1: *3* DefaultDict.suggest & helpers
     def suggest(self, word: str) -> list[str]:
 
         def known(words: list[str]) -> list[str]:
@@ -177,7 +177,7 @@ class DefaultWrapper(BaseSpellWrapper):
     - ~/.leo/spellpyx.txt
     """
     #@+others
-    #@+node:ekr.20180207071114.2: *3* default. __init__
+    #@+node:ekr.20180207071114.2: *3* DefaultWrapper. __init__
     def __init__(self, c: Cmdr) -> None:
         """Ctor for DefaultWrapper class."""
         # pylint: disable=super-init-not-called
@@ -199,13 +199,13 @@ class DefaultWrapper(BaseSpellWrapper):
             if fn:
                 words = self.read_words(kind, fn)
                 self.d.add_words_from_dict(kind, fn, words)
-    #@+node:ekr.20180207110701.1: *3* default.add
+    #@+node:ekr.20180207110701.1: *3* DefaultWrapper.add
     def add(self, word: str) -> None:
         """Add a word to the user dictionary."""
         self.d.add(word)
         self.d.add(word.lower())
         self.save_user_dict()
-    #@+node:ekr.20180207100238.1: *3* default.find_main_dict
+    #@+node:ekr.20180207100238.1: *3* DefaultWrapper.find_main_dict
     def find_main_dict(self) -> Optional[str]:
         """Return the full path to the global dictionary."""
         c = self.c
@@ -215,7 +215,17 @@ class DefaultWrapper(BaseSpellWrapper):
         # Default to ~/.leo/main_spelling_dict.txt
         fn = g.finalize_join(g.app.homeDir, '.leo', 'main_spelling_dict.txt')
         return fn if g.os_path_exists(fn) else None
-    #@+node:ekr.20180207073815.1: *3* default.read_words
+    #@+node:ekr.20230926171905.1: *3* DefaultWrapper.find_user_dict
+    def find_user_dict(self) -> Optional[str]:
+        """Return the full path to the global dictionary."""
+        c = self.c
+        fn = c.config.getString('enchant-local-dictionary')
+        if fn and g.os_path_exists(fn):
+            return fn
+        # Default to ~/.leo/main_spelling_dict.txt
+        fn = g.finalize_join(g.app.homeDir, '.leo', 'spellpyx.txt')
+        return fn if g.os_path_exists(fn) else None
+    #@+node:ekr.20180207073815.1: *3* DefaultWrapper.read_words
     def read_words(self, kind: Any, fn: str) -> set[str]:
         """Return all the words from the dictionary file."""
         words = set()
@@ -230,7 +240,7 @@ class DefaultWrapper(BaseSpellWrapper):
         except Exception:
             g.es_print(f"can not open {kind} dictionary: {fn}")
         return words
-    #@+node:ekr.20180207110718.1: *3* default.save_dict
+    #@+node:ekr.20180207110718.1: *3* DefaultWrapper.save_dict
     def save_dict(self, kind: str, fn: str, trace: bool = False) -> None:
         """
         Save the dictionary whose name is given, alphabetizing the file.
@@ -250,7 +260,7 @@ class DefaultWrapper(BaseSpellWrapper):
         s = '\n'.join(aList) + '\n'
         f.write(g.toEncodedString(s))
         f.close()
-    #@+node:ekr.20180211104628.1: *3* default.save_main/user_dict
+    #@+node:ekr.20180211104628.1: *3* DefaultWrapper.save_main/user_dict
     def save_main_dict(self, trace: bool = False) -> None:
 
         self.save_dict('main', self.main_fn, trace=trace)
@@ -258,7 +268,7 @@ class DefaultWrapper(BaseSpellWrapper):
     def save_user_dict(self, trace: bool = False) -> None:
 
         self.save_dict('user', self.user_fn, trace=trace)
-    #@+node:ekr.20180209141933.1: *3* default.show_info
+    #@+node:ekr.20180209141933.1: *3* DefaultWrapper.show_info
     def show_info(self) -> None:
 
         if self.main_fn:
