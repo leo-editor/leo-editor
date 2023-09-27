@@ -41,6 +41,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoGui import LeoGui
     from leo.core.leoNodes import Position
+    from leo.plugins.mod_scripting import ScriptingController
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Widget = Any
 #@-<< qt_frame annotations >>
@@ -4105,10 +4106,14 @@ class QtIconBarClass:
             g.trace('not found', gnx)
     #@+node:ekr.20110605121601.18271: *3* QtIconBar.setCommandForButton (@rclick nodes) & helper
     # qtFrame.QtIconBarClass.setCommandForButton
-    # Controller is a ScriptingController.
 
     def setCommandForButton(self,
-        button: Any, command: Callable, command_p: Position, controller: Cmdr, gnx: str, script: str,
+        button: Wrapper,
+        command: Callable,
+        command_p: Position,
+        controller: ScriptingController,
+        gnx: str,
+        script: str,
     ) -> None:
         """
         Set the "Goto Script" rlick item of an @button button.
@@ -4125,7 +4130,11 @@ class QtIconBarClass:
         b = button.button
         b.clicked.connect(command)
 
-        def goto_callback(checked: str, controller: Cmdr=controller, gnx: str=gnx) -> None:
+        def goto_callback(
+            checked: str,
+            controller: ScriptingController = controller,
+            gnx: str=gnx,
+        ) -> None:
             self.goto_command(controller, gnx)
 
         b.goto_script = gts = QAction('Goto Script', b)
@@ -4138,9 +4147,9 @@ class QtIconBarClass:
         self,
         action_container: Any,
         rclicks: list[Any],
-        controller: Cmdr,
+        controller: ScriptingController,
         top_level: bool=True,
-        button: str=None,
+        button: Wrapper=None,
         script: str=None,
     ) -> None:
         c = controller.c
@@ -4155,7 +4164,7 @@ class QtIconBarClass:
                 act.setSeparator(True)
             elif rc.position.b.strip():
 
-                def cb(checked: str, p: Position=rc.position, button: str=button) -> None:
+                def cb(checked: str, p: Position=rc.position, button: Wrapper=button) -> None:
                     controller.executeScriptFromButton(
                         b=button,
                         buttonText=p.h[8:].strip(),

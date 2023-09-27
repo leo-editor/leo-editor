@@ -29,6 +29,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoGui
     from leo.core.leoMenu import LeoMenu, NullMenu
     from leo.core.leoNodes import Position, VNode
+    from leo.plugins.mod_scripting import ScriptingController
     from leo.plugins.qt_frame import DynamicWindow
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     from leo.plugins.qt_text import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree, QtIconBarClass
@@ -287,7 +288,12 @@ class IconBarAPI:
         pass
 
     def setCommandForButton(self,
-        button: Any, command: str, command_p: Position, controller: Cmdr, gnx: str, script: str,
+        button: Wrapper,
+        command: str,
+        command_p: Position,
+        controller: ScriptingController,
+        gnx: str,
+        script: str,
     ) -> None:
         pass
 #@+node:ekr.20031218072017.3656: ** class LeoBody
@@ -2019,7 +2025,7 @@ class NullIconBarClass:
         button: Any,
         command: str,
         command_p: Position,
-        controller: Cmdr,
+        controller: ScriptingController,
         gnx: str,
         script: str,
     ) -> None:
