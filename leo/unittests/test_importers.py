@@ -434,7 +434,7 @@ class TestC(BaseTestImporter):
     def test_find_blocks(self):
 
         from leo.plugins.importers.c import C_Importer
-        trace = False
+
         importer = C_Importer(self.c)
         lines = g.splitLines(textwrap.dedent("""\
 
@@ -469,9 +469,6 @@ class TestC(BaseTestImporter):
         importer.lines = lines
         importer.guide_lines = importer.make_guide_lines(lines)
         blocks = importer.find_blocks(i1=0, i2=len(lines))
-        if trace:
-            print('')
-            g.printObj(blocks, tag='Blocks')
 
         # The result lines must tile (cover) the original lines.
         result_lines = []
@@ -1006,12 +1003,6 @@ class TestHtml(BaseTestImporter):
             ),
             (1, '<body>',
                     '<body>\n'
-                    # ### New...
-                        # '\n'
-                        # '<!-- OOPS: the div and p elements not properly nested.-->\n'
-                        # '<!-- OOPS: this table got generated twice. -->\n'
-                        # '\n'
-                        # '<p id="P1">\n'
                     '@others\n'
                     '</p> <!-- orphan -->\n'
                     '\n'
