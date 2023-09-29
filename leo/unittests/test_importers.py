@@ -34,8 +34,8 @@ class BaseTestImporter(LeoUnitTest):
 
         Dump the actual outline if there is a mismatch.
         """
-        g.trace(g.callers())
-        g.printObj(g.splitLines(p.b), tag=f"check_outline: p.b: id(p) {id(p)} {p.h}")
+        ### g.trace(g.callers())  ###
+        ### g.printObj(g.splitLines(p.b), tag=f"check_outline: p.b: id(p) {id(p)} {p.h}")  ###
         try:
             p0_level = p.level()
             actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
@@ -111,7 +111,7 @@ class BaseTestImporter(LeoUnitTest):
 
         # Run the test.
         parent = p.insertAsLastChild()
-        g.trace('id(parent) 1', id(parent))
+        ### g.trace('id(parent) 1', id(parent)) ###
         kind = self.compute_unit_test_kind(ext)
 
         # TestCase.id() has the form leo.unittests.core.file.class.test_name
@@ -122,9 +122,9 @@ class BaseTestImporter(LeoUnitTest):
         # createOutline calls Importer.gen_lines and Importer.check.
         test_s = textwrap.dedent(s).strip() + '\n'
 
-        ### Get the parent from createOutline !!!
+        ### Experimental ### Get the parent from createOutline !!!
         parent = c.importCommands.createOutline(parent.copy(), ext, test_s)
-        g.trace('id(parent) 2', id(parent))
+        ### g.trace('id(parent) 2', id(parent))
 
         # Dump the actual results on failure and raise AssertionError.
         self.check_outline(parent, expected_results)

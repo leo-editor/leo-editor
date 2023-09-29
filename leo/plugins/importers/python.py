@@ -206,7 +206,7 @@ class Python_Importer(Importer):
         # Prepend section references to parent.b and create the corresponding section reference nodes.
         docstring_lines = find_docstring()
         ### g.printObj(docstring_lines, tag='create_sections: docstring_lines')
-        g.trace('id(parent) 1', id(parent))
+        ### g.trace('id(parent) 1', id(parent))
 
 
         if docstring_lines:
@@ -226,7 +226,7 @@ class Python_Importer(Importer):
             for z in parent.self_and_subtree():
                 g.printObj(g.splitLines(z.b), tag=z.h)
 
-        g.trace('id(parent) 2', id(parent))
+        ### g.trace('id(parent) 2', id(parent))
         ### g.printObj(parent.b, tag=f"parent.b: id(parent) {id(parent)} {parent.h}")
     #@+node:ekr.20230514140918.1: *3* python_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:

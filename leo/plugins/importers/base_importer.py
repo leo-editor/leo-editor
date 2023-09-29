@@ -490,7 +490,7 @@ class Importer:
 
         # Add trailing lines.
         parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
-        g.trace('id(parent)', id(parent))  ###
+        ### g.trace('id(parent)', id(parent))  ###
         ### g.printObj(g.splitLines(parent.b), tag=f"i.gen_lines: parent.b: id(parent) {id(parent)} {parent.h}")  ###
     #@+node:ekr.20230529075138.37: *4* i.import_from_string (driver)
     def import_from_string(self, parent: Position, s: str) -> None:
