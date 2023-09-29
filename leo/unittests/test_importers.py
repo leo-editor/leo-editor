@@ -591,9 +591,8 @@ class TestCoffeescript(BaseTestImporter):
                     "{parser} = @Narcissus or require('./narcissus_packed')\n"
                     '\n'
                     '# Main entry point\n'
-                    '\n'
             ),
-            (1, 'def buildCoffee',
+            (1, 'function: buildCoffee',
                     'buildCoffee = (str) ->\n'
                     "  str  = str.replace /\\r/g, ''\n"
                     '  str += "\\n"\n'
@@ -786,7 +785,6 @@ class TestCython(BaseTestImporter):
             ),
             (1, '<< TestCython.test_importer: preamble >>',
                     'from libc.math cimport pow\n'
-                    '\n'
             ),
             (1, 'cdef double square_and_add',
                     'cdef double square_and_add (double x):\n'
@@ -1645,16 +1643,16 @@ class TestJavascript(BaseTestImporter):
             ),
             (1, 'function c3',
                     'var c3 = (function () {\n'
-                    '    "use strict";\n'
-                    '\n'
-                    '    // Globals\n'
-                    '    var c3 = { version: "0.0.1"   };\n'
                     '    @others\n'
-                    ### '\n'
                     '    return c3;\n'
                     '}());\n'
             ),
             (2, 'function c3.someFunction',
+                    '"use strict";\n'
+                    '\n'
+                    '// Globals\n'
+                    'var c3 = { version: "0.0.1"   };\n'
+                    '\n'
                     'c3.someFunction = function () {\n'
                     '    console.log("Just a demo...");\n'
                     '};\n'
@@ -1716,7 +1714,6 @@ class TestLua (BaseTestImporter):
         expected_results = (
             (0, '', # Ignore the first headline.
                     '@others\n'
-                    '\n'
                     'print("main", coroutine.resume(co, 1, 10))\n'
                     'print("main", coroutine.resume(co, "r"))\n'
                     'print("main", coroutine.resume(co, "x", "y"))\n'
