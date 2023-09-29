@@ -34,7 +34,7 @@ class BaseTestImporter(LeoUnitTest):
 
         Dump the actual outline if there is a mismatch.
         """
-        ### g.trace(g.callers())  ###
+        g.trace(id(p), p.h, g.callers())  ###
         ### g.printObj(g.splitLines(p.b), tag=f"check_outline: p.b: id(p) {id(p)} {p.h}")  ###
         try:
             p0_level = p.level()
@@ -111,7 +111,6 @@ class BaseTestImporter(LeoUnitTest):
 
         # Run the test.
         parent = p.insertAsLastChild()
-        ### g.trace('id(parent) 1', id(parent)) ###
         kind = self.compute_unit_test_kind(ext)
 
         # TestCase.id() has the form leo.unittests.core.file.class.test_name
@@ -119,12 +118,16 @@ class BaseTestImporter(LeoUnitTest):
         self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
         parent.h = f"{kind} {self.short_id}"
 
+        g.trace('id(parent) 1', id(parent), parent.h) ###
+
         # createOutline calls Importer.gen_lines and Importer.check.
         test_s = textwrap.dedent(s).strip() + '\n'
 
         ### Experimental ### Get the parent from createOutline !!!
-        parent = c.importCommands.createOutline(parent.copy(), ext, test_s)
-        ### g.trace('id(parent) 2', id(parent))
+        parent_copy = parent.copy()
+        g.trace('id(parent_copy)', id(parent_copy), parent_copy.h)
+        parent = c.importCommands.createOutline(parent_copy, ext, test_s)
+        g.trace('id(parent) 2', id(parent), parent.h)
 
         # Dump the actual results on failure and raise AssertionError.
         self.check_outline(parent, expected_results)

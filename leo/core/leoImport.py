@@ -560,7 +560,7 @@ class LeoImportCommands:
             g.es("exception opening:", filename)
             g.print_exception()
     #@+node:ekr.20031218072017.3209: *3* ic.Import
-    #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
+    #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers (trace)
     def createOutline(self, parent: Position, ext: str = None, s: str = None) -> Position:
         """
         Create an outline by importing a file, reading the file with the
@@ -605,7 +605,9 @@ class LeoImportCommands:
             s = s.replace('\r', '')
             self.scanUnknownFileType(s, p, ext)
         if g.unitTesting:
-            ### g.trace('id(p) 2', id(p))  ###
+            # g.trace('*** return id(p)', id(p), p.h, 'id(parent)', id(parent), parent.h)  ###
+            g.printObj(g.splitLines(p.b), tag=f"{g.my_name} p.b: id(p): {id(p)} {p.h}")
+            g.printObj(g.splitLines(parent.b), tag=f"{g.my_name} parent.b: {id(parent)} {parent.h}")
             return p
         # #488894: unsettling dialog when saving Leo file
         # #889175: Remember the full fileName.

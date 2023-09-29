@@ -148,6 +148,8 @@ class Python_Importer(Importer):
 
         Insert corresponding section references into parent.b.
         """
+        g.printObj(g.splitLines(parent.b), tag=f"{g.my_name} parent.b: {id(parent)} {parent.h}")  ###
+
         assert self.allow_preamble
         assert parent == self.root
         lines = self.lines
@@ -196,19 +198,19 @@ class Python_Importer(Importer):
 
         if 0:  ###
             v0 = result_blocks[0].v
-            g.printObj(v0.b, tag='v0.b')
+            g.printObj(v0.b, tag=f"{g.my_name} v0.b")
 
         # Remove the preamble lines from result_blocks[1], the first child block.
         v1 = result_blocks[1].v
         lines = g.splitLines(v1.b)
         v1.b = self.compute_body(lines[len(preamble_lines) :])
 
-        ### g.printObj(preamble_lines, tag='preamble_lines')
-        ### g.printObj(v1.b, tag='v1.b')
+        ### g.printObj(preamble_lines, tag=f"{g.my_name} preamble_lines")
+        ### g.printObj(v1.b, tag=f"{g.my_name} v1.b")
 
         # Prepend section references to parent.b and create the corresponding section reference nodes.
         docstring_lines = find_docstring()
-        ### g.printObj(docstring_lines, tag='create_sections: docstring_lines')
+        ### g.printObj(docstring_lines, tag=f"{g.my_name} : docstring_lines")
         ### g.trace('id(parent) 1', id(parent))
 
 
@@ -227,7 +229,7 @@ class Python_Importer(Importer):
         if 0:  ###
             print('create_sections: final results')
             for z in parent.self_and_subtree():
-                g.printObj(g.splitLines(z.b), tag=z.h)
+                g.printObj(g.splitLines(z.b), tag=f"{g.my_name} {z.h}")
 
         ### g.trace('id(parent) 2', id(parent))
         ### g.printObj(parent.b, tag=f"parent.b: id(parent) {id(parent)} {parent.h}")

@@ -265,7 +265,7 @@ class Importer:
                     if level == 0:
                         return i
         return i2
-    #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative)
+    #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative) (trace)
     def gen_block(self, parent: Position) -> None:
         """
         Importer.gen_block.
@@ -274,6 +274,8 @@ class Importer:
 
         Five importers override this method.
         """
+        g.printObj(g.splitLines(parent.b), tag=f"{g.my_name()} parent.b: {id(parent)} {parent.h}")
+
         todo_list: list[Block] = []
         result_blocks: list[Block] = []
 
@@ -329,10 +331,10 @@ class Importer:
         seen_vnodes: dict[VNode, bool] = {}
 
         if 0:  # An excellent debugging trace.
-            g.printObj(result_blocks, tag='Initial result_blocks')
+            g.printObj(result_blocks, tag='{g.my_name} Initial result_blocks')
 
         if 0:  # Another good trace.
-            print('Result blocks...\n')
+            g.trace('Result blocks...\n')
             for z in result_blocks[1:]:
                 z.dump_lines()
             print('End of result blocks')
@@ -460,7 +462,7 @@ class Importer:
 
         if self.allow_preamble:
             self.create_sections(parent, result_blocks)
-    #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level) ***Trace
+    #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level) (trace)
     def gen_lines(self, lines: list[str], parent: Position) -> None:
         """
         Importer.gen_lines: Allocate lines to the parent and descendant nodes.
