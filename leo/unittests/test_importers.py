@@ -465,15 +465,11 @@ class TestC(BaseTestImporter):
         blocks = importer.find_blocks(i1=0, i2=len(lines))
         if trace:
             print('')
-            g.trace('Blocks...')
-            for z in blocks:
-                kind, name, start, start_body, end = z
-                print(f"{kind:>10} {name:<20} {start:4} {start_body:4} {end:4}")
+            g.printObj(blocks, tag='Blocks')
 
         # The result lines must tile (cover) the original lines.
         result_lines = []
         for block in blocks:
-            ### kind, name, start, start_body, end = z
             result_lines.extend(lines[block.start : block.end])
         self.assertEqual(lines, result_lines)
     #@+node:ekr.20230511073719.1: *3* TestC.test_codon_file
@@ -3068,13 +3064,13 @@ class TestPython(BaseTestImporter):
                 'class Class3:\n'
                 '@others\n'  # The underindented comments prevents indentaion
             ),
-            (2, 'UnderindentedComment.u1',
+            (2, 'Class3.u1',
                     '# Outer underindented comment\n'
                     '    def u1():\n'
                     '    # Underindented comment in u1.\n'
                     '        pass\n'
             ),
-            (1, 'def main',
+            (1, 'function: main',
                        '# About main.\n'
                        '\n'
                        'def main():\n'

@@ -32,6 +32,7 @@ class Block:
         self.end = end
         self.kind = kind
         self.lines = lines
+        self.lws: str = None
         self.name = name
         self.parent_v: VNode = None
         self.start = start
@@ -44,8 +45,9 @@ class Block:
         kind_name_s = f"{self.kind} {self.name}"
         parent_v_s = self.parent_v.h if self.parent_v else '<no parent_v>'
         v_s = self.v.h if self.v else '<no v>'
+        lws_s = 'None' if self.lws is None else len(self.lws)
         return (
-            f"Block: kind/name: {kind_name_s!r:20} "
+            f"Block: kind/name: {kind_name_s!r:20} lws: {lws_s} "
             f"{self.start:2} {self.start_body:2} {self.end:2} "
             f"parent_v: {parent_v_s!r} v: {v_s!r}"
         )
@@ -208,39 +210,37 @@ class Importer:
     #@+node:ekr.20230529075138.10: *4* i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
-        Importer.find_blocks.
+        Importer.find_blocks: Subclasses may override this method.
 
-        Find all blocks in the given range of *guide* lines.
+        Using self.block_patterns and self.guide_lines, return a list of all
+        blocks in the given range of *guide* lines.
 
-        Use the patterns in self.block_patterns to find the start the start of a block.
-
-        Subclasses may override this method for more control.
-
-        Return a list of Blocks.
+        **Important**: An @others directive will refer to the returned blocks,
+                       so there must be *no gaps* between blocks!
         """
         min_size = self.minimum_block_size
-        i, results = i1, []
+        i, prev_i, results = i1, i1, []
         while i < i2:
+            progress = i
             s = self.guide_lines[i]
             i += 1
             # Assume that no pattern matches a compound statement.
             for kind, pattern in self.block_patterns:
                 m = pattern.match(s)
                 if m:
-                    # g.trace('match line', i, repr(m.group(0)))
-
                     # cython may include trailing whitespace.
                     name = m.group(1).strip()
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
-
                     # Don't generate small blocks.
-                    i -= 1  # Restore i!
-                    if min_size == 0 or end - i > min_size:
-                        block = Block(kind, name, start=i, start_body=i + 1, end=end, lines=self.lines)
+                    if min_size == 0 or end - prev_i > min_size:
+                        block = Block(kind, name, start=prev_i, start_body=i, end=end, lines=self.lines)
                         results.append(block)
-                    i = end
-                    break  # Go on to the next line.
+                        i = prev_i = end
+                    else:
+                        i = end
+                    break
+            assert i > progress, g.callers()
         return results
     #@+node:ekr.20230529075138.11: *4* i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
@@ -254,11 +254,7 @@ class Importer:
         This method assumes that that '{' and '}' delimit blocks.
         Subclasses may override this method as necessary.
         """
-        trace = False  ###
         level = 1  # All blocks start with '{'
-        tag = 'find_end_of_block'
-        if trace:
-            print(f"  {tag} 1: {i:3} {self.lines[i-1]!r}")
         assert '{' in self.guide_lines[i - 1]
         while i < i2:
             line = self.guide_lines[i]
@@ -269,8 +265,6 @@ class Importer:
                 if ch == '}':
                     level -= 1
                     if level == 0:
-                        if trace:
-                            print(f"  {tag} 2: {i:3} {self.lines[i-1]!r}")
                         return i
         return i2
     #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative)
@@ -282,7 +276,7 @@ class Importer:
 
         Five importers override this method.
         """
-        todo_list: list[Block] = []  # The todo list.
+        todo_list: list[Block] = []
         result_blocks: list[Block] = []
 
         # Add an outer block to the results list.
@@ -328,7 +322,7 @@ class Importer:
         self.generate_all_bodies(parent, outer_block, result_blocks)
 
         # Note: i.gen_lines adds the @language and @tabwidth directives.
-    #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies ***
+    #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies
     def generate_all_bodies(self, parent: Position, outer_block: Block, result_blocks: list[Block]) -> None:
         """Carefully generate bodies from the given blocks."""
         # Keys: VNodes containing @others directives.
@@ -336,12 +330,12 @@ class Importer:
         seen_blocks: dict[Block, bool] = {}
         seen_vnodes: dict[VNode, bool] = {}
 
-        if 1:  # An excellent debugging trace.
-            g.printObj(result_blocks, tag='result_blocks')
+        if 0:  # An excellent debugging trace.
+            g.printObj(result_blocks, tag='Initial result_blocks')
 
         if 0:  # Another good trace.
             print('Result blocks...\n')
-            for z in result_blocks:
+            for z in result_blocks[1:]:
                 z.dump_lines()
             print('End of result blocks')
 
@@ -354,36 +348,6 @@ class Importer:
         #@-<< i.generate_all_bodies: initial checks >>
 
         #@+others  # Define helper functions.
-        #@+node:ekr.20230926114338.1: *6* function: adjust_blocks
-        def adjust_blocks(parent_block: Block, child_blocks: list[Block]) -> None:
-            """
-            Adjust (child) blocks so that they (mostly) cover self.lines.
-
-            Let children = parent_block.child_blocks, and child0 = children[0]
-
-
-            1. Handle child0 as follows:
-
-               - If parent_block == outer_block, set child0.start = 0,
-                 but *not* if allow_preamble is True (Python).
-
-               - Otherwise, the @others directive refers to child0.start,
-                 so do *not* adjust child0.start.
-
-            2. For all other children:
-
-                set children[i].start = children[i-1].end
-            """
-            block0 = parent_block.child_blocks[0]
-            prev = block0.end
-            for child_block in child_blocks:
-                if child_block == block0:
-                    if parent_block == outer_block and not self.allow_preamble:
-                        child_block.start = 0
-                else:
-                    child_block.start = prev
-                prev = child_block.end
-            g.printObj(child_blocks, tag='adjust_blocks: After')
         #@+node:ekr.20230924170708.1: *6* function: dump_lines
         def dump_lines(lines: list[str], tag: str) -> None:
             """For debugging."""
@@ -408,9 +372,6 @@ class Importer:
             # Find all lines that will be covered by @others.
             children_start, children_end = find_all_child_lines(block)
 
-            # Adjust the child blocks so that they cover self.lines.
-            adjust_blocks(parent_block=block, child_blocks=block.child_blocks)
-
             # Add the head lines to block.v.
             head_lines = self.lines[block.start:children_start]
             block.v.b = self.compute_body(head_lines)
@@ -422,14 +383,12 @@ class Importer:
 
             # Add the tail lines to block.v
             tail_lines = self.lines[children_end:block.end]
-
-            ###block.v.b = block.v.b + self.compute_body(tail_lines)
             tail_s = self.compute_body(tail_lines)
-            if tail_s.strip():  ### Experimental.
+            if tail_s.strip():
                 block.v.b = block.v.b.rstrip() + '\n' + tail_s
 
             # Alter block.end.
-            block.end = children_start  ### + len(tail_lines)
+            block.end = children_start
         #@+node:ekr.20230925071111.1: *6* function: remove_lws_from_blocks
         def remove_lws_from_blocks(blocks: list[Block], common_lws: str) -> None:
             """
@@ -437,6 +396,7 @@ class Importer:
             """
             n = len(self.lines)
             for block in blocks:
+                block.lws = common_lws  # For later.
                 lines = self.lines[block.start:block.end]
                 lines2 = self.remove_common_lws(common_lws, lines)
                 self.lines[block.start:block.end] = lines2
@@ -485,7 +445,6 @@ class Importer:
             if block.child_blocks:
                 handle_block_with_children(block, block_common_lws)
             else:
-                ### handle_childless_block(block)
                 block.v.b = self.compute_body(self.lines[block.start:block.end])
 
             # Add all child blocks to the to-do list.

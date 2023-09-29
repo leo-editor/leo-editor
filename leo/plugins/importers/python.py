@@ -149,7 +149,7 @@ class Python_Importer(Importer):
         assert parent == self.root
         lines = self.lines
         common_lws = self.compute_common_lws(result_blocks)
-        preamble_start = max(0, result_blocks[1].start_body - 1)  ###
+        preamble_start = max(0, result_blocks[1].start_body - 1)
         preamble_lines = lines[:preamble_start]
 
         if not preamble_lines or not any(z for z in preamble_lines):
@@ -192,11 +192,10 @@ class Python_Importer(Importer):
             return []
         #@-others
 
-        # First, remove the preamble lines from parent.b.
-        v = parent.v
-        assert v == result_blocks[0].v
-        lines = g.splitLines(v.b)
-        v.b = self.compute_body(lines[len(preamble_lines) :])
+        # Remove the preamble lines from result_blocks[1], the first child block.
+        v1 = result_blocks[1].v
+        lines = g.splitLines(v1.b)
+        v1.b = self.compute_body(lines[len(preamble_lines) :])
 
         # Prepend section references to parent.b and create the corresponding section reference nodes.
         docstring_lines = find_docstring()
@@ -215,13 +214,13 @@ class Python_Importer(Importer):
         """
         Python_Importer.find_blocks: override Importer.find_blocks.
 
-        Find all blocks in the given range of *guide* lines from which blanks
-        and tabs have been deleted.
+        Using self.block_patterns and self.guide_lines, return a list of all
+        blocks in the given range of *guide* lines.
 
-        Return a list of Blocks, that is, tuples(name, start, start_body, end).
+        **Important**: An @others directive will refer to the returned blocks,
+                       so there must be *no gaps* between blocks!
         """
-        ### i, prev_i, results = i1, i1, []
-        i, results = i1, []
+        i, prev_i, results = i1, i1, []
 
         def lws_n(s: str) -> int:
             """Return the length of the leading whitespace for s."""
@@ -230,6 +229,7 @@ class Python_Importer(Importer):
         # Look behind to see what the previous block was.
         prev_block_line = self.guide_lines[i1 - 1] if i1 > 0 else ''
         while i < i2:
+            progress = i
             s = self.guide_lines[i]
             i += 1
             for kind, pattern in self.block_patterns:
@@ -240,20 +240,18 @@ class Python_Importer(Importer):
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
 
-                    ### g.printObj(self.lines[i-1:end], tag=f"python_i.find_blocks: {name}")
-
-                    # #3517: Don't generated nested defs.
+                    # #3517: Don't generate nested defs.
                     if (kind == 'def'
                         and prev_block_line.strip().startswith('def ')
                         and lws_n(prev_block_line) < lws_n(s)
                     ):
-                        pass
-                    else:
-                        i -= 1  # Restore i!
-                        block = Block(kind, name, start=i, start_body=i + 1, end=end, lines=self.lines)
-                        results.append(block)
                         i = end
+                    else:
+                        block = Block(kind, name, start=prev_i, start_body=i, end=end, lines=self.lines)
+                        results.append(block)
+                        i = prev_i = end
                     break
+            assert i > progress, g.callers()
         return results
     #@+node:ekr.20230514140918.4: *3* python_i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
@@ -267,6 +265,9 @@ class Python_Importer(Importer):
         def lws_n(s: str) -> int:
             """Return the length of the leading whitespace for s."""
             return len(s) - len(s.lstrip())
+
+        if i >= i2:
+            return i2
 
         prev_line = self.guide_lines[i - 1]
         kinds = ('class', 'def', '->')  # '->' denotes a coffeescript function.
