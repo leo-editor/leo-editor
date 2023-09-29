@@ -38,11 +38,14 @@ class Python_Importer(Importer):
     #@+node:ekr.20230825100219.1: *3* python_i.adjust_headlines
     def adjust_headlines(self, parent: Position) -> None:
         """
+        python_i.adjust_headlines.
+
+        coffee_script_i also uses this method.
+
         Add class names for all methods.
 
         Change 'def' to 'function:' for all non-methods.
         """
-        assert self.language == 'python', repr(self.language)
         for child in parent.subtree():
             found = False
             if child.h.startswith('def '):
