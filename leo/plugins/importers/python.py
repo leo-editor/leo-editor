@@ -153,14 +153,13 @@ class Python_Importer(Importer):
         preamble_lines = lines[:preamble_start]
 
         if not preamble_lines or not any(z for z in preamble_lines):
-            g.trace('NO PREAMBLE')
             return
 
         #@+others  # Define helpers
         #@+node:ekr.20230922023223.1: *4* function: make_section_reference
         def make_section_reference(headline: str) -> Position:
             """
-            Create a new section definition node and prepend a reference to it in parent.b.
+            Create a new section definition node and prepend a reference to parent.b.
 
             Return the newly-created node.
             """
@@ -192,23 +191,43 @@ class Python_Importer(Importer):
             return []
         #@-others
 
+        if 0:  ###
+            v0 = result_blocks[0].v
+            g.printObj(v0.b, tag='v0.b')
+
         # Remove the preamble lines from result_blocks[1], the first child block.
         v1 = result_blocks[1].v
         lines = g.splitLines(v1.b)
         v1.b = self.compute_body(lines[len(preamble_lines) :])
 
+        ### g.printObj(preamble_lines, tag='preamble_lines')
+        ### g.printObj(v1.b, tag='v1.b')
+
         # Prepend section references to parent.b and create the corresponding section reference nodes.
         docstring_lines = find_docstring()
+        ### g.printObj(docstring_lines, tag='create_sections: docstring_lines')
+        g.trace('id(parent) 1', id(parent))
+
+
         if docstring_lines:
+            declaration_lines = preamble_lines[len(docstring_lines) :]
+            # Prepend the lines in reverse order.
+            if declaration_lines:
+                declarations_p = make_section_reference("declarations")
+                declarations_p.b = self.compute_body(declaration_lines)
             docstring_p = make_section_reference("docstring")
             docstring_p.b = self.compute_body(docstring_lines)
-            declaration_lines = preamble_lines[len(docstring_lines) :]
-            if declaration_lines:
-                docstring_p = make_section_reference("declarations")
-                docstring_p.b = self.compute_body(declaration_lines)
         else:
             preamble_p = make_section_reference("preamble")
             preamble_p.b = self.compute_body(preamble_lines)
+
+        if 0:  ###
+            print('create_sections: final results')
+            for z in parent.self_and_subtree():
+                g.printObj(g.splitLines(z.b), tag=z.h)
+
+        g.trace('id(parent) 2', id(parent))
+        ### g.printObj(parent.b, tag=f"parent.b: id(parent) {id(parent)} {parent.h}")
     #@+node:ekr.20230514140918.1: *3* python_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """

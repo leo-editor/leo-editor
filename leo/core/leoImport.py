@@ -573,6 +573,7 @@ class LeoImportCommands:
         """
         c = self.c
         p = parent.copy()
+        g.trace('id(p) 1', id(p))
         self.treeType = '@file'  # Fix #352.
         fileName = c.fullPath(parent)
         if g.is_binary_external_file(fileName):
@@ -604,6 +605,7 @@ class LeoImportCommands:
             s = s.replace('\r', '')
             self.scanUnknownFileType(s, p, ext)
         if g.unitTesting:
+            g.trace('id(p) 2', id(p))
             return p
         # #488894: unsettling dialog when saving Leo file
         # #889175: Remember the full fileName.

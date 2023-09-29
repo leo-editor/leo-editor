@@ -72,7 +72,7 @@ class TestLeoImport(BaseTestImporter):
             ),
             (1, '<< target: preamble >>',
                 'import os\n'
-                '\n'
+                ### '\n'
             ),
             (1, 'function: macro',
                 'def macro(func):\n'

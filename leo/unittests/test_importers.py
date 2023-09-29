@@ -34,6 +34,8 @@ class BaseTestImporter(LeoUnitTest):
 
         Dump the actual outline if there is a mismatch.
         """
+        g.trace(g.callers())
+        g.printObj(g.splitLines(p.b), tag=f"check_outline: p.b: id(p) {id(p)} {p.h}")
         try:
             p0_level = p.level()
             actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
@@ -109,6 +111,7 @@ class BaseTestImporter(LeoUnitTest):
 
         # Run the test.
         parent = p.insertAsLastChild()
+        g.trace('id(parent) 1', id(parent))
         kind = self.compute_unit_test_kind(ext)
 
         # TestCase.id() has the form leo.unittests.core.file.class.test_name
@@ -118,7 +121,10 @@ class BaseTestImporter(LeoUnitTest):
 
         # createOutline calls Importer.gen_lines and Importer.check.
         test_s = textwrap.dedent(s).strip() + '\n'
-        c.importCommands.createOutline(parent.copy(), ext, test_s)
+
+        ### Get the parent from createOutline !!!
+        parent = c.importCommands.createOutline(parent.copy(), ext, test_s)
+        g.trace('id(parent) 2', id(parent))
 
         # Dump the actual results on failure and raise AssertionError.
         self.check_outline(parent, expected_results)
@@ -3149,6 +3155,49 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
+    #@+node:ekr.20230830100457.1: *3* TestPython.test_nested_defs
+    def test_nested_defs(self):
+        # See #3517
+
+        # A simplified version of code in mypy/build.py.
+        s = (
+        '''
+            def load_plugins_from_config(
+                options: Options, errors: Errors, stdout: TextIO
+            ) -> tuple[list[Plugin], dict[str, str]]:
+                """Load all configured plugins."""
+
+                snapshot: dict[str, str] = {}
+
+                def plugin_error(message: str) -> NoReturn:
+                    errors.report(line, 0, message)
+                    errors.raise_error(use_stdout=False)
+
+                custom_plugins: list[Plugin] = []
+        ''')
+
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                '@others\n'
+                '@language python\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'function: load_plugins_from_config',
+                'def load_plugins_from_config(\n'
+                '    options: Options, errors: Errors, stdout: TextIO\n'
+                ') -> tuple[list[Plugin], dict[str, str]]:\n'
+                '    """Load all configured plugins."""\n'
+                '\n'
+                '    snapshot: dict[str, str] = {}\n'
+                '\n'
+                '    def plugin_error(message: str) -> NoReturn:\n'
+                '        errors.report(line, 0, message)\n'
+                '        errors.raise_error(use_stdout=False)\n'
+                '\n'
+                '    custom_plugins: list[Plugin] = []\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
     #@+node:vitalije.20211207200701.1: *3* TestPython.test_no_methods
     def test_no_methods(self):
 
@@ -3199,7 +3248,7 @@ class TestPython(BaseTestImporter):
             (0, '',  # Ignore the first headline.
                     '<< TestPython.test_oneliners: preamble >>\n'
                     '@others\n'
-                    '\n'
+                    ### '\n'
                     "if __name__ == '__main__':\n"
                     '    main()\n'
                     '@language python\n'
@@ -3230,7 +3279,7 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20230825071437.1: *3* TestPython.test_post_process (revise)
+    #@+node:ekr.20230825071437.1: *3* TestPython.test_post_process
     def test_post_process(self):
 
         s = '''
@@ -3248,7 +3297,6 @@ class TestPython(BaseTestImporter):
                 pass
 
             '''
-        ### To do: Test multi-line docstring!  ###
 
         expected_results = (
             (0, '',  # Ignore the first headline.
@@ -3261,7 +3309,65 @@ class TestPython(BaseTestImporter):
             (1, '<< TestPython.test_post_process: preamble >>',
                     '\n'
                     'from __future__ import annotations\n'
+                    ### '\n'
+            ),
+            (1, 'class C1',
+                    'class C1:\n'
+                    '    """Class docstring"""\n'
                     '\n'
+                    '    @others\n'
+            ),
+            (2, 'C1.__init__',
+                    'def __init__(self):\n'
+                    '    pass\n'
+            ),
+            (1, 'function: f1',
+                   'def f1():\n'
+                   '    pass\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
+    #@+node:ekr.20230929051304.1: *3* TestPython.test_post_process_long_outer_docstring
+    def test_post_process_long_outer_docstring(self):
+
+        s = '''
+            """
+            Multi-line module-level docstring
+
+            Last line.
+            """
+
+            from __future__ import annotations
+
+            class C1:
+                """Class docstring"""
+
+                def __init__(self):
+                    pass
+
+            def f1():
+                pass
+
+            '''
+
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                    '<< TestPython.test_post_process_long_outer_docstring: docstring >>\n'
+                    '<< TestPython.test_post_process_long_outer_docstring: declarations >>\n'
+                    '@others\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<< TestPython.test_post_process_long_outer_docstring: docstring >>',
+                    '"""\n'
+                    'Multi-line module-level docstring\n'
+                    '\n'
+                    'Last line.\n'
+                    '"""\n'
+            ),
+            (1, '<< TestPython.test_post_process: declarations >>',
+                    '\n'
+                    'from __future__ import annotations\n'
             ),
             (1, 'class C1',
                     'class C1:\n'
@@ -3310,7 +3416,7 @@ class TestPython(BaseTestImporter):
             (1, '<< TestPython.test_preamble: declarations >>',
                     'import sys\n'
                     'from leo.core import leoGlobals as g\n'
-                    '\n'
+                    ### '\n'
             ),
             (1, 'function: f',
                    'def f():\n'
@@ -3376,49 +3482,6 @@ class TestPython(BaseTestImporter):
                "    print('12')\n"
                '@language python\n'
                '@tabwidth -4\n'
-            ),
-        )
-        self.new_run_test(s, expected_results)
-    #@+node:ekr.20230830100457.1: *3* TestPython.test_nested_defs
-    def test_nested_defs(self):
-        # See #3517
-
-        # A simplified version of code in mypy/build.py.
-        s = (
-        '''
-            def load_plugins_from_config(
-                options: Options, errors: Errors, stdout: TextIO
-            ) -> tuple[list[Plugin], dict[str, str]]:
-                """Load all configured plugins."""
-
-                snapshot: dict[str, str] = {}
-
-                def plugin_error(message: str) -> NoReturn:
-                    errors.report(line, 0, message)
-                    errors.raise_error(use_stdout=False)
-
-                custom_plugins: list[Plugin] = []
-        ''')
-
-        expected_results = (
-            (0, '',  # Ignore the first headline.
-                '@others\n'
-                '@language python\n'
-                '@tabwidth -4\n'
-            ),
-            (1, 'function: load_plugins_from_config',
-                'def load_plugins_from_config(\n'
-                '    options: Options, errors: Errors, stdout: TextIO\n'
-                ') -> tuple[list[Plugin], dict[str, str]]:\n'
-                '    """Load all configured plugins."""\n'
-                '\n'
-                '    snapshot: dict[str, str] = {}\n'
-                '\n'
-                '    def plugin_error(message: str) -> NoReturn:\n'
-                '        errors.report(line, 0, message)\n'
-                '        errors.raise_error(use_stdout=False)\n'
-                '\n'
-                '    custom_plugins: list[Plugin] = []\n'
             ),
         )
         self.new_run_test(s, expected_results)
