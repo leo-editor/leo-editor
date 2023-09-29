@@ -955,14 +955,12 @@ class TestHtml(BaseTestImporter):
 
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    ### New.
-                        '<!DOCTYPE html>\n'
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<html>',
-                    ### '<!DOCTYPE html>\n'
+                    '<!DOCTYPE html>\n'
                     '<html>\n'
                     '@others\n'
                     '</html>\n'
