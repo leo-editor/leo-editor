@@ -32,7 +32,6 @@ class Block:
         self.end = end
         self.kind = kind
         self.lines = lines
-        self.lws: str = None
         self.name = name
         self.parent_v: VNode = None
         self.start = start
@@ -45,9 +44,8 @@ class Block:
         kind_name_s = f"{self.kind} {self.name}"
         parent_v_s = self.parent_v.h if self.parent_v else '<no parent_v>'
         v_s = self.v.h if self.v else '<no v>'
-        lws_s = 'None' if self.lws is None else len(self.lws)
         return (
-            f"Block: kind/name: {kind_name_s!r:20} lws: {lws_s} "
+            f"Block: kind/name: {kind_name_s!r:20} "
             f"{self.start:2} {self.start_body:2} {self.end:2} "
             f"parent_v: {parent_v_s!r} v: {v_s!r}"
         )
@@ -396,7 +394,6 @@ class Importer:
             """
             n = len(self.lines)
             for block in blocks:
-                block.lws = common_lws  # For later.
                 lines = self.lines[block.start:block.end]
                 lines2 = self.remove_common_lws(common_lws, lines)
                 self.lines[block.start:block.end] = lines2

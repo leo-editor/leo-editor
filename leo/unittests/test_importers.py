@@ -3248,7 +3248,7 @@ class TestPython(BaseTestImporter):
                 pass
 
             '''
-        ### To do: Test multi-line docstring!  ####
+        ### To do: Test multi-line docstring!  ###
 
         expected_results = (
             (0, '',  # Ignore the first headline.
