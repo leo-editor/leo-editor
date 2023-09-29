@@ -719,14 +719,11 @@ class TestCSharp(BaseTestImporter):
                     '@language csharp\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'unnamed namespace',
+            (1, 'namespace unnamed namespace',
                     'namespace {\n'
-                    '    @others\n'
-                    '}\n'
-            ),
-            (2, 'class cTestClass1',
-                    'class cTestClass1 {\n'
-                    '    ;\n'
+                    '    class cTestClass1 {\n'
+                    '        ;\n'
+                    '    }\n'
                     '}\n'
             ),
         )
@@ -747,14 +744,11 @@ class TestCSharp(BaseTestImporter):
                     '@language csharp\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'unnamed namespace',
+            (1, 'namespace unnamed namespace',
                     'namespace {\n'
-                    '@others\n'
-                    '}\n'
-            ),
-            (2, 'class cTestClass1',
                     'class cTestClass1 {\n'
                     '    ;\n'
+                    '}\n'
                     '}\n'
             ),
         )
@@ -1014,38 +1008,31 @@ class TestHtml(BaseTestImporter):
             ),
             (1, '<body>',
                     '<body>\n'
-                    ### New...
-                        '\n'
-                        '<!-- OOPS: the div and p elements not properly nested.-->\n'
-                        '<!-- OOPS: this table got generated twice. -->\n'
-                        '\n'
-                        '<p id="P1">\n'
+                    # ### New...
+                        # '\n'
+                        # '<!-- OOPS: the div and p elements not properly nested.-->\n'
+                        # '<!-- OOPS: this table got generated twice. -->\n'
+                        # '\n'
+                        # '<p id="P1">\n'
                     '@others\n'
                     '</p> <!-- orphan -->\n'
                     '\n'
                     '</body>\n'
             ),
             (2, '<div id="D666">Paragraph</p> <!-- P1 -->',
-                    ### Old.
-                        # '<!-- OOPS: the div and p elements not properly nested.-->\n'
-                        # '<!-- OOPS: this table got generated twice. -->\n'
-                        # '\n'
-                        # '<p id="P1">\n'
+                    '<!-- OOPS: the div and p elements not properly nested.-->\n'
+                    '<!-- OOPS: this table got generated twice. -->\n'
+                    '\n'
+                    '<p id="P1">\n'
                     '<div id="D666">Paragraph</p> <!-- P1 -->\n'
-                    ### @others\n'
-                    ### New.
-                        '<p id="P2">\n'
-                        '\n'
-                        '<TABLE id="T666"></TABLE></p> <!-- P2 -->\n'
+                    '@others\n'
                     '</div>\n'
             ),
-
-            ### Old
-            # (3, '<TABLE id="T666"></TABLE></p> <!-- P2 -->',
-                    # '<p id="P2">\n'
-                    # '\n'
-                    # '<TABLE id="T666"></TABLE></p> <!-- P2 -->\n'
-            # ),
+            (3, '<TABLE id="T666"></TABLE></p> <!-- P2 -->',
+                    '<p id="P2">\n'
+                    '\n'
+                    '<TABLE id="T666"></TABLE></p> <!-- P2 -->\n'
+            ),
         )
         self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.26: *3* TestHtml.test_improperly_terminated_tags
@@ -1067,11 +1054,7 @@ class TestHtml(BaseTestImporter):
         '''
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    ### New.
-                        '<html>\n'
-                        '\n'
-                        '<head>\n'
-                    ### '@others\n'
+                    '@others\n'
                     '    <!-- oops: link elements terminated two different ways -->\n'
                     '    <link id="L1">\n'
                     '    <link id="L2">\n'
@@ -1084,12 +1067,11 @@ class TestHtml(BaseTestImporter):
                     '@language html\n'
                     '@tabwidth -4\n'
             ),
-            ###
-            # (1, '<head>',
-                    # '<html>\n'
-                    # '\n'
-                    # '<head>\n'
-            # ),
+            (1, '<head>',
+                    '<html>\n'
+                    '\n'
+                    '<head>\n'
+            ),
         )
         self.new_run_test(s, expected_results)
     #@+node:ekr.20210904065459.19: *3* TestHtml.test_mixed_case_tags
@@ -1213,14 +1195,12 @@ class TestHtml(BaseTestImporter):
 
         expected_results = (
             (0, '',
-                    ### New
-                        '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
                     '@others\n'
                     '@language html\n'
                     '@tabwidth -4\n'
             ),
             (1, '<html>',
-                    ### '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
+                    '<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->\n'
                     '<html>\n'
                     '<head>headline</head>\n'
                     '<body>body</body>\n'
@@ -1324,13 +1304,11 @@ class TestHtml(BaseTestImporter):
             ),
             (1, '<table cellspacing="0" cellpadding="0" width="600" border="0">',
                     '<table cellspacing="0" cellpadding="0" width="600" border="0">\n'
-                    ### New
-                        '    <!-- The indentation of this element causes the problem. -->\n'
                     '@others\n'
                     '</table>\n'
             ),
             (2, '<table>',
-                    ### '    <!-- The indentation of this element causes the problem. -->\n'
+                    '    <!-- The indentation of this element causes the problem. -->\n'
                     '    <table>\n'
                     '@others\n'
                     '</table>\n'
@@ -4166,30 +4144,16 @@ class TestXML(BaseTestImporter):
 
         expected_results = (
             (0, '',  # Ignore level 0 headlines.
-
-                    '<?xml version="1.0" encoding="UTF-8"?>\n'
-                    '<!DOCTYPE note SYSTEM "Note.dtd">\n'
                     '@others\n'
                     '@language xml\n'
                     '@tabwidth -4\n'
-
-                    ### Old
-                        # '@others\n'
-                        # '@language xml\n'
-                        # '@tabwidth -4\n'
             ),
             (1, '<html>',
-
+                    '<?xml version="1.0" encoding="UTF-8"?>\n'
+                    '<!DOCTYPE note SYSTEM "Note.dtd">\n'
                     '<html>\n'
                     '@others\n'
                     '</html>\n'
-
-                    ### Old.
-                        # '<?xml version="1.0" encoding="UTF-8"?>\n'
-                        # '<!DOCTYPE note SYSTEM "Note.dtd">\n'
-                        # '<html>\n'
-                            # '@others\n'
-                        # '</html>\n'
             ),
             (2, '<head>',
                     '<head>\n'
@@ -4197,7 +4161,6 @@ class TestXML(BaseTestImporter):
                     '</head>\n'
             ),
             (2, "<body class='bodystring'>",
-
                     "<body class='bodystring'>\n"
                     "<div id='bodydisplay'></div>\n"
                     '</body>\n'
