@@ -560,7 +560,7 @@ class LeoImportCommands:
             g.es("exception opening:", filename)
             g.print_exception()
     #@+node:ekr.20031218072017.3209: *3* ic.Import
-    #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers (trace)
+    #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
     def createOutline(self, parent: Position, ext: str = None, s: str = None) -> Position:
         """
         Create an outline by importing a file, reading the file with the

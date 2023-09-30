@@ -265,7 +265,7 @@ class Importer:
                     if level == 0:
                         return i
         return i2
-    #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative) (trace)
+    #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative)
     def gen_block(self, parent: Position) -> None:
         """
         Importer.gen_block.
@@ -466,7 +466,7 @@ class Importer:
 
         if self.allow_preamble:
             self.create_sections(parent, result_blocks)
-    #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level) (trace)
+    #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:
         """
         Importer.gen_lines: Allocate lines to the parent and descendant nodes.
