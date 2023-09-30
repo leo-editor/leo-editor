@@ -97,7 +97,6 @@ class Importer:
     language: str = None
 
     # May be overridden in subclasses.
-    allow_preamble = False
     block_patterns: tuple = tuple()
     string_list: list[str] = ['"', "'"]
 
@@ -425,13 +424,10 @@ class Importer:
                 assert block.v in seen_vnodes, repr(block.v)
         #@-<< i.generate_all_bodies: final checks >>
 
-        if self.allow_preamble:
-            # Only Python_Importer sets allow_preamble.
-            self.create_sections(parent, result_blocks)
+        # A hook for Python_Importer.
+        self.postprocess(parent, result_blocks)
 
-        # Important: The following tweaks happen next:
-        # 1. i.gen_lines appends @language and @tabwidth directives to parent.b.
-        # 2. i.import_from_string calls x.postprocess.
+        # Note: i.gen_lines appends @language and @tabwidth directives to parent.b.
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:
         """
@@ -498,9 +494,6 @@ class Importer:
         # Generate all nodes.
         self.gen_lines(lines, parent)
 
-        # A hook for python importer.
-        self.postprocess(parent)
-
         # Importers should never dirty the outline.
         # #1451: Do not change the outline's change status.
         for p in root.self_and_subtree():
@@ -527,15 +520,14 @@ class Importer:
         """
         return lines
     #@+node:ekr.20230825095756.1: *4* i.postprocess
-    def postprocess(self, parent: Position) -> None:
+    def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:
         """
         Importer.postprocess.  A hook for language-specific post-processing.
 
         Python_Importer overrides this method.
 
-        **Important**: The RecursiveImportController (RIC) class contains a
-                       language-independent postpass that adjusts headlines of
-                       *all* imported nodes.
+        **Note**: The RecursiveImportController class contains a postpass that
+                  adjusts headlines of *all* imported nodes.
         """
     #@+node:ekr.20230529075138.39: *4* i.regularize_whitespace
     def regularize_whitespace(self, lines: list[str]) -> list[str]:  # pragma: no cover (missing test)

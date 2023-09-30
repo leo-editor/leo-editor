@@ -3238,7 +3238,7 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20230825071437.1: *3* TestPython.test_post_process
+    #@+node:ekr.20230825071437.1: *3* TestPython.test_post_process (fails)
     def test_post_process(self):
 
         s = '''

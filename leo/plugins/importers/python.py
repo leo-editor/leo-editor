@@ -20,7 +20,6 @@ class Python_Importer(Importer):
 
     language = 'python'
     string_list = ['"""', "'''", '"', "'"]  # longest first.
-    allow_preamble = True
 
     # The default patterns. Overridden in the Cython_Importer class.
     # Group 1 matches the name of the class/def.
@@ -76,69 +75,6 @@ class Python_Importer(Importer):
                         p.b = ''.join(lines[:i]) + '\n' + ''.join(lines[i:])
                         child.b = child.b[1:]
                         break
-    #@+node:ekr.20230830051934.1: *3* python_i.delete_comments_and_strings
-    string_pat1 = re.compile(r'([fFrR]*)("""|")')
-    string_pat2 = re.compile(r"([fFrR]*)('''|')")
-
-    def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
-        """
-        Python_i.delete_comments_and_strings.
-
-        This method handles f-strings properly.
-        """
-
-        def skip_string(delim: str, i: int, line: str) -> tuple[str, int]:
-            """
-            Skip the remainder of a string.
-
-            String ends:      return ('', i)
-            String continues: return (delim, len(line))
-            """
-            if delim not in line:
-                return delim, len(line)
-            delim_pat = re.compile(delim)
-            while i < len(line):
-                ch = line[i]
-                if ch == '\\':
-                    i += 2
-                    continue
-                if delim_pat.match(line, i):
-                    return '', i + len(delim)
-                i += 1
-            return delim, i
-
-        delim: str = ''  # The open string delim.
-        result: list[str] = []
-        for line_i, line in enumerate(lines):
-            i, result_line = 0, []
-            while i < len(line):
-                if delim:
-                    delim, i = skip_string(delim, i, line)
-                    continue
-                ch = line[i]
-                if ch in '#\n':
-                    break
-                m = (
-                    self.string_pat1.match(line, i) or
-                    self.string_pat2.match(line, i)
-                )
-                if m:
-                    # Start skipping the string.
-                    prefix, delim = m.group(1), m.group(2)
-                    i += len(prefix)
-                    i += len(delim)
-                    if i < len(line):
-                        delim, i = skip_string(delim, i, line)
-                else:
-                    result_line.append(ch)
-                    i += 1
-
-            # End the line and append it to the result.
-            if line.endswith('\n'):
-                result_line.append('\n')
-            result.append(''.join(result_line))
-        assert len(result) == len(lines)  # A crucial invariant.
-        return result
     #@+node:ekr.20230612171619.1: *3* python_i.create_sections
     def create_sections(self, parent: Position, result_blocks: list[Block]) -> None:
         """
@@ -148,7 +84,6 @@ class Python_Importer(Importer):
 
         Insert corresponding section references into parent.b.
         """
-        assert self.allow_preamble
         assert parent == self.root
         lines = self.lines
         common_lws = self.compute_common_lws(result_blocks)
@@ -226,6 +161,69 @@ class Python_Importer(Importer):
             print('create_sections: final results')
             for z in parent.self_and_subtree():
                 g.printObj(g.splitLines(z.b), tag=f"{g.my_name()} {z.h}")
+    #@+node:ekr.20230830051934.1: *3* python_i.delete_comments_and_strings
+    string_pat1 = re.compile(r'([fFrR]*)("""|")')
+    string_pat2 = re.compile(r"([fFrR]*)('''|')")
+
+    def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
+        """
+        Python_i.delete_comments_and_strings.
+
+        This method handles f-strings properly.
+        """
+
+        def skip_string(delim: str, i: int, line: str) -> tuple[str, int]:
+            """
+            Skip the remainder of a string.
+
+            String ends:      return ('', i)
+            String continues: return (delim, len(line))
+            """
+            if delim not in line:
+                return delim, len(line)
+            delim_pat = re.compile(delim)
+            while i < len(line):
+                ch = line[i]
+                if ch == '\\':
+                    i += 2
+                    continue
+                if delim_pat.match(line, i):
+                    return '', i + len(delim)
+                i += 1
+            return delim, i
+
+        delim: str = ''  # The open string delim.
+        result: list[str] = []
+        for line_i, line in enumerate(lines):
+            i, result_line = 0, []
+            while i < len(line):
+                if delim:
+                    delim, i = skip_string(delim, i, line)
+                    continue
+                ch = line[i]
+                if ch in '#\n':
+                    break
+                m = (
+                    self.string_pat1.match(line, i) or
+                    self.string_pat2.match(line, i)
+                )
+                if m:
+                    # Start skipping the string.
+                    prefix, delim = m.group(1), m.group(2)
+                    i += len(prefix)
+                    i += len(delim)
+                    if i < len(line):
+                        delim, i = skip_string(delim, i, line)
+                else:
+                    result_line.append(ch)
+                    i += 1
+
+            # End the line and append it to the result.
+            if line.endswith('\n'):
+                result_line.append('\n')
+            result.append(''.join(result_line))
+        assert len(result) == len(lines)  # A crucial invariant.
+        return result
     #@+node:ekr.20230514140918.1: *3* python_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
@@ -383,15 +381,11 @@ class Python_Importer(Importer):
             if p.h.startswith('class '):
                 move_docstring(p)
     #@+node:ekr.20230825095926.1: *3* python_i.postprocess
-    def postprocess(self, parent: Position) -> None:
+    def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:
         """
         Python_Importer.postprocess.
         """
-
-        # The following have already happened:
-        # i.gen_lines has appened @language and @tabwidth directive to parent.b.
-        # python_i.create_sections has already created section definitions for docstrings and preambles.
-
+        self.create_sections(parent, result_blocks)
         self.adjust_headlines(parent)
         self.move_docstrings(parent)
         self.adjust_at_others(parent)
