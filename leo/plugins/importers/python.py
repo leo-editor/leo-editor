@@ -148,7 +148,6 @@ class Python_Importer(Importer):
 
         Insert corresponding section references into parent.b.
         """
-        ### g.trace('id(parent)', id(parent), 'id(parent.v)', id(parent.v), parent.h)
 
         assert self.allow_preamble
         assert parent == self.root

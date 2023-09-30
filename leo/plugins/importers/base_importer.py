@@ -277,7 +277,6 @@ class Importer:
         Note:  i.gen_lines adds the @language and @tabwidth directives.
         """
 
-        ###g.trace(' ' * 5, 'id(parent)', id(parent), 'id(parent.v)', id(parent.v))  ###
 
         todo_list: list[Block] = []
         result_blocks: list[Block] = []
@@ -288,7 +287,6 @@ class Importer:
 
         # Add all outer blocks to the to-do list.
         todo_list = self.find_blocks(0, len(self.lines))
-        ### outer_blocks = todo_list[:]
 
         # Link the blocks to the outer block.
         for block in todo_list:
@@ -338,7 +336,6 @@ class Importer:
         seen_vnodes: dict[VNode, bool] = {}
 
         if 0:  # An excellent debugging trace.
-            ### g.trace(' ' * 3, id(parent), 'id(parent.v)', id(parent.v))  ###
             g.printObj(result_blocks, tag=f"{g.my_name()} Initial result_blocks")
 
         if 0:  # Another good trace.

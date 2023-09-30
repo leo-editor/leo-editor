@@ -34,7 +34,6 @@ class BaseTestImporter(LeoUnitTest):
 
         Dump the actual outline if there is a mismatch.
         """
-        ### g.trace('  id(p)     ', id(p), 'id(p.v)     ', id(p.v), p.h)
         try:
             p0_level = p.level()
             actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
