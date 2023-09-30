@@ -34,8 +34,7 @@ class BaseTestImporter(LeoUnitTest):
 
         Dump the actual outline if there is a mismatch.
         """
-        g.trace('  id(p)     ', id(p), 'id(p.v)     ', id(p.v), p.h)
-        ### g.printObj(g.splitLines(p.b), tag=f"check_outline: p.b: id(p) {id(p)} {p.h}")  ###
+        ### g.trace('  id(p)     ', id(p), 'id(p.v)     ', id(p.v), p.h)
         try:
             p0_level = p.level()
             actual = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
@@ -118,19 +117,14 @@ class BaseTestImporter(LeoUnitTest):
         self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
         parent.h = f"{kind} {self.short_id}"
 
-        g.trace('   id(parent)', id(parent), 'id(parent.v)', id(parent.v), parent.h) ###
+        if 0:  ###
+            print('')
+            g.trace('   id(parent)', id(parent), 'id(parent.v)', id(parent.v), parent.h) ###
 
         # createOutline calls Importer.gen_lines and Importer.check.
         test_s = textwrap.dedent(s).strip() + '\n'
 
         c.importCommands.createOutline(parent.copy(), ext, test_s)
-
-        ### Terrible idea.
-            ### Experimental ### Get the parent from createOutline !!!
-            # parent_copy = parent.copy()
-            # g.trace('id(parent_copy)', id(parent_copy), parent_copy.h)
-            # parent = c.importCommands.createOutline(parent_copy, ext, test_s)
-            # g.trace('id(parent) 2', id(parent), parent.h)
 
         # Dump the actual results on failure and raise AssertionError.
         self.check_outline(parent, expected_results)
@@ -3298,7 +3292,7 @@ class TestPython(BaseTestImporter):
         )
         self.new_run_test(s, expected_results)
     #@+node:ekr.20230929051304.1: *3* TestPython.test_post_process_long_outer_docstring
-    def test_post_process_long_outer_docstring(self):
+    def test_long_outer_docstring(self):
 
         s = '''
             """
@@ -3322,21 +3316,21 @@ class TestPython(BaseTestImporter):
 
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    '<< TestPython.test_post_process_long_outer_docstring: docstring >>\n'
-                    '<< TestPython.test_post_process_long_outer_docstring: declarations >>\n'
+                    '<< TestPython.test_long_outer_docstring: docstring >>\n'
+                    '<< TestPython.test_long_outer_docstring: declarations >>\n'
                     '@others\n'
                     '@language python\n'
                     '@tabwidth -4\n'
             ),
-            (1, '<< TestPython.test_post_process_long_outer_docstring: docstring >>',
+            (1, '<< TestPython.test_long_outer_docstring: docstring >>',
                     '"""\n'
                     'Multi-line module-level docstring\n'
                     '\n'
                     'Last line.\n'
                     '"""\n'
             ),
-            (1, '<< TestPython.test_post_process: declarations >>',
-                    '\n'
+            (1, '<< TestPython.test_long_outer_docstring: declarations >>',
+                    ### '\n'
                     'from __future__ import annotations\n'
             ),
             (1, 'class C1',

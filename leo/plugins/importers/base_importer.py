@@ -266,6 +266,8 @@ class Importer:
                         return i
         return i2
     #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative) (trace)
+    USE_OUTER = True
+
     def gen_block(self, parent: Position) -> None:
         """
         Importer.gen_block.
@@ -273,18 +275,17 @@ class Importer:
         Create all descendant blocks and their parent nodes.
 
         Five importers override this method.
+
+        Note:  i.gen_lines adds the @language and @tabwidth directives.
         """
 
-        USE_OUTER = True
-
-        g.trace(' ' * 5, 'id(parent)', id(parent), 'id(parent.v)', id(parent.v))  ###
-        ### g.printObj(g.splitLines(parent.b), tag=f"{g.my_name()} parent.b: {id(parent)} {parent.h}")
+        ###g.trace(' ' * 5, 'id(parent)', id(parent), 'id(parent.v)', id(parent.v))  ###
 
         todo_list: list[Block] = []
         result_blocks: list[Block] = []
 
         # Add an outer block to the results list.
-        if USE_OUTER:  ###
+        if self.USE_OUTER:  ###
             outer_block = Block('outer', 'outer-block', 0, 0, len(self.lines), self.lines)
             result_blocks.append(outer_block)
 
@@ -292,7 +293,7 @@ class Importer:
         todo_list = self.find_blocks(0, len(self.lines))
         outer_blocks = todo_list[:]
 
-        if USE_OUTER:
+        if self.USE_OUTER:
             # Link the blocks to the outer block.
             for block in todo_list:
                 block.parent_v = parent.v
@@ -329,20 +330,17 @@ class Importer:
                 inner_block.parent_v = child_v
                 todo_list.append(inner_block)
 
-        if USE_OUTER:
+        if self.USE_OUTER:
             # Post pass: generate all bodies
             self.generate_all_bodies(parent, [outer_block], result_blocks)
         else:
             self.generate_all_bodies(parent, outer_blocks, result_blocks)
 
-        # Note: i.gen_lines adds the @language and @tabwidth directives.
     #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies
     ### def generate_all_bodies(self, parent: Position, outer_block: Block, result_blocks: list[Block]) -> None:
     def generate_all_bodies(self, parent: Position, outer_blocks: list[Block], result_blocks: list[Block]) -> None:
 
-        USE_OUTER = True
-
-        if USE_OUTER:
+        if self.USE_OUTER:
             outer_block = outer_blocks[0]
 
         """Carefully generate bodies from the given blocks."""
@@ -352,7 +350,7 @@ class Importer:
         seen_vnodes: dict[VNode, bool] = {}
 
         if 0:  # An excellent debugging trace.
-            g.trace(' ' * 3, id(parent), 'id(parent.v)', id(parent.v))  ###
+            ### g.trace(' ' * 3, id(parent), 'id(parent.v)', id(parent.v))  ###
             g.printObj(result_blocks, tag=f"{g.my_name()} Initial result_blocks")
 
         if 0:  # Another good trace.
@@ -361,7 +359,7 @@ class Importer:
                 z.dump_lines()
             print('End of result blocks')
 
-        if USE_OUTER:
+        if self.USE_OUTER:
             #@+<< i.generate_all_bodies: initial checks >>
             #@+node:ekr.20230925133647.1: *6* << i.generate_all_bodies: initial checks >>
             # An initial sanity check.
@@ -426,7 +424,7 @@ class Importer:
         #@-others
 
         # Note: i.gen_lines adds the @language and @tabwidth directives.
-        if USE_OUTER:
+        if self.USE_OUTER:
             if not outer_block.child_blocks:
                 # Put everything in parent.b.
                 parent.h = self.compute_headline(outer_block)
@@ -442,13 +440,11 @@ class Importer:
 
         todo_list: list[Block]
 
-        if USE_OUTER:
-            outer_block.v = parent.v  ### Was this the bug???
+        if self.USE_OUTER:
+            outer_block.v = parent.v
             todo_list = [outer_block]
         else:
             todo_list = outer_blocks
-
-        ### breakpoint()  ###
 
         # The main loop.
         while todo_list:
@@ -478,7 +474,7 @@ class Importer:
             remove_lws_from_blocks(block.child_blocks, block_common_lws)
 
             # Handle the block and any child blocks.
-            if USE_OUTER:
+            if self.USE_OUTER:
                 if block != outer_block:
                     block.v.h = self.compute_headline(block)
             else:
@@ -493,7 +489,7 @@ class Importer:
 
         #@+<< i.generate_all_bodies: final checks >>
         #@+node:ekr.20230926105046.1: *6* << i.generate_all_bodies: final checks >>
-        if USE_OUTER:
+        if self.USE_OUTER:
             assert result_blocks[0].kind == 'outer', result_blocks[0]
 
         # Make sure we've seen all blocks and vnodes.

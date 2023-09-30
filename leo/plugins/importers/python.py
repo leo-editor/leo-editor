@@ -148,8 +148,7 @@ class Python_Importer(Importer):
 
         Insert corresponding section references into parent.b.
         """
-        g.trace('id(parent)', id(parent), 'id(parent.v)', id(parent.v), parent.h)
-        ### g.printObj(g.splitLines(parent.b), tag=f"{g.my_name()} parent.b: {id(parent)} {parent.h}")  ###
+        ### g.trace('id(parent)', id(parent), 'id(parent.v)', id(parent.v), parent.h)
 
         assert self.allow_preamble
         assert parent == self.root
@@ -197,24 +196,22 @@ class Python_Importer(Importer):
             return []
         #@-others
 
-        if 0:  ###
-            v0 = result_blocks[0].v
-            g.printObj(v0.b, tag=f"{g.my_name()} v0.b")
 
-        # Remove the preamble lines from result_blocks[1], the first child block.
         v1 = result_blocks[1].v
         lines = g.splitLines(v1.b)
-        v1.b = self.compute_body(lines[len(preamble_lines) :])
 
-        ### g.printObj(preamble_lines, tag=f"{g.my_name()} preamble_lines")
-        ### g.printObj(v1.b, tag=f"{g.my_name()} v1.b")
+        # Special case: one-line docstring.
+        line0 = preamble_lines[0].strip()  ###lines[0].strip()
+        if False:  ###line0.startswith('"""') and line0.endswith('"""'):
+            # Adjust the preamble lines and leave the first line alone."
+            preamble_lines = preamble_lines[1:]
+            v1.b = line0 + self.compute_body(lines[len(preamble_lines) :])
+        else:
+            # Remove the preamble lines from result_blocks[1], the first child block.
+            v1.b = self.compute_body(lines[len(preamble_lines) :])
 
         # Prepend section references to parent.b and create the corresponding section reference nodes.
         docstring_lines = find_docstring()
-        ### g.printObj(docstring_lines, tag=f"{g.my_name()} : docstring_lines")
-        ### g.trace('id(parent) 1', id(parent))
-
-
         if docstring_lines:
             declaration_lines = preamble_lines[len(docstring_lines) :]
             # Prepend the lines in reverse order.
@@ -355,7 +352,6 @@ class Python_Importer(Importer):
             docstring = find_docstring(child)
             if not docstring:
                 return
-
             child.b = child.b[len(docstring) :]
             if parent.h.startswith('class'):
                 parent_lines = g.splitLines(parent.b)
@@ -373,7 +369,8 @@ class Python_Importer(Importer):
                 docstring_list = [f"{' '*4}{z}" for z in g.splitLines(docstring)]
                 parent.b = ''.join(parent_lines[:n] + docstring_list + parent_lines[n:])
             else:
-                parent.b = docstring + parent.b
+                if 0:  ###  WRONG for top-level node!
+                    parent.b = docstring + parent.b
 
             # Delete references to empty children.
             # ric.remove_empty_nodes will delete the child later.
@@ -381,8 +378,7 @@ class Python_Importer(Importer):
                 parent.b = parent.b.replace(child.h, '')
         #@-others
 
-        # Move module-level docstrings.
-        move_docstring(parent)
+        # python_i.gen_block has already generated the top-level docstring.
 
         # Move class docstrings.
         for p in parent.subtree():
