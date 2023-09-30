@@ -167,44 +167,6 @@ class Importer:
         """
         name_s = block.name or f"unnamed {block.kind}"
         return f"{block.kind} {name_s}"
-    #@+node:ekr.20230612170928.1: *4* i.create_sections
-    def create_sections(self, parent: Position, result_blocks: list[Block]) -> None:
-        """
-        Importer.create_sections.
-
-        Create a section reference node for preamble code.
-
-        Insert a corresponding section reference into parent.b.
-
-        Subclasses may override this method to create multiple section reference nodes.
-        """
-        assert self.allow_preamble
-        assert parent == self.root
-        lines = self.lines
-        common_lws = self.compute_common_lws(result_blocks)
-        new_start = max(0, result_blocks[0].start_body - 1)
-        preamble = lines[:new_start]
-        if preamble and any(z for z in preamble):
-            child = parent.insertAsLastChild()
-            section_name = '<< preamble >>'
-            child.h = section_name
-            child.b = ''.join(preamble)
-
-            # Prepend the section reference.
-            parent.b = f"{common_lws}{section_name}\n" + parent.b
-
-            # Remove the preamble from block zero's lines.
-            block0 = result_blocks[0]
-            block0.start = new_start
-            block0.lines = block0.lines[new_start:]
-
-            # Patch the block zero's body text.
-            v = block0.v
-            v.b = ''.join(block0.lines).lstrip('\n').rstrip() + '\n'
-
-            # Adjust this block.
-            block_0 = result_blocks[0]
-            block_0.start = new_start
     #@+node:ekr.20230529075138.10: *4* i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
@@ -466,6 +428,11 @@ class Importer:
 
         if self.allow_preamble:
             self.create_sections(parent, result_blocks)
+
+        # Notes:
+        # 1. python_i.postprocess tweaks the results.
+        # 2. The caller (i.gen_lines) adds the @language and @tabwidth directives *last*.
+
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:
         """
