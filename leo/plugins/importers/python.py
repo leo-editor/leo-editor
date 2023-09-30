@@ -148,7 +148,6 @@ class Python_Importer(Importer):
 
         Insert corresponding section references into parent.b.
         """
-
         assert self.allow_preamble
         assert parent == self.root
         lines = self.lines
@@ -385,8 +384,14 @@ class Python_Importer(Importer):
                 move_docstring(p)
     #@+node:ekr.20230825095926.1: *3* python_i.postprocess
     def postprocess(self, parent: Position) -> None:
-        """Python_Importer.postprocess."""
-        # See #3514.
+        """
+        Python_Importer.postprocess.
+        """
+
+        # The following have already happened:
+        # i.gen_lines has appened @language and @tabwidth directive to parent.b.
+        # python_i.create_sections has already created section definitions for docstrings and preambles.
+
         self.adjust_headlines(parent)
         self.move_docstrings(parent)
         self.adjust_at_others(parent)

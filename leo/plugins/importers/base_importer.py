@@ -282,7 +282,6 @@ class Importer:
                 inner_block.parent_v = child_v
                 todo_list.append(inner_block)
 
-
         # Post pass: generate all bodies
         self.generate_all_bodies(parent, outer_block, result_blocks)
     #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies
@@ -427,12 +426,12 @@ class Importer:
         #@-<< i.generate_all_bodies: final checks >>
 
         if self.allow_preamble:
+            # Only Python_Importer sets allow_preamble.
             self.create_sections(parent, result_blocks)
 
-        # Notes:
-        # 1. python_i.postprocess tweaks the results.
-        # 2. The caller (i.gen_lines) adds the @language and @tabwidth directives *last*.
-
+        # Important: The following tweaks happen next:
+        # 1. i.gen_lines appends @language and @tabwidth directives to parent.b.
+        # 2. i.import_from_string calls x.postprocess.
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:
         """
@@ -463,6 +462,7 @@ class Importer:
 
         # Add trailing lines.
         parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
+
     #@+node:ekr.20230529075138.37: *4* i.import_from_string (driver)
     def import_from_string(self, parent: Position, s: str) -> None:
         """
