@@ -322,12 +322,13 @@ class Importer:
 
 
         # Post pass: generate all bodies
-        self.generate_all_bodies(parent, [outer_block], result_blocks)
+        ### self.generate_all_bodies(parent, [outer_block], result_blocks)
+        self.generate_all_bodies(parent, outer_block, result_blocks)
     #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies
-    ### def generate_all_bodies(self, parent: Position, outer_block: Block, result_blocks: list[Block]) -> None:
-    def generate_all_bodies(self, parent: Position, outer_blocks: list[Block], result_blocks: list[Block]) -> None:
+    def generate_all_bodies(self, parent: Position, outer_block: Block, result_blocks: list[Block]) -> None:
+    ### def generate_all_bodies(self, parent: Position, outer_blocks: list[Block], result_blocks: list[Block]) -> None:
 
-        outer_block = outer_blocks[0]  #### To be removed after restoring signature.
+        ### outer_block = outer_blocks[0]  #### To be removed after restoring signature.
 
         """Carefully generate bodies from the given blocks."""
         # Keys: VNodes containing @others directives.
