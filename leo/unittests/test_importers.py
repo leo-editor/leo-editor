@@ -116,10 +116,6 @@ class BaseTestImporter(LeoUnitTest):
         self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
         parent.h = f"{kind} {self.short_id}"
 
-        if 0:  ###
-            print('')
-            g.trace('   id(parent)', id(parent), 'id(parent.v)', id(parent.v), parent.h) ###
-
         # createOutline calls Importer.gen_lines and Importer.check.
         test_s = textwrap.dedent(s).strip() + '\n'
 

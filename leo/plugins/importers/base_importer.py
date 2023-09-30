@@ -322,15 +322,11 @@ class Importer:
 
 
         # Post pass: generate all bodies
-        ### self.generate_all_bodies(parent, [outer_block], result_blocks)
         self.generate_all_bodies(parent, outer_block, result_blocks)
     #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies
     def generate_all_bodies(self, parent: Position, outer_block: Block, result_blocks: list[Block]) -> None:
-    ### def generate_all_bodies(self, parent: Position, outer_blocks: list[Block], result_blocks: list[Block]) -> None:
-
-        ### outer_block = outer_blocks[0]  #### To be removed after restoring signature.
-
         """Carefully generate bodies from the given blocks."""
+
         # Keys: VNodes containing @others directives.
         at_others_dict: dict[VNode, bool] = {}
         seen_blocks: dict[Block, bool] = {}
@@ -415,11 +411,8 @@ class Importer:
             parent.b = self.compute_body(outer_block.lines)
             return
 
-        todo_list: list[Block]  ### Put below.
-
         outer_block.v = parent.v
-        todo_list = [outer_block]
-
+        todo_list: list[Block] = [outer_block]
 
         # The main loop.
         while todo_list:
