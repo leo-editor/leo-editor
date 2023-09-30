@@ -2247,8 +2247,6 @@ def pdb(message: str = '') -> None:
 #@+node:ekr.20050819064157: *4* g.objToString & aliases
 def objToString(obj: Any, *, indent: int = 0, tag: str = None, width: int = 120) -> str:
     """Pretty print any Python object to a string."""
-    if not tag:
-        tag = g.caller()
     if isinstance(obj, dict):
         if obj:
             result_list = ['{\n']
@@ -2297,8 +2295,6 @@ def sleep(n: float) -> None:
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
 def printObj(obj: Any, *, tag: str = None, indent: int = 0) -> None:
     """Pretty print any Python object using g.pr."""
-    if not tag:
-        tag = g.caller()
     g.pr(objToString(obj, indent=indent, tag=tag))
 
 printDict = printObj
