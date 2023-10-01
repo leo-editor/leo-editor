@@ -188,15 +188,8 @@ class Python_Importer(Importer):
         """
         Python_Importer.postprocess.
         """
-
-        ### common_lws = self.compute_common_lws(result_blocks)
-
-        preamble_start = max(0, result_blocks[1].start_body - 1)
-        preamble_lines = self.lines[:preamble_start]
-        preamble_s = ''.join(preamble_lines)
-
         self.adjust_headlines(parent)
-        self.move_module_preamble(preamble_s, parent)
+        self.move_module_preamble(self.lines, parent, result_blocks)
         self.move_class_docstrings(parent)
         self.adjust_at_others(parent)
     #@+node:ekr.20230830113521.1: *4* python_i.adjust_at_others
@@ -302,13 +295,18 @@ class Python_Importer(Importer):
                     if docstring:
                         move_class_docstring(docstring, child1, p)
     #@+node:ekr.20230930181855.1: *4* python_i.move_module_preamble
-    def move_module_preamble(self, preamble_s: str, parent: Position) -> None:
+    def move_module_preamble(self, lines: list[str], parent: Position, result_blocks: list[Block]) -> None:
         """Move the preamble lines from the parent's first child to the start of parent.b."""
-        if not preamble_s.strip():
-            return
         child1 = parent.firstChild()
         if not child1:
             return
+        # Compute the preamble.
+        preamble_start = max(0, result_blocks[1].start_body - 1)
+        preamble_lines = lines[:preamble_start]
+        preamble_s = ''.join(preamble_lines)
+        if not preamble_s.strip():
+            return
+        # Adjust the bodies.
         parent.b = preamble_s + parent.b
         child1.b = child1.b.replace(preamble_s, '')
         child1.b = child1.b.lstrip('\n')
