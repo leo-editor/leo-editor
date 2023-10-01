@@ -367,7 +367,7 @@ class Importer:
         # Note: i.gen_lines adds the @language and @tabwidth directives.
         if not outer_block.child_blocks:
             # Put everything in parent.b.
-            # Do *not* change the headline!
+            # Do *not* change parent.h!
             parent.b = self.compute_body(outer_block.lines)
             return
 
@@ -403,6 +403,7 @@ class Importer:
 
             # Handle the block and any child blocks.
             if block != outer_block:
+                # Do *not* change parent.h!
                 block.v.h = self.compute_headline(block)
             if block.child_blocks:
                 handle_block_with_children(block, block_common_lws)
