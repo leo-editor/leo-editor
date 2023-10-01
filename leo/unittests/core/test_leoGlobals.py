@@ -205,7 +205,6 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20230330042647.1: *4* TestGlobals._make_tree
     def _make_tree(self, c, root_h=None):
         """Make a test tree for c."""
-        ### c = self.c
         root = c.rootPosition()
         root.h = root_h or 'Root'
         root.b = "def root():\n    pass\n"

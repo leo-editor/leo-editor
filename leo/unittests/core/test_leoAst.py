@@ -32,7 +32,7 @@ from leo.core import leoGlobals as g
 
 from leo.core.leoAst import AstNotEqual
 from leo.core.leoAst import Fstringify, Orange
-from leo.core.leoAst import Token, TokenOrderGenerator  ###, TokenOrderTraverser
+from leo.core.leoAst import Token, TokenOrderGenerator
 from leo.core.leoAst import get_encoding_directive, read_file, strip_BOM
 from leo.core.leoAst import make_tokens, parse_ast, tokens_to_string
 from leo.core.leoAst import dump_ast, dump_contents, dump_tokens, dump_tree, _op_names
