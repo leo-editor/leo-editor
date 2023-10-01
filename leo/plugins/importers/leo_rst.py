@@ -7,7 +7,7 @@ This module must **not** be named rst, so as not to conflict with docutils.
 """
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from leo.plugins.importers.base_importer import Block, Importer
+from leo.plugins.importers.base_importer import Importer
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
@@ -26,9 +26,9 @@ class Rst_Importer(Importer):
 
     #@+others
     #@+node:ekr.20230529072922.1: *3* rst_i.gen_block & helpers
-    def gen_block(self, block: Block, parent: Position) -> None:
+    def gen_block(self, parent: Position) -> None:
         """
-        Rst_Importer: gen_block. The `block` arg is unused.
+        Rst_Importer: gen_block.
 
         Node generator for reStructuredText.
 

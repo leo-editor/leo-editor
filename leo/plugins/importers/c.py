@@ -49,7 +49,7 @@ class C_Importer(Importer):
         Return a list of Blocks, that is, tuples(name, start, start_body, end).
         """
         lines = self.guide_lines
-        i, prev_i, result = i1, i1, []
+        i, prev_i, results = i1, i1, []
         while i < i2:
             s = lines[i]
             i += 1
@@ -66,7 +66,8 @@ class C_Importer(Importer):
                     ):
                         end = self.find_end_of_block(i, i2)
                         assert i1 + 1 <= end <= i2, (i1, end, i2)
-                        result.append((kind, name, prev_i, i, end))
+                        block = Block(kind, name, start=prev_i, start_body=i + 1, end=end, lines=self.lines)
+                        results.append(block)
                         i = prev_i = end
                         break
                 elif m2 and i < i2:
@@ -80,10 +81,11 @@ class C_Importer(Importer):
                     ):
                         end = self.find_end_of_block(i + 1, i2)
                         assert i1 + 1 <= end <= i2, (i1, end, i2)
-                        result.append(('func', name, prev_i, i + 1, end))
+                        block = Block('func', name, start=prev_i, start_body=i + 1, end=end, lines=self.lines)
+                        results.append(block)
                         i = prev_i = end
                         break
-        return result
+        return results
     #@-others
 #@-others
 

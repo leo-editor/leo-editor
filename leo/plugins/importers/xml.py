@@ -52,10 +52,8 @@ class Xml_Importer(Importer):
     #@+node:ekr.20230519053541.1: *3* xml_i.compute_headline
     def compute_headline(self, block: Block) -> str:
         """Xml_Importer.compute_headline."""
-
-        child_kind, child_name, child_start, child_start_body, child_end = block
-        n = max(child_start, child_start_body - 1)
-        return self.lines[n].strip()
+        n = max(block.start, block.start_body - 1)
+        return block.lines[n].strip()
     #@+node:ekr.20230518081757.1: *3* xml_i.find_end_of_block
     def find_end_of_block(self, i1: int, i2: int) -> int:
         """

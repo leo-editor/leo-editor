@@ -4,7 +4,7 @@
 from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
-from leo.plugins.importers.base_importer import Block, Importer
+from leo.plugins.importers.base_importer import Importer
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
@@ -19,9 +19,9 @@ class Markdown_Importer(Importer):
 
     #@+others
     #@+node:ekr.20230528165149.1: *3* md_i.gen_block
-    def gen_block(self, block: Block, parent: Position) -> None:
+    def gen_block(self, parent: Position) -> None:
         """
-        Markdown_Importer: gen_block. The `block` arg is unused.
+        Markdown_Importer: gen_block.
 
         Create all descendant blocks and their nodes from self.lines.
 

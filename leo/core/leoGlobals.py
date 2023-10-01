@@ -2136,7 +2136,7 @@ def _assert(condition: Any, show_callers: bool = True) -> bool:
     if show_callers:
         g.es_print(g.callers())
     return False
-#@+node:ekr.20051023083258: *4* g.callers, caller,  _callerName, callers_list
+#@+node:ekr.20051023083258: *4* g.callers, caller, my_name, etc.
 #@+node:ekr.20230128025911.1: *5* g.callers
 def callers(n: int = 4) -> str:
     """
@@ -2196,6 +2196,10 @@ def _callerName(n: int) -> str:
 def caller(i: int = 1) -> str:
     """Return the caller name i levels up the stack."""
     return g.callers(i + 1).split(',')[0]
+#@+node:ekr.20230929150105.1: *5* g.my_name
+def my_name(i: int = 1) -> str:
+    """Return the name of the function or method calling this function"""
+    return g.callers(-1).split(',')[0]
 #@+node:ekr.20031218072017.3109: *4* g.dump
 def dump(s: str) -> str:
     out = ""
@@ -2405,7 +2409,7 @@ def sleep(n: float) -> None:
     from time import sleep  # type:ignore
     sleep(n)  # type:ignore
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
-def printObj(obj: Any, tag: str = None, indent: int = 0) -> None:
+def printObj(obj: Any, *, tag: str = None, indent: int = 0) -> None:
     """Pretty print any Python object using g.pr."""
     g.pr(objToString(obj, indent=indent, tag=tag))
 

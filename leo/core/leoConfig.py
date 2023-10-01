@@ -1794,7 +1794,7 @@ class LocalConfigManager:
     #@+node:ekr.20120215072959.12536: *5* c.config.getRatio
     def getRatio(self, setting: str) -> float:
         """
-        Return the value of @float setting.
+        Return the value of @float setting
 
         Warn if the value is less than 0.0 or greater than 1.0.
         """

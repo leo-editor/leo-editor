@@ -41,8 +41,8 @@ class TestLeoImport(BaseTestImporter):
             (1, 'a1', ''),
             (1, 'a2', ''),
         ))
-    #@+node:ekr.20221104065722.1: *3* TestLeoImport.test_parse_body
-    def test_parse_body(self):
+    #@+node:ekr.20221104065722.1: *3* TestLeoImport.test_python_importer_parse_body
+    def test_python_importer_parse_body(self):
 
         c = self.c
         u = c.undoer
@@ -64,15 +64,12 @@ class TestLeoImport(BaseTestImporter):
 
         expected_results = (
             (0, '',  # Ignore the top-level headline.
-                '<< target: preamble >>\n'
+                'import os\n'
+                '\n'
                 '@others\n'
                 'return new_func\n'
                 '@language python\n'
                 '@tabwidth -4\n'
-            ),
-            (1, '<< target: preamble >>',
-                'import os\n'
-                '\n'
             ),
             (1, 'function: macro',
                 'def macro(func):\n'
