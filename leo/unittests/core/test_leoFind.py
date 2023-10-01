@@ -277,8 +277,6 @@ class TestFind(LeoUnitTest):
                 count = result_dict['total_matches']
                 self.assertEqual(count, expected_count, msg=find_text)
 
-        ### return
-
         # Test 2.
         init()
         settings.suboutline_only = True

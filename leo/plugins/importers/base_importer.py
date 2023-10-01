@@ -154,7 +154,6 @@ class Importer:
         """
         s = ''.join(lines)
         return s.lstrip('\n').rstrip() + '\n' if s.strip() else ''
-        ###return s.rstrip() + '\n' if s.strip() else ''
     #@+node:ekr.20230529075138.13: *4* i.compute_headline
     def compute_headline(self, block: Block) -> str:
         """
