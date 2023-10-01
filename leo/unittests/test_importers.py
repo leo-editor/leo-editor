@@ -550,10 +550,10 @@ class TestCoffeescript(BaseTestImporter):
     ext = '.coffee'
 
     #@+others
-    #@+node:ekr.20210904065459.15: *3* TestCoffeescript.test_1
+    #@+node:ekr.20210904065459.15: *3* TestCoffeescript.test_coffeescript_1
     #@@tabwidth -2 # Required
 
-    def test_1(self):
+    def test_coffeescript_1(self):
 
         s = r"""
         # Js2coffee relies on Narcissus's parser.
@@ -572,17 +572,15 @@ class TestCoffeescript(BaseTestImporter):
 
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    '<< TestCoffeescript.test_1: preamble >>\n'
-                    '@others\n'
-                    '@language coffeescript\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, '<< TestCoffeescript.test_1: preamble >>',
                     "# Js2coffee relies on Narcissus's parser.\n"
                     '\n'
                     "{parser} = @Narcissus or require('./narcissus_packed')\n"
                     '\n'
                     '# Main entry point\n'
+                    '\n'
+                    '@others\n'
+                    '@language coffeescript\n'
+                    '@tabwidth -4\n'
             ),
             (1, 'function: buildCoffee',
                     'buildCoffee = (str) ->\n'
@@ -595,10 +593,10 @@ class TestCoffeescript(BaseTestImporter):
         )
         self.new_run_test(s, expected_results)
 
-    #@+node:ekr.20210904065459.16: *3* TestCoffeescript.test_2
+    #@+node:ekr.20210904065459.16: *3* TestCoffeescript.test_coffeescript_2
     #@@tabwidth -2 # Required
 
-    def test_2(self):
+    def test_coffeescript_2(self):
 
         s = """
           class Builder
@@ -750,8 +748,8 @@ class TestCython(BaseTestImporter):
 
     ext = '.pyx'
     #@+others
-    #@+node:ekr.20210904065459.11: *3* TestCython.test_importer
-    def test_importer(self):
+    #@+node:ekr.20210904065459.11: *3* TestCython.test_cython_importer
+    def test_cython_importer(self):
 
         s = '''
             from libc.math cimport pow
@@ -770,13 +768,11 @@ class TestCython(BaseTestImporter):
         '''
         expected_results = (
             (0, '',  # check_outlines ignores the first headline.
-                    '<< TestCython.test_importer: preamble >>\n'
+                    'from libc.math cimport pow\n'
+                    '\n'
                     '@others\n'
                     '@language cython\n'
                     '@tabwidth -4\n'
-            ),
-            (1, '<< TestCython.test_importer: preamble >>',
-                    'from libc.math cimport pow\n'
             ),
             (1, 'cdef double square_and_add',
                     'cdef double square_and_add (double x):\n'
@@ -2970,15 +2966,12 @@ class TestPython(BaseTestImporter):
 
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    '<< TestPython.test_general_test_1: preamble >>\n'
+                    'import sys\n'
                     '@others\n'
                     "if __name__ == '__main__':\n"
                     '    main()\n'
                     '@language python\n'
                     '@tabwidth -4\n'
-            ),
-            (1, '<< TestPython.test_general_test_1: preamble >>',
-                    'import sys\n'
             ),
             (1, 'function: f1',
                     'def f1():\n'
@@ -3205,16 +3198,12 @@ class TestPython(BaseTestImporter):
         # Note: new_gen_block deletes leading and trailing whitespace from all blocks.
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    '<< TestPython.test_oneliners: preamble >>\n'
+                    'import sys\n'
                     '@others\n'
-                    ### '\n'
                     "if __name__ == '__main__':\n"
                     '    main()\n'
                     '@language python\n'
                     '@tabwidth -4\n'
-            ),
-            (1, '<< TestPython.test_oneliners: preamble >>',
-                    'import sys\n'
             ),
             (1, 'function: f1',
                     'def f1():\n'
@@ -3238,7 +3227,7 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20230825071437.1: *3* TestPython.test_post_process (fails)
+    #@+node:ekr.20230825071437.1: *3* TestPython.test_post_process
     def test_post_process(self):
 
         s = '''
@@ -3260,20 +3249,17 @@ class TestPython(BaseTestImporter):
         expected_results = (
             (0, '',  # Ignore the first headline.
                     '"""Module-level docstring"""\n'
-                    '<< TestPython.test_post_process: preamble >>\n'
+                    '\n'
+                    'from __future__ import annotations\n'
+                    '\n'
                     '@others\n'
                     '@language python\n'
                     '@tabwidth -4\n'
             ),
-            (1, '<< TestPython.test_post_process: preamble >>',
-                    '\n'
-                    'from __future__ import annotations\n'
-                    ### '\n'
-            ),
             (1, 'class C1',
                     'class C1:\n'
                     '    """Class docstring"""\n'
-                    '\n'
+                    ### '\n'
                     '    @others\n'
             ),
             (2, 'C1.__init__',
@@ -3311,27 +3297,22 @@ class TestPython(BaseTestImporter):
 
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    '<< TestPython.test_long_outer_docstring: docstring >>\n'
-                    '<< TestPython.test_long_outer_docstring: declarations >>\n'
-                    '@others\n'
-                    '@language python\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, '<< TestPython.test_long_outer_docstring: docstring >>',
                     '"""\n'
                     'Multi-line module-level docstring\n'
                     '\n'
                     'Last line.\n'
                     '"""\n'
-            ),
-            (1, '<< TestPython.test_long_outer_docstring: declarations >>',
-                    ### '\n'
+                    '\n'
                     'from __future__ import annotations\n'
+                    '\n'
+                    '@others\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
             ),
             (1, 'class C1',
                     'class C1:\n'
                     '    """Class docstring"""\n'
-                    '\n'
+                    ### '\n'
                     '    @others\n'
             ),
             (2, 'C1.__init__',
@@ -3342,45 +3323,6 @@ class TestPython(BaseTestImporter):
                    'def f1():\n'
                    '    pass\n'
             ),
-        )
-        self.new_run_test(s, expected_results)
-    #@+node:ekr.20230612085239.1: *3* TestPython.test_preamble
-    def test_preamble(self):
-
-        s = '''
-            # This file is part of Leo: https://leo-editor.github.io/leo-editor
-            """
-            This is a docstring.
-            """
-            import sys
-            from leo.core import leoGlobals as g
-
-            def f():
-                g.trace()
-        '''
-        expected_results = (
-            (0, '',  # Ignore the first headline.
-                    '<< TestPython.test_preamble: docstring >>\n'
-                    '<< TestPython.test_preamble: declarations >>\n'
-                   '@others\n'
-                   '@language python\n'
-                   '@tabwidth -4\n'
-            ),
-            (1, '<< TestPython.test_preamble: docstring >>',
-                    '# This file is part of Leo: https://leo-editor.github.io/leo-editor\n'
-                    '"""\n'
-                    'This is a docstring.\n'
-                    '"""\n'
-            ),
-            (1, '<< TestPython.test_preamble: declarations >>',
-                    'import sys\n'
-                    'from leo.core import leoGlobals as g\n'
-                    ### '\n'
-            ),
-            (1, 'function: f',
-                   'def f():\n'
-                   '    g.trace()\n'
-            )
         )
         self.new_run_test(s, expected_results)
     #@+node:vitalije.20211207183645.1: *3* TestPython.test_strange_indentation
