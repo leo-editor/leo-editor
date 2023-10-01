@@ -3259,7 +3259,6 @@ class TestPython(BaseTestImporter):
             (1, 'class C1',
                     'class C1:\n'
                     '    """Class docstring"""\n'
-                    ### '\n'
                     '    @others\n'
             ),
             (2, 'C1.__init__',
@@ -3312,7 +3311,6 @@ class TestPython(BaseTestImporter):
             (1, 'class C1',
                     'class C1:\n'
                     '    """Class docstring"""\n'
-                    ### '\n'
                     '    @others\n'
             ),
             (2, 'C1.__init__',

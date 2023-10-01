@@ -238,11 +238,11 @@ class Importer:
         Note:  i.gen_lines adds the @language and @tabwidth directives.
         """
 
-
         todo_list: list[Block] = []
         result_blocks: list[Block] = []
 
         # Add an outer block to the results list.
+
         outer_block = Block('outer', 'outer-block', 0, 0, len(self.lines), self.lines)
         result_blocks.append(outer_block)
 
@@ -367,7 +367,7 @@ class Importer:
         # Note: i.gen_lines adds the @language and @tabwidth directives.
         if not outer_block.child_blocks:
             # Put everything in parent.b.
-            parent.h = self.compute_headline(outer_block)
+            # Do *not* change the headline!
             parent.b = self.compute_body(outer_block.lines)
             return
 
@@ -404,7 +404,6 @@ class Importer:
             # Handle the block and any child blocks.
             if block != outer_block:
                 block.v.h = self.compute_headline(block)
-
             if block.child_blocks:
                 handle_block_with_children(block, block_common_lws)
             else:
