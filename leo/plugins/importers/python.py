@@ -2,7 +2,6 @@
 #@+node:ekr.20211209153303.1: * @file ../plugins/importers/python.py
 """The new, tokenize based, @auto importer for Python."""
 from __future__ import annotations
-import os
 import re
 from typing import Optional, TYPE_CHECKING
 import leo.core.leoGlobals as g
@@ -20,7 +19,6 @@ class Python_Importer(Importer):
 
     language = 'python'
     string_list = ['"""', "'''", '"', "'"]  # longest first.
-    allow_preamble = True
 
     # The default patterns. Overridden in the Cython_Importer class.
     # Group 1 matches the name of the class/def.
@@ -35,40 +33,6 @@ class Python_Importer(Importer):
     )
 
     #@+others
-    #@+node:ekr.20230825100219.1: *3* python_i.adjust_headlines
-    def adjust_headlines(self, parent: Position) -> None:
-        """
-        Add class names for all methods.
-
-        Change 'def' to 'function:' for all non-methods.
-        """
-        class_pat = re.compile(r'\s*class\s+(\w+)')
-
-        for p in parent.subtree():
-            if p.h.startswith('def '):
-                # Look up the tree for the nearest class.
-                for z in p.parents():
-                    m = class_pat.match(z.h)
-                    if m:
-                        p.h = f"{m.group(1)}.{p.h[4:].strip()}"
-                        break
-                else:
-                    if self.language == 'python':
-                        p.h = f"function: {p.h[4:].strip()}"
-    #@+node:ekr.20230830113521.1: *3* python_i.adjust_at_others
-    def adjust_at_others(self, parent: Position) -> None:
-        """
-        Add a blank line before @others, and remove the leading blank line in the first child.
-        """
-        for p in parent.subtree():
-            if p.h.startswith('class') and p.hasChildren():
-                child = p.firstChild()
-                lines = g.splitLines(p.b)
-                for i, line in enumerate(lines):
-                    if line.strip().startswith('@others') and child.b.startswith('\n'):
-                        p.b = ''.join(lines[:i]) + '\n' + ''.join(lines[i:])
-                        child.b = child.b[1:]
-                        break
     #@+node:ekr.20230830051934.1: *3* python_i.delete_comments_and_strings
     string_pat1 = re.compile(r'([fFrR]*)("""|")')
     string_pat2 = re.compile(r"([fFrR]*)('''|')")
@@ -132,64 +96,16 @@ class Python_Importer(Importer):
             result.append(''.join(result_line))
         assert len(result) == len(lines)  # A crucial invariant.
         return result
-    #@+node:ekr.20230612171619.1: *3* python_i.create_preamble
-    def create_preamble(self, blocks: list[Block], parent: Position, result_list: list[str]) -> None:
-        """
-        Python_Importer.create_preamble:
-        Create preamble nodes for the module docstrings and everything else.
-        """
-        assert self.allow_preamble
-        assert parent == self.root
-        lines = self.lines
-        common_lws = self.compute_common_lws(blocks)
-        child_kind, child_name, child_start, child_start_body, child_end = blocks[0]
-        new_start = max(0, child_start_body - 1)
-        preamble_lines = lines[:new_start]
-        if not preamble_lines or not any(z for z in preamble_lines):
-            return
-
-        def make_node(index: int, preamble_lines: list[str], title: str) -> None:
-            child = parent.insertAsLastChild()
-            parent_s = os.path.split(parent.h)[1].replace('@file', '').replace('@clean', '').strip()
-            section_name = f"<< {parent_s}: {title} >>"
-            child.h = section_name
-            child.b = ''.join(preamble_lines)
-            result_list.insert(index, f"{common_lws}{section_name}\n")
-
-        def find_docstring() -> list[str]:
-            i = 0
-            while i < len(preamble_lines):
-                for delim in ('"""', "'''"):
-                    if preamble_lines[i].count(delim) == 1:
-                        i += 1
-                        while i < len(preamble_lines):
-                            if preamble_lines[i].count(delim) == 1:
-                                return preamble_lines[: i + 1]
-                            i += 1
-                        return []  # Mal-formed docstring.
-                i += 1
-            return []
-
-        docstring_lines = find_docstring()
-        if docstring_lines:
-            make_node(0, docstring_lines, "docstring")
-            declaration_lines = preamble_lines[len(docstring_lines) :]
-            if declaration_lines:
-                make_node(1, declaration_lines, "declarations")
-        else:
-            make_node(0, preamble_lines, "preamble")
-
-        # Adjust this block.
-        blocks[0] = child_kind, child_name, new_start, child_start_body, child_end
     #@+node:ekr.20230514140918.1: *3* python_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
         Python_Importer.find_blocks: override Importer.find_blocks.
 
-        Find all blocks in the given range of *guide* lines from which blanks
-        and tabs have been deleted.
+        Using self.block_patterns and self.guide_lines, return a list of all
+        blocks in the given range of *guide* lines.
 
-        Return a list of Blocks, that is, tuples(name, start, start_body, end).
+        **Important**: An @others directive will refer to the returned blocks,
+                       so there must be *no gaps* between blocks!
         """
         i, prev_i, results = i1, i1, []
 
@@ -200,6 +116,7 @@ class Python_Importer(Importer):
         # Look behind to see what the previous block was.
         prev_block_line = self.guide_lines[i1 - 1] if i1 > 0 else ''
         while i < i2:
+            progress = i
             s = self.guide_lines[i]
             i += 1
             for kind, pattern in self.block_patterns:
@@ -210,16 +127,18 @@ class Python_Importer(Importer):
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
 
-                    # #3517: Don't generated nested defs.
+                    # #3517: Don't generate nested defs.
                     if (kind == 'def'
                         and prev_block_line.strip().startswith('def ')
                         and lws_n(prev_block_line) < lws_n(s)
                     ):
-                        pass
+                        i = end
                     else:
-                        results.append((kind, name, prev_i, i, end))
+                        block = Block(kind, name, start=prev_i, start_body=i, end=end, lines=self.lines)
+                        results.append(block)
                         i = prev_i = end
                     break
+            assert i > progress, g.callers()
         return results
     #@+node:ekr.20230514140918.4: *3* python_i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
@@ -233,6 +152,9 @@ class Python_Importer(Importer):
         def lws_n(s: str) -> int:
             """Return the length of the leading whitespace for s."""
             return len(s) - len(s.lstrip())
+
+        if i >= i2:
+            return i2
 
         prev_line = self.guide_lines[i - 1]
         kinds = ('class', 'def', '->')  # '->' denotes a coffeescript function.
@@ -261,18 +183,58 @@ class Python_Importer(Importer):
                     # A comment line.
                     tail_lines += 1
         return i2 - tail_lines
-    #@+node:ekr.20230825111112.1: *3* python_i.move_docstrings
-    def move_docstrings(self, parent: Position) -> None:
+    #@+node:ekr.20230825095926.1: *3* python_i.postprocess & helpers
+    def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:
         """
-        Move docstrings to their most convenient locations.
+        Python_Importer.postprocess.
         """
 
-        delims = ('"""', "'''")
+        #@+others  # Define helper functions.
+        #@+node:ekr.20230830113521.1: *4* function: adjust_at_others
+        def adjust_at_others(parent: Position) -> None:
+            """
+            Add a blank line before @others, and remove the leading blank line in the first child.
+            """
+            for p in parent.subtree():
+                if p.h.startswith('class') and p.hasChildren():
+                    child = p.firstChild()
+                    lines = g.splitLines(p.b)
+                    for i, line in enumerate(lines):
+                        if line.strip().startswith('@others') and child.b.startswith('\n'):
+                            p.b = ''.join(lines[:i]) + '\n' + ''.join(lines[i:])
+                            child.b = child.b[1:]
+                            break
+        #@+node:ekr.20230825100219.1: *4* function: adjust_headlines
+        def adjust_headlines(parent: Position) -> None:
+            """
+            python_i.adjust_headlines.
 
-        #@+others  # define helper functions
-        #@+node:ekr.20230825164231.1: *4* function: find_docstrings
+            coffee_script_i also uses this method.
+
+            Add class names for all methods.
+
+            Change 'def' to 'function:' for all non-methods.
+            """
+            for child in parent.subtree():
+                found = False
+                if child.h.startswith('def '):
+                    # Look up the tree for the nearest class.
+                    for ancestor in child.parents():
+                        if ancestor == parent:
+                            break
+                        m = self.class_pat.match(ancestor.h)
+                        if m:
+                            found = True
+                            # Replace 'def ' by the class name + '.'
+                            child.h = f"{m.group(1)}.{child.h[4:].strip()}"
+                            break
+                    if not found:
+                        # Replace 'def ' by 'function'
+                        child.h = f"function: {child.h[4:].strip()}"
+        #@+node:ekr.20230825164231.1: *4* function: find_docstring
         def find_docstring(p: Position) -> Optional[str]:
-            """Righting a regex that will return a docstring is too tricky."""
+            """Creating a regex that returns a docstring is too tricky."""
+            delims = ('"""', "'''")
             s_strip = p.b.strip()
             if not s_strip:
                 return None
@@ -289,55 +251,64 @@ class Python_Importer(Importer):
                 i += 1
             return None
 
-        #@+node:ekr.20230825164234.1: *4* function: move_docstring
-        def move_docstring(parent: Position) -> None:
-            """Move a docstring from the child (or next sibling) to the parent."""
-            child = parent.firstChild() or parent.next()
-            if not child:
-                return
-            docstring = find_docstring(child)
-            if not docstring:
+        #@+node:ekr.20230825164234.1: *4* function: move_class_docstring
+        def move_class_docstring(docstring: str, child_p: Position, class_p: Position) -> None:
+            """Move the docstring from child_p to class_p."""
+
+            # Remove the docstring from child_p.b.
+            child_p.b = child_p.b.replace(docstring, '')
+            child_p.b = child_p.b.lstrip('\n')
+
+            # Carefully add the docstring to class_p.b.
+            class_lines = g.splitLines(class_p.b)
+            # Count the number of lines before the class line.
+            n = 0
+            while n < len(class_lines):
+                line = class_lines[n]
+                n += 1
+                if line.strip().startswith('class '):
+                    break
+            if n > len(class_lines):
+                g.printObj(g.splitLines(class_p.b), tag=f"No class line: {class_p.h}")
                 return
 
-            child.b = child.b[len(docstring) :]
-            if parent.h.startswith('class'):
-                parent_lines = g.splitLines(parent.b)
-                # Count the number of parent lines before the class line.
-                n = 0
-                while n < len(parent_lines):
-                    line = parent_lines[n]
-                    n += 1
-                    if line.strip().startswith('class '):
-                        break
-                if n > len(parent_lines):
-                    g.printObj(g.splitLines(parent.b), tag=f"Noclass line: {p.h}")
-                    return
-                # This isn't perfect in some situations.
-                docstring_list = [f"{' '*4}{z}" for z in g.splitLines(docstring)]
-                parent.b = ''.join(parent_lines[:n] + docstring_list + parent_lines[n:])
-            else:
-                parent.b = docstring + parent.b
-
-            # Delete references to empty children.
-            # ric.remove_empty_nodes will delete the child later.
-            if not child.b.strip():
-                parent.b = parent.b.replace(child.h, '')
+            # This isn't perfect in some situations.
+            docstring_list = [f"{' '*4}{z}" for z in g.splitLines(docstring)]
+            class_p.b = ''.join(class_lines[:n] + docstring_list + class_lines[n:])
+        #@+node:ekr.20230825111112.1: *4* function: move_class_docstrings
+        def move_class_docstrings(parent: Position) -> None:
+            """
+            Move class docstrings from the class node's first child to the class node.
+            """
+            for p in parent.subtree():
+                if p.h.startswith('class '):
+                    child1 = p.firstChild()
+                    if child1:
+                        docstring = find_docstring(child1)
+                        if docstring:
+                            move_class_docstring(docstring, child1, p)
+        #@+node:ekr.20230930181855.1: *4* function: move_module_preamble
+        def move_module_preamble(lines: list[str], parent: Position, result_blocks: list[Block]) -> None:
+            """Move the preamble lines from the parent's first child to the start of parent.b."""
+            child1 = parent.firstChild()
+            if not child1:
+                return
+            # Compute the preamble.
+            preamble_start = max(0, result_blocks[1].start_body - 1)
+            preamble_lines = lines[:preamble_start]
+            preamble_s = ''.join(preamble_lines)
+            if not preamble_s.strip():
+                return
+            # Adjust the bodies.
+            parent.b = preamble_s + parent.b
+            child1.b = child1.b.replace(preamble_s, '')
+            child1.b = child1.b.lstrip('\n')
         #@-others
 
-        # Move module-level docstrings.
-        move_docstring(parent)
-
-        # Move class docstrings.
-        for p in parent.subtree():
-            if p.h.startswith('class '):
-                move_docstring(p)
-    #@+node:ekr.20230825095926.1: *3* python_i.postprocess
-    def postprocess(self, parent: Position) -> None:
-        """Python_Importer.postprocess."""
-        # See #3514.
-        self.adjust_headlines(parent)
-        self.move_docstrings(parent)
-        self.adjust_at_others(parent)
+        adjust_headlines(parent)
+        move_module_preamble(self.lines, parent, result_blocks)
+        move_class_docstrings(parent)
+        adjust_at_others(parent)
     #@-others
 #@-others
 

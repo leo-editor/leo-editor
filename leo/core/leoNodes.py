@@ -1567,6 +1567,15 @@ class Position:
         p2.v.iconVal = 0
         p2._linkAfter(p)
         return p2
+    #@+node:ekr.20230922021736.1: *4* p.insertAsFirstChild
+    def insertAsFirstChild(self) -> Position:
+        """
+        Insert a new VNode as the last child of self.
+
+        Return the newly created position.
+        """
+        p = self
+        return p.insertAsNthChild(0)
     #@+node:ekr.20040303175026.4: *4* p.insertAsLastChild
     def insertAsLastChild(self) -> Position:
         """
