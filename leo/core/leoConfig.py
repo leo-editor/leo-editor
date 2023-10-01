@@ -9,7 +9,7 @@ import os
 import sys
 import re
 import textwrap
-from typing import Any, Generator, TYPE_CHECKING
+from typing import Any, Generator, Optional, TYPE_CHECKING
 from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
@@ -1447,10 +1447,10 @@ class GlobalConfigManager:
         val = self.get('openwithtable', 'openwithtable')
         return val
     #@+node:ekr.20041122070752: *4* gcm.getRatio
-    def getRatio(self, setting: str) -> float:
-        """Return the value of @float setting.
-
-        Warn if the value is less than 0.0 or greater than 1.0."""
+    def getRatio(self, setting: str) -> Optional[float]:
+        """
+        Return the value of @float setting, or None if there is an error.
+        """
         val = self.get(setting, "ratio")
         try:
             val = float(val)
@@ -1792,11 +1792,9 @@ class LocalConfigManager:
         val = self.get('openwithtable', 'openwithtable')
         return val
     #@+node:ekr.20120215072959.12536: *5* c.config.getRatio
-    def getRatio(self, setting: str) -> float:
+    def getRatio(self, setting: str) -> Optional[float]:
         """
-        Return the value of @float setting
-
-        Warn if the value is less than 0.0 or greater than 1.0.
+        Return the value of @float setting, or None if there is an error.
         """
         val = self.get(setting, "ratio")
         try:
