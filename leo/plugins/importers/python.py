@@ -188,63 +188,53 @@ class Python_Importer(Importer):
         """
         Python_Importer.postprocess.
         """
-        self.adjust_headlines(parent)
-        self.move_module_preamble(self.lines, parent, result_blocks)
-        self.move_class_docstrings(parent)
-        self.adjust_at_others(parent)
-    #@+node:ekr.20230830113521.1: *4* python_i.adjust_at_others
-    def adjust_at_others(self, parent: Position) -> None:
-        """
-        Add a blank line before @others, and remove the leading blank line in the first child.
-        """
-        for p in parent.subtree():
-            if p.h.startswith('class') and p.hasChildren():
-                child = p.firstChild()
-                lines = g.splitLines(p.b)
-                for i, line in enumerate(lines):
-                    if line.strip().startswith('@others') and child.b.startswith('\n'):
-                        p.b = ''.join(lines[:i]) + '\n' + ''.join(lines[i:])
-                        child.b = child.b[1:]
-                        break
-    #@+node:ekr.20230825100219.1: *4* python_i.adjust_headlines
-    def adjust_headlines(self, parent: Position) -> None:
-        """
-        python_i.adjust_headlines.
 
-        coffee_script_i also uses this method.
+        #@+others  # Define helper functions.
+        #@+node:ekr.20230830113521.1: *4* function: adjust_at_others
+        def adjust_at_others(parent: Position) -> None:
+            """
+            Add a blank line before @others, and remove the leading blank line in the first child.
+            """
+            for p in parent.subtree():
+                if p.h.startswith('class') and p.hasChildren():
+                    child = p.firstChild()
+                    lines = g.splitLines(p.b)
+                    for i, line in enumerate(lines):
+                        if line.strip().startswith('@others') and child.b.startswith('\n'):
+                            p.b = ''.join(lines[:i]) + '\n' + ''.join(lines[i:])
+                            child.b = child.b[1:]
+                            break
+        #@+node:ekr.20230825100219.1: *4* function: adjust_headlines
+        def adjust_headlines(parent: Position) -> None:
+            """
+            python_i.adjust_headlines.
 
-        Add class names for all methods.
+            coffee_script_i also uses this method.
 
-        Change 'def' to 'function:' for all non-methods.
-        """
-        for child in parent.subtree():
-            found = False
-            if child.h.startswith('def '):
-                # Look up the tree for the nearest class.
-                for ancestor in child.parents():
-                    if ancestor == parent:
-                        break
-                    m = self.class_pat.match(ancestor.h)
-                    if m:
-                        found = True
-                        # Replace 'def ' by the class name + '.'
-                        child.h = f"{m.group(1)}.{child.h[4:].strip()}"
-                        break
-                if not found:
-                    # Replace 'def ' by 'function'
-                    child.h = f"function: {child.h[4:].strip()}"
-    #@+node:ekr.20230825111112.1: *4* python_i.move_class_docstrings
-    def move_class_docstrings(self, parent: Position) -> None:
-        """
-        Move class docstrings from the class node's first child to the class node.
-        """
+            Add class names for all methods.
 
-        delims = ('"""', "'''")
-
-        #@+others  # define helper functions.
-        #@+node:ekr.20230825164231.1: *5* function: find_docstring
+            Change 'def' to 'function:' for all non-methods.
+            """
+            for child in parent.subtree():
+                found = False
+                if child.h.startswith('def '):
+                    # Look up the tree for the nearest class.
+                    for ancestor in child.parents():
+                        if ancestor == parent:
+                            break
+                        m = self.class_pat.match(ancestor.h)
+                        if m:
+                            found = True
+                            # Replace 'def ' by the class name + '.'
+                            child.h = f"{m.group(1)}.{child.h[4:].strip()}"
+                            break
+                    if not found:
+                        # Replace 'def ' by 'function'
+                        child.h = f"function: {child.h[4:].strip()}"
+        #@+node:ekr.20230825164231.1: *4* function: find_docstring
         def find_docstring(p: Position) -> Optional[str]:
             """Creating a regex that returns a docstring is too tricky."""
+            delims = ('"""', "'''")
             s_strip = p.b.strip()
             if not s_strip:
                 return None
@@ -261,7 +251,7 @@ class Python_Importer(Importer):
                 i += 1
             return None
 
-        #@+node:ekr.20230825164234.1: *5* function: move_class_docstring
+        #@+node:ekr.20230825164234.1: *4* function: move_class_docstring
         def move_class_docstring(docstring: str, child_p: Position, class_p: Position) -> None:
             """Move the docstring from child_p to class_p."""
 
@@ -285,31 +275,40 @@ class Python_Importer(Importer):
             # This isn't perfect in some situations.
             docstring_list = [f"{' '*4}{z}" for z in g.splitLines(docstring)]
             class_p.b = ''.join(class_lines[:n] + docstring_list + class_lines[n:])
+        #@+node:ekr.20230825111112.1: *4* function: move_class_docstrings
+        def move_class_docstrings(parent: Position) -> None:
+            """
+            Move class docstrings from the class node's first child to the class node.
+            """
+            for p in parent.subtree():
+                if p.h.startswith('class '):
+                    child1 = p.firstChild()
+                    if child1:
+                        docstring = find_docstring(child1)
+                        if docstring:
+                            move_class_docstring(docstring, child1, p)
+        #@+node:ekr.20230930181855.1: *4* function: move_module_preamble
+        def move_module_preamble(lines: list[str], parent: Position, result_blocks: list[Block]) -> None:
+            """Move the preamble lines from the parent's first child to the start of parent.b."""
+            child1 = parent.firstChild()
+            if not child1:
+                return
+            # Compute the preamble.
+            preamble_start = max(0, result_blocks[1].start_body - 1)
+            preamble_lines = lines[:preamble_start]
+            preamble_s = ''.join(preamble_lines)
+            if not preamble_s.strip():
+                return
+            # Adjust the bodies.
+            parent.b = preamble_s + parent.b
+            child1.b = child1.b.replace(preamble_s, '')
+            child1.b = child1.b.lstrip('\n')
         #@-others
 
-        for p in parent.subtree():
-            if p.h.startswith('class '):
-                child1 = p.firstChild()
-                if child1:
-                    docstring = find_docstring(child1)
-                    if docstring:
-                        move_class_docstring(docstring, child1, p)
-    #@+node:ekr.20230930181855.1: *4* python_i.move_module_preamble
-    def move_module_preamble(self, lines: list[str], parent: Position, result_blocks: list[Block]) -> None:
-        """Move the preamble lines from the parent's first child to the start of parent.b."""
-        child1 = parent.firstChild()
-        if not child1:
-            return
-        # Compute the preamble.
-        preamble_start = max(0, result_blocks[1].start_body - 1)
-        preamble_lines = lines[:preamble_start]
-        preamble_s = ''.join(preamble_lines)
-        if not preamble_s.strip():
-            return
-        # Adjust the bodies.
-        parent.b = preamble_s + parent.b
-        child1.b = child1.b.replace(preamble_s, '')
-        child1.b = child1.b.lstrip('\n')
+        adjust_headlines(parent)
+        move_module_preamble(self.lines, parent, result_blocks)
+        move_class_docstrings(parent)
+        adjust_at_others(parent)
     #@-others
 #@-others
 
