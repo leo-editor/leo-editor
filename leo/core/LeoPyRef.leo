@@ -204,7 +204,6 @@
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
 <v t="ekr.20120420054855.14241"><vh>@file leoSessions.py</vh></v>
-<v t="ekr.20120420054855.14241"></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20180121041003.1"><vh>@file leoTips.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
@@ -479,7 +478,12 @@
 <v t="ekr.20140723122936.17926"><vh>@file ../plugins/importers/c.py</vh></v>
 <v t="ekr.20160505094722.1"><vh>@file ../plugins/importers/coffeescript.py</vh></v>
 <v t="ekr.20140723122936.18140"><vh>@file ../plugins/importers/csharp.py</vh></v>
-<v t="tbrown.20140801105909.47549"><vh>@file ../plugins/importers/ctext.py</vh></v>
+<v t="tbrown.20140801105909.47549"><vh>../plugins/importers/ctext.py</vh>
+<v t="tbrown.20140801105909.47551"><vh>class CText_Importer(Importer)</vh>
+<v t="ekr.20161130053507.1"><vh>&lt;&lt; ctext docstring &gt;&gt;</vh></v>
+<v t="tbrown.20140801105909.47553"><vh>ctext_i.import_from_string</vh></v>
+</v>
+</v>
 <v t="ekr.20200619141135.1"><vh>@file ../plugins/importers/cython.py</vh></v>
 <v t="ekr.20141116100154.1"><vh>@file ../plugins/importers/dart.py</vh></v>
 <v t="ekr.20140723122936.18141"><vh>@file ../plugins/importers/elisp.py</vh></v>
@@ -605,7 +609,12 @@
 <v t="ekr.20140726091031.18071"><vh>Writer plugins</vh>
 <v t="ekr.20140726091031.18152"><vh>@file ../plugins/writers/__init__.py</vh></v>
 <v t="ekr.20140726091031.18143"><vh>@file ../plugins/writers/basewriter.py</vh></v>
-<v t="tbrown.20140804103545.29975"><vh>@file ../plugins/writers/ctext.py</vh></v>
+<v t="tbrown.20140804103545.29975"><vh>../plugins/writers/ctext.py</vh>
+<v t="tbrown.20140804103545.29977"><vh>class CTextWriter(BaseWriter)</vh>
+<v t="tbrown.20140804103545.29978"><vh>put_node</vh></v>
+<v t="tbrown.20140804103545.29979"><vh>write</vh></v>
+</v>
+</v>
 <v t="ekr.20141116100154.2"><vh>@file ../plugins/writers/dart.py</vh></v>
 <v t="ekr.20140726091031.18080"><vh>@file ../plugins/writers/leo_rst.py</vh></v>
 <v t="ekr.20140726091031.18073"><vh>@file ../plugins/writers/markdown.py</vh></v>
@@ -1536,6 +1545,32 @@ prefix_lines:
 [Def Name Patterns]
 
 [General Patterns]
+</t>
+<t tx="ekr.20161130053507.1">"""
+Read/Write simple text files with hierarchy embedded in headlines::
+
+    Leading text in root node of subtree
+
+    Etc. etc.
+
+    ### A level one node #####################################
+
+    This would be the text in this level one node.
+
+    And this.
+
+    ### Another level one node ###############################
+
+    Another one
+
+    #### A level 2 node ######################################
+
+    See what we did there - one more '#' - this is a subnode.
+
+Leading / trailing whitespace may not be preserved.  '-' and '/'
+are used in place of '#' for SQL and JavaScript.
+
+"""
 </t>
 <t tx="ekr.20170427112302.1">g.cls()
 import glob
@@ -3528,6 +3563,108 @@ x.node_history(path, gnxs, limit=60)
 # f" {commands}.test_editFileCommands",
 # f" {commands}.test_gotoCommands.TestGotoCommands",
 # f" {commands}.test_outlineCommands",
+</t>
+<t tx="tbrown.20140801105909.47549">from __future__ import annotations
+import re
+from typing import TYPE_CHECKING
+from leo.core import leoGlobals as g  # Required
+from leo.plugins.importers.base_importer import Importer
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoNodes import Position, VNode
+
+@others
+
+def do_import(c: Cmdr, parent: Position, s: str) -&gt; None:
+    """The importer callback for ctext."""
+    CText_Importer(c).import_from_string(parent, s)
+
+importer_dict = {
+    '@auto': ['@auto-ctext'],
+    'extensions': ['.ctext'],  # A made-up extension for unit tests.
+    'func': do_import,
+}
+@language python
+@tabwidth -4
+</t>
+<t tx="tbrown.20140801105909.47551">class CText_Importer(Importer):
+    &lt;&lt; ctext docstring &gt;&gt;
+
+    language = 'plain'  # A reasonable default.
+
+    @others
+</t>
+<t tx="tbrown.20140801105909.47553">def import_from_string(self, parent: Position, s: str) -&gt; None:
+    """CText_Importer.import_from_string."""
+    c = self.c
+    root = parent.copy()
+    ft = c.importCommands.fileType.lower()
+    cchar = (
+        '#' if g.unitTesting else
+        '-' if ft == '.sql' else
+        '/' if ft == '.js' else '#'
+    )
+    header_pat = re.compile(fr"^\s*({cchar}{{3,}})(.*?){cchar}*\s*$")
+    lines_dict: dict[VNode, list[str]] = {root.v: []}
+    parents: list[Position] = [root]
+    for line in g.splitLines(s):
+        m = header_pat.match(line)
+        if m:
+            level = len(m.group(1)) - 2
+            assert level &gt;= 1, m.group(1)
+            parents = parents[:level]
+            self.create_placeholders(level, lines_dict, parents)
+            parent = parents[-1]
+            child = parent.insertAsLastChild()
+            child.h = m.group(2).strip()
+            lines_dict[child.v] = []
+            parents.append(child)
+        else:
+            parent = parents[-1]
+            lines_dict[parent.v].append(line)
+
+    for p in root.self_and_subtree():
+        p.b = ''.join(lines_dict[p.v])
+
+    # Importers should dirty neither nodes nor the outline.
+    for p in root.self_and_subtree():
+        p.clearDirty()
+</t>
+<t tx="tbrown.20140804103545.29975">@language python
+@tabwidth -4
+from leo.core import leoGlobals as g  # Required.
+from leo.core.leoNodes import Position
+import leo.plugins.writers.basewriter as basewriter
+@others
+writer_dict = {
+    '@auto': ['@auto-ctext',],
+    'class': CTextWriter,
+}
+@language python
+@tabwidth -4
+</t>
+<t tx="tbrown.20140804103545.29977">class CTextWriter(basewriter.BaseWriter):
+    @others
+</t>
+<t tx="tbrown.20140804103545.29978">def put_node(self, p: Position, level: int = 0) -&gt; None:
+    self.put(p.b.strip() + '\n\n')
+    for child in p.children():
+        txt = self.cchar * 3 + self.cchar * level + ' ' + child.h.strip() + ' '
+        txt += self.cchar * max(0, 75 - len(txt))
+        self.put(txt + '\n\n')
+        self.put_node(child, level + 1)
+</t>
+<t tx="tbrown.20140804103545.29979">def write(self, root: Position) -&gt; None:
+
+    h = root.h.lower()
+    self.cchar = (
+        '#' if g.unitTesting else
+        '%' if h.startswith('.tex') else
+        '-' if h.startswith('.sql') else
+        '/' if h.startswith('.js') else '#'
+    )
+    self.put_node(root, 0)
 </t>
 </tnodes>
 </leo_file>
