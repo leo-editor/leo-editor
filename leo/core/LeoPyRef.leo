@@ -29,6 +29,7 @@
 <v t="ekr.20220306092217.1"><vh>@command test-one</vh>
 <v t="ekr.20230511074046.1"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
 <v t="ekr.20230724084617.1"><vh>&lt;&lt; old tests &gt;&gt;</vh></v>
+<v t="ekr.20230926025203.1"><vh>&lt;&lt; importer tests &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20201013034659.1"><vh>@ignore Unused buttons and commands</vh>
 <v t="ekr.20211020091540.1"><vh>@@command b</vh></v>
@@ -478,12 +479,6 @@
 <v t="ekr.20140723122936.17926"><vh>@file ../plugins/importers/c.py</vh></v>
 <v t="ekr.20160505094722.1"><vh>@file ../plugins/importers/coffeescript.py</vh></v>
 <v t="ekr.20140723122936.18140"><vh>@file ../plugins/importers/csharp.py</vh></v>
-<v t="tbrown.20140801105909.47549"><vh>../plugins/importers/ctext.py</vh>
-<v t="tbrown.20140801105909.47551"><vh>class CText_Importer(Importer)</vh>
-<v t="ekr.20161130053507.1"><vh>&lt;&lt; ctext docstring &gt;&gt;</vh></v>
-<v t="tbrown.20140801105909.47553"><vh>ctext_i.import_from_string</vh></v>
-</v>
-</v>
 <v t="ekr.20200619141135.1"><vh>@file ../plugins/importers/cython.py</vh></v>
 <v t="ekr.20141116100154.1"><vh>@file ../plugins/importers/dart.py</vh></v>
 <v t="ekr.20140723122936.18141"><vh>@file ../plugins/importers/elisp.py</vh></v>
@@ -609,12 +604,6 @@
 <v t="ekr.20140726091031.18071"><vh>Writer plugins</vh>
 <v t="ekr.20140726091031.18152"><vh>@file ../plugins/writers/__init__.py</vh></v>
 <v t="ekr.20140726091031.18143"><vh>@file ../plugins/writers/basewriter.py</vh></v>
-<v t="tbrown.20140804103545.29975"><vh>../plugins/writers/ctext.py</vh>
-<v t="tbrown.20140804103545.29977"><vh>class CTextWriter(BaseWriter)</vh>
-<v t="tbrown.20140804103545.29978"><vh>put_node</vh></v>
-<v t="tbrown.20140804103545.29979"><vh>write</vh></v>
-</v>
-</v>
 <v t="ekr.20141116100154.2"><vh>@file ../plugins/writers/dart.py</vh></v>
 <v t="ekr.20140726091031.18080"><vh>@file ../plugins/writers/leo_rst.py</vh></v>
 <v t="ekr.20140726091031.18073"><vh>@file ../plugins/writers/markdown.py</vh></v>
@@ -673,6 +662,7 @@
 <v t="ekr.20230705083159.1"><vh>@file ../unittests/commands/test_editFileCommands.py</vh></v>
 <v t="ekr.20230802060212.1"><vh>@file ../unittests/commands/test_gotoCommands.py</vh></v>
 <v t="ekr.20221113062857.1"><vh>@file ../unittests/commands/test_outlineCommands.py</vh></v>
+<v t="ekr.20230916141635.1"><vh>@file ../unittests/commands/test_spellCommands.py</vh></v>
 </v>
 <v t="ekr.20210912064205.1"><vh>in unittests/core</vh>
 <v t="ekr.20210901170451.1"><vh>@file ../unittests/core/test_leoApp.py</vh></v>
@@ -1067,7 +1057,7 @@ c.frame.body.wrapper    The high level interface for the body widget.
 c.frame.iconBar         The icon bar.
 c.frame.log             The log pane.
 c.frame.log.widget      The gui widget for the log pane.
-c.frame.log.wrapper     The high-level inteface for the log pane.
+c.frame.log.wrapper     The high-level interface for the log pane.
 c.frame.tree            The tree pane.
 
 The following were official ivars that no longer exist:
@@ -1545,32 +1535,6 @@ prefix_lines:
 [Def Name Patterns]
 
 [General Patterns]
-</t>
-<t tx="ekr.20161130053507.1">"""
-Read/Write simple text files with hierarchy embedded in headlines::
-
-    Leading text in root node of subtree
-
-    Etc. etc.
-
-    ### A level one node #####################################
-
-    This would be the text in this level one node.
-
-    And this.
-
-    ### Another level one node ###############################
-
-    Another one
-
-    #### A level 2 node ######################################
-
-    See what we did there - one more '#' - this is a subnode.
-
-Leading / trailing whitespace may not be preserved.  '-' and '/'
-are used in place of '#' for SQL and JavaScript.
-
-"""
 </t>
 <t tx="ekr.20170427112302.1">g.cls()
 import glob
@@ -2812,15 +2776,21 @@ if c.isChanged():
     c.save()
 &lt;&lt; prefixes &gt;&gt;
 &lt;&lt; old tests &gt;&gt;
+&lt;&lt; importer tests &gt;&gt;
 commands = (
 
-    # f" {core}.test_leoserver.TestLeoServer.test_most_public_server_methods",
-    
-    # Fails
-    # f" {core}.test_leoCommands.TestCommands.test_koi8_r_encoding",
-    # f" {commands}.test_outlineCommands.TestOutlineCommands.test_paste_retaining_clones",
-    # f" {commands}.test_outlineCommands.TestOutlineCommands.test_paste_node",
-    f" {commands}.test_outlineCommands.TestOutlineCommands.test_paste_as_template",
+    f" {importers}.TestPython",
+    # f" {importers}.TestPython.test_general_test_1",
+    # f" {importers}.TestPython.test_long_declaration",
+    # f" {importers}.TestPython.test_long_outer_docstring",
+    # f" {importers}.TestPython.test_nested_classes",
+    # f" {importers}.TestPython.test_nested_defs",
+    # f" {importers}.TestPython.test_oneliners",
+    # f" {importers}.TestPython.test_post_process",
+    # f" {importers}.TestPython.test_preamble",
+    # f" {core}.test_leoImport.TestLeoImport.test_python_importer_parse_body",
+    # f" {importers}.TestCoffeescript.test_coffeescript_1",
+    # f" {importers}.TestCython.test_cython_importer",
 )
 verbose_flag = ''  # -v
 commands_s = f"python -m unittest {verbose_flag} {' '.join(commands)}"
@@ -3333,14 +3303,17 @@ while todo:
 # Standard plugins...
 
 plugins_menu.py     # Adds 'Plugins' menu.
-contextmenu.py      # Required by the vim.py and xemacs.py plugins.
-mod_autosave.py
 mod_scripting.py
+contextmenu.py      # Required by the vim.py and xemacs.py plugins.
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
-nodetags.py
-quicksearch.py      # Nav pane.
-todo.py             # Task pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
+
+# Disabled standard menus...
+
+# mod_autosave.py   # Creates .bak files.
+# nodetags.py       # Supports tags via uA's.
+# quicksearch.py      # Nav pane.
+# todo.py             # Task pane.
 </t>
 <t tx="ekr.20221129012213.1"># See flake8 settings in setup.cfg.</t>
 <t tx="ekr.20221201043917.1">@language batch
@@ -3509,6 +3482,7 @@ core = 'leo.unittests.core'
 design = 'leo.unittests.test_design'
 gui = 'leo.unittests.test_gui'
 importers = 'leo.unittests.test_importers'
+plugins = 'leo.unittests.test_plugins'
 syntax = 'leo.unittests.test_syntax'
 
 testAtFile = 'test_leoAtFile.TestAtFile'
@@ -3548,9 +3522,7 @@ gnxs = (
 )
 x.node_history(path, gnxs, limit=60)
 </t>
-<t tx="ekr.20230724084617.1"># f" {importers}",
-
-# f" {core}.test_leoApp.TestApp",
+<t tx="ekr.20230724084617.1"># f" {core}.test_leoApp.TestApp",
 # f" {core}.test_leoAst.TestTOG"
 # f" {core}.test_leoCommands.TestCommands",
 # f" {core}.test_leoCompare.TestCompare",
@@ -3563,108 +3535,51 @@ x.node_history(path, gnxs, limit=60)
 # f" {commands}.test_editFileCommands",
 # f" {commands}.test_gotoCommands.TestGotoCommands",
 # f" {commands}.test_outlineCommands",
-</t>
-<t tx="tbrown.20140801105909.47549">from __future__ import annotations
-import re
-from typing import TYPE_CHECKING
-from leo.core import leoGlobals as g  # Required
-from leo.plugins.importers.base_importer import Importer
 
-if TYPE_CHECKING:
-    from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position, VNode
+# f" {plugins}.TestIndentedTypeScript.test_atFile_read",  # Long test.
+# f" {plugins}.TestIndentedTypeScript.test_after_read", # Short test.</t>
+<t tx="ekr.20230926025203.1"># f" {importers}",
 
-@others
+# html/xml tests...
 
-def do_import(c: Cmdr, parent: Position, s: str) -&gt; None:
-    """The importer callback for ctext."""
-    CText_Importer(c).import_from_string(parent, s)
+# f" {importers}.TestHtml.test_brython",
+# f" {importers}.TestHtml.test_improperly_nested_tags",
+# f" {importers}.TestHtml.test_improperly_terminated_tags",
+# f" {importers}.TestHtml.test_multple_node_completed_on_a_line",
+# f" {importers}.TestHtml.test_underindented_comment",
+# f" {importers}.TestXML.test_standard_opening_elements",
+# f" {importers}.TestXML.test_xml_1",
 
-importer_dict = {
-    '@auto': ['@auto-ctext'],
-    'extensions': ['.ctext'],  # A made-up extension for unit tests.
-    'func': do_import,
-}
-@language python
-@tabwidth -4
-</t>
-<t tx="tbrown.20140801105909.47551">class CText_Importer(Importer):
-    &lt;&lt; ctext docstring &gt;&gt;
+# Python tests...
 
-    language = 'plain'  # A reasonable default.
+# f" {core}.test_leoImport.TestLeoImport.test_python_importer_parse_body",
+# f" {importers}.TestPython.test_general_test_1",
+# f" {importers}.TestPython.test_long_declaration",
+# f" {importers}.TestPython.test_post_process",
+# f" {importers}.TestPython.test_nested_classes",
+# f" {importers}.TestPython.test_nested_defs",
+# f" {importers}.TestPython.test_oneliners",
+# f" {importers}.TestPython.test_preamble",
 
-    @others
-</t>
-<t tx="tbrown.20140801105909.47553">def import_from_string(self, parent: Position, s: str) -&gt; None:
-    """CText_Importer.import_from_string."""
-    c = self.c
-    root = parent.copy()
-    ft = c.importCommands.fileType.lower()
-    cchar = (
-        '#' if g.unitTesting else
-        '-' if ft == '.sql' else
-        '/' if ft == '.js' else '#'
-    )
-    header_pat = re.compile(fr"^\s*({cchar}{{3,}})(.*?){cchar}*\s*$")
-    lines_dict: dict[VNode, list[str]] = {root.v: []}
-    parents: list[Position] = [root]
-    for line in g.splitLines(s):
-        m = header_pat.match(line)
-        if m:
-            level = len(m.group(1)) - 2
-            assert level &gt;= 1, m.group(1)
-            parents = parents[:level]
-            self.create_placeholders(level, lines_dict, parents)
-            parent = parents[-1]
-            child = parent.insertAsLastChild()
-            child.h = m.group(2).strip()
-            lines_dict[child.v] = []
-            parents.append(child)
-        else:
-            parent = parents[-1]
-            lines_dict[parent.v].append(line)
+# C, C#, Cython...
 
-    for p in root.self_and_subtree():
-        p.b = ''.join(lines_dict[p.v])
+# f" {importers}.TestC.test_c_class_1",
+# f" {importers}.TestC.test_delete_comments_and_strings",
+# f" {importers}.TestCSharp.test_namespace_indent",
+# f" {importers}.TestCSharp.test_namespace_no_indent",
+# f" {importers}.TestCython.test_importer",
 
-    # Importers should dirty neither nodes nor the outline.
-    for p in root.self_and_subtree():
-        p.clearDirty()
-</t>
-<t tx="tbrown.20140804103545.29975">@language python
-@tabwidth -4
-from leo.core import leoGlobals as g  # Required.
-from leo.core.leoNodes import Position
-import leo.plugins.writers.basewriter as basewriter
-@others
-writer_dict = {
-    '@auto': ['@auto-ctext',],
-    'class': CTextWriter,
-}
-@language python
-@tabwidth -4
-</t>
-<t tx="tbrown.20140804103545.29977">class CTextWriter(basewriter.BaseWriter):
-    @others
-</t>
-<t tx="tbrown.20140804103545.29978">def put_node(self, p: Position, level: int = 0) -&gt; None:
-    self.put(p.b.strip() + '\n\n')
-    for child in p.children():
-        txt = self.cchar * 3 + self.cchar * level + ' ' + child.h.strip() + ' '
-        txt += self.cchar * max(0, 75 - len(txt))
-        self.put(txt + '\n\n')
-        self.put_node(child, level + 1)
-</t>
-<t tx="tbrown.20140804103545.29979">def write(self, root: Position) -&gt; None:
+# All other importer tests...
 
-    h = root.h.lower()
-    self.cchar = (
-        '#' if g.unitTesting else
-        '%' if h.startswith('.tex') else
-        '-' if h.startswith('.sql') else
-        '/' if h.startswith('.js') else '#'
-    )
-    self.put_node(root, 0)
+# f" {importers}.TestCoffeescript.test_1",
+
+# f" {importers}.TestJavascript.test_var_equal_function",
+
+# f" {importers}.TestLua.test_lua_1",
+
+# f" {importers}.TestTcl.test_1",
+# f" {importers}.TestTcl.test_1",
+
 </t>
 </tnodes>
 </leo_file>
