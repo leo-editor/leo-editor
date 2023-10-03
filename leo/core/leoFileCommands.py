@@ -911,48 +911,54 @@ class FileCommands:
         c.selectPosition(p)
         return p
     #@+node:ekr.20060919104836: *4* fc: Read Top-level
-    #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile (read switch)
-    def getLeoFile(
-        self,
-        theFile: Any,
-        fileName: str,
-        readAtFileNodesFlag: bool = True,
-        silent: bool = False,
+    #@+node:ekr.20230911045929.1: *5* fc.getAnyLeoFileByName
+    def getAnyLeoFileByName(self,
+        path: str,
+        *,
         checkOpenFiles: bool = True,
-    ) -> tuple[VNode, float]:
+        readAtFileNodesFlag: bool = True,
+    ) -> Optional[VNode]:
+        """Open any kind of Leo file."""
+        c = self.c
+        fc = c.fileCommands
+        self.gnxDict = {}  # #1437
+        if path.endswith('.db'):
+            v = fc._getLeoDBFileByName(path, readAtFileNodesFlag)
+        else:
+            v = fc._getLeoFileByName(path, readAtFileNodesFlag)
+        if v:
+            c.frame.resizePanesToRatio(c.frame.ratio, c.frame.secondary_ratio)
+            if checkOpenFiles:
+                g.app.checkForOpenFile(c, path)
+        return v
+    #@+node:ekr.20230910154358.1: *6* fc._getLeoDBFileByName
+    def _getLeoDBFileByName(self, path: str, readAtFileNodesFlag: bool) -> Optional[VNode]:
         """
-            Read a .leo file.
-            The caller should follow this with a call to c.redraw().
+        Open, read, and close a .db file.
+
+        The caller should follow this with a call to c.redraw().
         """
         fc, c = self, self.c
         t1 = time.time()
         c.clearChanged()  # May be set when reading @file nodes.
-        fc.warnOnReadOnlyFiles(fileName)
+        fc.warnOnReadOnlyFiles(path)
         fc.checking = False
         fc.mFileName = c.mFileName
         fc.initReadIvars()
         recoveryNode = None
+        conn = None
         try:
             c.loading = True  # disable c.changed
-            if not silent and checkOpenFiles:
-                # Don't check for open file when reverting.
-                g.app.checkForOpenFile(c, fileName)
-            # Read the .leo file and create the outline.
-            if fileName.endswith('.db'):
-                v = fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
-            elif fileName.endswith('.leojs'):
-                v = FastRead(c, self.gnxDict).readJsonFile(theFile, fileName)
-                if v:
-                    c.hiddenRootNode = v
-            else:
-                v = FastRead(c, self.gnxDict).readFile(theFile, fileName)
-                if v:
-                    c.hiddenRootNode = v
-            if v:
-                c.setFileTimeStamp(fileName)
-                if readAtFileNodesFlag:
-                    recoveryNode = fc.readExternalFiles()
-        finally:
+            conn = sqlite3.connect(path)
+            v = fc.retrieveVnodesFromDb(conn) or fc.initNewDb(conn)
+            if not v:
+                return None
+
+            # Set timestamp and recovery node.
+            c.setFileTimeStamp(path)
+            if readAtFileNodesFlag:
+                recoveryNode = fc.readExternalFiles()
+
             # lastTopLevel is a better fallback, imo.
             p = recoveryNode or c.p or c.lastTopLevel()
             c.selectPosition(p)
@@ -960,52 +966,75 @@ class FileCommands:
             # This causes a slight flash, but corrects a hangnail.
             c.redraw_later()
             c.checkOutline()  # Must be called *after* ni.end_holding.
+            if c.changed:
+                fc.propagateDirtyNodes()
+            fc.initReadIvars()
+            t2 = time.time()
+            g.es(f"read outline in {t2 - t1:2.2f} seconds")
+            return v
+        finally:
+            # Never put a return in a finally clause.
+            if conn:
+                conn.close()
             c.loading = False  # reenable c.changed
-            if not isinstance(theFile, sqlite3.Connection):
-                # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
-                # Leo holding directory/file handles after file close?
-                theFile.close()
-        if c.changed:
-            fc.propagateDirtyNodes()
-        fc.initReadIvars()
-        t2 = time.time()
-        g.es(f"read outline in {t2 - t1:2.2f} seconds")
-        return v, c.frame.ratio
-    #@+node:ekr.20031218072017.2297: *5* fc.openLeoFile
-    def openLeoFile(self,
-        theFile: Any,
-        fileName: str,
-        readAtFileNodesFlag: bool = True,
-        silent: bool = False,
-    ) -> VNode:
+    #@+node:ekr.20230910160254.1: *6* fc._getLeoFileByName
+    def _getLeoFileByName(self, path: str, readAtFileNodesFlag: bool) -> Optional[VNode]:
         """
-        Open a Leo file.
+        Open, read, and close a .leo or .leojs file.
 
-        readAtFileNodesFlag: False when reading settings files.
-        silent:              True when creating hidden commanders.
+        The caller should follow this with a call to c.redraw().
         """
-        c, frame = self.c, self.c.frame
-        # Set c.openDirectory
-        theDir = g.os_path_dirname(fileName)
-        if theDir:
-            c.openDirectory = c.frame.openDirectory = theDir
-        # Get the file.
-        self.gnxDict = {}  # #1437
-        v, ratio = self.getLeoFile(
-            theFile, fileName,
-            readAtFileNodesFlag=readAtFileNodesFlag,
-            silent=silent,
-        )
-        if v:
-            frame.resizePanesToRatio(ratio, frame.secondary_ratio)
-        return v
+        fc, c = self, self.c
+        t1 = time.time()
+        c.clearChanged()  # May be set when reading @file nodes.
+        fc.warnOnReadOnlyFiles(path)
+        fc.checking = False
+        fc.mFileName = c.mFileName
+        fc.initReadIvars()
+        recoveryNode = None
+        try:
+            c.loading = True
+
+            # Open, read and close the file.
+            try:
+                with open(path, 'rb') as theFile:
+                    if path.endswith('.leojs'):
+                        v = FastRead(c, self.gnxDict).readJsonFile(theFile, path)
+                    else:
+                        v = FastRead(c, self.gnxDict).readFile(theFile, path)
+            except IOError as e:
+                if not g.unitTesting:
+                    g.trace(e)
+                    g.error("can not open:", path)
+                return None
+            if not v:
+                return None
+
+            # Finish loading.
+            c.hiddenRootNode = v
+            c.setFileTimeStamp(path)
+            if readAtFileNodesFlag:
+                recoveryNode = fc.readExternalFiles()
+
+            # lastTopLevel is a better fallback, imo.
+            p = recoveryNode or c.p or c.lastTopLevel()
+            c.selectPosition(p)
+            # Delay the second redraw until idle time.
+            # This causes a slight flash, but corrects a hangnail.
+            c.redraw_later()
+            c.checkOutline()  # Must be called *after* ni.end_holding.
+            if c.changed:
+                fc.propagateDirtyNodes()
+            fc.initReadIvars()
+            t2 = time.time()
+            g.es(f"read outline in {t2 - t1:2.2f} seconds")
+            return v
+        finally:
+            # Never put a return in a finally clause.
+            c.loading = False  # reenable c.changed
     #@+node:ekr.20120212220616.10537: *5* fc.readExternalFiles & helper
     def readExternalFiles(self) -> Optional[Position]:
-        """
-        Read all external files in the outline.
-
-        A helper for fc.getLeoFile.
-        """
+        """Read all external files in the outline."""
         c, fc = self.c, self
         c.atFileCommands.readAll(c.rootPosition())
         recoveryNode = fc.handleNodeConflicts()
@@ -1075,7 +1104,6 @@ class FileCommands:
 
         This method follows behavior of readSaxFile.
         """
-
         c, fc = self.c, self
         sql = '''select gnx, head,
              body,
@@ -1136,7 +1164,6 @@ class FileCommands:
         (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
         c.frame.setTopGeometry(w, h, x, y)
         c.frame.resizePanesToRatio(r1, r2)
-        c.sqlite_connection = conn
         fc.exportToSqlite(c.mFileName)
         return v
     #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
@@ -1301,9 +1328,6 @@ class FileCommands:
     def setPositionsFromVnodes(self) -> None:
 
         c, root = self.c, self.c.rootPosition()
-        if c.sqlite_connection:
-            # position is already selected
-            return
         current, str_pos = None, None
         if c.mFileName:
             str_pos = c.db.get('current_position')
@@ -1329,9 +1353,6 @@ class FileCommands:
             g.app.commander_cacher.save(c, fileName)
             ok = c.checkFileTimeStamp(fileName)
             if ok:
-                if c.sqlite_connection:
-                    c.sqlite_connection.close()
-                    c.sqlite_connection = None
                 ok = self.write_Leo_file(fileName)
             if ok:
                 if not silent:
@@ -1349,14 +1370,11 @@ class FileCommands:
         p = c.p
         if not g.doHook("save1", c=c, p=p, fileName=fileName):
             c.endEditing()  # Set the current headline text.
-            if c.sqlite_connection:
-                c.sqlite_connection.close()
-                c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
             g.app.commander_cacher.save(c, fileName)
             # Disable path-changed messages in writeAllHelper.
-            c.ignoreChangedPaths = True
             try:
+                c.ignoreChangedPaths = True
                 if self.write_Leo_file(fileName):
                     c.clearChanged()  # Clears all dirty bits.
                     self.putSavedMessage(fileName)
@@ -1370,14 +1388,12 @@ class FileCommands:
         p = c.p
         if not g.doHook("save1", c=c, p=p, fileName=fileName):
             c.endEditing()  # Set the current headline text.
-            if c.sqlite_connection:
-                c.sqlite_connection.close()
-                c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
             g.app.commander_cacher.commit()  # Commit, but don't save file name.
+
             # Disable path-changed messages in writeAllHelper.
-            c.ignoreChangedPaths = True
             try:
+                c.ignoreChangedPaths = True
                 self.write_Leo_file(fileName)
             finally:
                 c.ignoreChangedPaths = False
@@ -1389,9 +1405,7 @@ class FileCommands:
     def exportToSqlite(self, fileName: str) -> bool:
         """Dump all vnodes to sqlite database. Returns True on success."""
         c, fc = self.c, self
-        if c.sqlite_connection is None:
-            c.sqlite_connection = sqlite3.connect(fileName, isolation_level='DEFERRED')
-        conn = c.sqlite_connection
+        conn = sqlite3.connect(fileName, isolation_level='DEFERRED')
 
         def dump_u(v: VNode) -> bytes:
             try:
@@ -1423,7 +1437,6 @@ class FileCommands:
             fc.exportHashesToSqlite(conn)
             conn.commit()
             conn.close()
-            c.sqlite_connection = None
             ok = True
         except sqlite3.Error as e:
             g.internalError(e)
@@ -1468,7 +1481,6 @@ class FileCommands:
             '''create table if not exists extra_infos(name primary key, value)''')
     #@+node:vitalije.20170701161851.1: *6* fc.exportVnodesToSqlite
     def exportVnodesToSqlite(self, conn: Any, rows: Any) -> None:
-        """Called only from fc.exportToSqlite."""
         conn.executemany(
             '''insert into vnodes
             (gnx, head, body, children, parents,

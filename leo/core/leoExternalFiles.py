@@ -94,14 +94,9 @@ class ExternalFilesController:
         Return True if the file given by fn has not been changed
         since Leo read it or if the user agrees to overwrite it.
         """
-        if c.sqlite_connection and c.mFileName == path:
-            # sqlite database file is never actually overwritten by Leo
-            # so no need to check its timestamp. It is modified through
-            # sqlite methods.
-            return True
-        if self.has_changed(path):
+        if self.has_changed(path):  # has_changed handles all special cases.
             val = self.ask(c, path)
-            return val in ('yes', 'yes-all')  # #1888
+            return val in ('yes', 'yes-all')
         return True
     #@+node:ekr.20031218072017.2613: *4* efc.destroy_frame
     def destroy_frame(self, frame: Widget) -> None:
@@ -574,7 +569,9 @@ class ExternalFilesController:
             return False
         if g.os_path_isdir(path):
             return False
-        #
+        if path.endswith('.db'):
+            return False
+
         # First, check the modification times.
         old_time = self.get_time(path)
         new_time = self.get_mtime(path)
@@ -585,7 +582,7 @@ class ExternalFilesController:
             return False
         if old_time == new_time:
             return False
-        #
+
         # Check the checksums *only* if the mod times don't match.
         old_sum = self.checksum_d.get(path)
         new_sum = self.checksum(path)
@@ -595,6 +592,7 @@ class ExternalFilesController:
             # Return False so we don't prompt the user for an update.
             self.set_time(path, new_time)
             return False
+
         # The file has really changed.
         assert old_time, path
         return True

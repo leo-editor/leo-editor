@@ -191,7 +191,6 @@ class Commands:
         self.navPrefix: str = ''  # Must always be a string.
         self.navTime: Optional[float] = None
         self.recent_commands_list: list[str] = []  # List of command names.
-        self.sqlite_connection: Any = None
     #@+node:ekr.20120217070122.10466: *5* c.initDebugIvars
     def initDebugIvars(self) -> None:
         """Init Commander debugging ivars."""
