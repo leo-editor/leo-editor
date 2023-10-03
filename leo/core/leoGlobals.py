@@ -3054,11 +3054,10 @@ def createHiddenCommander(fn: str) -> Cmdr:
     """Read the file into a hidden commander (Similar to g.openWithFileName)."""
     from leo.core.leoCommands import Commands
     c = Commands(fn, gui=g.app.nullGui)
-    theFile = g.app.loadManager.openAnyLeoFile(fn)
-    if theFile:
-        c.fileCommands.openLeoFile(theFile, fn, readAtFileNodesFlag=True, silent=True)
-        return c
-    return None
+    lm = g.app.loadManager
+    c = lm.openFileByName(fn, gui=g.app.nullGui)
+    return c
+
 #@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
 def defaultLeoFileExtension(c: Cmdr = None) -> str:
     conf = c.config if c else g.app.config
