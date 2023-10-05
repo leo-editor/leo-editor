@@ -999,7 +999,7 @@ class TestHtml(BaseTestImporter):
                     '\n'
                     '</body>\n'
             ),
-            (2, '<div id="D666">',
+            (2, '<div id="D666">Paragraph</p> <!-- P1 -->',
                     '<!-- OOPS: the div and p elements not properly nested.-->\n'
                     '<!-- OOPS: this table got generated twice. -->\n'
                     '\n'
@@ -1008,7 +1008,7 @@ class TestHtml(BaseTestImporter):
                     '@others\n'
                     '</div>\n'
             ),
-            (3, '<TABLE id="T666">',
+            (3, '<TABLE id="T666"></TABLE></p> <!-- P2 -->',
                     '<p id="P2">\n'
                     '\n'
                     '<TABLE id="T666"></TABLE></p> <!-- P2 -->\n'

@@ -50,16 +50,13 @@ class Xml_Importer(Importer):
         self.end_patterns = tuple(re.compile(fr"\s*</({tag})>") for tag in tags)
         return tags
     #@+node:ekr.20230519053541.1: *3* xml_i.compute_headline
-    tag_pattern = re.compile(r'<.*?>')
-
     def compute_headline(self, block: Block) -> str:
         """Xml_Importer.compute_headline."""
         n = max(block.start, block.start_body - 1)
         s = block.lines[n].strip()
 
         # Truncate the headline if necessary.
-        m = self.tag_pattern.match(s)
-        return m.group(0) if m else s[:50]
+        return g.truncate(s, 120)
     #@+node:ekr.20230518081757.1: *3* xml_i.find_end_of_block
     def find_end_of_block(self, i1: int, i2: int) -> int:
         """
