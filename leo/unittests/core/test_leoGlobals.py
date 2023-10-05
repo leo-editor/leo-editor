@@ -586,6 +586,8 @@ class TestGlobals(LeoUnitTest):
         )
         for ignore_case in (True, False):
             for expected, i, word, line in table:
+                if ignore_case:
+                    line = line.upper()
                 got = g.match_word(line + '\n', i, word, ignore_case=ignore_case)
                 assert expected == got, (word, line[i:])
     #@+node:ekr.20230131234527.1: *4* TestGlobals.test_g_objToString
