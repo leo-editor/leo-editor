@@ -404,7 +404,6 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
             c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
             c.frame.title = c.computeWindowTitle(c.mFileName)
             c.frame.setTitle(c.computeWindowTitle(c.mFileName))
-            c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
             if hasattr(c.frame, 'top'):
                 c.frame.top.leo_master.setTabName(c, c.mFileName)
             c.fileCommands.save(c.mFileName)
@@ -480,7 +479,6 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
         # Part of the fix for https://bugs.launchpad.net/leo-editor/+bug/1194209
         c.frame.title = title = c.computeWindowTitle(c.mFileName)
         c.frame.setTitle(title)
-        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(c.mFileName)
         # Calls c.clearChanged() if no error.
         if hasattr(c.frame, 'top'):
             c.frame.top.leo_master.setTabName(c, c.mFileName)

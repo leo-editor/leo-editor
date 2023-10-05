@@ -3074,7 +3074,7 @@ def ensure_extension(name: str, ext: str) -> str:
         return name
     return name + ext
 #@+node:ekr.20150403150655.1: *3* g.fullPath (deprecated)
-def fullPath(c: Cmdr, p: Position, simulate: bool = False) -> str:
+def fullPath(c: Cmdr, p: Position) -> str:
     """
     Return the full path (including fileName) in effect at p.
 
@@ -3082,7 +3082,7 @@ def fullPath(c: Cmdr, p: Position, simulate: bool = False) -> str:
 
     This function is deprecated. Use c.fullPath(p) instead.
     """
-    return c.fullPath(p, simulate)
+    return c.fullPath(p)
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
 def get_files_in_directory(directory: str, kinds: list = None, recursive: bool = True) -> list[str]:
     """
@@ -3905,9 +3905,13 @@ def is_ws(ch: str) -> bool:
 def is_ws_or_nl(s: str, i: int) -> bool:
     return g.is_nl(s, i) or (i < len(s) and g.is_ws(s[i]))
 #@+node:ekr.20031218072017.3181: *4* g.match
-# Warning: this code makes no assumptions about what follows pattern.
-
 def match(s: str, i: int, pattern: str) -> bool:
+    """
+    Return True if the given pattern matches at s[i].
+
+    Warning: this method makes no assumptions about what precedes or
+    follows the pattern.
+    """
     return bool(s and pattern and s.find(pattern, i, i + len(pattern)) == i)
 #@+node:ekr.20031218072017.3182: *4* g.match_c_word
 def match_c_word(s: str, i: int, name: str) -> bool:
@@ -3921,36 +3925,32 @@ def match_c_word(s: str, i: int, name: str) -> bool:
 def match_ignoring_case(s1: str, s2: str) -> bool:
     return bool(s1 and s2 and s1.lower() == s2.lower())
 #@+node:ekr.20031218072017.3184: *4* g.match_word & g.match_words
-def match_word(s: str, i: int, pattern: str) -> bool:
-    """Return True if s[i] starts a word."""
-    # Using a regex is surprisingly tricky.
+def match_words(s: str, i: int, patterns: Sequence[str], *, ignore_case: bool = False) -> bool:
+    """Return true if any of the given patterns match at s[i]"""
+    return any(g.match_word(s, i, pattern, ignore_case=ignore_case) for pattern in patterns)
 
-    # Check the pattern and set j.
-    if pattern is None:
-        return False
-    j = len(pattern)
-    if j == 0:
+def match_word(s: str, i: int, pattern: str, *, ignore_case: bool = False) -> bool:
+    """Return True if s[i] starts the word given by pattern."""
+    if not pattern:
         return False
 
-    # Check the start of the word.
-    # Special cases: \b or \t or \n delimit words!
-    if i > 2 and s[i - 2] == '\\' and s[i - 1] in 'bnt':
-        return True
-    if i > 0 and g.isWordChar(s[i - 1]):
-        return False
+    # 1. Compute the required boundaries.
+    bound1 = g.isWordChar1(pattern[0])
+    bound2 = g.isWordChar(pattern[-1])
 
-    # Check that the pattern matches.
-    if s.find(pattern, i, i + j) != i:
-        return False
-    if i + j >= len(s):
-        return True
+    # 2. Add regex escapes.
+    pattern = re.escape(pattern)
 
-    # Check the end of the word.
-    ch = s[i + j]
-    return not g.isWordChar(ch)
+    # 3. Add the boundaries.
+    if bound1:
+        pattern = '\\b' + pattern
+    if bound2:
+        pattern = pattern + '\\b'
 
-def match_words(s: str, i: int, patterns: Sequence[str]) -> bool:
-    return any(g.match_word(s, i, pattern) for pattern in patterns)
+    # Compile the pattern so we can specify the starting position.
+    pat = re.compile(pattern, flags=re.I if ignore_case else 0)
+    return bool(pat.match(s, i))
+
 #@+node:ekr.20031218072017.3185: *4* g.skip_blank_lines
 # This routine differs from skip_ws_and_nl in that
 # it does not advance over whitespace at the start
@@ -6771,9 +6771,9 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
         else:
             path = url
         # Handle ancestor @path directives.
-        if c and c.openDirectory:
+        if c and c.fileName():
             base = c.getNodePath(p)
-            path = g.finalize_join(c.openDirectory, base, path)
+            path = g.finalize_join(g.os_path_dirname(c.fileName()), base, path)
         else:
             path = g.finalize(path)
         url = f"{tag}{path}"
