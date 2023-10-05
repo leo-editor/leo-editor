@@ -56,7 +56,6 @@ class Xml_Importer(Importer):
         """Xml_Importer.compute_headline."""
         n = max(block.start, block.start_body - 1)
         s = block.lines[n].strip()
-        assert '\n' not in s, repr(s)
 
         # Truncate the headline if necessary.
         m = self.tag_pattern.match(s)
