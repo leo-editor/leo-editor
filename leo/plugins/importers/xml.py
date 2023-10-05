@@ -50,7 +50,7 @@ class Xml_Importer(Importer):
         self.end_patterns = tuple(re.compile(fr"\s*</({tag})>") for tag in tags)
         return tags
     #@+node:ekr.20230519053541.1: *3* xml_i.compute_headline
-    tag_pattern = re.compile(r'^\s*<.*?>')
+    tag_pattern = re.compile(r'<.*?>')
 
     def compute_headline(self, block: Block) -> str:
         """Xml_Importer.compute_headline."""
