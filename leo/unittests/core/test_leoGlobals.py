@@ -647,12 +647,24 @@ class TestGlobals(LeoUnitTest):
             (False, 0, 'a', 'a_'),
             (True, 2, 'a', 'b a c'),
             (False, 0, 'a', 'b a c'),
+            # Tests of #3588.
+            (True, 4, '.lws', 'self.lws = 0'),
+            (True, 4, '.lws', 'self.lws=0'),
+            (False, 4, '.lws', 'self.lws2a=0'),
+            (False, 4, '.lws', 'self.lws0=0'),
+            (True, 2, '.lws', '  .lws  #comment'),
+            (False, 2, '.lws', '  .lws2  #comment'),
+            (True, 0, '###', '### comment'),
+            (True, 0, '###', '###comment'),
+            (True, 2, '###', '  ###comment'),
+            (True, 2, '###', '  ###.'),
+            (True, 1, '###', 'a###.'),
         )
-        for data in table:
-            expected, i, word, line = data
-            got = g.match_word(line + '\n', i, word)
-            self.assertEqual(expected, got)
-    #@+node:ekr.20230131234527.1: *3* TestGlobals.test_g_objToString
+        for ignore_case in (True, False):
+            for expected, i, word, line in table:
+                got = g.match_word(line + '\n', i, word, ignore_case=ignore_case)
+                assert expected == got, (word, line[i:])
+    #@+node:ekr.20230131234527.1: *4* TestGlobals.test_g_objToString
     def test_g_objToString(self):
 
         #@+<< define s >>
