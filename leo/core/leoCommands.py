@@ -229,7 +229,6 @@ class Commands:
         self.last_dir: str = None  # The last used directory.
         self.mFileName: str = fileName or ''  # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName or ''  #
-        self.openDirectory: Optional[str] = None  #
         self.orphan_at_file_nodes: list[Position] = []  # List of orphaned nodes for c.raise_error_dialogs.
         self.wrappedFileName: Optional[str] = None  # The name of the wrapped file, for wrapper commanders.
 
@@ -1123,8 +1122,8 @@ class Commands:
         # A mypy bug? the script can be str.
         rewrite_asserts(tree, script, config=cfg)  # type:ignore
         co = compile(tree, fname, "exec", dont_inherit=True)
-        sys.path.insert(0, '.')
-        sys.path.insert(0, c.frame.openDirectory)
+        sys.path.insert(0, os.getcwd())
+        sys.path.insert(0, g.os_path_dirname(c.fileName()))  # per SegundoBob
         try:
             exec(co, {'c': c, 'g': g, 'p': p})
         except KeyboardInterrupt:
@@ -1185,8 +1184,8 @@ class Commands:
             log = c.frame.log
             g.app.log = log
             if script.strip():
-                sys.path.insert(0, '.')  # New in Leo 5.0
-                sys.path.insert(0, c.frame.openDirectory)  # per SegundoBob
+                sys.path.insert(0, os.getcwd())
+                sys.path.insert(0, g.os_path_dirname(c.fileName()))  # per SegundoBob
                 script += '\n'  # Make sure we end the script properly.
                 try:
                     if not namespace or namespace.get('script_gnx') is None:
@@ -2671,20 +2670,15 @@ class Commands:
             raise
     #@+node:ekr.20171123200644.1: *3* c.Convenience methods
     #@+node:ekr.20230402232100.1: *4* c.fullPath
-    def fullPath(self, p: Position, simulate: bool = False) -> str:
+    def fullPath(self, p: Position) -> str:
         """
         Return the full path (including fileName) in effect at p. Neither the
         path nor the fileName will be created if it does not exist.
         """
         c = self
-        # Search p and p's parents.
-        for p in p.self_and_parents(copy=False):
-            aList = g.get_directives_dict_list(p)
-            path = c.scanAtPathDirectives(aList)
-            fn = p.h if simulate else p.anyAtFileNodeName()  # Use p.h for unit tests.
-            if fn:
-                return g.finalize_join(path, fn)
-        return ''
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        return g.finalize_join(path, p.anyAtFileNodeName())
     #@+node:ekr.20171123135625.39: *4* c.getTime
     def getTime(self, body: bool = True) -> str:
         c = self
@@ -2938,8 +2932,10 @@ class Commands:
         """
         c = self
         c.scanAtPathDirectivesCount += 1  # An important statistic.
-        base = c.openDirectory
-        absbase = g.finalize_join(g.app.loadDir, base)
+        if c.fileName():
+            absbase = g.os_path_dirname(c.fileName())
+        else:
+            absbase = os.getcwd()
 
         # Look for @path directives.
         paths = []
