@@ -227,7 +227,6 @@ class Commands:
         self.last_dir: str = None  # The last used directory.
         self.mFileName: str = fileName or ''  # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName or ''  #
-        self.openDirectory: Optional[str] = None  #
         self.orphan_at_file_nodes: list[Position] = []  # List of orphaned nodes for c.raise_error_dialogs.
         self.wrappedFileName: Optional[str] = None  # The name of the wrapped file, for wrapper commanders.
 
@@ -1120,8 +1119,8 @@ class Commands:
         # A mypy bug? the script can be str.
         rewrite_asserts(tree, script, config=cfg)  # type:ignore
         co = compile(tree, fname, "exec", dont_inherit=True)
-        sys.path.insert(0, '.')
-        sys.path.insert(0, c.frame.openDirectory)
+        sys.path.insert(0, os.getcwd())
+        sys.path.insert(0, os.path.dirname(c.fileName()))  # per SegundoBob
         try:
             exec(co, {'c': c, 'g': g, 'p': p})
         except KeyboardInterrupt:
@@ -1182,8 +1181,8 @@ class Commands:
             log = c.frame.log
             g.app.log = log
             if script.strip():
-                sys.path.insert(0, '.')  # New in Leo 5.0
-                sys.path.insert(0, c.frame.openDirectory)  # per SegundoBob
+                sys.path.insert(0, os.getcwd())
+                sys.path.insert(0, os.path.dirname(c.fileName()))  # per SegundoBob
                 script += '\n'  # Make sure we end the script properly.
                 try:
                     if not namespace or namespace.get('script_gnx') is None:

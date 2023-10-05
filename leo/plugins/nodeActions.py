@@ -375,7 +375,7 @@ def applyNodeAction(pScript, pClicked, c):
     redirect = c.config.getBool('redirect-execute-script-output-to-log_pane')
     if script:
         working_directory = os.getcwd()
-        file_directory = c.frame.openDirectory
+        file_directory = os.path.dirname(c.fileName())
         os.chdir(file_directory)
         script += '\n'
         # Redirect output
