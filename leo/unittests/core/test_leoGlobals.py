@@ -441,9 +441,20 @@ class TestGlobals(LeoUnitTest):
         child = c.rootPosition().insertAfter()
         child.h = '@path abc'
         grand = child.insertAsLastChild()
-        grand.h = 'xyz'
-        path = g.fullPath(c, grand, simulate=True)
+        grand.h = '@file xyz'
+        path = g.fullPath(c, grand)
         end = g.os_path_normpath('abc/xyz')
+        assert path.endswith(end), repr(path)
+
+        # Test 2: Create a commander for an outline outside of g.app.loadDir and its parents.
+        from leo.core.leoCommands import Commands
+        c = Commands(fileName='~/LeoPyRef.leo', gui=g.app.gui)
+        child = c.rootPosition().insertAfter()
+        child.h = '@path abc2'
+        grand = child.insertAsLastChild()
+        grand.h = '@file xyz2'
+        path = g.fullPath(c, grand)
+        end = g.os_path_normpath('abc2/xyz2')
         assert path.endswith(end), repr(path)
     #@+node:ekr.20210905203541.16: *4* TestGlobals.test_g_get_directives_dict
     def test_g_get_directives_dict(self):

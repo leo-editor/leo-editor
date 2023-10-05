@@ -720,7 +720,6 @@ class LeoFrame:
         self.cursorStay = True  # May be overridden in subclass.reloadSettings.
         self.es_newlines = 0  # newline count for this log stream.
         self.isNullFrame = False
-        self.openDirectory = ""
         self.saved = False  # True if ever saved
         self.splitVerticalFlag = True  # Set by initialRatios later.
         self.stylesheet: str = None  # The contents of <?xml-stylesheet...?> line.

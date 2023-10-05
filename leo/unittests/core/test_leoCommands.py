@@ -291,6 +291,20 @@ class TestCommands(LeoUnitTest):
         path = c.scanAtPathDirectives(aList)
         endpath = g.os_path_normpath('one/two')
         assert path.endswith(endpath), f"expected '{endpath}' got '{path}'"
+
+        # Test 2: Create a commander for an outline outside of g.app.loadDir and its parents.
+        from leo.core.leoCommands import Commands
+        c = Commands(fileName='~/LeoPyRef.leo', gui=g.app.gui)
+        child = p.insertAfter()
+        child.h = '@path one'
+        grand = child.insertAsLastChild()
+        grand.h = '@path two'
+        great = grand.insertAsLastChild()
+        great.h = 'xyz'
+        aList = g.get_directives_dict_list(great)
+        path = c.scanAtPathDirectives(aList)
+        endpath = g.os_path_normpath('one/two')
+        assert path.endswith(endpath), f"expected '{endpath}' got '{path}'"
     #@+node:ekr.20210906075242.19: *3* TestCommands.test_c_scanAtPathDirectives_same_name_subdirs
     def test_c_scanAtPathDirectives_same_name_subdirs(self):
         c = self.c

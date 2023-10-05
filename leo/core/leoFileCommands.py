@@ -607,7 +607,6 @@ class FileCommands:
         self.read_only = False
         self.rootPosition: Position = None
         self.outputFile: io.StringIO = None
-        self.openDirectory: str = None
         self.usingClipboard = False
         self.currentPosition: Position = None
         # New in 3.12...
@@ -766,14 +765,6 @@ class FileCommands:
             except Exception:
                 pass  # os.access() may not exist on all platforms.
         return False
-    #@+node:ekr.20031218072017.3045: *4* fc.setDefaultDirectoryForNewFiles
-    def setDefaultDirectoryForNewFiles(self, fileName: str) -> None:
-        """Set c.openDirectory for new files for the benefit of leoAtFile.scanAllDirectives."""
-        c = self.c
-        if not c.openDirectory:
-            theDir = g.os_path_dirname(fileName)
-            if theDir and g.os_path_isabs(theDir) and g.os_path_exists(theDir):
-                c.openDirectory = c.frame.openDirectory = theDir
     #@+node:ekr.20031218072017.1554: *4* fc.warnOnReadOnlyFiles
     def warnOnReadOnlyFiles(self, fileName: str) -> None:
         # os.access may not exist on all platforms.
@@ -1338,7 +1329,6 @@ class FileCommands:
         ok = g.doHook("save1", c=c, p=p, fileName=fileName)
         if ok is None:
             c.endEditing()  # Set the current headline text.
-            self.setDefaultDirectoryForNewFiles(fileName)
             g.app.commander_cacher.save(c, fileName)
             ok = c.checkFileTimeStamp(fileName)
             if ok:
@@ -1359,7 +1349,6 @@ class FileCommands:
         p = c.p
         if not g.doHook("save1", c=c, p=p, fileName=fileName):
             c.endEditing()  # Set the current headline text.
-            self.setDefaultDirectoryForNewFiles(fileName)
             g.app.commander_cacher.save(c, fileName)
             # Disable path-changed messages in writeAllHelper.
             try:
@@ -1377,7 +1366,6 @@ class FileCommands:
         p = c.p
         if not g.doHook("save1", c=c, p=p, fileName=fileName):
             c.endEditing()  # Set the current headline text.
-            self.setDefaultDirectoryForNewFiles(fileName)
             g.app.commander_cacher.commit()  # Commit, but don't save file name.
 
             # Disable path-changed messages in writeAllHelper.

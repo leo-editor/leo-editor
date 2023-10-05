@@ -2115,7 +2115,6 @@ class LoadManager:
         finally:
             # Never put a return in a finally clause.
             g.app.unlockLog()
-            c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
             g.app.gui = oldGui
     #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
     def readGlobalSettingsFiles(self) -> None:
@@ -2363,7 +2362,6 @@ class LoadManager:
         # Create the outline with workbook's name.
         c.frame.title = title = c.computeWindowTitle(fn)
         c.frame.setTitle(title)
-        c.openDirectory = c.frame.openDirectory = g.os_path_dirname(fn)
         if hasattr(c.frame, 'top'):
             c.frame.top.leo_master.setTabName(c, fn)
         # Finish: Do *not* save the file!
