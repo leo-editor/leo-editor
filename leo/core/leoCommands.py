@@ -2348,20 +2348,15 @@ class Commands:
             raise
     #@+node:ekr.20171123200644.1: *3* c.Convenience methods
     #@+node:ekr.20230402232100.1: *4* c.fullPath
-    def fullPath(self, p: Position, simulate: bool = False) -> str:
+    def fullPath(self, p: Position) -> str:
         """
         Return the full path (including fileName) in effect at p. Neither the
         path nor the fileName will be created if it does not exist.
         """
         c = self
-        # Search p and p's parents.
-        for p in p.self_and_parents(copy=False):
-            aList = g.get_directives_dict_list(p)
-            path = c.scanAtPathDirectives(aList)
-            fn = p.h if simulate else p.anyAtFileNodeName()  # Use p.h for unit tests.
-            if fn:
-                return g.finalize_join(path, fn)
-        return ''
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        return g.finalize_join(path, p.anyAtFileNodeName())
     #@+node:ekr.20171123135625.39: *4* c.getTime
     def getTime(self, body: bool = True) -> str:
         c = self
@@ -2615,8 +2610,10 @@ class Commands:
         """
         c = self
         c.scanAtPathDirectivesCount += 1  # An important statistic.
-        base = c.openDirectory
-        absbase = g.finalize_join(g.app.loadDir, base)
+        if c.fileName():
+            absbase = os.path.dirname(c.fileName())
+        else:
+            absbase = os.getcwd()
 
         # Look for @path directives.
         paths = []

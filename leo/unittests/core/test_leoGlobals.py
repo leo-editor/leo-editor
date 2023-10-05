@@ -441,8 +441,8 @@ class TestGlobals(LeoUnitTest):
         child = c.rootPosition().insertAfter()
         child.h = '@path abc'
         grand = child.insertAsLastChild()
-        grand.h = 'xyz'
-        path = g.fullPath(c, grand, simulate=True)
+        grand.h = '@file xyz'
+        path = g.fullPath(c, grand)
         end = g.os_path_normpath('abc/xyz')
         assert path.endswith(end), repr(path)
     #@+node:ekr.20210905203541.16: *4* TestGlobals.test_g_get_directives_dict

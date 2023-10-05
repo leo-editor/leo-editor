@@ -3074,7 +3074,7 @@ def ensure_extension(name: str, ext: str) -> str:
         return name
     return name + ext
 #@+node:ekr.20150403150655.1: *3* g.fullPath (deprecated)
-def fullPath(c: Cmdr, p: Position, simulate: bool = False) -> str:
+def fullPath(c: Cmdr, p: Position) -> str:
     """
     Return the full path (including fileName) in effect at p.
 
@@ -3082,7 +3082,7 @@ def fullPath(c: Cmdr, p: Position, simulate: bool = False) -> str:
 
     This function is deprecated. Use c.fullPath(p) instead.
     """
-    return c.fullPath(p, simulate)
+    return c.fullPath(p)
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
 def get_files_in_directory(directory: str, kinds: list = None, recursive: bool = True) -> list[str]:
     """
