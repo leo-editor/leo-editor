@@ -1120,7 +1120,7 @@ class Commands:
         rewrite_asserts(tree, script, config=cfg)  # type:ignore
         co = compile(tree, fname, "exec", dont_inherit=True)
         sys.path.insert(0, os.getcwd())
-        sys.path.insert(0, os.path.dirname(c.fileName()))  # per SegundoBob
+        sys.path.insert(0, g.os_path_dirname(c.fileName()))  # per SegundoBob
         try:
             exec(co, {'c': c, 'g': g, 'p': p})
         except KeyboardInterrupt:
@@ -1182,7 +1182,7 @@ class Commands:
             g.app.log = log
             if script.strip():
                 sys.path.insert(0, os.getcwd())
-                sys.path.insert(0, os.path.dirname(c.fileName()))  # per SegundoBob
+                sys.path.insert(0, g.os_path_dirname(c.fileName()))  # per SegundoBob
                 script += '\n'  # Make sure we end the script properly.
                 try:
                     if not namespace or namespace.get('script_gnx') is None:
@@ -2610,7 +2610,7 @@ class Commands:
         c = self
         c.scanAtPathDirectivesCount += 1  # An important statistic.
         if c.fileName():
-            absbase = os.path.dirname(c.fileName())
+            absbase = g.os_path_dirname(c.fileName())
         else:
             absbase = os.getcwd()
 

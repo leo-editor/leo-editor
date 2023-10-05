@@ -4556,7 +4556,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # Handle ancestor @path directives.
             if c and c.fileName():
                 base = c.getNodePath(c.p)
-                fn = g.finalize_join(os.path.dirname(c.fileName()), base, fn)
+                fn = g.finalize_join(g.os_path_dirname(c.fileName()), base, fn)
             else:
                 fn = g.finalize(fn)
 
