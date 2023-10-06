@@ -580,7 +580,6 @@ class Commands:
         c.make_node_conflicts_node = getBool('make-node-conflicts-node', default=True)
         c.outlineHasInitialFocus = getBool('outline-pane-has-initial-focus')
         c.page_width = getInt('page-width') or 132
-        # c.putBitsFlag = getBool('put-expansion-bits-in-leo-files', default=True)
         c.sparse_move = getBool('sparse-move-outline-left')
         c.sparse_find = getBool('collapse-nodes-during-finds')
         c.sparse_spell = getBool('collapse-nodes-while-spelling')
