@@ -1152,6 +1152,8 @@ class LeoGlobals:
     def cls(self):
         '''Clear the screen.'''
         if sys.platform.lower().startswith('win'):
+            # Leo 6.7.5: Two calls seem to be required!
+            os.system('cls')
             os.system('cls')
     #@+node:ekr.20160316091132.86: *3* g.computeLeadingWhitespace
     def computeLeadingWhitespace(self, width, tab_width):
