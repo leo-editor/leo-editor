@@ -5972,6 +5972,8 @@ def CheckVersionToInt(s: str) -> int:
 def cls(event: Event = None) -> None:
     """Clear the screen."""
     if sys.platform.lower().startswith('win'):
+        # Leo 6.7.5: Two calls seem to be required!
+        os.system('cls')
         os.system('cls')
 #@+node:ekr.20131114124839.16665: *3* g.createScratchCommander
 def createScratchCommander(fileName: str = None) -> None:

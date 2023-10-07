@@ -1096,6 +1096,8 @@ class LeoGlobals:
     def cls(self):
         '''Clear the screen.'''
         if sys.platform.lower().startswith('win'):
+            # Leo 6.7.5: Two calls seem to be required!
+            os.system('cls')
             os.system('cls')
     #@+node:ekr.20160318093308.1: *3* g.isString & isUnicode (make_stub_files.py)
     def isString(self, s):
