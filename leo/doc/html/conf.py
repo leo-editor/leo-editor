@@ -3,66 +3,36 @@
 #@+node:ekr.20090428133936.2: * @file html/conf.py
 #@@first
 #@@language python
+
 # leo/doc/html/conf.py
+
+# This file must be in the source directory.
 
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 # http://docs.readthedocs.io/en/latest/getting_started.html#in-markdown
 
-# leo/doc/html is the current directory.
-# This file is execfile()d with the current directory set to its containing dir.
-
-# import os
-# tag = 'leo/doc/html/conf.py'
-# print(f"\n{tag} cwd: {os.getcwd()}")
+source_suffix = '.html.txt'
 
 #@+<< general settings >>
 #@+node:ekr.20230121091126.1: ** << general settings >>
-# General settings...
-
-# The suffix of source filenames.
-try:
-    from recommonmark.parser import CommonMarkParser
-
-    source_parsers = {
-        '.md': CommonMarkParser,
-    }
-    source_suffix = ['.html.txt', '.md'] # possible: '.rst',
-    print(".md files enabled")
-except ImportError:
-    source_suffix = '.html.txt'
-    print(".md files NOT enabled")
-print('')
-
-# Sphinx extension module names, as strings.
-# They can be Sphinx extensions (named 'sphinx.ext.*') or your custom ones.
-extensions = []
-
-# Add any paths that contain templates here, relative to this directory.
-
-templates_path = ['_templates']  # leo/doc/html/_templates
-
-# The master toctree document.
-master_doc = 'leo_toc'  # don't use any suffix.
-
-# General information about the project.
 project = 'Leo'
 copyright = '1997-2023, Edward K. Ream'
-
-# The version info for this project.
 version = '6.7.4'
 release = '6.7.4'
 
-# List of directories, relative to source directory,
-# that shouldn't be searched for source files.
-exclude_trees = ['_build']
+# The master toctree document, without suffix.
+master_doc = 'leo_toc'
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
+
+# Paths.  All relative to this directory.
+extensions = []  # Sphinx extension modules.
+templates_path = ['_templates']
+exclude_trees = ['_build']  # Don't search for source files.
 #@-<< general settings >>
 #@+<< html options >>
 #@+node:ekr.20230121091709.1: ** << html options >>
-# -- Options for HTML output...
-
 # https://www.sphinx-doc.org/en/master/usage/theming.html#builtin-themes
 
 # Paths containing custom static files (such as style sheets),
@@ -132,23 +102,4 @@ html_use_opensearch = ''
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'Leodoc'
 #@-<< html options >>
-#@+<< LaTex options >>
-#@+node:ekr.20230121092413.1: ** << LaTex options >>
-# -- Options for LaTeX output...
-
-# The paper size ('letter' or 'a4').
-latex_paper_size = 'a4'
-
-# The font size ('10pt', '11pt' or '12pt').
-#latex_font_size = '10pt'
-
-# Grouping the document tree into LaTeX files. List of tuples
-# tex_documents(source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [
-  ('leo_toc', 'Leodocumentation.tex', 'Leo', 'Edward K. Ream', 'manual'),
-]
-
-# True: generate module index.
-latex_use_modindex = False
-#@-<< LaTex options >>
 #@-leo

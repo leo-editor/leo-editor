@@ -2508,7 +2508,6 @@
 </v>
 <v t="ekr.20230901233844.1"></v>
 <v t="ekr.20230901233131.1"><vh>Leo 6.7.5 release notes</vh></v>
-<v t="ekr.20131016083406.16724"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -15623,7 +15622,7 @@ For more information, consult `Leo's cheat sheet &lt;cheatsheet.html&gt;`_ and `
 Run this script from the `gh-pages` branch.
 
 1. Generate intermediate files for all headlines in the table.
-2. Run `make clean` and `make html` from the leo/doc/html directory.
+2. Run `make html` from the leo/doc/html directory.
 
 After running this script, copy files from leo/doc/html/_build/html to leo-editor/docs
 """
