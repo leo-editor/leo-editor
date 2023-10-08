@@ -355,75 +355,64 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
 
     kwarg: a file name, for use by scripts using Leo's bridge.
     """
-    c = self
-    p = c.p
+    c, p = self, self.p
 
-    # Save w now: w may go away.
-    w = g.app.gui.get_focus(c)
-    inBody = g.app.gui.widget_name(w).startswith('body')
-    if inBody:
-        p.saveCursorAndScroll()
     if g.app.disableSave:
         g.es("save commands disabled", color="purple")
         return
 
+    # Save the focus and body data.
+    w = g.app.gui.get_focus(c)
+    inBody = g.app.gui.widget_name(w).startswith('body')
+    if inBody:
+        p.saveCursorAndScroll()
+
+    def finish() -> None:
+        c.syntaxErrorDialog()
+        c.raise_error_dialogs(kind='write')
+        if inBody:
+            c.bodyWantsFocus()
+            p.restoreCursorAndScroll()
+        else:
+            c.treeWantsFocus()
+
+    g.app.syntax_error_files = []
     c.init_error_dialogs()
 
-    # 2013/09/28: use the fileName keyword argument if given.
-    # This supports the leoBridge.
-    # Make sure we never pass None to the ctor.
+    if fileName or c.mFileName:
+        c.fileCommands.save(c.mFileName)
+        finish()
+        return
+
+    root = c.rootPosition()
+    if not root.next() and root.isAtEditNode():
+        # Write the @edit node if needed.
+        if root.isDirty():
+            c.atFileCommands.writeOneAtEditNode(root)
+        c.clearChanged()  # Clears all dirty bits.
+        finish()
+        return
+
+    ### fileName = ''.join(c.k.givenArgs)
+    ###if not fileName:
+
+    fileName = g.app.gui.runSaveFileDialog(c,
+        title="Save",
+        filetypes=[("Leo files", "*.leo *.leojs *.db"),],
+        defaultextension=g.defaultLeoFileExtension(c))
 
     if fileName:
-        c.frame.title = g.computeWindowTitle(fileName)
-        c.mFileName = fileName
-    if not c.mFileName:
-        c.frame.title = ""
-        c.mFileName = ""
-
-    if c.mFileName:
-        # Calls c.clearChanged() if no error.
-        g.app.syntax_error_files = []
+        # Don't change mFileName until the dialog has succeeded.
+        c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
+        c.frame.title = c.computeWindowTitle(c.mFileName)
+        c.frame.setTitle(c.computeWindowTitle(c.mFileName))
+        if hasattr(c.frame, 'top'):
+            c.frame.top.leo_master.setTabName(c, c.mFileName)
         c.fileCommands.save(c.mFileName)
-        c.syntaxErrorDialog()
-    else:
-        root = c.rootPosition()
-        if not root.next() and root.isAtEditNode():
-            # There is only a single @edit node in the outline.
-            # A hack to allow "quick edit" of non-Leo files.
-            # See https://bugs.launchpad.net/leo-editor/+bug/381527
-            fileName = None
-            # Write the @edit node if needed.
-            if root.isDirty():
-                c.atFileCommands.writeOneAtEditNode(root)
-            c.clearChanged()  # Clears all dirty bits.
-        else:
-            fileName = ''.join(c.k.givenArgs)
-            if not fileName:
-                fileName = g.app.gui.runSaveFileDialog(c,
-                    title="Save",
-                    filetypes=[("Leo files", "*.leo *.leojs *.db"),],
-                    defaultextension=g.defaultLeoFileExtension(c))
+        g.app.recentFilesManager.updateRecentFiles(c.mFileName)
+        g.chdir(c.mFileName)
 
-        c.bringToFront()
-
-        if fileName:
-            # Don't change mFileName until the dialog has succeeded.
-            c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
-            c.frame.title = c.computeWindowTitle(c.mFileName)
-            c.frame.setTitle(c.computeWindowTitle(c.mFileName))
-            if hasattr(c.frame, 'top'):
-                c.frame.top.leo_master.setTabName(c, c.mFileName)
-            c.fileCommands.save(c.mFileName)
-            g.app.recentFilesManager.updateRecentFiles(c.mFileName)
-            g.chdir(c.mFileName)
-
-    c.raise_error_dialogs(kind='write')
-    # *Safely* restore focus, without using the old w directly.
-    if inBody:
-        c.bodyWantsFocus()
-        p.restoreCursorAndScroll()
-    else:
-        c.treeWantsFocus()
+    finish()
 #@+node:ekr.20110228162720.13980: *3* c_file.saveAll
 @g.commander_command('save-all')
 def saveAll(self: Self, event: Event = None) -> None:
@@ -451,28 +440,32 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
     """
     c, p = self, self.p
 
-    # Save w now: w may go away.
-    w = g.app.gui.get_focus(c)
-    inBody = g.app.gui.widget_name(w).startswith('body')
-    if inBody:
-        p.saveCursorAndScroll()
     if g.app.disableSave:
         g.es("save commands disabled", color="purple")
         return
 
+    # Save the focus and body data.
+    w = g.app.gui.get_focus(c)
+    inBody = g.app.gui.widget_name(w).startswith('body')
+    if inBody:
+        p.saveCursorAndScroll()
+
     c.init_error_dialogs()
 
+    ### ????????
+    # if fileName:
+        # c.frame.title = g.computeWindowTitle(fileName)
+        # c.mFileName = fileName
+
+    # # Make sure we never pass None to the ctor.
+    # if not c.mFileName:
+        # c.frame.title = ""
+
     # Add fileName keyword arg for leoBridge scripts.
-    if fileName:
-        c.frame.title = g.computeWindowTitle(fileName)
-        c.mFileName = fileName
+    # if not fileName:
+        # fileName = ''.join(c.k.givenArgs)
 
-    # Make sure we never pass None to the ctor.
-    if not c.mFileName:
-        c.frame.title = ""
-    if not fileName:
-        fileName = ''.join(c.k.givenArgs)
-
+    # Don't change mFileName or c.frame.title until the dialog has succeeded.
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
             title="Save As",
@@ -485,8 +478,6 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
         # Forget the file.
         if c.mFileName:
             g.app.forgetOpenFile(c.mFileName)
-            
-        # Don't change mFileName until the dialog has succeeded.
         if fileName.endswith(('.leo', '.db', '.leojs')):
             c.mFileName = fileName
         else:
@@ -505,7 +496,7 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
 
     c.raise_error_dialogs(kind='write')
 
-    # *Safely* restore focus, without using the old w directly.
+    # Restore the focus and body data.
     if inBody:
         c.bodyWantsFocus()
         p.restoreCursorAndScroll()
@@ -524,20 +515,22 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
     """
     c, p = self, self.p
 
-    # Save w now: w may go away.
-    w = g.app.gui.get_focus(c)
-    inBody = g.app.gui.widget_name(w).startswith('body')
-    if inBody:
-        p.saveCursorAndScroll()
     if g.app.disableSave:
         g.es("save commands disabled", color="purple")
         return
 
+    # Save the focus and body data.
+    w = g.app.gui.get_focus(c)
+    inBody = g.app.gui.widget_name(w).startswith('body')
+    if inBody:
+        p.saveCursorAndScroll()
+
     c.init_error_dialogs()
 
-    # Add fileName keyword arg for leoBridge scripts.
-    if not fileName:
-        fileName = ''.join(c.k.givenArgs)  # Don't set c.mFileName yet.
+    ###
+        # Add fileName keyword arg for leoBridge scripts.
+        # if not fileName:
+            # fileName = ''.join(c.k.givenArgs)
 
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
@@ -545,22 +538,24 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
             filetypes=[("Leo files", "*.leo *.leojs *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
 
-    c.bringToFront()
+    ### c.bringToFront()
 
     if fileName:
+        # *Never* change c.mFileName or c.frame.title.
         c.fileCommands.saveTo(fileName, silent=silent)
         g.app.recentFilesManager.updateRecentFiles(fileName)
         g.chdir(fileName)
 
+    c.bringToFront()  ### New.
     c.raise_error_dialogs(kind='write')
 
-    # *Safely* restore focus, without using the old w directly.
+    # Restore the focus and body data.
     if inBody:
         c.bodyWantsFocus()
         p.restoreCursorAndScroll()
     else:
         c.treeWantsFocus()
-    c.outerUpdate()
+    ### c.outerUpdate()
 #@+node:ekr.20031218072017.2837: *3* c_file.revert
 @g.commander_command('revert')
 def revert(self: Self, event: Event = None) -> None:
