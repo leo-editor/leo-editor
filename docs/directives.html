@@ -1,19 +1,18 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Directives Reference &#8212; Leo 6.7.4 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=db26dd79" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=524d4423" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8453e47e" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=60bf6a40"></script>
+    <script src="_static/doctools.js?v=13a9ecda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <script src="_static/sidebar.js"></script>
     
@@ -46,7 +45,7 @@
           <div class="body" role="main">
             
   <section id="directives-reference">
-<h1>Directives Reference<a class="headerlink" href="#directives-reference" title="Permalink to this heading">¶</a></h1>
+<h1>Directives Reference<a class="headerlink" href="#directives-reference" title="Link to this heading">¶</a></h1>
 <nav class="contents local" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
@@ -72,7 +71,7 @@
 </ul>
 </nav>
 <section id="part-1-file-directives">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink">Part 1: &#64;&lt;file&gt; directives</a><a class="headerlink" href="#part-1-file-directives" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Part 1: &#64;&lt;file&gt; directives</a><a class="headerlink" href="#part-1-file-directives" title="Link to this heading">¶</a></h2>
 <p id="index-0">This section discusses the &#64;&lt;file&gt; directives. These directives create or import external files.</p>
 <p><code class="docutils literal notranslate"><span class="pre">&#64;&lt;file&gt;</span></code> nodes create external files:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@asis</span> <span class="o">&lt;</span><span class="n">filename</span><span class="o">&gt;</span>        <span class="n">write</span> <span class="n">only</span><span class="p">,</span> <span class="n">no</span> <span class="n">sentinels</span><span class="p">,</span> <span class="n">exact</span> <span class="n">line</span> <span class="n">endings</span>
@@ -137,7 +136,7 @@ By default, the file’s extension determines the importer:</p>
 </div>
 <p><strong>Important</strong>: The importers/exporters for markdown, org-mode, reStructuredText and vimoutline files automatically generate section heading of the appropriate level. Body text of the top-level <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> node is ignored.</p>
 <section id="asis-path">
-<h3><a class="toc-backref" href="#id3" role="doc-backlink">&#64;asis &lt;path&gt;</a><a class="headerlink" href="#asis-path" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">&#64;asis &lt;path&gt;</a><a class="headerlink" href="#asis-path" title="Link to this heading">¶</a></h3>
 <p id="index-1">The <code class="docutils literal notranslate"><span class="pre">&#64;asis</span></code> directive creates an external file without sentinels and without any expansions.</p>
 <p>Use this directive only when you must have complete control over every character of the external file. When writing <code class="docutils literal notranslate"><span class="pre">&#64;asis</span></code> nodes, writes the body text of all nodes in outline order. Leo writes the body text <em>as is</em>, without recognizing section definitions, without expanding section references, and without treating directives specially in any way. In particular, Leo copies all directives, including <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> or <code class="docutils literal notranslate"><span class="pre">&#64;c</span></code> directives, to the external file as text. <strong>Warning</strong>: Because the external file contains no sentinels, <code class="docutils literal notranslate"><span class="pre">&#64;nosent</span></code> trees can not be updated from changes made outside of Leo. If you want this capability, use <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> instead.</p>
 <p id="index-2"><strong>The &#64;&#64; convention</strong>: Within <code class="docutils literal notranslate"><span class="pre">&#64;asis</span></code> trees only, if a headline starts with &#64;&#64;, Leo writes everything in the headline following the &#64;&#64; just before the corresponding body text.</p>
@@ -149,7 +148,7 @@ line from the next node will concatenated to the last line of the preceding node
 <p><strong>Note</strong>: <code class="docutils literal notranslate"><span class="pre">&#64;file-asis</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;silent</span></code> are deprecated synonyms for <code class="docutils literal notranslate"><span class="pre">&#64;asis</span></code>.</p>
 </section>
 <section id="auto-path">
-<h3><a class="toc-backref" href="#id4" role="doc-backlink">&#64;auto &lt;path&gt;</a><a class="headerlink" href="#auto-path" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">&#64;auto &lt;path&gt;</a><a class="headerlink" href="#auto-path" title="Link to this heading">¶</a></h3>
 <p id="index-3">The <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> directive imports an external file into a tree of nodes.</p>
 <p><code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> trees allow people to use Leo in collaborative environments without using sentinels in external files. Even without sentinels, <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> trees can change when the corresponding external file changes outside of Leo.</p>
 <p id="index-4"><code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> nodes read files using language-specific importers.
@@ -195,7 +194,7 @@ By default, the file’s extension determines the importer:</p>
 <p><strong>Note 4</strong>: See Leo’s <a class="reference external" href="vimBindings.html#using-vimoutline-otl-files-in-leo">vim</a> documentation and Vim’s <a class="reference external" href="http://www.vim.org/scripts/script.php?script_id=3515">vim outline</a> documentation.</p>
 <p><strong>Note 5</strong>: See the <a class="reference external" href="http://docutils.sourceforge.net/rst.html">reStructuredText</a> documentation.</p>
 <section id="auto-sanity-checks">
-<h4><a class="toc-backref" href="#id5" role="doc-backlink">&#64;auto sanity checks</a><a class="headerlink" href="#auto-sanity-checks" title="Permalink to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id5" role="doc-backlink">&#64;auto sanity checks</a><a class="headerlink" href="#auto-sanity-checks" title="Link to this heading">¶</a></h4>
 <p>When importing files into <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> trees, Leo performs several checks to ensure that writing the imported file will produce exactly the same file. These checks can produces <strong>errors</strong> or <strong>warnings</strong>. Errors indicate a potentially serious problem. Leo inserts an <code class="docutils literal notranslate"><span class="pre">&#64;ignore</span></code> directive in the <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> tree if any error is found. This prevents the <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> tree from modifying the external file.</p>
 <p id="index-5">Before importing a file, Leo <strong>regularizes</strong> the leading whitespace of all lines of the original source file. That is, Leo converts blanks to tabs or tabs to blanks depending on the value of the <code class="docutils literal notranslate"><span class="pre">&#64;tabwidth</span></code> directive in effect for the <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> node. Leo also checks that the indentation of any non-blank line is a multiple of the indentation specified by the <code class="docutils literal notranslate"><span class="pre">&#64;tabwidth</span></code> directive. <strong>Strict languages</strong> are languages such as Python for which leading whitespace must be preserved exactly as it appears in the original source file. Problems during regularizing whitespace generate errors for strict languages and warnings for non-strict languages.</p>
 <p>After importing a file, Leo verifies that writing the <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> node would create the same file as the original file. Such file comparison mismatches generate errors unless the problem involves only leading whitespace for non-strict languages. Whenever a mismatch occurs the first non-matching line is printed.</p>
@@ -208,7 +207,7 @@ By default, the file’s extension determines the importer:</p>
 </section>
 </section>
 <section id="clean-path">
-<h3><a class="toc-backref" href="#id6" role="doc-backlink">&#64;clean &lt;path&gt;</a><a class="headerlink" href="#clean-path" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">&#64;clean &lt;path&gt;</a><a class="headerlink" href="#clean-path" title="Link to this heading">¶</a></h3>
 <p id="index-7">The <code class="docutils literal notranslate"><span class="pre">&#64;clean</span> <span class="pre">&lt;filename&gt;</span></code> creates an external file without sentinel lines.
 <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> trees will probably be the most convenient way of creating and
 accessing external files for most people.</p>
@@ -222,7 +221,7 @@ The default is True.</p>
 collaborating with others.</p>
 </section>
 <section id="edit-path">
-<h3><a class="toc-backref" href="#id7" role="doc-backlink">&#64;edit &lt;path&gt;</a><a class="headerlink" href="#edit-path" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">&#64;edit &lt;path&gt;</a><a class="headerlink" href="#edit-path" title="Link to this heading">¶</a></h3>
 <p id="index-8">The <code class="docutils literal notranslate"><span class="pre">&#64;edit</span></code> directive imports an external file into a single node.</p>
 <p>When reading <code class="docutils literal notranslate"><span class="pre">&#64;edit</span></code> nodes, Leo reads the entire file into the <code class="docutils literal notranslate"><span class="pre">&#64;edit</span></code> node. Lines
 that look like sentinels will be read just as they are.</p>
@@ -230,7 +229,7 @@ that look like sentinels will be read just as they are.</p>
 references and <code class="docutils literal notranslate"><span class="pre">&#64;others</span></code> are not allowed.</p>
 </section>
 <section id="file-path-aka-thin">
-<h3><a class="toc-backref" href="#id8" role="doc-backlink">&#64;file &lt;path&gt; (aka &#64;thin)</a><a class="headerlink" href="#file-path-aka-thin" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">&#64;file &lt;path&gt; (aka &#64;thin)</a><a class="headerlink" href="#file-path-aka-thin" title="Link to this heading">¶</a></h3>
 <p id="index-9">The <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> directive creates an external file containing sentinels. When writing
 &#64;file trees, Leo expands section references and <code class="docutils literal notranslate"><span class="pre">&#64;all</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;others</span></code> directives.</p>
 <p>When reading external files created by <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code>, the sentinels allow Leo to
@@ -248,12 +247,12 @@ comment delimiters.</p>
 a problem: Leo 4.7 can read all external files written by Leo 4.6.</p>
 </section>
 <section id="nosent-path">
-<h3><a class="toc-backref" href="#id9" role="doc-backlink">&#64;nosent &lt;path&gt;</a><a class="headerlink" href="#nosent-path" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">&#64;nosent &lt;path&gt;</a><a class="headerlink" href="#nosent-path" title="Link to this heading">¶</a></h3>
 <p id="index-10">The <code class="docutils literal notranslate"><span class="pre">&#64;nosent</span></code> directive creates an external file <strong>without</strong> sentinels. When writing
 <code class="docutils literal notranslate"><span class="pre">&#64;nosent</span></code> trees, Leo expands section references and <code class="docutils literal notranslate"><span class="pre">&#64;all</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;others</span></code> directives. <strong>Warning</strong>: Because the external file contains no sentinels, <code class="docutils literal notranslate"><span class="pre">&#64;nosent</span></code> trees can not be updated from changes made outside of Leo. If you want this capability, use <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> instead.</p>
 </section>
 <section id="shadow-path-deprecated">
-<h3><a class="toc-backref" href="#id10" role="doc-backlink">&#64;shadow &lt;path&gt; (deprecated)</a><a class="headerlink" href="#shadow-path-deprecated" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">&#64;shadow &lt;path&gt; (deprecated)</a><a class="headerlink" href="#shadow-path-deprecated" title="Link to this heading">¶</a></h3>
 <p id="index-11"><strong>Important</strong>: As of Leo 5.1, <code class="docutils literal notranslate"><span class="pre">&#64;shadow</span></code> is <strong>deprecated</strong> Use <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> instead. <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> is faster than <code class="docutils literal notranslate"><span class="pre">&#64;shadow</span></code> and requires no hidden files.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&#64;shadow</span></code> directive creates <em>two</em> external files, a <strong>public</strong> file without sentinels, and a <strong>private</strong> file containing sentinels.</p>
 <p>When reading an <code class="docutils literal notranslate"><span class="pre">&#64;shadow</span></code> node, Leo uses the <a class="reference external" href="appendices.html#the-mulder-ream-update-algorithm">Mulder/Ream update algorithm</a> to compare the public and private files, then updates the outline based on changes to the <em>public</em> file.</p>
@@ -261,7 +260,7 @@ a problem: Leo 4.7 can read all external files written by Leo 4.6.</p>
 </section>
 </section>
 <section id="part-2-all-and-others">
-<h2><a class="toc-backref" href="#id11" role="doc-backlink">Part 2: &#64;all and &#64;others</a><a class="headerlink" href="#part-2-all-and-others" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">Part 2: &#64;all and &#64;others</a><a class="headerlink" href="#part-2-all-and-others" title="Link to this heading">¶</a></h2>
 <p>These control how Leo places text when writing external files. They are two of the most important directives in Leo.</p>
 <dl class="simple glossary">
 </dl>
@@ -288,20 +287,39 @@ may have other <code class="docutils literal notranslate"><span class="pre">&#64
 </div></blockquote>
 </section>
 <section id="part-3-syntax-coloring-directives">
-<h2><a class="toc-backref" href="#id12" role="doc-backlink">Part 3: Syntax coloring directives</a><a class="headerlink" href="#part-3-syntax-coloring-directives" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Part 3: Syntax coloring directives</a><a class="headerlink" href="#part-3-syntax-coloring-directives" title="Link to this heading">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">&#64;color</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;killcolor</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;nocolor</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;nocolor-node</span></code> directives control how
 Leo colors text in the body pane.</p>
 <p id="index-14">These directives typically affect the node in which they appear and all descendant nodes. Exception: an <strong>ambiguous node</strong>, a node containing both <code class="docutils literal notranslate"><span class="pre">&#64;color</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;nocolor</span></code> directives, has no effect on how Leo colors text in descendant nodes.</p>
 <dl class="simple glossary">
 </dl>
+<p id="index-15"><code class="docutils literal notranslate"><span class="pre">&#64;color</span></code></p>
+<blockquote>
+<div><p>Enables syntax coloring until the next <code class="docutils literal notranslate"><span class="pre">&#64;nocolor</span></code> directive.</p>
+</div></blockquote>
+<p id="index-16"><code class="docutils literal notranslate"><span class="pre">&#64;killcolor</span></code></p>
+<blockquote>
+<div><p>Disables syntax coloring in a node, overriding all <code class="docutils literal notranslate"><span class="pre">&#64;color</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;nocolor</span></code> or
+<code class="docutils literal notranslate"><span class="pre">&#64;nocolor-node</span></code> directives in the same node.</p>
+</div></blockquote>
+<p id="index-17"><code class="docutils literal notranslate"><span class="pre">&#64;nocolor</span></code></p>
+<blockquote>
+<div><p>Disables syntax coloring until the next <code class="docutils literal notranslate"><span class="pre">&#64;nocolor</span></code> directive.</p>
+</div></blockquote>
+<p id="index-18"><code class="docutils literal notranslate"><span class="pre">&#64;nocolor-node</span></code></p>
+<blockquote>
+<div><p>Disables coloring for only the node containing it. The <code class="docutils literal notranslate"><span class="pre">&#64;nocolor-node</span></code>
+directive overrides the <code class="docutils literal notranslate"><span class="pre">&#64;color</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;nocolor</span></code> directives within the same
+node.</p>
+</div></blockquote>
 </section>
 <section id="part-4-dangerous-directives">
-<h2><a class="toc-backref" href="#id13" role="doc-backlink">Part 4: Dangerous directives</a><a class="headerlink" href="#part-4-dangerous-directives" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Part 4: Dangerous directives</a><a class="headerlink" href="#part-4-dangerous-directives" title="Link to this heading">¶</a></h2>
 <p>These directives alter how Leo represents data in external files. They are <strong>dangerous</strong>–mistakes in using these sentinels can make it impossible for Leo to read the resulting external file. Use them with care!</p>
 <p>Nevertheless, these sentinels can be useful in special situations.</p>
 <dl class="simple glossary">
 </dl>
-<p id="index-15"><code class="docutils literal notranslate"><span class="pre">&#64;comment</span> <span class="pre">&lt;1,</span> <span class="pre">2</span> <span class="pre">or</span> <span class="pre">three</span> <span class="pre">comment</span> <span class="pre">delims&gt;</span></code></p>
+<p id="index-19"><code class="docutils literal notranslate"><span class="pre">&#64;comment</span> <span class="pre">&lt;1,</span> <span class="pre">2</span> <span class="pre">or</span> <span class="pre">three</span> <span class="pre">comment</span> <span class="pre">delims&gt;</span></code></p>
 <blockquote>
 <div><p>Sets the comment delimiters in <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;shadow</span></code> files.
 <strong>Important</strong>: Use <code class="docutils literal notranslate"><span class="pre">&#64;comment</span></code> for unusual situations only. In most cases, you
@@ -344,14 +362,38 @@ do not clash with Leo format (like newline or NUL characters)!</p>
 <p>to create comments that will be removed from the output by Genshi. But the latter would
 cause XML parsing error on the <code class="docutils literal notranslate"><span class="pre">&#64;comment</span></code> line.</p>
 </div></blockquote>
+<p id="index-20"><code class="docutils literal notranslate"><span class="pre">&#64;delims</span> <span class="pre">&lt;1</span> <span class="pre">or</span> <span class="pre">2</span> <span class="pre">comment</span> <span class="pre">delims&gt;</span></code></p>
+<blockquote>
+<div><p>Sets comment delimiters in external files containing sentinel lines.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&#64;delims</span></code> directive requires one or two delimiters, separated by
+whitespace. If one delimiter is present it sets the single-line-comment
+delimiter. If two delimiters are present they set block comment delimiters.</p>
+<p>This directive is often used to place Javascript text inside XML or HTML
+files. Like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@delims</span> <span class="o">/*</span> <span class="o">*/</span>
+<span class="n">Javascript</span> <span class="n">stuff</span>
+<span class="nd">@delims</span> <span class="o">&lt;--</span> <span class="o">--&gt;</span>
+<span class="n">HTML</span> <span class="n">stuff</span>
+</pre></div>
+</div>
+<p><strong>Warning</strong>: you <strong>must</strong> change back to previous delimiters using another
+<code class="docutils literal notranslate"><span class="pre">&#64;delims</span></code> directive. Failure to change back to the previous delimiters will
+thoroughly corrupt the external file as far as compilers, HTML renderers,
+etc. are concerned. Leo does not do this automatically at the end of a node.</p>
+<p><strong>Warning</strong>: the <code class="docutils literal notranslate"><span class="pre">&#64;comment</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;delims</span></code> directives <strong>must not</strong> appear in
+the same node. Doing so may create a file that Leo can not read.</p>
+<p><strong>Note</strong>: The <code class="docutils literal notranslate"><span class="pre">&#64;delims</span></code> directive can not be used to change the comment
+strings at the start of the external file, that is, the comment strings for
+the <code class="docutils literal notranslate"><span class="pre">&#64;+leo</span> <span class="pre">sentinel</span></code> and the initial <code class="docutils literal notranslate"><span class="pre">&#64;+body</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;+node</span></code> sentinels.</p>
+</div></blockquote>
 </section>
 <section id="part-5-all-other-directives">
-<h2><a class="toc-backref" href="#id14" role="doc-backlink">Part 5: All other directives</a><a class="headerlink" href="#part-5-all-other-directives" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Part 5: All other directives</a><a class="headerlink" href="#part-5-all-other-directives" title="Link to this heading">¶</a></h2>
 <p>This section is a reference guide for all other Leo directives, organized alphabetically.</p>
 <p>Unless otherwise noted, all directives listed are valid only in body text, and they must start at the leftmost column of the node.</p>
 <dl class="simple glossary">
 </dl>
-<span class="target" id="index-16"></span><span class="target" id="index-17"></span><p id="index-18"><code class="docutils literal notranslate"><span class="pre">&#64;</span> <span class="pre">and</span> <span class="pre">&#64;doc</span></code></p>
+<p id="index-23"><span id="index-22"></span><span id="index-21"></span><code class="docutils literal notranslate"><span class="pre">&#64;</span> <span class="pre">and</span> <span class="pre">&#64;doc</span></code></p>
 <blockquote>
 <div><p>These directives start a doc part. <code class="docutils literal notranslate"><span class="pre">&#64;doc</span></code> is a synonym for <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>. Doc parts
 continue until an <code class="docutils literal notranslate"><span class="pre">&#64;c</span></code> directive or the end of the body text. For example:</p>
@@ -365,7 +407,7 @@ continue until an <code class="docutils literal notranslate"><span class="pre">&
 <p>Leo does not recognize <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> or <code class="docutils literal notranslate"><span class="pre">&#64;doc</span></code> in <code class="docutils literal notranslate"><span class="pre">&#64;asis</span></code> trees or when the <code class="docutils literal notranslate"><span class="pre">&#64;all</span></code> or
 <code class="docutils literal notranslate"><span class="pre">&#64;delims</span></code> directives are in effect.</p>
 </div></blockquote>
-<span class="target" id="index-19"></span><p id="index-20"><code class="docutils literal notranslate"><span class="pre">&#64;c</span> <span class="pre">and</span> <span class="pre">&#64;code</span></code></p>
+<p id="index-25"><span id="index-24"></span><code class="docutils literal notranslate"><span class="pre">&#64;c</span> <span class="pre">and</span> <span class="pre">&#64;code</span></code></p>
 <blockquote>
 <div><p>Ends any doc part and starts a code part.</p>
 <p><code class="docutils literal notranslate"><span class="pre">&#64;code</span></code> is a deprecated synonym for <code class="docutils literal notranslate"><span class="pre">&#64;c</span></code>.</p>
@@ -378,7 +420,118 @@ continue until an <code class="docutils literal notranslate"><span class="pre">&
 <p>These directives must appear in the node’s headline.</p>
 </div></blockquote>
 </div></blockquote>
-<span class="target" id="index-22"></span><span class="target" id="index-23"></span><span class="target" id="index-24"></span><p id="index-25"><code class="docutils literal notranslate"><span class="pre">&#64;path</span> <span class="pre">&lt;path&gt;</span></code></p>
+<p id="index-27"><code class="docutils literal notranslate"><span class="pre">&#64;encoding</span> <span class="pre">&lt;encoding&gt;</span></code></p>
+<blockquote>
+<div><p>Specifies the Unicode encoding for an external file. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@encoding</span> <span class="n">iso</span><span class="o">-</span><span class="mi">8859</span><span class="o">-</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>When reading external files, the encoding given must match the encoding
+actually used in the external file or “byte hash” will result.</p>
+</div></blockquote>
+<p id="index-28"><code class="docutils literal notranslate"><span class="pre">&#64;first</span> <span class="pre">&lt;text&gt;</span></code></p>
+<blockquote>
+<div><p>Places lines at the very start of an external file, before any Leo
+sentinels. <code class="docutils literal notranslate"><span class="pre">&#64;first</span></code> lines must be the <em>very first</em> lines in an <code class="docutils literal notranslate"><span class="pre">&#64;&lt;file&gt;</span></code> node.
+More then one <code class="docutils literal notranslate"><span class="pre">&#64;first</span></code> lines may appear.</p>
+<p>This creates two first lines, a shebang line and a Python encoding line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@first</span> <span class="c1">#! /usr/bin/env python</span>
+<span class="nd">@first</span> <span class="c1"># -*- coding: utf-8 -*-</span>
+</pre></div>
+</div>
+<p>Here is a perl example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@first</span> <span class="c1">#!/bin/sh -- # perl, to stop looping</span>
+<span class="nd">@first</span> <span class="nb">eval</span> <span class="s1">&#39;exec /usr/bin/perl -w -S $0 ${1+&quot;$@&quot;}&#39;</span>
+<span class="nd">@first</span>     <span class="k">if</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">&#64;ignore</span></code></p>
+<blockquote>
+<div><p>Tells Leo to ignore the subtree in which it appears.</p>
+<p>In the body text of most top-level &#64;&lt;file&gt; nodes, the <code class="docutils literal notranslate"><span class="pre">&#64;ignore</span></code> directive
+causes Leo not to write the tree. However, Leo ignores <code class="docutils literal notranslate"><span class="pre">&#64;ignore</span></code> directives
+in <code class="docutils literal notranslate"><span class="pre">&#64;asis</span></code> trees.</p>
+<p>Plugins and other parts of Leo sometimes <code class="docutils literal notranslate"><span class="pre">&#64;ignore</span></code> for their own purposes. For
+example, Leo’s unit testing commands will ignore trees containing <code class="docutils literal notranslate"><span class="pre">&#64;ignore</span></code>.
+In such cases, the <code class="docutils literal notranslate"><span class="pre">&#64;ignore</span></code> directive may appear in the headline or body
+text.</p>
+</div></blockquote>
+<span class="target" id="index-29"></span><p><code class="docutils literal notranslate"><span class="pre">&#64;language</span> <span class="pre">&lt;language</span> <span class="pre">name&gt;</span></code></p>
+<blockquote>
+<div><p>Specifies the language in effect, including comment delimiters.
+If no <code class="docutils literal notranslate"><span class="pre">&#64;language</span></code> directive is in effect, Leo uses the defaults specified
+by the <code class="docutils literal notranslate"><span class="pre">&#64;string</span> <span class="pre">target-language</span></code> setting.</p>
+<p>A node may contain multiple <code class="docutils literal notranslate"><span class="pre">&#64;language</span></code> directives.</p>
+<p>The valid language names include the following: actionscript, ada95, ahk, antlr, apacheconf, apdl, applescript, asciidoc, asp, aspect_j, assembly_macro32, assembly_mcs51, assembly_parrot, assembly_r2000, assembly_x86, awk, b, batch, bbj, bcel, bibtex, c, chill, clojure, cobol, coldfusion, cplusplus, csharp, css, cython, d, dart, doxygen, eiffel, embperl, erlang, factor, forth, fortran, fortran90, foxpro, gettext, groovy, haskell, haxe, html, i4gl, icon, idl, inform, ini, inno_setup, interlist, io, java, javascript, jhtml, jmk, jsp, kivy, latex, lilypond, lisp, lotos, lua, mail, makefile, maple, matlab, md, ml, modula3, moin, mqsc, netrexx, nqc, nsi, nsis2, objective_c, objectrexx, occam, omnimark, pascal, patch, perl, php, phpsection, pike, pl1, plain, plsql, pop11, postscript, povray, powerdynamo, prolog, pseudoplain, psp, ptl, pvwave, pyrex, python, r, rebol, redcode, rest, rhtml, rib, rpmspec, rtf, ruby, rview, sas, scala, scheme, sdl_pr, sgml, shell, shellscript, shtml, smalltalk, smi_mib, splus, sqr, squidconf, ssharp, swig, tcl, tex, texinfo, text, tpl, tsql, uscript, vbscript, velocity, verilog, vhdl, xml, xsl, yaml, zpt.</p>
+<p><strong>Note</strong>: Shell files have comments that start with #.</p>
+<p>Case is ignored in the language names. For example, the following are
+equivalent:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@language</span> <span class="n">html</span>
+<span class="nd">@language</span> <span class="n">HTML</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">&#64;language</span></code> directive also controls syntax coloring. For language x, the
+file leo/modes/x.py describes how to colorize the language. To see the
+languages presently supported, look in the leo/modes directory. There are
+over 100 such languages.</p>
+</div></blockquote>
+<p id="index-30"><code class="docutils literal notranslate"><span class="pre">&#64;last</span> <span class="pre">&lt;text&gt;</span></code></p>
+<blockquote>
+<div><p>Places lines at the very end of external files.</p>
+<p>This directive must occur at the <em>very end</em> of top-level &#64;&lt;file&gt; nodes. More
+than one <code class="docutils literal notranslate"><span class="pre">&#64;last</span></code> directive may exist. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@first &lt;?php
+...
+@last ?&gt;
+</pre></div>
+</div>
+<p>Leo does not recognize <code class="docutils literal notranslate"><span class="pre">&#64;last</span></code> directive in <code class="docutils literal notranslate"><span class="pre">&#64;asis</span></code> trees.</p>
+</div></blockquote>
+<p id="index-31"><code class="docutils literal notranslate"><span class="pre">&#64;lineending</span> <span class="pre">cr/lf/nl/crlf</span></code></p>
+<blockquote>
+<div><p>Sets the line endings for external files.
+This directive overrides the <code class="docutils literal notranslate"><span class="pre">&#64;string</span> <span class="pre">output_newline</span></code> setting.</p>
+<p>The valid forms of the <code class="docutils literal notranslate"><span class="pre">&#64;lineending</span></code> directive are:</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>&#64;lineending nl</p></td>
+<td><p>The default, Linux.</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;lineending cr</p></td>
+<td><p>Mac</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;lineending crlf</p></td>
+<td><p>Windows</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;lineending lf</p></td>
+<td><p>Same as ‘nl’, not recommended</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;lineending platform</p></td>
+<td><p>Same as platform value for output_newline setting.</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p id="index-32"><code class="docutils literal notranslate"><span class="pre">&#64;nowrap</span></code></p>
+<blockquote>
+<div><p>Disables line wrapping the Leo’s body pane.</p>
+<p>Only the first <code class="docutils literal notranslate"><span class="pre">&#64;wrap</span></code> or <code class="docutils literal notranslate"><span class="pre">&#64;nowrap</span></code> directive in a node has any effect.</p>
+<p><code class="docutils literal notranslate"><span class="pre">&#64;nowrap</span></code> may appear in either headlines or body text.</p>
+</div></blockquote>
+<p id="index-33"><code class="docutils literal notranslate"><span class="pre">&#64;pagewidth</span> <span class="pre">&lt;n&gt;</span></code></p>
+<blockquote>
+<div><blockquote>
+<div><p>Sets the page width used by the <code class="docutils literal notranslate"><span class="pre">reformat-paragraph</span></code> command.
+This directive also controls how <code class="docutils literal notranslate"><span class="pre">&#64;doc</span></code> parts are broken into lines.
+&lt;n&gt; should be a positive integer.  For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@pagewidth</span> <span class="mi">100</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The <code class="docutils literal notranslate"><span class="pre">&#64;pagewidth</span></code> directive overrides the <code class="docutils literal notranslate"><span class="pre">&#64;int</span> <span class="pre">page_width</span></code> setting.</p>
+</div></blockquote>
+<p id="index-36"><span id="index-35"></span><span id="index-34"></span><code class="docutils literal notranslate"><span class="pre">&#64;path</span> <span class="pre">&lt;path&gt;</span></code></p>
 <blockquote>
 <div><p>Sets the <strong>path prefix</strong> for relative filenames for all &#64;&lt;file&gt; tree.</p>
 <p>This directive may appear in headlines or body text, and may
@@ -391,10 +544,22 @@ Relative paths add to the path prefix.</p>
 <p>If no <code class="docutils literal notranslate"><span class="pre">&#64;path</span></code> directives are in effect, the default path prefix is
 the directory containing the .leo file.</p>
 </div></blockquote>
+<p id="index-37"><code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code></p>
 <p>With <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code>, Leo can store <strong>persistent data</strong> in nodes. This information consists of the node’s <strong>gnx</strong> (Global Node Index) and the node’s <strong>uA</strong>, (User Attributes). The gnx gives each node a unique, immutable identity. Gnx’s make clones possible. The uA allows scripts and plugins to associate arbitrarily much additional data with each node.</p>
 <p>By default, Leo’s importers preserve neither gnx’s nor uA’s. This makes imported <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> trees second class citizens. To remedy this, if an outline contains an <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> node, Leo will save data in the <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> tree that allows Leo to recover gnx’s and uA’s when re-reading <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> files later. This allows clone links and uA’s to persist.</p>
 <p>&#64;persistence is an optional feature. The stored data is akin to bookmarks. The data can “break” (become inaccessible) if the structure (including class/method/function names) changes. However, the data will typically break infrequently. To disable this feature, just delete an existing <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> node or change <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> to <code class="docutils literal notranslate"><span class="pre">&#64;&#64;persistence</span></code>.</p>
-<span class="target" id="index-26"></span></section>
+<p id="index-39"><span id="index-38"></span><code class="docutils literal notranslate"><span class="pre">&#64;tabwidth</span> <span class="pre">&lt;n&gt;</span></code></p>
+<blockquote>
+<div><p>Sets the width of tabs.
+Negative tab widths cause Leo to convert tabs to spaces.</p>
+</div></blockquote>
+<p id="index-40"><code class="docutils literal notranslate"><span class="pre">&#64;wrap</span></code></p>
+<blockquote>
+<div><p>Enables line wrapping in Leo’s body pane.</p>
+<p>Only the first <code class="docutils literal notranslate"><span class="pre">&#64;wrap</span></code> or <code class="docutils literal notranslate"><span class="pre">&#64;nowrap</span></code> directive in a node has any effect.</p>
+<p><code class="docutils literal notranslate"><span class="pre">&#64;wrap</span></code> may appear in either headlines or body text.</p>
+</div></blockquote>
+</section>
 </section>
 
 
@@ -453,9 +618,9 @@ the directory containing the .leo file.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on September 09, 2023.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+    &#169; Copyright 1997-2023, Edward K. Ream.
+      Last updated on October 08, 2023.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

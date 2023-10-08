@@ -327,6 +327,52 @@
 <v t="ekr.20181019042544.1"><vh>script: regularize settings names</vh></v>
 <v t="ekr.20051110111150" descendentVnodeUnknownAttributes="7d7100285807000000302e31302e313671017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710558040000003c2f613e71065d71072858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710858060000003c2f6469763e71095d710a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710b58060000003c2f6469763e710c5d710d2858060000003c626f64793e710e58070000003c2f626f64793e710f5d71102858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711158070000003c2f68746d6c3e71124e6565656558070000003c2f6469763e0a7113583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7114587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a711565735807000000302e31302e323671167d7117580b0000005f5f626f6f6b6d61726b7371187d7119580700000069735f64757065711a4930300a7373752e"><vh>@file leoScripts.txt</vh></v>
 </v>
+<v t="ekr.20230925012840.1"><vh>--- Recent</vh>
+<v t="ekr.20211020082938.1"><vh>script: display slides</vh>
+<v t="ekr.20211020082938.2"><vh>get_files</vh></v>
+<v t="ekr.20211020082938.3"><vh>class Slides</vh>
+<v t="ekr.20211020082938.4"><vh>Slides.delete</vh></v>
+<v t="ekr.20211020082938.5"><vh>Slides.keyPressEvent</vh></v>
+<v t="ekr.20211020082938.6"><vh>Slides.move_up/down/left/right</vh></v>
+<v t="ekr.20211020082938.7"><vh>Slides.move_to</vh></v>
+<v t="ekr.20211020082938.8"><vh>Slides.next_slide</vh></v>
+<v t="ekr.20211020082938.9"><vh>Slides.prev_slide</vh></v>
+<v t="ekr.20211020082938.10"><vh>Slides.quit</vh></v>
+<v t="ekr.20211020082938.11"><vh>Slides.run &amp; helper</vh>
+<v t="ekr.20211020082938.12"><vh>Slides.make_widgets</vh></v>
+</v>
+<v t="ekr.20211020082938.13"><vh>Slides.show_help</vh></v>
+<v t="ekr.20211020082938.14"><vh>Slides.show_slide</vh></v>
+<v t="ekr.20211020082938.15"><vh>Slides.sort</vh></v>
+<v t="ekr.20211020082938.16"><vh>Slides.timerEvent</vh></v>
+<v t="ekr.20211020082938.17"><vh>Slides.toggle_full_screen</vh></v>
+<v t="ekr.20211020082938.18"><vh>Slides.zoom_in &amp; zoom_out</vh></v>
+</v>
+</v>
+<v t="ekr.20220319162442.1"><vh>script: diff-two-revs-wo-comments</vh>
+<v t="ekr.20220319162442.2"><vh>function: make_diff_outlines_ignoring_comments</vh></v>
+<v t="ekr.20220319162442.3"><vh>function: strip_comments</vh></v>
+</v>
+<v t="ekr.20221105063835.1"><vh>script: insert-macros</vh>
+<v t="ekr.20221105063835.2"><vh>add_macros</vh></v>
+<v t="ekr.20221105063835.3"><vh>macro-test</vh>
+<v t="ekr.20221105063835.4"><vh>multiple defs</vh></v>
+<v t="ekr.20221105063835.5"><vh>spam</vh></v>
+<v t="ekr.20221105063835.6"><vh>eggs</vh></v>
+</v>
+</v>
+<v t="ekr.20230421070847.1"><vh>script: replace kwargs in mode files</vh></v>
+<v t="ekr.20230925012359.1"><vh>script: list all rhythms in a 4/4 measure</vh>
+<v t="ekr.20230925012359.2"><vh>compute_quarters</vh></v>
+<v t="ekr.20230925012359.3"><vh>convert_pattern and convert_patterns</vh></v>
+<v t="ekr.20230925012359.4"><vh>find_patterns</vh></v>
+<v t="ekr.20230925012359.5"><vh>is_square</vh></v>
+</v>
+<v t="ekr.20231008041100.1"><vh>script: to-github</vh>
+<v t="ekr.20231008041100.2"><vh>put_all_nodes</vh></v>
+<v t="ekr.20231008041100.3"><vh>python_i.delete_comments_and_strings</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -3940,6 +3986,767 @@ main()
                 doSet(p,h)
     checkSets()
     g.es('Check Bindings done')
+</t>
+<t tx="ekr.20211020082938.1">"""
+Display slides from a folder and its subfolders.
+
+Prompts for a folder containing images, then displays the images.
+
+Plain keys control the display of slides:
+    
+      space: show the next slide.
+  backspace: show the previous slide.
+     escape: end the slideshow
+          =: zoom in
+          -: zoom out
+arrows keys: pan the slide
+          d: prompt to move the slide to the trash
+          h: show the help message
+          m: move the file.
+
+Default settings:
+
+- background_color: black
+- 60 seconds between slides.
+- Start in full-screen mode.
+- Display in random order.
+- Allowed file extensions: ['.jpeg', '.jpg', '.png']
+
+"""
+import os
+import pathlib
+import random
+import textwrap
+from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+
+# Defaults
+background_color = "black"
+delay = 60  # seconds
+extensions = ['.jpeg', '.jpg', '.png']  # Allowed file extensions.
+full_screen = True
+sort_kind = 'random'  # 'date', 'name', 'none', 'random', or 'size'
+height = 900  # Window height (pixels) when not in full screen mode.
+width = 1500  # Window width (pixels) when not un full screen mode.
+
+@others
+
+path = QtWidgets.QFileDialog().getExistingDirectory()
+if path:
+    files_list = get_files(path)
+    if files_list:
+        n = len(files_list)
+        print(f"Found {n} picture{g.plural(n)} in {path}")
+        w = Slides()
+        w.run()
+        print('done')
+    else:
+        print(f"No slides found in {path!r}")
+</t>
+<t tx="ekr.20211020082938.10">def quit(self):
+    self.timer.stop()
+    self.destroy()
+</t>
+<t tx="ekr.20211020082938.11">def run(self):
+    global background_color, delay, full_screen, sort_kind
+    w = self
+    # Init ivars
+    self.delay = delay
+    self.full_screen = not full_screen  # So toggling below works.
+    # Init the widget.
+    w.make_widgets()
+    # Center the widget
+    qtRectangle = w.frameGeometry()
+    centerPoint = QtWidgets.QDesktopWidget().availableGeometry().center()
+    qtRectangle.moveCenter(centerPoint)
+    w.move(qtRectangle.topLeft())
+    # Show the widget.
+    w.showNormal()
+    if full_screen:
+        w.toggle_full_screen()
+    # Show the next slide.
+    self.sort(sort_kind)
+    w.next_slide()  # show_slide resets the timer.
+</t>
+<t tx="ekr.20211020082938.12">def make_widgets(self):
+    
+    global width, height
+    w = self
+
+    # Init the window's attributes.
+    w.setStyleSheet(f"background: {background_color}")
+    w.setGeometry(0, 0, width, height)  # The non-full-screen sizes.
+    
+    # Create the picture area.
+    w.picture = QtWidgets.QLabel('picture', self)
+    
+    # Create the scroll area.
+    w.scroll_area = area =QtWidgets.QScrollArea()
+    area.setWidget(self.picture)
+    AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
+    area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)
+    
+    # Disable scrollbars.
+    ScrollBarPolicy = QtCore.Qt if isQt5 else QtCore.Qt.ScrollBarPolicy
+    area.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
+    area.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)
+    
+    # Init the layout.
+    layout = QtWidgets.QVBoxLayout()
+    layout.addWidget(self.scroll_area)
+    w.setLayout(layout)
+</t>
+<t tx="ekr.20211020082938.13">def show_help(self):
+    """Show the help message."""
+    print(textwrap.dedent('''\
+                    d delete slide
+                    f toggle full screen
+                    h show help
+         n or &lt;space&gt; show next slide
+     p or &lt;backspace&gt; show previous slide
+           q or &lt;esc&gt; end slideshow
+                    + zoom in
+                    - zoom out
+             up arrow scroll up
+           down arrow scroll down
+           left arrow scroll left
+          right arrow scroll right
+    '''))
+</t>
+<t tx="ekr.20211020082938.14">def show_slide(self):
+    # Reset the timer.
+    self.timer.stop()
+    self.timer.start(self.delay * 1000.0, self)
+    # Get the file name.
+    file_name = files_list[self.slide_number]
+    # Change the title.
+    self.setWindowTitle(file_name)
+    # Display the picture.
+    pixmap = QtGui.QPixmap(file_name)
+    try:
+        TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
+        image = pixmap.scaledToHeight(
+            self.height() * self.scale,
+            TransformationMode.SmoothTransformation,
+        )
+        self.picture.setPixmap(image)
+        self.picture.adjustSize()
+    except Exception:
+        self.next_slide()
+</t>
+<t tx="ekr.20211020082938.15">def sort(self, sort_kind):
+    """sort files_list based on sort_kind."""
+    global files_list
+    if sort_kind == 'date':
+        print('Sorting by date...')
+        files_list.sort(key = os.path.getmtime)
+    elif sort_kind == 'name':
+        print('Sorting by name...')
+        files_list.sort()
+    elif sort_kind in (None, 'none'):
+        pass
+    elif sort_kind == 'random':
+        print('Randomizing...')
+        random.shuffle(files_list)
+    elif sort_kind == 'size':
+        print('Sorting by size...')
+        files_list.sort(key = os.path.getsize)
+    else:
+        g.trace(f"unknown sort kind: {sort_kind!r}")
+</t>
+<t tx="ekr.20211020082938.16">def timerEvent(self, e=None):
+    self.next_slide()  # show_slide resets the timer.
+</t>
+<t tx="ekr.20211020082938.17">def toggle_full_screen(self):
+    w = self
+    if w.full_screen:
+        w.full_screen = False
+        w.picture.adjustSize()
+        w.showNormal()
+    else:
+        w.full_screen = True
+        WindowState = QtCore.Qt if isQt5 else QtCore.Qt.WindowState
+        w.setWindowState(WindowState.WindowFullScreen)
+        w.picture.setGeometry(0, 0, w.width(), w.height())
+        w.picture.adjustSize()
+</t>
+<t tx="ekr.20211020082938.18">def zoom_in(self):
+    self.scale = self.scale * 1.05
+    self.show_slide()
+    
+def zoom_out(self):
+    self.scale = self.scale * (1.0 / 1.05)
+    self.show_slide()
+</t>
+<t tx="ekr.20211020082938.2">def get_files(path):
+    """Return all files in path, including all subdirectories."""
+    global extensions
+    return [
+        str(z) for z in pathlib.Path(path).rglob('*')
+            if z.is_file()
+            and os.path.splitext(str(z))[1].lower() in extensions
+    ]
+</t>
+<t tx="ekr.20211020082938.3">class Slides(QtWidgets.QWidget):
+
+    scale = 1.0
+    slide_number = -1
+    timer = QtCore.QBasicTimer()
+    
+    @others
+</t>
+<t tx="ekr.20211020082938.4">send_to_trash_warning_given = False
+
+def delete(self):
+    """Issue a prompt and delete the file if the user agrees."""
+    try:
+        from send2trash import send2trash
+    except Exception:
+        if not self.send_to_trash_warning_given:
+            self.send_to_trash_warning_given = True
+            print("Deleting files requires send2trash")
+            print("pip install Send2Trash")
+        return
+    file_name = files_list[self.slide_number]
+    result = g.app.gui.runAskYesNoDialog(c,
+        title = "Delete File?",
+        message = f"Delete file {g.shortFileName(file_name)}?"
+    )
+    if result == 'yes':
+        # Move the file to the trash.
+        send2trash(file_name)
+        del files_list[self.slide_number]
+        print(f"Deleted {file_name}")
+        self.slide_number = max(0, self.slide_number - 1)
+        self.next_slide()
+</t>
+<t tx="ekr.20211020082938.5">def keyPressEvent (self, event):
+    
+    i = event.key()
+    s = event.text()
+    mods = event.modifiers()
+    if s == 'd':
+        self.delete()
+    elif s == 'f':
+        self.toggle_full_screen()
+    elif s == 'h':
+        self.show_help()
+    elif s == 'm':
+        self.move_to()
+    elif s == 'n' or i == 32:  # ' '
+        self.next_slide()
+    elif s == 'p' or s == '\b':
+        self.prev_slide()
+    elif s == 'q' or s == '\x1b':  # ESC.
+        self.quit()
+    elif s in '=+':
+        self.zoom_in()
+    elif s == '-':
+        self.zoom_out()
+    elif i == 16777235:
+        self.move_up()
+    elif i == 16777237:
+        self.move_down()
+    elif i == 16777234:
+        self.move_left()
+    elif i == 16777236:
+        self.move_right()
+    else:
+        g.trace(repr(s), i, repr(mods))
+    
+</t>
+<t tx="ekr.20211020082938.6">def move_down(self):
+    self.scroll_area.scrollContentsBy(0, -200)
+
+def move_left(self):
+    self.scroll_area.scrollContentsBy(-200, 0)
+
+def move_right(self):
+    self.scroll_area.scrollContentsBy(200, 0)
+
+def move_up(self):
+    self.scroll_area.scrollContentsBy(0, 200)
+</t>
+<t tx="ekr.20211020082938.7">def move_to(self):
+    """Issue a prompt and move the file if the user agrees."""
+    file_name = files_list[self.slide_number]
+    path = QtWidgets.QFileDialog().getExistingDirectory()
+    if path:
+        new_path = os.path.join(path, os.path.basename(file_name))
+        if os.path.exists(new_path):
+            # result = g.app.guirunAskYesNoDialog
+            print("File exists:", new_path)
+        else:
+            pathlib.Path(file_name).rename(new_path)
+            del files_list[self.slide_number]
+            self.slide_number = max(0, self.slide_number - 1)
+            self.next_slide()
+</t>
+<t tx="ekr.20211020082938.8">def next_slide(self):
+    if self.slide_number + 1 &lt; len(files_list):
+        self.slide_number += 1  # Don't wrap.
+    self.scale = 1.0
+    self.show_slide()
+</t>
+<t tx="ekr.20211020082938.9">def prev_slide(self):
+    if self.slide_number &gt; 0: # Don't wrap.
+        self.slide_number -= 1
+    self.scale = 1.0
+    self.show_slide()
+</t>
+<t tx="ekr.20220319162442.1">g.cls()
+
+# Monkey-patched git-diff-pr command.
+import leo.commands.editFileCommands as efc
+
+rev1 = '7fe2cc486153'  # Preveious commit of devel'
+rev2 = 'c4d109012028'  # Last commit of ekr-clean-comments
+x = efc.GitDiffController(c)
+
+@others
+
+# Monkey-patch, with x bound.
+x.make_diff_outlines = make_diff_outlines_ignoring_comments
+x.diff_two_revs(rev1, rev2)
+</t>
+<t tx="ekr.20220319162442.2">def make_diff_outlines_ignoring_comments(c1, c2, fn, rev1='', rev2=''):
+    """Create an outline-oriented diff from the *hidden* outlines c1 and c2."""
+    self = x
+    added, deleted, changed = self.compute_dicts(c1, c2)
+    table = (
+        (added, 'Added'),
+        (deleted, 'Deleted'),
+        (changed, 'Changed'))
+    for d, kind in table:
+        if kind.lower() == 'changed':
+            for key in d:
+                v1, v2 = d.get(key)
+                v1.b = strip_comments(v1.b)
+                v2.b = strip_comments(v2.b)
+        self.create_compare_node(c1, c2, d, kind, rev1, rev2)
+</t>
+<t tx="ekr.20220319162442.3">def strip_comments(aString):
+    """
+    Strip everything that looks like a comment from aString.
+    It's fine, for now, to ignore strings and docstrings.
+    """
+    result = []
+    lines = g.splitLines(aString)
+    for s in lines:
+        if s.strip().startswith('#@'):
+            # Retain everything that looks like a sentinel.
+            result.append(s)
+        else:
+            # Strip the comment, ignoring the end of the line.
+            i = s.find('#')
+            if i == -1:
+                result.append(s)
+            else:
+                tail = s[:i]
+                if tail.strip():
+                    result.append(tail.rstrip() + '\n')
+    return ''.join(result)
+</t>
+<t tx="ekr.20221105063835.1">"""
+script: Insert text-based macros in python code.
+
+- Add traces at start of each def.
+- Add traces at end of each def.
+- Add traces before each return.
+"""
+# This is prototype code. I have no plans to improve it.
+g.cls()
+import re
+from typing import List
+@others
+
+target = g.findNodeInChildren(c, p, 'macro-test')
+for p in target.self_and_subtree():
+    add_macros(p)
+print('Done!')
+</t>
+<t tx="ekr.20221105063835.2">def_pat = re.compile(r'^def\s+(\w+)\(.*\).*:')
+ret_pat = re.compile(r'^\s*return\b(.*)')
+
+def add_macros(p):
+    if not p.b.strip():
+        return
+    result: List[str] = []  # List of lines, with added traces.
+    indents: List[int] = []  # Indentation of def statements.
+    names: List[str] = []  # Names of defs.
+    returns: List[bool] = []  # True if def has any minimally indented returns.
+    indent, last_indent = 0, 0
+    for i, line in enumerate(g.splitLines(p.b.rstrip() + '\n')):
+        s = line.lstrip()
+        indent = len(line) - len(s)
+        indent_s = indent * ' '
+        if not s:
+            result.append(line)
+            continue  # Blank lines don't affect indentation.
+        # End any previous def at this level.
+        while indents and indent &lt; last_indent:
+            last_indent = indents.pop()
+            last_name = names.pop()
+            last_return = returns.pop()
+            if not last_return:
+                indent_s = last_indent * ' '
+                result.append(f"{indent_s}g.trace('end {last_name}')\n")
+        def_m = def_pat.match(s)
+        if def_m:
+            # End any previous entry at this level.
+            if indents and indents[-1] == indent:
+                indents.pop()
+                names.pop()
+                returns.pop()
+            # Enter this def.
+            indents.append(indent)
+            name = def_m.group(1)
+            names.append(name)
+            returns.append(False)
+            last_indent = indent
+            indent_s = (indent + 4) * ' '
+            result.append(line)
+            result.append(f"{indent_s}g.trace('enter: {name}')\n")
+            continue
+        ret_m = ret_pat.match(s)
+        if ret_m:
+            if indents:
+                if indents[-1] + 4 == indent:
+                    returns[-1] = True
+                    # g.trace(f"Suppress end trace: {line!r}")
+                val = ret_m.group(1).strip()
+                result.append(f"{indent_s}g.trace('return {val}')\n")
+            else:
+                result.append(f"### Line: {i} Return outside of def. {p.h}\n")
+        result.append(line)
+    if indents:
+        indent_s = (indents[-1] + 4) * ' '
+        name = names[-1]
+        if not returns[-1]:
+            result.append(f"{indent_s}g.trace('end {name}')\n")
+    g.printObj(result, tag=f"{p.h}:")
+</t>
+<t tx="ekr.20221105063835.3"></t>
+<t tx="ekr.20221105063835.4">def test_1():
+    return 'a'
+    
+def test_2():
+    return 'b'
+    
+def test_3():
+    if 1:
+        return 1
+    else:
+        return 2
+</t>
+<t tx="ekr.20221105063835.5">def spam():
+    print("spam")
+</t>
+<t tx="ekr.20221105063835.6">def eggs(a=None):
+    print('eggs')
+</t>
+<t tx="ekr.20230421070847.1">"""Replace default kwargs in all leo/modes files"""
+
+g.cls()
+import glob
+import os
+import re
+
+bool_kwargs = (
+    'at_line_start', 'at_whitespace_end', 'at_word_start',
+    'exclude_match',
+    'no_escape', 'no_line_break', 'no_word_break',
+)
+
+patterns = []
+for bool_arg in bool_kwargs:
+    # Remove kwargs inited to False.
+    pattern1 = re.compile(fr"{bool_arg}=False,")
+    patterns.append((pattern1, ''))
+    pattern2 = re.compile(fr"{bool_arg}=False\)")
+    patterns.append((pattern2, ')'))
+
+delegate_patterns = (
+    # Remove kwargs inited to "".
+    (re.compile(r'delegate="",'), ''),
+    (re.compile(r'delegate=""\)'), ')'),
+)
+cleanup_patterns = [
+    # Remove blank lines between trailing comma and ')'.
+    (re.compile(r',[ ]*(\n[ ]*)*\)', re.MULTILINE), ')'),
+]
+for bool_arg in bool_kwargs:
+    # Remove blank lines between trailing comma and any bool kwarg.
+    pattern3 = re.compile(fr",[ ]*(\n[ ]*)*{bool_arg}")
+    cleanup_patterns.append((pattern3, fr",\n{' '*10}{bool_arg}"))   
+
+for aTuple in delegate_patterns:
+    patterns.append(aTuple)
+for aTuple in cleanup_patterns:
+    patterns.append(aTuple)
+    
+# Exclude these files: @file nodes define them.
+exclude = (
+    'batch.py', 'forth.py', 'html.py',
+    'javascript.py', 'julia.py', 'python.py',
+)
+modes = os.path.normpath(os.path.join(g.app.loadDir, '..', 'modes'))
+paths = glob.glob(f"{modes}{os.sep}*.py")
+paths = [z for z in paths if not any(z2 in z for z2 in exclude)]
+# g.printObj([g.shortFileName(z) for z in paths])
+
+paths = paths[:1]  ###
+for path in paths:  ###
+    with open(path, 'r') as f:
+        contents = f.read()
+    for pattern, repl in patterns:
+        contents =  re.sub(pattern, repl, contents)
+    lines = [z.rstrip() + '\n' for z in g.splitLines(contents)]
+    contents = ''.join(lines)
+    lines = g.splitLines(contents)
+    if 0:
+        g.printObj(lines, tag=path)
+    if 0:
+        g.printObj(list(f"{i+660:3} {z}" for i, z in enumerate(lines[660:])))
+    if 0:
+        contents = contents.replace('  ', ' ')
+        lines = [f"{i:3} {z}" for i, z in enumerate(g.splitLines(contents))
+            if ('colorer.match' in z
+                or ',\n\n' in z
+                or any(z2 in z for z2 in bool_kwargs)
+            )]
+        g.printObj(lines, tag=path)
+    with open(path, 'w') as f:
+        f.write(contents)
+g.es_print('Done!')
+</t>
+<t tx="ekr.20230925012359.1">g.cls()
+
+@others  # Define helpers
+        
+total, total_square, total_jazz = 0, 0, 0
+
+for group in range(5):
+
+    n8 = group * 2
+    n4 = compute_quarters(n8)
+    print('')
+    print(f"===== Group {group + 1} =====: {n8} eighth notes, {n4} quarter notes...")
+    print('')
+
+    results = find_patterns(n8)
+    converted = convert_patterns(results)
+    assert len(converted) == len(results)
+    
+    square_patterns = [z for z in results if is_square(z)]
+    jazz_patterns = [z for z in results if not is_square(z)]
+    
+    total += len(results)
+    total_square += len(square_patterns)
+    total_jazz += len(jazz_patterns)
+
+    print(
+        f"{len(results)} total rhythm{g.plural(len(results))}. "
+        f"{len(square_patterns)} square, {len(jazz_patterns)} jazz")
+
+    square_converted = [convert_pattern(z) for z in square_patterns]
+    jazz_converted = [convert_pattern(z) for z in jazz_patterns]
+
+    print('\nSquare:\n')
+    for i, z in enumerate(square_converted):
+        print(f"{i + 1:2} {z!s}")
+    
+    if jazz_patterns:
+        print('\nJazz:\n')
+        for i, z in enumerate(jazz_converted):
+            print(f"{i + 1:2} {z!s}")
+            
+print(f"\nGrand totals: {total} patterns, {total_square} square, {total_jazz} jazz")
+</t>
+<t tx="ekr.20230925012359.2">def compute_quarters(n8) -&gt; int:
+    """
+    Return the quarter notes in the measure containing the given number of
+    eighth notes.
+    """
+    assert (n8 % 2) == 0, (n8, (n8 % 2))
+    return int(4 - n8/2)
+</t>
+<t tx="ekr.20230925012359.3">def convert_pattern(pattern:str) -&gt; str:
+    """Convert a string of 1s and 0s to a string of dots and dashes"""
+    return pattern.replace('1', '.').replace('0', ' _')
+
+def convert_patterns(patterns: list[int]) -&gt; list[str]:
+    return [convert_pattern(pattern) for pattern in patterns]
+</t>
+<t tx="ekr.20230925012359.4">def find_patterns(n8: int) -&gt; list[str]:
+    """
+    Given a desired number of eighth notes in a 4-beat bar, return the
+    padded string representation of all the base-2 numbers (in descending
+    order) representing rhythms contain the given number of eighth notes.
+    
+    As always in this program, 1s represent an eighth note, 0s represent
+    quarter notes.
+    """
+    # Special case.
+    if n8 == 0:
+        return ['0000']
+
+    # Compute a string with n8 leading 1s and n_zeros 
+    n_zeros = compute_quarters(n8)
+    n_s = '1' * n8 + '0' * n_zeros
+    width = n8 + n_zeros
+    
+    # Convert the string to a base-2 number.
+    n = int(n_s, 2)
+    
+    # Count down, accepting only numbers with the desired number of 1s.
+    results = []
+    while n &gt; 0:
+        s = bin(n)[2:]
+        if s.count('1') == n8:
+            pad = '0' * (width - len(s))
+            results.append(pad + s)
+        n -= 1
+    return results
+</t>
+<t tx="ekr.20230925012359.5">def is_square(s) -&gt; bool:
+    """
+    Return True if s represents a square rhythm.
+    """
+    # Remove square patterns (0 or 11) from the left.
+    # s represents a jazz pattern if the remainder ever contains 01.
+    digits = list(s)
+    while digits:
+        if digits[0] == '0':
+            digits = digits[1:]
+            continue
+        tail = ''.join(digits[0:2])
+        # if tail in ('1', '01'):
+        if tail == '10':
+            return False
+        digits = digits[2:]
+    return True
+</t>
+<t tx="ekr.20230925012840.1"></t>
+<t tx="ekr.20231008041100.1">"""
+Convert a tree of nodes to a GitHub-formatted string.
+
+This script assumes only the top-level node contains @others.
+"""
+
+# Note: There is an @others in the docstring! That's why we must use guide lines!
+
+g.cls()
+import re
+
+if 1:  # Convert *this* script: @button to-github.
+    source_h = '@button to-github'
+    target_h = 'Flat to-github'
+else:  # Convert the original script.
+    source_h = '@button create-rst'
+    target_h = 'Flat create-rst'
+
+# Find/create nodes.
+source_p = g.findNodeAnywhere(c, source_h)
+assert source_p
+target_p = g.findTopLevelNode(c, target_h)
+if not target_p:
+    target_p = c.lastTopLevel().insertAfter()
+    target_p.h = target_h
+    
+@others  # Define functions.
+    
+put_all_nodes(source_p, target_p)
+c.redraw()
+print('Done')
+
+@language python
+@tabwidth -4</t>
+<t tx="ekr.20231008041100.2">def put_all_nodes(source_p, target_p):
+    """
+    Put all nodes, expanding @others only in the top-level node.
+    """
+    # Leo note: guide lines contain no comments, strings or docstrings.
+    #           Using guide lines prevents false matches of @others!
+    lines = g.splitLines(source_p.b)
+    guide_lines = delete_comments_and_strings(lines)
+    assert len(lines) == len(guide_lines)
+    target_lines = [
+        '```python\n\n',
+        f"# {source_p.h}\n\n",
+    ]
+    for i, line in enumerate(lines):
+        guide_line = guide_lines[i]
+        target_lines.append(line if line.strip() else '\n')
+        if '@others' in guide_line:
+            target_lines.append('\n')
+            for child_p in source_p.subtree():
+                if child_p.h.strip().startswith('&lt;&lt;'):
+                    target_lines.append(f"# {child_p.h}\n")
+                target_lines.extend(g.splitLines(child_p.b + '\n'))
+    # Finish.
+    target_lines.append('\n```\n')
+    target_p.b = ''.join(target_lines)
+</t>
+<t tx="ekr.20231008041100.3"># Copied from leo.plugins.importers.python.
+string_pat1 = re.compile(r'([fFrR]*)("""|")')
+string_pat2 = re.compile(r"([fFrR]*)('''|')")
+
+def delete_comments_and_strings(lines: list[str]) -&gt; list[str]:
+    """
+    Python_i.delete_comments_and_strings.
+
+    This method handles f-strings properly.
+    """
+
+    def skip_string(delim: str, i: int, line: str) -&gt; tuple[str, int]:
+        """
+        Skip the remainder of a string.
+
+        String ends:      return ('', i)
+        String continues: return (delim, len(line))
+        """
+        if delim not in line:
+            return delim, len(line)
+        delim_pat = re.compile(delim)
+        while i &lt; len(line):
+            ch = line[i]
+            if ch == '\\':
+                i += 2
+                continue
+            if delim_pat.match(line, i):
+                return '', i + len(delim)
+            i += 1
+        return delim, i
+
+    delim: str = ''  # The open string delim.
+    result: list[str] = []
+    for line_i, line in enumerate(lines):
+        i, result_line = 0, []
+        while i &lt; len(line):
+            if delim:
+                delim, i = skip_string(delim, i, line)
+                continue
+            ch = line[i]
+            if ch in '#\n':
+                break
+            m = string_pat1.match(line, i) or string_pat2.match(line, i)
+            if m:
+                # Start skipping the string.
+                prefix, delim = m.group(1), m.group(2)
+                i += len(prefix)
+                i += len(delim)
+                if i &lt; len(line):
+                    delim, i = skip_string(delim, i, line)
+            else:
+                result_line.append(ch)
+                i += 1
+
+        # End the line and append it to the result.
+        if line.endswith('\n'):
+            result_line.append('\n')
+        result.append(''.join(result_line))
+    assert len(result) == len(lines)  # A crucial invariant.
+    return result
 </t>
 <t tx="lkj.20190712002811.1"></t>
 <t tx="maphew.20190209160547.1">gnx: maphew.20130809155103.2863
