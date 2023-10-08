@@ -2508,6 +2508,7 @@
 </v>
 <v t="ekr.20230901233844.1"></v>
 <v t="ekr.20230901233131.1"><vh>Leo 6.7.5 release notes</vh></v>
+<v t="ekr.20131016083406.16724"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -7671,7 +7672,7 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an Attribute
    This directive also controls how @doc parts are broken into lines.
 
 ..  .. index::
-    ..  pair: \@path; Glossary
+    ..  pair: @path; Glossary
 
 @path &lt;path&gt;
 
@@ -8170,7 +8171,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 .. index::
     pair: @encoding; Reference
 
- ``@encoding &lt;encoding&gt;``
+``@encoding &lt;encoding&gt;``
 
     Specifies the Unicode encoding for an external file. For example::
 
@@ -8182,7 +8183,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 .. index::
     pair: @first; Reference
 
- ``@first &lt;text&gt;``
+``@first &lt;text&gt;``
 
     Places lines at the very start of an external file, before any Leo
     sentinels. ``@first`` lines must be the *very first* lines in an ``@&lt;file&gt;`` node.
@@ -8199,7 +8200,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
         @first eval 'exec /usr/bin/perl -w -S $0 ${1+"$@"}'
         @first     if 0;
 
- ``@ignore``
+``@ignore``
 
     Tells Leo to ignore the subtree in which it appears.
 
@@ -8222,7 +8223,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 ..  s = ', '.join([g.shortFileName(z)[: -3] for z in aList])
 ..  g.es(s)
 
- ``@language &lt;language name&gt;``
+``@language &lt;language name&gt;``
 
     Specifies the language in effect, including comment delimiters.
     If no ``@language`` directive is in effect, Leo uses the defaults specified
@@ -8248,7 +8249,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 .. index::
     pair: @last; Reference
 
- ``@last &lt;text&gt;``
+``@last &lt;text&gt;``
 
     Places lines at the very end of external files.
 
@@ -8264,7 +8265,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 .. index::
     pair: @lineending; Reference
 
- ``@lineending cr/lf/nl/crlf``
+``@lineending cr/lf/nl/crlf``
 
     Sets the line endings for external files.
     This directive overrides the ``@string output_newline`` setting.
@@ -8286,7 +8287,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 .. index::
     pair: @nowrap; Reference
 
- ``@nowrap``
+``@nowrap``
 
     Disables line wrapping the Leo's body pane.
 
@@ -8297,7 +8298,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 .. index::
     pair: @pagewidth; Reference
 
- ``@pagewidth &lt;n&gt;``
+``@pagewidth &lt;n&gt;``
 
    Sets the page width used by the ``reformat-paragraph`` command.
    This directive also controls how ``@doc`` parts are broken into lines.
@@ -8334,7 +8335,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 .. index::
     pair: @persistence; Reference
     
- ``@persistence``
+``@persistence``
     
 With ``@clean`` and ``@file``, Leo can store **persistent data** in nodes. This information consists of the node's **gnx** (Global Node Index) and the node's **uA**, (User Attributes). The gnx gives each node a unique, immutable identity. Gnx's make clones possible. The uA allows scripts and plugins to associate arbitrarily much additional data with each node.
 
@@ -8347,7 +8348,7 @@ By default, Leo's importers preserve neither gnx's nor uA's. This makes imported
 .. index::
     pair: Negative tab width; Reference
 
- ``@tabwidth &lt;n&gt;``
+``@tabwidth &lt;n&gt;``
 
   Sets the width of tabs.
   Negative tab widths cause Leo to convert tabs to spaces.
@@ -8355,7 +8356,7 @@ By default, Leo's importers preserve neither gnx's nor uA's. This makes imported
 .. index::
     pair: @wrap; Reference
 
- ``@wrap``
+``@wrap``
 
     Enables line wrapping in Leo's body pane.
 
@@ -8549,14 +8550,14 @@ These directives typically affect the node in which they appear and all descenda
 .. index::
     pair: @color; Reference
 
- ``@color``
+``@color``
 
     Enables syntax coloring until the next ``@nocolor`` directive.
 
 .. index::
     pair: @killcolor; Reference
 
- ``@killcolor``
+``@killcolor``
 
     Disables syntax coloring in a node, overriding all ``@color``, ``@nocolor`` or
     ``@nocolor-node`` directives in the same node.
@@ -8564,14 +8565,14 @@ These directives typically affect the node in which they appear and all descenda
 .. index::
     pair: @nocolor; Reference
 
- ``@nocolor``
+``@nocolor``
 
     Disables syntax coloring until the next ``@nocolor`` directive.
 
 .. index::
     pair: @nocolor-node; Reference
 
- ``@nocolor-node``
+``@nocolor-node``
 
     Disables coloring for only the node containing it. The ``@nocolor-node``
     directive overrides the ``@color`` and ``@nocolor`` directives within the same
@@ -8702,7 +8703,7 @@ Nevertheless, these sentinels can be useful in special situations.
 .. index::
     pair: @delims; Reference
 
- ``@delims &lt;1 or 2 comment delims&gt;``
+``@delims &lt;1 or 2 comment delims&gt;``
 
     Sets comment delimiters in external files containing sentinel lines.
 
@@ -9019,7 +9020,7 @@ controller(c).run()
 ``bookmarks.py``
     Manages bookmarks using a separate pane.
 ``add_directives.py``
-    Allows users to define new ``@``directives.
+    Allows users to define new directives.
 ``at_folder.py``
     Synchronizes ``@folder`` nodes with folders.
 ``at_produce.py``
@@ -9552,7 +9553,7 @@ will look something like:
 
 </t>
 <t tx="ekr.20101113063552.9412"></t>
-<t tx="ekr.20101113063552.9413">Allows users to define new ``@``directives.</t>
+<t tx="ekr.20101113063552.9413">Allows users to define new directives.</t>
 <t tx="ekr.20101113063552.9414">Adds a context menu to each node containing all the commands in the bzr Qt interface. Bzr is invoked based on the path of the current node. **Requires contextmenu.py.**
 
 </t>
