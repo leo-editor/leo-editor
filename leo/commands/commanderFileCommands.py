@@ -357,7 +357,8 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
     """
     c = self
     p = c.p
-    # Do this now: w may go away.
+
+    # Save w now: w may go away.
     w = g.app.gui.get_focus(c)
     inBody = g.app.gui.widget_name(w).startswith('body')
     if inBody:
@@ -365,16 +366,20 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
     if g.app.disableSave:
         g.es("save commands disabled", color="purple")
         return
+
     c.init_error_dialogs()
+
     # 2013/09/28: use the fileName keyword argument if given.
     # This supports the leoBridge.
     # Make sure we never pass None to the ctor.
+
     if fileName:
         c.frame.title = g.computeWindowTitle(fileName)
         c.mFileName = fileName
     if not c.mFileName:
         c.frame.title = ""
         c.mFileName = ""
+
     if c.mFileName:
         # Calls c.clearChanged() if no error.
         g.app.syntax_error_files = []
@@ -398,7 +403,9 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
                     title="Save",
                     filetypes=[("Leo files", "*.leo *.leojs *.db"),],
                     defaultextension=g.defaultLeoFileExtension(c))
+
         c.bringToFront()
+
         if fileName:
             # Don't change mFileName until the dialog has succeeded.
             c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
@@ -409,6 +416,7 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
             c.fileCommands.save(c.mFileName)
             g.app.recentFilesManager.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
+
     c.raise_error_dialogs(kind='write')
     # *Safely* restore focus, without using the old w directly.
     if inBody:
@@ -442,7 +450,8 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
     file-save-as-unzipped and scripts using Leo's bridge.
     """
     c, p = self, self.p
-    # Do this now: w may go away.
+
+    # Save w now: w may go away.
     w = g.app.gui.get_focus(c)
     inBody = g.app.gui.widget_name(w).startswith('body')
     if inBody:
@@ -450,42 +459,52 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
     if g.app.disableSave:
         g.es("save commands disabled", color="purple")
         return
+
     c.init_error_dialogs()
-    # 2013/09/28: add fileName keyword arg for leoBridge scripts.
+
+    # Add fileName keyword arg for leoBridge scripts.
     if fileName:
         c.frame.title = g.computeWindowTitle(fileName)
         c.mFileName = fileName
+
     # Make sure we never pass None to the ctor.
     if not c.mFileName:
         c.frame.title = ""
     if not fileName:
         fileName = ''.join(c.k.givenArgs)
+
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
             title="Save As",
             filetypes=[("Leo files", "*.leo *.leojs *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
+
     c.bringToFront()
+
     if fileName:
-        # #998090: save file as doesn't remove entry from open file list.
-        g.trace(fileName)
+        # Forget the file.
         if c.mFileName:
             g.app.forgetOpenFile(c.mFileName)
+            
         # Don't change mFileName until the dialog has succeeded.
         if fileName.endswith(('.leo', '.db', '.leojs')):
             c.mFileName = fileName
         else:
             c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
+
         # Part of the fix for https://bugs.launchpad.net/leo-editor/+bug/1194209
         c.frame.title = title = c.computeWindowTitle(c.mFileName)
         c.frame.setTitle(title)
+
         # Calls c.clearChanged() if no error.
         if hasattr(c.frame, 'top'):
             c.frame.top.leo_master.setTabName(c, c.mFileName)
         c.fileCommands.saveAs(c.mFileName)
         g.app.recentFilesManager.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
+
     c.raise_error_dialogs(kind='write')
+
     # *Safely* restore focus, without using the old w directly.
     if inBody:
         c.bodyWantsFocus()
@@ -504,7 +523,8 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
     kwarg: a file name, for use by scripts using Leo's bridge.
     """
     c, p = self, self.p
-    # Do this now: w may go away.
+
+    # Save w now: w may go away.
     w = g.app.gui.get_focus(c)
     inBody = g.app.gui.widget_name(w).startswith('body')
     if inBody:
@@ -512,22 +532,28 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
     if g.app.disableSave:
         g.es("save commands disabled", color="purple")
         return
+
     c.init_error_dialogs()
+
     # Add fileName keyword arg for leoBridge scripts.
     if not fileName:
-        # set local fileName, _not_ c.mFileName
-        fileName = ''.join(c.k.givenArgs)
+        fileName = ''.join(c.k.givenArgs)  # Don't set c.mFileName yet.
+
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
             title="Save To",
             filetypes=[("Leo files", "*.leo *.leojs *.db"),],
             defaultextension=g.defaultLeoFileExtension(c))
+
     c.bringToFront()
+
     if fileName:
         c.fileCommands.saveTo(fileName, silent=silent)
         g.app.recentFilesManager.updateRecentFiles(fileName)
         g.chdir(fileName)
+
     c.raise_error_dialogs(kind='write')
+
     # *Safely* restore focus, without using the old w directly.
     if inBody:
         c.bodyWantsFocus()
