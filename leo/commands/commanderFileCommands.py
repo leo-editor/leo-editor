@@ -393,25 +393,26 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
         finish()
         return
 
-    ### fileName = ''.join(c.k.givenArgs)
-    ###if not fileName:
-
     fileName = g.app.gui.runSaveFileDialog(c,
         title="Save",
         filetypes=[("Leo files", "*.leo *.leojs *.db"),],
         defaultextension=g.defaultLeoFileExtension(c))
 
-    if fileName:
-        # Don't change mFileName until the dialog has succeeded.
-        c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
-        c.frame.title = c.computeWindowTitle(c.mFileName)
-        c.frame.setTitle(c.computeWindowTitle(c.mFileName))
-        if hasattr(c.frame, 'top'):
-            c.frame.top.leo_master.setTabName(c, c.mFileName)
-        c.fileCommands.save(c.mFileName)
-        g.app.recentFilesManager.updateRecentFiles(c.mFileName)
-        g.chdir(c.mFileName)
+    if not fileName:
+        finish()
+        return
 
+    # Set name and title.
+    c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
+    c.frame.title = c.computeWindowTitle(c.mFileName)
+    c.frame.setTitle(c.computeWindowTitle(c.mFileName))
+    if hasattr(c.frame, 'top'):
+        c.frame.top.leo_master.setTabName(c, c.mFileName)
+
+    # Save the file!
+    c.fileCommands.save(c.mFileName)
+    g.app.recentFilesManager.updateRecentFiles(c.mFileName)
+    g.chdir(c.mFileName)
     finish()
 #@+node:ekr.20110228162720.13980: *3* c_file.saveAll
 @g.commander_command('save-all')
@@ -452,19 +453,6 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
 
     c.init_error_dialogs()
 
-    ### ????????
-    # if fileName:
-        # c.frame.title = g.computeWindowTitle(fileName)
-        # c.mFileName = fileName
-
-    # # Make sure we never pass None to the ctor.
-    # if not c.mFileName:
-        # c.frame.title = ""
-
-    # Add fileName keyword arg for leoBridge scripts.
-    # if not fileName:
-        # fileName = ''.join(c.k.givenArgs)
-
     # Don't change mFileName or c.frame.title until the dialog has succeeded.
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
@@ -478,19 +466,19 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
         # Forget the file.
         if c.mFileName:
             g.app.forgetOpenFile(c.mFileName)
+
+        # Rename.
         if fileName.endswith(('.leo', '.db', '.leojs')):
             c.mFileName = fileName
         else:
             c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
-
-        # Part of the fix for https://bugs.launchpad.net/leo-editor/+bug/1194209
         c.frame.title = title = c.computeWindowTitle(c.mFileName)
         c.frame.setTitle(title)
-
-        # Calls c.clearChanged() if no error.
         if hasattr(c.frame, 'top'):
             c.frame.top.leo_master.setTabName(c, c.mFileName)
-        c.fileCommands.saveAs(c.mFileName)
+
+        # Save the file!
+        c.fileCommands.saveAs(c.mFileName)  # Calls c.clearChanged() if no error.
         g.app.recentFilesManager.updateRecentFiles(c.mFileName)
         g.chdir(c.mFileName)
 
