@@ -9020,7 +9020,7 @@ controller(c).run()
 ``bookmarks.py``
     Manages bookmarks using a separate pane.
 ``add_directives.py``
-    Allows users to define new ``@``directives.
+    Allows users to define new directives.
 ``at_folder.py``
     Synchronizes ``@folder`` nodes with folders.
 ``at_produce.py``
@@ -9553,7 +9553,7 @@ will look something like:
 
 </t>
 <t tx="ekr.20101113063552.9412"></t>
-<t tx="ekr.20101113063552.9413">Allows users to define new ``@``directives.</t>
+<t tx="ekr.20101113063552.9413">Allows users to define new directives.</t>
 <t tx="ekr.20101113063552.9414">Adds a context menu to each node containing all the commands in the bzr Qt interface. Bzr is invoked based on the path of the current node. **Requires contextmenu.py.**
 
 </t>
