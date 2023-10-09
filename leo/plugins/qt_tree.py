@@ -103,7 +103,7 @@ class LeoQtTree(leoFrame.LeoTree):
         tw = self.treeWidget
         tw.itemDoubleClicked.connect(self.onItemDoubleClicked)
         tw.itemClicked.connect(self.onItemClicked)
-        if self.use_mouse_expand_gestures:  
+        if self.use_mouse_expand_gestures:
             tw.setMouseTracking(True)
             tw.itemEntered.connect(self.onItemEntered)
         tw.itemSelectionChanged.connect(self.onTreeSelect)
@@ -741,7 +741,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:tom.20230324155453.1: *3* qtree.onItemEntered
     def onItemEntered(self, item: Item, col: int):
         """Expand/Contract a node when mouse moves over it.
-        
+
         <CTRL-hover> -- expand;
         <SHIFT-hover> -- contract.
         """

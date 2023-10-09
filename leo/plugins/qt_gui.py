@@ -782,7 +782,7 @@ class LeoQtGui(leoGui.LeoGui):
 
         # Save session data.
         g.app.saveSession()
-        
+
         # Attempt to close all windows.
         for c in g.app.commanders():
             allow = c.exists and g.app.closeLeoWindow(c.frame)
