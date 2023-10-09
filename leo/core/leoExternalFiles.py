@@ -196,12 +196,17 @@ class ExternalFilesController:
     #@+node:ekr.20201207055713.1: *5* efc.idle_check_leo_file
     def idle_check_leo_file(self, c: Cmdr) -> None:
         """Check c's .leo file for external changes."""
+        p = c.p
         path = c.fileName()
         if not self.has_changed(path):
             return
         # Always update the path & time to prevent future warnings.
         self.set_time(path)
         self.checksum_d[path] = self.checksum(path)
+
+        # #3601: Like g.save_focus_data, but we will *always* restore focus to the body.
+        p.saveCursorAndScroll()
+
         # #1888:
         val = self.ask(c, path)
         if val in ('yes', 'yes-all'):
@@ -209,6 +214,10 @@ class ExternalFilesController:
             g.app.loadManager.revertCommander(c)
             g.es_print(f"reloaded {path}")
 
+        # #3601:
+        c.bringToFront()
+        c.bodyWantsFocusNow()
+        p.restoreCursorAndScroll()
     #@+node:ekr.20150407124259.1: *5* efc.idle_check_open_with_file & helper
     def idle_check_open_with_file(self, c: Cmdr, ef: Any) -> None:
         """Update the open-with node given by ef."""
@@ -503,7 +512,7 @@ class ExternalFilesController:
             return ''
         is_leo = path.endswith(('.leo', '.db'))
         is_external_file = not is_leo
-        #
+
         # Create the message.
         message1 = f"{path}\nhas changed outside Leo.\n\n"
         if is_leo:
@@ -520,16 +529,12 @@ class ExternalFilesController:
 
         # #1240: Note: This dialog prevents idle time.
 
-        inBody = g.save_focus_data(c)  ### Temp: should be done in the dialog itself.
-
         result = g.app.gui.runAskYesNoDialog(c,
             message2,
             message1 + message2,
             yes_all=is_external_file,
             no_all=is_external_file,
         )
-
-        g.restore_focus(c, inBody)
 
         # #1961. Re-init the checksum to suppress concurrent dialogs.
         self.checksum_d[path] = self.checksum(path)

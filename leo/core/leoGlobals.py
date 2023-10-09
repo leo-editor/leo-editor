@@ -2996,6 +2996,9 @@ def restore_focus(c: Cmdr, inBody: bool) -> None:
     The caller must have called g.save_focus_data.
     """
     p = c.p
+
+    c.bringToFront()
+
     # Restore focus and scroll position.
     if inBody:
         c.bodyWantsFocus()

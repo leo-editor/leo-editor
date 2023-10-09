@@ -438,8 +438,6 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
         filetypes=[("Leo files", "*.leo *.leojs *.db"),],
         defaultextension=g.defaultLeoFileExtension(c))
 
-    c.bringToFront()
-
     if new_file_name:
         final_file_name = set_name_and_title(c, new_file_name)
         do_save(c, final_file_name)
@@ -506,8 +504,6 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
         filetypes=[("Leo files", "*.leo *.leojs *.db"),],
         defaultextension=g.defaultLeoFileExtension(c))
 
-    c.bringToFront()
-
     if new_file_name:
         do_save_as(c, new_file_name)
 
@@ -551,8 +547,6 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
         title="Save To",
         filetypes=[("Leo files", "*.leo *.leojs *.db"),],
         defaultextension=g.defaultLeoFileExtension(c))
-
-    c.bringToFront()
 
     if new_file_name:
         do_save_to(c, new_file_name)
