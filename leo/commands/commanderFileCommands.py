@@ -25,7 +25,7 @@ if TYPE_CHECKING:  # pragma: no cover
 def finish_save_command(c: Cmdr, p: Position, inBody: bool) -> None:
     """
     Raise error dialogs and restore the focus.
-    
+
     A helper function for c.save and c.saveAs.
 
     If inBody is True, caller must have called p.saveCursorAndScroll().
@@ -45,7 +45,7 @@ def finish_save_command(c: Cmdr, p: Position, inBody: bool) -> None:
 def save_focus_data(c: Cmdr) -> bool:
     """
     Save all data needed to restore focus and body position after a save command.
-    
+
     A helper function for c.save, c.saveAs, and c.saveTo.
     """
     p = c.p
@@ -426,6 +426,7 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
         """Common save code."""
         c.fileCommands.save(fileName)
         g.app.recentFilesManager.updateRecentFiles(fileName)
+        g.chdir(fileName)
 
     # Calls to do_save might raise an error dialog.
     # We must *always* call finish_save_command later.
@@ -435,11 +436,8 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
     # Don't prompt if the file name is known.
     given_file_name = fileName or c.mFileName
     if given_file_name:
-        # Finalize given_file_name and set related ivars.
         final_file_name = set_name_and_title(c, given_file_name)
         do_save(c, final_file_name)
-
-        # Don't call g.chdir here!
         finish_save_command(c, p, inBody)
         return
 
@@ -463,10 +461,8 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
     c.bringToFront()
 
     if new_file_name:
-        # Finalize fileName and set related ivars.
         final_file_name = set_name_and_title(c, new_file_name)
         do_save(c, final_file_name)
-        g.chdir(final_file_name)
 
     finish_save_command(c, p, inBody)
 #@+node:ekr.20110228162720.13980: *3* c_file.saveAll
@@ -510,6 +506,7 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
         # 3. Do the save and related tasks.
         c.fileCommands.saveAs(new_file_name)
         g.app.recentFilesManager.updateRecentFiles(new_file_name)
+        g.chdir(new_file_name)
         return new_file_name
 
     # Calls to do_save_as might raise an error dialog.
@@ -521,7 +518,6 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
     if fileName:
         do_save_as(c, fileName)
         finish_save_command(c, p, inBody)
-        # Don't call g.chdir here!
         return
 
     # Prompt for fileName.
@@ -533,8 +529,7 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
     c.bringToFront()
 
     if new_file_name:
-        final_file_name = do_save_as(c, new_file_name)
-        g.chdir(final_file_name)
+        do_save_as(c, new_file_name)
 
     finish_save_command(c, p, inBody)
 #@+node:ekr.20031218072017.2836: *3* c_file.saveTo
