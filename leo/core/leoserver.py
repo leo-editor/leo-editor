@@ -3216,7 +3216,7 @@ class LeoServer:
             for z in sorted(duplicates):
                 print(z, flush=True)
         result = []
-        for command_name in sorted(d):
+        for command_name in d:
             func = d.get(command_name)
             if not func:  # pragma: no cover
                 print(f"{tag}: no func: {command_name!r}", flush=True)
