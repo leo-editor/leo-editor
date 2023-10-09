@@ -649,6 +649,89 @@ def stop(self) -> None:
     """Stop all tracing."""
     sys.settrace(None)
 #@+node:ekr.20231009061250.1: ** retire all eval commands
+#@+node:ekr.20231009062818.1: *3* docstring relating to eval commands
+"""
+Eval Commands
+-------------
+
+The mod_scripting plugin creates the following 5 eval* commands:
+
+eval
+----
+
+Evaluates the selected text, if any, and remember the result in c.vs, a global namespace.
+For example::
+
+    a = 10
+
+sets:
+
+    c.vs['a'] = 10
+
+This command prints the result of the last expression or assignment in the log pane
+and select the next line of the body pane. Handy for executing line by line.
+
+eval-last
+---------
+
+Inserts the result of the last eval in the body.
+Suppose you have this text::
+
+    The cat is 7 years, or 7*365 days old.
+
+To replace 7*365 with 2555, do the following::
+
+    select 7*367
+    eval
+    delete 7*365
+    do eval-last
+
+eval-replace
+------------
+
+Evaluates the expression and replaces it with the computed value.
+For example, the example above can be done as follows::
+
+
+    select 7*367
+    eval-replace
+
+eval-last-pretty
+----------------
+
+Like eval-last, but format with pprint.pformat.
+
+eval-block
+----------
+
+Evaluates a series of blocks of code in the body, separated like this::
+
+    # >>>
+    code to run
+    # <<<
+    output of code
+    # >>>
+    code to run
+    # <<<
+    output of code
+    ...
+
+For example::
+
+    import datetime
+    datetime.datetime.now()
+    # >>>
+    2018-03-21 21:46:13.582835
+    # <<<
+    datetime.datetime.now()+datetime.timedelta(days=1000)
+    # >>>
+    2020-12-15 21:46:34.403814
+    # <<<
+
+eval-block inserts the separators, blocks can be re-run by placing the cursor in
+them and doing eval-block, and the cursor is placed in the next block, so you
+can go back up, change something, then quickly re-execute everything.
+"""
 #@+node:ekr.20180328085038.1: *3* class EvalController
 class EvalController:
     """A class defining all eval-* commands."""

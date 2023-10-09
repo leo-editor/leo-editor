@@ -2,10 +2,10 @@
 #@+node:ekr.20060328125248: * @file ../plugins/mod_scripting.py
 #@+<< mod_scripting docstring >>
 #@+node:ekr.20060328125248.1: ** << mod_scripting docstring >>
-r"""This plugin script buttons and eval* commands.
+r"""This plugin implements script buttons.
 
-Overview of script buttons
---------------------------
+Overview
+--------
 
 This plugin puts buttons in the icon area. Depending on settings the plugin will
 create the 'Run Script', the 'Script Button' and the 'Debug Script' buttons.
@@ -98,8 +98,8 @@ You can specify the following options in myLeoSettings.leo.  See the node:
     @int scripting-max-button-size = 18
     The maximum length of button names: longer names are truncated.
 
-Shortcuts for script buttons
-----------------------------
+Shortcuts
+---------
 
 You can bind key shortcuts to @button and @command nodes as follows:
 
@@ -132,92 +132,10 @@ For example::
 This creates a button named 'my-button', with a color of white, a keyboard shortcut
 of Ctrl+Alt+1, and sets sys.argv to ['a', 'b', 'c'] within the context of the script.
 
-Eval Commands
--------------
+Acknowledgement
+---------------
 
-The mod_scripting plugin creates the following 5 eval* commands:
-
-eval
-----
-
-Evaluates the selected text, if any, and remember the result in c.vs, a global namespace.
-For example::
-
-    a = 10
-
-sets:
-
-    c.vs['a'] = 10
-
-This command prints the result of the last expression or assignment in the log pane
-and select the next line of the body pane. Handy for executing line by line.
-
-eval-last
----------
-
-Inserts the result of the last eval in the body.
-Suppose you have this text::
-
-    The cat is 7 years, or 7*365 days old.
-
-To replace 7*365 with 2555, do the following::
-
-    select 7*367
-    eval
-    delete 7*365
-    do eval-last
-
-eval-replace
-------------
-
-Evaluates the expression and replaces it with the computed value.
-For example, the example above can be done as follows::
-
-
-    select 7*367
-    eval-replace
-
-eval-last-pretty
-----------------
-
-Like eval-last, but format with pprint.pformat.
-
-eval-block
-----------
-
-Evaluates a series of blocks of code in the body, separated like this::
-
-    # >>>
-    code to run
-    # <<<
-    output of code
-    # >>>
-    code to run
-    # <<<
-    output of code
-    ...
-
-For example::
-
-    import datetime
-    datetime.datetime.now()
-    # >>>
-    2018-03-21 21:46:13.582835
-    # <<<
-    datetime.datetime.now()+datetime.timedelta(days=1000)
-    # >>>
-    2020-12-15 21:46:34.403814
-    # <<<
-
-eval-block inserts the separators, blocks can be re-run by placing the cursor in
-them and doing eval-block, and the cursor is placed in the next block, so you
-can go back up, change something, then quickly re-execute everything.
-
-Acknowledgements
-----------------
-
-This plugin is based on ideas from e's dynabutton plugin, possibly the
-most brilliant idea in Leo's history.
+This plugin is based on e's dynabutton plugin, possibly the most brilliant idea in Leo's history.
 """
 #@-<< mod_scripting docstring >>
 #@+<< mod_scripting imports & annotations >>
