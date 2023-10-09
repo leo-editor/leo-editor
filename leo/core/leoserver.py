@@ -73,7 +73,7 @@ version_tuple = (1, 0, 8)
 # 1.0.5 October 2022: Fixed node commands when used from client's context menu.
 # 1.0.6 February 2023: Fixed JSON serialization, improved search commands and syntax-coloring.
 # 1.0.7 September 2023: Fixed message for file change detection.
-# 1.0.7 October 2023: Added history commands
+# 1.0.8 October 2023: Added history commands.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
