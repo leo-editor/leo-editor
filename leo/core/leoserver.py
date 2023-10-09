@@ -3806,7 +3806,7 @@ class LeoServer:
             # 'add-comments',
             'add-space-to-lines',
             'add-tab-to-lines',
-            'align-eq-signs',  # does not exist 
+            'align-eq-signs',  # does not exist
             'always-indent-region',
             'capitalize-words-or-selection',
             'cls',
