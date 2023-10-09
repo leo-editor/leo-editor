@@ -64,7 +64,7 @@ Socket = Any
 #@-<< leoserver annotations >>
 #@+<< leoserver version >>
 #@+node:ekr.20220820160619.1: ** << leoserver version >>
-version_tuple = (1, 0, 7)
+version_tuple = (1, 0, 8)
 # Version History
 # 1.0.1 Initial commit.
 # 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info.
@@ -73,6 +73,7 @@ version_tuple = (1, 0, 7)
 # 1.0.5 October 2022: Fixed node commands when used from client's context menu.
 # 1.0.6 February 2023: Fixed JSON serialization, improved search commands and syntax-coloring.
 # 1.0.7 September 2023: Fixed message for file change detection.
+# 1.0.7 October 2023: Added history commands
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
