@@ -26,7 +26,7 @@ def finish_save_command(c: Cmdr, p: Position, inBody: bool) -> None:
     """
     A helper function for c.save and c.saveAs.
 
-    Raise error dialogs and restore the focut.
+    Raise error dialogs and restore the focus.
 
     If inBody is True, caller must have called p.saveCursorAndScroll().
     """
