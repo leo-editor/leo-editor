@@ -64,7 +64,7 @@ Socket = Any
 #@-<< leoserver annotations >>
 #@+<< leoserver version >>
 #@+node:ekr.20220820160619.1: ** << leoserver version >>
-version_tuple = (1, 0, 7)
+version_tuple = (1, 0, 8)
 # Version History
 # 1.0.1 Initial commit.
 # 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info.
@@ -73,6 +73,7 @@ version_tuple = (1, 0, 7)
 # 1.0.5 October 2022: Fixed node commands when used from client's context menu.
 # 1.0.6 February 2023: Fixed JSON serialization, improved search commands and syntax-coloring.
 # 1.0.7 September 2023: Fixed message for file change detection.
+# 1.0.8 October 2023: Added history commands, Fixed leo document change detection, allowed more minibuffer commands.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -316,8 +317,10 @@ class ServerExternalFilesController(ExternalFilesController):
         Return True if the user agrees by default, or skips and asks
         client, blocking further checks until result received.
         """
+        _is_leo = path.endswith(('.leo', '.db', '.leojs'))
+
         # check with leoServer's config first
-        if g.leoServer.leoServerConfig:
+        if not _is_leo and g.leoServer.leoServerConfig:
             check_config = g.leoServer.leoServerConfig["defaultReloadIgnore"].lower()
             if not bool('none' in check_config):
                 if bool('yes' in check_config):
@@ -3215,7 +3218,7 @@ class LeoServer:
             for z in sorted(duplicates):
                 print(z, flush=True)
         result = []
-        for command_name in sorted(d):
+        for command_name in d:
             func = d.get(command_name)
             if not func:  # pragma: no cover
                 print(f"{tag}: no func: {command_name!r}", flush=True)
@@ -3282,7 +3285,7 @@ class LeoServer:
             'file-compare-two-leo-files',
             'edit-recent-files',
             'exit-leo',
-            'help',  # To do.
+            'help',
             'help-for-abbreviations',
             'help-for-autocompletion',
             'help-for-bindings',
@@ -3734,11 +3737,11 @@ class LeoServer:
             'toggle-split-direction',
 
             'what-line',
-            'eval',
+            # 'eval',
             'eval-block',
-            'eval-last',
-            'eval-last-pretty',
-            'eval-replace',
+            # 'eval-last',
+            # 'eval-last-pretty',
+            # 'eval-replace',
 
             'find-quick',
             'find-quick-changed',
@@ -3800,16 +3803,18 @@ class LeoServer:
             'vs-update',
 
             # Connected client's text editing commands should cover all of these...
-            'add-comments',
+            # 'add-comments',
             'add-space-to-lines',
             'add-tab-to-lines',
-            'align-eq-signs',
+            'align-eq-signs',  # does not exist
             'always-indent-region',
             'capitalize-words-or-selection',
             'cls',
-            'reformat-body',
-            'reformat-paragraph',
-            'reformat-selection',
+
+            # reformat are Ok to use from leobridge
+            # 'reformat-body',
+            # 'reformat-paragraph',
+            # 'reformat-selection',
 
             'back-char',
             'back-char-extend-selection',
@@ -4397,6 +4402,37 @@ class LeoServer:
         """
         members = inspect.getmembers(self, inspect.ismethod)
         return sorted([name for (name, value) in members if not name.startswith('_')])
+    #@+node:felix.20231008201016.1: *5* server.history getters & setters
+    #@+node:felix.20231008201231.1: *6* get_history
+    def get_history(self, param: Param) -> Response:
+        """Get current commander's command history"""
+        c = self._check_c()
+        k = c.k
+        if k and k.commandHistory:
+            h = k.commandHistory
+        else:
+            h = []
+        return self._make_response({"history": h})
+    #@+node:felix.20231008201237.1: *6* set_history
+    def set_history(self, param: Param) -> Response:
+        """Set current commander's command history"""
+        c = self._check_c()
+        k = c.k
+        h = param.get('history', [])
+        if k and isinstance(h, list) and all(isinstance(item, str) for item in h):
+            k.commandHistory = h
+        else:
+            k.commandHistory = []
+        return self._make_response()
+    #@+node:felix.20231008201242.1: *6* add_history
+    def add_history(self, param: Param) -> Response:
+        """Add a command to the current commander's command history"""
+        c = self._check_c()
+        k = c.k
+        command = param.get('command', "")
+        if k and command and isinstance(command, str):
+            k.addToCommandHistory(command)
+        return self._make_response()
     #@+node:felix.20210621233316.76: *5* server.init_connection
     def _init_connection(self, web_socket: Socket) -> None:  # pragma: no cover (tested in client).
         """Begin the connection."""
