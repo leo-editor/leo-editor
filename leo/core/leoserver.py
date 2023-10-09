@@ -4397,6 +4397,37 @@ class LeoServer:
         """
         members = inspect.getmembers(self, inspect.ismethod)
         return sorted([name for (name, value) in members if not name.startswith('_')])
+    #@+node:felix.20231008201016.1: *5* server.history getters & setters
+    #@+node:felix.20231008201231.1: *6* get_history
+    def get_history(self, param: Param) -> Response:
+        """Get current commander's command history"""
+        c = self._check_c()
+        k = c.k
+        if k and k.commandHistory:
+            h = k.commandHistory
+        else:
+            h = []
+        return self._make_response({"history": h})
+    #@+node:felix.20231008201237.1: *6* set_history
+    def set_history(self, param: Param) -> Response:
+        """Set current commander's command history"""
+        c = self._check_c()
+        k = c.k
+        h = param.get('history', [])
+        if k and isinstance(h, list) and all(isinstance(item, str) for item in h):
+            k.commandHistory = h
+        else:
+            k.commandHistory = []
+        return self._make_response()
+    #@+node:felix.20231008201242.1: *6* add_history
+    def add_history(self, param: Param) -> Response:
+        """Add a command to the current commander's command history"""
+        c = self._check_c()
+        k = c.k
+        command = param.get('command', "")
+        if k and command and isinstance(command, str):
+            k.addToCommandHistory(command)
+        return self._make_response()
     #@+node:felix.20210621233316.76: *5* server.init_connection
     def _init_connection(self, web_socket: Socket) -> None:  # pragma: no cover (tested in client).
         """Begin the connection."""
