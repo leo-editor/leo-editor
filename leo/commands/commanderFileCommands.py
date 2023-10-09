@@ -74,10 +74,12 @@ def set_name_and_title(c: Cmdr, fileName: str) -> str:
     title = c.computeWindowTitle(c.mFileName)
     c.frame.title = title
     c.frame.setTitle(title)
-    if hasattr(c.frame, 'top'):
+    try:
+        # Does not exist during unit testing. May not exist in all guis.
         c.frame.top.leo_master.setTabName(c, c.mFileName)
+    except AttributeError:
+        pass
     return c.mFileName
-
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings
 @g.commander_command('reload-settings')
 def reloadSettings(self: Self, event: Event = None) -> None:
@@ -420,28 +422,25 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
         g.es("save commands disabled", color="purple")
         return
 
-    inBody = save_focus_data(c)
-    c.init_error_dialogs()
-
     def do_save(c: Cmdr, fileName: str) -> None:
         """Common save code."""
         c.fileCommands.save(fileName)
         g.app.recentFilesManager.updateRecentFiles(fileName)
 
-    # Handle the kwarg first.
-    if fileName:
-        # Finalize fileName and set related ivars.
-        fileName = set_name_and_title(c, fileName)
-        do_save(c, fileName)
-        g.chdir(fileName)
-        finish_save_command(c, p, inBody)  # Defensive: should not be needed.
-        return
+    # Calls to do_save might raise an error dialog.
+    # We must *always* call finish_save_command later.
+    inBody = save_focus_data(c)
+    c.init_error_dialogs()
 
-    # Save the file if it already has a name.
-    if c.mFileName:
-        do_save(c, c.mFileName)
-        # Do not call g.chdir here!
-        finish_save_command(c, p, inBody)  # Defensive: should not be needed.
+    # Don't prompt if the file name is known.
+    given_file_name = fileName or c.mFileName
+    if given_file_name:
+        # Finalize given_file_name and set related ivars.
+        final_file_name = set_name_and_title(c, given_file_name)
+        do_save(c, final_file_name)
+
+        # Don't call g.chdir here!
+        finish_save_command(c, p, inBody)
         return
 
     # The file still has no name.
@@ -452,22 +451,22 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
         if root.isDirty():
             c.atFileCommands.writeOneAtEditNode(root)
         c.clearChanged()  # Clears all dirty bits.
-        finish_save_command(c, p, inBody)  # Defensive: should not be needed.
+        finish_save_command(c, p, inBody)
         return
 
     # Prompt for fileName.
-    fileName = g.app.gui.runSaveFileDialog(c,
+    new_file_name = g.app.gui.runSaveFileDialog(c,
         title="Save",
         filetypes=[("Leo files", "*.leo *.leojs *.db"),],
         defaultextension=g.defaultLeoFileExtension(c))
 
     c.bringToFront()
 
-    if fileName:
+    if new_file_name:
         # Finalize fileName and set related ivars.
-        fileName = set_name_and_title(c, fileName)
-        do_save(c, fileName)
-        g.chdir(fileName)
+        final_file_name = set_name_and_title(c, new_file_name)
+        do_save(c, final_file_name)
+        g.chdir(final_file_name)
 
     finish_save_command(c, p, inBody)
 #@+node:ekr.20110228162720.13980: *3* c_file.saveAll
@@ -501,37 +500,41 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
         g.es("save commands disabled", color="purple")
         return
 
-    def do_save_as(c: Cmdr, fileName: str) -> None:
+    def do_save_as(c: Cmdr, fileName: str) -> str:
         """Common save-as code."""
         # 1. Forget the previous file.
         if c.mFileName:
             g.app.forgetOpenFile(c.mFileName)
         # 2. Finalize fileName and set related ivars.
-        fileName = set_name_and_title(c, fileName)
+        new_file_name = set_name_and_title(c, fileName)
         # 3. Do the save and related tasks.
-        c.fileCommands.saveAs(fileName)
-        g.app.recentFilesManager.updateRecentFiles(fileName)
-        g.chdir(fileName)
+        c.fileCommands.saveAs(new_file_name)
+        g.app.recentFilesManager.updateRecentFiles(new_file_name)
+        return new_file_name
 
+    # Calls to do_save_as might raise an error dialog.
+    # We must *always* call finish_save_command later.
     inBody = save_focus_data(c)
     c.init_error_dialogs()
 
     # Handle the kwarg first.
     if fileName:
         do_save_as(c, fileName)
-        finish_save_command(c, p, inBody)  # Defensive: should not be needed.
+        finish_save_command(c, p, inBody)
+        # Don't call g.chdir here!
         return
 
     # Prompt for fileName.
-    fileName = g.app.gui.runSaveFileDialog(c,
+    new_file_name = g.app.gui.runSaveFileDialog(c,
         title="Save As",
         filetypes=[("Leo files", "*.leo *.leojs *.db"),],
         defaultextension=g.defaultLeoFileExtension(c))
 
     c.bringToFront()
 
-    if fileName:
-        do_save_as(c, fileName)
+    if new_file_name:
+        final_file_name = do_save_as(c, new_file_name)
+        g.chdir(final_file_name)
 
     finish_save_command(c, p, inBody)
 #@+node:ekr.20031218072017.2836: *3* c_file.saveTo
@@ -551,6 +554,8 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
         g.es("save commands disabled", color="purple")
         return
 
+    # Calls to do_save_to might raise an error dialog.
+    # We must *always* call finish_save_command later.
     inBody = save_focus_data(c)
     c.init_error_dialogs()
 
@@ -559,23 +564,23 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
         # *Never* change c.mFileName or c.frame.title.
         c.fileCommands.saveTo(fileName, silent=silent)
         g.app.recentFilesManager.updateRecentFiles(fileName)
+        # *Never* call g.chdir!
 
     # Handle the kwarg first.
     if fileName:
         do_save_to(c, fileName)
-        finish_save_command(c, p, inBody)  # Defensive: should not be needed.
+        finish_save_command(c, p, inBody)
         return
 
-    fileName = g.app.gui.runSaveFileDialog(c,
+    new_file_name = g.app.gui.runSaveFileDialog(c,
         title="Save To",
         filetypes=[("Leo files", "*.leo *.leojs *.db"),],
         defaultextension=g.defaultLeoFileExtension(c))
 
     c.bringToFront()
 
-    if fileName:
-        do_save_to(c, fileName)
-        g.chdir(fileName)
+    if new_file_name:
+        do_save_to(c, new_file_name)
 
     finish_save_command(c, p, inBody)
 #@+node:ekr.20031218072017.2837: *3* c_file.revert
