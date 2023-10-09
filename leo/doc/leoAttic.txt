@@ -649,7 +649,11 @@ def stop(self) -> None:
     """Stop all tracing."""
     sys.settrace(None)
 #@+node:ekr.20231009061250.1: ** retire all eval commands
-#@+node:ekr.20231009062818.1: *3* docstring relating to eval commands
+# mod_scripting.py contained the EvalController class.
+
+# mod_http.py (!) used the EvalController class.
+#@+node:ekr.20231009082535.1: *3* --- from mod_scripting.py
+#@+node:ekr.20231009062818.1: *4* docstring relating to eval commands
 """
 Eval Commands
 -------------
@@ -732,11 +736,11 @@ eval-block inserts the separators, blocks can be re-run by placing the cursor in
 them and doing eval-block, and the cursor is placed in the next block, so you
 can go back up, change something, then quickly re-execute everything.
 """
-#@+node:ekr.20180328085038.1: *3* class EvalController
+#@+node:ekr.20180328085038.1: *4* class EvalController
 class EvalController:
     """A class defining all eval-* commands."""
     @others
-#@+node:ekr.20180328130835.1: *4* eval.Birth
+#@+node:ekr.20180328130835.1: *5* eval.Birth
 def __init__(self, c: Cmdr) -> None:
     """Ctor for EvalController class."""
     self.answers: list[tuple[str, str]] = []
@@ -758,8 +762,8 @@ def __init__(self, c: Cmdr) -> None:
     self.last_result = None
     self.old_stderr: bool = None
     self.old_stdout: bool = None
-#@+node:ekr.20180328092221.1: *4* eval.Commands
-#@+node:ekr.20180328085426.2: *5* eval
+#@+node:ekr.20180328092221.1: *5* eval.Commands
+#@+node:ekr.20180328085426.2: *6* eval
 @eval_cmd("eval")
 def eval_command(self, event: Event) -> None:
     << eval docstring >>
@@ -770,7 +774,7 @@ def eval_command(self, event: Event) -> None:
             return
         # Updates self.last_answer if there is exactly one answer.
         self.eval_text(s)
-#@+node:ekr.20180328100519.1: *6* << eval docstring >>
+#@+node:ekr.20180328100519.1: *7* << eval docstring >>
 """
 Execute the selected text, if any, or the line containing the cursor.
 
@@ -794,7 +798,7 @@ allowing execution of indented code.
 ``g``, ``c``, and ``p`` are available to executing code, assignments
 are made in the ``c.vs`` namespace and persist for the life of ``c``.
 """
-#@+node:ekr.20180328085426.3: *5* eval-block
+#@+node:ekr.20180328085426.3: *6* eval-block
 @eval_cmd("eval-block")
 def eval_block(self, event: Event) -> None:
     << eval-block docstring >>
@@ -827,7 +831,7 @@ def eval_block(self, event: Event) -> None:
     c.frame.body.wrapper.setInsertPoint(pos)
     c.redraw()
     c.bodyWantsFocusNow()
-#@+node:ekr.20180328100415.1: *6* << eval-block docstring >>
+#@+node:ekr.20180328100415.1: *7* << eval-block docstring >>
 """
 In the body, "# >>>" marks the end of a code block, and "# <<<" marks
 the end of an output block.  E.g.::
@@ -851,7 +855,7 @@ because ``eval-block`` will add them as needed.  So just type the
 first code block and run ``eval-block``.
 
 """
-#@+node:ekr.20180328085426.5: *5* eval-last
+#@+node:ekr.20180328085426.5: *6* eval-last
 @eval_cmd("eval-last")
 def eval_last(self, event: Event, text: str=None) -> None:
     """
@@ -875,7 +879,7 @@ def eval_last(self, event: Event, text: str=None) -> None:
     w.insert(i, text + '\n')
     w.setInsertPoint(i + len(text) + 1)
     c.setChanged()
-#@+node:ekr.20180328085426.6: *5* eval-last-pretty
+#@+node:ekr.20180328085426.6: *6* eval-last-pretty
 @eval_cmd("eval-last-pretty")
 def vs_last_pretty(self, event: Event) -> None:
     """
@@ -894,7 +898,7 @@ def vs_last_pretty(self, event: Event) -> None:
     if text:
         text = pprint.pformat(text)
         self.eval_last(event, text=text)
-#@+node:ekr.20180328085426.4: *5* eval-replace
+#@+node:ekr.20180328085426.4: *6* eval-replace
 @eval_cmd("eval-replace")
 def eval_replace(self, event: Event) -> None:
     """
@@ -925,8 +929,8 @@ def eval_replace(self, event: Event) -> None:
     w.setInsertPoint(i + len(s))
     c.undoer.afterChangeNodeContents(c.p, 'Insert result', bunch)
     c.setChanged()
-#@+node:ekr.20180328151652.1: *4* eval.Helpers
-#@+node:ekr.20180328090830.1: *5* eval.eval_text & helpers
+#@+node:ekr.20180328151652.1: *5* eval.Helpers
+#@+node:ekr.20180328090830.1: *6* eval.eval_text & helpers
 def eval_text(self, s: str) -> Optional[str]:
     """Evaluate string s."""
     s = textwrap.dedent(s)
@@ -942,7 +946,7 @@ def eval_text(self, s: str) -> Optional[str]:
     self.show_answers()
     self.unredirect()
     return None
-#@+node:ekr.20180329130626.1: *6* eval.new_exec
+#@+node:ekr.20180329130626.1: *7* eval.new_exec
 def new_exec(self, s: str) -> None:
     try:
         self.answers = []
@@ -959,7 +963,7 @@ def new_exec(self, s: str) -> None:
             self.last_result = None
     except Exception:
         g.es_exception()
-#@+node:ekr.20180329130623.1: *6* eval.old_exec
+#@+node:ekr.20180329130623.1: *7* eval.old_exec
 def old_exec(self, blocks: list[str], txt: str) -> str:
 
     # pylint: disable=eval-used
@@ -990,7 +994,7 @@ def old_exec(self, blocks: list[str], txt: str) -> str:
             except Exception:
                 g.es_exception()
     return ans
-#@+node:ekr.20180328130526.1: *6* eval.redirect & unredirect
+#@+node:ekr.20180328130526.1: *7* eval.redirect & unredirect
 def redirect(self) -> None:
     c = self.c
     if c.config.getBool('eval-redirect'):
@@ -1008,7 +1012,7 @@ def unredirect(self) -> None:
             g.restoreStderr()
         if not self.old_stdout:
             g.restoreStdout()
-#@+node:ekr.20180328132748.1: *6* eval.show_answers
+#@+node:ekr.20180328132748.1: *7* eval.show_answers
 def show_answers(self) -> None:
     """ Show all new values computed by do_exec."""
     if len(self.answers) > 1:
@@ -1016,7 +1020,7 @@ def show_answers(self) -> None:
     for answer in self.answers:
         key, val = answer
         g.es(f"{key} = {val}")
-#@+node:ekr.20180329154232.1: *6* eval.show_legacy_answer
+#@+node:ekr.20180329154232.1: *7* eval.show_legacy_answer
 def show_legacy_answer(self, ans: str, blocks: list[str]) -> str:
 
     cvs = self.c.vs
@@ -1039,7 +1043,7 @@ def show_legacy_answer(self, ans: str, blocks: list[str]) -> str:
             txt = txt[:500] + ' <truncated>'
         g.es(txt)
     return ans
-#@+node:ekr.20180329125626.1: *5* eval.exec_then_eval (not used yet)
+#@+node:ekr.20180329125626.1: *6* eval.exec_then_eval (not used yet)
 def exec_then_eval(self, code: str, ns: dict) -> str:
     # From Milan Melena.
     import ast
@@ -1051,7 +1055,7 @@ def exec_then_eval(self, code: str, ns: dict) -> str:
         return eval(compile(last, '<string>', mode='eval'), ns)
     exec(compile(block, '<string>', mode='exec'), ns)
     return ""
-#@+node:tbrown.20170516194332.1: *5* eval.get_blocks
+#@+node:tbrown.20170516194332.1: *6* eval.get_blocks
 def get_blocks(self) -> Generator:
     """get_blocks - iterate code blocks
 
@@ -1084,7 +1088,7 @@ def get_blocks(self) -> Generator:
             reading = 'source'
             continue
         block[reading].append(line)
-#@+node:ekr.20180328145035.1: *5* eval.get_selected_lines
+#@+node:ekr.20180328145035.1: *6* eval.get_selected_lines
 def get_selected_lines(self) -> str:
 
     c, p = self.c, self.c.p
@@ -1122,6 +1126,79 @@ def get_selected_lines(self) -> str:
         ins = min(len(p.b), i2)
         w.setSelectionRange(i1, ins, insert=ins, s=p.b)
     return s
+#@+node:ekr.20231009082307.15: *3* --- from mod_http.py
+#@+node:ekr.20231009082307.16: *4* class ExecHandler
+class ExecHandler:
+    """
+    Quasi-RPC GET based interface
+    """
+    @others
+#@+node:ekr.20231009082307.17: *5* __init__
+def __init__(self, request_handler):
+    self.request_handler = request_handler
+#@+node:ekr.20231009082307.18: *5* get_response
+def get_response(self):
+    """Return the file like 'f' that leo_interface.send_head makes"""
+    # self.request_handler.path.startswith('/_/exec/')
+
+    if not g.app.config.getBool("http-allow-remote-exec"):
+        return None  # fail deliberately
+
+    c = g.app and g.app.log and g.app.log.c
+    if c and config.enable is None:
+        if c.config.isLocalSetting('http-allow-remote-exec', 'bool'):
+            g.issueSecurityWarning('@bool http-allow-remote-exec')
+            config.enable = False
+        else:
+            config.enable = True
+
+    parsed_url = urlparse.urlparse(self.request_handler.path)
+    query = urlparse.parse_qs(parsed_url.query)
+
+    enc = query.get("enc", ["str"])[0]
+
+    if parsed_url.path.startswith('/_/exec/commanders/'):
+        ans = [i.fileName() for i in g.app.commanders()]
+        if enc != 'json':
+            ans = '\n'.join(ans)  # type:ignore
+    else:
+        ans = self.proc_cmds()
+
+    f = StringIO()
+    f.mime_type = query.get("mime_type", ["text/plain"])[0]
+    enc = query.get("enc", ["str"])[0]
+    if enc == 'json':
+        f.write(json.dumps(ans))
+    elif enc == 'repr':
+        f.write(repr(ans))
+    else:
+        f.write(str(ans))
+    return f
+
+#@+node:ekr.20231009082307.19: *5* proc_cmds (mod_http.py)
+def proc_cmds(self):
+
+    parsed_url = urlparse.urlparse(self.request_handler.path)
+    query = urlparse.parse_qs(parsed_url.query)
+    # work out which commander to use, zero index int, full path name, or file name
+    c_idx = query.get('c', [0])[0]
+    # pylint: disable=literal-comparison
+    if c_idx != 0:
+        try:
+            c_idx = int(c_idx)
+        except ValueError:
+            paths = [i.fileName() for i in g.app.commanders()]
+            if c_idx in paths:
+                c_idx = paths.index(c_idx)
+            else:
+                paths = [os.path.basename(i) for i in paths]
+                c_idx = paths.index(c_idx)
+    ans = None
+    c = g.app.commanders()[c_idx]
+    if c and c.evalController:
+        for cmd in query['cmd']:
+            ans = c.evalController.eval_text(cmd)
+    return ans  # the last answer, if multiple commands run
 #@-all
 #@@nosearch
 #@-leo

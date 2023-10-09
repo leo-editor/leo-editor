@@ -159,10 +159,6 @@ if TYPE_CHECKING:  # pragma: no cover
 #@-<< mod_scripting imports & annotations >>
 
 #@+others
-#@+node:ekr.20210228135810.1: ** cmd decorator
-def eval_cmd(name: str) -> Callable:
-    """Command decorator for the EvalController class."""
-    return g.new_cmd_decorator(name, ['c', 'evalController',])
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
 #@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
 def build_rclick_tree(command_p: Position, rclicks: list[Any]=None, top_level: bool=False) -> list:
