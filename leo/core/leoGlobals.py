@@ -2988,6 +2988,35 @@ def update_directives_pat() -> None:
 # #1688: Initialize g.directives_pat
 update_directives_pat()
 #@+node:ekr.20031218072017.3116: ** g.Files & Directories
+#@+node:ekr.20231009173348.1: *3* g.save/restore focus
+#@+node:ekr.20231009173348.2: *4* g.restore_focus
+def restore_focus(c: Cmdr, inBody: bool) -> None:
+    """Restore the focus and other data.
+
+    The caller must have called g.save_focus_data.
+    """
+    p = c.p
+    # Restore focus and scroll position.
+    if inBody:
+        c.bodyWantsFocus()
+        p.restoreCursorAndScroll()
+    else:
+        c.treeWantsFocus()
+#@+node:ekr.20231009173348.3: *4* g.save_focus_data
+def save_focus_data(c: Cmdr) -> bool:
+    """
+    Save all data needed to restore focus and body position after a save command.
+
+    A helper function for c.save, c.saveAs, and c.saveTo.
+
+    Return a bool telling whether focus was in the body pane.
+    """
+    p = c.p
+    w = g.app.gui.get_focus(c)
+    inBody = g.app.gui.widget_name(w).startswith('body')
+    if inBody:
+        p.saveCursorAndScroll()
+    return inBody
 #@+node:ekr.20080606074139.2: *3* g.chdir
 def chdir(path: str) -> None:
     """Change current directory to the directory corresponding to path."""

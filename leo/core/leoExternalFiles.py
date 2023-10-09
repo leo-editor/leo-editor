@@ -517,18 +517,23 @@ class ExternalFilesController:
                     break
             else:
                 message2 = f"Reload {path}?"
-        #
+
         # #1240: Note: This dialog prevents idle time.
+
+        inBody = g.save_focus_data(c)  ### Temp: should be done in the dialog itself.
+
         result = g.app.gui.runAskYesNoDialog(c,
             message2,
             message1 + message2,
             yes_all=is_external_file,
             no_all=is_external_file,
         )
-        #
+
+        g.restore_focus(c, inBody)
+
         # #1961. Re-init the checksum to suppress concurrent dialogs.
         self.checksum_d[path] = self.checksum(path)
-        #
+
         # #1888: return one of ('yes', 'no', 'yes-all', 'no-all')
         return result.lower() if result else 'no'
     #@+node:ekr.20150404052819.1: *4* efc.checksum

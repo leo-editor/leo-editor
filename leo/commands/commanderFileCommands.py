@@ -13,7 +13,6 @@ from leo.core import leoImport
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoCommands import Position
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoGui import LeoGui
     Self = Cmdr  # For @g.commander_command.
@@ -22,13 +21,11 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+others
 #@+node:ekr.20231008163009.1: **  top-level helper functions
 #@+node:ekr.20231008163338.1: *3* function: finish_save_command
-def finish_save_command(c: Cmdr, p: Position, inBody: bool) -> None:
+def finish_save_command(c: Cmdr, inBody: bool) -> None:
     """
     Raise error dialogs and restore the focus.
 
     A helper function for c.save and c.saveAs.
-
-    If inBody is True, caller must have called p.saveCursorAndScroll().
     """
 
     # Raise any queued error dialogs.
@@ -36,24 +33,7 @@ def finish_save_command(c: Cmdr, p: Position, inBody: bool) -> None:
     c.raise_error_dialogs(kind='write')
 
     # Restore focus and scroll position.
-    if inBody:
-        c.bodyWantsFocus()
-        p.restoreCursorAndScroll()
-    else:
-        c.treeWantsFocus()
-#@+node:ekr.20231008164053.1: *3* function: save_focus_data
-def save_focus_data(c: Cmdr) -> bool:
-    """
-    Save all data needed to restore focus and body position after a save command.
-
-    A helper function for c.save, c.saveAs, and c.saveTo.
-    """
-    p = c.p
-    w = g.app.gui.get_focus(c)
-    inBody = g.app.gui.widget_name(w).startswith('body')
-    if inBody:
-        p.saveCursorAndScroll()
-    return inBody
+    g.restore_focus(c, inBody)
 #@+node:ekr.20231008163048.1: *3* function: set_name_and_title
 def set_name_and_title(c: Cmdr, fileName: str) -> str:
     """
@@ -416,7 +396,7 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
 
     kwarg: a file name, for use by scripts using Leo's bridge.
     """
-    c, p = self, self.p
+    c = self
 
     if g.app.disableSave:
         g.es("save commands disabled", color="purple")
@@ -430,7 +410,7 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
 
     # Calls to do_save might raise an error dialog.
     # We must *always* call finish_save_command later.
-    inBody = save_focus_data(c)
+    inBody = g.save_focus_data(c)
     c.init_error_dialogs()
 
     # Don't prompt if the file name is known.
@@ -438,7 +418,7 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
     if given_file_name:
         final_file_name = set_name_and_title(c, given_file_name)
         do_save(c, final_file_name)
-        finish_save_command(c, p, inBody)
+        finish_save_command(c, inBody)
         return
 
     # The file still has no name.
@@ -449,7 +429,7 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
         if root.isDirty():
             c.atFileCommands.writeOneAtEditNode(root)
         c.clearChanged()  # Clears all dirty bits.
-        finish_save_command(c, p, inBody)
+        finish_save_command(c, inBody)
         return
 
     # Prompt for fileName.
@@ -464,7 +444,7 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
         final_file_name = set_name_and_title(c, new_file_name)
         do_save(c, final_file_name)
 
-    finish_save_command(c, p, inBody)
+    finish_save_command(c, inBody)
 #@+node:ekr.20110228162720.13980: *3* c_file.saveAll
 @g.commander_command('save-all')
 def saveAll(self: Self, event: Event = None) -> None:
@@ -490,7 +470,7 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
     kwarg: a file name, for use by file-save-as-zipped,
     file-save-as-unzipped and scripts using Leo's bridge.
     """
-    c, p = self, self.p
+    c = self
 
     if g.app.disableSave:
         g.es("save commands disabled", color="purple")
@@ -511,13 +491,13 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
 
     # Calls to do_save_as might raise an error dialog.
     # We must *always* call finish_save_command later.
-    inBody = save_focus_data(c)
+    inBody = g.save_focus_data(c)
     c.init_error_dialogs()
 
     # Handle the kwarg first.
     if fileName:
         do_save_as(c, fileName)
-        finish_save_command(c, p, inBody)
+        finish_save_command(c, inBody)
         return
 
     # Prompt for fileName.
@@ -531,7 +511,7 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
     if new_file_name:
         do_save_as(c, new_file_name)
 
-    finish_save_command(c, p, inBody)
+    finish_save_command(c, inBody)
 #@+node:ekr.20031218072017.2836: *3* c_file.saveTo
 @g.commander_command('save-to')
 @g.commander_command('file-save-to')
@@ -543,7 +523,7 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
 
     kwarg: a file name, for use by scripts using Leo's bridge.
     """
-    c, p = self, self.p
+    c = self
 
     if g.app.disableSave:
         g.es("save commands disabled", color="purple")
@@ -551,7 +531,7 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
 
     # Calls to do_save_to might raise an error dialog.
     # We must *always* call finish_save_command later.
-    inBody = save_focus_data(c)
+    inBody = g.save_focus_data(c)
     c.init_error_dialogs()
 
     def do_save_to(c: Cmdr, fileName: str) -> None:
@@ -564,7 +544,7 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
     # Handle the kwarg first.
     if fileName:
         do_save_to(c, fileName)
-        finish_save_command(c, p, inBody)
+        finish_save_command(c, inBody)
         return
 
     new_file_name = g.app.gui.runSaveFileDialog(c,
@@ -577,7 +557,7 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
     if new_file_name:
         do_save_to(c, new_file_name)
 
-    finish_save_command(c, p, inBody)
+    finish_save_command(c, inBody)
 #@+node:ekr.20031218072017.2837: *3* c_file.revert
 @g.commander_command('revert')
 def revert(self: Self, event: Event = None) -> None:
