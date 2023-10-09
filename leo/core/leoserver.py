@@ -3283,7 +3283,7 @@ class LeoServer:
             'file-compare-two-leo-files',
             'edit-recent-files',
             'exit-leo',
-            'help',  # To do.
+            'help',
             'help-for-abbreviations',
             'help-for-autocompletion',
             'help-for-bindings',
@@ -3735,11 +3735,11 @@ class LeoServer:
             'toggle-split-direction',
 
             'what-line',
-            'eval',
+            # 'eval',
             'eval-block',
-            'eval-last',
-            'eval-last-pretty',
-            'eval-replace',
+            # 'eval-last',
+            # 'eval-last-pretty',
+            # 'eval-replace',
 
             'find-quick',
             'find-quick-changed',
@@ -3801,16 +3801,18 @@ class LeoServer:
             'vs-update',
 
             # Connected client's text editing commands should cover all of these...
-            'add-comments',
+            # 'add-comments',
             'add-space-to-lines',
             'add-tab-to-lines',
-            'align-eq-signs',
+            'align-eq-signs',  # does not exist 
             'always-indent-region',
             'capitalize-words-or-selection',
             'cls',
-            'reformat-body',
-            'reformat-paragraph',
-            'reformat-selection',
+
+            # reformat are Ok to use from leobridge
+            # 'reformat-body',
+            # 'reformat-paragraph',
+            # 'reformat-selection',
 
             'back-char',
             'back-char-extend-selection',
