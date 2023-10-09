@@ -317,8 +317,10 @@ class ServerExternalFilesController(ExternalFilesController):
         Return True if the user agrees by default, or skips and asks
         client, blocking further checks until result received.
         """
+        _is_leo = path.endswith(('.leo', '.db', '.leojs'))
+
         # check with leoServer's config first
-        if g.leoServer.leoServerConfig:
+        if not _is_leo and g.leoServer.leoServerConfig:
             check_config = g.leoServer.leoServerConfig["defaultReloadIgnore"].lower()
             if not bool('none' in check_config):
                 if bool('yes' in check_config):
