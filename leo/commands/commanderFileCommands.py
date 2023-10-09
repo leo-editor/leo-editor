@@ -24,9 +24,9 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+node:ekr.20231008163338.1: *3* function: finish_save_command
 def finish_save_command(c: Cmdr, p: Position, inBody: bool) -> None:
     """
-    A helper function for c.save and c.saveAs.
-
     Raise error dialogs and restore the focus.
+    
+    A helper function for c.save and c.saveAs.
 
     If inBody is True, caller must have called p.saveCursorAndScroll().
     """
@@ -44,9 +44,9 @@ def finish_save_command(c: Cmdr, p: Position, inBody: bool) -> None:
 #@+node:ekr.20231008164053.1: *3* function: save_focus_data
 def save_focus_data(c: Cmdr) -> bool:
     """
-    A helper function for c.save, c.saveAs, and c.saveTo.
-
     Save all data needed to restore focus and body position after a save command.
+    
+    A helper function for c.save, c.saveAs, and c.saveTo.
     """
     p = c.p
     w = g.app.gui.get_focus(c)
@@ -57,9 +57,9 @@ def save_focus_data(c: Cmdr) -> bool:
 #@+node:ekr.20231008163048.1: *3* function: set_name_and_title
 def set_name_and_title(c: Cmdr, fileName: str) -> str:
     """
-    A helper function for c.save and c.saveAs.
-
     Compute c.mFileName and related ivars.
+
+    A helper function for c.save and c.saveAs.
 
     Return c.mFileName.
     """
