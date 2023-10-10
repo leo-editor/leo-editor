@@ -20,25 +20,23 @@ if TYPE_CHECKING:  # pragma: no cover
 
 #@+others
 #@+node:ekr.20231008163009.1: **  top-level helper functions
-#@+node:ekr.20231008163338.1: *3* function: finish_save_command
-def finish_save_command(c: Cmdr) -> None:
+#@+node:ekr.20231008163338.1: *3* function: do_error_dialogs
+def do_error_dialogs(c: Cmdr) -> None:
     """
-    Raise error dialogs and restore the focus.
+    Raise error dialogs.
 
-    A helper function for c.save and c.saveAs.
+    A helper function for c.save, c.saveAs, and c.saveTo.
     """
-
-    # Raise any queued error dialogs.
     c.syntaxErrorDialog()
     c.raise_error_dialogs(kind='write')
 #@+node:ekr.20231008163048.1: *3* function: set_name_and_title
 def set_name_and_title(c: Cmdr, fileName: str) -> str:
     """
-    Compute c.mFileName and related ivars.
+    Compute the finalized name for c.mFileName. Set related ivars.
 
-    A helper function for c.save and c.saveAs.
+    A helper function for c.save, c.saveAs, and c.saveTo.
 
-    Return c.mFileName.
+    Return the finalized name.
     """
 
     # Finalize fileName.
@@ -405,38 +403,39 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
         g.app.recentFilesManager.updateRecentFiles(fileName)
         g.chdir(fileName)
 
-    c.init_error_dialogs()
+    try:
+        c.init_error_dialogs()
 
-    # Don't prompt if the file name is known.
-    given_file_name = fileName or c.mFileName
-    if given_file_name:
-        final_file_name = set_name_and_title(c, given_file_name)
-        do_save(c, final_file_name)
-        finish_save_command(c)
-        return
+        # Don't prompt if the file name is known.
+        given_file_name = fileName or c.mFileName
+        if given_file_name:
+            final_file_name = set_name_and_title(c, given_file_name)
+            do_save(c, final_file_name)
+            return
 
-    # The file still has no name.
+        # The file still has no name.
 
-    root = c.rootPosition()
-    if not root.next() and root.isAtEditNode():
-        # Write the @edit node if needed.
-        if root.isDirty():
-            c.atFileCommands.writeOneAtEditNode(root)
-        c.clearChanged()  # Clears all dirty bits.
-        finish_save_command(c)
-        return
+        root = c.rootPosition()
+        if not root.next() and root.isAtEditNode():
+            # Write the @edit node if needed.
+            if root.isDirty():
+                c.atFileCommands.writeOneAtEditNode(root)
+            c.clearChanged()  # Clears all dirty bits.
+            do_error_dialogs(c)
+            return
 
-    # Prompt for fileName.
-    new_file_name = g.app.gui.runSaveFileDialog(c,
-        title="Save",
-        filetypes=[("Leo files", "*.leo *.leojs *.db"),],
-        defaultextension=g.defaultLeoFileExtension(c))
+        # Prompt for fileName.
+        new_file_name = g.app.gui.runSaveFileDialog(c,
+            title="Save",
+            filetypes=[("Leo files", "*.leo *.leojs *.db"),],
+            defaultextension=g.defaultLeoFileExtension(c))
 
-    if new_file_name:
-        final_file_name = set_name_and_title(c, new_file_name)
-        do_save(c, final_file_name)
+        if new_file_name:
+            final_file_name = set_name_and_title(c, new_file_name)
+            do_save(c, final_file_name)
 
-    finish_save_command(c)
+    finally:
+        do_error_dialogs(c)
 #@+node:ekr.20110228162720.13980: *3* c_file.saveAll
 @g.commander_command('save-all')
 def saveAll(self: Self, event: Event = None) -> None:
@@ -481,24 +480,25 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
         g.chdir(new_file_name)
         return new_file_name
 
-    c.init_error_dialogs()
+    try:
+        c.init_error_dialogs()
 
-    # Handle the kwarg first.
-    if fileName:
-        do_save_as(c, fileName)
-        finish_save_command(c)
-        return
+        # Handle the kwarg first.
+        if fileName:
+            do_save_as(c, fileName)
+            return
 
-    # Prompt for fileName.
-    new_file_name = g.app.gui.runSaveFileDialog(c,
-        title="Save As",
-        filetypes=[("Leo files", "*.leo *.leojs *.db"),],
-        defaultextension=g.defaultLeoFileExtension(c))
+        # Prompt for fileName.
+        new_file_name = g.app.gui.runSaveFileDialog(c,
+            title="Save As",
+            filetypes=[("Leo files", "*.leo *.leojs *.db"),],
+            defaultextension=g.defaultLeoFileExtension(c))
 
-    if new_file_name:
-        do_save_as(c, new_file_name)
+        if new_file_name:
+            do_save_as(c, new_file_name)
 
-    finish_save_command(c)
+    finally:
+        do_error_dialogs(c)
 #@+node:ekr.20031218072017.2836: *3* c_file.saveTo
 @g.commander_command('save-to')
 @g.commander_command('file-save-to')
@@ -516,8 +516,6 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
         g.es("save commands disabled", color="purple")
         return
 
-    c.init_error_dialogs()
-
     def do_save_to(c: Cmdr, fileName: str) -> None:
         """Common save-to code."""
         # *Never* change c.mFileName or c.frame.title.
@@ -525,21 +523,24 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
         g.app.recentFilesManager.updateRecentFiles(fileName)
         # *Never* call g.chdir!
 
-    # Handle the kwarg first.
-    if fileName:
-        do_save_to(c, fileName)
-        finish_save_command(c)
-        return
+    try:
+        c.init_error_dialogs()
 
-    new_file_name = g.app.gui.runSaveFileDialog(c,
-        title="Save To",
-        filetypes=[("Leo files", "*.leo *.leojs *.db"),],
-        defaultextension=g.defaultLeoFileExtension(c))
+        # Handle the kwarg first.
+        if fileName:
+            do_save_to(c, fileName)
+            return
 
-    if new_file_name:
-        do_save_to(c, new_file_name)
+        new_file_name = g.app.gui.runSaveFileDialog(c,
+            title="Save To",
+            filetypes=[("Leo files", "*.leo *.leojs *.db"),],
+            defaultextension=g.defaultLeoFileExtension(c))
 
-    finish_save_command(c)
+        if new_file_name:
+            do_save_to(c, new_file_name)
+
+    finally:
+        do_error_dialogs(c)
 #@+node:ekr.20031218072017.2837: *3* c_file.revert
 @g.commander_command('revert')
 def revert(self: Self, event: Event = None) -> None:
