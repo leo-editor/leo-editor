@@ -188,12 +188,16 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20231010004932.1: *4* qt_gui._save/_restore_focus
     def _save_focus(self, c):
         """
-        Save the data needed to restor focus to the body.
+        Save the data needed to restore focus to the body.
+
+        We have to guess: the user may have executed the save commands from the
+        minibuffer. There is no way to know what the "original" focus was!
         """
         c.p.saveCursorAndScroll()
 
     def _restore_focus(self, c):
         """Restore focus to the body pane."""
+        # Fix #3601 by brute force.
         c.bringToFront()
         c.bodyWantsFocusNow()
         c.p.restoreCursorAndScroll()
