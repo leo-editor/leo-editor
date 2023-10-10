@@ -3052,8 +3052,6 @@ def create_temp_file(textMode: bool = False) -> tuple[Any, str]:
 #@+node:ekr.20210307060731.1: *3* g.createHiddenCommander
 def createHiddenCommander(fn: str) -> Cmdr:
     """Read the file into a hidden commander (Similar to g.openWithFileName)."""
-    from leo.core.leoCommands import Commands
-    c = Commands(fn, gui=g.app.nullGui)
     lm = g.app.loadManager
     c = lm.openFileByName(fn, gui=g.app.nullGui)
     return c
