@@ -4750,7 +4750,7 @@ class LeoServer:
         if func:
             return func
         # Otherwise, search all subcommanders for the method.
-        table = (  # This table comes from c.initObjectIvars.
+        table = (  # This table comes from c.initObjects.
             'abbrevCommands',
             'bufferCommands',
             'chapterCommands',
@@ -4759,7 +4759,7 @@ class LeoServer:
             'debugCommands',
             'editCommands',
             'editFileCommands',
-            'evalController',
+            # 'evalController',  # Previously, set in mod_scripting.py.
             'gotoCommands',
             'helpCommands',
             'keyHandler',

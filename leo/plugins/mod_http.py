@@ -683,7 +683,6 @@ class LeoActions:
     def __init__(self, request_handler):
         self.request_handler = request_handler
         self.bookmark_unl = g.app.commanders()[0].config.getString('http-bookmark-unl')
-        self.exec_handler = ExecHandler(request_handler)
     #@+node:tbrown.20110930220448.18075: *3* add_bookmark
     def add_bookmark(self):
         """Return the file like 'f' that leo_interface.send_head makes
@@ -880,89 +879,21 @@ class LeoActions:
             return f
         except Exception:
             return None
-    #@+node:tbrown.20110930220448.18076: *3* get_response
+    #@+node:tbrown.20110930220448.18076: *3* get_response (mod_http.py)
     def get_response(self):
         """Return the file like 'f' that leo_interface.send_head makes"""
         if self.request_handler.path.startswith('/_/add/bkmk/'):
             return self.add_bookmark()
-        if self.request_handler.path.startswith('/_/exec/'):
-            return self.exec_handler.get_response()
+            
+        # No longer used.
+        # mod_scripting.py used to define the EvalController class, but that class was buggy.
+
+        # if self.request_handler.path.startswith('/_/exec/'):
+            # return self.exec_handler.get_response()
+
         f = StringIO()
         f.write("Unknown URL in LeoActions.get_response()")
         return f
-    #@-others
-#@+node:tbrown.20150729112701.1: ** class ExecHandler
-class ExecHandler:
-    """
-    Quasi-RPC GET based interface
-    """
-    #@+others
-    #@+node:tbrown.20150729112701.2: *3* __init__
-    def __init__(self, request_handler):
-        self.request_handler = request_handler
-    #@+node:tbrown.20150729112808.1: *3* get_response
-    def get_response(self):
-        """Return the file like 'f' that leo_interface.send_head makes"""
-        # self.request_handler.path.startswith('/_/exec/')
-
-        if not g.app.config.getBool("http-allow-remote-exec"):
-            return None  # fail deliberately
-
-        c = g.app and g.app.log and g.app.log.c
-        if c and config.enable is None:
-            if c.config.isLocalSetting('http-allow-remote-exec', 'bool'):
-                g.issueSecurityWarning('@bool http-allow-remote-exec')
-                config.enable = False
-            else:
-                config.enable = True
-
-        parsed_url = urlparse.urlparse(self.request_handler.path)
-        query = urlparse.parse_qs(parsed_url.query)
-
-        enc = query.get("enc", ["str"])[0]
-
-        if parsed_url.path.startswith('/_/exec/commanders/'):
-            ans = [i.fileName() for i in g.app.commanders()]
-            if enc != 'json':
-                ans = '\n'.join(ans)  # type:ignore
-        else:
-            ans = self.proc_cmds()
-
-        f = StringIO()
-        f.mime_type = query.get("mime_type", ["text/plain"])[0]
-        enc = query.get("enc", ["str"])[0]
-        if enc == 'json':
-            f.write(json.dumps(ans))
-        elif enc == 'repr':
-            f.write(repr(ans))
-        else:
-            f.write(str(ans))
-        return f
-
-    #@+node:tbrown.20150729150843.1: *3* proc_cmds (mod_http.py)
-    def proc_cmds(self):
-
-        parsed_url = urlparse.urlparse(self.request_handler.path)
-        query = urlparse.parse_qs(parsed_url.query)
-        # work out which commander to use, zero index int, full path name, or file name
-        c_idx = query.get('c', [0])[0]
-        # pylint: disable=literal-comparison
-        if c_idx != 0:
-            try:
-                c_idx = int(c_idx)
-            except ValueError:
-                paths = [i.fileName() for i in g.app.commanders()]
-                if c_idx in paths:
-                    c_idx = paths.index(c_idx)
-                else:
-                    paths = [os.path.basename(i) for i in paths]
-                    c_idx = paths.index(c_idx)
-        ans = None
-        c = g.app.commanders()[c_idx]
-        if c and c.evalController:
-            for cmd in query['cmd']:
-                ans = c.evalController.eval_text(cmd)
-        return ans  # the last answer, if multiple commands run
     #@-others
 #@+node:EKR.20040517080250.10: ** class nodeNotFound
 class nodeNotFound(Exception):

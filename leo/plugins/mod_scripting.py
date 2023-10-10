@@ -2,10 +2,10 @@
 #@+node:ekr.20060328125248: * @file ../plugins/mod_scripting.py
 #@+<< mod_scripting docstring >>
 #@+node:ekr.20060328125248.1: ** << mod_scripting docstring >>
-r"""This plugin script buttons and eval* commands.
+r"""This plugin implements script buttons.
 
-Overview of script buttons
---------------------------
+Overview
+--------
 
 This plugin puts buttons in the icon area. Depending on settings the plugin will
 create the 'Run Script', the 'Script Button' and the 'Debug Script' buttons.
@@ -98,8 +98,8 @@ You can specify the following options in myLeoSettings.leo.  See the node:
     @int scripting-max-button-size = 18
     The maximum length of button names: longer names are truncated.
 
-Shortcuts for script buttons
-----------------------------
+Shortcuts
+---------
 
 You can bind key shortcuts to @button and @command nodes as follows:
 
@@ -132,92 +132,10 @@ For example::
 This creates a button named 'my-button', with a color of white, a keyboard shortcut
 of Ctrl+Alt+1, and sets sys.argv to ['a', 'b', 'c'] within the context of the script.
 
-Eval Commands
--------------
+Acknowledgement
+---------------
 
-The mod_scripting plugin creates the following 5 eval* commands:
-
-eval
-----
-
-Evaluates the selected text, if any, and remember the result in c.vs, a global namespace.
-For example::
-
-    a = 10
-
-sets:
-
-    c.vs['a'] = 10
-
-This command prints the result of the last expression or assignment in the log pane
-and select the next line of the body pane. Handy for executing line by line.
-
-eval-last
----------
-
-Inserts the result of the last eval in the body.
-Suppose you have this text::
-
-    The cat is 7 years, or 7*365 days old.
-
-To replace 7*365 with 2555, do the following::
-
-    select 7*367
-    eval
-    delete 7*365
-    do eval-last
-
-eval-replace
-------------
-
-Evaluates the expression and replaces it with the computed value.
-For example, the example above can be done as follows::
-
-
-    select 7*367
-    eval-replace
-
-eval-last-pretty
-----------------
-
-Like eval-last, but format with pprint.pformat.
-
-eval-block
-----------
-
-Evaluates a series of blocks of code in the body, separated like this::
-
-    # >>>
-    code to run
-    # <<<
-    output of code
-    # >>>
-    code to run
-    # <<<
-    output of code
-    ...
-
-For example::
-
-    import datetime
-    datetime.datetime.now()
-    # >>>
-    2018-03-21 21:46:13.582835
-    # <<<
-    datetime.datetime.now()+datetime.timedelta(days=1000)
-    # >>>
-    2020-12-15 21:46:34.403814
-    # <<<
-
-eval-block inserts the separators, blocks can be re-run by placing the cursor in
-them and doing eval-block, and the cursor is placed in the next block, so you
-can go back up, change something, then quickly re-execute everything.
-
-Acknowledgements
-----------------
-
-This plugin is based on ideas from e's dynabutton plugin, possibly the
-most brilliant idea in Leo's history.
+This plugin is based on e's dynabutton plugin, possibly the most brilliant idea in Leo's history.
 """
 #@-<< mod_scripting docstring >>
 #@+<< mod_scripting imports & annotations >>
@@ -225,11 +143,9 @@ most brilliant idea in Leo's history.
 from __future__ import annotations
 from collections import namedtuple
 from collections.abc import Callable
-import pprint
 import re
 import sys
-import textwrap
-from typing import Any, Generator, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoGui
@@ -243,10 +159,6 @@ if TYPE_CHECKING:  # pragma: no cover
 #@-<< mod_scripting imports & annotations >>
 
 #@+others
-#@+node:ekr.20210228135810.1: ** cmd decorator
-def eval_cmd(name: str) -> Callable:
-    """Command decorator for the EvalController class."""
-    return g.new_cmd_decorator(name, ['c', 'evalController',])
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
 #@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
 def build_rclick_tree(command_p: Position, rclicks: list[Any]=None, top_level: bool=False) -> list:
@@ -334,7 +246,6 @@ def onCreate(tag: str, keys: Any) -> None:
         sc = g.app.gui.ScriptingControllerClass(c)
         c.theScriptingController = sc
         sc.createAllButtons()
-        c.evalController = EvalController(c)
 #@+node:ekr.20141031053508.7: ** class AtButtonCallback
 class AtButtonCallback:
     """A class whose __call__ method is a callback for @button nodes."""
@@ -1217,399 +1128,6 @@ class ScriptingController:
     #@-others
 
 scriptingController = ScriptingController
-#@+node:ekr.20180328085038.1: ** class EvalController
-class EvalController:
-    """A class defining all eval-* commands."""
-    #@+others
-    #@+node:ekr.20180328130835.1: *3* eval.Birth
-    def __init__(self, c: Cmdr) -> None:
-        """Ctor for EvalController class."""
-        self.answers: list[tuple[str, str]] = []
-        self.c = c
-        self.d: dict[str, Any] = {}
-        self.globals_d: dict[str, Any] = {'c': c, 'g': g, 'p': c.p}
-        self.locals_d: dict[str, Any] = {}
-        self.legacy = c.config.getBool('legacy-eval', default=True)
-        if g.app.ipk:
-            # Use the IPython namespace.
-            self.c.vs = g.app.ipk.namespace
-        elif self.legacy:
-            self.c.vs = self.d
-        else:
-            self.c.vs = self.globals_d
-        # allow the auto-completer to complete in this namespace
-        # Updated by do_exec.
-        self.c.keyHandler.autoCompleter.namespaces.append(self.c.vs)
-        self.last_result = None
-        self.old_stderr: bool = None
-        self.old_stdout: bool = None
-    #@+node:ekr.20180328092221.1: *3* eval.Commands
-    #@+node:ekr.20180328085426.2: *4* eval
-    @eval_cmd("eval")
-    def eval_command(self, event: Event) -> None:
-        #@+<< eval docstring >>
-        #@+node:ekr.20180328100519.1: *5* << eval docstring >>
-        """
-        Execute the selected text, if any, or the line containing the cursor.
-
-        Select next line of text.
-
-        Tries hard to capture the result of from the last expression in the
-        selected text::
-
-            import datetime
-            today = datetime.date.today()
-
-        will capture the value of ``today`` even though the last line is a
-        statement, not an expression.
-
-        Stores results in ``c.vs['_last']`` for insertion
-        into body by ``eval-last`` or ``eval-last-pretty``.
-
-        Removes common indentation (``textwrap.dedent()``) before executing,
-        allowing execution of indented code.
-
-        ``g``, ``c``, and ``p`` are available to executing code, assignments
-        are made in the ``c.vs`` namespace and persist for the life of ``c``.
-        """
-        #@-<< eval docstring >>
-        c = self.c
-        if c == event.get('c'):
-            s = self.get_selected_lines()
-            if self.legacy and s is None:
-                return
-            # Updates self.last_answer if there is exactly one answer.
-            self.eval_text(s)
-    #@+node:ekr.20180328085426.3: *4* eval-block
-    @eval_cmd("eval-block")
-    def eval_block(self, event: Event) -> None:
-        #@+<< eval-block docstring >>
-        #@+node:ekr.20180328100415.1: *5* << eval-block docstring >>
-        """
-        In the body, "# >>>" marks the end of a code block, and "# <<<" marks
-        the end of an output block.  E.g.::
-
-        a = 2
-        # >>>
-        4
-        # <<<
-        b = 2.0*a
-        # >>>
-        4.0
-        # <<<
-
-        ``eval-block`` evaluates the current code block, either the code block
-        the cursor's in, or the code block preceding the output block the cursor's
-        in.  Subsequent output blocks are marked "# >>> *" to show they may need
-        re-evaluation.
-
-        Note: you don't really need to type the "# >>>" and "# <<<" markers
-        because ``eval-block`` will add them as needed.  So just type the
-        first code block and run ``eval-block``.
-
-        """
-        #@-<< eval-block docstring >>
-        c = self.c
-        if c != event.get('c'):
-            return
-        pos = 0
-        lines: list[str] = []
-        current_seen = False
-        current: bool
-        source: str
-        output: str
-        for current, source, output in self.get_blocks():
-            lines.append(source)
-            lines.append("# >>>" + (" *" if current_seen else ""))
-            if current:
-                old_log = c.frame.log.logCtrl.getAllText()
-                self.eval_text(source)
-                new_log = c.frame.log.logCtrl.getAllText()[len(old_log) :]
-                lines.append(new_log.strip())
-                if not self.legacy:
-                    if self.last_result:
-                        lines.append(self.last_result)
-                pos = len('\n'.join(lines)) + 7
-                current_seen = True
-            else:
-                lines.append(output)
-            lines.append("# <<<")
-        c.p.b = '\n'.join(lines) + '\n'
-        c.frame.body.wrapper.setInsertPoint(pos)
-        c.redraw()
-        c.bodyWantsFocusNow()
-    #@+node:ekr.20180328085426.5: *4* eval-last
-    @eval_cmd("eval-last")
-    def eval_last(self, event: Event, text: str=None) -> None:
-        """
-        Insert the last result from ``eval``.
-
-        Inserted as a string, so ``"1\n2\n3\n4"`` will cover four lines and
-        insert no quotes, for ``repr()`` style insertion use ``last-pretty``.
-        """
-        c = self.c
-        if c != event.get('c'):
-            return
-        if self.legacy:
-            text = str(c.vs.get('_last'))
-        else:
-            if not text and not self.last_result:
-                return
-            if not text:
-                text = str(self.last_result)
-        w = c.frame.body.wrapper
-        i = w.getInsertPoint()
-        w.insert(i, text + '\n')
-        w.setInsertPoint(i + len(text) + 1)
-        c.setChanged()
-    #@+node:ekr.20180328085426.6: *4* eval-last-pretty
-    @eval_cmd("eval-last-pretty")
-    def vs_last_pretty(self, event: Event) -> None:
-        """
-        Insert the last result from ``eval``.
-
-        Formatted by ``pprint.pformat()``, so ``"1\n2\n3\n4"`` will appear as
-        '``"1\n2\n3\n4"``', see all ``last``.
-        """
-        c = self.c
-        if c != event.get('c'):
-            return
-        if self.legacy:
-            text = str(c.vs.get('_last'))
-        else:
-            text = self.last_result
-        if text:
-            text = pprint.pformat(text)
-            self.eval_last(event, text=text)
-    #@+node:ekr.20180328085426.4: *4* eval-replace
-    @eval_cmd("eval-replace")
-    def eval_replace(self, event: Event) -> None:
-        """
-        Execute the selected text, if any.
-        Undoably replace it with the result.
-        """
-        c = self.c
-        if c != event.get('c'):
-            return
-        w = c.frame.body.wrapper
-        s = w.getSelectedText()
-        if not s.strip():
-            g.es_print('no selected text')
-            return
-        self.eval_text(s)
-        if self.legacy:
-            last = c.vs.get('_last')
-        else:
-            last = self.last_result
-        if not last:
-            return
-        s = pprint.pformat(last)
-        i, j = w.getSelectionRange()
-        new_text = c.p.b[:i] + s + c.p.b[j:]
-        bunch = c.undoer.beforeChangeNodeContents(c.p)
-        w.setAllText(new_text)
-        c.p.b = new_text
-        w.setInsertPoint(i + len(s))
-        c.undoer.afterChangeNodeContents(c.p, 'Insert result', bunch)
-        c.setChanged()
-    #@+node:ekr.20180328151652.1: *3* eval.Helpers
-    #@+node:ekr.20180328090830.1: *4* eval.eval_text & helpers
-    def eval_text(self, s: str) -> Optional[str]:
-        """Evaluate string s."""
-        s = textwrap.dedent(s)
-        if not s.strip():
-            return None
-        self.redirect()
-        if self.legacy:
-            blocks = re.split('\n(?=[^\\s])', s)
-            ans = self.old_exec(blocks, s)
-            self.show_legacy_answer(ans, blocks)
-            return ans  # needed by mod_http
-        self.new_exec(s)
-        self.show_answers()
-        self.unredirect()
-        return None
-    #@+node:ekr.20180329130626.1: *5* eval.new_exec
-    def new_exec(self, s: str) -> None:
-        try:
-            self.answers = []
-            self.locals_d = {}
-            exec(s, self.globals_d, self.locals_d)
-            for key in self.locals_d:
-                val = self.locals_d.get(key)
-                self.globals_d[key] = val
-                self.answers.append((key, val))
-            if len(self.answers) == 1:
-                key, val = self.answers[0]
-                self.last_result = val
-            else:
-                self.last_result = None
-        except Exception:
-            g.es_exception()
-    #@+node:ekr.20180329130623.1: *5* eval.old_exec
-    def old_exec(self, blocks: list[str], txt: str) -> str:
-
-        # pylint: disable=eval-used
-        c = self.c
-        leo_globals = {'c': c, 'g': g, 'p': c.p}
-        all_done, ans = False, None
-        try:
-            # Execute all but the last 'block'
-            exec('\n'.join(blocks[:-1]), leo_globals, c.vs)  # Compatible with Python 3.x.
-            all_done = False
-        except SyntaxError:
-            # Splitting the last block caused syntax error
-            try:
-                # Is the whole thing a single expression?
-                ans = eval(txt, leo_globals, c.vs)
-            except SyntaxError:
-                try:
-                    exec(txt, leo_globals, c.vs)
-                except Exception:
-                    g.es_exception()
-            all_done = True  # Either way, the last block will be used.
-        if not all_done:  # last block still needs using
-            try:
-                ans = eval(blocks[-1], leo_globals, c.vs)
-            except SyntaxError:
-                try:
-                    exec(txt, leo_globals, c.vs)
-                except Exception:
-                    g.es_exception()
-        return ans
-    #@+node:ekr.20180328130526.1: *5* eval.redirect & unredirect
-    def redirect(self) -> None:
-        c = self.c
-        if c.config.getBool('eval-redirect'):
-            self.old_stderr = g.stdErrIsRedirected()
-            self.old_stdout = g.stdOutIsRedirected()
-            if not self.old_stderr:
-                g.redirectStderr()
-            if not self.old_stdout:
-                g.redirectStdout()
-
-    def unredirect(self) -> None:
-        c = self.c
-        if c.config.getBool('eval-redirect'):
-            if not self.old_stderr:
-                g.restoreStderr()
-            if not self.old_stdout:
-                g.restoreStdout()
-    #@+node:ekr.20180328132748.1: *5* eval.show_answers
-    def show_answers(self) -> None:
-        """ Show all new values computed by do_exec."""
-        if len(self.answers) > 1:
-            g.es('')
-        for answer in self.answers:
-            key, val = answer
-            g.es(f"{key} = {val}")
-    #@+node:ekr.20180329154232.1: *5* eval.show_legacy_answer
-    def show_legacy_answer(self, ans: str, blocks: list[str]) -> str:
-
-        cvs = self.c.vs
-        if ans is None:  # see if last block was a simple "var =" assignment
-            key = blocks[-1].split('=', 1)[0].strip()
-            if key in cvs:
-                ans = cvs[key]
-        if ans is None:  # see if whole text was a simple /multi-line/ "var =" assignment
-            key = blocks[0].split('=', 1)[0].strip()
-            if key in cvs:
-                ans = cvs[key]
-        cvs['_last'] = ans
-        if ans is not None:
-            # annoying to echo 'None' to the log during line by line execution
-            txt = str(ans)
-            lines = txt.split('\n')
-            if len(lines) > 10:
-                txt = '\n'.join(lines[:5] + ['<snip>'] + lines[-5:])
-            if len(txt) > 500:
-                txt = txt[:500] + ' <truncated>'
-            g.es(txt)
-        return ans
-    #@+node:ekr.20180329125626.1: *4* eval.exec_then_eval (not used yet)
-    def exec_then_eval(self, code: str, ns: dict) -> str:
-        # From Milan Melena.
-        import ast
-        block = ast.parse(code, mode='exec')
-        if block.body and isinstance(block.body[-1], ast.Expr):
-            last = ast.Expression(block.body.pop().value)
-            exec(compile(block, '<string>', mode='exec'), ns)
-            # pylint: disable=eval-used
-            return eval(compile(last, '<string>', mode='eval'), ns)
-        exec(compile(block, '<string>', mode='exec'), ns)
-        return ""
-    #@+node:tbrown.20170516194332.1: *4* eval.get_blocks
-    def get_blocks(self) -> Generator:
-        """get_blocks - iterate code blocks
-
-        :return: (current, source, output)
-        :rtype: (bool, str, str)
-        """
-        c = self.c
-        pos = c.frame.body.wrapper.getInsertPoint()
-        chrs = 0
-        lines = c.p.b.split('\n')
-        block: dict[str, list] = {'source': [], 'output': []}
-        reading = 'source'
-        seeking_current = True
-        # if the last non-blank line isn't the end of a possibly empty
-        # output block, make it one
-        if [i for i in lines if i.strip()][-1] != "# <<<":
-            lines.append("# <<<")
-        while lines:
-            line = lines.pop(0)
-            chrs += len(line) + 1
-            if line.startswith("# >>>"):
-                reading = 'output'
-                continue
-            if line.startswith("# <<<"):
-                current = seeking_current and (chrs >= pos + 1)
-                if current:
-                    seeking_current = False
-                yield current, '\n'.join(block['source']), '\n'.join(block['output'])
-                block = {'source': [], 'output': []}
-                reading = 'source'
-                continue
-            block[reading].append(line)
-    #@+node:ekr.20180328145035.1: *4* eval.get_selected_lines
-    def get_selected_lines(self) -> str:
-
-        c, p = self.c, self.c.p
-        w = c.frame.body.wrapper
-        body = w.getAllText()
-        i = w.getInsertPoint()
-        if w.hasSelection():
-            if self.legacy:
-                i1, i2 = w.getSelectionRange()
-            else:
-                j, k = w.getSelectionRange()
-                i1, junk = g.getLine(body, j)
-                junk, i2 = g.getLine(body, k)
-            s = body[i1:i2]
-        else:
-            if self.legacy:
-                k = w.getInsertPoint()
-                junk, i2 = g.getLine(body, k)
-                w.setSelectionRange(k, i2)
-                return None
-            i1, i2 = g.getLine(body, i)
-            s = body[i1:i2].strip()
-        # Select next line for next eval.
-        if self.legacy:
-            i = j = i2
-            j += 1
-            while j < len(body) and body[j] != '\n':
-                j += 1
-            w.setSelectionRange(i, j)
-        else:
-            if not body.endswith('\n'):
-                if i >= len(p.b):
-                    i2 += 1
-                p.b = p.b + '\n'
-            ins = min(len(p.b), i2)
-            w.setSelectionRange(i1, ins, insert=ins, s=p.b)
-        return s
-    #@-others
 #@-others
 #@@language python
 #@@tabwidth -4

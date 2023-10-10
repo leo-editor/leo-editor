@@ -18347,9 +18347,7 @@ A **session** specifies a list of .leo files that Leo opens automatically when L
 
 
 </t>
-<t tx="ekr.20150318110552.38">``eval-expression``
-    Evaluate an expression entered in the minibuffer.
-``full-command (Alt-X)``
+<t tx="ekr.20150318110552.38">``full-command (Alt-X)``
     Execute a command by name. Tab completion is supported.
 ``keyboard-quit``
     Exits the minibuffer, putting focus in the body pane.
