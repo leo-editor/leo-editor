@@ -21,7 +21,7 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+others
 #@+node:ekr.20231008163009.1: **  top-level helper functions
 #@+node:ekr.20231008163338.1: *3* function: finish_save_command
-def finish_save_command(c: Cmdr, inBody: bool) -> None:
+def finish_save_command(c: Cmdr) -> None:
     """
     Raise error dialogs and restore the focus.
 
@@ -31,9 +31,6 @@ def finish_save_command(c: Cmdr, inBody: bool) -> None:
     # Raise any queued error dialogs.
     c.syntaxErrorDialog()
     c.raise_error_dialogs(kind='write')
-
-    # Restore focus and scroll position.
-    g.restore_focus(c, inBody)
 #@+node:ekr.20231008163048.1: *3* function: set_name_and_title
 def set_name_and_title(c: Cmdr, fileName: str) -> str:
     """
@@ -408,9 +405,6 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
         g.app.recentFilesManager.updateRecentFiles(fileName)
         g.chdir(fileName)
 
-    # Calls to do_save might raise an error dialog.
-    # We must *always* call finish_save_command later.
-    inBody = g.save_focus_data(c)
     c.init_error_dialogs()
 
     # Don't prompt if the file name is known.
@@ -418,7 +412,7 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
     if given_file_name:
         final_file_name = set_name_and_title(c, given_file_name)
         do_save(c, final_file_name)
-        finish_save_command(c, inBody)
+        finish_save_command(c)
         return
 
     # The file still has no name.
@@ -429,7 +423,7 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
         if root.isDirty():
             c.atFileCommands.writeOneAtEditNode(root)
         c.clearChanged()  # Clears all dirty bits.
-        finish_save_command(c, inBody)
+        finish_save_command(c)
         return
 
     # Prompt for fileName.
@@ -442,7 +436,7 @@ def save(self: Self, event: Event = None, fileName: str = None) -> None:
         final_file_name = set_name_and_title(c, new_file_name)
         do_save(c, final_file_name)
 
-    finish_save_command(c, inBody)
+    finish_save_command(c)
 #@+node:ekr.20110228162720.13980: *3* c_file.saveAll
 @g.commander_command('save-all')
 def saveAll(self: Self, event: Event = None) -> None:
@@ -487,15 +481,12 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
         g.chdir(new_file_name)
         return new_file_name
 
-    # Calls to do_save_as might raise an error dialog.
-    # We must *always* call finish_save_command later.
-    inBody = g.save_focus_data(c)
     c.init_error_dialogs()
 
     # Handle the kwarg first.
     if fileName:
         do_save_as(c, fileName)
-        finish_save_command(c, inBody)
+        finish_save_command(c)
         return
 
     # Prompt for fileName.
@@ -507,7 +498,7 @@ def saveAs(self: Self, event: Event = None, fileName: str = None) -> None:
     if new_file_name:
         do_save_as(c, new_file_name)
 
-    finish_save_command(c, inBody)
+    finish_save_command(c)
 #@+node:ekr.20031218072017.2836: *3* c_file.saveTo
 @g.commander_command('save-to')
 @g.commander_command('file-save-to')
@@ -525,9 +516,6 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
         g.es("save commands disabled", color="purple")
         return
 
-    # Calls to do_save_to might raise an error dialog.
-    # We must *always* call finish_save_command later.
-    inBody = g.save_focus_data(c)
     c.init_error_dialogs()
 
     def do_save_to(c: Cmdr, fileName: str) -> None:
@@ -540,7 +528,7 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
     # Handle the kwarg first.
     if fileName:
         do_save_to(c, fileName)
-        finish_save_command(c, inBody)
+        finish_save_command(c)
         return
 
     new_file_name = g.app.gui.runSaveFileDialog(c,
@@ -551,7 +539,7 @@ def saveTo(self: Self, event: Event = None, fileName: str = None, silent: bool =
     if new_file_name:
         do_save_to(c, new_file_name)
 
-    finish_save_command(c, inBody)
+    finish_save_command(c)
 #@+node:ekr.20031218072017.2837: *3* c_file.revert
 @g.commander_command('revert')
 def revert(self: Self, event: Event = None) -> None:

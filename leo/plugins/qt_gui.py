@@ -11,6 +11,7 @@ import functools
 import re
 import sys
 import textwrap
+from time import sleep
 from typing import Any, Optional, Union, TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
@@ -28,7 +29,6 @@ from leo.plugins import qt_text
 # This defines the commands defined by @g.command.
 from leo.plugins import qt_commands
 from leo.core.leoTips import UserTip
-from time import sleep
 assert qt_commands
 #@-<< qt_gui imports  >>
 #@+<< qt_gui annotations >>
@@ -185,6 +185,18 @@ class LeoQtGui(leoGui.LeoGui):
         return
 
     #@+node:ekr.20110605121601.18487: *3* qt_gui.Dialogs & panels
+    #@+node:ekr.20231010004932.1: *4* qt_gui._save/_restore_focus
+    def _save_focus(self, c):
+        """
+        Save the data needed to restor focus to the body.
+        """
+        c.p.saveCursorAndScroll()
+
+    def _restore_focus(self, c):
+        """Restore focus to the body pane."""
+        c.bringToFront()
+        c.bodyWantsFocusNow()
+        c.p.restoreCursorAndScroll()
     #@+node:ekr.20110605121601.18488: *4* qt_gui.alert
     def alert(self, c: Cmdr, message: str) -> None:
         if g.unitTesting:
@@ -277,30 +289,35 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return None
         return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
-    #@+node:ekr.20110605121601.18493: *4* qt_gui.runAboutLeoDialog
+    #@+node:ekr.20110605121601.18493: *4* qt_gui.runAboutLeoDialog (changed)
     def runAboutLeoDialog(self,
         c: Cmdr, version: str, theCopyright: str, url: str, email: str,
     ) -> None:
         """Create and run a qt About Leo dialog."""
         if g.unitTesting:
             return
+
+        # Create the dialog.
         dialog = QtWidgets.QMessageBox(c and c.frame.top)
         ssm = g.app.gui.styleSheetManagerClass(c)
         w = ssm.get_master_widget()
         sheet = w.styleSheet()
         if sheet:
             dialog.setStyleSheet(sheet)
-
         dialog.setText(f"{version}\n{theCopyright}\n{url}\n{email}")
         dialog.setIcon(Icon.Information)
         yes = dialog.addButton('Ok', ButtonRole.YesRole)
         dialog.setDefaultButton(yes)
+
+        # Run the dialog, saving and restoring focus.
         try:
+            self._save_focus(c)
             c.in_qt_dialog = True
             dialog.raise_()
             dialog.exec_()
         finally:
             c.in_qt_dialog = False
+            self._restore_focus(c)
     #@+node:ekr.20110605121601.18496: *4* qt_gui.runAskDateTimeDialog
     def runAskDateTimeDialog(
         self,
@@ -420,7 +437,7 @@ class LeoQtGui(leoGui.LeoGui):
         s, ok = QtWidgets.QInputDialog.getText(parent, title, message)
 
         return s
-    #@+node:ekr.20110605121601.18491: *4* qt_gui.runAskOkCancelNumberDialog
+    #@+node:ekr.20110605121601.18491: *4* qt_gui.runAskOkCancelNumberDialog (not used)
     def runAskOkCancelNumberDialog(self,
         c: Cmdr, title: str, message: str, cancelButtonText: str=None, okButtonText: str=None,
     ) -> Optional[int]:
@@ -485,24 +502,31 @@ class LeoQtGui(leoGui.LeoGui):
         dialog.raise_()
         ok = dialog.exec_()
         return str(dialog.textValue()) if ok else None
-    #@+node:ekr.20110605121601.18495: *4* qt_gui.runAskOkDialog
+    #@+node:ekr.20110605121601.18495: *4* qt_gui.runAskOkDialog (changed)
     def runAskOkDialog(self, c: Cmdr, title: str, message: str=None, text: str="Ok") -> None:
         """Create and run a qt askOK dialog ."""
         if g.unitTesting:
             return
+
+        # Create the dialog.
         dialog = QtWidgets.QMessageBox(c and c.frame.top)
         dialog.setWindowTitle(title)
         if message:
             dialog.setText(message)
         dialog.setIcon(Information.Information)
-        dialog.addButton(text, ButtonRole.YesRole)
+        yes = dialog.addButton(text, ButtonRole.YesRole)
+        dialog.setDefaultButton(yes)  # 2023/10/10.
+
+        # Run the dialog.
         try:
+            self._save_focus(c)
             c.in_qt_dialog = True
             dialog.raise_()
             dialog.exec_()
         finally:
             c.in_qt_dialog = False
-    #@+node:ekr.20110605121601.18497: *4* qt_gui.runAskYesNoCancelDialog
+            self._restore_focus(c)
+    #@+node:ekr.20110605121601.18497: *4* qt_gui.runAskYesNoCancelDialog (changed)
     def runAskYesNoCancelDialog(
         self,
         c: Cmdr,
@@ -522,6 +546,8 @@ class LeoQtGui(leoGui.LeoGui):
         """
         if g.unitTesting:
             return None
+
+        # Create the dialog.
         dialog = QtWidgets.QMessageBox(c and c.frame.top)
         if message:
             dialog.setText(message)
@@ -539,18 +565,23 @@ class LeoQtGui(leoGui.LeoGui):
             dialog.setDefaultButton(no)
         else:
             dialog.setDefaultButton(cancel)
+
+        # Run the dialog, saving and restoring focus.
         try:
+            self._save_focus(c)
             c.in_qt_dialog = True
             dialog.raise_()  # #2246.
             val = dialog.exec() if isQt6 else dialog.exec_()
         finally:
             c.in_qt_dialog = False
+            self._restore_focus(c)
+
         # val is the same as the creation order.
         # Tested with both Qt6 and Qt5.
         return {
             0: 'yes', 1: 'no', 2: 'cancel', 3: 'yes-to-all',
         }.get(val, 'cancel')
-    #@+node:ekr.20110605121601.18498: *4* qt_gui.runAskYesNoDialog
+    #@+node:ekr.20110605121601.18498: *4* qt_gui.runAskYesNoDialog (changed)
     def runAskYesNoDialog(self,
         c: Cmdr, title: str, message: str=None, yes_all: bool=False, no_all: bool=False,
     ) -> str:
@@ -567,6 +598,8 @@ class LeoQtGui(leoGui.LeoGui):
         """
         if g.unitTesting:
             return None
+
+        # Create the dialog.
         dialog = QtWidgets.QMessageBox(c and c.frame.top)
         # Creation order determines returned value.
         yes = dialog.addButton('Yes', ButtonRole.YesRole)
@@ -581,16 +614,23 @@ class LeoQtGui(leoGui.LeoGui):
             dialog.setText(message)
         dialog.setIcon(Information.Warning)
         dialog.setDefaultButton(yes)
+
         if c:
+            # Run the dialog, saving and restoring focus.
             try:
+                self._save_focus(c)
                 c.in_qt_dialog = True
                 dialog.raise_()
                 val = dialog.exec() if isQt6 else dialog.exec_()
             finally:
                 c.in_qt_dialog = False
+                self._restore_focus(c)
         else:
+            # There is no way to save/restore focus.
             dialog.raise_()
             val = dialog.exec() if isQt6 else dialog.exec_()
+
+        # Create the return dictionary.
         # val is the same as the creation order.
         # Tested with both Qt6 and Qt5.
         return_d = {0: 'yes', 1: 'no'}
@@ -668,7 +708,7 @@ class LeoQtGui(leoGui.LeoGui):
         if not g.unitTesting:
             g.warning('Properties menu not supported for Qt gui')
         return 'Cancel', {}
-    #@+node:ekr.20110605121601.18502: *4* qt_gui.runSaveFileDialog
+    #@+node:ekr.20110605121601.18502: *4* qt_gui.runSaveFileDialog (changed)
     def runSaveFileDialog(self,
         c: Cmdr, title: str='Save', filetypes: list[str]=None, defaultextension: str='',
     ) -> str:
@@ -680,6 +720,7 @@ class LeoQtGui(leoGui.LeoGui):
             # dialog.setStyleSheet(c.active_stylesheet)
             self.attachLeoIcon(dialog)
             try:
+                self._save_focus(c)
                 c.in_qt_dialog = True
                 obj = dialog.getSaveFileName(
                     None,  # parent
@@ -690,6 +731,7 @@ class LeoQtGui(leoGui.LeoGui):
                 )
             finally:
                 c.in_qt_dialog = False
+                self._restore_focus(c)
         else:
             self.attachLeoIcon(dialog)
             obj = dialog.getSaveFileName(

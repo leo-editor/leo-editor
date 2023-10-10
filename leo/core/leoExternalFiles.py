@@ -196,16 +196,13 @@ class ExternalFilesController:
     #@+node:ekr.20201207055713.1: *5* efc.idle_check_leo_file
     def idle_check_leo_file(self, c: Cmdr) -> None:
         """Check c's .leo file for external changes."""
-        p = c.p
         path = c.fileName()
         if not self.has_changed(path):
             return
+
         # Always update the path & time to prevent future warnings.
         self.set_time(path)
         self.checksum_d[path] = self.checksum(path)
-
-        # #3601: Like g.save_focus_data, but we will *always* restore focus to the body.
-        p.saveCursorAndScroll()
 
         # #1888:
         val = self.ask(c, path)
@@ -213,11 +210,6 @@ class ExternalFilesController:
             # Do a complete restart of Leo.
             g.app.loadManager.revertCommander(c)
             g.es_print(f"reloaded {path}")
-
-        # #3601:
-        c.bringToFront()
-        c.bodyWantsFocusNow()
-        p.restoreCursorAndScroll()
     #@+node:ekr.20150407124259.1: *5* efc.idle_check_open_with_file & helper
     def idle_check_open_with_file(self, c: Cmdr, ef: Any) -> None:
         """Update the open-with node given by ef."""
