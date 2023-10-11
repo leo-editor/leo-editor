@@ -10,11 +10,11 @@ from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins.importers.base_importer import Block
+from leo.plugins.importers.python import Python_Importer
 import leo.plugins.importers.coffeescript as cs
 import leo.plugins.importers.coffeescript as coffeescript
 import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.otl as otl
-import leo.plugins.importers.python as python_importer
 #@+others
 #@+node:ekr.20210904064440.3: ** class BaseTestImporter(LeoUnitTest)
 class BaseTestImporter(LeoUnitTest):
@@ -160,7 +160,7 @@ class TestImporterClass(LeoUnitTest):
     def test_trace_block(self):
 
         c = self.c
-        importer = python_importer.Python_Importer(c)
+        importer = Python_Importer(c)
         lines = g.splitLines(textwrap.dedent(
             """
             import sys\n
@@ -2924,7 +2924,6 @@ class TestPython(BaseTestImporter):
     #@+node:ekr.20230514195224.1: *3* TestPython.test_delete_comments_and_strings
     def test_delete_comments_and_strings(self):
 
-        from leo.plugins.importers.python import Python_Importer
         importer = Python_Importer(self.c)
 
         lines = [
