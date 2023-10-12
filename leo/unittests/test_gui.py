@@ -7,13 +7,16 @@ import os
 import time
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest, create_app
-from leo.core.leoQt import QtCore
-from leo.core.leoFrame import StatusLineAPI, TreeAPI, WrapperAPI
-from leo.core.leoFrame import LeoTree, NullStatusLineClass, NullTree, StringTextWrapper
-from leo.plugins.qt_frame import QtStatusLineClass
-from leo.plugins.qt_text import QLineEditWrapper, QScintillaWrapper, QTextEditWrapper
-from leo.plugins.qt_text import LeoQTextBrowser
-from leo.plugins.qt_tree import LeoQtTree
+try:
+    from leo.core.leoQt import Qt, QtCore
+    from leo.core.leoFrame import StatusLineAPI, TreeAPI, WrapperAPI
+    from leo.core.leoFrame import LeoTree, NullStatusLineClass, NullTree, StringTextWrapper
+    from leo.plugins.qt_frame import QtStatusLineClass
+    from leo.plugins.qt_text import QLineEditWrapper, QScintillaWrapper, QTextEditWrapper
+    from leo.plugins.qt_text import LeoQTextBrowser
+    from leo.plugins.qt_tree import LeoQtTree
+except Exception:
+    Qt = QtCore = None
 #@-<< test_gui imports >>
 
 #@+others
@@ -40,12 +43,21 @@ class TestNullGui(LeoUnitTest):
 class TestQtGui(LeoUnitTest):
     """Test cases for gui base classes."""
 
+    #@+others
+    #@+node:ekr.20231012085112.1: *3* TestQtGui.setUp and setUpClass
     # Override LeoUnitTest setUpClass.
     @classmethod
     def setUpClass(cls):
         create_app(gui_name='qt')
 
-    #@+others
+    def setUp(self):
+        super().setUp()
+        # Don't run *any* tests if Qt has not been installed.
+        try:
+            from leo.core.leoQt import Qt
+            assert Qt
+        except Exception:
+            self.skipTest('Qt not installed')
     #@+node:ekr.20210913120449.1: *3* TestQtGui.test_bug_2164
     def test_bug_2164(self):
         # show-invisibles crashes with PyQt6.
@@ -182,7 +194,10 @@ class TestAPIClasses(LeoUnitTest):
         def get_missing(cls):
             return [z for z in get_methods(StatusLineAPI) if z not in get_methods(cls)]
 
-        for cls in (QtStatusLineClass, NullStatusLineClass):
+        classes = [NullStatusLineClass]
+        if Qt:
+            classes.append(QtStatusLineClass)
+        for cls in classes:
             self.assertFalse(get_missing(cls), msg=f"Missing {cls.__class__.__name__} methods")
     #@+node:ekr.20220911101329.1: *3* test_tree_api
     def test_tree_api(self):
@@ -193,7 +208,10 @@ class TestAPIClasses(LeoUnitTest):
         def get_missing(cls):
             return [z for z in get_methods(TreeAPI) if z not in get_methods(cls)]
 
-        for cls in (LeoQtTree, LeoTree, NullTree):
+        classes = [NullTree]
+        if Qt:
+            classes.extend([LeoQtTree, LeoTree])
+        for cls in classes:
             self.assertFalse(get_missing(cls), msg=f"Missing {cls.__class__.__name__} methods")
     #@+node:ekr.20220911101330.1: *3* test_wrapper_api
     def test_wrapper_api(self):
@@ -204,9 +222,10 @@ class TestAPIClasses(LeoUnitTest):
         def get_missing(cls):
             return [z for z in get_methods(WrapperAPI) if z not in get_methods(cls)]
 
-        table = (QLineEditWrapper, QTextEditWrapper, QScintillaWrapper, StringTextWrapper)
-
-        for cls in table:
+        classes = [StringTextWrapper]
+        if Qt:
+            classes.extend([QLineEditWrapper, QTextEditWrapper, QScintillaWrapper])
+        for cls in classes:
             self.assertFalse(get_missing(cls), msg=f"Missing {cls.__class__.__name__} methods")
     #@-others
 #@-others

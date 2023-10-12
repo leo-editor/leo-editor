@@ -102,8 +102,11 @@ import re
 from typing import Any, Generator, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-from leo.core.leoQt import QtCore, QtWidgets
-from leo.core.leoQt import MouseButton
+try:
+    from leo.core.leoQt import QtCore, QtWidgets
+    from leo.core.leoQt import MouseButton
+except Exception:
+    QtCore = QtWidgets = None
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
