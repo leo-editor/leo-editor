@@ -901,8 +901,8 @@ class TestElisp(BaseTestImporter):
     ext = '.el'
 
     #@+others
-    #@+node:ekr.20210904065459.18: *3* TestElisp.test_1
-    def test_1(self):
+    #@+node:ekr.20210904065459.18: *3* TestElisp.test_elisp_1
+    def test_elisp_1(self):
 
         # Add weird assignments for coverage.
         s = """
@@ -3871,6 +3871,54 @@ class TestRust(BaseTestImporter):
                     'fn area(width: u32, height: u32) -> u32 {\n'
                     '    width * height\n'
                     '}\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
+    #@-others
+#@+node:ekr.20231012142113.1: ** class TestScheme (BaseTestImporter)
+class TestScheme(BaseTestImporter):
+
+    ext = '.scm'
+
+    #@+others
+    #@+node:ekr.20231012142113.2: *3* TestScheme.test_scheme_1
+    def test_scheme_1(self):
+
+        # Add weird assignments for coverage.
+        s = """
+            ;;; comment
+            ;;; continue
+            ;;;
+
+            (define abc (a b)
+               (assn a "abc")
+               (assn b \\x)
+               (+ 1 2 3))
+
+            ; comment re cde
+            (define cde (a b)
+               (+ 1 2 3))
+        """
+        expected_results = (
+            (0, '', # Ignore the first headline.
+                    '@others\n'
+                    '@language scheme\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'define abc',
+                    ';;; comment\n'
+                    ';;; continue\n'
+                    ';;;\n'
+                    '\n'
+                    '(define abc (a b)\n'
+                    '   (assn a "abc")\n'
+                    '   (assn b \\x)\n'
+                    '   (+ 1 2 3))\n'
+            ),
+            (1, 'define cde',
+                    '; comment re cde\n'
+                    '(define cde (a b)\n'
+                    '   (+ 1 2 3))\n'
             ),
         )
         self.new_run_test(s, expected_results)
