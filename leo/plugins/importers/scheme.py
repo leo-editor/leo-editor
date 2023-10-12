@@ -18,9 +18,12 @@ class Scheme_Importer(Elisp_Importer):
 
     language = 'scheme'
 
-    block_patterns = (
+    block_patterns: tuple = (
         # ( define name
-        ('define', re.compile(r'\s*\(\s*\bdefine\s+([\w_-]+)')),
+        ('define-library', re.compile(r'\s*\(\s*\bdefine-library\s*\(?\s*([\w_-]+)')),
+        ('define-module', re.compile(r'\s*\(\s*\bdefine-module\s*\(?\s*([\w_-]+)')),
+        ('define-public', re.compile(r'\s*\(\s*\bdefine-public\s*\(?\s*([\w_-]+)')),
+        ('define', re.compile(r'\s*\(\s*\bdefine\s*\(?([\w_-]+)')),
     )
 #@-others
 

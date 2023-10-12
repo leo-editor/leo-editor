@@ -18,10 +18,12 @@ class Elisp_Importer(Importer):
 
     language = 'lisp'
 
-    block_patterns = (
+    block_patterns: tuple = (
         # ( defun name
         ('defun', re.compile(r'\s*\(\s*\bdefun\s+([\w_-]+)')),
     )
+
+    string_list: list[str] = ['"']
 
     #@+others
     #@+node:ekr.20230516145728.1: *3* elisp_i.find_end_of_block
