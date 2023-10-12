@@ -61,9 +61,8 @@ class Block:
         for child_block in self.child_blocks:
             child_blocks.append(f"{child_block.kind}:{child_block.name}")
         child_blocks_s = '\n'.join(child_blocks) if child_blocks else '<no children>'
-        lines_list = g.objToString(self.lines[self.start:self.end], tag='lines')
-        lines_s = ''.join(lines_list)
-        return f"\n{repr(self)} child_blocks: {child_blocks_s}\n{lines_s}"
+        lines_s = g.objToString(self.lines[self.start:self.end], tag='lines')
+        return f"\n{self!r} child_blocks: {child_blocks_s}\n{lines_s}"
     #@-others
 
 
@@ -701,7 +700,7 @@ class Importer:
 
     def trace_block(self, block: Block) -> None:
         """For debugging: trace one block."""
-        tag = f"  {block.kind:>10} {block.name:<20} {block.start} {block.start_body2} {block.end}"
+        tag = f"  {block.kind:>10} {block.name:<20} {block.start} {block.start_body} {block.end}"
         g.printObj(block.lines[block.start:block.end], tag=tag)
     #@-others
 #@-others

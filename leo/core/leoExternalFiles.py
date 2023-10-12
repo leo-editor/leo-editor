@@ -199,16 +199,17 @@ class ExternalFilesController:
         path = c.fileName()
         if not self.has_changed(path):
             return
+
         # Always update the path & time to prevent future warnings.
         self.set_time(path)
         self.checksum_d[path] = self.checksum(path)
+
         # #1888:
         val = self.ask(c, path)
         if val in ('yes', 'yes-all'):
             # Do a complete restart of Leo.
             g.app.loadManager.revertCommander(c)
             g.es_print(f"reloaded {path}")
-
     #@+node:ekr.20150407124259.1: *5* efc.idle_check_open_with_file & helper
     def idle_check_open_with_file(self, c: Cmdr, ef: Any) -> None:
         """Update the open-with node given by ef."""
@@ -503,7 +504,7 @@ class ExternalFilesController:
             return ''
         is_leo = path.endswith(('.leo', '.db'))
         is_external_file = not is_leo
-        #
+
         # Create the message.
         message1 = f"{path}\nhas changed outside Leo.\n\n"
         if is_leo:
@@ -517,18 +518,19 @@ class ExternalFilesController:
                     break
             else:
                 message2 = f"Reload {path}?"
-        #
+
         # #1240: Note: This dialog prevents idle time.
+
         result = g.app.gui.runAskYesNoDialog(c,
             message2,
             message1 + message2,
             yes_all=is_external_file,
             no_all=is_external_file,
         )
-        #
+
         # #1961. Re-init the checksum to suppress concurrent dialogs.
         self.checksum_d[path] = self.checksum(path)
-        #
+
         # #1888: return one of ('yes', 'no', 'yes-all', 'no-all')
         return result.lower() if result else 'no'
     #@+node:ekr.20150404052819.1: *4* efc.checksum

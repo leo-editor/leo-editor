@@ -3,10 +3,14 @@
 """Tests of leo/plugins/importers"""
 import glob
 import importlib
+import os
+import sys
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
+from leo.plugins.importers.base_importer import Block
+from leo.plugins.importers.python import Python_Importer
 import leo.plugins.importers.coffeescript as cs
 import leo.plugins.importers.coffeescript as coffeescript
 import leo.plugins.importers.markdown as markdown
@@ -146,6 +150,50 @@ class BaseTestImporter(LeoUnitTest):
         test_s = textwrap.dedent(s).strip() + '\n'
         c.importCommands.createOutline(parent.copy(), ext, test_s)
         return parent
+    #@-others
+#@+node:ekr.20231011020747.1: ** class TestImporterClass(LeoUnitTest)
+class TestImporterClass(LeoUnitTest):
+    """Tests of methods of the Importer class."""
+
+    #@+others
+    #@+node:ekr.20231011021003.1: *3* TestImporterClass.test_trace_block
+    def test_trace_block(self):
+
+        c = self.c
+        importer = Python_Importer(c)
+        lines = g.splitLines(textwrap.dedent(
+            """
+            import sys\n
+            def spam_and_eggs():
+               pass'
+            """
+        ))
+        # Test that Importer.trace_block doesn't crash.
+        # Comment out the assignment to sys.stdout to see the actual reasults.
+        try:
+            sys.stdout = open(os.devnull, 'w')
+            block = Block('def', 'spam_and_eggs', start=3, start_body=4, end=5, lines=lines)
+            importer.trace_block(block)
+        finally:
+            sys.stdout = sys.__stdout__
+
+    #@+node:ekr.20231011021056.1: *3* TestImporterClass.test_long_repr
+    def test_long_repr(self):
+
+        lines = g.splitLines(textwrap.dedent(
+            """
+            import sys\n
+            def spam_and_eggs():
+               pass'
+            """
+        ))
+        block = Block('def', 'spam_and_eggs', start=3, start_body=4, end=5, lines=lines)
+
+        # Test that long_repr doesn't crash.
+        s = block.long_repr()
+
+        # A short test that the results contain an expected line.
+        assert 'def spam_and_eggs' in s, repr(s)
     #@-others
 #@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
 class TestAtAuto(BaseTestImporter):
@@ -2883,7 +2931,6 @@ class TestPython(BaseTestImporter):
     #@+node:ekr.20230514195224.1: *3* TestPython.test_delete_comments_and_strings
     def test_delete_comments_and_strings(self):
 
-        from leo.plugins.importers.python import Python_Importer
         importer = Python_Importer(self.c)
 
         lines = [
