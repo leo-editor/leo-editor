@@ -3364,6 +3364,7 @@ class Commands:
     #@+node:ekr.20111217154130.10284: *5* c.init_error_dialogs
     def init_error_dialogs(self) -> None:
         c = self
+        g.app.syntax_error_files = []
         c.import_error_nodes = []
         c.ignored_at_file_nodes = []
         c.orphan_at_file_nodes = []
