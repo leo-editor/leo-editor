@@ -3150,6 +3150,9 @@ update_directives_pat()
 #@+node:ekr.20031218072017.3116: ** g.Files & Directories
 #@+node:ekr.20080606074139.2: *3* g.chdir
 def chdir(path: str) -> None:
+    """Change current directory to the directory corresponding to path."""
+    if g.unitTesting:
+        return  # Don't change the global environment in unit tests!
     if not g.os_path_isdir(path):
         path = g.os_path_dirname(path)
     if g.os_path_isdir(path) and g.os_path_exists(path):
