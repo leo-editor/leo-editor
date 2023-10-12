@@ -41,15 +41,16 @@ try:
     g.app = leoApp.LeoApp()
 
 except Exception as e:
-    # Printing the exception would be confusing.
+    # The full traceback would alarm users!
     # Note: app.createDefaultGui reports problems importing Qt.
     print(e)
-    print(
+    message = (
         '*** Leo could not be started ***\n'
         "Please verify you've installed the required dependencies:\n"
         'https://leo-editor.github.io/leo-editor/installing.html'
     )
-    sys.exit(1)
+    print(message)
+    sys.exit(message)
 #@-<< imports and inits >>
 #@+others
 #@+node:ekr.20031218072017.2607: ** profile_leo (runLeo.py)
