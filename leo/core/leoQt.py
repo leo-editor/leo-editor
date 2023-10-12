@@ -55,7 +55,7 @@ if not g.in_bridge:
             # print('\n===== Qt5 =====')
         except Exception:
             # Don't print anything here.
-            # g.app.createQtGui will issue handle the error if the user wants Qt.
+            # g.app.createQtGui will handle the error if the user wants Qt.
             if 0:
                 print('Can not import pyQt5 or pyQt6')
 #@-leo
