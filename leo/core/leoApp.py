@@ -993,15 +993,10 @@ class LeoApp:
         app = self
         try:
             from leo.core.leoQt import Qt
+            from leo.plugins import qt_gui
             assert Qt
         except Exception:
-            return None
-        try:
-            from leo.plugins import qt_gui
-        except Exception:
-            g.es_exception()
-            print('can not import leo.plugins.qt_gui')
-            sys.exit(1)
+            return None  # Other methods will report startup problems.
         try:
             from leo.plugins.editpane.editpane import edit_pane_test_open, edit_pane_csv
             g.command('edit-pane-test-open')(edit_pane_test_open)
