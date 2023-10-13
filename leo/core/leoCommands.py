@@ -2622,7 +2622,8 @@ class Commands:
             if path is not None:  # retain empty paths for warnings.
                 # Convert "path" or <path> to path.
                 path = g.stripPathCruft(path)
-                paths.append(path)
+                if path:
+                    paths.append(path)
 
         # Add absbase and reverse the list.
         paths.append(absbase)
