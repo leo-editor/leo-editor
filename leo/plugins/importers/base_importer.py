@@ -198,6 +198,7 @@ class Importer:
                         i = end
                     break
             assert i > progress, g.callers()
+        # g.printObj(results, tag=f"{g.my_name()} {i1} {i2}")
         return results
     #@+node:ekr.20230529075138.11: *4* i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:

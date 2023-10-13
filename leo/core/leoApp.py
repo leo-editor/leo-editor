@@ -310,6 +310,7 @@ class LeoApp:
             "bib":      "bibtex",
             "c":        "c",
             "c++":      "cplusplus",
+            "cc":       "cplusplus",
             "cbl":      "cobol", # Only one extension is valid: .cob
             "cfg":      "config",
             "cfm":      "coldfusion",
@@ -338,6 +339,7 @@ class LeoApp:
             "go":       "go",
             "groovy":   "groovy",
             "h":        "c", # 2012/05/23.
+            "hh":       "cplusplus",
             "handlebars": "html", # McNab.
             "hbs":      "html", # McNab.
             "hs":       "haskell",
