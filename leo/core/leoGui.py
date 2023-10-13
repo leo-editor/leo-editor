@@ -355,14 +355,13 @@ class NullGui(LeoGui):
     #@+node:ekr.20031218072017.2225: *3* NullGui.__init__
     def __init__(self, guiName: str = 'nullGui') -> None:
         """ctor for the NullGui class."""
-        from leo.plugins.qt_text import QTextEditWrapper
         super().__init__(guiName)
         self.clipboardContents = ''
         self.focusWidget: Widget = None
         self.isNullGui = True
         self.idleTimeClass: Any = g.NullObject
         self.lastFrame: Widget = None  # The outer frame, to set g.app.log in runMainLoop.
-        self.plainTextWidget: Widget = QTextEditWrapper  # For SpellTabHandler class.
+        self.plainTextWidget: Widget = g.NullObject
         self.script = None
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs
     def runAboutLeoDialog(self, c: Cmdr, version: str, theCopyright: str, url: str, email: str) -> str:
