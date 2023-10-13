@@ -153,26 +153,26 @@ class TestPlugins(LeoUnitTest):
     #@-others
 #@+node:ekr.20230917015008.1: ** class TestIndentedTypescript(LeoUnitTest)
 class TestIndentedTypeScript(LeoUnitTest):
-    """Tests for the indented_typescript plugin."""
+    """Tests for typescript-related code in the indented_languages plugin."""
 
     def setUp(self):
 
         from leo.core.leoPlugins import LeoPluginsController
-        from leo.plugins import indented_typescript
+        from leo.plugins import indented_languages
 
         super().setUp()
 
         # Instantiate a LeoPluginsController. It is usually a g.NullObject.
-        self.controller = indented_typescript.IndentedTypeScript(self.c)
+        self.controller = indented_languages.IndentedTypeScript(self.c)
         g.app.pluginsController = pc = LeoPluginsController()
         g.app.hookFunction = pc.doPlugins  # Required.
 
         # Enable the indented_typescript plugin and call init.
-        plugin = pc.loadOnePlugin('leo.plugins.indented_typescript', verbose=False)
+        plugin = pc.loadOnePlugin('leo.plugins.indented_languages', verbose=False)
         assert plugin
 
         # Call onCreate to register handlers.
-        indented_typescript.onCreate(tag='unit-test', keys={'c': self.c})
+        indented_languages.onCreate(tag='unit-test', keys={'c': self.c})
 
     #@+others
     #@+node:ekr.20230917014735.1: *3* test_its.test_atFile_read
