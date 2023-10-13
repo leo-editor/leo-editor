@@ -49,7 +49,11 @@ def create_app(gui_name: str = 'null') -> Cmdr:
     from leo.core import leoCommands
     from leo.core.leoGui import NullGui
     if gui_name == 'qt':
-        from leo.plugins.qt_gui import LeoQtGui
+        # Don't fail if Qt has not been installed.
+        try:
+            from leo.plugins.qt_gui import LeoQtGui
+        except Exception:
+            gui_name = 'null'
     t2 = time.process_time()
     g.app.recentFilesManager = leoApp.RecentFilesManager()
     g.app.loadManager = lm = leoApp.LoadManager()

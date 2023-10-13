@@ -2122,7 +2122,7 @@ class JEditColorizer(BaseColorizer):
         # Prepend "dots" to the kind, as a flag to setTag.
         dots = j > len(
             s) and begin in "'\"" and end in "'\"" and kind.startswith('literal')
-        dots = dots and self.language not in ('lisp', 'elisp', 'rust')
+        dots = dots and self.language not in ('lisp', 'elisp', 'rust', 'scheme')
         if dots:
             kind = 'dots' + kind
         # A match

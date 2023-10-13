@@ -1,3 +1,5 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20231012163843.1: * @file ../modes/scheme.py
 # Leo colorizer control file for scheme mode.
 # This file is in the public domain.
 
@@ -353,3 +355,4 @@ rulesDictDict = {
 
 # Import dict for scheme mode.
 importDict = {}
+#@-leo
