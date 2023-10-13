@@ -18,10 +18,12 @@ class Elisp_Importer(Importer):
 
     language = 'lisp'
 
-    block_patterns = (
+    block_patterns: tuple = (
         # ( defun name
         ('defun', re.compile(r'\s*\(\s*\bdefun\s+([\w_-]+)')),
     )
+
+    string_list: list[str] = ['"']
 
     #@+others
     #@+node:ekr.20230516145728.1: *3* elisp_i.find_end_of_block
@@ -56,8 +58,8 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
     Elisp_Importer(c).import_from_string(parent, s)
 
 importer_dict = {
-    'extensions': ['.el', '.clj', '.cljs', '.cljc',],
-    'func': do_import,  # Also clojure, clojurescript
+    'extensions': ['.el', '.clj', '.cljs', '.cljc'],
+    'func': do_import,  # Also clojure, clojurescript.
 }
 #@@language python
 #@@tabwidth -4

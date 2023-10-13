@@ -310,6 +310,7 @@ class LeoApp:
             "bib":      "bibtex",
             "c":        "c",
             "c++":      "cplusplus",
+            "cc":       "cplusplus",
             "cbl":      "cobol", # Only one extension is valid: .cob
             "cfg":      "config",
             "cfm":      "coldfusion",
@@ -338,6 +339,7 @@ class LeoApp:
             "go":       "go",
             "groovy":   "groovy",
             "h":        "c", # 2012/05/23.
+            "hh":       "cplusplus",
             "handlebars": "html", # McNab.
             "hbs":      "html", # McNab.
             "hs":       "haskell",
@@ -965,7 +967,20 @@ class LeoApp:
         elif argName == 'text':
             app.createTextGui()
         if not app.gui:
-            print('createDefaultGui: Leo requires Qt to be installed.')
+            # Raise an emergency dialog.
+            message = (
+                f"Can not load the requested gui: {argName}\n"
+                '*** Leo could not be started ***\n\n'
+                "Please verify you've installed the required dependencies:\n"
+                'https://leo-editor.github.io/leo-editor/installing.html\n'
+            )
+            try:
+                d = g.EmergencyDialog(title=message, message=message)
+                d.run()
+            except Exception:
+                g.es_exception()
+            # runLeo.py will catch the SystemExit exception and print the message.
+            sys.exit(message)
     #@+node:ekr.20031218072017.1938: *5* app.createNullGuiWithScript
     def createNullGuiWithScript(self, script: str = None) -> None:
         app = self
@@ -973,37 +988,24 @@ class LeoApp:
         app.gui = g.app.nullGui
         app.gui.setScript(script)
     #@+node:ekr.20090202191501.1: *5* app.createQtGui
+    # Do NOT omit fileName param: it is used in plugin code.
+
     def createQtGui(self, fileName: str = '', verbose: bool = False) -> None:
-        # Do NOT omit fileName param: it is used in plugin code.
         """A convenience routines for plugins to create the Qt gui class."""
         app = self
         try:
             from leo.core.leoQt import Qt
+            from leo.plugins import qt_gui
             assert Qt
         except Exception:
-            # #1215: Raise an emergency dialog.
-            message = 'Can not Import Qt'
-            print(message)
-            try:
-                d = g.EmergencyDialog(title=message, message=message)
-                d.run()
-            except Exception:
-                g.es_exception()
-            sys.exit(1)
-        try:
-            from leo.plugins import qt_gui
-        except Exception:
-            g.es_exception()
-            print('can not import leo.plugins.qt_gui')
-            sys.exit(1)
+            return None  # Other methods will report startup problems.
         try:
             from leo.plugins.editpane.editpane import edit_pane_test_open, edit_pane_csv
             g.command('edit-pane-test-open')(edit_pane_test_open)
             g.command('edit-pane-csv')(edit_pane_csv)
         except ImportError:
-            # g.es_exception()
             print('Failed to import editpane')
-        #
+
         # Complete the initialization.
         qt_gui.init()
         if app.gui and fileName and verbose:

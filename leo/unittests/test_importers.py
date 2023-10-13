@@ -11,6 +11,7 @@ from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins.importers.base_importer import Block
 from leo.plugins.importers.python import Python_Importer
+from leo.plugins.importers.c import C_Importer
 import leo.plugins.importers.coffeescript as cs
 import leo.plugins.importers.coffeescript as coffeescript
 import leo.plugins.importers.markdown as markdown
@@ -521,13 +522,8 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20230511073719.1: *3* TestC.test_codon_file
     def test_codon_file(self):
         # Test codon/codon/app/main.cpp.
-        import os
-        from leo.plugins.importers.c import C_Importer
-
-        trace = False
         c = self.c
         importer = C_Importer(c)
-
         path = 'C:/Repos/codon/codon/app/main.cpp'
         if not os.path.exists(path):
             self.skipTest(f"Not found: {path!r}")
@@ -537,18 +533,9 @@ class TestC(BaseTestImporter):
         if 1:  # Test gen_lines.
             importer.root = c.p
             importer.gen_lines(lines, c.p)
-            if trace:
-                for p in c.p.self_and_subtree():
-                    g.printObj(p.b, tag=p.h)
         else: # Test find_blocks.
             importer.guide_lines = importer.make_guide_lines(lines)
             result = importer.find_blocks(0, len(importer.guide_lines))
-            if trace:
-                print('')
-                g.trace()
-                for z in result:
-                    kind, name, start, start_body, end = z
-                    print(f"{kind:>10} {name:<20} {start:4} {start_body:4} {end:4}")
 
             # The result lines must tile (cover) the original lines.
             result_lines = []
@@ -901,8 +888,8 @@ class TestElisp(BaseTestImporter):
     ext = '.el'
 
     #@+others
-    #@+node:ekr.20210904065459.18: *3* TestElisp.test_1
-    def test_1(self):
+    #@+node:ekr.20210904065459.18: *3* TestElisp.test_elisp_1
+    def test_elisp_1(self):
 
         # Add weird assignments for coverage.
         s = """
@@ -1384,11 +1371,6 @@ class TestHtml(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20230826053559.1: ** class TestImporter(LeoUnitTest)
-class TestImporter(LeoUnitTest):
-    """General tests of the Importer class."""
-    #@+others
     #@-others
 #@+node:ekr.20211108062617.1: ** class TestIni (BaseTestImporter)
 class TestIni(BaseTestImporter):
@@ -3871,6 +3853,54 @@ class TestRust(BaseTestImporter):
                     'fn area(width: u32, height: u32) -> u32 {\n'
                     '    width * height\n'
                     '}\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
+    #@-others
+#@+node:ekr.20231012142113.1: ** class TestScheme (BaseTestImporter)
+class TestScheme(BaseTestImporter):
+
+    ext = '.scm'
+
+    #@+others
+    #@+node:ekr.20231012142113.2: *3* TestScheme.test_scheme_1
+    def test_scheme_1(self):
+
+        # Add weird assignments for coverage.
+        s = """
+            ;;; comment
+            ;;; continue
+            ;;;
+
+            (define abc (a b)
+               (assn a "abc")
+               (assn b \\x)
+               (+ 1 2 3))
+
+            ; comment re cde
+            (define cde (a b)
+               (+ 1 2 3))
+        """
+        expected_results = (
+            (0, '', # Ignore the first headline.
+                    '@others\n'
+                    '@language scheme\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'define abc',
+                    ';;; comment\n'
+                    ';;; continue\n'
+                    ';;;\n'
+                    '\n'
+                    '(define abc (a b)\n'
+                    '   (assn a "abc")\n'
+                    '   (assn b \\x)\n'
+                    '   (+ 1 2 3))\n'
+            ),
+            (1, 'define cde',
+                    '; comment re cde\n'
+                    '(define cde (a b)\n'
+                    '   (+ 1 2 3))\n'
             ),
         )
         self.new_run_test(s, expected_results)

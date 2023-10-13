@@ -5,6 +5,7 @@
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
+from leo.core.leoQt import Qt
 import leo.core.leoColorizer as leoColorizer
 
 #@+others
@@ -37,6 +38,8 @@ class TestColorizer(LeoUnitTest):
         self.color('plain', text)
     #@+node:ekr.20210905170507.3: *3* TestColorizer.test_bc_scanLanguageDirectives
     def test_bc_scanLanguageDirectives(self):
+        if not Qt:
+            self.skipTest('Requires Qt')
         c = self.c
         c.target_language = 'python'  # Set the default.
         widget = c.frame.body.widget
@@ -56,6 +59,8 @@ class TestColorizer(LeoUnitTest):
             self.assertEqual(got, language, msg=f"i: {i} {language}")
     #@+node:ekr.20210905170507.4: *3* TestColorizer.test_bc_useSyntaxColoring
     def test_bc_useSyntaxColoring(self):
+        if not Qt:
+            self.skipTest('Requires Qt')
         c = self.c
         widget = c.frame.body.widget
         x = leoColorizer.JEditColorizer(c, widget)
