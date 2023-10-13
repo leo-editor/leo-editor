@@ -2739,6 +2739,8 @@ def findReference(name: str, root: Position) -> Optional[Position]:
             return p.copy()
     return None
 #@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
+at_path_warnings_dict: dict[str, bool] = {}
+
 def get_directives_dict(p: Position) -> dict[str, str]:
     """
     Scan p for Leo directives found in globalDirectiveList.
@@ -2748,7 +2750,7 @@ def get_directives_dict(p: Position) -> dict[str, str]:
     """
     d = {}
     # The headline has higher precedence because it is more visible.
-    for s in (p.h, p.b):
+    for kind, s in (('head', p.h), ('body', p.b)):
         anIter = g.directives_pat.finditer(s)
         for m in anIter:
             word = m.group(1).strip()
@@ -2758,6 +2760,14 @@ def get_directives_dict(p: Position) -> dict[str, str]:
             j = i + len(word)
             if j < len(s) and s[j] not in ' \t\n':
                 # Not a valid directive: just ignore it.
+                continue
+            # Warning if @path is in the body of an @file node.
+            if word == 'path' and kind == 'body' and p.isAtFileNode():
+                if p.h not in at_path_warnings_dict:
+                    if not at_path_warnings_dict:
+                        print('\n@path is not allowed in the body text of @file nodes\n')
+                    at_path_warnings_dict[p.h] = True
+                    print(f"Ignoring @path in {p.h}")
                 continue
             k = g.skip_line(s, j)
             val = s[j:k].strip()
@@ -2952,7 +2962,7 @@ def scanAtPagewidthDirectives(aList: list, issue_error_flag: bool = False) -> Op
             if issue_error_flag and not g.unitTesting:
                 g.error("ignoring @pagewidth", s)
     return None
-#@+node:ekr.20101022172109.6108: *3* g.scanAtPathDirectives
+#@+node:ekr.20101022172109.6108: *3* g.scanAtPathDirectives & scanAllAtPathDirectives
 def scanAtPathDirectives(c: Cmdr, aList: list) -> str:
     path = c.scanAtPathDirectives(aList)
     return path

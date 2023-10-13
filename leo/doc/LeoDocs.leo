@@ -1222,7 +1222,7 @@
 <v t="ekr.20150323102918.1"><vh>@rst-ignore Undocumented commands</vh></v>
 </v>
 <v t="ekr.20131009065148.31758"><vh>@rst html/directives.html</vh>
-<v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; directives</vh>
+<v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; and \@path directives</vh>
 <v t="ekr.20100806170836.4393"><vh>\@asis &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh>
 <v t="ekr.20160410045234.1"><vh>\@auto sanity checks</vh></v>
@@ -1232,6 +1232,7 @@
 <v t="ekr.20100806170836.4403"><vh>\@file &lt;path&gt; (aka @thin)</vh></v>
 <v t="ekr.20160410044518.1"><vh>\@nosent &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt; (deprecated)</vh></v>
+<v t="ekr.20231013091132.1"><vh>\@path &lt;path&gt;</vh></v>
 </v>
 <v t="ekr.20100806170836.4411"><vh>Part 2: \@all and \@others</vh></v>
 <v t="ekr.20100806170836.4398"><vh>Part 3: Syntax coloring directives</vh></v>
@@ -2508,6 +2509,7 @@
 </v>
 <v t="ekr.20230901233844.1"></v>
 <v t="ekr.20230901233131.1"><vh>Leo 6.7.5 release notes</vh></v>
+<v t="ekr.20131009065148.31758"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -8307,30 +8309,6 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 
   The ``@pagewidth`` directive overrides the ``@int page_width`` setting.
 
-.. index::
-    pair: @path; Reference
-.. index::
-    pair: Absolute path; Reference
-.. index::
-    pair: Path prefix; Reference
-
-``@path &lt;path&gt;``
-
-   Sets the **path prefix** for relative filenames for all @&lt;file&gt; tree.
-
-   This directive may appear in headlines or body text, and may
-   appear in top-level ``@&lt;file&gt;`` nodes *except* ``@file`` nodes.
-
-   The path is an **absolute path** if it begins with ``c:\\`` or ``/``,
-   otherwise the path is a **relative** paths.
-
-   Multiple ``@path`` directives may contribute to the path prefix.
-   Absolute paths overrides any ancestor ``@path`` directives.
-   Relative paths add to the path prefix.
-
-   If no ``@path`` directives are in effect, the default path prefix is
-   the directory containing the .leo file.
-   
 .. index::
     pair: @persistence; Reference
     
@@ -32751,6 +32729,25 @@ When I study other people's code I do the following:
 - Use git diff to track any changes I make (such as adding tracing or debugging statements) for the purposes of studying the code. Using ``@clean`` is an essential part of this work flow. The diffs would be much harder to read if I had imported files into ``@file`` trees instead.
 
 In short, I have just now realized how badly sentinels interfered with git diffs.
+</t>
+<t tx="ekr.20231013091132.1">.. index::
+    pair: @path; Reference
+.. index::
+    pair: Absolute path; Reference
+.. index::
+    pair: Path prefix; Reference
+
+Sets the **path prefix** for relative filenames for all ``@&lt;file&gt;`` trees *except* ``@file`` trees.
+
+The ``@path`` directive may appear in any headline or the body text ``@&lt;file&gt;`` nodes (``@clean``, ``@auto``, etc.).
+
+*Note*: The ``@path`` directive is *not* allowed in the body text of ``@file`` nodes.
+
+The path is an **absolute path** if it begins with ``c:\\`` or ``/``, otherwise the path is a **relative** paths.
+
+Multiple ``@path`` directives may contribute to the path prefix. Absolute paths overrides any ancestor ``@path`` directives. Relative paths add to the path prefix.
+
+If no ``@path`` directives are in effect, the default path prefix is the directory containing the .leo file.
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py

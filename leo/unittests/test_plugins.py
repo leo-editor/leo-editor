@@ -72,7 +72,7 @@ class TestPlugins(LeoUnitTest):
         for fn in files:
             with open(fn, 'r') as f:
                 s = f.read()
-            self.assertTrue('def init()' in s or 'def init ()' in s, msg=fn)
+            assert 'def init()' in s, repr(fn)
     #@+node:ekr.20210907081455.3: *3* TestPlugins.test_all_qt_plugins_call_g_assertUi_qt_
     def test_all_qt_plugins_call_g_assertUi_qt_(self):
         files = self.get_plugins()

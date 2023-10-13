@@ -2926,7 +2926,8 @@ class Commands:
     #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives
     def scanAtPathDirectives(self, aList: list) -> str:
         """
-        Scan aList for @path directives.
+        Scan aList (created by g.get_directives_dict_list) for @path directives.
+
         Return a reasonable default if no @path directive is found.
         """
         c = self
@@ -2941,11 +2942,10 @@ class Commands:
         for d in aList:
             # Look for @path directives.
             path = d.get('path')
-            warning = d.get('@path_in_body')
             if path is not None:  # retain empty paths for warnings.
                 # Convert "path" or <path> to path.
                 path = g.stripPathCruft(path)
-                if path and not warning:  # Silently ignore empty @path directives.
+                if path:
                     paths.append(path)
 
         # Add absbase and reverse the list.
