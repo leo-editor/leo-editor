@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20230917013414.1: * @file ../plugins/indented_typescript.py
+#@+node:ekr.20230917013414.1: * @file ../plugins/indented_languages.py
 """
 A plugin to edit typescript files using indentation instead of curly brackets.
 
