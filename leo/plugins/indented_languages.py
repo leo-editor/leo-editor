@@ -170,7 +170,7 @@ class IndentedTypeScript:
         curlies, squares, parens = 0, 0, 0
         for i, line in enumerate(guide_lines):
             strip_line = line.strip()
-            # Check leading whitepaces or *original* lines.
+            # Check leading whitespace in *original* lines.
             if not parens and not squares and strip_line:
                 original_line = lines[i]
                 last_line = '' if i == 0 else lines[i-1].strip()
@@ -272,7 +272,7 @@ class IndentedTypeScript:
                 result_lines.append(lines[line_number])
                 continue
 
-            # Don't make the substition if '};' appears on the line.
+            # Don't make the substitution if '};' appears on the line.
             if self.semicolon_pat.search(line):
                 # g.trace('Skip };', repr(line))
                 result_lines.append(lines[line_number])

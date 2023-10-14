@@ -45,8 +45,8 @@ class JS_Importer(Importer):
 
         This method also replaces *apparent* regular expressions with spaces.
 
-        In general, JS tokenizing is context dependent, but it's too ugly to
-        include a full JS tokenizer.
+        In general, tokenizing Javascript is context dependent(!!), but it
+        would be unbearable to include a full JS tokenizer.
         """
         string_delims = self.string_list
         line_comment, start_comment, end_comment = g.set_delims_from_language(self.language)

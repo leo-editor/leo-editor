@@ -207,7 +207,7 @@ class TestIndentedTypeScript(LeoUnitTest):
 
     # Snippets from indented_typescript_test.ts.
 
-    # Contains "over-indented" parenthized lines, a good test for check_indentation.
+    # Contains "over-indented" parenthesized lines, a good test for check_indentation.
         contents = textwrap.dedent(
     """\
     import { NodeIndices, VNode, Position } from './leoNodes';
