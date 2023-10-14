@@ -38,7 +38,7 @@ class JS_Importer(Importer):
     )
 
     #@+others
-    #@+node:ekr.20230919103544.1: *3* js_i.delete_comments_and_strings (***)
+    #@+node:ekr.20230919103544.1: *3* js_i.delete_comments_and_strings
     def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
         """
         JS_Importer.delete_comments_and_strings.
