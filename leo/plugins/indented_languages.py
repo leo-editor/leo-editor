@@ -159,7 +159,7 @@ class IndentedTypeScript:
         Relax the checks for parenthesized lines.
         """
         print_header = True
-        tag = 'check_indentation'
+        tag=f"{g.my_name()}"
         ws_char = ' ' if indent < 0 else '\t'
         ws_pat = re.compile(fr'^[{ws_char}]*')
         indent_s = ws_char * abs(indent)
@@ -231,7 +231,7 @@ class IndentedTypeScript:
         Raise TypeError if there is a problem.
         """
 
-        tag = 'remove_brackets'
+        tag=f"{g.my_name()}"
 
         # The stack contains tuples(curly_bracket, line_number, column_number) for each curly bracket.
         # Note: adding a 'level' entry to these tuples would be tricky.

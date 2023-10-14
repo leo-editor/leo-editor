@@ -1,8 +1,7 @@
 //@+leo-ver=5-thin
 //@+node:ekr.20230917150336.1: * @file ../unittests/indented_typescript_test.ts
-// A test file for the indented_typescript plugin.
+// A test file for the indented_languages plugin.
 // Based on various files from leoJS.
-// Comments indicate which files.
 
 //@+<< imports: indented_typescript_test.ts >>
 //@+node:ekr.20230917150336.2: ** << imports: indented_typescript_test.ts >>
