@@ -87,10 +87,14 @@ class JS_Importer(Importer):
                     result_line.append(' ')
                     target = end_comment
                     skip_count = max(0, len(start_comment) - 1)
-                elif ch == '/' and line.find('/', i + 1) > -1:
-                    # An *apparent* regular expression.
-                    result_line.append(' ')
-                    skip_count = line.find('/', i + 1) - i + 1
+                elif ch == '/':
+                    j = line.find('/', i + 1)
+                    if j > -1:
+                        # An *apparent* regular expression.
+                        result_line.append(' ')
+                        skip_count = j - i + 1
+                    else:
+                        result_line.append(ch)
                 else:
                     result_line.append(ch)
 
