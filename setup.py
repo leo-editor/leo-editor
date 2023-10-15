@@ -47,7 +47,8 @@ install_requires = [
     'pyshortcuts >= 1.7',  # desktop integration (#1243)
     'sphinx',  # rST plugin
     'tk',  # tkinter.
-    'windows-curses; platform_system=="Windows"',  # for console mode on Windows
+    # #3603: windows-curses doesn't work with Python 3.12.
+    # 'windows-curses; platform_system=="Windows"',  # for console mode on Windows
 ]
 #@-<< define install_requires >>
 #@+others  # Define helpers
