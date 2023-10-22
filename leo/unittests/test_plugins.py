@@ -9,6 +9,7 @@ import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core.leoPlugins import LeoPluginsController
+from leo.plugins import indented_languages
 
 #@+others
 #@+node:ekr.20210907082556.1: ** class TestPlugins(LeoUnitTest)
@@ -155,47 +156,29 @@ class TestPlugins(LeoUnitTest):
 class TestIndentedTypeScript(LeoUnitTest):
     """Tests for typescript-related code in the indented_languages plugin."""
 
+    #@+others
+    #@+node:ekr.20231022081148.1: *3* test_its.setUp
     def setUp(self):
 
-        from leo.core.leoPlugins import LeoPluginsController
-        from leo.plugins import indented_languages
+        ### from leo.core.leoPlugins import LeoPluginsController
+        ### from leo.plugins import indented_languages
 
         super().setUp()
 
-        # Instantiate a LeoPluginsController. It is usually a g.NullObject.
-        self.controller = indented_languages.IndentedTypeScript(self.c)
+        # # Instantiate a LeoPluginsController. It is usually a g.NullObject.
         g.app.pluginsController = pc = LeoPluginsController()
         g.app.hookFunction = pc.doPlugins  # Required.
 
-        # Enable the indented_typescript plugin and call init.
-        plugin = pc.loadOnePlugin('leo.plugins.indented_languages', verbose=False)
-        assert plugin
+        # # Enable the indented_typescript plugin and call init.
+        # plugin = pc.loadOnePlugin('leo.plugins.indented_languages', verbose=False)
+        # assert plugin
 
         # Call onCreate to register handlers.
-        indented_languages.onCreate(tag='unit-test', keys={'c': self.c})
+        ### indented_languages.onCreate(tag='unit-test', keys={'c': self.c})
 
-    #@+others
-    #@+node:ekr.20230917014735.1: *3* test_its.test_atFile_read
-    def test_atFile_read(self):
-
-        c = self.c
-        p = c.p
-        at = c.atFileCommands
-
-        if 1:
-            # Compute local path to leoJS.
-            path = os.path.normpath(r'C:\Repos\leojs\src\core\leoAtFile.ts')
-        else:
-            # Compute the path to typescript_test.ts
-            unittest_dir = os.path.dirname(__file__)
-            path = os.path.normpath(os.path.join(unittest_dir, 'indented_typescript_test.ts'))
-        assert os.path.exists(path), repr(path)
-
-        # Remove braces!
-        p.h = f"@file {path}"
-        at.read(p)
-    #@+node:ekr.20230919025755.1: *3* test_its.test_after_read
-    def test_after_read(self):
+        self.importer = indented_languages.Indented_TypeScript(self.c)
+    #@+node:ekr.20230919025755.1: *3* test_its.test_typescript
+    def test_typescript(self):
 
         c = self.c
         p = c.p
@@ -245,7 +228,7 @@ class TestIndentedTypeScript(LeoUnitTest):
     """)
         p.h = f"@file {path}"
         p.b = contents
-        self.controller.after_read(c, p)
+        self.importer.do_import()
     #@-others
 #@-others
 #@-leo
