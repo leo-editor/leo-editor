@@ -4,16 +4,12 @@
 A plugin that creates **study outlines** in which indentation replaces curly brackets.
 """
 import re
-from typing import Any
+from typing import Any, Optional
 from leo.core import leoGlobals as g
-### from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position  ###, VNode
-
-###
-# from leo.plugins.importers.elisp import Elisp_Importer
-# from leo.plugins.importers.python import Python_Importer
-# from leo.plugins.importers.typescript import TS_Importer
-# assert Elisp_Importer, Python_Importer, TS_Importer  ###
+from leo.core.leoNodes import Position
+from leo.plugins.importers.c import C_Importer
+from leo.plugins.importers.elisp import Elisp_Importer
+from leo.plugins.importers.typescript import TS_Importer
 
 #@+others
 #@+node:ekr.20230917084259.1: ** top-level
@@ -51,36 +47,11 @@ def import_to_indented_typescript(event: Any) -> None:
 class Indented_Importer:
     """The base class for all indented importers."""
     
-    ext: list[str] = None  # The file extension for the language.
+    extentions: list[str] = None  # The file extension for the language.
     language: str = None  # The name of the language.
-    
-    def __init__(self, c):
-        self.c = c
 
     #@+others
-    #@+node:ekr.20231022073537.1: *3* Indented_Importer.do_import
-    def do_import(self):
-        """
-        Base_Indented_Importer.do_import: Create a top-level node containing study outlines for all files in
-        c.p and its descendants.
-        
-        Subclasses must define 
-        """
-        c, p = self.c, self.c.p
-        ext = self.ext
-        assert ext
-        assert c  ###
-        
-        # Undoably create top-level organizer node
-        
-        if 0:
-            seen: dict[str, bool] = {}
-            for p2 in p.self_and_subtree():
-                if p2.gnx not in seen:
-                    seen [p2.gnx] = True
-                    self.do_remove_brackets(p2)
-        
-    #@+node:ekr.20231022073306.4: *3* Indented_Importer.check_brackets
+    #@+node:ekr.20231022073306.4: *3* Indented_Importer.check_brackets (needed???)
     # No need to worry about comments in guide lines.
     bracket_pat = re.compile(r'^\s*}.*?{\s*$')
     matched_bracket_pat = re.compile(r'{.*?}\s*')
@@ -108,13 +79,90 @@ class Indented_Importer:
                         f"{p.h}: Too invalid curly brackets in line {i:4}: {line.strip()}")
                 if trace:
                     g.trace(f"Good: Line {i:4}: {line.strip()}")
+    #@+node:ekr.20231022073537.1: *3* Indented_Importer.do_import (driver)
+    def do_import(self) -> Optional[Position]:
+        """
+        Base_Indented_Importer.do_import: Create a top-level node containing study outlines for all files in
+        c.p and its descendants.
+
+        Return the top-level node for unit tests.
+        """
+        c, p, u = self.c, self.c.p, self.c.undoer
+
+        assert self.extentions
+        
+        def predicate(p: Position) -> bool:
+            return p.isAnyAtFileNode() and p.h.strip().endswith(tuple(self.extentions))
+
+        roots: list[Position] = g.findRootsWithPredicate(c, p, predicate)  # Removes duplicates
+        if not roots:
+            return None
+        
+        # Undoably create top-level organizer node and import all files.
+        try:
+            ### g.app.disable_redraw = True
+            last = c.lastTopLevel()
+            c.selectPosition(last)
+            undoData = u.beforeInsertNode(last)
+            # Always create a new last top-level node.
+            parent = last.insertAfter()
+            parent.v.h = 'indented files'
+            for root in roots:
+                self.import_one_file(root, parent)
+            u.afterInsertNode(parent, 'recursive-import', undoData)
+        except Exception:
+            g.es_print(f"Exception in {self.__class__.__name__}")
+            g.es_exception()
+        finally:
+            ### g.app.disable_redraw = False
+            for p2 in parent.self_and_subtree(copy=False):
+                p2.contract()
+            c.redraw(parent)
+        return parent
+    #@+node:ekr.20231022100000.1: *3* Indented_Importer.import_one_file
+    def import_one_file(self, p: Position, parent: Position) -> None:
+        """
+        Indented_Importer.import_one_file: common setup code.
+        
+        p is an @<file> node.
+        
+        - Create a parallel tree as the last child of parent.
+        - Indent all the nodes of the parallel tree.
+        """
+        file_name = p.anyAtFileNodeName()
+        
+        ### For testing only.
+        if g.unitTesting:
+            i = file_name.find('unittests\\')
+            if i > -1:
+                file_name = file_name[i:]
+        
+        # Create root, a parallel outline.
+        root = p.copyWithNewVnodes()
+        n = parent.numberOfChildren()
+        root._linkAsNthChild(parent, n)
+        root.h = file_name
+
+        # Indent the parallel outline.
+        self.indent_outline(root)
+        
+        ### Debugging.
+        if 0:
+            for z in self.c.all_positions():
+                print(f"{' '*z.level()} {z.h}")
+        if 0:
+            g.printObj(g.splitLines(root.b), tag=root.h)
     #@-others
 #@+node:ekr.20231022080007.1: ** class Indented_C
 class Indented_C (Indented_Importer):
     """A class to support indented C files."""
-    
-    ext: list[str] = ['.c', '.cpp', '.cc']  
+
+    extentions: list[str] = ['.c', '.cpp', '.cc']
     language = 'c'
+    
+    def __init__(self, c):
+        self.c = c
+        self.importer = C_Importer(c)
 
     #@+others
     #@+node:ekr.20231022080007.2: *3* Indented_C.do_remove_brackets (top level)
@@ -250,8 +298,12 @@ class Indented_C (Indented_Importer):
 class Indented_Lisp (Indented_Importer):
     """A class to support indented typescript files."""
     
-    ext: list[str] = ['.el', ]  ### More???
+    extentions: list[str] = ['.el', '.scm']
     language = 'lisp'
+    
+    def __init__(self, c):
+        self.c = c
+        self.importer = Elisp_Importer(c)
 
     #@+others
     #@+node:ekr.20230917184608.1: *3* Indented_Lisp.do_remove_brackets (top level)
@@ -487,47 +539,41 @@ class Indented_Lisp (Indented_Importer):
 class Indented_TypeScript (Indented_Importer):
     """A class to support indented typescript files."""
     
-    ext = ['.ts']
+    extentions: list[str] = ['.ts',]
     language = 'typescript'
+    
+    def __init__(self, c):
+        self.c = c
+        self.importer = TS_Importer(c)
 
     #@+others
-    #@+node:ekr.20231022073306.3: *3* Indented_TS.do_remove_brackets (top level)
-    def do_remove_brackets(self, indent: int, p: Position) -> None:
+    #@+node:ekr.20231022073306.3: *3* Indented_TS.indent_outline
+    def indent_outline(self, root: Position) -> None:
         """
-        The top-level driver for each node.
-        
-        Using guide lines, remove most curly brackets from p.b.
+        Indent the body text of root and all its descendants.
         """
-        contents = p.b
-        if not contents.strip():
-            # g.trace('Empty!', p.h)
-            return
-        lines = g.splitLines(contents)
-        guide_lines = self.importer.make_guide_lines(lines)
-        assert lines and len(lines) == len(guide_lines)
-
-        # These may raise TypeError.
-        self.check_brackets(guide_lines, p)
-        self.check_indentation(indent, guide_lines, lines, p)
-        self.remove_brackets(guide_lines, lines, p)
-    #@+node:ekr.20231022073306.6: *3* IndentedTS.remove_brackets
+        for p in root.self_and_subtree():
+            self.indent_node(p)
+    #@+node:ekr.20231022073306.6: *3* IndentedTS.indent_node  (TEST)
     curlies_pat = re.compile(r'{|}')
     close_curly_pat = re.compile(r'}')
     semicolon_pat = re.compile(r'}\s*;')
 
-    def remove_brackets(self,
-        guide_lines: list[str],
-        lines: list[str],
-        p: Position,
-    ) -> None:
+    def indent_node(self, p: Position) -> None:
         """
         Remove curly brackets from p.b.
+
         Do not remove matching brackets if ';' follows the closing bracket.
 
         Raise TypeError if there is a problem.
         """
 
         tag=f"{g.my_name()}"
+        
+        lines = g.splitLines(p.b)
+        guide_lines = self.importer.make_guide_lines(lines)
+        
+        ### g.printObj(guide_lines, tag=f"{g.my_name()}: guide_lines for {p.h}")
 
         # The stack contains tuples(curly_bracket, line_number, column_number) for each curly bracket.
         # Note: adding a 'level' entry to these tuples would be tricky.
@@ -611,14 +657,9 @@ class Indented_TypeScript (Indented_Importer):
             else:
                 new_result_lines.append(line)
         result_lines = new_result_lines
-
-        # Add a header for traces.
-        if 0:
-            result_lines = [f"Node: {p.h}\n\n"] + result_lines
-        # g.printObj(lines, f"lines: {p.h}")
-        # g.printObj(guide_lines, f"guide_lines: {p.h}")
-        # print(''.join(result_lines).rstrip() + '\n')
-        # g.printObj(result_lines, tag=f"result_lines: {p.h}")
+        
+        # Set the result
+        p.b = ''.join(result_lines).rstrip() + '\n\n'
     #@-others
 #@-others
 #@-leo
