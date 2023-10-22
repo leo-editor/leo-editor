@@ -138,7 +138,6 @@ class Indented_Importer:
         Do not remove matching brackets if ';' follows the closing bracket.
         """
         tag=f"{g.my_name()}"
-        
         if not p.b.strip():
             return
         lines = g.splitLines(p.b)
@@ -164,7 +163,10 @@ class Indented_Importer:
                     stack.append((curly, line_number, column_number))
                 else:
                     assert curly == '}', f"{tag}: not }}"
-                    assert stack, f"{tag}: stack underflow"
+                    if not stack:
+                        g.es_print(f"   Stack underflow: {p.h}")
+                        # g.printObj(lines, tag='lines')
+                        return
                     top = stack.pop()
                     top_curly, top_line_number, top_column_number = top
                     assert top_curly == '{', f"{tag} stack mismatch"
@@ -172,7 +174,10 @@ class Indented_Importer:
                     info [top] = this_info
                     info [this_info] = top
                 level += (1 if curly == '{' else -1)
-        assert level == 0, f"{tag} unmatched brackets"
+        if level != 0:
+            g.es_print(f"Unmatched brackets: {p.h}")
+            # g.printObj(lines, tag='lines')
+            return
 
         # Pass 2: Make the substitutions when '}' is seen.
         result_lines = []  # Must be empty here.
