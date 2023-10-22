@@ -1,56 +1,37 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20230917013414.1: * @file ../plugins/indented_languages.py
 """
-A plugin to edit typescript files using indentation instead of curly brackets.
+A plugin to edit languages using indentation instead of curly brackets.
 
-- The ``open2`` event handler deletes curly brackets,
-  after checking that nothing (except comments?) follows curly brackets.
-- The ``read1`` event handler inserts curly brackets based on indentation.
+- The ``open2`` event handler deletes curly brackets/ parens.
+  after checking that nothing (except comments?) folows curly brackets.
+- The ``read1`` event handler inserts curly brackets/parens based on indentation.
 
 Both event handlers will do a check similar to Python's tabnanny module.
+
+Classes:
+- IndentedC: For C.
+- IndentedTypeScript: For TypeScript.
+
+
 """
 import re
-from typing import Any
+### from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
 from leo.core.leoNodes import Position, VNode
 from leo.plugins.importers.typescript import TS_Importer
 
 #@+others
-#@+node:ekr.20230917084259.1: ** top-level (indented_typescript.py)
-#@+node:ekr.20230917015308.1: *3* init (indented_typescript.py)
+#@+node:ekr.20230917084259.1: ** top-level
+#@+node:ekr.20230917015308.1: *3* init (indented_languages.py)
 def init() -> bool:
     """Return True if the plugin has loaded successfully."""
-    g.registerHandler('before-create-leo-frame', onCreate)
-    g.registerHandler('after-reading-external-file', onAfterRead)
-    g.registerHandler('before-writing-external-file', onBeforeWrite)
+    # g.registerHandler('after-create-leo-frame', onCreate)
+    # g.registerHandler('after-reading-external-file', onAfterRead)
+    # g.registerHandler('before-writing-external-file', onBeforeWrite)
     return True
-#@+node:ekr.20230917084347.1: *3* event handlers (indented_typescript.py)
-def onCreate(tag: str, keys: Any) -> None:
-    """Instantiate an IndentedTypeScript instance for c."""
-    c=keys.get('c')
-    if c:
-        gControllers[c.hash()] = IndentedTypeScript(c)
-    else:
-        g.trace(f"Can not happen. c: {c!r}")
-
-def onAfterRead(tag: str, kwargs: Any) -> None:
-    """after-reading-external-file event handler for indented_typescript.py"""
-    c, p = kwargs.get('c'), kwargs.get('p')
-    if c and p:
-        controller = gControllers.get(c.hash())
-        controller.after_read(c, p)
-    else:
-        g.trace(f"Can not happen. c: {c!r} p: {p!r}")
-
-def onBeforeWrite(tag: str, kwargs: Any) -> None:
-    """before-writing-external-file event handler for indented_typescript.py"""
-    c, p = kwargs.get('c'), kwargs.get('p')
-    if c and p:
-        controller = gControllers.get(c.hash())
-        controller.before_write(c, p)
-    else:
-        g.trace(f"Can not happen. c: {c!r} p: {p!r}")
+#@+node:ekr.20231022071443.1: *3* commands (indented_languages.py)
 #@+node:ekr.20230917083456.1: ** class IndentedTypeScript
 class IndentedTypeScript:
     """A class to support indented typescript files."""
