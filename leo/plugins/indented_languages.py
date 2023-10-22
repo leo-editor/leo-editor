@@ -116,7 +116,17 @@ class Indented_Importer:
 
         # Indent the parallel outline.
         self.indent_outline(root)
-    #@+node:ekr.20231022073306.6: *3* indented_i.indent_node
+
+    #@+node:ekr.20231022073306.3: *3* indented_i.indent_outline (the pipeline)
+    def indent_outline(self, root: Position) -> None:
+        """
+        Indent the body text of root and all its descendants.
+        """
+        for p in root.self_and_subtree():
+            self.indent_node(p)
+            self.remove_trailing_semicolons(p)
+            self.remove_blank_lines(p)
+    #@+node:ekr.20231022073306.6: *4* indented_i.indent_node
     curlies_pat = re.compile(r'{|}')
     close_curly_pat = re.compile(r'}')
     semicolon_pat = re.compile(r'}\s*;')
@@ -127,13 +137,12 @@ class Indented_Importer:
 
         Do not remove matching brackets if ';' follows the closing bracket.
         """
-
         tag=f"{g.my_name()}"
-
+        
+        if not p.b.strip():
+            return
         lines = g.splitLines(p.b)
         guide_lines = self.importer.make_guide_lines(lines)
-
-        ### g.printObj(guide_lines, tag=f"{g.my_name()}: guide_lines for {p.h}")
 
         # The stack contains tuples(curly_bracket, line_number, column_number) for each curly bracket.
         # Note: adding a 'level' entry to these tuples would be tricky.
@@ -219,14 +228,28 @@ class Indented_Importer:
         result_lines = new_result_lines
 
         # Set the result
-        p.b = ''.join(result_lines).rstrip() + '\n\n'
-    #@+node:ekr.20231022073306.3: *3* indented_i.indent_outline
-    def indent_outline(self, root: Position) -> None:
-        """
-        Indent the body text of root and all its descendants.
-        """
-        for p in root.self_and_subtree():
-            self.indent_node(p)
+        p.b = ''.join(result_lines).rstrip() + '\n'
+    #@+node:ekr.20231022152015.1: *4* indented_i.remove_trailing_semicolons
+    def remove_trailing_semicolons(self, p: Position) -> None:
+        
+        if not p.b.strip():
+            return
+        lines = g.splitLines(p.b)
+        result_lines = []
+        for line in lines:
+            line_s = line.rstrip()
+            if line_s.endswith(';'):
+                line = line_s[:-1] + '\n'
+            result_lines.append(line)
+        p.b =  p.b = ''.join(result_lines).rstrip() + '\n'
+    #@+node:ekr.20231022150805.1: *4* indented_i.remove_blank_lines
+    def remove_blank_lines(self, p: Position) -> None:
+        
+        if not p.b.strip():
+            return
+        lines = g.splitLines(p.b)
+        result_lines = [z for z in lines if z.strip()]
+        p.b =  p.b = ''.join(result_lines).rstrip() + '\n'
     #@+node:ekr.20231022150031.1: *3* indented_i.isAtFileNode & atFileName
     def isAtFileNode(self, p: Position) -> bool:
         return p.h.startswith(('@@file ', '@@clean ', '@file ', '@clean '))
