@@ -160,17 +160,19 @@ class TestIndentedTypeScript(LeoUnitTest):
     #@+node:ekr.20230919025755.1: *3* test_its.test_typescript
     def test_typescript(self):
 
-        c = self.c
-        p = c.p
+        c, p = self.c, self.c.p
 
-    # Snippets from indented_typescript_test.ts.
+        #@+<< define contents: test_typescript >>
+        #@+node:ekr.20231022133716.1: *4* << define contents: test_typescript >>
 
-    # Contains "over-indented" parenthesized lines, a good test for check_indentation.
+        # Snippets from indented_typescript_test.ts.
+
+        # Contains "over-indented" parenthesized lines, a good test for check_indentation.
         contents = textwrap.dedent(
-    """\
-    import { NodeIndices, VNode, Position } from './leoNodes';
+        """\
+        import { NodeIndices, VNode, Position } from './leoNodes';
 
-    export class Config implements ConfigMembers {
+        export class Config implements ConfigMembers {
 
         constructor(
             private _context: vscode.ExtensionContext,
@@ -199,8 +201,10 @@ class TestIndentedTypeScript(LeoUnitTest):
                 at.initReadLine(s);
             }
         }
-    }
-    """)
+        }
+        """)
+        #@-<< define contents: test_typescript >>
+
         # Set p.h and p.b.
         unittest_dir = os.path.dirname(__file__)
         path = os.path.abspath(os.path.join(unittest_dir, 'indented_typescript_test.ts'))
@@ -209,8 +213,18 @@ class TestIndentedTypeScript(LeoUnitTest):
         p.b = contents
 
         # Import.
-        x = indented_languages.Indented_TypeScript(self.c)
-        x.do_import()
+        x = indented_languages.Indented_TypeScript(c)
+        top_node = x.do_import()
+        assert top_node.h == 'indented files', repr(top_node.h)
+
+        # Debugging.
+        if 0:
+            for z in self.c.all_positions():
+                print(f"{' '*z.level()} {z.h}")
+        if 0:
+            root = top_node.firstChild()
+            g.printObj(g.splitLines(root.b), tag=root.h)
+
     #@-others
 #@-others
 #@-leo

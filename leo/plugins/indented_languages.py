@@ -108,12 +108,6 @@ class Indented_Importer:
         """
         file_name = p.anyAtFileNodeName()
 
-        ### For testing only.
-        if g.unitTesting:
-            i = file_name.find('unittests\\')
-            if i > -1:
-                file_name = file_name[i:]
-
         # Create root, a parallel outline.
         root = p.copyWithNewVnodes()
         n = parent.numberOfChildren()
@@ -122,13 +116,6 @@ class Indented_Importer:
 
         # Indent the parallel outline.
         self.indent_outline(root)
-
-        ### Debugging.
-        if 0:
-            for z in self.c.all_positions():
-                print(f"{' '*z.level()} {z.h}")
-        if 0:
-            g.printObj(g.splitLines(root.b), tag=root.h)
     #@+node:ekr.20231022073306.6: *3* indented_i.indent_node
     curlies_pat = re.compile(r'{|}')
     close_curly_pat = re.compile(r'}')
@@ -262,8 +249,5 @@ class Indented_TypeScript(Indented_Importer):
     extentions: list[str] = ['.ts',]
     language = 'typescript'
     importer_class = TS_Importer
-
-    #@+others
-    #@-others
 #@-others
 #@-leo
