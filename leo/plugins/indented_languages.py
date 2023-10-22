@@ -53,7 +53,7 @@ class Indented_Importer:
 
     def __init__(self, c):
         self.c = c
-        self.importer = self.importer_class(c)
+        self.importer = self.importer_class(c)  # pylint: disable=not-callable
 
     #@+others
     #@+node:ekr.20231022073537.1: *3* indented_i.do_import (driver)
@@ -69,7 +69,7 @@ class Indented_Importer:
         assert self.extentions
 
         def predicate(p: Position) -> bool:
-            return p.isAnyAtFileNode() and p.h.strip().endswith(tuple(self.extentions))
+            return self.isAtFileNode(p) and p.h.strip().endswith(tuple(self.extentions))
 
         roots: list[Position] = g.findRootsWithPredicate(c, p, predicate)  # Removes duplicates
         if not roots:
@@ -106,7 +106,7 @@ class Indented_Importer:
         - Create a parallel tree as the last child of parent.
         - Indent all the nodes of the parallel tree.
         """
-        file_name = p.anyAtFileNodeName()
+        file_name = self.atFileName(p)
 
         # Create root, a parallel outline.
         root = p.copyWithNewVnodes()
@@ -220,13 +220,22 @@ class Indented_Importer:
 
         # Set the result
         p.b = ''.join(result_lines).rstrip() + '\n\n'
-    #@+node:ekr.20231022073306.3: *3* Indented_i.indent_outline
+    #@+node:ekr.20231022073306.3: *3* indented_i.indent_outline
     def indent_outline(self, root: Position) -> None:
         """
         Indent the body text of root and all its descendants.
         """
         for p in root.self_and_subtree():
             self.indent_node(p)
+    #@+node:ekr.20231022150031.1: *3* indented_i.isAtFileNode & atFileName
+    def isAtFileNode(self, p: Position) -> bool:
+        return p.h.startswith(('@@file ', '@@clean ', '@file ', '@clean '))
+
+    def atFileName(self, p: Position) -> str:
+        assert self.isAtFileNode(p), repr(p.h)
+        i = p.h.find(' ')
+        assert i > -1, p.h
+        return p.h[i:].strip()
     #@-others
 #@+node:ekr.20231022080007.1: ** class Indented_C
 class Indented_C(Indented_Importer):
