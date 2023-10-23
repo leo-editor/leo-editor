@@ -40,10 +40,10 @@ class BaseTestImporter(LeoUnitTest):
         """
         try:
             p0_level = p.level()
-            actual_list = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
-            for i, actual_tuple in enumerate(actual_list):
+            actuals = [(z.level(), z.h, z.b) for z in p.self_and_subtree()]
+            for i, actual in enumerate(actuals):
                 try:
-                    a_level, a_h, a_str = actual_tuple
+                    a_level, a_h, a_str = actual
                     e_level, e_h, e_str = expected[i]
                 except Exception:
                     assert False  # So we print the actual results.
