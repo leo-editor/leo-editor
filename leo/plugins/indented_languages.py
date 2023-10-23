@@ -28,9 +28,9 @@ def import_to_indented_c(event: Any) -> None:
     if c:
         Indented_C(c).do_import()
 
-@g.command('import-to-indented-elisp')
+@g.command('import-to-indented-lisp')
 def import_to_indented_elisp(event: Any) -> None:
-    """The import-to-indented-elisp command."""
+    """The import-to-indented-lisp command."""
     c = event.get('c')
     if c:
         Indented_Lisp(c).do_import()
