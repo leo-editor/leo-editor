@@ -1705,26 +1705,14 @@ class TestJavascript(BaseTestImporter):
     def test_guide_lines(self):
 
         c = self.c
-
-        # s = textwrap.dedent("""\
-           # SCRIPT_BUTTON_TOOLTIP:
-                # "Creates a new button with the presently selected node.\n" +
-                # "For example, to run a script on any part of an outline:\n" +
-                # "\n" +
-                # "1.  Select the node containing a script. e.g. \"g.es(p.h)\"\n" +
-                # "2.  Press 'Script Button' to create a new button.\n" +
-                # "3.  Select another node on which to run the script.\n" +
-                # "4.  Press the *new* button.",
-            # """)
-
-        s = r'''"1\"2\"3\n"'''
-
         x = javascript.JS_Importer(c)
+
+        # Adapted from an import failure in leoJS: The USER_MESSAGES method in constants.ts.
+        s = r'''"1\"2\"3\n"'''
         lines = g.splitLines(s)
         guide_lines = x.delete_comments_and_strings(lines)
         line1 = guide_lines[0]
         assert not line1.strip(), repr(line1)
-
     #@-others
 #@+node:ekr.20220816082603.1: ** class TestLua (BaseTestImporter)
 class TestLua (BaseTestImporter):
