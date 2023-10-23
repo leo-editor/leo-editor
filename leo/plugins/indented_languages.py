@@ -128,7 +128,19 @@ class Indented_Importer:
         for p in root.self_and_subtree():
             self.indent_node(p)
             self.remove_trailing_semicolons(p)
+            self.remove_includes(p)
             self.remove_blank_lines(p)
+
+        # Remove @path.
+        if root.b.startswith('@path'):
+            lines = g.splitLines(root.b)
+            root.b = ''.join(lines[1:])
+
+        # Remove the useless first block comment.
+        self.remove_first_block_comment(root)
+
+        # Append @language.
+        root.b = root.b.rstrip() + f"\n\n@language {self.language}\n"
     #@+node:ekr.20231022073306.6: *4* indented_i.indent_node
     curlies_pat = re.compile(r'{|}')
     close_curly_pat = re.compile(r'}')
@@ -239,6 +251,40 @@ class Indented_Importer:
 
         # Set the result
         p.b = ''.join(result_lines).rstrip() + '\n'
+    #@+node:ekr.20231022150805.1: *4* indented_i.remove_blank_lines
+    def remove_blank_lines(self, p: Position) -> None:
+        """Replace multiple blank lines with a single blank line."""
+        if not p.b.strip():
+            return
+        result_lines = []
+        for line in g.splitLines(p.b):
+            if line.strip():
+                result_lines.append(line)
+            elif result_lines and result_lines[-1].strip():
+                # A blank line preceded by a non-blank line.
+                result_lines.append('\n')
+        p.b =  p.b = ''.join(result_lines).rstrip() + '\n'
+    #@+node:ekr.20231023045225.1: *4* indented_i.remove_first_block_comment
+    def remove_first_block_comment(self, p: Position) -> None:
+        """Remove the first block C comment."""
+        if not p.b.strip():
+            return
+        lines = g.splitLines(p.b)
+        if not lines[0].startswith('/*'):
+            return
+        for i, line in enumerate(lines):
+            if line.strip().endswith('*/'):
+                tail = lines[i + 1:]
+                p.b = ''.join(tail).lstrip('\n')
+                return
+    #@+node:ekr.20231023044845.1: *4* indented_i.remove_includes
+    def remove_includes(self, p: Position) -> None:
+        """Remove #include lines."""
+        if not p.b.strip():
+            return
+        lines = g.splitLines(p.b)
+        result_lines = [z for z in lines if not z.startswith('#include ')]
+        p.b =  p.b = ''.join(result_lines).rstrip() + '\n'
     #@+node:ekr.20231022152015.1: *4* indented_i.remove_trailing_semicolons
     def remove_trailing_semicolons(self, p: Position) -> None:
 
@@ -251,21 +297,6 @@ class Indented_Importer:
             if line_s.endswith(';'):
                 line = line_s[:-1] + '\n'
             result_lines.append(line)
-        p.b =  p.b = ''.join(result_lines).rstrip() + '\n'
-    #@+node:ekr.20231022150805.1: *4* indented_i.remove_blank_lines
-    def remove_blank_lines(self, p: Position) -> None:
-        """Replace multiple blank lines with a single blank line."""
-        if not p.b.strip():
-            return
-        lines = g.splitLines(p.b)
-        result_lines = []
-        for line in lines:
-            if line.strip():
-                result_lines.append(line)
-            else:
-                prev_lines = ''.join(result_lines[-2:])
-                if prev_lines.strip():
-                    result_lines.append(line)
         p.b =  p.b = ''.join(result_lines).rstrip() + '\n'
     #@+node:ekr.20231022150031.1: *3* indented_i.isAtFileNode & atFileName
     def isAtFileNode(self, p: Position) -> bool:
