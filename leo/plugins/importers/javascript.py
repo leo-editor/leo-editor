@@ -48,7 +48,6 @@ class JS_Importer(Importer):
         In general, tokenizing Javascript is context dependent(!!), but it
         would be unbearable to include a full JS tokenizer.
         """
-        trace = False
         string_delims = self.string_list
         line_comment, start_comment, end_comment = g.set_delims_from_language(self.language)
         target = ''  # The string ending a multi-line comment or string.
@@ -56,17 +55,15 @@ class JS_Importer(Importer):
         result = []
         for line in lines:
             result_line, skip_count = [], 0
-            if trace: g.trace(repr(line))  ###
             for i, ch in enumerate(line):
-                if trace: g.trace(f"{i:3} {ch!r:4} skip: {skip_count} target: {target!r:4}")  ###
+                # g.trace(f"{i:3} {ch!r:4} skip: {skip_count} target: {target!r:4}")
                 if ch == '\n':
                     break  # Avoid appending the newline twice.
                 elif skip_count > 0:
                     # Replace the character with a blank.
                     result_line.append(' ')
                     skip_count -= 1
-                ### Bug fix: test this first!
-                elif ch == escape:
+                elif ch == escape:  # #3620: test for escape before testing for target.
                     assert skip_count == 0
                     result_line.append(' ')
                     skip_count = 1
@@ -76,11 +73,6 @@ class JS_Importer(Importer):
                     if g.match(line, i, target):
                         skip_count = max(0, (len(target) - 1))
                         target = ''
-                ### OLD: Test this first!
-                    # elif ch == escape:
-                        # assert skip_count == 0
-                        # result_line.append(' ')
-                        # skip_count = 1
                 elif line_comment and line.startswith(line_comment, i):
                     # Skip the rest of the line. It can't contain significant characters.
                     break

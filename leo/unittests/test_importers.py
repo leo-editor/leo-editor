@@ -1722,12 +1722,9 @@ class TestJavascript(BaseTestImporter):
         x = javascript.JS_Importer(c)
         lines = g.splitLines(s)
         guide_lines = x.delete_comments_and_strings(lines)
-        ### g.printObj(guide_lines)
         line1 = guide_lines[0]
         assert not line1.strip(), repr(line1)
 
-
-        # self.new_round_trip_test(s)
     #@-others
 #@+node:ekr.20220816082603.1: ** class TestLua (BaseTestImporter)
 class TestLua (BaseTestImporter):

@@ -178,8 +178,6 @@ class Indented_Importer:
 
         Do not remove matching brackets if ';' follows the closing bracket.
         """
-        trace = True and 'user messages' in p.h
-        
 
         tag=f"{g.my_name()}"
         if not p.b.strip():
@@ -195,10 +193,6 @@ class Indented_Importer:
         # Note: adding a 'level' entry to these tuples would be tricky.
         stack: list[tuple[str, int, int]] = []
         info: dict[tuple, tuple] = {}  # Keys and values are tuples, as above.
-        
-        if trace:
-            print(f"\n{tag} {p.h}\n")
-            g.printObj(guide_lines, tag='guide_lines')
 
         # Pass 1: Create the info dict.
         level = 0  # To check for unmatched braces.
@@ -210,8 +204,7 @@ class Indented_Importer:
                 assert last_column == 0 or last_column < column_number, f"{tag} unexpected column"
                 assert 0 <= column_number < len(line), f"{tag} column out of range"
                 last_column = column_number
-                if trace:
-                    g.trace(f" {curly} lvl: {level} col: {column_number:3} line: {line_number:3} {line!r}")
+                # g.trace(f" {curly} lvl: {level} col: {column_number:3} line: {line_number:3} {line!r}")
                 if curly == '{':
                     stack.append((curly, line_number, column_number))
                 else:
