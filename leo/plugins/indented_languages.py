@@ -3,7 +3,26 @@
 """
 A plugin that creates **study outlines** in which indentation replaces curly brackets.
 
-Do *not* rely on the accuracy of the generated nodes.
+This plugin is surprisingly helpful in getting the feel of source code.
+
+Warnings:
+
+- This plugin assumes that indentation corresponds to curly-bracket level!
+- If this assumption is violated the results may be misleading.
+- Do *not* assume that it is possible to recreate curly-brackes from the indented code!
+
+Hacks for increased readablily:
+    
+- Remove the first block comment (a copyright message) in each file.
+- Remove #include statements.
+- Replace multiple blank lines by a single blank line.
+
+Won't do:
+    
+I have no plans to generate leading whitespace (lws) corresponding to
+curly-bracket level. Doing so would be tricky because the plugin should
+preserve lws inside parens and square brackets.
+  
 """
 import re
 from typing import Any, Optional
