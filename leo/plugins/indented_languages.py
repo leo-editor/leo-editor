@@ -19,9 +19,11 @@ Hacks for increased readablily:
 
 Won't do:
     
-I have no plans to generate leading whitespace (lws) corresponding to
-curly-bracket level. Doing so would be tricky because the plugin should
-preserve lws inside parens and square brackets.
+1. This plugin could generate leading whitespace (lws) corresponding to
+   curly-bracket level. Doing so would be tricky because the plugin should
+   preserve lws inside parens and square brackets.
+
+2. This plugin could support options for disabling the hacks listed above.
   
 """
 import re
@@ -68,7 +70,7 @@ def import_to_indented_typescript(event: Any) -> None:
 class Indented_Importer:
     """The base class for all indented importers."""
 
-    extentions: list[str] = None  # The file extension for the language.
+    extensions: list[str] = None  # The file extension for the language.
     language: str = None  # The name of the language.
     importer_class: Any = None  # The importer class
 
@@ -88,10 +90,10 @@ class Indented_Importer:
         """
         c, p, u = self.c, self.c.p, self.c.undoer
 
-        assert self.extentions
+        assert self.extensions
 
         def predicate(p: Position) -> bool:
-            return self.isAtFileNode(p) and p.h.strip().endswith(tuple(self.extentions))
+            return self.isAtFileNode(p) and p.h.strip().endswith(tuple(self.extensions))
 
         roots: list[Position] = g.findRootsWithPredicate(c, p, predicate)  # Removes duplicates
         if not roots:
@@ -335,21 +337,21 @@ class Indented_Importer:
 class Indented_C(Indented_Importer):
     """A class to support indented C files."""
 
-    extentions: list[str] = ['.c', '.cpp', '.cc']
+    extensions: list[str] = ['.c', '.cpp', '.cc']
     importer_class = C_Importer
     language = 'c'
 #@+node:ekr.20230917083456.1: ** class Indented_Lisp
 class Indented_Lisp(Indented_Importer):
     """A class to support indented Lisp files."""
 
-    extentions: list[str] = ['.el', '.scm']
+    extensions: list[str] = ['.el', '.scm']
     importer_class = Elisp_Importer
     language = 'lisp'
 #@+node:ekr.20231022073306.1: ** class Indented_TypeScript
 class Indented_TypeScript(Indented_Importer):
     """A class to support indented Typescript files."""
 
-    extentions: list[str] = ['.ts',]
+    extensions: list[str] = ['.ts',]
     language = 'typescript'
     importer_class = TS_Importer
 #@-others
