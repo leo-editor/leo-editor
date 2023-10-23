@@ -12,7 +12,6 @@ from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins.importers.base_importer import Block
 from leo.plugins.importers.python import Python_Importer
 from leo.plugins.importers.c import C_Importer
-import leo.plugins.importers.coffeescript as cs
 import leo.plugins.importers.coffeescript as coffeescript
 import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.otl as otl
@@ -448,7 +447,6 @@ class TestC(BaseTestImporter):
     #@+node:ekr.20230510161130.1: *3* TestC.test_delete_comments_and_strings
     def test_delete_comments_and_strings(self):
 
-        from leo.plugins.importers.c import C_Importer
         importer = C_Importer(self.c)
 
         lines = [
@@ -476,8 +474,6 @@ class TestC(BaseTestImporter):
         self.assertEqual(result, expected_lines)
     #@+node:ekr.20230511044054.1: *3* TestC.test_find_blocks
     def test_find_blocks(self):
-
-        from leo.plugins.importers.c import C_Importer
 
         importer = C_Importer(self.c)
         lines = g.splitLines(textwrap.dedent("""\
@@ -718,7 +714,7 @@ class TestCoffeescript(BaseTestImporter):
     #@+node:ekr.20210904065459.126: *3* TestCoffeescript.test_scan_line
     def test_scan_line(self):
         c = self.c
-        x = cs.Coffeescript_Importer(c)
+        x = coffeescript.Coffeescript_Importer(c)
         self.assertEqual(x.single_comment, '#')
     #@-others
 #@+node:ekr.20211108062958.1: ** class TestCSharp (BaseTestImporter)
