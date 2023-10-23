@@ -230,8 +230,8 @@ class Indented_Importer:
                 result_lines.append(lines[line_number])
                 continue
 
-            # Don't make the substitution if '};' appears on the line.
-            if self.semicolon_pat.search(line):
+            # Typescript only: Don't make the substitution if '};' appears on the line.
+            if self.language == 'typescript' and self.semicolon_pat.search(line):
                 # g.trace('Skip };', repr(line))
                 result_lines.append(lines[line_number])
                 continue
