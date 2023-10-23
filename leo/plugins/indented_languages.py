@@ -145,7 +145,7 @@ class Indented_Importer:
             return
 
         def oops(message):
-            g.es_print(f"{self.file_name}: {message}")
+            g.es_print(f"{self.file_name:>30}: {message}")
 
         lines = g.splitLines(p.b)
         guide_lines = self.importer.make_guide_lines(lines)
