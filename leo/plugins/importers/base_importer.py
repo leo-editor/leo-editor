@@ -607,13 +607,15 @@ class Importer:
     #@+node:ekr.20230529075138.9: *4* i.delete_comments_and_strings
     def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
         """
-        Delete all comments and strings from the given lines.
+        Return **guide-lines** from the lines, replacing strings and multi-line
+        comments with spaces, thereby preserving (within the guide-lines) the
+        position of all significant characters.
 
-        The resulting lines form **guide lines**. The input and guide
-        lines are "parallel": they have the same number of lines.
+        Analyzing the guide lines instead of the input lines is the simplifying
+        trick behind the new importers.
 
-        Analyzing the guide lines instead of the input lines is the
-        simplifying trick behind the new importers.
+        The input and guide lines are "parallel": they have the same number of
+        lines.
         """
         string_delims = self.string_list
         line_comment, start_comment, end_comment = g.set_delims_from_language(self.language)
@@ -625,39 +627,42 @@ class Importer:
             for i, ch in enumerate(line):
                 if ch == '\n':
                     break  # Avoid appending the newline twice.
-                if skip_count > 0:
-                    skip_count -= 1  # Skip the character.
-                    continue
-                if target:
-                    if line.startswith(target, i):
-                        if len(target) > 1:
-                            # Skip the remaining characters of the target.
-                            skip_count = len(target) - 1
-                        target = ''  # Begin accumulating characters.
-                elif ch == escape:
+                elif skip_count > 0:
+                    # Replace the character with a blank.
+                    result_line.append(' ')
+                    skip_count -= 1
+                elif ch == escape:  # #3620: test for escape before testing for target.
+                    assert skip_count == 0
+                    result_line.append(' ')
                     skip_count = 1
-                    continue
+                elif target:
+                    result_line.append(' ')
+                    # Clear the target, but skip any remaining characters of the target.
+                    if g.match(line, i, target):
+                        skip_count = max(0, (len(target) - 1))
+                        target = ''
                 elif line_comment and line.startswith(line_comment, i):
-                    break  # Skip the rest of the line.
-                elif any(line.startswith(z, i) for z in string_delims):
+                    # Skip the rest of the line. It can't contain significant characters.
+                    break
+                elif any(g.match(line, i, z) for z in string_delims):
                     # Allow multi-character string delimiters.
+                    result_line.append(' ')
                     for z in string_delims:
-                        if line.startswith(z, i):
+                        if g.match(line, i, z):
                             target = z
-                            if len(z) > 1:
-                                skip_count = len(z) - 1
+                            skip_count = max(0, (len(z) - 1))
                             break
-                elif start_comment and line.startswith(start_comment, i):
+                elif start_comment and g.match(line, i, start_comment):
+                    result_line.append(' ')
                     target = end_comment
-                    if len(start_comment) > 1:
-                        # Skip the remaining characters of the starting comment delim.
-                        skip_count = len(start_comment) - 1
+                    skip_count = max(0, len(start_comment) - 1)
                 else:
                     result_line.append(ch)
+
             # End the line and append it to the result.
-            if line.endswith('\n'):
-                result_line.append('\n')
-            result.append(''.join(result_line))
+            # Strip trailing whitespace. It can't affect significant characters.
+            end_s = '\n' if line.endswith('\n') else ''
+            result.append(''.join(result_line).rstrip() + end_s)
         assert len(result) == len(lines)  # A crucial invariant.
         return result
     #@+node:ekr.20230529075138.42: *4* i.get_str_lws
