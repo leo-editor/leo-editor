@@ -254,11 +254,18 @@ class Indented_Importer:
         p.b =  p.b = ''.join(result_lines).rstrip() + '\n'
     #@+node:ekr.20231022150805.1: *4* indented_i.remove_blank_lines
     def remove_blank_lines(self, p: Position) -> None:
-
+        """Replace multiple blank lines with a single blank line."""
         if not p.b.strip():
             return
         lines = g.splitLines(p.b)
-        result_lines = [z for z in lines if z.strip()]
+        result_lines = []
+        for line in lines:
+            if line.strip():
+                result_lines.append(line)
+            else:
+                prev_lines = ''.join(result_lines[-2:])
+                if prev_lines.strip():
+                    result_lines.append(line)
         p.b =  p.b = ''.join(result_lines).rstrip() + '\n'
     #@+node:ekr.20231022150031.1: *3* indented_i.isAtFileNode & atFileName
     def isAtFileNode(self, p: Position) -> bool:
