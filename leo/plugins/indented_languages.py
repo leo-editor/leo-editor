@@ -2,6 +2,8 @@
 #@+node:ekr.20230917013414.1: * @file ../plugins/indented_languages.py
 """
 A plugin that creates **study outlines** in which indentation replaces curly brackets.
+
+Do *not* rely on the accuracy of the generated nodes.
 """
 import re
 from typing import Any, Optional
@@ -53,6 +55,7 @@ class Indented_Importer:
 
     def __init__(self, c):
         self.c = c
+        self.file_name = None  # Set by import_one_file.
         self.importer = self.importer_class(c)  # pylint: disable=not-callable
 
     #@+others
@@ -106,13 +109,13 @@ class Indented_Importer:
         - Create a parallel tree as the last child of parent.
         - Indent all the nodes of the parallel tree.
         """
-        file_name = self.atFileName(p)
+        self.file_name = self.atFileName(p)
 
         # Create root, a parallel outline.
         root = p.copyWithNewVnodes()
         n = parent.numberOfChildren()
         root._linkAsNthChild(parent, n)
-        root.h = file_name
+        root.h = self.file_name
 
         # Indent the parallel outline.
         self.indent_outline(root)
@@ -140,6 +143,10 @@ class Indented_Importer:
         tag=f"{g.my_name()}"
         if not p.b.strip():
             return
+
+        def oops(message):
+            g.es_print(f"{self.file_name}: {message}")
+
         lines = g.splitLines(p.b)
         guide_lines = self.importer.make_guide_lines(lines)
 
@@ -164,8 +171,7 @@ class Indented_Importer:
                 else:
                     assert curly == '}', f"{tag}: not }}"
                     if not stack:
-                        g.es_print(f"   Stack underflow: {p.h}")
-                        # g.printObj(lines, tag='lines')
+                        oops(f"   Stack underflow: {p.h}")
                         return
                     top = stack.pop()
                     top_curly, top_line_number, top_column_number = top
@@ -175,8 +181,7 @@ class Indented_Importer:
                     info [this_info] = top
                 level += (1 if curly == '{' else -1)
         if level != 0:
-            g.es_print(f"Unmatched brackets: {p.h}")
-            # g.printObj(lines, tag='lines')
+            oops(f"Unmatched brackets: {p.h}")
             return
 
         # Pass 2: Make the substitutions when '}' is seen.
@@ -236,7 +241,7 @@ class Indented_Importer:
         p.b = ''.join(result_lines).rstrip() + '\n'
     #@+node:ekr.20231022152015.1: *4* indented_i.remove_trailing_semicolons
     def remove_trailing_semicolons(self, p: Position) -> None:
-        
+
         if not p.b.strip():
             return
         lines = g.splitLines(p.b)
@@ -249,7 +254,7 @@ class Indented_Importer:
         p.b =  p.b = ''.join(result_lines).rstrip() + '\n'
     #@+node:ekr.20231022150805.1: *4* indented_i.remove_blank_lines
     def remove_blank_lines(self, p: Position) -> None:
-        
+
         if not p.b.strip():
             return
         lines = g.splitLines(p.b)
