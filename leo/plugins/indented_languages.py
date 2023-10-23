@@ -165,7 +165,8 @@ class Indented_Importer:
         self.remove_first_block_comment(root)
 
         # Append @language.
-        root.b = root.b.rstrip() + f"\n\n@language {self.language}\n"
+        if '@language' not in root.b:
+            root.b = root.b.rstrip() + f"\n\n@language {self.language}\n"
     #@+node:ekr.20231022073306.6: *4* indented_i.indent_node
     curlies_pat = re.compile(r'{|}')
     close_curly_pat = re.compile(r'}')
@@ -177,6 +178,9 @@ class Indented_Importer:
 
         Do not remove matching brackets if ';' follows the closing bracket.
         """
+        trace = True and 'user messages' in p.h
+        
+
         tag=f"{g.my_name()}"
         if not p.b.strip():
             return
@@ -191,6 +195,10 @@ class Indented_Importer:
         # Note: adding a 'level' entry to these tuples would be tricky.
         stack: list[tuple[str, int, int]] = []
         info: dict[tuple, tuple] = {}  # Keys and values are tuples, as above.
+        
+        if trace:
+            print(f"\n{tag} {p.h}\n")
+            g.printObj(guide_lines, tag='guide_lines')
 
         # Pass 1: Create the info dict.
         level = 0  # To check for unmatched braces.
@@ -202,7 +210,8 @@ class Indented_Importer:
                 assert last_column == 0 or last_column < column_number, f"{tag} unexpected column"
                 assert 0 <= column_number < len(line), f"{tag} column out of range"
                 last_column = column_number
-                # g.trace(f" {curly} level: {level} column: {column_number:3} line: {line_number:3} {line!r}")
+                if trace:
+                    g.trace(f" {curly} lvl: {level} col: {column_number:3} line: {line_number:3} {line!r}")
                 if curly == '{':
                     stack.append((curly, line_number, column_number))
                 else:
@@ -218,7 +227,7 @@ class Indented_Importer:
                     info [this_info] = top
                 level += (1 if curly == '{' else -1)
         if level != 0:
-            oops(f"Unmatched brackets: {p.h}")
+            oops(f"Unmatched brackets: {p.h} level: {level}")
             return
 
         # Pass 2: Make the substitutions when '}' is seen.
