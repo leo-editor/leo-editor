@@ -1,5 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20230917013414.1: * @file ../plugins/indented_languages.py
+#@+<< docstring: indented_languages.py >>
+#@+node:ekr.20231023052313.1: ** << docstring: indented_languages.py >>
 """
 A plugin that creates **study outlines** in which indentation replaces curly brackets.
 
@@ -26,6 +28,8 @@ Won't do:
 2. This plugin could support options for disabling the hacks listed above.
   
 """
+#@-<< docstring: indented_languages.py >>
+
 import re
 from typing import Any, Optional
 from leo.core import leoGlobals as g
