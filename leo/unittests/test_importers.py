@@ -1717,12 +1717,12 @@ class TestJavascript(BaseTestImporter):
                 # "4.  Press the *new* button.",
             # """)
 
-        s = '''"1. Blah blah \"g.es(p.h)\"\n"\n'''
+        s = r'''"1\"2\"3\n"'''
 
         x = javascript.JS_Importer(c)
         lines = g.splitLines(s)
         guide_lines = x.delete_comments_and_strings(lines)
-        g.printObj(guide_lines)
+        ### g.printObj(guide_lines)
         line1 = guide_lines[0]
         assert not line1.strip(), repr(line1)
 
