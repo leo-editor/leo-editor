@@ -257,7 +257,11 @@ class Indented_Importer:
         p.b =  p.b = ''.join(result_lines).rstrip() + '\n'
     #@+node:ekr.20231022150031.1: *3* indented_i.isAtFileNode & atFileName
     def isAtFileNode(self, p: Position) -> bool:
-        return p.h.startswith(('@@file ', '@@clean ', '@file ', '@clean '))
+        h = p.h
+        if h.startswith('@@'):
+            h = h[1:]
+        # Not complete.
+        return h.startswith(('@auto ', '@clean ', '@edit ', '@file '))
 
     def atFileName(self, p: Position) -> str:
         assert self.isAtFileNode(p), repr(p.h)
