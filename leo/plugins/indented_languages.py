@@ -335,6 +335,14 @@ class Lisp_Token:
     """
     A class reprenting a Lisp token.
     """
+    def __init__(self, kind, value):
+        self.kind = kind
+        self.value = value
+        
+    def __repr__(self):
+        return f"Lisp_Token: {self.kind!r}: {self.value!r}"
+        
+    __str__ = __repr__
 #@+node:ekr.20231022080007.1: ** class Indented_C
 class Indented_C(Indented_Importer):
     """A class to support indented C files."""
@@ -380,7 +388,46 @@ def indent_node(self, p: Position) -> None:
     g.printObj(result_lines)  ###
 #@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
 def tokenize(self, p: Position) -> list[Lisp_Token]:
-    pass
+    """Create p.b to a list of Lisp_Tokens."""
+    # ; is the only comment delim.
+    # " is the only string delim
+    s = p.b
+    token_list: list[Lisp_Token] = []
+
+    # Tokenize character by character.
+    i = 0
+    while i < len(s):
+        progress = i
+        ch = s[i]
+        if ch == ';':  # Scan a comment.
+            start = i
+            i += 1
+            while i < len(s) and s[i] != '\n':
+                i += 1
+            token_list.append(Lisp_Token(ch, s[start:i]))
+        elif ch == '"':  # Scan a string.
+            start = i
+            i += 1
+            while i < len(s) and s[i] != '"':
+                i += 1
+            if s[i] == '"':
+                i += 1
+            else:
+                g.es_print(f"{self.file_name}: Unterminated string in {p.h}")
+            token_list.append(Lisp_Token(ch, s[start:i]))
+        elif ch == ' ':  # Convert multiple blanks to a single blank.
+            start = i
+            i += 1
+            while i < len(s) and s[i] == ' ':
+                i += 1
+            token_list.append(Lisp_Token(ch, s[start:i]))
+        else:  # Everything else gets its own token.
+            i += 1
+            token_list.append(Lisp_Token(ch, ch))
+        assert i > progress, (repr(ch), i, repr(s[i: i+20]))
+            
+    g.printObj(token_list, tag='token_list')
+    return token_list
 #@+node:ekr.20231022073306.1: ** class Indented_TypeScript
 class Indented_TypeScript(Indented_Importer):
     """A class to support indented Typescript files."""
