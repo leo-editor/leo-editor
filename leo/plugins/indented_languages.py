@@ -361,73 +361,73 @@ class Indented_Lisp(Indented_Importer):
     extensions: list[str] = ['.el', '.scm']
     importer_class = None  # There is no need for importer.make_guide_lines.
     language = 'lisp'
-#@+node:ekr.20231024024032.1: *3* indented_lisp.indent_node
-curlies_pat = re.compile(r'{|}')
-close_curly_pat = re.compile(r'}')
-semicolon_pat = re.compile(r'}\s*;')
-
-def indent_node(self, p: Position) -> None:
-    """
-    Tokenize p.b, add indentation and rearrange tokens.
-    """
-    if not p.b.strip():
-        return
-
-    def oops(message):
-        g.es_print(f"{self.file_name:>30}: {message}")
-        
-    token_list = self.make_tokens(p.b)
-    g.printObj(token_list)
     
-    result_lines: list[str] = []
+    #@+others
+    #@+node:ekr.20231024024032.1: *3* indented_lisp.indent_node
+    curlies_pat = re.compile(r'{|}')
+    close_curly_pat = re.compile(r'}')
+    semicolon_pat = re.compile(r'}\s*;')
 
+    def indent_node(self, p: Position) -> None:
+        """
+        Tokenize p.b, add indentation and rearrange tokens.
+        """
+        if not p.b.strip():
+            return
 
-    # Set the result
-    ### p.b = ''.join(result_lines).rstrip() + '\n'
-    
-    g.printObj(result_lines)  ###
-#@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
-def tokenize(self, p: Position) -> list[Lisp_Token]:
-    """Create p.b to a list of Lisp_Tokens."""
-    # ; is the only comment delim.
-    # " is the only string delim
-    s = p.b
-    token_list: list[Lisp_Token] = []
-
-    # Tokenize character by character.
-    i = 0
-    while i < len(s):
-        progress = i
-        ch = s[i]
-        if ch == ';':  # Scan a comment.
-            start = i
-            i += 1
-            while i < len(s) and s[i] != '\n':
-                i += 1
-            token_list.append(Lisp_Token(ch, s[start:i]))
-        elif ch == '"':  # Scan a string.
-            start = i
-            i += 1
-            while i < len(s) and s[i] != '"':
-                i += 1
-            if s[i] == '"':
-                i += 1
-            else:
-                g.es_print(f"{self.file_name}: Unterminated string in {p.h}")
-            token_list.append(Lisp_Token(ch, s[start:i]))
-        elif ch == ' ':  # Convert multiple blanks to a single blank.
-            start = i
-            i += 1
-            while i < len(s) and s[i] == ' ':
-                i += 1
-            token_list.append(Lisp_Token(ch, s[start:i]))
-        else:  # Everything else gets its own token.
-            i += 1
-            token_list.append(Lisp_Token(ch, ch))
-        assert i > progress, (repr(ch), i, repr(s[i: i+20]))
+        def oops(message):
+            g.es_print(f"{self.file_name:>30}: {message}")
             
-    g.printObj(token_list, tag='token_list')
-    return token_list
+        token_list = self.tokenize(p.b)
+        g.printObj(token_list)
+        
+        if 0:
+            result_lines: list[str] = []
+            ### p.b = ''.join(result_lines).rstrip() + '\n'
+            g.printObj(result_lines)  ###
+    #@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
+    def tokenize(self, p: Position) -> list[Lisp_Token]:
+        """Create p.b to a list of Lisp_Tokens."""
+        # ; is the only comment delim.
+        # " is the only string delim
+        s = p.b
+        token_list: list[Lisp_Token] = []
+
+        # Tokenize character by character.
+        i = 0
+        while i < len(s):
+            progress = i
+            ch = s[i]
+            if ch == ';':  # Scan a comment.
+                start = i
+                i += 1
+                while i < len(s) and s[i] != '\n':
+                    i += 1
+                token_list.append(Lisp_Token(ch, s[start:i]))
+            elif ch == '"':  # Scan a string.
+                start = i
+                i += 1
+                while i < len(s) and s[i] != '"':
+                    i += 1
+                if s[i] == '"':
+                    i += 1
+                else:
+                    g.es_print(f"{self.file_name}: Unterminated string in {p.h}")
+                token_list.append(Lisp_Token(ch, s[start:i]))
+            elif ch == ' ':  # Convert multiple blanks to a single blank.
+                start = i
+                i += 1
+                while i < len(s) and s[i] == ' ':
+                    i += 1
+                token_list.append(Lisp_Token(ch, s[start:i]))
+            else:  # Everything else gets its own token.
+                i += 1
+                token_list.append(Lisp_Token(ch, ch))
+            assert i > progress, (repr(ch), i, repr(s[i: i+20]))
+                
+        g.printObj(token_list, tag='token_list')
+        return token_list
+    #@-others
 #@+node:ekr.20231022073306.1: ** class Indented_TypeScript
 class Indented_TypeScript(Indented_Importer):
     """A class to support indented Typescript files."""
