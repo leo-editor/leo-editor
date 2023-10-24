@@ -56,22 +56,23 @@ class JS_Importer(Importer):
         for line in lines:
             result_line, skip_count = [], 0
             for i, ch in enumerate(line):
+                # g.trace(f"{i:3} {ch!r:4} skip: {skip_count} target: {target!r:4}")
                 if ch == '\n':
                     break  # Avoid appending the newline twice.
                 elif skip_count > 0:
                     # Replace the character with a blank.
                     result_line.append(' ')
                     skip_count -= 1
+                elif ch == escape:  # #3620: test for escape before testing for target.
+                    assert skip_count == 0
+                    result_line.append(' ')
+                    skip_count = 1
                 elif target:
                     result_line.append(' ')
                     # Clear the target, but skip any remaining characters of the target.
                     if g.match(line, i, target):
                         skip_count = max(0, (len(target) - 1))
                         target = ''
-                elif ch == escape:
-                    assert skip_count == 0
-                    result_line.append(' ')
-                    skip_count = 1
                 elif line_comment and line.startswith(line_comment, i):
                     # Skip the rest of the line. It can't contain significant characters.
                     break
