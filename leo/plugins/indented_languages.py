@@ -384,8 +384,8 @@ class Indented_Lisp(Indented_Importer):
         this_line: list[str] = []
         # Prototype: Indent using paren level.
         for token in token_list:
-            kind, value = token.kind, token.value
-            this_line.append(value if kind in ';"' else kind)
+            kind = token.kind
+            this_line.append(token.value)
             if kind == '(':
                 level += 1
             elif kind == ')':
@@ -449,7 +449,8 @@ class Indented_Lisp(Indented_Importer):
                 i += 1
                 while i < len(s) and s[i] == ' ':
                     i += 1
-                token_list.append(Lisp_Token(ch, s[start:i]))
+                token_list.append(Lisp_Token(ch, ch))
+            ### To do: handle id's and numbers.
             else:  # Everything else gets its own token.
                 i += 1
                 token_list.append(Lisp_Token(ch, ch))
