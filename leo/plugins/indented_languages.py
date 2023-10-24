@@ -363,21 +363,101 @@ class Indented_Lisp(Indented_Importer):
     language = 'lisp'
     
     #@+others
-    #@+node:ekr.20231024024032.1: *3* indented_lisp.indent_node
-    curlies_pat = re.compile(r'{|}')
-    close_curly_pat = re.compile(r'}')
-    semicolon_pat = re.compile(r'}\s*;')
-
-    def indent_node(self, p: Position) -> None:
+    #@+node:ekr.20231024044536.1: *3* indented_lisp.indent_outline (override)
+    def indent_outline(self, root: Position) -> None:
         """
-        Tokenize p.b, add 2-space indentation and rearrange tokens.
+        Indented_Lisp.indent_outline.  The main line.
+        
+        
+        Indent the body text of root and all its descendants.
+        """
+        for p in root.self_and_subtree():
+            if p.b.strip():
+                if 1:
+                    # Convert prefix to infix.
+                    self.convert_node(p)
+                else:
+                    # A prototype.
+                    self.indent_node(p)
+            self.remove_blank_lines(p)
+
+        # Remove @path.
+        if root.b.startswith('@path'):
+            lines = g.splitLines(root.b)
+            root.b = ''.join(lines[1:])
+
+        # Remove the useless first block comment.
+        self.remove_first_block_comment(root)
+
+        # Append @language.
+        if '@language' not in root.b:
+            root.b = root.b.rstrip() + f"\n\n@language {self.language}\n"
+    #@+node:ekr.20231024044903.1: *3* indented_lisp.convert_node
+    def convert_node(self, p: Position) -> None:
+        """
+        Convert from prefix to infix notation, removing parens if possible.
         """
         if not p.b.strip():
             return
-
-        def oops(message: str) -> None:
-            g.es_print(f"{self.file_name:>30}: {message}")
-            
+        token_list = self.tokenize(p)
+        output_list: list[str] = []
+        level = 0
+        at_start_of_line = True
+        for i, token in enumerate(token_list):
+            if token.kind == '(':
+                at_start_of_line = False
+                level += 1
+                matching_token = self.find_matching_paren(i, token_list)
+                if matching_token:
+                    # Null out only the *value* of both tokens.
+                    token.value = matching_token.value = ''
+            elif token.kind == ')':
+                at_start_of_line = False
+                level -= 1
+            elif token.kind == '\n':
+                at_start_of_line = True
+                output_list.append('\n')
+                # output_list.append(f"level: {level}" + ' ' * 2 * level)
+                output_list.append(' ' * 2 * level)
+            elif token.kind == ' ':
+                if not at_start_of_line:
+                    output_list.append(' ')
+            else:
+                at_start_of_line = False
+                output_list.append(token.value)
+                
+        p.b = ''.join(output_list)
+        if 0:
+            print('')
+            print(p.h)
+            print(''.join(output_list))
+    #@+node:ekr.20231024045727.1: *3* indented_lisp.find_matching_paren
+    def find_matching_paren(self, i: int, token_list: list[Lisp_Token]) -> Lisp_Token:
+        """Return the index of the matching closing parenthesis."""
+        assert token_list[i].kind == '(', token_list[i]
+        start_i = i
+        i += 1
+        level = 1
+        while i < len(token_list):
+            token = token_list[i]
+            if token.kind == '(':
+                level += 1
+            elif token.kind == ')':
+                level -= 1
+                if level == 0:
+                    return token
+            i += 1
+        # Give an error.
+        tail_tokens = token_list[start_i:]
+        tail_values = [z.value for z in tail_tokens]
+        tail_s = ''.join(tail_values)[:20]
+        g.trace('No matching close paren', start_i, tail_s, '\n')
+        return None
+    #@+node:ekr.20231024024032.1: *3* indented_lisp.indent_node
+    def indent_node(self, p: Position) -> None:
+        """Indent p.b with 2-space indentation."""
+        if not p.b.strip():
+            return
         token_list = self.tokenize(p)
         level = 0  # Net number of parens.
         result_lines: list[str] = []
