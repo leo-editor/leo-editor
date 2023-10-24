@@ -370,22 +370,39 @@ class Indented_Lisp(Indented_Importer):
 
     def indent_node(self, p: Position) -> None:
         """
-        Tokenize p.b, add indentation and rearrange tokens.
+        Tokenize p.b, add 2-space indentation and rearrange tokens.
         """
         if not p.b.strip():
             return
 
-        def oops(message):
+        def oops(message: str) -> None:
             g.es_print(f"{self.file_name:>30}: {message}")
             
         token_list = self.tokenize(p)
-
+        level = 0  # Net number of parens.
+        result_lines: list[str] = []
+        this_line: list[str] = []
+        # Prototype: Indent using paren level.
+        for token in token_list:
+            kind, value = token.kind, token.value
+            this_line.append(value if kind in ';"' else kind)
+            if kind == '(':
+                level += 1
+            elif kind == ')':
+                level -= 1
+            elif kind == '\n':
+                last_line = ''.join(this_line)
+                result_lines.append(last_line if last_line.strip() else '\n')
+                indent = ' ' * 2 * level
+                this_line = [indent]
+        # Include the last line.
+        last_line = ''.join(this_line)
+        if last_line.strip():
+            result_lines.append(last_line)
         if 0:
-            g.printObj(token_list)
-        if 0:
-            result_lines: list[str] = []
-            ### p.b = ''.join(result_lines).rstrip() + '\n'
-            g.printObj(result_lines)  ###
+            print('')
+            print(''.join(result_lines))
+        p.b = ''.join(result_lines)
     #@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
     def tokenize(self, p: Position) -> list[Lisp_Token]:
         """Create p.b to a list of Lisp_Tokens."""
@@ -399,7 +416,15 @@ class Indented_Lisp(Indented_Importer):
         while i < len(s):
             progress = i
             ch = s[i]
-            if ch == ';':  # Scan a comment.
+            if ch == '\\':
+                # Skip the next character! The lisp colorizer appears to have a bug here.
+                token_list.append(Lisp_Token(ch, ch))
+                i += 1
+                if i < len(s):
+                    ch = s[i]
+                    token_list.append(Lisp_Token(ch, ch))
+                    i += 1
+            elif ch == ';':  # Scan a comment.
                 start = i
                 i += 1
                 while i < len(s) and s[i] != '\n':
@@ -429,9 +454,7 @@ class Indented_Lisp(Indented_Importer):
                 i += 1
                 token_list.append(Lisp_Token(ch, ch))
             assert i > progress, (repr(ch), i, repr(s[i: i+20]))
-                
-        # g.printObj(token_list, tag='token_list')
-        # g.trace(f"{p.h:>40} tokens: {len(token_list)}")
+
         return token_list
     #@-others
 #@+node:ekr.20231022073306.1: ** class Indented_TypeScript
