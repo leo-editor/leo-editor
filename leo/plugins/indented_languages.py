@@ -9,7 +9,7 @@ This plugin is surprisingly helpful in getting the feel of source code.
 
 Warnings:
 
-- This plugin assumes that indentation corresponds to curly-bracket level!
+- For C and Typescript, this plugin assumes that indentation corresponds to curly-bracket level!
 - If this assumption is violated the results may be misleading.
 - Do *not* assume that it is possible to recreate curly-brackes from the indented code!
 
@@ -31,11 +31,10 @@ Won't do:
 #@-<< docstring: indented_languages.py >>
 
 import re
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 from leo.plugins.importers.c import C_Importer
-from leo.plugins.importers.elisp import Elisp_Importer
 from leo.plugins.importers.typescript import TS_Importer
 
 #@+others
@@ -76,12 +75,13 @@ class Indented_Importer:
 
     extensions: list[str] = None  # The file extension for the language.
     language: str = None  # The name of the language.
-    importer_class: Any = None  # The importer class
+    importer_class: Callable = None  # The importer class
 
     def __init__(self, c):
         self.c = c
         self.file_name = None  # Set by import_one_file.
-        self.importer = self.importer_class(c)  # pylint: disable=not-callable
+        if self.importer_class:
+            self.importer = self.importer_class(c)  # pylint: disable=not-callable
 
     #@+others
     #@+node:ekr.20231022073537.1: *3* indented_i.do_import (driver)
@@ -267,15 +267,6 @@ class Indented_Importer:
                 this_line = s[:column_number] + ' ' + s[column_number + 1:]
                 result_lines.append(this_line.rstrip() + '\n' if this_line.strip() else '\n')
 
-        # Remove multiple blank lines. Some will be added later.
-        new_result_lines: list[str] = []
-        for i, line in enumerate(result_lines):
-            if 0 < i - 1 < len(new_result_lines) and line == '\n' and new_result_lines[i-1] == '\n':
-                pass
-            else:
-                new_result_lines.append(line)
-        result_lines = new_result_lines
-
         # Set the result
         p.b = ''.join(result_lines).rstrip() + '\n'
     #@+node:ekr.20231022150805.1: *4* indented_i.remove_blank_lines
@@ -339,6 +330,11 @@ class Indented_Importer:
         assert i > -1, p.h
         return p.h[i:].strip()
     #@-others
+#@+node:ekr.20231024024201.1: **  class Lisp_Token
+class Lisp_Token:
+    """
+    A class reprenting a Lisp token.
+    """
 #@+node:ekr.20231022080007.1: ** class Indented_C
 class Indented_C(Indented_Importer):
     """A class to support indented C files."""
@@ -348,11 +344,43 @@ class Indented_C(Indented_Importer):
     language = 'c'
 #@+node:ekr.20230917083456.1: ** class Indented_Lisp
 class Indented_Lisp(Indented_Importer):
-    """A class to support indented Lisp files."""
+    """
+    A class to support indented Lisp files.
+    
+    This class rearranges tokens. Guide lines won't work.
+    """
 
     extensions: list[str] = ['.el', '.scm']
-    importer_class = Elisp_Importer
+    importer_class = None  # There is no need for importer.make_guide_lines.
     language = 'lisp'
+#@+node:ekr.20231024024032.1: *3* indented_lisp.indent_node
+curlies_pat = re.compile(r'{|}')
+close_curly_pat = re.compile(r'}')
+semicolon_pat = re.compile(r'}\s*;')
+
+def indent_node(self, p: Position) -> None:
+    """
+    Tokenize p.b, add indentation and rearrange tokens.
+    """
+    if not p.b.strip():
+        return
+
+    def oops(message):
+        g.es_print(f"{self.file_name:>30}: {message}")
+        
+    token_list = self.make_tokens(p.b)
+    g.printObj(token_list)
+    
+    result_lines: list[str] = []
+
+
+    # Set the result
+    ### p.b = ''.join(result_lines).rstrip() + '\n'
+    
+    g.printObj(result_lines)  ###
+#@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
+def tokenize(self, p: Position) -> list[Lisp_Token]:
+    pass
 #@+node:ekr.20231022073306.1: ** class Indented_TypeScript
 class Indented_TypeScript(Indented_Importer):
     """A class to support indented Typescript files."""
