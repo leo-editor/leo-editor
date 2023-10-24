@@ -378,9 +378,10 @@ class Indented_Lisp(Indented_Importer):
         def oops(message):
             g.es_print(f"{self.file_name:>30}: {message}")
             
-        token_list = self.tokenize(p.b)
-        g.printObj(token_list)
-        
+        token_list = self.tokenize(p)
+
+        if 0:
+            g.printObj(token_list)
         if 0:
             result_lines: list[str] = []
             ### p.b = ''.join(result_lines).rstrip() + '\n'
@@ -407,10 +408,14 @@ class Indented_Lisp(Indented_Importer):
             elif ch == '"':  # Scan a string.
                 start = i
                 i += 1
-                while i < len(s) and s[i] != '"':
-                    i += 1
-                if s[i] == '"':
-                    i += 1
+                while i < len(s):
+                    if s[i] == '\\':
+                        i += 2
+                    elif s[i] == '"':
+                        i += 1
+                        break
+                    else:
+                        i += 1
                 else:
                     g.es_print(f"{self.file_name}: Unterminated string in {p.h}")
                 token_list.append(Lisp_Token(ch, s[start:i]))
@@ -425,7 +430,8 @@ class Indented_Lisp(Indented_Importer):
                 token_list.append(Lisp_Token(ch, ch))
             assert i > progress, (repr(ch), i, repr(s[i: i+20]))
                 
-        g.printObj(token_list, tag='token_list')
+        # g.printObj(token_list, tag='token_list')
+        # g.trace(f"{p.h:>40} tokens: {len(token_list)}")
         return token_list
     #@-others
 #@+node:ekr.20231022073306.1: ** class Indented_TypeScript
