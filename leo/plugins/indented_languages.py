@@ -363,35 +363,6 @@ class Indented_Lisp(Indented_Importer):
     language = 'lisp'
     
     #@+others
-    #@+node:ekr.20231024044536.1: *3* indented_lisp.indent_outline (override)
-    def indent_outline(self, root: Position) -> None:
-        """
-        Indented_Lisp.indent_outline.  The main line.
-        
-        
-        Indent the body text of root and all its descendants.
-        """
-        for p in root.self_and_subtree():
-            if p.b.strip():
-                if 1:
-                    # Convert prefix to infix.
-                    self.convert_node(p)
-                else:
-                    # A prototype.
-                    self.indent_node(p)
-            self.remove_blank_lines(p)
-
-        # Remove @path.
-        if root.b.startswith('@path'):
-            lines = g.splitLines(root.b)
-            root.b = ''.join(lines[1:])
-
-        # Remove the useless first block comment.
-        self.remove_first_block_comment(root)
-
-        # Append @language.
-        if '@language' not in root.b:
-            root.b = root.b.rstrip() + f"\n\n@language {self.language}\n"
     #@+node:ekr.20231024044903.1: *3* indented_lisp.convert_node
     def convert_node(self, p: Position) -> None:
         """
@@ -407,8 +378,9 @@ class Indented_Lisp(Indented_Importer):
             if token.kind == '(':
                 at_start_of_line = False
                 level += 1
-                matching_token = self.find_matching_paren(i, token_list)
-                if matching_token:
+                matching_i = self.find_matching_paren(i, token_list)
+                if matching_i is not None:
+                    matching_token = token_list[matching_i]
                     # Null out only the *value* of both tokens.
                     token.value = matching_token.value = ''
             elif token.kind == ')':
@@ -431,8 +403,11 @@ class Indented_Lisp(Indented_Importer):
             print('')
             print(p.h)
             print(''.join(output_list))
+    #@+node:ekr.20231024103253.1: *3* indented_lisp.do_args
+    def do_args(self, arg_list: list[tuple[int, int]]) -> None:
+        pass
     #@+node:ekr.20231024045727.1: *3* indented_lisp.find_matching_paren
-    def find_matching_paren(self, i: int, token_list: list[Lisp_Token]) -> Lisp_Token:
+    def find_matching_paren(self, i: int, token_list: list[Lisp_Token]) -> int:
         """Return the index of the matching closing parenthesis."""
         assert token_list[i].kind == '(', token_list[i]
         start_i = i
@@ -445,7 +420,7 @@ class Indented_Lisp(Indented_Importer):
             elif token.kind == ')':
                 level -= 1
                 if level == 0:
-                    return token
+                    return i
             i += 1
         # Give an error.
         tail_tokens = token_list[start_i:]
@@ -453,7 +428,10 @@ class Indented_Lisp(Indented_Importer):
         tail_s = ''.join(tail_values)[:20]
         g.trace('No matching close paren', start_i, tail_s, '\n')
         return None
-    #@+node:ekr.20231024024032.1: *3* indented_lisp.indent_node
+    #@+node:ekr.20231024103107.1: *3* indented_lisp.get_args
+    def get_args(self, i: int, token_list: list[Lisp_Token]) -> list[tuple[int, int]]:
+        pass
+    #@+node:ekr.20231024024032.1: *3* indented_lisp.indent_node (prototype)
     def indent_node(self, p: Position) -> None:
         """Indent p.b with 2-space indentation."""
         if not p.b.strip():
@@ -483,6 +461,35 @@ class Indented_Lisp(Indented_Importer):
             print('')
             print(''.join(result_lines))
         p.b = ''.join(result_lines)
+    #@+node:ekr.20231024044536.1: *3* indented_lisp.indent_outline (override)
+    def indent_outline(self, root: Position) -> None:
+        """
+        Indented_Lisp.indent_outline.  The main line.
+        
+        
+        Indent the body text of root and all its descendants.
+        """
+        for p in root.self_and_subtree():
+            if p.b.strip():
+                if 1:
+                    # Convert prefix to infix.
+                    self.convert_node(p)
+                else:
+                    # A prototype.
+                    self.indent_node(p)
+            self.remove_blank_lines(p)
+
+        # Remove @path.
+        if root.b.startswith('@path'):
+            lines = g.splitLines(root.b)
+            root.b = ''.join(lines[1:])
+
+        # Remove the useless first block comment.
+        self.remove_first_block_comment(root)
+
+        # Append @language.
+        if '@language' not in root.b:
+            root.b = root.b.rstrip() + f"\n\n@language {self.language}\n"
     #@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
     def tokenize(self, p: Position) -> list[Lisp_Token]:
         """Create p.b to a list of Lisp_Tokens."""
