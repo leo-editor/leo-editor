@@ -330,18 +330,18 @@ class Indented_Importer:
         assert i > -1, p.h
         return p.h[i:].strip()
     #@-others
-#@+node:ekr.20231024024201.1: **  class Lisp_Token
-class Lisp_Token:
+#@+node:ekr.20231024024201.1: **  class Token
+class Token:
     """
     A class reprenting a Lisp token.
     """
     def __init__(self, kind, value):
         self.kind = kind
         self.value = value
-        
+
     def __repr__(self):
-        return f"Lisp_Token: {self.kind!r}: {self.value!r}"
-        
+        return f"Token: {self.kind!r}: {self.value!r}"
+
     __str__ = __repr__
 #@+node:ekr.20231022080007.1: ** class Indented_C
 class Indented_C(Indented_Importer):
@@ -354,14 +354,14 @@ class Indented_C(Indented_Importer):
 class Indented_Lisp(Indented_Importer):
     """
     A class to support indented Lisp files.
-    
+
     This class rearranges tokens. Guide lines won't work.
     """
 
     extensions: list[str] = ['.el', '.scm']
     importer_class = None  # There is no need for importer.make_guide_lines.
     language = 'lisp'
-    
+
     #@+others
     #@+node:ekr.20231024044903.1: *3* indented_lisp.convert_node
     def convert_node(self, p: Position) -> None:
@@ -380,9 +380,10 @@ class Indented_Lisp(Indented_Importer):
                 level += 1
                 matching_i = self.find_matching_paren(i, token_list)
                 if matching_i is not None:
-                    matching_token = token_list[matching_i]
                     # Null out only the *value* of both tokens.
+                    matching_token = token_list[matching_i]
                     token.value = matching_token.value = ''
+                    self.do_args(i, matching_i, token_list)
             elif token.kind == ')':
                 at_start_of_line = False
                 level -= 1
@@ -397,17 +398,17 @@ class Indented_Lisp(Indented_Importer):
             else:
                 at_start_of_line = False
                 output_list.append(token.value)
-                
+
         p.b = ''.join(output_list)
         if 0:
             print('')
             print(p.h)
             print(''.join(output_list))
     #@+node:ekr.20231024103253.1: *3* indented_lisp.do_args
-    def do_args(self, arg_list: list[tuple[int, int]]) -> None:
+    def do_args(self, start, end, token_list: list[Token]) -> None:
         pass
     #@+node:ekr.20231024045727.1: *3* indented_lisp.find_matching_paren
-    def find_matching_paren(self, i: int, token_list: list[Lisp_Token]) -> int:
+    def find_matching_paren(self, i: int, token_list: list[Token]) -> int:
         """Return the index of the matching closing parenthesis."""
         assert token_list[i].kind == '(', token_list[i]
         start_i = i
@@ -428,9 +429,6 @@ class Indented_Lisp(Indented_Importer):
         tail_s = ''.join(tail_values)[:20]
         g.trace('No matching close paren', start_i, tail_s, '\n')
         return None
-    #@+node:ekr.20231024103107.1: *3* indented_lisp.get_args
-    def get_args(self, i: int, token_list: list[Lisp_Token]) -> list[tuple[int, int]]:
-        pass
     #@+node:ekr.20231024024032.1: *3* indented_lisp.indent_node (prototype)
     def indent_node(self, p: Position) -> None:
         """Indent p.b with 2-space indentation."""
@@ -465,8 +463,8 @@ class Indented_Lisp(Indented_Importer):
     def indent_outline(self, root: Position) -> None:
         """
         Indented_Lisp.indent_outline.  The main line.
-        
-        
+
+
         Indent the body text of root and all its descendants.
         """
         for p in root.self_and_subtree():
@@ -491,12 +489,12 @@ class Indented_Lisp(Indented_Importer):
         if '@language' not in root.b:
             root.b = root.b.rstrip() + f"\n\n@language {self.language}\n"
     #@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
-    def tokenize(self, p: Position) -> list[Lisp_Token]:
+    def tokenize(self, p: Position) -> list[Token]:
         """Create p.b to a list of Lisp_Tokens."""
         # ; is the only comment delim.
         # " is the only string delim
         s = p.b
-        token_list: list[Lisp_Token] = []
+        token_list: list[Token] = []
 
         # Tokenize character by character.
         i = 0
@@ -505,18 +503,18 @@ class Indented_Lisp(Indented_Importer):
             ch = s[i]
             if ch == '\\':
                 # Skip the next character! The lisp colorizer appears to have a bug here.
-                token_list.append(Lisp_Token(ch, ch))
+                token_list.append(Token(ch, ch))
                 i += 1
                 if i < len(s):
                     ch = s[i]
-                    token_list.append(Lisp_Token(ch, ch))
+                    token_list.append(Token(ch, ch))
                     i += 1
             elif ch == ';':  # Scan a comment.
                 start = i
                 i += 1
                 while i < len(s) and s[i] != '\n':
                     i += 1
-                token_list.append(Lisp_Token(ch, s[start:i]))
+                token_list.append(Token(ch, s[start:i]))
             elif ch == '"':  # Scan a string.
                 start = i
                 i += 1
@@ -530,17 +528,17 @@ class Indented_Lisp(Indented_Importer):
                         i += 1
                 else:
                     g.es_print(f"{self.file_name}: Unterminated string in {p.h}")
-                token_list.append(Lisp_Token(ch, s[start:i]))
+                token_list.append(Token(ch, s[start:i]))
             elif ch == ' ':  # Convert multiple blanks to a single blank.
                 start = i
                 i += 1
                 while i < len(s) and s[i] == ' ':
                     i += 1
-                token_list.append(Lisp_Token(ch, ch))
+                token_list.append(Token(ch, ch))
             ### To do: handle id's and numbers.
             else:  # Everything else gets its own token.
                 i += 1
-                token_list.append(Lisp_Token(ch, ch))
+                token_list.append(Token(ch, ch))
             assert i > progress, (repr(ch), i, repr(s[i: i+20]))
 
         return token_list
