@@ -346,7 +346,6 @@ class Token:
     
     def to_string(self):
         return self.value
-
 #@+node:ekr.20231022080007.1: ** class Indented_C
 class Indented_C(Indented_Importer):
     """A class to support indented C files."""
@@ -372,6 +371,7 @@ class Indented_Lisp(Indented_Importer):
         '=', '<=', '>=', '/=',
         '+', '-',
         '*', '/',
+        '%',
     )
 
     #@+others
@@ -417,22 +417,21 @@ class Indented_Lisp(Indented_Importer):
             print(p.h)
             print(''.join(output_list))
     #@+node:ekr.20231024103253.1: *4* indented_lisp.do_args
-    def do_args(self, start, end, tokens: list[Token]) -> None:
-        
-        assert tokens, g.callers()
-        assert tokens[0].kind == '(', repr(tokens[0])
-        stripped_tokens = [z for z in tokens if z.kind not in ' \n']
-        if not stripped_tokens:
-            return
-        assert stripped_tokens[-1].kind == ')', repr(tokens[-1])
-        token0 = stripped_tokens[0]
-        if token0.kind == '\n':
-            print('')
-            g.trace(f"{start:>3}:{end:<3} {token0.kind!r}\n\n{self.to_string(stripped_tokens).rstrip()!s}")
-        
-        
-        
+    def do_args(self, start: int, end: int, tokens: list[Token]) -> None:
 
+        # Prechecks.
+        assert tokens[end].kind == ')'
+        arg_tokens = tokens[start:end + 1]
+        assert arg_tokens[0].kind == '(', repr(arg_tokens[0])
+        assert arg_tokens[-1].kind == ')', repr(arg_tokens[-1])
+        stripped_args = [z for z in arg_tokens if z.kind != ' ']
+
+        # Handle each operator/symbol.
+        args = stripped_args[1:-1]
+        arg0 = args[0]
+        if arg0.value in self.operators:
+            print('')
+            g.trace(f"{start:>3}:{end:<3} {arg0.value!r}\n{self.to_string(args).rstrip()!s}")
     #@+node:ekr.20231024045727.1: *4* indented_lisp.find_matching_paren
     def find_matching_paren(self, i: int, tokens: list[Token]) -> int:
         """Return the index of the matching closing parenthesis."""
@@ -490,7 +489,7 @@ class Indented_Lisp(Indented_Importer):
         """
         Indented_Lisp.indent_outline: Indent the body text of root and all its
         descendants.
-        
+
         Called by indented_i.do_import.
         """
         for p in root.self_and_subtree():
@@ -517,7 +516,7 @@ class Indented_Lisp(Indented_Importer):
     #@+node:ekr.20231026081944.1: *3* indented_lisp.to_string
     def to_string(self, tokens: list[Token]) -> str:
         """Convert a list of tokens to a string."""
-        return ''.join([z.to_string() for z in tokens])
+        return ' '.join([z.to_string() for z in tokens])
     #@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
     def tokenize(self, p: Position) -> list[Token]:
         """Create p.b to a list of Lisp_Tokens."""
@@ -525,11 +524,11 @@ class Indented_Lisp(Indented_Importer):
         # " is the only string delim
         s = p.b
         tokens: list[Token] = []
-        
+
         def is_symbol1(ch: str) -> bool:
             """Return True if ch can start a symbol."""
             return ch.isalpha() or ch == '_'
-            
+
         def is_symbol(ch: str) -> bool:
             """Return True if ch is valid within a symbol."""
             # Approximate. This class treats "operators" separately.
@@ -568,12 +567,12 @@ class Indented_Lisp(Indented_Importer):
                 else:
                     g.es_print(f"{self.file_name}: Unterminated string in {p.h}")
                 tokens.append(Token(ch, s[start:i]))
-            elif ch == ' ':  # Convert multiple blanks to a single blank.
+            elif ch in ' \n':  # Convert multiple blanks and newlines to a single blank.
                 start = i
                 i += 1
-                while i < len(s) and s[i] == ' ':
+                while i < len(s) and s[i] in ' \n':
                     i += 1
-                tokens.append(Token(ch, ch))
+                tokens.append(Token(' ', ' '))
             elif ch.isdigit():
                 start = i
                 while i < len(s) and s[i].isdigit():
@@ -590,6 +589,7 @@ class Indented_Lisp(Indented_Importer):
                     g.es_print(f"{self.file_name}: Unterminated '|' symbol in {p.h}")
             elif is_symbol1(ch):
                 start = i
+                i += 1
                 while i < len(s) and is_symbol(s[i]):
                     i += 1
                 tokens.append(Token('symbol', s[start:i]))
@@ -597,7 +597,7 @@ class Indented_Lisp(Indented_Importer):
                 i += 1
                 tokens.append(Token(ch, ch))
             assert i > progress, (repr(ch), i, repr(s[i: i+20]))
-
+        # g.printObj(tokens, tag='tokenize')
         return tokens
     #@-others
 #@+node:ekr.20231022073306.1: ** class Indented_TypeScript
