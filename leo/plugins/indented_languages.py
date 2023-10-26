@@ -363,7 +363,7 @@ class Indented_Lisp(Indented_Importer):
     language = 'lisp'
 
     #@+others
-    #@+node:ekr.20231024044903.1: *3* indented_lisp.convert_node
+    #@+node:ekr.20231024044903.1: *3* indented_lisp.convert_node (production)
     def convert_node(self, p: Position) -> None:
         """
         Convert from prefix to infix notation, removing parens if possible.
@@ -404,10 +404,10 @@ class Indented_Lisp(Indented_Importer):
             print('')
             print(p.h)
             print(''.join(output_list))
-    #@+node:ekr.20231024103253.1: *3* indented_lisp.do_args
+    #@+node:ekr.20231024103253.1: *4* indented_lisp.do_args
     def do_args(self, start, end, token_list: list[Token]) -> None:
         pass
-    #@+node:ekr.20231024045727.1: *3* indented_lisp.find_matching_paren
+    #@+node:ekr.20231024045727.1: *4* indented_lisp.find_matching_paren
     def find_matching_paren(self, i: int, token_list: list[Token]) -> int:
         """Return the index of the matching closing parenthesis."""
         assert token_list[i].kind == '(', token_list[i]
@@ -459,13 +459,13 @@ class Indented_Lisp(Indented_Importer):
             print('')
             print(''.join(result_lines))
         p.b = ''.join(result_lines)
-    #@+node:ekr.20231024044536.1: *3* indented_lisp.indent_outline (override)
+    #@+node:ekr.20231024044536.1: *3* indented_lisp.indent_outline (top-level)
     def indent_outline(self, root: Position) -> None:
         """
-        Indented_Lisp.indent_outline.  The main line.
-
-
-        Indent the body text of root and all its descendants.
+        Indented_Lisp.indent_outline: Indent the body text of root and all its
+        descendants.
+        
+        Called by indented_i.do_import.
         """
         for p in root.self_and_subtree():
             if p.b.strip():

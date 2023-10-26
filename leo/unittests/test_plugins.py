@@ -226,5 +226,50 @@ class TestIndentedTypeScript(LeoUnitTest):
             g.printObj(g.splitLines(root.b), tag=root.h)
 
     #@-others
+#@+node:ekr.20231025174626.1: ** class TestIndentedLisp(LeoUnitTest)
+class TestIndentedLisp(LeoUnitTest):
+    """Tests for lisp-related code in the indented_languages plugin."""
+
+    #@+others
+    #@+node:ekr.20231025174704.1: *3* test_ilisp.test_lisp_reduce_fraction
+    def test_lisp_reduce_fraction(self):
+
+        c, p = self.c, self.c.p
+
+        contents = textwrap.dedent(
+    """\
+    (defun reduce-fraction (f divisor)
+      "Eliminates divisor from fraction if present"
+      (while (and (= 0 (% (car result) divisor))
+              (= 0 (% (cadr result) divisor))
+              (< 1 (cadr result))
+              (< 0 (car result)))
+        (setq result (list (/ (car result) divisor) (/ (cadr result) divisor))))
+      result
+    )
+    """)
+
+        # Set p.h and p.b.
+        ###
+            # unittest_dir = os.path.dirname(__file__)
+            # path = os.path.abspath(os.path.join(unittest_dir, 'indented_typescript_test.ts'))
+            # assert os.path.exists(path), repr(path)
+        p.h = '@@file reduce_fraction.el'
+        p.b = contents
+
+        # Import.
+        x = indented_languages.Indented_Lisp(c)
+        top_node = x.do_import()
+        assert top_node.h == 'indented files', repr(top_node.h)
+
+        # Debugging.
+        if 1:
+            for z in self.c.all_positions():
+                print(f"{' '*z.level()} {z.h}")
+        if 1:
+            root = top_node.firstChild()
+            g.printObj(g.splitLines(root.b), tag=root.h)
+
+    #@-others
 #@-others
 #@-leo
