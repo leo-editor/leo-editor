@@ -263,10 +263,10 @@ class TestIndentedLisp(LeoUnitTest):
         assert top_node.h == 'indented files', repr(top_node.h)
 
         # Debugging.
-        if 1:
+        if 0:
             for z in self.c.all_positions():
                 print(f"{' '*z.level()} {z.h}")
-        if 1:
+        if 0:
             root = top_node.firstChild()
             g.printObj(g.splitLines(root.b), tag=root.h)
 
