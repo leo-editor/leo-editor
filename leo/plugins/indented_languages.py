@@ -506,6 +506,15 @@ class Indented_Lisp(Indented_Importer):
         # " is the only string delim
         s = p.b
         token_list: list[Token] = []
+        
+        def is_symbol1(ch: str) -> bool:
+            """Return True if ch can start a symbol."""
+            return ch.isalpha() or ch == '_'
+            
+        def is_symbol(ch: str) -> bool:
+            """Return True if ch is valid within a symbol."""
+            # Approximate. This class treats "operators" separately.
+            return ch.isalnum() or ch == '_' 
 
         # Tokenize character by character.
         i = 0
@@ -546,7 +555,25 @@ class Indented_Lisp(Indented_Importer):
                 while i < len(s) and s[i] == ' ':
                     i += 1
                 token_list.append(Token(ch, ch))
-            ### To do: handle id's and numbers.
+            elif ch.isdigit():
+                start = i
+                while i < len(s) and s[i].isdigit():
+                    i += 1
+                token_list.append(Token('number', s[start:i]))
+            elif ch == '|':  # Everything up to the matching '|' is part of the symbol!
+                i += 1
+                start = i
+                while i < len(s) and s[i] != '|':
+                    i += 1
+                if i < len(s) and s[i] == '|':
+                    token_list.append(Token('symbol', s[start:i]))
+                else:
+                    g.es_print(f"{self.file_name}: Unterminated '|' symbol in {p.h}")
+            elif is_symbol1(ch):
+                start = i
+                while i < len(s) and is_symbol(s[i]):
+                    i += 1
+                token_list.append(Token('symbol', s[start:i]))
             else:  # Everything else gets its own token.
                 i += 1
                 token_list.append(Token(ch, ch))
