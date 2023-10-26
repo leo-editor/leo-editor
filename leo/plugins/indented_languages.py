@@ -365,6 +365,14 @@ class Indented_Lisp(Indented_Importer):
     extensions: list[str] = ['.el', '.scm']
     importer_class = None  # There is no need for importer.make_guide_lines.
     language = 'lisp'
+    operators = (
+        # From lowest to highest precedence.
+        'and', 'or',
+        'max', 'min',
+        '=', '<=', '>=', '/=',
+        '+', '-',
+        '*', '/',
+    )
 
     #@+others
     #@+node:ekr.20231024044903.1: *3* indented_lisp.convert_node (production)
@@ -374,20 +382,20 @@ class Indented_Lisp(Indented_Importer):
         """
         if not p.b.strip():
             return
-        token_list = self.tokenize(p)
+        tokens = self.tokenize(p)
         output_list: list[str] = []
         level = 0
         at_start_of_line = True
-        for i, token in enumerate(token_list):
+        for i, token in enumerate(tokens):
             if token.kind == '(':
                 at_start_of_line = False
                 level += 1
-                matching_i = self.find_matching_paren(i, token_list)
+                matching_i = self.find_matching_paren(i, tokens)
                 if matching_i is not None:
                     # Null out only the *value* of both tokens.
-                    matching_token = token_list[matching_i]
+                    matching_token = tokens[matching_i]
                     token.value = matching_token.value = ''
-                    self.do_args(i, matching_i, token_list)
+                    self.do_args(i, matching_i, tokens)
             elif token.kind == ')':
                 at_start_of_line = False
                 level -= 1
@@ -409,20 +417,31 @@ class Indented_Lisp(Indented_Importer):
             print(p.h)
             print(''.join(output_list))
     #@+node:ekr.20231024103253.1: *4* indented_lisp.do_args
-    def do_args(self, start, end, token_list: list[Token]) -> None:
-
-        print('')
-        g.trace(f"{start:>3}:{end:<3}\n\n{self.to_string(token_list[start:end]).rstrip()!s}")
+    def do_args(self, start, end, tokens: list[Token]) -> None:
+        
+        assert tokens, g.callers()
+        assert tokens[0].kind == '(', repr(tokens[0])
+        stripped_tokens = [z for z in tokens if z.kind not in ' \n']
+        if not stripped_tokens:
+            return
+        assert stripped_tokens[-1].kind == ')', repr(tokens[-1])
+        token0 = stripped_tokens[0]
+        if token0.kind == '\n':
+            print('')
+            g.trace(f"{start:>3}:{end:<3} {token0.kind!r}\n\n{self.to_string(stripped_tokens).rstrip()!s}")
+        
+        
+        
 
     #@+node:ekr.20231024045727.1: *4* indented_lisp.find_matching_paren
-    def find_matching_paren(self, i: int, token_list: list[Token]) -> int:
+    def find_matching_paren(self, i: int, tokens: list[Token]) -> int:
         """Return the index of the matching closing parenthesis."""
-        assert token_list[i].kind == '(', token_list[i]
+        assert tokens[i].kind == '(', tokens[i]
         start_i = i
         i += 1
         level = 1
-        while i < len(token_list):
-            token = token_list[i]
+        while i < len(tokens):
+            token = tokens[i]
             if token.kind == '(':
                 level += 1
             elif token.kind == ')':
@@ -431,7 +450,7 @@ class Indented_Lisp(Indented_Importer):
                     return i
             i += 1
         # Give an error.
-        tail_tokens = token_list[start_i:]
+        tail_tokens = tokens[start_i:]
         tail_values = [z.value for z in tail_tokens]
         tail_s = ''.join(tail_values)[:20]
         g.trace('No matching close paren', start_i, tail_s, '\n')
@@ -441,12 +460,12 @@ class Indented_Lisp(Indented_Importer):
         """Indent p.b with 2-space indentation."""
         if not p.b.strip():
             return
-        token_list = self.tokenize(p)
+        tokens = self.tokenize(p)
         level = 0  # Net number of parens.
         result_lines: list[str] = []
         this_line: list[str] = []
         # Prototype: Indent using paren level.
-        for token in token_list:
+        for token in tokens:
             kind = token.kind
             this_line.append(token.value)
             if kind == '(':
@@ -505,7 +524,7 @@ class Indented_Lisp(Indented_Importer):
         # ; is the only comment delim.
         # " is the only string delim
         s = p.b
-        token_list: list[Token] = []
+        tokens: list[Token] = []
         
         def is_symbol1(ch: str) -> bool:
             """Return True if ch can start a symbol."""
@@ -514,7 +533,7 @@ class Indented_Lisp(Indented_Importer):
         def is_symbol(ch: str) -> bool:
             """Return True if ch is valid within a symbol."""
             # Approximate. This class treats "operators" separately.
-            return ch.isalnum() or ch == '_' 
+            return ch.isalnum() or ch in '_-'
 
         # Tokenize character by character.
         i = 0
@@ -523,18 +542,18 @@ class Indented_Lisp(Indented_Importer):
             ch = s[i]
             if ch == '\\':
                 # Skip the next character! The lisp colorizer appears to have a bug here.
-                token_list.append(Token(ch, ch))
+                tokens.append(Token(ch, ch))
                 i += 1
                 if i < len(s):
                     ch = s[i]
-                    token_list.append(Token(ch, ch))
+                    tokens.append(Token(ch, ch))
                     i += 1
             elif ch == ';':  # Scan a comment.
                 start = i
                 i += 1
                 while i < len(s) and s[i] != '\n':
                     i += 1
-                token_list.append(Token(ch, s[start:i]))
+                tokens.append(Token(ch, s[start:i]))
             elif ch == '"':  # Scan a string.
                 start = i
                 i += 1
@@ -548,38 +567,38 @@ class Indented_Lisp(Indented_Importer):
                         i += 1
                 else:
                     g.es_print(f"{self.file_name}: Unterminated string in {p.h}")
-                token_list.append(Token(ch, s[start:i]))
+                tokens.append(Token(ch, s[start:i]))
             elif ch == ' ':  # Convert multiple blanks to a single blank.
                 start = i
                 i += 1
                 while i < len(s) and s[i] == ' ':
                     i += 1
-                token_list.append(Token(ch, ch))
+                tokens.append(Token(ch, ch))
             elif ch.isdigit():
                 start = i
                 while i < len(s) and s[i].isdigit():
                     i += 1
-                token_list.append(Token('number', s[start:i]))
+                tokens.append(Token('number', s[start:i]))
             elif ch == '|':  # Everything up to the matching '|' is part of the symbol!
                 i += 1
                 start = i
                 while i < len(s) and s[i] != '|':
                     i += 1
                 if i < len(s) and s[i] == '|':
-                    token_list.append(Token('symbol', s[start:i]))
+                    tokens.append(Token('symbol', s[start:i]))
                 else:
                     g.es_print(f"{self.file_name}: Unterminated '|' symbol in {p.h}")
             elif is_symbol1(ch):
                 start = i
                 while i < len(s) and is_symbol(s[i]):
                     i += 1
-                token_list.append(Token('symbol', s[start:i]))
+                tokens.append(Token('symbol', s[start:i]))
             else:  # Everything else gets its own token.
                 i += 1
-                token_list.append(Token(ch, ch))
+                tokens.append(Token(ch, ch))
             assert i > progress, (repr(ch), i, repr(s[i: i+20]))
 
-        return token_list
+        return tokens
     #@-others
 #@+node:ekr.20231022073306.1: ** class Indented_TypeScript
 class Indented_TypeScript(Indented_Importer):
