@@ -417,7 +417,11 @@ class Indented_Lisp(Indented_Importer):
             print(p.h)
             print(''.join(output_list))
     #@+node:ekr.20231024103253.1: *4* indented_lisp.do_args
-    def do_args(self, start: int, end: int, tokens: list[Token]) -> None:
+    def do_args(self, start: int, end: int, tokens: list[Token], level: int = 0) -> list[Token]:
+        """
+        Find and evaluate all args.
+        Return the evaluated args as a flattened list of tokens.
+        """
 
         # Prechecks.
         assert tokens[end].kind == ')'
@@ -432,6 +436,13 @@ class Indented_Lisp(Indented_Importer):
         op = arg0.value
         if op not in self.operators:
             return
+        if 1:
+            print('')
+            # g.trace(f"args for {op} {start:>3}:{end:<3} {arg0.value!r}\n{self.to_string(args).rstrip()!s}\n")
+            print(f"level: {level} op: '{op}' args: {self.to_string(args).rstrip()!s}")
+        # Change the *value* from '=' to '=='.
+        if arg0.kind == '=':
+            arg0.value = '=='
         # Find all the inner args.
         inner_args: list[list[Token]] = []
         i = 1  # Skip the operator.
@@ -447,20 +458,39 @@ class Indented_Lisp(Indented_Importer):
                 if matching_i is None:
                     g.trace(f"Can not happen: no matching ')': {i}")
                     return
-                ### To do: evaluate recursively.
-                inner_args.append(args[i:matching_i + 1])
+                # Recursively evaluate the inner arg.
+                if 1:
+                    # g.trace(i, matching_i, args[i:matching_i+ 1])
+                    evaluated_args = self.do_args(i, matching_i, args, level=level+1)  ### args[i:matching_i + 1])
+                    if evaluated_args:
+                        inner_args.append(evaluated_args)
+                else:
+                    inner_args.append(args[i:matching_i + 1])
                 i = matching_i + 1
             else:
                 g.trace(f"Unexpected token: {i} {token!r}")
                 return
             assert i > progress, (i, repr(token))
         if 1:
-            print('')
-            # g.trace(f"args for {op} {start:>3}:{end:<3} {arg0.value!r}\n{self.to_string(args).rstrip()!s}\n")
-            print(f"op: '{op}' args: {self.to_string(args).rstrip()!s}")
             print('\nInner args...')
             for n, inner_arg in enumerate(inner_args):
                 print(f"inner arg: {n}: {self.to_string(inner_arg)}")
+        # Flatten the list, embedding the op.
+        result_list = []
+        lt_token, rt_token = Token('(', '('), Token(')', ')')
+        for inner_arg_n, inner_arg in enumerate(inner_args):
+            if len(inner_arg) > 1:
+                result_list.append(lt_token)
+                result_list.extend(inner_arg)
+                result_list.append(rt_token)
+            else:
+                result_list.extend(inner_arg)
+            if inner_arg_n < len(inner_args) - 1:
+                result_list.append(arg0)
+        if 1:
+            # g.printObj(result_list, tag='Results')
+            print('Results:', self.to_string(result_list))
+        return result_list
     #@+node:ekr.20231024045727.1: *4* indented_lisp.find_matching_paren
     def find_matching_paren(self, i: int, tokens: list[Token]) -> int:
         """Return the index of the matching closing parenthesis."""
@@ -545,7 +575,7 @@ class Indented_Lisp(Indented_Importer):
     #@+node:ekr.20231026081944.1: *3* indented_lisp.to_string
     def to_string(self, tokens: list[Token]) -> str:
         """Convert a list of tokens to a string."""
-        return ' '.join([z.to_string() for z in tokens])
+        return ' '.join([z.to_string() for z in tokens or []])
     #@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
     def tokenize(self, p: Position) -> list[Token]:
         """Create p.b to a list of Lisp_Tokens."""
