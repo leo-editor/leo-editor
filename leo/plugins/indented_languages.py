@@ -343,6 +343,10 @@ class Token:
         return f"Token: {self.kind!r}: {self.value!r}"
 
     __str__ = __repr__
+    
+    def to_string(self):
+        return self.value
+
 #@+node:ekr.20231022080007.1: ** class Indented_C
 class Indented_C(Indented_Importer):
     """A class to support indented C files."""
@@ -406,7 +410,10 @@ class Indented_Lisp(Indented_Importer):
             print(''.join(output_list))
     #@+node:ekr.20231024103253.1: *4* indented_lisp.do_args
     def do_args(self, start, end, token_list: list[Token]) -> None:
-        pass
+
+        print('')
+        g.trace(f"{start:>3}:{end:<3}\n\n{self.to_string(token_list[start:end]).rstrip()!s}")
+
     #@+node:ekr.20231024045727.1: *4* indented_lisp.find_matching_paren
     def find_matching_paren(self, i: int, token_list: list[Token]) -> int:
         """Return the index of the matching closing parenthesis."""
@@ -488,6 +495,10 @@ class Indented_Lisp(Indented_Importer):
         # Append @language.
         if '@language' not in root.b:
             root.b = root.b.rstrip() + f"\n\n@language {self.language}\n"
+    #@+node:ekr.20231026081944.1: *3* indented_lisp.to_string
+    def to_string(self, tokens: list[Token]) -> str:
+        """Convert a list of tokens to a string."""
+        return ''.join([z.to_string() for z in tokens])
     #@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
     def tokenize(self, p: Position) -> list[Token]:
         """Create p.b to a list of Lisp_Tokens."""
