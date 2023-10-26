@@ -596,7 +596,6 @@ class ExternalFilesController:
             return False
 
         # The file has really changed.
-        assert old_time, path
         return True
     #@+node:ekr.20150405104340.1: *4* efc.is_enabled
     def is_enabled(self, c: Cmdr) -> bool:
