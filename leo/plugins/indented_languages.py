@@ -429,9 +429,38 @@ class Indented_Lisp(Indented_Importer):
         # Handle each operator/symbol.
         args = stripped_args[1:-1]
         arg0 = args[0]
-        if arg0.value in self.operators:
+        op = arg0.value
+        if op not in self.operators:
+            return
+        # Find all the inner args.
+        inner_args: list[list[Token]] = []
+        i = 1  # Skip the operator.
+        while i < len(args):
+            token = args[i]
+            progress = i
+            assert token.kind != ' ', (i, repr(token))
+            if token.kind in ('\\', 'symbol', 'number'):
+                inner_args.append([token])
+                i += 1
+            elif token.kind == '(':
+                matching_i = self.find_matching_paren(i, args)
+                if matching_i is None:
+                    g.trace(f"Can not happen: no matching ')': {i}")
+                    return
+                ### To do: evaluate recursively.
+                inner_args.append(args[i:matching_i + 1])
+                i = matching_i + 1
+            else:
+                g.trace(f"Unexpected token: {i} {token!r}")
+                return
+            assert i > progress, (i, repr(token))
+        if 1:
             print('')
-            g.trace(f"{start:>3}:{end:<3} {arg0.value!r}\n{self.to_string(args).rstrip()!s}")
+            # g.trace(f"args for {op} {start:>3}:{end:<3} {arg0.value!r}\n{self.to_string(args).rstrip()!s}\n")
+            print(f"op: '{op}' args: {self.to_string(args).rstrip()!s}")
+            print('\nInner args...')
+            for n, inner_arg in enumerate(inner_args):
+                print(f"inner arg: {n}: {self.to_string(inner_arg)}")
     #@+node:ekr.20231024045727.1: *4* indented_lisp.find_matching_paren
     def find_matching_paren(self, i: int, tokens: list[Token]) -> int:
         """Return the index of the matching closing parenthesis."""
