@@ -383,20 +383,22 @@ class Indented_Lisp(Indented_Importer):
 
         tokens: a list of tokens, beginning and ending with parens.
         """
+        
+        trace = False
 
         # Prechecks.
         assert tokens[0].kind == '('
         assert tokens[-1].kind == ')'
         
         # Let block.
-        args = [z for z in tokens[1:-1] if z.kind not in ('\n', ' ')]  ### != ' ']
+        args = [z for z in tokens[1:-1] if z.kind != ' ']  # Strip blanks, but not newlines.
         arg0 = args[0]
         op = arg0.value
         if 0:
             g.trace(f"{op}\n{self.to_string(args[1:])}")
 
         # Find all inner parenthesized expressions.
-        output_list: list[list[Token]] = []
+        inner_list: list[list[Token]] = []
         i = 1  # Skip the operator.
         while i < len(args):
             token = args[i]
@@ -408,65 +410,56 @@ class Indented_Lisp(Indented_Importer):
                     return args
                 # Recursively evaluate the inner arg.
                 assert args[j].kind == ')', (i, j, tokens[j])
-                output_list.append(args[i:j + 1])
+                inner_list.append(args[i:j+1])
                 i = j + 1
             else:
                 # Append the token.
-                output_list.append([token])
+                inner_list.append([token])
                 i += 1
             assert i > progress, (i, token)
-        if 1:
-            print(f"output_list {p.h}")
-            for n, item in enumerate(output_list):
+
+        if trace:
+            print(f"inner_list {p.h}")
+            for n, item in enumerate(inner_list):
                 print(f"{n}: {self.to_string(item)}")
 
-        return args  ###
+        # Recursively evaluate the inner args:
+        evaluated_args: list[Token] = []
+        for i, inner_item in enumerate(inner_list):
+            assert isinstance(inner_item, list), repr(inner_item)
+            if len(inner_item) == 1:
+                evaluated_args.append(inner_item[0])
+            else:
+                evaluated_item = self.apply_function(p, inner_item)
+                assert evaluated_item, repr(inner_item)
+                evaluated_args.extend(evaluated_item)
+                if trace:
+                    print(f"{i} inner_item: {self.to_string(inner_item)}")
+                    print(f"{i}  eval_item: {self.to_string(evaluated_item)}")
+                    # g.printObj(inner_item, tag=f"{i} inner_item")
+                    # g.printObj(evaluated_item, tag=f"{i} eval_item")
+                    
+        return evaluated_args  ###
 
-        #####
+        # # Flatten the evaluated args, embedding the op.
+        # if True:
+            # result_list = []
+            # # lt_token, rt_token = Token('(', '('), Token(')', ')')
+            # for inner_arg_n, inner_arg in enumerate(evaluated_args):
+                # # if False:  ### len(inner_arg) > 1:
+                    # # result_list.append(lt_token)
+                    # # result_list.extend(inner_arg)
+                    # # result_list.append(rt_token)
+                # # else:
+                    # # result_list.extend(inner_arg)
+                # result_list.extend(inner_arg)
+                # if inner_arg_n < len(inner) - 1:
+                    # result_list.append(arg0)
 
-        # # # # Recursively evaluate the inner args:
-        # # # if True:  ### level == 0:
-            # # # evaluated_args = []
-            # # # for i, inner_arg in enumerate(output_tokens):
-                # # # inner_kind = inner_arg[0].kind
-                # # # if inner_kind == '(':
-                    # # # assert inner_arg[-1].kind == ')', repr(inner_arg)
-                    # # # evaluated_arg = self.do_args(0, len(inner_arg)-1, inner_arg, level=level+1)
-                    # # # evaluated_args.append(evaluated_arg or inner_arg)
-                    # # # if trace:
-                        # # # if 1:  # Brief
-                            # # # print(f"level {level}     Inner arg {i}: {self.to_string(inner_arg)}")
-                            # # # print(f"level {level} Evaluated arg {i}: {self.to_string(evaluated_arg)}")
-                        # # # else:
-                            # # # g.printObj(inner_arg, tag=f"level {level} Inner arg {i}")
-                            # # # g.printObj(evaluated_arg, tag=f"level {level} Evaluated arg {i}")
-                # # # elif inner_kind in ('number', 'symbol', ';', '\n'):
-                    # # # evaluated_args.append(inner_arg)
-                # # # else:
-                    # # # g.trace('Unexpected inner_kind', repr(inner_kind))
-                    # # # evaluated_args.append(inner_arg)
-        # # # else:
-            # # # evaluated_args = output_tokens
-
-        # # # # Flatten the evaluated args, embedding the op.
-        # # # if True:
-            # # # result_list = []
-            # # # # lt_token, rt_token = Token('(', '('), Token(')', ')')
-            # # # for inner_arg_n, inner_arg in enumerate(evaluated_args):
-                # # # # if False:  ### len(inner_arg) > 1:
-                    # # # # result_list.append(lt_token)
-                    # # # # result_list.extend(inner_arg)
-                    # # # # result_list.append(rt_token)
-                # # # # else:
-                    # # # # result_list.extend(inner_arg)
-                # # # result_list.extend(inner_arg)
-                # # # if inner_arg_n < len(inner) - 1:
-                    # # # result_list.append(arg0)
-
-        # # # # g.printObj(result_list, tag='Results')
-        # # # if trace:
-            # # # print(f"\nlevel {level} Results...\n{self.to_string(result_list)}\n")
-        # # # return result_list
+        # # g.printObj(result_list, tag='Results')
+        # if trace:
+            # print(f"\nlevel {level} Results...\n{self.to_string(result_list)}\n")
+        # return result_list
     #@+node:ekr.20231024045727.1: *3* indented_lisp.find_matching_paren
     def find_matching_paren(self, i: int, tokens: list[Token]) -> int:
         """Return the index of the matching closing parenthesis."""
