@@ -479,11 +479,12 @@ class Indented_Lisp(Indented_Importer):
                     assert tokens[j].kind == ')', (i, j, tokens[j])
                     items.append(tokens[i:j+1])
                     i = j + 1
-            elif kind in ('\n', 'symbol', 'number'):
+            elif kind in ('\n', '"', 'symbol', 'number'):
+                # Append an expected atom.
                 items.append([token])
                 i += 1
             else:
-                # Append the Atom.
+                # Append an unusual atom.
                 items.append([token])
                 g.trace(f"Unusual token: {i} {p.h} {token!r}")
                 i += 1
@@ -492,7 +493,7 @@ class Indented_Lisp(Indented_Importer):
         for item in items:
             assert isinstance(item, list), repr(item)
 
-        if 0:
+        if 0:  ###
             print('')
             print(p.h)
             for n, item in enumerate(items):
@@ -530,11 +531,17 @@ class Indented_Lisp(Indented_Importer):
             results.extend(self.to_infix(expression))
         return results
     #@+node:ekr.20231027061647.1: *3* indented_lisp.to_infix (test)
+    call_n = 0
+
     def to_infix(self, item: list[Token]) -> list[Token]:
         """Convert the item to infix notation."""
-        if len(item) == 1:
-            assert isinstance(item, Token), repr(item)
-            return [item]
+
+        p = self.p
+        call_n = self.call_n
+        self.call_n += 1
+
+        def atom_p(item: list[Token]) -> bool:
+            return len(item) == 1
 
         # Pre-checks.
         assert isinstance(item, list), repr(item)
@@ -542,34 +549,53 @@ class Indented_Lisp(Indented_Importer):
         assert item[-1].kind == ')'
         assert len(item) > 2, repr(item)
 
-        # Let block.
-        p = self.p
+        # Do nothing with atoms.
+        if atom_p(item):
+            assert isinstance(item[0], Token), repr(item)
+            return item
+
+        # Do nothing if the function/operator is a list:
         op = item[1]
+        if not isinstance(op, Token):
+            g.trace(f"List operator: {op!r} {p.h}")
+            return item
+
+        # Let block.
         arg_tokens = item[2:-1]
         args = self.parse(arg_tokens)
         results: list[Token] = []
 
-        g.printObj(args, tag=p.h)
-        if 1:  ###
-            return item  ###
+        # Post check.
+        for arg in args:
+            assert isinstance(arg, list), repr(arg)
 
         # Convert!
+        g.trace('call_n', call_n, 'args:', len(args))
         if op in self.operators:
             # Convert to infix notation.
             for i, arg in enumerate(args):
-                converted_arg = self.to_infix(arg)  ### Wrong type.
-                results.extend(self.flatten(converted_arg))
+                if atom_p(arg):
+                    results.extend(arg)
+                else:
+                    converted_arg = self.to_infix(arg)
+                    results.extend(self.flatten(converted_arg))
                 if i < len(args) + 1:
                     results.append(op)
         else:
             # Convert to function notation.
             results.extend([op, self.lt_token])
             for i, arg in enumerate(args):
-                converted_arg = self.to_infix(arg)  ### Wrong type.
-                results.extend(self.flatten(converted_arg))
+                if atom_p(arg):
+                    results.extend(arg)
+                else:
+                    converted_arg = self.to_infix(arg)
+                    results.extend(self.flatten(converted_arg))
                 if i < len(args) + 1:
                     results.append(self.comma_token)
             results.append(self.rt_token)
+        # g.printObj(results, tag=f"Results: call {call_n}")  ###
+        print(f"Results: call {call_n}")
+        print(self.to_string(results))
         return results
     #@+node:ekr.20231026081944.1: *3* indented_lisp.to_string
     def to_string(self, tokens: list[Token]) -> str:
