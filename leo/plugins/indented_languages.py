@@ -382,7 +382,7 @@ class Indented_Lisp(Indented_Importer):
         '*', '/',
         '%',
     )
-    
+
     lt_token = Token('(', '(')
     rt_token = Token(')', ')')
 
@@ -394,13 +394,13 @@ class Indented_Lisp(Indented_Importer):
 
         tokens: a list of tokens, beginning and ending with parens.
         """
-        
+
         trace = False
 
         # Prechecks.
         assert tokens[0].kind == '('
         assert tokens[-1].kind == ')'
-        
+
         # Let block.
         args = [z for z in tokens[1:-1] if z.kind != ' ']  # Strip blanks, but not newlines.
         arg0 = args[0]
@@ -453,32 +453,11 @@ class Indented_Lisp(Indented_Importer):
                     print(f"{i}  eval_item: {self.to_string(evaluated_item)}")
                     # g.printObj(inner_item, tag=f"{i} inner_item")
                     # g.printObj(evaluated_item, tag=f"{i} eval_item")
-                    
-        # To do: rearrange the evaluated args.
-                    
+
         # Flatten the list:
         result_list: list[Token] = []
         for z in evaluated_args:
             result_list.extend(z)
-        return result_list
-                    
-        # Flatten the evaluated args, embedding the op.
-
-        # lt_token, rt_token = Token('(', '('), Token(')', ')')
-        for arg_n, arg in enumerate(evaluated_args):
-            # if False:  ### len(inner_arg) > 1:
-                # result_list.append(lt_token)
-                # result_list.extend(inner_arg)
-                # result_list.append(rt_token)
-            # else:
-                # result_list.extend(inner_arg)
-            result_list.extend(arg)
-            if arg_n < len(evaluated_args) - 1:
-                result_list.append(arg0)
-
-        # g.printObj(result_list, tag='Results')
-        if trace:
-            print(f"\nResults...\n{self.to_string(result_list)}\n")
         return result_list
     #@+node:ekr.20231024045727.1: *3* indented_lisp.find_matching_paren
     def find_matching_paren(self, i: int, tokens: list[Token]) -> int:
@@ -574,14 +553,14 @@ class Indented_Lisp(Indented_Importer):
 
         if op in self.operators:
             return result
-            
+
         ### To do: convert inner args.
-            
+
         # Convert to function notation.
         result = [op, self.lt_token]
         result.extend(args)
         result.append(self.rt_token)
-        
+
         if False and len(result) < 10:
             g.trace(self.to_string(result))
             # g.printObj(result)  ###
