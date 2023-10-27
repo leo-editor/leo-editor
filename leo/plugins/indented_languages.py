@@ -345,7 +345,15 @@ class Token:
     __str__ = __repr__
 
     def to_string(self):
-        return '\n    and' if self.value == 'and' else self.value
+        ### g.trace(repr(self.kind), repr(self.value))
+        if self.kind == 'symbol' and self.value == 'and':
+            return '\n    and '
+        if self.kind == 'symbol':
+            return f" {self.value} "
+        if self.kind == ' ':
+            return ''  # Strip all blanks.
+        return self.value
+        # return '\n    and' if self.value == 'and' else self.value
         # return self.value
 #@+node:ekr.20231022080007.1: ** class Indented_C
 class Indented_C(Indented_Importer):
@@ -374,6 +382,9 @@ class Indented_Lisp(Indented_Importer):
         '*', '/',
         '%',
     )
+    
+    lt_token = Token('(', '(')
+    rt_token = Token(')', ')')
 
     #@+others
     #@+node:ekr.20231027042313.1: *3* indented_lisp.apply_function
@@ -393,7 +404,11 @@ class Indented_Lisp(Indented_Importer):
         # Let block.
         args = [z for z in tokens[1:-1] if z.kind != ' ']  # Strip blanks, but not newlines.
         arg0 = args[0]
+        # Change the *value* from '=' to '=='.
+        if arg0.value == '=':
+            arg0.value = '=='
         op = arg0.value
+
         if 0:
             g.trace(f"{op}\n{self.to_string(args[1:])}")
 
@@ -423,43 +438,48 @@ class Indented_Lisp(Indented_Importer):
             for n, item in enumerate(inner_list):
                 print(f"{n}: {self.to_string(item)}")
 
-        # Recursively evaluate the inner args:
-        evaluated_args: list[Token] = []
+        # Convert the inner list to infix notation.
+        evaluated_args: list[list[Token]] = []
         for i, inner_item in enumerate(inner_list):
             assert isinstance(inner_item, list), repr(inner_item)
             if len(inner_item) == 1:
-                evaluated_args.append(inner_item[0])
+                evaluated_args.append(inner_item)
             else:
-                evaluated_item = self.apply_function(p, inner_item)
+                evaluated_item = self.to_infix(p, inner_item)
                 assert evaluated_item, repr(inner_item)
-                evaluated_args.extend(evaluated_item)
+                evaluated_args.append(evaluated_item)
                 if trace:
                     print(f"{i} inner_item: {self.to_string(inner_item)}")
                     print(f"{i}  eval_item: {self.to_string(evaluated_item)}")
                     # g.printObj(inner_item, tag=f"{i} inner_item")
                     # g.printObj(evaluated_item, tag=f"{i} eval_item")
                     
-        return evaluated_args  ###
+        # To do: rearrange the evaluated args.
+                    
+        # Flatten the list:
+        result_list: list[Token] = []
+        for z in evaluated_args:
+            result_list.extend(z)
+        return result_list
+                    
+        # Flatten the evaluated args, embedding the op.
 
-        # # Flatten the evaluated args, embedding the op.
-        # if True:
-            # result_list = []
-            # # lt_token, rt_token = Token('(', '('), Token(')', ')')
-            # for inner_arg_n, inner_arg in enumerate(evaluated_args):
-                # # if False:  ### len(inner_arg) > 1:
-                    # # result_list.append(lt_token)
-                    # # result_list.extend(inner_arg)
-                    # # result_list.append(rt_token)
-                # # else:
-                    # # result_list.extend(inner_arg)
+        # lt_token, rt_token = Token('(', '('), Token(')', ')')
+        for arg_n, arg in enumerate(evaluated_args):
+            # if False:  ### len(inner_arg) > 1:
+                # result_list.append(lt_token)
                 # result_list.extend(inner_arg)
-                # if inner_arg_n < len(inner) - 1:
-                    # result_list.append(arg0)
+                # result_list.append(rt_token)
+            # else:
+                # result_list.extend(inner_arg)
+            result_list.extend(arg)
+            if arg_n < len(evaluated_args) - 1:
+                result_list.append(arg0)
 
-        # # g.printObj(result_list, tag='Results')
-        # if trace:
-            # print(f"\nlevel {level} Results...\n{self.to_string(result_list)}\n")
-        # return result_list
+        # g.printObj(result_list, tag='Results')
+        if trace:
+            print(f"\nResults...\n{self.to_string(result_list)}\n")
+        return result_list
     #@+node:ekr.20231024045727.1: *3* indented_lisp.find_matching_paren
     def find_matching_paren(self, i: int, tokens: list[Token]) -> int:
         """Return the index of the matching closing parenthesis."""
@@ -539,10 +559,37 @@ class Indented_Lisp(Indented_Importer):
                 output_tokens.append(token)
             assert i > progress, (i, p.h)
         return output_tokens
+    #@+node:ekr.20231027061647.1: *3* indented_lisp.to_infix
+    def to_infix(self, p: Position, tokens: list[Token]) -> list[Token]:
+        """Convert the list of tokens to infix notation."""
+        assert tokens[0].kind == '('
+        assert tokens[-1].kind == ')'
+        assert len(tokens) > 2, tokens
+        op = tokens[1]
+        args = tokens[2:-1]
+        result: list[Token] = []
+        if 0:
+            print('')
+            g.trace('op:', op.value, 'args:', self.to_string(args))
+
+        if op in self.operators:
+            return result
+            
+        ### To do: convert inner args.
+            
+        # Convert to function notation.
+        result = [op, self.lt_token]
+        result.extend(args)
+        result.append(self.rt_token)
+        
+        if False and len(result) < 10:
+            g.trace(self.to_string(result))
+            # g.printObj(result)  ###
+        return result
     #@+node:ekr.20231026081944.1: *3* indented_lisp.to_string
     def to_string(self, tokens: list[Token]) -> str:
         """Convert a list of tokens to a string."""
-        return ' '.join([z.to_string() for z in tokens or []])
+        return ''.join([z.to_string() for z in tokens or []]).replace('( ', '(').replace(' )', ')')
     #@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
     def tokenize(self, p: Position) -> list[Token]:
         """Create p.b to a list of Lisp_Tokens."""
