@@ -249,11 +249,7 @@ class TestIndentedLisp(LeoUnitTest):
     )
     """)
 
-        # Set p.h and p.b.
-        ###
-            # unittest_dir = os.path.dirname(__file__)
-            # path = os.path.abspath(os.path.join(unittest_dir, 'indented_typescript_test.ts'))
-            # assert os.path.exists(path), repr(path)
+        # Setup.
         p.h = '@@file reduce_fraction.el'
         p.b = contents
 
@@ -262,14 +258,9 @@ class TestIndentedLisp(LeoUnitTest):
         top_node = x.do_import()
         assert top_node.h == 'indented files', repr(top_node.h)
 
-        # Debugging.
-        if 0:
-            for z in self.c.all_positions():
-                print(f"{' '*z.level()} {z.h}")
-        if 0:
-            root = top_node.firstChild()
-            g.printObj(g.splitLines(root.b), tag=root.h)
-
+        if 1:  ###
+            g.trace()
+            print(p.b)
     #@-others
 #@-others
 #@-leo

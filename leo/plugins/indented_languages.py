@@ -14,19 +14,19 @@ Warnings:
 - Do *not* assume that it is possible to recreate curly-brackes from the indented code!
 
 Hacks for increased readablily:
-    
+
 - Remove the first block comment (a copyright message) in each file.
 - Remove #include statements.
 - Replace multiple blank lines by a single blank line.
 
 Won't do:
-    
+
 1. This plugin could generate leading whitespace (lws) corresponding to
    curly-bracket level. Doing so would be tricky because the plugin should
    preserve lws inside parens and square brackets.
 
 2. This plugin could support options for disabling the hacks listed above.
-  
+
 """
 #@-<< docstring: indented_languages.py >>
 
@@ -343,9 +343,10 @@ class Token:
         return f"Token: {self.kind!r}: {self.value!r}"
 
     __str__ = __repr__
-    
+
     def to_string(self):
-        return self.value
+        return '\n    and' if self.value == 'and' else self.value
+        # return self.value
 #@+node:ekr.20231022080007.1: ** class Indented_C
 class Indented_C(Indented_Importer):
     """A class to support indented C files."""
@@ -375,74 +376,27 @@ class Indented_Lisp(Indented_Importer):
     )
 
     #@+others
-    #@+node:ekr.20231024044903.1: *3* indented_lisp.convert_node (production)
-    def convert_node(self, p: Position) -> None:
+    #@+node:ekr.20231027042313.1: *3* indented_lisp.apply_function
+    def apply_function(self, tokens: list[Token]) -> list[Token]:
         """
-        Convert from prefix to infix notation, removing parens if possible.
-        """
-        if not p.b.strip():
-            return
-        tokens = self.tokenize(p)
-        output_list: list[str] = []
-        level = 0
-        at_start_of_line = True
-        for i, token in enumerate(tokens):
-            if token.kind == '(':
-                at_start_of_line = False
-                level += 1
-                matching_i = self.find_matching_paren(i, tokens)
-                if matching_i is not None:
-                    # Null out only the *value* of both tokens.
-                    matching_token = tokens[matching_i]
-                    token.value = matching_token.value = ''
-                    self.do_args(i, matching_i, tokens)
-            elif token.kind == ')':
-                at_start_of_line = False
-                level -= 1
-            elif token.kind == '\n':
-                at_start_of_line = True
-                output_list.append('\n')
-                # output_list.append(f"level: {level}" + ' ' * 2 * level)
-                output_list.append(' ' * 2 * level)
-            elif token.kind == ' ':
-                if not at_start_of_line:
-                    output_list.append(' ')
-            else:
-                at_start_of_line = False
-                output_list.append(token.value)
+        apply a function to a list of arguments, rearranging the tokens.
 
-        p.b = ''.join(output_list)
-        if 0:
-            print('')
-            print(p.h)
-            print(''.join(output_list))
-    #@+node:ekr.20231024103253.1: *4* indented_lisp.do_args
-    def do_args(self, start: int, end: int, tokens: list[Token], level: int = 0) -> list[Token]:
+        tokens: a list of tokens, beginning and ending with parens.
         """
-        Find and evaluate all args.
-        Return the evaluated args as a flattened list of tokens.
-        """
+        trace = True
+        level = 1
 
         # Prechecks.
-        assert tokens[end].kind == ')'
-        arg_tokens = tokens[start:end + 1]
-        assert arg_tokens[0].kind == '(', repr(arg_tokens[0])
-        assert arg_tokens[-1].kind == ')', repr(arg_tokens[-1])
-        stripped_args = [z for z in arg_tokens if z.kind != ' ']
-
-        # Handle each operator/symbol.
-        args = stripped_args[1:-1]
+        assert tokens[0].kind == '('
+        assert tokens[-1].kind == ')'
+        args = [z for z in tokens[1:-1] if z.kind not in ('\n', ' ')]  ### != ' ']
         arg0 = args[0]
         op = arg0.value
-        if op not in self.operators:
-            return
-        if 1:
-            print('')
-            # g.trace(f"args for {op} {start:>3}:{end:<3} {arg0.value!r}\n{self.to_string(args).rstrip()!s}\n")
-            print(f"level: {level} op: '{op}' args: {self.to_string(args).rstrip()!s}")
-        # Change the *value* from '=' to '=='.
-        if arg0.kind == '=':
-            arg0.value = '=='
+        assert op  ###d
+        # g.trace(f"{op}\n{self.to_string(args[1:])}")
+        return args  ###
+
+
         # Find all the inner args.
         inner_args: list[list[Token]] = []
         i = 1  # Skip the operator.
@@ -450,48 +404,78 @@ class Indented_Lisp(Indented_Importer):
             token = args[i]
             progress = i
             assert token.kind != ' ', (i, repr(token))
-            if token.kind in ('\\', 'symbol', 'number'):
-                inner_args.append([token])
-                i += 1
-            elif token.kind == '(':
+
+            ###
+            # if token.kind in ('\\', 'symbol', 'number'):
+                # inner_args.append([token])
+                # i += 1
+            # el
+
+            if token.kind == '(':
                 matching_i = self.find_matching_paren(i, args)
                 if matching_i is None:
                     g.trace(f"Can not happen: no matching ')': {i}")
-                    return
+                    return args
                 # Recursively evaluate the inner arg.
-                if 1:
-                    # g.trace(i, matching_i, args[i:matching_i+ 1])
-                    evaluated_args = self.do_args(i, matching_i, args, level=level+1)  ### args[i:matching_i + 1])
-                    if evaluated_args:
-                        inner_args.append(evaluated_args)
-                else:
-                    inner_args.append(args[i:matching_i + 1])
+                # Invariant:
+                assert args[matching_i].kind == ')', repr(args[matching_i])
+                inner_args.append(args[i:matching_i + 1])
                 i = matching_i + 1
             else:
-                g.trace(f"Unexpected token: {i} {token!r}")
+                # Append the token.
+                ### g.trace(f"Unexpected token: {i} {token!r}")
+                inner_args.append([token])
+                i += 1
                 return
             assert i > progress, (i, repr(token))
-        if 1:
-            print('\nInner args...')
+        if trace:  ### level == 0:
+            print(f"\nLevel {level} Inner args...")
             for n, inner_arg in enumerate(inner_args):
                 print(f"inner arg: {n}: {self.to_string(inner_arg)}")
-        # Flatten the list, embedding the op.
-        result_list = []
-        lt_token, rt_token = Token('(', '('), Token(')', ')')
-        for inner_arg_n, inner_arg in enumerate(inner_args):
-            if len(inner_arg) > 1:
-                result_list.append(lt_token)
+        # Recursively evaluate the inner args:
+        if True:  ### level == 0:
+            evaluated_args = []
+            for i, inner_arg in enumerate(inner_args):
+                inner_kind = inner_arg[0].kind
+                if inner_kind == '(':
+                    assert inner_arg[-1].kind == ')', repr(inner_arg)
+                    evaluated_arg = self.do_args(0, len(inner_arg)-1, inner_arg, level=level+1)
+                    evaluated_args.append(evaluated_arg or inner_arg)
+                    if trace:
+                        if 1:  # Brief
+                            print(f"level {level}     Inner arg {i}: {self.to_string(inner_arg)}")
+                            print(f"level {level} Evaluated arg {i}: {self.to_string(evaluated_arg)}")
+                        else:
+                            g.printObj(inner_arg, tag=f"level {level} Inner arg {i}")
+                            g.printObj(evaluated_arg, tag=f"level {level} Evaluated arg {i}")
+                elif inner_kind in ('number', 'symbol', ';', '\n'):
+                    evaluated_args.append(inner_arg)
+                else:
+                    g.trace('Unexpected inner_kind', repr(inner_kind))
+                    evaluated_args.append(inner_arg)
+        else:
+            evaluated_args = inner_args
+
+        # Flatten the evaluated args, embedding the op.
+        if True:
+            result_list = []
+            # lt_token, rt_token = Token('(', '('), Token(')', ')')
+            for inner_arg_n, inner_arg in enumerate(evaluated_args):
+                # if False:  ### len(inner_arg) > 1:
+                    # result_list.append(lt_token)
+                    # result_list.extend(inner_arg)
+                    # result_list.append(rt_token)
+                # else:
+                    # result_list.extend(inner_arg)
                 result_list.extend(inner_arg)
-                result_list.append(rt_token)
-            else:
-                result_list.extend(inner_arg)
-            if inner_arg_n < len(inner_args) - 1:
-                result_list.append(arg0)
-        if 1:
-            # g.printObj(result_list, tag='Results')
-            print('Results:', self.to_string(result_list))
+                if inner_arg_n < len(inner_args) - 1:
+                    result_list.append(arg0)
+
+        # g.printObj(result_list, tag='Results')
+        if trace:
+            print(f"\nlevel {level} Results...\n{self.to_string(result_list)}\n")
         return result_list
-    #@+node:ekr.20231024045727.1: *4* indented_lisp.find_matching_paren
+    #@+node:ekr.20231024045727.1: *3* indented_lisp.find_matching_paren
     def find_matching_paren(self, i: int, tokens: list[Token]) -> int:
         """Return the index of the matching closing parenthesis."""
         assert tokens[i].kind == '(', tokens[i]
@@ -513,36 +497,6 @@ class Indented_Lisp(Indented_Importer):
         tail_s = ''.join(tail_values)[:20]
         g.trace('No matching close paren', start_i, tail_s, '\n')
         return None
-    #@+node:ekr.20231024024032.1: *3* indented_lisp.indent_node (prototype)
-    def indent_node(self, p: Position) -> None:
-        """Indent p.b with 2-space indentation."""
-        if not p.b.strip():
-            return
-        tokens = self.tokenize(p)
-        level = 0  # Net number of parens.
-        result_lines: list[str] = []
-        this_line: list[str] = []
-        # Prototype: Indent using paren level.
-        for token in tokens:
-            kind = token.kind
-            this_line.append(token.value)
-            if kind == '(':
-                level += 1
-            elif kind == ')':
-                level -= 1
-            elif kind == '\n':
-                last_line = ''.join(this_line)
-                result_lines.append(last_line if last_line.strip() else '\n')
-                indent = ' ' * 2 * level
-                this_line = [indent]
-        # Include the last line.
-        last_line = ''.join(this_line)
-        if last_line.strip():
-            result_lines.append(last_line)
-        if 0:
-            print('')
-            print(''.join(result_lines))
-        p.b = ''.join(result_lines)
     #@+node:ekr.20231024044536.1: *3* indented_lisp.indent_outline (top-level)
     def indent_outline(self, root: Position) -> None:
         """
@@ -553,12 +507,9 @@ class Indented_Lisp(Indented_Importer):
         """
         for p in root.self_and_subtree():
             if p.b.strip():
-                if 1:
-                    # Convert prefix to infix.
-                    self.convert_node(p)
-                else:
-                    # A prototype.
-                    self.indent_node(p)
+                tokens = self.tokenize(p)
+                output_tokens = self.strip_parens(p, tokens)
+                p.b = self.tokens_to_body(output_tokens)
             self.remove_blank_lines(p)
 
         # Remove @path.
@@ -572,6 +523,37 @@ class Indented_Lisp(Indented_Importer):
         # Append @language.
         if '@language' not in root.b:
             root.b = root.b.rstrip() + f"\n\n@language {self.language}\n"
+    #@+node:ekr.20231024103253.1: *3* indented_lisp.strip_parens
+    def strip_parens(self, p: Position, tokens: list[Token]) -> list[Token]:
+        """
+        Find and evaluate all args.
+        Return the evaluated args as a flattened list of tokens.
+        """
+        output_tokens: list[Token] = []
+        i = 0
+        while i < len(tokens):
+            token = tokens[i]
+            progress = i
+            if token.kind in (' ', '\n'):
+                i += 1  # Ignore whitespace.
+            elif token.kind in ('symbol', 'number'):
+                i += 1
+                output_tokens.append(token)
+            elif token.kind == '(':
+                j = self.find_matching_paren(i, tokens)
+                if j is None:
+                    g.trace(f"Unmatched parens: {p.h}")
+                    return tokens
+                assert tokens[j].kind == ')'
+                applied_tokens = self.apply_function(tokens[i:j+1])
+                output_tokens.extend(applied_tokens)
+                i = j + 1
+            else:
+                g.trace(f"Unusual token: {p.h} {token!r}")
+                i += 1
+                output_tokens.append(token)
+            assert i > progress, (i, p.h)
+        return output_tokens
     #@+node:ekr.20231026081944.1: *3* indented_lisp.to_string
     def to_string(self, tokens: list[Token]) -> str:
         """Convert a list of tokens to a string."""
@@ -626,12 +608,15 @@ class Indented_Lisp(Indented_Importer):
                 else:
                     g.es_print(f"{self.file_name}: Unterminated string in {p.h}")
                 tokens.append(Token(ch, s[start:i]))
-            elif ch in ' \n':  # Convert multiple blanks and newlines to a single blank.
+            elif ch == ' ':  # Convert multiple blanks to a single blank.
                 start = i
                 i += 1
                 while i < len(s) and s[i] in ' \n':
                     i += 1
                 tokens.append(Token(' ', ' '))
+            elif ch == '\n':
+                tokens.append(Token('\n', '\n'))
+                i += 1
             elif ch.isdigit():
                 start = i
                 while i < len(s) and s[i].isdigit():
@@ -658,6 +643,10 @@ class Indented_Lisp(Indented_Importer):
             assert i > progress, (repr(ch), i, repr(s[i: i+20]))
         # g.printObj(tokens, tag='tokenize')
         return tokens
+    #@+node:ekr.20231027041906.1: *3* indented_lisp.tokens_to_body
+    def tokens_to_body(self, tokens: list[Token]) -> str:
+        """Convert a list of tokens to body text."""
+        return self.to_string(tokens)
     #@-others
 #@+node:ekr.20231022073306.1: ** class Indented_TypeScript
 class Indented_TypeScript(Indented_Importer):
