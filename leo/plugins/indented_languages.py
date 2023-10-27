@@ -540,7 +540,7 @@ class Indented_Lisp(Indented_Importer):
         call_n = self.call_n
         self.call_n += 1
 
-        def atom_p(item: list[Token]) -> bool:
+        def is_atom(item: list[Token]) -> bool:
             return len(item) == 1
 
         # Pre-checks.
@@ -550,7 +550,7 @@ class Indented_Lisp(Indented_Importer):
         assert len(item) > 2, repr(item)
 
         # Do nothing with atoms.
-        if atom_p(item):
+        if is_atom(item):
             assert isinstance(item[0], Token), repr(item)
             return item
 
@@ -574,7 +574,7 @@ class Indented_Lisp(Indented_Importer):
         if op in self.operators:
             # Convert to infix notation.
             for i, arg in enumerate(args):
-                if atom_p(arg):
+                if is_atom(arg):
                     results.extend(arg)
                 else:
                     converted_arg = self.to_infix(arg)
@@ -585,7 +585,7 @@ class Indented_Lisp(Indented_Importer):
             # Convert to function notation.
             results.extend([op, self.lt_token])
             for i, arg in enumerate(args):
-                if atom_p(arg):
+                if is_atom(arg):
                     results.extend(arg)
                 else:
                     converted_arg = self.to_infix(arg)
