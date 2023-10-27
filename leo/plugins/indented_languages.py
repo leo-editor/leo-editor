@@ -525,7 +525,7 @@ class Indented_Lisp(Indented_Importer):
             assert isinstance(item, list), (repr(expression.__class__.__name__), g.callers())
             results.extend(self.to_infix(p, expression))
         return results
-    #@+node:ekr.20231027061647.1: *3* indented_lisp.to_infix
+    #@+node:ekr.20231027061647.1: *3* indented_lisp.to_infix (to do)
     def to_infix(self, p: Position, item: list[Token]) -> list[Token]:
         """Convert the inner list infix notation."""
         return item
@@ -664,13 +664,7 @@ class Indented_Lisp(Indented_Importer):
     #@+node:ekr.20231027041906.1: *3* indented_lisp.tokens_to_body
     def tokens_to_body(self, tokens: list[Token]) -> str:
         """Convert a list of tokens to body text."""
-        
-        if 0:
-            g.trace()
-            for n, token in enumerate(tokens):
-                ### print(f"{n}: {self.to_string(item)}")
-                g.printObj(token, tag=f"tokens_to_body: token {n}")
-        return ''  ### self.to_string(tokens)
+        return self.to_string(tokens)
     #@-others
 #@+node:ekr.20231022073306.1: ** class Indented_TypeScript
 class Indented_TypeScript(Indented_Importer):
