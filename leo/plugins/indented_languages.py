@@ -345,8 +345,8 @@ class Token:
     __str__ = __repr__
 
     def to_string(self):
-        if self.kind == 'symbol' and self.value == 'and':
-            return '\n    and '
+        # if self.kind == 'symbol' and self.value == 'and':
+            # return '\n    and '
         if self.kind in ('symbol', 'number'):
             return f" {self.value} "  # Add blanks around symbols and numbers.
         if self.kind == ' ':
@@ -374,7 +374,8 @@ class Indented_Lisp(Indented_Importer):
         # From lowest to highest precedence.
         'and', 'or',
         'max', 'min',
-        '=', '<=', '>=', '/=',
+        '==', '<=', '>=', '!=',  # Tokenizer converts '/=' to '!=' and '=' to '=='
+        '<', '>',
         '+', '-',
         '*', '/',
         '%',
@@ -543,6 +544,12 @@ class Indented_Lisp(Indented_Importer):
         def is_atom(item: list[Token]) -> bool:
             return len(item) == 1
 
+        def is_known_op(op: Token) -> bool:
+            return (
+                op.kind in self.operators
+                or op.kind == 'symbol' and op.value in self.operators
+            )
+
         # Pre-checks.
         assert isinstance(item, list), repr(item)
         assert item[0].kind == '('
@@ -565,6 +572,11 @@ class Indented_Lisp(Indented_Importer):
         args = self.parse(arg_tokens)
         results: list[Token] = []
 
+        # Convert '=' to '==' (value only).
+        if 0:
+            if op.kind == '=':
+                op.value = '=='
+
         # Post check.
         for arg in args:
             assert isinstance(arg, list), repr(arg)
@@ -575,18 +587,17 @@ class Indented_Lisp(Indented_Importer):
             print('')
             g.printObj(args, tag=f"args. op: {op}, call_n: {call_n}, level: {level}")
 
-        if op.kind in self.operators:
+        if is_known_op(op):
             # Convert to infix notation.
             # results.append(self.lt_token)
             for i, arg in enumerate(args):
                 if is_atom(arg):
                     results.extend(arg)
+                    if i + 1 < len(args):
+                        results.append(op)
                 else:
                     converted_arg = self.to_infix(arg, level=level + 1)
                     results.extend(self.flatten(converted_arg))
-                results.append(self.blank_token)
-                if i + 1 < len(args):
-                    results.append(op)
             # results.append(self.rt_token)
         else:
             # Convert to function notation.
@@ -610,7 +621,13 @@ class Indented_Lisp(Indented_Importer):
     #@+node:ekr.20231026081944.1: *3* indented_lisp.to_string
     def to_string(self, tokens: list[Token]) -> str:
         """Convert a list of tokens to a string."""
-        return ''.join([z.to_string() for z in tokens or []]).replace('( ', '(').replace(' )', ')')
+        s = ''.join([z.to_string() for z in tokens or []])
+        lines = g.splitLines(s)
+        results = []
+        for line in lines:
+            results.append(line.strip().replace('( ', '(').replace(' )', ')'))
+        s = '\n    '.join(results)
+        return s.rstrip() + '\n'
     #@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
     def tokenize(self, p: Position) -> list[Token]:
         """Create p.b to a list of Lisp_Tokens."""
@@ -690,6 +707,17 @@ class Indented_Lisp(Indented_Importer):
                 while i < len(s) and is_symbol(s[i]):
                     i += 1
                 tokens.append(Token('symbol', s[start:i]))
+            elif ch in '/<>':  # Convert '/=' to '!=', and handle '<=' and '>='.
+                if i < len(s) and s[i + 1] == '=':
+                    op = '!=' if ch == '/' else ch + '='
+                    tokens.append(Token(op, op))
+                    i += 2
+                else:
+                    tokens.append(Token(ch, ch))
+                    i += 1
+            elif ch == '=':  # Convert '=' to '=='
+                tokens.append(Token('==', '=='))
+                i += 1
             else:  # Everything else gets its own token.
                 i += 1
                 tokens.append(Token(ch, ch))

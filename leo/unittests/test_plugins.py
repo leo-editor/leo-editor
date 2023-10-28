@@ -236,21 +236,26 @@ class TestIndentedLisp(LeoUnitTest):
 
         c, p = self.c, self.c.p
 
-        contents = textwrap.dedent(
+        if 0:
+            contents = textwrap.dedent(
     """\
     (defun test (a)
         (+ 1 (* 2 a))
     )
     """)
-    # (defun reduce-fraction (f divisor)
-      # "Eliminates divisor from fraction if present"
-      # (while (and (= 0 (% (car result) divisor))
-              # (= 0 (% (cadr result) divisor))
-              # (< 1 (cadr result))
-              # (< 0 (car result)))
-        # (setq result (list (/ (car result) divisor) (/ (cadr result) divisor))))
-      # result
-    # )
+        else:
+            contents = textwrap.dedent(
+   """\
+   (defun reduce-fraction (f divisor)
+     "Eliminates divisor from fraction if present"
+     (while (and (= 0 (% (car result) divisor))
+             (= 0 (% (cadr result) divisor))
+             (< 1 (cadr result))
+             (< 0 (car result)))
+       (setq result (list (/ (car result) divisor) (/ (cadr result) divisor))))
+     result
+   )
+   """)
 
         # Setup.
         p.h = '@@file reduce_fraction.el'
