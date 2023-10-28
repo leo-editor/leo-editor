@@ -276,6 +276,7 @@ class TestIndentedLisp(LeoUnitTest):
             print(contents)
             print('')
             print(p.b)
+            # g.printObj(g.splitLines(p.b), tag=f"{g.my_name()}")
     #@-others
 #@-others
 #@-leo

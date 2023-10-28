@@ -372,12 +372,6 @@ class Indented_Lisp(Indented_Importer):
         '%',
     )
 
-    # Constants.
-    blank_token = Token(' ', ' ')
-    comma_token = Token(',', ',')
-    lt_token = Token('(', '(')
-    rt_token = Token(')', ')')
-
     # For error messages only. Set in indent_outline.
     p: Position = None
 
@@ -573,6 +567,11 @@ class Indented_Lisp(Indented_Importer):
         args: list[list[Token]] = self.parse(arg_tokens)
         results: list[Token] = []
 
+        # Define tokens.
+        comma_token = Token(',', ',')
+        lt_token = Token('(', '(')
+        rt_token = Token(')', ')')
+
         # Post check.
         for arg in args:
             assert isinstance(arg, list), repr(arg)
@@ -580,9 +579,9 @@ class Indented_Lisp(Indented_Importer):
         # Convert!
         if is_known_op(op):
             # Convert to infix notation.
-            add_parens = op.value == '%'
+            add_parens = op.value in '%'  # Not sound.
             if add_parens:
-                results.append(self.lt_token)
+                results.append(lt_token)
             for i, arg in enumerate(args):
                 if is_newline(arg):
                     results.append(Token('\n', '\n' + 4 * ' ' * max(0, level - 1)))
@@ -595,7 +594,7 @@ class Indented_Lisp(Indented_Importer):
                 if i + 1 < len(args):
                     results.append(op)
             if add_parens:
-                results.append(self.rt_token)
+                results.append(rt_token)
         elif is_defun(op, args):
             # Convert defun to def name (args)
             results.append(Token('def', 'def'))
@@ -630,16 +629,19 @@ class Indented_Lisp(Indented_Importer):
         else:
             # Convert to function notation.
             level += 1
-            results.extend([op, self.lt_token])
+            results.extend([op, lt_token])
             for i, arg in enumerate(args):
                 if is_newline(arg):
                     results.append(Token('\n', '\n' + 4 * ' ' * level))
-                elif is_atom(arg):
+                    continue
+                if is_atom(arg):
                     results.extend(arg)
                 else:
                     converted_arg = self.to_infix(arg, level=level)
                     results.extend(self.flatten(converted_arg))
-            results.append(self.rt_token)
+                if i + 1 < len(args):
+                    results.append(comma_token)
+            results.append(rt_token)
             level -= 1
 
         # print(f"\nResults: op: {op}, level: {level}\n{self.to_string(results)}")
@@ -652,6 +654,7 @@ class Indented_Lisp(Indented_Importer):
         results: list[str] = []
         for i, token in enumerate(tokens):
             prev_kind = '' if i == 0 else tokens[i - 1].kind
+            prev_result = results[-1] if results else ''
             kind = token.kind
             if kind == ' ':
                 pass
@@ -664,12 +667,17 @@ class Indented_Lisp(Indented_Importer):
                     results.extend([' ', '('])
             elif kind == '\n':
                 # To infix adds the indentation.
-                results.append(token.value)  ###'\n' + ' ' * 4)  # Use 4-space indentation.
+                results.append(token.value)
+            elif kind in ':,':
+                if prev_result == ' ':
+                    results[-1] = ''
+                results.append(token.value)
             else:
                 # All other tokens.
                 if prev_kind in '\n(':
                     results.append(token.value)
                 else:
+                    # g.trace(repr(prev_kind), repr(token.value))
                     results.extend([' ', token.value])
         return ''.join(results).strip()
     #@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
