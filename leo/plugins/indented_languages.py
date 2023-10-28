@@ -664,7 +664,7 @@ class Indented_Lisp(Indented_Importer):
             elif kind == ')':
                 results.append(')')
             elif kind == '(':
-                if prev_kind == 'symbol':
+                if prev_kind in ('(', 'symbol'):
                     results.append('(')
                 else:
                     results.extend([' ', '('])
