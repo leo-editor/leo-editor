@@ -656,40 +656,28 @@ class Indented_Lisp(Indented_Importer):
         """Convert a list of tokens to a string."""
         if not tokens:
             return ''
-
-        if 0:
-            # Does not remove blanks in function calls.
-            # Does not indent lines.
-            s = ' '.join([z.value for z in tokens])
-            s = s.replace('( ', '(').replace(' )', ')')  # Unsound.
-            return s
-
         results: list[str] = []
         for i, token in enumerate(tokens):
             prev_result = '' if i == 0 else results[i - 1]
-            prev_kind = None if i == 0 else tokens[i - 1].kind
+            prev_kind = '' if i == 0 else tokens[i - 1].kind
             kind = token.kind
             if kind == ' ':
                 pass
             elif kind == ')':
-                if prev_result == ' ':
-                    results[-1] = ''  # Delete the previous space.
-                results.extend([')', ' '])
+                results.append(')')
             elif kind == '(':
                 if prev_kind == 'symbol' and prev_result == ' ':
-                    results[-1] = ''  # Delete the previous space.
-                results.append('(')
+                    results.append('(')
+                else:
+                    results.extend([' ', '('])
             elif kind == '\n':
                 results.append('\n' + ' ' * 4)  # Use 4-space indentation.
             else:
                 # All other tokens.
-                if prev_result == ' ':
-                    results[-1] == ''
-                    results.extend([token.value, ' '])
-                elif prev_result == '(' or prev_kind == '\n':
-                    results.extend([token.value, ' '])
+                if prev_kind in '\n(':
+                    results.append(token.value)
                 else:
-                    results.extend([' ', token.value, ' '])
+                    results.extend([' ', token.value])
         return ''.join(results).strip() + '\n'
     #@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
     def tokenize(self, p: Position) -> list[Token]:
