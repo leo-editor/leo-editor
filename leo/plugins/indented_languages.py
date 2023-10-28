@@ -345,12 +345,7 @@ class Token:
     __str__ = __repr__
 
     def to_string(self):
-        # if self.kind == 'symbol' and self.value == 'and':
-            # return '\n    and '
-        if self.kind in ('symbol', 'number'):
-            return f" {self.value} "  # Add blanks around symbols and numbers.
-        if self.kind == ' ':
-            return ''  # Strip all other blanks.
+        # Indented_Lisp.to_space does all the work.
         return self.value
 #@+node:ekr.20231022080007.1: ** class Indented_C
 class Indented_C(Indented_Importer):
@@ -555,6 +550,13 @@ class Indented_Lisp(Indented_Importer):
                 and args[0][0].kind == 'symbol'
                 and args[1][0].kind == '('
             )
+
+        def is_setq(op, args: list[list[Token]]) -> bool:
+            return (
+                op.kind == 'symbol' and op.value == 'setq'
+                and bool(args) and len(args) > 1
+                and args[0][0].kind == 'symbol'
+            )
         #@-<< to_infix: define predicates >>
 
         # Pre-checks.
@@ -590,16 +592,25 @@ class Indented_Lisp(Indented_Importer):
         # Convert!
         if is_known_op(op):
             # Convert to infix notation.
-            # results.append(self.lt_token)
+            add_parens = op.value == '%'
+            if add_parens:
+                results.append(self.lt_token)
+                ### g.printObj(args, tag='to_infix')  ###
+                ### breakpoint()  ###
             for i, arg in enumerate(args):
+                ### g.trace(i, int(is_atom(arg)), op.kind,  self.to_string(arg).strip())
+                ### g.trace(self.to_string(arg).strip())
                 if is_atom(arg):
                     results.extend(arg)
-                    if i + 1 < len(args):
-                        results.append(op)
+                    # if i + 1 < len(args):
+                        # results.append(op)
                 else:
                     converted_arg = self.to_infix(arg, level=level + 1)
                     results.extend(self.flatten(converted_arg))
-            # results.append(self.rt_token)
+                if i + 1 < len(args):
+                    results.append(op)
+            if add_parens:
+                results.append(self.rt_token)
         elif is_defun(op, args):
             # Convert defun to def name (args)
             results.append(Token('def', 'def'))
@@ -607,7 +618,17 @@ class Indented_Lisp(Indented_Importer):
             results.extend(args[1])  # Argument list.
             results.append(Token(':', ':'))
             # Convert the body.
-            for i, arg in enumerate(args[2:]):
+            for arg in args[2:]:
+                if is_atom(arg):
+                    results.extend(arg)
+                else:
+                    converted_arg = self.to_infix(arg, level=level + 1)
+                    results.extend(self.flatten(converted_arg))
+        elif is_setq(op, args):
+            results.extend(args[0])  # Var name.
+            results.append(Token('=', '='))
+            # Convert the value.
+            for arg in args[1:]:
                 if is_atom(arg):
                     results.extend(arg)
                 else:
@@ -633,13 +654,43 @@ class Indented_Lisp(Indented_Importer):
     #@+node:ekr.20231026081944.1: *3* indented_lisp.to_string
     def to_string(self, tokens: list[Token]) -> str:
         """Convert a list of tokens to a string."""
-        s = ''.join([z.to_string() for z in tokens or []])
-        lines = g.splitLines(s)
-        results = []
-        for line in lines:
-            results.append(line.strip().replace('( ', '(').replace(' )', ')'))
-        s = '\n    '.join(results)
-        return s.rstrip() + '\n'
+        if not tokens:
+            return ''
+
+        if 0:
+            # Does not remove blanks in function calls.
+            # Does not indent lines.
+            s = ' '.join([z.value for z in tokens])
+            s = s.replace('( ', '(').replace(' )', ')')  # Unsound.
+            return s
+
+        results: list[str] = []
+        for i, token in enumerate(tokens):
+            prev_result = '' if i == 0 else results[i - 1]
+            prev_kind = None if i == 0 else tokens[i - 1].kind
+            kind = token.kind
+            if kind == ' ':
+                pass
+            elif kind == ')':
+                if prev_result == ' ':
+                    results[-1] = ''  # Delete the previous space.
+                results.extend([')', ' '])
+            elif kind == '(':
+                if prev_kind == 'symbol' and prev_result == ' ':
+                    results[-1] = ''  # Delete the previous space.
+                results.append('(')
+            elif kind == '\n':
+                results.append('\n' + ' ' * 4)  # Use 4-space indentation.
+            else:
+                # All other tokens.
+                if prev_result == ' ':
+                    results[-1] == ''
+                    results.extend([token.value, ' '])
+                elif prev_result == '(' or prev_kind == '\n':
+                    results.extend([token.value, ' '])
+                else:
+                    results.extend([' ', token.value, ' '])
+        return ''.join(results).strip() + '\n'
     #@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
     def tokenize(self, p: Position) -> list[Token]:
         """Create p.b to a list of Lisp_Tokens."""
