@@ -343,10 +343,6 @@ class Token:
         return f"Token: {self.kind!r}: {self.value!r}"
 
     __str__ = __repr__
-
-    def to_string(self):
-        # Indented_Lisp.to_space does all the work.
-        return self.value
 #@+node:ekr.20231022080007.1: ** class Indented_C
 class Indented_C(Indented_Importer):
     """A class to support indented C files."""
@@ -461,8 +457,11 @@ class Indented_Lisp(Indented_Importer):
             token = tokens[i]
             kind = token.kind
             progress = i
-            if kind == ' ':
-                i += 1  # Ignore blanks. (Retain newlines).
+            if kind in ' ':
+                i += 1  # Ignore blanks
+            elif kind == '\n':
+                items.append([token])
+                i += 1  # Retains newlines for now.
             elif kind == '(':
                 j = self.find_matching_paren(i, tokens)
                 if j is None:
@@ -473,7 +472,7 @@ class Indented_Lisp(Indented_Importer):
                     assert tokens[j].kind == ')', (i, j, tokens[j])
                     items.append(tokens[i : j + 1])
                     i = j + 1
-            elif kind in ('\n', '"', 'symbol', 'number'):
+            elif kind in ('"', 'symbol', 'number'):
                 # Append an expected atom.
                 items.append([token])
                 i += 1
@@ -483,16 +482,8 @@ class Indented_Lisp(Indented_Importer):
                 g.trace(f"Unusual token: {i} {p.h} {token!r}")
                 i += 1
             assert i > progress, (i, token, p.h)
-
         for item in items:
             assert isinstance(item, list), repr(item)
-
-        if 0:  ###
-            print('')
-            print(p.h)
-            for n, item in enumerate(items):
-                ### print(f"{n}: {self.to_string(item)}")
-                g.printObj(item, tag=f"parse: item {n}")
         return items
     #@+node:ekr.20231027042313.1: *3* indented_lisp.simplify_tokens
     def simplify_tokens(self, tokens: list[Token]) -> list[Token]:
@@ -528,8 +519,6 @@ class Indented_Lisp(Indented_Importer):
     #@+node:ekr.20231027061647.1: *3* indented_lisp.to_infix
     def to_infix(self, item: list[Token], level: int = 0) -> list[Token]:
         """Convert the item to infix notation."""
-
-        trace = False and level == 0
         p = self.p
 
         #@+<< to_infix: define predicates >>
@@ -542,6 +531,9 @@ class Indented_Lisp(Indented_Importer):
                 op.kind in self.operators
                 or op.kind == 'symbol' and op.value in self.operators
             )
+
+        def is_newline(item: list[Token]) -> bool:
+            return len(item) == 1 and item[0].kind == '\n'
 
         def is_defun(op, args: list[list[Token]]) -> bool:
             return (
@@ -585,25 +577,18 @@ class Indented_Lisp(Indented_Importer):
         for arg in args:
             assert isinstance(arg, list), repr(arg)
 
-        if trace:
-            print('')
-            g.printObj(args, tag=f"args. op: {op}, level: {level}")
-
         # Convert!
         if is_known_op(op):
             # Convert to infix notation.
             add_parens = op.value == '%'
             if add_parens:
                 results.append(self.lt_token)
-                ### g.printObj(args, tag='to_infix')  ###
-                ### breakpoint()  ###
             for i, arg in enumerate(args):
-                ### g.trace(i, int(is_atom(arg)), op.kind,  self.to_string(arg).strip())
-                ### g.trace(self.to_string(arg).strip())
+                if is_newline(arg):
+                    results.append(Token('\n', '\n' + 4 * ' ' * max(0, level - 1)))
+                    continue
                 if is_atom(arg):
                     results.extend(arg)
-                    # if i + 1 < len(args):
-                        # results.append(op)
                 else:
                     converted_arg = self.to_infix(arg, level=level + 1)
                     results.extend(self.flatten(converted_arg))
@@ -618,38 +603,46 @@ class Indented_Lisp(Indented_Importer):
             results.extend(args[1])  # Argument list.
             results.append(Token(':', ':'))
             # Convert the body.
+            level += 1
             for arg in args[2:]:
-                if is_atom(arg):
+                if is_newline(arg):
+                    results.append(Token('\n', '\n' + 4 * ' ' * level))
+                elif is_atom(arg):
                     results.extend(arg)
                 else:
                     converted_arg = self.to_infix(arg, level=level + 1)
                     results.extend(self.flatten(converted_arg))
+            level -= 1
         elif is_setq(op, args):
             results.extend(args[0])  # Var name.
             results.append(Token('=', '='))
             # Convert the value.
+            level += 1
             for arg in args[1:]:
-                if is_atom(arg):
+                if is_newline(arg):
+                    results.append(Token('\n', '\n' + 4 * ' ' * level))
+                elif is_atom(arg):
                     results.extend(arg)
                 else:
-                    converted_arg = self.to_infix(arg, level=level + 1)
+                    converted_arg = self.to_infix(arg, level=level)
                     results.extend(self.flatten(converted_arg))
+            level -= 1
         else:
             # Convert to function notation.
+            level += 1
             results.extend([op, self.lt_token])
             for i, arg in enumerate(args):
-                if is_atom(arg):
+                if is_newline(arg):
+                    results.append(Token('\n', '\n' + 4 * ' ' * level))
+                elif is_atom(arg):
                     results.extend(arg)
                 else:
-                    converted_arg = self.to_infix(arg, level=level + 1)
+                    converted_arg = self.to_infix(arg, level=level)
                     results.extend(self.flatten(converted_arg))
             results.append(self.rt_token)
+            level -= 1
 
-        if trace:
-            print('')
-            print(f"Results: op: {op}, level: {level}")
-            print(self.to_string(results))
-
+        # print(f"\nResults: op: {op}, level: {level}\n{self.to_string(results)}")
         return results
     #@+node:ekr.20231026081944.1: *3* indented_lisp.to_string
     def to_string(self, tokens: list[Token]) -> str:
@@ -670,14 +663,15 @@ class Indented_Lisp(Indented_Importer):
                 else:
                     results.extend([' ', '('])
             elif kind == '\n':
-                results.append('\n' + ' ' * 4)  # Use 4-space indentation.
+                # To infix adds the indentation.
+                results.append(token.value)  ###'\n' + ' ' * 4)  # Use 4-space indentation.
             else:
                 # All other tokens.
                 if prev_kind in '\n(':
                     results.append(token.value)
                 else:
                     results.extend([' ', token.value])
-        return ''.join(results).strip() + '\n'
+        return ''.join(results).strip()
     #@+node:ekr.20231024024109.1: *3* indented_lisp.tokenize
     def tokenize(self, p: Position) -> list[Token]:
         """Create p.b to a list of Lisp_Tokens."""
@@ -777,7 +771,7 @@ class Indented_Lisp(Indented_Importer):
     #@+node:ekr.20231027041906.1: *3* indented_lisp.tokens_to_body
     def tokens_to_body(self, tokens: list[Token]) -> str:
         """Convert a list of tokens to body text."""
-        return self.to_string(tokens)
+        return self.to_string(tokens).strip() + '\n'
     #@-others
 #@+node:ekr.20231022073306.1: ** class Indented_TypeScript
 class Indented_TypeScript(Indented_Importer):
