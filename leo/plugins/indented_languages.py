@@ -531,16 +531,14 @@ class Indented_Lisp(Indented_Importer):
             results.extend(self.to_infix(expression))
         return results
     #@+node:ekr.20231027061647.1: *3* indented_lisp.to_infix
-    call_n = 0
-
     def to_infix(self, item: list[Token], level: int = 0) -> list[Token]:
         """Convert the item to infix notation."""
 
-        trace = False
+        trace = False and level == 0
         p = self.p
-        call_n = self.call_n
-        self.call_n += 1
 
+        #@+<< to_infix: define predicates >>
+        #@+node:ekr.20231028050301.1: *4* << to_infix: define predicates >>
         def is_atom(item: list[Token]) -> bool:
             return len(item) == 1
 
@@ -555,8 +553,9 @@ class Indented_Lisp(Indented_Importer):
                 op.kind == 'symbol' and op.value == 'defun'
                 and bool(args) and len(args) > 1
                 and args[0][0].kind == 'symbol'
-                and args[1][0].kind == '('  # and is_atom(args[2])
+                and args[1][0].kind == '('
             )
+        #@-<< to_infix: define predicates >>
 
         # Pre-checks.
         assert isinstance(item, list), repr(item)
@@ -586,7 +585,7 @@ class Indented_Lisp(Indented_Importer):
 
         if trace:
             print('')
-            g.printObj(args, tag=f"args. op: {op}, call_n: {call_n}, level: {level}")
+            g.printObj(args, tag=f"args. op: {op}, level: {level}")
 
         # Convert!
         if is_known_op(op):
@@ -625,9 +624,9 @@ class Indented_Lisp(Indented_Importer):
                     results.extend(self.flatten(converted_arg))
             results.append(self.rt_token)
 
-        if level == 0 and trace:
+        if trace:
             print('')
-            print(f"Results: op: {op}, call_n: {call_n}, level: {level}")
+            print(f"Results: op: {op}, level: {level}")
             print(self.to_string(results))
 
         return results
