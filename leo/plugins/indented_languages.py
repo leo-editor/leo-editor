@@ -658,7 +658,6 @@ class Indented_Lisp(Indented_Importer):
             return ''
         results: list[str] = []
         for i, token in enumerate(tokens):
-            prev_result = '' if i == 0 else results[i - 1]
             prev_kind = '' if i == 0 else tokens[i - 1].kind
             kind = token.kind
             if kind == ' ':
@@ -666,7 +665,7 @@ class Indented_Lisp(Indented_Importer):
             elif kind == ')':
                 results.append(')')
             elif kind == '(':
-                if prev_kind == 'symbol' and prev_result == ' ':
+                if prev_kind == 'symbol':
                     results.append('(')
                 else:
                     results.extend([' ', '('])
