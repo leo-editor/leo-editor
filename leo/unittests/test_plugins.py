@@ -272,11 +272,10 @@ class TestIndentedLisp(LeoUnitTest):
         top_node = x.do_import()
         assert top_node.h == 'indented files', repr(top_node.h)
         p = top_node.firstChild()
-        if 1:  ###
+        if 0:
             print(contents)
             print('')
             print(p.b)
-            # g.printObj(g.splitLines(p.b), tag=f"{g.my_name()}")
     #@-others
 #@-others
 #@-leo
