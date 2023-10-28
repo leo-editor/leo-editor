@@ -550,6 +550,14 @@ class Indented_Lisp(Indented_Importer):
                 or op.kind == 'symbol' and op.value in self.operators
             )
 
+        def is_defun(op, args: list[list[Token]]) -> bool:
+            return (
+                op.kind == 'symbol' and op.value == 'defun'
+                and bool(args) and len(args) > 1
+                and args[0][0].kind == 'symbol'
+                and args[1][0].kind == '('  # and is_atom(args[2])
+            )
+
         # Pre-checks.
         assert isinstance(item, list), repr(item)
         assert item[0].kind == '('
@@ -569,24 +577,18 @@ class Indented_Lisp(Indented_Importer):
 
         # Let block.
         arg_tokens = item[2:-1]
-        args = self.parse(arg_tokens)
+        args: list[list[Token]] = self.parse(arg_tokens)
         results: list[Token] = []
-
-        # Convert '=' to '==' (value only).
-        if 0:
-            if op.kind == '=':
-                op.value = '=='
 
         # Post check.
         for arg in args:
             assert isinstance(arg, list), repr(arg)
 
-        # Convert!
-        # g.trace('call_n', call_n, 'level', level, 'args:', len(args))
         if trace:
             print('')
             g.printObj(args, tag=f"args. op: {op}, call_n: {call_n}, level: {level}")
 
+        # Convert!
         if is_known_op(op):
             # Convert to infix notation.
             # results.append(self.lt_token)
@@ -599,6 +601,19 @@ class Indented_Lisp(Indented_Importer):
                     converted_arg = self.to_infix(arg, level=level + 1)
                     results.extend(self.flatten(converted_arg))
             # results.append(self.rt_token)
+        elif is_defun(op, args):
+            # Convert defun to def name (args)
+            results.append(Token('def', 'def'))
+            results.extend(args[0])  # Function name.
+            results.extend(args[1])  # Argument list.
+            results.append(Token(':', ':'))
+            # Convert the body.
+            for i, arg in enumerate(args[2:]):
+                if is_atom(arg):
+                    results.extend(arg)
+                else:
+                    converted_arg = self.to_infix(arg, level=level + 1)
+                    results.extend(self.flatten(converted_arg))
         else:
             # Convert to function notation.
             results.extend([op, self.lt_token])
@@ -608,8 +623,6 @@ class Indented_Lisp(Indented_Importer):
                 else:
                     converted_arg = self.to_infix(arg, level=level + 1)
                     results.extend(self.flatten(converted_arg))
-                # if i + 1 < len(args):
-                    # results.append(self.comma_token)
             results.append(self.rt_token)
 
         if level == 0 and trace:
