@@ -235,17 +235,7 @@ class TestIndentedLisp(LeoUnitTest):
     def test_lisp_reduce_fraction(self):
 
         c, p = self.c, self.c.p
-
-        if 0:
-            contents = textwrap.dedent(
-    """\
-    (defun test (a)
-        (+ 1 (* 2 a))
-        (= 0 (% (cadr result) divisor))
-    )
-    """)
-        else:
-            contents = textwrap.dedent(
+        contents = textwrap.dedent(
     """\
     (defun test (a)
         (+ 1 (* 2 a))
@@ -272,7 +262,7 @@ class TestIndentedLisp(LeoUnitTest):
         top_node = x.do_import()
         assert top_node.h == 'indented files', repr(top_node.h)
         p = top_node.firstChild()
-        if 1:
+        if 0:
             print(contents)
             print('')
             print(p.b)

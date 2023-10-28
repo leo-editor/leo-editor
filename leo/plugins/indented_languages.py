@@ -529,7 +529,7 @@ class Indented_Lisp(Indented_Importer):
 
         def is_newline(item: list[Token]) -> bool:
             return len(item) == 1 and item[0].kind == '\n'
-            
+
         def is_ws(item: list[Token]) -> bool:
             return len(item) == 1 and item[0].kind in ' \n\t'
 
