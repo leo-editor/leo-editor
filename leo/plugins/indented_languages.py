@@ -453,7 +453,7 @@ class Indented_Lisp(Indented_Importer):
     #@+node:ekr.20231027084804.1: *3* indented_lisp.parse
     def parse(self, tokens: list[Token]) -> list[list[Token]]:
         """
-        Parse the given tokens into a list of items, removing all blanks.
+        Parse the given tokens into a list of items, removing all blanks and parens.
 
         Items have the following form:
 
@@ -475,7 +475,7 @@ class Indented_Lisp(Indented_Importer):
                     g.trace(f"Unmatched '(': {i} {p.h}")
                     items.append([token])
                     i += 1
-                else:  # Append the Expression.
+                else:  # Append the Expression *without* parens.
                     assert tokens[j].kind == ')', (i, j, tokens[j])
                     items.append(tokens[i:j+1])
                     i = j + 1
