@@ -395,8 +395,9 @@ class Indented_Lisp(Indented_Importer):
         # Give an error.
         tail_tokens = tokens[start_i:]
         tail_values = [z.value for z in tail_tokens]
-        tail_s = ''.join(tail_values)[:20]
-        g.trace('No matching close paren', start_i, tail_s, '\n')
+        if 0:
+            tail_s = ''.join(tail_values)[:20]
+            g.trace('No matching close paren', start_i, tail_s, '\n')
         return None
     #@+node:ekr.20231027085715.1: *3* indented_lisp.flatten
     def flatten(self, obj: Union[list, Token]) -> list[Token]:
@@ -459,7 +460,7 @@ class Indented_Lisp(Indented_Importer):
             elif kind == '(':
                 j = self.find_matching_paren(i, tokens)
                 if j is None:
-                    g.trace(f"Unmatched '(': {i} {p.h}")
+                    # g.trace(f"Unmatched '(': {i} {p.h}")
                     items.append([token])
                     i += 1
                 else:  # Append the Expression *without* parens.
@@ -473,7 +474,7 @@ class Indented_Lisp(Indented_Importer):
             else:
                 # Append an unusual atom.
                 items.append([token])
-                g.trace(f"Unusual token: {i} {p.h} {token!r}")
+                # g.trace(f"Unusual token: {i} {p.h} {token!r}")
                 i += 1
             assert i > progress, (i, token, p.h)
         for item in items:
@@ -528,6 +529,9 @@ class Indented_Lisp(Indented_Importer):
 
         def is_newline(item: list[Token]) -> bool:
             return len(item) == 1 and item[0].kind == '\n'
+            
+        def is_ws(item: list[Token]) -> bool:
+            return len(item) == 1 and item[0].kind in ' \n\t'
 
         def is_defun(op, args: list[list[Token]]) -> bool:
             return (
@@ -549,10 +553,9 @@ class Indented_Lisp(Indented_Importer):
         assert isinstance(item, list), repr(item)
         assert item[0].kind == '('
         assert item[-1].kind == ')'
-        assert len(item) > 2, repr(item)
 
-        # Do nothing with atoms.
-        if is_atom(item):
+        # Do nothing with atoms or short items.
+        if is_atom(item) or len(item) < 3:
             assert isinstance(item[0], Token), repr(item)
             return item
 
@@ -584,7 +587,7 @@ class Indented_Lisp(Indented_Importer):
                 results.append(lt_token)
             for i, arg in enumerate(args):
                 if is_newline(arg):
-                    results.append(Token('\n', '\n' + 4 * ' ' * max(0, level - 1)))
+                    results.append(Token('\n', '\n' + 2 * ' ' * max(0, level - 1)))
                     continue
                 if is_atom(arg):
                     results.extend(arg)
@@ -605,7 +608,7 @@ class Indented_Lisp(Indented_Importer):
             level += 1
             for arg in args[2:]:
                 if is_newline(arg):
-                    results.append(Token('\n', '\n' + 4 * ' ' * level))
+                    results.append(Token('\n', '\n' + 2 * ' ' * level))
                 elif is_atom(arg):
                     results.extend(arg)
                 else:
@@ -619,7 +622,7 @@ class Indented_Lisp(Indented_Importer):
             level += 1
             for arg in args[1:]:
                 if is_newline(arg):
-                    results.append(Token('\n', '\n' + 4 * ' ' * level))
+                    results.append(Token('\n', '\n' + 2 * ' ' * level))
                 elif is_atom(arg):
                     results.extend(arg)
                 else:
@@ -632,7 +635,7 @@ class Indented_Lisp(Indented_Importer):
             results.extend([op, lt_token])
             for i, arg in enumerate(args):
                 if is_newline(arg):
-                    results.append(Token('\n', '\n' + 4 * ' ' * level))
+                    results.append(Token('\n', '\n' + 2 * ' ' * level))
                     continue
                 if is_atom(arg):
                     results.extend(arg)
@@ -668,13 +671,13 @@ class Indented_Lisp(Indented_Importer):
             elif kind == '\n':
                 # To infix adds the indentation.
                 results.append(token.value)
-            elif kind in ':,':
+            elif kind in '@:,':
                 if prev_result == ' ':
                     results[-1] = ''
                 results.append(token.value)
             else:
                 # All other tokens.
-                if prev_kind in '\n(':
+                if prev_kind in '@\n(':
                     results.append(token.value)
                 else:
                     # g.trace(repr(prev_kind), repr(token.value))
