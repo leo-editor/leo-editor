@@ -238,16 +238,19 @@ class TestIndentedLisp(LeoUnitTest):
 
         contents = textwrap.dedent(
     """\
-    (defun reduce-fraction (f divisor)
-      "Eliminates divisor from fraction if present"
-      (while (and (= 0 (% (car result) divisor))
-              (= 0 (% (cadr result) divisor))
-              (< 1 (cadr result))
-              (< 0 (car result)))
-        (setq result (list (/ (car result) divisor) (/ (cadr result) divisor))))
-      result
+    (defun test (a)
+        (+ 1 (* 2 a))
     )
     """)
+    # (defun reduce-fraction (f divisor)
+      # "Eliminates divisor from fraction if present"
+      # (while (and (= 0 (% (car result) divisor))
+              # (= 0 (% (cadr result) divisor))
+              # (< 1 (cadr result))
+              # (< 0 (car result)))
+        # (setq result (list (/ (car result) divisor) (/ (cadr result) divisor))))
+      # result
+    # )
 
         # Setup.
         p.h = '@@file reduce_fraction.el'
@@ -257,8 +260,9 @@ class TestIndentedLisp(LeoUnitTest):
         x = indented_languages.Indented_Lisp(c)
         top_node = x.do_import()
         assert top_node.h == 'indented files', repr(top_node.h)
+        p = top_node.firstChild()
         if 1:  ###
-            g.trace()
+            print('')
             print(p.b)
     #@-others
 #@-others

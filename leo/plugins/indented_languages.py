@@ -179,7 +179,7 @@ class Indented_Importer:
         Do not remove matching brackets if ';' follows the closing bracket.
         """
 
-        tag=f"{g.my_name()}"
+        tag = f"{g.my_name()}"
         if not p.b.strip():
             return
 
@@ -216,8 +216,8 @@ class Indented_Importer:
                     top_curly, top_line_number, top_column_number = top
                     assert top_curly == '{', f"{tag} stack mismatch"
                     this_info = (curly, line_number, column_number)
-                    info [top] = this_info
-                    info [this_info] = top
+                    info[top] = this_info
+                    info[this_info] = top
                 level += (1 if curly == '{' else -1)
         if level != 0:
             oops(f"Unmatched brackets: {p.h} level: {level}")
@@ -242,7 +242,7 @@ class Indented_Importer:
                 column_number = m.start()
                 this_info = ('}', line_number, column_number)
                 assert this_info in info, f"no matching info: {this_info}"
-                match_curly, match_line, match_column = info [this_info]
+                match_curly, match_line, match_column = info[this_info]
                 assert match_curly == '{', f"{tag}: wrong matching curly bracket"
 
                 # Don't make the substitution if the match is on the same line.
@@ -259,12 +259,12 @@ class Indented_Importer:
 
                 # Replace the previous line in result_lines, *not* lines.
                 s = result_lines[match_line]
-                new_line = s[:match_column] + ' ' + s[match_column + 1:]
+                new_line = s[:match_column] + ' ' + s[match_column + 1 :]
                 result_lines[match_line] = new_line.rstrip() + '\n' if new_line.strip() else '\n'
 
                 # Append this *real* line to result_lines.
                 s = lines[line_number]
-                this_line = s[:column_number] + ' ' + s[column_number + 1:]
+                this_line = s[:column_number] + ' ' + s[column_number + 1 :]
                 result_lines.append(this_line.rstrip() + '\n' if this_line.strip() else '\n')
 
         # Set the result
@@ -281,7 +281,7 @@ class Indented_Importer:
             elif result_lines and result_lines[-1].strip():
                 # A blank line preceded by a non-blank line.
                 result_lines.append('\n')
-        p.b =  p.b = ''.join(result_lines).rstrip() + '\n'
+        p.b = ''.join(result_lines).rstrip() + '\n'
     #@+node:ekr.20231023045225.1: *4* indented_i.remove_first_block_comment
     def remove_first_block_comment(self, p: Position) -> None:
         """Remove the first block C comment."""
@@ -292,7 +292,7 @@ class Indented_Importer:
             return
         for i, line in enumerate(lines):
             if line.strip().endswith('*/'):
-                tail = lines[i + 1:]
+                tail = lines[i + 1 :]
                 p.b = ''.join(tail).lstrip('\n')
                 return
     #@+node:ekr.20231023044845.1: *4* indented_i.remove_includes
@@ -302,7 +302,7 @@ class Indented_Importer:
             return
         lines = g.splitLines(p.b)
         result_lines = [z for z in lines if not z.startswith('#include ')]
-        p.b =  p.b = ''.join(result_lines).rstrip() + '\n'
+        p.b = p.b = ''.join(result_lines).rstrip() + '\n'
     #@+node:ekr.20231022152015.1: *4* indented_i.remove_trailing_semicolons
     def remove_trailing_semicolons(self, p: Position) -> None:
 
@@ -315,7 +315,7 @@ class Indented_Importer:
             if line_s.endswith(';'):
                 line = line_s[:-1] + '\n'
             result_lines.append(line)
-        p.b =  p.b = ''.join(result_lines).rstrip() + '\n'
+        p.b = p.b = ''.join(result_lines).rstrip() + '\n'
     #@+node:ekr.20231022150031.1: *3* indented_i.isAtFileNode & atFileName
     def isAtFileNode(self, p: Position) -> bool:
         h = p.h
@@ -347,10 +347,10 @@ class Token:
     def to_string(self):
         if self.kind == 'symbol' and self.value == 'and':
             return '\n    and '
-        if self.kind == 'symbol':
-            return f" {self.value} "
+        if self.kind in ('symbol', 'number'):
+            return f" {self.value} "  # Add blanks around symbols and numbers.
         if self.kind == ' ':
-            return ''  # Strip all blanks.
+            return ''  # Strip all other blanks.
         return self.value
 #@+node:ekr.20231022080007.1: ** class Indented_C
 class Indented_C(Indented_Importer):
@@ -381,6 +381,7 @@ class Indented_Lisp(Indented_Importer):
     )
 
     # Constants.
+    blank_token = Token(' ', ' ')
     comma_token = Token(',', ',')
     lt_token = Token('(', '(')
     rt_token = Token(')', ')')
@@ -444,9 +445,6 @@ class Indented_Lisp(Indented_Importer):
             lines = g.splitLines(root.b)
             root.b = ''.join(lines[1:])
 
-        # Remove the useless first block comment.
-        self.remove_first_block_comment(root)
-
         # Append @language.
         if '@language' not in root.b:
             root.b = root.b.rstrip() + f"\n\n@language {self.language}\n"
@@ -477,7 +475,7 @@ class Indented_Lisp(Indented_Importer):
                     i += 1
                 else:  # Append the Expression *without* parens.
                     assert tokens[j].kind == ')', (i, j, tokens[j])
-                    items.append(tokens[i:j+1])
+                    items.append(tokens[i : j + 1])
                     i = j + 1
             elif kind in ('\n', '"', 'symbol', 'number'):
                 # Append an expected atom.
@@ -512,6 +510,7 @@ class Indented_Lisp(Indented_Importer):
         for item in items:
             simplified_item = self.simplify_item(item)
             results.extend(self.flatten(simplified_item))
+        ### g.printObj(results, tag='simplify_tokens')
         return results
     #@+node:ekr.20231024103253.1: *3* indented_lisp.simplify_item
     def simplify_item(self, item: list[Token]) -> list[Token]:
@@ -530,12 +529,13 @@ class Indented_Lisp(Indented_Importer):
             assert isinstance(item, list), (repr(expression.__class__.__name__), g.callers())
             results.extend(self.to_infix(expression))
         return results
-    #@+node:ekr.20231027061647.1: *3* indented_lisp.to_infix (test)
+    #@+node:ekr.20231027061647.1: *3* indented_lisp.to_infix
     call_n = 0
 
-    def to_infix(self, item: list[Token]) -> list[Token]:
+    def to_infix(self, item: list[Token], level: int = 0) -> list[Token]:
         """Convert the item to infix notation."""
 
+        trace = False
         p = self.p
         call_n = self.call_n
         self.call_n += 1
@@ -570,17 +570,24 @@ class Indented_Lisp(Indented_Importer):
             assert isinstance(arg, list), repr(arg)
 
         # Convert!
-        g.trace('call_n', call_n, 'args:', len(args))
-        if op in self.operators:
+        # g.trace('call_n', call_n, 'level', level, 'args:', len(args))
+        if trace:
+            print('')
+            g.printObj(args, tag=f"args. op: {op}, call_n: {call_n}, level: {level}")
+
+        if op.kind in self.operators:
             # Convert to infix notation.
+            # results.append(self.lt_token)
             for i, arg in enumerate(args):
                 if is_atom(arg):
                     results.extend(arg)
                 else:
-                    converted_arg = self.to_infix(arg)
+                    converted_arg = self.to_infix(arg, level=level + 1)
                     results.extend(self.flatten(converted_arg))
-                if i < len(args) + 1:
+                results.append(self.blank_token)
+                if i + 1 < len(args):
                     results.append(op)
+            # results.append(self.rt_token)
         else:
             # Convert to function notation.
             results.extend([op, self.lt_token])
@@ -588,14 +595,17 @@ class Indented_Lisp(Indented_Importer):
                 if is_atom(arg):
                     results.extend(arg)
                 else:
-                    converted_arg = self.to_infix(arg)
+                    converted_arg = self.to_infix(arg, level=level + 1)
                     results.extend(self.flatten(converted_arg))
-                if i < len(args) + 1:
-                    results.append(self.comma_token)
+                # if i + 1 < len(args):
+                    # results.append(self.comma_token)
             results.append(self.rt_token)
-        # g.printObj(results, tag=f"Results: call {call_n}")  ###
-        print(f"Results: call {call_n}")
-        print(self.to_string(results))
+
+        if level == 0 and trace:
+            print('')
+            print(f"Results: op: {op}, call_n: {call_n}, level: {level}")
+            print(self.to_string(results))
+
         return results
     #@+node:ekr.20231026081944.1: *3* indented_lisp.to_string
     def to_string(self, tokens: list[Token]) -> str:
@@ -683,7 +693,7 @@ class Indented_Lisp(Indented_Importer):
             else:  # Everything else gets its own token.
                 i += 1
                 tokens.append(Token(ch, ch))
-            assert i > progress, (repr(ch), i, repr(s[i: i+20]))
+            assert i > progress, (repr(ch), i, repr(s[i : i + 20]))
         # g.printObj(tokens, tag='tokenize')
         return tokens
     #@+node:ekr.20231027041906.1: *3* indented_lisp.tokens_to_body
