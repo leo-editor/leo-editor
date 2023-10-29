@@ -212,8 +212,7 @@ class Importer:
         This method assumes that that '{' and '}' delimit blocks.
         Subclasses may override this method as necessary.
         """
-        level = 1  # All blocks start with '{'
-        assert '{' in self.guide_lines[i - 1]
+        level = 1 if '{' in self.guide_lines[i - 1] else 0
         while i < i2:
             line = self.guide_lines[i]
             i += 1
