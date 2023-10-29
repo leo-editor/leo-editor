@@ -642,7 +642,7 @@ class ExternalFilesController:
             message=(
                 f"{path_name} has changed outside Leo.\n\n"
                 f"An {kind} node created this file.\n\n"
-                'Warning: Leo can not update this file!\n'
+                'Warning: Leo can not update this node!\n'
                 'Neither refresh-from-disk nor restarting Leo will work.\n'
             ),
             title='External file changed',
