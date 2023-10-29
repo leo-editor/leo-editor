@@ -2,18 +2,23 @@
 #@+node:ekr.20230917013414.1: * @file ../plugins/indented_languages.py
 #@+<< docstring: indented_languages.py >>
 #@+node:ekr.20231023052313.1: ** << docstring: indented_languages.py >>
+#@@language rest
+#@@wrap
+
 """
-A plugin that creates **study outlines** in which indentation replaces curly brackets.
+A plugin defines three Leo commands that create **study outlines**:
 
-This plugin is surprisingly helpful in getting the feel of source code.
+=== Part 1: The import-to-indented-c and import-to-indented-typescript commands
 
-Warnings:
+These commands remove braces from C and Typescript programs. They are
+surprisingly helpful in getting the feel of C and Typescript programs.
 
-- For C and Typescript, this plugin assumes that indentation corresponds to curly-bracket level!
-- If this assumption is violated the results may be misleading.
-- Do *not* assume that it is possible to recreate curly-brackes from the indented code!
+These commands assume that indentation corresponds to curly-bracket level!
+If this assumption is violated the results may be misleading. Do *not*
+assume that it is possible to recreate curly-brackets from the indented
+code!
 
-Hacks for increased readablily:
+Hacks for increased readability:
 
 - Remove the first block comment (a copyright message) in each file.
 - Remove #include statements.
@@ -21,11 +26,20 @@ Hacks for increased readablily:
 
 Won't do:
 
-1. This plugin could generate leading whitespace (lws) corresponding to
-   curly-bracket level. Doing so would be tricky because the plugin should
-   preserve lws inside parens and square brackets.
+1. Generate leading whitespace (lws) corresponding to curly-bracket level.
+   Doing so would be tricky because the plugin should preserve lws inside
+   parens and square brackets.
 
-2. This plugin could support options for disabling the hacks listed above.
+2. Support an option to disable the hacks listed above.
+
+=== Part 2: The import-to-indented-lisp command
+
+The command removes *some* parentheses from Lisp program.
+
+I do not recommend using this command. The code is merely a prototype and
+will remain as it is. It would take lots more work to be useful.
+
+Working on this command reminds me why I never want to use or read Lisp!
 
 """
 #@-<< docstring: indented_languages.py >>
@@ -333,7 +347,7 @@ class Indented_Importer:
 #@+node:ekr.20231024024201.1: **  class Token
 class Token:
     """
-    A class reprenting a Lisp token.
+    A class representing a Lisp token.
     """
     def __init__(self, kind, value):
         self.kind = kind
@@ -497,7 +511,7 @@ class Indented_Lisp(Indented_Importer):
     #@+node:ekr.20231024103253.1: *3* indented_lisp.simplify_item
     def simplify_item(self, item: list[Token]) -> list[Token]:
         """
-        Remove as many parenthese as possible from the list of tokens,
+        Remove as many parentheses as possible from the list of tokens,
         converting prefix operators to infix where possible.
         """
         results: list[Token] = []
