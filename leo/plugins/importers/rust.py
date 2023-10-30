@@ -19,10 +19,13 @@ class Rust_Importer(Importer):
     # Single quotes do *not* start strings.
     string_list: list[str] = ['"']
 
+    # None of these patterns need end with '{' on the same line.
     block_patterns = (
-        ('impl', re.compile(r'\bimpl\b(.*?)\s*{')),  # Use most of the line.
+        ('impl', re.compile(r'\bimpl\b(.*?)$')),  # Use the rest of the line.
         ('fn', re.compile(r'\s*fn\s+(\w+)\s*\(')),
         ('fn', re.compile(r'\s*pub\s+fn\s+(\w+)\s*\(')),
+        ('trait', re.compile(r'\s*trait\s+(\w+)\s*\(')),
+        ('trait', re.compile(r'\s*pub\s+trait\s+(\w+)\s*\(')),
     )
 #@-others
 

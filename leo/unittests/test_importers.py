@@ -3817,7 +3817,7 @@ class TestRust(BaseTestImporter):
     ext = '.rs'
 
     #@+others
-    #@+node:ekr.20220814095025.1: *3* TestRust.test_1
+    #@+node:ekr.20220814095025.1: *3* TestRust.test_rust_1
     def test_1(self):
 
         s = """
@@ -3855,6 +3855,66 @@ class TestRust(BaseTestImporter):
             (1, 'fn area',
                     'fn area(width: u32, height: u32) -> u32 {\n'
                     '    width * height\n'
+                    '}\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
+    #@+node:ekr.20231030054735.1: *3* TestRust.test_rust_import_fails
+    def test_rust_import_fails(self):
+
+        # From ruff/crates/ruff_formatter/shared_traits.rs
+        s = textwrap.dedent(
+    """
+        /// Used to get an object that knows how to format this object.
+        pub trait AsFormat<Context> {
+            type Format<'a>: ruff_formatter::Format<Context>
+            where
+                Self: 'a;
+
+            /// Returns an object that is able to format this object.
+            fn format(&self) -> Self::Format<'_>;
+        }
+
+        /// Implement [`AsFormat`] for references to types that implement [`AsFormat`].
+        impl<T, C> AsFormat<C> for &T
+        where
+            T: AsFormat<C>,
+        {
+            type Format<'a> = T::Format<'a> where Self: 'a;
+
+            fn format(&self) -> Self::Format<'_> {
+                AsFormat::format(&**self)
+            }
+        }
+    """)
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                    '@others\n'
+                    '@language rust\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'fn AsFormat',
+                    '/// Used to get an object that knows how to format this object.\n'
+                    'pub trait AsFormat<Context> {\n'
+                    "    type Format<'a>: ruff_formatter::Format<Context>\n"
+                    '    where\n'
+                    "        Self: 'a;\n"
+                    '\n'
+                    '    /// Returns an object that is able to format this object.\n'
+                    "    fn format(&self) -> Self::Format<'_>;\n"
+                    '}\n'
+            ),
+            (1, 'impl AsFormat',
+                    '/// Implement [`AsFormat`] for references to types that implement [`AsFormat`].\n'
+                    'impl<T, C> AsFormat<C> for &T\n'
+                    'where\n'
+                    '    T: AsFormat<C>,\n'
+                    '{\n'
+                    "    type Format<'a> = T::Format<'a> where Self: 'a;\n"
+                    '\n'
+                    "    fn format(&self) -> Self::Format<'_> {\n"
+                    '        AsFormat::format(&**self)\n'
+                    '    }\n'
                     '}\n'
             ),
         )
