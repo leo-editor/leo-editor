@@ -3188,6 +3188,9 @@ class LoadManager:
             if p:
                 # The 'load_type' key may not exist when run from the bridge.
                 load_type = self.options.get('load_type', '@edit')  # #2489.
+                if not load_type.startswith('@'):  # #3546
+                    # The "@" may get lost so restore it
+                    load_type = '@' + load_type
                 p.setHeadString(f"{load_type} {fn}")
                 c.refreshFromDisk()
                 c.selectPosition(p)
