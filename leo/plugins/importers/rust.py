@@ -22,10 +22,12 @@ class Rust_Importer(Importer):
 
     # None of these patterns need end with '{' on the same line.
     block_patterns = (
-        ('impl', re.compile(r'\s*impl\b(.*?)$')),  # Use the rest of the line.
         ('fn', re.compile(r'\s*fn\s+(\w+)\s*\(')),
         ('fn', re.compile(r'\s*pub\s+fn\s+(\w+)\s*\(')),
+        ('impl', re.compile(r'\s*impl\b(.*?)$')),  # Use the rest of the line.
         ('mod', re.compile(r'\s*mod\s+(\w+)')),
+        ('struct', re.compile(r'\s*struct\b(.*?)$')),
+        ('struct', re.compile(r'\s*pub\s+struct\b(.*?)$')),
         ('trait', re.compile(r'\s*trait\b(.*?)$')),
         ('trait', re.compile(r'\s*pub\s+trait\b(.*?)$')),
     )
@@ -50,8 +52,8 @@ class Rust_Importer(Importer):
             """
             while i < i2:
                 line = self.guide_lines[i].strip()
-                if line.endswith(';'):
-                    return None
+                if line.endswith((';', '}')):
+                    return None  # One-line definition.
                 if line.endswith('{'):
                     return i
                 i += 1
@@ -89,6 +91,66 @@ class Rust_Importer(Importer):
             assert i > progress, g.callers()
         ### g.printObj(results, tag=f"{g.my_name()} {i1} {i2}")
         return results
+    #@+node:ekr.20231031131127.1: *3* rust_i.postprocess
+    def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:
+        """
+        Rust_Importer.postprocess: Post-process the result.blocks.
+
+        **Note**: The RecursiveImportController class contains a postpass that
+                  adjusts headlines of *all* imported nodes.
+        """
+        ### g.trace(f"{len(result_blocks):3} blocks: {parent.h}")
+        ### g.printObj(result_blocks[0], tag=parent.h)
+        if len(result_blocks) < 2:
+            return
+        # result_blocks[1].dump_lines(tag=parent.h)
+        result_blocks[1].long_repr()
+
+        #@+others  # Define helper functions.
+        #@+node:ekr.20231031162249.1: *4* function: convert_docstrings
+        def convert_docstrings(lines: list[str], parent: Position, result_blocks: list[Block]) -> None:
+            pass
+        #@+node:ekr.20231031162058.1: *4* function: find_docstring
+        def find_docstring(p: Position) -> Optional[str]:
+            """Creating a regex that returns a docstring is too tricky."""
+            delims = ('"""', "'''")
+            s_strip = p.b.strip()
+            if not s_strip:
+                return None
+            if not s_strip.startswith(delims):
+                return None
+            delim = delims[0] if s_strip.startswith(delims[0]) else delims[1]
+            lines = g.splitLines(p.b)
+            if lines[0].count(delim) == 2:
+                return lines[0]
+            i = 1
+            while i < len(lines):
+                if delim in lines[i]:
+                    return ''.join(lines[: i + 1])
+                i += 1
+            return None
+
+        #@+node:ekr.20231031162142.1: *4* function: move_module_preamble
+        def move_module_preamble(lines: list[str], parent: Position, result_blocks: list[Block]) -> None:
+            """Move the preamble lines from the parent's first child to the start of parent.b."""
+            child1 = parent.firstChild()
+            if not child1:
+                return
+            # Compute the preamble.
+            preamble_start = max(0, result_blocks[1].start_body - 1)
+            preamble_lines = lines[:preamble_start]
+            preamble_s = ''.join(preamble_lines)
+            if not preamble_s.strip():
+                return
+            # Adjust the bodies.
+            parent.b = preamble_s + parent.b
+            child1.b = child1.b.replace(preamble_s, '')
+            child1.b = child1.b.lstrip('\n')
+        #@-others
+
+        convert_docstrings(self.lines, parent, result_blocks)
+        move_module_preamble(self.lines, parent, result_blocks)
+
     #@+node:ekr.20231031033255.1: *3* rust_i.compute_headline
     def compute_headline(self, block: Block) -> str:
         """

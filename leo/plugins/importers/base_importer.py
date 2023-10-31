@@ -52,8 +52,10 @@ class Block:
 
     __str__ = __repr__
     #@+node:ekr.20230921061937.1: *3* Block.dump_lines
-    def dump_lines(self) -> None:
-        g.printObj(self.lines[self.start:self.end], tag=repr(self))
+    def dump_lines(self, tag: str = None) -> None:
+        if not tag:
+            tag = repr(self)
+        g.printObj(self.lines[self.start:self.end], tag=tag)
     #@+node:ekr.20230921061932.1: *3* Block.long_repr
     def long_repr(self) -> str:
         """A longer form of Block.__repr__"""
@@ -522,7 +524,7 @@ class Importer:
         """
         Importer.postprocess.  A hook for language-specific post-processing.
 
-        Python_Importer overrides this method.
+        The Python_Importer and Rust_Importer classes override this method.
 
         **Note**: The RecursiveImportController class contains a postpass that
                   adjusts headlines of *all* imported nodes.

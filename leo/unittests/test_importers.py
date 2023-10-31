@@ -3918,6 +3918,61 @@ class TestRust(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
+    #@+node:ekr.20231031161514.1: *3* TestRust.test_rust_postpass
+    def test_rust_postpass(self):
+
+        # Modified from ruff/crates/ruff_formatter/src/arguments.rs
+        s = textwrap.dedent(
+    """
+    use super::{Buffer, Format, Formatter};
+    use crate::FormatResult;
+
+    /// Mono-morphed type to format an object.
+    /// Used by the [`crate::format`!].
+    ///
+    /// This struct is similar to a dynamic dispatch (using `dyn Format`)
+    /// because it stores a pointer to the value.
+    pub struct Argument<'fmt, Context> {
+        /// The value to format stored as a raw pointer where `lifetime` stores the value's lifetime.
+        value: *const c_void,
+
+        /// Stores the lifetime of the value.
+        lifetime: PhantomData<&'fmt ()>,
+
+        /// The function pointer to `value`'s `Format::format` method
+        formatter: fn(*const c_void, &mut Formatter<'_, Context>) -> FormatResult<()>,
+    }
+    """)
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                    'use super::{Buffer, Format, Formatter};\n'
+                    'use crate::FormatResult;\n'
+                    '\n'
+                    '@\n'
+                    'Mono-morphed type to format an object.\n'
+                    'Used by the [`crate::format`!].\n'
+                    '\n'
+                    'This struct is similar to a dynamic dispatch (using `dyn Format`)\n'
+                    'because it stores a pointer to the value.\n'
+                    '@c\n'
+                    '@others\n'
+                    '@language rust\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, "struct Argument<'fmt, Context>",
+                    "pub struct Argument<'fmt, Context> {\n"
+                    "   /// The value to format stored as a raw pointer where `lifetime` stores the value's lifetime.\n"
+                    '    value: *const c_void,\n'
+                    '\n'
+                    '    /// Stores the lifetime of the value.\n'
+                    "    lifetime: PhantomData<&'fmt ()>,\n"
+                    '\n'
+                    "    /// The function pointer to `value`'s `Format::format` method\n"
+                    "    formatter: fn(*const c_void, &mut Formatter<'_, Context>) -> FormatResult<()>,\n"
+                    '}\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20231012142113.1: ** class TestScheme (BaseTestImporter)
 class TestScheme(BaseTestImporter):
