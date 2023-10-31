@@ -589,7 +589,7 @@ class ExternalFilesController:
         old_sum = self.checksum_d.get(path)
         new_sum = self.checksum(path)
         if new_sum == old_sum:
-            # The modtime changed, but it's contents didn't.
+            # The modtime changed, but its contents didn't.
             # Update the time, so we don't keep checking the checksums.
             # Return False so we don't prompt the user for an update.
             self.set_time(path, new_time)
@@ -634,16 +634,17 @@ class ExternalFilesController:
         if g.unitTesting or c not in g.app.commanders():
             return
         if not p:
-            g.trace('NO P')
             return
+        path_name = g.splitLongFileName(path)
+        kind = '@asis' if p.h.startswith('@asis') else '@nosent'
         g.app.gui.runAskOkDialog(
             c=c,
-            message='\n'.join([
-                f"{g.splitLongFileName(path)} has changed outside Leo.\n",
-                'Leo can not update this file automatically.\n',
-                f"This file was created from {p.h}.\n",
-                'Warning: refresh-from-disk will destroy all children.'
-            ]),
+            message=(
+                f"{path_name} has changed outside Leo.\n\n"
+                f"An {kind} node created this file.\n\n"
+                'Warning: Leo can not update this node!\n'
+                'Neither refresh-from-disk nor restarting Leo will work.\n'
+            ),
             title='External file changed',
         )
     #@-others

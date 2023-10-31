@@ -8421,7 +8421,7 @@ By default, the file's extension determines the importer::
 
 The ``@asis`` directive creates an external file without sentinels and without any expansions.
 
-Use this directive only when you must have complete control over every character of the external file. When writing ``@asis`` nodes, writes the body text of all nodes in outline order. Leo writes the body text *as is*, without recognizing section definitions, without expanding section references, and without treating directives specially in any way. In particular, Leo copies all directives, including ``@`` or ``@c`` directives, to the external file as text. **Warning**: Because the external file contains no sentinels, ``@nosent`` trees can not be updated from changes made outside of Leo. If you want this capability, use ``@clean`` instead.
+Use this directive only when you must have complete control over every character of the external file. When writing ``@asis`` nodes, writes the body text of all nodes in outline order. Leo writes the body text *as is*, without recognizing section definitions, without expanding section references, and without treating directives specially in any way. In particular, Leo copies all directives, including ``@`` or ``@c`` directives, to the external file as text. **Warning**: Because the external file contains no sentinels, ``@asis`` trees can not be updated from changes made outside of Leo. If you want this capability, use ``@clean`` instead.
 
 .. index::
     pair: @@ convention in @asis trees; Reference
