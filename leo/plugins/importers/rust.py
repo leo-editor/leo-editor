@@ -25,6 +25,7 @@ class Rust_Importer(Importer):
         ('impl', re.compile(r'\s*impl\b(.*?)$')),  # Use the rest of the line.
         ('fn', re.compile(r'\s*fn\s+(\w+)\s*\(')),
         ('fn', re.compile(r'\s*pub\s+fn\s+(\w+)\s*\(')),
+        ('mod', re.compile(r'\s*mod\s+(\w+)')),
         ('trait', re.compile(r'\s*trait\b(.*?)$')),
         ('trait', re.compile(r'\s*pub\s+trait\b(.*?)$')),
     )
@@ -54,7 +55,6 @@ class Rust_Importer(Importer):
                 if line.endswith('{'):
                     return i
                 i += 1
-            ### g.trace('Not Found')
             return None
 
         min_size = self.minimum_block_size
@@ -68,7 +68,6 @@ class Rust_Importer(Importer):
                 assert i == progress + 1, (i, progress)
                 m = pattern.match(line)
                 if m:
-                    ### g.trace(m)  ###
                     i = find_curly_bracket_line(i - 1)  # Rescan the line.
                     if i is None:
                         i = progress + 1
