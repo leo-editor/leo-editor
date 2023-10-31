@@ -3893,7 +3893,7 @@ class TestRust(BaseTestImporter):
                     '@language rust\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'fn AsFormat',
+            (1, 'trait AsFormat<Context>',
                     '/// Used to get an object that knows how to format this object.\n'
                     'pub trait AsFormat<Context> {\n'
                     "    type Format<'a>: ruff_formatter::Format<Context>\n"
@@ -3904,17 +3904,20 @@ class TestRust(BaseTestImporter):
                     "    fn format(&self) -> Self::Format<'_>;\n"
                     '}\n'
             ),
-            (1, 'impl AsFormat',
+            (1, 'impl <T, C> AsFormat<C> for &T',
                     '/// Implement [`AsFormat`] for references to types that implement [`AsFormat`].\n'
                     'impl<T, C> AsFormat<C> for &T\n'
                     'where\n'
                     '    T: AsFormat<C>,\n'
                     '{\n'
-                    "    type Format<'a> = T::Format<'a> where Self: 'a;\n"
+                    '    @others\n'
+                    '}\n'
+            ),
+            (2, 'fn format',
+                    "type Format<'a> = T::Format<'a> where Self: 'a;\n"
                     '\n'
-                    "    fn format(&self) -> Self::Format<'_> {\n"
-                    '        AsFormat::format(&**self)\n'
-                    '    }\n'
+                    "fn format(&self) -> Self::Format<'_> {\n"
+                    '    AsFormat::format(&**self)\n'
                     '}\n'
             ),
         )
