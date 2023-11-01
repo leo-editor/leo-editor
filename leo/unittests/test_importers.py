@@ -3948,6 +3948,11 @@ class TestRust(BaseTestImporter):
                     'use super::{Buffer, Format, Formatter};\n'
                     'use crate::FormatResult;\n'
                     '\n'
+                    '@others\n'
+                    '@language rust\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, "struct Argument<'fmt, Context>",
                     '@\n'
                     'Mono-morphed type to format an object.\n'
                     'Used by the [`crate::format`!].\n'
@@ -3955,13 +3960,8 @@ class TestRust(BaseTestImporter):
                     'This struct is similar to a dynamic dispatch (using `dyn Format`)\n'
                     'because it stores a pointer to the value.\n'
                     '@c\n'
-                    '@others\n'
-                    '@language rust\n'
-                    '@tabwidth -4\n'
-            ),
-            (1, "struct Argument<'fmt, Context>",
                     "pub struct Argument<'fmt, Context> {\n"
-                    "   /// The value to format stored as a raw pointer where `lifetime` stores the value's lifetime.\n"
+                    "    /// The value to format stored as a raw pointer where `lifetime` stores the value's lifetime.\n"
                     '    value: *const c_void,\n'
                     '\n'
                     '    /// Stores the lifetime of the value.\n'

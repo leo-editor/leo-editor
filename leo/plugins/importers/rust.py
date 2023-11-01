@@ -99,47 +99,69 @@ class Rust_Importer(Importer):
         **Note**: The RecursiveImportController class contains a postpass that
                   adjusts headlines of *all* imported nodes.
         """
-        ### g.trace(f"{len(result_blocks):3} blocks: {parent.h}")
-        ### g.printObj(result_blocks[0], tag=parent.h)
         if len(result_blocks) < 2:
             return
-        # result_blocks[1].dump_lines(tag=parent.h)
-        result_blocks[1].long_repr()
 
         #@+others  # Define helper functions.
-        #@+node:ekr.20231031162249.1: *4* function: convert_docstrings
-        def convert_docstrings(lines: list[str], parent: Position, result_blocks: list[Block]) -> None:
-            pass
-        #@+node:ekr.20231031162058.1: *4* function: find_docstring
-        def find_docstring(p: Position) -> Optional[str]:
-            """Creating a regex that returns a docstring is too tricky."""
-            delims = ('"""', "'''")
-            s_strip = p.b.strip()
-            if not s_strip:
-                return None
-            if not s_strip.startswith(delims):
-                return None
-            delim = delims[0] if s_strip.startswith(delims[0]) else delims[1]
+        #@+node:ekr.20231031162249.1: *4* function: convert_docstring
+        def convert_docstring(p: Position) -> None:
+            """Convert the leading comments of p.b to a docstring."""
+            if not p.b.strip():
+                return
             lines = g.splitLines(p.b)
-            if lines[0].count(delim) == 2:
-                return lines[0]
-            i = 1
-            while i < len(lines):
-                if delim in lines[i]:
-                    return ''.join(lines[: i + 1])
-                i += 1
-            return None
 
+            # Find all leading comment lines.
+            for i, line in enumerate(lines):
+                if line.strip() and not line.startswith('///'):
+                    break
+            # Don't convert a single comment line.
+            if i < 2:
+                return
+            tail = lines[i:]
+            leading_lines = lines[:i]
+            if not ''.join(leading_lines).strip():
+                return  # Defensive.
+            results = ['@\n']
+            for line in leading_lines:
+                if line.strip():
+                    if line.startswith('/// '):
+                        results.append(line[4:].rstrip() + '\n')
+                    else:
+                        results.append(line[3:].rstrip() + '\n')
+                else:
+                    results.append('\n')
+            results.append('@c\n')
+            p.b = ''.join(results) + ''.join(tail)
         #@+node:ekr.20231031162142.1: *4* function: move_module_preamble
         def move_module_preamble(lines: list[str], parent: Position, result_blocks: list[Block]) -> None:
-            """Move the preamble lines from the parent's first child to the start of parent.b."""
+            """
+            Move the preamble lines from the parent's first child to the start of parent.b.
+
+            For Rust, this consists of leading 'use' statements and any comments that precede them.
+            """
             child1 = parent.firstChild()
             if not child1:
                 return
-            # Compute the preamble.
-            preamble_start = max(0, result_blocks[1].start_body - 1)
-            preamble_lines = lines[:preamble_start]
-            preamble_s = ''.join(preamble_lines)
+            # Compute the potential preamble are all the leading lines.
+            potential_preamble_start = max(0, result_blocks[1].start_body - 1)
+            potential_preamble_lines = lines[:potential_preamble_start]
+
+            # Include only comment, blank and 'use' lines.
+            found_use = False
+            for i, line in enumerate(potential_preamble_lines):
+                stripped_line = line.strip()
+                if stripped_line.startswith('use'):
+                    found_use = True
+                elif stripped_line.startswith('///'):
+                    if found_use:
+                        break
+                elif stripped_line:
+                    break
+            if not found_use:
+                # Assume all the comments belong to the first node.
+                return
+            real_preamble_lines = lines[:i]
+            preamble_s = ''.join(real_preamble_lines)
             if not preamble_s.strip():
                 return
             # Adjust the bodies.
@@ -148,9 +170,9 @@ class Rust_Importer(Importer):
             child1.b = child1.b.lstrip('\n')
         #@-others
 
-        convert_docstrings(self.lines, parent, result_blocks)
         move_module_preamble(self.lines, parent, result_blocks)
-
+        for p in parent.self_and_subtree():
+            convert_docstring(p)
     #@+node:ekr.20231031033255.1: *3* rust_i.compute_headline
     def compute_headline(self, block: Block) -> str:
         """
