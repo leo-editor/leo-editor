@@ -16,6 +16,8 @@ if TYPE_CHECKING:
 class Rust_Importer(Importer):
 
     language = 'rust'
+    
+    minimum_block_size = 0
 
     # Single quotes do *not* start strings.
     string_list: list[str] = ['"']
@@ -171,8 +173,9 @@ class Rust_Importer(Importer):
         #@-others
 
         move_module_preamble(self.lines, parent, result_blocks)
-        for p in parent.self_and_subtree():
-            convert_docstring(p)
+        if 0:
+            for p in parent.self_and_subtree():
+                convert_docstring(p)
     #@+node:ekr.20231031033255.1: *3* rust_i.compute_headline
     def compute_headline(self, block: Block) -> str:
         """
