@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class Rust_Importer(Importer):
 
     language = 'rust'
-    
+
     minimum_block_size = 0
 
     # Single quotes do *not* start strings.
