@@ -132,9 +132,21 @@ def rust_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="'", end="'",
           no_line_break=True)
 
-def rust_raw_string_literal(colorer, s, i):  # #3631
-    # https://doc.rust-lang.org/reference/tokens.html#raw-string-literals
+# #3631
+# https://doc.rust-lang.org/reference/tokens.html#raw-string-literals
+# Up to 255 '#' are allowed. Ruff only uses 1 and 3.
+
+def rust_raw_string_literal3(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal2", begin='r###"', end='"###')
+
+def rust_raw_string_literal2(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal2", begin='r##"', end='"##')
+
+def rust_raw_string_literal1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin='r#"', end='"#')
+
+def rust_at_operator(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
 
 def rust_rule5(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="keyword2", seq="##")
@@ -237,7 +249,7 @@ rulesDict1 = {
     "<": [rust_rule11, rust_rule17],
     "=": [rust_rule8],
     ">": [rust_rule10, rust_rule16],
-    "@": [rust_rule27],
+    "@": [rust_at_operator],
     "A": [rust_rule27],
     "B": [rust_rule27],
     "C": [rust_rule27],
@@ -283,7 +295,12 @@ rulesDict1 = {
     "o": [rust_rule27],
     "p": [rust_rule27],
     "q": [rust_rule27],
-    "r": [rust_raw_string_literal, rust_rule27],
+    "r": [
+        rust_raw_string_literal3,
+        rust_raw_string_literal2,
+        rust_raw_string_literal1,
+        rust_rule27,
+    ],
     "s": [rust_rule27],
     "t": [rust_rule27],
     "u": [rust_rule27],
