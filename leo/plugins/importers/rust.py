@@ -19,8 +19,7 @@ class Rust_Importer(Importer):
 
     minimum_block_size = 0
 
-    # Single quotes do *not* start strings.
-    string_list: list[str] = ['"']
+    string_list: list[str] = []  # Not used.
 
     # None of these patterns need end with '{' on the same line.
     block_patterns = (
@@ -58,12 +57,15 @@ class Rust_Importer(Importer):
         Changes from Importer.delete_comments_and_strings:
 
         - Block comments may be nested.
-        - Raw string literals.  See starts_raw_string_literal helper for details.
+        - Raw string literals. See the starts_raw_string_literal helper for details.
         """
+        i = 0
+        s = ''.join(lines)
+        result = []
 
-        #@+others  # Define helper function.
-        #@+node:ekr.20231104201507.1: *4* starts_raw_string_literal
-        def starts_raw_string_literal(i: int, line: str) -> int:
+        #@+others  # Define helper functions.
+        #@+node:ekr.20231105045331.1: *4* rust_i function: is_raw_string_literal
+        def is_raw_string_literal() -> int:
             """
             Return the number of '#' characters if line[i] starts w raw_string_literal.
 
@@ -76,77 +78,147 @@ class Rust_Importer(Importer):
             character, followed by the same number of U+0023 (#) characters that
             preceded the opening U+0022 (double-quote) character.
             """
-            if line[i] != 'r':
-                return 0
+            nonlocal i
+            assert s[i] == 'r', repr(s[i])
             i += 1
             count = 0
-            while i < len(line) and line[i] == '#':
+            while i < len(s) and s[i] == '#':
                 count += 1
                 i += 1
-            if not (0 < count < 256):
-                return 0
-            return count if i < len(line) and line[i] == '"' else 0
+            return count if 0 < count < 256 and next() == '"' else 0
+        #@+node:ekr.20231105043204.1: *4* rust_i function: oops
+        def oops(message: str) -> None:
+            g.es_print(message)
+        #@+node:ekr.20231105043049.1: *4* rust_i function: scan_character_constant
+        def scan_character_constant() -> None:
+            assert s[i] == "'", repr(s[i])
+            j = i
+            skip()
+            if next() == '\\':
+                skip()
+            if next() == "'":  # Character constants
+                oops(f"Empty character constant:  {s[j:j+2]!r}")
+            else:
+                skip()
+                if next() == "'":
+                    skip()
+                else:
+                    oops(f"Run on character constant: {s[j:j+4]!r}")
+        #@+node:ekr.20231105043500.1: *4* rust_i function: scan_possible_comments
+        def scan_possible_comments() -> None:
+            nonlocal i
+            assert s[i] == '/', repr(s[i])
+            i += 1  # Skip the '/'
+            if next() == '/':  # Single-line comment.
+                skip2()
+                while i < len(s) and next() != '\n':
+                    skip()
+                if next() == '\n':
+                    add()
+            elif next() == '*':  # Block comment.
+                j = i
+                level = 1  # Block comments may be nested!
+                skip2()
+                while i + 2 < len(s):
+                    progress = i
+                    if s[i] == '/' and s[i + 1] == '*':
+                        level += 1
+                        skip2()
+                    elif s[i] == '*' and s[i + 1] == '/':
+                        level -= 1
+                        skip2()
+                        if level == 0:
+                            break
+                    else:
+                        skip()
+                    assert i > progress, repr(s[j:])
+                else:
+                    oops(f"Bad block comment: {s[j:]!r}")
+            else:
+                add()  # Just add the '/'
+
+        #@+node:ekr.20231105043337.1: *4* rust_i function: scan_string_constant
+        def scan_string_constant() -> None:
+            assert s[i] == '"', repr(s[i])
+            j = i
+            skip()
+            while i < len(s):
+                ch = next()
+                skip()
+                if ch == '\\':
+                    skip()
+                elif ch == '"':
+                    break
+            else:
+                oops(f"Run-on string: {s[j:j+10]!r}")
+        #@+node:ekr.20231105045459.1: *4* rust_i function: scan_raw_string_literal
+        def scan_raw_string_literal(n: int) -> None:
+            nonlocal i
+            assert s[i - n - 1] == 'r'
+            j = i
+            target = '"' + '#' * n
+            while i + len(target) < len(s):
+                if g.match(s, i, target):
+                    skip_n(len(target))
+                    break
+                else:
+                    skip()
+            else:
+                oops(f"Unterminated raw string literal: {s[j:]!r}")
+        #@+node:ekr.20231105042315.1: *4* rust_i functions: scanning
+        def add() -> None:
+            nonlocal i
+            if i < len(s):
+                result.append(s[i])
+                i += 1
+
+        def add2() -> None:
+            add()
+            add()
+
+        def next() -> str:
+            return s[i] if i < len(s) else ''
+
+        def skip() -> None:
+            nonlocal i
+            if i < len(s):
+                result.append('\n' if s[i] == '\n' else ' ')
+                i += 1
+
+        def skip2() -> None:
+            skip_n(2)
+
+        def skip_n(n: int) -> None:
+            while n > 0:
+                n -= 1
+                skip()
         #@-others
 
-        string_delims = self.string_list
-        line_comment, start_comment, end_comment = g.set_delims_from_language(self.language)
-        target = ''  # The string ending a multi-line comment or string.
-        escape = '\\'
-        result = []
-        in_raw_string_literal = False  # Raw string literals do not process any escapes.
-        for line in lines:
-            result_line, skip_count = [], 0
-            for i, ch in enumerate(line):
-                if ch == '\n':
-                    break  # Avoid appending the newline twice.
-                elif skip_count > 0:
-                    # Replace the character with a blank.
-                    result_line.append(' ')
-                    skip_count -= 1
-                elif ch == escape and not in_raw_string_literal:
-                    # #3620: test for escape before testing for target.
-                    #        But not in raw string literals.
-                    assert skip_count == 0
-                    result_line.append(' ')
-                    skip_count = 1
-                elif target:
-                    result_line.append(' ')
-                    # Clear the target, but skip any remaining characters of the target.
-                    if g.match(line, i, target):
-                        skip_count = max(0, (len(target) - 1))
-                        target = ''
-                        in_raw_string_literal = False
-                elif line_comment and line.startswith(line_comment, i):
-                    # Skip the rest of the line. It can't contain significant characters.
-                    break
-                elif any(g.match(line, i, z) for z in string_delims):
-                    # Allow multi-character string delimiters.
-                    result_line.append(' ')
-                    for z in string_delims:
-                        if g.match(line, i, z):
-                            target = z
-                            skip_count = max(0, (len(z) - 1))
-                            break
-                elif start_comment and g.match(line, i, start_comment):
-                    result_line.append(' ')
-                    target = end_comment
-                    skip_count = max(0, len(start_comment) - 1)
-                elif ch == 'r' and starts_raw_string_literal(i, line):
-                    result_line.append(' ')
-                    pound_signs = starts_raw_string_literal(i, line)
-                    skip_count = pound_signs + 1
-                    # The raw string ends with " followed by '#' * pound_signs.
-                    target = '"' + '#' * pound_signs
-                    in_raw_string_literal = True  # Don't process escapes.
+        while i < len(s):
+            ch = s[i]
+            if ch == '\n':
+                add()
+            elif ch == '\\':
+                add2()
+            elif ch == "'":
+                scan_character_constant()
+            elif ch == '"':
+                scan_string_constant()
+            elif ch == '/':
+                scan_possible_comments()
+            elif ch == 'r':
+                n = is_raw_string_literal()
+                if n > 0:
+                    skip_n(n + 1)
+                    scan_raw_string_literal(n)
                 else:
-                    result_line.append(ch)
-
-            # End the line and append it to the result.
-            # Strip trailing whitespace. It can't affect significant characters.
-            end_s = '\n' if line.endswith('\n') else ''
-            result.append(''.join(result_line).rstrip() + end_s)
-        assert len(result) == len(lines)  # A crucial invariant.
-        return result
+                    add()
+            else:
+                add()
+        result_str = ''.join(result)
+        result_lines = g.splitLines(result_str)
+        assert len(result_lines) == len(lines)  # A crucial invariant.
+        return result_lines
     #@+node:ekr.20231031020646.1: *3* rust_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
