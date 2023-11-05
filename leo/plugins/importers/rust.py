@@ -35,6 +35,118 @@ class Rust_Importer(Importer):
     )
 
     #@+others
+    #@+node:ekr.20231031033255.1: *3* rust_i.compute_headline
+    def compute_headline(self, block: Block) -> str:
+        """
+        Rust_Importer.compute_headline.
+
+        Return the headline for the given block.
+
+        Subclasses may override this method as necessary.
+        """
+        name_s = block.name.replace('{', '').strip() or f"unnamed {block.kind}"
+        return f"{block.kind} {name_s}"
+    #@+node:ekr.20231104195248.1: *3* rust_i.delete_comments_and_strings
+    def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
+        """
+        Rust_Importer.delete_comments_and_strings:
+
+        Return **guide-lines** from the lines, replacing strings and multi-line
+        comments with spaces, thereby preserving (within the guide-lines) the
+        position of all significant characters.
+
+        Changes from Importer.delete_comments_and_strings:
+
+        - Block comments may be nested.
+        - Raw string literals.  See starts_raw_string_literal helper for details.
+        """
+
+        #@+others  # Define helper function.
+        #@+node:ekr.20231104201507.1: *4* starts_raw_string_literal
+        def starts_raw_string_literal(i: int, line: str) -> int:
+            """
+            Return the number of '#' characters if line[i] starts w raw_string_literal.
+
+            Raw string start with the character U+0072 (r), followed by fewer than
+            256 of the character U+0023 (#) and a U+0022 (double-quote) character.
+
+            Raw string literals do not process any escapes.
+
+            The raw string body is terminated only by another U+0022 (double-quote)
+            character, followed by the same number of U+0023 (#) characters that
+            preceded the opening U+0022 (double-quote) character.
+            """
+            if line[i] != 'r':
+                return 0
+            i += 1
+            count = 0
+            while i < len(line) and line[i] == '#':
+                count += 1
+                i += 1
+            if not (0 < count < 256):
+                return 0
+            return count if i < len(line) and line[i] == '"' else 0
+        #@-others
+
+        string_delims = self.string_list
+        line_comment, start_comment, end_comment = g.set_delims_from_language(self.language)
+        target = ''  # The string ending a multi-line comment or string.
+        escape = '\\'
+        result = []
+        in_raw_string_literal = False  # Raw string literals do not process any escapes.
+        for line in lines:
+            result_line, skip_count = [], 0
+            for i, ch in enumerate(line):
+                if ch == '\n':
+                    break  # Avoid appending the newline twice.
+                elif skip_count > 0:
+                    # Replace the character with a blank.
+                    result_line.append(' ')
+                    skip_count -= 1
+                elif ch == escape and not in_raw_string_literal:
+                    # #3620: test for escape before testing for target.
+                    #        But not in raw string literals.
+                    assert skip_count == 0
+                    result_line.append(' ')
+                    skip_count = 1
+                elif target:
+                    result_line.append(' ')
+                    # Clear the target, but skip any remaining characters of the target.
+                    if g.match(line, i, target):
+                        skip_count = max(0, (len(target) - 1))
+                        target = ''
+                        in_raw_string_literal = False
+                elif line_comment and line.startswith(line_comment, i):
+                    # Skip the rest of the line. It can't contain significant characters.
+                    break
+                elif any(g.match(line, i, z) for z in string_delims):
+                    # Allow multi-character string delimiters.
+                    result_line.append(' ')
+                    for z in string_delims:
+                        if g.match(line, i, z):
+                            target = z
+                            skip_count = max(0, (len(z) - 1))
+                            break
+                elif start_comment and g.match(line, i, start_comment):
+                    result_line.append(' ')
+                    target = end_comment
+                    skip_count = max(0, len(start_comment) - 1)
+                elif ch == 'r' and starts_raw_string_literal(i, line):
+                    result_line.append(' ')
+                    pound_signs = starts_raw_string_literal(i, line)
+                    skip_count = pound_signs + 1
+                    # The raw string ends with " followed by '#' * pound_signs.
+                    target = '"' + '#' * pound_signs
+                    in_raw_string_literal = True  # Don't process escapes.
+                else:
+                    result_line.append(ch)
+
+            # End the line and append it to the result.
+            # Strip trailing whitespace. It can't affect significant characters.
+            end_s = '\n' if line.endswith('\n') else ''
+            result.append(''.join(result_line).rstrip() + end_s)
+        assert len(result) == len(lines)  # A crucial invariant.
+        return result
     #@+node:ekr.20231031020646.1: *3* rust_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
@@ -176,17 +288,6 @@ class Rust_Importer(Importer):
         if 0:
             for p in parent.self_and_subtree():
                 convert_docstring(p)
-    #@+node:ekr.20231031033255.1: *3* rust_i.compute_headline
-    def compute_headline(self, block: Block) -> str:
-        """
-        Rust_Importer.compute_headline.
-
-        Return the headline for the given block.
-
-        Subclasses may override this method as necessary.
-        """
-        name_s = block.name.replace('{', '').strip() or f"unnamed {block.kind}"
-        return f"{block.kind} {name_s}"
     #@-others
 #@-others
 
