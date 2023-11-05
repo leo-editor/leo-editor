@@ -79,13 +79,13 @@ class Rust_Importer(Importer):
             preceded the opening U+0022 (double-quote) character.
             """
             nonlocal i
-            j = i
-            assert s[j] == 'r', repr(s[i])
+            j = i  # Don't change i here!
+            assert s[j] == 'r', repr(s[j])
             j += 1
             if j < len(s) and s[j] != '#':
                 return 0
             count = 0
-            while next() == '#':
+            while j < len(s) and s[j] == '#':
                 count += 1
                 j += 1
             if j >= len(s) or s[j] != '"':
