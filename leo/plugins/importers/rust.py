@@ -119,14 +119,13 @@ class Rust_Importer(Importer):
         def skip_possible_comments() -> None:
             nonlocal i
             assert s[i] == '/', repr(s[i])
-            i += 1  # Skip the '/'
-            if next() == '/':  # Single-line comment.
+            j = i
+            next_ch = s[i + 1] if i + 1 < len(s) else ''
+            if next_ch == '/':  # Single-line comment.
                 skip2()
                 while i < len(s) and next() != '\n':
                     skip()
-                if next() == '\n':
-                    add()
-            elif next() == '*':  # Block comment.
+            elif next_ch == '*':  # Block comment.
                 j = i
                 level = 1  # Block comments may be nested!
                 skip2()
@@ -146,12 +145,13 @@ class Rust_Importer(Importer):
                 else:
                     oops(f"Bad block comment: {s[j:]!r}")
             else:
+                assert s[i] == '/', repr(s[i])
                 add()  # Just add the '/'
-
         #@+node:ekr.20231105045459.1: *4* rust_i function: skip_raw_string_literal
         def skip_raw_string_literal(n: int) -> None:
             nonlocal i
             assert s[i - n - 1] == 'r'
+            assert s[i - n] == '#'
             j = i
             target = '"' + '#' * n
             while i + len(target) < len(s):
