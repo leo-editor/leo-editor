@@ -79,33 +79,44 @@ class Rust_Importer(Importer):
             preceded the opening U+0022 (double-quote) character.
             """
             nonlocal i
-            assert s[i] == 'r', repr(s[i])
-            i += 1
+            j = i
+            assert s[j] == 'r', repr(s[i])
+            j += 1
+            if j < len(s) and s[j] != '#':
+                return 0
             count = 0
-            while i < len(s) and s[i] == '#':
+            while next() == '#':
                 count += 1
-                i += 1
-            return count if 0 < count < 256 and next() == '"' else 0
+                j += 1
+            if j >= len(s) or s[j] != '"':
+                return 0
+            return count if 0 < count < 256 else 0
         #@+node:ekr.20231105043204.1: *4* rust_i function: oops
         def oops(message: str) -> None:
             g.es_print(message)
-        #@+node:ekr.20231105043049.1: *4* rust_i function: scan_character_constant
-        def scan_character_constant() -> None:
+        #@+node:ekr.20231105043049.1: *4* rust_i function: skip_possible_character_constant
+        def skip_possible_character_constant() -> None:
+            """
+            Rust uses ' in several ways.
+            Valid character constants:
+                'x'
+                '\y'
+            """
+            nonlocal i
             assert s[i] == "'", repr(s[i])
-            j = i
-            skip()
-            if next() == '\\':
-                skip()
-            if next() == "'":  # Character constants
-                oops(f"Empty character constant:  {s[j:j+2]!r}")
+            if i + 4 < len(s) and s[i + 1] == '\\' and s[i + 3] == "'":
+                # Skip '\x'
+                skip_n(4)
+            elif i + 3 < len(s) and s[i + 1] != '\\' and s[i + 2] == "'":
+                # Skip 'x'
+                skip_n(3)
+            elif i + 2 < len(s) and s[i + 1] == "'":
+                # Skip an empty character constant: ''
+                skip_n(2)
             else:
-                skip()
-                if next() == "'":
-                    skip()
-                else:
-                    oops(f"Run on character constant: {s[j:j+4]!r}")
-        #@+node:ekr.20231105043500.1: *4* rust_i function: scan_possible_comments
-        def scan_possible_comments() -> None:
+                add()  # Not a character constant.
+        #@+node:ekr.20231105043500.1: *4* rust_i function: skip_possible_comments
+        def skip_possible_comments() -> None:
             nonlocal i
             assert s[i] == '/', repr(s[i])
             i += 1  # Skip the '/'
@@ -137,22 +148,8 @@ class Rust_Importer(Importer):
             else:
                 add()  # Just add the '/'
 
-        #@+node:ekr.20231105043337.1: *4* rust_i function: scan_string_constant
-        def scan_string_constant() -> None:
-            assert s[i] == '"', repr(s[i])
-            j = i
-            skip()
-            while i < len(s):
-                ch = next()
-                skip()
-                if ch == '\\':
-                    skip()
-                elif ch == '"':
-                    break
-            else:
-                oops(f"Run-on string: {s[j:j+10]!r}")
-        #@+node:ekr.20231105045459.1: *4* rust_i function: scan_raw_string_literal
-        def scan_raw_string_literal(n: int) -> None:
+        #@+node:ekr.20231105045459.1: *4* rust_i function: skip_raw_string_literal
+        def skip_raw_string_literal(n: int) -> None:
             nonlocal i
             assert s[i - n - 1] == 'r'
             j = i
@@ -165,6 +162,20 @@ class Rust_Importer(Importer):
                     skip()
             else:
                 oops(f"Unterminated raw string literal: {s[j:]!r}")
+        #@+node:ekr.20231105043337.1: *4* rust_i function: skip_string_constant
+        def skip_string_constant() -> None:
+            assert s[i] == '"', repr(s[i])
+            j = i
+            skip()
+            while i < len(s):
+                ch = next()
+                skip()
+                if ch == '\\':
+                    skip()
+                elif ch == '"':
+                    break
+            else:
+                oops(f"Run-on string: {s[j:j+10]!r}")
         #@+node:ekr.20231105042315.1: *4* rust_i functions: scanning
         def add() -> None:
             nonlocal i
@@ -201,16 +212,16 @@ class Rust_Importer(Importer):
             elif ch == '\\':
                 add2()
             elif ch == "'":
-                scan_character_constant()
+                skip_possible_character_constant()
             elif ch == '"':
-                scan_string_constant()
+                skip_string_constant()
             elif ch == '/':
-                scan_possible_comments()
+                skip_possible_comments()
             elif ch == 'r':
                 n = is_raw_string_literal()
                 if n > 0:
                     skip_n(n + 1)
-                    scan_raw_string_literal(n)
+                    skip_raw_string_literal(n)
                 else:
                     add()
             else:
@@ -218,6 +229,7 @@ class Rust_Importer(Importer):
         result_str = ''.join(result)
         result_lines = g.splitLines(result_str)
         assert len(result_lines) == len(lines)  # A crucial invariant.
+        # g.printObj(result_lines, tag=f"{g.my_name()}")
         return result_lines
     #@+node:ekr.20231031020646.1: *3* rust_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
