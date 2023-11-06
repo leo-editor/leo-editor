@@ -34,12 +34,6 @@ class Rust_Importer(Importer):
     )
 
     #@+others
-    #@+node:ekr.20231105235637.1: *3* rust_i.check_blanks_and_tabs
-    def check_blanks_and_tabs(self, lines: list[str]) -> bool:  # pragma: no cover (missing test)
-        """
-        Rust_Importer.check_blanks_and_tabs: skip checks for intermixed blanks and tabs.
-        """
-        return True
     #@+node:ekr.20231031033255.1: *3* rust_i.compute_headline
     def compute_headline(self, block: Block) -> str:
         """
