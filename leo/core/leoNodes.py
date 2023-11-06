@@ -2552,7 +2552,6 @@ class VNode:
         # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535
         # API allows headlines to contain newlines.
         v = self
-        ### g.trace(repr(s), g.callers())  ###
         if isinstance(s, str):
             v._headString = s.replace('\n', '')
             v.updateIcon()

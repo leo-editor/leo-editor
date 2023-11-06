@@ -1186,7 +1186,6 @@ class LeoQtTree(leoFrame.LeoTree):
         Just end editing of the presently-selected QLineEdit!
         This will trigger the editingFinished_callback defined in createEditorForItem.
         """
-        ### g.trace(g.callers())
         item = self.getCurrentItem()
         if not item:
             return
