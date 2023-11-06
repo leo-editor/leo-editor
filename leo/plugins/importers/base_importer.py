@@ -602,7 +602,6 @@ class Importer:
         """
         kind = 'tabs' if self.tab_width > 0 else 'blanks'
         kind2 = 'blanks' if self.tab_width > 0 else 'tabs'
-        fn = g.shortFileName(self.root.h)
         count, result, tab_width = 0, [], self.tab_width
         if tab_width < 0:  # Convert tabs to blanks.
             for n, line in enumerate(lines):
@@ -620,7 +619,7 @@ class Importer:
                     count += 1
                 result.append(s)
         if count and not g.unitTesting:
-            g.es(f"changed leading {kind2} to {kind} in {count} line{g.plural(count)} in {fn}")
+            g.es_print(f"{self.root.h}:\nchanged leading {kind2} to {kind} in {count} line{g.plural(count)}")
         return result
     #@+node:ekr.20230529075138.7: *3* i: Utils
     # Subclasses are unlikely ever to need to override these methods.
