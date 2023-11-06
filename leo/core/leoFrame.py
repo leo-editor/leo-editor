@@ -11,6 +11,7 @@ These classes should be overridden to create frames for a particular gui.
 from __future__ import annotations
 from collections.abc import Callable
 import os
+import re
 import string
 from typing import Any, Optional, Union
 from typing import TYPE_CHECKING
@@ -1423,14 +1424,9 @@ class LeoTree:
         s = w.getAllText()
         #@+<< truncate s if it has multiple lines >>
         #@+node:ekr.20040803072955.94: *5* << truncate s if it has multiple lines >>
-        # Remove trailing newlines before warning of truncation.
-        while s and s[-1] == '\n':
-            s = s[:-1]
-        # Warn if there are multiple lines.
-        i = s.find('\n')
-        if i > -1:
-            g.warning("truncating headline to one line")
-            s = s[:i]
+        # #3633: Replace newlines with a blank.
+        if '\n' in s:
+            s = re.sub(r'\s*\n\s*', ' ', s).replace('  ', ' ').rstrip()
         limit = 1000
         if len(s) > limit:
             g.warning("truncating headline to", limit, "characters")
@@ -1726,7 +1722,6 @@ class LeoTreeTab:
     #@+node:ekr.20070317073755: *3* LeoTreeTab: Must be defined in subclasses
     def createControl(self) -> Wrapper:  # pylint: disable=useless-return
         raise NotImplementedError
-        return None
 
     def createTab(self, tabName: str, createText: bool = True, widget: Widget = None, select: bool = True) -> None:
         raise NotImplementedError
