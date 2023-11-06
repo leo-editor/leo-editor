@@ -96,26 +96,27 @@ class Rust_Importer(Importer):
             full_message = f"{self.root.h} line: {i}:\n{message}"
             g.es_print(full_message)
         #@+node:ekr.20231105043049.1: *4* rust_i function: skip_possible_character_constant
+        length10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]\}'")  # '\u{7FFF}'
+        length6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")  # '\x7F'
+        length4_pat = re.compile(r"'\\[\\\"'nrt0]'")  # '\n', '\r', '\t', '\\', '\0', '\'', '\"'
+
         def skip_possible_character_constant() -> None:
             """
             Rust uses ' in several ways.
             Valid character constants:
-                'x'
-                '\y'
+            https://doc.rust-lang.org/reference/tokens.html#literals
             """
             nonlocal i
             assert s[i] == "'", repr(s[i])
-            if i + 4 < len(s) and s[i + 1] == '\\' and s[i + 3] == "'":
-                # Skip '\x'
-                skip_n(4)
-            elif i + 3 < len(s) and s[i + 1] != '\\' and s[i + 2] == "'":
-                # Skip 'x'
-                skip_n(3)
-            elif i + 2 < len(s) and s[i + 1] == "'":
-                # Skip an empty character constant: ''
-                skip_n(2)
-            else:
-                add()  # Not a character constant.
+            for n, pattern in (
+                (10, length10_pat),
+                (6, length6_pat),
+                (4, length4_pat),
+            ):
+                if pattern.match(s, i):
+                    skip_n(n)
+                    return
+            add()  # Not a character constant.
         #@+node:ekr.20231105043500.1: *4* rust_i function: skip_possible_comments
         def skip_possible_comments() -> None:
             nonlocal i
