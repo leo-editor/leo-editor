@@ -25,6 +25,7 @@ class Rust_Importer(Importer):
     block_patterns = (
         ('fn', re.compile(r'\s*fn\s+(\w+)\s*\(')),
         ('fn', re.compile(r'\s*pub\s+fn\s+(\w+)\s*\(')),
+        ('fn', re.compile(r'\s*pub\s*\(crate\)\s*fn\s+(\w+)\s*\(')),
         ('impl', re.compile(r'\s*impl\b(.*?)$')),  # Use the rest of the line.
         ('mod', re.compile(r'\s*mod\s+(\w+)')),
         ('struct', re.compile(r'\s*struct\b(.*?)$')),
