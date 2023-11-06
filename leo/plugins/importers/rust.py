@@ -206,9 +206,14 @@ class Rust_Importer(Importer):
                 skip()
         #@-others
 
+        line_number, line_start = 1, 0  # For traces.
         while i < len(s):
             ch = s[i]
             if ch == '\n':
+                if 0:
+                    g.trace(f"{line_number:3} {s[line_start:i+1]!r}")
+                line_start = i + 1
+                line_number += 1
                 add()
             elif ch == '\\':
                 add2()
