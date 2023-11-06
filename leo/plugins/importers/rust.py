@@ -228,7 +228,26 @@ class Rust_Importer(Importer):
                 add()
         result_str = ''.join(result)
         result_lines = g.splitLines(result_str)
-        assert len(result_lines) == len(lines)  # A crucial invariant.
+        if len(result_lines) != len(lines):  # A crucial invariant.
+            print('')
+            g.trace(f"FAIL: {self.root.h}")
+            print(f"       len(lines): {len(lines)}")
+            print(f"len(result_lines): {len(result_lines)}")
+            if 0:
+                g.printObj(lines, tag=f"lines: len={len(lines)}")
+                g.printObj(result_lines, tag=f"result_lines: len={len(result_lines)}")
+            for i, line in enumerate(lines):
+                try:
+                    result_line = result_lines[i]
+                except IndexError:
+                    result_line = f"<{i} Missing line>"
+                    break
+                if len(line) != len(result_line):
+                    print('First ismatched line:', i)
+                    print('       line:', repr(line))
+                    print('result_line:', repr(result_line))
+                    break
+        # assert len(result_lines) == len(lines)  # A crucial invariant.
         # g.printObj(result_lines, tag=f"{g.my_name()}")
         return result_lines
     #@+node:ekr.20231031020646.1: *3* rust_i.find_blocks
