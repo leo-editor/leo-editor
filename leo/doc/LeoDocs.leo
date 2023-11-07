@@ -1816,6 +1816,7 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20230901233131.1"><vh>Leo 6.7.5 release notes</vh></v>
 <v t="ekr.20230703101804.1"><vh>Leo 6.7.4 release notes</vh></v>
 <v t="ekr.20230409052507.1"><vh>Leo 6.7.3 release notes</vh></v>
 <v t="ekr.20230110152131.1"><vh>Leo 6.7.2 release notes</vh></v>
@@ -2508,8 +2509,7 @@
 </v>
 </v>
 <v t="ekr.20230901233844.1"></v>
-<v t="ekr.20230901233131.1"><vh>Leo 6.7.5 release notes</vh></v>
-<v t="ekr.20131009065148.31758"></v>
+<v t="ekr.20230901233131.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32582,6 +32582,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - PR #3519: Make the mark-node-and-parents and unmark-node-and-parents commands undoable.
 - PR #3503: Fix bug involving back slashes in search patterns.
 - PR #3499: Retire the read-outline-only command.
+- PR #3607: Add scheme importer
 - Fix several other minor bugs.
 
 **Links**
@@ -32618,18 +32619,19 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **Other improvements**
 
-.. _`PR #3560`: https://github.com/leo-editor/leo-editor/pull/3560
-.. _`PR #3552`: https://github.com/leo-editor/leo-editor/pull/3552
-.. _`PR #3541`: https://github.com/leo-editor/leo-editor/pull/3541
-.. _`PR #3538`: https://github.com/leo-editor/leo-editor/pull/3538
-.. _`PR #3533`: https://github.com/leo-editor/leo-editor/pull/3533
-.. _`PR #3531`: https://github.com/leo-editor/leo-editor/pull/3531
-.. _`PR #3528`: https://github.com/leo-editor/leo-editor/pull/3528
-.. _`PR #3525`: https://github.com/leo-editor/leo-editor/pull/3525
-.. _`PR #3521`: https://github.com/leo-editor/leo-editor/pull/3521
-.. _`PR #3519`: https://github.com/leo-editor/leo-editor/pull/3519
-.. _`PR #3503`: https://github.com/leo-editor/leo-editor/pull/3503
 .. _`PR #3499`: https://github.com/leo-editor/leo-editor/pull/3499
+.. _`PR #3503`: https://github.com/leo-editor/leo-editor/pull/3503
+.. _`PR #3519`: https://github.com/leo-editor/leo-editor/pull/3519
+.. _`PR #3521`: https://github.com/leo-editor/leo-editor/pull/3521
+.. _`PR #3525`: https://github.com/leo-editor/leo-editor/pull/3525
+.. _`PR #3528`: https://github.com/leo-editor/leo-editor/pull/3528
+.. _`PR #3531`: https://github.com/leo-editor/leo-editor/pull/3531
+.. _`PR #3533`: https://github.com/leo-editor/leo-editor/pull/3533
+.. _`PR #3538`: https://github.com/leo-editor/leo-editor/pull/3538
+.. _`PR #3541`: https://github.com/leo-editor/leo-editor/pull/3541
+.. _`PR #3552`: https://github.com/leo-editor/leo-editor/pull/3552
+.. _`PR #3560`: https://github.com/leo-editor/leo-editor/pull/3560
+.. _`PR #3607`: https://github.com/leo-editor/leo-editor/pull/3607
 
 - `PR #3560`_: Retire the g.SherlockTracer class.
 - `PR #3552`_: Clear dirty bits when writing sqLite DBs.
@@ -32643,6 +32645,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - `PR #3519`_: Make the mark-node-and-parents and unmark-node-and-parents commands undoable.
 - `PR #3503`_: Fix bug involving back slashes in search patterns.
 - `PR #3499`_: Retire the read-outline-only command.
+- `PR #3607`_: Add Scheme importer.
 </t>
 <t tx="ekr.20230908140206.569">This "fallow" period prepared contained important performance improvements and paved the way for ``leoInteg``.
 
