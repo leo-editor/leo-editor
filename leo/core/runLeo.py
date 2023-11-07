@@ -65,6 +65,7 @@ def profile_leo():
     # Work around a Python distro bug: can fail on Ubuntu.
     try:
         import pstats
+        from leo.core import leoGlobals as g
     except ImportError:
         g.es_print('can not import pstats: this is a Python distro bug')
         g.es_print(
