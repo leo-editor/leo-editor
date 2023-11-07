@@ -32555,7 +32555,7 @@ Try these examples!
 The "Key bindings" node in this file:
 unl:gnx://CheatSheet.leo#ekr.20131019184243.16685
 
-The "6.7.4 release notes" node in LeoDocs.leo.
+The "6.7.5 release notes" node in LeoDocs.leo.
 unl:gnx://LeoDocs.leo#ekr.20230703101804.1
 </t>
 <t tx="ekr.20230901233131.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.5 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).

@@ -1937,8 +1937,6 @@
 </v>
 <v t="ekr.20110611092035.16483"><vh>mod_scripting plugin</vh>
 <v t="tbrown.20100524101550.4704"><vh>@string mod-scripting-subtext = ▼</vh></v>
-<v t="ekr.20181018105342.1"><vh>@bool eval-redirect = False</vh></v>
-<v t="ekr.20181018105355.1"><vh>@bool legacy-eval = False</vh></v>
 </v>
 <v t="TL.20090225102340.33"><vh>nodeActions plugin</vh>
 <v t="TL.20090225102340.34"><vh>@bool nodeActions-save-atFile-nodes = False</vh></v>
@@ -2284,7 +2282,6 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="peckj.20130514082859.5599"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11063,8 +11060,6 @@ See https://jedi.readthedocs.io/en/latest/index.html
 </t>
 <t tx="ekr.20181018103813.1">True: use verbose mode.</t>
 <t tx="ekr.20181018104056.1">True: use smart quotes when typing.</t>
-<t tx="ekr.20181018105342.1"></t>
-<t tx="ekr.20181018105355.1"></t>
 <t tx="ekr.20181018105433.1"></t>
 <t tx="ekr.20181018105440.1"></t>
 <t tx="ekr.20181018105515.1"></t>
