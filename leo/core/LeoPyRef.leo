@@ -24,7 +24,7 @@
 <v t="ekr.20160122104332.1"><vh>Buttons &amp; commands</vh>
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
-<v t="ekr.20220823130338.1"><vh>@button check-leoPy.leo</vh></v>
+<v t="ekr.20231107062256.1"><vh>@button check-leoPy.leo</vh></v>
 <v t="ekr.20230508145335.1"><vh>@command slow-tests</vh></v>
 <v t="ekr.20220306092217.1"><vh>@command test-one</vh>
 <v t="ekr.20230511074046.1"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
@@ -355,6 +355,7 @@
 <v t="ekr.20230419052236.1"><vh>@file ../modes/javascript.py</vh></v>
 <v t="ekr.20210223151922.1"><vh>@file ../modes/julia.py</vh></v>
 <v t="ekr.20210219115553.109"><vh>@file ../modes/python.py</vh></v>
+<v t="ekr.20231012163843.1"><vh>@file ../modes/scheme.py</vh></v>
 </v>
 </v>
 <v t="ekr.20201012111545.1"><vh>Plugins</vh>
@@ -496,6 +497,7 @@
 <v t="ekr.20140723122936.18148"><vh>@file ../plugins/importers/php.py</vh></v>
 <v t="ekr.20211209153303.1"><vh>@file ../plugins/importers/python.py</vh></v>
 <v t="ekr.20200316100818.1"><vh>@file ../plugins/importers/rust.py</vh></v>
+<v t="ekr.20231012140553.1"><vh>@file ../plugins/importers/scheme.py</vh></v>
 <v t="ekr.20170615153639.2"><vh>@file ../plugins/importers/tcl.py</vh></v>
 <v t="ekr.20180201203240.2"><vh>@file ../plugins/importers/treepad.py</vh></v>
 <v t="ekr.20140723122936.18152"><vh>@file ../plugins/importers/typescript.py</vh></v>
@@ -724,7 +726,7 @@ in LeoDocs.leo for full details.
 <t tx="edream.110203113231.872">@nocolor-node
 
 These plugins create new kinds of nodes, some of which affect the file system.</t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
+<t tx="ekr.20031218072017.2406"># This file contains almost all of Leo's sources.
 
 # See the "About this file" node for important notes.
 </t>
@@ -975,7 +977,7 @@ returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction.
 </t>
-<t tx="ekr.20051031040240" annotate="7d71002858080000007072696f7269747971014d0f27580a000000707269736574646174657102580a000000323032302d31312d31307103752e"></t>
+<t tx="ekr.20051031040240"></t>
 <t tx="ekr.20071113084440"># These plugins are for testing Leo's own plugin loading logic.
 # There is no reason ever to enable these plugins.</t>
 <t tx="ekr.20080412053100.5">@language rest
@@ -2778,19 +2780,12 @@ if c.isChanged():
 &lt;&lt; old tests &gt;&gt;
 &lt;&lt; importer tests &gt;&gt;
 commands = (
+    
+    # f" {plugins}.TestIndentedTypeScript",
+    # f" {importers}.TestJavascript.test_guide_lines",
 
-    f" {importers}.TestPython",
-    # f" {importers}.TestPython.test_general_test_1",
-    # f" {importers}.TestPython.test_long_declaration",
-    # f" {importers}.TestPython.test_long_outer_docstring",
-    # f" {importers}.TestPython.test_nested_classes",
-    # f" {importers}.TestPython.test_nested_defs",
-    # f" {importers}.TestPython.test_oneliners",
-    # f" {importers}.TestPython.test_post_process",
-    # f" {importers}.TestPython.test_preamble",
-    # f" {core}.test_leoImport.TestLeoImport.test_python_importer_parse_body",
-    # f" {importers}.TestCoffeescript.test_coffeescript_1",
-    # f" {importers}.TestCython.test_cython_importer",
+    # f" {importers}.TestRust.test_rust_import_fails",
+    f" {importers}.TestRust.test_rust_postpass",
 )
 verbose_flag = ''  # -v
 commands_s = f"python -m unittest {verbose_flag} {' '.join(commands)}"
@@ -3135,57 +3130,6 @@ make_outline(d, top, topFlag=True)
 top.b = f"{{\n{textwrap.indent(top.b.strip(),' '*4)}\n}}\n"
 c.redraw(top)
     </t>
-<t tx="ekr.20220823130338.1">"""Ensure that all expected @&lt;file&gt; nodes exist."""
-g.cls()
-import glob
-import os
-join, norm, sep = os.path.join, os.path.normpath, os.sep
-
-# Compute the directories.
-leo_dir = norm(join(g.app.loadDir, '..', '..'))
-core_dir = join(leo_dir, 'core')
-commands_dir = join(leo_dir, 'commands')
-external_dir = join(leo_dir, 'external')
-plugins_dir = join(leo_dir, 'plugins')
-unittests_dir = join(leo_dir, '..', 'unittests')
-
-def make_list(pattern):
-    return [norm(z) for z in glob.glob(pattern) if '__init__' not in z]
-
-# Find paths on disk.
-core_files = make_list(f"{core_dir}{sep}*.py")
-commands_files = make_list(f"{commands_dir}{sep}*.py")
-external_files = make_list(f"{external_dir}{sep}*.py")
-plugin_files = make_list(f"{plugins_dir}{sep}*.py")
-unittests_files = make_list(f"{unittests_dir}{sep}*.py")
-
-# Compute paths from @&lt;file&gt; nodes.
-at_file_paths = sorted([
-    norm(c.fullPath(z))
-        for z in c.all_unique_positions()
-            if z.isAnyAtFileNode()
-])
-
-# g.printObj(at_file_paths, tag='known paths')
-
-excluded_files = (
-    r'plugins\qt_main.py',  # Generated automatically.
-    r'plugins\baseNativeTree.py',  # No longer used.
-)
-
-def is_excluded(path):
-    return any(z in path for z in excluded_files)
-
-# Ensure that @&lt;file&gt; nodes exist for every file on disk.
-missing = []
-for z in core_files + external_files + plugin_files:
-    if z not in at_file_paths and not is_excluded(z):
-        missing.append(z)
-if missing:
-    g.printObj(missing, tag='missing')
-else:
-    print('No missing files!')
-print('done')</t>
 <t tx="ekr.20220823195205.1">"""
 Stand alone GUI free index builder for Leo's full text search system::
 
@@ -3414,6 +3358,14 @@ rem echo reindent leo/commands
 call py %REINDENT_PATH% -r leo\commands
 rem echo reindent leo/plugins/importers
 call py %REINDENT_PATH% -r leo\plugins\importers
+rem echo reindent leo/plugins/commmands
+call py %REINDENT_PATH% leo\plugins\qt_commands.py
+call py %REINDENT_PATH% leo\plugins\qt_events.py
+call py %REINDENT_PATH% leo\plugins\qt_frame.py
+call py %REINDENT_PATH% leo\plugins\qt_gui.py
+call py %REINDENT_PATH% leo\plugins\qt_idle_time.py
+call py %REINDENT_PATH% leo\plugins\qt_text.py
+call py %REINDENT_PATH% leo\plugins\qt_tree.py
 rem echo reindent leo/plugins/writers
 call py %REINDENT_PATH% -r leo\plugins\writers
 rem echo reindent leo/unittests
@@ -3535,9 +3487,7 @@ x.node_history(path, gnxs, limit=60)
 # f" {commands}.test_editFileCommands",
 # f" {commands}.test_gotoCommands.TestGotoCommands",
 # f" {commands}.test_outlineCommands",
-
-# f" {plugins}.TestIndentedTypeScript.test_atFile_read",  # Long test.
-# f" {plugins}.TestIndentedTypeScript.test_after_read", # Short test.</t>
+</t>
 <t tx="ekr.20230926025203.1"># f" {importers}",
 
 # html/xml tests...
@@ -3555,10 +3505,11 @@ x.node_history(path, gnxs, limit=60)
 # f" {core}.test_leoImport.TestLeoImport.test_python_importer_parse_body",
 # f" {importers}.TestPython.test_general_test_1",
 # f" {importers}.TestPython.test_long_declaration",
-# f" {importers}.TestPython.test_post_process",
+# f" {importers}.TestPython.test_long_outer_docstring",
 # f" {importers}.TestPython.test_nested_classes",
 # f" {importers}.TestPython.test_nested_defs",
 # f" {importers}.TestPython.test_oneliners",
+# f" {importers}.TestPython.test_post_process",
 # f" {importers}.TestPython.test_preamble",
 
 # C, C#, Cython...
@@ -3567,7 +3518,7 @@ x.node_history(path, gnxs, limit=60)
 # f" {importers}.TestC.test_delete_comments_and_strings",
 # f" {importers}.TestCSharp.test_namespace_indent",
 # f" {importers}.TestCSharp.test_namespace_no_indent",
-# f" {importers}.TestCython.test_importer",
+# f" {importers}.TestCython.test_cython_importer",
 
 # All other importer tests...
 
@@ -3579,7 +3530,73 @@ x.node_history(path, gnxs, limit=60)
 
 # f" {importers}.TestTcl.test_1",
 # f" {importers}.TestTcl.test_1",
-
 </t>
+<t tx="ekr.20231107062256.1">"""Ensure that all expected @&lt;file&gt; nodes exist."""
+g.cls()
+import glob
+import os
+join, sep = os.path.join, os.sep
+
+def norm(path):
+    return os.path.normpath(path).lower()
+
+# Compute the directories.
+leo_dir = norm(join(g.app.loadDir, '..'))  ### '..'))
+core_dir = join(leo_dir, 'core')
+commands_dir = join(leo_dir, 'commands')
+external_dir = join(leo_dir, 'external')
+importers_dir = join(leo_dir, 'plugins', 'importers')
+plugins_dir = join(leo_dir, 'plugins')
+unittests_dir = join(leo_dir, '..', 'unittests')
+writers_dir = join(leo_dir, 'plugins', 'writers')
+
+def make_list(pattern):
+    return [norm(z) for z in glob.glob(pattern) if '__init__' not in z]
+
+# Find paths on disk.
+core_files = make_list(f"{core_dir}{sep}*.py")
+commands_files = make_list(f"{commands_dir}{sep}*.py")
+external_files = make_list(f"{external_dir}{sep}*.py")
+importer_files = make_list(f"{importers_dir}{sep}*.py")
+# plugin_files = make_list(f"{plugins_dir}{sep}*.py")
+qt_files = make_list(f"{plugins_dir}{sep}qt*.py")
+unittests_files = make_list(f"{unittests_dir}{sep}*.py")
+writer_files = make_list(f"{writers_dir}{sep}*.py")
+
+# Compute paths from @&lt;file&gt; nodes.
+at_file_paths = sorted([
+    norm(c.fullPath(z))
+        for z in c.all_unique_positions()
+            if z.isAnyAtFileNode()
+])
+
+excluded_files = (
+    r'plugins\qt_main.py',  # Generated automatically.
+    r'plugins\baseNativeTree.py',  # No longer used.
+)
+
+def is_excluded(path):
+    return any(z in path for z in excluded_files)
+    
+if 0:
+    for files, kind in (
+        (at_file_paths, 'all known paths'),
+        (core_files, 'core_files'),
+        (qt_files, 'qt_files'),
+        (importer_files, 'importer_files'),
+        (writer_files, 'writer_files'),
+    ):
+        g.printObj(files, tag=f"{kind}")
+
+# Ensure that @&lt;file&gt; nodes exist for every file on disk.
+missing = []
+for z in core_files + external_files + qt_files + importer_files + writer_files:
+    if z not in at_file_paths and not is_excluded(z):
+        missing.append(z)
+if missing:
+    g.printObj(missing, tag='missing @&lt;file&gt; nodes')
+else:
+    print('No missing files!')
+print('done')</t>
 </tnodes>
 </leo_file>
