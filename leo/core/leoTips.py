@@ -171,7 +171,6 @@ Become familiar with Leo's most important plugins:
 - bookmarks.py manages bookmarks.
 - contextmenu.py shows a menu when when right-clicking.
 - mod_scripting.py supports @button and @command nodes.
-  The eval* command support persistent evaluation.
 - quicksearch.py adds a Nav tab for searching.
 - todo.py handles to-do lists and is a project manager.
 - viewrendered.py renders content in the rendering pane.
