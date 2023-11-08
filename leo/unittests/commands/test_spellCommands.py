@@ -21,6 +21,9 @@ class TestSpellCommands(LeoUnitTest):
     #@+node:ekr.20230916141635.3: *3* TestSpellCommands.test_SpellTabHandler_find
     def test_SpellTabHandler_find(self):
 
+        if not g.isWindows:
+            self.skipTest('Requires Windows')
+
         from leo.core.leoCommands import Commands as Cmdr
         from leo.commands.spellCommands import SpellTabHandler
 

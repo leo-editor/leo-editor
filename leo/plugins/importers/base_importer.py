@@ -52,8 +52,10 @@ class Block:
 
     __str__ = __repr__
     #@+node:ekr.20230921061937.1: *3* Block.dump_lines
-    def dump_lines(self) -> None:
-        g.printObj(self.lines[self.start:self.end], tag=repr(self))
+    def dump_lines(self, tag: str = None) -> None:
+        if not tag:
+            tag = repr(self)
+        g.printObj(self.lines[self.start:self.end], tag=tag)
     #@+node:ekr.20230921061932.1: *3* Block.long_repr
     def long_repr(self) -> str:
         """A longer form of Block.__repr__"""
@@ -164,6 +166,67 @@ class Importer:
         """
         name_s = block.name or f"unnamed {block.kind}"
         return f"{block.kind} {name_s}"
+    #@+node:ekr.20230529075138.9: *4* i.delete_comments_and_strings
+    def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
+        """
+        Return **guide-lines** from the lines, replacing strings and multi-line
+        comments with spaces, thereby preserving (within the guide-lines) the
+        position of all significant characters.
+
+        Analyzing the guide lines instead of the input lines is the simplifying
+        trick behind the new importers.
+
+        The input and guide lines are "parallel": they have the same number of
+        lines.
+        """
+        string_delims = self.string_list
+        line_comment, start_comment, end_comment = g.set_delims_from_language(self.language)
+        target = ''  # The string ending a multi-line comment or string.
+        escape = '\\'
+        result = []
+        for line in lines:
+            result_line, skip_count = [], 0
+            for i, ch in enumerate(line):
+                if ch == '\n':
+                    break  # Avoid appending the newline twice.
+                elif skip_count > 0:
+                    # Replace the character with a blank.
+                    result_line.append(' ')
+                    skip_count -= 1
+                elif ch == escape:  # #3620: test for escape before testing for target.
+                    assert skip_count == 0
+                    result_line.append(' ')
+                    skip_count = 1
+                elif target:
+                    result_line.append(' ')
+                    # Clear the target, but skip any remaining characters of the target.
+                    if g.match(line, i, target):
+                        skip_count = max(0, (len(target) - 1))
+                        target = ''
+                elif line_comment and line.startswith(line_comment, i):
+                    # Skip the rest of the line. It can't contain significant characters.
+                    break
+                elif any(g.match(line, i, z) for z in string_delims):
+                    # Allow multi-character string delimiters.
+                    result_line.append(' ')
+                    for z in string_delims:
+                        if g.match(line, i, z):
+                            target = z
+                            skip_count = max(0, (len(z) - 1))
+                            break
+                elif start_comment and g.match(line, i, start_comment):
+                    result_line.append(' ')
+                    target = end_comment
+                    skip_count = max(0, len(start_comment) - 1)
+                else:
+                    result_line.append(ch)
+
+            # End the line and append it to the result.
+            # Strip trailing whitespace. It can't affect significant characters.
+            end_s = '\n' if line.endswith('\n') else ''
+            result.append(''.join(result_line).rstrip() + end_s)
+        assert len(result) == len(lines)  # A crucial invariant.
+        return result
     #@+node:ekr.20230529075138.10: *4* i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
@@ -509,6 +572,16 @@ class Importer:
         as comments and strings.
         """
         return self.delete_comments_and_strings(lines[:])
+    #@+node:ekr.20230825095756.1: *4* i.postprocess
+    def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:
+        """
+        Importer.postprocess.  A hook for language-specific post-processing.
+
+        The Python_Importer and Rust_Importer classes override this method.
+
+        **Note**: The RecursiveImportController class contains a postpass that
+                  adjusts headlines of *all* imported nodes.
+        """
     #@+node:ekr.20230529075138.38: *4* i.preprocess_lines
     def preprocess_lines(self, lines: list[str]) -> list[str]:
         """
@@ -517,16 +590,6 @@ class Importer:
         Xml_Importer uses this hook to split lines.
         """
         return lines
-    #@+node:ekr.20230825095756.1: *4* i.postprocess
-    def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:
-        """
-        Importer.postprocess.  A hook for language-specific post-processing.
-
-        Python_Importer overrides this method.
-
-        **Note**: The RecursiveImportController class contains a postpass that
-                  adjusts headlines of *all* imported nodes.
-        """
     #@+node:ekr.20230529075138.39: *4* i.regularize_whitespace
     def regularize_whitespace(self, lines: list[str]) -> list[str]:  # pragma: no cover (missing test)
         """
@@ -539,7 +602,6 @@ class Importer:
         """
         kind = 'tabs' if self.tab_width > 0 else 'blanks'
         kind2 = 'blanks' if self.tab_width > 0 else 'tabs'
-        fn = g.shortFileName(self.root.h)
         count, result, tab_width = 0, [], self.tab_width
         if tab_width < 0:  # Convert tabs to blanks.
             for n, line in enumerate(lines):
@@ -557,7 +619,7 @@ class Importer:
                     count += 1
                 result.append(s)
         if count and not g.unitTesting:
-            g.es(f"changed leading {kind2} to {kind} in {count} line{g.plural(count)} in {fn}")
+            g.es_print(f"{self.root.h}:\nchanged leading {kind2} to {kind} in {count} line{g.plural(count)}")
         return result
     #@+node:ekr.20230529075138.7: *3* i: Utils
     # Subclasses are unlikely ever to need to override these methods.
@@ -603,67 +665,6 @@ class Importer:
             child.h = f"placeholder level {len(parents)}"
             parents.append(child)
             lines_dict[child.v] = []
-    #@+node:ekr.20230529075138.9: *4* i.delete_comments_and_strings
-    def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
-        """
-        Return **guide-lines** from the lines, replacing strings and multi-line
-        comments with spaces, thereby preserving (within the guide-lines) the
-        position of all significant characters.
-
-        Analyzing the guide lines instead of the input lines is the simplifying
-        trick behind the new importers.
-
-        The input and guide lines are "parallel": they have the same number of
-        lines.
-        """
-        string_delims = self.string_list
-        line_comment, start_comment, end_comment = g.set_delims_from_language(self.language)
-        target = ''  # The string ending a multi-line comment or string.
-        escape = '\\'
-        result = []
-        for line in lines:
-            result_line, skip_count = [], 0
-            for i, ch in enumerate(line):
-                if ch == '\n':
-                    break  # Avoid appending the newline twice.
-                elif skip_count > 0:
-                    # Replace the character with a blank.
-                    result_line.append(' ')
-                    skip_count -= 1
-                elif ch == escape:  # #3620: test for escape before testing for target.
-                    assert skip_count == 0
-                    result_line.append(' ')
-                    skip_count = 1
-                elif target:
-                    result_line.append(' ')
-                    # Clear the target, but skip any remaining characters of the target.
-                    if g.match(line, i, target):
-                        skip_count = max(0, (len(target) - 1))
-                        target = ''
-                elif line_comment and line.startswith(line_comment, i):
-                    # Skip the rest of the line. It can't contain significant characters.
-                    break
-                elif any(g.match(line, i, z) for z in string_delims):
-                    # Allow multi-character string delimiters.
-                    result_line.append(' ')
-                    for z in string_delims:
-                        if g.match(line, i, z):
-                            target = z
-                            skip_count = max(0, (len(z) - 1))
-                            break
-                elif start_comment and g.match(line, i, start_comment):
-                    result_line.append(' ')
-                    target = end_comment
-                    skip_count = max(0, len(start_comment) - 1)
-                else:
-                    result_line.append(ch)
-
-            # End the line and append it to the result.
-            # Strip trailing whitespace. It can't affect significant characters.
-            end_s = '\n' if line.endswith('\n') else ''
-            result.append(''.join(result_line).rstrip() + end_s)
-        assert len(result) == len(lines)  # A crucial invariant.
-        return result
     #@+node:ekr.20230529075138.42: *4* i.get_str_lws
     def get_str_lws(self, s: str) -> str:
         """Return the characters of the lws of s."""

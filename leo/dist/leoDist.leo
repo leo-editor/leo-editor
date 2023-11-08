@@ -1445,14 +1445,11 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create the **release branch**: `6.7.6`.
-- Change version in this checklist to match.
-- Do all release work in `6.7.6` or `gh-pages`.
+(Done) Create the **release branch**: `6.7.6`.
+- (Done) Change version in this checklist to match.
 
-About merges:
-- Do *not* merge devel into 6.7.6.
-- Merge bug fix branches into `devel` and `6.7.6`
-- Merge `6.7.6` into `devel` any time.
+It's ok to merge devel into release branch
+*unless* devel contains work for the *next* release.
 
 @language rest
 </t>
