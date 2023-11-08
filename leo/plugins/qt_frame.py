@@ -419,7 +419,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         #
         # Official ivars.
         self.lineEdit = lineEdit
-        # self.leo_minibuffer_frame = frame
+        self.leo_minibuffer_frame = frame
         # self.leo_minibuffer_layout = layout
         return frame
     #@+node:ekr.20110605121601.18149: *5* dw.createOutlinePane
@@ -4701,6 +4701,31 @@ def hideBodyPane(event: Event) -> None:
     if not c:
         return
     c.frame.divideLeoSplitter1(1.0)
+#@+node:ekr.20231102130853.1: *3* 'hide-icon-bar', 'show-icon-bar', 'toggle-icon-bar'
+@g.command('hide-icon-bar')
+def hideIconBar(event: Event) -> None:
+    c = event.get('c')
+    if c:
+        dw = c.frame.top
+        dw.iconBar.hide()
+
+@g.command('show-icon-bar')
+def showIconBar(event: Event) -> None:
+    c = event.get('c')
+    if c:
+        dw = c.frame.top
+        dw.iconBar.show()
+
+@g.command('toggle-icon-bar')
+def toggleIconBar(event: Event) -> None:
+    c = event.get('c')
+    if c:
+        dw = c.frame.top
+        w = dw.iconBar
+        if w.isVisible():
+            w.hide()
+        else:
+            w.show()
 #@+node:ekr.20200303084625.1: *3* 'hide-log-pane'
 @g.command('hide-log-pane')
 def hideLogPane(event: Event) -> None:
@@ -4709,6 +4734,32 @@ def hideLogPane(event: Event) -> None:
     if not c:
         return
     c.frame.divideLeoSplitter2(1.0)
+#@+node:ekr.20231102131048.1: *3* 'hide-minibuffer', 'show-minibuffer', 'toggle-minibuffer'
+@g.command('hide-minibuffer')
+def hideMinibuffer(event: Event) -> None:
+    c = event.get('c')
+    if c:
+        dw = c.frame.top
+        dw.leo_minibuffer_frame.hide()
+
+@g.command('show-minibuffer')
+def showMinibuffer(event: Event) -> None:
+    c = event.get('c')
+    if c:
+        dw = c.frame.top
+        dw.leo_minibuffer_frame.show()
+
+@g.command('toggle-minibuffer')
+def toggleMinibuffer(event: Event) -> None:
+    c = event.get('c')
+    if c:
+        dw = c.frame.top
+        w = dw.leo_minibuffer_frame
+        if w.isVisible():
+            w.hide()
+        else:
+            w.show()
+
 #@+node:ekr.20200303082511.7: *3* 'hide-outline-pane'
 @g.command('hide-outline-pane')
 def hideOutlinePane(event: Event) -> None:
@@ -4718,6 +4769,31 @@ def hideOutlinePane(event: Event) -> None:
         return
     c.frame.divideLeoSplitter1(0.0)
 
+#@+node:ekr.20231102130902.1: *3* 'hide-status-bar', 'show-status-bar', 'toggle-staus-bar'
+@g.command('hide-status-bar')
+def hideStatusBar(event: Event) -> None:
+    c = event.get('c')
+    if c:
+        dw = c.frame.top
+        dw.statusBar.hide()
+
+@g.command('show-status-bar')
+def showStatusBar(event: Event) -> None:
+    c = event.get('c')
+    if c:
+        dw = c.frame.top
+        dw.statusBar.show()
+
+@g.command('toggle-status-bar')
+def toggleStatusBar(event: Event) -> None:
+    c = event.get('c')
+    if c:
+        dw = c.frame.top
+        w = dw.statusBar
+        if w.isVisible():
+            w.hide()
+        else:
+            w.show()
 #@-others
 #@@language python
 #@@tabwidth -4
