@@ -38,14 +38,23 @@ class Rust_Importer(Importer):
     #@+node:ekr.20231031033255.1: *3* rust_i.compute_headline
     def compute_headline(self, block: Block) -> str:
         """
-        Rust_Importer.compute_headline.
-
-        Return the headline for the given block.
-
-        Subclasses may override this method as necessary.
+        Rust_Importer.compute_headline: Return the headline for the given block.
         """
-        name_s = block.name.replace('{', '').strip() or f"unnamed {block.kind}"
-        return f"{block.kind} {name_s}"
+        if block.name:
+            s = block.name.replace('{', '')
+            # Remove possibly nested <...>.
+            level, result = 0, []
+            for ch in s:
+                if ch == '<':
+                    level += 1
+                elif ch == '>':
+                    level -= 1
+                elif level == 0:
+                    result.append(ch)
+            name_s = ''.join(result).replace('  ', ' ').strip()
+        else:
+            name_s = ''
+        return f"{block.kind} {name_s}" if name_s else f"unnamed {block.kind}"
     #@+node:ekr.20231104195248.1: *3* rust_i.delete_comments_and_strings
     def delete_comments_and_strings(self, lines: list[str]) -> list[str]:
         """

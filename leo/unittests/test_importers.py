@@ -3889,7 +3889,7 @@ class TestRust(BaseTestImporter):
                     '@language rust\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'trait AsFormat<Context>',
+            (1, 'trait AsFormat',
                     '/// Used to get an object that knows how to format this object.\n'
                     'pub trait AsFormat<Context> {\n'
                     "    type Format<'a>: ruff_formatter::Format<Context>\n"
@@ -3900,7 +3900,7 @@ class TestRust(BaseTestImporter):
                     "    fn format(&self) -> Self::Format<'_>;\n"
                     '}\n'
             ),
-            (1, 'impl <T, C> AsFormat<C> for &T',
+            (1, 'impl AsFormat for &T',
                     '/// Implement [`AsFormat`] for references to types that implement [`AsFormat`].\n'
                     'impl<T, C> AsFormat<C> for &T\n'
                     'where\n'
@@ -3952,7 +3952,7 @@ class TestRust(BaseTestImporter):
                     '@language rust\n'
                     '@tabwidth -4\n'
             ),
-            (1, "struct Argument<'fmt, Context>",
+            (1, "struct Argument",
                     # '@\n'
                     # 'Mono-morphed type to format an object.\n'
                     # 'Used by the [`crate::format`!].\n'
