@@ -1697,23 +1697,25 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not w:
             return
         tag = 'clean-all-lines'
+        roots = g.findRootsWithPredicate(c, c.p)
         u.beforeChangeGroup(c.p, tag)
         n = 0
-        for p in c.p.self_and_subtree():
-            lines = []
-            for line in g.splitLines(p.b):
-                if line.rstrip():
-                    lines.append(line.rstrip())
-                if line.endswith('\n'):
-                    lines.append('\n')
-            s2 = ''.join(lines)
-            if s2 != p.b:
-                print(p.h)
-                bunch = u.beforeChangeNodeContents(p)
-                p.b = s2
-                p.setDirty()
-                n += 1
-                u.afterChangeNodeContents(p, tag, bunch)
+        for root in roots:
+            for p in root.self_and_subtree():
+                lines = []
+                for line in g.splitLines(p.b):
+                    if line.rstrip():
+                        lines.append(line.rstrip())
+                    if line.endswith('\n'):
+                        lines.append('\n')
+                s2 = ''.join(lines)
+                if s2 != p.b:
+                    print(p.h)
+                    bunch = u.beforeChangeNodeContents(p)
+                    p.b = s2
+                    p.setDirty()
+                    n += 1
+                    u.afterChangeNodeContents(p, tag, bunch)
         u.afterChangeGroup(c.p, tag)
         g.es(f"cleaned {n} nodes")
     #@+node:ekr.20150514063305.256: *4* ec.cleanLines

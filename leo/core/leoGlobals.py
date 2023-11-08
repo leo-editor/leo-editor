@@ -6676,7 +6676,8 @@ def is_sentinel(line: str, delims: tuple[str, str, str]) -> bool:
             i = line.find(sentinel2)
             j = line.find(delim3)
             return 0 == i < j
-    g.error(f"is_sentinel: can not happen. delims: {repr(delims)}")
+    # #3458: This case *can* happen when the user changes an @language directive.
+    #        Don't bother trying to recover.
     return False
 #@+node:ekr.20070524083513: ** g.Unit Tests
 #@+node:ekr.20210901071523.1: *3* g.run_coverage_tests

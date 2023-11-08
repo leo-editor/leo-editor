@@ -3033,8 +3033,9 @@ class PygmentsColorizer(BaseColorizer):
         try:
             return PatchedLexer()
         except Exception:
-            g.trace(f"can not patch {language!r}")
-            g.es_exception()
+            if 0:  # #3456: Suppress this error.
+                g.trace(f"can not patch {language!r}")
+                g.es_exception()
             return lexer
     #@+node:ekr.20190322133358.1: *4* pyg_c.section_ref_callback
     def section_ref_callback(self, lexer: Any, match: Any) -> Generator:
