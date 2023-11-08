@@ -3813,7 +3813,7 @@ class TestRust(BaseTestImporter):
     ext = '.rs'
 
     #@+others
-    #@+node:ekr.20220814095025.1: *3* TestRust.test_1
+    #@+node:ekr.20220814095025.1: *3* TestRust.test_rust_1
     def test_1(self):
 
         s = """
@@ -3851,6 +3851,129 @@ class TestRust(BaseTestImporter):
             (1, 'fn area',
                     'fn area(width: u32, height: u32) -> u32 {\n'
                     '    width * height\n'
+                    '}\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
+    #@+node:ekr.20231030054735.1: *3* TestRust.test_rust_import_fails
+    def test_rust_import_fails(self):
+
+        # From ruff/crates/ruff_formatter/shared_traits.rs
+        s = textwrap.dedent(
+    """
+        /// Used to get an object that knows how to format this object.
+        pub trait AsFormat<Context> {
+            type Format<'a>: ruff_formatter::Format<Context>
+            where
+                Self: 'a;
+
+            /// Returns an object that is able to format this object.
+            fn format(&self) -> Self::Format<'_>;
+        }
+
+        /// Implement [`AsFormat`] for references to types that implement [`AsFormat`].
+        impl<T, C> AsFormat<C> for &T
+        where
+            T: AsFormat<C>,
+        {
+            type Format<'a> = T::Format<'a> where Self: 'a;
+
+            fn format(&self) -> Self::Format<'_> {
+                AsFormat::format(&**self)
+            }
+        }
+    """)
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                    '@others\n'
+                    '@language rust\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'trait AsFormat',
+                    '/// Used to get an object that knows how to format this object.\n'
+                    'pub trait AsFormat<Context> {\n'
+                    "    type Format<'a>: ruff_formatter::Format<Context>\n"
+                    '    where\n'
+                    "        Self: 'a;\n"
+                    '\n'
+                    '    /// Returns an object that is able to format this object.\n'
+                    "    fn format(&self) -> Self::Format<'_>;\n"
+                    '}\n'
+            ),
+            (1, 'impl AsFormat for &T',
+                    '/// Implement [`AsFormat`] for references to types that implement [`AsFormat`].\n'
+                    'impl<T, C> AsFormat<C> for &T\n'
+                    'where\n'
+                    '    T: AsFormat<C>,\n'
+                    '{\n'
+                    '    @others\n'
+                    '}\n'
+            ),
+            (2, 'fn format',
+                    "type Format<'a> = T::Format<'a> where Self: 'a;\n"
+                    '\n'
+                    "fn format(&self) -> Self::Format<'_> {\n"
+                    '    AsFormat::format(&**self)\n'
+                    '}\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
+    #@+node:ekr.20231031161514.1: *3* TestRust.test_rust_postpass
+    def test_rust_postpass(self):
+
+        # Modified from ruff/crates/ruff_formatter/src/arguments.rs
+        s = textwrap.dedent(
+    """
+    use super::{Buffer, Format, Formatter};
+    use crate::FormatResult;
+
+    /// Mono-morphed type to format an object.
+    /// Used by the [`crate::format`!].
+    ///
+    /// This struct is similar to a dynamic dispatch (using `dyn Format`)
+    /// because it stores a pointer to the value.
+    pub struct Argument<'fmt, Context> {
+        /// The value to format stored as a raw pointer where `lifetime` stores the value's lifetime.
+        value: *const c_void,
+
+        /// Stores the lifetime of the value.
+        lifetime: PhantomData<&'fmt ()>,
+
+        /// The function pointer to `value`'s `Format::format` method
+        formatter: fn(*const c_void, &mut Formatter<'_, Context>) -> FormatResult<()>,
+    }
+    """)
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                    'use super::{Buffer, Format, Formatter};\n'
+                    'use crate::FormatResult;\n'
+                    '\n'
+                    '@others\n'
+                    '@language rust\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, "struct Argument",
+                    # '@\n'
+                    # 'Mono-morphed type to format an object.\n'
+                    # 'Used by the [`crate::format`!].\n'
+                    # '\n'
+                    # 'This struct is similar to a dynamic dispatch (using `dyn Format`)\n'
+                    # 'because it stores a pointer to the value.\n'
+                    # '@c\n'
+                    '/// Mono-morphed type to format an object.\n'
+                    '/// Used by the [`crate::format`!].\n'
+                    '///\n'
+                    '/// This struct is similar to a dynamic dispatch (using `dyn Format`)\n'
+                    '/// because it stores a pointer to the value.\n'
+                    "pub struct Argument<'fmt, Context> {\n"
+                    "    /// The value to format stored as a raw pointer where `lifetime` stores the value's lifetime.\n"
+                    '    value: *const c_void,\n'
+                    '\n'
+                    '    /// Stores the lifetime of the value.\n'
+                    "    lifetime: PhantomData<&'fmt ()>,\n"
+                    '\n'
+                    "    /// The function pointer to `value`'s `Format::format` method\n"
+                    "    formatter: fn(*const c_void, &mut Formatter<'_, Context>) -> FormatResult<()>,\n"
                     '}\n'
             ),
         )
