@@ -889,10 +889,9 @@ class LeoQtTree(leoFrame.LeoTree):
         def editingFinished_callback() -> None:
             """Called when Qt emits the editingFinished signal."""
             s = e.text()
-            i = s.find('\n')
-            # Truncate to one line.
-            if i > -1:
-                s = s[:i]
+            # #3633: Replace newlines with a blank.
+            if '\n' in s:
+                s = re.sub(r'\s*\n\s*', ' ', s).replace('  ', ' ').rstrip()
             # #1310: update the tooltip.
             if p.h != s:
                 # Update p.h and handle undo.

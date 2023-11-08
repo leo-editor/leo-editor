@@ -49,7 +49,9 @@ from leo.external.npyscreen.wgwidget import(  # type:ignore
 try:
     from tkinter import Tk
 except ImportError:
-    print('cursesGui2.py: Tk module required for clipboard handling.')
+    from leo.core import leoGlobals as g
+    if not g.unitTesting:
+        print('cursesGui2.py: Tk module required for clipboard handling.')
     raise
 
 # Leo imports
