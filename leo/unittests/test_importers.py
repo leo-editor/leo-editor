@@ -13,6 +13,7 @@ from leo.plugins.importers.base_importer import Block
 from leo.plugins.importers.python import Python_Importer
 from leo.plugins.importers.c import C_Importer
 import leo.plugins.importers.coffeescript as coffeescript
+import leo.plugins.importers.javascript as javascript
 import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.otl as otl
 #@+others
@@ -473,6 +474,10 @@ class TestC(BaseTestImporter):
             'i = 2\n'
         ]
         result = importer.delete_comments_and_strings(lines)
+        if 0:
+            g.printObj(lines, tag='input lines')
+            g.printObj(result, tag='result')
+            g.printObj(expected_lines, tag='expected')
         self.assertEqual(len(result), len(expected_lines))
         self.assertEqual(result, expected_lines)
     #@+node:ekr.20230511044054.1: *3* TestC.test_find_blocks
@@ -1692,6 +1697,18 @@ class TestJavascript(BaseTestImporter):
             };
             """
         self.new_round_trip_test(s)
+    #@+node:ekr.20231023061407.1: *3* TestJavascript.test_guide_lines
+    def test_guide_lines(self):
+
+        c = self.c
+        x = javascript.JS_Importer(c)
+
+        # Adapted from an import failure in leoJS: The USER_MESSAGES method in constants.ts.
+        s = r'''"1\"2\"3\n"'''
+        lines = g.splitLines(s)
+        guide_lines = x.delete_comments_and_strings(lines)
+        line1 = guide_lines[0]
+        assert not line1.strip(), repr(line1)
     #@-others
 #@+node:ekr.20220816082603.1: ** class TestLua (BaseTestImporter)
 class TestLua (BaseTestImporter):
