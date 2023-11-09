@@ -2973,7 +2973,7 @@ class LoadManager:
             traceback.print_exc()
             return False
     #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helpers
-    def loadLocalFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Optional[Cmdr]:
+    def loadLocalFile(self, fn: str, gui: LeoGui, old_c: Cmdr) -> Optional[Cmdr]:
         """Completely read a file, creating the corresponding outline.
 
         1. If fn is an existing .leo, .db or .leojs file, read it twice:
