@@ -3255,7 +3255,13 @@ class LoadManager:
 
         # Re-read the file.
         c.fileCommands.initIvars()
-        v = fc.getAnyLeoFileByName(fn, readAtFileNodesFlag=True)
+        try:
+            g.app.reverting = True
+            v = fc.getAnyLeoFileByName(fn, readAtFileNodesFlag=True)
+        finally:
+            g.app.reverting = False
+
+        # Report failure.
         if not v:
             g.error(f"Revert failed: {fn!r}")
     #@-others
