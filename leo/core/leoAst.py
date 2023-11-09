@@ -4301,10 +4301,13 @@ def main() -> None:  # pragma: no cover
     # Finalize arguments.
     cwd, files = os.getcwd(), []
     for path in arg_files:
-        root_dir = os.path.join(cwd, path)
-        files = glob.glob(f'{root_dir}**{os.sep}*.py', recursive=recursive)
+        if path.endswith('.py'):
+            files = [os.path.join(cwd, path)]
+        else:
+            root_dir = os.path.join(cwd, path)
+            files = glob.glob(f'{root_dir}**{os.sep}*.py', recursive=recursive)
     if not files:
-        print('No files found')
+        print(f"No files found in {arg_files!r}")
         return
     # Execute the command.
     # print(f"Found {len(files)} file{g.plural(len(files))}.")

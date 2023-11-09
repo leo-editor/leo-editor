@@ -4,15 +4,16 @@
 from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
-from leo.plugins.importers.base_importer import Importer
+# from leo.plugins.importers.base_importer import Importer
+from leo.plugins.importers.javascript import JS_Importer
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
 
 #@+others
-#@+node:ekr.20161118093751.1: ** class TS_Importer(Importer)
-class TS_Importer(Importer):
+#@+node:ekr.20161118093751.1: ** class TS_Importer(JS_Importer)
+class TS_Importer(JS_Importer):
 
     language = 'typescript'
 

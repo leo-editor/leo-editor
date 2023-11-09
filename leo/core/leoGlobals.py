@@ -6506,11 +6506,6 @@ def composeScript(
     useSentinels: bool = True,
 ) -> str:
     """Compose a script from p.b."""
-    # This causes too many special cases.
-        # if not g.unitTesting and forceEncoding:
-            # aList = g.get_directives_dict_list(p)
-            # encoding = scanAtEncodingDirectives(aList) or 'utf-8'
-            # s = g.insertCodingLine(encoding,s)
     if not s.strip():
         return ''
     at = c.atFileCommands
@@ -6598,23 +6593,6 @@ def handleScriptException(
     except Exception:
         g.es_print('Unexpected exception in g.handleScriptException')
         g.es_exception()
-#@+node:ekr.20140209065845.16767: *3* g.insertCodingLine
-def insertCodingLine(encoding: str, script: str) -> str:
-    """
-    Insert a coding line at the start of script s if no such line exists.
-    The coding line must start with @first because it will be passed to
-    at.stringToString.
-    """
-    if script:
-        tag = '@first # -*- coding:'
-        lines = g.splitLines(script)
-        for s in lines:
-            if s.startswith(tag):
-                break
-        else:
-            lines.insert(0, f"{tag} {encoding} -*-\n")
-            script = ''.join(lines)
-    return script
 #@+node:ekr.20230803155851.1: ** g.Sentinels
 #@+node:ekr.20230803160315.1: *3* g.is_invisible_sentinel
 def is_invisible_sentinel(delims: tuple[str, str, str], contents: list[str], i: int) -> bool:

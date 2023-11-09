@@ -276,7 +276,7 @@ class LeoPluginsController:
     def __init__(self) -> None:
 
         # Keys are tags, values are lists of bunches.
-        self.handlers: dict[str, Any] = {}
+        self.handlers: dict[str, list[g.Bunch]] = {}
         # Keys are regularized module names, values are the names of .leo files
         # containing @enabled-plugins nodes that caused the plugin to be loaded
         self.loadedModulesFilesDict: dict[str, str] = {}
@@ -484,10 +484,11 @@ class LeoPluginsController:
         Using a module name allows plugins to be loaded from outside the leo/plugins directory.
         """
         global optional_modules
-        trace = 'plugins' in g.app.debug
+
+        trace = verbose or 'plugins' in g.app.debug
 
         def report(message: str) -> None:
-            if trace and not g.unitTesting:
+            if trace:
                 g.es_print(f"loadOnePlugin: {message}")
 
         # Define local helper functions.

@@ -3,11 +3,13 @@
 """General tests of plugins."""
 
 import glob
+import os
 import re
+import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core.leoPlugins import LeoPluginsController
-assert g
+from leo.plugins import indented_languages
 
 #@+others
 #@+node:ekr.20210907082556.1: ** class TestPlugins(LeoUnitTest)
@@ -149,6 +151,121 @@ class TestPlugins(LeoUnitTest):
                 pass
             except ImportError:
                 pass
+    #@-others
+#@+node:ekr.20230917015008.1: ** class TestIndentedTypescript(LeoUnitTest)
+class TestIndentedTypeScript(LeoUnitTest):
+    """Tests for typescript-related code in the indented_languages plugin."""
+
+    #@+others
+    #@+node:ekr.20230919025755.1: *3* test_its.test_typescript
+    def test_typescript(self):
+
+        c, p = self.c, self.c.p
+
+        #@+<< define contents: test_typescript >>
+        #@+node:ekr.20231022133716.1: *4* << define contents: test_typescript >>
+
+        # Snippets from indented_typescript_test.ts.
+
+        # Contains "over-indented" parenthesized lines, a good test for check_indentation.
+        contents = textwrap.dedent(
+        """\
+        import { NodeIndices, VNode, Position } from './leoNodes';
+
+        export class Config implements ConfigMembers {
+
+        constructor(
+            private _context: vscode.ExtensionContext,
+            private _leoUI: LeoUI
+        ) { }
+
+        const w_config: FontSettings = {
+            zoomLevel: Number(w_zoomLevel),
+            fontSize: Number(w_fontSize)
+        };
+
+        public getFontConfig(): FontSettings {
+            let w_zoomLevel = vscode.workspace.getConfiguration(
+                "window"
+            ).get("zoomLevel");
+
+            return w_config;
+        }
+
+        public getEncodingFromHeader(fileName: string, s: string): BufferEncoding {
+            if (at.errors) {
+                if (g.unitTesting) {
+                    console.assert(false, g.callers());
+                }
+            } else {
+                at.initReadLine(s);
+            }
+        }
+        }
+        """)
+        #@-<< define contents: test_typescript >>
+
+        # Set p.h and p.b.
+        unittest_dir = os.path.dirname(__file__)
+        path = os.path.abspath(os.path.join(unittest_dir, 'indented_typescript_test.ts'))
+        assert os.path.exists(path), repr(path)
+        p.h = f"@file {path}"
+        p.b = contents
+
+        # Import.
+        x = indented_languages.Indented_TypeScript(c)
+        top_node = x.do_import()
+        assert top_node.h == 'indented files', repr(top_node.h)
+
+        # Debugging.
+        if 0:
+            for z in self.c.all_positions():
+                print(f"{' '*z.level()} {z.h}")
+        if 0:
+            root = top_node.firstChild()
+            g.printObj(g.splitLines(root.b), tag=root.h)
+
+    #@-others
+#@+node:ekr.20231025174626.1: ** class TestIndentedLisp(LeoUnitTest)
+class TestIndentedLisp(LeoUnitTest):
+    """Tests for lisp-related code in the indented_languages plugin."""
+
+    #@+others
+    #@+node:ekr.20231025174704.1: *3* test_ilisp.test_lisp_reduce_fraction
+    def test_lisp_reduce_fraction(self):
+
+        c, p = self.c, self.c.p
+        contents = textwrap.dedent(
+    """\
+    (defun test (a)
+        (+ 1 (* 2 a))
+        (= 0 (% (cadr result) divisor))
+    )
+
+    (defun reduce-fraction (f divisor)
+        "Eliminates divisor from fraction if present"
+        (while (and (= 0 (% (car result) divisor))
+             (= 0 (% (cadr result) divisor))
+             (< 1 (cadr result))
+             (< 0 (car result)))
+        (setq result (list (/ (car result) divisor) (/ (cadr result) divisor))))
+        result
+    )
+    """)
+
+        # Setup.
+        p.h = '@@file reduce_fraction.el'
+        p.b = contents
+
+        # Import.
+        x = indented_languages.Indented_Lisp(c)
+        top_node = x.do_import()
+        assert top_node.h == 'indented files', repr(top_node.h)
+        p = top_node.firstChild()
+        if 0:
+            print(contents)
+            print('')
+            print(p.b)
     #@-others
 #@-others
 #@-leo
