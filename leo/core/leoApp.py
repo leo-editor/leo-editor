@@ -2855,8 +2855,10 @@ class LoadManager:
         #@-others
 
         obsolete_options = [
-            '--dock', '--global-docks', '--init-docks', '--no-cache',
-            '--no-dock', '--session-restore', '--session-save', '--use-docks',
+            '--dock', '--global-docks', '--init-docks', '--no-dock', '--use-docks',
+            '--load-type', '--load-type=@edit', '--load-type=@file',
+            '--no-cache',
+            '--session-restore', '--session-save',
         ]
         usage = defineUsage()
         utils = g.OptionsUtils(usage, obsolete_options)
