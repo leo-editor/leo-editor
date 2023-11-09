@@ -2656,7 +2656,6 @@ class LoadManager:
           --ipython             enable ipython support
           --gui=GUI             specify gui: browser,console,curses,qt,text,null
           --listen-to-log       start log_listener.py on startup
-          --load-type=TYPE      @<file> type for non-outlines: @edit or @file
           --maximized           start maximized
           --minimized           start minimized
           --no-plugins          disable all plugins
@@ -2700,11 +2699,6 @@ class LoadManager:
             g.app.guiArgName = gui
             return gui
 
-        #@+node:ekr.20210927034148.5: *6* function: doLoadTypeOption
-        def doLoadTypeOption() -> Optional[str]:
-            """Handle load-type"""
-            m = utils.find_complex_option(r'--load-type=@(edit|file)')
-            return m.group(1).lower() if m else None
         #@+node:ekr.20210927034148.7: *6* function: doScriptOption
         def doScriptOption() -> Optional[str]:
             """Handle --script=path"""
@@ -2878,7 +2872,6 @@ class LoadManager:
         script = None if pymacs else doScriptOption()  # Used twice below.
         return {
             'gui': doGuiOption(),
-            'load_type': doLoadTypeOption(),
             'script': script,
             'select': doSelectOption(),
             'theme_path': doThemeOption(),
@@ -3186,12 +3179,7 @@ class LoadManager:
             # Create an @<file> node.
             p = c.rootPosition()
             if p:
-                # The 'load_type' key may not exist when run from the bridge.
-                load_type = self.options.get('load_type', '@edit')  # #2489.
-                if not load_type.startswith('@'):  # #3546
-                    # The "@" may get lost so restore it
-                    load_type = '@' + load_type
-                p.setHeadString(f"{load_type} {fn}")
+                p.setHeadString(f"@edit {fn}")
                 c.refreshFromDisk()
                 c.selectPosition(p)
         # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
