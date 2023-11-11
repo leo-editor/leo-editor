@@ -1621,7 +1621,7 @@ class RecursiveImportController:
             files = [dir_]
         else:
             if self.verbose:
-                g.es_print(f"importing directory: {os.path.normpath(dir_)}")
+                print(f"importing: {os.path.normpath(dir_)}")
             files = list(sorted(os.listdir(dir_)))
         dirs, files2 = [], []
         for path in files:
@@ -1861,7 +1861,7 @@ class RecursiveImportController:
                 if self.verbose:
                     # Only print this message if importing a *single* file.
                     print('')
-                    g.es_print(f"importing file: {os.path.normpath(dir_)}")
+                    print(f"importing file: {os.path.normpath(dir_)}")
                 self.import_one_file(dir_, parent)
             else:
                 self.import_dir(dir_, parent)
