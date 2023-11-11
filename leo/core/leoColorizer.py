@@ -12,7 +12,7 @@ from collections.abc import Callable
 import re
 import string
 import time
-from typing import Any, Generator, Sequence, Optional, TYPE_CHECKING
+from typing import Any, Generator, Sequence, Optional, Union, TYPE_CHECKING
 #
 # Third-part tools.
 try:
@@ -1999,20 +1999,24 @@ class JEditColorizer(BaseColorizer):
         # This match was causing most of the syntax-color problems.
         return 0  # 2009/6/23
     #@+node:ekr.20110605121601.18619: *4* jedit.match_regexp_helper
-    def match_regexp_helper(self, s: str, i: int, pattern: str) -> int:
+    def match_regexp_helper(self, s: str, i: int, pattern: Any) -> int:
         """
         Return the length of the matching text if
         seq (a regular expression) matches the present position.
         """
-        try:
-            flags = re.MULTILINE
-            if self.ignore_case:
-                flags |= re.IGNORECASE
-            re_obj = re.compile(pattern, flags)
-        except Exception:
-            # Do not call g.es here!
-            g.trace(f"Invalid regular expression: {pattern}")
-            return 0
+        # Leo 6.7.6: Allow compiled regexes.
+        if isinstance(pattern, str):
+            try:
+                flags = re.MULTILINE
+                if self.ignore_case:
+                    flags |= re.IGNORECASE
+                re_obj = re.compile(pattern, flags)
+            except Exception:
+                # Do not call g.es here!
+                g.trace(f"Invalid regular expression: {pattern}")
+                return 0
+        else:
+            re_obj = pattern
         # Match succeeds or fails more quickly than search.
         self.match_obj = mo = re_obj.match(s, i)  # re_obj.search(s,i)
         if mo is None:
@@ -2277,7 +2281,7 @@ class JEditColorizer(BaseColorizer):
         s: str,
         i: int,
         kind: str = '',
-        begin: str = '',
+        begin: Union[re.Pattern, str] = '',
         end: str = '',
         at_line_start: bool = False,
         at_whitespace_end: bool = False,
@@ -2289,8 +2293,13 @@ class JEditColorizer(BaseColorizer):
         no_word_break: bool = False,
     ) -> int:
         """
-        Succeed if s[i:] starts with 'begin' (a regular expression) and
-        contains a following 'end'.
+        Succeed if s[i:] matches 'begin' a regex string or compiled regex.
+
+        Callers should use regex features to limit the search.
+
+        New in Leo 6.7.6:
+        - The 'begin' arg may be compiled pattern (re.Pattern).
+        - The 'end' arg is optional.
         """
         if at_line_start and i != 0 and s[i - 1] != '\n':
             return 0
@@ -2299,7 +2308,8 @@ class JEditColorizer(BaseColorizer):
         if at_word_start and i > 0 and s[i - 1] in self.word_chars:
             return 0  # 7/5/2008
         if (
-            at_word_start
+            isinstance(begin, str)
+            and at_word_start
             and i + len(begin) + 1 < len(s)
             and s[i + len(begin)] in self.word_chars
         ):
@@ -2307,10 +2317,11 @@ class JEditColorizer(BaseColorizer):
         n = self.match_regexp_helper(s, i, begin)
         # We may have to allow $n here, in which case we must use a regex object?
         if n > 0:
-            j = i + n
-            j2 = s.find(end, j)
-            if j2 == -1:
-                return 0
+            j = j2 = i + n
+            if end:  # Leo 6.7.6.
+                j2 = s.find(end, j)
+                if j2 == -1:
+                    return 0
             if self.escape and not no_escape:
                 # Only an odd number of escapes is a 'real' escape.
                 escapes = 0

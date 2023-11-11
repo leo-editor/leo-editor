@@ -106,9 +106,10 @@ class Rust_Importer(Importer):
             full_message = f"{self.root.h} line: {i}:\n{message}"
             g.es_print(full_message)
         #@+node:ekr.20231105043049.1: *4* rust_i function: skip_possible_character_constant
-        length10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]\}'")  # '\u{7FFF}'
+        length10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")  # '\u{7FFF}'
         length6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")  # '\x7F'
         length4_pat = re.compile(r"'\\[\\\"'nrt0]'")  # '\n', '\r', '\t', '\\', '\0', '\'', '\"'
+        length3_pat = re.compile(r"'.'", re.UNICODE)  # 'x' where x is any unicode character.
 
         def skip_possible_character_constant() -> None:
             """
@@ -122,6 +123,7 @@ class Rust_Importer(Importer):
                 (10, length10_pat),
                 (6, length6_pat),
                 (4, length4_pat),
+                (3, length3_pat),
             ):
                 if pattern.match(s, i):
                     skip_n(n)
