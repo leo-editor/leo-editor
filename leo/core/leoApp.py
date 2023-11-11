@@ -3190,7 +3190,9 @@ class LoadManager:
         c.mFileName = fn if fn.endswith('.leo') else f"{fn}.leo"
         c.wrappedFileName = fn
         c.frame.title = c.computeWindowTitle(c.mFileName)
+        ### g.trace('c.mFileName:', c.mFileName, '\nc.frame.title:', c.frame.title)
         c.frame.setTitle(c.frame.title)
+        ### To do: set tab name.
         if c.config.getBool('use-chapters') and c.chapterController:
             c.chapterController.finishCreate()
         frame.c.clearChanged()

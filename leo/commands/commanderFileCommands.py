@@ -286,7 +286,7 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
         )
     return c  # For unit tests and scripts.
 #@+node:ekr.20031218072017.2821: *3* c_file.open_outline & helper
-@g.commander_command('open-outline')
+@g.commander_command('open-file')
 def open_outline(self: Self, event: Event = None) -> None:
     """Open a Leo window containing the contents of a .leo file."""
     c = self
@@ -294,25 +294,42 @@ def open_outline(self: Self, event: Event = None) -> None:
     #@+node:ekr.20190518121302.1: *4* function: open_completer
     def open_completer(c: Cmdr, fileName: str) -> None:
 
+        lm = g.app.loadManager
         c.bringToFront()
         c.init_error_dialogs()
+        g.trace(fileName)
         if fileName:
-            if g.app.loadManager.isLeoFile(fileName):
+            if lm.isLeoFile(fileName):
                 c2 = g.openWithFileName(fileName, old_c=c)
-                if c2:
-                    c = c2  # #2906: Switch c here!
-                    c.init_error_dialogs()
-                    # Fix #579: Key bindings don't take for commands defined in plugins.
-                    c.k.makeAllBindings()
-                    g.chdir(fileName)
-                    g.setGlobalOpenDir(fileName)
-                    c.initialFocusHelper()
-            elif c.looksLikeDerivedFile(fileName):
-                # Create an @file node for files containing Leo sentinels.
-                c.importCommands.importDerivedFiles(parent=c.p, paths=[fileName], command='Open')
+
+                ###
+                # if c2:
+                    # c = c2  # #2906: Switch c here!
+                    # c.init_error_dialogs()
+                    # # Fix #579: Key bindings don't take for commands defined in plugins.
+                    # c.k.makeAllBindings()
+                    # g.chdir(fileName)
+                    # g.setGlobalOpenDir(fileName)
+                    # c.initialFocusHelper()
             else:
-                # otherwise, create an @edit node.
-                c.createNodeFromExternalFile(fileName)
+                c2 = lm.initWrapperLeoFile(c, fileName)
+
+            if c2:
+                c = c2  # #2906: Switch c here!
+                c.init_error_dialogs()
+                # Fix #579: Key bindings don't take for commands defined in plugins.
+                c.k.makeAllBindings()
+                g.chdir(fileName)
+                g.setGlobalOpenDir(fileName)
+                c.initialFocusHelper()
+            ###
+
+            # elif c.looksLikeDerivedFile(fileName):
+                # # Create an @file node for files containing Leo sentinels.
+                # c.importCommands.importDerivedFiles(parent=c.p, paths=[fileName], command='Open')
+            # else:
+                # # otherwise, create an @edit node.
+                # c.createNodeFromExternalFile(fileName)
         c.raise_error_dialogs(kind='write')
         g.app.runAlreadyOpenDialog(c)
     #@-others
