@@ -2042,10 +2042,6 @@ class LeoFind:
             else:
                 p.moveToThreadNext()
             assert p != progress
-        self.ftm.set_radio_button('entire-outline')
-        # suboutline-only is a one-shot for batch commands.
-        self.node_only = self.suboutline_only = False
-        self.root = None
         if clones:
             undoData = u.beforeInsertNode(c.p)
             found = self._cfa_create_nodes(clones, flattened=False)
@@ -2055,6 +2051,11 @@ class LeoFind:
             c.selectPosition(found)
             # Put the count in found.h.
             found.h = found.h.replace('Found:', f"Found {count}:")
+        # Reset data after calculating results.
+        self.ftm.set_radio_button('entire-outline')
+        # suboutline-only is a one-shot for batch commands.
+        self.node_only = self.suboutline_only = False
+        self.root = None
         g.es("found", count, "matches for", self.find_text)
         return count  # Might be useful for the gui update.
     #@+node:ekr.20210110073117.34: *5* find._cfa_create_nodes
@@ -2073,7 +2074,8 @@ class LeoFind:
         status = self.compute_result_status(find_all_flag=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
         flat = 'flattened, ' if flattened else ''
-        found.b = f"@nosearch\n\n# {flat}{status}\n\n# found {len(clones)} nodes"
+        root = f"\n\n# root: {c.p.h}" if self.suboutline_only else ''
+        found.b = f"@nosearch\n\n# {flat}{status}{root}\n\n# found {len(clones)} nodes"
         # Clone nodes as children of the found node.
         for p in clones:
             # Create the clone directly as a child of found.
