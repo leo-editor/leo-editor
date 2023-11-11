@@ -21,11 +21,25 @@ class Rust_Importer(Importer):
 
     string_list: list[str] = []  # Not used.
 
+    #@+<< define rust block patterns >>
+    #@+node:ekr.20231111065650.1: *3* << define rust block patterns >>
+
     # None of these patterns need end with '{' on the same line.
     block_patterns = (
+
         ('fn', re.compile(r'\s*fn\s+(\w+)\s*\(')),
         ('fn', re.compile(r'\s*pub\s+fn\s+(\w+)\s*\(')),
-        ('fn', re.compile(r'\s*pub\s*\(crate\)\s*fn\s+(\w+)\s*\(')),
+
+        # https://doc.rust-lang.org/stable/reference/visibility-and-privacy.html
+        # 2018 edition+, paths for pub(in path) must start with crate, self, or super.
+        ('fn', re.compile(r'\s*pub\s*\(\s*crate\s*\)\s*fn\s+(\w+)\s*\(')),
+        ('fn', re.compile(r'\s*pub\s*\(\s*self\s*\)\s*fn\s+(\w+)\s*\(')),
+        ('fn', re.compile(r'\s*pub\s*\(\s*super\s*\)\s*fn\s+(\w+)\s*\(')),
+
+        ('fn', re.compile(r'\s*pub\s*\(\s*in\s*crate::.*?\)\s*fn\s+(\w+)\s*\(')),
+        ('fn', re.compile(r'\s*pub\s*\(\s*in\s*self::.*?\)\s*fn\s+(\w+)\s*\(')),
+        ('fn', re.compile(r'\s*pub\s*\(\s*in\s*super::.*?\)\s*fn\s+(\w+)\s*\(')),
+
         ('impl', re.compile(r'\s*impl\b(.*?)$')),  # Use the rest of the line.
         ('mod', re.compile(r'\s*mod\s+(\w+)')),
         ('struct', re.compile(r'\s*struct\b(.*?)$')),
@@ -33,6 +47,7 @@ class Rust_Importer(Importer):
         ('trait', re.compile(r'\s*trait\b(.*?)$')),
         ('trait', re.compile(r'\s*pub\s+trait\b(.*?)$')),
     )
+    #@-<< define rust block patterns >>
 
     #@+others
     #@+node:ekr.20231031033255.1: *3* rust_i.compute_headline
