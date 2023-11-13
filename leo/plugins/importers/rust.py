@@ -16,11 +16,8 @@ if TYPE_CHECKING:
 class Rust_Importer(Importer):
 
     language = 'rust'
-
-    minimum_block_size = 0
-
     string_list: list[str] = []  # Not used.
-
+    minimum_block_size = 0
     #@+<< define rust block patterns >>
     #@+node:ekr.20231111065650.1: *3* << define rust block patterns >>
 
@@ -46,7 +43,8 @@ class Rust_Importer(Importer):
         ('struct', re.compile(r'\s*pub\s+struct\b(.*?)$')),
         ('trait', re.compile(r'\s*trait\b(.*?)$')),
         ('trait', re.compile(r'\s*pub\s+trait\b(.*?)$')),
-        ('use', re.compile(r'\s*use\s*\{')),  # No m.group(1).
+        
+        ('use', re.compile(r'\s*use.*?\{')),  # No m.group(1).
     )
     #@-<< define rust block patterns >>
 
@@ -98,6 +96,7 @@ class Rust_Importer(Importer):
         i = 0
         s = ''.join(lines)
         result = []
+        line_number, line_start = 1, 0  # For traces.
 
         #@+others  # Define helper functions.
         #@+node:ekr.20231105045331.1: *4* rust_i function: is_raw_string_literal
@@ -129,8 +128,8 @@ class Rust_Importer(Importer):
             return count if 0 < count < 256 else 0
         #@+node:ekr.20231105043204.1: *4* rust_i function: oops
         def oops(message: str) -> None:
-            full_message = f"{self.root.h} line: {i}:\n{message}"
-            g.es_print(full_message)
+            full_message = f"{self.root.h} line: {line_number}:\n{message}"
+            print(full_message)
         #@+node:ekr.20231105043049.1: *4* rust_i function: skip_possible_character_constant
         length10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")  # '\u{7FFF}'
         length6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")  # '\x7F'
@@ -245,7 +244,6 @@ class Rust_Importer(Importer):
                 skip()
         #@-others
 
-        line_number, line_start = 1, 0  # For traces.
         while i < len(s):
             ch = s[i]
             if ch == '\n':
@@ -350,6 +348,7 @@ class Rust_Importer(Importer):
                         i = end
                     break  # The pattern fully matched.
             assert i > progress, g.callers()
+        # g.printObj(results, tag=f"{g.my_name()} {i1}:{i2}")
         return results
     #@+node:ekr.20231031131127.1: *3* rust_i.postprocess
     def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:
