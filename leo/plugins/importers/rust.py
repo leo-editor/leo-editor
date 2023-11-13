@@ -43,7 +43,7 @@ class Rust_Importer(Importer):
         ('struct', re.compile(r'\s*pub\s+struct\b(.*?)$')),
         ('trait', re.compile(r'\s*trait\b(.*?)$')),
         ('trait', re.compile(r'\s*pub\s+trait\b(.*?)$')),
-        
+
         ('use', re.compile(r'\s*use.*?\{')),  # No m.group(1).
     )
     #@-<< define rust block patterns >>
