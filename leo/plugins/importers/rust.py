@@ -344,14 +344,12 @@ class Rust_Importer(Importer):
                     # Don't generate small blocks.
                     if min_size == 0 or end - prev_i > min_size:
                         block = Block(kind, name, start=prev_i, start_body=i, end=end, lines=self.lines)
-                        ### g.printObj(self.lines[prev_i:end],tag=f"{g.my_name()} {name}")
                         results.append(block)
                         i = prev_i = end
                     else:
                         i = end
                     break  # The pattern fully matched.
             assert i > progress, g.callers()
-        ### g.printObj(results, tag=f"{g.my_name()} {i1} {i2}")
         return results
     #@+node:ekr.20231031131127.1: *3* rust_i.postprocess
     def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:

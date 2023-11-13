@@ -1646,7 +1646,6 @@ class RecursiveImportController:
                     if not self.ignore_pattern.search(f):
                         self.import_one_file(f, parent=parent)
             if dirs:
-                assert self.recursive
                 for dir_ in sorted(dirs):
                     self.import_dir(dir_, parent)
     #@+node:ekr.20170404103953.1: *3* ric.import_one_file
