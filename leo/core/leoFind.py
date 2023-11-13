@@ -1489,7 +1489,6 @@ class LeoFind:
         """
         self.ftm.clear_focus()
         self.ftm.set_entry_focus()
-        self.total_links = 0  # Limit the total number of clickable links.
         self.start_state_machine(event, 'Search: ',
             handler=self.interactive_find_all1,
             escape_handler=self.find_all_escape_handler,
@@ -3022,6 +3021,7 @@ class LeoFind:
         k.getArgEscapes = ['\t'] if escape_handler else []
         self.handler = handler
         self.escape_handler = escape_handler
+        self.total_links = 0  # Limit the total number of clickable links.
         # Start the state matching!
         k.get1Arg(event, handler=self.state0, tabList=self.findTextList, completion=True)
 
