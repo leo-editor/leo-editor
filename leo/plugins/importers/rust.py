@@ -46,6 +46,7 @@ class Rust_Importer(Importer):
         ('struct', re.compile(r'\s*pub\s+struct\b(.*?)$')),
         ('trait', re.compile(r'\s*trait\b(.*?)$')),
         ('trait', re.compile(r'\s*pub\s+trait\b(.*?)$')),
+        ('use', re.compile(r'\s*use\s*\{')),  # No m.group(1).
     )
     #@-<< define rust block patterns >>
 
@@ -337,7 +338,7 @@ class Rust_Importer(Importer):
                         continue
                     i += 1
                     # cython may include trailing whitespace.
-                    name = m.group(1).strip()
+                    name = m.group(1).strip() if m.groups() else ''
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
                     # Don't generate small blocks.
