@@ -129,7 +129,10 @@ class Rust_Importer(Importer):
         #@+node:ekr.20231105043204.1: *4* rust_i function: oops
         def oops(message: str) -> None:
             full_message = f"{self.root.h} line: {line_number}:\n{message}"
-            print(full_message)
+            if g.unitTesting:
+                assert False, full_message
+            else:
+                print(full_message)
         #@+node:ekr.20231105043049.1: *4* rust_i function: skip_possible_character_constant
         length10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")  # '\u{7FFF}'
         length6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")  # '\x7F'
@@ -189,8 +192,10 @@ class Rust_Importer(Importer):
         #@+node:ekr.20231105045459.1: *4* rust_i function: skip_raw_string_literal
         def skip_raw_string_literal(n: int) -> None:
             nonlocal i
-            assert s[i - n - 1] == 'r'
-            assert s[i - n] == '#'
+            assert s[i - n - 1] == 'r', repr(s[i - n - 1])
+            assert s[i - n] == '#', repr(s[i - n])
+            assert s[i] == '"', repr(s[i])
+            i += 1
             j = i
             target = '"' + '#' * n
             while i + len(target) < len(s):
@@ -200,6 +205,7 @@ class Rust_Importer(Importer):
                 else:
                     skip()
             else:
+                g.printObj(g.splitLines(s[j:]), tag=f"{g.my_name()}: run-on raw string literal at")
                 oops(f"Unterminated raw string literal: {s[j:]!r}")
         #@+node:ekr.20231105043337.1: *4* rust_i function: skip_string_constant
         def skip_string_constant() -> None:
@@ -214,7 +220,8 @@ class Rust_Importer(Importer):
                 elif ch == '"':
                     break
             else:
-                oops(f"Run-on string: {s[j:j+10]!r}")
+                g.printObj(g.splitLines(s[j:]), tag=f"{g.my_name()}: run-on string at")
+                oops(f"Run-on string! offset: {j} line number: {line_number}")
         #@+node:ekr.20231105042315.1: *4* rust_i functions: scanning
         def add() -> None:
             nonlocal i

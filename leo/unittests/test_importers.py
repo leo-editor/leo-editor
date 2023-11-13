@@ -3995,6 +3995,35 @@ class TestRust(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
+    #@+node:ekr.20231113092341.1: *3* TestRust.test_invalid_runon_string
+    def test_invalid_runon_string(self):
+
+        # From ruff_linter/src/rules/eradicate/detection.rs
+        s = textwrap.dedent(
+    """
+        #[test]
+        fn comment_contains_code_basic() {
+            assert!(comment_contains_code("#import eradicate", &[]));
+            assert!(comment_contains_code(r#"#"key": value,"#, &[]));
+            assert!(comment_contains_code(r#"#"key": "value","#, &[]));
+        }
+    """)
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                    '@others\n'
+                    '@language rust\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'fn comment_contains_code_basic',
+                    '#[test]\n'
+                    'fn comment_contains_code_basic() {\n'
+                    '    assert!(comment_contains_code("#import eradicate", &[]));\n'
+                    '    assert!(comment_contains_code(r#"#"key": value,"#, &[]));\n'
+                    '    assert!(comment_contains_code(r#"#"key": "value","#, &[]));\n'
+                    '}\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20231012142113.1: ** class TestScheme (BaseTestImporter)
 class TestScheme(BaseTestImporter):
