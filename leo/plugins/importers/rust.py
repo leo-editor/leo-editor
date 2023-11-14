@@ -16,25 +16,56 @@ if TYPE_CHECKING:
 class Rust_Importer(Importer):
 
     language = 'rust'
-
-    minimum_block_size = 0
-
     string_list: list[str] = []  # Not used.
+    minimum_block_size = 0
+    #@+<< define rust block patterns >>
+    #@+node:ekr.20231111065650.1: *3* << define rust block patterns >>
 
-    # None of these patterns need end with '{' on the same line.
     block_patterns = (
+
+        # Patterns that *do* require '{' on the same line...
+
+        ('enum', re.compile(r'\s*enum\s+(\w+)\s*\{')),
+        ('macro', re.compile(r'\s*(\w+)\!\s*\{')),
+        ('use', re.compile(r'\s*use.*?\{')),  # No m.group(1).
+
+         # Patterns that do *not* require '{' on the same line...
+
         ('fn', re.compile(r'\s*fn\s+(\w+)\s*\(')),
         ('fn', re.compile(r'\s*pub\s+fn\s+(\w+)\s*\(')),
-        ('fn', re.compile(r'\s*pub\s*\(crate\)\s*fn\s+(\w+)\s*\(')),
+
+        # https://doc.rust-lang.org/stable/reference/visibility-and-privacy.html
+        # 2018 edition+, paths for pub(in path) must start with crate, self, or super.
+        ('fn', re.compile(r'\s*pub\s*\(\s*crate\s*\)\s*fn\s+(\w+)\s*\(')),
+        ('fn', re.compile(r'\s*pub\s*\(\s*self\s*\)\s*fn\s+(\w+)\s*\(')),
+        ('fn', re.compile(r'\s*pub\s*\(\s*super\s*\)\s*fn\s+(\w+)\s*\(')),
+
+        ('fn', re.compile(r'\s*pub\s*\(\s*in\s*crate::.*?\)\s*fn\s+(\w+)\s*\(')),
+        ('fn', re.compile(r'\s*pub\s*\(\s*in\s*self::.*?\)\s*fn\s+(\w+)\s*\(')),
+        ('fn', re.compile(r'\s*pub\s*\(\s*in\s*super::.*?\)\s*fn\s+(\w+)\s*\(')),
+
         ('impl', re.compile(r'\s*impl\b(.*?)$')),  # Use the rest of the line.
+
         ('mod', re.compile(r'\s*mod\s+(\w+)')),
+
         ('struct', re.compile(r'\s*struct\b(.*?)$')),
         ('struct', re.compile(r'\s*pub\s+struct\b(.*?)$')),
         ('trait', re.compile(r'\s*trait\b(.*?)$')),
         ('trait', re.compile(r'\s*pub\s+trait\b(.*?)$')),
     )
+    #@-<< define rust block patterns >>
 
     #@+others
+    #@+node:ekr.20231111073652.1: *3* rust_i.check_blanks_and_tabs
+    def check_blanks_and_tabs(self, lines: list[str]) -> bool:  # pragma: no cover (missing test)
+        """
+        Rust_Importer.check_blanks_and_tabs.
+
+        Check for intermixed blank & tabs.
+
+        Ruff uses intermixed blanks and tabs.
+        """
+        return True
     #@+node:ekr.20231031033255.1: *3* rust_i.compute_headline
     def compute_headline(self, block: Block) -> str:
         """
@@ -72,6 +103,7 @@ class Rust_Importer(Importer):
         i = 0
         s = ''.join(lines)
         result = []
+        line_number, line_start = 1, 0  # For traces.
 
         #@+others  # Define helper functions.
         #@+node:ekr.20231105045331.1: *4* rust_i function: is_raw_string_literal
@@ -103,12 +135,16 @@ class Rust_Importer(Importer):
             return count if 0 < count < 256 else 0
         #@+node:ekr.20231105043204.1: *4* rust_i function: oops
         def oops(message: str) -> None:
-            full_message = f"{self.root.h} line: {i}:\n{message}"
-            g.es_print(full_message)
+            full_message = f"{self.root.h} line: {line_number}:\n{message}"
+            if g.unitTesting:
+                assert False, full_message
+            else:
+                print(full_message)
         #@+node:ekr.20231105043049.1: *4* rust_i function: skip_possible_character_constant
-        length10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]\}'")  # '\u{7FFF}'
+        length10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")  # '\u{7FFF}'
         length6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")  # '\x7F'
         length4_pat = re.compile(r"'\\[\\\"'nrt0]'")  # '\n', '\r', '\t', '\\', '\0', '\'', '\"'
+        length3_pat = re.compile(r"'.'", re.UNICODE)  # 'x' where x is any unicode character.
 
         def skip_possible_character_constant() -> None:
             """
@@ -122,6 +158,7 @@ class Rust_Importer(Importer):
                 (10, length10_pat),
                 (6, length6_pat),
                 (4, length4_pat),
+                (3, length3_pat),
             ):
                 if pattern.match(s, i):
                     skip_n(n)
@@ -162,8 +199,10 @@ class Rust_Importer(Importer):
         #@+node:ekr.20231105045459.1: *4* rust_i function: skip_raw_string_literal
         def skip_raw_string_literal(n: int) -> None:
             nonlocal i
-            assert s[i - n - 1] == 'r'
-            assert s[i - n] == '#'
+            assert s[i - n - 1] == 'r', repr(s[i - n - 1])
+            assert s[i - n] == '#', repr(s[i - n])
+            assert s[i] == '"', repr(s[i])
+            i += 1
             j = i
             target = '"' + '#' * n
             while i + len(target) < len(s):
@@ -173,6 +212,7 @@ class Rust_Importer(Importer):
                 else:
                     skip()
             else:
+                g.printObj(g.splitLines(s[j:]), tag=f"{g.my_name()}: run-on raw string literal at")
                 oops(f"Unterminated raw string literal: {s[j:]!r}")
         #@+node:ekr.20231105043337.1: *4* rust_i function: skip_string_constant
         def skip_string_constant() -> None:
@@ -187,7 +227,8 @@ class Rust_Importer(Importer):
                 elif ch == '"':
                     break
             else:
-                oops(f"Run-on string: {s[j:j+10]!r}")
+                g.printObj(g.splitLines(s[j:]), tag=f"{g.my_name()}: run-on string at")
+                oops(f"Run-on string! offset: {j} line number: {line_number}")
         #@+node:ekr.20231105042315.1: *4* rust_i functions: scanning
         def add() -> None:
             nonlocal i
@@ -217,7 +258,6 @@ class Rust_Importer(Importer):
                 skip()
         #@-others
 
-        line_number, line_start = 1, 0  # For traces.
         while i < len(s):
             ch = s[i]
             if ch == '\n':
@@ -310,20 +350,19 @@ class Rust_Importer(Importer):
                         continue
                     i += 1
                     # cython may include trailing whitespace.
-                    name = m.group(1).strip()
+                    name = m.group(1).strip() if m.groups() else ''
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
                     # Don't generate small blocks.
                     if min_size == 0 or end - prev_i > min_size:
                         block = Block(kind, name, start=prev_i, start_body=i, end=end, lines=self.lines)
-                        ### g.printObj(self.lines[prev_i:end],tag=f"{g.my_name()} {name}")
                         results.append(block)
                         i = prev_i = end
                     else:
                         i = end
                     break  # The pattern fully matched.
             assert i > progress, g.callers()
-        ### g.printObj(results, tag=f"{g.my_name()} {i1} {i2}")
+        # g.printObj(results, tag=f"{g.my_name()} {i1}:{i2}")
         return results
     #@+node:ekr.20231031131127.1: *3* rust_i.postprocess
     def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:
