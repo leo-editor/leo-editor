@@ -392,15 +392,13 @@ if 1:  # pragma: no cover
         old_cwd = os.getcwd()
         os.chdir(repo_path)
         try:
-            # Run git status.
             result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
             if result.returncode != 0:
                 print("Error running git command")
                 return []
-            # Parse the output.
             modified_files = []
             for line in result.stdout.split('\n'):
-                if line.startswith(' M') or line.startswith('M '):
+                if line.startswith((' M', 'M ', 'A ', ' A')):
                     modified_files.append(line[3:])
             return [os.path.abspath(z) for z in modified_files]
         finally:
