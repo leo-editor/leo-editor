@@ -385,18 +385,17 @@ if 1:  # pragma: no cover
 if 1:  # pragma: no cover
     #@+others
     #@+node:ekr.20231114133501.1: *3* function: get_modified_files
-    def get_modified_files(repo_path):
+    def get_modified_files(repo_path: str) -> list[str]:
         """Return the modified files in the given repo."""
         old_cwd = os.getcwd()
         os.chdir(repo_path)
         try:
-            # Run git status and get the output
+            # Run git status.
             result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
             if result.returncode != 0:
                 print("Error running git command")
                 return []
-
-            # Parse the output to find modified files
+            # Parse the output.
             modified_files = []
             for line in result.stdout.split('\n'):
                 if line.startswith(' M') or line.startswith('M '):
