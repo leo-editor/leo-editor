@@ -156,6 +156,7 @@ import io
 import os
 import pprint
 import re
+import subprocess
 import sys
 import textwrap
 import tokenize
@@ -383,6 +384,26 @@ if 1:  # pragma: no cover
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level utils
 if 1:  # pragma: no cover
     #@+others
+    #@+node:ekr.20231114133501.1: *3* function: get_modified_files
+    def get_modified_files(repo_path):
+        """Return the modified files in the given repo."""
+        old_cwd = os.getcwd()
+        os.chdir(repo_path)
+        try:
+            # Run git status and get the output
+            result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+            if result.returncode != 0:
+                print("Error running git command")
+                return []
+
+            # Parse the output to find modified files
+            modified_files = []
+            for line in result.stdout.split('\n'):
+                if line.startswith(' M') or line.startswith('M '):
+                    modified_files.append(line[3:])
+            return modified_files
+        finally:
+            os.chdir(old_cwd)
     #@+node:ekr.20220404062739.1: *3* function: scan_ast_args
     def scan_ast_args() -> tuple[Any, dict[str, Any], list[str], bool]:
         description = textwrap.dedent("""\
