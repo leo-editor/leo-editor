@@ -19,29 +19,35 @@ This file requires Python 3.9 or above.
 **Stand-alone operation**
 
 usage:
-    leoAst.py --help
-    leoAst.py [--fstringify | --fstringify-diff | --orange | --orange-diff] PATHS
-    leoAst.py --py-cov [ARGS]
-    leoAst.py --pytest [ARGS]
-    leoAst.py --unittest [ARGS]
+    python -m leo.core.leoAst.py --help
+    python -m leo.core.leoAst.py --fstringify ARGS PATHS
+    python -m leo.core.leoAst.py --fstringify-diff ARGS PATHS
+    python -m leo.core.leoAst.py --orange ARGS PATHS
+    python -m leo.core.leoAst.py --orange-diff ARGS PATHS
+    python -m leo.core.leoAst.py --py-cov [ARGS]
+    python -m leo.core.leoAst.py --pytest [ARGS]
+    python -m leo.core.leoAst.py --unittest [ARGS]
 
 examples:
-    --py-cov "-f TestOrange"
-    --pytest "-f TestOrange"
-    --unittest TestOrange
+    python -m leo.core.leoAst.py --orange --force --verbose PATHS
+    python -m leo.core.leoAst.py --py-cov "-f TestOrange"
+    python -m leo.core.leoAst.py --pytest "-f TestOrange"
+    python -m leo.core.leoAst.py --unittest TestOrange
 
 positional arguments:
   PATHS              directory or list of files
 
 optional arguments:
   -h, --help         show this help message and exit
+  --force            operate on all files. Otherwise operate only on modified files
   --fstringify       leonine fstringify
   --fstringify-diff  show fstringify diff
-  --orange           leonine Black
+  --orange           leonine text formatter (Orange is the new Black)
   --orange-diff      show orange diff
   --py-cov           run pytest --cov on leoAst.py
   --pytest           run pytest on leoAst.py
   --unittest         run unittest on leoAst.py
+  --verbose          verbose output
 
 
 **Overview**
