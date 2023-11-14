@@ -387,6 +387,8 @@ if 1:  # pragma: no cover
     #@+node:ekr.20231114133501.1: *3* function: get_modified_files
     def get_modified_files(repo_path: str) -> list[str]:
         """Return the modified files in the given repo."""
+        if not repo_path:
+            return []
         old_cwd = os.getcwd()
         os.chdir(repo_path)
         try:
@@ -400,7 +402,7 @@ if 1:  # pragma: no cover
             for line in result.stdout.split('\n'):
                 if line.startswith(' M') or line.startswith('M '):
                     modified_files.append(line[3:])
-            return modified_files
+            return [os.path.abspath(z) for z in modified_files]
         finally:
             os.chdir(old_cwd)
     #@+node:ekr.20220404062739.1: *3* function: scan_ast_args
@@ -434,13 +436,20 @@ if 1:  # pragma: no cover
             help='include directories recursively')
         add2('--tab-width', dest='tab_width', metavar='N', type=int,
             help='tab-width (default -4)')
+        # Newer arguments.
+        add2('--force', dest='force', action='store_true',
+            help='force beautification of all files')
+        add2('--verbose', dest='verbose', action='store_true',
+            help='verbose (per-file) output')
         # Create the return values, using EKR's prefs as the defaults.
         parser.set_defaults(
             allow_joined=False,
+            force=False,
             max_join=0,
             max_split=0,
             recursive=False,
             tab_width=4,
+            verbose=False
         )
         args = parser.parse_args()
         files = args.PATHS
@@ -448,9 +457,11 @@ if 1:  # pragma: no cover
         # Create the settings dict, ensuring proper values.
         settings_dict: dict[str, Any] = {
             'allow_joined_strings': bool(args.allow_joined),
+            'force': bool(args.force),
             'max_join_line_length': abs(args.max_join),
             'max_split_line_length': abs(args.max_split),
             'tab_width': abs(args.tab_width),  # Must be positive!
+            'verbose': bool(args.verbose),
         }
         return args, settings_dict, files, recursive
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
@@ -1711,18 +1722,22 @@ class Orange:
             settings = {}
         valid_keys = (
             'allow_joined_strings',
+            'force',
             'max_join_line_length',
             'max_split_line_length',
             'orange',
             'tab_width',
+            'verbose',
         )
         # For mypy...
         self.kind: str = ''
         # Default settings...
         self.allow_joined_strings = False  # EKR's preference.
+        self.force = False
         self.max_join_line_length = 88
         self.max_split_line_length = 88
         self.tab_width = 4
+        self.verbose = False
         # Override from settings dict...
         for key in settings:  # pragma: no cover
             value = settings.get(key)
@@ -4319,18 +4334,41 @@ def main() -> None:  # pragma: no cover
     """Run commands specified by sys.argv."""
     args, settings_dict, arg_files, recursive = scan_ast_args()
     # Finalize arguments.
-    cwd, files = os.getcwd(), []
+    cwd = os.getcwd()
+    # Calculate requested files.
+    requested_files = []
     for path in arg_files:
         if path.endswith('.py'):
-            files = [os.path.join(cwd, path)]
+            requested_files = [os.path.join(cwd, path)]
         else:
             root_dir = os.path.join(cwd, path)
-            files = glob.glob(f'{root_dir}**{os.sep}*.py', recursive=recursive)
-    if not files:
-        print(f"No files found in {arg_files!r}")
+            requested_files = glob.glob(f'{root_dir}**{os.sep}*.py', recursive=recursive)
+    if not requested_files:
+        print(f"No files in {arg_files!r}")
         return
+    if args.force:
+        # Beautify all requested files.
+        files = requested_files
+    else:
+        # Beautify only requested files.
+        modified_files = get_modified_files(cwd)
+        files = [z for z in requested_files if os.path.abspath(z) in modified_files]
+        if not files:
+            if args.verbose:
+                print(f"No modified files in {arg_files!r}")
+            return
     # Execute the command.
-    # print(f"Found {len(files)} file{g.plural(len(files))}.")
+    if args.verbose:
+        kind = (
+            'fstringify' if args.f else
+            'fstringify-diff' if args.fd else
+            'orange' if args.o else
+            'orange-diff' if args.od else
+            None
+        )
+        if kind:
+            n = len(files)
+            print(f"{kind}: {n} file{g.plural(n)}.")
     if args.f:
         fstringify_command(files)
     if args.fd:
