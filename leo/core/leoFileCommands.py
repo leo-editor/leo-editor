@@ -1947,7 +1947,7 @@ class FileCommands:
         """
         Put the prolog of the xml file.
         """
-        tag = 'http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1'
+        tag = 'https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1'
         self.putXMLLine()
         # Put "created by Leo" line.
         self.put('<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->\n')
