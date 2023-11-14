@@ -21,8 +21,15 @@ class Rust_Importer(Importer):
     #@+<< define rust block patterns >>
     #@+node:ekr.20231111065650.1: *3* << define rust block patterns >>
 
-    # None of these patterns need end with '{' on the same line.
     block_patterns = (
+
+        # Patterns that *do* require '{' on the same line...
+
+        ('enum', re.compile(r'\s*enum\s+(\w+)\s*\{')),
+        ('macro', re.compile(r'\s*(\w+)\!\s*\{')),
+        ('use', re.compile(r'\s*use.*?\{')),  # No m.group(1).
+
+         # Patterns that do *not* require '{' on the same line...
 
         ('fn', re.compile(r'\s*fn\s+(\w+)\s*\(')),
         ('fn', re.compile(r'\s*pub\s+fn\s+(\w+)\s*\(')),
@@ -38,13 +45,13 @@ class Rust_Importer(Importer):
         ('fn', re.compile(r'\s*pub\s*\(\s*in\s*super::.*?\)\s*fn\s+(\w+)\s*\(')),
 
         ('impl', re.compile(r'\s*impl\b(.*?)$')),  # Use the rest of the line.
+
         ('mod', re.compile(r'\s*mod\s+(\w+)')),
+
         ('struct', re.compile(r'\s*struct\b(.*?)$')),
         ('struct', re.compile(r'\s*pub\s+struct\b(.*?)$')),
         ('trait', re.compile(r'\s*trait\b(.*?)$')),
         ('trait', re.compile(r'\s*pub\s+trait\b(.*?)$')),
-
-        ('use', re.compile(r'\s*use.*?\{')),  # No m.group(1).
     )
     #@-<< define rust block patterns >>
 
