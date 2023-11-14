@@ -1486,8 +1486,6 @@ class LeoFind:
         search string.
 
         Typing tab converts this to the change-all command.
-
-
         """
         self.ftm.clear_focus()
         self.ftm.set_entry_focus()
@@ -1698,10 +1696,15 @@ class LeoFind:
                         self.put_link(line, n, v)
         return ''.join(results)
     #@+node:ekr.20230124102225.1: *7* find.put_link
+    total_links = 0
+
     def put_link(self, line: str, line_number: int, v: VNode) -> None:  # pragma: no cover  # #2023
         """Put a link to the given line at the given line_number in v.h."""
         c = self.c
         log = c.frame.log
+        self.total_links += 1
+        if self.total_links > 100:
+            return
         # Find the first position with the given vnode.
         for p in c.all_unique_positions():
             if p.v == v:
@@ -3018,6 +3021,7 @@ class LeoFind:
         k.getArgEscapes = ['\t'] if escape_handler else []
         self.handler = handler
         self.escape_handler = escape_handler
+        self.total_links = 0  # Limit the total number of clickable links.
         # Start the state matching!
         k.get1Arg(event, handler=self.state0, tabList=self.findTextList, completion=True)
 
