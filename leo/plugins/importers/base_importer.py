@@ -619,7 +619,7 @@ class Importer:
                     count += 1
                 result.append(s)
         if count and not g.unitTesting:
-            g.es_print(f"{self.root.h}:\nchanged leading {kind2} to {kind} in {count} line{g.plural(count)}")
+            print(f"{self.root.h}:\nchanged leading {kind2} to {kind} in {count} line{g.plural(count)}")
         return result
     #@+node:ekr.20230529075138.7: *3* i: Utils
     # Subclasses are unlikely ever to need to override these methods.
