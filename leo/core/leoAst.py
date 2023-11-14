@@ -20,10 +20,10 @@ This file requires Python 3.9 or above.
 
 usage:
     python -m leo.core.leoAst.py --help
-    python -m leo.core.leoAst.py --fstringify ARGS PATHS
-    python -m leo.core.leoAst.py --fstringify-diff ARGS PATHS
-    python -m leo.core.leoAst.py --orange ARGS PATHS
-    python -m leo.core.leoAst.py --orange-diff ARGS PATHS
+    python -m leo.core.leoAst.py --fstringify [ARGS] PATHS
+    python -m leo.core.leoAst.py --fstringify-diff [ARGS] PATHS
+    python -m leo.core.leoAst.py --orange [ARGS] PATHS
+    python -m leo.core.leoAst.py --orange-diff [ARGS] PATHS
     python -m leo.core.leoAst.py --py-cov [ARGS]
     python -m leo.core.leoAst.py --pytest [ARGS]
     python -m leo.core.leoAst.py --unittest [ARGS]
