@@ -410,7 +410,7 @@ if 1:  # pragma: no cover
         finally:
             os.chdir(old_cwd)
     #@+node:ekr.20220404062739.1: *3* function: scan_ast_args
-    def scan_ast_args() -> tuple[Any, dict[str, Any], list[str], bool]:
+    def scan_ast_args() -> tuple[Any, dict[str, Any], list[str]]:
         description = textwrap.dedent("""\
             Execute fstringify or beautify commands contained in leoAst.py.
         """)
@@ -436,8 +436,6 @@ if 1:  # pragma: no cover
             help='max unsplit line length (default 0)')
         add2('--max-split', dest='max_split', metavar='N', type=int,
             help='max unjoined line length (default 0)')
-        add2('--recursive', dest='recursive', action='store_true',
-            help='include directories recursively')
         add2('--tab-width', dest='tab_width', metavar='N', type=int,
             help='tab-width (default -4)')
         # Newer arguments.
@@ -455,9 +453,8 @@ if 1:  # pragma: no cover
             tab_width=4,
             verbose=False
         )
-        args = parser.parse_args()
+        args: Any = parser.parse_args()
         files = args.PATHS
-        recursive = args.recursive
         # Create the settings dict, ensuring proper values.
         settings_dict: dict[str, Any] = {
             'allow_joined_strings': bool(args.allow_joined),
@@ -467,7 +464,7 @@ if 1:  # pragma: no cover
             'tab_width': abs(args.tab_width),  # Must be positive!
             'verbose': bool(args.verbose),
         }
-        return args, settings_dict, files, recursive
+        return args, settings_dict, files
     #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
     #@+node:ekr.20200218071822.1: *4* function: regularize_nls
     def regularize_nls(s: str) -> str:
@@ -4337,22 +4334,21 @@ class TokenOrderGenerator:
 #@+node:ekr.20200702102239.1: ** function: main (leoAst.py)
 def main() -> None:  # pragma: no cover
     """Run commands specified by sys.argv."""
-    args, settings_dict, arg_files, recursive = scan_ast_args()
-    if recursive:
-        print('Ignoring deprecated --recursive command-line option')
+    args, settings_dict, arg_files = scan_ast_args()
     # Finalize arguments.
     cwd = os.getcwd()
     # Calculate requested files.
-    requested_files = []
+    requested_files: list[str] = []
     for path in arg_files:
         if path.endswith('.py'):
-            requested_files.append([os.path.join(cwd, path)])
+            requested_files.append(os.path.join(cwd, path))
         else:
             root_dir = os.path.join(cwd, path)
             requested_files.extend(glob.glob(f'{root_dir}**{os.sep}*.py', recursive=True))
     if not requested_files:
         print(f"No files in {arg_files!r}")
         return
+    files: list[str]
     if args.force:
         # Handle all requested files.
         files = requested_files
