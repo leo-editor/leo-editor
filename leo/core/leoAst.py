@@ -1759,9 +1759,10 @@ class Orange:
     def oops(self) -> None:  # pragma: no cover
         g.trace(f"Unknown kind: {self.kind}")
 
-    def beautify(self, contents: str, filename: str, tokens: list[Token], tree: Node,
-
-        max_join_line_length: Optional[int] = None, max_split_line_length: Optional[int] = None,
+    def beautify(self,
+        contents: str, filename: str, tokens: list[Token], tree: Node,
+        max_join_line_length: Optional[int] = None,
+        max_split_line_length: Optional[int] = None,
     ) -> str:
         """
         The main line. Create output tokens and return the result as a string.
