@@ -33,7 +33,7 @@ from leo.plugins.mod_scripting import scriptingController
 Qt = QtCore.Qt
 
 QApplication = QtWidgets.QApplication
-QButtonGroup  = QtWidgets.QButtonGroup
+QButtonGroup = QtWidgets.QButtonGroup
 QCheckBox = QtWidgets.QCheckBox
 QClipboard = QtGui.QClipboard
 QColor = QtGui.QColor
@@ -200,7 +200,7 @@ def toggle_tab(event) -> None:
     c = event.c
     log = c.frame.log
 
-    toggle_app_tab(log, TABNAME, widget = CalcDlg)
+    toggle_app_tab(log, TABNAME, widget=CalcDlg)
 #@+node:tom.20230501083631.1: ** copyToClip
 def copyToClip(text):
     """Copy text to the clipboard.
@@ -217,23 +217,23 @@ def onCreate(tag: str, keys: Any) -> None:
     if c:
         sc = scriptingController(c)
         sc.createIconButton(
-            args = None,
-            text = 'RPCalc',
-            command = lambda: c.doCommandByName('rpcalc-toggle'),
+            args=None,
+            text='RPCalc',
+            command=lambda: c.doCommandByName('rpcalc-toggle'),
             statusLine=None)
 #@+node:tom.20230424130102.2: **  altbasedialog
 #@+others
 #@+node:tom.20230424130102.3: *3* class AltBaseDialog
-class AltBaseDialog(QWidget): # type: ignore
+class AltBaseDialog(QWidget):  # type: ignore
     """Displays edit boxes for other number bases.
     """
-    baseCode = {'X':16, 'O':8, 'B':2, 'D':10}
+    baseCode = {'X': 16, 'O': 8, 'B': 2, 'D': 10}
     #@+others
     #@+node:tom.20230424130102.4: *4* __init__
     def __init__(self, dlgRef, parent=None):
         QWidget.__init__(self, parent)
         self.dlgRef = dlgRef
-        self.prevBase = None   # revert to prevBase after temp base change
+        self.prevBase = None  # revert to prevBase after temp base change
         self.setAttribute(Qt.WidgetAttribute.WA_QuitOnClose, False)
         self.setWindowTitle('rpCalc Alternate Bases')
         topLay = QVBoxLayout(self)
@@ -365,7 +365,7 @@ class AltBaseDialog(QWidget): # type: ignore
 
     #@-others
 #@+node:tom.20230424130102.13: *3* class AltBaseBox
-class AltBaseBox(QLabel): # type: ignore
+class AltBaseBox(QLabel):  # type: ignore
     """Displays an edit box at a particular base.
     """
     #@+others
@@ -401,7 +401,7 @@ class AltBaseBox(QLabel): # type: ignore
 #@+node:tom.20230424130102.18: **  calcbutton
 #@+others
 #@+node:tom.20230424130102.19: *3* class CalcButton
-class CalcButton(QPushButton): # type: ignore
+class CalcButton(QPushButton):  # type: ignore
     """Calculator button class - size change & emits clicked text signal.
     """
     activated = pyqtSignal(str)
@@ -455,12 +455,12 @@ class Mode:
     """Enum for calculator modes.
     """
     entryMode = 100  # in num entry - adds to num string
-    saveMode = 101   # after result - previous result becomes Y
-    replMode = 102   # after enter key - replaces X
-    expMode = 103    # in exponent entry - adds to exp string
-    memStoMode = 104 # in memory register entry - needs 0-9 for num to store
-    memRclMode = 105 # in memory register entry - needs 0-9 for num to recall
-    decPlcMode = 106 # in decimal places entry - needs 0-9 for value
+    saveMode = 101  # after result - previous result becomes Y
+    replMode = 102  # after enter key - replaces X
+    expMode = 103  # in exponent entry - adds to exp string
+    memStoMode = 104  # in memory register entry - needs 0-9 for num to store
+    memRclMode = 105  # in memory register entry - needs 0-9 for num to recall
+    decPlcMode = 106  # in decimal places entry - needs 0-9 for value
     errorMode = 107  # error notification - any cmd to resume
 
 
@@ -549,7 +549,7 @@ class CalcCore:
             exp = int(math.floor(math.log10(absNum)))
             if useEng:
                 exp = 3 * (exp // 3)
-            num /= 10**exp
+            num /= 10 ** exp
             num = round(num, plcs)  # check if rounding bumps exponent
             if useEng and abs(num) >= 1000.0:
                 num /= 1000.0
@@ -610,7 +610,7 @@ class CalcCore:
             else:
                 newStr = self.numberStr(self.stack[0], self.base) + entStr
         else:
-            newStr = ' ' + entStr    # space for minus sign
+            newStr = ' ' + entStr  # space for minus sign
             if newStr == ' .':
                 newStr = ' 0.'
         try:
@@ -618,7 +618,7 @@ class CalcCore:
         except ValueError:
             return False
         if self.base != 10:
-            newStr = self.formatNum(num)    # decimal num in main display
+            newStr = self.formatNum(num)  # decimal num in main display
         self.stack[0] = num
         if self.option.boolData('ThousandsSeparator'):
             newStr = self.addThousandsSep(newStr)
@@ -638,16 +638,16 @@ class CalcCore:
         if number == 0:
             return '0'
         if self.useTwosComplement:
-            if number >= 2**(self.numBits - 1) or \
-                    number < -2**(self.numBits - 1):
+            if number >= 2 ** (self.numBits - 1) or \
+                    number < -2 ** (self.numBits - 1):
                 return 'overflow'
             if number < 0:
-                number = 2**self.numBits + number
+                number = 2 ** self.numBits + number
         else:
             if number < 0:
                 number = abs(number)
                 sign = '-'
-            if number >= 2**self.numBits:
+            if number >= 2 ** self.numBits:
                 return 'overflow'
         while number:
             number, remainder = divmod(number, base)
@@ -662,13 +662,13 @@ class CalcCore:
         if self.base == 10:
             return float(numStr)
         num = float(int(numStr, self.base))
-        if num >= 2**self.numBits:
+        if num >= 2 ** self.numBits:
             self.xStr = 'error 9'
             self.flag = Mode.errorMode
             self.stack[0] = num
             raise ValueError
-        if self.useTwosComplement and num >= 2**(self.numBits - 1):
-            num = num - 2**self.numBits
+        if self.useTwosComplement and num >= 2 ** (self.numBits - 1):
+            num = num - 2 ** self.numBits
         return num
 
     #@+node:tom.20230424130102.41: *4* expCmd
@@ -682,7 +682,7 @@ class CalcCore:
         else:
             if self.flag == Mode.saveMode:
                 self.stack.enterX()
-            self.stack[0]= 1.0
+            self.stack[0] = 1.0
             self.xStr = '1e+0'
         self.flag = Mode.expMode
         return True
@@ -745,10 +745,10 @@ class CalcCore:
             elif self.flag == Mode.memRclMode:
                 self.stack.enterX()
                 self.stack[0] = self.mem[num]
-            else:        # decimal place mode
+            else:  # decimal place mode
                 self.option.changeData('NumDecimalPlaces', numStr, 1)
                 self.option.writeChanges()
-        elif numStr == '<-':         # backspace
+        elif numStr == '<-':  # backspace
             pass
         else:
             return False
@@ -765,7 +765,7 @@ class CalcCore:
             return 1.0
         if type == 'grad':
             return math.pi / 200
-        return math.pi / 180   # degree
+        return math.pi / 180  # degree
 
     #@+node:tom.20230424130102.46: *4* cmd
     def cmd(self, cmdStr):
@@ -773,7 +773,7 @@ class CalcCore:
         """
         if self.flag in (Mode.memStoMode, Mode.memRclMode, Mode.decPlcMode):
             return self.memStoRcl(cmdStr)
-        if self.flag == Mode.errorMode:    # reset display, ignore next command
+        if self.flag == Mode.errorMode:  # reset display, ignore next command
             self.updateXStr()
             self.flag = Mode.saveMode
             return True
@@ -798,95 +798,95 @@ class CalcCore:
                         self.stack.replaceXY(self.stack[1] / self.stack[0])
                 else:
                     return False
-            elif cmdStr == 'ENT':          # enter
+            elif cmdStr == 'ENT':  # enter
                 self.stack.enterX()
                 self.flag = Mode.replMode
                 self.updateXStr()
                 return True
             elif cmdStr == 'EXP':
                 return self.expCmd()
-            elif cmdStr == 'X<>Y':         # exchange
+            elif cmdStr == 'X<>Y':  # exchange
                 self.stack[0], self.stack[1] = self.stack[1], self.stack[0]
-            elif cmdStr == 'CHS':          # change sign
+            elif cmdStr == 'CHS':  # change sign
                 return self.chsCmd()
-            elif cmdStr == 'CLR':          # clear
+            elif cmdStr == 'CLR':  # clear
                 self.stack.replaceAll([0.0, 0.0, 0.0, 0.0])
-            elif cmdStr == '<-':           # backspace
+            elif cmdStr == '<-':  # backspace
                 return self.bspCmd()
-            elif cmdStr == 'STO':          # store to memory
+            elif cmdStr == 'STO':  # store to memory
                 self.flag = Mode.memStoMode
                 self.xStr = '0-9:'
                 return True
-            elif cmdStr == 'RCL':          # recall from memory
+            elif cmdStr == 'RCL':  # recall from memory
                 self.flag = Mode.memRclMode
                 self.xStr = '0-9:'
                 return True
-            elif cmdStr == 'PLCS':         # change dec plc setting
+            elif cmdStr == 'PLCS':  # change dec plc setting
                 self.flag = Mode.decPlcMode
                 self.xStr = '0-9:'
                 return True
-            elif cmdStr == 'SCI':          # toggle fix/sci setting
+            elif cmdStr == 'SCI':  # toggle fix/sci setting
                 orig = self.option.boolData('ForceSciNotation')
                 new = orig and 'no' or 'yes'
                 self.option.changeData('ForceSciNotation', new, 1)
                 self.option.writeChanges
-            elif cmdStr == 'DEG':           # change deg/rad setting
+            elif cmdStr == 'DEG':  # change deg/rad setting
                 orig = self.option.strData('AngleUnit')
                 new = orig == 'deg' and 'rad' or 'deg'
                 self.option.changeData('AngleUnit', new, 1)
                 self.option.writeChanges()
-            elif cmdStr == 'R>':           # roll stack back
+            elif cmdStr == 'R>':  # roll stack back
                 self.stack.rollBack()
-            elif cmdStr == 'R^':           # roll stack forward
+            elif cmdStr == 'R^':  # roll stack forward
                 self.stack.rollUp()
-            elif cmdStr == 'PI':           # pi constant
+            elif cmdStr == 'PI':  # pi constant
                 self.stack.enterX()
                 self.stack[0] = math.pi
-            elif cmdStr == 'X^2':          # square
+            elif cmdStr == 'X^2':  # square
                 eqn = '{0}^2'.format(self.formatNum(self.stack[0]))
                 self.stack[0] = self.stack[0] * self.stack[0]
-            elif cmdStr == 'Y^X':          # x power of y
+            elif cmdStr == 'Y^X':  # x power of y
                 eqn = '({0})^{1}'.format(self.formatNum(self.stack[1]),
                                          self.formatNum(self.stack[0]))
                 self.stack.replaceXY(self.stack[1] ** self.stack[0])
-            elif cmdStr == 'XRTY':          # x root of y
+            elif cmdStr == 'XRTY':  # x root of y
                 eqn = '({0})^(1/{1})'.format(self.formatNum(self.stack[1]),
                                              self.formatNum(self.stack[0]))
-                self.stack.replaceXY(self.stack[1] ** (1/self.stack[0]))
-            elif cmdStr == 'RCIP':         # 1/x
+                self.stack.replaceXY(self.stack[1] ** (1 / self.stack[0]))
+            elif cmdStr == 'RCIP':  # 1/x
                 eqn = '1 / ({0})'.format(self.formatNum(self.stack[0]))
                 self.stack[0] = 1 / self.stack[0]
-            elif cmdStr == 'E^X':          # inverse natural log
+            elif cmdStr == 'E^X':  # inverse natural log
                 eqn = 'e^({0})'.format(self.formatNum(self.stack[0]))
                 self.stack[0] = math.exp(self.stack[0])
-            elif cmdStr == 'TN^X':         # inverse base 10 log
+            elif cmdStr == 'TN^X':  # inverse base 10 log
                 eqn = '10^({0})'.format(self.formatNum(self.stack[0]))
                 self.stack[0] = 10.0 ** self.stack[0]
             else:
                 eqn = '{0}({1})'.format(cmdStr, self.formatNum(self.stack[0]))
-                if cmdStr == 'SQRT':         # square root
+                if cmdStr == 'SQRT':  # square root
                     self.stack[0] = math.sqrt(self.stack[0])
-                elif cmdStr == 'SIN':          # sine
+                elif cmdStr == 'SIN':  # sine
                     self.stack[0] = math.sin(self.stack[0] *
                                              self.angleConv())
-                elif cmdStr == 'COS':          # cosine
+                elif cmdStr == 'COS':  # cosine
                     self.stack[0] = math.cos(self.stack[0] *
                                              self.angleConv())
-                elif cmdStr == 'TAN':          # tangent
+                elif cmdStr == 'TAN':  # tangent
                     self.stack[0] = math.tan(self.stack[0] *
                                              self.angleConv())
-                elif cmdStr == 'LN':           # natural log
+                elif cmdStr == 'LN':  # natural log
                     self.stack[0] = math.log(self.stack[0])
-                elif cmdStr == 'ASIN':         # arcsine
+                elif cmdStr == 'ASIN':  # arcsine
                     self.stack[0] = math.asin(self.stack[0]) \
                                     / self.angleConv()
-                elif cmdStr == 'ACOS':         # arccosine
+                elif cmdStr == 'ACOS':  # arccosine
                     self.stack[0] = math.acos(self.stack[0]) \
                                     / self.angleConv()
-                elif cmdStr == 'ATAN':         # arctangent
+                elif cmdStr == 'ATAN':  # arctangent
                     self.stack[0] = math.atan(self.stack[0]) \
                                     / self.angleConv()
-                elif cmdStr == 'LOG':          # base 10 log
+                elif cmdStr == 'LOG':  # base 10 log
                     self.stack[0] = math.log10(self.stack[0])
                 else:
                     return False
@@ -901,7 +901,7 @@ class CalcCore:
                 while len(self.history) > maxLen:
                     del self.history[0]
             return True
-        except (ValueError, ZeroDivisionError):
+        except(ValueError, ZeroDivisionError):
             self.xStr = 'error 0'
             self.flag = Mode.errorMode
             return True
@@ -923,7 +923,7 @@ class CalcCore:
 #@@language python
 #@@tabwidth -4
 #@+node:tom.20230424130102.50: ** class CalcDlg
-class CalcDlg(QWidget): # type: ignore
+class CalcDlg(QWidget):  # type: ignore
     """Main dialog for calculator program.
     """
     #@+others
@@ -1209,7 +1209,7 @@ class CalcDlg(QWidget): # type: ignore
         """Show extra data view.
         """
         if self.optDlg:
-            self.optDlg.reject()   # unfortunately necessary?
+            self.optDlg.reject()  # unfortunately necessary?
         if not self.extraView:
             self.extraView = ExtraDisplay(self)
         self.extraView.tabUpdate(defaultTab)
@@ -1264,7 +1264,7 @@ class CalcDlg(QWidget): # type: ignore
         """Show alternate base view.
         """
         if self.optDlg:
-            self.optDlg.reject()   # unfortunately necessary?
+            self.optDlg.reject()  # unfortunately necessary?
 
         if not self.altBaseView:
             self.altBaseView = AltBaseDialog(self)
@@ -1276,7 +1276,7 @@ class CalcDlg(QWidget): # type: ignore
         """View the ReadMe file.
         """
         if self.optDlg:
-            self.optDlg.reject()   # unfortunately necessary?
+            self.optDlg.reject()  # unfortunately necessary?
 
         self.helpView = HelpView('', 'rpCalc README File', self.icons, self)
         self.helpView.show()
@@ -1309,7 +1309,7 @@ class CalcDlg(QWidget): # type: ignore
         """
         button = CalcButton(text)
         self.mainDict[key] = button
-        self.mainLay.addWidget(button, row, col, 1+extraRow, 1+extraCol)
+        self.mainLay.addWidget(button, row, col, 1 + extraRow, 1 + extraCol)
         button.activated.connect(self.issueCmd)
 
     #@+node:tom.20230424130102.68: *3* updateLcd
@@ -1358,11 +1358,11 @@ class CalcDlg(QWidget): # type: ignore
         """
         if not ch:
             return False
-        if ord(ch) == 8:   # backspace key
+        if ord(ch) == 8:  # backspace key
             self.entryStr = self.entryStr[:-1]
         elif ord(ch) == 27:  # escape key
             self.entryStr = ''
-        elif ch == '\t':     # tab key
+        elif ch == '\t':  # tab key
             cmds = [key for key in self.cmdDict.keys() if
                     key.startswith(self.entryStr.upper())]
             if len(cmds) == 1:
@@ -1373,10 +1373,10 @@ class CalcDlg(QWidget): # type: ignore
             else:
                 QApplication.beep()
         elif ch == ':' and not self.entryStr:
-            self.entryStr = ':'   # optional command prefix
+            self.entryStr = ':'  # optional command prefix
         else:
             newStr = (self.entryStr + ch).upper()
-            if newStr == ':Q':    # vim-like shortcut
+            if newStr == ':Q':  # vim-like shortcut
                 newStr = '>CLIP'
             button = self.cmdDict.get(newStr.lstrip(':'))
             if button:
@@ -1478,7 +1478,7 @@ class CalcDlg(QWidget): # type: ignore
 
 #@+others
 #@+node:tom.20230424130102.76: *3* class Lcd
-class Lcd(QLCDNumber): # type: ignore
+class Lcd(QLCDNumber):  # type: ignore
     """Main LCD Display.
     """
     #@+others
@@ -1496,7 +1496,7 @@ class Lcd(QLCDNumber): # type: ignore
         """
         text = text.replace('e', ' E', 1)  # add space before exp
         if len(text) > numDigits:  # mark if digits hidden
-            text = 'c{0}'.format(text[1-numDigits:])
+            text = 'c{0}'.format(text[1 - numDigits :])
         self.setNumDigits(numDigits)
         self.display(text)
 
@@ -1512,7 +1512,7 @@ class Lcd(QLCDNumber): # type: ignore
 
     #@-others
 #@+node:tom.20230424130102.80: *3* class LcdBox
-class LcdBox(QFrame): # type: ignore
+class LcdBox(QFrame):  # type: ignore
     """Frame for LCD display.
     """
     #@+others
@@ -1588,7 +1588,7 @@ class CalcStack(list):
 
 #@+others
 #@+node:tom.20230424130102.94: *3* class ExtraViewWidget
-class ExtraViewWidget(QTreeWidget): # type: ignore
+class ExtraViewWidget(QTreeWidget):  # type: ignore
     """Base class of list views for ExtraDisplay.
     """
     #@+others
@@ -1663,7 +1663,7 @@ class HistViewWidget(ExtraViewWidget):
         maxLen = self.calcRef.option.intData('MaxHistLength',
                                              self.calcRef.minMaxHist,
                                              self.calcRef.maxMaxHist)
-        for eqn, value in self.calcRef.history[-self.calcRef.histChg:]:
+        for eqn, value in self.calcRef.history[-self.calcRef.histChg :]:
             item = QTreeWidgetItem(self,
                                          [eqn, self.calcRef.formatNum(value)])
             if self.topLevelItemCount() > maxLen:
@@ -1722,7 +1722,7 @@ class MemViewWidget(ExtraViewWidget):
 
     #@-others
 #@+node:tom.20230424130102.109: *3* class ExtraDisplay
-class ExtraDisplay(QWidget): # type: ignore
+class ExtraDisplay(QWidget):  # type: ignore
     """Displays registers, history or memory values, allows copies.
     """
     #@+others
@@ -1849,7 +1849,7 @@ class ExtraDisplay(QWidget): # type: ignore
 #@+node:tom.20230424130102.121: **  helpview
 #@+others
 #@+node:tom.20230424130102.122: *3* class HelpView
-class HelpView(QMainWindow): # type: ignore
+class HelpView(QMainWindow):  # type: ignore
     """Main window for viewing an html help file.
     """
     #@+others
@@ -1993,7 +1993,7 @@ class IconDict(dict):
         self.pathList = [iconPath]
 
     #@+node:tom.20230424130102.136: *3* addIconPath
-    def addIconPath(self, potentialPaths = []):
+    def addIconPath(self, potentialPaths=[]):
         pass
     #@+node:tom.20230424130102.137: *3* __getitem__
     def __getitem__(self, name):
@@ -2075,8 +2075,8 @@ class Option:
                             print('Error - could not write to config dir')
                             self.path = ''
         self.keySpaces = keySpaces
-        self.dfltDict = {} # type: ignore
-        self.userDict = {} # type: ignore
+        self.dfltDict = {}  # type: ignore
+        self.userDict = {}  # type: ignore
         self.dictList = (self.userDict, self.dfltDict)
         self.chgList = []
 
@@ -2108,7 +2108,7 @@ class Option:
         for line in list:
             line = line.split('#', 1)[0].strip()
             if line:
-                item = line.split(None, 1) + ['']   # add value if blank
+                item = line.split(None, 1) + ['']  # add value if blank
                 data[item[0]] = item[1].strip()
 
     #@+node:tom.20230424130102.146: *3* addData
@@ -2228,7 +2228,7 @@ class Option:
 #@+node:tom.20230424130102.156: **  optiondlg
 #@+others
 #@+node:tom.20230424130102.157: *3* class OptionDlg
-class OptionDlg(QDialog): # type: ignore
+class OptionDlg(QDialog):  # type: ignore
     """Works with Option class to provide a dialog for pref/options.
     """
     #@+others
@@ -3041,7 +3041,7 @@ Issues:
 #@-<< help text >>
 """
 #@+node:tom.20230424140347.3: ** toggle_app_tab
-def toggle_app_tab(log, tabname, widget = CalcDlg):
+def toggle_app_tab(log, tabname, widget=CalcDlg):
     """Create or remove our app's tab.
 
     ARGUMENTS
@@ -3060,8 +3060,8 @@ def toggle_app_tab(log, tabname, widget = CalcDlg):
         # Show our tab, reusing our widget if already loaded
         if log.contentsDict.get(LOADED, False):
             log.createTab(tabname,
-                          widget = log.contentsDict[WIDGET_NAME],
-                          createText = False)
+                          widget=log.contentsDict[WIDGET_NAME],
+                          createText=False)
             log.contentsDict[VISIBLE] = True
             log.selectTab(tabname)
             w = log.contentsDict[WIDGET_NAME]
@@ -3069,7 +3069,7 @@ def toggle_app_tab(log, tabname, widget = CalcDlg):
             # Create our widget for the first time
             # w = CalcDlg()
             w = widget()
-            log.createTab(tabname, widget = w, createText = False)
+            log.createTab(tabname, widget=w, createText=False)
             log.selectTab(tabname)
             log.contentsDict[LOADED] = True
             log.contentsDict[VISIBLE] = True

@@ -942,7 +942,7 @@ from urllib.request import urlopen
 import leo.core.leoGlobals as g
 from leo.core.leoApp import LoadManager as LM
 
-#1946
+# 1946
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 #@+<< Qt Imports >>
@@ -1107,7 +1107,7 @@ RST_ERROR_MSG_STYLE = ('color:red;'
                        'border:thin solid gray;'
                        'border-radius:.4em;')
 #@-<< RsT Error styles>>
-#RST_HEADING_CHARS = '''=-:.`'"-~^_*+#'''# Symbol hierarchy - maybe some day
+# RST_HEADING_CHARS = '''=-:.`'"-~^_*+#'''# Symbol hierarchy - maybe some day
 RST_HEADING_CHARS = '''=============='''  # For now, same symbol for all levels
 RST_NO_WARNINGS = 5
 
@@ -1277,11 +1277,11 @@ def find_dir(name, path):
             return os.path.join(root, name)
     return None
 #@+node:tom.20221231143118.1: ** get_gems()
-def check_gems(gem:str, encoding:str = 'utf-8') -> bool:
+def check_gems(gem: str, encoding: str = 'utf-8') -> bool:
     """Check if a particular ruby gem is installed."""
     cmd = f'gem list {gem}'
     # pylint: disable = subprocess-run-check
-    proc = subprocess.run(cmd, shell = True, capture_output = True)
+    proc = subprocess.run(cmd, shell=True, capture_output=True)
     installed = gem in proc.stdout.decode(encoding)
     return installed
 
@@ -1509,7 +1509,7 @@ def split_last_sizes(sizes):
 def open_in_tab(c, vr3):
     """Open a vr3 instance in a tab in the log pane."""
     log = c.frame.log
-    log.createTab(TABNAME, widget = vr3, createText = False)
+    log.createTab(TABNAME, widget=vr3, createText=False)
     log.selectTab(TABNAME)
     positions[c.hash()] = OPENED_IN_TAB
 #@+node:tom.20230403143106.1: *3* vr3.close_tab
@@ -3815,14 +3815,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
         i_path = g.finalize_join(home, 'vr3_input.pandoc')
         o_path = g.finalize_join(home, 'vr3_output.html')
         # Write the input file.
-        with open(i_path, 'w', encoding = ENCODING) as f:
+        with open(i_path, 'w', encoding=ENCODING) as f:
             f.write(s)
         # Call pandoc to write the output file.
         # --quiet does no harm.
         command = f"pandoc {i_path} -t html5 -o {o_path}"
         g.execute_shell_commands(command)
         # Read the output file and return it.
-        with open(o_path, 'r', encoding = ENCODING) as f:
+        with open(o_path, 'r', encoding=ENCODING) as f:
             return f.read()
     #@+node:TomP.20191215195433.72: *4* vr3.update_pyplot
     def update_pyplot(self, s, keywords):
@@ -4636,7 +4636,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if body.startswith('@language'):
                 i = body.find('\n')
                 if i > -1:
-                    body = body[i + 1:]
+                    body = body[i + 1 :]
             lines.append(body)
         s = '\n'.join(lines)
         self.last_markup = s
@@ -5078,10 +5078,10 @@ class StateMachine:
             # and encounter another @language block.
             if tag == CODE:
                 next = State.AT_LANG_CODE
-                #_lang = language
+                # _lang = language
             else:
                 next = State.BASE
-                #_lang = self.base_lang
+                # _lang = self.base_lang
 
         action(self, line, tag, language)
         self.state = next
@@ -5217,7 +5217,7 @@ class StateMachine:
     State_table = {  # (state, marker): (action, next_state)
 
         (State.BASE, Marker.AT_LANGUAGE_MARKER): (Action.new_chunk, State.AT_LANG_CODE),
-        #(State.AT_LANG_CODE, Marker.MARKER_NONE): (Action.add_line, State.AT_LANG_CODE),
+        # (State.AT_LANG_CODE, Marker.MARKER_NONE): (Action.add_line, State.AT_LANG_CODE),
         (State.AT_LANG_CODE, Marker.MARKER_NONE): (Action.add_line, State.BASE),
         (State.BASE, Marker.MARKER_NONE): (Action.add_line, State.BASE),
 

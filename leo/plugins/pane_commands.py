@@ -29,8 +29,8 @@ def bottomOfPane(event=None):
     vp = w.viewport()
 
     # get the coordinates of the bottom of the visible area
-    vWidth = vp.width() -1
-    vHeight = vp.height() -1
+    vWidth = vp.width() - 1
+    vHeight = vp.height() - 1
     # g.es("width", vWidth, "height", vHeight)
 
     # create a QPoint from this

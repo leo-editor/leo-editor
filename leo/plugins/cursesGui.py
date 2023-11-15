@@ -335,7 +335,7 @@ class textLeoMenu(leoMenu.LeoMenu):
         self._top_menu = textLeoMenu(frame)
         self.createMenusFromTables()
     #@+node:ekr.20150107090324.48: *3* new_menu
-    def new_menu(self, parent: Widget, tearoff: int=0, labe: str=''):
+    def new_menu(self, parent: Widget, tearoff: int = 0, labe: str = ''):
         if tearoff:
             raise NotImplementedError(repr(tearoff))
         menu = textLeoMenu(parent or self.frame)
@@ -348,11 +348,11 @@ class textLeoMenu(leoMenu.LeoMenu):
         parent.entries.append(textMenuCascade(menu, label, underline,))
     #@+node:ekr.20150107090324.50: *3* add_command (cursesGui.py)
     def add_command(self, menu: Widget,
-        accelerator: str='',
-        command: Callable=None,
-        commandName: str=None,
-        label: str=None,
-        underline: int=0,
+        accelerator: str = '',
+        command: Callable = None,
+        commandName: str = None,
+        label: str = None,
+        underline: int = 0,
     ) -> None:
         # ?
         # underline - Offset into label. For those who memorised Alt, F, X rather than Alt+F4.
@@ -467,7 +467,7 @@ class textTree(leoFrame.LeoTree):
         w.setAllText(p.b)
         # and something to do with undo?
     #@+node:ekr.20150107090324.66: *3* editLabel & edit_widget
-    def editLabel(self, v, selectAll: bool=False, selection: tuple=None):
+    def editLabel(self, v, selectAll: bool = False, selection: tuple = None):
         pass  # N/A?
 
     def edit_widget(self, p):

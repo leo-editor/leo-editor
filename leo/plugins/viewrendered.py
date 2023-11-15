@@ -480,7 +480,7 @@ def hide_rendering_pane(event: Event) -> None:
     vr.deactivate()
     vr.deleteLater()
 
-    def at_idle(c: Cmdr=c, _vr: ViewRenderedController=vr) -> None:
+    def at_idle(c: Cmdr = c, _vr: ViewRenderedController = vr) -> None:
         _vr.adjust_layout('closed')
         c.bodyWantsFocusNow()
 
@@ -672,7 +672,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     """A class to control rendering in a rendering pane."""
     #@+others
     #@+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
-    def __init__(self, c: Cmdr, parent: Position=None) -> None:
+    def __init__(self, c: Cmdr, parent: Position = None) -> None:
         """Ctor for ViewRenderedController class."""
         self.c = c
         # Create the widget.
@@ -933,7 +933,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 pass
         return w
     #@+node:ekr.20110320120020.14486: *4* vr.embed_widget & helper
-    def embed_widget(self, w: Wrapper, delete_callback: Callable=None) -> None:
+    def embed_widget(self, w: Wrapper, delete_callback: Callable = None) -> None:
         """Embed widget w in the free_layout splitter."""
         pc = self
         c = pc.c
@@ -1643,7 +1643,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
             w.customContextMenuRequested.connect(contextMenuCallback)
 
-            def handleClick(url: str, w: Widget=w) -> None:
+            def handleClick(url: str, w: Widget = w) -> None:
                 wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
                 event = g.Bunch(c=c, w=wrapper)
                 g.openUrlOnClick(event, url=url)
