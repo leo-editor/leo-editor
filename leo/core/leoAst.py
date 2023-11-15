@@ -4370,8 +4370,8 @@ def main() -> None:  # pragma: no cover
         )
         if kind:
             n = len(files)
-            n_s = f" {n:>3} file in" if n == 1 else f"{n:>3} files in"
-            print(f"{kind}: {n_s} {','.join(arg_files)}")
+            n_s = f" {n:>3} file" if n == 1 else f"{n:>3} files"
+            print(f"{kind}: {n_s} in {','.join(arg_files)}")
     # Do the command.
     if args.f:
         fstringify_command(files)
