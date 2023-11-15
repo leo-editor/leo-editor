@@ -398,6 +398,8 @@ if 1:  # pragma: no cover
         old_cwd = os.getcwd()
         os.chdir(repo_path)
         try:
+            # We are not checking the return code here, so:
+            # pylint: disable=subprocess-run-check
             result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
             if result.returncode != 0:
                 print("Error running git command")
