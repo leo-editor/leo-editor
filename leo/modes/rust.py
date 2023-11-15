@@ -133,22 +133,22 @@ def rust_rule3(colorer, s, i):
 # A single quote does not always denote a character literal.
 
 # These patterns are the same as in the rust importer:
-    
+
 char10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")  # '\u{7FFF}'
 char6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")  # '\x7F'
 char4_pat = re.compile(r"'\\[\\\"'nrt0]'")  # '\n', '\r', '\t', '\\', '\0', '\'', '\"'
 char3_pat = re.compile(r"'.'", re.UNICODE)  # 'x' where x is any unicode character.
 
-def rust_char10(colorer,s,i):
+def rust_char10(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal2", begin=char10_pat)
 
-def rust_char6(colorer,s,i):
+def rust_char6(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal2", begin=char6_pat)
 
-def rust_char4(colorer,s,i):
+def rust_char4(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal2", begin=char4_pat)
 
-def rust_char3(colorer,s,i):
+def rust_char3(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="literal2", begin=char3_pat)
 
 # #3631
