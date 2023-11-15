@@ -4352,17 +4352,14 @@ def main() -> None:  # pragma: no cover
         print(f"No files in {arg_files!r}")
         return
     if args.force:
-        # Beautify all requested files.
+        # Handle all requested files.
         files = requested_files
     else:
-        # Beautify only requested files.
+        # Handle only modified files.
         modified_files = get_modified_files(cwd)
         files = [z for z in requested_files if os.path.abspath(z) in modified_files]
-        if not files:
-            if args.verbose:
-                print(f"No modified files in {arg_files!r}")
-            return
-    # Execute the command.
+    if not files:
+        return
     if args.verbose:
         kind = (
             'fstringify' if args.f else
@@ -4373,7 +4370,9 @@ def main() -> None:  # pragma: no cover
         )
         if kind:
             n = len(files)
-            print(f"{kind}: {n} file{g.plural(n)}.")
+            n_s = f" {n:>3} file in" if n == 1 else f"{n:>3} files in"
+            print(f"{kind}: {n_s} {','.join(arg_files)}")
+    # Do the command.
     if args.f:
         fstringify_command(files)
     if args.fd:
