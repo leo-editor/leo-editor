@@ -4338,16 +4338,18 @@ class TokenOrderGenerator:
 def main() -> None:  # pragma: no cover
     """Run commands specified by sys.argv."""
     args, settings_dict, arg_files, recursive = scan_ast_args()
+    if recursive:
+        print('Ignoring deprecated --recursive command-line option')
     # Finalize arguments.
     cwd = os.getcwd()
     # Calculate requested files.
     requested_files = []
     for path in arg_files:
         if path.endswith('.py'):
-            requested_files = [os.path.join(cwd, path)]
+            requested_files.append([os.path.join(cwd, path)])
         else:
             root_dir = os.path.join(cwd, path)
-            requested_files = glob.glob(f'{root_dir}**{os.sep}*.py', recursive=recursive)
+            requested_files.extend(glob.glob(f'{root_dir}**{os.sep}*.py', recursive=True))
     if not requested_files:
         print(f"No files in {arg_files!r}")
         return
@@ -4371,7 +4373,7 @@ def main() -> None:  # pragma: no cover
         if kind:
             n = len(files)
             n_s = f" {n:>3} file" if n == 1 else f"{n:>3} files"
-            print(f"{kind}: {n_s} in {','.join(arg_files)}")
+            print(f"{kind}: {n_s} in {', '.join(arg_files)}")
     # Do the command.
     if args.f:
         fstringify_command(files)

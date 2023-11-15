@@ -2,9 +2,9 @@
 cd %~dp0..\..
 
 echo beautify-leo
-call py -m leo.core.leoAst --orange --recursive leo\core
-call py -m leo.core.leoAst --orange --recursive leo\commands
-call py -m leo.core.leoAst --orange --recursive leo\plugins\importers
-call py -m leo.core.leoAst --orange --recursive leo\plugins\writers
-call py -m leo.core.leoAst --orange leo\plugins\indented_languages.py
-rem call py -m leo.core.leoAst --orange --recursive leo\modes
+call py -m leo.core.leoAst --orange --verbose leo\core
+call py -m leo.core.leoAst --orange --verbose leo\commands
+
+rem Never force these!
+call py -m leo.core.leoAst --orange --verbose leo\plugins
+call py -m leo.core.leoAst --orange --verbose leo\modes
