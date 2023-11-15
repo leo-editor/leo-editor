@@ -186,7 +186,7 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         super().setInsertPoint(pos, s)
         self.finish_set_insert('setInsertPoint')
 
-    def setSelectionRange(self, i: int, j: int, insert: Optional[int]=None):
+    def setSelectionRange(self, i: int, j: int, insert: Optional[int] = None):
         super().setSelectionRange(i, j, insert)
         self.finish_set_insert('setSelectionRange')
     #@+node:ekr.20181127121642.1: *4* API_Wrapper.Text Setters
@@ -225,7 +225,7 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         super().appendText(s)
         self.finish_setter('appendText')
 
-    def delete(self, i: int, j: Optional[int]=None):
+    def delete(self, i: int, j: Optional[int] = None):
         super().delete(i, j)
         self.finish_setter('delete')
 
@@ -1444,7 +1444,7 @@ class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
         w.minibuffer.set_selection(i, j)
         w.minibuffer.set_insert(self.ins)
 
-    def delete(self, i: int, j: Optional[int]=None):
+    def delete(self, i: int, j: Optional[int] = None):
         super().delete(i, j)
         self.update('delete')
 
@@ -1459,7 +1459,7 @@ class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
         super().setAllText(s)
         self.update('setAllText')
 
-    def setSelectionRange(self, i: int, j: int, insert: Optional[int]=None):
+    def setSelectionRange(self, i: int, j: int, insert: Optional[int] = None):
         super().setSelectionRange(i, j, insert)
         self.update('setSelectionRange')
 

@@ -330,7 +330,7 @@ class Demo:
             aList.append(''.join(lines))
         return aList
     #@+node:ekr.20170128213103.43: *4* demo.wait & key_wait
-    def key_wait(self, speed: float=None, n1=None, n2=None):
+    def key_wait(self, speed: float = None, n1=None, n2=None):
         """Wait for an interval between n1 and n2, in seconds."""
         if n1 is None:
             n1 = self.n1
@@ -498,7 +498,7 @@ class Demo:
             p = g.findNodeAnywhere(c, headline)
         return p
     #@+node:ekr.20170211045602.1: *4* demo.insert_node
-    def insert_node(self, headline, end=True, keys=False, speed: float=None):
+    def insert_node(self, headline, end=True, keys=False, speed: float = None):
         """Helper for inserting a node."""
         c = self.c
         p = c.insertHeadline()
