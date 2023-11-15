@@ -2,7 +2,7 @@
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
-#from PyQt4 import QtCore, QtGui
+# from PyQt4 import QtCore, QtGui
 from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import Policy
 QtGui = QtWidgets

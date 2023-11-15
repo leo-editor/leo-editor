@@ -884,7 +884,7 @@ class LeoActions:
         """Return the file like 'f' that leo_interface.send_head makes"""
         if self.request_handler.path.startswith('/_/add/bkmk/'):
             return self.add_bookmark()
-            
+
         # No longer used.
         # mod_scripting.py used to define the EvalController class, but that class was buggy.
 

@@ -267,7 +267,7 @@ if QtWidgets:
     class LeoTagWidget(QtWidgets.QWidget):  # type:ignore
         #@+others
         #@+node:peckj.20140804114520.15200: *3* tag_w.__init__
-        def __init__(self, c: Cmdr, parent: Widget=None) -> None:
+        def __init__(self, c: Cmdr, parent: Widget = None) -> None:
             super().__init__(parent)
             self.c = c
             self.tc = self.c.theTagController
@@ -468,7 +468,7 @@ if QtWidgets:
             self.update_list()
             self.update_current_tags(self.c.p)
         #@+node:peckj.20140806145948.6579: *4* tag_w.add_tag
-        def add_tag(self, event: Event=None) -> None:
+        def add_tag(self, event: Event = None) -> None:
             p = self.c.p
             tag = str(self.comboBox.currentText()).strip()
             if not tag:

@@ -161,7 +161,7 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+others
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
 #@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
-def build_rclick_tree(command_p: Position, rclicks: list[Any]=None, top_level: bool=False) -> list:
+def build_rclick_tree(command_p: Position, rclicks: list[Any] = None, top_level: bool = False) -> list:
     """
     Return a list of top level RClicks for the button at command_p, which can be
     used later to add the rclick menus.
@@ -270,7 +270,7 @@ class AtButtonCallback:
         self.source_c = c  # For GetArgs.command_source.
         self.__doc__ = docstring  # The docstring for this callback for g.getDocStringForFunction.
     #@+node:ekr.20141031053508.10: *3* __call__ (AtButtonCallback)
-    def __call__(self, event: Event=None) -> None:
+    def __call__(self, event: Event = None) -> None:
         """AtButtonCallbgack.__call__. The callback for @button nodes."""
         self.execute_script()
     #@+node:ekr.20141031053508.13: *3* __repr__ (AtButtonCallback)
@@ -325,7 +325,7 @@ class ScriptingController:
     """A class defining scripting commands."""
     #@+others
     #@+node:ekr.20060328125248.7: *3*  sc.ctor
-    def __init__(self, c: Cmdr, iconBar: Widget=None) -> None:
+    def __init__(self, c: Cmdr, iconBar: Widget = None) -> None:
         self.c = c
         self.gui = c.frame.gui
         getBool = c.config.getBool
@@ -368,7 +368,7 @@ class ScriptingController:
         self.seen: set[str] = set()  # Set of gnx's (not vnodes!) that created buttons or commands.
     #@+node:ekr.20150401113822.1: *3* sc.Callbacks
     #@+node:ekr.20060328125248.23: *4* sc.addScriptButtonCommand
-    def addScriptButtonCommand(self, event: Event=None) -> None:
+    def addScriptButtonCommand(self, event: Event = None) -> None:
         """Called when the user presses the 'script-button' button or executes the script-button command."""
         c = self.c
         p = c.p
@@ -381,7 +381,7 @@ class ScriptingController:
         self.createLocalAtButtonHelper(p, h, statusLine, kind='script-button', verbose=True)
         c.bodyWantsFocus()
     #@+node:ekr.20060522105937.1: *4* sc.runDebugScriptCommand
-    def runDebugScriptCommand(self, event: Event=None) -> None:
+    def runDebugScriptCommand(self, event: Event = None) -> None:
         """Called when user presses the 'debug-script' button or executes the debug-script command."""
         c = self.c
         p = c.p
@@ -440,7 +440,7 @@ class ScriptingController:
                 g.error('No debugger active')
         c.bodyWantsFocus()
     #@+node:ekr.20060328125248.21: *4* sc.runScriptCommand
-    def runScriptCommand(self, event: Event=None) -> None:
+    def runScriptCommand(self, event: Event = None) -> None:
         """Called when user presses the 'run-script' button or executes the run-script command."""
         c, p = self.c, self.c.p
         args = self.getArgs(p)
@@ -502,8 +502,8 @@ class ScriptingController:
         p: Position,
         h: Any,
         statusLine: Any,
-        kind: str='at-button',
-        verbose: bool=True,
+        kind: str = 'at-button',
+        verbose: bool = True,
     ) -> Wrapper:
         """Create a button for a local @button node."""
         c = self.c
@@ -558,8 +558,8 @@ class ScriptingController:
         text: str,
         command: Callable,
         statusLine: str,
-        bg: str=None,
-        kind: str=None,
+        bg: str = None,
+        kind: str = None,
     ) -> Wrapper:
         """
         Create one icon button.
@@ -596,7 +596,7 @@ class ScriptingController:
                 source_c=c,
                 tag='icon button')
 
-        def deleteButtonCallback(event: Event=None, self: Any=self, b: Widget=b) -> None:
+        def deleteButtonCallback(event: Event = None, self: Any = self, b: Widget = b) -> None:
             self.deleteButton(b, event=event)
 
         # Register the delete-x-button command.
@@ -616,7 +616,7 @@ class ScriptingController:
         buttonText: str,
         p: Position,
         script: str,
-        script_gnx: str=None,
+        script_gnx: str = None,
     ) -> None:
         """Execute an @button script in p.b or script."""
         c = self.c
@@ -680,7 +680,7 @@ class ScriptingController:
                 script = self.getScript(p)
                 self.createCommonButton(p, script, rclicks)
     #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
-    def createCommonButton(self, p: Position, script: str, rclicks: list[Any]=None) -> None:
+    def createCommonButton(self, p: Position, script: str, rclicks: list[Any] = None) -> None:
         """
         Create a button in the icon area for a common @button node in an @setting
         tree. Binds button presses to a callback that executes the script.
@@ -817,7 +817,7 @@ class ScriptingController:
             return
         args = self.getArgs(p)
 
-        def atCommandCallback(event: Event=None, args: Any=args, c: Cmdr=c, p: Position=p.copy()) -> None:
+        def atCommandCallback(event: Event = None, args: Any = args, c: Cmdr = c, p: Position = p.copy()) -> None:
             # pylint: disable=dangerous-default-value
             c.executeScript(args=args, p=p, silent=True)
 
@@ -856,7 +856,7 @@ class ScriptingController:
             return
         args = self.getArgs(p)
 
-        def atCommandCallback(event: Event=None, args: Any=args, c: Cmdr=c, p: Position=p.copy()) -> None:
+        def atCommandCallback(event: Event = None, args: Any = args, c: Cmdr = c, p: Position = p.copy()) -> None:
             # pylint: disable=dangerous-default-value
             c.executeScript(args=args, p=p, silent=True)
         if p.b.strip():
@@ -926,7 +926,7 @@ class ScriptingController:
             kind="script-button-button")
     #@+node:ekr.20061014075212: *3* sc.Utils
     #@+node:ekr.20060929135558: *4* sc.cleanButtonText
-    def cleanButtonText(self, s: str, minimal: bool=False) -> str:
+    def cleanButtonText(self, s: str, minimal: bool = False) -> str:
         """
         Clean the text following @button or @command so
         that it is a valid name of a minibuffer command.
@@ -1049,8 +1049,8 @@ class ScriptingController:
         func: Callable,
         h: str,
         pane: str,
-        source_c: Cmdr=None,
-        tag: str=None,
+        source_c: Cmdr = None,
+        tag: str = None,
     ) -> None:
         """Register @button <name> and @rclick <name> and <name>"""
         c, k = self.c, self.c.k
@@ -1075,7 +1075,7 @@ class ScriptingController:
                 commandName2 = commandName[len(prefix) :].strip()
                 # Create a *second* func, to avoid collision in c.commandsDict.
 
-                def registerAllCommandsCallback(event: Event=None, func: Callable=func) -> None:
+                def registerAllCommandsCallback(event: Event = None, func: Callable = func) -> None:
                     func()
 
                 # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
