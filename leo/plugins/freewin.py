@@ -349,87 +349,87 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+node:tom.20210527153422.1: ** << declarations >>
 # pylint: disable=invalid-name
 # Dimensions and placing of editor windows
-W:int = 570
-H:int = 350
-X:int = 1200
-Y:int = 100
-DELTA_Y:int = 35
+W: int = 570
+H: int = 350
+X: int = 1200
+Y: int = 100
+DELTA_Y: int = 35
 
 clipboard = QApplication.clipboard()
 
-FG_COLOR_LIGHT:str = '#6B5B53'
-BG_COLOR_LIGHT:str = '#ededed'
-BG_COLOR_DARK:str = '#202020'
-FG_COLOR_DARK:str = '#cbdedc'
-FONT_FAMILY:str = 'Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
+FG_COLOR_LIGHT: str = '#6B5B53'
+BG_COLOR_LIGHT: str = '#ededed'
+BG_COLOR_DARK: str = '#202020'
+FG_COLOR_DARK: str = '#cbdedc'
+FONT_FAMILY: str = 'Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
 
-EDITOR_FONT_SIZE:str = '11pt'
-EDITOR_STYLESHEET_LIGHT_FILE:str = 'freewin_editor_light.css'
-EDITOR_STYLESHEET_DARK_FILE:str = 'freewin_editor_dark.css'
-ENCODING:str = 'utf-8'
-BROWSER:int = 1
-EDITOR:int = 0
-BROWSER_VIEW:str = 'browser_view'
-NAV_VIEW:str = 'nav-view'
+EDITOR_FONT_SIZE: str = '11pt'
+EDITOR_STYLESHEET_LIGHT_FILE: str = 'freewin_editor_light.css'
+EDITOR_STYLESHEET_DARK_FILE: str = 'freewin_editor_dark.css'
+ENCODING: str = 'utf-8'
+BROWSER: int = 1
+EDITOR: int = 0
+BROWSER_VIEW: str = 'browser_view'
+NAV_VIEW: str = 'nav-view'
 
-RST_NO_WARNINGS:int = 5
-RST_CUSTOM_STYLESHEET_LIGHT_FILE:str = 'freewin_rst_light.css'
-RST_CUSTOM_STYLESHEET_DARK_FILE:str = 'freewin_rst_dark.css'
+RST_NO_WARNINGS: int = 5
+RST_CUSTOM_STYLESHEET_LIGHT_FILE: str = 'freewin_rst_light.css'
+RST_CUSTOM_STYLESHEET_DARK_FILE: str = 'freewin_rst_dark.css'
 
-instances: dict[str, ZEditorWin ] = {}
+instances: dict[str, ZEditorWin] = {}
 
 #@+others
 #@+node:tom.20210709130401.1: *3* Fonts and Text
-ZOOM_FACTOR:float = 1.1
+ZOOM_FACTOR: float = 1.1
 
-F7_KEY:int = 0x01000036  # See https://doc.qt.io/qt-5/qt.html#Key-enum (enum Qt::Key)
-F9_KEY:int = 0x01000038
-KEY_S:int = 0x53
+F7_KEY: int = 0x01000036  # See https://doc.qt.io/qt-5/qt.html#Key-enum (enum Qt::Key)
+F9_KEY: int = 0x01000038
+KEY_S: int = 0x53
 
-GNXre:str = r'^(.+\.\d+\.\d+)'  # For gnx at start of line
-GNX1re:str = r'.*[([\s](\w+\.\d+\.\d+)'  # For gnx not at start of line
+GNXre: str = r'^(.+\.\d+\.\d+)'  # For gnx at start of line
+GNX1re: str = r'.*[([\s](\w+\.\d+\.\d+)'  # For gnx not at start of line
 
-GNX:re.Pattern = re.compile(GNXre)
-GNX1:re.Pattern = re.compile(GNX1re)
+GNX: re.Pattern = re.compile(GNXre)
+GNX1: re.Pattern = re.compile(GNX1re)
 
-fs:str = EDITOR_FONT_SIZE.split('pt', 1)[0]
-qf:QtGui.QFont = QFont(FONT_FAMILY[0], int(fs))
-qfont:QtGui.QFontInfo = QFontInfo(qf)  # Uses actual font if different
-FM:QtGui.QFontMetrics = QFontMetrics(qf)
+fs: str = EDITOR_FONT_SIZE.split('pt', 1)[0]
+qf: QtGui.QFont = QFont(FONT_FAMILY[0], int(fs))
+qfont: QtGui.QFontInfo = QFontInfo(qf)  # Uses actual font if different
+FM: QtGui.QFontMetrics = QFontMetrics(qf)
 
-TABWIDTH:int = 36  # Best guess but may not alays be right.
-TAB2SPACES:int = 4  # Tab replacement when writing back to host node
+TABWIDTH: int = 36  # Best guess but may not alays be right.
+TAB2SPACES: int = 4  # Tab replacement when writing back to host node
 #@-others
 
 #@-<< declarations >>
 #@+<< Stylesheets >>
 #@+node:tom.20210614172857.1: ** << Stylesheets >>
 
-EDITOR_STYLESHEET_LIGHT:str = f'''QTextEdit {{
+EDITOR_STYLESHEET_LIGHT: str = f'''QTextEdit {{
     color: {FG_COLOR_LIGHT};
     background: {BG_COLOR_LIGHT};
     font-family: {FONT_FAMILY};
     font-size: {EDITOR_FONT_SIZE};
     }}'''
 
-EDITOR_STYLESHEET_DARK:str = f'''QTextEdit {{
+EDITOR_STYLESHEET_DARK: str = f'''QTextEdit {{
     color: {FG_COLOR_DARK};
     background: {BG_COLOR_DARK};
     font-family: {FONT_FAMILY};
     font-size: {EDITOR_FONT_SIZE};
     }}'''
 
-RENDER_BTN_STYLESHEET_LIGHT:str = f'''color: {FG_COLOR_LIGHT};
+RENDER_BTN_STYLESHEET_LIGHT: str = f'''color: {FG_COLOR_LIGHT};
     background: {BG_COLOR_LIGHT};
     font-size: {EDITOR_FONT_SIZE};'''
 
-RENDER_BTN_STYLESHEET_DARK:str = f'''color: {FG_COLOR_DARK};
+RENDER_BTN_STYLESHEET_DARK: str = f'''color: {FG_COLOR_DARK};
     background: {BG_COLOR_DARK};
     font-size: {EDITOR_FONT_SIZE};'''
 
 #@+others
 #@+node:tom.20210625145324.1: *3* RsT Stylesheet Dark
-RST_STYLESHEET_DARK:str = '''body {
+RST_STYLESHEET_DARK: str = '''body {
   color: #cbdedc; /*#ededed;*/
   background: #202020;
   font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
@@ -480,7 +480,7 @@ RST_STYLESHEET_DARK:str = '''body {
 
 '''
 #@+node:tom.20210625155534.1: *3* RsT Stylesheet Light
-RST_STYLESHEET_LIGHT:str = '''body {
+RST_STYLESHEET_LIGHT: str = '''body {
   color: #6B5B53;
   background: #ededed;
   font-family: Verdana, Arial, "Bitstream Vera Sans", sans-serif;
@@ -601,7 +601,7 @@ def getLine(text_edit: QtWidgets.QTextEdit) -> str:
     line = before.split('\n')[-1] + after.split('\n')[0]
     return line
 #@+node:tom.20210625161018.1: ** gotoHostGnx
-def gotoHostGnx(c: Cmdr, target:str) -> bool:
+def gotoHostGnx(c: Cmdr, target: str) -> bool:
     """Change host node selection to target gnx.
 
     This will not change the node displayed by the
@@ -625,7 +625,7 @@ def gotoHostGnx(c: Cmdr, target:str) -> bool:
 def copy2clip(text: str) -> None:
     clipboard.setText(text)
 #@+node:tom.20220329145952.1: ** change_css_prop
-def change_css_prop(css: str, prop: str, newval:str) -> str:
+def change_css_prop(css: str, prop: str, newval: str) -> str:
     """Change the value of a named property in a css stylesheet fragment.
 
     If there is more than one instance of prop, only
@@ -647,13 +647,13 @@ def change_css_prop(css: str, prop: str, newval:str) -> str:
 # Get current colors from the body editor widget
 def get_body_colors(c: Cmdr) -> tuple[str, str]:
     wrapper = c.frame.body.wrapper
-    w:LeoQTextBrowser = wrapper.widget
+    w: LeoQTextBrowser = wrapper.widget
 
-    pallete:QtGui.QPalette = w.viewport().palette()
-    fg_hex:int = pallete.text().color().rgb()
-    bg_hex:int = pallete.window().color().rgb()
-    fg:str = f'#{fg_hex:x}'
-    bg:str = f'#{bg_hex:x}'
+    pallete: QtGui.QPalette = w.viewport().palette()
+    fg_hex: int = pallete.text().color().rgb()
+    bg_hex: int = pallete.window().color().rgb()
+    fg: str = f'#{fg_hex:x}'
+    bg: str = f'#{bg_hex:x}'
 
     return fg, bg
 #@+node:tom.20220329231604.1: ** is_body_dark
@@ -670,7 +670,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
     """An editing window that echos the contents of an outline node."""
     #@+others
     #@+node:tom.20210527185804.1: *3* ctor
-    def __init__(self, c: Cmdr, title:str ='Z-editor') -> None:
+    def __init__(self, c: Cmdr, title: str = 'Z-editor') -> None:
         # pylint: disable=too-many-locals
         # pylint: disable = too-many-statements
         global TAB2SPACES
@@ -901,7 +901,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.doc.setModified(False)
 
     #@+node:tom.20210703173219.1: *3* teardown
-    def teardown(self, tag: str ='') -> None:
+    def teardown(self, tag: str = '') -> None:
         # Close window and delete it when host node is deleted.
         if self.closing:
             return

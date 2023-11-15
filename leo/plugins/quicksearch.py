@@ -186,7 +186,7 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
     c.frame.nav = wdg
 
     # make activating this tab activate the input box
-    def activate_input(idx: int, c: Cmdr=c) -> None:
+    def activate_input(idx: int, c: Cmdr = c) -> None:
         wdg = c.frame.nav
         tab_widget = wdg.parent().parent()
         if (tab_widget and
@@ -288,7 +288,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
 
     #@+others
     #@+node:ekr.20111015194452.15695: *3* quick_w.ctor
-    def __init__(self, c: Cmdr, mode: str="nav", parent: Position=None) -> None:
+    def __init__(self, c: Cmdr, mode: str = "nav", parent: Position = None) -> None:
 
         super().__init__(parent)
         self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
@@ -366,7 +366,7 @@ class QuickSearchController:
         self.frozen = False
         self._search_patterns: list[str] = []
 
-        def searcher(inp:str) -> tuple[Match_List, Match_List]:
+        def searcher(inp: str) -> tuple[Match_List, Match_List]:
             if self.frozen:
                 return None
             exp = inp.replace(" ", "*")
@@ -401,7 +401,7 @@ class QuickSearchController:
         w.itemPressed.connect(self.onSelectItem)
         w.currentItemChanged.connect(self.onSelectItem)
     #@+node:ville.20121120225024.3636: *3* freeze
-    def freeze(self, val: bool=True) -> None:
+    def freeze(self, val: bool = True) -> None:
         self.frozen = val
 
     #@+node:vitalije.20170705203722.1: *3* addItem
@@ -427,7 +427,7 @@ class QuickSearchController:
                     return lineMatchHits
         return lineMatchHits
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
-    def addParentMatches(self, parent_list: dict[str,  Match_List]) -> int:
+    def addParentMatches(self, parent_list: dict[str, Match_List]) -> int:
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
             if isinstance(parent_key, str):
@@ -618,7 +618,7 @@ class QuickSearchController:
                 self.lw.insertItem(0, "External file directive not found " +
                                       "during search")
     #@+node:ville.20121118193144.3620: *3* bgSearch
-    def bgSearch(self, pat:str) -> tuple[Match_List, Match_List]:
+    def bgSearch(self, pat: str) -> tuple[Match_List, Match_List]:
 
         if self.frozen:
             return None
@@ -646,7 +646,7 @@ class QuickSearchController:
     def find_h(self,
         regex: str,
         positions: Iterable[Position],
-        flags: RegexFlag=re.IGNORECASE,
+        flags: RegexFlag = re.IGNORECASE,
     ) -> Match_List:
         """
         Return the list of all tuple (Position, matchiter/None) whose headline matches the given pattern.
@@ -660,7 +660,7 @@ class QuickSearchController:
     def find_b(self,
         regex: str,
         positions: Iterable[Position],
-        flags: RegexFlag=re.IGNORECASE | re.MULTILINE,
+        flags: RegexFlag = re.IGNORECASE | re.MULTILINE,
     ) -> Match_List:
         """
         Return list of all tuple (Position, matchiter/None) whose body matches regex one or more times.
@@ -688,11 +688,11 @@ class QuickSearchController:
         self.clear()
         c = self.c
         self.addHeadlineMatches([
-            (p.copy(), None) for p in c.all_positions()if p.isMarked()
+            (p.copy(), None) for p in c.all_positions() if p.isMarked()
         ])
     #@+node:ekr.20111015194452.15700: *3* Event handlers
     #@+node:ekr.20111015194452.15686: *4* onSelectItem (quicksearch.py)
-    def onSelectItem(self, it: Iterable, it_prev: Iterable=None) -> None:
+    def onSelectItem(self, it: Iterable, it_prev: Iterable = None) -> None:
 
         c = self.c
         if not it:

@@ -186,7 +186,7 @@ class FreeLayoutController:
             g.es("WARNING: @data free-layout-layout node is not under an active @settings node")
         c.redraw()
     #@+node:ekr.20160424035257.1: *3* flc.get_main_splitter
-    def get_main_splitter(self, w: Wrapper=None) -> Optional[Wrapper]:
+    def get_main_splitter(self, w: Wrapper = None) -> Optional[Wrapper]:
         """
         Return the splitter the main splitter, or None. The main splitter is a
         NestedSplitter that contains the body pane.
@@ -229,7 +229,7 @@ class FreeLayoutController:
             return child and child.top()
         return None
     #@+node:ekr.20120419095424.9927: *3* flc.loadLayouts (sets wrap=True)
-    def loadLayouts(self, tag: str, keys: Any, reloading: bool=False) -> None:
+    def loadLayouts(self, tag: str, keys: Any, reloading: bool = False) -> None:
         """loadLayouts - Load the outline's layout
 
         :Parameters:
