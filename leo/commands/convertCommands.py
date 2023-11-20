@@ -1702,12 +1702,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             docstring_pat = re.compile(r'^([ \t]*)r?("""|\'\'\')(.*)\n')
 
             def do_docstring(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-                """
-                Convert a python docstring.
-
-                Always use the full multi-line Rust format, even for single-line
-                python docstrings.
-                """
+                """Convert a python docstring."""
                 lws, delim, docstring = m.group(1), m.group(2), m.group(3).strip()
                 tail = docstring.replace(delim, '').strip()
                 lines[i] = ''
