@@ -6,6 +6,16 @@
 
 //@+<< leoBeautify.rs docstring >>
 //@+node:ekr.20231119151801.1: ** << leoBeautify.rs docstring >>
+"""
+leoBeautify.rs: Transliterate Leo's beautifier (Orange) into rust.
+
+Goals:
+
+- Don't change Leo's sentinel lines.
+- Don't change line breaks.
+- Otherwise, be compatible with Black and --skip-string-normalization.
+
+"""
 //@-<< leoBeautify.rs docstring >>
 //@+<< leoBeautify.rs imports & annotations >>
 //@+node:ekr.20231119151804.1: ** << leoBeautify.rs imports & annotations >>

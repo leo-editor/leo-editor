@@ -1594,7 +1594,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     parent.promote()
                     parent.doDelete()
                     p = c.lastTopLevel()
-                    p.h = p.h.replace('.py', '.ts').replace('@', '@@')
+                    p.h = p.h.replace('.py', '.rs').replace('@', '@@')
                     c.redraw(p)
                     c.expandAllSubheads(p)
                     c.treeWantsFocusNow()
@@ -1643,7 +1643,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Munge target.h.
                 target.h = target.h.replace('__init__', 'constructor')
             #@+node:ekr.20231119103026.6: *6* handlers
-            #@+node:ekr.20231119103026.7: *7* py2rust.do_class
+            #@+node:ekr.20231119103026.7: *7* py2rust.do_class (enum)
             class_pat = re.compile(r'^([ \t]*)class(.*):(.*)\n')
 
             def do_class(self, i: int, lines: list[str], m: Match, p: Position) -> int:
@@ -1652,7 +1652,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lws, base, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
                 base_s = f" {base} " if base else ''
                 tail_s = f" // {tail}" if tail else ''
-                lines[i] = f"{lws}class{base_s}{{{tail_s}\n"
+                lines[i] = f"{lws}enum{base_s}{{{tail_s}\n"
                 lines.insert(j, f"{lws}}}\n")
                 return i + 1
             #@+node:ekr.20231119103026.8: *7* py2rust.do_comment
@@ -1666,22 +1666,25 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 else:
                     lines[i] = '\n'  # Write blank line for an empty comment.
                 return i + 1
-            #@+node:ekr.20231119103026.9: *7* py2rust.do_def & helper
+            #@+node:ekr.20231119103026.9: *7* py2rust.do_def & helper (fn)
             def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*)\):(.*)\n')
-            this_pat = re.compile(r'^.*?\bthis\b')  # 'self' has already become 'this'.
+            ### this_pat = re.compile(r'^.*?\bthis\b')  # 'self' has already become 'this'.
 
             def do_def(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
                 j = self.find_indented_block(i, lines, m, p)
                 lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
                 args = self.do_args(args)
-                if name == '__init__':
-                    name = 'constructor'
-                tail_s = f" // {tail}" if tail else ''
-                # Use void as a placeholder type.
-                type_s = ' ' if name == 'constructor' else ': void '
-                function_s = ' ' if self.this_pat.match(lines[i]) else ' function '
-                lines[i] = f"{lws}public{function_s}{name}({args}){type_s}{{{tail_s}\n"
+                ###
+                    # if name == '__init__':
+                        # name = 'constructor'
+                tail_s = f" // {tail}" if tail else ''  ### Needed.
+                ###
+                    # # Use void as a placeholder type.
+                    # type_s = ' ' if name == 'constructor' else ': void '
+                    # function_s = ' ' if self.this_pat.match(lines[i]) else ' fn '
+                ### lines[i] = f"{lws}public{function_s}{name}({args}){type_s}{{{tail_s}\n"
+                lines[i] = f"{lws}fn {name}({args}){{{tail_s}\n"
                 lines.insert(j, f"{lws}}}\n")
                 return i + 1
             #@+node:ekr.20231119103026.10: *8* py2rust.do_args
@@ -1701,7 +1704,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 """
                 Convert a python docstring.
 
-                Always use the full multi-line typescript format, even for single-line
+                Always use the full multi-line Rust format, even for single-line
                 python docstrings.
                 """
                 lws, delim, docstring = m.group(1), m.group(2), m.group(3).strip()
@@ -1718,19 +1721,24 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     line = lines[i]
                     # Buglet: ignores whatever might follow.
                     tail = line.replace(delim, '').strip()
-                    # pylint: disable=no-else-return
                     if delim in line:
                         if tail:
-                            lines[i] = f"{lws} * {tail}\n"
-                            lines.insert(i + 1, f"{lws} */\n")
-                            return i + 2
-                        else:
-                            lines[i] = f"{lws} */\n"
+                            ### lines[i] = f"{lws} * {tail}\n"
+                            ### lines.insert(i + 1, f"{lws} */\n")
+                            lines[i] = f"{lws}///{tail}\n"
+                            ### lines.insert(i + 1, f"{lws}\n")
+                            ### return i + 2
                             return i + 1
+                        else:
+                            ### lines[i] = f"{lws} */\n"
+                            ### lines[i] = f"{lws}\n"
+                            ###return i + 1
+                            return i
                     elif tail:
-                        lines[i] = f"{lws} * {tail}\n"
+                        ### lines[i] = f"{lws} * {tail}\n"
+                        lines[i] = f"{lws}/// {tail}\n"
                     else:
-                        lines[i] = f"{lws} *\n"
+                        lines[i] = f"{lws}///\n"
                     i += 1
                 return i
             #@+node:ekr.20231119103026.12: *7* py2rust.do_except
