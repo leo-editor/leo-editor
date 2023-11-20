@@ -1709,12 +1709,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 """
                 lws, delim, docstring = m.group(1), m.group(2), m.group(3).strip()
                 tail = docstring.replace(delim, '').strip()
-                lines[i] = f"{lws}/**\n"
+                ### lines[i] = f"{lws}/**\n"
+                lines[i] = ''
                 if tail:
-                    lines.insert(i + 1, f"{lws} * {tail}\n")
+                    ### lines.insert(i + 1, f"{lws} * {tail}\n")
+                    lines.insert(i, f"{lws}// {tail}\n")
                     i += 1
                 if delim in docstring:
-                    lines.insert(i + 1, f"{lws} */\n")
+                    ### lines.insert(i + 1, f"{lws} */\n")
                     return i + 2
                 i += 1
                 while i < len(lines):
@@ -1722,23 +1724,30 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     # Buglet: ignores whatever might follow.
                     tail = line.replace(delim, '').strip()
                     if delim in line:
-                        if tail:
-                            ### lines[i] = f"{lws} * {tail}\n"
-                            ### lines.insert(i + 1, f"{lws} */\n")
-                            lines[i] = f"{lws}///{tail}\n"
-                            ### lines.insert(i + 1, f"{lws}\n")
-                            ### return i + 2
-                            return i + 1
-                        else:
-                            ### lines[i] = f"{lws} */\n"
-                            ### lines[i] = f"{lws}\n"
-                            ###return i + 1
-                            return i
-                    elif tail:
-                        ### lines[i] = f"{lws} * {tail}\n"
-                        lines[i] = f"{lws}/// {tail}\n"
+                        ###
+                            # if tail:
+                                # ### lines[i] = f"{lws} * {tail}\n"
+                                # ### lines.insert(i + 1, f"{lws} */\n")
+                                # ### return i + 2
+                                # lines[i] = f"{lws}// {tail}\n"
+                                # # return i + 1
+                            # else:
+                                # ### lines[i] = f"{lws} */\n"
+                                # ### lines[i] = f"{lws}\n"
+                                # lines[i] = ''
+                                # ###return i + 1
+                                # #return i
+                        lines[i] = f"{lws}// {tail}\n" if tail else ''
+                        return i + 1 if tail else i
+                    ###
                     else:
-                        lines[i] = f"{lws}///\n"
+                        # elif tail:
+                            # ### lines[i] = f"{lws} * {tail}\n"
+                            # lines[i] = f"{lws}// {tail}\n"
+                        # else:
+                            # ### lines[i] = f"{lws} *\n"
+                            # lines[i] = '\n'
+                        lines[i] = f"{lws}// {tail}\n" if tail else '\n'
                     i += 1
                 return i
             #@+node:ekr.20231119103026.12: *7* py2rust.do_except
@@ -2130,7 +2139,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.do_ternary(lines)
                 self.do_assignment(lines)  # Do this last, so it doesn't add 'const' to inserted comments.
                 s = (''.join(lines)
-                    .replace('@language python', '@language typescript')
+                    .replace('@language python', '@language rust')
                     .replace(self.kill_semicolons_flag, '\n')
                 )
                 return re.sub(r'\bNone\b', 'null', s)
