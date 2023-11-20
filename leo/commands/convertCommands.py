@@ -1621,9 +1621,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # The loop may change lines, but each line is scanned only once.
                 i, lines = 0, g.splitLines(self.pre_pass(p.b))
                 old_lines = lines[:]
+                if trace:
+                    print('')
+                    print(p.h)
                 while i < len(lines):
                     progress = i
                     line = lines[i]
+                    if trace:
+                        print(f"{i:2} {line.rstrip()}")
                     for (pattern, handler) in self.patterns:
                         m = pattern.match(line)
                         if m:
@@ -1641,7 +1646,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Run the post-pass
                 target.b = self.post_pass(lines)
                 # Munge target.h.
-                target.h = target.h.replace('__init__', 'constructor')
+                target.h = target.h.replace('__init__', 'enum')
             #@+node:ekr.20231119103026.6: *6* handlers
             #@+node:ekr.20231119103026.7: *7* py2rust.do_class (enum)
             class_pat = re.compile(r'^([ \t]*)class(.*):(.*)\n')
@@ -1667,24 +1672,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     lines[i] = '\n'  # Write blank line for an empty comment.
                 return i + 1
             #@+node:ekr.20231119103026.9: *7* py2rust.do_def & helper (fn)
-            def_pat = re.compile(r'^([ \t]*)def[ \t]+([\w_]+)\s*\((.*)\):(.*)\n')
-            ### this_pat = re.compile(r'^.*?\bthis\b')  # 'self' has already become 'this'.
+            def_pat = re.compile(r'^(\s*)def\s*([\w_]+)\s*\((.*?)\)(.*?):')
 
             def do_def(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
                 j = self.find_indented_block(i, lines, m, p)
                 lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
                 args = self.do_args(args)
-                g.trace(f"{name} ({args}) {tail}:")
-                ###
-                    # if name == '__init__':
-                        # name = 'constructor'
-                tail_s = f" // {tail}" if tail else ''  ### Needed.
-                ###
-                    # # Use void as a placeholder type.
-                    # type_s = ' ' if name == 'constructor' else ': void '
-                    # function_s = ' ' if self.this_pat.match(lines[i]) else ' fn '
-                ### lines[i] = f"{lws}public{function_s}{name}({args}){type_s}{{{tail_s}\n"
+                tail_s = f" // {tail}" if tail else ''  # Needed.
                 lines[i] = f"{lws}fn {name}({args}){{{tail_s}\n"
                 lines.insert(j, f"{lws}}}\n")
                 return i + 1
@@ -1707,20 +1702,20 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 tail = docstring.replace(delim, '').strip()
                 lines[i] = ''
                 if tail:
-                    lines.insert(i, f"{lws}// {tail}\n")
+                    lines.insert(i, f"{lws}/// {tail}\n")
                     i += 1
                 if delim in docstring:
                     return i + 2
                 i += 1
                 while i < len(lines):
                     line = lines[i]
-                    # Buglet: ignores whatever might follow.
+                    # Buglet: ignores whatever might follow the end of the docstring.
                     tail = line.replace(delim, '').strip()
                     if delim in line:
-                        lines[i] = f"{lws}// {tail}\n" if tail else ''
+                        lines[i] = f"{lws}/// {tail}\n" if tail else ''
                         return i + 1 if tail else i
                     else:
-                        lines[i] = f"{lws}// {tail}\n" if tail else '\n'
+                        lines[i] = f"{lws}/// {tail}\n" if tail else f"{lws}///\n"
                     i += 1
                 return i
             #@+node:ekr.20231119103026.12: *7* py2rust.do_except
