@@ -1657,8 +1657,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             j = self.find_indented_block(i, lines, m, p)
             lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
             args = self.do_args(args)
-            tail_s = f" // {tail}" if tail else ''  # Needed.
-            lines[i] = f"{lws}fn {name}({args}){{{tail_s}\n"
+            tail_s = f"{tail.strip()} " if tail.strip() else ''  # Needed.
+            lines[i] = f"{lws}fn {name}({args}) {tail_s}{{\n"
             lines.insert(j, f"{lws}}}\n")
             return i + 1
         #@+node:ekr.20231119103026.10: *8* py2rust.do_args
@@ -2181,7 +2181,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Tail: order matters.
             (trailing_comment_pat, do_trailing_comment)
         )
-
     #@+node:ekr.20211013080132.1: *3* ccc.python-to-typescript
     @cmd('python-to-typescript')
     def python_to_typescript(self, event: Event) -> None:  # pragma: no cover
