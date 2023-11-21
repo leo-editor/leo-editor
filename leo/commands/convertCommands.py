@@ -1530,650 +1530,648 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         Converts Python text to Rust text. The conversion is not
         perfect, but it eliminates a lot of tedious text manipulation.
         """
-        #@+others
-        #@+node:ekr.20231119103026.1: *4* class Python_To_Rust
-        #@@nobeautify
-        class Python_To_Rust:  # pragma: no cover
-
-            # The handlers are clear as they are.
-            # pylint: disable=no-else-return
-
-            # Keys are argument names. Values are Rust types.
-            # Typescript can infer types of initialized kwargs.
-            types_d: dict[str, str] = {}
-
-            #@+others
-            #@+node:ekr.20231119103026.2: *5* py2rust.ctor
-            def __init__(self, c: Cmdr, alias: str = None) -> None:
-                self.c = c
-                self.alias = alias  # For scripts. An alias for 'self'.
-                data = c.config.getData('python-to-typescript-types') or []
-                for line in data:
-                    try:
-                        key, value = line.split(',')
-                        self.types_d[key.strip()] = value.strip()
-                    except Exception:
-                        g.es_print('ignoring bad key/value pair in @data python-to-typescript-types')
-                        g.es_print(repr(line))
-                # Create the list of patterns.
-                self.patterns = (
-                    # Head: order matters.
-                    (self.comment_pat, self.do_comment),
-                    (self.docstring_pat, self.do_docstring),
-                    (self.section_ref_pat, self.do_section_ref),
-                    # Middle: order doesn't matter.
-                    (self.class_pat, self.do_class),
-                    (self.def_pat, self.do_def),
-                    (self.elif_pat, self.do_elif),
-                    (self.else_pat, self.do_else),
-                    (self.except_pat, self.do_except),
-                    (self.finally_pat, self.do_finally),
-                    (self.for_pat, self.do_for),
-                    (self.if_pat, self.do_if),
-                    (self.import_pat, self.do_import),
-                    (self.try_pat, self.do_try),
-                    (self.while_pat, self.do_while),
-                    (self.with_pat, self.do_with),
-                    # Tail: order matters.
-                    (self.trailing_comment_pat, self.do_trailing_comment)
-                )
-            #@+node:ekr.20231119103026.3: *5* py2rust.convert
-            def convert(self, p: Position) -> None:
-                """
-                The main line.
-
-                Convert p and all descendants as a child of a new last top-level node.
-                """
-                c = self.c
-                # Create the parent node. It will be deleted.
-                parent = c.lastTopLevel().insertAfter()
-                # Convert p and all its descendants.
-                try:
-                    self.convert_node(p, parent)
-                    # Promote the translated node.
-                    parent.promote()
-                    parent.doDelete()
-                    p = c.lastTopLevel()
-                    p.h = p.h.replace('.py', '.rs').replace('@', '@@')
-                    c.redraw(p)
-                    c.expandAllSubheads(p)
-                    c.treeWantsFocusNow()
-                except Exception:
-                    g.es_exception()
-            #@+node:ekr.20231119103026.4: *5* py2rust.convert_node
-            def convert_node(self, p: Position, parent: Position) -> None:
-                # Create a copy of p as the last child of parent.
-                target = parent.insertAsLastChild()
-                target.h = p.h  # The caller will rename this node.
-                # Convert p.b into child.b
-                self.convert_body(p, target)
-                # Recursively create all descendants.
-                for child in p.children():
-                    self.convert_node(child, target)
-            #@+node:ekr.20231119103026.5: *5* py2rust.convert_body, handlers &helpers
-            def convert_body(self, p: Position, target: Position) -> None:
-                """
-                Convert p.b into target.b.
-
-                This is the heart of the algorithm.
-                """
-                trace = False
-                # The loop may change lines, but each line is scanned only once.
-                i, lines = 0, self.pre_pass(p.b)
-                old_lines = lines[:]
-                if trace:
-                    print('')
-                    print(p.h)
-                while i < len(lines):
-                    progress = i
-                    line = lines[i]
-                    if trace:
-                        print(f"{i:2} {line.rstrip()}")
-                    for (pattern, handler) in self.patterns:
-                        m = pattern.match(line)
-                        if m:
-                            i = handler(i, lines, m, p)  # May change lines.
-                            break
-                    else:
-                        self.do_operators(i, lines, p)
-                        self.do_semicolon(i, lines, p)
-                        i += 1
-                    assert progress < i
-                if trace and g.unitTesting and lines != old_lines:
-                    print(f"\nchanged {p.h}:\n")
-                    for z in lines:
-                        print(z.rstrip())
-                # Run the post-pass
-                target.b = self.post_pass(lines)
-            #@+node:ekr.20231119103026.6: *6* handlers
-            #@+node:ekr.20231119103026.7: *7* py2rust.do_class (struct)
-            class_pat = re.compile(r'^([ \t]*)class(.*):(.*)\n')
-
-            def do_class(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-
-                j = self.find_indented_block(i, lines, m, p)
-                lws, base, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-                base_s = f" {base} " if base else ''
-                tail_s = f" // {tail}" if tail else ''
-                lines[i] = f"{lws}struct{base_s}{{{tail_s}\n"
-                lines.insert(j, f"{lws}}}\n")
-                return i + 1
-            #@+node:ekr.20231119103026.8: *7* py2rust.do_comment
-            comment_pat = re.compile(r'^([ \t]*)#(.*)\n')
-
-            def do_comment(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-                """Handle a stand-alone comment line."""
-                lws, comment = m.group(1), m.group(2).strip()
-                if comment:
-                    lines[i] = f"{lws}// {comment}\n"
-                else:
-                    lines[i] = '\n'  # Write blank line for an empty comment.
-                return i + 1
-            #@+node:ekr.20231119103026.9: *7* py2rust.do_def & helper (fn)
-            def_pat = re.compile(r'^(\s*)def\s*([\w_]+)\s*\((.*?)\)(.*?):')
-
-            def do_def(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-
-                j = self.find_indented_block(i, lines, m, p)
-                lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
-                args = self.do_args(args)
-                tail_s = f" // {tail}" if tail else ''  # Needed.
-                lines[i] = f"{lws}fn {name}({args}){{{tail_s}\n"
-                lines.insert(j, f"{lws}}}\n")
-                return i + 1
-            #@+node:ekr.20231119103026.10: *8* py2rust.do_args
-            def do_args(self, args: list[str]) -> str:
-                """Add type annotations and remove the 'self' argument."""
-                result = []
-                for arg in (z.strip() for z in args.split(',')):
-                    # Omit the self arg.
-                    if arg != 'this':  # Already converted.
-                        val = self.types_d.get(arg)
-                        result.append(f"{arg}: {val}" if val else arg)
-                return ', '.join(result)
-            #@+node:ekr.20231119103026.11: *7* py2rust.do_docstring
-            docstring_pat = re.compile(r'^([ \t]*)r?("""|\'\'\')(.*)\n')
-
-            def do_docstring(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-                """Convert a python docstring."""
-                lws, delim, docstring = m.group(1), m.group(2), m.group(3).strip()
-                tail = docstring.replace(delim, '').strip()
-                lines[i] = ''
-                if tail:
-                    lines.insert(i, f"{lws}/// {tail}\n")
-                    i += 1
-                if delim in docstring:
-                    return i + 2
-                i += 1
-                while i < len(lines):
-                    line = lines[i]
-                    # Buglet: ignores whatever might follow the end of the docstring.
-                    tail = line.replace(delim, '').strip()
-                    if delim in line:
-                        lines[i] = f"{lws}/// {tail}\n" if tail else ''
-                        return i + 1 if tail else i
-                    else:
-                        lines[i] = f"{lws}/// {tail}\n" if tail else f"{lws}///\n"
-                    i += 1
-                return i
-            #@+node:ekr.20231119103026.12: *7* py2rust.do_except
-            except_pat = re.compile(r'^([ \t]*)except(.*):(.*)\n')
-
-            def do_except(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-
-                j = self.find_indented_block(i, lines, m, p)
-                lws, error, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-                tail_s = f" // {tail}" if tail else ''
-                error_s = f" ({error}) " if error else ''
-                lines[i] = f"{lws}catch{error_s}{{{tail_s}\n"
-                lines.insert(j, f"{lws}}}\n")
-                return i + 1
-            #@+node:ekr.20231119103026.13: *7* py2rust.do_for
-            for1_s = r'^([ \t]*)for[ \t]+(.*):(.*)\n'  # for (cond):
-            for2_s = r'^([ \t]*)for[ \t]*\((.*)\n'  # for (
-
-            for1_pat = re.compile(for1_s)
-            for2_pat = re.compile(for2_s)
-            for_pat = re.compile(fr"{for1_s}|{for2_s}")  # Used by main loop.
-
-            def do_for(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-
-                line = lines[i]
-                m1 = self.for1_pat.match(line)
-                m2 = self.for2_pat.match(line)
-                if m1:
-                    j = self.find_indented_block(i, lines, m, p)
-                    lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-                    cond_s = cond if cond.startswith('(') else f"({cond})"
-                    tail_s = f" // {tail}" if tail else ''
-                    lines[i] = f"{lws}for {cond_s} {{{tail_s}\n"
-                    self.do_operators(i, lines, p)
-                    lines.insert(j, f"{lws}}}\n")
-                    return i + 1
-                else:
-                    j = self.find_indented_block(i, lines, m2, p)
-                    # Generate the 'for' line.
-                    lws, tail = m2.group(1), m2.group(2).strip()
-                    tail_s = f" // {tail}" if tail else ''
-                    lines[i] = f"{lws}for ({tail_s}\n"
-                    # Tell do_semicolons that lines[i:j] are not statements.
-                    self.kill_semicolons(lines, i, j)
-                    # Assume line[j] closes the paren.  Insert '{'
-                    lines[j] = lines[j].rstrip().replace(':', '') + ' {\n'
-                    # Insert '}'
-                    k = self.find_indented_block(j, lines, m2, p)
-                    lines.insert(k, f"{lws}}}\n")
-                    return i + 1
-            #@+node:ekr.20231119103026.14: *7* py2rust.do_import
-            import_s = r'^([ \t]*)import[ \t]+(.*)\n'
-            import_from_s = r'^([ \t]*)from[ \t]+(.*)[ \t]+import[ \t]+(.*)\n'
-            import_pat = re.compile(fr"{import_s}|{import_from_s}")  # Used by main loop.
-            import1_pat = re.compile(import_s)
-            import2_pat = re.compile(import_from_s)
-
-            def do_import(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-
-                line = lines[i]
-                m1 = self.import1_pat.match(line)
-                m2 = self.import2_pat.match(line)
-                # Comment out all imports.
-                if m1:
-                    lws, import_list = m1.group(1), m1.group(2).strip()
-                    lines[i] = f'{lws}// import "{import_list}"\n'
-                else:
-                    lws, module, import_list = m2.group(1), m2.group(2).strip(), m2.group(3).strip()
-                    lines[i] = f'{lws}// from "{module}" import {import_list}\n'
-                return i + 1
-            #@+node:ekr.20231119103026.15: *7* py2rust.do_elif
-            elif1_s = r'^([ \t]*)elif[ \t]+(.*):(.*)\n'  # elif (cond):
-            elif2_s = r'^([ \t]*)elif[ \t]*\((.*)\n'  # elif (
-
-            elif1_pat = re.compile(elif1_s)
-            elif2_pat = re.compile(elif2_s)
-            elif_pat = re.compile(fr"{elif1_s}|{elif2_s}")  # Used by main loop.
-
-            def do_elif(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-
-                line = lines[i]
-                m1 = self.elif1_pat.match(line)
-                m2 = self.elif2_pat.match(line)
-                if m1:
-                    j = self.find_indented_block(i, lines, m, p)
-                    lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-                    cond_s = cond if cond.startswith('(') else f"({cond})"
-                    tail_s = f" // {tail}" if tail else ''
-                    lines[i] = f"{lws}else if {cond_s} {{{tail_s}\n"
-                    lines.insert(j, f"{lws}}}\n")
-                    self.do_operators(i, lines, p)
-                    return i + 1
-                else:
-                    j = self.find_indented_block(i, lines, m2, p)
-                    # Generate the 'else if' line.
-                    lws, tail = m2.group(1), m2.group(2).strip()
-                    tail_s = f" // {tail}" if tail else ''
-                    lines[i] = f"{lws}else if ({tail_s}\n"
-                    # Tell do_semicolons that lines[i:j] are not statements.
-                    self.kill_semicolons(lines, i, j)
-                    # Assume line[j] closes the paren.  Insert '{'
-                    lines[j] = lines[j].rstrip().replace(':', '') + ' {\n'
-                    # Insert '}'
-                    k = self.find_indented_block(j, lines, m2, p)
-                    lines.insert(k, f"{lws}}}\n")
-                    return i + 1
-
-            #@+node:ekr.20231119103026.16: *7* py2rust.do_else
-            else_pat = re.compile(r'^([ \t]*)else:(.*)\n')
-
-            def do_else(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-
-                j = self.find_indented_block(i, lines, m, p)
-                lws, tail = m.group(1), m.group(2).strip()
-                tail_s = f" // {tail}" if tail else ''
-                lines[i] = f"{lws}else {{{tail_s}\n"
-                lines.insert(j, f"{lws}}}\n")
-                return i + 1
-            #@+node:ekr.20231119103026.17: *7* py2rust.do_finally
-            finally_pat = re.compile(r'^([ \t]*)finally:(.*)\n')
-
-            def do_finally(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-
-                j = self.find_indented_block(i, lines, m, p)
-                lws, tail = m.group(1), m.group(2).strip()
-                tail_s = f" // {tail}" if tail else ''
-                lines[i] = f"{lws}finally {{{tail_s}\n"
-                lines.insert(j, f"{lws}}}\n")
-                return i + 1
-            #@+node:ekr.20231119103026.18: *7* py2rust.do_if
-            if1_s = r'^([ \t]*)if[ \t]+(.*):(.*?)\n'  # if cond:
-            if2_s = r'^([ \t]*)if[ \t]*\((.*?)\n'  # if (
-
-            if1_pat = re.compile(if1_s)
-            if2_pat = re.compile(if2_s)
-            if_pat = re.compile(fr"{if1_s}|{if2_s}")  # Used by main loop.
-
-            def do_if(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-
-                line = lines[i]
-                m1 = self.if1_pat.match(line)
-                m2 = self.if2_pat.match(line)
-                if m1:
-                    j = self.find_indented_block(i, lines, m1, p)
-                    lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-                    ### cond_s = cond if cond.startswith('(') else f"({cond})"
-                    tail_s = f" // {tail}" if tail else ''
-                    lines[i] = f"{lws}if {cond} {{{tail_s}\n"
-                    self.do_operators(i, lines, p)
-                    lines.insert(j, f"{lws}}}\n")
-                    return i + 1
-                else:
-                    j = self.find_indented_block(i, lines, m2, p)
-                    # Generate the 'if' line.
-                    lws, tail = m2.group(1), m2.group(2).strip()
-                    tail_s = f" // {tail}" if tail else ''
-                    lines[i] = f"{lws}if ({tail_s}\n"
-                    # Tell do_semicolons that lines[i:j] are not statements.
-                    self.kill_semicolons(lines, i, j)
-                    # Assume line[j] closes the paren.  Insert '{'
-                    lines[j] = lines[j].rstrip().replace(':', '') + ' {\n'
-                    # Insert '}'
-                    k = self.find_indented_block(j, lines, m2, p)
-                    lines.insert(k, f"{lws}}}\n")
-                    return i + 1
-            #@+node:ekr.20231119103026.19: *7* py2rust.do_section_ref
-            section_ref_pat = re.compile(r"^([ \t]*)(\<\<.*?\>\>)\s*(.*)$")
-
-            def do_section_ref(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-                # Handle trailing code.
-                lws, section_name, tail = m.group(1), m.group(2), m.group(3).strip()
-                if tail.startswith('#'):
-                    lines[i] = f"{lws}{section_name}  // {tail[1:]}\n"
-                return i + 1
-            #@+node:ekr.20231119103026.20: *7* py2rust.do_try
-            try_pat = re.compile(r'^([ \t]*)try:(.*)\n')
-
-            def do_try(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-
-                j = self.find_indented_block(i, lines, m, p)
-                lws, tail = m.group(1), m.group(2).strip()
-                tail_s = f" // {tail}" if tail else ''
-                lines[i] = f"{lws}try {{{tail_s}\n"
-                lines.insert(j, f"{lws}}}\n")
-                return i + 1
-            #@+node:ekr.20231119103026.21: *7* py2rust.do_while
-            while1_s = r'^([ \t]*)while[ \t]+(.*):(.*)\n'  # while (cond):
-            while2_s = r'^([ \t]*)while[ \t]*\((.*)\n'  # while (
-
-            while1_pat = re.compile(while1_s)
-            while2_pat = re.compile(while2_s)
-            while_pat = re.compile(fr"{while1_s}|{while2_s}")  # Used by main loop.
-
-            def do_while(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-
-                line = lines[i]
-                m1 = self.while1_pat.match(line)
-                m2 = self.while2_pat.match(line)
-                if m1:
-                    j = self.find_indented_block(i, lines, m, p)
-                    lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-                    cond_s = cond if cond.startswith('(') else f"({cond})"
-                    tail_s = f" // {tail}" if tail else ''
-                    lines[i] = f"{lws}while {cond_s} {{{tail_s}\n"
-                    self.do_operators(i, lines, p)
-                    lines.insert(j, f"{lws}}}\n")
-                    return i + 1
-                else:
-                    j = self.find_indented_block(i, lines, m2, p)
-                    # Generate the 'while' line.
-                    lws, tail = m2.group(1), m2.group(2).strip()
-                    tail_s = f" // {tail}" if tail else ''
-                    lines[i] = f"{lws}while ({tail_s}\n"
-                    # Tell do_semicolons that lines[i:j] are not statements.
-                    self.kill_semicolons(lines, i, j)
-                    # Assume line[j] closes the paren.  Insert '{'
-                    lines[j] = lines[j].rstrip().replace(':', '') + ' {\n'
-                    # Insert '}'
-                    k = self.find_indented_block(j, lines, m2, p)
-                    lines.insert(k, f"{lws}}}\n")
-                    return i + 1
-
-            #@+node:ekr.20231119103026.22: *7* py2rust.do_with
-            with_pat = re.compile(r'^([ \t]*)with(.*):(.*)\n')
-
-            def do_with(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-
-                j = self.find_indented_block(i, lines, m, p)
-                lws, clause, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-                tail_s = f" // {tail}" if tail else ''
-                clause_s = f" ({clause}) " if clause else ''
-                lines[i] = f"{lws}with{clause_s}{{{tail_s}\n"
-                lines.insert(j, f"{lws}}}\n")
-                return i + 1
-            #@+node:ekr.20231119103026.23: *7* py2rust.do_trailing_comment
-            trailing_comment_pat = re.compile(r'^([ \t]*)(.*)#(.*)\n')
-
-            def do_trailing_comment(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-                """
-                Handle a trailing comment line.
-
-                All other patterns have already been scanned on the line.
-                """
-                lws, statement, trailing_comment = m.group(1), m.group(2).rstrip(), m.group(3).strip()
-                statement_s = f"{statement};" if self.ends_statement(i, lines) else statement
-                lines[i] = f"{lws}{statement_s}  // {trailing_comment}\n"
-                return i + 1
-            #@+node:ekr.20231119103026.24: *6* helpers
-            #@+node:ekr.20231119103026.25: *7* py2rust.do_operators
-            def do_operators(self, i: int, lines: list[str], p: Position) -> None:
-                """Replace all operators and replace single quotes with double quotes."""
-                # Regex replacements.
-                table = (
-                    ('True', 'true'),
-                    ('False', 'false'),
-                    # ('None', 'null'), # Done in post-pass.
-                    ('default', 'default_val'),
-                    ('and', '&&'),
-                    ('or', '||'),
-                    ('is not', '!='),
-                    ('is', '=='),
-                    ('not', '!'),
-                    ('assert', '// assert'),
-                )
-                for a, b in table:
-                    lines[i] = re.sub(fr"\b{a}\b", b, lines[i])
-
-
-            #@+node:ekr.20231119103026.26: *7* py2rust.do_semicolon
-            def do_semicolon(self, i: int, lines: list[str], p: Position) -> None:
-                """
-                Insert a semicolon in lines[i] is appropriate.
-
-                No other handler has matched, so we know that the line:
-                - Does not end in a comment.
-                - Is not part of a docstring.
-                """
-                # Honor the flag inserted by kill_semicolons.
-                flag = self.kill_semicolons_flag
-                if lines[i].endswith(flag):
-                    lines[i] = lines[i].replace(flag, '\n')
-                    return
-                # For now, use a maximal policy.
-                if self.ends_statement(i, lines):
-                    lines[i] = f"{lines[i].rstrip()};\n"
-
-
-            #@+node:ekr.20231119103026.27: *7* py2rust.ends_statement
-            def ends_statement(self, i: int, lines: list[str]) -> bool:
-                """
-                Return True if lines[i] ends a statement.
-
-                If so, the line should end with a semicolon,
-                before any trailing comment, that is.
-                """
-                # https://stackoverflow.com/questions/38823062/
-                s = lines[i].strip()
-                next_line = lines[i + 1] if i + 1 < len(lines) else ''
-                # Return False for blank lines.
-                if not s:
-                    return False
-                # Return False for Leo directives.
-                if s.startswith('@'):
-                    return False
-                # Return False for section references.
-                i = s.find('<<')
-                j = s.find('>>')
-                if -1 < i < j:
-                    return False
-                # Return False if this line ends in any of the following:
-                if s.endswith(('{', '(', '[', ':', '||', '&&', '!', ',', '`')):
-                    return False
-                # Return False if the next line starts with '{', '(', '['.
-                if next_line.lstrip().startswith(('[', '(', '[', '&&', '||', '!')):
-                    return False
-                # Return False for '}' lines.
-                if s.startswith('}'):
-                    return False
-                return True
-            #@+node:ekr.20231119103026.28: *7* py2rust.find_indented_block
-            lws_pat = re.compile(r'^([ \t]*)')
-
-            def find_indented_block(self, i: int, lines: list[str], m: Match, p: Position) -> int:
-                """Return j, the index of the line *after* the indented block."""
-                # Scan for the first non-empty line with the same or less indentation.
-                lws = m.group(1)
-                j = i + 1
-                while j < len(lines):
-                    line = lines[j]
-                    m2 = self.lws_pat.match(line)
-                    lws2 = m2.group(1)
-                    if line.strip() and len(lws2) <= len(lws):
-                        # Don't add a blank line at the end of a block.
-                        if j > 1 and not lines[j - 1].strip():
-                            j -= 1
-                        break
-                    j += 1
-                return j
-
-            #@+node:ekr.20231119103026.29: *7* py2rust.kill_semicolons
-            kill_semicolons_flag = '  // **kill-semicolon**\n'  # Must end with a newline.
-
-            def kill_semicolons(self, lines: list[str], i: int, j: int) -> None:
-                """
-                Tell later calls to do_semicolon that lines[i : j] should *not* end with a semicolon.
-                """
-                for n in range(i, j):
-                    lines[n] = lines[n].rstrip() + self.kill_semicolons_flag
-            #@+node:ekr.20231119103026.31: *7* py2rust.post_pass & helpers
-            def post_pass(self, lines: list[str]) -> str:
-
-                # Munge lines in place
-                self.do_f_strings(lines)
-                self.do_ternary(lines)
-                self.replace_single_quotes(lines)
-                self.do_assignment(lines)  # Do this last, so it doesn't add 'let' to inserted comments.
-                s = (''.join(lines)
-                    .replace('@language python', '@language rust')
-                    .replace(self.kill_semicolons_flag, '\n')
-                )
-                return re.sub(r'\bNone\b', 'null', s)
-
-
-            #@+node:ekr.20231119103026.32: *8* py2rust.do_assignment
-            assignment_pat = re.compile(r'^([ \t]*)(.*?)\s+=\s+(.*)$')  # Require whitespace around the '='
-
-            def do_assignment(self, lines: list[str]) -> None:
-                """Add let to all non-tuple assignments."""
-                # Do this late so that we can test for the ending semicolon.
-
-                # Suppression table.
-                # Missing elements are likely to cause this method to generate '= ='.
-                table = (
-                    ',',  # Tuple assignment or  multi-line argument lists.
-                    '*',  # A converted docstring.
-                    '`',  # f-string.
-                    '//',  # Comment.
-                    '=',  # Condition.
-                    # Keywords that might be followed by '='
-                    'class', 'def', 'elif', 'for', 'if', 'print', 'public', 'return', 'with', 'while',
-                )
-                for i, s in enumerate(lines):
-                    m = self.assignment_pat.match(s)
-                    if m:
-                        lws, lhs, rhs = m.group(1), m.group(2), m.group(3).rstrip()
-                        if not any(z in lhs for z in table):
-                            lines[i] = f"{lws}let {lhs} = {rhs}\n"
-            #@+node:ekr.20231119103026.33: *8* py2rust.do_f_strings
-            f_string_pat = re.compile(r'([ \t]*)(.*?)f"(.*?)"(.*)$')
-
-            def do_f_strings(self, lines: list[str]) -> None:
-
-                i = 0
-                while i < len(lines):
-                    progress = i
-                    s = lines[i]
-                    m = self.f_string_pat.match(s)
-                    if not m:
-                        i += 1
-                        continue
-                    lws, head, string, tail = m.group(1), m.group(2), m.group(3), m.group(4).rstrip()
-                    # A hack. If the fstring is on a line by itself, remove a trailing ';'
-                    tail_s = tail
-                    if not head.strip() and tail.endswith(';'):
-                        tail_s = tail[:-1].strip()
-                    # We'll ignore that calls are not allowed in Rust f-strings.
-                    lines[i] = f'{lws}{head}f!"{string}"{tail_s}\n'
-                    i += 1
-                    assert i > progress
-            #@+node:ekr.20231119103026.34: *8* py2rust.do_ternary
-            ternary_pat1 = re.compile(r'^([ \t]*)(.*?)\s*=\s*(.*?) if (.*?) else (.*);$')  # assignment
-            ternary_pat2 = re.compile(r'^([ \t]*)return\s+(.*?) if (.*?) else (.*);$')  # return statement
-
-            def do_ternary(self, lines: list[str]) -> None:
-
-                i = 0
-                while i < len(lines):
-                    progress = i
-                    s = lines[i]
-                    m1 = self.ternary_pat1.match(s)
-                    m2 = self.ternary_pat2.match(s)
-                    if m1:
-                        lws, target, a, cond, b = m1.group(1), m1.group(2), m1.group(3), m1.group(4), m1.group(5)
-                        lines[i] = f"{lws}// {s.strip()}\n"
-                        lines.insert(i + 1, f"{lws}{target} = if {cond} {{{a}}} else {{{b}}};\n")
-                        i += 2
-                    elif m2:
-                        lws, a, cond, b = m2.group(1), m2.group(2), m2.group(3), m2.group(4)
-                        lines[i] = f"{lws}// {s.strip()}\n"
-                        lines.insert(i + 1, f"{lws}return if {cond} then {{{a}}} else {{{b}}};\n")
-                        i += 2
-                    else:
-                        i += 1
-                    assert progress < i
-            #@+node:ekr.20231120201711.1: *8* py2rust.replace_single_quotes
-            def replace_single_quotes(self, lines: list[str]) -> None:
-                for i, line in enumerate(lines):
-                    n1 = line.find("'")
-                    if n1 == -1:
-                        continue
-                    n0 = line.find('//')
-                    if n0 == -1 or n0 > n1:
-                        lines[i] = lines[i].replace("'", '"')
-            #@+node:ekr.20231119103026.35: *7* py2rust.pre_pass
-            def pre_pass(self, s: str) -> list[str]:
-                """
-                The pre-pass for s, a multi-line string.
-                
-                Split the lines and comment out all decorators.
-                """
-                result = []
-                for s in g.splitLines(s):
-                    # Comment out decorators.
-                    result.append(re.sub(r'^@(cmd|g\.command)', r'// @\1', s))
-                return result
-            #@-others
-        #@-others
         c = self.c
-        Python_To_Rust(c).convert(c.p)
+        self.Python_To_Rust(c).convert(c.p)
         c.bodyWantsFocus()
+    #@+node:ekr.20231119103026.1: *4* class Python_To_Rust
+    #@@nobeautify
+    class Python_To_Rust:  # pragma: no cover
+
+        # The handlers are clear as they are.
+        # pylint: disable=no-else-return
+
+        # Keys are argument names. Values are Rust types.
+        # Typescript can infer types of initialized kwargs.
+        types_d: dict[str, str] = {}
+
+        #@+others
+        #@+node:ekr.20231119103026.2: *5* py2rust.ctor
+        def __init__(self, c: Cmdr, alias: str = None) -> None:
+            self.c = c
+            self.alias = alias  # For scripts. An alias for 'self'.
+            data = c.config.getData('python-to-typescript-types') or []
+            for line in data:
+                try:
+                    key, value = line.split(',')
+                    self.types_d[key.strip()] = value.strip()
+                except Exception:
+                    g.es_print('ignoring bad key/value pair in @data python-to-typescript-types')
+                    g.es_print(repr(line))
+            # Create the list of patterns.
+            self.patterns = (
+                # Head: order matters.
+                (self.comment_pat, self.do_comment),
+                (self.docstring_pat, self.do_docstring),
+                (self.section_ref_pat, self.do_section_ref),
+                # Middle: order doesn't matter.
+                (self.class_pat, self.do_class),
+                (self.def_pat, self.do_def),
+                (self.elif_pat, self.do_elif),
+                (self.else_pat, self.do_else),
+                (self.except_pat, self.do_except),
+                (self.finally_pat, self.do_finally),
+                (self.for_pat, self.do_for),
+                (self.if_pat, self.do_if),
+                (self.import_pat, self.do_import),
+                (self.try_pat, self.do_try),
+                (self.while_pat, self.do_while),
+                (self.with_pat, self.do_with),
+                # Tail: order matters.
+                (self.trailing_comment_pat, self.do_trailing_comment)
+            )
+        #@+node:ekr.20231119103026.3: *5* py2rust.convert
+        def convert(self, p: Position) -> None:
+            """
+            The main line.
+
+            Convert p and all descendants as a child of a new last top-level node.
+            """
+            c = self.c
+            # Create the parent node. It will be deleted.
+            parent = c.lastTopLevel().insertAfter()
+            # Convert p and all its descendants.
+            try:
+                self.convert_node(p, parent)
+                # Promote the translated node.
+                parent.promote()
+                parent.doDelete()
+                p = c.lastTopLevel()
+                p.h = p.h.replace('.py', '.rs').replace('@', '@@')
+                c.redraw(p)
+                c.expandAllSubheads(p)
+                c.treeWantsFocusNow()
+            except Exception:
+                g.es_exception()
+        #@+node:ekr.20231119103026.4: *5* py2rust.convert_node
+        def convert_node(self, p: Position, parent: Position) -> None:
+            # Create a copy of p as the last child of parent.
+            target = parent.insertAsLastChild()
+            target.h = p.h  # The caller will rename this node.
+            # Convert p.b into child.b
+            self.convert_body(p, target)
+            # Recursively create all descendants.
+            for child in p.children():
+                self.convert_node(child, target)
+        #@+node:ekr.20231119103026.5: *5* py2rust.convert_body, handlers &helpers
+        def convert_body(self, p: Position, target: Position) -> None:
+            """
+            Convert p.b into target.b.
+
+            This is the heart of the algorithm.
+            """
+            trace = False
+            # The loop may change lines, but each line is scanned only once.
+            i, lines = 0, self.pre_pass(p.b)
+            old_lines = lines[:]
+            if trace:
+                print('')
+                print(p.h)
+            while i < len(lines):
+                progress = i
+                line = lines[i]
+                if trace:
+                    print(f"{i:2} {line.rstrip()}")
+                for (pattern, handler) in self.patterns:
+                    m = pattern.match(line)
+                    if m:
+                        i = handler(i, lines, m, p)  # May change lines.
+                        break
+                else:
+                    self.do_operators(i, lines, p)
+                    self.do_semicolon(i, lines, p)
+                    i += 1
+                assert progress < i
+            if trace and g.unitTesting and lines != old_lines:
+                print(f"\nchanged {p.h}:\n")
+                for z in lines:
+                    print(z.rstrip())
+            # Run the post-pass
+            target.b = self.post_pass(lines)
+        #@+node:ekr.20231119103026.6: *6* handlers
+        #@+node:ekr.20231119103026.7: *7* py2rust.do_class (struct)
+        class_pat = re.compile(r'^([ \t]*)class(.*):(.*)\n')
+
+        def do_class(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+
+            j = self.find_indented_block(i, lines, m, p)
+            lws, base, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            base_s = f" {base} " if base else ''
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}struct{base_s}{{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1
+        #@+node:ekr.20231119103026.8: *7* py2rust.do_comment
+        comment_pat = re.compile(r'^([ \t]*)#(.*)\n')
+
+        def do_comment(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+            """Handle a stand-alone comment line."""
+            lws, comment = m.group(1), m.group(2).strip()
+            if comment:
+                lines[i] = f"{lws}// {comment}\n"
+            else:
+                lines[i] = '\n'  # Write blank line for an empty comment.
+            return i + 1
+        #@+node:ekr.20231119103026.9: *7* py2rust.do_def & helper (fn)
+        def_pat = re.compile(r'^(\s*)def\s*([\w_]+)\s*\((.*?)\)(.*?):')
+
+        def do_def(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+
+            j = self.find_indented_block(i, lines, m, p)
+            lws, name, args, tail = m.group(1), m.group(2), m.group(3).strip(), m.group(4).strip()
+            args = self.do_args(args)
+            tail_s = f" // {tail}" if tail else ''  # Needed.
+            lines[i] = f"{lws}fn {name}({args}){{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1
+        #@+node:ekr.20231119103026.10: *8* py2rust.do_args
+        def do_args(self, args: list[str]) -> str:
+            """Add type annotations and remove the 'self' argument."""
+            result = []
+            for arg in (z.strip() for z in args.split(',')):
+                # Omit the self arg.
+                if arg != 'this':  # Already converted.
+                    val = self.types_d.get(arg)
+                    result.append(f"{arg}: {val}" if val else arg)
+            return ', '.join(result)
+        #@+node:ekr.20231119103026.11: *7* py2rust.do_docstring
+        docstring_pat = re.compile(r'^([ \t]*)r?("""|\'\'\')(.*)\n')
+
+        def do_docstring(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+            """Convert a python docstring."""
+            lws, delim, docstring = m.group(1), m.group(2), m.group(3).strip()
+            tail = docstring.replace(delim, '').strip()
+            lines[i] = ''
+            if tail:
+                lines.insert(i, f"{lws}/// {tail}\n")
+                i += 1
+            if delim in docstring:
+                return i + 2
+            i += 1
+            while i < len(lines):
+                line = lines[i]
+                # Buglet: ignores whatever might follow the end of the docstring.
+                tail = line.replace(delim, '').strip()
+                if delim in line:
+                    lines[i] = f"{lws}/// {tail}\n" if tail else ''
+                    return i + 1 if tail else i
+                else:
+                    lines[i] = f"{lws}/// {tail}\n" if tail else f"{lws}///\n"
+                i += 1
+            return i
+        #@+node:ekr.20231119103026.12: *7* py2rust.do_except
+        except_pat = re.compile(r'^([ \t]*)except(.*):(.*)\n')
+
+        def do_except(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+
+            j = self.find_indented_block(i, lines, m, p)
+            lws, error, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            tail_s = f" // {tail}" if tail else ''
+            error_s = f" ({error}) " if error else ''
+            lines[i] = f"{lws}catch{error_s}{{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1
+        #@+node:ekr.20231119103026.13: *7* py2rust.do_for
+        for1_s = r'^([ \t]*)for[ \t]+(.*):(.*)\n'  # for (cond):
+        for2_s = r'^([ \t]*)for[ \t]*\((.*)\n'  # for (
+
+        for1_pat = re.compile(for1_s)
+        for2_pat = re.compile(for2_s)
+        for_pat = re.compile(fr"{for1_s}|{for2_s}")  # Used by main loop.
+
+        def do_for(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+
+            line = lines[i]
+            m1 = self.for1_pat.match(line)
+            m2 = self.for2_pat.match(line)
+            if m1:
+                j = self.find_indented_block(i, lines, m, p)
+                lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+                cond_s = cond if cond.startswith('(') else f"({cond})"
+                tail_s = f" // {tail}" if tail else ''
+                lines[i] = f"{lws}for {cond_s} {{{tail_s}\n"
+                self.do_operators(i, lines, p)
+                lines.insert(j, f"{lws}}}\n")
+                return i + 1
+            else:
+                j = self.find_indented_block(i, lines, m2, p)
+                # Generate the 'for' line.
+                lws, tail = m2.group(1), m2.group(2).strip()
+                tail_s = f" // {tail}" if tail else ''
+                lines[i] = f"{lws}for ({tail_s}\n"
+                # Tell do_semicolons that lines[i:j] are not statements.
+                self.kill_semicolons(lines, i, j)
+                # Assume line[j] closes the paren.  Insert '{'
+                lines[j] = lines[j].rstrip().replace(':', '') + ' {\n'
+                # Insert '}'
+                k = self.find_indented_block(j, lines, m2, p)
+                lines.insert(k, f"{lws}}}\n")
+                return i + 1
+        #@+node:ekr.20231119103026.14: *7* py2rust.do_import
+        import_s = r'^([ \t]*)import[ \t]+(.*)\n'
+        import_from_s = r'^([ \t]*)from[ \t]+(.*)[ \t]+import[ \t]+(.*)\n'
+        import_pat = re.compile(fr"{import_s}|{import_from_s}")  # Used by main loop.
+        import1_pat = re.compile(import_s)
+        import2_pat = re.compile(import_from_s)
+
+        def do_import(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+
+            line = lines[i]
+            m1 = self.import1_pat.match(line)
+            m2 = self.import2_pat.match(line)
+            # Comment out all imports.
+            if m1:
+                lws, import_list = m1.group(1), m1.group(2).strip()
+                lines[i] = f'{lws}// import "{import_list}"\n'
+            else:
+                lws, module, import_list = m2.group(1), m2.group(2).strip(), m2.group(3).strip()
+                lines[i] = f'{lws}// from "{module}" import {import_list}\n'
+            return i + 1
+        #@+node:ekr.20231119103026.15: *7* py2rust.do_elif
+        elif1_s = r'^([ \t]*)elif[ \t]+(.*):(.*)\n'  # elif (cond):
+        elif2_s = r'^([ \t]*)elif[ \t]*\((.*)\n'  # elif (
+
+        elif1_pat = re.compile(elif1_s)
+        elif2_pat = re.compile(elif2_s)
+        elif_pat = re.compile(fr"{elif1_s}|{elif2_s}")  # Used by main loop.
+
+        def do_elif(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+
+            line = lines[i]
+            m1 = self.elif1_pat.match(line)
+            m2 = self.elif2_pat.match(line)
+            if m1:
+                j = self.find_indented_block(i, lines, m, p)
+                lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+                cond_s = cond if cond.startswith('(') else f"({cond})"
+                tail_s = f" // {tail}" if tail else ''
+                lines[i] = f"{lws}else if {cond_s} {{{tail_s}\n"
+                lines.insert(j, f"{lws}}}\n")
+                self.do_operators(i, lines, p)
+                return i + 1
+            else:
+                j = self.find_indented_block(i, lines, m2, p)
+                # Generate the 'else if' line.
+                lws, tail = m2.group(1), m2.group(2).strip()
+                tail_s = f" // {tail}" if tail else ''
+                lines[i] = f"{lws}else if ({tail_s}\n"
+                # Tell do_semicolons that lines[i:j] are not statements.
+                self.kill_semicolons(lines, i, j)
+                # Assume line[j] closes the paren.  Insert '{'
+                lines[j] = lines[j].rstrip().replace(':', '') + ' {\n'
+                # Insert '}'
+                k = self.find_indented_block(j, lines, m2, p)
+                lines.insert(k, f"{lws}}}\n")
+                return i + 1
+
+        #@+node:ekr.20231119103026.16: *7* py2rust.do_else
+        else_pat = re.compile(r'^([ \t]*)else:(.*)\n')
+
+        def do_else(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+
+            j = self.find_indented_block(i, lines, m, p)
+            lws, tail = m.group(1), m.group(2).strip()
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}else {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1
+        #@+node:ekr.20231119103026.17: *7* py2rust.do_finally
+        finally_pat = re.compile(r'^([ \t]*)finally:(.*)\n')
+
+        def do_finally(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+
+            j = self.find_indented_block(i, lines, m, p)
+            lws, tail = m.group(1), m.group(2).strip()
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}finally {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1
+        #@+node:ekr.20231119103026.18: *7* py2rust.do_if
+        if1_s = r'^([ \t]*)if[ \t]+(.*):(.*?)\n'  # if cond:
+        if2_s = r'^([ \t]*)if[ \t]*\((.*?)\n'  # if (
+
+        if1_pat = re.compile(if1_s)
+        if2_pat = re.compile(if2_s)
+        if_pat = re.compile(fr"{if1_s}|{if2_s}")  # Used by main loop.
+
+        def do_if(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+
+            line = lines[i]
+            m1 = self.if1_pat.match(line)
+            m2 = self.if2_pat.match(line)
+            if m1:
+                j = self.find_indented_block(i, lines, m1, p)
+                lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+                ### cond_s = cond if cond.startswith('(') else f"({cond})"
+                tail_s = f" // {tail}" if tail else ''
+                lines[i] = f"{lws}if {cond} {{{tail_s}\n"
+                self.do_operators(i, lines, p)
+                lines.insert(j, f"{lws}}}\n")
+                return i + 1
+            else:
+                j = self.find_indented_block(i, lines, m2, p)
+                # Generate the 'if' line.
+                lws, tail = m2.group(1), m2.group(2).strip()
+                tail_s = f" // {tail}" if tail else ''
+                lines[i] = f"{lws}if ({tail_s}\n"
+                # Tell do_semicolons that lines[i:j] are not statements.
+                self.kill_semicolons(lines, i, j)
+                # Assume line[j] closes the paren.  Insert '{'
+                lines[j] = lines[j].rstrip().replace(':', '') + ' {\n'
+                # Insert '}'
+                k = self.find_indented_block(j, lines, m2, p)
+                lines.insert(k, f"{lws}}}\n")
+                return i + 1
+        #@+node:ekr.20231119103026.19: *7* py2rust.do_section_ref
+        section_ref_pat = re.compile(r"^([ \t]*)(\<\<.*?\>\>)\s*(.*)$")
+
+        def do_section_ref(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+            # Handle trailing code.
+            lws, section_name, tail = m.group(1), m.group(2), m.group(3).strip()
+            if tail.startswith('#'):
+                lines[i] = f"{lws}{section_name}  // {tail[1:]}\n"
+            return i + 1
+        #@+node:ekr.20231119103026.20: *7* py2rust.do_try
+        try_pat = re.compile(r'^([ \t]*)try:(.*)\n')
+
+        def do_try(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+
+            j = self.find_indented_block(i, lines, m, p)
+            lws, tail = m.group(1), m.group(2).strip()
+            tail_s = f" // {tail}" if tail else ''
+            lines[i] = f"{lws}try {{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1
+        #@+node:ekr.20231119103026.21: *7* py2rust.do_while
+        while1_s = r'^([ \t]*)while[ \t]+(.*):(.*)\n'  # while (cond):
+        while2_s = r'^([ \t]*)while[ \t]*\((.*)\n'  # while (
+
+        while1_pat = re.compile(while1_s)
+        while2_pat = re.compile(while2_s)
+        while_pat = re.compile(fr"{while1_s}|{while2_s}")  # Used by main loop.
+
+        def do_while(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+
+            line = lines[i]
+            m1 = self.while1_pat.match(line)
+            m2 = self.while2_pat.match(line)
+            if m1:
+                j = self.find_indented_block(i, lines, m, p)
+                lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+                cond_s = cond if cond.startswith('(') else f"({cond})"
+                tail_s = f" // {tail}" if tail else ''
+                lines[i] = f"{lws}while {cond_s} {{{tail_s}\n"
+                self.do_operators(i, lines, p)
+                lines.insert(j, f"{lws}}}\n")
+                return i + 1
+            else:
+                j = self.find_indented_block(i, lines, m2, p)
+                # Generate the 'while' line.
+                lws, tail = m2.group(1), m2.group(2).strip()
+                tail_s = f" // {tail}" if tail else ''
+                lines[i] = f"{lws}while ({tail_s}\n"
+                # Tell do_semicolons that lines[i:j] are not statements.
+                self.kill_semicolons(lines, i, j)
+                # Assume line[j] closes the paren.  Insert '{'
+                lines[j] = lines[j].rstrip().replace(':', '') + ' {\n'
+                # Insert '}'
+                k = self.find_indented_block(j, lines, m2, p)
+                lines.insert(k, f"{lws}}}\n")
+                return i + 1
+
+        #@+node:ekr.20231119103026.22: *7* py2rust.do_with
+        with_pat = re.compile(r'^([ \t]*)with(.*):(.*)\n')
+
+        def do_with(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+
+            j = self.find_indented_block(i, lines, m, p)
+            lws, clause, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
+            tail_s = f" // {tail}" if tail else ''
+            clause_s = f" ({clause}) " if clause else ''
+            lines[i] = f"{lws}with{clause_s}{{{tail_s}\n"
+            lines.insert(j, f"{lws}}}\n")
+            return i + 1
+        #@+node:ekr.20231119103026.23: *7* py2rust.do_trailing_comment
+        trailing_comment_pat = re.compile(r'^([ \t]*)(.*)#(.*)\n')
+
+        def do_trailing_comment(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+            """
+            Handle a trailing comment line.
+
+            All other patterns have already been scanned on the line.
+            """
+            lws, statement, trailing_comment = m.group(1), m.group(2).rstrip(), m.group(3).strip()
+            statement_s = f"{statement};" if self.ends_statement(i, lines) else statement
+            lines[i] = f"{lws}{statement_s}  // {trailing_comment}\n"
+            return i + 1
+        #@+node:ekr.20231119103026.24: *6* helpers
+        #@+node:ekr.20231119103026.25: *7* py2rust.do_operators
+        def do_operators(self, i: int, lines: list[str], p: Position) -> None:
+            """Replace all operators and replace single quotes with double quotes."""
+            # Regex replacements.
+            table = (
+                ('True', 'true'),
+                ('False', 'false'),
+                # ('None', 'null'), # Done in post-pass.
+                ('default', 'default_val'),
+                ('and', '&&'),
+                ('or', '||'),
+                ('is not', '!='),
+                ('is', '=='),
+                ('not', '!'),
+                ('assert', '// assert'),
+            )
+            for a, b in table:
+                lines[i] = re.sub(fr"\b{a}\b", b, lines[i])
+
+
+        #@+node:ekr.20231119103026.26: *7* py2rust.do_semicolon
+        def do_semicolon(self, i: int, lines: list[str], p: Position) -> None:
+            """
+            Insert a semicolon in lines[i] is appropriate.
+
+            No other handler has matched, so we know that the line:
+            - Does not end in a comment.
+            - Is not part of a docstring.
+            """
+            # Honor the flag inserted by kill_semicolons.
+            flag = self.kill_semicolons_flag
+            if lines[i].endswith(flag):
+                lines[i] = lines[i].replace(flag, '\n')
+                return
+            # For now, use a maximal policy.
+            if self.ends_statement(i, lines):
+                lines[i] = f"{lines[i].rstrip()};\n"
+
+
+        #@+node:ekr.20231119103026.27: *7* py2rust.ends_statement
+        def ends_statement(self, i: int, lines: list[str]) -> bool:
+            """
+            Return True if lines[i] ends a statement.
+
+            If so, the line should end with a semicolon,
+            before any trailing comment, that is.
+            """
+            # https://stackoverflow.com/questions/38823062/
+            s = lines[i].strip()
+            next_line = lines[i + 1] if i + 1 < len(lines) else ''
+            # Return False for blank lines.
+            if not s:
+                return False
+            # Return False for Leo directives.
+            if s.startswith('@'):
+                return False
+            # Return False for section references.
+            i = s.find('<<')
+            j = s.find('>>')
+            if -1 < i < j:
+                return False
+            # Return False if this line ends in any of the following:
+            if s.endswith(('{', '(', '[', ':', '||', '&&', '!', ',', '`')):
+                return False
+            # Return False if the next line starts with '{', '(', '['.
+            if next_line.lstrip().startswith(('[', '(', '[', '&&', '||', '!')):
+                return False
+            # Return False for '}' lines.
+            if s.startswith('}'):
+                return False
+            return True
+        #@+node:ekr.20231119103026.28: *7* py2rust.find_indented_block
+        lws_pat = re.compile(r'^([ \t]*)')
+
+        def find_indented_block(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+            """Return j, the index of the line *after* the indented block."""
+            # Scan for the first non-empty line with the same or less indentation.
+            lws = m.group(1)
+            j = i + 1
+            while j < len(lines):
+                line = lines[j]
+                m2 = self.lws_pat.match(line)
+                lws2 = m2.group(1)
+                if line.strip() and len(lws2) <= len(lws):
+                    # Don't add a blank line at the end of a block.
+                    if j > 1 and not lines[j - 1].strip():
+                        j -= 1
+                    break
+                j += 1
+            return j
+
+        #@+node:ekr.20231119103026.29: *7* py2rust.kill_semicolons
+        kill_semicolons_flag = '  // **kill-semicolon**\n'  # Must end with a newline.
+
+        def kill_semicolons(self, lines: list[str], i: int, j: int) -> None:
+            """
+            Tell later calls to do_semicolon that lines[i : j] should *not* end with a semicolon.
+            """
+            for n in range(i, j):
+                lines[n] = lines[n].rstrip() + self.kill_semicolons_flag
+        #@+node:ekr.20231119103026.31: *7* py2rust.post_pass & helpers
+        def post_pass(self, lines: list[str]) -> str:
+
+            # Munge lines in place
+            self.do_f_strings(lines)
+            self.do_ternary(lines)
+            self.replace_single_quotes(lines)
+            self.do_assignment(lines)  # Do this last, so it doesn't add 'let' to inserted comments.
+            s = (''.join(lines)
+                .replace('@language python', '@language rust')
+                .replace(self.kill_semicolons_flag, '\n')
+            )
+            return re.sub(r'\bNone\b', 'null', s)
+
+
+        #@+node:ekr.20231119103026.32: *8* py2rust.do_assignment
+        assignment_pat = re.compile(r'^([ \t]*)(.*?)\s+=\s+(.*)$')  # Require whitespace around the '='
+
+        def do_assignment(self, lines: list[str]) -> None:
+            """Add let to all non-tuple assignments."""
+            # Do this late so that we can test for the ending semicolon.
+
+            # Suppression table.
+            # Missing elements are likely to cause this method to generate '= ='.
+            table = (
+                ',',  # Tuple assignment or  multi-line argument lists.
+                '*',  # A converted docstring.
+                '`',  # f-string.
+                '//',  # Comment.
+                '=',  # Condition.
+                # Keywords that might be followed by '='
+                'class', 'def', 'elif', 'for', 'if', 'print', 'public', 'return', 'with', 'while',
+            )
+            for i, s in enumerate(lines):
+                m = self.assignment_pat.match(s)
+                if m:
+                    lws, lhs, rhs = m.group(1), m.group(2), m.group(3).rstrip()
+                    if not any(z in lhs for z in table):
+                        lines[i] = f"{lws}let {lhs} = {rhs}\n"
+        #@+node:ekr.20231119103026.33: *8* py2rust.do_f_strings
+        f_string_pat = re.compile(r'([ \t]*)(.*?)f"(.*?)"(.*)$')
+
+        def do_f_strings(self, lines: list[str]) -> None:
+
+            i = 0
+            while i < len(lines):
+                progress = i
+                s = lines[i]
+                m = self.f_string_pat.match(s)
+                if not m:
+                    i += 1
+                    continue
+                lws, head, string, tail = m.group(1), m.group(2), m.group(3), m.group(4).rstrip()
+                # A hack. If the fstring is on a line by itself, remove a trailing ';'
+                tail_s = tail
+                if not head.strip() and tail.endswith(';'):
+                    tail_s = tail[:-1].strip()
+                # We'll ignore that calls are not allowed in Rust f-strings.
+                lines[i] = f'{lws}{head}f!"{string}"{tail_s}\n'
+                i += 1
+                assert i > progress
+        #@+node:ekr.20231119103026.34: *8* py2rust.do_ternary
+        ternary_pat1 = re.compile(r'^([ \t]*)(.*?)\s*=\s*(.*?) if (.*?) else (.*);$')  # assignment
+        ternary_pat2 = re.compile(r'^([ \t]*)return\s+(.*?) if (.*?) else (.*);$')  # return statement
+
+        def do_ternary(self, lines: list[str]) -> None:
+
+            i = 0
+            while i < len(lines):
+                progress = i
+                s = lines[i]
+                m1 = self.ternary_pat1.match(s)
+                m2 = self.ternary_pat2.match(s)
+                if m1:
+                    lws, target, a, cond, b = m1.group(1), m1.group(2), m1.group(3), m1.group(4), m1.group(5)
+                    lines[i] = f"{lws}// {s.strip()}\n"
+                    lines.insert(i + 1, f"{lws}{target} = if {cond} {{{a}}} else {{{b}}};\n")
+                    i += 2
+                elif m2:
+                    lws, a, cond, b = m2.group(1), m2.group(2), m2.group(3), m2.group(4)
+                    lines[i] = f"{lws}// {s.strip()}\n"
+                    lines.insert(i + 1, f"{lws}return if {cond} then {{{a}}} else {{{b}}};\n")
+                    i += 2
+                else:
+                    i += 1
+                assert progress < i
+        #@+node:ekr.20231120201711.1: *8* py2rust.replace_single_quotes
+        def replace_single_quotes(self, lines: list[str]) -> None:
+            for i, line in enumerate(lines):
+                n1 = line.find("'")
+                if n1 == -1:
+                    continue
+                n0 = line.find('//')
+                if n0 == -1 or n0 > n1:
+                    lines[i] = lines[i].replace("'", '"')
+        #@+node:ekr.20231119103026.35: *7* py2rust.pre_pass
+        def pre_pass(self, s: str) -> list[str]:
+            """
+            The pre-pass for s, a multi-line string.
+            
+            Split the lines and comment out all decorators.
+            """
+            result = []
+            for s in g.splitLines(s):
+                # Comment out decorators.
+                result.append(re.sub(r'^@(cmd|g\.command)', r'// @\1', s))
+            return result
+        #@-others
     #@+node:ekr.20211013080132.1: *3* ccc.python-to-typescript
     @cmd('python-to-typescript')
     def python_to_typescript(self, event: Event) -> None:  # pragma: no cover
