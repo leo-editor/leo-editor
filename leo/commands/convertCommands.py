@@ -1543,7 +1543,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         # Keys are argument names. Values are Rust types.
         # Typescript can infer types of initialized kwargs.
         types_d: dict[str, str] = {}
-
+        
         #@+others
         #@+node:ekr.20231119103026.2: *5* py2rust.ctor
         def __init__(self, c: Cmdr, alias: str = None) -> None:
@@ -1557,28 +1557,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 except Exception:
                     g.es_print('ignoring bad key/value pair in @data python-to-typescript-types')
                     g.es_print(repr(line))
-            # Create the list of patterns.
-            self.patterns = (
-                # Head: order matters.
-                (self.comment_pat, self.do_comment),
-                (self.docstring_pat, self.do_docstring),
-                (self.section_ref_pat, self.do_section_ref),
-                # Middle: order doesn't matter.
-                (self.class_pat, self.do_class),
-                (self.def_pat, self.do_def),
-                (self.elif_pat, self.do_elif),
-                (self.else_pat, self.do_else),
-                (self.except_pat, self.do_except),
-                (self.finally_pat, self.do_finally),
-                (self.for_pat, self.do_for),
-                (self.if_pat, self.do_if),
-                (self.import_pat, self.do_import),
-                (self.try_pat, self.do_try),
-                (self.while_pat, self.do_while),
-                (self.with_pat, self.do_with),
-                # Tail: order matters.
-                (self.trailing_comment_pat, self.do_trailing_comment)
-            )
         #@+node:ekr.20231119103026.3: *5* py2rust.convert
         def convert(self, p: Position) -> None:
             """
@@ -1634,7 +1612,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 for (pattern, handler) in self.patterns:
                     m = pattern.match(line)
                     if m:
-                        i = handler(i, lines, m, p)  # May change lines.
+                        i = handler(self, i, lines, m, p)  # May change lines.
                         break
                 else:
                     self.do_operators(i, lines, p)
@@ -1887,7 +1865,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def do_return(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
             lws, tail = m.group(1), m.group(2).strip()
-            lines[i] = f"{lws}{tail.strip()}\n"
+            tail_s = tail.strip() if tail.strip() else 'None'
+            lines[i] = f"{lws}{tail_s}\n"  # Any extra comment quickly becomes annoying.
             return i + 1
         #@+node:ekr.20231119103026.19: *7* py2rust.do_section_ref
         section_ref_pat = re.compile(r"^([ \t]*)(\<\<.*?\>\>)\s*(.*)$")
@@ -1979,7 +1958,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             table = (
                 ('True', 'true'),
                 ('False', 'false'),
-                # ('None', 'null'), # Done in post-pass.
                 ('default', 'default_val'),
                 ('and', '&&'),
                 ('or', '||'),
@@ -2079,11 +2057,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             self.do_ternary(lines)
             self.replace_single_quotes(lines)
             self.do_assignment(lines)  # Do this last, so it doesn't add 'let' to inserted comments.
-            s = (''.join(lines)
+            return (
+                ''.join(lines)
                 .replace('@language python', '@language rust')
                 .replace(self.kill_semicolons_flag, '\n')
             )
-            return re.sub(r'\bNone\b', 'null', s)
+            # return re.sub(r'\bNone\b', 'null', s)
 
 
         #@+node:ekr.20231119103026.32: *8* py2rust.do_assignment
@@ -2179,6 +2158,30 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 result.append(re.sub(r'^@(cmd|g\.command)', r'// @\1', s))
             return result
         #@-others
+
+        patterns = (
+            # Head: order matters.
+            (comment_pat, do_comment),
+            (docstring_pat, do_docstring),
+            (section_ref_pat, do_section_ref),
+            # Middle: order doesn't matter.
+            (class_pat, do_class),
+            (def_pat, do_def),
+            (elif_pat, do_elif),
+            (else_pat, do_else),
+            (except_pat, do_except),
+            (finally_pat, do_finally),
+            (for_pat, do_for),
+            (if_pat, do_if),
+            (import_pat, do_import),
+            (return_pat, do_return),
+            (try_pat, do_try),
+            (while_pat, do_while),
+            (with_pat, do_with),
+            # Tail: order matters.
+            (trailing_comment_pat, do_trailing_comment)
+        )
+
     #@+node:ekr.20211013080132.1: *3* ccc.python-to-typescript
     @cmd('python-to-typescript')
     def python_to_typescript(self, event: Event) -> None:  # pragma: no cover
