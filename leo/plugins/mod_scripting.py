@@ -453,7 +453,9 @@ class ScriptingController:
     def createAllButtons(self) -> None:
         """Scan for @button, @rclick, @command, @plugin and @script nodes."""
         c = self.c
-        if self.scanned:
+        if g.app.reverting:
+            self.deleteAllButtons()
+        elif self.scanned:
             return  # Defensive.
         self.scanned = True
         #
@@ -610,6 +612,13 @@ class ScriptingController:
         )
         # Reporting this command is way too annoying.
         return b
+    #@+node:ekr.20231117041244.1: *3* sc.deleteAllButtons
+    def deleteAllButtons(self) -> None:
+        """Delete all buttons during revert."""
+        for w in self.buttonsDict:
+            self.iconBar.deleteButton(w)
+        self.buttonsDict = {}
+        self.seen = set()
     #@+node:ekr.20060328125248.28: *3* sc.executeScriptFromButton
     def executeScriptFromButton(self,
         b: Wrapper,

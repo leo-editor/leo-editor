@@ -570,7 +570,7 @@ def revert(self: Self, event: Event = None) -> None:
         g.es('Can not revert unnamed file.')
         return
     if not g.os_path_exists(fn):
-        g.es(f"Can not revert unsaved file: {fn}")
+        g.es(f"Can not revert non-existent file: {fn}")
         return
     reply = g.app.gui.runAskYesNoDialog(
         c, 'Revert', f"Revert to previous version of {fn}?")

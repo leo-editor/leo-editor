@@ -3099,7 +3099,10 @@ class KeyHandlerClass:
         c, k = self.c, self
         # Setup...
         if trace:
-            g.trace(repr(k.state.kind), repr(event.char), repr(event.stroke))
+            handler_s = f"{k.state.handler.__name__}" if k.state.handler else 'No handler'
+            g.trace(
+                f"char: {event.char!r} stroke: {event.stroke!r} "
+                f"state.kind: {k.state.kind!r}, state.handler: {handler_s}")
         k.checkKeyEvent(event)
         k.setEventWidget(event)
         k.traceVars(event)
@@ -3285,6 +3288,8 @@ class KeyHandlerClass:
                     g.trace(state, 'k.generalModeHandler', stroke)
                 return True
             # Unbound keys end mode.
+            if trace:
+                g.trace(state, stroke, 'no binding')
             k.endMode()
             return False
         # Fourth, call the state handler.
@@ -3503,6 +3508,8 @@ class KeyHandlerClass:
         #
         # #327: Ignore killed bindings.
         if bi and bi.commandName in k.killedBindings:
+            if trace:
+                g.trace(f"{event.stroke!s} {bi.commandName}: in killed bindings")
             return False
         #
         # Execute the command if the binding exists.
@@ -3514,6 +3521,8 @@ class KeyHandlerClass:
             return True
         #
         # No binding exists.
+        if trace:
+            g.trace(f"{event.stroke!s} {bi.commandName}: no binding")
         return False
     #@+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
     def getPaneBinding(self, event: Event) -> Any:
