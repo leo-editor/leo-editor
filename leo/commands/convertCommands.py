@@ -2151,25 +2151,13 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         i += 1
                         continue
                     lws, head, string, tail = m.group(1), m.group(2), m.group(3), m.group(4).rstrip()
-                    string_s = (
-                        string.replace('{', '${')  # Add the '$'
-                        .replace('! ', 'not ')  # Undo erroneous replacement.
-                    )
-                    # Remove format strings. Not perfect, but seemingly good enough.
-                    string_s = re.sub(r'\:[0-9]\.+[0-9]+[frs]', '', string_s)
-                    string_s = re.sub(r'\![frs]', '', string_s)
                     # A hack. If the fstring is on a line by itself, remove a trailing ';'
+                    tail_s = tail
                     if not head.strip() and tail.endswith(';'):
-                        tail = tail[:-1].strip()
-                    if 1:  # Just replace the line.
-                        lines[i] = f"{lws}{head}`{string_s}`{tail.rstrip()}\n"
-                        i += 1
-                    else:
-                        # These comments quickly become annoying.
-                        # Add the original line as a comment as a check.
-                        lines[i] = f"{lws}// {s.strip()}\n"  # Add the replacement line.
-                        lines.insert(i + 1, f"{lws}{head}`{string_s}`{tail.rstrip()}\n")
-                        i += 2
+                        tail_s = tail[:-1].strip()
+                    # We'll ignore that calls are not allowed in Rust f-strings.
+                    lines[i] = f'{lws}{head}f!"{string}"{tail_s}\n'
+                    i += 1
                     assert i > progress
             #@+node:ekr.20231119103026.34: *8* py2rust.do_ternary
             ternary_pat1 = re.compile(r'^([ \t]*)(.*?)\s*=\s*(.*?) if (.*?) else (.*);$')  # assignment
