@@ -1855,6 +1855,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def do_if(self, i: int, lines: list[str], m: Match, p: Position) -> int:
 
+            # Recompute the match for better accuracy.
             line = lines[i]
             m1 = self.if1_pat.match(line)
             m2 = self.if2_pat.match(line)
