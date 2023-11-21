@@ -1619,7 +1619,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 """
                 trace = False
                 # The loop may change lines, but each line is scanned only once.
-                i, lines = 0, g.splitLines(self.pre_pass(p.b))
+                i, lines = 0, self.pre_pass(p.b)
                 old_lines = lines[:]
                 if trace:
                     print('')
@@ -1645,10 +1645,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         print(z.rstrip())
                 # Run the post-pass
                 target.b = self.post_pass(lines)
-                # Munge target.h.
-                target.h = target.h.replace('__init__', 'enum')
             #@+node:ekr.20231119103026.6: *6* handlers
-            #@+node:ekr.20231119103026.7: *7* py2rust.do_class (enum)
+            #@+node:ekr.20231119103026.7: *7* py2rust.do_class (struct)
             class_pat = re.compile(r'^([ \t]*)class(.*):(.*)\n')
 
             def do_class(self, i: int, lines: list[str], m: Match, p: Position) -> int:
@@ -1657,7 +1655,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lws, base, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
                 base_s = f" {base} " if base else ''
                 tail_s = f" // {tail}" if tail else ''
-                lines[i] = f"{lws}enum{base_s}{{{tail_s}\n"
+                lines[i] = f"{lws}struct{base_s}{{{tail_s}\n"
                 lines.insert(j, f"{lws}}}\n")
                 return i + 1
             #@+node:ekr.20231119103026.8: *7* py2rust.do_comment
@@ -2160,37 +2158,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if n0 == -1 or n0 > n1:
                         lines[i] = lines[i].replace("'", '"')
             #@+node:ekr.20231119103026.35: *7* py2rust.pre_pass
-            def pre_pass(self, s: str) -> str:
-
-                # Remove the python encoding lines.
-                s = s.replace('', '')
-
-                # Replace 'self' by 'this' *everywhere*.
-                s = re.sub(r'\bself\b', 'this', s)
-
-                # Comment out @cmd decorators.
-                s = re.sub(r"^@cmd(.*?)$", r'// @cmd\1\n', s, flags=re.MULTILINE)
-
-                # Replace the alias for 'self' by 'this' *only* in specif contexts.
-                # Do *not* replace the alias everywhere: that could do great harm.
-                if self.alias:
-                    s = re.sub(fr"\b{self.alias}\.", 'this.', s)
-                    # Remove lines like `at = self`.
-                    s = re.sub(fr"^\s*{self.alias}\s*=\s*this\s*\n", '', s, flags=re.MULTILINE)
-                    # Remove lines like `at, c = self, self.c`.
-                    s = re.sub(
-                        fr"^(\s*){self.alias}\s*,\s*c\s*=\s*this,\s*this.c\n",
-                        r'\1c = this.c\n',  # do_assignment adds 'let'.
-                        s,
-                        flags=re.MULTILINE)
-                    # Remove lines like `at, p = self, self.p`.
-                    s = re.sub(fr"^(\s*){self.alias}\s*,\s*p\s*=\s*this,\s*this.p\n",
-                        r'\1p = this.p\n',  # do_assignment adds 'let'.
-                        s,
-                        flags=re.MULTILINE)
-                    # Do this last.
-                    s = re.sub(fr"\b{self.alias},", 'this,', s)
-                return s
+            def pre_pass(self, s: str) -> list[str]:
+                """
+                The pre-pass for s, a multi-line string.
+                
+                Split the lines and comment out all decorators.
+                """
+                result = []
+                for s in g.splitLines(s):
+                    # Comment out decorators.
+                    result.append(re.sub(r'^@(cmd|g\.command)', r'// @\1', s))
+                return result
             #@-others
         #@-others
         c = self.c
