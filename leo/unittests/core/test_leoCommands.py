@@ -424,13 +424,11 @@ class TestCommands(LeoUnitTest):
         p1 = p.insertAsLastChild()
         s = '\xd4\xc5\xd3\xd4'  # the word 'test' in Russian, koi8-r
         assert isinstance(s, str), repr(s)
-        p1.setBodyString(s)
+        p1.b = s
         c.selectPosition(p1)
         c.copyOutline()
         c.pasteOutline()
-        p2 = p1.next()
-        self.assertEqual(p1.b, p2.b)
-
+        assert p1.b == c.p.b, (repr(p1.b), repr(c.p.b))
     #@+node:ekr.20210901140645.9: *3* TestCommands.test_official_commander_ivars
     def test_official_commander_ivars(self):
         c = self.c

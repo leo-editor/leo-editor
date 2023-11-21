@@ -4,7 +4,6 @@
 #@+node:ekr.20040712045933: ** << leoCommands imports >>
 from __future__ import annotations
 from collections.abc import Callable
-import json
 import os
 import re
 import subprocess
@@ -59,6 +58,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoGui
     from leo.plugins.qt_gui import StyleSheetManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+
+    # Type aliases.
+    PositionStack = list[tuple[VNode, int]]
     RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
     Widget = Any
 #@-<< leoCommands annotations >>
@@ -602,7 +604,8 @@ class Commands:
                     repr(self.fixedWindowPosition))
         else:
             c.windowPosition = 500, 700, 50, 50  # width,height,left,top.
-    #@+node:ekr.20210530065748.1: *3* @cmd c.execute-general-script
+    #@+node:ekr.20230811051010.1: *3* top-level commands
+    #@+node:ekr.20210530065748.1: *4* @cmd c.execute-general-script
     @cmd('execute-general-script')
     def execute_general_script_command(self, event: Event = None) -> None:
         """
@@ -655,13 +658,13 @@ class Commands:
             directory = None
         c.general_script_helper(command, ext, language,
             directory=directory, regex=regex, root=p)
-    #@+node:tom.20230308193758.1: *3* @cmd c.execute-external-file
+    #@+node:tom.20230308193758.1: *4* @cmd c.execute-external-file
     #@@language python
     @cmd('execute-external-file')
     def execute_external_file(self, event: Event = None) -> None:
         r"""
         #@+<< docstring >>
-        #@+node:tom.20230308193758.2: *4* << docstring >>
+        #@+node:tom.20230308193758.2: *5* << docstring >>
         Run external files.
 
         If there is an @language directive in the top node of the file,
@@ -712,10 +715,10 @@ class Commands:
         c = self
         MAP_SETTING_NODE = 'run-external-processor-map'
         #@+others
-        #@+node:tom.20230313002434.1: *4* Declarations
+        #@+node:tom.20230313002434.1: *5* Declarations
         PREFERRED_TERMINALS = ('konsole', 'xfce4-terminal', 'mate-terminal',
                                'gnome-terminal', 'xterm')
-        #@+node:tom.20230308193758.3: *4* SETTINGS_HELP
+        #@+node:tom.20230308193758.3: *5* SETTINGS_HELP
         SETTINGS_HELP = r'''The data in the @data node body must have a
         PROCESSORS and an EXTENSIONS section, plus an optional TERMINAL
         section, looking like this example:
@@ -737,7 +740,7 @@ class Commands:
 
         Blank lines and lines starting with a "#" are ignored.
         '''
-        #@+node:tom.20230308193758.4: *4* extension map
+        #@+node:tom.20230308193758.4: *5* extension map
         LANGUAGE_EXTENSION_MAP = {
         '.cmd': 'batch',
         '.bat': 'batch',  # We'll get confused if a Linux program uses a .bat extension
@@ -748,7 +751,7 @@ class Commands:
         '.pyw': 'python',
         'rb': 'ruby',
         }
-        #@+node:tom.20230308193758.5: *4* processor map
+        #@+node:tom.20230308193758.5: *5* processor map
         PROCESSORS = {
         'batch': 'cmd.exe',
         'julia': 'julia',
@@ -757,7 +760,7 @@ class Commands:
         'ruby': 'ruby',
         'shellscript': 'bash',
         }
-        #@+node:tom.20230308193758.6: *4* get_external_maps
+        #@+node:tom.20230308193758.6: *5* get_external_maps
         def get_external_maps() -> tuple[dict, dict, str]:
             r"""Return processor, extension maps for @data node.
 
@@ -817,7 +820,7 @@ class Commands:
                     val = keyval[1].strip()
                     active_map[key] = val  # # pylint: disable=unsupported-assignment-operation
             return processor_map, extension_map, terminal
-        #@+node:tom.20230308193758.7: *4* getExeKind
+        #@+node:tom.20230308193758.7: *5* getExeKind
         def getExeKind(pos: Position, ext: str) -> str:
             """Return the executable kind of the external file.
 
@@ -838,7 +841,7 @@ class Commands:
 
             return language
 
-        #@+node:tom.20230308193758.8: *4* getProcessor
+        #@+node:tom.20230308193758.8: *5* getProcessor
         def getProcessor(language: str, path: str, extension: str) -> str:
             """Return the name or path of a program able to run our external program."""
             processor = ''
@@ -858,7 +861,7 @@ class Commands:
                 if not proc:
                     processor = ''
             return processor
-        #@+node:tom.20230308193758.9: *4* Get Windows File Associations
+        #@+node:tom.20230308193758.9: *5* Get Windows File Associations
         def get_win_assoc(extension: str) -> str:
             """Return Windows association for given file extension, or ''.
 
@@ -893,7 +896,7 @@ class Commands:
                 return ''
             prog_str = ftype_str.split('=')[1]
             return prog_str.split('"')[1]
-        #@+node:tom.20230308193758.10: *4* getShell
+        #@+node:tom.20230308193758.10: *5* getShell
         def getShell() -> str:
             # Prefer bash unless it is not present - we know its options' names
             shell = 'bash'
@@ -902,9 +905,9 @@ class Commands:
                 # Need bare shell name, not whole path
                 shell = os.environ['SHELL'].split('/')[-1]
             return shell
-        #@+node:tom.20230308193758.11: *4* getTerminal
+        #@+node:tom.20230308193758.11: *5* getTerminal
         #@+others
-        #@+node:tom.20230308193758.12: *5* getTerminalFromDirectory
+        #@+node:tom.20230308193758.12: *6* getTerminalFromDirectory
         def getTerminalFromDirectory(dir: str) -> str:
             BAD_NAMES = ('xdg-terminal', 'setterm', 'ppmtoterm',
                          'koi8rxterm', 'rofi-sensible-terminal',
@@ -920,7 +923,7 @@ class Commands:
                     if bare_term not in BAD_NAMES:
                         return t
             return ''
-        #@+node:tom.20230308193758.13: *5* getCommonTerminal
+        #@+node:tom.20230308193758.13: *6* getCommonTerminal
         def getCommonTerminal(names: Union[str, list, tuple]) -> str:
             """Return a terminal name given candidate names.
 
@@ -946,7 +949,7 @@ class Commands:
                     or getTerminalFromDirectory('/usr/bin')
                     or getTerminalFromDirectory('/bin')
                     )
-        #@+node:tom.20230308193758.14: *4* getTermExecuteCmd
+        #@+node:tom.20230308193758.14: *5* getTermExecuteCmd
         def getTermExecuteCmd(terminal: str) -> str:
             """Given a terminal's name, find the command line arg to launch a program.
 
@@ -957,7 +960,7 @@ class Commands:
             EXECUTESTR = 'execute'
 
             #@+others
-            #@+node:tom.20230308193758.15: *5* get_help_message
+            #@+node:tom.20230308193758.15: *6* get_help_message
             def get_help_message(terminal: str, help_cmd: str) -> str:
                 cmd = f'{terminal} {help_cmd}'
                 # pylint: disable=subprocess-run-check
@@ -967,7 +970,7 @@ class Commands:
                     # g.es('error:', proc.stderr.decode('utf-8'))
                     return ''
                 return msg
-            #@+node:tom.20230308193758.16: *5* find_ex_arg
+            #@+node:tom.20230308193758.16: *6* find_ex_arg
             def find_ex_arg(help_msg: str) -> str:
                 for line in help_msg.splitlines():
                     if '--command' in line:
@@ -996,14 +999,14 @@ class Commands:
             else:
                 arg = '-e ' if 'xterm' in terminal else '-x '
             return arg
-        #@+node:tom.20230308193758.17: *4* checkShebang
+        #@+node:tom.20230308193758.17: *5* checkShebang
         def checkShebang(path: str) -> bool:
             """Return True if file begins with a shebang line, else False."""
             path = g.finalize(path)
             with open(path, encoding='utf-8') as f:
                 first_line = f.readline()
             return first_line.startswith('#!')
-        #@+node:tom.20230308193758.18: *4* runFile
+        #@+node:tom.20230308193758.18: *5* runFile
         def runfile(fullpath: str, processor: str, terminal: str) -> None:
             direc: str = os.path.expanduser(os.path.dirname(fullpath))
             if g.isWindows:
@@ -1066,7 +1069,7 @@ class Commands:
             runfile(path, processor, terminal)
         else:
             g.es('Cannot find an @- file', color='red')
-    #@+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
+    #@+node:vitalije.20190924191405.1: *4* @cmd execute-pytest
     @cmd('execute-pytest')
     def execute_pytest(self, event: Event = None) -> None:
         """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
@@ -1128,7 +1131,7 @@ class Commands:
             g.handleScriptException(c, p)
         finally:
             del sys.path[:2]
-    #@+node:ekr.20171123135625.4: *3* @cmd execute-script & public helpers
+    #@+node:ekr.20171123135625.4: *4* @cmd execute-script & public helpers
     @cmd('execute-script')
     def executeScript(
         self,
@@ -1204,7 +1207,7 @@ class Commands:
         finally:
             g.app.log = oldLog
             self.unredirectScriptOutput()
-    #@+node:ekr.20171123135625.5: *4* c.executeScriptHelper
+    #@+node:ekr.20171123135625.5: *5* c.executeScriptHelper
     def executeScriptHelper(self,
         args: Any,
         define_g: Any,
@@ -1238,13 +1241,13 @@ class Commands:
                 exec(script, d)
         finally:
             g.inScript = g.app.inScript = False
-    #@+node:ekr.20171123135625.6: *4* c.redirectScriptOutput
+    #@+node:ekr.20171123135625.6: *5* c.redirectScriptOutput
     def redirectScriptOutput(self) -> None:
         c = self
         if c.exists and c.config.getBool('redirect-execute-script-output-to-log-pane'):
             g.redirectStdout()  # Redirect stdout
             g.redirectStderr()  # Redirect stderr
-    #@+node:ekr.20171123135625.7: *4* c.setCurrentDirectoryFromContext
+    #@+node:ekr.20171123135625.7: *5* c.setCurrentDirectoryFromContext
     def setCurrentDirectoryFromContext(self, p: Position) -> None:
         c = self
         aList = g.get_directives_dict_list(p)
@@ -1255,13 +1258,13 @@ class Commands:
                 os.chdir(path)
             except Exception:
                 pass
-    #@+node:ekr.20171123135625.8: *4* c.unredirectScriptOutput
+    #@+node:ekr.20171123135625.8: *5* c.unredirectScriptOutput
     def unredirectScriptOutput(self) -> None:
         c = self
         if c.exists and c.config.getBool('redirect-execute-script-output-to-log-pane'):
             g.restoreStderr()
             g.restoreStdout()
-    #@+node:ekr.20080514131122.12: *3* @cmd recolor
+    #@+node:ekr.20080514131122.12: *4* @cmd recolor
     @cmd('recolor')
     def recolorCommand(self, event: Event = None) -> None:
         """Force a full recolor."""
@@ -1275,23 +1278,6 @@ class Commands:
     #@+node:ekr.20171124100654.1: *3* c.API
     # These methods are a fundamental, unchanging, part of Leo's API.
     #@+node:ekr.20091001141621.6061: *4* c.Generators
-    #@+node:ekr.20091001141621.6043: *5* c.all_nodes & all_unique_nodes
-    def all_nodes(self) -> Generator:
-        """A generator returning all vnodes in the outline, in outline order."""
-        c = self
-        for p in c.all_positions():
-            yield p.v
-
-    def all_unique_nodes(self) -> Generator:
-        """A generator returning each vnode of the outline."""
-        c = self
-        for p in c.all_unique_positions(copy=False):
-            yield p.v
-
-    # Compatibility with old code...
-
-    all_vnodes_iter = all_nodes
-    all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6044: *5* c.all_positions
     def all_positions(self, copy: bool = True) -> Generator:
         """A generator return all positions of the outline, in outline order."""
@@ -1307,9 +1293,11 @@ class Commands:
     allNodes_iter = all_positions
     safe_all_positions = all_positions
     #@+node:ekr.20191014093239.1: *5* c.all_positions_for_v
-    def all_positions_for_v(self, v: VNode, stack: list[tuple] = None) -> Generator:
+    def all_positions_for_v(self, v: VNode, stack: Optional[list[tuple[VNode, int]]] = None) -> Generator:
         """
-        Generates all positions p in this outline where p.v is v.
+        Yield all positions p in this outline such that p.v == v.
+
+        This method is much faster than brute-force searching.
 
         Should be called with stack=None.
 
@@ -1317,6 +1305,7 @@ class Commands:
 
         By Виталије Милошевић (Vitalije Milosevic).
         """
+        # Not used in Leo's core.
         c = self
 
         if stack is None:
@@ -1332,7 +1321,7 @@ class Commands:
                 if x is target_v:
                     yield i
 
-        def stack2pos(stack: list[tuple]) -> Position:
+        def stack2pos(stack: Optional[list[tuple[VNode, int]]]) -> Position:
             """Convert the stack to a position."""
             v, i = stack[-1]
             return leoNodes.Position(v, i, stack[:-1])
@@ -1367,6 +1356,23 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+    #@+node:ekr.20091001141621.6043: *5* c.all_unique_nodes
+    def all_unique_nodes(self) -> Generator:
+        """
+        Yield all unique VNodes of the outline (except c.hiddenRootNode) in no
+        particular order.
+
+        This method is about three times faster than using c.all_unique_positions.
+        """
+        c = self
+        for v in c.hiddenRootNode.alt_self_and_subtree():
+            yield v
+
+    # Compatibility with old code...
+
+    all_nodes = all_unique_nodes
+    all_vnodes_iter = all_unique_nodes
+    all_unique_vnodes_iter = all_unique_nodes
     #@+node:ekr.20091001141621.6062: *5* c.all_unique_positions
     def all_unique_positions(self, copy: bool = True) -> Generator:
         """
@@ -1411,6 +1417,43 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+    #@+node:ekr.20230813113424.1: *5* c.alt_all_positions
+    def alt_all_positions(self, copy: bool = True) -> Generator:  # copy kwarg not used.
+        """An alternative implementation of c.all_positions."""
+        c = self
+        Position = leoNodes.Position
+
+        def visit(childIndex: int, v: VNode, stack: PositionStack) -> Generator:
+            # Position.__init__ copies the stack.
+            yield Position(v, childIndex, stack)
+            stack.append((v, childIndex))
+            for child_childIndex, child_v, in enumerate(v.children):
+                yield from visit(child_childIndex, child_v, stack)
+            stack.pop()
+
+        stack: PositionStack = []
+        for i, v in enumerate(c.hiddenRootNode.children):
+            yield from visit(i, v, stack)
+    #@+node:ekr.20230813053808.1: *5* c.alt_all_unique_nodes
+    def alt_all_unique_nodes(self) -> Generator:
+        """
+        Yield all unique VNodes corresponding to c.all_unique_positions.
+
+        The following is an equivalent (much worse) generator:
+
+            for z in c.all_unique_positions():
+                yield z.v
+        """
+        c = self
+        seen: dict[str, bool] = {}
+        to_be_visited: list[VNode] = list(reversed(c.hiddenRootNode.children))
+        while to_be_visited:
+            v = to_be_visited.pop()
+            if v.gnx not in seen:
+                seen[v.gnx] = True
+                yield v
+                for child in reversed(v.children):
+                    to_be_visited.append(child)
     #@+node:ekr.20060906211747: *4* c.Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition
     def currentPosition(self) -> Position:
@@ -1883,7 +1926,320 @@ class Commands:
 
     topVnode = topPosition
     setTopVnode = setTopPosition
-    #@+node:ekr.20171124081419.1: *3* c.Check Outline...
+    #@+node:ekr.20230811051032.1: *3* c.Archive
+    #@+node:ekr.20230807171351.1: *4* c.archive
+    def archive(self, v: VNode = None) -> dict[str, Any]:
+        """
+        Return an archival dict of v and all its descendants.
+
+        If v is None, return an archive of the entire outline.
+        """
+        c = self
+
+        format = 'file' if v is None else 'copy-paste'
+
+        #@+others # define helper functions
+        #@+node:ekr.20230807120730.1: *5* c.archive: helper functions
+        def vnode_list_to_gnx_list(vnode_list: list[VNode]) -> list[str]:
+            result = [vnode_to_gnx(z) for z in vnode_list]
+            return [z for z in result if z]
+
+        def vnode_to_gnx(v: VNode) -> Optional[str]:
+            c = v.context
+            return None if v == c.hiddenRootNode else v.gnx
+        #@-others
+
+        # The keys are gnxs for all these dicts.
+        children_dict: dict[str, list[str]] = {}  # Values are lists of gnxs.
+        parents_dict: dict[str, list[str]] = {}  # Values are lists of gnxs.
+        body_dict: dict[str, list[str]] = {}  # Values are lists of body lines.
+        headline_dict: dict[str, str] = {}  # Values are headlines.
+        marks_dict: dict[str, str] = {}  # Values are '1', only for marked nodes.
+        uas_dict: dict[str, dict] = {}  # Values are json dicts.
+        was_cloned_dict: dict[str, str] = {}  # Values are '1', only for cloned nodes.
+
+        # Handle the special case here, *not* in v.alt_self_and_subtree.
+        if v is None:
+            v = c.hiddenRootNode
+            gnx = v.gnx
+            children_dict[gnx] = vnode_list_to_gnx_list(v.children)
+            parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
+            body_dict[gnx] = ['']
+            headline_dict[gnx] = ''
+
+        # Create all the dicts.
+        root = v
+        iter_ = c.all_unique_nodes if v is None else v.alt_self_and_subtree
+        for v in iter_():
+            gnx = v.gnx
+            body_dict[gnx] = g.splitLines(v._bodyString)
+            children_dict[gnx] = vnode_list_to_gnx_list(v.children)
+            headline_dict[gnx] = v._headString
+            parents_dict[gnx] = vnode_list_to_gnx_list(v.parents)
+            if format != 'file':
+                if v.isMarked():
+                    marks_dict[gnx] = '1'
+                if v.isCloned():
+                    was_cloned_dict[gnx] = '1'
+            uas = g.archive_uas(v)
+            if uas:
+                uas_dict[gnx] = uas
+        d = {
+            'bodies': body_dict,
+            'children': children_dict,
+            'format': format,  # 'file' or 'copy-paste'
+            'headlines': headline_dict,
+            'marks': marks_dict,
+            'parents': parents_dict,
+            'root': root.gnx,
+            'uas': uas_dict,
+            'was_cloned': was_cloned_dict,
+        }
+        # g.dump_archive(d, tag='c.archive')
+        return d
+    #@+node:ekr.20230812041307.1: *4* c.recompute_all_parents
+    def recompute_all_parents(self) -> None:
+        """
+        Recompute all v.parents arrays using neither positions nor v.parents ivars.
+        """
+        c = self
+        root_v = c.hiddenRootNode
+
+        # Clear all v.parents arrays.
+        root_v.parents = []
+        for v in c.alt_all_unique_nodes():
+            v.parents = []
+
+        # Loop invariant: Visit each *parent* vnode *once*.
+        #                 Child vnodes may be visited more than once.
+
+        # Visit the hidden_root.
+        for child in root_v.children:
+            child.parents.append(root_v)
+
+        # Visit all other parents.
+        for parent in c.alt_all_unique_nodes():
+            for child in parent.children:
+                child.parents.append(parent)
+    #@+node:ekr.20230810090101.1: *4* c.unarchive
+    def unarchive(self, archive: dict, root: Position, command_name: str) -> None:
+        """
+        Patch root_v from archive, a dict created by c.archive, creating all of
+        root_v's descendants as needed and updating fc.gnxDict.
+
+        The caller should already have called c.validate_archive.
+        """
+        c = self
+        root_v = root.v
+        fc = c.fileCommands
+        global_gnx_dict = fc.gnxDict  # Updated only at the end.
+        valid_command_names = (
+            'paste-node', 'paste-retaining-clones', 'paste-as-template', 'read-outline',
+        )
+
+        #@+others  # define helper funtions.
+        #@+node:ekr.20230818165719.1: *5* function: all_gnxs_in_archive
+        def all_gnxs_in_archive(archive: dict) -> list[str]:
+            """
+            Return *all* gnxs occuring anywhere in the given archive.
+
+            These gnxs do *not* necessarily occur in the outline!
+            """
+            result_set: set[str] = set()
+
+            # The keys of all inner dicts are gnxs.
+            all_dicts = (
+                archive['bodies'],
+                archive['children'],
+                archive['headlines'],
+                archive['marks'],
+                archive['parents'],
+                archive['uas'],
+                archive['was_cloned'],
+            )
+
+            # Add the outer keys.
+            for z in all_dicts:
+                for key in z.keys():
+                    result_set.add(key)
+
+            # The values of children and parents dicts are lists of gnxs.
+            for z in (archive['children'], archive['parents']):
+                for gnx in z:
+                    assert gnx in result_set, repr(gnx)
+                    for gnx2 in z[gnx]:
+                        result_set.add(gnx2)
+
+            return list(result_set)
+        #@+node:ekr.20230819100843.1: *5* function: create_parent_child_links
+        def create_parent_child_links(vnode_dict: dict[str, VNode]) -> None:
+            """Create parent/child links in *all* vnodes."""
+
+            # Pass 1: create children links.
+            for gnx, v in vnode_dict.items():
+                children = archive.get('children').get(gnx) or []
+                v.children = [vnode_dict[z] for z in children]
+
+            # Pass 2: recompute parents.
+            if command_name == 'paste-node':
+                # Just recompute the parents in root_v's subtree.
+                recompute_parents_in_tree(root_v)
+            else:
+                # We *must* recompute all parents whenever clones are involved.
+                c.recompute_all_parents()
+
+            # Immediately check.
+            if g.unitTesting:
+                g.app.debug = ['test:strict', 'test:verbose']
+                n = c.checkVnodeLinks()
+                assert n == 0, n  # c.checkVnodeLinks()
+        #@+node:ekr.20230818165723.1: *5* function: new_vnode
+        def new_vnode(gnx: str) -> VNode:
+            """Find or create the vnode with the given gnx."""
+            # Important special case.
+            if gnx == c.hiddenRootNode.gnx:
+                assert root_v == c.hiddenRootNode, f"root_v {root_v} != c.hiddenRootNode"
+                return c.hiddenRootNode
+
+            # Important special case: Make use root_v for archive's root.
+            if gnx == archive['root']:
+                return root_v
+
+            if command_name == 'read-outline':
+                # Return a new VNode *retaining* the gnx.
+                return leoNodes.VNode(c)
+
+            if command_name == 'paste-node':
+                # Return a new VNode with a *new* gnx.
+                return leoNodes.VNode(c)
+            if (
+                command_name == 'paste-retaining-clones' or
+                command_name == 'paste-as-template' and c.was_cloned_in_archive(archive, gnx)
+            ):
+                # The interesting case. We *can* use a deleted vnode.
+                if gnx in global_gnx_dict:
+                    return global_gnx_dict[gnx]
+
+            # c's outline has *never* contained a VNode with the given gnx.
+            return leoNodes.VNode(c)
+        #@+node:ekr.20230820042603.1: *5* function: overwrite_node_data
+        def overwrite_node_data(archive: dict, vnode_dict: dict) -> None:
+            """
+            Overwrite non-link data, using values from the archive.
+            """
+            for gnx, v in vnode_dict.items():
+
+                body = archive.get('bodies').get(gnx) or []
+                headline = archive.get('headlines').get(gnx) or ''
+                marks = archive.get('marks').get(gnx)
+                uas_dict = archive['uas'].get(gnx)
+
+                v._bodyString = ''.join(body)
+                v._headString = headline
+                if marks:
+                    v.setMarked()
+                if uas_dict:
+                    v.u = uas_dict
+        #@+node:ekr.20230821122338.1: *5* function: recompute_parents_in_tree
+        def recompute_parents_in_tree(root_v: VNode) -> None:
+            """
+            Recompute all v.parents arrays in root_v's subtree using neither
+            positions nor v.parents ivars.
+
+            This is valid *only* if root_v's subtree contains no clones.
+            """
+
+            # Clear all v.parents arrays except root_v's parents.
+            root_parents = root_v.parents
+            for v in root_v.alt_self_and_subtree():
+                v.parents = []
+            root_v.parents = root_parents
+
+            # Loop invariant: Visit each *parent* vnode *once*.
+            #                 Child vnodes may be visited more than once.
+
+            for parent_v in root_v.alt_self_and_subtree():
+                for child_v in parent_v.children:
+                    child_v.parents.append(parent_v)
+        #@+node:ekr.20230819101513.1: *5* function: update_gnxDict
+        def update_gnxDict() -> None:
+            """Carefully update fc.gnxDict."""
+            from leo.core.leoNodes import VNode
+            for gnx, v in global_gnx_dict.items():
+                assert isinstance(gnx, str), repr(gnx)
+                assert isinstance(v, VNode), repr(v)
+                if gnx in fc.gnxDict:
+                    assert fc.gnxDict[gnx] == v
+                else:
+                    fc.gnxDict[gnx] = v
+        #@-others
+
+        try:
+            assert command_name in valid_command_names, repr(command_name)
+            all_gnxs: list[str] = all_gnxs_in_archive(archive)
+            vnode_dict: dict[str, Optional[VNode]] = {
+                gnx: new_vnode(gnx) for gnx in all_gnxs
+            }
+            overwrite_node_data(archive, vnode_dict)
+            create_parent_child_links(vnode_dict)
+            assert(n := c.checkVnodeLinks()) == 0, n
+            update_gnxDict()
+        except Exception as e:
+            if g.unitTesting:
+                g.es_exception()
+                if 0:  # Very effective trace for debugging.
+                    print('')
+                    g.trace('Callers:', g.callers())
+                    g.dump_archive(archive, tag=f"unarchive: {command_name} root_v: {root_v.h}")
+                raise
+            g.trace(f"Invalid archive: {e}")
+            g.es_exception()
+            g.internalError(e)
+    #@+node:ekr.20230816045125.1: *4* c.validate_archive
+    def validate_archive(self, archive: dict) -> bool:
+        """Return True if c.unarchive(archive) will succeed."""
+        try:
+            # Mandatory key: 'format'.
+            assert 'format' in archive, "archive key not found: 'format'"
+            format = archive['format']
+            assert format in ('file', 'copy-paste'), f"Invalid 'format': {format!r}"
+
+            # Mandatory key: 'root'.
+            assert 'root' in archive, "archive key not found: 'root'"
+            root_gnx = archive['root']
+            assert isinstance(root_gnx, str), repr(root_gnx)
+
+            # Madatory keys whose values are dictionaries.
+            for key in ('bodies', 'children', 'headlines', 'parents', 'uas'):
+                assert key in archive, f"archive key not found: {key!r}"
+                d = archive[key]
+                assert isinstance(d, dict), f"archive {key!r} must be a python dictionary."
+                for inner_key in d:
+                    assert isinstance(inner_key, str), f"Inner key {inner_key} of {key!r} must be a string."
+
+            # Keys that are allowed only format is 'copy-paste'.
+            for key in ('marks', 'was_cloned'):
+                if format == 'file':
+                    assert key not in archive, key
+                else:
+                    assert key in archive, key
+
+            # Bodies must be lists of strings.
+            bodies = archive['bodies']
+            for key, value in bodies.items():
+                assert isinstance(value, list), f"bodies must be lists of strings: {key!r} {value!r}"
+            return True
+        except AssertionError as e:
+            g.trace(f"Invalid archive: {e}")
+            if g.unitTesting:
+                g.es_exception()
+                raise
+            return False
+    #@+node:ekr.20230815142654.1: *4* c.was_cloned_in_archive
+    def was_cloned_in_archive(self, d: dict, gnx: str) -> bool:
+        """Return True if the archive d specifies that the given gnx was cloned."""
+        return gnx in d['was_cloned']
+    #@+node:ekr.20171124081419.1: *3* c.Check outline
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
     def checkGnxs(self) -> int:
         """
@@ -1891,6 +2247,7 @@ class Commands:
         Reallocate gnx's for duplicates or empty gnx's.
         Return the number of errors found.
         """
+
         c = self
         # Keys are gnx's; values are sets of vnodes with that gnx.
         d: dict[str, set[VNode]] = {}
@@ -1902,9 +2259,8 @@ class Commands:
             v.fileIndex = ni.getNewIndex(v)
 
         count, gnx_errors = 0, 0
-        for p in c.all_positions(copy=False):
+        for v in c.alt_all_unique_nodes():
             count += 1
-            v = p.v
             gnx = v.fileIndex
             if gnx:  # gnx must be a string.
                 aSet: set[VNode] = d.get(gnx, set())
@@ -1913,7 +2269,7 @@ class Commands:
             else:
                 gnx_errors += 1
                 new_gnx(v)
-                g.es_print(f"empty v.fileIndex: {v} new: {p.v.gnx!r}", color='red')
+                g.es_print(f"empty v.fileIndex: {v} new: {v.gnx!r}", color='red')
         for gnx in sorted(d.keys()):
             aList = list(d.get(gnx))
             if len(aList) != 1:
@@ -2048,7 +2404,7 @@ class Commands:
                 g.trace("p!=p.threadNext().threadBack()")
                 return False
         return True
-    #@+node:ekr.20230723031540.1: *5* c.checkVnodeLinks & helpers
+    #@+node:ekr.20230723031540.1: *5* c.checkVnodeLinks
     def checkVnodeLinks(self) -> int:
         """
         Check all vnode links.
@@ -2061,7 +2417,7 @@ class Commands:
         c = self
 
         #@+others  # Define helpers.
-        #@+node:ekr.20230728005934.1: *6* find_errors
+        #@+node:ekr.20230728005934.1: *6* function: find_errors
         def find_errors() -> tuple[list[tuple[VNode, VNode]], list[str], int]:
             """
             Scan all vnodes for erroneous parent/child pairs.
@@ -2071,92 +2427,59 @@ class Commands:
             error_list: list[tuple[VNode, VNode]] = []
             messages: list[str] = []
             n = 0
-            for parent_v in c.all_unique_nodes():  # Avoids recursion.
-                for child_v in parent_v.children:
-                    children_n = parent_v.children.count(child_v)
-                    parents_n = child_v.parents.count(parent_v)
-                    if children_n != parents_n:
-                        error_list.append((parent_v, child_v))
-                        messages.append(
-                            'Mismatch between parent.children and child.parents\n'
-                            f"parent: {parent_v.h:30} count(parent.children) = {children_n}\n"
-                            f" child: {child_v.h:30} count(child.parents = {parents_n}")
-                        n += 1
-            return error_list, messages, n
-        #@+node:ekr.20230728010156.1: *6* fix_errors
-        def fix_errors(error_list: list[tuple[VNode, VNode]]) -> None:
-            """Fix all erroneous nodes by adding/deleting entries from v.parents."""
-            for parent_v, child_v in error_list:
-                children_n = parent_v.children.count(child_v)
-                parents_n = child_v.parents.count(parent_v)
-                if parents_n == children_n:
-                    pass  # Already fixed.
-                elif parents_n < children_n:
-                    while parents_n < children_n:
-                        # Safe.
-                        child_v.parents.append(parent_v)
-                        parents_n += 1
-                else:
-                    while children_n < parents_n:
-                        if child_v.parents:
-                            # Safe.
-                            child_v.parents.remove(parent_v)
-                            children_n += 1
-                        else:  # pragma: no cover
-                            # This could delete the child.
-                            parent_v.children.remove(child_v)
-                            parents_n += 1
-        #@+node:ekr.20230728010753.1: *6* undelete_nodes
-        def undelete_nodes(error_list: list[tuple[VNode, VNode]]) -> None:
 
-            """Restore a parent link to any node that would otherwise be deleted."""
-            seen: list[VNode] = []
-            for parent_v, child_v in error_list:
-                if not child_v.parents and child_v not in seen:  # pragma: no cover
-                    # Add child_v to *one* parent.
-                    seen.append(child_v)
-                    parent_v.children.append(child_v)
-                    child_v.parents.append(parent_v)
-        #@+node:ekr.20230728011151.1: *6* recheck
-        def recheck() -> tuple[list[tuple[VNode, VNode]], list[str], int]:
-            """
-            Rescan all vnodes to ensure that no errors remain.
+            def oops(parent_v: VNode, child_v: VNode, message_list: list[str]) -> None:
+                """Helper for error message"""
+                error_list.append((parent_v, child_v))
+                message = '\n'.join(f"{i+1}: {z}" for i, z in enumerate(message_list))
+                messages.append(
+                    f"{message}\n\n"
+                    f"parent: {parent_v.gnx} {parent_v.h}\n"
+                    f"  parent.children: {[g.dump_vnode(z) for z in parent_v.children]}\n"
+                    f"matching_children: {[g.dump_vnode(z) for z in matching_children]}\n\n"
 
-            Return (error_list, messages, n).
-            """
-            error_list: list[tuple[VNode, VNode]] = []
-            messages: list[str] = []
-            n = 0
-            for parent_v in c.all_unique_nodes():  # Avoids recursion.
+                    f" child: {child_v.gnx} {child_v.h}\n"
+                    f"   child.parents: {[g.dump_vnode(z) for z in child_v.parents]}\n"
+                    f"matching_parents: {[g.dump_vnode(z) for z in matching_parents]}\n"
+                )
+
+            all_nodes = list(c.all_unique_nodes())
+            all_nodes.append(c.hiddenRootNode)
+            for parent_v in all_nodes:
                 for child_v in parent_v.children:
-                    children_n = parent_v.children.count(child_v)
-                    parents_n = child_v.parents.count(parent_v)
-                    if children_n != parents_n:  # pragma: no cover
-                        error_list.append((parent_v, child_v))
-                        messages.append(
-                            'Error recovery failed!\n'
-                            f"parent: {parent_v.h:30} count(parent.children) = {children_n}\n"
-                            f" child: {child_v.h:30} count(child.parents = {parents_n}")
-                        n += 1
+                    matching_children = [z for z in parent_v.children if z == child_v]
+                    matching_parents = [z for z in child_v.parents if z == parent_v]
+                    local_messages = []
+                    if child_v in child_v.parents:
+                        local_messages.append('child is parent of itself')
+                    if not matching_parents:
+                        local_messages.append('parent not in child.parents')
+                    if len(matching_children) != len(matching_parents):
+                        local_messages.append('Mismatch between parent.children and child.parents')
+                    if local_messages:
+                        oops(parent_v, child_v, local_messages)
+                        n += len(local_messages)
             return error_list, messages, n
         #@-others
 
-        # For unit testing.
-        strict = 'test:strict' in g.app.debug
-        verbose = any(z in g.app.debug for z in ('test:verbose', 'gnx', 'shutdown', 'startup', 'verbose'))
+        strict = 'test:strict' in g.app.debug  # Do *not* use g.unitTesting instead!
+        verbose = any(z in g.app.debug for z in (
+            'test:verbose', 'gnx', 'shutdown', 'startup', 'verbose')
+        )
         error_list, messages, n = find_errors()
         if n == 0:
             return 0
         if verbose:  # pragma: no cover
-            print('\n')
-            g.trace(f"{len(messages)} link error{g.plural(len(messages))}:\n")
-            print('\n'.join(messages) + '\n')
+            print('')
+            g.trace(g.callers())
+            g.trace(f"{n} link error{g.plural(n)}:\n")
+            print('\n'.join(messages).rstrip())
+            g.dump_clone_info(c, tag='checkVnodeLinks')
         if strict:  # pragma: no cover
             return n
         old_n = n
-        fix_errors(error_list)
-        undelete_nodes(error_list)
-        error_list, messages, n = recheck()
+        c.recompute_all_parents()
+        error_list, messages, n = find_errors()
         if n:  # pragma: no cover
             # Report the *failure* to fix links!
             print('\n'.join(messages))
@@ -3091,7 +3414,7 @@ class Commands:
         path = os.path.expandvars(path)
         return path
     #@+node:ekr.20171124101444.1: *3* c.File
-    #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition (new)
+    #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition
     def archivedPositionToPosition(self, s: str) -> Position:
         """Convert an archived position (a string) to a position."""
         c = self
@@ -3298,23 +3621,6 @@ class Commands:
             g.app.externalFilesController.open_with(c, d)
         elif not d:
             g.trace('can not happen: no d', g.callers())
-    #@+node:ekr.20140717074441.17770: *4* c.recreateGnxDict
-    def recreateGnxDict(self) -> None:
-        """Recreate the gnx dict prior to refreshing nodes from disk."""
-        c, d = self, {}
-        # Start with the hidden-root-vnode
-        vHiddenRoot = c.hiddenRootNode
-        d[vHiddenRoot.gnx] = vHiddenRoot
-        # And fill up the with rest of the commander's VNodes.
-        for v in c.all_unique_nodes():
-            gnxString = v.fileIndex
-            if isinstance(gnxString, str):
-                d[gnxString] = v
-                if 'gnx' in g.app.debug:
-                    g.trace(c.shortFileName(), gnxString, v)
-            else:
-                g.internalError(f"no gnx for vnode: {v}")
-        c.fileCommands.gnxDict = d
     #@+node:ekr.20180508111544.1: *3* c.Git
     #@+node:ekr.20180510104805.1: *4* c.diff_file
     def diff_file(self, fn: str, rev1: str = 'HEAD', rev2: str = '') -> None:
@@ -3801,7 +4107,7 @@ class Commands:
     def contractAllHeadlines(self, event: Event = None) -> None:
         """Contract all nodes in the outline."""
         c = self
-        for v in c.all_nodes():
+        for v in c.all_unique_nodes():
             v.contract()
             v.expandedPositions = []  # #2571
         if c.hoistStack:
@@ -4152,21 +4458,10 @@ class Commands:
         return current != c.rootPosition()
     #@+node:ekr.20031218072017.2974: *6* c.canPasteOutline
     def canPasteOutline(self, s: str = None) -> bool:
-        # c = self
+        """Return True if s (or the clipboard) contains text that may be pasted."""
         if not s:
             s = g.app.gui.getTextFromClipboard()
-        # check for JSON
-        if s and s.lstrip().startswith("{"):
-            try:
-                d = json.loads(s)
-                if not ('vnodes' in d and 'tnodes' in d):
-                    return False
-            except Exception:
-                return False
-            return True
-        if s and g.match(s, 0, g.app.prolog_prefix_string):
-            return True
-        return False
+        return bool(s and g.json_string_to_dict(s)is not None)
     #@+node:ekr.20031218072017.2975: *6* c.canPromote
     def canPromote(self) -> bool:
         p = self.p

@@ -144,8 +144,9 @@ class LeoUnitTest(unittest.TestCase):
     #@+node:ekr.20230724140745.1: *4* LeoUnitTest.clean_tree
     def clean_tree(self) -> None:
         """Clear everything but the root node."""
-        p = self.root_p
-        assert p.h == 'root'
+        c = self.c
+        p = c.rootPosition()
+        p.h = 'root'
         p.deleteAllChildren()
         while p.hasNext():
             p.next().doDelete()
@@ -153,10 +154,7 @@ class LeoUnitTest(unittest.TestCase):
     def copy_node(self, is_json: bool = False) -> str:
         """Copy c.p to the clipboard."""
         c = self.c
-        if is_json:
-            s = c.fileCommands.outline_to_clipboard_json_string()
-        else:
-            s = c.fileCommands.outline_to_clipboard_string()
+        s = c.fileCommands.outline_to_clipboard_json_string()
         g.app.gui.replaceClipboardWith(s)
         return s
     #@+node:ekr.20210830151601.1: *4* LeoUnitTest.create_test_outline
@@ -211,12 +209,15 @@ class LeoUnitTest(unittest.TestCase):
                 aa:child1
             bb
             cc:child1 (clone)
+                cc:child1:child1
             cc
               cc:child1 (clone)
+                cc:child1:child1
               cc:child2
             dd
               dd:child1
                 dd:child1:child1
+                    dd:child1:child1:child1
               dd:child2
             ee
 
@@ -234,6 +235,8 @@ class LeoUnitTest(unittest.TestCase):
         cc.h = 'cc'
         cc_child1 = cc.insertAsLastChild()
         cc_child1.h = 'cc:child1'
+        cc_child1_child1 = cc_child1.insertAsLastChild()
+        cc_child1_child1.h = 'cc:child1:child1'
         cc_child2 = cc_child1.insertAfter()
         cc_child2.h = 'cc:child2'
         dd = cc.insertAfter()
@@ -244,6 +247,8 @@ class LeoUnitTest(unittest.TestCase):
         dd_child2.h = 'dd:child2'
         dd_child1_child1 = dd_child1.insertAsLastChild()
         dd_child1_child1.h = 'dd:child1:child1'
+        dd_child1_child1_child1 = dd_child1_child1.insertAsLastChild()
+        dd_child1_child1_child1.h = 'dd:child1:child1:child1'
         ee = dd.insertAfter()
         ee.h = 'ee'
         clone = cc_child1.clone()
@@ -299,26 +304,15 @@ class LeoUnitTest(unittest.TestCase):
             head_s = f"{' '*p.level()} {p.h}"
             print(f"{p.gnx:<28} {head_s:<20} body: {p.b!r}")
 
-    #@+node:ekr.20230720210931.1: *4* LeoUnitTest.dump_clone_info
-    def dump_clone_info(self, c: Cmdr, tag: str = None) -> None:
-        """Dump all clone info."""
-        print('')
-        g.trace(f"{tag or ''} {c.fileName()}")
-        print('')
-        for p in c.all_positions():
-            head_s = f"{' '*p.level()}{p.h}"
-            print(
-                f"clone? {int(p.isCloned())} id(v): {id(p.v)} gnx: {p.gnx:30}: "
-                f"{head_s:<10} parents: {p.v.parents}"
-            )
     #@+node:ekr.20220805071838.1: *4* LeoUnitTest.dump_headlines
     def dump_headlines(self, c: Cmdr, tag: str = None) -> None:  # pragma: no cover
         """Dump all headlines."""
         print('')
-        g.trace(f"{tag or ''} {c.fileName()}")
-        print('')
+        tag_s = tag + ': ' if tag else ''
+        g.trace(f"{tag_s}{c.fileName()}\n")
         for p in c.all_positions():
-            print(f"{p.gnx:25}: {' '*p.level()}{p.h}")
+            print(f"{p.gnx[-10:]} {' '*p.level()}{p.h}")
+        print('')
     #@+node:ekr.20220806170537.1: *4* LeoUnitTest.dump_string
     def dump_string(self, s: str, tag: str = None) -> None:
         if tag:

@@ -248,15 +248,15 @@ class Position:
         """Return True if two positions are not equivalent."""
         return not self.__eq__(p2)
     #@+node:ekr.20080416161551.190: *4*  p.__init__
-    def __init__(self, v: VNode, childIndex: int = 0, stack: Optional[list] = None) -> None:
+    def __init__(self, v: VNode, childIndex: int = 0, stack: Optional[list[tuple[VNode, int]]] = None) -> None:
         """Create a new position with the given childIndex and parent stack."""
         self._childIndex = childIndex
         self.v = v
         # Stack entries are tuples (v, childIndex).
-        if stack:
-            self.stack = stack[:]  # Creating a copy here is safest and best.
-        else:
+        if stack is None:
             self.stack = []
+        else:
+            self.stack = stack[:]  # Creating a copy here is safest and best.
         g.app.positions += 1
     #@+node:ekr.20091210082012.6230: *4* p.__ge__ & __le__& __lt__
     def __ge__(self, other: Any) -> bool:
@@ -321,52 +321,6 @@ class Position:
         return f"<pos {id(p)} [{len(p.stack)}] None>"
 
     __repr__ = __str__
-    #@+node:ekr.20230726063237.1: *4* p.archive
-    def archive(self) -> dict[str, Any]:
-        """Return a json-like archival dictionary for p/v.unarchive."""
-        p = self
-        c = p.v.context
-
-        # Create an *initial* list of all vnodes in p.self_and_subtree.
-        all_unique_vnodes: list[VNode] = []
-        for p in p.self_and_subtree():
-            if p.v not in all_unique_vnodes:
-                all_unique_vnodes.append(p.v)
-
-        def ref(v: VNode) -> Optional[str]:
-            if v == c.hiddenRootNode:
-                return None
-            if v.gnx not in all_unique_vnodes:
-                all_unique_vnodes.append(v.gnx)
-            return v.gnx
-
-        parents_dict: dict[str, list[str]] = {}
-        for p2 in p.self_and_subtree():
-            v = p2.v
-            parents_list = [ref(z) for z in v.parents]
-            parents_dict[v.gnx] = [z for z in parents_list if z]
-
-        children_dict: dict[str, list[str]] = {}
-        for p2 in p.self_and_subtree():
-            v = p2.v
-            childrens_list = [ref(z.gnx) for z in v.children]
-            children_dict[v.gnx] = [z for z in childrens_list if z]
-
-        marks_dict: dict[str, str] = {}
-        for v in all_unique_vnodes:
-            marks_dict[v.gnx] = str(int(v.isMarked()))
-
-        uas_dict: dict[str, dict] = {}
-        for v in all_unique_vnodes:
-            uas_dict[v.gnx] = v.archive_ua()  # To do.
-
-        return {
-            'vnodes': all_unique_vnodes,
-            'parents': parents_dict,
-            'children': children_dict,
-            'marks': marks_dict,
-            'uAs': uas_dict,
-        }
     #@+node:ekr.20061006092649: *4* p.archivedPosition
     def archivedPosition(self, root_p: Optional[Position] = None) -> list[int]:
         """Return a representation of a position suitable for use in .leo files."""
@@ -468,7 +422,38 @@ class Position:
                 s = s[:i] + '\\' + s[i:]
             array.append(s)
         return '\n'.join(array)
-    #@+node:ekr.20091001141621.6060: *3* p.generators
+    #@+node:ekr.20091001141621.6060: *3* p.Generators
+    #@+node:ekr.20230813172128.1: *4* p.alt_self_and_subtree
+    def alt_self_and_subtree(self, copy: bool = True) -> Generator:  # copy kwarg not used.
+        """An alternative implementation of c.all_positions."""
+        p = self
+
+        def visit(childIndex: int, v: VNode, stack: list[tuple[VNode, int]]) -> Generator:
+            # Position.__init__ copies the stack.
+            yield Position(v, childIndex, stack)
+            stack.append((v, childIndex))
+            for child_childIndex, child_v, in enumerate(v.children):
+                yield from visit(child_childIndex, child_v, stack)
+            stack.pop()
+
+        yield p.copy()
+        for i, v in enumerate(p.v.children):
+            yield from visit(i, v, p.stack)
+    #@+node:ekr.20230813173841.1: *4* p.alt_subtree
+    def alt_subtree(self, copy: bool = True) -> Generator:  # copy kwarg not used.
+        """An alternative implementation of c.all_positions."""
+        p = self
+
+        def visit(childIndex: int, v: VNode, stack: list[tuple[VNode, int]]) -> Generator:
+            # Position.__init__ copies the stack.
+            yield Position(v, childIndex, stack)
+            stack.append((v, childIndex))
+            for child_childIndex, child_v, in enumerate(v.children):
+                yield from visit(child_childIndex, child_v, stack)
+            stack.pop()
+
+        for i, v in enumerate(p.v.children):
+            yield from visit(i, v, p.stack)
     #@+node:ekr.20091001141621.6055: *4* p.children
     def children(self, copy: bool = True) -> Generator:
         """Yield all child positions of p."""
@@ -1800,7 +1785,7 @@ class Position:
     nosentinels = property(
         __get_nosentinels,  # __set_nosentinels
         doc="position property returning the body text without sentinels")
-    #@+node:ekr.20160129073222.1: *4* p.u Property
+    #@+node:ekr.20160129073222.1: *4* p.u property
     def __get_u(self) -> Any:
         p = self
         return p.v.u
@@ -2055,9 +2040,9 @@ class VNode:
         # To make VNode's independent of Leo's core,
         # wrap all calls to the VNode ctor::
         #
-        #   def allocate_vnode(c,gnx):
+        #   def allocate_vnode(c, gnx):
         #       v = VNode(c)
-        #       g.app.nodeIndices.new_vnode_helper(c,gnx,v)
+        #       g.app.nodeIndices.new_vnode_helper(c, gnx, v)
         g.app.nodeIndices.new_vnode_helper(context, gnx, self)
         assert self.fileIndex, g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
@@ -2083,10 +2068,6 @@ class VNode:
             print(f"parents: {g.listToString(v.parents)}")
         if v.children:
             print(f"children: {g.listToString(v.children)}")
-    #@+node:ekr.20230728062638.1: *4* v.archive_uas
-    def archive_uas(self) -> dict[str, dict]:
-        """To do: return a json-like dict of all uas."""
-        return {}
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
     def findAtFileName(self, names: tuple, h: Optional[str] = None) -> str:
@@ -2261,6 +2242,49 @@ class VNode:
         for child in v.children:
             v2.children.append(child.copyTree(copyMarked))
         return v2
+    #@+node:ekr.20230808052030.1: *3* v.Generators
+    #@+node:ekr.20230808052041.1: *4* v.alt_self_and_subtree
+    def alt_self_and_subtree(self) -> Generator:
+        """
+        Yield v itself and all descendant vnodes, without duplicates.
+
+        An edge case: never yield the hidden root node.
+        """
+        v = self
+        c = v.context
+        seen: dict[str, bool] = {}
+        to_be_visited = list(set(v.children))
+        if v != c.hiddenRootNode:
+            seen[v.gnx] = True
+            yield v
+        while to_be_visited:
+            v = to_be_visited.pop()
+            if v.gnx not in seen:
+                seen[v.gnx] = True
+                yield v
+                for child in v.children:
+                    if child.gnx not in seen:
+                        to_be_visited.append(child)
+    #@+node:ekr.20230809044102.1: *4* v.alt_self_and_parents
+    def alt_self_and_parents(self) -> Generator:
+        """Yield v and all parents of v and v.parents."""
+        v = self
+        c = self.context
+        seen: dict[str, bool] = {
+            c.hiddenRootNode.gnx: True,  # Never add the hidden root VNode.
+        }
+        to_be_visited = list(set(v.parents))
+        if v != c.hiddenRootNode:
+            seen[v.gnx] = True
+            yield v
+        while to_be_visited:
+            v = to_be_visited.pop()
+            if v.gnx not in seen:
+                seen[v.gnx] = True
+                yield v
+                for parent in v.parents:
+                    if parent.gnx not in seen:
+                        to_be_visited.append(parent)
     #@+node:ekr.20031218072017.3359: *3* v.Getters
     #@+node:ekr.20031218072017.3378: *4* v.bodyString
     def bodyString(self) -> str:
@@ -2513,24 +2537,9 @@ class VNode:
             pass
     #@+node:ekr.20191213161023.1: *4* v.setAllAncestorAtFileNodesDirty
     def setAllAncestorAtFileNodesDirty(self) -> None:
-        """
-        Original idea by Виталије Милошевић (Vitalije Milosevic).
-
-        Modified by EKR.
-        """
+        """Original idea by Виталије Милошевић (Vitalije Milosevic)."""
         v = self
-        seen: set[VNode] = set([v.context.hiddenRootNode])
-
-        def v_and_parents(v: VNode) -> Generator:
-            if v in seen:
-                return
-            seen.add(v)
-            yield v
-            for parent_v in v.parents:
-                if parent_v not in seen:
-                    yield from v_and_parents(parent_v)
-
-        for v2 in v_and_parents(v):
+        for v2 in v.alt_self_and_parents():
             if v2.isAnyAtFileNode():
                 v2.setDirty()
     #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString

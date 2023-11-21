@@ -20,6 +20,7 @@ import glob
 import importlib
 import inspect
 import io
+import json
 import operator
 import os
 from pathlib import Path
@@ -35,12 +36,12 @@ import textwrap
 import time
 import traceback
 import types
-from typing import Any, Generator, Iterable, Optional, Sequence, Union, TYPE_CHECKING
+from typing import Any, Iterable, Optional, Sequence, Union, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse
 
-# Leo never imports any other Leo module.
+# This module must never import any other Leo module at the top level.
 
 # Third-party tools.
 import webbrowser
@@ -60,6 +61,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     Event = Any
 #@-<< leoGlobals annotations >>
+#@+<< leoGlobals switch >>
+#@+node:ekr.20230807123041.1: ** << leoGlobals switch >>
+# Temporary switch.
+json_leo_swith = False  # True: read/write json format .leo files.
+#@-<< leoGlobals switch >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.9'
@@ -350,6 +356,107 @@ app: Any = None  # The singleton app object. Set by runLeo.py.
 inScript = False  # A synonym for app.inScript
 unitTesting = False  # A synonym for app.unitTesting.
 #@+others
+#@+node:ekr.20230801015325.1: ** g.Archive
+# New in Leo 6.7.5. Leo uses JSON
+# - For all copy/paste operations.
+# - When writing .leo files.
+#@+node:ekr.20230728062638.1: *3* g.archive_uas
+def archive_uas(v: VNode) -> dict:
+    """Return a json-like dict of all uas."""
+    d = getattr(v, 'unknownAttributes', None)
+    trace = any(z in g.app.debug for z in ('save', 'test:v_archive_uas'))
+    if d and isinstance(d, dict):
+        # Prevalidate all inner dictionaries.
+        result_d = {}
+        for key, value in d.items():
+            inner_d = d[key]
+            inner_result_d = {}
+            if inner_d and isinstance(inner_d, dict):
+                for inner_key, inner_value in inner_d.items():
+                    if g.is_valid_json({inner_key: inner_value}):
+                        inner_result_d[inner_key] = inner_value
+                    elif trace:
+                        g.trace(
+                            f"In outer dict: key: {key!r}. "
+                            'Ignoring inner invalid key/value: '
+                            f"{inner_key!r}: {inner_value.__class__.__name__}")
+                if inner_result_d:
+                    result_d[key] = inner_result_d
+        if result_d and g.is_valid_json(result_d):
+            return result_d
+        if result_d:
+            message = f"Can not happen: invalid result_d: {g.objToString(result_d)}"
+            if trace:
+                raise ValueError(message)
+            print(message)
+    return None
+#@+node:ekr.20230807120727.1: *3* g.dump_archive
+def dump_archive(d: dict, tag: str = None) -> None:
+    """
+    Dump the archive in a more readable format, showing corrsponding headlines.
+
+    """
+    tag_s = f" {tag}" if tag else ''
+    print(f"\nDump of archive:{tag_s}...\n")
+
+    if 0:  # Reasonable, but does not resolve gnxs to headlines.
+        print(json.dumps(d, indent=2, sort_keys=True))
+        return
+
+    bodies = d['bodies']
+    children = d['children']
+    headlines = d['headlines']
+    marks = d['marks']
+    parents = d['parents']
+    root = d['root']
+    uas = d['uas']
+    was_cloned = d['was_cloned']
+
+    def gnx_to_headline(gnx: str) -> str:
+        return headlines[gnx] if gnx in headlines else '<no headline>'
+
+    print('headlines')
+    for gnx, headline in headlines.items():
+        print(f"  {gnx:>40} {headline}")
+
+    print('\nbodies:')
+    i = 0
+    for gnx, body in bodies.items():
+        print(f" body {i} lines: {len(body)} {gnx_to_headline(gnx)}")
+        i += 1
+
+    print('\nparents:')
+    i = 0
+    for gnx, parents_list in parents.items():
+        parents_list_headlines = [gnx_to_headline(gnx) for gnx in parents_list]
+        parents_list_s = g.objToString(parents_list_headlines, indent=2).rstrip()
+        print(f"  parent {i}: {gnx_to_headline(gnx)} {parents_list_s}")
+        i += 1
+
+    print('\nchildren:')
+    i = 0
+    for gnx, child_list in children.items():
+        child_list_headlines = [gnx_to_headline(gnx) for gnx in child_list]
+        child_list_s = g.objToString(child_list_headlines, indent=2).rstrip()
+        print(f"  child {i}: {gnx_to_headline(gnx)} {child_list_s}")
+        i += 1
+
+    print('\nmarks:')
+    for gnx in marks:
+        print(f"  Marked: {gnx_to_headline(gnx)}")
+
+    print(f"\nroot: {gnx_to_headline(root)}")
+
+    print('\nuas:')
+    for gnx, ua in uas.items():
+        # uas_s = g.objToString(ua, indent=2).rstrip()
+        print(f"  {gnx:28} {gnx_to_headline(gnx)}")
+
+    print('\nwas_cloned')
+    for gnx in was_cloned:
+        print(f"  Was cloned: {gnx_to_headline(gnx)}")
+
+    print('')
 #@+node:ekr.20201211182722.1: ** g.Backup
 #@+node:ekr.20201211182659.1: *3* g.standard_timestamp
 def standard_timestamp() -> str:
@@ -2246,7 +2353,9 @@ def pdb(message: str = '') -> None:
     breakpoint()  # New in Python 3.7.
 #@+node:ekr.20050819064157: *4* g.objToString & aliases
 def objToString(obj: Any, *, indent: int = 0, tag: str = None, width: int = 120) -> str:
-    """Pretty print any Python object to a string."""
+    """
+    Dump a Python object using pprint.pformat only as a fallback.
+    """
     if isinstance(obj, dict):
         if obj:
             result_list = ['{\n']
@@ -2254,10 +2363,9 @@ def objToString(obj: Any, *, indent: int = 0, tag: str = None, width: int = 120)
             for key in sorted(obj):
                 pad_s = ' ' * max(0, pad - len(key))
                 result_list.append(f"  {pad_s}{key}: {obj.get(key)}\n")
-            result_list.append('}')
-            result = ''.join(result_list)
+            result_list.append('}\n')
         else:
-            result = '{}'
+            result_list = ['{}']
     elif isinstance(obj, (list, tuple)):
         if obj:
             # Return the enumerated lines of the list.
@@ -2265,23 +2373,31 @@ def objToString(obj: Any, *, indent: int = 0, tag: str = None, width: int = 120)
             for i, z in enumerate(obj):
                 result_list.append(f"  {i:4}: {z!r}\n")
             result_list.append(']\n' if isinstance(obj, list) else ')\n')
-            result = ''.join(result_list)
         else:
-            result = '[]' if isinstance(obj, list) else '()'
+            result_list = ['[]\n' if isinstance(obj, list) else '()\n']
     elif not isinstance(obj, str):
         result = pprint.pformat(obj, indent=indent, width=width)
         # Put opening/closing delims on separate lines.
         if result.count('\n') > 0 and result[0] in '([{' and result[-1] in ')]}':
-            result = f"{result[0]}\n{result[1:-2]}\n{result[-1]}"
+            result_list = [
+                f"{result[0]}\n",
+                f"{result[1:-2]}\n",
+                f"{result[-1]}\n",
+            ]
+        else:
+            result_list = [result]
     elif '\n' not in obj:
-        result = repr(obj)
+        result_list = [repr(obj)]
     else:
         # Return the enumerated lines of the string.
-        lines = ''.join([
+        result_list = [
             f"  {i:4}: {z!r}\n" for i, z in enumerate(g.splitLines(obj))
-        ])
-        result = f"[\n{lines}]\n"
-    return f"{tag.strip()}: {result}" if tag and tag.strip() else result
+        ]
+    indent_s = ' ' * indent
+    result_s = ''.join(f"{indent_s}{z}" for z in result_list)
+    if tag and tag.strip():
+        return f"{tag}: {result_s.lstrip()}"
+    return result_s
 
 toString = objToString
 dictToString = objToString
@@ -2441,6 +2557,67 @@ def printDiffTime(message: str, start: float) -> float:
 
 def timeSince(start: float) -> str:
     return f"{time.time()-start:5.2f} sec."
+#@+node:ekr.20230821105641.1: *3* g.clone_info_to_list
+def clone_info_to_list(c: Cmdr, tag: str = None) -> list[str]:
+    """
+    Return a list of strings corresponding to g.dump_info.
+
+    Sort parent lists but *not* children lists.
+    """
+    # Used in unit tests.
+    result = []
+    tag_s = tag + ': ' if tag else ''
+    result.append(f"{tag_s}{g.shortFileName(c.fileName())}\n")
+    result.append(f"clone{' '*3}gnx{' '*3}headline{' '*11}parents{' '*13}children")
+    for p in c.all_positions():
+        cloned_s = ' yes' if p.isCloned() else ''
+        head_s = f"{' '*p.level()}{p.h}"
+        children_list = [dump_vnode(z) for z in p.v.children]
+        parents_list = list(sorted([dump_vnode(z) for z in p.v.parents]))
+        parents_s = '[' + ', '.join(parents_list) + ']'
+        children_s = '[' + ', '.join(children_list) + ']'
+        result.append(
+            f"{cloned_s:>4}"
+            f"{' '*3}{g.dump_gnx(p.v):5}"
+            f"{' '*2}{head_s:<18} {parents_s:<20}"
+            f"{children_s}"
+        )
+    return result
+#@+node:ekr.20230720210931.1: *3* g.dump_clone_info
+def dump_clone_info(c: Cmdr, tag: str = None) -> None:
+    """
+    Print clone info, sorting parents list but *not* children lists.
+    """
+    print('')
+    tag_s = tag + ': ' if tag else ''
+    g.trace(f"{tag_s}{g.shortFileName(c.fileName())}\n")
+    print(f"clone{' '*3}gnx{' '*3}headline{' '*11}parents{' '*13}children")
+    for p in c.all_positions():
+        cloned_s = ' yes' if p.isCloned() else ''
+        head_s = f"{' '*p.level()}{p.h}"
+        children_list = [dump_vnode(z) for z in p.v.children]
+        parents_list = list(sorted([dump_vnode(z) for z in p.v.parents]))
+        parents_s = '[' + ', '.join(parents_list) + ']'
+        children_s = '[' + ', '.join(children_list) + ']'
+        print(
+            f"{cloned_s:>4}"
+            f"{' '*3}{g.dump_gnx(p.v):5}"
+            f"{' '*2}{head_s:<18} {parents_s:<20}"
+            f"{children_s}"
+        )
+
+#@+node:ekr.20230812112043.1: *3* g.dump_gnx
+def dump_gnx(v: VNode) -> str:
+    return '.' + v.gnx.split('.')[2]
+
+#@+node:ekr.20230812112044.1: *3* g.dump_vnode
+def dump_vnode(v: VNode) -> str:
+    c = v.context
+    return (
+        'hidden' if v == c.hiddenRootNode
+        # else f"{v.gnx[-10:]}: {v.h}"
+        else f"{dump_gnx(v)}:{v.h}"
+    )
 #@+node:ekr.20031218072017.1380: ** g.Directives
 # Weird pylint bug, activated by TestLeoGlobals class.
 # Disabling this will be safe, because pyflakes will still warn about true redefinitions
@@ -2618,20 +2795,6 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
     3. Search p's "extended parents" for an unambiguous @language directive.
     """
     v0 = p.v
-    seen: set[VNode]
-
-    # The same generator as in v.setAllAncestorAtFileNodesDirty.
-    # Original idea by Виталије Милошевић (Vitalije Milosevic).
-    # Modified by EKR.
-
-    def v_and_parents(v: VNode) -> Generator:
-        if v in seen:
-            return
-        seen.add(v)
-        yield v
-        for parent_v in v.parents:
-            if parent_v not in seen:
-                yield from v_and_parents(parent_v)
 
     def find_language(v: VNode, phase: int) -> Optional[str]:
         """
@@ -2658,18 +2821,15 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
     language = g.findFirstValidAtLanguageDirective(p.b)
     if language:
         return language
-    #
-    # Phase 1: search only @<file> nodes: #2308.
-    # Phase 2: search all nodes.
+
     for phase in (1, 2):
-        # Search direct parents.
+        # Search *direct* parents.
         for p2 in p.self_and_parents(copy=False):
             language = find_language(p2.v, phase)
             if language:
                 return language
         # Search all extended parents.
-        seen = set([v0.context.hiddenRootNode])
-        for v in v_and_parents(v0):
+        for v in v0.alt_self_and_parents():
             language = find_language(v, phase)
             if language:
                 return language
@@ -5264,6 +5424,54 @@ def stripBlankLines(s: str) -> str:
         elif line[j] == '\n':
             lines[i] = '\n'
     return ''.join(lines)
+#@+node:ekr.20230807120828.1: ** g.JSON
+#@+node:ekr.20230801025822.1: *3* class g.SetJsonEncoder
+class SetJSONEncoder(json.JSONEncoder):
+    """
+    A class to encode json in archive files.
+    """
+    def default(self, obj: Any) -> Any:
+        if isinstance(obj, set):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)
+#@+node:ekr.20230810090150.1: *3* g.is_valid_json
+def is_valid_json(obj: Any, warn: bool = False) -> bool:
+    """Return True if the given object can be converted to JSON."""
+    try:
+        json.dumps(obj, skipkeys=True, cls=g.SetJSONEncoder)
+        return True
+    except Exception as e:
+        if warn:
+            g.trace(f"Unexpected exception: {e}")
+            g.es_exception()
+        return False
+
+#@+node:ekr.20230810090150.2: *3* g.json_string_to_dict
+def json_string_to_dict(s: str, warn: bool = False) -> Optional[dict]:
+    try:
+        return json.loads(s)
+    except Exception as e:
+        if warn:
+            g.trace(f"Unexpected exception: {e}", g.callers())
+            g.es_exception()
+        return None
+
+#@+node:ekr.20230810090150.3: *3* g.obj_to_json_string
+def obj_to_json_string(obj: Any, warn: bool = False) -> Optional[str]:
+    """
+    Convert the given object to string using json.dumps.
+
+    This function specifies the format of json-based .leo files.
+
+    Return None if there is an error.
+    """
+    try:
+        return json.dumps(obj, indent=2, sort_keys=True)
+    except Exception as e:
+        if warn:
+            g.trace(f"Unexpected exception: {e}")
+            g.es_exception()
+        return None
 #@+node:ekr.20031218072017.3108: ** g.Logging & Printing
 # g.es and related print to the Log window.
 # g.pr prints to the console.
@@ -5490,20 +5698,27 @@ def goto_last_exception(c: Cmdr) -> None:
             # A script.
             c.goToScriptLineNumber(line_number, c.p)
         else:
-            for p in c.all_nodes():
+            for p in c.all_unique_nodes():
                 if p.isAnyAtFileNode() and p.h.endswith(file_name):
                     c.goToLineNumber(line_number)
                     return
     else:
         g.trace('No previous exception')
 #@+node:ekr.20100126062623.6240: *3* g.internalError
+internalError_dict: dict[str, bool] = {}
+
 def internalError(*args: Any) -> None:
     """Report a serious internal error in Leo."""
-    callers = g.callers(20).split(',')
+    callers_s = g.callers(20)
+    callers = callers_s.split(',')
     caller = callers[-1]
+    key = caller  # f"{caller}:{callers_s}"
+    if key in g.internalError_dict:
+        return
+    g.internalError_dict[key] = True
     g.error('\nInternal Leo error in', caller)
     g.es_print(*args)
-    g.es_print('Called from', ', '.join(callers[:-1]))
+    g.printObj(callers[:-1], tag='Called from')
     g.es_print('Please report this error to Leo\'s developers', color='red')
 #@+node:ekr.20150127060254.5: *3* g.log_to_file
 def log_to_file(s: str, fn: str = None) -> None:

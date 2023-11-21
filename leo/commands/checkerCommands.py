@@ -95,6 +95,23 @@ def check_nodes(event: Event) -> None:
       Default: None.
     """
     CheckNodes().check(event)
+#@+node:ekr.20230807081137.1: *3* check-uas
+@g.command('check-uas')
+@g.command('show-uas')
+@g.command('uas-check')
+def check_uas(event: Event) -> None:
+    c = event and event.get('c')
+    if not c:
+        return
+    old_debug = g.app.debug
+    g.app.debug = ['uas']  # Enable traces in g.archive_uas.
+    try:
+        for v in c.all_unique_nodes():
+            d = g.archive_uas(v)
+            if d:
+                g.dump_archive(d, tag=f"uAs for {v.h}...")
+    finally:
+        g.app.debug = old_debug
 #@+node:ekr.20190608084751.1: *3* find-long-lines
 @g.command('find-long-lines')
 def find_long_lines(event: Event) -> None:

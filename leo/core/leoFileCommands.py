@@ -63,13 +63,6 @@ def dump_gnx_dict(event: Event) -> None:
         return
     d = c.fileCommands.gnxDict
     g.printObj(d, tag='gnxDict')
-#@+node:felix.20220618222639.1: ** class SetEncoder
-class SetJSONEncoder(json.JSONEncoder):
-    # Used to encode JSON in leojs files
-    def default(self, obj: Any) -> Any:
-        if isinstance(obj, set):
-            return list(obj)
-        return json.JSONEncoder.default(self, obj)
 #@+node:ekr.20060918164811: ** class BadLeoFile
 class BadLeoFile(Exception):
 
@@ -794,41 +787,37 @@ class FileCommands:
     def getLeoOutlineFromClipboard(self, s: str) -> Optional[Position]:
         """Read a Leo outline from string s in clipboard format."""
         c = self.c
-        current = c.p
-        if not current:
+        if not c.p:
             g.trace('no c.p')
             return None
-        self.initReadIvars()
 
-        # Save and clear gnxDict.
-        oldGnxDict = self.gnxDict
-        self.gnxDict = {}
-        if s.lstrip().startswith("{"):
-            # Maybe JSON
-            hidden_v = FastRead(c, self.gnxDict).readFileFromJsonClipboard(s)
-        else:
-            # This encoding must match the encoding used in outline_to_clipboard_string.
-            s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s_bytes)
-        v = hidden_v.children[0]
-        v.parents = []
-        if not v:
-            g.es("the clipboard is not valid ", color="blue")
+        # Prevalidate the to-be-pasted archive.
+        if not s:
+            return None
+        d = g.json_string_to_dict(s)
+        if not c.validate_archive(d):
+            g.es("The clipboard archive is not valid ", color="blue")
             return None
 
-        # Create the position.
-        p = leoNodes.Position(v)
-
-        # Do *not* adjust links when linking v.
-        if current.hasChildren() and current.isExpanded():
-            p._linkCopiedAsNthChild(current, 0)
+        # Create the new position *first*.
+        if c.p.hasChildren() and c.p.isExpanded():
+            p = c.p.insertAsNthChild(0)
         else:
-            p._linkCopiedAfter(current)
-        assert not p.isCloned(), g.objToString(p.v.parents)
-        self.gnxDict = oldGnxDict
-        self.reassignAllIndices(p)
+            p = c.p.insertAfter()
+
+        if c.checkOutline() > 0:
+            g.trace('Can not happen: fc.getLeoOutlineFromClipBoard')
+            return None
+
+        # Paste into p.v
+        c.unarchive(d, root=p, command_name='paste-node')
+
+        # Defensive code: automatically correct link errors.
+        errors = c.checkOutline()
+        if errors > 0:
+            return None
+
         c.selectPosition(p)
-        self.initReadIvars()
         return p
 
     getLeoOutline = getLeoOutlineFromClipboard  # for compatibility
@@ -840,56 +829,78 @@ class FileCommands:
         if not current:
             g.trace('no c.p')
             return None
-        self.initReadIvars()
 
-        # All pasted nodes should already have unique gnx's.
+        # Prevalidate the to-be-pasted archive.
+        if not s:
+            return None
+        d = g.json_string_to_dict(s)
+        if not c.validate_archive(d):
+            g.es("The clipboard archive is not valid ", color="blue")
+            return None
+
+        # Create the new position *first*.
+        if c.p.hasChildren() and c.p.isExpanded():
+            p = c.p.insertAsNthChild(0)
+        else:
+            p = c.p.insertAfter()
+
+        if c.checkOutline() > 0:
+            g.trace('Can not happen: fc.getLeoOutlineFromClipBoardRetainingClones')
+            return None
+
+        # Init. All pasted nodes should already have unique gnx's.
+        self.initReadIvars()
         ni = g.app.nodeIndices
         for v in c.all_unique_nodes():
             ni.check_gnx(c, v.fileIndex, v)
 
-        if s.lstrip().startswith("{"):
-            # Maybe JSON
-            hidden_v = FastRead(c, self.gnxDict).readFileFromJsonClipboard(s)
-        else:
-            # This encoding must match the encoding used in outline_to_clipboard_string.
-            s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            hidden_v = FastRead(c, self.gnxDict).readFileFromClipboard(s_bytes)
+        # Paste into p.v
+        c.unarchive(d, root=p, command_name='paste-retaining-clones')
 
-        v = hidden_v.children[0]
-        v.parents.remove(hidden_v)
-        if not v:
-            g.es("the clipboard is not valid ", color="blue")
-            return None
-
-        # Create the position.
-        p = leoNodes.Position(v)
-
-        # Do *not* adjust links when linking v.
-        if current.hasChildren() and current.isExpanded():
-            if not self.checkPaste(current, p):
-                return None
-            p._linkCopiedAsNthChild(current, 0)
-        else:
-            if not self.checkPaste(current.parent(), p):
-                return None
-            p._linkCopiedAfter(current)
-
-        # Automatically correct any link errors!
+        # Defensive code: automatically correct link errors.
         errors = c.checkOutline()
         if errors > 0:
             return None
+
         c.selectPosition(p)
         self.initReadIvars()
         return p
-    #@+node:ekr.20180425034856.1: *5* fc.reassignAllIndices
-    def reassignAllIndices(self, p: Position) -> None:
-        """Reassign all indices in p's subtree."""
-        ni = g.app.nodeIndices
-        for p2 in p.self_and_subtree(copy=False):
-            v = p2.v
-            index = ni.getNewIndex(v)
-            if 'gnx' in g.app.debug:
-                g.trace('**reassigning**', index, v)
+    #@+node:ekr.20230815140104.1: *5* fc.getLeoOutlineFromClipBoardAsTemplate
+    def getLeoOutlineFromClipboardAsTemplate(self, s: str) -> Optional[Position]:
+        """Read a Leo outline from string s in clipboard format."""
+        c = self.c
+        if not c.p:
+            g.trace('no c.p')
+            return None
+
+        # Prevalidate the to-be-pasted archive.
+        if not s:
+            return None
+        d = g.json_string_to_dict(s)
+        if not c.validate_archive(d):
+            g.es("The clipboard archive is not valid ", color="blue")
+            return None
+
+        # Create the new position *first*.
+        if c.p.hasChildren() and c.p.isExpanded():
+            p = c.p.insertAsNthChild(0)
+        else:
+            p = c.p.insertAfter()
+
+        if c.checkOutline() > 0:
+            g.trace('Can not happen: fc.getLeoOutlineFromClipBoardAsTemplate')
+            return None
+
+        # Paste into p.v
+        c.unarchive(d, root=p, command_name='paste-as-template')
+
+        # Defensive code: automatically correct link errors.
+        errors = c.checkOutline()
+        if errors > 0:
+            return None
+
+        c.selectPosition(p)
+        return p
     #@+node:ekr.20060919104836: *4* fc: Read Top-level
     #@+node:ekr.20230911045929.1: *5* fc.getAnyLeoFileByName
     def getAnyLeoFileByName(self,
@@ -1526,7 +1537,7 @@ class FileCommands:
             self.usingClipboard = True
             if self.c.config.getBool('json-outline-clipboard', default=False):
                 d = self.leojs_outline_dict(p or self.c.p)
-                s = json.dumps(d, indent=2, cls=SetJSONEncoder)
+                s = json.dumps(d, indent=2, cls=g.SetJSONEncoder)
             else:
                 self.outputFile = io.StringIO()
                 self.putProlog()
@@ -1548,22 +1559,11 @@ class FileCommands:
         """
         Return a JSON string suitable for pasting to the clipboard.
         """
-        # Save
-        tua = self.descendentTnodeUaDictList
-        vua = self.descendentVnodeUaDictList
-        gnxDict = self.gnxDict
-        vnodesDict = self.vnodesDict
-        try:
-            self.usingClipboard = True
-            d = self.leojs_outline_dict(p or self.c.p)  # Checks for illegal ua's
-            s = json.dumps(d, indent=2, cls=SetJSONEncoder)
-        finally:  # Restore
-            self.descendentTnodeUaDictList = tua
-            self.descendentVnodeUaDictList = vua
-            self.gnxDict = gnxDict
-            self.vnodesDict = vnodesDict
-            self.usingClipboard = False
-        return s
+        c = self.c
+        if not p:
+            p = c.p
+        d = c.archive(p.v)
+        return g.obj_to_json_string(d, warn=True)
     #@+node:ekr.20040324080819.1: *5* fc.outline_to_xml_string
     def outline_to_xml_string(self) -> str:
         """Write the outline in .leo (XML) format to a string."""
@@ -1605,7 +1605,7 @@ class FileCommands:
             # Create the dict corresponding to the JSON.
             d = self.leojs_outline_dict()  # Checks for illegal ua's
             # Convert the dict to JSON.
-            json_s = json.dumps(d, indent=2, cls=SetJSONEncoder)
+            json_s = json.dumps(d, indent=2, cls=g.SetJSONEncoder)
             # Write bytes.
             f.write(bytes(json_s, self.leo_file_encoding, 'replace'))
             f.close()
@@ -1633,7 +1633,7 @@ class FileCommands:
             for p in sp.self_and_subtree():
                 if hasattr(p.v, 'unknownAttributes') and len(p.v.unknownAttributes.keys()):
                     try:
-                        json.dumps(p.v.unknownAttributes, skipkeys=True, cls=SetJSONEncoder)  # If this test passes ok
+                        json.dumps(p.v.unknownAttributes, skipkeys=True, cls=g.SetJSONEncoder)
                         uas[p.v.gnx] = p.v.unknownAttributes  # Valid UA's as-is. UA's are NOT encoded.
                     except TypeError:
                         g.trace(f"Can not serialize uA for {p.h}", g.callers(6))
@@ -1654,7 +1654,7 @@ class FileCommands:
                 if hasattr(v, 'unknownAttributes') and len(v.unknownAttributes.keys()):
                     try:
                         # If this passes, the (unencoded) uAs are valid json.
-                        json.dumps(v.unknownAttributes, skipkeys=True, cls=SetJSONEncoder)
+                        json.dumps(v.unknownAttributes, skipkeys=True, cls=g.SetJSONEncoder)
                         uas[v.gnx] = v.unknownAttributes
                     except TypeError:
                         g.trace(f"Can not serialize uA for {v.h}", g.callers(6))
