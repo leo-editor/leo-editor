@@ -3252,12 +3252,23 @@ class LoadManager:
             return
         if not lm.isLeoFile(fn):
             return
-
         # Re-read the file.
         c.fileCommands.initIvars()
-        v = fc.getAnyLeoFileByName(fn, readAtFileNodesFlag=True)
-        if not v:
-            g.error(f"Revert failed: {fn!r}")
+        try:
+            g.app.reverting = True
+            v = fc.getAnyLeoFileByName(fn, readAtFileNodesFlag=True)
+            # Report failure.
+            if not v:
+                g.error(f"Revert failed: {fn!r}")
+                return
+            # #3596: Redo all buttons.
+            sc = getattr(c, 'theScriptingController', None)
+            if sc:
+                sc.createAllButtons()
+            if not g.unitTesting:
+                g.es_print(f"Reverted {c.fileName()}")
+        finally:
+            g.app.reverting = False
     #@-others
 #@+node:ekr.20120223062418.10420: ** class PreviousSettings
 class PreviousSettings:
