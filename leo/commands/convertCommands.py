@@ -2105,7 +2105,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.move_docstrings(lines)
                 self.do_f_strings(lines)
                 self.do_ternary(lines)
-                self.do_assignment(lines)  # Do this last, so it doesn't add 'const' to inserted comments.
+                self.do_assignment(lines)  # Do this last, so it doesn't add 'let' to inserted comments.
                 s = (''.join(lines)
                     .replace('@language python', '@language rust')
                     .replace(self.kill_semicolons_flag, '\n')
@@ -2117,7 +2117,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             assignment_pat = re.compile(r'^([ \t]*)(.*?)\s+=\s+(.*)$')  # Require whitespace around the '='
 
             def do_assignment(self, lines: list[str]) -> None:
-                """Add const to all non-tuple assignments."""
+                """Add let to all non-tuple assignments."""
                 # Do this late so that we can test for the ending semicolon.
 
                 # Suppression table.
@@ -2136,7 +2136,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if m:
                         lws, lhs, rhs = m.group(1), m.group(2), m.group(3).rstrip()
                         if not any(z in lhs for z in table):
-                            lines[i] = f"{lws}const {lhs} = {rhs}\n"
+                            lines[i] = f"{lws}let {lhs} = {rhs}\n"
             #@+node:ekr.20231119103026.33: *8* py2rust.do_f_strings
             f_string_pat = re.compile(r'([ \t]*)(.*?)f"(.*?)"(.*)$')
 
@@ -2205,12 +2205,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     # Remove lines like `at, c = self, self.c`.
                     s = re.sub(
                         fr"^(\s*){self.alias}\s*,\s*c\s*=\s*this,\s*this.c\n",
-                        r'\1c = this.c\n',  # do_assignment adds const.
+                        r'\1c = this.c\n',  # do_assignment adds 'let'.
                         s,
                         flags=re.MULTILINE)
                     # Remove lines like `at, p = self, self.p`.
                     s = re.sub(fr"^(\s*){self.alias}\s*,\s*p\s*=\s*this,\s*this.p\n",
-                        r'\1p = this.p\n',  # do_assignment adds const.
+                        r'\1p = this.p\n',  # do_assignment adds 'let'.
                         s,
                         flags=re.MULTILINE)
                     # Do this last.
