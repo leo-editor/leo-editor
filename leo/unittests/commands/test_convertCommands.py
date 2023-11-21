@@ -275,22 +275,42 @@ class TestPythonToTypeRust(LeoUnitTest):
 
         x = self.x
         tests = (
+            # Test 1.
             (
-                # def indent(self, p: Position, toList: bool = False, giveWarnings: bool = True) -> Union[str, list[str]]:
-                # """Beautify a node with @language C in effect."""
-                'if not should_beautify(p):\n'
-                '    return [] if toList else ''  # #2271\n',
-
-                'if not should_beautify(p):{\n'
-                '    return [] if toList else ''  # #2271\n',
-                '}\n'
+                (
+                    'if not should_beautify(p):\n'
+                    "    return [] if toList else ''  # #2271\n"
+                ),
+                # Replace operators, but not single quotes.
+                (
+                    'if ! should_beautify(p) {\n'
+                    "    return [] if toList else ''  # #2271\n"
+                    '}\n'
+                ),
+            ),
+            # Test 2
+            (
+                (
+                    'if TYPE_CHECKING:  # pragma: no cover\n'
+                    '    from leo.core.leoCommands import Commands as Cmdr\n'
+                ),
+                (
+                    'if TYPE_CHECKING { // # pragma: no cover\n'
+                    '    from leo.core.leoCommands import Commands as Cmdr\n'
+                    '}\n'
+                ),
             ),
         )
         for test in tests:
-            source, expected = test
-            lines = [source]
-            x.do_f_strings(lines)
-            self.assertEqual(lines[-1], expected)
+            source_s, expected_s = test
+            lines = g.splitLines(source_s)
+            expected = g.splitLines(expected_s)
+            # g.printObj(lines, tag='lines')
+            # g.printObj(expected, tag='expected')
+            i = x.do_if(0, lines, m=None, p=None)  # Modifies lines in place.
+            assert i > 0
+            # g.printObj(lines, tag='result')
+            self.assertEqual(lines, expected)
     #@+node:ekr.20231121061008.3: *3* test_py2rust.test_setup
     def test_setup(self):
         c = self.c

@@ -1846,7 +1846,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lines.insert(j, f"{lws}}}\n")
             return i + 1
         #@+node:ekr.20231119103026.18: *7* py2rust.do_if
-        if1_s = r'^([ \t]*)if[ \t]+(.*):(.*?)\n'  # if cond:
+        if1_s = r'^([ \t]*)if[ \t]+(.*?):(.*?)\n'  # if cond:
         if2_s = r'^([ \t]*)if[ \t]*\((.*?)\n'  # if (
 
         if1_pat = re.compile(if1_s)
@@ -1860,8 +1860,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             m2 = self.if2_pat.match(line)
             if m1:
                 j = self.find_indented_block(i, lines, m1, p)
-                lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-                ### cond_s = cond if cond.startswith('(') else f"({cond})"
+                lws, cond, tail = m1.group(1), m1.group(2).strip(), m1.group(3).strip()
                 tail_s = f" // {tail}" if tail else ''
                 lines[i] = f"{lws}if {cond} {{{tail_s}\n"
                 self.do_operators(i, lines, p)
@@ -2054,7 +2053,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     break
                 j += 1
             return j
-
         #@+node:ekr.20231119103026.29: *7* py2rust.kill_semicolons
         kill_semicolons_flag = '  // **kill-semicolon**\n'  # Must end with a newline.
 
