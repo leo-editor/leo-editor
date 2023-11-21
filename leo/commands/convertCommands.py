@@ -1966,7 +1966,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20231119103026.24: *6* helpers
             #@+node:ekr.20231119103026.25: *7* py2rust.do_operators
             def do_operators(self, i: int, lines: list[str], p: Position) -> None:
-
+                """Replace all operators and replace single quotes with double quotes."""
                 # Regex replacements.
                 table = (
                     ('True', 'true'),
@@ -1982,6 +1982,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 )
                 for a, b in table:
                     lines[i] = re.sub(fr"\b{a}\b", b, lines[i])
+
 
             #@+node:ekr.20231119103026.26: *7* py2rust.do_semicolon
             def do_semicolon(self, i: int, lines: list[str], p: Position) -> None:
@@ -2069,6 +2070,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Munge lines in place
                 self.do_f_strings(lines)
                 self.do_ternary(lines)
+                self.replace_single_quotes(lines)
                 self.do_assignment(lines)  # Do this last, so it doesn't add 'let' to inserted comments.
                 s = (''.join(lines)
                     .replace('@language python', '@language rust')
@@ -2148,6 +2150,15 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     else:
                         i += 1
                     assert progress < i
+            #@+node:ekr.20231120201711.1: *8* py2rust.replace_single_quotes
+            def replace_single_quotes(self, lines: list[str]) -> None:
+                for i, line in enumerate(lines):
+                    n1 = line.find("'")
+                    if n1 == -1:
+                        continue
+                    n0 = line.find('//')
+                    if n0 == -1 or n0 > n1:
+                        lines[i] = lines[i].replace("'", '"')
             #@+node:ekr.20231119103026.35: *7* py2rust.pre_pass
             def pre_pass(self, s: str) -> str:
 
