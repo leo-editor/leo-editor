@@ -1881,6 +1881,14 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 k = self.find_indented_block(j, lines, m2, p)
                 lines.insert(k, f"{lws}}}\n")
                 return i + 1
+        #@+node:ekr.20231121113506.1: *7* py2rust.do_return
+        return_pat = re.compile(r'^([ \t]*)return\b(.*?)\n')
+
+        def do_return(self, i: int, lines: list[str], m: Match, p: Position) -> int:
+
+            lws, tail = m.group(1), m.group(2).strip()
+            lines[i] = f"{lws}{tail.strip()}\n"
+            return i + 1
         #@+node:ekr.20231119103026.19: *7* py2rust.do_section_ref
         section_ref_pat = re.compile(r"^([ \t]*)(\<\<.*?\>\>)\s*(.*)$")
 
