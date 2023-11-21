@@ -1846,8 +1846,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lines.insert(j, f"{lws}}}\n")
                 return i + 1
             #@+node:ekr.20231119103026.18: *7* py2rust.do_if
-            if1_s = r'^([ \t]*)if[ \t]+(.*):(.*)\n'  # if (cond):
-            if2_s = r'^([ \t]*)if[ \t]*\((.*)\n'  # if (
+            if1_s = r'^([ \t]*)if[ \t]+(.*):(.*?)\n'  # if cond:
+            if2_s = r'^([ \t]*)if[ \t]*\((.*?)\n'  # if (
 
             if1_pat = re.compile(if1_s)
             if2_pat = re.compile(if2_s)
@@ -1861,9 +1861,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if m1:
                     j = self.find_indented_block(i, lines, m1, p)
                     lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
-                    cond_s = cond if cond.startswith('(') else f"({cond})"
+                    ### cond_s = cond if cond.startswith('(') else f"({cond})"
                     tail_s = f" // {tail}" if tail else ''
-                    lines[i] = f"{lws}if {cond_s} {{{tail_s}\n"
+                    lines[i] = f"{lws}if {cond} {{{tail_s}\n"
                     self.do_operators(i, lines, p)
                     lines.insert(j, f"{lws}}}\n")
                     return i + 1
@@ -2063,46 +2063,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 """
                 for n in range(i, j):
                     lines[n] = lines[n].rstrip() + self.kill_semicolons_flag
-            #@+node:ekr.20231119103026.30: *7* py2rust.move_docstrings
-            class_or_def_pat = re.compile(r'^(\s*)(public|class)\s+([\w_]+)')
-
-            def move_docstrings(self, lines: list[str]) -> None:
-                """Move docstrings before the preceding class or def line."""
-                i = 0
-                while i < len(lines):
-                    m = self.class_or_def_pat.match(lines[i])
-                    i += 1
-                    if not m:
-                        continue
-                    # Set j to the start of the docstring.
-                    j = i
-                    while j < len(lines):
-                        if lines[j].strip():
-                            break
-                        j += 1
-                    if j >= len(lines):
-                        continue
-                    if not lines[j].strip().startswith('/**'):
-                        continue
-                    # Set k to the end of the docstring.
-                    k = j
-                    while k < len(lines) and '*/' not in lines[k]:
-                        k += 1
-                    if k >= len(lines):
-                        g.printObj(lines[i - 1 : len(lines) - 1], tag='OOPS')
-                        continue
-                    # Remove 4 blanks from the docstrings.
-                    for n in range(j, k + 1):
-                        if lines[n].startswith(' ' * 4):
-                            lines[n] = lines[n][4:]
-                    # Rearrange the lines.
-                    lines[i - 1 : k + 1] = lines[j : k + 1] + [lines[i - 1]]
-                    i = k + 1
             #@+node:ekr.20231119103026.31: *7* py2rust.post_pass & helpers
             def post_pass(self, lines: list[str]) -> str:
 
                 # Munge lines in place
-                self.move_docstrings(lines)
                 self.do_f_strings(lines)
                 self.do_ternary(lines)
                 self.do_assignment(lines)  # Do this last, so it doesn't add 'let' to inserted comments.
@@ -2174,12 +2138,12 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if m1:
                         lws, target, a, cond, b = m1.group(1), m1.group(2), m1.group(3), m1.group(4), m1.group(5)
                         lines[i] = f"{lws}// {s.strip()}\n"
-                        lines.insert(i + 1, f"{lws}{target} = {cond} ? {a} : {b};\n")
+                        lines.insert(i + 1, f"{lws}{target} = if {cond} {{{a}}} else {{{b}}};\n")
                         i += 2
                     elif m2:
                         lws, a, cond, b = m2.group(1), m2.group(2), m2.group(3), m2.group(4)
                         lines[i] = f"{lws}// {s.strip()}\n"
-                        lines.insert(i + 1, f"{lws}return {cond} ? {a} : {b};\n")
+                        lines.insert(i + 1, f"{lws}return if {cond} then {{{a}}} else {{{b}}};\n")
                         i += 2
                     else:
                         i += 1
