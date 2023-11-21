@@ -1597,29 +1597,22 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
             This is the heart of the algorithm.
             """
-            trace = False
             # The loop may change lines, but each line is scanned only once.
             i, lines = 0, self.pre_pass(p.b)
             old_lines = lines[:]
-            if trace:
-                print('')
-                print(p.h)
             while i < len(lines):
                 progress = i
-                line = lines[i]
-                if trace:
-                    print(f"{i:2} {line.rstrip()}")
+                self.do_operators(i, lines, p)
                 for (pattern, handler) in self.patterns:
-                    m = pattern.match(line)
+                    m = pattern.match(lines[i])
                     if m:
                         i = handler(self, i, lines, m, p)  # May change lines.
                         break
                 else:
-                    self.do_operators(i, lines, p)
                     self.do_semicolon(i, lines, p)
                     i += 1
                 assert progress < i
-            if trace and g.unitTesting and lines != old_lines:
+            if False and g.unitTesting and lines != old_lines:
                 print(f"\nchanged {p.h}:\n")
                 for z in lines:
                     print(z.rstrip())
@@ -1953,21 +1946,31 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20231119103026.24: *6* helpers
         #@+node:ekr.20231119103026.25: *7* py2rust.do_operators
         def do_operators(self, i: int, lines: list[str], p: Position) -> None:
-            """Replace all operators and replace single quotes with double quotes."""
+            """Replace all operators and aliases."""
             # Regex replacements.
             table = (
+                # Annotations.
+                ('str', 'String:'),
+                ('int', 'i32'),
+                ('float', 'f64'),
+                # Constants.
                 ('True', 'true'),
                 ('False', 'false'),
                 ('default', 'default_val'),
+                # Operators.
                 ('and', '&&'),
                 ('or', '||'),
                 ('is not', '!='),
                 ('is', '=='),
                 ('not', '!'),
+                # Others.
                 ('assert', '// assert'),
             )
             for a, b in table:
                 lines[i] = re.sub(fr"\b{a}\b", b, lines[i])
+            ###
+                # if 'skip_block_comment' in lines[i]:
+                    # g.trace(lines[i].strip(), g.callers())
 
 
         #@+node:ekr.20231119103026.26: *7* py2rust.do_semicolon
