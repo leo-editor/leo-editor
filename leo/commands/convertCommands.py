@@ -120,7 +120,7 @@ class To_Python:  # pragma: no cover
     #@+node:ekr.20150514063305.133: *4* is...
     #@+node:ekr.20150514063305.134: *5* is_section_def/ref
     def is_section_def(self, s: str) -> bool:
-        return self.is_section_def(s)
+        return self.is_section_ref(s)  # 2023/11/22
 
     def is_section_ref(self, s: str) -> bool:
         n1 = s.find("<<", 0)
@@ -1566,6 +1566,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             """
             c = self.c
             # Create the parent node. It will be deleted.
+            old_p = c.p
             parent = c.lastTopLevel().insertAfter()
             # Convert p and all its descendants.
             try:
@@ -1575,11 +1576,15 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 parent.doDelete()
                 p = c.lastTopLevel()
                 p.h = p.h.replace('.py', '.rs').replace('@', '@@')
+                self.ensure_at_language(p)
                 c.redraw(p)
                 c.expandAllSubheads(p)
                 c.treeWantsFocusNow()
             except Exception:
                 g.es_exception()
+                # Recover.
+                parent.doDelete()
+                c.redraw(old_p)
         #@+node:ekr.20231119103026.4: *5* py2rust.convert_node
         def convert_node(self, p: Position, parent: Position) -> None:
             # Create a copy of p as the last child of parent.
@@ -1599,23 +1604,23 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             """
             # The loop may change lines, but each line is scanned only once.
             i, lines = 0, self.pre_pass(p.b)
-            old_lines = lines[:]
             while i < len(lines):
                 progress = i
-                self.do_operators(i, lines, p)
-                for (pattern, handler) in self.patterns:
+                for (kind, pattern, handler) in self.patterns:
                     m = pattern.match(lines[i])
                     if m:
-                        i = handler(self, i, lines, m, p)  # May change lines.
+                        j = handler(self, i, lines, m, p)  # May change lines.
                         break
                 else:
-                    self.do_semicolon(i, lines, p)
-                    i += 1
+                    kind = 'code'
+                    j = i + 1
+                if kind == 'code':
+                    while i < j:
+                        self.do_operators(i, lines, p)
+                        self.do_semicolon(i, lines, p)
+                        i += 1
+                i = j
                 assert progress < i
-            if False and g.unitTesting and lines != old_lines:
-                print(f"\nchanged {p.h}:\n")
-                for z in lines:
-                    print(z.rstrip())
             # Run the post-pass
             target.b = self.post_pass(lines)
         #@+node:ekr.20231119103026.6: *6* handlers
@@ -1968,15 +1973,10 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             )
             for a, b in table:
                 lines[i] = re.sub(fr"\b{a}\b", b, lines[i])
-            ###
-                # if 'skip_block_comment' in lines[i]:
-                    # g.trace(lines[i].strip(), g.callers())
-
-
         #@+node:ekr.20231119103026.26: *7* py2rust.do_semicolon
         def do_semicolon(self, i: int, lines: list[str], p: Position) -> None:
             """
-            Insert a semicolon in lines[i] is appropriate.
+            Insert a semicolon in lines[i] if appropriate.
 
             No other handler has matched, so we know that the line:
             - Does not end in a comment.
@@ -1990,8 +1990,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # For now, use a maximal policy.
             if self.ends_statement(i, lines):
                 lines[i] = f"{lines[i].rstrip()};\n"
-
-
         #@+node:ekr.20231119103026.27: *7* py2rust.ends_statement
         def ends_statement(self, i: int, lines: list[str]) -> bool:
             """
@@ -2060,13 +2058,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             self.do_ternary(lines)
             self.replace_single_quotes(lines)
             self.do_assignment(lines)  # Do this last, so it doesn't add 'let' to inserted comments.
-            return (
-                ''.join(lines)
-                .replace('@language python', '@language rust')
-                .replace(self.kill_semicolons_flag, '\n')
-            )
-            # return re.sub(r'\bNone\b', 'null', s)
 
+            # Replace the flag with a real newline.
+            return ''.join(lines).replace(self.kill_semicolons_flag, '\n')
 
         #@+node:ekr.20231119103026.32: *8* py2rust.do_assignment
         assignment_pat = re.compile(r'^([ \t]*)(.*?)\s+=\s+(.*)$')  # Require whitespace around the '='
@@ -2160,30 +2154,43 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Comment out decorators.
                 result.append(re.sub(r'^@(cmd|g\.command)', r'// @\1', s))
             return result
+        #@+node:ekr.20231122020653.1: *5* py2rust.ensure_at_language
+        def ensure_at_language(self, p: Position) -> None:
+            """Ensure that the top-level node p contains @language rust"""
+            lines = g.splitLines(p.b)
+            for i, line in enumerate(lines):
+                if line.startswith('@language python'):
+                    p.b = p.b.replace('@language python', '@language rust')
+                    return
+            p.b = p.b.rstrip() + '\n@language rust\n\n'
         #@-others
 
+        #@+<< global handler patterns >>
+        #@+node:ekr.20231122012709.1: *5* << global handler patterns >>
         patterns = (
             # Head: order matters.
-            (comment_pat, do_comment),
-            (docstring_pat, do_docstring),
-            (section_ref_pat, do_section_ref),
+            ('comment', comment_pat, do_comment),
+            ('docstring', docstring_pat, do_docstring),
+            ('section-ref', section_ref_pat, do_section_ref),
             # Middle: order doesn't matter.
-            (class_pat, do_class),
-            (def_pat, do_def),
-            (elif_pat, do_elif),
-            (else_pat, do_else),
-            (except_pat, do_except),
-            (finally_pat, do_finally),
-            (for_pat, do_for),
-            (if_pat, do_if),
-            (import_pat, do_import),
-            (return_pat, do_return),
-            (try_pat, do_try),
-            (while_pat, do_while),
-            (with_pat, do_with),
+            ('code', class_pat, do_class),
+            ('code', def_pat, do_def),
+            ('code', elif_pat, do_elif),
+            ('code', else_pat, do_else),
+            ('code', except_pat, do_except),
+            ('code', finally_pat, do_finally),
+            ('code', for_pat, do_for),
+            ('code', if_pat, do_if),
+            ('code', import_pat, do_import),
+            ('return', return_pat, do_return),
+            ('code', try_pat, do_try),
+            ('code', while_pat, do_while),
+            ('code', with_pat, do_with),
             # Tail: order matters.
-            (trailing_comment_pat, do_trailing_comment)
+            ('trailing-comment', trailing_comment_pat, do_trailing_comment)
         )
+        #@-<< global handler patterns >>
+
     #@+node:ekr.20211013080132.1: *3* ccc.python-to-typescript
     @cmd('python-to-typescript')
     def python_to_typescript(self, event: Event) -> None:  # pragma: no cover
@@ -3348,4 +3355,5 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocus()
     #@-others
 #@-others
+
 #@-leo
