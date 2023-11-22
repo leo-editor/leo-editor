@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Leo’s Cheat Sheet &#8212; Leo 6.7.4 documentation</title>
+    <title>Leo’s Cheat Sheet &#8212; Leo 6.7.5 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=db26dd79" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=524d4423" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8453e47e" />
     
-    <script src="_static/documentation_options.js?v=60bf6a40"></script>
+    <script src="_static/documentation_options.js?v=c4c7ee59"></script>
     <script src="_static/doctools.js?v=13a9ecda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="FAQ.html" title="FAQ"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="toc-more-links.html" accesskey="U">More Leo Links</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Leo’s Cheat Sheet</a></li> 
       </ul>
@@ -81,39 +81,38 @@
 <li><p><a class="reference internal" href="#vnode-class" id="id22">VNode class</a></p></li>
 <li><p><a class="reference internal" href="#position-class" id="id23">Position class</a></p></li>
 <li><p><a class="reference internal" href="#leo-core-leoglobals-module" id="id24">leo.core.leoGlobals module</a></p></li>
-<li><p><a class="reference internal" href="#test-driven-development" id="id25">Test driven development</a></p></li>
-<li><p><a class="reference internal" href="#performance-gotchas" id="id26">Performance gotchas</a></p></li>
-<li><p><a class="reference internal" href="#prompting-for-command-arguments" id="id27">Prompting for command arguments</a></p>
+<li><p><a class="reference internal" href="#performance-gotchas" id="id25">Performance gotchas</a></p></li>
+<li><p><a class="reference internal" href="#prompting-for-command-arguments" id="id26">Prompting for command arguments</a></p>
 <ul>
-<li><p><a class="reference internal" href="#example-1-prompt-for-one-arg" id="id28">Example 1: Prompt for one arg</a></p></li>
-<li><p><a class="reference internal" href="#example-2-prompt-for-2-args" id="id29">Example 2: Prompt for 2 args</a></p></li>
-<li><p><a class="reference internal" href="#example-3-prompt-for-3-args" id="id30">Example 3: Prompt for 3 args</a></p></li>
+<li><p><a class="reference internal" href="#example-1-prompt-for-one-arg" id="id27">Example 1: Prompt for one arg</a></p></li>
+<li><p><a class="reference internal" href="#example-2-prompt-for-2-args" id="id28">Example 2: Prompt for 2 args</a></p></li>
+<li><p><a class="reference internal" href="#example-3-prompt-for-3-args" id="id29">Example 3: Prompt for 3 args</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#naming-conventions-in-leo-s-core" id="id31">Naming conventions in Leo’s core</a></p>
+<li><p><a class="reference internal" href="#naming-conventions-in-leo-s-core" id="id30">Naming conventions in Leo’s core</a></p>
 <ul>
-<li><p><a class="reference internal" href="#official-ivars" id="id32">Official ivars</a></p></li>
+<li><p><a class="reference internal" href="#official-ivars" id="id31">Official ivars</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#widgets-and-wrappers" id="id33">Widgets and wrappers</a></p></li>
+<li><p><a class="reference internal" href="#widgets-and-wrappers" id="id32">Widgets and wrappers</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#command-line-options" id="id34">Command-line options</a></p></li>
-<li><p><a class="reference internal" href="#learning-to-be-a-leo-developer" id="id35">Learning to be a Leo developer</a></p>
+<li><p><a class="reference internal" href="#command-line-options" id="id33">Command-line options</a></p></li>
+<li><p><a class="reference internal" href="#learning-to-be-a-leo-developer" id="id34">Learning to be a Leo developer</a></p>
 <ul>
-<li><p><a class="reference internal" href="#code-academy" id="id36">Code academy</a></p>
+<li><p><a class="reference internal" href="#code-academy" id="id35">Code academy</a></p>
 <ul>
-<li><p><a class="reference internal" href="#ca-ua-s" id="id37">CA: uA’s</a></p></li>
-<li><p><a class="reference internal" href="#ca-icons" id="id38">CA: icons</a></p></li>
-<li><p><a class="reference internal" href="#ca-using-git" id="id39">CA: using git</a></p></li>
-<li><p><a class="reference internal" href="#ca-finding-nodes-with-c-clonefindbypredicate" id="id40">CA: finding nodes with c.cloneFindByPredicate</a></p></li>
+<li><p><a class="reference internal" href="#ca-ua-s" id="id36">CA: uA’s</a></p></li>
+<li><p><a class="reference internal" href="#ca-icons" id="id37">CA: icons</a></p></li>
+<li><p><a class="reference internal" href="#ca-using-git" id="id38">CA: using git</a></p></li>
+<li><p><a class="reference internal" href="#ca-finding-nodes-with-c-clonefindbypredicate" id="id39">CA: finding nodes with c.cloneFindByPredicate</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#leo-university" id="id41">Leo University</a></p></li>
-<li><p><a class="reference internal" href="#architecture" id="id42">Architecture</a></p></li>
+<li><p><a class="reference internal" href="#leo-university" id="id40">Leo University</a></p></li>
+<li><p><a class="reference internal" href="#architecture" id="id41">Architecture</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#clickable-links" id="id43">Clickable links</a></p></li>
+<li><p><a class="reference internal" href="#clickable-links" id="id42">Clickable links</a></p></li>
 </ul>
 </nav>
 <section id="key-bindings">
@@ -752,16 +751,8 @@ these when generators are not flexible enough:</p>
 </pre></div>
 </div>
 </section>
-<section id="test-driven-development">
-<h3><a class="toc-backref" href="#id25" role="doc-backlink">Test driven development</a><a class="headerlink" href="#test-driven-development" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>Use <a class="reference external" href="https://docs.python.org/3/library/imp.html">imp.reload</a> to reload all changed modules.</p></li>
-<li><p>Make sure to <em>instantiate</em> any changed objects.</p></li>
-<li><p>See <a class="reference external" href="unitTesting.html#test-driven-development-in-leo">this section</a> for full details.</p></li>
-</ul>
-</section>
 <section id="performance-gotchas">
-<h3><a class="toc-backref" href="#id26" role="doc-backlink">Performance gotchas</a><a class="headerlink" href="#performance-gotchas" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">Performance gotchas</a><a class="headerlink" href="#performance-gotchas" title="Link to this heading">¶</a></h3>
 <p><strong>Warning</strong>: The p.b and p.h setters and p.setDirty() are <em>very</em> expensive:</p>
 <ul class="simple">
 <li><p>p.b = s calls c.setBodyString(p, s) which will recolor body text and update the node’s icon.</p></li>
@@ -773,9 +764,9 @@ these when generators are not flexible enough:</p>
 <p>These performance gotchas become important for repetitive commands, like cff, replace-all and recursive import. In such situations, code should use p.v.b and p.v.h setters instead of p.b and p.h setters.</p>
 </section>
 <section id="prompting-for-command-arguments">
-<h3><a class="toc-backref" href="#id27" role="doc-backlink">Prompting for command arguments</a><a class="headerlink" href="#prompting-for-command-arguments" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">Prompting for command arguments</a><a class="headerlink" href="#prompting-for-command-arguments" title="Link to this heading">¶</a></h3>
 <section id="example-1-prompt-for-one-arg">
-<h4><a class="toc-backref" href="#id28" role="doc-backlink">Example 1: Prompt for one arg</a><a class="headerlink" href="#example-1-prompt-for-one-arg" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id27" role="doc-backlink">Example 1: Prompt for one arg</a><a class="headerlink" href="#example-1-prompt-for-one-arg" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@g</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;i1&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">i1_command</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
@@ -790,7 +781,7 @@ these when generators are not flexible enough:</p>
 </div>
 </section>
 <section id="example-2-prompt-for-2-args">
-<h4><a class="toc-backref" href="#id29" role="doc-backlink">Example 2: Prompt for 2 args</a><a class="headerlink" href="#example-2-prompt-for-2-args" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id28" role="doc-backlink">Example 2: Prompt for 2 args</a><a class="headerlink" href="#example-2-prompt-for-2-args" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@g</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;i2&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">i2_command</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
@@ -806,7 +797,7 @@ these when generators are not flexible enough:</p>
 </div>
 </section>
 <section id="example-3-prompt-for-3-args">
-<h4><a class="toc-backref" href="#id30" role="doc-backlink">Example 3: Prompt for 3 args</a><a class="headerlink" href="#example-3-prompt-for-3-args" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id29" role="doc-backlink">Example 3: Prompt for 3 args</a><a class="headerlink" href="#example-3-prompt-for-3-args" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@g</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s1">&#39;i3&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">i3_command</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
@@ -823,7 +814,7 @@ these when generators are not flexible enough:</p>
 </section>
 </section>
 <section id="naming-conventions-in-leo-s-core">
-<h3><a class="toc-backref" href="#id31" role="doc-backlink">Naming conventions in Leo’s core</a><a class="headerlink" href="#naming-conventions-in-leo-s-core" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Naming conventions in Leo’s core</a><a class="headerlink" href="#naming-conventions-in-leo-s-core" title="Link to this heading">¶</a></h3>
 <p>LeoPyRef.leo contains all of Leo’s core source code.</p>
 <p>Leo’s code uses the following conventions throughout:</p>
 <p>c:  a commander.
@@ -855,7 +846,7 @@ qsciw:  qt_text.QScintiallaWrapper
 qtew:   qt_text.QTextEditWrapper</p>
 <p>Names defined in Leo’s core are unlikely to change, especially names used outside their defining module. This includes virtually everything in leoGlobals.py, and many names in leoCommands.py and other files.</p>
 <section id="official-ivars">
-<h4><a class="toc-backref" href="#id32" role="doc-backlink">Official ivars</a><a class="headerlink" href="#official-ivars" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id31" role="doc-backlink">Official ivars</a><a class="headerlink" href="#official-ivars" title="Link to this heading">¶</a></h4>
 <p>The following ‘official’ ivars (instance vars) will always exist:</p>
 <p>c.frame                 The frame containing the log,body,tree, etc.
 c.frame.body            The body pane.
@@ -872,14 +863,14 @@ c.frame.log.logCtrl     Use c.frame.log.wrapper instead.</p>
 </section>
 </section>
 <section id="widgets-and-wrappers">
-<h3><a class="toc-backref" href="#id33" role="doc-backlink">Widgets and wrappers</a><a class="headerlink" href="#widgets-and-wrappers" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">Widgets and wrappers</a><a class="headerlink" href="#widgets-and-wrappers" title="Link to this heading">¶</a></h3>
 <p>A <strong>widget</strong> is an actual Qt widget. Leo’s core seldom accesses widgets directly.  Instead, a  <strong>wrapper class</strong> defines a standard api that hides the details of the underlying gui <strong>text</strong> widgets.</p>
 <p>Leo’s core uses the wrapper api almost exclusively. That is, Leo’s core code treats wrappers <em>as if</em> they were only text widgets there are!</p>
 <p>A back door exists for special cases. All wrapper classes define an official <code class="docutils literal notranslate"><span class="pre">widget</span></code> ivar, so core or plugin code can gain access to the real Qt widget using wrapper.widget. Searching for wrapper.widget will find all gui-dependent snippets of code in Leo’s core.</p>
 </section>
 </section>
 <section id="command-line-options">
-<h2><a class="toc-backref" href="#id34" role="doc-backlink">Command-line options</a><a class="headerlink" href="#command-line-options" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id33" role="doc-backlink">Command-line options</a><a class="headerlink" href="#command-line-options" title="Link to this heading">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Usage</span><span class="p">:</span> <span class="n">launchLeo</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span> <span class="n">file1</span><span class="p">,</span> <span class="n">file2</span><span class="p">,</span> <span class="o">...</span>
 
 <span class="n">Options</span><span class="p">:</span>
@@ -913,12 +904,12 @@ c.frame.log.logCtrl     Use c.frame.log.wrapper instead.</p>
 </div>
 </section>
 <section id="learning-to-be-a-leo-developer">
-<h2><a class="toc-backref" href="#id35" role="doc-backlink">Learning to be a Leo developer</a><a class="headerlink" href="#learning-to-be-a-leo-developer" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id34" role="doc-backlink">Learning to be a Leo developer</a><a class="headerlink" href="#learning-to-be-a-leo-developer" title="Link to this heading">¶</a></h2>
 <section id="code-academy">
-<h3><a class="toc-backref" href="#id36" role="doc-backlink">Code academy</a><a class="headerlink" href="#code-academy" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">Code academy</a><a class="headerlink" href="#code-academy" title="Link to this heading">¶</a></h3>
 <p>Leo’s Code Academy posts discuss how to do useful things in Leo. The following are distilled from online discussions about Leo’s scripting.</p>
 <section id="ca-ua-s">
-<h4><a class="toc-backref" href="#id37" role="doc-backlink">CA: uA’s</a><a class="headerlink" href="#ca-ua-s" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id36" role="doc-backlink">CA: uA’s</a><a class="headerlink" href="#ca-ua-s" title="Link to this heading">¶</a></h4>
 <p>uA’s (user Attributes) associate arbitrary data with any vnode. uA’s are dictionaries of dictionaries–an <strong>outer dictionary</strong> and zero or more <strong>inner dictionaries</strong>. The outer dictionary associates plugin names (or Leo’s core) with inner dictionaries. The inner dictionaries carry the actual data.</p>
 <p>The v.u or p.v properties get and set uA’s. You can think of p.u as a synonym for p.v.unknownAttributes on both sides of an assignment. For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plugin_name</span> <span class="o">=</span> <span class="s1">&#39;test_plugin&#39;</span>
@@ -947,7 +938,7 @@ print(’n’.join([p.h for p in aList]))</p>
 <p><em>Important</em>: If you don’t understand these lines, please study Python’s list comprehensions.  They are incredibly useful. ‘n’.join(aList) is a great idiom to know.  str.join is one of python’s most useful string methods. It converts between lists and strings.</p>
 </section>
 <section id="ca-icons">
-<h4><a class="toc-backref" href="#id38" role="doc-backlink">CA: icons</a><a class="headerlink" href="#ca-icons" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id37" role="doc-backlink">CA: icons</a><a class="headerlink" href="#ca-icons" title="Link to this heading">¶</a></h4>
 <p>This script inserts three icons in the current outline node. Running
 the script again will insert three more:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">table</span> <span class="o">=</span> <span class="p">(</span>
@@ -968,7 +959,7 @@ the script again will insert three more:</p>
 </div>
 </section>
 <section id="ca-using-git">
-<h4><a class="toc-backref" href="#id39" role="doc-backlink">CA: using git</a><a class="headerlink" href="#ca-using-git" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id38" role="doc-backlink">CA: using git</a><a class="headerlink" href="#ca-using-git" title="Link to this heading">¶</a></h4>
 <p>Using Leo’s latest sources from GitHub is highly recommended. Once git is installed, the following gets the latest Leo sources:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">leo</span><span class="o">-</span><span class="n">editor</span><span class="o">/</span><span class="n">leo</span><span class="o">-</span><span class="n">editor</span><span class="o">.</span><span class="n">git</span>
 </pre></div>
@@ -981,7 +972,7 @@ the script again will insert three more:</p>
 <p>Using git is very similar to using bzr or hg or any other SCCS.  To change Leo, you add files, you commit files, and you push files.  That’s about it.</p>
 </section>
 <section id="ca-finding-nodes-with-c-clonefindbypredicate">
-<h4><a class="toc-backref" href="#id40" role="doc-backlink">CA: finding nodes with c.cloneFindByPredicate</a><a class="headerlink" href="#ca-finding-nodes-with-c-clonefindbypredicate" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id39" role="doc-backlink">CA: finding nodes with c.cloneFindByPredicate</a><a class="headerlink" href="#ca-finding-nodes-with-c-clonefindbypredicate" title="Link to this heading">¶</a></h4>
 <p>c.cloneFindByPredicate is a powerful new addition to Leo.  Here is its docstring:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Traverse</span> <span class="n">the</span> <span class="n">tree</span> <span class="n">given</span> <span class="n">using</span> <span class="n">the</span> <span class="n">generator</span><span class="p">,</span> <span class="n">cloning</span> <span class="nb">all</span> <span class="n">positions</span> <span class="k">for</span>
 <span class="n">which</span> <span class="n">predicate</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="o">.</span> <span class="n">Undoably</span> <span class="n">move</span> <span class="nb">all</span> <span class="n">clones</span> <span class="n">to</span> <span class="n">a</span> <span class="n">new</span> <span class="n">node</span><span class="p">,</span> <span class="n">created</span>
@@ -1037,13 +1028,13 @@ the script again will insert three more:</p>
 </section>
 </section>
 <section id="leo-university">
-<h3><a class="toc-backref" href="#id41" role="doc-backlink">Leo University</a><a class="headerlink" href="#leo-university" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id40" role="doc-backlink">Leo University</a><a class="headerlink" href="#leo-university" title="Link to this heading">¶</a></h3>
 <p>Leo University is a project devoted to help people become Leo developers.</p>
 <p>Here is the main page.  It contains links to individual lessons.
 <a class="reference external" href="https://github.com/leo-editor/leo-editor/issues/816">https://github.com/leo-editor/leo-editor/issues/816</a></p>
 </section>
 <section id="architecture">
-<h3><a class="toc-backref" href="#id42" role="doc-backlink">Architecture</a><a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id41" role="doc-backlink">Architecture</a><a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h3>
 <p>Leo uses a model/view/controller architecture.</p>
 <ul class="simple">
 <li><p>Controller: The Commands class and its helpers in leoCommands.py and leoEditCommands.py.</p></li>
@@ -1054,7 +1045,7 @@ the script again will insert three more:</p>
 </section>
 </section>
 <section id="clickable-links">
-<h2><a class="toc-backref" href="#id43" role="doc-backlink">Clickable links</a><a class="headerlink" href="#clickable-links" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id42" role="doc-backlink">Clickable links</a><a class="headerlink" href="#clickable-links" title="Link to this heading">¶</a></h2>
 <p>Leo syntax colors clickable links in the body pane. For example:</p>
 <p>Leo’s home page: <a class="reference external" href="https://leo-editor.github.io/leo-editor/">https://leo-editor.github.io/leo-editor/</a></p>
 <p>The status area shows the UNL (<em>Universal Node Locator</em>) for each node.</p>
@@ -1063,7 +1054,7 @@ gnx-based UNLs won’t break even if you move or rename the target node.</p>
 <p>Try these examples!</p>
 <p>The “Key bindings” node in this file:
 unl:gnx://CheatSheet.leo#ekr.20131019184243.16685</p>
-<p>The “6.7.4 release notes” node in LeoDocs.leo.
+<p>The “6.7.5 release notes” node in LeoDocs.leo.
 unl:gnx://LeoDocs.leo#ekr.20230703101804.1</p>
 </section>
 </section>
@@ -1118,14 +1109,14 @@ unl:gnx://LeoDocs.leo#ekr.20230703101804.1</p>
         <li class="right" >
           <a href="FAQ.html" title="FAQ"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="toc-more-links.html" >More Leo Links</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Leo’s Cheat Sheet</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on October 08, 2023.
+      Last updated on November 22, 2023.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

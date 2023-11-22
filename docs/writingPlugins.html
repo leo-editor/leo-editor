@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Writing Plugins &#8212; Leo 6.7.4 documentation</title>
+    <title>Writing Plugins &#8212; Leo 6.7.5 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=db26dd79" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=524d4423" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8453e47e" />
     
-    <script src="_static/documentation_options.js?v=60bf6a40"></script>
+    <script src="_static/documentation_options.js?v=c4c7ee59"></script>
     <script src="_static/doctools.js?v=13a9ecda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="coloring.html" title="Controlling Syntax Coloring"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="intermediatetopics.html" accesskey="U">Advanced Topics</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Writing Plugins</a></li> 
       </ul>
@@ -307,15 +307,25 @@ deprecated. The new_c key is also deprecated. Plugins should use the c key inste
 <td><p>end of tree.redraw</p></td>
 <td><p>c (note 6)</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘after-reload-settings’</p></td>
+<tr class="row-odd"><td><p>‘after-reading-external-file’</p></td>
+<td></td>
+<td><p>after reading each external file</p></td>
+<td><p>c,p</p></td>
+</tr>
+<tr class="row-even"><td><p>‘after-reload-settings’</p></td>
 <td></td>
 <td><p>after ‘reload-settings’ command</p></td>
 <td><p>c</p></td>
 </tr>
-<tr class="row-even"><td><p>‘before-create-leo-frame’</p></td>
+<tr class="row-odd"><td><p>‘before-create-leo-frame’</p></td>
 <td></td>
 <td><p>before frame.finishCreate</p></td>
 <td><p>c</p></td>
+</tr>
+<tr class="row-even"><td><p>‘before-writing-external-file’</p></td>
+<td></td>
+<td><p>before writing each external file</p></td>
+<td><p>c,p</p></td>
 </tr>
 <tr class="row-odd"><td><p>‘bodyclick1’</p></td>
 <td><p>yes</p></td>
@@ -863,14 +873,14 @@ dictionary whose keys are all the tags specified by the user in the body of the
         <li class="right" >
           <a href="coloring.html" title="Controlling Syntax Coloring"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="intermediatetopics.html" >Advanced Topics</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Writing Plugins</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on October 08, 2023.
+      Last updated on November 22, 2023.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
