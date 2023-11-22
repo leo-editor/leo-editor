@@ -228,8 +228,6 @@ class Commands:
         self.mFileName: str = fileName or ''  # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName or ''  #
         self.orphan_at_file_nodes: list[Position] = []  # List of orphaned nodes for c.raise_error_dialogs.
-        self.wrappedFileName: Optional[str] = None  # The name of the wrapped file, for wrapper commanders.
-
     #@+node:ekr.20120217070122.10469: *5* c.initOptionsIvars
     def initOptionsIvars(self) -> None:
         """Init Commander ivars corresponding to user options."""

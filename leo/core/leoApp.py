@@ -3026,7 +3026,6 @@ class LoadManager:
         c.frame.splitVerticalFlag, r1, r2 = c.frame.initialRatios()
         c.frame.resizePanesToRatio(r1, r2)
         c.mFileName = None
-        c.wrappedFileName = None
         # Fix a buglet: Don't call c.computeWindowTitle here.
         c.frame.setTitle(c.frame.title)
         # Late inits. Order matters.
@@ -3188,9 +3187,7 @@ class LoadManager:
         # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
         # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
         c.mFileName = fn if fn.endswith('.leo') else f"{fn}.leo"
-        c.wrappedFileName = fn
         c.frame.title = c.computeWindowTitle(c.mFileName)
-        ### g.trace('c.mFileName:', c.mFileName, '\nc.frame.title:', c.frame.title)
         c.frame.setTitle(c.frame.title)
         ### To do: set tab name.
         if c.config.getBool('use-chapters') and c.chapterController:

@@ -262,8 +262,8 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         if g.app.diff:
             if len(commanders) == 2:
                 c1, c2 = commanders
-                fn1 = g.shortFileName(c1.wrappedFileName) or c1.shortFileName()
-                fn2 = g.shortFileName(c2.wrappedFileName) or c2.shortFileName()
+                fn1 = c1.shortFileName()
+                fn2 = c2.shortFileName()
                 g.es('--diff auto compare', color='red')
                 g.es(fn1)
                 g.es(fn2)
@@ -335,9 +335,8 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         parent = c.p.insertAfter()
         parent.setHeadString(undoType)
         u.afterInsertNode(parent, undoType, undoData)
-        # Use the wrapped file name if possible.
-        fn1 = g.shortFileName(c1.wrappedFileName) or c1.shortFileName()
-        fn2 = g.shortFileName(c2.wrappedFileName) or c2.shortFileName()
+        fn1 = c1.shortFileName()
+        fn2 = c2.shortFileName()
         for d, kind in (
             (deleted, f"not in {fn2}"),
             (inserted, f"not in {fn1}"),
