@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
-<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -1506,7 +1506,6 @@
 <v t="ekr.20131019061259.16690"><vh>VNode class</vh></v>
 <v t="ekr.20131019061259.16691"><vh>Position class</vh></v>
 <v t="ekr.20131019061259.16692"><vh>leo.core.leoGlobals module</vh></v>
-<v t="ekr.20170311120214.1"><vh>Test driven development</vh></v>
 <v t="ekr.20170403185500.1"><vh>Performance gotchas</vh></v>
 <v t="ekr.20181015144118.25"><vh>Prompting for command arguments</vh>
 <v t="ekr.20181015144118.26"><vh>Example 1: Prompt for one arg</vh></v>
@@ -2510,6 +2509,7 @@
 </v>
 <v t="ekr.20230901233844.1"></v>
 <v t="ekr.20230901233131.1"></v>
+<v t="ekr.20050903074833.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -4718,91 +4718,94 @@ the 'Stop?' column.
 the keyword dictionary contain *positions*, not vnodes. These keys are
 deprecated. The new_c key is also deprecated. Plugins should use the c key instead.
 
-============================= ======== =================================== =============================
-Event name (tag argument)     Stop?    When called                         Keys in keywords dict
-============================= ======== =================================== =============================
-'after-auto'                           after each @auto file loaded        c,p (note 13)
-'after-create-leo-frame'               after creating any frame            c
-'after-redraw-outline'                 end of tree.redraw                  c (note 6)
-'after-reload-settings'                after 'reload-settings' command     c
-'before-create-leo-frame'              before frame.finishCreate           c
-'bodyclick1'                   yes     before normal click in body         c,p,v,event
-'bodyclick2'                           after normal click in body          c,p,v,event
-'bodydclick1'                  yes     before double click in body         c,p,v,event
-'bodydclick2'                          after  double click in body         c,p,v,event
-'bodykey1'                     yes     before body keystrokes              c,p,v,ch,oldSel,undoType
-'bodykey2'                             after  body keystrokes              c,p,v,ch,oldSel,undoType
-'bodyrclick1'                  yes     before right click in body          c,p,v,event
-'bodyrclick2'                          after  right click in body          c,p,v,event
-'boxclick1'                    yes     before click in +- box              c,p,v,event
-'boxclick2'                            after  click in +- box              c,p,v,event
-'clear-all-marks'                      after clear-all-marks command       c,p,v
-'clear-mark'                           when mark is set                    c,p,v
-'close-frame'                          in app.closeLeoWindow               c
-'color-optional-markup'        yes *   (note 7)                            colorer,p,v,s,i,j,colortag (note 7)
-'command1'                     yes     before each command                 c,p,v,label (note 2)
-'command2'                             after  each command                 c,p,v,label (note 2)
-'create-optional-menus'                (note 8)                            c (note 8)
-'create-popup-menu-items'              in tree.OnPopup                     c,p,v,event (new)
-'draw-outline-box'             yes     when drawing +- box                 tree,p,v,x,y
-'draw-outline-icon'            yes     when drawing icon                   tree,p,v,x,y
-'draw-outline-node'            yes     when drawing node                   tree,p,v,x,y
-'draw-outline-text-box'        yes     when drawing headline               tree,p,v,x,y
-'drag1'                        yes     before start of drag                c,p,v,event
-'drag2'                                after  start of drag                c,p,v,event
-'dragging1'                    yes     before continuing to drag           c,p,v,event
-'dragging2'                            after  continuing to drag           c,p,v,event
-'enable-popup-menu-items'              in tree.OnPopup                     c,p,v,event
-'end1'                                 start of app.quit()                 None
-'enddrag1'                     yes     before end of drag                  c,p,v,event
-'enddrag2'                             after  end of drag                  c,p,v,event
-'headclick1'                   yes     before normal click in headline     c,p,v,event
-'headclick2'                           after  normal click in headline     c,p,v,event
-'headrclick1'                  yes     before right click in headline      c,p,v,event
-'headrclick2'                          after  right click in headline      c,p,v,event
-'headkey1'                     yes     before headline keystrokes          c,p,v,ch (note 12)
-'headkey2'                             after  headline keystrokes          c,p,v,ch (note 12)
-'hoist-changed'                        whenever the hoist stack changes    c
-'hypercclick1'                 yes     before control click in hyperlink   c,p,v,event
-'hypercclick2'                         after  control click in hyperlink   c,p,v,event
-'hyperenter1'                  yes     before entering hyperlink           c,p,v,event
-'hyperenter2'                          after  entering hyperlink           c,p,v,event
-'hyperleave1'                  yes     before leaving  hyperlink           c,p,v,event
-'hyperleave2'                          after  leaving  hyperlink           c,p,v,event
-'iconclick1'                   yes     before single click in icon box     c,p,v,event (note 15)
-'iconclick2'                           after  single click in icon box     c,p,v,event (note 15)
-'iconrclick1'                  yes     before right click in icon box      c,p,v,event (note 15)
-'iconrclick2'                          after  right click in icon box      c,p,v,event (note 15)
-'icondclick1'                  yes     before double click in icon box     c,p,v,event (note 15)
-'icondclick2'                          after  double click in icon box     c,p,v,event (note 15)
-'idle'                                 periodically (at idle time)         c
-'init-color-markup'                    (note 7)                            colorer,p,v (note 7)
-'menu1'                        yes     before creating menus               c,p,v (note 3)
-'menu2'                        yes     during creating menus               c,p,v (note 3)
-'menu-update'                  yes     before updating menus               c,p,v
-'new'                                  start of New command                c,old_c,new_c (note 9)
-'open1'                        yes     before opening any file             c,old_c,new_c,fileName (note 4)
-'open2'                                after  opening any file             c,old_c,new_c,fileName (note 4)
-'openwith1'                    yes     before Open With command            c,p,v,d (note 14)
-'openwith2'                            after  Open With command            c,p,v,(note 14)
-'recentfiles1'                 yes     before Recent Files command         c,p,v,fileName
-'recentfiles2'                         after  Recent Files command         c,p,v,fileName
-'redraw-entire-outline'        yes     start of tree.redraw                c (note 6)
-'save1'                        yes     before any Save command             c,p,v,fileName
-'save2'                                after  any Save command             c,p,v,fileName
-'scan-directives'                      in scanDirectives                   c,p,v,s,old_dict,dict,pluginsList (note 10)
-'select1'                      yes     before selecting a position         c,new_p,old_p,new_v,old_v
-'select2'                              after  selecting a position         c,new_p,old_p,new_v,old_v
-'select3'                              after  selecting a position         c,new_p,old_p,new_v,old_v
-'set-mark'                             when a mark is set                  c,p,v
-'show-popup-menu'                      in tree.OnPopup                     c,p,v,event
-'start1'                               after app.finishCreate()            None
-'start2'                               after opening first Leo window      c,p,v,fileName
-'unselect1'                    yes     before unselecting a vnode          c,new_p,old_p,new_v,old_v
-'unselect2'                            after  unselecting a vnode          c,new_p,old_p,old_v,old_v
-'\@url1'                       yes     before double-click @url node       c,p,v,url (note 5)
-'\@url2'                               after  double-click @url node       c,p,v(note 5)
-============================= ======== =================================== =============================
+
+============================== ======== =================================== =============================
+Event name (tag argument)      Stop?    When called                         Keys in keywords dict
+============================== ======== =================================== =============================
+'after-auto'                            after each @auto file loaded        c,p (note 13)
+'after-create-leo-frame'                after creating any frame            c
+'after-redraw-outline'                  end of tree.redraw                  c (note 6)
+'after-reading-external-file'           after reading each external file    c,p
+'after-reload-settings'                 after 'reload-settings' command     c
+'before-create-leo-frame'               before frame.finishCreate           c
+'before-writing-external-file'          before writing each external file   c,p
+'bodyclick1'                    yes     before normal click in body         c,p,v,event
+'bodyclick2'                            after normal click in body          c,p,v,event
+'bodydclick1'                   yes     before double click in body         c,p,v,event
+'bodydclick2'                           after  double click in body         c,p,v,event
+'bodykey1'                      yes     before body keystrokes              c,p,v,ch,oldSel,undoType
+'bodykey2'                              after  body keystrokes              c,p,v,ch,oldSel,undoType
+'bodyrclick1'                   yes     before right click in body          c,p,v,event
+'bodyrclick2'                           after  right click in body          c,p,v,event
+'boxclick1'                     yes     before click in +- box              c,p,v,event
+'boxclick2'                             after  click in +- box              c,p,v,event
+'clear-all-marks'                       after clear-all-marks command       c,p,v
+'clear-mark'                            when mark is set                    c,p,v
+'close-frame'                           in app.closeLeoWindow               c
+'color-optional-markup'         yes *   (note 7)                            colorer,p,v,s,i,j,colortag (note 7)
+'command1'                      yes     before each command                 c,p,v,label (note 2)
+'command2'                              after  each command                 c,p,v,label (note 2)
+'create-optional-menus'                 (note 8)                            c (note 8)
+'create-popup-menu-items'               in tree.OnPopup                     c,p,v,event (new)
+'draw-outline-box'              yes     when drawing +- box                 tree,p,v,x,y
+'draw-outline-icon'             yes     when drawing icon                   tree,p,v,x,y
+'draw-outline-node'             yes     when drawing node                   tree,p,v,x,y
+'draw-outline-text-box'         yes     when drawing headline               tree,p,v,x,y
+'drag1'                         yes     before start of drag                c,p,v,event
+'drag2'                                 after  start of drag                c,p,v,event
+'dragging1'                     yes     before continuing to drag           c,p,v,event
+'dragging2'                             after  continuing to drag           c,p,v,event
+'enable-popup-menu-items'               in tree.OnPopup                     c,p,v,event
+'end1'                                  start of app.quit()                 None
+'enddrag1'                      yes     before end of drag                  c,p,v,event
+'enddrag2'                              after  end of drag                  c,p,v,event
+'headclick1'                    yes     before normal click in headline     c,p,v,event
+'headclick2'                            after  normal click in headline     c,p,v,event
+'headrclick1'                   yes     before right click in headline      c,p,v,event
+'headrclick2'                           after  right click in headline      c,p,v,event
+'headkey1'                      yes     before headline keystrokes          c,p,v,ch (note 12)
+'headkey2'                              after  headline keystrokes          c,p,v,ch (note 12)
+'hoist-changed'                         whenever the hoist stack changes    c
+'hypercclick1'                  yes     before control click in hyperlink   c,p,v,event
+'hypercclick2'                          after  control click in hyperlink   c,p,v,event
+'hyperenter1'                   yes     before entering hyperlink           c,p,v,event
+'hyperenter2'                           after  entering hyperlink           c,p,v,event
+'hyperleave1'                   yes     before leaving  hyperlink           c,p,v,event
+'hyperleave2'                           after  leaving  hyperlink           c,p,v,event
+'iconclick1'                    yes     before single click in icon box     c,p,v,event (note 15)
+'iconclick2'                            after  single click in icon box     c,p,v,event (note 15)
+'iconrclick1'                   yes     before right click in icon box      c,p,v,event (note 15)
+'iconrclick2'                           after  right click in icon box      c,p,v,event (note 15)
+'icondclick1'                   yes     before double click in icon box     c,p,v,event (note 15)
+'icondclick2'                           after  double click in icon box     c,p,v,event (note 15)
+'idle'                                  periodically (at idle time)         c
+'init-color-markup'                     (note 7)                            colorer,p,v (note 7)
+'menu1'                         yes     before creating menus               c,p,v (note 3)
+'menu2'                         yes     during creating menus               c,p,v (note 3)
+'menu-update'                   yes     before updating menus               c,p,v
+'new'                                   start of New command                c,old_c,new_c (note 9)
+'open1'                         yes     before opening any file             c,old_c,new_c,fileName (note 4)
+'open2'                                 after  opening any file             c,old_c,new_c,fileName (note 4)
+'openwith1'                     yes     before Open With command            c,p,v,d (note 14)
+'openwith2'                             after  Open With command            c,p,v,(note 14)
+'recentfiles1'                  yes     before Recent Files command         c,p,v,fileName
+'recentfiles2'                          after  Recent Files command         c,p,v,fileName
+'redraw-entire-outline'         yes     start of tree.redraw                c (note 6)
+'save1'                         yes     before any Save command             c,p,v,fileName
+'save2'                                 after  any Save command             c,p,v,fileName
+'scan-directives'                       in scanDirectives                   c,p,v,s,old_dict,dict,pluginsList (note 10)
+'select1'                       yes     before selecting a position         c,new_p,old_p,new_v,old_v
+'select2'                               after  selecting a position         c,new_p,old_p,new_v,old_v
+'select3'                               after  selecting a position         c,new_p,old_p,new_v,old_v
+'set-mark'                              when a mark is set                  c,p,v
+'show-popup-menu'                       in tree.OnPopup                     c,p,v,event
+'start1'                                after app.finishCreate()            None
+'start2'                                after opening first Leo window      c,p,v,fileName
+'unselect1'                     yes     before unselecting a vnode          c,new_p,old_p,new_v,old_v
+'unselect2'                             after  unselecting a vnode          c,new_p,old_p,old_v,old_v
+'\@url1'                        yes     before double-click @url node       c,p,v,url (note 5)
+'\@url2'                                after  double-click @url node       c,p,v(note 5)
+============================== ======== =================================== =============================
 
 **Notes**:
 
@@ -22158,10 +22161,6 @@ I can't ignore the freedom of arbitrary abstraction, and I've come to rely upon 
 
 I realize this is a "why" and not a "how" and that this doesn't help anyone get better acquainted with Leo. But, as a programmer if you've ever felt frustrated with the organizational constructs of the language you're working in you might be surprised to realize that after using Leo it wasn't the language that was the problem, but a lack of tools to organize your programs in a way that makes sense to you.</t>
 <t tx="ekr.20170311055647.1">Thanks to Tsuchi Noko for these.</t>
-<t tx="ekr.20170311120214.1">- Use `imp.reload &lt;https://docs.python.org/3/library/imp.html&gt;`_ to reload all changed modules.
-- Make sure to *instantiate* any changed objects.
-- See `this section &lt;unitTesting.html#test-driven-development-in-leo&gt;`_ for full details.
-</t>
 <t tx="ekr.20170312083548.1">.. index::
     pair: Chapter; Tutorial
     pair: @chapter; Tutorial
