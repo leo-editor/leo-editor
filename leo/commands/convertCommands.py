@@ -1537,6 +1537,21 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     #@@nobeautify
     class Python_To_Rust:  # pragma: no cover
 
+        #@+<< docstring: Python_To_Rust >>
+        #@+node:ekr.20231122105133.1: *5* << docstring: Python_To_Rust >>
+        """
+        class Python_To_Rust: Convert Python text to Rust text.
+
+        The conversion is not perfect, but it eliminates lots of tedious text manipulation.
+            
+        The Rust compiler will complain about the following:
+
+        - Calls are not allowed in f-strings.
+        - This class retains `try/except` (with braces) as a guide.
+        - The code retains `self`.
+        """
+        #@-<< docstring: Python_To_Rust >>
+
         # The handlers are clear as they are.
         # pylint: disable=no-else-return
 
