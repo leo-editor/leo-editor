@@ -287,6 +287,7 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
     return c  # For unit tests and scripts.
 #@+node:ekr.20031218072017.2821: *3* c_file.open_outline & helper
 @g.commander_command('open-file')
+@g.commander_command('open-outline')
 def open_outline(self: Self, event: Event = None) -> None:
     """Open a Leo window containing the contents of a .leo file."""
     c = self

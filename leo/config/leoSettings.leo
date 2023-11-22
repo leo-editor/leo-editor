@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
-<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -954,14 +954,14 @@
 <v t="ekr.20070925144552"><vh>Menus</vh>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
-<v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
+<v t="ekr.20071010123223.1"><vh>@item open-file</vh></v>
 </v>
 <v t="ekr.20131213135427.21826"><vh>@menus</vh>
 <v t="ekr.20131213135427.21827"><vh>@menu &amp;File</vh>
 <v t="ekr.20131213135427.21833"><vh>@item &amp;close-window</vh></v>
 <v t="ekr.20140917063815.21917"><vh>@item &amp;file-open-by-name</vh></v>
 <v t="ekr.20131213135427.21828"><vh>@item &amp;new</vh></v>
-<v t="ekr.20131213135427.21829"><vh>@item &amp;open-outline</vh></v>
+<v t="ekr.20131213135427.21829"><vh>@item &amp;open-file</vh></v>
 <v t="ekr.20180403155811.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21830"><vh>@menu Open &amp;With</vh></v>
 <v t="ekr.20151225142626.1"><vh>@menu Open Specific &amp;Leo File</vh>
