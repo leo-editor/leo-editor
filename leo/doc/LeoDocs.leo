@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
-<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -4718,14 +4718,17 @@ the 'Stop?' column.
 the keyword dictionary contain *positions*, not vnodes. These keys are
 deprecated. The new_c key is also deprecated. Plugins should use the c key instead.
 
+
 ============================= ======== =================================== =============================
 Event name (tag argument)     Stop?    When called                         Keys in keywords dict
 ============================= ======== =================================== =============================
 'after-auto'                           after each @auto file loaded        c,p (note 13)
 'after-create-leo-frame'               after creating any frame            c
 'after-redraw-outline'                 end of tree.redraw                  c (note 6)
+'after-reading-external-file'          after reading each external file    c,p
 'after-reload-settings'                after 'reload-settings' command     c
 'before-create-leo-frame'              before frame.finishCreate           c
+'before-writing-external-file'         before writing each external file   c,p
 'bodyclick1'                   yes     before normal click in body         c,p,v,event
 'bodyclick2'                           after normal click in body          c,p,v,event
 'bodydclick1'                  yes     before double click in body         c,p,v,event
