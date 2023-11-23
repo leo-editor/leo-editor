@@ -166,8 +166,9 @@ class Commands:
         Return the tab title for this commander.
         """
         c = self
-        if c.fileName():
-            return c.fileName()
+        file_name = c.fileName()
+        if file_name:
+            return file_name
         # Return 'untitled' or 'untitled{n}
         n = g.app.numberOfUntitledWindows
         n_s = '' if n == 1 else str(n)
