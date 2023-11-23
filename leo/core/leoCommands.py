@@ -160,16 +160,6 @@ class Commands:
                 f"    2: {t3-t2:5.2f}\n"  # 0.53 sec: c.finishCreate.
                 f"total: {t3-t1:5.2f}"
             )
-    #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
-    def computeWindowTitle(self, fileName: str = None) -> str:
-        """
-        Return the title for the top-level window.
-        """
-        c = self
-        branch = g.gitBranchName()
-        branch_s = f"{branch}: " if branch else ''
-        name_s = fileName or c.fileName() or 'untitled'
-        return f"{branch_s}{name_s}"
     #@+node:ekr.20231123014221.1: *5* c.computeTabTitle
     def computeTabTitle(self) -> str:
         """
@@ -183,6 +173,16 @@ class Commands:
         n_s = '' if n == 1 else str(n)
         title = f"untitled{n_s}"
         return title
+    #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
+    def computeWindowTitle(self, fileName: str = None) -> str:
+        """
+        Return the title for the top-level window.
+        """
+        c = self
+        branch = g.gitBranchName()
+        branch_s = f"{branch}: " if branch else ''
+        name_s = fileName or c.fileName() or 'untitled'
+        return f"{branch_s}{name_s}"
     #@+node:ekr.20120217070122.10473: *5* c.initCommandIvars
     def initCommandIvars(self) -> None:
         """Init ivars used while executing a command."""
@@ -240,26 +240,6 @@ class Commands:
         self.orphan_at_file_nodes: list[Position] = []  # List of orphaned nodes for c.raise_error_dialogs.
         self.wrappedFileName: Optional[str] = None  # The name of the wrapped file, for wrapper commanders.
 
-    #@+node:ekr.20120217070122.10469: *5* c.initOptionsIvars
-    def initOptionsIvars(self) -> None:
-        """Init Commander ivars corresponding to user options."""
-        self.fixed = False
-        self.fixedWindowPosition: list[tuple[int, int, int, int]] = []
-        self.forceExecuteEntireBody = False
-        self.focus_border_color = 'white'
-        self.focus_border_width = 1  # pixels
-        self.outlineHasInitialFocus = False
-        self.page_width = 132
-        self.sparse_find = True
-        self.sparse_move = True
-        self.sparse_spell = True
-        self.sparse_goto_visible = False
-        self.stayInTreeAfterSelect = False
-        self.tab_width = -4
-        self.tangle_batch_flag = False
-        self.target_language = "python"
-        self.untangle_batch_flag = False
-        self.vim_mode = False
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
     #@@nobeautify
 
@@ -401,6 +381,26 @@ class Commands:
             self.subCommanders.append(self.styleSheetManager)
         else:
             self.styleSheetManager = None
+    #@+node:ekr.20120217070122.10469: *5* c.initOptionsIvars
+    def initOptionsIvars(self) -> None:
+        """Init Commander ivars corresponding to user options."""
+        self.fixed = False
+        self.fixedWindowPosition: list[tuple[int, int, int, int]] = []
+        self.forceExecuteEntireBody = False
+        self.focus_border_color = 'white'
+        self.focus_border_width = 1  # pixels
+        self.outlineHasInitialFocus = False
+        self.page_width = 132
+        self.sparse_find = True
+        self.sparse_move = True
+        self.sparse_spell = True
+        self.sparse_goto_visible = False
+        self.stayInTreeAfterSelect = False
+        self.tab_width = -4
+        self.tangle_batch_flag = False
+        self.target_language = "python"
+        self.untangle_batch_flag = False
+        self.vim_mode = False
     #@+node:ekr.20140815160132.18837: *5* c.initSettings
     def initSettings(self, previousSettings: "PreviousSettings") -> None:
         """Instantiate c.config from previous settings."""
