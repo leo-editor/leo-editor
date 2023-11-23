@@ -2053,7 +2053,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.initComplete = False  # Set by initCompleteHint().
         self.minibufferVisible = True
         self.statusLineClass: Any = QtStatusLineClass  # A Union. 'Any' can't easily be removed.
-        self.title = 'Branch! ' + title
+        self.title = title
         self.setIvars()
         self.reloadSettings()
 
@@ -4616,7 +4616,7 @@ class TabbedFrameFactory:
                         tabw.setCurrentIndex(i)
                         break
                 break
-    #@+node:ekr.20110605121601.18470: *3* frameFactory.signal handlers
+    #@+node:ekr.20110605121601.18470: *3* frameFactory.signal handlers (trace)
     def slotCloseRequest(self, idx: int) -> None:
 
         tabw = self.masterFrame
