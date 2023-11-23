@@ -171,12 +171,13 @@ class Commands:
         name_s = fileName or c.fileName() or 'untitled'
         return f"{branch_s}{name_s}"
     #@+node:ekr.20231123014221.1: *5* c.computeTabTitle
-    def computeTabTitle(self, fileName: str) -> str:
+    def computeTabTitle(self) -> str:
         """
-        Return the tab title for the window with the given file name.
+        Return the tab title for this commander.
         """
-        if fileName:
-            return fileName
+        c = self
+        if c.fileName():
+            return c.fileName()
         # Return 'untitled' or 'untitled{n}
         n = g.app.numberOfUntitledWindows
         n_s = '' if n == 1 else str(n)
@@ -268,7 +269,7 @@ class Commands:
         self.hiddenRootNode = leoNodes.VNode(context=c, gnx='hidden-root-vnode-gnx')
         self.hiddenRootNode.h = '<hidden root vnode>'
         # Create the gui frame.
-        title = c.computeTabTitle(c.mFileName)
+        title = c.computeTabTitle()
         if not g.app.initing:
             g.doHook("before-create-leo-frame", c=c)
         self.frame = gui.createLeoFrame(c, title)
