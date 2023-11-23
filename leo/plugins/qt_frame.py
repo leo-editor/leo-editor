@@ -4616,7 +4616,7 @@ class TabbedFrameFactory:
                         tabw.setCurrentIndex(i)
                         break
                 break
-    #@+node:ekr.20110605121601.18470: *3* frameFactory.signal handlers (trace)
+    #@+node:ekr.20110605121601.18470: *3* frameFactory.signal handlers
     def slotCloseRequest(self, idx: int) -> None:
 
         tabw = self.masterFrame
