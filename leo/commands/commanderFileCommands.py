@@ -294,65 +294,64 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
 def open_outline(self: Self, event: Event = None) -> None:
     """Open a Leo window containing the contents of a .leo file."""
     c = self
-    #@+others  # Defines open_completer function.
-    #@+node:ekr.20190518121302.1: *4* function: open_completer
-    def open_completer(c: Cmdr, fileName: str) -> None:
-
-        lm = g.app.loadManager
-        c.bringToFront()
-        c.init_error_dialogs()
-        ### g.trace(fileName)  ###
-        if fileName:
-            if lm.isLeoFile(fileName):
-                c2 = g.openWithFileName(fileName, old_c=c)
-
-                ###
-                # if c2:
-                    # c = c2  # #2906: Switch c here!
-                    # c.init_error_dialogs()
-                    # # Fix #579: Key bindings don't take for commands defined in plugins.
-                    # c.k.makeAllBindings()
-                    # g.chdir(fileName)
-                    # g.setGlobalOpenDir(fileName)
-                    # c.initialFocusHelper()
-            else:
-                c2 = lm.initWrapperLeoFile(c, fileName)
-
-            if c2:
-                c = c2  # #2906: Switch c here!
-                c.init_error_dialogs()
-                # Fix #579: Key bindings don't take for commands defined in plugins.
-                c.k.makeAllBindings()
-                g.chdir(fileName)
-                g.setGlobalOpenDir(fileName)
-                c.initialFocusHelper()
-            ###
-
-            # elif c.looksLikeDerivedFile(fileName):
-                # # Create an @file node for files containing Leo sentinels.
-                # c.importCommands.importDerivedFiles(parent=c.p, paths=[fileName], command='Open')
-            # else:
-                # # otherwise, create an @edit node.
-                # c.createNodeFromExternalFile(fileName)
-        c.raise_error_dialogs(kind='write')
-        g.app.runAlreadyOpenDialog(c)
-    #@-others
     table = [
         ("Leo files", "*.leo *.leojs *.db"),
         ("Python files", "*.py"),
         ("All files", "*"),
     ]
     fileName = ''.join(c.k.givenArgs)
+    if not fileName:
+        fileName = g.app.gui.runOpenFileDialog(c,
+            defaultextension=g.defaultLeoFileExtension(c),
+            filetypes=table,
+            title="Open",
+        )
     if fileName:
         open_completer(c, fileName)
+#@+node:ekr.20190518121302.1: *4* c_file.open_completer
+def open_completer(c: Cmdr, fileName: str) -> None:
+
+    lm = g.app.loadManager
+    if not fileName:
         return
-    # Equivalent to legacy code.
-    fileName = g.app.gui.runOpenFileDialog(c,
-        defaultextension=g.defaultLeoFileExtension(c),
-        filetypes=table,
-        title="Open",
-    )
-    open_completer(c, fileName)
+    c.bringToFront()
+    c.init_error_dialogs()
+
+    if lm.isLeoFile(fileName):
+        ### c2 = g.openWithFileName(fileName, old_c=c)
+        c2 = g.app.loadManager.loadLocalFile(fileName, gui=g.app.gui, old_c=c)
+
+
+        ###  Rewrite???
+        # if c2:
+            # c = c2  # #2906: Switch c here!
+            # c.init_error_dialogs()
+            # # Fix #579: Key bindings don't take for commands defined in plugins.
+            # c.k.makeAllBindings()
+            # g.chdir(fileName)
+            # g.setGlobalOpenDir(fileName)
+            # c.initialFocusHelper()
+    else:
+        c2 = lm.initWrapperLeoFile(c, fileName)
+
+    if c2:
+        c = c2  # #2906: Switch c here!
+        c.init_error_dialogs()
+        # Fix #579: Key bindings don't take for commands defined in plugins.
+        c.k.makeAllBindings()
+        g.chdir(fileName)
+        g.setGlobalOpenDir(fileName)
+        c.initialFocusHelper()
+    ###
+
+        # elif c.looksLikeDerivedFile(fileName):
+            # # Create an @file node for files containing Leo sentinels.
+            # c.importCommands.importDerivedFiles(parent=c.p, paths=[fileName], command='Open')
+        # else:
+            # # otherwise, create an @edit node.
+            # c.createNodeFromExternalFile(fileName)
+    c.raise_error_dialogs(kind='write')
+    g.app.runAlreadyOpenDialog(c)
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
 @g.commander_command('refresh-from-disk')
 def refreshFromDisk(self: Self, event: Event = None) -> None:

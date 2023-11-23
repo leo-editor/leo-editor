@@ -3039,7 +3039,7 @@ class LoadManager:
         lm.createMenu(c)
         lm.finishOpen(c)
         return c
-    #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers
+    #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers (Don't call initWrapperLeoFile??)
     def openFileByName(self,
         fn: str,
         gui: Optional[LeoGui],
@@ -3145,7 +3145,7 @@ class LoadManager:
             k.showStateAndMode()
         c.frame.initCompleteHint()
         c.outerUpdate()  # #181: Honor focus requests.
-    #@+node:ekr.20120223062418.10408: *6* LM.initWrapperLeoFile
+    #@+node:ekr.20120223062418.10408: *6* LM.initWrapperLeoFile (To be deleted??)
     def initWrapperLeoFile(self, c: Cmdr, fn: str) -> Optional[Cmdr]:
         """
         Create an empty file if the external fn is empty.
@@ -3179,20 +3179,25 @@ class LoadManager:
                 c.selectPosition(p)
         else:
             # Create an @edit node.
-            p = c.lastTopLevel()
-            if p:
-                p.setHeadString(f"@edit {fn}")
-                c.refreshFromDisk()
-                c.selectPosition(p)
-        # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
-        # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
-        c.mFileName = fn if fn.endswith('.leo') else f"{fn}.leo"
-        c.wrappedFileName = fn
-        c.frame.title = c.computeWindowTitle()
-        c.frame.setTitle(c.frame.title)
-        if c.config.getBool('use-chapters') and c.chapterController:
-            c.chapterController.finishCreate()
-        frame.c.clearChanged()
+            last = c.lastTopLevel()
+            p = last.insertAfter()
+
+            p.setHeadString(f"@edit {fn}")
+            c.selectPosition(p)
+            c.refreshFromDisk()  # Calls c.redraw()
+            return c  # Do not create a new Commander!
+
+        if 1:  ### Obsolete?
+            # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
+            # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
+
+            c.mFileName = fn if fn.endswith('.leo') else f"{fn}.leo"
+            c.wrappedFileName = fn
+            c.frame.title = c.computeWindowTitle()
+            c.frame.setTitle(c.frame.title)
+            if c.config.getBool('use-chapters') and c.chapterController:
+                c.chapterController.finishCreate()
+            frame.c.clearChanged()
         return c
     #@+node:ekr.20120223062418.10419: *6* LM.isLeoFile & LM.isZippedFile
     def isLeoFile(self, fn: str) -> bool:
