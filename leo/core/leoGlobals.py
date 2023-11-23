@@ -3223,10 +3223,13 @@ def makePathRelativeTo(fullPath: str, basePath: str) -> str:
 #@+node:ekr.20090520055433.5945: *3* g.openWithFileName
 def openWithFileName(fileName: str, old_c: Cmdr = None, gui: LeoGui = None) -> Cmdr:
     """
-    Create a Leo Frame for the indicated fileName if the file exists.
+    Load any kind of file in the appropriate way:
 
-    Return the commander of the newly-opened outline.
+    Return the commander of the newly-opened file, which may be old_c or another commander.
     """
+    # Leo 6.7.6: default to g.app.gui:
+    if gui is None:
+        gui = g.app.gui
     return g.app.loadManager.loadLocalFile(fileName, gui, old_c)
 #@+node:ekr.20150306035851.7: *3* g.readFileIntoEncodedString
 def readFileIntoEncodedString(fn: str, silent: bool = False) -> bytes:

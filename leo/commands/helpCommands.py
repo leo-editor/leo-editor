@@ -1095,7 +1095,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
                 useSelectedText=True,
                 forcePythonSentinels=True,
                 useSentinels=True)
-            g.openWithFileName(fileName,old_c=None,gui=None)
+            g.openWithFileName(fileName, old_c=None, gui=None)
             g.os_path_... # Wrappers for os.path methods.
             g.pdb(message='')
             g.toEncodedString(s,encoding='utf-8',reportErrors=False)

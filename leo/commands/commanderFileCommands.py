@@ -318,8 +318,7 @@ def open_completer(c: Cmdr, fileName: str) -> None:
     c.init_error_dialogs()
 
     if lm.isLeoFile(fileName):
-        ### c2 = g.openWithFileName(fileName, old_c=c)
-        c2 = g.app.loadManager.loadLocalFile(fileName, gui=g.app.gui, old_c=c)
+        c2 = g.openWithFileName(fileName, old_c=c)
 
 
         ###  Rewrite???
