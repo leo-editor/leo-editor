@@ -161,16 +161,14 @@ class Commands:
                 f"total: {t3-t1:5.2f}"
             )
     #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
-    def computeWindowTitle(self) -> str:
+    def computeWindowTitle(self, fileName: str = None) -> str:
         """
-        Return the title for the top-level window with the given file name.
-        
-        A quirp: return 'untitled' for *all* untitled windows.
+        Return the title for the top-level window.
         """
         c = self
         branch = g.gitBranchName()
         branch_s = f"{branch}: " if branch else ''
-        name_s = c.fileName() or 'untitled'
+        name_s = fileName or c.fileName() or 'untitled'
         return f"{branch_s}{name_s}"
     #@+node:ekr.20231123014221.1: *5* c.computeTabTitle
     def computeTabTitle(self, fileName: str) -> str:

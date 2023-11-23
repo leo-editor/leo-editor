@@ -4637,7 +4637,7 @@ class TabbedFrameFactory:
         if not f:
             return
         c = f.c
-        title = c.computeWindowTitle()
+        title = c.computeWindowTitle(f.title)
         tabw.setWindowTitle(title)
         # Don't do this: it would break --minimize.
             # g.app.selectLeoWindow(f.c)
