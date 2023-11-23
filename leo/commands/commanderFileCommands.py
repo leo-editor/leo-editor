@@ -46,7 +46,7 @@ def set_name_and_title(c: Cmdr, fileName: str) -> str:
         c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
 
     # Set various ivars.
-    title = c.computeWindowTitle(c.mFileName)
+    title = c.computeWindowTitle()
     c.frame.title = title
     c.frame.setTitle(title)
     try:

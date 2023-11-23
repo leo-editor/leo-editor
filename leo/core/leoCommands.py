@@ -160,35 +160,28 @@ class Commands:
                 f"    2: {t3-t2:5.2f}\n"  # 0.53 sec: c.finishCreate.
                 f"total: {t3-t1:5.2f}"
             )
-    #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle (trace)
-    ### def computeWindowTitle(self, fileName: str) -> str:
+    #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
     def computeWindowTitle(self) -> str:
         """
         Return the title for the top-level window with the given file name.
+        
+        A quirp: return 'untitled' for *all* untitled windows.
         """
         c = self
         branch = g.gitBranchName()
-        file_name = c.fileName()
-        ### g.trace(repr(g.shortFileName(file_name)), g.callers(1))  ###
         branch_s = f"{branch}: " if branch else ''
-        if file_name:
-            return f"{branch_s}{file_name}"
-        # Return 'untitled' or 'untitled{n}
-        n = g.app.numberOfUntitledWindows
-        n_s = '' if n == 0 else str(n)
-        title = f"{branch_s}untitled{n_s}"
-        return title
-    #@+node:ekr.20231123014221.1: *5* c.computeTabTitle (new)
+        name_s = c.fileName() or 'untitled'
+        return f"{branch_s}{name_s}"
+    #@+node:ekr.20231123014221.1: *5* c.computeTabTitle
     def computeTabTitle(self, fileName: str) -> str:
         """
         Return the tab title for the window with the given file name.
         """
-        ### g.trace(repr(g.shortFileName(fileName)), g.callers(1))  ###
         if fileName:
             return fileName
         # Return 'untitled' or 'untitled{n}
         n = g.app.numberOfUntitledWindows
-        n_s = '' if n == 0 else str(n)
+        n_s = '' if n == 1 else str(n)
         title = f"untitled{n_s}"
         return title
     #@+node:ekr.20120217070122.10473: *5* c.initCommandIvars

@@ -2362,7 +2362,7 @@ class LoadManager:
             if not exists:
                 c.rootPosition().h = 'Workbook'
         # Create the outline with workbook's name.
-        c.frame.title = title = c.computeWindowTitle(fn)
+        c.frame.title = title = c.computeWindowTitle()
         c.frame.setTitle(title)
         if hasattr(c.frame, 'top'):
             c.frame.top.leo_master.setTabName(c, fn)
@@ -3198,7 +3198,7 @@ class LoadManager:
         # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
         c.mFileName = fn if fn.endswith('.leo') else f"{fn}.leo"
         c.wrappedFileName = fn
-        c.frame.title = c.computeWindowTitle(c.mFileName)
+        c.frame.title = c.computeWindowTitle()
         c.frame.setTitle(c.frame.title)
         if c.config.getBool('use-chapters') and c.chapterController:
             c.chapterController.finishCreate()
@@ -3416,7 +3416,7 @@ class RecentFilesManager:
                     c.add_command(recentFilesMenu, label=baseName,
                         command=recentFilesCallback, underline=0)
             else:  # original behavior
-                label = f"{accel_ch[i]} {c.computeWindowTitle(name)}"
+                label = f"{accel_ch[i]} {c.computeWindowTitle()}"
                 c.add_command(recentFilesMenu, label=label,
                     command=recentFilesCallback, underline=0)
             i += 1
