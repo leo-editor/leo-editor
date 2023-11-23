@@ -160,10 +160,33 @@ class Commands:
                 f"    2: {t3-t2:5.2f}\n"  # 0.53 sec: c.finishCreate.
                 f"total: {t3-t1:5.2f}"
             )
-    #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
+    #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle (trace)
     def computeWindowTitle(self, fileName: str) -> str:
-        """Set the window title and fileName."""
-        return g.shortFileName(fileName) if fileName.strip() else 'untitled'
+        """
+        Return the title for the top-level window with the given file name.
+        """
+        branch = g.gitBranchName()
+        g.trace(repr(g.shortFileName(fileName)), g.callers(1))  ###
+        branch_s = f"{branch}: " if branch else ''
+        if fileName:
+            return f"{branch_s}{fileName}"
+        # Return 'untitled' or 'untitled{n}
+        n = g.app.numberOfUntitledWindows
+        n_s = '' if n == 0 else str(n)
+        title = f"{branch_s}untitled{n_s}"
+        return title
+    #@+node:ekr.20231123014221.1: *5* c.computeTabTitle (new)
+    def computeTabTitle(self, fileName: str) -> str:
+        """
+        Return the tab title for the window with the given file name.
+        """
+        if fileName:
+            return fileName
+        # Return 'untitled' or 'untitled{n}
+        n = g.app.numberOfUntitledWindows
+        n_s = '' if n == 0 else str(n)
+        title = f"untitled{n_s}"
+        return title
     #@+node:ekr.20120217070122.10473: *5* c.initCommandIvars
     def initCommandIvars(self) -> None:
         """Init ivars used while executing a command."""

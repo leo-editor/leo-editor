@@ -256,6 +256,7 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
             shortcutsDict=lm.globalBindingsDict,
         ))
     t3 = time.process_time()
+    g.app.numberOfUntitledWindows += 1
     frame = c.frame
     g.app.unlockLog()
     if not old_c:
