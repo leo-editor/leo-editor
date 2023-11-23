@@ -248,6 +248,7 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
     g.app.lockLog()
     # Retain all previous settings. Very important for theme code.
     t2 = time.process_time()
+    g.app.numberOfUntitledWindows += 1
     c = g.app.newCommander(
         fileName=None,
         gui=gui,
@@ -256,7 +257,6 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
             shortcutsDict=lm.globalBindingsDict,
         ))
     t3 = time.process_time()
-    g.app.numberOfUntitledWindows += 1
     frame = c.frame
     g.app.unlockLog()
     if not old_c:

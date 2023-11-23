@@ -4636,7 +4636,9 @@ class TabbedFrameFactory:
         f = self.leoFrames.get(w)
         if not f:
             return
-        tabw.setWindowTitle(f.title)
+        c = f.c
+        title = c.computeWindowTitle()
+        tabw.setWindowTitle(title)
         # Don't do this: it would break --minimize.
             # g.app.selectLeoWindow(f.c)
         # Fix bug 690260: correct the log.
