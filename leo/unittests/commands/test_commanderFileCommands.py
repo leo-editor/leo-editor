@@ -64,8 +64,8 @@ class TestCommanderFileCommands (LeoUnitTest):
     def test_3546_import_from_command_line(self):
         
         # https://github.com/leo-editor/leo-editor/issues/3546
-        
-        g.trace(tag=f"{g.my_name()}")
+        if 0:
+            g.trace(tag=f"{g.my_name()}")
         # c = self.c
         # at = c.atFileCommands
         # p = c.p
@@ -73,8 +73,8 @@ class TestCommanderFileCommands (LeoUnitTest):
     def test_3660_new_title(self):
         
         # https://github.com/leo-editor/leo-editor/issues/3660
-        
-        g.trace(tag=f"{g.my_name()}")
+        if 0:
+            g.trace(tag=f"{g.my_name()}")
         # c = self.c
         # at = c.atFileCommands
         # p = c.p

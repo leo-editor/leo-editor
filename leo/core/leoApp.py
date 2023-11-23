@@ -2362,7 +2362,7 @@ class LoadManager:
             if not exists:
                 c.rootPosition().h = 'Workbook'
         # Create the outline with workbook's name.
-        c.frame.title = title = c.computeWindowTitle(fn)
+        c.frame.title = title = c.computeWindowTitle()
         c.frame.setTitle(title)
         if hasattr(c.frame, 'top'):
             c.frame.top.leo_master.setTabName(c, fn)
@@ -3187,9 +3187,9 @@ class LoadManager:
         # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
         # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
         c.mFileName = fn if fn.endswith('.leo') else f"{fn}.leo"
-        c.frame.title = c.computeWindowTitle(c.mFileName)
+        c.wrappedFileName = fn
+        c.frame.title = c.computeWindowTitle()
         c.frame.setTitle(c.frame.title)
-        ### To do: set tab name.
         if c.config.getBool('use-chapters') and c.chapterController:
             c.chapterController.finishCreate()
         frame.c.clearChanged()
@@ -3406,7 +3406,7 @@ class RecentFilesManager:
                     c.add_command(recentFilesMenu, label=baseName,
                         command=recentFilesCallback, underline=0)
             else:  # original behavior
-                label = f"{accel_ch[i]} {g.computeWindowTitle(name)}"
+                label = f"{accel_ch[i]} {c.computeWindowTitle()}"
                 c.add_command(recentFilesMenu, label=label,
                     command=recentFilesCallback, underline=0)
             i += 1
