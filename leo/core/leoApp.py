@@ -2639,7 +2639,7 @@ class LoadManager:
         #@+node:ekr.20230615062931.1: *6* function: defineUsage
         def defineUsage() -> str:
             """
-            Return (that is, define) Leo's usage message.
+            Return Leo's usage message.
 
             The g.OptionsUtils class uses this message to compute the list of valid options!
             """

@@ -11,10 +11,10 @@ assert g
 assert textwrap
 
 #@+others
-#@+node:ekr.20230710105810.1: ** class TestRefreshFromDisk (LeoUnitTest)
-class TestRefreshFromDisk (LeoUnitTest):
+#@+node:ekr.20230710105810.1: ** class TestCommanderFileCommands (LeoUnitTest)
+class TestCommanderFileCommands (LeoUnitTest):
     #@+others
-    #@+node:ekr.20230710105853.1: *3* TestRefreshFromDisk.test_refresh_from_disk
+    #@+node:ekr.20230710105853.1: *3* TestCommanderFileCommands.test_refresh_from_disk
     def test_refresh_from_disk(self):
         c = self.c
         at = c.atFileCommands
@@ -60,6 +60,24 @@ class TestRefreshFromDisk (LeoUnitTest):
             self.assertTrue(os.path.exists(file_name), msg=file_name)
             os.remove(file_name)
             self.assertFalse(os.path.exists(file_name), msg=file_name)
+    #@+node:ekr.20231122165954.1: *3* TestCommanderFileCommands.test_3546_import_from_command_line
+    def test_3546_import_from_command_line(self):
+        
+        # https://github.com/leo-editor/leo-editor/issues/3546
+        
+        g.trace(tag=f"{g.my_name()}")
+        # c = self.c
+        # at = c.atFileCommands
+        # p = c.p
+    #@+node:ekr.20231122170450.1: *3* TestCommanderFileCommands.test_3660_new_title
+    def test_3660_new_title(self):
+        
+        # https://github.com/leo-editor/leo-editor/issues/3660
+        
+        g.trace(tag=f"{g.my_name()}")
+        # c = self.c
+        # at = c.atFileCommands
+        # p = c.p
     #@-others
 #@-others
 #@-leo

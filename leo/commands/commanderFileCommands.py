@@ -38,6 +38,8 @@ def set_name_and_title(c: Cmdr, fileName: str) -> str:
 
     Return the finalized name.
     """
+    
+    g.trace(repr(fileName), g.callers(2))
 
     # Finalize fileName.
     if fileName.endswith(('.leo', '.db', '.leojs')):
@@ -298,7 +300,7 @@ def open_outline(self: Self, event: Event = None) -> None:
         lm = g.app.loadManager
         c.bringToFront()
         c.init_error_dialogs()
-        g.trace(fileName)
+        g.trace(fileName)  ###
         if fileName:
             if lm.isLeoFile(fileName):
                 c2 = g.openWithFileName(fileName, old_c=c)

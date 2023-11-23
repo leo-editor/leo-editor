@@ -172,6 +172,8 @@ class Commands:
                 s += str(n)
             title = g.computeWindowTitle(s)
             g.app.numberOfUntitledWindows = n + 1
+        print('')
+        g.trace(f"\n{fileName!r} ==>\n{title!r}\n{g.callers()}")
         return title
     #@+node:ekr.20120217070122.10473: *5* c.initCommandIvars
     def initCommandIvars(self) -> None:
