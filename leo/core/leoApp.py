@@ -3416,7 +3416,7 @@ class RecentFilesManager:
                     c.add_command(recentFilesMenu, label=baseName,
                         command=recentFilesCallback, underline=0)
             else:  # original behavior
-                label = f"{accel_ch[i]} {g.computeWindowTitle(name)}"
+                label = f"{accel_ch[i]} {c.computeWindowTitle(name)}"
                 c.add_command(recentFilesMenu, label=label,
                     command=recentFilesCallback, underline=0)
             i += 1

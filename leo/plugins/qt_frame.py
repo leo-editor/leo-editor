@@ -2053,7 +2053,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.initComplete = False  # Set by initCompleteHint().
         self.minibufferVisible = True
         self.statusLineClass: Any = QtStatusLineClass  # A Union. 'Any' can't easily be removed.
-        self.title = title
+        self.title = 'Branch! ' + title
         self.setIvars()
         self.reloadSettings()
 

@@ -333,7 +333,7 @@ class LeoBrowserApp(flx.PyComponent):
             w.body.set_focus()
         # Set the inited flag *last*.
         self.inited = True
-    #@+node:ekr.20181216042806.1: *5* app.init
+    #@+node:ekr.20181216042806.1: *5* app.init (leoflexx.py)
     def init(self):
         # Set the ivars.
         global g  # Always use the imported g.

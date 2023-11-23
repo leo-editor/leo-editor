@@ -163,16 +163,18 @@ class Commands:
     #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
     def computeWindowTitle(self, fileName: str) -> str:
         """Set the window title and fileName."""
-        if fileName:
-            title = g.computeWindowTitle(fileName)
-        else:
-            s = "untitled"
-            n = g.app.numberOfUntitledWindows
-            if n > 0:
-                s += str(n)
-            title = g.computeWindowTitle(s)
-            g.app.numberOfUntitledWindows = n + 1
-        return title
+        return g.shortFileName(fileName) if fileName.strip() else 'untitled'
+        ###
+            # if fileName:
+                # title = g.computeWindowTitle(fileName)
+            # else:
+                # s = "untitled"
+                # n = g.app.numberOfUntitledWindows
+                # if n > 0:
+                    # s += str(n)
+                # title = g.computeWindowTitle(s)
+                # g.app.numberOfUntitledWindows = n + 1
+            # return title
     #@+node:ekr.20120217070122.10473: *5* c.initCommandIvars
     def initCommandIvars(self) -> None:
         """Init ivars used while executing a command."""
