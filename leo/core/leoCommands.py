@@ -3214,7 +3214,7 @@ class Commands:
         if g.app.externalFilesController:
             return g.app.externalFilesController.check_overwrite(c, fn)
         return True
-    #@+node:ekr.20090212054250.9: *4* c.createNodeFromExternalFile
+    #@+node:ekr.20090212054250.9: *4* c.createNodeFromExternalFile (deleted)
     def createNodeFromExternalFile(self, fn: str) -> None:
         """
         Read the file into a node.

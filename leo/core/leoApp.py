@@ -2979,14 +2979,14 @@ class LoadManager:
         old_c: Optional[Cmdr],
         previousSettings: PreviousSettings,
     ) -> Optional[Cmdr]:
-        # """
-        # Create an outline (Commander) for either:
-        # - a Leo file (including .leo or zipped file),
-        # - an external file.
+        """
+        Create an outline (Commander) for either:
+        - a Leo file (including .leo or zipped file),
+        - an external file.
 
-        # Note: The settings don't matter for pre-reads!
-        # For second read, the settings for the file are *exactly* previousSettings.
-        # """
+        Note: The settings don't matter for pre-reads!
+        For second read, the settings for the file are *exactly* previousSettings.
+        """
         lm = self
         if not fn:
             return None  # Should not happen.
@@ -3011,7 +3011,7 @@ class LoadManager:
 
         if not lm.isLeoFile(fn):
             # Handle a wrapper file.
-            c = lm.initWrapperLeoFile(c, fn)  # #2489
+            c = lm.createWrapperCommander(c, fn)  # #2489
             # Finish.
             g.doHook("new", old_c=old_c, c=c, new_c=c)  # #2489.
             g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
@@ -3149,12 +3149,12 @@ class LoadManager:
             k.showStateAndMode()
         c.frame.initCompleteHint()
         c.outerUpdate()  # #181: Honor focus requests.
-    #@+node:ekr.20120223062418.10408: *5* LM.initWrapperLeoFile (To be deleted)
-    def initWrapperLeoFile(self, c: Cmdr, fn: str) -> Optional[Cmdr]:
+    #@+node:ekr.20120223062418.10408: *5* LM.createWrapperCommander (Retain??)
+    def createWrapperCommander(self, c: Cmdr, fn: str) -> Optional[Cmdr]:
         """
-        Create an empty file if the external fn is empty.
-
-        Otherwise, create an @edit or @file node for the external file.
+        Create a wrapper commander (in a new tab) for the given external file.
+        
+        The commander's outline contains an @edit or @file node for the external file.
         """
         # lm = self
         # Use the config params to set the size and location of the window.
