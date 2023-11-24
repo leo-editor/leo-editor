@@ -3050,7 +3050,6 @@ def createHiddenCommander(fn: str) -> Cmdr:
     """Read the given outline into a hidden commander."""
     lm = g.app.loadManager
     if lm.isLeoFile(fn):
-        ### return lm.openFileByName(fn, gui=g.app.nullGui)
         return g.openWithFileName(fn, gui=g.app.nullGui)
     return None
 
@@ -3232,7 +3231,6 @@ def openWithFileName(fileName: str, old_c: Cmdr = None, gui: LeoGui = None) -> C
     # Leo 6.7.6: default to g.app.gui:
     if gui is None:
         gui = g.app.gui
-    ### return g.app.loadManager.loadLocalFile(fileName, gui, old_c)
     return g.app.loadManager.openWithFileName(fileName, gui, old_c)
 #@+node:ekr.20150306035851.7: *3* g.readFileIntoEncodedString
 def readFileIntoEncodedString(fn: str, silent: bool = False) -> bytes:

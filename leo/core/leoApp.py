@@ -2287,7 +2287,6 @@ class LoadManager:
                 for n, fn in enumerate(lm.files):
                     lm.more_cmdline_files = n < len(lm.files) - 1
                     # Returns None if the file is open in another instance of Leo.
-                    ### c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
                     c = g.openWithFileName(fn, gui=g.app.gui, old_c=None)
                     if c and not c1:
                         c1 = c
@@ -2359,7 +2358,6 @@ class LoadManager:
             c.rootPosition().h = 'Workbook'
         else:
             # Open the workbook or create an empty file.
-            ### c = self.loadLocalFile(fn, gui=g.app.gui, old_c=None)
             c = g.openWithFileName(fn, gui=g.app.gui, old_c=None)
             if not exists:
                 c.rootPosition().h = 'Workbook'
@@ -3032,8 +3030,6 @@ class LoadManager:
         complete_inits(c)
         return c
     #@+node:ekr.20120223062418.10393: *4* LM.openWithFileName & helpers (Rewrite)
-    ###Use the logic in
-
     def openWithFileName(self, fn: str, gui: LeoGui, old_c: Cmdr) -> Optional[Cmdr]:
         """Completely read a file.
         
