@@ -1732,8 +1732,8 @@ class KeyHandlerClass:
         self.state = g.bunch(kind=None, n=None, handler=None)
 
         # Remove ???
-        self.givenArgs: list[str] = []  # Args specified after the command name in k.simulateCommand.
-        self.functionTail = ''  # For commands that take minibuffer arguments.
+        ### self.givenArgs: list[str] = []  # Args specified after the command name in k.simulateCommand.
+        self.functionTail = ''  # For vim commands that take minibuffer arguments.
     #@+node:ekr.20061031131434.79: *5* k.defineInternalIvars
     def defineInternalIvars(self) -> None:
         """Define internal ivars of the KeyHandlerClass class."""

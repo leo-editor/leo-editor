@@ -563,29 +563,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             k.setStatusLabel(f"Created: {k.arg}")
         except Exception:
             k.setStatusLabel(f"Not Created: {k.arg}")
-    #@+node:ekr.20170806094318.12: *3* efc.openOutlineByName
-    @cmd('file-open-by-name')
-    def openOutlineByName(self, event: Event) -> None:
-        """file-open-by-name: Prompt for the name of a Leo outline and open it."""
-        c, k = self.c, self.c.k
-        fileName = ''.join(k.givenArgs)
-        # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
-        if fileName and g.os_path_exists(fileName):
-            g.openWithFileName(fileName, old_c=c)
-        else:
-            k.setLabelBlue('Open Leo Outline: ')
-            k.getFileName(event, callback=self.openOutlineByNameFinisher)
-
-    def openOutlineByNameFinisher(self, fn: str) -> None:
-        c = self.c
-        if fn and g.os_path_exists(fn) and not g.os_path_isdir(fn):
-            c2 = g.openWithFileName(fn, old_c=c)
-            try:
-                g.app.gui.runAtIdle(c2.treeWantsFocusNow)
-            except Exception:
-                pass
-        else:
-            g.es(f"ignoring: {fn}")
     #@+node:ekr.20170806094318.14: *3* efc.removeDirectory
     @cmd('directory-remove')
     def removeDirectory(self, event: Event) -> None:

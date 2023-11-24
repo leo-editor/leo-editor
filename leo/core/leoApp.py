@@ -2287,7 +2287,8 @@ class LoadManager:
                 for n, fn in enumerate(lm.files):
                     lm.more_cmdline_files = n < len(lm.files) - 1
                     # Returns None if the file is open in another instance of Leo.
-                    c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+                    ### c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+                    c = g.openWithFileName(fn, gui=g.app.gui, old_c=None)
                     if c and not c1:
                         c1 = c
             except Exception:
@@ -2358,7 +2359,8 @@ class LoadManager:
             c.rootPosition().h = 'Workbook'
         else:
             # Open the workbook or create an empty file.
-            c = self.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+            ### c = self.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+            c = g.openWithFileName(fn, gui=g.app.gui, old_c=None)
             if not exists:
                 c.rootPosition().h = 'Workbook'
         # Create the outline with workbook's name.
@@ -2972,88 +2974,21 @@ class LoadManager:
             print("isValidPython: unexpected exception: g.CheckVersion")
             traceback.print_exc()
             return False
-    #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helpers
-    def loadLocalFile(self, fn: str, gui: LeoGui, old_c: Cmdr) -> Optional[Cmdr]:
-        """Completely read a file, creating the corresponding outline.
-
-        1. If fn is an existing .leo, .db or .leojs file, read it twice:
-        the first time with a NullGui to discover settings,
-        the second time with the requested gui to create the outline.
-
-        2. If fn is an external file:
-        get settings from the leoSettings.leo and myLeoSetting.leo, then
-        create a "wrapper" outline containing an @file node for the external file.
-
-        3. If fn is empty:
-        get settings from the leoSettings.leo and myLeoSetting.leo or default settings,
-        or open an empty outline.
-        """
-        lm = self
-        # #2489: If fn is empty, open an empty, untitled .leo file.
-        if not fn:
-            return lm.openEmptyLeoFile(gui, old_c)
-        # Return the commander if the file is an already open outline.
-        fn = g.finalize(fn)
-        c = lm.findOpenFile(fn)
-        if c:
-            return c
-        # Open the file, creating a wrapper .leo file if necessary.
-        previousSettings = lm.getPreviousSettings(fn)
-        c = lm.openFileByName(fn, gui, old_c, previousSettings)
-        return c
-    #@+node:ekr.20220318033804.1: *5* LM.openEmptyLeoFile
-    def openEmptyLeoFile(self, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
-        """Open an empty, untitled, new Leo file."""
-        lm = self
-        # Disable the log.
-        g.app.setLog(None)
-        g.app.lockLog()
-        # Create the commander for the .leo file.
-        c = g.app.newCommander(
-            fileName=None,
-            gui=gui,
-            previousSettings=lm.getPreviousSettings(None),
-        )
-        g.doHook('open0')
-        # Enable the log.
-        g.app.unlockLog()
-        c.frame.log.enable(True)
-        g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=None)
-        # Init the frame.
-        c.frame.setInitialWindowGeometry()
-        c.frame.deiconify()
-        c.frame.lift()
-        c.frame.splitVerticalFlag, r1, r2 = c.frame.initialRatios()
-        c.frame.resizePanesToRatio(r1, r2)
-        c.mFileName = None
-        # Fix a buglet: Don't call c.computeWindowTitle here.
-        c.frame.setTitle(c.frame.title)
-        # Late inits. Order matters.
-        if c.config.getBool('use-chapters') and c.chapterController:
-            c.chapterController.finishCreate()
-        c.clearChanged()
-        g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=None)
-        g.doHook("new", old_c=old_c, c=c, new_c=c)
-        g.app.writeWaitingLog(c)
-        c.setLog()
-        lm.createMenu(c)
-        lm.finishOpen(c)
-        return c
-    #@+node:ekr.20120223062418.10394: *5* LM.openFileByName & helpers (Don't call initWrapperLeoFile??)
+    #@+node:ekr.20120223062418.10394: *4* LM.openFileByName (to be deleted? called from LM.openWithFileName)
     def openFileByName(self,
         fn: str,
         gui: Optional[LeoGui],
         old_c: Optional[Cmdr],
-        previousSettings: "PreviousSettings",
+        previousSettings: PreviousSettings,
     ) -> Optional[Cmdr]:
-        """
-        Create an outline (Commander) for either:
-        - a Leo file (including .leo or zipped file),
-        - an external file.
+        # """
+        # Create an outline (Commander) for either:
+        # - a Leo file (including .leo or zipped file),
+        # - an external file.
 
-        Note: The settings don't matter for pre-reads!
-        For second read, the settings for the file are *exactly* previousSettings.
-        """
+        # Note: The settings don't matter for pre-reads!
+        # For second read, the settings for the file are *exactly* previousSettings.
+        # """
         lm = self
         if not fn:
             return None  # Should not happen.
@@ -3096,7 +3031,80 @@ class LoadManager:
         g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
         complete_inits(c)
         return c
-    #@+node:ekr.20120223062418.10405: *6* LM.createMenu
+    #@+node:ekr.20120223062418.10393: *4* LM.openWithFileName & helpers (Rewrite)
+    ###Use the logic in
+
+    def openWithFileName(self, fn: str, gui: LeoGui, old_c: Cmdr) -> Optional[Cmdr]:
+        """Completely read a file.
+        
+        Create an creating the corresponding outline.
+
+        1. If fn is an existing .leo, .db or .leojs file, read it twice:
+        the first time with a NullGui to discover settings,
+        the second time with the requested gui to create the outline.
+
+        2. If fn is an external file:
+        get settings from the leoSettings.leo and myLeoSetting.leo, then
+        create a "wrapper" outline containing an @file node for the external file.
+
+        3. If fn is empty:
+        get settings from the leoSettings.leo and myLeoSetting.leo or default settings,
+        or open an empty outline.
+        """
+        lm = self
+        # #2489: If fn is empty, open an empty, untitled .leo file.
+        if not fn:
+            return lm.openEmptyLeoFile(gui, old_c)
+        # Return the commander if the file is an already open outline.
+        fn = g.finalize(fn)
+        c = lm.findOpenFile(fn)
+        if c:
+            return c
+        # Open the file, creating a wrapper .leo file if necessary.
+        previousSettings = lm.getPreviousSettings(fn)
+        c = lm.openFileByName(fn, gui, old_c, previousSettings)
+        return c
+
+    loadLocalFile = openWithFileName  # Compatibility.
+    #@+node:ekr.20220318033804.1: *5* LM.openEmptyLeoFile
+    def openEmptyLeoFile(self, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
+        """Open an empty, untitled, new Leo file."""
+        lm = self
+        # Disable the log.
+        g.app.setLog(None)
+        g.app.lockLog()
+        # Create the commander for the .leo file.
+        c = g.app.newCommander(
+            fileName=None,
+            gui=gui,
+            previousSettings=lm.getPreviousSettings(None),
+        )
+        g.doHook('open0')
+        # Enable the log.
+        g.app.unlockLog()
+        c.frame.log.enable(True)
+        g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=None)
+        # Init the frame.
+        c.frame.setInitialWindowGeometry()
+        c.frame.deiconify()
+        c.frame.lift()
+        c.frame.splitVerticalFlag, r1, r2 = c.frame.initialRatios()
+        c.frame.resizePanesToRatio(r1, r2)
+        c.mFileName = None
+        # Fix a buglet: Don't call c.computeWindowTitle here.
+        c.frame.setTitle(c.frame.title)
+        # Late inits. Order matters.
+        if c.config.getBool('use-chapters') and c.chapterController:
+            c.chapterController.finishCreate()
+        c.clearChanged()
+        g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=None)
+        g.doHook("new", old_c=old_c, c=c, new_c=c)
+        g.app.writeWaitingLog(c)
+        c.setLog()
+        lm.createMenu(c)
+        lm.finishOpen(c)
+        return c
+    #@+node:ekr.20120223062418.10405: *5* LM.createMenu
     def createMenu(self, c: Cmdr, fn: str = None) -> None:
         # lm = self
         # Create the menu as late as possible so it can use user commands.
@@ -3108,7 +3116,7 @@ class LoadManager:
             g.doHook("after-create-leo-frame2", c=c)
             # Fix bug 844953: tell Unity which menu to use.
                 # c.enableMenuBar()
-    #@+node:ekr.20120223062418.10406: *6* LM.findOpenFile
+    #@+node:ekr.20120223062418.10406: *5* LM.findOpenFile
     def findOpenFile(self, fn: str) -> Optional[Cmdr]:
 
         def munge(name: str) -> str:
@@ -3126,7 +3134,7 @@ class LoadManager:
                 c.outerUpdate()
                 return c
         return None
-    #@+node:ekr.20120223062418.10407: *6* LM.finishOpen
+    #@+node:ekr.20120223062418.10407: *5* LM.finishOpen
     def finishOpen(self, c: Cmdr) -> None:
         # lm = self
         k = c.k
@@ -3145,7 +3153,7 @@ class LoadManager:
             k.showStateAndMode()
         c.frame.initCompleteHint()
         c.outerUpdate()  # #181: Honor focus requests.
-    #@+node:ekr.20120223062418.10408: *6* LM.initWrapperLeoFile (To be deleted??)
+    #@+node:ekr.20120223062418.10408: *5* LM.initWrapperLeoFile (To be deleted)
     def initWrapperLeoFile(self, c: Cmdr, fn: str) -> Optional[Cmdr]:
         """
         Create an empty file if the external fn is empty.
@@ -3199,7 +3207,7 @@ class LoadManager:
                 c.chapterController.finishCreate()
             frame.c.clearChanged()
         return c
-    #@+node:ekr.20120223062418.10419: *6* LM.isLeoFile & LM.isZippedFile
+    #@+node:ekr.20120223062418.10419: *5* LM.isLeoFile & LM.isZippedFile
     def isLeoFile(self, fn: str) -> bool:
         """
         Return True if fn is any kind of Leo file,
@@ -3212,7 +3220,7 @@ class LoadManager:
     def isZippedFile(self, fn: str) -> bool:
         """Return True if fn is a zipped file."""
         return bool(fn and zipfile.is_zipfile(fn))
-    #@+node:ekr.20120223062418.10410: *6* LM.openZipFile
+    #@+node:ekr.20120223062418.10410: *5* LM.openZipFile
     def openZipFile(self, fn: str) -> Any:
         """
         Open a zipped file for reading.

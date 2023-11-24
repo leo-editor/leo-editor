@@ -696,7 +696,7 @@ class LeoBrowserApp(flx.PyComponent):
             widget=w,  # Use the body pane by default.
         )
         # Another hack.
-        k.functionTail = None
+        ### k.functionTail = None
         if commandName and commandName.isdigit():
             # The line number Easter Egg.
             def func(event=None):

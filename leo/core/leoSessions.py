@@ -68,7 +68,8 @@ class SessionManager:
             if 'startup' in g.app.debug:
                 g.trace('loading session file:', fn)
             # This selects the proper position.
-            g.app.loadManager.loadLocalFile(fn, gui=g.app.gui, old_c=c)
+            ### g.app.loadManager.loadLocalFile(fn, gui=g.app.gui, old_c=c)
+            g.openWithFileName(fn, gui=g.app.gui, old_c=c)
     #@+node:ekr.20120420054855.14248: *3* SessionManager.load_snapshot
     def load_snapshot(self) -> list[str]:
         """
