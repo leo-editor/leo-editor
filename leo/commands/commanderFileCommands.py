@@ -130,6 +130,7 @@ def close(self: Self, event: Event = None, new_c: Cmdr = None) -> None:
     """Close the Leo window, prompting to save it if it has been changed."""
     g.app.closeLeoWindow(self.frame, new_c=new_c)
 #@+node:ekr.20110530124245.18245: *3* c_file.importAnyFile & helper
+@g.commander_command('import-any-file')
 @g.commander_command('import-file')
 def importAnyFile(self: Self, event: Event = None) -> None:
     """Import one or more files."""
