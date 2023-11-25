@@ -953,16 +953,6 @@ def editRecentFiles(self: Self, event: Event = None) -> None:
     """Opens recent files list in a new node for editing."""
     c = self
     g.app.recentFilesManager.editRecentFiles(c)
-#@+node:ekr.20031218072017.2081: *3* c_file.openRecentFile
-@g.commander_command('open-recent-file')
-def openRecentFile(self: Self, event: Event = None, fn: str = None) -> None:
-    c = self
-    if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn):
-        return
-    c2 = g.openWithFileName(fn, old_c=c)
-    if c2:
-        g.app.makeAllBindings()
-        g.doHook("recentfiles2", c=c2, p=c2.p, v=c2.p, fileName=fn)
 #@+node:tbrown.20080509212202.8: *3* c_file.sortRecentFiles
 @g.commander_command('sort-recent-files')
 def sortRecentFiles(self: Self, event: Event = None) -> None:
