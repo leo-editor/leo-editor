@@ -2972,7 +2972,7 @@ class LoadManager:
             print("isValidPython: unexpected exception: g.CheckVersion")
             traceback.print_exc()
             return False
-    #@+node:ekr.20120223062418.10393: *4* LM.openWithFileName & helpers
+    #@+node:ekr.20120223062418.10393: *4* LM.openWithFileName & helpers (cleanup)
     def openWithFileName(self, fn: str, gui: LeoGui, old_c: Cmdr) -> Optional[Cmdr]:
         """
         Completely read a file, creating the corresponding outline.
@@ -3045,7 +3045,7 @@ class LoadManager:
                 c.outerUpdate()
                 return c
         return None
-    #@+node:ekr.20120223062418.10407: *5* LM.finishOpen
+    #@+node:ekr.20120223062418.10407: *5* LM.finishOpen (***)
     def finishOpen(self, c: Cmdr) -> None:
         # lm = self
         k = c.k
@@ -3092,35 +3092,31 @@ class LoadManager:
             # Fix #1070: Use "newHeadline", not fn.
             p.h = "newHeadline" if fn.endswith('.leo') else f"@edit {fn}"
             c.selectPosition(p)
+            c.redraw()
         elif c.looksLikeDerivedFile(fn):
             # 2011/10/10: Create an @file node.
             p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
                 paths=[fn], command=None)  # Not undoable.
             if not p:
                 return None
-            if p and p.hasBack():
+            if p.hasBack():
                 p.back().doDelete()
                 p = c.rootPosition()
-                c.selectPosition(p)
+            c.selectPosition(p)
+            c.redraw()
         else:
-            # Create an @edit node.
-            last = c.lastTopLevel()
-            p = last.insertAfter()
-
-            p.setHeadString(f"@edit {fn}")
+            # Make the root node an @edit node.
+            p = c.rootPosition()
+            # last = c.lastTopLevel()
+            # p = last.insertAfter()
+            p.h = f"@edit {fn}"
             c.selectPosition(p)
             c.refreshFromDisk()  # Calls c.redraw()
-            return c  # Do not create a new Commander!
-
 
         # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
         # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
-
-
-        ### c.mFileName = fn if fn.endswith('.leo') else f"{fn}.leo"
-        ### c.wrappedFileName = fn
-        c.mFileName = None  ### Experimental.
-        c.frame.title = c.computeWindowTitle()
+        c.mFileName = None  # #3546: Do *not* automatically save the .leo file.
+        c.frame.title = c.computeTabTitle()
         c.frame.setTitle(c.frame.title)
         if c.config.getBool('use-chapters') and c.chapterController:
             c.chapterController.finishCreate()
@@ -3164,6 +3160,7 @@ class LoadManager:
         c.frame.splitVerticalFlag, r1, r2 = c.frame.initialRatios()
         c.frame.resizePanesToRatio(r1, r2)
         c.frame.setTitle(c.frame.title)
+
         # Late inits. Order matters.
         if c.config.getBool('use-chapters') and c.chapterController:
             c.chapterController.finishCreate()

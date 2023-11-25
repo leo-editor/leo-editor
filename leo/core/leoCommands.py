@@ -171,7 +171,7 @@ class Commands:
             return file_name
         # Return 'untitled' or 'untitled{n}
         n = g.app.numberOfUntitledWindows
-        n_s = '' if n == 1 else str(n)
+        n_s = '' if n < 2 else str(n)
         title = f"untitled{n_s}"
         return title
     #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
