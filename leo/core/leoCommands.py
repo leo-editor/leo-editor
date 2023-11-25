@@ -3315,6 +3315,21 @@ class Commands:
             else:
                 g.internalError(f"no gnx for vnode: {v}")
         c.fileCommands.gnxDict = d
+    #@+node:ekr.20031218072017.2081: *4* c.openRecentFile
+    def openRecentFile(self, event: Event = None, fn: str = None) -> None:
+        """
+        c.openRecentFile: This is not a command!
+        
+        This method is a helper called only from the recentFilesCallback in
+        rf.createRecentFilesMenuItems.
+        """
+        c = self
+        if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn):
+            return
+        c2 = g.openWithFileName(fn, old_c=c)
+        if c2:
+            g.app.makeAllBindings()
+            g.doHook("recentfiles2", c=c2, p=c2.p, v=c2.p, fileName=fn)
     #@+node:ekr.20180508111544.1: *3* c.Git
     #@+node:ekr.20180510104805.1: *4* c.diff_file
     def diff_file(self, fn: str, rev1: str = 'HEAD', rev2: str = '') -> None:
@@ -3972,9 +3987,7 @@ class Commands:
     ) -> None:
         c = self
         if command:
-            # Command is always either:
-            # one of two callbacks defined in createMenuEntries or
-            # recentFilesCallback, defined in createRecentFilesMenuItems.
+            # Command is one of two callbacks defined in createMenuEntries.
 
             def add_commandCallback(c: Commands = c, command: Callable = command) -> Any:
                 val = command()
