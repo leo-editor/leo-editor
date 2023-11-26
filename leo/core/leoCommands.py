@@ -183,6 +183,8 @@ class Commands:
         file_name = fileName or c.fileName()
         if not file_name:
             return 'untitled'
+        if re.match(r'^untitled\d+$', file_name):
+            return file_name
         branch = g.gitBranchName(file_name)
         branch_s = f"{branch}: " if branch else ''
         # Pretty-print file_name.
