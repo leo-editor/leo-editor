@@ -3416,7 +3416,10 @@ class RecentFilesManager:
                     c.add_command(recentFilesMenu, label=baseName,
                         command=recentFilesCallback, underline=0)
             else:  # original behavior
-                label = f"{accel_ch[i]} {c.computeWindowTitle()}"
+                # Pretty-print file_name: Replaces g.computeWindowTitle.
+                path, fn = g.os_path_split(name)
+                name_s = f"{fn} in {path}" if path else fn
+                label = f"{accel_ch[i]} {name_s}"
                 c.add_command(recentFilesMenu, label=label,
                     command=recentFilesCallback, underline=0)
             i += 1
