@@ -180,9 +180,19 @@ class Commands:
         Return the title for the top-level window.
         """
         c = self
-        branch = g.gitBranchName()
+        file_name = fileName or c.fileName()
+        if not file_name:
+            return 'untitled'
+        if re.match(r'^untitled\d+$', file_name):
+            return file_name
+        branch = g.gitBranchName(file_name)
         branch_s = f"{branch}: " if branch else ''
-        name_s = fileName or c.fileName() or 'untitled'
+        # Pretty-print file_name.
+        path, fn = g.os_path_split(file_name)
+        name_s = f"{fn} in {path}" if path else fn
+        # Regularize slashes.
+        if os.sep in '/\\':
+            name_s = name_s.replace('/', os.sep).replace('\\', os.sep)
         return f"{branch_s}{name_s}"
     #@+node:ekr.20120217070122.10473: *5* c.initCommandIvars
     def initCommandIvars(self) -> None:
