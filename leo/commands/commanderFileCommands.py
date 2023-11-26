@@ -46,7 +46,7 @@ def set_name_and_title(c: Cmdr, fileName: str) -> str:
         c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
 
     # Set various ivars.
-    title = c.computeWindowTitle(c.mFileName)
+    title = c.computeWindowTitle()
     c.frame.title = title
     c.frame.setTitle(title)
     try:
@@ -248,6 +248,7 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
     g.app.lockLog()
     # Retain all previous settings. Very important for theme code.
     t2 = time.process_time()
+    g.app.numberOfUntitledWindows += 1
     c = g.app.newCommander(
         fileName=None,
         gui=gui,

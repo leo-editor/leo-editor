@@ -160,19 +160,40 @@ class Commands:
                 f"    2: {t3-t2:5.2f}\n"  # 0.53 sec: c.finishCreate.
                 f"total: {t3-t1:5.2f}"
             )
-    #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
-    def computeWindowTitle(self, fileName: str) -> str:
-        """Set the window title and fileName."""
-        if fileName:
-            title = g.computeWindowTitle(fileName)
-        else:
-            s = "untitled"
-            n = g.app.numberOfUntitledWindows
-            if n > 0:
-                s += str(n)
-            title = g.computeWindowTitle(s)
-            g.app.numberOfUntitledWindows = n + 1
+    #@+node:ekr.20231123014221.1: *5* c.computeTabTitle
+    def computeTabTitle(self) -> str:
+        """
+        Return the tab title for this commander.
+        """
+        c = self
+        file_name = c.fileName()
+        if file_name:
+            return file_name
+        # Return 'untitled' or 'untitled{n}
+        n = g.app.numberOfUntitledWindows
+        n_s = '' if n < 2 else str(n)
+        title = f"untitled{n_s}"
         return title
+    #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
+    def computeWindowTitle(self, fileName: str = None) -> str:
+        """
+        Return the title for the top-level window.
+        """
+        c = self
+        file_name = fileName or c.fileName()
+        if not file_name:
+            return 'untitled'
+        if re.match(r'^untitled\d+$', file_name):
+            return file_name
+        branch = g.gitBranchName(file_name)
+        branch_s = f"{branch}: " if branch else ''
+        # Pretty-print file_name.
+        path, fn = g.os_path_split(file_name)
+        name_s = f"{fn} in {path}" if path else fn
+        # Regularize slashes.
+        if os.sep in '/\\':
+            name_s = name_s.replace('/', os.sep).replace('\\', os.sep)
+        return f"{branch_s}{name_s}"
     #@+node:ekr.20120217070122.10473: *5* c.initCommandIvars
     def initCommandIvars(self) -> None:
         """Init ivars used while executing a command."""
@@ -230,26 +251,6 @@ class Commands:
         self.orphan_at_file_nodes: list[Position] = []  # List of orphaned nodes for c.raise_error_dialogs.
         self.wrappedFileName: Optional[str] = None  # The name of the wrapped file, for wrapper commanders.
 
-    #@+node:ekr.20120217070122.10469: *5* c.initOptionsIvars
-    def initOptionsIvars(self) -> None:
-        """Init Commander ivars corresponding to user options."""
-        self.fixed = False
-        self.fixedWindowPosition: list[tuple[int, int, int, int]] = []
-        self.forceExecuteEntireBody = False
-        self.focus_border_color = 'white'
-        self.focus_border_width = 1  # pixels
-        self.outlineHasInitialFocus = False
-        self.page_width = 132
-        self.sparse_find = True
-        self.sparse_move = True
-        self.sparse_spell = True
-        self.sparse_goto_visible = False
-        self.stayInTreeAfterSelect = False
-        self.tab_width = -4
-        self.tangle_batch_flag = False
-        self.target_language = "python"
-        self.untangle_batch_flag = False
-        self.vim_mode = False
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
     #@@nobeautify
 
@@ -259,7 +260,7 @@ class Commands:
         self.hiddenRootNode = leoNodes.VNode(context=c, gnx='hidden-root-vnode-gnx')
         self.hiddenRootNode.h = '<hidden root vnode>'
         # Create the gui frame.
-        title = c.computeWindowTitle(c.mFileName)
+        title = c.computeTabTitle()
         if not g.app.initing:
             g.doHook("before-create-leo-frame", c=c)
         self.frame = gui.createLeoFrame(c, title)
@@ -391,6 +392,26 @@ class Commands:
             self.subCommanders.append(self.styleSheetManager)
         else:
             self.styleSheetManager = None
+    #@+node:ekr.20120217070122.10469: *5* c.initOptionsIvars
+    def initOptionsIvars(self) -> None:
+        """Init Commander ivars corresponding to user options."""
+        self.fixed = False
+        self.fixedWindowPosition: list[tuple[int, int, int, int]] = []
+        self.forceExecuteEntireBody = False
+        self.focus_border_color = 'white'
+        self.focus_border_width = 1  # pixels
+        self.outlineHasInitialFocus = False
+        self.page_width = 132
+        self.sparse_find = True
+        self.sparse_move = True
+        self.sparse_spell = True
+        self.sparse_goto_visible = False
+        self.stayInTreeAfterSelect = False
+        self.tab_width = -4
+        self.tangle_batch_flag = False
+        self.target_language = "python"
+        self.untangle_batch_flag = False
+        self.vim_mode = False
     #@+node:ekr.20140815160132.18837: *5* c.initSettings
     def initSettings(self, previousSettings: "PreviousSettings") -> None:
         """Instantiate c.config from previous settings."""
