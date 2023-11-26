@@ -171,7 +171,7 @@ class Commands:
             return file_name
         # Return 'untitled' or 'untitled{n}
         n = g.app.numberOfUntitledWindows
-        n_s = '' if n == 1 else str(n)
+        n_s = '' if n < 2 else str(n)
         title = f"untitled{n_s}"
         return title
     #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
@@ -181,10 +181,10 @@ class Commands:
         """
         c = self
         file_name = fileName or c.fileName()
+        if not file_name:
+            return 'untitled'
         branch = g.gitBranchName(file_name)
         branch_s = f"{branch}: " if branch else ''
-        if not file_name:
-            return f"{branch_s}untitled"
         # Pretty-print file_name.
         path, fn = g.os_path_split(file_name)
         name_s = f"{fn} in {path}" if path else fn
