@@ -3228,9 +3228,6 @@ def openWithFileName(fileName: str, old_c: Cmdr = None, gui: LeoGui = None) -> C
 
     Return the commander of the newly-opened file, which may be old_c or another commander.
     """
-    # Leo 6.7.6: default to g.app.gui:
-    if gui is None:
-        gui = g.app.gui
     return g.app.loadManager.openWithFileName(fileName, gui, old_c)
 #@+node:ekr.20150306035851.7: *3* g.readFileIntoEncodedString
 def readFileIntoEncodedString(fn: str, silent: bool = False) -> bytes:
