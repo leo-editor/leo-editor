@@ -333,7 +333,7 @@ class LeoBrowserApp(flx.PyComponent):
             w.body.set_focus()
         # Set the inited flag *last*.
         self.inited = True
-    #@+node:ekr.20181216042806.1: *5* app.init
+    #@+node:ekr.20181216042806.1: *5* app.init (leoflexx.py)
     def init(self):
         # Set the ivars.
         global g  # Always use the imported g.
@@ -365,7 +365,7 @@ class LeoBrowserApp(flx.PyComponent):
         for frame in g.app.windowList:
             assert isinstance(frame, DummyFrame), repr(frame)
         # Instantiate all wrappers here, not in app.finish_create.
-        title = c.computeWindowTitle(c.mFileName)
+        title = c.computeWindowTitle()
         c.frame = gui.lastFrame = LeoBrowserFrame(c, title, gui)
         # The main window will be created (much) later.
         main_window = LeoFlexxMainWindow()

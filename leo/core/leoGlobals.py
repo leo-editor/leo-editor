@@ -3027,23 +3027,6 @@ def computeMachineName() -> str:
 
 def computeStandardDirectories() -> str:
     return g.app.loadManager.computeStandardDirectories()
-#@+node:ekr.20031218072017.3103: *3* g.computeWindowTitle
-def computeWindowTitle(fileName: str) -> str:
-
-    branch, commit = g.gitInfoForFile(fileName)  # #1616
-    if not fileName:
-        return branch + ": untitled" if branch else 'untitled'
-    path, fn = g.os_path_split(fileName)
-    if path:
-        title = fn + " in " + path
-    else:
-        title = fn
-    # Yet another fix for bug 1194209: regularize slashes.
-    if os.sep in '/\\':
-        title = title.replace('/', os.sep).replace('\\', os.sep)
-    if branch:
-        title = branch + ": " + title
-    return title
 #@+node:ekr.20031218072017.3117: *3* g.create_temp_file
 def create_temp_file(textMode: bool = False) -> tuple[Any, str]:
     """
