@@ -3064,7 +3064,7 @@ class LoadManager:
             k.showStateAndMode()
         c.frame.initCompleteHint()
         c.outerUpdate()  # #181: Honor focus requests.
-    #@+node:ekr.20120223062418.10408: *5* LM.openExternalFile (***)
+    #@+node:ekr.20120223062418.10408: *5* LM.openExternalFile (***) (Doesn't call finishOpen!)
     def openExternalFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
         """
         Create a wrapper commander (in a new tab) for the given external file.
