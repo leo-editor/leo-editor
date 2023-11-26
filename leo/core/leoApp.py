@@ -2972,7 +2972,7 @@ class LoadManager:
             print("isValidPython: unexpected exception: g.CheckVersion")
             traceback.print_exc()
             return False
-    #@+node:ekr.20120223062418.10393: *4* LM.openWithFileName & helpers (cleanup)
+    #@+node:ekr.20120223062418.10393: *4* LM.openWithFileName & helpers
     def openWithFileName(self, fn: str, gui: LeoGui, old_c: Cmdr) -> Optional[Cmdr]:
         """
         Completely read a file, creating the corresponding outline.
@@ -3107,14 +3107,10 @@ class LoadManager:
         else:
             # Make the root node an @edit node.
             p = c.rootPosition()
-            # last = c.lastTopLevel()
-            # p = last.insertAfter()
             p.h = f"@edit {fn}"
             c.selectPosition(p)
             c.refreshFromDisk()  # Calls c.redraw()
 
-        # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
-        # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
         c.mFileName = None  # #3546: Do *not* automatically save the .leo file.
         c.frame.title = c.computeTabTitle()
         c.frame.setTitle(c.frame.title)
