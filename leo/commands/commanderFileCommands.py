@@ -283,7 +283,6 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
 
     g.doHook("new", old_c=old_c, c=c, new_c=c)
     c.clearChanged()  # Fix #387: Clear all dirty bits.
-    ### g.app.disable_redraw = False
     c.redraw()
 
     t4 = time.process_time()
