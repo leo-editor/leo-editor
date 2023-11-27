@@ -2367,8 +2367,12 @@ class Commands:
     #@+node:ekr.20230402232100.1: *4* c.fullPath
     def fullPath(self, p: Position) -> str:
         """
-        Return the full path (including fileName) in effect at p. Neither the
-        path nor the fileName will be created if it does not exist.
+        Return the full path in effect at p.
+        
+        If p is an @<file> node, return the path, including the filename.
+        Otherwise the return the path to the enclosing directory.
+        
+        Neither the path nor the fileName will be created if it does not exist.
         """
         c = self
         aList = g.get_directives_dict_list(p)

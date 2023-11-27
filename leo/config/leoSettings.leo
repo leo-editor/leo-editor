@@ -2282,6 +2282,8 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
+<v t="ekr.20051101160257"></v>
+<v t="ekr.20051007200824.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2707,16 +2709,14 @@ script can find them.
 
 - The *active* set should be *outside* of the @ignore and its descendants.
 </t>
-<t tx="ekr.20051007200824.1">The following special single characters may be used in the tails of shortcuts.
-They are listed along with their associated Tk binding value. Leo contains
-special code to handle these characters. No other single characters may be
-specified.
+<t tx="ekr.20051007200824.1">Leo uses Tk key names internally, even when using the Qt gui. 
 
-For example, you could specify Ctrl+! as a shortcut, and Leo will create a
-binding for &lt;Control+exclam&gt;. Some of these values may be invalid on some
-machines.
+See https://www.tcl.tk/man/tcl8.4/TkCmd/keysyms.html for the full list of Tk key names.
 
-The full list is at http://tcl.activestate.com/man/tcl8.4/TkCmd/keysyms.htm
+For convenience (and compatibility with existing settings files), Leo
+translates non-Tk names to Tk names in two ways:
+
+1. Leo translates the following single characters to longer binding names:
 
 ! exclam
 " quotedbl
@@ -2751,8 +2751,10 @@ _ underscore
 } braceright
 ~ asciitilde
 
-Leo recognizes the following mult-character names, and translates the indicated
-strings in the menu items:
+For example, you could specify Ctrl+! as a shortcut, and Leo will create a
+binding for &lt;Control+exclam&gt;.
+
+2. Leo also translates these strings in menu items:
     
 "bksp"     : "BkSp"
 "dnarrow"  : "DnArrow"
@@ -2762,27 +2764,7 @@ strings in the menu items:
 "pageup"   : "PgUp"),
 "pagedn"   : "PgDn")
 
-For example, "Ctrl-uparrow"  will appear as "Ctrl+UpArrow" in the menu.
-
-Leo passes all other mult-character names verbatim to Qt, so on some platforms
-you may be able to use any of the following. Most appear on the numeric keypad.
-For example, the following may work on some systems:
-    
-"Ctrl+BackSpace"
-
-Don't use these if you want to be sure that the binding work on all platforms.
-The complete list of names may be found at:
-http://tcl.activestate.com/man/tcl8.4/TkCmd/keysyms.htm.
-    
-F1, F2, F3, F4, F5, F6, F7, F8, F9, F10,
-BackSpace, Break, Clear, Delete, Escape, Linefeed, Return, Tab, 
-Down, Left, Right, Up,
-Begin, End, Home, Next, Prior,
-Num_Lock, Pause, Scroll_Lock, Sys_Req,
-KP_Add, KP_Decimal, KP_Divide, KP_Enter, KP_Equal,
-KP_Multiply, KP_Separator, KP_Space, KP_Subtract, KP_Tab,
-KP_F1, KP_F2, KP_F3, KP_F4,
-KP_0, KP_1, KP_2, KP_3, KP_4, KP_5, KP_6, KP_7, KP_8, KP_9</t>
+For example, "Ctrl-uparrow"  will appear as "Ctrl+UpArrow" in the menu.</t>
 <t tx="ekr.20051020125928">#d6c7d3
 #d2cad0
 #c6d3d7</t>
@@ -2828,11 +2810,16 @@ Notes:
 
 1. The case of plain letters is significant:  a is not A.
 
-2. The Shift- (or Shift+) prefix can be applied *only* to letters or multi-letter tails. Leo will ignore (with a warning) the shift prefix applied to other single letters, e.g., Ctrl-Shift-(
+2. The Shift- (or Shift+) prefix can be applied *only* to letters or
+   multi-letter tails. Leo will ignore (with a warning) the shift prefix
+   applied to other single letters, e.g., Ctrl-Shift-(
 
-3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not* significant.
+3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
+   significant.
 
-The following table illustrates these rules.  In each row, the first entry is the key (for k.bindingsDict) and the other entries are equivalents that the user may specify in leoSettings.leo:
+The following table illustrates these rules. In each row, the first entry
+is the key (for k.bindingsDict) and the other entries are equivalents that
+the user may specify in leoSettings.leo:
 
 a, Key-a, Key-A
 A, Shift-A
