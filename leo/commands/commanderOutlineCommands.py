@@ -657,7 +657,7 @@ def fullCheckOutline(self: Cmdr, event: Event = None) -> None:
     c = self
     t1 = time.process_time()
     errors = c.checkOutline()
-    t2 = time.time()
+    t2 = time.process_time()
     g.es_print(f"check-outline: {errors} error{g.plural(errors)} in {t2 - t1:4.2f} sec.")
 #@+node:ekr.20031218072017.2913: ** c_oc.Goto commands
 #@+node:ekr.20071213123942: *3* c_oc.findNextClone
