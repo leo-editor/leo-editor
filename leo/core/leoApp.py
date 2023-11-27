@@ -3047,12 +3047,24 @@ class LoadManager:
         return None
     #@+node:ekr.20120223062418.10407: *5* LM.finishOpen (***)
     def finishOpen(self, c: Cmdr) -> None:
-        # lm = self
+        """
+        Common operations to finish opening any file.
+        """
+        lm = self
         k = c.k
-        assert k
+
         # New in Leo 4.6: provide an official way for very late initialization.
         c.frame.tree.initAfterLoad()
         c.initAfterLoad()
+
+        ### Experimental: Add new common code.
+
+        lm.createMenu(c)
+        g.app.unlockLog()
+        g.app.writeWaitingLog(c)
+        c.setLog()
+        c.frame.log.enable(True)
+
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
         if c.chapterController:
@@ -3064,7 +3076,7 @@ class LoadManager:
             k.showStateAndMode()
         c.frame.initCompleteHint()
         c.outerUpdate()  # #181: Honor focus requests.
-    #@+node:ekr.20120223062418.10408: *5* LM.openExternalFile (***) (Doesn't call finishOpen!)
+    #@+node:ekr.20120223062418.10408: *5* LM.openExternalFile (***) (Didn't call finishOpen!)
     def openExternalFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
         """
         Create a wrapper commander (in a new tab) for the given external file.
@@ -3072,6 +3084,12 @@ class LoadManager:
         The commander's outline contains an @edit or @file node for the external file.
         """
         lm = self
+
+        # Suppress redraws until later.
+        g.app.disable_redraw = True
+        g.app.setLog(None)
+        g.app.lockLog()
+
         # Create the commander.
         c = g.app.newCommander(
             fileName=fn,
@@ -3114,9 +3132,10 @@ class LoadManager:
         c.mFileName = None  # #3546: Do *not* automatically save the .leo file.
         c.frame.title = c.computeTabTitle()
         c.frame.setTitle(c.frame.title)
-        if c.config.getBool('use-chapters') and c.chapterController:
-            c.chapterController.finishCreate()
+        ### if c.config.getBool('use-chapters') and c.chapterController:
+        ###    c.chapterController.finishCreate()
         frame.c.clearChanged()
+        lm.finishOpen(c)
         return c
     #@+node:ekr.20120223062418.10419: *5* LM.isLeoFile & LM.isZippedFile
     def isLeoFile(self, fn: str) -> bool:
@@ -3135,9 +3154,12 @@ class LoadManager:
     def openEmptyLeoFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
         """Open an empty Leo file with the given file name."""
         lm = self
-        # Disable the log.
+
+        # Suppress redraws until later.
+        g.app.disable_redraw = True
         g.app.setLog(None)
         g.app.lockLog()
+
         # Create the commander.
         c = g.app.newCommander(
             fileName=fn,
@@ -3145,10 +3167,13 @@ class LoadManager:
             previousSettings=lm.getPreviousSettings(fn),
         )
         g.doHook('open0')
-        # Enable the log.
-        g.app.unlockLog()
-        c.frame.log.enable(True)
+        ###
+            # # Enable the log.
+            # g.app.unlockLog()
+            # c.frame.log.enable(True)
+
         g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=None)
+
         # Init the frame.
         c.frame.setInitialWindowGeometry()
         c.frame.deiconify()
@@ -3161,13 +3186,14 @@ class LoadManager:
         if c.config.getBool('use-chapters') and c.chapterController:
             c.chapterController.finishCreate()
         c.clearChanged()
+
         g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=None)
         g.doHook("new", old_c=old_c, c=c, new_c=c)
 
         # Finish
-        g.app.writeWaitingLog(c)
-        c.setLog()
-        lm.createMenu(c)
+            ### g.app.writeWaitingLog(c)
+            ### c.setLog()
+            ### lm.createMenu(c)
         lm.finishOpen(c)
         return c
     #@+node:ekr.20231124134846.1: *5* LM.openExistingLeoFile (***)
@@ -3179,7 +3205,8 @@ class LoadManager:
         if not os.path.exists(fn):
             return None  # Defensive.
 
-        # Disable the log.
+        # Suppress redraws until later.
+        g.app.disable_redraw = True
         g.app.setLog(None)
         g.app.lockLog()
 
@@ -3187,22 +3214,28 @@ class LoadManager:
         previousSettings = lm.getPreviousSettings(fn)
 
         # Create the a commander for the .leo file.
-        c = g.app.newCommander(fileName=fn, gui=gui, previousSettings=previousSettings)
+        c = g.app.newCommander(
+            fileName=fn,
+            gui=gui,
+            previousSettings=previousSettings,
+        )
 
         # Read the outline.
         g.doHook('open0')
+
         v = c.fileCommands.getAnyLeoFileByName(fn, readAtFileNodesFlag=bool(previousSettings))
         if not v:
             return None
+
         g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=fn)
         g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
 
         # Finish.
-        g.app.unlockLog()
-        c.frame.log.enable(True)
-        g.app.writeWaitingLog(c)
-        c.setLog()
-        lm.createMenu(c, fn)
+            ### g.app.unlockLog()
+            ### c.frame.log.enable(True)
+            ### g.app.writeWaitingLog(c)
+            ### c.setLog()
+            ### lm.createMenu(c, fn)
         lm.finishOpen(c)
         return c
     #@+node:ekr.20120223062418.10410: *5* LM.openZipFile

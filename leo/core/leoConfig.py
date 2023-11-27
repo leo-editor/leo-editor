@@ -977,34 +977,40 @@ class ActiveSettingsOutline:
         """Create the new commander, and load all settings files."""
         lm = g.app.loadManager
         old_c = self.c
+
         # Save any changes so they can be seen.
         if old_c.isChanged():
             old_c.save()
         old_c.outerUpdate()
-        # From file-new...
+
+        # Suppress redraws until later.
         g.app.disable_redraw = True
         g.app.setLog(None)
         g.app.lockLog()
+
         # Switch to the new commander. Do *not* use previous settings.
         fileName = f"{old_c.fileName()}-active-settings"
         g.es(fileName, color='red')
         c = g.app.newCommander(fileName=fileName)
+
         # Restore the layout, if we have ever saved this file.
         if not old_c:
             c.frame.setInitialWindowGeometry()
+
         # #1340: Don't do this. It is no longer needed.
             # g.app.restoreWindowState(c)
         c.frame.resizePanesToRatio(c.frame.ratio, c.frame.secondary_ratio)
+        c.clearChanged()  # Clears all dirty bits.
 
         # Finish.
-        g.app.unlockLog()
-        lm.createMenu(c)
+            ### g.app.unlockLog()
+            ### lm.createMenu(c)
         lm.finishOpen(c)
-        g.app.writeWaitingLog(c)
-        c.setLog()
+            ### g.app.writeWaitingLog(c)
+            ### c.setLog()
 
-        c.clearChanged()  # Clears all dirty bits.
-        g.app.disable_redraw = False
+        ###c.clearChanged()  # Clears all dirty bits.
+        ### g.app.disable_redraw = False
         return c
     #@+node:ekr.20190905091614.6: *3* aso.create_outline & helper
     def create_outline(self) -> None:

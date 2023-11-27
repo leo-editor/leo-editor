@@ -231,7 +231,7 @@ def import_txt_file(c: Cmdr, fn: str) -> None:
     u.afterInsertNode(p, 'Import', undoData)
     c.setChanged()
     c.redraw(p)
-#@+node:ekr.20031218072017.1623: *3* c_file.new
+#@+node:ekr.20031218072017.1623: *3* c_file.new (***)
 @g.commander_command('file-new')
 @g.commander_command('new')
 def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
@@ -240,13 +240,15 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
     from leo.core import leoApp
     lm = g.app.loadManager
     old_c = self
+
     # Clean out the update queue so it won't interfere with the new window.
     self.outerUpdate()
+
     # Suppress redraws until later.
     g.app.disable_redraw = True
-    # Send all log messages to the new frame.
     g.app.setLog(None)
     g.app.lockLog()
+
     # Retain all previous settings. Very important for theme code.
     t2 = time.process_time()
     g.app.numberOfUntitledWindows += 1
@@ -259,7 +261,7 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
         ))
     t3 = time.process_time()
     frame = c.frame
-    g.app.unlockLog()
+    ### g.app.unlockLog()
     if not old_c:
         frame.setInitialWindowGeometry()
     # #1643: This doesn't work.
@@ -269,11 +271,11 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
     # Resize the _new_ frame.
     frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
     c.frame.createFirstTreeNode()
-    lm.createMenu(c)
+    ### lm.createMenu(c)
     lm.finishOpen(c)
-    g.app.writeWaitingLog(c)
+    ### g.app.writeWaitingLog(c)
     g.doHook("new", old_c=old_c, c=c, new_c=c)
-    c.setLog()
+    ### c.setLog()
     c.clearChanged()  # Fix #387: Clear all dirty bits.
     g.app.disable_redraw = False
     c.redraw()
