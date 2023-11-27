@@ -48,6 +48,7 @@ class TestAtFile(LeoUnitTest):
     #@+node:ekr.20200204094139.1: *3* TestAtFile.test_bug_1469
     def test_bug_1469(self):
         # Test #1469: saves renaming an external file
+        # https://github.com/leo-editor/leo-editor/issues/1469
         # Create a new outline with @file node and save it
         bridge = self.bridge()
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -63,9 +64,9 @@ class TestAtFile(LeoUnitTest):
             c.save()
             # Remove the original "@file 1" from the disk
             external_filename = f"{temp_dir}{os.sep}1"
-            assert os.path.exists(external_filename)
+            assert os.path.exists(external_filename), external_filename
             os.remove(external_filename)
-            assert not os.path.exists(external_filename)
+            assert not os.path.exists(external_filename), external_filename
             # Change the @file contents, save and reopen the outline
             p1.b = "b_1_changed"
             c.save()

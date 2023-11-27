@@ -11,10 +11,10 @@ assert g
 assert textwrap
 
 #@+others
-#@+node:ekr.20230710105810.1: ** class TestRefreshFromDisk (LeoUnitTest)
-class TestRefreshFromDisk (LeoUnitTest):
+#@+node:ekr.20230710105810.1: ** class TestCommanderFileCommands (LeoUnitTest)
+class TestCommanderFileCommands (LeoUnitTest):
     #@+others
-    #@+node:ekr.20230710105853.1: *3* TestRefreshFromDisk.test_refresh_from_disk
+    #@+node:ekr.20230710105853.1: *3* TestCommanderFileCommands.test_refresh_from_disk
     def test_refresh_from_disk(self):
         c = self.c
         at = c.atFileCommands

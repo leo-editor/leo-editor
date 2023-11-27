@@ -3047,10 +3047,11 @@ def create_temp_file(textMode: bool = False) -> tuple[Any, str]:
     return theFile, theFileName
 #@+node:ekr.20210307060731.1: *3* g.createHiddenCommander
 def createHiddenCommander(fn: str) -> Cmdr:
-    """Read the file into a hidden commander (Similar to g.openWithFileName)."""
+    """Read the given outline into a hidden commander."""
     lm = g.app.loadManager
-    c = lm.openFileByName(fn, gui=g.app.nullGui)
-    return c
+    if lm.isLeoFile(fn):
+        return g.openWithFileName(fn, gui=g.app.nullGui)
+    return None
 
 #@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
 def defaultLeoFileExtension(c: Cmdr = None) -> str:
@@ -3223,11 +3224,11 @@ def makePathRelativeTo(fullPath: str, basePath: str) -> str:
 #@+node:ekr.20090520055433.5945: *3* g.openWithFileName
 def openWithFileName(fileName: str, old_c: Cmdr = None, gui: LeoGui = None) -> Cmdr:
     """
-    Create a Leo Frame for the indicated fileName if the file exists.
+    Load any kind of file in the appropriate way:
 
-    Return the commander of the newly-opened outline.
+    Return the commander of the newly-opened file, which may be old_c or another commander.
     """
-    return g.app.loadManager.loadLocalFile(fileName, gui, old_c)
+    return g.app.loadManager.openWithFileName(fileName, gui, old_c)
 #@+node:ekr.20150306035851.7: *3* g.readFileIntoEncodedString
 def readFileIntoEncodedString(fn: str, silent: bool = False) -> bytes:
     """Return the raw contents of the file whose full path is fn."""
