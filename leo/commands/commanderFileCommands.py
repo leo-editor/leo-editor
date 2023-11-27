@@ -249,16 +249,19 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
     g.app.setLog(None)
     g.app.lockLog()
 
-    # Retain all previous settings. Very important for theme code.
     t2 = time.process_time()
     g.app.numberOfUntitledWindows += 1
+
+    # Retain all previous settings. Very important for theme code.
+    previousSettings = leoApp.PreviousSettings(
+        settingsDict=lm.globalSettingsDict,
+        shortcutsDict=lm.globalBindingsDict,
+    )
     c = g.app.newCommander(
         fileName=None,
         gui=gui,
-        previousSettings=leoApp.PreviousSettings(
-            settingsDict=lm.globalSettingsDict,
-            shortcutsDict=lm.globalBindingsDict,
-        ))
+        previousSettings=previousSettings,
+    )
 
     t3 = time.process_time()
     frame = c.frame

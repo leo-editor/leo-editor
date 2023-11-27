@@ -999,6 +999,7 @@ class ActiveSettingsOutline:
 
         # #1340: Don't do this. It is no longer needed.
             # g.app.restoreWindowState(c)
+
         c.frame.resizePanesToRatio(c.frame.ratio, c.frame.secondary_ratio)
         c.clearChanged()  # Clears all dirty bits.
 
