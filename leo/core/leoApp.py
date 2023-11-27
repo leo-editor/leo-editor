@@ -3218,7 +3218,6 @@ class LoadManager:
         g.doHook('open0')
         v = c.fileCommands.getAnyLeoFileByName(fn, readAtFileNodesFlag=bool(previousSettings))
         if not v:
-            g.trace('No v!!!')
             return None
         g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=fn)
         g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
