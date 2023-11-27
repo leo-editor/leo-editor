@@ -3071,11 +3071,12 @@ def ensure_extension(name: str, ext: str) -> str:
 #@+node:ekr.20150403150655.1: *3* g.fullPath (deprecated)
 def fullPath(c: Cmdr, p: Position) -> str:
     """
-    Return the full path (including fileName) in effect at p.
-
-    Create neither the path nor the fileName.
-
-    This function is deprecated. Use c.fullPath(p) instead.
+    Return the full path in effect at p.
+    
+    If p is an @<file> node, return the path will including the filename.
+    Otherwise the return the path to the enclosing directory.
+    
+    Neither the path nor the fileName will be created if it does not exist.
     """
     return c.fullPath(p)
 #@+node:ekr.20190327192721.1: *3* g.get_files_in_directory
