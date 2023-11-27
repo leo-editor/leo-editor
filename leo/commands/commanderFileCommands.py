@@ -231,7 +231,7 @@ def import_txt_file(c: Cmdr, fn: str) -> None:
     u.afterInsertNode(p, 'Import', undoData)
     c.setChanged()
     c.redraw(p)
-#@+node:ekr.20031218072017.1623: *3* c_file.new (***)
+#@+node:ekr.20031218072017.1623: *3* c_file.new
 @g.commander_command('file-new')
 @g.commander_command('new')
 def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:

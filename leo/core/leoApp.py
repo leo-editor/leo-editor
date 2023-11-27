@@ -3045,7 +3045,7 @@ class LoadManager:
                 c.outerUpdate()
                 return c
         return None
-    #@+node:ekr.20120223062418.10407: *5* LM.finishOpen (***)
+    #@+node:ekr.20120223062418.10407: *5* LM.finishOpen
     def finishOpen(self, c: Cmdr) -> None:
         """
         Common operations to finish opening any file.
@@ -3076,7 +3076,7 @@ class LoadManager:
             k.showStateAndMode()
         c.frame.initCompleteHint()
         c.outerUpdate()  # #181: Honor focus requests.
-    #@+node:ekr.20120223062418.10408: *5* LM.openExternalFile (***) (Didn't call finishOpen!)
+    #@+node:ekr.20120223062418.10408: *5* LM.openExternalFile
     def openExternalFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
         """
         Create a wrapper commander (in a new tab) for the given external file.
@@ -3150,7 +3150,7 @@ class LoadManager:
     def isZippedFile(self, fn: str) -> bool:
         """Return True if fn is a zipped file."""
         return bool(fn and zipfile.is_zipfile(fn))
-    #@+node:ekr.20220318033804.1: *5* LM.openEmptyLeoFile (***)
+    #@+node:ekr.20220318033804.1: *5* LM.openEmptyLeoFile
     def openEmptyLeoFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
         """Open an empty Leo file with the given file name."""
         lm = self
@@ -3196,7 +3196,7 @@ class LoadManager:
             ### lm.createMenu(c)
         lm.finishOpen(c)
         return c
-    #@+node:ekr.20231124134846.1: *5* LM.openExistingLeoFile (***)
+    #@+node:ekr.20231124134846.1: *5* LM.openExistingLeoFile
     def openExistingLeoFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
         """
         Create a commander for an existing .leo, .db, or .leojs file.
