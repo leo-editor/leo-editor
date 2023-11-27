@@ -2716,7 +2716,7 @@ For example, you could specify Ctrl+! as a shortcut, and Leo will create a
 binding for &lt;Control+exclam&gt;. Some of these values may be invalid on some
 machines.
 
-The full list is at http://tcl.activestate.com/man/tcl8.4/TkCmd/keysyms.htm
+The full list is at https://www.tcl.tk/man/tcl8.4/TkCmd/keysyms.html
 
 ! exclam
 " quotedbl
@@ -2770,19 +2770,7 @@ For example, the following may work on some systems:
     
 "Ctrl+BackSpace"
 
-Don't use these if you want to be sure that the binding work on all platforms.
-The complete list of names may be found at:
-http://tcl.activestate.com/man/tcl8.4/TkCmd/keysyms.htm.
-    
-F1, F2, F3, F4, F5, F6, F7, F8, F9, F10,
-BackSpace, Break, Clear, Delete, Escape, Linefeed, Return, Tab, 
-Down, Left, Right, Up,
-Begin, End, Home, Next, Prior,
-Num_Lock, Pause, Scroll_Lock, Sys_Req,
-KP_Add, KP_Decimal, KP_Divide, KP_Enter, KP_Equal,
-KP_Multiply, KP_Separator, KP_Space, KP_Subtract, KP_Tab,
-KP_F1, KP_F2, KP_F3, KP_F4,
-KP_0, KP_1, KP_2, KP_3, KP_4, KP_5, KP_6, KP_7, KP_8, KP_9</t>
+Use the full Tk key names if you want to be sure that the binding work on all platforms.</t>
 <t tx="ekr.20051020125928">#d6c7d3
 #d2cad0
 #c6d3d7</t>
