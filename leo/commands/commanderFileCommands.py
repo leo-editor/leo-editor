@@ -259,26 +259,30 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
             settingsDict=lm.globalSettingsDict,
             shortcutsDict=lm.globalBindingsDict,
         ))
+
     t3 = time.process_time()
     frame = c.frame
-    ### g.app.unlockLog()
     if not old_c:
         frame.setInitialWindowGeometry()
+
     # #1643: This doesn't work.
         # g.app.restoreWindowState(c)
+
     frame.deiconify()
     frame.lift()
+
     # Resize the _new_ frame.
     frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
     c.frame.createFirstTreeNode()
-    ### lm.createMenu(c)
+
+    # Finish.
     lm.finishOpen(c)
-    ### g.app.writeWaitingLog(c)
+
     g.doHook("new", old_c=old_c, c=c, new_c=c)
-    ### c.setLog()
     c.clearChanged()  # Fix #387: Clear all dirty bits.
-    g.app.disable_redraw = False
+    ### g.app.disable_redraw = False
     c.redraw()
+
     t4 = time.process_time()
     if 'speed' in g.app.debug:
         g.trace()

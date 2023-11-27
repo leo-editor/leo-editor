@@ -3057,13 +3057,19 @@ class LoadManager:
         c.frame.tree.initAfterLoad()
         c.initAfterLoad()
 
-        ### Experimental: Add new common code.
-
-        lm.createMenu(c)
+        # Leo 6.7.6: New common finishing code.
+        # # lm.createMenu(c)
+        # # g.app.unlockLog()
+        # # g.app.writeWaitingLog(c)
+        # # c.setLog()
+        # # c.frame.log.enable(True)
+        
+        
         g.app.unlockLog()
+        c.frame.log.enable(True)
         g.app.writeWaitingLog(c)
         c.setLog()
-        c.frame.log.enable(True)
+        lm.createMenu(c, c.fileName())  ###
 
         # chapterController.finishCreate must be called after the first real redraw
         # because it requires a valid value for c.rootPosition().
@@ -3132,8 +3138,8 @@ class LoadManager:
         c.mFileName = None  # #3546: Do *not* automatically save the .leo file.
         c.frame.title = c.computeTabTitle()
         c.frame.setTitle(c.frame.title)
-        ### if c.config.getBool('use-chapters') and c.chapterController:
-        ###    c.chapterController.finishCreate()
+        
+        # Finish.
         frame.c.clearChanged()
         lm.finishOpen(c)
         return c
@@ -3166,34 +3172,21 @@ class LoadManager:
             gui=gui,
             previousSettings=lm.getPreviousSettings(fn),
         )
-        g.doHook('open0')
-        ###
-            # # Enable the log.
-            # g.app.unlockLog()
-            # c.frame.log.enable(True)
-
-        g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=None)
-
+        
         # Init the frame.
+        g.doHook('open0')
+        g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=None)
         c.frame.setInitialWindowGeometry()
         c.frame.deiconify()
         c.frame.lift()
         c.frame.splitVerticalFlag, r1, r2 = c.frame.initialRatios()
         c.frame.resizePanesToRatio(r1, r2)
         c.frame.setTitle(c.frame.title)
-
-        # Late inits. Order matters.
-        if c.config.getBool('use-chapters') and c.chapterController:
-            c.chapterController.finishCreate()
-        c.clearChanged()
-
         g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=None)
         g.doHook("new", old_c=old_c, c=c, new_c=c)
 
         # Finish
-            ### g.app.writeWaitingLog(c)
-            ### c.setLog()
-            ### lm.createMenu(c)
+        c.clearChanged()
         lm.finishOpen(c)
         return c
     #@+node:ekr.20231124134846.1: *5* LM.openExistingLeoFile
@@ -3201,6 +3194,7 @@ class LoadManager:
         """
         Create a commander for an existing .leo, .db, or .leojs file.
         """
+        g.trace(fn)  ###
         lm = self
         if not os.path.exists(fn):
             return None  # Defensive.
@@ -3222,21 +3216,16 @@ class LoadManager:
 
         # Read the outline.
         g.doHook('open0')
-
         v = c.fileCommands.getAnyLeoFileByName(fn, readAtFileNodesFlag=bool(previousSettings))
         if not v:
+            g.trace('No v!!!')
             return None
-
         g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=fn)
         g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
 
         # Finish.
-            ### g.app.unlockLog()
-            ### c.frame.log.enable(True)
-            ### g.app.writeWaitingLog(c)
-            ### c.setLog()
-            ### lm.createMenu(c, fn)
         lm.finishOpen(c)
+        c.redraw()  ###
         return c
     #@+node:ekr.20120223062418.10410: *5* LM.openZipFile
     def openZipFile(self, fn: str) -> Any:

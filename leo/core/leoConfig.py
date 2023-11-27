@@ -1003,14 +1003,7 @@ class ActiveSettingsOutline:
         c.clearChanged()  # Clears all dirty bits.
 
         # Finish.
-            ### g.app.unlockLog()
-            ### lm.createMenu(c)
         lm.finishOpen(c)
-            ### g.app.writeWaitingLog(c)
-            ### c.setLog()
-
-        ###c.clearChanged()  # Clears all dirty bits.
-        ### g.app.disable_redraw = False
         return c
     #@+node:ekr.20190905091614.6: *3* aso.create_outline & helper
     def create_outline(self) -> None:
