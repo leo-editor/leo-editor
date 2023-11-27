@@ -1901,6 +1901,42 @@ class LeoFind:
         k.showStateAndMode()
         c.widgetWantsFocusNow(w)
         self.do_find_next(settings)
+    #@+node:ekr.20231127044802.1: *4* find.summarize
+    @cmd('summarize')
+    def summarize_command(self, event: Event) -> None:  # pragma: no cover (interactive)
+
+        c = self.c
+
+        def summarize_callback(**kwargs: Any) -> None:
+
+            # Get and check pattern.
+            pattern_s = kwargs['args'][0]
+            if not pattern_s.strip():
+                g.es_print('No pattern')
+                return
+            try:
+                re_pattern = re.compile(pattern_s)
+            except Exception:
+                g.es_print(f"Bad pattern: {pattern_s!r}")
+                return
+
+            # Find all unique instances of pattern.
+            results_set = set()
+            for v in c.all_unique_nodes():
+                for m in re.finditer(re_pattern, v.b):
+                    results_set.add(m.group(1) if m.groups() else m.group(0))
+            results = list(sorted(results_set))
+
+            # Create a top-level summary node.
+            last = c.lastTopLevel()
+            p = last.insertAfter()
+            p.h = f"Summary: {pattern_s}"
+            results_s = '\n'.join(results)
+            p.b = f"// Summary: {pattern_s}\n\n{results_s}\n"
+            print(f"Summary: Found {len(results)}")
+            c.redraw()
+
+        c.interactive1(summarize_callback, event=None, prompts=('Summarize regex: ',))
     #@+node:ekr.20160920164418.2: *4* find.tag-children & helper
     @cmd('tag-children')
     def interactive_tag_children(self, event: Event = None) -> None:  # pragma: no cover (interactive)
