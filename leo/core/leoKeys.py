@@ -1727,13 +1727,10 @@ class KeyHandlerClass:
         self.arg = ''  # The value returned by k.getArg.
         self.getArgEscapeFlag = False  # True: the user escaped getArg in an unusual way.
         self.getArgEscapes: list[str] = []
+        self.functionTail = ''  # For vim commands that take minibuffer arguments.
         self.inputModeName = ''  # The name of the input mode, or None.
         self.modePrompt = ''  # The mode prompt.
         self.state = g.bunch(kind=None, n=None, handler=None)
-
-        # Remove ???
-        self.givenArgs: list[str] = []  # Args specified after the command name in k.simulateCommand.
-        self.functionTail = ''  # For commands that take minibuffer arguments.
     #@+node:ekr.20061031131434.79: *5* k.defineInternalIvars
     def defineInternalIvars(self) -> None:
         """Define internal ivars of the KeyHandlerClass class."""

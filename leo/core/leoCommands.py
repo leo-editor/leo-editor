@@ -249,8 +249,6 @@ class Commands:
         self.mFileName: str = fileName or ''  # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mRelativeFileName = relativeFileName or ''  #
         self.orphan_at_file_nodes: list[Position] = []  # List of orphaned nodes for c.raise_error_dialogs.
-        self.wrappedFileName: Optional[str] = None  # The name of the wrapped file, for wrapper commanders.
-
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
     #@@nobeautify
 
@@ -3224,34 +3222,6 @@ class Commands:
         if g.app.externalFilesController:
             return g.app.externalFilesController.check_overwrite(c, fn)
         return True
-    #@+node:ekr.20090212054250.9: *4* c.createNodeFromExternalFile
-    def createNodeFromExternalFile(self, fn: str) -> None:
-        """
-        Read the file into a node.
-        Return None, indicating that c.open should set focus.
-        """
-        c = self
-        s, e = g.readFileIntoString(fn)
-        if s is None:
-            return
-        head, ext = g.os_path_splitext(fn)
-        if ext.startswith('.'):
-            ext = ext[1:]
-        language = g.app.extension_dict.get(ext)
-        if language:
-            prefix = f"@color\n@language {language}\n\n"
-        else:
-            prefix = '@killcolor\n\n'
-        # pylint: disable=no-member
-        # Defined in commanderOutlineCommands.py
-        p2 = c.insertHeadline(op_name='Open File', as_child=False)
-        p2.h = f"@edit {fn}"
-        p2.b = prefix + s
-        w = c.frame.body.wrapper
-        if w:
-            w.setInsertPoint(0)
-        c.redraw()
-        c.recolor()
     #@+node:ekr.20110530124245.18248: *4* c.looksLikeDerivedFile
     def looksLikeDerivedFile(self, fn: str) -> bool:
         """

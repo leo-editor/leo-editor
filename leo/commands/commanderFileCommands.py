@@ -130,6 +130,7 @@ def close(self: Self, event: Event = None, new_c: Cmdr = None) -> None:
     """Close the Leo window, prompting to save it if it has been changed."""
     g.app.closeLeoWindow(self.frame, new_c=new_c)
 #@+node:ekr.20110530124245.18245: *3* c_file.importAnyFile & helper
+@g.commander_command('import-any-file')
 @g.commander_command('import-file')
 def importAnyFile(self: Self, event: Event = None) -> None:
     """Import one or more files."""
@@ -239,43 +240,51 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
     from leo.core import leoApp
     lm = g.app.loadManager
     old_c = self
+
     # Clean out the update queue so it won't interfere with the new window.
     self.outerUpdate()
+
     # Suppress redraws until later.
     g.app.disable_redraw = True
-    # Send all log messages to the new frame.
     g.app.setLog(None)
     g.app.lockLog()
-    # Retain all previous settings. Very important for theme code.
+
     t2 = time.process_time()
     g.app.numberOfUntitledWindows += 1
+
+    # Retain all previous settings. Very important for theme code.
+    previousSettings = leoApp.PreviousSettings(
+        settingsDict=lm.globalSettingsDict,
+        shortcutsDict=lm.globalBindingsDict,
+    )
     c = g.app.newCommander(
         fileName=None,
         gui=gui,
-        previousSettings=leoApp.PreviousSettings(
-            settingsDict=lm.globalSettingsDict,
-            shortcutsDict=lm.globalBindingsDict,
-        ))
+        previousSettings=previousSettings,
+    )
+
     t3 = time.process_time()
     frame = c.frame
-    g.app.unlockLog()
     if not old_c:
         frame.setInitialWindowGeometry()
+
     # #1643: This doesn't work.
         # g.app.restoreWindowState(c)
+
     frame.deiconify()
     frame.lift()
+
     # Resize the _new_ frame.
     frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
     c.frame.createFirstTreeNode()
-    lm.createMenu(c)
+
+    # Finish.
     lm.finishOpen(c)
-    g.app.writeWaitingLog(c)
+
     g.doHook("new", old_c=old_c, c=c, new_c=c)
-    c.setLog()
     c.clearChanged()  # Fix #387: Clear all dirty bits.
-    g.app.disable_redraw = False
     c.redraw()
+
     t4 = time.process_time()
     if 'speed' in g.app.debug:
         g.trace()
@@ -286,53 +295,24 @@ def new(self: Self, event: Event = None, gui: LeoGui = None) -> Cmdr:
             f"total: {t4-t1:5.2f}"
         )
     return c  # For unit tests and scripts.
-#@+node:ekr.20031218072017.2821: *3* c_file.open_outline & helper
+#@+node:ekr.20031218072017.2821: *3* c_file.open_outline
+@g.commander_command('open-file')
 @g.commander_command('open-outline')
 def open_outline(self: Self, event: Event = None) -> None:
     """Open a Leo window containing the contents of a .leo file."""
     c = self
-    #@+others  # Defines open_completer function.
-    #@+node:ekr.20190518121302.1: *4* function: open_completer
-    def open_completer(c: Cmdr, fileName: str) -> None:
-
-        c.bringToFront()
-        c.init_error_dialogs()
-        if fileName:
-            if g.app.loadManager.isLeoFile(fileName):
-                c2 = g.openWithFileName(fileName, old_c=c)
-                if c2:
-                    c = c2  # #2906: Switch c here!
-                    c.init_error_dialogs()
-                    # Fix #579: Key bindings don't take for commands defined in plugins.
-                    c.k.makeAllBindings()
-                    g.chdir(fileName)
-                    g.setGlobalOpenDir(fileName)
-                    c.initialFocusHelper()
-            elif c.looksLikeDerivedFile(fileName):
-                # Create an @file node for files containing Leo sentinels.
-                c.importCommands.importDerivedFiles(parent=c.p, paths=[fileName], command='Open')
-            else:
-                # otherwise, create an @edit node.
-                c.createNodeFromExternalFile(fileName)
-        c.raise_error_dialogs(kind='write')
-        g.app.runAlreadyOpenDialog(c)
-    #@-others
     table = [
         ("Leo files", "*.leo *.leojs *.db"),
         ("Python files", "*.py"),
         ("All files", "*"),
     ]
-    fileName = ''.join(c.k.givenArgs)
-    if fileName:
-        open_completer(c, fileName)
-        return
-    # Equivalent to legacy code.
     fileName = g.app.gui.runOpenFileDialog(c,
         defaultextension=g.defaultLeoFileExtension(c),
         filetypes=table,
         title="Open",
     )
-    open_completer(c, fileName)
+    if fileName:
+        g.openWithFileName(fileName, old_c=c)
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
 @g.commander_command('refresh-from-disk')
 def refreshFromDisk(self: Self, event: Event = None) -> None:

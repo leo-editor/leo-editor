@@ -63,13 +63,12 @@ class SessionManager:
             fn = g.getUNLFilePart(unl)
             exists = fn and g.os_path_exists(fn)
             if not exists:
-                g.trace('File part does not exist', repr(fn))
-                g.trace(f"Bad unl: {unl!r}")
+                g.trace(f"Ignoring invalid session {'unl'}: {unl!r}")
                 continue
             if 'startup' in g.app.debug:
                 g.trace('loading session file:', fn)
             # This selects the proper position.
-            g.app.loadManager.loadLocalFile(fn, gui=g.app.gui, old_c=c)
+            g.openWithFileName(fn, gui=g.app.gui, old_c=c)
     #@+node:ekr.20120420054855.14248: *3* SessionManager.load_snapshot
     def load_snapshot(self) -> list[str]:
         """
