@@ -3073,7 +3073,7 @@ def fullPath(c: Cmdr, p: Position) -> str:
     """
     Return the full path in effect at p.
     
-    If p is an @<file> node, return the path will including the filename.
+    If p is an @<file> node, return the path, including the filename.
     Otherwise the return the path to the enclosing directory.
     
     Neither the path nor the fileName will be created if it does not exist.
