@@ -2713,7 +2713,7 @@ script can find them.
 
 See https://www.tcl.tk/man/tcl8.4/TkCmd/keysyms.html for the full list of Tk key names.
 
-For convenience (and compatibility with exising settings files), Leo
+For convenience (and compatibility with existing settings files), Leo
 translates non-Tk names to Tk names in two ways:
 
 1. Leo translates the following single characters to longer binding names:
