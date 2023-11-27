@@ -1904,6 +1904,13 @@ class LeoFind:
     #@+node:ekr.20231127044802.1: *4* find.summarize
     @cmd('summarize')
     def summarize_command(self, event: Event) -> None:  # pragma: no cover (interactive)
+        """
+        The summarize command. Prompt for a regex and list all matches in a new
+        top-level node.
+        
+        This command shows *only* m.group(0).
+        Append `.*` to the pattern to see the remainder of the line.
+        """
 
         c = self.c
 
@@ -1912,29 +1919,32 @@ class LeoFind:
             # Get and check pattern.
             pattern_s = kwargs['args'][0]
             if not pattern_s.strip():
-                g.es_print('No pattern')
+                g.es_print('no pattern')
                 return
             try:
                 re_pattern = re.compile(pattern_s)
             except Exception:
-                g.es_print(f"Bad pattern: {pattern_s!r}")
+                g.es(f"invalid regex: {pattern_s!r}")
                 return
 
             # Find all unique instances of pattern.
             results_set = set()
             for v in c.all_unique_nodes():
                 for m in re.finditer(re_pattern, v.b):
-                    results_set.add(m.group(1) if m.groups() else m.group(0))
+                    results_set.add(m.group(0))
             results = list(sorted(results_set))
 
-            # Create a top-level summary node.
-            last = c.lastTopLevel()
-            p = last.insertAfter()
-            p.h = f"Summary: {pattern_s}"
-            results_s = '\n'.join(results)
-            p.b = f"// Summary: {pattern_s}\n\n{results_s}\n"
-            print(f"Summary: Found {len(results)}")
-            c.redraw()
+            if results:
+                # Create a top-level summary node.
+                last = c.lastTopLevel()
+                p = last.insertAfter()
+                p.h = f"summarize: found {len(results)}: {pattern_s}"
+                results_s = '\n'.join(results)
+                p.b = f"// summarize: {pattern_s}\n\n{results_s}\n"
+                c.redraw()
+            else:
+                # Report failure.
+                g.es(f"summarize: not found: {pattern_s}")
 
         c.interactive1(summarize_callback, event=None, prompts=('Summarize regex: ',))
     #@+node:ekr.20160920164418.2: *4* find.tag-children & helper
