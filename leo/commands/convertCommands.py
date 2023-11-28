@@ -1558,7 +1558,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         # Keys are argument names. Values are Rust types.
         # Typescript can infer types of initialized kwargs.
         types_d: dict[str, str] = {}
-        
+
         #@+others
         #@+node:ekr.20231119103026.2: *5* py2rust.ctor
         def __init__(self, c: Cmdr, alias: str = None) -> None:
