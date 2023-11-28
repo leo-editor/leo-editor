@@ -37,7 +37,8 @@ class SessionManager:
         else:
             outlines = [i.c for i in g.app.windowList]
         for c in outlines:
-            result.append(c.p.get_full_gnx_UNL())
+            if c.fileName():
+                result.append(c.p.get_full_gnx_UNL())
         return result
     #@+node:ekr.20120420054855.14416: *3* SessionManager.get_session_path
     def get_session_path(self) -> Optional[str]:
