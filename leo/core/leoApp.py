@@ -3140,7 +3140,7 @@ class LoadManager:
     #@+node:ekr.20120223062418.10419: *5* LM.isLeoFile & LM.isZippedFile
     def isLeoFile(self, fn: str) -> bool:
         """
-        Return True if fn is any kind of Leo file,
+        Return True if fn has the extention of any kind of Leo file,
         including a zipped file or .leo, .db, or .leojs file.
         """
         if not fn:
@@ -3183,7 +3183,7 @@ class LoadManager:
         c.clearChanged()
         lm.finishOpen(c)
         return c
-    #@+node:ekr.20231124134846.1: *5* LM.openExistingLeoFile
+    #@+node:ekr.20231124134846.1: *5* LM.openExistingLeoFile & helper
     def openExistingLeoFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
         """
         Create a commander for an existing .leo, .db, or .leojs file.
@@ -3212,13 +3212,49 @@ class LoadManager:
         g.doHook('open0')
         v = c.fileCommands.getAnyLeoFileByName(fn, readAtFileNodesFlag=bool(previousSettings))
         if not v:
-            return None
+            # #3656: Recover gracefully.
+            lm.openBadLeoFile(c, fn)
+
         g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)
         g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
 
         # Finish.
         lm.finishOpen(c)
         return c
+    #@+node:ekr.20231128064705.1: *6* LM.openBadLeoFile
+    def openBadLeoFile(self, c: Cmdr, fn: str) -> None:
+        """
+        Open a bad Leo file using some of the logic of lm.openExternalFile.
+        """
+        # lm = self
+        if not fn:
+            return None  # Should not happen.
+        if not os.path.exists(fn):
+            return None  # Should not happen.
+
+        if c.looksLikeDerivedFile(fn):
+            # Create an @file node.
+            p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
+                paths=[fn], command=None)  # Not undoable.
+            if not p:
+                return None
+            if p.hasBack():
+                p.back().doDelete()
+                p = c.rootPosition()
+            c.selectPosition(p)
+            c.redraw()
+        else:
+            # Make the root node an @edit node.
+            p = c.rootPosition()
+            p.h = f"@edit {fn}"
+            c.selectPosition(p)
+            c.refreshFromDisk()  # Calls c.redraw()
+
+        c.mFileName = fn  # It *is* valid to save the file.
+        title = c.computeWindowTitle()
+        c.frame.title = title
+        c.frame.setTitle(title)
+        c.clearChanged()
     #@+node:ekr.20120223062418.10410: *5* LM.openZipFile
     def openZipFile(self, fn: str) -> Any:
         """
