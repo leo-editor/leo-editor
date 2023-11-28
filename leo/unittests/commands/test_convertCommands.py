@@ -10,79 +10,28 @@ from leo.commands.convertCommands import ConvertCommandsClass
 from leo.unittests.test_importers import BaseTestImporter
 
 #@+others
-#@+node:ekr.20211013081200.1: ** class TestPythonToTypeScript(LeoUnitTest):
-class TestPythonToTypeScript(LeoUnitTest):
-    """Test cases for python-to-typescript command"""
+#@+node:ekr.20220824193803.1: ** class Test_To_Python(BaseTestImporter):
+class Test_To_Python(BaseTestImporter):
+    """Test cases for commands using To_Python class."""
 
     #@+others
-    #@+node:ekr.20211013090653.1: *3*  test_py2ts.setUp
-    def setUp(self):
-        super().setUp()
-        c = self.c
-        self.x = c.convertCommands.PythonToTypescript(c)
-        self.assertTrue(hasattr(self.x, 'convert'))
-        root = self.root_p
-        # Delete all children
-        root.deleteAllChildren()
-        # Read leo.core.leoNodes into contents.
-        unittest_dir = os.path.dirname(__file__)
-        core_dir = os.path.abspath(os.path.join(unittest_dir, '..', '..', 'core'))
-        path = os.path.join(core_dir, 'leoNodes.py')
-        with open(path) as f:
-            contents = f.read()
-        # Set the gnx of the @file nodes in the contents to root.gnx.
-        # This is necessary because of a check in fast_at.scan_lines.
-        pat = re.compile(r'^\s*#\s?@\+node:([^:]+): \* @file leoNodes\.py$')
-        # line 1: #@+leo-ver=5-thin
-        # line 2: #@+node:ekr.20031218072017.3320: * @file leoNodes.py
-        line2 = g.splitLines(contents)[1]
-        m = pat.match(line2)
-        assert m, "Can not replace gnx"
-        contents = contents.replace(m.group(1), root.gnx)
-        # Replace c's outline with leoNodes.py.
-        gnx2vnode = {}
-        ok = c.atFileCommands.fast_read_into_root(c, contents, gnx2vnode, path, root)
-        self.assertTrue(ok)
-        root.h = 'leoNodes.py'
-        self.p = root
-        c.selectPosition(self.p)
-    #@+node:ekr.20211013081200.2: *3* test_py2ts.test_setup
-    def test_setup(self):
-        c = self.c
-        assert self.x
-        assert self.p
-        if 0:
-            self.dump_tree()
-        if 0:
-            for p in c.all_positions():
-                g.printObj(p.b, tag=p.h)
-    #@+node:ekr.20211013085659.1: *3* test_py2ts.test_convert_position_class
-    def test_convert_position_class(self):
-        # Convert a copy of the Position class
-        self.x.convert(self.p)
-    #@+node:ekr.20211021075411.1: *3* test_py2ts.test_do_f_strings()
-    def test_do_f_strings(self):
+    #@+node:ekr.20220824193932.1: *3* test_c_to_python
+    def test_c_to_python(self):
 
-        x = self.x
-        tests = (
-            (
-                'g.es(f"{timestamp}created: {fileName}")\n',
-                'g.es(`${timestamp}created: ${fileName}`)\n',
-            ),
-            (
-                'g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")\n',
-                'g.es(`read ${len(files)} files in ${t2 - t1} seconds`)\n',
-            ),
-            (
-                'print(f"s: {s!r}")\n',
-                'print(`s: ${s}`)\n',
-            ),
-        )
-        for test in tests:
-            source, expected = test
-            lines = [source]
-            x.do_f_strings(lines)
-            self.assertEqual(lines[-1], expected)
+        c = self.c
+        x1 = ConvertCommandsClass(c)
+        x = x1.C_To_Python(c)
+        s = textwrap.dedent("""\
+        void hello_world()
+        {
+            print('hi')
+            if a == 2 {
+                print('2')
+            }
+        }
+        """)
+        lines = g.splitLines(s)
+        x.convertCodeList(lines)
     #@-others
 #@+node:ekr.20220108083112.1: ** class TestAddMypyAnnotations(LeoUnitTest):
 class TestAddMypyAnnotations(LeoUnitTest):
@@ -255,28 +204,197 @@ class TestAddMypyAnnotations(LeoUnitTest):
         self.x.convert_body(p)
         self.assertEqual(p.b, expected)
     #@-others
-#@+node:ekr.20220824193803.1: ** class Test_To_Python(BaseTestImporter):
-class Test_To_Python(BaseTestImporter):
-    """Test cases for commands using To_Python class."""
+#@+node:ekr.20231121061008.1: ** class TestPythonToTypeRust(LeoUnitTest):
+class TestPythonToTypeRust(LeoUnitTest):
+    """Test cases for python-to-typescript command"""
 
     #@+others
-    #@+node:ekr.20220824193932.1: *3* test_c_to_python
-    def test_c_to_python(self):
-
+    #@+node:ekr.20231121061008.2: *3*  test_py2rust.setUp
+    def setUp(self):
+        super().setUp()
         c = self.c
-        x1 = ConvertCommandsClass(c)
-        x = x1.C_To_Python(c)
-        s = textwrap.dedent("""\
-        void hello_world()
-        {
-            print('hi')
-            if a == 2 {
-                print('2')
-            }
-        }
-        """)
-        lines = g.splitLines(s)
-        x.convertCodeList(lines)
+        self.p = c.p
+        self.x = c.convertCommands.Python_To_Rust(c)
+        self.assertTrue(hasattr(self.x, 'convert'))
+        root = self.root_p
+        root.deleteAllChildren()
+    #@+node:ekr.20231121061008.4: *3* slow_test_py2rust.test_convert_position_class
+    def slow_test_convert_position_class(self):
+        # Convert a copy of the Position class
+        c = self.c
+        root = self.root_p
+
+        # Read leo.core.leoNodes into contents.
+        unittest_dir = os.path.dirname(__file__)
+        core_dir = os.path.abspath(os.path.join(unittest_dir, '..', '..', 'core'))
+        path = os.path.join(core_dir, 'leoNodes.py')
+        with open(path) as f:
+            contents = f.read()
+        # Set the gnx of the @file nodes in the contents to root.gnx.
+        # This is necessary because of a check in fast_at.scan_lines.
+        pat = re.compile(r'^\s*#\s?@\+node:([^:]+): \* @file leoNodes\.py$')
+        # line 1: #@+leo-ver=5-thin
+        # line 2: #@+node:ekr.20031218072017.3320: * @file leoNodes.py
+        line2 = g.splitLines(contents)[1]
+        m = pat.match(line2)
+        assert m, "Can not replace gnx"
+        contents = contents.replace(m.group(1), root.gnx)
+        # Replace c's outline with leoNodes.py.
+        gnx2vnode = {}
+        ok = c.atFileCommands.fast_read_into_root(c, contents, gnx2vnode, path, root)
+        self.assertTrue(ok)
+        root.h = 'leoNodes.py'
+        self.p = root
+        c.selectPosition(self.p)
+        self.x.convert(self.p)
+    #@+node:ekr.20231121061008.5: *3* test_py2rust.test_f_strings()
+    def test_f_strings(self):
+
+        x = self.x
+        tests = (
+            (
+                'g.es(f"{timestamp}created: {fileName}")\n',
+                'g.es(f!"{timestamp}created: {fileName}")\n',
+            ),
+            (
+                'g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")\n',
+                'g.es(f!"read {len(files)} files in {t2 - t1:2.2f} seconds")\n',
+            ),
+            (
+                'print(f!"s: {s!r}")\n',
+                'print(f!"s: {s!r}")\n',
+            ),
+        )
+        for test in tests:
+            source, expected = test
+            lines = [source]
+            x.do_f_strings(lines)
+            self.assertEqual(lines[-1], expected)
+    #@+node:ekr.20231121062934.1: *3* test_py2rust.test_if_statements()
+    def test_if_statements(self):
+
+        x = self.x
+        tests = (
+            # Test 1.
+            (
+                (
+                    'if not should_beautify(p):\n'
+                    "    return [] if toList else ''  # #2271\n"
+                ),
+                # Replace operators, but not single quotes.
+                (
+                    'if ! should_beautify(p) {\n'
+                    "    return [] if toList else ''  # #2271\n"
+                    '}\n'
+                ),
+            ),
+            # Test 2
+            (
+                (
+                    'if TYPE_CHECKING:  # pragma: no cover\n'
+                    '    from leo.core.leoCommands import Commands as Cmdr\n'
+                ),
+                (
+                    'if TYPE_CHECKING { // # pragma: no cover\n'
+                    '    from leo.core.leoCommands import Commands as Cmdr\n'
+                    '}\n'
+                ),
+            ),
+        )
+        for test in tests:
+            source_s, expected_s = test
+            lines = g.splitLines(source_s)
+            expected = g.splitLines(expected_s)
+            # g.printObj(lines, tag='lines')
+            # g.printObj(expected, tag='expected')
+            i = x.do_if(0, lines, m=None, p=None)  # Modifies lines in place.
+            assert i > 0
+            # g.printObj(lines, tag='result')
+            self.assertEqual(lines, expected)
+    #@+node:ekr.20231121061008.3: *3* test_py2rust.test_setup
+    def test_setup(self):
+        c = self.c
+        assert self.x
+        assert self.p
+        if 0:
+            self.dump_tree()
+        if 0:
+            for p in c.all_positions():
+                g.printObj(p.b, tag=p.h)
+    #@-others
+#@+node:ekr.20211013081200.1: ** class TestPythonToTypeScript(LeoUnitTest):
+class TestPythonToTypeScript(LeoUnitTest):
+    """Test cases for python-to-typescript command"""
+
+    #@+others
+    #@+node:ekr.20211013090653.1: *3*  test_py2ts.setUp
+    def setUp(self):
+        super().setUp()
+        c = self.c
+        self.x = c.convertCommands.PythonToTypescript(c)
+        self.assertTrue(hasattr(self.x, 'convert'))
+        root = self.root_p
+        # Delete all children
+        root.deleteAllChildren()
+        # Read leo.core.leoNodes into contents.
+        unittest_dir = os.path.dirname(__file__)
+        core_dir = os.path.abspath(os.path.join(unittest_dir, '..', '..', 'core'))
+        path = os.path.join(core_dir, 'leoNodes.py')
+        with open(path) as f:
+            contents = f.read()
+        # Set the gnx of the @file nodes in the contents to root.gnx.
+        # This is necessary because of a check in fast_at.scan_lines.
+        pat = re.compile(r'^\s*#\s?@\+node:([^:]+): \* @file leoNodes\.py$')
+        # line 1: #@+leo-ver=5-thin
+        # line 2: #@+node:ekr.20031218072017.3320: * @file leoNodes.py
+        line2 = g.splitLines(contents)[1]
+        m = pat.match(line2)
+        assert m, "Can not replace gnx"
+        contents = contents.replace(m.group(1), root.gnx)
+        # Replace c's outline with leoNodes.py.
+        gnx2vnode = {}
+        ok = c.atFileCommands.fast_read_into_root(c, contents, gnx2vnode, path, root)
+        self.assertTrue(ok)
+        root.h = 'leoNodes.py'
+        self.p = root
+        c.selectPosition(self.p)
+    #@+node:ekr.20211013081200.2: *3* test_py2ts.test_setup
+    def test_setup(self):
+        c = self.c
+        assert self.x
+        assert self.p
+        if 0:
+            self.dump_tree()
+        if 0:
+            for p in c.all_positions():
+                g.printObj(p.b, tag=p.h)
+    #@+node:ekr.20211013085659.1: *3* test_py2ts.test_convert_position_class
+    def test_convert_position_class(self):
+        # Convert a copy of the Position class
+        self.x.convert(self.p)
+    #@+node:ekr.20211021075411.1: *3* test_py2ts.test_do_f_strings()
+    def test_do_f_strings(self):
+
+        x = self.x
+        tests = (
+            (
+                'g.es(f"{timestamp}created: {fileName}")\n',
+                'g.es(`${timestamp}created: ${fileName}`)\n',
+            ),
+            (
+                'g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")\n',
+                'g.es(`read ${len(files)} files in ${t2 - t1} seconds`)\n',
+            ),
+            (
+                'print(f"s: {s!r}")\n',
+                'print(`s: ${s}`)\n',
+            ),
+        )
+        for test in tests:
+            source, expected = test
+            lines = [source]
+            x.do_f_strings(lines)
+            self.assertEqual(lines[-1], expected)
     #@-others
 #@-others
 #@-leo
