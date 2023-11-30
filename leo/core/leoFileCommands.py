@@ -930,7 +930,7 @@ class FileCommands:
         try:
             c.loading = True  # disable c.changed
             conn = sqlite3.connect(path)
-            v = fc.retrieveVnodesFromDb(conn) or fc.initNewDb(conn)
+            v = fc.retrieveVnodesFromDb(conn) or fc.initNewDb(conn, path)
             if not v:
                 return None
 
@@ -1136,7 +1136,7 @@ class FileCommands:
         c.setCurrentPosition(p)
         return rootChildren[0]
     #@+node:vitalije.20170815162307.1: *6* fc.initNewDb
-    def initNewDb(self, conn: Any) -> VNode:
+    def initNewDb(self, conn: Any, path: str) -> VNode:
         """ Initializes tables and returns None"""
         c, fc = self.c, self
         v = leoNodes.VNode(context=c)
@@ -1144,7 +1144,7 @@ class FileCommands:
         (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
         c.frame.setTopGeometry(w, h, x, y)
         c.frame.resizePanesToRatio(r1, r2)
-        fc.exportToSqlite(c.mFileName)
+        fc.exportToSqlite(path)
         return v
     #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
     def getWindowGeometryFromDb(self, conn: Any) -> tuple:
