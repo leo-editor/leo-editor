@@ -210,8 +210,8 @@ which node is selected.
 
 """
 #@-<< docstring >>
-#@+<< imports >>
-#@+node:EKR.20040517080250.3: ** << imports >>
+#@+<< imports: mod_http.py >>
+#@+node:EKR.20040517080250.3: ** << imports: mod_http.py >>
 # py---lint: disable=deprecated-method
     # parse_qs
 if 1:  ### Legacy
@@ -235,7 +235,7 @@ from leo.core import leoGlobals as g
 SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
 StringIO = io.StringIO
 BytesIO = io.BytesIO
-#@-<< imports >>
+#@-<< imports: mod_http.py >>
 #@+<< data >>
 #@+node:ekr.20161001100345.1: ** << data >>
 # This encoding must match the character encoding used in your browser.
