@@ -1,8 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:EKR.20040517080250.1: * @file ../plugins/mod_http.py
 # pylint: disable=line-too-long
-#@+<< docstring >>
-#@+node:ekr.20050111111238: ** << docstring >>
+#@+<< docstring: mod_http.py >>
+#@+node:ekr.20050111111238: ** << docstring: mod_http.py >>
 #@@language rest
 #@@wrap
 """An http plug-in for LEO, based on AsyncHttpServer.py.
@@ -209,7 +209,7 @@ which node is selected.
 
 
 """
-#@-<< docstring >>
+#@-<< docstring: mod_http.py >>
 #@+<< imports: mod_http.py >>
 #@+node:EKR.20040517080250.3: ** << imports: mod_http.py >>
 # py---lint: disable=deprecated-method
@@ -221,29 +221,55 @@ else:
     import asyncio
     assert asyncio  ###
 import http.server
+import inspect  ###
 import json
 import io
 import os
 import select
 import shutil
 import socket
+### import textwrap  ###
 import time
+from typing import Any, Callable, Generator, Optional  ###, Union
+### import warnings  ###
 import urllib.parse as urlparse
 from xml.sax.saxutils import quoteattr
 from leo.core import leoGlobals as g
+from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoNodes import Position, VNode
 # Aliases.
 SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
 StringIO = io.StringIO
 BytesIO = io.BytesIO
 #@-<< imports: mod_http.py >>
-#@+<< data >>
-#@+node:ekr.20161001100345.1: ** << data >>
+#@+<< annotations: mod_http.py >>
+#@+node:ekr.20231130124146.1: ** << annotations: mod_http.py >>
+Event = Any  # More than one kind of Event!
+Loop = Any
+# Match = re.Match
+# Match_Iter = Iterator[re.Match[str]]
+Package = dict[str, Any]
+Param = dict[str, Any]
+# RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
+Response = str  # See _make_response.
+Socket = Any
+
+#@-<< annotations: mod_http.py >>
+
 # This encoding must match the character encoding used in your browser.
 # If it does not, non-ascii characters will look very strange.
 # To do: Can we query the browser for this?
 browser_encoding = 'utf-8'
 sockets_to_close = []
-#@-<< data >>
+connectionsPool: set[Any] = set()
+connectionsTotal = 0  # Current connected client total
+traces: list[str] = []  # list of traces names, to be used as flags to output traces
+
+#@+<< define new constant >>
+#@+node:ekr.20231130123711.1: ** << define new constant >>
+new = False  ### Choose between old and new code.
+#@-<< define new constant >>
+
 #@+others
 #@+node:ekr.20060830091349: ** init & helpers (mod_http.py)
 def init():
@@ -327,907 +353,4385 @@ def getConfiguration(c):
     new_rst2_http_attributename = c.config.getString("rst2-http-attributename")
     if new_rst2_http_attributename:
         config.rst2_http_attributename = new_rst2_http_attributename
-#@+node:ekr.20161003140938.1: ** getData
-def getData(setting):
-    """Return the given @data node."""
-    # Plug an important security hole.
-    c = g.app and g.app.log and g.app.log.c
-    key = g.app.config.munge(setting)
-    if c and key == 'httpscript' and c.config.isLocalSetting(key, 'data'):
-        g.issueSecurityWarning('@data http-script')
-        return ""
-    aList = g.app.config.getData(
-        key,
-        strip_comments=False,
-        strip_data=False,
-    )
-    s = ''.join(aList or [])
-    return s
-#@+node:bwmulder.20050326191345: ** class config
-class config:
-    enabled = None  # True when security check re http-allow-remote-exec passes.
-    http_active = False
-    http_timeout = 0
-    http_ip = '127.0.0.1'
-    http_port = 8130
-    rst2_http_attributename = 'rst_http_attribute'
-#@+node:EKR.20040517080250.4: ** class delayedSocketStream
-class delayedSocketStream(asyncore.dispatcher_with_send):
+#@+node:ekr.20231130124348.1: ** OLD: mod_http
+if not new:
     #@+others
-    #@+node:EKR.20040517080250.5: *3* __init__
-    def __init__(self, sock):
-        # pylint: disable=super-init-not-called
-        self._map = asyncore.socket_map
-        self.socket = sock
-        self.socket.setblocking(False)
-        self.closed = 1  # compatibility with SocketServer
-        self.buffer = []
-    #@+node:EKR.20040517080250.6: *3* write
-    def write(self, data):
-        self.buffer.append(data)
-    #@+node:EKR.20040517080250.7: *3* initiate_sending
-    def initiate_sending(self):
-        # Create a bytes string.
-        aList = [g.toEncodedString(z) for z in self.buffer]
-        self.out_buffer = b''.join(aList)
-        del self.buffer
-        self.set_socket(self.socket, None)
-        self.socket.setblocking(False)
-        self.connected = True
-        try:
-            self.addr = self.socket.getpeername()
-        except socket.error:
-            # The addr isn't crucial
+    #@+node:ekr.20161003140938.1: *3* getData
+    def getData(setting):
+        """Return the given @data node."""
+        # Plug an important security hole.
+        c = g.app and g.app.log and g.app.log.c
+        key = g.app.config.munge(setting)
+        if c and key == 'httpscript' and c.config.isLocalSetting(key, 'data'):
+            g.issueSecurityWarning('@data http-script')
+            return ""
+        aList = g.app.config.getData(
+            key,
+            strip_comments=False,
+            strip_data=False,
+        )
+        s = ''.join(aList or [])
+        return s
+    #@+node:bwmulder.20050326191345: *3* class config
+    class config:
+        enabled = None  # True when security check re http-allow-remote-exec passes.
+        http_active = False
+        http_timeout = 0
+        http_ip = '127.0.0.1'
+        http_port = 8130
+        rst2_http_attributename = 'rst_http_attribute'
+    #@+node:EKR.20040517080250.4: *3* class delayedSocketStream
+    class delayedSocketStream(asyncore.dispatcher_with_send):
+        #@+others
+        #@+node:EKR.20040517080250.5: *4* __init__
+        def __init__(self, sock):
+            # pylint: disable=super-init-not-called
+            self._map = asyncore.socket_map
+            self.socket = sock
+            self.socket.setblocking(False)
+            self.closed = 1  # compatibility with SocketServer
+            self.buffer = []
+        #@+node:EKR.20040517080250.6: *4* write
+        def write(self, data):
+            self.buffer.append(data)
+        #@+node:EKR.20040517080250.7: *4* initiate_sending
+        def initiate_sending(self):
+            # Create a bytes string.
+            aList = [g.toEncodedString(z) for z in self.buffer]
+            self.out_buffer = b''.join(aList)
+            del self.buffer
+            self.set_socket(self.socket, None)
+            self.socket.setblocking(False)
+            self.connected = True
+            try:
+                self.addr = self.socket.getpeername()
+            except socket.error:
+                # The addr isn't crucial
+                pass
+        #@+node:EKR.20040517080250.8: *4* handle_read
+        def handle_read(self):
             pass
-    #@+node:EKR.20040517080250.8: *3* handle_read
-    def handle_read(self):
-        pass
-    #@+node:EKR.20040517080250.9: *3* writable
-    def writable(self):
-        result = (not self.connected) or len(self.out_buffer)
-        if not result:
-            sockets_to_close.append(self)
-        return result
-    #@-others
-#@+node:EKR.20040517080250.20: ** class leo_interface
-class leo_interface:
-    # .path, .send_error, .send_response and .end_headers
-    # appear to be undefined.
-    # pylint: disable=no-member
-    #@+others
-    #@+node:bwmulder.20050322224921: *3* send_head & helpers
-    def send_head(self):
-        """Common code for GET and HEAD commands.
+        #@+node:EKR.20040517080250.9: *4* writable
+        def writable(self):
+            result = (not self.connected) or len(self.out_buffer)
+            if not result:
+                sockets_to_close.append(self)
+            return result
+        #@-others
+    #@+node:EKR.20040517080250.20: *3* class leo_interface
+    class leo_interface:
+        # .path, .send_error, .send_response and .end_headers
+        # appear to be undefined.
+        # pylint: disable=no-member
+        #@+others
+        #@+node:bwmulder.20050322224921: *4* send_head & helpers
+        def send_head(self):
+            """Common code for GET and HEAD commands.
 
-         This sends the response code and MIME headers.
+             This sends the response code and MIME headers.
 
-         Return value is either a file object (which has to be copied
-         to the outputfile by the caller unless the command was HEAD,
-         and must be closed by the caller under all circumstances), or
-         None, in which case the caller has nothing further to do.
+             Return value is either a file object (which has to be copied
+             to the outputfile by the caller unless the command was HEAD,
+             and must be closed by the caller under all circumstances), or
+             None, in which case the caller has nothing further to do.
 
-         """
-        try:
-            # self.path is provided by the RequestHandler class.
-            path = self.split_leo_path(self.path)
-            if path[0] == '_':
-                f = self.leo_actions.get_response()
-            elif len(path) == 1 and path[0] == 'favicon.ico':
-                f = self.leo_actions.get_favicon()
-            elif path == '/':
-                f = self.write_leo_windowlist()
-            else:
-                try:
-                    window, root = self.find_window_and_root(path)
-                    if window is None:
-                        self.send_error(404, "File not found")
+             """
+            try:
+                # self.path is provided by the RequestHandler class.
+                path = self.split_leo_path(self.path)
+                if path[0] == '_':
+                    f = self.leo_actions.get_response()
+                elif len(path) == 1 and path[0] == 'favicon.ico':
+                    f = self.leo_actions.get_favicon()
+                elif path == '/':
+                    f = self.write_leo_windowlist()
+                else:
+                    try:
+                        window, root = self.find_window_and_root(path)
+                        if window is None:
+                            self.send_error(404, "File not found")
+                            return None
+                        if root is None:
+                            self.send_error(404, "No root node")
+                            return None
+                        f = StringIO()
+                        self.write_leo_tree(f, window, root)
+                    except nodeNotFound:
+                        self.send_error(404, "Node not found")
                         return None
-                    if root is None:
-                        self.send_error(404, "No root node")
+                    except noLeoNodePath:
+                        g.es("No Leo node path:", path)
+                        # Is there something better we can do here?
+                        self.send_error(404, "Node not found")
                         return None
-                    f = StringIO()
-                    self.write_leo_tree(f, window, root)
-                except nodeNotFound:
-                    self.send_error(404, "Node not found")
+                if f is None:
                     return None
-                except noLeoNodePath:
-                    g.es("No Leo node path:", path)
-                    # Is there something better we can do here?
-                    self.send_error(404, "Node not found")
-                    return None
-            if f is None:
-                return None
-            length = f.tell()
-            f.seek(0)
-            self.send_response(200)
-            self.send_header("Content-type", getattr(f, "mime_type", "text/html"))
-            self.send_header("Content-Length", str(length))
-            self.end_headers()
-            return f
-        except Exception:
-            import traceback
-            traceback.print_exc()
-            raise
-        return None
-    #@+node:EKR.20040517080250.26: *4* find_window_and_root
-    def find_window_and_root(self, path):
-        """
-        given a path of the form:
-            [<short filename>,<number1>,<number2>...<numbern>]
-            identify the leo node which is in that file, and,
-            from top to bottom, is the <number1> child of the topmost
-            node, the <number2> child of that node, and so on.
+                length = f.tell()
+                f.seek(0)
+                self.send_response(200)
+                self.send_header("Content-type", getattr(f, "mime_type", "text/html"))
+                self.send_header("Content-Length", str(length))
+                self.end_headers()
+                return f
+            except Exception:
+                import traceback
+                traceback.print_exc()
+                raise
+            return None
+        #@+node:EKR.20040517080250.26: *5* find_window_and_root
+        def find_window_and_root(self, path):
+            """
+            given a path of the form:
+                [<short filename>,<number1>,<number2>...<numbern>]
+                identify the leo node which is in that file, and,
+                from top to bottom, is the <number1> child of the topmost
+                node, the <number2> child of that node, and so on.
 
-            Return None if that node can not be identified that way.
-        """
-        for w in g.app.windowList:
-            if w.shortFileName() == path[0]:
-                return w, w.c.rootPosition()
-        return None, None
-    #@+node:EKR.20040517080250.30: *4* split_leo_path
-    def split_leo_path(self, path):
-        """Split self.path."""
-        if path == '/':
-            return '/'
-        if path.startswith("/"):
-            path = path[1:]
-        return path.split('/')
-    #@+node:ekr.20161001114512.1: *4* write_leo_tree & helpers
-    def write_leo_tree(self, f, window, root):
-        """Wriite the entire html file to f."""
-        root = root.copy()
-        self.write_head(f, root.h, window)
-        f.write('<body>')
-        f.write('<div class="container">')
-        f.write('<div class="outlinepane">')
-        f.write('<h1>%s</h1>' % window.shortFileName())
-        for sib in root.self_and_siblings():
-            self.write_node_and_subtree(f, sib)
-        f.write('</div>')
-        f.write('</div>')
-        self.write_body_pane(f, root)
-        f.write('</body></html>')
-    #@+node:ekr.20161001124752.1: *5* write_body_pane
-    def write_body_pane(self, f, p):
+                Return None if that node can not be identified that way.
+            """
+            for w in g.app.windowList:
+                if w.shortFileName() == path[0]:
+                    return w, w.c.rootPosition()
+            return None, None
+        #@+node:EKR.20040517080250.30: *5* split_leo_path
+        def split_leo_path(self, path):
+            """Split self.path."""
+            if path == '/':
+                return '/'
+            if path.startswith("/"):
+                path = path[1:]
+            return path.split('/')
+        #@+node:ekr.20161001114512.1: *5* write_leo_tree & helpers
+        def write_leo_tree(self, f, window, root):
+            """Wriite the entire html file to f."""
+            root = root.copy()
+            self.write_head(f, root.h, window)
+            f.write('<body>')
+            f.write('<div class="container">')
+            f.write('<div class="outlinepane">')
+            f.write('<h1>%s</h1>' % window.shortFileName())
+            for sib in root.self_and_siblings():
+                self.write_node_and_subtree(f, sib)
+            f.write('</div>')
+            f.write('</div>')
+            self.write_body_pane(f, root)
+            f.write('</body></html>')
+        #@+node:ekr.20161001124752.1: *6* write_body_pane
+        def write_body_pane(self, f, p):
 
-        f.write('<div class="bodypane">')
-        f.write('<pre class="body-text">')
-        # This isn't correct when put in a triple string.
-        # We might be able to use textwrap.dedent, but this works.
-        f.write('<code class="body-code">%s</code>' % escape(p.b))
-        f.write('</pre></div>')
-    #@+node:ekr.20161001121838.1: *5* write_head
-    def write_head(self, f, headString, window):
+            f.write('<div class="bodypane">')
+            f.write('<pre class="body-text">')
+            # This isn't correct when put in a triple string.
+            # We might be able to use textwrap.dedent, but this works.
+            f.write('<code class="body-code">%s</code>' % escape(p.b))
+            f.write('</pre></div>')
+        #@+node:ekr.20161001121838.1: *6* write_head
+        def write_head(self, f, headString, window):
 
-        f.write("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    <html>
-    <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-        <style>%s</style>
-        <style>%s</style>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
-        </script>
-        <script>%s</script>
-        <title>%s</title>
-    </head>
-    """ % (
+            f.write("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+        <html>
+        <head>
+            <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+            <style>%s</style>
+            <style>%s</style>
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+            </script>
+            <script>%s</script>
+            <title>%s</title>
+        </head>
+        """ % (
+                getData('http_stylesheet'),
+                getData('user_http_stylesheet'),
+                getData('http_script'),
+                (escape(window.shortFileName() + ":" + headString)))
+            )
+        #@+node:ekr.20161001122919.1: *6* write_node_and_subtree
+        def write_node_and_subtree(self, f, p):
+
+            # This organization, with <headline> elements in <node> elements,
+            # allows proper highlighting of nodes.
+            f.write('<div class="node" id=n:%s>' % (
+                quoteattr(p.gnx),
+            ))
+            f.write('<div class="headline" id=h:%s expand="%s" icon="%02d" b=%s>%s</div>' % (
+                quoteattr(p.gnx),
+                '+' if p.hasChildren() else '-',
+                p.computeIcon(),
+                quoteattr(p.b),
+                escape(p.h),
+            ))
+            for child in p.children():
+                self.write_node_and_subtree(f, child)
+            f.write('</div>')
+        #@+node:EKR.20040517080250.27: *5* write_leo_windowlist
+        def write_leo_windowlist(self):
+            f = StringIO()
+            f.write('''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+        <html>
+        <head>
+            <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+            <style>%s</style>
+            <style>%s</style>
+            <title>ROOT for LEO HTTP plugin</title>
+        </head>
+        <body>
+            <h1>Windowlist</h1>
+            <hr />
+            <ul>
+        ''' % (
             getData('http_stylesheet'),
             getData('user_http_stylesheet'),
-            getData('http_script'),
-            (escape(window.shortFileName() + ":" + headString)))
-        )
-    #@+node:ekr.20161001122919.1: *5* write_node_and_subtree
-    def write_node_and_subtree(self, f, p):
-
-        # This organization, with <headline> elements in <node> elements,
-        # allows proper highlighting of nodes.
-        f.write('<div class="node" id=n:%s>' % (
-            quoteattr(p.gnx),
         ))
-        f.write('<div class="headline" id=h:%s expand="%s" icon="%02d" b=%s>%s</div>' % (
-            quoteattr(p.gnx),
-            '+' if p.hasChildren() else '-',
-            p.computeIcon(),
-            quoteattr(p.b),
-            escape(p.h),
-        ))
-        for child in p.children():
-            self.write_node_and_subtree(f, child)
-        f.write('</div>')
-    #@+node:EKR.20040517080250.27: *4* write_leo_windowlist
-    def write_leo_windowlist(self):
-        f = StringIO()
-        f.write('''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    <html>
-    <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-        <style>%s</style>
-        <style>%s</style>
-        <title>ROOT for LEO HTTP plugin</title>
-    </head>
-    <body>
-        <h1>Windowlist</h1>
-        <hr />
-        <ul>
-    ''' % (
-        getData('http_stylesheet'),
-        getData('user_http_stylesheet'),
-    ))
-        a = g.app  # get the singleton application instance.
-        windows = a.windowList  # get the list of all open frames.
-        for w in windows:
-            shortfilename = w.shortFileName()
-            f.write('<li><a href="%s">"file name: %s"</a></li>' % (
-                shortfilename, shortfilename))
-        f.write('</ul><hr /></body></html>')
-        return f
-    #@+node:bwmulder.20050319135316: *3* node_reference & helpers
-    def node_reference(self, vnode):
-        """
-        Given a position p, return the name of the node.
+            a = g.app  # get the singleton application instance.
+            windows = a.windowList  # get the list of all open frames.
+            for w in windows:
+                shortfilename = w.shortFileName()
+                f.write('<li><a href="%s">"file name: %s"</a></li>' % (
+                    shortfilename, shortfilename))
+            f.write('</ul><hr /></body></html>')
+            return f
+        #@+node:bwmulder.20050319135316: *4* node_reference & helpers
+        def node_reference(self, vnode):
+            """
+            Given a position p, return the name of the node.
 
-        This is called from leo.core.leoRst.
-        """
-        # 1. Find the root
-        root = vnode
-        parent = root.parent()
-        while parent:
-            root = parent
+            This is called from leo.core.leoRst.
+            """
+            # 1. Find the root
+            root = vnode
             parent = root.parent()
-        while root.v._back:
-            root.moveToBack()
-        # 2. Return the window
-        window = [w for w in g.app.windowList if w.c.rootVnode().v == root.v][0]
-        result = self.create_leo_h_reference(window, vnode)
-        return result
-    #@+node:EKR.20040517080250.21: *4* add_leo_links (mod_http.py)
-    def add_leo_links(self, window, node, f):
-        """
-        Given a node 'node', add links to:
-            The next sibling, if any.
-            the next node.
-            the parent.
-            The children, if any.
-        """
-        # Collecting the navigational links.
-        if node:
-            nodename = node.h
-            threadNext = node.threadNext()
-            sibling = node.next()
-            parent = node.parent()
-            f.write("<p>\n")
-            children = []
-            firstChild = node.firstChild()
-            if firstChild:
-                child = firstChild
-                while child:
-                    children.append(child)
-                    child = child.next()
-            if threadNext is not None:
-                self.create_leo_reference(window, threadNext, "next", f)
-            f.write("<br />")
-            if sibling is not None:
-                self.create_leo_reference(window, sibling, "next Sibling", f)
-            f.write("<br />")
-            if parent is None:
-                self.create_href("/", "Top level", f)
-            else:
-                self.create_leo_reference(window, parent, "Up", f)
-            f.write("<br />")
-            f.write("\n</p>\n")
-        else:
-            # top level
-            child = window.c.rootPosition()
-            children = [child]
-            next = child.next()
-            while next:
-                child = next
-                children.append(child)
-                next = child.next()
-            nodename = window.shortFileName()
-        if children:
-            f.write("\n<h2>")
-            f.write("Children of ")
-            f.write(escape(nodename))
-            f.write("</h2>\n")
-            f.write("<ol>\n")
-            for child in children:
-                f.write("<li>\n")
-                self.create_leo_reference(window, child, child.h, f)
-                f.write("</li>\n")
-            f.write("</ol>\n")
-    #@+node:EKR.20040517080250.22: *4* create_href
-    def create_href(self, href, text, f):
-        f.write('<a href="%s">' % href)
-        f.write(escape(text))
-        f.write("</a>\n")
-    #@+node:bwmulder.20050319134815: *4* create_leo_h_reference
-    def create_leo_h_reference(self, window, node):
-        parts = [window.shortFileName()] + self.get_leo_nameparts(node)
-        href = '/' + '/'.join(parts)
-        return href
-    #@+node:EKR.20040517080250.23: *4* create_leo_reference
-    def create_leo_reference(self, window, node, text, f):
-        """
-        Create a reference to 'node' in 'window', displaying 'text'
-        """
-        href = self.create_leo_h_reference(window, node)
-        self.create_href(href, text, f)
-    #@+node:EKR.20040517080250.28: *4* write_path
-    def write_path(self, node, f):
-        result = []
-        while node:
-            result.append(node.h)
-            node = node.parent()
-        result.reverse()
-        if result:
-            result2 = result[:-1]
-            if result2:
-                result2_s = ' / '.join(result2)
+            while parent:
+                root = parent
+                parent = root.parent()
+            while root.v._back:
+                root.moveToBack()
+            # 2. Return the window
+            window = [w for w in g.app.windowList if w.c.rootVnode().v == root.v][0]
+            result = self.create_leo_h_reference(window, vnode)
+            return result
+        #@+node:EKR.20040517080250.21: *5* add_leo_links (mod_http.py)
+        def add_leo_links(self, window, node, f):
+            """
+            Given a node 'node', add links to:
+                The next sibling, if any.
+                the next node.
+                the parent.
+                The children, if any.
+            """
+            # Collecting the navigational links.
+            if node:
+                nodename = node.h
+                threadNext = node.threadNext()
+                sibling = node.next()
+                parent = node.parent()
                 f.write("<p>\n")
-                f.write("<br />\n")
-                f.write(escape(result2_s))
-                f.write("<br />\n")
-                f.write("</p>\n")
-            f.write("<h2>")
-            f.write(escape(result[-1]))
-            f.write("</h2>\n")
-    #@-others
-#@+node:tbrown.20110930093028.34530: ** class LeoActions
-class LeoActions:
-    """
-    A place to collect other URL based actions like saving bookmarks from
-    the browser. Conceptually this stuff could go in class leo_interface
-    but putting it here for separation for now.
-    """
-    #@+others
-    #@+node:tbrown.20110930220448.18077: *3* __init__(LeoActions)
-    def __init__(self, request_handler):
-        self.request_handler = request_handler
-        self.bookmark_unl = g.app.commanders()[0].config.getString('http-bookmark-unl')
-    #@+node:tbrown.20110930220448.18075: *3* add_bookmark
-    def add_bookmark(self):
-        """Return the file like 'f' that leo_interface.send_head makes
-
-        """
-        parsed_url = urlparse.urlparse(self.request_handler.path)
-        query = urlparse.parse_qs(parsed_url.query)
-        # print(parsed_url.query)
-        # print(query)
-        name = query.get('name', ['NO TITLE'])[0]
-        url = query['url'][0]
-        one_tab_links = []
-        if 'www.one-tab.com' in url.lower():
-            one_tab_links = query.get('ln', [''])[0]
-            one_tab_links = json.loads(one_tab_links)  # type:ignore
-        c = None  # outline for bookmarks
-        previous = None  # previous bookmark for adding selections
-        parent = None  # parent node for new bookmarks
-        using_root = False
-        path = self.bookmark_unl
-        if path:
-            parsed = urlparse.urlparse(path)
-            leo_path = os.path.expanduser(parsed.path)
-            c = g.openWithFileName(leo_path, old_c=None)
-            if c:
-                g.es_print("Opened '%s' for bookmarks" % path)
-                if parsed.fragment:
-                    g.findAnyUnl(parsed.fragment, c)
-                parent = c.currentPosition()
-                if parent.hasChildren():
-                    previous = parent.getFirstChild()
-            else:
-                g.es_print("Failed to open '%s' for bookmarks" % self.bookmark_unl)
-        if c is None:
-            using_root = True
-            c = g.app.commanders()[0]
-            parent = c.rootPosition()
-            previous = c.rootPosition()
-        f = StringIO()
-        if previous and url == previous.b.split('\n', 1)[0]:
-            # another marking of the same page, just add selection
-            self.add_bookmark_selection(
-                previous, query.get('selection', [''])[0])
-            c.selectPosition(previous)  # required for body text redraw
-            c.redraw()
-            f.write("""
-    <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
-    <p>Selection added</p></body>""")
-            return f
-        if '_form' in query:
-            # got extra details, save to new node
-            f.write("""
-    <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
-    <p>Bookmark saved</p></body>""")
-            if using_root:
-                nd = parent.insertAfter()
-                nd.moveToRoot()
-            else:
-                nd = parent.insertAsNthChild(0)
-            if g.pluginIsLoaded('leo.plugins.bookmarks'):
-                nd.h = name
-            else:
-                nd.h = '@url ' + name
-            selection = query.get('selection', [''])[0]
-            if selection:
-                selection = '\n\n"""\n' + selection + '\n"""'
-            tags = query.get('tags', [''])[0]
-            if one_tab_links:
-                if tags:
-                    tags += ', OneTabList'
+                children = []
+                firstChild = node.firstChild()
+                if firstChild:
+                    child = firstChild
+                    while child:
+                        children.append(child)
+                        child = child.next()
+                if threadNext is not None:
+                    self.create_leo_reference(window, threadNext, "next", f)
+                f.write("<br />")
+                if sibling is not None:
+                    self.create_leo_reference(window, sibling, "next Sibling", f)
+                f.write("<br />")
+                if parent is None:
+                    self.create_href("/", "Top level", f)
                 else:
-                    tags = 'OneTabList'
-                self.get_one_tab(one_tab_links, nd)
-            nd.b = "%s\n\nTags: %s\n\n%s\n\nCollected: %s%s\n\n%s" % (
-                url,
-                tags,
-                query.get('_name', [''])[0],
-                time.strftime("%c"),
-                selection,
-                query.get('description', [''])[0],
-            )
-            c.setChanged()
-            c.selectPosition(nd)  # required for body text redraw
-            c.redraw()
-            return f
-        # send form to collect extra details
-        f.write("""
-    <html>
-    <head>
-        <style>
-            body {font-family:mono; font-size: 80%%;}
-            th {text-align:right}
-        </style>
-        <style>%s</style>
-    <title>Leo Add Bookmark</title>
-    </head>
-    <body onload='document.getElementById("tags").focus();'>
-        <form method='GET' action='/_/add/bkmk/'>
-            <input type='hidden' name='_form' value='1'/>
-            <input type='hidden' name='_name' value=%s/>
-            <input type='hidden' name='selection' value=%s/>
-            <input type='hidden' name='ln' value=%s/>
-            <table>
-            <tr><th>Tags:</th><td><input id='tags' name='tags' size='60'/>(comma sep.)</td></tr>
-            <tr><th>Title:</th><td><input name='name' value=%s size='60'/></td></tr>
-            <tr><th>URL:</th><td><input name='url' value=%s size='60'/></td></tr>
-            <tr><th>Notes:</th><td><textarea name='description' cols='60' rows='6'></textarea></td></tr>
-            </table>
-            <input type='submit' value='Save'/><br/>
-        </form>
-    </body>
-    </html>""" % (
-            getData('user_bookmark_stylesheet'),  # EKR: Add config.css to style.
-            quoteattr(name),
-            quoteattr(query.get('selection', [''])[0]),
-            quoteattr(json.dumps(one_tab_links)),
-            quoteattr(name),
-            quoteattr(url)))
-        return f
-    #@+node:tbrown.20131122091143.54044: *3* get_one_tab
-    def get_one_tab(self, links, nd):
-        """get_one_tab - Add child bookmarks from OneTab chrome extension
-
-        :Parameters:
-        - `links`: list of {'txt':, 'url':} dicts
-        - `nd`: node under which to put child nodes
+                    self.create_leo_reference(window, parent, "Up", f)
+                f.write("<br />")
+                f.write("\n</p>\n")
+            else:
+                # top level
+                child = window.c.rootPosition()
+                children = [child]
+                next = child.next()
+                while next:
+                    child = next
+                    children.append(child)
+                    next = child.next()
+                nodename = window.shortFileName()
+            if children:
+                f.write("\n<h2>")
+                f.write("Children of ")
+                f.write(escape(nodename))
+                f.write("</h2>\n")
+                f.write("<ol>\n")
+                for child in children:
+                    f.write("<li>\n")
+                    self.create_leo_reference(window, child, child.h, f)
+                    f.write("</li>\n")
+                f.write("</ol>\n")
+        #@+node:EKR.20040517080250.22: *5* create_href
+        def create_href(self, href, text, f):
+            f.write('<a href="%s">' % href)
+            f.write(escape(text))
+            f.write("</a>\n")
+        #@+node:bwmulder.20050319134815: *5* create_leo_h_reference
+        def create_leo_h_reference(self, window, node):
+            parts = [window.shortFileName()] + self.get_leo_nameparts(node)
+            href = '/' + '/'.join(parts)
+            return href
+        #@+node:EKR.20040517080250.23: *5* create_leo_reference
+        def create_leo_reference(self, window, node, text, f):
+            """
+            Create a reference to 'node' in 'window', displaying 'text'
+            """
+            href = self.create_leo_h_reference(window, node)
+            self.create_href(href, text, f)
+        #@+node:EKR.20040517080250.28: *5* write_path
+        def write_path(self, node, f):
+            result = []
+            while node:
+                result.append(node.h)
+                node = node.parent()
+            result.reverse()
+            if result:
+                result2 = result[:-1]
+                if result2:
+                    result2_s = ' / '.join(result2)
+                    f.write("<p>\n")
+                    f.write("<br />\n")
+                    f.write(escape(result2_s))
+                    f.write("<br />\n")
+                    f.write("</p>\n")
+                f.write("<h2>")
+                f.write(escape(result[-1]))
+                f.write("</h2>\n")
+        #@-others
+    #@+node:tbrown.20110930093028.34530: *3* class LeoActions
+    class LeoActions:
         """
-        for link in links:
-            if 'url' in link and 'www.one-tab.com' not in link['url'].lower():
-                nnd = nd.insertAsLastChild()
-                nnd.h = link['txt']
-                nnd.b = "%s\n\nTags: %s\n\n%s\n\nCollected: %s%s\n\n%s" % (
-                    link['url'],
-                    'OneTabTab',
-                    link['txt'],
-                    time.strftime("%c"),
-                    '',
-                    '',
-                )
-    #@+node:tbrown.20111002082827.18325: *3* add_bookmark_selection
-    def add_bookmark_selection(self, node, text):
-        '''Insert the selected text into the bookmark node,
-        after any earlier selections but before the users comments.
-
-            http://example.com/
-
-            Tags: tags, are here
-
-            Full title of the page
-
-            Collected: timestamp
+        A place to collect other URL based actions like saving bookmarks from
+        the browser. Conceptually this stuff could go in class leo_interface
+        but putting it here for separation for now.
+        """
+        #@+others
+        #@+node:tbrown.20110930220448.18077: *4* __init__(LeoActions)
+        def __init__(self, request_handler):
+            self.request_handler = request_handler
+            self.bookmark_unl = g.app.commanders()[0].config.getString('http-bookmark-unl')
+        #@+node:tbrown.20110930220448.18075: *4* add_bookmark
+        def add_bookmark(self):
+            """Return the file like 'f' that leo_interface.send_head makes
 
             """
-            The first saved selection
-            """
-
-            """
-            The second saved selection
-            """
-
-            Users comments
-
-        i.e. just above the "Users comments" line.
-        '''
-        b = node.b.split('\n')
-        insert = ['', '"""', text, '"""']
-        collected = None
-        tri_quotes = []
-        for n, i in enumerate(b):
-            if collected is None and i.startswith('Collected: '):
-                collected = n
-            if i == '"""':
-                tri_quotes.append(n)
-        if collected is None:
-            # not a regularly formatted text, just append
-            b.extend(insert)
-        elif len(tri_quotes) >= 2:
-            # insert after the last balanced pair of tri quotes
-            x = tri_quotes[len(tri_quotes) - len(tri_quotes) % 2 - 1] + 1
-            b[x:x] = insert
-        else:
-            # found Collected but no tri quotes
-            b[collected + 1 : collected + 1] = insert
-        node.b = '\n'.join(b)
-        node.setDirty()
-    #@+node:tbrown.20111005093154.17683: *3* get_favicon
-    def get_favicon(self):
-        path = g.os_path_join(g.computeLeoDir(), 'Icons', 'LeoApp16.ico')
-        try:
+            parsed_url = urlparse.urlparse(self.request_handler.path)
+            query = urlparse.parse_qs(parsed_url.query)
+            # print(parsed_url.query)
+            # print(query)
+            name = query.get('name', ['NO TITLE'])[0]
+            url = query['url'][0]
+            one_tab_links = []
+            if 'www.one-tab.com' in url.lower():
+                one_tab_links = query.get('ln', [''])[0]
+                one_tab_links = json.loads(one_tab_links)  # type:ignore
+            c = None  # outline for bookmarks
+            previous = None  # previous bookmark for adding selections
+            parent = None  # parent node for new bookmarks
+            using_root = False
+            path = self.bookmark_unl
+            if path:
+                parsed = urlparse.urlparse(path)
+                leo_path = os.path.expanduser(parsed.path)
+                c = g.openWithFileName(leo_path, old_c=None)
+                if c:
+                    g.es_print("Opened '%s' for bookmarks" % path)
+                    if parsed.fragment:
+                        g.findAnyUnl(parsed.fragment, c)
+                    parent = c.currentPosition()
+                    if parent.hasChildren():
+                        previous = parent.getFirstChild()
+                else:
+                    g.es_print("Failed to open '%s' for bookmarks" % self.bookmark_unl)
+            if c is None:
+                using_root = True
+                c = g.app.commanders()[0]
+                parent = c.rootPosition()
+                previous = c.rootPosition()
             f = StringIO()
-            f2 = open(path)
-            s = f2.read()
-            f.write(s)
-            return f
-        except Exception:
-            return None
-    #@+node:tbrown.20110930220448.18076: *3* get_response (mod_http.py)
-    def get_response(self):
-        """Return the file like 'f' that leo_interface.send_head makes"""
-        if self.request_handler.path.startswith('/_/add/bkmk/'):
-            return self.add_bookmark()
-
-        # No longer used.
-        # mod_scripting.py used to define the EvalController class, but that class was buggy.
-
-        # if self.request_handler.path.startswith('/_/exec/'):
-            # return self.exec_handler.get_response()
-
-        f = StringIO()
-        f.write("Unknown URL in LeoActions.get_response()")
-        return f
-    #@-others
-#@+node:EKR.20040517080250.10: ** class nodeNotFound
-class nodeNotFound(Exception):
-    pass
-#@+node:bwmulder.20061014153544: ** class noLeoNodePath
-class noLeoNodePath(Exception):
-    """
-    Raised if the path can not be converted a filename and a series of numbers.
-    Most likely a reference to a picture.
-    """
-    pass
-#@+node:EKR.20040517080250.13: ** class RequestHandler
-class RequestHandler(
-    leo_interface,
-    asynchat.async_chat,
-    SimpleHTTPRequestHandler
-):
-    # pylint: disable=too-many-ancestors
-    # pylint: disable=super-init-not-called
-    #@+others
-    #@+node:EKR.20040517080250.14: *3* __init__
-    def __init__(self, conn, addr, server):
-        self.leo_actions = LeoActions(self)
-        super().__init__(conn)
-        self.client_address = addr
-        self.connection = conn
-        self.server = server
-        self.wfile = delayedSocketStream(self.socket)  # type:ignore
-        # Sets the terminator. When it is received, this means that the
-        # http request is complete, control will be passed to self.found_terminator
-        self.term = g.toEncodedString('\r\n\r\n')
-        self.set_terminator(self.term)
-        self.buffer = BytesIO()
-        # Set self.use_encoding and self.encoding.
-        # This is used by asyn_chat.
-        self.use_encoding = True
-        self.encoding = 'utf-8'
-    #@+node:EKR.20040517080250.15: *3* copyfile
-    def copyfile(self, source, outputfile):
-        """Copy all data between two file objects.
-
-        The SOURCE argument is a file object open for reading
-        (or anything with a read() method) and the DESTINATION
-        argument is a file object open for writing (or
-        anything with a write() method).
-
-        The only reason for overriding this would be to change
-        the block size or perhaps to replace newlines by CRLF
-        -- note however that this the default server uses this
-        to copy binary data as well.
-         """
-        shutil.copyfileobj(source, outputfile, length=255)
-    #@+node:EKR.20040517080250.16: *3* log_message
-    def log_message(self, format, *args):
-        """Log an arbitrary message.
-
-         This is used by all other logging functions.  Override
-         it if you have specific logging wishes.
-
-         The first argument, FORMAT, is a format string for the
-         message to be logged.  If the format string contains
-         any % escapes requiring parameters, they should be
-         specified as subsequent arguments (it's just like
-         printf!).
-
-         The client host and current date/time are prefixed to
-         every message.
-
-         """
-        message = "%s - - [%s] %s\n" % (
-            self.address_string(),
-            self.log_date_time_string(),
-            format % args)
-        g.es(message)
-    #@+node:EKR.20040517080250.17: *3* collect_incoming_data
-    def collect_incoming_data(self, data):
-        """Collects the data arriving on the connexion"""
-        self.buffer.write(data)
-    #@+node:EKR.20040517080250.18: *3* prepare_POST
-    def prepare_POST(self):
-        """Prepare to read the request body"""
-        bytesToRead = int(self.headers.getheader('content-length'))
-        # set terminator to length (will read bytesToRead bytes)
-        self.set_terminator(bytesToRead)
-        self.buffer = StringIO()  # type:ignore
-        # control will be passed to a new found_terminator
-        self.found_terminator = self.handle_post_data  # type:ignore
-    #@+node:EKR.20040517080250.19: *3* handle_post_data
-    def handle_post_data(self):
-        """Called when a POST request body has been read"""
-        self.rfile = StringIO(self.buffer.getvalue())  # type:ignore
-        self.do_POST()
-        self.finish()
-    #@+node:EKR.20040517080250.31: *3* do_GET
-    def do_GET(self):
-        """Begins serving a GET request"""
-        # nothing more to do before handle_data()
-        self.handle_data()
-    #@+node:EKR.20040517080250.32: *3* do_POST
-    def do_POST(self):
-        """
-        Begins serving a POST request. The request data must be readable
-        on a file-like object called self.rfile
-        """
-        header = self.headers.getheader('content-type')
-        g.trace('not ready yet', repr(header))
-    #@+node:EKR.20040517080250.33: *3* query
-    def query(self, parsedQuery):
-        """Returns the QUERY dictionary, similar to the result of urllib.parse_qs
-         except that :
-         - if the key ends with [], returns the value (a Python list)
-         - if not, returns a string, empty if the list is empty, or with the
-         first value in the list"""
-        res = {}
-        for item in parsedQuery.keys():
-            value = parsedQuery[item]  # a Python list
-            if item.endswith("[]"):
-                res[item[:-2]] = value
-            else:
-                res[item] = value[0] if value else ''
-        return res
-    #@+node:EKR.20040517080250.34: *3* handle_data
-    def handle_data(self):
-        """Class to override"""
-        f = self.send_head()
-        if f:
-            self.copyfile(f, self.wfile)
-    #@+node:ekr.20110522152535.18254: *3* handle_read_event (NEW)
-    def handle_read_event(self):
-        """Over-ride SimpleHTTPRequestHandler.handle_read_event."""
-        asynchat.async_chat.handle_read_event(self)
-    #@+node:EKR.20040517080250.35: *3* handle_request_line (aka found_terminator)
-    def handle_request_line(self):
-        """Called when the http request line and headers have been received"""
-        # prepare attributes needed in parse_request()
-        self.rfile = BytesIO(self.buffer.getvalue())
-        self.raw_requestline = self.rfile.readline()
-        self.parse_request()
-        # if there is a Query String, decodes it in a QUERY dictionary
-        self.path_without_qs, self.qs = self.path, ''
-        if self.path.find('?') >= 0:
-            self.qs = self.path[self.path.find('?') + 1 :]
-            self.path_without_qs = self.path[: self.path.find('?')]
-        self.QUERY = self.query(urlparse.parse_qs(self.qs, 1))  # type:ignore
-        if self.command in ['GET', 'HEAD']:
-            # if method is GET or HEAD, call do_GET or do_HEAD and finish
-            method = "do_" + self.command
-            if hasattr(self, method):
-                f = getattr(self, method)
-                f()
-                self.finish()
-        elif self.command == "POST":
-            # if method is POST, call prepare_POST, don't finish before
-            self.prepare_POST()
-        else:
-            self.send_error(501, "Unsupported method (%s)" % self.command)
-    #@+node:ekr.20110522152535.18256: *3* found_terminator
-    def found_terminator(self):
-        # pylint: disable=method-hidden
-        # Control may be passed to another found_terminator.
-        self.handle_request_line()
-    #@+node:EKR.20040517080250.36: *3* finish
-    def finish(self):
-        """Reset terminator (required after POST method), then close"""
-        self.set_terminator(self.term)
-        self.wfile.initiate_sending()
-        # self.close()
-    #@-others
-#@+node:EKR.20040517080250.37: ** class Server
-class Server(asyncore.dispatcher):
-    """Copied from http_server in medusa"""
-    #@+others
-    #@+node:EKR.20040517080250.38: *3* __init__
-    def __init__(self, ip, port, handler):
-        self.ip = ip
-        self.port = port
-        self.handler = handler
-        super().__init__()
-        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.set_reuse_addr()
-        self.bind((ip, port))
-        # lower this to 5 if your OS complains
-        self.listen(1024)
-    #@+node:EKR.20040517080250.39: *3* handle_accept
-    def handle_accept(self):
-        try:
-            # pylint: disable=unpacking-non-sequence
-            # The following except statements catch this.
-            conn, addr = self.accept()
-        except socket.error:
-            self.log_info('warning: server accept() threw an exception', 'warning')
-            return
-        except TypeError:
-            self.log_info('warning: server accept() threw EWOULDBLOCK', 'warning')
-            return
-        # creates an instance of the handler class to handle the request/response
-        # on the incoming connexion
-        self.handler(conn, addr, self)
-    #@-others
-#@+node:ekr.20140920145803.17997: ** functions
-#@+node:EKR.20040517080250.47: *3* a_read (asynchore override)
-def a_read(obj):
-    try:
-        obj.handle_read_event()
-    except asyncore.ExitNow:
-        raise
-    except Exception:
-        obj.handle_error()
-#@+node:ekr.20110522152535.18252: *3* escape
-def escape(s):
-    s = s.replace('&', "&amp;")
-    s = s.replace('<', "&lt;")
-    s = s.replace('>', "&gt;")
-    # is there a more elegant way to do this?
-    # Replaces blanks with &nbsp; id they are in
-    # the beginning of the line.
-    lines = s.split('\n')
-    result = []
-    blank = chr(32)
-    for line in lines:
-        if line.startswith(blank):
-            resultchars = []
-            startline = True
-            for char in line:
-                if char == blank:
-                    if startline:
-                        resultchars.append('&nbsp;')
-                    else:
-                        resultchars.append(' ')
+            if previous and url == previous.b.split('\n', 1)[0]:
+                # another marking of the same page, just add selection
+                self.add_bookmark_selection(
+                    previous, query.get('selection', [''])[0])
+                c.selectPosition(previous)  # required for body text redraw
+                c.redraw()
+                f.write("""
+        <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
+        <p>Selection added</p></body>""")
+                return f
+            if '_form' in query:
+                # got extra details, save to new node
+                f.write("""
+        <body onload="setTimeout('window.close();', 350);" style='font-family:mono'>
+        <p>Bookmark saved</p></body>""")
+                if using_root:
+                    nd = parent.insertAfter()
+                    nd.moveToRoot()
                 else:
-                    startline = False
-                    resultchars.append(char)
-            result.append(''.join(resultchars))
-        else:
-            result.append(line)
-    s = '\n'.join(result)
-    s = s.replace('\n', '<br />')
-    s = s.replace(chr(9), '&nbsp;&nbsp;&nbsp;&nbsp;')
-    # 8/9/2007
-    # s = g.toEncodedString(s,encoding=browser_encoding,reportErrors=False)
-    # StringIO.write(self, s)
-    return s
-#@+node:EKR.20040517080250.44: *3* loop (asynchore override)
-def loop(timeout=5.0, use_poll=0, map=None):
-    """
-    Override the loop function of asynchore.
-    We poll only until there is not read or
-    write request pending.
-    """
-    return poll(timeout)
-#@+node:bwmulder.20050322135114: *3* node_reference
-def node_reference(vnode):
-    """
-    Use by the rst3 plugin.
-    """
-    return leo_interface().node_reference(vnode)
-#@+node:EKR.20040517080250.40: *3* poll
-def poll(timeout=0.0):
-    global sockets_to_close
-    map = asyncore.socket_map
-    if not map:
-        return False
-    e: list
-    r: list = []
-    w: list
-    while 1:
-        e = w = []
-        for fd, obj in map.items():
-            if obj.readable():
-                r.append(fd)
-            if obj.writable():
-                w.append(fd)
-        if not sockets_to_close:  # Set by writeable()
-            break
-        for s in sockets_to_close:
-            s.close()
-        sockets_to_close = []
-    if [] == r == w == e:  # pylint: disable=bad-option-value,use-implicit-booleaness-not-comparison
-        time.sleep(timeout)
-    else:
-        # set r, w, e
-        try:
-            r, w, e = select.select(r, w, e, timeout)
-        except select.error:  # as err:
-            return False  # EKR: EINTR is undefined.
-    # Read.
-    for fd in r:
-        obj = map.get(fd)
-        if obj is not None:
-            asyncore.read(obj)
-    # Write.
-    for fd in w:
-        obj = map.get(fd)
-        if obj is not None:
-            asyncore.write(obj)
+                    nd = parent.insertAsNthChild(0)
+                if g.pluginIsLoaded('leo.plugins.bookmarks'):
+                    nd.h = name
+                else:
+                    nd.h = '@url ' + name
+                selection = query.get('selection', [''])[0]
+                if selection:
+                    selection = '\n\n"""\n' + selection + '\n"""'
+                tags = query.get('tags', [''])[0]
+                if one_tab_links:
+                    if tags:
+                        tags += ', OneTabList'
+                    else:
+                        tags = 'OneTabList'
+                    self.get_one_tab(one_tab_links, nd)
+                nd.b = "%s\n\nTags: %s\n\n%s\n\nCollected: %s%s\n\n%s" % (
+                    url,
+                    tags,
+                    query.get('_name', [''])[0],
+                    time.strftime("%c"),
+                    selection,
+                    query.get('description', [''])[0],
+                )
+                c.setChanged()
+                c.selectPosition(nd)  # required for body text redraw
+                c.redraw()
+                return f
+            # send form to collect extra details
+            f.write("""
+        <html>
+        <head>
+            <style>
+                body {font-family:mono; font-size: 80%%;}
+                th {text-align:right}
+            </style>
+            <style>%s</style>
+        <title>Leo Add Bookmark</title>
+        </head>
+        <body onload='document.getElementById("tags").focus();'>
+            <form method='GET' action='/_/add/bkmk/'>
+                <input type='hidden' name='_form' value='1'/>
+                <input type='hidden' name='_name' value=%s/>
+                <input type='hidden' name='selection' value=%s/>
+                <input type='hidden' name='ln' value=%s/>
+                <table>
+                <tr><th>Tags:</th><td><input id='tags' name='tags' size='60'/>(comma sep.)</td></tr>
+                <tr><th>Title:</th><td><input name='name' value=%s size='60'/></td></tr>
+                <tr><th>URL:</th><td><input name='url' value=%s size='60'/></td></tr>
+                <tr><th>Notes:</th><td><textarea name='description' cols='60' rows='6'></textarea></td></tr>
+                </table>
+                <input type='submit' value='Save'/><br/>
+            </form>
+        </body>
+        </html>""" % (
+                getData('user_bookmark_stylesheet'),  # EKR: Add config.css to style.
+                quoteattr(name),
+                quoteattr(query.get('selection', [''])[0]),
+                quoteattr(json.dumps(one_tab_links)),
+                quoteattr(name),
+                quoteattr(url)))
+            return f
+        #@+node:tbrown.20131122091143.54044: *4* get_one_tab
+        def get_one_tab(self, links, nd):
+            """get_one_tab - Add child bookmarks from OneTab chrome extension
 
-    return len(r) > 0 or len(w) > 0
-#@+node:bwmulder.20050322132919: *3* rst_related functions
-#@+node:bwmulder.20050322132919.2: *4* get_http_attribute
-def get_http_attribute(p):
-    if hasattr(p.v, 'unknownAttributes'):
-        return p.v.unknownAttributes.get(config.rst2_http_attributename, None)
-    return None
-#@+node:bwmulder.20050322134325: *4* reconstruct_html_from_attrs
-def reconstruct_html_from_attrs(attrs, how_much_to_ignore=0):
-    """
-    Given an attribute, reconstruct the html for this node.
-    """
-    result = []
-    stack = attrs
-    while stack:
-        result.append(stack[0])
-        stack = stack[2]
-    result.reverse()
-    result = result[how_much_to_ignore:]
-    result.extend(attrs[3:])
-    stack = attrs
-    for i in range(how_much_to_ignore):
-        stack = stack[2]
-    while stack:
-        result.append(stack[1])
-        stack = stack[2]
-    return result
-#@+node:bwmulder.20050322133050: *4* set_http_attribute
-def set_http_attribute(p, value):
-    vnode = p.v
-    if hasattr(vnode, 'unknownAttributes'):
-        vnode.unknownAttributes[config.rst2_http_attributename] = value
-    else:
-        vnode.unknownAttributes = {config.rst2_http_attributename: value}
+            :Parameters:
+            - `links`: list of {'txt':, 'url':} dicts
+            - `nd`: node under which to put child nodes
+            """
+            for link in links:
+                if 'url' in link and 'www.one-tab.com' not in link['url'].lower():
+                    nnd = nd.insertAsLastChild()
+                    nnd.h = link['txt']
+                    nnd.b = "%s\n\nTags: %s\n\n%s\n\nCollected: %s%s\n\n%s" % (
+                        link['url'],
+                        'OneTabTab',
+                        link['txt'],
+                        time.strftime("%c"),
+                        '',
+                        '',
+                    )
+        #@+node:tbrown.20111002082827.18325: *4* add_bookmark_selection
+        def add_bookmark_selection(self, node, text):
+            '''Insert the selected text into the bookmark node,
+            after any earlier selections but before the users comments.
+
+                http://example.com/
+
+                Tags: tags, are here
+
+                Full title of the page
+
+                Collected: timestamp
+
+                """
+                The first saved selection
+                """
+
+                """
+                The second saved selection
+                """
+
+                Users comments
+
+            i.e. just above the "Users comments" line.
+            '''
+            b = node.b.split('\n')
+            insert = ['', '"""', text, '"""']
+            collected = None
+            tri_quotes = []
+            for n, i in enumerate(b):
+                if collected is None and i.startswith('Collected: '):
+                    collected = n
+                if i == '"""':
+                    tri_quotes.append(n)
+            if collected is None:
+                # not a regularly formatted text, just append
+                b.extend(insert)
+            elif len(tri_quotes) >= 2:
+                # insert after the last balanced pair of tri quotes
+                x = tri_quotes[len(tri_quotes) - len(tri_quotes) % 2 - 1] + 1
+                b[x:x] = insert
+            else:
+                # found Collected but no tri quotes
+                b[collected + 1 : collected + 1] = insert
+            node.b = '\n'.join(b)
+            node.setDirty()
+        #@+node:tbrown.20111005093154.17683: *4* get_favicon
+        def get_favicon(self):
+            path = g.os_path_join(g.computeLeoDir(), 'Icons', 'LeoApp16.ico')
+            try:
+                f = StringIO()
+                f2 = open(path)
+                s = f2.read()
+                f.write(s)
+                return f
+            except Exception:
+                return None
+        #@+node:tbrown.20110930220448.18076: *4* get_response (mod_http.py)
+        def get_response(self):
+            """Return the file like 'f' that leo_interface.send_head makes"""
+            if self.request_handler.path.startswith('/_/add/bkmk/'):
+                return self.add_bookmark()
+
+            # No longer used.
+            # mod_scripting.py used to define the EvalController class, but that class was buggy.
+
+            # if self.request_handler.path.startswith('/_/exec/'):
+                # return self.exec_handler.get_response()
+
+            f = StringIO()
+            f.write("Unknown URL in LeoActions.get_response()")
+            return f
+        #@-others
+    #@+node:EKR.20040517080250.10: *3* class nodeNotFound
+    class nodeNotFound(Exception):
+        pass
+    #@+node:bwmulder.20061014153544: *3* class noLeoNodePath
+    class noLeoNodePath(Exception):
+        """
+        Raised if the path can not be converted a filename and a series of numbers.
+        Most likely a reference to a picture.
+        """
+        pass
+    #@+node:EKR.20040517080250.13: *3* class RequestHandler
+    class RequestHandler(
+        leo_interface,
+        asynchat.async_chat,
+        SimpleHTTPRequestHandler
+    ):
+        # pylint: disable=too-many-ancestors
+        # pylint: disable=super-init-not-called
+        #@+others
+        #@+node:EKR.20040517080250.14: *4* __init__
+        def __init__(self, conn, addr, server):
+            self.leo_actions = LeoActions(self)
+            super().__init__(conn)
+            self.client_address = addr
+            self.connection = conn
+            self.server = server
+            self.wfile = delayedSocketStream(self.socket)  # type:ignore
+            # Sets the terminator. When it is received, this means that the
+            # http request is complete, control will be passed to self.found_terminator
+            self.term = g.toEncodedString('\r\n\r\n')
+            self.set_terminator(self.term)
+            self.buffer = BytesIO()
+            # Set self.use_encoding and self.encoding.
+            # This is used by asyn_chat.
+            self.use_encoding = True
+            self.encoding = 'utf-8'
+        #@+node:EKR.20040517080250.15: *4* copyfile
+        def copyfile(self, source, outputfile):
+            """Copy all data between two file objects.
+
+            The SOURCE argument is a file object open for reading
+            (or anything with a read() method) and the DESTINATION
+            argument is a file object open for writing (or
+            anything with a write() method).
+
+            The only reason for overriding this would be to change
+            the block size or perhaps to replace newlines by CRLF
+            -- note however that this the default server uses this
+            to copy binary data as well.
+             """
+            shutil.copyfileobj(source, outputfile, length=255)
+        #@+node:EKR.20040517080250.16: *4* log_message
+        def log_message(self, format, *args):
+            """Log an arbitrary message.
+
+             This is used by all other logging functions.  Override
+             it if you have specific logging wishes.
+
+             The first argument, FORMAT, is a format string for the
+             message to be logged.  If the format string contains
+             any % escapes requiring parameters, they should be
+             specified as subsequent arguments (it's just like
+             printf!).
+
+             The client host and current date/time are prefixed to
+             every message.
+
+             """
+            message = "%s - - [%s] %s\n" % (
+                self.address_string(),
+                self.log_date_time_string(),
+                format % args)
+            g.es(message)
+        #@+node:EKR.20040517080250.17: *4* collect_incoming_data
+        def collect_incoming_data(self, data):
+            """Collects the data arriving on the connexion"""
+            self.buffer.write(data)
+        #@+node:EKR.20040517080250.18: *4* prepare_POST
+        def prepare_POST(self):
+            """Prepare to read the request body"""
+            bytesToRead = int(self.headers.getheader('content-length'))
+            # set terminator to length (will read bytesToRead bytes)
+            self.set_terminator(bytesToRead)
+            self.buffer = StringIO()  # type:ignore
+            # control will be passed to a new found_terminator
+            self.found_terminator = self.handle_post_data  # type:ignore
+        #@+node:EKR.20040517080250.19: *4* handle_post_data
+        def handle_post_data(self):
+            """Called when a POST request body has been read"""
+            self.rfile = StringIO(self.buffer.getvalue())  # type:ignore
+            self.do_POST()
+            self.finish()
+        #@+node:EKR.20040517080250.31: *4* do_GET
+        def do_GET(self):
+            """Begins serving a GET request"""
+            # nothing more to do before handle_data()
+            self.handle_data()
+        #@+node:EKR.20040517080250.32: *4* do_POST
+        def do_POST(self):
+            """
+            Begins serving a POST request. The request data must be readable
+            on a file-like object called self.rfile
+            """
+            header = self.headers.getheader('content-type')
+            g.trace('not ready yet', repr(header))
+        #@+node:EKR.20040517080250.33: *4* query
+        def query(self, parsedQuery):
+            """Returns the QUERY dictionary, similar to the result of urllib.parse_qs
+             except that :
+             - if the key ends with [], returns the value (a Python list)
+             - if not, returns a string, empty if the list is empty, or with the
+             first value in the list"""
+            res = {}
+            for item in parsedQuery.keys():
+                value = parsedQuery[item]  # a Python list
+                if item.endswith("[]"):
+                    res[item[:-2]] = value
+                else:
+                    res[item] = value[0] if value else ''
+            return res
+        #@+node:EKR.20040517080250.34: *4* handle_data
+        def handle_data(self):
+            """Class to override"""
+            f = self.send_head()
+            if f:
+                self.copyfile(f, self.wfile)
+        #@+node:ekr.20110522152535.18254: *4* handle_read_event (NEW)
+        def handle_read_event(self):
+            """Over-ride SimpleHTTPRequestHandler.handle_read_event."""
+            asynchat.async_chat.handle_read_event(self)
+        #@+node:EKR.20040517080250.35: *4* handle_request_line (aka found_terminator)
+        def handle_request_line(self):
+            """Called when the http request line and headers have been received"""
+            # prepare attributes needed in parse_request()
+            self.rfile = BytesIO(self.buffer.getvalue())
+            self.raw_requestline = self.rfile.readline()
+            self.parse_request()
+            # if there is a Query String, decodes it in a QUERY dictionary
+            self.path_without_qs, self.qs = self.path, ''
+            if self.path.find('?') >= 0:
+                self.qs = self.path[self.path.find('?') + 1 :]
+                self.path_without_qs = self.path[: self.path.find('?')]
+            self.QUERY = self.query(urlparse.parse_qs(self.qs, 1))  # type:ignore
+            if self.command in ['GET', 'HEAD']:
+                # if method is GET or HEAD, call do_GET or do_HEAD and finish
+                method = "do_" + self.command
+                if hasattr(self, method):
+                    f = getattr(self, method)
+                    f()
+                    self.finish()
+            elif self.command == "POST":
+                # if method is POST, call prepare_POST, don't finish before
+                self.prepare_POST()
+            else:
+                self.send_error(501, "Unsupported method (%s)" % self.command)
+        #@+node:ekr.20110522152535.18256: *4* found_terminator
+        def found_terminator(self):
+            # pylint: disable=method-hidden
+            # Control may be passed to another found_terminator.
+            self.handle_request_line()
+        #@+node:EKR.20040517080250.36: *4* finish
+        def finish(self):
+            """Reset terminator (required after POST method), then close"""
+            self.set_terminator(self.term)
+            self.wfile.initiate_sending()
+            # self.close()
+        #@-others
+    #@+node:EKR.20040517080250.37: *3* class Server
+    class Server(asyncore.dispatcher):
+        """Copied from http_server in medusa"""
+        #@+others
+        #@+node:EKR.20040517080250.38: *4* __init__
+        def __init__(self, ip, port, handler):
+            self.ip = ip
+            self.port = port
+            self.handler = handler
+            super().__init__()
+            self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.set_reuse_addr()
+            self.bind((ip, port))
+            # lower this to 5 if your OS complains
+            self.listen(1024)
+        #@+node:EKR.20040517080250.39: *4* handle_accept
+        def handle_accept(self):
+            try:
+                # pylint: disable=unpacking-non-sequence
+                # The following except statements catch this.
+                conn, addr = self.accept()
+            except socket.error:
+                self.log_info('warning: server accept() threw an exception', 'warning')
+                return
+            except TypeError:
+                self.log_info('warning: server accept() threw EWOULDBLOCK', 'warning')
+                return
+            # creates an instance of the handler class to handle the request/response
+            # on the incoming connexion
+            self.handler(conn, addr, self)
+        #@-others
+    #@+node:ekr.20140920145803.17997: *3* functions
+    #@+node:EKR.20040517080250.47: *4* a_read (asynchore override)
+    def a_read(obj):
+        try:
+            obj.handle_read_event()
+        except asyncore.ExitNow:
+            raise
+        except Exception:
+            obj.handle_error()
+    #@+node:ekr.20110522152535.18252: *4* escape
+    def escape(s):
+        s = s.replace('&', "&amp;")
+        s = s.replace('<', "&lt;")
+        s = s.replace('>', "&gt;")
+        # is there a more elegant way to do this?
+        # Replaces blanks with &nbsp; id they are in
+        # the beginning of the line.
+        lines = s.split('\n')
+        result = []
+        blank = chr(32)
+        for line in lines:
+            if line.startswith(blank):
+                resultchars = []
+                startline = True
+                for char in line:
+                    if char == blank:
+                        if startline:
+                            resultchars.append('&nbsp;')
+                        else:
+                            resultchars.append(' ')
+                    else:
+                        startline = False
+                        resultchars.append(char)
+                result.append(''.join(resultchars))
+            else:
+                result.append(line)
+        s = '\n'.join(result)
+        s = s.replace('\n', '<br />')
+        s = s.replace(chr(9), '&nbsp;&nbsp;&nbsp;&nbsp;')
+        # 8/9/2007
+        # s = g.toEncodedString(s,encoding=browser_encoding,reportErrors=False)
+        # StringIO.write(self, s)
+        return s
+    #@+node:EKR.20040517080250.44: *4* loop (asynchore override)
+    def loop(timeout=5.0, use_poll=0, map=None):
+        """
+        Override the loop function of asynchore.
+        We poll only until there is not read or
+        write request pending.
+        """
+        return poll(timeout)
+    #@+node:bwmulder.20050322135114: *4* node_reference
+    def node_reference(vnode):
+        """
+        Use by the rst3 plugin.
+        """
+        return leo_interface().node_reference(vnode)
+    #@+node:EKR.20040517080250.40: *4* poll
+    def poll(timeout=0.0):
+        global sockets_to_close
+        map = asyncore.socket_map
+        if not map:
+            return False
+        e: list
+        r: list = []
+        w: list
+        while 1:
+            e = w = []
+            for fd, obj in map.items():
+                if obj.readable():
+                    r.append(fd)
+                if obj.writable():
+                    w.append(fd)
+            if not sockets_to_close:  # Set by writeable()
+                break
+            for s in sockets_to_close:
+                s.close()
+            sockets_to_close = []
+        if [] == r == w == e:  # pylint: disable=bad-option-value,use-implicit-booleaness-not-comparison
+            time.sleep(timeout)
+        else:
+            # set r, w, e
+            try:
+                r, w, e = select.select(r, w, e, timeout)
+            except select.error:  # as err:
+                return False  # EKR: EINTR is undefined.
+        # Read.
+        for fd in r:
+            obj = map.get(fd)
+            if obj is not None:
+                asyncore.read(obj)
+        # Write.
+        for fd in w:
+            obj = map.get(fd)
+            if obj is not None:
+                asyncore.write(obj)
+
+        return len(r) > 0 or len(w) > 0
+    #@+node:bwmulder.20050322132919: *4* rst_related functions
+    #@+node:bwmulder.20050322132919.2: *5* get_http_attribute
+    def get_http_attribute(p):
+        if hasattr(p.v, 'unknownAttributes'):
+            return p.v.unknownAttributes.get(config.rst2_http_attributename, None)
+        return None
+    #@+node:bwmulder.20050322134325: *5* reconstruct_html_from_attrs
+    def reconstruct_html_from_attrs(attrs, how_much_to_ignore=0):
+        """
+        Given an attribute, reconstruct the html for this node.
+        """
+        result = []
+        stack = attrs
+        while stack:
+            result.append(stack[0])
+            stack = stack[2]
+        result.reverse()
+        result = result[how_much_to_ignore:]
+        result.extend(attrs[3:])
+        stack = attrs
+        for i in range(how_much_to_ignore):
+            stack = stack[2]
+        while stack:
+            result.append(stack[1])
+            stack = stack[2]
+        return result
+    #@+node:bwmulder.20050322133050: *5* set_http_attribute
+    def set_http_attribute(p, value):
+        vnode = p.v
+        if hasattr(vnode, 'unknownAttributes'):
+            vnode.unknownAttributes[config.rst2_http_attributename] = value
+        else:
+            vnode.unknownAttributes = {config.rst2_http_attributename: value}
+    #@-others
+#@+node:ekr.20231130124437.1: ** NEW: mod_http
+if new:
+    #@+others
+    #@+node:ekr.20231130124335.1: *3* Exception classes
+    class InternalServerError(Exception):  # pragma: no cover
+        """The server violated its own coding conventions."""
+        pass
+
+    class ServerError(Exception):  # pragma: no cover
+        """The server received an erroneous package."""
+        pass
+
+    class TerminateServer(Exception):  # pragma: no cover
+        """Ask the server to terminate."""
+        pass
+    #@+node:ekr.20231130125530.1: *3* class SetEncoder
+    class SetEncoder(json.JSONEncoder):
+
+        def default(self, obj: Any) -> Any:
+            # Sets become basic javascript arrays
+            if isinstance(obj, set):
+                return list(obj)
+            # Leo Positions get converted with same simple algorithm as p_to_ap
+            if isinstance(obj, Position):
+                stack = [{'gnx': v.gnx, 'childIndex': childIndex}
+                    for (v, childIndex) in obj.stack]
+                return {
+                    'childIndex': obj._childIndex,
+                    'gnx': obj.v.gnx,
+                    'stack': stack,
+                }
+            # Leo VNodes are represented as their gnx
+            if isinstance(obj, VNode):
+                return {'gnx': obj.gnx}
+            return json.JSONEncoder.default(self, obj)  # otherwise, return default
+    #@+node:ekr.20231130124623.1: *3* class Mod_HTTP_Server
+    class Mod_HTTP_Server:
+        """
+        Server for mod_http.py.
+
+        Based on LeoServer in leoserver.py
+        """
+        #@+others
+        #@+node:ekr.20231130124623.2: *4* server.__init__
+        def __init__(self, testing: bool = False) -> None:
+
+            import leo.core.leoApp as leoApp
+            import leo.core.leoBridge as leoBridge
+
+            global g
+            t1 = time.process_time()
+            #
+            # Init ivars first.
+            self.c: Cmdr = None  # Currently Selected Commander.
+            self.dummy_c: Cmdr = None  # Set below, after we set g.
+            self.action: str = None
+            self.bad_commands_list: list[str] = []  # Set below.
+            #
+            # Debug utilities
+            self.current_id = 0  # Id of action being processed.
+            self.log_flag = False  # set by "log" key
+            #
+            # Start the bridge.
+            self.bridge = leoBridge.controller(
+                gui='nullGui',
+                loadPlugins=True,  # True: attempt to load plugins.
+                readSettings=True,  # True: read standard settings files.
+                silent=True,  # True: don't print signon messages.
+                verbose=False,  # True: prints messages that would be sent to the log pane.
+            )
+            self.g = g = self.bridge.globals()  # Also sets global 'g' object
+            g.in_leo_server = True  # #2098.
+            g.leoServer = self  # Set server singleton global reference
+            self.leoServerConfig: Param = None
+            #
+            # * Intercept Log Pane output: Sends to client's log pane
+            g.es = self._es  # pointer - not a function call
+            g.es_print = self._es  # Also like es, because es_print would double strings in client
+            #
+            # Set in _init_connection
+            self.web_socket = None  # Main Control Client
+            self.loop: Loop = None
+            #
+            # To inspect commands
+            self.dummy_c = g.app.newCommander(fileName=None)
+            self.bad_commands_list = self._bad_commands(self.dummy_c)
+            #
+            # * Replacement instances to Leo's codebase : getScript, IdleTime and externalFilesController
+            ### g.getScript = self._getScript
+            ### g.IdleTime = self._idleTime
+            #
+            # override for "revert to file" operation
+            g.app.gui.runAskOkDialog = self._runAskOkDialog
+            g.app.gui.runAskYesNoDialog = self._runAskYesNoDialog
+            g.app.gui.runAskYesNoCancelDialog = self._runAskYesNoCancelDialog
+            g.app.gui.show_find_success = self._show_find_success
+            self.headlineWidget = g.bunch(_name='tree')
+            #
+            # Complete the initialization, as in LeoApp.initApp.
+            g.app.idleTimeManager = leoApp.IdleTimeManager()
+            ### g.app.externalFilesController = ServerExternalFilesController()  # Replace
+            g.app.idleTimeManager.start()
+            t2 = time.process_time()
+            if not testing:
+                print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
+        #@+node:ekr.20231130124623.13: *4* server.public commands
+        #@+node:ekr.20231130124623.14: *5* server.button commands
+        # These will fail unless the open_file inits c.theScriptingController.
+        #@+node:ekr.20231130124623.15: *6* _check_button_command
+        def _check_button_command(self, tag: str) -> dict:  # pragma: no cover (no scripting controller)
+            """
+            Check that a button command is possible.
+            Raise ServerError if not. Otherwise, return sc.buttonsDict.
+            """
+            c = self._check_c()
+            sc = getattr(c, "theScriptingController", None)
+            if not sc:
+                # This will happen unless mod_scripting is loaded!
+                raise ServerError(f"{tag}: no scripting controller")
+            return sc.buttonsDict
+        #@+node:ekr.20231130124623.16: *6* _get_rclickTree
+        def _get_rclickTree(self, rclicks: list[Any]) -> list[dict[str, Any]]:
+            rclickList: list[dict[str, Any]] = []
+            for rc in rclicks:
+                children = []
+                if rc.children:
+                    children = self._get_rclickTree(rc.children)
+                rclickList.append({"name": rc.position.h, "children": children})
+            return rclickList
+
+
+        #@+node:ekr.20231130124623.17: *6* server.click_button
+        def click_button(self, param: Param) -> Response:  # pragma: no cover (no scripting controller)
+            """Handles buttons clicked in client from the '@button' panel"""
+            tag = 'click_button'
+            index = param.get("index")
+            if not index:
+                raise ServerError(f"{tag}: no button index given")
+            d = self._check_button_command(tag)
+            button = None
+            for key in d:
+                # Some button keys are objects so we have to convert first
+                if str(key) == index:
+                    button = key
+
+            if not button:
+                raise ServerError(f"{tag}: button {index!r} does not exist")
+
+            try:
+                w_rclick = param.get("rclick", False)
+                if w_rclick and hasattr(button, 'rclicks'):
+                    # not zero
+                    toChooseFrom = button.rclicks
+                    for i_rc in w_rclick:
+                        w_rclickChosen = toChooseFrom[i_rc]
+                        toChooseFrom = w_rclickChosen.children
+                    if w_rclickChosen:
+                        c = self._check_c()
+                        sc = getattr(c, "theScriptingController", None)
+                        sc.executeScriptFromButton(button, "", w_rclickChosen.position, "")
+
+                else:
+                    button.command()
+            except Exception as e:
+                raise ServerError(f"{tag}: exception clicking button {index!r}: {e}")
+            # Tag along a possible return value with info sent back by _make_response
+            return self._make_response()
+        #@+node:ekr.20231130124623.18: *6* server.get_buttons
+        def get_buttons(self, param: dict) -> Response:  # pragma: no cover (no scripting controller)
+            """
+            Gets the currently opened file's @buttons list
+            as an array of dict.
+
+            Typescript RClick recursive interface:
+            RClick: {name: string, children: RClick[]}
+
+            Typescript return interface:
+                {
+                    name: string;
+                    index: string;
+                    rclicks: RClick[];
+                }[]
+            """
+            d = self._check_button_command('get_buttons')
+
+            buttons = []
+            # Some button keys are objects so we have to convert first
+            for key in d:
+                rclickList = []
+                if hasattr(key, 'rclicks'):
+                    rclickList = self._get_rclickTree(key.rclicks)
+                    # buttonRClicks = key.rclicks
+                    # for rc in buttonRClicks:
+                    #     rclickList.append(rc.position.h)
+
+                entry = {"name": d[key], "index": str(key), "rclicks": rclickList}
+                buttons.append(entry)
+
+            return self._make_minimal_response({
+                "buttons": buttons
+            })
+        #@+node:ekr.20231130124623.19: *6* server.remove_button
+        def remove_button(self, param: dict) -> Response:  # pragma: no cover (no scripting controller)
+            """Remove button by index 'key string'."""
+            tag = 'remove_button'
+            index = param.get("index")
+            if not index:
+                raise ServerError(f"{tag}: no button index given")
+            d = self._check_button_command(tag)
+            # Some button keys are objects so we have to convert first
+            key = None
+            for i_key in d:
+                if str(i_key) == index:
+                    key = i_key
+            if key:
+                try:
+                    del d[key]
+                except Exception as e:
+                    raise ServerError(f"{tag}: exception removing button {index!r}: {e}")
+            else:
+                raise ServerError(f"{tag}: button {index!r} does not exist")
+
+            return self._make_response()
+        #@+node:ekr.20231130124623.20: *6* server.goto_script
+        def goto_script(self, param: dict) -> Response:  # pragma: no cover (no scripting controller)
+            """Goto the script this button originates."""
+            tag = 'goto_script'
+            index = param.get("index")
+            if not index:
+                raise ServerError(f"{tag}: no button index given")
+            d = self._check_button_command(tag)
+            # Some button keys are objects so we have to convert first
+            key = None
+            for i_key in d:
+                if str(i_key) == index:
+                    key = i_key
+            if key:
+                try:
+                    gnx = key.command.gnx
+                    c = self._check_c()
+                    # pylint: disable=undefined-loop-variable
+                    for p in c.all_positions():
+                        if p.gnx == gnx:
+                            break
+                    if p:
+                        assert c.positionExists(p)
+                        c.selectPosition(p)
+                    else:
+                        raise ServerError(f"{tag}: not found {gnx}")
+                except Exception as e:
+                    raise ServerError(f"{tag}: exception going to script of button {index!r}: {e}")
+            else:
+                raise ServerError(f"{tag}: button {index!r} does not exist")
+
+            return self._make_response()
+        #@+node:ekr.20231130124623.21: *5* server.file commands
+        #@+node:ekr.20231130124623.22: *6* server.open_file
+        def open_file(self, param: Param) -> Response:
+            """
+            Open a leo file with the given filename.
+            Create a new document if no name.
+            """
+            found, tag = False, 'open_file'
+            filename = param.get('filename')  # Optional.
+            if filename:
+                for c in g.app.commanders():
+                    if c.fileName() == filename:
+                        found = True
+                        break
+            if not found:
+                c = self.bridge.openLeoFile(filename)
+                ###
+                    # # Add ftm. This won't happen if opened outside leoserver
+                    # c.findCommands.ftm = StringFindTabManager(c)
+                    # cc = QuickSearchController(c)
+                    # # Patch up quick-search controller to the commander
+                    # c.patched_quicksearch_controller = cc
+                    # # Patch up for 'selection range' in headlines left by the search commands.
+                    # c.frame.tree.endEditLabel = self._endEditLabel
+            if not c:  # pragma: no cover
+                raise ServerError(f"{tag}: bridge did not open {filename!r}")
+            if not c.frame.body.wrapper:  # pragma: no cover
+                raise ServerError(f"{tag}: no wrapper")
+            # Assign self.c
+            self.c = c
+            # c.selectPosition(c.rootPosition())  # Why ? This will create a node change !
+            # Check the outline!
+            c.recreateGnxDict()  # refresh c.fileCommands.gnxDict used in ap_to_p
+            self._check_outline(c)
+            if self.log_flag:  # pragma: no cover
+                self._dump_outline(c)
+
+            result = {"total": len(g.app.commanders()), "filename": self.c.fileName()}
+
+            return self._make_response(result)
+        #@+node:ekr.20231130124623.23: *6* server.open_files
+        def open_files(self, param: Param) -> Response:
+            """
+            Opens an array of leo files.
+            Returns an object with total opened files
+            and name of currently last opened & selected document.
+            """
+            files = param.get('files')  # Optional.
+            if files:
+                for i_file in files:
+                    if os.path.isfile(i_file):
+                        self.open_file({"filename": i_file})
+            total = len(g.app.commanders())
+            filename = self.c.fileName() if total else ""
+            result = {"total": total, "filename": filename}
+            return self._make_response(result)
+        #@+node:ekr.20231130124623.24: *6* server.set_opened_file
+        def set_opened_file(self, param: Param) -> Response:
+            """
+            Choose the new active commander from array of opened files.
+            Returns an object with total opened files
+            and name of currently last opened & selected document.
+            """
+            tag = 'set_opened_file'
+            index = param.get('index')
+            total = len(g.app.commanders())
+            if total and index < total:
+                self.c = g.app.commanders()[index]
+                # maybe needed for frame wrapper
+                self.c.selectPosition(self.c.p)
+                self._check_outline(self.c)
+                result = {"total": total, "filename": self.c.fileName()}
+                return self._make_response(result)
+            raise ServerError(f"{tag}: commander at index {index} does not exist")
+        #@+node:ekr.20231130124623.25: *6* server.close_file
+        def close_file(self, param: Param) -> Response:
+            """
+            Closes an outline opened with open_file.
+            Use a 'forced' flag to force close.
+            Returns a 'total' member in the package if close is successful.
+            """
+            c = self._check_c()
+            forced = param.get("forced")
+            if c:
+                # First, revert to prevent asking user.
+                if forced and c.changed:
+                    if c.fileName():
+                        c.revert()
+                    else:
+                        c.changed = False  # Needed in g.app.closeLeoWindow
+                # Then, if still possible, close it.
+                if forced or not c.changed:
+                    # c.close() # Stops too much if last file closed
+                    g.app.closeLeoWindow(c.frame, finish_quit=False)
+                else:
+                    # Cannot close, return empty response without 'total'
+                    # (ask to save, ignore or cancel)
+                    return self._make_response()
+            # New 'c': Select the first open outline, if any.
+            commanders = g.app.commanders()
+            self.c = commanders and commanders[0] or None
+            if self.c:
+                result = {"total": len(g.app.commanders()), "filename": self.c.fileName()}
+            else:
+                result = {"total": 0}
+            return self._make_response(result)
+        #@+node:ekr.20231130124623.26: *6* server.save_file
+        def save_file(self, param: Param) -> Response:  # pragma: no cover (too dangerous).
+            """Save the leo outline."""
+            tag = 'save_file'
+            c = self._check_c()
+            if c:
+                try:
+                    if "name" in param:
+                        c.save(fileName=param['name'])
+                    else:
+                        c.save()
+                except Exception as e:
+                    print(f"{tag} Error while saving {param['name']}", flush=True)
+                    print(e, flush=True)
+
+            return self._make_response()  # Just send empty as 'ok'
+        #@+node:ekr.20231130124623.27: *6* server.import_any_file
+        def import_any_file(self, param: Param) -> Response:
+            """
+            Import file(s) from array of file names
+            """
+            tag = 'import_any_file'
+            c = self._check_c()
+            ic = c.importCommands
+            names = param.get('filenames')
+            if names:
+                g.chdir(names[0])
+            if not names:
+                raise ServerError(f"{tag}: No file names provided")
+            # New in Leo 4.9: choose the type of import based on the extension.
+            derived = [z for z in names if c.looksLikeDerivedFile(z)]
+            others = [z for z in names if z not in derived]
+            if derived:
+                ic.importDerivedFiles(parent=c.p, paths=derived)
+            for fn in others:
+                junk, ext = g.os_path_splitext(fn)
+                ext = ext.lower()  # #1522
+                if ext.startswith('.'):
+                    ext = ext[1:]
+                if ext == 'csv':
+                    ic.importMindMap([fn])
+                elif ext in ('cw', 'cweb'):
+                    ic.importWebCommand([fn], "cweb")
+                # Not useful. Use @auto x.json instead.
+                # elif ext == 'json':
+                    # ic.importJSON([fn])
+                elif fn.endswith('mm.html'):
+                    ic.importFreeMind([fn])
+                elif ext in ('nw', 'noweb'):
+                    ic.importWebCommand([fn], "noweb")
+                elif ext == 'more':
+                    # (Félix) leoImport Should be on c?
+                    c.leoImport.MORE_Importer(c).import_file(fn)  # #1522.
+                elif ext == 'txt':
+                    # (Félix) import_txt_file Should be on c?
+                    # #1522: Create an @edit node.
+                    c.import_txt_file(c, fn)
+                else:
+                    # Make *sure* that parent.b is empty.
+                    last = c.lastTopLevel()
+                    parent = last.insertAfter()
+                    parent.v.h = 'Imported Files'
+                    ic.importFilesCommand(
+                        files=[fn],
+                        parent=parent,
+                        treeType='@auto',  # was '@clean'
+                        # Experimental: attempt to use permissive section ref logic.
+                    )
+            return self._make_response()  # Just send empty as 'ok'
+        #@+node:ekr.20231130124623.28: *5* server.export commands
+        #@+node:ekr.20231130124623.29: *6* server.export-headlines
+        def export_headlines(self, param: Param) -> Response:
+            """
+            Export Outline (export headlines)
+            """
+            tag = 'export_headlines'
+            c = self._check_c()
+            if c and "name" in param:
+                try:
+                    fileName = param.get("name")
+                    if fileName:
+                        g.setGlobalOpenDir(fileName)
+                        g.chdir(fileName)
+                        c.importCommands.exportHeadlines(fileName)
+
+                except Exception as e:
+                    print(f"{tag} Error while writing {param['name']}", flush=True)
+                    print(e, flush=True)
+
+            return self._make_response()
+        #@+node:ekr.20231130124623.30: *6* server.flatten-outline
+        def flatten_outline(self, param: Param) -> Response:
+            """
+            Flatten Selected Outline
+            """
+            tag = 'flatten_outline'
+            c = self._check_c()
+            if c and "name" in param:
+                try:
+                    fileName = param.get("name")
+                    if fileName:
+                        g.setGlobalOpenDir(fileName)
+                        g.chdir(fileName)
+                        c.importCommands.flattenOutline(fileName)
+
+                except Exception as e:
+                    print(f"{tag} Error while writing {param['name']}", flush=True)
+                    print(e, flush=True)
+            return self._make_response()
+        #@+node:ekr.20231130124623.31: *6* server.outline-to-cweb
+        def outline_to_cweb(self, param: Param) -> Response:
+            """
+            Outline To CWEB
+            """
+            tag = 'outline_to_cweb'
+            c = self._check_c()
+            if c and "name" in param:
+                try:
+                    fileName = param.get("name")
+                    if fileName:
+                        g.setGlobalOpenDir(fileName)
+                        g.chdir(fileName)
+                        c.importCommands.outlineToWeb(fileName, "cweb")
+
+                except Exception as e:
+                    print(f"{tag} Error while writing {param['name']}", flush=True)
+                    print(e, flush=True)
+            return self._make_response()
+        #@+node:ekr.20231130124623.32: *6* server.outline-to-noweb
+
+        def outline_to_noweb(self, param: Param) -> Response:
+            """
+            Outline To Noweb
+            """
+            tag = 'outline_to_noweb'
+            c = self._check_c()
+            if c and "name" in param:
+                try:
+                    fileName = param.get("name")
+                    if fileName:
+                        g.setGlobalOpenDir(fileName)
+                        g.chdir(fileName)
+                        c.importCommands.outlineToWeb(fileName, "noweb")
+                        c.outlineToNowebDefaultFileName = fileName
+
+                except Exception as e:
+                    print(f"{tag} Error while writing {param['name']}", flush=True)
+                    print(e, flush=True)
+            return self._make_response()
+        #@+node:ekr.20231130124623.33: *6* server.remove-sentinels
+        def remove_sentinels(self, param: Param) -> Response:
+            """
+            Remove Sentinels
+            """
+            tag = 'remove_sentinels'
+            c = self._check_c()
+            if c and "names" in param:
+                try:
+                    names = param.get("names")
+                    if names:
+                        g.chdir(names[0])
+                        c.importCommands.removeSentinelsCommand(names)
+
+                except Exception as e:
+                    print(f"{tag} Error while running remove_sentinels", flush=True)
+                    print(e, flush=True)
+            return self._make_response()
+        #@+node:ekr.20231130124623.34: *6* server.weave
+        def weave(self, param: Param) -> Response:
+            """
+            Weave
+            """
+            tag = 'weave'
+            c = self._check_c()
+            if c and "name" in param:
+                try:
+                    fileName = param.get("name")
+                    if fileName:
+                        g.setGlobalOpenDir(fileName)
+                        g.chdir(fileName)
+                        c.importCommands.weave(fileName)
+
+                except Exception as e:
+                    print(f"{tag} Error while writing {param['name']}", flush=True)
+                    print(e, flush=True)
+            return self._make_response()
+        #@+node:ekr.20231130124623.35: *6* server.write-file-from-node
+        def write_file_from_node(self, param: Param) -> Response:
+            """
+            Write file from node
+            """
+            tag = 'write_file_from_node'
+            c = self._check_c()
+            if c and "name" in param:
+                try:
+                    fileName = param.get("name")
+                    if fileName:
+                        p = c.p
+                        s = p.b
+                        with open(fileName, 'w') as f:
+                            g.chdir(fileName)
+                            if s.startswith('@nocolor\n'):
+                                s = s[len('@nocolor\n') :]
+                            f.write(s)
+                            f.flush()
+                            g.blue('wrote:', fileName)
+
+                except Exception as e:
+                    print(f"{tag} Error while writing {param['name']}", flush=True)
+                    print(e, flush=True)
+            return self._make_response()
+        #@+node:ekr.20231130124623.36: *6* server.read-file-into-node
+        def read_file_into_node(self, param: Param) -> Response:
+            """
+            Read a file into a single node.
+            """
+            tag = 'read_file_into_node'
+            undoType = 'Read File Into Node'
+            c = self._check_c()
+            if c and "name" in param:
+                try:
+                    fileName = param.get("name")
+                    if fileName:
+                        s, e = g.readFileIntoString(fileName)
+                        if s is None:
+                            return None
+                        g.chdir(fileName)  # TODO : IS THIS NEEDED
+                        s = '@nocolor\n' + s  # TODO : MAKE THIS UNDOABLE !
+                        p = c.insertHeadline(op_name=undoType)
+                        # New node does not need c.setHeadString. p.setHeadString is ok.
+                        p.setHeadString('@read-file-into-node ' + fileName)
+                        p.setBodyString(s)
+                except Exception as err:
+                    print(f"{tag} Error while reading {param['name']}", flush=True)
+                    print(err, flush=True)
+            return self._make_response()
+
+
+        #@+node:ekr.20231130124623.71: *5* server.getter commands
+        #@+node:ekr.20231130124623.72: *6* server.get_all_open_commanders
+        def get_all_open_commanders(self, param: Param) -> Response:
+            """Return array describing each commander in g.app.commanders()."""
+            files = [
+                {
+                    "changed": c.isChanged(),
+                    "name": c.fileName(),
+                    "selected": c == self.c,
+                } for c in g.app.commanders()
+            ]
+            return self._make_minimal_response({"files": files})
+        #@+node:ekr.20231130124623.73: *6* server.get_all_positions
+        def get_all_positions(self, param: Param) -> Response:
+            """
+            Return a list of position data for all positions.
+
+            Useful as a sanity check for debugging.
+            """
+            c = self._check_c()
+            result = [
+                self._get_position_d(p) for p in c.all_positions(copy=False)
+            ]
+            return self._make_minimal_response({"position-data-list": result})
+        #@+node:ekr.20231130124623.74: *6* server.get_structure
+        def get_structure(self, param: Param) -> Response:
+            """
+            Returns an array of ap's, the direct descendants of the hidden root node.
+            Each having required 'children' array, to give the whole structure of ap's.
+            """
+            c = self._check_c()
+            result = []
+            p = c.rootPosition()  # first child of hidden root node as first item in top array
+            while p:
+                result.append(self._get_position_d(p, includeChildren=True))
+                p.moveToNodeAfterTree()
+            # return selected node either ways
+            return self._make_minimal_response({"structure": result})
+
+        #@+node:ekr.20231130124623.75: *6* server.get_all_gnx
+        def get_all_gnx(self, param: Param) -> Response:
+            """Get gnx array from all unique nodes"""
+            if self.log_flag:  # pragma: no cover
+                print('\nget_all_gnx\n', flush=True)
+            c = self._check_c()
+            all_gnx = [p.v.gnx for p in c.all_unique_positions(copy=False)]
+            return self._make_minimal_response({"gnx": all_gnx})
+        #@+node:ekr.20231130124623.76: *6* server.get_branch
+        def get_branch(self, param: Param) -> Response:
+            """
+            Return the branch and commit of the currently opened document, if any.
+            """
+            c = self._check_c()
+            fileName = c.fileName()
+            branch, commit = g.gitInfoForFile(fileName)
+            return self._make_minimal_response({"branch": branch, "commit": commit})
+        #@+node:ekr.20231130124623.77: *6* server.get_body
+        def get_body(self, param: Param) -> Response:
+            """
+            Return the body content body specified via GNX.
+            """
+            c = self._check_c()
+            gnx = param.get("gnx")
+            v = c.fileCommands.gnxDict.get(gnx)  # vitalije
+            body = ""
+            if v:
+                body = v.b or ""
+            # Support asking for unknown gnx when client switches rapidly
+            return self._make_minimal_response({"body": body})
+        #@+node:ekr.20231130124623.78: *6* server.get_body_length
+        def get_body_length(self, param: Param) -> Response:
+            """
+            Return p.b's length in bytes, where p is c.p if param["ap"] is missing.
+            """
+            c = self._check_c()
+            gnx = param.get("gnx")
+            w_v = c.fileCommands.gnxDict.get(gnx)  # vitalije
+            if w_v:
+                # Length in bytes, not just by character count.
+                return self._make_minimal_response({"len": len(w_v.b.encode('utf-8'))})
+            return self._make_minimal_response({"len": 0})  # empty as default
+        #@+node:ekr.20231130124623.79: *6* server.get_body_states
+        def get_body_states(self, param: Param) -> Response:
+            """
+            Return body data for p, where p is c.p if param["ap"] is missing.
+            The cursor positions are given as {"line": line, "col": col, "index": i}
+            with line and col along with a redundant index for convenience and flexibility.
+            """
+            c = self._check_c()
+            p = self._get_p(param)
+            wrapper = c.frame.body.wrapper
+
+            def row_col_wrapper_dict(i: int) -> dict:
+                if not i:
+                    i = 0  # prevent none type
+                # BUG: this uses current selection wrapper only, use
+                # g.convertPythonIndexToRowCol instead !
+                line, col = wrapper.toPythonIndexRowCol(i)
+                return {"line": line, "col": col, "index": i}
+
+            def row_col_pv_dict(i: int, s: str) -> dict:
+                if not i:
+                    i = 0  # prevent none type
+                # BUG: this uses current selection wrapper only, use
+                # g.convertPythonIndexToRowCol instead !
+                line, col = g.convertPythonIndexToRowCol(s, i)
+                return {"line": line, "col": col, "index": i}
+
+            # Handle @killcolor and @nocolor-node when looking for language
+            if c.frame.body.colorizer.useSyntaxColoring(p):
+                # Get the language.
+                aList = g.get_directives_dict_list(p)
+                d = g.scanAtCommentAndAtLanguageDirectives(aList)
+                language = (
+                    d and d.get('language')
+                    or g.getLanguageFromAncestorAtFileNode(p)
+                    or c.config.getLanguage('target-language')
+                    or 'plain'
+                )
+            else:
+                # No coloring at all for this node.
+                language = 'plain'
+
+            # Get the body wrap state
+            wrap = g.scanAllAtWrapDirectives(c, p)
+            tabWidth = g.scanAllAtTabWidthDirectives(c, p)
+            if not isinstance(tabWidth, int):
+                tabWidth = False
+
+            # get values from wrapper if it's the selected node.
+            if c.p.v.gnx == p.v.gnx:
+                insert = wrapper.getInsertPoint()
+                try:
+                    start, end = wrapper.getSelectionRange(True)
+                except Exception:  # pragma: no cover
+                    start, end = 0, 0
+                scroll = wrapper.getYScrollPosition()
+                states = {
+                    'language': language.lower(),
+                    'wrap': wrap,
+                    'tabWidth': tabWidth,
+                    'selection': {
+                        "gnx": p.v.gnx,
+                        "scroll": scroll,
+                        "insert": row_col_wrapper_dict(insert),
+                        "start": row_col_wrapper_dict(start),
+                        "end": row_col_wrapper_dict(end)
+                    }
+                }
+            else:  # pragma: no cover
+                insert = p.v.insertSpot
+                start = p.v.selectionStart
+                end = p.v.selectionStart + p.v.selectionLength
+                scroll = p.v.scrollBarSpot
+                states = {
+                    'language': language.lower(),
+                    'wrap': wrap,
+                    'tabWidth': tabWidth,
+                    'selection': {
+                        "gnx": p.v.gnx,
+                        "scroll": scroll,
+                        "insert": row_col_pv_dict(insert, p.v.b),
+                        "start": row_col_pv_dict(start, p.v.b),
+                        "end": row_col_pv_dict(end, p.v.b)
+                    }
+                }
+            return self._make_minimal_response(states)
+        #@+node:ekr.20231130124623.80: *6* server.get_chapters
+        def get_chapters(self, param: Param) -> Response:
+            c = self._check_c()
+            cc = c.chapterController
+            chapters = []
+            if cc:
+                chapters = cc.setAllChapterNames()
+            return self._make_minimal_response({"chapters": chapters})
+        #@+node:ekr.20231130124623.81: *6* server.get_children
+        def get_children(self, param: Param) -> Response:
+            """
+            Return the node data for children of p,
+            where p is root if param.ap is missing
+            """
+            c = self._check_c()
+            children = []  # default empty array
+            if param.get("ap"):
+                # Maybe empty param, for tree-root children(s).
+                # Call _get_optional_p:
+                # we don't want c.p. after switch to another document while refreshing.
+                p = self._get_optional_p(param)
+                if p and p.hasChildren():
+                    children = [self._get_position_d(child) for child in p.children()]
+            else:
+                if c.hoistStack:
+                    topHoistPos = c.hoistStack[-1].p
+                    if g.match_word(topHoistPos.h, 0, '@chapter'):
+                        children = [self._get_position_d(child) for child in topHoistPos.children()]
+                    else:
+                        # start hoisted tree with single hoisted root node
+                        children = [self._get_position_d(topHoistPos)]
+                else:
+                    # this outputs all Root Children
+                    children = [self._get_position_d(child) for child in self._yieldAllRootChildren()]
+            return self._make_minimal_response({"children": children})
+        #@+node:ekr.20231130124623.82: *6* server.get_focus
+        def get_focus(self, param: Param) -> Response:
+            """
+            Return a representation of the focused widget,
+            one of ("body", "tree", "headline", repr(the_widget)).
+            """
+            return self._make_minimal_response({"focus": self._get_focus()})
+        #@+node:ekr.20231130124623.83: *6* server.get_parent
+        def get_parent(self, param: Param) -> Response:
+            """
+            Return the node data for the parent of position p,
+            where p is c.p if param["ap"] is missing.
+            """
+            c = self._check_c()
+            p = self._get_p(param)
+            parent: Optional[Position] = p.parent()
+            if c.hoistStack:
+                topHoistPos = c.hoistStack[-1].p
+                if parent == topHoistPos:
+                    parent = None
+            data = self._get_position_d(parent) if parent else None
+            return self._make_minimal_response({"node": data})
+        #@+node:ekr.20231130124623.84: *6* server.get_position_data
+        def get_position_data(self, param: Param) -> Response:
+            """
+            Return a dict of position data for all positions.
+
+            Useful as a sanity check for debugging.
+            """
+            c = self._check_c()
+            result = {
+                p.v.gnx: self._get_position_d(p)
+                    for p in c.all_unique_positions(copy=False)
+            }
+            return self._make_minimal_response({"position-data-dict": result})
+        #@+node:ekr.20231130124623.85: *6* server.get_ua
+        def get_ua(self, param: Param) -> Response:
+            """Return p.v.u, making sure it can be serialized."""
+            self._check_c()
+            p = self._get_p(param)
+            try:
+                ua = {"ua": p.v.u}
+                json.dumps(ua, separators=(',', ':'), cls=SetEncoder)
+                response = {"ua": p.v.u}
+            except Exception:  # pragma: no cover
+                response = {"ua": repr(p.v.u)}
+            # _make_response adds all the cheap redraw data.
+            return self._make_minimal_response(response)
+        #@+node:ekr.20231130124623.86: *6* server.get_ui_states
+        def get_ui_states(self, param: Param) -> Response:
+            """
+            Return the enabled/disabled UI states for the open commander, or defaults if None.
+            """
+            tag = 'get_ui_states'
+            c = self._check_c()
+            p = self._get_p(param)
+
+            w_canHoist = True
+            if c.hoistStack:
+                bunch = c.hoistStack[len(c.hoistStack) - 1]
+                w_ph = bunch.p
+                if p == w_ph:
+                # p is already the hoisted node
+                    w_canHoist = False
+            else:
+                # not hoisted, was it the single top child of the real root?
+                if c.rootPosition() == p and len(c.hiddenRootNode.children) == 1:
+                    w_canHoist = False
+
+            inChapter = False
+            topHoistChapter = False
+            if c.config.getBool('use-chapters') and c.chapterController:
+                cc = c.chapterController
+                inChapter = cc.inChapter()
+                if c.hoistStack:
+                    bunch = c.hoistStack[len(c.hoistStack) - 1]
+                    if g.match_word(bunch.p.h, 0, '@chapter'):
+                        topHoistChapter = True
+
+            try:
+                states = {
+                    "changed": c and c.changed,
+                    "canUndo": c and c.canUndo(),
+                    "canRedo": c and c.canRedo(),
+                    "canGoBack": c and c.nodeHistory.beadPointer > 0,
+                    "canGoNext": c and c.nodeHistory.beadPointer + 1 < len(c.nodeHistory.beadList),
+                    "canDemote": c and c.canDemote(),
+                    "canPromote": c and c.canPromote(),
+                    "canDehoist": c and c.canDehoist(),
+                    "canHoist": w_canHoist,
+                    "inChapter": inChapter,
+                    "topHoistChapter": topHoistChapter
+                }
+            except Exception as e:  # pragma: no cover
+                raise ServerError(f"{tag}: Exception setting state: {e}")
+            return self._make_minimal_response({"states": states})
+        #@+node:ekr.20231130124623.87: *6* server.get_undos
+        def get_undos(self, param: Param) -> Response:
+            """Return list of undo operations"""
+            c = self._check_c()
+            undoer = c.undoer
+            undos = []
+            try:
+                for bead in undoer.beads:
+                    undos.append(bead.undoType)
+                response = {"bead": undoer.bead, "undos": undos}
+            except Exception:  # pragma: no cover
+                response = {"bead": 0, "undos": []}
+            # _make_response adds all the cheap redraw data.
+            return self._make_minimal_response(response)
+        #@+node:ekr.20231130124623.88: *5* server.node commands
+        #@+node:ekr.20231130124623.89: *6* server.clone_node
+        def clone_node(self, param: Param) -> Response:
+            """
+            Clone a node.
+            Try to keep selection, then return the selected node that remains.
+            """
+            c = self._check_c()
+            p = self._get_p(param)
+            if p == c.p:
+                c.clone()
+            else:
+                oldPosition = c.p
+                c.selectPosition(p)
+                c.clone()
+                if c.positionExists(oldPosition):
+                    c.selectPosition(oldPosition)
+                else:
+                    oldPosition._childIndex = oldPosition._childIndex + 1
+                    # Try again with childIndex incremented
+                    if c.positionExists(oldPosition):
+                        # additional try with lowered childIndex
+                        c.selectPosition(oldPosition)
+
+            # return selected node either ways
+            return self._make_response()
+
+        #@+node:ekr.20231130124623.90: *6* server.contract_node
+        def contract_node(self, param: Param) -> Response:
+            """
+            Contract (Collapse) the node at position p, where p is c.p if p is missing.
+            """
+            p = self._get_p(param)
+            p.contract()
+            return self._make_response()
+        #@+node:ekr.20231130124623.91: *6* server.copy_node
+        def copy_node(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
+            """
+            Copy a node, don't select it.
+            Also supports 'asJSON' parameter to get as JSON
+            Try to keep selection, then return the selected node.
+            """
+            c = self._check_c()
+            p = self._get_p(param)
+
+            copyMethod = c.copyOutline
+            if hasattr(param, "asJSON"):
+                if param["asJSON"]:
+                    copyMethod = c.copyOutlineAsJSON
+
+            if p == c.p:
+                s = copyMethod()
+            else:
+                oldPosition = c.p  # not same node, save position to possibly return to
+                c.selectPosition(p)
+                s = copyMethod()
+                if c.positionExists(oldPosition):
+                    # select if old position still valid
+                    c.selectPosition(oldPosition)
+            g.app.gui.replaceClipboardWith(s)
+            return self._make_response({"string": s})
+
+        #@+node:ekr.20231130124623.92: *6* server.copy_node_as_json
+        def copy_node_as_json(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
+            """
+            Copy a node as JSON, don't select it.
+            Also supports 'asJSON' parameter to get as JSON
+            Try to keep selection, then return the selected node.
+            """
+            c = self._check_c()
+            p = self._get_p(param)
+            if p == c.p:
+                s = c.copyOutlineAsJSON()
+            else:
+                oldPosition = c.p  # not same node, save position to possibly return to
+                c.selectPosition(p)
+                s = c.copyOutlineAsJSON()
+                if c.positionExists(oldPosition):
+                    # select if old position still valid
+                    c.selectPosition(oldPosition)
+            g.app.gui.replaceClipboardWith(s)
+            return self._make_response({"string": s})
+
+        #@+node:ekr.20231130124623.93: *6* server.cut_node
+        def cut_node(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
+            """
+            Cut a node, don't select it.
+            Try to keep selection, then return the selected node that remains.
+            """
+            c = self._check_c()
+            p = self._get_p(param)
+            copyMethod = c.copyOutline
+            if hasattr(param, "asJSON"):
+                if param["asJSON"]:
+                    copyMethod = c.copyOutlineAsJSON
+            if p == c.p:
+                s = copyMethod()
+                c.cutOutline()  # already on this node, so cut it
+            else:
+                oldPosition = c.p  # not same node, save position to possibly return to
+                c.selectPosition(p)
+                s = copyMethod()
+                c.cutOutline()
+                if c.positionExists(oldPosition):
+                    # select if old position still valid
+                    c.selectPosition(oldPosition)
+                else:
+                    oldPosition._childIndex = oldPosition._childIndex - 1
+                    # Try again with childIndex decremented
+                    if c.positionExists(oldPosition):
+                        # additional try with lowered childIndex
+                        c.selectPosition(oldPosition)
+            g.app.gui.replaceClipboardWith(s)
+            return self._make_response({"string": s})
+        #@+node:ekr.20231130124623.94: *6* server.delete_node
+        def delete_node(self, param: Param) -> Response:  # pragma: no cover (too dangerous, for now)
+            """
+            Delete a node, don't select it.
+            Try to keep selection, then return the selected node that remains.
+            """
+            c = self._check_c()
+            p = self._get_p(param)
+            if p == c.p:
+                c.deleteOutline()  # already on this node, so cut it
+            else:
+                oldPosition = c.p  # not same node, save position to possibly return to
+                c.selectPosition(p)
+                c.deleteOutline()
+                if c.positionExists(oldPosition):
+                    # select if old position still valid
+                    c.selectPosition(oldPosition)
+                else:
+                    oldPosition._childIndex = oldPosition._childIndex - 1
+                    # Try again with childIndex decremented
+                    if c.positionExists(oldPosition):
+                        # additional try with lowered childIndex
+                        c.selectPosition(oldPosition)
+            return self._make_response()
+        #@+node:ekr.20231130124623.95: *6* server.expand_node
+        def expand_node(self, param: Param) -> Response:
+            """
+            Expand the node at position p, where p is c.p if p is missing.
+            """
+            p = self._get_p(param)
+            p.expand()
+            return self._make_response()
+        #@+node:ekr.20231130124623.96: *6* server.insert_node
+        def insert_node(self, param: Param) -> Response:
+            """
+            Insert a node at given node. If a position is given
+            that is not the current position, re-select the original position.
+            """
+            c = self._check_c()
+            p = self._get_p(param)
+
+            if p == c.p:
+                c.insertHeadline()  # Handles undo, sets c.p
+            else:
+                oldPosition = c.p
+                c.selectPosition(p)
+                c.insertHeadline()  # Handles undo, sets c.p
+                if c.positionExists(oldPosition):
+                    c.selectPosition(oldPosition)
+                else:
+                    oldPosition._childIndex = oldPosition._childIndex + 1
+                    # Try again with childIndex incremented
+                    if c.positionExists(oldPosition):
+                        # additional try with lowered childIndex
+                        c.selectPosition(oldPosition)
+
+            return self._make_response()
+        #@+node:ekr.20231130124623.97: *6* server.insert_child_node
+        def insert_child_node(self, param: Param) -> Response:
+            """
+            Insert a child node at given node. If a position is given
+            that is not the current position, re-select the original position.
+            """
+            c = self._check_c()
+            p = self._get_p(param)
+
+            if p == c.p:
+                c.insertHeadline(op_name='Insert Child', as_child=True)  # Handles undo, sets c.p
+            else:
+                oldPosition = c.p
+                c.selectPosition(p)
+                c.insertHeadline(op_name='Insert Child', as_child=True)  # Handles undo, sets c.p
+                if c.positionExists(oldPosition):
+                    c.selectPosition(oldPosition)
+            # return selected node either ways
+            return self._make_response()
+        #@+node:ekr.20231130124623.98: *6* server.insert_named_node
+        def insert_named_node(self, param: Param) -> Response:
+            """
+            Insert a node at given node, set its headline. If a position is given
+            that is not the current position, re-select the original position.
+            """
+            c = self._check_c()
+            p = self._get_p(param)
+            oldPosition: Optional[Position] = None if p == c.p else c.p
+
+            newHeadline = param.get('name')
+            bunch = c.undoer.beforeInsertNode(p)
+            newNode = p.insertAfter()
+            # Set this node's new headline
+            newNode.h = newHeadline
+            newNode.setDirty()
+            c.setChanged()
+            c.undoer.afterInsertNode(newNode, 'Insert Node', bunch)
+
+            c.selectPosition(newNode)
+            if oldPosition:
+                if c.positionExists(oldPosition):
+                    c.selectPosition(oldPosition)
+                else:
+                    oldPosition._childIndex = oldPosition._childIndex + 1
+                    # Try again with childIndex incremented
+                    if c.positionExists(oldPosition):
+                        # additional try with lowered childIndex
+                        c.selectPosition(oldPosition)
+
+            c.setChanged()
+            return self._make_response()
+        #@+node:ekr.20231130124623.99: *6* server.insert_child_named_node
+        def insert_child_named_node(self, param: Param) -> Response:
+            """
+            Insert a child node at given node, set its headline, select it and finally return it
+            """
+            c = self._check_c()
+            p = self._get_p(param)
+            newHeadline = param.get('name')
+            bunch = c.undoer.beforeInsertNode(p)
+            if c.config.getBool('insert-new-nodes-at-end'):
+                newNode = p.insertAsLastChild()
+            else:
+                newNode = p.insertAsNthChild(0)
+            # Set this node's new headline
+            newNode.h = newHeadline
+            newNode.setDirty()
+            c.setChanged()
+            c.undoer.afterInsertNode(
+                newNode, 'Insert Node', bunch)
+            c.selectPosition(newNode)
+            return self._make_response()
+        #@+node:ekr.20231130124623.100: *6* server.scroll_top
+        def scroll_top(self, param: Param) -> Response:
+            """
+            Utility method for connected clients to simulate scroll to the top
+            """
+            c = self._check_c()
+            p = c.firstVisible()
+            if p:
+                c.treeSelectHelper(p)
+            return self._make_response()
+        #@+node:ekr.20231130124623.101: *6* server.scroll_bottom
+        def scroll_bottom(self, param: Param) -> Response:
+            """
+            Utility method for connected clients to simulate scroll to bottom
+            """
+            c = self._check_c()
+            p = c.lastVisible()
+            if p:
+                c.treeSelectHelper(p)
+            return self._make_response()
+        #@+node:ekr.20231130124623.102: *6* server.page_down
+        def page_down(self, param: Param) -> Response:
+            """
+            Tree page-down command:
+            If no 'n steps' are passed, this selects last sibling or next vis if already last sibling.
+            Otherwise selects a node "n" steps down in the tree to simulate page down.
+            """
+            c = self._check_c()
+            n = param.get("n", 0)
+            if n:
+                for _z in range(n):
+                    c.selectVisNext()
+            else:
+                parent = c.p.parent()
+                if not parent:
+                    c.goToLastSibling()
+                    return self._make_response()
+
+                siblings = [* parent.children(copy=True)]
+                lastSibling = siblings[-1]
+                if lastSibling == c.p:
+                    c.selectVisNext()  # already last sibling
+                else:
+                    c.goToLastSibling()
+
+            return self._make_response()
+        #@+node:ekr.20231130124623.103: *6* server.page_up
+        def page_up(self, param: Param) -> Response:
+            """
+            Tree page-up command:
+            If no 'n steps' are passed, this selects first sibling, or previous vis if already first sibling.
+            Otherwise selects a node "N" steps up in the tree to simulate page up.
+            """
+            c = self._check_c()
+            n = param.get("n", 0)
+            if n:
+                for _z in range(n):
+                    c.selectVisBack()
+            else:
+                parent = c.p.parent()
+                if not parent:
+                    c.goToFirstSibling()
+                    return self._make_response()
+
+                siblings = [* parent.children(copy=True)]
+                firstSibling = siblings[0]
+                if firstSibling == c.p:
+                    c.selectVisBack()  # already first sibling
+                else:
+                    c.goToFirstSibling()
+
+            return self._make_response()
+        #@+node:ekr.20231130124623.104: *6* server.paste_node
+        def paste_node(self, param: Param) -> Response:
+            """
+            Pastes a node,
+            Try to keep selection, then return the selected node.
+            """
+            tag = 'paste_node'
+            c = self._check_c()
+            p = self._get_p(param)
+            s = param.get('name')
+            if s is None:  # pragma: no cover
+                raise ServerError(f"{tag}: no string given")
+            g.app.gui.replaceClipboardWith(s)
+            if p == c.p:
+                c.pasteOutline(s=s)
+            else:
+                oldPosition = c.p  # not same node, save position to possibly return to
+                c.selectPosition(p)
+                c.pasteOutline(s=s)
+                if c.positionExists(oldPosition):
+                    # select if old position still valid
+                    c.selectPosition(oldPosition)
+                else:
+                    oldPosition._childIndex = oldPosition._childIndex + 1
+                    # Try again with childIndex incremented
+                    if c.positionExists(oldPosition):
+                        # additional try with higher childIndex
+                        c.selectPosition(oldPosition)
+            return self._make_response()
+        #@+node:ekr.20231130124623.105: *6* server.paste_as_clone_node
+        def paste_as_clone_node(self, param: Param) -> Response:
+            """
+            Pastes a node as a clone,
+            Try to keep selection, then return the selected node.
+            """
+            tag = 'paste_as_clone_node'
+            c = self._check_c()
+            p = self._get_p(param)
+            s = param.get('name')
+            if s is None:  # pragma: no cover
+                raise ServerError(f"{tag}: no string given")
+            g.app.gui.replaceClipboardWith(s)
+            if p == c.p:
+                c.pasteOutlineRetainingClones(s=s)
+            else:
+                oldPosition = c.p  # not same node, save position to possibly return to
+                c.selectPosition(p)
+                c.pasteOutlineRetainingClones(s=s)
+                if c.positionExists(oldPosition):
+                    # select if old position still valid
+                    c.selectPosition(oldPosition)
+                else:
+                    oldPosition._childIndex = oldPosition._childIndex + 1
+                    # Try again with childIndex incremented
+                    if c.positionExists(oldPosition):
+                        # additional try with higher childIndex
+                        c.selectPosition(oldPosition)
+            return self._make_response()
+        #@+node:ekr.20231130124623.106: *6* server.paste_as_template
+        def paste_as_template(self, param: Param) -> Response:
+            """
+            Paste as template clones only nodes that were already clones
+            """
+            tag = 'paste_as_template'
+            c = self._check_c()
+            p = self._get_p(param)
+            s = param.get('name')
+            if s is None:  # pragma: no cover
+                raise ServerError(f"{tag}: no string given")
+            g.app.gui.replaceClipboardWith(s)
+            if p == c.p:
+                c.pasteAsTemplate()
+            else:
+                oldPosition = c.p  # not same node, save position to possibly return to
+                c.selectPosition(p)
+                c.pasteAsTemplate()
+                if c.positionExists(oldPosition):
+                    # select if old position still valid
+                    c.selectPosition(oldPosition)
+                else:
+                    oldPosition._childIndex = oldPosition._childIndex + 1
+                    # Try again with childIndex incremented
+                    if c.positionExists(oldPosition):
+                        # additional try with higher childIndex
+                        c.selectPosition(oldPosition)
+            return self._make_response()
+        #@+node:ekr.20231130124623.107: *6* server.redo
+        def redo(self, param: Param) -> Response:
+            """Undo last un-doable operation with optional redo repeat count"""
+            c = self._check_c()
+            u = c.undoer
+            total = param.get('repeat', 1)  # Facultative repeat redo count
+            for _i in range(total):
+                if u.canRedo():
+                    u.redo()
+            return self._make_response()
+        #@+node:ekr.20231130124623.108: *6* server.set_body
+        def set_body(self, param: Param) -> Response:
+            """
+            Undoably set body text of a v node.
+            (Only if new string is different from actual existing body string)
+            """
+            tag = 'set_body'
+            c = self._check_c()
+            gnx = param.get('gnx')
+            body = param.get('body')
+            u, wrapper = c.undoer, c.frame.body.wrapper
+            if body is None:  # pragma: no cover
+                raise ServerError(f"{tag}: no body given")
+            for p in c.all_positions():
+                if p.v.gnx == gnx:
+                    if body == p.v.b:
+                        return self._make_response()
+                        # Just exit if there is no need to change at all.
+                    bunch = u.beforeChangeNodeContents(p)
+                    p.v.setBodyString(body)
+                    u.afterChangeNodeContents(p, "Body Text", bunch)
+                    if c.p == p:
+                        wrapper.setAllText(body)
+                    if not self.c.isChanged():  # pragma: no cover
+                        c.setChanged()
+                    if not p.v.isDirty():  # pragma: no cover
+                        p.setDirty()
+                    break
+            # additional forced string setting
+            if gnx:
+                v = c.fileCommands.gnxDict.get(gnx)  # vitalije
+                if v:
+                    v.b = body
+            return self._make_response()
+        #@+node:ekr.20231130124623.109: *6* server.set_current_position
+        def set_current_position(self, param: Param) -> Response:
+            """Select position p. Or try to get p with gnx if not found."""
+            tag = "set_current_position"
+            c = self._check_c()
+            p = self._get_p(param)
+            if p:
+                if c.positionExists(p):
+                    # set this node as selection
+                    c.selectPosition(p)
+                else:
+                    ap = param.get('ap')
+                    foundPNode = self._positionFromGnx(ap.get('gnx', ""))
+                    if foundPNode:
+                        c.selectPosition(foundPNode)
+                    else:
+                        print(
+                            f"{tag}: node does not exist! "
+                            f"ap was: {json.dumps(ap, cls=SetEncoder)}", flush=True)
+            return self._make_response()
+        #@+node:ekr.20231130124623.110: *6* server.set_headline
+        def set_headline(self, param: Param) -> Response:
+            """
+            Undoably set p.h, where p is c.p if package["ap"] is missing.
+            """
+            c = self._check_c()
+            p = self._get_p(param)
+            u = c.undoer
+            h: str = param.get('name', '')
+            oldH: str = p.h
+            if h == oldH:
+                return self._make_response()
+            bunch = u.beforeChangeHeadline(p)
+            c.setHeadString(p, h)  # c.setHeadString fixes the headline revert bug of p.initHeadString(h)
+            c.setChanged()
+            p.setDirty()
+            u.afterChangeHeadline(p, 'Change Headline', bunch)
+            return self._make_response()
+        #@+node:ekr.20231130124623.111: *6* server.set_selection
+        def set_selection(self, param: Param) -> Response:
+            """
+            Set the selection range for p.b, where p is c.p if package["ap"] is missing.
+
+            Set the selection in the wrapper if p == c.p
+
+            Package has these keys:
+
+            - "ap":     An archived position for position p.
+            - "start":  The start of the selection.
+            - "end":    The end of the selection.
+            - "active": The insert point. Must be either start or end.
+            - "scroll": An optional scroll position.
+
+            Selection points can be sent as {"col":int, "line" int} dict
+            or as numbers directly for convenience.
+            """
+            c = self._check_c()
+            p = self._get_p(param)  # Will raise ServerError if p does not exist.
+            v = p.v
+            wrapper = c.frame.body.wrapper
+            convert = g.convertRowColToPythonIndex
+            start = param.get('start', 0)
+            end = param.get('end', 0)
+            active = param.get('insert', 0)  # temp var to check if int.
+            scroll = param.get('scroll', 0)
+            # If sent as number, use 'as is'
+            if isinstance(active, int):
+                insert = active
+                startSel = start
+                endSel = end
+            else:
+                # otherwise convert from line+col data.
+                insert = convert(
+                    v.b, active['line'], active['col'])
+                startSel = convert(
+                    v.b, start['line'], start['col'])
+                endSel = convert(
+                    v.b, end['line'], end['col'])
+            # If it's the currently selected node set the wrapper's states too
+            if p == c.p:
+                wrapper.setSelectionRange(startSel, endSel, insert)
+                wrapper.setYScrollPosition(scroll)
+            # Always set vnode attrs.
+            v.scrollBarSpot = scroll
+            v.insertSpot = insert
+            v.selectionStart = startSel
+            v.selectionLength = abs(startSel - endSel)
+            return self._make_response()
+        #@+node:ekr.20231130124623.112: *6* server.set_ua_member
+        def set_ua_member(self, param: Param) -> Response:
+            """
+            Set a single member of a node's ua.
+            """
+            self._check_c()
+            p = self._get_p(param)
+            name = param.get('name')
+            value = param.get('value', '')
+            if not p.v.u:
+                p.v.u = {}  # assert at least an empty dict if null or non existent
+            if name and isinstance(name, str):
+                p.v.u[name] = value
+            return self._make_response()
+        #@+node:ekr.20231130124623.113: *6* server.set_ua
+        def set_ua(self, param: Param) -> Response:
+            """
+            Replace / set the whole user attribute dict of a node.
+            """
+            self._check_c()
+            p = self._get_p(param)
+            ua = param.get('ua', {})
+            p.v.u = ua
+            return self._make_response()
+        #@+node:ekr.20231130124623.114: *6* server.toggle_mark
+        def toggle_mark(self, param: Param) -> Response:
+            """
+            Toggle the mark at position p.
+            Try to keep selection, then return the selected node that remains.
+            """
+            c = self._check_c()
+            p = self._get_p(param)
+            if p == c.p:
+                c.markHeadline()
+            else:
+                oldPosition = c.p
+                c.selectPosition(p)
+                c.markHeadline()
+                if c.positionExists(oldPosition):
+                    c.selectPosition(oldPosition)
+            # return selected node either ways
+            return self._make_response()
+        #@+node:ekr.20231130124623.115: *6* server.mark_node
+        def mark_node(self, param: Param) -> Response:
+            """
+            Mark a node.
+            Try to keep selection, then return the selected node that remains.
+            """
+            # pylint: disable=no-else-return
+            self._check_c()
+            p = self._get_p(param)
+            if p.isMarked():
+                return self._make_response()
+            else:
+                return self.toggle_mark(param)
+
+        #@+node:ekr.20231130124623.116: *6* server.unmark_node
+        def unmark_node(self, param: Param) -> Response:
+            """
+            Unmark a node.
+            Try to keep selection, then return the selected node that remains.
+            """
+            # pylint: disable=no-else-return
+            self._check_c()
+            p = self._get_p(param)
+            if not p.isMarked():
+                return self._make_response()
+            else:
+                return self.toggle_mark(param)
+        #@+node:ekr.20231130124623.117: *6* server.undo
+        def undo(self, param: Param) -> Response:
+            """Undo last un-doable operation with optional undo repeat count"""
+            c = self._check_c()
+            u = c.undoer
+            total = param.get('repeat', 1)  # Facultative repeat undo count
+            for _i in range(total):
+                if u.canUndo():
+                    u.undo()
+            # Félix: Caller can get focus using other calls.
+            return self._make_response()
+        #@+node:ekr.20231130124623.118: *5* server.server commands
+        #@+node:ekr.20231130124623.120: *6* server.get_leoid
+        def get_leoid(self, param: Param) -> Response:
+            """
+            Returns g.app.leoID
+            """
+            # uses the __version__ global constant and the v1, v2, v3 global version numbers
+            result = {"leoID": g.app.leoID}
+            return self._make_minimal_response(result)
+        #@+node:ekr.20231130124623.121: *6* server.set_leoid
+        def set_leoid(self, param: Param) -> Response:
+            """
+            Sets g.app.leoID
+            """
+            # uses the __version__ global constant and the v1, v2, v3 global version numbers
+            leoID = param.get('leoID', '')
+            # Same test/fix as in Leo
+            if leoID:
+                try:
+                    leoID = leoID.replace('.', '').replace(',', '').replace('"', '').replace("'", '')
+                    # Remove *all* whitespace: https://stackoverflow.com/questions/3739909
+                    leoID = ''.join(leoID.split())
+                except Exception:
+                    g.es_exception()
+                    leoID = 'None'
+                if len(leoID) > 2:
+                    g.app.leoID = leoID
+                    g.app.nodeIndices.defaultId = leoID
+                    g.app.nodeIndices.userId = leoID
+            return self._make_response()
+        #@+node:ekr.20231130124623.122: *6* server.do_nothing
+        def do_nothing(self, param: Param) -> Response:
+            """Simply return states from _make_response"""
+            return self._make_response()
+        #@+node:ekr.20231130124623.123: *6* server.set_ask_result
+        def set_ask_result(self, param: Param) -> Response:
+            """Got the result to an asked question/warning from client"""
+            tag = "set_ask_result"
+            result = param.get("result")
+            if not result:
+                raise ServerError(f"{tag}: no param result")
+            g.app.externalFilesController.clientResult(result)
+            return self._make_response()
+        #@+node:ekr.20231130124623.124: *6* server.set_config
+        def set_config(self, param: Param) -> Response:
+            """Got auto-reload's config from client"""
+            self.leoServerConfig = param  # PARAM IS THE CONFIG-DICT
+            return self._make_response()
+        #@+node:ekr.20231130124623.125: *6* server.error
+        def error(self, param: Param) -> None:
+            """For unit testing. Raise ServerError"""
+            raise ServerError("error called")
+        #@+node:ekr.20231130124623.126: *6* server.get_all_leo_commands & helper
+        def get_all_leo_commands(self, param: Param) -> Response:
+            """Return a list of all commands that make sense for connected clients."""
+            tag = 'get_all_leo_commands'
+            # #173: Use the present commander to get commands created by @button and @command.
+            c = self.c
+            d: dict = c.commandsDict if c else {}  # keys are command names, values are functions.
+            bad_names = self._bad_commands(c)  # #92.
+            good_names = self._good_commands()
+            duplicates = set(bad_names).intersection(set(good_names))
+            if duplicates:  # pragma: no cover
+                print(f"{tag}: duplicate command names...", flush=True)
+                for z in sorted(duplicates):
+                    print(z, flush=True)
+            result = []
+            for command_name in d:
+                func = d.get(command_name)
+                if not func:  # pragma: no cover
+                    print(f"{tag}: no func: {command_name!r}", flush=True)
+                    continue
+                if command_name in bad_names:  # #92.
+                    continue
+                doc = func.__doc__ or ''
+                result.append({
+                    "label": command_name,  # Kebab-cased Command name to be called
+                    "detail": doc,
+                })
+            if self.log_flag:  # pragma: no cover
+                print(f"\n{tag}: {len(result)} leo commands\n", flush=True)
+                g.printObj([z.get("label") for z in result], tag=tag)
+                print('', flush=True)
+            return self._make_minimal_response({"commands": result})
+        #@+node:ekr.20231130124623.127: *7* server._bad_commands
+        def _bad_commands(self, c: Cmdr) -> list[str]:
+            """Return the list of command names that connected clients should ignore."""
+            d = c.commandsDict if c else {}  # keys are command names, values are functions.
+            bad = []
+            #
+            # leoInteg #173: Remove only vim commands.
+            for command_name in sorted(d):
+                if command_name.startswith(':'):
+                    bad.append(command_name)
+            #
+            # Remove other commands.
+            # This is a hand-curated list.
+            bad_list = [
+                'restart-leo',
+
+                'demangle-recent-files',
+                'clean-main-spell-dict',
+                'clean-persistence',
+                'clean-recent-files',
+                'clean-spellpyx',
+                'clean-user-spell-dict',
+                'clear-recent-files',
+                'delete-first-icon',
+                'delete-last-icon',
+                'delete-node-icons',
+                'insert-icon',
+
+                'count-region',  # Uses wrapper, already available in client
+
+                'export-headlines',  # (overridden by client)
+                'export-jupyter-notebook',  # (overridden by client)
+                'flatten-outline',  # (overridden by client)
+                'outline-to-cweb',  # (overridden by client)
+                'outline-to-noweb',  # (overridden by client)
+                'remove-sentinels',  # (overridden by client)
+                'weave',  # (overridden by client)
+                'write-file-from-node',  # (overridden by client)
+
+                'save-all',
+                'save-file-as-zipped',
+                'edit-setting',
+                'edit-shortcut',
+                'goto-line',
+                'pdb',
+                'xdb',
+                'compare-two-leo-files',
+                'file-compare-two-leo-files',
+                'edit-recent-files',
+                'exit-leo',
+                'help',
+                'help-for-abbreviations',
+                'help-for-autocompletion',
+                'help-for-bindings',
+                'help-for-command',
+                'help-for-creating-external-files',
+                'help-for-debugging-commands',
+                'help-for-drag-and-drop',
+                'help-for-dynamic-abbreviations',
+                'help-for-find-commands',
+                'help-for-keystroke',
+                'help-for-minibuffer',
+                'help-for-python',
+                'help-for-regular-expressions',
+                'help-for-scripting',
+                'help-for-settings',
+                'join-leo-irc',  # Some online irc - parameters not working anymore
+
+                'print-body',
+                'print-cmd-docstrings',
+                'print-expanded-body',
+                'print-expanded-html',
+                'print-html',
+                'print-marked-bodies',
+                'print-marked-html',
+                'print-marked-nodes',
+                'print-node',
+                'print-sep',
+                'print-tree-bodies',
+                'print-tree-html',
+                'print-tree-nodes',
+                'print-window-state',
+                'quit-leo',
+                'reload-style-sheets',
+                'save-buffers-kill-leo',
+                'screen-capture-5sec',
+                'screen-capture-now',
+                'set-reference-file',  # TODO : maybe offer this
+                'show-style-sheet',
+                'sort-recent-files',
+                'view-lossage',
+
+                # Buffers commands (Usage?)
+                'buffer-append-to',
+                'buffer-copy',
+                'buffer-insert',
+                'buffer-kill',
+                'buffer-prepend-to',
+                'buffer-switch-to',
+                'buffers-list',
+                'buffers-list-alphabetically',
+
+                # Open specific files... (MAYBE MAKE AVAILABLE?)
+                # 'ekr-projects',
+                'leo-cheat-sheet',  # These duplicates are useful.
+                'leo-dist-leo',
+                'leo-docs-leo',
+                'leo-plugins-leo',
+                'leo-py-leo',
+                'leo-quickstart-leo',
+                'leo-scripts-leo',
+                'leo-unittest-leo',
+
+                # 'scripts',
+                'settings',
+
+                'open-cheat-sheet-leo',
+                'cheat-sheet-leo',
+                'cheat-sheet',
+                'open-desktop-integration-leo',
+                'desktop-integration-leo',
+                'open-leo-dist-leo',
+                'leo-dist-leo',
+                'open-leo-docs-leo',
+                'leo-docs-leo',
+                'open-leo-plugins-leo',
+                'leo-plugins-leo',
+                'open-leo-py-leo',
+                'leo-py-leo',
+                'open-leo-py-ref-leo',
+                'leo-py-ref-leo',
+                'open-leo-py',
+                'open-leo-settings',
+                'open-leo-settings-leo',
+                'open-local-settings',
+                'my-leo-settings',
+                'open-my-leo-settings',
+                'open-my-leo-settings-leo',
+                'leo-settings',
+                'open-quickstart-leo',
+                'leo-quickstart-leo',
+                'open-scripts-leo',
+                'leo-scripts-leo',
+                'open-unittest-leo',
+                'leo-unittest-leo',
+
+                # Open other places...
+                'desktop-integration-leo',
+
+                'open-offline-tutorial',
+                'open-online-home',
+                'open-online-toc',
+                'open-online-tutorials',
+                'open-online-videos',
+                'open-recent-file',
+                'open-theme-file',
+                'open-url',
+                'open-url-under-cursor',
+                'open-users-guide',
+
+                # Diffs - needs open file dialog
+                'diff-and-open-leo-files',
+                'diff-leo-files',
+
+                # --- ORIGINAL BAD COMMANDS START HERE ---
+                # Abbreviations...
+                'abbrev-kill-all',
+                'abbrev-list',
+                'dabbrev-completion',
+                'dabbrev-expands',
+
+                # Autocompletion...
+                'auto-complete',
+                'auto-complete-force',
+                'disable-autocompleter',
+                'disable-calltips',
+                'enable-autocompleter',
+                'enable-calltips',
+
+                # Debugger...
+                'debug',
+                'db-again',
+                'db-b',
+                'db-c',
+                'db-h',
+                'db-input',
+                'db-l',
+                'db-n',
+                'db-q',
+                'db-r',
+                'db-s',
+                'db-status',
+                'db-w',
+
+                # File operations...
+                'directory-make',
+                'directory-remove',
+                'file-delete',
+                'file-diff-files',
+                'file-insert',
+                'file-save-by-name',  # only body pane to file (confusing w/ save as...)
+                'save-file-by-name',  # only body pane to file (confusing w/ save as...)
+                # 'file-new',
+                # 'file-open-by-name',
+
+                # All others...
+                'shell-command',
+                'shell-command-on-region',
+                'cheat-sheet',
+                'dehoist',  # Duplicates of de-hoist.
+                # 'find-clone-all',
+                # 'find-clone-all-flattened',
+                # 'find-clone-tag',
+                # 'find-all',
+                'find-character',
+                'find-character-extend-selection',
+                # 'find-next',
+                # 'find-prev',
+                'find-word',
+                'find-word-in-line',
+
+                'global-search',
+
+                'isearch-backward',
+                'isearch-backward-regexp',
+                'isearch-forward',
+                'isearch-forward-regexp',
+                'isearch-with-present-options',
+
+                # 'replace',
+                # 'replace-all',
+                'replace-current-character',
+                # 'replace-then-find',
+
+                # 're-search-backward',
+                # 're-search-forward',
+
+                # 'search-backward',
+                # 'search-forward',
+                'search-return-to-origin',
+
+                # 'set-find-everywhere',
+                # 'set-find-node-only',
+                # 'set-find-suboutline-only',
+                'set-replace-string',
+                'set-search-string',
+
+                # 'show-find-options',
+
+                # 'start-search',
+
+                'toggle-find-collapses-nodes',
+                # 'toggle-find-ignore-case-option',
+                # 'toggle-find-in-body-option',
+                # 'toggle-find-in-headline-option',
+                # 'toggle-find-mark-changes-option',
+                # 'toggle-find-mark-finds-option',
+                # 'toggle-find-regex-option',
+                # 'toggle-find-word-option',
+                'toggle-find-wrap-around-option',
+
+                # 'word-search-backward',
+                # 'word-search-forward',
+
+                # Buttons...
+                'delete-script-button-button',
+
+                # Clicks...
+                'click-click-box',
+                'click-icon-box',
+                'ctrl-click-at-cursor',
+                'ctrl-click-icon',
+                'double-click-icon-box',
+                'right-click-icon',
+
+                # Editors...
+                'add-editor', 'editor-add',
+                'delete-editor', 'editor-delete',
+                'detach-editor-toggle',
+                'detach-editor-toggle-max',
+
+                # Focus...
+                'cycle-editor-focus', 'editor-cycle-focus',
+                'focus-to-body',
+                'focus-to-find',
+                'focus-to-log',
+                'focus-to-minibuffer',
+                'focus-to-nav',
+                'focus-to-spell-tab',
+                'focus-to-tree',
+
+                'tab-cycle-next',
+                'tab-cycle-previous',
+                'tab-detach',
+
+                # Headlines..
+                'abort-edit-headline',
+                'edit-headline',
+                'end-edit-headline',
+
+                # Layout and panes...
+                'adoc',
+                'adoc-with-preview',
+
+                'contract-body-pane',
+                'contract-log-pane',
+                'contract-outline-pane',
+
+                'edit-pane-csv',
+                'edit-pane-test-open',
+                'equal-sized-panes',
+                'expand-log-pane',
+                'expand-body-pane',
+                'expand-outline-pane',
+
+                'free-layout-context-menu',
+                'free-layout-load',
+                'free-layout-restore',
+                'free-layout-zoom',
+
+                'zoom-in',
+                'zoom-out',
+
+                # Log
+                'clear-log',
+
+                # Menus...
+                'activate-cmds-menu',
+                'activate-edit-menu',
+                'activate-file-menu',
+                'activate-help-menu',
+                'activate-outline-menu',
+                'activate-plugins-menu',
+                'activate-window-menu',
+                'context-menu-open',
+                'menu-shortcut',
+
+                # Modes...
+                'clear-extend-mode',
+
+                # Outline... (Commented off by Félix, Should work)
+                # 'contract-or-go-left',
+                # 'contract-node',
+                # 'contract-parent',
+
+                # Scrolling...
+                'scroll-down-half-page',
+                'scroll-down-line',
+                'scroll-down-page',
+                'scroll-outline-down-line',
+                'scroll-outline-down-page',
+                'scroll-outline-left',
+                'scroll-outline-right',
+                'scroll-outline-up-line',
+                'scroll-outline-up-page',
+                'scroll-up-half-page',
+                'scroll-up-line',
+                'scroll-up-page',
+
+                # Windows...
+                'about-leo',
+
+                'cascade-windows',
+                'close-others',
+                'close-window',
+
+                'iconify-frame',
+
+                'find-tab-hide',
+                'help-for-highlight-current-line',
+                'help-for-right-margin-guide',
+
+                # 'find-tab-open',
+
+                'hide-body-dock',
+                'hide-body-pane',
+                'hide-invisibles',
+                'hide-log-pane',
+                'hide-outline-dock',
+                'hide-outline-pane',
+                'hide-tabs-dock',
+
+                'minimize-all',
+
+                'resize-to-screen',
+
+                'show-body-dock',
+                'show-hide-body-dock',
+                'show-hide-outline-dock',
+                'show-hide-render-dock',
+                'show-hide-tabs-dock',
+                'show-tabs-dock',
+                'clean-diff',
+                'cm-external-editor',
+
+                'delete-@button-parse-json-button',
+                'delete-trace-statements',
+
+                'disable-idle-time-events',
+
+                'enable-idle-time-events',
+                'enter-quick-command-mode',
+                'exit-named-mode',
+
+                'F6-open-console',
+
+                'flush-lines',
+                'full-command',
+
+                'get-child-headlines',
+
+                'history',
+
+                'insert-file-name',
+                'insert-jupyter-toc',
+                'insert-markdown-toc',
+
+                'justify-toggle-auto',
+
+                'keep-lines',
+                'keyboard-quit',
+
+                'line-number',
+                'line-numbering-toggle',
+                'line-to-headline',
+
+                'marked-list',
+
+                'mode-help',
+
+                'open-python-window',
+
+                'open-with-idle',
+                'open-with-open-office',
+                'open-with-scite',
+                'open-with-word',
+
+                'recolor',
+                'redraw',
+
+                'repeat-complex-command',
+
+                'session-clear',
+                'session-create',
+                'session-refresh',
+                'session-restore',
+                'session-snapshot-load',
+                'session-snapshot-save',
+
+                'set-colors',
+                'set-command-state',
+                'set-comment-column',
+                'set-extend-mode',
+                'set-fill-column',
+                'set-fill-prefix',
+                'set-font',
+                'set-insert-state',
+                'set-overwrite-state',
+                'set-silent-mode',
+
+                'show-buttons',
+                'show-calltips',
+                'show-calltips-force',
+                'show-color-names',
+                'show-color-wheel',
+                'show-commands',
+                # 'show-file-line',
+
+                'show-focus',
+                'show-fonts',
+
+                'show-invisibles',
+                # 'show-node-uas',
+                'show-outline-dock',
+                'show-plugin-handlers',
+                'show-plugins-info',
+                # 'show-settings',
+                'show-settings-outline',
+                'show-spell-info',
+                'show-stats',
+                'show-tips',
+
+                'style-set-selected',
+
+                'suspend',
+
+                'toggle-abbrev-mode',
+                'toggle-active-pane',
+                'toggle-angle-brackets',
+                'toggle-at-auto-at-edit',
+                'toggle-autocompleter',
+                'toggle-calltips',
+                'toggle-case-region',
+                'toggle-extend-mode',
+                'toggle-idle-time-events',
+                'toggle-input-state',
+                'toggle-invisibles',
+                'toggle-line-numbering-root',
+                'toggle-sparse-move',
+                'toggle-split-direction',
+
+                'what-line',
+                # 'eval',
+                'eval-block',
+                # 'eval-last',
+                # 'eval-last-pretty',
+                # 'eval-replace',
+
+                'find-quick',
+                'find-quick-changed',
+                'find-quick-selected',
+                'find-quick-test-failures',
+                'find-quick-timeline',
+
+                # 'goto-next-history-node',
+                # 'goto-prev-history-node',
+
+                'preview',
+                'preview-body',
+                'preview-expanded-body',
+                'preview-expanded-html',
+                'preview-html',
+                'preview-marked-bodies',
+                'preview-marked-html',
+                'preview-marked-nodes',
+                'preview-node',
+                'preview-tree-bodies',
+                'preview-tree-html',
+                'preview-tree-nodes',
+
+                'spell-add',
+                'spell-as-you-type-next',
+                'spell-as-you-type-toggle',
+                'spell-as-you-type-undo',
+                'spell-as-you-type-wrap',
+                'spell-change',
+                'spell-change-then-find',
+                'spell-find',
+                'spell-ignore',
+                'spell-tab-hide',
+                'spell-tab-open',
+
+                # 'tag-children',
+
+                'todo-children-todo',
+                'todo-dec-pri',
+                'todo-find-todo',
+                'todo-fix-datetime',
+                'todo-inc-pri',
+
+                'vr',
+                'vr-contract',
+                'vr-expand',
+                'vr-hide',
+                'vr-lock',
+                'vr-pause-play-movie',
+                'vr-show',
+                'vr-toggle',
+                'vr-unlock',
+                'vr-update',
+                'vr-zoom',
+
+                'vs-create-tree',
+                'vs-dump',
+                'vs-reset',
+                'vs-update',
+
+                # Connected client's text editing commands should cover all of these...
+                # 'add-comments',
+                'add-space-to-lines',
+                'add-tab-to-lines',
+                'align-eq-signs',  # does not exist
+                'always-indent-region',
+                'capitalize-words-or-selection',
+                'cls',
+
+                # reformat are Ok to use from leobridge
+                # 'reformat-body',
+                # 'reformat-paragraph',
+                # 'reformat-selection',
+
+                'back-char',
+                'back-char-extend-selection',
+                'back-page',
+                'back-page-extend-selection',
+                'back-paragraph',
+                'back-paragraph-extend-selection',
+                'back-sentence',
+                'back-sentence-extend-selection',
+                'back-to-home',
+                'back-to-home-extend-selection',
+                'back-to-indentation',
+                'back-word',
+                'back-word-extend-selection',
+                'back-word-smart',
+                'back-word-smart-extend-selection',
+                'backward-delete-char',
+                'backward-delete-word',
+                'backward-delete-word-smart',
+                'backward-find-character',
+                'backward-find-character-extend-selection',
+                'backward-kill-paragraph',
+                'backward-kill-sentence',
+                'backward-kill-word',
+                'beginning-of-buffer',
+                'beginning-of-buffer-extend-selection',
+                'beginning-of-line',
+                'beginning-of-line-extend-selection',
+
+                'capitalize-word',
+                'center-line',
+                'center-region',
+                'clean-all-blank-lines',
+                'clean-all-lines',
+                'clean-body',
+                'clean-lines',
+                'clear-kill-ring',
+                'clear-selected-text',
+                'convert-blanks',
+                'convert-tabs',
+                'copy-text',
+                'cut-text',
+
+                'delete-char',
+                'delete-comments',
+                'delete-indentation',
+                'delete-spaces',
+                'delete-word',
+                'delete-word-smart',
+                'downcase-region',
+                'downcase-word',
+
+                'end-of-buffer',
+                'end-of-buffer-extend-selection',
+                'end-of-line',
+                'end-of-line-extend-selection',
+
+                'exchange-point-mark',
+
+                'extend-to-line',
+                'extend-to-paragraph',
+                'extend-to-sentence',
+                'extend-to-word',
+
+                'fill-paragraph',
+                'fill-region',
+                'fill-region-as-paragraph',
+
+                'finish-of-line',
+                'finish-of-line-extend-selection',
+
+                'forward-char',
+                'forward-char-extend-selection',
+                'forward-end-word',
+                'forward-end-word-extend-selection',
+                'forward-page',
+                'forward-page-extend-selection',
+                'forward-paragraph',
+                'forward-paragraph-extend-selection',
+                'forward-sentence',
+                'forward-sentence-extend-selection',
+                'forward-word',
+                'forward-word-extend-selection',
+                'forward-word-smart',
+                'forward-word-smart-extend-selection',
+
+                'go-anywhere',
+                'go-back',
+                'go-forward',
+                'goto-char',
+
+                'indent-region',
+                'indent-relative',
+                'indent-rigidly',
+                'indent-to-comment-column',
+
+                'insert-hard-tab',
+                'insert-newline',
+                'insert-parentheses',
+                'insert-soft-tab',
+
+                'kill-line',
+                'kill-paragraph',
+                'kill-pylint',
+                'kill-region',
+                'kill-region-save',
+                'kill-sentence',
+                'kill-to-end-of-line',
+                'kill-word',
+                'kill-ws',
+
+                'match-brackets',
+
+                'move-lines-down',
+                'move-lines-up',
+                'move-past-close',
+                'move-past-close-extend-selection',
+
+                'newline-and-indent',
+                'next-line',
+                'next-line-extend-selection',
+                'next-or-end-of-line',
+                'next-or-end-of-line-extend-selection',
+
+                'previous-line',
+                'previous-line-extend-selection',
+                'previous-or-beginning-of-line',
+                'previous-or-beginning-of-line-extend-selection',
+
+                'rectangle-clear',
+                'rectangle-close',
+                'rectangle-delete',
+                'rectangle-kill',
+                'rectangle-open',
+                'rectangle-string',
+                'rectangle-yank',
+
+                'remove-blank-lines',
+                'remove-newlines',
+                'remove-space-from-lines',
+                'remove-tab-from-lines',
+
+                'reverse-region',
+                'reverse-sort-lines',
+                'reverse-sort-lines-ignoring-case',
+
+                'paste-text',
+                'pop-cursor',
+                'push-cursor',
+
+                'select-all',
+                'select-next-trace-statement',
+                'select-to-matching-bracket',
+
+                'sort-columns',
+                'sort-fields',
+                'sort-lines',
+                'sort-lines-ignoring-case',
+
+                'split-defs',
+                'split-line',
+
+                'start-of-line',
+                'start-of-line-extend-selection',
+
+                'tabify',
+                'transpose-chars',
+                'transpose-lines',
+                'transpose-words',
+
+                'unformat-paragraph',
+                'unindent-region',
+
+                'untabify',
+
+                'upcase-region',
+                'upcase-word',
+                'update-ref-file',
+
+                'yank',
+                'yank-pop',
+
+                'zap-to-character',
+
+            ]
+            bad.extend(bad_list)
+            result = list(sorted(bad))
+            return result
+        #@+node:ekr.20231130124623.128: *7* server._good_commands
+        def _good_commands(self) -> list[str]:
+            """Defined commands that should be available in a connected client"""
+            good_list = [
+
+                'contract-all',
+                'contract-all-other-nodes',
+                'clone-node',
+                'copy-node',
+                'copy-marked-nodes',
+                'cut-node',
+
+                'de-hoist',
+                'delete-marked-nodes',
+                'delete-node',
+                # 'demangle-recent-files',
+                'demote',
+                'do-nothing',
+                'expand-and-go-right',
+                'expand-next-level',
+                'expand-node',
+                'expand-or-go-right',
+                'expand-prev-level',
+                'expand-to-level-1',
+                'expand-to-level-2',
+                'expand-to-level-3',
+                'expand-to-level-4',
+                'expand-to-level-5',
+                'expand-to-level-6',
+                'expand-to-level-7',
+                'expand-to-level-8',
+                'expand-to-level-9',
+                'expand-all',
+                'expand-all-subheads',
+                'expand-ancestors-only',
+
+                'find-next-clone',
+
+                'goto-first-node',
+                'goto-first-sibling',
+                'goto-first-visible-node',
+                'goto-last-node',
+                'goto-last-sibling',
+                'goto-last-visible-node',
+                'goto-next-changed',
+                'goto-next-clone',
+                'goto-next-marked',
+                'goto-next-node',
+                'goto-next-sibling',
+                'goto-next-visible',
+                'goto-parent',
+                'goto-prev-marked',
+                'goto-prev-node',
+                'goto-prev-sibling',
+                'goto-prev-visible',
+
+                'hoist',
+
+                'insert-node',
+                'insert-node-before',
+                'insert-as-first-child',
+                'insert-as-last-child',
+                'insert-child',
+
+                'mark',
+                'mark-changed-items',
+                'mark-first-parents',
+                'mark-subheads',
+
+                'move-marked-nodes',
+                'move-outline-down',
+                'move-outline-left',
+                'move-outline-right',
+                'move-outline-up',
+
+                'paste-node',
+                'paste-retaining-clones',
+                'promote',
+                'promote-bodies',
+                'promote-headlines',
+
+                'sort-children',
+                'sort-siblings',
+
+                'tangle',
+                'tangle-all',
+                'tangle-marked',
+
+                'unmark-all',
+                'unmark-first-parents',
+                # 'clean-main-spell-dict',
+                # 'clean-persistence',
+                # 'clean-recent-files',
+                # 'clean-spellpyx',
+                # 'clean-user-spell-dict',
+
+                'clear-all-caches',
+                'clear-all-hoists',
+                'clear-all-uas',
+                'clear-cache',
+                'clear-node-uas',
+                # 'clear-recent-files',
+
+                # 'delete-first-icon', # ? maybe move to bad commands?
+                # 'delete-last-icon', # ? maybe move to bad commands?
+                # 'delete-node-icons', # ? maybe move to bad commands?
+
+                'dump-caches',
+                'dump-clone-parents',
+                'dump-expanded',
+                'dump-node',
+                'dump-outline',
+
+                # 'insert-icon', # ? maybe move to bad commands?
+
+                'set-ua',
+
+                'show-all-uas',
+                'show-bindings',
+                'show-clone-ancestors',
+                'show-clone-parents',
+
+                'typescript-to-py',
+
+                # Import files... # done through import all
+                'import-MORE-files',
+                'import-file',
+                'import-free-mind-files',
+                'import-jupyter-notebook',
+                'import-legacy-external-files',
+                'import-mind-jet-files',
+                'import-tabbed-files',
+                'import-todo-text-files',
+                'import-zim-folder',
+
+                # Read outlines...
+                'read-at-auto-nodes',
+                'read-at-file-nodes',
+                'read-at-shadow-nodes',
+                'read-file-into-node',
+                'read-ref-file',
+
+                # Save Files.
+                'file-save',
+                'file-save-as',
+                # 'file-save-by-name',
+                'file-save-to',
+                'save',
+                'save-as',
+                'save-file',
+                'save-file-as',
+                # 'save-file-by-name',
+                'save-file-to',
+                'save-to',
+
+                # Write parts of outlines...
+                'write-at-auto-nodes',
+                'write-at-file-nodes',
+                'write-at-shadow-nodes',
+                'write-dirty-at-auto-nodes',
+                'write-dirty-at-file-nodes',
+                'write-dirty-at-shadow-nodes',
+                'write-edited-recent-files',
+                # 'write-file-from-node',
+                'write-missing-at-file-nodes',
+                'write-outline-only',
+
+                'clone-find-all',
+                'clone-find-all-flattened',
+                'clone-find-all-flattened-marked',
+                'clone-find-all-marked',
+                'clone-find-parents',
+                'clone-find-tag',
+                'clone-marked-nodes',
+                'clone-node-to-last-node',
+
+                'clone-to-at-spot',
+
+                # 'edit-setting',
+                # 'edit-shortcut',
+
+                'execute-pytest',
+                'execute-script',
+                'extract',
+                'extract-names',
+
+                'goto-any-clone',
+                'goto-global-line',
+                # 'goto-line',
+                'git-diff', 'gd',
+
+                'log-kill-listener', 'kill-log-listener',
+                'log-listen', 'listen-to-log',
+
+                'make-stub-files',
+
+                # 'pdb',
+
+                'redo',
+                'rst3',
+                'run-all-unit-tests-externally',
+                'run-all-unit-tests-locally',
+                'run-marked-unit-tests-externally',
+                'run-marked-unit-tests-locally',
+                'run-selected-unit-tests-externally',
+                'run-selected-unit-tests-locally',
+                'run-tests',
+
+                'undo',
+
+                # 'xdb',
+
+                # Beautify, blacken, fstringify...
+                'beautify-files',
+                'beautify-files-diff',
+                'blacken-files',
+                'blacken-files-diff',
+                # 'diff-and-open-leo-files',
+                'diff-beautify-files',
+                'diff-fstringify-files',
+                # 'diff-leo-files',
+                'diff-marked-nodes',
+                'fstringify-files',
+                'fstringify-files-diff',
+                'fstringify-files-silent',
+                'pretty-print-c',
+                'silent-fstringify-files',
+
+                # All other commands...
+                'at-file-to-at-auto',
+
+                'beautify-c',
+
+                # 'cls',
+                'c-to-python',
+                'c-to-python-clean-docs',
+                'check-derived-file',
+                'check-outline',
+                'code-to-rst',
+                # 'compare-two-leo-files',
+                'convert-all-blanks',
+                'convert-all-tabs',
+                'count-children',
+                'count-pages',
+                # 'count-region',
+
+                # 'desktop-integration-leo',
+
+                # 'edit-recent-files',
+                # 'exit-leo',
+
+                # 'file-compare-two-leo-files',
+                'find-def',
+                'find-long-lines',
+                'find-missing-docstrings',
+                'flake8-files',
+                # 'flatten-outline',
+                'flatten-outline-to-node',
+                'flatten-script',
+
+                'gc-collect-garbage',
+                'gc-dump-all-objects',
+                'gc-dump-new-objects',
+                'gc-dump-objects-verbose',
+                'gc-show-summary',
+
+                # 'help',  # To do.
+                # 'help-for-abbreviations',
+                # 'help-for-autocompletion',
+                # 'help-for-bindings',
+                # 'help-for-command',
+                # 'help-for-creating-external-files',
+                # 'help-for-debugging-commands',
+                # 'help-for-drag-and-drop',
+                # 'help-for-dynamic-abbreviations',
+                # 'help-for-find-commands',
+                # 'help-for-keystroke',
+                # 'help-for-minibuffer',
+                # 'help-for-python',
+                # 'help-for-regular-expressions',
+                # 'help-for-scripting',
+                # 'help-for-settings',
+
+                'insert-body-time',  # ?
+                'insert-headline-time',
+                # 'insert-jupyter-toc',
+                # 'insert-markdown-toc',
+
+                'find-var',
+
+                # 'join-leo-irc',
+                'join-node-above',
+                'join-node-below',
+                'join-selection-to-node-below',
+
+                'move-lines-to-next-node',
+
+                'new',
+
+                'open-outline',
+
+                'parse-body',
+                'parse-json',
+                'pandoc',
+                'pandoc-with-preview',
+                'paste-as-template',
+
+                # 'print-body',
+                # 'print-cmd-docstrings',
+                # 'print-expanded-body',
+                # 'print-expanded-html',
+                # 'print-html',
+                # 'print-marked-bodies',
+                # 'print-marked-html',
+                # 'print-marked-nodes',
+                # 'print-node',
+                # 'print-sep',
+                # 'print-tree-bodies',
+                # 'print-tree-html',
+                # 'print-tree-nodes',
+                # 'print-window-state',
+
+                'pyflakes',
+                'pylint',
+                'pylint-kill',
+                'python-to-coffeescript',
+
+                # 'quit-leo',
+
+                # 'reformat-body',
+                # 'reformat-paragraph',
+                'refresh-from-disk',
+                'reload-settings',
+                # 'reload-style-sheets',
+                'revert',
+
+                # 'save-buffers-kill-leo',
+                # 'screen-capture-5sec',
+                # 'screen-capture-now',
+                'script-button',  # ?
+                # 'set-reference-file',
+                # 'show-style-sheet',
+                # 'sort-recent-files',
+                'sphinx',
+                'sphinx-with-preview',
+                'style-reload',  # ?
+
+                'untangle',
+                'untangle-all',
+                'untangle-marked',
+
+                # 'view-lossage',  # ?
+
+                # Dubious commands (to do)...
+                'act-on-node',
+
+                'cfa',
+                'cfam',
+                'cff',
+                'cffm',
+                'cft',
+
+                # 'buffer-append-to',
+                # 'buffer-copy',
+                # 'buffer-insert',
+                # 'buffer-kill',
+                # 'buffer-prepend-to',
+                # 'buffer-switch-to',
+                # 'buffers-list',
+                # 'buffers-list-alphabetically',
+
+                'chapter-back',
+                'chapter-next',
+                # 'chapter-select', #
+                'chapter-select-main'
+            ]
+            return good_list
+        #@+node:ekr.20231130124623.129: *6* server.get_all_server_commands & helpers
+        def get_all_server_commands(self, param: Param) -> Response:
+            """
+            Public server method:
+            Return the names of all callable public methods of the server.
+            """
+            tag = 'get_all_server_commands'
+            names = self._get_all_server_commands()
+            if self.log_flag:  # pragma: no cover
+                print(f"\n{tag}: {len(names)} server commands\n", flush=True)
+                g.printObj(names, tag=tag)
+                print('', flush=True)
+            return self._make_response({"server-commands": names})
+        #@+node:ekr.20231130124623.130: *7* _get_all_server_commands
+        def _get_all_server_commands(self) -> list[str]:
+            """
+            Private server method:
+            Return the names of all callable public methods of the server.
+            (Methods that do not start with an underscore '_')
+            """
+            members = inspect.getmembers(self, inspect.ismethod)
+            return sorted([name for (name, value) in members if not name.startswith('_')])
+        #@+node:ekr.20231130124623.131: *6* server.history getters & setters
+        #@+node:ekr.20231130124623.132: *7* get_history
+        def get_history(self, param: Param) -> Response:
+            """Get current commander's command history"""
+            c = self._check_c()
+            k = c.k
+            if k and k.commandHistory:
+                h = k.commandHistory
+            else:
+                h = []
+            return self._make_response({"history": h})
+        #@+node:ekr.20231130124623.133: *7* set_history
+        def set_history(self, param: Param) -> Response:
+            """Set current commander's command history"""
+            c = self._check_c()
+            k = c.k
+            h = param.get('history', [])
+            if k and isinstance(h, list) and all(isinstance(item, str) for item in h):
+                k.commandHistory = h
+            else:
+                k.commandHistory = []
+            return self._make_response()
+        #@+node:ekr.20231130124623.134: *7* add_history
+        def add_history(self, param: Param) -> Response:
+            """Add a command to the current commander's command history"""
+            c = self._check_c()
+            k = c.k
+            command = param.get('command', "")
+            if k and command and isinstance(command, str):
+                k.addToCommandHistory(command)
+            return self._make_response()
+        #@+node:ekr.20231130124623.135: *6* server.init_connection
+        def _init_connection(self, web_socket: Socket) -> None:  # pragma: no cover (tested in client).
+            """Begin the connection."""
+            global connectionsTotal
+            if connectionsTotal == 1:
+                # First connection, so "Master client" setup
+                self.web_socket = web_socket
+                self.loop = asyncio.get_event_loop()
+            else:
+                # already exist, so "spectator-clients" setup
+                pass  # nothing for now
+        #@+node:ekr.20231130124623.136: *6* server.shut_down
+        def shut_down(self, param: Param) -> None:
+            """Shut down the server."""
+            tag = 'shut_down'
+            n = len(g.app.commanders())
+            if n:  # pragma: no cover
+                raise ServerError(f"{tag}: {n} open outlines")
+            raise TerminateServer("client requested shut down")
+        #@+node:ekr.20231130124623.137: *4* server.server utils
+        #@+node:ekr.20231130124623.138: *5* server._ap_to_p
+        def _ap_to_p(self, ap: dict[str, Any]) -> Optional[Position]:
+            """
+            Convert ap (archived position, a dict) to a valid Leo position.
+
+            Return False on any kind of error to support calls to invalid positions
+            after a document has been closed of switched and interface interaction
+            in the client generated incoming calls to 'getters' already sent. (for the
+            now inaccessible leo document commander.)
+            """
+            tag = '_ap_to_p'
+            c = self._check_c()
+            gnx_d = c.fileCommands.gnxDict
+            try:
+                outer_stack = ap.get('stack')
+                if outer_stack is None:  # pragma: no cover.
+                    raise ServerError(f"{tag}: no stack in ap: {ap!r}")
+                if not isinstance(outer_stack, (list, tuple)):  # pragma: no cover.
+                    raise ServerError(f"{tag}: stack must be tuple or list: {outer_stack}")
+
+                def d_to_childIndex_v(d: dict[str, str]) -> tuple[int, VNode]:
+                    """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
+                    childIndex: int
+                    childIndex_s: str = d.get('childIndex')
+                    if childIndex_s is None:
+                        raise ServerError(f"{tag}: no childIndex in {d}")
+                    try:
+                        childIndex = int(childIndex_s)
+                    except Exception:  # pragma: no cover.
+                        raise ServerError(f"{tag}: bad childIndex: {childIndex!r}")
+                    gnx = d.get('gnx')
+                    if gnx is None:  # pragma: no cover.
+                        raise ServerError(f"{tag}: no gnx in {d}.")
+                    v = gnx_d.get(gnx)
+                    if v is None:  # pragma: no cover.
+                        raise ServerError(f"{tag}: gnx not found: {gnx!r}")
+                    return childIndex, v
+
+                # Compute p.childIndex and p.v.
+                childIndex, v = d_to_childIndex_v(ap)
+
+                # Create p.stack.
+                stack = []
+                for stack_d in outer_stack:
+                    stack_childIndex, stack_v = d_to_childIndex_v(stack_d)
+                    stack.append((stack_v, stack_childIndex))
+
+                # Make p and check p.
+                p = Position(v, childIndex, stack)
+                if not c.positionExists(p):  # pragma: no cover.
+                    raise ServerError(f"{tag}: p does not exist in {c.shortFileName()}")
+            except Exception:
+                if self.log_flag or traces:
+                    print(
+                        f"{tag}: Bad ap: {ap!r}\n"
+                        f"{tag}: v {v!r} childIndex: {childIndex!r}\n"
+                        f"{tag}: stack: {stack!r}", flush=True)
+                return None  # Return None on any error so caller can react.
+            return p
+        #@+node:ekr.20231130124623.139: *5* server._check_c
+        def _check_c(self) -> Cmdr:
+            """Return self.c or raise ServerError if self.c is None."""
+            tag = '_check_c'
+            c = self.c
+            if not c:  # pragma: no cover
+                raise ServerError(f"{tag}: no open commander")
+            return c
+        #@+node:ekr.20231130124623.140: *5* server._check_outline
+        def _check_outline(self, c: Cmdr) -> None:
+            """Check self.c for consistency."""
+            # Check that all positions exist.
+            self._check_outline_positions(c)
+            # Test round-tripping.
+            self._test_round_trip_positions(c)
+        #@+node:ekr.20231130124623.141: *5* server._check_outline_positions
+        def _check_outline_positions(self, c: Cmdr) -> None:
+            """Verify that all positions in c exist."""
+            tag = '_check_outline_positions'
+            for p in c.all_positions(copy=False):
+                if not c.positionExists(p):  # pragma: no cover
+                    message = f"{tag}: position {p!r} does not exist in {c.shortFileName()}"
+                    print(message, flush=True)
+                    self._dump_position(p)
+                    raise ServerError(message)
+        #@+node:ekr.20231130124623.142: *5* server._do_leo_command_by_name
+        def _do_leo_command_by_name(self, command_name: str, param: Param) -> Response:
+            """
+            Generic call to a command in Leo's Commands class or any subcommander class.
+
+            The param["ap"] position is to be selected before having the command run,
+            while the param["keep"] parameter specifies wether the original position
+            should be re-selected afterward.
+
+            TODO: The whole of those operations is to be undoable as one undo step.
+
+            command_name: the name of a Leo command (a kebab-cased string).
+            param["ap"]: an archived position.
+            param["keep"]: preserve the current selection, if possible.
+
+            """
+            tag = '_do_leo_command_by_name'
+            c = self._check_c()
+
+            if command_name in self.bad_commands_list:  # pragma: no cover
+                raise ServerError(f"{tag}: disallowed command: {command_name!r}")
+
+            keepSelection = False  # Set default, optional component of param
+            if "keep" in param:
+                keepSelection = param["keep"]
+
+            func = c.commandsDict.get(command_name)  # Getting from kebab-cased 'Command Name'
+            if not func:  # pragma: no cover
+                raise ServerError(f"{tag}: Leo command not found: {command_name!r}")
+
+            p = self._get_p(param)
+            try:
+                if p == c.p:
+                    value = func(event={"c": c})  # no need for re-selection
+                else:
+                    old_p = c.p  # preserve old position
+                    c.selectPosition(p)  # set position upon which to perform the command
+                    value = func(event={"c": c})
+                    if keepSelection and c.positionExists(old_p):
+                        # Only if 'keep' old position was set, and old_p still exists
+                        c.selectPosition(old_p)
+            except Exception as e:
+                print(f"_do_leo_command Recovered from Error {e!s}", flush=True)
+                return self._make_response()  # Return empty on error
+            #
+            # Tag along a possible return value with info sent back by _make_response
+            if self._is_jsonable(value):
+                return self._make_response({"return-value": value})
+            return self._make_response()
+        #@+node:ekr.20231130124623.143: *5* server._do_leo_function_by_name
+        def _do_leo_function_by_name(self, function_name: str, param: Param) -> Response:
+            """
+            Generic call to a method in Leo's Commands class or any subcommander class.
+
+            The param["ap"] position is to be selected before having the command run,
+            while the param["keep"] parameter specifies wether the original position
+            should be re-selected afterward.
+
+            TODO: The whole of those operations is to be undoable as one undo step.
+
+            command: the name of a method
+            param["ap"]: an archived position.
+            param["keep"]: preserve the current selection, if possible.
+
+            """
+            tag = '_do_leo_function_by_name'
+            c = self._check_c()
+
+            keepSelection = False  # Set default, optional component of param
+            if "keep" in param:
+                keepSelection = param["keep"]
+
+            func = self._get_commander_method(function_name)  # GET FUNC
+            if not func:  # pragma: no cover
+                raise ServerError(f"{tag}: Leo command not found: {function_name!r}")
+
+            p = self._get_p(param)
+            try:
+                if p == c.p:
+                    value = func(event={"c": c})  # no need for re-selection
+                else:
+                    old_p = c.p  # preserve old position
+                    c.selectPosition(p)  # set position upon which to perform the command
+                    value = func(event={"c": c})
+                    if keepSelection and c.positionExists(old_p):
+                        # Only if 'keep' old position was set, and old_p still exists
+                        c.selectPosition(old_p)
+            except Exception as e:
+                print(f"_do_leo_command Recovered from Error {e!s}", flush=True)
+                return self._make_response()  # Return empty on error
+            #
+            # Tag along a possible return value with info sent back by _make_response
+            if self._is_jsonable(value):
+                return self._make_response({"return-value": value})
+            return self._make_response()
+        #@+node:ekr.20231130124623.144: *5* server._do_message
+        def _do_message(self, d: dict[str, Any]) -> Response:
+            """
+            Handle d, a python dict representing the incoming request.
+            The d dict must have the three (3) following keys:
+
+            "id": A positive integer.
+
+            "action": A string, which is either:
+                - The name of public method of this class, prefixed with '!'.
+                - The name of a Leo command, prefixed with '-'
+                - The name of a method of a Leo class, without prefix.
+
+            "param": A dict to be passed to the called "action" method.
+                (Passed to the public method, or the _do_leo_command. Often contains ap, text & keep)
+
+            Return a dict, created by _make_response or _make_minimal_response
+            that contains at least an 'id' key.
+
+            """
+            global traces
+            tag = '_do_message'
+            trace, verbose = 'request' in traces, 'verbose' in traces
+            func: Callable
+            action: Optional[str]
+
+            # Require "id" and "action" keys
+            id_: Optional[int] = d.get("id")
+            if id_ is None:  # pragma: no cover
+                raise ServerError(f"{tag}: no id")
+            action = d.get("action")
+            if action is None:  # pragma: no cover
+                raise ServerError(f"{tag}: no action")
+
+            # TODO : make/force always an object from the client connected.
+            param: Optional[dict] = d.get('param', {})
+            # Set log flag.
+            if param:
+                self.log_flag = param.get("log")
+            else:
+                param = {}
+
+            # Handle traces.
+            if trace and verbose:  # pragma: no cover
+                g.printObj(d, tag=f"request {id_}")
+                print('', flush=True)
+            elif trace:  # pragma: no cover
+                keys = sorted(param.keys())
+                if action == '!set_config':
+                    keys_s = f"({len(keys)} keys)"
+                elif len(keys) > 5:
+                    keys_s = '\n  ' + '\n  '.join(keys)
+                else:
+                    keys_s = ', '.join(keys)
+                print(f" request {id_:<4} {action:<30} {keys_s}", flush=True)
+
+            # Set the current_id and action ivars for _make_response.
+            self.current_id = id_
+            self.action = action
+
+            # Execute the requested action.
+            if action[0] == "!":
+                action = action[1:]  # Remove exclamation point "!"
+                func = self._do_server_command  # Server has this method.
+            elif action[0] == '-':
+                action = action[1:]  # Remove dash "-"
+                func = self._do_leo_command_by_name  # It's a command name.
+            else:
+                func = self._do_leo_function_by_name  # It's the name of a method in some commander.
+            result = func(action, param)
+            if result is None:  # pragma: no cover
+                raise ServerError(f"{tag}: no response: {action!r}")
+            return result
+        #@+node:ekr.20231130124623.145: *5* server._do_server_command
+        def _do_server_command(self, action: str, param: Param) -> Response:
+            tag = '_do_server_command'
+            # Disallow hidden methods.
+            if action.startswith('_'):  # pragma: no cover
+                raise ServerError(f"{tag}: action starts with '_': {action!r}")
+            # Find and execute the server method.
+            func = getattr(self, action, None)
+            if not func:
+                raise ServerError(f"{tag}: action not found: {action!r}")  # pragma: no cover
+            if not callable(func):
+                raise ServerError(f"{tag}: not callable: {func!r}")  # pragma: no cover
+            return func(param)
+        #@+node:ekr.20231130124623.146: *5* server._dump_*
+        def _dump_outline(self, c: Cmdr) -> None:  # pragma: no cover
+            """Dump the outline."""
+            tag = '_dump_outline'
+            print(f"{tag}: {c.shortFileName()}...\n", flush=True)
+            for p in c.all_positions():
+                self._dump_position(p)
+            print('', flush=True)
+
+        def _dump_position(self, p: Position) -> None:  # pragma: no cover
+            level_s = ' ' * 2 * p.level()
+            print(f"{level_s}{p.childIndex():2} {p.v.gnx} {p.h}", flush=True)
+        #@+node:ekr.20231130124623.147: *5* server._emit_signon
+        def _emit_signon(self) -> None:
+            """Simulate the Initial Leo Log Entry"""
+            tag = 'emit_signon'
+            if self.loop:
+                g.app.computeSignon()
+                signon = []
+                for z in (g.app.signon, g.app.signon1):
+                    for z2 in z.split('\n'):
+                        signon.append(z2.strip())
+                g.es("\n".join(signon))
+            else:
+                raise ServerError(f"{tag}: no loop ready for emit_signon")
+        #@+node:ekr.20231130124623.148: *5* server._get_commander_method
+        def _get_commander_method(self, command: str) -> Callable:
+            """ Return the given method (p_command) in the Commands class or subcommanders."""
+            # First, try the commands class.
+            c = self._check_c()
+            func = getattr(c, command, None)
+            if func:
+                return func
+            # Otherwise, search all subcommanders for the method.
+            table = (  # This table comes from c.initObjects.
+                'abbrevCommands',
+                'bufferCommands',
+                'chapterCommands',
+                'controlCommands',
+                'convertCommands',
+                'debugCommands',
+                'editCommands',
+                'editFileCommands',
+                # 'evalController',  # Previously, set in mod_scripting.py.
+                'gotoCommands',
+                'helpCommands',
+                'keyHandler',
+                'keyHandlerCommands',
+                'killBufferCommands',
+                'leoCommands',
+                'macroCommands',
+                'miniBufferWidget',
+                'printingController',
+                'queryReplaceCommands',
+                'rectangleCommands',
+                'spellCommands',
+                'vimCommands',  # Not likely to be useful.
+            )
+            for ivar in table:
+                subcommander = getattr(c, ivar, None)
+                if subcommander:
+                    func = getattr(subcommander, command, None)
+                    if func:
+                        return func
+            return None
+        #@+node:ekr.20231130124623.149: *5* server._get_focus
+        def _get_focus(self) -> str:
+            """Server helper method to get the focused panel name string"""
+            tag = '_get_focus'
+            try:
+                w = g.app.gui.get_focus()
+                focus = g.app.gui.widget_name(w)
+            except Exception as e:
+                raise ServerError(f"{tag}: exception trying to get the focused widget: {e}")
+            return focus
+        #@+node:ekr.20231130124623.150: *5* server._get_optional_p
+        def _get_optional_p(self, param: dict) -> Optional[Position]:
+            """
+            Return _ap_to_p(param["ap"]) or None.
+            """
+            tag = '_get_ap'
+            c = self.c
+            if not c:  # pragma: no cover
+                raise ServerError(f"{tag}: no c")
+            ap = param.get("ap")
+            if ap:
+                p = self._ap_to_p(ap)  # Conversion
+                if p:
+                    if not c.positionExists(p):  # pragma: no cover
+                        raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
+                    return p  # Return the position
+            return None
+        #@+node:ekr.20231130124623.151: *5* server._get_p
+        def _get_p(self, param: dict) -> Position:
+            """
+            Return _ap_to_p(param["ap"]) or c.p.
+            """
+            tag = '_get_ap'
+            c = self.c
+            if not c:  # pragma: no cover
+                raise ServerError(f"{tag}: no c")
+
+            ap = param.get("ap")
+            if ap:
+                p = self._ap_to_p(ap)  # Conversion
+                if p:
+                    if not c.positionExists(p):  # pragma: no cover
+                        raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
+                    return p  # Return the position
+            # Fallback to c.p
+            if not c.p:  # pragma: no cover
+                raise ServerError(f"{tag}: no c.p")
+            return c.p
+        #@+node:ekr.20231130124623.152: *5* server._get_position_d
+        def _get_position_d(self, p: Position, includeChildren: bool = False) -> dict:
+            """
+            Return a python dict that is adding
+            graphical representation data and flags
+            to the base 'ap' dict from _p_to_ap.
+            (To be used by the connected client GUI.)
+            """
+            d = self._p_to_ap(p)
+            d['headline'] = p.h
+            if p.v.u:
+                # tags quantity first if any ua's present
+                tagsQty = len(p.v.u.get("__node_tags", []))
+                # Tags only if there are some present.
+                if tagsQty > 0:
+                    d['nodeTags'] = tagsQty
+
+                # Check for flag to send ua quantity instead of full ua's
+                uAsBoolean = False
+                uAsNumber = False
+                if g.leoServer.leoServerConfig:
+                    uAsBoolean = g.leoServer.leoServerConfig.get("uAsBoolean", False)
+                    uAsNumber = g.leoServer.leoServerConfig.get("uAsNumber", False)
+                if g.leoServer.leoServerConfig and (uAsBoolean or uAsNumber):
+                    uaQty = len(p.v.u)  # number will be 'true' if any keys are present
+                    if tagsQty > 0 and uaQty > 0:
+                        uaQty = uaQty - 1
+                    # set number pre-decremented if __node_tags were present
+                    d['u'] = uaQty
+                else:
+                    # Normal output if no tags set
+                    d['u'] = p.v.u
+            if bool(p.b):
+                d['hasBody'] = True
+            if p.hasChildren():
+                d['hasChildren'] = True
+                # includeChildren flag is used by get_structure
+                if includeChildren:
+                    d['children'] = [
+                        self._get_position_d(child, includeChildren=True) for child in p.children()
+                    ]
+
+            if p.isCloned():
+                d['cloned'] = True
+            if p.isDirty():
+                d['dirty'] = True
+            if p.isExpanded():
+                d['expanded'] = True
+            if p.isMarked():
+                d['marked'] = True
+            if p.isAnyAtFileNode():
+                d['atFile'] = True
+            if p == self.c.p:
+                d['selected'] = True
+            return d
+        #@+node:ekr.20231130124623.153: *5* server._get_sel_range
+        def _get_sel_range(self) -> tuple[int, int]:
+            """
+            Returns the selection range from either the body widget,
+            or the selected node headline widget.
+
+            Returns [0, 0] if any problem occurs getting leoBridge's current focused widget
+            """
+            w = g.app.gui.get_focus()
+            try:
+                if hasattr(w, "sel"):
+                    return w.sel[0], w.sel[1]
+                c = self.c
+                gui_w = c.edit_widget(c.p)
+                selRange = gui_w.getSelectionRange()
+                return selRange
+            except Exception:
+                print("Error retrieving current focused widget selection range.")
+                return 0, 0
+        #@+node:ekr.20231130124623.154: *5* server._is_jsonable
+        def _is_jsonable(self, x: Any) -> bool:
+            """
+            Makes sure that an object is serializable in JSON.
+            Returns true if it is. False otherwise.
+            """
+            try:
+                json.dumps(x, cls=SetEncoder)
+                return True
+            except(TypeError, OverflowError):
+                return False
+        #@+node:ekr.20231130124623.155: *5* server._make_minimal_response
+        def _make_minimal_response(self, package: Package = None) -> str:
+            """
+            Return a json string representing a response dict.
+
+            The 'package' kwarg, if present, must be a python dict describing a
+            response. package may be an empty dict or None.
+
+            The 'p' kwarg, if present, must be a position.
+
+            First, this method creates a response (a python dict) containing all
+            the keys in the 'package' dict.
+
+            Then it adds 'id' to the package.
+
+            Finally, this method returns the json string corresponding to the
+            response.
+            """
+            if package is None:
+                package = {}
+
+            if not self._is_jsonable(package):
+                package = {}
+
+            # Always add id.
+            package["id"] = self.current_id
+
+            return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
+        #@+node:ekr.20231130124623.156: *5* server._make_response
+        def _make_response(self, package: Package = None) -> str:
+            """
+            Return a json string representing a response dict.
+
+            The 'package' kwarg, if present, must be a python dict describing a
+            response. package may be an empty dict or None.
+
+            The 'p' kwarg, if present, must be a position.
+
+            First, this method creates a response (a python dict) containing all
+            the keys in the 'package' dict, with the following added keys:
+
+            - "id":         The incoming id.
+            - "commander":  A dict describing self.c.
+            - "node":       None, or an archived position describing self.c.p.
+
+            Finally, this method returns the json string corresponding to the
+            response.
+            """
+            global traces
+            tag = '_make_response'
+            trace = self.log_flag or 'response' in traces
+            verbose = 'verbose' in traces
+            c = self.c  # It is valid for c to be None.
+            if package is None:
+                package = {}
+            p = package.get("p")
+            if p:
+                del package["p"]
+            # if not serializable, include 'p' if present at best.
+            if not self._is_jsonable(package):
+                if p:
+                    package = {'p': p}
+                else:
+                    package = {}
+
+            # Raise an *internal* error if checks fail.
+            if isinstance(package, str):  # pragma: no cover
+                raise InternalServerError(f"{tag}: bad package kwarg: {package!r}")
+            if p and not isinstance(p, Position):  # pragma: no cover
+                raise InternalServerError(f"{tag}: bad p kwarg: {p!r}")
+            if p and not c:  # pragma: no cover
+                raise InternalServerError(f"{tag}: p but not c")
+            if p and not c.positionExists(p):  # pragma: no cover
+                raise InternalServerError(f"{tag}: p does not exist: {p!r}")
+            if c and not c.p:  # pragma: no cover
+                raise InternalServerError(f"{tag}: empty c.p")
+
+            # Always add id
+            package["id"] = self.current_id
+
+            # The following keys are relevant only if there is an open commander.
+            if c:
+                # Allow commands, especially _get_redraw_d, to specify p!
+                p = p or c.p
+                package["commander"] = {
+                    "changed": c.isChanged(),
+                    "fileName": c.fileName(),  # Can be None for new files.
+                }
+                # Add all the node data, including:
+                # - "node": self._p_to_ap(p) # Contains p.gnx, p.childIndex and p.stack.
+                # - All the *cheap* redraw data for p.
+                redraw_d = self._get_position_d(p)
+                package["node"] = redraw_d
+
+            # Handle traces.
+            if trace and verbose:  # pragma: no cover
+                g.printObj(package, tag=f"response {self.current_id}")
+                print('', flush=True)
+            elif trace:  # pragma: no cover
+                keys = sorted(package.keys())
+                keys_s = ', '.join(keys)
+                print(f"response {self.current_id:<4} {keys_s}", flush=True)
+
+            return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
+        #@+node:ekr.20231130124623.157: *5* server._p_to_ap
+        def _p_to_ap(self, p: Position) -> dict:
+            """
+            * From Leo plugin leoflexx.py *
+
+            Convert Leo position p to a serializable archived position.
+
+            This returns only position-related data.
+            get_position_data returns all data needed to redraw the screen.
+            """
+            self._check_c()
+            stack = [{'gnx': v.gnx, 'childIndex': childIndex}
+                for (v, childIndex) in p.stack]
+            return {
+                'childIndex': p._childIndex,
+                'gnx': p.v.gnx,
+                'stack': stack,
+            }
+        #@+node:ekr.20231130124623.158: *5* server._positionFromGnx
+        def _positionFromGnx(self, gnx: str) -> Optional[Position]:
+            """Return first p node with this gnx or false"""
+            c = self._check_c()
+            for p in c.all_unique_positions():
+                if p.v.gnx == gnx:
+                    return p
+            return None
+        #@+node:ekr.20231130124623.159: *5* server._send_async_output & helper
+        def _send_async_output(self, package: Package, toAll: bool = False) -> None:
+            """
+            Send data asynchronously to the client
+            """
+            tag = "send async output"
+            jsonPackage = json.dumps(package, separators=(',', ':'), cls=SetEncoder)
+            if "async" not in package:
+                InternalServerError(f"\n{tag}: async member missing in package {jsonPackage} \n")
+            if self.loop:
+                self.loop.create_task(self._async_output(jsonPackage, toAll))
+            else:
+                InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
+        #@+node:ekr.20231130124623.160: *6* server._async_output
+        async def _async_output(self,
+            json: str,
+            toAll: bool = False,
+        ) -> None:  # pragma: no cover (tested in server)
+            """Output json string to the web_socket"""
+            global connectionsTotal
+            tag = '_async_output'
+            outputBytes = bytes(json, 'utf-8')
+            if toAll:
+                if connectionsPool:  # asyncio.wait doesn't accept an empty list
+                    await asyncio.wait([
+                        asyncio.create_task(client.send(outputBytes)) for client in connectionsPool
+                    ])
+                else:
+                    g.trace(f"{tag}: no web socket. json: {json!r}")
+            else:
+                if self.web_socket:
+                    await self.web_socket.send(outputBytes)
+                else:
+                    g.trace(f"{tag}: no web socket. json: {json!r}")
+        #@+node:ekr.20231130124623.161: *5* server._test_round_trip_positions
+        def _test_round_trip_positions(self, c: Cmdr) -> None:  # pragma: no cover (tested in client).
+            """Test the round tripping of p_to_ap and ap_to_p."""
+            tag = '_test_round_trip_positions'
+            for p in c.all_unique_positions():
+                ap = self._p_to_ap(p)
+                p2 = self._ap_to_p(ap)
+                if p != p2:
+                    self._dump_outline(c)
+                    raise ServerError(f"{tag}: round-trip failed: ap: {ap!r}, p: {p!r}, p2: {p2!r}")
+        #@+node:ekr.20231130124623.162: *5* server._yieldAllRootChildren
+        def _yieldAllRootChildren(self) -> Generator:
+            """Return all root children P nodes"""
+            c = self._check_c()
+            p = c.rootPosition()
+            while p:
+                yield p
+                p.moveToNext()
+
+        #@-others
+    #@-others
 #@-others
 #@@language python
 #@@tabwidth -4
