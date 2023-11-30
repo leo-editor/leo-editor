@@ -3123,9 +3123,11 @@ class LoadManager:
             c.selectPosition(p)
             c.redraw()
         else:
-            # Make the root node an @edit node.
+            # Make the root node an @auto node if an importer exists. @edit otherwise.
+            unused, ext = os.path.splitext(fn)
+            func = g.app.scanner_for_ext(c, ext)
             p = c.rootPosition()
-            p.h = f"@edit {fn}"
+            p.h = f"@auto {fn}" if func else f"@edit {fn}"
             c.selectPosition(p)
             c.refreshFromDisk()  # Calls c.redraw()
 
