@@ -619,7 +619,7 @@ class LeoImportCommands:
         """Return the correct scanner function for p, an @auto node."""
         # Match the @auto type first, then the file extension.
         c = self.c
-        return g.app.scanner_for_at_auto(c, p) or g.app.scanner_for_ext(c, ext)
+        return g.app.scanner_for_at_auto(c, p) or g.app.scanner_for_ext(ext)
     #@+node:ekr.20170405191106.1: *5* ic.import_binary_file
     def import_binary_file(self, fileName: str, parent: Position) -> Position:
 
