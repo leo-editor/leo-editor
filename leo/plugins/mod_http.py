@@ -212,10 +212,14 @@ which node is selected.
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:EKR.20040517080250.3: ** << imports >>
-# pylint: disable=deprecated-method
+# py---lint: disable=deprecated-method
     # parse_qs
-import asynchat
-import asyncore
+if 1:  ### Legacy
+    import asynchat
+    import asyncore
+else:
+    import asyncio
+    assert asyncio  ###
 import http.server
 import json
 import io
@@ -1174,27 +1178,22 @@ def poll(timeout=0.0):
     if [] == r == w == e:  # pylint: disable=bad-option-value,use-implicit-booleaness-not-comparison
         time.sleep(timeout)
     else:
-        #@+<< try r, w, e = select.select >>
-        #@+node:EKR.20040517080250.41: *4* << try r, w, e = select.select >>
+        # set r, w, e
         try:
             r, w, e = select.select(r, w, e, timeout)
         except select.error:  # as err:
             return False  # EKR: EINTR is undefined.
-        #@-<< try r, w, e = select.select >>
+    # Read.
     for fd in r:
-        #@+<< asyncore.read(map.get(fd)) >>
-        #@+node:EKR.20040517080250.42: *4* << asyncore.read(map.get(fd)) >>
         obj = map.get(fd)
         if obj is not None:
             asyncore.read(obj)
-        #@-<< asyncore.read(map.get(fd)) >>
+    # Write.
     for fd in w:
-        #@+<< asyncore.write(map.get(fd)) >>
-        #@+node:EKR.20040517080250.43: *4* << asyncore.write(map.get(fd)) >>
         obj = map.get(fd)
         if obj is not None:
             asyncore.write(obj)
-        #@-<< asyncore.write(map.get(fd)) >>
+
     return len(r) > 0 or len(w) > 0
 #@+node:bwmulder.20050322132919: *3* rst_related functions
 #@+node:bwmulder.20050322132919.2: *4* get_http_attribute
