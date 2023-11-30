@@ -1446,11 +1446,10 @@ class LeoApp:
                 text="Ok")
     #@+node:ekr.20171127111141.1: *3* app.Import utils
     #@+node:ekr.20140727180847.17985: *4* app.scanner_for_at_auto
-    def scanner_for_at_auto(self, c: Cmdr, p: Position) -> Optional[Callable]:
+    def scanner_for_at_auto(self, p: Position) -> Optional[Callable]:
         """A factory returning a scanner function for p, an @auto node."""
         d = g.app.atAutoDict
         for key in d:
-            # pylint: disable=cell-var-from-loop
             func = d.get(key)
             if func and g.match_word(p.h, 0, key):
                 return func
