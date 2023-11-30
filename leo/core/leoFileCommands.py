@@ -1136,7 +1136,7 @@ class FileCommands:
         c.setCurrentPosition(p)
         return rootChildren[0]
     #@+node:vitalije.20170815162307.1: *6* fc.initNewDb
-    def initNewDb(self, conn: Any, path: str) -> VNode:
+    def initNewDb(self, conn: Any, path: str = None) -> VNode:
         """ Initializes tables and returns None"""
         c, fc = self.c, self
         v = leoNodes.VNode(context=c)
@@ -1144,7 +1144,7 @@ class FileCommands:
         (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
         c.frame.setTopGeometry(w, h, x, y)
         c.frame.resizePanesToRatio(r1, r2)
-        fc.exportToSqlite(path)
+        fc.exportToSqlite(path or c.mFileName)
         return v
     #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
     def getWindowGeometryFromDb(self, conn: Any) -> tuple:
