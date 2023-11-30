@@ -225,11 +225,11 @@ class TestAtFile(LeoUnitTest):
             Second @doc part
         ''')
         expected = textwrap.dedent('''\
-            <!--@+doc-->
+            <!-- @+doc-->
             <!--
             First @doc part
             -->
-            <!--@+doc-->
+            <!-- @+doc-->
             <!--
             Second @doc part
             -->
@@ -264,7 +264,7 @@ class TestAtFile(LeoUnitTest):
 
             @ A single-line doc part.
             #AT-all
-        ''').replace('AT', '@')
+        ''').replace('AT', ' @')
         root.b = contents
         at.initWriteIvars(root)
         at.putBody(root)
@@ -282,7 +282,7 @@ class TestAtFile(LeoUnitTest):
             ATall
         ''').replace('AT', '@')
         expected = textwrap.dedent('''\
-            #AT+doc
+            # AT+doc
             # doc line 1
             # ATall
         ''').replace('AT', '@')
@@ -310,7 +310,7 @@ class TestAtFile(LeoUnitTest):
             #AT+others
             #AT-others
             #AT-others
-        ''').replace('AT', '@')
+        ''').replace('AT', ' @')
         root.b = contents
         at.initWriteIvars(root)
         at.putBody(root)
@@ -327,7 +327,7 @@ class TestAtFile(LeoUnitTest):
             Unterminated @doc parts (not an error)
         ''')
         expected = textwrap.dedent('''\
-            <!--@+doc-->
+            <!-- @+doc-->
             <!--
             Unterminated @doc parts (not an error)
             -->
@@ -564,7 +564,7 @@ class TestFastAtRead(LeoUnitTest):
              ):
                 a = 2
             #AT-leo
-        ''').replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', ' @').replace('LB', '<<')
         #@-<< define contents >>
         #@+<< define expected_body >>
         #@+node:ekr.20211106115654.1: *4* << define expected_body >>
@@ -590,7 +590,7 @@ class TestFastAtRead(LeoUnitTest):
             LB test >> ):
                 a = 2
             #AT-leo
-        ''').replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', ' @').replace('LB', '<<')
         #@-<< define expected_contents >>
         x.read_into_root(contents, path='test', root=root)
         self.assertEqual(root.b, expected_body, msg='mismatch in body')
@@ -629,7 +629,7 @@ class TestFastAtRead(LeoUnitTest):
         #AT-all
         #AT@nosearch
         #AT-leo
-        ''').replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', ' @').replace('LB', '<<')
         #@-<< define contents >>
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
@@ -671,7 +671,7 @@ class TestFastAtRead(LeoUnitTest):
 
         !!!AT@language plain
         !!!AT-leo
-        ''').replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', ' @').replace('LB', '<<')
         #@-<< define contents >>
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
@@ -720,7 +720,7 @@ class TestFastAtRead(LeoUnitTest):
 
         !!AT@language python
         !!AT-leo
-        ''').replace('AT', '@').replace('LB', '<<').replace('SPACE', ' ')
+        ''').replace('AT', ' @').replace('LB', '<<').replace('SPACE', ' ')
         #@-<< define contents >>
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
@@ -758,7 +758,7 @@ class TestFastAtRead(LeoUnitTest):
         #AT@last
         #AT-leo
         # last line
-        ''').replace('AT', '@')
+        ''').replace('AT', ' @')
         #@-<< define contents >>
         #@+<< define expected_body >>
         #@+node:ekr.20211104052937.1: *4* << define expected_body >> (test_at_last)
@@ -796,7 +796,7 @@ class TestFastAtRead(LeoUnitTest):
                 pass
             #AT-others
         #AT-leo
-        ''').replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', ' @').replace('LB', '<<')
         #@-<< define contents >>
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
@@ -879,7 +879,7 @@ class TestFastAtRead(LeoUnitTest):
         a = 3
         #AT-others
         #AT-leo
-        ''').replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', ' @').replace('LB', '<<')
         #@-<< define contents >>
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
@@ -945,10 +945,12 @@ class TestFastAtRead(LeoUnitTest):
             BSLaTeX and BSc should not be colored.
             if else, while, do // C keywords.
             ATq@@-leo@>
-        ''').replace('AT', '@').replace('LB', '<<').replace('BS', '\\')
+        ''').replace('AT', ' @').replace('LB', '<<').replace('BS', '\\')
         #@-<< define contents >>
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
+        g.printObj(g.splitLines(contents), tag='contents')
+        g.printObj(g.splitLines(s), tag='s')
         self.assertEqual(contents, s)
     #@+node:ekr.20211101152817.1: *3* TestFastAtRead.test_doc_parts
     def test_doc_parts(self):
@@ -979,18 +981,10 @@ class TestFastAtRead(LeoUnitTest):
         #AT@c
 
         #AT-leo
-        ''').replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', ' @').replace('LB', '<<')
         #@-<< define contents >>
 
-        # Test 1: without black delims.
-        g.app.write_black_sentinels = False
-        x.read_into_root(contents, path='test', root=root)
-        s = c.atFileCommands.atFileToString(root, sentinels=True)
-        self.assertEqual(contents, s, msg='Test 1')
-
-        # Test 2: with black delims.
-        g.app.write_black_sentinels = True
-        contents = contents.replace('#@', '# @')
+        ### contents = contents.replace('#@', '# @')
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         # g.printObj(contents2, tag='contents2')
@@ -1018,10 +1012,12 @@ class TestFastAtRead(LeoUnitTest):
         -->
         <!--AT@c-->
         <!--AT-leo-->
-        ''').replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', ' @').replace('LB', '<<')
         #@-<< define contents >>
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
+        g.printObj(g.splitLines(contents), tag='contents')
+        g.printObj(g.splitLines(s), tag='s')
         self.assertEqual(contents, s)
     #@+node:ekr.20211101180354.1: *3* TestFastAtRead.test_verbatim
     def test_verbatim(self):
@@ -1042,7 +1038,7 @@ class TestFastAtRead(LeoUnitTest):
             #ATverbatim
             #AT+node (should be protected by verbatim)
             #AT-leo
-        ''').replace('AT', '@') # .replace('LB', '<<')
+        ''').replace('AT', ' @') # .replace('LB', '<<')
         #@-<< define contents >>
         #@+<< define expected_body >>
         #@+node:ekr.20211106070035.1: *4* << define expected_body >> (test_verbatim)
@@ -1053,23 +1049,13 @@ class TestFastAtRead(LeoUnitTest):
         #AT+node (should be protected by verbatim)
         ''').replace('AT', '@')
         #@-<< define expected_body >>
-
-        # Test 1: without black delims.
-        g.app.write_black_sentinels = False
-        x.read_into_root(contents, path='test', root=root)
-        self.assertEqual(root.b, expected_body)
-        s = c.atFileCommands.atFileToString(root, sentinels=True)
-        self.assertEqual(contents, s)
-
-        # Test 2: with black delims.
-        g.app.write_black_sentinels = True
+        
         contents = contents.replace('#@', '# @')
         expected_body = expected_body.replace('#@', '# @')
         x.read_into_root(contents, path='test', root=root)
         self.assertEqual(root.b, expected_body)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         self.assertEqual(contents, s)
-
     #@-others
 #@-others
 #@-leo

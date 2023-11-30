@@ -99,7 +99,6 @@ class GoToCommands:
         # if not g.unitTesting: g.printObj(contents)
 
         # Find the node with the correct gnx.
-        ###node_pat = re.compile(fr"\s*{re.escape(delim1)}@\+node:{re.escape(p.gnx)}:")
         node_pat = re.compile(fr"\s*{re.escape(delim1)} ?@\+node:{re.escape(p.gnx)}:")
         for i, s in enumerate(contents):
             if node_pat.match(s):
@@ -115,7 +114,6 @@ class GoToCommands:
         # #3010: Special case for .vue files.
         #        Also look for nodes delimited by "//"
         if root.h.endswith('.vue'):
-            ### node_pat2 = re.compile(fr"\s{re.escape('//')}@\+node:{re.escape(p.gnx)}:")
             node_pat2 = re.compile(fr"\s{re.escape('//')} ?@\+node:{re.escape(p.gnx)}:")
             for i, s in enumerate(contents):
                 if node_pat2.match(s):
@@ -221,7 +219,7 @@ class GoToCommands:
                 # Handle blackened sentinels.
                 s2 = s.strip()[len(delim1) :]
                 if s2.startswith(' '):
-                    s2 = s2[1:]  ### Experimental.
+                    s2 = s2[1:]
                 if s2.startswith('@+node'):
                     # Invisible, but resets the offset.
                     offset = 0
@@ -271,7 +269,7 @@ class GoToCommands:
                 # Handle blackened sentinels.
                 s2 = s.strip()[len(delim1) :]
                 if s2.startswith(' '):
-                    s2 = s2[1:]  ### Experimental.
+                    s2 = s2[1:]
                 if s2.startswith('@+node'):
                     offset = 0
                     gnx, h = self.get_script_node_info(s, delim2)

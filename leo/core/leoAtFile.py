@@ -1718,6 +1718,8 @@ class AtFile:
         if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
             if not s.endswith('\n'):
                 s = s + '\n'
+                
+        ### g.printObj(g.splitLines(s), tag=p.h) ###
 
 
         class Status:
@@ -1734,6 +1736,7 @@ class AtFile:
             next_i = g.skip_line(s, i)
             assert next_i > i, 'putBody'
             kind = at.directiveKind4(s, i)
+            ### g.trace(f"{i:3}:{next_i:3} {kind} {s[i:next_i]!r}") ###
             at.putLine(i, kind, p, s, status)
             i = next_i
         if not status.in_code:
@@ -1743,6 +1746,7 @@ class AtFile:
     def putLine(self, i: int, kind: int, p: Position, s: str, status: Any) -> None:
         """Put the line at s[i:] of the given kind, updating the status."""
         at = self
+        ### g.trace(f"{i:3} {kind} {s[i]!r}")  ###
         if kind == at.noDirective:
             if status.in_code:
                 # Important: the so-called "name" must include brackets.
@@ -1942,6 +1946,9 @@ class AtFile:
         j = g.skip_line(s, i)
         k = g.skip_ws(s, i)
         line = s[i:j]
+        ### g.trace(repr(line))  ###
+        delim1 = self.startSentinelComment
+        delims = f"{delim1}@", f"{delim1} @"
 
         def put_verbatim_sentinel() -> None:
             """
@@ -1955,12 +1962,16 @@ class AtFile:
             self.putSentinel("@verbatim")
 
         # Put an @verbatim sentinel if the next line looks like another sentinel.
-        if at.language == 'python':  # New in Leo 6.7.2.
-            # Python sentinels *only* may contain a space between '#' and '@'
-            if g.match(s, k, '#@') or g.match(s, k, '# @'):
+        if 1:
+            if any(g.match(s, k, z) for z in delims):
                 put_verbatim_sentinel()
-        elif g.match(s, k, self.startSentinelComment + "@"):
-            put_verbatim_sentinel()
+        else:  ### Legacy.
+            if at.language == 'python':  # New in Leo 6.7.2.
+                # Python sentinels *only* may contain a space between '#' and '@'
+                if g.match(s, k, '#@') or g.match(s, k, '# @'):
+                    put_verbatim_sentinel()
+            elif g.match(s, k, self.startSentinelComment + "@"):
+                put_verbatim_sentinel()
 
         # Don't put any whitespace in otherwise blank lines.
         if len(line) > 1:  # Preserve *anything* the user puts on the line!!!
@@ -2058,6 +2069,7 @@ class AtFile:
         i += len(directive)
         j = g.skip_to_end_of_line(s, i)
         follow = s[i:j]
+        ### g.trace('follow', repr(follow))
         # Put the opening @+doc or @-doc sentinel, including whatever follows the directive.
         at.putSentinel(sentinel + follow)
         # Put the opening comment if we are using block comments.
@@ -2148,9 +2160,8 @@ class AtFile:
         if at.sentinels or g.app.force_at_auto_sentinels:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment)
-            # #2194. #2983: Put Black sentinels if --black-sentinels is in effect.
-            if g.app.write_black_sentinels:
-                at.os(' ')
+            # Leo 6.7.6: Always write black-compatible sentinels.
+            at.os(' ')
             # Apply the cweb hack to s:
             #   If the opening comment delim ends in '@',
             #   double all '@' signs except the first.
@@ -3114,7 +3125,8 @@ class FastAtRead:
         doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')  # To handle doc parts.
         first_i = 0  # Index into first array.
         in_doc = False  # True: in @doc parts.
-        is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
+        ### is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
+        is_cweb = comment_delim1 in ('@q@', ' @q@') and comment_delim2 == '@>'  # True: cweb hack in effect.
         indent = 0  # The current indentation.
         level_stack: list[tuple[VNode, VNode]] = []
         n_last_lines = 0  # The number of @@last directives seen.
@@ -3150,6 +3162,7 @@ class FastAtRead:
         # Set the patterns
         self.get_patterns(comment_delims)
         #@-<< init scan_lines >>
+        breakpoint()  ###
         i = 0  # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
             # Strip the line only once.
@@ -3189,7 +3202,8 @@ class FastAtRead:
             if indent and line[:indent].isspace() and len(line) > indent:
                 line = line[indent:]
             #@-<< finalize line >>
-            if not in_doc and not strip_line.startswith(sentinel):  # Faster than a regex!
+            ### if not in_doc and not strip_line.startswith(sentinel):  # Faster than a regex!
+            if not in_doc and not strip_line.startswith(sentinel.lstrip()):  # Faster than a regex!
                 body.append(line)
                 continue
             # These three sections might clear in_doc.
@@ -3445,7 +3459,7 @@ class FastAtRead:
                 comment_delim2 = comment_delim2.replace('__', '\n').replace('_', ' ')
                 # Recalculate all delim-related values
                 doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
-                is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
+                is_cweb = comment_delim1 in ('@q@', ' @q@') and comment_delim2 == '@>'
                 sentinel = comment_delim1 + '@'
                 #
                 # Recalculate the patterns
@@ -3558,6 +3572,7 @@ class FastAtRead:
         # Set the body text.
         assert root_v.gnx in gnx2vnode, root_v
         assert root_v.gnx in gnx2body, root_v
+        breakpoint()  ###
         for key in gnx2body:
             body = gnx2body.get(key)
             v = gnx2vnode.get(key)

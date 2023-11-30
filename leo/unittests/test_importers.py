@@ -1,5 +1,5 @@
-#@+leo-ver=5-thin
-#@+node:ekr.20210904064440.2: * @file ../unittests/test_importers.py
+# @+leo-ver=5-thin
+# @+node:ekr.20210904064440.2: * @file ../unittests/test_importers.py
 """Tests of leo/plugins/importers"""
 import glob
 import importlib
@@ -16,8 +16,8 @@ import leo.plugins.importers.coffeescript as coffeescript
 import leo.plugins.importers.javascript as javascript
 import leo.plugins.importers.markdown as markdown
 import leo.plugins.importers.otl as otl
-#@+others
-#@+node:ekr.20210904064440.3: ** class BaseTestImporter(LeoUnitTest)
+# @+others
+# @+node:ekr.20210904064440.3: ** class BaseTestImporter(LeoUnitTest)
 class BaseTestImporter(LeoUnitTest):
     """The base class for tests of leoImport.py"""
 
@@ -27,10 +27,9 @@ class BaseTestImporter(LeoUnitTest):
     def setUp(self):
         super().setUp()
         g.app.loadManager.createAllImporterData()
-        g.app.write_black_sentinels = False
 
-    #@+others
-    #@+node:ekr.20230526135305.1: *3* BaseTestImporter.check_outline
+    # @+others
+    # @+node:ekr.20230526135305.1: *3* BaseTestImporter.check_outline
     def check_outline(self, p: Position, expected: tuple) -> None:
         """
         BaseTestImporter.check_outline.
@@ -66,7 +65,7 @@ class BaseTestImporter(LeoUnitTest):
                     print('level:', level, headline)
                     g.printObj(g.splitLines(body))
             raise
-    #@+node:ekr.20220809054555.1: *3* BaseTestImporter.check_round_trip
+    # @+node:ekr.20220809054555.1: *3* BaseTestImporter.check_round_trip
     def check_round_trip(self, p: Position, s: str) -> None:
         """Assert that p's outline is equivalent to s."""
         c = self.c
@@ -80,7 +79,7 @@ class BaseTestImporter(LeoUnitTest):
             g.printObj([f"{i:<4} {z}" for i, z in enumerate(s_lines)], tag=f"expected: {p.h}")
             g.printObj([f"{i:<4} {z}" for i, z in enumerate(result_lines)], tag=f"results: {p.h}")
         self.assertEqual(s_lines, result_lines)
-    #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
+    # @+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
     def compute_unit_test_kind(self, ext: str) -> str:
         """Return kind from the given extention."""
         aClass = g.app.classDispatchDict.get(ext)
@@ -99,11 +98,11 @@ class BaseTestImporter(LeoUnitTest):
                 if d2.get(z) == aClass:
                     return z  # pragma: no cover
         return '@file'
-    #@+node:ekr.20230527075112.1: *3* BaseTestImporter.new_round_trip_test
+    # @+node:ekr.20230527075112.1: *3* BaseTestImporter.new_round_trip_test
     def new_round_trip_test(self, s: str, expected_s: str = None) -> None:
         p = self.run_test(s)
         self.check_round_trip(p, expected_s or s)
-    #@+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
+    # @+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
     def new_run_test(self, s: str, expected_results: tuple, brief: bool = False) -> None:
         """
         Run a unit test of an import scanner,
@@ -128,7 +127,7 @@ class BaseTestImporter(LeoUnitTest):
 
         # Dump the actual results on failure and raise AssertionError.
         self.check_outline(parent, expected_results)
-    #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
+    # @+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s: str) -> Position:
         """
         Run a unit test of an import scanner,
@@ -151,13 +150,13 @@ class BaseTestImporter(LeoUnitTest):
         test_s = textwrap.dedent(s).strip() + '\n'
         c.importCommands.createOutline(parent.copy(), ext, test_s)
         return parent
-    #@-others
-#@+node:ekr.20231011020747.1: ** class TestImporterClass(LeoUnitTest)
+    # @-others
+# @+node:ekr.20231011020747.1: ** class TestImporterClass(LeoUnitTest)
 class TestImporterClass(LeoUnitTest):
     """Tests of methods of the Importer class."""
 
-    #@+others
-    #@+node:ekr.20231011021003.1: *3* TestImporterClass.test_trace_block
+    # @+others
+    # @+node:ekr.20231011021003.1: *3* TestImporterClass.test_trace_block
     def test_trace_block(self):
 
         c = self.c
@@ -178,7 +177,7 @@ class TestImporterClass(LeoUnitTest):
         finally:
             sys.stdout = sys.__stdout__
 
-    #@+node:ekr.20231011021056.1: *3* TestImporterClass.test_long_repr
+    # @+node:ekr.20231011021056.1: *3* TestImporterClass.test_long_repr
     def test_long_repr(self):
 
         lines = g.splitLines(textwrap.dedent(
@@ -195,12 +194,12 @@ class TestImporterClass(LeoUnitTest):
 
         # A short test that the results contain an expected line.
         assert 'def spam_and_eggs' in s, repr(s)
-    #@-others
-#@+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108052633.1: ** class TestAtAuto (BaseTestImporter)
 class TestAtAuto(BaseTestImporter):
 
-    #@+others
-    #@+node:ekr.20210904065459.122: *3* TestAtAuto.test_importers_can_be_imported
+    # @+others
+    # @+node:ekr.20210904065459.122: *3* TestAtAuto.test_importers_can_be_imported
     def test_importers_can_be_imported(self):
         path = g.finalize_join(g.app.loadDir, '..', 'plugins', 'importers')
         assert g.os_path_exists(path), repr(path)
@@ -209,14 +208,14 @@ class TestAtAuto(BaseTestImporter):
             sfn = g.shortFileName(fn)
             m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
             assert m
-    #@-others
-#@+node:ekr.20211108062025.1: ** class TestC (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108062025.1: ** class TestC (BaseTestImporter)
 class TestC(BaseTestImporter):
 
     ext = '.c'
 
-    #@+others
-    #@+node:ekr.20210904065459.3: *3* TestC.test_c_class_1
+    # @+others
+    # @+node:ekr.20210904065459.3: *3* TestC.test_c_class_1
     def test_c_class_1(self):
 
         s = """
@@ -254,7 +253,7 @@ class TestC(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
+    # @+node:ekr.20210904065459.4: *3* TestC.test_class_underindented_line
     def test_class_underindented_line(self):
 
         s = """
@@ -298,7 +297,7 @@ class TestC(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.5: *3* TestC.test_open_curly_bracket_on_next_line
+    # @+node:ekr.20210904065459.5: *3* TestC.test_open_curly_bracket_on_next_line
     def test_open_curly_bracket_on_next_line(self):
 
         s = """
@@ -336,7 +335,7 @@ class TestC(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.10: *3* TestC.test_extern
+    # @+node:ekr.20210904065459.10: *3* TestC.test_extern
     def test_extern(self):
 
         s = """
@@ -361,7 +360,7 @@ class TestC(BaseTestImporter):
         )
         self.new_run_test(s, expected_results)
 
-    #@+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
+    # @+node:ekr.20210904065459.8: *3* TestC.test_old_style_decl_1
     def test_old_style_decl_1(self):
 
         s = """
@@ -392,7 +391,7 @@ class TestC(BaseTestImporter):
         )
         self.new_run_test(s, expected_results)
 
-    #@+node:ekr.20210904065459.9: *3* TestC.test_old_style_decl_2
+    # @+node:ekr.20210904065459.9: *3* TestC.test_old_style_decl_2
     def test_old_style_decl_2(self):
 
         s = """
@@ -418,7 +417,7 @@ class TestC(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20220812232648.1: *3* TestC.test_template
+    # @+node:ekr.20220812232648.1: *3* TestC.test_template
     def test_template(self):
 
         s = """
@@ -445,7 +444,7 @@ class TestC(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20230510161130.1: *3* TestC.test_delete_comments_and_strings
+    # @+node:ekr.20230510161130.1: *3* TestC.test_delete_comments_and_strings
     def test_delete_comments_and_strings(self):
 
         importer = C_Importer(self.c)
@@ -480,7 +479,7 @@ class TestC(BaseTestImporter):
             g.printObj(expected_lines, tag='expected')
         self.assertEqual(len(result), len(expected_lines))
         self.assertEqual(result, expected_lines)
-    #@+node:ekr.20230511044054.1: *3* TestC.test_find_blocks
+    # @+node:ekr.20230511044054.1: *3* TestC.test_find_blocks
     def test_find_blocks(self):
 
         importer = C_Importer(self.c)
@@ -523,7 +522,7 @@ class TestC(BaseTestImporter):
         for block in blocks:
             result_lines.extend(lines[block.start : block.end])
         self.assertEqual(lines, result_lines)
-    #@+node:ekr.20230511073719.1: *3* TestC.test_codon_file
+    # @+node:ekr.20230511073719.1: *3* TestC.test_codon_file
     def test_codon_file(self):
         # Test codon/codon/app/main.cpp.
         c = self.c
@@ -547,7 +546,7 @@ class TestC(BaseTestImporter):
                 kind, name, start, start_body, end = z
                 result_lines.extend(lines[start : end])
             self.assertEqual(lines, result_lines)
-    #@+node:ekr.20230607164309.1: *3* TestC.test_struct
+    # @+node:ekr.20230607164309.1: *3* TestC.test_struct
     def test_struct(self):
         # From codon soources.
         s = """
@@ -582,15 +581,15 @@ class TestC(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108063520.1: ** class TestCoffeescript (BaseTestImporter)
 class TestCoffeescript(BaseTestImporter):
 
     ext = '.coffee'
 
-    #@+others
-    #@+node:ekr.20210904065459.15: *3* TestCoffeescript.test_coffeescript_1
-    #@@tabwidth -2 # Required
+    # @+others
+    # @+node:ekr.20210904065459.15: *3* TestCoffeescript.test_coffeescript_1
+    # @@tabwidth -2 # Required
 
     def test_coffeescript_1(self):
 
@@ -632,8 +631,8 @@ class TestCoffeescript(BaseTestImporter):
         )
         self.new_run_test(s, expected_results)
 
-    #@+node:ekr.20210904065459.16: *3* TestCoffeescript.test_coffeescript_2
-    #@@tabwidth -2 # Required
+    # @+node:ekr.20210904065459.16: *3* TestCoffeescript.test_coffeescript_2
+    # @@tabwidth -2 # Required
 
     def test_coffeescript_2(self):
 
@@ -714,24 +713,24 @@ class TestCoffeescript(BaseTestImporter):
           ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
+    # @+node:ekr.20211108085023.1: *3* TestCoffeescript.test_get_leading_indent
     def test_get_leading_indent(self):
         c = self.c
         importer = coffeescript.Coffeescript_Importer(c)
         self.assertEqual(importer.single_comment, '#')
-    #@+node:ekr.20210904065459.126: *3* TestCoffeescript.test_scan_line
+    # @+node:ekr.20210904065459.126: *3* TestCoffeescript.test_scan_line
     def test_scan_line(self):
         c = self.c
         x = coffeescript.Coffeescript_Importer(c)
         self.assertEqual(x.single_comment, '#')
-    #@-others
-#@+node:ekr.20211108062958.1: ** class TestCSharp (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108062958.1: ** class TestCSharp (BaseTestImporter)
 class TestCSharp(BaseTestImporter):
 
     ext = '.c#'
 
-    #@+others
-    #@+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
+    # @+others
+    # @+node:ekr.20210904065459.12: *3* TestCSharp.test_namespace_indent
     def test_namespace_indent(self):
 
         s = """
@@ -756,7 +755,7 @@ class TestCSharp(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.13: *3* TestCSharp.test_namespace_no_indent
+    # @+node:ekr.20210904065459.13: *3* TestCSharp.test_namespace_no_indent
     def test_namespace_no_indent(self):
 
         s = """
@@ -781,13 +780,13 @@ class TestCSharp(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20211108063908.1: ** class TestCython (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108063908.1: ** class TestCython (BaseTestImporter)
 class TestCython(BaseTestImporter):
 
     ext = '.pyx'
-    #@+others
-    #@+node:ekr.20210904065459.11: *3* TestCython.test_cython_importer
+    # @+others
+    # @+node:ekr.20210904065459.11: *3* TestCython.test_cython_importer
     def test_cython_importer(self):
 
         s = '''
@@ -829,14 +828,14 @@ class TestCython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20211108064115.1: ** class TestDart (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108064115.1: ** class TestDart (BaseTestImporter)
 class TestDart(BaseTestImporter):
 
     ext = '.dart'
 
-    #@+others
-    #@+node:ekr.20210904065459.17: *3* TestDart.test_hello_world
+    # @+others
+    # @+node:ekr.20210904065459.17: *3* TestDart.test_hello_world
     def test_hello_world(self):
 
         s = r'''
@@ -885,14 +884,14 @@ class TestDart(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20211108065659.1: ** class TestElisp (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108065659.1: ** class TestElisp (BaseTestImporter)
 class TestElisp(BaseTestImporter):
 
     ext = '.el'
 
-    #@+others
-    #@+node:ekr.20210904065459.18: *3* TestElisp.test_elisp_1
+    # @+others
+    # @+node:ekr.20210904065459.18: *3* TestElisp.test_elisp_1
     def test_elisp_1(self):
 
         # Add weird assignments for coverage.
@@ -933,8 +932,8 @@ class TestElisp(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20211108064432.1: ** class TestHtml (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108064432.1: ** class TestHtml (BaseTestImporter)
 class TestHtml(BaseTestImporter):
 
     ext = '.htm'
@@ -948,8 +947,8 @@ class TestHtml(BaseTestImporter):
         c.config.settingsDict = settingsDict
         c.config.set(c.p, 'data', 'import-html-tags', tags_list, warn=True)
 
-    #@+others
-    #@+node:ekr.20210904065459.28: *3* TestHtml.test_brython
+    # @+others
+    # @+node:ekr.20210904065459.28: *3* TestHtml.test_brython
     def test_brython(self):
 
         # https://github.com/leo-editor/leo-editor/issues/479
@@ -1006,7 +1005,7 @@ class TestHtml(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.25: *3* TestHtml.test_improperly_nested_tags
+    # @+node:ekr.20210904065459.25: *3* TestHtml.test_improperly_nested_tags
     def test_improperly_nested_tags(self):
 
         s = """
@@ -1054,7 +1053,7 @@ class TestHtml(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.26: *3* TestHtml.test_improperly_terminated_tags
+    # @+node:ekr.20210904065459.26: *3* TestHtml.test_improperly_terminated_tags
     def test_improperly_terminated_tags(self):
 
         s = '''
@@ -1093,7 +1092,7 @@ class TestHtml(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.19: *3* TestHtml.test_mixed_case_tags
+    # @+node:ekr.20210904065459.19: *3* TestHtml.test_mixed_case_tags
     def test_mixed_case_tags(self):
 
         s = """
@@ -1129,12 +1128,12 @@ class TestHtml(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.20: *3* TestHtml.test_multiple_tags_on_a_line
+    # @+node:ekr.20210904065459.20: *3* TestHtml.test_multiple_tags_on_a_line
     def test_multiple_tags_on_a_line(self):
 
         # pylint: disable=line-too-long
-        #@+<< define s >>
-        #@+node:ekr.20230126042723.1: *4* << define s >>
+        # @+<< define s >>
+        # @+node:ekr.20230126042723.1: *4* << define s >>
         # tags that cause nodes: html, head, body, div, table, nodeA, nodeB
         # NOT: tr, td, tbody, etc.
         s = """
@@ -1190,7 +1189,7 @@ class TestHtml(BaseTestImporter):
             </body>
             </html>
         """
-        #@-<< define s >>
+        # @-<< define s >>
 
         # xml.preprocess_lines inserts several newlines.
         # Modify the expected result accordingly.
@@ -1202,7 +1201,7 @@ class TestHtml(BaseTestImporter):
             .replace('<noscript><img', '<noscript>\n<img')
         )
         self.new_round_trip_test(s, expected_s)
-    #@+node:ekr.20210904065459.21: *3* TestHtml.test_multple_node_completed_on_a_line
+    # @+node:ekr.20210904065459.21: *3* TestHtml.test_multple_node_completed_on_a_line
     def test_multple_node_completed_on_a_line(self):
 
         s = """
@@ -1227,7 +1226,7 @@ class TestHtml(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
+    # @+node:ekr.20210904065459.22: *3* TestHtml.test_multple_node_starts_on_a_line
     def test_multple_node_starts_on_a_line(self):
 
         s = '''
@@ -1250,7 +1249,7 @@ class TestHtml(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20230123162321.1: *3* TestHtml.test_structure
+    # @+node:ekr.20230123162321.1: *3* TestHtml.test_structure
     def test_structure(self):
 
         s = '''
@@ -1300,7 +1299,7 @@ class TestHtml(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.23: *3* TestHtml.test_underindented_comment
+    # @+node:ekr.20210904065459.23: *3* TestHtml.test_underindented_comment
     def test_underindented_comment(self):
 
         s = r'''
@@ -1339,7 +1338,7 @@ class TestHtml(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.24: *3* TestHtml.test_uppercase_tags
+    # @+node:ekr.20210904065459.24: *3* TestHtml.test_uppercase_tags
     def test_uppercase_tags(self):
 
         s = """
@@ -1375,14 +1374,14 @@ class TestHtml(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20211108062617.1: ** class TestIni (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108062617.1: ** class TestIni (BaseTestImporter)
 class TestIni(BaseTestImporter):
 
     ext = '.ini'
 
-    #@+others
-    #@+node:ekr.20220813054952.1: *3* TestIni.test_1
+    # @+others
+    # @+node:ekr.20220813054952.1: *3* TestIni.test_1
     def test_1(self):
         # This is just a coverage test for the importer.
         s = """
@@ -1440,14 +1439,14 @@ class TestIni(BaseTestImporter):
 
         """.replace('AT', '@')
         self.run_test(s)
-    #@-others
-#@+node:ekr.20211108065916.1: ** class TestJava (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108065916.1: ** class TestJava (BaseTestImporter)
 class TestJava(BaseTestImporter):
 
     ext = '.java'
 
-    #@+others
-    #@+node:ekr.20210904065459.30: *3* TestJava.test_from_AdminPermission_java
+    # @+others
+    # @+node:ekr.20210904065459.30: *3* TestJava.test_from_AdminPermission_java
     def test_from_AdminPermission_java(self):
 
         ### To do: allow '{' on following line.
@@ -1490,7 +1489,7 @@ class TestJava(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.31: *3* TestJava.test_from_BundleException_java
+    # @+node:ekr.20210904065459.31: *3* TestJava.test_from_BundleException_java
     def test_from_BundleException_java(self):
 
         s = """
@@ -1548,7 +1547,7 @@ class TestJava(BaseTestImporter):
         )
         self.new_run_test(s, expected_results)
 
-    #@+node:ekr.20210904065459.32: *3* TestJava.test_interface_test1
+    # @+node:ekr.20210904065459.32: *3* TestJava.test_interface_test1
     def test_interface_test1(self):
 
         s = """
@@ -1568,7 +1567,7 @@ class TestJava(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.33: *3* TestJava.test_interface_test2
+    # @+node:ekr.20210904065459.33: *3* TestJava.test_interface_test2
     def test_interface_test2(self):
 
         s = """
@@ -1588,14 +1587,14 @@ class TestJava(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20211108070310.1: ** class TestJavascript (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108070310.1: ** class TestJavascript (BaseTestImporter)
 class TestJavascript(BaseTestImporter):
 
     ext = '.js'
 
-    #@+others
-    #@+node:ekr.20210904065459.35: *3* TestJavascript.test_plain_function
+    # @+others
+    # @+node:ekr.20210904065459.35: *3* TestJavascript.test_plain_function
     def test_plain_function(self):
 
         s = """
@@ -1633,7 +1632,7 @@ class TestJavascript(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.36: *3* TestJavascript.test_var_equal_function
+    # @+node:ekr.20210904065459.36: *3* TestJavascript.test_var_equal_function
     def test_var_equal_function(self):
 
         s = textwrap.dedent("""\
@@ -1676,7 +1675,7 @@ class TestJavascript(BaseTestImporter):
         )
         # g.printObj(g.splitLines(s), tag='source')
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20220814014851.1: *3* TestJavascript.test_comments
+    # @+node:ekr.20220814014851.1: *3* TestJavascript.test_comments
     def test_comments(self):
 
         s = """
@@ -1685,7 +1684,7 @@ class TestJavascript(BaseTestImporter):
              */
         """
         self.new_round_trip_test(s)
-    #@+node:ekr.20210904065459.34: *3* TestJavascript.test_regex
+    # @+node:ekr.20210904065459.34: *3* TestJavascript.test_regex
     def test_regex(self):
 
         s = """
@@ -1697,7 +1696,7 @@ class TestJavascript(BaseTestImporter):
             };
             """
         self.new_round_trip_test(s)
-    #@+node:ekr.20231023061407.1: *3* TestJavascript.test_guide_lines
+    # @+node:ekr.20231023061407.1: *3* TestJavascript.test_guide_lines
     def test_guide_lines(self):
 
         c = self.c
@@ -1709,14 +1708,14 @@ class TestJavascript(BaseTestImporter):
         guide_lines = x.delete_comments_and_strings(lines)
         line1 = guide_lines[0]
         assert not line1.strip(), repr(line1)
-    #@-others
-#@+node:ekr.20220816082603.1: ** class TestLua (BaseTestImporter)
+    # @-others
+# @+node:ekr.20220816082603.1: ** class TestLua (BaseTestImporter)
 class TestLua (BaseTestImporter):
 
     ext = '.lua'
 
-    #@+others
-    #@+node:ekr.20220816082722.1: *3* TestLua.test_1
+    # @+others
+    # @+node:ekr.20220816082722.1: *3* TestLua.test_1
     def test_lua_1(self):
 
         s = """
@@ -1767,15 +1766,15 @@ class TestLua (BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20211108043230.1: ** class TestMarkdown (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108043230.1: ** class TestMarkdown (BaseTestImporter)
 class TestMarkdown(BaseTestImporter):
 
     ext = '.md'
     treeType = '@auto-md'
 
-    #@+others
-    #@+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import
+    # @+others
+    # @+node:ekr.20210904065459.109: *3* TestMarkdown.test_md_import
     def test_md_import(self):
 
         # Must be in standard form, with a space after '#'.
@@ -1834,7 +1833,7 @@ class TestMarkdown(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.110: *3* TestMarkdown.test_md_import_rst_style
+    # @+node:ekr.20210904065459.110: *3* TestMarkdown.test_md_import_rst_style
     def test_md_import_rst_style(self):
 
         s = """\
@@ -1913,7 +1912,7 @@ class TestMarkdown(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.111: *3* TestMarkdown.test_markdown_importer_basic
+    # @+node:ekr.20210904065459.111: *3* TestMarkdown.test_markdown_importer_basic
     def test_markdown_importer_basic(self):
 
         # Must be in standard form, with a space after '#'.
@@ -1960,7 +1959,7 @@ class TestMarkdown(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.112: *3* TestMarkdown.test_markdown_importer_implicit_section
+    # @+node:ekr.20210904065459.112: *3* TestMarkdown.test_markdown_importer_implicit_section
     def test_markdown_importer_implicit_section(self):
 
         s = """
@@ -2012,7 +2011,7 @@ class TestMarkdown(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.114: *3* TestMarkdown.test_markdown_github_syntax
+    # @+node:ekr.20210904065459.114: *3* TestMarkdown.test_markdown_github_syntax
     def test_markdown_github_syntax(self):
 
         # Must be in standard form, with a space after '#'.
@@ -2050,7 +2049,7 @@ class TestMarkdown(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.128: *3* TestMarkdown.test_is_hash
+    # @+node:ekr.20210904065459.128: *3* TestMarkdown.test_is_hash
     def test_is_hash(self):
         c = self.c
         x = markdown.Markdown_Importer(c)
@@ -2068,7 +2067,7 @@ class TestMarkdown(BaseTestImporter):
         level3, name = x.is_hash('Not a hash')
         assert level3 is None
         assert name is None
-    #@+node:ekr.20210904065459.129: *3* TestMarkdown.test_is_underline
+    # @+node:ekr.20210904065459.129: *3* TestMarkdown.test_is_underline
     def test_is_underline(self):
         c = self.c
         x = markdown.Markdown_Importer(c)
@@ -2078,15 +2077,15 @@ class TestMarkdown(BaseTestImporter):
         for line in ('-\n', '--\n', '---\n', '==\n', '===\n', '===\n', '==-==\n', 'abc\n'):
             got = x.is_underline(line)
             assert not got, repr(line)
-    #@-others
-#@+node:ekr.20211108080955.1: ** class TestOrg (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108080955.1: ** class TestOrg (BaseTestImporter)
 class TestOrg(BaseTestImporter):
 
     ext = '.org'
     treeType = '@auto-org'
 
-    #@+others
-    #@+node:ekr.20210904065459.42: *3* TestOrg.test_1
+    # @+others
+    # @+node:ekr.20210904065459.42: *3* TestOrg.test_1
     def test_1(self):
 
         s = """
@@ -2127,7 +2126,7 @@ class TestOrg(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.46: *3* TestOrg.test_1074
+    # @+node:ekr.20210904065459.46: *3* TestOrg.test_1074
     def test_1074(self):
 
         s = """
@@ -2144,7 +2143,7 @@ class TestOrg(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.45: *3* TestOrg.test_552
+    # @+node:ekr.20210904065459.45: *3* TestOrg.test_552
     def test_552(self):
 
         s = """
@@ -2173,7 +2172,7 @@ class TestOrg(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.44: *3* TestOrg.test_intro
+    # @+node:ekr.20210904065459.44: *3* TestOrg.test_intro
     def test_intro(self):
 
         s = """
@@ -2197,7 +2196,7 @@ class TestOrg(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.47: *3* TestOrg.test_placeholder
+    # @+node:ekr.20210904065459.47: *3* TestOrg.test_placeholder
     def test_placeholder(self):
 
         # insert test for org here.
@@ -2246,7 +2245,7 @@ class TestOrg(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.43: *3* TestOrg.test_tags
+    # @+node:ekr.20210904065459.43: *3* TestOrg.test_tags
     def test_tags(self):
 
         s = """\
@@ -2269,15 +2268,15 @@ class TestOrg(BaseTestImporter):
             (1, 'Section 3 :tag3:tag4:', ''),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20211108081327.1: ** class TestOtl (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108081327.1: ** class TestOtl (BaseTestImporter)
 class TestOtl(BaseTestImporter):
 
     ext = '.otl'
     treeType = '@auto-otl'
 
-    #@+others
-    #@+node:ekr.20210904065459.49: *3* TestOtl.test_otl_1
+    # @+others
+    # @+node:ekr.20210904065459.49: *3* TestOtl.test_otl_1
     def test_otl_1(self):
 
         s = """
@@ -2310,7 +2309,7 @@ class TestOtl(BaseTestImporter):
             (2, 'Section 3.1', 'Sec 3.1\n'),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20220804040446.1: *3* TestOtl.test_otl_placeholder
+    # @+node:ekr.20220804040446.1: *3* TestOtl.test_otl_placeholder
     def test_otl_placeholder(self):
 
         s = """
@@ -2332,7 +2331,7 @@ class TestOtl(BaseTestImporter):
             (3, 'Section 3', 'Sec 3.\n'),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.48: *3* TestOtl.test_vim_outline_mode
+    # @+node:ekr.20210904065459.48: *3* TestOtl.test_vim_outline_mode
     def test_vim_outline_mode(self):
 
         c = self.c
@@ -2346,18 +2345,18 @@ class TestOtl(BaseTestImporter):
         for line in table:
             m = pattern.match(line)
             self.assertTrue(m, msg=repr(line))
-    #@-others
-#@+node:ekr.20211108081719.1: ** class TestPascal (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108081719.1: ** class TestPascal (BaseTestImporter)
 class TestPascal(BaseTestImporter):
 
     ext = '.pas'
 
-    #@+others
-    #@+node:ekr.20210904065459.50: *3* TestPascal.test_delphi_interface
+    # @+others
+    # @+node:ekr.20210904065459.50: *3* TestPascal.test_delphi_interface
     def test_delphi_interface(self):
 
-        #@+<< define s >>
-        #@+node:ekr.20230518071612.1: *4* << define s >>
+        # @+<< define s >>
+        # @+node:ekr.20230518071612.1: *4* << define s >>
         s = textwrap.dedent(
         """
             unit Unit1;
@@ -2396,7 +2395,7 @@ class TestPascal(BaseTestImporter):
 
             end. // interface
         """).strip() + '\n'
-        #@-<< define s >>
+        # @-<< define s >>
 
         expected_results = (
             (0, '',  # Ignore the first headline.
@@ -2446,12 +2445,12 @@ class TestPascal(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20220829221825.1: *3* TestPascal.test_indentation
+    # @+node:ekr.20220829221825.1: *3* TestPascal.test_indentation
     def test_indentation(self):
 
         # From GSTATOBJ.PAS
-        #@+<< define s >>
-        #@+node:ekr.20220830112013.1: *4* << define s >>
+        # @+<< define s >>
+        # @+node:ekr.20220830112013.1: *4* << define s >>
         s = textwrap.dedent(
         """
         unit gstatobj;
@@ -2522,7 +2521,7 @@ class TestPascal(BaseTestImporter):
             data^[i].y := data^[i].y + pstatObj(source)^.data^[i].y;
         end;
         """).strip() + '\n'
-        #@-<< define s >>
+        # @-<< define s >>
         expected_results = (
             (0, '',  # Ignore the first headline.
                     '@others\n'
@@ -2605,14 +2604,14 @@ class TestPascal(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20211108081950.1: ** class TestPerl (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108081950.1: ** class TestPerl (BaseTestImporter)
 class TestPerl(BaseTestImporter):
 
     ext = '.pl'
 
-    #@+others
-    #@+node:ekr.20210904065459.51: *3* TestPerl.test_1
+    # @+others
+    # @+node:ekr.20210904065459.51: *3* TestPerl.test_1
     def test_1(self):
 
         s = """
@@ -2674,7 +2673,7 @@ class TestPerl(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.53: *3* TestPerl.test_multi_line_string
+    # @+node:ekr.20210904065459.53: *3* TestPerl.test_multi_line_string
     def test_multi_line_string(self):
 
         s = """
@@ -2707,7 +2706,7 @@ class TestPerl(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.52: *3* TestPerl.test_perlpod_comment
+    # @+node:ekr.20210904065459.52: *3* TestPerl.test_perlpod_comment
     def test_perlpod_comment(self):
 
         s = """
@@ -2759,7 +2758,7 @@ class TestPerl(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.55: *3* TestPerl.test_regex
+    # @+node:ekr.20210904065459.55: *3* TestPerl.test_regex
     def test_regex(self):
 
         s = """
@@ -2811,14 +2810,14 @@ class TestPerl(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20211108082208.1: ** class TestPhp (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108082208.1: ** class TestPhp (BaseTestImporter)
 class TestPhp(BaseTestImporter):
 
     ext = '.php'
 
-    #@+others
-    #@+node:ekr.20210904065459.56: *3* TestPhp.test_import_class
+    # @+others
+    # @+node:ekr.20210904065459.56: *3* TestPhp.test_import_class
     def test_import_class(self):
 
         s = """
@@ -2836,7 +2835,7 @@ class TestPhp(BaseTestImporter):
             ?>
         """
         self.run_test(s)
-    #@+node:ekr.20210904065459.57: *3* TestPhp.test_import_conditional_class
+    # @+node:ekr.20210904065459.57: *3* TestPhp.test_import_conditional_class
     def test_import_conditional_class(self):
 
         s = """
@@ -2855,7 +2854,7 @@ class TestPhp(BaseTestImporter):
             ?>
         """
         self.new_round_trip_test(s)
-    #@+node:ekr.20210904065459.58: *3* TestPhp.test_import_classes__functions
+    # @+node:ekr.20210904065459.58: *3* TestPhp.test_import_classes__functions
     def test_import_classes__functions(self):
 
         s = """
@@ -2898,7 +2897,7 @@ class TestPhp(BaseTestImporter):
         """
         self.new_round_trip_test(s)
 
-    #@+node:ekr.20210904065459.59: *3* TestPhp.test_here_doc
+    # @+node:ekr.20210904065459.59: *3* TestPhp.test_here_doc
     def test_here_doc(self):
 
         s = """
@@ -2912,14 +2911,14 @@ class TestPhp(BaseTestImporter):
             ?>
         """
         self.new_round_trip_test(s)
-    #@-others
-#@+node:ekr.20211108082509.1: ** class TestPython (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108082509.1: ** class TestPython (BaseTestImporter)
 class TestPython(BaseTestImporter):
 
     ext = '.py'
 
-    #@+others
-    #@+node:ekr.20230514195224.1: *3* TestPython.test_delete_comments_and_strings
+    # @+others
+    # @+node:ekr.20230514195224.1: *3* TestPython.test_delete_comments_and_strings
     def test_delete_comments_and_strings(self):
 
         importer = Python_Importer(self.c)
@@ -2959,7 +2958,7 @@ class TestPython(BaseTestImporter):
         result = importer.delete_comments_and_strings(lines)
         self.assertEqual(len(result), len(expected_lines))
         self.assertEqual(result, expected_lines)
-    #@+node:vitalije.20211206201240.1: *3* TestPython.test_general_test_1
+    # @+node:vitalije.20211206201240.1: *3* TestPython.test_general_test_1
     def test_general_test_1(self):
 
         s = (
@@ -3081,7 +3080,7 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20230612072414.1: *3* TestPython.test_long_declaration
+    # @+node:ekr.20230612072414.1: *3* TestPython.test_long_declaration
     def test_long_declaration(self):
 
         # ekr-mypy2/mypy/applytype.py
@@ -3120,7 +3119,7 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20211202064822.1: *3* TestPython.test_nested_classes
+    # @+node:ekr.20211202064822.1: *3* TestPython.test_nested_classes
     def test_nested_classes(self):
         s = """
             class TestCopyFile(unittest.TestCase):
@@ -3152,7 +3151,7 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20230830100457.1: *3* TestPython.test_nested_defs
+    # @+node:ekr.20230830100457.1: *3* TestPython.test_nested_defs
     def test_nested_defs(self):
         # See #3517
 
@@ -3195,7 +3194,7 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:vitalije.20211207200701.1: *3* TestPython.test_no_methods
+    # @+node:vitalije.20211207200701.1: *3* TestPython.test_no_methods
     def test_no_methods(self):
 
         s = """
@@ -3218,7 +3217,7 @@ class TestPython(BaseTestImporter):
             )
         )
         self.new_run_test(s, expected_results)
-    #@+node:vitalije.20211206212507.1: *3* TestPython.test_oneliners
+    # @+node:vitalije.20211206212507.1: *3* TestPython.test_oneliners
     def test_oneliners(self):
         s = """
             import sys
@@ -3272,7 +3271,7 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20230825071437.1: *3* TestPython.test_post_process
+    # @+node:ekr.20230825071437.1: *3* TestPython.test_post_process
     def test_post_process(self):
 
         s = '''
@@ -3316,7 +3315,7 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20230929051304.1: *3* TestPython.test_post_process_long_outer_docstring
+    # @+node:ekr.20230929051304.1: *3* TestPython.test_post_process_long_outer_docstring
     def test_long_outer_docstring(self):
 
         s = '''
@@ -3368,7 +3367,7 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:vitalije.20211207183645.1: *3* TestPython.test_strange_indentation
+    # @+node:vitalije.20211207183645.1: *3* TestPython.test_strange_indentation
     def test_strange_indentation(self):
         s = """
             a = 1
@@ -3429,15 +3428,15 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108050827.1: ** class TestRst (BaseTestImporter)
 class TestRst(BaseTestImporter):
 
     ext = '.rst'
     treeType = '@auto-rst'
 
-    #@+others
-    #@+node:ekr.20210904065459.115: *3* TestRst.test_rst_1
+    # @+others
+    # @+node:ekr.20210904065459.115: *3* TestRst.test_rst_1
     def test_rst_1(self):
 
         try:
@@ -3537,7 +3536,7 @@ class TestRst(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.116: *3* TestRst.test_simple
+    # @+node:ekr.20210904065459.116: *3* TestRst.test_simple
     def test_simple(self):
 
         try:
@@ -3574,7 +3573,7 @@ class TestRst(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.117: *3* TestRst.test_no_double_underlines
+    # @+node:ekr.20210904065459.117: *3* TestRst.test_no_double_underlines
     def test_no_double_underlines(self):
 
         try:
@@ -3673,7 +3672,7 @@ class TestRst(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.118: *3* TestRst.test_long_underlines
+    # @+node:ekr.20210904065459.118: *3* TestRst.test_long_underlines
     def test_long_underlines(self):
 
         try:
@@ -3705,7 +3704,7 @@ class TestRst(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.119: *3* TestRst.test_test_long_overlines
+    # @+node:ekr.20210904065459.119: *3* TestRst.test_test_long_overlines
     def test_test_long_overlines(self):
 
         try:
@@ -3738,7 +3737,7 @@ class TestRst(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.120: *3* TestRst.test_trailing_whitespace
+    # @+node:ekr.20210904065459.120: *3* TestRst.test_trailing_whitespace
     def test_trailing_whitespace(self):
 
         try:
@@ -3775,7 +3774,7 @@ class TestRst(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.121: *3* TestRst.test_leo_rst
+    # @+node:ekr.20210904065459.121: *3* TestRst.test_leo_rst
     def test_leo_rst(self):
 
         try:
@@ -3823,14 +3822,14 @@ class TestRst(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20220814094900.1: ** class TestRust (BaseTestImporter)
+    # @-others
+# @+node:ekr.20220814094900.1: ** class TestRust (BaseTestImporter)
 class TestRust(BaseTestImporter):
 
     ext = '.rs'
 
-    #@+others
-    #@+node:ekr.20220814095025.1: *3* TestRust.test_rust_1
+    # @+others
+    # @+node:ekr.20220814095025.1: *3* TestRust.test_rust_1
     def test_1(self):
 
         s = """
@@ -3872,7 +3871,7 @@ class TestRust(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20231030054735.1: *3* TestRust.test_rust_import_fails
+    # @+node:ekr.20231030054735.1: *3* TestRust.test_rust_import_fails
     def test_rust_import_fails(self):
 
         # From ruff/crates/ruff_formatter/shared_traits.rs
@@ -3935,7 +3934,7 @@ class TestRust(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20231031161514.1: *3* TestRust.test_rust_postpass
+    # @+node:ekr.20231031161514.1: *3* TestRust.test_rust_postpass
     def test_rust_postpass(self):
 
         # Modified from ruff/crates/ruff_formatter/src/arguments.rs
@@ -3995,7 +3994,7 @@ class TestRust(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20231113092341.1: *3* TestRust.test_invalid_runon_string
+    # @+node:ekr.20231113092341.1: *3* TestRust.test_invalid_runon_string
     def test_invalid_runon_string(self):
 
         # From ruff_linter/src/rules/eradicate/detection.rs
@@ -4024,14 +4023,14 @@ class TestRust(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20231012142113.1: ** class TestScheme (BaseTestImporter)
+    # @-others
+# @+node:ekr.20231012142113.1: ** class TestScheme (BaseTestImporter)
 class TestScheme(BaseTestImporter):
 
     ext = '.scm'
 
-    #@+others
-    #@+node:ekr.20231012142113.2: *3* TestScheme.test_scheme_1
+    # @+others
+    # @+node:ekr.20231012142113.2: *3* TestScheme.test_scheme_1
     def test_scheme_1(self):
 
         # Add weird assignments for coverage.
@@ -4072,14 +4071,14 @@ class TestScheme(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20220813174450.1: ** class TestTcl (BaseTestImporter)
+    # @-others
+# @+node:ekr.20220813174450.1: ** class TestTcl (BaseTestImporter)
 class TestTcl (BaseTestImporter):
 
     ext = '.tcl'
 
-    #@+others
-    #@+node:ekr.20220813174721.1: *3* TestTcl.test_1
+    # @+others
+    # @+node:ekr.20220813174721.1: *3* TestTcl.test_1
     def test_1(self):
 
         s = r"""
@@ -4135,14 +4134,14 @@ class TestTcl (BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20220809161015.1: ** class TestTreepad (BaseTestImporter)
+    # @-others
+# @+node:ekr.20220809161015.1: ** class TestTreepad (BaseTestImporter)
 class TestTreepad (BaseTestImporter):
 
     ext = '.hjt'
 
-    #@+others
-    #@+node:ekr.20220810141234.1: *3* TestTreepad.test_treepad_1
+    # @+others
+    # @+node:ekr.20220810141234.1: *3* TestTreepad.test_treepad_1
     def test_treepad_1(self):
 
         # 5P9i0s8y19Z is a magic number.
@@ -4216,14 +4215,14 @@ class TestTreepad (BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@+node:ekr.20211108083038.1: ** class TestTypescript (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108083038.1: ** class TestTypescript (BaseTestImporter)
 class TestTypescript(BaseTestImporter):
 
     ext = '.ts'
 
-    #@+others
-    #@+node:ekr.20210904065459.103: *3* TestTypescript.test_class
+    # @+others
+    # @+node:ekr.20210904065459.103: *3* TestTypescript.test_class
     def test_class(self):
 
         s = '''
@@ -4249,7 +4248,7 @@ class TestTypescript(BaseTestImporter):
 
         '''
         self.new_round_trip_test(s)
-    #@+node:ekr.20210904065459.104: *3* TestTypescript.test_module
+    # @+node:ekr.20210904065459.104: *3* TestTypescript.test_module
     def test_module(self):
         s = '''
             module Sayings {
@@ -4274,8 +4273,8 @@ class TestTypescript(BaseTestImporter):
             document.body.appendChild(button)
         '''
         self.new_round_trip_test(s)
-    #@-others
-#@+node:ekr.20211108065014.1: ** class TestXML (BaseTestImporter)
+    # @-others
+# @+node:ekr.20211108065014.1: ** class TestXML (BaseTestImporter)
 class TestXML(BaseTestImporter):
 
     ext = '.xml'
@@ -4289,8 +4288,8 @@ class TestXML(BaseTestImporter):
         c.config.settingsDict = settingsDict
         c.config.set(c.p, 'data', 'import-xml-tags', tags_list, warn=True)
 
-    #@+others
-    #@+node:ekr.20210904065459.105: *3* TestXml.test_standard_opening_elements
+    # @+others
+    # @+node:ekr.20210904065459.105: *3* TestXml.test_standard_opening_elements
     def test_standard_opening_elements(self):
 
         s = """
@@ -4334,7 +4333,7 @@ class TestXML(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.106: *3* TestXml.test_xml_1
+    # @+node:ekr.20210904065459.106: *3* TestXml.test_xml_1
     def test_xml_1(self):
 
         s = """
@@ -4377,7 +4376,7 @@ class TestXML(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
+    # @+node:ekr.20210904065459.108: *3* TestXml.test_non_ascii_tags
     def test_non_ascii_tags(self):
         s = """
             <:À.Ç>
@@ -4394,7 +4393,7 @@ class TestXML(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@-others
-#@-others
-#@@language python
-#@-leo
+    # @-others
+# @-others
+# @@language python
+# @-leo
