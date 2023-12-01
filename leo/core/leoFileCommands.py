@@ -150,6 +150,8 @@ class FastRead:
     # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
     translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
 
+    bad_path_dict: dict[str, bool] = {}
+
     def readWithElementTree(self, path: str, s_or_b: Union[str, bytes]) -> tuple[VNode, Any]:
 
         contents = g.toUnicode(s_or_b)
@@ -157,16 +159,20 @@ class FastRead:
         contents = contents.translate(table)  # #1036, #1046.
         try:
             xroot = ElementTree.fromstring(contents)
-        except Exception as e:
-            # #970: Report failure here.
+        except Exception:
+            message = None
+            if path and path in self.bad_path_dict:
+                return None, None
             if path:
+                self.bad_path_dict[path] = True
                 message = f"bad .leo file: {g.shortFileName(path)}"
             else:
                 message = 'The clipboard is not a valid .leo file'
-            g.es_print('\n' + message, color='red')
-            g.es_print(g.toUnicode(e))
             print('')
-            return None, None  # #1510: Return a tuple.
+            g.es_print(message, color='red')
+            print('')
+            return None, None
+
         g_element = xroot.find('globals')
         v_elements = xroot.find('vnodes')
         t_elements = xroot.find('tnodes')
