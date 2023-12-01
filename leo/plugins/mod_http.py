@@ -249,7 +249,7 @@ else:
 
 # Leo Inits.
 from leo.core import leoGlobals as g
-from leo.core.leoCommands import Commands as Cmdr
+### from leo.core.leoCommands import Commands as Cmdr
 ### from leo.core.leoNodes import Position, VNode
 
 ### Aliases.
@@ -1516,82 +1516,13 @@ class TerminateServer(Exception):  # pragma: no cover
     pass
 #@+node:ekr.20231130124623.1: *3* class Mod_HTTP_Server
 class Mod_HTTP_Server:
-    """
-    Server for mod_http.py.
+    """Server for mod_http.py."""
+    ### Based on LeoServer in leoserver.py
 
-    Based on LeoServer in leoserver.py
-    """
-    #@+others
-    #@+node:ekr.20231130124623.2: *4* server.__init__
-    def __init__(self) -> None:
+    web_socket: Socket = None
+    loop: Loop = None
 
-        ###
-            # import leo.core.leoApp as leoApp
-            # import leo.core.leoBridge as leoBridge
-
-            # global g
-
-        # Init ivars first.
-        self.c: Cmdr = None  # Currently Selected Commander.
-        ### self.dummy_c: Cmdr = None  # Set below, after we set g.
-        self.action: str = None
-        ### self.bad_commands_list: list[str] = []  # Set below.
-
-        # Debug utilities
-        self.current_id = 0  # Id of action being processed.
-        self.log_flag = False  # set by "log" key
-
-        ###
-            # # Start the bridge.
-            # self.bridge = leoBridge.controller(
-                # gui='nullGui',
-                # loadPlugins=True,  # True: attempt to load plugins.
-                # readSettings=True,  # True: read standard settings files.
-                # silent=True,  # True: don't print signon messages.
-                # verbose=False,  # True: prints messages that would be sent to the log pane.
-            # )
-            # self.g = g = self.bridge.globals()  # Also sets global 'g' object
-            # g.in_leo_server = True  # #2098.
-            # g.leoServer = self  # Set server singleton global reference
-            # self.leoServerConfig: Param = None
-
-        ###
-            # # * Intercept Log Pane output: Sends to client's log pane
-            # g.es = self._es  # pointer - not a function call
-            # g.es_print = self._es  # Also like es, because es_print would double strings in client
-
-        # Set in _init_connection
-        self.web_socket = None  # Main Control Client
-        self.loop: Loop = None
-
-        ###
-            # # To inspect commands
-            # self.dummy_c = g.app.newCommander(fileName=None)
-            # self.bad_commands_list = self._bad_commands(self.dummy_c)
-
-        ###
-            # * Replacement instances to Leo's codebase : getScript, IdleTime and externalFilesController
-            ### g.getScript = self._getScript
-            ### g.IdleTime = self._idleTime
-
-        ###
-            # # override for "revert to file" operation
-            # g.app.gui.runAskOkDialog = self._runAskOkDialog
-            # g.app.gui.runAskYesNoDialog = self._runAskYesNoDialog
-            # g.app.gui.runAskYesNoCancelDialog = self._runAskYesNoCancelDialog
-            # g.app.gui.show_find_success = self._show_find_success
-            # self.headlineWidget = g.bunch(_name='tree')
-
-        ###
-            # # Complete the initialization, as in LeoApp.initApp.
-            # g.app.idleTimeManager = leoApp.IdleTimeManager()
-            # g.app.externalFilesController = ServerExternalFilesController()  # Replace
-            # g.app.idleTimeManager.start()
-
-        ###
-            # if not testing:
-                # print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
-    #@-others
+    ### @others
 #@-others
 
 controller: Mod_HTTP_Server = None
