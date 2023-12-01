@@ -4,7 +4,7 @@
 
 #@+<< define new constant >>
 #@+node:ekr.20231130123711.1: ** << define new constant >>
-new = True  ### Choose between old and new code.
+new = False  ### Choose between old and new code.
 #@-<< define new constant >>
 
 #@+<< docstring: mod_http.py >>
@@ -1153,6 +1153,7 @@ def getData(setting):
         strip_data=False,
     )
     s = ''.join(aList or [])
+    ### g.printObj(aList, tag=f"{g.my_name()}")  ###
     return s
 #@+node:EKR.20040517080250.4: *3* class delayedSocketStream
 class delayedSocketStream(asyncore.dispatcher_with_send):
@@ -1172,6 +1173,9 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
     def initiate_sending(self):
         # Create a bytes string.
         aList = [g.toEncodedString(z) for z in self.buffer]
+        if False and aList:
+            ### Sends css ###
+            g.printObj(aList, tag=f"{g.my_name()}")  ###
         self.out_buffer = b''.join(aList)
         del self.buffer
         self.set_socket(self.socket, None)
@@ -1186,20 +1190,22 @@ class delayedSocketStream(asyncore.dispatcher_with_send):
     def handle_read(self):
         pass
     #@+node:EKR.20040517080250.9: *4* writable
-    def writable(self):
-        result = (not self.connected) or len(self.out_buffer)
+    def writable(self) -> int:
+        result = 0 if not self.connected else len(self.out_buffer)
         if not result:
             sockets_to_close.append(self)
+        if result:
+            g.trace(result, g.caller())
         return result
     #@-others
-#@+node:bwmulder.20061014153544: *3* class noLeoNodePath
+#@+node:bwmulder.20061014153544: *3* class noLeoNodePath(Exception)
 class noLeoNodePath(Exception):
     """
     Raised if the path can not be converted a filename and a series of numbers.
     Most likely a reference to a picture.
     """
     pass
-#@+node:EKR.20040517080250.13: *3* class RequestHandler
+#@+node:EKR.20040517080250.13: *3* class RequestHandler(...,SimpleHTTPRequestHandler)
 class RequestHandler(
     leo_interface,
     asynchat.async_chat,
@@ -1212,6 +1218,7 @@ class RequestHandler(
     def __init__(self, conn, addr, server):
         self.leo_actions = LeoActions(self)
         super().__init__(conn)
+        ### g.trace('(RequestHandler)', g.callers(2))  ###
         self.client_address = addr
         self.connection = conn
         self.server = server
@@ -1270,6 +1277,7 @@ class RequestHandler(
     def prepare_POST(self):
         """Prepare to read the request body"""
         bytesToRead = int(self.headers.getheader('content-length'))
+        g.printObj(bytesToRead, tag=f"{g.my_name()}")  ###
         # set terminator to length (will read bytesToRead bytes)
         self.set_terminator(bytesToRead)
         self.buffer = StringIO()  # type:ignore
@@ -1285,8 +1293,10 @@ class RequestHandler(
     def do_GET(self):
         """Begins serving a GET request"""
         # nothing more to do before handle_data()
+        # Called from handle_request_line.
+        ### g.trace(g.callers())  ###
         self.handle_data()
-    #@+node:EKR.20040517080250.32: *4* do_POST
+    #@+node:EKR.20040517080250.32: *4* do_POST (not used)
     def do_POST(self):
         """
         Begins serving a POST request. The request data must be readable
@@ -1332,6 +1342,7 @@ class RequestHandler(
             self.qs = self.path[self.path.find('?') + 1 :]
             self.path_without_qs = self.path[: self.path.find('?')]
         self.QUERY = self.query(urlparse.parse_qs(self.qs, 1))  # type:ignore
+        ###  g.trace(self.command)  ###
         if self.command in ['GET', 'HEAD']:
             # if method is GET or HEAD, call do_GET or do_HEAD and finish
             method = "do_" + self.command
@@ -1356,7 +1367,7 @@ class RequestHandler(
         self.wfile.initiate_sending()
         # self.close()
     #@-others
-#@+node:EKR.20040517080250.37: *3* class Server
+#@+node:EKR.20040517080250.37: *3* class Server(asyncore.dispatcher)
 class Server(asyncore.dispatcher):
     """Copied from http_server in medusa"""
     #@+others
@@ -1447,15 +1458,15 @@ def node_reference(vnode):
 #@+node:EKR.20040517080250.40: *4* poll
 def poll(timeout=0.0):
     global sockets_to_close
-    map = asyncore.socket_map
-    if not map:
+    socket_map = asyncore.socket_map
+    if not socket_map:
         return False
     e: list
     r: list = []
     w: list
     while 1:
         e = w = []
-        for fd, obj in map.items():
+        for fd, obj in socket_map.items():
             if obj.readable():
                 r.append(fd)
             if obj.writable():
@@ -1475,13 +1486,15 @@ def poll(timeout=0.0):
             return False  # EKR: EINTR is undefined.
     # Read.
     for fd in r:
-        obj = map.get(fd)
+        obj = socket_map.get(fd)
         if obj is not None:
+            ### g.trace('Read')  ###
             asyncore.read(obj)
     # Write.
     for fd in w:
-        obj = map.get(fd)
+        obj = socket_map.get(fd)
         if obj is not None:
+            ### g.trace('Write')
             asyncore.write(obj)
 
     return len(r) > 0 or len(w) > 0
