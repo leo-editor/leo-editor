@@ -4,7 +4,7 @@
 
 #@+<< define new constant >>
 #@+node:ekr.20231130123711.1: ** << define new constant >>
-new = False  ### Choose between old and new code.
+new = True  ### Choose between old and new code.
 #@-<< define new constant >>
 
 #@+<< docstring: mod_http.py >>
@@ -220,12 +220,14 @@ which node is selected.
 #@+node:EKR.20040517080250.3: ** << imports: mod_http.py >>
 # py---lint: disable=deprecated-method
     # parse_qs
-if 1:  ### Legacy
+import asyncio
+
+if 1:  ### To be removed.
     import asynchat
     import asyncore
-else:
-    import asyncio
-    assert asyncio  ###
+    import urllib.parse as urlparse
+    from xml.sax.saxutils import quoteattr
+
 import http.server
 ### import inspect
 import json
@@ -235,27 +237,20 @@ import select
 import shutil
 import socket
 import time
-from typing import TypeAlias  ### Any, Callable, Generator, Optional
+from typing import Any, TypeAlias  ### Callable, Generator, Optional
 
 # Third party inits.
-if new:  ###
-    try:
-        import websockets
-    except Exception:
-        websocekts = None
-else:
-    import urllib.parse as urlparse
-    from xml.sax.saxutils import quoteattr
+try:
+    import websockets
+except Exception:
+    websockets = None
 
 # Leo Inits.
 from leo.core import leoGlobals as g
 ### from leo.core.leoCommands import Commands as Cmdr
 ### from leo.core.leoNodes import Position, VNode
 
-### Aliases.
-if new:
-    pass
-else:
+if 1:  ###  To be deleted.
     SimpleHTTPRequestHandler = http.server.SimpleHTTPRequestHandler
     StringIO = io.StringIO
     BytesIO = io.BytesIO
@@ -263,8 +258,10 @@ else:
 #@+<< annotations: mod_http.py >>
 #@+node:ekr.20231130124146.1: ** << annotations: mod_http.py >>
 Loop: TypeAlias = asyncio.AbstractEventLoop
-Socket: TypeAlias = websockets.WebSocket
+### Socket: TypeAlias = websockets.WebSocket
 Task: TypeAlias = asyncio.Task
+
+Socket = Any
 
 ###
     # Event = Any  # More than one kind of Event!
@@ -284,7 +281,7 @@ browser_encoding = 'utf-8'
 connectionsPool: set[Socket] = set()
 connectionsTotal = 0  # Current connected client total
 traces: list[str] = []  # list of traces names, to be used as flags to output traces
-sockets_to_close = []
+sockets_to_close: list[Socket] = []
 
 #@+others
 #@+node:ekr.20231201041730.1: ** top-level helpers (mod_http.py)
@@ -364,8 +361,10 @@ def start_server() -> None:
     """python script for leo integration via leoBridge"""
     # pylint: disable=used-before-assignment
     global websockets
-    ### global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
-    ### global wsHost, wsPort
+    
+    ###
+        # global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
+        # global wsHost, wsPort
 
     wsHost = config.http_ip
     wsPort = config.http_port
