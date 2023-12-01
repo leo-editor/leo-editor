@@ -299,6 +299,7 @@ def init():
             try:
                 controller = Mod_HTTP_Server()
                 ### g.registerHandler("idle", plugin_wrapper)
+                ### Hangs.
                 start_server()  ###
                 g.es_print(
                     f"http serving enabled at {config.http_ip}:{config.http_port}",
@@ -325,6 +326,19 @@ def init():
             )
     g.plugin_signon(__name__)
     return True
+#@+node:bwmulder.20050326191345: *4* class Config (aka config)
+class Config:
+    enabled = None  # True when security check re http-allow-remote-exec passes.
+    http_active = False
+    http_timeout = 0
+    http_ip = '127.0.0.1'
+    http_port = 8130
+    if new:
+        pass
+    else:
+        rst2_http_attributename = 'rst_http_attribute'
+
+config = Config
 #@+node:tbrown.20111005140148.18223: *3* getGlobalConfiguration
 def getGlobalConfiguration():
     """read config."""
@@ -361,7 +375,7 @@ def start_server() -> None:
     """python script for leo integration via leoBridge"""
     # pylint: disable=used-before-assignment
     global websockets
-    
+
     ###
         # global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
         # global wsHost, wsPort
@@ -370,7 +384,7 @@ def start_server() -> None:
     wsPort = config.http_port
 
     #@+others
-    #@+node:ekr.20231201043726.2: *4* function: cancel_tasks
+    #@+node:ekr.20231201043726.2: *4* mod_http: function: cancel_tasks
     def cancel_tasks(to_cancel: set[Task], loop: Loop) -> None:
 
         if not to_cancel:
@@ -392,7 +406,7 @@ def start_server() -> None:
                         "task": task,
                     }
                 )
-    #@+node:ekr.20231201043726.4: *4* function: close_server
+    #@+node:ekr.20231201043726.4: *4* mod_http: function: close_server
     def close_Server() -> None:
         """
         Close the server by stopping the loop
@@ -402,7 +416,7 @@ def start_server() -> None:
             loop.stop()
         else:
             print('Loop was not running', flush=True)
-    #@+node:ekr.20231201043726.11: *4* function: notify_clients
+    #@+node:ekr.20231201043726.11: *4* mod_http: function: notify_clients
     async def notify_clients(action: str, excludedConn: Socket = None) -> None:
         global connectionsTotal
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
@@ -424,30 +438,35 @@ def start_server() -> None:
                 await asyncio.wait([
                     asyncio.create_task(client.send(m)) for client in clientSetCopy
                 ])
-    #@+node:ekr.20231201043726.12: *4* function: register_client
+    #@+node:ekr.20231201043726.12: *4* mod_http: function: register_client
     async def register_client(websocket: Socket) -> None:
         global connectionsTotal
         connectionsPool.add(websocket)
         await notify_clients("unregister", websocket)
-    #@+node:ekr.20231201043726.14: *4* function: unregister_client
+    #@+node:ekr.20231201043726.14: *4* mod_http: function: unregister_client
     async def unregister_client(websocket: Socket) -> None:
         global connectionsTotal
         connectionsPool.remove(websocket)
         await notify_clients("unregister")
-    #@+node:ekr.20231201043726.15: *4* function: ws_handler (server)
-    async def ws_handler(websocket: Socket, path: str) -> None:
+    #@+node:ekr.20231201043726.15: *4* mod_http: function: mod_http_handler (server)
+    async def mod_http_handler(websocket: Socket, path: str) -> None:
         """
         The web socket handler: server.ws_server.
 
         It must be a coroutine accepting two arguments: a WebSocketServerProtocol and the request URI.
         """
         global connectionsTotal  ###, wsLimit
-        tag = 'server'
-        trace = False
-        verbose = False
+
+        tag = 'mod_http server'
+        trace = True
+        verbose = True
         connected = False
 
+        g.trace('=====', g.callers())
+
         try:
+
+
             # Websocket connection startup
 
             ###
@@ -457,11 +476,13 @@ def start_server() -> None:
                     # return
             connected = True  # local variable
             connectionsTotal += 1  # global variable
+
             ### print(f"{tag}: User Connected, Total: {connectionsTotal}, Limit: {wsLimit}", flush=True)
             print(f"{tag}: User Connected, Total: {connectionsTotal}", flush=True)
             # If first connection set it as the main client connection
             controller._init_connection(websocket)
             await register_client(websocket)
+
             # Start by sending empty as 'ok'.
             n = 0
             await websocket.send(controller._make_response({"leoID": g.app.leoID}))
@@ -551,20 +572,21 @@ def start_server() -> None:
 
     # Start the server.
     loop = asyncio.get_event_loop()
+    handler = mod_http_handler
 
     try:
         try:
-            server = websockets.serve(ws_handler, wsHost, wsPort, max_size=None)  # pylint: disable=no-member
+            server = websockets.serve(handler, wsHost, wsPort, max_size=None)  # pylint: disable=no-member
             realtime_server = loop.run_until_complete(server)
         except OSError as e:
             print(e)
             print("Trying with IPv4 Family", flush=True)
-            server = websockets.serve(
-                ws_handler, wsHost, wsPort,
+            server = websockets.serve(handler, wsHost, wsPort,
                 family=socket.AF_INET, max_size=None)  # pylint: disable=no-member
             realtime_server = loop.run_until_complete(server)
 
         signon = f"Mod_HTTP_Server at {wsHost}:{wsPort}.\n"
+
         ###
             # if wsPersist:
                 # signon = signon + "Persistent server\n"
