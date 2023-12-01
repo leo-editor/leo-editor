@@ -235,7 +235,7 @@ import select
 import shutil
 import socket
 import time
-from typing import Any  ### Callable, Generator, Optional
+from typing import TypeAlias  ### Any, Callable, Generator, Optional
 
 # Third party inits.
 if new:  ###
@@ -250,7 +250,7 @@ else:
 # Leo Inits.
 from leo.core import leoGlobals as g
 from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoNodes import Position, VNode
+### from leo.core.leoNodes import Position, VNode
 
 ### Aliases.
 if new:
@@ -262,16 +262,18 @@ else:
 #@-<< imports: mod_http.py >>
 #@+<< annotations: mod_http.py >>
 #@+node:ekr.20231130124146.1: ** << annotations: mod_http.py >>
-### Event = Any  # More than one kind of Event!
-Loop = Any
-# Match = re.Match
-# Match_Iter = Iterator[re.Match[str]]
-Package = dict[str, Any]
-Param = dict[str, Any]
-# RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
-Response = str  # See _make_response.
-Socket = Any
+Loop: TypeAlias = asyncio.AbstractEventLoop
+Socket: TypeAlias = websockets.WebSocket
+Task: TypeAlias = asyncio.Task
 
+###
+    # Event = Any  # More than one kind of Event!
+    # Match = re.Match
+    # Match_Iter = Iterator[re.Match[str]]
+    # Package = dict[str, Any]
+    # Param = dict[str, Any]
+    # RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
+    # Response = str  # See _make_response.
 #@-<< annotations: mod_http.py >>
 
 # This encoding must match the character encoding used in your browser.
@@ -283,7 +285,6 @@ connectionsPool: set[Socket] = set()
 connectionsTotal = 0  # Current connected client total
 traces: list[str] = []  # list of traces names, to be used as flags to output traces
 sockets_to_close = []
-SERVER_STARTED_TOKEN = "LeoBridge started"  # Output when started successfully
 
 #@+others
 #@+node:ekr.20231201041730.1: ** top-level helpers (mod_http.py)
@@ -371,7 +372,8 @@ def start_server() -> None:
 
     #@+others
     #@+node:ekr.20231201043726.2: *4* function: cancel_tasks
-    def cancel_tasks(to_cancel: Any, loop: Loop) -> None:
+    def cancel_tasks(to_cancel: set[Task], loop: Loop) -> None:
+
         if not to_cancel:
             return
 
@@ -402,15 +404,19 @@ def start_server() -> None:
         else:
             print('Loop was not running', flush=True)
     #@+node:ekr.20231201043726.11: *4* function: notify_clients
-    async def notify_clients(action: str, excludedConn: Any = None) -> None:
+    async def notify_clients(action: str, excludedConn: Socket = None) -> None:
         global connectionsTotal
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
             opened = bool(controller.c)  # c can be none if no files opened
-            m = json.dumps({
-                "async": "refresh",
-                "action": action,
-                "opened": opened,
-            }, separators=(',', ':'), cls=SetEncoder)
+            m = json.dumps(
+                {
+                    "async": "refresh",
+                    "action": action,
+                    "opened": opened,
+                },
+                separators=(',', ':'),
+                ### cls=LeoEncoder,
+            )
             clientSetCopy = connectionsPool.copy()
             if excludedConn:
                 clientSetCopy.discard(excludedConn)
@@ -488,7 +494,11 @@ def start_server() -> None:
                         "request": data,
                         "ServerError": f"{e}",
                     }
-                    answer = json.dumps(package, separators=(',', ':'), cls=SetEncoder)
+                    answer = json.dumps(
+                        package,
+                        separators=(',', ':'),
+                        ### cls=LeoJsonEncoder,
+                    )
                 except InternalServerError as e:  # pragma: no cover
                     print(f"{tag}: InternalServerError {e}", flush=True)
                     break
@@ -555,7 +565,7 @@ def start_server() -> None:
                 family=socket.AF_INET, max_size=None)  # pylint: disable=no-member
             realtime_server = loop.run_until_complete(server)
 
-        signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}.\n"
+        signon = f"Mod_HTTP_Server at {wsHost}:{wsPort}.\n"
         ###
             # if wsPersist:
                 # signon = signon + "Persistent server\n"
@@ -586,8 +596,8 @@ def start_server() -> None:
 #@+node:EKR.20040517080250.10: *3* class nodeNotFound
 class nodeNotFound(Exception):
     pass
-#@+node:bwmulder.20050326191345: ** class config
-class config:
+#@+node:bwmulder.20050326191345: ** class Config (aka config)
+class Config:
     enabled = None  # True when security check re http-allow-remote-exec passes.
     http_active = False
     http_timeout = 0
@@ -597,6 +607,8 @@ class config:
         pass
     else:
         rst2_http_attributename = 'rst_http_attribute'
+
+config = Config
 #@+node:tbrown.20110930093028.34530: ** class LeoActions
 class LeoActions:
     """
@@ -1502,26 +1514,6 @@ class ServerError(Exception):  # pragma: no cover
 class TerminateServer(Exception):  # pragma: no cover
     """Ask the server to terminate."""
     pass
-#@+node:ekr.20231130125530.1: *3* class SetEncoder (To be deleted)
-class SetEncoder(json.JSONEncoder):
-
-    def default(self, obj: Any) -> Any:
-        # Sets become basic javascript arrays
-        if isinstance(obj, set):
-            return list(obj)
-        # Leo Positions get converted with same simple algorithm as p_to_ap
-        if isinstance(obj, Position):
-            stack = [{'gnx': v.gnx, 'childIndex': childIndex}
-                for (v, childIndex) in obj.stack]
-            return {
-                'childIndex': obj._childIndex,
-                'gnx': obj.v.gnx,
-                'stack': stack,
-            }
-        # Leo VNodes are represented as their gnx
-        if isinstance(obj, VNode):
-            return {'gnx': obj.gnx}
-        return json.JSONEncoder.default(self, obj)  # otherwise, return default
 #@+node:ekr.20231130124623.1: *3* class Mod_HTTP_Server
 class Mod_HTTP_Server:
     """
