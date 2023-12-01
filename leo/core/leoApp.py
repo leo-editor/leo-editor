@@ -3229,16 +3229,16 @@ class LoadManager:
         """
         # lm = self
         if not fn:
-            return None  # Should not happen.
+            return  # Should not happen.
         if not os.path.exists(fn):
-            return None  # Should not happen.
+            return  # Should not happen.
 
         if c.looksLikeDerivedFile(fn):
             # Create an @file node.
             p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
                 paths=[fn], command=None)  # Not undoable.
             if not p:
-                return None
+                return
             if p.hasBack():
                 p.back().doDelete()
                 p = c.rootPosition()
