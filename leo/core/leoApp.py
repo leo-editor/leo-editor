@@ -1443,19 +1443,18 @@ class LeoApp:
                 title='Already Open Files',
                 message=message,
                 text="Ok")
-    # @+node:ekr.20171127111141.1: *3* app.Import utils
-    # @+node:ekr.20140727180847.17985: *4* app.scanner_for_at_auto
-    def scanner_for_at_auto(self, c: Cmdr, p: Position) -> Optional[Callable]:
+    #@+node:ekr.20171127111141.1: *3* app.Import utils
+    #@+node:ekr.20140727180847.17985: *4* app.scanner_for_at_auto
+    def scanner_for_at_auto(self, p: Position) -> Optional[Callable]:
         """A factory returning a scanner function for p, an @auto node."""
         d = g.app.atAutoDict
         for key in d:
-            # pylint: disable=cell-var-from-loop
             func = d.get(key)
             if func and g.match_word(p.h, 0, key):
                 return func
         return None
-    # @+node:ekr.20140130172810.15471: *4* app.scanner_for_ext
-    def scanner_for_ext(self, c: Cmdr, ext: str) -> Optional[Callable]:
+    #@+node:ekr.20140130172810.15471: *4* app.scanner_for_ext
+    def scanner_for_ext(self, ext: str) -> Optional[Callable]:
         """A factory returning a scanner function for the given file extension."""
         return g.app.classDispatchDict.get(ext)
     # @+node:ekr.20170429152049.1: *3* app.listenToLog
@@ -3120,9 +3119,11 @@ class LoadManager:
             c.selectPosition(p)
             c.redraw()
         else:
-            # Make the root node an @edit node.
+            # Make the root node an @auto node if an importer exists. @edit otherwise.
+            unused, ext = os.path.splitext(fn)
+            func = g.app.scanner_for_ext(ext)
             p = c.rootPosition()
-            p.h = f"@edit {fn}"
+            p.h = f"@auto {fn}" if func else f"@edit {fn}"
             c.selectPosition(p)
             c.refreshFromDisk()  # Calls c.redraw()
 

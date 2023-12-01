@@ -1718,7 +1718,7 @@ class AtFile:
         if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
             if not s.endswith('\n'):
                 s = s + '\n'
-                
+
         ### g.printObj(g.splitLines(s), tag=p.h) ###
 
 
@@ -3162,7 +3162,7 @@ class FastAtRead:
         # Set the patterns
         self.get_patterns(comment_delims)
         #@-<< init scan_lines >>
-        breakpoint()  ###
+        ### breakpoint()  ###
         i = 0  # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
             # Strip the line only once.
@@ -3572,7 +3572,7 @@ class FastAtRead:
         # Set the body text.
         assert root_v.gnx in gnx2vnode, root_v
         assert root_v.gnx in gnx2body, root_v
-        breakpoint()  ###
+        ### breakpoint()  ###
         for key in gnx2body:
             body = gnx2body.get(key)
             v = gnx2vnode.get(key)
