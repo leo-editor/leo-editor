@@ -227,8 +227,8 @@ if 1:  ### To be removed.
     import asyncore
     import urllib.parse as urlparse
     from xml.sax.saxutils import quoteattr
+    import http.server
 
-import http.server
 ### import inspect
 import json
 import io
@@ -1308,8 +1308,8 @@ class Leo_Interface:
             f.write("</h2>\n")
     #@-others
 #@+node:ekr.20231130124348.1: ** Old classes
-#@+node:EKR.20040517080250.4: *3* class delayedSocketStream
-class delayedSocketStream(asyncore.dispatcher_with_send):
+#@+node:EKR.20040517080250.4: *3* class DelayedSocketStream
+class DelayedSocketStream(asyncore.dispatcher_with_send):
     #@+others
     #@+node:EKR.20040517080250.5: *4* __init__
     def __init__(self, sock):
@@ -1368,7 +1368,7 @@ class RequestHandler(
         self.client_address = addr
         self.connection = conn
         self.server = server
-        self.wfile = delayedSocketStream(self.socket)  # type:ignore
+        self.wfile = DelayedSocketStream(self.socket)  # type:ignore
         # Sets the terminator. When it is received, this means that the
         # http request is complete, control will be passed to self.found_terminator
         self.term = g.toEncodedString('\r\n\r\n')
@@ -1571,7 +1571,7 @@ class Asyncio_Request_Handler(Leo_Interface):
         self.client_address = addr
         self.connection = conn
         self.server = server
-        self.wfile = delayedSocketStream(self.socket)  # type:ignore
+        self.wfile = DelayedSocketStream(self.socket)  # type:ignore
         # Sets the terminator. When it is received, this means that the
         # http request is complete, control will be passed to self.found_terminator
         self.term = g.toEncodedString('\r\n\r\n')
