@@ -1,7 +1,7 @@
-#@+leo-ver=5-thin
-#@+node:ekr.20170419092835.1: * @file ../plugins/cursesGui2.py
-#@+<< cursesGui2 docstring >>
-#@+node:ekr.20170608073034.1: ** << cursesGui2 docstring >>
+# @+leo-ver=5-thin
+# @+node:ekr.20170419092835.1: * @file ../plugins/cursesGui2.py
+# @+<< cursesGui2 docstring >>
+# @+node:ekr.20170608073034.1: ** << cursesGui2 docstring >>
 """
 A curses gui for Leo using npyscreen.
 
@@ -23,9 +23,9 @@ https://github.com/leo-editor/leo-editor/issues/488
 Devs, please read:
 https://leo-editor.github.io/leo-editor/console-gui.html#developing-the-cursesgui2-plugin
 """
-#@-<< cursesGui2 docstring >>
-#@+<< cursesGui2 imports >>
-#@+node:ekr.20170419172102.1: ** << cursesGui2 imports >>
+# @-<< cursesGui2 docstring >>
+# @+<< cursesGui2 imports >>
+# @+node:ekr.20170419172102.1: ** << cursesGui2 imports >>
 from __future__ import annotations
 from collections.abc import Callable
 import copy
@@ -60,26 +60,26 @@ from leo.core import leoFrame
 from leo.core import leoGui
 from leo.core import leoMenu
 from leo.core.leoNodes import Position
-#@-<< cursesGui2 imports >>
-#@+<< cursesGui2 annotations >>
-#@+node:ekr.20220911020102.1: ** << cursesGui2 annotations >>
+# @-<< cursesGui2 imports >>
+# @+<< cursesGui2 annotations >>
+# @+node:ekr.20220911020102.1: ** << cursesGui2 annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     Event = Any  # Not usually a LeoKeyEvent.
     Wrapper = Any  # Everything, including widgets, is a wrapper!
-#@-<< cursesGui2 annotations >>
+# @-<< cursesGui2 annotations >>
 # pylint: disable=arguments-differ,logging-not-lazy
 # pylint: disable=not-an-iterable,unsubscriptable-object,unsupported-delete-operation
 
 # True: use native Leo data structures, replacing the
 # the values property by a singleton LeoValues object.
 native = True
-#@+<< forward reference classes >>
-#@+node:ekr.20170511053555.1: **  << forward reference classes >>
+# @+<< forward reference classes >>
+# @+node:ekr.20170511053555.1: **  << forward reference classes >>
 # These classes aren't necessarily base classes, but
 # they must be defined before classes that refer to them.
-#@+others
-#@+node:ekr.20170602094648.1: *3* class LeoBodyTextfield (npyscreen.Textfield)
+# @+others
+# @+node:ekr.20170602094648.1: *3* class LeoBodyTextfield (npyscreen.Textfield)
 class LeoBodyTextfield(npyscreen.Textfield):
     """
     A class to allow an overridden h_addch for body text.
@@ -93,11 +93,11 @@ class LeoBodyTextfield(npyscreen.Textfield):
         self.value: str
         self.set_handlers()
 
-    #@+others
-    #@+node:ekr.20170604182251.1: *4* LeoBodyTextfield handlers
+    # @+others
+    # @+node:ekr.20170604182251.1: *4* LeoBodyTextfield handlers
     # All h_exit_* methods call self.leo_parent.set_box_name.
     # In addition, h_exit_down inserts a blank(!!) for '\n'.
-    #@+node:ekr.20170602095236.1: *5* LeoBodyTextfield.h_addch
+    # @+node:ekr.20170602095236.1: *5* LeoBodyTextfield.h_addch
     def h_addch(self, ch_i: int) -> None:
         """
         Update a single line of the body text, carefully recomputing c.p.b.
@@ -130,12 +130,12 @@ class LeoBodyTextfield(npyscreen.Textfield):
         self.update()
         # Update the parent and Leo's data structures.
         parent_w.update_body(self.cursor_position, self.value)
-    #@+node:ekr.20170603131317.1: *5* LeoBodyTextfield.h_cursor_left
+    # @+node:ekr.20170603131317.1: *5* LeoBodyTextfield.h_cursor_left
     def h_cursor_left(self, ch_i: int) -> None:
 
         self.cursor_position -= 1  # -1 Means something.
 
-    #@+node:ekr.20170603131253.1: *5* LeoBodyTextfield.h_delete_left
+    # @+node:ekr.20170603131253.1: *5* LeoBodyTextfield.h_delete_left
     def h_delete_left(self, ch_i: int) -> None:
 
         # pylint: disable=no-member
@@ -148,7 +148,7 @@ class LeoBodyTextfield(npyscreen.Textfield):
         self.update()
         parent_w = self.leo_parent
         parent_w.update_body(self.cursor_position, self.value)
-    #@+node:ekr.20170602110807.2: *5* LeoBodyTextfield.h_exit_down
+    # @+node:ekr.20170602110807.2: *5* LeoBodyTextfield.h_exit_down
     def h_exit_down(self, ch_i: int) -> Optional[bool]:
         """
         From InputHandler.h_exit_down
@@ -165,7 +165,7 @@ class LeoBodyTextfield(npyscreen.Textfield):
         self.editing = False
         self.how_exited = EXITED_DOWN
         return None
-    #@+node:ekr.20170602110807.3: *5* LeoBodyTextfield.h_exit_escape
+    # @+node:ekr.20170602110807.3: *5* LeoBodyTextfield.h_exit_escape
     def h_exit_escape(self, ch_i: int) -> Optional[bool]:
         """From InputHandler.h_exit_escape"""
         # Leo-specific exit code.
@@ -176,7 +176,7 @@ class LeoBodyTextfield(npyscreen.Textfield):
         self.editing = False
         self.how_exited = EXITED_ESCAPE
         return None
-    #@+node:ekr.20170602110807.4: *5* LeoBodyTextfield.h_exit_mouse
+    # @+node:ekr.20170602110807.4: *5* LeoBodyTextfield.h_exit_mouse
     def h_exit_mouse(self, ch_i: int) -> None:
         """From InputHandler.h_exit_mouse"""
         # pylint: disable=no-member
@@ -192,14 +192,14 @@ class LeoBodyTextfield(npyscreen.Textfield):
                 assert ch == curses.KEY_MOUSE
             self.editing = False
             self.how_exited = EXITED_MOUSE
-    #@+node:ekr.20170602110807.5: *5* LeoBodyTextfield.h_exit_up
+    # @+node:ekr.20170602110807.5: *5* LeoBodyTextfield.h_exit_up
     def h_exit_up(self, ch_i: int) -> None:
         """LeoBodyTextfield.h_exit_up."""
         # Don't end overall editing.
             # self.leo_parent.set_box_name('Body Pane')
         self.editing = False
         self.how_exited = EXITED_UP
-    #@+node:ekr.20170604180351.1: *5* LeoBodyTextfield.set_handlers
+    # @+node:ekr.20170604180351.1: *5* LeoBodyTextfield.set_handlers
     def set_handlers(self) -> None:
 
         # pylint: disable=no-member
@@ -222,8 +222,8 @@ class LeoBodyTextfield(npyscreen.Textfield):
             curses.ascii.TAB: self.h_addch,
         }
         # dump_handlers(self)
-    #@-others
-#@+node:ekr.20170603104320.1: *3* class LeoLogTextfield (npyscreen.Textfield)
+    # @-others
+# @+node:ekr.20170603104320.1: *3* class LeoLogTextfield (npyscreen.Textfield)
 class LeoLogTextfield(npyscreen.Textfield):
     """
     A class to allow an overridden h_addch for body text.
@@ -236,11 +236,11 @@ class LeoLogTextfield(npyscreen.Textfield):
         super().__init__(*args, **kwargs)
         self.set_handlers()
 
-    #@+others
-    #@+node:ekr.20170604113445.1: *4* LeoLogTextfield handlers
+    # @+others
+    # @+node:ekr.20170604113445.1: *4* LeoLogTextfield handlers
     # All h_exit_* methods call self.leo_parent.set_box_name.
     # In addition, h_exit_down inserts a blank(!!) for '\n'.
-    #@+node:ekr.20170603104320.5: *5* LeoLogTextfield.h_exit_escape
+    # @+node:ekr.20170603104320.5: *5* LeoLogTextfield.h_exit_escape
     def h_exit_escape(self, ch_i: int) -> Optional[bool]:
         """From InputHandler.h_exit_escape"""
         parent_w = self.leo_parent
@@ -250,7 +250,7 @@ class LeoLogTextfield(npyscreen.Textfield):
         self.editing = False
         self.how_exited = EXITED_ESCAPE
         return None
-    #@+node:ekr.20170603104320.6: *5* LeoLogTextfield.h_exit_mouse
+    # @+node:ekr.20170603104320.6: *5* LeoLogTextfield.h_exit_mouse
     def h_exit_mouse(self, ch_i: int) -> None:
         """From InputHandler.h_exit_mouse"""
         # pylint: disable=no-member
@@ -266,7 +266,7 @@ class LeoLogTextfield(npyscreen.Textfield):
                 assert ch == curses.KEY_MOUSE
             self.editing = False
             self.how_exited = EXITED_MOUSE
-    #@+node:ekr.20170603104320.8: *5* LeoLogTextfield.h_exit_down
+    # @+node:ekr.20170603104320.8: *5* LeoLogTextfield.h_exit_down
     def h_exit_down(self, ch_i: int) -> Optional[bool]:
         """LeoLogTextfield.h_exit_up. Delegate to LeoLog."""
         # g.trace('(LeoLogTextfield)', self._test_safe_to_exit())
@@ -282,7 +282,7 @@ class LeoLogTextfield(npyscreen.Textfield):
         self.editing = False
         self.how_exited = EXITED_DOWN
         return None
-    #@+node:ekr.20170603104320.9: *5* LeoLogTextfield.h_exit_up
+    # @+node:ekr.20170603104320.9: *5* LeoLogTextfield.h_exit_up
     def h_exit_up(self, ch_i: int) -> Optional[bool]:
         """LeoLogTextfield.h_exit_up. Delegate to LeoLog."""
         parent_w = self.leo_parent
@@ -292,7 +292,7 @@ class LeoLogTextfield(npyscreen.Textfield):
         self.editing = False
         self.how_exited = EXITED_DOWN
         return None
-    #@+node:ekr.20170604075324.1: *4* LeoLogTextfield.set_handlers
+    # @+node:ekr.20170604075324.1: *4* LeoLogTextfield.set_handlers
     def set_handlers(self) -> None:
 
         # pylint: disable=no-member
@@ -315,12 +315,12 @@ class LeoLogTextfield(npyscreen.Textfield):
             curses.ascii.TAB: self.h_addch,
         }
         # dump_handlers(self)
-    #@-others
-#@+node:ekr.20170507184329.1: *3* class LeoTreeData (npyscreen.TreeData)
+    # @-others
+# @+node:ekr.20170507184329.1: *3* class LeoTreeData (npyscreen.TreeData)
 class LeoTreeData(npyscreen.TreeData):
     """A TreeData class that has a len and new_first_child methods."""
-    #@+<< about LeoTreeData ivars >>
-    #@+node:ekr.20170516143500.1: *4* << about LeoTreeData ivars >>
+    # @+<< about LeoTreeData ivars >>
+    # @+node:ekr.20170516143500.1: *4* << about LeoTreeData ivars >>
     # EKR: TreeData.__init__ sets the following ivars for keyword args.
         # self._parent # None or weakref.proxy(parent)
         # self.content.
@@ -333,7 +333,7 @@ class LeoTreeData(npyscreen.TreeData):
         # self.sort = False
         # self.sort_function = sort_function
         # self.sort_function_wrapper = True
-    #@-<< about LeoTreeData ivars >>
+    # @-<< about LeoTreeData ivars >>
 
     _children: list[LeoTreeData]
     content = Union[str, Position]
@@ -355,15 +355,15 @@ class LeoTreeData(npyscreen.TreeData):
         return '<LeoTreeData: %r>' % self.content
     __str__ = __repr__
 
-    #@+others
-    #@+node:ekr.20170516153211.1: *4* LeoTreeData.__getitem__
+    # @+others
+    # @+node:ekr.20170516153211.1: *4* LeoTreeData.__getitem__
     def __getitem__(self, n: int) -> LeoTreeData:
         """Return the n'th item in this tree."""
         aList = self.get_tree_as_list()
         data = aList[n] if n < len(aList) else None
         # g.trace(n, len(aList), repr(data))
         return data
-    #@+node:ekr.20170516093009.1: *4* LeoTreeData.is_ancestor_of
+    # @+node:ekr.20170516093009.1: *4* LeoTreeData.is_ancestor_of
     def is_ancestor_of(self, node: LeoTreeData) -> bool:
 
         assert isinstance(node, LeoTreeData), repr(node)
@@ -373,9 +373,9 @@ class LeoTreeData(npyscreen.TreeData):
                 return True
             parent = parent._parent
         return False
-    #@+node:ekr.20170516085427.1: *4* LeoTreeData.overrides
+    # @+node:ekr.20170516085427.1: *4* LeoTreeData.overrides
     # Don't use weakrefs!
-    #@+node:ekr.20170518103807.6: *5* LeoTreeData.find_depth
+    # @+node:ekr.20170518103807.6: *5* LeoTreeData.find_depth
     def find_depth(self, d: int = 0) -> int:
         if native:
             p = self.content
@@ -386,21 +386,21 @@ class LeoTreeData(npyscreen.TreeData):
             d += 1
             parent = parent.get_parent()
         return d
-    #@+node:ekr.20170516085427.2: *5* LeoTreeData.get_children
+    # @+node:ekr.20170516085427.2: *5* LeoTreeData.get_children
     def get_children(self) -> list[LeoTreeData]:
 
         if native:
             p = self.content
             return p.children()
         return self._children
-    #@+node:ekr.20170518103807.11: *5* LeoTreeData.get_parent
+    # @+node:ekr.20170518103807.11: *5* LeoTreeData.get_parent
     def get_parent(self) -> Position:
 
         if native:
             p = self.content
             return p.parent()
         return self._parent
-    #@+node:ekr.20170516085427.3: *5* LeoTreeData.get_tree_as_list
+    # @+node:ekr.20170516085427.3: *5* LeoTreeData.get_tree_as_list
     def get_tree_as_list(self) -> list[LeoTreeData]:  # only_expanded=True, sort=None, key=None):
         """
         Called only from LeoMLTree.values._getValues.
@@ -412,7 +412,7 @@ class LeoTreeData(npyscreen.TreeData):
         aList = [z for z in self.walk_tree(only_expanded=True)]
         # g.trace('LeoTreeData', len(aList))
         return aList
-    #@+node:ekr.20170516085427.4: *5* LeoTreeData.new_child
+    # @+node:ekr.20170516085427.4: *5* LeoTreeData.new_child
     def new_child(self, *args: Any, **keywords: Any) -> Position:
 
         if self.CHILDCLASS:
@@ -422,7 +422,7 @@ class LeoTreeData(npyscreen.TreeData):
         child = cld(parent=self, *args, **keywords)
         self._children.append(child)
         return child
-    #@+node:ekr.20170516085742.1: *5* LeoTreeData.new_child_at
+    # @+node:ekr.20170516085742.1: *5* LeoTreeData.new_child_at
     def new_child_at(self, index: int, *args: Any, **keywords: Any) -> Position:
         """Same as new_child, with insert(index, c) instead of append(c)"""
         # g.trace('LeoTreeData')
@@ -433,7 +433,7 @@ class LeoTreeData(npyscreen.TreeData):
         child = cld(parent=self, *args, **keywords)
         self._children.insert(index, child)
         return child
-    #@+node:ekr.20170516085427.5: *5* LeoTreeData.remove_child
+    # @+node:ekr.20170516085427.5: *5* LeoTreeData.remove_child
     def remove_child(self, child: Position) -> None:
 
         if native:
@@ -443,7 +443,7 @@ class LeoTreeData(npyscreen.TreeData):
         else:
             # May be useful when child is cloned.
             self._children = [z for z in self._children if z != child]
-    #@+node:ekr.20170518103807.21: *5* LeoTreeData.set_content
+    # @+node:ekr.20170518103807.21: *5* LeoTreeData.set_content
     def set_content(self, content: Union[str, Position]) -> None:
 
         if native:
@@ -459,12 +459,12 @@ class LeoTreeData(npyscreen.TreeData):
                 self.content = content.copy()  # type:ignore
         else:
             self.content = content  # type:ignore
-    #@+node:ekr.20170516085427.6: *5* LeoTreeData.set_parent
+    # @+node:ekr.20170516085427.6: *5* LeoTreeData.set_parent
     def set_parent(self, parent: Position) -> None:
 
         self._parent = parent
 
-    #@+node:ekr.20170518103807.24: *5* LeoTreeData.walk_tree (native only)
+    # @+node:ekr.20170518103807.24: *5* LeoTreeData.walk_tree (native only)
     if native:
 
         def walk_tree(
@@ -498,8 +498,8 @@ class LeoTreeData(npyscreen.TreeData):
                     p.moveToThreadNext()
 
     # else use the base TreeData.walk_tree method.
-    #@-others
-#@+node:ekr.20170508085942.1: *3* class LeoTreeLine (npyscreen.TreeLine)
+    # @-others
+# @+node:ekr.20170508085942.1: *3* class LeoTreeLine (npyscreen.TreeLine)
 class LeoTreeLine(npyscreen.TreeLine):
     """A editable TreeLine class."""
 
@@ -532,8 +532,8 @@ class LeoTreeLine(npyscreen.TreeLine):
 
     __str__ = __repr__
 
-    #@+others
-    #@+node:ekr.20170514104550.1: *4* LeoTreeLine._get_string_to_print
+    # @+others
+    # @+node:ekr.20170514104550.1: *4* LeoTreeLine._get_string_to_print
     def _get_string_to_print(self) -> Optional[str]:
 
         # From TextfieldBase.
@@ -546,7 +546,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             return ''
         s = self.value.content if self.value else None
         return g.toUnicode(s) if s else None
-    #@+node:ekr.20170522032805.1: *4* LeoTreeLine._print
+    # @+node:ekr.20170522032805.1: *4* LeoTreeLine._print
     def _print(self, left_margin: int = 0) -> None:
         """LeoTreeLine._print. Adapted from TreeLine._print."""
         # pylint: disable=no-member
@@ -584,7 +584,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             self.parent.curses_pad.bkgdset(' ', curses.A_STANDOUT)
         # This draws the actual line.
         super()._print()
-    #@+node:ekr.20170514183049.1: *4* LeoTreeLine.display_value
+    # @+node:ekr.20170514183049.1: *4* LeoTreeLine.display_value
     def display_value(self, vl: LeoTreeData) -> str:
 
         # vl is a LeoTreeData.
@@ -593,7 +593,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             assert p and isinstance(p, Position), repr(p)
             return p.h or ' '
         return vl.content if vl else ''  # type:ignore
-    #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
+    # @+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
     def edit(self) -> None:
         """Allow the user to edit the widget: ie. start handling keypresses."""
         # g.trace('LeoTreeLine 1')
@@ -613,12 +613,12 @@ class LeoTreeLine(npyscreen.TreeLine):
         # return self._post_edit()
         self.highlight = False
         self.update()
-    #@+node:ekr.20170508130016.1: *4* LeoTreeLine.handlers
-    #@+node:ekr.20170508130946.1: *5* LeoTreeLine.h_cursor_beginning
+    # @+node:ekr.20170508130016.1: *4* LeoTreeLine.handlers
+    # @+node:ekr.20170508130946.1: *5* LeoTreeLine.h_cursor_beginning
     def h_cursor_beginning(self, ch: str) -> None:
 
         self.cursor_position = 0
-    #@+node:ekr.20170508131043.1: *5* LeoTreeLine.h_cursor_end
+    # @+node:ekr.20170508131043.1: *5* LeoTreeLine.h_cursor_end
     def h_cursor_end(self, ch: str) -> None:
 
         # self.value is a LeoTreeData.
@@ -626,7 +626,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         content = self.value.content
         s = content.h if native else content
         self.cursor_position = max(0, len(s) - 1)
-    #@+node:ekr.20170508130328.1: *5* LeoTreeLine.h_cursor_left
+    # @+node:ekr.20170508130328.1: *5* LeoTreeLine.h_cursor_left
     def h_cursor_left(self, input: Any) -> None:  # input not used.
 
         # self.value is a LeoTreeData.
@@ -635,7 +635,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         s = content.h if native else content
         i = min(self.cursor_position, len(s) - 1)
         self.cursor_position = max(0, i - 1)
-    #@+node:ekr.20170508130339.1: *5* LeoTreeLine.h_cursor_right
+    # @+node:ekr.20170508130339.1: *5* LeoTreeLine.h_cursor_right
     def h_cursor_right(self, input: Any) -> None:  # input not used.
 
         # self.value is a LeoTreeData.
@@ -648,7 +648,7 @@ class LeoTreeLine(npyscreen.TreeLine):
 
 
 
-    #@+node:ekr.20170508130349.1: *5* LeoTreeLine.h_delete_left
+    # @+node:ekr.20170508130349.1: *5* LeoTreeLine.h_delete_left
     def h_delete_left(self, input: Any) -> None:  # input not used.
 
         # self.value is a LeoTreeData.
@@ -667,14 +667,14 @@ class LeoTreeLine(npyscreen.TreeLine):
             if 0 <= n <= len(s):
                 self.value.content = s[:n] + s[n + 1 :]
         self.cursor_position -= 1
-    #@+node:ekr.20170510212007.1: *5* LeoTreeLine.h_end_editing
+    # @+node:ekr.20170510212007.1: *5* LeoTreeLine.h_end_editing
     def h_end_editing(self, ch: str) -> None:
 
         c = self.leo_c
         c.endEditing()
         self.editing = False
         self.how_exited = None
-    #@+node:ekr.20170508125632.1: *5* LeoTreeLine.h_insert (to do: honor v.selection)
+    # @+node:ekr.20170508125632.1: *5* LeoTreeLine.h_insert (to do: honor v.selection)
     def h_insert(self, i: int) -> None:
 
         # self.value is a LeoTreeData.
@@ -690,8 +690,8 @@ class LeoTreeLine(npyscreen.TreeLine):
             s = self.value.content
             self.value.content = s[:n] + chr(i) + s[n:]
         self.cursor_position += 1
-    #@+node:ekr.20170508130025.1: *5* LeoTreeLine.set_handlers
-    #@@nobeautify
+    # @+node:ekr.20170508130025.1: *5* LeoTreeLine.set_handlers
+    # @@nobeautify
 
     def set_handlers(self) -> None:
 
@@ -712,14 +712,14 @@ class LeoTreeLine(npyscreen.TreeLine):
             curses.KEY_BACKSPACE:   self.h_delete_left,
             curses.KEY_MOUSE:       self.h_exit_mouse, # New
         })
-    #@+node:ekr.20170519023802.1: *4* LeoTreeLine.when_check_value_changed
+    # @+node:ekr.20170519023802.1: *4* LeoTreeLine.when_check_value_changed
     if native:
 
         def when_check_value_changed(self) -> bool:
             """Check whether the widget's value has changed and call when_valued_edited if so."""
             return True
-    #@-others
-#@+node:ekr.20170618103742.1: *3* class QuitButton (npyscreen.MiniButton)
+    # @-others
+# @+node:ekr.20170618103742.1: *3* class QuitButton (npyscreen.MiniButton)
 class QuitButton(npyscreen.MiniButtonPress):
     """Override the "Quit Leo" button so it prompts for save if needed."""
 
@@ -732,11 +732,11 @@ class QuitButton(npyscreen.MiniButtonPress):
             if not allow:
                 return
         sys.exit(0)
-#@-others
-#@-<< forward reference classes >>
-#@+others
-#@+node:ekr.20170501043944.1: **   curses2: top-level functions
-#@+node:ekr.20170603110639.1: *3* curses2: dump_handlers
+# @-others
+# @-<< forward reference classes >>
+# @+others
+# @+node:ekr.20170501043944.1: **   curses2: top-level functions
+# @+node:ekr.20170603110639.1: *3* curses2: dump_handlers
 def dump_handlers(
     obj: Any,
     dump_complex: bool = True,
@@ -764,7 +764,7 @@ def dump_handlers(
             f1, f2 = data
             aList.append('%25s predicate: %s' % (method_name(f2), method_name(f1)))
         g.printList(sorted(set(aList)))
-#@+node:ekr.20170419094705.1: *3* curses2: init
+# @+node:ekr.20170419094705.1: *3* curses2: init
 def init() -> bool:
     """
     top-level init for cursesGui2.py pseudo-plugin.
@@ -776,9 +776,9 @@ def init() -> bool:
             g.es_print(s, color="red")
         return False
     return bool(curses and not g.unitTesting)  # Not Ok for unit testing!
-#@+node:ekr.20170501032705.1: *3* curses2: leoGlobals replacements
+# @+node:ekr.20170501032705.1: *3* curses2: leoGlobals replacements
 # CGui.init_logger monkey-patches leoGlobals with these functions.
-#@+node:ekr.20170430112645.1: *4* curses2: es
+# @+node:ekr.20170430112645.1: *4* curses2: es
 def es(*args: Any, **keys: Any) -> None:
     """Monkey-patch for g.es."""
     d = {
@@ -797,12 +797,12 @@ def es(*args: Any, **keys: Any) -> None:
         else:
             g.app.gui.wait_list.append((s, color))
     # else: logging.info(' KILL: %r' % s)
-#@+node:ekr.20170613144149.1: *4* curses2: has_logger (not used)
+# @+node:ekr.20170613144149.1: *4* curses2: has_logger (not used)
 def has_logger() -> bool:
 
     logger = logging.getLogger()
     return any(isinstance(z, logging.handlers.SocketHandler) for z in logger.handlers or [])
-#@+node:ekr.20170501043411.1: *4* curses2: pr
+# @+node:ekr.20170501043411.1: *4* curses2: pr
 def pr(*args: Any, **keys: Any) -> None:
     """Monkey-patch for g.pr."""
     d = {'commas': False, 'newline': True, 'spaces': True}
@@ -812,7 +812,7 @@ def pr(*args: Any, **keys: Any) -> None:
         if line.strip():  # No need to print blank logging lines.
             line = '   pr: %s' % line.rstrip()
             logging.info(line)
-#@+node:ekr.20170429165242.1: *4* curses2: trace
+# @+node:ekr.20170429165242.1: *4* curses2: trace
 def trace(*args: Any, **keys: Any) -> None:
     """Monkey-patch for g.trace."""
     d: dict[str, Any] = {
@@ -863,7 +863,7 @@ def trace(*args: Any, **keys: Any) -> None:
     s = ''.join(result)
     line = 'trace: %s' % s.rstrip()
     logging.info(line)
-#@+node:ekr.20170526075024.1: *3* method_name
+# @+node:ekr.20170526075024.1: *3* method_name
 def method_name(f: Callable) -> str:
     """Print a method name is a simplified format."""
     pattern = r'<bound method ([\w\.]*\.)?(\w+) of <([\w\.]*\.)?(\w+) object at (.+)>>'
@@ -872,7 +872,7 @@ def method_name(f: Callable) -> str:
         # Shows actual method: very useful
         return '%20s%s' % (m.group(1), m.group(2))
     return repr(f)
-#@+node:ekr.20210228141208.1: **  decorators (curses2)
+# @+node:ekr.20210228141208.1: **  decorators (curses2)
 def frame_cmd(name: str) -> Callable:
     """Command decorator for the LeoFrame class."""
     return g.new_cmd_decorator(name, ['c', 'frame',])
@@ -880,13 +880,13 @@ def frame_cmd(name: str) -> Callable:
 def log_cmd(name: str) -> Callable:
     """Command decorator for the c.frame.log class."""
     return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
-#@+node:ekr.20170524123950.1: ** Gui classes
-#@+node:ekr.20171128051435.1: *3* class StringFindTabManager(cursesGui2.py)
+# @+node:ekr.20170524123950.1: ** Gui classes
+# @+node:ekr.20171128051435.1: *3* class StringFindTabManager(cursesGui2.py)
 class StringFindTabManager:
     """CursesGui.py: A string-based FindTabManager class."""
     # A complete rewrite of the FindTabManager in qt_frame.py.
-    #@+others
-    #@+node:ekr.20171128051435.2: *4*  sftm.ctor
+    # @+others
+    # @+node:ekr.20171128051435.2: *4*  sftm.ctor
     def __init__(self, c: Cmdr) -> None:
         """Ctor for the StringFindTabManager class."""
         self.c: Cmdr = c
@@ -918,7 +918,7 @@ class StringFindTabManager:
         self.replace_button: Wrapper = None
         self.replace_then_find_button: Wrapper = None
         self.replace_all_button: Wrapper = None
-    #@+node:ekr.20171128051435.3: *4* sftm.text getters/setters
+    # @+node:ekr.20171128051435.3: *4* sftm.text getters/setters
     def get_find_text(self) -> str:
         return g.toUnicode(self.find_findbox.text())
 
@@ -936,7 +936,7 @@ class StringFindTabManager:
         s = g.toUnicode(s)
         w.clear()
         w.insert(s)
-    #@+node:ekr.20171128051435.4: *4* sftm.*_focus
+    # @+node:ekr.20171128051435.4: *4* sftm.*_focus
     def clear_focus(self) -> None:
         pass
 
@@ -945,14 +945,14 @@ class StringFindTabManager:
 
     def set_entry_focus(self) -> None:
         pass
-    #@+node:ekr.20171128051435.5: *4* sftm.set_ignore_case
+    # @+node:ekr.20171128051435.5: *4* sftm.set_ignore_case
     def set_ignore_case(self, aBool: bool) -> None:
         """Set the ignore-case checkbox to the given value."""
         c = self.c
         c.findCommands.ignore_case = aBool
         w = self.check_box_ignore_case
         w.setChecked(aBool)
-    #@+node:ekr.20171128051435.6: *4* sftm.init_widgets
+    # @+node:ekr.20171128051435.6: *4* sftm.init_widgets
     def init_widgets(self) -> None:
         """
         Init widgets and ivars from c.config settings.
@@ -1018,8 +1018,8 @@ class StringFindTabManager:
         if not find.node_only and not find.suboutline_only:
             w = self.radio_button_entire_outline
             w.toggle()
-    #@+node:ekr.20171128051435.7: *4* sftm.set_radio_button
-    #@@nobeautify
+    # @+node:ekr.20171128051435.7: *4* sftm.set_radio_button
+    # @@nobeautify
 
     def set_radio_button(self, name: str) -> None:
         """Set the value of the radio buttons"""
@@ -1043,8 +1043,8 @@ class StringFindTabManager:
         if ivar:
             setattr(fc, ivar, True)
 
-    #@+node:ekr.20171128051435.8: *4* sftm.toggle_checkbox
-    #@@nobeautify
+    # @+node:ekr.20171128051435.8: *4* sftm.toggle_checkbox
+    # @@nobeautify
 
     def toggle_checkbox(self, checkbox_name: str) -> None:
         """Toggle the value of the checkbox whose name is given."""
@@ -1068,12 +1068,12 @@ class StringFindTabManager:
         setattr(fc, checkbox_name, not getattr(fc, checkbox_name))
         w.toggle() # Only toggles w's internal value.
         # g.trace(checkbox_name, getattr(fc, checkbox_name, None))
-    #@-others
-#@+node:edward.20170428174322.1: *3* class KeyEvent
+    # @-others
+# @+node:edward.20170428174322.1: *3* class KeyEvent
 class KeyEvent:
     """A gui-independent wrapper for gui events."""
-    #@+others
-    #@+node:edward.20170428174322.2: *4* KeyEvent.__init__
+    # @+others
+    # @+node:edward.20170428174322.2: *4* KeyEvent.__init__
     def __init__(
         self,
         c: Cmdr,
@@ -1101,11 +1101,11 @@ class KeyEvent:
         # Support for fastGotoNode plugin
         self.x_root: Position = x_root
         self.y_root: Position = y_root
-    #@+node:edward.20170428174322.3: *4* KeyEvent.__repr__
+    # @+node:edward.20170428174322.3: *4* KeyEvent.__repr__
     def __repr__(self) -> str:
         return 'KeyEvent: stroke: %s, char: %s, w: %s' % (
             repr(self.stroke), repr(self.char), repr(self.w))
-    #@+node:edward.20170428174322.4: *4* KeyEvent.get & __getitem__
+    # @+node:edward.20170428174322.4: *4* KeyEvent.get & __getitem__
     def get(self, attr: str) -> Any:
         """Compatibility with g.bunch: return an attr."""
         return getattr(self, attr, None)
@@ -1113,15 +1113,15 @@ class KeyEvent:
     def __getitem__(self, attr: str) -> Any:
         """Compatibility with g.bunch: return an attr."""
         return getattr(self, attr, None)
-    #@+node:edward.20170428174322.5: *4* KeyEvent.type
+    # @+node:edward.20170428174322.5: *4* KeyEvent.type
     def type(self) -> str:
         return 'KeyEvent'
-    #@-others
-#@+node:ekr.20170430114840.1: *3* class KeyHandler
+    # @-others
+# @+node:ekr.20170430114840.1: *3* class KeyHandler
 class KeyHandler:
 
-    #@+others
-    #@+node:ekr.20170430114930.1: *4* CKey.do_key & helpers
+    # @+others
+    # @+node:ekr.20170430114930.1: *4* CKey.do_key & helpers
     def do_key(self, ch_i: int) -> bool:
         """
         Handle a key event by calling k.masterKeyHandler.
@@ -1152,7 +1152,7 @@ class KeyHandler:
             return bool(shortcut)
         g.app.gui.show_label(c)
         return False
-    #@+node:ekr.20170430115131.4: *5* CKey.char_to_tk_name
+    # @+node:ekr.20170430115131.4: *5* CKey.char_to_tk_name
     tk_dict = {
         # Part 1: same as g.app.guiBindNamesDict
         "&": "ampersand",
@@ -1192,7 +1192,7 @@ class KeyHandler:
 
     def char_to_tk_name(self, ch: str) -> str:
         return self.tk_dict.get(ch, ch)
-    #@+node:ekr.20170430115131.2: *5* CKey.create_key_event
+    # @+node:ekr.20170430115131.2: *5* CKey.create_key_event
     def create_key_event(self, c: Cmdr, w: Wrapper, ch: str, binding: str) -> Event:
         trace = False
         # Last-minute adjustments...
@@ -1221,11 +1221,11 @@ class KeyHandler:
             binding=binding,
             w=w, x=0, y=0, x_root=0, y_root=0,
         )
-    #@+node:ekr.20170430115030.1: *5* CKey.is_key_event
+    # @+node:ekr.20170430115030.1: *5* CKey.is_key_event
     def is_key_event(self, ch_i: int) -> bool:
         # pylint: disable=no-member
         return ch_i not in (curses.KEY_MOUSE,)
-    #@+node:ekr.20170430115131.3: *5* CKey.to_key
+    # @+node:ekr.20170430115131.3: *5* CKey.to_key
     def to_key(self, i: int) -> tuple[str, str]:
         """Convert int i to a char and shortcut."""
         trace = False
@@ -1266,17 +1266,17 @@ class KeyHandler:
         if trace:
             g.trace('i: %s s: %s char: %r shortcut: %r' % (i, s, char, shortcut))
         return char, shortcut
-    #@-others
-#@+node:ekr.20170419094731.1: *3* class LeoCursesGui (leoGui.LeoGui)
+    # @-others
+# @+node:ekr.20170419094731.1: *3* class LeoCursesGui (leoGui.LeoGui)
 class LeoCursesGui(leoGui.LeoGui):
     """
     Leo's curses gui wrapper.
     This is g.app.gui, when --gui=curses.
     """
 
-    #@+others
-    #@+node:ekr.20171128041849.1: *4* CGui.Birth & death
-    #@+node:ekr.20170608112335.1: *5* CGui.__init__
+    # @+others
+    # @+node:ekr.20171128041849.1: *4* CGui.Birth & death
+    # @+node:ekr.20170608112335.1: *5* CGui.__init__
     def __init__(self) -> None:
         """Ctor for the CursesGui class."""
         super().__init__('curses')  # Init the base class.
@@ -1294,7 +1294,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.init_logger()
         self.top_form: Wrapper = None  # The top-level form. Set in createCursesTop.
         self.key_handler = KeyHandler()
-    #@+node:ekr.20170502083158.1: *5* CGui.createCursesTop & helpers
+    # @+node:ekr.20170502083158.1: *5* CGui.createCursesTop & helpers
     def createCursesTop(self) -> Wrapper:
         """Create the top-level curses Form."""
         trace = False and not g.unitTesting
@@ -1318,7 +1318,7 @@ class LeoCursesGui(leoGui.LeoGui):
         c.frame.tree.set_status_line(c.p)
         # self.focus_to_body(c)
         return form
-    #@+node:ekr.20170502084106.1: *6* CGui.createCursesBody
+    # @+node:ekr.20170502084106.1: *6* CGui.createCursesBody
     def createCursesBody(self, c: Cmdr, form: Wrapper) -> None:
         """
         Create the curses body widget in the given curses Form.
@@ -1364,7 +1364,7 @@ class LeoCursesGui(leoGui.LeoGui):
         w.leo_c = c
         w.leo_box = box
 
-    #@+node:ekr.20170502083613.1: *6* CGui.createCursesLog
+    # @+node:ekr.20170502083613.1: *6* CGui.createCursesLog
     def createCursesLog(self, c: Cmdr, form: Wrapper) -> None:
         """
         Create the curses log widget in the given curses Form.
@@ -1402,7 +1402,7 @@ class LeoCursesGui(leoGui.LeoGui):
         box.leo_wrapper = wrapper
         w.leo_wrapper = wrapper
         w.leo_box = box
-    #@+node:ekr.20170502084249.1: *6* CGui.createCursesMinibuffer
+    # @+node:ekr.20170502084249.1: *6* CGui.createCursesMinibuffer
     def createCursesMinibuffer(self, c: Cmdr, form: Wrapper) -> None:
         """Create the curses minibuffer widget in the given curses Form."""
         trace = False
@@ -1434,7 +1434,7 @@ class LeoCursesGui(leoGui.LeoGui):
         w.leo_c = c
         w.leo_wrapper = wrapper
 
-    #@+node:ekr.20171129193946.1: *6* CGui.createCursesStatusLine
+    # @+node:ekr.20171129193946.1: *6* CGui.createCursesStatusLine
     def createCursesStatusLine(self, c: Cmdr, form: Wrapper) -> None:
         """Create the curses minibuffer widget in the given curses Form."""
 
@@ -1462,7 +1462,7 @@ class LeoCursesGui(leoGui.LeoGui):
         box.leo_wrapper = wrapper
         w.leo_c = c
         w.leo_wrapper = wrapper
-    #@+node:ekr.20170502083754.1: *6* CGui.createCursesTree
+    # @+node:ekr.20170502083754.1: *6* CGui.createCursesTree
     def createCursesTree(self, c: Cmdr, form: Wrapper) -> None:
         """Create the curses tree widget in the given curses Form."""
 
@@ -1518,7 +1518,7 @@ class LeoCursesGui(leoGui.LeoGui):
         assert wrapper
         box.leo_wrapper = wrapper
         w.leo_wrapper = wrapper
-    #@+node:ekr.20171126191726.1: *6* CGui.monkeyPatch
+    # @+node:ekr.20171126191726.1: *6* CGui.monkeyPatch
     def monkeyPatch(self, c: Cmdr) -> None:
         """Monkey patch commands"""
         table = (
@@ -1529,24 +1529,24 @@ class LeoCursesGui(leoGui.LeoGui):
             c.k.overrideCommand(commandName, func)
         # A new ivar.
         c.inFindCommand = False
-    #@+node:ekr.20170419110052.1: *5* CGui.createLeoFrame
+    # @+node:ekr.20170419110052.1: *5* CGui.createLeoFrame
     def createLeoFrame(self, c: Cmdr, title: str) -> Wrapper:
         """
         Create a LeoFrame for the current gui.
         Called from Leo's core (c.initObjects).
         """
         return CoreFrame(c, title)
-    #@+node:ekr.20170502103338.1: *5* CGui.destroySelf
+    # @+node:ekr.20170502103338.1: *5* CGui.destroySelf
     def destroySelf(self) -> None:
         """
         Terminate the curses gui application.
         Leo's core calls this only if the user agrees to terminate the app.
         """
         sys.exit(0)
-    #@+node:ekr.20220618070256.1: *5* CGui.getFullVersion
+    # @+node:ekr.20220618070256.1: *5* CGui.getFullVersion
     def getFullVersion(self, c: Cmdr = None) -> str:
         return 'Leo Console Gui (npyscreen)'
-    #@+node:ekr.20170501032447.1: *5* CGui.init_logger
+    # @+node:ekr.20170501032447.1: *5* CGui.init_logger
     def init_logger(self) -> None:
 
         self.rootLogger = logging.getLogger('')
@@ -1561,7 +1561,7 @@ class LeoCursesGui(leoGui.LeoGui):
         g.es = es
         g.pr = pr  # Most ouput goes through here, including g.es_exception.
         g.trace = trace
-    #@+node:ekr.20170419140914.1: *5* CGui.runMainLoop
+    # @+node:ekr.20170419140914.1: *5* CGui.runMainLoop
     def runMainLoop(self) -> None:
         """The curses gui main loop."""
         # pylint: disable=no-member
@@ -1580,7 +1580,7 @@ class LeoCursesGui(leoGui.LeoGui):
             curses.endwin()
             if 'shutdown' in g.app.debug:
                 g.pr('Exiting Leo...')
-    #@+node:ekr.20170502020354.1: *5* CGui.run
+    # @+node:ekr.20170502020354.1: *5* CGui.run
     def run(self) -> None:
         """
         Create and run the top-level curses form.
@@ -1588,9 +1588,9 @@ class LeoCursesGui(leoGui.LeoGui):
         self.top_form = self.createCursesTop()
         # g.trace('(CGui) top_form', self.top_form)
         self.top_form.edit()
-    #@+node:ekr.20170504112655.1: *4* CGui.Clipboard
+    # @+node:ekr.20170504112655.1: *4* CGui.Clipboard
     # Yes, using Tkinter seems to be the standard way.
-    #@+node:ekr.20170504112744.3: *5* CGui.getTextFromClipboard
+    # @+node:ekr.20170504112744.3: *5* CGui.getTextFromClipboard
     def getTextFromClipboard(self) -> str:
         """Get a unicode string from the clipboard."""
         if not Tk:
@@ -1603,7 +1603,7 @@ class LeoCursesGui(leoGui.LeoGui):
             s = ''
         root.destroy()
         return g.toUnicode(s)
-    #@+node:ekr.20170504112744.2: *5* CGui.replaceClipboardWith
+    # @+node:ekr.20170504112744.2: *5* CGui.replaceClipboardWith
     def replaceClipboardWith(self, s: str) -> None:
         """Replace the clipboard with the string s."""
         if not Tk:
@@ -1616,19 +1616,19 @@ class LeoCursesGui(leoGui.LeoGui):
 
     # Do *not* define setClipboardSelection.
     # setClipboardSelection = replaceClipboardWith
-    #@+node:ekr.20170502021145.1: *4* CGui.dialogs
-    #@+node:ekr.20170712145632.2: *5* CGui.createFindDialog
+    # @+node:ekr.20170502021145.1: *4* CGui.dialogs
+    # @+node:ekr.20170712145632.2: *5* CGui.createFindDialog
     def createFindDialog(self, c: Cmdr) -> None:
         """Create and init a non-modal Find dialog."""
         g.trace('not implemented')
-    #@+node:ekr.20171126182120.1: *5* CGui.dialog_message
+    # @+node:ekr.20171126182120.1: *5* CGui.dialog_message
     def dialog_message(self, message: str) -> None:
         """No longer used: a placeholder for dialogs."""
         if not g.unitTesting:
             for s in g.splitLines(message):
                 g.pr(s.rstrip())
 
-    #@+node:ekr.20171126182120.2: *5* CGui.runAboutLeoDialog
+    # @+node:ekr.20171126182120.2: *5* CGui.runAboutLeoDialog
     def runAboutLeoDialog(self, c: Cmdr, version: str, theCopyright: str, url: str, email: str) -> None:
         """Create and run Leo's About Leo dialog."""
         if not g.unitTesting:
@@ -1636,7 +1636,7 @@ class LeoCursesGui(leoGui.LeoGui):
             # form_color='STANDOUT', wrap=True, wide=False, editw=0)
             utilNotify.notify_confirm(message, title="About Leo")
 
-    #@+node:ekr.20171126182120.3: *5* CGui.runAskLeoIDDialog
+    # @+node:ekr.20171126182120.3: *5* CGui.runAskLeoIDDialog
     def runAskLeoIDDialog(self) -> None:
         """Create and run a dialog to get g.app.LeoID."""
         if not g.unitTesting:
@@ -1653,7 +1653,7 @@ class LeoCursesGui(leoGui.LeoGui):
             # "and must be at least 3 characters in length."
             sys.exit(0)
 
-    #@+node:ekr.20171126182120.5: *5* CGui.runAskOkCancelNumberDialog
+    # @+node:ekr.20171126182120.5: *5* CGui.runAskOkCancelNumberDialog
     def runAskOkCancelNumberDialog(self,
         c: Cmdr,
         title: str,
@@ -1670,7 +1670,7 @@ class LeoCursesGui(leoGui.LeoGui):
             self.in_dialog = False
             return val
         return 'no'
-    #@+node:ekr.20171126182120.6: *5* CGui.runAskOkCancelStringDialog
+    # @+node:ekr.20171126182120.6: *5* CGui.runAskOkCancelStringDialog
     def runAskOkCancelStringDialog(
         self,
         c: Cmdr,
@@ -1688,7 +1688,7 @@ class LeoCursesGui(leoGui.LeoGui):
         val = utilNotify.notify_ok_cancel(message=message, title=title)  # val is True/False
         self.in_dialog = False
         return 'yes' if val else 'no'
-    #@+node:ekr.20171126182120.4: *5* CGui.runAskOkDialog
+    # @+node:ekr.20171126182120.4: *5* CGui.runAskOkDialog
     def runAskOkDialog(
         self,
         c: Cmdr,
@@ -1706,7 +1706,7 @@ class LeoCursesGui(leoGui.LeoGui):
             return val
         return False
 
-    #@+node:ekr.20171126182120.8: *5* CGui.runAskYesNoCancelDialog
+    # @+node:ekr.20171126182120.8: *5* CGui.runAskYesNoCancelDialog
     def runAskYesNoCancelDialog(
         self,
         c: Cmdr,
@@ -1727,7 +1727,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.in_dialog = False
         return 'yes' if val else 'no'
 
-    #@+node:ekr.20171126182120.7: *5* CGui.runAskYesNoDialog
+    # @+node:ekr.20171126182120.7: *5* CGui.runAskYesNoDialog
     def runAskYesNoDialog(
         self,
         c: Cmdr,
@@ -1744,7 +1744,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.in_dialog = False
         return 'yes' if val else 'no'
 
-    #@+node:ekr.20171126182120.9: *5* CGui.runOpenFileDialog
+    # @+node:ekr.20171126182120.9: *5* CGui.runOpenFileDialog
     def runOpenFileDialog(self,
         c: Cmdr,
         title: str,
@@ -1757,7 +1757,7 @@ class LeoCursesGui(leoGui.LeoGui):
             g.trace('not ready yet', title)
         return ''
 
-    #@+node:ekr.20171126182120.10: *5* CGui.runPropertiesDialog
+    # @+node:ekr.20171126182120.10: *5* CGui.runPropertiesDialog
     def runPropertiesDialog(
         self,
         title: str = 'Properties',
@@ -1769,7 +1769,7 @@ class LeoCursesGui(leoGui.LeoGui):
         if not g.unitTesting:
             g.trace('not ready yet', title)
 
-    #@+node:ekr.20171126182120.11: *5* CGui.runSaveFileDialog
+    # @+node:ekr.20171126182120.11: *5* CGui.runSaveFileDialog
     def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: list[str], defaultextension: str) -> str:
         if g.unitTesting:
             return None
@@ -1787,7 +1787,7 @@ class LeoCursesGui(leoGui.LeoGui):
         if s:
             c.last_dir = g.os_path_dirname(s)
         return s
-    #@+node:ekr.20170430114709.1: *4* CGui.do_key
+    # @+node:ekr.20170430114709.1: *4* CGui.do_key
     def do_key(self, ch_i: int) -> bool:
 
         # Ignore all printable characters.
@@ -1795,7 +1795,7 @@ class LeoCursesGui(leoGui.LeoGui):
             g.trace('ignoring', chr(ch_i))
             return True
         return self.key_handler.do_key(ch_i)
-    #@+node:ekr.20170526051256.1: *4* CGui.dump_keys
+    # @+node:ekr.20170526051256.1: *4* CGui.dump_keys
     def dump_keys(self) -> None:
         """Show all defined curses.KEY_ constants."""
         if 0:
@@ -1804,7 +1804,7 @@ class LeoCursesGui(leoGui.LeoGui):
                     if isinstance(getattr(curses, z), int)]
             g.trace()
             g.printList(sorted(aList))
-    #@+node:ekr.20170522005855.1: *4* CGui.event_generate
+    # @+node:ekr.20170522005855.1: *4* CGui.event_generate
     def event_generate(self, c: Cmdr, char: str, shortcut: str, w: Wrapper) -> None:
 
         k = c.k
@@ -1818,20 +1818,20 @@ class LeoCursesGui(leoGui.LeoGui):
         k.masterKeyHandler(event)
         g.app.gui.show_label(c)
         c.outerUpdate()
-    #@+node:ekr.20171128041920.1: *4* CGui.Focus
-    #@+node:ekr.20171127171659.1: *5* CGui.focus_to_body
+    # @+node:ekr.20171128041920.1: *4* CGui.Focus
+    # @+node:ekr.20171127171659.1: *5* CGui.focus_to_body
     def focus_to_body(self, c: Cmdr) -> None:
         """Put focus in the body pane."""
         self.set_focus(c, c.frame.body)
-    #@+node:ekr.20171202092838.1: *5* CGui.focus_to_head
+    # @+node:ekr.20171202092838.1: *5* CGui.focus_to_head
     def focus_to_head(self, c: Cmdr, p: Position) -> None:
         """Put focus in the headline."""
         self.set_focus(c, c.frame.tree)
-    #@+node:ekr.20171127162649.1: *5* CGui.focus_to_minibuffer
+    # @+node:ekr.20171127162649.1: *5* CGui.focus_to_minibuffer
     def focus_to_minibuffer(self, c: Cmdr) -> None:
         """Put focus in minibuffer text widget."""
         self.set_focus(c, c.frame.miniBufferWidget)
-    #@+node:ekr.20170502101347.1: *5* CGui.get_focus
+    # @+node:ekr.20170502101347.1: *5* CGui.get_focus
     def get_focus(self, c: Cmdr = None, raw: bool = False, at_idle: bool = False) -> Optional[Wrapper]:
         """
         Return the Leo wrapper for the npyscreen widget that is being edited.
@@ -1852,7 +1852,7 @@ class LeoCursesGui(leoGui.LeoGui):
         # At present, HeadWrappers have no widgets.
         g.trace('(CursesGui) ===== no leo_wrapper', widget)
         return None
-    #@+node:ekr.20171128041805.1: *5* CGui.set_focus & helpers
+    # @+node:ekr.20171128041805.1: *5* CGui.set_focus & helpers
     set_focus_fail: list[Wrapper] = []  # List of widgets
 
     def set_focus(self, c: Cmdr, w: Wrapper) -> None:
@@ -1862,7 +1862,7 @@ class LeoCursesGui(leoGui.LeoGui):
             self.NEW_set_focus(c, w)
         else:
             self.OLD_set_focus(c, w)
-    #@+node:ekr.20171204040620.1: *6* CGui.NEW_set_focus & helper
+    # @+node:ekr.20171204040620.1: *6* CGui.NEW_set_focus & helper
     def NEW_set_focus(self, c: Cmdr, w: Wrapper) -> None:
         """
         Given a Leo wrapper w, set focus to the underlying npyscreen widget.
@@ -1894,7 +1894,7 @@ class LeoCursesGui(leoGui.LeoGui):
         if trace and widget not in self.set_focus_fail:
             self.set_focus_fail.append(widget)
             g.trace('Fail\n%r\n%r' % (widget, w))
-    #@+node:ekr.20171204040620.2: *7* CGui.switch_editing
+    # @+node:ekr.20171204040620.2: *7* CGui.switch_editing
     def switch_editing(self, i: int, w: Wrapper) -> None:
         """Clear editing for *all* widgets and set form.editw to i"""
         trace = 'focus' in g.app.debug
@@ -1951,7 +1951,7 @@ class LeoCursesGui(leoGui.LeoGui):
         w.display()
         form.display()
         w.edit()  # Does not return
-    #@+node:ekr.20171204100910.1: *6* CGui.OLD_set_focus
+    # @+node:ekr.20171204100910.1: *6* CGui.OLD_set_focus
     def OLD_set_focus(self, c: Cmdr, w: Wrapper) -> None:
         """Given a Leo wrapper, set focus to the underlying npyscreen widget."""
         trace = 'focus' in g.app.debug
@@ -2006,16 +2006,16 @@ class LeoCursesGui(leoGui.LeoGui):
         if trace and widget not in self.set_focus_fail:
             self.set_focus_fail.append(widget)
             g.trace('Fail\n%r\n%r' % (widget, w))
-    #@+node:ekr.20170514060742.1: *4* CGui.Fonts
+    # @+node:ekr.20170514060742.1: *4* CGui.Fonts
     def getFontFromParams(self,
         family: str, size: str, slant: str, weight: str, defaultSize: int = 12, tag: str = '',
     ) -> None:
         return None
-    #@+node:ekr.20170504052119.1: *4* CGui.isTextWrapper
+    # @+node:ekr.20170504052119.1: *4* CGui.isTextWrapper
     def isTextWrapper(self, w: Wrapper) -> bool:
         """Return True if w is a Text widget suitable for text-oriented commands."""
         return bool(w and getattr(w, 'supportsHighLevelInterface', None))
-    #@+node:ekr.20170612063102.1: *4* CGui.put_help
+    # @+node:ekr.20170612063102.1: *4* CGui.put_help
     def put_help(self, c: Cmdr, s: str, short_title: str) -> None:
         """Put a help message in a dialog."""
         if not g.unitTesting:
@@ -2023,7 +2023,7 @@ class LeoCursesGui(leoGui.LeoGui):
                 message=s,
                 title=short_title or 'Help',
             )
-    #@+node:ekr.20171130195357.1: *4* CGui.redraw_in_context
+    # @+node:ekr.20171130195357.1: *4* CGui.redraw_in_context
     def redraw_in_context(self, c: Cmdr) -> None:
         """Redraw p in context."""
         w = c.frame.tree.widget
@@ -2033,7 +2033,7 @@ class LeoCursesGui(leoGui.LeoGui):
         w.select_leo_node(c.p)
         w.update(forceInit=True)
         g.app.gui.curses_form.display()
-    #@+node:ekr.20171130181722.1: *4* CGui.repeatComplexCommand (commandName, event)
+    # @+node:ekr.20171130181722.1: *4* CGui.repeatComplexCommand (commandName, event)
     def repeatComplexCommand(self, c: Cmdr) -> None:
         """An override of the 'repeat-complex-command' command."""
         trace = False and not g.unitTesting
@@ -2051,12 +2051,12 @@ class LeoCursesGui(leoGui.LeoGui):
             )
         else:
             g.warning('no previous command')
-    #@+node:ekr.20171201084211.1: *4* CGui.set_minibuffer_label
+    # @+node:ekr.20171201084211.1: *4* CGui.set_minibuffer_label
     def set_minibuffer_label(self, c: Cmdr, s: str) -> None:
         """Remember the minibuffer label."""
         self.minibuffer_label = s
         self.show_label(c)
-    #@+node:ekr.20171202092230.1: *4* CGui.show_find_success
+    # @+node:ekr.20171202092230.1: *4* CGui.show_find_success
     def show_find_success(self, c: Cmdr, in_headline: bool, insert: int, p: Position) -> None:
         """Handle a successful find match."""
         trace = False and not g.unitTesting
@@ -2072,7 +2072,7 @@ class LeoCursesGui(leoGui.LeoGui):
                 g.trace('BODY ROW', row, p.h)
             w.cursor_line = row
             self.focus_to_body(c)  # Does not return.
-    #@+node:ekr.20171201081700.1: *4* CGui.show_label
+    # @+node:ekr.20171201081700.1: *4* CGui.show_label
     def show_label(self, c: Cmdr) -> None:
         """
         Set the minibuffer's label the value set by set_minibuffer_label.
@@ -2091,7 +2091,7 @@ class LeoCursesGui(leoGui.LeoGui):
         box.update()
         g.app.gui.curses_form.display()
 
-    #@+node:ekr.20171126192144.1: *4* CGui.startSearch
+    # @+node:ekr.20171126192144.1: *4* CGui.startSearch
     def startSearch(self, event: Event) -> None:
         c = event.get('c')
         if not c:
@@ -2117,11 +2117,11 @@ class LeoCursesGui(leoGui.LeoGui):
         options = fc.computeFindOptionsInStatusArea()
         c.frame.statusLine.put(options)
         self.focus_to_minibuffer(c)  # Does not return!
-    #@-others
-#@+node:ekr.20170524124010.1: ** Leo widget classes
+    # @-others
+# @+node:ekr.20170524124010.1: ** Leo widget classes
 # Most are subclasses Leo's base gui classes.
 # All classes have a "c" ivar.
-#@+node:ekr.20170501024433.1: *3* class CoreBody (leoFrame.LeoBody)
+# @+node:ekr.20170501024433.1: *3* class CoreBody (leoFrame.LeoBody)
 class CoreBody(leoFrame.LeoBody):
     """
     A class that represents curses body pane.
@@ -2136,12 +2136,12 @@ class CoreBody(leoFrame.LeoBody):
         self.colorizer: Wrapper = leoFrame.NullColorizer(c)
         self.widget: Wrapper = None
         self.wrapper: Wrapper = None  # Set in createCursesBody.
-#@+node:ekr.20170419105852.1: *3* class CoreFrame (leoFrame.LeoFrame)
+# @+node:ekr.20170419105852.1: *3* class CoreFrame (leoFrame.LeoFrame)
 class CoreFrame(leoFrame.LeoFrame):
     """The LeoFrame when --gui=curses is in effect."""
 
-    #@+others
-    #@+node:ekr.20170501155347.1: *4* CFrame.birth
+    # @+others
+    # @+node:ekr.20170501155347.1: *4* CFrame.birth
     def __init__(self, c: Cmdr, title: str) -> None:
 
         leoFrame.LeoFrame.instances += 1  # Increment the class var.
@@ -2161,7 +2161,7 @@ class CoreFrame(leoFrame.LeoFrame):
         self.statusLine: Wrapper = g.NullObject()  # For unit tests.
         assert self.tree is None, self.tree
         self.tree = CoreTree(c)
-    #@+node:ekr.20170420163932.1: *5* CFrame.finishCreate
+    # @+node:ekr.20170420163932.1: *5* CFrame.finishCreate
     def finishCreate(self) -> None:
 
         c = self.c
@@ -2171,7 +2171,7 @@ class CoreFrame(leoFrame.LeoFrame):
         self.ftm = ftm
         self.createFindTab()
         self.createFirstTreeNode()  # Call the base-class method.
-    #@+node:ekr.20171128052121.1: *5* CFrame.createFindTab & helpers
+    # @+node:ekr.20171128052121.1: *5* CFrame.createFindTab & helpers
     def createFindTab(self) -> None:
         """Create a Find Tab in the given parent."""
         # Like DynamicWindow.createFindTab.
@@ -2183,7 +2183,7 @@ class CoreFrame(leoFrame.LeoFrame):
         # Official ivars (in addition to checkbox ivars).
         self.leo_find_widget = None
         ftm.init_widgets()
-    #@+node:ekr.20171128052121.4: *6* CFrame.create_find_findbox
+    # @+node:ekr.20171128052121.4: *6* CFrame.create_find_findbox
     def create_find_findbox(self) -> None:
         """Create the Find: label and text area."""
         c = self.c
@@ -2192,7 +2192,7 @@ class CoreFrame(leoFrame.LeoFrame):
         assert ftm
         assert ftm.find_findbox is None
         ftm.find_findbox = self.createLineEdit('findPattern', disabled=fc.expert_mode)
-    #@+node:ekr.20171128052121.5: *6* CFrame.create_find_replacebox
+    # @+node:ekr.20171128052121.5: *6* CFrame.create_find_replacebox
     def create_find_replacebox(self) -> None:
         """Create the Replace: label and text area."""
         c = self.c
@@ -2201,7 +2201,7 @@ class CoreFrame(leoFrame.LeoFrame):
         assert ftm
         assert ftm.find_replacebox is None
         ftm.find_replacebox = self.createLineEdit('findChange', disabled=fc.expert_mode)
-    #@+node:ekr.20171128052121.6: *6* CFrame.create_find_checkboxes
+    # @+node:ekr.20171128052121.6: *6* CFrame.create_find_checkboxes
     def create_find_checkboxes(self) -> None:
         """Create check boxes and radio buttons."""
         # c = self.c
@@ -2240,19 +2240,19 @@ class CoreFrame(leoFrame.LeoFrame):
             w = func(name, label)
             assert getattr(ftm, name) is None
             setattr(ftm, name, w)
-    #@+node:ekr.20171128053531.3: *6* CFrame.createCheckBox
+    # @+node:ekr.20171128053531.3: *6* CFrame.createCheckBox
     def createCheckBox(self, name: str, label: str) -> Wrapper:
 
         return leoGui.StringCheckBox(name, label)
-    #@+node:ekr.20171128053531.8: *6* CFrame.createLineEdit
+    # @+node:ekr.20171128053531.8: *6* CFrame.createLineEdit
     def createLineEdit(self, name: str, disabled: bool = True) -> Wrapper:
 
         return leoGui.StringLineEdit(name, disabled)
-    #@+node:ekr.20171128053531.9: *6* CFrame.createRadioButton
+    # @+node:ekr.20171128053531.9: *6* CFrame.createRadioButton
     def createRadioButton(self, name: str, label: str) -> Wrapper:
 
         return leoGui.StringRadioButton(name, label)
-    #@+node:ekr.20170501161029.1: *4* CFrame.do nothings
+    # @+node:ekr.20170501161029.1: *4* CFrame.do nothings
     def bringToFront(self) -> None:
         pass
 
@@ -2307,11 +2307,11 @@ class CoreFrame(leoFrame.LeoFrame):
 
     def update(self, *args: Any, **keys: Any) -> None:
         pass
-    #@+node:ekr.20170524144717.1: *4* CFrame.get_focus
+    # @+node:ekr.20170524144717.1: *4* CFrame.get_focus
     def getFocus(self) -> None:
 
         return g.app.gui.get_focus()
-    #@+node:ekr.20170522015906.1: *4* CFrame.pasteText (cursesGui2)
+    # @+node:ekr.20170522015906.1: *4* CFrame.pasteText (cursesGui2)
     @frame_cmd('paste-text')
     def pasteText(self, event: Event = None, middleButton: bool = False) -> None:
         """
@@ -2348,16 +2348,16 @@ class CoreFrame(leoFrame.LeoFrame):
             c.frame.tree.onHeadChanged(c.p, s=w.getAllText(), undoType='Paste')
 
     OnPasteFromMenu = pasteText
-    #@-others
-#@+node:ekr.20170419143731.1: *3* class CoreLog (leoFrame.LeoLog)
+    # @-others
+# @+node:ekr.20170419143731.1: *3* class CoreLog (leoFrame.LeoLog)
 class CoreLog(leoFrame.LeoLog):
     """
     A class that represents curses log pane.
     This is c.frame.log.
     """
 
-    #@+others
-    #@+node:ekr.20170419143731.4: *4* CLog.__init__
+    # @+others
+    # @+node:ekr.20170419143731.4: *4* CLog.__init__
     def __init__(self, c: Cmdr) -> None:
         """Ctor for CLog class."""
         super().__init__(frame=None, parentFrame=None)
@@ -2369,30 +2369,30 @@ class CoreLog(leoFrame.LeoLog):
         self.contentsDict: dict[str, Wrapper] = {}  # Keys are tab names.  Values are widgets.
         self.logDict: dict[str, Wrapper] = {}  # Keys are tab names.  Values are the widgets.
         self.tabWidget: Wrapper = None
-    #@+node:ekr.20170419143731.7: *4* CLog.clearLog
+    # @+node:ekr.20170419143731.7: *4* CLog.clearLog
     @log_cmd('clear-log')
     def clearLog(self, event: Event = None) -> None:
         """Clear the log pane."""
-    #@+node:ekr.20170420035717.1: *4* CLog.enable/disable
+    # @+node:ekr.20170420035717.1: *4* CLog.enable/disable
     def disable(self) -> None:
         self.enabled = False
 
     def enable(self, enabled: bool = True) -> None:
         self.enabled = enabled
-    #@+node:ekr.20170420041119.1: *4* CLog.finishCreate
+    # @+node:ekr.20170420041119.1: *4* CLog.finishCreate
     def finishCreate(self) -> None:
         """CoreLog.finishCreate."""
 
-    #@+node:ekr.20170513183826.1: *4* CLog.isLogWidget
+    # @+node:ekr.20170513183826.1: *4* CLog.isLogWidget
     def isLogWidget(self, w: Wrapper) -> bool:
         return w == self or w in list(self.contentsDict.values())
-    #@+node:ekr.20170513184115.1: *4* CLog.orderedTabNames
+    # @+node:ekr.20170513184115.1: *4* CLog.orderedTabNames
     def orderedTabNames(self, LeoLog: Wrapper = None) -> list[str]:  # Unused: LeoLog
         """Return a list of tab names in the order in which they appear in the QTabbedWidget."""
         return []
         # w = self.tabWidget
         # return [w.tabText(i) for i in range(w.count())]
-    #@+node:ekr.20170419143731.15: *4* CLog.put
+    # @+node:ekr.20170419143731.15: *4* CLog.put
     # Signature is different.
     def put(self, s: str, color: str = None, tabName: str = 'Log', from_redirect: bool = False) -> None:  # type:ignore
         """All output to the log stream eventually comes here."""
@@ -2409,22 +2409,22 @@ class CoreLog(leoFrame.LeoLog):
         w.cursor_line += len(lines)
         w.start_display_at += len(lines)
         w.update()
-    #@+node:ekr.20170419143731.16: *4* CLog.putnl
+    # @+node:ekr.20170419143731.16: *4* CLog.putnl
     def putnl(self, tabName: str = 'Log') -> None:
         """Put a newline to the Qt log."""
         # This is not called normally.
         # print('CLog.put: %s' % g.callers())
         if g.app.quitting:
             return
-    #@-others
-#@+node:ekr.20170419111515.1: *3* class CoreMenu (leoMenu.LeoMenu)
+    # @-others
+# @+node:ekr.20170419111515.1: *3* class CoreMenu (leoMenu.LeoMenu)
 class CoreMenu(leoMenu.LeoMenu):
 
     def __init__(self, c: Cmdr) -> None:
         dummy_frame = g.Bunch(c=c)
         super().__init__(dummy_frame)
         self.c = c
-#@+node:ekr.20170501024424.1: *3* class CoreTree (leoFrame.LeoTree)
+# @+node:ekr.20170501024424.1: *3* class CoreTree (leoFrame.LeoTree)
 class CoreTree(leoFrame.LeoTree):
     """
     A class that represents curses tree pane.
@@ -2432,8 +2432,8 @@ class CoreTree(leoFrame.LeoTree):
     This is the c.frame.tree instance.
     """
 
-    #@+others
-    #@+node:ekr.20170511111242.1: *4*  CTree.ctor
+    # @+others
+    # @+node:ekr.20170511111242.1: *4*  CTree.ctor
     class DummyFrame:
         def __init__(self, c: Cmdr) -> None:
             self.c = c
@@ -2452,8 +2452,8 @@ class CoreTree(leoFrame.LeoTree):
         self.expanding = False
         self.redrawing = False
         self.selecting = False
-    #@+node:ekr.20170511094217.1: *4* CTree.Drawing
-    #@+node:ekr.20170511094217.3: *5* CTree.redraw
+    # @+node:ekr.20170511094217.1: *4* CTree.Drawing
+    # @+node:ekr.20170511094217.3: *5* CTree.redraw
     def redraw(self, p: Position = None) -> None:
         """
         Redraw all visible nodes of the tree.
@@ -2472,7 +2472,7 @@ class CoreTree(leoFrame.LeoTree):
     full_redraw = redraw
     redraw_now = redraw
     repaint = redraw
-    #@+node:ekr.20170511100356.1: *5* CTree.redraw_after...
+    # @+node:ekr.20170511100356.1: *5* CTree.redraw_after...
     def redraw_after_contract(self, p: Position = None) -> None:
         self.redraw(p)
 
@@ -2493,12 +2493,12 @@ class CoreTree(leoFrame.LeoTree):
         finally:
             self.selecting = oldSelecting
         # Do *not* call redraw_after_select here!
-    #@+node:ekr.20170511104032.1: *4* CTree.error
+    # @+node:ekr.20170511104032.1: *4* CTree.error
     def error(self, s: str) -> None:
         if not g.unitTesting:
             g.trace('LeoQtTree Error: %s' % (s), g.callers())
-    #@+node:ekr.20170511104533.1: *4* CTree.Event handlers
-    #@+node:ekr.20170511104533.10: *5* CTree.busy
+    # @+node:ekr.20170511104533.1: *4* CTree.Event handlers
+    # @+node:ekr.20170511104533.10: *5* CTree.busy
     def busy(self) -> str:
         """Return True (actually, a debugging string)
         if any lockout is set."""
@@ -2508,7 +2508,7 @@ class CoreTree(leoFrame.LeoTree):
         if kinds and trace:
             g.trace(kinds)
         return kinds  # Return the string for debugging
-    #@+node:ekr.20170511104533.12: *5* CTree.onHeadChanged (cursesGui2)
+    # @+node:ekr.20170511104533.12: *5* CTree.onHeadChanged (cursesGui2)
     # Tricky code: do not change without careful thought and testing.
 
     def onHeadChanged(self, p: Position, s: str = None, undoType: str = 'Typing') -> None:  # type:ignore
@@ -2531,8 +2531,8 @@ class CoreTree(leoFrame.LeoTree):
         if s is None:
             s = w.getAllText()
         # if trace: g.trace('CoreTree: %r ==> %r' % (p and p.h, s))
-        #@+<< truncate s if it has multiple lines >>
-        #@+node:ekr.20170511104533.13: *6* << truncate s if it has multiple lines >>
+        # @+<< truncate s if it has multiple lines >>
+        # @+node:ekr.20170511104533.13: *6* << truncate s if it has multiple lines >>
         # Remove trailing newlines before warning of truncation.
         while s and s[-1] == '\n':
             s = s[:-1]
@@ -2547,7 +2547,7 @@ class CoreTree(leoFrame.LeoTree):
             s = s[:limit]
             # if s != oldHead:
                 # g.warning("truncating headline to", limit, "characters")
-        #@-<< truncate s if it has multiple lines >>
+        # @-<< truncate s if it has multiple lines >>
         # Make the change official, but undo to the *old* revert point.
         changed = s != p.h
         if not changed:
@@ -2572,12 +2572,12 @@ class CoreTree(leoFrame.LeoTree):
         #    c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
         g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
-    #@+node:ekr.20170511104121.1: *4* CTree.Scroll bars
-    #@+node:ekr.20170511104121.2: *5* Ctree.getScroll
+    # @+node:ekr.20170511104121.1: *4* CTree.Scroll bars
+    # @+node:ekr.20170511104121.2: *5* Ctree.getScroll
     def getScroll(self) -> tuple[int, int]:
         """Return the hPos,vPos for the tree's scrollbars."""
         return 0, 0
-    #@+node:ekr.20170511104121.4: *5* Ctree.setH/VScroll
+    # @+node:ekr.20170511104121.4: *5* Ctree.setH/VScroll
     def setHScroll(self, hPos: int) -> None:
         pass
         # w = self.widget
@@ -2589,16 +2589,16 @@ class CoreTree(leoFrame.LeoTree):
         # w = self.widget
         # vScroll = w.verticalScrollBar()
         # vScroll.setValue(vPos)
-    #@+node:ekr.20170511105355.1: *4* CTree.Selecting & editing
-    #@+node:ekr.20170511105355.4: *5* CTree.edit_widget
+    # @+node:ekr.20170511105355.1: *4* CTree.Selecting & editing
+    # @+node:ekr.20170511105355.4: *5* CTree.edit_widget
     def edit_widget(self, p: Position) -> Wrapper:
         """Returns the edit widget for position p."""
         return HeadWrapper(c=self.c, name='head', p=p)
-    #@+node:ekr.20170511095353.1: *5* CTree.editLabel (cursesGui2) (not used)
+    # @+node:ekr.20170511095353.1: *5* CTree.editLabel (cursesGui2) (not used)
     def editLabel(self, p: Position, selectAll: bool = False, selection: tuple = None) -> tuple[None, None]:
         """Start editing p's headline."""
         return None, None
-    #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel (cursesGui2)
+    # @+node:ekr.20170511105355.7: *5* CTree.endEditLabel (cursesGui2)
     def endEditLabel(self) -> None:
         """Override LeoTree.endEditLabel.
         End editing of the presently-selected headline.
@@ -2606,12 +2606,12 @@ class CoreTree(leoFrame.LeoTree):
         c = self.c
         p = c.currentPosition()
         self.onHeadChanged(p)
-    #@+node:ekr.20170511105355.8: *5* CTree.getSelectedPositions (called from Leo's core)
+    # @+node:ekr.20170511105355.8: *5* CTree.getSelectedPositions (called from Leo's core)
     def getSelectedPositions(self) -> list[Position]:
         """This can be called from Leo's core."""
         # Not called from unit tests.
         return [self.c.p]
-    #@+node:ekr.20170511105355.9: *5* CTree.setHeadline
+    # @+node:ekr.20170511105355.9: *5* CTree.setHeadline
     def setHeadline(self, p: Position, s: str) -> None:
         """Force the actual text of the headline widget to p.h."""
         trace = False and not g.unitTesting
@@ -2627,7 +2627,7 @@ class CoreTree(leoFrame.LeoTree):
         e.setAllText(s)
         if trace:
             g.trace(e)
-    #@+node:ekr.20170523115818.1: *5* CTree.set_body_text_after_select
+    # @+node:ekr.20170523115818.1: *5* CTree.set_body_text_after_select
     def set_body_text_after_select(self, p: Position, old_p: Position) -> None:
         """Set the text after selecting a node."""
         c = self.c
@@ -2642,8 +2642,8 @@ class CoreTree(leoFrame.LeoTree):
         widget.update()
         # Now done after c.p has been changed.
         # p.restoreCursorAndScroll()
-    #@-others
-#@+node:ekr.20171129200050.1: *3* class CoreStatusLine
+    # @-others
+# @+node:ekr.20171129200050.1: *3* class CoreStatusLine
 class CoreStatusLine:
     """A do-nothing status line."""
 
@@ -2659,9 +2659,9 @@ class CoreStatusLine:
         c.frame.statusLabel = None
         c.frame.statusText = None
 
-    #@+others
-    #@-others
-#@+node:ekr.20170502093200.1: *3* class TopFrame
+    # @+others
+    # @-others
+# @+node:ekr.20170502093200.1: *3* class TopFrame
 class TopFrame:
     """A representation of c.frame.top."""
 
@@ -2677,10 +2677,10 @@ class TopFrame:
 
     def finishCreateLogPane(self, *args: Any, **kwargs: Any) -> None:
         pass
-#@+node:ekr.20170524124449.1: ** Npyscreen classes
+# @+node:ekr.20170524124449.1: ** Npyscreen classes
 # These are subclasses of npyscreen base classes.
 # These classes have "leo_c" ivars.
-#@+node:ekr.20170420054211.1: *3* class LeoApp (npyscreen.NPSApp)
+# @+node:ekr.20170420054211.1: *3* class LeoApp (npyscreen.NPSApp)
 class LeoApp(npyscreen.NPSApp):
     """
     The *anonymous* npyscreen application object, created from
@@ -2697,7 +2697,7 @@ class LeoApp(npyscreen.NPSApp):
         Create and start Leo's singleton npyscreen window.
         """
         g.app.gui.run()
-#@+node:ekr.20170526054750.1: *3* class LeoBody (npyscreen.MultiLineEditable)
+# @+node:ekr.20170526054750.1: *3* class LeoBody (npyscreen.MultiLineEditable)
 class LeoBody(npyscreen.MultiLineEditable):
 
     continuation_line = "- more -"  # value of contination line.
@@ -2714,9 +2714,9 @@ class LeoBody(npyscreen.MultiLineEditable):
         self.set_handlers()
         # createCursesBody  sets the leo_box and leo_c ivars.
 
-    #@+others
-    #@+node:ekr.20170604183231.1: *4*  LeoBody handlers
-    #@+node:ekr.20170526114040.4: *5* LeoBody.h_cursor_line_down
+    # @+others
+    # @+node:ekr.20170604183231.1: *4*  LeoBody handlers
+    # @+node:ekr.20170526114040.4: *5* LeoBody.h_cursor_line_down
     def h_cursor_line_down(self, ch_i: int) -> None:
         """
         From MultiLine.h_cursor_line_down. Never exit.
@@ -2734,13 +2734,13 @@ class LeoBody(npyscreen.MultiLineEditable):
                 self.start_display_at += 1
             else:
                 self.start_display_at = self.cursor_line
-    #@+node:ekr.20170526114040.5: *5* LeoBody.h_cursor_line_up
+    # @+node:ekr.20170526114040.5: *5* LeoBody.h_cursor_line_up
     def h_cursor_line_up(self, ch_i: int) -> None:
         """From MultiLine.h_cursor_line_up. Never exit here."""
         # Reset editing mode.
         self.set_box_name('Body Pane')
         self.cursor_line = max(0, self.cursor_line - 1)
-    #@+node:ekr.20170604181755.1: *5* LeoBody.h_exit_down
+    # @+node:ekr.20170604181755.1: *5* LeoBody.h_exit_down
     def h_exit_down(self, ch_i: int) -> Optional[bool]:
         """Called when user leaves the widget to the next widget"""
         if ch_i in (curses.ascii.CR, curses.ascii.NL):
@@ -2751,7 +2751,7 @@ class LeoBody(npyscreen.MultiLineEditable):
         self.editing = False
         self.how_exited = EXITED_DOWN
         return None
-    #@+node:ekr.20170604181821.1: *5* LeoBody.h_exit_up
+    # @+node:ekr.20170604181821.1: *5* LeoBody.h_exit_up
     def h_exit_up(self, ch_i: int) -> Optional[bool]:
 
         self.set_box_name('Body Pane')
@@ -2761,14 +2761,14 @@ class LeoBody(npyscreen.MultiLineEditable):
         self.editing = False
         self.how_exited = EXITED_UP
         return None
-    #@+node:ekr.20170526114452.2: *5* LeoBody.h_edit_cursor_line_value
+    # @+node:ekr.20170526114452.2: *5* LeoBody.h_edit_cursor_line_value
     def h_edit_cursor_line_value(self, ch_i: int) -> None:
         """From MultiLineEditable.h_edit_cursor_line_value"""
         self.set_box_name('Body Pane (Editing)')
         continue_line = self.edit_cursor_line_value()
         if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
             self._continue_editing()
-    #@+node:ekr.20170604185028.1: *4* LeoBody.delete_line_value
+    # @+node:ekr.20170604185028.1: *4* LeoBody.delete_line_value
     def delete_line_value(self, ch_i: int = None) -> None:
 
         c = self.leo_c
@@ -2777,7 +2777,7 @@ class LeoBody(npyscreen.MultiLineEditable):
             self.display()
             # #1224:
             c.p.b = ''.join(self.values)
-    #@+node:ekr.20170602103122.1: *4* LeoBody.make_contained_widgets
+    # @+node:ekr.20170602103122.1: *4* LeoBody.make_contained_widgets
     def make_contained_widgets(self) -> None:
         """
         LeoBody.make_contained_widgets.
@@ -2803,14 +2803,14 @@ class LeoBody(npyscreen.MultiLineEditable):
         if trace and trace_widgets:
             g.printList(self._my_widgets)
             g.printList(['value: %r' % (z.value) for z in self._my_widgets])
-    #@+node:ekr.20170604073733.1: *4* LeoBody.set_box_name
+    # @+node:ekr.20170604073733.1: *4* LeoBody.set_box_name
     def set_box_name(self, name: str) -> None:
         """Update the title of the Form surrounding the Leo Body."""
         box = self.leo_box
         box.name = name
         box.update()
-    #@+node:ekr.20170526064136.1: *4* LeoBody.set_handlers
-    #@@nobeautify
+    # @+node:ekr.20170526064136.1: *4* LeoBody.set_handlers
+    # @@nobeautify
     def set_handlers(self) -> None:
         """LeoBody.set_handlers."""
         # pylint: disable=no-member
@@ -2835,7 +2835,7 @@ class LeoBody(npyscreen.MultiLineEditable):
             ord('e'):           self.h_edit_cursor_line_value,
         }
         # self.dump_handlers()
-    #@+node:ekr.20170606100707.1: *4* LeoBody.update_body (cursesGui2)
+    # @+node:ekr.20170606100707.1: *4* LeoBody.update_body (cursesGui2)
     def update_body(self, ins: int, s: str) -> None:
         """
         Update self.values and p.b and vnode ivars after the present line changes.
@@ -2884,8 +2884,8 @@ class LeoBody(npyscreen.MultiLineEditable):
             g.printList(self.values)
             g.trace('g.splitLines(c.p.b)')
             g.printList(g.splitLines(c.p.b))
-    #@-others
-#@+node:ekr.20170603103946.1: *3* class LeoLog (npyscreen.MultiLineEditable)
+    # @-others
+# @+node:ekr.20170603103946.1: *3* class LeoLog (npyscreen.MultiLineEditable)
 class LeoLog(npyscreen.MultiLineEditable):
 
     continuation_line = "- more -"  # value of contination line.
@@ -2901,14 +2901,14 @@ class LeoLog(npyscreen.MultiLineEditable):
         self.leo_c: Cmdr = None
         # createCursesLog sets the leo_c and leo_box ivars.
 
-    #@+others
-    #@+node:ekr.20170604184928.2: *4* LeoLog.delete_line_value
+    # @+others
+    # @+node:ekr.20170604184928.2: *4* LeoLog.delete_line_value
     def delete_line_value(self, ch_i: int = None) -> None:
         if self.values:
             del self.values[self.cursor_line]
             self.display()
-    #@+node:ekr.20170604183417.1: *4*  LeoLog handlers
-    #@+node:ekr.20170603103946.32: *5* LeoLog.h_cursor_line_down
+    # @+node:ekr.20170604183417.1: *4*  LeoLog handlers
+    # @+node:ekr.20170603103946.32: *5* LeoLog.h_cursor_line_down
     def h_cursor_line_down(self, ch_i: int) -> None:
         """
         From MultiLine.h_cursor_line_down. Never exit.
@@ -2930,20 +2930,20 @@ class LeoLog(npyscreen.MultiLineEditable):
         if trace:
             g.trace('n: %s, start: %s, line: %s' % (
                 n, self.start_display_at, self.cursor_line))
-    #@+node:ekr.20170603103946.31: *5* LeoLog.h_cursor_line_up
+    # @+node:ekr.20170603103946.31: *5* LeoLog.h_cursor_line_up
     def h_cursor_line_up(self, ch_i: int) -> None:
         """From MultiLine.h_cursor_line_up. Never exit here."""
         self.set_box_name('Log Pane')
         self.cursor_line = max(0, self.cursor_line - 1)
 
-    #@+node:ekr.20170604061933.4: *5* LeoLog.h_edit_cursor_line_value
+    # @+node:ekr.20170604061933.4: *5* LeoLog.h_edit_cursor_line_value
     def h_edit_cursor_line_value(self, ch_i: int) -> None:
         """From MultiLineEditable.h_edit_cursor_line_value"""
         self.set_box_name('Log Pane (Editing)')
         continue_line = self.edit_cursor_line_value()
         if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
             self._continue_editing()
-    #@+node:ekr.20170604113733.2: *5* LeoLog.h_exit_down
+    # @+node:ekr.20170604113733.2: *5* LeoLog.h_exit_down
     def h_exit_down(self, ch_i: int) -> Optional[bool]:
         """Called when user leaves the widget to the next widget"""
         trace = False and not g.unitTesting
@@ -2958,7 +2958,7 @@ class LeoLog(npyscreen.MultiLineEditable):
         self.editing = False
         self.how_exited = EXITED_DOWN
         return None
-    #@+node:ekr.20170604113733.4: *5* LeoLog.h_exit_up
+    # @+node:ekr.20170604113733.4: *5* LeoLog.h_exit_up
     def h_exit_up(self, ch_i: int) -> Optional[bool]:
         self.set_box_name('Log Pane')
         if not self._test_safe_to_exit():
@@ -2967,7 +2967,7 @@ class LeoLog(npyscreen.MultiLineEditable):
         self.editing = False
         self.how_exited = EXITED_UP
         return None
-    #@+node:ekr.20170603103946.34: *4* LeoLog.make_contained_widgets
+    # @+node:ekr.20170603103946.34: *4* LeoLog.make_contained_widgets
     def make_contained_widgets(self) -> None:
         """
         LeoLog.make_contained_widgets.
@@ -2995,13 +2995,13 @@ class LeoLog(npyscreen.MultiLineEditable):
         if trace and trace_widgets:
             g.printList(self._my_widgets)
             g.printList(['value: %r' % (z.value) for z in self._my_widgets])
-    #@+node:ekr.20170604073322.1: *4* LeoLog.set_box_name
+    # @+node:ekr.20170604073322.1: *4* LeoLog.set_box_name
     def set_box_name(self, name: str) -> None:
         """Update the title of the Form surrounding the Leo Log."""
         box = self.leo_box
         box.name = name
         box.update()
-    #@+node:ekr.20170603103946.33: *4* LeoLog.set_handlers
+    # @+node:ekr.20170603103946.33: *4* LeoLog.set_handlers
     def set_handlers(self) -> None:
         """LeoLog.set_handlers."""
         # pylint: disable=no-member
@@ -3028,7 +3028,7 @@ class LeoLog(npyscreen.MultiLineEditable):
             ord('e'): self.h_edit_cursor_line_value,
         }
         # dump_handlers(self)
-    #@+node:ekr.20170708181422.1: *4* LeoLog.firstScroll
+    # @+node:ekr.20170708181422.1: *4* LeoLog.firstScroll
     def firstScroll(self) -> None:
         """Scroll the log pane so the last lines are in view."""
         # Fix #508: Part 0.
@@ -3036,8 +3036,8 @@ class LeoLog(npyscreen.MultiLineEditable):
         self.cursor_line = max(0, n - 2)
         self.start_display_at = max(0, n - len(self._my_widgets))
         self.update()
-    #@-others
-#@+node:ekr.20170507194035.1: *3* class LeoForm (npyscreen.Form)
+    # @-others
+# @+node:ekr.20170507194035.1: *3* class LeoForm (npyscreen.Form)
 class LeoForm(npyscreen.Form):
 
     OK_BUTTON_TEXT = 'Quit Leo'
@@ -3051,7 +3051,7 @@ class LeoForm(npyscreen.Form):
             '(changed) ' if changed else '',
             c.fileName() if c else '')
         super().display(*args, **kwargs)
-#@+node:ekr.20170510092721.1: *3* class LeoMiniBuffer (npyscreen.Textfield)
+# @+node:ekr.20170510092721.1: *3* class LeoMiniBuffer (npyscreen.Textfield)
 class LeoMiniBuffer(npyscreen.Textfield):
     """An npyscreen class representing Leo's minibuffer, with binding."""
 
@@ -3065,9 +3065,9 @@ class LeoMiniBuffer(npyscreen.Textfield):
         self.leo_completion_prefix: str = ''
         self.set_handlers()
 
-    #@+others
-    #@+node:ekr.20170510172335.1: *4* LeoMiniBuffer.Handlers
-    #@+node:ekr.20171201054825.1: *5* LeoMiniBuffer.do_tab_completion
+    # @+others
+    # @+node:ekr.20170510172335.1: *4* LeoMiniBuffer.Handlers
+    # @+node:ekr.20171201054825.1: *5* LeoMiniBuffer.do_tab_completion
     def do_tab_completion(self) -> None:
         """Perform tab completion."""
         trace = False and not g.unitTesting
@@ -3096,25 +3096,25 @@ class LeoMiniBuffer(npyscreen.Textfield):
             self.update()
         elif trace:
             g.trace('no completions for', command)
-    #@+node:ekr.20170510095136.2: *5* LeoMiniBuffer.h_cursor_beginning
+    # @+node:ekr.20170510095136.2: *5* LeoMiniBuffer.h_cursor_beginning
     def h_cursor_beginning(self, ch: str) -> None:
 
         self.cursor_position = 0
-    #@+node:ekr.20170510095136.3: *5* LeoMiniBuffer.h_cursor_end
+    # @+node:ekr.20170510095136.3: *5* LeoMiniBuffer.h_cursor_end
     def h_cursor_end(self, ch: str) -> None:
 
         self.cursor_position = len(self.value)
-    #@+node:ekr.20170510095136.4: *5* LeoMiniBuffer.h_cursor_left
+    # @+node:ekr.20170510095136.4: *5* LeoMiniBuffer.h_cursor_left
     def h_cursor_left(self, ch: str) -> None:
 
         self.cursor_position = max(0, self.cursor_position - 1)
-    #@+node:ekr.20170510095136.5: *5* LeoMiniBuffer.h_cursor_right
+    # @+node:ekr.20170510095136.5: *5* LeoMiniBuffer.h_cursor_right
     def h_cursor_right(self, ch: str) -> None:
 
         self.cursor_position = min(len(self.value), self.cursor_position + 1)
 
 
-    #@+node:ekr.20170510095136.6: *5* LeoMiniBuffer.h_delete_left
+    # @+node:ekr.20170510095136.6: *5* LeoMiniBuffer.h_delete_left
     def h_delete_left(self, ch: str) -> None:
 
         n = self.cursor_position
@@ -3126,7 +3126,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
             # Delete the character to the left of the cursor
             self.value = s[: n - 1] + s[n:]
             self.cursor_position -= 1
-    #@+node:ekr.20171201053817.1: *5* LeoMiniBuffer.h_exit_down
+    # @+node:ekr.20171201053817.1: *5* LeoMiniBuffer.h_exit_down
     def h_exit_down(self, ch: str) -> Optional[bool]:
         """LeoMiniBuffer.h_exit_down.  Override InputHandler.h_exit_down."""
         trace = False and not g.unitTesting
@@ -3144,14 +3144,14 @@ class LeoMiniBuffer(npyscreen.Textfield):
             self.editing = False
             self.how_exited = EXITED_DOWN
         return None
-    #@+node:ekr.20170510095136.7: *5* LeoMiniBuffer.h_insert
+    # @+node:ekr.20170510095136.7: *5* LeoMiniBuffer.h_insert
     def h_insert(self, ch: int) -> None:
 
         n = self.cursor_position + 1
         s = self.value
         self.value = s[:n] + chr(ch) + s[n:]
         self.cursor_position += 1
-    #@+node:ekr.20170510100003.1: *5* LeoMiniBuffer.h_return (executes command) (complex kwargs!)
+    # @+node:ekr.20170510100003.1: *5* LeoMiniBuffer.h_return (executes command) (complex kwargs!)
     def h_return(self, ch: str) -> None:
         """
         Handle the return key in the minibuffer.
@@ -3187,7 +3187,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
         # Do a full redraw, with c.p as the first visible node.
         # g.trace('----- after command')
         g.app.gui.redraw_in_context(c)
-    #@+node:ekr.20170510094104.1: *5* LeoMiniBuffer.set_handlers
+    # @+node:ekr.20170510094104.1: *5* LeoMiniBuffer.set_handlers
     def set_handlers(self) -> None:
 
         # pylint: disable=no-member
@@ -3208,8 +3208,8 @@ class LeoMiniBuffer(npyscreen.Textfield):
             curses.ascii.BS: self.h_delete_left,
             curses.KEY_BACKSPACE: self.h_delete_left,
         })
-    #@-others
-#@+node:ekr.20171129194909.1: *3* class LeoStatusLine (npyscreen.Textfield)
+    # @-others
+# @+node:ekr.20171129194909.1: *3* class LeoStatusLine (npyscreen.Textfield)
 class LeoStatusLine(npyscreen.Textfield):
     """An npyscreen class representing Leo's status line"""
 
@@ -3221,9 +3221,9 @@ class LeoStatusLine(npyscreen.Textfield):
         # Use the default handlers.
             # self.set_handlers()
 
-    #@+others
-    #@-others
-#@+node:ekr.20170506035146.1: *3* class LeoMLTree (npyscreen.MLTree, object)
+    # @+others
+    # @-others
+# @+node:ekr.20170506035146.1: *3* class LeoMLTree (npyscreen.MLTree, object)
 class LeoMLTree(npyscreen.MLTree):
 
     # pylint: disable=used-before-assignment
@@ -3236,9 +3236,9 @@ class LeoMLTree(npyscreen.MLTree):
 
     # Note: The startup sequence sets leo_c and the value property/ivar.
 
-    #@+others
-    #@+node:ekr.20170510171826.1: *4* LeoMLTree.Entries
-    #@+node:ekr.20170506044733.6: *5* LeoMLTree.delete_line
+    # @+others
+    # @+node:ekr.20170510171826.1: *4* LeoMLTree.Entries
+    # @+node:ekr.20170506044733.6: *5* LeoMLTree.delete_line
     def delete_line(self) -> None:
 
         trace = False
@@ -3292,7 +3292,7 @@ class LeoMLTree(npyscreen.MLTree):
         # self.parent.refresh()
         # LeoForm.refresh
         self.display()
-    #@+node:ekr.20170507171518.1: *5* LeoMLTree.dump_code/values/widgets
+    # @+node:ekr.20170507171518.1: *5* LeoMLTree.dump_code/values/widgets
     def dump_code(self, code: int) -> str:
         d = {
             -2: 'left', -1: 'up', 1: 'down', 2: 'right',
@@ -3313,7 +3313,7 @@ class LeoMLTree(npyscreen.MLTree):
             return '%s.%s' % (id(z), z.__class__.__name__)
 
         g.printList([info(z) for z in self._my_widgets])
-    #@+node:ekr.20170506044733.4: *5* LeoMLTree.edit_headline
+    # @+node:ekr.20170506044733.4: *5* LeoMLTree.edit_headline
     def edit_headline(self) -> bool:
 
         trace = False and not g.unitTesting
@@ -3345,7 +3345,7 @@ class LeoMLTree(npyscreen.MLTree):
         self.reset_display_cache()
         self.display()
         return True
-    #@+node:ekr.20170523113530.1: *5* LeoMLTree.get_nth_visible_position
+    # @+node:ekr.20170523113530.1: *5* LeoMLTree.get_nth_visible_position
     def get_nth_visible_position(self, n: int) -> Optional[Position]:
         """Return the n'th visible position."""
         c = self.leo_c
@@ -3359,7 +3359,7 @@ class LeoMLTree(npyscreen.MLTree):
             i += 1
         g.trace('Can not happen', n)
         return None
-    #@+node:ekr.20171128191134.1: *5* LeoMLTree.select_leo_node
+    # @+node:ekr.20171128191134.1: *5* LeoMLTree.select_leo_node
     def select_leo_node(self, p: Position) -> None:
         """
         Set .start_display_at and .cursor_line ivars to display node p, with 2
@@ -3387,10 +3387,10 @@ class LeoMLTree(npyscreen.MLTree):
         if trace:
             # Can happen during unit tests.
             g.trace('Not found', p and p.h)
-    #@+node:ekr.20170514065422.1: *5* LeoMLTree.intraFileDrop
+    # @+node:ekr.20170514065422.1: *5* LeoMLTree.intraFileDrop
     def intraFileDrop(self, fn: str, p1: Position, p2: Position) -> None:
         pass
-    #@+node:ekr.20170506044733.2: *5* LeoMLTree.new_mltree_node
+    # @+node:ekr.20170506044733.2: *5* LeoMLTree.new_mltree_node
     def new_mltree_node(self) -> Position:
         """
         Insert a new outline TreeData widget at the current line.
@@ -3415,7 +3415,7 @@ class LeoMLTree(npyscreen.MLTree):
             if trace_values:
                 self.dump_values()
         return node
-    #@+node:ekr.20170506044733.5: *5* LeoMLTree.insert_line
+    # @+node:ekr.20170506044733.5: *5* LeoMLTree.insert_line
     def insert_line(self) -> None:
         """Insert an MLTree line and mark c changed."""
         trace = False
@@ -3443,9 +3443,9 @@ class LeoMLTree(npyscreen.MLTree):
         self.display()
         self.edit_headline()
 
-    #@+node:ekr.20170506045346.1: *4* LeoMLTree.Handlers
+    # @+node:ekr.20170506045346.1: *4* LeoMLTree.Handlers
     # These insert or delete entire outline nodes.
-    #@+node:ekr.20170523112839.1: *5* LeoMLTree.handle_mouse_event
+    # @+node:ekr.20170523112839.1: *5* LeoMLTree.handle_mouse_event
     def handle_mouse_event(self, mouse_event: Event) -> None:
         """Called from InputHandler.h_exit_mouse."""
         # pylint: disable=no-member
@@ -3462,7 +3462,7 @@ class LeoMLTree(npyscreen.MLTree):
             c = self.leo_c
             p = self.get_nth_visible_position(self.cursor_line)
             c.frame.tree.select(p)
-    #@+node:ekr.20170516055435.4: *5* LeoMLTree.h_collapse_all
+    # @+node:ekr.20170516055435.4: *5* LeoMLTree.h_collapse_all
     def h_collapse_all(self, ch: str) -> None:
 
         if native:
@@ -3477,7 +3477,7 @@ class LeoMLTree(npyscreen.MLTree):
         self.cursor_line = 0
         self.display()
 
-    #@+node:ekr.20170516055435.2: *5* LeoMLTree.h_collapse_tree
+    # @+node:ekr.20170516055435.2: *5* LeoMLTree.h_collapse_tree
     def h_collapse_tree(self, ch: str) -> None:
 
         node = self.values[self.cursor_line]
@@ -3502,7 +3502,7 @@ class LeoMLTree(npyscreen.MLTree):
                         cursor_line -= 1
         self._cached_tree = None  # Invalidate the display cache.
         self.display()
-    #@+node:ekr.20170513091821.1: *5* LeoMLTree.h_cursor_line_down
+    # @+node:ekr.20170513091821.1: *5* LeoMLTree.h_cursor_line_down
     def h_cursor_line_down(self, ch: str) -> None:
 
         c = self.leo_c
@@ -3510,7 +3510,7 @@ class LeoMLTree(npyscreen.MLTree):
         if native:
             p = self.get_nth_visible_position(self.cursor_line)
             c.frame.tree.select(p)
-    #@+node:ekr.20170513091928.1: *5* LeoMLTree.h_cursor_line_up
+    # @+node:ekr.20170513091928.1: *5* LeoMLTree.h_cursor_line_up
     def h_cursor_line_up(self, ch: str) -> None:
 
         c = self.leo_c
@@ -3518,7 +3518,7 @@ class LeoMLTree(npyscreen.MLTree):
         if native:
             p = self.get_nth_visible_position(self.cursor_line)
             c.frame.tree.select(p)
-    #@+node:ekr.20170506044733.12: *5* LeoMLTree.h_delete
+    # @+node:ekr.20170506044733.12: *5* LeoMLTree.h_delete
     def h_delete(self, ch: str) -> None:
 
         c = self.leo_c
@@ -3527,12 +3527,12 @@ class LeoMLTree(npyscreen.MLTree):
         if native:
             p = self.get_nth_visible_position(self.cursor_line)
             c.frame.tree.select(p)
-    #@+node:ekr.20170506044733.10: *5* LeoMLTree.h_edit_headline
+    # @+node:ekr.20170506044733.10: *5* LeoMLTree.h_edit_headline
     def h_edit_headline(self, ch: str) -> None:
         """Called when the user types "h"."""
         # Remember the starting headline, for CTree.onHeadChanged.
         self.edit_headline()
-    #@+node:ekr.20170516055435.5: *5* LeoMLTree.h_expand_all
+    # @+node:ekr.20170516055435.5: *5* LeoMLTree.h_expand_all
     def h_expand_all(self, ch: str) -> None:
 
         if native:
@@ -3546,7 +3546,7 @@ class LeoMLTree(npyscreen.MLTree):
         self._cached_tree = None
         self.cursor_line = 0
         self.display()
-    #@+node:ekr.20170516055435.3: *5* LeoMLTree.h_expand_tree
+    # @+node:ekr.20170516055435.3: *5* LeoMLTree.h_expand_tree
     def h_expand_tree(self, ch: str) -> None:
 
         node = self.values[self.cursor_line]
@@ -3565,7 +3565,7 @@ class LeoMLTree(npyscreen.MLTree):
                     z.expanded = True
         self._cached_tree = None  # Invalidate the cache.
         self.display()
-    #@+node:ekr.20170506044733.11: *5* LeoMLTree.h_insert
+    # @+node:ekr.20170506044733.11: *5* LeoMLTree.h_insert
     def h_insert(self, ch: str) -> None:
 
         self.insert_line()
@@ -3573,7 +3573,7 @@ class LeoMLTree(npyscreen.MLTree):
             c = self.leo_c
             p = self.get_nth_visible_position(self.cursor_line)
             c.frame.tree.select(p)
-    #@+node:ekr.20170506035413.1: *5* LeoMLTree.h_move_left
+    # @+node:ekr.20170506035413.1: *5* LeoMLTree.h_move_left
     def h_move_left(self, ch: str) -> None:
 
         trace = False and not g.unitTesting
@@ -3617,7 +3617,7 @@ class LeoMLTree(npyscreen.MLTree):
                 self.h_collapse_tree(ch)
             else:
                 self.h_cursor_line_up(ch)
-    #@+node:ekr.20170506035419.1: *5* LeoMLTree.h_move_right
+    # @+node:ekr.20170506035419.1: *5* LeoMLTree.h_move_right
     def h_move_right(self, ch: str) -> None:
 
         node = self.values[self.cursor_line]
@@ -3642,8 +3642,8 @@ class LeoMLTree(npyscreen.MLTree):
                     self.h_expand_tree(ch)
             else:
                 self.h_cursor_line_down(ch)
-    #@+node:ekr.20170507175304.1: *5* LeoMLTree.set_handlers
-    #@@nobeautify
+    # @+node:ekr.20170507175304.1: *5* LeoMLTree.set_handlers
+    # @@nobeautify
     def set_handlers(self) -> None:
 
         # pylint: disable=no-member
@@ -3676,7 +3676,7 @@ class LeoMLTree(npyscreen.MLTree):
         # self.handlers.update(d)
         # dump_handlers(self)
         self.handlers = d
-    #@+node:ekr.20170516100256.1: *5* LeoMLTree.set_up_handlers
+    # @+node:ekr.20170516100256.1: *5* LeoMLTree.set_up_handlers
     def set_up_handlers(self) -> None:
         super().set_up_handlers()
         assert not hasattr(self, 'hidden_root_node'), repr(self)
@@ -3685,7 +3685,7 @@ class LeoMLTree(npyscreen.MLTree):
         self.hidden_root_node = None
         self.set_handlers()
 
-    #@+node:ekr.20170513032502.1: *4* LeoMLTree.update & helpers
+    # @+node:ekr.20170513032502.1: *4* LeoMLTree.update & helpers
     def update(self, clear: bool = True, forceInit: bool = False) -> None:
         """Redraw the tree."""
         # This is a major refactoring of MultiLine.update.
@@ -3708,7 +3708,7 @@ class LeoMLTree(npyscreen.MLTree):
         else:
             self._last_values = copy.copy(self.values)
             self._last_value = copy.copy(self.value)
-    #@+node:ekr.20170513122253.1: *5* LeoMLTree._init_update
+    # @+node:ekr.20170513122253.1: *5* LeoMLTree._init_update
     def _init_update(self) -> None:
         """Put self.cursor_line and self.start_display_at in range."""
         # pylint: disable=access-member-before-definition,consider-using-max-builtin
@@ -3728,7 +3728,7 @@ class LeoMLTree(npyscreen.MLTree):
                 self.start_display_at = self.cursor_line - (display_length - 2)
                 if self.start_display_at < 0:
                     self.start_display_at = 0
-    #@+node:ekr.20170513123010.1: *5* LeoMLTree._must_redraw
+    # @+node:ekr.20170513123010.1: *5* LeoMLTree._must_redraw
     def _must_redraw(self, clear: bool) -> Generator:
         """Return a list of reasons why we must redraw."""
         trace = False and not g.unitTesting
@@ -3749,7 +3749,7 @@ class LeoMLTree(npyscreen.MLTree):
                 ','.join(reasons),
                 self.values[self.cursor_line].content))
         return reasons
-    #@+node:ekr.20170513122427.1: *5* LeoMLTree._redraw & helpers
+    # @+node:ekr.20170513122427.1: *5* LeoMLTree._redraw & helpers
     def _redraw(self, clear: bool) -> None:
         """Do the actual redraw."""
         trace = False and not g.unitTesting
@@ -3788,7 +3788,7 @@ class LeoMLTree(npyscreen.MLTree):
             line = self._my_widgets[(self.cursor_line - start)]
             line.highlight = True
             line.update(clear=True)
-    #@+node:ekr.20170513032717.1: *6* LeoMLTree._print_line
+    # @+node:ekr.20170513032717.1: *6* LeoMLTree._print_line
     def _print_line(self, line: str, i: int) -> None:
 
         # if self.widgets_inherit_color and self.do_colors():
@@ -3797,7 +3797,7 @@ class LeoMLTree(npyscreen.MLTree):
         if line.value is not None:
             assert isinstance(line.value, LeoTreeData), repr(line.value)
         self._set_line_highlighting(line, i)
-    #@+node:ekr.20170513102428.1: *6* LeoMLTree._put_continuation_line
+    # @+node:ekr.20170513102428.1: *6* LeoMLTree._put_continuation_line
     def _put_continuation_line(self) -> None:
         """Print the line indicating there are more lines left."""
         s = self.continuation_line
@@ -3808,7 +3808,7 @@ class LeoMLTree(npyscreen.MLTree):
             self.parent.curses_pad.addstr(y, x, s, style)
         else:
             self.parent.curses_pad.addstr(y, x, s)
-    #@+node:ekr.20170513075423.1: *6* LeoMLTree._set_line_values
+    # @+node:ekr.20170513075423.1: *6* LeoMLTree._set_line_values
     def _set_line_values(self, line: str, i: int) -> None:
         """Set internal values of line using self.values[i] and self.values[i+1]"""
         trace = False
@@ -3858,7 +3858,7 @@ class LeoMLTree(npyscreen.MLTree):
             content = line.value.content
             s = content.h if native else content
             g.trace(i, n, s)
-    #@+node:ekr.20170516101203.1: *4* LeoMLTree.values
+    # @+node:ekr.20170516101203.1: *4* LeoMLTree.values
     if native:
         _myFullValues = LeoTreeData()
         values = None
@@ -3867,8 +3867,8 @@ class LeoMLTree(npyscreen.MLTree):
         # This property converts the (possibly cached) result of converting
         # the root node (_myFullValues) and its *visible* decendants to a list.
         # To invalidate the cache, set __cached_tree = None
-        #@+others
-        #@+node:ekr.20170517142822.1: *5* _getValues
+        # @+others
+        # @+node:ekr.20170517142822.1: *5* _getValues
         def _getValues(self) -> list[LeoTreeData]:
             """
             Return the (possibly cached) list returned by self._myFullValues.get_tree_as_list().
@@ -3881,21 +3881,21 @@ class LeoMLTree(npyscreen.MLTree):
             self._cached_tree = self._myFullValues
             self._cached_tree_as_list = self._myFullValues.get_tree_as_list()
             return self._cached_tree_as_list
-        #@+node:ekr.20170518054457.1: *5* _setValues
+        # @+node:ekr.20170518054457.1: *5* _setValues
         def _setValues(self, tree: LeoTreeData) -> None:
             self._myFullValues = tree or LeoTreeData()
-        #@-others
+        # @-others
         values = property(_getValues, _setValues)
-    #@-others
-#@+node:ekr.20170517072429.1: *3* class LeoValues (npyscreen.TreeData)
+    # @-others
+# @+node:ekr.20170517072429.1: *3* class LeoValues (npyscreen.TreeData)
 class LeoValues(npyscreen.TreeData):
     """
     A class to replace the MLTree.values property.
     This is formally an subclass of TreeData.
     """
 
-    #@+others
-    #@+node:ekr.20170619070717.1: *4* values.__init__
+    # @+others
+    # @+node:ekr.20170619070717.1: *4* values.__init__
     def __init__(self, c: Cmdr, tree: LeoTreeData) -> None:
         """Ctor for LeoValues class."""
         super().__init__()  # Init the base class.
@@ -3905,7 +3905,7 @@ class LeoValues(npyscreen.TreeData):
         self.last_len = 0  # The last computed value of the number of visible nodes.
         self.n_refreshes = 0  # Number of calls to refresh_cache.
         self.tree: LeoTreeData = tree  # not used here.
-    #@+node:ekr.20170517090738.1: *4* values.__getitem__ and get_data
+    # @+node:ekr.20170517090738.1: *4* values.__getitem__ and get_data
     def __getitem__(self, n: int) -> LeoTreeData:
         """Called from LeoMLTree._setLineValues."""
         return self.get_data(n)
@@ -3920,7 +3920,7 @@ class LeoValues(npyscreen.TreeData):
         data = self.data_cache.get(n)
         g.trace('uncached', data)
         return data
-    #@+node:ekr.20170518060014.1: *4* values.__len__
+    # @+node:ekr.20170518060014.1: *4* values.__len__
     def __len__(self) -> int:
         """
         Return the putative length of the values array,
@@ -3937,12 +3937,12 @@ class LeoValues(npyscreen.TreeData):
             return self.last_len
         self.last_len = self.refresh_cache()
         return self.last_len
-    #@+node:ekr.20170519041459.1: *4* values.clear_cache
+    # @+node:ekr.20170519041459.1: *4* values.clear_cache
     def clear_cache(self) -> None:
         """Called only from this file."""
         self.data_cache = {}
         self.last_len = -1
-    #@+node:ekr.20170619072048.1: *4* values.refresh_cache
+    # @+node:ekr.20170619072048.1: *4* values.refresh_cache
     def refresh_cache(self) -> int:
         """Update all cached values."""
         trace = False
@@ -3960,14 +3960,14 @@ class LeoValues(npyscreen.TreeData):
             g.trace('%3s vis: %3s generation: %s' % (
                 self.n_refreshes, n, c.frame.tree.generation))
         return n
-    #@-others
-#@+node:ekr.20170522081122.1: ** Wrapper classes
-#@+others
-#@+node:ekr.20170511053143.1: *3*  class TextMixin: cursesGui2.py
+    # @-others
+# @+node:ekr.20170522081122.1: ** Wrapper classes
+# @+others
+# @+node:ekr.20170511053143.1: *3*  class TextMixin: cursesGui2.py
 class TextMixin:
     """A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes."""
-    #@+others
-    #@+node:ekr.20170511053143.2: *4* tm.ctor & helper
+    # @+others
+    # @+node:ekr.20170511053143.2: *4* tm.ctor & helper
     def __init__(self, c: Cmdr = None) -> None:
         """Ctor for TextMixin class"""
         self.c = c
@@ -3980,7 +3980,7 @@ class TextMixin:
         # self.virtualInsertPoint = None
         if c:
             self.injectIvars(c)
-    #@+node:ekr.20170511053143.3: *5* tm.injectIvars (cursesGui2)
+    # @+node:ekr.20170511053143.3: *5* tm.injectIvars (cursesGui2)
     def injectIvars(self, c: Cmdr) -> Wrapper:
         """Inject standard leo ivars into the QTextEdit or QsciScintilla widget."""
         self.leo_p = c.p.copy() if c.p else None
@@ -3993,25 +3993,25 @@ class TextMixin:
         self.leo_name = '1'
         self.leo_label = None
         return self
-    #@+node:ekr.20170511053143.4: *4* tm.getName
+    # @+node:ekr.20170511053143.4: *4* tm.getName
     def getName(self) -> str:
         return self.name  # Essential.
-    #@+node:ekr.20170511053143.8: *4* tm.Generic high-level interface
+    # @+node:ekr.20170511053143.8: *4* tm.Generic high-level interface
     # These call only wrapper methods.
-    #@+node:ekr.20170511053143.13: *5* tm.appendText
+    # @+node:ekr.20170511053143.13: *5* tm.appendText
     def appendText(self, s: str) -> None:
         """TextMixin"""
         s2 = self.getAllText()
         self.setAllText(s2 + s)
         self.setInsertPoint(len(s2))
-    #@+node:ekr.20170511053143.10: *5* tm.clipboard_clear/append
+    # @+node:ekr.20170511053143.10: *5* tm.clipboard_clear/append
     def clipboard_append(self, s: str) -> None:
         s1 = g.app.gui.getTextFromClipboard()
         g.app.gui.replaceClipboardWith(s1 + s)
 
     def clipboard_clear(self) -> None:
         g.app.gui.replaceClipboardWith('')
-    #@+node:ekr.20170511053143.14: *5* tm.delete
+    # @+node:ekr.20170511053143.14: *5* tm.delete
     def delete(self, i: int, j: int = None) -> None:
         """TextMixin"""
         s = self.getAllText()
@@ -4023,18 +4023,18 @@ class TextMixin:
         self.setAllText(s[:i] + s[j:])
         # Bug fix: Significant in external tests.
         self.setSelectionRange(i, i, insert=i)
-    #@+node:ekr.20170511053143.15: *5* tm.deleteTextSelection
+    # @+node:ekr.20170511053143.15: *5* tm.deleteTextSelection
     def deleteTextSelection(self) -> None:
         """TextMixin"""
         i, j = self.getSelectionRange()
         self.delete(i, j)
-    #@+node:ekr.20170511053143.9: *5* tm.Enable/disable
+    # @+node:ekr.20170511053143.9: *5* tm.Enable/disable
     def disable(self) -> None:
         self.enabled = False
 
     def enable(self, enabled: bool = True) -> None:
         self.enabled = enabled
-    #@+node:ekr.20170511053143.16: *5* tm.get
+    # @+node:ekr.20170511053143.16: *5* tm.get
     def get(self, i: int, j: int = None) -> str:
         """TextMixin"""
         # 2012/04/12: fix the following two bugs by using the vanilla code:
@@ -4044,7 +4044,7 @@ class TextMixin:
         if j is None:
             j = i + 1
         return all_s[i:j]
-    #@+node:ekr.20170511053143.17: *5* tm.getLastIndex & getLength
+    # @+node:ekr.20170511053143.17: *5* tm.getLastIndex & getLength
     def getLastIndex(self, s: str = None) -> int:
         """TextMixin"""
         return len(self.getAllText()) if s is None else len(s)
@@ -4052,7 +4052,7 @@ class TextMixin:
     def getLength(self, s: str = None) -> int:
         """TextMixin"""
         return len(self.getAllText()) if s is None else len(s)
-    #@+node:ekr.20170511053143.18: *5* tm.getSelectedText
+    # @+node:ekr.20170511053143.18: *5* tm.getSelectedText
     def getSelectedText(self) -> str:
         """TextMixin"""
         i, j = self.getSelectionRange()
@@ -4060,14 +4060,14 @@ class TextMixin:
             return ''
         s = self.getAllText()
         return s[i:j]
-    #@+node:ekr.20170511053143.19: *5* tm.insert
+    # @+node:ekr.20170511053143.19: *5* tm.insert
     def insert(self, i: int, s: str) -> int:
         """TextMixin"""
         all_s = self.getAllText()
         self.setAllText(all_s[:i] + s + all_s[i:])
         self.setInsertPoint(i + len(s))
         return i
-    #@+node:ekr.20170511053143.24: *5* tm.rememberSelectionAndScroll
+    # @+node:ekr.20170511053143.24: *5* tm.rememberSelectionAndScroll
     def rememberSelectionAndScroll(self) -> None:
 
         v = self.c.p.v  # Always accurate.
@@ -4079,28 +4079,28 @@ class TextMixin:
         v.selectionStart = i
         v.selectionLength = j - i
         v.scrollBarSpot = self.getYScrollPosition()
-    #@+node:ekr.20170511053143.20: *5* tm.seeInsertPoint
+    # @+node:ekr.20170511053143.20: *5* tm.seeInsertPoint
     def seeInsertPoint(self) -> None:
         """Ensure the insert point is visible."""
         # getInsertPoint defined in client classes.
         self.see(self.getInsertPoint())
-    #@+node:ekr.20170511053143.21: *5* tm.selectAllText
+    # @+node:ekr.20170511053143.21: *5* tm.selectAllText
     def selectAllText(self, s: str = None) -> None:
         """TextMixin."""
         self.setSelectionRange(0, self.getLength(s))
-    #@+node:ekr.20170511053143.11: *5* tm.setFocus
+    # @+node:ekr.20170511053143.11: *5* tm.setFocus
     def setFocus(self) -> None:
         """TextMixin.setFocus"""
         g.app.gui.set_focus(self)
 
-    #@+node:ekr.20170511053143.23: *5* tm.toPythonIndexRowCol
+    # @+node:ekr.20170511053143.23: *5* tm.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index: int) -> tuple[int, int]:
         """TextMixin"""
         s = self.getAllText()
         row, col = g.convertPythonIndexToRowCol(s, index)
         return row, col
-    #@-others
-#@+node:ekr.20170504034655.1: *3* class BodyWrapper (leoFrame.StringTextWrapper)
+    # @-others
+# @+node:ekr.20170504034655.1: *3* class BodyWrapper (leoFrame.StringTextWrapper)
 class BodyWrapper(leoFrame.StringTextWrapper):
     """
     A Wrapper class for Leo's body.
@@ -4113,8 +4113,8 @@ class BodyWrapper(leoFrame.StringTextWrapper):
         self.widget: Wrapper = w
         self.injectIvars(c)  # These are used by Leo's core.
 
-    #@+others
-    #@+node:ekr.20170504034655.3: *4* bw.injectIvars (cursesGui2)
+    # @+others
+    # @+node:ekr.20170504034655.3: *4* bw.injectIvars (cursesGui2)
     def injectIvars(self, c: Cmdr) -> None:
         """Inject standard leo ivars into the QTextEdit or QsciScintilla widget."""
         self.leo_p = c.p.copy() if c.p else None
@@ -4126,12 +4126,12 @@ class BodyWrapper(leoFrame.StringTextWrapper):
         self.leo_frame = None
         self.leo_name = '1'
         self.leo_label = None
-    #@+node:ekr.20170504034655.6: *4* bw.onCursorPositionChanged
+    # @+node:ekr.20170504034655.6: *4* bw.onCursorPositionChanged
     def onCursorPositionChanged(self, event: Event = None) -> None:
         if 0:
             g.trace('=====', event)
-    #@-others
-#@+node:ekr.20170522002403.1: *3* class HeadWrapper (leoFrame.StringTextWrapper)
+    # @-others
+# @+node:ekr.20170522002403.1: *3* class HeadWrapper (leoFrame.StringTextWrapper)
 class HeadWrapper(leoFrame.StringTextWrapper):
     """
     A Wrapper class for headline widgets, returned by c.edit_widget(p)
@@ -4144,8 +4144,8 @@ class HeadWrapper(leoFrame.StringTextWrapper):
         self.p = p.copy()
         self.s = p.v._headString
 
-    #@+others
-    #@+node:ekr.20170522014009.1: *4* hw.setAllText
+    # @+others
+    # @+node:ekr.20170522014009.1: *4* hw.setAllText
     def setAllText(self, s: str) -> None:
         """HeadWrapper.setAllText"""
         # Don't allow newlines.
@@ -4154,8 +4154,8 @@ class HeadWrapper(leoFrame.StringTextWrapper):
         self.ins = i
         self.sel = i, i
         self.p.v._headString = self.s
-    #@-others
-#@+node:ekr.20170525062512.1: *3* class LogWrapper (leoFrame.StringTextWrapper)
+    # @-others
+# @+node:ekr.20170525062512.1: *3* class LogWrapper (leoFrame.StringTextWrapper)
 class LogWrapper(leoFrame.StringTextWrapper):
     """A Wrapper class for the log pane."""
 
@@ -4165,9 +4165,9 @@ class LogWrapper(leoFrame.StringTextWrapper):
         self.trace = False  # For tracing in base class.
         self.widget: Wrapper = w
 
-    #@+others
-    #@-others
-#@+node:ekr.20170525105707.1: *3* class MiniBufferWrapper (leoFrame.StringTextWrapper)
+    # @+others
+    # @-others
+# @+node:ekr.20170525105707.1: *3* class MiniBufferWrapper (leoFrame.StringTextWrapper)
 class MiniBufferWrapper(leoFrame.StringTextWrapper):
     """A Wrapper class for the minibuffer."""
 
@@ -4177,7 +4177,7 @@ class MiniBufferWrapper(leoFrame.StringTextWrapper):
         self.trace = False  # For tracing in base class.
         self.box: Wrapper = None  # Injected
         self.widget: Wrapper = w
-#@+node:ekr.20171129194610.1: *3* class StatusLineWrapper (leoFrame.StringTextWrapper)
+# @+node:ekr.20171129194610.1: *3* class StatusLineWrapper (leoFrame.StringTextWrapper)
 class StatusLineWrapper(leoFrame.StringTextWrapper):
     """A Wrapper class for the status line."""
 
@@ -4190,8 +4190,8 @@ class StatusLineWrapper(leoFrame.StringTextWrapper):
     def isEnabled(self) -> bool:
         return True
 
-    #@+others
-    #@+node:ekr.20171129204751.1: *4* StatusLineWrapper.do nothings
+    # @+others
+    # @+node:ekr.20171129204751.1: *4* StatusLineWrapper.do nothings
     def disable(self, *args: Any, **kwargs: Any) -> None:
         pass
 
@@ -4200,7 +4200,7 @@ class StatusLineWrapper(leoFrame.StringTextWrapper):
 
     def setFocus(self) -> None:
         pass
-    #@+node:ekr.20171129204736.1: *4* StatusLineWrapper.redirectors
+    # @+node:ekr.20171129204736.1: *4* StatusLineWrapper.redirectors
     def clear(self) -> None:
         self.widget.value = ''
         self.widget.display()
@@ -4218,9 +4218,9 @@ class StatusLineWrapper(leoFrame.StringTextWrapper):
 
     def update(self, *args: Any, **kwargs: Any) -> None:
         self.widget.update()
-    #@-others
-#@-others
-#@-others
-#@@language python
-#@@tabwidth -4
-#@-leo
+    # @-others
+# @-others
+# @-others
+# @@language python
+# @@tabwidth -4
+# @-leo
