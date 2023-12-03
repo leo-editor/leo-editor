@@ -2402,7 +2402,7 @@ class LoadManager:
             g.app.recentFilesManager.readRecentFiles(localConfigFile)
         # Create the gui after reading options and settings.
         lm.createGui(pymacs)
-    #@+node:ekr.20170302093006.1: *5* LM.createAllImporterData & helpers
+    # @+node:ekr.20170302093006.1: *5* LM.createAllImporterData & helpers
     def createAllImporterData(self) -> None:
         """
         New in Leo 5.5:
