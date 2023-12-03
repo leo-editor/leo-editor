@@ -38,7 +38,7 @@ from typing import Any, Generator, Optional, Union, TYPE_CHECKING
 # Third-party.
 try:
     import curses
-except ImportError:
+except Exception:
     print('cursesGui2.py: curses required.')
     print('pip install windows-curses')
     raise
@@ -452,13 +452,13 @@ class LeoTreeData(npyscreen.TreeData):
             elif isinstance(content, str):
                 # This is a dummy node, not actually used.
                 assert content == '<HIDDEN>', repr(content)
-                self.content = content
+                self.content = content  # type:ignore
             else:
                 p = content
                 assert p and isinstance(p, Position), repr(p)
-                self.content = content.copy()
+                self.content = content.copy()  # type:ignore
         else:
-            self.content = content
+            self.content = content  # type:ignore
     #@+node:ekr.20170516085427.6: *5* LeoTreeData.set_parent
     def set_parent(self, parent: Position) -> None:
 
@@ -2154,7 +2154,7 @@ class CoreFrame(leoFrame.LeoFrame):
         # Standard ivars.
         self.ratio = self.secondary_ratio = 0.5
         # Widgets
-        self.top = TopFrame(c)
+        self.top = TopFrame(c)  # type:ignore
         self.body = CoreBody(c)
         self.menu = CoreMenu(c)
         self.miniBufferWidget: MiniBufferWrapper = None
