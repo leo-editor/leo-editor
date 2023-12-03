@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
-<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -3325,8 +3325,8 @@ cls
 cd %~dp0..\..
 
 echo full-test-leo
-rem call reindent-leo.cmd
-rem call beautify-leo.cmd
+rem beautify also removes trailing whitespace.
+call beautify-leo.cmd
 call test-leo.cmd
 rem echo.
 call ruff-leo.cmd
@@ -3370,6 +3370,8 @@ rem echo reindent leo/plugins/writers
 call py %REINDENT_PATH% -r leo\plugins\writers
 rem echo reindent leo/unittests
 call py %REINDENT_PATH% -r leo\unittests
+rem echo reindent official plugins.
+call py %REINDENT_PATH% leo\plugins\indented_languages.py
 goto done
 
 :no_reindent
@@ -3382,12 +3384,11 @@ echo Cannot find reindent.py, skipping reindentation
 cd %~dp0..\..
 
 echo beautify-leo
-call py -m leo.core.leoAst --orange --recursive leo\core
-call py -m leo.core.leoAst --orange --recursive leo\commands
-call py -m leo.core.leoAst --orange --recursive leo\plugins\importers
-call py -m leo.core.leoAst --orange --recursive leo\plugins\writers
-rem call py -m leo.core.leoAst --orange --recursive leo\modes
 
+call py -m leo.core.leoAst --orange --verbose leo\core
+call py -m leo.core.leoAst --orange --verbose leo\commands
+call py -m leo.core.leoAst --orange --verbose leo\plugins
+call py -m leo.core.leoAst --orange --verbose leo\modes
 </t>
 <t tx="ekr.20221204074235.1">@language batch
 @echo off
@@ -3402,6 +3403,7 @@ py -m flake8 %*
 @echo off
 cd %~dp0..\..
 
+rem not recommended!
 echo black leo.core
 call py -m black --skip-string-normalization leo\core
 </t>
@@ -3447,16 +3449,12 @@ testGlobals = 'test_leoGlobals.TestGlobals'
 @echo off
 cd %~dp0..\..
 
-echo ruff leo/core
-call py -m ruff leo/core
-
-echo ruff leo/commands
-call py -m ruff leo/commands
-
 rem qt_main.py is auto generated.
 rem call py -m ruff leo/plugins/qt*.py
 
-echo ruff leo/plugins/qt...
+echo ruff leo/core, leo/commands, leo/plugins/qt...
+call py -m ruff leo/core
+call py -m ruff leo/commands
 call py -m ruff leo/plugins/qt_gui.py
 call py -m ruff leo/plugins/qt_text.py
 call py -m ruff leo/plugins/qt_tree.py
