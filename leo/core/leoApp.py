@@ -2198,6 +2198,7 @@ class LoadManager:
         if not lm.isValidPython():
             return
         lm.doPrePluginsInit(fileName, pymacs)  # sets lm.options and lm.files
+        # Compute the signon after initing the gui.
         g.app.computeSignon()
         g.app.printSignon()
         if lm.options.get('version'):
@@ -2401,8 +2402,6 @@ class LoadManager:
             g.app.recentFilesManager.readRecentFiles(localConfigFile)
         # Create the gui after reading options and settings.
         lm.createGui(pymacs)
-        # We can't print the signon until we know the gui.
-        g.app.computeSignon()  # Set app.signon/signon1 for commanders.
     #@+node:ekr.20170302093006.1: *5* LM.createAllImporterData & helpers
     def createAllImporterData(self) -> None:
         """
