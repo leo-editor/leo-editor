@@ -957,6 +957,46 @@ class TestFastAtRead(LeoUnitTest):
         expected = contents.replace('@q@@', '@q@ @')
         # g.printObj(g.splitLines(expected), tag='expected')  ###
         self.assertEqual(s, expected)
+    # @+node:ekr.20231203092436.1: *3* TestFastAtRead.test_minimal_cweb
+    # @@language python
+
+    def test_minimal_cweb(self):
+
+        c, x = self.c, self.x
+        h = '@file /test/test_cweb.w'
+        root = c.rootPosition()
+        root.h = h  # To match contents.
+        # @+<< define contents >>
+        # @+node:ekr.20231203092436.2: *4* << define contents >> (test_cweb)
+        # Use neither a raw string nor an f-string here.
+        # Lines must not look like Leo sentinels!
+        contents = textwrap.dedent(r'''
+        ATq@@+leo-ver=5-thin@>
+        ATq@@+node:{root.gnx}: * @{h}@>
+        ATq@@@@language cweb@>
+        % $Id: minimal.w,v 1.4 1995/08/25 19:12:41 schrod Exp $
+        %----------------------------------------------------------------------
+
+        % tests minimal CWEB w/ LaTeX input file
+
+        \documentclass{cweb}
+        \begin{document}
+
+        Test.
+
+        AT
+        \end{document}
+        ATq@@-leo@>
+        ''').lstrip()
+        contents = contents.replace('AT', '@').replace('{root.gnx}', root.gnx).replace('{h}', root.h)
+        # @-<< define contents >>
+        # g.printObj(g.splitLines(contents), tag='contents')
+        x.read_into_root(contents, path='test', root=root)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        # g.printObj(g.splitLines(s), tag='s')
+        expected = contents.replace('@q@@', '@q@ @')
+        # g.printObj(g.splitLines(expected), tag='expected')  ###
+        self.assertEqual(s, expected)
     # @+node:ekr.20211101152817.1: *3* TestFastAtRead.test_doc_parts
     def test_doc_parts(self):
 
