@@ -38,7 +38,7 @@ from typing import Any, Generator, Optional, Union, TYPE_CHECKING
 # Third-party.
 try:
     import curses
-except ImportError:
+except Exception:
     print('cursesGui2.py: curses required.')
     print('pip install windows-curses')
     raise
