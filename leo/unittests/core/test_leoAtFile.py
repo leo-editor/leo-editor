@@ -685,11 +685,12 @@ class TestFastAtRead(LeoUnitTest):
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         # @-<< define contents >>
         # g.printObj(g.splitLines(contents), tag='contents')
+        expected = contents.replace('!!!@', '!!! @')
+        # g.printObj(g.splitLines(expected), tag='expected')
+
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         # g.printObj(g.splitLines(s), tag='s')
-        expected = contents.replace('!!!@', '!!! @')
-        # g.printObj(g.splitLines(expected), tag='expected')
         self.assertEqual(s, expected)
         if 1:
             child1 = root.firstChild()
@@ -710,9 +711,12 @@ class TestFastAtRead(LeoUnitTest):
         root.h = h  # To match contents.
         # @+<< define contents >>
         # @+node:ekr.20211101111652.1: *4* << define contents >> (test_at_delims)
+        # Use neither a raw string nor an f-string here.
+
         # Be careful: no line should look like a Leo sentinel!
-        contents = textwrap.dedent(f'''\
-        !! -*- coding: utf-8 -*-
+
+        contents = textwrap.dedent('''
+        # -*- coding: utf-8 -*-
         #AT+leo-ver=5-thin
         #AT+node:{root.gnx}: * {h}
         #AT@first
@@ -736,11 +740,19 @@ class TestFastAtRead(LeoUnitTest):
 
         !!AT@language python
         !!AT-leo
-        ''').replace('AT', ' @').replace('LB', '<<').replace('SPACE', ' ')
+        ''').lstrip()
+        contents = contents.replace('AT', '@').replace('LB', '<<').replace('SPACE', ' ')
+        contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
+
         # @-<< define contents >>
+        # g.printObj(g.splitLines(contents), tag='contents')
+        expected = contents.replace('!!@', '!! @').replace('#@', '# @')
+        
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
-        self.assertEqual(contents, s)
+        # g.printObj(g.splitLines(s), tag='s')
+        self.assertEqual(expected, s)
+
         child1 = root.firstChild()
         child2 = child1.next()
         child3 = child2.next()
