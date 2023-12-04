@@ -23,6 +23,12 @@ class TestSpellCommands(LeoUnitTest):
 
         if not g.isWindows:
             self.skipTest('Requires Windows')
+            
+        try:
+            import enchant
+            assert enchant
+        except Exception:  # May throw WinError(!)
+            self.skipTest('enchant not found')
 
         from leo.core.leoCommands import Commands as Cmdr
         from leo.commands.spellCommands import SpellTabHandler
