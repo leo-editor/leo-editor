@@ -638,7 +638,7 @@ class TestFastAtRead(LeoUnitTest):
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         # g.printObj(g.splitLines(s), tag='s')
         expected = contents.replace('#@', '# @')
-        # g.printObj(g.splitLines(expected), tag='expected')  ###
+        # g.printObj(g.splitLines(expected), tag='expected')
         self.assertEqual(s, expected)
     # @+node:ekr.20211101085019.1: *3* TestFastAtRead.test_at_comment (and @first)
     def test_at_comment(self):
@@ -1004,7 +1004,7 @@ class TestFastAtRead(LeoUnitTest):
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         # g.printObj(g.splitLines(s), tag='s')
         expected = contents.replace('@q@@', '@q@ @')
-        # g.printObj(g.splitLines(expected), tag='expected')  ###
+        # g.printObj(g.splitLines(expected), tag='expected')
         self.assertEqual(s, expected)
     # @+node:ekr.20231203092436.1: *3* TestFastAtRead.test_minimal_cweb
     # @@language python
@@ -1044,7 +1044,7 @@ class TestFastAtRead(LeoUnitTest):
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         # g.printObj(g.splitLines(s), tag='s')
         expected = contents.replace('@q@@', '@q@ @')
-        # g.printObj(g.splitLines(expected), tag='expected')  ###
+        # g.printObj(g.splitLines(expected), tag='expected')
         self.assertEqual(s, expected)
     # @+node:ekr.20211101152817.1: *3* TestFastAtRead.test_doc_parts
     def test_doc_parts(self):
@@ -1079,8 +1079,6 @@ class TestFastAtRead(LeoUnitTest):
         ''').lstrip().replace('AT', ' @').replace('LB', '<<')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         # @-<< define contents >>
-
-        ### contents = contents.replace('#@', '# @')
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         # g.printObj(contents2, tag='contents2')

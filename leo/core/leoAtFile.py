@@ -1719,8 +1719,6 @@ class AtFile:
             if not s.endswith('\n'):
                 s = s + '\n'
 
-        ### g.printObj(g.splitLines(s), tag=p.h) ###
-
 
         class Status:
             at_comment_seen = False
@@ -1736,7 +1734,6 @@ class AtFile:
             next_i = g.skip_line(s, i)
             assert next_i > i, 'putBody'
             kind = at.directiveKind4(s, i)
-            ### g.trace(f"{i:3}:{next_i:3} {kind} {s[i:next_i]!r}") ###
             at.putLine(i, kind, p, s, status)
             i = next_i
         if not status.in_code:
@@ -1746,7 +1743,6 @@ class AtFile:
     def putLine(self, i: int, kind: int, p: Position, s: str, status: Any) -> None:
         """Put the line at s[i:] of the given kind, updating the status."""
         at = self
-        ### g.trace(f"{i:3} {kind} {s[i]!r}")  ###
         if kind == at.noDirective:
             if status.in_code:
                 # Important: the so-called "name" must include brackets.
@@ -1946,7 +1942,6 @@ class AtFile:
         j = g.skip_line(s, i)
         k = g.skip_ws(s, i)
         line = s[i:j]
-        ### g.trace(repr(line))  ###
         delim1 = self.startSentinelComment
         delims = f"{delim1}@", f"{delim1} @"
 
@@ -2069,7 +2064,6 @@ class AtFile:
         i += len(directive)
         j = g.skip_to_end_of_line(s, i)
         follow = s[i:j]
-        ### g.trace('follow', repr(follow))
         # Put the opening @+doc or @-doc sentinel, including whatever follows the directive.
         at.putSentinel(sentinel + follow)
         # Put the opening comment if we are using block comments.
@@ -3050,11 +3044,9 @@ class FastAtRead:
 
     def get_patterns(self, comment_delims: Any) -> None:
         """Create regex patterns for the given comment delims."""
+        
         # This must be a function, because of @comments & @delims.
         comment_delim_start, comment_delim_end = comment_delims
-        ###
-            # delim1 = re.escape(comment_delim_start)
-            # delim2 = re.escape(comment_delim_end or '')
             
         # Make no assumption about comment delims.
         delim1 = re.escape(comment_delim_start.strip())
@@ -3109,7 +3101,6 @@ class FastAtRead:
         i = 0  # To keep some versions of pylint happy.
         for i, line in enumerate(lines):
             m = self.header_pattern.match(line)
-            ### g.trace(repr(line), repr(m))
             if m:
                 delims = m.group(1), m.group(8) or ''
                 return delims, first_lines, i + 1
@@ -3130,8 +3121,7 @@ class FastAtRead:
         doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')  # To handle doc parts.
         first_i = 0  # Index into first array.
         in_doc = False  # True: in @doc parts.
-        ### is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
-        is_cweb = comment_delim1 in ('@q@', ' @q@') and comment_delim2 == '@>'  # True: cweb hack in effect.
+        is_cweb = comment_delim1.strip() == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
         indent = 0  # The current indentation.
         level_stack: list[tuple[VNode, VNode]] = []
         n_last_lines = 0  # The number of @@last directives seen.
@@ -3167,11 +3157,9 @@ class FastAtRead:
         # Set the patterns
         self.get_patterns(comment_delims)
         # @-<< init scan_lines >>
-        ### g.trace(f"comment_delims: {comment_delims!r}")  ###
         i = 0  # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
             # Strip the line only once.
-            ### print(f"{i:2} {line!r}")  ###
             strip_line = line.strip()
             if afterref:
                 # @+<< handle afterref line>>
@@ -3208,7 +3196,6 @@ class FastAtRead:
             if indent and line[:indent].isspace() and len(line) > indent:
                 line = line[indent:]
             # @-<< finalize line >>
-            ### if not in_doc and not strip_line.startswith(sentinel):  # Faster than a regex!
             if not in_doc and not strip_line.startswith(sentinel.lstrip()):  # Faster than a regex!
                 body.append(line)
                 continue
@@ -3578,7 +3565,6 @@ class FastAtRead:
         # Set the body text.
         assert root_v.gnx in gnx2vnode, root_v
         assert root_v.gnx in gnx2body, root_v
-        ### breakpoint()  ###
         for key in gnx2body:
             body = gnx2body.get(key)
             v = gnx2vnode.get(key)
