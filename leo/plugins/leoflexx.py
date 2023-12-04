@@ -1,15 +1,15 @@
-#@+leo-ver=5-thin
-#@+node:ekr.20181103094900.1: * @file ../plugins/leoflexx.py
+# @+leo-ver=5-thin
+# @+node:ekr.20181103094900.1: * @file ../plugins/leoflexx.py
 
 # Disable mypy checking.
 # type:ignore
 
-#@@language python
-#@@tabwidth -4
-#@+<< leoflexx: docstring >>
-#@+node:ekr.20181122215342.1: ** << leoflexx: docstring >>
-#@@language md
-#@@wrap
+# @@language python
+# @@tabwidth -4
+# @+<< leoflexx: docstring >>
+# @+node:ekr.20181122215342.1: ** << leoflexx: docstring >>
+# @@language md
+# @@wrap
 """
 flexx.py: LeoWapp (Leo as a web browser), implemented using flexx:
 https://flexx.readthedocs.io/en/stable/
@@ -34,9 +34,9 @@ You should see the flexx (Tornado) server start up in the console.
 Something that looks like Leo should then appear in the browser. Everything
 you see is real, and most of it is "live".
 """
-#@-<< leoflexx: docstring >>
-#@+<< leoflexx: imports >>
-#@+node:ekr.20181113041314.1: ** << leoflexx: imports >>
+# @-<< leoflexx: docstring >>
+# @+<< leoflexx: imports >>
+# @+node:ekr.20181113041314.1: ** << leoflexx: imports >>
 import os
 import re
 import sys
@@ -65,24 +65,24 @@ try:
     from pscript import RawJS
 except Exception:
     flx = None
-#@-<< leoflexx: imports >>
-#@+<< leoflexx: assets >>
-#@+node:ekr.20181111074958.1: ** << leoflexx: assets >>
+# @-<< leoflexx: imports >>
+# @+<< leoflexx: assets >>
+# @+node:ekr.20181111074958.1: ** << leoflexx: assets >>
 # Assets for ace JS editor.
 base_url = 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/'
 flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
-#@-<< leoflexx: assets >>
+# @-<< leoflexx: assets >>
 #
 # pylint: disable=logging-not-lazy,unused-private-member
 
 # flexx can't handle generators, so we *must* use comprehensions instead.
 # pylint: disable=use-a-generator
 
-#@+others
-#@+node:ekr.20181121040901.1: **  top-level functions
-#@+node:ekr.20181121091633.1: *3* dump_event
+# @+others
+# @+node:ekr.20181121040901.1: **  top-level functions
+# @+node:ekr.20181121091633.1: *3* dump_event
 def dump_event(ev):
     """Print a description of the event."""
     id_ = ev.source.title or ev.source.text
@@ -90,7 +90,7 @@ def dump_event(ev):
     s = kind + ev.type
     message = '%s: %s' % (s.rjust(15), id_)
     print('dump_event: ' + message)
-#@+node:ekr.20181121040857.1: *3* get_root
+# @+node:ekr.20181121040857.1: *3* get_root
 def get_root():
     """
     Return the LeoBrowserApp instance.
@@ -101,7 +101,7 @@ def get_root():
     root = flx.loop.get_active_component().root
     assert isinstance(root, LeoBrowserApp), repr(root)
     return root
-#@+node:ekr.20181112165240.1: *3* info (deprecated)
+# @+node:ekr.20181112165240.1: *3* info (deprecated)
 def info(s):
     """Send the string s to the flex logger, at level info."""
     if not isinstance(s, str):
@@ -109,10 +109,10 @@ def info(s):
     # A hack: automatically add the "Leo" prefix so
     # the top-level suppression logic will not delete this message.
     flx.logger.info('Leo: ' + s)
-#@+node:ekr.20181103151350.1: *3* init
+# @+node:ekr.20181103151350.1: *3* init
 def init():
     return flx
-#@+node:ekr.20181203151314.1: *3* make_editor_function
+# @+node:ekr.20181203151314.1: *3* make_editor_function
 def make_editor_function(name, node):
     """
     Instantiate the ace editor.
@@ -131,7 +131,7 @@ def make_editor_function(name, node):
     if name == 'minibuffer':
         pass  # To do: Disable line numbers.
     return ace
-#@+node:ekr.20181113041410.1: *3* suppress_unwanted_log_messages (not used)
+# @+node:ekr.20181113041410.1: *3* suppress_unwanted_log_messages (not used)
 def suppress_unwanted_log_messages():
     """
     Suppress the "Automatically scrolling cursor into view" messages by
@@ -140,8 +140,8 @@ def suppress_unwanted_log_messages():
     allowed = r'(Traceback|Critical|Error|Leo|Session|Starting|Stopping|Warning)'
     pattern = re.compile(allowed, re.IGNORECASE)
     flx.set_log_level('INFO', pattern)
-#@+node:ekr.20181115071559.1: ** Py side: App & wrapper classes
-#@+node:ekr.20181127151027.1: *3* class API_Wrapper (StringTextWrapper)
+# @+node:ekr.20181115071559.1: ** Py side: App & wrapper classes
+# @+node:ekr.20181127151027.1: *3* class API_Wrapper (StringTextWrapper)
 class API_Wrapper(leoFrame.StringTextWrapper):
     """
     A wrapper class that implements the high-level interface.
@@ -166,8 +166,8 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         self.flx_wrapper().set_focus()
 
     # No need to override getters.
-    #@+others
-    #@+node:ekr.20181128101421.1: *4* API_Wrapper.Selection Setters
+    # @+others
+    # @+node:ekr.20181128101421.1: *4* API_Wrapper.Selection Setters
     def finish_set_insert(self, tag):
         """Common helper for selection setters."""
         if 'select' in g.app.debug:
@@ -189,10 +189,10 @@ class API_Wrapper(leoFrame.StringTextWrapper):
     def setSelectionRange(self, i: int, j: int, insert: Optional[int] = None):
         super().setSelectionRange(i, j, insert)
         self.finish_set_insert('setSelectionRange')
-    #@+node:ekr.20181127121642.1: *4* API_Wrapper.Text Setters
-    #@@language rest
-    #@@wrap
-    #@+at
+    # @+node:ekr.20181127121642.1: *4* API_Wrapper.Text Setters
+    # @@language rest
+    # @@wrap
+    # @+at
     # These methods implement Leo's high-level api for the body pane.
     #
     # Consider Leo's sort-lines command. sort-lines knows nothing about which gui
@@ -203,8 +203,8 @@ class API_Wrapper(leoFrame.StringTextWrapper):
     # 1. Call the corresponding super() method to update self.s, self.i and self.ins.
     # 2. Call the corresponding flx_body methods to update the flx_body widget,
     #    except while unit testing.
-    #@@c
-    #@@language python
+    # @@c
+    # @@language python
 
     def finish_setter(self, tag):
         """The common setter code."""
@@ -242,8 +242,8 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         # Called by set_body_text_after_select.
         super().setAllText(s)
         self.finish_setter('insert')
-    #@-others
-#@+node:ekr.20181206153831.1: *3* class DummyFrame
+    # @-others
+# @+node:ekr.20181206153831.1: *3* class DummyFrame
 class DummyFrame(leoFrame.NullFrame):
     """
     A frame to keep Leo's core happy until we can call app.finish_create.
@@ -254,7 +254,7 @@ class DummyFrame(leoFrame.NullFrame):
 
     __str__ = __repr__
 
-#@+node:ekr.20181107052522.1: *3* class LeoBrowserApp
+# @+node:ekr.20181107052522.1: *3* class LeoBrowserApp
 # pscript never converts flx.PyComponents to JS.
 
 class LeoBrowserApp(flx.PyComponent):
@@ -268,9 +268,9 @@ class LeoBrowserApp(flx.PyComponent):
 
     main_window = flx.ComponentProp(settable=True)
 
-    #@+others
-    #@+node:ekr.20181126103604.1: *4*  app.Initing
-    #@+node:ekr.20181114015356.1: *5* app.create_all_data
+    # @+others
+    # @+node:ekr.20181126103604.1: *4*  app.Initing
+    # @+node:ekr.20181114015356.1: *5* app.create_all_data
     def create_gnx_to_vnode(self):
         t1 = time.process_time()
         # This is likely the only data that ever will be needed.
@@ -279,7 +279,7 @@ class LeoBrowserApp(flx.PyComponent):
             print('app.create_all_data: %5.3f sec. %s entries' % (
                 (time.process_time() - t1), len(list(self.gnx_to_vnode.keys()))))
         self.test_round_trip_positions()
-    #@+node:ekr.20181124133513.1: *5* app.finish_create
+    # @+node:ekr.20181124133513.1: *5* app.finish_create
     @flx.action
     def finish_create(self):
         """
@@ -333,7 +333,7 @@ class LeoBrowserApp(flx.PyComponent):
             w.body.set_focus()
         # Set the inited flag *last*.
         self.inited = True
-    #@+node:ekr.20181216042806.1: *5* app.init (leoflexx.py)
+    # @+node:ekr.20181216042806.1: *5* app.init (leoflexx.py)
     def init(self):
         # Set the ivars.
         global g  # Always use the imported g.
@@ -370,12 +370,12 @@ class LeoBrowserApp(flx.PyComponent):
         # The main window will be created (much) later.
         main_window = LeoFlexxMainWindow()
         self._mutate('main_window', main_window)
-    #@+node:ekr.20190507110902.1: *4* app.action.cls
+    # @+node:ekr.20190507110902.1: *4* app.action.cls
     @flx.action
     def cls(self):
         """Clear the console"""
         g.cls()
-    #@+node:ekr.20181117163223.1: *4* app.action.do_key
+    # @+node:ekr.20181117163223.1: *4* app.action.do_key
     # https://flexx.readthedocs.io/en/stable/ui/widget.html#flexx.ui.Widget.key_down
     # See Widget._create_key_event in flexx/ui/_widget.py:
 
@@ -392,8 +392,8 @@ class LeoBrowserApp(flx.PyComponent):
         c = self.c
         # Essential: there is no way to pass the actual wrapper.
         browser_wrapper = getattr(c.frame, ivar)
-        #@+<< check browser_wrapper >>
-        #@+node:ekr.20181129073812.1: *5* << check browser_wrapper >>
+        # @+<< check browser_wrapper >>
+        # @+node:ekr.20181129073812.1: *5* << check browser_wrapper >>
         assert isinstance(browser_wrapper, (
             LeoBrowserBody,
             LeoBrowserLog,
@@ -401,7 +401,7 @@ class LeoBrowserApp(flx.PyComponent):
             LeoBrowserStatusLine,
             LeoBrowserTree,
         )), repr(browser_wrapper)
-        #@-<< check browser_wrapper >>
+        # @-<< check browser_wrapper >>
         # ev is a dict, keys are type, source, key, modifiers
         # mods in ('Alt', 'Shift', 'Ctrl', 'Meta')
         key, mods = ev['key'], ev['modifiers']
@@ -410,8 +410,8 @@ class LeoBrowserApp(flx.PyComponent):
             command = 'find' if key == 'f' else 'head'
             self.do_command(command, key, mods)
             return
-        #@+<< set char to the translated key name >>
-        #@+node:ekr.20181129073905.1: *5* << set char to the translated key name >>
+        # @+<< set char to the translated key name >>
+        # @+node:ekr.20181129073905.1: *5* << set char to the translated key name >>
         d = {
             'ArrowDown': 'Down',
             'ArrowLeft': 'Left',
@@ -425,10 +425,10 @@ class LeoBrowserApp(flx.PyComponent):
         if 'Ctrl' in mods:
             mods.remove('Ctrl')
             mods.append('Control')
-        #@-<< set char to the translated key name >>
+        # @-<< set char to the translated key name >>
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), char)
-        #@+<< create key_event >>
-        #@+node:ekr.20181129073734.1: *5* << create key_event >>
+        # @+<< create key_event >>
+        # @+node:ekr.20181129073734.1: *5* << create key_event >>
         # create the key event, but don't bother tracing it.
         old_debug = g.app.debug
         try:
@@ -441,9 +441,9 @@ class LeoBrowserApp(flx.PyComponent):
             )
         finally:
             g.app.debug = old_debug
-        #@-<< create key_event >>
+        # @-<< create key_event >>
         c.k.masterKeyHandler(key_event)
-    #@+node:ekr.20181124054536.1: *4* app.action.dump_dict
+    # @+node:ekr.20181124054536.1: *4* app.action.dump_dict
     @flx.action
     def dump_dict(self, obj, tag):
         # Note: flexx has problems with keyword args.
@@ -452,7 +452,7 @@ class LeoBrowserApp(flx.PyComponent):
     # def message(self, s):
         # """For testing."""
         # print('app.message: %s' % s)
-    #@+node:ekr.20181207080933.1: *4* app.action.set_body_text & set_status
+    # @+node:ekr.20181207080933.1: *4* app.action.set_body_text & set_status
     # These must be separate because they are called from the tree logic.
 
     @flx.action
@@ -467,8 +467,8 @@ class LeoBrowserApp(flx.PyComponent):
         c, w = self.c, self.main_window
         lt, rt = c.frame.statusLine.update(c.p.b, 0)
         w.status_line.update(lt, rt)
-    #@+node:ekr.20181122132345.1: *4* app.Drawing...
-    #@+node:ekr.20181113042549.1: *5* app.action.redraw
+    # @+node:ekr.20181122132345.1: *4* app.Drawing...
+    # @+node:ekr.20181113042549.1: *5* app.action.redraw
     @flx.action
     def redraw(self, p):
         """
@@ -520,7 +520,7 @@ class LeoBrowserApp(flx.PyComponent):
         self.old_flattened_outline = new_flattened_outline
         self.old_redraw_dict = redraw_dict
         self.redraw_generation += 1
-    #@+node:ekr.20181111095640.1: *5* app.action.send_children_to_tree
+    # @+node:ekr.20181111095640.1: *5* app.action.send_children_to_tree
     @flx.action
     def send_children_to_tree(self, parent_ap):
         """
@@ -555,7 +555,7 @@ class LeoBrowserApp(flx.PyComponent):
                 # For compatibility with flx.tree.create_item_with_parent.
             ],
         })
-    #@+node:ekr.20181111203114.1: *5* app.ap_to_p
+    # @+node:ekr.20181111203114.1: *5* app.ap_to_p
     def ap_to_p(self, ap):
         """Convert an archived position to a true Leo position."""
         childIndex = ap['childIndex']
@@ -565,7 +565,7 @@ class LeoBrowserApp(flx.PyComponent):
                 for d in ap['stack']
         ]
         return leoNodes.Position(v, childIndex, stack)
-    #@+node:ekr.20181124071215.1: *5* app.dump_top_level
+    # @+node:ekr.20181124071215.1: *5* app.dump_top_level
     def dump_top_level(self):
         """Dump the top-level nodes."""
         if 0:
@@ -578,7 +578,7 @@ class LeoBrowserApp(flx.PyComponent):
             for p in c.rootPosition().self_and_siblings():
                 print('  %5s %s' % (p.isExpanded(), p.h))
             print('')
-    #@+node:ekr.20181113043539.1: *5* app.make_redraw_dict & helper
+    # @+node:ekr.20181113043539.1: *5* app.make_redraw_dict & helper
     def make_redraw_dict(self, p=None):
         """
         Return a **recursive**, archivable, list of lists describing all the
@@ -602,7 +602,7 @@ class LeoBrowserApp(flx.PyComponent):
             print('app.make_redraw_dict: %s direct children %5.3f sec.' % (
                 len(list(c.rootPosition().self_and_siblings())), (t2 - t1)))
         return d
-    #@+node:ekr.20181113044701.1: *6* app.make_dict_for_position
+    # @+node:ekr.20181113044701.1: *6* app.make_dict_for_position
     def make_dict_for_position(self, p):
         """
         Recursively add a sublist for p and all its visible nodes.
@@ -629,8 +629,8 @@ class LeoBrowserApp(flx.PyComponent):
             'gnx': p.v.gnx,
             'headline': p.v.h,
         }
-    #@+node:ekr.20190511091601.1: *4* app.Editing
-    #@+node:ekr.20181129122147.1: *5* app.edit_headline & helper
+    # @+node:ekr.20190511091601.1: *4* app.Editing
+    # @+node:ekr.20181129122147.1: *5* app.edit_headline & helper
     def edit_headline(self):
         """Simulate editing the headline in the minibuffer."""
         w = self.root.main_window
@@ -640,7 +640,7 @@ class LeoBrowserApp(flx.PyComponent):
 
     def edit_headline_completer(self, headline):
         print('app.edit_headline_completer')
-    #@+node:ekr.20190512081356.1: *4* app.request_focus
+    # @+node:ekr.20190512081356.1: *4* app.request_focus
     def request_focus(self, w):
         """Monkey-patched c.request_focus."""
         tag = 'py.app.request_focus'
@@ -665,8 +665,8 @@ class LeoBrowserApp(flx.PyComponent):
                 return
         if trace:
             print('%30s: FAIL %r' % (tag, w))
-    #@+node:ekr.20190511091236.1: *4* app.Minibuffer
-    #@+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command
+    # @+node:ekr.20190511091236.1: *4* app.Minibuffer
+    # @+node:ekr.20181127070903.1: *5* app.execute_minibuffer_command
     def execute_minibuffer_command(self, commandName, char, mods):
         """Start the execution of a minibuffer command."""
         # Called by app.do_command.
@@ -678,7 +678,7 @@ class LeoBrowserApp(flx.PyComponent):
             'headline': c.p.h,  # Debugging.
             'mods': mods,
         })
-    #@+node:ekr.20190510133737.1: *5* app.action.complete_minibuffer_command
+    # @+node:ekr.20190510133737.1: *5* app.action.complete_minibuffer_command
     @flx.action
     def complete_minibuffer_command(self, d):
         """Complete the minibuffer command using d."""
@@ -735,9 +735,9 @@ class LeoBrowserApp(flx.PyComponent):
                 k.setStatusLabel('Command does not exist: %s' % commandName)
                 c.bodyWantsFocus()
         return False
-    #@+node:ekr.20190511102058.1: *4* app.Save commands
+    # @+node:ekr.20190511102058.1: *4* app.Save commands
     # These all monkey-patch the corresponding c.fileCommands methods.
-    #@+node:ekr.20190511100908.1: *5* app.save_file
+    # @+node:ekr.20190511100908.1: *5* app.save_file
     def save_file(self, fileName):
         """
         Monkey-patched override of c.fileCommands.save.
@@ -764,7 +764,7 @@ class LeoBrowserApp(flx.PyComponent):
             tag = 'py.app.complete_save_file'
             print('%30s: %s' % (tag, fn))
         self.old_save_file(fn)
-    #@+node:ekr.20190511102119.1: *5* app.save_file_as
+    # @+node:ekr.20190511102119.1: *5* app.save_file_as
     def save_file_as(self, fileName):
         """
         Monkey-patched override of c.fileCommands.saveAs.
@@ -791,7 +791,7 @@ class LeoBrowserApp(flx.PyComponent):
             tag = 'py.app.complete_save_file'
             print('%30s: %s' % (tag, fn))
         self.old_save_file_as(fn)
-    #@+node:ekr.20190511102120.1: *5* app.save_file_to
+    # @+node:ekr.20190511102120.1: *5* app.save_file_to
     def save_file_to(self, fileName):
         """
         Monkey-patched override of c.fileCommands.saveTo.
@@ -818,15 +818,15 @@ class LeoBrowserApp(flx.PyComponent):
             tag = 'py.app.complete_save_file'
             print('%30s: %s' % (tag, fn))
         self.old_save_file_to(fn)
-    #@+node:ekr.20181124095316.1: *4* app.Selecting...
-    #@+node:ekr.20181216051109.1: *5* app.action.complete_select
+    # @+node:ekr.20181124095316.1: *4* app.Selecting...
+    # @+node:ekr.20181216051109.1: *5* app.action.complete_select
     @flx.action
     def complete_select(self, d):
         """Complete the selection of the d['new_ap']"""
         self.update_body_from_dict(d)
         # tree.complete_select has direct ivars to tree ivars.
         self.c.frame.tree.complete_select(d)
-    #@+node:ekr.20181111202747.1: *5* app.action.select_ap
+    # @+node:ekr.20181111202747.1: *5* app.action.select_ap
     @flx.action
     def select_ap(self, ap):
         """
@@ -844,14 +844,14 @@ class LeoBrowserApp(flx.PyComponent):
         w.tree.select_ap(ap)
         # call LeoTree.select, but not self.select_p.
         c.frame.tree.super_select(p)
-    #@+node:ekr.20190506100026.1: *5* app.action.select_minibuffer
+    # @+node:ekr.20190506100026.1: *5* app.action.select_minibuffer
     @flx.action
     def select_minibuffer(self):
         """Select the minibuffer in response to user click."""
         c = self.c
         event = g.app.gui.create_key_event(c, w=c.frame.body.wrapper)
         c.k.fullCommand(event)
-    #@+node:ekr.20181118061020.1: *5* app.action.select_p
+    # @+node:ekr.20181118061020.1: *5* app.action.select_p
     @flx.action
     def select_p(self, p):
         """
@@ -873,7 +873,7 @@ class LeoBrowserApp(flx.PyComponent):
         body = c.frame.body.wrapper
         w.body.set_text(body.s)
         w.body.set_insert_point(body.ins, body.sel)
-    #@+node:ekr.20190510053112.1: *5* app.action.select_tree_using_ap
+    # @+node:ekr.20190510053112.1: *5* app.action.select_tree_using_ap
     @flx.action
     def select_tree_using_ap(self, ap):
         """A helper action, called from flx_tree.on_selected_event."""
@@ -881,7 +881,7 @@ class LeoBrowserApp(flx.PyComponent):
         # print(tag, ap ['headline'])
         p = self.ap_to_p(ap)
         self.c.frame.tree.select(p)
-    #@+node:ekr.20181111204659.1: *5* app.p_to_ap (updates dict)
+    # @+node:ekr.20181111204659.1: *5* app.p_to_ap (updates dict)
     def p_to_ap(self, p):
         """
         Convert a true Leo position to a serializable archived position.
@@ -908,7 +908,7 @@ class LeoBrowserApp(flx.PyComponent):
                 'headline': stack_v.h,
             } for (stack_v, stack_childIndex) in p.stack],
         }
-    #@+node:ekr.20181215154640.1: *5* app.update_body_from_dict & helper
+    # @+node:ekr.20181215154640.1: *5* app.update_body_from_dict & helper
     def update_body_from_dict(self, d):
         """
         Update the *old* p.b from d.
@@ -931,7 +931,7 @@ class LeoBrowserApp(flx.PyComponent):
             print('%30s: p.b: %s d.s: %s' % (tag, len(p.b), len(d_s)))
             # self.dump_dict(d, tag)
         self.update_body_from_dict_helper(d)
-    #@+node:ekr.20190511094352.1: *6* app.update_body_from_dict_helper
+    # @+node:ekr.20190511094352.1: *6* app.update_body_from_dict_helper
     def update_body_from_dict_helper(self, d):
         """Update the body dict, without checks."""
         c, v = self.c, self.c.p.v
@@ -959,8 +959,8 @@ class LeoBrowserApp(flx.PyComponent):
             # Besides, we are about to change nodes.
             w = c.frame.body.wrapper
             w.ins, w.sel, w.s = ins, sel, d_s
-    #@+node:ekr.20181122132009.1: *4* app.Testing...
-    #@+node:ekr.20181111142921.1: *5* app.action: do_command & helpers
+    # @+node:ekr.20181122132009.1: *4* app.Testing...
+    # @+node:ekr.20181111142921.1: *5* app.action: do_command & helpers
     @flx.action
     def do_command(self, command, key, mods):
         c = self.c
@@ -984,14 +984,14 @@ class LeoBrowserApp(flx.PyComponent):
         self.execute_minibuffer_command(command, key, mods)
         c.k.keyboardQuit()
         w.body.set_focus()
-    #@+node:ekr.20181210054910.1: *6* app.do_cls
+    # @+node:ekr.20181210054910.1: *6* app.do_cls
     def do_cls(self):
         c = self.c
         w = self.root.main_window
         g.cls()
         c.k.keyboardQuit()
         w.body.set_focus()
-    #@+node:ekr.20181210055704.1: *6* app.do_find & helpers
+    # @+node:ekr.20181210055704.1: *6* app.do_find & helpers
     def do_find(self):
         c = self.c
         event = leoGui.LeoKeyEvent(c,
@@ -1008,7 +1008,7 @@ class LeoBrowserApp(flx.PyComponent):
 
     def terminate_do_find(self):
         """Never called."""
-    #@+node:ekr.20181210092900.1: *7* app.end_find
+    # @+node:ekr.20181210092900.1: *7* app.end_find
     def end_find(self, pattern):
         c = self.c
         fc = c.findCommands
@@ -1045,7 +1045,7 @@ class LeoBrowserApp(flx.PyComponent):
             c.k.keyboardQuit()
             c.redraw()
             w.body.set_focus()
-    #@+node:ekr.20181119103144.1: *6* app.do_focus
+    # @+node:ekr.20181119103144.1: *6* app.do_focus
     def do_focus(self):
         c = self.c
         old_debug = g.app.debug
@@ -1058,7 +1058,7 @@ class LeoBrowserApp(flx.PyComponent):
 
 
 
-    #@+node:ekr.20181210055648.1: *6* app.do_head & helpers
+    # @+node:ekr.20181210055648.1: *6* app.do_head & helpers
     def do_head(self):
         c = self.c
         event = leoGui.LeoKeyEvent(c,
@@ -1075,7 +1075,7 @@ class LeoBrowserApp(flx.PyComponent):
 
     def terminate_do_head(self, args, c, event):
         """never actually called."""
-    #@+node:ekr.20181210092817.1: *7* app.end_set_headline (leoflexx.py)
+    # @+node:ekr.20181210092817.1: *7* app.end_set_headline (leoflexx.py)
     def end_set_headline(self, h):
         c, k, p, u = self.c, self.c.k, self.c.p, self.c.undoer
         w = self.root.main_window
@@ -1090,11 +1090,11 @@ class LeoBrowserApp(flx.PyComponent):
         k.keyboardQuit()
         c.redraw()
         w.body.set_focus()
-    #@+node:ekr.20181210054631.1: *6* app.do_redraw
+    # @+node:ekr.20181210054631.1: *6* app.do_redraw
     def do_redraw(self):
         print('testing redraw...')
         self.redraw(None)
-    #@+node:ekr.20181210054631.2: *6* app.do_select
+    # @+node:ekr.20181210054631.2: *6* app.do_select
     def do_select(self):
         print('testing select...')
         c = self.c
@@ -1105,7 +1105,7 @@ class LeoBrowserApp(flx.PyComponent):
             # LeoBrowserTree.select.
         else:
             print('app.do_select: not found: %s' % h)
-    #@+node:ekr.20181210054516.1: *6* app.do_test
+    # @+node:ekr.20181210054516.1: *6* app.do_test
     def do_test(self):
         c = self.c
         w = self.root.main_window
@@ -1116,7 +1116,7 @@ class LeoBrowserApp(flx.PyComponent):
         c.redraw()
         w.body.set_focus()
 
-    #@+node:ekr.20181126104843.1: *5* app.test_full_outline
+    # @+node:ekr.20181126104843.1: *5* app.test_full_outline
     def test_full_outline(self, p):
         """Exercise the new diff-based redraw code on a fully-expanded outline."""
         c = self.c
@@ -1139,7 +1139,7 @@ class LeoBrowserApp(flx.PyComponent):
         for p2 in c.all_positions(copy=False):
             p2.contract()
         c.expandAllAncestors(p)  # Does not do a redraw.
-    #@+node:ekr.20181113180246.1: *5* app.test_round_trip_positions
+    # @+node:ekr.20181113180246.1: *5* app.test_round_trip_positions
     def test_round_trip_positions(self):
         """Test the round tripping of p_to_ap and ap_to_p."""
         c = self.c
@@ -1155,8 +1155,8 @@ class LeoBrowserApp(flx.PyComponent):
         new_len = len(list(self.gnx_to_vnode.keys()))
         assert old_len == new_len, (old_len, new_len)
         # print('app.test_round_trip_positions: %5.3f sec' % (time.process_time()-t1))
-    #@-others
-#@+node:ekr.20181115092337.3: *3* class LeoBrowserBody
+    # @-others
+# @+node:ekr.20181115092337.3: *3* class LeoBrowserBody
 class LeoBrowserBody(leoFrame.NullBody):
 
     def __init__(self, frame):
@@ -1177,7 +1177,7 @@ class LeoBrowserBody(leoFrame.NullBody):
     def getName(self):
         return 'body'  # Required for proper pane bindings.
 
-#@+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
+# @+node:ekr.20181115092337.6: *3* class LeoBrowserFrame
 class LeoBrowserFrame(leoFrame.NullFrame):
 
     def __init__(self, c, title, gui):
@@ -1205,9 +1205,9 @@ class LeoBrowserFrame(leoFrame.NullFrame):
         """Override NullFrame.finishCreate."""
         # Do not call self.createFirstTreeNode.
 
-    #@+others
-    #@-others
-#@+node:ekr.20181113041113.1: *3* class LeoBrowserGui
+    # @+others
+    # @-others
+# @+node:ekr.20181113041113.1: *3* class LeoBrowserGui
 class LeoBrowserGui(leoGui.NullGui):
 
     def __init__(self, gui_name='browser'):
@@ -1233,8 +1233,8 @@ class LeoBrowserGui(leoGui.NullGui):
         # Mysterious...
         assert False, g.callers()
 
-    #@+others
-    #@+node:ekr.20181206153033.1: *4* gui.createLeoFrame
+    # @+others
+    # @+node:ekr.20181206153033.1: *4* gui.createLeoFrame
     def createLeoFrame(self, c, title):
         """
         Override NullGui.createLeoFrame.
@@ -1249,7 +1249,7 @@ class LeoBrowserGui(leoGui.NullGui):
         # LM.doPostPluginsInit tests g.app.windowList, maybe when it shouldn't.
         g.app.windowList.append(self.lastFrame)
         return self.lastFrame
-    #@+node:ekr.20181119141542.1: *4* gui.isTextWrapper
+    # @+node:ekr.20181119141542.1: *4* gui.isTextWrapper
     def isTextWrapper(self, w):
         """Return True if w is supposedly a text widget."""
         # isinstance is much more pythonic than using getName.
@@ -1265,7 +1265,7 @@ class LeoBrowserGui(leoGui.NullGui):
         if g.unitTesting and isinstance(w, leoFrame.StringTextWrapper):
             return True
         return False
-    #@+node:ekr.20181119153936.1: *4* gui.focus...
+    # @+node:ekr.20181119153936.1: *4* gui.focus...
     def get_focus(self, *args, **kwargs):
         w = self.focusWidget
         # print('%s: get_focus: %r' % (self.tag, w.tag))
@@ -1298,7 +1298,7 @@ class LeoBrowserGui(leoGui.NullGui):
             c.frame.body.wrapper.setFocus()
         else:
             print('gui.set_focus: unknown widget', repr(widget), g.callers(6))
-    #@+node:ekr.20181206090210.1: *4* gui.writeWaitingLog1/2
+    # @+node:ekr.20181206090210.1: *4* gui.writeWaitingLog1/2
     def writeWaitingLog1(self, c=None):
         """Monkey-patched do-nothing version of g.app.writeWaitingLog."""
 
@@ -1326,15 +1326,15 @@ class LeoBrowserGui(leoGui.NullGui):
             w.log.put(s.rstrip())
         g.app.logWaiting = []
         g.app.setLog(None)  # Essential when opening multiple files...
-    #@+node:ekr.20181202083305.1: *4* gui.runMainLoop
+    # @+node:ekr.20181202083305.1: *4* gui.runMainLoop
     def runMainLoop(self):
         """Run the main loop from within Leo's core."""
         runtime = self.specific_browser or 'webruntime'
         flx.launch(LeoBrowserApp, runtime)
         flx.set_log_level('ERROR')  #  'INFO'
         flx.run()
-    #@-others
-#@+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
+    # @-others
+# @+node:ekr.20181115092337.21: *3* class LeoBrowserIconBar
 class LeoBrowserIconBar(leoFrame.NullIconBarClass):
 
     def __init__(self, c, parentFrame):
@@ -1343,9 +1343,9 @@ class LeoBrowserIconBar(leoFrame.NullIconBarClass):
         self.root = get_root()
         self.tag = 'py.icon bar.wrap'
 
-    #@+others
-    #@-others
-#@+node:ekr.20181115092337.22: *3* class LeoBrowserLog
+    # @+others
+    # @-others
+# @+node:ekr.20181115092337.22: *3* class LeoBrowserLog
 class LeoBrowserLog(leoFrame.NullLog):
 
     def __init__(self, frame, parentFrame=None):
@@ -1369,19 +1369,19 @@ class LeoBrowserLog(leoFrame.NullLog):
     def getName(self):
         return 'log'  # Required for proper pane bindings.
 
-    #@+others
-    #@+node:ekr.20181120063043.1: *4* log_wrapper.setFocus
+    # @+others
+    # @+node:ekr.20181120063043.1: *4* log_wrapper.setFocus
     def setFocus(self):
         w = self.root.main_window
         w.log.set_focus()
-    #@+node:ekr.20181120063111.1: *4* log_wrapper.put & putnl
+    # @+node:ekr.20181120063111.1: *4* log_wrapper.put & putnl
     def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         self.root.main_window.log.put(s)
 
     def putnl(self, tabName='Log'):
         self.root.main_window.log.put('')
-    #@-others
-#@+node:ekr.20181115092337.31: *3* class LeoBrowserMenu
+    # @-others
+# @+node:ekr.20181115092337.31: *3* class LeoBrowserMenu
 class LeoBrowserMenu(leoMenu.NullMenu):
     """Browser wrapper for menus."""
 
@@ -1390,9 +1390,9 @@ class LeoBrowserMenu(leoMenu.NullMenu):
         # self.root = get_root()
         # self.tag = '(py.menu.wrap)'
 
-    #@verbatim
+    # @verbatim
     # @others
-#@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer (StringTextWrapper)
+# @+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer (StringTextWrapper)
 # Leo's core doesn't define a NullMinibuffer class.
 
 class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
@@ -1420,8 +1420,8 @@ class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
     def setFocus(self):
         self.root.main_window.minibuffer.set_focus()
 
-    #@+others
-    #@+node:ekr.20181208062449.1: *4* mini.called by k.minibuffer
+    # @+others
+    # @+node:ekr.20181208062449.1: *4* mini.called by k.minibuffer
     # Override the methods called by k.minibuffer:
 
     last_ins = None
@@ -1473,8 +1473,8 @@ class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
             # print('%30s: %r' % (tag, name))
         w.minibuffer.set_style(name)
         self.update('setStyleClass:%r' % name)
-    #@-others
-#@+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine
+    # @-others
+# @+node:ekr.20181115092337.32: *3* class LeoBrowserStatusLine
 class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
 
     def __init__(self, c, parentFrame):
@@ -1490,15 +1490,15 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
     def __getattr__(self, attr):
         return g.NullObject()
 
-    #@+others
-    #@+node:ekr.20181119045430.1: *4* status_line_wrapper.clear & get
+    # @+others
+    # @+node:ekr.20181119045430.1: *4* status_line_wrapper.clear & get
     def clear(self):
         pass
 
     def get(self):
         print('status_line.get: NOT READY')
         return ''
-    #@+node:ekr.20181119045343.1: *4* status_line_wrapper.put and put1
+    # @+node:ekr.20181119045343.1: *4* status_line_wrapper.put and put1
     def put(self, s, bg=None, fg=None):
         w = self.root.main_window
         # Be careful during startup.
@@ -1510,10 +1510,10 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         # Be careful during startup.
         if w and w.status_line:
             w.status_line.put2(s, bg, fg)
-    #@+node:ekr.20181119154422.1: *4* status_line_wrapper.setFocus
+    # @+node:ekr.20181119154422.1: *4* status_line_wrapper.setFocus
     def setFocus(self):
         self.root.status_line.set_focus()
-    #@+node:ekr.20181119042937.1: *4* status_line_wrapper.update
+    # @+node:ekr.20181119042937.1: *4* status_line_wrapper.update
     def update(self, body_text='', insert_point=0):
         """
         Update the status line, based on the contents of the body.
@@ -1539,8 +1539,8 @@ class LeoBrowserStatusLine(leoFrame.NullStatusLineClass):
         self.put(lt_part)
         self.put1(rt_part)
         return lt_part, rt_part
-    #@-others
-#@+node:ekr.20181115092337.57: *3* class LeoBrowserTree
+    # @-others
+# @+node:ekr.20181115092337.57: *3* class LeoBrowserTree
 class LeoBrowserTree(leoFrame.NullTree):
 
     def __init__(self, frame):
@@ -1554,11 +1554,11 @@ class LeoBrowserTree(leoFrame.NullTree):
     def getName(self):
         return 'canvas(tree)'  # Required for proper pane bindings.
 
-    #@+others
-    #@+node:ekr.20181116081421.1: *4* tree.selection...
+    # @+others
+    # @+node:ekr.20181116081421.1: *4* tree.selection...
 
 
-    #@+node:ekr.20190508121417.1: *5* tree.complete_select
+    # @+node:ekr.20190508121417.1: *5* tree.complete_select
     def complete_select(self, d):
         """Complete the selection of the tree."""
         trace = 'select' in g.app.debug
@@ -1580,7 +1580,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         # Make everything official in Leo's core.
         super().select(p)  # Call LeoTree.select.
         self.root.select_p(p)  # Call app.select_position.
-    #@+node:ekr.20190508121510.1: *5* tree.endEditLabel
+    # @+node:ekr.20190508121510.1: *5* tree.endEditLabel
     def endEditLabel(self):
         """
         End editing.
@@ -1588,7 +1588,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         This must be a do-nothing, because app.end_set_headline takes its place.
         """
         # print(flx.tree.endEditLabel')
-    #@+node:ekr.20190508121414.1: *5*  tree.select
+    # @+node:ekr.20190508121414.1: *5*  tree.select
     # The lockout ensures that old_p never changes during the selection process.
     select_lockout = False
     old_p = None
@@ -1647,7 +1647,7 @@ class LeoBrowserTree(leoFrame.NullTree):
             'old_ap': self.root.p_to_ap(old_p),
             'new_ap': self.root.p_to_ap(p),
         })
-    #@+node:ekr.20190508121417.2: *5* tree.select_ap
+    # @+node:ekr.20190508121417.2: *5* tree.select_ap
     def select_ap(self, ap):
         trace = 'select' in g.app.debug
         p = self.root.ap_to_p(ap)
@@ -1655,7 +1655,7 @@ class LeoBrowserTree(leoFrame.NullTree):
             tag = 'py.tree.select_ap'
             print('%30s: %s %s' % (tag, p.v.fileIndex, p.v._headString))
         self.select(p)
-    #@+node:ekr.20190508121417.3: *5* tree.super_select
+    # @+node:ekr.20190508121417.3: *5* tree.super_select
     def super_select(self, p):
         """Call only LeoTree.select."""
         trace = 'select' in g.app.debug
@@ -1664,17 +1664,17 @@ class LeoBrowserTree(leoFrame.NullTree):
             print('%30s %4s %s %s' % (tag, len(p.b), p.gnx, p.h))
         super().select(p)
 
-    #@+node:ekr.20181118052203.1: *4* tree.redraw
+    # @+node:ekr.20181118052203.1: *4* tree.redraw
     def redraw(self, p=None):
         """This is c.frame.tree.redraw!"""
         self.root.redraw(p)
-    #@+node:ekr.20181120063844.1: *4* tree.setFocus
+    # @+node:ekr.20181120063844.1: *4* tree.setFocus
     def setFocus(self):
         w = self.root.main_window
         w.tree.set_focus()
-    #@-others
-#@+node:ekr.20181119094122.1: *3* class TracingNullObject (leoflexx.py)
-#@@nobeautify
+    # @-others
+# @+node:ekr.20181119094122.1: *3* class TracingNullObject (leoflexx.py)
+# @@nobeautify
 
 class TracingNullObject:
     """A tracing version of g.NullObject."""
@@ -1704,8 +1704,8 @@ class TracingNullObject:
     def __setattr__(self, attr, val):
         print('NullObject.__setattr__ %r %s' % (attr, g.callers()))
         return self
-#@+node:ekr.20181107052700.1: ** Js side: flx.Widgets
-#@+node:ekr.20181201125953.1: *3* class JS_Editor (flx.Widget)
+# @+node:ekr.20181107052700.1: ** Js side: flx.Widgets
+# @+node:ekr.20181201125953.1: *3* class JS_Editor (flx.Widget)
 class JS_Editor(flx.Widget):
     """
     The base class for the body and log panes.
@@ -1722,9 +1722,9 @@ class JS_Editor(flx.Widget):
     def __on_size(self, *events):
         self.editor.resize()
 
-    #@+others
-    #@+node:ekr.20181121072246.1: *4* jse.Keys
-    #@+node:ekr.20181215083729.1: *5* jse.key_press & on_key_press
+    # @+others
+    # @+node:ekr.20181121072246.1: *4* jse.Keys
+    # @+node:ekr.20181215083729.1: *5* jse.key_press & on_key_press
     last_down = None
     ignore_up = False
 
@@ -1785,7 +1785,7 @@ class JS_Editor(flx.Widget):
             if self.should_be_leo_key(ev):
                 ivar = 'minibufferWidget' if self.name == 'minibuffer' else self.name
                 self.root.do_key(ev, ivar)
-    #@+node:ekr.20181201081444.1: *5* jse.should_be_leo_key
+    # @+node:ekr.20181201081444.1: *5* jse.should_be_leo_key
     def should_be_leo_key(self, ev):
         """
         Return True if Leo should handle the key.
@@ -1815,7 +1815,7 @@ class JS_Editor(flx.Widget):
         if trace:
             print('%s: %r %r return: %s' % (tag, mods, key, bool(mods2)))
         return mods2
-    #@+node:ekr.20181215083642.1: *4* jse.focus
+    # @+node:ekr.20181215083642.1: *4* jse.focus
     @flx.action
     def see_insert_point(self):
         if 'focus' in g.app.debug:
@@ -1828,7 +1828,7 @@ class JS_Editor(flx.Widget):
             tag = '%s.%s' % (self.tag, 'jse.set_focus')
             print('%30s:' % tag)
         self.editor.focus()
-    #@+node:ekr.20181215061810.1: *4* jse.text getters
+    # @+node:ekr.20181215061810.1: *4* jse.text getters
     def get_ins(self):
         d = self.editor.selection.getCursor()
         row, col = d['row'], d['column']
@@ -1854,7 +1854,7 @@ class JS_Editor(flx.Widget):
         s = editor.getValue()
         # print('%s: get_text: %s' % (self.tag, len(s)))
         return s
-    #@+node:ekr.20181128061524.1: *4* jse.text setters
+    # @+node:ekr.20181128061524.1: *4* jse.text setters
     @flx.action
     def insert(self, s):
         # print(self.tag, 'insert', repr(s))
@@ -1885,38 +1885,38 @@ class JS_Editor(flx.Widget):
         """Set the entire text"""
         # print('%s.set_text: len(s): %s' % (self.tag, len(s)))
         self.editor.setValue(s)
-    #@-others
-#@+node:ekr.20181104082144.1: *3* class LeoFlexxBody (JS_Editor)
+    # @-others
+# @+node:ekr.20181104082144.1: *3* class LeoFlexxBody (JS_Editor)
 class LeoFlexxBody(JS_Editor):
     """A CodeEditor widget based on Ace."""
 
-    #@+<< body css >>
-    #@+node:ekr.20181120055046.1: *4* << body css >>
+    # @+<< body css >>
+    # @+node:ekr.20181120055046.1: *4* << body css >>
     CSS = """
     .flx-CodeEditor > .ace {
         width: 100%;
         height: 100%;
     }
     """
-    #@-<< body css >>
+    # @-<< body css >>
 
     def init(self):
         # pylint: disable=arguments-differ
         super().init('body')
         self.editor = make_editor_function(self.name, self.node)
 
-    #@+others
-    #@+node:ekr.20190512094614.1: *4* flx_body.action.set_focus
+    # @+others
+    # @+node:ekr.20190512094614.1: *4* flx_body.action.set_focus
     @flx.action
     def set_focus(self):
         if 'focus' in g.app.debug:
             tag = 'flx.body.set_focus'
             print('%30s:' % tag)
         self.editor.focus()
-    #@+node:ekr.20181215061402.1: *4* flx_body.action.sync*
+    # @+node:ekr.20181215061402.1: *4* flx_body.action.sync*
 
 
-    #@+node:ekr.20190511092226.1: *5* flx.body.action.sync_body_before_save_file
+    # @+node:ekr.20190511092226.1: *5* flx.body.action.sync_body_before_save_file
     @flx.action
     def sync_body_before_save_file(self, d):
         """Update p.b, etc. before executing calling c.fileCommands.save."""
@@ -1925,7 +1925,7 @@ class LeoFlexxBody(JS_Editor):
             tag = 'flx.body.sync_body_before_save_file'
             print('%30s: %r' % (tag, d['s']))
         self.root.complete_save_file(d)
-    #@+node:ekr.20190511102428.1: *5* flx.body.action.sync_body_before_save_file_as
+    # @+node:ekr.20190511102428.1: *5* flx.body.action.sync_body_before_save_file_as
     @flx.action
     def sync_body_before_save_file_as(self, d):
         """Update p.b, etc. before executing calling c.fileCommands.saveAs."""
@@ -1934,7 +1934,7 @@ class LeoFlexxBody(JS_Editor):
             tag = 'flx.body.sync_body_before_save_file_as'
             print('%30s: %r' % (tag, d['s']))
         self.root.complete_save_file_as(d)
-    #@+node:ekr.20190511102429.1: *5* flx.body.action.sync_body_before_save_file_to
+    # @+node:ekr.20190511102429.1: *5* flx.body.action.sync_body_before_save_file_to
     @flx.action
     def sync_body_before_save_file_to(self, d):
         """Update p.b, etc. before executing calling c.fileCommands.saveTo."""
@@ -1943,7 +1943,7 @@ class LeoFlexxBody(JS_Editor):
             tag = 'flx.body.sync_body_before_save_file_to'
             print('%30s: %r' % (tag, d['s']))
         self.root.complete_save_file_to(d)
-    #@+node:ekr.20190510070009.1: *5* flx.body.action.sync_body_before_select
+    # @+node:ekr.20190510070009.1: *5* flx.body.action.sync_body_before_select
     @flx.action
     def sync_body_before_select(self, d):
         """
@@ -1962,7 +1962,7 @@ class LeoFlexxBody(JS_Editor):
         self.update_body_dict(d)
         self.root.complete_select(d)
 
-    #@+node:ekr.20190510070010.1: *4* flx.body.update_body_dict
+    # @+node:ekr.20190510070010.1: *4* flx.body.update_body_dict
     def update_body_dict(self, d):
         """
         Add keys to d describing flx.body.
@@ -1987,27 +1987,27 @@ class LeoFlexxBody(JS_Editor):
                 for z in d_s.split('\n'):
                     print(repr(z))
                 print('')
-    #@-others
-#@+node:ekr.20181104082149.1: *3* class LeoFlexxLog (JS_Editor)
+    # @-others
+# @+node:ekr.20181104082149.1: *3* class LeoFlexxLog (JS_Editor)
 class LeoFlexxLog(JS_Editor):
 
-    #@+<< log css >>
-    #@+node:ekr.20181120060336.1: *4* << log css >>
+    # @+<< log css >>
+    # @+node:ekr.20181120060336.1: *4* << log css >>
     CSS = """
     .flx-CodeEditor > .ace {
         width: 100%;
         height: 100%;
     }
     """
-    #@-<< log css >>
+    # @-<< log css >>
 
     def init(self):
         # pylint: disable=arguments-differ
         super().init('log')
         self.editor = make_editor_function(self.name, self.node)
 
-    #@+others
-    #@+node:ekr.20181120060348.1: *4* flx.log.put & set_focus
+    # @+others
+    # @+node:ekr.20181120060348.1: *4* flx.log.put & set_focus
     @flx.action
     def put(self, s):
         prev = self.editor.getValue()
@@ -2022,8 +2022,8 @@ class LeoFlexxLog(JS_Editor):
             tag = 'flx.log.set_focus'
             print('%30s:' % tag)
         self.editor.focus()
-    #@-others
-#@+node:ekr.20181104082130.1: *3* class LeoFlexxMainWindow
+    # @-others
+# @+node:ekr.20181104082130.1: *3* class LeoFlexxMainWindow
 class LeoFlexxMainWindow(flx.Widget):
 
     """
@@ -2046,8 +2046,8 @@ class LeoFlexxMainWindow(flx.Widget):
             body = LeoFlexxBody(flex=1)
             minibuffer = LeoFlexxMiniBuffer()
             status_line = LeoFlexxStatusLine()
-        #@+<< define unload action >>
-        #@+node:ekr.20181206044554.1: *4* << define unload action >>
+        # @+<< define unload action >>
+        # @+node:ekr.20181206044554.1: *4* << define unload action >>
         RawJS("""\
         // Called from Mozilla, but not webruntime.
         window.onbeforeunload = function(){
@@ -2055,7 +2055,7 @@ class LeoFlexxMainWindow(flx.Widget):
             return "Are you sure?"
         };
         """)
-        #@-<< define unload action >>
+        # @-<< define unload action >>
         self._mutate('body', body)
         self._mutate('log', log)
         self._mutate('minibuffer', minibuffer)
@@ -2066,7 +2066,7 @@ class LeoFlexxMainWindow(flx.Widget):
     @flx.reaction('!do_init')
     def after_init(self):
         self.root.finish_create()
-#@+node:ekr.20181104082154.1: *3* class LeoFlexxMiniBuffer (JS_Editor)
+# @+node:ekr.20181104082154.1: *3* class LeoFlexxMiniBuffer (JS_Editor)
 class MinibufferEditor(flx.Widget):
 
     def init(self):
@@ -2087,8 +2087,8 @@ class LeoFlexxMiniBuffer(JS_Editor):
     def on_select(self):
         self.root.select_minibuffer()
 
-    #@+others
-    #@+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
+    # @+others
+    # @+node:ekr.20181127060810.1: *4* flx_minibuffer.high-level interface
     # The high-level interface methods, called from LeoBrowserMinibuffer.
 
     @flx.action
@@ -2120,7 +2120,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
             tag = 'flx.mini.set_text'
             print('%30s: %r' % (tag, s))
         self.editor.setValue(s)
-    #@+node:ekr.20181203150409.1: *4* flx_minibuffer.Key handling
+    # @+node:ekr.20181203150409.1: *4* flx_minibuffer.Key handling
     @flx.emitter
     def key_press(self, e):
         """Pass *all* keys except Enter and F12 to Leo's core."""
@@ -2148,7 +2148,7 @@ class LeoFlexxMiniBuffer(JS_Editor):
         for ev in events:
             # print('mini.on_key_press: %r %r' % (ev ['modifiers'], ev['key']))
             self.root.do_key(ev, 'minibufferWidget')
-    #@+node:ekr.20181129174405.1: *4* flx_minibuffer.do_enter_key
+    # @+node:ekr.20181129174405.1: *4* flx_minibuffer.do_enter_key
     def do_enter_key(self, key, mods):
         """
         Handle the enter key in the minibuffer.
@@ -2166,8 +2166,8 @@ class LeoFlexxMiniBuffer(JS_Editor):
                 self.root.edit_headline_completer(headline)
             else:
                 self.root.do_command(command, key, mods)
-    #@-others
-#@+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
+    # @-others
+# @+node:ekr.20181104082201.1: *3* class LeoFlexxStatusLine
 class LeoFlexxStatusLine(flx.Widget):
 
     def init(self):
@@ -2179,13 +2179,13 @@ class LeoFlexxStatusLine(flx.Widget):
         self.widget.apply_style('background: green')
         self.widget2.apply_style('background: green')
 
-    #@+others
-    #@+node:ekr.20181123043015.1: *4* flx.status_line.action.update
+    # @+others
+    # @+node:ekr.20181123043015.1: *4* flx.status_line.action.update
     @flx.action
     def update(self, lt, rt):
         self.put(lt)
         self.put2(rt)
-    #@+node:ekr.20181120060957.1: *4* flx_status_line.action.put & put2
+    # @+node:ekr.20181120060957.1: *4* flx_status_line.action.put & put2
     @flx.action
     def put(self, s, bg=None, fg=None):
         self.widget.set_text(s)
@@ -2193,7 +2193,7 @@ class LeoFlexxStatusLine(flx.Widget):
     @flx.action
     def put2(self, s, bg=None, fg=None):
         self.widget2.set_text(s)
-    #@+node:ekr.20181120060950.1: *4* flx_status_line.Key handling
+    # @+node:ekr.20181120060950.1: *4* flx_status_line.Key handling
     @flx.emitter
     def key_press(self, e):
         """Allow only F-keys, Ctrl-C and Ctrl-S."""
@@ -2217,12 +2217,12 @@ class LeoFlexxStatusLine(flx.Widget):
             if mods == ['Ctrl'] and key == 's':
                 self.root.do_key(ev, 'statusLine')
             return ev
-    #@-others
-#@+node:ekr.20181104082138.1: *3* class LeoFlexxTree
+    # @-others
+# @+node:ekr.20181104082138.1: *3* class LeoFlexxTree
 class LeoFlexxTree(flx.Widget):
 
-    #@+<< tree css >>
-    #@+node:ekr.20181120061118.1: *4*  << tree css >>
+    # @+<< tree css >>
+    # @+node:ekr.20181120061118.1: *4*  << tree css >>
 
     CSS = '''
     .flx-TreeWidget {
@@ -2233,7 +2233,7 @@ class LeoFlexxTree(flx.Widget):
         /* color: #afa; */
     }
     '''
-    #@-<< tree css >>
+    # @-<< tree css >>
 
     def init(self):
         self.widget = self
@@ -2253,9 +2253,9 @@ class LeoFlexxTree(flx.Widget):
         global undefined
         assert obj not in (undefined, None, {}), repr(obj)
 
-    #@+others
-    #@+node:ekr.20181121073246.1: *4* flx_tree.Drawing...
-    #@+node:ekr.20181112163252.1: *5* flx_tree.action.clear_tree
+    # @+others
+    # @+node:ekr.20181121073246.1: *4* flx_tree.Drawing...
+    # @+node:ekr.20181112163252.1: *5* flx_tree.action.clear_tree
     @flx.action
     def clear_tree(self):
         """
@@ -2281,7 +2281,7 @@ class LeoFlexxTree(flx.Widget):
             if trace:
                 print('  %r %s' % (item, item.text))
             item.dispose()
-    #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
+    # @+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
     def redraw_with_dict(self, redraw_dict, redraw_instructions):
         """
@@ -2312,7 +2312,7 @@ class LeoFlexxTree(flx.Widget):
         # Select c.p.
         self.select_ap(redraw_dict['c.p'])
         redraw_dict = {}  # #1127: Remove references to deleted items.
-    #@+node:ekr.20181124194248.1: *6* tree.create_item_with_parent
+    # @+node:ekr.20181124194248.1: *6* tree.create_item_with_parent
     def create_item_with_parent(self, item, parent):
         """Create a tree item for item and all its visible children."""
         # pylint: disable=no-member
@@ -2343,7 +2343,7 @@ class LeoFlexxTree(flx.Widget):
         for child in item['children']:
             self.create_item_with_parent(child, tree_item)
         return tree_item  # Debugging
-    #@+node:ekr.20181114072307.1: *5* flx_tree.ap_to_key
+    # @+node:ekr.20181114072307.1: *5* flx_tree.ap_to_key
     def ap_to_key(self, ap):
         """Produce a key for the given ap."""
         self.assert_exists(ap)
@@ -2358,7 +2358,7 @@ class LeoFlexxTree(flx.Widget):
         key = 'Tree key<childIndex: %s, gnx: %s, %s <stack: %s>>' % (
             childIndex, gnx, headline, stack_s or '[]')
         return key
-    #@+node:ekr.20181113085722.1: *5* flx_tree.dump_ap
+    # @+node:ekr.20181113085722.1: *5* flx_tree.dump_ap
     def dump_ap(self, ap, padding, tag):
         """Print an archived position fully."""
         stack = ap['stack']
@@ -2391,7 +2391,7 @@ class LeoFlexxTree(flx.Widget):
                 ap['gnx'],
                 ap['headline'],
             ))
-    #@+node:ekr.20181104080854.3: *5* flx_tree.reaction: on_tree_event
+    # @+node:ekr.20181104080854.3: *5* flx_tree.reaction: on_tree_event
     # actions: set_checked, set_collapsed, set_parent, set_selected, set_text, set_visible
     @flx.reaction(
         'tree.children**.checked',
@@ -2412,16 +2412,16 @@ class LeoFlexxTree(flx.Widget):
                     ap['expanded'] = True
                     # Populate children, if necessary.
                     self.start_populating_children(ap, tree_item)
-    #@+node:ekr.20181120063735.1: *4* flx_tree.Focus
+    # @+node:ekr.20181120063735.1: *4* flx_tree.Focus
     @flx.action
     def set_focus(self):
         if 'focus' in g.app.debug:
             tag = 'flx.tree.set_focus'
             print('%30s:' % tag)
         self.node.focus()
-    #@+node:ekr.20181123165819.1: *4* flx_tree.Incremental Drawing...
+    # @+node:ekr.20181123165819.1: *4* flx_tree.Incremental Drawing...
     # This are not used, at present, but they may come back.
-    #@+node:ekr.20181125051244.1: *5* flx_tree.populate_children
+    # @+node:ekr.20181125051244.1: *5* flx_tree.populate_children
     def populate_children(self, children, parent_ap):
         """
         Populate the children of the given parent.
@@ -2438,7 +2438,7 @@ class LeoFlexxTree(flx.Widget):
         for child_ap in children:
             self.create_item_with_parent(child_ap, parent)
         self.populating_tree_item = False
-    #@+node:ekr.20181111011928.1: *5* flx_tree.start_populating_children
+    # @+node:ekr.20181111011928.1: *5* flx_tree.start_populating_children
     def start_populating_children(self, parent_ap, parent_tree_item):
         """
         Populate the parent tree item with the children if necessary.
@@ -2457,7 +2457,7 @@ class LeoFlexxTree(flx.Widget):
         #
         # Ask for the items.
         self.root.send_children_to_tree(parent_ap)
-    #@+node:ekr.20181110175222.1: *5* flx_tree.action.receive_children
+    # @+node:ekr.20181110175222.1: *5* flx_tree.action.receive_children
     @flx.action
     def receive_children(self, d):
         """
@@ -2474,7 +2474,7 @@ class LeoFlexxTree(flx.Widget):
         children = d['items']
         # print('flx.tree.receive_children: %s children' % (len(children)))
         self.populate_children(children, parent_ap)
-    #@+node:ekr.20181120061140.1: *4* flx_tree.Key handling
+    # @+node:ekr.20181120061140.1: *4* flx_tree.Key handling
     @flx.emitter
     def key_press(self, e):
         ev = self._create_key_event(e)
@@ -2497,15 +2497,15 @@ class LeoFlexxTree(flx.Widget):
         # print('flx.tree.on_key_press')
         for ev in events:
             self.root.do_key(ev, 'tree')
-    #@+node:ekr.20181121195235.1: *4* flx_tree.Selecting...
-    #@+node:ekr.20181123171958.1: *5* flx_tree.action.set_ap
+    # @+node:ekr.20181121195235.1: *4* flx_tree.Selecting...
+    # @+node:ekr.20181123171958.1: *5* flx_tree.action.set_ap
     @flx.action
     def set_ap(self, ap):
         """self.selected_ap. Called from app.select_ap."""
         assert ap
         self.selected_ap = ap
         self.select_ap(self.selected_ap)
-    #@+node:ekr.20181116083916.1: *5* flx_tree.select_ap
+    # @+node:ekr.20181116083916.1: *5* flx_tree.select_ap
     @flx.action
     def select_ap(self, ap):
         """
@@ -2521,7 +2521,7 @@ class LeoFlexxTree(flx.Widget):
             self.selected_ap = ap  # Set the item's selected property.
         else:
             pass  # We may be in the middle of a redraw.
-    #@+node:ekr.20181109083659.1: *5* flx_tree.reaction.on_selected_event
+    # @+node:ekr.20181109083659.1: *5* flx_tree.reaction.on_selected_event
     @flx.reaction('tree.children**.selected')  # don't use mode="greedy" here!
     def on_selected_event(self, *events):
         """
@@ -2550,8 +2550,8 @@ class LeoFlexxTree(flx.Widget):
                 self.set_ap(ap)  # Sets self.selected_ap.
                 # A helper action, calling tree.select.
                 self.root.select_tree_using_ap(ap)
-    #@-others
-#@+node:ekr.20181108233657.1: *3* class LeoFlexxTreeItem
+    # @-others
+# @+node:ekr.20181108233657.1: *3* class LeoFlexxTreeItem
 class LeoFlexxTreeItem(flx.TreeItem):
 
     def init(self, leo_ap):
@@ -2562,7 +2562,7 @@ class LeoFlexxTreeItem(flx.TreeItem):
     def getName(self):
         return 'head'  # Required, for proper pane bindings.
 
-    #@+others
-    #@-others
-#@-others
-#@-leo
+    # @+others
+    # @-others
+# @-others
+# @-leo
