@@ -1207,20 +1207,19 @@ class TestFastAtRead(LeoUnitTest):
         # @-<< define expected_contents >>
         
         # g.printObj(g.splitLines(contents), tag='contents')
-        # g.printObj(g.splitLines(expected_contents), tag='expected_contents')
-        
-        # g.printObj(g.splitLines(expected_body), tag='expected_body')
-        # g.printObj(g.splitLines(root.b), tag='root.b')
 
         x.read_into_root(contents, path='test', root=root)
+        # g.printObj(g.splitLines(root.b), tag='root.b')
+        # g.printObj(g.splitLines(expected_body), tag='expected_body')
+        
         self.assertEqual(root.b, expected_body, msg='mismatch in body')
 
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         # g.printObj(g.splitLines(s), tag='s')
+        # g.printObj(g.splitLines(expected_contents), tag='expected_contents')
 
         # Leo has *never* round-tripped the contents without change!
         self.assertEqual(s, expected_contents, msg='mismatch in contents')
-
     # @+node:ekr.20211101180354.1: *3* TestFastAtRead.test_verbatim
     def test_verbatim(self):
 
