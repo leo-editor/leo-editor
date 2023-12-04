@@ -1157,7 +1157,7 @@ class TestFastAtRead(LeoUnitTest):
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
         contents = textwrap.dedent('''
-            #AT+leo-ver=5-thin
+            # AT+leo-ver=5-thin
             #AT+node:{root.gnx}: * {h}
             #AT@language python
 
@@ -1209,7 +1209,7 @@ class TestFastAtRead(LeoUnitTest):
         # g.printObj(g.splitLines(contents), tag='contents')
 
         x.read_into_root(contents, path='test', root=root)
-        # g.printObj(g.splitLines(root.b), tag='root.b')
+        g.printObj(g.splitLines(root.b), tag='root.b')
         # g.printObj(g.splitLines(expected_body), tag='expected_body')
         
         self.assertEqual(root.b, expected_body, msg='mismatch in body')

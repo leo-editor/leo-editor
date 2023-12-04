@@ -3152,6 +3152,9 @@ class FastAtRead:
         # @-<< init scan_lines >>
         i = 0  # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
+            ### print(f"{i:2} {line!r}")
+            ### if '+node' in line:
+            ###     breakpoint()  ###
             # Strip the line only once.
             strip_line = line.strip()
             if afterref:
@@ -3475,6 +3478,8 @@ class FastAtRead:
             # @verbatim
             # @first, @last, @delims and @comment generate @@ sentinels,
             # So this must follow all of those.
+            if False and '@@' in line:
+                breakpoint()  ###
             if line.startswith(comment_delim1 + '@@'):
                 ii = len(comment_delim1) + 1  # on second '@'
                 jj = line.rfind(comment_delim2) if comment_delim2 else -1
