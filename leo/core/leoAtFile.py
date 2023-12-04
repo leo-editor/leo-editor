@@ -1957,7 +1957,7 @@ class AtFile:
             self.putSentinel("@verbatim")
 
         # Put an @verbatim sentinel if the next line looks like another sentinel.
-        if 1:
+        if 0:
             if any(g.match(s, k, z) for z in delims):
                 put_verbatim_sentinel()
         else:  ### Legacy.
