@@ -653,51 +653,45 @@ class TestFastAtRead(LeoUnitTest):
 
         # Be careful: no line should look like a Leo sentinel!
 
-        # @verbatim
-        # @comment !! sets the comment delims only for *following* lines.
         contents = textwrap.dedent('''
-        # -*- coding: utf-8 -*-
-        # AT+leo-ver=5-thin
-        # AT+node:{root.gnx}: * {h}
-        # AT@first
+        !!! -*- coding: utf-8 -*-
+        !!!AT+leo-ver=5-thin
+        !!!AT+node:{root.gnx}: * {h}
+        !!!AT@first
 
         """Classes to read and write @file nodes."""
 
-        AT comment !!
+        !!!AT@comment !!!
 
-        !! AT+LB test >>
-        !! AT+node:ekr.20211101090015.2: ** LB test >>
+        !!!AT+LB test >>
+        !!!AT+node:ekr.20211101090015.2: ** LB test >>
         print('in test section')
         print('done')
-        !! AT-LB test >>
+        !!!AT-LB test >>
 
-        !! AT+others
-        !! AT+node:ekr.20211101090015.3: ** spam
+        !!!AT+others
+        !!!AT+node:ekr.20211101090015.3: ** spam
         def spam():
             pass
-        !! AT+node:ekr.20211101090015.4: ** eggs
+        !!!AT+node:ekr.20211101090015.4: ** eggs
         def eggs():
             pass
-        !! AT-others
+        !!!AT-others
 
-        !! AT@language plain
-        !! AT-leo
+        !!!AT@language plain
+        !!!AT-leo
         ''').lstrip()
-        # @verbatim
-        # @comment !! sets the comment delims.
         contents = contents.replace('AT', '@').replace('LB', '<<')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         # @-<< define contents >>
-        
-        g.printObj(g.splitLines(contents), tag='contents')
+        # g.printObj(g.splitLines(contents), tag='contents')
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
-        g.printObj(g.splitLines(s), tag='s')
-        expected = contents.replace('@q@@', '@q@ @')
-        g.printObj(g.splitLines(expected), tag='expected')  ###
+        # g.printObj(g.splitLines(s), tag='s')
+        expected = contents.replace('!!!@', '!!! @')
+        # g.printObj(g.splitLines(expected), tag='expected')
         self.assertEqual(s, expected)
-        
-        if 0:  ###
+        if 1:
             child1 = root.firstChild()
             child2 = child1.next()
             child3 = child2.next()
