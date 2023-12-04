@@ -1942,13 +1942,11 @@ class AtFile:
         j = g.skip_line(s, i)
         k = g.skip_ws(s, i)
         line = s[i:j]
-        delim1 = self.startSentinelComment
-        delims = f"{delim1}@", f"{delim1} @"
+        ### delim1 = self.startSentinelComment
+        ### delims = f"{delim1}@", f"{delim1} @"
 
         def put_verbatim_sentinel() -> None:
-            """
-            Put an @verbatim sentinel. *Always* use black-compatible indentation.
-            """
+            """Put an @verbatim sentinel."""
             if at.root.isAtCleanNode():
                 # #2996. Adding an @verbatim sentinel interferes with the @clean algorithm.
                 return
@@ -1957,16 +1955,12 @@ class AtFile:
             self.putSentinel("@verbatim")
 
         # Put an @verbatim sentinel if the next line looks like another sentinel.
-        if 0:
-            if any(g.match(s, k, z) for z in delims):
+        if at.language == 'python':  # New in Leo 6.7.2.
+            # Python sentinels *only* may contain a space between '#' and '@'
+            if g.match(s, k, '#@') or g.match(s, k, '# @'):
                 put_verbatim_sentinel()
-        else:  ### Legacy.
-            if at.language == 'python':  # New in Leo 6.7.2.
-                # Python sentinels *only* may contain a space between '#' and '@'
-                if g.match(s, k, '#@') or g.match(s, k, '# @'):
-                    put_verbatim_sentinel()
-            elif g.match(s, k, self.startSentinelComment + "@"):
-                put_verbatim_sentinel()
+        elif g.match(s, k, self.startSentinelComment + "@"):
+            put_verbatim_sentinel()
 
         # Don't put any whitespace in otherwise blank lines.
         if len(line) > 1:  # Preserve *anything* the user puts on the line!!!
