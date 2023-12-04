@@ -1014,47 +1014,6 @@ class TestFastAtRead(LeoUnitTest):
 
         expected = contents
         self.assertEqual(s, expected)
-    # @+node:ekr.20231203092436.1: *3* TestFastAtRead.test_minimal_cweb
-    # @@language python
-
-    def test_minimal_cweb(self):
-
-        c, x = self.c, self.x
-        h = '@file /test/test_cweb.w'
-        root = c.rootPosition()
-        root.h = h  # To match contents.
-        # @+<< define contents >>
-        # @+node:ekr.20231203092436.2: *4* << define contents >> (test_cweb)
-        # Be careful: no line should look like a Leo sentinel!
-        # Use neither a raw string nor an f-string here.
-        contents = textwrap.dedent('''
-        ATq@@+leo-ver=5-thin@>
-        ATq@@+node:{root.gnx}: * @{h}@>
-        ATq@@@@language cweb@>
-        % $Id: minimal.w,v 1.4 1995/08/25 19:12:41 schrod Exp $
-        %----------------------------------------------------------------------
-
-        % tests minimal CWEB w/ LaTeX input file
-
-        \documentclass{cweb}
-        \begin{document}
-
-        Test.
-
-        AT
-        \end{document}
-        ATq@@-leo@>
-        ''').lstrip()
-        contents = contents.replace('AT', '@').replace('{root.gnx}', root.gnx).replace('{h}', root.h)
-        # @-<< define contents >>
-        # g.printObj(g.splitLines(contents), tag='contents')
-
-        x.read_into_root(contents, path='test', root=root)
-        s = c.atFileCommands.atFileToString(root, sentinels=True)
-        # g.printObj(g.splitLines(s), tag='s')
-
-        expected = contents
-        self.assertEqual(s, expected)
     # @+node:ekr.20211101152817.1: *3* TestFastAtRead.test_doc_parts
     def test_doc_parts(self):
 
@@ -1145,6 +1104,123 @@ class TestFastAtRead(LeoUnitTest):
         # g.printObj(g.splitLines(s), tag='s')
         
         self.assertEqual(s, expected)
+    # @+node:ekr.20231203092436.1: *3* TestFastAtRead.test_minimal_cweb
+    # @@language python
+
+    def test_minimal_cweb(self):
+
+        c, x = self.c, self.x
+        h = '@file /test/test_cweb.w'
+        root = c.rootPosition()
+        root.h = h  # To match contents.
+        # @+<< define contents >>
+        # @+node:ekr.20231203092436.2: *4* << define contents >> (test_cweb)
+        # Be careful: no line should look like a Leo sentinel!
+        # Use neither a raw string nor an f-string here.
+        contents = textwrap.dedent('''
+        ATq@@+leo-ver=5-thin@>
+        ATq@@+node:{root.gnx}: * @{h}@>
+        ATq@@@@language cweb@>
+        % $Id: minimal.w,v 1.4 1995/08/25 19:12:41 schrod Exp $
+        %----------------------------------------------------------------------
+
+        % tests minimal CWEB w/ LaTeX input file
+
+        \documentclass{cweb}
+        \begin{document}
+
+        Test.
+
+        AT
+        \end{document}
+        ATq@@-leo@>
+        ''').lstrip()
+        contents = contents.replace('AT', '@').replace('{root.gnx}', root.gnx).replace('{h}', root.h)
+        # @-<< define contents >>
+        # g.printObj(g.splitLines(contents), tag='contents')
+
+        x.read_into_root(contents, path='test', root=root)
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        # g.printObj(g.splitLines(s), tag='s')
+
+        expected = contents
+        self.assertEqual(s, expected)
+    # @+node:ekr.20231204095225.1: *3* TestFastAtRead.test_mixed_sentinels
+    def test_mixed_sentinels(self):
+
+        c, x = self.c, self.x
+        h = '@file /test/test_mixed_sentinels.py'
+        root = c.rootPosition()
+        root.h = h  # To match contents.
+        # @+<< define contents >>
+        # @+node:ekr.20231204100121.2: *4* << define contents >>
+        # Be careful: no line should look like a Leo sentinel!
+        # Use neither a raw string nor an f-string here.
+        contents = textwrap.dedent('''
+            #AT+leo-ver=5-thin
+            #AT+node:{root.gnx}: * {h}
+            #AT@language python
+
+            a = 1
+            if (
+            #AT+LB test >>
+            #AT+node:ekr.20211107051401.1: ** LB test >>
+            a == 2
+            #AT-LB test >>
+            #ATafterref
+             ):
+                a = 2
+            #AT-leo
+        ''').lstrip()
+        contents = contents.replace('AT', '@').replace('LB', '<<')
+        contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
+        # @-<< define contents >>
+        # @+<< define expected_body >>
+        # @+node:ekr.20231204100121.3: *4* << define expected_body >>
+        # Be careful: no line should look like a Leo sentinel!
+        # Use neither a raw string nor an f-string here.
+        expected_body = textwrap.dedent('''
+            ATlanguage python
+
+            a = 1
+            if (
+            LB test >> ):
+                a = 2
+        ''').lstrip().replace('AT', '@').replace('LB', '<<')
+        # @-<< define expected_body >>
+        # @+<< define expected_contents >>
+        # @+node:ekr.20231204100121.4: *4* << define expected_contents >>
+        # Be careful: no line should look like a Leo sentinel!
+        # Use neither a raw string nor an f-string here.
+        expected_contents = textwrap.dedent('''
+            #AT+leo-ver=5-thin
+            #AT+node:{root.gnx}: * {h}
+            #AT@language python
+
+            a = 1
+            if (
+            LB test >> ):
+                a = 2
+            #AT-leo
+        ''').lstrip().replace('AT', ' @').replace('LB', '<<')
+        expected_contents = expected_contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
+        # @-<< define expected_contents >>
+        
+        # g.printObj(g.splitLines(contents), tag='contents')
+        # g.printObj(g.splitLines(expected_contents), tag='expected_contents')
+        
+        # g.printObj(g.splitLines(expected_body), tag='expected_body')
+        # g.printObj(g.splitLines(root.b), tag='root.b')
+
+        x.read_into_root(contents, path='test', root=root)
+        self.assertEqual(root.b, expected_body, msg='mismatch in body')
+
+        s = c.atFileCommands.atFileToString(root, sentinels=True)
+        # g.printObj(g.splitLines(s), tag='s')
+
+        # Leo has *never* round-tripped the contents without change!
+        self.assertEqual(s, expected_contents, msg='mismatch in contents')
+
     # @+node:ekr.20211101180354.1: *3* TestFastAtRead.test_verbatim
     def test_verbatim(self):
 
