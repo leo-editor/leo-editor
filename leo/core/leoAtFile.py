@@ -1942,8 +1942,6 @@ class AtFile:
         j = g.skip_line(s, i)
         k = g.skip_ws(s, i)
         line = s[i:j]
-        ### delim1 = self.startSentinelComment
-        ### delims = f"{delim1}@", f"{delim1} @"
 
         def put_verbatim_sentinel() -> None:
             """Put an @verbatim sentinel."""
