@@ -549,7 +549,8 @@ class TestFastAtRead(LeoUnitTest):
         # @+<< define contents >>
         # @+node:ekr.20211106112233.1: *4* << define contents >>
         # Be careful: no line should look like a Leo sentinel!
-        contents = textwrap.dedent(f'''\
+        # Use neither a raw string nor an f-string here.
+        contents = textwrap.dedent('''
             #AT+leo-ver=5-thin
             #AT+node:{root.gnx}: * {h}
             #AT@language python
@@ -564,23 +565,28 @@ class TestFastAtRead(LeoUnitTest):
              ):
                 a = 2
             #AT-leo
-        ''').replace('AT', ' @').replace('LB', '<<')
+        ''').lstrip()
+        contents = contents.replace('AT', '@').replace('LB', '<<')
+        contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         # @-<< define contents >>
         # @+<< define expected_body >>
         # @+node:ekr.20211106115654.1: *4* << define expected_body >>
-        expected_body = textwrap.dedent('''\
+        # Be careful: no line should look like a Leo sentinel!
+        # Use neither a raw string nor an f-string here.
+        expected_body = textwrap.dedent('''
             ATlanguage python
 
             a = 1
             if (
             LB test >> ):
                 a = 2
-        ''').replace('AT', '@').replace('LB', '<<')
+        ''').lstrip().replace('AT', '@').replace('LB', '<<')
         # @-<< define expected_body >>
         # @+<< define expected_contents >>
         # @+node:ekr.20211107053133.1: *4* << define expected_contents >>
         # Be careful: no line should look like a Leo sentinel!
-        expected_contents = textwrap.dedent(f'''\
+        # Use neither a raw string nor an f-string here.
+        expected_contents = textwrap.dedent('''
             #AT+leo-ver=5-thin
             #AT+node:{root.gnx}: * {h}
             #AT@language python
@@ -590,7 +596,8 @@ class TestFastAtRead(LeoUnitTest):
             LB test >> ):
                 a = 2
             #AT-leo
-        ''').replace('AT', ' @').replace('LB', '<<')
+        ''').lstrip().replace('AT', ' @').replace('LB', '<<')
+        expected_contents = expected_contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         # @-<< define expected_contents >>
         x.read_into_root(contents, path='test', root=root)
         self.assertEqual(root.b, expected_body, msg='mismatch in body')
