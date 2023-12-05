@@ -506,7 +506,7 @@ class LeoQtGui(leoGui.LeoGui):
         dialog.raise_()
         ok = dialog.exec_()
         return str(dialog.textValue()) if ok else None
-    #@+node:ekr.20110605121601.18495: *4* qt_gui.runAskOkDialog (changed)
+    #@+node:ekr.20110605121601.18495: *4* qt_gui.runAskOkDialog
     def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> None:
         """Create and run a qt askOK dialog ."""
         if g.unitTesting:

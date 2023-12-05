@@ -1568,7 +1568,19 @@ class LeoCursesGui(leoGui.LeoGui):
         #
         # Do NOT change g.app!
         self.curses_app = LeoApp()
-        stdscr = curses.initscr()
+
+        if 1:  # Call our own version of curses.initscr().
+            import _curses
+            # This crashes on Python 3.12.
+                # setupterm(term=_os.environ.get("TERM", "unknown"),
+                    # fd=_sys.__stdout__.fileno())
+            stdscr = _curses.initscr()
+            for key, value in _curses.__dict__.items():
+                if key[0:4] == 'ACS_' or key in ('LINES', 'COLS'):
+                    setattr(curses, key, value)
+            # return stdscr
+        else:
+            stdscr = curses.initscr()
         if 1:  # Must follow initscr.
             self.dump_keys()
         try:
