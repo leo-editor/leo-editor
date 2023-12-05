@@ -3196,7 +3196,6 @@ class FastAtRead:
 
                 # 2022/12/02: Bug fix: adjust indentation.
                 if indent and line[:indent].isspace() and len(line) > indent:
-                    g.trace('verbatim', repr(line))
                     line = line[indent:]
 
                 body.append(line)
