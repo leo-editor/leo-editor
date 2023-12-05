@@ -1157,7 +1157,7 @@ class TestFastAtRead(LeoUnitTest):
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
         contents = textwrap.dedent('''
-            # AT+leo-ver=5-thin
+            #AT+leo-ver=5-thin
             #AT+node:{root.gnx}: * {h}
             #AT@language python
 

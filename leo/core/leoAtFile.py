@@ -3068,10 +3068,13 @@ class FastAtRead:
             ('section_delims', fr'^\s*{delim1} *@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),
         )
         # Set the ivars.
+        self.pattern_ivars: list[str] = []  # For debugging only.
         for (name, pattern) in table:
             ivar = f"{name}_pat"
+            self.pattern_ivars.append(ivar)
             assert hasattr(self, ivar), ivar
             setattr(self, ivar, re.compile(pattern))
+            
     # @+node:ekr.20180602103135.2: *3* fast_at.scan_header
     header_pattern = re.compile(
         r'''
@@ -3152,9 +3155,17 @@ class FastAtRead:
         # @-<< init scan_lines >>
         i = 0  # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
-            ### print(f"{i:2} {line!r}")
-            ### if '+node' in line:
-            ###     breakpoint()  ###
+            if 0:  # Too slow to keep in production code.
+                for ivar in self.pattern_ivars:
+                    pattern = getattr(self, ivar)
+                    assert isinstance(pattern, re.Pattern)
+                    m = pattern.match(line)
+                    if m:
+                        print(f"{i:2} {ivar:15} {line!r}")
+                        break
+                else:
+                    print(f"{i:2} {' ':15} {line!r}")
+                    
             # Strip the line only once.
             strip_line = line.strip()
             if afterref:
