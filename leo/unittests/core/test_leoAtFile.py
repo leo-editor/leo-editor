@@ -748,24 +748,29 @@ class TestFastAtRead(LeoUnitTest):
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
 
         # @-<< define contents >>
-        # g.printObj(g.splitLines(contents), tag='contents')
-        expected = contents.replace('!!@', '!! @').replace('#@', '# @')
-        
-        x.read_into_root(contents, path='test', root=root)
-        s = c.atFileCommands.atFileToString(root, sentinels=True)
-        # g.printObj(g.splitLines(s), tag='s')
-        self.assertEqual(expected, s)
+        blackened_contents = contents.replace('#@', '# @')
+        for test_s in (contents, blackened_contents):
+            expected = test_s.replace('!!@', '!! @').replace('#@', '# @')
+            x.read_into_root(test_s, path='test', root=root)
+            s = c.atFileCommands.atFileToString(root, sentinels=True)
 
-        child1 = root.firstChild()
-        child2 = child1.next()
-        child3 = child2.next()
-        table = (
-            (child1, g.angleBrackets(' test ')),
-            (child2, 'spam'),
-            (child3, 'eggs'),
-        )
-        for child, h in table:
-            self.assertEqual(child.h, h)
+            if expected != s:
+                g.printObj(g.splitLines(test_s), tag='test_s')
+                g.printObj(g.splitLines(expected), tag='expected')
+                g.printObj(g.splitLines(s), tag='s')
+
+            self.assertEqual(expected, s)
+
+            child1 = root.firstChild()
+            child2 = child1.next()
+            child3 = child2.next()
+            table = (
+                (child1, g.angleBrackets(' test ')),
+                (child2, 'spam'),
+                (child3, 'eggs'),
+            )
+            for child, h in table:
+                self.assertEqual(child.h, h)
     # @+node:ekr.20211103095616.1: *3* TestFastAtRead.test_at_last
     def test_at_last(self):
 
@@ -1211,6 +1216,7 @@ class TestFastAtRead(LeoUnitTest):
         x.read_into_root(contents, path='test', root=root)
 
         s = c.atFileCommands.atFileToString(root, sentinels=True)
+
         if s != expected_contents:
             g.printObj(g.splitLines(s), tag='s')
             g.printObj(g.splitLines(expected_contents), tag='expected_contents')
@@ -1241,7 +1247,7 @@ class TestFastAtRead(LeoUnitTest):
             #ATverbatim
             #AT+node (should be protected by verbatim)
             #AT-leo
-        ''').replace('AT', ' @') # .replace('LB', '<<')
+        ''').replace('AT', '@') # .replace('LB', '<<')
         # @-<< define contents >>
         # @+<< define expected_body >>
         # @+node:ekr.20211106070035.1: *4* << define expected_body >> (test_verbatim)
@@ -1252,13 +1258,33 @@ class TestFastAtRead(LeoUnitTest):
         #AT+node (should be protected by verbatim)
         ''').replace('AT', '@')
         # @-<< define expected_body >>
-        
-        contents = contents.replace('#@', '# @')
-        expected_body = expected_body.replace('#@', '# @')
-        x.read_into_root(contents, path='test', root=root)
-        self.assertEqual(root.b, expected_body)
-        s = c.atFileCommands.atFileToString(root, sentinels=True)
-        self.assertEqual(contents, s)
+        # contents is legacy contents.
+        blackened_contents = contents.replace('#@', '# @')
+        for test_s in (contents, blackened_contents):
+
+            # Protect the verbatim line.
+            test_s = test_s.replace('# @+node (should be protected', '#@+node (should be protected')
+            expected = test_s.replace('!!@', '!! @').replace('#@', '# @')
+            expected = expected.replace('# @+node (should be protected', '#@+node (should be protected')
+            expected_body = expected_body.replace('# @+node (should be protected', '#@+node (should be protected')
+
+            x.read_into_root(test_s, path='test', root=root)
+            
+            if root.b != expected_body:
+                g.printObj(g.splitLines(test_s), tag='test_s')
+                g.printObj(g.splitLines(root.b), tag='root.b')
+                g.printObj(g.splitLines(expected_body), tag='expected_body')
+
+            self.assertEqual(root.b, expected_body)
+
+            s = c.atFileCommands.atFileToString(root, sentinels=True)
+
+            if s != expected:
+                g.printObj(g.splitLines(test_s), tag='test_s')
+                g.printObj(g.splitLines(s), tag='s')
+                g.printObj(g.splitLines(expected), tag='expected')
+
+            self.assertEqual(expected, s)
     # @-others
 # @-others
 # @-leo

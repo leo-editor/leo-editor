@@ -3114,6 +3114,8 @@ class FastAtRead:
         # The start/end *comment* delims.
         # Important: scan_header ends comment_delim1 with a blank when using black sentinels.
         comment_delim1, comment_delim2 = comment_delims
+        comment_delim1 = comment_delim1.strip()  ###
+        comment_delim2 = comment_delim2.strip()  ###
         doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')  # To handle doc parts.
         first_i = 0  # Index into first array.
         in_doc = False  # True: in @doc parts.
@@ -3129,9 +3131,12 @@ class FastAtRead:
         section_reference_seen = False
         sentinel = comment_delim1 + '@'
         blackened_sentinel = comment_delim1 + ' @'
+        any_sentinel = (sentinel, blackened_sentinel)
         # The stack is updated when at+others, at+<section>, or at+all is seen.
         stack: list[tuple[str, int, str]] = []  # Entries are (gnx, indent, body)
         verbatim_line = comment_delim1 + '@verbatim' + comment_delim2
+        blackened_verbatim_line = comment_delim1 + ' @verbatim' + comment_delim2
+        verbatim_lines = (verbatim_line, blackened_verbatim_line)
         verbatim = False  # True: the next line must be added without change.
         #
         # Init the parent vnode.
@@ -3191,13 +3196,14 @@ class FastAtRead:
 
                 # 2022/12/02: Bug fix: adjust indentation.
                 if indent and line[:indent].isspace() and len(line) > indent:
+                    g.trace('verbatim', repr(line))
                     line = line[indent:]
 
                 body.append(line)
                 verbatim = False
                 # @-<< handle verbatim line >>
                 continue
-            if strip_line == verbatim_line:  # <delim>@verbatim
+            if strip_line in verbatim_lines:
                 verbatim = True
                 continue
             # @+<< finalize line >>
@@ -3209,7 +3215,8 @@ class FastAtRead:
             if indent and line[:indent].isspace() and len(line) > indent:
                 line = line[indent:]
             # @-<< finalize line >>
-            if not in_doc and not strip_line.startswith((sentinel, blackened_sentinel)):  # Faster than a regex!
+            # Faster than a regex!
+            if not in_doc and not strip_line.startswith(any_sentinel):
                 body.append(line)
                 continue
             # These three sections might clear in_doc.
@@ -3358,7 +3365,7 @@ class FastAtRead:
                     in_doc = True
                     continue
                 # @-<< handle @ or @doc >>
-            if line.startswith(comment_delim1 + '@-leo'):  # Faster than a regex!
+            if line.startswith((comment_delim1 + '@-leo', comment_delim1 + ' @-leo')):  # Faster than a regex!
                 # The @-leo sentinel adds *nothing* to the text.
                 i += 1
                 break
@@ -3434,6 +3441,8 @@ class FastAtRead:
                 doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
                 is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
                 sentinel = comment_delim1 + '@'
+                blackened_sentinel = comment_delim1 + ' @'
+                any_sentinel = (sentinel, blackened_sentinel)
                 #
                 # Recalculate the patterns.
                 comment_delims = comment_delim1, comment_delim2
@@ -3467,6 +3476,8 @@ class FastAtRead:
                 doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
                 is_cweb = comment_delim1 in ('@q@', ' @q@') and comment_delim2 == '@>'
                 sentinel = comment_delim1 + '@'
+                blackened_sentinel = comment_delim1 + ' @'
+                any_sentinel = (sentinel, blackened_sentinel)
                 #
                 # Recalculate the patterns
                 comment_delims = comment_delim1, comment_delim2
@@ -3485,7 +3496,7 @@ class FastAtRead:
                     # Carefully update the section reference pattern!
                     section_delim1 = d1 = re.escape(m.group(1))
                     section_delim2 = d2 = re.escape(m.group(2) or '')
-                    self.ref_pat = re.compile(fr'^(\s*){comment_delim1}@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
+                    self.ref_pat = re.compile(fr'^(\s*){comment_delim1} *@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
                 body.append(f"@section-delims {m.group(1)} {m.group(2)}\n")
                 continue
             # @-<< handle @section-delims >>
@@ -3495,8 +3506,10 @@ class FastAtRead:
             # @verbatim
             # @first, @last, @delims and @comment generate @@ sentinels,
             # So this must follow all of those.
-            if line.startswith(comment_delim1 + '@@'):
+            if line.startswith((comment_delim1 + '@@', comment_delim1 + ' @@')):
                 ii = len(comment_delim1) + 1  # on second '@'
+                if line.startswith(comment_delim1 + ' @@'):
+                    ii += 1
                 jj = line.rfind(comment_delim2) if comment_delim2 else -1
                 body.append(line[ii:jj] + '\n')
                 continue
@@ -3509,8 +3522,12 @@ class FastAtRead:
                     body.append(line)
                     continue
 
-                #    with --black-sentinels: comment_delim1 ends with a blank.
-                # without --black-sentinels: comment_delim1 does *not* end with a blank.
+                # Legacy:
+                    #    with --black-sentinels: comment_delim1 ends with a blank.
+                    # without --black-sentinels: comment_delim1 does *not* end with a blank.
+                # Leo 6.7.6: comment_delim never ends with a blank.
+
+                ### assert comment_delim1.strip() == comment_delim1
 
                 tail = line.lstrip()[len(comment_delim1.rstrip()) + 1 :]
                 if tail.strip():
@@ -3527,7 +3544,7 @@ class FastAtRead:
             if 1:  # pragma: no cover (defensive)
 
                 # This assert verifies the short-circuit test.
-                assert strip_line.startswith((sentinel, blackened_sentinel)), repr(line)
+                assert strip_line.startswith(any_sentinel), repr(line)
 
                 # Defensive: make *sure* we ignore verbatim lines.
                 if strip_line == verbatim_line:
