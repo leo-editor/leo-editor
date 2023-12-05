@@ -3128,6 +3128,7 @@ class FastAtRead:
         section_delim2 = '>>'
         section_reference_seen = False
         sentinel = comment_delim1 + '@'
+        blackened_sentinel = comment_delim1 + ' @'
         # The stack is updated when at+others, at+<section>, or at+all is seen.
         stack: list[tuple[str, int, str]] = []  # Entries are (gnx, indent, body)
         verbatim_line = comment_delim1 + '@verbatim' + comment_delim2
@@ -3155,17 +3156,22 @@ class FastAtRead:
         # @-<< init scan_lines >>
         i = 0  # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
-            if 0:  # Too slow to keep in production code.
-                for ivar in self.pattern_ivars:
-                    pattern = getattr(self, ivar)
-                    assert isinstance(pattern, re.Pattern)
-                    m = pattern.match(line)
-                    if m:
-                        print(f"{i:2} {ivar:15} {line!r}")
-                        break
-                else:
-                    print(f"{i:2} {' ':15} {line!r}")
-                    
+            # @+<< trace patterns >>
+            # @+node:ekr.20231205061620.1: *4* << trace patterns >>
+            # Keep this excellent trace, but comment it out for production code.
+            #
+                # for ivar in self.pattern_ivars:
+                    # pattern = getattr(self, ivar)
+                    # assert isinstance(pattern, re.Pattern)
+                    # m = pattern.match(line)
+                    # if m:
+                        # print(f"{i:2} {ivar:15} {line!r}")
+                        # if False and ivar == 'node_start_pat':
+                            # breakpoint()  ###
+                        # break
+                # else:
+                    # print(f"{i:2} {' ':15} {line!r}")
+            # @-<< trace patterns >>
             # Strip the line only once.
             strip_line = line.strip()
             if afterref:
@@ -3203,7 +3209,7 @@ class FastAtRead:
             if indent and line[:indent].isspace() and len(line) > indent:
                 line = line[indent:]
             # @-<< finalize line >>
-            if not in_doc and not strip_line.startswith(sentinel.lstrip()):  # Faster than a regex!
+            if not in_doc and not strip_line.startswith((sentinel, blackened_sentinel)):  # Faster than a regex!
                 body.append(line)
                 continue
             # These three sections might clear in_doc.
@@ -3489,8 +3495,6 @@ class FastAtRead:
             # @verbatim
             # @first, @last, @delims and @comment generate @@ sentinels,
             # So this must follow all of those.
-            if False and '@@' in line:
-                breakpoint()  ###
             if line.startswith(comment_delim1 + '@@'):
                 ii = len(comment_delim1) + 1  # on second '@'
                 jj = line.rfind(comment_delim2) if comment_delim2 else -1
@@ -3523,7 +3527,7 @@ class FastAtRead:
             if 1:  # pragma: no cover (defensive)
 
                 # This assert verifies the short-circuit test.
-                assert strip_line.startswith(sentinel), repr(line)
+                assert strip_line.startswith((sentinel, blackened_sentinel)), repr(line)
 
                 # Defensive: make *sure* we ignore verbatim lines.
                 if strip_line == verbatim_line:
