@@ -1245,7 +1245,7 @@ class TestFastAtRead(LeoUnitTest):
             # Test of @verbatim
             print('hi')
             #ATverbatim
-            #AT+node (should be protected by verbatim)
+            #AT+node (verbatim)
             #AT-leo
         ''').replace('AT', '@') # .replace('LB', '<<')
         #@-<< define contents >>
@@ -1255,18 +1255,18 @@ class TestFastAtRead(LeoUnitTest):
         ATlanguage python
         # Test of @verbatim
         print('hi')
-        #AT+node (should be protected by verbatim)
+        #AT+node (verbatim)
         ''').replace('AT', '@')
         #@-<< define expected_body >>
-        # contents is legacy contents.
-        blackened_contents = contents.replace('#@', '# @')
-        for test_s in (contents, blackened_contents):
+        for blacken in (True, False):
+            g.app.write_black_sentinels = blacken
+            test_s = expected = contents
 
-            # Protect the verbatim line.
-            test_s = test_s.replace('# @+node (should be protected', '#@+node (should be protected')
-            expected = test_s.replace('!!@', '!! @').replace('#@', '# @')
-            expected = expected.replace('# @+node (should be protected', '#@+node (should be protected')
-            expected_body = expected_body.replace('# @+node (should be protected', '#@+node (should be protected')
+            if blacken:
+                # All true sentinels should be blackened.
+                expected = test_s.replace('#@', '# @')
+                # Protect the @verbatim line.
+                expected = expected.replace('# @+node (verbatim)', '#@+node (verbatim)')
 
             x.read_into_root(test_s, path='test', root=root)
             
@@ -1277,14 +1277,14 @@ class TestFastAtRead(LeoUnitTest):
 
             self.assertEqual(root.b, expected_body)
 
-            s = c.atFileCommands.atFileToString(root, sentinels=True)
+            results = c.atFileCommands.atFileToString(root, sentinels=True)
 
-            if s != expected:
+            if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
-                g.printObj(g.splitLines(s), tag='s')
+                g.printObj(g.splitLines(results), tag='results')
                 g.printObj(g.splitLines(expected), tag='expected')
 
-            self.assertEqual(expected, s)
+            self.assertEqual(results, expected)
     #@-others
 #@-others
 #@-leo
