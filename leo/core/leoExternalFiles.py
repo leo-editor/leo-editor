@@ -190,9 +190,10 @@ class ExternalFilesController:
             if state in ('yes', 'no'):
                 state = self.ask(c, path, p=p)
             if state in ('yes', 'yes-all'):
-                c.redraw(p)
+                old_c = c.p
+                c.selectPosition(p)  # Required.
                 c.refreshFromDisk()
-                c.redraw()
+                c.redraw(old_c)  # #3695: Don't change c.p!
     #@+node:ekr.20201207055713.1: *5* efc.idle_check_leo_file
     def idle_check_leo_file(self, c: Cmdr) -> None:
         """Check c's .leo file for external changes."""
@@ -505,8 +506,8 @@ class ExternalFilesController:
         is_leo = path.endswith(('.leo', '.db'))
         is_external_file = not is_leo
 
-        # Create the message.
-        message1 = f"{path}\nhas changed outside Leo.\n\n"
+        # Create the message. Concatenate strings to make finding this message easier.
+        message1 = path + '\n' + 'has changed outside Leo.\n\n'
         if is_leo:
             message2 = 'Reload this outline?'
         elif p:
