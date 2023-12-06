@@ -133,6 +133,7 @@ class LeoApp:
         self.translateToUpperCase = False  # Never set to True.
         self.useIpython = False  # True: add support for IPython.
         self.use_splash_screen = True  # True: put up a splash screen.
+        self.write_black_sentinels = False  # True: write a space before '@' in sentinel lines.
         #@-<< LeoApp: command-line arguments >>
         #@+<< LeoApp: Debugging & statistics >>
         #@+node:ekr.20161028035835.1: *5* << LeoApp: Debugging & statistics >>
@@ -2646,6 +2647,7 @@ class LoadManager:
 
         options:
           -h, --help            show this help message and exit
+          -b, --black-sentinels write black-compatible sentinel comments
           --diff                use Leo as an external git diff
           --fail-fast           stop unit tests after the first failure
           --fullscreen          start fullscreen
@@ -2719,6 +2721,9 @@ class LoadManager:
             """Handle options without arguments."""
             #@+<< define scanArgv helpers >>
             #@+node:ekr.20230615053133.1: *7* << define scanArgv helpers >>
+            def _black() -> None:
+                g.app.write_black_sentinels = True
+
             def _diff() -> None:
                 g.app.diff = True
 
@@ -2758,8 +2763,8 @@ class LoadManager:
             #@-<< define scanArgv helpers >>
 
             options_dict: dict[str, Callable] = {
-                ### '-b': _black,
-                ### '--black-sentinels': _black,
+                '-b': _black,
+                '--black-sentinels': _black,
                 '--diff': _diff,
                 '--fail-fast': _fail_fast,
                 '--fullscreen': _full_screen,
@@ -2848,7 +2853,6 @@ class LoadManager:
         #@-others
 
         obsolete_options = [
-            '-b', '--black-sentinels',
             '--dock', '--global-docks', '--init-docks', '--no-dock', '--use-docks',
             '--load-type', '--load-type=@edit', '--load-type=@file',
             '--no-cache',
