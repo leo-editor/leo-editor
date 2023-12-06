@@ -1,5 +1,5 @@
-# @+leo-ver=5-thin
-# @+node:ekr.20201129023817.1: * @file leoTest2.py
+#@+leo-ver=5-thin
+#@+node:ekr.20201129023817.1: * @file leoTest2.py
 """
 Support for Leo's new unit tests, contained in leo/unittests/test_*.py.
 
@@ -9,8 +9,8 @@ See g.run_unit_tests and g.run_coverage_tests.
 This file also contains classes that convert @test nodes in unitTest.leo to
 tests in leo/unittest. Eventually these classes will move to scripts.leo.
 """
-# @+<< leoTest2 imports & annotations >>
-# @+node:ekr.20220901083840.1: ** << leoTest2 imports & annotations >>
+#@+<< leoTest2 imports & annotations >>
+#@+node:ekr.20220901083840.1: ** << leoTest2 imports & annotations >>
 from __future__ import annotations
 import os
 import sys
@@ -24,10 +24,10 @@ from leo.core import leoApp
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
-# @-<< leoTest2 imports & annotations >>
+#@-<< leoTest2 imports & annotations >>
 
-# @+others
-# @+node:ekr.20201130195111.1: ** function.create_app
+#@+others
+#@+node:ekr.20201130195111.1: ** function.create_app
 def create_app(gui_name: str = 'null') -> Cmdr:
     """
     Create the Leo application, g.app, the Gui, g.app.gui, and a commander.
@@ -94,7 +94,7 @@ def create_app(gui_name: str = 'null') -> Cmdr:
             f"commander: {(t4-t2):.3f}\n"
             f"    total: {(t4-t1):.3f}\n")
     return c
-# @+node:ekr.20210902014907.1: ** class LeoUnitTest(unittest.TestCase)
+#@+node:ekr.20210902014907.1: ** class LeoUnitTest(unittest.TestCase)
 class LeoUnitTest(unittest.TestCase):
     """
     The base class for all unit tests in Leo.
@@ -108,8 +108,8 @@ class LeoUnitTest(unittest.TestCase):
     def setUpClass(cls: Any) -> None:
         create_app(gui_name='null')
 
-    # @+others
-    # @+node:ekr.20210901140855.2: *3*  LeoUnitTest.setUp & tearDown
+    #@+others
+    #@+node:ekr.20210901140855.2: *3*  LeoUnitTest.setUp & tearDown
     def setUp(self) -> None:
         """
         Create a commander using g.app.gui.
@@ -137,8 +137,8 @@ class LeoUnitTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.c = None
-    # @+node:ekr.20230808113454.1: *3* LeoUnitTest: setup utils
-    # @+node:ekr.20230724140745.1: *4* LeoUnitTest.clean_tree
+    #@+node:ekr.20230808113454.1: *3* LeoUnitTest: setup utils
+    #@+node:ekr.20230724140745.1: *4* LeoUnitTest.clean_tree
     def clean_tree(self) -> None:
         """Clear everything but the root node."""
         p = self.root_p
@@ -146,7 +146,7 @@ class LeoUnitTest(unittest.TestCase):
         p.deleteAllChildren()
         while p.hasNext():
             p.next().doDelete()
-    # @+node:ekr.20230724141139.1: *4* LeoUnitTest.copy_node
+    #@+node:ekr.20230724141139.1: *4* LeoUnitTest.copy_node
     def copy_node(self, is_json: bool = False) -> str:
         """Copy c.p to the clipboard."""
         c = self.c
@@ -156,7 +156,7 @@ class LeoUnitTest(unittest.TestCase):
             s = c.fileCommands.outline_to_clipboard_string()
         g.app.gui.replaceClipboardWith(s)
         return s
-    # @+node:ekr.20210830151601.1: *4* LeoUnitTest.create_test_outline
+    #@+node:ekr.20210830151601.1: *4* LeoUnitTest.create_test_outline
     def create_test_outline(self) -> None:
         p = self.c.p
         # Create the following outline:
@@ -199,7 +199,7 @@ class LeoUnitTest(unittest.TestCase):
         # Clone 'child b'
         clone = child_b.clone()
         clone.moveToLastChildOf(p)
-    # @+node:ekr.20230724140451.1: *4* LeoUnitTest.create_test_paste_outline
+    #@+node:ekr.20230724140451.1: *4* LeoUnitTest.create_test_paste_outline
     def create_test_paste_outline(self) -> Position:
         """
         Create the following tree:
@@ -257,7 +257,7 @@ class LeoUnitTest(unittest.TestCase):
             else:
                 assert not p.isCloned(), p.h
         return cc
-    # @+node:ekr.20221113064908.1: *4* LeoUnitTest.create_test_sort_outline
+    #@+node:ekr.20221113064908.1: *4* LeoUnitTest.create_test_sort_outline
     def create_test_sort_outline(self) -> None:
         """Create a test outline suitable for sort commands."""
         p = self.c.p
@@ -274,7 +274,7 @@ class LeoUnitTest(unittest.TestCase):
             child.h = h
 
 
-    # @+node:ekr.20230703103458.1: *3* LeoUnitTest._set_setting
+    #@+node:ekr.20230703103458.1: *3* LeoUnitTest._set_setting
     def _set_setting(self, c: Cmdr, kind: str, name: str, val: Any) -> None:
         """
         Call c.config.set with the given args, suppressing stdout.
@@ -285,8 +285,8 @@ class LeoUnitTest(unittest.TestCase):
             c.config.set(p=None, kind=kind, name=name, val=val)
         finally:
             sys.stdout = old_stdout
-    # @+node:ekr.20230808113542.1: *3* LeoUnitTest: dumps
-    # @+node:ekr.20230724174102.1: *4* LeoUnitTest.dump_bodies
+    #@+node:ekr.20230808113542.1: *3* LeoUnitTest: dumps
+    #@+node:ekr.20230724174102.1: *4* LeoUnitTest.dump_bodies
     def dump_bodies(self, c: Cmdr) -> None:  # pragma: no cover
         """Dump all headlines."""
         print('')
@@ -296,7 +296,7 @@ class LeoUnitTest(unittest.TestCase):
             head_s = f"{' '*p.level()} {p.h}"
             print(f"{p.gnx:<28} {head_s:<20} body: {p.b!r}")
 
-    # @+node:ekr.20230720210931.1: *4* LeoUnitTest.dump_clone_info
+    #@+node:ekr.20230720210931.1: *4* LeoUnitTest.dump_clone_info
     def dump_clone_info(self, c: Cmdr, tag: str = None) -> None:
         """Dump all clone info."""
         print('')
@@ -308,7 +308,7 @@ class LeoUnitTest(unittest.TestCase):
                 f"clone? {int(p.isCloned())} id(v): {id(p.v)} gnx: {p.gnx:30}: "
                 f"{head_s:<10} parents: {p.v.parents}"
             )
-    # @+node:ekr.20220805071838.1: *4* LeoUnitTest.dump_headlines
+    #@+node:ekr.20220805071838.1: *4* LeoUnitTest.dump_headlines
     def dump_headlines(self, c: Cmdr, tag: str = None) -> None:  # pragma: no cover
         """Dump all headlines."""
         print('')
@@ -316,12 +316,12 @@ class LeoUnitTest(unittest.TestCase):
         print('')
         for p in c.all_positions():
             print(f"{p.gnx:25}: {' '*p.level()}{p.h}")
-    # @+node:ekr.20220806170537.1: *4* LeoUnitTest.dump_string
+    #@+node:ekr.20220806170537.1: *4* LeoUnitTest.dump_string
     def dump_string(self, s: str, tag: str = None) -> None:
         if tag:
             print(tag)
         g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
-    # @+node:ekr.20211129062220.1: *4* LeoUnitTest.dump_tree
+    #@+node:ekr.20211129062220.1: *4* LeoUnitTest.dump_tree
     def dump_tree(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
         """
         Dump root's tree, or the entire tree if root is None.
@@ -334,6 +334,6 @@ class LeoUnitTest(unittest.TestCase):
             print('')
             print('level:', p.level(), p.h)
             g.printObj(g.splitLines(p.v.b))
-    # @-others
-# @-others
-# @-leo
+    #@-others
+#@-others
+#@-leo
