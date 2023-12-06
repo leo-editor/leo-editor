@@ -2146,7 +2146,7 @@ class AtFile:
         if at.sentinels or g.app.force_at_auto_sentinels:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment)
-            # Leo 6.7.6: Always write black-compatible sentinels for Python files.
+            # Blacken python sentinels if --black-sentinels is in effect.
             if g.app.write_black_sentinels and self.language == 'python':
                 at.os(' ')
             # Apply the cweb hack to s:
