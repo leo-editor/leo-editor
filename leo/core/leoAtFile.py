@@ -2147,7 +2147,7 @@ class AtFile:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment)
             # Leo 6.7.6: Always write black-compatible sentinels for Python files.
-            if False and self.language == 'python':  ### Changeover: never write blackened sentinels.
+            if g.app.write_black_sentinels and self.language == 'python':
                 at.os(' ')
             # Apply the cweb hack to s:
             #   If the opening comment delim ends in '@',
