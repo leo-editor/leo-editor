@@ -1,5 +1,5 @@
-# @+leo-ver=5-thin
-# @+node:ekr.20230802060212.1: * @file ../unittests/commands/test_gotoCommands.py
+#@+leo-ver=5-thin
+#@+node:ekr.20230802060212.1: * @file ../unittests/commands/test_gotoCommands.py
 """Tests of leo.commands.gotoCommands."""
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
@@ -7,13 +7,13 @@ from leo.commands.gotoCommands import GoToCommands
 assert g
 from leo.core.leoNodes import Position
 
-# @+others
-# @+node:ekr.20230802060212.2: ** class TestGotoCommands(LeoUnitTest)
+#@+others
+#@+node:ekr.20230802060212.2: ** class TestGotoCommands(LeoUnitTest)
 class TestGotoCommands(LeoUnitTest):
     """Unit tests for leo/commands/gotoCommands.py."""
 
-    # @+others
-    # @+node:ekr.20230802060444.1: *3* TestGotoCommands.test_show_file_line
+    #@+others
+    #@+node:ekr.20230802060444.1: *3* TestGotoCommands.test_show_file_line
     def test_show_file_line(self):
 
         c = self.c
@@ -23,8 +23,8 @@ class TestGotoCommands(LeoUnitTest):
         real_clean_contents: list[str]
         root: Position
         
-        # @+others  # Create helpers
-        # @+node:ekr.20230804093924.1: *4* function: create_test_tree
+        #@+others  # Create helpers
+        #@+node:ekr.20230804093924.1: *4* function: create_test_tree
         def create_test_tree() -> Position:
 
             self.clean_tree()
@@ -47,7 +47,7 @@ class TestGotoCommands(LeoUnitTest):
                 'after\n'
             )
             return root
-        # @+node:ekr.20230804093956.1: *4* function: init_unchanging_data
+        #@+node:ekr.20230804093956.1: *4* function: init_unchanging_data
         def init_unchanging_data() -> None:
             
             nonlocal clean_contents, real_clean_contents
@@ -76,7 +76,7 @@ class TestGotoCommands(LeoUnitTest):
             # Test 0: A strong test of g.is_invisible_sentinel.
             self.assertEqual(clean_contents, real_clean_contents)
             
-        # @+node:ekr.20230804094419.1: *4* test1
+        #@+node:ekr.20230804094419.1: *4* test1
         def test1() -> None:
 
             # test the helper for show-file-line
@@ -90,7 +90,7 @@ class TestGotoCommands(LeoUnitTest):
                 else:
                     # print(f"{p.h:10} {offset:3} {line}")
                     assert p.h in line, (offset, repr(p.h), repr(line))
-        # @+node:ekr.20230804094514.1: *4* test2
+        #@+node:ekr.20230804094514.1: *4* test2
         def test2() -> None:
 
             # test the helper for goto-global-line.
@@ -107,7 +107,7 @@ class TestGotoCommands(LeoUnitTest):
                         assert line == '@language python\n', (offset, repr(p.h), repr(line))
                 else:
                     assert p.h in line, (offset, repr(p.h), repr(line))
-        # @+node:ekr.20230804105414.1: *4* test3
+        #@+node:ekr.20230804105414.1: *4* test3
         def test3() -> None:
             # test show-file-line & goto-global-line directly >>
 
@@ -136,7 +136,7 @@ class TestGotoCommands(LeoUnitTest):
                     global_i += 2
                 else:
                     global_i += len(lines)
-        # @-others
+        #@-others
 
         # All body lines are unique, which simplifies the tests below.
         root = create_test_tree()
@@ -153,6 +153,6 @@ class TestGotoCommands(LeoUnitTest):
         test1()
         test2()
         test3()
-    # @-others
-# @-others
-# @-leo
+    #@-others
+#@-others
+#@-leo
