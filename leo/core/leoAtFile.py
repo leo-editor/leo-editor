@@ -3358,10 +3358,11 @@ class FastAtRead:
                 # #1496: Retire the @doc convention.
                 #        An empty line is no longer a sentinel.
 
+                assert in_doc, repr(line)
+
                 if comment_delim2 and line in doc_skip:
                     # skip start/end comment delim!
                     continue
-                assert in_doc, repr(line)
                 #
                 # Check for @c or @code.
                 m = self.code_pat.match(line)
@@ -3372,6 +3373,8 @@ class FastAtRead:
                 #@-<< handle @c or @code >>
                 #@+<< handle remaining @doc lines >>
                 #@+node:ekr.20180606054325.1: *4* << handle remaining @doc lines >>
+                assert in_doc, repr(line)
+
                 if comment_delim2:
                     # Inner doc lines have no comment delims.
                     body.append(line)
