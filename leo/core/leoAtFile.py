@@ -3455,7 +3455,7 @@ class FastAtRead:
                 if delim1:
                     comment_delim1, comment_delim2 = delim1, ''
                 else:
-                    comment_delim1, comment_delim2 = delim2, delim3  ### Cover me.
+                    comment_delim1, comment_delim2 = delim2, delim3  # pragma: no cover (unimportant)
                 #
                 # Within these delimiters:
                 # - double underscores represent a newline.

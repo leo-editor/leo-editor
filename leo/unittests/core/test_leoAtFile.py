@@ -1563,6 +1563,8 @@ class TestFastAtRead(LeoUnitTest):
             print('hi')
             <!--ATverbatim-->
             <!--AT+node (verbatim)-->
+                <!--ATverbatim-->
+                <!--AT+node (verbatim)-->
             <!--AT-leo-->
         ''').replace('AT', '@') # .replace('LB', '<<')
         #@-<< define contents >>
@@ -1573,6 +1575,7 @@ class TestFastAtRead(LeoUnitTest):
         <!-- Test of @verbatim-->
         print('hi')
         <!--AT+node (verbatim)-->
+            <!--AT+node (verbatim)-->
         ''').replace('AT', '@')
         #@-<< define expected_body >>
 
