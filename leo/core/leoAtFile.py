@@ -3371,29 +3371,6 @@ class FastAtRead:
                     body.append('@code\n' if m.group(1) else '@c\n')
                     continue
                 #@-<< handle @c or @code >>
-                #@+<< handle remaining @doc lines >>
-                #@+node:ekr.20180606054325.1: *4* << handle remaining @doc lines >>
-                assert in_doc, repr(line)
-
-                if comment_delim2:
-                    # Inner doc lines have no comment delims.
-                    body.append(line)
-                    continue
-
-                # Legacy:
-                #    with --black-sentinels: comment_delim1 ends with a blank.
-                # without --black-sentinels: comment_delim1 does *not* end with a blank.
-
-                # Leo 6.7.6:
-                #   comment_delim never ends with a blank.
-
-                tail = line.lstrip()[len(comment_delim1.rstrip()) + 1 :]
-                if tail.strip():
-                    body.append(tail)
-                else:
-                    body.append('\n')
-                continue
-                #@-<< handle remaining @doc lines >>
             else:
                 #@+<< handle @ or @doc >>
                 #@+node:ekr.20211031033754.1: *4* << handle @ or @doc >>
@@ -3562,6 +3539,30 @@ class FastAtRead:
                 body.append(line[ii:jj] + '\n')
                 continue
             #@-<< handle remaining @@ lines >>
+            if in_doc:
+                #@+<< handle remaining @doc lines >>
+                #@+node:ekr.20180606054325.1: *4* << handle remaining @doc lines >>
+                assert in_doc, repr(line)
+
+                if comment_delim2:
+                    # Inner doc lines have no comment delims.
+                    body.append(line)
+                    continue
+
+                # Legacy:
+                #    with --black-sentinels: comment_delim1 ends with a blank.
+                # without --black-sentinels: comment_delim1 does *not* end with a blank.
+
+                # Leo 6.7.6:
+                #   comment_delim never ends with a blank.
+
+                tail = line.lstrip()[len(comment_delim1.rstrip()) + 1 :]
+                if tail.strip():
+                    body.append(tail)
+                else:
+                    body.append('\n')
+                continue
+                #@-<< handle remaining @doc lines >>
             #@+<< handle remaining @ lines >>
             #@+node:ekr.20180602103135.17: *4* << handle remaining @ lines >>
             # Handle an apparent sentinel line.
