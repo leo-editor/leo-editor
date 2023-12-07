@@ -167,7 +167,7 @@ class AtFile:
             # Encoding directive overrides everything else.
             encoding = g.getPythonEncodingFromString(root.b)
             if encoding:
-                at.encoding = encoding
+                at.encoding = encoding  # pragma: no cover (python 2)
         #
         # Clean root.v.
         if not at.errors and at.root:
@@ -1727,7 +1727,7 @@ class AtFile:
             has_at_others = False
             in_code = True
 
-            def __repr__(self) -> str:
+            def __repr__(self) -> str:  # pragma: no cover (testing)
                 return (
                     f"code? {int(self.in_code)} "
                     # f"comment? {int(self.at_comment_seen)} "
@@ -1955,7 +1955,7 @@ class AtFile:
             """Put an @verbatim sentinel."""
             if at.root.isAtCleanNode():
                 # #2996. Adding an @verbatim sentinel interferes with the @clean algorithm.
-                return
+                return  # # pragma: no cover (defensive)
             ws = s[i:k]
             self.putIndent(len(ws))
             self.putSentinel("@verbatim")
@@ -2900,7 +2900,7 @@ class AtFile:
         aSet.add(p.h)
         d[fn] = aSet
     #@+node:ekr.20231207062321.1: *4* at.repr_kind
-    def repr_kind(self, kind: int) -> str:
+    def repr_kind(self, kind: int) -> str:  # pragma: no cover (testing)
         """Return the string representation of AtFile class constants."""
         d: dict[int, str] = {
             1: 'plain',
@@ -3358,6 +3358,7 @@ class FastAtRead:
                 # #1496: Retire the @doc convention.
                 #        An empty line is no longer a sentinel.
                 if comment_delim2 and line in doc_skip:
+                    g.trace('empty line', repr(line))
                     # doc_skip is (comment_delim1 + '\n', delim_end + '\n')
                     continue
                 #

@@ -1162,6 +1162,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+node:ekr.20211101152843.1: *4* << define contents >> (test_doc_parts)
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
+        # The doc part should contain at least one blank line.
         contents = textwrap.dedent('''
             #AT+leo-ver=5-thin
             #AT+node:{root.gnx}: * {h}
@@ -1194,6 +1195,54 @@ class TestFastAtRead(LeoUnitTest):
             
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
+                g.printObj(g.splitLines(results), tag='results')
+                g.printObj(g.splitLines(expected), tag='expected')
+           
+            self.assertEqual(results, expected)
+    #@+node:ekr.20231207083858.1: *3* TestFastAtRead.test_doc_parts_html
+    def test_doc_parts_html(self):
+
+        c, x = self.c, self.x
+        h = '@file /test/test_directives.html'
+        root = c.rootPosition()
+        root.h = h  # To match contents.
+        #@+<< define contents >>
+        #@+node:ekr.20231207083858.2: *4* << define contents >> (test_doc_parts_html)
+        # Be careful: no line should look like a Leo sentinel!
+        # Use neither a raw string nor an f-string here.
+        # The doc part should contain at least one blank line.
+        contents = textwrap.dedent('''
+            <!--AT+leo-ver=5-thin-->
+            <!--AT+node:{root.gnx}: * {h}-->
+            <!--AT@language html-->
+
+            a = 1
+
+            <!--AT+at A doc part-->
+            <!-- Line 2.-->
+            <!--AT@c-->
+
+            <!--AT+doc-->
+            <!-- Line 2-->
+
+            <!-- Line 3
+            <!--AT@c
+
+            <!--AT-leo
+        ''').lstrip().replace('AT', '@').replace('LB', '<<')
+        contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
+        #@-<< define contents >>
+        for blacken in (True, False):
+
+            g.app.write_black_sentinels = blacken
+            test_s = contents.replace('#@', '# @') if blacken else contents
+            expected = test_s.replace('<!--\n', '\n')  ###
+            
+            x.read_into_root(test_s, path='test', root=root)
+            results = c.atFileCommands.atFileToString(root, sentinels=True)
+            
+            if results != expected:
+                # g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
                 g.printObj(g.splitLines(expected), tag='expected')
            
@@ -1440,6 +1489,64 @@ class TestFastAtRead(LeoUnitTest):
                 expected = test_s.replace('#@', '# @')
                 # Protect the @verbatim line.
                 expected = expected.replace('# @+node (verbatim)', '#@+node (verbatim)')
+
+            x.read_into_root(test_s, path='test', root=root)
+            
+            if root.b != expected_body:
+                g.printObj(g.splitLines(test_s), tag='test_s')
+                g.printObj(g.splitLines(root.b), tag='root.b')
+                g.printObj(g.splitLines(expected_body), tag='expected_body')
+
+            self.assertEqual(root.b, expected_body)
+
+            results = c.atFileCommands.atFileToString(root, sentinels=True)
+
+            if results != expected:
+                g.printObj(g.splitLines(test_s), tag='test_s')
+                g.printObj(g.splitLines(results), tag='results')
+                g.printObj(g.splitLines(expected), tag='expected')
+
+            self.assertEqual(results, expected)
+    #@+node:ekr.20231207080536.1: *3* TestFastAtRead.test_verbatim_html
+    def test_verbatim_html(self):
+
+        c, x = self.c, self.x
+        h = '@file /test/test_verbatim.html'
+        root = c.rootPosition()
+        root.h = h  # To match contents.
+        #@+<< define contents >>
+        #@+node:ekr.20231207080536.2: *4* << define contents >> (test_verbatim_html)
+        # Be careful: no line should look like a Leo sentinel!
+        contents = textwrap.dedent(f'''\
+            <!--AT+leo-ver=5-thin-->
+            <!--AT+node:{root.gnx}: * {h}-->
+            <!--AT@language html-->
+            <!-- Test of @verbatim-->
+            print('hi')
+            <!--ATverbatim-->
+            <!--AT+node (verbatim)-->
+            <!--AT-leo-->
+        ''').replace('AT', '@') # .replace('LB', '<<')
+        #@-<< define contents >>
+        #@+<< define expected_body >>
+        #@+node:ekr.20231207080536.3: *4* << define expected_body >> (test_verbatim_html)
+        expected_body = textwrap.dedent('''\
+        ATlanguage html
+        <!-- Test of @verbatim-->
+        print('hi')
+        <!--AT+node (verbatim)-->
+        ''').replace('AT', '@')
+        #@-<< define expected_body >>
+
+        for blacken in (True, False):
+            g.app.write_black_sentinels = blacken
+            test_s = expected = contents
+
+            if blacken:
+                # All true sentinels should be blackened.
+                expected = test_s.replace('#@', '# @')
+                # Protect the @verbatim line.
+                expected = expected.replace('<!-- @+node (verbatim)', '<!--@+node (verbatim)')
 
             x.read_into_root(test_s, path='test', root=root)
             
