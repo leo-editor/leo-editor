@@ -3217,7 +3217,7 @@ class FastAtRead:
 
                 # 2022/12/02: Bug fix: adjust indentation.
                 if indent and line[:indent].isspace() and len(line) > indent:
-                    line = line[indent:]
+                    line = line[indent:]  ### Cover me.
 
                 body.append(line)
                 verbatim = False
@@ -3475,7 +3475,7 @@ class FastAtRead:
                 if delim1:
                     comment_delim1, comment_delim2 = delim1, ''
                 else:
-                    comment_delim1, comment_delim2 = delim2, delim3
+                    comment_delim1, comment_delim2 = delim2, delim3  ### Cover me.
                 #
                 # Within these delimiters:
                 # - double underscores represent a newline.
