@@ -283,7 +283,7 @@ class TestAtFile(LeoUnitTest):
                 g.printObj(g.splitLines(expected), tag='expected')
 
             self.assertEqual(results, expected)
-    #@+node:ekr.20211102111413.1: *3* TestAtFile.test_putBody_at_all_after_at_doc (***real fail ???)
+    #@+node:ekr.20211102111413.1: *3* TestAtFile.test_putBody_at_all_after_at_doc
     def test_putBody_at_all_after_at_doc(self):
 
         at, c = self.at, self.c
@@ -294,18 +294,20 @@ class TestAtFile(LeoUnitTest):
             doc line 1
             ATall
         ''').replace('AT', '@')
+
+        # Only @c or @code end an @doc part.
+        # Therefore, the @all line is part of the @doc part.
+
         expected_contents = textwrap.dedent('''\
             #AT+doc
             # doc line 1
-            #ATall
+            # ATall
         ''').replace('AT', '@')
         
         for blacken in (True, False):
-            
-            print('blacken', blacken)
 
             g.app.write_black_sentinels = blacken
-            test_s = contents ### contents.replace('#@', '# @') if blacken else contents
+            test_s = contents.replace('#@', '# @') if blacken else contents
             expected = expected_contents.replace('#@', '# @') if blacken else expected_contents
         
             root.b = test_s 
