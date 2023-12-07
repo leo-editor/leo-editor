@@ -2019,6 +2019,7 @@ class AtFile:
         at = self
         j = g.skip_line(s, i)
         s = s[i:j]
+        ### g.trace(f"{i:2} {s!r}")
         #
         # #1496: Retire the @doc convention:
         #        Strip all trailing ws here.

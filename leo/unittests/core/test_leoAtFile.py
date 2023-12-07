@@ -256,7 +256,7 @@ class TestAtFile(LeoUnitTest):
         contents = textwrap.dedent('''\
             ATall
         ''').replace('AT', '@')
-        expected = textwrap.dedent('''\
+        expected_contents = textwrap.dedent('''\
             #AT+all
             #AT+node:<GNX>: ** child
             def spam():
@@ -264,13 +264,26 @@ class TestAtFile(LeoUnitTest):
 
             @ A single-line doc part.
             #AT-all
-        ''').replace('AT', ' @')
-        root.b = contents
-        at.initWriteIvars(root)
-        at.putBody(root)
-        result = ''.join(at.outputList)
-        self.assertEqual(result, expected)
-    #@+node:ekr.20211102111413.1: *3* TestAtFile.test_putBody_at_all_after_at_doc
+        ''').replace('AT', '@')
+        
+        for blacken in (True, False):
+
+            g.app.write_black_sentinels = blacken
+            test_s = contents.replace('#@', '# @') if blacken else contents
+            expected = expected_contents.replace('#@', '# @') if blacken else expected_contents
+
+            root.b = test_s 
+            at.initWriteIvars(root)
+            at.putBody(root)
+            results = ''.join(at.outputList)
+            
+            if results != expected:
+                g.printObj(g.splitLines(test_s), tag='test_s')
+                g.printObj(g.splitLines(results), tag='results')
+                g.printObj(g.splitLines(expected), tag='expected')
+
+            self.assertEqual(results, expected)
+    #@+node:ekr.20211102111413.1: *3* TestAtFile.test_putBody_at_all_after_at_doc (***real fail ???)
     def test_putBody_at_all_after_at_doc(self):
 
         at, c = self.at, self.c
@@ -281,16 +294,37 @@ class TestAtFile(LeoUnitTest):
             doc line 1
             ATall
         ''').replace('AT', '@')
-        expected = textwrap.dedent('''\
-            # AT+doc
+        expected_contents = textwrap.dedent('''\
+            #AT+doc
             # doc line 1
-            # ATall
+            #ATall
         ''').replace('AT', '@')
-        root.b = contents
-        at.initWriteIvars(root)
-        at.putBody(root)
-        result = ''.join(at.outputList)
-        self.assertEqual(result, expected)
+        
+        for blacken in (True, False):
+            
+            print('blacken', blacken)
+
+            g.app.write_black_sentinels = blacken
+            test_s = contents ### contents.replace('#@', '# @') if blacken else contents
+            expected = expected_contents.replace('#@', '# @') if blacken else expected_contents
+        
+            root.b = test_s 
+            at.initWriteIvars(root)
+            at.putBody(root)
+            results = ''.join(at.outputList)
+            
+            if results != expected:
+                g.printObj(g.splitLines(test_s), tag='test_s')
+                g.printObj(g.splitLines(results), tag='results')
+                g.printObj(g.splitLines(expected), tag='expected')
+
+            self.assertEqual(results, expected)
+        
+        # # # root.b = contents
+        # # # at.initWriteIvars(root)
+        # # # at.putBody(root)
+        # # # result = ''.join(at.outputList)
+        # # # self.assertEqual(result, expected)
     #@+node:ekr.20211102150707.1: *3* TestAtFile.test_putBody_at_others
     def test_putBody_at_others(self):
 
@@ -304,18 +338,38 @@ class TestAtFile(LeoUnitTest):
         contents = textwrap.dedent('''\
             ATothers
         ''').replace('AT', '@')
-        expected = textwrap.dedent('''\
+        expected_contents = textwrap.dedent('''\
             #AT+others
             #AT+node:<GNX>: ** child
             #AT+others
             #AT-others
             #AT-others
-        ''').replace('AT', ' @')
-        root.b = contents
-        at.initWriteIvars(root)
-        at.putBody(root)
-        result = ''.join(at.outputList)
-        self.assertEqual(result, expected)
+        ''').replace('AT', '@')
+        
+        for blacken in (True, False):
+
+            g.app.write_black_sentinels = blacken
+            test_s = contents.replace('#@', '# @') if blacken else contents
+            expected = expected_contents.replace('#@', '# @') if blacken else expected_contents
+
+            root.b = test_s 
+            at.initWriteIvars(root)
+            at.putBody(root)
+            results = ''.join(at.outputList)
+            
+            if results != expected:
+                g.printObj(g.splitLines(test_s), tag='test_s')
+                g.printObj(g.splitLines(results), tag='results')
+                g.printObj(g.splitLines(expected), tag='expected')
+
+            self.assertEqual(results, expected)
+        
+        
+        # root.b = contents
+        # at.initWriteIvars(root)
+        # at.putBody(root)
+        # result = ''.join(at.outputList)
+        # self.assertEqual(result, expected)
     #@+node:ekr.20211102102024.1: *3* TestAtFile.test_putBody_unterminated_at_doc_part
     def test_putBody_unterminated_at_doc_part(self):
 
