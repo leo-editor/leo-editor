@@ -2027,7 +2027,6 @@ class AtFile:
         at = self
         j = g.skip_line(s, i)
         s = s[i:j]
-        ### g.trace(f"{i:2} {s!r}")
         #
         # #1496: Retire the @doc convention:
         #        Strip all trailing ws here.
@@ -3138,8 +3137,8 @@ class FastAtRead:
         # The start/end *comment* delims.
         # Important: scan_header ends comment_delim1 with a blank when using black sentinels.
         comment_delim1, comment_delim2 = comment_delims
-        comment_delim1 = comment_delim1.strip()  ###
-        comment_delim2 = comment_delim2.strip()  ###
+        comment_delim1 = comment_delim1.strip()
+        comment_delim2 = comment_delim2.strip()
         doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')  # To handle doc parts.
         first_i = 0  # Index into first array.
         in_doc = False  # True: in @doc parts.
@@ -3195,8 +3194,6 @@ class FastAtRead:
                     # m = pattern.match(line)
                     # if m:
                         # print(f"{i:2} {ivar:15} {line!r}")
-                        # if False and ivar == 'node_start_pat':
-                            # breakpoint()  ###
                         # break
                 # else:
                     # print(f"{i:2} {' ':15} {line!r}")
@@ -3546,11 +3543,11 @@ class FastAtRead:
                     continue
 
                 # Legacy:
-                    #    with --black-sentinels: comment_delim1 ends with a blank.
-                    # without --black-sentinels: comment_delim1 does *not* end with a blank.
-                # Leo 6.7.6: comment_delim never ends with a blank.
+                #    with --black-sentinels: comment_delim1 ends with a blank.
+                # without --black-sentinels: comment_delim1 does *not* end with a blank.
 
-                ### assert comment_delim1.strip() == comment_delim1
+                # Leo 6.7.6:
+                #   comment_delim never ends with a blank.
 
                 tail = line.lstrip()[len(comment_delim1.rstrip()) + 1 :]
                 if tail.strip():
