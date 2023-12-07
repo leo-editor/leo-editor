@@ -3217,7 +3217,7 @@ class FastAtRead:
 
                 # 2022/12/02: Bug fix: adjust indentation.
                 if indent and line[:indent].isspace() and len(line) > indent:
-                    line = line[indent:]  ### Cover me.
+                    line = line[indent:]  # pragma: no cover (defensive?)
 
                 body.append(line)
                 verbatim = False
