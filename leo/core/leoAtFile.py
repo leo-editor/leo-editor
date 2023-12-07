@@ -36,12 +36,12 @@ class AtFile:
 
     # directives...
     noDirective     =  1  # not an at-directive.
-    allDirective    =  2  # at-all (4.2)
+    allDirective    =  2  # @all (4.2)
     docDirective    =  3  # @doc.
-    atDirective     =  4  # @<space> or @<newline>
+    atDirective     =  4  # @<space or newline>
     codeDirective   =  5  # @code
-    cDirective      =  6  # @c<space> or @c<newline>
-    othersDirective =  7  # at-others
+    cDirective      =  6  # @c<space or newline>
+    othersDirective =  7  # @others
     miscDirective   =  8  # All other directives
     startVerbatim   =  9  # @verbatim  Not a real directive. Used to issue warnings.
     #@-<< define class constants >>
@@ -1727,6 +1727,13 @@ class AtFile:
             has_at_others = False
             in_code = True
 
+            def __repr__(self) -> str:
+                return (
+                    f"code? {int(self.in_code)} "
+                    # f"comment? {int(self.at_comment_seen)} "
+                    # f"delims? {int(self.at_delims_seen)} "
+                    # f"@others? {int(self.has_at_others)} "
+                )
 
         i = 0
         status = Status()
@@ -1743,6 +1750,7 @@ class AtFile:
     def putLine(self, i: int, kind: int, p: Position, s: str, status: Any) -> None:
         """Put the line at s[i:] of the given kind, updating the status."""
         at = self
+        # g.trace(f"kind: {self.repr_kind(kind):5} i: {i:2} {status} {s!r}")
         if kind == at.noDirective:
             if status.in_code:
                 # Important: the so-called "name" must include brackets.
@@ -2892,6 +2900,21 @@ class AtFile:
         aSet = d.get(fn, set())
         aSet.add(p.h)
         d[fn] = aSet
+    #@+node:ekr.20231207062321.1: *4* at.repr_kind
+    def repr_kind(self, kind: int) -> str:
+        """Return the string representation of AtFile class constants."""
+        d: dict[int, str] = {
+            1: 'plain',
+            2: '@all',
+            3: '@doc',
+            4: '@ ',
+            5: '@code',
+            6: '@c',
+            7: '@others',
+            8: '@<misc>',
+            9: '@verbatim',
+        }
+        return d.get(kind) or f"<unknown AtFile class constant> {kind!r}"
     #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives
     def scanAllDirectives(self, p: Position) -> dict[str, Any]:
         """
@@ -3165,7 +3188,7 @@ class FastAtRead:
             #@+<< trace patterns >>
             #@+node:ekr.20231205061620.1: *4* << trace patterns >>
             # Keep this excellent trace, but comment it out for production code.
-            #
+            # if g.unitTesting:
                 # for ivar in self.pattern_ivars:
                     # pattern = getattr(self, ivar)
                     # assert isinstance(pattern, re.Pattern)
