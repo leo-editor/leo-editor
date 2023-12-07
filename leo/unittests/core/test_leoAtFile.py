@@ -1210,6 +1210,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+node:ekr.20231207083858.2: *4* << define contents >> (test_doc_parts_html)
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
+
         # The doc part should contain at least one blank line.
         contents = textwrap.dedent('''
             <!--AT+leo-ver=5-thin-->
@@ -1219,30 +1220,67 @@ class TestFastAtRead(LeoUnitTest):
             a = 1
 
             <!--AT+at A doc part-->
-            <!-- Line 2.-->
+            <!--
+            Line 2.
+            -->
             <!--AT@c-->
 
             <!--AT+doc-->
-            <!-- Line 2-->
+            <!--
+            Line 3.
 
-            <!-- Line 3
-            <!--AT@c
+            Line 4.
+            -->
+            <!--AT@c-->
 
             <!--AT-leo
         ''').lstrip().replace('AT', '@').replace('LB', '<<')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
+        #@+<< define expected_contents >>
+        #@+node:ekr.20231207121222.1: *4* << define expected_contents >> (test_doc_parts_html)
+        # For languages with a trailing delim,
+        #@verbatim
+        # @doc parts contain extra lines for the start/end delims.
+        expected_contents = textwrap.dedent('''
+            <!--AT+leo-ver=5-thin-->
+            <!--AT+node:{root.gnx}: * {h}-->
+            <!--AT@language html-->
+
+            a = 1
+
+            <!--AT+at A doc part-->
+            <!--
+            Line 2.
+            -->
+            <!--AT@c-->
+
+            <!--AT+doc-->
+            <!--
+            Line 3.
+
+            Line 4.
+            -->
+            <!--AT@c-->
+
+            <!--AT-leo-->
+        ''').lstrip().replace('AT', '@').replace('LB', '<<')
+        expected_contents = expected_contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
+        #@-<< define expected_contents >>
+
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
-            test_s = contents.replace('#@', '# @') if blacken else contents
-            expected = test_s.replace('<!--\n', '\n')  ###
+            
+            # --black-sentinels applies only to python files.
+            test_s = contents
+            expected = expected_contents
             
             x.read_into_root(test_s, path='test', root=root)
             results = c.atFileCommands.atFileToString(root, sentinels=True)
             
             if results != expected:
-                # g.printObj(g.splitLines(test_s), tag='test_s')
+                g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
                 g.printObj(g.splitLines(expected), tag='expected')
            
