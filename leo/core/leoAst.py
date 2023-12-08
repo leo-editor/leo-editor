@@ -3514,7 +3514,7 @@ class TokenOrderGenerator:
                 # self.token('number', conv)
             # if spec is not None:
                 # self.visit(node.format_spec)
-    #@+node:ekr.20191113063144.41: *6* tog.JoinedStr & helpers
+    #@+node:ekr.20191113063144.41: *6* tog.JoinedStr & helper
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node: Node) -> None:
@@ -3529,6 +3529,56 @@ class TokenOrderGenerator:
         """
         for z in self.get_concatenated_string_tokens():
             self.token(z.kind, z.value)
+    #@+node:ekr.20200111083914.1: *7* tog.get_concatenated_tokens
+    def get_concatenated_string_tokens(self) -> list[Token]:
+        """
+        Return the next 'string' token and all 'string' tokens concatenated to
+        it. *Never* update self.px here.
+        """
+        trace = False
+        tag = 'tog.get_concatenated_string_tokens'
+        i = self.px
+        # First, find the next significant token.  It should be a string.
+        i, token = i + 1, None
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            i += 1
+            if token.kind == 'string':
+                # Rescan the string.
+                i -= 1
+                break
+            # An error.
+            if is_significant_token(token):  # pragma: no cover
+                break
+        # Raise an error if we didn't find the expected 'string' token.
+        if not token or token.kind != 'string':  # pragma: no cover
+            if not token:
+                token = self.tokens[-1]
+            filename = getattr(self, 'filename', '<no filename>')
+            raise AssignLinksError(
+                f"\n"
+                f"{tag}...\n"
+                f"file: {filename}\n"
+                f"line: {token.line_number}\n"
+                f"   i: {i}\n"
+                f"expected 'string' token, got {token!s}")
+        # Accumulate string tokens.
+        assert self.tokens[i].kind == 'string'
+        results = []
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            i += 1
+            if token.kind == 'string':
+                results.append(token)
+            elif token.kind == 'op' or is_significant_token(token):
+                # Any significant token *or* any op will halt string concatenation.
+                break
+            # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
+        # The (significant) 'endmarker' token ensures we will have result.
+        assert results
+        if trace:  # pragma: no cover
+            g.print_obj(results, tag=f"{tag}: Results")
+        return results
     #@+node:ekr.20191113063144.42: *6* tog.List
     def do_List(self, node: Node) -> None:
 
@@ -3595,7 +3645,7 @@ class TokenOrderGenerator:
         else:
             self.op(':')
             self.visit(step)
-    #@+node:ekr.20191113063144.50: *6* tog.Str & helper (deprecated)
+    #@+node:ekr.20191113063144.50: *6* tog.Str (deprecated)
     # DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14;
     # use ast.Constant instead
 
@@ -3606,56 +3656,6 @@ class TokenOrderGenerator:
             # This loop is necessary to handle string concatenation.
             for z in self.get_concatenated_string_tokens():
                 self.token(z.kind, z.value)
-    #@+node:ekr.20200111083914.1: *7* tog.get_concatenated_tokens
-    def get_concatenated_string_tokens(self) -> list[Token]:
-        """
-        Return the next 'string' token and all 'string' tokens concatenated to
-        it. *Never* update self.px here.
-        """
-        trace = False
-        tag = 'tog.get_concatenated_string_tokens'
-        i = self.px
-        # First, find the next significant token.  It should be a string.
-        i, token = i + 1, None
-        while i < len(self.tokens):
-            token = self.tokens[i]
-            i += 1
-            if token.kind == 'string':
-                # Rescan the string.
-                i -= 1
-                break
-            # An error.
-            if is_significant_token(token):  # pragma: no cover
-                break
-        # Raise an error if we didn't find the expected 'string' token.
-        if not token or token.kind != 'string':  # pragma: no cover
-            if not token:
-                token = self.tokens[-1]
-            filename = getattr(self, 'filename', '<no filename>')
-            raise AssignLinksError(
-                f"\n"
-                f"{tag}...\n"
-                f"file: {filename}\n"
-                f"line: {token.line_number}\n"
-                f"   i: {i}\n"
-                f"expected 'string' token, got {token!s}")
-        # Accumulate string tokens.
-        assert self.tokens[i].kind == 'string'
-        results = []
-        while i < len(self.tokens):
-            token = self.tokens[i]
-            i += 1
-            if token.kind == 'string':
-                results.append(token)
-            elif token.kind == 'op' or is_significant_token(token):
-                # Any significant token *or* any op will halt string concatenation.
-                break
-            # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
-        # The (significant) 'endmarker' token ensures we will have result.
-        assert results
-        if trace:  # pragma: no cover
-            g.print_obj(results, tag=f"{tag}: Results")
-        return results
     #@+node:ekr.20191113063144.51: *6* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
