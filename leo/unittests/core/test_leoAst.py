@@ -2726,7 +2726,7 @@ class TestTokens(BaseTest):
         self.check_roundtrip("""'abc' f'xyz'""")
     #@+node:ekr.20160521103254.1: *4* TT.test_visitors_exist
     def test_visitors_exist(self):
-        """Ensure that visitors for all ast nodes exist."""
+        """Ensure that visitors exist for all ast nodes."""
         import _ast
         # Compute all fields to BaseTest.
         aList = sorted(dir(_ast))

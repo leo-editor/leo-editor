@@ -4335,6 +4335,38 @@ class TokenOrderGenerator:
         self.name('yield')
         self.name('from')
         self.visit(node.value)
+    #@+node:ekr.20231208092310.1: *5* tog: Types
+    #@+node:ekr.20231208092945.1: *6* tog.ParamSpec
+    # ParamSpec(identifier name)
+
+    def do_ParamSpec(self, node: Node) -> None:
+
+        self.visit(node.name)
+    #@+node:ekr.20231208092326.1: *6* tog.TypeAlias
+    # TypeAlias(expr name, type_param* type_params, expr value)
+
+    def do_TypeAlias(self, node: Node) -> None:
+
+        params = getattr(node, 'type_params', [])
+        self.visit(node.name)
+        for param in params:
+            self.visit(param)
+        self.visit(node.value)
+    #@+node:ekr.20231208092726.1: *6* tog.TypeVar
+    #  TypeVar(identifier name, expr? bound)
+
+    def do_TypeVar(self, node: Node) -> None:
+
+        bound = getattr(node, 'bound', None)
+        self.visit(node.name)
+        if bound:
+            self.visit(bound)
+    #@+node:ekr.20231208093043.1: *6* tog.TypeVarTuple
+    # TypeVarTuple(identifier name)
+
+    def do_TypeVarTuple(self, node: Node) -> None:
+
+        self.visit(node.name)
     #@-others
 #@+node:ekr.20200702102239.1: ** function: main (leoAst.py)
 def main() -> None:  # pragma: no cover
