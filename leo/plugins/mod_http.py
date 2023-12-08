@@ -5,7 +5,10 @@
 #@+node:ekr.20050111111238: ** << docstring >>
 #@@language rest
 #@@wrap
-"""An http plug-in for LEO, based on AsyncHttpServer.py.
+"""
+An http plug-in for LEO, based on AsyncHttpServer.py.
+
+*This plugin does not work with Python 3.12 and above.*
 
 Adapted and extended from the Python Cookbook:
 http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/259148
