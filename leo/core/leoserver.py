@@ -5445,7 +5445,7 @@ def main() -> None:  # pragma: no cover (tested in client)
                     elif trace:
                         print(f"{tag}: got: {d}", flush=True)
                     answer = controller._do_message(d)
-                except TerminateServer as e:  ###
+                except TerminateServer as e:
                     rcvd = websockets.frames.Close(websockets.frames.CloseCode.NORMAL_CLOSURE, e.__str__())
                     raise websockets.exceptions.ConnectionClosed(rcvd, None, None)
                 except ServerError as e:
