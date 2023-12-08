@@ -3604,7 +3604,7 @@ class TokenOrderGenerator:
     # DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14;
     # use ast.Constant instead
 
-    if py_version < (3, 12):
+    if py_version < (3, 14):
 
         def do_Str(self, node: Node) -> None:
             """This node represents a string constant."""
