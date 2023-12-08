@@ -2710,7 +2710,7 @@ class Token:
         """Dump a token."""
         return (
             f"{self.index:>3} line: {self.line_number:<2} "
-            f"{self.kind:>11} {self.show_val(100)}")
+            f"{self.kind:>15} {self.show_val(100)}")
     #@+node:ekr.20200223022950.11: *4* token.dump
     def dump(self) -> str:  # pragma: no cover
         """Dump a token and related links."""
@@ -2720,16 +2720,16 @@ class Token:
         return (
             f"{self.line_number:4} "
             f"{node_id:5} {node_cn:16} "
-            f"{self.index:>5} {self.kind:>11} "
+            f"{self.index:>5} {self.kind:>15} "
             f"{self.show_val(100)}")
     #@+node:ekr.20200121081151.1: *4* token.dump_header
     def dump_header(self) -> None:  # pragma: no cover
         """Print the header for token.dump"""
         print(
             f"\n"
-            f"         node    {'':10} token          token\n"
-            f"line index class {'':10} index        kind value\n"
-            f"==== ===== ===== {'':10} =====        ==== =====\n")
+            f"         node    {'':10} token {'':10}   token\n"
+            f"line index class {'':10} index {'':10} kind value\n"
+            f"==== ===== ===== {'':10} ===== {'':10} ==== =====\n")
     #@+node:ekr.20191116154328.1: *4* token.error_dump
     def error_dump(self) -> str:  # pragma: no cover
         """Dump a token or result node for error message."""
