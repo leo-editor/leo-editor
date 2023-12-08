@@ -258,7 +258,10 @@ def init():
         if not message_given:
             message_given = True
             print('')
-            print('mod_http plugin does not work on Python 3.12 and above.')
+            g.es_print(
+                'mod_http plugin does not work on Python 3.12 and above.',
+                color='red',
+            )
             print('')
         return False
     getGlobalConfiguration()
