@@ -36,12 +36,12 @@ class AtFile:
 
     # directives...
     noDirective     =  1  # not an at-directive.
-    allDirective    =  2  # at-all (4.2)
+    allDirective    =  2  # @all (4.2)
     docDirective    =  3  # @doc.
-    atDirective     =  4  # @<space> or @<newline>
+    atDirective     =  4  # @<space or newline>
     codeDirective   =  5  # @code
-    cDirective      =  6  # @c<space> or @c<newline>
-    othersDirective =  7  # at-others
+    cDirective      =  6  # @c<space or newline>
+    othersDirective =  7  # @others
     miscDirective   =  8  # All other directives
     startVerbatim   =  9  # @verbatim  Not a real directive. Used to issue warnings.
     #@-<< define class constants >>
@@ -167,7 +167,7 @@ class AtFile:
             # Encoding directive overrides everything else.
             encoding = g.getPythonEncodingFromString(root.b)
             if encoding:
-                at.encoding = encoding
+                at.encoding = encoding  # pragma: no cover (python 2)
         #
         # Clean root.v.
         if not at.errors and at.root:
@@ -1727,6 +1727,13 @@ class AtFile:
             has_at_others = False
             in_code = True
 
+            def __repr__(self) -> str:  # pragma: no cover (testing)
+                return (
+                    f"code? {int(self.in_code)} "
+                    # f"comment? {int(self.at_comment_seen)} "
+                    # f"delims? {int(self.at_delims_seen)} "
+                    # f"@others? {int(self.has_at_others)} "
+                )
 
         i = 0
         status = Status()
@@ -1944,12 +1951,10 @@ class AtFile:
         line = s[i:j]
 
         def put_verbatim_sentinel() -> None:
-            """
-            Put an @verbatim sentinel. *Always* use black-compatible indentation.
-            """
+            """Put an @verbatim sentinel."""
             if at.root.isAtCleanNode():
                 # #2996. Adding an @verbatim sentinel interferes with the @clean algorithm.
-                return
+                return  # # pragma: no cover (defensive)
             ws = s[i:k]
             self.putIndent(len(ws))
             self.putSentinel("@verbatim")
@@ -2028,6 +2033,7 @@ class AtFile:
             # A blank line.
             at.putBlankDocLine()
             return
+
         # Write the line as it is.
         at.putIndent(at.indent)
         if not at.endSentinelComment:
@@ -2148,8 +2154,8 @@ class AtFile:
         if at.sentinels or g.app.force_at_auto_sentinels:
             at.putIndent(at.indent)
             at.os(at.startSentinelComment)
-            # #2194. #2983: Put Black sentinels if --black-sentinels is in effect.
-            if g.app.write_black_sentinels:
+            # Blacken python sentinels if --black-sentinels is in effect.
+            if g.app.write_black_sentinels and self.language == 'python':
                 at.os(' ')
             # Apply the cweb hack to s:
             #   If the opening comment delim ends in '@',
@@ -2893,6 +2899,21 @@ class AtFile:
         aSet = d.get(fn, set())
         aSet.add(p.h)
         d[fn] = aSet
+    #@+node:ekr.20231207062321.1: *4* at.repr_kind
+    def repr_kind(self, kind: int) -> str:  # pragma: no cover (testing)
+        """Return the string representation of AtFile class constants."""
+        d: dict[int, str] = {
+            1: 'plain',
+            2: '@all',
+            3: '@doc',
+            4: '@ ',
+            5: '@code',
+            6: '@c',
+            7: '@others',
+            8: '@<misc>',
+            9: '@verbatim',
+        }
+        return d.get(kind) or f"<unknown AtFile class constant> {kind!r}"
     #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives
     def scanAllDirectives(self, p: Position) -> dict[str, Any]:
         """
@@ -3039,38 +3060,44 @@ class FastAtRead:
 
     def get_patterns(self, comment_delims: Any) -> None:
         """Create regex patterns for the given comment delims."""
+        
         # This must be a function, because of @comments & @delims.
         comment_delim_start, comment_delim_end = comment_delims
-        delim1 = re.escape(comment_delim_start)
-        delim2 = re.escape(comment_delim_end or '')
+            
+        # Make no assumption about comment delims.
+        delim1 = re.escape(comment_delim_start.strip())
+        delim2 = re.escape(comment_delim_end.strip() or '')
         ref = g.angleBrackets(r'(.*)')
         table = (
-            # Note: Do *not* alter these regexes to handle black-compatible sentinels!
-            #       delim1 *already* contains the trailing blank!
+            # Leo 6.7.6. These patterns match both legacy and blackened sentinels.
+            #            During git merges a mix of sentinels is passible!
 
             # These patterns must be mutually exclusive.
-            ('after',       fr'^\s*{delim1}@afterref{delim2}$'),             # @afterref
-            ('all',         fr'^(\s*){delim1}@(\+|-)all\b(.*){delim2}$'),    # @all
-            ('code',        fr'^\s*{delim1}@@c(ode)?{delim2}$'),             # @c and @code
-            ('comment',     fr'^\s*{delim1}@@comment(.*){delim2}'),          # @comment
-            ('delims',      fr'^\s*{delim1}@delims(.*){delim2}'),            # @delims
-            ('doc',         fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
-            ('first',       fr'^\s*{delim1}@@first{delim2}$'),               # @first
-            ('last',        fr'^\s*{delim1}@@last{delim2}$'),                # @last
+            ('after',       fr'^\s*{delim1} *@afterref{delim2}$'),             # @afterref
+            ('all',         fr'^(\s*){delim1} *@(\+|-)all\b(.*){delim2}$'),    # @all
+            ('code',        fr'^\s*{delim1} *@@c(ode)?\b(.*){delim2}$'),       # @c and @code
+            ('comment',     fr'^\s*{delim1} *@@comment(.*){delim2}'),          # @comment
+            ('delims',      fr'^\s*{delim1} *@delims(.*){delim2}'),            # @delims
+            ('doc',         fr'^\s*{delim1} *@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
+            ('first',       fr'^\s*{delim1} *@@first{delim2}$'),               # @first
+            ('last',        fr'^\s*{delim1} *@@last{delim2}$'),                # @last
             #@verbatim
             # @node
-            ('node_start',  fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
-            ('others',      fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$'), # @others
-            ('ref',         fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),     # section ref
+            ('node_start',  fr'^(\s*){delim1} *@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
+            ('others',      fr'^(\s*){delim1} *@(\+|-)others\b(.*){delim2}$'), # @others
+            ('ref',         fr'^(\s*){delim1} *@(\+|-){ref}\s*{delim2}$'),     # section ref
             #@verbatim
             # @section-delims
-            ('section_delims', fr'^\s*{delim1}@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),
+            ('section_delims', fr'^\s*{delim1} *@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),
         )
         # Set the ivars.
+        self.pattern_ivars: list[str] = []  # For debugging only.
         for (name, pattern) in table:
             ivar = f"{name}_pat"
+            self.pattern_ivars.append(ivar)
             assert hasattr(self, ivar), ivar
             setattr(self, ivar, re.compile(pattern))
+            
     #@+node:ekr.20180602103135.2: *3* fast_at.scan_header
     header_pattern = re.compile(
         r'''
@@ -3086,9 +3113,8 @@ class FastAtRead:
         """
         Scan for the header line, which follows any @first lines.
         Return (delims, first_lines, i+1) or None
-
-        Important: delims[0] will end with a blank when reading a file with blackened sentinels!
-                   This fact eliminates all special cases in scan_lines!
+        
+        *Note*: delims[0] will end with a blank when reading a file with blackened sentinels!
         """
         first_lines: list[str] = []
         i = 0  # To keep some versions of pylint happy.
@@ -3111,10 +3137,12 @@ class FastAtRead:
         # The start/end *comment* delims.
         # Important: scan_header ends comment_delim1 with a blank when using black sentinels.
         comment_delim1, comment_delim2 = comment_delims
+        comment_delim1 = comment_delim1.strip()
+        comment_delim2 = comment_delim2.strip()
         doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')  # To handle doc parts.
         first_i = 0  # Index into first array.
         in_doc = False  # True: in @doc parts.
-        is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
+        is_cweb = comment_delim1.strip() == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
         indent = 0  # The current indentation.
         level_stack: list[tuple[VNode, VNode]] = []
         n_last_lines = 0  # The number of @@last directives seen.
@@ -3125,9 +3153,13 @@ class FastAtRead:
         section_delim2 = '>>'
         section_reference_seen = False
         sentinel = comment_delim1 + '@'
+        blackened_sentinel = comment_delim1 + ' @'
+        any_sentinel = (sentinel, blackened_sentinel)
         # The stack is updated when at+others, at+<section>, or at+all is seen.
         stack: list[tuple[str, int, str]] = []  # Entries are (gnx, indent, body)
         verbatim_line = comment_delim1 + '@verbatim' + comment_delim2
+        blackened_verbatim_line = comment_delim1 + ' @verbatim' + comment_delim2
+        verbatim_lines = (verbatim_line, blackened_verbatim_line)
         verbatim = False  # True: the next line must be added without change.
         #
         # Init the parent vnode.
@@ -3152,6 +3184,20 @@ class FastAtRead:
         #@-<< init scan_lines >>
         i = 0  # To keep pylint happy.
         for i, line in enumerate(lines[start:]):
+            #@+<< trace patterns >>
+            #@+node:ekr.20231205061620.1: *4* << trace patterns >>
+            # Keep this excellent trace, but comment it out for production code.
+            # if g.unitTesting:
+                # for ivar in self.pattern_ivars:
+                    # pattern = getattr(self, ivar)
+                    # assert isinstance(pattern, re.Pattern)
+                    # m = pattern.match(line)
+                    # if m:
+                        # print(f"{i:2} {ivar:15} {line!r}")
+                        # break
+                # else:
+                    # print(f"{i:2} {' ':15} {line!r}")
+            #@-<< trace patterns >>
             # Strip the line only once.
             strip_line = line.strip()
             if afterref:
@@ -3171,13 +3217,13 @@ class FastAtRead:
 
                 # 2022/12/02: Bug fix: adjust indentation.
                 if indent and line[:indent].isspace() and len(line) > indent:
-                    line = line[indent:]
+                    line = line[indent:]  # pragma: no cover (defensive?)
 
                 body.append(line)
                 verbatim = False
                 #@-<< handle verbatim line >>
                 continue
-            if strip_line == verbatim_line:  # <delim>@verbatim
+            if strip_line in verbatim_lines:
                 verbatim = True
                 continue
             #@+<< finalize line >>
@@ -3189,7 +3235,8 @@ class FastAtRead:
             if indent and line[:indent].isspace() and len(line) > indent:
                 line = line[indent:]
             #@-<< finalize line >>
-            if not in_doc and not strip_line.startswith(sentinel):  # Faster than a regex!
+            # Faster than a regex!
+            if not in_doc and not strip_line.startswith(any_sentinel):
                 body.append(line)
                 continue
             # These three sections might clear in_doc.
@@ -3310,8 +3357,11 @@ class FastAtRead:
                 #
                 # #1496: Retire the @doc convention.
                 #        An empty line is no longer a sentinel.
+
+                assert in_doc, repr(line)
+
                 if comment_delim2 and line in doc_skip:
-                    # doc_skip is (comment_delim1 + '\n', delim_end + '\n')
+                    # skip start/end comment delim!
                     continue
                 #
                 # Check for @c or @code.
@@ -3324,6 +3374,8 @@ class FastAtRead:
             else:
                 #@+<< handle @ or @doc >>
                 #@+node:ekr.20211031033754.1: *4* << handle @ or @doc >>
+                assert not in_doc, repr(line)
+
                 m = self.doc_pat.match(line)
                 if m:
                     #@verbatim
@@ -3338,7 +3390,7 @@ class FastAtRead:
                     in_doc = True
                     continue
                 #@-<< handle @ or @doc >>
-            if line.startswith(comment_delim1 + '@-leo'):  # Faster than a regex!
+            if line.startswith((comment_delim1 + '@-leo', comment_delim1 + ' @-leo')):  # Faster than a regex!
                 # The @-leo sentinel adds *nothing* to the text.
                 i += 1
                 break
@@ -3403,7 +3455,7 @@ class FastAtRead:
                 if delim1:
                     comment_delim1, comment_delim2 = delim1, ''
                 else:
-                    comment_delim1, comment_delim2 = delim2, delim3
+                    comment_delim1, comment_delim2 = delim2, delim3  # pragma: no cover (unimportant)
                 #
                 # Within these delimiters:
                 # - double underscores represent a newline.
@@ -3414,6 +3466,8 @@ class FastAtRead:
                 doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
                 is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
                 sentinel = comment_delim1 + '@'
+                blackened_sentinel = comment_delim1 + ' @'
+                any_sentinel = (sentinel, blackened_sentinel)
                 #
                 # Recalculate the patterns.
                 comment_delims = comment_delim1, comment_delim2
@@ -3445,8 +3499,10 @@ class FastAtRead:
                 comment_delim2 = comment_delim2.replace('__', '\n').replace('_', ' ')
                 # Recalculate all delim-related values
                 doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
-                is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
+                is_cweb = comment_delim1 in ('@q@', ' @q@') and comment_delim2 == '@>'
                 sentinel = comment_delim1 + '@'
+                blackened_sentinel = comment_delim1 + ' @'
+                any_sentinel = (sentinel, blackened_sentinel)
                 #
                 # Recalculate the patterns
                 comment_delims = comment_delim1, comment_delim2
@@ -3465,7 +3521,7 @@ class FastAtRead:
                     # Carefully update the section reference pattern!
                     section_delim1 = d1 = re.escape(m.group(1))
                     section_delim2 = d2 = re.escape(m.group(2) or '')
-                    self.ref_pat = re.compile(fr'^(\s*){comment_delim1}@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
+                    self.ref_pat = re.compile(fr'^(\s*){comment_delim1} *@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
                 body.append(f"@section-delims {m.group(1)} {m.group(2)}\n")
                 continue
             #@-<< handle @section-delims >>
@@ -3475,8 +3531,10 @@ class FastAtRead:
             #@verbatim
             # @first, @last, @delims and @comment generate @@ sentinels,
             # So this must follow all of those.
-            if line.startswith(comment_delim1 + '@@'):
+            if line.startswith((comment_delim1 + '@@', comment_delim1 + ' @@')):
                 ii = len(comment_delim1) + 1  # on second '@'
+                if line.startswith(comment_delim1 + ' @@'):
+                    ii += 1
                 jj = line.rfind(comment_delim2) if comment_delim2 else -1
                 body.append(line[ii:jj] + '\n')
                 continue
@@ -3484,13 +3542,19 @@ class FastAtRead:
             if in_doc:
                 #@+<< handle remaining @doc lines >>
                 #@+node:ekr.20180606054325.1: *4* << handle remaining @doc lines >>
+                assert in_doc, repr(line)
+
                 if comment_delim2:
-                    # doc lines are unchanged.
+                    # Inner doc lines have no comment delims.
                     body.append(line)
                     continue
 
+                # Legacy:
                 #    with --black-sentinels: comment_delim1 ends with a blank.
                 # without --black-sentinels: comment_delim1 does *not* end with a blank.
+
+                # Leo 6.7.6:
+                #   comment_delim never ends with a blank.
 
                 tail = line.lstrip()[len(comment_delim1.rstrip()) + 1 :]
                 if tail.strip():
@@ -3507,7 +3571,7 @@ class FastAtRead:
             if 1:  # pragma: no cover (defensive)
 
                 # This assert verifies the short-circuit test.
-                assert strip_line.startswith(sentinel), repr(line)
+                assert strip_line.startswith(any_sentinel), repr(line)
 
                 # Defensive: make *sure* we ignore verbatim lines.
                 if strip_line == verbatim_line:
