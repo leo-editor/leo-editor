@@ -2863,6 +2863,8 @@ class Tokenizer:
 class TokenOrderGenerator:
     """
     A class that traverses ast (parse) trees in token order.
+    
+    Requires Python 3.9+.
 
     Overview: https://github.com/leo-editor/leo-editor/issues/1440#issue-522090981
 
@@ -3558,10 +3560,6 @@ class TokenOrderGenerator:
 
         self.name(repr(node.value))
 
-    #@+node:ekr.20191113063144.45: *6* tog.Num
-    def do_Num(self, node: Node) -> None:  # pragma: no cover (Does not exist in Python 3.8+)
-
-        self.token('number', node.n)
     #@+node:ekr.20191113063144.47: *6* tog.Set
     # Set(expr* elts)
 
@@ -3602,12 +3600,17 @@ class TokenOrderGenerator:
         else:
             self.op(':')
             self.visit(step)
-    #@+node:ekr.20191113063144.50: *6* tog.Str & helper
-    def do_Str(self, node: Node) -> None:
-        """This node represents a string constant."""
-        # This loop is necessary to handle string concatenation.
-        for z in self.get_concatenated_string_tokens():
-            self.token(z.kind, z.value)
+    #@+node:ekr.20191113063144.50: *6* tog.Str & helper (deprecated)
+    # DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14;
+    # use ast.Constant instead
+
+    if py_version < (3, 12):
+
+        def do_Str(self, node: Node) -> None:
+            """This node represents a string constant."""
+            # This loop is necessary to handle string concatenation.
+            for z in self.get_concatenated_string_tokens():
+                self.token(z.kind, z.value)
     #@+node:ekr.20200111083914.1: *7* tog.get_concatenated_tokens
     def get_concatenated_string_tokens(self) -> list[Token]:
         """
