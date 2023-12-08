@@ -2764,6 +2764,7 @@ class TestTokens(BaseTest):
                     ops += 1
                 else:  # pragma: no cover
                     errors += 1
+                    print('')
                     print(
                         f"Missing visitor: "
                         f"{traverser.__class__.__name__}.{z}")
