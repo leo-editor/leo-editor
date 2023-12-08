@@ -171,17 +171,11 @@ from typing import Any, Generator, Optional, Union
 
 Node = ast.AST
 Settings = Optional[dict[str, Any]]
+#@-<< leoAst imports & annotations >>
+
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
 
-#@-<< leoAst imports & annotations >>
-#@+<< leoAst data >>
-#@+node:ekr.20220821044107.1: ** << leoAst data >>
-
-# Async tokens exist only in Python 3.5 and 3.6.
-# https://docs.python.org/3/library/token.html
-has_async_tokens = (3, 5) <= py_version <= (3, 6)
-#@-<< leoAst data >>
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
 #@@nosearch
@@ -3274,8 +3268,9 @@ class TokenOrderGenerator:
                 self.visit(z)
         # 'asynch def (%s): -> %s\n'
         # 'asynch def %s(%s):\n'
-        async_token_type = 'async' if has_async_tokens else 'name'
-        self.token(async_token_type, 'async')
+        ### async_token_type = 'async' if has_async_tokens else 'name'
+        ### self.token(async_token_type, 'async')
+        self.token('name', 'async')
         self.name('def')
         self.name(node.name)  # A string
         self.op('(')
@@ -3776,9 +3771,10 @@ class TokenOrderGenerator:
     def do_AsyncFor(self, node: Node) -> None:
 
         # The def line...
-        # Py 3.8 changes the kind of token.
-        async_token_type = 'async' if has_async_tokens else 'name'
-        self.token(async_token_type, 'async')
+        ### Py 3.8 changes the kind of token.
+        ### async_token_type = 'async' if has_async_tokens else 'name'
+        ## self.token(async_token_type, 'async')
+        self.token('name', 'async')
         self.name('for')
         self.visit(node.target)
         self.name('in')
@@ -3796,8 +3792,9 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.65: *6* tog.AsyncWith
     def do_AsyncWith(self, node: Node) -> None:
 
-        async_token_type = 'async' if has_async_tokens else 'name'
-        self.token(async_token_type, 'async')
+        ### async_token_type = 'name'  ### 'async' if has_async_tokens else 'name'
+        ### self.token(async_token_type, 'async')
+        self.token('name', 'async')
         self.do_With(node)
     #@+node:ekr.20191113063144.66: *6* tog.AugAssign
     # AugAssign(expr target, operator op, expr value)
@@ -3814,8 +3811,9 @@ class TokenOrderGenerator:
 
     def do_Await(self, node: Node) -> None:
 
-        async_token_type = 'await' if has_async_tokens else 'name'
-        self.token(async_token_type, 'await')
+        ### async_token_type = 'await' if has_async_tokens else 'name'
+        ### self.token(async_token_type, 'await')
+        self.token('name', 'await')
         self.visit(node.value)
     #@+node:ekr.20191113063144.68: *6* tog.Break
     def do_Break(self, node: Node) -> None:

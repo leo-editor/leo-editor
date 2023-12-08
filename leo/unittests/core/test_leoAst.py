@@ -602,6 +602,8 @@ class TestTOG(BaseTest):
     )
     print('done')
     """
+        self.debug_list.extend(['tree', 'tokens'])
+
         self.make_data(contents)
     #@+node:ekr.20191227052446.67: *5* test_fstring02: Ternary
     def test_fstring2(self):
