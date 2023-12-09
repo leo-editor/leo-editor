@@ -1142,6 +1142,22 @@ class TestColorizer(LeoUnitTest):
     ''')
         self.color('python', text)
 
+    #@+node:ekr.20231209161622.1: *3* TestColorizer.test_colorizer_Python_fstrings
+    def test_colorizer_Python_fstrings(self):
+
+        text = textwrap.dedent(r'''
+    my_dict = {'key': 'value', 'key2': 'value2'}
+
+    print(repr(f"{'':*^{1:{1}}}"))
+
+    for key in ('key', 'key2'):
+        print(f"{my_dict[key]=}")
+    print(f"{my_dict['key']=}")
+    print(f"{my_dict['key2']=}")
+
+    ''').lstrip()
+        self.color('python', text)
+
     #@+node:ekr.20210905170507.27: *3* TestColorizer.test_colorizer_r
     def test_colorizer_r(self):
         text = textwrap.dedent("""\
