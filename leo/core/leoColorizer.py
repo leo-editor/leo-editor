@@ -1851,16 +1851,27 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20231209010844.1: *4* jedit.match_fstring
     f_string_nesting_level = 0
 
-    def match_fstring(self, s: str, i: int, delim: str) -> int:
+    def match_fstring(self, s: str, i: int) -> int:
         """
         Match a python 3.12 f-string.
         
         Called only for python 3.12+.
         """
+        # Fail quickly if possible.
+        if i + 1 >= len(s):
+            return 0
+        ch = s[i+1]
+        j = 1 if ch in 'rfRF' else 0
+        if i + j + 1 >= len(s):
+            return 0
+        delim = s[i + j + 1]
+        g.trace('delim', repr(delim), s[i:])
+        if delim not in ('"', '"'):
+            return 0
+
         # Python uses match_span for docstrings,
         # so this code will be similar.
-        g.trace(delim)
-        start = i + len(delim)
+        start = i + j + len(delim)
 
         ### Extend delim to triples
             

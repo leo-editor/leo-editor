@@ -408,19 +408,7 @@ def python_rule21(colorer, s, i):
     return colorer.match_keywords(s, i)
 #@+node:ekr.20231209010502.1: *3* python_rule_fstring
 def python_rule_fstring(colorer, s, i):
-    # Fail quickly if possible.
-    print('python_rule_fstring', s[i:])
-    if i + 1 >= len(s):
-        return 0
-    ch = s[i+1]
-    j = 1 if ch in 'rfRF' else 0
-    if i + j + 1 >= len(s):
-        return 0
-    delim = s[i + j + 1]
-    print('delim', repr(delim))
-    if delim not in ('"', '"'):
-        return 0
-    return colorer.match_fstring(s, i, delim)
+    return colorer.match_fstring(s, i)
 #@+node:ekr.20230419163931.1: *3* python_rule_h_url/rule_f_url (not used)
 if 0:
     url = False
