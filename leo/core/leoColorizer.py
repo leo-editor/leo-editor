@@ -1868,23 +1868,19 @@ class JEditColorizer(BaseColorizer):
         if delim not in ('"', '"'):
             return 0
             
-        # Extend delim to triples.
+        # Init.
+        self.f_string_nesting_level = 0
         if g.match(s, delim_offset, delim * 3):
             delim = delim * 3
 
         # Similar to code for docstrings (match_span).
-        start = i + j
-        end = self.match_fstring_helper(s, start + 1, delim)
+        start = delim_offset
+        end = self.match_fstring_helper(s, start + len(delim), delim)
         if end == -1:
             return 0  # A real failure.
-            
-        ### g.trace('delim', repr(delim), 'escape', repr(self.escape), s[i:])
 
-        # Continue until matching delim found at nesting level 0.
-        self.f_string_nesting_level = 0
-
+        # Color this line.
         self.colorRangeWithTag(s, start, end, tag='literal1')
-
         self.prev = (i, end, delim)
         self.trace_match(delim, s, i, end)
 
@@ -1906,25 +1902,29 @@ class JEditColorizer(BaseColorizer):
         """
         escape, escapes = '\\', 0
         level = self.f_string_nesting_level
+
         # Scan, incrementing escape count and f-string level.
         while i < len(s):
             progress = i
             if g.match(s, i, delim):
-                if (escapes % 2) == 1 and level == 0:
+                if (escapes % 2) == 0 and level == 0:
                     return i + len(delim)
                 i += len(delim)
                 continue
             ch = s[i]
             i += 1
+            if ch == '#' and (escapes % 2) == 0:
+                break  # Don't scan comments.
             if ch == escape:
                 escapes += 1
             elif ch == '{':
                 level += 1
             elif ch == '}':
-                level += 1
+                level -= 1
             else:
                 escapes = 0
             assert progress < i, (i, s)
+
         # Continue scanning.
         self.f_string_nesting_level = level
         return len(s) + 1
@@ -1936,14 +1936,18 @@ class JEditColorizer(BaseColorizer):
         
         if j == -1:
             j2 = len(s) + 1
-        elif j > len(s):
-            j2 = j
         else:
-            j2 = j + len(delim)
+            j2 = j
+            
+        ###
+        # elif j > len(s):
+            # j2 = j
+        # else:
+            # j2 = j + len(delim)
 
         self.colorRangeWithTag(s, i, j2, tag='literal1')
-        j = j2
-        self.trace_match(delim, s, i, j)
+        ### j = j2
+        self.trace_match(delim, s, i, j2)
         if j > len(s):
             
             def fstring_restarter(s: str) -> int:
