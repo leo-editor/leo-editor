@@ -4,6 +4,10 @@
 # Leo colorizer control file for python mode.
 # This file is in the public domain.
 
+import sys
+
+v1, v2, junk1, junk2, junk3 = sys.version_info
+
 # Properties for python mode.
 properties = {
     "indentNextLines": "\\s*[^#]{3,}:\\s*(#.*)?",
@@ -308,16 +312,16 @@ keywordsDictDict = {
 #@+node:ekr.20230419163819.1: *3* python_rule0
 def python_rule0(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="#")
-#@+node:ekr.20230419163819.2: *3* python_rule1
+#@+node:ekr.20230419163819.2: *3* python_rule1 """
 def python_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"")
-#@+node:ekr.20230419163819.3: *3* python_rule2
+#@+node:ekr.20230419163819.3: *3* python_rule2 '''
 def python_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''")
-#@+node:ekr.20230419163819.4: *3* python_rule3
+#@+node:ekr.20230419163819.4: *3* python_rule3 "
 def python_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
-#@+node:ekr.20230419163819.5: *3* python_rule4
+#@+node:ekr.20230419163819.5: *3* python_rule4 '
 def python_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 #@+node:ekr.20230419163819.6: *3* python_rule5
@@ -399,9 +403,12 @@ def python_rule19(colorer, s, i):
 if 0:  # #1821.
     def python_rule20(colorer, s, i):
         return colorer.match_mark_previous(s, i, kind="function", pattern="(")
-#@+node:ekr.20230419163819.22: *3* python_rule21
+#@+node:ekr.20230419163819.22: *3* python_rule21 (keyword)
 def python_rule21(colorer, s, i):
     return colorer.match_keywords(s, i)
+#@+node:ekr.20231209010502.1: *3* python_rule_fstring
+def python_rule_fstring(colorer, s, i):
+    return colorer.match_fstring(s, i)
 #@+node:ekr.20230419163931.1: *3* python_rule_h_url/rule_f_url (not used)
 if 0:
     url = False
@@ -510,6 +517,11 @@ rulesDict1 = {
     "|": [python_rule17],
     "~": [python_rule19],
 }
+
+if (v1, v2) >= (3, 12):
+    # Update rules to for Python 3.12+ f-strings.
+    for key in 'frFR':
+        rulesDict1 [key] = [python_rule_fstring, python_rule21]
 
 # x.rulesDictDict for python mode.
 rulesDictDict = {
