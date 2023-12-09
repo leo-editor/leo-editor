@@ -3186,8 +3186,7 @@ class FastAtRead:
         if self.old:  ### devel.
             blackened_sentinel = comment_delim1 + ' @'
             any_sentinel = (sentinel, blackened_sentinel)
-        else:
-            pass  ### experimental.
+
         # The stack is updated when at+others, at+<section>, or at+all is seen.
         stack: list[tuple[str, int, str]] = []  # Entries are (gnx, indent, body)
         verbatim_line = comment_delim1 + '@verbatim' + comment_delim2
@@ -3195,8 +3194,7 @@ class FastAtRead:
         if self.old:  ### devel.
             blackened_verbatim_line = comment_delim1 + ' @verbatim' + comment_delim2
             verbatim_lines = (verbatim_line, blackened_verbatim_line)
-        else:
-            pass  ### experimental.
+
         verbatim = False  # True: the next line must be added without change.
         #
         # Init the parent vnode.
@@ -3278,9 +3276,14 @@ class FastAtRead:
                 line = line[indent:]
             #@-<< finalize line >>
             # Faster than a regex!
-            if not in_doc and not strip_line.startswith(any_sentinel):
-                body.append(line)
-                continue
+            if self.old:
+                if not in_doc and not strip_line.startswith(any_sentinel):
+                    body.append(line)
+                    continue
+            else:
+                if not in_doc and not strip_line.startswith(sentinel):
+                    body.append(line)
+                    continue
             # These three sections might clear in_doc.
             #@+<< handle @others >>
             #@+node:ekr.20180602103135.14: *4* << handle @others >>
@@ -3508,8 +3511,9 @@ class FastAtRead:
                 doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
                 is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
                 sentinel = comment_delim1 + '@'
-                blackened_sentinel = comment_delim1 + ' @'
-                any_sentinel = (sentinel, blackened_sentinel)
+                if self.old:
+                    blackened_sentinel = comment_delim1 + ' @'
+                    any_sentinel = (sentinel, blackened_sentinel)
                 #
                 # Recalculate the patterns.
                 comment_delims = comment_delim1, comment_delim2
@@ -3543,8 +3547,9 @@ class FastAtRead:
                 doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
                 is_cweb = comment_delim1 in ('@q@', ' @q@') and comment_delim2 == '@>'
                 sentinel = comment_delim1 + '@'
-                blackened_sentinel = comment_delim1 + ' @'
-                any_sentinel = (sentinel, blackened_sentinel)
+                if self.old:
+                    blackened_sentinel = comment_delim1 + ' @'
+                    any_sentinel = (sentinel, blackened_sentinel)
                 #
                 # Recalculate the patterns
                 comment_delims = comment_delim1, comment_delim2
@@ -3613,7 +3618,10 @@ class FastAtRead:
             if 1:  # pragma: no cover (defensive)
 
                 # This assert verifies the short-circuit test.
-                assert strip_line.startswith(any_sentinel), repr(line)
+                if self.old:
+                    assert strip_line.startswith(any_sentinel), repr(line)
+                else:
+                    assert strip_line.startswith(sentinel), repr(line)
 
                 # Defensive: make *sure* we ignore verbatim lines.
                 if strip_line == verbatim_line:
