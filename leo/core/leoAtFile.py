@@ -3033,6 +3033,8 @@ class FastAtRead:
     This is Vitalije's code, edited by EKR.
     """
 
+    old = True  ### True: devel. False: attempted fix.
+
     #@+others
     #@+node:ekr.20211030193146.1: *3* fast_at.__init__
     def __init__(self, c: Cmdr, gnx2vnode: dict[str, VNode]) -> None:
@@ -3065,31 +3067,56 @@ class FastAtRead:
         comment_delim_start, comment_delim_end = comment_delims
             
         # Make no assumption about comment delims.
-        delim1 = re.escape(comment_delim_start.strip())
-        delim2 = re.escape(comment_delim_end.strip() or '')
         ref = g.angleBrackets(r'(.*)')
-        table = (
-            # Leo 6.7.6. These patterns match both legacy and blackened sentinels.
-            #            During git merges a mix of sentinels is passible!
 
-            # These patterns must be mutually exclusive.
-            ('after',       fr'^\s*{delim1} *@afterref{delim2}$'),             # @afterref
-            ('all',         fr'^(\s*){delim1} *@(\+|-)all\b(.*){delim2}$'),    # @all
-            ('code',        fr'^\s*{delim1} *@@c(ode)?\b(.*){delim2}$'),       # @c and @code
-            ('comment',     fr'^\s*{delim1} *@@comment(.*){delim2}'),          # @comment
-            ('delims',      fr'^\s*{delim1} *@delims(.*){delim2}'),            # @delims
-            ('doc',         fr'^\s*{delim1} *@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
-            ('first',       fr'^\s*{delim1} *@@first{delim2}$'),               # @first
-            ('last',        fr'^\s*{delim1} *@@last{delim2}$'),                # @last
-            #@verbatim
-            # @node
-            ('node_start',  fr'^(\s*){delim1} *@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
-            ('others',      fr'^(\s*){delim1} *@(\+|-)others\b(.*){delim2}$'), # @others
-            ('ref',         fr'^(\s*){delim1} *@(\+|-){ref}\s*{delim2}$'),     # section ref
-            #@verbatim
-            # @section-delims
-            ('section_delims', fr'^\s*{delim1} *@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),
-        )
+        if self.old:  ### devel.
+            delim1 = re.escape(comment_delim_start.strip())
+            delim2 = re.escape(comment_delim_end.strip() or '')
+            table = (
+                # Leo 6.7.6. These patterns match both legacy and blackened sentinels.
+                #            During git merges a mix of sentinels is passible!
+
+                # These patterns must be mutually exclusive.
+                ('after',       fr'^\s*{delim1} *@afterref{delim2}$'),             # @afterref
+                ('all',         fr'^(\s*){delim1} *@(\+|-)all\b(.*){delim2}$'),    # @all
+                ('code',        fr'^\s*{delim1} *@@c(ode)?\b(.*){delim2}$'),       # @c and @code
+                ('comment',     fr'^\s*{delim1} *@@comment(.*){delim2}'),          # @comment
+                ('delims',      fr'^\s*{delim1} *@delims(.*){delim2}'),            # @delims
+                ('doc',         fr'^\s*{delim1} *@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
+                ('first',       fr'^\s*{delim1} *@@first{delim2}$'),               # @first
+                ('last',        fr'^\s*{delim1} *@@last{delim2}$'),                # @last
+                #@verbatim
+                # @node
+                ('node_start',  fr'^(\s*){delim1} *@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
+                ('others',      fr'^(\s*){delim1} *@(\+|-)others\b(.*){delim2}$'), # @others
+                ('ref',         fr'^(\s*){delim1} *@(\+|-){ref}\s*{delim2}$'),     # section ref
+                #@verbatim
+                # @section-delims
+                ('section_delims', fr'^\s*{delim1} *@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),
+            )
+        else:  ### Attempted fix.
+            delim1 = re.escape(comment_delim_start)
+            delim2 = re.escape(comment_delim_end or '')
+            table = (
+                # These patterns must be mutually exclusive.
+                ('after',       fr'^\s*{delim1}@afterref{delim2}$'),             # @afterref
+                ('all',         fr'^(\s*){delim1}@(\+|-)all\b(.*){delim2}$'),    # @all
+                ('code',        fr'^\s*{delim1}@@c(ode)?\b(.*){delim2}$'),       # @c and @code
+                ('comment',     fr'^\s*{delim1}@@comment(.*){delim2}'),          # @comment
+                ('delims',      fr'^\s*{delim1}@delims(.*){delim2}'),            # @delims
+                ('doc',         fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
+                ('first',       fr'^\s*{delim1}@@first{delim2}$'),               # @first
+                ('last',        fr'^\s*{delim1}@@last{delim2}$'),                # @last
+                #@verbatim
+                # @node
+                ('node_start',  fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
+                ('others',      fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$'), # @others
+                ('ref',         fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),     # section ref
+                #@verbatim
+                # @section-delims
+                ('section_delims', fr'^\s*{delim1} *@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),
+            )
+
         # Set the ivars.
         self.pattern_ivars: list[str] = []  # For debugging only.
         for (name, pattern) in table:
@@ -3137,8 +3164,11 @@ class FastAtRead:
         # The start/end *comment* delims.
         # Important: scan_header ends comment_delim1 with a blank when using black sentinels.
         comment_delim1, comment_delim2 = comment_delims
-        comment_delim1 = comment_delim1.strip()
-        comment_delim2 = comment_delim2.strip()
+        if self.old:  ### devel
+            comment_delim1 = comment_delim1.strip()
+            comment_delim2 = comment_delim2.strip()
+        else:
+            pass  ### Experimental
         doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')  # To handle doc parts.
         first_i = 0  # Index into first array.
         in_doc = False  # True: in @doc parts.
@@ -3153,13 +3183,20 @@ class FastAtRead:
         section_delim2 = '>>'
         section_reference_seen = False
         sentinel = comment_delim1 + '@'
-        blackened_sentinel = comment_delim1 + ' @'
-        any_sentinel = (sentinel, blackened_sentinel)
+        if self.old:  ### devel.
+            blackened_sentinel = comment_delim1 + ' @'
+            any_sentinel = (sentinel, blackened_sentinel)
+        else:
+            pass  ### experimental.
         # The stack is updated when at+others, at+<section>, or at+all is seen.
         stack: list[tuple[str, int, str]] = []  # Entries are (gnx, indent, body)
         verbatim_line = comment_delim1 + '@verbatim' + comment_delim2
-        blackened_verbatim_line = comment_delim1 + ' @verbatim' + comment_delim2
-        verbatim_lines = (verbatim_line, blackened_verbatim_line)
+
+        if self.old:  ### devel.
+            blackened_verbatim_line = comment_delim1 + ' @verbatim' + comment_delim2
+            verbatim_lines = (verbatim_line, blackened_verbatim_line)
+        else:
+            pass  ### experimental.
         verbatim = False  # True: the next line must be added without change.
         #
         # Init the parent vnode.
@@ -3223,9 +3260,14 @@ class FastAtRead:
                 verbatim = False
                 #@-<< handle verbatim line >>
                 continue
-            if strip_line in verbatim_lines:
-                verbatim = True
-                continue
+            if self.old:
+                if strip_line in verbatim_lines:
+                    verbatim = True
+                    continue
+            else:
+                if strip_line in verbatim_line:
+                    verbatim = True
+                    continue
             #@+<< finalize line >>
             #@+node:ekr.20180602103135.10: *4* << finalize line >>
             # Undo the cweb hack.
