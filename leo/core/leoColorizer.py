@@ -1879,7 +1879,7 @@ class JEditColorizer(BaseColorizer):
             
         # Continue until matching delim found at nesting level 0.
         self.f_string_nesting_level = 0
-        g.trace(s[start:end])
+        ### g.trace(s[start:end])
 
         self.colorRangeWithTag(s, start, end, tag='literal1')
 
@@ -1891,7 +1891,7 @@ class JEditColorizer(BaseColorizer):
             end = len(s) + 1  # A signal??
 
             def fstring_restarter(s: str) -> int:
-                # Freeze the binding of delim.
+                """Freeze the binding of delim"""
                 return self.restart_fstring(s, delim)
 
             self.setRestart(fstring_restarter)
@@ -1940,9 +1940,6 @@ class JEditColorizer(BaseColorizer):
         i = 0
         j = self.match_fstring_helper(s, i, delim)
         
-        g.trace(j, s)
-        # breakpoint()  ###
-
         if j == -1:
             j2 = len(s) + 1
         elif j > len(s):
@@ -1956,7 +1953,7 @@ class JEditColorizer(BaseColorizer):
         if j > len(s):
             
             def fstring_restarter(s: str) -> int:
-                # Freeze the binding of delim.
+                """Freeze the binding of delim."""
                 return self.restart_fstring(s, delim)
 
             self.setRestart(fstring_restarter)
