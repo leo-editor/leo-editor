@@ -1849,13 +1849,16 @@ class JEditColorizer(BaseColorizer):
         # self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
         # return j
     #@+node:ekr.20231209010844.1: *4* jedit.match_fstring
+    f_string_nesting_level = 0
+
     def match_fstring(self, s: str, i: int) -> int:
         """
         Match a python 3.12 f-string.
         
         Called only for python 3.12+.
         """
-        g.trace('Python 3.12 f-string')
+        # Python uses match_span for docstrings,
+        # so this code will be similar.
         ch0 = s[i].lower()
         ch1 = s[i+1].lower() if i+1 < len(s) else ''
         assert ch0.lower() in 'fr'
@@ -1869,18 +1872,31 @@ class JEditColorizer(BaseColorizer):
             
         ### Extend delim to triples
             
-        # Similar to match_span.
 
-        k = self.match_fstring_helper(s, start + 1, delim)
-        if k == -1:
+        end = self.match_fstring_helper(s, start + 1, delim)
+        if end == -1:
             return 0  # A real failure.
             
-        g.trace(s[start:k])
-            
-        # A match
-        end = k + 1  ### len(end)
+        # Continue until matching delim found at nesting level 0.
+        self.f_string_nesting_level = 0
+        g.trace(s[start:end])
+
         self.colorRangeWithTag(s, start, end, tag='literal1')
-        return end-i
+
+        self.prev = (i, end, delim)
+        self.trace_match(delim, s, i, end)
+
+        # Continue the f-string if necessary.
+        if end >= len(s):
+            end = len(s) + 1  # A signal??
+
+            def fstring_restarter(s: str) -> int:
+                # Freeze the binding of delim.
+                return self.restart_fstring(s, delim)
+
+            self.setRestart(fstring_restarter)
+            
+        return end - i  # Correct, whatever end is.
     #@+node:ekr.20231209015334.1: *5* jedit.match_fstring_helper
     def match_fstring_helper(self, s: str, i: int, delim: str) -> int:
         """
@@ -1918,6 +1934,36 @@ class JEditColorizer(BaseColorizer):
                 return j
         # For pylint.
         return -1
+    #@+node:ekr.20231209082830.1: *5* jedit.restart_fstring
+    def restart_fstring(self, s: str, delim: str) -> int:
+        """Remain in this state until 'delim' is seen."""
+        i = 0
+        j = self.match_fstring_helper(s, i, delim)
+        
+        g.trace(j, s)
+        # breakpoint()  ###
+
+        if j == -1:
+            j2 = len(s) + 1
+        elif j > len(s):
+            j2 = j
+        else:
+            j2 = j + len(delim)
+
+        self.colorRangeWithTag(s, i, j2, tag='literal1')
+        j = j2
+        self.trace_match(delim, s, i, j)
+        if j > len(s):
+            
+            def fstring_restarter(s: str) -> int:
+                # Freeze the binding of delim.
+                return self.restart_fstring(s, delim)
+
+            self.setRestart(fstring_restarter)
+
+        else:
+            self.clearState()
+        return j  # Return the new i, *not* the length of the match.
     #@+node:ekr.20110605121601.18614: *4* jedit.match_keywords
     # This is a time-critical method.
 
@@ -2675,6 +2721,7 @@ class JEditColorizer(BaseColorizer):
     def setRestart(self, f: Any, **keys: Any) -> int:
         n = self.computeState(f, keys)
         self.setState(n)
+        g.trace(n, f.__name__)
         return n
     #@+node:ekr.20110605121601.18635: *4* jedit.show...
     def showState(self, n: int) -> str:
