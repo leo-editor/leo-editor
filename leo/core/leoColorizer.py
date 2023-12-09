@@ -1848,6 +1848,76 @@ class JEditColorizer(BaseColorizer):
         # j = len(s)
         # self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
         # return j
+    #@+node:ekr.20231209010844.1: *4* jedit.match_fstring
+    def match_fstring(self, s: str, i: int) -> int:
+        """
+        Match a python 3.12 f-string.
+        
+        Called only for python 3.12+.
+        """
+        g.trace('Python 3.12 f-string')
+        ch0 = s[i].lower()
+        ch1 = s[i+1].lower() if i+1 < len(s) else ''
+        assert ch0.lower() in 'fr'
+        j = 1 if ch1 in 'fr' else 0
+        start = i+j+1
+        if start >= len(s):
+            return 0
+        delim = s[start]
+        if delim not in ('"', "'"):
+            return 0
+            
+        ### Extend delim to triples
+            
+        # Similar to match_span.
+
+        k = self.match_fstring_helper(s, start + 1, delim)
+        if k == -1:
+            return 0  # A real failure.
+            
+        g.trace(s[start:k])
+            
+        # A match
+        end = k + 1  ### len(end)
+        self.colorRangeWithTag(s, start, end, tag='literal1')
+        return end-i
+    #@+node:ekr.20231209015334.1: *5* jedit.match_fstring_helper
+    def match_fstring_helper(self, s: str, i: int, delim: str) -> int:
+        """
+        Return n >= 0 if s[i] ends with a non-escaped delim.
+        """
+        esc = self.escape
+        while 1:
+            j = s.find(delim, i)
+            if j == -1:
+                return len(s) + 1
+                ###
+                    # # Match to end of text if not found and no_line_break is False
+                    # if no_line_break:
+                        # return -1
+                    # return len(s) + 1
+            ###
+                # if no_word_break and j > 0 and s[j - 1] in self.word_chars:
+                    # return -1  # New in Leo 4.5.
+                # if no_line_break and '\n' in s[i:j]:
+                    # return -1
+            if esc: ### and not no_escape:
+                # Only an odd number of escapes is a 'real' escape.
+                escapes = 0
+                k = 1
+                while j - k >= 0 and s[j - k] == esc:
+                    escapes += 1
+                    k += 1
+                if (escapes % 2) == 1:
+                    assert s[j - 1] == esc
+                    # Advance past *one* escaped character.
+                    i += 1
+                else:
+                    return j
+            else:
+                return j
+        # For pylint.
+        return -1
     #@+node:ekr.20110605121601.18614: *4* jedit.match_keywords
     # This is a time-critical method.
 

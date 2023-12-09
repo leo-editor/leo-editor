@@ -63,7 +63,6 @@ if TYPE_CHECKING:  # pragma: no cover
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.9'
-isPython3 = sys.version_info >= (3, 0, 0)  # Not used in Leo's core.
 isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
 #@+<< define g.globalDirectiveList >>
