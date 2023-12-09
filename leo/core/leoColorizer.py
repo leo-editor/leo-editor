@@ -1898,7 +1898,7 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20231209015334.1: *5* jedit.match_fstring_helper
     def match_fstring_helper(self, s: str, i: int, delim: str) -> int:
         """
-        Return n >= 0 if s[i:] contains with a non-escaped delim at fstring-level 0
+        Return n >= 0 if s[i:] contains with a non-escaped delim at fstring-level 0.
         """
         escape, escapes = '\\', 0
         level = self.f_string_nesting_level
@@ -1933,21 +1933,11 @@ class JEditColorizer(BaseColorizer):
         """Remain in this state until 'delim' is seen."""
         i = 0
         j = self.match_fstring_helper(s, i, delim)
-        
-        if j == -1:
-            j2 = len(s) + 1
-        else:
-            j2 = j
-            
-        ###
-        # elif j > len(s):
-            # j2 = j
-        # else:
-            # j2 = j + len(delim)
-
+        j2 = len(s) + 1 if j == -1 else j
         self.colorRangeWithTag(s, i, j2, tag='literal1')
-        ### j = j2
         self.trace_match(delim, s, i, j2)
+        
+        # Restart of necessary.
         if j > len(s):
             
             def fstring_restarter(s: str) -> int:
