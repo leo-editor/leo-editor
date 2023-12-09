@@ -1860,29 +1860,29 @@ class JEditColorizer(BaseColorizer):
         # Fail quickly if possible.
         if i + 1 >= len(s):
             return 0
-        ch = s[i+1]
-        j = 1 if ch in 'rfRF' else 0
-        if i + j + 1 >= len(s):
+        j = 1 if s[i+1] in 'rfRF' else 0
+        delim_offset =  i + j + 1
+        if delim_offset >= len(s):
             return 0
-        delim = s[i + j + 1]
-        g.trace('delim', repr(delim), s[i:])
+        delim = s[delim_offset]
         if delim not in ('"', '"'):
             return 0
-
-        # Python uses match_span for docstrings,
-        # so this code will be similar.
-        start = i + j + len(delim)
-
-        ### Extend delim to triples
             
+        # Extend delim to triples.
+        if g.match(s, delim_offset, delim * 3):
+            delim = delim * 3
 
+        
+        # Similar to code for docstrings (match_span).
+        start = i + j
         end = self.match_fstring_helper(s, start + 1, delim)
         if end == -1:
             return 0  # A real failure.
             
+        ### g.trace('delim', repr(delim), 'escape', repr(self.escape), s[i:])
+
         # Continue until matching delim found at nesting level 0.
         self.f_string_nesting_level = 0
-        ### g.trace(s[start:end])
 
         self.colorRangeWithTag(s, start, end, tag='literal1')
 
@@ -1903,40 +1903,32 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20231209015334.1: *5* jedit.match_fstring_helper
     def match_fstring_helper(self, s: str, i: int, delim: str) -> int:
         """
-        Return n >= 0 if s[i] ends with a non-escaped delim.
+        Return n >= 0 if s[i:] contains with a non-escaped delim at fstring-level 0
         """
-        esc = self.escape
-        while 1:
-            j = s.find(delim, i)
-            if j == -1:
-                return len(s) + 1
-                ###
-                    # # Match to end of text if not found and no_line_break is False
-                    # if no_line_break:
-                        # return -1
-                    # return len(s) + 1
-            ###
-                # if no_word_break and j > 0 and s[j - 1] in self.word_chars:
-                    # return -1  # New in Leo 4.5.
-                # if no_line_break and '\n' in s[i:j]:
-                    # return -1
-            if esc: ### and not no_escape:
-                # Only an odd number of escapes is a 'real' escape.
-                escapes = 0
-                k = 1
-                while j - k >= 0 and s[j - k] == esc:
-                    escapes += 1
-                    k += 1
-                if (escapes % 2) == 1:
-                    assert s[j - 1] == esc
-                    # Advance past *one* escaped character.
-                    i += 1
-                else:
-                    return j
+        escape, escapes = '\\', 0
+        level = self.f_string_nesting_level
+        # Scan, incrementing escape count and f-string level.
+        while i < len(s):
+            progress = i
+            if g.match(s, i, delim):
+                if (escapes % 2) == 1 and level == 0:
+                    return i + len(delim)
+                i += len(delim)
+                continue
+            ch = s[i]
+            i += 1
+            if ch == escape:
+                escapes += 1
+            elif ch == '{':
+                level += 1
+            elif ch == '}':
+                level += 1
             else:
-                return j
-        # For pylint.
-        return -1
+                escapes = 0
+            assert progress < i, (i, s)
+        # Continue scanning.
+        self.f_string_nesting_level = level
+        return len(s) + 1
     #@+node:ekr.20231209082830.1: *5* jedit.restart_fstring
     def restart_fstring(self, s: str, delim: str) -> int:
         """Remain in this state until 'delim' is seen."""
@@ -2721,7 +2713,6 @@ class JEditColorizer(BaseColorizer):
     def setRestart(self, f: Any, **keys: Any) -> int:
         n = self.computeState(f, keys)
         self.setState(n)
-        g.trace(n, f.__name__)
         return n
     #@+node:ekr.20110605121601.18635: *4* jedit.show...
     def showState(self, n: int) -> str:
