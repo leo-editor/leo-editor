@@ -3114,7 +3114,7 @@ class FastAtRead:
                 ('ref',         fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),     # section ref
                 #@verbatim
                 # @section-delims
-                ('section_delims', fr'^\s*{delim1} *@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),
+                ('section_delims', fr'^\s*{delim1}@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),
             )
 
         # Set the ivars.
