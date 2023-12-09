@@ -1872,7 +1872,6 @@ class JEditColorizer(BaseColorizer):
         if g.match(s, delim_offset, delim * 3):
             delim = delim * 3
 
-        
         # Similar to code for docstrings (match_span).
         start = i + j
         end = self.match_fstring_helper(s, start + 1, delim)
@@ -1891,7 +1890,7 @@ class JEditColorizer(BaseColorizer):
 
         # Continue the f-string if necessary.
         if end >= len(s):
-            end = len(s) + 1  # A signal??
+            end = len(s) + 1
 
             def fstring_restarter(s: str) -> int:
                 """Freeze the binding of delim"""
