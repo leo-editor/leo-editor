@@ -408,9 +408,19 @@ def python_rule21(colorer, s, i):
     return colorer.match_keywords(s, i)
 #@+node:ekr.20231209010502.1: *3* python_rule_fstring
 def python_rule_fstring(colorer, s, i):
-    if (v1, v2) < (3, 12):
+    # Fail quickly if possible.
+    print('python_rule_fstring', s[i:])
+    if i + 1 >= len(s):
         return 0
-    return colorer.match_fstring(s, i)
+    ch = s[i+1]
+    j = 1 if ch in 'rfRF' else 0
+    if i + j + 1 >= len(s):
+        return 0
+    delim = s[i + j + 1]
+    print('delim', repr(delim))
+    if delim not in ('"', '"'):
+        return 0
+    return colorer.match_fstring(s, i, delim)
 #@+node:ekr.20230419163931.1: *3* python_rule_h_url/rule_f_url (not used)
 if 0:
     url = False
@@ -467,7 +477,7 @@ rulesDict1 = {
     "C": [python_rule21],
     "D": [python_rule21],
     "E": [python_rule21],
-    "F": [python_rule_fstring, python_rule21],  # python_rule_f_url,
+    "F": [python_rule21],  # python_rule_f_url,
     "G": [python_rule21],
     "H": [python_rule21],  # python_rule_h_url,
     "I": [python_rule21],
@@ -479,7 +489,7 @@ rulesDict1 = {
     "O": [python_rule21],
     "P": [python_rule21],
     "Q": [python_rule21],
-    "R": [python_rule_fstring, python_rule21],
+    "R": [python_rule21],
     "S": [python_rule21],
     "T": [python_rule21],
     "U": [python_rule21],
@@ -495,7 +505,7 @@ rulesDict1 = {
     "c": [python_rule21],
     "d": [python_rule21],
     "e": [python_rule21],
-    "f": [python_rule_fstring, python_rule21],  # python_rule_f_url
+    "f": [python_rule21],  # python_rule_f_url
     "g": [python_rule21],
     "h": [python_rule21],  # python_rule_h_url
     "i": [python_rule21],
@@ -507,7 +517,7 @@ rulesDict1 = {
     "o": [python_rule21],
     "p": [python_rule21],
     "q": [python_rule21],
-    "r": [python_rule_fstring, python_rule21],
+    "r": [python_rule21],
     "s": [python_rule21],
     "t": [python_rule21],
     "u": [python_rule21],
@@ -519,6 +529,11 @@ rulesDict1 = {
     "|": [python_rule17],
     "~": [python_rule19],
 }
+
+if (v1, v2) >= (3, 12):
+    # Update rules to for Python 3.12+ f-strings.
+    for key in 'frFR':
+        rulesDict1 [key] = [python_rule_fstring, python_rule21]
 
 # x.rulesDictDict for python mode.
 rulesDictDict = {
