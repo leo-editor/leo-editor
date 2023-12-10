@@ -3033,7 +3033,6 @@ class FastAtRead:
     This is Vitalije's code, edited by EKR.
     """
 
-    ### The fix may be in <handle remaining @@ lines>.
     old = False  ### True: devel. False: attempted fix.
 
 
@@ -3071,7 +3070,7 @@ class FastAtRead:
         # Make no assumption about comment delims.
         ref = g.angleBrackets(r'(.*)')
 
-        if self.old:  ### devel.
+        if False: ### self.old:  ### devel.
             delim1 = re.escape(comment_delim_start.strip())
             delim2 = re.escape(comment_delim_end.strip() or '')
             table = (
@@ -3166,18 +3165,25 @@ class FastAtRead:
         # The start/end *comment* delims.
         # Important: scan_header ends comment_delim1 with a blank when using black sentinels.
         comment_delim1, comment_delim2 = comment_delims
-        if self.old:  ### devel
-            comment_delim1 = comment_delim1.strip()
-            comment_delim2 = comment_delim2.strip()
-        else:
-            pass  ### Experimental
+
+        ###
+        # if self.old:  ### devel
+            # comment_delim1 = comment_delim1.strip()
+            # comment_delim2 = comment_delim2.strip()
+
         doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')  # To handle doc parts.
         first_i = 0  # Index into first array.
         in_doc = False  # True: in @doc parts.
-        if self.old:  ### devel
-            is_cweb = comment_delim1.strip() == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
-        else:
-            is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
+
+        ###
+        # if self.old:  ### devel
+            # is_cweb = comment_delim1.strip() == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
+        # else:
+            # is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
+
+        is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
+
+
         indent = 0  # The current indentation.
         level_stack: list[tuple[VNode, VNode]] = []
         n_last_lines = 0  # The number of @@last directives seen.
@@ -3188,17 +3194,20 @@ class FastAtRead:
         section_delim2 = '>>'
         section_reference_seen = False
         sentinel = comment_delim1 + '@'
-        if self.old:  ### devel.
-            blackened_sentinel = comment_delim1 + ' @'
-            any_sentinel = (sentinel, blackened_sentinel)
+
+        ###
+        # if self.old:  ### devel.
+            # blackened_sentinel = comment_delim1 + ' @'
+            # any_sentinel = (sentinel, blackened_sentinel)
 
         # The stack is updated when at+others, at+<section>, or at+all is seen.
         stack: list[tuple[str, int, str]] = []  # Entries are (gnx, indent, body)
         verbatim_line = comment_delim1 + '@verbatim' + comment_delim2
 
-        if self.old:  ### devel.
-            blackened_verbatim_line = comment_delim1 + ' @verbatim' + comment_delim2
-            verbatim_lines = (verbatim_line, blackened_verbatim_line)
+        ###
+        # if self.old:  ### devel.
+            # blackened_verbatim_line = comment_delim1 + ' @verbatim' + comment_delim2
+            # verbatim_lines = (verbatim_line, blackened_verbatim_line)
 
         verbatim = False  # True: the next line must be added without change.
         #
@@ -3263,14 +3272,14 @@ class FastAtRead:
                 verbatim = False
                 #@-<< handle verbatim line >>
                 continue
-            if self.old:
-                if strip_line in verbatim_lines:
-                    verbatim = True
-                    continue
-            else:
-                if strip_line == verbatim_line:
-                    verbatim = True
-                    continue
+            ###
+            # if self.old:
+                # if strip_line in verbatim_lines:
+                    # verbatim = True
+                    # continue
+            if strip_line == verbatim_line:
+                verbatim = True
+                continue
             #@+<< finalize line >>
             #@+node:ekr.20180602103135.10: *4* << finalize line >>
             # Undo the cweb hack.
@@ -3281,14 +3290,15 @@ class FastAtRead:
                 line = line[indent:]
             #@-<< finalize line >>
             # Faster than a regex!
-            if self.old:
-                if not in_doc and not strip_line.startswith(any_sentinel):
-                    body.append(line)
-                    continue
-            else:
-                if not in_doc and not strip_line.startswith(sentinel):
-                    body.append(line)
-                    continue
+            ###
+            # if self.old:
+                # if not in_doc and not strip_line.startswith(any_sentinel):
+                    # body.append(line)
+                    # continue
+
+            if not in_doc and not strip_line.startswith(sentinel):
+                body.append(line)
+                continue
             # These three sections might clear in_doc.
             #@+<< handle @others >>
             #@+node:ekr.20180602103135.14: *4* << handle @others >>
@@ -3440,16 +3450,17 @@ class FastAtRead:
                     in_doc = True
                     continue
                 #@-<< handle @ or @doc >>
-            if self.old:
-                if line.startswith((comment_delim1 + '@-leo', comment_delim1 + ' @-leo')):  # Faster than a regex!
-                    # The @-leo sentinel adds *nothing* to the text.
-                    i += 1
-                    break
-            else:
-                if line.startswith(comment_delim1 + '@-leo'):  # Faster than a regex!
-                    # The @-leo sentinel adds *nothing* to the text.
-                    i += 1
-                    break
+
+            ###
+            # if self.old:
+                # if line.startswith((comment_delim1 + '@-leo', comment_delim1 + ' @-leo')):  # Faster than a regex!
+                    # # The @-leo sentinel adds *nothing* to the text.
+                    # i += 1
+                    # break
+            if line.startswith(comment_delim1 + '@-leo'):  # Faster than a regex!
+                # The @-leo sentinel adds *nothing* to the text.
+                i += 1
+                break
             # Order doesn't matter.
             #@+<< handle @all >>
             #@+node:ekr.20180602103135.13: *4* << handle @all >>
@@ -3522,9 +3533,11 @@ class FastAtRead:
                 doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
                 is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
                 sentinel = comment_delim1 + '@'
-                if self.old:
-                    blackened_sentinel = comment_delim1 + ' @'
-                    any_sentinel = (sentinel, blackened_sentinel)
+
+                ###
+                # if self.old:
+                    # blackened_sentinel = comment_delim1 + ' @'
+                    # any_sentinel = (sentinel, blackened_sentinel)
                 #
                 # Recalculate the patterns.
                 comment_delims = comment_delim1, comment_delim2
@@ -3556,14 +3569,20 @@ class FastAtRead:
                 comment_delim2 = comment_delim2.replace('__', '\n').replace('_', ' ')
                 # Recalculate all delim-related values
                 doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
-                if self.old:  ### devel
-                    is_cweb = comment_delim1 in ('@q@', ' @q@') and comment_delim2 == '@>'
-                else:
-                    is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
+
+                ###
+                # if self.old:  ### devel
+                    # is_cweb = comment_delim1 in ('@q@', ' @q@') and comment_delim2 == '@>'
+                # else:
+                    # is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
+
+                is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
                 sentinel = comment_delim1 + '@'
-                if self.old:  ### devel
-                    blackened_sentinel = comment_delim1 + ' @'
-                    any_sentinel = (sentinel, blackened_sentinel)
+
+                ###
+                # if self.old:  ### devel
+                    # blackened_sentinel = comment_delim1 + ' @'
+                    # any_sentinel = (sentinel, blackened_sentinel)
                 #
                 # Recalculate the patterns
                 comment_delims = comment_delim1, comment_delim2
@@ -3582,10 +3601,12 @@ class FastAtRead:
                     # Carefully update the section reference pattern!
                     section_delim1 = d1 = re.escape(m.group(1))
                     section_delim2 = d2 = re.escape(m.group(2) or '')
-                    if self.old:  ### delim.
-                        self.ref_pat = re.compile(fr'^(\s*){comment_delim1} *@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
-                    else:
-                        self.ref_pat = re.compile(fr'^(\s*){comment_delim1}@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
+                    ###
+                    # if self.old:  ### delim.
+                        # self.ref_pat = re.compile(fr'^(\s*){comment_delim1} *@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
+                    # else:
+                        # self.ref_pat = re.compile(fr'^(\s*){comment_delim1}@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
+                    self.ref_pat = re.compile(fr'^(\s*){comment_delim1}@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
                 body.append(f"@section-delims {m.group(1)} {m.group(2)}\n")
                 continue
             #@-<< handle @section-delims >>
@@ -3595,21 +3616,22 @@ class FastAtRead:
             #@verbatim
             # @first, @last, @delims and @comment generate @@ sentinels,
             # So this must follow all of those.
-            if self.old:  ###
-                if line.startswith((comment_delim1 + '@@', comment_delim1 + ' @@')):
-                    ii = len(comment_delim1) + 1  # on second '@'
-                    if line.startswith(comment_delim1 + ' @@'):
-                            ii += 1
-                    jj = line.rfind(comment_delim2) if comment_delim2 else -1
-                    body.append(line[ii:jj] + '\n')
-                    continue
 
-            else:  ### This may be the problem ###
-                if line.startswith(comment_delim1 + '@@'):
-                    ii = len(comment_delim1) + 1  # on second '@'
-                    jj = line.rfind(comment_delim2) if comment_delim2 else -1
-                    body.append(line[ii:jj] + '\n')
-                    continue
+            ###
+            # if False and self.old:  ###
+                # if line.startswith((comment_delim1 + '@@', comment_delim1 + ' @@')):
+                    # ii = len(comment_delim1) + 1  # on second '@'
+                    # if line.startswith(comment_delim1 + ' @@'):
+                            # ii += 1
+                    # jj = line.rfind(comment_delim2) if comment_delim2 else -1
+                    # body.append(line[ii:jj] + '\n')
+                    # continue
+
+            if line.startswith(comment_delim1 + '@@'):
+                ii = len(comment_delim1) + 1  # on second '@'
+                jj = line.rfind(comment_delim2) if comment_delim2 else -1
+                body.append(line[ii:jj] + '\n')
+                continue
             #@-<< handle remaining @@ lines >>
             if in_doc:
                 #@+<< handle remaining @doc lines >>
@@ -3643,10 +3665,14 @@ class FastAtRead:
             if 1:  # pragma: no cover (defensive)
 
                 # This assert verifies the short-circuit test.
-                if self.old:
-                    assert strip_line.startswith(any_sentinel), repr(line)
-                else:
-                    assert strip_line.startswith(sentinel), repr(line)
+
+                ###
+                # if self.old:
+                    # assert strip_line.startswith(any_sentinel), repr(line)
+                # else:
+                    # assert strip_line.startswith(sentinel), repr(line)
+
+                assert strip_line.startswith(sentinel), repr(line)
 
                 # Defensive: make *sure* we ignore verbatim lines.
                 if strip_line == verbatim_line:
