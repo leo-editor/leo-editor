@@ -3033,7 +3033,9 @@ class FastAtRead:
     This is Vitalije's code, edited by EKR.
     """
 
-    old = True  ### True: devel. False: attempted fix.
+    ### The fix may be in <handle remaining @@ lines>.
+    old = False  ### True: devel. False: attempted fix.
+
 
     #@+others
     #@+node:ekr.20211030193146.1: *3* fast_at.__init__
@@ -3172,7 +3174,10 @@ class FastAtRead:
         doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')  # To handle doc parts.
         first_i = 0  # Index into first array.
         in_doc = False  # True: in @doc parts.
-        is_cweb = comment_delim1.strip() == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
+        if self.old:  ### devel
+            is_cweb = comment_delim1.strip() == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
+        else:
+            is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
         indent = 0  # The current indentation.
         level_stack: list[tuple[VNode, VNode]] = []
         n_last_lines = 0  # The number of @@last directives seen.
@@ -3263,7 +3268,7 @@ class FastAtRead:
                     verbatim = True
                     continue
             else:
-                if strip_line in verbatim_line:
+                if strip_line == verbatim_line:
                     verbatim = True
                     continue
             #@+<< finalize line >>
@@ -3435,10 +3440,16 @@ class FastAtRead:
                     in_doc = True
                     continue
                 #@-<< handle @ or @doc >>
-            if line.startswith((comment_delim1 + '@-leo', comment_delim1 + ' @-leo')):  # Faster than a regex!
-                # The @-leo sentinel adds *nothing* to the text.
-                i += 1
-                break
+            if self.old:
+                if line.startswith((comment_delim1 + '@-leo', comment_delim1 + ' @-leo')):  # Faster than a regex!
+                    # The @-leo sentinel adds *nothing* to the text.
+                    i += 1
+                    break
+            else:
+                if line.startswith(comment_delim1 + '@-leo'):  # Faster than a regex!
+                    # The @-leo sentinel adds *nothing* to the text.
+                    i += 1
+                    break
             # Order doesn't matter.
             #@+<< handle @all >>
             #@+node:ekr.20180602103135.13: *4* << handle @all >>
@@ -3545,9 +3556,12 @@ class FastAtRead:
                 comment_delim2 = comment_delim2.replace('__', '\n').replace('_', ' ')
                 # Recalculate all delim-related values
                 doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
-                is_cweb = comment_delim1 in ('@q@', ' @q@') and comment_delim2 == '@>'
+                if self.old:  ### devel
+                    is_cweb = comment_delim1 in ('@q@', ' @q@') and comment_delim2 == '@>'
+                else:
+                    is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'
                 sentinel = comment_delim1 + '@'
-                if self.old:
+                if self.old:  ### devel
                     blackened_sentinel = comment_delim1 + ' @'
                     any_sentinel = (sentinel, blackened_sentinel)
                 #
@@ -3568,7 +3582,10 @@ class FastAtRead:
                     # Carefully update the section reference pattern!
                     section_delim1 = d1 = re.escape(m.group(1))
                     section_delim2 = d2 = re.escape(m.group(2) or '')
-                    self.ref_pat = re.compile(fr'^(\s*){comment_delim1} *@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
+                    if self.old:  ### delim.
+                        self.ref_pat = re.compile(fr'^(\s*){comment_delim1} *@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
+                    else:
+                        self.ref_pat = re.compile(fr'^(\s*){comment_delim1}@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
                 body.append(f"@section-delims {m.group(1)} {m.group(2)}\n")
                 continue
             #@-<< handle @section-delims >>
@@ -3578,13 +3595,21 @@ class FastAtRead:
             #@verbatim
             # @first, @last, @delims and @comment generate @@ sentinels,
             # So this must follow all of those.
-            if line.startswith((comment_delim1 + '@@', comment_delim1 + ' @@')):
-                ii = len(comment_delim1) + 1  # on second '@'
-                if line.startswith(comment_delim1 + ' @@'):
-                    ii += 1
-                jj = line.rfind(comment_delim2) if comment_delim2 else -1
-                body.append(line[ii:jj] + '\n')
-                continue
+            if self.old:  ###
+                if line.startswith((comment_delim1 + '@@', comment_delim1 + ' @@')):
+                    ii = len(comment_delim1) + 1  # on second '@'
+                    if line.startswith(comment_delim1 + ' @@'):
+                            ii += 1
+                    jj = line.rfind(comment_delim2) if comment_delim2 else -1
+                    body.append(line[ii:jj] + '\n')
+                    continue
+
+            else:  ### This may be the problem ###
+                if line.startswith(comment_delim1 + '@@'):
+                    ii = len(comment_delim1) + 1  # on second '@'
+                    jj = line.rfind(comment_delim2) if comment_delim2 else -1
+                    body.append(line[ii:jj] + '\n')
+                    continue
             #@-<< handle remaining @@ lines >>
             if in_doc:
                 #@+<< handle remaining @doc lines >>
