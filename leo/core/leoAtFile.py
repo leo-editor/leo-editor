@@ -3065,9 +3065,9 @@ class FastAtRead:
         comment_delim_start, comment_delim_end = comment_delims
             
         # Make no assumption about comment delims.
-        ref = g.angleBrackets(r'(.*)')
         delim1 = re.escape(comment_delim_start)
         delim2 = re.escape(comment_delim_end or '')
+        ref = g.angleBrackets(r'(.*)')
         table = (
             # These patterns must be mutually exclusive.
             ('after',       fr'^\s*{delim1}@afterref{delim2}$'),             # @afterref
