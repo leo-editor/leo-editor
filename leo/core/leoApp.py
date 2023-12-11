@@ -12,7 +12,6 @@ import string
 import sys
 import textwrap
 import time
-import traceback
 from typing import Any, Optional, TYPE_CHECKING
 import zipfile
 import platform
@@ -2951,11 +2950,10 @@ class LoadManager:
             return True
         message = (
             f"Leo requires Python {g.minimum_python_version} or higher"
-            f"You may download Python from http://python.org/download/")
+            "You may download Python from http://python.org/download/"
+        )
         try:
-            version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
-            ok = g.CheckVersion(version, g.minimum_python_version)
-            if not ok:
+            if not g.isValidPython:
                 print(message)
                 try:
                     # g.app.gui does not exist yet.
@@ -2965,10 +2963,9 @@ class LoadManager:
                     d.run()
                 except Exception:
                     g.es_exception()
-            return ok
-        except Exception:
-            print("isValidPython: unexpected exception: g.CheckVersion")
-            traceback.print_exc()
+            return g.isValidPython
+        except Exception as e:
+            print(f"LM.isValidPython: unexpected exception {e}")
             return False
     #@+node:ekr.20120223062418.10393: *4* LM.openWithFileName & helpers
     def openWithFileName(self, fn: str, gui: LeoGui, old_c: Cmdr) -> Optional[Cmdr]:
