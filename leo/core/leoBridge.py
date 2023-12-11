@@ -233,35 +233,31 @@ class BridgeController:
     def isValidPython(self) -> bool:
         if sys.platform == 'cli':
             return True
-        message = """\
-    Leo requires Python 3.6 or higher.
-    You may download Python from http://python.org/download/
-    """
+        tag = 'leoBridge: isValidPython'
         try:
             # This will fail if True/False are not defined.
             from leo.core import leoGlobals as g
-            # print('leoBridge:isValidPython:g',g)
+
             # Set leoGlobals.g here, rather than in leoGlobals.py.
-            leoGlobals = g  # Don't set g.g, it would pollute the autocompleter.
+            leoGlobals = g
             leoGlobals.g = g
-        except ImportError:
-            print("isValidPython: can not import leoGlobals")
+        except Exception as e:
+            print(f"{tag}: can not import leoGlobals: {e}")
             return False
-        except Exception:
-            print("isValidPython: unexpected exception importing leoGlobals")
-            traceback.print_exc()
-            return False
+
+        message = (
+            f"Leo requires Python {g.minimum_python_version} or higher"
+            "You may download Python from http://python.org/download/"
+        )
+
         try:
-            version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
-            ok = g.CheckVersion(version, g.minimum_python_version)
-            if not ok:
+            if not g.isValidPython:
                 print(message)
                 g.app.gui.runAskOkDialog(
                     None, "Python version error", message=message, text="Exit")
-            return ok
-        except Exception:
-            print("isValidPython: unexpected exception: g.CheckVersion")
-            traceback.print_exc()
+            return g.isValidPython
+        except Exception as e:
+            print(f"{tag}: unexpected exception: {e}")
             return False
     #@+node:ekr.20070227093629.9: *4* bridge.reportDirectories
     def reportDirectories(self) -> None:

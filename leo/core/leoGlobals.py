@@ -63,7 +63,11 @@ if TYPE_CHECKING:  # pragma: no cover
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.9'
-isPython3 = sys.version_info >= (3, 0, 0)  # Not used in Leo's core.
+minimum_python_version_tuple = (3, 9, 0)
+v1, v2, v3, junk2, junk3 = sys.version_info
+python_version_tuple = (v1, v2, v3)
+isPython3 = python_version_tuple >= (3, 0, 0)
+isValidPython = python_version_tuple >= minimum_python_version_tuple
 isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
 #@+<< define g.globalDirectiveList >>
@@ -5700,7 +5704,7 @@ def actualColor(color: str) -> str:
         return color2 or 'black'
     color2 = c.config.getColor(f"log_{color}_color")
     return color2 or color
-#@+node:ekr.20060921100435: *3* g.CheckVersion & helpers
+#@+node:ekr.20060921100435: *3* g.CheckVersion & helpers (deprecated)
 # Simplified version by EKR: stringCompare not used.
 
 def CheckVersion(
@@ -5711,7 +5715,10 @@ def CheckVersion(
     delimiter: str = '.',
     trace: bool = False,
 ) -> bool:
-    # CheckVersion is called early in the startup process.
+    """
+    Return True if the indicated relationship holds.
+    Deprecated: not used in Leo's core.
+    """
     vals1 = [g.CheckVersionToInt(s) for s in s1.split(delimiter)]
     n1 = len(vals1)
     vals2 = [g.CheckVersionToInt(s) for s in s2.split(delimiter)]
