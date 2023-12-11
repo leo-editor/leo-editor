@@ -335,7 +335,9 @@ class EnchantWrapper(BaseSpellWrapper):
             try:
                 enchant.dict_exists(language)
             except AttributeError:
-                pass  # ? dict_exists does not exist in later version of enchant.
+                # Likely an install error.
+                # open_dict_file gives the error.
+                pass
             except Exception:
                 if language == 'en_US':
                     g.es_exception()  # Valid language.
