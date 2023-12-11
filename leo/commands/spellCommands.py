@@ -338,7 +338,7 @@ class EnchantWrapper(BaseSpellWrapper):
                 pass  # ? dict_exists does not exist in later version of enchant.
             except Exception:
                 if language == 'en_US':
-                    g.es_exception() # Valid language.
+                    g.es_exception()  # Valid language.
                 else:
                     g.warning('Invalid language code for Enchant', repr(language))
                     g.es_print('Using "en_US" instead')
@@ -373,7 +373,9 @@ class EnchantWrapper(BaseSpellWrapper):
                 d = enchant.Dict(language)
             except Exception:
                 d = {}
-        # Common exit, for traces.
+        if not d:
+            g.es_print('Error opening dictionary')
+            g.es_print('pip install pyenchant, NOT enchant')
         return d
 
     #@+node:ekr.20150514063305.517: *3* enchant.process_word
