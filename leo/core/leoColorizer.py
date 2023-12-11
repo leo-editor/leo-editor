@@ -1860,18 +1860,20 @@ class JEditColorizer(BaseColorizer):
         # Fail quickly if possible.
         if i + 1 >= len(s):
             return 0
-        j = 1 if s[i+1] in 'rfRF' else 0
-        delim_offset =  i + j + 1
+        j = 1 if s[i + 1] in 'rfRF' else 0
+        delim_offset = i + j + 1
         if delim_offset >= len(s):
             return 0
         delim = s[delim_offset]
         if delim not in ('"', '"'):
             return 0
-            
+
         # Init.
         self.f_string_nesting_level = 0
         if g.match(s, delim_offset, delim * 3):
             delim = delim * 3
+
+        # print(f"  match_fstringi: {i:2} delim: {delim} s: {s}")
 
         # Similar to code for docstrings (match_span).
         start = delim_offset
@@ -1885,7 +1887,7 @@ class JEditColorizer(BaseColorizer):
         self.trace_match(delim, s, i, end)
 
         # Continue the f-string if necessary.
-        if end >= len(s):
+        if end > len(s):
             end = len(s) + 1
 
             def fstring_restarter(s: str) -> int:
@@ -1893,12 +1895,14 @@ class JEditColorizer(BaseColorizer):
                 return self.restart_fstring(s, delim)
 
             self.setRestart(fstring_restarter)
-            
+
         return end - i  # Correct, whatever end is.
     #@+node:ekr.20231209015334.1: *5* jedit.match_fstring_helper
     def match_fstring_helper(self, s: str, i: int, delim: str) -> int:
         """
         Return n >= 0 if s[i:] contains with a non-escaped delim at fstring-level 0.
+        
+        Return len(s) + 1 if the fstring should continue.
         """
         escape, escapes = '\\', 0
         level = self.f_string_nesting_level
@@ -1936,10 +1940,10 @@ class JEditColorizer(BaseColorizer):
         j2 = len(s) + 1 if j == -1 else j
         self.colorRangeWithTag(s, i, j2, tag='literal1')
         self.trace_match(delim, s, i, j2)
-        
+
         # Restart of necessary.
         if j > len(s):
-            
+
             def fstring_restarter(s: str) -> int:
                 """Freeze the binding of delim."""
                 return self.restart_fstring(s, delim)
