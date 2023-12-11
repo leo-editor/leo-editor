@@ -67,6 +67,7 @@ minimum_python_version_tuple = (3, 9, 0)
 v1, v2, v3, junk2, junk3 = sys.version_info
 python_version_tuple = (v1, v2, v3)
 isPython3 = python_version_tuple >= (3, 0, 0)
+isValidPython = python_version_tuple >= minimum_python_version_tuple
 isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
 #@+<< define g.globalDirectiveList >>

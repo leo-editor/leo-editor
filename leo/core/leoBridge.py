@@ -251,12 +251,11 @@ class BridgeController:
         )
 
         try:
-            ok = g.python_version_tuple >= g.minimum_python_version_tuple
-            if not ok:
+            if not g.isValidPython:
                 print(message)
                 g.app.gui.runAskOkDialog(
                     None, "Python version error", message=message, text="Exit")
-            return ok
+            return g.isValidPython
         except Exception as e:
             print(f"{tag}: unexpected exception: {e}")
             return False

@@ -2953,8 +2953,7 @@ class LoadManager:
             "You may download Python from http://python.org/download/"
         )
         try:
-            ok = g.python_version_tuple >= g.minimum_python_version_tuple
-            if not ok:
+            if not g.isValidPython:
                 print(message)
                 try:
                     # g.app.gui does not exist yet.
@@ -2964,7 +2963,7 @@ class LoadManager:
                     d.run()
                 except Exception:
                     g.es_exception()
-            return ok
+            return g.isValidPython
         except Exception as e:
             print(f"LM.isValidPython: unexpected exception {e}")
             return False
