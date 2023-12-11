@@ -3068,6 +3068,10 @@ class FastAtRead:
         delim1 = re.escape(comment_delim_start)
         delim2 = re.escape(comment_delim_end or '')
         ref = g.angleBrackets(r'(.*)')
+
+        # The @+leo sentinel MUST determine the format of *all* sentinel comments.
+        # The patterns below MUST NOT accept a space after {delim1} !!!
+        # Doing so will break Leo!
         table = (
             # These patterns must be mutually exclusive.
             ('after',       fr'^\s*{delim1}@afterref{delim2}$'),             # @afterref
