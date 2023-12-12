@@ -183,6 +183,8 @@ class BaseTest(unittest.TestCase):
         if not tokens:
             self.fail('make_tokens failed')
         tree = self.make_tree(contents)
+        
+        # Early dumps.
         if not tree:
             self.fail('make_tree failed')
         if 'contents' in self.debug_list:
@@ -193,16 +195,21 @@ class BaseTest(unittest.TestCase):
             dump_ast(tree)
         if 'tokens' in self.debug_list:
             dump_tokens(tokens)
+
         self.balance_tokens(tokens)
 
         # Pass 1: create the links.
         self.create_links(tokens, tree)
+        
+        # Late dumps.
         if 'post-tree' in self.debug_list:
             dump_tree(tokens, tree)
         if 'post-tokens' in self.debug_list:
             dump_tokens(tokens)
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - t1)
+        
+        # Fail if create_links set link_error.
         if self.link_error:
             self.fail(self.link_error)
         return contents, tokens, tree
@@ -605,7 +612,7 @@ class TestTOG(BaseTest):
     )
     print('done')
     """
-        self.debug_list.extend(['tree', 'tokens'])
+        self.debug_list.extend(['contents']) # 'tree', 'tokens'
 
         self.make_data(contents)
     #@+node:ekr.20191227052446.67: *5* test_fstring02: Ternary
