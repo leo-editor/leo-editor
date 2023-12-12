@@ -194,20 +194,23 @@ class LeoGlobals:  # pragma: no cover
         """Return the name of the caller n levels back in the call stack."""
         try:
             # Get the function name from the call stack.
-            frame = sys._getframe(n)  # The stack frame, n levels up.
-            code = frame.f_code  # The code object
-            locals_ = frame.f_locals  # The local namespace.
-            name = code.co_name
-            obj = locals_.get("self")
-            if obj and name == "__init__":
+            f1 = sys._getframe(n)  # The stack frame, n levels up.
+            code1 = f1.f_code  # The code object
+            locals_ = f1.f_locals  # The local namespace.
+            name = code1.co_name
+            # sfn = shortFilename(code1.co_filename)  # The file name.
+            # line = code1.co_firstlineno
+            obj = locals_.get('self')
+            if obj and name == '__init__':
                 return f"{obj.__class__.__name__}.{name}"
             return name
         except ValueError:
             # The stack is not deep enough OR
             # sys._getframe does not exist on this platform.
-            return ""
+            return ''
         except Exception:
-            return ""  # "<no caller name>"
+            # es_exception()
+            return ''  # "<no caller name>"
     #@+node:ekr.20230208055034.1: *3* LeoGlobals.caller
     def caller(self, i: int = 1) -> str:
         """Return the caller name i levels up the call stack."""
@@ -673,7 +676,7 @@ if 1:  # pragma: no cover
         # Making 'endmarker' significant ensures that all tokens are synced.
         return (
             kind in ('async', 'await', 'endmarker', 'name', 'number', 'string')
-            or kind in ('fstring_start', 'fstring_middle', 'fstring_end')  ### Experimental.
+            ### or kind in ('fstring_start', 'fstring_middle', 'fstring_end')  ### Experimental.
             or kind == 'op' and value not in ',;()')
 
     def is_significant_token(token: Token) -> bool:
@@ -3523,7 +3526,9 @@ class TokenOrderGenerator:
 
         Instead, we get the tokens *from the token list itself*!
         """
+        g.trace(g.callers())
         for z in self.get_concatenated_string_tokens():
+            g.trace(z)
             self.token(z.kind, z.value)
     #@+node:ekr.20200111083914.1: *7* tog.get_concatenated_tokens
     def get_concatenated_string_tokens(self) -> list[Token]:
@@ -3539,7 +3544,8 @@ class TokenOrderGenerator:
         while i < len(self.tokens):
             token = self.tokens[i]
             i += 1
-            if token.kind == 'string':
+            ### if token.kind == 'string':
+            if token.kind in ('string', 'fstring_start'):  ### Experimental.
                 # Rescan the string.
                 i -= 1
                 break
@@ -3547,7 +3553,8 @@ class TokenOrderGenerator:
             if is_significant_token(token):  # pragma: no cover
                 break
         # Raise an error if we didn't find the expected 'string' token.
-        if not token or token.kind != 'string':  # pragma: no cover
+        ### if not token or token.kind != 'string':  # pragma: no cover
+        if not token or token.kind not in ('string', 'fstring_start'):  # pragma: no cover
             if not token:
                 token = self.tokens[-1]
             filename = getattr(self, 'filename', '<no filename>')
