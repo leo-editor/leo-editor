@@ -173,8 +173,8 @@ Node = ast.AST
 Settings = Optional[dict[str, Any]]
 #@-<< leoAst imports & annotations >>
 
-v1, v2, junk1, junk2, junk3 = sys.version_info
-py_version = (v1, v2)
+v1, v2, v3, junk2, junk3 = sys.version_info
+python_version_tuple = (v1, v2, v3)
 
 #@+others
 #@+node:ekr.20191226175251.1: **  class LeoGlobals
@@ -672,8 +672,9 @@ if 1:  # pragma: no cover
         """
         # Making 'endmarker' significant ensures that all tokens are synced.
         return (
-            kind in ('async', 'await', 'endmarker', 'name', 'number', 'string') or
-            kind == 'op' and value not in ',;()')
+            kind in ('async', 'await', 'endmarker', 'name', 'number', 'string')
+            or kind in ('fstring_start', 'fstring_middle', 'fstring_end')  ### Experimental.
+            or kind == 'op' and value not in ',;()')
 
     def is_significant_token(token: Token) -> bool:
         """Return True if the given token is a synchronizing token"""
@@ -3022,33 +3023,30 @@ class TokenOrderGenerator:
             # Special case. Inject equal_sign_spaces into '=' tokens.
             if token.kind == 'op' and token.value == '=':
                 token.equal_sign_spaces = self.equal_sign_spaces
-    #@+node:ekr.20191124083124.1: *5* tog.sync_name (aka name)
-    def sync_name(self, val: str) -> None:
+    #@+node:ekr.20191124083124.1: *5* tog.name
+    def name(self, val: str) -> None:
+        """Sync to the given name token."""
         aList = val.split('.')
         if len(aList) == 1:
-            self.sync_token('name', val)
+            self.token('name', val)
         else:
             for i, part in enumerate(aList):
-                self.sync_token('name', part)
+                self.token('name', part)
                 if i < len(aList) - 1:
-                    self.sync_op('.')
-
-    name = sync_name  # for readability.
-    #@+node:ekr.20220402052102.1: *5* tog.sync_op (aka op)
-    def sync_op(self, val: str) -> None:
+                    self.op('.')
+    #@+node:ekr.20220402052102.1: *5* tog.op
+    def op(self, val: str) -> None:
         """
         Sync to the given operator.
 
         val may be '(' or ')' *only* if the parens *will* actually exist in the
         token list.
         """
-        self.sync_token('op', val)
-
-    op = sync_op  # For readability.
-    #@+node:ekr.20191113063144.7: *5* tog.sync_token (aka token)
+        self.token('op', val)
+    #@+node:ekr.20191113063144.7: *5* tog.token
     px = -1  # Index of the previously synced token.
 
-    def sync_token(self, kind: str, val: str) -> None:
+    def token(self, kind: str, val: str) -> None:
         """
         Sync to a token whose kind & value are given. The token need not be
         significant, but it must be guaranteed to exist in the token list.
@@ -3064,7 +3062,7 @@ class TokenOrderGenerator:
         """
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
-        if 0:  # A Superb trace.
+        if 1:  # A Superb trace.
             g.trace(
                 f"px: {self.px:4} "
                 f"node: {node.__class__.__name__:<12} "
@@ -3112,8 +3110,6 @@ class TokenOrderGenerator:
         #
         # Step four: Advance.
         self.px = px
-
-    token = sync_token  # For readability.
     #@+node:ekr.20191223052749.1: *4* tog: Traversal...
     #@+node:ekr.20191113063144.3: *5* tog.enter_node
     def enter_node(self, node: Node) -> None:
@@ -3649,7 +3645,7 @@ class TokenOrderGenerator:
     # DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14;
     # use ast.Constant instead
 
-    if py_version < (3, 14):
+    if python_version_tuple < (3, 14, 0):
 
         def do_Str(self, node: Node) -> None:
             """This node represents a string constant."""
