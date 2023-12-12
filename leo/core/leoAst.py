@@ -160,14 +160,18 @@ import difflib
 import glob
 import io
 import os
-import pprint
 import re
 import subprocess
 import sys
 import textwrap
 import tokenize
-import traceback
 from typing import Any, Generator, Optional, Union
+
+try:
+    from leo.core import leoGlobals as g
+except Exception:
+    print('Can not import leo.core.leoGlobals')
+    g = None
 
 Node = ast.AST
 Settings = Optional[dict[str, Any]]
@@ -177,165 +181,6 @@ v1, v2, v3, junk2, junk3 = sys.version_info
 python_version_tuple = (v1, v2, v3)
 
 #@+others
-#@+node:ekr.20191226175251.1: **  class LeoGlobals
-#@@nosearch
-
-
-class LeoGlobals:  # pragma: no cover
-    """
-    Simplified version of functions in leoGlobals.py.
-    """
-
-    total_time = 0.0  # For unit testing.
-
-    #@+others
-    #@+node:ekr.20191226175903.1: *3* LeoGlobals._caller_name
-    def _caller_name(self, n: int) -> str:
-        """Return the name of the caller n levels back in the call stack."""
-        try:
-            # Get the function name from the call stack.
-            f1 = sys._getframe(n)  # The stack frame, n levels up.
-            code1 = f1.f_code  # The code object
-            locals_ = f1.f_locals  # The local namespace.
-            name = code1.co_name
-            # sfn = shortFilename(code1.co_filename)  # The file name.
-            # line = code1.co_firstlineno
-            obj = locals_.get('self')
-            if obj and name == '__init__':
-                return f"{obj.__class__.__name__}.{name}"
-            return name
-        except ValueError:
-            # The stack is not deep enough OR
-            # sys._getframe does not exist on this platform.
-            return ''
-        except Exception:
-            # es_exception()
-            return ''  # "<no caller name>"
-    #@+node:ekr.20230208055034.1: *3* LeoGlobals.caller
-    def caller(self, i: int = 1) -> str:
-        """Return the caller name i levels up the call stack."""
-        return self.callers(i + 1).split(",")[0]
-    #@+node:ekr.20191226175426.1: *3* LeoGlobals.callers
-    def callers(self, n: int = 4) -> str:
-        """
-        Return a string containing a comma-separated list of the callers
-        of the function that called g.caller_list.
-        """
-        i, result = 2, []
-        while True:
-            s = self._caller_name(n=i)
-            if s:
-                result.append(s)
-            if not s or len(result) >= n:
-                break
-            i += 1
-        return ','.join(reversed(result))
-    #@+node:ekr.20191226190709.1: *3* leoGlobals.es_exception & helper
-    def es_exception(self) -> None:
-        typ, val, tb = sys.exc_info()
-        for line in traceback.format_exception(typ, val, tb):
-            print(line)
-    #@+node:ekr.20191226192030.1: *4* LeoGlobals.getLastTracebackFileAndLineNumber
-    def getLastTracebackFileAndLineNumber(self) -> tuple[str, int]:
-        typ, val, tb = sys.exc_info()
-        if typ == SyntaxError:
-            # IndentationError is a subclass of SyntaxError.
-            # SyntaxError *does* have 'filename' and 'lineno' attributes.
-            return val.filename, val.lineno
-        #
-        # Data is a list of tuples, one per stack entry.
-        # The tuples have the form (filename, lineNumber, functionName, text).
-        data = traceback.extract_tb(tb)
-        item = data[-1]  # Get the item at the top of the stack.
-        filename, n, functionName, text = item
-        return filename, n
-    #@+node:ekr.20191226190425.1: *3* LeoGlobals.plural
-    def plural(self, obj: Any) -> str:
-        """Return "s" or "" depending on n."""
-        if isinstance(obj, (list, tuple, str)):
-            n = len(obj)
-        else:
-            n = obj
-        return '' if n == 1 else 's'
-    #@+node:ekr.20191226175441.1: *3* LeoGlobals.print_obj
-    def print_obj(self, obj: Any, *, tag: str = None) -> None:
-        """Print an object."""
-        print(self.to_string(obj, tag=tag))
-
-    printObj = print_obj
-    #@+node:ekr.20220327120618.1: *3* LeoGlobals.short_file_name
-    def short_file_name(self, fileName: str) -> str:
-        """Return the base name of a path."""
-        return os.path.basename(fileName) if fileName else ''
-    #@+node:ekr.20191226190131.1: *3* LeoGlobals.split_lines
-    def split_lines(self, s: str) -> list[str]:
-        """Split s into lines, preserving the number of lines and
-        the endings of all lines, including the last line."""
-        if s:
-            return s.splitlines(True)  # This is a Python string function!
-        return []
-    #@+node:ekr.20200220065737.1: *3* LeoGlobals.to_string
-    def to_string(self, obj: Any, *, indent: int = 0, tag: str = None, width: int = 120) -> str:
-        """
-        Pretty print any Python object to a string.
-        """
-        if not isinstance(obj, str):
-            result = pprint.pformat(obj, indent=indent, width=width)
-        elif "\n" not in obj:
-            result = repr(obj)
-        else:
-            # Return the enumerated lines of the string.
-            lines = "".join([f"  {i:4}: {z!r}\n" for i, z in enumerate(self.split_lines(obj))])
-            result = f"[\n{lines}]\n"
-        return f"{tag.strip()}: {result}" if tag and tag.strip() else result
-    #@+node:ekr.20191226190844.1: *3* LeoGlobals.to_encoded_string
-    def to_encoded_string(self, s: Any, *, encoding: str = 'utf-8') -> bytes:
-        """Convert unicode string to an encoded string."""
-        if not isinstance(s, str):
-            return s
-        try:
-            s = s.encode(encoding, "strict")
-        except UnicodeError:
-            s = s.encode(encoding, "replace")
-            print(f"to_encoded_string: Error converting {s!r} to {encoding}")
-        return s
-    #@+node:ekr.20191226190006.1: *3* LeoGlobals.to_unicode
-    def to_unicode(self, s: Any, *, encoding: str = 'utf-8') -> str:
-        """Convert bytes to unicode if necessary."""
-        tag = 'g.to_unicode'
-        if isinstance(s, str):
-            return s
-        if not isinstance(s, bytes):
-            print(f"{tag}: bad s: {s!r}")
-            return ''
-        b: bytes = s
-        try:
-            s2 = b.decode(encoding, 'strict')
-        except(UnicodeDecodeError, UnicodeError):  # noqa
-            s2 = b.decode(encoding, 'replace')
-            print(f"{tag}: unicode error. encoding: {encoding!r}, s2:\n{s2!r}")
-            g.trace(g.callers())
-        except Exception:
-            g.es_exception()
-            print(f"{tag}: unexpected error! encoding: {encoding!r}, s2:\n{s2!r}")
-            g.trace(g.callers())
-        return s2
-    #@+node:ekr.20191226175436.1: *3* LeoGlobals.trace
-    def trace(self, *args: Any) -> None:
-        """Print the name of the calling function followed by all the args."""
-        name = self._caller_name(2)
-        if name.endswith(".pyc"):
-            name = name[:-1]
-        args_s = " ".join(str(z) for z in args)
-        print(f"{name} {args_s}")
-    #@+node:ekr.20191226190241.1: *3* LeoGlobals.truncate
-    def truncate(self, s: str, n: int) -> str:
-        """Return s truncated to n characters."""
-        if len(s) <= n:
-            return s
-        s2 = s[: n - 3] + f"...({len(s)})"
-        return s2 + '\n' if s.endswith('\n') else s2
-    #@-others
 #@+node:ekr.20200702114522.1: **  leoAst.py: top-level commands
 # Don't bother covering top-level commands.
 if 1:  # pragma: no cover
@@ -544,7 +389,7 @@ if 1:  # pragma: no cover
         if not e:
             # Python's encoding comments override everything else.
             e = get_encoding_directive(bb)
-        s = g.to_unicode(bb, encoding=e)
+        s = g.toUnicode(bb, encoding=e)
         s = regularize_nls(s)
         return e, s
     #@+node:ekr.20200106174158.1: *4* function: strip_BOM
@@ -907,9 +752,9 @@ if 1:  # pragma: no cover
             if not ok:
                 print('\nRound-trip check FAILS')
                 print('Contents...\n')
-                g.print_obj(contents)
+                g.printObj(contents)
                 print('\nResult...\n')
-                g.print_obj(result)
+                g.printObj(result)
             return ok
 
         try:
@@ -936,7 +781,7 @@ if 1:  # pragma: no cover
             print('')
 
         try:
-            s1 = g.to_encoded_string(s)
+            s1 = g.toEncodedString(s)
             tree = ast.parse(s1, filename='before', mode='exec')
             return tree
         except IndentationError:
@@ -951,12 +796,12 @@ if 1:  # pragma: no cover
     #@+node:ekr.20191027074436.1: *4* function: dump_ast
     def dump_ast(ast: Node, tag: str = 'dump_ast') -> None:
         """Utility to dump an ast tree."""
-        g.print_obj(AstDumper().dump_ast(ast), tag=tag)
+        g.printObj(AstDumper().dump_ast(ast), tag=tag)
     #@+node:ekr.20191228095945.4: *4* function: dump_contents
     def dump_contents(contents: str, tag: str = 'Contents') -> None:
         print('')
         print(f"{tag}...\n")
-        for i, z in enumerate(g.split_lines(contents)):
+        for i, z in enumerate(g.splitLines(contents)):
             print(f"{i+1:<3} ", z.rstrip())
         print('')
     #@+node:ekr.20191228095945.5: *4* function: dump_lines
@@ -995,14 +840,14 @@ if 1:  # pragma: no cover
     def show_diffs(s1: str, s2: str, filename: str = '') -> None:
         """Print diffs between strings s1 and s2."""
         lines = list(difflib.unified_diff(
-            g.split_lines(s1),
-            g.split_lines(s2),
+            g.splitLines(s1),
+            g.splitLines(s2),
             fromfile=f"Old {filename}",
             tofile=f"New {filename}",
         ))
         print('')
         tag = f"Diffs for {filename}" if filename else 'Diffs'
-        g.print_obj(lines, tag=tag)
+        g.printObj(lines, tag=tag)
     #@+node:ekr.20191225061516.1: *3* node/token replacers...
     # Functions that replace tokens or nodes.
     #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list
@@ -1637,7 +1482,7 @@ class Fstringify:
         # Print a leading blank line.
         print('')
         # Calculate the padding.
-        lines = g.split_lines(message)
+        lines = g.splitLines(message)
         pad = max(lines[0].find(':'), 30)
         # Print the first line.
         z = lines[0]
@@ -1824,7 +1669,7 @@ class Orange:
         if 0:  # This obscures more import error messages.
             show_diffs(contents, results, filename=filename)
         # Write the results
-        print(f"Beautified: {g.short_file_name(filename)}")
+        print(f"Beautified: {g.shortFileName(filename)}")
         write_file(filename, results, encoding=encoding)
         return True
     #@+node:ekr.20200107172512.1: *5* orange.beautify_file_diff (entry)
@@ -2791,7 +2636,7 @@ class Tokenizer:
 
         # Split the results into lines.
         result = ''.join([z.to_string() for z in self.results])
-        result_lines = g.split_lines(result)
+        result_lines = g.splitLines(result)
         # Check.
         ok = result == contents and result_lines == self.lines
         assert ok, (
@@ -3577,7 +3422,7 @@ class TokenOrderGenerator:
         assert self.tokens[i].kind in ('string', 'fstring_start'), repr(self.tokens[i].kind)
         in_fstring = self.tokens[i].kind == 'fstring_start'
         results = []
-        
+
         if 0:  ### Legacy
             while i < len(self.tokens):
                 token = self.tokens[i]
@@ -3589,7 +3434,7 @@ class TokenOrderGenerator:
                     # Any significant token *or* any op will halt string concatenation.
                     break
                 # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
-        
+
         results.append(token)
         if in_fstring:
             i1 = i
@@ -3613,7 +3458,7 @@ class TokenOrderGenerator:
         # The (significant) 'endmarker' token ensures we will have result.
         assert results
         if trace:  # pragma: no cover
-            g.print_obj(results, tag=f"{tag}: Results")
+            g.printObj(results, tag=f"{tag}: Results")
         return results
     #@+node:ekr.20191113063144.42: *6* tog.List
     def do_List(self, node: Node) -> None:
@@ -4413,7 +4258,6 @@ def main() -> None:  # pragma: no cover
     if args.od:
         orange_diff_command(files, settings_dict)
 #@-others
-g = LeoGlobals()
 if __name__ == '__main__':
     main()  # pragma: no cover
 #@@language python
