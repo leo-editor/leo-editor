@@ -612,7 +612,7 @@ class TestTOG(BaseTest):
     )
     print('done')
     """
-        self.debug_list.extend(['contents']) # 'tree', 'tokens'
+        # self.debug_list.extend(['contents', 'full-traceback']) # 'tree', 'tokens'
 
         self.make_data(contents)
     #@+node:ekr.20191227052446.67: *5* test_fstring02: Ternary

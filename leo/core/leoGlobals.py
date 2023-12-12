@@ -5378,7 +5378,7 @@ def es_error(*args: Any, **keys: Any) -> None:
 
 def es_print_error(*args: Any, **keys: Any) -> None:
     color = keys.get('color')
-    if color is None and g.app.config:
+    if color is None and g.app and g.app.config:
         keys['color'] = g.app.config.getColor("log-error-color") or 'red'
     g.es_print(*args, **keys)
 #@+node:ekr.20031218072017.3111: *3* g.es_event_exception
