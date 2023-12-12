@@ -162,11 +162,14 @@ class BaseTest(unittest.TestCase):
     def make_data(self,
         contents: str,
         description: str = None,
+        debug_list: str = None,
     ) -> tuple[str, list[Token], ast.AST]:  # pragma: no cover
         """Return (contents, tokens, tree) for the given contents."""
         contents = contents.lstrip('\\\n')
         if not contents:
             return '', None, None
+        if debug_list:
+            self.debug_list = debug_list
         self.link_error = None
         t1 = get_time()
         self.update_counts('characters', len(contents))
@@ -603,7 +606,7 @@ class TestTOG(BaseTest):
     """
         self.make_data(contents)
     #@+node:ekr.20191227052446.65: *4* TestTOG.f-strings....
-    #@+node:ekr.20191227052446.66: *5* test_fstring01: complex Call
+    #@+node:ekr.20191227052446.66: *5* test_fstring1
     def test_fstring1(self):
         # Line 1177, leoApp.py
         contents = r"""\
@@ -614,14 +617,20 @@ class TestTOG(BaseTest):
     """
         # self.debug_list.extend(['contents', 'full-traceback']) # 'tree', 'tokens'
 
-        self.make_data(contents)
+        self.make_data(contents, debug_list=['contents', 'tokens'])
     #@+node:ekr.20191227052446.67: *5* test_fstring02: Ternary
     def test_fstring2(self):
         contents = r"""\
     func(f"{b if not cond1 else ''}")
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.68: *5* test_fstring03: single f-string
+    #@+node:ekr.20231212092427.1: *5* test_simplest_fstring
+    def test_simplest_fstring(self):
+        contents = r"""\
+    print(f'{7.1}')
+    """
+        self.make_data(contents, debug_list=['contents', 'tokens'])
+    #@+node:ekr.20191227052446.68: *5* test_fstring03b: single f-string
     def test_fstring3(self):
         contents = r"""\
     print(f'{7.1}')
