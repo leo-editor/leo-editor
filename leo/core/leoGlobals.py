@@ -2070,8 +2070,9 @@ def callers_list(n: int = 4) -> list[str]:
     return list(reversed(result))
 #@+node:ekr.20031218072017.3107: *5* g._callerName
 def _callerName(n: int) -> str:
+    """Return the name of the caller n levels back in the call stack."""
     try:
-        # get the function name from the call stack.
+        # Get the function name from the call stack.
         f1 = sys._getframe(n)  # The stack frame, n levels up.
         code1 = f1.f_code  # The code object
         locals_ = f1.f_locals  # The local namespace.
