@@ -170,7 +170,6 @@ from typing import Any, Generator, Optional, Union
 try:
     from leo.core import leoGlobals as g
 except Exception:
-    print('Can not import leo.core.leoGlobals')
     g = None
 
 Node = ast.AST
@@ -192,6 +191,8 @@ if 1:  # pragma: no cover
 
         Fstringify the given file, overwriting the file.
         """
+        if not check_g():
+            return
         for filename in files:
             if os.path.exists(filename):
                 print(f"fstringify {filename}")
@@ -205,6 +206,8 @@ if 1:  # pragma: no cover
 
         Print the diff that would be produced by fstringify.
         """
+        if not check_g():
+            return
         for filename in files:
             if os.path.exists(filename):
                 print(f"fstringify-diff {filename}")
@@ -214,6 +217,8 @@ if 1:  # pragma: no cover
     #@+node:ekr.20200702115002.1: *3* command: orange_command
     def orange_command(files: list[str], settings: Settings = None) -> None:
 
+        if not check_g():
+            return
         for filename in files:
             if os.path.exists(filename):
                 # print(f"orange {filename}")
@@ -224,6 +229,8 @@ if 1:  # pragma: no cover
     #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
     def orange_diff_command(files: list[str], settings: Settings = None) -> None:
 
+        if not check_g():
+            return
         for filename in files:
             if os.path.exists(filename):
                 print(f"orange-diff {filename}")
@@ -234,6 +241,13 @@ if 1:  # pragma: no cover
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level utils
 if 1:  # pragma: no cover
     #@+others
+    #@+node:ekr.20231212071217.1: *3* function: check_g
+    def check_g() -> bool:
+        """print an error message if g is None"""
+        if not g:
+            print('Can not import leo.core.leoGlobals')
+            print('Please add leo.core to your path')
+        return bool(g)
     #@+node:ekr.20231114133501.1: *3* function: get_modified_files
     def get_modified_files(repo_path: str) -> list[str]:
         """Return the modified files in the given repo."""
