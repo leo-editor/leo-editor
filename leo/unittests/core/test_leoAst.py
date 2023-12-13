@@ -713,8 +713,8 @@ class TestTOG(BaseTest):
         contents = r"""
     print(f'{7.1}')
     """
-        debug_list = ['contents', 'tokens', 'tree']
-        self.make_data(contents, debug_list=debug_list)
+        ### debug_list = ['tokens']  ### ['contents', 'tokens', 'tree']
+        self.make_data(contents) ###, debug_list=debug_list)
     #@+node:ekr.20191227052446.67: *5* test_fstring_ternary
     def test_fstring_ternary(self):
         contents = r"""

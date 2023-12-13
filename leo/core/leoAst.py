@@ -172,7 +172,7 @@ try:
 except Exception:
     # check_g function gives the message.
     g = None
-    
+
 
 Node = ast.AST
 Settings = Optional[dict[str, Any]]
@@ -539,8 +539,14 @@ if 1:  # pragma: no cover
         # Making 'endmarker' significant ensures that all tokens are synced.
         return (
             kind in ('async', 'await', 'endmarker', 'name', 'number', 'string')
-            ### or kind in ('fstring_start', 'fstring_middle', 'fstring_end')  ### Experimental.
+            or kind.startswith('fstring')  ### Experimental.
             or kind == 'op' and value not in ',;()')
+
+    def is_significant_kind(kind: str) -> bool:
+        return (
+            kind in ('async', 'await', 'endmarker', 'name', 'number', 'string')
+            or kind.startswith('fstring')  ### Experimental.
+        )
 
     def is_significant_token(token: Token) -> bool:
         """Return True if the given token is a synchronizing token"""
@@ -3380,10 +3386,19 @@ class TokenOrderGenerator:
 
         Instead, we get the tokens *from the token list itself*!
         """
+
+        def sync(kind):
+            """Sync to the next signifcant token of the given kind."""
+            assert is_significant_kind(kind), repr(kind)
+            while next_token := self.find_next_significant_token():
+                ### g.trace('next_token', next_token)
+                self.token(next_token.kind, next_token.value)
+                if next_token.kind in (kind, 'endtoken'):
+                    break
+
         if python_version_tuple >= (3, 12, 0):
-            # Python 3.12: Support fstring_start/middle/end tokens.
-            g.trace('Next significant token:', self.find_next_significant_token())
-            pass  ###
+            sync('fstring_start')
+            sync('fstring_end')
         else:
             # Python 3.11 and below.
             for z in self.get_concatenated_string_tokens():
