@@ -3383,12 +3383,13 @@ class TokenOrderGenerator:
         """
         if python_version_tuple >= (3, 12, 0):
             # Python 3.12: Support fstring_start/middle/end tokens.
+            g.trace('Next significant token:', self.find_next_significant_token())
             pass  ###
         else:
             # Python 3.11 and below.
             for z in self.get_concatenated_string_tokens():
                 self.token(z.kind, z.value)
-    #@+node:ekr.20200111083914.1: *7* tog.get_concatenated_tokens
+    #@+node:ekr.20231213061819.1: *7* tog.get_concatenated_tokens (3.11-)
     def get_concatenated_string_tokens(self) -> list[Token]:
         """
         Return the next 'string' token and all 'string' tokens concatenated to
@@ -3396,27 +3397,21 @@ class TokenOrderGenerator:
         """
         trace = False
         tag = 'tog.get_concatenated_string_tokens'
-        if trace:
-            print('\n', tag, '\n')
         i = self.px
         # First, find the next significant token.  It should be a string.
         i, token = i + 1, None
         while i < len(self.tokens):
             token = self.tokens[i]
             i += 1
-            ### if token.kind == 'string':
-            if token.kind in ('string', 'fstring_start'):  ### Experimental.
+            if token.kind == 'string':
                 # Rescan the string.
                 i -= 1
                 break
             # An error.
             if is_significant_token(token):  # pragma: no cover
-                if trace:
-                    g.trace('SIGNIFICANT')
                 break
         # Raise an error if we didn't find the expected 'string' token.
-        ### if not token or token.kind != 'string':  # pragma: no cover
-        if not token or token.kind not in ('string', 'fstring_start'):  # pragma: no cover
+        if not token or token.kind != 'string':  # pragma: no cover
             if not token:
                 token = self.tokens[-1]
             filename = getattr(self, 'filename', '<no filename>')
@@ -3428,48 +3423,21 @@ class TokenOrderGenerator:
                 f"   i: {i}\n"
                 f"expected 'string' token, got {token!s}")
         # Accumulate string tokens.
-        ### assert self.tokens[i].kind == 'string', repr(self.tokens[i].kind)
-        assert self.tokens[i].kind in ('string', 'fstring_start'), repr(self.tokens[i].kind)
-        in_fstring = self.tokens[i].kind == 'fstring_start'
+        assert self.tokens[i].kind == 'string'
         results = []
-
-        if 0:  ### Legacy
-            while i < len(self.tokens):
-                token = self.tokens[i]
-                i += 1
-                ### if token.kind == 'string':
-                if token.kind in ('string', 'fstring_start'):
-                    results.append(token)
-                elif token.kind == 'op' or is_significant_token(token):
-                    # Any significant token *or* any op will halt string concatenation.
-                    break
-                # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
-
-        results.append(token)
-        if in_fstring:
-            i1 = i
-            while i < len(self.tokens):
-                token = self.tokens[i]
-                i += 1
-                ### if token.kind == 'op' or is_significant_token(token):
-                if token.kind == 'fstring_end':
-                    # Any significant token *or* any op will halt string concatenation.
-                    break
-            if trace:
-                g.printObj(self.tokens[i1:i], tag='tog.get_concatenated_tokens')
-            ### g.printObj(self.tokens[i:], tag='tog.get_concatenated_tokens: tail')
-        else:
-            while i < len(self.tokens):
-                token = self.tokens[i]
-                i += 1
-                if token.kind == 'op' or is_significant_token(token):
-                    # Any significant token *or* any op will halt string concatenation.
-                    break
-                # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            i += 1
+            if token.kind == 'string':
+                results.append(token)
+            elif token.kind == 'op' or is_significant_token(token):
+                # Any significant token *or* any op will halt string concatenation.
+                break
+            # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
         # The (significant) 'endmarker' token ensures we will have result.
         assert results
         if trace:  # pragma: no cover
-            g.printObj(results, tag=f"{tag}: Results")
+            g.print_obj(results, tag=f"{tag}: Results")
         return results
     #@+node:ekr.20191113063144.42: *6* tog.List
     def do_List(self, node: Node) -> None:
