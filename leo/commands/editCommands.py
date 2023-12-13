@@ -1260,8 +1260,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def hn_delete(self, p: Position) -> None:
         """Helper: delete the headline number in p.h."""
         c = self.c
-        m = re.match(self.hn_pattern, p.h)
-        if m:
+        if m := re.match(self.hn_pattern, p.h):
             # Do not strip the headline!
             n = len(m.group(0))
             c.setHeadString(p, p.v.h[n:])

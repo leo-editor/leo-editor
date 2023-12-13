@@ -2691,8 +2691,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             """
             sections = {}
             for i, line in enumerate(pagelines):
-                m = SECTION_RE.match(line)
-                if m:
+                if m := SECTION_RE.match(line):
                     sections[m[1]] = i
             return sections
         #@+node:tom.20211104105903.8: *6* set custom_style()

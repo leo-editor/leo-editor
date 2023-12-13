@@ -932,8 +932,7 @@ class JEditColorizer(BaseColorizer):
 
         def find_delims(v: VNode) -> Optional[re.Match]:
             for s in g.splitLines(v.b):
-                m = g.g_section_delims_pat.match(s)
-                if m:
+                if m := g.g_section_delims_pat.match(s):
                     return m
             return None
 
@@ -1626,8 +1625,7 @@ class JEditColorizer(BaseColorizer):
 
     def match_image(self, s: str, i: int) -> int:
         """Matcher for <img...>"""
-        m = self.image_url.match(s, i)
-        if m:
+        if m := self.image_url.match(s, i):
             self.image_src = src = m.group(1)
             j = len(src)
             doc = self.highlighter.document()
@@ -2464,8 +2462,7 @@ class JEditColorizer(BaseColorizer):
         2. Exactly one character, of any kind.
         """
         assert s[i] == '\\'
-        m = self.ascii_letters.match(s, i + 1)
-        if m:
+        if m := self.ascii_letters.match(s, i + 1):
             n = len(m.group(0))
             j = i + n + 1
         else:
@@ -2478,8 +2475,7 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20170205074106.1: *4* jedit.match_wiki_pattern
     def match_wiki_pattern(self, s: str, i: int, pattern: Any) -> int:
         """Show or hide a regex pattern managed by the wikiview plugin."""
-        m = pattern.match(s, i)
-        if m:
+        if m := pattern.match(s, i):
             n = len(m.group(0))
             self.colorRangeWithTag(s, i, i + n, 'url')
             return n
