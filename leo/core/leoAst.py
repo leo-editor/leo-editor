@@ -842,7 +842,7 @@ if 1:  # pragma: no cover
         print(f"{tag}...\n")
         if not tokens:
             return
-        print("Note: values shown are repr(value) *except* for 'string' tokens.")
+        print("Note: values shown are repr(value) *except* for 'string' and 'fstring*' tokens.")
         tokens[0].dump_header()
         for z in tokens:
             print(z.dump())
@@ -2613,9 +2613,8 @@ class Token:
         """Return the token.value field."""
         if self.kind in ('ws', 'indent'):
             val = str(len(self.value))
-        elif self.kind == 'string':
-            # Important: don't add a repr for 'string' tokens.
-            # repr just adds another layer of confusion.
+        elif self.kind == 'string' or self.kind.startswith('fstring'):
+            # repr would be confusing.
             val = g.truncate(self.value, truncate_n)
         else:
             val = g.truncate(repr(self.value), truncate_n)
