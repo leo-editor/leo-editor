@@ -2926,7 +2926,7 @@ class TokenOrderGenerator:
         """
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
-        if 1:  # A Superb trace.
+        if 0:  # A Superb trace.
             g.trace(
                 f"px: {self.px:4} "
                 f"node: {node.__class__.__name__:<12} "
@@ -3388,7 +3388,7 @@ class TokenOrderGenerator:
         Instead, we get the tokens *from the token list itself*!
         """
         for z in self.get_concatenated_string_tokens():
-            if 1:  ###
+            if 0:  ###
                 print('')
                 g.trace(z)
                 print('')
@@ -3399,7 +3399,7 @@ class TokenOrderGenerator:
         Return the next 'string' token and all 'string' tokens concatenated to
         it. *Never* update self.px here.
         """
-        trace = True
+        trace = False
         tag = 'tog.get_concatenated_string_tokens'
         if trace:
             print('\n', tag, '\n')
@@ -3416,7 +3416,8 @@ class TokenOrderGenerator:
                 break
             # An error.
             if is_significant_token(token):  # pragma: no cover
-                g.trace('SIGNIFICANT')
+                if trace:
+                    g.trace('SIGNIFICANT')
                 break
         # Raise an error if we didn't find the expected 'string' token.
         ### if not token or token.kind != 'string':  # pragma: no cover
@@ -3459,7 +3460,8 @@ class TokenOrderGenerator:
                 if token.kind == 'fstring_end':
                     # Any significant token *or* any op will halt string concatenation.
                     break
-            g.printObj(self.tokens[i1:i], tag='tog.get_concatenated_tokens')
+            if trace:
+                g.printObj(self.tokens[i1:i], tag='tog.get_concatenated_tokens')
             ### g.printObj(self.tokens[i:], tag='tog.get_concatenated_tokens: tail')
         else:
             while i < len(self.tokens):

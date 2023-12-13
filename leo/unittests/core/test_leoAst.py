@@ -168,8 +168,7 @@ class BaseTest(unittest.TestCase):
         contents = contents.lstrip('\\\n')
         if not contents:
             return '', None, None
-        if debug_list:
-            self.debug_list = debug_list
+        self.debug_list = debug_list or []
         self.link_error = None
         t1 = get_time()
         self.update_counts('characters', len(contents))
@@ -606,78 +605,14 @@ class TestTOG(BaseTest):
     """
         self.make_data(contents)
     #@+node:ekr.20191227052446.65: *4* TestTOG.f-strings....
-    #@+node:ekr.20191227052446.66: *5* test_fstring1
-    def test_fstring1(self):
-        # Line 1177, leoApp.py
+    #@+node:ekr.20191227052446.80: *5* test_fstring_expr_with_commas
+    def test_fstring_expr_with_commas(self):
         contents = r"""\
-    print(
-        message = f"line 1: {old_id!r}\n" "line 2\n"
-    )
-    print('done')
-    """
-        # self.debug_list.extend(['contents', 'full-traceback']) # 'tree', 'tokens'
-
-        self.make_data(contents, debug_list=['contents', 'tokens'])
-    #@+node:ekr.20191227052446.67: *5* test_fstring02: Ternary
-    def test_fstring2(self):
-        contents = r"""\
-    func(f"{b if not cond1 else ''}")
+    print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")
     """
         self.make_data(contents)
-    #@+node:ekr.20231212092427.1: *5* test_simplest_fstring
-    def test_simplest_fstring(self):
-        contents = r"""\
-    print(f'{7.1}')
-    """
-        self.make_data(contents, debug_list=['contents', 'tokens'])
-    #@+node:ekr.20191227052446.68: *5* test_fstring03b: single f-string
-    def test_fstring3(self):
-        contents = r"""\
-    print(f'{7.1}')
-    print('end')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.69: *5* test_fstring04: f-string + plain
-    def test_fstring4(self):
-        contents = r"""\
-    print(f'{7.1}' 'p7.2')
-    print('end')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.70: *5* test_fstring05: plain + f-string
-    def test_fstring5(self):
-        contents = r"""\
-    print('p1' f'{f2}')
-    'end'
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.71: *5* test_fstring06: f-string + fstring
-    def test_fstring6(self):
-        contents = r"""\
-    print(f'{f1}' f'{f2}')
-    'end'
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.72: *5* test_fstring07: many
-    def test_fstring7(self):
-        contents = r"""\
-    print('s1', f'{f2}' f'f3' f'{f4}' 's5')
-    'end'
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.73: *5* test_fstring08: ternary op
-    def test_fstring8(self):
-        # leoFind.py line 856
-        contents = r"""\
-    a = f"{'a' if x else 'b'}"
-    f()
-
-    # Pass
-    # print(f"{'a' if x else 'b'}")
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.74: *5* test_fstring09: leoFind.py line 856
-    def test_fstring9(self):
+    #@+node:ekr.20191227052446.74: *5* test_fstring_in_arg_list
+    def test_fstring_in_arg_list(self):
         contents = r"""\
     func(
         "Isearch"
@@ -686,15 +621,22 @@ class TestTOG(BaseTest):
     print('done')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.75: *5* test_fstring10: leoFind.py: line 861
-    def test_fstring10(self):
-        # leoFind.py: line 861
+    #@+node:ekr.20191227052446.70: *5* test_fstring_join1
+    def test_fstring_join1(self):
         contents = r"""\
-    one(f"{'B'}" ": ")
+    print('p1' f'{f2}')
+    'end'
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.76: *5* test_fstring11: joins
-    def test_fstring11(self):
+    #@+node:ekr.20191227052446.71: *5* test_fstring_join1a
+    def test_join1a(self):
+        contents = r"""\
+    print(f'{f1}' f'{f2}')
+    'end'
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.76: *5* test_fstring_join3
+    def test_fstring_join3(self):
         contents = r"""\
     print(f'x3{e3+1}y3' f'x4{e4+2}y4')
     print('done')
@@ -712,8 +654,8 @@ class TestTOG(BaseTest):
     # f'f2' 'f3' ;
 
     # f'x5{e5+1}y5{e5+1}z5' f'x6{e6+1}y6{e6+1}z6' ;
-    #@+node:ekr.20191227052446.78: *5* test_fstring12: joins + 1 f-expr
-    def test_fstring12(self):
+    #@+node:ekr.20191227052446.78: *5* test_fstring_join4
+    def test_fstring_join4(self):
         contents = r"""\
     print(f'x1{e1}y1', 'p1')
     print(f'x2{e2}y2', f'f2')
@@ -721,8 +663,8 @@ class TestTOG(BaseTest):
     print('end')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.79: *5* test_fstring13: joins + 2 f-exprs
-    def test_fstring13(self):
+    #@+node:ekr.20191227052446.79: *5* test_fstring_join5
+    def test_fstring_join5(self):
         contents = r"""\
     print(f'x1{e1}y1{e2}z1', 'p1')
     print(f'x2{e3}y2{e3}z2', f'f2')
@@ -730,33 +672,79 @@ class TestTOG(BaseTest):
     print('end')
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.80: *5* test_fstring14: complex, with commas
-    def test_fstring14(self):
-        contents = r"""\
-    print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.81: *5* test_fstring15
-    def test_fstring15(self):
-        contents = r"""\
-    print(f"test {a}={2}")
-    print('done')
-    """
-        self.make_data(contents)
-    #@+node:ekr.20191227052446.83: *5* test_fstring16: simple
-    def test_fstring16(self):
+    #@+node:ekr.20191227052446.83: *5* test_fstring_join6
+    def test_fstring_join6(self):
         contents = r"""\
     'p1' ;
     f'f1' ;
     'done' ;
     """
         self.make_data(contents)
-    #@+node:ekr.20191227052446.82: *5* test_regex_fstring
-    def test_regex_fstring(self):
+    #@+node:ekr.20191227052446.75: *5* test_fstring_join7
+    def test_fstring_join7(self):
+        # leoFind.py: line 861
+        contents = r"""\
+    one(f"{'B'}" ": ")
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.69: *5* test_fstring_join8
+    def test_fstring_join8(self):
+        contents = r"""\
+    print(f'{7.1}' 'p7.2')
+    print('end')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.72: *5* test_fstring_join9
+    def test_fstring_join9(self):
+        contents = r"""\
+    print('s1', f'{f2}' f'f3' f'{f4}' 's5')
+    'end'
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.82: *5* test_fstring_regex
+    def test_fstring_regex(self):
         # Line 7709, leoGlobals.py
         contents = r'''\
     fr"""{kinds}://[^\s'"]+[\w=/]"""
     '''
+        self.make_data(contents)
+    #@+node:ekr.20231212092427.1: *5* test_fstring_simple
+    def test_fstring_simple(self):
+        contents = r"""\
+    print(f'{7.1}')
+    """
+        debug_list = [] ### ['contents', 'tokens']
+        self.make_data(contents, debug_list=debug_list)
+    #@+node:ekr.20191227052446.67: *5* test_fstring_ternary
+    def test_fstring_ternary(self):
+        contents = r"""\
+    func(f"{b if not cond1 else ''}")
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.73: *5* test_fstring_ternary2
+    def test_fstring_ternary2(self):
+        # leoFind.py line 856
+        contents = r"""\
+    a = f"{'a' if x else 'b'}"
+    f()
+
+    # Pass
+    # print(f"{'a' if x else 'b'}")
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.81: *5* test_fstring_two_statements
+    def test_fstring_two_statements(self):
+        contents = r"""\
+    print(f"test {a}={2}")
+    print('done')
+    """
+        self.make_data(contents)
+    #@+node:ekr.20191227052446.68: *5* test_fstring_two_statements2
+    def test_fstring_two_statements2(self):
+        contents = r"""\
+    print(f'{7.1}')
+    print('end')
+    """
         self.make_data(contents)
     #@+node:ekr.20191227052446.32: *4* TestTOG.If...
     #@+node:ekr.20191227052446.33: *5* test_from leoTips.py
@@ -1105,14 +1093,7 @@ class TestTOG(BaseTest):
         case True | False | None: pass
         case True, False, None: pass  # A tuple!
     """
-        try:
-            # self.debug_list.append('contents')
-            # self.debug_list.append('tokens')
-            # self.debug_list.append('tree')
-            # self.debug_list.append('full-traceback')
-            self.make_data(contents)
-        finally:
-            self.debug_list = []
+        self.make_data(contents)
     #@+node:ekr.20200111200640.1: *5* test_Nonlocal
     def test_Nonlocal(self):
         contents = r"""nonlocal name1, name2"""
