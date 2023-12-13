@@ -333,13 +333,18 @@ class EnchantWrapper(BaseSpellWrapper):
         language = g.checkUnicode(c.config.getString('enchant-language'))
         if language:
             try:
-                ok = enchant.dict_exists(language)
+                enchant.dict_exists(language)
+            except AttributeError:
+                # Likely an install error.
+                # open_dict_file gives the error.
+                pass
             except Exception:
-                ok = False
-            if not ok:
-                g.warning('Invalid language code for Enchant', repr(language))
-                g.es_print('Using "en_US" instead')
-                g.es_print('Use @string enchant_language to specify your language')
+                if language == 'en_US':
+                    g.es_exception()  # Valid language.
+                else:
+                    g.warning('Invalid language code for Enchant', repr(language))
+                    g.es_print('Using "en_US" instead')
+                    g.es_print('Use @string enchant_language to specify your language')
                 language = 'en_US'
         self.language = language
     #@+node:ekr.20180207102856.1: *3* enchant.open_dict_file
@@ -370,7 +375,9 @@ class EnchantWrapper(BaseSpellWrapper):
                 d = enchant.Dict(language)
             except Exception:
                 d = {}
-        # Common exit, for traces.
+        if not d:
+            g.es_print('Error opening dictionary')
+            g.es_print('pip install pyenchant, NOT enchant')
         return d
 
     #@+node:ekr.20150514063305.517: *3* enchant.process_word
