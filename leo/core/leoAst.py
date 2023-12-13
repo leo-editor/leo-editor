@@ -3387,7 +3387,7 @@ class TokenOrderGenerator:
         Instead, we get the tokens *from the token list itself*!
         """
 
-        def sync(kind):
+        def sync(kind: str) -> None:
             """Sync to the next signifcant token of the given kind."""
             assert is_significant_kind(kind), repr(kind)
             while next_token := self.find_next_significant_token():
@@ -3397,8 +3397,14 @@ class TokenOrderGenerator:
                     break
 
         if python_version_tuple >= (3, 12, 0):
-            sync('fstring_start')
-            sync('fstring_end')
+            while next_token := self.find_next_significant_token():
+                if next_token.kind == 'fstring_start':
+                    sync('fstring_start')
+                    sync('fstring_end')
+                elif next_token.kind == 'string':
+                    sync('string')
+                else:
+                    break
         else:
             # Python 3.11 and below.
             for z in self.get_concatenated_string_tokens():
