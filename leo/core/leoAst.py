@@ -170,7 +170,9 @@ from typing import Any, Generator, Optional, Union
 try:
     from leo.core import leoGlobals as g
 except Exception:
+    # check_g function gives the message.
     g = None
+    
 
 Node = ast.AST
 Settings = Optional[dict[str, Any]]
@@ -245,8 +247,8 @@ if 1:  # pragma: no cover
     def check_g() -> bool:
         """print an error message if g is None"""
         if not g:
-            print('Can not import leo.core.leoGlobals')
-            print('Please add leo.core to your path')
+            print('This statement failed: `from leo.core import leoGlobals as g`')
+            print('Please adjust your Python path accordingly')
         return bool(g)
     #@+node:ekr.20231114133501.1: *3* function: get_modified_files
     def get_modified_files(repo_path: str) -> list[str]:
