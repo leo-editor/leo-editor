@@ -356,8 +356,7 @@ def get_gnx_from_file(file_s, p, path):
     """Set p's gnx from the @file node in the derived file."""
     pat = re.compile(r'^#@\+node:(.*): \*+ @file (.+)$')
     for line in g.splitLines(file_s):
-        m = pat.match(line)
-        if m:
+        if m := pat.match(line):
             gnx, path2 = m.group(1), m.group(2)
             path2 = path2.replace('\\', '/')
             p.v.fileIndex = gnx

@@ -117,8 +117,7 @@ def import_from_string(self, parent: Position, s: str) -> None:
     lines_dict: dict[VNode, list[str]] = {root.v: []}
     parents: list[Position] = [root]
     for line in g.splitLines(s):
-        m = header_pat.match(line)
-        if m:
+        if m := header_pat.match(line):
             level = len(m.group(1)) - 2
             assert level >= 1, m.group(1)
             parents = parents[:level]

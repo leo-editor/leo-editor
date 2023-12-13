@@ -34,13 +34,11 @@ def find_next_trace(ins: int, p: Position) -> tuple[int, int, Position]:
     while p:
         ins = max(0, ins - 1)  # Back up over newline.
         s = p.b[ins:]
-        m = re.search(skip_pat, s)
-        if m:
+        if m := re.search(skip_pat, s):
             # Skip this node.
             g.es_print('Skipping', p.h)
         else:
-            m = re.search(if_pat, s)
-            if m:
+            if m := re.search(if_pat, s):
                 i = m.start() + 1
                 j = m.end()
                 k = find_trace_block(i, j, s)
@@ -1262,8 +1260,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def hn_delete(self, p: Position) -> None:
         """Helper: delete the headline number in p.h."""
         c = self.c
-        m = re.match(self.hn_pattern, p.h)
-        if m:
+        if m := re.match(self.hn_pattern, p.h):
             # Do not strip the headline!
             n = len(m.group(0))
             c.setHeadString(p, p.v.h[n:])

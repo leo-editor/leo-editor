@@ -1502,8 +1502,7 @@ class OptionsUtils:
         option_pattern = re.compile(r'\s*(-\w)?,?\s*(--[\w-]+=?)')
         valid = ['-?']
         for line in g.splitLines(self.usage):
-            m = option_pattern.match(line)
-            if m:
+            if m := option_pattern.match(line):
                 if m.group(1):
                     valid.append(m.group(1))
                 if m.group(2):
@@ -1520,8 +1519,7 @@ class OptionsUtils:
         prefix = regex.split('=')[0]
         for arg in sys.argv:
             if arg.split('=')[0] == prefix:
-                m = re.match(regex, arg)
-                if m:
+                if m := re.match(regex, arg):
                     return m
                 self.option_error(arg, 'Missing or erroneous value')
         return None
@@ -2736,8 +2734,7 @@ def inAtNosearch(p: Position) -> bool:
 #@+node:ekr.20131230090121.16528: *3* g.isDirective
 def isDirective(s: str) -> bool:
     """Return True if s starts with a directive."""
-    m = g_is_directive_pattern.match(s)
-    if m:
+    if m := g_is_directive_pattern.match(s):
         s2 = s[m.end(1) :]
         if s2 and s2[0] in ".(":
             return False
@@ -3889,8 +3886,7 @@ def is_special(s: str, directive: str) -> tuple[bool, int]:
     lws = directive in ("@others", "@all")
     pattern_s = r'^\s*(%s\b)' if lws else r'^(%s\b)'
     pattern = re.compile(pattern_s % directive, re.MULTILINE)
-    m = re.search(pattern, s)
-    if m:
+    if m := re.search(pattern, s):
         return True, m.start(1)
     return False, -1
 #@+node:ekr.20031218072017.3177: *4* g.is_c_id
@@ -6543,8 +6539,7 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
     # Scan the lines, extracting only the valid lines.
     extracting, result = False, []
     for line in g.splitLines(s):
-        m = re.match(pattern, line)
-        if m:
+        if m := re.match(pattern, line):
             extracting = m.group(1) == language
         elif extracting:
             result.append(line)
@@ -6819,8 +6814,7 @@ def findGnx(gnx: str, c: Cmdr) -> Optional[Position]:
     """
     # Get the actual gnx and line number.
     n: int = 0  # The line number.
-    m = find_gnx_pat.match(gnx)
-    if m:
+    if m := find_gnx_pat.match(gnx):
         # Get the actual gnx and line number.
         gnx = m.group(1)
         try:
@@ -6916,8 +6910,7 @@ def findUnl(unlList1: list[str], c: Cmdr) -> Optional[Position]:
                 assert p == p1, (p, p1)
                 n = 0  # The default line number.
                 # Parse the last target.
-                m = new_pat.match(unlList[-1])
-                if m:
+                if m := new_pat.match(unlList[-1]):
                     line = m.group(3)
                     try:
                         n = int(line)
@@ -7332,8 +7325,7 @@ def parsePathData(c: Cmdr) -> dict[str, str]:
     lines = c.config.getData('unl-path-prefixes')
     d: dict[str, str] = {}
     for line in lines:
-        m = path_data_pattern.match(line)
-        if m:
+        if m := path_data_pattern.match(line):
             key, path = m.group(1), m.group(2)
             if key in d:
                 g.trace(f"Ignoring duplicate key: {line!r}")  # pragma: no cover

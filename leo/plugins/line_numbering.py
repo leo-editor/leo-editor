@@ -205,8 +205,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
         if is_verbatim(line):
             return 1, 2
         #@+node:vitalije.20170726193927.1: *4* others
-        m = others_pat.match(line)
-        if m:
+        if m := others_pat.match(line):
             n = inc(st)
             for p1 in others_iterator(p):
                 n = numerate_node(p1, n)
@@ -233,8 +232,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
                 flines_data[pkey(p1)] = tuple(flines), n
             return 1, n - st
         #@+node:vitalije.20170726193920.1: *4* section reference
-        m = section_pat.match(line)
-        if m:
+        if m := section_pat.match(line):
             p1 = g.findReference(m.group(2), p)
             if not p1:
                 g.warning('unresolved section reference %s' % m.group(2))

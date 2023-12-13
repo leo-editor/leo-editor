@@ -54,13 +54,11 @@ class Otl_Importer(Importer):
         for line in lines:
             if not line.strip():
                 continue  # New.
-            m = self.otl_body_pattern.match(line)
-            if m:
+            if m := self.otl_body_pattern.match(line):
                 top = parents[-1]
                 lines_dict[top.v].append(m.group(1) + '\n')
                 continue
-            m = self.otl_node_pattern.match(line)
-            if m:
+            if m := self.otl_node_pattern.match(line):
                 # Cut back the stack, then allocate a new node.
                 level = 1 + len(m.group(1))
                 parents = parents[:level]

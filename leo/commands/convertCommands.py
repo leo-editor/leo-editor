@@ -651,8 +651,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     break
                 # Handle comments following arguments.
                 if multiline and result:
-                    m = self.comment_pat.match(rest)
-                    if m:
+                    if m := self.comment_pat.match(rest):
                         comment = m.group(0)
                         i += len(comment)
                         last = result.pop()
@@ -1622,8 +1621,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             while i < len(lines):
                 progress = i
                 for (kind, pattern, handler) in self.patterns:
-                    m = pattern.match(lines[i])
-                    if m:
+                    if m := pattern.match(lines[i]):
                         j = handler(self, i, lines, m, p)  # May change lines.
                         break
                 else:
@@ -2096,8 +2094,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 'class', 'def', 'elif', 'for', 'if', 'print', 'public', 'return', 'with', 'while',
             )
             for i, s in enumerate(lines):
-                m = self.assignment_pat.match(s)
-                if m:
+                if m := self.assignment_pat.match(s):
                     lws, lhs, rhs = m.group(1), m.group(2), m.group(3).rstrip()
                     if not any(z in lhs for z in table):
                         lines[i] = f"{lws}let {lhs} = {rhs}\n"
@@ -2323,8 +2320,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 progress = i
                 line = lines[i]
                 for (pattern, handler) in self.patterns:
-                    m = pattern.match(line)
-                    if m:
+                    if m := pattern.match(line):
                         i = handler(i, lines, m, p)  # May change lines.
                         break
                 else:
@@ -2845,8 +2841,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 'class', 'def', 'elif', 'for', 'if', 'print', 'public', 'return', 'with', 'while',
             )
             for i, s in enumerate(lines):
-                m = self.assignment_pat.match(s)
-                if m:
+                if m := self.assignment_pat.match(s):
                     lws, lhs, rhs = m.group(1), m.group(2), m.group(3).rstrip()
                     if not any(z in lhs for z in table):
                         lines[i] = f"{lws}const {lhs} = {rhs}\n"

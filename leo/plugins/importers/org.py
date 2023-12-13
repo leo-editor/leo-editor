@@ -39,8 +39,7 @@ class Org_Importer(Importer):
         while i < len(lines):
             line = lines[i]
             i += 1
-            m = self.section_pat.match(line)
-            if m:
+            if m := self.section_pat.match(line):
                 level = len(m.group(1))
                 headline = m.group(2)  # Don't strip.
                 # Cut back the stack.

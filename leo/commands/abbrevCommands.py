@@ -468,8 +468,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         ))
         changed = False
         # Perform at most one scripting substitution.
-        m = pattern.match(p.h)
-        if m:
+        if m := pattern.match(p.h):
             content = m.group(2)
             c.abbrev_subst_env['x'] = ''
             try:

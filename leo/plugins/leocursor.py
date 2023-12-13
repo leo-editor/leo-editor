@@ -76,8 +76,7 @@ class AM_Colon(AttribManager):
             m = self.pattern.match(i)
 
             if m and m.group(1) == what:
-                m = m.group(3)
-                if m:
+                if m := m.group(3):
                     m = m.strip()
                 else:
                     # don't return None
@@ -89,8 +88,7 @@ class AM_Colon(AttribManager):
     def keys(self, v):
         ans = []
         for i in v.b.split('\n'):
-            m = self.pattern.match(i)
-            if m:
+            if m := self.pattern.match(i):
                 ans.append(m.group(1))
         return ans
 

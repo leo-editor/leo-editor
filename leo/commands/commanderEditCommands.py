@@ -531,15 +531,13 @@ def extractDef(c: Cmdr, s: str) -> str:
     for pat in c.config.getData('extract-patterns') or []:
         try:
             pat = re.compile(pat)
-            m = pat.search(s)
-            if m:
+            if m := pat.search(s):
                 return m.group(1)
         except Exception:
             g.es_print('bad regex in @data extract-patterns', color='blue')
             g.es_print(pat)
     for pat in extractDef_patterns:
-        m = pat.search(s)
-        if m:
+        if m := pat.search(s):
             return m.group(1)
     return ''
 #@+node:ekr.20171123135625.26: *3* function: extractDef_find

@@ -345,8 +345,7 @@ class LeoQtTree(leoFrame.LeoTree):
             new_icons = []
             modifiers_and_args = []
             for pattern, cmds in self.get_declutter_patterns():
-                m = pattern.match(text) or pattern.search(text)
-                if m:
+                if m := pattern.match(text) or pattern.search(text):
                     modifiers_and_args.extend(apply_declutter_rules(cmds))
             # Save the lists of the icons and the adjusting operations.
             dd[(v.h, iconVal)] = new_icons, modifiers_and_args
