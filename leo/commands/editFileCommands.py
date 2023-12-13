@@ -116,8 +116,7 @@ class ConvertAtRoot:
     def make_clones(self, p: Position) -> None:
         """Make clones for all undefined sections in p.b."""
         for s in g.splitLines(p.b):
-            m = self.section_pat.match(s)
-            if m:
+            if m := self.section_pat.match(s):
                 section_name = g.angleBrackets(m.group(1).strip())
                 section_p = self.make_clone(p, section_name)
                 if not section_p:

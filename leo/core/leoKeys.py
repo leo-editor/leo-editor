@@ -782,8 +782,7 @@ class AutoCompleterClass:
         aList = prefix.split('.')
         if len(aList) > 1:
             name = aList[0]
-            m = sys.modules.get(name)
-            if m:
+            if m := sys.modules.get(name):
                 d[name] = m
         return d
     #@+node:ekr.20110512170111.14472: *4* ac.get_object

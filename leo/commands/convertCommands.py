@@ -651,8 +651,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     break
                 # Handle comments following arguments.
                 if multiline and result:
-                    m = self.comment_pat.match(rest)
-                    if m:
+                    if m := self.comment_pat.match(rest):
                         comment = m.group(0)
                         i += len(comment)
                         last = result.pop()

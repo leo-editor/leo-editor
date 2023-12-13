@@ -2328,8 +2328,7 @@ class AtFile:
         # Use regex to properly distinguish between Leo directives
         # and python decorators.
         s2 = s[i:]
-        m = self.at_directive_kind_pattern.match(s2)
-        if m:
+        if m := self.at_directive_kind_pattern.match(s2):
             word = m.group(1)
             if word not in g.globalDirectiveList:
                 return at.noDirective
@@ -2690,8 +2689,7 @@ class AtFile:
         # Scan root.b.
         lines = []
         for s in g.splitLines(root.b):
-            m = g.g_section_delims_pat.match(s)
-            if m:
+            if m := g.g_section_delims_pat.match(s):
                 lines.append(s)
                 at.section_delim1 = m.group(1)
                 at.section_delim2 = m.group(2)
