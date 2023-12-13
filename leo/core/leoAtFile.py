@@ -3119,8 +3119,7 @@ class FastAtRead:
         first_lines: list[str] = []
         i = 0  # To keep some versions of pylint happy.
         for i, line in enumerate(lines):
-            m = self.header_pattern.match(line)
-            if m:
+            if m := self.header_pattern.match(line):
                 delims = m.group(1), m.group(8) or ''
                 return delims, first_lines, i + 1
             first_lines.append(line)

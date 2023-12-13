@@ -263,8 +263,7 @@ class ChapterController:
                 #@verbatim
                 # @chapter (all up to @) (@key=(binding))?
                 # name=group(1), binding=group(3)
-        m = self.re_chapter.search(p.h)
-        if m:
+        if m := self.re_chapter.search(p.h):
             chapterName, binding = m.group(1), m.group(3)
             if chapterName:
                 chapterName = self.sanitize(chapterName)

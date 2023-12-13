@@ -1298,8 +1298,7 @@ class LeoLog:
             if not line.strip():
                 return None, None, None
             for filename_i, line_number_i, pattern in self.link_table:
-                m = pattern.match(line)
-                if m:
+                if m := pattern.match(line):
                     return m, filename_i, line_number_i
             return None, None, None
         #@+node:ekr.20220412084258.1: *5* function: find_at_file_node

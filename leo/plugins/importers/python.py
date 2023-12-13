@@ -222,8 +222,7 @@ class Python_Importer(Importer):
                     for ancestor in child.parents():
                         if ancestor == parent:
                             break
-                        m = self.class_pat.match(ancestor.h)
-                        if m:
+                        if m := self.class_pat.match(ancestor.h):
                             found = True
                             # Replace 'def ' by the class name + '.'
                             child.h = f"{m.group(1)}.{child.h[4:].strip()}"

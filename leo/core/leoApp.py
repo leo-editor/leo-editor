@@ -2790,14 +2790,12 @@ class LoadManager:
             """Handle --trace-binding, --trace-setting and --trace"""
 
             # --trace-binding
-            m = utils.find_complex_option(r'--trace-binding=([\w\-\+]+)')
-            if m:
+            if m := utils.find_complex_option(r'--trace-binding=([\w\-\+]+)'):
                 g.app.trace_binding = m.group(1)
                 print(f"Enabling --trace-binding={m.group(1)}")
 
             # --trace-setting=setting
-            m = utils.find_complex_option(r'--trace-setting=([\w]+)')
-            if m:
+            if m := utils.find_complex_option(r'--trace-setting=([\w]+)'):
                 # g.app.config does not exist yet.
                 g.app.trace_setting = m.group(1)
                 print(f"Enabling --trace-setting={m.group(1)}")
