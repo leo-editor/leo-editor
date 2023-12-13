@@ -3239,8 +3239,7 @@ class FastAtRead:
             # These three sections might clear in_doc.
             #@+<< handle @others >>
             #@+node:ekr.20180602103135.14: *4* << handle @others >>
-            m = self.others_pat.match(line)
-            if m:
+            if m := self.others_pat.match(line):
                 in_doc = False
                 if m.group(2) == '+':  # opening sentinel
                     body.append(f"{m.group(1)}@others{m.group(3) or ''}\n")
@@ -3259,8 +3258,7 @@ class FastAtRead:
             #@+node:ekr.20180602103135.18: *4* << handle section refs >>
             # Note: scan_header sets *comment* delims, not *section* delims.
             # This section coordinates with the section that handles @section-delims.
-            m = self.ref_pat.match(line)
-            if m:
+            if m := self.ref_pat.match(line):
                 in_doc = False
                 if m.group(2) == '+':
                     # Any later @section-delims directive is a serious error.
@@ -3277,8 +3275,7 @@ class FastAtRead:
             #@-<< handle section refs >>
             #@+<< handle node_start >>
             #@+node:ekr.20180602103135.19: *4* << handle node_start >>
-            m = self.node_start_pat.match(line)
-            if m:
+            if m := self.node_start_pat.match(line):
                 in_doc = False
                 gnx, head = m.group(2), m.group(5)
                 # m.group(3) is the level number, m.group(4) is the number of stars.
@@ -3362,8 +3359,7 @@ class FastAtRead:
                     continue
                 #
                 # Check for @c or @code.
-                m = self.code_pat.match(line)
-                if m:
+                if m := self.code_pat.match(line):
                     in_doc = False
                     body.append('@code\n' if m.group(1) else '@c\n')
                     continue
@@ -3373,8 +3369,7 @@ class FastAtRead:
                 #@+node:ekr.20211031033754.1: *4* << handle @ or @doc >>
                 assert not in_doc, repr(line)
 
-                m = self.doc_pat.match(line)
-                if m:
+                if m := self.doc_pat.match(line):
                     #@verbatim
                     # @+at or @+doc?
                     doc = '@doc' if m.group(1) == 'doc' else '@'
@@ -3394,8 +3389,7 @@ class FastAtRead:
             # Order doesn't matter.
             #@+<< handle @all >>
             #@+node:ekr.20180602103135.13: *4* << handle @all >>
-            m = self.all_pat.match(line)
-            if m:
+            if m := self.all_pat.match(line):
                 #@verbatim
                 # @all tells Leo's *write* code not to check for undefined sections.
                 # Here, in the read code, we merely need to add it to the body.
@@ -3411,15 +3405,13 @@ class FastAtRead:
             #@-<< handle @all >>
             #@+<< handle afterref >>
             #@+node:ekr.20180603063102.1: *4* << handle afterref >>
-            m = self.after_pat.match(line)
-            if m:
+            if m := self.after_pat.match(line):
                 afterref = True
                 continue
             #@-<< handle afterref >>
             #@+<< handle @first and @last >>
             #@+node:ekr.20180606053919.1: *4* << handle @first and @last >>
-            m = self.first_pat.match(line)
-            if m:
+            if m := self.first_pat.match(line):
                 # pylint: disable=no-else-continue
                 if 0 <= first_i < len(first_lines):
                     body.append('@first ' + first_lines[first_i])
@@ -3431,8 +3423,7 @@ class FastAtRead:
                     g.printObj(first_lines, tag='first_lines')
                     g.printObj(lines[start : i + 2], tag='lines[start:i+2]')
                     continue
-            m = self.last_pat.match(line)
-            if m:
+            if m := self.last_pat.match(line):
                 # Just increment the count of the expected last lines.
                 # We'll fill in the @last line directives after we see the @-leo directive.
                 n_last_lines += 1
@@ -3441,8 +3432,7 @@ class FastAtRead:
             #@+<< handle @comment >>
             #@+node:ekr.20180621050901.1: *4* << handle @comment >>
             # https://leo-editor.github.io/leo-editor/directives.html#part-4-dangerous-directives
-            m = self.comment_pat.match(line)
-            if m:
+            if m := self.comment_pat.match(line):
                 # <1, 2 or 3 comment delims>
                 delims = m.group(1).strip()
 
@@ -3473,8 +3463,7 @@ class FastAtRead:
             #@-<< handle @comment >>
             #@+<< handle @delims >>
             #@+node:ekr.20180608104836.1: *4* << handle @delims >>
-            m = self.delims_pat.match(line)
-            if m:
+            if m := self.delims_pat.match(line):
                 # Get 1 or 2 comment delims
                 # Whatever happens, retain the original @delims line.
                 delims = m.group(1).strip()
@@ -3507,8 +3496,7 @@ class FastAtRead:
             #@-<< handle @delims >>
             #@+<< handle @section-delims >>
             #@+node:ekr.20211030033211.1: *4* << handle @section-delims >>
-            m = self.section_delims_pat.match(line)
-            if m:
+            if m := self.section_delims_pat.match(line):
                 if section_reference_seen:  # pragma: no cover
                     # This is a serious error.
                     # This kind of error should have been caught by Leo's atFile write logic.

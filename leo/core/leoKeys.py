@@ -588,8 +588,7 @@ class AutoCompleterClass:
     def get_codewise_completions(self, prefix: str) -> list[str]:
         """Use codewise to generate a list of hits."""
         c = self.c
-        m = re.match(r"(\S+(\.\w+)*)\.(\w*)$", prefix)
-        if m:
+        if m := re.match(r"(\S+(\.\w+)*)\.(\w*)$", prefix):
             varname = m.group(1)
             ivar = m.group(3)
             kind, aList = self.guess_class(c, varname)
@@ -648,8 +647,7 @@ class AutoCompleterClass:
             # Return the nearest enclosing class.
             for p in c.p.parents():
                 h = p.h
-                m = re.search(r'class\s+(\w+)', h)
-                if m:
+                if m := re.search(r'class\s+(\w+)', h):
                     return 'class', [m.group(1)]
         # This is not needed now that we add the completions for 'self'.
             # aList = ContextSniffer().get_classes(c.p.b, varname)
