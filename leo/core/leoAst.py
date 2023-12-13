@@ -3135,8 +3135,6 @@ class TokenOrderGenerator:
                 self.visit(z)
         # 'asynch def (%s): -> %s\n'
         # 'asynch def %s(%s):\n'
-        ### async_token_type = 'async' if has_async_tokens else 'name'
-        ### self.token(async_token_type, 'async')
         self.token('name', 'async')
         self.name('def')
         self.name(node.name)  # A string
@@ -3651,9 +3649,6 @@ class TokenOrderGenerator:
     def do_AsyncFor(self, node: Node) -> None:
 
         # The def line...
-        ### Py 3.8 changes the kind of token.
-        ### async_token_type = 'async' if has_async_tokens else 'name'
-        ## self.token(async_token_type, 'async')
         self.token('name', 'async')
         self.name('for')
         self.visit(node.target)
@@ -3672,8 +3667,6 @@ class TokenOrderGenerator:
     #@+node:ekr.20191113063144.65: *6* tog.AsyncWith
     def do_AsyncWith(self, node: Node) -> None:
 
-        ### async_token_type = 'name'  ### 'async' if has_async_tokens else 'name'
-        ### self.token(async_token_type, 'async')
         self.token('name', 'async')
         self.do_With(node)
     #@+node:ekr.20191113063144.66: *6* tog.AugAssign
@@ -3691,8 +3684,6 @@ class TokenOrderGenerator:
 
     def do_Await(self, node: Node) -> None:
 
-        ### async_token_type = 'await' if has_async_tokens else 'name'
-        ### self.token(async_token_type, 'await')
         self.token('name', 'await')
         self.visit(node.value)
     #@+node:ekr.20191113063144.68: *6* tog.Break
