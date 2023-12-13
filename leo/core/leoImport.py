@@ -1348,12 +1348,10 @@ class MindMapImporter:
                 p.b = self.csv_string(row)
                 n = p.level()
         for p in target.unique_subtree():
-            if len(p.b.splitlines()) == 1:
-                if len(p.b.splitlines()[0]) < max_chars_in_header:
-                    p.h = p.b.splitlines()[0]
-                    p.b = ""
-                else:
-                    p.h = "@node_with_long_text"
+            lines = p.b.splitlines()
+            if len(lines) == 1 and len(lines[0]) < max_chars_in_header:
+                p.h = lines[0]
+                p.b = ""
             else:
                 p.h = "@node_with_long_text"
     #@+node:ekr.20160503130810.4: *4* mindmap.csv_level
