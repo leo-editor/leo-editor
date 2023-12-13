@@ -3381,12 +3381,13 @@ class TokenOrderGenerator:
 
         Instead, we get the tokens *from the token list itself*!
         """
-        for z in self.get_concatenated_string_tokens():
-            if 0:  ###
-                print('')
-                g.trace(z)
-                print('')
-            self.token(z.kind, z.value)
+        if python_version_tuple >= (3, 12, 0):
+            # Python 3.12: Support fstring_start/middle/end tokens.
+            pass  ###
+        else:
+            # Python 3.11 and below.
+            for z in self.get_concatenated_string_tokens():
+                self.token(z.kind, z.value)
     #@+node:ekr.20200111083914.1: *7* tog.get_concatenated_tokens
     def get_concatenated_string_tokens(self) -> list[Token]:
         """
