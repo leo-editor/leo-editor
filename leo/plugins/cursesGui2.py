@@ -867,8 +867,7 @@ def trace(*args: Any, **keys: Any) -> None:
 def method_name(f: Callable) -> str:
     """Print a method name is a simplified format."""
     pattern = r'<bound method ([\w\.]*\.)?(\w+) of <([\w\.]*\.)?(\w+) object at (.+)>>'
-    m = re.match(pattern, repr(f))
-    if m:
+    if m := re.match(pattern, repr(f)):
         # Shows actual method: very useful
         return '%20s%s' % (m.group(1), m.group(2))
     return repr(f)

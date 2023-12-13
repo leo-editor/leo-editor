@@ -205,8 +205,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
         if is_verbatim(line):
             return 1, 2
         #@+node:vitalije.20170726193927.1: *4* others
-        m = others_pat.match(line)
-        if m:
+        if m := others_pat.match(line):
             n = inc(st)
             for p1 in others_iterator(p):
                 n = numerate_node(p1, n)

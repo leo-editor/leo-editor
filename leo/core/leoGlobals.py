@@ -1502,8 +1502,7 @@ class OptionsUtils:
         option_pattern = re.compile(r'\s*(-\w)?,?\s*(--[\w-]+=?)')
         valid = ['-?']
         for line in g.splitLines(self.usage):
-            m = option_pattern.match(line)
-            if m:
+            if m := option_pattern.match(line):
                 if m.group(1):
                     valid.append(m.group(1))
                 if m.group(2):
@@ -1520,8 +1519,7 @@ class OptionsUtils:
         prefix = regex.split('=')[0]
         for arg in sys.argv:
             if arg.split('=')[0] == prefix:
-                m = re.match(regex, arg)
-                if m:
+                if m := re.match(regex, arg):
                     return m
                 self.option_error(arg, 'Missing or erroneous value')
         return None

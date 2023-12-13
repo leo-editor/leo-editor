@@ -120,8 +120,7 @@ class Python_Importer(Importer):
             s = self.guide_lines[i]
             i += 1
             for kind, pattern in self.block_patterns:
-                m = pattern.match(s)
-                if m:
+                if m := pattern.match(s):
                     # cython may include trailing whitespace.
                     name = m.group(1).strip()
                     end = self.find_end_of_block(i, i2)

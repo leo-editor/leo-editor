@@ -305,8 +305,7 @@ class MarkupCommands:
         kind = self.kind
         h = p.h.rstrip()
         if kind == 'adoc':
-            m = self.adoc_pattern.match(h)
-            if m:
+            if m := self.adoc_pattern.match(h):
                 prefix = m.group(1)
                 return h[1 + len(prefix) :].strip()
             return None

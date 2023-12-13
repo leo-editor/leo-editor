@@ -38,8 +38,7 @@ class Perl_Importer(Importer):
         """Remove regexes."""
         result = []
         for line in lines:
-            m = self.regex_pat.match(line)
-            if m:
+            if m := self.regex_pat.match(line):
                 result.append(line[: len(m.group(0))])
             else:
                 result.append(line)

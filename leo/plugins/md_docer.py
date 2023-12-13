@@ -59,8 +59,7 @@ def md_write_files(event):
             yield hl(v, lev)
             yield ''
         for line in v.b.splitlines(False):
-            m = pat.match(line)
-            if m:
+            if m := pat.match(line):
                 v1 = c.fileCommands.gnxDict.get(m.group(2))
                 if not v1:
                     g.es('gnx not found:[%s]' % m.group(2))

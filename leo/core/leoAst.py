@@ -1896,8 +1896,7 @@ class Orange:
             val = self.line.rstrip()
             # #3056: Insure one space after '#' in non-sentinel comments.
             #        Do not change bang lines or '##' comments.
-            m = self.comment_pat.match(val)
-            if m:
+            if m := self.comment_pat.match(val):
                 i = len(m.group(1))
                 val = val[:i] + '# ' + val[i + 1 :]
         else:

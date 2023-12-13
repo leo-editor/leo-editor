@@ -68,8 +68,7 @@ class Markdown_Importer(Importer):
         Return level, name if line is a hash section line.
         else return None, None.
         """
-        m = self.md_hash_pattern.match(line)
-        if m:
+        if m := self.md_hash_pattern.match(line):
             level = len(m.group(1))
             name = m.group(2).strip()
             if name:
