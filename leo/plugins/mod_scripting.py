@@ -493,8 +493,7 @@ class ScriptingController:
                 p.moveToThreadNext()
             else:
                 self.seen.add(gnx)
-                m = pattern.match(p.h)
-                if m:
+                if m := pattern.match(p.h):
                     func = d.get(m.group(1))
                     func(p)
                 p.moveToThreadNext()

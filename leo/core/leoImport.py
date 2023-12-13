@@ -1728,8 +1728,7 @@ class RecursiveImportController:
         outline_dir = norm(self.outline_directory.replace('\\', '/'))
         len_outline_dir = len(outline_dir)
 
-        m = self.file_pattern.match(p.h)
-        if m:
+        if m := self.file_pattern.match(p.h):
             # p is an @file node of some kind.
             kind = m.group(0)
             path = p.h[len(kind) :].strip()

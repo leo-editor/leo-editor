@@ -164,8 +164,7 @@ def session_snapshot_load_command(event: Event) -> None:
 @g.command('session-snapshot-save')
 def session_snapshot_save_command(event: Event) -> None:
     """Save a snapshot of the present session to the leo.session file."""
-    m = g.app.sessionManager
-    if m:
+    if m := g.app.sessionManager:
         m.save_snapshot()
 #@-others
 #@@language python

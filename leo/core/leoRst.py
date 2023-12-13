@@ -382,9 +382,10 @@ class RstCommands:
         i = s.find('<title></title>')
         if i == -1:
             return s
-        m = re.search(r'<h1>([^<]*)</h1>', s)
-        if not m:
-            m = re.search(r'<h1><[^>]+>([^<]*)</a></h1>', s)
+        m = (
+            re.search(r'<h1>([^<]*)</h1>', s) or
+            re.search(r'<h1><[^>]+>([^<]*)</a></h1>', s)
+        )
         if m:
             s = s.replace('<title></title>',
                 f"<title>{m.group(1)}</title>")

@@ -3380,8 +3380,7 @@ if pygments:
             return
         while 1:
             for rexmatch, action, new_state in statetokens:
-                m = rexmatch(text, pos)
-                if m:
+                if m := rexmatch(text, pos):
                     if action is not None:
                         # pylint: disable=unidiomatic-typecheck
                         # EKR: Why not use isinstance?
