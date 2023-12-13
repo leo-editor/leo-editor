@@ -43,13 +43,11 @@ class Lua_Importer(Importer):
             line = self.guide_lines[i]
             i += 1
             for (kind, pat) in self.block_patterns:
-                m1 = pat.match(line)
-                if m1:
+                if pat.match(line):
                     level += 1
                     break
             else:
-                m2 = self.end_pat.match(line)
-                if m2:
+                if self.end_pat.match(line):
                     level -= 1
                     if level == 0:
                         return i
