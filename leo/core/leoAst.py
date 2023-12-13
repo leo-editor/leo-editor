@@ -3359,23 +3359,15 @@ class TokenOrderGenerator:
         """
         This node represents the *components* of a *single* f-string.
 
-        Happily, JoinedStr nodes *also* represent *all* f-strings,
-        so the TOG should *never visit this node!
+        Happily, JoinedStr nodes *also* represent *all* f-strings.
+        
+        JoinedStr does *not* visit the FormattedValue node,
+        so the TOG should *never* visit this node!
         """
         filename = getattr(self, 'filename', '<no file>')
         raise AssignLinksError(
             f"file: {filename}\n"
             f"do_FormattedValue should never be called")
-
-        # This code has no chance of being useful...
-
-            # conv = node.conversion
-            # spec = node.format_spec
-            # self.visit(node.value)
-            # if conv is not None:
-                # self.token('number', conv)
-            # if spec is not None:
-                # self.visit(node.format_spec)
     #@+node:ekr.20191113063144.41: *6* tog.JoinedStr & helper
     # JoinedStr(expr* values)
 
