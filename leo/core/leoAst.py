@@ -3460,6 +3460,11 @@ class TokenOrderGenerator:
                 self.visit(z)  ### Experimental.
             elif isinstance(z, ast.FormattedValue):
                 # FormattedValue(expr value, int conversion, expr? format_spec)  Python 3.12+
+                if 1:  ### Experimental.
+                    if 1:
+                        print('')
+                        g.trace(z.value)
+                    self.visit(z.value)
                 if 0:
                     ### self.visit(z.value)
                     # # All other tokens are part of an f-string!

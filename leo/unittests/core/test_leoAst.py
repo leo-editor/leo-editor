@@ -191,10 +191,10 @@ class BaseTest(unittest.TestCase):
             self.fail('make_tree failed')
             
         # Check the debug_list.
+        valid = ('ast', 'contents', 'debug', 'sync', 'tokens', 'tree', 'post-tokens', 'post-tree')
         for z in self.debug_list:
-            if z not in ('ast', 'contents', 'sync', 'tokens', 'tree', 'post-tokens', 'post-tree'):
+            if z not in valid:
                 g.trace('Ignoring debug_list value:', z)
-        
 
         # Early dumps and traces.
         if 'ast' in self.debug_list:
@@ -623,7 +623,14 @@ class TestTOG(BaseTest):
         contents = r"""
     print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")
     """
-        self.make_data(contents)
+        self.make_data(contents, debug_list=[  ###
+            'contents',
+            'debug',
+            'sync',
+            'tree',
+            'tokens',
+        ])
+
     #@+node:ekr.20191227052446.74: *5* test_fstring_in_arg_list
     def test_fstring_in_arg_list(self):
         contents = r"""
