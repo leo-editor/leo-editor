@@ -153,14 +153,15 @@ class BaseTest(unittest.TestCase):
         """Adjust leading indentation in the expected string s."""
         return textwrap.dedent(s.lstrip('\\\n')).rstrip() + '\n'
     #@+node:ekr.20200110092217.1: *4* BaseTest.check_roundtrip
-    def check_roundtrip(self, contents):
+    def check_roundtrip(self, contents, debug_list: list[str] = None):
         """Check that the tokenizer round-trips the given contents."""
-        contents, tokens, tree = self.make_data(contents)
+        contents, tokens, tree = self.make_data(contents, debug_list=debug_list)
         results = tokens_to_string(tokens)
         self.assertEqual(contents, results)
     #@+node:ekr.20191227054856.1: *4* BaseTest.make_data
     def make_data(self,
         contents: str,
+        *,
         description: str = None,
         debug_list: str = None,
     ) -> tuple[str, list[Token], ast.AST]:  # pragma: no cover
@@ -222,7 +223,7 @@ class BaseTest(unittest.TestCase):
         filename = g.finalize_join(directory, '..', '..', 'core', filename)
         assert os.path.exists(filename), repr(filename)
         contents = read_file(filename)
-        contents, tokens, tree = self.make_data(contents, filename)
+        contents, tokens, tree = self.make_data(contents, description=filename)
         return contents, tokens, tree
     #@+node:ekr.20191228101601.1: *4* BaseTest: passes...
     #@+node:ekr.20191228095945.11: *5* 0.1: BaseTest.make_tokens
@@ -945,10 +946,7 @@ class TestTOG(BaseTest):
     print(f"a {old_id!r}\n" "b\n")
     print('done')
     """
-        self.make_data(contents) ###, debug_list = [
-            # 'contents',
-            # 'tokens',
-            # 'tree',])
+        self.make_data(contents)
     #@+node:ekr.20191227052446.64: *5* test_potential_fstring
     def test_potential_fstring(self):
         contents = r"""
@@ -1596,7 +1594,7 @@ class TestFstringify(BaseTest):
         for i, data in enumerate(table):
             contents, expected = data
             description = f"test_single_quotes: {i}"
-            contents, tokens, tree = self.make_data(contents, description)
+            contents, tokens, tree = self.make_data(contents, description=description)
             results = self.fstringify(contents, tokens, tree, filename=description)
             self.assertEqual(results, expected, msg=i)
     #@+node:ekr.20200214094938.1: *4* TestFstringify.test_switch_quotes
@@ -1610,7 +1608,7 @@ class TestFstringify(BaseTest):
         for i, data in enumerate(table):
             contents, expected = data
             description = f"test_single_quotes: {i}"
-            contents, tokens, tree = self.make_data(contents, description)
+            contents, tokens, tree = self.make_data(contents, description=description)
             results = self.fstringify(contents, tokens, tree, filename=description)
             self.assertEqual(results, expected, msg=i)
     #@+node:ekr.20200206173725.1: *4* TestFstringify.test_switch_quotes_2
@@ -2285,7 +2283,7 @@ class TestOrange(BaseTest):
         fails = 0
         for i, contents in enumerate(table):
             description = f"{tag} part {i}"
-            contents, tokens, tree = self.make_data(contents, description)
+            contents, tokens, tree = self.make_data(contents, description=description)
             expected = self.blacken(contents)
             results = self.beautify(contents, tokens, tree, filename=description)
             if results != expected:  # pragma: no cover

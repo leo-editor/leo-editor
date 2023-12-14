@@ -2909,7 +2909,7 @@ class TokenOrderGenerator:
         token list.
         """
         self.token('op', val)
-    #@+node:ekr.20231213174617.1: *5* tog.sync_to_kind (New, Experimental)
+    #@+node:ekr.20231213174617.1: *5* tog.sync_to_kind
     def sync_to_kind(self, kind: str) -> None:
         """Sync to the next signifcant token of the given kind."""
         assert is_significant_kind(kind), repr(kind)
@@ -3298,14 +3298,19 @@ class TokenOrderGenerator:
             self.op('...')
         elif isinstance(node.value, str):
             if g.python_version_tuple >= (3, 12, 0):
-                next_token = self.find_next_significant_token()
-                kind, value = next_token.kind, next_token.value
-                assert kind in ('string', 'fstring_start'), (kind, value, g.callers())
-                if kind == 'string':
-                    self.token(kind, value)
-                else:
-                    self.sync_to_kind('fstring_start')
-                    self.sync_to_kind('fstring_end')
+                # Handle string concatentation here!
+                while True:
+                    next_token = self.find_next_significant_token()
+                    kind, value = next_token.kind, next_token.value
+                    ### g.trace(kind, value)
+                    ### assert kind in ('string', 'fstring_start'), (kind, value, g.callers())
+                    if kind == 'string':
+                        self.token(kind, value)
+                    elif kind == 'fstring_start':
+                        self.sync_to_kind('fstring_start')
+                        self.sync_to_kind('fstring_end')
+                    else:
+                        break
             else:
                 self.do_Str(node)
         elif isinstance(node.value, int):
@@ -3412,7 +3417,7 @@ class TokenOrderGenerator:
 
         Instead, we get the tokens *from the token list itself*!
         """
-        
+
         if 0:  ###
 
             def sync(kind: str) -> None:
@@ -3425,11 +3430,11 @@ class TokenOrderGenerator:
                         break
 
         if g.python_version_tuple >= (3, 12, 0):
-        
+
             if 0:
                 for z in node.values:
                     self.visit(z)
-                
+
             if 1:  ### Experimental.
                 while next_token := self.find_next_significant_token():
                     if next_token.kind == 'fstring_start':
