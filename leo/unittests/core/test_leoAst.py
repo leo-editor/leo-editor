@@ -633,11 +633,11 @@ class TestTOG(BaseTest):
     print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")
     """
         self.make_data(contents, debug_list=[  ###
-            'contents',
-            'debug',
-            'sync',
+            # 'contents',
+            # 'debug',
+            # 'sync',
             # 'tree',
-            'tokens',
+            # 'tokens',
         ])
 
     #@+node:ekr.20191227052446.74: *5* test_fstring_in_arg_list

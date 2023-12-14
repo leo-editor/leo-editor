@@ -3312,7 +3312,7 @@ class TokenOrderGenerator:
         for z in node.ifs or []:
             self.name('if')
             self.visit(z)
-    #@+node:ekr.20191113063144.34: *6* tog.Constant
+    #@+node:ekr.20191113063144.34: *6* tog.Constant & helper
     # Constant(constant value, string? kind)
 
     def do_Constant(self, node: Node) -> None:
@@ -3328,39 +3328,13 @@ class TokenOrderGenerator:
             self.op('...')
         elif isinstance(node.value, str):
             if g.python_version_tuple >= (3, 12, 0):
-                # Handle string concatentation here!
-                if self.debug_flag: ###
-                    print('')
-                    g.trace('Start. node.value:', node.value)  ###
-
-                # First, look for a *significant* token.
-                # Thereafter, look only for a non-whitespace token.
-                ### token = self.find_next_significant_token()
-                while 1:
-                    token = self.find_next_non_ws_token()
-                    if self.debug_flag:  ###
-                        g.trace(token.index, token.kind, token.value, g.callers(2))
-                    if token.kind == 'string':
-                        # Handle concatenated strings!
-                        ### self.sync_to_kind('string')
-                        self.token(token.kind, token.value)
-                        ### token = self.find_next_non_ws_token()
-                    elif token.kind == 'fstring_start':
-                        self.token(token.kind, token.value)
-                        ### self.sync_to_kind('fstring_start')
-                        self.sync_to_kind('fstring_end')
-                        ### token = self.find_next_non_ws_token()
-                    else:
-                        break
-                if self.debug_flag:  ###
-                    g.trace('Done')
-                    print('')
+                self.string_helper(node)
             else:
                 self.do_Str(node)
         elif isinstance(node.value, int):
             # Look at the next token to distinguinsh 0/1 from True/False.
-            next_token = self.find_next_significant_token()
-            kind, value = next_token.kind, next_token.value
+            token = self.find_next_significant_token()
+            kind, value = token.kind, token.value
             assert kind in ('name', 'number'), (kind, value, g.callers())
             if kind == 'name':
                 self.name(value)
@@ -3379,6 +3353,38 @@ class TokenOrderGenerator:
         else:
             # Unknown type.
             g.trace('----- Oops -----', repr(node.value), g.callers())
+    #@+node:ekr.20231214173003.1: *7* tog.string_helper
+    def string_helper(self, node):
+        """
+        Common string and f-string handling for Constant and JoinedStr nodes.
+        
+        Handle string concatenation.
+        """
+        trace = self.debug_flag
+        if trace:  ###
+            print('')
+            g.trace('Start', node)
+            
+        # Handle all concatenated strings, that is, strings separated only by whitespace.
+        while 1:
+            token = self.find_next_non_ws_token()
+            if trace:  ###
+                g.trace(token.index, token.kind, token.value, g.callers(2))
+            if token.kind == 'string':
+                # Handle concatenated strings!
+                ### self.sync_to_kind('string')
+                self.token(token.kind, token.value)
+                ### token = self.find_next_non_ws_token()
+            elif token.kind == 'fstring_start':
+                self.token(token.kind, token.value)
+                ### self.sync_to_kind('fstring_start')
+                self.sync_to_kind('fstring_end')
+                ### token = self.find_next_non_ws_token()
+            else:
+                break
+        if trace:  ###
+            g.trace('Done')
+            print('')
     #@+node:ekr.20191113063144.35: *6* tog.Dict
     # Dict(expr* keys, expr* values)
 
@@ -3454,36 +3460,14 @@ class TokenOrderGenerator:
 
         Instead, we get the tokens *from the token list itself*!
         """
-        
+        # Everything in the JoinedStr tree is a string.
+        # Do *not* call self.visit.
         if g.python_version_tuple < (3, 12, 0):
             # Python 3.11 and below.
             for z in self.get_concatenated_string_tokens():
                 self.token(z.kind, z.value)
-            return
-
-        if self.debug_flag:  ###
-            dump_ast(node, tag=f"{g.my_name()}")
-            
-        ### Everything following is a string.  Do NOT call self.visit!!!
-
-        # A big hack.
-        for z in node.values:
-            if isinstance(z, ast.Constant):
-                self.visit(z)  ### Experimental.
-            elif isinstance(z, ast.FormattedValue):
-                # FormattedValue(expr value, int conversion, expr? format_spec)  Python 3.12+
-                if 1:  ### Experimental.
-                    if 1:
-                        print('')
-                        g.trace(z.value)
-                    self.visit(z.value)
-                if 0:
-                    ### self.visit(z.value)
-                    # # All other tokens are part of an f-string!
-                    self.sync_to_kind('fstring_start')
-                    self.sync_to_kind('fstring_end')
-            else:
-                g.trace('PASS', z)
+        else:
+            self.string_helper(node)
     #@+node:ekr.20231213061819.1: *7* tog.get_concatenated_tokens (3.11-)
     def get_concatenated_string_tokens(self) -> list[Token]:
         """
