@@ -628,10 +628,10 @@ class TestTOG(BaseTest):
     print('p1' f'{f2}')
     'end'
     """
-        self.make_data(contents) ###, debug_list=[
-            # 'contents',
-            # 'tokens',
-            # 'tree',])
+        self.make_data(contents, debug_list=[
+            'contents',
+            'tokens',
+            'tree',])
     #@+node:ekr.20191227052446.71: *5* test_fstring_join1a
     def test_fstring_join1a(self):
         contents = r"""

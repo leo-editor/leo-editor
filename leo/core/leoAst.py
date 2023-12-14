@@ -3397,6 +3397,7 @@ class TokenOrderGenerator:
         so the TOG should *never* visit this node!
         """
         if g.python_version_tuple >= (3, 12, 0):
+            g.trace(node.value)
             format_spec = getattr(node, 'format_spec', None)
             self.visit(node.value)
             self.visit(node.conversion)
@@ -3418,24 +3419,14 @@ class TokenOrderGenerator:
         Instead, we get the tokens *from the token list itself*!
         """
 
-        if 0:  ###
-
-            def sync(kind: str) -> None:
-                """Sync to the next signifcant token of the given kind."""
-                assert is_significant_kind(kind), repr(kind)
-                while next_token := self.find_next_significant_token():
-                    g.trace('next_token', next_token)
-                    self.token(next_token.kind, next_token.value)
-                    if next_token.kind in (kind, 'endtoken'):
-                        break
 
         if g.python_version_tuple >= (3, 12, 0):
 
-            if 0:
+            if 1:
                 for z in node.values:
                     self.visit(z)
 
-            if 1:  ### Experimental.
+            if 0:  ### Experimental.
                 while next_token := self.find_next_significant_token():
                     if next_token.kind == 'fstring_start':
                         self.sync_to_kind('fstring_start')
@@ -3521,9 +3512,11 @@ class TokenOrderGenerator:
 
         self.name(node.id)
 
-    def do_NameConstant(self, node: Node) -> None:  # pragma: no cover (Does not exist in Python 3.8+)
+    if 0:  ### Does not exist in Python 3.8+
 
-        self.name(repr(node.value))
+        def do_NameConstant(self, node: Node) -> None:  # pragma: no cover (Does not exist in Python 3.8+)
+
+            self.name(repr(node.value))
 
     #@+node:ekr.20191113063144.47: *6* tog.Set
     # Set(expr* elts)
