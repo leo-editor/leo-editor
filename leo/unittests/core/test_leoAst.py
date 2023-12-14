@@ -153,7 +153,7 @@ class BaseTest(unittest.TestCase):
         """Adjust leading indentation in the expected string s."""
         return textwrap.dedent(s.lstrip('\\\n')).rstrip() + '\n'
     #@+node:ekr.20200110092217.1: *4* BaseTest.check_roundtrip
-    def check_roundtrip(self, contents, debug_list: list[str] = None):
+    def check_roundtrip(self, contents, *, debug_list: list[str] = None):
         """Check that the tokenizer round-trips the given contents."""
         contents, tokens, tree = self.make_data(contents, debug_list=debug_list)
         results = tokens_to_string(tokens)
@@ -170,6 +170,7 @@ class BaseTest(unittest.TestCase):
         if not contents:
             return '', None, None
         self.debug_list = debug_list or []
+        self.trace_token_method = False
         self.link_error = None
         t1 = get_time()
         self.update_counts('characters', len(contents))
@@ -186,14 +187,24 @@ class BaseTest(unittest.TestCase):
         if not tokens:
             self.fail('make_tokens failed')
         tree = self.make_tree(contents)
-        
-        # Early dumps.
         if not tree:
             self.fail('make_tree failed')
-        if 'contents' in self.debug_list:
-            dump_contents(contents)
+            
+        # Check the debug_list.
+        for z in self.debug_list:
+            if z not in ('ast', 'contents', 'sync', 'tokens', 'tree', 'post-tokens', 'post-tree'):
+                g.trace('Ignoring debug_list value:', z)
+        
+
+        # Early dumps and traces.
         if 'ast' in self.debug_list:
             g.printObj(ast.dump(tree, indent=2), tag='ast.dump')
+        if 'contents' in self.debug_list:
+            dump_contents(contents)
+        if 'debug' in self.debug_list:
+            self.tog.debug_flag = True
+        if 'sync' in self.debug_list:
+            self.tog.trace_token_method = True
         if 'tree' in self.debug_list:  # Excellent traces for tracking down mysteries.
             dump_ast(tree)
         if 'tokens' in self.debug_list:
@@ -209,6 +220,7 @@ class BaseTest(unittest.TestCase):
             dump_tree(tokens, tree)
         if 'post-tokens' in self.debug_list:
             dump_tokens(tokens)
+
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - t1)
         
@@ -628,10 +640,11 @@ class TestTOG(BaseTest):
     print('p1' f'{f2}')
     'end'
     """
-        self.make_data(contents, debug_list=[
-            'contents',
-            'tokens',
-            'tree',])
+        self.make_data(contents, debug_list=[  ###
+            # 'contents',
+            # 'tokens',
+            # 'tree',
+            ])
     #@+node:ekr.20191227052446.71: *5* test_fstring_join1a
     def test_fstring_join1a(self):
         contents = r"""
@@ -982,12 +995,22 @@ class TestTOG(BaseTest):
     print('a' 'b')
     print('c')
     """
-        self.make_data(contents)
+        self.make_data(contents, debug_list=[ ###
+            # 'contents',
+            # 'tokens',
+            # 'tree',
+            ])
     #@+node:ekr.20200111042825.1: *5* test_string_concatenation_2
     def test_string_concatenation_2(self):
         # Crash in leoCheck.py.
         contents = """return self.Type('error', 'no member %s' % ivar)"""
-        self.make_data(contents)
+        self.make_data(contents, debug_list=[  ###
+            # 'contents',
+            # 'debug',
+            # 'sync',
+            # 'tree',
+            # 'tokens',
+        ])
     #@+node:ekr.20191227052446.43: *4* TestTOG.Statements...
     #@+node:ekr.20200112075707.1: *5* test_AnnAssign
     def test_AnnAssign(self):
@@ -2706,7 +2729,13 @@ class TestTokens(BaseTest):
             'x=1+\\\n    2'
             '# This is a comment\\\n    # This also'
         )
-        self.check_roundtrip(contents)
+        self.check_roundtrip(contents, debug_list=[  ###
+            'xxx',
+            'contents',
+            'sync',
+            'tree',
+            'tokens',
+        ])
     #@+node:ekr.20200111085211.1: *4* TT.test_continuation_3
     def test_continuation_3(self):
 

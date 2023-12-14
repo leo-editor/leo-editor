@@ -2564,7 +2564,7 @@ class Token:
 
     def __repr__(self) -> str:  # pragma: no cover
         s = f"{self.index:<3} {self.kind:}"
-        return f"Token {s}:{self.show_val(20)}"
+        return f"Token {s}: {self.show_val(20)}"
 
     __str__ = __repr__
 
@@ -2739,11 +2739,13 @@ class TokenOrderGenerator:
     """
 
     begin_end_stack: list[str] = []
+    debug_flag: bool = False  # Set by 'debug' in trace_list kwarg.
     equal_sign_spaces = True  # A flag for orange.do_equal_op
     n_nodes = 0  # The number of nodes that have been visited.
     node_index = 0  # The index into the node_stack.
     node_stack: list[ast.AST] = []  # The stack of parent nodes.
     try_stack: list[str] = []  # A stack of either '' (Try) or '*' (TryStar)
+    trace_token_method: bool = False  # True: trace the token method
 
     #@+others
     #@+node:ekr.20200103174914.1: *4* tog: Init...
@@ -2846,6 +2848,23 @@ class TokenOrderGenerator:
                 return token
         # This will never happen, because endtoken is significant.
         return None  # pragma: no cover
+    #@+node:ekr.20231214054225.1: *5* tog.find_next_non_ws_token
+    def find_next_non_ws_token(self) -> Optional[Token]:
+        """
+        Scan from *after* self.tokens[px] looking for the next token that isn't
+        whitespace.
+
+        Return the token, or None. Never change self.px.
+        """
+        px = self.px + 1
+        while px < len(self.tokens):
+            token = self.tokens[px]
+            px += 1
+            if token.kind not in ('newline', 'ws'):
+                return token
+
+        # This should never happen: endtoken isn't whitespace.
+        return None  # pragma: no cover
     #@+node:ekr.20191125120814.1: *5* tog.set_links
     last_statement_node = None
 
@@ -2913,11 +2932,13 @@ class TokenOrderGenerator:
     def sync_to_kind(self, kind: str) -> None:
         """Sync to the next signifcant token of the given kind."""
         assert is_significant_kind(kind), repr(kind)
+        ### g.trace('Entry: looking for', kind)  ###
         while next_token := self.find_next_significant_token():
             ### g.trace('next_token', next_token)  ###
             self.token(next_token.kind, next_token.value)
             if next_token.kind in (kind, 'endtoken'):
                 break
+        ### g.trace('Done')  ###
     #@+node:ekr.20191113063144.7: *5* tog.token
     px = -1  # Index of the previously synced token.
 
@@ -2937,7 +2958,8 @@ class TokenOrderGenerator:
         """
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
-        if 0:  # A Superb trace.
+
+        if self.trace_token_method:  # A Superb trace.
             g.trace(
                 f"px: {self.px:4} "
                 f"node: {node.__class__.__name__:<12} "
@@ -3293,24 +3315,36 @@ class TokenOrderGenerator:
         immutable container types (tuples and frozensets) if all of their
         elements are constant.
         """
-        ### g.trace(node, repr(node.value))
         if node.value == Ellipsis:
             self.op('...')
         elif isinstance(node.value, str):
             if g.python_version_tuple >= (3, 12, 0):
                 # Handle string concatentation here!
-                while True:
-                    next_token = self.find_next_significant_token()
-                    kind, value = next_token.kind, next_token.value
-                    ### g.trace(kind, value)
-                    ### assert kind in ('string', 'fstring_start'), (kind, value, g.callers())
-                    if kind == 'string':
-                        self.token(kind, value)
-                    elif kind == 'fstring_start':
-                        self.sync_to_kind('fstring_start')
+                if self.debug_flag: ###
+                    print('')
+                    g.trace('Start. node.value:', node.value)  ###
+
+                # First, look for a *significant* token.
+                # Thereafter, look only for a non-whitespace token.
+                token = self.find_next_significant_token()
+                while 1:
+                    if self.debug_flag:  ###
+                        g.trace(token.index, token.kind, token.value, g.callers(2))
+                    if token.kind == 'string':
+                        # Handle concatenated strings!
+                        ### self.sync_to_kind('string')
+                        self.token(token.kind, token.value)
+                        token = self.find_next_non_ws_token()
+                    elif token.kind == 'fstring_start':
+                        self.token(token.kind, token.value)
+                        ### self.sync_to_kind('fstring_start')
                         self.sync_to_kind('fstring_end')
+                        token = self.find_next_non_ws_token()
                     else:
                         break
+                if self.debug_flag:  ###
+                    g.trace('Done')
+                    print('')
             else:
                 self.do_Str(node)
         elif isinstance(node.value, int):
@@ -3384,7 +3418,7 @@ class TokenOrderGenerator:
     def do_Index(self, node: Node) -> None:  # pragma: no cover (deprecated)
 
         self.visit(node.value)
-    #@+node:ekr.20191113063144.39: *6* tog.FormattedValue (Used only in Python 3.12+)
+    #@+node:ekr.20191113063144.39: *6* tog.FormattedValue (Never called)
     # FormattedValue(expr value, int conversion, expr? format_spec)  Python 3.12+
 
     def do_FormattedValue(self, node: Node) -> None:  # pragma: no cover
@@ -3396,15 +3430,7 @@ class TokenOrderGenerator:
         JoinedStr does *not* visit the FormattedValue node,
         so the TOG should *never* visit this node!
         """
-        if g.python_version_tuple >= (3, 12, 0):
-            g.trace(node.value)
-            format_spec = getattr(node, 'format_spec', None)
-            self.visit(node.value)
-            self.visit(node.conversion)
-            if format_spec:
-                self.visit(node.format_spec)
-        else:
-            raise AssignLinksError('do_FormattedValue called with Python 3.11 or below')
+        raise AssignLinksError(f"do_FormattedValue called from: {g.callers()}")
     #@+node:ekr.20191113063144.41: *6* tog.JoinedStr & helper
     # JoinedStr(expr* values)
 
@@ -3418,28 +3444,29 @@ class TokenOrderGenerator:
 
         Instead, we get the tokens *from the token list itself*!
         """
-
-
-        if g.python_version_tuple >= (3, 12, 0):
-
-            if 1:
-                for z in node.values:
-                    self.visit(z)
-
-            if 0:  ### Experimental.
-                while next_token := self.find_next_significant_token():
-                    if next_token.kind == 'fstring_start':
-                        self.sync_to_kind('fstring_start')
-                        self.sync_to_kind('fstring_end')
-                    elif next_token.kind == 'string':
-                        self.sync_to_kind('string')
-                    else:
-                        break
-                ### g.trace('Done. next_token:', next_token)
-        else:
+        
+        if g.python_version_tuple < (3, 12, 0):
             # Python 3.11 and below.
             for z in self.get_concatenated_string_tokens():
                 self.token(z.kind, z.value)
+            return
+
+        if 0:  ###
+            dump_ast(node, tag=f"{g.my_name()}")
+
+        # A big hack.
+        for z in node.values:
+            if isinstance(z, ast.Constant):
+                self.visit(z)  ### Experimental.
+            elif isinstance(z, ast.FormattedValue):
+                # FormattedValue(expr value, int conversion, expr? format_spec)  Python 3.12+
+                if 0:
+                    ### self.visit(z.value)
+                    # # All other tokens are part of an f-string!
+                    self.sync_to_kind('fstring_start')
+                    self.sync_to_kind('fstring_end')
+            else:
+                g.trace('PASS', z)
     #@+node:ekr.20231213061819.1: *7* tog.get_concatenated_tokens (3.11-)
     def get_concatenated_string_tokens(self) -> list[Token]:
         """
@@ -3507,16 +3534,10 @@ class TokenOrderGenerator:
         for z in node.generators:
             self.visit(z)
         self.op(']')
-    #@+node:ekr.20191113063144.44: *6* tog.Name & NameConstant
+    #@+node:ekr.20191113063144.44: *6* tog.Name
     def do_Name(self, node: Node) -> None:
 
         self.name(node.id)
-
-    if 0:  ### Does not exist in Python 3.8+
-
-        def do_NameConstant(self, node: Node) -> None:  # pragma: no cover (Does not exist in Python 3.8+)
-
-            self.name(repr(node.value))
 
     #@+node:ekr.20191113063144.47: *6* tog.Set
     # Set(expr* elts)
