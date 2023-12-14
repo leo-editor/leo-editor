@@ -231,10 +231,10 @@ class BaseTest(unittest.TestCase):
         if self.link_error:
             if not enabled(['contents']):
                 dump_contents(contents)
-            if not enabled(['tokens', 'post-tokens']):
-                dump_tokens(tokens)
             if not enabled(['tree', 'post-tree']):
                 dump_tree(tokens, tree)
+            if not enabled(['tokens', 'post-tokens']):
+                dump_tokens(tokens)
             self.fail(self.link_error)
         return contents, tokens, tree
     #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
@@ -633,11 +633,11 @@ class TestTOG(BaseTest):
     print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")
     """
         self.make_data(contents, debug_list=[  ###
-            # 'contents',
-            # 'debug',
-            # 'sync',
+            'contents',
+            'debug',
+            'sync',
             # 'tree',
-            # 'tokens',
+            'tokens',
         ])
 
     #@+node:ekr.20191227052446.74: *5* test_fstring_in_arg_list

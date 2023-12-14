@@ -3463,6 +3463,8 @@ class TokenOrderGenerator:
 
         if self.debug_flag:  ###
             dump_ast(node, tag=f"{g.my_name()}")
+            
+        ### Everything following is a string.  Do NOT call self.visit!!!
 
         # A big hack.
         for z in node.values:
