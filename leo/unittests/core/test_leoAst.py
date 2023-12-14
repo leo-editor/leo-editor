@@ -225,7 +225,16 @@ class BaseTest(unittest.TestCase):
         self.update_times('90: TOTAL', t2 - t1)
         
         # Fail if create_links set link_error.
+        def enabled(aList: list) -> bool:
+            return any(z in self.debug_list for z in aList)
+
         if self.link_error:
+            if not enabled(['contents']):
+                dump_contents(contents)
+            if not enabled(['tokens', 'post-tokens']):
+                dump_tokens(tokens)
+            if not enabled(['tree', 'post-tree']):
+                dump_tree(tokens, tree)
             self.fail(self.link_error)
         return contents, tokens, tree
     #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
@@ -624,11 +633,11 @@ class TestTOG(BaseTest):
     print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")
     """
         self.make_data(contents, debug_list=[  ###
-            'contents',
-            'debug',
-            'sync',
-            'tree',
-            'tokens',
+            # 'contents',
+            # 'debug',
+            # 'sync',
+            # 'tree',
+            # 'tokens',
         ])
 
     #@+node:ekr.20191227052446.74: *5* test_fstring_in_arg_list

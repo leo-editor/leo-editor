@@ -979,13 +979,22 @@ class AstDumper:  # pragma: no cover
             results = []
             fstrings, strings = 0, 0
             for z in values:
-                assert isinstance(z, (ast.FormattedValue, ast.Str))
-                if isinstance(z, ast.Str):
-                    results.append(z.s)
-                    strings += 1
+                if g.python_version_tuple < (3, 12, 0):
+                    assert isinstance(z, (ast.FormattedValue, ast.Str))
+                    if isinstance(z, ast.Str):
+                        results.append(z.s)
+                        strings += 1
+                    else:
+                        results.append(z.__class__.__name__)
+                        fstrings += 1
                 else:
-                    results.append(z.__class__.__name__)
-                    fstrings += 1
+                    assert isinstance(z, (ast.FormattedValue, ast.Constant))  ### Experimental.
+                    if isinstance(z, ast.Constant):
+                        results.append(z.value)
+                        strings += 1
+                    else:
+                        results.append(z.__class__.__name__)
+                        fstrings += 1
             val = f"{strings} str, {fstrings} f-str"
         elif class_name == 'keyword':
             if isinstance(node.value, ast.Str):
@@ -3326,20 +3335,21 @@ class TokenOrderGenerator:
 
                 # First, look for a *significant* token.
                 # Thereafter, look only for a non-whitespace token.
-                token = self.find_next_significant_token()
+                ### token = self.find_next_significant_token()
                 while 1:
+                    token = self.find_next_non_ws_token()
                     if self.debug_flag:  ###
                         g.trace(token.index, token.kind, token.value, g.callers(2))
                     if token.kind == 'string':
                         # Handle concatenated strings!
                         ### self.sync_to_kind('string')
                         self.token(token.kind, token.value)
-                        token = self.find_next_non_ws_token()
+                        ### token = self.find_next_non_ws_token()
                     elif token.kind == 'fstring_start':
                         self.token(token.kind, token.value)
                         ### self.sync_to_kind('fstring_start')
                         self.sync_to_kind('fstring_end')
-                        token = self.find_next_non_ws_token()
+                        ### token = self.find_next_non_ws_token()
                     else:
                         break
                 if self.debug_flag:  ###
@@ -3451,7 +3461,7 @@ class TokenOrderGenerator:
                 self.token(z.kind, z.value)
             return
 
-        if 0:  ###
+        if self.debug_flag:  ###
             dump_ast(node, tag=f"{g.my_name()}")
 
         # A big hack.
