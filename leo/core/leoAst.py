@@ -162,7 +162,6 @@ import io
 import os
 import re
 import subprocess
-import sys
 import textwrap
 import tokenize
 from typing import Any, Generator, Optional, Union
@@ -177,9 +176,6 @@ except Exception:
 Node = ast.AST
 Settings = Optional[dict[str, Any]]
 #@-<< leoAst imports & annotations >>
-
-v1, v2, v3, junk2, junk3 = sys.version_info
-python_version_tuple = (v1, v2, v3)
 
 #@+others
 #@+node:ekr.20200702114522.1: **  leoAst.py: top-level commands
@@ -2913,6 +2909,15 @@ class TokenOrderGenerator:
         token list.
         """
         self.token('op', val)
+    #@+node:ekr.20231213174617.1: *5* tog.sync_to_kind (New, Experimental)
+    def sync_to_kind(self, kind: str) -> None:
+        """Sync to the next signifcant token of the given kind."""
+        assert is_significant_kind(kind), repr(kind)
+        while next_token := self.find_next_significant_token():
+            ### g.trace('next_token', next_token)  ###
+            self.token(next_token.kind, next_token.value)
+            if next_token.kind in (kind, 'endtoken'):
+                break
     #@+node:ekr.20191113063144.7: *5* tog.token
     px = -1  # Index of the previously synced token.
 
@@ -3277,7 +3282,9 @@ class TokenOrderGenerator:
             self.name('if')
             self.visit(z)
     #@+node:ekr.20191113063144.34: *6* tog.Constant
-    def do_Constant(self, node: Node) -> None:  # pragma: no cover
+    # Constant(constant value, string? kind)
+
+    def do_Constant(self, node: Node) -> None:
         """
         https://greentreesnakes.readthedocs.io/en/latest/nodes.html
 
@@ -3286,15 +3293,31 @@ class TokenOrderGenerator:
         immutable container types (tuples and frozensets) if all of their
         elements are constant.
         """
-        # Support Python 3.8.
-        if node.value is None or isinstance(node.value, bool):
-            # Weird: return a name!
-            self.token('name', repr(node.value))
-        elif node.value == Ellipsis:
+        ### g.trace(node, repr(node.value))
+        if node.value == Ellipsis:
             self.op('...')
         elif isinstance(node.value, str):
-            self.do_Str(node)
-        elif isinstance(node.value, (int, float)):
+            if g.python_version_tuple >= (3, 12, 0):
+                next_token = self.find_next_significant_token()
+                kind, value = next_token.kind, next_token.value
+                assert kind in ('string', 'fstring_start'), (kind, value, g.callers())
+                if kind == 'string':
+                    self.token(kind, value)
+                else:
+                    self.sync_to_kind('fstring_start')
+                    self.sync_to_kind('fstring_end')
+            else:
+                self.do_Str(node)
+        elif isinstance(node.value, int):
+            # Look at the next token to distinguinsh 0/1 from True/False.
+            next_token = self.find_next_significant_token()
+            kind, value = next_token.kind, next_token.value
+            assert kind in ('name', 'number'), (kind, value, g.callers())
+            if kind == 'name':
+                self.name(value)
+            else:
+                self.token(kind, repr(value))
+        elif isinstance(node.value, float):
             self.token('number', repr(node.value))
         elif isinstance(node.value, bytes):
             self.do_Bytes(node)
@@ -3302,6 +3325,8 @@ class TokenOrderGenerator:
             self.do_Tuple(node)
         elif isinstance(node.value, frozenset):
             self.do_Set(node)
+        elif node.value is None:
+            self.name('None')  ### Experimental.
         else:
             # Unknown type.
             g.trace('----- Oops -----', repr(node.value), g.callers())
@@ -3354,8 +3379,8 @@ class TokenOrderGenerator:
     def do_Index(self, node: Node) -> None:  # pragma: no cover (deprecated)
 
         self.visit(node.value)
-    #@+node:ekr.20191113063144.39: *6* tog.FormattedValue: not called!
-    # FormattedValue(expr value, int? conversion, expr? format_spec)
+    #@+node:ekr.20191113063144.39: *6* tog.FormattedValue (Used only in Python 3.12+)
+    # FormattedValue(expr value, int conversion, expr? format_spec)  Python 3.12+
 
     def do_FormattedValue(self, node: Node) -> None:  # pragma: no cover
         """
@@ -3366,10 +3391,14 @@ class TokenOrderGenerator:
         JoinedStr does *not* visit the FormattedValue node,
         so the TOG should *never* visit this node!
         """
-        filename = getattr(self, 'filename', '<no file>')
-        raise AssignLinksError(
-            f"file: {filename}\n"
-            f"do_FormattedValue should never be called")
+        if g.python_version_tuple >= (3, 12, 0):
+            format_spec = getattr(node, 'format_spec', None)
+            self.visit(node.value)
+            self.visit(node.conversion)
+            if format_spec:
+                self.visit(node.format_spec)
+        else:
+            raise AssignLinksError('do_FormattedValue called with Python 3.11 or below')
     #@+node:ekr.20191113063144.41: *6* tog.JoinedStr & helper
     # JoinedStr(expr* values)
 
@@ -3383,26 +3412,34 @@ class TokenOrderGenerator:
 
         Instead, we get the tokens *from the token list itself*!
         """
+        
+        if 0:  ###
 
-        def sync(kind: str) -> None:
-            """Sync to the next signifcant token of the given kind."""
-            assert is_significant_kind(kind), repr(kind)
-            while next_token := self.find_next_significant_token():
-                g.trace('next_token', next_token)
-                self.token(next_token.kind, next_token.value)
-                if next_token.kind in (kind, 'endtoken'):
-                    break
+            def sync(kind: str) -> None:
+                """Sync to the next signifcant token of the given kind."""
+                assert is_significant_kind(kind), repr(kind)
+                while next_token := self.find_next_significant_token():
+                    g.trace('next_token', next_token)
+                    self.token(next_token.kind, next_token.value)
+                    if next_token.kind in (kind, 'endtoken'):
+                        break
 
-        if python_version_tuple >= (3, 12, 0):
-            while next_token := self.find_next_significant_token():
-                if next_token.kind == 'fstring_start':
-                    sync('fstring_start')
-                    sync('fstring_end')
-                # elif next_token.kind == 'string':
-                    # sync('string')
-                else:
-                    break
-            g.trace('Done. next_token:', next_token)
+        if g.python_version_tuple >= (3, 12, 0):
+        
+            if 0:
+                for z in node.values:
+                    self.visit(z)
+                
+            if 1:  ### Experimental.
+                while next_token := self.find_next_significant_token():
+                    if next_token.kind == 'fstring_start':
+                        self.sync_to_kind('fstring_start')
+                        self.sync_to_kind('fstring_end')
+                    elif next_token.kind == 'string':
+                        self.sync_to_kind('string')
+                    else:
+                        break
+                ### g.trace('Done. next_token:', next_token)
         else:
             # Python 3.11 and below.
             for z in self.get_concatenated_string_tokens():
@@ -3527,7 +3564,7 @@ class TokenOrderGenerator:
     # DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14;
     # use ast.Constant instead
 
-    if python_version_tuple < (3, 14, 0):
+    if g.python_version_tuple < (3, 14, 0):
 
         def do_Str(self, node: Node) -> None:
             """This node represents a string constant."""

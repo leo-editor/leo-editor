@@ -627,10 +627,10 @@ class TestTOG(BaseTest):
     print('p1' f'{f2}')
     'end'
     """
-        self.make_data(contents, debug_list=[
-            'contents',
-            'tokens',
-            'tree',])
+        self.make_data(contents) ###, debug_list=[
+            # 'contents',
+            # 'tokens',
+            # 'tree',])
     #@+node:ekr.20191227052446.71: *5* test_fstring_join1a
     def test_fstring_join1a(self):
         contents = r"""
@@ -945,7 +945,10 @@ class TestTOG(BaseTest):
     print(f"a {old_id!r}\n" "b\n")
     print('done')
     """
-        self.make_data(contents)
+        self.make_data(contents) ###, debug_list = [
+            # 'contents',
+            # 'tokens',
+            # 'tree',])
     #@+node:ekr.20191227052446.64: *5* test_potential_fstring
     def test_potential_fstring(self):
         contents = r"""
