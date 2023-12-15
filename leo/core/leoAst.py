@@ -1143,12 +1143,15 @@ class Fstringify:
         self.tree = tree
         # Prepass: reassign tokens.
         ReassignTokens().reassign(filename, tokens, tree)
+
         # Main pass.
+        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant
         for node in ast.walk(tree):
             if (
                 isinstance(node, ast.BinOp)
                 and op_name(node.op) == '%'
-                and isinstance(node.left, ast.Str)
+                ### and isinstance(node.left, ast.Str)
+                and isinstance(node.left, string_node)
             ):
                 self.make_fstring(node)
         results = tokens_to_string(self.tokens)
@@ -1248,7 +1251,7 @@ class Fstringify:
     def make_fstring(self, node: Node) -> None:
         """
         node is BinOp node representing an '%' operator.
-        node.left is an ast.Str node.
+        node.left is an ast.Str or ast.Constant node.
         node.right represents the RHS of the '%' operator.
 
         Convert this tree to an f-string, if possible.
@@ -1256,7 +1259,9 @@ class Fstringify:
         Replace all the relevant tokens with a single new 'string' token.
         """
         trace = False
-        assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
+        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant
+        ### assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
+        assert isinstance(node.left, string_node), (repr(node.left), g.callers())
         # Careful: use the tokens, not Str.s.  This preserves spelling.
         lt_token_list = get_node_token_list(node.left, self.tokens)
         if not lt_token_list:  # pragma: no cover
@@ -1451,7 +1456,9 @@ class Fstringify:
         """
         trace = False
         # First, Try the most common cases.
-        if isinstance(node, ast.Str):
+        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant
+        ### if isinstance(node, ast.Str):
+        if isinstance(node, string_node):
             token_list = get_node_token_list(node, self.tokens)
             return [token_list]
         if isinstance(node, (list, tuple, ast.Tuple)):
@@ -1543,7 +1550,7 @@ class Fstringify:
     #@+node:ekr.20191225054848.1: *4* fs.replace
     def replace(self, node: Node, s: str, values: list[list[Token]]) -> None:
         """
-        Replace node with an ast.Str node for s.
+        Replace node with an ast.Str or ast.Constant node for s.
         Replace all tokens in the range of values with a single 'string' node.
         """
         # Replace the tokens...
@@ -1555,8 +1562,13 @@ class Fstringify:
             replace_token(self.tokens[i1 + j], 'killed', '')
             j += 1
         # Replace the node.
-        new_node = ast.Str()
-        new_node.s = s
+        ### new_node = ast.Str()
+        if g.python_version_tuple < (3, 12, 0):
+            new_node = ast.Str()
+            new_node.s = s
+        else:
+            new_node = ast.Constant()
+            new_node.value = s
         replace_node(new_node, node)
         # Update the token.
         token = self.tokens[i1]
@@ -3358,7 +3370,7 @@ class TokenOrderGenerator:
         else:
             # Unknown type.
             g.trace('----- Oops -----', repr(node.value), g.callers())
-    #@+node:ekr.20231214173003.1: *7* tog.string_helper ====
+    #@+node:ekr.20231214173003.1: *7* tog.string_helper
     def string_helper(self, node: Node) -> None:
         """
         Common string and f-string handling for Constant and JoinedStr nodes.
@@ -3373,17 +3385,17 @@ class TokenOrderGenerator:
             print('')
             g.trace('=====', node, g.callers(3))  ###
             print(f"self.px: {self.px} token @ px: {self.tokens[self.px]}\n")
-            
+
         ### breakpoint()  ###
 
         # First, find the next significant token.  It should be a string.
         token = self.find_next_significant_token()
-        
+
         # Make sure we found a string token.
         message2 = f" Exit: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
-        fail_s =  f"tog.string_helper found no string!\n{message1}{message2}"
+        fail_s = f"tog.string_helper found no string!\n{message1}{message2}"
         assert token and token.kind in ('string', 'fstring_start'), fail_s
-        
+
         # Handle all adjacent strings.
         while token and token.kind in ('string', 'fstring_start'):
             if trace:  ###
@@ -3458,9 +3470,9 @@ class TokenOrderGenerator:
         so the TOG should *never* visit this node!
         """
         raise AssignLinksError(f"do_FormattedValue called: {g.callers()}")
-            
+
         ### WRONG: The entire parse tree is part of an f-string!
-        
+
             # format_spec = getattr(node, 'format_spec', None)
 
             # ### Experimental
@@ -3608,13 +3620,19 @@ class TokenOrderGenerator:
     # DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14;
     # use ast.Constant instead
 
-    if g.python_version_tuple < (3, 14, 0):
+    if g.python_version_tuple < (3, 12, 0):
 
         def do_Str(self, node: Node) -> None:
             """This node represents a string constant."""
             # This loop is necessary to handle string concatenation.
             for z in self.get_concatenated_string_tokens():
                 self.token(z.kind, z.value)
+
+    ###
+    # else:
+        # # Issue just a warning here. Python 3.12 issues this warning:
+        # # DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14; use ast.Constant instead
+        # g.trace('Should not be called', g.callers())
     #@+node:ekr.20191113063144.51: *6* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 

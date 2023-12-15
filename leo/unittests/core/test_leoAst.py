@@ -642,7 +642,7 @@ class TestTOG(BaseTest):
             # 'tokens',
         ])
 
-    #@+node:ekr.20191227052446.74: *5* ****** test_fstring_in_arg_list
+    #@+node:ekr.20191227052446.74: *5* test_fstring_in_arg_list
     def test_fstring_in_arg_list(self):
         contents = r"""
     func(
