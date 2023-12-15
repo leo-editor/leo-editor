@@ -1107,7 +1107,7 @@ class TestTOG(BaseTest):
         # Coverage test for spaces
         contents = """f = lambda x: x"""
         self.make_data(contents)
-    #@+node:ekr.20220329095904.1: *5* *** test_Match
+    #@+node:ekr.20220329095904.1: *5* test_Match
     def test_Match(self):
 
         if py_version < (3, 10):  # pragma: no cover
