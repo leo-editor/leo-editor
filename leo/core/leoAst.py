@@ -522,7 +522,7 @@ if 1:  # pragma: no cover
             name = node.__class__.__name__
             if abs(i - j) > 3:
                 tag = f"get_node_token_list: {name} {i}..{j}"
-                g.print_obj(global_tokens_list[i : j + 1], tag=tag)
+                g.printObj(global_tokens_list[i : j + 1], tag=tag)
             else:
                 g.trace(f"{i!r:>3}..{j!r:3} {name} {global_tokens_list[i : j + 1]}")
         return global_tokens_list[i : j + 1]
@@ -796,7 +796,7 @@ if 1:  # pragma: no cover
         def oops(message: str) -> None:
             print('')
             print(f"parse_ast: {message}")
-            g.print_obj(s)
+            g.printObj(s)
             print('')
 
         try:
@@ -1462,7 +1462,7 @@ class Fstringify:
                 result.append(tokens)
                 if trace:  # pragma: no cover
                     g.trace(f"item: {i}: {elt.__class__.__name__}")
-                    g.print_obj(tokens, tag=f"Tokens for item {i}")
+                    g.printObj(tokens, tag=f"Tokens for item {i}")
             return result
         # Now we expect only one result.
         tokens = tokens_for_node(self.filename, node, self.tokens)
@@ -2972,9 +2972,9 @@ class TokenOrderGenerator:
         if self.trace_token_method:  # A Superb trace.
             g.trace(
                 f"px: {self.px:4} "
-                f"node: {node.__class__.__name__:<12} "
+                f"node: {node.__class__.__name__:<14} "
                 f"significant? {int(is_significant(kind, val))} "
-                f"kind/val: {kind:>10}: {val!r}")
+                f"{kind:>10}: {val!r}")
         #
         # Step one: Look for token T.
         old_px = px = self.px + 1
@@ -3509,7 +3509,7 @@ class TokenOrderGenerator:
         # The (significant) 'endmarker' token ensures we will have result.
         assert results
         if trace:  # pragma: no cover
-            g.print_obj(results, tag=f"{tag}: Results")
+            g.printObj(results, tag=f"{tag}: Results")
         return results
     #@+node:ekr.20191113063144.42: *6* tog.List
     def do_List(self, node: Node) -> None:
@@ -3793,8 +3793,8 @@ class TokenOrderGenerator:
             return line * 1000 + col
 
         if 0:  # pragma: no cover
-            g.print_obj([ast.dump(z) for z in args], tag='args')
-            g.print_obj([ast.dump(z) for z in keywords], tag='keywords')
+            g.printObj([ast.dump(z) for z in args], tag='args')
+            g.printObj([ast.dump(z) for z in keywords], tag='keywords')
 
         places = [get_pos(z) for z in args + keywords]
         places.sort(key=sort_key)
