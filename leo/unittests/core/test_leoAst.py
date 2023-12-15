@@ -229,12 +229,13 @@ class BaseTest(unittest.TestCase):
             return any(z in self.debug_list for z in aList)
 
         if self.link_error:
-            if not enabled(['contents']):
-                dump_contents(contents)
-            if not enabled(['tree', 'post-tree']):
-                dump_tree(tokens, tree)
-            if not enabled(['tokens', 'post-tokens']):
-                dump_tokens(tokens)
+            if 0:  # Useful for single tests.
+                if not enabled(['contents']):
+                    dump_contents(contents)
+                if not enabled(['tree', 'post-tree']):
+                    dump_tree(tokens, tree)
+                if not enabled(['tokens', 'post-tokens']):
+                    dump_tokens(tokens)
             self.fail(self.link_error)
         return contents, tokens, tree
     #@+node:ekr.20191227103533.1: *4* BaseTest.make_file_data
@@ -2746,11 +2747,11 @@ class TestTokens(BaseTest):
             '# This is a comment\\\n    # This also'
         )
         self.check_roundtrip(contents, debug_list=[  ###
-            'xxx',
-            'contents',
-            'sync',
-            'tree',
-            'tokens',
+            # 'contents',
+            # 'debug',
+            # 'sync',
+            # 'tree',
+            # 'tokens',
         ])
     #@+node:ekr.20200111085211.1: *4* TT.test_continuation_3
     def test_continuation_3(self):

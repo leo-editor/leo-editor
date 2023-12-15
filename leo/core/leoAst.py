@@ -576,10 +576,11 @@ if 1:  # pragma: no cover
         if level != 0:  # pragma: no cover.
             line_n = tokens[i].line_number
             raise AssignLinksError(
-                f"\n"
+                'In match_parens\n'
                 f"Unmatched parens: level={level}\n"
                 f"            file: {filename}\n"
-                f"            line: {line_n}\n")
+                f"            line: {line_n}\n"
+            )
         return j
     #@+node:ekr.20191223053324.1: *4* function: tokens_for_node
     def tokens_for_node(filename: str, node: Node, global_token_list: list[Token]) -> list[Token]:
@@ -908,13 +909,11 @@ if 1:  # pragma: no cover
 class AssignLinksError(Exception):
     """Assigning links to ast nodes failed."""
 
-
 class AstNotEqual(Exception):
     """The two given AST's are not equivalent."""
 
 class BeautifyError(Exception):
     """Leading tabs found."""
-
 
 class FailFast(Exception):
     """Abort tests in TestRunner class."""
@@ -2897,12 +2896,14 @@ class TokenOrderGenerator:
         if token.node is not None:  # pragma: no cover
             line_s = f"line {token.line_number}:"
             raise AssignLinksError(
-                    f"       file: {self.filename}\n"
-                    f"{line_s:>12} {token.line.strip()}\n"
-                    f"token index: {self.px}\n"
-                    f"token.node is not None\n"
-                    f" token.node: {token.node.__class__.__name__}\n"
-                    f"    callers: {g.callers()}")
+                'set_links\n'
+                f"       file: {self.filename}\n"
+                f"{line_s:>12} {token.line.strip()}\n"
+                f"token index: {self.px}\n"
+                f"token.node is not None\n"
+                f" token.node: {token.node.__class__.__name__}\n"
+                f"    callers: {g.callers()}"
+            )
         # Assign newlines to the previous statement node, if any.
         if token.kind in ('newline', 'nl'):
             # Set an *auxiliary* link for the split/join logic.
@@ -2988,19 +2989,23 @@ class TokenOrderGenerator:
                 line_s = f"line {token.line_number}:"
                 val = str(val)  # for g.truncate.
                 raise AssignLinksError(
+                    'tog.token\n'
                     f"       file: {self.filename}\n"
-                    f"{line_s:>12} {token.line.strip()}\n"
+                    f"{line_s:>12} {g.truncate(token.line.strip(), 40)!r}\n"
                     f"Looking for: {kind}.{g.truncate(val, 40)!r}\n"
-                    f"      found: {token.kind}.{token.value!r}\n"
-                    f"token.index: {token.index}\n")
+                    f"      found: {token.kind}.{g.truncate(token.value, 40)!r}\n"
+                    f"token.index: {token.index}\n"
+                )
             # Skip the insignificant token.
             px += 1
         else:  # pragma: no cover
             val = str(val)  # for g.truncate.
             raise AssignLinksError(
+                'tog.token 2\n'
                  f"       file: {self.filename}\n"
                  f"Looking for: {kind}.{g.truncate(val, 40)}\n"
-                 f"      found: end of token list")
+                 f"      found: end of token list"
+            )
         #
         # Step two: Assign *secondary* links only for newline tokens.
         #           Ignore all other non-significant tokens.
@@ -3086,9 +3091,9 @@ class TokenOrderGenerator:
         # tog.handle_call_arguments calls self.visit(kwarg_arg.value) instead.
         filename = getattr(self, 'filename', '<no file>')
         raise AssignLinksError(
+            f"do_keyword called: {g.callers(8)}\n"
             f"file: {filename}\n"
-            f"do_keyword should never be called\n"
-            f"{g.callers(8)}")
+        )
     #@+node:ekr.20191113063144.14: *5* tog: Contexts
     #@+node:ekr.20191113063144.28: *6*  tog.arg
     # arg = (identifier arg, expr? annotation)
@@ -3354,7 +3359,7 @@ class TokenOrderGenerator:
             # Unknown type.
             g.trace('----- Oops -----', repr(node.value), g.callers())
     #@+node:ekr.20231214173003.1: *7* tog.string_helper
-    def string_helper(self, node):
+    def string_helper(self, node: Node) -> None:
         """
         Common string and f-string handling for Constant and JoinedStr nodes.
         
@@ -3364,7 +3369,7 @@ class TokenOrderGenerator:
         if trace:  ###
             print('')
             g.trace('Start', node)
-            
+
         # Handle all concatenated strings, that is, strings separated only by whitespace.
         while 1:
             token = self.find_next_non_ws_token()
@@ -3446,7 +3451,7 @@ class TokenOrderGenerator:
         JoinedStr does *not* visit the FormattedValue node,
         so the TOG should *never* visit this node!
         """
-        raise AssignLinksError(f"do_FormattedValue called from: {g.callers()}")
+        raise AssignLinksError(f"do_FormattedValue called: {g.callers()}")
     #@+node:ekr.20191113063144.41: *6* tog.JoinedStr & helper
     # JoinedStr(expr* values)
 
@@ -3495,12 +3500,12 @@ class TokenOrderGenerator:
                 token = self.tokens[-1]
             filename = getattr(self, 'filename', '<no filename>')
             raise AssignLinksError(
-                f"\n"
-                f"{tag}...\n"
+                f"get_concatenated_string_tokens: {tag}...\n"
                 f"file: {filename}\n"
                 f"line: {token.line_number}\n"
                 f"   i: {i}\n"
-                f"expected 'string' token, got {token!s}")
+                f"expected 'string' token, got {token!s}"
+            )
         # Accumulate string tokens.
         assert self.tokens[i].kind == 'string'
         results = []
@@ -4051,7 +4056,7 @@ class TokenOrderGenerator:
                 token = None
                 break
         else:
-            raise AssignLinksError('Ill-formed tuple')  # pragma: no cover
+            raise AssignLinksError('do_MatchSequence: Ill-formed tuple')  # pragma: no cover
         if token:
             self.op(token.value)
         for pattern in patterns:
