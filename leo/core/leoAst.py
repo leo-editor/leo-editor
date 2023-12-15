@@ -2868,7 +2868,7 @@ class TokenOrderGenerator:
         while px < len(self.tokens):
             token = self.tokens[px]
             px += 1
-            if token.kind not in ('newline', 'ws'):
+            if token.kind not in ('encoding', 'indent', 'newline', 'ws'):
                 return token
 
         # This should never happen: endtoken isn't whitespace.
@@ -3365,31 +3365,19 @@ class TokenOrderGenerator:
         
         Handle string concatenation.
         """
-        trace = self.debug_flag
-        if trace:  ###
-            print('')
-            g.trace('Start', node)
 
         # Handle all concatenated strings, that is, strings separated only by whitespace.
         while 1:
             token = self.find_next_non_ws_token()
-            if trace:  ###
-                g.trace(token.index, token.kind, token.value, g.callers(2))
+            # g.trace(token.index, token.kind, token.value, g.callers(2))  ###
             if token.kind == 'string':
                 # Handle concatenated strings!
-                ### self.sync_to_kind('string')
                 self.token(token.kind, token.value)
-                ### token = self.find_next_non_ws_token()
             elif token.kind == 'fstring_start':
                 self.token(token.kind, token.value)
-                ### self.sync_to_kind('fstring_start')
                 self.sync_to_kind('fstring_end')
-                ### token = self.find_next_non_ws_token()
             else:
                 break
-        if trace:  ###
-            g.trace('Done')
-            print('')
     #@+node:ekr.20191113063144.35: *6* tog.Dict
     # Dict(expr* keys, expr* values)
 

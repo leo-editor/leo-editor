@@ -140,10 +140,6 @@ class BaseTest(unittest.TestCase):
     times: dict[str, float] = {}
 
     # Debugging traces & behavior.
-    # create_links: 'full-traceback'
-    # make_data: 'contents', 'tokens', 'tree',
-    #            'post-tokens', 'post-tree',
-    #            'unit-test'
     debug_list: list[str] = []
     link_error: Exception = None
 
@@ -516,7 +512,12 @@ class TestTOG(BaseTest):
             """ds 3"""
             print('done')
     '''
-        self.make_data(contents)
+        self.make_data(contents, debug_list=[  ###
+            # 'contents',
+            # 'sync',
+            # 'tree',
+            # 'tokens'
+        ])
     #@+node:ekr.20191227052446.13: *5* test_FunctionDef
     def test_FunctionDef(self):
         contents = r"""
