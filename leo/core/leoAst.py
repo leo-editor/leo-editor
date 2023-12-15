@@ -3358,24 +3358,28 @@ class TokenOrderGenerator:
         else:
             # Unknown type.
             g.trace('----- Oops -----', repr(node.value), g.callers())
-    #@+node:ekr.20231214173003.1: *7* tog.string_helper
+    #@+node:ekr.20231214173003.1: *7* tog.string_helper ====
     def string_helper(self, node: Node) -> None:
         """
         Common string and f-string handling for Constant and JoinedStr nodes.
         
         Handle string concatenation.
         """
+        trace = self.debug_flag  ###
 
         # Handle all concatenated strings, that is, strings separated only by whitespace.
         message1 = f"Entry: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
-        if 1:  ###
+        if trace:  ###
             print('')
             g.trace('=====', node.value, g.callers(3))  ###
             print(f"self.px: {self.px} token @ px: {self.tokens[self.px]}\n")
         found = False
-        while 1:
-            token = self.find_next_non_ws_token()
-            g.trace(token.index, token.kind, token.value)  ###
+
+        # First, find the next significant token.  It should be a string.
+        token = self.find_next_significant_token()
+        while token:
+            if trace:  ###
+                g.trace(token.index, token.kind, token.value)  ###
             if token.kind == 'string':
                 # Handle concatenated strings!
                 self.token(token.kind, token.value)
@@ -3386,8 +3390,9 @@ class TokenOrderGenerator:
                 found = True
             else:
                 break
+            # Check for concatenated strings.
+            token = self.find_next_non_ws_token()
         message2 = f" Exit: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
-        print(message2)
         assert found, f"tog.string_helper found no string!\n{message1}{message2}"
     #@+node:ekr.20191113063144.35: *6* tog.Dict
     # Dict(expr* keys, expr* values)
@@ -3984,7 +3989,7 @@ class TokenOrderGenerator:
         self.op(':')
         for statement in body:
             self.visit(statement)
-    #@+node:ekr.20220401034726.3: *7* tog.MatchAs
+    #@+node:ekr.20220401034726.3: *7* tog.MatchAs (changed)
     # MatchAs(pattern? pattern, identifier? name)
 
     def do_MatchAs(self, node: Node) -> None:
@@ -3994,11 +3999,12 @@ class TokenOrderGenerator:
             self.visit(pattern)
             self.name('as')
             self.name(name)
+        elif name:
+            self.name(name)
         elif pattern:
-            g.trace('NO NAME')  ###
             self.visit(pattern)  # pragma: no cover
         else:
-            self.name(name or '_')
+            self.token('name', '_')
     #@+node:ekr.20220401034726.4: *7* tog.MatchClass
     # MatchClass(expr cls, pattern* patterns, identifier* kwd_attrs, pattern* kwd_patterns)
 
