@@ -3948,7 +3948,7 @@ class TokenOrderGenerator:
 
     # match_case = (pattern pattern, expr? guard, stmt* body)
 
-    # Full syntax diagram: # https://peps.python.org/pep-0634/#appendix-a
+    # https://docs.python.org/3/reference/compound_stmts.html#match
 
     def do_Match(self, node: Node) -> None:
 
@@ -3984,6 +3984,7 @@ class TokenOrderGenerator:
             self.name('as')
             self.name(name)
         elif pattern:
+            g.trace('NO NAME')  ###
             self.visit(pattern)  # pragma: no cover
         else:
             self.name(name or '_')
@@ -4013,6 +4014,7 @@ class TokenOrderGenerator:
         rest = getattr(node, 'rest', None)
         self.op('{')
         for i, key in enumerate(keys):
+            g.trace(i, key, patterns[i])  ###
             self.visit(key)
             self.op(':')
             self.visit(patterns[i])

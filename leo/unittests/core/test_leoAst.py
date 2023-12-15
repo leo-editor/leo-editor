@@ -1142,7 +1142,7 @@ class TestTOG(BaseTest):
             # 'contents',
             'sync',
             # 'tree',
-            # 'tokens'
+            #'tokens'
         ])
     #@+node:ekr.20200111200640.1: *5* test_Nonlocal
     def test_Nonlocal(self):
