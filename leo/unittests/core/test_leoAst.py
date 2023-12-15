@@ -642,7 +642,7 @@ class TestTOG(BaseTest):
             # 'tokens',
         ])
 
-    #@+node:ekr.20191227052446.74: *5* test_fstring_in_arg_list
+    #@+node:ekr.20191227052446.74: *5* ****** test_fstring_in_arg_list
     def test_fstring_in_arg_list(self):
         contents = r"""
     func(
@@ -651,7 +651,14 @@ class TestTOG(BaseTest):
     )
     print('done')
     """
-        self.make_data(contents)
+        self.make_data(contents, debug_list=[  ###
+            # 'contents',
+            # 'debug',
+            # 'sync',
+            # 'tree',
+            # 'tokens'
+        ])
+
     #@+node:ekr.20191227052446.70: *5* test_fstring_join1
     def test_fstring_join1(self):
         contents = r"""

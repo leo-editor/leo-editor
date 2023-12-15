@@ -2868,7 +2868,7 @@ class TokenOrderGenerator:
         while px < len(self.tokens):
             token = self.tokens[px]
             px += 1
-            if token.kind not in ('encoding', 'indent', 'newline', 'ws'):
+            if token.kind not in ('encoding', 'indent', 'newline', 'nl', 'ws'):
                 return token
 
         # This should never happen: endtoken isn't whitespace.
@@ -3371,8 +3371,10 @@ class TokenOrderGenerator:
         message1 = f"Entry: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
         if trace:  ###
             print('')
-            g.trace('=====', node.value, g.callers(3))  ###
+            g.trace('=====', node, g.callers(3))  ###
             print(f"self.px: {self.px} token @ px: {self.tokens[self.px]}\n")
+            
+        ### breakpoint()  ###
 
         # First, find the next significant token.  It should be a string.
         token = self.find_next_significant_token()
@@ -3443,7 +3445,7 @@ class TokenOrderGenerator:
     def do_Index(self, node: Node) -> None:  # pragma: no cover (deprecated)
 
         self.visit(node.value)
-    #@+node:ekr.20191113063144.39: *6* tog.FormattedValue (Never called)
+    #@+node:ekr.20191113063144.39: *6* tog.FormattedValue
     # FormattedValue(expr value, int conversion, expr? format_spec)  Python 3.12+
 
     def do_FormattedValue(self, node: Node) -> None:  # pragma: no cover
@@ -3456,6 +3458,17 @@ class TokenOrderGenerator:
         so the TOG should *never* visit this node!
         """
         raise AssignLinksError(f"do_FormattedValue called: {g.callers()}")
+            
+        ### WRONG: The entire parse tree is part of an f-string!
+        
+            # format_spec = getattr(node, 'format_spec', None)
+
+            # ### Experimental
+            # g.trace('value', node.value)
+            # g.trace('conversion', node.conversion)
+            # g.trace('format_spec', repr(format_spec))
+            # breakpoint()  ###
+            # self.visit(node.value)
     #@+node:ekr.20191113063144.41: *6* tog.JoinedStr & helper
     # JoinedStr(expr* values)
 
@@ -3469,8 +3482,10 @@ class TokenOrderGenerator:
 
         Instead, we get the tokens *from the token list itself*!
         """
+
         # Everything in the JoinedStr tree is a string.
         # Do *not* call self.visit.
+
         if g.python_version_tuple < (3, 12, 0):
             # Python 3.11 and below.
             for z in self.get_concatenated_string_tokens():
