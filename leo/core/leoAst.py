@@ -3368,38 +3368,25 @@ class TokenOrderGenerator:
     #@+node:ekr.20231214173003.1: *7* tog.string_helper
     def string_helper(self, node: Node) -> None:
         """
-        Common string and f-string handling for Constant and JoinedStr nodes.
+        Common string and f-string handling for Constant, JoinedStr and Str nodes.
         
-        Handle string concatenation.
+        Handle all concatenated strings, that is, strings separated only by whitespace.
         """
 
-        # Handle all concatenated strings, that is, strings separated only by whitespace.
-        message1 = f"Entry: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
-
-        ###
-            # if trace:  ###
-                # print('')
-                # g.trace('=====', node, g.callers(3))  ###
-                # print(f"self.px: {self.px} token @ px: {self.tokens[self.px]}\n")
-
-        # First, find the next significant token.  It should be a string.
+        # The next significant token must be a string or f-string.
+        message1 = f"Old token: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
         token = self.find_next_significant_token()
-
-        # Make sure we found a string token.
-        message2 = f" Exit: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
-        fail_s = f"tog.string_helper found no string!\n{message1}{message2}"
+        message2 = f"New token: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
+        fail_s = f"tog.string_helper: no string!\n{message1}{message2}"
         assert token and token.kind in ('string', 'fstring_start'), fail_s
 
         # Handle all adjacent strings.
         while token and token.kind in ('string', 'fstring_start'):
-            # if trace:  ###
-                # g.trace(token.index, token.kind, token.value)  ###
             if token.kind == 'string':
                 self.token(token.kind, token.value)
             else:
                 self.token(token.kind, token.value)
                 self.sync_to_kind('fstring_end')
-
             # Check for concatenated strings.
             token = self.find_next_non_ws_token()
     #@+node:ekr.20191113063144.35: *6* tog.Dict
@@ -3554,10 +3541,6 @@ class TokenOrderGenerator:
         def do_Str(self, node: Node) -> None:
             """This node represents a string constant."""
             self.string_helper(node)
-            ###
-                # # This loop is necessary to handle string concatenation.
-                # for z in self.get_concatenated_string_tokens():
-                    # self.token(z.kind, z.value)
     #@+node:ekr.20191113063144.51: *6* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
