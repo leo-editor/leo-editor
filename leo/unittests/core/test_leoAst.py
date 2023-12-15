@@ -512,12 +512,7 @@ class TestTOG(BaseTest):
             """ds 3"""
             print('done')
     '''
-        self.make_data(contents, debug_list=[  ###
-            # 'contents',
-            # 'sync',
-            # 'tree',
-            # 'tokens'
-        ])
+        self.make_data(contents)
     #@+node:ekr.20191227052446.13: *5* test_FunctionDef
     def test_FunctionDef(self):
         contents = r"""
@@ -634,14 +629,7 @@ class TestTOG(BaseTest):
         contents = r"""
     print(f"{list(z for z in ('a', 'b', 'c') if z != 'b')}")
     """
-        self.make_data(contents, debug_list=[  ###
-            # 'contents',
-            # 'debug',
-            # 'sync',
-            # 'tree',
-            # 'tokens',
-        ])
-
+        self.make_data(contents)
     #@+node:ekr.20191227052446.74: *5* test_fstring_in_arg_list
     def test_fstring_in_arg_list(self):
         contents = r"""
@@ -651,25 +639,14 @@ class TestTOG(BaseTest):
     )
     print('done')
     """
-        self.make_data(contents, debug_list=[  ###
-            # 'contents',
-            # 'debug',
-            # 'sync',
-            # 'tree',
-            # 'tokens'
-        ])
-
+        self.make_data(contents)
     #@+node:ekr.20191227052446.70: *5* test_fstring_join1
     def test_fstring_join1(self):
         contents = r"""
     print('p1' f'{f2}')
     'end'
     """
-        self.make_data(contents, debug_list=[  ###
-            # 'contents',
-            # 'tokens',
-            # 'tree',
-            ])
+        self.make_data(contents)
     #@+node:ekr.20191227052446.71: *5* test_fstring_join1a
     def test_fstring_join1a(self):
         contents = r"""
@@ -1020,22 +997,12 @@ class TestTOG(BaseTest):
     print('a' 'b')
     print('c')
     """
-        self.make_data(contents, debug_list=[ ###
-            # 'contents',
-            # 'tokens',
-            # 'tree',
-            ])
+        self.make_data(contents)
     #@+node:ekr.20200111042825.1: *5* test_string_concatenation_2
     def test_string_concatenation_2(self):
         # Crash in leoCheck.py.
         contents = """return self.Type('error', 'no member %s' % ivar)"""
-        self.make_data(contents, debug_list=[  ###
-            # 'contents',
-            # 'debug',
-            # 'sync',
-            # 'tree',
-            # 'tokens',
-        ])
+        self.make_data(contents)
     #@+node:ekr.20191227052446.43: *4* TestTOG.Statements...
     #@+node:ekr.20200112075707.1: *5* test_AnnAssign
     def test_AnnAssign(self):
@@ -1144,12 +1111,7 @@ class TestTOG(BaseTest):
             case True, False, None: pass  # A tuple!
         """
         #@-<< test_Match: define contents >>
-        self.make_data(contents, debug_list=[  ###
-            # 'contents',
-            # 'sync',
-            # 'tree',
-            # 'tokens'
-        ])
+        self.make_data(contents)
     #@+node:ekr.20200111200640.1: *5* test_Nonlocal
     def test_Nonlocal(self):
         contents = r"""nonlocal name1, name2"""
@@ -2761,13 +2723,7 @@ class TestTokens(BaseTest):
             'x=1+\\\n    2'
             '# This is a comment\\\n    # This also'
         )
-        self.check_roundtrip(contents, debug_list=[  ###
-            # 'contents',
-            # 'debug',
-            # 'sync',
-            # 'tree',
-            # 'tokens',
-        ])
+        self.check_roundtrip(contents)
     #@+node:ekr.20200111085211.1: *4* TT.test_continuation_3
     def test_continuation_3(self):
 

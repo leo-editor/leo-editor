@@ -534,13 +534,13 @@ if 1:  # pragma: no cover
         # Making 'endmarker' significant ensures that all tokens are synced.
         return (
             kind in ('async', 'await', 'endmarker', 'name', 'number', 'string')
-            or kind.startswith('fstring')  ### Experimental.
+            or kind.startswith('fstring')
             or kind == 'op' and value not in ',;()')
 
     def is_significant_kind(kind: str) -> bool:
         return (
             kind in ('async', 'await', 'endmarker', 'name', 'number', 'string')
-            or kind.startswith('fstring')  ### Experimental.
+            or kind.startswith('fstring')
         )
 
     def is_significant_token(token: Token) -> bool:
@@ -986,7 +986,7 @@ class AstDumper:  # pragma: no cover
                         results.append(z.__class__.__name__)
                         fstrings += 1
                 else:
-                    assert isinstance(z, (ast.FormattedValue, ast.Constant))  ### Experimental.
+                    assert isinstance(z, (ast.FormattedValue, ast.Constant))
                     if isinstance(z, ast.Constant):
                         results.append(z.value)
                         strings += 1
@@ -1149,7 +1149,6 @@ class Fstringify:
             if (
                 isinstance(node, ast.BinOp)
                 and op_name(node.op) == '%'
-                ### and isinstance(node.left, ast.Str)
                 and isinstance(node.left, string_node)
             ):
                 self.make_fstring(node)
@@ -1259,9 +1258,9 @@ class Fstringify:
         """
         trace = False
         string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant
-        ### assert isinstance(node.left, ast.Str), (repr(node.left), g.callers())
         assert isinstance(node.left, string_node), (repr(node.left), g.callers())
-        # Careful: use the tokens, not Str.s.  This preserves spelling.
+
+        # Careful: use the tokens, not Str.s or Constant.value. This preserves spelling.
         lt_token_list = get_node_token_list(node.left, self.tokens)
         if not lt_token_list:  # pragma: no cover
             print('')
@@ -1456,7 +1455,6 @@ class Fstringify:
         trace = False
         # First, Try the most common cases.
         string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant
-        ### if isinstance(node, ast.Str):
         if isinstance(node, string_node):
             token_list = get_node_token_list(node, self.tokens)
             return [token_list]
@@ -1561,7 +1559,6 @@ class Fstringify:
             replace_token(self.tokens[i1 + j], 'killed', '')
             j += 1
         # Replace the node.
-        ### new_node = ast.Str()
         new_node: ast.AST
         if g.python_version_tuple < (3, 12, 0):
             new_node = ast.Str()
@@ -2954,13 +2951,11 @@ class TokenOrderGenerator:
     def sync_to_kind(self, kind: str) -> None:
         """Sync to the next signifcant token of the given kind."""
         assert is_significant_kind(kind), repr(kind)
-        ### g.trace('Entry: looking for', kind)  ###
         while next_token := self.find_next_significant_token():
-            ### g.trace('next_token', next_token)  ###
             self.token(next_token.kind, next_token.value)
             if next_token.kind in (kind, 'endtoken'):
                 break
-        ### g.trace('Done')  ###
+
     #@+node:ekr.20191113063144.7: *5* tog.token
     px = -1  # Index of the previously synced token.
 
@@ -3366,10 +3361,10 @@ class TokenOrderGenerator:
         elif isinstance(node.value, frozenset):
             self.do_Set(node)
         elif node.value is None:
-            self.name('None')  ### Experimental.
+            self.name('None')
         else:
             # Unknown type.
-            g.trace('----- Oops -----', repr(node.value), g.callers())
+            g.trace('----- Oops -----', repr(node), g.callers())
     #@+node:ekr.20231214173003.1: *7* tog.string_helper
     def string_helper(self, node: Node) -> None:
         """
@@ -3377,16 +3372,15 @@ class TokenOrderGenerator:
         
         Handle string concatenation.
         """
-        trace = self.debug_flag  ###
 
         # Handle all concatenated strings, that is, strings separated only by whitespace.
         message1 = f"Entry: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
-        if trace:  ###
-            print('')
-            g.trace('=====', node, g.callers(3))  ###
-            print(f"self.px: {self.px} token @ px: {self.tokens[self.px]}\n")
 
-        ### breakpoint()  ###
+        ###
+            # if trace:  ###
+                # print('')
+                # g.trace('=====', node, g.callers(3))  ###
+                # print(f"self.px: {self.px} token @ px: {self.tokens[self.px]}\n")
 
         # First, find the next significant token.  It should be a string.
         token = self.find_next_significant_token()
@@ -3398,8 +3392,8 @@ class TokenOrderGenerator:
 
         # Handle all adjacent strings.
         while token and token.kind in ('string', 'fstring_start'):
-            if trace:  ###
-                g.trace(token.index, token.kind, token.value)  ###
+            # if trace:  ###
+                # g.trace(token.index, token.kind, token.value)  ###
             if token.kind == 'string':
                 self.token(token.kind, token.value)
             else:
@@ -3470,7 +3464,7 @@ class TokenOrderGenerator:
         so the TOG should *never* visit this node!
         """
         raise AssignLinksError(f"do_FormattedValue called: {g.callers()}")
-    #@+node:ekr.20191113063144.41: *6* tog.JoinedStr & helper
+    #@+node:ekr.20191113063144.41: *6* tog.JoinedStr
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node: Node) -> None:
@@ -3489,67 +3483,6 @@ class TokenOrderGenerator:
 
         # This works for all versions of Python!
         self.string_helper(node)
-
-        ###
-        # if g.python_version_tuple < (3, 12, 0):
-            # if 1:  ### Experimental
-                # self.string_helper(node)
-            # else:
-                # # Python 3.11 and below.
-                # for z in self.get_concatenated_string_tokens():
-                    # self.token(z.kind, z.value)
-        # else:
-            # self.string_helper(node)
-    #@+node:ekr.20231213061819.1: *7* tog.get_concatenated_tokens (3.11-)
-    def get_concatenated_string_tokens(self) -> list[Token]:
-        """
-        Return the next 'string' token and all 'string' tokens concatenated to
-        it. *Never* update self.px here.
-        """
-        trace = False
-        tag = 'tog.get_concatenated_string_tokens'
-        i = self.px
-        # First, find the next significant token.  It should be a string.
-        i, token = i + 1, None
-        while i < len(self.tokens):
-            token = self.tokens[i]
-            i += 1
-            if token.kind == 'string':
-                # Rescan the string.
-                i -= 1
-                break
-            # An error.
-            if is_significant_token(token):  # pragma: no cover
-                break
-        # Raise an error if we didn't find the expected 'string' token.
-        if not token or token.kind != 'string':  # pragma: no cover
-            if not token:
-                token = self.tokens[-1]
-            filename = getattr(self, 'filename', '<no filename>')
-            raise AssignLinksError(
-                f"get_concatenated_string_tokens: {tag}...\n"
-                f"file: {filename}\n"
-                f"line: {token.line_number}\n"
-                f"   i: {i}\n"
-                f"expected 'string' token, got {token!s}"
-            )
-        # Accumulate string tokens.
-        assert self.tokens[i].kind == 'string'
-        results = []
-        while i < len(self.tokens):
-            token = self.tokens[i]
-            i += 1
-            if token.kind == 'string':
-                results.append(token)
-            elif token.kind == 'op' or is_significant_token(token):
-                # Any significant token *or* any op will halt string concatenation.
-                break
-            # 'ws', 'nl', 'newline', 'comment', 'indent', 'dedent', etc.
-        # The (significant) 'endmarker' token ensures we will have result.
-        assert results
-        if trace:  # pragma: no cover
-            g.printObj(results, tag=f"{tag}: Results")
-        return results
     #@+node:ekr.20191113063144.42: *6* tog.List
     def do_List(self, node: Node) -> None:
 
@@ -3620,9 +3553,11 @@ class TokenOrderGenerator:
 
         def do_Str(self, node: Node) -> None:
             """This node represents a string constant."""
-            # This loop is necessary to handle string concatenation.
-            for z in self.get_concatenated_string_tokens():
-                self.token(z.kind, z.value)
+            self.string_helper(node)
+            ###
+                # # This loop is necessary to handle string concatenation.
+                # for z in self.get_concatenated_string_tokens():
+                    # self.token(z.kind, z.value)
     #@+node:ekr.20191113063144.51: *6* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
@@ -4054,7 +3989,6 @@ class TokenOrderGenerator:
         rest = getattr(node, 'rest', None)
         self.op('{')
         for i, key in enumerate(keys):
-            ### g.trace(i, key, patterns[i])  ###
             self.visit(key)
             self.op(':')
             self.visit(patterns[i])
