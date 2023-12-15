@@ -172,7 +172,6 @@ except Exception:
     # check_g function gives the message.
     g = None
 
-
 Node = ast.AST
 Settings = Optional[dict[str, Any]]
 #@-<< leoAst imports & annotations >>
@@ -1563,6 +1562,7 @@ class Fstringify:
             j += 1
         # Replace the node.
         ### new_node = ast.Str()
+        new_node: ast.AST
         if g.python_version_tuple < (3, 12, 0):
             new_node = ast.Str()
             new_node.s = s
@@ -3470,17 +3470,6 @@ class TokenOrderGenerator:
         so the TOG should *never* visit this node!
         """
         raise AssignLinksError(f"do_FormattedValue called: {g.callers()}")
-
-        ### WRONG: The entire parse tree is part of an f-string!
-
-            # format_spec = getattr(node, 'format_spec', None)
-
-            # ### Experimental
-            # g.trace('value', node.value)
-            # g.trace('conversion', node.conversion)
-            # g.trace('format_spec', repr(format_spec))
-            # breakpoint()  ###
-            # self.visit(node.value)
     #@+node:ekr.20191113063144.41: *6* tog.JoinedStr & helper
     # JoinedStr(expr* values)
 
@@ -3498,12 +3487,19 @@ class TokenOrderGenerator:
         # Everything in the JoinedStr tree is a string.
         # Do *not* call self.visit.
 
-        if g.python_version_tuple < (3, 12, 0):
-            # Python 3.11 and below.
-            for z in self.get_concatenated_string_tokens():
-                self.token(z.kind, z.value)
-        else:
-            self.string_helper(node)
+        # This works for all versions of Python!
+        self.string_helper(node)
+
+        ###
+        # if g.python_version_tuple < (3, 12, 0):
+            # if 1:  ### Experimental
+                # self.string_helper(node)
+            # else:
+                # # Python 3.11 and below.
+                # for z in self.get_concatenated_string_tokens():
+                    # self.token(z.kind, z.value)
+        # else:
+            # self.string_helper(node)
     #@+node:ekr.20231213061819.1: *7* tog.get_concatenated_tokens (3.11-)
     def get_concatenated_string_tokens(self) -> list[Token]:
         """
@@ -3627,12 +3623,6 @@ class TokenOrderGenerator:
             # This loop is necessary to handle string concatenation.
             for z in self.get_concatenated_string_tokens():
                 self.token(z.kind, z.value)
-
-    ###
-    # else:
-        # # Issue just a warning here. Python 3.12 issues this warning:
-        # # DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14; use ast.Constant instead
-        # g.trace('Should not be called', g.callers())
     #@+node:ekr.20191113063144.51: *6* tog.Subscript
     # Subscript(expr value, slice slice, expr_context ctx)
 
@@ -4022,7 +4012,7 @@ class TokenOrderGenerator:
         self.op(':')
         for statement in body:
             self.visit(statement)
-    #@+node:ekr.20220401034726.3: *7* tog.MatchAs (changed)
+    #@+node:ekr.20220401034726.3: *7* tog.MatchAs
     # MatchAs(pattern? pattern, identifier? name)
 
     def do_MatchAs(self, node: Node) -> None:
