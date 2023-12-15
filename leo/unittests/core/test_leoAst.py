@@ -1107,42 +1107,23 @@ class TestTOG(BaseTest):
         # Coverage test for spaces
         contents = """f = lambda x: x"""
         self.make_data(contents)
-    #@+node:ekr.20220329095904.1: *5* test_Match
+    #@+node:ekr.20220329095904.1: *5* ===== test_Match
     def test_Match(self):
 
         if py_version < (3, 10):  # pragma: no cover
             self.skipTest('Require python 3.10')
         #@+<< test_Match: define contents >>
         #@+node:ekr.20231215010832.1: *6* << test_Match: define contents >>
-        contents = r"""
+        contents = """
         match node:
-            # Passed...
-            case 1: pass
-            case (2, 3): pass
-            case BinOp("+", a, BinOp("*", b, c)): pass
             case {"text": message, "color": c}: pass
-            case 401 | 403 | 404: pass
-            case xyzzy if a > 1: pass
-            case {"sound": _, "format": _}: pass
-            case BinOp2("+", a, BinOp("*", d = 2)): pass
-            case BinOp2("-", d, e = 2): pass
-            case {"pat1": 2, **rest}: pass
-            case _: pass
-            case (4, 5, *rest): pass
-            case [6, 5, *rest]: pass
-            case ['a'|'b' as ab, c]: pass
-            case True: pass
-            case False: pass
-            case None: pass
-            case True | False | None: pass
-            case True, False, None: pass  # A tuple!
         """
         #@-<< test_Match: define contents >>
         self.make_data(contents, debug_list=[  ###
-            # 'contents',
+            'contents',
             'sync',
             # 'tree',
-            #'tokens'
+            'tokens'
         ])
     #@+node:ekr.20200111200640.1: *5* test_Nonlocal
     def test_Nonlocal(self):

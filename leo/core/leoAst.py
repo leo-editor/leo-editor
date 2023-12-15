@@ -3367,17 +3367,28 @@ class TokenOrderGenerator:
         """
 
         # Handle all concatenated strings, that is, strings separated only by whitespace.
+        message1 = f"Entry: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
+        if 1:  ###
+            print('')
+            g.trace('=====', node.value, g.callers(3))  ###
+            print(f"self.px: {self.px} token @ px: {self.tokens[self.px]}\n")
+        found = False
         while 1:
             token = self.find_next_non_ws_token()
-            # g.trace(token.index, token.kind, token.value, g.callers(2))  ###
+            g.trace(token.index, token.kind, token.value)  ###
             if token.kind == 'string':
                 # Handle concatenated strings!
                 self.token(token.kind, token.value)
+                found = True
             elif token.kind == 'fstring_start':
                 self.token(token.kind, token.value)
                 self.sync_to_kind('fstring_end')
+                found = True
             else:
                 break
+        message2 = f" Exit: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
+        print(message2)
+        assert found, f"tog.string_helper found no string!\n{message1}{message2}"
     #@+node:ekr.20191113063144.35: *6* tog.Dict
     # Dict(expr* keys, expr* values)
 
@@ -4014,7 +4025,7 @@ class TokenOrderGenerator:
         rest = getattr(node, 'rest', None)
         self.op('{')
         for i, key in enumerate(keys):
-            g.trace(i, key, patterns[i])  ###
+            ### g.trace(i, key, patterns[i])  ###
             self.visit(key)
             self.op(':')
             self.visit(patterns[i])
