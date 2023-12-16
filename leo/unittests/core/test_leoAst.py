@@ -635,12 +635,7 @@ class TestTOG(BaseTest):
             f"total: {t3-t1:5.2f}"
         )
     """
-        self.make_data(contents, debug_list=[  ###
-            # 'contents',
-            # 'sync',
-            # 'tokens',
-            # 'tree',
-        ])
+        self.make_data(contents)
     #@+node:ekr.20191227052446.80: *5* test_fstring_expr_with_commas
     def test_fstring_expr_with_commas(self):
         contents = r"""
