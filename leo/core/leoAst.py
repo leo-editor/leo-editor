@@ -3384,10 +3384,7 @@ class TokenOrderGenerator:
         if node.value == Ellipsis:
             self.op('...')
         elif isinstance(node.value, str):
-            if g.python_version_tuple >= (3, 12, 0):
-                self.string_helper(node)
-            else:
-                self.do_Str(node)
+            self.string_helper(node)
         elif isinstance(node.value, int):
             # Look at the next token to distinguinsh 0/1 from True/False.
             token = self.find_next_significant_token()
