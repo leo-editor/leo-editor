@@ -624,6 +624,18 @@ class TestTOG(BaseTest):
     """
         self.make_data(contents)
     #@+node:ekr.20191227052446.65: *4* TestTOG.f-strings....
+    #@+node:ekr.20231215220814.1: *5* test_fstring_crash
+    def test_fstring_crash(self):
+
+        # leoCommands.py line 160
+        contents = r"""
+        print(
+            f"    1: {t2-t1:5.2f}\n"  # 0.00 sec.
+            f"    2: {t3-t2:5.2f}\n"  # Crash happens here.
+            f"total: {t3-t1:5.2f}"
+        )
+    """
+        self.make_data(contents)
     #@+node:ekr.20191227052446.80: *5* test_fstring_expr_with_commas
     def test_fstring_expr_with_commas(self):
         contents = r"""
