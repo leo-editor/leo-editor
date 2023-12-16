@@ -2161,9 +2161,10 @@ class Orange:
             """True if node is any expression other than += number."""
             if isinstance(node, (ast.BinOp, ast.Call, ast.IfExp)):
                 return True
+            num_node = ast.Num if g.python_version_tuple < (3, 12, 0) else ast.Constant
             return (
                 isinstance(node, ast.UnaryOp)
-                and not isinstance(node.operand, ast.Num)
+                and not isinstance(node.operand, num_node)
             )
 
         node = self.token.node
