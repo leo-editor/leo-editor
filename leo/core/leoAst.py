@@ -3068,7 +3068,7 @@ class TokenOrderGenerator:
         while px < len(self.tokens):
             token = self.tokens[px]
             px += 1
-            if token.kind not in ('encoding', 'indent', 'newline', 'nl', 'ws'):
+            if token.kind not in ('comment', 'encoding', 'indent', 'newline', 'nl', 'ws'):
                 return token
 
         # This should never happen: endtoken isn't whitespace.
