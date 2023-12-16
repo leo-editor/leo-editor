@@ -1857,6 +1857,12 @@ class JEditColorizer(BaseColorizer):
         # Fail quickly if possible.
         if i + 1 >= len(s):
             return 0
+
+        # Make sure this is an f-string.
+        if 'f' not in s[i : i + 2].lower():
+            return 0
+
+        # Find the opening string delim.
         j = 1 if s[i + 1] in 'rfRF' else 0
         delim_offset = i + j + 1
         if delim_offset >= len(s):
