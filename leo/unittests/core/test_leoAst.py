@@ -777,10 +777,16 @@ class TestTOG(BaseTest):
     #@+node:ekr.20231215210904.1: *5* test_fstring_with_nested_quotes
     def test_fstring_with_nested_quotes(self):
         
-        # PEP 701 says the following should always be valid:
+        if g.python_version_tuple < (3, 12, 0):
+            self.skipTest('Requires Python 3.12+')
+
+        # PEP 701 says the following should always be valid (Python 3.12+)
+        # f"{'':*^{1:{1}}}"
+
+        # Careful: don't create a syntax error for legacy Pythons.
         contents = """
-        f"{'':*^{1:{1}}}"
-        """
+        f"<LT>'':*^<LT>1:<LT>1<RT><RT><RT>"
+        """.replace('<LT>', '{').replace('<RT>', '}')
         self.make_data(contents)
     #@+node:ekr.20191227052446.32: *4* TestTOG.If...
     #@+node:ekr.20191227052446.33: *5* test_from leoTips.py
