@@ -762,6 +762,14 @@ class TestTOG(BaseTest):
     print('end')
     """
         self.make_data(contents)
+    #@+node:ekr.20231215210904.1: *5* test_fstring_with_nested_quotes
+    def test_fstring_with_nested_quotes(self):
+        
+        # PEP 701 says the following should always be valid:
+        contents = """
+        f"{'':*^{1:{1}}}"
+        """
+        self.make_data(contents)
     #@+node:ekr.20191227052446.32: *4* TestTOG.If...
     #@+node:ekr.20191227052446.33: *5* test_from leoTips.py
     def test_if1(self):

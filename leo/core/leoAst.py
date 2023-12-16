@@ -2865,23 +2865,6 @@ class TokenOrderGenerator:
                 return token
         # This will never happen, because endtoken is significant.
         return None  # pragma: no cover
-    #@+node:ekr.20231214054225.1: *5* tog.find_next_non_ws_token
-    def find_next_non_ws_token(self) -> Optional[Token]:
-        """
-        Scan from *after* self.tokens[px] looking for the next token that isn't
-        whitespace.
-
-        Return the token, or None. Never change self.px.
-        """
-        px = self.px + 1
-        while px < len(self.tokens):
-            token = self.tokens[px]
-            px += 1
-            if token.kind not in ('encoding', 'indent', 'newline', 'nl', 'ws'):
-                return token
-
-        # This should never happen: endtoken isn't whitespace.
-        return None  # pragma: no cover
     #@+node:ekr.20191125120814.1: *5* tog.set_links
     last_statement_node = None
 
@@ -2947,15 +2930,6 @@ class TokenOrderGenerator:
         token list.
         """
         self.token('op', val)
-    #@+node:ekr.20231213174617.1: *5* tog.sync_to_kind
-    def sync_to_kind(self, kind: str) -> None:
-        """Sync to the next signifcant token of the given kind."""
-        assert is_significant_kind(kind), repr(kind)
-        while next_token := self.find_next_significant_token():
-            self.token(next_token.kind, next_token.value)
-            if next_token.kind in (kind, 'endtoken'):
-                break
-
     #@+node:ekr.20191113063144.7: *5* tog.token
     px = -1  # Index of the previously synced token.
 
@@ -3028,6 +3002,56 @@ class TokenOrderGenerator:
         #
         # Step four: Advance.
         self.px = px
+    #@+node:ekr.20231214173003.1: *5* tog.string_helper & helpers
+    def string_helper(self, node: Node) -> None:
+        """
+        Common string and f-string handling for Constant, JoinedStr and Str nodes.
+        
+        Handle all concatenated strings, that is, strings separated only by whitespace.
+        """
+
+        # The next significant token must be a string or f-string.
+        message1 = f"Old token: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
+        token = self.find_next_significant_token()
+        message2 = f"New token: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
+        fail_s = f"tog.string_helper: no string!\n{message1}{message2}"
+        assert token and token.kind in ('string', 'fstring_start'), fail_s
+
+        # Handle all adjacent strings.
+        while token and token.kind in ('string', 'fstring_start'):
+            if token.kind == 'string':
+                self.token(token.kind, token.value)
+            else:
+                self.token(token.kind, token.value)
+                self.sync_to_kind('fstring_end')
+            # Check for concatenated strings.
+            token = self.find_next_non_ws_token()
+    #@+node:ekr.20231213174617.1: *6* tog.sync_to_kind
+    def sync_to_kind(self, kind: str) -> None:
+        """Sync to the next signifcant token of the given kind."""
+        assert is_significant_kind(kind), repr(kind)
+        while next_token := self.find_next_significant_token():
+            self.token(next_token.kind, next_token.value)
+            if next_token.kind in (kind, 'endtoken'):
+                break
+
+    #@+node:ekr.20231214054225.1: *6* tog.find_next_non_ws_token
+    def find_next_non_ws_token(self) -> Optional[Token]:
+        """
+        Scan from *after* self.tokens[px] looking for the next token that isn't
+        whitespace.
+
+        Return the token, or None. Never change self.px.
+        """
+        px = self.px + 1
+        while px < len(self.tokens):
+            token = self.tokens[px]
+            px += 1
+            if token.kind not in ('encoding', 'indent', 'newline', 'nl', 'ws'):
+                return token
+
+        # This should never happen: endtoken isn't whitespace.
+        return None  # pragma: no cover
     #@+node:ekr.20191223052749.1: *4* tog: Traversal...
     #@+node:ekr.20191113063144.3: *5* tog.enter_node
     def enter_node(self, node: Node) -> None:
@@ -3324,7 +3348,7 @@ class TokenOrderGenerator:
         for z in node.ifs or []:
             self.name('if')
             self.visit(z)
-    #@+node:ekr.20191113063144.34: *6* tog.Constant & helper
+    #@+node:ekr.20191113063144.34: *6* tog.Constant
     # Constant(constant value, string? kind)
 
     def do_Constant(self, node: Node) -> None:
@@ -3365,30 +3389,6 @@ class TokenOrderGenerator:
         else:
             # Unknown type.
             g.trace('----- Oops -----', repr(node), g.callers())
-    #@+node:ekr.20231214173003.1: *7* tog.string_helper
-    def string_helper(self, node: Node) -> None:
-        """
-        Common string and f-string handling for Constant, JoinedStr and Str nodes.
-        
-        Handle all concatenated strings, that is, strings separated only by whitespace.
-        """
-
-        # The next significant token must be a string or f-string.
-        message1 = f"Old token: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
-        token = self.find_next_significant_token()
-        message2 = f"New token: self.px: {self.px} token @ px: {self.tokens[self.px]}\n"
-        fail_s = f"tog.string_helper: no string!\n{message1}{message2}"
-        assert token and token.kind in ('string', 'fstring_start'), fail_s
-
-        # Handle all adjacent strings.
-        while token and token.kind in ('string', 'fstring_start'):
-            if token.kind == 'string':
-                self.token(token.kind, token.value)
-            else:
-                self.token(token.kind, token.value)
-                self.sync_to_kind('fstring_end')
-            # Check for concatenated strings.
-            token = self.find_next_non_ws_token()
     #@+node:ekr.20191113063144.35: *6* tog.Dict
     # Dict(expr* keys, expr* values)
 
@@ -3434,10 +3434,6 @@ class TokenOrderGenerator:
             self.visit(z)
             if i < len(node.dims) - 1:
                 self.op(',')
-    #@+node:ekr.20191113063144.40: *6* tog.Index
-    def do_Index(self, node: Node) -> None:  # pragma: no cover (deprecated)
-
-        self.visit(node.value)
     #@+node:ekr.20191113063144.39: *6* tog.FormattedValue
     # FormattedValue(expr value, int conversion, expr? format_spec)  Python 3.12+
 
@@ -3451,6 +3447,10 @@ class TokenOrderGenerator:
         so the TOG should *never* visit this node!
         """
         raise AssignLinksError(f"do_FormattedValue called: {g.callers()}")
+    #@+node:ekr.20191113063144.40: *6* tog.Index
+    def do_Index(self, node: Node) -> None:  # pragma: no cover (deprecated)
+
+        self.visit(node.value)
     #@+node:ekr.20191113063144.41: *6* tog.JoinedStr
     # JoinedStr(expr* values)
 
