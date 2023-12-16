@@ -1657,6 +1657,7 @@ class Orange:
         self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
         self.decorator_seen = False  # Set by do_name for do_op.
         self.in_arg_list = 0  # > 0 if in an arg list of a def.
+        self.in_fstring = False  # True: scanning an f-string.
         self.level = 0  # Set only by do_indent and do_dedent.
         self.lws = ''  # Leading whitespace.
         self.paren_level = 0  # Number of unmatched '(' tokens.
@@ -1676,6 +1677,8 @@ class Orange:
             self.kind, self.val, self.line = token.kind, token.value, token.line
             if self.verbatim:
                 self.do_verbatim()
+            elif self.in_fstring:
+                self.continue_fstring()
             else:
                 func = getattr(self, f"do_{token.kind}", self.oops)
                 func()
@@ -1795,6 +1798,23 @@ class Orange:
         # Ensure exactly one blank at the end of the file.
         self.clean_blank_lines()
         self.add_token('line-end', '\n')
+    #@+node:ekr.20231215212951.1: *5* orange.do_fstring_start & continue_fstring
+    def do_fstring_start(self) -> None:
+        """Handle the 'fstring_start' token. Enter f-string mode."""
+        self.in_fstring = True
+        self.add_token('verbatim', self.val)
+
+    def continue_fstring(self) -> None:
+        """
+        Put the next token in f-fstring mode.
+        Exit f-string mode if the token is 'fstring_end'.
+        """
+        ### g.trace(self.val)
+        self.add_token('verbatim', self.val)
+        if self.kind == 'fstring_end':
+            self.in_fstring = False
+
+
     #@+node:ekr.20200107165250.18: *5* orange.do_indent & do_dedent & helper
     # Note: other methods use self.level.
 
