@@ -1809,7 +1809,6 @@ class Orange:
         Put the next token in f-fstring mode.
         Exit f-string mode if the token is 'fstring_end'.
         """
-        ### g.trace(self.val)
         self.add_token('verbatim', self.val)
         if self.kind == 'fstring_end':
             self.in_fstring = False
