@@ -521,7 +521,7 @@ rulesDict1 = {
 if (v1, v2) >= (3, 12):
     # Update rules to for Python 3.12+ f-strings.
     for key in 'frFR':
-        rulesDict1 [key] = [python_rule_fstring, python_rule21]
+        rulesDict1[key] = [python_rule_fstring, python_rule21]
 
 # x.rulesDictDict for python mode.
 rulesDictDict = {
