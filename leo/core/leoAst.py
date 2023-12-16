@@ -1812,8 +1812,6 @@ class Orange:
         self.add_token('verbatim', self.val)
         if self.kind == 'fstring_end':
             self.in_fstring = False
-
-
     #@+node:ekr.20200107165250.18: *5* orange.do_indent & do_dedent & helper
     # Note: other methods use self.level.
 
