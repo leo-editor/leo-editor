@@ -17,8 +17,8 @@ source_suffix = '.html.txt'
 #@+node:ekr.20230121091126.1: ** << general settings >>
 project = 'Leo'
 copyright = '1997-2023, Edward K. Ream'
-version = '6.7.5'
-release = '6.7.5'
+version = '6.7.6'
+release = '6.7.6'
 
 # The master toctree document, without suffix.
 master_doc = 'leo_toc'
