@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
-<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -371,6 +371,11 @@
 <v t="ekr.20231008041100.1"><vh>script: to-github</vh>
 <v t="ekr.20231008041100.2"><vh>put_all_nodes</vh></v>
 <v t="ekr.20231008041100.3"><vh>python_i.delete_comments_and_strings</vh></v>
+</v>
+<v t="ekr.20231217050920.1"><vh>Tom Passin's Current Directory Buttons</vh>
+<v t="ekr.20231217050920.2"><vh>@button Show Current Dir</vh></v>
+<v t="ekr.20231217050920.3"><vh>@button Cmd Window Here</vh></v>
+<v t="ekr.20231217050920.4"><vh>@button Node Dir to Clip</vh></v>
 </v>
 </v>
 </vnodes>
@@ -4660,7 +4665,8 @@ c.redraw()
 print('Done')
 
 @language python
-@tabwidth -4</t>
+@tabwidth -4
+</t>
 <t tx="ekr.20231008041100.2">def put_all_nodes(source_p, target_p):
     """
     Put all nodes, expanding @others only in the top-level node.
@@ -4747,6 +4753,91 @@ def delete_comments_and_strings(lines: list[str]) -&gt; list[str]:
         result.append(''.join(result_line))
     assert len(result) == len(lines)  # A crucial invariant.
     return result
+</t>
+<t tx="ekr.20231217050920.1">@language rest
+@wrap
+
+Here's an example of how they can be used.
+
+You have a node and you want to have some images that you can display with, say, VR3.
+
+You want to put them into an images subdir, but you have to navigate there first.  How can you do that?
+
+The show-current-dir button opens the system's file manager/Windows Explorer window opens on that directory.
+Now you can copy those image files to the images subdirectory.
+
+@language python
+</t>
+<t tx="ekr.20231217050920.2">@language python
+"""Open directory for a node, respecting any @path directives and "~"."""
+
+from pathlib import Path
+from subprocess import run
+
+pth = Path(c.fullPath(p))
+if pth.exists():
+    if pth.is_file():
+        direc = pth.parent
+    else:
+        direc = pth
+else:
+    direc = Path(g.scanAllAtPathDirectives(c, p))
+
+if direc:
+    normdir = str(direc.resolve())
+    term = 'explorer.exe' if g.isWindows else 'xdg-open'
+    run([term, direc])
+
+else:
+    g.es(f"Path {direc} doesn't exist", color='red')
+</t>
+<t tx="ekr.20231217050920.3">@language python
+"""Open command window at current directory. Expands "~"."""
+
+from pathlib import Path
+from subprocess import run
+
+pth = Path(c.fullPath(p))
+if pth.exists():
+    if pth.is_file():
+        direc = pth.parent
+    else:
+        direc = pth
+else:
+    direc = Path(g.scanAllAtPathDirectives(c, p))
+
+if direc:
+    normdir = str(direc.resolve())
+    if g.isWindows:
+        cmd = f'start cmd.exe /K "cd {direc}"'
+        run(cmd, shell=True)
+    else:
+        cmd = 'x-terminal-emulator'
+        run(cmd, cwd=direc)
+else:
+    g.es(f"Path {direc} doesn't exist", color='red')</t>
+<t tx="ekr.20231217050920.4">@language python
+"""Copy the effective path of the current node to the clipboard.
+
+This command honors @path directives.
+"""
+from pathlib import Path
+
+pth = Path(c.fullPath(p))
+if pth.exists():
+    if pth.is_file():
+        direc = pth.parent
+    else:
+        direc = pth
+else:
+    direc = Path(g.scanAllAtPathDirectives(c, p))
+
+if direc:
+    normdir = str(direc.resolve())
+    g.app.gui.replaceClipboardWith(normdir)
+else:
+    g.es(f"Path {direc} doesn't exist")
+
 </t>
 <t tx="lkj.20190712002811.1"></t>
 <t tx="maphew.20190209160547.1">gnx: maphew.20130809155103.2863
