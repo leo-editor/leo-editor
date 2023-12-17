@@ -959,7 +959,6 @@
 <v t="ekr.20131213135427.21826"><vh>@menus</vh>
 <v t="ekr.20131213135427.21827"><vh>@menu &amp;File</vh>
 <v t="ekr.20131213135427.21833"><vh>@item &amp;close-window</vh></v>
-<v t="ekr.20140917063815.21917"><vh>@item &amp;file-open-by-name</vh></v>
 <v t="ekr.20131213135427.21828"><vh>@item &amp;new</vh></v>
 <v t="ekr.20131213135427.21829"><vh>@item &amp;open-file</vh></v>
 <v t="ekr.20180403155811.1"><vh>@item -</vh></v>
@@ -1411,13 +1410,6 @@
 <v t="ekr.20131213135427.22196"><vh>@item &amp;keyboard-quit</vh></v>
 <v t="ekr.20131213135427.22197"><vh>@item &amp;repeat-complex-command</vh></v>
 <v t="ekr.20131213135427.22198"><vh>@item &amp;view-lossage</vh></v>
-<v t="ekr.20180405112939.1"><vh>@item -</vh></v>
-<v t="ekr.20180403105526.1"><vh>@item &amp;eval</vh></v>
-<v t="ekr.20180403105636.1"><vh>@item &amp;eval-block</vh></v>
-<v t="ekr.20180403105541.1"><vh>@item &amp;eval-last</vh></v>
-<v t="ekr.20180403105609.1"><vh>@item &amp;eval-last-pretty</vh></v>
-<v t="ekr.20180403105722.1"><vh>@item &amp;eval-replace</vh></v>
-<v t="ekr.20180405112923.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22131"><vh>@menu &amp;Control Garbage Collection</vh>
 <v t="ekr.20131213135427.22132"><vh>@item gc-&amp;collect-garbage</vh></v>
 <v t="ekr.20131213135427.22133"><vh>@item gc-dump-&amp;all-objects</vh></v>
@@ -9146,7 +9138,6 @@ Don't change these unless you are aware of the consequences</t>
 <t tx="ekr.20140916113003.19609"></t>
 <t tx="ekr.20140916113003.20415"></t>
 <t tx="ekr.20140917051508.19548">The children of this node determine how Leo looks.</t>
-<t tx="ekr.20140917063815.21917"></t>
 <t tx="ekr.20140918165611.38050">'''
 Show a color wheel.
 Writes the selected color to the clipboard.
@@ -10845,11 +10836,6 @@ Use different names instead.</t>
 <t tx="ekr.20180403104732.1"></t>
 <t tx="ekr.20180403104751.1"></t>
 <t tx="ekr.20180403105112.1"></t>
-<t tx="ekr.20180403105526.1"></t>
-<t tx="ekr.20180403105541.1"></t>
-<t tx="ekr.20180403105609.1"></t>
-<t tx="ekr.20180403105636.1"></t>
-<t tx="ekr.20180403105722.1"></t>
 <t tx="ekr.20180403114533.1"></t>
 <t tx="ekr.20180403114558.1"></t>
 <t tx="ekr.20180403114818.1"></t>
@@ -10880,8 +10866,6 @@ Use different names instead.</t>
 <t tx="ekr.20180405110859.1"></t>
 <t tx="ekr.20180405112647.1"></t>
 <t tx="ekr.20180405112755.1"></t>
-<t tx="ekr.20180405112923.1"></t>
-<t tx="ekr.20180405112939.1"></t>
 <t tx="ekr.20180406013812.1"></t>
 <t tx="ekr.20180411070112.1">The setting only has effect on MacOS.
 False: Legacy operation.
