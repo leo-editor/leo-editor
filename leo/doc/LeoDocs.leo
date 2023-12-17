@@ -1639,7 +1639,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20231126120048.1"><vh>What's new in Leo 6.7.6 (to do)</vh></v>
+<v t="ekr.20231126120048.1"><vh>What's new in Leo 6.7.6</vh></v>
 <v t="ekr.20230901233844.1"><vh>What's new in Leo 6.7.5</vh></v>
 <v t="ekr.20230709070852.1"><vh>What's new in Leo 6.7.4</vh></v>
 <v t="ekr.20230409053106.1"><vh>What's new in Leo 6.7.3</vh></v>
@@ -1816,7 +1816,7 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
-<v t="ekr.20231126121710.1"><vh>Leo 6.7.6 release notes (to do)</vh></v>
+<v t="ekr.20231126121710.1"><vh>Leo 6.7.6 release notes </vh></v>
 <v t="ekr.20230901233131.1"><vh>Leo 6.7.5 release notes</vh></v>
 <v t="ekr.20230703101804.1"><vh>Leo 6.7.4 release notes</vh></v>
 <v t="ekr.20230409052507.1"><vh>Leo 6.7.3 release notes</vh></v>
@@ -2509,8 +2509,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20230901233844.1"></v>
-<v t="ekr.20230901233131.1"></v>
 <v t="ekr.20231126120048.1"></v>
 <v t="ekr.20231126121710.1"></v>
 </vnodes>
@@ -32754,33 +32752,53 @@ Multiple ``@path`` directives may contribute to the path prefix. Absolute paths 
 
 If no ``@path`` directives are in effect, the default path prefix is the directory containing the .leo file.
 </t>
-<t tx="ekr.20231126120048.1">.. _`PR #3645`: https://github.com/leo-editor/leo-editor/pull/3645
+<t tx="ekr.20231126120048.1">.. Use the link-pr abbreviation to create these links.
 
-- Per `PR #3568`_, scripts and plugins may now call `g.openWithFileName` to open *any* kind of file.
+.. _`PR #3575`: https://github.com/leo-editor/leo-editor/pull/3575
+.. _`PR #3642`: https://github.com/leo-editor/leo-editor/pull/3642
+.. _`PR #3645`: https://github.com/leo-editor/leo-editor/pull/3645
+.. _`PR #3659`: https://github.com/leo-editor/leo-editor/pull/3659
+.. _`PR #3673`: https://github.com/leo-editor/leo-editor/pull/3673
+.. _`PR #3693`: https://github.com/leo-editor/leo-editor/pull/3693
+.. _`PR #3701`: https://github.com/leo-editor/leo-editor/pull/3701
 
-**API changes**
+Support for Python 3.12:
 
-`PR #3568`_ deletes several *publicly visible* helpers of the `LoadManager` class.
-There is a slight possibility that existing scripts or plugins may be using those deleted helpers.
-In all such cases, the fix is to use `g.openWithFileName` instead.
+- `PR #3693`_: update leoAst.py for Python 3.12.
+- `PR #3701`_: Colorize PEP 701 f-strings.
 
-**Minor changes to the `LoadManager` class**
+Other significant improvements:
 
-- Delete lm.openFileByName.
-- Replace lm.initWrapperLeoFile with lm.openExternalFile.
-- Add the "fn" arg to the signature of lm.openEmptyLeoFile.
-
-**Other code changes**
-
-- Delete the unused `k.givenArgs` ivar.
-- Delete the unused `c.wrappedFileName` ivar.
-- Delete the never uses `efc.openOutlineByName` method.
+- `PR #3645`_: Allow mixed external files on the command line.
+               Retire the --load-type command-line option.
+- `PR #3575`_: Add the indented_languages plugin.
+- `PR #3642`_: Add the clean-all-lines command.
+- `PR #3659`_: Add python-to-rust command.
+- `PR #3673`_: Add summarize command.
+- scripts.leo contains `@button` scripts by Thomas Passin.
 </t>
 <t tx="ekr.20231126121710.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.6 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.7.6**
+
+Support for Python 3.12:
+
+- PR #3693: update leoAst.py for Python 3.12.
+- PR #3701: Colorize PEP 701 f-strings.
+
+Other significant improvements:
+
+- PR #3645: Allow mixed external files on the command line.
+            Retire the --load-type command-line option.
+- PR #3575: Add the indented_languages plugin.
+- PR #3642: Add the clean-all-lines command.
+- PR #3659: Add python-to-rust command.
+- PR #3673: Add summarize command.
+- scripts.leo contains `@button` scripts by Thomas Passin.
+
+The usual assortment of minor bug fixes and code-level improvements.
 
 **Links**
 
