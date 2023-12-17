@@ -201,7 +201,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.7.5
+Version: 6.7.6
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -1441,8 +1441,8 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-(Done) Create the **release branch**: `6.7.6`.
-- (Done) Change version in this checklist to match.
+Create the **release branch**: `6.7.6`.
+Change version in this checklist to match.
 
 It's ok to merge devel into release branch
 *unless* devel contains work for the *next* release.
