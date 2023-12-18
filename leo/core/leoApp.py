@@ -424,6 +424,7 @@ class LeoApp:
             # "tcl":    "tcltk",
             "tex":      "latex",
             # "tex":      "tex",
+            "toml":     "ini",  # 2023/12/18.
             "tpl":      "tpl",
             "ts":       "typescript",
             "txt":      "plain",
