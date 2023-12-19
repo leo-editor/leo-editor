@@ -31,7 +31,12 @@ split = g.os_path_split
 #@+others
 #@+node:ekr.20180627052459.1: ** class CommanderWrapper (c.db)
 class CommanderWrapper:
-    """A class to distinguish keys from separate commanders."""
+    """
+    A class that creates distinct keys for all commanders, allowing
+    commanders to share g.app.db without collisions.
+    
+    Instances of this class are c.db.
+    """
 
     def __init__(self, c: Cmdr) -> None:
         self.c = c
@@ -62,7 +67,14 @@ class CommanderWrapper:
         self.db[f"{self.key}:::{key}"] = value
 #@+node:ekr.20180627041556.1: ** class GlobalCacher (g.app.db)
 class GlobalCacher:
-    """A singleton global cacher, g.app.db"""
+    """
+    A calss creating a singleton global database, g.app.db.
+    
+    This DB resides in ~/.leo/db.
+    
+    New in Leo 6.7.7: All instances of c.db may use g.app.db because the
+    CommanderWrapper class creates distinct keys for each commander.
+    """
 
     def __init__(self) -> None:
         """Ctor for the GlobalCacher class."""
@@ -116,7 +128,12 @@ _sentinel = object()
 
 
 class SqlitePickleShare:
-    """ The main 'connection' object for SqlitePickleShare database """
+    """
+    The main 'connection' object for SqlitePickleShare database.
+    
+    Opening this DB may fail. If so the GlobalCacher class uses a plain
+    Python dict instead.
+    """
     #@+others
     #@+node:vitalije.20170716201700.2: *3*  Birth & special methods
     def init_dbtables(self, conn: Any) -> None:
