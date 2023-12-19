@@ -29,7 +29,7 @@ join = g.os_path_join
 normcase = g.os_path_normcase
 split = g.os_path_split
 #@+others
-#@+node:ekr.20180627052459.1: ** class CommanderWrapper
+#@+node:ekr.20180627052459.1: ** class CommanderWrapper (c.db)
 class CommanderWrapper:
     """A class to distinguish keys from separate commanders."""
 
@@ -60,7 +60,7 @@ class CommanderWrapper:
     def __setitem__(self, key: str, value: Any) -> None:
         self.user_keys.add(key)
         self.db[f"{self.key}:::{key}"] = value
-#@+node:ekr.20180627041556.1: ** class GlobalCacher
+#@+node:ekr.20180627041556.1: ** class GlobalCacher (g.app.db)
 class GlobalCacher:
     """A singleton global cacher, g.app.db"""
 
@@ -90,7 +90,7 @@ class GlobalCacher:
         try:
             self.db.clear()
         except TypeError:
-            self.db.clear()
+            self.db = {}
         except Exception:
             g.trace('unexpected exception')
             g.es_exception()
