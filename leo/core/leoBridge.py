@@ -174,7 +174,7 @@ class BridgeController:
             g.app.setGlobalDb()  # #556.
         else:
             g.app.db = g.NullObject()
-            g.app.commander_cacher = g.NullObject()
+            ### g.app.commander_cacher = g.NullObject()
             g.app.global_cacher = g.NullObject()
         if self.readSettings:
             # reads only standard settings files, using a null gui.
@@ -321,8 +321,8 @@ class BridgeController:
         except Exception:
             g.app.global_cacher = leoCache.GlobalCacher()
             g.app.db = g.app.global_cacher.db
-            g.app.commander_cacher = leoCache.CommanderCacher()
-            g.app.commander_db = g.app.commander_cacher.db
+            ### g.app.commander_cacher = leoCache.CommanderCacher()
+            ### g.app.commander_db = g.app.commander_cacher.db
     #@-others
 #@-others
 #@-leo

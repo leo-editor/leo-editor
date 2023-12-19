@@ -1335,7 +1335,7 @@ class FileCommands:
         ok = g.doHook("save1", c=c, p=p, fileName=fileName)
         if ok is None:
             c.endEditing()  # Set the current headline text.
-            g.app.commander_cacher.save(c, fileName)
+            ### g.app.commander_cacher.save(c, fileName)
             ok = c.checkFileTimeStamp(fileName)
             if ok:
                 ok = self.write_Leo_file(fileName)
@@ -1355,7 +1355,9 @@ class FileCommands:
         p = c.p
         if not g.doHook("save1", c=c, p=p, fileName=fileName):
             c.endEditing()  # Set the current headline text.
-            g.app.commander_cacher.save(c, fileName)
+
+            ### g.app.commander_cacher.save(c, fileName)
+
             # Disable path-changed messages in writeAllHelper.
             try:
                 c.ignoreChangedPaths = True
@@ -1372,7 +1374,8 @@ class FileCommands:
         p = c.p
         if not g.doHook("save1", c=c, p=p, fileName=fileName):
             c.endEditing()  # Set the current headline text.
-            g.app.commander_cacher.commit()  # Commit, but don't save file name.
+
+            ### g.app.commander_cacher.commit()  # Commit, but don't save file name.
 
             # Disable path-changed messages in writeAllHelper.
             try:
@@ -1615,7 +1618,9 @@ class FileCommands:
             # Write bytes.
             f.write(bytes(json_s, self.leo_file_encoding, 'replace'))
             f.close()
-            g.app.commander_cacher.save(c, fileName)
+
+            ### g.app.commander_cacher.save(c, fileName)
+
             c.setFileTimeStamp(fileName)
             # Delete backup file.
             if backupName and g.os_path_exists(backupName):

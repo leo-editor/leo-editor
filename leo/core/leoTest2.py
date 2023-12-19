@@ -64,7 +64,7 @@ def create_app(gui_name: str = 'null') -> Cmdr:
     # Disable dangerous code.
     g.app.db = g.NullObject('g.app.db')  # type:ignore
     g.app.pluginsController = g.NullObject('g.app.pluginsController')  # type:ignore
-    g.app.commander_cacher = g.NullObject('g.app.commander_cacher')  # type:ignore
+    ### g.app.commander_cacher = g.NullObject('g.app.commander_cacher')  # type:ignore
     if gui_name == 'null':
         g.app.gui = NullGui()
     elif gui_name == 'qt':

@@ -105,8 +105,10 @@ def restartLeo(self: Self, event: Event = None) -> None:
         frame = c.frame
         # This is similar to g.app.closeLeoWindow.
         g.doHook("close-frame", c=c)
+
+        ### g.app.commander_cacher.commit()  # store cache, but don't close it.
+
         # Save the window state
-        g.app.commander_cacher.commit()  # store cache, but don't close it.
         # This may remove frame from the window list.
         if frame in g.app.windowList:
             g.app.destroyWindow(frame)

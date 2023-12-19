@@ -275,6 +275,7 @@ class Commands:
         from leo.core import leoAtFile
         from leo.core import leoBeautify  # So decorators are executed.
         assert leoBeautify  # for pyflakes.
+        from leo.core.leoCache import CommanderWrapper  ###
         from leo.core import leoChapters
         # User commands...
         from leo.commands import abbrevCommands
@@ -376,7 +377,11 @@ class Commands:
         # Other objects
         # A list of other classes that have a reloadSettings method
         c.configurables = c.subCommanders[:]
-        c.db = g.app.commander_cacher.get_wrapper(c)
+        
+        ###
+        ### c.db = g.app.commander_cacher.get_wrapper(c)
+        c.db = CommanderWrapper(c) ### , fn=fn)
+        
         # #2485: Load the free_layout plugin in the proper context.
         #        g.app.pluginsController.loadOnePlugin won't work here.
         try:
