@@ -24,7 +24,7 @@ StringIO = io.StringIO
 #@+node:ekr.20220819191617.1: ** << leoApp annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoBackground import BackgroundProcessManager
-    from leo.core.leoCache import GlobalCacher  ### CommanderCacher,
+    from leo.core.leoCache import GlobalCacher
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoConfig import GlobalConfigManager
     from leo.core.leoExternalFiles import ExternalFilesController
@@ -182,8 +182,6 @@ class LeoApp:
         #@+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >>
         # Singleton applications objects...
         self.backgroundProcessManager: BackgroundProcessManager = None  # A BackgroundProcessManager.
-        ### self.commander_cacher: CommanderCacher = None
-        ### self.commander_db: GlobalCacher = None  # Managed by g.app.commander_cacher.
         self.config: GlobalConfigManager = None  # g.app.config.
         self.db: GlobalCacher = None  # A global db, managed by g.app.global_cacher.
         self.externalFilesController: ExternalFilesController = None
@@ -1030,12 +1028,9 @@ class LeoApp:
             g.app.db['hello'] = [1,2,5]
 
         """
-        # Fixes bug 670108.
         from leo.core import leoCache
         g.app.global_cacher = leoCache.GlobalCacher()
         g.app.db = g.app.global_cacher.db
-        ### g.app.commander_cacher = leoCache.CommanderCacher()
-        ### g.app.commander_db = g.app.commander_cacher.db
     #@+node:ekr.20031218072017.1978: *4* app.setLeoID & helpers
     def setLeoID(self, useDialog: bool = True, verbose: bool = True) -> str:
         """Get g.app.leoID from various sources."""
@@ -1257,9 +1252,6 @@ class LeoApp:
                 return False
         g.app.setLog(None)  # no log until we reactive a window.
         g.doHook("close-frame", c=c)
-
-        ###g.app.commander_cacher.commit()  # store cache, but don't close it.
-
         # Save the window state for *all* open files.
         # This may remove frame from the window list.
         if frame in g.app.windowList:
@@ -1305,17 +1297,14 @@ class LeoApp:
             g.doHook("end1")
             if g.app.global_cacher:  # #1766.
                 g.app.global_cacher.commit_and_close()
-            ###
-            # if g.app.commander_cacher:  # #1766.
-                # g.app.commander_cacher.commit()
-                # g.app.commander_cacher.close()
-
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         g.app.destroyAllOpenWithFiles()
-        if hasattr(g.app, 'pyzo_close_handler'):
-            # pylint: disable=no-member
-            g.app.pyzo_close_handler()
+        ###
+            # if hasattr(g.app, 'pyzo_close_handler'):
+                # # pylint: disable=no-member
+                # g.app.pyzo_close_handler()
+
         # Disable all further hooks and events.
         # Alas, "idle" events can still be called
         # even after the following code.

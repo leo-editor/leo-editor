@@ -33,12 +33,9 @@ split = g.os_path_split
 class CommanderWrapper:
     """A class to distinguish keys from separate commanders."""
 
-    ### def __init__(self, c: Cmdr, fn: str = None) -> None:
     def __init__(self, c: Cmdr) -> None:
-        ###g.trace('(CommanderWrapper)', repr(fn))
         self.c = c
         self.db = g.app.db
-        ### self.key = fn or c.mFileName
         self.key = c.mFileName
         self.user_keys: set[str] = set()
 

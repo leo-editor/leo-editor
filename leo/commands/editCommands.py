@@ -427,13 +427,11 @@ class EditCommandsClass(BaseEditCommandsClass):
     def clearAllCaches(self, event: Event = None) -> None:  # pragma: no cover
         """Clear all of Leo's file caches."""
         g.app.global_cacher.clear()
-        ### g.app.commander_cacher.clear()
 
     @cmd('dump-caches')
     def dumpCaches(self, event: Event = None) -> None:  # pragma: no cover
         """Dump, all of Leo's file caches."""
         g.app.global_cacher.dump()
-        ### g.app.commander_cacher.dump()
     #@+node:ekr.20150514063305.118: *3* ec.doNothing
     @cmd('do-nothing')
     def doNothing(self, event: Event) -> None:
