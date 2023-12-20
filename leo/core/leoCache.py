@@ -100,13 +100,13 @@ class GlobalCacher:
         if 'cache' in g.app.debug:
             g.trace('clear g.app.db')
         try:
-            self.db.clear()
+            self.db.clear()  # SqlitePickleShare.clear.
         except TypeError:
-            self.db = {}
+            self.db = {}  # self.db was a dict.
         except Exception:
             g.trace('unexpected exception')
             g.es_exception()
-            self.db = {}  # type:ignore
+            self.db = {}
     #@+node:ekr.20180627042948.1: *3* g_cacher.commit_and_close()
     def commit_and_close(self) -> None:
         # Careful: self.db may be a dict.
@@ -273,9 +273,12 @@ class SqlitePickleShare:
         return fnmatch.fnmatch(basename(s), pattern)
     #@+node:vitalije.20170716201700.15: *3* clear (SqlitePickleShare)
     def clear(self) -> None:
-        # Deletes all files in the fcache subdirectory.
-        # It would be more thorough to delete everything
-        # below the root directory, but it's not necessary.
+        """
+        Deletes all files in the fcache subdirectory.
+        
+        It would be more thorough to delete everything
+        below the root directory, but it's not necessary.
+        """
         self.conn.execute('delete from cachevalues;')
     #@+node:vitalije.20170716201700.16: *3* get  (SqlitePickleShare)
     def get(self, key: str, default: Any = None) -> Any:
