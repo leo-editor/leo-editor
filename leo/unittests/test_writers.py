@@ -4,6 +4,7 @@
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
+from leo.plugins.importers.markdown import Markdown_Importer
 from leo.plugins.writers.dart import DartWriter
 from leo.plugins.writers.markdown import MarkdownWriter
 from leo.plugins.writers.leo_rst import RstWriter
@@ -53,16 +54,15 @@ class TestDartWriter(BaseTestWriter):
         x.write(root)
     #@-others
 #@+node:ekr.20231219151314.1: ** class TestMDWriter(BaseTestWriter)
-class TestMarkdownWriter(BaseTestWriter):
+class TestMDWriter(BaseTestWriter):
     """Test Cases for the markdown writer plugin."""
     #@+others
     #@+node:ekr.20231219151402.1: *3* TestMDWriter.test_markdown_writer
     def test_markdown_writer(self):
         
-        ### Should be a round-trip test.
-        
-        g.trace('=====')
-
+        c, root = self.c, self.c.p
+        #@+<< define contents: test_markdown_writer >>
+        #@+node:ekr.20231221072635.1: *4* << define contents: test_markdown_writer >>
         contents = textwrap.dedent("""
             # 1st level title X
 
@@ -78,16 +78,23 @@ class TestMarkdownWriter(BaseTestWriter):
 
             some body content of the 2nd node 
         """).strip() + '\n'
+        #@-<< define contents: test_markdown_writer >>
 
-        c, root = self.c, self.c.p
-        child = root.insertAsLastChild()
-        child.h = 'h'
-        child.b = contents
-        x = MarkdownWriter(c)
-        x.write(child)
+        # Import contents into root's tree.
+        importer = Markdown_Importer(c)
+        importer.import_from_string(parent=root, s=contents)
+
+        if 0:
+            for z in root.self_and_subtree():
+                g.printObj(g.splitLines(z.b), tag=z.h)
+            print('\n=== End dump ===\n')
+
+        # Write the tree
+        writer = MarkdownWriter(c)
+        writer.write(root)
         results_list = c.atFileCommands.outputList
         results_s = ''.join(results_list)
-        if 0:
+        if 1:
             g.printObj(contents, tag='contents')
             g.printObj(results_s, tag='results_s')
         # results = ''.join(results_list)
