@@ -288,6 +288,7 @@ class PrintingController:
             return
         # pylint: disable=no-member
         dialog = printsupport.QPrintDialog()
+        dialog.setStyleSheet(self.stylesheet)
         result = dialog.exec_()
         if result == DialogCode.Accepted:
             try:
