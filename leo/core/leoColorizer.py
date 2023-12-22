@@ -1909,18 +1909,26 @@ class JEditColorizer(BaseColorizer):
         """
         escape, escapes = '\\', 0
         level = self.f_string_nesting_level
+        alt_delim = '"' if delim == "'" else "'"
+        in_alt_delim = False
 
         # Scan, incrementing escape count and f-string level.
+        g.trace(i, 'delim:', delim, s.rstrip())
         while i < len(s):
             progress = i
+            ### g.trace(i, 'escapes', escapes, 'level', level, repr(s[i]))
             if g.match(s, i, delim):
-                if (escapes % 2) == 0 and level == 0:
+                if (escapes % 2) == 0 and level == 0 and not in_alt_delim:
                     return i + len(delim)
                 i += len(delim)
                 continue
+            if g.match(s, i, alt_delim):
+                in_alt_delim = not in_alt_delim
+                i += 1
+                continue
             ch = s[i]
             i += 1
-            if ch == '#' and (escapes % 2) == 0:
+            if ch == '#' and (escapes % 2) == 0 and not in_alt_delim:
                 break  # Don't scan comments.
             if ch == escape:
                 escapes += 1
