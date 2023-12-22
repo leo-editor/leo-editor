@@ -21,11 +21,14 @@ class MarkdownWriter(basewriter.BaseWriter):
                 self.put_node_sentinel(p, '<!--', delim2='-->')
             self.write_headline(p)
             # Ensure that every section ends with exactly two newlines.
-            s = p.b.rstrip() + '\n\n'
-            lines = s.splitlines(False)
-            for s in lines:
-                if not g.isDirective(s):
-                    self.put(s)
+            if p.b.rstrip():
+                s = p.b.rstrip() + '\n\n'
+                lines = s.splitlines(False)
+                for s in lines:
+                    if not g.isDirective(s):
+                        self.put(s)
+            else:  # #3719.
+                self.put('\n')
         root.setVisited()
     #@+node:ekr.20141110223158.20: *3* mdw.write_headline
     def write_headline(self, p: Position) -> None:
@@ -42,7 +45,8 @@ class MarkdownWriter(basewriter.BaseWriter):
         if kind == '!':
             pass  # The signal for a declaration node.
         else:
-            self.put(f"{'#' * level} {p.h.lstrip()}")  # Leo 6.6.4: preserve spacing.
+            # Leo 6.6.4: preserve spacing.
+            self.put(f"{'#' * level} {p.h.lstrip()}")
     #@+node:ekr.20171230170642.1: *3* mdw.write_root
     def write_root(self, root: Position) -> None:
         """Write the root @auto-org node."""

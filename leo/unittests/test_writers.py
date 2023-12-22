@@ -74,10 +74,10 @@ class TestMDWriter(BaseTestWriter):
 
             # 1st level title A
 
-            ## 2nd level title B 
+            ## 2nd level title B
 
             some body content of the 2nd node 
-        """).strip() + '\n'
+        """).strip() + '\n\n'  # End the last node with '\n\n'.
         #@-<< define contents: test_markdown_writer >>
 
         # Import contents into root's tree.
@@ -89,17 +89,15 @@ class TestMDWriter(BaseTestWriter):
                 g.printObj(g.splitLines(z.b), tag=z.h)
             print('\n=== End dump ===\n')
 
-        # Write the tree
+        # Write the tree.
         writer = MarkdownWriter(c)
         writer.write(root)
         results_list = c.atFileCommands.outputList
         results_s = ''.join(results_list)
-        if 1:
+        if contents != results_s:
             g.printObj(contents, tag='contents')
             g.printObj(results_s, tag='results_s')
-        # results = ''.join(results_list)
         self.assertEqual(results_s, contents)
-        ### self.assertEqual(results_list,  g.splitLines(contents))
     #@-others
 #@+node:ekr.20220812175633.1: ** class TestRstWriter(BaseTestWriter)
 class TestRstWriter(BaseTestWriter):
