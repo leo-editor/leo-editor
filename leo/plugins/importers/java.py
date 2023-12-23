@@ -20,7 +20,7 @@ class Java_Importer(Importer):
     block_patterns = (
         ('class', re.compile(r'.*?\bclass\s+(\w+)')),
         ('func', re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*{')),
-        ('interface', re.compile(r'\w*\binterface\w*{')),
+        ('interface', re.compile(r'.*?\binterface\s+(\w*)\s*{')),
     )
 #@-others
 

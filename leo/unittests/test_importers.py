@@ -1558,12 +1558,15 @@ class TestJava(BaseTestImporter):
         """
         expected_results = (
             (0, '',  # Ignore the first headline.
+                '@others\n'
+                '@language java\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'interface Bicycle',
                 'interface Bicycle {\n'
                 '    void changeCadence(int newValue);\n'
                 '    void changeGear(int newValue);\n'
                 '}\n'
-                '@language java\n'
-                '@tabwidth -4\n'
             ),
         )
         self.new_run_test(s, expected_results)
@@ -1578,12 +1581,15 @@ class TestJava(BaseTestImporter):
         """
         expected_results = (
             (0, '',  # Ignore the first headline.
+                '@others\n'
+                '@language java\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'interface Bicycle',
                 'interface Bicycle {\n'
                 'void changeCadence(int newValue);\n'
                 'void changeGear(int newValue);\n'
                 '}\n'
-                '@language java\n'
-                '@tabwidth -4\n'
             ),
         )
         self.new_run_test(s, expected_results)
