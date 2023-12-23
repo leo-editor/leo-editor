@@ -301,6 +301,7 @@ class PrintingController:
         # pylint: disable=no-member
         dialog = printsupport.QPrintPreviewDialog()
         dialog.setSizeGripEnabled(True)
+        dialog.setStyleSheet(self.stylesheet)
         dialog.paintRequested.connect(doc.print)
         dialog.exec_()
     #@-others
