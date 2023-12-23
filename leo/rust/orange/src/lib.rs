@@ -4,11 +4,16 @@
 
 // Test file for main.rs.
 
+
 #[cfg(test)]
 mod tests {
+    //@+others
+    //@+node:ekr.20231223154842.1: ** fn: driver
     #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+    fn driver() {
+        println!("driver test")
+        // assert_eq!(2 + 2, 4);
     }
+    //@-others
 }
 //@-leo
