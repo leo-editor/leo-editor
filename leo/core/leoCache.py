@@ -68,7 +68,7 @@ class CommanderWrapper:
 #@+node:ekr.20180627041556.1: ** class GlobalCacher (g.app.db)
 class GlobalCacher:
     """
-    A calss creating a singleton global database, g.app.db.
+    A class creating a singleton global database, g.app.db.
     
     This DB resides in ~/.leo/db.
     
