@@ -292,7 +292,7 @@ def getLastTracebackFileAndLineNumber():
         return val.filename, val.lineno  # type:ignore
     #
     # Data is a list of tuples, one per stack entry.
-    # Tupls have the form (filename,lineNumber,functionName,text).
+    # Tuples have the form (filename,lineNumber,functionName,text).
     data = traceback.extract_tb(tb)
     if data:
         item = data[-1]  # Get the item at the top of the stack.

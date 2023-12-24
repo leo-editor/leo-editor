@@ -1188,7 +1188,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
     def do_interact(self, arg):
         """interact
 
-        Start an interative interpreter whose global namespace
+        Start an interactive interpreter whose global namespace
         contains all the (global and local) names found in the current scope.
         """
         ns = self.curframe.f_globals.copy()

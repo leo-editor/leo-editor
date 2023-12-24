@@ -216,13 +216,13 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
     #@+node:ekr.20170428084207.190: *3* while_editing
     def while_editing(self, *args, **keywords):
         """This function gets called during the edit loop, on each iteration
-        of the loop.  It does nothing: it is here to make customising the loop
+        of the loop.  It does nothing: it is here to make customizing the loop
         as easy as overriding this function. A proxy to the currently selected widget is
         passed to the function."""
 
     #@+node:ekr.20170428084207.191: *3* on_screen
     def on_screen(self):
-        # is the widget in editw on sreen at the moment?
+        # is the widget in editw on screen at the moment?
         # if not, alter screen so that it is.
 
         w = weakref.proxy(self._widgets__[self.editw])
@@ -429,7 +429,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
     def add_widget(self, widgetClass, w_id=None, max_height=None, rely=None, relx=None, *args, **keywords):
         """Add a widget to the form.  The form will do its best to decide on placing, unless you override it.
         The form of this function is add_widget(WidgetClass, ....) with any arguments or keywords supplied to
-        the widget. The wigdet will be added to self._widgets__
+        the widget. The widget will be added to self._widgets__
 
         It is safe to use the return value of this function to keep hold of the widget, since that is a weak
         reference proxy, but it is not safe to keep hold of self._widgets__"""

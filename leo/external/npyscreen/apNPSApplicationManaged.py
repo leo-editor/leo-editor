@@ -203,7 +203,7 @@ class NPSAppManaged(apNPSApplication.NPSApp):
 
     #@+node:ekr.20170428084207.48: *3* onStart
     def onStart(self):
-        """Override this method to perform any initialisation."""
+        """Override this method to perform any initialization."""
         pass
 
     #@+node:ekr.20170428084207.49: *3* onCleanExit
