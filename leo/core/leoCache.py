@@ -29,97 +29,19 @@ join = g.os_path_join
 normcase = g.os_path_normcase
 split = g.os_path_split
 #@+others
-#@+node:ekr.20100208062523.5885: ** class CommanderCacher
-class CommanderCacher:
-    """A class to manage per-commander caches."""
-
-    def __init__(self) -> None:
-        self.db: Any
-        try:
-            path = join(g.app.homeLeoDir, 'db', 'global_data')
-            self.db = SqlitePickleShare(path)
-        except Exception:
-            self.db = {}  # type:ignore
-    #@+others
-    #@+node:ekr.20100209160132.5759: *3* cacher.clear
-    def clear(self) -> None:
-        """Clear the cache for all commanders."""
-        # Careful: self.db may be a Python dict.
-        try:
-            self.db.clear()
-        except Exception:
-            g.trace('unexpected exception')
-            g.es_exception()
-            self.db = {}  # type:ignore
-    #@+node:ekr.20180627062431.1: *3* cacher.close
-    def close(self) -> None:
-        # Careful: self.db may be a dict.
-        if hasattr(self.db, 'conn'):
-            # pylint: disable=no-member
-            self.db.conn.commit()
-            self.db.conn.close()
-    #@+node:ekr.20180627042809.1: *3* cacher.commit
-    def commit(self) -> None:
-        # Careful: self.db may be a dict.
-        if hasattr(self.db, 'conn'):
-            # pylint: disable=no-member
-            self.db.conn.commit()
-    #@+node:ekr.20180611054447.1: *3* cacher.dump
-    def dump(self) -> None:
-        """Dump the indicated cache if --trace-cache is in effect."""
-        dump_cache(g.app.commander_db, tag='Commander Cache')
-    #@+node:ekr.20180627053508.1: *3* cacher.get_wrapper
-    def get_wrapper(self, c: Cmdr, fn: str = None) -> "CommanderWrapper":
-        """Return a new wrapper for c."""
-        return CommanderWrapper(c, fn=fn)
-    #@+node:ekr.20100208065621.5890: *3* cacher.test
-    def test(self) -> bool:
-
-        # pylint: disable=no-member
-        if g.app.gui.guiName() == 'nullGui':
-            # Null gui's don't normally set the g.app.gui.db.
-            g.app.setGlobalDb()
-        # Fixes bug 670108.
-        assert g.app.db is not None
-        # Make sure g.guessExternalEditor works.
-        g.app.db.get("LEO_EDITOR")
-        # self.initFileDB('~/testpickleshare')
-        db = self.db
-        db.clear()
-        assert not list(db.items())
-        db['hello'] = 15
-        db['aku ankka'] = [1, 2, 313]
-        db['paths/nest/ok/keyname'] = [1, (5, 46)]
-        db.uncache()  # frees memory, causes re-reads later
-        # print(db.keys())
-        db.clear()
-        return True
-    #@+node:ekr.20100210163813.5747: *3* cacher.save
-    def save(self, c: Cmdr, fn: str) -> None:
-        """
-        Save the per-commander cache.
-
-        Change the cache prefix if changeName is True.
-
-        save and save-as set changeName to True, save-to does not.
-        """
-        self.commit()
-        if fn:
-            # 1484: Change only the key!
-            if isinstance(c.db, CommanderWrapper):
-                c.db.key = fn
-                self.commit()
-            else:
-                g.trace('can not happen', c.db.__class__.__name__)
-    #@-others
-#@+node:ekr.20180627052459.1: ** class CommanderWrapper
+#@+node:ekr.20180627052459.1: ** class CommanderWrapper (c.db)
 class CommanderWrapper:
-    """A class to distinguish keys from separate commanders."""
+    """
+    A class that creates distinct keys for all commanders, allowing
+    commanders to share g.app.db without collisions.
+    
+    Instances of this class are c.db.
+    """
 
-    def __init__(self, c: Cmdr, fn: str = None) -> None:
+    def __init__(self, c: Cmdr) -> None:
         self.c = c
         self.db = g.app.db
-        self.key = fn or c.mFileName
+        self.key = c.mFileName
         self.user_keys: set[str] = set()
 
     def get(self, key: str, default: Any = None) -> Any:
@@ -143,9 +65,16 @@ class CommanderWrapper:
     def __setitem__(self, key: str, value: Any) -> None:
         self.user_keys.add(key)
         self.db[f"{self.key}:::{key}"] = value
-#@+node:ekr.20180627041556.1: ** class GlobalCacher
+#@+node:ekr.20180627041556.1: ** class GlobalCacher (g.app.db)
 class GlobalCacher:
-    """A singleton global cacher, g.app.db"""
+    """
+    A class creating a singleton global database, g.app.db.
+    
+    This DB resides in ~/.leo/db.
+    
+    New in Leo 6.7.7: All instances of c.db may use g.app.db because the
+    CommanderWrapper class creates distinct keys for each commander.
+    """
 
     def __init__(self) -> None:
         """Ctor for the GlobalCacher class."""
@@ -171,13 +100,13 @@ class GlobalCacher:
         if 'cache' in g.app.debug:
             g.trace('clear g.app.db')
         try:
-            self.db.clear()
+            self.db.clear()  # SqlitePickleShare.clear.
         except TypeError:
-            self.db.clear()
+            self.db = {}  # self.db was a dict.
         except Exception:
             g.trace('unexpected exception')
             g.es_exception()
-            self.db = {}  # type:ignore
+            self.db = {}
     #@+node:ekr.20180627042948.1: *3* g_cacher.commit_and_close()
     def commit_and_close(self) -> None:
         # Careful: self.db may be a dict.
@@ -199,7 +128,12 @@ _sentinel = object()
 
 
 class SqlitePickleShare:
-    """ The main 'connection' object for SqlitePickleShare database """
+    """
+    The main 'connection' object for SqlitePickleShare database.
+    
+    Opening this DB may fail. If so the GlobalCacher class uses a plain
+    Python dict instead.
+    """
     #@+others
     #@+node:vitalije.20170716201700.2: *3*  Birth & special methods
     def init_dbtables(self, conn: Any) -> None:
@@ -339,9 +273,12 @@ class SqlitePickleShare:
         return fnmatch.fnmatch(basename(s), pattern)
     #@+node:vitalije.20170716201700.15: *3* clear (SqlitePickleShare)
     def clear(self) -> None:
-        # Deletes all files in the fcache subdirectory.
-        # It would be more thorough to delete everything
-        # below the root directory, but it's not necessary.
+        """
+        Deletes all files in the fcache subdirectory.
+        
+        It would be more thorough to delete everything
+        below the root directory, but it's not necessary.
+        """
         self.conn.execute('delete from cachevalues;')
     #@+node:vitalije.20170716201700.16: *3* get  (SqlitePickleShare)
     def get(self, key: str, default: Any = None) -> Any:
