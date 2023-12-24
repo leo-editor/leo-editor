@@ -325,20 +325,23 @@ def show_clone_ancestors(event: Event = None) -> None:
     c = event.get('c')
     if not c:
         return
-    p = c.p
-    g.es(f"Ancestors of {p.h}...")
-    for clone in c.all_positions():
-        if clone.v == p.v:
-            unl = message = clone.get_legacy_UNL()
+    g.es(f"Ancestors of {c.p.h}...")
+    seen: set[str] = set()
+    for p in c.vnode2allPositions(c.p.v):
+        for ancestor in p.parents():
+            unl = message = ancestor.get_legacy_UNL()
             # Drop the file part.
             i = unl.find('#')
-            if i > 0:
+            if i >= 0:
                 message = unl[i + 1 :]
-            # Drop the target node from the message.
-            parts = message.split('-->')
-            if len(parts) > 1:
-                message = '-->'.join(parts[:-1])
-            c.frame.log.put(message + '\n', nodeLink=f"{unl}::1")
+            if 0:  # Too confusing.
+                # Drop the target node from the message.
+                parts = message.split('-->')
+                if len(parts) > 1:
+                    message = '-->'.join(parts[:-1])
+            if message not in seen:
+                seen.add(message)
+                c.frame.log.put(message + '\n', nodeLink=f"{unl}::1")
 #@+node:ekr.20191007034723.1: *3* @g.command('show-clone-parents')
 @g.command('show-clone-parents')
 def show_clones(event: Event = None) -> None:
@@ -346,18 +349,19 @@ def show_clones(event: Event = None) -> None:
     c = event.get('c')
     if not c:
         return
-    seen = []
+    seen: set[str] = set()
+    g.es(f"Parents of {c.p.h}...")
     for clone in c.vnode2allPositions(c.p.v):
         parent = clone.parent()
-        if parent and parent not in seen:
-            seen.append(parent)
+        if parent:
             unl = message = parent.get_legacy_UNL()
             # Drop the file part.
             i = unl.find('#')
-            if i > 0:
+            if i >= 0:
                 message = unl[i + 1 :]
-            c.frame.log.put(message + '\n', nodeLink=f"{unl}::1")
-
+            if message not in seen:
+                seen.add(message)
+                c.frame.log.put(message + '\n', nodeLink=f"{unl}::1")
 #@+node:ekr.20180210161001.1: *3* @g.command('unmark-node-and-parents')
 @g.command('unmark-node-and-parents')
 def unmark_node_and_parents(event: Event = None) -> list[Position]:
@@ -427,13 +431,11 @@ class EditCommandsClass(BaseEditCommandsClass):
     def clearAllCaches(self, event: Event = None) -> None:  # pragma: no cover
         """Clear all of Leo's file caches."""
         g.app.global_cacher.clear()
-        g.app.commander_cacher.clear()
 
     @cmd('dump-caches')
     def dumpCaches(self, event: Event = None) -> None:  # pragma: no cover
         """Dump, all of Leo's file caches."""
         g.app.global_cacher.dump()
-        g.app.commander_cacher.dump()
     #@+node:ekr.20150514063305.118: *3* ec.doNothing
     @cmd('do-nothing')
     def doNothing(self, event: Event) -> None:
