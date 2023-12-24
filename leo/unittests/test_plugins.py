@@ -14,7 +14,7 @@ from leo.plugins import indented_languages
 #@+others
 #@+node:ekr.20210907082556.1: ** class TestPlugins(LeoUnitTest)
 class TestPlugins(LeoUnitTest):
-    """General tests of plugoins."""
+    """General tests of plugins."""
     #@+others
     #@+node:ekr.20210909165100.1: *3*  TestPlugin.check_syntax
     def check_syntax(self, filename):  # pylint: disable=inconsistent-return-statements

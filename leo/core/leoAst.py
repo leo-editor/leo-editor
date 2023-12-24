@@ -3046,7 +3046,7 @@ class TokenOrderGenerator:
             token = self.find_next_non_ws_token()
     #@+node:ekr.20231213174617.1: *6* tog.sync_to_kind
     def sync_to_kind(self, kind: str) -> None:
-        """Sync to the next signifcant token of the given kind."""
+        """Sync to the next significant token of the given kind."""
         assert is_significant_kind(kind), repr(kind)
         while next_token := self.find_next_significant_token():
             self.token(next_token.kind, next_token.value)
@@ -3383,7 +3383,7 @@ class TokenOrderGenerator:
         elif isinstance(node.value, str):
             self.string_helper(node)
         elif isinstance(node.value, int):
-            # Look at the next token to distinguinsh 0/1 from True/False.
+            # Look at the next token to distinguish 0/1 from True/False.
             token = self.find_next_significant_token()
             kind, value = token.kind, token.value
             assert kind in ('name', 'number'), (kind, value, g.callers())

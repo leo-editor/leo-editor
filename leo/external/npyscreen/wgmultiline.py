@@ -103,7 +103,7 @@ class MultiLine(widget.Widget):
         self.values = values or []
         self.value = value
         self._filter = None
-        # For optimisation...
+        # For optimization...
         self._last_start_display_at = None
         self._last_cursor_line = None
         self._last_values = copy.copy(values)
@@ -884,7 +884,7 @@ class TitleMultiLine(titlefield.TitleText):
         if hasattr(self, 'entry_widget'):
             self.entry_widget.values = value
         elif hasattr(self, '__tmp_value'):
-            # probably trying to set the value before the textarea is initialised
+            # probably trying to set the value before the textarea is initialized
             self.__tmp_values = value
     #@+node:ekr.20170428084208.147: *3* del_values
     def del_values(self):

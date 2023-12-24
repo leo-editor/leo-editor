@@ -292,7 +292,7 @@ def getLastTracebackFileAndLineNumber():
         return val.filename, val.lineno  # type:ignore
     #
     # Data is a list of tuples, one per stack entry.
-    # Tupls have the form (filename,lineNumber,functionName,text).
+    # Tuples have the form (filename,lineNumber,functionName,text).
     data = traceback.extract_tb(tb)
     if data:
         item = data[-1]  # Get the item at the top of the stack.
@@ -448,7 +448,7 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
     return s
 #@+node:ekr.20110310093050.14287: *5* toUnicode (codewise)
 def toUnicode(s, encoding='utf-8', reportErrors=False):
-    '''Connvert a non-unicode string with the given encoding to unicode.'''
+    '''Convert a non-unicode string with the given encoding to unicode.'''
     if isUnicode(s):
         return s
     if not encoding:

@@ -58,7 +58,7 @@ class BaseTestImporter(LeoUnitTest):
             print(f"Fail: {self.id()}")
             self.dump_tree(p, tag='Actual results...')
             if 0:  # Sometimes good.
-                # Dump the exptected results, as in LeoUnitTest.dump_tree.
+                # Dump the expected results, as in LeoUnitTest.dump_tree.
                 print('Expected results')
                 for (level, headline, body) in expected:
                     print('')
@@ -81,7 +81,7 @@ class BaseTestImporter(LeoUnitTest):
         self.assertEqual(s_lines, result_lines)
     #@+node:ekr.20211108044605.1: *3* BaseTestImporter.compute_unit_test_kind
     def compute_unit_test_kind(self, ext: str) -> str:
-        """Return kind from the given extention."""
+        """Return kind from the given extension."""
         aClass = g.app.classDispatchDict.get(ext)
         kind = {
             '.json': '@auto-json',
@@ -169,7 +169,7 @@ class TestImporterClass(LeoUnitTest):
             """
         ))
         # Test that Importer.trace_block doesn't crash.
-        # Comment out the assignment to sys.stdout to see the actual reasults.
+        # Comment out the assignment to sys.stdout to see the actual results.
         try:
             sys.stdout = open(os.devnull, 'w')
             block = Block('def', 'spam_and_eggs', start=3, start_body=4, end=5, lines=lines)
@@ -548,7 +548,7 @@ class TestC(BaseTestImporter):
             self.assertEqual(lines, result_lines)
     #@+node:ekr.20230607164309.1: *3* TestC.test_struct
     def test_struct(self):
-        # From codon soources.
+        # From codon sources.
         s = """
         struct SrcInfoAttribute : public Attribute {
           static const std::string AttributeName;
@@ -1853,7 +1853,7 @@ class TestMarkdown(BaseTestImporter):
 
             section 1, line 1
             -- Not an underline
-            secttion 1, line 2
+            section 1, line 2
 
             Section 2
             ---------
@@ -1890,7 +1890,7 @@ class TestMarkdown(BaseTestImporter):
                 '\n'
                 'section 1, line 1\n'
                 '-- Not an underline\n'
-                'secttion 1, line 2\n'
+                'section 1, line 2\n'
                 '\n'
             ),
             (2, 'Section 2',
@@ -2689,7 +2689,7 @@ class TestPerl(BaseTestImporter):
             print "Hello
 
             sub World {
-                print "This is not a funtion!"
+                print "This is not a function!"
             }
 
             world\n";
@@ -2702,7 +2702,7 @@ class TestPerl(BaseTestImporter):
                     '            print "Hello\n'
                     '\n'
                     '            sub World {\n'
-                    '                print "This is not a funtion!"\n'
+                    '                print "This is not a function!"\n'
                     '            }\n'
                     '\n'
                     '            world\n'
@@ -2724,7 +2724,7 @@ class TestPerl(BaseTestImporter):
 
             =begin comment
             sub World {
-                print "This is not a funtion!"
+                print "This is not a function!"
             }
             =cut
 
@@ -2750,7 +2750,7 @@ class TestPerl(BaseTestImporter):
             (1, 'sub World',
                     '            =begin comment\n'
                     '            sub World {\n'
-                    '                print "This is not a funtion!"\n'
+                    '                print "This is not a function!"\n'
                     '            }\n'
             ),
             (1, 'sub Hello',
@@ -3070,7 +3070,7 @@ class TestPython(BaseTestImporter):
             ),
             (1, 'class Class3',
                 'class Class3:\n'
-                '@others\n'  # The underindented comments prevents indentaion
+                '@others\n'  # The underindented comments prevents indention
             ),
             (2, 'Class3.u1',
                     '# Outer underindented comment\n'

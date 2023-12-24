@@ -1363,7 +1363,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+<< define contents >>
         #@+node:ekr.20231203092436.2: *4* << define contents >> (test_cweb)
         # Be careful: no line should look like a Leo sentinel!
-        # Use a raw string so pyflakes won't complain abouit \document.
+        # Use a raw string so pyflakes won't complain about \document.
         contents = textwrap.dedent(r'''
         ATq@@+leo-ver=5-thin@>
         ATq@@+node:{root.gnx}: * @{h}@>

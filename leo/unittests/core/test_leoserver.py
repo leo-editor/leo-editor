@@ -119,7 +119,7 @@ class TestLeoServer(LeoUnitTest):
             # "paste_node": {"name", "paste-node-name"},
             # "paste_as_clone_node": {"name", "paste-node-name"},
         }
-        # First open a test file & performa all tests.
+        # First open a test file & perform all tests.
         server.open_file({"filename": test_dot_leo})  # A real file.
         # Remove all uA's that can't be serialized.
         file_c = g.openWithFileName(test_dot_leo)
