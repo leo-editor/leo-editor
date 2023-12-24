@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:edream.110203113231.741: * @file ../plugins/add_directives.py
-"""Allows users to define new @direcives."""
+"""Allows users to define new @directives."""
 
 from leo.core import leoGlobals as g
 

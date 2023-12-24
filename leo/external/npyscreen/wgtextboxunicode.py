@@ -29,7 +29,7 @@ class TextfieldUnicode(wgtextbox.Textfield):
         return 1
         w = unicodedata.east_asian_width(char)
         if w == 'A':
-            # Abiguous - allow 1, but be aware that this could well be wrong
+            # Ambiguous - allow 1, but be aware that this could well be wrong
             return 1
         else:
             return self.__class__.width_mapping[w]

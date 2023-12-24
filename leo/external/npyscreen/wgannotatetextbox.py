@@ -9,7 +9,7 @@ from .wgtextbox import Textfield
 
 #@+node:ekr.20170428084207.482: ** class AnnotateTextboxBase
 class AnnotateTextboxBase(wgwidget.Widget):
-    """A base class intented for customization. Note in particular the annotationColor and annotationNoColor methods
+    """A base class intended for customization. Note in particular the annotationColor and annotationNoColor methods
     which you should override."""
     ANNOTATE_WIDTH = 5
 

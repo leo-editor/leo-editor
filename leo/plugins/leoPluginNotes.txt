@@ -3,7 +3,7 @@
 #@+all
 #@+node:ekr.20071113084440.1: ** @@file test/syntax_error_plugin.py
 """
-This plugin intentially has a syntax error.
+This plugin intentionally has a syntax error.
 It is used for testing Leo's plugin loading logic.
 """
 
@@ -132,7 +132,7 @@ This plugin renders @md, @image, @html, @movie, @networkx and @svg nodes as foll
 **Note**: For @image, @movie and @svg nodes, either the headline or the first line of body text may
 contain a filename.  If relative, the filename is resolved relative to Leo's load directory.
 
-- ``@md`` renderes the body text as markdown, as described above.
+- ``@md`` renders the body text as markdown, as described above.
 
 - ``@graphics-script`` executes the script in the body text in a context containing
   two predefined variables:

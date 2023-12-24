@@ -14,7 +14,7 @@ from . import fmForm
 
 #@+node:ekr.20170428084207.326: ** class Menu
 class Menu:
-    "This class is obsolete and Depricated.  Use NewMenu instead."
+    "This class is obsolete and Deprecated.  Use NewMenu instead."
 
     #@+others
     #@+node:ekr.20170428084207.327: *3* __init__

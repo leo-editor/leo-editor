@@ -99,14 +99,14 @@ class TestGlobals(LeoUnitTest):
 
         'unl:gnx://#ekr.20180311131424.1',
 
-        # test.leo:Error mssages (copy to log)
+        # test.leo:Error messages (copy to log)
         'unl:gnx://#ekr.20230622112649.1',
 
         # test.leo:Recent
         'unl:gnx://test.leo#ekr.20180311131424.1',
         'unl:gnx://#ekr.20180311131424.1',
 
-        # test.leo: Error mssages (copy to log)
+        # test.leo: Error messages (copy to log)
         'unl:gnx://test.leo#ekr.20230622112649.1',
         'unl:gnx://#ekr.20230622112649.1',
 

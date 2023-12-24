@@ -168,7 +168,7 @@ class TitleText(widget.Widget):
         if hasattr(self, 'entry_widget'):
             self.entry_widget.value = value
         else:
-            # probably trying to set the value before the textarea is initialised
+            # probably trying to set the value before the textarea is initialized
             self.__tmp_value = value
     #@+node:ekr.20170428084208.393: *3* TitleText.del_value
     def del_value(self):

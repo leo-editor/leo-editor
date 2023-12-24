@@ -69,7 +69,7 @@ class _LinePrinter:
 
     #@+node:ekr.20170428084208.442: *3* make_attributes_list
     def make_attributes_list(self, unicode_string, attribute):
-        """A convenience function.  Retuns a list the length of the unicode_string
+        """A convenience function.  Returns a list the length of the unicode_string
         provided, with each entry of the list containing a copy of attribute."""
         if isinstance(unicode_string, bytes):
             raise ValueError("This class is intended for unicode strings only.")

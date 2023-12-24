@@ -153,7 +153,7 @@ class ScreenArea:
         pmfuncs.hide_cursor()
         _my, _mx = self._max_physical()
         self.curses_pad.move(0, 0)
-        # Since we can have pannels larger than the screen
+        # Since we can have panels larger than the screen
         # let's allow for scrolling them
 
         # Getting strange errors on OS X, with curses sometimes crashing at this point.
