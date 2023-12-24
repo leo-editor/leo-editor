@@ -178,7 +178,7 @@ class MonthBox(DateEntryBase):
 
     #@+node:ekr.20170428084208.65: *3* MonthBox.calculate_area_needed
     def calculate_area_needed(self):
-        # Rember that although months only have 4-5 weeks, they can span 6 weeks.
+        # Remember that although months only have 4-5 weeks, they can span 6 weeks.
         # Currently allowing 2 lines for headers, so 8 lines total
         return 10, self.__class__.DAY_FIELD_WIDTH * 7
 

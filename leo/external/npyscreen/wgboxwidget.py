@@ -194,7 +194,7 @@ class BoxTitle(BoxBasic):
         if hasattr(self, 'entry_widget'):
             self.entry_widget.value = value
         else:
-            # probably trying to set the value before the textarea is initialised
+            # probably trying to set the value before the textarea is initialized
             self.__tmp_value = value
     #@+node:ekr.20170428084207.517: *3* BoxTitle.del_value
     def del_value(self):
@@ -214,7 +214,7 @@ class BoxTitle(BoxBasic):
         if hasattr(self, 'entry_widget'):
             self.entry_widget.values = value
         elif hasattr(self, '__tmp_value'):
-            # probably trying to set the value before the textarea is initialised
+            # probably trying to set the value before the textarea is initialized
             self.__tmp_values = value
     #@+node:ekr.20170428084207.520: *3* BoxTitle.del_values
     def del_values(self):
@@ -232,7 +232,7 @@ class BoxTitle(BoxBasic):
         if hasattr(self, 'entry_widget'):
             self.entry_widget.editable = value
         elif hasattr(self, '__tmp_value'):
-            # probably trying to set the value before the textarea is initialised
+            # probably trying to set the value before the textarea is initialized
             self.__tmp_values = value
     #@+node:ekr.20170428084207.523: *3* BoxTitle.del_editable
     def del_editable(self):

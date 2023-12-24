@@ -20,7 +20,7 @@ class ThemeManager:
     # a tuple with (color_number, (r, g, b))
     # you can use this to redefine colour values.
     # This will only work on compatible terminals.
-    # Betware that effects will last beyond the end of the
+    # Beware that effects will last beyond the end of the
     # application.
     _color_values = (
         #(curses.COLOR_GREEN, (150,250,100)),

@@ -30,7 +30,7 @@ class NPSApp:
 
     #@+node:ekr.20170428084207.9: *3* __remove_argument_call_main
     def __remove_argument_call_main(self, screen, enable_mouse=True):
-        # screen disgarded.
+        # screen discarded.
         if enable_mouse:
             curses.mousemask(curses.ALL_MOUSE_EVENTS)
         del screen

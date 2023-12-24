@@ -88,7 +88,7 @@ def start(event):
     The ctags-complete command.
     Call cc.start() where cc is the CtagsController for event's commander.
     """
-    global conrollers
+    global controllers
     c = event.get('c')
     if not c:
         return
