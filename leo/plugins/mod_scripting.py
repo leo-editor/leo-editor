@@ -569,7 +569,7 @@ class ScriptingController:
         - Creates the actual button and its balloon.
         - Adds the button to buttonsDict.
         - Registers command with the shortcut.
-        - Creates x amd delete-x-button commands, where x is the cleaned button name.
+        - Creates x and delete-x-button commands, where x is the cleaned button name.
         - Binds a right-click in the button to a callback that deletes the button.
         """
         c = self.c

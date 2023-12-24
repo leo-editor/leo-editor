@@ -367,7 +367,7 @@ class CoffeeScriptTraverser:
 
     def do_arg(self, node):
 
-        # Visit the node.annotation to keep strings in synch.
+        # Visit the node.annotation to keep strings in sync.
         if getattr(node, 'annotation', None):
             self.visit(node.annotation)
         return node.arg
@@ -1198,7 +1198,7 @@ class LeoGlobals:
         return s.splitlines(True) if s else []
     #@+node:ekr.20160316091132.92: *3* g.toUnicode (py2cs.py)
     def toUnicode(self, s, encoding='utf-8', reportErrors=False):
-        '''Connvert a non-unicode string with the given encoding to unicode.'''
+        '''Convert a non-unicode string with the given encoding to unicode.'''
         if isinstance(s, str):
             return s
         if not encoding:

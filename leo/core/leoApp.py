@@ -3124,7 +3124,7 @@ class LoadManager:
     #@+node:ekr.20120223062418.10419: *5* LM.isLeoFile & LM.isZippedFile
     def isLeoFile(self, fn: str) -> bool:
         """
-        Return True if fn has the extention of any kind of Leo file,
+        Return True if fn has the extension of any kind of Leo file,
         including a zipped file or .leo, .db, or .leojs file.
         """
         if not fn:
