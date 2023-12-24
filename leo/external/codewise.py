@@ -448,7 +448,7 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
     return s
 #@+node:ekr.20110310093050.14287: *5* toUnicode (codewise)
 def toUnicode(s, encoding='utf-8', reportErrors=False):
-    '''Connvert a non-unicode string with the given encoding to unicode.'''
+    '''Convert a non-unicode string with the given encoding to unicode.'''
     if isUnicode(s):
         return s
     if not encoding:

@@ -1876,7 +1876,7 @@ class JEditColorizer(BaseColorizer):
         if g.match(s, delim_offset, delim * 3):
             delim = delim * 3
 
-        # print(f"  match_fstringi: {i:2} delim: {delim} s: {s}")
+        # print(f"  match_fstring i: {i:2} delim: {delim} s: {s}")
 
         # Similar to code for docstrings (match_span).
         start = delim_offset

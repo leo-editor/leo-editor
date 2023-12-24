@@ -680,7 +680,7 @@ class TestTOG(BaseTest):
     # f'x1{e1}y1' ;
     # f'x2{e2+1}y2{e2+2}z2' ;
 
-    # Concatentated strings...
+    # Concatenated strings...
     # 'p2', 'p3' ;
     # f'f2' 'f3' ;
 

@@ -2529,7 +2529,7 @@ class TestEditCommands(LeoUnitTest):
     line c
     last line
     """)
-        # docstrings strip blank lines, so we can't use a doctring here!
+        # docstrings strip blank lines, so we can't use a docstring here!
         after_b = ''.join([
             'first line\n'
             'line 1\n'
