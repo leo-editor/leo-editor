@@ -24,7 +24,7 @@ def cmd(name: str) -> Callable:
 #@+others
 #@+node:ekr.20160514121110.1: ** class HelpCommandsClass
 class HelpCommandsClass(BaseEditCommandsClass):
-    """A class to load files into buffers and save buffers to files."""
+    """A class containing Leo's help-for commands."""
     #@+others
     #@+node:ekr.20150514063305.373: *3* help
     @cmd('help')
@@ -618,7 +618,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.390: *3* helpForDragAndDrop
     @cmd('help-for-drag-and-drop')
     def helpForDragAndDrop(self, event: Event = None) -> None:
-        """Prints a discussion of of Leo's debugging commands."""
+        """Prints a discussion of of Leo's drag-and-drop commands."""
         #@+<< define s >>
         #@+node:ekr.20150514063305.391: *4* << define s >> (helpForDragAndDrop
         #@verbatim
