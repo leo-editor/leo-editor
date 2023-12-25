@@ -844,7 +844,7 @@ class SpellTabHandler:
                         else:
                             alts = []  # Done.
                 except ValueError:
-                    g.printObj(parts, tag=f"Fail: word: {word!r}")
+                    # g.printObj(parts, tag=f"Fail: word: {word!r}")
                     continue
                 if alts:
                     self.currentWord = word
