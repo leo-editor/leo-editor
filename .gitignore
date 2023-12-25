@@ -128,8 +128,6 @@ leo/rust/orange/target
 leo/rust/orange/target/*
 leo/rust/orange/Cargo.lock
 
-leo/scripts/picture_viewer.py
-
 leo/test/*.css
 leo/test/at_ignore_test.txt
 leo/test/dynamicUnitTest.leo
