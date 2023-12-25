@@ -102,14 +102,16 @@ class TestMDWriter(BaseTestWriter):
     def test_markdown_image(self):
         
         c, root = self.c, self.c.p
-        #@+<< define contents: test_markdown_images >>
-        #@+node:ekr.20231225025012.2: *4* << define contents: test_markdown_images >>
+        #@+<< define contents: test_markdown_image >>
+        #@+node:ekr.20231225025012.2: *4* << define contents: test_markdown_image >>
         contents = textwrap.dedent("""
+            declaration text
+
             # ![label](https://raw.githubusercontent.com/boltext/leojs/master/resources/leoapp.png)
 
             Body text
         """).strip() + '\n\n'  # End the last node with '\n\n'.
-        #@-<< define contents: test_markdown_images >>
+        #@-<< define contents: test_markdown_image >>
 
         # Import contents into root's tree.
         importer = Markdown_Importer(c)
