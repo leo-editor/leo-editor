@@ -57,12 +57,12 @@ class TestDartWriter(BaseTestWriter):
 class TestMDWriter(BaseTestWriter):
     """Test Cases for the markdown writer plugin."""
     #@+others
-    #@+node:ekr.20231219151402.1: *3* TestMDWriter.test_markdown_writer
-    def test_markdown_writer(self):
+    #@+node:ekr.20231219151402.1: *3* TestMDWriter.test_markdown_sections
+    def test_markdown_sections(self):
         
         c, root = self.c, self.c.p
-        #@+<< define contents: test_markdown_writer >>
-        #@+node:ekr.20231221072635.1: *4* << define contents: test_markdown_writer >>
+        #@+<< define contents: test_markdown_sections >>
+        #@+node:ekr.20231221072635.1: *4* << define contents: test_markdown_sections >>
         contents = textwrap.dedent("""
             # 1st level title X
 
@@ -78,7 +78,38 @@ class TestMDWriter(BaseTestWriter):
 
             some body content of the 2nd node 
         """).strip() + '\n\n'  # End the last node with '\n\n'.
-        #@-<< define contents: test_markdown_writer >>
+        #@-<< define contents: test_markdown_sections >>
+
+        # Import contents into root's tree.
+        importer = Markdown_Importer(c)
+        importer.import_from_string(parent=root, s=contents)
+
+        if 0:
+            for z in root.self_and_subtree():
+                g.printObj(g.splitLines(z.b), tag=z.h)
+            print('\n=== End dump ===\n')
+
+        # Write the tree.
+        writer = MarkdownWriter(c)
+        writer.write(root)
+        results_list = c.atFileCommands.outputList
+        results_s = ''.join(results_list)
+        if contents != results_s:
+            g.printObj(contents, tag='contents')
+            g.printObj(results_s, tag='results_s')
+        self.assertEqual(results_s, contents)
+    #@+node:ekr.20231225025012.1: *3* TestMDWriter.test_markdown_images
+    def test_markdown_image(self):
+        
+        c, root = self.c, self.c.p
+        #@+<< define contents: test_markdown_images >>
+        #@+node:ekr.20231225025012.2: *4* << define contents: test_markdown_images >>
+        contents = textwrap.dedent("""
+            # ![label](https://raw.githubusercontent.com/boltext/leojs/master/resources/leoapp.png)
+
+            Body text
+        """).strip() + '\n\n'  # End the last node with '\n\n'.
+        #@-<< define contents: test_markdown_images >>
 
         # Import contents into root's tree.
         importer = Markdown_Importer(c)
