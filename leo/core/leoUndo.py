@@ -510,11 +510,9 @@ class Undoer:
         u.setUndoTypes()
     #@+node:ekr.20231225132413.1: *5* u.afterChangeUA
     def afterChangeUA(self, p: Position, command: str, bunch: g.Bunch) -> None:
-
         u = self
         if u.redoing or u.undoing:
             return  # pragma: no cover
-
         bunch.undoType = command
         bunch.newUA = p.v.u
         bunch.undoHelper = u.undoChangeUA
@@ -814,9 +812,8 @@ class Undoer:
         return bunch
     #@+node:ekr.20231225131907.1: *5* u.beforeChangeUA
     def beforeChangeUA(self, p: Position) -> None:
-
         u = self
-        bunch = u.createCommonBunch(p)  # Sets u.oldMarked, u.oldSel, u.p
+        bunch = u.createCommonBunch(p)
         bunch.oldUA = p.v.u
         return bunch
     #@+node:ekr.20050424161505.1: *5* u.beforeClearRecentFiles
@@ -1477,7 +1474,6 @@ class Undoer:
         v = u.p.v
         v.setDirty()
         v.u = u.newUA
-        g.trace(v.h, v.u)
     #@+node:ekr.20050424170219: *4* u.redoClearRecentFiles
     def redoClearRecentFiles(self) -> None:
         c, u = self.c, self
@@ -1832,7 +1828,6 @@ class Undoer:
         v = u.p.v
         v.setDirty()
         v.u = u.oldUA
-        g.trace(v.h, v.u)
     #@+node:ekr.20050424170219.1: *4* u.undoClearRecentFiles
     def undoClearRecentFiles(self) -> None:
         c, u = self.c, self
