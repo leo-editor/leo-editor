@@ -41,9 +41,8 @@ class MarkdownWriter(basewriter.BaseWriter):
         """
         level = p.level() - self.root.level()
         assert level > 0, p.h
-        kind = p.h and p.h[0]
-        if kind == '!':
-            pass  # The signal for a declaration node.
+        if p.h == '!Declarations':
+            pass
         else:
             # Leo 6.6.4: preserve spacing.
             self.put(f"{'#' * level} {p.h.lstrip()}")

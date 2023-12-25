@@ -98,7 +98,7 @@ class TestMDWriter(BaseTestWriter):
             g.printObj(contents, tag='contents')
             g.printObj(results_s, tag='results_s')
         self.assertEqual(results_s, contents)
-    #@+node:ekr.20231225025012.1: *3* TestMDWriter.test_markdown_images
+    #@+node:ekr.20231225025012.1: *3* TestMDWriter.test_markdown_image
     def test_markdown_image(self):
         
         c, root = self.c, self.c.p
