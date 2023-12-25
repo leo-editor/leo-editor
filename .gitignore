@@ -124,6 +124,10 @@ leo/doc/html/_build
 leo/plugins/leoPlugins.leo
 leo/plugins/temacs_ext/
 
+leo/rust/orange/target
+leo/rust/orange/target/*
+leo/rust/orange/Cargo.lock
+
 leo/test/*.css
 leo/test/at_ignore_test.txt
 leo/test/dynamicUnitTest.leo
