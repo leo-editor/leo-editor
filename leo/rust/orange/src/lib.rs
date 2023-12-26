@@ -5,6 +5,7 @@
 use std::process::ExitCode;
 
 pub fn run() -> ExitCode {
+    // The main line for orange.
     println!("orange/src/lib.rs: run");
     
     ExitCode::SUCCESS
