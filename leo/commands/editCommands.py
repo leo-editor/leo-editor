@@ -4049,26 +4049,33 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Clear the uA's in the selected VNode."""
         c = self.c
         p = c and c.p
+        u = c.undoer
         if p and p.v.u:
+            bunch = u.beforeChangeUA(p)
             p.v.u = {}
             # #1276.
             p.setDirty()
             c.setChanged()
+            u.afterChangeUA(p, 'clear-node-uas', bunch)
             c.redraw()
 
     @cmd('clear-all-uas')
     def clearAllUas(self, event: Event = None) -> None:
         """Clear all uAs in the entire outline."""
-        c = self.c
+        c, u, undoType = self.c, self.c.undoer, 'clear-all-uas'
         # #1276.
         changed = False
-        for p in self.c.all_unique_positions():
+        u.beforeChangeGroup(c.p, undoType)
+        for p in c.all_unique_positions():
             if p.v.u:
+                bunch = u.beforeChangeUA(p)
                 p.v.u = {}
                 p.setDirty()
+                u.afterChangeUA(p, undoType, bunch)
                 changed = True
         if changed:
             c.setChanged()
+            u.afterChangeGroup(c.p, undoType)
             c.redraw()
     #@+node:ekr.20150514063305.350: *4* ec.showUas & showAllUas
     @cmd('show-all-uas')
@@ -4107,10 +4114,13 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.getNextArg(self.setUa2)
 
     def setUa2(self, event: Event) -> None:
-        c, k = self.c, self.c.k
+        c, k, u = self.c, self.c.k, self.c.undoer
+        p = c.p
         val = k.arg
-        d = c.p.v.u
+        d = p.v.u
+        bunch = u.beforeChangeUA(p)
         d[self.uaName] = val
+        u.afterChangeUA(p, 'set-ua', bunch)
         self.showNodeUas()
         k.clearState()
         k.resetLabel()
