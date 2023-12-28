@@ -6715,7 +6715,7 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
 #
 # 3. Leo's headline-based UNLs, as shown in the status pane:
 #
-#    Headline-based UNLs consist of `unl://` + `//{outline}#{headline_list}`
+#    Headline-based UNLs consist of `unl://` + `{outline}#{headline_list}`
 #    where headline_list is list of headlines separated by `-->`.
 #
 #    This link works: `unl://#Code-->About this file`.
@@ -6796,11 +6796,10 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         return None
     file_part = g.getUNLFilePart(unl)
     c2 = g.openUNLFile(c, file_part)
-    if not c2:
-        return None
+    c3 = c2 or c
     tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
     unlList = tail.split('-->')
-    return g.findUnl(unlList, c2)
+    return g.findUnl(unlList, c3)
 #@+node:ekr.20230624015529.1: *3* g.findGnx (new unls)
 find_gnx_pat = re.compile(r'^(.*)::([-\d]+)?$')
 
