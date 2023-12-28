@@ -376,6 +376,8 @@ def babelExec(event):
 
         """
 
+        # Execute the Python script in the body of the Babel Root node.  This sets
+        # Leo-Babel options.
         script = getScript(cmdr, babelRoot, useSelectedText=False, language='python')
         code = compile(script, 'Babel Parameter Script', 'exec')
 
@@ -398,23 +400,30 @@ def babelExec(event):
             cmdrRes = None
             resultsRoot = None
 
+        sudo = gld.get('sudo')
+        if sudo:
+            # Run the script with sudo
+            cmdList = ['sudo']
+        else:
+            cmdList = list()
+
         # Determine the language and then the interpreter
         langx = leoG.scanForAtLanguage(cmdrScr, scriptRoot)
         if langx == 'python':
             interpreter = gld.get('babel_python')
             if not interpreter:
                 interpreter = babelCmdr.interpreterPython
-            cmdList = [interpreter, '-u']
+            cmdList.extend([interpreter, '-u'])
         elif langx == 'shell':
             interpreter = gld.get('babel_shell')
             if not interpreter:
                 interpreter = babelCmdr.interpreterShell
-            cmdList = [interpreter]
+            cmdList.append(interpreter)
         else:
             babelCmdr.babelExecCnt += 1
             raise babelG.babel_api.BABEL_LANGUAGE('Unknown language "{0}"'.format(langx))
 
-        script = getScript(cmdrScr, scriptRoot, useSelectedText=False, language=langx)
+        script = f'#! {interpreter}\n' + getScript(cmdrScr, scriptRoot, useSelectedText=False, language=langx)
 
         cmdrScr.setCurrentDirectoryFromContext(scriptRoot)
         cwd = leoG.os_path_abspath(os.getcwd())
@@ -424,6 +433,10 @@ def babelExec(event):
         babel_script_args = gld.get('babel_script_args')
         if babel_script_args:
             cmdList.extend(babel_script_args)
+
+        leoG.es(f'Script\'s CWD: "{cwd}"', color='navy')
+        leoG.es(f'Command list: {cmdList}', color='navy')
+
         # pylint: disable=unexpected-keyword-arg
         wro = tempfile.NamedTemporaryFile(buffering=0)
         wre = tempfile.NamedTemporaryFile(buffering=0)
