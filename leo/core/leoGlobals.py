@@ -7183,8 +7183,8 @@ def openUrlHelper(event: Any, url: str = None) -> Optional[str]:
                         if p.v.gnx == target:
                             c.selectPosition(p)
                             c.redraw()
-                            break
-                    return target
+                            return target
+                    return None
                 #@-<< look for gnx >>
     elif not isinstance(url, str):
         url = url.toString()
