@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140726091031.18073: * @file ../plugins/writers/markdown.py
 """The @auto write code for markdown."""
+import re
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 import leo.plugins.writers.basewriter as basewriter
@@ -12,8 +13,6 @@ class MarkdownWriter(basewriter.BaseWriter):
     #@+node:ekr.20140726091031.18076: *3* mdw.write
     def write(self, root: Position) -> None:
         """Write all the *descendants* of an @auto-markdown node."""
-        # Fix bug 66: errors inhibited read @auto foo.md.
-        # New in Leo 5.5: Skip !headlines. Convert all others to '#' sections.
         self.root = root
         self.write_root(root)
         for p in root.subtree():
@@ -31,17 +30,24 @@ class MarkdownWriter(basewriter.BaseWriter):
                 self.put('\n')
         root.setVisited()
     #@+node:ekr.20141110223158.20: *3* mdw.write_headline
+    # Importer.create_placeholders creates headlines matching this pattern.
+    placeholder_regex = re.compile(r'placeholder level [0-9]+')
+
     def write_headline(self, p: Position) -> None:
         """
         Write or skip the headline.
 
-        New in Leo 5.5: Always write '#' sections.
-        This will cause perfect import to fail.
-        The alternatives are much worse.
+        New in Leo 5.5:
+        - Always write '#' sections.
+          This will cause perfect import to fail. The alternatives are worse.
+        - Skip !Declarations.
+        
+        New in Leo 6.7.7:
+        - Don't write headlines of placeholder nodes.
         """
         level = p.level() - self.root.level()
         assert level > 0, p.h
-        if p.h == '!Declarations':
+        if p.h == '!Declarations' or self.placeholder_regex.match(p.h):
             pass
         else:
             # Leo 6.6.4: preserve spacing.
