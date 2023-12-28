@@ -10,6 +10,7 @@ from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins.importers.base_importer import Block
+from leo.plugins.importers.java import Java_Importer
 from leo.plugins.importers.python import Python_Importer
 from leo.plugins.importers.c import C_Importer
 import leo.plugins.importers.coffeescript as coffeescript
@@ -1558,12 +1559,15 @@ class TestJava(BaseTestImporter):
         """
         expected_results = (
             (0, '',  # Ignore the first headline.
+                '@others\n'
+                '@language java\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'interface Bicycle',
                 'interface Bicycle {\n'
                 '    void changeCadence(int newValue);\n'
                 '    void changeGear(int newValue);\n'
                 '}\n'
-                '@language java\n'
-                '@tabwidth -4\n'
             ),
         )
         self.new_run_test(s, expected_results)
@@ -1578,15 +1582,64 @@ class TestJava(BaseTestImporter):
         """
         expected_results = (
             (0, '',  # Ignore the first headline.
+                '@others\n'
+                '@language java\n'
+                '@tabwidth -4\n'
+            ),
+            (1, 'interface Bicycle',
                 'interface Bicycle {\n'
                 'void changeCadence(int newValue);\n'
                 'void changeGear(int newValue);\n'
                 '}\n'
-                '@language java\n'
-                '@tabwidth -4\n'
             ),
         )
         self.new_run_test(s, expected_results)
+    #@+node:ekr.20231225065750.1: *3* TestJava.test_round_trip
+    def test_round_trip(self):
+        
+        c, root = self.c, self.c.p
+        at = c.atFileCommands
+        #@+<< define contents: test_round_trip >>
+        #@+node:ekr.20231225065840.1: *4* << define contents: test_round_trip >>
+        # #3727: The blank lines below cause the round-trip to fail.
+        #        For now, this unit test will hack the expected lines.
+        contents =  textwrap.dedent("""
+            public class Main {
+                public static void main(String[] args) {
+                    myMethod();
+                }
+
+                static void myMethod() {
+                    System.out.println("I just got executed!");
+                }
+
+            }
+
+        """).strip() + '\n'
+        #@-<< define contents: test_round_trip >>
+
+        # Import contents into root's tree.
+        importer = Java_Importer(c)
+        importer.import_from_string(parent=root, s=contents)
+
+        if 0:
+            for z in root.self_and_subtree():
+                g.printObj(g.splitLines(z.b), tag=z.h)
+            print('\n=== End dump ===\n')
+
+        # Write the tree as if it were an @auto node.
+        root.h = '@auto test.java'
+        results = at.atAutoToString(root)
+        
+        # A hack, acknowledging that the importer strips trailing blank lines in each node.
+        expected = results.replace('\n\n', '\n')
+
+        if results != expected:
+            g.printObj(contents, tag='contents')
+            g.printObj(results, tag='results')
+            g.printObj(expected, tag='expected')
+
+        self.assertEqual(results, expected)
     #@-others
 #@+node:ekr.20211108070310.1: ** class TestJavascript (BaseTestImporter)
 class TestJavascript(BaseTestImporter):
