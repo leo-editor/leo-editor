@@ -7177,16 +7177,13 @@ def openUrlHelper(event: Any, url: str = None) -> Optional[str]:
                         break
 
                 if target:
-                    found_gnx = False
                     if c.p.gnx == target:
                         return target
                     for p in c.all_unique_positions():
                         if p.v.gnx == target:
-                            found_gnx = True
+                            c.selectPosition(p)
+                            c.redraw()
                             break
-                    if found_gnx:
-                        c.selectPosition(p)
-                        c.redraw()
                     return target
                 #@-<< look for gnx >>
     elif not isinstance(url, str):
