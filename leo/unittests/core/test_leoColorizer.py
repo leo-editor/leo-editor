@@ -1443,8 +1443,8 @@ class TestColorizer(LeoUnitTest):
         colorizer = JEditColorizer(c, None)
         
         table = (
-            # Strings must not be f-strings! We don't want to evaluate them!
-            # Strings starting *after* the opening delim *without* a closing delim.
+            # These are *plain* strings that start *after* the opening delim.
+            # These strings do *not* end with the closing delim.
             "{'':*^{1:{1}}}",
             "{my_dict[key]=}",
             "{my_dict['key']=}",
