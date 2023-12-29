@@ -6782,10 +6782,12 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         unl = unl[8:]
         file_part = g.getUNLFilePart(unl)
         c2 = g.openUNLFile(c, file_part)
-        if not c2:
+        if file_part and not c2:
+            print(f"Bad unl: {unl_s}")
             return None
+        c3 = c2 or c
         tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
-        return g.findGnx(tail, c2)
+        return g.findGnx(tail, c3)
     # Resolve a file-based unl.
     for prefix in ('unl:', 'file:'):
         if unl.startswith(prefix):
@@ -6796,6 +6798,9 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         return None
     file_part = g.getUNLFilePart(unl)
     c2 = g.openUNLFile(c, file_part)
+    if file_part and not c2:
+        print(f"Bad unl: {unl_s}")
+        return None
     c3 = c2 or c
     tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
     unlList = tail.split('-->')

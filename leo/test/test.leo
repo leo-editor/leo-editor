@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
-<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -55,16 +55,6 @@
 </v>
 <v t="ekr.20180311131424.1"><vh>Recent tests</vh>
 <v t="ekr.20180311131403.1"><vh>@jupyter</vh></v>
-<v t="ekr.20230622112641.1"><vh>--- tests of UNL</vh>
-<v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
-<v t="ekr.20230622112535.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
-<v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
-<v t="ekr.20230625084119.1"><vh>Legacy UNLs: in this file</vh></v>
-<v t="ekr.20230628090119.1"><vh>Legacy UNLs: other files</vh></v>
-<v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
-<v t="ekr.20230627150454.1"><vh>New UNLs with short file parts</vh></v>
-<v t="ekr.20230707065449.1"><vh>New UNLS with long(absolute) file parts</vh></v>
-</v>
 <v t="ekr.20180311212134.1"><vh>Coloring tests</vh>
 <v t="ekr.20180311131449.1"><vh>Syntax coloring template</vh></v>
 <v t="ekr.20180311212134.2"><vh>g.es test</vh></v>
@@ -98,6 +88,16 @@
 </v>
 <v t="ekr.20230906100141.24"><vh>script: asttokens</vh></v>
 <v t="ekr.20230906100141.25"><vh>QToolBar test</vh></v>
+</v>
+<v t="ekr.20230622112641.1"><vh>--- tests of UNL (do not delete!)</vh>
+<v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
+<v t="ekr.20230622112535.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
+<v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
+<v t="ekr.20230625084119.1"><vh>Legacy UNLs: in this file</vh></v>
+<v t="ekr.20230628090119.1"><vh>Legacy UNLs: other files</vh></v>
+<v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
+<v t="ekr.20230627150454.1"><vh>New UNLs with short file parts</vh></v>
+<v t="ekr.20230707065449.1"><vh>New UNLS with long(absolute) file parts</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1022,7 +1022,7 @@ convert-unls
 copy-test</t>
 <t tx="ekr.20230623141357.1">https://github.com/leo-editor/leo-editor/pull/3215/files
 
-# Exists: Recent
+# Exists: Recent tests.
 unl:gnx://#ekr.20180311131424.1
 
 # Error mssages (copy to log)
@@ -1050,7 +1050,7 @@ unl://#Viewrendered examples
 unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples--&gt;Python code
 unl://#Viewrendered examples--&gt;Python code
 </t>
-<t tx="ekr.20230627150454.1"># Exists: Recent
+<t tx="ekr.20230627150454.1"># Exists: Recent tests
 unl:gnx://test.leo#ekr.20180311131424.1
 unl:gnx://#ekr.20180311131424.1
 
@@ -1079,7 +1079,7 @@ unl://LeoDocs.leo#Web pages
 <t tx="ekr.20230707065449.1"># These unls will work only on EKR's machine.
 # They are a test of absolute matches in g.openUNLFile.
 
-# Exists: Recent
+# Exists: Recent tests
 unl:gnx://c:\Repos\leo-editor\leo\test\test.leo#ekr.20180311131424.1
 
 # Error mssages (copy to log)
