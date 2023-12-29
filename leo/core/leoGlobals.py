@@ -6777,13 +6777,18 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
     The UNL may be either a legacy (path-based) or new (gnx-based) unl.
     """
     unl = unl_s
+
+    def oops() -> None:
+        if not g.unitTesting:
+            print(f"Bad unl: {unl_s}")
+
     if unl.startswith('unl:gnx:'):
         # Resolve a gnx-based unl.
         unl = unl[8:]
         file_part = g.getUNLFilePart(unl)
         c2 = g.openUNLFile(c, file_part)
         if file_part and not c2:
-            print(f"Bad unl: {unl_s}")
+            oops()
             return None
         c3 = c2 or c
         tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
@@ -6794,12 +6799,12 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
             unl = unl[len(prefix) :]
             break
     else:
-        print(f"Bad unl: {unl_s}")
+        oops()
         return None
     file_part = g.getUNLFilePart(unl)
     c2 = g.openUNLFile(c, file_part)
     if file_part and not c2:
-        print(f"Bad unl: {unl_s}")
+        oops()
         return None
     c3 = c2 or c
     tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
