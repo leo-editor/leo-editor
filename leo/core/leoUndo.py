@@ -117,6 +117,7 @@ class Undoer:
         self.newRecentFiles = None
         self.newSel = None
         self.newTree = None
+        self.newUA = None
         self.newYScroll = None
         self.oldBack = None
         self.oldBody = None
@@ -132,6 +133,7 @@ class Undoer:
         self.oldSel = None
         self.oldSiblings = None
         self.oldTree = None
+        self.oldUA = None
         self.oldYScroll = None
         self.pasteAsClone = None
         self.prevSel = None
@@ -506,6 +508,16 @@ class Undoer:
         u.beads[u.bead:] = [bunch]
         # Recalculate the menu labels.
         u.setUndoTypes()
+    #@+node:ekr.20231225132413.1: *5* u.afterChangeUA
+    def afterChangeUA(self, p: Position, command: str, bunch: g.Bunch) -> None:
+        u = self
+        if u.redoing or u.undoing:
+            return  # pragma: no cover
+        bunch.undoType = command
+        bunch.newUA = p.v.u
+        bunch.undoHelper = u.undoChangeUA
+        bunch.redoHelper = u.redoChangeUA
+        u.pushBead(bunch)
     #@+node:ekr.20050424161505: *5* u.afterClearRecentFiles
     def afterClearRecentFiles(self, bunch: g.Bunch) -> None:
         u = self
@@ -797,6 +809,12 @@ class Undoer:
         bunch.oldHead = p.h
         bunch.oldIns = w.getInsertPoint()
         bunch.oldYScroll = w.getYScrollPosition()
+        return bunch
+    #@+node:ekr.20231225131907.1: *5* u.beforeChangeUA
+    def beforeChangeUA(self, p: Position) -> None:
+        u = self
+        bunch = u.createCommonBunch(p)
+        bunch.oldUA = p.v.u
         return bunch
     #@+node:ekr.20050424161505.1: *5* u.beforeClearRecentFiles
     def beforeClearRecentFiles(self) -> g.Bunch:
@@ -1450,6 +1468,12 @@ class Undoer:
             c.frame.body.recolor(u.p)
         u.updateMarks('new')
         u.p.setDirty()
+    #@+node:ekr.20231225134021.1: *4* u.redoChangeUA
+    def redoChangeUA(self) -> None:
+        u = self
+        v = u.p.v
+        v.setDirty()
+        v.u = u.newUA
     #@+node:ekr.20050424170219: *4* u.redoClearRecentFiles
     def redoClearRecentFiles(self) -> None:
         c, u = self.c, self
@@ -1798,6 +1822,12 @@ class Undoer:
         #
         if c.p != u.p:
             c.selectPosition(u.p)
+    #@+node:ekr.20231225133712.1: *4* u.undoChangeUA
+    def undoChangeUA(self) -> None:
+        u = self
+        v = u.p.v
+        v.setDirty()
+        v.u = u.oldUA
     #@+node:ekr.20050424170219.1: *4* u.undoClearRecentFiles
     def undoClearRecentFiles(self) -> None:
         c, u = self.c, self

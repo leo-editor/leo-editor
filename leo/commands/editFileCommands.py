@@ -1307,12 +1307,14 @@ class GitDiffController:
             return g.toUnicode(''.join(lines)).replace('\r', '')
 
         # Read the file.
+        if not os.path.exists(path):
+            # This is not an error. The user has inserted or deleted the file.
+            return ''
         try:
             with open(path, 'rb') as f:
                 b = f.read()
             return g.toUnicode(b).replace('\r', '')
         except Exception:
-            g.es_print('Can not read', path)
             g.es_exception()
             return ''
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
