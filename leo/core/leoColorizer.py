@@ -1903,6 +1903,8 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20231209015334.1: *5* jedit.match_fstring_helper
     def match_fstring_helper(self, s: str, i: int, delim: str) -> int:
         """
+        s is an fstring (or its continuation) *without* the leadin characters and the opening delim.
+
         Return n >= 0 if s[i:] contains with a non-escaped delim at fstring-level 0.
         
         Return len(s) + 1 if the fstring should continue.
