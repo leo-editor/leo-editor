@@ -396,13 +396,6 @@ class TestColorizer(LeoUnitTest):
             ;
     """)
         self.color('forth', text)
-    #@+node:ekr.20210905170507.14: *3* TestColorizer.test_colorizer_HTML_string_bug
-    def test_colorizer_HTML_string_bug(self):
-        text = textwrap.dedent("""\
-            b = "cd"
-            d
-    """)
-        self.color('html', text)
     #@+node:ekr.20210905170507.15: *3* TestColorizer.test_colorizer_HTML1
     def test_colorizer_HTML1(self):
         text = textwrap.dedent("""\
@@ -526,6 +519,13 @@ class TestColorizer(LeoUnitTest):
             This is a test.
             </body>
             </html>
+    """)
+        self.color('html', text)
+    #@+node:ekr.20210905170507.14: *3* TestColorizer.test_colorizer_HTML_string_bug
+    def test_colorizer_HTML_string_bug(self):
+        text = textwrap.dedent("""\
+            b = "cd"
+            d
     """)
         self.color('html', text)
     #@+node:ekr.20210905170507.17: *3* TestColorizer.test_colorizer_Java
@@ -1088,29 +1088,6 @@ class TestColorizer(LeoUnitTest):
             xor
     """)
         self.color('plsql', text)
-    #@+node:ekr.20210905170507.24: *3* TestColorizer.test_colorizer_python_xml_jEdit_
-    def test_colorizer_python_xml_jEdit_(self):
-        text = textwrap.dedent(r"""\\\
-            <?xml version="1.0"?>
-
-            <!DOCTYPE MODE SYSTEM "xmode.dtd">
-            < < remarks > >
-
-            <MODE>
-                <PROPS>
-                    <PROPERTY NAME="indentPrevLine" VALUE="\s*.{3,}:\s*(#.*)?" />
-                    <PROPERTY NAME="lineComment" VALUE="#" />
-                </PROPS>
-                <RULES ESCAPE="\" IGNORE_CASE="FALSE" HIGHLIGHT_DIGITS="TRUE">
-                    < < comments > >
-                    < < literals > >
-                    < < operators > >
-                    <MARK_PREVIOUS TYPE="FUNCTION" EXCLUDE_MATCH="TRUE">(</MARK_PREVIOUS>
-                    < < keywords > >
-                </RULES>
-            </MODE>
-    """)
-        self.color('html', text)
     #@+node:ekr.20210905170507.25: *3* TestColorizer.test_colorizer_Python1
     def test_colorizer_Python1(self):
         text = textwrap.dedent("""\
@@ -1158,6 +1135,29 @@ class TestColorizer(LeoUnitTest):
     ''').lstrip()
         self.color('python', text)
 
+    #@+node:ekr.20210905170507.24: *3* TestColorizer.test_colorizer_python_xml_jEdit_
+    def test_colorizer_python_xml_jEdit_(self):
+        text = textwrap.dedent(r"""\\\
+            <?xml version="1.0"?>
+
+            <!DOCTYPE MODE SYSTEM "xmode.dtd">
+            < < remarks > >
+
+            <MODE>
+                <PROPS>
+                    <PROPERTY NAME="indentPrevLine" VALUE="\s*.{3,}:\s*(#.*)?" />
+                    <PROPERTY NAME="lineComment" VALUE="#" />
+                </PROPS>
+                <RULES ESCAPE="\" IGNORE_CASE="FALSE" HIGHLIGHT_DIGITS="TRUE">
+                    < < comments > >
+                    < < literals > >
+                    < < operators > >
+                    <MARK_PREVIOUS TYPE="FUNCTION" EXCLUDE_MATCH="TRUE">(</MARK_PREVIOUS>
+                    < < keywords > >
+                </RULES>
+            </MODE>
+    """)
+        self.color('html', text)
     #@+node:ekr.20210905170507.27: *3* TestColorizer.test_colorizer_r
     def test_colorizer_r(self):
         text = textwrap.dedent("""\
@@ -1435,6 +1435,34 @@ class TestColorizer(LeoUnitTest):
                 pass
     ''')
         self.color('html', text)
+    #@+node:ekr.20231229142541.1: *3* TestColorizer.test_match_fstring_helper
+    def test_match_fstring_helper(self):
+
+        c = self.c
+        from leo.core.leoColorizer import JEditColorizer
+        colorizer = JEditColorizer(c, None)
+        
+        table = (
+            # These are *plain* strings that start *after* the opening delim.
+            # These strings do *not* end with the closing delim.
+            "{'':*^{1:{1}}}",
+            "{my_dict[key]=}",
+            "{my_dict['key']=}",
+            "{'#' * level} {p.h.lstrip()}",  # #3739.
+        )
+        
+        # These examples assume that the lead-in is f".
+        delim = '"'
+        for terminated in (True, False):
+            for s in table:
+                # Add a closing delim if we are testing a terminated string.
+                if terminated:
+                    s = s + delim
+                n = colorizer.match_fstring_helper(s, 0, delim)
+                if terminated:
+                    assert n == len(s), (n, len(s), s)
+                else:
+                    assert n == len(s) + 1, (n, len(s), s)
     #@+node:ekr.20210905170507.39: *3* TestColorizer.test_scanColorDirectives
     def test_scanColorDirectives(self):
         c = self.c
