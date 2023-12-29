@@ -1845,7 +1845,7 @@ class JEditColorizer(BaseColorizer):
         # j = len(s)
         # self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
         # return j
-    #@+node:ekr.20231209010844.1: *4* jedit.match_fstring
+    #@+node:ekr.20231209010844.1: *4* jedit.match_fstring & helper
     f_string_nesting_level = 0
 
     def match_fstring(self, s: str, i: int) -> int:
@@ -1910,7 +1910,7 @@ class JEditColorizer(BaseColorizer):
         escape, escapes = '\\', 0
         level = self.f_string_nesting_level
         alt_delim = '"' if delim == "'" else "'"  # Works for triple delims.
-        in_alt_delim = False
+        in_alt_delim, in_comment = False, False
 
         # Scan, incrementing escape count and f-string level.
         while i < len(s):
@@ -1924,11 +1924,14 @@ class JEditColorizer(BaseColorizer):
                 in_alt_delim = not in_alt_delim
                 i += 1
                 continue
+            if in_comment:
+                i += 1
+                continue
             ch = s[i]
             i += 1
             if ch == '#' and (escapes % 2) == 0 and not in_alt_delim:
-                break  # Don't scan comments.
-            if ch == escape:
+                in_comment = True
+            elif ch == escape:
                 escapes += 1
             elif ch == '{':
                 level += 1
