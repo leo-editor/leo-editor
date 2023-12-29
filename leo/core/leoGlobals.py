@@ -6794,8 +6794,8 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
             unl = unl[len(prefix) :]
             break
     else:
-        if not g.unitTesting:
-            print(f"Bad unl: {unl_s}")
+        # Unit tests suppress this output.
+        print(f"Bad unl: {unl_s}")
         return None
     file_part = g.getUNLFilePart(unl)
     c2 = g.openUNLFile(c, file_part)
