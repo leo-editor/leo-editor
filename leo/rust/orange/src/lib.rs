@@ -2,14 +2,16 @@
 //@+node:ekr.20231226052346.1: * @file ../rust/orange/src/lib.rs
 //! This is the `orange` binary.
 
+//@+<< use: orange/src/lib.rs >>
+//@+node:ekr.20231230105848.1: ** << use: orange/src/lib.rs >>
+// use std::fmt::Debug;
 use std::process::ExitCode;
 use rustpython_parser::{lexer::lex, Mode, parse_tokens};
-// use rustpython_ast;
 
-// To print tokens.
-// use rustpython_parser::{lexer::lex, Tok, Mode, StringKind};
-// use rustpython_parser::{Tok, StringKind};
+//@-<< use: orange/src/lib.rs >>
 
+//@+others
+//@+node:ekr.20231230104754.1: ** fn: run
 pub fn run() -> ExitCode {
     // The main line for orange.
     println!("orange/src/lib.rs: run");
@@ -26,34 +28,29 @@ def is_odd(i):
     assert!(ast.is_ok());
     
     // https://docs.rs/rustpython-parser/latest/rustpython_parser/lexer/index.html#example
-    if false {  // Print tokens.
+    if true {  // Print tokens.
         let debug_tokens = lex(python_source, Mode::Module)
             .map(|tok| tok.expect("Failed to lex"))
             .collect::<Vec<_>>();
-
-        println!("\nTokens!");
+        println!("\nTokens:");
         for (debug_token, range) in debug_tokens {
             println!("  {debug_token:?}@{range:?}");
         }
     }
-    
-    // if true { // print ast
-        // let debug_ast = parse_tokens(tokens, Mode::Module, "<embedded>")
-            // .map(|ast| ast.expect("Failed to parse"))
-            // .collect::<Vec<_>>();
-
-        // println!("\nAST!");
-        // for (debug_ast, range) in debug_ast {
-            // println!("  {debug_ast:?}@{range:?}");
-        // }
-    // }
+    if true { // print ast
+        match ast {
+            // Ok(tree) => println!("{:#?}", tree),
+            Ok(tree) => {
+                println!("\nTree:");
+                println!("{:#?}", tree);
+            },
+            Err(_) => println!("no ast"),
+        }
+    }
 
     println!("orange/src/lib.rs: done!");
-
     ExitCode::SUCCESS
 }
-
-//@+others
 //@+node:ekr.20231226041203.1: ** mod tests
 #[cfg(test)]
 mod tests {
