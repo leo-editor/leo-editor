@@ -12,9 +12,9 @@ pub fn run() -> ExitCode {
     // https://docs.rs/rustpython-parser/latest/rustpython_parser/#examples
 
     let python_source = r#"
-    def is_odd(i):
-       return bool(i & 1)
-    "#;
+def is_odd(i):
+   return bool(i & 1)
+"#;
 
     let tokens = lex(python_source, Mode::Module);
     let ast = parse_tokens(tokens, Mode::Module, "<embedded>");
