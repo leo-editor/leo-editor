@@ -109,7 +109,7 @@ class BabelCmdr(object):
         #@-others
 
         self.cmdr = cmdr
-        self.colorStdout = _getColor(cmdr, 'Leo-Babel-stdout', default='#00ff00')
+        self.colorStdout = _getColor(cmdr, 'Leo-Babel-stdout', default='#996633')
         self.colorStderr = _getColor(cmdr, 'Leo-Babel-stderr', default='#A020F0')
         self.colorCompletion = _getColor(cmdr, 'Leo-Babel-completion', default='#FFD700')
         self.nodeCreationDefault = \

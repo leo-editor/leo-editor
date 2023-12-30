@@ -3,7 +3,20 @@
 #@@language plain
 #@+others
 #@+node:bob.20170311143456.1: ** To Do
-#@+node:bob.20231228131441.1: ** sudo parameter added needs documentation
+#@+node:bob.20231228131441.1: *3* sudo parameter added needs documentation
+babel_sudo - Set the default.
+Apparently there is no get_boolean and get_string is used instead?
+How does gld.get() work?  It appears to me that it should not work.
+
+#@+node:bob.20231229145158.1: *3* The help is displayed as raw markdown.
+#@+node:bob.20231229144523.1: *3* Pull Request
+This revision does the following:
+
+* Implements a new option to run the script using sudo.  The default setting for this option is off.
+
+* Inserts a shebang line as the first line in every script file.  This isn't needed by Leo-Babel which specifies the interpreter for the script file, but it allows the user to safely run the script without specifying the interpreter.
+
+* Changes the default stdout color.
 #@+node:bob.20170508125827.1: ** Issues
 #@+node:bob.20170319141959.1: *3* uA's
 I don't understand Terry Brown's attrib_edit.py plugin.  I think it is inadequate anyway.

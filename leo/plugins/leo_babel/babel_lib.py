@@ -400,8 +400,8 @@ def babelExec(event):
             cmdrRes = None
             resultsRoot = None
 
-        sudo = gld.get('sudo')
-        if sudo:
+        babel_sudo = gld.get('babel_sudo')
+        if babel_sudo:
             # Run the script with sudo
             cmdList = ['sudo']
         else:

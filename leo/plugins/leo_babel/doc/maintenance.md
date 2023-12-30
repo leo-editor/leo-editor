@@ -2,6 +2,15 @@ Note: This node's body text is ignored when writing this file.
 
 The @others directive is not required.
 
+# Leo-Babel Parameters
+Beware:  It is somewhat confusing that there is one parameter name used to set a parameter using the standard Leo-Editor parameter setting code and another parameter name for setting the same parameter in a Babel Script.
+
+Example:
+Settings node:  @color Leo-Babel-stdout = @color Leo-Babel-stdout = #996633
+Babel script:   leo_babel_stdout = @color Leo-Babel-stdout = #996633
+
+This is because the Leo-Editor standard for naming parameters requires the capitalization and the hyphens, but a Python variable name can't contain hyphens and the usual convention is for a variable name to begin with a lower-case letter.
+
 # Why there is no echo command lines to stdout
 Leo-Babel writes all the lines of the script to disk file, then Leo-Babel creates a subprocess in which the appropriate interpreter (Python or Bash) executes the entire script.  Hence, Leo-Babel has no way to echo each line of the script just before it is executed.
 

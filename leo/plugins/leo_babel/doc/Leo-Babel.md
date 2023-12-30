@@ -100,7 +100,7 @@ Leo-Babel ignores all headlines.
 
 The script is written to the same file used by Ctrl-B.  The default path is $HOME/.leo/scriptFile.py.
 
-You can specify the file to use with the following "Debugging" settings option:
+You can specify the file to use with the following standard Leo-Editor "Debugging" settings option:
 
     @string script_file_path = <pathname>
 
@@ -157,7 +157,7 @@ Completion Example:
 
 ## stdout, stderr, and completion Default colors
 
-* stdout - green (#00ff00)
+* stdout - brown (#996633)
 * stderr - purple (#A020F0)
 * completion - gold (#FFD700)
 
@@ -208,6 +208,8 @@ The Babel Parameters Script can define the following parameters that affect Babe
 1. babel_python
 
 1. babel_shell
+
+1. babel_sudo
 
 1. babel_redirect_stdout
 
@@ -272,6 +274,11 @@ The POSIX standard shell interpreter chosen by your Linux distribution.
 babel_shell = 'zsh'
 
 The Z shell.
+
+## Running the scipt with sudo
+If babel_sudo is not defined, then the script is run with the current user's priveleges.
+
+If and only if babel_sudo is defined and is True, then the script is run by sudo.  That is, the script is run with root priveleges.
 
 ## Redirect Stdout to Stderr
 If the script in the Babel Root body defines babel_redirect_stdout, it specifies whether or not stdout is redirected to stderr.  By default, stdout is **NOT** redirected to stderr.
@@ -339,7 +346,20 @@ Note carefully, "UNL Quoting" differs from "URL Quoting".  "URL Quoting" a strin
 ## Debugging a Babel Parameter Script
 A Babel Parameter Script is executed without writing it to disk as a "script" file.  To aid debugging when a Babel Parameter Script raises an exception, Leo-Babel writes the script with line numbers to the Leo-Editor Log pane.  Then it re-raises the exception.  The exception message almost always contains a line number which matches the line numbers Leo-Babel writes.
 
-# Leo-Editor Settings
+# Babel Parameters
+The standard Leo-Editor parameter setting scheme allows the user to customize the setting of any Babel Parameter for all his Leo-Editor files or for any one Leo-Editor file.  The Babel Parameters Script allows the user to set any Babel Parameter for just one Babel Script.
+
+This following precedence achieves this:
+
+* A setting compiled into the Leo-Babel code has the lowest priority.
+
+* A setting in your myLeoSettings.py has the new highest priority.  That is, it overwrites the compiled default.
+
+* A setting in a Leo-Editor file containing one or more Babel Scripts has the next highest priority.  That is, overwrite the myLeoSetings.py setting.
+
+* A setting in a Babel Parameters Script has the highest priority.  That is, overwrites any lower priority setting.
+
+## Leo-Editor Settings
 In an @settings subtree in leoMySettings.leo (applies to all your Leo-Editor files) or in a particular Leo-Editor file (applies to just this one Leo-Editor file), add one node per setting with the setting in the headline.
 
 ## Customizing Colors
