@@ -8,6 +8,7 @@
 use std::process::ExitCode;
 use rustpython_parser::{lexer::lex, Mode, parse_tokens};
 
+// use rustpython_parser::ast::Ast;
 //@-<< use: orange/src/lib.rs >>
 
 //@+others
@@ -27,10 +28,16 @@ def is_odd(i):
     let ast = parse_tokens(tokens, Mode::Module, "<embedded>");
     assert!(ast.is_ok());
     
-    // https://docs.rs/rustpython-parser/latest/rustpython_parser/lexer/index.html#example
-    print_tokens(python_source);
 
-    if false { // print ast.
+    if false {
+        print_tokens(python_source);
+    }
+    
+    // print ast.
+    if false {
+        //print_ast(ast);
+    }
+    else if true {
         match ast {
             Ok(tree) => {
                 println!("\nTree:");
@@ -43,7 +50,21 @@ def is_odd(i):
     println!("orange/src/lib.rs: done!");
     ExitCode::SUCCESS
 }
+//@+node:ekr.20231230114358.1: *3* fn: print_ast
+// fn print_ast(ast: Result<Ast, &'static str>) {
+    // match ast {
+        // Ok(tree) => {
+            // println!("\nTree:");
+            // println!("{:#?}", tree);
+        // },
+        // Err(_) => println!("no ast"),
+    // }
+// }
+
+//@@language rust
 //@+node:ekr.20231230113914.1: *3* fn: print_tokens
+// https://docs.rs/rustpython-parser/latest/rustpython_parser/lexer/index.html#example
+
 fn print_tokens(python_source: &str) {
 
     // Can't be formatted with `{:?}` because it doesn't implement `Debug`.
