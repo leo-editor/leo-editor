@@ -20,8 +20,12 @@ def is_odd(i):
    return bool(i & 1)
 "#;
 
+    let tokens = lex(python_source, Mode::Module);
+    let ast = parse_tokens(tokens, Mode::Module, "<embedded>");
+    assert!(ast.is_ok());
+    
     // https://docs.rs/rustpython-parser/latest/rustpython_parser/lexer/index.html#example
-    if true {  // Print tokens.
+    if false {  // Print tokens.
         let debug_tokens = lex(python_source, Mode::Module)
             .map(|tok| tok.expect("Failed to lex"))
             .collect::<Vec<_>>();
@@ -31,10 +35,8 @@ def is_odd(i):
             println!("  {debug_token:?}@{range:?}");
         }
     }
-
-    let tokens = lex(python_source, Mode::Module);
-    let ast = parse_tokens(tokens, Mode::Module, "<embedded>");
-    assert!(ast.is_ok());
+    
+    println!("orange/src/lib.rs: done!");
 
     ExitCode::SUCCESS
 }
