@@ -3,10 +3,22 @@
 //! This is the `orange` binary.
 
 use std::process::ExitCode;
+use rustpython_parser::{lexer::lex, Mode, parse_tokens};
 
 pub fn run() -> ExitCode {
     // The main line for orange.
     println!("orange/src/lib.rs: run");
+    
+    // https://docs.rs/rustpython-parser/latest/rustpython_parser/#examples
+
+    let python_source = r#"
+    def is_odd(i):
+       return bool(i & 1)
+    "#;
+
+    let tokens = lex(python_source, Mode::Module);
+    let ast = parse_tokens(tokens, Mode::Module, "<embedded>");
+    assert!(ast.is_ok());
 
     ExitCode::SUCCESS
 }
@@ -25,4 +37,5 @@ mod tests {
     //@-others
 }
 //@-others
+//@@language rust
 //@-leo
