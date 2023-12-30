@@ -13,18 +13,4 @@ rustpython-parser = { git = "https://github.com/RustPython/Parser" }
 
 # rustpython = { git = "https://github.com/RustPython/RustPython" }
 # rustpython-compiler = { git = "https://github.com/RustPython/RustPython" }
-
-# Compiling rustpython-compiler-core v0.3.0 (https://github.com/RustPython/RustPython#0fab6e60)
-# Compiling rustpython-ast v0.3.1 (https://github.com/RustPython/Parser.git?rev=52edf4525ec300f2b69670f3991784bbcf140564#52edf452)
-# Compiling rustpython-format v0.3.1 (https://github.com/RustPython/Parser.git?rev=52edf4525ec300f2b69670f3991784bbcf140564#52edf452)
-# Compiling rustpython-derive-impl v0.3.0 (https://github.com/RustPython/RustPython#0fab6e60)
-# Compiling rustpython-common v0.3.0 (https://github.com/RustPython/RustPython#0fab6e60)
-# Compiling rustpython-codegen v0.3.0 (https://github.com/RustPython/RustPython#0fab6e60)
-# Compiling rustpython-compiler v0.3.0 (https://github.com/RustPython/RustPython#0fab6e60)
-# Compiling rustpython-derive v0.3.0 (https://github.com/RustPython/RustPython#0fab6e60)
-# Compiling rustpython v0.3.0 (https://github.com/RustPython/RustPython#0fab6e60)
-
 # rustpython-vm = { git = "https://github.com/RustPython/RustPython" }
-# Compiling rustpython-vm v0.3.0 (https://github.com/RustPython/RustPython#0fab6e60)
-# Compiling rustpython-stdlib v0.3.0 (https://github.com/RustPython/RustPython#0fab6e60)
-
