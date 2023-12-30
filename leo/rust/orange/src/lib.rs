@@ -11,7 +11,7 @@ use rustpython_parser::{lexer::lex, Mode, parse_tokens};
 //@-<< use: orange/src/lib.rs >>
 
 //@+others
-//@+node:ekr.20231230104754.1: ** fn: run
+//@+node:ekr.20231230104754.1: ** fn: run & helpers
 pub fn run() -> ExitCode {
     // The main line for orange.
     println!("orange/src/lib.rs: run");
@@ -28,18 +28,10 @@ def is_odd(i):
     assert!(ast.is_ok());
     
     // https://docs.rs/rustpython-parser/latest/rustpython_parser/lexer/index.html#example
-    if true {  // Print tokens.
-        let debug_tokens = lex(python_source, Mode::Module)
-            .map(|tok| tok.expect("Failed to lex"))
-            .collect::<Vec<_>>();
-        println!("\nTokens:");
-        for (debug_token, range) in debug_tokens {
-            println!("  {debug_token:?}@{range:?}");
-        }
-    }
-    if true { // print ast
+    print_tokens(python_source);
+
+    if false { // print ast.
         match ast {
-            // Ok(tree) => println!("{:#?}", tree),
             Ok(tree) => {
                 println!("\nTree:");
                 println!("{:#?}", tree);
@@ -51,6 +43,20 @@ def is_odd(i):
     println!("orange/src/lib.rs: done!");
     ExitCode::SUCCESS
 }
+//@+node:ekr.20231230113914.1: *3* fn: print_tokens
+fn print_tokens(python_source: &str) {
+
+    // Can't be formatted with `{:?}` because it doesn't implement `Debug`.
+    let debug_tokens = lex(python_source, Mode::Module)
+        .map(|tok| tok.expect("Failed to lex"))
+        .collect::<Vec<_>>();
+    println!("\nTokens:");
+    for (debug_token, range) in debug_tokens {
+        println!("  {debug_token:?}@{range:?}");
+    }
+}
+
+//@@language rust
 //@+node:ekr.20231226041203.1: ** mod tests
 #[cfg(test)]
 mod tests {
