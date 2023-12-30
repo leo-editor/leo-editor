@@ -5,6 +5,10 @@
 use std::process::ExitCode;
 use rustpython_parser::{lexer::lex, Mode, parse_tokens};
 
+// To print tokens.
+// use rustpython_parser::{lexer::lex, Tok, Mode, StringKind};
+// use rustpython_parser::{Tok, StringKind};
+
 pub fn run() -> ExitCode {
     // The main line for orange.
     println!("orange/src/lib.rs: run");
@@ -15,6 +19,18 @@ pub fn run() -> ExitCode {
 def is_odd(i):
    return bool(i & 1)
 "#;
+
+    // https://docs.rs/rustpython-parser/latest/rustpython_parser/lexer/index.html#example
+    if true {  // Print tokens.
+        let debug_tokens = lex(python_source, Mode::Module)
+            .map(|tok| tok.expect("Failed to lex"))
+            .collect::<Vec<_>>();
+
+        println!("\nTokens!");
+        for (debug_token, range) in debug_tokens {
+            println!("  {debug_token:?}@{range:?}");
+        }
+    }
 
     let tokens = lex(python_source, Mode::Module);
     let ast = parse_tokens(tokens, Mode::Module, "<embedded>");
