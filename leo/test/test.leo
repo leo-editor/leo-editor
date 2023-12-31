@@ -96,6 +96,7 @@
 <v t="ekr.20230625084119.1"><vh>Legacy UNLs: in this file</vh></v>
 <v t="ekr.20230628090119.1"><vh>Legacy UNLs: other files</vh></v>
 <v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
+<v t="ekr.20231231043342.1"><vh>New UNLs with empty file parts</vh></v>
 <v t="ekr.20230627150454.1"><vh>New UNLs with short file parts</vh></v>
 <v t="ekr.20230707065449.1"><vh>New UNLS with long(absolute) file parts</vh></v>
 </v>
@@ -1031,6 +1032,9 @@ unl:gnx://#ekr.20230622112649.1
 # Bad gnx
 unl:gnx://xyzzy.leo#.20230622112649.1
 
+# In LeoDocs.leo: will work only if LeoDocs.leo is open!
+unl:gnx://#ekr.20100805171546.4412
+
 </t>
 <t tx="ekr.20230625084119.1"># Shorter UNL:
 unl://#Coloring tests--&gt;Syntax coloring template
@@ -1052,13 +1056,12 @@ unl://#Viewrendered examples--&gt;Python code
 </t>
 <t tx="ekr.20230627150454.1"># Exists: Recent tests
 unl:gnx://test.leo#ekr.20180311131424.1
-unl:gnx://#ekr.20180311131424.1
 
 # Error mssages (copy to log)
 unl:gnx://test.leo#ekr.20230622112649.1
-unl:gnx://#ekr.20230622112649.1
 
-# These links depend on @data unl-path-prefixes.
+# The following links depend on @data unl-path-prefixes.
+# These links should open LeoDocs.leo if it is not already open.
 
 # In LeoDocs.leo: Leo 6.7.3 release notes
 unl:gnx://LeoDocs.leo#ekr.20230409052507.1
@@ -1068,13 +1071,15 @@ unl:gnx://LeoDocs.leo#ekr.20050831195449
 
 # Bad gnx: xyzzy.leo does not exist.
 unl:gnx://xyzzy.leo#.20230622112649.1</t>
-<t tx="ekr.20230628090119.1"># These links will work only if *your* @data unl-path-prefixes setting
-# contains the proper paths to the viles on your machine.
+<t tx="ekr.20230628090119.1"># The following links depend on @data unl-path-prefixes.
 
 unl://LeoDocs.leo#Release Notes--&gt;Leo 6.7.3 release notes
 
 # In LeoDocs.leo
 unl://LeoDocs.leo#Web pages
+
+# In LeoDocs.leo. Will work only if LeoDocs.leo is open!
+unl://#Web pages
 </t>
 <t tx="ekr.20230707065449.1"># These unls will work only on EKR's machine.
 # They are a test of absolute matches in g.openUNLFile.
@@ -1087,6 +1092,8 @@ unl:gnx://c:\Repos\leo-editor\leo\test\test.leo#ekr.20230622112649.1
 
 # Should fail
 unl:gnx://c:\Repos\leo-editor\leo\doc\test.leo#ekr.20230622112649.1
+
+# The following links should open LeoDocs.leo if it is not already open.
 
 # In LeoDocs.leo: Leo 6.7.3 release notes
 unl:gnx://c:\Repos\leo-editor\leo\doc\LeoDocs.leo#ekr.20230409052507.1
@@ -1445,6 +1452,20 @@ g.registerHandler('select3', ud['alt_body_font_proc'])
 
 
 
+</t>
+<t tx="ekr.20231231043342.1"># Exists: Recent tests
+unl:gnx://#ekr.20180311131424.1
+
+# Error mssages (copy to log)
+unl:gnx://#ekr.20230622112649.1
+
+# The following will work only if LeoDocs.leo is open!
+
+# In LeoDocs.leo: Leo 6.7.3 release notes
+unl:gnx://#ekr.20230409052507.1
+
+# In LeoDocs.leo: ** Read me first **
+unl:gnx://#ekr.20050831195449
 </t>
 </tnodes>
 </leo_file>
