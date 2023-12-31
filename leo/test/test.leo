@@ -8,6 +8,7 @@
 <vnodes>
 <v t="ekr.20180311131353.1"><vh>test.leo: semi-official tests</vh></v>
 <v t="ekr.20230622114548.1"><vh>@settings</vh>
+<v t="ekr.20231231164138.1"><vh>@data unl-path-prefixes</vh></v>
 <v t="ekr.20230623064935.1"><vh>@data history-list</vh></v>
 <v t="ekr.20230622114556.1"><vh>@button copy-test</vh></v>
 <v t="ekr.20180311210803.1"><vh>Latex buttons</vh>
@@ -993,7 +994,8 @@ This is a comment</t>
 
 # Doesn't play, probably because of https.</t>
 <t tx="ekr.20230622112535.1"></t>
-<t tx="ekr.20230622112641.1"></t>
+<t tx="ekr.20230622112641.1"># Note: Modify @data unl-path-prefixes (in this file)
+# To match the paths on your machine.</t>
 <t tx="ekr.20230622112649.1"># These links will be active only if the @&lt;file&gt; node exists.
 
 # Absolute file names
@@ -1061,6 +1063,7 @@ unl:gnx://test.leo#ekr.20180311131424.1
 unl:gnx://test.leo#ekr.20230622112649.1
 
 # The following links depend on @data unl-path-prefixes.
+
 # These links should open LeoDocs.leo if it is not already open.
 
 # In LeoDocs.leo: Leo 6.7.3 release notes
@@ -1467,5 +1470,12 @@ unl:gnx://#ekr.20230409052507.1
 # In LeoDocs.leo: ** Read me first **
 unl:gnx://#ekr.20050831195449
 </t>
+<t tx="ekr.20231231164138.1"># These data work on EKR's machine.  Modify for your own!
+
+# lines have the form:
+# x.leo: &lt;absolute path to x.leo&gt;
+
+test.leo:    c:/Repos/leo-editor/leo/test
+LeoDocs.leo: c:/Repos/leo-editor/leo/doc</t>
 </tnodes>
 </leo_file>

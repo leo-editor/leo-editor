@@ -7303,6 +7303,8 @@ def getUNLFilePart(s: str) -> str:
 def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     """
     Open the commander for filename s, the file part of an unl.
+    
+    Use `@data unl-path-prefixes` to convert to relative to absolute paths.
 
     Return None if the file can not be found.
     """
@@ -7328,7 +7330,8 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     if os.path.isabs(s):
         path = standard(s)
     else:
-        # Values of d should be directories.
+        # Use `@data unl-path-prefixes` to convert to relative to absolute paths.
+        # Keys are file names; values are directives.
         d = g.parsePathData(c)
         base_s = base(s)
         directory = d.get(base_s)
