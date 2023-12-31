@@ -15,19 +15,27 @@ class MarkdownWriter(basewriter.BaseWriter):
         """Write all the *descendants* of an @auto-markdown node."""
         self.root = root
         self.write_root(root)
+        total = sum(1 for _ in  root.subtree()) 
+        count = 0
         for p in root.subtree():
+            count += 1
+            lastFlag = count == total  # Last node should not output extra newline
             if g.app.force_at_auto_sentinels:  # pragma: no cover
                 self.put_node_sentinel(p, '<!--', delim2='-->')
-            self.write_headline(p)
-            # Ensure that every section ends with exactly two newlines.
-            if p.b.rstrip():
-                s = p.b.rstrip() + '\n\n'
-                lines = s.splitlines(False)
-                for s in lines:
-                    if not g.isDirective(s):
-                        self.put(s)
-            else:  # #3719.
-                self.put('\n')
+            if self.placeholder_regex.match(p.h):
+                # skip this 'placeholder level X' node
+                pass
+            else:
+                self.write_headline(p)
+                # Ensure that every section ends with exactly two newlines.
+                if p.b.rstrip():
+                    s = p.b.rstrip() + ('\n' if lastFlag else '\n\n' )
+                    lines = s.splitlines(False)
+                    for s in lines:
+                        if not g.isDirective(s):
+                            self.put(s)
+                elif not lastFlag:  # #3719.
+                    self.put('\n')
         root.setVisited()
     #@+node:ekr.20141110223158.20: *3* mdw.write_headline
     # Importer.create_placeholders creates headlines matching this pattern.

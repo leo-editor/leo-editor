@@ -77,7 +77,7 @@ class TestMDWriter(BaseTestWriter):
             ## 2nd level title B
 
             some body content of the 2nd node 
-        """).strip() + '\n\n'  # End the last node with '\n\n'.
+        """).strip() + '\n'  # End the last node with '\n'.
         #@-<< define contents: test_markdown_sections >>
 
         # Import contents into root's tree.
@@ -110,7 +110,7 @@ class TestMDWriter(BaseTestWriter):
             # ![label](https://raw.githubusercontent.com/boltext/leojs/master/resources/leoapp.png)
 
             Body text
-        """).strip() + '\n\n'  # End the last node with '\n\n'.
+        """).strip() + '\n'  # End the last node with '\n'.
         #@-<< define contents: test_markdown_image >>
 
         # Import contents into root's tree.
@@ -143,11 +143,10 @@ class TestMDWriter(BaseTestWriter):
 
             Level 1 text.
 
-
             ### Level 3
 
             Level 3 text.
-        """).strip() + '\n\n'  # End the last node with '\n\n'.
+        """).strip() + '\n'  # End the last node with '\n'.
         #@-<< define contents: test_markdown_placeholders >>
 
         # Import contents into root's tree.
