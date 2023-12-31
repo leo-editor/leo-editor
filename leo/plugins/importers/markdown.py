@@ -4,11 +4,14 @@
 from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
+from leo.core import leoGlobals as g
 from leo.plugins.importers.base_importer import Importer
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
+    
+assert g
 
 #@+others
 #@+node:ekr.20161124192050.2: ** class Markdown_Importer(Importer)
