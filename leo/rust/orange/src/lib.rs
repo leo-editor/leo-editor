@@ -38,15 +38,18 @@ def is_odd(i):
         //print_ast(ast);
     }
     
-    if false {
+    if true {
+        // ast: enum Result
         match ast {
             Ok(tree) => {
                 println!("\nTree:");
-                if false {  // Experimental.
+                // tree:  enum `rustpython_parser::rustpython_ast::Mod`
+                if true {  // Experimental.
                     // let tree_iter = tree.iter();
-                    // for z in tree_iter {
-                        // println!("{:#?}", z);
-                    // }
+                    // for z in tree.traverse() {
+                    for z in tree.visitor() {
+                        println!("{:#?}", z);
+                    }
                 }
                 else {
                     println!("{:#?}", tree);
