@@ -6779,15 +6779,31 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
     unl = unl_s
 
     if unl.startswith('unl:gnx:'):
-        # Resolve a gnx-based unl.
+        # Init the gnx-based search.
         unl = unl[8:]
         file_part = g.getUNLFilePart(unl)
-        c2 = g.openUNLFile(c, file_part)
-        if file_part and not c2:
-            return None
-        c3 = c2 or c
         tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
-        return g.findGnx(tail, c3)
+
+        # If there is a file part, search *only* the given commander!
+        if file_part:
+            c2 = g.openUNLFile(c, file_part)
+            if not c2:
+                return None
+            p = g.findGnx(tail, c2)
+            return p  # May be None.
+
+        # New in Leo 6.7.7:
+        # There is no file part, so search all open commanders, starting with c.
+        p = g.findGnx(tail, c)
+        if p:
+            return p
+        for c2 in g.app.commanders():
+            if c2 != c:
+                p = g.findGnx(tail, c2)
+                if p:
+                    return p
+        return None
+
     # Resolve a file-based unl.
     for prefix in ('unl:', 'file:'):
         if unl.startswith(prefix):
@@ -6797,14 +6813,31 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         # Unit tests suppress this output.
         print(f"Bad unl: {unl_s}")
         return None
+
+    # Init the headline-based search.
     file_part = g.getUNLFilePart(unl)
-    c2 = g.openUNLFile(c, file_part)
-    if file_part and not c2:
-        return None
-    c3 = c2 or c
     tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
     unlList = tail.split('-->')
-    return g.findUnl(unlList, c3)
+
+    # If there is a file part, search *only* the given commander!
+    if file_part:
+        c2 = g.openUNLFile(c, file_part)
+        if not c2:
+            return None
+        p = g.findUnl(unlList, c2)
+        return p  # May be None
+
+    # New in Leo 6.7.7:
+    # There is no file part, so search all open commanders, starting with c.
+    p = g.findUnl(unlList, c)
+    if p:
+        return p
+    for c2 in g.app.commanders():
+        if c2 != c:
+            p = g.findUnl(unlList, c2)
+            if p:
+                return p
+    return None
 #@+node:ekr.20230624015529.1: *3* g.findGnx (new unls)
 find_gnx_pat = re.compile(r'^(.*)::([-\d]+)?$')
 
