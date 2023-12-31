@@ -378,16 +378,16 @@ The default colors are:
 ## Node Creation Default
 Parameter name:  Leo-Babel-Node-Creation-Default
 
-    * False --> by default, no results nodes are added.
-    * True --> by default, results nodes are added.
+    * False --> no results nodes are added.
+    * True --> results nodes are added.
 
 Example:
 
 \@bool Leo-Babel-Node-Creation-Default = False
 
-If Leo-Babel-Node-Creation-Default is not defined, then Leo-Babel creates results nodes.
+The value of Leo-Babel-Node-Creation-Default compiled into Leo-Babel is True.
 
-This default can be overridden for an individual Babel script by setting babel_node_creation True/False in the Babel Parameters Script.
+This parameter's setting can be overridden for an individual Babel Script by setting babel_node_creation in the Babel Parameters Script.
 
 ## Python Interpreter Default
 Parameter Name:  Leo-Babel-Python
@@ -430,6 +430,20 @@ The POSIX standard shell interpreter chosen by your Linux distribution.
 The Z shell.
 
 This default can be overridden for an individual Babel script by setting babel_shell in the Babel Parameters Script.
+
+## Sudo Executes Script
+Parameter Name:  Leo-Babel-Sudo
+
+    * False --> the Babel Script is executed with the current user's priveleges
+    * True --> Sudo executes the Babel Script.  That is, the Babel Script is executed with root priveleges.
+
+Example:
+
+\@bool Leo-Babel-Sudo = True
+
+The value of Leo-Babel-Sudo compiled into Leo-Babel is False.
+
+This parameter's setting can be overridden for an individual Babel Script by setting babel_sudo in the Babel Parameters Script.
 
 # Supported Python Release
 

@@ -116,6 +116,7 @@ class BabelCmdr(object):
             cmdr.config.getBool('Leo-Babel-Node-Creation-Default', default=True)
         self.interpreterPython = _getString(cmdr, 'Leo-Babel-Python', default='python3')
         self.interpreterShell = _getString(cmdr, 'Leo-Babel-Shell', default='bash')
+        self.babel_sudo = cmdr.config.getBool('Leo-Babel-Sudo', default=False)
 
         self.babelExecCnt = 0
         self.cmdDoneFlag = False

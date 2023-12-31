@@ -387,7 +387,7 @@ def babelExec(event):
             'c': cmdr,
             'g': leoG,
             'p': babelRoot}
-        exec(code, gld)
+        exec(code, gld)     # This adds all the variables set by "code" to dictionary gld. [It also adds Python built-in's to gld.]
 
         # Create Nodes?
         createNodes = gld.get('babel_node_creation')
@@ -434,8 +434,8 @@ def babelExec(event):
         if babel_script_args:
             cmdList.extend(babel_script_args)
 
-        leoG.es(f'Script\'s CWD: "{cwd}"', color='navy')
-        leoG.es(f'Command list: {cmdList}', color='navy')
+        leoG.es(f'Script\'s CWD: "{cwd}"', color='navy', tabName='Babel')
+        leoG.es(f'Command list: {cmdList}', color='navy', tabName='Babel')
 
         # pylint: disable=unexpected-keyword-arg
         wro = tempfile.NamedTemporaryFile(buffering=0)
@@ -533,7 +533,7 @@ def babelExec(event):
                         forcePythonSentinels=forcePythonSentinels,
                         sentinels=sentinels)
         except Exception:
-            leoG.es_print("unexpected exception in Leo-Babel getScript()")
+            leoG.es_print("unexpected exception in Leo-Babel getScript()", tabName='Babel')
             raise
         return script
     #@+node:bob.20170828151625.1: *3* scrOrResRoot()
@@ -603,7 +603,7 @@ def babelExec(event):
         while True:
             lix = fdr.read()
             if lix:
-                leoG.es(lix.decode('utf-8'), color=color)
+                leoG.es(lix.decode('utf-8'), color=color, tabName='Babel')
             else:
                 break
         if babelCmdr.cmdDoneFlag:
@@ -692,8 +692,8 @@ def babelExec(event):
                 wro.close()
                 wre.close()
                 colorCompletion = babelCmdr.colorCompletion
-                leoG.es(babelCmdr.termMsg, color=colorCompletion)
-                leoG.es(babelCmdr.etMsg, color=colorCompletion)
+                leoG.es(babelCmdr.termMsg, color=colorCompletion, tabName='Babel')
+                leoG.es(babelCmdr.etMsg, color=colorCompletion, tabName='Babel')
                 if createNodes:
                     makeBabelNodes(cmdrRes, resultsRoot, reo, ree,
                         babelCmdr.termMsg, babelCmdr.etMsg)
@@ -724,6 +724,7 @@ def babelExec(event):
     if babelCmdr is None:
         babelCmdr = babelG.babel_api.BabelCmdr(cmdr)
         cmdr.user_dict['leo_babel'] = babelCmdr
+        cmdr.frame.log.createTab("Babel")
     pos = cmdr.p
     babelRoot = pos.copy()
 
