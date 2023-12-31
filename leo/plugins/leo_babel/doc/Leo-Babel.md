@@ -367,13 +367,33 @@ Examples of color settings:
 
 * @color Leo-Babel-stdout = #c8ffbe
 * @color Leo-Babel-stderr = #ffc0cc
-* @color Leo-Babel-completion = #ffee8b
+* @color Leo-Babel-completion = #ffee8b  **Deprecated.  Replaced by Leo-Babel-information**
+* @color Leo-Babel-information = #ffee8b
 
 The default colors are:
 
     * stdout 00ff00  green
     * stderr A020F0  purple
     * completion message FFD700  gold
+
+The colors can be overridden for one Babel Script by setting the following variables in the scripts Babel Script:
+
+* colorStdout
+* colorStderr
+* colorInformation
+
+## Output Prefixes
+Each line in the Babel tab of the Log pane has prefix identifying the type of line.  The default values compiled into Leo-Babel are shown below:
+
+* \@string Leo-Babel-Prefix-Information = "- "
+* \@string Leo-Babel-Prefix-stdout = "| "
+* \@string Leo-Babel-Prefix-stderr = "* "
+
+The prefixes can be overridden for one Babel Script by setting the following variables in the scripts Babel Script:
+
+* babel_prefix_information
+* babel_prefix_stdout
+* babel_prefix_stderr
 
 ## Node Creation Default
 Parameter name:  Leo-Babel-Node-Creation-Default

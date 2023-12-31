@@ -44,7 +44,7 @@ import leo.core.leoNodes as leoNodes
 #@-<< imports >>
 
 #@+others
-#@+node:bob.20170801125314.1: ** unl2clipboard()
+#@+node:bob.20170801125314.1: ** unl2clipboard(babelG)
 def unl2clipboard(babelG):
     """ Put the UNL of the current node in the clipboard
 
@@ -60,7 +60,7 @@ def unl2clipboard(babelG):
     clipboard = QtCore.QCoreApplication.instance().clipboard()
     clipboard.setText(unl)
     babelG.babelMenu.hide()
-#@+node:bob.20170812170608.1: ** listRoots()
+#@+node:bob.20170812170608.1: ** listRoots(cmdr)
 def listRoots(cmdr):
     """
     Return an ordered list of all the current
@@ -76,29 +76,7 @@ def listRoots(cmdr):
 
     root1 = cmdr.rootPosition()
     return [root.copy() for root in root1.self_and_siblings_iter()]
-#@+node:bob.20170816103509.1: ** otpQuote() & otpUnquote()
-quoteList = (
-    (six.u(' '), six.u('%20')),
-    #(six.u('\t'), six.u('%09')),
-    #(six.u("'"), six.u('%27')),
-    )
-
-if False:  # Currently unused.
-    def otpQuote(otp):
-        """
-        Apply just enough "URL quoting" to make Leo-Editor URL coloring color all
-        of the otp when it is part of a URL
-
-        @param otp:  Outline path
-        @param return:  otp-quoted outline path
-
-        """
-
-        if otp:
-            for un, qu in quoteList:
-                otp = otp.replace(un, qu)
-        return otp
-
+#@+node:bob.20170816103509.1: ** otpUnquote(otp)
 def otpUnquote(otp):
     """
     Remove all otp-quoting from a string
@@ -107,12 +85,21 @@ def otpUnquote(otp):
     @param return:  Unquoted outline path
 
     """
+    #@+others
+    #@+node:bob.20231231133744.1: *3* quoteList = (...) tuple
+    quoteList = (
+        (six.u(' '), six.u('%20')),
+        #(six.u('\t'), six.u('%09')),
+        #(six.u("'"), six.u('%27')),
+        )
+
+    #@-others
 
     if otp:
         for un, qu in quoteList:
             otp = otp.replace(qu, un)
     return otp
-#@+node:bob.20170816102949.1: ** unlSplit()
+#@+node:bob.20170816102949.1: ** unlSplit(unl)
 def unlSplit(unl):
     """
     Split a UNL into a file pathname and an outline path.
@@ -147,7 +134,7 @@ def unlSplit(unl):
         nodePart = unl[idx + 1 :]
     pathname = os.path.realpath(pathname)
     return pathname, nodePart
-#@+node:bob.20170812164857.1: ** unl2pos()
+#@+node:bob.20170812164857.1: ** unl2pos(unl, cmdr=None)
 def unl2pos(unl, cmdr=None):
     """ Univeral Node Locator to Leo-Editor Position
 
@@ -241,7 +228,7 @@ def _descendHdl(cmdrUnl, unlList):
             return list()
     return [leoNodes.position(stk[-1][0], childIndex=stk[-1][1],
         stack=stk[:-1]) for stk in soFarList]
-#@+node:bob.20170726143458.9: ** class MenuPopUp
+#@+node:bob.20170726143458.9: ** class MenuPopUp(QtWidgets.QMenu)
 class MenuPopUp(QtWidgets.QMenu):
     """ Pop-up Menu
     """
@@ -303,7 +290,7 @@ class MenuPopUp(QtWidgets.QMenu):
             self.rect().center())  # type:ignore
     #@-others
 
-#@+node:bob.20170726143458.15: ** babelMenu()
+#@+node:bob.20170726143458.15: ** babelMenu(event)
 def babelMenu(event):
     """ Show the Leo-Babel Menu
 
@@ -321,7 +308,7 @@ def babelMenu(event):
     babelG.cmdr = cmdr
     babelG.babelMenu.exec_(QtWidgets.QApplication.desktop().screen().rect().center() -
         babelG.babelMenu.rect().center())
-#@+node:bob.20170726143458.16: ** babelExec()
+#@+node:bob.20170726143458.16: ** babelExec(event)
 def babelExec(event):
     """ Execute a Script
 
@@ -336,7 +323,7 @@ def babelExec(event):
     """
 
     #@+others
-    #@+node:bob.20180402153922.1: *3* _babelExec
+    #@+node:bob.20180402153922.1: *3* _babelExec(babelG, babelCmdr, babelRoot)
     def _babelExec(babelG, babelCmdr, babelRoot):
         """ Execute a Script
 
@@ -434,8 +421,8 @@ def babelExec(event):
         if babel_script_args:
             cmdList.extend(babel_script_args)
 
-        leoG.es(f'Script\'s CWD: "{cwd}"', color='navy', tabName='Babel')
-        leoG.es(f'Command list: {cmdList}', color='navy', tabName='Babel')
+        leoG.es(f'{babelCmdr.babel_prefix_information}Script\'s CWD: "{cwd}"', color=babelCmdr.colorInformation, tabName='Babel')
+        leoG.es(f'{babelCmdr.babel_prefix_information}Command list: {cmdList}', color=babelCmdr.colorInformation, tabName='Babel')
 
         # pylint: disable=unexpected-keyword-arg
         wro = tempfile.NamedTemporaryFile(buffering=0)
@@ -456,8 +443,8 @@ def babelExec(event):
         subPbabKill = subprocess.Popen([babelG.pathBabelKill, str(subPscript.pid)])
 
         babelCmdr.reo = reo  # Kludge to allow itf() to determine which output it polls
-        itOut = leoG.IdleTime((lambda ito: itf(babelCmdr.colorStdout, reo, babelCmdr)), delay=1000)
-        itErr = leoG.IdleTime((lambda ito: itf(babelCmdr.colorStderr, ree, babelCmdr)), delay=1000)
+        itOut = leoG.IdleTime(lambda ito, prefix=babelCmdr.babel_prefix_stdout, color=babelCmdr.colorStdout, fdr=reo, babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr), delay=1000)
+        itErr = leoG.IdleTime(lambda ito, prefix=babelCmdr.babel_prefix_stderr, color=babelCmdr.colorStderr, fdr=ree, babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr), delay=1000)
         if (not itOut) or (not itErr):
             raise babelG.babel_api.BABEL_ERROR('leoG.IdleTime() failed')
         itOut.start()
@@ -469,7 +456,7 @@ def babelExec(event):
         if not itPoll:
             raise babelG.babel_api.BABEL_ERROR('leoG.IdleTime() failed')
         itPoll.start()
-    #@+node:bob.20170726143458.17: *3* getScript() & helpers
+    #@+node:bob.20170726143458.17: *3* getScript(c, p, useSelectedText=True, forcePythonSentinels=True, sentinels=True, language='python', )
     def getScript(c, p,
         useSelectedText=True,
         forcePythonSentinels=True,
@@ -483,7 +470,7 @@ def babelExec(event):
         '''
 
         #@+others
-        #@+node:bob.20170726143458.18: *4* extractExecutableString()
+        #@+node:bob.20170726143458.18: *4* extractExecutableString(c, p, s, language='python')
         def extractExecutableString(c, p, s, language='python'):
             '''
             Return all lines for the given @language directive.
@@ -503,7 +490,7 @@ def babelExec(event):
                 elif langCur == language:
                     result.append(line)
             return ''.join(result)
-        #@+node:bob.20170726143458.19: *4* composeScript()
+        #@+node:bob.20170726143458.19: *4* composeScript(c, p, s, forcePythonSentinels=True, sentinels=True)
         def composeScript(c, p, s, forcePythonSentinels=True, sentinels=True):
             '''Compose a script from p.b.'''
 
@@ -536,7 +523,7 @@ def babelExec(event):
             leoG.es_print("unexpected exception in Leo-Babel getScript()", tabName='Babel')
             raise
         return script
-    #@+node:bob.20170828151625.1: *3* scrOrResRoot()
+    #@+node:bob.20170828151625.1: *3* scrOrResRoot(cmdrb, gld, babelG, babelRoot, scrOrRes)
     def scrOrResRoot(cmdrb, gld, babelG, babelRoot, scrOrRes):
         """ Get the Script or Results Root
 
@@ -587,11 +574,12 @@ def babelExec(event):
             cmdrx, rootx = rootx
             rootx = rootx.copy()
         return cmdrx, rootx
-    #@+node:bob.20170726143458.20: *3* itf()
-    def itf(color, fdr, babelCmdr):
+    #@+node:bob.20170726143458.20: *3* itf(prefix, color, fdr, babelCmdr)
+    def itf(prefix, color, fdr, babelCmdr):
         """ Echo stdout to the log pane
 
         Arguments:
+            prefix: Line prefix
             color: Color of text to put in the log pane
             fdr:  Read File Descriptor for the stdout or stderr log file.
             babelCmdr: Leo-Editor for the file containing the current command
@@ -603,7 +591,7 @@ def babelExec(event):
         while True:
             lix = fdr.read()
             if lix:
-                leoG.es(lix.decode('utf-8'), color=color, tabName='Babel')
+                leoG.es(prefix + lix.decode('utf-8'), color=color, tabName='Babel')
             else:
                 break
         if babelCmdr.cmdDoneFlag:
@@ -611,7 +599,7 @@ def babelExec(event):
                 babelCmdr.cmdDoneStdPolled = True
             else:
                 babelCmdr.cmdDoneErrPolled = True
-    #@+node:bob.20170726143458.21: *3* makeBabelNodes()
+    #@+node:bob.20170726143458.21: *3* makeBabelNodes(cmdrRes, resultsRoot, reo, ree, termMsg, etMsg)
     def makeBabelNodes(cmdrRes, resultsRoot, reo, ree, termMsg, etMsg):
         """ Create the Babel Ouput Nodes
 
@@ -655,7 +643,7 @@ def babelExec(event):
         cmdrRes.expandSubtree(posET)
         cmdrRes.redraw()
         cmdrRes.save()
-    #@+node:bob.20170726143458.22: *3* itp()
+    #@+node:bob.20170726143458.22: *3* itp(itPoll, cmdrB, cmdrRes, resultsRoot, subPscript, subPbabKill, wro, reo, wre, ree, itOut, itErr, start, createNodes)
     def itp(itPoll, cmdrB, cmdrRes, resultsRoot, subPscript,
         subPbabKill, wro, reo, wre, ree,
         itOut, itErr,
@@ -691,9 +679,9 @@ def babelExec(event):
                 itPoll.stop()
                 wro.close()
                 wre.close()
-                colorCompletion = babelCmdr.colorCompletion
-                leoG.es(babelCmdr.termMsg, color=colorCompletion, tabName='Babel')
-                leoG.es(babelCmdr.etMsg, color=colorCompletion, tabName='Babel')
+                colorInformation = babelCmdr.colorInformation
+                leoG.es(babelCmdr.babel_prefix_information + babelCmdr.termMsg, color=colorInformation, tabName='Babel')
+                leoG.es(babelCmdr.babel_prefix_information + babelCmdr.etMsg, color=colorInformation, tabName='Babel')
                 if createNodes:
                     makeBabelNodes(cmdrRes, resultsRoot, reo, ree,
                         babelCmdr.termMsg, babelCmdr.etMsg)
