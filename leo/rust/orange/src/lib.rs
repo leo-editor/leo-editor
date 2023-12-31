@@ -37,11 +37,20 @@ def is_odd(i):
     if false {
         //print_ast(ast);
     }
-    else if true {
+    
+    if false {
         match ast {
             Ok(tree) => {
                 println!("\nTree:");
-                println!("{:#?}", tree);
+                if false {  // Experimental.
+                    // let tree_iter = tree.iter();
+                    // for z in tree_iter {
+                        // println!("{:#?}", z);
+                    // }
+                }
+                else {
+                    println!("{:#?}", tree);
+                }
             },
             Err(_) => println!("no ast"),
         }
@@ -50,7 +59,7 @@ def is_odd(i):
     println!("orange/src/lib.rs: done!");
     ExitCode::SUCCESS
 }
-//@+node:ekr.20231230114358.1: *3* fn: print_ast
+//@+node:ekr.20231230114358.1: *3* fn: print_ast (not used)
 // fn print_ast(ast: Result<Ast, &'static str>) {
     // match ast {
         // Ok(tree) => {
@@ -68,12 +77,13 @@ def is_odd(i):
 fn print_tokens(python_source: &str) {
 
     // Can't be formatted with `{:?}` because it doesn't implement `Debug`.
-    let debug_tokens = lex(python_source, Mode::Module)
+    let tokens = lex(python_source, Mode::Module)
         .map(|tok| tok.expect("Failed to lex"))
         .collect::<Vec<_>>();
+
     println!("\nTokens:");
-    for (debug_token, range) in debug_tokens {
-        println!("  {debug_token:?}@{range:?}");
+    for (token, range) in tokens {
+        println!("  {token:?}@{range:?}");
     }
 }
 
