@@ -3,22 +3,49 @@
 #@@language plain
 #@+others
 #@+node:bob.20170311143456.1: ** To Do
+#@+node:bob.20240101114745.1: *3* Find the @int function
+Put @int into my settings
+
+Damn.  @int is not executable.  I can't put a break before it.
+#@+node:bob.20240101114030.1: *3* Can None be a default for a bool and a color?
+None is the default for a string parameter
+
+None is the default for a color parameter.  So None is OK for a color.
+
+getBool() returns None if the parameter is not found.
+
+getInt() returns None if the parameter is not found.
+#@+node:bob.20240101090629.1: *3* True/False Babel Tab option
+#@+node:bob.20240101110007.1: *3* Leo-Babel-Poll-Delay option added
+#@+node:bob.20240101113347.1: *3* nodeCreationDefault to babel_node_ceation
 #@+node:bob.20231231154402.1: *3* subprocess option for sending stderr to stdout
 #@+node:bob.20231229145158.1: *3* The help is displayed as raw markdown.
 #@+node:bob.20231229144523.1: *3* Pull Request
 This revision does the following:
 
-* Implements a new option to run the script using sudo.  The default setting for this option is off.
+* Implements a new option "Leo-Babel-Sudo" to run the script using sudo.  The default setting for this option is off.
 
-* Implements a new "Babel" tab in the Log pane for all Leo-Babel output.
+* Implements a new option "Leo-Babel-Tab-Babel" to use a "Babel" tab in the Log pane for all Leo-Babel output.
 
 * Implements line prefix options to indicate the type of each line in the "Babel" tab of the Log pane.
 
-* Fixes bug:  The arguments to the output function run by "Leo idle" were NOT curried.  Garbage arguments could result.  I never saw a problem till I made unrelated changes.
+* Implements a new option "Leo-Babel-Poll-Delay" to specify the output polling delay in milliseconds.  Previously the delay was 1000.  Now the default is 1.
 
 * Inserts a shebang line as the first line in every script file.  This isn't needed by Leo-Babel which specifies the interpreter for the script file, but it allows the user to safely run the script without specifying the interpreter.
 
-* Changes the default stdout color.
+* Changes the default color for "Leo-Babel-stdout"
+
+* Changes the default color for "Leo-Babel-stderr"
+
+* Deprecates Babel Parameter "Leo-Babel-Node-Creation-Default" in favor of "Leo-Babel-Node-Creation".
+
+* Deprecates Babel Parameter "Leo-Babel-completion" in favor of "Leo-Babel-information".
+
+* Changes the default color for "Leo-Babel-information"
+
+* Changes the default for Babel Parameter "Leo-Babel-Python".
+
+* Changes the default for Babel Parameter "Leo-Babel-Shell".
 #@+node:bob.20170508125827.1: ** Issues
 #@+node:bob.20170319141959.1: *3* uA's
 I don't understand Terry Brown's attrib_edit.py plugin.  I think it is inadequate anyway.

@@ -443,8 +443,8 @@ def babelExec(event):
         subPbabKill = subprocess.Popen([babelG.pathBabelKill, str(subPscript.pid)])
 
         babelCmdr.reo = reo  # Kludge to allow itf() to determine which output it polls
-        itOut = leoG.IdleTime(lambda ito, prefix=babelCmdr.babel_prefix_stdout, color=babelCmdr.colorStdout, fdr=reo, babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr), delay=1000)
-        itErr = leoG.IdleTime(lambda ito, prefix=babelCmdr.babel_prefix_stderr, color=babelCmdr.colorStderr, fdr=ree, babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr), delay=1000)
+        itOut = leoG.IdleTime(lambda ito, prefix=babelCmdr.babel_prefix_stdout, color=babelCmdr.colorStdout, fdr=reo, babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr), delay=1)
+        itErr = leoG.IdleTime(lambda ito, prefix=babelCmdr.babel_prefix_stderr, color=babelCmdr.colorStderr, fdr=ree, babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr), delay=1)
         if (not itOut) or (not itErr):
             raise babelG.babel_api.BABEL_ERROR('leoG.IdleTime() failed')
         itOut.start()
@@ -574,12 +574,12 @@ def babelExec(event):
             cmdrx, rootx = rootx
             rootx = rootx.copy()
         return cmdrx, rootx
-    #@+node:bob.20170726143458.20: *3* itf(prefix, color, fdr, babelCmdr)
-    def itf(prefix, color, fdr, babelCmdr):
+    #@+node:bob.20170726143458.20: *3* itf(linePrefix, color, fdr, babelCmdr)
+    def itf(linePrefix, color, fdr, babelCmdr):
         """ Echo stdout to the log pane
 
         Arguments:
-            prefix: Line prefix
+            linePrefix: Line prefix
             color: Color of text to put in the log pane
             fdr:  Read File Descriptor for the stdout or stderr log file.
             babelCmdr: Leo-Editor for the file containing the current command
@@ -591,7 +591,9 @@ def babelExec(event):
         while True:
             lix = fdr.read()
             if lix:
-                leoG.es(prefix + lix.decode('utf-8'), color=color, tabName='Babel')
+                for lineX in lix.decode('utf-8').split('\n'):
+                    if lineX:
+                        leoG.es(linePrefix + lineX, color=color, tabName='Babel')
             else:
                 break
         if babelCmdr.cmdDoneFlag:

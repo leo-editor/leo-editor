@@ -395,61 +395,33 @@ The prefixes can be overridden for one Babel Script by setting the following var
 * babel_prefix_stdout
 * babel_prefix_stderr
 
-## Node Creation Default
-Parameter name:  Leo-Babel-Node-Creation-Default
+## Babel Tab
+Parameter Name:  Leo-Babel-Tab-Babel
+
+    * False --> All Babel Script output goes to the "Log" tab in the Log pane
+    * True --> All Babel Script output goes to the "Babel" tab in the Log pane
+
+Example:
+
+\@bool Leo-Babel-Tab-Babel = True
+
+The value of Leo-Babel-Tab-Babel compiled into Leo-Babel is True.
+
+This parameter's setting can be overridden for an individual Babel Script by setting babel_tab_babel in the Babel Parameters Script.
+
+## Node Creation
+Parameter name:  Leo-Babel-Node-Creation
 
     * False --> no results nodes are added.
     * True --> results nodes are added.
 
 Example:
 
-\@bool Leo-Babel-Node-Creation-Default = False
+\@bool Leo-Babel-Node-Creation = False
 
-The value of Leo-Babel-Node-Creation-Default compiled into Leo-Babel is True.
+The value of Leo-Babel-Node-Creation compiled into Leo-Babel is True.
 
 This parameter's setting can be overridden for an individual Babel Script by setting babel_node_creation in the Babel Parameters Script.
-
-## Python Interpreter Default
-Parameter Name:  Leo-Babel-Python
-
-This parameter specifies the program used to interpret a Python language script.  The program must exist on the path specified by the PATH environment variable, or the absolute path to the program must be specified.
-
-If Leo-Babel-Python is **NOT** specified, then the default Python interpreter is "python3."
-
-Examples:
-
-\@string Leo-Babel-Python = python2
-
-The Python 2 interpreter.
-
-\@string Leo-Babel-Python = python3
-
-The Python 3 interpreter.
-
-
-This default can be overridden for an individual Babel script by setting babel_python in the Babel Parameters Script.
-
-## Shell Interpreter Default
-Parameter Name:  Leo-Babel-Shell
-
-This parameter specifies the default program used to interpret a shell language script.  The program must exist on the path specified by the PATH environment variable, or the absolute path to the program must be specified.
-
-If Leo-Babel-Shell is **NOT** specified, then the default shell interpreter is "bash."
-Examples:
-
-\@string Leo-Babel-Shell = bash
-
-The Bourne shell.
-
-\@string Leo-Babel-Shell = sh
-
-The POSIX standard shell interpreter chosen by your Linux distribution.
-
-\@string Leo-Babel-Shell = zsh
-
-The Z shell.
-
-This default can be overridden for an individual Babel script by setting babel_shell in the Babel Parameters Script.
 
 ## Sudo Executes Script
 Parameter Name:  Leo-Babel-Sudo
@@ -464,6 +436,57 @@ Example:
 The value of Leo-Babel-Sudo compiled into Leo-Babel is False.
 
 This parameter's setting can be overridden for an individual Babel Script by setting babel_sudo in the Babel Parameters Script.
+
+## Output Polling Delay
+Parameter Name:  Leo-Babel-Polling-Delay
+
+This is an integer specifying the minimum number of milliseconds between output polls.
+
+Example:
+
+\@int Leo-Babel-Polling-Delay = 1
+
+The value of Leo-Babel-Polling-Delay compiled into Leo-Babel is 1.
+
+This parameter's setting can be overridden for an individual Babel Script by setting babel_polling_delay in the Babel Parameters Script.
+
+## Python Interpreter
+Parameter Name:  Leo-Babel-Python
+
+This parameter specifies the program used to interpret a Python language script.  The program must exist on the path specified by the PATH environment variable, or the absolute path to the program must be specified.
+
+If Leo-Babel-Python is **NOT** specified, then the default Python interpreter is "/usr/bin/python3."
+
+Examples:
+
+\@string Leo-Babel-Python = /usr/bin/python2
+
+\@string Leo-Babel-Python = /usr/bin/python3
+
+
+This parameter can be overridden for an individual Babel script by setting babel_python in the Babel Parameters Script.
+
+## Shell Interpreter
+Parameter Name:  Leo-Babel-Shell
+
+This parameter specifies the default program used to interpret a shell language script.  The program must exist on the path specified by the PATH environment variable, or the absolute path to the program must be specified.
+
+If Leo-Babel-Shell is **NOT** specified, then the default shell interpreter is "/usr/bin/bash."
+Examples:
+
+\@string Leo-Babel-Shell = usr/bin/bash
+
+The Bourne shell.
+
+\@string Leo-Babel-Shell = sh
+
+The POSIX standard shell interpreter chosen by your Linux distribution.
+
+\@string Leo-Babel-Shell = zsh
+
+The Z shell.
+
+This parameter can be overridden for an individual Babel script by setting babel_shell in the Babel Parameters Script.
 
 # Supported Python Release
 

@@ -109,18 +109,24 @@ class BabelCmdr(object):
         #@-others
 
         self.cmdr = cmdr
-        self.colorStdout = _getColor(cmdr, 'Leo-Babel-stdout', default='#996633')
-        self.colorStderr = _getColor(cmdr, 'Leo-Babel-stderr', default='#A020F0')
-        self.colorInformation = _getColor(cmdr, 'Leo-Babel-completion', default='#FFD700')
-        self.colorInformation = _getColor(cmdr, 'Leo-Babel-information', default='#FFD700')
+        self.colorStdout = _getColor(cmdr, 'Leo-Babel-stdout', default='#000000')
+        self.colorStderr = _getColor(cmdr, 'Leo-Babel-stderr', default='#ff3300')
+        self.colorInformation = _getColor(cmdr, 'Leo-Babel-completion')
+        if self.colorInformation is None:
+            self.colorInformation = _getColor(cmdr, 'Leo-Babel-information', default='#3333ff')
         self.nodeCreationDefault = \
-            cmdr.config.getBool('Leo-Babel-Node-Creation-Default', default=True)
-        self.interpreterPython = _getString(cmdr, 'Leo-Babel-Python', default='python3')
-        self.interpreterShell = _getString(cmdr, 'Leo-Babel-Shell', default='bash')
+            cmdr.config.getBool('Leo-Babel-Node-Creation-Default', default=None)
+        if self.nodeCreationDefault is None:
+            self.nodeCreationDefault = \
+                cmdr.config.getBool('Leo-Babel-Node-Creation', default=True)
+        self.interpreterPython = _getString(cmdr, 'Leo-Babel-Python', default='/usr/bin/python3')
+        self.interpreterShell = _getString(cmdr, 'Leo-Babel-Shell', default='/user/bin/bash')
         self.babel_sudo = cmdr.config.getBool('Leo-Babel-Sudo', default=False)
         self.babel_prefix_information = _getString(cmdr, 'Leo-Babel-Prefix-Information',  default="- ")
         self.babel_prefix_stdout = _getString(cmdr, 'Leo-Babel-Prefix-stdout', default="| ")
         self.babel_prefix_stderr = _getString(cmdr, 'Leo-Babel-Prefix-stderr', default="* ")
+        self.babel_tab_babel = cmdr.config.getBool('Leo-Babel-Tab-Babel', default=True)
+        self.babel_polling_delay = cmdr.config.getInt("Leo-Babel-Polling-Delay", default=1)
 
         self.babelExecCnt = 0
         self.cmdDoneFlag = False
