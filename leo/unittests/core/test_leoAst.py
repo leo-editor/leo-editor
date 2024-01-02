@@ -30,6 +30,11 @@ except Exception:  # pragma: no cover
 # pylint: disable=wrong-import-position
 from leo.core import leoGlobals as g
 
+try:
+    from leo.core.leoAst import use_ast
+except Exception:
+    use_ast = True  # Default to legacy code.
+
 from leo.core.leoAst import AstNotEqual
 from leo.core.leoAst import Fstringify, Orange
 from leo.core.leoAst import Token, TokenOrderGenerator
@@ -2384,6 +2389,9 @@ class TestOrange(BaseTest):
         self.assertEqual(results, expected)
     #@+node:ekr.20200117180956.1: *4* TestOrange.test_split_lines
     def test_split_lines(self):
+        
+        if not use_ast:
+            self.skipTest('requires use_ast = True')
 
         line_length = 40  # For testing.
         table = (
@@ -2417,6 +2425,9 @@ class TestOrange(BaseTest):
         self.assertEqual(fails, 0)
     #@+node:ekr.20200210073227.1: *4* TestOrange.test_split_lines_2
     def test_split_lines_2(self):
+        
+        if not use_ast:
+            self.skipTest('requires use_ast = True')
 
         line_length = 40  # For testing.
         # Different from how black handles things.
@@ -2448,6 +2459,9 @@ class TestOrange(BaseTest):
         self.assertEqual(fails, 0)
     #@+node:ekr.20200219144837.1: *4* TestOrange.test_split_lines_3
     def test_split_lines_3(self):
+        
+        if not use_ast:
+            self.skipTest('requires use_ast = True')
 
         line_length = 40  # For testing.
         # Different from how black handles things.
