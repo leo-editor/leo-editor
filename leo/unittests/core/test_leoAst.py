@@ -1720,10 +1720,12 @@ class TestOrange(BaseTest):
 
         table = (
         # Case 0.
-        '''\
-    def annotated_f(s: str = None, x=None) -> None:
-        pass
-    ''',
+            textwrap.dedent(
+                '''
+                def annotated_f(s: str = None, x=None) -> None:
+                    pass
+                '''
+            ),
         )
         for i, contents in enumerate(table):
             contents, tokens, tree = self.make_data(contents)
@@ -1824,22 +1826,23 @@ class TestOrange(BaseTest):
     #@+node:ekr.20200228074455.1: *4* TestOrange.test_bug_1429
     def test_bug_1429(self):
 
-        contents = r'''\
-    def get_semver(tag):
-        """bug 1429 docstring"""
-        try:
-            import semantic_version
-            version = str(semantic_version.Version.coerce(tag, partial=True))
-                # tuple of major, minor, build, pre-release, patch
-                # 5.6b2 --> 5.6-b2
-        except(ImportError, ValueError) as err:
-            print('\n', err)
-            print("""*** Failed to parse Semantic Version from git tag '{0}'.
-            Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
-            This version can't be uploaded to PyPi.org.""".format(tag))
-            version = tag
-        return version
-    '''
+        contents = textwrap.dedent(
+            r'''
+            def get_semver(tag):
+                """bug 1429 docstring"""
+                try:
+                    import semantic_version
+                    version = str(semantic_version.Version.coerce(tag, partial=True))
+                        # tuple of major, minor, build, pre-release, patch
+                        # 5.6b2 --> 5.6-b2
+                except(ImportError, ValueError) as err:
+                    print('\n', err)
+                    print("""*** Failed to parse Semantic Version from git tag '{0}'.
+                    Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
+                    This version can't be uploaded to PyPi.org.""".format(tag))
+                    version = tag
+                return version
+            ''')
         contents, tokens, tree = self.make_data(contents)
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens, tree,
@@ -1940,25 +1943,31 @@ class TestOrange(BaseTest):
     def test_decorator(self):
 
         table = (
-        # Case 0.
-        """\
-    @my_decorator(1)
-    def func():
-        pass
-    """,
-        # Case 1.
-        """\
-    if 1:
-        @my_decorator
-        def func():
-            pass
-    """,
-        # Case 2.
-        '''\
-    @g.commander_command('promote')
-    def promote(self, event=None, undoFlag=True):
-        """Make all children of the selected nodes siblings of the selected node."""
-    ''',
+            # Case 0.
+            textwrap.dedent(
+                """
+                @my_decorator(1)
+                def func():
+                    pass
+                """
+            ),
+            # Case 1.
+            textwrap.dedent(
+                """
+                if 1:
+                    @my_decorator
+                    def func():
+                        pass
+                """
+            ),
+            # Case 2.
+            textwrap.dedent(
+                '''
+                @g.commander_command('promote')
+                def promote(self, event=None, undoFlag=True):
+                    """Make all children of the selected nodes siblings of the selected node."""
+                '''
+            ),
         )
         for i, contents in enumerate(table):
             contents, tokens, tree = self.make_data(contents)
@@ -1991,27 +2000,35 @@ class TestOrange(BaseTest):
     def test_function_defs(self):
 
         table = (
-        # Case 0.
-        """\
-    def f1(a=2 + 5):
-        pass
-    """,
-        # Case 2
-         """\
-    def f1():
-        pass
-    """,
-        # Case 3.
-        """\
-    def f1():
-        pass
-    """,
-        # Case 4.
-        '''\
-    def should_kill_beautify(p):
-        """Return True if p.b contains @killbeautify"""
-        return 'killbeautify' in g.get_directives_dict(p)
-    ''',
+            # Case 0.
+            textwrap.dedent(
+                """
+                def f1(a=2 + 5):
+                    pass
+                """
+            ),
+            # Case 2
+            textwrap.dedent(
+                """
+                def f1():
+                    pass
+                """
+            ),
+            # Case 3.
+            textwrap.dedent(
+                """
+                def f1():
+                    pass
+                """
+            ),
+            # Case 4.
+            textwrap.dedent(
+                '''
+                def should_kill_beautify(p):
+                    """Return True if p.b contains @killbeautify"""
+                    return 'killbeautify' in g.get_directives_dict(p)
+                '''
+            ),
         )
         for i, contents in enumerate(table):
             contents, tokens, tree = self.make_data(contents)
