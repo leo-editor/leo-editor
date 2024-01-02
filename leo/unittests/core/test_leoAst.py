@@ -32,7 +32,11 @@ from leo.core import leoGlobals as g
 
 try:
     from leo.core.leoAst import use_ast
+    print('===== test_leoAst.py: use_ast:', use_ast)
 except Exception:
+    print('')
+    print('test_leoAst.py: failed to import use_ast')
+    print('')
     use_ast = True  # Default to legacy code.
 
 from leo.core.leoAst import AstNotEqual
