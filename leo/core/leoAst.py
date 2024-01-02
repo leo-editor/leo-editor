@@ -2221,15 +2221,13 @@ class Orange:
     def line_end(self) -> None:
         """Add a line-end request to the code list."""
         # This should be called only be do_newline and do_nl.
-
-        ### node, token = self.token.statement_node, self.token
         token = self.token
         assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
         
         # Create the 'line-end' output token.
         self.add_line_end()
         
-        ### For now, don't split unless we have parse tree.
+        ### For now, don't split lines unless we have parse tree.
         if use_ast:
             node = self.token.statement_node
             # Attempt to split the line.
