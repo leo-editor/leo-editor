@@ -1585,12 +1585,11 @@ class Fstringify:
 #@+node:ekr.20200107165250.1: *3* class Orange
 class Orange:
     """
-    A flexible and powerful beautifier for Python.
-    Orange is the new black.
-
-    This is a predominantly a *token-based* beautifier. However,
-    orange.do_op, orange.colon, and orange.possible_unary_op use the parse
-    tree to provide context that would otherwise be difficult to deduce.
+    A token-based beautifier for Python. Orange is the new Black.
+    
+    The module-level `use_ast` switch determines how this class infers context:
+    - True:  Use the Python parse tree.
+    - False: Use a state machine.
     """
     # This switch is really a comment. It will always be false.
     # It marks the code that simulates the operation of the black tool.
