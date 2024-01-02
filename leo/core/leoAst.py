@@ -179,7 +179,7 @@ Settings = Optional[dict[str, Any]]
 #@+node:ekr.20240102051437.1: ** << leoAst.py: use_ast switch >>
 # True: use Python's ast trees.
 # False: use a state machine.
-use_ast = True
+use_ast = False
 #@-<< leoAst.py: use_ast switch >>
 
 #@+others
@@ -2046,6 +2046,10 @@ class Orange:
                 # f"{token.node.__class__.__name__}"
             )
             # dump_tree(self.tokens, self.tree)
+            
+        ### To do: Use state machine.
+        
+        # Only tog.set_links sets token.equal_sign_spaces
         if self.token.equal_sign_spaces:
             self.blank()
             self.add_token('op', val)
@@ -2217,17 +2221,24 @@ class Orange:
     def line_end(self) -> None:
         """Add a line-end request to the code list."""
         # This should be called only be do_newline and do_nl.
-        node, token = self.token.statement_node, self.token
+
+        ### node, token = self.token.statement_node, self.token
+        token = self.token
         assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
+        
         # Create the 'line-end' output token.
         self.add_line_end()
-        # Attempt to split the line.
-        was_split = self.split_line(node, token)
-        # Attempt to join the line only if it has not just been split.
-        if not was_split and self.max_join_line_length > 0:
-            self.join_lines(node, token)
-        # Add the indentation for all lines
-        # until the next indent or unindent token.
+        
+        ### For now, don't split unless we have parse tree.
+        if use_ast:
+            node = self.token.statement_node
+            # Attempt to split the line.
+            was_split = self.split_line(node, token)
+            # Attempt to join the line only if it has not just been split.
+            if not was_split and self.max_join_line_length > 0:
+                self.join_lines(node, token)
+
+        # Add the indentation for all lines until the next indent or unindent token.
         self.line_indent()
     #@+node:ekr.20200107165250.40: *5* orange.line_indent
     def line_indent(self) -> None:
@@ -2613,6 +2624,7 @@ class Token:
 
         self.kind = kind
         self.value = value
+        self.equal_sign_spaces: bool = None  # Set by tog.set_links.
         self.five_tuple: tuple = None
         self.index = 0  # Set by Orange.add_token.
         self.line = ''  # The entire line containing the token.
