@@ -2257,7 +2257,7 @@ class Orange:
         """Generate code for a left paren or curly/square bracket."""
         assert val in '([{', repr(val)
 
-        # Update the state machine.
+        # Update the state machine. This is really part of the input logic.
         if val == '(':
             self.paren_level += 1
         elif val == '[':
@@ -2284,6 +2284,8 @@ class Orange:
     #@+node:ekr.20200107165250.43: *5* orange.op_rt
     def op_rt(self, val: str) -> None:
         """Generate code for a right paren or curly/square bracket."""
+        
+        # Update the state machine. This is really part of the input logic.
         assert val in ')]}', repr(val)
         if val == ')':
             self.paren_level -= 1
@@ -2292,6 +2294,8 @@ class Orange:
             self.square_brackets_stack.pop()
         else:
             self.curly_brackets_level -= 1
+            
+        # Generate the code.
         self.clean('blank')
         self.add_token('rt', val)
     #@+node:ekr.20200107165250.45: *5* orange.possible_unary_op & unary_op
