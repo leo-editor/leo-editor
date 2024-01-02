@@ -1645,7 +1645,7 @@ class Orange:
         g.trace(f"Unknown kind: {self.kind}")
 
     def beautify(self,
-        contents: str, filename: str, tokens: list[Token], tree: Node,
+        contents: str, filename: str, tokens: list[Token], tree: Optional[Node],
         max_join_line_length: Optional[int] = None,
         max_split_line_length: Optional[int] = None,
     ) -> str:
@@ -1675,7 +1675,7 @@ class Orange:
         # Init output list and state...
         self.code_list: list[Token] = []  # The list of output tokens.
         self.tokens = tokens  # The list of input tokens.
-        self.tree = tree
+        self.tree = tree  # May be None. For debugging only.
         self.add_token('file-start', '')
         self.push_state('file-start')
         for token in tokens:
@@ -1698,10 +1698,16 @@ class Orange:
         Return True if the file was changed.
         """
         self.filename = filename
-        tog = TokenOrderGenerator()
-        contents, encoding, tokens, tree = tog.init_from_file(filename)
-        if not contents or not tokens or not tree:
-            return False  # #2529: Not an error.
+        if use_ast:
+            tog = TokenOrderGenerator()
+            contents, encoding, tokens, tree = tog.init_from_file(filename)
+            if not contents or not tokens or not tree:
+                return False  # Not an error.
+        else:
+            tree = None
+            contents, encoding, tokens = self.init_tokens_from_file(filename)
+            if not contents or not tokens:
+                return False  # Not an error.
         # Beautify.
         try:
             results = self.beautify(contents, filename, tokens, tree)
@@ -1725,11 +1731,17 @@ class Orange:
         """
         tag = 'diff-beautify-file'
         self.filename = filename
-        tog = TokenOrderGenerator()
-        contents, encoding, tokens, tree = tog.init_from_file(filename)
-        if not contents or not tokens or not tree:
-            print(f"{tag}: Can not beautify: {filename}")
-            return False
+        if use_ast:
+            tog = TokenOrderGenerator()
+            contents, encoding, tokens, tree = tog.init_from_file(filename)
+            if not (contents and tokens and tree):
+                return False  # Not an error.
+        else:
+            tree = None
+            contents, encoding, tokens = self.init_tokens_from_file(filename)
+            if not (contents and tokens):
+                return False  # Not an error.
+
         # fstringify.
         results = self.beautify(contents, filename, tokens, tree)
         # Something besides newlines must change.
@@ -1739,6 +1751,19 @@ class Orange:
         # Show the diffs.
         show_diffs(contents, results, filename=filename)
         return True
+    #@+node:ekr.20240102052859.1: *4* orange: init_tokens_from_file (new)
+    def init_tokens_from_file(self, filename: str) -> tuple[str, str, list[Token]]:  # pragma: no cover
+        """
+        Create the list of tokens for the given file.
+        Return (contents, encoding, tokens).
+        """
+        self.level = 0
+        self.filename = filename
+        encoding, contents = read_file_with_encoding(filename)
+        if not contents:
+            return None, None, None
+        self.tokens = tokens = make_tokens(contents)
+        return contents, encoding, tokens
     #@+node:ekr.20200107165250.13: *4* orange: Input token handlers
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
     in_doc_part = False
@@ -2588,19 +2613,12 @@ class Token:
 
         self.kind = kind
         self.value = value
-        #
-        # Injected by Tokenizer.add_token.
         self.five_tuple: tuple = None
-        self.index = 0
-        # The entire line containing the token.
-        # Same as five_tuple.line.
-        self.line = ''
+        self.index = 0  # Set by Orange.add_token.
+        self.line = ''  # The entire line containing the token.
         # The line number, for errors and dumps.
-        # Same as five_tuple.start[0]
-        self.line_number = 0
-        #
-        # Injected by Tokenizer.add_token.
-        self.level = 0
+        self.line_number = 0  # Set by Tokenizer.add_token.
+        self.level = 0  ### Used ????
         self.node: Optional[Node] = None
 
     def __repr__(self) -> str:  # pragma: no cover
@@ -2670,7 +2688,7 @@ class Tokenizer:
     results: list[Token] = []
 
     #@+others
-    #@+node:ekr.20191110165235.2: *4* tokenizer.add_token
+    #@+node:ekr.20191110165235.2: *4* Tokenizer.add_token
     token_index = 0
     prev_line_token = None
 
@@ -2688,7 +2706,7 @@ class Tokenizer:
         tok.line = line
         tok.line_number = s_row
         self.results.append(tok)
-    #@+node:ekr.20191110170551.1: *4* tokenizer.check_results
+    #@+node:ekr.20191110170551.1: *4* Tokenizer.check_results
     def check_results(self, contents: str) -> None:
 
         # Split the results into lines.
@@ -2703,7 +2721,7 @@ class Tokenizer:
             f"result_lines: {result_lines}\n"
             f"       lines: {self.lines}"
         )
-    #@+node:ekr.20191110165235.3: *4* tokenizer.create_input_tokens
+    #@+node:ekr.20191110165235.3: *4* Tokenizer.create_input_tokens
     def create_input_tokens(self, contents: str, tokens: Generator) -> list[Token]:
         """
         Generate a list of Token's from tokens, a list of 5-tuples.
@@ -2723,7 +2741,7 @@ class Tokenizer:
         self.check_results(contents)
         # Return results, as a list.
         return self.results
-    #@+node:ekr.20191110165235.4: *4* tokenizer.do_token (the gem)
+    #@+node:ekr.20191110165235.4: *4* Tokenizer.do_token (the gem)
     header_has_been_shown = False
 
     def do_token(self, contents: str, five_tuple: tuple) -> None:
