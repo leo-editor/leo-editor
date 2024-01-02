@@ -2012,10 +2012,10 @@ class Orange:
         elif val in '([{':
             # Pep 8: Avoid extraneous whitespace immediately inside
             # parentheses, brackets or braces.
-            self.lt(val)
+            self.op_lt(val)
         elif val in ')]}':
             # Ditto.
-            self.rt(val)
+            self.op_rt(val)
         elif val == '=':
             self.do_equal_op(val)
         elif val in '~+-':
@@ -2148,7 +2148,7 @@ class Orange:
             'hard-blank',  # Unique to orange.
             'line-end',
             'line-indent',
-            'lt',
+            'op_lt',
             'op-no-blanks',
             'unary-op',
         ):
@@ -2252,9 +2252,8 @@ class Orange:
         """Add a line-indent token."""
         self.clean('line-indent')  # Defensive. Should never happen.
         self.add_token('line-indent', self.lws)
-    #@+node:ekr.20200107165250.41: *5* orange.lt & rt
-    #@+node:ekr.20200107165250.42: *6* orange.lt
-    def lt(self, val: str) -> None:
+    #@+node:ekr.20200107165250.42: *5* orange.op_lt
+    def op_lt(self, val: str) -> None:
         """Generate code for a left paren or curly/square bracket."""
         assert val in '([{', repr(val)
         if val == '(':
@@ -2267,19 +2266,19 @@ class Orange:
         prev = self.code_list[- 1]
         if prev.kind in ('op', 'word-op'):
             self.blank()
-            self.add_token('lt', val)
+            self.add_token('op_lt', val)
         elif prev.kind == 'word':
             # Only suppress blanks before '(' or '[' for non-keywords.
             if val == '{' or prev.value in ('if', 'else', 'return', 'for'):
                 self.blank()
             elif val == '(':
                 self.in_arg_list += 1
-            self.add_token('lt', val)
+            self.add_token('op_lt', val)
         else:
             self.clean('blank')
             self.add_token('op-no-blanks', val)
-    #@+node:ekr.20200107165250.43: *6* orange.rt
-    def rt(self, val: str) -> None:
+    #@+node:ekr.20200107165250.43: *5* orange.op_rt
+    def op_rt(self, val: str) -> None:
         """Generate code for a right paren or curly/square bracket."""
         assert val in ')]}', repr(val)
         if val == ')':
@@ -2290,7 +2289,7 @@ class Orange:
         else:
             self.curly_brackets_level -= 1
         self.clean('blank')
-        self.add_token('rt', val)
+        self.add_token('op_rt', val)
     #@+node:ekr.20200107165250.45: *5* orange.possible_unary_op & unary_op
     def possible_unary_op(self, s: str) -> None:
         """Add a unary or binary op to the token list."""
@@ -2311,7 +2310,7 @@ class Orange:
         assert s and isinstance(s, str), repr(s)
         self.clean('blank')
         prev = self.code_list[- 1]
-        if prev.kind == 'lt':
+        if prev.kind == 'op_lt':
             self.add_token('unary-op', s)
         else:
             self.blank()
@@ -2331,7 +2330,7 @@ class Orange:
             return  # #2533
         if self.paren_level > 0:
             prev = self.code_list[- 1]
-            if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
+            if prev.kind == 'op_lt' or (prev.kind, prev.value) == ('op', ','):
                 self.blank()
                 self.add_token('op', val)
                 return
@@ -2350,7 +2349,7 @@ class Orange:
             return  # #2533
         if self.paren_level > 0:
             prev = self.code_list[- 1]
-            if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
+            if prev.kind == 'op_lt' or (prev.kind, prev.value) == ('op', ','):
                 self.blank()
                 self.add_token('op', val)
                 return
@@ -2409,7 +2408,7 @@ class Orange:
         if len(line_s) < self.max_split_line_length:
             return False
         # Return if the previous line has no opening delim: (, [ or {.
-        if not any(z.kind == 'lt' for z in line_tokens):  # pragma: no cover (defensive)
+        if not any(z.kind == 'op_lt' for z in line_tokens):  # pragma: no cover (defensive)
             return False
         prefix = self.find_line_prefix(line_tokens)
         # Calculate the tail before cleaning the prefix.
@@ -2438,9 +2437,9 @@ class Orange:
         # Start a new line and increase the indentation.
         self.add_token('line-end', '\n')
         self.add_token('line-indent', self.lws + ' ' * 4)
-        open_delim = Token(kind = 'lt', value = prefix[- 1].value)
+        open_delim = Token(kind = 'op_lt', value = prefix[- 1].value)
         value = open_delim.value.replace('(', ')').replace('[', ']').replace('{', '}')
-        close_delim = Token(kind = 'rt', value = value)
+        close_delim = Token(kind = 'op_rt', value = value)
         delim_count = 1
         lws = self.lws + ' ' * 4
         for i, t in enumerate(tail):
@@ -2489,13 +2488,13 @@ class Orange:
     #@+node:ekr.20200107165250.37: *6* orange.find_line_prefix
     def find_line_prefix(self, token_list: list[Token]) -> list[Token]:
         """
-        Return all tokens up to and including the first lt token.
-        Also add all lt tokens directly following the first lt token.
+        Return all tokens up to and including the first op_lt token.
+        Also add all op_lt tokens directly following the first op_lt token.
         """
         result = []
         for t in token_list:
             result.append(t)
-            if t.kind == 'lt':
+            if t.kind == 'op_lt':
                 break
         return result
     #@+node:ekr.20200107165250.39: *5* orange.join_lines
