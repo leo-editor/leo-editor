@@ -106,27 +106,37 @@ class BabelCmdr(object):
                 return strx
             else:
                 return default
+        #@+node:bob.20240102112512.1: *4* _getString()
+        def _getInt(cmdr, settingName, default=None):
+            """ Add a default option to c.config.getInt()
+            """
+
+            intX = cmdr.config.getInt(settingName)
+            if intX:
+                return intX
+            else:
+                return default
         #@-others
 
         self.cmdr = cmdr
-        self.colorStdout = _getColor(cmdr, 'Leo-Babel-stdout', default='#000000')
-        self.colorStderr = _getColor(cmdr, 'Leo-Babel-stderr', default='#ff3300')
-        self.colorInformation = _getColor(cmdr, 'Leo-Babel-completion')
-        if self.colorInformation is None:
-            self.colorInformation = _getColor(cmdr, 'Leo-Babel-information', default='#3333ff')
-        self.nodeCreationDefault = \
+        self.babel_color_stdout = _getColor(cmdr, 'Leo-Babel-stdout', default='#000000')
+        self.babel_color_stderr = _getColor(cmdr, 'Leo-Babel-stderr', default='#ff3300')
+        self.babel_color_information = _getColor(cmdr, 'Leo-Babel-completion')
+        if self.babel_color_information is None:
+            self.babel_color_information = _getColor(cmdr, 'Leo-Babel-information', default='#3333ff')
+        self.babel_node_creation = \
             cmdr.config.getBool('Leo-Babel-Node-Creation-Default', default=None)
-        if self.nodeCreationDefault is None:
-            self.nodeCreationDefault = \
+        if self.babel_node_creation is None:
+            self.babel_node_creation = \
                 cmdr.config.getBool('Leo-Babel-Node-Creation', default=True)
-        self.interpreterPython = _getString(cmdr, 'Leo-Babel-Python', default='/usr/bin/python3')
-        self.interpreterShell = _getString(cmdr, 'Leo-Babel-Shell', default='/user/bin/bash')
+        self.babel_interpreter_python = _getString(cmdr, 'Leo-Babel-Python', default='/usr/bin/python3')
+        self.babel_interpreter_shell = _getString(cmdr, 'Leo-Babel-Shell', default='/usr/bin/bash')
         self.babel_sudo = cmdr.config.getBool('Leo-Babel-Sudo', default=False)
         self.babel_prefix_information = _getString(cmdr, 'Leo-Babel-Prefix-Information',  default="- ")
         self.babel_prefix_stdout = _getString(cmdr, 'Leo-Babel-Prefix-stdout', default="| ")
         self.babel_prefix_stderr = _getString(cmdr, 'Leo-Babel-Prefix-stderr', default="* ")
         self.babel_tab_babel = cmdr.config.getBool('Leo-Babel-Tab-Babel', default=True)
-        self.babel_polling_delay = cmdr.config.getInt("Leo-Babel-Polling-Delay", default=1)
+        self.babel_polling_delay = _getInt(cmdr, "Leo-Babel-Polling-Delay", default=1)
 
         self.babelExecCnt = 0
         self.cmdDoneFlag = False

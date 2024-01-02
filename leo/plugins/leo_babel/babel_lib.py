@@ -376,19 +376,22 @@ def babelExec(event):
             'p': babelRoot}
         exec(code, gld)     # This adds all the variables set by "code" to dictionary gld. [It also adds Python built-in's to gld.]
 
-        # Create Nodes?
-        createNodes = gld.get('babel_node_creation')
-        if createNodes is None:
-            createNodes = babelCmdr.nodeCreationDefault
-        cmdrScr, scriptRoot = scrOrResRoot(cmdr, gld, babelG, babelRoot, 'script')
-        if createNodes:
-            cmdrRes, resultsRoot = scrOrResRoot(cmdr, gld, babelG, babelRoot, 'results')
+        # Copy Babel Parameter settings from gld to babelCmdr
+        for paramName in ['babel_color_information', 'babel_color_stderr', 'babel_color_stdout', 'babel_interpreter_python',
+            'babel_interpreter_shell', 'babel_node_creation', 'babel_polling_delay', 'babel_prefix_information',
+            'babel_prefix_stderr', 'babel_prefix_stdout', 'babel_redirect_stdout', 'babel_results', 'babel_script', 'babel_sudo', 'babel_tab_babel']:
+            paramValue = gld.get(paramName, None)
+            if not paramValue is None:
+                setattr(babelCmdr, paramName, paramValue)
+
+        cmdrScr, scriptRoot = scrOrResRoot(cmdr, gld.get('babel_script'), babelG, babelRoot, 'script')
+        if babelCmdr.babel_node_creation:
+            cmdrRes, resultsRoot = scrOrResRoot(cmdr, gld.get('babel_results'), babelG, babelRoot, 'results')
         else:
             cmdrRes = None
             resultsRoot = None
 
-        babel_sudo = gld.get('babel_sudo')
-        if babel_sudo:
+        if babelCmdr.babel_sudo:
             # Run the script with sudo
             cmdList = ['sudo']
         else:
@@ -397,14 +400,14 @@ def babelExec(event):
         # Determine the language and then the interpreter
         langx = leoG.scanForAtLanguage(cmdrScr, scriptRoot)
         if langx == 'python':
-            interpreter = gld.get('babel_python')
+            interpreter =  babelCmdr.babel_python
             if not interpreter:
-                interpreter = babelCmdr.interpreterPython
+                interpreter = babelCmdr.babel_interpreter_python
             cmdList.extend([interpreter, '-u'])
         elif langx == 'shell':
-            interpreter = gld.get('babel_shell')
+            interpreter = babelCmdr.babel_shell
             if not interpreter:
-                interpreter = babelCmdr.interpreterShell
+                interpreter = babelCmdr.babel_interpreter_shell
             cmdList.append(interpreter)
         else:
             babelCmdr.babelExecCnt += 1
@@ -417,12 +420,12 @@ def babelExec(event):
 
         pathScript = cmdr.writeScriptFile(script)
         cmdList.append(pathScript)
-        babel_script_args = gld.get('babel_script_args')
+        babel_script_args = babelCmdr.babel_script_args
         if babel_script_args:
             cmdList.extend(babel_script_args)
 
-        leoG.es(f'{babelCmdr.babel_prefix_information}Script\'s CWD: "{cwd}"', color=babelCmdr.colorInformation, tabName='Babel')
-        leoG.es(f'{babelCmdr.babel_prefix_information}Command list: {cmdList}', color=babelCmdr.colorInformation, tabName='Babel')
+        leoG.es(f'{babelCmdr.babel_prefix_information}Script\'s CWD: "{cwd}"', color=babelCmdr.babel_color_information, tabName= 'Babel' if babelCmdr.babel_tab_babel else 'Log')
+        leoG.es(f'{babelCmdr.babel_prefix_information}Command list: {cmdList}', color=babelCmdr.babel_color_information, tabName= 'Babel' if babelCmdr.babel_tab_babel else 'Log')
 
         # pylint: disable=unexpected-keyword-arg
         wro = tempfile.NamedTemporaryFile(buffering=0)
@@ -430,7 +433,7 @@ def babelExec(event):
         reo = io.open(wro.name, 'rb', buffering=0)
         ree = io.open(wre.name, 'rb', buffering=0)
 
-        if gld.get('babel_redirect_stdout'):
+        if babelCmdr.babel_redirect_stdout:
             # Redirect stdout to stderr
             wro = wre
 
@@ -443,8 +446,8 @@ def babelExec(event):
         subPbabKill = subprocess.Popen([babelG.pathBabelKill, str(subPscript.pid)])
 
         babelCmdr.reo = reo  # Kludge to allow itf() to determine which output it polls
-        itOut = leoG.IdleTime(lambda ito, prefix=babelCmdr.babel_prefix_stdout, color=babelCmdr.colorStdout, fdr=reo, babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr), delay=1)
-        itErr = leoG.IdleTime(lambda ito, prefix=babelCmdr.babel_prefix_stderr, color=babelCmdr.colorStderr, fdr=ree, babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr), delay=1)
+        itOut = leoG.IdleTime(lambda ito, prefix=babelCmdr.babel_prefix_stdout, color=babelCmdr.babel_color_stdout, fdr=reo, babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr), delay=1)
+        itErr = leoG.IdleTime(lambda ito, prefix=babelCmdr.babel_prefix_stderr, color=babelCmdr.babel_color_stderr, fdr=ree, babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr), delay=1)
         if (not itOut) or (not itErr):
             raise babelG.babel_api.BABEL_ERROR('leoG.IdleTime() failed')
         itOut.start()
@@ -452,7 +455,7 @@ def babelExec(event):
 
         itPoll = leoG.IdleTime((lambda itobj: itp(itobj, cmdr, cmdrRes, resultsRoot,
             subPscript, subPbabKill, wro, reo, wre, ree, itOut, itErr, start,
-            createNodes)), delay=1000)
+            babelCmdr.babel_node_creation)), delay=1000)
         if not itPoll:
             raise babelG.babel_api.BABEL_ERROR('leoG.IdleTime() failed')
         itPoll.start()
@@ -520,60 +523,9 @@ def babelExec(event):
                         forcePythonSentinels=forcePythonSentinels,
                         sentinels=sentinels)
         except Exception:
-            leoG.es_print("unexpected exception in Leo-Babel getScript()", tabName='Babel')
+            leoG.es_print("unexpected exception in Leo-Babel getScript()", tabName= 'Babel' if babelCmdr.babel_tab_babel else 'Log')
             raise
         return script
-    #@+node:bob.20170828151625.1: *3* scrOrResRoot(cmdrb, gld, babelG, babelRoot, scrOrRes)
-    def scrOrResRoot(cmdrb, gld, babelG, babelRoot, scrOrRes):
-        """ Get the Script or Results Root
-
-        Arguments:
-            cmdrb:  Leo-Editor commander for the Babel Root
-            gld: The global dictionary used for the execution
-                of the Babel Parameters script.
-            babelG: Babel globals
-            babelRoot:  Babel Root
-            scrOrRes: "script" for Script root
-                "results" for Results root
-
-        Returns:
-            (cmdrx, rootx):
-                cmdrx: Commander for root position
-                rootx: Root position
-        """
-
-        rootx = gld.get('babel_{0}'.format(scrOrRes))
-        if rootx is None:
-            # Rootx is a child of babelRoot.
-            cmdrx = cmdrb
-            rootx = babelRoot.getNthChild({'script': 0, 'results': 1}[scrOrRes])
-            if not rootx:
-                raise babelG.babel_api.BABEL_ROOT('{ord} child of current node must be '
-                    'the {sor} root.'.format(
-                    ord={'script': 'First', 'results': 'Second'}[scrOrRes],
-                    sor=scrOrRes))
-        elif isinstance(rootx, type('abc')):
-            # scriptRoot is a UNL
-            pathname, nodePart = unlSplit(rootx)
-            if pathname is None:
-                cmdrx = cmdrb
-            else:
-                cmdrx = None
-            cmdrx, posList = unl2pos(rootx, cmdr=cmdrx)
-            if not posList:
-                raise babelG.babel_api.BABEL_UNL_NO_POS('{0} Root UNL does not match any '
-                    'position.'.format(scrOrRes.capitalize()))
-            else:
-                rootx = posList[0]
-                if len(posList) > 1:
-                    warning = '{0} Root UNL satisfies {1} positions.'.format(
-                        scrOrRes.capitalize(), len(posList))
-                    leoG.warning(warning)
-        else:
-            # scriptRoot is (cmdr, pos) pair
-            cmdrx, rootx = rootx
-            rootx = rootx.copy()
-        return cmdrx, rootx
     #@+node:bob.20170726143458.20: *3* itf(linePrefix, color, fdr, babelCmdr)
     def itf(linePrefix, color, fdr, babelCmdr):
         """ Echo stdout to the log pane
@@ -593,7 +545,7 @@ def babelExec(event):
             if lix:
                 for lineX in lix.decode('utf-8').split('\n'):
                     if lineX:
-                        leoG.es(linePrefix + lineX, color=color, tabName='Babel')
+                        leoG.es(linePrefix + lineX, color=color, tabName= 'Babel' if babelCmdr.babel_tab_babel else 'Log')
             else:
                 break
         if babelCmdr.cmdDoneFlag:
@@ -601,6 +553,67 @@ def babelExec(event):
                 babelCmdr.cmdDoneStdPolled = True
             else:
                 babelCmdr.cmdDoneErrPolled = True
+    #@+node:bob.20170726143458.22: *3* itp(itPoll, cmdrB, cmdrRes, resultsRoot, subPscript, subPbabKill, wro, reo, wre, ree, itOut, itErr, start, babel_node_creation)
+    def itp(itPoll, cmdrB, cmdrRes, resultsRoot, subPscript,
+        subPbabKill, wro, reo, wre, ree,
+        itOut, itErr,
+        start, babel_node_creation):
+        """ Poll for subprocess done
+
+        Arguments:
+            itPoll:  Idle time object for itp()
+            cmdrB: Leo-Editor commander for the Leo-Babel root node
+            cmdRes: Leo-Editor commander for resultsRoot
+            resultsRoot: Results root
+            subPscript:  Script subprocess object
+            subPbabKill:  babel_kill subprocess object
+            wro: File Descriptor
+            reo: File Descriptor
+            wre: File Descriptor
+            ree: File Descriptor
+            itOut: Idle time object
+            itErr: Idle time object
+            start:  Script start time
+            babel_node_creation: False --> Don't create results nodes
+                True --> Create results nodes
+
+        Returns:
+            None
+        """
+
+        babelCmdr = cmdrB.user_dict['leo_babel']
+        if babelCmdr.cmdDoneFlag:
+            if babelCmdr.cmdDoneStdPolled and babelCmdr.cmdDoneErrPolled:
+                itOut.stop()
+                itErr.stop()
+                itPoll.stop()
+                wro.close()
+                wre.close()
+                babel_color_information = babelCmdr.babel_color_information
+                leoG.es(babelCmdr.babel_prefix_information + babelCmdr.termMsg, color=babel_color_information, tabName= 'Babel' if babelCmdr.babel_tab_babel else 'Log')
+                leoG.es(babelCmdr.babel_prefix_information + babelCmdr.etMsg, color=babel_color_information, tabName= 'Babel' if babelCmdr.babel_tab_babel else 'Log')
+                if babel_node_creation:
+                    makeBabelNodes(cmdrRes, resultsRoot, reo, ree,
+                        babelCmdr.termMsg, babelCmdr.etMsg)
+                reo.close()
+                ree.close()
+                babelCmdr.babelExecCnt += 1
+        else:
+            rc = subPscript.poll()
+            if not rc is None:
+                end = time.time()
+                babelCmdr.cmdDoneFlag = True
+                if subPbabKill.poll() is None:
+                    # Kill subprocess has not terminated
+                    # pylint: disable=no-member
+                    os.kill(subPbabKill.pid, signal.SIGHUP)
+                babelCmdr.termMsg = '{0} Subprocess Termination Code'.format(rc)
+                et = int(round(end - start))
+                minutes, secs = divmod(et, 60)
+                hours, minutes = divmod(minutes, 60)
+                babelCmdr.etMsg = '{hr:02d}:{mi:02d}:{se:02d} Elapsed Time. {end} End Time'.format(
+                    hr=hours, mi=minutes, se=secs,
+                    end=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     #@+node:bob.20170726143458.21: *3* makeBabelNodes(cmdrRes, resultsRoot, reo, ree, termMsg, etMsg)
     def makeBabelNodes(cmdrRes, resultsRoot, reo, ree, termMsg, etMsg):
         """ Create the Babel Ouput Nodes
@@ -645,67 +658,54 @@ def babelExec(event):
         cmdrRes.expandSubtree(posET)
         cmdrRes.redraw()
         cmdrRes.save()
-    #@+node:bob.20170726143458.22: *3* itp(itPoll, cmdrB, cmdrRes, resultsRoot, subPscript, subPbabKill, wro, reo, wre, ree, itOut, itErr, start, createNodes)
-    def itp(itPoll, cmdrB, cmdrRes, resultsRoot, subPscript,
-        subPbabKill, wro, reo, wre, ree,
-        itOut, itErr,
-        start, createNodes):
-        """ Poll for subprocess done
+    #@+node:bob.20170828151625.1: *3* scrOrResRoot(cmdrb, rootX, babelG, babelRoot, scrOrRes)
+    def scrOrResRoot(cmdrb, rootX, babelG, babelRoot, scrOrRes):
+        """ Get the Script or Results Root
 
         Arguments:
-            itPoll:  Idle time object for itp()
-            cmdrB: Leo-Editor commander for the Leo-Babel root node
-            cmdRes: Leo-Editor commander for resultsRoot
-            resultsRoot: Results root
-            subPscript:  Script subprocess object
-            subPbabKill:  babel_kill subprocess object
-            wro: File Descriptor
-            reo: File Descriptor
-            wre: File Descriptor
-            ree: File Descriptor
-            itOut: Idle time object
-            itErr: Idle time object
-            start:  Script start time
-            createNodes: False --> Don't create results nodes
-                True --> Create results nodes
+            cmdrb:  Leo-Editor commander for the Babel Root
+            rootX: UNL of the node to contain the output
+                None --> output to a child of babelRoot
+            babelG: Babel globals
+            babelRoot:  Babel Root
+            scrOrRes: "script" for Script root
+                "results" for Results root
 
         Returns:
-            None
+            (cmdrx, rootx):
+                cmdrx: Commander for root position
+                rootx: Root position
         """
 
-        babelCmdr = cmdrB.user_dict['leo_babel']
-        if babelCmdr.cmdDoneFlag:
-            if babelCmdr.cmdDoneStdPolled and babelCmdr.cmdDoneErrPolled:
-                itOut.stop()
-                itErr.stop()
-                itPoll.stop()
-                wro.close()
-                wre.close()
-                colorInformation = babelCmdr.colorInformation
-                leoG.es(babelCmdr.babel_prefix_information + babelCmdr.termMsg, color=colorInformation, tabName='Babel')
-                leoG.es(babelCmdr.babel_prefix_information + babelCmdr.etMsg, color=colorInformation, tabName='Babel')
-                if createNodes:
-                    makeBabelNodes(cmdrRes, resultsRoot, reo, ree,
-                        babelCmdr.termMsg, babelCmdr.etMsg)
-                reo.close()
-                ree.close()
-                babelCmdr.babelExecCnt += 1
+        if rootX is None:
+            # rootX is a child of babelRoot.
+            cmdrx = cmdrb
+            rootX = babelRoot.getNthChild({'script': 0, 'results': 1}[scrOrRes])
+            if not rootX:
+                childOrd = {'script': 'First', 'results': 'Second'}[scrOrRes]
+                raise babelG.babel_api.BABEL_ROOT(f'{childOrd} child '
+                    f'of current node must be the {scrOrRes} root.')
+        elif isinstance(rootX, type('abc')):
+            # scriptRoot is a UNL
+            pathname, nodePart = unlSplit(rootX)
+            if pathname is None:
+                cmdrx = cmdrb
+            else:
+                cmdrx = None
+            cmdrx, posList = unl2pos(rootX, cmdr=cmdrx)
+            if not posList:
+                raise babelG.babel_api.BABEL_UNL_NO_POS(f'{scrOrRes.capitalize()} Root UNL does not match any '
+                    'position.')
+            else:
+                rootX = posList[0]
+                if len(posList) > 1:
+                    warning = f'{scrOrRes.capitalize()} Root UNL satisfies {len(posList)} positions.'
+                    leoG.warning(warning)
         else:
-            rc = subPscript.poll()
-            if not rc is None:
-                end = time.time()
-                babelCmdr.cmdDoneFlag = True
-                if subPbabKill.poll() is None:
-                    # Kill subprocess has not terminated
-                    # pylint: disable=no-member
-                    os.kill(subPbabKill.pid, signal.SIGHUP)
-                babelCmdr.termMsg = '{0} Subprocess Termination Code'.format(rc)
-                et = int(round(end - start))
-                minutes, secs = divmod(et, 60)
-                hours, minutes = divmod(minutes, 60)
-                babelCmdr.etMsg = '{hr:02d}:{mi:02d}:{se:02d} Elapsed Time. {end} End Time'.format(
-                    hr=hours, mi=minutes, se=secs,
-                    end=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+            # scriptRoot is (cmdr, pos) pair
+            cmdrx, rootX = rootX
+            rootX = rootX.copy()
+        return cmdrx, rootX
     #@-others
 
     babelG = leoG.user_dict['leo_babel']
@@ -714,7 +714,7 @@ def babelExec(event):
     if babelCmdr is None:
         babelCmdr = babelG.babel_api.BabelCmdr(cmdr)
         cmdr.user_dict['leo_babel'] = babelCmdr
-        cmdr.frame.log.createTab("Babel")
+        #cmdr.frame.log.createTab('Babel')
     pos = cmdr.p
     babelRoot = pos.copy()
 
