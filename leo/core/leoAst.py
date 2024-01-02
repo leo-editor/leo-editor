@@ -665,6 +665,9 @@ if 1:  # pragma: no cover
         Return True if node is an instance of a node that might be split into
         shorter lines.
         """
+        if not use_ast:  ### Highly experimental.
+            return False
+
         return isinstance(node, (
             ast.Assign, ast.AnnAssign, ast.AsyncFor, ast.AsyncWith, ast.AugAssign,
             ast.Call, ast.Delete, ast.ExceptHandler, ast.For, ast.Global,
@@ -2232,14 +2235,15 @@ class Orange:
         # Create the 'line-end' output token.
         self.add_line_end()
 
-        ### For now, don't split or join lines unless we have parse tree.
-        if use_ast:
-            node = self.token.statement_node
-            # Attempt to split the line.
-            was_split = self.split_line(node, token)
-            # Attempt to join the line only if it has not just been split.
-            if not was_split and self.max_join_line_length > 0:
-                self.join_lines(node, token)
+        ### Highly experimental.
+        node = self.token.statement_node if use_ast else None
+
+        # Attempt to split the line.
+        was_split = self.split_line(node, token)
+
+        # Attempt to join the line only if it has not just been split.
+        if not was_split and self.max_join_line_length > 0:
+            self.join_lines(node, token)
 
         # Add the indentation for all lines until the next indent or unindent token.
         self.line_indent()
