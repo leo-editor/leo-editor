@@ -4,8 +4,8 @@
 # Leo's copyright notice is based on the MIT license:
 # https://leo-editor.github.io/leo-editor/license.html
 
-#@+<< leoAst docstring >>
-#@+node:ekr.20200113081838.1: ** << leoAst docstring >>
+#@+<< leoAst.py: docstring >>
+#@+node:ekr.20200113081838.1: ** << leoAst.py: docstring >>
 """
 leoAst.py: This file does not depend on Leo in any way.
 
@@ -149,9 +149,9 @@ Leo's outline structure. These comments have the form::
 
     `#@<comment-kind>:<user-id>.<timestamp>.<number>: <outline-level> <headline>`
 """
-#@-<< leoAst docstring >>
-#@+<< leoAst imports & annotations >>
-#@+node:ekr.20200105054219.1: ** << leoAst imports & annotations >>
+#@-<< leoAst.py: docstring >>
+#@+<< leoAst.py: imports & annotations >>
+#@+node:ekr.20200105054219.1: ** << leoAst.py: imports & annotations >>
 from __future__ import annotations
 import argparse
 import ast
@@ -174,7 +174,13 @@ except Exception:
 
 Node = ast.AST
 Settings = Optional[dict[str, Any]]
-#@-<< leoAst imports & annotations >>
+#@-<< leoAst.py: imports & annotations >>
+#@+<< leoAst.py: use_ast switch >>
+#@+node:ekr.20240102051437.1: ** << leoAst.py: use_ast switch >>
+# True: use Python's ast trees.
+# False: use a state machine.
+use_ast = True
+#@-<< leoAst.py: use_ast switch >>
 
 #@+others
 #@+node:ekr.20200702114522.1: **  leoAst.py: top-level commands
