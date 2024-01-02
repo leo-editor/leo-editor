@@ -107,7 +107,7 @@ class NodeIndices:
         #    Neither UUIDs nor KSUIDs contain colons, so the read code will
         #    parse all forms of gnx properly.
         # 2. NodeIndicds.compute_last_index ignores UUIDs and KSUIDs,
-        #    so it and will allocate a new legacy gnx properly.
+        #    so it will allocate a new legacy gnx properly.
         gnx = None
         try:
             if uuid_kind == 'uuid':

@@ -94,7 +94,7 @@ class TestGlobals(LeoUnitTest):
     #@-<< define missing_unls >>
     #@+<< define valid_unl_templates >>
     #@+node:ekr.20230701090956.2: *4* << define valid_unl_templates >>
-    # These links are functional only if on @data unl-path-prefixes contains the proper file part.
+    # These links are functional only if an @data unl-path-prefixes contains the proper file part.
     valid_unls = (
 
         'unl:gnx://#ekr.20180311131424.1',
@@ -128,7 +128,6 @@ class TestGlobals(LeoUnitTest):
 
         # Absolute file: valid, but can't be resolved in a unit test.
         'unl://C:/Repos/leo-editor/leo/test/test.leo#@file ../plugins/importers/__init__.py',
-
     )
     #@-<< define valid_unl_templates >>
     #@-<< TestGlboals: define unchanging data >>
@@ -997,7 +996,8 @@ class TestGlobals(LeoUnitTest):
             fn, n = g.getLastTracebackFileAndLineNumber()
         self.assertEqual(fn.lower(), __file__.lower())
 
-    #@+node:ekr.20230325055810.1: *3* TestGlobals.test_g_findGnx
+    #@+node:ekr.20231228234020.1: *3* --- gnx tests
+    #@+node:ekr.20230325055810.1: *4* TestGlobals.test_g_findGnx
     def test_g_findGnx(self):
         c = self.c
 
@@ -1020,7 +1020,7 @@ class TestGlobals(LeoUnitTest):
         for p in c.all_positions():
             for gnx in (f"{p.gnx}", f"{p.gnx}::0"):
                 self.assertEqual(p, g.findGnx(gnx, c), msg=gnx)
-    #@+node:ekr.20230703175743.1: *3* TestGlobals.test_g_findUnl (legacy)
+    #@+node:ekr.20230703175743.1: *4* TestGlobals.test_g_findUnl (legacy)
     def test_g_findUnl(self):
 
         c = self.c
@@ -1039,14 +1039,14 @@ class TestGlobals(LeoUnitTest):
             if 0:  # I don't understand the old-style format!
                 aList2 = [f"{z}:0" for z in headlines]
                 self.assertEqual(p, g.findUnl(aList2, c), msg=','.join(aList2))
-    #@+node:ekr.20230701085746.1: *3* TestGlobals.test_g_isValidUnl
+    #@+node:ekr.20230701085746.1: *4* TestGlobals.test_g_isValidUnl
     def test_g_isValidUnl(self):
 
         for unl in self.valid_unls + self.missing_unls:
             self.assertTrue(g.isValidUnl(unl), msg=unl)
         for unl in self.invalid_unls:
             self.assertFalse(g.isValidUnl(unl), msg=unl)
-    #@+node:ekr.20230701171707.1: *3* TestGlobals.test_g_getUNLFilePart
+    #@+node:ekr.20230701171707.1: *4* TestGlobals.test_g_getUNLFilePart
     def test_g_getUNLFilePart(self):
 
         table = (
@@ -1057,7 +1057,7 @@ class TestGlobals(LeoUnitTest):
         )
         for unl, expected in table:
             self.assertEqual(expected, g.getUNLFilePart(unl), msg=unl)
-    #@+node:ekr.20230701101300.1: *3* TestGlobals.test_g_isValidUrl
+    #@+node:ekr.20230701101300.1: *4* TestGlobals.test_g_isValidUrl
     def test_g_isValidUrl(self):
 
         bad_table = ('@whatever',)
@@ -1069,20 +1069,41 @@ class TestGlobals(LeoUnitTest):
             self.assertTrue(g.isValidUrl(unl), msg=unl)
         for unl in self.invalid_unls + bad_table:
             self.assertFalse(g.isValidUrl(unl), msg=unl)
-    #@+node:ekr.20230701095636.1: *3* TestGlobals.test_g_findAnyUnl
+    #@+node:ekr.20230701095636.1: *4* TestGlobals.test_g_findAnyUnl
     def test_g_findAnyUnl(self):
 
-        # g.findAnyUnl returns a Position or None.
-
-        ### To do: resolve all valid unls to a real position.
-
         c = self.c
+        # Create a sibling after the root position.
         self._make_tree(c, root_h='root')
-
-        if 0:  ### Not yet.
-            for unl in self.valid_unls + self.missing_unls:
-                p = c.rootPosition()
-                self.assertEqual(p, g.findAnyUnl(unl, c), msg=unl)
+        sib = c.rootPosition().next()
+        child2 = sib.firstChild()
+        child2_gnx = child2.gnx
+        if 0:
+            for p in sib.self_and_subtree():
+                print(f"{p.gnx:30} {p.h}")
+        
+        # Create a table of various kinds of unls.
+        bad_gnx = 'TestLeoId.20231229001812.666'
+        file_name = c.fileName()
+        gnx_head = 'unl:gnx://#'
+        gnx_file_head = 'unl:gnx://' + file_name + '#'
+        unl_head = 'unl://#'
+        unl_file_head = 'unl://' + file_name + '#'
+        table = (
+            # Good gnxs...
+            (child2, f"{gnx_head}{child2_gnx}"),
+            (child2, f"{gnx_file_head}{child2_gnx}"),
+            (child2, f"{unl_head}Node 1-->child 2"),
+            (child2, f"{unl_file_head}Node 1-->child 2"),
+            # Bad gnxs...
+            (None, f"{gnx_head}{bad_gnx}"),
+            (None, f"{gnx_file_head}{bad_gnx}"),
+            (None, f"{unl_head}Node 1-->child 666"),
+            (None, f"{unl_file_head}Node 666-->child 1"),
+        )
+        for expected_p, unl in table:
+            result_p = g.findAnyUnl(unl, c)
+            self.assertEqual(expected_p, result_p, msg=unl)
 
         # Suppress warnings.
         old_stdout = sys.stdout
@@ -1092,7 +1113,7 @@ class TestGlobals(LeoUnitTest):
                 self.assertEqual(None, g.findAnyUnl(unl, c), msg=unl)
         finally:
             sys.stdout = old_stdout
-    #@+node:ekr.20230701113123.1: *3* TestGlobals.test_p_get_star_UNL
+    #@+node:ekr.20230701113123.1: *4* TestGlobals.test_p_get_star_UNL
     def test_p_get_star_UNL(self):
 
         # Test 11 p.get_*_UNL methods.
@@ -1165,7 +1186,21 @@ class TestGlobals(LeoUnitTest):
                 ):
                     msg = f"{f.__name__}: kind: {kind} full: {full}"
                     self.assertEqual(expected, f(), msg=msg)
-    #@+node:ekr.20230701103509.1: *3* TestGlobals.test_g_parsePathData
+    #@+node:ekr.20230703175447.1: *4* TestGlobals.test_g_openUNLFile
+    def test_g_openUNLFile(self):
+
+        # Create a new commander
+        c1 = self.c
+        c2 = self._patch_at_data_unl_path_prefixes()
+        # Change both filenames.
+        file_name1 = os.path.basename(c1.fileName())
+        file_name2 = os.path.basename(c2.fileName())
+        # Cross-file tests.
+        c3 = g.openUNLFile(c1, file_name2)
+        self.assertEqual(c3, c2)
+        c4 = g.openUNLFile(c2, file_name1)
+        self.assertEqual(c4, c1)
+    #@+node:ekr.20230701103509.1: *4* TestGlobals.test_g_parsePathData
     def test_g_parsePathData(self) -> None:
 
         c = self.c
@@ -1191,20 +1226,6 @@ class TestGlobals(LeoUnitTest):
         paths = ['c:/Repos/leo-editor/leo/test', 'c:/Repos/leo-editor/leo/doc']
         expected_paths = [os.path.normpath(z) for z in paths]
         self.assertEqual(list(sorted(d.values())), list(sorted(expected_paths)))
-    #@+node:ekr.20230703175447.1: *3* TestGlobals.test_g_openUNLFile
-    def test_g_openUNLFile(self):
-
-        # Create a new commander
-        c1 = self.c
-        c2 = self._patch_at_data_unl_path_prefixes()
-        # Change both filenames.
-        file_name1 = os.path.basename(c1.fileName())
-        file_name2 = os.path.basename(c2.fileName())
-        # Cross-file tests.
-        c3 = g.openUNLFile(c1, file_name2)
-        self.assertEqual(c3, c2)
-        c4 = g.openUNLFile(c2, file_name1)
-        self.assertEqual(c4, c1)
     #@-others
 #@-others
 #@-leo

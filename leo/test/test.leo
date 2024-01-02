@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
-<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -8,6 +8,7 @@
 <vnodes>
 <v t="ekr.20180311131353.1"><vh>test.leo: semi-official tests</vh></v>
 <v t="ekr.20230622114548.1"><vh>@settings</vh>
+<v t="ekr.20231231164138.1"><vh>@data unl-path-prefixes</vh></v>
 <v t="ekr.20230623064935.1"><vh>@data history-list</vh></v>
 <v t="ekr.20230622114556.1"><vh>@button copy-test</vh></v>
 <v t="ekr.20180311210803.1"><vh>Latex buttons</vh>
@@ -55,16 +56,6 @@
 </v>
 <v t="ekr.20180311131424.1"><vh>Recent tests</vh>
 <v t="ekr.20180311131403.1"><vh>@jupyter</vh></v>
-<v t="ekr.20230622112641.1"><vh>--- tests of UNL</vh>
-<v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
-<v t="ekr.20230622112535.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
-<v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
-<v t="ekr.20230625084119.1"><vh>Legacy UNLs: in this file</vh></v>
-<v t="ekr.20230628090119.1"><vh>Legacy UNLs: other files</vh></v>
-<v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
-<v t="ekr.20230627150454.1"><vh>New UNLs with short file parts</vh></v>
-<v t="ekr.20230707065449.1"><vh>New UNLS with long(absolute) file parts</vh></v>
-</v>
 <v t="ekr.20180311212134.1"><vh>Coloring tests</vh>
 <v t="ekr.20180311131449.1"><vh>Syntax coloring template</vh></v>
 <v t="ekr.20180311212134.2"><vh>g.es test</vh></v>
@@ -98,6 +89,17 @@
 </v>
 <v t="ekr.20230906100141.24"><vh>script: asttokens</vh></v>
 <v t="ekr.20230906100141.25"><vh>QToolBar test</vh></v>
+</v>
+<v t="ekr.20230622112641.1"><vh>--- tests of UNL (do not delete!)</vh>
+<v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
+<v t="ekr.20230622112535.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
+<v t="ekr.20230622112649.1"><vh>Error messages (copy to log)</vh></v>
+<v t="ekr.20230625084119.1"><vh>Legacy UNLs: in this file</vh></v>
+<v t="ekr.20230628090119.1"><vh>Legacy UNLs: other files</vh></v>
+<v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
+<v t="ekr.20231231043342.1"><vh>New UNLs with empty file parts</vh></v>
+<v t="ekr.20230627150454.1"><vh>New UNLs with short file parts</vh></v>
+<v t="ekr.20230707065449.1"><vh>New UNLS with long(absolute) file parts</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -992,7 +994,8 @@ This is a comment</t>
 
 # Doesn't play, probably because of https.</t>
 <t tx="ekr.20230622112535.1"></t>
-<t tx="ekr.20230622112641.1"></t>
+<t tx="ekr.20230622112641.1"># Note: Modify @data unl-path-prefixes (in this file)
+# To match the paths on your machine.</t>
 <t tx="ekr.20230622112649.1"># These links will be active only if the @&lt;file&gt; node exists.
 
 # Absolute file names
@@ -1022,7 +1025,7 @@ convert-unls
 copy-test</t>
 <t tx="ekr.20230623141357.1">https://github.com/leo-editor/leo-editor/pull/3215/files
 
-# Exists: Recent
+# Exists: Recent tests.
 unl:gnx://#ekr.20180311131424.1
 
 # Error mssages (copy to log)
@@ -1030,6 +1033,9 @@ unl:gnx://#ekr.20230622112649.1
 
 # Bad gnx
 unl:gnx://xyzzy.leo#.20230622112649.1
+
+# In LeoDocs.leo: will work only if LeoDocs.leo is open!
+unl:gnx://#ekr.20100805171546.4412
 
 </t>
 <t tx="ekr.20230625084119.1"># Shorter UNL:
@@ -1050,15 +1056,15 @@ unl://#Viewrendered examples
 unl://C:/Repos/leo-editor/leo/test/test.leo#Viewrendered examples--&gt;Python code
 unl://#Viewrendered examples--&gt;Python code
 </t>
-<t tx="ekr.20230627150454.1"># Exists: Recent
+<t tx="ekr.20230627150454.1"># Exists: Recent tests
 unl:gnx://test.leo#ekr.20180311131424.1
-unl:gnx://#ekr.20180311131424.1
 
 # Error mssages (copy to log)
 unl:gnx://test.leo#ekr.20230622112649.1
-unl:gnx://#ekr.20230622112649.1
 
-# These links depend on @data unl-path-prefixes.
+# The following links depend on @data unl-path-prefixes.
+
+# These links should open LeoDocs.leo if it is not already open.
 
 # In LeoDocs.leo: Leo 6.7.3 release notes
 unl:gnx://LeoDocs.leo#ekr.20230409052507.1
@@ -1068,18 +1074,20 @@ unl:gnx://LeoDocs.leo#ekr.20050831195449
 
 # Bad gnx: xyzzy.leo does not exist.
 unl:gnx://xyzzy.leo#.20230622112649.1</t>
-<t tx="ekr.20230628090119.1"># These links will work only if *your* @data unl-path-prefixes setting
-# contains the proper paths to the viles on your machine.
+<t tx="ekr.20230628090119.1"># The following links depend on @data unl-path-prefixes.
 
 unl://LeoDocs.leo#Release Notes--&gt;Leo 6.7.3 release notes
 
 # In LeoDocs.leo
 unl://LeoDocs.leo#Web pages
+
+# In LeoDocs.leo. Will work only if LeoDocs.leo is open!
+unl://#Web pages
 </t>
 <t tx="ekr.20230707065449.1"># These unls will work only on EKR's machine.
 # They are a test of absolute matches in g.openUNLFile.
 
-# Exists: Recent
+# Exists: Recent tests
 unl:gnx://c:\Repos\leo-editor\leo\test\test.leo#ekr.20180311131424.1
 
 # Error mssages (copy to log)
@@ -1087,6 +1095,8 @@ unl:gnx://c:\Repos\leo-editor\leo\test\test.leo#ekr.20230622112649.1
 
 # Should fail
 unl:gnx://c:\Repos\leo-editor\leo\doc\test.leo#ekr.20230622112649.1
+
+# The following links should open LeoDocs.leo if it is not already open.
 
 # In LeoDocs.leo: Leo 6.7.3 release notes
 unl:gnx://c:\Repos\leo-editor\leo\doc\LeoDocs.leo#ekr.20230409052507.1
@@ -1446,5 +1456,26 @@ g.registerHandler('select3', ud['alt_body_font_proc'])
 
 
 </t>
+<t tx="ekr.20231231043342.1"># Exists: Recent tests
+unl:gnx://#ekr.20180311131424.1
+
+# Error mssages (copy to log)
+unl:gnx://#ekr.20230622112649.1
+
+# The following will work only if LeoDocs.leo is open!
+
+# In LeoDocs.leo: Leo 6.7.3 release notes
+unl:gnx://#ekr.20230409052507.1
+
+# In LeoDocs.leo: ** Read me first **
+unl:gnx://#ekr.20050831195449
+</t>
+<t tx="ekr.20231231164138.1"># These data work on EKR's machine.  Modify for your own!
+
+# lines have the form:
+# x.leo: &lt;absolute path to x.leo&gt;
+
+test.leo:    c:/Repos/leo-editor/leo/test
+LeoDocs.leo: c:/Repos/leo-editor/leo/doc</t>
 </tnodes>
 </leo_file>
