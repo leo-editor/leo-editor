@@ -2014,8 +2014,33 @@ class TestOrange(BaseTest):
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens, tree)
             self.assertEqual(results, expected)
+    #@+node:ekr.20220327131225.1: *4* TestOrange.test_join_and_leading_stars
+    def test_join_and_leading_stars(self):
+        
+        if not use_ast:
+            self.skipTest('requires use_ast = True')
+
+        # #2533.
+        contents = """\
+            def f(
+                arg1,
+                *args,
+                **kwargs
+            ):
+                pass
+    """
+        expected = textwrap.dedent("""\
+            def f(arg1, *args, **kwargs):
+                pass
+    """)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, tokens, tree)
+        self.assertEqual(expected, results)
     #@+node:ekr.20200116104031.1: *4* TestOrange.test_join_and_strip_condition
     def test_join_and_strip_condition(self):
+        
+        if not use_ast:
+            self.skipTest('requires use_ast = True')
 
         contents = """\
     if (
@@ -2104,6 +2129,9 @@ class TestOrange(BaseTest):
         self.assertEqual(fails, 0)
     #@+node:ekr.20200210051900.1: *4* TestOrange.test_join_suppression
     def test_join_suppression(self):
+        
+        if not use_ast:
+            self.skipTest('requires use_ast = True')
 
         contents = """\
     class T:
@@ -2153,25 +2181,24 @@ class TestOrange(BaseTest):
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
         assert not fails, fails
-    #@+node:ekr.20220327131225.1: *4* TestOrange.test_leading_stars
+    #@+node:ekr.20240102063358.1: *4* TestOrange.test_leading_stars
     def test_leading_stars(self):
+        
+        # if not use_ast:
+            # self.skipTest('requires use_ast = True')
 
         # #2533.
         contents = """\
-            def f(
-                arg1,
-                *args,
-                **kwargs
-            ):
-                pass
-    """
-        expected = textwrap.dedent("""\
             def f(arg1, *args, **kwargs):
                 pass
-    """)
+    """
+        # expected = textwrap.dedent("""\
+            # def f(arg1, *args, **kwargs):
+                # pass
+    # """)
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tokens, tree)
-        self.assertEqual(expected, results)
+        self.assertEqual(contents, results)
     #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels
     def test_leo_sentinels_1(self):
 
