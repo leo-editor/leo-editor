@@ -1773,7 +1773,7 @@ class Orange:
     def do_comment(self) -> None:
         """Handle a comment token."""
         val = self.val
-        #
+
         # Leo-specific code...
         if self.node_pat.match(val):
             # Clear per-node state.
@@ -1799,7 +1799,7 @@ class Orange:
                 self.in_doc_part = True
             if self.end_doc_pat.match(val):
                 self.in_doc_part = False
-        #
+
         # General code: Generate the comment.
         self.clean('blank')
         entire_line = self.line.lstrip().startswith('#')
@@ -2200,12 +2200,16 @@ class Orange:
                 and not isinstance(node.operand, num_node)
             )
 
-        node = self.token.node
+        node = self.token.node  # Will be None when use_ast is False.
         self.clean('blank')
+
+        ### To do: Use state machine to disambiguate the following:
+
         if not isinstance(node, ast.Slice):
             self.add_token('op', val)
             self.blank()
             return
+
         # A slice.
         lower = getattr(node, 'lower', None)
         upper = getattr(node, 'upper', None)
@@ -2286,8 +2290,11 @@ class Orange:
     #@+node:ekr.20200107165250.45: *5* orange.possible_unary_op & unary_op
     def possible_unary_op(self, s: str) -> None:
         """Add a unary or binary op to the token list."""
-        node = self.token.node
+        node = self.token.node  # Will be None when use_ast is False.
         self.clean('blank')
+
+        ### To do: Use state machine to disambiguate the following:
+
         if isinstance(node, ast.UnaryOp):
             self.unary_op(s)
         else:
@@ -2309,8 +2316,11 @@ class Orange:
     def star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
         val = '*'
-        node = self.token.node
+        node = self.token.node  # Will be None when use_ast is False.
         self.clean('blank')
+
+        ### To do: Use state machine to disambiguate the following:
+
         if isinstance(node, ast.arguments):
             self.blank()
             self.add_token('op', val)
@@ -2347,7 +2357,10 @@ class Orange:
     def word(self, s: str) -> None:
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
-        node = self.token.node
+        node = self.token.node  # Will be None when use_ast is False.
+
+        ### To do: Use state machine to disambiguate the following:
+
         if isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
             self.clean('blank')
             self.add_token('blank', ' ')
