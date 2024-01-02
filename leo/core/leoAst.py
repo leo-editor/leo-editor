@@ -2618,7 +2618,6 @@ class Token:
         self.line = ''  # The entire line containing the token.
         # The line number, for errors and dumps.
         self.line_number = 0  # Set by Tokenizer.add_token.
-        self.level = 0  ### Used ????
         self.node: Optional[Node] = None
 
     def __repr__(self) -> str:  # pragma: no cover
