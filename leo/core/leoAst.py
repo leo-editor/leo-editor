@@ -2047,7 +2047,7 @@ class Orange:
             )
             # dump_tree(self.tokens, self.tree)
 
-        ### To do: Use state machine ???
+        ### To do: Use state machine to disambiguate the following:
 
         # Only tog.set_links sets token.equal_sign_spaces
         ### if self.token.equal_sign_spaces:
