@@ -1727,12 +1727,12 @@ class TestOrange(BaseTest):
                 '''
             ),
         )
+        debug_list = ['tokens']  ###
         for i, contents in enumerate(table):
-            contents, tokens, tree = self.make_data(contents)
+            contents, tokens, tree = self.make_data(contents, debug_list=debug_list)
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens, tree)
             self.assertEqual(results, expected)
-
     #@+node:ekr.20200219114415.1: *4* TestOrange.test_at_doc_part
     def test_at_doc_part(self):
 

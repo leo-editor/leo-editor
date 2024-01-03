@@ -1584,14 +1584,30 @@ class Fstringify:
     #@-others
 #@+node:ekr.20200107165250.1: *3* class Orange
 class Orange:
+    #@+<< docstring: class Orange >>
+    #@+node:ekr.20240103095921.1: *4* << docstring: class Orange >>
     """
     A token-based beautifier for Python. Orange is the new Black.
-    
-    The module-level `use_ast` switch determines how this class infers context:
 
-    - True:  Use the Python parse tree.
-    - False: Use a state machine.
+    **Overview**
+
+    orange.beautify is the main loop: it calls a *visitor* (o.do_* method) for each *input token*.
+        
+    Visitors call one or more *output generators* to generate the *output list*.
+
+    Output generators work much like a peephole optimizer.
+
+    **Context inference**
+
+    The module-level `use_ast` switch determines how Orange infers context:
+
+    - True:  (Legacy) Use Python's ast (parse tree) and the TokenOrderGenerator class.
+    - False: (Recommended) Use token-based scanning.
+
+    Token-based scanning is faster and simpler than using parse trees.
+    A Nim-based version of this file will using token-based scanning.
     """
+    #@-<< docstring: class Orange >>
     # This switch is really a comment. It will always be false.
     # It marks the code that simulates the operation of the black tool.
     black_mode = False
@@ -1637,11 +1653,6 @@ class Orange:
                 setattr(self, key, value)
             else:
                 g.trace(f"Unexpected setting: {key} = {value!r}")
-    #@+node:ekr.20200107165250.51: *4* orange.push_state
-    def push_state(self, kind: str, value: Union[int, str] = None) -> None:
-        """Append a state to the state stack."""
-        state = ParseState(kind, value)
-        self.state_stack.append(state)
     #@+node:ekr.20200107165250.8: *4* orange: Entries
     #@+node:ekr.20200107173542.1: *5* orange.beautify (main token loop)
     def oops(self) -> None:  # pragma: no cover
@@ -1754,19 +1765,6 @@ class Orange:
         # Show the diffs.
         show_diffs(contents, results, filename = filename)
         return True
-    #@+node:ekr.20240102052859.1: *4* orange: init_tokens_from_file (new)
-    def init_tokens_from_file(self, filename: str) -> tuple[str, str, list[Token]]:  # pragma: no cover
-        """
-        Create the list of tokens for the given file.
-        Return (contents, encoding, tokens).
-        """
-        self.level = 0
-        self.filename = filename
-        encoding, contents = read_file_with_encoding(filename)
-        if not contents:
-            return None, None, None
-        self.tokens = tokens = make_tokens(contents)
-        return contents, encoding, tokens
     #@+node:ekr.20200107165250.13: *4* orange: Input token handlers (do_*)
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
     in_doc_part = False
@@ -2040,12 +2038,20 @@ class Orange:
     dump_flag = True
 
     def do_equal_op(self, val: str) -> None:
-        """The input handler for '=' operators."""
+        """
+        The input handler for '=' operators.
+        
+        This is tricky. For example.
+            
+            def annotated_f(s: str = None, x=None) -> None:
+                
+        Within argument lists, add spaces around *annotated* inits, but not around plain inits.
+        """
         if 0:
             token = self.token
             g.trace(
                 f"token.index: {token.index:2} paren_level: {self.paren_level} "
-                f"token.equal_sign_spaces: {int(token.equal_sign_spaces)} "
+                f"token.equal_sign_spaces: {bool(token.equal_sign_spaces)} "
                 # f"{token.node.__class__.__name__}"
             )
             # dump_tree(self.tokens, self.tree)
@@ -2284,7 +2290,7 @@ class Orange:
     #@+node:ekr.20200107165250.43: *5* orange.op_rt
     def op_rt(self, val: str) -> None:
         """Generate code for a right paren or curly/square bracket."""
-        
+
         # Update the state machine. This is really part of the input logic.
         assert val in ')]}', repr(val)
         if val == ')':
@@ -2294,7 +2300,7 @@ class Orange:
             self.square_brackets_stack.pop()
         else:
             self.curly_brackets_level -= 1
-            
+
         # Generate the code.
         self.clean('blank')
         self.add_token('rt', val)
@@ -2573,6 +2579,25 @@ class Orange:
         # Add the new output tokens.
         self.add_token('string', tail_s)
         self.add_token('line-end', '\n')
+    #@+node:ekr.20240102105303.1: *4* orange: Utils
+    #@+node:ekr.20240102052859.1: *5* orange.init_tokens_from_file (new)
+    def init_tokens_from_file(self, filename: str) -> tuple[str, str, list[Token]]:  # pragma: no cover
+        """
+        Create the list of tokens for the given file.
+        Return (contents, encoding, tokens).
+        """
+        self.level = 0
+        self.filename = filename
+        encoding, contents = read_file_with_encoding(filename)
+        if not contents:
+            return None, None, None
+        self.tokens = tokens = make_tokens(contents)
+        return contents, encoding, tokens
+    #@+node:ekr.20200107165250.51: *5* orange.push_state
+    def push_state(self, kind: str, value: Union[int, str] = None) -> None:
+        """Append a state to the state stack."""
+        state = ParseState(kind, value)
+        self.state_stack.append(state)
     #@-others
 #@+node:ekr.20200107170126.1: *3* class ParseState
 class ParseState:
