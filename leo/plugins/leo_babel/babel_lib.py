@@ -379,14 +379,15 @@ def babelExec(event):
         # Copy Babel Parameter settings from gld to babelCmdr
         for paramName in ['babel_color_information', 'babel_color_stderr', 'babel_color_stdout', 'babel_interpreter_python',
             'babel_interpreter_shell', 'babel_node_creation', 'babel_polling_delay', 'babel_prefix_information',
-            'babel_prefix_stderr', 'babel_prefix_stdout', 'babel_redirect_stdout', 'babel_results', 'babel_script', 'babel_sudo', 'babel_tab_babel']:
+            'babel_prefix_stderr', 'babel_prefix_stdout', 'babel_redirect_stdout', 'babel_results', 'babel_script',
+            'babel_script_args',  'babel_sudo', 'babel_tab_babel']:
             paramValue = gld.get(paramName, None)
             if not paramValue is None:
                 setattr(babelCmdr, paramName, paramValue)
 
-        cmdrScr, scriptRoot = scrOrResRoot(cmdr, gld.get('babel_script'), babelG, babelRoot, 'script')
+        cmdrScr, scriptRoot = scrOrResRoot(cmdr, babelCmdr, babelG, babelRoot, 'script')
         if babelCmdr.babel_node_creation:
-            cmdrRes, resultsRoot = scrOrResRoot(cmdr, gld.get('babel_results'), babelG, babelRoot, 'results')
+            cmdrRes, resultsRoot = scrOrResRoot(cmdr, babelCmdr, babelG, babelRoot, 'results')
         else:
             cmdrRes = None
             resultsRoot = None
@@ -400,14 +401,10 @@ def babelExec(event):
         # Determine the language and then the interpreter
         langx = leoG.scanForAtLanguage(cmdrScr, scriptRoot)
         if langx == 'python':
-            interpreter =  babelCmdr.babel_python
-            if not interpreter:
-                interpreter = babelCmdr.babel_interpreter_python
+            interpreter = babelCmdr.babel_interpreter_python
             cmdList.extend([interpreter, '-u'])
         elif langx == 'shell':
-            interpreter = babelCmdr.babel_shell
-            if not interpreter:
-                interpreter = babelCmdr.babel_interpreter_shell
+            interpreter = babelCmdr.babel_interpreter_shell
             cmdList.append(interpreter)
         else:
             babelCmdr.babelExecCnt += 1
@@ -420,9 +417,8 @@ def babelExec(event):
 
         pathScript = cmdr.writeScriptFile(script)
         cmdList.append(pathScript)
-        babel_script_args = babelCmdr.babel_script_args
-        if babel_script_args:
-            cmdList.extend(babel_script_args)
+        if getattr(babelCmdr, 'babel_script_args', None):
+            cmdList.extend(babelCmdr.babel_script_args)
 
         leoG.es(f'{babelCmdr.babel_prefix_information}Script\'s CWD: "{cwd}"', color=babelCmdr.babel_color_information, tabName= 'Babel' if babelCmdr.babel_tab_babel else 'Log')
         leoG.es(f'{babelCmdr.babel_prefix_information}Command list: {cmdList}', color=babelCmdr.babel_color_information, tabName= 'Babel' if babelCmdr.babel_tab_babel else 'Log')
@@ -433,7 +429,7 @@ def babelExec(event):
         reo = io.open(wro.name, 'rb', buffering=0)
         ree = io.open(wre.name, 'rb', buffering=0)
 
-        if babelCmdr.babel_redirect_stdout:
+        if getattr(babelCmdr, 'babel_redirect_stdout', None):
             # Redirect stdout to stderr
             wro = wre
 
@@ -446,8 +442,8 @@ def babelExec(event):
         subPbabKill = subprocess.Popen([babelG.pathBabelKill, str(subPscript.pid)])
 
         babelCmdr.reo = reo  # Kludge to allow itf() to determine which output it polls
-        itOut = leoG.IdleTime(lambda ito, prefix=babelCmdr.babel_prefix_stdout, color=babelCmdr.babel_color_stdout, fdr=reo, babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr), delay=1)
-        itErr = leoG.IdleTime(lambda ito, prefix=babelCmdr.babel_prefix_stderr, color=babelCmdr.babel_color_stderr, fdr=ree, babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr), delay=1)
+        itOut = leoG.IdleTime(lambda ito, prefix=babelCmdr.babel_prefix_stdout, color=babelCmdr.babel_color_stdout, fdr=reo, babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr), delay=babelCmdr.babel_polling_delay)
+        itErr = leoG.IdleTime(lambda ito, prefix=babelCmdr.babel_prefix_stderr, color=babelCmdr.babel_color_stderr, fdr=ree, babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr), delay=babelCmdr.babel_polling_delay)
         if (not itOut) or (not itErr):
             raise babelG.babel_api.BABEL_ERROR('leoG.IdleTime() failed')
         itOut.start()
@@ -658,54 +654,48 @@ def babelExec(event):
         cmdrRes.expandSubtree(posET)
         cmdrRes.redraw()
         cmdrRes.save()
-    #@+node:bob.20170828151625.1: *3* scrOrResRoot(cmdrb, rootX, babelG, babelRoot, scrOrRes)
-    def scrOrResRoot(cmdrb, rootX, babelG, babelRoot, scrOrRes):
+    #@+node:bob.20170828151625.1: *3* scrOrResRoot(leoCmdrB, rootX, babelG, babelRoot, scrOrRes)
+    def scrOrResRoot(leoCmdrB, babelCmdr, babelG, babelRoot, scrOrRes):
         """ Get the Script or Results Root
 
         Arguments:
-            cmdrb:  Leo-Editor commander for the Babel Root
-            rootX: UNL of the node to contain the output
-                None --> output to a child of babelRoot
+            leoCmdrB:  Leo-Editor commander for the Babel Root
+            babelCmdr: Babel commander
             babelG: Babel globals
             babelRoot:  Babel Root
             scrOrRes: "script" for Script root
                 "results" for Results root
 
         Returns:
-            (cmdrx, rootx):
-                cmdrx: Commander for root position
-                rootx: Root position
+            (leoCmdrX, posX):
+                leoCmdrX: Leo Commander for posX
+                posX: Root position
         """
 
-        if rootX is None:
-            # rootX is a child of babelRoot.
-            cmdrx = cmdrb
-            rootX = babelRoot.getNthChild({'script': 0, 'results': 1}[scrOrRes])
-            if not rootX:
+        if getattr(babelCmdr, scrOrRes, None) is None:
+            leoCmdrX = leoCmdrB
+            posX = babelRoot.getNthChild({'script': 0, 'results': 1}[scrOrRes])
+            if not posX:
                 childOrd = {'script': 'First', 'results': 'Second'}[scrOrRes]
                 raise babelG.babel_api.BABEL_ROOT(f'{childOrd} child '
                     f'of current node must be the {scrOrRes} root.')
-        elif isinstance(rootX, type('abc')):
-            # scriptRoot is a UNL
-            pathname, nodePart = unlSplit(rootX)
+        elif isinstance(posX, type('abc')):
+            pathname, nodePart = unlSplit(posX)
             if pathname is None:
-                cmdrx = cmdrb
+                leoCmdrX = leoCmdrB
             else:
-                cmdrx = None
-            cmdrx, posList = unl2pos(rootX, cmdr=cmdrx)
+                leoCmdrX = None
+            leoCmdrX, posList = unl2pos(posX, cmdr=leoCmdrX)
             if not posList:
                 raise babelG.babel_api.BABEL_UNL_NO_POS(f'{scrOrRes.capitalize()} Root UNL does not match any '
                     'position.')
             else:
-                rootX = posList[0]
+                posX = posList[0]
                 if len(posList) > 1:
                     warning = f'{scrOrRes.capitalize()} Root UNL satisfies {len(posList)} positions.'
                     leoG.warning(warning)
-        else:
-            # scriptRoot is (cmdr, pos) pair
-            cmdrx, rootX = rootX
-            rootX = rootX.copy()
-        return cmdrx, rootX
+        posX = posX.copy()
+        return leoCmdrX, posX
     #@-others
 
     babelG = leoG.user_dict['leo_babel']

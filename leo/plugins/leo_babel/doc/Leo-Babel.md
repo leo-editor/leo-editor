@@ -199,21 +199,22 @@ The Babel Parameters Script is executed with the following objects available:
 
 The Babel Parameters Script can define the following parameters that affect Babel Script execution:
 
-1. babel_script
-
-1. babel_results
-
+1. babel_color_information
+1. babel_color_stderr
+1. babel_color_stdout
+1. babel_interpreter_python
+1. babel_interpreter_shell
 1. babel_node_creation
-
-1. babel_python
-
-1. babel_shell
-
-1. babel_sudo
-
+1. babel_polling_delay
+1. babel_prefix_information
+1. babel_prefix_stderr
+1. babel_prefix_stdout
 1. babel_redirect_stdout
-
+1. babel_results
+1. babel_script
 1. babel_script_args
+1. babel_sudo
+1. babel_tab_babel
 
 The current working directory for the Babel Parameters Script is the working directory for the Babel Script node.  See section "Current working directory for a node".
 

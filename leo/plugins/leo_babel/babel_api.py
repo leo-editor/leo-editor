@@ -86,7 +86,7 @@ class BabelCmdr(object):
         """
 
         #@+others
-        #@+node:bob.20180318164514.3: *4* _getColor()
+        #@+node:bob.20180318164514.3: *4* _getColor(cmdr, settingName, default=None)
         def _getColor(cmdr, settingName, default=None):
             """ Add a default option to c.config.getColor()
             """
@@ -96,7 +96,7 @@ class BabelCmdr(object):
                 return colorx
             else:
                 return default
-        #@+node:bob.20180318164514.4: *4* _getString()
+        #@+node:bob.20180318164514.4: *4* _getString(cmdr, settingName, default=None)
         def _getString(cmdr, settingName, default=None):
             """ Add a default option to c.config.getString()
             """
@@ -106,7 +106,7 @@ class BabelCmdr(object):
                 return strx
             else:
                 return default
-        #@+node:bob.20240102112512.1: *4* _getString()
+        #@+node:bob.20240102112512.1: *4* _getInt(cmdr, settingName, default=None)
         def _getInt(cmdr, settingName, default=None):
             """ Add a default option to c.config.getInt()
             """
