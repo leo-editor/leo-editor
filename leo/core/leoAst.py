@@ -1653,7 +1653,7 @@ class Orange:
                 setattr(self, key, value)
             else:
                 g.trace(f"Unexpected setting: {key} = {value!r}")
-    #@+node:ekr.20200107165250.8: *4* orange: Entries
+    #@+node:ekr.20200107165250.8: *4* orange: Entries & helpers
     #@+node:ekr.20200107173542.1: *5* orange.beautify (main token loop)
     def oops(self) -> None:  # pragma: no cover
         g.trace(f"Unknown kind: {self.kind}")
@@ -1765,6 +1765,27 @@ class Orange:
         # Show the diffs.
         show_diffs(contents, results, filename = filename)
         return True
+    #@+node:ekr.20240102052859.1: *5* orange.init_tokens_from_file (new)
+    def init_tokens_from_file(self, filename: str) -> tuple[str, str, list[Token]]:  # pragma: no cover
+        """
+        Create the list of tokens for the given file.
+        Return (contents, encoding, tokens).
+        """
+        self.level = 0
+        self.filename = filename
+        encoding, contents = read_file_with_encoding(filename)
+        if not contents:
+            return None, None, None
+        self.tokens = tokens = make_tokens(contents)
+        return contents, encoding, tokens
+    #@+node:ekr.20200107165250.51: *5* orange.push_state
+    def push_state(self, kind: str, value: Union[int, str] = None) -> None:
+        """Append a state to the state stack."""
+        state = ParseState(kind, value)
+        self.state_stack.append(state)
+    #@+node:ekr.20240104045538.1: *5* orange.scan_def
+    def scan_def(self):
+        g.trace(self.token)
     #@+node:ekr.20200107165250.13: *4* orange: Input token handlers (do_*)
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
     in_doc_part = False
@@ -2241,7 +2262,6 @@ class Orange:
         # Create the 'line-end' output token.
         self.add_line_end()
 
-        ### Highly experimental.
         node = self.token.statement_node if use_ast else None
 
         # Attempt to split the line.
@@ -2377,6 +2397,9 @@ class Orange:
         node = self.token.node  # Will be None when use_ast is False.
 
         ### To do: Use state machine to disambiguate the following:
+        
+        if s == 'def':
+            self.scan_def()
 
         if isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
             self.clean('blank')
@@ -2579,25 +2602,6 @@ class Orange:
         # Add the new output tokens.
         self.add_token('string', tail_s)
         self.add_token('line-end', '\n')
-    #@+node:ekr.20240102105303.1: *4* orange: Utils
-    #@+node:ekr.20240102052859.1: *5* orange.init_tokens_from_file (new)
-    def init_tokens_from_file(self, filename: str) -> tuple[str, str, list[Token]]:  # pragma: no cover
-        """
-        Create the list of tokens for the given file.
-        Return (contents, encoding, tokens).
-        """
-        self.level = 0
-        self.filename = filename
-        encoding, contents = read_file_with_encoding(filename)
-        if not contents:
-            return None, None, None
-        self.tokens = tokens = make_tokens(contents)
-        return contents, encoding, tokens
-    #@+node:ekr.20200107165250.51: *5* orange.push_state
-    def push_state(self, kind: str, value: Union[int, str] = None) -> None:
-        """Append a state to the state stack."""
-        state = ParseState(kind, value)
-        self.state_stack.append(state)
     #@-others
 #@+node:ekr.20200107170126.1: *3* class ParseState
 class ParseState:
