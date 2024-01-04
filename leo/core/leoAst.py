@@ -1605,20 +1605,13 @@ class InputToken:
 
         self.kind = kind
         self.value = value
-        #
-        # Injected by Tokenizer.add_token.
         self.five_tuple: tuple = None
         self.index = 0
-        # The entire line containing the token.
-        # Same as five_tuple.line.
-        self.line = ''
-        # The line number, for errors and dumps.
-        # Same as five_tuple.start[0]
-        self.line_number = 0
-        #
-        # Injected by Tokenizer.add_token.
+        self.line = ''  # The entire line containing the token.
+        self.line_number = 0  # The line number, for errors and dumps.
         self.level = 0
-        self.node: Optional[Node] = None
+        self.node: Optional[Node] = None  ### Legacy only.
+        ### The token-based Orange will inject context data into InputTokens.
 
     def __repr__(self) -> str:  # pragma: no cover
         s = f"{self.index:<3} {self.kind:}"
