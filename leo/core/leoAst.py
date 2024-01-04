@@ -1784,8 +1784,9 @@ class Orange:
         state = ParseState(kind, value)
         self.state_stack.append(state)
     #@+node:ekr.20240104045538.1: *5* orange.scan_def
-    def scan_def(self):
-        g.trace(self.token)
+    def scan_def(self) -> None:
+        if 0:
+            g.trace(self.token)
     #@+node:ekr.20200107165250.13: *4* orange: Input token handlers (do_*)
     #@+node:ekr.20200107165250.14: *5* orange.do_comment
     in_doc_part = False
