@@ -1872,7 +1872,6 @@ class Orange:
         encoding, contents = read_file_with_encoding(filename)
         if not contents:
             return None, None, None
-        ### self.tokens = tokens = make_tokens(contents)
         self.tokens = tokens = self.make_tokens(contents)
         return contents, encoding, tokens
     #@+node:ekr.20240104123947.1: *5* orange.make_tokens
@@ -2687,24 +2686,15 @@ class Orange:
 #@+node:ekr.20240104082408.1: *3* class OutputToken
 class OutputToken:
     """
-    A class representing an Orange input output token.
+    A class representing an Orange output token.
     """
 
     def __init__(self, kind: str, value: str):
 
         self.kind = kind
         self.value = value
-        ### self.five_tuple: tuple = None  # Set by Tokenizer.add_token
-        ### self.index = 0
-        ### self.line = ''  # The entire line containing the token.
-        ### self.line_number = 0  # The line number, for errors and dumps.
-        ### self.level = 0
-        ### self.node: Optional[Node] = None
 
     def __repr__(self) -> str:  # pragma: no cover
-        ###
-        # s = f"{self.index:<3} {self.kind:}"
-        # return f"Token {s}: {self.show_val(20)}"
         return f"OutputToken: {self.show_val(20)}"
 
     __str__ = __repr__
@@ -3080,8 +3070,6 @@ class TokenOrderGenerator:
         # Ensure that all tokens are patched.
         self.node = tree
         self.token('endmarker', '')
-        ### # Return [] for compatibility with legacy code: list(tog.create_links).
-        ### return []
     #@+node:ekr.20191229071733.1: *5* tog.init_from_file
     def init_from_file(self, filename: str) -> tuple[str, str, list[Token], Node]:  # pragma: no cover
         """
