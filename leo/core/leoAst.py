@@ -179,7 +179,7 @@ Settings = Optional[dict[str, Any]]
 #@+node:ekr.20240102051437.1: ** << leoAst.py: use_ast switch >>
 # True: use Python's ast trees.
 # False: use a state machine.
-use_ast = False
+use_ast = True
 #@-<< leoAst.py: use_ast switch >>
 
 #@+others

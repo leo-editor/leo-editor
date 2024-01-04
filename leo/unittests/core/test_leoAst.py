@@ -1727,7 +1727,7 @@ class TestOrange(BaseTest):
                 '''
             ),
         )
-        debug_list = ['tokens']  ###
+        debug_list = [] ###'tokens']  ###
         for i, contents in enumerate(table):
             contents, tokens, tree = self.make_data(contents, debug_list=debug_list)
             expected = self.blacken(contents).rstrip() + '\n'
