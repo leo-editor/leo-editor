@@ -177,6 +177,64 @@ Settings = Optional[dict[str, Any]]
 #@-<< leoAst imports & annotations >>
 
 #@+others
+#@+node:ekr.20200702114522.1: **  leoAst.py: top-level commands
+# Don't bother covering top-level commands.
+if 1:  # pragma: no cover
+    #@+others
+    #@+node:ekr.20200702114557.1: *3* command: fstringify_command
+    def fstringify_command(files: list[str]) -> None:
+        """
+        Entry point for --fstringify.
+
+        Fstringify the given file, overwriting the file.
+        """
+        if not check_g():
+            return
+        for filename in files:
+            if os.path.exists(filename):
+                print(f"fstringify {filename}")
+                Fstringify().fstringify_file_silent(filename)
+            else:
+                print(f"file not found: {filename}")
+    #@+node:ekr.20200702121222.1: *3* command: fstringify_diff_command
+    def fstringify_diff_command(files: list[str]) -> None:
+        """
+        Entry point for --fstringify-diff.
+
+        Print the diff that would be produced by fstringify.
+        """
+        if not check_g():
+            return
+        for filename in files:
+            if os.path.exists(filename):
+                print(f"fstringify-diff {filename}")
+                Fstringify().fstringify_file_diff(filename)
+            else:
+                print(f"file not found: {filename}")
+    #@+node:ekr.20200702115002.1: *3* command: orange_command
+    def orange_command(files: list[str], settings: Settings = None) -> None:
+
+        if not check_g():
+            return
+        for filename in files:
+            if os.path.exists(filename):
+                # print(f"orange {filename}")
+                Orange(settings).beautify_file(filename)
+            else:
+                print(f"file not found: {filename}")
+        # print(f"Beautify done: {len(files)} files")
+    #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
+    def orange_diff_command(files: list[str], settings: Settings = None) -> None:
+
+        if not check_g():
+            return
+        for filename in files:
+            if os.path.exists(filename):
+                print(f"orange-diff {filename}")
+                Orange(settings).beautify_file_diff(filename)
+            else:
+                print(f"file not found: {filename}")
+    #@-others
 #@+node:ekr.20160521104628.1: **  leoAst.py: top-level utils
 if 1:  # pragma: no cover
     #@+others
@@ -4401,6 +4459,54 @@ class BeautifyError(Exception):
 
 class FailFast(Exception):
     """Abort tests in TestRunner class."""
+#@+node:ekr.20200702102239.1: ** function: main (leoAst.py)
+def main() -> None:  # pragma: no cover
+    """Run commands specified by sys.argv."""
+    args, settings_dict, arg_files = scan_ast_args()
+    # Finalize arguments.
+    cwd = os.getcwd()
+    # Calculate requested files.
+    requested_files: list[str] = []
+    for path in arg_files:
+        if path.endswith('.py'):
+            requested_files.append(os.path.join(cwd, path))
+        else:
+            root_dir = os.path.join(cwd, path)
+            requested_files.extend(glob.glob(f'{root_dir}**{os.sep}*.py', recursive=True))
+    if not requested_files:
+        print(f"No files in {arg_files!r}")
+        return
+    files: list[str]
+    if args.force:
+        # Handle all requested files.
+        files = requested_files
+    else:
+        # Handle only modified files.
+        modified_files = get_modified_files(cwd)
+        files = [z for z in requested_files if os.path.abspath(z) in modified_files]
+    if not files:
+        return
+    if args.verbose:
+        kind = (
+            'fstringify' if args.f else
+            'fstringify-diff' if args.fd else
+            'orange' if args.o else
+            'orange-diff' if args.od else
+            None
+        )
+        if kind:
+            n = len(files)
+            n_s = f" {n:>3} file" if n == 1 else f"{n:>3} files"
+            print(f"{kind}: {n_s} in {', '.join(arg_files)}")
+    # Do the command.
+    if args.f:
+        fstringify_command(files)
+    if args.fd:
+        fstringify_diff_command(files)
+    if args.o:
+        orange_command(files, settings_dict)
+    if args.od:
+        orange_diff_command(files, settings_dict)
 #@-others
 
 if __name__ == '__main__':
