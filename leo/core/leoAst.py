@@ -1573,6 +1573,90 @@ class Fstringify:
         # Update the token list.
         add_token_to_token_list(token, new_node)
     #@-others
+#@+node:ekr.20240104082325.1: *3* class InputToken
+class InputToken:
+    """
+    A class representing input tokens.
+    """
+
+    def __init__(self, kind: str, value: str):
+
+        self.kind = kind
+        self.value = value
+        #
+        # Injected by Tokenizer.add_token.
+        self.five_tuple: tuple = None
+        self.index = 0
+        # The entire line containing the token.
+        # Same as five_tuple.line.
+        self.line = ''
+        # The line number, for errors and dumps.
+        # Same as five_tuple.start[0]
+        self.line_number = 0
+        #
+        # Injected by Tokenizer.add_token.
+        self.level = 0
+        self.node: Optional[Node] = None
+
+    def __repr__(self) -> str:  # pragma: no cover
+        s = f"{self.index:<3} {self.kind:}"
+        return f"Token {s}: {self.show_val(20)}"
+
+    __str__ = __repr__
+
+
+    def to_string(self) -> str:
+        """Return the contribution of the token to the source file."""
+        return self.value if isinstance(self.value, str) else ''
+    #@+others
+    #@+node:ekr.20240104082325.2: *4* token.brief_dump
+    def brief_dump(self) -> str:  # pragma: no cover
+        """Dump a token."""
+        return (
+            f"{self.index:>3} line: {self.line_number:<2} "
+            f"{self.kind:>15} {self.show_val(100)}")
+    #@+node:ekr.20240104082325.3: *4* token.dump
+    def dump(self) -> str:  # pragma: no cover
+        """Dump a token and related links."""
+        # Let block.
+        node_id = self.node.node_index if self.node else ''
+        node_cn = self.node.__class__.__name__ if self.node else ''
+        return (
+            f"{self.line_number:4} "
+            f"{node_id:5} {node_cn:16} "
+            f"{self.index:>5} {self.kind:>15} "
+            f"{self.show_val(100)}")
+    #@+node:ekr.20240104082325.4: *4* token.dump_header
+    def dump_header(self) -> None:  # pragma: no cover
+        """Print the header for token.dump"""
+        print(
+            f"\n"
+            f"         node    {'':10} token {'':10}   token\n"
+            f"line index class {'':10} index {'':10} kind value\n"
+            f"==== ===== ===== {'':10} ===== {'':10} ==== =====\n")
+    #@+node:ekr.20240104082325.5: *4* token.error_dump
+    def error_dump(self) -> str:  # pragma: no cover
+        """Dump a token or result node for error message."""
+        if self.node:
+            node_id = obj_id(self.node)
+            node_s = f"{node_id} {self.node.__class__.__name__}"
+        else:
+            node_s = "None"
+        return (
+            f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
+            f"{node_s}")
+    #@+node:ekr.20240104082325.6: *4* token.show_val
+    def show_val(self, truncate_n: int) -> str:  # pragma: no cover
+        """Return the token.value field."""
+        if self.kind in ('ws', 'indent'):
+            val = str(len(self.value))
+        elif self.kind == 'string' or self.kind.startswith('fstring'):
+            # repr would be confusing.
+            val = g.truncate(self.value, truncate_n)
+        else:
+            val = g.truncate(repr(self.value), truncate_n)
+        return val
+    #@-others
 #@+node:ekr.20200107165250.1: *3* class Orange
 class Orange:
     """
@@ -2509,6 +2593,90 @@ class Orange:
         self.add_token('string', tail_s)
         self.add_token('line-end', '\n')
     #@-others
+#@+node:ekr.20240104082408.1: *3* class OutputToken
+class OututToken:
+    """
+    A class representing an output token.
+    """
+
+    def __init__(self, kind: str, value: str):
+
+        self.kind = kind
+        self.value = value
+        #
+        # Injected by Tokenizer.add_token.
+        self.five_tuple: tuple = None
+        self.index = 0
+        # The entire line containing the token.
+        # Same as five_tuple.line.
+        self.line = ''
+        # The line number, for errors and dumps.
+        # Same as five_tuple.start[0]
+        self.line_number = 0
+        #
+        # Injected by Tokenizer.add_token.
+        self.level = 0
+        self.node: Optional[Node] = None
+
+    def __repr__(self) -> str:  # pragma: no cover
+        s = f"{self.index:<3} {self.kind:}"
+        return f"Token {s}: {self.show_val(20)}"
+
+    __str__ = __repr__
+
+
+    def to_string(self) -> str:
+        """Return the contribution of the token to the source file."""
+        return self.value if isinstance(self.value, str) else ''
+    #@+others
+    #@+node:ekr.20240104082408.2: *4* token.brief_dump
+    def brief_dump(self) -> str:  # pragma: no cover
+        """Dump a token."""
+        return (
+            f"{self.index:>3} line: {self.line_number:<2} "
+            f"{self.kind:>15} {self.show_val(100)}")
+    #@+node:ekr.20240104082408.3: *4* token.dump
+    def dump(self) -> str:  # pragma: no cover
+        """Dump a token and related links."""
+        # Let block.
+        node_id = self.node.node_index if self.node else ''
+        node_cn = self.node.__class__.__name__ if self.node else ''
+        return (
+            f"{self.line_number:4} "
+            f"{node_id:5} {node_cn:16} "
+            f"{self.index:>5} {self.kind:>15} "
+            f"{self.show_val(100)}")
+    #@+node:ekr.20240104082408.4: *4* token.dump_header
+    def dump_header(self) -> None:  # pragma: no cover
+        """Print the header for token.dump"""
+        print(
+            f"\n"
+            f"         node    {'':10} token {'':10}   token\n"
+            f"line index class {'':10} index {'':10} kind value\n"
+            f"==== ===== ===== {'':10} ===== {'':10} ==== =====\n")
+    #@+node:ekr.20240104082408.5: *4* token.error_dump
+    def error_dump(self) -> str:  # pragma: no cover
+        """Dump a token or result node for error message."""
+        if self.node:
+            node_id = obj_id(self.node)
+            node_s = f"{node_id} {self.node.__class__.__name__}"
+        else:
+            node_s = "None"
+        return (
+            f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
+            f"{node_s}")
+    #@+node:ekr.20240104082408.6: *4* token.show_val
+    def show_val(self, truncate_n: int) -> str:  # pragma: no cover
+        """Return the token.value field."""
+        if self.kind in ('ws', 'indent'):
+            val = str(len(self.value))
+        elif self.kind == 'string' or self.kind.startswith('fstring'):
+            # repr would be confusing.
+            val = g.truncate(self.value, truncate_n)
+        else:
+            val = g.truncate(repr(self.value), truncate_n)
+        return val
+    #@-others
 #@+node:ekr.20200107170126.1: *3* class ParseState
 class ParseState:
     """
@@ -2576,6 +2744,10 @@ class ReassignTokens:
 class Token:
     """
     A class representing a 5-tuple, plus additional data.
+    
+    Represents both input and output tokens.
+    
+    Used only by the TokenOrderGenerator class
     """
 
     def __init__(self, kind: str, value: str):
