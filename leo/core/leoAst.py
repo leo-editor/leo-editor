@@ -444,13 +444,13 @@ class InputToken:
         """Return the contribution of the token to the source file."""
         return self.value if isinstance(self.value, str) else ''
     #@+others
-    #@+node:ekr.20240104082325.2: *4* token.brief_dump
+    #@+node:ekr.20240104082325.2: *4* itoken.brief_dump
     def brief_dump(self) -> str:  # pragma: no cover
         """Dump a token."""
         return (
             f"{self.index:>3} line: {self.line_number:<2} "
             f"{self.kind:>15} {self.show_val(100)}")
-    #@+node:ekr.20240104082325.3: *4* token.dump
+    #@+node:ekr.20240104082325.3: *4* itoken.dump
     def dump(self) -> str:  # pragma: no cover
         """Dump a token and related links."""
         # Let block.
@@ -461,7 +461,7 @@ class InputToken:
             f"{node_id:5} {node_cn:16} "
             f"{self.index:>5} {self.kind:>15} "
             f"{self.show_val(100)}")
-    #@+node:ekr.20240104082325.4: *4* token.dump_header
+    #@+node:ekr.20240104082325.4: *4* itoken.dump_header
     def dump_header(self) -> None:  # pragma: no cover
         """Print the header for token.dump"""
         print(
@@ -469,7 +469,7 @@ class InputToken:
             f"         node    {'':10} token {'':10}   token\n"
             f"line index class {'':10} index {'':10} kind value\n"
             f"==== ===== ===== {'':10} ===== {'':10} ==== =====\n")
-    #@+node:ekr.20240104082325.5: *4* token.error_dump
+    #@+node:ekr.20240104082325.5: *4* itoken.error_dump
     def error_dump(self) -> str:  # pragma: no cover
         """Dump a token or result node for error message."""
         if self.node:
@@ -480,7 +480,7 @@ class InputToken:
         return (
             f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
             f"{node_s}")
-    #@+node:ekr.20240104082325.6: *4* token.show_val
+    #@+node:ekr.20240104082325.6: *4* itoken.show_val
     def show_val(self, truncate_n: int) -> str:  # pragma: no cover
         """Return the token.value field."""
         if self.kind in ('ws', 'indent'):
@@ -605,7 +605,7 @@ class Orange:
                 func = getattr(self, f"do_{token.kind}", self.oops)
                 func()
         # Any post pass would go here.
-        return output_tokens_to_string(self.code_list)
+        return self.output_tokens_to_string(self.code_list)
     #@+node:ekr.20200107172450.1: *5* orange.beautify_file (entry)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
@@ -1316,13 +1316,13 @@ class OutputToken:
         """Return the contribution of the token to the source file."""
         return self.value if isinstance(self.value, str) else ''
     #@+others
-    #@+node:ekr.20240104082408.2: *4* token.brief_dump
+    #@+node:ekr.20240104082408.2: *4* otoken.brief_dump
     def brief_dump(self) -> str:  # pragma: no cover
         """Dump a token."""
         return (
             f"{self.index:>3} line: {self.line_number:<2} "
             f"{self.kind:>15} {self.show_val(100)}")
-    #@+node:ekr.20240104082408.3: *4* token.dump
+    #@+node:ekr.20240104082408.3: *4* otoken.dump
     def dump(self) -> str:  # pragma: no cover
         """Dump a token and related links."""
         # Let block.
@@ -1333,7 +1333,7 @@ class OutputToken:
             f"{node_id:5} {node_cn:16} "
             f"{self.index:>5} {self.kind:>15} "
             f"{self.show_val(100)}")
-    #@+node:ekr.20240104082408.4: *4* token.dump_header
+    #@+node:ekr.20240104082408.4: *4* otoken.dump_header
     def dump_header(self) -> None:  # pragma: no cover
         """Print the header for token.dump"""
         print(
@@ -1341,7 +1341,7 @@ class OutputToken:
             f"         node    {'':10} token {'':10}   token\n"
             f"line index class {'':10} index {'':10} kind value\n"
             f"==== ===== ===== {'':10} ===== {'':10} ==== =====\n")
-    #@+node:ekr.20240104082408.5: *4* token.error_dump
+    #@+node:ekr.20240104082408.5: *4* otoken.error_dump
     def error_dump(self) -> str:  # pragma: no cover
         """Dump a token or result node for error message."""
         if self.node:
@@ -1352,7 +1352,7 @@ class OutputToken:
         return (
             f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
             f"{node_s}")
-    #@+node:ekr.20240104082408.6: *4* token.show_val
+    #@+node:ekr.20240104082408.6: *4* otoken.show_val
     def show_val(self, truncate_n: int) -> str:  # pragma: no cover
         """Return the token.value field."""
         if self.kind in ('ws', 'indent'):
