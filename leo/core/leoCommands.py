@@ -640,7 +640,6 @@ class Commands:
         Set the cwd before calling the command.
         """
         c, p, tag = self, self.p, 'execute-general-script'
-
         def get_setting_for_language(setting: str) -> Optional[str]:
             """
             Return the setting from the given @data setting.
@@ -2889,7 +2888,7 @@ class Commands:
         use_temp = not root.isAnyAtFileNode()
         if use_temp:
             fd, root_path = tempfile.mkstemp(suffix=ext, prefix="")
-            with os.fdopen(fd, 'w') as f:
+            with os.fdopen(fd, 'w', encoding = 'utf-8') as f:
                 f.write(script)
         else:
             root_path = c.fullPath(root)
