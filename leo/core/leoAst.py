@@ -4482,7 +4482,17 @@ class TokenOrderGenerator:
     #@-others
 #@+node:ekr.20200702102239.1: ** function: main (leoAst.py)
 def main() -> None:  # pragma: no cover
-    """Run commands specified by sys.argv."""
+    """
+    Run commands specified by sys.argv.
+    
+    Legacy/Python: beautify only *changed* files.
+    Testing: beautify *no* files.
+    Nim: beautify *all* files.
+    
+    """
+    if 1:
+        print('=== beautifier disabled during testing')
+        return
     args, settings_dict, arg_files = scan_ast_args()
     # Finalize arguments.
     cwd = os.getcwd()
