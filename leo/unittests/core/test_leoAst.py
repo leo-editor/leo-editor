@@ -1723,14 +1723,11 @@ class TestOrange(BaseTest):
         """
         TestOrange.make_data:
 
-        Return (contents, tokens, tree) for the given contents.
-        
-        For now, unit tests require the TOG!
+        Return (contents, tokens) for the given contents.
         """
         contents = contents.lstrip('\\\n')
-        if not contents:
-            return '', None, None
-            
+        assert contents.strip(), g.callers()
+
         # Set debug flags and counts.
         self.debug_list = debug_list or []
         self.trace_token_method = False
