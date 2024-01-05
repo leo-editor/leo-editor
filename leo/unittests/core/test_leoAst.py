@@ -1713,14 +1713,18 @@ class TestOrange(BaseTest):
         except TypeError:  # pragma: no cover
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
-    #@+node:ekr.20240105090644.1: *4* TestOrange.make_data (new)
+    #@+node:ekr.20240105090644.1: *4* TestOrange.make_data
     def make_data(self,
         contents: str,
         *,
         description: str = None,
         debug_list: str = None,
     ) -> tuple[str, list[Token], ast.AST]:  # pragma: no cover
-        """Return (contents, tokens, tree) for the given contents."""
+        """
+        Return (contents, tokens, tree) for the given contents.
+        
+        For now, unit tests require the TOG!
+        """
         contents = contents.lstrip('\\\n')
         if not contents:
             return '', None, None
