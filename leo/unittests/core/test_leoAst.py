@@ -318,7 +318,13 @@ class BaseTest(unittest.TestCase):
         self.update_times('21: fstringify', t2 - t1)
         return result_s
     #@+node:ekr.20200107175223.1: *5* 2.2: BaseTest.beautify
-    def beautify(self, contents, tokens, tree, filename=None, max_join_line_length=None, max_split_line_length=None):
+    def beautify(self,
+        contents,
+        tokens,
+        filename=None,
+        max_join_line_length=None,
+        max_split_line_length=None,
+    ):
         """
         BaseTest.beautify.
         """
@@ -328,7 +334,7 @@ class BaseTest(unittest.TestCase):
         if not filename:
             filename = g.callers(2).split(',')[0]
         orange = Orange()
-        result_s = orange.beautify(contents, filename, tokens, tree,
+        result_s = orange.beautify(contents, filename, tokens,
             max_join_line_length=max_join_line_length,
             max_split_line_length=max_split_line_length)
         t2 = get_time()
@@ -1719,7 +1725,7 @@ class TestOrange(BaseTest):
         for i, contents in enumerate(table):
             contents, tokens, tree = self.make_data(contents)
             expected = self.blacken(contents).rstrip() + '\n'
-            results = self.beautify(contents, tokens, tree)
+            results = self.beautify(contents, tokens)
             self.assertEqual(results, expected)
 
     #@+node:ekr.20200219114415.1: *4* TestOrange.test_at_doc_part
@@ -1755,7 +1761,7 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         expected = contents.rstrip() + '\n'
         # expected = self.blacken(contents).rstrip() + '\n'
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200219145639.1: *4* TestOrange.test_blank_lines_after_function
     def test_blank_lines_after_function(self):
@@ -1774,7 +1780,7 @@ class TestOrange(BaseTest):
     """
         contents, tokens, tree = self.make_data(contents)
         expected = contents
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200220050758.1: *4* TestOrange.test_blank_lines_after_function_2
     def test_blank_lines_after_function_2(self):
@@ -1791,7 +1797,7 @@ class TestOrange(BaseTest):
     """
         contents, tokens, tree = self.make_data(contents)
         expected = contents
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200220053212.1: *4* TestOrange.test_blank_lines_after_function_3
     def test_blank_lines_after_function_3(self):
@@ -1810,7 +1816,7 @@ class TestOrange(BaseTest):
     """
         contents, tokens, tree = self.make_data(contents)
         expected = contents
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200228074455.1: *4* TestOrange.test_bug_1429
     def test_bug_1429(self):
@@ -1954,7 +1960,7 @@ class TestOrange(BaseTest):
         for i, contents in enumerate(table):
             contents, tokens, tree = self.make_data(contents)
             expected = contents
-            results = self.beautify(contents, tokens, tree)
+            results = self.beautify(contents, tokens)
             if results != expected:
                 g.trace('Fail:', i)  # pragma: no cover
             self.assertEqual(results, expected)
@@ -2007,7 +2013,7 @@ class TestOrange(BaseTest):
         for i, contents in enumerate(table):
             contents, tokens, tree = self.make_data(contents)
             expected = self.blacken(contents).rstrip() + '\n'
-            results = self.beautify(contents, tokens, tree)
+            results = self.beautify(contents, tokens)
             self.assertEqual(results, expected)
     #@+node:ekr.20200116104031.1: *4* TestOrange.test_join_and_strip_condition
     def test_join_and_strip_condition(self):
@@ -2027,7 +2033,7 @@ class TestOrange(BaseTest):
         expected = textwrap.dedent(expected)
         # Black also removes parens, which is beyond our scope at present.
             # expected = self.blacken(contents, line_length=40)
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200208041446.1: *4* TestOrange.test_join_leading_whitespace
     def test_join_leading_whitespace(self):
@@ -2114,7 +2120,7 @@ class TestOrange(BaseTest):
     """
         contents, tokens, tree = self.make_data(contents)
         expected = textwrap.dedent(expected)
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200207093606.1: *4* TestOrange.test_join_too_long_lines
     def test_join_too_long_lines(self):
@@ -2165,7 +2171,7 @@ class TestOrange(BaseTest):
                 pass
     """)
         contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(expected, results)
     #@+node:ekr.20240102063358.1: *4* TestOrange.test_leading_stars_one_line
     def test_leading_stars_one_line(self):
@@ -2183,7 +2189,7 @@ class TestOrange(BaseTest):
                 # pass
     # """)
         contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(contents, results)
     #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels
     def test_leo_sentinels_1(self):
@@ -2198,7 +2204,7 @@ class TestOrange(BaseTest):
     """
         contents, tokens, tree = self.make_data(contents)
         expected = contents.rstrip() + '\n'
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200209155457.1: *4* TestOrange.test_leo_sentinels_2
     def test_leo_sentinels_2(self):
@@ -2213,7 +2219,7 @@ class TestOrange(BaseTest):
     """
         contents, tokens, tree = self.make_data(contents)
         expected = contents.rstrip() + '\n'
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200108082833.1: *4* TestOrange.test_lines_before_class
     def test_lines_before_class(self):
@@ -2225,7 +2231,7 @@ class TestOrange(BaseTest):
     """
         contents, tokens, tree = self.make_data(contents)
         expected = contents
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200110014220.86: *4* TestOrange.test_multi_line_pet_peeves
     def test_multi_line_pet_peeves(self):
@@ -2257,7 +2263,7 @@ class TestOrange(BaseTest):
     """
         contents, tokens, tree = self.make_data(contents)
         expected = self.adjust_expected(expected)
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200110014220.95: *4* TestOrange.test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
@@ -2381,7 +2387,7 @@ class TestOrange(BaseTest):
             import leo.core.leoGlobals as g
     """)
         contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(expected, results)
     #@+node:ekr.20200210050646.1: *4* TestOrange.test_return
     def test_return(self):
@@ -2389,7 +2395,7 @@ class TestOrange(BaseTest):
         contents = """return []"""
         expected = self.blacken(contents)
         contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200107174742.1: *4* TestOrange.test_single_quoted_string
     def test_single_quoted_string(self):
@@ -2398,7 +2404,7 @@ class TestOrange(BaseTest):
         # blacken suppresses string normalization.
         expected = self.blacken(contents)
         contents, tokens, tree = self.make_data(contents)
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200117180956.1: *4* TestOrange.test_split_lines
     def test_split_lines(self):
@@ -2504,7 +2510,7 @@ class TestOrange(BaseTest):
         # Don't rely on black for this test.
         # expected = self.blacken(contents)
         expected = contents
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200119155207.1: *4* TestOrange.test_sync_tokens
     def test_sync_tokens(self):
@@ -2514,7 +2520,7 @@ class TestOrange(BaseTest):
         expected = """if x == 4: pass"""
         contents, tokens, tree = self.make_data(contents)
         expected = self.adjust_expected(expected)
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200209161226.1: *4* TestOrange.test_ternary
     def test_ternary(self):
@@ -2522,7 +2528,7 @@ class TestOrange(BaseTest):
         contents = """print(2 if name == 'class' else 1)"""
         contents, tokens, tree = self.make_data(contents)
         expected = contents
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20200211093359.1: *4* TestOrange.test_verbatim
     def test_verbatim(self):
@@ -2605,7 +2611,7 @@ class TestOrange(BaseTest):
     """
         contents, tokens, tree = self.make_data(contents)
         expected = contents
-        results = self.beautify(contents, tokens, tree)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected, msg=contents)
     #@-others
 #@+node:ekr.20191231130208.1: *3* class TestReassignTokens (BaseTest)

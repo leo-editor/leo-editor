@@ -1232,7 +1232,6 @@ class BaseTokenizer:
             print('make_tokens: exception in tokenize.tokenize')
             g.es_exception()
             return None
-        ### tokens = Tokenizer().create_tokens(contents, five_tuples)
         tokens = self.create_tokens(contents, five_tuples)
         assert self.check_round_trip(contents, tokens)
         return tokens
@@ -1846,8 +1845,7 @@ class Orange:
     def beautify(self,
         contents: str,
         filename: str,
-        tokens: list[InputToken],  ### list[Token],
-        ### tree: Optional[Node] = None,
+        tokens: list[InputToken],
         max_join_line_length: Optional[int] = None,
         max_split_line_length: Optional[int] = None,
     ) -> str:
@@ -1877,7 +1875,6 @@ class Orange:
         # Init output list and state...
         self.code_list: list[OutputToken] = []  # The list of output tokens.
         self.tokens = tokens  # The list of input tokens.
-        ### self.tree = tree
         self.add_token('file-start', '')
         self.push_state('file-start')
         for token in tokens:
