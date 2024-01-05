@@ -32,7 +32,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoGui
     from leo.core.leoIPython import InternalIPKernel
     from leo.core.leoNodes import NodeIndices, Position
-    from leo.core.leoPlugins import PluginsManager
+    from leo.core.leoPlugins import LeoPluginsController
     from leo.core.leoSessions import SessionManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Widget = Any
@@ -190,7 +190,7 @@ class LeoApp:
         self.ipk: InternalIPKernel = None  # A python kernel.
         self.loadManager: LoadManager = None
         self.nodeIndices: NodeIndices = None
-        self.pluginsController: PluginsManager = None
+        self.pluginsController: LeoPluginsController = None
         self.sessionManager: SessionManager = None
 
         # Global status vars for the Commands class...
