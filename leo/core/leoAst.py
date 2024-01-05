@@ -1717,8 +1717,6 @@ class InputToken:
         self.index = 0
         self.line = ''  # The entire line containing the token.
         self.line_number = 0  # The line number, for errors and dumps.
-        # Unit test data: to be removed.
-        self.node = None  # For now, unit tests patch this field!
 
     def __repr__(self) -> str:  # pragma: no cover
         s = f"{self.index:<3} {self.kind:}"
@@ -2092,8 +2090,7 @@ class Orange:
                 tail.insert(0, t)
             elif t.kind == 'comment':
                 # Only underindented single-line comments belong in the tail.
-                #@verbatim
-                # @+node comments must never be in the tail.
+                # at+node comments must never be in the tail.
                 single_line = self.code_list[i].kind in ('line-end', 'line-indent')
                 lws = len(t.value) - len(t.value.lstrip())
                 underindent = lws <= len(self.lws)
