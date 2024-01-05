@@ -1574,7 +1574,7 @@ class TokenBasedOrange:
             self.curly_brackets_level -= 1
         self.clean('blank')
         self.add_token('rt', val)
-    #@+node:ekr.20240105145241.37: *5* tbo.possible_unary_op & unary_op (test)
+    #@+node:ekr.20240105145241.37: *5* tbo.possible_unary_op & unary_op (to do)
     def possible_unary_op(self, s: str) -> None:
         """Add a unary or binary op to the token list."""
         self.clean('blank')
@@ -1596,7 +1596,7 @@ class TokenBasedOrange:
         else:
             self.blank()
             self.add_token('unary-op', s)
-    #@+node:ekr.20240105145241.38: *5* tbo.star_op (test)
+    #@+node:ekr.20240105145241.38: *5* tbo.star_op (to do)
     def star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
         val = '*'
@@ -1615,7 +1615,7 @@ class TokenBasedOrange:
         self.blank()
         self.add_token('op', val)
         self.blank()
-    #@+node:ekr.20240105145241.39: *5* tbo.star_star_op (test)
+    #@+node:ekr.20240105145241.39: *5* tbo.star_star_op (to do)
     def star_star_op(self) -> None:
         """Put a ** operator, with a special case for **kwargs."""
         val = '**'
@@ -1634,7 +1634,7 @@ class TokenBasedOrange:
         self.blank()
         self.add_token('op', val)
         self.blank()
-    #@+node:ekr.20240105145241.40: *5* tbo.word & word_op (test)
+    #@+node:ekr.20240105145241.40: *5* tbo.word & word_op (to do)
     def word(self, s: str) -> None:
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
