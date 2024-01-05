@@ -2228,7 +2228,6 @@ class Orange:
             g.trace(
                 f"token.index: {token.index:2} paren_level: {self.paren_level} "
                 f"token.equal_sign_spaces: {int(token.equal_sign_spaces)} "
-                # f"{token.node.__class__.__name__}"
             )
             # dump_tree(self.tokens, self.tree)
         if self.token.equal_sign_spaces:
@@ -2370,27 +2369,28 @@ class Orange:
     def colon(self, val: str) -> None:
         """Handle a colon."""
 
-        def is_expr(node: Node) -> bool:
-            """True if node is any expression other than += number."""
-            if isinstance(node, (ast.BinOp, ast.Call, ast.IfExp)):
-                return True
-            num_node = ast.Num if g.python_version_tuple < (3, 12, 0) else ast.Constant
-            return (
-                isinstance(node, ast.UnaryOp)
-                and not isinstance(node.operand, num_node)
-            )
+        ###
+            # def is_expr(node: Node) -> bool:
+                # """True if node is any expression other than += number."""
+                # if isinstance(node, (ast.BinOp, ast.Call, ast.IfExp)):
+                    # return True
+                # num_node = ast.Num if g.python_version_tuple < (3, 12, 0) else ast.Constant
+                # return (
+                    # isinstance(node, ast.UnaryOp)
+                    # and not isinstance(node.operand, num_node)
+                # )
 
-        node = self.token.node
+        ### node = self.token.node
         self.clean('blank')
-        if not isinstance(node, ast.Slice):
+        if True:  ### not isinstance(node, ast.Slice):
             self.add_token('op', val)
             self.blank()
             return
         # A slice.
-        lower = getattr(node, 'lower', None)
-        upper = getattr(node, 'upper', None)
-        step = getattr(node, 'step', None)
-        if any(is_expr(z) for z in (lower, upper, step)):
+        # lower = getattr(node, 'lower', None)
+        # upper = getattr(node, 'upper', None)
+        # step = getattr(node, 'step', None)
+        if False:  ### any(is_expr(z) for z in (lower, upper, step)):
             prev = self.code_list[-1]
             if prev.value not in '[:':
                 self.blank()
@@ -2462,9 +2462,9 @@ class Orange:
     #@+node:ekr.20200107165250.45: *5* orange.possible_unary_op & unary_op
     def possible_unary_op(self, s: str) -> None:
         """Add a unary or binary op to the token list."""
-        node = self.token.node
+        ### node = self.token.node
         self.clean('blank')
-        if isinstance(node, ast.UnaryOp):
+        if False:  ### isinstance(node, ast.UnaryOp):
             self.unary_op(s)
         else:
             self.blank()
@@ -2485,9 +2485,9 @@ class Orange:
     def star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
         val = '*'
-        node = self.token.node
+        ### node = self.token.node
         self.clean('blank')
-        if isinstance(node, ast.arguments):
+        if False:  ### isinstance(node, ast.arguments):
             self.blank()
             self.add_token('op', val)
             return  # #2533
@@ -2504,9 +2504,9 @@ class Orange:
     def star_star_op(self) -> None:
         """Put a ** operator, with a special case for **kwargs."""
         val = '**'
-        node = self.token.node
+        # node = self.token.node
         self.clean('blank')
-        if isinstance(node, ast.arguments):
+        if False:  ### isinstance(node, ast.arguments):
             self.blank()
             self.add_token('op', val)
             return  # #2533
@@ -2523,8 +2523,12 @@ class Orange:
     def word(self, s: str) -> None:
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
-        node = self.token.node
-        if isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
+        ### node = self.token.node
+        if s == 'def':
+            self.scan_def()
+            
+        ###
+        if False:  ### isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
             self.clean('blank')
             self.add_token('blank', ' ')
             self.add_token('word', s)
@@ -2546,6 +2550,19 @@ class Orange:
         self.blank()
         self.add_token('word-op', s)
         self.blank()
+    #@+node:ekr.20240105075118.1: *4* orange: Scanning (to do)
+    #@+node:ekr.20240104045538.1: *5* orange.scan_def (to do)
+    def scan_def(self) -> None:
+        if 0:
+            g.trace(self.token)
+    #@+node:ekr.20240104045948.1: *5* orange.next_token (to do)
+    def next_token(self) -> InputToken:
+        """
+        Return the next *significant* token in the token list,
+        ignoring whitespace, indentation, comments, etc.
+        """
+        ### token = self.token
+
     #@+node:ekr.20200118120049.1: *4* orange: Split/join
     #@+node:ekr.20200107165250.34: *5* orange.split_line & helpers
     def split_line(self, node: Node, token: InputToken) -> bool:
