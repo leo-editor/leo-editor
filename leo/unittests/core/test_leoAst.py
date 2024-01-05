@@ -185,7 +185,7 @@ class BaseTest(unittest.TestCase):
         tree = self.make_tree(contents)
         if not tree:
             self.fail('make_tree failed')
-            
+
         # Check the debug_list.
         valid = ('ast', 'contents', 'debug', 'sync', 'tokens', 'tree', 'post-tokens', 'post-tree')
         for z in self.debug_list:
@@ -210,7 +210,7 @@ class BaseTest(unittest.TestCase):
 
         # Pass 1: create the links.
         self.create_links(tokens, tree)
-        
+
         # Late dumps.
         if 'post-tree' in self.debug_list:
             dump_tree(tokens, tree)
@@ -219,7 +219,7 @@ class BaseTest(unittest.TestCase):
 
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - t1)
-        
+
         # Fail if create_links set link_error.
         def enabled(aList: list) -> bool:
             return any(z in self.debug_list for z in aList)
@@ -782,7 +782,7 @@ class TestTOG(BaseTest):
         self.make_data(contents)
     #@+node:ekr.20231215210904.1: *5* test_fstring_with_nested_quotes
     def test_fstring_with_nested_quotes(self):
-        
+
         if g.python_version_tuple < (3, 12, 0):
             self.skipTest('Requires Python 3.12+')
 
@@ -2175,7 +2175,7 @@ class TestOrange(BaseTest):
         self.assertEqual(expected, results)
     #@+node:ekr.20240102063358.1: *4* TestOrange.test_leading_stars_one_line
     def test_leading_stars_one_line(self):
-        
+
         # if not use_ast:
             # self.skipTest('requires use_ast = True')
 
