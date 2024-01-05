@@ -4491,7 +4491,7 @@ def main() -> None:  # pragma: no cover
     
     """
     if 1:
-        print('=== beautifier disabled during testing')
+        print('=== beautifier disabled')
         return
     args, settings_dict, arg_files = scan_ast_args()
     # Finalize arguments.
