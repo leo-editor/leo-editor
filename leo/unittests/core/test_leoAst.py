@@ -2167,6 +2167,24 @@ class TestOrange(BaseTest):
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tokens, tree)
         self.assertEqual(expected, results)
+    #@+node:ekr.20240102063358.1: *4* TestOrange.test_leading_stars_one_line
+    def test_leading_stars_one_line(self):
+        
+        # if not use_ast:
+            # self.skipTest('requires use_ast = True')
+
+        # #2533.
+        contents = """\
+            def f(arg1, *args, **kwargs):
+                pass
+    """
+        # expected = textwrap.dedent("""\
+            # def f(arg1, *args, **kwargs):
+                # pass
+    # """)
+        contents, tokens, tree = self.make_data(contents)
+        results = self.beautify(contents, tokens, tree)
+        self.assertEqual(contents, results)
     #@+node:ekr.20200108075541.1: *4* TestOrange.test_leo_sentinels
     def test_leo_sentinels_1(self):
 
