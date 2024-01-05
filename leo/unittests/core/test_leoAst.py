@@ -1738,7 +1738,6 @@ class TestOrange(BaseTest):
         self.tog.filename = description or g.callers(2).split(',')[0]
 
         # Pass 0: create the tokens and parse tree
-        ### tokens = self.make_tokens(contents)
         tokens = InputTokenizer().make_tokens(contents)
         if not tokens:
             self.fail('make_tokens failed')
@@ -1794,20 +1793,6 @@ class TestOrange(BaseTest):
                     dump_tokens(tokens)
             self.fail(self.link_error)
         return contents, tokens, tree
-    #@+node:ekr.20240105091206.1: *4* TestOrange.make_tokens (new)
-    def make_tokens(self, contents):
-        """
-        BaseTest.make_tokens.
-
-        Make tokens from contents.
-        """
-        t1 = get_time()
-        # Tokenize.
-        tokens = make_tokens(contents)
-        t2 = get_time()
-        self.update_counts('tokens', len(tokens))
-        self.update_times('01: make-tokens', t2 - t1)
-        return tokens
     #@+node:ekr.20230115150916.1: *4* TestOrange.test_annotations
     def test_annotations(self):
 
