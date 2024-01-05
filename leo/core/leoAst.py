@@ -2404,8 +2404,9 @@ class Orange:
     #@+node:ekr.20200107165250.33: *5* orange.line_end (disabled calls to split/join)
     def line_end(self) -> None:
         """Add a line-end request to the code list."""
-        # This should be called only be do_newline and do_nl.
-        node, token = self.token.statement_node, self.token
+        # Only do_newline and do_nl should call this method.
+        token = self.token
+        node = None  ### To be removed.
         assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
         # Create the 'line-end' output token.
         self.add_line_end()

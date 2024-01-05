@@ -1721,6 +1721,8 @@ class TestOrange(BaseTest):
         debug_list: str = None,
     ) -> tuple[str, list[Token], ast.AST]:  # pragma: no cover
         """
+        TestOrange.make_data:
+
         Return (contents, tokens, tree) for the given contents.
         
         For now, unit tests require the TOG!
@@ -1730,7 +1732,7 @@ class TestOrange(BaseTest):
             return '', None, None
         self.debug_list = debug_list or []
         self.trace_token_method = False
-        self.link_error = None
+        ### self.link_error = None  ### Will never change!
         t1 = get_time()
         self.update_counts('characters', len(contents))
 
@@ -1745,57 +1747,48 @@ class TestOrange(BaseTest):
         tokens = InputTokenizer().make_tokens(contents)
         if not tokens:
             self.fail('make_tokens failed')
-        tree = self.make_tree(contents)
-        if not tree:
-            self.fail('make_tree failed')
+        tree = None  ### To be removed
 
         # Check the debug_list.
         valid = ('ast', 'contents', 'debug', 'sync', 'tokens', 'tree', 'post-tokens', 'post-tree')
         for z in self.debug_list:
             if z not in valid:
                 g.trace('Ignoring debug_list value:', z)
-
         # Early dumps and traces.
-        if 'ast' in self.debug_list:
-            g.printObj(ast.dump(tree, indent=2), tag='ast.dump')
         if 'contents' in self.debug_list:
             dump_contents(contents)
         if 'debug' in self.debug_list:
             self.tog.debug_flag = True
-        if 'sync' in self.debug_list:
-            self.tog.trace_token_method = True
-        if 'tree' in self.debug_list:  # Excellent traces for tracking down mysteries.
-            dump_ast(tree)
+        ###
+            # if 'ast' in self.debug_list:
+                # g.printObj(ast.dump(tree, indent=2), tag='ast.dump')
+            # if 'sync' in self.debug_list:
+                # self.tog.trace_token_method = True
+            # if 'tree' in self.debug_list:  # Excellent traces for tracking down mysteries.
+                # dump_ast(tree)
         if 'tokens' in self.debug_list:
             dump_tokens(tokens)
 
-        self.balance_tokens(tokens)
-
-        # Pass 1: create the links.
-        self.create_links(tokens, tree)
-
         # Late dumps.
-        if 'post-tree' in self.debug_list:
-            dump_tree(tokens, tree)
         if 'post-tokens' in self.debug_list:
             dump_tokens(tokens)
 
         t2 = get_time()
         self.update_times('90: TOTAL', t2 - t1)
 
-        # Fail if create_links set link_error.
-        def enabled(aList: list) -> bool:
-            return any(z in self.debug_list for z in aList)
-
-        if self.link_error:
-            if 0:  # Useful for single tests.
-                if not enabled(['contents']):
-                    dump_contents(contents)
-                if not enabled(['tree', 'post-tree']):
-                    dump_tree(tokens, tree)
-                if not enabled(['tokens', 'post-tokens']):
-                    dump_tokens(tokens)
-            self.fail(self.link_error)
+        ###
+            # Fail if create_links set link_error.
+            # def enabled(aList: list) -> bool:
+                # return any(z in self.debug_list for z in aList)
+            # if self.link_error:
+                # if 0:  # Useful for single tests.
+                    # if not enabled(['contents']):
+                        # dump_contents(contents)
+                    # if not enabled(['tree', 'post-tree']):
+                        # dump_tree(tokens, tree)
+                    # if not enabled(['tokens', 'post-tokens']):
+                        # dump_tokens(tokens)
+                # self.fail(self.link_error)
         return contents, tokens, tree
     #@+node:ekr.20230115150916.1: *4* TestOrange.test_annotations
     def test_annotations(self):
