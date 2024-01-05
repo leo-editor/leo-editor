@@ -1715,8 +1715,6 @@ class InputToken:
         self.line = ''  # The entire line containing the token.
         self.line_number = 0  # The line number, for errors and dumps.
         self.level = 0
-        self.node: Optional[Node] = None  ### Legacy only.
-        ### The token-based Orange will inject context data into InputTokens.
 
     def __repr__(self) -> str:  # pragma: no cover
         s = f"{self.index:<3} {self.kind:}"
