@@ -2352,7 +2352,7 @@ class TestOrange(BaseTest):
             description = f"{tag} part {i}"
             contents, tokens, tree = self.make_data(contents, description=description)
             expected = self.blacken(contents)
-            results = self.beautify(contents, tokens, tree, filename=description)
+            results = self.beautify(contents, tokens, filename=description)
             if results != expected:  # pragma: no cover
                 fails += 1
                 print('')

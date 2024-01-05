@@ -2548,7 +2548,7 @@ class Orange:
         self.blank()
     #@+node:ekr.20200118120049.1: *4* orange: Split/join
     #@+node:ekr.20200107165250.34: *5* orange.split_line & helpers
-    def split_line(self, node: Node, token: Token) -> bool:  ### token: InputToken
+    def split_line(self, node: Node, token: InputToken) -> bool:
         """
         Split token's line, if possible and enabled.
 
@@ -2658,7 +2658,7 @@ class Orange:
                 break
         return result
     #@+node:ekr.20200107165250.39: *5* orange.join_lines
-    def join_lines(self, node: Node, token: Token) -> None:  ### token: InputToken
+    def join_lines(self, node: Node, token: InputToken) -> None:
         """
         Join preceding lines, if possible and enabled.
         token is a line_end token. node is the corresponding ast node.
