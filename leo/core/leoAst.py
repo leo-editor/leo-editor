@@ -2380,7 +2380,6 @@ class Orange:
                     # and not isinstance(node.operand, num_node)
                 # )
 
-        ### node = self.token.node
         self.clean('blank')
         if True:  ### not isinstance(node, ast.Slice):
             self.add_token('op', val)
@@ -2462,7 +2461,6 @@ class Orange:
     #@+node:ekr.20200107165250.45: *5* orange.possible_unary_op & unary_op
     def possible_unary_op(self, s: str) -> None:
         """Add a unary or binary op to the token list."""
-        ### node = self.token.node
         self.clean('blank')
         if False:  ### isinstance(node, ast.UnaryOp):
             self.unary_op(s)
@@ -2485,7 +2483,6 @@ class Orange:
     def star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
         val = '*'
-        ### node = self.token.node
         self.clean('blank')
         if False:  ### isinstance(node, ast.arguments):
             self.blank()
@@ -2504,7 +2501,6 @@ class Orange:
     def star_star_op(self) -> None:
         """Put a ** operator, with a special case for **kwargs."""
         val = '**'
-        # node = self.token.node
         self.clean('blank')
         if False:  ### isinstance(node, ast.arguments):
             self.blank()
@@ -2523,11 +2519,8 @@ class Orange:
     def word(self, s: str) -> None:
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
-        ### node = self.token.node
         if s == 'def':
             self.scan_def()
-            
-        ###
         if False:  ### isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
             self.clean('blank')
             self.add_token('blank', ' ')
