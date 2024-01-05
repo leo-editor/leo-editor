@@ -1840,7 +1840,9 @@ class Orange:
         show_diffs(contents, results, filename=filename)
         return True
     #@+node:ekr.20240104093833.1: *5* orange.init_tokens_from_file
-    def init_tokens_from_file(self, filename: str) -> tuple[str, str, list[Token]]:  # pragma: no cover  list[InputToken]
+    def init_tokens_from_file(self, filename: str) -> tuple[
+        str, str, list[Token]
+    ]:  # pragma: no cover
         """
         Create the list of tokens for the given file.
         Return (contents, encoding, tokens).
