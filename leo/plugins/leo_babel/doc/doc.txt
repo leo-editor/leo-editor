@@ -3,8 +3,8 @@
 #@@language plain
 #@+others
 #@+node:bob.20170311143456.1: ** To Do
-#@+node:bob.20240101110007.1: *3* Leo-Babel-Poll-Delay option added
-still needs to be implemented
+#@+node:bob.20240105084206.1: *3* Blank Leo-Babel Parameters Script 
+#@+node:bob.20240105084132.1: *3* Script file name?
 #@+node:bob.20231229145158.1: *3* The help is displayed as raw markdown.
 #@+node:bob.20231229144523.1: *3* Pull Request
 This revision does the following:
