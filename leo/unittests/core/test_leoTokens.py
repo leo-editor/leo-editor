@@ -3,17 +3,17 @@
 """Tests of leoTokens.py"""
 #@+<< test_leoTokens imports >>
 #@+node:ekr.20240105151507.2: ** << test_leoTokens imports >>
-### import ast
-### from collections.abc import Callable
 import os
 import sys
 import textwrap
 import time
-### import token as token_module
-### from typing import Any
 import unittest
-import warnings
-warnings.simplefilter("ignore")
+
+# pylint: disable=wrong-import-position
+
+if 0:
+    import warnings
+    warnings.simplefilter("ignore")
 
 try:
     # Suppress a warning about imp being deprecated.
@@ -22,23 +22,16 @@ try:
 except Exception:  # pragma: no cover
     black = None
 
-# pylint: disable=wrong-import-position
 from leo.core import leoGlobals as g
-
-### from leo.core.leoAst import AstNotEqual
-### from leo.core.leoAst import Fstringify, Orange
 from leo.core.leoTokens import TokenBasedOrange
-### from leo.core.leoAst import Token, TokenOrderGenerator
 from leo.core.leoTokens import InputToken, Tokenizer
 from leo.core.leoTokens import get_encoding_directive, read_file, strip_BOM
-### from leo.core.leoAst import make_tokens, parse_ast, tokens_to_string
 from leo.core.leoTokens import make_tokens, tokens_to_string
-### from leo.core.leoAst import dump_ast, dump_contents, dump_tokens, dump_tree, _op_names
-from leo.core.leoAst import dump_contents, dump_tokens
+from leo.core.leoTokens import dump_contents, dump_tokens
 #@-<< test_leoTokens imports >>
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
-### ActionList = list[tuple[Callable, Any]]
+
 #@+others
 #@+node:ekr.20240105153229.3: ** functions: unit testing
 #@+node:ekr.20240105153229.7: *3* function: compare_lists
