@@ -915,7 +915,7 @@ class TokenBasedOrange:
     # Doc parts end with @c or a node sentinel. Specialized for python.
     end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
     #@+others
-    #@+node:ekr.20240105145241.2: *4* orange.ctor
+    #@+node:ekr.20240105145241.2: *4* tbo.ctor
     def __init__(self, settings: Settings = None):
         """Ctor for Orange class."""
         if settings is None:
@@ -945,13 +945,13 @@ class TokenBasedOrange:
                 setattr(self, key, value)
             else:
                 g.trace(f"Unexpected setting: {key} = {value!r}")
-    #@+node:ekr.20240105145241.3: *4* orange.push_state
+    #@+node:ekr.20240105145241.3: *4* tbo.push_state
     def push_state(self, kind: str, value: Union[int, str] = None) -> None:
         """Append a state to the state stack."""
         state = ParseState(kind, value)
         self.state_stack.append(state)
-    #@+node:ekr.20240105145241.4: *4* orange: Entries & helpers
-    #@+node:ekr.20240105145241.5: *5* orange.beautify (main token loop)
+    #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
+    #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def oops(self) -> None:  # pragma: no cover
         g.trace(f"Unknown kind: {self.kind}")
 
@@ -1002,7 +1002,7 @@ class TokenBasedOrange:
                 func()
         # Any post pass would go here.
         return output_tokens_to_string(self.code_list)
-    #@+node:ekr.20240105145241.6: *5* orange.beautify_file (entry)
+    #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
         Orange: Beautify the the given external file.
@@ -1027,7 +1027,7 @@ class TokenBasedOrange:
         print(f"Beautified: {g.shortFileName(filename)}")
         write_file(filename, results, encoding=encoding)
         return True
-    #@+node:ekr.20240105145241.7: *5* orange.beautify_file_diff (entry)
+    #@+node:ekr.20240105145241.7: *5* tbo.beautify_file_diff (entry)
     def beautify_file_diff(self, filename: str) -> bool:  # pragma: no cover
         """
         Orange: Print the diffs that would result from the orange-file command.
@@ -1051,7 +1051,7 @@ class TokenBasedOrange:
         # Show the diffs.
         show_diffs(contents, results, filename=filename)
         return True
-    #@+node:ekr.20240105145241.8: *5* orange.init_tokens_from_file
+    #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
         str, str, list[InputToken]
     ]:  # pragma: no cover
@@ -1066,8 +1066,8 @@ class TokenBasedOrange:
             return None, None, None
         self.tokens = tokens = Tokenizer().make_tokens(contents)
         return contents, encoding, tokens
-    #@+node:ekr.20240105145241.9: *4* orange: Input token handlers
-    #@+node:ekr.20240105145241.10: *5* orange.do_comment
+    #@+node:ekr.20240105145241.9: *4* tbo: Input token handlers
+    #@+node:ekr.20240105145241.10: *5* tbo.do_comment
     in_doc_part = False
 
     comment_pat = re.compile(r'^(\s*)#[^@!# \n]')
@@ -1119,19 +1119,19 @@ class TokenBasedOrange:
             # Exactly two spaces before trailing comments.
             val = '  ' + self.val.rstrip()
         self.add_token('comment', val)
-    #@+node:ekr.20240105145241.11: *5* orange.do_encoding
+    #@+node:ekr.20240105145241.11: *5* tbo.do_encoding
     def do_encoding(self) -> None:
         """
         Handle the encoding token.
         """
         pass
-    #@+node:ekr.20240105145241.12: *5* orange.do_endmarker
+    #@+node:ekr.20240105145241.12: *5* tbo.do_endmarker
     def do_endmarker(self) -> None:
         """Handle an endmarker token."""
         # Ensure exactly one blank at the end of the file.
         self.clean_blank_lines()
         self.add_token('line-end', '\n')
-    #@+node:ekr.20240105145241.13: *5* orange.do_fstring_start & continue_fstring
+    #@+node:ekr.20240105145241.13: *5* tbo.do_fstring_start & continue_fstring
     def do_fstring_start(self) -> None:
         """Handle the 'fstring_start' token. Enter f-string mode."""
         self.in_fstring = True
@@ -1145,7 +1145,7 @@ class TokenBasedOrange:
         self.add_token('verbatim', self.val)
         if self.kind == 'fstring_end':
             self.in_fstring = False
-    #@+node:ekr.20240105145241.14: *5* orange.do_indent & do_dedent & helper
+    #@+node:ekr.20240105145241.14: *5* tbo.do_indent & do_dedent & helper
     # Note: other methods use self.level.
 
     def do_dedent(self) -> None:
@@ -1184,7 +1184,7 @@ class TokenBasedOrange:
             g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
         self.lws = new_indent
         self.line_indent()
-    #@+node:ekr.20240105145241.15: *6* orange.handle_dedent_after_class_or_def
+    #@+node:ekr.20240105145241.15: *6* tbo.handle_dedent_after_class_or_def
     def handle_dedent_after_class_or_def(self, kind: str) -> None:  # pragma: no cover (black)
         """
         Insert blank lines after a class or def as the result of a 'dedent' token.
@@ -1233,7 +1233,7 @@ class TokenBasedOrange:
         if tail:
             self.code_list.extend(tail)
         self.line_indent()
-    #@+node:ekr.20240105145241.16: *5* orange.do_name
+    #@+node:ekr.20240105145241.16: *5* tbo.do_name
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.val
@@ -1266,7 +1266,7 @@ class TokenBasedOrange:
             self.word_op(name)
         else:
             self.word(name)
-    #@+node:ekr.20240105145241.17: *5* orange.do_newline & do_nl
+    #@+node:ekr.20240105145241.17: *5* tbo.do_newline & do_nl
     def do_newline(self) -> None:
         """Handle a regular newline."""
         self.line_end()
@@ -1274,12 +1274,12 @@ class TokenBasedOrange:
     def do_nl(self) -> None:
         """Handle a continuation line."""
         self.line_end()
-    #@+node:ekr.20240105145241.18: *5* orange.do_number
+    #@+node:ekr.20240105145241.18: *5* tbo.do_number
     def do_number(self) -> None:
         """Handle a number token."""
         self.blank()
         self.add_token('number', self.val)
-    #@+node:ekr.20240105145241.19: *5* orange.do_op & helper
+    #@+node:ekr.20240105145241.19: *5* tbo.do_op & helper
     def do_op(self) -> None:
         """Handle an op token."""
         val = self.val
@@ -1331,7 +1331,7 @@ class TokenBasedOrange:
             self.blank()
             self.add_token('op', val)
             self.blank()
-    #@+node:ekr.20240105145241.20: *6* orange.do_equal_op
+    #@+node:ekr.20240105145241.20: *6* tbo.do_equal_op
     # Keys: token.index of '=' token. Values: count of ???s
     arg_dict: dict[int, int] = {}
 
@@ -1358,14 +1358,14 @@ class TokenBasedOrange:
             #        *do* use spaces around the = sign
             self.clean('blank')
             self.add_token('op-no-blanks', val)
-    #@+node:ekr.20240105145241.21: *5* orange.do_string
+    #@+node:ekr.20240105145241.21: *5* tbo.do_string
     def do_string(self) -> None:
         """Handle a 'string' token."""
         # Careful: continued strings may contain '\r'
         val = regularize_nls(self.val)
         self.add_token('string', val)
         self.blank()
-    #@+node:ekr.20240105145241.22: *5* orange.do_verbatim
+    #@+node:ekr.20240105145241.22: *5* tbo.do_verbatim
     beautify_pat = re.compile(
         r'#\s*pragma:\s*beautify\b|#\s*@@beautify|#\s*@\+node|#\s*@[+-]others|#\s*@[+-]<<')
 
@@ -1391,7 +1391,7 @@ class TokenBasedOrange:
             self.level -= 1
             self.lws = self.level * self.tab_width * ' '
         self.add_token('verbatim', val)
-    #@+node:ekr.20240105145241.23: *5* orange.do_ws
+    #@+node:ekr.20240105145241.23: *5* tbo.do_ws
     def do_ws(self) -> None:
         """
         Handle the "ws" pseudo-token.
@@ -1411,8 +1411,8 @@ class TokenBasedOrange:
             # Retain the indent that won't be cleaned away.
             self.clean('line-indent')
             self.add_token('hard-blank', val)
-    #@+node:ekr.20240105145241.24: *4* orange: Output token generators
-    #@+node:ekr.20240105145241.25: *5* orange.add_line_end
+    #@+node:ekr.20240105145241.24: *4* tbo: Output token generators
+    #@+node:ekr.20240105145241.25: *5* tbo.add_line_end
     def add_line_end(self) -> OutputToken:
         """Add a line-end request to the code list."""
         # This may be called from do_name as well as do_newline and do_nl.
@@ -1423,14 +1423,14 @@ class TokenBasedOrange:
         # Distinguish between kinds of 'line-end' tokens.
         t.newline_kind = self.token.kind
         return t
-    #@+node:ekr.20240105145241.26: *5* orange.add_token
+    #@+node:ekr.20240105145241.26: *5* tbo.add_token
     def add_token(self, kind: str, value: Any) -> OutputToken:
         """Add an output token to the code list."""
         tok = OutputToken(kind, value)
         tok.index = len(self.code_list)
         self.code_list.append(tok)
         return tok
-    #@+node:ekr.20240105145241.27: *5* orange.blank
+    #@+node:ekr.20240105145241.27: *5* tbo.blank
     def blank(self) -> None:
         """Add a blank request to the code list."""
         prev = self.code_list[-1]
@@ -1438,7 +1438,7 @@ class TokenBasedOrange:
             'blank',
             'blank-lines',
             'file-start',
-            'hard-blank',  # Unique to orange.
+            'hard-blank',  # Unique to tbo.
             'line-end',
             'line-indent',
             'lt',
@@ -1446,7 +1446,7 @@ class TokenBasedOrange:
             'unary-op',
         ):
             self.add_token('blank', ' ')
-    #@+node:ekr.20240105145241.28: *5* orange.blank_lines (black only)
+    #@+node:ekr.20240105145241.28: *5* tbo.blank_lines (black only)
     def blank_lines(self, n: int) -> None:  # pragma: no cover (black)
         """
         Add a request for n blank lines to the code list.
@@ -1462,13 +1462,13 @@ class TokenBasedOrange:
         # Retain the token (intention) for debugging.
         self.add_token('blank-lines', n)
         self.line_indent()
-    #@+node:ekr.20240105145241.29: *5* orange.clean
+    #@+node:ekr.20240105145241.29: *5* tbo.clean
     def clean(self, kind: str) -> None:
         """Remove the last item of token list if it has the given kind."""
         prev = self.code_list[-1]
         if prev.kind == kind:
             self.code_list.pop()
-    #@+node:ekr.20240105145241.30: *5* orange.clean_blank_lines
+    #@+node:ekr.20240105145241.30: *5* tbo.clean_blank_lines
     def clean_blank_lines(self) -> bool:
         """
         Remove all vestiges of previous blank lines.
@@ -1482,7 +1482,7 @@ class TokenBasedOrange:
             if t.kind == 'line-end' and getattr(t, 'newline_kind', None) != 'nl':
                 cleaned_newline = True
         return cleaned_newline
-    #@+node:ekr.20240105145241.31: *5* orange.colon
+    #@+node:ekr.20240105145241.31: *5* tbo.colon
     def colon(self, val: str) -> None:
         """Handle a colon."""
         ###
@@ -1513,31 +1513,30 @@ class TokenBasedOrange:
             self.blank()
         else:
             self.add_token('op-no-blanks', val)
-    #@+node:ekr.20240105145241.32: *5* orange.line_end (disabled calls to split/join)
+    #@+node:ekr.20240105145241.32: *5* tbo.line_end (disabled calls to split/join)
     def line_end(self) -> None:
         """Add a line-end request to the code list."""
         # Only do_newline and do_nl should call this method.
         token = self.token
-        node = None  ### To be removed.
         assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
         # Create the 'line-end' output token.
         self.add_line_end()
         if 0:  ### Not ready yet.
             # Attempt to split the line.
-            was_split = self.split_line(node, token)
+            was_split = self.split_line(token)
             # Attempt to join the line only if it has not just been split.
             if not was_split and self.max_join_line_length > 0:
-                self.join_lines(node, token)
+                self.join_lines(token)
         # Add the indentation for all lines
         # until the next indent or unindent token.
         self.line_indent()
-    #@+node:ekr.20240105145241.33: *5* orange.line_indent
+    #@+node:ekr.20240105145241.33: *5* tbo.line_indent
     def line_indent(self) -> None:
         """Add a line-indent token."""
         self.clean('line-indent')  # Defensive. Should never happen.
         self.add_token('line-indent', self.lws)
-    #@+node:ekr.20240105145241.34: *5* orange.lt & rt
-    #@+node:ekr.20240105145241.35: *6* orange.lt
+    #@+node:ekr.20240105145241.34: *5* tbo.lt & rt
+    #@+node:ekr.20240105145241.35: *6* tbo.lt
     def lt(self, val: str) -> None:
         """Generate code for a left paren or curly/square bracket."""
         assert val in '([{', repr(val)
@@ -1562,7 +1561,7 @@ class TokenBasedOrange:
         else:
             self.clean('blank')
             self.add_token('op-no-blanks', val)
-    #@+node:ekr.20240105145241.36: *6* orange.rt
+    #@+node:ekr.20240105145241.36: *6* tbo.rt
     def rt(self, val: str) -> None:
         """Generate code for a right paren or curly/square bracket."""
         assert val in ')]}', repr(val)
@@ -1575,7 +1574,7 @@ class TokenBasedOrange:
             self.curly_brackets_level -= 1
         self.clean('blank')
         self.add_token('rt', val)
-    #@+node:ekr.20240105145241.37: *5* orange.possible_unary_op & unary_op (test)
+    #@+node:ekr.20240105145241.37: *5* tbo.possible_unary_op & unary_op (test)
     def possible_unary_op(self, s: str) -> None:
         """Add a unary or binary op to the token list."""
         self.clean('blank')
@@ -1597,7 +1596,7 @@ class TokenBasedOrange:
         else:
             self.blank()
             self.add_token('unary-op', s)
-    #@+node:ekr.20240105145241.38: *5* orange.star_op (test)
+    #@+node:ekr.20240105145241.38: *5* tbo.star_op (test)
     def star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
         val = '*'
@@ -1616,7 +1615,7 @@ class TokenBasedOrange:
         self.blank()
         self.add_token('op', val)
         self.blank()
-    #@+node:ekr.20240105145241.39: *5* orange.star_star_op (test)
+    #@+node:ekr.20240105145241.39: *5* tbo.star_star_op (test)
     def star_star_op(self) -> None:
         """Put a ** operator, with a special case for **kwargs."""
         val = '**'
@@ -1635,7 +1634,7 @@ class TokenBasedOrange:
         self.blank()
         self.add_token('op', val)
         self.blank()
-    #@+node:ekr.20240105145241.40: *5* orange.word & word_op (test)
+    #@+node:ekr.20240105145241.40: *5* tbo.word & word_op (test)
     def word(self, s: str) -> None:
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
@@ -1664,12 +1663,12 @@ class TokenBasedOrange:
         self.blank()
         self.add_token('word-op', s)
         self.blank()
-    #@+node:ekr.20240105145241.41: *4* orange: Scanning (to do)
-    #@+node:ekr.20240105145241.42: *5* orange.scan_def (to do)
+    #@+node:ekr.20240105145241.41: *4* tbo: Scanning (to do)
+    #@+node:ekr.20240105145241.42: *5* tbo.scan_def (to do)
     def scan_def(self) -> None:
         if 0:
             g.trace(self.token)
-    #@+node:ekr.20240105145241.43: *5* orange.next_token (to do)
+    #@+node:ekr.20240105145241.43: *5* tbo.next_token (to do)
     def next_token(self) -> InputToken:
         """
         Return the next *significant* token in the token list,
@@ -1677,9 +1676,9 @@ class TokenBasedOrange:
         """
         ### token = self.token
 
-    #@+node:ekr.20240105145241.44: *4* orange: Split/join
-    #@+node:ekr.20240105145241.45: *5* orange.split_line & helpers
-    def split_line(self, node: Node, token: InputToken) -> bool:
+    #@+node:ekr.20240105145241.44: *4* tbo: Split/join
+    #@+node:ekr.20240105145241.45: *5* tbo.split_line & helpers (to do)
+    def split_line(self, token: InputToken) -> bool:
         """
         Split token's line, if possible and enabled.
 
@@ -1689,9 +1688,10 @@ class TokenBasedOrange:
         # Return if splitting is disabled:
         if self.max_split_line_length <= 0:  # pragma: no cover (user option)
             return False
-        # Return if the node can't be split.
-        if not is_long_statement(node):
-            return False
+        # Return if the line can't be split.
+        ### Not yet.
+            # if not is_long_statement(node):
+                # return False
         # Find the *output* tokens of the previous lines.
         line_tokens = self.find_prev_line()
         line_s = ''.join([z.to_string() for z in line_tokens])
@@ -1711,7 +1711,7 @@ class TokenBasedOrange:
         # Add the line-end token deleted by find_line_prefix.
         self.add_token('line-end', '\n')
         return True
-    #@+node:ekr.20240105145241.46: *6* orange.append_tail
+    #@+node:ekr.20240105145241.46: *6* tbo.append_tail
     def append_tail(self, prefix: list[OutputToken], tail: list[OutputToken]) -> None:
         """Append the tail tokens, splitting the line further as necessary."""
         tail_s = ''.join([z.to_string() for z in tail])
@@ -1767,7 +1767,7 @@ class TokenBasedOrange:
             else:
                 self.code_list.append(t)
         g.trace('BAD DELIMS', delim_count)  # pragma: no cover
-    #@+node:ekr.20240105145241.47: *6* orange.find_prev_line
+    #@+node:ekr.20240105145241.47: *6* tbo.find_prev_line
     def find_prev_line(self) -> list[OutputToken]:
         """Return the previous line, as a list of tokens."""
         line = []
@@ -1776,7 +1776,7 @@ class TokenBasedOrange:
                 break
             line.append(t)
         return list(reversed(line))
-    #@+node:ekr.20240105145241.48: *6* orange.find_line_prefix
+    #@+node:ekr.20240105145241.48: *6* tbo.find_line_prefix
     def find_line_prefix(self, token_list: list[OutputToken]) -> list[OutputToken]:
         """
         Return all tokens up to and including the first lt token.
@@ -1788,11 +1788,11 @@ class TokenBasedOrange:
             if t.kind == 'lt':
                 break
         return result
-    #@+node:ekr.20240105145241.49: *5* orange.join_lines
-    def join_lines(self, node: Node, token: InputToken) -> None:
+    #@+node:ekr.20240105145241.49: *5* tbo.join_lines (to do)
+    def join_lines(self, token: InputToken) -> None:
         """
         Join preceding lines, if possible and enabled.
-        token is a line_end token. node is the corresponding ast node.
+        token is a line_end token.
         """
         if self.max_join_line_length <= 0:  # pragma: no cover (user option)
             return
