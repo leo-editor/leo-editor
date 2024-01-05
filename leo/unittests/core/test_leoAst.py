@@ -30,6 +30,7 @@ except Exception:  # pragma: no cover
 # pylint: disable=wrong-import-position
 from leo.core import leoGlobals as g
 
+from leo.core.leoAst import InputTokenizer
 from leo.core.leoAst import AstNotEqual
 from leo.core.leoAst import Fstringify, Orange
 from leo.core.leoAst import Token, TokenOrderGenerator
@@ -1712,6 +1713,101 @@ class TestOrange(BaseTest):
         except TypeError:  # pragma: no cover
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
+    #@+node:ekr.20240105090644.1: *4* TestOrange.make_data (new)
+    def make_data(self,
+        contents: str,
+        *,
+        description: str = None,
+        debug_list: str = None,
+    ) -> tuple[str, list[Token], ast.AST]:  # pragma: no cover
+        """Return (contents, tokens, tree) for the given contents."""
+        contents = contents.lstrip('\\\n')
+        if not contents:
+            return '', None, None
+        self.debug_list = debug_list or []
+        self.trace_token_method = False
+        self.link_error = None
+        t1 = get_time()
+        self.update_counts('characters', len(contents))
+
+        # Ensure all tests start with a real line and end in exactly one newline.
+        contents = textwrap.dedent(contents).strip() + '\n'
+
+        # Create the TOG instance, even for the tokens-only Beautifier.
+        self.tog = TokenOrderGenerator()
+        self.tog.filename = description or g.callers(2).split(',')[0]
+
+        # Pass 0: create the tokens and parse tree
+        ### tokens = self.make_tokens(contents)
+        tokens = InputTokenizer().make_tokens(contents)
+        if not tokens:
+            self.fail('make_tokens failed')
+        tree = self.make_tree(contents)
+        if not tree:
+            self.fail('make_tree failed')
+
+        # Check the debug_list.
+        valid = ('ast', 'contents', 'debug', 'sync', 'tokens', 'tree', 'post-tokens', 'post-tree')
+        for z in self.debug_list:
+            if z not in valid:
+                g.trace('Ignoring debug_list value:', z)
+
+        # Early dumps and traces.
+        if 'ast' in self.debug_list:
+            g.printObj(ast.dump(tree, indent=2), tag='ast.dump')
+        if 'contents' in self.debug_list:
+            dump_contents(contents)
+        if 'debug' in self.debug_list:
+            self.tog.debug_flag = True
+        if 'sync' in self.debug_list:
+            self.tog.trace_token_method = True
+        if 'tree' in self.debug_list:  # Excellent traces for tracking down mysteries.
+            dump_ast(tree)
+        if 'tokens' in self.debug_list:
+            dump_tokens(tokens)
+
+        self.balance_tokens(tokens)
+
+        # Pass 1: create the links.
+        self.create_links(tokens, tree)
+
+        # Late dumps.
+        if 'post-tree' in self.debug_list:
+            dump_tree(tokens, tree)
+        if 'post-tokens' in self.debug_list:
+            dump_tokens(tokens)
+
+        t2 = get_time()
+        self.update_times('90: TOTAL', t2 - t1)
+
+        # Fail if create_links set link_error.
+        def enabled(aList: list) -> bool:
+            return any(z in self.debug_list for z in aList)
+
+        if self.link_error:
+            if 0:  # Useful for single tests.
+                if not enabled(['contents']):
+                    dump_contents(contents)
+                if not enabled(['tree', 'post-tree']):
+                    dump_tree(tokens, tree)
+                if not enabled(['tokens', 'post-tokens']):
+                    dump_tokens(tokens)
+            self.fail(self.link_error)
+        return contents, tokens, tree
+    #@+node:ekr.20240105091206.1: *4* TestOrange.make_tokens (new)
+    def make_tokens(self, contents):
+        """
+        BaseTest.make_tokens.
+
+        Make tokens from contents.
+        """
+        t1 = get_time()
+        # Tokenize.
+        tokens = make_tokens(contents)
+        t2 = get_time()
+        self.update_counts('tokens', len(tokens))
+        self.update_times('01: make-tokens', t2 - t1)
+        return tokens
     #@+node:ekr.20230115150916.1: *4* TestOrange.test_annotations
     def test_annotations(self):
 

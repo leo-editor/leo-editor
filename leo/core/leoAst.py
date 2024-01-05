@@ -1717,6 +1717,8 @@ class InputToken:
         self.index = 0
         self.line = ''  # The entire line containing the token.
         self.line_number = 0  # The line number, for errors and dumps.
+        # Unit test data: to be removed.
+        self.node = None  # For now, unit tests patch this field!
 
     def __repr__(self) -> str:  # pragma: no cover
         s = f"{self.index:<3} {self.kind:}"
@@ -1900,6 +1902,7 @@ class Orange:
         contents, encoding, tokens = self.init_tokens_from_file(filename)
         if not (contents and tokens):
             return False  # Not an error.
+        assert isinstance(tokens[0], InputToken), repr(tokens[0])
         try:
             results = self.beautify(contents, filename, tokens)
         except BeautifyError:
@@ -1925,6 +1928,7 @@ class Orange:
         contents, encoding, tokens = self.init_tokens_from_file(filename)
         if not (contents and tokens):
             return False
+        assert isinstance(tokens[0], InputToken), repr(tokens[0])
         try:
             results = self.beautify(contents, filename, tokens)
         except BeautifyError:
@@ -2229,8 +2233,9 @@ class Orange:
                 f"token.index: {token.index:2} paren_level: {self.paren_level} "
                 f"token.equal_sign_spaces: {int(token.equal_sign_spaces)} "
             )
-            # dump_tree(self.tokens, self.tree)
-        if self.token.equal_sign_spaces:
+
+        equal_sign_spaces = self.token.context.get('equal_sign_spaces')
+        if equal_sign_spaces:  ###self.token.equal_sign_spaces:
             self.blank()
             self.add_token('op', val)
             self.blank()
@@ -2368,7 +2373,6 @@ class Orange:
     #@+node:ekr.20200107165250.32: *5* orange.colon
     def colon(self, val: str) -> None:
         """Handle a colon."""
-
         ###
             # def is_expr(node: Node) -> bool:
                 # """True if node is any expression other than += number."""
@@ -2397,7 +2401,7 @@ class Orange:
             self.blank()
         else:
             self.add_token('op-no-blanks', val)
-    #@+node:ekr.20200107165250.33: *5* orange.line_end
+    #@+node:ekr.20200107165250.33: *5* orange.line_end (disabled calls to split/join)
     def line_end(self) -> None:
         """Add a line-end request to the code list."""
         # This should be called only be do_newline and do_nl.
@@ -2458,11 +2462,12 @@ class Orange:
             self.curly_brackets_level -= 1
         self.clean('blank')
         self.add_token('rt', val)
-    #@+node:ekr.20200107165250.45: *5* orange.possible_unary_op & unary_op
+    #@+node:ekr.20200107165250.45: *5* orange.possible_unary_op & unary_op (test)
     def possible_unary_op(self, s: str) -> None:
         """Add a unary or binary op to the token list."""
         self.clean('blank')
-        if False:  ### isinstance(node, ast.UnaryOp):
+        is_unary = self.token.context.get('is_unary')
+        if is_unary:  ### isinstance(node, ast.UnaryOp):
             self.unary_op(s)
         else:
             self.blank()
@@ -2479,12 +2484,13 @@ class Orange:
         else:
             self.blank()
             self.add_token('unary-op', s)
-    #@+node:ekr.20200107165250.46: *5* orange.star_op
+    #@+node:ekr.20200107165250.46: *5* orange.star_op (test)
     def star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
         val = '*'
         self.clean('blank')
-        if False:  ### isinstance(node, ast.arguments):
+        in_arg = self.token.context.get('in_args')
+        if in_arg:  ### isinstance(node, ast.arguments):
             self.blank()
             self.add_token('op', val)
             return  # #2533
@@ -2497,12 +2503,13 @@ class Orange:
         self.blank()
         self.add_token('op', val)
         self.blank()
-    #@+node:ekr.20200107165250.47: *5* orange.star_star_op
+    #@+node:ekr.20200107165250.47: *5* orange.star_star_op (test)
     def star_star_op(self) -> None:
         """Put a ** operator, with a special case for **kwargs."""
         val = '**'
         self.clean('blank')
-        if False:  ### isinstance(node, ast.arguments):
+        in_arg = self.token.context.get('in_args')
+        if in_arg:  ### isinstance(node, ast.arguments):
             self.blank()
             self.add_token('op', val)
             return  # #2533
@@ -2515,13 +2522,14 @@ class Orange:
         self.blank()
         self.add_token('op', val)
         self.blank()
-    #@+node:ekr.20200107165250.48: *5* orange.word & word_op
+    #@+node:ekr.20200107165250.48: *5* orange.word & word_op (test) 
     def word(self, s: str) -> None:
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
         if s == 'def':
             self.scan_def()
-        if False:  ### isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
+        in_import_from = self.token.context.get('in_import_from')
+        if in_import_from:  ### isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
             self.clean('blank')
             self.add_token('blank', ' ')
             self.add_token('word', s)
@@ -2939,8 +2947,8 @@ class Tokenizer(BaseTokenizer):
         tok.line_number = s_row
         self.results.append(tok)
     #@-others
-#@+node:ekr.20240105041147.1: *3* class InputTokenizer
-class InputTokenizer:
+#@+node:ekr.20240105041147.1: *3* class InputTokenizer(BaseTokenizer)
+class InputTokenizer(BaseTokenizer):
     """Create a list of InputTokens from contents."""
 
     results: list[InputToken] = []
