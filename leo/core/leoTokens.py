@@ -1230,8 +1230,8 @@ class TokenBasedOrange:
         self.blank()
         self.add_token('word-op', s)
         self.blank()
-    #@+node:ekr.20240105145241.41: *4* tbo: Scanning (to do)
-    #@+node:ekr.20240106053414.1: *5* tbo.is_keyword (to do):
+    #@+node:ekr.20240105145241.41: *4* tbo: Scanning
+    #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
         """Return True if the token represents a Python keyword."""
         value = token.value
@@ -1241,16 +1241,25 @@ class TokenBasedOrange:
         )
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def (to do)
     def scan_def(self) -> None:
+        """The root of a recursive-descent parser for Python 'def' statements."""
         if 0:
             g.trace(self.token)
-    #@+node:ekr.20240105145241.43: *5* tbo.next_token (to do)
+    #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token (to do)
     def next_token(self) -> InputToken:
         """
-        Return the next *significant* token in the token list,
-        ignoring whitespace, indentation, comments, etc.
+        Return the next *significant* token in the list of *input* tokens.
+        
+        Ignore whitespace, indentation, comments, etc.
         """
         ### token = self.token
-
+        
+    def prev_token(self) -> InputToken:
+        """
+        Return the previous *significant* token in the list of *input* tokens.
+        
+        Ignore whitespace, indentation, comments, etc.
+        """
+        ### token = self.token
     #@+node:ekr.20240105145241.44: *4* tbo: Split/join (not used yet)
     #@+node:ekr.20240105145241.45: *5* tbo.split_line & helpers (to do)
     def split_line(self, token: InputToken) -> bool:

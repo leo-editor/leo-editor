@@ -2659,10 +2659,9 @@ class ReassignTokens:
 #@+node:ekr.20191110080535.1: *3* class Token
 class Token:
     """
-    A class representing a *general* token:
+    A class representing a *general* token.
     
-    - The Tokenizer class creates tokens.
-    - The TokenOrderGenerator class patches the tokens with data.
+    The TOG makes no distinction between input and output tokens.
     """
 
     def __init__(self, kind: str, value: str):
