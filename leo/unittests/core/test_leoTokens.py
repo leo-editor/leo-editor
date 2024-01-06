@@ -21,11 +21,13 @@ except Exception:  # pragma: no cover
     black = None
 
 from leo.core import leoGlobals as g
-from leo.core.leoTokens import TokenBasedOrange
-from leo.core.leoTokens import InputToken, Tokenizer
+
+# Classes and funtions to test.
+from leo.core.leoTokens import InputToken, Tokenizer, TokenBasedOrange
 from leo.core.leoTokens import get_encoding_directive, read_file, strip_BOM
-from leo.core.leoTokens import make_tokens, tokens_to_string
-from leo.core.leoTokens import dump_contents, dump_tokens
+
+# Utility functions.
+from leo.core.leoTokens import dump_contents, dump_tokens, tokens_to_string
 #@-<< test_leoTokens imports >>
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
@@ -129,9 +131,10 @@ class BaseTest(unittest.TestCase):
         contents = textwrap.dedent(contents).strip() + '\n'
 
         # Create the tokens.
-        tokens = Tokenizer().make_tokens(contents)
+        ### tokens = Tokenizer().make_tokens(contents)
+        tokens = Tokenizer().make_input_tokens(contents)
         if not tokens:
-            self.fail('TestOrange.make_tokens failed')
+            self.fail('BaseTest.make_data:Tokenizer().make_input_tokens failed')
 
         # Dumps.
         if 'contents' in self.debug_list:
@@ -157,7 +160,8 @@ class BaseTest(unittest.TestCase):
         """
         t1 = get_time()
         # Tokenize.
-        tokens = make_tokens(contents)
+        ### tokens = make_tokens(contents)
+        tokens = Tokenizer().make_input_tokens(contents)
         t2 = get_time()
         self.update_counts('tokens', len(tokens))
         self.update_times('01: make-tokens', t2 - t1)
