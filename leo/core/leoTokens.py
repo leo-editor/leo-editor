@@ -1066,7 +1066,9 @@ class TokenBasedOrange:
                 # )
 
         self.clean('blank')
-        if True:  ### not isinstance(node, ast.Slice):
+        in_args = self.token.context.get('in_args')
+        g.trace(self.index, 'in_args', repr(in_args))
+        if in_args:  ### not isinstance(node, ast.Slice):
             self.add_token('op', val)
             self.blank()
             return
@@ -1324,9 +1326,13 @@ class TokenBasedOrange:
         expect(i, ':')
         if 0:
             g.trace(i1, i2, i3)
-        if 1:
-            dump_tokens(self.tokens[i1 : i3 + 1])
-        # Set context for all '=' and ':' tokens between tokens[i1:i2].
+        if 0:
+            dump_tokens(self.tokens[i1:i3])
+        # Set in_args context for in tokens[i1:i2].
+        for n in range(i1, i2 + 1):
+            token = self.tokens[i]
+            if token.kind == 'op':
+                token.context['in_args'] = True
     #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token
     def next_token(self, i: int) -> Optional[int]:
         """

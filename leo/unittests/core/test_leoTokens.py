@@ -250,7 +250,7 @@ class TestTokenBasedOrange(BaseTest):
                    are ever inserted or deleted.
     """
     #@+others
-    #@+node:ekr.20240105153425.43: *3* TestOrange.blacken
+    #@+node:ekr.20240105153425.43: *3* TestTBO.blacken
     def blacken(self, contents, line_length=None):
         """Return the results of running black on contents"""
         if not black:
@@ -264,7 +264,7 @@ class TestTokenBasedOrange(BaseTest):
         except TypeError:  # pragma: no cover
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
-    #@+node:ekr.20240105153425.45: *3* TestOrange.test_annotations
+    #@+node:ekr.20240105153425.45: *3* TestTBO.test_annotations
     def test_annotations(self):
 
         table = (
@@ -278,9 +278,12 @@ class TestTokenBasedOrange(BaseTest):
             contents, tokens = self.make_data(contents)
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens)
+            if results != expected:
+                g.printObj(expected, tag='Expected (blackened)')
+                g.printObj(results, tag='Results')
             self.assertEqual(results, expected)
 
-    #@+node:ekr.20240105153425.46: *3* TestOrange.test_at_doc_part
+    #@+node:ekr.20240105153425.46: *3* TestTBO.test_at_doc_part
     def test_at_doc_part(self):
 
         line_length = 40  # For testing.
@@ -298,7 +301,7 @@ class TestTokenBasedOrange(BaseTest):
             max_split_line_length=line_length,
         )
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.47: *3* TestOrange.test_backslash_newline
+    #@+node:ekr.20240105153425.47: *3* TestTBO.test_backslash_newline
     def test_backslash_newline(self):
         """
         This test is necessarily different from black, because orange doesn't
@@ -315,7 +318,7 @@ class TestTokenBasedOrange(BaseTest):
         # expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.48: *3* TestOrange.test_blank_lines_after_function
+    #@+node:ekr.20240105153425.48: *3* TestTBO.test_blank_lines_after_function
     def test_blank_lines_after_function(self):
 
         contents = """\
@@ -334,7 +337,7 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.49: *3* TestOrange.test_blank_lines_after_function_2
+    #@+node:ekr.20240105153425.49: *3* TestTBO.test_blank_lines_after_function_2
     def test_blank_lines_after_function_2(self):
 
         contents = """\
@@ -351,7 +354,7 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.50: *3* TestOrange.test_blank_lines_after_function_3
+    #@+node:ekr.20240105153425.50: *3* TestTBO.test_blank_lines_after_function_3
     def test_blank_lines_after_function_3(self):
 
         # From leoAtFile.py.
@@ -370,7 +373,7 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.51: *3* TestOrange.test_bug_1429
+    #@+node:ekr.20240105153425.51: *3* TestTBO.test_bug_1429
     def test_bug_1429(self):
 
         contents = r'''\
@@ -394,7 +397,7 @@ class TestTokenBasedOrange(BaseTest):
         results = self.beautify(contents, tokens,
             max_join_line_length=0, max_split_line_length=0)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.52: *3* TestOrange.test_bug_1851
+    #@+node:ekr.20240105153425.52: *3* TestTBO.test_bug_1851
     def test_bug_1851(self):
 
         contents = r'''\
@@ -406,7 +409,7 @@ class TestTokenBasedOrange(BaseTest):
         results = self.beautify(contents, tokens,
             max_join_line_length=0, max_split_line_length=0)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.53: *3* TestOrange.test_comment_indented
+    #@+node:ekr.20240105153425.53: *3* TestTBO.test_comment_indented
     def test_comment_indented(self):
 
         line_length = 40  # For testing.
@@ -444,7 +447,7 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
         assert not fails, fails
-    #@+node:ekr.20240105153425.54: *3* TestOrange.test_comment_space_after_delim
+    #@+node:ekr.20240105153425.54: *3* TestTBO.test_comment_space_after_delim
     def test_comment_space_after_delim(self):
 
         line_length = 40  # For testing.
@@ -484,7 +487,7 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
         assert not fails, fails
-    #@+node:ekr.20240105153425.55: *3* TestOrange.test_decorator
+    #@+node:ekr.20240105153425.55: *3* TestTBO.test_decorator
     def test_decorator(self):
 
         table = (
@@ -515,7 +518,7 @@ class TestTokenBasedOrange(BaseTest):
             if results != expected:
                 g.trace('Fail:', i)  # pragma: no cover
             self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.56: *3* TestOrange.test_dont_delete_blank_lines
+    #@+node:ekr.20240105153425.56: *3* TestTBO.test_dont_delete_blank_lines
     def test_dont_delete_blank_lines(self):
 
         line_length = 40  # For testing.
@@ -535,7 +538,7 @@ class TestTokenBasedOrange(BaseTest):
             max_split_line_length=line_length,
         )
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.57: *3* TestOrange.test_function_defs
+    #@+node:ekr.20240105153425.57: *3* TestTBO.test_function_defs
     def test_function_defs(self):
 
         table = (
@@ -566,7 +569,7 @@ class TestTokenBasedOrange(BaseTest):
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens)
             self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.58: *3* TestOrange.test_join_and_strip_condition
+    #@+node:ekr.20240105153425.58: *3* TestTBO.test_join_and_strip_condition
     def test_join_and_strip_condition(self):
 
         contents = """\
@@ -586,7 +589,7 @@ class TestTokenBasedOrange(BaseTest):
             # expected = self.blacken(contents, line_length=40)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.59: *3* TestOrange.test_join_leading_whitespace
+    #@+node:ekr.20240105153425.59: *3* TestTBO.test_join_leading_whitespace
     def test_join_leading_whitespace(self):
 
         line_length = 40  # For testing.
@@ -621,7 +624,7 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
         assert not fails, fails
-    #@+node:ekr.20240105153425.60: *3* TestOrange.test_join_lines
+    #@+node:ekr.20240105153425.60: *3* TestTBO.test_join_lines
     def test_join_lines(self):
 
         # Except where noted, all entries are expected values....
@@ -651,7 +654,7 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
         self.assertEqual(fails, 0)
-    #@+node:ekr.20240105153425.61: *3* TestOrange.test_join_suppression
+    #@+node:ekr.20240105153425.61: *3* TestTBO.test_join_suppression
     def test_join_suppression(self):
 
         contents = """\
@@ -670,7 +673,7 @@ class TestTokenBasedOrange(BaseTest):
         expected = textwrap.dedent(expected)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.62: *3* TestOrange.test_join_too_long_lines
+    #@+node:ekr.20240105153425.62: *3* TestTBO.test_join_too_long_lines
     def test_join_too_long_lines(self):
 
         # Except where noted, all entries are expected values....
@@ -701,7 +704,7 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
         assert not fails, fails
-    #@+node:ekr.20240105153425.63: *3* TestOrange.test_leading_stars
+    #@+node:ekr.20240105153425.63: *3* TestTBO.test_leading_stars
     def test_leading_stars(self):
 
         # #2533.
@@ -720,7 +723,7 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         self.assertEqual(expected, results)
-    #@+node:ekr.20240105153425.64: *3* TestOrange.test_leading_stars_one_line
+    #@+node:ekr.20240105153425.64: *3* TestTBO.test_leading_stars_one_line
     def test_leading_stars_one_line(self):
 
         # if not use_ast:
@@ -738,7 +741,7 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         self.assertEqual(contents, results)
-    #@+node:ekr.20240105153425.65: *3* TestOrange.test_leo_sentinels
+    #@+node:ekr.20240105153425.65: *3* TestTBO.test_leo_sentinels
     def test_leo_sentinels_1(self):
 
         # Careful: don't put a sentinel into the file directly.
@@ -753,7 +756,7 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.66: *3* TestOrange.test_leo_sentinels_2
+    #@+node:ekr.20240105153425.66: *3* TestTBO.test_leo_sentinels_2
     def test_leo_sentinels_2(self):
 
         # Careful: don't put a sentinel into the file directly.
@@ -768,7 +771,7 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.67: *3* TestOrange.test_lines_before_class
+    #@+node:ekr.20240105153425.67: *3* TestTBO.test_lines_before_class
     def test_lines_before_class(self):
 
         contents = """\
@@ -780,7 +783,7 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.68: *3* TestOrange.test_multi_line_pet_peeves
+    #@+node:ekr.20240105153425.68: *3* TestTBO.test_multi_line_pet_peeves
     def test_multi_line_pet_peeves(self):
 
         contents = """\
@@ -812,7 +815,7 @@ class TestTokenBasedOrange(BaseTest):
         expected = self.adjust_expected(expected)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.69: *3* TestOrange.test_one_line_pet_peeves
+    #@+node:ekr.20240105153425.69: *3* TestTBO.test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
 
         # See https://peps.python.org/pep-0008/#pet-peeves
@@ -904,12 +907,12 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 print('')
                 print(
-                    f"TestOrange.test_one_line_pet_peeves: FAIL {fails}\n"
+                    f"TestTokenBasedOrange.test_one_line_pet_peeves: FAIL {fails}\n"
                     f"  contents: {contents.rstrip()}\n"
                     f"     black: {expected.rstrip()}\n"
                     f"    orange: {results.rstrip()}")
         self.assertEqual(fails, 0)
-    #@+node:ekr.20240105153425.70: *3* TestOrange.test_relative_imports
+    #@+node:ekr.20240105153425.70: *3* TestTBO.test_relative_imports
     def test_relative_imports(self):
 
         # #2533.
@@ -936,7 +939,7 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         self.assertEqual(expected, results)
-    #@+node:ekr.20240105153425.71: *3* TestOrange.test_return
+    #@+node:ekr.20240105153425.71: *3* TestTBO.test_return
     def test_return(self):
 
         contents = """return []"""
@@ -944,7 +947,7 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.72: *3* TestOrange.test_single_quoted_string
+    #@+node:ekr.20240105153425.72: *3* TestTBO.test_single_quoted_string
     def test_single_quoted_string(self):
 
         contents = """print('hi')"""
@@ -953,7 +956,7 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.73: *3* TestOrange.test_split_lines
+    #@+node:ekr.20240105153425.73: *3* TestTBO.test_split_lines
     def test_split_lines(self):
 
         line_length = 40  # For testing.
@@ -985,7 +988,7 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
         self.assertEqual(fails, 0)
-    #@+node:ekr.20240105153425.74: *3* TestOrange.test_split_lines_2
+    #@+node:ekr.20240105153425.74: *3* TestTBO.test_split_lines_2
     def test_split_lines_2(self):
 
         line_length = 40  # For testing.
@@ -1015,7 +1018,7 @@ class TestTokenBasedOrange(BaseTest):
             fails += 1
             print(f"Fail: {fails}\n{message}")
         self.assertEqual(fails, 0)
-    #@+node:ekr.20240105153425.75: *3* TestOrange.test_split_lines_3
+    #@+node:ekr.20240105153425.75: *3* TestTBO.test_split_lines_3
     def test_split_lines_3(self):
 
         line_length = 40  # For testing.
@@ -1046,7 +1049,7 @@ class TestTokenBasedOrange(BaseTest):
             fails += 1
             print(f"Fail: {fails}\n{message}")
         self.assertEqual(fails, 0)
-    #@+node:ekr.20240105153425.76: *3* TestOrange.test_star_star_operator
+    #@+node:ekr.20240105153425.76: *3* TestTBO.test_star_star_operator
     def test_star_star_operator(self):
         # Was tested in pet peeves, but this is more permissive.
         contents = """a = b ** c"""
@@ -1056,7 +1059,7 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.77: *3* TestOrange.test_sync_tokens
+    #@+node:ekr.20240105153425.77: *3* TestTBO.test_sync_tokens
     def test_sync_tokens(self):
 
         contents = """if x == 4: pass"""
@@ -1066,7 +1069,7 @@ class TestTokenBasedOrange(BaseTest):
         expected = self.adjust_expected(expected)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.78: *3* TestOrange.test_ternary
+    #@+node:ekr.20240105153425.78: *3* TestTBO.test_ternary
     def test_ternary(self):
 
         contents = """print(2 if name == 'class' else 1)"""
@@ -1074,7 +1077,7 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.79: *3* TestOrange.test_verbatim
+    #@+node:ekr.20240105153425.79: *3* TestTBO.test_verbatim
     def test_verbatim(self):
 
         line_length = 40  # For testing.
@@ -1110,7 +1113,7 @@ class TestTokenBasedOrange(BaseTest):
             max_split_line_length=line_length,
         )
         self.assertEqual(results, expected, msg=contents)
-    #@+node:ekr.20240105153425.80: *3* TestOrange.test_verbatim_with_pragma
+    #@+node:ekr.20240105153425.80: *3* TestTBO.test_verbatim_with_pragma
     def test_verbatim_with_pragma(self):
 
         line_length = 40  # For testing.
@@ -1142,7 +1145,7 @@ class TestTokenBasedOrange(BaseTest):
             max_split_line_length=line_length,
         )
         self.assertEqual(results, expected, msg=contents)
-    #@+node:ekr.20240105153425.81: *3* TestOrange.verbatim2
+    #@+node:ekr.20240105153425.81: *3* TestTBO.verbatim2
     def test_verbatim2(self):
 
         contents = """\
