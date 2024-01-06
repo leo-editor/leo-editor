@@ -63,6 +63,7 @@ from __future__ import annotations
 import argparse
 import ast
 import glob
+import keyword
 import io
 import os
 import re
@@ -1232,7 +1233,12 @@ class TokenBasedOrange:
     #@+node:ekr.20240105145241.41: *4* tbo: Scanning (to do)
     #@+node:ekr.20240106053414.1: *5* tbo.is_keyword (to do):
     def is_keyword(self, token: InputToken) -> bool:
-        return False  ###'
+        """Return True if the token represents a Python keyword."""
+        value = token.value
+        return (
+            token.kind == 'word' and
+            (keyword.iskeyword(value) or keyword.issoftkeyword(value))
+        )
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def (to do)
     def scan_def(self) -> None:
         if 0:
