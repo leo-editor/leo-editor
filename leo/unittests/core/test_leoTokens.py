@@ -22,9 +22,8 @@ except Exception:  # pragma: no cover
 
 from leo.core import leoGlobals as g
 
-# Classes and funtions to test.
+# Classes to test.
 from leo.core.leoTokens import InputToken, Tokenizer, TokenBasedOrange
-from leo.core.leoTokens import get_encoding_directive, read_file, strip_BOM
 
 # Utility functions.
 from leo.core.leoTokens import dump_contents, dump_tokens, output_tokens_to_string
@@ -131,7 +130,6 @@ class BaseTest(unittest.TestCase):
         contents = textwrap.dedent(contents).strip() + '\n'
 
         # Create the tokens.
-        ### tokens = Tokenizer().make_tokens(contents)
         tokens = Tokenizer().make_input_tokens(contents)
         if not tokens:
             self.fail('BaseTest.make_data:Tokenizer().make_input_tokens failed')
@@ -148,7 +146,7 @@ class BaseTest(unittest.TestCase):
         directory = os.path.dirname(__file__)
         filename = g.finalize_join(directory, '..', '..', 'core', filename)
         assert os.path.exists(filename), repr(filename)
-        contents = read_file(filename)
+        contents = g.readFileIntoUnicodeString(filename)
         contents, tokens = self.make_data(contents, description=filename)
         return contents, tokens
     #@+node:ekr.20240105153420.8: *3* BaseTest.make_tokens
@@ -160,7 +158,6 @@ class BaseTest(unittest.TestCase):
         """
         t1 = get_time()
         # Tokenize.
-        ### tokens = make_tokens(contents)
         tokens = Tokenizer().make_input_tokens(contents)
         t2 = get_time()
         self.update_counts('tokens', len(tokens))
@@ -1230,30 +1227,6 @@ class TestTokens(BaseTest):
     def test_string_concatentation_3(self):
         # plain string followed by f-string on the same line
         self.check_roundtrip("""'abc' f'xyz'""")
-    #@-others
-#@+node:ekr.20240105153425.102: ** class TestTopLevelFunctions (BaseTest)
-class TestTopLevelFunctions(BaseTest):
-    """Tests for the top-level functions in leoAst.py."""
-    #@+others
-    #@+node:ekr.20240105153425.103: *3* test_get_encoding_directive
-    def test_get_encoding_directive(self):
-
-        filename = __file__
-        assert os.path.exists(filename), repr(filename)
-        with open(filename, 'rb') as f:
-            bb = f.read()
-        e = get_encoding_directive(bb)
-        self.assertEqual(e.lower(), 'utf-8')
-    #@+node:ekr.20240105153425.104: *3* test_strip_BOM
-    def test_strip_BOM(self):
-
-        filename = __file__
-        assert os.path.exists(filename), repr(filename)
-        with open(filename, 'rb') as f:
-            bb = f.read()
-        assert bb, filename
-        e, s = strip_BOM(bb)
-        assert e is None or e.lower() == 'utf-8', repr(e)
     #@-others
 #@-others
 #@-leo

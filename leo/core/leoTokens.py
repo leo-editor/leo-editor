@@ -62,7 +62,6 @@ Leo's outline structure. These comments have the form::
 from __future__ import annotations
 import argparse
 import ast
-import codecs
 import glob
 import io
 import os
@@ -83,7 +82,7 @@ Settings = Optional[dict[str, Any]]
 #@-<< leoTokens.py: imports & annotations >>
 
 #@+others
-#@+node:ekr.20240105140814.5: ** function: orange_command
+#@+node:ekr.20240105140814.5: ** command: orange_command
 def orange_command(
     files: list[str],
     settings: Settings = None,
@@ -98,7 +97,7 @@ def orange_command(
         else:
             print(f"file not found: {filename}")
     # print(f"Beautify done: {len(files)} files")
-#@+node:ekr.20240105140814.7: ** top-level utils
+#@+node:ekr.20240105140814.7: ** leoTokens: functions
 if 1:  # pragma: no cover
     #@+others
     #@+node:ekr.20240105140814.8: *3* function: check_g
@@ -108,114 +107,86 @@ if 1:  # pragma: no cover
             print('This statement failed: `from leo.core import leoGlobals as g`')
             print('Please adjust your Python path accordingly')
         return bool(g)
-    #@+node:ekr.20240105140814.11: *3* functions: reading & writing files
-    #@+node:ekr.20240105140814.13: *4* function: get_encoding_directive
-    # This is the pattern in PEP 263.
-    encoding_pattern = re.compile(r'^[ \t\f]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)')
-
-    def get_encoding_directive(bb: bytes) -> str:
-        """
-        Get the encoding from the encoding directive at the start of a file.
-
-        bb: The bytes of the file.
-
-        Returns the codec name, or 'UTF-8'.
-
-        Adapted from pyzo. Copyright 2008 to 2020 by Almar Klein.
-        """
-        for line in bb.split(b'\n', 2)[:2]:
-            # Try to make line a string
-            try:
-                line2 = line.decode('ASCII').strip()
-            except Exception:
-                continue
-            # Does the line match the PEP 263 pattern?
-            m = encoding_pattern.match(line2)
-            if not m:
-                continue
-            # Is it a known encoding? Correct the name if it is.
-            try:
-                c = codecs.lookup(m.group(1))
-                return c.name
-            except Exception:
-                pass
-        return 'UTF-8'
-    #@+node:ekr.20240105140814.14: *4* function: read_file
-    def read_file(filename: str, encoding: str = 'utf-8') -> Optional[str]:
-        """
-        Return the contents of the file with the given name.
-        Print an error message and return None on error.
-        """
-        tag = 'read_file'
+    #@+node:ekr.20240105140814.41: *3* function: dump_contents
+    def dump_contents(contents: str, tag: str = 'Contents') -> None:
+        print('')
+        print(f"{tag}...\n")
+        for i, z in enumerate(g.splitLines(contents)):
+            print(f"{i+1:<3} ", z.rstrip())
+        print('')
+    #@+node:ekr.20240105140814.42: *3* function: dump_lines
+    def dump_lines(tokens: list[InputToken], tag: str = 'lines') -> None:
+        print('')
+        print(f"{tag}...\n")
+        for z in tokens:
+            if z.line.strip():
+                print(z.line.rstrip())
+            else:
+                print(repr(z.line))
+        print('')
+    #@+node:ekr.20240105140814.43: *3* function: dump_results
+    def dump_results(tokens: list[OutputToken], tag: str = 'Results') -> None:
+        print('')
+        print(f"{tag}...\n")
+        print(output_tokens_to_string(tokens))
+        print('')
+    #@+node:ekr.20240105140814.44: *3* function: dump_tokens
+    def dump_tokens(tokens: list[InputToken], tag: str = 'Tokens') -> None:
+        print('')
+        print(f"{tag}...\n")
+        if not tokens:
+            return
+        print("Note: values shown are repr(value) *except* for 'string' and 'fstring*' tokens.")
+        tokens[0].dump_header()
+        for z in tokens:
+            print(z.dump())
+        print('')
+    #@+node:ekr.20240105140814.9: *3* function: get_modified_files
+    def get_modified_files(repo_path: str) -> list[str]:
+        """Return the modified files in the given repo."""
+        if not repo_path:
+            return []
+        old_cwd = os.getcwd()
+        os.chdir(repo_path)
         try:
-            # Translate all newlines to '\n'.
-            with open(filename, 'r', encoding=encoding) as f:
-                s = f.read()
-            return regularize_nls(s)
-        except Exception:
-            print(f"{tag}: can not read {filename}")
-            return None
-    #@+node:ekr.20240105140814.15: *4* function: read_file_with_encoding
-    def read_file_with_encoding(filename: str) -> tuple[str, str]:
-        """
-        Read the file with the given name,  returning (e, s), where:
-
-        s is the string, converted to unicode, or '' if there was an error.
-
-        e is the encoding of s, computed in the following order:
-
-        - The BOM encoding if the file starts with a BOM mark.
-        - The encoding given in the # -*- coding: utf-8 -*- line.
-        - The encoding given by the 'encoding' keyword arg.
-        - 'utf-8'.
-        """
-        # First, read the file.
-        tag = 'read_with_encoding'
-        try:
-            with open(filename, 'rb') as f:
-                bb = f.read()
-        except Exception:
-            print(f"{tag}: can not read {filename}")
-            return 'UTF-8', None
-        # Look for the BOM.
-        e, bb = strip_BOM(bb)
-        if not e:
-            # Python's encoding comments override everything else.
-            e = get_encoding_directive(bb)
-        s = g.toUnicode(bb, encoding=e)
-        s = regularize_nls(s)
-        return e, s
-    #@+node:ekr.20240105140814.12: *4* function: regularize_nls
+            # We are not checking the return code here, so:
+            # pylint: disable=subprocess-run-check
+            result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+            if result.returncode != 0:
+                print("Error running git command")
+                return []
+            modified_files = []
+            for line in result.stdout.split('\n'):
+                if line.startswith((' M', 'M ', 'A ', ' A')):
+                    modified_files.append(line[3:])
+            return [os.path.abspath(z) for z in modified_files]
+        finally:
+            os.chdir(old_cwd)
+    #@+node:ekr.20240105140814.27: *3* function: input_tokens_to_string
+    def input_tokens_to_string(tokens: list[InputToken]) -> str:
+        """Return the string represented by the list of tokens."""
+        if tokens is None:
+            # This indicates an internal error.
+            print('')
+            g.trace('===== input token list is None ===== ')
+            print('')
+            return ''
+        return ''.join([z.to_string() for z in tokens])
+    #@+node:ekr.20240105140814.24: *3* function: output_tokens_to_string
+    def output_tokens_to_string(tokens: list[OutputToken]) -> str:
+        """Return the string represented by the list of tokens."""
+        if tokens is None:
+            # This indicates an internal error.
+            print('')
+            g.trace('===== output token list is None ===== ')
+            print('')
+            return ''
+        return ''.join([z.to_string() for z in tokens])
+    #@+node:ekr.20240105140814.12: *3* function: regularize_nls
     def regularize_nls(s: str) -> str:
         """Regularize newlines within s."""
         return s.replace('\r\n', '\n').replace('\r', '\n')
-    #@+node:ekr.20240105140814.16: *4* function: strip_BOM
-    def strip_BOM(bb: bytes) -> tuple[Optional[str], bytes]:
-        """
-        bb must be the bytes contents of a file.
-
-        If bb starts with a BOM (Byte Order Mark), return (e, bb2), where:
-
-        - e is the encoding implied by the BOM.
-        - bb2 is bb, stripped of the BOM.
-
-        If there is no BOM, return (None, bb)
-        """
-        assert isinstance(bb, bytes), bb.__class__.__name__
-        table = (
-                        # Test longer bom's first.
-            (4, 'utf-32', codecs.BOM_UTF32_BE),
-            (4, 'utf-32', codecs.BOM_UTF32_LE),
-            (3, 'utf-8', codecs.BOM_UTF8),
-            (2, 'utf-16', codecs.BOM_UTF16_BE),
-            (2, 'utf-16', codecs.BOM_UTF16_LE),
-        )
-        for n, e, bom in table:
-            assert len(bom) == n
-            if bom == bb[: len(bom)]:
-                return e, bb[len(bom) :]
-        return None, bb
-    #@+node:ekr.20240105140814.17: *4* function: write_file
+    #@+node:ekr.20240105140814.17: *3* function: write_file
     def write_file(filename: str, s: str, encoding: str = 'utf-8') -> None:
         """
         Write the string s to the file whose name is given.
@@ -231,61 +202,6 @@ if 1:  # pragma: no cover
                 f.write(s)
         except Exception as e:
             g.trace(f"Error writing {filename}\n{e}")
-    #@+node:ekr.20240105140814.40: *3* functions: dumpers...
-    #@+node:ekr.20240105140814.41: *4* function: dump_contents
-    def dump_contents(contents: str, tag: str = 'Contents') -> None:
-        print('')
-        print(f"{tag}...\n")
-        for i, z in enumerate(g.splitLines(contents)):
-            print(f"{i+1:<3} ", z.rstrip())
-        print('')
-    #@+node:ekr.20240105140814.42: *4* function: dump_lines
-    def dump_lines(tokens: list[InputToken], tag: str = 'lines') -> None:
-        print('')
-        print(f"{tag}...\n")
-        for z in tokens:
-            if z.line.strip():
-                print(z.line.rstrip())
-            else:
-                print(repr(z.line))
-        print('')
-    #@+node:ekr.20240105140814.43: *4* function: dump_results
-    def dump_results(tokens: list[OutputToken], tag: str = 'Results') -> None:
-        print('')
-        print(f"{tag}...\n")
-        print(output_tokens_to_string(tokens))
-        print('')
-    #@+node:ekr.20240105140814.44: *4* function: dump_tokens
-    def dump_tokens(tokens: list[InputToken], tag: str = 'Tokens') -> None:
-        print('')
-        print(f"{tag}...\n")
-        if not tokens:
-            return
-        print("Note: values shown are repr(value) *except* for 'string' and 'fstring*' tokens.")
-        tokens[0].dump_header()
-        for z in tokens:
-            print(z.dump())
-        print('')
-    #@+node:ekr.20240105140814.27: *4* function: input_tokens_to_string
-    def input_tokens_to_string(tokens: list[InputToken]) -> str:
-        """Return the string represented by the list of tokens."""
-        if tokens is None:
-            # This indicates an internal error.
-            print('')
-            g.trace('===== input token list is None ===== ')
-            print('')
-            return ''
-        return ''.join([z.to_string() for z in tokens])
-    #@+node:ekr.20240105140814.24: *4* function: output_tokens_to_string
-    def output_tokens_to_string(tokens: list[OutputToken]) -> str:
-        """Return the string represented by the list of tokens."""
-        if tokens is None:
-            # This indicates an internal error.
-            print('')
-            g.trace('===== output token list is None ===== ')
-            print('')
-            return ''
-        return ''.join([z.to_string() for z in tokens])
     #@-others
 #@+node:ekr.20240105140814.52: ** Classes
 #@+node:ekr.20240105140814.51: *3* class BeautifyError(Exception)
@@ -706,7 +622,7 @@ class TokenBasedOrange:
         """
         self.level = 0
         self.filename = filename
-        encoding, contents = read_file_with_encoding(filename)
+        contents, encoding = g.readFileIntoString(filename)
         if not contents:
             return None, None, None
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
@@ -1555,27 +1471,6 @@ def main() -> None:  # pragma: no cover
         orange_command(files, settings_dict)
     # if args.od:
         # orange_diff_command(files, settings_dict)
-#@+node:ekr.20240105140814.9: *3* function: get_modified_files
-def get_modified_files(repo_path: str) -> list[str]:
-    """Return the modified files in the given repo."""
-    if not repo_path:
-        return []
-    old_cwd = os.getcwd()
-    os.chdir(repo_path)
-    try:
-        # We are not checking the return code here, so:
-        # pylint: disable=subprocess-run-check
-        result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
-        if result.returncode != 0:
-            print("Error running git command")
-            return []
-        modified_files = []
-        for line in result.stdout.split('\n'):
-            if line.startswith((' M', 'M ', 'A ', ' A')):
-                modified_files.append(line[3:])
-        return [os.path.abspath(z) for z in modified_files]
-    finally:
-        os.chdir(old_cwd)
 #@+node:ekr.20240105140814.10: *3* function: scan_args
 def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
     description = textwrap.dedent("""\
