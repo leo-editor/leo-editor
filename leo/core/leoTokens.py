@@ -1233,11 +1233,17 @@ class TokenBasedOrange:
     #@+node:ekr.20240105145241.41: *4* tbo: Scanning
     #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
-        """Return True if the token represents a Python keyword."""
+        """
+        Return True if the token represents a Python keyword.
+        
+        But return False for 'True', 'False' or 'None':
+        these can appear in expressions.
+        """
         value = token.value
         return (
-            token.kind == 'word' and
-            (keyword.iskeyword(value) or keyword.issoftkeyword(value))
+            token.kind == 'word'
+            and value not in ('True', 'False', None)
+            and (keyword.iskeyword(value) or keyword.issoftkeyword(value))
         )
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def (to do)
     def scan_def(self) -> None:
@@ -1252,7 +1258,7 @@ class TokenBasedOrange:
         Ignore whitespace, indentation, comments, etc.
         """
         ### token = self.token
-        
+
     def prev_token(self) -> InputToken:
         """
         Return the previous *significant* token in the list of *input* tokens.
