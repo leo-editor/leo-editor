@@ -7,14 +7,13 @@
 #@+<< leoTokens.py: docstring >>
 #@+node:ekr.20240105140814.2: ** << leoTokens.py: docstring >>
 """
-leoTokens.py: This file does not depend on Leo in any way.
+leoTokens.py.
 
 **Stand-alone operation**
 
 usage:
     python -m leo.core.leoTokens --help
     python -m leo.core.leoTokens --orange [ARGS] PATHS
-    python -m leo.core.leoTokens --orange-diff [ARGS] PATHS
     python -m leo.core.leoTokens --py-cov [ARGS]
     python -m leo.core.leoTokens --pytest [ARGS]
     python -m leo.core.leoTokens --unittest [ARGS]
@@ -44,11 +43,7 @@ Leo...
 Ask for help:       https://groups.google.com/forum/#!forum/leo-editor
 Report a bug:       https://github.com/leo-editor/leo-editor/issues
 
-Other tools...
 black:              https://pypi.org/project/black/
-fstringify:         https://pypi.org/project/fstringify/
-
-Python modules...
 tokenize.py:        https://docs.python.org/3/library/tokenize.html
 
 **Studying this file**
@@ -105,17 +100,6 @@ if 1:  # pragma: no cover
             else:
                 print(f"file not found: {filename}")
         # print(f"Beautify done: {len(files)} files")
-    #@+node:ekr.20240105140814.6: *3* command: orange_diff_command
-    def orange_diff_command(files: list[str], settings: Settings = None) -> None:
-
-        if not check_g():
-            return
-        for filename in files:
-            if os.path.exists(filename):
-                print(f"orange-diff {filename}")
-                TokenBasedOrange(settings).beautify_file_diff(filename)
-            else:
-                print(f"file not found: {filename}")
     #@-others
 #@+node:ekr.20240105140814.7: **  leoAst.py: top-level utils
 if 1:  # pragma: no cover
@@ -1903,8 +1887,8 @@ def main() -> None:  # pragma: no cover
         # fstringify_diff_command(files)
     if args.o:
         orange_command(files, settings_dict)
-    if args.od:
-        orange_diff_command(files, settings_dict)
+    # if args.od:
+        # orange_diff_command(files, settings_dict)
 #@+node:ekr.20240105140814.10: *3* function: scan_args
 def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
     description = textwrap.dedent("""\
