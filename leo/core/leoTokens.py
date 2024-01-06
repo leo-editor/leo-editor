@@ -916,6 +916,7 @@ class TokenBasedOrange:
             )
 
         equal_sign_spaces = self.token.context.get('equal_sign_spaces')
+        g.trace(self.index, self.token.context)  ###
         if equal_sign_spaces:  ###self.token.equal_sign_spaces:
             self.blank()
             self.add_token('op', val)
@@ -1051,7 +1052,7 @@ class TokenBasedOrange:
             if t.kind == 'line-end' and getattr(t, 'newline_kind', None) != 'nl':
                 cleaned_newline = True
         return cleaned_newline
-    #@+node:ekr.20240105145241.31: *5* tbo.colon
+    #@+node:ekr.20240105145241.31: *5* tbo.colon (to do)
     def colon(self, val: str) -> None:
         """Handle a colon."""
         ###
@@ -1306,7 +1307,7 @@ class TokenBasedOrange:
         return token.kind not in (
             'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
         )
-    #@+node:ekr.20240105145241.42: *5* tbo.scan_def (to do)
+    #@+node:ekr.20240105145241.42: *5* tbo.scan_def
     def scan_def(self) -> None:
         """The root of a recursive-descent parser for Python 'def' statements."""
         expect, expect_ops = self.expect, self.expect_ops
@@ -1329,10 +1330,12 @@ class TokenBasedOrange:
         if 0:
             dump_tokens(self.tokens[i1:i3])
         # Set in_args context for in tokens[i1:i2].
-        for n in range(i1, i2 + 1):
+        for i in range(i1, i2 + 1):
             token = self.tokens[i]
             if token.kind == 'op':
+                g.trace('set context', i)
                 token.context['in_args'] = True
+                token.context['equal_sign_spaces'] = True  ### Not valid!!!
     #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token
     def next_token(self, i: int) -> Optional[int]:
         """

@@ -279,6 +279,7 @@ class TestTokenBasedOrange(BaseTest):
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens)
             if results != expected:
+                g.printObj(contents, tag='Contents')
                 g.printObj(expected, tag='Expected (blackened)')
                 g.printObj(results, tag='Results')
             self.assertEqual(results, expected)
