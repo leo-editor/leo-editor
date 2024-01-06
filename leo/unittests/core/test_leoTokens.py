@@ -8,13 +8,11 @@ import sys
 import textwrap
 import time
 import unittest
+import warnings
 
 # pylint: disable=wrong-import-position
 
-if 0:
-    import warnings
-    warnings.simplefilter("ignore")
-
+# warnings.simplefilter("ignore")
 try:
     # Suppress a warning about imp being deprecated.
     with warnings.catch_warnings():

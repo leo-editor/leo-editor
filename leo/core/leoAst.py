@@ -7,11 +7,14 @@
 #@+<< leoAst docstring >>
 #@+node:ekr.20200113081838.1: ** << leoAst docstring >>
 """
-leoAst.py: This file does not depend on Leo in any way.
+leoAst.py
 
 The classes in this file unify python's token-based and ast-based worlds by
 creating two-way links between tokens in the token list and ast nodes in
 the parse tree. For more details, see the "Overview" section below.
+
+See also leoTokens.py. It defines a Python beautifier that uses only
+Python's tokenize module.
 
 This file requires Python 3.9 or above.
 
@@ -19,20 +22,20 @@ This file requires Python 3.9 or above.
 **Stand-alone operation**
 
 usage:
-    python -m leo.core.leoAst.py --help
-    python -m leo.core.leoAst.py --fstringify [ARGS] PATHS
-    python -m leo.core.leoAst.py --fstringify-diff [ARGS] PATHS
-    python -m leo.core.leoAst.py --orange [ARGS] PATHS
-    python -m leo.core.leoAst.py --orange-diff [ARGS] PATHS
-    python -m leo.core.leoAst.py --py-cov [ARGS]
-    python -m leo.core.leoAst.py --pytest [ARGS]
-    python -m leo.core.leoAst.py --unittest [ARGS]
+    python -m leo.core.leoAst --help
+    python -m leo.core.leoAst --fstringify [ARGS] PATHS
+    python -m leo.core.leoAst --fstringify-diff [ARGS] PATHS
+    python -m leo.core.leoAst --orange [ARGS] PATHS
+    python -m leo.core.leoAst --orange-diff [ARGS] PATHS
+    python -m leo.core.leoAst --py-cov [ARGS]
+    python -m leo.core.leoAst --pytest [ARGS]
+    python -m leo.core.leoAst --unittest [ARGS]
 
 examples:
-    python -m leo.core.leoAst.py --orange --force --verbose PATHS
-    python -m leo.core.leoAst.py --py-cov "-f TestOrange"
-    python -m leo.core.leoAst.py --pytest "-f TestOrange"
-    python -m leo.core.leoAst.py --unittest TestOrange
+    python -m leo.core.leoAst --orange --force --verbose PATHS
+    python -m leo.core.leoAst --py-cov "-f TestOrange"
+    python -m leo.core.leoAst --pytest "-f TestOrange"
+    python -m leo.core.leoAst --unittest TestOrange
 
 positional arguments:
   PATHS              directory or list of files
