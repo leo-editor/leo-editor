@@ -330,67 +330,6 @@ if 1:  # pragma: no cover
             print('')
             return ''
         return ''.join([z.to_string() for z in tokens])
-    #@+node:ekr.20240105140814.28: *3* node/token nodes...
-    # Functions that associate tokens with nodes.
-    if 0:
-        #@+others
-        #@+node:ekr.20240105140814.29: *4* function: find_statement_node
-        def find_statement_node(node: Node) -> Optional[Node]:
-            """
-            Return the nearest statement node.
-            Return None if node has only Module for a parent.
-            """
-            if isinstance(node, ast.Module):
-                return None
-            parent = node
-            while parent:
-                if is_statement_node(parent):
-                    return parent
-                parent = parent.parent
-            return None
-        #@+node:ekr.20240105140814.31: *4* function: is_long_statement
-        def is_long_statement(node: Node) -> bool:
-            """
-            Return True if node is an instance of a node that might be split into
-            shorter lines.
-            """
-            return isinstance(node, (
-                ast.Assign, ast.AnnAssign, ast.AsyncFor, ast.AsyncWith, ast.AugAssign,
-                ast.Call, ast.Delete, ast.ExceptHandler, ast.For, ast.Global,
-                ast.If, ast.Import, ast.ImportFrom,
-                ast.Nonlocal, ast.Return, ast.While, ast.With, ast.Yield, ast.YieldFrom))
-        #@+node:ekr.20240105140814.32: *4* function: is_statement_node
-        def is_statement_node(node: Node) -> bool:
-            """Return True if node is a top-level statement."""
-            return is_long_statement(node) or isinstance(node, (
-                ast.Break, ast.Continue, ast.Pass, ast.Try))
-        #@+node:ekr.20240105140814.33: *4* function: nearest_common_ancestor
-        def nearest_common_ancestor(node1: Node, node2: Node) -> Optional[Node]:
-            """
-            Return the nearest common ancestor node for the given nodes.
-
-            The nodes must have parent links.
-            """
-
-            def parents(node: Node) -> list[Node]:
-                aList = []
-                while node:
-                    aList.append(node)
-                    node = node.parent
-                return list(reversed(aList))
-
-            result = None
-            parents1 = parents(node1)
-            parents2 = parents(node2)
-            while parents1 and parents2:
-                parent1 = parents1.pop(0)
-                parent2 = parents2.pop(0)
-                if parent1 == parent2:
-                    result = parent1
-                else:
-                    break
-            return result
-        #@-others
     #@+node:ekr.20240105140814.34: *3* functions: utils...
     # General utility functions on tokens and nodes.
     #@+node:ekr.20240105140814.35: *4* function: obj_id
