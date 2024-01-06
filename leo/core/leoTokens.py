@@ -84,24 +84,22 @@ Settings = Optional[dict[str, Any]]
 #@-<< leoTokens.py: imports & annotations >>
 
 #@+others
-#@+node:ekr.20240105140814.4: **  leoTokens.py: top-level commands
-# Don't bother covering top-level commands.
-if 1:  # pragma: no cover
-    #@+others
-    #@+node:ekr.20240105140814.5: *3* command: orange_command
-    def orange_command(files: list[str], settings: Settings = None) -> None:
+#@+node:ekr.20240105140814.5: ** function: orange_command
+def orange_command(
+    files: list[str],
+    settings: Settings = None,
+) -> None:  # pragma: no cover
 
-        if not check_g():
-            return
-        for filename in files:
-            if os.path.exists(filename):
-                # print(f"orange {filename}")
-                TokenBasedOrange(settings).beautify_file(filename)
-            else:
-                print(f"file not found: {filename}")
-        # print(f"Beautify done: {len(files)} files")
-    #@-others
-#@+node:ekr.20240105140814.7: **  leoAst.py: top-level utils
+    if not check_g():
+        return
+    for filename in files:
+        if os.path.exists(filename):
+            # print(f"orange {filename}")
+            TokenBasedOrange(settings).beautify_file(filename)
+        else:
+            print(f"file not found: {filename}")
+    # print(f"Beautify done: {len(files)} files")
+#@+node:ekr.20240105140814.7: ** top-level utils
 if 1:  # pragma: no cover
     #@+others
     #@+node:ekr.20240105140814.8: *3* function: check_g
@@ -111,27 +109,6 @@ if 1:  # pragma: no cover
             print('This statement failed: `from leo.core import leoGlobals as g`')
             print('Please adjust your Python path accordingly')
         return bool(g)
-    #@+node:ekr.20240105140814.9: *3* function: get_modified_files
-    def get_modified_files(repo_path: str) -> list[str]:
-        """Return the modified files in the given repo."""
-        if not repo_path:
-            return []
-        old_cwd = os.getcwd()
-        os.chdir(repo_path)
-        try:
-            # We are not checking the return code here, so:
-            # pylint: disable=subprocess-run-check
-            result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
-            if result.returncode != 0:
-                print("Error running git command")
-                return []
-            modified_files = []
-            for line in result.stdout.split('\n'):
-                if line.startswith((' M', 'M ', 'A ', ' A')):
-                    modified_files.append(line[3:])
-            return [os.path.abspath(z) for z in modified_files]
-        finally:
-            os.chdir(old_cwd)
     #@+node:ekr.20240105140814.11: *3* functions: reading & writing files
     #@+node:ekr.20240105140814.12: *4* function: regularize_nls
     def regularize_nls(s: str) -> str:
@@ -355,62 +332,65 @@ if 1:  # pragma: no cover
         return ''.join([z.to_string() for z in tokens])
     #@+node:ekr.20240105140814.28: *3* node/token nodes...
     # Functions that associate tokens with nodes.
-    #@+node:ekr.20240105140814.29: *4* function: find_statement_node
-    def find_statement_node(node: Node) -> Optional[Node]:
-        """
-        Return the nearest statement node.
-        Return None if node has only Module for a parent.
-        """
-        if isinstance(node, ast.Module):
+    if 0:
+        #@+others
+        #@+node:ekr.20240105140814.29: *4* function: find_statement_node
+        def find_statement_node(node: Node) -> Optional[Node]:
+            """
+            Return the nearest statement node.
+            Return None if node has only Module for a parent.
+            """
+            if isinstance(node, ast.Module):
+                return None
+            parent = node
+            while parent:
+                if is_statement_node(parent):
+                    return parent
+                parent = parent.parent
             return None
-        parent = node
-        while parent:
-            if is_statement_node(parent):
-                return parent
-            parent = parent.parent
-        return None
-    #@+node:ekr.20240105140814.31: *4* function: is_long_statement
-    def is_long_statement(node: Node) -> bool:
-        """
-        Return True if node is an instance of a node that might be split into
-        shorter lines.
-        """
-        return isinstance(node, (
-            ast.Assign, ast.AnnAssign, ast.AsyncFor, ast.AsyncWith, ast.AugAssign,
-            ast.Call, ast.Delete, ast.ExceptHandler, ast.For, ast.Global,
-            ast.If, ast.Import, ast.ImportFrom,
-            ast.Nonlocal, ast.Return, ast.While, ast.With, ast.Yield, ast.YieldFrom))
-    #@+node:ekr.20240105140814.32: *4* function: is_statement_node
-    def is_statement_node(node: Node) -> bool:
-        """Return True if node is a top-level statement."""
-        return is_long_statement(node) or isinstance(node, (
-            ast.Break, ast.Continue, ast.Pass, ast.Try))
-    #@+node:ekr.20240105140814.33: *4* function: nearest_common_ancestor
-    def nearest_common_ancestor(node1: Node, node2: Node) -> Optional[Node]:
-        """
-        Return the nearest common ancestor node for the given nodes.
+        #@+node:ekr.20240105140814.31: *4* function: is_long_statement
+        def is_long_statement(node: Node) -> bool:
+            """
+            Return True if node is an instance of a node that might be split into
+            shorter lines.
+            """
+            return isinstance(node, (
+                ast.Assign, ast.AnnAssign, ast.AsyncFor, ast.AsyncWith, ast.AugAssign,
+                ast.Call, ast.Delete, ast.ExceptHandler, ast.For, ast.Global,
+                ast.If, ast.Import, ast.ImportFrom,
+                ast.Nonlocal, ast.Return, ast.While, ast.With, ast.Yield, ast.YieldFrom))
+        #@+node:ekr.20240105140814.32: *4* function: is_statement_node
+        def is_statement_node(node: Node) -> bool:
+            """Return True if node is a top-level statement."""
+            return is_long_statement(node) or isinstance(node, (
+                ast.Break, ast.Continue, ast.Pass, ast.Try))
+        #@+node:ekr.20240105140814.33: *4* function: nearest_common_ancestor
+        def nearest_common_ancestor(node1: Node, node2: Node) -> Optional[Node]:
+            """
+            Return the nearest common ancestor node for the given nodes.
 
-        The nodes must have parent links.
-        """
+            The nodes must have parent links.
+            """
 
-        def parents(node: Node) -> list[Node]:
-            aList = []
-            while node:
-                aList.append(node)
-                node = node.parent
-            return list(reversed(aList))
+            def parents(node: Node) -> list[Node]:
+                aList = []
+                while node:
+                    aList.append(node)
+                    node = node.parent
+                return list(reversed(aList))
 
-        result = None
-        parents1 = parents(node1)
-        parents2 = parents(node2)
-        while parents1 and parents2:
-            parent1 = parents1.pop(0)
-            parent2 = parents2.pop(0)
-            if parent1 == parent2:
-                result = parent1
-            else:
-                break
-        return result
+            result = None
+            parents1 = parents(node1)
+            parents2 = parents(node2)
+            while parents1 and parents2:
+                parent1 = parents1.pop(0)
+                parent2 = parents2.pop(0)
+                if parent1 == parent2:
+                    result = parent1
+                else:
+                    break
+            return result
+        #@-others
     #@+node:ekr.20240105140814.34: *3* functions: utils...
     # General utility functions on tokens and nodes.
     #@+node:ekr.20240105140814.35: *4* function: obj_id
@@ -628,14 +608,11 @@ class InputToken:
     #@+node:ekr.20240105140814.55: *4* itoken.dump
     def dump(self) -> str:  # pragma: no cover
         """Dump a token and related links."""
-        # Let block.
-        node_id = self.node.node_index if self.node else ''
-        node_cn = self.node.__class__.__name__ if self.node else ''
         return (
             f"{self.line_number:4} "
-            f"{node_id:5} {node_cn:16} "
             f"{self.index:>5} {self.kind:>15} "
-            f"{self.show_val(100)}")
+            f"{self.show_val(100)}"
+        )
     #@+node:ekr.20240105140814.56: *4* itoken.dump_header
     def dump_header(self) -> None:  # pragma: no cover
         """Print the header for token.dump"""
@@ -646,15 +623,8 @@ class InputToken:
             f"==== ===== ===== {'':10} ===== {'':10} ==== =====\n")
     #@+node:ekr.20240105140814.57: *4* itoken.error_dump
     def error_dump(self) -> str:  # pragma: no cover
-        """Dump a token or result node for error message."""
-        if self.node:
-            node_id = obj_id(self.node)
-            node_s = f"{node_id} {self.node.__class__.__name__}"
-        else:
-            node_s = "None"
-        return (
-            f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20} "
-            f"{node_s}")
+        """Dump a token for error message."""
+        return f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20}"
     #@+node:ekr.20240105140814.58: *4* itoken.show_val
     def show_val(self, truncate_n: int) -> str:  # pragma: no cover
         """Return the token.value field."""
@@ -716,10 +686,10 @@ class Tokenizer:
             print('\nResult...\n')
             g.printObj(result)
         return ok
-    #@+node:ekr.20240105143214.4: *4* itok.create_tokens
-    def create_tokens(self, contents: str, five_tuples: Generator) -> list[InputToken]:
+    #@+node:ekr.20240105143214.4: *4* itok.create_input_tokens
+    def create_input_tokens(self, contents: str, five_tuples: Generator) -> list[InputToken]:
         """
-        InputTokenizer.create_tokens.
+        InputTokenizer.create_input_tokens.
 
         Return list of InputToken's from tokens, a list of 5-tuples.
         """
@@ -797,7 +767,7 @@ class Tokenizer:
             print('make_tokens: exception in tokenize.tokenize')
             g.es_exception()
             return None
-        tokens = self.create_tokens(contents, five_tuples)
+        tokens = self.create_input_tokens(contents, five_tuples)
         assert self.check_round_trip(contents, tokens)
         return tokens
     #@+node:ekr.20240105143214.7: *4* itok.tokens_to_string
@@ -1010,30 +980,6 @@ class TokenBasedOrange:
         # Write the results
         print(f"Beautified: {g.shortFileName(filename)}")
         write_file(filename, results, encoding=encoding)
-        return True
-    #@+node:ekr.20240105145241.7: *5* tbo.beautify_file_diff (entry)
-    def beautify_file_diff(self, filename: str) -> bool:  # pragma: no cover
-        """
-        Orange: Print the diffs that would result from the orange-file command.
-
-        Return True if the file would be changed.
-        """
-        tag = 'diff-beautify-file'
-        self.filename = filename
-        contents, encoding, tokens = self.init_tokens_from_file(filename)
-        if not (contents and tokens):
-            return False
-        assert isinstance(tokens[0], InputToken), repr(tokens[0])
-        try:
-            results = self.beautify(contents, filename, tokens)
-        except BeautifyError:
-            return False
-        # Something besides newlines must change.
-        if regularize_nls(contents) == regularize_nls(results):
-            print(f"{tag}: Unchanged: {filename}")
-            return False
-        # Show the diffs.
-        show_diffs(contents, results, filename=filename)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
@@ -1841,7 +1787,7 @@ class TokenBasedOrange:
         self.add_token('string', tail_s)
         self.add_token('line-end', '\n')
     #@-others
-#@+node:ekr.20240105140814.121: ** function: main (leoTokens.py) & helper
+#@+node:ekr.20240105140814.121: ** function: (leoTokens.py) main & helpers
 def main() -> None:  # pragma: no cover
     """Run commands specified by sys.argv."""
     args, settings_dict, arg_files = scan_args()
@@ -1889,6 +1835,27 @@ def main() -> None:  # pragma: no cover
         orange_command(files, settings_dict)
     # if args.od:
         # orange_diff_command(files, settings_dict)
+#@+node:ekr.20240105140814.9: *3* function: get_modified_files
+def get_modified_files(repo_path: str) -> list[str]:
+    """Return the modified files in the given repo."""
+    if not repo_path:
+        return []
+    old_cwd = os.getcwd()
+    os.chdir(repo_path)
+    try:
+        # We are not checking the return code here, so:
+        # pylint: disable=subprocess-run-check
+        result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+        if result.returncode != 0:
+            print("Error running git command")
+            return []
+        modified_files = []
+        for line in result.stdout.split('\n'):
+            if line.startswith((' M', 'M ', 'A ', ' A')):
+                modified_files.append(line[3:])
+        return [os.path.abspath(z) for z in modified_files]
+    finally:
+        os.chdir(old_cwd)
 #@+node:ekr.20240105140814.10: *3* function: scan_args
 def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
     description = textwrap.dedent("""\
