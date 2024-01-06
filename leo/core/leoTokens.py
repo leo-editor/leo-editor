@@ -1535,10 +1535,10 @@ def main() -> None:  # pragma: no cover
         return
     if args.verbose:
         kind = (
-            'fstringify' if args.f else
-            'fstringify-diff' if args.fd else
+            # 'fstringify' if args.f else
+            # 'fstringify-diff' if args.fd else
             'orange' if args.o else
-            'orange-diff' if args.od else
+            # 'orange-diff' if args.od else
             None
         )
         if kind:
