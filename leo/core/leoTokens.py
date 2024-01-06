@@ -98,7 +98,7 @@ def orange_command(
         else:
             print(f"file not found: {filename}")
     # print(f"Beautify done: {len(files)} files")
-#@+node:ekr.20240105140814.7: ** leoTokens: functions
+#@+node:ekr.20240105140814.7: ** leoTokens: top-level functions
 if 1:  # pragma: no cover
     #@+others
     #@+node:ekr.20240105140814.8: *3* function: check_g
@@ -1240,7 +1240,7 @@ class TokenBasedOrange:
             self.tokens[i]
         except IndexError:
             raise BeautifyError(f"IndexError: tokens[{i}]")
-    #@+node:ekr.20240106090914.1: *5* tbo.expect
+    #@+node:ekr.20240106090914.1: *5* tbo.expect & expect_op
     def expect(self, i: int, kind: str, value: str = None) -> None:
         self.check_token_index(i)
         token = self.tokens[i]
@@ -1251,22 +1251,27 @@ class TokenBasedOrange:
             message = f"Expected token.kind: {kind} got {token!r}"
         if not token or token.kind != kind or value is not None and token.value != value:
             raise BeautifyError(message)
-    #@+node:ekr.20240106110748.1: *5* tbo.find_matching_paren
-    def find_matching_paren(self, i: int) -> int:
+
+    def expect_ops(self, i: int, values: tuple) -> None:
+        self.check_token_index(i)
+        token = self.tokens[i]
+        if token.kind != 'op':
+            raise BeautifyError(f"Expected op token, got {token.kind!r}")
+        if token.value not in values:
+            raise BeautifyError(f"Expected value in {values!r}, got {token.value!r}")
+
+    #@+node:ekr.20240106110748.1: *5* tbo.find_op
+    def find_op(self, i: int, target_value: str) -> int:
         """Return the index of the matching ')' token."""
-        self.expect(i, 'op', '(')
-        curly_brackets, parens, square_brackets = 0, 1, 0
-        i += 1
+        curly_brackets, parens, square_brackets = 0, 0, 0
         while i < len(self.tokens):
             token = self.tokens[i]
-            kind, value = token.kind, token.value
-            if kind == 'op' and value in '()[]{}':  
+            value = token.value
+            if token.kind == 'op':
                 if value == '(':
                     parens += 1
                 elif value == ')':
                     parens -= 1
-                    if (curly_brackets, parens, square_brackets) == (0, 0, 0):
-                        return i
                 elif value == '{':
                     curly_brackets += 1
                 elif value == '}':
@@ -1275,6 +1280,8 @@ class TokenBasedOrange:
                     square_brackets += 1
                 elif value == ']':
                     square_brackets -= 1
+                if value == target_value and (curly_brackets, parens, square_brackets) == (0, 0, 0):
+                    return i
             i += 1
         return None
     #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
@@ -1300,15 +1307,26 @@ class TokenBasedOrange:
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def (to do)
     def scan_def(self) -> None:
         """The root of a recursive-descent parser for Python 'def' statements."""
-        expect, next = self.expect, self.next_token
+        expect, expect_ops = self.expect, self.expect_ops
+        find_op, next = self.find_op, self.next_token
         i = self.index
         expect(i, 'name', 'def')
         i = next(i)
         expect(i, 'name')
         i = next(i)
         expect(i, 'op', '(')
-        i = self.find_matching_paren(i)
-        ### Scan for matching ')'
+        i1 = i
+        i = i2 = find_op(i, ')')
+        expect(i, 'op', ')')
+        i = next(i)
+        expect_ops(i, ('->', ':'))
+        i = i3 = find_op(i, ':')
+        expect(i, ':')
+        if 0:
+            g.trace(i1, i2, i3)
+        if 1:
+            dump_tokens(self.tokens[i1 : i3 + 1])
+        # Set context for all '=' and ':' tokens between tokens[i1:i2].
     #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token
     def next_token(self, i: int) -> Optional[int]:
         """
