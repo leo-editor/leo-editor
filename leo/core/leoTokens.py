@@ -1230,6 +1230,9 @@ class TokenBasedOrange:
         self.add_token('word-op', s)
         self.blank()
     #@+node:ekr.20240105145241.41: *4* tbo: Scanning (to do)
+    #@+node:ekr.20240106053414.1: *5* tbo.is_keyword (to do):
+    def is_keyword(self, token: InputToken) -> bool:
+        return False  ###'
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def (to do)
     def scan_def(self) -> None:
         if 0:
