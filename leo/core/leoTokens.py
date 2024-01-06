@@ -250,10 +250,10 @@ if 1:  # pragma: no cover
                 print(repr(z.line))
         print('')
     #@+node:ekr.20240105140814.43: *4* function: dump_results
-    def dump_results(tokens: list[InputToken], tag: str = 'Results') -> None:
+    def dump_results(tokens: list[OutputToken], tag: str = 'Results') -> None:
         print('')
         print(f"{tag}...\n")
-        print(tokens_to_string(tokens))
+        print(output_tokens_to_string(tokens))
         print('')
     #@+node:ekr.20240105140814.44: *4* function: dump_tokens
     def dump_tokens(tokens: list[InputToken], tag: str = 'Tokens') -> None:
@@ -286,30 +286,11 @@ if 1:  # pragma: no cover
             print('')
             return ''
         return ''.join([z.to_string() for z in tokens])
-    #@+node:ekr.20240105140814.26: *4* function: tokens_to_string
-    def tokens_to_string(tokens: list[InputToken]) -> str:
-        """Return the string represented by the list of tokens."""
-        if tokens is None:
-            # This indicates an internal error.
-            print('')
-            g.trace('===== No tokens ===== ')
-            print('')
-            return ''
-        return ''.join([z.to_string() for z in tokens])
     #@-others
-#@+node:ekr.20240105140814.51: ** Exception classes
-class AssignLinksError(Exception):
-    """Assigning links to ast nodes failed."""
-
-class AstNotEqual(Exception):
-    """The two given AST's are not equivalent."""
-
+#@+node:ekr.20240105140814.52: ** Classes
+#@+node:ekr.20240105140814.51: *3* class BeautifyError(Exception)
 class BeautifyError(Exception):
     """Leading tabs found."""
-
-class FailFast(Exception):
-    """Abort tests in TestRunner class."""
-#@+node:ekr.20240105140814.52: ** Classes
 #@+node:ekr.20240105140814.53: *3* class InputToken
 class InputToken:
     """

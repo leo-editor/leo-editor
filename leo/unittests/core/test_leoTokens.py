@@ -27,7 +27,7 @@ from leo.core.leoTokens import InputToken, Tokenizer, TokenBasedOrange
 from leo.core.leoTokens import get_encoding_directive, read_file, strip_BOM
 
 # Utility functions.
-from leo.core.leoTokens import dump_contents, dump_tokens, tokens_to_string
+from leo.core.leoTokens import dump_contents, dump_tokens, output_tokens_to_string
 #@-<< test_leoTokens imports >>
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
@@ -99,7 +99,7 @@ class BaseTest(unittest.TestCase):
     def check_roundtrip(self, contents, *, debug_list: list[str] = None):
         """Check that the tokenizer round-trips the given contents."""
         contents, tokens = self.make_data(contents, debug_list=debug_list)
-        results = tokens_to_string(tokens)
+        results = output_tokens_to_string(tokens)
         self.assertEqual(contents, results)
     #@+node:ekr.20240105153425.44: *3* BaseTest.make_data
     def make_data(self,
