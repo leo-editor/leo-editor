@@ -158,7 +158,6 @@ Leo's outline structure. These comments have the form::
 from __future__ import annotations
 import argparse
 import ast
-import codecs
 import difflib
 import glob
 import io
@@ -269,6 +268,10 @@ if 1:  # pragma: no cover
             return [os.path.abspath(z) for z in modified_files]
         finally:
             os.chdir(old_cwd)
+    #@+node:ekr.20200218071822.1: *3* function: regularize_nls
+    def regularize_nls(s: str) -> str:
+        """Regularize newlines within s."""
+        return s.replace('\r\n', '\n').replace('\r', '\n')
     #@+node:ekr.20220404062739.1: *3* function: scan_ast_args
     def scan_ast_args() -> tuple[Any, dict[str, Any], list[str]]:
         description = textwrap.dedent("""\
@@ -325,114 +328,7 @@ if 1:  # pragma: no cover
             'verbose': bool(args.verbose),
         }
         return args, settings_dict, files
-    #@+node:ekr.20200107114409.1: *3* functions: reading & writing files
-    #@+node:ekr.20200218071822.1: *4* function: regularize_nls
-    def regularize_nls(s: str) -> str:
-        """Regularize newlines within s."""
-        return s.replace('\r\n', '\n').replace('\r', '\n')
-    #@+node:ekr.20200106171502.1: *4* function: get_encoding_directive
-    # This is the pattern in PEP 263.
-    encoding_pattern = re.compile(r'^[ \t\f]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)')
-
-    def get_encoding_directive(bb: bytes) -> str:
-        """
-        Get the encoding from the encoding directive at the start of a file.
-
-        bb: The bytes of the file.
-
-        Returns the codec name, or 'UTF-8'.
-
-        Adapted from pyzo. Copyright 2008 to 2020 by Almar Klein.
-        """
-        for line in bb.split(b'\n', 2)[:2]:
-            # Try to make line a string
-            try:
-                line2 = line.decode('ASCII').strip()
-            except Exception:
-                continue
-            # Does the line match the PEP 263 pattern?
-            m = encoding_pattern.match(line2)
-            if not m:
-                continue
-            # Is it a known encoding? Correct the name if it is.
-            try:
-                c = codecs.lookup(m.group(1))
-                return c.name
-            except Exception:
-                pass
-        return 'UTF-8'
-    #@+node:ekr.20200103113417.1: *4* function: read_file
-    def read_file(filename: str, encoding: str = 'utf-8') -> Optional[str]:
-        """
-        Return the contents of the file with the given name.
-        Print an error message and return None on error.
-        """
-        tag = 'read_file'
-        try:
-            # Translate all newlines to '\n'.
-            with open(filename, 'r', encoding=encoding) as f:
-                s = f.read()
-            return regularize_nls(s)
-        except Exception:
-            print(f"{tag}: can not read {filename}")
-            return None
-    #@+node:ekr.20200106173430.1: *4* function: read_file_with_encoding
-    def read_file_with_encoding(filename: str) -> tuple[str, str]:
-        """
-        Read the file with the given name,  returning (e, s), where:
-
-        s is the string, converted to unicode, or '' if there was an error.
-
-        e is the encoding of s, computed in the following order:
-
-        - The BOM encoding if the file starts with a BOM mark.
-        - The encoding given in the # -*- coding: utf-8 -*- line.
-        - The encoding given by the 'encoding' keyword arg.
-        - 'utf-8'.
-        """
-        # First, read the file.
-        tag = 'read_with_encoding'
-        try:
-            with open(filename, 'rb') as f:
-                bb = f.read()
-        except Exception:
-            print(f"{tag}: can not read {filename}")
-            return 'UTF-8', None
-        # Look for the BOM.
-        e, bb = strip_BOM(bb)
-        if not e:
-            # Python's encoding comments override everything else.
-            e = get_encoding_directive(bb)
-        s = g.toUnicode(bb, encoding=e)
-        s = regularize_nls(s)
-        return e, s
-    #@+node:ekr.20200106174158.1: *4* function: strip_BOM
-    def strip_BOM(bb: bytes) -> tuple[Optional[str], bytes]:
-        """
-        bb must be the bytes contents of a file.
-
-        If bb starts with a BOM (Byte Order Mark), return (e, bb2), where:
-
-        - e is the encoding implied by the BOM.
-        - bb2 is bb, stripped of the BOM.
-
-        If there is no BOM, return (None, bb)
-        """
-        assert isinstance(bb, bytes), bb.__class__.__name__
-        table = (
-                        # Test longer bom's first.
-            (4, 'utf-32', codecs.BOM_UTF32_BE),
-            (4, 'utf-32', codecs.BOM_UTF32_LE),
-            (3, 'utf-8', codecs.BOM_UTF8),
-            (2, 'utf-16', codecs.BOM_UTF16_BE),
-            (2, 'utf-16', codecs.BOM_UTF16_LE),
-        )
-        for n, e, bom in table:
-            assert len(bom) == n
-            if bom == bb[: len(bom)]:
-                return e, bb[len(bom) :]
-        return None, bb
-    #@+node:ekr.20200103163100.1: *4* function: write_file
+    #@+node:ekr.20200103163100.1: *3* function: write_file
     def write_file(filename: str, s: str, encoding: str = 'utf-8') -> None:
         """
         Write the string s to the file whose name is given.
@@ -448,6 +344,62 @@ if 1:  # pragma: no cover
                 f.write(s)
         except Exception as e:
             g.trace(f"Error writing {filename}\n{e}")
+    #@+node:ekr.20191231110051.1: *3* functions: dumpers...
+    #@+node:ekr.20191027074436.1: *4* function: dump_ast
+    def dump_ast(ast: Node, tag: str = 'dump_ast') -> None:
+        """Utility to dump an ast tree."""
+        g.printObj(AstDumper().dump_ast(ast), tag=tag)
+    #@+node:ekr.20191228095945.4: *4* function: dump_contents
+    def dump_contents(contents: str, tag: str = 'Contents') -> None:
+        print('')
+        print(f"{tag}...\n")
+        for i, z in enumerate(g.splitLines(contents)):
+            print(f"{i+1:<3} ", z.rstrip())
+        print('')
+    #@+node:ekr.20191228095945.5: *4* function: dump_lines
+    def dump_lines(tokens: list[Token], tag: str = 'Token lines') -> None:
+        print('')
+        print(f"{tag}...\n")
+        for z in tokens:
+            if z.line.strip():
+                print(z.line.rstrip())
+            else:
+                print(repr(z.line))
+        print('')
+    #@+node:ekr.20191228095945.7: *4* function: dump_results
+    def dump_results(tokens: list[Token], tag: str = 'Results') -> None:
+        print('')
+        print(f"{tag}...\n")
+        print(tokens_to_string(tokens))
+        print('')
+    #@+node:ekr.20191228095945.8: *4* function: dump_tokens
+    def dump_tokens(tokens: list[Token], tag: str = 'Tokens') -> None:
+        print('')
+        print(f"{tag}...\n")
+        if not tokens:
+            return
+        print("Note: values shown are repr(value) *except* for 'string' and 'fstring*' tokens.")
+        tokens[0].dump_header()
+        for z in tokens:
+            print(z.dump())
+        print('')
+    #@+node:ekr.20191228095945.9: *4* function: dump_tree
+    def dump_tree(tokens: list[Token], tree: Node, tag: str = 'Tree') -> None:
+        print('')
+        print(f"{tag}...\n")
+        print(AstDumper().dump_tree(tokens, tree))
+    #@+node:ekr.20200107040729.1: *4* function: show_diffs
+    def show_diffs(s1: str, s2: str, filename: str = '') -> None:
+        """Print diffs between strings s1 and s2."""
+        lines = list(difflib.unified_diff(
+            g.splitLines(s1),
+            g.splitLines(s2),
+            fromfile=f"Old {filename}",
+            tofile=f"New {filename}",
+        ))
+        print('')
+        tag = f"Diffs for {filename}" if filename else 'Diffs'
+        g.printObj(lines, tag=tag)
     #@+node:ekr.20200113154120.1: *3* functions: tokens
     #@+node:ekr.20191223093539.1: *4* function: find_anchor_token
     def find_anchor_token(node: Node, global_token_list: list[Token]) -> Optional[Token]:
@@ -648,76 +600,6 @@ if 1:  # pragma: no cover
             print('')
             return ''
         return ''.join([z.to_string() for z in tokens])
-    #@+node:ekr.20191223095408.1: *3* node/token nodes...
-    # Functions that associate tokens with nodes.
-    #@+node:ekr.20200120082031.1: *4* function: find_statement_node
-    def find_statement_node(node: Node) -> Optional[Node]:
-        """
-        Return the nearest statement node.
-        Return None if node has only Module for a parent.
-        """
-        if isinstance(node, ast.Module):
-            return None
-        parent = node
-        while parent:
-            if is_statement_node(parent):
-                return parent
-            parent = parent.parent
-        return None
-    #@+node:ekr.20191223054300.1: *4* function: is_ancestor
-    def is_ancestor(node: Node, token: Token) -> bool:
-        """Return True if node is an ancestor of token."""
-        t_node = token.node
-        if not t_node:
-            assert token.kind == 'killed', repr(token)
-            return False
-        while t_node:
-            if t_node == node:
-                return True
-            t_node = t_node.parent
-        return False
-    #@+node:ekr.20200120082300.1: *4* function: is_long_statement
-    def is_long_statement(node: Node) -> bool:
-        """
-        Return True if node is an instance of a node that might be split into
-        shorter lines.
-        """
-        return isinstance(node, (
-            ast.Assign, ast.AnnAssign, ast.AsyncFor, ast.AsyncWith, ast.AugAssign,
-            ast.Call, ast.Delete, ast.ExceptHandler, ast.For, ast.Global,
-            ast.If, ast.Import, ast.ImportFrom,
-            ast.Nonlocal, ast.Return, ast.While, ast.With, ast.Yield, ast.YieldFrom))
-    #@+node:ekr.20200120110005.1: *4* function: is_statement_node
-    def is_statement_node(node: Node) -> bool:
-        """Return True if node is a top-level statement."""
-        return is_long_statement(node) or isinstance(node, (
-            ast.Break, ast.Continue, ast.Pass, ast.Try))
-    #@+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor
-    def nearest_common_ancestor(node1: Node, node2: Node) -> Optional[Node]:
-        """
-        Return the nearest common ancestor node for the given nodes.
-
-        The nodes must have parent links.
-        """
-
-        def parents(node: Node) -> list[Node]:
-            aList = []
-            while node:
-                aList.append(node)
-                node = node.parent
-            return list(reversed(aList))
-
-        result = None
-        parents1 = parents(node1)
-        parents2 = parents(node2)
-        while parents1 and parents2:
-            parent1 = parents1.pop(0)
-            parent2 = parents2.pop(0)
-            if parent1 == parent2:
-                result = parent1
-            else:
-                break
-        return result
     #@+node:ekr.20191231072039.1: *3* functions: utils...
     # General utility functions on tokens and nodes.
     #@+node:ekr.20191119085222.1: *4* function: obj_id
@@ -835,62 +717,76 @@ if 1:  # pragma: no cover
             oops('Unexpected Exception')
             g.es_exception()
         return None
-    #@+node:ekr.20191231110051.1: *3* functions: dumpers...
-    #@+node:ekr.20191027074436.1: *4* function: dump_ast
-    def dump_ast(ast: Node, tag: str = 'dump_ast') -> None:
-        """Utility to dump an ast tree."""
-        g.printObj(AstDumper().dump_ast(ast), tag=tag)
-    #@+node:ekr.20191228095945.4: *4* function: dump_contents
-    def dump_contents(contents: str, tag: str = 'Contents') -> None:
-        print('')
-        print(f"{tag}...\n")
-        for i, z in enumerate(g.splitLines(contents)):
-            print(f"{i+1:<3} ", z.rstrip())
-        print('')
-    #@+node:ekr.20191228095945.5: *4* function: dump_lines
-    def dump_lines(tokens: list[Token], tag: str = 'Token lines') -> None:
-        print('')
-        print(f"{tag}...\n")
-        for z in tokens:
-            if z.line.strip():
-                print(z.line.rstrip())
+    #@+node:ekr.20191223095408.1: *3* node/token nodes...
+    # Functions that associate tokens with nodes.
+    #@+node:ekr.20200120082031.1: *4* function: find_statement_node
+    def find_statement_node(node: Node) -> Optional[Node]:
+        """
+        Return the nearest statement node.
+        Return None if node has only Module for a parent.
+        """
+        if isinstance(node, ast.Module):
+            return None
+        parent = node
+        while parent:
+            if is_statement_node(parent):
+                return parent
+            parent = parent.parent
+        return None
+    #@+node:ekr.20191223054300.1: *4* function: is_ancestor
+    def is_ancestor(node: Node, token: Token) -> bool:
+        """Return True if node is an ancestor of token."""
+        t_node = token.node
+        if not t_node:
+            assert token.kind == 'killed', repr(token)
+            return False
+        while t_node:
+            if t_node == node:
+                return True
+            t_node = t_node.parent
+        return False
+    #@+node:ekr.20200120082300.1: *4* function: is_long_statement
+    def is_long_statement(node: Node) -> bool:
+        """
+        Return True if node is an instance of a node that might be split into
+        shorter lines.
+        """
+        return isinstance(node, (
+            ast.Assign, ast.AnnAssign, ast.AsyncFor, ast.AsyncWith, ast.AugAssign,
+            ast.Call, ast.Delete, ast.ExceptHandler, ast.For, ast.Global,
+            ast.If, ast.Import, ast.ImportFrom,
+            ast.Nonlocal, ast.Return, ast.While, ast.With, ast.Yield, ast.YieldFrom))
+    #@+node:ekr.20200120110005.1: *4* function: is_statement_node
+    def is_statement_node(node: Node) -> bool:
+        """Return True if node is a top-level statement."""
+        return is_long_statement(node) or isinstance(node, (
+            ast.Break, ast.Continue, ast.Pass, ast.Try))
+    #@+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor
+    def nearest_common_ancestor(node1: Node, node2: Node) -> Optional[Node]:
+        """
+        Return the nearest common ancestor node for the given nodes.
+
+        The nodes must have parent links.
+        """
+
+        def parents(node: Node) -> list[Node]:
+            aList = []
+            while node:
+                aList.append(node)
+                node = node.parent
+            return list(reversed(aList))
+
+        result = None
+        parents1 = parents(node1)
+        parents2 = parents(node2)
+        while parents1 and parents2:
+            parent1 = parents1.pop(0)
+            parent2 = parents2.pop(0)
+            if parent1 == parent2:
+                result = parent1
             else:
-                print(repr(z.line))
-        print('')
-    #@+node:ekr.20191228095945.7: *4* function: dump_results
-    def dump_results(tokens: list[Token], tag: str = 'Results') -> None:
-        print('')
-        print(f"{tag}...\n")
-        print(tokens_to_string(tokens))
-        print('')
-    #@+node:ekr.20191228095945.8: *4* function: dump_tokens
-    def dump_tokens(tokens: list[Token], tag: str = 'Tokens') -> None:
-        print('')
-        print(f"{tag}...\n")
-        if not tokens:
-            return
-        print("Note: values shown are repr(value) *except* for 'string' and 'fstring*' tokens.")
-        tokens[0].dump_header()
-        for z in tokens:
-            print(z.dump())
-        print('')
-    #@+node:ekr.20191228095945.9: *4* function: dump_tree
-    def dump_tree(tokens: list[Token], tree: Node, tag: str = 'Tree') -> None:
-        print('')
-        print(f"{tag}...\n")
-        print(AstDumper().dump_tree(tokens, tree))
-    #@+node:ekr.20200107040729.1: *4* function: show_diffs
-    def show_diffs(s1: str, s2: str, filename: str = '') -> None:
-        """Print diffs between strings s1 and s2."""
-        lines = list(difflib.unified_diff(
-            g.splitLines(s1),
-            g.splitLines(s2),
-            fromfile=f"Old {filename}",
-            tofile=f"New {filename}",
-        ))
-        print('')
-        tag = f"Diffs for {filename}" if filename else 'Diffs'
-        g.printObj(lines, tag=tag)
+                break
+        return result
     #@+node:ekr.20191225061516.1: *3* node/token replacers...
     # Functions that replace tokens or nodes.
     #@+node:ekr.20191231162249.1: *4* function: add_token_to_token_list
@@ -1852,7 +1748,7 @@ class Orange:
         """
         self.level = 0
         self.filename = filename
-        encoding, contents = read_file_with_encoding(filename)
+        contents, encoding = g.readFileIntoString(filename)
         if not contents:
             return None, None, None
         self.tokens = tokens = self.make_tokens(contents)
@@ -3059,7 +2955,7 @@ class TokenOrderGenerator:
         """
         self.level = 0
         self.filename = filename
-        encoding, contents = read_file_with_encoding(filename)
+        contents, encoding = g.readFileIntoString(filename)
         if not contents:
             return None, None, None, None
         self.tokens = tokens = self.make_tokens(contents)

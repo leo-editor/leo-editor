@@ -36,7 +36,6 @@ from leo.core import leoGlobals as g
 from leo.core.leoAst import AstNotEqual
 from leo.core.leoAst import Fstringify, Orange
 from leo.core.leoAst import Token, TokenOrderGenerator
-from leo.core.leoAst import get_encoding_directive, read_file, strip_BOM
 from leo.core.leoAst import make_tokens, parse_ast, tokens_to_string
 from leo.core.leoAst import dump_ast, dump_contents, dump_tokens, dump_tree, _op_names
 #@-<< test_leoAst imports >>
@@ -243,7 +242,7 @@ class BaseTest(unittest.TestCase):
         directory = os.path.dirname(__file__)
         filename = g.finalize_join(directory, '..', '..', 'core', filename)
         assert os.path.exists(filename), repr(filename)
-        contents = read_file(filename)
+        contents = g.readFileIntoUnicodeString(filename)
         contents, tokens, tree = self.make_data(contents, description=filename)
         return contents, tokens, tree
     #@+node:ekr.20191228101601.1: *4* BaseTest: passes...
@@ -418,7 +417,7 @@ class TestTOG(BaseTest):
         if py_version < (3, 9):
             self.skipTest('Requires Python 3.9 or above')  # pragma: no cover
         # Verify that leoAst can parse the file.
-        contents = read_file(path)
+        contents = g.readFileIntoUnicodeString(path)
         self.make_data(contents)
     #@+node:ekr.20210318214057.1: *5* test_line_315
     def test_line_315(self):
@@ -1347,7 +1346,7 @@ class Optional_TestFiles(BaseTest):
         filename = os.path.join(directory, filename)
         # A fair comparison omits the read time.
         t0 = get_time()
-        contents = read_file(filename)
+        contents = g.readFileIntoUnicodeString(filename)
         t1 = get_time()
         # Part 1: TOG.
         tog = TokenOrderGenerator()
@@ -2819,30 +2818,6 @@ class TestTokens(BaseTest):
                         f"{traverser.__class__.__name__}.{z}")
         msg = f"{nodes} node types, {ops} op types, {errors} errors"
         assert not errors, msg
-    #@-others
-#@+node:ekr.20200107144010.1: *3* class TestTopLevelFunctions (BaseTest)
-class TestTopLevelFunctions(BaseTest):
-    """Tests for the top-level functions in leoAst.py."""
-    #@+others
-    #@+node:ekr.20200107144227.1: *4* test_get_encoding_directive
-    def test_get_encoding_directive(self):
-
-        filename = __file__
-        assert os.path.exists(filename), repr(filename)
-        with open(filename, 'rb') as f:
-            bb = f.read()
-        e = get_encoding_directive(bb)
-        self.assertEqual(e.lower(), 'utf-8')
-    #@+node:ekr.20200107150857.1: *4* test_strip_BOM
-    def test_strip_BOM(self):
-
-        filename = __file__
-        assert os.path.exists(filename), repr(filename)
-        with open(filename, 'rb') as f:
-            bb = f.read()
-        assert bb, filename
-        e, s = strip_BOM(bb)
-        assert e is None or e.lower() == 'utf-8', repr(e)
     #@-others
 #@-others
 #@-leo
