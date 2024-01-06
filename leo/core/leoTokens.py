@@ -1251,6 +1251,32 @@ class TokenBasedOrange:
             message = f"Expected token.kind: {kind} got {token!r}"
         if not token or token.kind != kind or value is not None and token.value != value:
             raise BeautifyError(message)
+    #@+node:ekr.20240106110748.1: *5* tbo.find_matching_paren
+    def find_matching_paren(self, i: int) -> int:
+        """Return the index of the matching ')' token."""
+        self.expect(i, 'op', '(')
+        curly_brackets, parens, square_brackets = 0, 1, 0
+        i += 1
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            kind, value = token.kind, token.value
+            if kind == 'op' and value in '()[]{}':  
+                if value == '(':
+                    parens += 1
+                elif value == ')':
+                    parens -= 1
+                    if (curly_brackets, parens, square_brackets) == (0, 0, 0):
+                        return i
+                elif value == '{':
+                    curly_brackets += 1
+                elif value == '}':
+                    curly_brackets -= 1
+                elif value == '[':
+                    square_brackets += 1
+                elif value == ']':
+                    square_brackets -= 1
+            i += 1
+        return None
     #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
         """
@@ -1281,15 +1307,15 @@ class TokenBasedOrange:
         expect(i, 'name')
         i = next(i)
         expect(i, 'op', '(')
+        i = self.find_matching_paren(i)
         ### Scan for matching ')'
-    #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token (to do)
+    #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token
     def next_token(self, i: int) -> Optional[int]:
         """
         Return the next *significant* token in the list of *input* tokens.
         
         Ignore whitespace, indentation, comments, etc.
         """
-        self.check_token_index(i)
         i += 1
         while i < len(self.tokens):
             token = self.tokens[i]
