@@ -589,6 +589,7 @@ class TokenBasedOrange:
 
     # Doc parts end with @c or a node sentinel. Specialized for python.
     end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
+
     #@+others
     #@+node:ekr.20240105145241.2: *4* tbo.ctor
     def __init__(self, settings: Settings = None):
@@ -620,11 +621,6 @@ class TokenBasedOrange:
                 setattr(self, key, value)
             else:
                 g.trace(f"Unexpected setting: {key} = {value!r}")
-    #@+node:ekr.20240105145241.3: *4* tbo.push_state
-    def push_state(self, kind: str, value: Union[int, str] = None) -> None:
-        """Append a state to the state stack."""
-        state = ParseState(kind, value)
-        self.state_stack.append(state)
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def oops(self) -> None:  # pragma: no cover
@@ -715,6 +711,11 @@ class TokenBasedOrange:
             return None, None, None
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
         return contents, encoding, tokens
+    #@+node:ekr.20240105145241.3: *5* tbo.push_state
+    def push_state(self, kind: str, value: Union[int, str] = None) -> None:
+        """Append a state to the state stack."""
+        state = ParseState(kind, value)
+        self.state_stack.append(state)
     #@+node:ekr.20240105145241.9: *4* tbo: Input token handlers
     #@+node:ekr.20240105145241.10: *5* tbo.do_comment
     in_doc_part = False
@@ -1325,7 +1326,7 @@ class TokenBasedOrange:
         """
         ### token = self.token
 
-    #@+node:ekr.20240105145241.44: *4* tbo: Split/join
+    #@+node:ekr.20240105145241.44: *4* tbo: Split/join (not used yet)
     #@+node:ekr.20240105145241.45: *5* tbo.split_line & helpers (to do)
     def split_line(self, token: InputToken) -> bool:
         """
