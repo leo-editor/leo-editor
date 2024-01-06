@@ -565,11 +565,13 @@ class TokenBasedOrange:
         self.decorator_seen = False  # Set by do_name for do_op.
         self.in_arg_list = 0  # > 0 if in an arg list of a def.
         self.in_fstring = False  # True: scanning an f-string.
+        self.index = 0  # The index within the tokens array of the token being scanned.
         self.level = 0  # Set only by do_indent and do_dedent.
         self.lws = ''  # Leading whitespace.
         self.paren_level = 0  # Number of unmatched '(' tokens.
         self.square_brackets_stack: list[bool] = []  # A stack of bools, for self.word().
         self.state_stack: list["ParseState"] = []  # Stack of ParseState objects.
+        self.tokens = tokens  # The list of input tokens.
         self.val = None  # The input token's value (a string).
         self.verbatim = False  # True: don't beautify.
         #
@@ -578,7 +580,7 @@ class TokenBasedOrange:
         self.tokens = tokens  # The list of input tokens.
         self.add_token('file-start', '')
         self.push_state('file-start')
-        for token in tokens:
+        for self.index, token in enumerate(tokens):
             self.token = token
             self.kind, self.val, self.line = token.kind, token.value, token.line
             if self.verbatim:
@@ -1231,6 +1233,24 @@ class TokenBasedOrange:
         self.add_token('word-op', s)
         self.blank()
     #@+node:ekr.20240105145241.41: *4* tbo: Scanning
+    #@+node:ekr.20240106094211.1: *5* tbo.check_token_index
+    def check_token_index(self, i: int) -> None:
+        # pylint: disable=raise-missing-from
+        try:
+            self.tokens[i]
+        except IndexError:
+            raise BeautifyError(f"IndexError: tokens[{i}]")
+    #@+node:ekr.20240106090914.1: *5* tbo.expect
+    def expect(self, i: int, kind: str, value: str = None) -> None:
+        self.check_token_index(i)
+        token = self.tokens[i]
+        kind, value = token.kind, token.value
+        if value is not None:
+            message = f"Expected token.kind: {kind} token.value: {value} got {token!r}"
+        else:
+            message = f"Expected token.kind: {kind} got {token!r}"
+        if not token or token.kind != kind or value is not None and token.value != value:
+            raise BeautifyError(message)
     #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
         """
@@ -1245,27 +1265,52 @@ class TokenBasedOrange:
             and value not in ('True', 'False', None)
             and (keyword.iskeyword(value) or keyword.issoftkeyword(value))
         )
+    #@+node:ekr.20240106093210.1: *5* tbo.is_significant_token
+    def is_significant_token(self, token: InputToken) -> bool:
+        """Return true if the given token is not whitespace."""
+        return token.kind not in (
+            'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
+        )
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def (to do)
     def scan_def(self) -> None:
         """The root of a recursive-descent parser for Python 'def' statements."""
-        if 0:
-            g.trace(self.token)
+        expect, next = self.expect, self.next_token
+        i = self.index
+        expect(i, 'name', 'def')
+        i = next(i)
+        expect(i, 'name')
+        i = next(i)
+        expect(i, 'op', '(')
+        ### Scan for matching ')'
     #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token (to do)
-    def next_token(self) -> InputToken:
+    def next_token(self, i: int) -> Optional[int]:
         """
         Return the next *significant* token in the list of *input* tokens.
         
         Ignore whitespace, indentation, comments, etc.
         """
-        ### token = self.token
+        self.check_token_index(i)
+        i += 1
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            if self.is_significant_token(token):
+                return i
+            i += 1
+        return None
 
-    def prev_token(self) -> InputToken:
+    def prev_token(self, i: int) -> Optional[int]:
         """
         Return the previous *significant* token in the list of *input* tokens.
         
         Ignore whitespace, indentation, comments, etc.
         """
-        ### token = self.token
+        i -= 1
+        while i >= 0:
+            token = self.tokens[i]
+            if self.is_significant_token(token):
+                return i
+            i -= 1
+        return None
     #@+node:ekr.20240105145241.44: *4* tbo: Split/join (not used yet)
     #@+node:ekr.20240105145241.45: *5* tbo.split_line & helpers (to do)
     def split_line(self, token: InputToken) -> bool:
