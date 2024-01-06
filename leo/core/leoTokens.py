@@ -63,7 +63,6 @@ from __future__ import annotations
 import argparse
 import ast
 import codecs
-import difflib
 import glob
 import io
 import os
@@ -110,10 +109,6 @@ if 1:  # pragma: no cover
             print('Please adjust your Python path accordingly')
         return bool(g)
     #@+node:ekr.20240105140814.11: *3* functions: reading & writing files
-    #@+node:ekr.20240105140814.12: *4* function: regularize_nls
-    def regularize_nls(s: str) -> str:
-        """Regularize newlines within s."""
-        return s.replace('\r\n', '\n').replace('\r', '\n')
     #@+node:ekr.20240105140814.13: *4* function: get_encoding_directive
     # This is the pattern in PEP 263.
     encoding_pattern = re.compile(r'^[ \t\f]*#.*?coding[:=][ \t]*([-_.a-zA-Z0-9]+)')
@@ -190,6 +185,10 @@ if 1:  # pragma: no cover
         s = g.toUnicode(bb, encoding=e)
         s = regularize_nls(s)
         return e, s
+    #@+node:ekr.20240105140814.12: *4* function: regularize_nls
+    def regularize_nls(s: str) -> str:
+        """Regularize newlines within s."""
+        return s.replace('\r\n', '\n').replace('\r', '\n')
     #@+node:ekr.20240105140814.16: *4* function: strip_BOM
     def strip_BOM(bb: bytes) -> tuple[Optional[str], bytes]:
         """
@@ -232,189 +231,6 @@ if 1:  # pragma: no cover
                 f.write(s)
         except Exception as e:
             g.trace(f"Error writing {filename}\n{e}")
-    #@+node:ekr.20240105140814.18: *3* functions: tokens
-    #@+node:ekr.20240105140814.20: *4* function: find_paren_token
-    def find_paren_token(i: int, global_token_list: list[InputToken]) -> int:
-        """Return i of the next paren token, starting at tokens[i]."""
-        while i < len(global_token_list):
-            token = global_token_list[i]
-            if token.kind == 'op' and token.value in '()':
-                return i
-            if is_significant_token(token):
-                break
-            i += 1
-        return None
-    #@+node:ekr.20240105140814.22: *4* function: is_significant & is_significant_token
-    def is_significant(kind: str, value: str) -> bool:
-        """
-        Return True if (kind, value) represent a token that can be used for
-        syncing generated tokens with the token list.
-        """
-        # Making 'endmarker' significant ensures that all tokens are synced.
-        return (
-            kind in ('async', 'await', 'endmarker', 'name', 'number', 'string')
-            or kind.startswith('fstring')
-            or kind == 'op' and value not in ',;()')
-
-    def is_significant_kind(kind: str) -> bool:
-        return (
-            kind in ('async', 'await', 'endmarker', 'name', 'number', 'string')
-            or kind.startswith('fstring')
-        )
-
-    def is_significant_token(token: InputToken) -> bool:
-        """Return True if the given token is a synchronizing token"""
-        return is_significant(token.kind, token.value)
-    #@+node:ekr.20240105140814.23: *4* function: match_parens
-    def match_parens(filename: str, i: int, j: int, tokens: list[InputToken]) -> int:
-        """Match parens in tokens[i:j]. Return the new j."""
-        if j >= len(tokens):
-            return len(tokens)
-        # Calculate paren level...
-        level = 0
-        for n in range(i, j + 1):
-            token = tokens[n]
-            if token.kind == 'op' and token.value == '(':
-                level += 1
-            if token.kind == 'op' and token.value == ')':
-                if level == 0:
-                    break
-                level -= 1
-        # Find matching ')' tokens *after* j.
-        if level > 0:
-            while level > 0 and j + 1 < len(tokens):
-                token = tokens[j + 1]
-                if token.kind == 'op' and token.value == ')':
-                    level -= 1
-                elif token.kind == 'op' and token.value == '(':
-                    level += 1
-                elif is_significant_token(token):
-                    break
-                j += 1
-        if level != 0:  # pragma: no cover.
-            line_n = tokens[i].line_number
-            raise AssignLinksError(
-                'In match_parens\n'
-                f"Unmatched parens: level={level}\n"
-                f"            file: {filename}\n"
-                f"            line: {line_n}\n"
-            )
-        return j
-    #@+node:ekr.20240105140814.24: *4* function: output_tokens_to_string
-    def output_tokens_to_string(tokens: list[OutputToken]) -> str:
-        """Return the string represented by the list of tokens."""
-        if tokens is None:
-            # This indicates an internal error.
-            print('')
-            g.trace('===== output token list is None ===== ')
-            print('')
-            return ''
-        return ''.join([z.to_string() for z in tokens])
-    #@+node:ekr.20240105140814.26: *4* function: tokens_to_string
-    def tokens_to_string(tokens: list[InputToken]) -> str:
-        """Return the string represented by the list of tokens."""
-        if tokens is None:
-            # This indicates an internal error.
-            print('')
-            g.trace('===== No tokens ===== ')
-            print('')
-            return ''
-        return ''.join([z.to_string() for z in tokens])
-    #@+node:ekr.20240105140814.27: *4* function: input_tokens_to_string
-    def input_tokens_to_string(tokens: list[InputToken]) -> str:
-        """Return the string represented by the list of tokens."""
-        if tokens is None:
-            # This indicates an internal error.
-            print('')
-            g.trace('===== input token list is None ===== ')
-            print('')
-            return ''
-        return ''.join([z.to_string() for z in tokens])
-    #@+node:ekr.20240105140814.34: *3* functions: utils...
-    # General utility functions on tokens and nodes.
-    #@+node:ekr.20240105140814.35: *4* function: obj_id
-    def obj_id(obj: Any) -> str:
-        """Return the last four digits of id(obj), for dumps & traces."""
-        return str(id(obj))[-4:]
-    #@+node:ekr.20240105140814.36: *4* function: op_name
-    #@@nobeautify
-
-    # https://docs.python.org/3/library/ast.html
-
-    _op_names = {
-        # Binary operators.
-        'Add': '+',
-        'BitAnd': '&',
-        'BitOr': '|',
-        'BitXor': '^',
-        'Div': '/',
-        'FloorDiv': '//',
-        'LShift': '<<',
-        'MatMult': '@',  # Python 3.5.
-        'Mod': '%',
-        'Mult': '*',
-        'Pow': '**',
-        'RShift': '>>',
-        'Sub': '-',
-        # Boolean operators.
-        'And': ' and ',
-        'Or': ' or ',
-        # Comparison operators
-        'Eq': '==',
-        'Gt': '>',
-        'GtE': '>=',
-        'In': ' in ',
-        'Is': ' is ',
-        'IsNot': ' is not ',
-        'Lt': '<',
-        'LtE': '<=',
-        'NotEq': '!=',
-        'NotIn': ' not in ',
-        # Context operators.
-        'AugLoad': '<AugLoad>',
-        'AugStore': '<AugStore>',
-        'Del': '<Del>',
-        'Load': '<Load>',
-        'Param': '<Param>',
-        'Store': '<Store>',
-        # Unary operators.
-        'Invert': '~',
-        'Not': ' not ',
-        'UAdd': '+',
-        'USub': '-',
-    }
-
-    def op_name(node: Node) -> str:
-        """Return the print name of an operator node."""
-        class_name = node.__class__.__name__
-        assert class_name in _op_names, repr(class_name)
-        return _op_names[class_name].strip()
-    #@+node:ekr.20240105140814.37: *3* node/token creators...
-    #@+node:ekr.20240105140814.39: *4* function: parse_ast
-    def parse_ast(s: str) -> Optional[Node]:
-        """
-        Parse string s, catching & reporting all exceptions.
-        Return the ast node, or None.
-        """
-
-        def oops(message: str) -> None:
-            print('')
-            print(f"parse_ast: {message}")
-            g.printObj(s)
-            print('')
-
-        try:
-            s1 = g.toEncodedString(s)
-            tree = ast.parse(s1, filename='before', mode='exec')
-            return tree
-        except IndentationError:
-            oops('Indentation Error')
-        except SyntaxError:
-            oops('Syntax Error')
-        except Exception:
-            oops('Unexpected Exception')
-            g.es_exception()
-        return None
     #@+node:ekr.20240105140814.40: *3* functions: dumpers...
     #@+node:ekr.20240105140814.41: *4* function: dump_contents
     def dump_contents(contents: str, tag: str = 'Contents') -> None:
@@ -450,18 +266,36 @@ if 1:  # pragma: no cover
         for z in tokens:
             print(z.dump())
         print('')
-    #@+node:ekr.20240105140814.46: *4* function: show_diffs
-    def show_diffs(s1: str, s2: str, filename: str = '') -> None:
-        """Print diffs between strings s1 and s2."""
-        lines = list(difflib.unified_diff(
-            g.splitLines(s1),
-            g.splitLines(s2),
-            fromfile=f"Old {filename}",
-            tofile=f"New {filename}",
-        ))
-        print('')
-        tag = f"Diffs for {filename}" if filename else 'Diffs'
-        g.printObj(lines, tag=tag)
+    #@+node:ekr.20240105140814.27: *4* function: input_tokens_to_string
+    def input_tokens_to_string(tokens: list[InputToken]) -> str:
+        """Return the string represented by the list of tokens."""
+        if tokens is None:
+            # This indicates an internal error.
+            print('')
+            g.trace('===== input token list is None ===== ')
+            print('')
+            return ''
+        return ''.join([z.to_string() for z in tokens])
+    #@+node:ekr.20240105140814.24: *4* function: output_tokens_to_string
+    def output_tokens_to_string(tokens: list[OutputToken]) -> str:
+        """Return the string represented by the list of tokens."""
+        if tokens is None:
+            # This indicates an internal error.
+            print('')
+            g.trace('===== output token list is None ===== ')
+            print('')
+            return ''
+        return ''.join([z.to_string() for z in tokens])
+    #@+node:ekr.20240105140814.26: *4* function: tokens_to_string
+    def tokens_to_string(tokens: list[InputToken]) -> str:
+        """Return the string represented by the list of tokens."""
+        if tokens is None:
+            # This indicates an internal error.
+            print('')
+            g.trace('===== No tokens ===== ')
+            print('')
+            return ''
+        return ''.join([z.to_string() for z in tokens])
     #@-others
 #@+node:ekr.20240105140814.51: ** Exception classes
 class AssignLinksError(Exception):
@@ -560,7 +394,6 @@ class Tokenizer:
         Add an InputToken to the results list.
         """
         tok = InputToken(kind, value)
-        ### tok.five_tuple = five_tuple
         tok.index = self.token_index
         # Bump the token index.
         self.token_index += 1
@@ -882,8 +715,6 @@ class TokenBasedOrange:
         # Something besides newlines must change.
         if regularize_nls(contents) == regularize_nls(results):
             return False
-        if 0:  # This obscures more import error messages.
-            show_diffs(contents, results, filename=filename)
         # Write the results
         print(f"Beautified: {g.shortFileName(filename)}")
         write_file(filename, results, encoding=encoding)
