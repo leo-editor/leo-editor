@@ -575,7 +575,7 @@ class TestTokenBasedOrange(BaseTest):
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens)
             self.assertEqual(results, expected)
-    #@+node:ekr.20240107080413.1: *3* TestTBO.test_function_call (new)
+    #@+node:ekr.20240107080413.1: *3* TestTBO.test_function_call
     def test_function_call(self):
         
         contents = textwrap.dedent(

@@ -751,29 +751,13 @@ class TokenBasedOrange:
 
     def do_name(self) -> None:
         """Handle a name token."""
-        # Aliases.
-        is_kind, next, set_context = self.is_kind, self.next_token, self.set_context
-
-        # Let block.
         name = self.val
-        func_class_name = 'function/class name'
-        if name in ('class', 'def'):
-            self.word(name)
-            i = next(self.index)
-            if is_kind(i, 'name'):
-                # Suppress handling a function call below.
-                set_context(i, func_class_name)
-        elif name in self.compound_keywords:
+        if name in self.compound_keywords:
             # There seems to be no need to add context to the trailing ':'.
             self.word_op(name)
         elif name in self.operator_keywords:
             self.word_op(name)
         else:
-            # Look for a possible function call.
-            if self.token.context != func_class_name:
-                i = next(self.index)
-                if i and self.is_op(i, ['(']):
-                    self.scan_call(i)
             self.word(name)
     #@+node:ekr.20240105145241.17: *5* tbo.do_newline & do_nl
     def do_newline(self) -> None:
@@ -836,14 +820,13 @@ class TokenBasedOrange:
             self.blank()
             self.add_token('op', val)
             self.blank()
-    #@+node:ekr.20240105145241.20: *6* tbo.do_equal_op (fixed)
+    #@+node:ekr.20240105145241.20: *6* tbo.do_equal_op
     # Keys: token.index of '=' token. Values: count of ???s
     arg_dict: dict[int, int] = {}
 
     def do_equal_op(self, val: str) -> None:
 
         context = self.token.context
-        ### g.trace(self.index, context)  ###
         if context == 'initializer':
             # Pep 8: Don't use spaces around the = sign when used to indicate
             #        a keyword argument or a default parameter value.
@@ -1095,7 +1078,7 @@ class TokenBasedOrange:
         else:
             self.blank()
             self.add_token('unary-op', s)
-    #@+node:ekr.20240105145241.38: *5* tbo.star_op (fixed)
+    #@+node:ekr.20240105145241.38: *5* tbo.star_op
     def star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
         val = '*'
@@ -1114,7 +1097,7 @@ class TokenBasedOrange:
         self.blank()
         self.add_token('op', val)
         self.blank()
-    #@+node:ekr.20240105145241.39: *5* tbo.star_star_op (fixed)
+    #@+node:ekr.20240105145241.39: *5* tbo.star_star_op
     def star_star_op(self) -> None:
         """Put a ** operator, with a special case for **kwargs."""
         val = '**'
@@ -1133,14 +1116,30 @@ class TokenBasedOrange:
         self.blank()
         self.add_token('op', val)
         self.blank()
-    #@+node:ekr.20240105145241.40: *5* tbo.word & word_op (to do)
+    #@+node:ekr.20240105145241.40: *5* tbo.word
     def word(self, s: str) -> None:
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
+        # Aliases.
+        is_kind, next, set_context = self.is_kind, self.next_token, self.set_context
+        in_class_or_def = 'in_class_or_def'
+
+        # Scan special statements.
+        if s == 'from':
+            self.scan_from()
         if s == 'def':
             self.scan_def()
 
-        ### To do. Handle function calls here, not in do_name.
+        if s in ('class', 'def'):
+            # The defined name is not a function call.
+            i = next(self.index)
+            if is_kind(i, 'name'):
+                set_context(i, in_class_or_def)
+        elif self.token.context != in_class_or_def:
+            # A possible function call.
+            i = next(self.index)
+            if i and self.is_op(i, ['(']):
+                self.scan_call(i)
 
         ### in_import_from = self.token.context == ?
         if False:  ### isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
@@ -1158,7 +1157,7 @@ class TokenBasedOrange:
             self.blank()
             self.add_token('word', s)
             self.blank()
-
+    #@+node:ekr.20240107141830.1: *5* tbo.word_op
     def word_op(self, s: str) -> None:
         """Add a word-op request to the code list."""
         assert s and isinstance(s, str), repr(s)
@@ -1470,6 +1469,37 @@ class TokenBasedOrange:
 
         # Scan the arguments.
         self.scan_args(i1, i2)
+    #@+node:ekr.20240107143500.1: *5* tbo.scan_from
+    def scan_from(self) -> None:
+        """
+        Scan a `from x import` statement just enough to handle leading '.'.
+        """
+        expect = self.expect
+        ### expect, expect_ops = self.expect, self.expect_ops
+        ### find_op, next = self.find_op, self.next_token
+
+        # Find i1 and i2, the boundaries of the argument list.
+        i = self.index
+        expect(i, 'name', 'from')
+
+        ###
+        # i = next(i)
+        # expect(i, 'name')
+        # i = next(i)
+        # expect(i, 'op', '(')
+        # i1 = i
+        # i = i2 = find_op(i, len(self.tokens), [')'])
+        # expect(i, 'op', ')')
+        # i = next(i)
+        # expect_ops(i, ['->', ':'])
+
+        # # Find i3, the ending ':' of the def statement.
+        # i3 = find_op(i, len(self.tokens), [':'])
+        # expect(i3, 'op', ':')
+        # self.set_context(i3, 'def')
+
+        # # Scan the arguments.
+        # self.scan_args(i1, i2)
     #@+node:ekr.20240106181215.1: *5* tbo.scan_initializer
     def scan_initializer(self, i1: int, i2: int, has_annotation: bool) -> Optional[int]:
         """Scan an initializer in a function definition argument."""
