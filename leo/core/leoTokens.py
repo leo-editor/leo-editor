@@ -753,7 +753,7 @@ class TokenBasedOrange:
         """Handle a name token."""
         # Aliases.
         is_kind, next, set_context = self.is_kind, self.next_token, self.set_context
-        
+
         # Let block.
         name = self.val
         func_class_name = 'function/class name'
@@ -1139,7 +1139,7 @@ class TokenBasedOrange:
         assert s and isinstance(s, str), repr(s)
         if s == 'def':
             self.scan_def()
-            
+
         ### To do. Handle function calls here, not in do_name.
 
         ### in_import_from = self.token.context == ?
@@ -1181,8 +1181,8 @@ class TokenBasedOrange:
             print(token.dump())
     #@+node:ekr.20240106090914.1: *5* tbo.expect & expect_ops
     def expect(self, i: int, kind: str, value: str = None) -> None:
-        
-        def dump():
+
+        def dump() -> None:
             print('')
             g.trace('Error. i:', i)
             g.printObj(self.tokens, tag='expect')
