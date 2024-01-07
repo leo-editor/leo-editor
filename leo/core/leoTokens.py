@@ -108,40 +108,6 @@ if 1:  # pragma: no cover
             print('This statement failed: `from leo.core import leoGlobals as g`')
             print('Please adjust your Python path accordingly')
         return bool(g)
-    #@+node:ekr.20240105140814.41: *3* function: dump_contents
-    def dump_contents(contents: str, tag: str = 'Contents') -> None:
-        print('')
-        print(f"{tag}...\n")
-        for i, z in enumerate(g.splitLines(contents)):
-            print(f"{i+1:<3} ", z.rstrip())
-        print('')
-    #@+node:ekr.20240105140814.42: *3* function: dump_lines
-    def dump_lines(tokens: list[InputToken], tag: str = 'lines') -> None:
-        print('')
-        print(f"{tag}...\n")
-        for z in tokens:
-            if z.line.strip():
-                print(z.line.rstrip())
-            else:
-                print(repr(z.line))
-        print('')
-    #@+node:ekr.20240105140814.43: *3* function: dump_results
-    def dump_results(tokens: list[OutputToken], tag: str = 'Results') -> None:
-        print('')
-        print(f"{tag}...\n")
-        print(output_tokens_to_string(tokens))
-        print('')
-    #@+node:ekr.20240105140814.44: *3* function: dump_tokens
-    def dump_tokens(tokens: list[InputToken], tag: str = 'Tokens') -> None:
-        print('')
-        print(f"{tag}...\n")
-        if not tokens:
-            return
-        print("Note: values shown are repr(value) *except* for 'string' and 'fstring*' tokens.")
-        tokens[0].dump_header()
-        for z in tokens:
-            print(z.dump())
-        print('')
     #@+node:ekr.20240105140814.9: *3* function: get_modified_files
     def get_modified_files(repo_path: str) -> list[str]:
         """Return the modified files in the given repo."""
@@ -163,26 +129,6 @@ if 1:  # pragma: no cover
             return [os.path.abspath(z) for z in modified_files]
         finally:
             os.chdir(old_cwd)
-    #@+node:ekr.20240105140814.27: *3* function: input_tokens_to_string
-    def input_tokens_to_string(tokens: list[InputToken]) -> str:
-        """Return the string represented by the list of tokens."""
-        if tokens is None:
-            # This indicates an internal error.
-            print('')
-            g.trace('===== input token list is None ===== ')
-            print('')
-            return ''
-        return ''.join([z.to_string() for z in tokens])
-    #@+node:ekr.20240105140814.24: *3* function: output_tokens_to_string
-    def output_tokens_to_string(tokens: list[OutputToken]) -> str:
-        """Return the string represented by the list of tokens."""
-        if tokens is None:
-            # This indicates an internal error.
-            print('')
-            g.trace('===== output token list is None ===== ')
-            print('')
-            return ''
-        return ''.join([z.to_string() for z in tokens])
     #@+node:ekr.20240105140814.12: *3* function: regularize_nls
     def regularize_nls(s: str) -> str:
         """Regularize newlines within s."""
@@ -204,6 +150,61 @@ if 1:  # pragma: no cover
         except Exception as e:
             g.trace(f"Error writing {filename}\n{e}")
     #@-others
+#@+node:ekr.20240106220602.1: ** LeoTokens: debugging functions
+#@+node:ekr.20240105140814.41: *3* function: dump_contents
+def dump_contents(contents: str, tag: str = 'Contents') -> None:
+    print('')
+    print(f"{tag}...\n")
+    for i, z in enumerate(g.splitLines(contents)):
+        print(f"{i+1:<3} ", z.rstrip())
+    print('')
+#@+node:ekr.20240105140814.42: *3* function: dump_lines
+def dump_lines(tokens: list[InputToken], tag: str = 'lines') -> None:
+    print('')
+    print(f"{tag}...\n")
+    for z in tokens:
+        if z.line.strip():
+            print(z.line.rstrip())
+        else:
+            print(repr(z.line))
+    print('')
+#@+node:ekr.20240105140814.43: *3* function: dump_results
+def dump_results(tokens: list[OutputToken], tag: str = 'Results') -> None:
+    print('')
+    print(f"{tag}...\n")
+    print(output_tokens_to_string(tokens))
+    print('')
+#@+node:ekr.20240105140814.44: *3* function: dump_tokens
+def dump_tokens(tokens: list[InputToken], tag: str = 'Tokens') -> None:
+    print('')
+    print(f"{tag}...\n")
+    if not tokens:
+        return
+    print("Note: values shown are repr(value) *except* for 'string' and 'fstring*' tokens.")
+    tokens[0].dump_header()
+    for z in tokens:
+        print(z.dump())
+    print('')
+#@+node:ekr.20240105140814.27: *3* function: input_tokens_to_string
+def input_tokens_to_string(tokens: list[InputToken]) -> str:
+    """Return the string represented by the list of tokens."""
+    if tokens is None:
+        # This indicates an internal error.
+        print('')
+        g.trace('===== input token list is None ===== ')
+        print('')
+        return ''
+    return ''.join([z.to_string() for z in tokens])
+#@+node:ekr.20240105140814.24: *3* function: output_tokens_to_string
+def output_tokens_to_string(tokens: list[OutputToken]) -> str:
+    """Return the string represented by the list of tokens."""
+    if tokens is None:
+        # This indicates an internal error.
+        print('')
+        g.trace('===== output token list is None ===== ')
+        print('')
+        return ''
+    return ''.join([z.to_string() for z in tokens])
 #@+node:ekr.20240105140814.52: ** Classes
 #@+node:ekr.20240105140814.51: *3* class BeautifyError(Exception)
 class BeautifyError(Exception):
@@ -1248,16 +1249,22 @@ class TokenBasedOrange:
             self.tokens[i]
         except IndexError:
             raise BeautifyError(f"IndexError: tokens[{i}]")
+    #@+node:ekr.20240106220724.1: *5* tbo.dump_token_range
+    def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:
+        if tag:
+            print(tag)
+        for token in self.tokens[i1 : i2 + 1]:
+            print(token.dump())
     #@+node:ekr.20240106090914.1: *5* tbo.expect & expect_ops
     def expect(self, i: int, kind: str, value: str = None) -> None:
         self.check_token_index(i)
         token = self.tokens[i]
-        kind, value = token.kind, token.value
-        if value is not None:
+        if value is None:
+            if token.kind != kind:
+                message = f"Expected token.kind: {kind} got {token.kind}"
+                raise BeautifyError(message)
+        elif (token.kind, token.value) != (kind, value):
             message = f"Expected token.kind: {kind} token.value: {value} got {token!r}"
-        else:
-            message = f"Expected token.kind: {kind} got {token!r}"
-        if not token or token.kind != kind or value is not None and token.value != value:
             raise BeautifyError(message)
 
     def expect_ops(self, i: int, values: list) -> None:
@@ -1269,13 +1276,25 @@ class TokenBasedOrange:
             raise BeautifyError(f"Expected value in {values!r}, got {token.value!r}")
 
     #@+node:ekr.20240106110748.1: *5* tbo.find_op
-    def find_op(self, i: int, values: list[str]) -> int:
+    def find_op(self, i1: int, i2: int, values: list[str]) -> int:
         """Return the index of the matching token."""
+        ### g.trace('Entry. values:', i1, i2, values)
+        ### self.dump_token_range(i1, i2)
         curly_brackets, parens, square_brackets = 0, 0, 0
+        i = i1
         while i < len(self.tokens):
             token = self.tokens[i]
             value = token.value
+            ### g.trace(i, token)
             if token.kind == 'op':
+                # Precheck.
+                if (
+                    value == ')' and ')' in values
+                    and (curly_brackets, parens, square_brackets) == (0, 0, 0)
+                ):
+                    ### g.trace('Found', i)
+                    return i
+                # Bump counts.
                 if value == '(':
                     parens += 1
                 elif value == ')':
@@ -1288,11 +1307,14 @@ class TokenBasedOrange:
                     square_brackets += 1
                 elif value == ']':
                     square_brackets -= 1
+                # Post-check.
                 if (value in values
                     and (curly_brackets, parens, square_brackets) == (0, 0, 0)
                 ):
+                    ### g.trace('Found', i)
                     return i
-            i += 1
+            i = self.next_token(i)
+        g.trace('Not found')
         return None
     #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
@@ -1320,129 +1342,6 @@ class TokenBasedOrange:
         return token.kind not in (
             'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
         )
-    #@+node:ekr.20240106181128.1: *5* tbo.scan_annotation
-    def scan_annotation(self, i1: int, i2: int) -> Optional[int]:
-        """Scan an annotation if a function definition arg."""
-        # Aliases
-        expect, find_op, next = self.expect, self.find_op, self.next_token
-        # Skip the ':'
-        expect(i1, ':')
-        i = next(i1)
-        # Skip to the next ',' or ')' at this level.
-        i3 = find_op(i, [',', ')'])
-        ### To do: set contexts of inner ops.
-        return i3
-    #@+node:ekr.20240106173638.1: *5* tbo.scan_arg
-    def scan_arg(self, i: int, i2: int) -> Optional[int]:
-        """Scan a single function definition argument"""
-        # Aliases.
-        expect, is_op = self.expect, self.is_op
-        next, set_context = self.next_token, self.set_context
-        # Scan optional  * and ** operators.
-        token = self.tokens[i]
-        if token.kind == 'op':
-            if token.value in ('*', '**'):
-                self.set_context(i, f"{token.value} args")
-            else:
-                self.unexpected_token(i)
-            i = next(i)
-        # Scan the argument name.
-        expect(i, 'name')
-        i = next(i)
-        # Scan an optional annotation.
-        has_annotation = is_op(i, ':')
-        if has_annotation:
-            set_context(i, ': annotation')
-            i = self.scan_annotation(i, i2)
-        # Scan the optional initializer.
-        if is_op(i, '='):
-            set_context(i, '= initializer')
-            i = self.scan_initializer(i, i2, has_annotation)
-        # Scan the optional comma.
-        if is_op(i, ','):
-            set_context(i, ', end-arg')
-            i = next(i)
-        return i
-    #@+node:ekr.20240106172905.1: *5* tbo.scan_args
-    def scan_args(self, i1: int, i2: int) -> Optional[int]:
-        """Scan a comma-separated list of function definition arguments."""
-        # Aliases.
-        expect, next, set_context = self.expect, self.next_token, self.set_context
-        # Sanity checks.
-        assert i2 > i1, (i1, i2)
-        expect(i1, 'op', '(')
-        expect(i2, 'op', ')')
-        # Skip the '('
-        i = next(i1)
-        # Scan each argument.
-        while i is not None and i < i2:
-            i = self.scan_arg(i, i2)
-            if i is not None and i < i2:
-                expect(i, ',')
-                set_context(i, ', arg-separator')
-        expect(i, 'op', ')')
-        set_context(i, ') end-arg-list')
-        return i
-    #@+node:ekr.20240105145241.42: *5* tbo.scan_def
-    def scan_def(self) -> None:
-        """Scan a complete 'def' statement."""
-        expect, expect_ops = self.expect, self.expect_ops
-        find_op, next = self.find_op, self.next_token
-        # Find i1 and i2, the boundaries of the argument list.
-        i = self.index
-        expect(i, 'name', 'def')
-        i = next(i)
-        expect(i, 'name')
-        i = next(i)
-        expect(i, 'op', '(')
-        i1 = i
-        i = i2 = find_op(i, [')'])
-        expect(i, 'op', ')')
-        i = next(i)
-        expect_ops(i, ['->', ':'])
-        # Find i3, the ending ':' of the def statement.
-        i3 = find_op(i, [':'])
-        expect(i3, ':')
-        self.set_context(i3, ':end-def')
-        # Parse the args and set the context of inner operators.
-        self.scan_args(i1, i2)
-        ### dump_tokens(self.tokens[i1:i3])
-    #@+node:ekr.20240106181215.1: *5* tbo.scan_initializer
-    def scan_initializer(self, i1: int, i2: int, has_annotation: bool) -> Optional[int]:
-        """Scan an initializer in a function definition argument."""
-        # Aliases
-        expect, expect_ops = self.expect, self.expect_ops
-        is_op, set_context = self.is_op, self.set_context
-        next = self.next_token
-        # Skip the '='
-        expect(i1, '=')
-        set_context(i1, f"= initializer: has_annotation {has_annotation}")
-        i = next(i1)
-        # Skip to the next ',' or ')' at this level.
-        i3 = self.find_op(i, [',', ')'])
-        expect_ops(i3, [',', ')'])
-        # Set the context of inner operators that require context assistance.
-        for i in range(i1 + 1, i3 - 1):
-            for value in self.context_op_values:
-                if is_op(i, value):
-                    set_context(i, f"{value} inner initializer")
-        # Caller sets the context of self.tokens[i3].
-        return i3
-    #@+node:ekr.20240106170746.1: *5* tbo.set_context (to do)
-    def set_context(self, i: int, context: str) -> None:
-        """Set the context for self.tokens[i] to a unique value."""
-        self.check_token_index(i)
-        token = self.tokens[i]
-        if False:  ### token.context is not None:
-            raise BeautifyError(
-                f"Duplicate context! token: {token!r}\n"
-                f"old: {token.context} new: {context}"
-            )
-        if False:  ### not context.startswith(token.value):
-            raise BeautifyError(
-                f"Invalid context! {context} should start with {token.value}"
-            )
-        token.context = context
     #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token
     def next_token(self, i: int) -> Optional[int]:
         """
@@ -1471,6 +1370,138 @@ class TokenBasedOrange:
                 return i
             i -= 1
         return None
+    #@+node:ekr.20240106181128.1: *5* tbo.scan_annotation
+    def scan_annotation(self, i1: int, i2: int) -> Optional[int]:
+        """Scan an annotation if a function definition arg."""
+        # Aliases
+        expect, find_op, next = self.expect, self.find_op, self.next_token
+        # Skip the ':'
+        expect(i1, 'op', ':')
+        i = next(i1)
+        # Skip to the next ',' or '=' at this level.
+        i3 = find_op(i, i2, [',', '=', ')'])
+        return i3
+        ### To do: set contexts of inner ops.
+    #@+node:ekr.20240106173638.1: *5* tbo.scan_arg
+    def scan_arg(self, i1: int, i2: int) -> Optional[int]:
+        """Scan a single function definition argument"""
+        # Aliases.
+        expect, is_op = self.expect, self.is_op
+        next, set_context = self.next_token, self.set_context
+        # Scan optional  * and ** operators.
+        ### self.dump_token_range(i1, i2, tag='arg')  ###
+        token = self.tokens[i1]
+        if token.kind == 'op':
+            if token.value in ('*', '**'):
+                self.set_context(i1, f"{token.value}args")
+            else:
+                self.unexpected_token(i1)
+            i = next(i1)
+        else:
+            i = i1
+        # Scan the argument name.
+        expect(i, 'name')
+        i = next(i)
+        # Scan an optional annotation.
+        has_annotation = is_op(i, ':')
+        if has_annotation:
+            set_context(i, ':annotation')
+            i = self.scan_annotation(i, i2)
+        # Scan the optional initializer.
+        if is_op(i, '='):
+            set_context(i, '=initializer')
+            i = self.scan_initializer(i, i2, has_annotation)
+        # Scan the optional comma.
+        if is_op(i, ','):
+            set_context(i, ',end-arg')
+            i = next(i)
+        return i
+    #@+node:ekr.20240106172905.1: *5* tbo.scan_args
+    def scan_args(self, i1: int, i2: int) -> Optional[int]:
+        """Scan a comma-separated list of function definition arguments."""
+        # Aliases.
+        expect, next = self.expect, self.next_token
+        ### set_context = self.set_context
+        # Sanity checks.
+        assert i2 > i1, (i1, i2)
+        expect(i1, 'op', '(')
+        expect(i2, 'op', ')')
+        ### self.dump_token_range(i1, i2, tag='args')  ###
+        # Skip the '('
+        i = next(i1)
+        # Scan each argument.
+        while i < i2:
+            i = self.scan_arg(i, i2)
+            ###
+            # if i < i2:
+                # expect(i, 'op', ',')
+                # set_context(i, ', arg-separator')
+        expect(i, 'op', ')')
+        ### set_context(i, ') end-arg-list')
+        return i
+    #@+node:ekr.20240105145241.42: *5* tbo.scan_def
+    def scan_def(self) -> None:
+        """Scan a complete 'def' statement."""
+        expect, expect_ops = self.expect, self.expect_ops
+        find_op, next = self.find_op, self.next_token
+        # Find i1 and i2, the boundaries of the argument list.
+        i = self.index
+        expect(i, 'name', 'def')
+        i = next(i)
+        expect(i, 'name')
+        i = next(i)
+        expect(i, 'op', '(')
+        i1 = i
+        i = i2 = find_op(i, len(self.tokens), [')'])
+        expect(i, 'op', ')')
+        i = next(i)
+        expect_ops(i, ['->', ':'])
+        # Find i3, the ending ':' of the def statement.
+        i3 = find_op(i, len(self.tokens), [':'])
+        expect(i3, 'op', ':')
+        self.set_context(i3, ':end-def')
+        # Parse the args and set the context of inner operators.
+        self.scan_args(i1, i2)
+        ### dump_tokens(self.tokens[i1:i3])
+    #@+node:ekr.20240106181215.1: *5* tbo.scan_initializer
+    def scan_initializer(self, i1: int, i2: int, has_annotation: bool) -> Optional[int]:
+        """Scan an initializer in a function definition argument."""
+        # Aliases
+        expect, expect_ops = self.expect, self.expect_ops
+        is_op, set_context = self.is_op, self.set_context
+        next = self.next_token
+        # Skip the '='
+        expect(i1, 'op', '=')
+        ### set_context(i1, f"= initializer: has_annotation {has_annotation}")
+        i = next(i1)
+        # Skip to the next ',' or ')' at this level.
+        i3 = self.find_op(i, i2, [',', ')'])
+        ### g.trace('AFTER find_op', repr(i3))
+        expect_ops(i3, [',', ')'])
+        # Set the context of inner operators that require context assistance.
+        if 0:  ###
+            for i in range(i1 + 1, i3 - 1):
+                for value in self.context_op_values:
+                    if is_op(i, value):
+                        set_context(i, f"{value}inner initializer")
+        # Caller sets the context of self.tokens[i3].
+        return i3
+    #@+node:ekr.20240106170746.1: *5* tbo.set_context
+    def set_context(self, i: int, context: str) -> None:
+        """Set the context for self.tokens[i] to a unique value."""
+        self.check_token_index(i)
+        token = self.tokens[i]
+        ### g.trace(token, context)
+        if token.context is not None:
+            raise BeautifyError(
+                f"Duplicate context! token: {token!r}\n"
+                f"old: {token.context} new: {context}"
+            )
+        if not context.startswith(token.value):
+            raise BeautifyError(
+                f"Invalid context! {context} should start with {token.value}"
+            )
+        token.context = context
     #@+node:ekr.20240106174317.1: *5* tbo.unexpected_token
     def unexpected_token(self, i: int) -> None:
         """Raise an error about an unexpected token."""
