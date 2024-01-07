@@ -902,16 +902,15 @@ class TokenBasedOrange:
             self.blank()
             self.add_token('op', val)
             self.blank()
-    #@+node:ekr.20240105145241.20: *6* tbo.do_equal_op (fixed)
+    #@+node:ekr.20240105145241.20: *6* tbo.do_equal_op (to do)
     # Keys: token.index of '=' token. Values: count of ???s
     arg_dict: dict[int, int] = {}
 
     def do_equal_op(self, val: str) -> None:
 
         context = self.token.context
-        g.trace(self.index, context)  ###
-        ### if context in ('annotation', 'initializer'):
-        if context == 'annotation':
+        ### g.trace(self.index, context)  ###
+        if context == 'initializer':
             # Pep 8: Don't use spaces around the = sign when used to indicate
             #        a keyword argument or a default parameter value.
             #        However, hen combining an argument annotation with a default value,
