@@ -751,10 +751,18 @@ class TokenBasedOrange:
 
     def do_name(self) -> None:
         """Handle a name token."""
-        next = self.next_token
+        # Aliases.
+        is_kind, next, set_context = self.is_kind, self.next_token, self.set_context
+        
+        # Let block.
         name = self.val
+        func_class_name = 'function/class name'
         if name in ('class', 'def'):
             self.word(name)
+            i = next(self.index)
+            if is_kind(i, 'name'):
+                # Suppress handling a function call below.
+                set_context(i, func_class_name)
         elif name in self.compound_keywords:
             # There seems to be no need to add context to the trailing ':'.
             self.word_op(name)
@@ -762,7 +770,7 @@ class TokenBasedOrange:
             self.word_op(name)
         else:
             # Look for a possible function call.
-            if 0:  ### Not yet.
+            if self.token.context != func_class_name:
                 i = next(self.index)
                 if i and self.is_op(i, ['(']):
                     self.scan_call(i)
@@ -1131,6 +1139,9 @@ class TokenBasedOrange:
         assert s and isinstance(s, str), repr(s)
         if s == 'def':
             self.scan_def()
+            
+        ### To do. Handle function calls here, not in do_name.
+
         ### in_import_from = self.token.context == ?
         if False:  ### isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
             self.clean('blank')
@@ -1170,13 +1181,21 @@ class TokenBasedOrange:
             print(token.dump())
     #@+node:ekr.20240106090914.1: *5* tbo.expect & expect_ops
     def expect(self, i: int, kind: str, value: str = None) -> None:
+        
+        def dump():
+            print('')
+            g.trace('Error. i:', i)
+            g.printObj(self.tokens, tag='expect')
+
         self.check_token_index(i)
         token = self.tokens[i]
         if value is None:
             if token.kind != kind:
+                dump()
                 message = f"Expected token.kind: {kind} got {token.kind}"
                 raise BeautifyError(message)
         elif (token.kind, token.value) != (kind, value):
+            dump()
             message = f"Expected token.kind: {kind} token.value: {value} got {token!r}"
             raise BeautifyError(message)
 
@@ -1243,7 +1262,7 @@ class TokenBasedOrange:
             and value not in ('True', 'False', None)
             and (keyword.iskeyword(value) or keyword.issoftkeyword(value))
         )
-    #@+node:ekr.20240106172054.1: *5* tbo.is_op
+    #@+node:ekr.20240106172054.1: *5* tbo.is_op & is_kind
     def is_op(self, i: int, values: list[str]) -> bool:
         self.check_token_index(i)
         ### Permissive.
@@ -1251,6 +1270,12 @@ class TokenBasedOrange:
                 # return False
         token = self.tokens[i]
         return token.kind == 'op' and token.value in values
+
+    def is_kind(self, i: int, kind: str) -> bool:
+        self.check_token_index(i)
+        token = self.tokens[i]
+        return token.kind == kind
+
     #@+node:ekr.20240106093210.1: *5* tbo.is_significant_token
     def is_significant_token(self, token: InputToken) -> bool:
         """Return true if the given token is not whitespace."""
@@ -1368,66 +1393,56 @@ class TokenBasedOrange:
     #@+node:ekr.20240107091700.1: *5* tbo.scan_call
     def scan_call(self, i1: int) -> None:
         """Scan a function call"""
-        # Aliases.
-        expect, find_op = self.expect, self.find_op
+        # Aliase.
+        expect = self.expect
 
         # Find i1 and i2, the boundaries of the argument list.
         expect(i1, 'op', '(')
-        i2 = find_op(i1, len(self.tokens), [')'])
-        expect(i2, 'op', ')')
 
         # Scan the arguments.
-        ### To do: scan_call_args.
-        self.scan_call_args(i1, i2)
+        i = self.scan_call_args(i1)
+
+        # Sanity check.
+        expect(i, 'op', ')')
     #@+node:ekr.20240107092559.1: *5* tbo.scan_call_arg
-    def scan_call_arg(self, i1: int, i2: int) -> Optional[int]:
-        """Scan a single function definition argument"""
-        # Aliases.
-        is_op, next, set_context = self.is_op, self.next_token, self.set_context
-
-        # Scan optional  * and ** operators.
-        i = i1
-        ## token = self.tokens[i1]
-        ### if token.kind == 'op' and token.value in ('*', '**'):
-        if is_op(i, ['*', '**']):
-            self.set_context(i1, 'arg')
-            i = next(i)
-
-        # Scan an option argument name.
-        token = self.tokens[i]
-        if token.kind == 'name':
-            i = next(i)
-
-        # Scan an optional initializer.
-        if is_op(i, ['=']):
-            set_context(i, 'initializer')
-            i = self.scan_initializer(i, i2, has_annotation=False)
-
-        # Scan the optional comma.
-        if is_op(i, [',']):
-            i = next(i)
+    def scan_call_arg(self, i1: int) -> Optional[int]:
+        """
+        Scan a single function definition argument.
+        
+        Set context for every '=' operator.
+        """
+        i = self.find_op(i1, len(self.tokens), [',', ')'])
+        for i2 in range(i1 + 1, i - 1):
+            if self.is_op(i2, ['=']):
+                self.set_context(i2, 'initializer')
         return i
     #@+node:ekr.20240107092458.1: *5* tbo.scan_call_args
-    def scan_call_args(self, i1: int, i2: int) -> Optional[int]:
+    def scan_call_args(self, i1: int) -> Optional[int]:
         """Scan a comma-separated list of function definition arguments."""
         # Aliases.
         expect, next = self.expect, self.next_token
-
-        # Sanity checks.
-        assert i2 > i1, (i1, i2)
-        expect(i1, 'op', '(')
-        expect(i2, 'op', ')')
+        is_op = self.is_op
 
         # Scan the '('
+        expect(i1, 'op', '(')
         i = next(i1)
 
-        # Scan each argument.
-        while i < i2:
-            i = self.scan_call_arg(i, i2)
-            ### g.trace(i, self.tokens[i])
+        # Quit if there are no args.
+        if is_op(i, [')']):
+            i = next(i)
+            return i
 
-        # Scan the ')'
+        # Scan arguments.
+        while i and i < len(self.tokens):
+            i = self.scan_call_arg(i)
+            if is_op(i, [')']):
+                break
+            i = next(i)
+
+        # Sanity check.
         expect(i, 'op', ')')
+
+        # The caller will eat the ')'.
         return i
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def
     def scan_def(self) -> None:
