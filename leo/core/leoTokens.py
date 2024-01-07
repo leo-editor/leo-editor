@@ -1242,13 +1242,11 @@ class TokenBasedOrange:
     #@+node:ekr.20240105145241.41: *4* tbo: Scanning
     #@+node:ekr.20240106094211.1: *5* tbo.check_token_index
     def check_token_index(self, i: Optional[int]) -> None:
-        # pylint: disable=raise-missing-from
-        if i is None:
-            return  ###
-        try:
-            self.tokens[i]
-        except IndexError:
-            raise BeautifyError(f"IndexError: tokens[{i}]")
+        if i < 0 or i >= len(self.tokens):
+            raise BeautifyError(
+                f"IndexError! i: {i}, len(tokens): {len(self.tokens)}"
+            )
+
     #@+node:ekr.20240106220724.1: *5* tbo.dump_token_range
     def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:
         if tag:
