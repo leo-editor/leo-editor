@@ -498,7 +498,7 @@ class TokenBasedOrange:
     black_mode = False
 
     # Values of operator InputToken that require context assistance.
-    context_op_values = (':', '*', '**', '-')
+    context_op_values: list[str] = [':', '*', '**', '-']
 
     # Patterns...
     nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
@@ -1242,7 +1242,7 @@ class TokenBasedOrange:
     #@+node:ekr.20240105145241.41: *4* tbo: Scanning
     #@+node:ekr.20240106094211.1: *5* tbo.check_token_index
     def check_token_index(self, i: Optional[int]) -> None:
-        if i < 0 or i >= len(self.tokens):
+        if i is None or i < 0 or i >= len(self.tokens):
             raise BeautifyError(
                 f"IndexError! i: {i}, len(tokens): {len(self.tokens)}"
             )
@@ -1329,11 +1329,13 @@ class TokenBasedOrange:
             and (keyword.iskeyword(value) or keyword.issoftkeyword(value))
         )
     #@+node:ekr.20240106172054.1: *5* tbo.is_op
-    def is_op(self, i: int, value: str) -> bool:
-        if i is None or i >= len(self.tokens):
-            return False
+    def is_op(self, i: int, values: list[str]) -> bool:
+        self.check_token_index(i)
+        ### Permissive.
+            # if i is None or i >= len(self.tokens):
+                # return False
         token = self.tokens[i]
-        return (token.kind, token.value) == ('op', value)
+        return token.kind == 'op' and token.value in values
     #@+node:ekr.20240106093210.1: *5* tbo.is_significant_token
     def is_significant_token(self, token: InputToken) -> bool:
         """Return true if the given token is not whitespace."""
@@ -1372,46 +1374,56 @@ class TokenBasedOrange:
     def scan_annotation(self, i1: int, i2: int) -> Optional[int]:
         """Scan an annotation if a function definition arg."""
         # Aliases
-        expect, find_op, next = self.expect, self.find_op, self.next_token
-        # Skip the ':'
+        expect, next = self.expect, self.next_token
+        find_op, is_op = self.find_op, self.is_op
+        set_context = self.set_context
+
+        # Scan the ':'
         expect(i1, 'op', ':')
+        set_context(i1, 'annotation')
         i = next(i1)
-        # Skip to the next ',' or '=' at this level.
+
+        # Scan to the next ',' or '=' at this level.
         i3 = find_op(i, i2, [',', '=', ')'])
+
+        # Set the contexts of inner ops.
+        for i4 in range(i1 + 1, i3 - 1):
+            if is_op(i4, ['=', ':']):
+                set_context(i4, 'annotation')
         return i3
-        ### To do: set contexts of inner ops.
     #@+node:ekr.20240106173638.1: *5* tbo.scan_arg
     def scan_arg(self, i1: int, i2: int) -> Optional[int]:
         """Scan a single function definition argument"""
         # Aliases.
         expect, is_op = self.expect, self.is_op
         next, set_context = self.next_token, self.set_context
+
         # Scan optional  * and ** operators.
-        ### self.dump_token_range(i1, i2, tag='arg')  ###
+        i = i1
         token = self.tokens[i1]
-        if token.kind == 'op':
-            if token.value in ('*', '**'):
-                self.set_context(i1, f"{token.value}args")
-            else:
-                self.unexpected_token(i1)
-            i = next(i1)
-        else:
-            i = i1
-        # Scan the argument name.
+        if token.kind == 'op' and token.value in ('*', '**'):
+            self.set_context(i1, 'arg')
+            i = next(i)
+
+        # Scan the argument's name.
         expect(i, 'name')
         i = next(i)
+
         # Scan an optional annotation.
-        has_annotation = is_op(i, ':')
+        has_annotation = is_op(i, [':'])
         if has_annotation:
-            set_context(i, ':annotation')
+            set_context(i, 'annotation')
             i = self.scan_annotation(i, i2)
-        # Scan the optional initializer.
-        if is_op(i, '='):
-            set_context(i, '=initializer')
+
+        # Scan an optional initializer.
+        if is_op(i, ['=']):
+            if has_annotation:
+                set_context(i, 'annotation')
+            ### set_context(i, 'annotation' if has_annotation else 'initializer')
             i = self.scan_initializer(i, i2, has_annotation)
+
         # Scan the optional comma.
-        if is_op(i, ','):
-            set_context(i, ',end-arg')
+        if is_op(i, [',']):
             i = next(i)
         return i
     #@+node:ekr.20240106172905.1: *5* tbo.scan_args
@@ -1419,29 +1431,28 @@ class TokenBasedOrange:
         """Scan a comma-separated list of function definition arguments."""
         # Aliases.
         expect, next = self.expect, self.next_token
-        ### set_context = self.set_context
+
         # Sanity checks.
         assert i2 > i1, (i1, i2)
         expect(i1, 'op', '(')
         expect(i2, 'op', ')')
-        ### self.dump_token_range(i1, i2, tag='args')  ###
-        # Skip the '('
+
+        # Scan the '('
         i = next(i1)
+
         # Scan each argument.
         while i < i2:
             i = self.scan_arg(i, i2)
-            ###
-            # if i < i2:
-                # expect(i, 'op', ',')
-                # set_context(i, ', arg-separator')
+
+        # Scan the ')'
         expect(i, 'op', ')')
-        ### set_context(i, ') end-arg-list')
         return i
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def
     def scan_def(self) -> None:
         """Scan a complete 'def' statement."""
         expect, expect_ops = self.expect, self.expect_ops
         find_op, next = self.find_op, self.next_token
+
         # Find i1 and i2, the boundaries of the argument list.
         i = self.index
         expect(i, 'name', 'def')
@@ -1454,13 +1465,14 @@ class TokenBasedOrange:
         expect(i, 'op', ')')
         i = next(i)
         expect_ops(i, ['->', ':'])
+
         # Find i3, the ending ':' of the def statement.
         i3 = find_op(i, len(self.tokens), [':'])
         expect(i3, 'op', ':')
-        self.set_context(i3, ':end-def')
-        # Parse the args and set the context of inner operators.
+        self.set_context(i3, 'def')
+
+        # Scan the arguments.
         self.scan_args(i1, i2)
-        ### dump_tokens(self.tokens[i1:i3])
     #@+node:ekr.20240106181215.1: *5* tbo.scan_initializer
     def scan_initializer(self, i1: int, i2: int, has_annotation: bool) -> Optional[int]:
         """Scan an initializer in a function definition argument."""
@@ -1468,38 +1480,42 @@ class TokenBasedOrange:
         expect, expect_ops = self.expect, self.expect_ops
         is_op, set_context = self.is_op, self.set_context
         next = self.next_token
-        # Skip the '='
+
+        # Scan the '='.
         expect(i1, 'op', '=')
-        ### set_context(i1, f"= initializer: has_annotation {has_annotation}")
+        set_context(i1, 'initializer')
         i = next(i1)
-        # Skip to the next ',' or ')' at this level.
+
+        # Find the next ',' or ')' at this level.
         i3 = self.find_op(i, i2, [',', ')'])
-        ### g.trace('AFTER find_op', repr(i3))
         expect_ops(i3, [',', ')'])
-        # Set the context of inner operators that require context assistance.
-        if 0:  ###
-            for i in range(i1 + 1, i3 - 1):
-                for value in self.context_op_values:
-                    if is_op(i, value):
-                        set_context(i, f"{value}inner initializer")
-        # Caller sets the context of self.tokens[i3].
+
+        # Set the context of inner operators.
+        for i in range(i1 + 1, i3 - 1):
+            if is_op(i, self.context_op_values):
+                set_context(i, 'initializer')
         return i3
     #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
-        """Set the context for self.tokens[i] to a unique value."""
+        """Set the context for self.tokens[i]."""
         self.check_token_index(i)
         token = self.tokens[i]
-        ### g.trace(token, context)
-        if token.context is not None:
-            raise BeautifyError(
-                f"Duplicate context! token: {token!r}\n"
-                f"old: {token.context} new: {context}"
-            )
-        if not context.startswith(token.value):
-            raise BeautifyError(
-                f"Invalid context! {context} should start with {token.value}"
-            )
-        token.context = context
+        if not token.context:
+            token.context = context
+        if token.context == context:
+            return
+
+        # The context has changed.
+        message = (
+            f"Change context! token: {token!r}\n"
+            f"old: {token.context}\nnew: {context}"
+        )
+        if 1:  ### Experimental.
+            # Use the previous context.
+            g.trace(message)
+            token.context = context
+        else:
+            raise BeautifyError(message)
     #@+node:ekr.20240106174317.1: *5* tbo.unexpected_token
     def unexpected_token(self, i: int) -> None:
         """Raise an error about an unexpected token."""
