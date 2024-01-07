@@ -907,8 +907,11 @@ class TokenBasedOrange:
     arg_dict: dict[int, int] = {}
 
     def do_equal_op(self, val: str) -> None:
+
         context = self.token.context
-        if context in ('annotation', 'initializer'):
+        g.trace(self.index, context)  ###
+        ### if context in ('annotation', 'initializer'):
+        if context == 'annotation':
             # Pep 8: Don't use spaces around the = sign when used to indicate
             #        a keyword argument or a default parameter value.
             #        However, hen combining an argument annotation with a default value,
@@ -1401,12 +1404,14 @@ class TokenBasedOrange:
         if has_annotation:
             set_context(i, 'annotation')
             i = self.scan_annotation(i, i2)
-            ### g.trace(i, self.tokens[i])
+            g.trace(i, self.tokens[i])
 
         # Scan an optional initializer.
         if is_op(i, ['=']):
             if has_annotation:
                 set_context(i, 'annotation')
+            else:
+                set_context(i, 'initializer')
             i = self.scan_initializer(i, i2, has_annotation)
 
         # Scan the optional comma.
@@ -1496,7 +1501,7 @@ class TokenBasedOrange:
 
         # The context is different from the old.
         if 1:  # Ignore the new context.
-            if 0:
+            if 1:
                 g.trace(
                     f"Ignore new context! token: {token!r}\n"
                     f"old: {token.context}\nnew: {context}"
@@ -1516,7 +1521,7 @@ class TokenBasedOrange:
         message = f"Unexpected InputToken at {i} {token!r}"
         raise BeautifyError(message)
     #@+node:ekr.20240105145241.44: *4* tbo: Split/join (not used yet)
-    #@+node:ekr.20240105145241.45: *5* tbo.split_line & helpers (to do)
+    #@+node:ekr.20240105145241.45: *5* tbo.split_line & helpers (to do last)
     def split_line(self, token: InputToken) -> bool:
         """
         Split token's line, if possible and enabled.
@@ -1627,7 +1632,7 @@ class TokenBasedOrange:
             if t.kind == 'lt':
                 break
         return result
-    #@+node:ekr.20240105145241.49: *5* tbo.join_lines (to do)
+    #@+node:ekr.20240105145241.49: *5* tbo.join_lines (to do last)
     def join_lines(self, token: InputToken) -> None:
         """
         Join preceding lines, if possible and enabled.

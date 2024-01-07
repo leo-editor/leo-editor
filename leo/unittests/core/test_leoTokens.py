@@ -570,8 +570,8 @@ class TestTokenBasedOrange(BaseTest):
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens)
             self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.58: *3* TestTBO.test_join_and_strip_condition
-    def test_join_and_strip_condition(self):
+    #@+node:ekr.20240105153425.58: *3* TestTBO.xxx_test_join_and_strip_condition
+    def xxx_test_join_and_strip_condition(self):
 
         contents = """\
     if (
@@ -590,8 +590,8 @@ class TestTokenBasedOrange(BaseTest):
             # expected = self.blacken(contents, line_length=40)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.59: *3* TestTBO.test_join_leading_whitespace
-    def test_join_leading_whitespace(self):
+    #@+node:ekr.20240105153425.59: *3* TestTBO.xxx_test_join_leading_whitespace
+    def xxx_test_join_leading_whitespace(self):
 
         line_length = 40  # For testing.
         table = (
@@ -625,8 +625,8 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
         assert not fails, fails
-    #@+node:ekr.20240105153425.60: *3* TestTBO.test_join_lines
-    def test_join_lines(self):
+    #@+node:ekr.20240105153425.60: *3* TestTBO.xxx_test_join_lines
+    def xxx_test_join_lines(self):
 
         # Except where noted, all entries are expected values....
         line_length = 40  # For testing.
@@ -655,8 +655,8 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
         self.assertEqual(fails, 0)
-    #@+node:ekr.20240105153425.61: *3* TestTBO.test_join_suppression
-    def test_join_suppression(self):
+    #@+node:ekr.20240105153425.61: *3* TestTBO.xxx_test_join_suppression
+    def xxx_test_join_suppression(self):
 
         contents = """\
     class T:
@@ -674,8 +674,8 @@ class TestTokenBasedOrange(BaseTest):
         expected = textwrap.dedent(expected)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.62: *3* TestTBO.test_join_too_long_lines
-    def test_join_too_long_lines(self):
+    #@+node:ekr.20240105153425.62: *3* TestTBO.xxx_test_join_too_long_lines
+    def xxx_test_join_too_long_lines(self):
 
         # Except where noted, all entries are expected values....
         line_length = 40  # For testing.
@@ -957,8 +957,8 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.73: *3* TestTBO.test_split_lines
-    def test_split_lines(self):
+    #@+node:ekr.20240105153425.73: *3* TestTBO.xxx_test_split_lines
+    def xxx_test_split_lines(self):
 
         line_length = 40  # For testing.
         table = (
@@ -989,8 +989,8 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
         self.assertEqual(fails, 0)
-    #@+node:ekr.20240105153425.74: *3* TestTBO.test_split_lines_2
-    def test_split_lines_2(self):
+    #@+node:ekr.20240105153425.74: *3* TestTBO.xxx_test_split_lines_2
+    def xxx_test_split_lines_2(self):
 
         line_length = 40  # For testing.
         # Different from how black handles things.
@@ -1019,8 +1019,8 @@ class TestTokenBasedOrange(BaseTest):
             fails += 1
             print(f"Fail: {fails}\n{message}")
         self.assertEqual(fails, 0)
-    #@+node:ekr.20240105153425.75: *3* TestTBO.test_split_lines_3
-    def test_split_lines_3(self):
+    #@+node:ekr.20240105153425.75: *3* TestTBO.xxx_test_split_lines_3
+    def xxx_test_split_lines_3(self):
 
         line_length = 40  # For testing.
         # Different from how black handles things.
