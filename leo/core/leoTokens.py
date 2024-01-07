@@ -902,26 +902,23 @@ class TokenBasedOrange:
             self.blank()
             self.add_token('op', val)
             self.blank()
-    #@+node:ekr.20240105145241.20: *6* tbo.do_equal_op
+    #@+node:ekr.20240105145241.20: *6* tbo.do_equal_op (fixed)
     # Keys: token.index of '=' token. Values: count of ???s
     arg_dict: dict[int, int] = {}
 
-    dump_flag = True
-
     def do_equal_op(self, val: str) -> None:
-
         context = self.token.context
-        if context == 'annotation':
-            self.blank()
-            self.add_token('op', val)
-            self.blank()
-        else:
+        if context in ('annotation', 'initializer'):
             # Pep 8: Don't use spaces around the = sign when used to indicate
             #        a keyword argument or a default parameter value.
             #        However, hen combining an argument annotation with a default value,
             #        *do* use spaces around the = sign
             self.clean('blank')
             self.add_token('op-no-blanks', val)
+        else:
+            self.blank()
+            self.add_token('op', val)
+            self.blank()
     #@+node:ekr.20240105145241.21: *5* tbo.do_string
     def do_string(self) -> None:
         """Handle a 'string' token."""
@@ -1046,7 +1043,7 @@ class TokenBasedOrange:
             if t.kind == 'line-end' and getattr(t, 'newline_kind', None) != 'nl':
                 cleaned_newline = True
         return cleaned_newline
-    #@+node:ekr.20240105145241.31: *5* tbo.colon (to do)
+    #@+node:ekr.20240105145241.31: *5* tbo.colon (partially fixed)
     def colon(self, val: str) -> None:
         """Handle a colon."""
         ###
@@ -1167,8 +1164,8 @@ class TokenBasedOrange:
         """Put a '*' op, with special cases for *args."""
         val = '*'
         self.clean('blank')
-        ### in_arg = self.token.context == ?
-        if False:  ### isinstance(node, ast.arguments):
+        context = self.token.context
+        if context in ('annotation', 'initializer'):
             self.blank()
             self.add_token('op', val)
             return  # #2533
