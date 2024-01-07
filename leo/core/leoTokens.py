@@ -491,9 +491,6 @@ class TokenBasedOrange:
     
     The Orange class in leoAst.py uses data from Python's parse tree.
     """
-    # This switch is really a comment. It will always be false.
-    # It marks the code that simulates the operation of the black tool.
-    black_mode = False
 
     # Values of operator InputToken that require context assistance.
     context_op_values: list[str] = [':', '*', '**', '-']
@@ -724,14 +721,6 @@ class TokenBasedOrange:
         self.indent_level -= 1
         self.lws = self.indent_level * self.tab_width * ' '
         self.line_indent()
-        if self.black_mode:  # pragma: no cover (black)
-            state = self.state_stack[-1]
-            if state.kind == 'indent' and state.value == self.indent_level:
-                self.state_stack.pop()
-                state = self.state_stack[-1]
-                if state.kind in ('class', 'def'):
-                    self.state_stack.pop()
-                    self.handle_dedent_after_class_or_def(state.kind)
 
     def do_indent(self) -> None:
         """Handle indent token."""
@@ -755,87 +744,28 @@ class TokenBasedOrange:
             g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
         self.lws = new_indent
         self.line_indent()
-    #@+node:ekr.20240105145241.15: *6* tbo.handle_dedent_after_class_or_def
-    def handle_dedent_after_class_or_def(self, kind: str) -> None:  # pragma: no cover (black)
-        """
-        Insert blank lines after a class or def as the result of a 'dedent' token.
-
-        Normal comment lines may precede the 'dedent'.
-        Insert the blank lines *before* such comment lines.
-        """
-        #
-        # Compute the tail.
-        i = len(self.code_list) - 1
-        tail: list[OutputToken] = []
-        while i > 0:
-            t = self.code_list.pop()
-            i -= 1
-            if t.kind == 'line-indent':
-                pass
-            elif t.kind == 'line-end':
-                tail.insert(0, t)
-            elif t.kind == 'comment':
-                # Only underindented single-line comments belong in the tail.
-                # at+node comments must never be in the tail.
-                single_line = self.code_list[i].kind in ('line-end', 'line-indent')
-                lws = len(t.value) - len(t.value.lstrip())
-                underindent = lws <= len(self.lws)
-                if underindent and single_line and not self.node_pat.match(t.value):
-                    # A single-line comment.
-                    tail.insert(0, t)
-                else:
-                    self.code_list.append(t)
-                    break
-            else:
-                self.code_list.append(t)
-                break
-        #
-        # Remove leading 'line-end' tokens from the tail.
-        while tail and tail[0].kind == 'line-end':
-            tail = tail[1:]
-        #
-        # Put the newlines *before* the tail.
-        # For Leo, always use 1 blank lines.
-        n = 1  # n = 2 if kind == 'class' else 1
-        # Retain the token (intention) for debugging.
-        self.add_token('blank-lines', n)
-        for _i in range(0, n + 1):
-            self.add_token('line-end', '\n')
-        if tail:
-            self.code_list.extend(tail)
-        self.line_indent()
     #@+node:ekr.20240105145241.16: *5* tbo.do_name
+    ### 'and', 'elif', 'else', 'for', 'if', 'in', 'not', 'not in', 'or', 'while'):
+    compound_keywords = ('elif', 'else', 'for', 'if', 'while')
+    operator_keywords = ('and', 'in', 'not', 'not in', 'or')
+
     def do_name(self) -> None:
         """Handle a name token."""
+        next = self.next_token
         name = self.val
-        if self.black_mode and name in ('class', 'def'):  # pragma: no cover (black)
-            # Handle newlines before and after 'class' or 'def'
-            self.decorator_seen = False
-            state = self.state_stack[-1]
-            if state.kind == 'decorator':
-                # Always do this, regardless of @bool clean-blank-lines.
-                self.clean_blank_lines()
-                # Suppress split/join.
-                self.add_token('hard-newline', '\n')
-                self.add_token('line-indent', self.lws)
-                self.state_stack.pop()
-            else:
-                # Always do this, regardless of @bool clean-blank-lines.
-                self.blank_lines(2 if name == 'class' else 1)
-            self.push_state(name)
-            # For trailing lines after inner classes/defs.
-            self.push_state('indent', self.indent_level)
-            self.word(name)
-            return
-        #
-        # Leo mode...
         if name in ('class', 'def'):
             self.word(name)
-        elif name in (
-            'and', 'elif', 'else', 'for', 'if', 'in', 'not', 'not in', 'or', 'while'
-        ):
+        elif name in self.compound_keywords:
+            # There seems to be no need to add context to the trailing ':'.
+            self.word_op(name)
+        elif name in self.operator_keywords:
             self.word_op(name)
         else:
+            # Look for a possible function call.
+            if 0:  ### Not yet.
+                i = next(self.index)
+                if i and self.is_op(i, ['(']):
+                    self.scan_call(i)
             self.word(name)
     #@+node:ekr.20240105145241.17: *5* tbo.do_newline & do_nl
     def do_newline(self) -> None:
@@ -862,10 +792,6 @@ class TokenBasedOrange:
                 self.blank()
             self.add_token('op-no-blanks', val)
         elif val == '@':
-            if self.black_mode:  # pragma: no cover (black)
-                if not self.decorator_seen:
-                    self.blank_lines(1)
-                    self.decorator_seen = True
             self.clean('blank')
             self.add_token('op-no-blanks', val)
             self.push_state('decorator')
@@ -1434,6 +1360,70 @@ class TokenBasedOrange:
         # Scan each argument.
         while i < i2:
             i = self.scan_arg(i, i2)
+            ### g.trace(i, self.tokens[i])
+
+        # Scan the ')'
+        expect(i, 'op', ')')
+        return i
+    #@+node:ekr.20240107091700.1: *5* tbo.scan_call
+    def scan_call(self, i1: int) -> None:
+        """Scan a function call"""
+        # Aliases.
+        expect, find_op = self.expect, self.find_op
+
+        # Find i1 and i2, the boundaries of the argument list.
+        expect(i1, 'op', '(')
+        i2 = find_op(i1, len(self.tokens), [')'])
+        expect(i2, 'op', ')')
+
+        # Scan the arguments.
+        ### To do: scan_call_args.
+        self.scan_call_args(i1, i2)
+    #@+node:ekr.20240107092559.1: *5* tbo.scan_call_arg
+    def scan_call_arg(self, i1: int, i2: int) -> Optional[int]:
+        """Scan a single function definition argument"""
+        # Aliases.
+        is_op, next, set_context = self.is_op, self.next_token, self.set_context
+
+        # Scan optional  * and ** operators.
+        i = i1
+        ## token = self.tokens[i1]
+        ### if token.kind == 'op' and token.value in ('*', '**'):
+        if is_op(i, ['*', '**']):
+            self.set_context(i1, 'arg')
+            i = next(i)
+
+        # Scan an option argument name.
+        token = self.tokens[i]
+        if token.kind == 'name':
+            i = next(i)
+
+        # Scan an optional initializer.
+        if is_op(i, ['=']):
+            set_context(i, 'initializer')
+            i = self.scan_initializer(i, i2, has_annotation=False)
+
+        # Scan the optional comma.
+        if is_op(i, [',']):
+            i = next(i)
+        return i
+    #@+node:ekr.20240107092458.1: *5* tbo.scan_call_args
+    def scan_call_args(self, i1: int, i2: int) -> Optional[int]:
+        """Scan a comma-separated list of function definition arguments."""
+        # Aliases.
+        expect, next = self.expect, self.next_token
+
+        # Sanity checks.
+        assert i2 > i1, (i1, i2)
+        expect(i1, 'op', '(')
+        expect(i2, 'op', ')')
+
+        # Scan the '('
+        i = next(i1)
+
+        # Scan each argument.
+        while i < i2:
+            i = self.scan_call_arg(i, i2)
             ### g.trace(i, self.tokens[i])
 
         # Scan the ')'

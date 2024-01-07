@@ -243,11 +243,9 @@ class Optional_TestFiles(BaseTest):
 #@+node:ekr.20240105153425.42: ** class TestTokenBasedOrange (BaseTest)
 class TestTokenBasedOrange(BaseTest):
     """
-    Tests for the Orange class.
-
-    **Important**: All unit tests assume that black_mode is False.
-                   That is, unit tests assume that no blank lines
-                   are ever inserted or deleted.
+    Tests for the TokenBasedOrange class.
+    
+    Note: TokenBasedOrange never inserts or deletes lines.
     """
     #@+others
     #@+node:ekr.20240105153425.43: *3* TestTBO.blacken
