@@ -709,18 +709,23 @@ class TestTokenBasedOrange(BaseTest):
     def test_leading_stars(self):
 
         # #2533.
-        contents = """\
-            def f(
-                arg1,
-                *args,
-                **kwargs
-            ):
-                pass
-    """
-        expected = textwrap.dedent("""\
-            def f(arg1, *args, **kwargs):
-                pass
-    """)
+        contents = textwrap.dedent(
+            """
+                def f(
+                    arg1,
+                    *args,
+                    **kwargs
+                ):
+                    pass
+            """).strip() + '\n'
+        if 1:  # w/o join:
+            expected = contents
+        else:  # with join.
+            expected = textwrap.dedent(
+            """
+                def f(arg1, *args, **kwargs):
+                    pass
+            """).strip() + '\n'
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         self.assertEqual(expected, results)

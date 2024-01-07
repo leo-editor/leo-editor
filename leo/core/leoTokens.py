@@ -902,7 +902,7 @@ class TokenBasedOrange:
             self.blank()
             self.add_token('op', val)
             self.blank()
-    #@+node:ekr.20240105145241.20: *6* tbo.do_equal_op (to do)
+    #@+node:ekr.20240105145241.20: *6* tbo.do_equal_op (fixed)
     # Keys: token.index of '=' token. Values: count of ???s
     arg_dict: dict[int, int] = {}
 
@@ -1167,7 +1167,7 @@ class TokenBasedOrange:
         val = '*'
         self.clean('blank')
         context = self.token.context
-        if context in ('annotation', 'initializer'):
+        if context not in ('annotation', 'initializer'):
             self.blank()
             self.add_token('op', val)
             return  # #2533
@@ -1185,8 +1185,10 @@ class TokenBasedOrange:
         """Put a ** operator, with a special case for **kwargs."""
         val = '**'
         self.clean('blank')
+        context = self.token.context
         ### in_arg = self.token.context == ?
-        if False:  ### isinstance(node, ast.arguments):
+        ###if False:  ### isinstance(node, ast.arguments):
+        if context not in ('annotation', 'initializer'):
             self.blank()
             self.add_token('op', val)
             return  # #2533
@@ -1403,7 +1405,7 @@ class TokenBasedOrange:
         if has_annotation:
             set_context(i, 'annotation')
             i = self.scan_annotation(i, i2)
-            g.trace(i, self.tokens[i])
+            ### g.trace(i, self.tokens[i])
 
         # Scan an optional initializer.
         if is_op(i, ['=']):
@@ -1500,7 +1502,7 @@ class TokenBasedOrange:
 
         # The context is different from the old.
         if 1:  # Ignore the new context.
-            if 1:
+            if 0:
                 g.trace(
                     f"Ignore new context! token: {token!r}\n"
                     f"old: {token.context}\nnew: {context}"
