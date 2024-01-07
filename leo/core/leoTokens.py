@@ -118,7 +118,9 @@ if 1:  # pragma: no cover
         try:
             # We are not checking the return code here, so:
             # pylint: disable=subprocess-run-check
-            result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+            result = subprocess.run(
+                ["git", "status", "--porcelain"],
+                capture_output=True, text=True)
             if result.returncode != 0:
                 print("Error running git command")
                 return []
@@ -180,7 +182,10 @@ def dump_tokens(tokens: list[InputToken], tag: str = 'Tokens') -> None:
     print(f"{tag}...\n")
     if not tokens:
         return
-    print("Note: values shown are repr(value) *except* for 'string' and 'fstring*' tokens.")
+    print(
+        "Note: values shown are repr(value) "
+        "*except* for 'string' and 'fstring*' tokens."
+    )
     tokens[0].dump_header()
     for z in tokens:
         print(z.dump())
@@ -286,7 +291,14 @@ class Tokenizer:
     token_index = 0
     prev_line_token = None
 
-    def add_token(self, kind: str, five_tuple: tuple, line: str, s_row: int, value: str) -> None:
+    def add_token(
+        self,
+        kind: str,
+        five_tuple: tuple,
+        line: str,
+        s_row: int,
+        value: str,
+    ) -> None:
         """
         Add an InputToken to the results list.
         """
@@ -324,7 +336,11 @@ class Tokenizer:
             g.printObj(result)
         return ok
     #@+node:ekr.20240105143214.4: *4* itok.create_input_tokens
-    def create_input_tokens(self, contents: str, five_tuples: Generator) -> list[InputToken]:
+    def create_input_tokens(
+        self,
+        contents: str,
+        five_tuples: Generator,
+    ) -> list[InputToken]:
         """
         InputTokenizer.create_input_tokens.
 
@@ -469,8 +485,8 @@ class ParseState:
     'indent': The indentation level for 'class' and 'def' names.
 
         do_name():      push_state('indent', self.level)
-        do_dendent():   pops the stack once or twice if state.value == self.level.
-
+        do_dendent():   pops the stack once or
+                        twice if state.value == self.level.
     """
 
     def __init__(self, kind: str, value: Union[int, str]) -> None:
@@ -724,7 +740,7 @@ class TokenBasedOrange:
 
     def do_indent(self) -> None:
         """Handle indent token."""
-        # #2578: Refuse to beautify files containing leading tabs or unusual indentation.
+        # Refuse to beautify files containing leading tabs or unusual indentation.
         consider_message = 'consider using python/Tools/scripts/reindent.py'
         if '\t' in self.val:  # pragma: no cover
             message = f"Leading tabs found: {self.filename}"
@@ -815,8 +831,8 @@ class TokenBasedOrange:
             # Pep 8: always surround binary operators with a single space.
             # '==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>',
             # '^','~','*','**','&','|','/','//',
-            # Pep 8: If operators with different priorities are used,
-            # consider adding whitespace around the operators with the lowest priorities.
+            # Pep 8: If operators with different priorities are used, consider
+            # adding whitespace around the operators with the lowest priorities.
             self.blank()
             self.add_token('op', val)
             self.blank()
@@ -966,19 +982,18 @@ class TokenBasedOrange:
     def colon(self, val: str) -> None:
         """Handle a colon."""
         ###
-            # def is_expr(node: Node) -> bool:
-                # """True if node is any expression other than += number."""
-                # if isinstance(node, (ast.BinOp, ast.Call, ast.IfExp)):
-                    # return True
-                # num_node = ast.Num if g.python_version_tuple < (3, 12, 0) else ast.Constant
-                # return (
-                    # isinstance(node, ast.UnaryOp)
-                    # and not isinstance(node.operand, num_node)
-                # )
+        # def is_expr(node: Node) -> bool:
+            # """True if node is any expression other than += number."""
+            # if isinstance(node, (ast.BinOp, ast.Call, ast.IfExp)):
+                # return True
+            # num_node = ast.Num if g.python_version_tuple < (3, 12, 0) else ast.Constant
+            # return (
+                # isinstance(node, ast.UnaryOp)
+                # and not isinstance(node.operand, num_node)
+            # )
 
         self.clean('blank')
         context = self.token.context
-        ### if context == 'annotation':  ### not isinstance(node, ast.Slice):
         if context != 'slice':  ### not isinstance(node, ast.Slice):
             self.add_token('op', val)
             self.blank()
@@ -1692,7 +1707,7 @@ class TokenBasedOrange:
                 # Can't join.
                 return
             if t.kind == 'string' and not self.allow_joined_strings:
-                # An EKR preference: don't join strings, no matter what black does.
+                # An EKR preference: unlike black, don't join strings.
                 # This allows "short" f-strings to be aligned.
                 return
             if t.kind == 'line-end':
@@ -1748,7 +1763,9 @@ def main() -> None:  # pragma: no cover
             requested_files.append(os.path.join(cwd, path))
         else:
             root_dir = os.path.join(cwd, path)
-            requested_files.extend(glob.glob(f'{root_dir}**{os.sep}*.py', recursive=True))
+            requested_files.extend(
+                glob.glob(f'{root_dir}**{os.sep}*.py', recursive=True)
+            )
     if not requested_files:
         print(f"No files in {arg_files!r}")
         return
@@ -1759,7 +1776,9 @@ def main() -> None:  # pragma: no cover
     else:
         # Handle only modified files.
         modified_files = get_modified_files(cwd)
-        files = [z for z in requested_files if os.path.abspath(z) in modified_files]
+        files = [
+            z for z in requested_files if os.path.abspath(z) in modified_files
+        ]
     if not files:
         return
     if args.verbose:
@@ -1792,7 +1811,8 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
         description=description,
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('PATHS', nargs='*', help='directory or list of files')
-    group = parser.add_mutually_exclusive_group(required=False)  # Don't require any args.
+    # Don't require any args.
+    group = parser.add_mutually_exclusive_group(required=False)
     add = group.add_argument
     # add('--fstringify', dest='f', action='store_true',
         # help='fstringify PATHS')
