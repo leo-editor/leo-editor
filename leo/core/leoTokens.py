@@ -219,9 +219,7 @@ class InputToken:
         # Basic data.
         self.kind = kind
         self.value = value
-        # Context: a string starting with self.kind.
         self.context: str = None
-        ### self.indent_level = 0
         # Debugging data.
         self.index = 0
         self.line = ''  # The entire line containing the token.
@@ -912,16 +910,8 @@ class TokenBasedOrange:
 
     def do_equal_op(self, val: str) -> None:
 
-        if 0:
-            token = self.token
-            g.trace(
-                f"token.index: {token.index:2} paren_level: {self.paren_level} "
-                f"token.equal_sign_spaces: {int(token.equal_sign_spaces)} "
-            )
-
-        ### equal_sign_spaces = self.token.context == ?
-        g.trace(self.index, self.token.context)  ###
-        if False:  ###self.token.equal_sign_spaces:
+        context = self.token.context
+        if context == 'annotation':
             self.blank()
             self.add_token('op', val)
             self.blank()
@@ -1071,9 +1061,9 @@ class TokenBasedOrange:
                 # )
 
         self.clean('blank')
-        ### in_args = self.token.context == ?
-        ### g.trace(self.index, 'in_args', repr(in_args))
-        if False:  ### not isinstance(node, ast.Slice):
+        context = self.token.context
+        ### if context == 'annotation':  ### not isinstance(node, ast.Slice):
+        if context != 'slice':  ### not isinstance(node, ast.Slice):
             self.add_token('op', val)
             self.blank()
             return
@@ -1414,12 +1404,12 @@ class TokenBasedOrange:
         if has_annotation:
             set_context(i, 'annotation')
             i = self.scan_annotation(i, i2)
+            ### g.trace(i, self.tokens[i])
 
         # Scan an optional initializer.
         if is_op(i, ['=']):
             if has_annotation:
                 set_context(i, 'annotation')
-            ### set_context(i, 'annotation' if has_annotation else 'initializer')
             i = self.scan_initializer(i, i2, has_annotation)
 
         # Scan the optional comma.
@@ -1443,6 +1433,7 @@ class TokenBasedOrange:
         # Scan each argument.
         while i < i2:
             i = self.scan_arg(i, i2)
+            ### g.trace(i, self.tokens[i])
 
         # Scan the ')'
         expect(i, 'op', ')')
@@ -1491,9 +1482,10 @@ class TokenBasedOrange:
         expect_ops(i3, [',', ')'])
 
         # Set the context of inner operators.
-        for i in range(i1 + 1, i3 - 1):
-            if is_op(i, self.context_op_values):
-                set_context(i, 'initializer')
+        if 0:  ### Do *not* override annotation.
+            for i in range(i1 + 1, i3 - 1):
+                if is_op(i, self.context_op_values):
+                    set_context(i, 'initializer')
         return i3
     #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
@@ -1505,17 +1497,20 @@ class TokenBasedOrange:
         if token.context == context:
             return
 
-        # The context has changed.
+        # The context is different from the old.
+        if 1:  # Ignore the new context.
+            if 0:
+                g.trace(
+                    f"Ignore new context! token: {token!r}\n"
+                    f"old: {token.context}\nnew: {context}"
+                )
+            ### # token.context = context
+            return
         message = (
-            f"Change context! token: {token!r}\n"
+            f"Can not change context! token: {token!r}\n"
             f"old: {token.context}\nnew: {context}"
         )
-        if 1:  ### Experimental.
-            # Use the previous context.
-            g.trace(message)
-            token.context = context
-        else:
-            raise BeautifyError(message)
+        raise BeautifyError(message)
     #@+node:ekr.20240106174317.1: *5* tbo.unexpected_token
     def unexpected_token(self, i: int) -> None:
         """Raise an error about an unexpected token."""
