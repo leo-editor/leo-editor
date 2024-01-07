@@ -218,9 +218,9 @@ class InputToken:
         # Basic data.
         self.kind = kind
         self.value = value
-        # Context data.
-        self.context: dict[str, Any] = {}  # Injected context data.
-        self.level = 0
+        # Context: a string starting with self.kind.
+        self.context: str = None
+        ### self.indent_level = 0
         # Debugging data.
         self.index = 0
         self.line = ''  # The entire line containing the token.
@@ -496,6 +496,9 @@ class TokenBasedOrange:
     # It marks the code that simulates the operation of the black tool.
     black_mode = False
 
+    # Values of operator InputToken that require context assistance.
+    context_op_values = (':', '*', '**', '-')
+
     # Patterns...
     nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
 
@@ -566,7 +569,7 @@ class TokenBasedOrange:
         self.in_arg_list = 0  # > 0 if in an arg list of a def.
         self.in_fstring = False  # True: scanning an f-string.
         self.index = 0  # The index within the tokens array of the token being scanned.
-        self.level = 0  # Set only by do_indent and do_dedent.
+        self.indent_level = 0  # Set only by do_indent and do_dedent.
         self.lws = ''  # Leading whitespace.
         self.paren_level = 0  # Number of unmatched '(' tokens.
         self.square_brackets_stack: list[bool] = []  # A stack of bools, for self.word().
@@ -623,7 +626,7 @@ class TokenBasedOrange:
         Create the list of tokens for the given file.
         Return (contents, encoding, tokens).
         """
-        self.level = 0
+        self.indent_level = 0
         self.filename = filename
         contents, encoding = g.readFileIntoString(filename)
         if not contents:
@@ -654,7 +657,7 @@ class TokenBasedOrange:
             # Do *not clear other state, which may persist across @others.
                 # self.curly_brackets_level = 0
                 # self.in_arg_list = 0
-                # self.level = 0
+                # self.indent_level = 0
                 # self.lws = ''
                 # self.paren_level = 0
                 # self.square_brackets_stack = []
@@ -715,16 +718,16 @@ class TokenBasedOrange:
         if self.kind == 'fstring_end':
             self.in_fstring = False
     #@+node:ekr.20240105145241.14: *5* tbo.do_indent & do_dedent & helper
-    # Note: other methods use self.level.
+    # Note: other methods use self.indent_level.
 
     def do_dedent(self) -> None:
         """Handle dedent token."""
-        self.level -= 1
-        self.lws = self.level * self.tab_width * ' '
+        self.indent_level -= 1
+        self.lws = self.indent_level * self.tab_width * ' '
         self.line_indent()
         if self.black_mode:  # pragma: no cover (black)
             state = self.state_stack[-1]
-            if state.kind == 'indent' and state.value == self.level:
+            if state.kind == 'indent' and state.value == self.indent_level:
                 self.state_stack.pop()
                 state = self.state_stack[-1]
                 if state.kind in ('class', 'def'):
@@ -746,9 +749,9 @@ class TokenBasedOrange:
             print(consider_message)
             raise BeautifyError(message)
         new_indent = self.val
-        old_indent = self.level * self.tab_width * ' '
+        old_indent = self.indent_level * self.tab_width * ' '
         if new_indent > old_indent:
-            self.level += 1
+            self.indent_level += 1
         elif new_indent < old_indent:  # pragma: no cover (defensive)
             g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
         self.lws = new_indent
@@ -822,7 +825,7 @@ class TokenBasedOrange:
                 self.blank_lines(2 if name == 'class' else 1)
             self.push_state(name)
             # For trailing lines after inner classes/defs.
-            self.push_state('indent', self.level)
+            self.push_state('indent', self.indent_level)
             self.word(name)
             return
         #
@@ -915,9 +918,9 @@ class TokenBasedOrange:
                 f"token.equal_sign_spaces: {int(token.equal_sign_spaces)} "
             )
 
-        equal_sign_spaces = self.token.context.get('equal_sign_spaces')
+        ### equal_sign_spaces = self.token.context == ?
         g.trace(self.index, self.token.context)  ###
-        if equal_sign_spaces:  ###self.token.equal_sign_spaces:
+        if False:  ###self.token.equal_sign_spaces:
             self.blank()
             self.add_token('op', val)
             self.blank()
@@ -955,11 +958,11 @@ class TokenBasedOrange:
             self.add_token('comment', val)
             return
         if kind == 'indent':
-            self.level += 1
-            self.lws = self.level * self.tab_width * ' '
+            self.indent_level += 1
+            self.lws = self.indent_level * self.tab_width * ' '
         if kind == 'dedent':
-            self.level -= 1
-            self.lws = self.level * self.tab_width * ' '
+            self.indent_level -= 1
+            self.lws = self.indent_level * self.tab_width * ' '
         self.add_token('verbatim', val)
     #@+node:ekr.20240105145241.23: *5* tbo.do_ws
     def do_ws(self) -> None:
@@ -1067,9 +1070,9 @@ class TokenBasedOrange:
                 # )
 
         self.clean('blank')
-        in_args = self.token.context.get('in_args')
-        g.trace(self.index, 'in_args', repr(in_args))
-        if in_args:  ### not isinstance(node, ast.Slice):
+        ### in_args = self.token.context == ?
+        ### g.trace(self.index, 'in_args', repr(in_args))
+        if False:  ### not isinstance(node, ast.Slice):
             self.add_token('op', val)
             self.blank()
             return
@@ -1150,8 +1153,8 @@ class TokenBasedOrange:
     def possible_unary_op(self, s: str) -> None:
         """Add a unary or binary op to the token list."""
         self.clean('blank')
-        is_unary = self.token.context.get('is_unary')
-        if is_unary:  ### isinstance(node, ast.UnaryOp):
+        ### is_unary = self.token.context
+        if False:  ### isinstance(node, ast.UnaryOp):
             self.unary_op(s)
         else:
             self.blank()
@@ -1173,8 +1176,8 @@ class TokenBasedOrange:
         """Put a '*' op, with special cases for *args."""
         val = '*'
         self.clean('blank')
-        in_arg = self.token.context.get('in_args')
-        if in_arg:  ### isinstance(node, ast.arguments):
+        ### in_arg = self.token.context == ?
+        if False:  ### isinstance(node, ast.arguments):
             self.blank()
             self.add_token('op', val)
             return  # #2533
@@ -1192,8 +1195,8 @@ class TokenBasedOrange:
         """Put a ** operator, with a special case for **kwargs."""
         val = '**'
         self.clean('blank')
-        in_arg = self.token.context.get('in_args')
-        if in_arg:  ### isinstance(node, ast.arguments):
+        ### in_arg = self.token.context == ?
+        if False:  ### isinstance(node, ast.arguments):
             self.blank()
             self.add_token('op', val)
             return  # #2533
@@ -1212,8 +1215,8 @@ class TokenBasedOrange:
         assert s and isinstance(s, str), repr(s)
         if s == 'def':
             self.scan_def()
-        in_import_from = self.token.context.get('in_import_from')
-        if in_import_from:  ### isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
+        ### in_import_from = self.token.context == ?
+        if False:  ### isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
             self.clean('blank')
             self.add_token('blank', ' ')
             self.add_token('word', s)
@@ -1237,13 +1240,15 @@ class TokenBasedOrange:
         self.blank()
     #@+node:ekr.20240105145241.41: *4* tbo: Scanning
     #@+node:ekr.20240106094211.1: *5* tbo.check_token_index
-    def check_token_index(self, i: int) -> None:
+    def check_token_index(self, i: Optional[int]) -> None:
         # pylint: disable=raise-missing-from
+        if i is None:
+            return  ###
         try:
             self.tokens[i]
         except IndexError:
             raise BeautifyError(f"IndexError: tokens[{i}]")
-    #@+node:ekr.20240106090914.1: *5* tbo.expect & expect_op
+    #@+node:ekr.20240106090914.1: *5* tbo.expect & expect_ops
     def expect(self, i: int, kind: str, value: str = None) -> None:
         self.check_token_index(i)
         token = self.tokens[i]
@@ -1255,7 +1260,7 @@ class TokenBasedOrange:
         if not token or token.kind != kind or value is not None and token.value != value:
             raise BeautifyError(message)
 
-    def expect_ops(self, i: int, values: tuple) -> None:
+    def expect_ops(self, i: int, values: list) -> None:
         self.check_token_index(i)
         token = self.tokens[i]
         if token.kind != 'op':
@@ -1264,8 +1269,8 @@ class TokenBasedOrange:
             raise BeautifyError(f"Expected value in {values!r}, got {token.value!r}")
 
     #@+node:ekr.20240106110748.1: *5* tbo.find_op
-    def find_op(self, i: int, target_value: str) -> int:
-        """Return the index of the matching ')' token."""
+    def find_op(self, i: int, values: list[str]) -> int:
+        """Return the index of the matching token."""
         curly_brackets, parens, square_brackets = 0, 0, 0
         while i < len(self.tokens):
             token = self.tokens[i]
@@ -1283,7 +1288,9 @@ class TokenBasedOrange:
                     square_brackets += 1
                 elif value == ']':
                     square_brackets -= 1
-                if value == target_value and (curly_brackets, parens, square_brackets) == (0, 0, 0):
+                if (value in values
+                    and (curly_brackets, parens, square_brackets) == (0, 0, 0)
+                ):
                     return i
             i += 1
         return None
@@ -1301,17 +1308,87 @@ class TokenBasedOrange:
             and value not in ('True', 'False', None)
             and (keyword.iskeyword(value) or keyword.issoftkeyword(value))
         )
+    #@+node:ekr.20240106172054.1: *5* tbo.is_op
+    def is_op(self, i: int, value: str) -> bool:
+        if i is None or i >= len(self.tokens):
+            return False
+        token = self.tokens[i]
+        return (token.kind, token.value) == ('op', value)
     #@+node:ekr.20240106093210.1: *5* tbo.is_significant_token
     def is_significant_token(self, token: InputToken) -> bool:
         """Return true if the given token is not whitespace."""
         return token.kind not in (
             'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
         )
+    #@+node:ekr.20240106181128.1: *5* tbo.scan_annotation
+    def scan_annotation(self, i1: int, i2: int) -> Optional[int]:
+        """Scan an annotation if a function definition arg."""
+        # Aliases
+        expect, find_op, next = self.expect, self.find_op, self.next_token
+        # Skip the ':'
+        expect(i1, ':')
+        i = next(i1)
+        # Skip to the next ',' or ')' at this level.
+        i3 = find_op(i, [',', ')'])
+        ### To do: set contexts of inner ops.
+        return i3
+    #@+node:ekr.20240106173638.1: *5* tbo.scan_arg
+    def scan_arg(self, i: int, i2: int) -> Optional[int]:
+        """Scan a single function definition argument"""
+        # Aliases.
+        expect, is_op = self.expect, self.is_op
+        next, set_context = self.next_token, self.set_context
+        # Scan optional  * and ** operators.
+        token = self.tokens[i]
+        if token.kind == 'op':
+            if token.value in ('*', '**'):
+                self.set_context(i, f"{token.value} args")
+            else:
+                self.unexpected_token(i)
+            i = next(i)
+        # Scan the argument name.
+        expect(i, 'name')
+        i = next(i)
+        # Scan an optional annotation.
+        has_annotation = is_op(i, ':')
+        if has_annotation:
+            set_context(i, ': annotation')
+            i = self.scan_annotation(i, i2)
+        # Scan the optional initializer.
+        if is_op(i, '='):
+            set_context(i, '= initializer')
+            i = self.scan_initializer(i, i2, has_annotation)
+        # Scan the optional comma.
+        if is_op(i, ','):
+            set_context(i, ', end-arg')
+            i = next(i)
+        return i
+    #@+node:ekr.20240106172905.1: *5* tbo.scan_args
+    def scan_args(self, i1: int, i2: int) -> Optional[int]:
+        """Scan a comma-separated list of function definition arguments."""
+        # Aliases.
+        expect, next, set_context = self.expect, self.next_token, self.set_context
+        # Sanity checks.
+        assert i2 > i1, (i1, i2)
+        expect(i1, 'op', '(')
+        expect(i2, 'op', ')')
+        # Skip the '('
+        i = next(i1)
+        # Scan each argument.
+        while i is not None and i < i2:
+            i = self.scan_arg(i, i2)
+            if i is not None and i < i2:
+                expect(i, ',')
+                set_context(i, ', arg-separator')
+        expect(i, 'op', ')')
+        set_context(i, ') end-arg-list')
+        return i
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def
     def scan_def(self) -> None:
-        """The root of a recursive-descent parser for Python 'def' statements."""
+        """Scan a complete 'def' statement."""
         expect, expect_ops = self.expect, self.expect_ops
         find_op, next = self.find_op, self.next_token
+        # Find i1 and i2, the boundaries of the argument list.
         i = self.index
         expect(i, 'name', 'def')
         i = next(i)
@@ -1319,28 +1396,58 @@ class TokenBasedOrange:
         i = next(i)
         expect(i, 'op', '(')
         i1 = i
-        i = i2 = find_op(i, ')')
+        i = i2 = find_op(i, [')'])
         expect(i, 'op', ')')
         i = next(i)
-        expect_ops(i, ('->', ':'))
-        i = i3 = find_op(i, ':')
-        expect(i, ':')
-        if 0:
-            g.trace(i1, i2, i3)
-        if 0:
-            dump_tokens(self.tokens[i1:i3])
-        # Set in_args context for in tokens[i1:i2].
-        for i in range(i1, i2 + 1):
-            token = self.tokens[i]
-            if token.kind == 'op':
-                g.trace('set context', i)
-                token.context['in_args'] = True
-                token.context['equal_sign_spaces'] = True  ### Not valid!!!
+        expect_ops(i, ['->', ':'])
+        # Find i3, the ending ':' of the def statement.
+        i3 = find_op(i, [':'])
+        expect(i3, ':')
+        self.set_context(i3, ':end-def')
+        # Parse the args and set the context of inner operators.
+        self.scan_args(i1, i2)
+        ### dump_tokens(self.tokens[i1:i3])
+    #@+node:ekr.20240106181215.1: *5* tbo.scan_initializer
+    def scan_initializer(self, i1: int, i2: int, has_annotation: bool) -> Optional[int]:
+        """Scan an initializer in a function definition argument."""
+        # Aliases
+        expect, expect_ops = self.expect, self.expect_ops
+        is_op, set_context = self.is_op, self.set_context
+        next = self.next_token
+        # Skip the '='
+        expect(i1, '=')
+        set_context(i1, f"= initializer: has_annotation {has_annotation}")
+        i = next(i1)
+        # Skip to the next ',' or ')' at this level.
+        i3 = self.find_op(i, [',', ')'])
+        expect_ops(i3, [',', ')'])
+        # Set the context of inner operators that require context assistance.
+        for i in range(i1 + 1, i3 - 1):
+            for value in self.context_op_values:
+                if is_op(i, value):
+                    set_context(i, f"{value} inner initializer")
+        # Caller sets the context of self.tokens[i3].
+        return i3
+    #@+node:ekr.20240106170746.1: *5* tbo.set_context (to do)
+    def set_context(self, i: int, context: str) -> None:
+        """Set the context for self.tokens[i] to a unique value."""
+        self.check_token_index(i)
+        token = self.tokens[i]
+        if False:  ### token.context is not None:
+            raise BeautifyError(
+                f"Duplicate context! token: {token!r}\n"
+                f"old: {token.context} new: {context}"
+            )
+        if False:  ### not context.startswith(token.value):
+            raise BeautifyError(
+                f"Invalid context! {context} should start with {token.value}"
+            )
+        token.context = context
     #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token
     def next_token(self, i: int) -> Optional[int]:
         """
         Return the next *significant* token in the list of *input* tokens.
-        
+
         Ignore whitespace, indentation, comments, etc.
         """
         i += 1
@@ -1364,6 +1471,13 @@ class TokenBasedOrange:
                 return i
             i -= 1
         return None
+    #@+node:ekr.20240106174317.1: *5* tbo.unexpected_token
+    def unexpected_token(self, i: int) -> None:
+        """Raise an error about an unexpected token."""
+        self.check_token_index(i)
+        token = self.tokens[i]
+        message = f"Unexpected InputToken at {i} {token!r}"
+        raise BeautifyError(message)
     #@+node:ekr.20240105145241.44: *4* tbo: Split/join (not used yet)
     #@+node:ekr.20240105145241.45: *5* tbo.split_line & helpers (to do)
     def split_line(self, token: InputToken) -> bool:
