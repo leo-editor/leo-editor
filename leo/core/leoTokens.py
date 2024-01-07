@@ -1161,7 +1161,7 @@ class TokenBasedOrange:
         else:
             self.blank()
             self.add_token('unary-op', s)
-    #@+node:ekr.20240105145241.38: *5* tbo.star_op (to do)
+    #@+node:ekr.20240105145241.38: *5* tbo.star_op (fixed)
     def star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
         val = '*'
@@ -1180,14 +1180,12 @@ class TokenBasedOrange:
         self.blank()
         self.add_token('op', val)
         self.blank()
-    #@+node:ekr.20240105145241.39: *5* tbo.star_star_op (to do)
+    #@+node:ekr.20240105145241.39: *5* tbo.star_star_op (fixed)
     def star_star_op(self) -> None:
         """Put a ** operator, with a special case for **kwargs."""
         val = '**'
         self.clean('blank')
         context = self.token.context
-        ### in_arg = self.token.context == ?
-        ###if False:  ### isinstance(node, ast.arguments):
         if context not in ('annotation', 'initializer'):
             self.blank()
             self.add_token('op', val)

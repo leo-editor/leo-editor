@@ -374,29 +374,36 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.51: *3* TestTBO.test_bug_1429
-    def test_bug_1429(self):
+    #@+node:ekr.20240105153425.51: *3* TestTBO.xxx_test_bug_1429
+    def xxx_test_bug_1429(self):
+        
+        # This test really only tests function calls.
 
-        contents = r'''\
-    def get_semver(tag):
-        """bug 1429 docstring"""
-        try:
-            import semantic_version
-            version = str(semantic_version.Version.coerce(tag, partial=True))
-                # tuple of major, minor, build, pre-release, patch
-                # 5.6b2 --> 5.6-b2
-        except(ImportError, ValueError) as err:
-            print('\n', err)
-            print("""*** Failed to parse Semantic Version from git tag '{0}'.
-            Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
-            This version can't be uploaded to PyPi.org.""".format(tag))
-            version = tag
-        return version
-    '''
+        contents = textwrap.dedent(
+        r'''
+            def get_semver(tag):
+                """bug 1429 docstring"""
+                try:
+                    import semantic_version
+                    version = str(semantic_version.Version.coerce(tag, partial=True))
+                        # tuple of major, minor, build, pre-release, patch
+                        # 5.6b2 --> 5.6-b2
+                except(ImportError, ValueError) as err:
+                    print('\n', err)
+                    print("""*** Failed to parse Semantic Version from git tag '{0}'.
+                    Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
+                    This version can't be uploaded to PyPi.org.""".format(tag))
+                    version = tag
+                return version
+        ''').strip() + '\n'
         contents, tokens = self.make_data(contents)
-        expected = contents.rstrip() + '\n'
+        expected = contents ###.rstrip() + '\n'
         results = self.beautify(contents, tokens,
             max_join_line_length=0, max_split_line_length=0)
+        if results != expected:
+            g.printObj(contents, tag='contents')
+            g.printObj(expected, tag='expected')
+            g.printObj(results, tag='results')
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.52: *3* TestTBO.test_bug_1851
     def test_bug_1851(self):
@@ -570,6 +577,22 @@ class TestTokenBasedOrange(BaseTest):
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens)
             self.assertEqual(results, expected)
+    #@+node:ekr.20240107080413.1: *3* TestTBO.test_function_call (new)
+    def test_function_call(self):
+        
+        contents = textwrap.dedent(
+            """
+            version = str(semantic_version.Version.coerce(tag, partial=True))
+            """).strip() + '\n'
+        expected = contents
+        contents, tokens = self.make_data(contents)
+        results = self.beautify(contents, tokens,
+            max_join_line_length=0, max_split_line_length=0)
+        if results != expected:
+            # g.printObj(contents, tag='contents')
+            g.printObj(expected, tag='expected')
+            g.printObj(results, tag='results')
+        self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.58: *3* TestTBO.xxx_test_join_and_strip_condition
     def xxx_test_join_and_strip_condition(self):
 
