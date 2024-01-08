@@ -1516,6 +1516,8 @@ class LeoApp:
             # master is a TabbedTopLevel.
             # Selecting the new tab ensures focus is set.
             master.select(c)
+        else:
+            print('no master window')
         if 1:
             c.initialFocusHelper()
         else:

@@ -900,6 +900,9 @@ class LeoServer:
         g.getScript = self._getScript
         g.IdleTime = self._idleTime
         #
+        # override for selectLeoWindow 
+        #
+        g.app.selectLeoWindow = self._selectLeoWindow
         # override for "revert to file" operation
         g.app.gui.runAskOkDialog = self._runAskOkDialog
         g.app.gui.runAskYesNoDialog = self._runAskYesNoDialog
@@ -915,6 +918,12 @@ class LeoServer:
         if not testing:
             print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
     #@+node:felix.20210622235127.1: *3* server.leo overridden methods
+    #@+node:felix.20240108011940.1: *4* LeoServer._selectLeoWindow
+    def _selectLeoWindow(self, c: Cmdr):
+        """Replaces selectLeoWindow in Leo server"""
+        pass
+        #
+
     #@+node:felix.20230206202334.1: *4* LeoServer._endEditLabel
     def _endEditLabel(self) -> None:
         """Overridden : End editing of a headline and update p.h."""
@@ -1552,6 +1561,21 @@ class LeoServer:
 
 
     #@+node:felix.20220309010334.1: *4* server.nav commands
+    #@+node:felix.20240107215312.1: *5* server.handle_unl
+    def handle_unl(self, param: Param) -> Response:
+        tag = 'handle_unl'
+        c = self._check_c()
+        unl = param.get('unl', '')
+        try:
+            g.openUrlOnClick(c, unl)
+        except Exception as e:
+            raise ServerError(f"{tag}: exception handling unl: {unl}")
+
+        total = len(g.app.commanders())
+        filename = c.fileName() if total else ""
+        result = {"total": total, "filename": filename}
+        return self._make_response(result)
+        
     #@+node:felix.20220714000930.1: *5* server.chapter_main
     def chapter_main(self, param: Param) -> Response:
         tag = 'chapter_main'
