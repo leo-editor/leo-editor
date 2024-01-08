@@ -1531,30 +1531,22 @@ class TokenBasedOrange:
         i3 = self.find_op(i, i2, [',', ')'])
         expect_ops(i3, [',', ')'])
         return i3
-    #@+node:ekr.20240106170746.1: *5* tbo.set_context (*** improve comments ***)
+    #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
-        """Set the context for self.tokens[i]."""
+        """
+        Set the context for self.tokens[i].
+        
+        It *is* valid (and expected) for this method to be called more than
+        once for the same token!
+        
+        The rule is: the *first* context is the valid context.
+        """
         self.check_token_index(i)
         token = self.tokens[i]
+
+        # Add context *only* if it does not already exist.
         if not token.context:
             token.context = context
-        if token.context == context:
-            return
-
-        # The context is different from the old.
-        if 1:  # Ignore the new context.
-            if 0:
-                g.trace(
-                    f"Ignore new context! token: {token!r}\n"
-                    f"old: {token.context}\nnew: {context}"
-                )
-            ### # token.context = context
-            return
-        message = (
-            f"Can not change context! token: {token!r}\n"
-            f"old: {token.context}\nnew: {context}"
-        )
-        raise BeautifyError(message)
     #@+node:ekr.20240106174317.1: *5* tbo.unexpected_token
     def unexpected_token(self, i: int) -> None:
         """Raise an error about an unexpected token."""
