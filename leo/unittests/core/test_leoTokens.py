@@ -87,9 +87,7 @@ class BaseTest(unittest.TestCase):
         if not filename:
             filename = g.callers(2).split(',')[0]
         orange = TokenBasedOrange()
-        result_s = orange.beautify(contents, filename, tokens,
-            max_join_line_length=max_join_line_length,
-            max_split_line_length=max_split_line_length)
+        result_s = orange.beautify(contents, filename, tokens)
         t2 = get_time()
         self.update_times('22: beautify', t2 - t1)
         self.code_list = orange.code_list
@@ -285,7 +283,6 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.46: *3* TestTBO.test_at_doc_part
     def test_at_doc_part(self):
 
-        line_length = 40  # For testing.
         contents = """\
     #@+at Line 1
     # Line 2
@@ -295,10 +292,7 @@ class TestTokenBasedOrange(BaseTest):
     """
         contents, tokens = self.make_data(contents)
         expected = contents.rstrip() + '\n'
-        results = self.beautify(contents, tokens,
-            max_join_line_length=line_length,
-            max_split_line_length=line_length,
-        )
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.47: *3* TestTBO.test_backslash_newline
     def test_backslash_newline(self):
@@ -396,8 +390,7 @@ class TestTokenBasedOrange(BaseTest):
         ''').strip() + '\n'
         contents, tokens = self.make_data(contents)
         expected = contents ###.rstrip() + '\n'
-        results = self.beautify(contents, tokens,
-            max_join_line_length=0, max_split_line_length=0)
+        results = self.beautify(contents, tokens)
         if results != expected:
             g.printObj(contents, tag='contents')
             g.printObj(expected, tag='expected')
@@ -412,13 +405,11 @@ class TestTokenBasedOrange(BaseTest):
     '''
         contents, tokens = self.make_data(contents)
         expected = contents.rstrip() + '\n'
-        results = self.beautify(contents, tokens,
-            max_join_line_length=0, max_split_line_length=0)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.53: *3* TestTBO.test_comment_indented
     def test_comment_indented(self):
 
-        line_length = 40  # For testing.
         table = (
     """\
     if 1:
@@ -436,14 +427,7 @@ class TestTokenBasedOrange(BaseTest):
         for contents in table:
             contents, tokens = self.make_data(contents)
             expected = contents
-            if 0:
-                dump_contents(contents)
-                dump_tokens(tokens)
-                # dump_tree(tokens, tree)
-            results = self.beautify(contents, tokens,
-                max_join_line_length=line_length,
-                max_split_line_length=line_length,
-            )
+            results = self.beautify(contents, tokens)
             message = (
                 f"\n"
                 f"  contents: {contents!r}\n"
@@ -456,7 +440,6 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.54: *3* TestTBO.test_comment_space_after_delim
     def test_comment_space_after_delim(self):
 
-        line_length = 40  # For testing.
         table = (
             # Test 1.
             (
@@ -477,13 +460,7 @@ class TestTokenBasedOrange(BaseTest):
         fails = 0
         for contents, expected in table:
             contents, tokens = self.make_data(contents)
-            if 0:
-                dump_contents(contents)
-                dump_tokens(tokens)
-            results = self.beautify(contents, tokens,
-                max_join_line_length=line_length,
-                max_split_line_length=line_length,
-            )
+            results = self.beautify(contents, tokens)
             message = (
                 f"\n"
                 f"  contents: {contents!r}\n"
@@ -527,7 +504,6 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.56: *3* TestTBO.test_dont_delete_blank_lines
     def test_dont_delete_blank_lines(self):
 
-        line_length = 40  # For testing.
         contents = """\
     class Test:
 
@@ -539,10 +515,7 @@ class TestTokenBasedOrange(BaseTest):
     """
         contents, tokens = self.make_data(contents)
         expected = contents.rstrip() + '\n'
-        results = self.beautify(contents, tokens,
-            max_join_line_length=line_length,
-            max_split_line_length=line_length,
-        )
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.57: *3* TestTBO.test_function_defs
     def test_function_defs(self):
@@ -584,148 +557,8 @@ class TestTokenBasedOrange(BaseTest):
             """).strip() + '\n'
         expected = contents
         contents, tokens = self.make_data(contents)
-        results = self.beautify(contents, tokens,
-            max_join_line_length=0, max_split_line_length=0)
-        if results != expected:
-            # g.printObj(contents, tag='contents')
-            g.printObj(expected, tag='expected')
-            g.printObj(results, tag='results')
-        self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.58: *3* TestTBO.xxx_test_join_and_strip_condition
-    def xxx_test_join_and_strip_condition(self):
-
-        contents = """\
-    if (
-        a == b or
-        c == d
-    ):
-        pass
-    """
-        expected = """\
-    if (a == b or c == d):
-        pass
-    """
-        contents, tokens = self.make_data(contents)
-        expected = textwrap.dedent(expected)
-        # Black also removes parens, which is beyond our scope at present.
-            # expected = self.blacken(contents, line_length=40)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.59: *3* TestTBO.xxx_test_join_leading_whitespace
-    def xxx_test_join_leading_whitespace(self):
-
-        line_length = 40  # For testing.
-        table = (
-                            #1234567890x1234567890x1234567890x1234567890x
-    """\
-    if 1:
-        print('4444',
-            '5555')
-    """,
-    """\
-    if 1:
-        print('4444', '5555')\n""",
-        )
-        fails = 0
-        for contents in table:
-            contents, tokens = self.make_data(contents)
-            if 0:
-                dump_contents(contents)
-                dump_tokens(tokens)
-            expected = contents
-            results = self.beautify(contents, tokens,
-                max_join_line_length=line_length,
-                max_split_line_length=line_length,
-            )
-            message = (
-                f"\n"
-                f"  contents: {contents!r}\n"
-                f"  expected: {expected!r}\n"
-                f"       got: {results!r}")
-            if results != expected:  # pragma: no cover
-                fails += 1
-                print(f"Fail: {fails}\n{message}")
-        assert not fails, fails
-    #@+node:ekr.20240105153425.60: *3* TestTBO.xxx_test_join_lines
-    def xxx_test_join_lines(self):
-
-        # Except where noted, all entries are expected values....
-        line_length = 40  # For testing.
-        table = (
-            #1234567890x1234567890x1234567890x1234567890x
-            """print('4444',\n    '5555')""",
-            """print('4444', '5555')\n""",
-        )
-        fails = 0
-        for contents in table:
-            contents, tokens = self.make_data(contents)
-            if 0:
-                dump_contents(contents)
-                dump_tokens(tokens)
-            expected = contents
-            results = self.beautify(contents, tokens,
-                max_join_line_length=line_length,
-                max_split_line_length=line_length,
-            )
-            message = (
-                f"\n"
-                f"  contents: {contents!r}\n"
-                f"  expected: {expected!r}\n"
-                f"    orange: {results!r}")
-            if results != expected:  # pragma: no cover
-                fails += 1
-                print(f"Fail: {fails}\n{message}")
-        self.assertEqual(fails, 0)
-    #@+node:ekr.20240105153425.61: *3* TestTBO.xxx_test_join_suppression
-    def xxx_test_join_suppression(self):
-
-        contents = """\
-    class T:
-        a = 1
-        print(
-           a
-        )
-    """
-        expected = """\
-    class T:
-        a = 1
-        print(a)
-    """
-        contents, tokens = self.make_data(contents)
-        expected = textwrap.dedent(expected)
-        results = self.beautify(contents, tokens)
-        self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.62: *3* TestTBO.xxx_test_join_too_long_lines
-    def xxx_test_join_too_long_lines(self):
-
-        # Except where noted, all entries are expected values....
-        line_length = 40  # For testing.
-        table = (
-                            #1234567890x1234567890x1234567890x1234567890x
-            (
-                """print('aaaaaaaaaaaa',\n    'bbbbbbbbbbbb', 'cccccccccccccccc')""",
-                """print('aaaaaaaaaaaa',\n    'bbbbbbbbbbbb', 'cccccccccccccccc')\n""",
-            ),
-        )
-        fails = 0
-        for contents, expected in table:
-            contents, tokens = self.make_data(contents)
-            if 0:
-                dump_contents(contents)
-                dump_tokens(tokens)
-            results = self.beautify(contents, tokens,
-                max_join_line_length=line_length,
-                max_split_line_length=line_length,
-            )
-            message = (
-                f"\n"
-                f"  contents: {contents!r}\n"
-                f"  expected: {expected!r}\n"
-                f"       got: {results!r}")
-            if results != expected:  # pragma: no cover
-                fails += 1
-                print(f"Fail: {fails}\n{message}")
-        assert not fails, fails
     #@+node:ekr.20240105153425.63: *3* TestTBO.test_leading_stars
     def test_leading_stars(self):
 
@@ -983,99 +816,6 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.73: *3* TestTBO.xxx_test_split_lines
-    def xxx_test_split_lines(self):
-
-        line_length = 40  # For testing.
-        table = (
-        #1234567890x1234567890x1234567890x1234567890x
-            """\
-    if 1:
-        print('1111111111', '2222222222', '3333333333')
-    """,
-    """print('aaaaaaaaaaaaa', 'bbbbbbbbbbbbbb', 'cccccc')""",
-    """print('aaaaaaaaaaaaa', 'bbbbbbbbbbbbbb', 'cccccc', 'ddddddddddddddddd')""",
-        )
-        fails = 0
-        for contents in table:
-            contents, tokens = self.make_data(contents)
-            if 0:
-                dump_tokens(tokens)
-            expected = self.blacken(contents, line_length=line_length)
-            results = self.beautify(contents, tokens,
-                max_join_line_length=line_length,
-                max_split_line_length=line_length,
-            )
-            message = (
-                f"\n"
-                f"  contents: {contents!s}\n"
-                f"     black: {expected!s}\n"
-                f"    orange: {results!s}")
-            if results != expected:  # pragma: no cover
-                fails += 1
-                print(f"Fail: {fails}\n{message}")
-        self.assertEqual(fails, 0)
-    #@+node:ekr.20240105153425.74: *3* TestTBO.xxx_test_split_lines_2
-    def xxx_test_split_lines_2(self):
-
-        line_length = 40  # For testing.
-        # Different from how black handles things.
-        contents = """\
-    if not any([z.kind == 'lt' for z in line_tokens]):
-        return False
-    """
-        expected = """\
-    if not any(
-        [z.kind == 'lt' for z in line_tokens]):
-        return False
-    """
-        fails = 0
-        contents, tokens = self.make_data(contents)
-        expected = textwrap.dedent(expected)
-        results = self.beautify(contents, tokens,
-            max_join_line_length=line_length,
-            max_split_line_length=line_length,
-        )
-        message = (
-            f"\n"
-            f"  contents: {contents!r}\n"
-            f"  expected: {expected!r}\n"
-            f"       got: {results!r}")
-        if results != expected:  # pragma: no cover
-            fails += 1
-            print(f"Fail: {fails}\n{message}")
-        self.assertEqual(fails, 0)
-    #@+node:ekr.20240105153425.75: *3* TestTBO.xxx_test_split_lines_3
-    def xxx_test_split_lines_3(self):
-
-        line_length = 40  # For testing.
-        # Different from how black handles things.
-        contents = """print('eee', ('fffffff, ggggggg', 'hhhhhhhh', 'iiiiiii'), 'jjjjjjj', 'kkkkkk')"""
-        # This is a bit different from black, but it's good enough for now.
-        expected = """\
-    print(
-        'eee',
-        ('fffffff, ggggggg', 'hhhhhhhh', 'iiiiiii'),
-        'jjjjjjj',
-        'kkkkkk',
-    )
-    """
-        fails = 0
-        contents, tokens = self.make_data(contents)
-        expected = textwrap.dedent(expected)
-        results = self.beautify(contents, tokens,
-            max_join_line_length=line_length,
-            max_split_line_length=line_length,
-        )
-        message = (
-            f"\n"
-            f"  contents: {contents!r}\n"
-            f"  expected: {expected!r}\n"
-            f"       got: {results!r}")
-        if results != expected:  # pragma: no cover
-            fails += 1
-            print(f"Fail: {fails}\n{message}")
-        self.assertEqual(fails, 0)
     #@+node:ekr.20240105153425.76: *3* TestTBO.test_star_star_operator
     def test_star_star_operator(self):
         # Was tested in pet peeves, but this is more permissive.
@@ -1107,7 +847,6 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.79: *3* TestTBO.test_verbatim
     def test_verbatim(self):
 
-        line_length = 40  # For testing.
         contents = textwrap.dedent("""\
     #@@nobeautify
 
@@ -1135,15 +874,11 @@ class TestTokenBasedOrange(BaseTest):
     """)
         contents, tokens = self.make_data(contents)
         expected = contents
-        results = self.beautify(contents, tokens,
-            max_join_line_length=line_length,
-            max_split_line_length=line_length,
-        )
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected, msg=contents)
     #@+node:ekr.20240105153425.80: *3* TestTBO.test_verbatim_with_pragma
     def test_verbatim_with_pragma(self):
 
-        line_length = 40  # For testing.
         contents = """\
     # pragma: no beautify
 
@@ -1167,10 +902,7 @@ class TestTokenBasedOrange(BaseTest):
     """
         contents, tokens = self.make_data(contents)
         expected = contents
-        results = self.beautify(contents, tokens,
-            max_join_line_length=line_length,
-            max_split_line_length=line_length,
-        )
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected, msg=contents)
     #@+node:ekr.20240105153425.81: *3* TestTBO.verbatim2
     def test_verbatim2(self):
