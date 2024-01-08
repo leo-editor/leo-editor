@@ -66,10 +66,12 @@
    -  `Leo-Editor Settings <#leo-editor-settings>`__
    -  `Customizing Colors <#customizing-colors-1>`__
    -  `Output Prefixes <#output-prefixes>`__
-   -  `Node Creation Default <#node-creation-default>`__
-   -  `Python Interpreter Default <#python-interpreter-default>`__
-   -  `Shell Interpreter Default <#shell-interpreter-default>`__
+   -  `Babel Tab <#babel-tab>`__
+   -  `Node Creation <#node-creation>`__
    -  `Sudo Executes Script <#sudo-executes-script>`__
+   -  `Output Polling Delay <#output-polling-delay>`__
+   -  `Python Interpreter <#python-interpreter-1>`__
+   -  `Shell Interpreter <#shell-interpreter-1>`__
 
 -  `Supported Python Release <#supported-python-release>`__
 -  `Why Use Leo-Babel <#why-use-leo-babel>`__
@@ -447,21 +449,22 @@ objects available:
 The Babel Parameters Script can define the following parameters that
 affect Babel Script execution:
 
-1. babel_script
-
-2. babel_results
-
-3. babel_node_creation
-
-4. babel_python
-
-5. babel_shell
-
-6. babel_sudo
-
-7. babel_redirect_stdout
-
-8. babel_script_args
+1.  babel_color_information
+2.  babel_color_stderr
+3.  babel_color_stdout
+4.  babel_interpreter_python
+5.  babel_interpreter_shell
+6.  babel_node_creation
+7.  babel_polling_delay
+8.  babel_prefix_information
+9.  babel_prefix_stderr
+10. babel_prefix_stdout
+11. babel_redirect_stdout
+12. babel_results
+13. babel_script
+14. babel_script_args
+15. babel_sudo
+16. babel_tab_babel
 
 The current working directory for the Babel Parameters Script is the
 working directory for the Babel Script node. See section “Current
@@ -756,10 +759,29 @@ following variables in the scripts Babel Script:
 -  babel_prefix_stdout
 -  babel_prefix_stderr
 
-Node Creation Default
----------------------
+Babel Tab
+---------
 
-Parameter name: Leo-Babel-Node-Creation-Default
+Parameter Name: Leo-Babel-Tab-Babel
+
+::
+
+   * False --> All Babel Script output goes to the "Log" tab in the Log pane
+   * True --> All Babel Script output goes to the "Babel" tab in the Log pane
+
+Example:
+
+@bool Leo-Babel-Tab-Babel = True
+
+The value of Leo-Babel-Tab-Babel compiled into Leo-Babel is True.
+
+This parameter’s setting can be overridden for an individual Babel
+Script by setting babel_tab_babel in the Babel Parameters Script.
+
+Node Creation
+-------------
+
+Parameter name: Leo-Babel-Node-Creation
 
 ::
 
@@ -768,67 +790,12 @@ Parameter name: Leo-Babel-Node-Creation-Default
 
 Example:
 
-@bool Leo-Babel-Node-Creation-Default = False
+@bool Leo-Babel-Node-Creation = False
 
-The value of Leo-Babel-Node-Creation-Default compiled into Leo-Babel is
-True.
+The value of Leo-Babel-Node-Creation compiled into Leo-Babel is True.
 
 This parameter’s setting can be overridden for an individual Babel
 Script by setting babel_node_creation in the Babel Parameters Script.
-
-Python Interpreter Default
---------------------------
-
-Parameter Name: Leo-Babel-Python
-
-This parameter specifies the program used to interpret a Python language
-script. The program must exist on the path specified by the PATH
-environment variable, or the absolute path to the program must be
-specified.
-
-If Leo-Babel-Python is **NOT** specified, then the default Python
-interpreter is “python3.”
-
-Examples:
-
-@string Leo-Babel-Python = python2
-
-The Python 2 interpreter.
-
-@string Leo-Babel-Python = python3
-
-The Python 3 interpreter.
-
-This default can be overridden for an individual Babel script by setting
-babel_python in the Babel Parameters Script.
-
-Shell Interpreter Default
--------------------------
-
-Parameter Name: Leo-Babel-Shell
-
-This parameter specifies the default program used to interpret a shell
-language script. The program must exist on the path specified by the
-PATH environment variable, or the absolute path to the program must be
-specified.
-
-If Leo-Babel-Shell is **NOT** specified, then the default shell
-interpreter is “bash.” Examples:
-
-@string Leo-Babel-Shell = bash
-
-The Bourne shell.
-
-@string Leo-Babel-Shell = sh
-
-The POSIX standard shell interpreter chosen by your Linux distribution.
-
-@string Leo-Babel-Shell = zsh
-
-The Z shell.
-
-This default can be overridden for an individual Babel script by setting
-babel_shell in the Babel Parameters Script.
 
 Sudo Executes Script
 --------------------
@@ -848,6 +815,77 @@ The value of Leo-Babel-Sudo compiled into Leo-Babel is False.
 
 This parameter’s setting can be overridden for an individual Babel
 Script by setting babel_sudo in the Babel Parameters Script.
+
+Output Polling Delay
+--------------------
+
+Parameter Name: Leo-Babel-Polling-Delay
+
+This is an integer specifying the minimum number of milliseconds between
+output polls.
+
+Example:
+
+@int Leo-Babel-Polling-Delay = 1
+
+The value of Leo-Babel-Polling-Delay compiled into Leo-Babel is 1.
+
+This parameter’s setting can be overridden for an individual Babel
+Script by setting babel_polling_delay in the Babel Parameters Script.
+
+.. _python-interpreter-1:
+
+Python Interpreter
+------------------
+
+Parameter Name: Leo-Babel-Python
+
+This parameter specifies the program used to interpret a Python language
+script. The program must exist on the path specified by the PATH
+environment variable, or the absolute path to the program must be
+specified.
+
+If Leo-Babel-Python is **NOT** specified, then the default Python
+interpreter is “/usr/bin/python3.”
+
+Examples:
+
+@string Leo-Babel-Python = /usr/bin/python2
+
+@string Leo-Babel-Python = /usr/bin/python3
+
+This parameter can be overridden for an individual Babel script by
+setting babel_python in the Babel Parameters Script.
+
+.. _shell-interpreter-1:
+
+Shell Interpreter
+-----------------
+
+Parameter Name: Leo-Babel-Shell
+
+This parameter specifies the default program used to interpret a shell
+language script. The program must exist on the path specified by the
+PATH environment variable, or the absolute path to the program must be
+specified.
+
+If Leo-Babel-Shell is **NOT** specified, then the default shell
+interpreter is “/usr/bin/bash.” Examples:
+
+@string Leo-Babel-Shell = usr/bin/bash
+
+The Bourne shell.
+
+@string Leo-Babel-Shell = sh
+
+The POSIX standard shell interpreter chosen by your Linux distribution.
+
+@string Leo-Babel-Shell = zsh
+
+The Z shell.
+
+This parameter can be overridden for an individual Babel script by
+setting babel_shell in the Babel Parameters Script.
 
 Supported Python Release
 ========================

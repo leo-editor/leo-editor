@@ -27,6 +27,7 @@ import collections
 import datetime
 import io
 import os
+import pathlib
 import re
 import signal
 import six
@@ -403,9 +404,11 @@ def babelExec(event):
         if langx == 'python':
             interpreter = babelCmdr.babel_interpreter_python
             cmdList.extend([interpreter, '-u'])
+            extX = '.py'
         elif langx == 'shell':
             interpreter = babelCmdr.babel_interpreter_shell
             cmdList.append(interpreter)
+            extX = '.sh'
         else:
             babelCmdr.babelExecCnt += 1
             raise babelG.babel_api.BABEL_LANGUAGE('Unknown language "{0}"'.format(langx))
@@ -415,7 +418,15 @@ def babelExec(event):
         cmdrScr.setCurrentDirectoryFromContext(scriptRoot)
         cwd = leoG.os_path_abspath(os.getcwd())
 
-        pathScript = cmdr.writeScriptFile(script)
+        scriptfilepathGS = cmdr.config.settingsDict['scriptfilepath']
+        sfSetting = scriptfilepathGS.val
+        plPath = pathlib.Path(sfSetting)
+        pathStr = str(plPath.parent.joinpath(plPath.stem)) + extX
+        try:
+            scriptfilepathGS.val = pathStr
+            pathScript = cmdr.writeScriptFile(script)
+        finally:
+            scriptfilepathGS.val = sfSetting
         cmdList.append(pathScript)
         if getattr(babelCmdr, 'babel_script_args', None):
             cmdList.extend(babelCmdr.babel_script_args)

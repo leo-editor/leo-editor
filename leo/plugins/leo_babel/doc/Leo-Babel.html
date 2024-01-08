@@ -128,14 +128,22 @@ unl:///tmp/unl.leo#Root:0--&gt;space%20&quot;%20&quot;%20tab%20&quot; &quot;%20s
 </ol>
 <p>The Babel Parameters Script can define the following parameters that affect Babel Script execution:</p>
 <ol type="1">
-<li><p>babel_script</p></li>
-<li><p>babel_results</p></li>
-<li><p>babel_node_creation</p></li>
-<li><p>babel_python</p></li>
-<li><p>babel_shell</p></li>
-<li><p>babel_sudo</p></li>
-<li><p>babel_redirect_stdout</p></li>
-<li><p>babel_script_args</p></li>
+<li>babel_color_information</li>
+<li>babel_color_stderr</li>
+<li>babel_color_stdout</li>
+<li>babel_interpreter_python</li>
+<li>babel_interpreter_shell</li>
+<li>babel_node_creation</li>
+<li>babel_polling_delay</li>
+<li>babel_prefix_information</li>
+<li>babel_prefix_stderr</li>
+<li>babel_prefix_stdout</li>
+<li>babel_redirect_stdout</li>
+<li>babel_results</li>
+<li>babel_script</li>
+<li>babel_script_args</li>
+<li>babel_sudo</li>
+<li>babel_tab_babel</li>
 </ol>
 <p>The current working directory for the Babel Parameters Script is the working directory for the Babel Script node. See section “Current working directory for a node”.</p>
 <h2 data-number="11.1" id="babel_script"><span class="header-section-number">11.1</span> babel_script</h2>
@@ -265,36 +273,23 @@ Exceptions:
 <li>babel_prefix_stdout</li>
 <li>babel_prefix_stderr</li>
 </ul>
-<h2 data-number="12.4" id="node-creation-default"><span class="header-section-number">12.4</span> Node Creation Default</h2>
-<p>Parameter name: Leo-Babel-Node-Creation-Default</p>
+<h2 data-number="12.4" id="babel-tab"><span class="header-section-number">12.4</span> Babel Tab</h2>
+<p>Parameter Name: Leo-Babel-Tab-Babel</p>
+<pre><code>* False --&gt; All Babel Script output goes to the &quot;Log&quot; tab in the Log pane
+* True --&gt; All Babel Script output goes to the &quot;Babel&quot; tab in the Log pane</code></pre>
+<p>Example:</p>
+<p>@bool Leo-Babel-Tab-Babel = True</p>
+<p>The value of Leo-Babel-Tab-Babel compiled into Leo-Babel is True.</p>
+<p>This parameter’s setting can be overridden for an individual Babel Script by setting babel_tab_babel in the Babel Parameters Script.</p>
+<h2 data-number="12.5" id="node-creation"><span class="header-section-number">12.5</span> Node Creation</h2>
+<p>Parameter name: Leo-Babel-Node-Creation</p>
 <pre><code>* False --&gt; no results nodes are added.
 * True --&gt; results nodes are added.</code></pre>
 <p>Example:</p>
-<p>@bool Leo-Babel-Node-Creation-Default = False</p>
-<p>The value of Leo-Babel-Node-Creation-Default compiled into Leo-Babel is True.</p>
+<p>@bool Leo-Babel-Node-Creation = False</p>
+<p>The value of Leo-Babel-Node-Creation compiled into Leo-Babel is True.</p>
 <p>This parameter’s setting can be overridden for an individual Babel Script by setting babel_node_creation in the Babel Parameters Script.</p>
-<h2 data-number="12.5" id="python-interpreter-default"><span class="header-section-number">12.5</span> Python Interpreter Default</h2>
-<p>Parameter Name: Leo-Babel-Python</p>
-<p>This parameter specifies the program used to interpret a Python language script. The program must exist on the path specified by the PATH environment variable, or the absolute path to the program must be specified.</p>
-<p>If Leo-Babel-Python is <strong>NOT</strong> specified, then the default Python interpreter is “python3.”</p>
-<p>Examples:</p>
-<p>@string Leo-Babel-Python = python2</p>
-<p>The Python 2 interpreter.</p>
-<p>@string Leo-Babel-Python = python3</p>
-<p>The Python 3 interpreter.</p>
-<p>This default can be overridden for an individual Babel script by setting babel_python in the Babel Parameters Script.</p>
-<h2 data-number="12.6" id="shell-interpreter-default"><span class="header-section-number">12.6</span> Shell Interpreter Default</h2>
-<p>Parameter Name: Leo-Babel-Shell</p>
-<p>This parameter specifies the default program used to interpret a shell language script. The program must exist on the path specified by the PATH environment variable, or the absolute path to the program must be specified.</p>
-<p>If Leo-Babel-Shell is <strong>NOT</strong> specified, then the default shell interpreter is “bash.” Examples:</p>
-<p>@string Leo-Babel-Shell = bash</p>
-<p>The Bourne shell.</p>
-<p>@string Leo-Babel-Shell = sh</p>
-<p>The POSIX standard shell interpreter chosen by your Linux distribution.</p>
-<p>@string Leo-Babel-Shell = zsh</p>
-<p>The Z shell.</p>
-<p>This default can be overridden for an individual Babel script by setting babel_shell in the Babel Parameters Script.</p>
-<h2 data-number="12.7" id="sudo-executes-script"><span class="header-section-number">12.7</span> Sudo Executes Script</h2>
+<h2 data-number="12.6" id="sudo-executes-script"><span class="header-section-number">12.6</span> Sudo Executes Script</h2>
 <p>Parameter Name: Leo-Babel-Sudo</p>
 <pre><code>* False --&gt; the Babel Script is executed with the current user&#39;s priveleges
 * True --&gt; Sudo executes the Babel Script.  That is, the Babel Script is executed with root priveleges.</code></pre>
@@ -302,6 +297,32 @@ Exceptions:
 <p>@bool Leo-Babel-Sudo = True</p>
 <p>The value of Leo-Babel-Sudo compiled into Leo-Babel is False.</p>
 <p>This parameter’s setting can be overridden for an individual Babel Script by setting babel_sudo in the Babel Parameters Script.</p>
+<h2 data-number="12.7" id="output-polling-delay"><span class="header-section-number">12.7</span> Output Polling Delay</h2>
+<p>Parameter Name: Leo-Babel-Polling-Delay</p>
+<p>This is an integer specifying the minimum number of milliseconds between output polls.</p>
+<p>Example:</p>
+<p>@int Leo-Babel-Polling-Delay = 1</p>
+<p>The value of Leo-Babel-Polling-Delay compiled into Leo-Babel is 1.</p>
+<p>This parameter’s setting can be overridden for an individual Babel Script by setting babel_polling_delay in the Babel Parameters Script.</p>
+<h2 data-number="12.8" id="python-interpreter-1"><span class="header-section-number">12.8</span> Python Interpreter</h2>
+<p>Parameter Name: Leo-Babel-Python</p>
+<p>This parameter specifies the program used to interpret a Python language script. The program must exist on the path specified by the PATH environment variable, or the absolute path to the program must be specified.</p>
+<p>If Leo-Babel-Python is <strong>NOT</strong> specified, then the default Python interpreter is “/usr/bin/python3.”</p>
+<p>Examples:</p>
+<p>@string Leo-Babel-Python = /usr/bin/python2</p>
+<p>@string Leo-Babel-Python = /usr/bin/python3</p>
+<p>This parameter can be overridden for an individual Babel script by setting babel_python in the Babel Parameters Script.</p>
+<h2 data-number="12.9" id="shell-interpreter-1"><span class="header-section-number">12.9</span> Shell Interpreter</h2>
+<p>Parameter Name: Leo-Babel-Shell</p>
+<p>This parameter specifies the default program used to interpret a shell language script. The program must exist on the path specified by the PATH environment variable, or the absolute path to the program must be specified.</p>
+<p>If Leo-Babel-Shell is <strong>NOT</strong> specified, then the default shell interpreter is “/usr/bin/bash.” Examples:</p>
+<p>@string Leo-Babel-Shell = usr/bin/bash</p>
+<p>The Bourne shell.</p>
+<p>@string Leo-Babel-Shell = sh</p>
+<p>The POSIX standard shell interpreter chosen by your Linux distribution.</p>
+<p>@string Leo-Babel-Shell = zsh</p>
+<p>The Z shell.</p>
+<p>This parameter can be overridden for an individual Babel script by setting babel_shell in the Babel Parameters Script.</p>
 <h1 data-number="13" id="supported-python-release"><span class="header-section-number">13</span> Supported Python Release</h1>
 <p>Leo-Babel only works when Python 3 interprets the Leo-Editor code and Python 3 interprets babel_kill.py.</p>
 <h1 data-number="14" id="why-use-leo-babel"><span class="header-section-number">14</span> Why Use Leo-Babel</h1>
