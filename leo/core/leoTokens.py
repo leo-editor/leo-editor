@@ -70,7 +70,7 @@ import re
 import subprocess
 import textwrap
 import tokenize
-from typing import Any, Generator, Optional, Union
+from typing import Any, Callable, Generator, Optional, Union
 
 try:
     from leo.core import leoGlobals as g
@@ -513,7 +513,7 @@ class TokenBasedOrange:
     # Values of operator InputToken that require context assistance.
     # context_op_values: list[str] = [':', '*', '**', '-']
 
-    compound_keywords = ('elif', 'else', 'for', 'if', 'while')
+    compound_statements = ('elif', 'else', 'for', 'if', 'while')
     operator_keywords = ('and', 'in', 'not', 'not in', 'or')
     #@-<< TokenBasedOrange: constants >>
     #@+<< TokenBasedOrange: patterns >>
@@ -535,16 +535,20 @@ class TokenBasedOrange:
     #@+node:ekr.20240105145241.2: *4* tbo.ctor
     def __init__(self, settings: Settings = None):
         """Ctor for Orange class."""
+        # Init ivars.
+        self.kind: str = ''
         if settings is None:
             settings = {}
-        valid_keys = (
-            # 'allow_joined_strings',
-            'force',
-            'orange',
-            'tab_width',
-            'verbose',
-        )
-        self.kind: str = ''
+        valid_keys = ('force', 'orange', 'tab_width', 'verbose')
+
+        # Init the dispatch dict for 'word' generator.
+        self.word_dispatch: dict[str, Callable] = {
+            'from': self.scan_from,
+            'def': self.scan_def,
+            'import': self.scan_import,
+        }
+        for z in self.compound_statements:
+            self.word_dispatch[z] = self.scan_compound_statement
 
         # Default settings...
         self.allow_joined_strings = False  # EKR's preference.
@@ -763,7 +767,7 @@ class TokenBasedOrange:
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.val
-        if name in self.compound_keywords:
+        if name in self.compound_statements:
             # There seems to be no need to add context to the trailing ':'.
             self.word_op(name)
         elif name in self.operator_keywords:
@@ -788,12 +792,26 @@ class TokenBasedOrange:
         """Handle an op token."""
         val = self.val
         if val == '.':
-            self.clean('blank')
+            context = self.token.context
             prev = self.code_list[-1]
-            # #2495 & #2533: Special case for 'from .'
-            if prev.kind == 'word' and prev.value == 'from':
-                self.blank()
-            self.add_token('op-no-blanks', val)
+            g.trace('context', repr(context), 'prev', prev)
+            if 1:  ### Experimental.
+                # Special case for 'from .'
+                if context == 'import1':
+                    self.clean('blank')
+                    self.add_token('hard-blank', ' ')
+                    self.add_token('op-no-blanks', val)
+                elif context == 'import2':
+                    self.add_token('op-no-blanks', val)
+                else:
+                    self.add_token('op-no-blanks', val)
+            else:
+                self.clean('blank')
+                prev = self.code_list[-1]
+                # #2495 & #2533: Special case for 'from .'
+                if prev.kind == 'word' and prev.value == 'from':
+                    self.blank()
+                self.add_token('op-no-blanks', val)
         elif val == '@':
             self.clean('blank')
             self.add_token('op-no-blanks', val)
@@ -929,7 +947,7 @@ class TokenBasedOrange:
             'blank',
             'blank-lines',
             'file-start',
-            'hard-blank',  # Unique to tbo.
+            'hard-blank',
             'line-end',
             'line-indent',
             'lt',
@@ -1130,12 +1148,9 @@ class TokenBasedOrange:
         in_class_or_def = 'in_class_or_def'
 
         # Scan special statements, adding context to *later* tokens.
-        if s == 'from':
-            self.scan_from()
-        elif s == 'def':
-            self.scan_def()
-        elif s in self.compound_keywords:
-            self.scan_compound_statement()
+        func = self.word_dispatch.get(s)
+        if func:
+            func()
 
         # Add context to *this* token.
         if s in ('class', 'def'):
@@ -1511,10 +1526,18 @@ class TokenBasedOrange:
         expect(i, 'name', 'from')
         i = next(i)
 
-        # Add 'import' context to all leading '.' tokens.
-        while i and is_op(i, ['.']):
-            set_context(i, 'import')
+        # Add 'import1' context to the first '.' token.
+        if i and is_op(i, ['.']):
+            set_context(i, 'import1')
             i = next(i)
+
+        # Add 'import2' context to all further '.' tokens.
+        while i and is_op(i, ['.']):
+            set_context(i, 'import2')
+            i = next(i)
+    #@+node:ekr.20240108083829.1: *5* tbo.scan_import
+    def scan_import(self) -> None:
+        g.trace('To do')
     #@+node:ekr.20240106181215.1: *5* tbo.scan_initializer
     def scan_initializer(self, i1: int, i2: int, has_annotation: bool) -> Optional[int]:
         """Scan an initializer in a function definition argument."""
