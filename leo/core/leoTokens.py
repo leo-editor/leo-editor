@@ -508,8 +508,16 @@ class TokenBasedOrange:
     The Orange class in leoAst.py uses data from Python's parse tree.
     """
 
+    #@+<< TokenBasedOrange: constants >>
+    #@+node:ekr.20240108065205.1: *4* << TokenBasedOrange: constants >>
     # Values of operator InputToken that require context assistance.
-    context_op_values: list[str] = [':', '*', '**', '-']
+    # context_op_values: list[str] = [':', '*', '**', '-']
+
+    compound_keywords = ('elif', 'else', 'for', 'if', 'while')
+    operator_keywords = ('and', 'in', 'not', 'not in', 'or')
+    #@-<< TokenBasedOrange: constants >>
+    #@+<< TokenBasedOrange: patterns >>
+    #@+node:ekr.20240108065133.1: *4* << TokenBasedOrange: patterns >>
 
     # Patterns...
     nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
@@ -521,6 +529,7 @@ class TokenBasedOrange:
 
     # Doc parts end with @c or a node sentinel. Specialized for python.
     end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
+    #@-<< TokenBasedOrange: patterns >>
 
     #@+others
     #@+node:ekr.20240105145241.2: *4* tbo.ctor
@@ -751,10 +760,6 @@ class TokenBasedOrange:
         self.lws = new_indent
         self.line_indent()
     #@+node:ekr.20240105145241.16: *5* tbo.do_name
-    ### 'and', 'elif', 'else', 'for', 'if', 'in', 'not', 'not in', 'or', 'while'):
-    compound_keywords = ('elif', 'else', 'for', 'if', 'while')
-    operator_keywords = ('and', 'in', 'not', 'not in', 'or')
-
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.val
@@ -1124,12 +1129,15 @@ class TokenBasedOrange:
         is_kind, next, set_context = self.is_kind, self.next_token, self.set_context
         in_class_or_def = 'in_class_or_def'
 
-        # Scan special statements.
+        # Scan special statements, adding context to *later* tokens.
         if s == 'from':
             self.scan_from()
-        if s == 'def':
+        elif s == 'def':
             self.scan_def()
+        elif s in self.compound_keywords:
+            self.scan_compound_statement()
 
+        # Add context to *this* token.
         if s in ('class', 'def'):
             # The defined name is not a function call.
             i = next(self.index)
@@ -1392,7 +1400,7 @@ class TokenBasedOrange:
     #@+node:ekr.20240107091700.1: *5* tbo.scan_call
     def scan_call(self, i1: int) -> None:
         """Scan a function call"""
-        # Aliase.
+        # Alias.
         expect = self.expect
 
         # Find i1 and i2, the boundaries of the argument list.
@@ -1443,6 +1451,26 @@ class TokenBasedOrange:
 
         # The caller will eat the ')'.
         return i
+    #@+node:ekr.20240108062349.1: *5* tbo.scan_compound_statement
+    def scan_compound_statement(self) -> None:
+        """
+        Scan a compound statement, adding 'end-statement' context to the
+        trailing ':' token.
+        """
+        # Aliases.
+        expect, next, set_context = self.expect, self.next_token, self.set_context
+
+        # Scan the keyword.
+        i1, i2 = self.index, len(self.tokens)
+        expect(i1, 'word')
+        i = next(i1)
+
+        # Find the trailing ':'.
+        i = self.find_op(i, i2, [':'])
+        expect(i, 'op', ':')
+
+        # Set the context.
+        set_context(i, 'end-statement')
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def
     def scan_def(self) -> None:
         """Scan a complete 'def' statement."""
@@ -1474,39 +1502,25 @@ class TokenBasedOrange:
         """
         Scan a `from x import` statement just enough to handle leading '.'.
         """
-        expect = self.expect
-        ### expect, expect_ops = self.expect, self.expect_ops
-        ### find_op, next = self.find_op, self.next_token
+        # Aliases.
+        expect, next = self.expect, self.next_token
+        is_op, set_context = self.is_op, self.set_context
 
-        # Find i1 and i2, the boundaries of the argument list.
+        # Scan the 'from' keyword.
         i = self.index
         expect(i, 'name', 'from')
+        i = next(i)
 
-        ###
-        # i = next(i)
-        # expect(i, 'name')
-        # i = next(i)
-        # expect(i, 'op', '(')
-        # i1 = i
-        # i = i2 = find_op(i, len(self.tokens), [')'])
-        # expect(i, 'op', ')')
-        # i = next(i)
-        # expect_ops(i, ['->', ':'])
-
-        # # Find i3, the ending ':' of the def statement.
-        # i3 = find_op(i, len(self.tokens), [':'])
-        # expect(i3, 'op', ':')
-        # self.set_context(i3, 'def')
-
-        # # Scan the arguments.
-        # self.scan_args(i1, i2)
+        # Add 'import' context to all leading '.' tokens.
+        while i and is_op(i, ['.']):
+            set_context(i, 'import')
+            i = next(i)
     #@+node:ekr.20240106181215.1: *5* tbo.scan_initializer
     def scan_initializer(self, i1: int, i2: int, has_annotation: bool) -> Optional[int]:
         """Scan an initializer in a function definition argument."""
         # Aliases
         expect, expect_ops = self.expect, self.expect_ops
-        is_op, set_context = self.is_op, self.set_context
-        next = self.next_token
+        next, set_context = self.next_token, self.set_context
 
         # Scan the '='.
         expect(i1, 'op', '=')
@@ -1516,14 +1530,8 @@ class TokenBasedOrange:
         # Find the next ',' or ')' at this level.
         i3 = self.find_op(i, i2, [',', ')'])
         expect_ops(i3, [',', ')'])
-
-        # Set the context of inner operators.
-        if 0:  ### Do *not* override annotation.
-            for i in range(i1 + 1, i3 - 1):
-                if is_op(i, self.context_op_values):
-                    set_context(i, 'initializer')
         return i3
-    #@+node:ekr.20240106170746.1: *5* tbo.set_context
+    #@+node:ekr.20240106170746.1: *5* tbo.set_context (*** improve comments ***)
     def set_context(self, i: int, context: str) -> None:
         """Set the context for self.tokens[i]."""
         self.check_token_index(i)
