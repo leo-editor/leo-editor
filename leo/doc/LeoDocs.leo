@@ -31104,7 +31104,7 @@ More inspired Leo's cloned nodes.
 - Виталије Милошевић, (Vitalije Milosevic) made vital code-level contributions.
 - Tsuchi Noko created transparent icons.
 - Neal Norwitz wrote PyChecker.
-- Félix Malboeuf wrote leoInteg, LeoJs, leoserver.py and leoclient.py.
+- Félix Malboeuf wrote LeoInteg, LeoJS, leoserver.py and leoclient.py.
 - Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
 - Paul Paterson created the plugin architecture, helped with spell checking and contributed many plugins.
 - François Pinard wrote pymacs, the foundation of Leo's emacs bridge.
@@ -32674,7 +32674,7 @@ Around this time Félix started a careful code review of *all* of Leo's core, in
 
 6.3 (November 6, 2020): ``leoAst.py``.
 
-June 21, 2021: The dawn of ``leoInteg``: The first commit by Félix Malboeuf for leoserver.py, a stand-alone server for Leo.
+June 21, 2021: The dawn of ``LeoInteg``: The first commit by Félix Malboeuf for leoserver.py, a stand-alone server for Leo.
 
 6.4 (September 20, 2021): The first release supporting ``leoInteg``: integration of Leo with VS code. ``leoInteg`` and ``leoJS`` are the future of Leo. All later releases contain support for ``leoInteg`` and ``leoJS``. This was the first release containing leoserver.py.
 
