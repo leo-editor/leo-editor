@@ -242,7 +242,7 @@ class Optional_TestFiles(BaseTest):
 class TestTokenBasedOrange(BaseTest):
     """
     Tests for the TokenBasedOrange class.
-    
+
     Note: TokenBasedOrange never inserts or deletes lines.
     """
     #@+others
@@ -368,7 +368,7 @@ class TestTokenBasedOrange(BaseTest):
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.51: *3* TestTBO.xxx_test_bug_1429
     def xxx_test_bug_1429(self):
-        
+
         # This test really only tests function calls.
 
         contents = textwrap.dedent(
@@ -550,7 +550,7 @@ class TestTokenBasedOrange(BaseTest):
             self.assertEqual(results, expected)
     #@+node:ekr.20240107080413.1: *3* TestTBO.test_function_call
     def test_function_call(self):
-        
+
         contents = textwrap.dedent(
             """
             version = str(semantic_version.Version.coerce(tag, partial=True))
@@ -678,6 +678,8 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.69: *3* TestTBO.test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
 
+        # One-line pet peeves, except those involving unary ops.
+
         # See https://peps.python.org/pep-0008/#pet-peeves
         # See https://peps.python.org/pep-0008/#other-recommendations
 
@@ -752,8 +754,6 @@ class TestTokenBasedOrange(BaseTest):
                 # Word ops...
                 """v1 = v2 and v3 if v3 not in v4 or v5 in v6 else v7""",
                 """print(v7 for v8 in v9)""",
-                # Unary ops...
-                """v = -1 if a < b else -2""",
                 # Returns...
                 """return -1""",
             )
@@ -855,6 +855,44 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
+    #@+node:ekr.20240109070553.1: *3* TestTBO.test_unary_op
+    def test_unary_op(self):
+
+        # One-line pet peeves involving unary ops.
+
+        # See https://peps.python.org/pep-0008/#pet-peeves
+        # See https://peps.python.org/pep-0008/#other-recommendations
+
+        tag = 'test_unary_ops'
+
+        # Except where noted, all entries are expected values....
+        table = (
+            # Arrays.
+            """a[:-1]""",
+            # Calls...
+            """f(-1)""",
+            """f(-1 < 2)""",
+            # Dicts...
+            """d = {key: -3}""",
+            """d['key'] = a[-i]""",
+            # Unary ops...
+            """v = -1 if a < b else -2""",
+        )
+        fails = 0
+        for i, contents in enumerate(table):
+            description = f"{tag} part {i}"
+            contents, tokens = self.make_data(contents, description=description)
+            expected = self.blacken(contents)
+            results = self.beautify(contents, tokens, filename=description)
+            if results != expected:  # pragma: no cover
+                fails += 1
+                print('')
+                print(
+                    f"TestTokenBasedOrange.test_one_line_pet_peeves: FAIL {fails}\n"
+                    f"  contents: {contents.rstrip()}\n"
+                    f"     black: {expected.rstrip()}\n"
+                    f"    orange: {results.rstrip()}")
+        self.assertEqual(fails, 0)
     #@+node:ekr.20240105153425.79: *3* TestTBO.test_verbatim
     def test_verbatim(self):
 
