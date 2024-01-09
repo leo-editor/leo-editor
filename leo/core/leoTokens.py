@@ -559,7 +559,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 setattr(self, key, value)
             else:
                 g.trace(f"Unexpected setting: {key} = {value!r}")
-                g.callers()
+                g.trace('(TokenBasedOrange)', g.callers())
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def oops(self) -> None:  # pragma: no cover
@@ -1763,10 +1763,10 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
     files = args.PATHS
     # Create the settings dict, ensuring proper values.
     settings_dict: dict[str, Any] = {
-        'allow_joined_strings': bool(args.allow_joined),
+        # 'allow_joined_strings': bool(args.allow_joined),
         'force': bool(args.force),
-        'max_join_line_length': abs(args.max_join),
-        'max_split_line_length': abs(args.max_split),
+        # 'max_join_line_length': abs(args.max_join),
+        # 'max_split_line_length': abs(args.max_split),
         'tab_width': abs(args.tab_width),  # Must be positive!
         'verbose': bool(args.verbose),
     }
