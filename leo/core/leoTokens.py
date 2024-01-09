@@ -1575,12 +1575,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         end = self.scan_simple_statement()
         if end is None:
             end = i2
-        i = i1
-
-        ### g.trace(i1, i2)
-        ### dump_tokens(self.tokens[i1:i2])
 
         # Add 'from' context to all '.' tokens.
+        i = i1
         while i and i < end:
             if is_op(i, ['.']):
                 set_context(i, 'from')
