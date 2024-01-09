@@ -733,7 +733,7 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 print('')
                 print(
-                    f"TestTokenBasedOrange.test_one_line_pet_peeves: FAIL {fails}\n"
+                    f"TestTokenBasedOrange.{tag}: FAIL {fails}\n"
                     f"  contents: {contents.rstrip()}\n"
                     f"     black: {expected.rstrip()}\n"
                     f"    orange: {results.rstrip()}")
@@ -844,7 +844,7 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 print('')
                 print(
-                    f"TestTokenBasedOrange.test_one_line_pet_peeves: FAIL {fails}\n"
+                    f"TestTokenBasedOrange.{tag}: FAIL {fails}\n"
                     f"  contents: {contents.rstrip()}\n"
                     f"     black: {expected.rstrip()}\n"
                     f"    orange: {results.rstrip()}")
