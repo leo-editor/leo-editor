@@ -548,7 +548,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.word_dispatch[z] = self.scan_compound_statement
 
         # Default settings...
-        self.allow_joined_strings = False  # EKR's preference.
+        # self.allow_joined_strings = False  # EKR's preference.
         self.force = False
         self.tab_width = 4
         self.verbose = False
@@ -597,21 +597,25 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.tokens = tokens  # The list of input tokens.
         self.add_token('file-start', '')
         self.push_state('file-start')
-        for self.index, token in enumerate(tokens):
-            self.token = token
-            self.kind, self.val, self.line = token.kind, token.value, token.line
-            if self.verbatim:
-                self.do_verbatim()
-            elif self.in_fstring:
-                self.continue_fstring()
-            else:
-                func = getattr(self, f"do_{token.kind}", self.oops)
-                func()
-        # Any post pass would go here.
-        result = output_tokens_to_string(self.code_list)
+        try:
+            for self.index, token in enumerate(tokens):
+                self.token = token
+                self.kind, self.val, self.line = token.kind, token.value, token.line
+                if self.verbatim:
+                    self.do_verbatim()
+                elif self.in_fstring:
+                    self.continue_fstring()
+                else:
+                    func = getattr(self, f"do_{token.kind}", self.oops)
+                    func()
+            # Any post pass would go here.
+            result = output_tokens_to_string(self.code_list)
+        except BeautifyError as e:
+            print(e)
+            result = None
         t2 = time.process_time()
         if 1:
-            print(f"TBO.beautify: {t2-t1:4.1} sec.", g.callers())
+            print(f"TBO.beautify: {t2-t1:4.1} sec.")
         return result
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
@@ -625,10 +629,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not (contents and tokens):
             return False  # Not an error.
         assert isinstance(tokens[0], InputToken), repr(tokens[0])
-        try:
+        if 1:
             results = self.beautify(contents, filename, tokens)
-        except BeautifyError:
-            return False  # #2578.
+            return bool(results)
+        else:
+            try:
+                results = self.beautify(contents, filename, tokens)
+            except BeautifyError as e:
+                print(e)
+                return False  # #2578.
         # Something besides newlines must change.
         if regularize_nls(contents) == regularize_nls(results):
             return False
