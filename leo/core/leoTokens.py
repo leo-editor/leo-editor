@@ -1025,7 +1025,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         Find the enclosing square brackets.
         
         Return one of (None, 'simple-slice', 'complex-slice')
-        ### Return the indices of the square brackets, or (None, None)
         """
         # Aliases.
         is_op, next, set_context = self.is_op, self.next_token, self.set_context
@@ -1066,7 +1065,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         context = 'complex-slice' if is_complex else 'simple-slice'
         i = next(i1)
         while i and i < i2:
-            ### token = self.tokens[i]
             if is_op(i, [':']):
                 set_context(i, context)
             i = next(i)
@@ -1224,12 +1222,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             if i and self.is_op(i, ['(']):
                 self.scan_call(i)
 
-        ### in_import_from = self.token.context == ?
-        if False:  ### isinstance(node, ast.ImportFrom) and s == 'import':  # #2533
-            self.clean('blank')
-            self.add_token('blank', ' ')
-            self.add_token('word', s)
-        elif self.square_brackets_stack:
+        # Finally: generate output tokens.
+        if self.square_brackets_stack:
             # A previous 'op-no-blanks' token may cancel this blank.
             self.blank()
             self.add_token('word', s)
@@ -1297,12 +1291,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         Return the index of the matching 'op' or 'newline' input token.
         Skip inner parens and brackets.
         """
-        ### g.trace('Entry', i, 'values:', values, 'reverse', int(reverse))
         curly_brackets, parens, square_brackets = 0, 0, 0
         while i and 0 <= i < len(self.tokens):
             token = self.tokens[i]
             kind, value = token.kind, token.value
-
             # Precheck.
             if (
                 kind in ('op', 'newline') and value in values
@@ -1436,7 +1428,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         if has_annotation:
             set_context(i, 'annotation')
             i = self.scan_annotation(i)
-            ### g.trace(i, self.tokens[i])
 
         # Scan an optional initializer.
         if is_op(i, ['=']):
@@ -1535,7 +1526,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         expect, next, set_context = self.expect, self.next_token, self.set_context
 
         # Scan the keyword.
-        ### i1, i2 = self.index, len(self.tokens)
         i = self.index
         expect(i, 'word')
         i = next(i)
@@ -1645,7 +1635,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Scan to the end of a simple statement like an `import` statement.
         """
-        ### i1, i2 = self.index, len(self.tokens)
         i = self.index
         i = self.find_input_token(i, ['\n'])
         if i is not None:
