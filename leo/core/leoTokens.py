@@ -610,7 +610,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
-        Orange: Beautify the the given external file.
+        TokenBasedOrange: Beautify the the given external file.
 
         Return True if the file was changed.
         """
@@ -1697,7 +1697,7 @@ def main() -> None:  # pragma: no cover
         kind = (
             # 'fstringify' if args.f else
             # 'fstringify-diff' if args.fd else
-            'orange' if args.o else
+            'orange-tokens' if args.o else
             # 'orange-diff' if args.od else
             None
         )
