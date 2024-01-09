@@ -997,38 +997,80 @@ class TokenBasedOrange:  # Orange is the new Black.
             if t.kind == 'line-end' and getattr(t, 'newline_kind', None) != 'nl':
                 cleaned_newline = True
         return cleaned_newline
-    #@+node:ekr.20240105145241.31: *5* tbo.colon (partially fixed)
+    #@+node:ekr.20240105145241.31: *5* tbo.colon
     def colon(self, val: str) -> None:
         """Handle a colon."""
-        ###
-        # def is_expr(node: Node) -> bool:
-            # """True if node is any expression other than += number."""
-            # if isinstance(node, (ast.BinOp, ast.Call, ast.IfExp)):
-                # return True
-            # num_node = ast.Num if g.python_version_tuple < (3, 12, 0) else ast.Constant
-            # return (
-                # isinstance(node, ast.UnaryOp)
-                # and not isinstance(node.operand, num_node)
-            # )
-
-        self.clean('blank')
         context = self.token.context
-        if context != 'slice':  ### not isinstance(node, ast.Slice):
-            self.add_token('op', val)
-            self.blank()
-            return
-        # A slice.
-        # lower = getattr(node, 'lower', None)
-        # upper = getattr(node, 'upper', None)
-        # step = getattr(node, 'step', None)
-        if False:  ### any(is_expr(z) for z in (lower, upper, step)):
-            prev = self.code_list[-1]
-            if prev.value not in '[:':
+        prev_i = self.prev_token(self.index)
+        prev = self.tokens[prev_i]
+        ### kind, value = prev_token.kind, prev_token.value
+
+        if context is None:
+            # Find the boundaries of the slice: the enclosing square brackets.
+            # # # i1: Optional[int]
+            # # # i2: Optional[int]
+            i1, i2 = self.scan_slice()
+            if (i1, i2) != (None, None):
+                self.expect(i1, 'op', '[')
+                self.expect(i2, 'op', ']')
+                context = self.token.context
+        # Now we can generate proper code.
+        self.clean('blank')
+        if context == 'complex-slice':
+            if prev.kind != 'op' or prev.value not in '[:':
                 self.blank()
             self.add_token('op', val)
             self.blank()
-        else:
+        elif context == 'simple-slice':
             self.add_token('op-no-blanks', val)
+        else:
+            self.add_token('op', val)
+            self.blank()
+            return
+
+        # # # if kind == 'op' and value in '[:':
+            # # # ### self.add_token('op', val)
+            # # # self.add_token('op-no-blanks', ':')
+            # # # ### self.blank()
+            # # # return
+
+        # # # ###
+        # # # # context = self.token.context
+        # # # # if context != 'slice':  ### not isinstance(node, ast.Slice):
+            # # # # self.add_token('op', val)
+            # # # # self.blank()
+            # # # # return
+
+        # # # # A slice.
+        # # # # lower = getattr(node, 'lower', None)
+        # # # # upper = getattr(node, 'upper', None)
+        # # # # step = getattr(node, 'step', None)
+        # # # if False:  ### any(is_expr(z) for z in (lower, upper, step)):
+            # # # prev = self.code_list[-1]
+            # # # if prev.value not in '[:':
+                # # # self.blank()
+            # # # self.add_token('op', val)
+            # # # self.blank()
+        # # # else:
+            # # # self.add_token('op-no-blanks', val)
+    #@+node:ekr.20240109115925.1: *6* tbo.scan_slice
+    def scan_slice(self) -> tuple[Optional[int], Optional[int]]:
+        """
+        Find the enclosing square brackets.
+        Return the indices of the square brackets, or (None, None)
+        """
+        i = self.index
+
+        # Scan backward.
+        i1 = self.find_input_token(i, ['['], reverse=True)
+        if i1 is None:
+            return (None, None)
+
+        # Scan forward.
+        i2 = self.find_input_token(i, [']'])
+        if i2 is None:
+            return (None, None)
+        return i1, i2
     #@+node:ekr.20240105145241.32: *5* tbo.line_end
     def line_end(self) -> None:
         """Add a line-end request to the code list."""
@@ -1113,7 +1155,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         kind, value = prev_token.kind, prev_token.value
         if kind == 'number':
             return False
-        if kind == 'op' and value in ')]}':
+        if kind == 'op' and value in ')]':  ### }':
             return False
         if self.is_keyword(prev_token):
             return True
@@ -1248,17 +1290,18 @@ class TokenBasedOrange:  # Orange is the new Black.
             raise BeautifyError(f"Expected value in {values!r}, got {token.value!r}")
 
     #@+node:ekr.20240106110748.1: *5* tbo.find_input_token
-    def find_input_token(self, i1: int, i2: int, values: list[str]) -> int:
+    def find_input_token(self,
+        i: int, values: list[str], reverse: bool = False,
+    ) -> Optional[int]:
         """
         Return the index of the matching 'op' or 'newline' input token.
         Skip inner parens and brackets.
         """
         if 0:  ###
-            g.trace('Entry', i1, i2, 'values:', values)
+            g.trace('Entry', i, 'values:', values, 'reverse', int(reverse))
             # dump_tokens(self.tokens)
         curly_brackets, parens, square_brackets = 0, 0, 0
-        i = i1
-        while i and i < len(self.tokens):
+        while i and 0 <= i < len(self.tokens):
             token = self.tokens[i]
             kind, value = token.kind, token.value
             ### g.trace(i, token)
@@ -1288,7 +1331,10 @@ class TokenBasedOrange:  # Orange is the new Black.
                 and (curly_brackets, parens, square_brackets) == (0, 0, 0)
             ):
                 return i
-            i += 1
+            if reverse:
+                i -= 1
+            else:
+                i += 1
         if 1:  ###
             g.trace('Not found', values)
         return None
@@ -1355,12 +1401,11 @@ class TokenBasedOrange:  # Orange is the new Black.
             i -= 1
         return None
     #@+node:ekr.20240106181128.1: *5* tbo.scan_annotation
-    def scan_annotation(self, i1: int, i2: int) -> Optional[int]:
+    def scan_annotation(self, i1: int) -> Optional[int]:
         """Scan an annotation if a function definition arg."""
         # Aliases
         expect, next = self.expect, self.next_token
-        find, is_op = self.find_input_token, self.is_op
-        set_context = self.set_context
+        is_op, set_context = self.is_op, self.set_context
 
         # Scan the ':'
         expect(i1, 'op', ':')
@@ -1368,7 +1413,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = next(i1)
 
         # Scan to the next ',' or '=' at this level.
-        i3 = find(i, i2, [',', '=', ')'])
+        i3 = self.find_input_token(i, [',', '=', ')'])
 
         # Set the contexts of inner ops.
         for i4 in range(i1 + 1, i3 - 1):
@@ -1376,7 +1421,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 set_context(i4, 'annotation')
         return i3
     #@+node:ekr.20240106173638.1: *5* tbo.scan_arg
-    def scan_arg(self, i1: int, i2: int) -> Optional[int]:
+    def scan_arg(self, i1: int) -> Optional[int]:
         """Scan a single function definition argument"""
         # Aliases.
         expect, is_op = self.expect, self.is_op
@@ -1397,7 +1442,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         has_annotation = is_op(i, [':'])
         if has_annotation:
             set_context(i, 'annotation')
-            i = self.scan_annotation(i, i2)
+            i = self.scan_annotation(i)
             ### g.trace(i, self.tokens[i])
 
         # Scan an optional initializer.
@@ -1406,7 +1451,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 set_context(i, 'annotation')
             else:
                 set_context(i, 'initializer')
-            i = self.scan_initializer(i, i2, has_annotation)
+            i = self.scan_initializer(i, has_annotation)
 
         # Scan the optional comma.
         if is_op(i, [',']):
@@ -1428,8 +1473,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan each argument.
         while i < i2:
-            i = self.scan_arg(i, i2)
-            ### g.trace(i, self.tokens[i])
+            i = self.scan_arg(i)
 
         # Scan the ')'
         expect(i, 'op', ')')
@@ -1455,7 +1499,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         
         Set context for every '=' operator.
         """
-        i = self.find_input_token(i1, len(self.tokens), [',', ')'])
+        i = self.find_input_token(i1, [',', ')'])
         for i2 in range(i1 + 1, i - 1):
             if self.is_op(i2, ['=']):
                 self.set_context(i2, 'initializer')
@@ -1498,12 +1542,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         expect, next, set_context = self.expect, self.next_token, self.set_context
 
         # Scan the keyword.
-        i1, i2 = self.index, len(self.tokens)
-        expect(i1, 'word')
-        i = next(i1)
+        ### i1, i2 = self.index, len(self.tokens)
+        i = self.index
+        expect(i, 'word')
+        i = next(i)
 
         # Find the trailing ':'.
-        i = self.find_input_token(i, i2, [':'])
+        i = self.find_input_token(i, [':'])
         expect(i, 'op', ':')
 
         # Set the context.
@@ -1511,8 +1556,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def
     def scan_def(self) -> None:
         """Scan a complete 'def' statement."""
-        expect, expect_ops = self.expect, self.expect_ops
-        find, next = self.find_input_token, self.next_token
+        # Aliases
+        expect, expect_ops, next = self.expect, self.expect_ops, self.next_token
 
         # Find i1 and i2, the boundaries of the argument list.
         i = self.index
@@ -1522,13 +1567,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = next(i)
         expect(i, 'op', '(')
         i1 = i
-        i = i2 = find(i, len(self.tokens), [')'])
+        i = i2 = self.find_input_token(i, [')'])
         expect(i, 'op', ')')
         i = next(i)
         expect_ops(i, ['->', ':'])
 
         # Find i3, the ending ':' of the def statement.
-        i3 = find(i, len(self.tokens), [':'])
+        i3 = self.find_input_token(i, [':'])
         expect(i3, 'op', ':')
         self.set_context(i3, 'def')
 
@@ -1587,7 +1632,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 set_context(i, 'import')
             i = next(i)
     #@+node:ekr.20240106181215.1: *5* tbo.scan_initializer
-    def scan_initializer(self, i1: int, i2: int, has_annotation: bool) -> Optional[int]:
+    def scan_initializer(self, i1: int, has_annotation: bool) -> Optional[int]:
         """Scan an initializer in a function definition argument."""
         # Aliases
         expect, expect_ops = self.expect, self.expect_ops
@@ -1599,7 +1644,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = next(i1)
 
         # Find the next ',' or ')' at this level.
-        i3 = self.find_input_token(i, i2, [',', ')'])
+        i3 = self.find_input_token(i, [',', ')'])
         expect_ops(i3, [',', ')'])
         return i3
     #@+node:ekr.20240109032639.1: *5* tbo.scan_simple_statement
@@ -1607,8 +1652,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Scan to the end of a simple statement like an `import` statement.
         """
-        i1, i2 = self.index, len(self.tokens)
-        i = self.find_input_token(i1, i2, ['\n'])
+        ### i1, i2 = self.index, len(self.tokens)
+        i = self.index
+        i = self.find_input_token(i, ['\n'])
         if i is not None:
             self.expect(i, 'newline')
         return i
