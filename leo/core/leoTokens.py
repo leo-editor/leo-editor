@@ -840,30 +840,23 @@ class TokenBasedOrange:
         prev = self.code_list[-1]
         next_i = self.next_token(self.index)
         next = 'None' if next_i is None else self.tokens[next_i]
-        if 0:  ###
-            g.trace(
-                f"{self.index:3} context {context!r} "
-                f"prev: {prev.kind:14} {prev.value:4} "
-                f"next: {next.kind:14} {next.value}")
-
+        import_is_next = next and next.kind == 'name' and next.value == 'import'
         if prev.kind == 'word' and prev.value in ('from', 'import'):
             # Handle previous 'from' and 'import' keyword.
             self.blank()
-            if next and next.kind == 'name' and next.value == 'import':
+            if import_is_next:
                 self.add_token('op', '.')
                 self.blank()
             else:
                 self.add_token('op-no-blanks', '.')
         elif context == 'from':
             # Don't put spaces between '.' tokens.
-            # Do put a space between the last '.' and 'import'
-            if next and next.kind == 'name' and next.value == 'import':
+            # Do put a space between the last '.' and 'import'.
+            if import_is_next:
                 self.add_token('op', '.')
                 self.blank()
             else:
                 self.add_token('op-no-blanks', '.')
-        elif context == 'import':
-            self.add_token('op-no-blanks', '.')
         else:
             self.add_token('op-no-blanks', '.')
     #@+node:ekr.20240105145241.20: *6* tbo.do_equal_op
