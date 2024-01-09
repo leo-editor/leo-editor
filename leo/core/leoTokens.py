@@ -515,7 +515,6 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@-<< TokenBasedOrange: constants >>
     #@+<< TokenBasedOrange: patterns >>
     #@+node:ekr.20240108065133.1: *4* << TokenBasedOrange: patterns >>
-
     # Patterns...
     nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
 
@@ -1086,28 +1085,41 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.curly_brackets_level -= 1
         self.clean('blank')
         self.add_token('rt', val)
-    #@+node:ekr.20240105145241.37: *5* tbo.possible_unary_op & unary_op (to do)
+    #@+node:ekr.20240105145241.37: *5* tbo.possible_unary_op & helper
     def possible_unary_op(self, s: str) -> None:
         """Add a unary or binary op to the token list."""
         self.clean('blank')
-        ### is_unary = self.token.context
-        if False:  ### isinstance(node, ast.UnaryOp):
-            self.unary_op(s)
+        if self.is_unary_op(s):
+            prev = self.code_list[-1]
+            if prev.kind == 'lt':
+                self.add_token('op-no-blanks', s)
+            else:
+                self.blank()
+                self.add_token('op-no-blanks', s)
         else:
             self.blank()
             self.add_token('op', s)
             self.blank()
 
-    def unary_op(self, s: str) -> None:
-        """Add an operator request to the code list."""
-        assert s and isinstance(s, str), repr(s)
-        self.clean('blank')
+    #@+node:ekr.20240109082712.1: *6* tbo.is_unary_op
+    def is_unary_op(self, s: str) -> bool:
+
+        if s not in '+-~':
+            return False
+        if s == '~':
+            return True
         prev = self.code_list[-1]
-        if prev.kind == 'lt':
-            self.add_token('unary-op', s)
-        else:
-            self.blank()
-            self.add_token('unary-op', s)
+        kind, value = prev.kind, prev.value
+        if kind == 'number':
+            g.trace(f"binary 1: {value}")
+            return False
+        if kind == 'op' and value in ')]}':
+            g.trace(f"binary 2: {value}")
+            return False
+        if self.is_keyword(prev):
+            g.trace(f"binary 3: {value}")
+            return False
+        return True
     #@+node:ekr.20240105145241.38: *5* tbo.star_op
     def star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
@@ -1281,7 +1293,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             g.trace('Not found', values)
         return None
     #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
-    def is_keyword(self, token: InputToken) -> bool:
+    def is_keyword(self, token: Union[InputToken, OutputToken]) -> bool:
         """
         Return True if the token represents a Python keyword.
         

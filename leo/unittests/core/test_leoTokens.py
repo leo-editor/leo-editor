@@ -678,85 +678,51 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.69: *3* TestTBO.test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
 
-        # One-line pet peeves, except those involving unary ops.
+        # One-line pet peeves, except those involving slices and unary ops.
 
         # See https://peps.python.org/pep-0008/#pet-peeves
         # See https://peps.python.org/pep-0008/#other-recommendations
 
         tag = 'test_one_line_pet_peeves'
         # Except where noted, all entries are expected values....
-        if 0:
-            # Test fails or recents...
-            table = (
-                # """a[: 1 if True else 2 :]""",
-                """a[:-1]""",
-            )
-        else:
-            table = (
-                # Assignments...
-                # Slices (colons)...
-                """a[:-1]""",
-                """a[: 1 if True else 2 :]""",
-                """a[1 : 1 + 2]""",
-                """a[lower:]""",
-                """a[lower::]""",
-                """a[:upper]""",
-                """a[:upper:]""",
-                """a[::step]""",
-                """a[lower:upper:]""",
-                """a[lower:upper:step]""",
-                """a[lower + offset : upper + offset]""",
-                """a[: upper_fn(x) :]""",
-                """a[: upper_fn(x) : step_fn(x)]""",
-                """a[:: step_fn(x)]""",
-                """a[: upper_fn(x) :]""",
-                """a[: upper_fn(x) : 2 + 1]""",
-                """a[:]""",
-                """a[::]""",
-                """a[1:]""",
-                """a[1::]""",
-                """a[:2]""",
-                """a[:2:]""",
-                """a[::3]""",
-                """a[1:2]""",
-                """a[1:2:]""",
-                """a[:2:3]""",
-                """a[1:2:3]""",
-                # * and **, inside and outside function calls.
-                """a = b * c""",
-                # Now done in test_star_star_operator
-                # """a = b ** c""",  # Black has changed recently.
-                """f(*args)""",
-                """f(**kwargs)""",
-                """f(*args, **kwargs)""",
-                """f(a, *args)""",
-                """f(a=2, *args)""",
-                # Calls...
-                """f(-1)""",
-                """f(-1 < 2)""",
-                """f(1)""",
-                """f(2 * 3)""",
-                """f(2 + name)""",
-                """f(a)""",
-                """f(a.b)""",
-                """f(a=2 + 3, b=4 - 5, c= 6 * 7, d=8 / 9, e=10 // 11)""",
-                """f(a[1 + 2])""",
-                """f({key: 1})""",
-                """t = (0,)""",
-                """x, y = y, x""",
-                # Dicts...
-                """d = {key: 1}""",
-                """d['key'] = a[i]""",
-                # Trailing comments: expect two spaces.
-                """whatever # comment""",
-                """whatever  # comment""",
-                """whatever   # comment""",
-                # Word ops...
-                """v1 = v2 and v3 if v3 not in v4 or v5 in v6 else v7""",
-                """print(v7 for v8 in v9)""",
-                # Returns...
-                """return -1""",
-            )
+       
+        table = (
+            # Assignments...
+            """a = b * c""",
+            """a = b + c"""
+            """a = b - c"""
+            # * and **, inside and outside function calls.
+            """f(*args)""",
+            """f(**kwargs)""",
+            """f(*args, **kwargs)""",
+            """f(a, *args)""",
+            """f(a=2, *args)""",
+            # Calls...
+            """f(-1)""",
+            """f(-1 < 2)""",
+            """f(1)""",
+            """f(2 * 3)""",
+            """f(2 + name)""",
+            """f(a)""",
+            """f(a.b)""",
+            """f(a=2 + 3, b=4 - 5, c= 6 * 7, d=8 / 9, e=10 // 11)""",
+            """f(a[1 + 2])""",
+            """f({key: 1})""",
+            """t = (0,)""",
+            """x, y = y, x""",
+            # Dicts...
+            """d = {key: 1}""",
+            """d['key'] = a[i]""",
+            # Trailing comments: expect two spaces.
+            """whatever # comment""",
+            """whatever  # comment""",
+            """whatever   # comment""",
+            # Word ops...
+            """v1 = v2 and v3 if v3 not in v4 or v5 in v6 else v7""",
+            """print(v7 for v8 in v9)""",
+            # Returns...
+            """return -1""",
+        )
         fails = 0
         for i, contents in enumerate(table):
             description = f"{tag} part {i}"
@@ -827,6 +793,62 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
+    #@+node:ekr.20240109090653.1: *3* TestTBO.test_slice
+    def test_slice(self):
+
+        # Test one-line pet peeves involving slices.
+
+        # See https://peps.python.org/pep-0008/#pet-peeves
+        # See https://peps.python.org/pep-0008/#other-recommendations
+
+        tag = 'test_slice'
+        
+        # Except where noted, all entries are expected values....
+        table = (
+            # Slices (colons)...
+            """a[:-1]""",
+            """a[: 1 if True else 2 :]""",
+            """a[1 : 1 + 2]""",
+            """a[lower:]""",
+            """a[lower::]""",
+            """a[:upper]""",
+            """a[:upper:]""",
+            """a[::step]""",
+            """a[lower:upper:]""",
+            """a[lower:upper:step]""",
+            """a[lower + offset : upper + offset]""",
+            """a[: upper_fn(x) :]""",
+            """a[: upper_fn(x) : step_fn(x)]""",
+            """a[:: step_fn(x)]""",
+            """a[: upper_fn(x) :]""",
+            """a[: upper_fn(x) : 2 + 1]""",
+            """a[:]""",
+            """a[::]""",
+            """a[1:]""",
+            """a[1::]""",
+            """a[:2]""",
+            """a[:2:]""",
+            """a[::3]""",
+            """a[1:2]""",
+            """a[1:2:]""",
+            """a[:2:3]""",
+            """a[1:2:3]""",
+        )
+        fails = 0
+        for i, contents in enumerate(table):
+            description = f"{tag} part {i}"
+            contents, tokens = self.make_data(contents, description=description)
+            expected = self.blacken(contents)
+            results = self.beautify(contents, tokens, filename=description)
+            if results != expected:  # pragma: no cover
+                fails += 1
+                print('')
+                print(
+                    f"TestTokenBasedOrange.test_one_line_pet_peeves: FAIL {fails}\n"
+                    f"  contents: {contents.rstrip()}\n"
+                    f"     black: {expected.rstrip()}\n"
+                    f"    orange: {results.rstrip()}")
+        self.assertEqual(fails, 0)
     #@+node:ekr.20240105153425.76: *3* TestTBO.test_star_star_operator
     def test_star_star_operator(self):
         # Was tested in pet peeves, but this is more permissive.
@@ -858,17 +880,15 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240109070553.1: *3* TestTBO.test_unary_op
     def test_unary_op(self):
 
-        # One-line pet peeves involving unary ops.
+        # One-line pet peeves involving unary ops but *not* slices.
 
         # See https://peps.python.org/pep-0008/#pet-peeves
         # See https://peps.python.org/pep-0008/#other-recommendations
 
         tag = 'test_unary_ops'
 
-        # Except where noted, all entries are expected values....
+        # All entries are expected values....
         table = (
-            # Arrays.
-            """a[:-1]""",
             # Calls...
             """f(-1)""",
             """f(-1 < 2)""",
