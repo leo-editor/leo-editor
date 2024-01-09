@@ -1275,19 +1275,31 @@ class TokenBasedOrange:  # Orange is the new Black.
     def expect(self, i: int, kind: str, value: str = None) -> None:
 
         def dump() -> None:
+            
+            try:
+                line = self.tokens[i].line
+                line_number = self.tokens[i].line_number
+            except Exception:
+                g.es_exception()
+                line = line_number = '???'
             print('')
-            g.trace('Error. i:', i)
-            g.printObj(self.tokens, tag='expect')
+            print(f"expect: Error at token {i}, line number: {line_number}:")
+            print(line)
+            print('')
+            if 0:
+                i1, i2 = max(0, i-20), i+20
+                g.printObj(self.tokens[i1:i2], tag='expect')
+                # g.printObj(self.tokens, tag='expect')
 
         self.check_token_index(i)
         token = self.tokens[i]
         if value is None:
             if token.kind != kind:
-                # dump()
+                dump()
                 message = f"Expected token.kind: {kind} got {token.kind}"
                 raise BeautifyError(message)
         elif (token.kind, token.value) != (kind, value):
-            # dump()
+            dump()
             message = f"Expected token.kind: {kind} token.value: {value} got {token!r}"
             raise BeautifyError(message)
 
