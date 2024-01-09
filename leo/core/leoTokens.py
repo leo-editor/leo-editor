@@ -833,23 +833,43 @@ class TokenBasedOrange:
     #@+node:ekr.20240109035004.1: *6* tbo.do_dot_op
     def do_dot_op(self, val: str) -> None:
         """Handle the '.' input token."""
-
+        assert val == '.'
         context = self.token.context
+        # Remove previous 'blank' token *before* calculating prev.
+        self.clean('blank')
         prev = self.code_list[-1]
-        g.trace(self.index, 'context', repr(context), 'prev', prev)
-        if 0:  ### Experimental.
-            # Special case for 'from .'
-            if context == 'import1':
-                self.clean('blank')
-                self.add_token('hard-blank', ' ')
-                self.add_token('op-no-blanks', val)
-            elif context == 'import2':
-                self.add_token('op-no-blanks', val)
+        next_i = self.next_token(self.index)
+        next = 'None' if next_i is None else self.tokens[next_i]
+        if 0:  ###
+            ### print('')
+            g.trace(
+                f"{self.index:3} context {context!r} "
+                f"prev: {prev.kind:14} {prev.value:4} "
+                f"next: {next.kind:14} {next.value}")
+        if 1:  ### New.
+            if prev.kind == 'word' and prev.value in ('from', 'import'):
+                # Handle previous 'from' and 'import' keyword.
+                self.blank()
+                if next and next.kind == 'name' and next.value == 'import':
+                    self.add_token('op', '.')
+                    self.blank()
+                else:
+                    self.add_token('op-no-blanks', '.')
+            elif context == 'from':
+                # Don't put spaces between '.' tokens.
+                # Do put a space between the last '.' and 'import'
+                if next and next.kind == 'name' and next.value == 'import':
+                    g.trace('BLANK AFTER')
+                    self.add_token('op', '.')
+                    self.blank()
+                else:
+                    self.add_token('op-no-blanks', '.')
+            elif context == 'import':
+                self.add_token('op-no-blanks', '.')
             else:
-                self.add_token('op-no-blanks', val)
-        else:
+                self.add_token('op-no-blanks', '.')
+        else:  ### Legacy.
             self.clean('blank')
-            prev = self.code_list[-1]
             # #2495 & #2533: Special case for 'from .'
             if prev.kind == 'word' and prev.value == 'from':
                 self.blank()
@@ -1239,15 +1259,15 @@ class TokenBasedOrange:
         Return the index of the matching 'op' or 'newline' input token.
         Skip inner parens and brackets.
         """
-        trace = False  ###
-        if trace:  ###
-            g.trace('Entry. values:', i1, i2, values)
-            dump_tokens(self.tokens)
+        if 0:  ###
+            g.trace('Entry', i1, i2, 'values:', values)
+            # dump_tokens(self.tokens)
         curly_brackets, parens, square_brackets = 0, 0, 0
         i = i1
         while i and i < len(self.tokens):
             token = self.tokens[i]
             kind, value = token.kind, token.value
+            ### g.trace(i, token)
             # Precheck.
             if (
                 kind in ('op', 'newline') and value in values
@@ -1275,7 +1295,7 @@ class TokenBasedOrange:
             ):
                 return i
             i += 1
-        if trace:  ###
+        if 1:  ###
             g.trace('Not found', values)
         return None
     #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
@@ -1526,27 +1546,52 @@ class TokenBasedOrange:
         Scan a `from x import` statement just enough to handle leading '.'.
         """
         # Aliases.
-        expect, next = self.expect, self.next_token
-        is_op, set_context = self.is_op, self.set_context
+        is_op, next, set_context = self.is_op, self.next_token, self.set_context
 
-        # Scan the 'from' keyword.
-        i = self.index
-        expect(i, 'name', 'from')
-        i = next(i)
+        # Find the end of the 'from' statement.
+        i1, i2 = self.index, len(self.tokens)
+        end = self.scan_simple_statement()
+        if end is None:
+            end = i2
+        i = i1
 
-        # Add 'import1' context to the first '.' token.
-        if i and is_op(i, ['.']):
-            set_context(i, 'import1')
+        ### g.trace(i1, i2)
+        ### dump_tokens(self.tokens[i1:i2])
+
+        # Add 'from' context to all '.' tokens.
+        while i and i < end:
+            if is_op(i, ['.']):
+                set_context(i, 'from')
             i = next(i)
 
-        # Add 'import2' context to all further '.' tokens.
-        while i and is_op(i, ['.']):
-            set_context(i, 'import2')
-            i = next(i)
+
+            # # Add 'import1' context to the first '.' token.
+            # if i and is_op(i, ['.']):
+                # set_context(i, 'import1')
+                # i = next(i)
+
+            # # Add 'import2' context to all further '.' tokens.
+            # while i and is_op(i, ['.']):
+                # set_context(i, 'import2')
+                # i = next(i)
     #@+node:ekr.20240108083829.1: *5* tbo.scan_import
     def scan_import(self) -> None:
 
-        self.scan_simple_statement()
+        # Aliases.
+        is_op, next, set_context = self.is_op, self.next_token, self.set_context
+
+        # Find the end of the import statement.
+        i1, i2 = self.index, len(self.tokens)
+        end = self.scan_simple_statement()
+        if end is None:
+            end = i2
+        i = i1
+
+        # Add 'import' context to all '.' operators.
+        while i and i < end:
+            if is_op(i, ['.']):
+                set_context(i, 'import')
+            i = next(i)
     #@+node:ekr.20240106181215.1: *5* tbo.scan_initializer
     def scan_initializer(self, i1: int, i2: int, has_annotation: bool) -> Optional[int]:
         """Scan an initializer in a function definition argument."""
@@ -1564,14 +1609,15 @@ class TokenBasedOrange:
         expect_ops(i3, [',', ')'])
         return i3
     #@+node:ekr.20240109032639.1: *5* tbo.scan_simple_statement
-    def scan_simple_statement(self) -> None:
+    def scan_simple_statement(self) -> int:
         """
         Scan to the end of a simple statement like an `import` statement.
         """
         i1, i2 = self.index, len(self.tokens)
-        i = self.find(i1, i2, ['newline'])
+        i = self.find(i1, i2, ['\n'])
         if i is not None:
             self.expect(i, 'newline')
+        return i
     #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
         """
