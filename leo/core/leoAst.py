@@ -1571,10 +1571,11 @@ class InputToken:
         return val
     #@-others
 #@+node:ekr.20200107165250.1: *3* class Orange
-class Orange:
+class Orange:  # Orange is the new Black.
     """
-    A flexible and powerful beautifier for Python.
-    Orange is the new black.
+    This class is a demo of the TokenOrderGenerator class.
+    
+    However, the TokenBasedOrange class in leoTokens.py is better.
 
     This is a predominantly a *token-based* beautifier. However,
     orange.do_op, orange.colon, and orange.possible_unary_op use the parse

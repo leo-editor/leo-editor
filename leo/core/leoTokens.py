@@ -498,14 +498,11 @@ class ParseState:
 
     __str__ = __repr__
 #@+node:ekr.20240105145241.1: *3* class TokenBasedOrange
-class TokenBasedOrange:
+class TokenBasedOrange:  # Orange is the new Black.
     """
-    A flexible and powerful beautifier for Python.
-    Orange is the new black.
-
-    This is a *completely token-based* beautifier.
+    Leo's token-based beautifier.
     
-    The Orange class in leoAst.py uses data from Python's parse tree.
+    This class is simpler and faster than the Orange class in leoAst.py.
     """
 
     #@+<< TokenBasedOrange: constants >>
