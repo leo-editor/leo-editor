@@ -3,23 +3,6 @@
 #@@language plain
 #@+others
 #@+node:bob.20170311143456.1: ** To Do
-#@+node:bob.20240108131341.1: *3* Ctrl+B 
-#@@language python
-
-import pathlib
-
-pathStr = '/home/bob/sec/LeoScript.py'
-plPath = pathlib.Path(pathStr)
-g.es(f'path={plPath}, stem={plPath.stem}, ext={plPath.suffix}, name={plPath.name}, parent={plPath.parent}')
-g.es(str(plPath.parent.joinpath(plPath.stem)) + '.sh')
-
-pathStr = '/home/bob/sec/LeoScript'
-plPath = pathlib.Path(pathStr)
-g.es(str(plPath.parent.joinpath(plPath.stem)) + '.sh')
-
-pathStr = 'LeoScript'
-plPath = pathlib.Path(pathStr)
-g.es(str(plPath.parent.joinpath(plPath.stem)) + '.sh')
 #@+node:bob.20231229144523.1: *3* Pull Request
 This revision does the following:
 
