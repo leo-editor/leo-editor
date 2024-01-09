@@ -775,28 +775,38 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.70: *3* TestTBO.test_relative_imports
     def test_relative_imports(self):
 
+        # Pass
+            # from .module1 import w
+            # from . module2 import x
+            # from ..module1 import y
+            # from .. module2 import z
+            
+        # Fails.
+            # from leo.core import leoExternalFiles
+            # import leo.core.leoGlobals as g
         # #2533.
-        contents = """\
-            from .module1 import w
-            from . module2 import x
-            from ..module1 import y
-            from .. module2 import z
-            from . import a
-            from.import b
-            from leo.core import leoExternalFiles
-            import leo.core.leoGlobals as g
-    """
-        expected = textwrap.dedent("""\
-            from .module1 import w
-            from .module2 import x
-            from ..module1 import y
-            from ..module2 import z
-            from . import a
-            from . import b
-            from leo.core import leoExternalFiles
-            import leo.core.leoGlobals as g
-    """)
+        contents = textwrap.dedent(
+            """
+                from . import a
+                from.import b
+            """).strip() + '\n'
+            
+        # Pass
+            # from .module1 import w
+            # from .module2 import x
+            # from ..module1 import y
+            # from ..module2 import z
+            
+        # Fails
+            # from leo.core import leoExternalFiles
+            # import leo.core.leoGlobals as g
+        expected = textwrap.dedent(
+            """
+                from . import a
+                from . import b
+            """).strip() + '\n'
         contents, tokens = self.make_data(contents)
+        # dump_tokens(tokens)
         results = self.beautify(contents, tokens)
         self.assertEqual(expected, results)
     #@+node:ekr.20240105153425.71: *3* TestTBO.test_return

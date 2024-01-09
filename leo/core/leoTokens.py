@@ -787,31 +787,12 @@ class TokenBasedOrange:
         """Handle a number token."""
         self.blank()
         self.add_token('number', self.val)
-    #@+node:ekr.20240105145241.19: *5* tbo.do_op & helper
+    #@+node:ekr.20240105145241.19: *5* tbo.do_op & helpers
     def do_op(self) -> None:
         """Handle an op token."""
         val = self.val
         if val == '.':
-            context = self.token.context
-            prev = self.code_list[-1]
-            g.trace('context', repr(context), 'prev', prev)
-            if 0:  ### Experimental.
-                # Special case for 'from .'
-                if context == 'import1':
-                    self.clean('blank')
-                    self.add_token('hard-blank', ' ')
-                    self.add_token('op-no-blanks', val)
-                elif context == 'import2':
-                    self.add_token('op-no-blanks', val)
-                else:
-                    self.add_token('op-no-blanks', val)
-            else:
-                self.clean('blank')
-                prev = self.code_list[-1]
-                # #2495 & #2533: Special case for 'from .'
-                if prev.kind == 'word' and prev.value == 'from':
-                    self.blank()
-                self.add_token('op-no-blanks', val)
+            self.do_dot_op(val)
         elif val == '@':
             self.clean('blank')
             self.add_token('op-no-blanks', val)
@@ -849,6 +830,30 @@ class TokenBasedOrange:
             self.blank()
             self.add_token('op', val)
             self.blank()
+    #@+node:ekr.20240109035004.1: *6* tbo.do_dot_op
+    def do_dot_op(self, val: str) -> None:
+        """Handle the '.' input token."""
+
+        context = self.token.context
+        prev = self.code_list[-1]
+        g.trace(self.index, 'context', repr(context), 'prev', prev)
+        if 0:  ### Experimental.
+            # Special case for 'from .'
+            if context == 'import1':
+                self.clean('blank')
+                self.add_token('hard-blank', ' ')
+                self.add_token('op-no-blanks', val)
+            elif context == 'import2':
+                self.add_token('op-no-blanks', val)
+            else:
+                self.add_token('op-no-blanks', val)
+        else:
+            self.clean('blank')
+            prev = self.code_list[-1]
+            # #2495 & #2533: Special case for 'from .'
+            if prev.kind == 'word' and prev.value == 'from':
+                self.blank()
+            self.add_token('op-no-blanks', val)
     #@+node:ekr.20240105145241.20: *6* tbo.do_equal_op
     # Keys: token.index of '=' token. Values: count of ???s
     arg_dict: dict[int, int] = {}
@@ -945,13 +950,13 @@ class TokenBasedOrange:
         prev = self.code_list[-1]
         if prev.kind not in (
             'blank',
-            'blank-lines',
+            'blank-lines',  # Request for n blank lines.
             'file-start',
             'hard-blank',
             'line-end',
             'line-indent',
-            'lt',
-            'op-no-blanks',
+            'lt',  # A left paren or curly/square bracket.
+            'op-no-blanks',  # A demand that no blank follows this op.
             'unary-op',
         ):
             self.add_token('blank', ' ')
@@ -1231,23 +1236,25 @@ class TokenBasedOrange:
     #@+node:ekr.20240106110748.1: *5* tbo.find
     def find(self, i1: int, i2: int, values: list[str]) -> int:
         """
-        Return the index of the matching token skipping inner parens and brackets.
+        Return the index of the matching 'op' or 'newline' input token.
+        Skip inner parens and brackets.
         """
-        ### g.trace('Entry. values:', i1, i2, values)
-        ### self.dump_token_range(i1, i2)
+        trace = False  ###
+        if trace:  ###
+            g.trace('Entry. values:', i1, i2, values)
+            dump_tokens(self.tokens)
         curly_brackets, parens, square_brackets = 0, 0, 0
         i = i1
-        while i < len(self.tokens):
+        while i and i < len(self.tokens):
             token = self.tokens[i]
-            value = token.value
+            kind, value = token.kind, token.value
             # Precheck.
             if (
-                value in values
+                kind in ('op', 'newline') and value in values
                 and (curly_brackets, parens, square_brackets) == (0, 0, 0)
             ):
-                ### g.trace('Found', i)
                 return i
-            if token.kind == 'op':
+            if kind == 'op':
                 # Bump counts.
                 if value == '(':
                     parens += 1
@@ -1262,13 +1269,14 @@ class TokenBasedOrange:
                 elif value == ']':
                     square_brackets -= 1
             # Post-check.
-            if (value in values
+            if (
+                kind in ('op', 'newline') and value in values
                 and (curly_brackets, parens, square_brackets) == (0, 0, 0)
             ):
-                ### g.trace('Found', i)
                 return i
-            i = self.next_token(i)
-        g.trace('Not found')
+            i += 1
+        if trace:  ###
+            g.trace('Not found', values)
         return None
     #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
@@ -1537,7 +1545,8 @@ class TokenBasedOrange:
             i = next(i)
     #@+node:ekr.20240108083829.1: *5* tbo.scan_import
     def scan_import(self) -> None:
-        pass  ### g.trace('To do')
+
+        self.scan_simple_statement()
     #@+node:ekr.20240106181215.1: *5* tbo.scan_initializer
     def scan_initializer(self, i1: int, i2: int, has_annotation: bool) -> Optional[int]:
         """Scan an initializer in a function definition argument."""
@@ -1561,7 +1570,8 @@ class TokenBasedOrange:
         """
         i1, i2 = self.index, len(self.tokens)
         i = self.find(i1, i2, ['newline'])
-        self.expect(i, 'newline')
+        if i is not None:
+            self.expect(i, 'newline')
     #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
         """
