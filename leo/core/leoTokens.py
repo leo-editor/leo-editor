@@ -1267,11 +1267,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         token = self.tokens[i]
         if value is None:
             if token.kind != kind:
-                dump()
+                # dump()
                 message = f"Expected token.kind: {kind} got {token.kind}"
                 raise BeautifyError(message)
         elif (token.kind, token.value) != (kind, value):
-            dump()
+            # dump()
             message = f"Expected token.kind: {kind} token.value: {value} got {token!r}"
             raise BeautifyError(message)
 
