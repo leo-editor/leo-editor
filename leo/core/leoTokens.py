@@ -1108,16 +1108,23 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False
         if s == '~':
             return True
-        prev = self.code_list[-1]
-        kind, value = prev.kind, prev.value
+        prev_i = self.prev_token(self.index)
+        prev_token = None if prev_i is None else self.tokens[prev_i]
+        kind, value = prev_token.kind, prev_token.value
+        ### g.trace(prev_i, prev_token)
+        ### g.printObj(self.tokens)
+        ### breakpoint()  ###
         if kind == 'number':
-            g.trace(f"binary 1: {value}")
+            ### g.trace(f"binary 1: {value}")
             return False
         if kind == 'op' and value in ')]}':
-            g.trace(f"binary 2: {value}")
+            ### g.trace(f"binary 2: {value}")
             return False
-        if self.is_keyword(prev):
-            g.trace(f"binary 3: {value}")
+        if self.is_keyword(prev_token):
+            ### g.trace(f"keyword: {value}")
+            return True
+        if kind == 'name':
+            ### g.trace(f"binary: {value}")
             return False
         return True
     #@+node:ekr.20240105145241.38: *5* tbo.star_op
@@ -1293,7 +1300,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             g.trace('Not found', values)
         return None
     #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
-    def is_keyword(self, token: Union[InputToken, OutputToken]) -> bool:
+    def is_keyword(self, token: InputToken) -> bool:
         """
         Return True if the token represents a Python keyword.
         
@@ -1302,7 +1309,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         value = token.value
         return (
-            token.kind == 'word'
+            token.kind == 'name'
             and value not in ('True', 'False', None)
             and (keyword.iskeyword(value) or keyword.issoftkeyword(value))
         )

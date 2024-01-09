@@ -689,8 +689,8 @@ class TestTokenBasedOrange(BaseTest):
         table = (
             # Assignments...
             """a = b * c""",
-            """a = b + c"""
-            """a = b - c"""
+            """a = b + c""",
+            """a = b - c""",
             # * and **, inside and outside function calls.
             """f(*args)""",
             """f(**kwargs)""",
