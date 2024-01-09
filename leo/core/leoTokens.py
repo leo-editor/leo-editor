@@ -559,6 +559,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 setattr(self, key, value)
             else:
                 g.trace(f"Unexpected setting: {key} = {value!r}")
+                g.callers()
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def oops(self) -> None:  # pragma: no cover
