@@ -795,7 +795,7 @@ class TokenBasedOrange:
             context = self.token.context
             prev = self.code_list[-1]
             g.trace('context', repr(context), 'prev', prev)
-            if 1:  ### Experimental.
+            if 0:  ### Experimental.
                 # Special case for 'from .'
                 if context == 'import1':
                     self.clean('blank')
@@ -1145,20 +1145,19 @@ class TokenBasedOrange:
         assert s and isinstance(s, str), repr(s)
         # Aliases.
         is_kind, next, set_context = self.is_kind, self.next_token, self.set_context
-        in_class_or_def = 'in_class_or_def'
 
-        # Scan special statements, adding context to *later* tokens.
+        # Scan special statements, adding context to *later* input tokens.
         func = self.word_dispatch.get(s)
         if func:
             func()
 
-        # Add context to *this* token.
+        # Add context to *this* input token.
         if s in ('class', 'def'):
             # The defined name is not a function call.
             i = next(self.index)
             if is_kind(i, 'name'):
-                set_context(i, in_class_or_def)
-        elif self.token.context != in_class_or_def:
+                set_context(i, 'class/def')
+        elif self.token.context != 'class/def':
             # A possible function call.
             i = next(self.index)
             if i and self.is_op(i, ['(']):
@@ -1231,7 +1230,9 @@ class TokenBasedOrange:
 
     #@+node:ekr.20240106110748.1: *5* tbo.find_op
     def find_op(self, i1: int, i2: int, values: list[str]) -> int:
-        """Return the index of the matching token."""
+        """
+        Return the index of the matching token skipping inner parens and brackets.
+        """
         ### g.trace('Entry. values:', i1, i2, values)
         ### self.dump_token_range(i1, i2)
         curly_brackets, parens, square_brackets = 0, 0, 0
@@ -1239,15 +1240,14 @@ class TokenBasedOrange:
         while i < len(self.tokens):
             token = self.tokens[i]
             value = token.value
-            ### g.trace(i, token)
+            # Precheck.
+            if (
+                value in values
+                and (curly_brackets, parens, square_brackets) == (0, 0, 0)
+            ):
+                ### g.trace('Found', i)
+                return i
             if token.kind == 'op':
-                # Precheck.
-                if (
-                    value == ')' and ')' in values
-                    and (curly_brackets, parens, square_brackets) == (0, 0, 0)
-                ):
-                    ### g.trace('Found', i)
-                    return i
                 # Bump counts.
                 if value == '(':
                     parens += 1
@@ -1261,12 +1261,12 @@ class TokenBasedOrange:
                     square_brackets += 1
                 elif value == ']':
                     square_brackets -= 1
-                # Post-check.
-                if (value in values
-                    and (curly_brackets, parens, square_brackets) == (0, 0, 0)
-                ):
-                    ### g.trace('Found', i)
-                    return i
+            # Post-check.
+            if (value in values
+                and (curly_brackets, parens, square_brackets) == (0, 0, 0)
+            ):
+                ### g.trace('Found', i)
+                return i
             i = self.next_token(i)
         g.trace('Not found')
         return None
@@ -1537,7 +1537,7 @@ class TokenBasedOrange:
             i = next(i)
     #@+node:ekr.20240108083829.1: *5* tbo.scan_import
     def scan_import(self) -> None:
-        g.trace('To do')
+        pass  ### g.trace('To do')
     #@+node:ekr.20240106181215.1: *5* tbo.scan_initializer
     def scan_initializer(self, i1: int, i2: int, has_annotation: bool) -> Optional[int]:
         """Scan an initializer in a function definition argument."""
@@ -1554,6 +1554,14 @@ class TokenBasedOrange:
         i3 = self.find_op(i, i2, [',', ')'])
         expect_ops(i3, [',', ')'])
         return i3
+    #@+node:ekr.20240109032639.1: *5* tbo.scan_simple_statement
+    def scan_simple_statement(self) -> None:
+        """
+        Scan to the end of a simple statement like an `import` statement.
+        """
+        i1, i2 = self.index, len(self.tokens)
+        i = self.find_op(i1, i2, ['newline'])
+        self.expect(i, 'newline')
     #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
         """
