@@ -784,6 +784,8 @@ class TestTokenBasedOrange(BaseTest):
             from .. module2 import z
             from . import a
             from.import b
+            from .. import c
+            from..import d
             from leo.core import leoExternalFiles
             import leo.core.leoGlobals as g
             """).strip() + '\n'
@@ -796,6 +798,8 @@ class TestTokenBasedOrange(BaseTest):
             from ..module2 import z
             from . import a
             from . import b
+            from .. import c
+            from .. import d
             from leo.core import leoExternalFiles
             import leo.core.leoGlobals as g
             """).strip() + '\n'

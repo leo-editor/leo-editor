@@ -841,39 +841,31 @@ class TokenBasedOrange:
         next_i = self.next_token(self.index)
         next = 'None' if next_i is None else self.tokens[next_i]
         if 0:  ###
-            ### print('')
             g.trace(
                 f"{self.index:3} context {context!r} "
                 f"prev: {prev.kind:14} {prev.value:4} "
                 f"next: {next.kind:14} {next.value}")
-        if 1:  ### New.
-            if prev.kind == 'word' and prev.value in ('from', 'import'):
-                # Handle previous 'from' and 'import' keyword.
+
+        if prev.kind == 'word' and prev.value in ('from', 'import'):
+            # Handle previous 'from' and 'import' keyword.
+            self.blank()
+            if next and next.kind == 'name' and next.value == 'import':
+                self.add_token('op', '.')
                 self.blank()
-                if next and next.kind == 'name' and next.value == 'import':
-                    self.add_token('op', '.')
-                    self.blank()
-                else:
-                    self.add_token('op-no-blanks', '.')
-            elif context == 'from':
-                # Don't put spaces between '.' tokens.
-                # Do put a space between the last '.' and 'import'
-                if next and next.kind == 'name' and next.value == 'import':
-                    g.trace('BLANK AFTER')
-                    self.add_token('op', '.')
-                    self.blank()
-                else:
-                    self.add_token('op-no-blanks', '.')
-            elif context == 'import':
-                self.add_token('op-no-blanks', '.')
             else:
                 self.add_token('op-no-blanks', '.')
-        else:  ### Legacy.
-            self.clean('blank')
-            # #2495 & #2533: Special case for 'from .'
-            if prev.kind == 'word' and prev.value == 'from':
+        elif context == 'from':
+            # Don't put spaces between '.' tokens.
+            # Do put a space between the last '.' and 'import'
+            if next and next.kind == 'name' and next.value == 'import':
+                self.add_token('op', '.')
                 self.blank()
-            self.add_token('op-no-blanks', val)
+            else:
+                self.add_token('op-no-blanks', '.')
+        elif context == 'import':
+            self.add_token('op-no-blanks', '.')
+        else:
+            self.add_token('op-no-blanks', '.')
     #@+node:ekr.20240105145241.20: *6* tbo.do_equal_op
     # Keys: token.index of '=' token. Values: count of ???s
     arg_dict: dict[int, int] = {}
