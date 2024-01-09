@@ -69,6 +69,7 @@ import os
 import re
 import subprocess
 import textwrap
+import time
 import tokenize
 from typing import Any, Callable, Generator, Optional, Union
 
@@ -589,8 +590,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.tokens = tokens  # The list of input tokens.
         self.val = None  # The input token's value (a string).
         self.verbatim = False  # True: don't beautify.
-        #
+
         # Init output list and state...
+        t1 = time.process_time()
         self.code_list: list[OutputToken] = []  # The list of output tokens.
         self.tokens = tokens  # The list of input tokens.
         self.add_token('file-start', '')
@@ -606,7 +608,11 @@ class TokenBasedOrange:  # Orange is the new Black.
                 func = getattr(self, f"do_{token.kind}", self.oops)
                 func()
         # Any post pass would go here.
-        return output_tokens_to_string(self.code_list)
+        result = output_tokens_to_string(self.code_list)
+        t2 = time.process_time()
+        if 1:
+            print(f"TBO.beautify: {t2-t1:4.1} sec.", g.callers())
+        return result
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
