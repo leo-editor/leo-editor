@@ -1228,8 +1228,8 @@ class TokenBasedOrange:
         if token.value not in values:
             raise BeautifyError(f"Expected value in {values!r}, got {token.value!r}")
 
-    #@+node:ekr.20240106110748.1: *5* tbo.find_op
-    def find_op(self, i1: int, i2: int, values: list[str]) -> int:
+    #@+node:ekr.20240106110748.1: *5* tbo.find
+    def find(self, i1: int, i2: int, values: list[str]) -> int:
         """
         Return the index of the matching token skipping inner parens and brackets.
         """
@@ -1337,7 +1337,7 @@ class TokenBasedOrange:
         """Scan an annotation if a function definition arg."""
         # Aliases
         expect, next = self.expect, self.next_token
-        find_op, is_op = self.find_op, self.is_op
+        find, is_op = self.find, self.is_op
         set_context = self.set_context
 
         # Scan the ':'
@@ -1346,7 +1346,7 @@ class TokenBasedOrange:
         i = next(i1)
 
         # Scan to the next ',' or '=' at this level.
-        i3 = find_op(i, i2, [',', '=', ')'])
+        i3 = find(i, i2, [',', '=', ')'])
 
         # Set the contexts of inner ops.
         for i4 in range(i1 + 1, i3 - 1):
@@ -1433,7 +1433,7 @@ class TokenBasedOrange:
         
         Set context for every '=' operator.
         """
-        i = self.find_op(i1, len(self.tokens), [',', ')'])
+        i = self.find(i1, len(self.tokens), [',', ')'])
         for i2 in range(i1 + 1, i - 1):
             if self.is_op(i2, ['=']):
                 self.set_context(i2, 'initializer')
@@ -1481,7 +1481,7 @@ class TokenBasedOrange:
         i = next(i1)
 
         # Find the trailing ':'.
-        i = self.find_op(i, i2, [':'])
+        i = self.find(i, i2, [':'])
         expect(i, 'op', ':')
 
         # Set the context.
@@ -1490,7 +1490,7 @@ class TokenBasedOrange:
     def scan_def(self) -> None:
         """Scan a complete 'def' statement."""
         expect, expect_ops = self.expect, self.expect_ops
-        find_op, next = self.find_op, self.next_token
+        find, next = self.find, self.next_token
 
         # Find i1 and i2, the boundaries of the argument list.
         i = self.index
@@ -1500,13 +1500,13 @@ class TokenBasedOrange:
         i = next(i)
         expect(i, 'op', '(')
         i1 = i
-        i = i2 = find_op(i, len(self.tokens), [')'])
+        i = i2 = find(i, len(self.tokens), [')'])
         expect(i, 'op', ')')
         i = next(i)
         expect_ops(i, ['->', ':'])
 
         # Find i3, the ending ':' of the def statement.
-        i3 = find_op(i, len(self.tokens), [':'])
+        i3 = find(i, len(self.tokens), [':'])
         expect(i3, 'op', ':')
         self.set_context(i3, 'def')
 
@@ -1551,7 +1551,7 @@ class TokenBasedOrange:
         i = next(i1)
 
         # Find the next ',' or ')' at this level.
-        i3 = self.find_op(i, i2, [',', ')'])
+        i3 = self.find(i, i2, [',', ')'])
         expect_ops(i3, [',', ')'])
         return i3
     #@+node:ekr.20240109032639.1: *5* tbo.scan_simple_statement
@@ -1560,7 +1560,7 @@ class TokenBasedOrange:
         Scan to the end of a simple statement like an `import` statement.
         """
         i1, i2 = self.index, len(self.tokens)
-        i = self.find_op(i1, i2, ['newline'])
+        i = self.find(i1, i2, ['newline'])
         self.expect(i, 'newline')
     #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
