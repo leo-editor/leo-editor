@@ -1003,21 +1003,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         context = self.token.context
         prev_i = self.prev_token(self.index)
         prev = self.tokens[prev_i]
-        ### kind, value = prev_token.kind, prev_token.value
-
         if context is None:
             # Find the boundaries of the slice: the enclosing square brackets.
-            # # # i1: Optional[int]
-            # # # i2: Optional[int]
-            i1, i2 = self.scan_slice()
-            if (i1, i2) != (None, None):
-                self.expect(i1, 'op', '[')
-                self.expect(i2, 'op', ']')
-                context = self.token.context
+            context = self.scan_slice()
         # Now we can generate proper code.
         self.clean('blank')
         if context == 'complex-slice':
-            if prev.kind != 'op' or prev.value not in '[:':
+            if prev.value not in '[:':
                 self.blank()
             self.add_token('op', val)
             self.blank()
@@ -1027,50 +1019,58 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.add_token('op', val)
             self.blank()
             return
-
-        # # # if kind == 'op' and value in '[:':
-            # # # ### self.add_token('op', val)
-            # # # self.add_token('op-no-blanks', ':')
-            # # # ### self.blank()
-            # # # return
-
-        # # # ###
-        # # # # context = self.token.context
-        # # # # if context != 'slice':  ### not isinstance(node, ast.Slice):
-            # # # # self.add_token('op', val)
-            # # # # self.blank()
-            # # # # return
-
-        # # # # A slice.
-        # # # # lower = getattr(node, 'lower', None)
-        # # # # upper = getattr(node, 'upper', None)
-        # # # # step = getattr(node, 'step', None)
-        # # # if False:  ### any(is_expr(z) for z in (lower, upper, step)):
-            # # # prev = self.code_list[-1]
-            # # # if prev.value not in '[:':
-                # # # self.blank()
-            # # # self.add_token('op', val)
-            # # # self.blank()
-        # # # else:
-            # # # self.add_token('op-no-blanks', val)
     #@+node:ekr.20240109115925.1: *6* tbo.scan_slice
-    def scan_slice(self) -> tuple[Optional[int], Optional[int]]:
+    def scan_slice(self) -> Optional[str]:
         """
         Find the enclosing square brackets.
-        Return the indices of the square brackets, or (None, None)
+        
+        Return one of (None, 'simple-slice', 'complex-slice')
+        ### Return the indices of the square brackets, or (None, None)
         """
-        i = self.index
+        # Aliases.
+        is_op, next, set_context = self.is_op, self.next_token, self.set_context
 
         # Scan backward.
+        i = self.index
         i1 = self.find_input_token(i, ['['], reverse=True)
         if i1 is None:
-            return (None, None)
+            return None
 
         # Scan forward.
         i2 = self.find_input_token(i, [']'])
         if i2 is None:
-            return (None, None)
-        return i1, i2
+            return None
+
+        # Sanity check.
+        self.expect(i1, 'op', '[')
+        self.expect(i2, 'op', ']')
+
+        # Set complex if the inner area contains something other than 'name' or 'number' tokens.
+        is_complex = False
+        i = next(i1)
+        while i and i < i2:
+            token = self.tokens[i]
+            if is_op(i, [':']):
+                # Look ahead for '+', '-' unary ops.
+                next_i = next(i)
+                if is_op(next_i, ['-', '+']):
+                    i = next_i  # Skip the unary.
+            elif token.kind == 'number':
+                pass
+            elif token.kind != 'name' or token.value in ('if', 'else'):
+                is_complex = True
+                break
+            i = next(i)
+
+        # Set the context for all ':' tokens.
+        context = 'complex-slice' if is_complex else 'simple-slice'
+        i = next(i1)
+        while i and i < i2:
+            ### token = self.tokens[i]
+            if is_op(i, [':']):
+                set_context(i, context)
+            i = next(i)
+        return context
     #@+node:ekr.20240105145241.32: *5* tbo.line_end
     def line_end(self) -> None:
         """Add a line-end request to the code list."""
@@ -1155,7 +1155,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         kind, value = prev_token.kind, prev_token.value
         if kind == 'number':
             return False
-        if kind == 'op' and value in ')]':  ### }':
+        if kind == 'op' and value in ')]':
             return False
         if self.is_keyword(prev_token):
             return True
@@ -1297,14 +1297,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         Return the index of the matching 'op' or 'newline' input token.
         Skip inner parens and brackets.
         """
-        if 0:  ###
-            g.trace('Entry', i, 'values:', values, 'reverse', int(reverse))
-            # dump_tokens(self.tokens)
+        ### g.trace('Entry', i, 'values:', values, 'reverse', int(reverse))
         curly_brackets, parens, square_brackets = 0, 0, 0
         while i and 0 <= i < len(self.tokens):
             token = self.tokens[i]
             kind, value = token.kind, token.value
-            ### g.trace(i, token)
+
             # Precheck.
             if (
                 kind in ('op', 'newline') and value in values
@@ -1335,8 +1333,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                 i -= 1
             else:
                 i += 1
-        if 1:  ###
-            g.trace('Not found', values)
         return None
     #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
@@ -1355,9 +1351,6 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240106172054.1: *5* tbo.is_op & is_kind
     def is_op(self, i: int, values: list[str]) -> bool:
         self.check_token_index(i)
-        ### Permissive.
-            # if i is None or i >= len(self.tokens):
-                # return False
         token = self.tokens[i]
         return token.kind == 'op' and token.value in values
 
