@@ -1109,22 +1109,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         if s == '~':
             return True
         prev_i = self.prev_token(self.index)
-        prev_token = None if prev_i is None else self.tokens[prev_i]
+        prev_token = self.tokens[prev_i]
         kind, value = prev_token.kind, prev_token.value
-        ### g.trace(prev_i, prev_token)
-        ### g.printObj(self.tokens)
-        ### breakpoint()  ###
         if kind == 'number':
-            ### g.trace(f"binary 1: {value}")
             return False
         if kind == 'op' and value in ')]}':
-            ### g.trace(f"binary 2: {value}")
             return False
         if self.is_keyword(prev_token):
-            ### g.trace(f"keyword: {value}")
             return True
         if kind == 'name':
-            ### g.trace(f"binary: {value}")
             return False
         return True
     #@+node:ekr.20240105145241.38: *5* tbo.star_op
