@@ -1238,8 +1238,8 @@ class TokenBasedOrange:
         if token.value not in values:
             raise BeautifyError(f"Expected value in {values!r}, got {token.value!r}")
 
-    #@+node:ekr.20240106110748.1: *5* tbo.find
-    def find(self, i1: int, i2: int, values: list[str]) -> int:
+    #@+node:ekr.20240106110748.1: *5* tbo.find_input_token
+    def find_input_token(self, i1: int, i2: int, values: list[str]) -> int:
         """
         Return the index of the matching 'op' or 'newline' input token.
         Skip inner parens and brackets.
@@ -1350,7 +1350,7 @@ class TokenBasedOrange:
         """Scan an annotation if a function definition arg."""
         # Aliases
         expect, next = self.expect, self.next_token
-        find, is_op = self.find, self.is_op
+        find, is_op = self.find_input_token, self.is_op
         set_context = self.set_context
 
         # Scan the ':'
@@ -1446,7 +1446,7 @@ class TokenBasedOrange:
         
         Set context for every '=' operator.
         """
-        i = self.find(i1, len(self.tokens), [',', ')'])
+        i = self.find_input_token(i1, len(self.tokens), [',', ')'])
         for i2 in range(i1 + 1, i - 1):
             if self.is_op(i2, ['=']):
                 self.set_context(i2, 'initializer')
@@ -1494,7 +1494,7 @@ class TokenBasedOrange:
         i = next(i1)
 
         # Find the trailing ':'.
-        i = self.find(i, i2, [':'])
+        i = self.find_input_token(i, i2, [':'])
         expect(i, 'op', ':')
 
         # Set the context.
@@ -1503,7 +1503,7 @@ class TokenBasedOrange:
     def scan_def(self) -> None:
         """Scan a complete 'def' statement."""
         expect, expect_ops = self.expect, self.expect_ops
-        find, next = self.find, self.next_token
+        find, next = self.find_input_token, self.next_token
 
         # Find i1 and i2, the boundaries of the argument list.
         i = self.index
@@ -1590,7 +1590,7 @@ class TokenBasedOrange:
         i = next(i1)
 
         # Find the next ',' or ')' at this level.
-        i3 = self.find(i, i2, [',', ')'])
+        i3 = self.find_input_token(i, i2, [',', ')'])
         expect_ops(i3, [',', ')'])
         return i3
     #@+node:ekr.20240109032639.1: *5* tbo.scan_simple_statement
@@ -1599,7 +1599,7 @@ class TokenBasedOrange:
         Scan to the end of a simple statement like an `import` statement.
         """
         i1, i2 = self.index, len(self.tokens)
-        i = self.find(i1, i2, ['\n'])
+        i = self.find_input_token(i1, i2, ['\n'])
         if i is not None:
             self.expect(i, 'newline')
         return i
