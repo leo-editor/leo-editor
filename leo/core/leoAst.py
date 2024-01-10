@@ -1698,12 +1698,11 @@ class Orange:  # Orange is the new Black.
         Return True if the file was changed.
         """
         self.filename = filename
-
-        if 1:  ### Legacy: use parse trees.
-            tog = TokenOrderGenerator()
-            contents, encoding, tokens, tree = tog.init_from_file(filename)
-            if not contents or not tokens or not tree:
-                return False  # Not an error.
+        # Annotate the tokens.
+        tog = TokenOrderGenerator()
+        contents, encoding, tokens, tree = tog.init_from_file(filename)
+        if not contents or not tokens or not tree:
+            return False  # Not an error.
         # Beautify.
         try:
             results = self.beautify(contents, filename, tokens, tree)  # type:ignore
