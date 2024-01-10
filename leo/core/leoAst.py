@@ -214,7 +214,7 @@ if 1:  # pragma: no cover
                 Fstringify().fstringify_file_diff(filename)
             else:
                 print(f"file not found: {filename}")
-    #@+node:ekr.20200702115002.1: *3* command: orange_command
+    #@+node:ekr.20200702115002.1: *3* command: orange_command (leoAst.py)
     def orange_command(files: list[str], settings: Settings = None) -> None:
 
         if not check_g():
@@ -227,7 +227,7 @@ if 1:  # pragma: no cover
             else:
                 print(f"file not found: {filename}")
         t2 = time.process_time()
-        if 1:
+        if 0:
             print(f"orange: {len(files):3} files in {t2-t1:3.1f} sec.")
     #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
     def orange_diff_command(files: list[str], settings: Settings = None) -> None:

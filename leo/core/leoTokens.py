@@ -86,8 +86,10 @@ Settings = Optional[dict[str, Any]]
 #@+others
 #@+node:ekr.20240105140814.5: ** command: orange_command (tbo)
 def orange_command(
+    arg_files: list[str],
     files: list[str],
     settings: Settings = None,
+    verbose: bool = False,
 ) -> None:  # pragma: no cover
 
     if not check_g():
@@ -101,7 +103,7 @@ def orange_command(
             print(f"file not found: {filename}")
     t2 = time.process_time()
     if 1:
-        print(f"tbo: {len(files):3} files in {t2-t1:3.1f} sec.")
+        print(f"tbo: {len(files):3} files in {t2-t1:3.1f} sec. in {','.join(arg_files)}")
 #@+node:ekr.20240105140814.7: ** leoTokens: top-level functions
 if 1:  # pragma: no cover
     #@+others
@@ -1449,7 +1451,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         return token.kind not in (
             'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
         )
-    #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token (**Peformance bug**)
+    #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token
     if trace_performance:
         next_count = 0
         next_callers_dict: dict[str, int] = {}
@@ -1804,25 +1806,9 @@ def main() -> None:  # pragma: no cover
         ]
     if not files:
         return
-    if args.verbose:
-        kind = (
-            # 'fstringify' if args.f else
-            # 'fstringify-diff' if args.fd else
-            'tbo' if args.o else
-            # 'orange-diff' if args.od else
-            None
-        )
-        if kind:
-            n = len(files)
-            n_s = f" {n:>3} file" if n == 1 else f"{n:>3} files"
-            print(f"{kind}: {n_s:3} in {', '.join(arg_files)}")
     # Do the command.
-    # if args.f:
-        # fstringify_command(files)
-    # if args.fd:
-        # fstringify_diff_command(files)
     if args.o:
-        orange_command(files, settings_dict)
+        orange_command(arg_files, files, settings_dict, args.verbose)
     # if args.od:
         # orange_diff_command(files, settings_dict)
 #@+node:ekr.20240105140814.10: *3* function: scan_args (leoTokens.py)
@@ -1837,35 +1823,42 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
     # Don't require any args.
     group = parser.add_mutually_exclusive_group(required=False)
     add = group.add_argument
-    # add('--fstringify', dest='f', action='store_true',
-        # help='fstringify PATHS')
-    # add('--fstringify-diff', dest='fd', action='store_true',
-        # help='fstringify diff PATHS')
+    add2 = parser.add_argument
+
+    # Commands.
     add('--orange', dest='o', action='store_true',
         help='beautify PATHS')
-    add('--orange-diff', dest='od', action='store_true',
-        help='diff beautify PATHS')
-    # New arguments.
-    add2 = parser.add_argument
-    # add2('--allow-joined', dest='allow_joined', action='store_true',
-        # help='allow joined strings')
-    # add2('--max-join', dest='max_join', metavar='N', type=int,
-        # help='max unsplit line length (default 0)')
-    # add2('--max-split', dest='max_split', metavar='N', type=int,
-        # help='max unjoined line length (default 0)')
-    # add2('--tab-width', dest='tab_width', metavar='N', type=int,
-        # help='tab-width (default -4)')
-    # Newer arguments.
+
+    # Unused commands...
+        # add('--fstringify', dest='f', action='store_true',
+            # help='fstringify PATHS')
+        # add('--fstringify-diff', dest='fd', action='store_true',
+            # help='fstringify diff PATHS')
+        # add('--orange-diff', dest='od', action='store_true',
+            # help='diff beautify PATHS')
+
+    # Arguments.
     add2('--force', dest='force', action='store_true',
         help='force beautification of all files')
     add2('--verbose', dest='verbose', action='store_true',
         help='verbose (per-file) output')
+
+    # Unused arguments..
+        # add2('--allow-joined', dest='allow_joined', action='store_true',
+            # help='allow joined strings')
+        # add2('--max-join', dest='max_join', metavar='N', type=int,
+            # help='max unsplit line length (default 0)')
+        # add2('--max-split', dest='max_split', metavar='N', type=int,
+            # help='max unjoined line length (default 0)')
+        # add2('--tab-width', dest='tab_width', metavar='N', type=int,
+            # help='tab-width (default -4)')
+
     # Create the return values, using EKR's prefs as the defaults.
     parser.set_defaults(
-        allow_joined=False,
+        # allow_joined=False,
         force=False,
-        max_join=0,
-        max_split=0,
+        # max_join=0,
+        # max_split=0,
         recursive=False,
         tab_width=4,
         verbose=False
