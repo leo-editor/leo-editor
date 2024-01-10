@@ -1292,19 +1292,19 @@ class TokenBasedOrange:  # Orange is the new Black.
     def expect(self, i: int, kind: str, value: str = None) -> None:
 
         trace = False
+        tag = 'TBO.expect'
+        try:
+            line = self.tokens[i].line
+            line_number = self.tokens[i].line_number
+        except Exception:
+            g.es_exception()
+            line = '<no line>'
+            line_number = 0
 
         def dump() -> None:
             if not trace:
                 return
-            tag = 'TBO.expect'
             full = False
-            try:
-                line = self.tokens[i].line
-                line_number = self.tokens[i].line_number
-            except Exception:
-                g.es_exception()
-                line = '<no line>'
-                line_number = 0
             print('')
             print(f"{tag}: Error at token {i}, line number: {line_number}:\n")
             print(f"file: {self.filename}")
@@ -1328,15 +1328,19 @@ class TokenBasedOrange:  # Orange is the new Black.
             if token.kind != kind:
                 dump()
                 message = (
-                    f"\nError in {g.shortFileName(self.filename)}:\n"
+                    f"\nError in {self.filename}:\n"
                     f"Expected token.kind: {kind} got {token.kind}\n"
+                    f"At token {i}, line number: {line_number}:\n"
+                    f"Line: {line!r}\n"
                 )
                 raise BeautifyError(message)
         elif (token.kind, token.value) != (kind, value):
             dump()
             message = (
-                f"\nError in {g.shortFileName(self.filename)}:\n"
-                f"Expected token.kind: {kind} token.value: {value} got {token!r} {self.filename}\n"
+                f"\nError in {self.filename}:\n"
+                f"Expected token.kind: {kind} token.value{value} got {token.kind}\n"
+                f"At token {i}, line number: {line_number}:\n"
+                f"Line: {line!r}\n"
             )
             raise BeautifyError(message)
 
