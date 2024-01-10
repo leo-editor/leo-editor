@@ -1335,14 +1335,25 @@ class TokenBasedOrange:  # Orange is the new Black.
         Skip inner parens and brackets.
         """
         curly_brackets, parens, square_brackets = 0, 0, 0
+        g.trace(i, 'values', values)  ###, self.tokens[i].line.rstrip())
+        # Special case for initial '(':
+        if 0:  ###
+            if self.is_op(i, ['(']):
+                g.trace(i, '==== OPEN (')
+                # g.printObj(self.tokens[i:], tag=str(i))
+                # g.trace(self.tokens[i].line)
+                parens += 1
+                i += 1
         while i and 0 <= i < len(self.tokens):
             token = self.tokens[i]
+            # g.printObj(self.tokens[i:], tag=str(i))
             kind, value = token.kind, token.value
             # Precheck.
             if (
                 kind in ('op', 'newline') and value in values
                 and (curly_brackets, parens, square_brackets) == (0, 0, 0)
             ):
+                # g.trace(i, 'pre-check return')
                 return i
             if kind == 'op':
                 # Bump counts.
@@ -1363,6 +1374,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 kind in ('op', 'newline') and value in values
                 and (curly_brackets, parens, square_brackets) == (0, 0, 0)
             ):
+                ### g.trace(i, 'post-check return')
                 return i
             if reverse:
                 i -= 1
@@ -1464,7 +1476,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Handle *,
             ### token = self.tokens[i1]
             if is_op(i, [',']):
-                g.trace('==== *, ====')
+                ### g.trace('==== *, ====')
                 i = next(i)
                 return i
 
@@ -1665,6 +1677,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Aliases
         expect, expect_ops = self.expect, self.expect_ops
         next, set_context = self.next_token, self.set_context
+
+        print('')
+        g.trace(i1, has_annotation)
+        g.printObj(self.tokens[i1:])
 
         # Scan the '='.
         expect(i1, 'op', '=')
