@@ -101,7 +101,7 @@ def orange_command(
             print(f"file not found: {filename}")
     t2 = time.process_time()
     if 1:
-        print(f"orange (tbo): {len(files):3} files in {t2-t1:3.1f} sec.")
+        print(f"tbo: {len(files):3} files in {t2-t1:3.1f} sec.")
 #@+node:ekr.20240105140814.7: ** leoTokens: top-level functions
 if 1:  # pragma: no cover
     #@+others
@@ -606,6 +606,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.tokens = tokens  # The list of input tokens.
         self.add_token('file-start', '')
         self.push_state('file-start')
+        if self.verbose:
+            sfn = filename if '__init__' in filename else g.shortFileName(filename)
+            print(f"tbo: {sfn}")
         try:
             for self.index, token in enumerate(tokens):
                 self.token = token
@@ -1803,7 +1806,7 @@ def main() -> None:  # pragma: no cover
         kind = (
             # 'fstringify' if args.f else
             # 'fstringify-diff' if args.fd else
-            'orange (tbo)' if args.o else
+            'tbo' if args.o else
             # 'orange-diff' if args.od else
             None
         )
