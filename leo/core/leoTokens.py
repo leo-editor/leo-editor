@@ -593,6 +593,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Init output list and state...
         t1 = time.process_time()
+        self.contents = contents  # For debugging.
         self.code_list: list[OutputToken] = []  # The list of output tokens.
         self.tokens = tokens  # The list of input tokens.
         self.add_token('file-start', '')
@@ -629,6 +630,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not (contents and tokens):
             return False  # Not an error.
         assert isinstance(tokens[0], InputToken), repr(tokens[0])
+        # pylint: disable=no-else-return
         if 1:
             results = self.beautify(contents, filename, tokens)
             return bool(results)
@@ -1275,21 +1277,25 @@ class TokenBasedOrange:  # Orange is the new Black.
     def expect(self, i: int, kind: str, value: str = None) -> None:
 
         def dump() -> None:
-            
+
+            tag = 'TBO.expect'
             try:
                 line = self.tokens[i].line
                 line_number = self.tokens[i].line_number
             except Exception:
                 g.es_exception()
-                line = line_number = '???'
+                line = line_number = 0, 0
             print('')
-            print(f"expect: Error at token {i}, line number: {line_number}:")
+            print(f"{tag}: Error at token {i}, line number: {line_number}:")
             print(line)
             print('')
-            if 0:
-                i1, i2 = max(0, i-20), i+20
-                g.printObj(self.tokens[i1:i2], tag='expect')
-                # g.printObj(self.tokens, tag='expect')
+            if 1:
+                lines = g.splitLines(self.contents)
+                n1, n2 = max(0, line_number-10), line_number+5
+                g.printObj(lines[n1: n2], tag=f"{tag}: lines[{n1}:{n2}]...")
+            if 1:
+                i1, i2 = max(0, i-5), i+5
+                g.printObj(self.tokens[i1:i2], tag=f"{tag}: tokens[{i1}:{i2}]...")
 
         self.check_token_index(i)
         token = self.tokens[i]
