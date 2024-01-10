@@ -510,10 +510,6 @@ class TokenBasedOrange:  # Orange is the new Black.
     
     This class is simpler and faster than the Orange class in leoAst.py.
     """
-    #@+<< TokenBasedOrange: trace_performance >>
-    #@+node:ekr.20240110061056.1: *4* << TokenBasedOrange: trace_performance >>
-    trace_performance = False
-    #@-<< TokenBasedOrange: trace_performance >>
     #@+<< TokenBasedOrange: constants >>
     #@+node:ekr.20240108065205.1: *4* << TokenBasedOrange: constants >>
     # Values of operator InputToken that require context assistance.
@@ -624,9 +620,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                     func()
             # Any post pass would go here.
             result = output_tokens_to_string(self.code_list)
-            if self.trace_performance:
-                print(f"tbo: next_count: {self.next_count:7} tokens: {len(tokens):6}")
-                # g.printObj(self.next_callers_dict, tag='tbo: next_callers_dict')
             return result
         except BeautifyError as e:
             print(e)
@@ -1391,7 +1384,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                 kind == 'op' and value in values
                 and (curly_brackets, parens, square_brackets) == (0, 0, 0)
             ):
-                # g.trace(i, 'pre-check return')
                 return i
             if kind == 'op':
                 # Bump counts.
@@ -1450,45 +1442,24 @@ class TokenBasedOrange:  # Orange is the new Black.
             'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
         )
     #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token
-    if trace_performance:
-        next_count = 0
-        next_callers_dict: dict[str, int] = {}
-
     def next_token(self, i: int) -> Optional[int]:
         """
         Return the next *significant* token in the list of *input* tokens.
 
         Ignore whitespace, indentation, comments, etc.
         """
-        # pylint: disable=no-else-return
-        if self.trace_performance:
-            # Trace the bottleneck!
-            caller = g.caller(1)
+        i += 1
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            if self.is_significant_token(token):
+                return i
             i += 1
-            while i < len(self.tokens):
-                self.next_count += 1
-                try:
-                    self.next_callers_dict[caller] += 1
-                except KeyError:
-                    self.next_callers_dict[caller] = 1
-                token = self.tokens[i]
-                if self.is_significant_token(token):
-                    return i
-                i += 1
-            return None
-        else:
-            i += 1
-            while i < len(self.tokens):
-                token = self.tokens[i]
-                if self.is_significant_token(token):
-                    return i
-                i += 1
-            return None
+        return None
 
     def prev_token(self, i: int) -> Optional[int]:
         """
         Return the previous *significant* token in the list of *input* tokens.
-        
+
         Ignore whitespace, indentation, comments, etc.
         """
         i -= 1
