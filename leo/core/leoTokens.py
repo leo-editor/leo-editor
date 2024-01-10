@@ -508,7 +508,10 @@ class TokenBasedOrange:  # Orange is the new Black.
     
     This class is simpler and faster than the Orange class in leoAst.py.
     """
-
+    #@+<< TokenBasedOrange: trace_performance >>
+    #@+node:ekr.20240110061056.1: *4* << TokenBasedOrange: trace_performance >>
+    trace_performance = False
+    #@-<< TokenBasedOrange: trace_performance >>
     #@+<< TokenBasedOrange: constants >>
     #@+node:ekr.20240108065205.1: *4* << TokenBasedOrange: constants >>
     # Values of operator InputToken that require context assistance.
@@ -565,7 +568,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 g.trace(f"Unexpected setting: {key} = {value!r}")
                 g.trace('(TokenBasedOrange)', g.callers())
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
-    #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
+    #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop) (trace_performance)
     def oops(self) -> None:  # pragma: no cover
         g.trace(f"Unknown kind: {self.kind}")
 
@@ -616,14 +619,14 @@ class TokenBasedOrange:  # Orange is the new Black.
                     func()
             # Any post pass would go here.
             result = output_tokens_to_string(self.code_list)
-            if 0:  ### The performance bug!
+            if self.trace_performance:  ###
                 print(
                     'orange (tbo): '
                     f"prev_count: {self.prev_count:5} next_count: {self.next_count:7} "
                     f"tokens: {len(tokens):6}"
                 )
-            if 0:  ###
-                g.printObj(self.next_callers_dict, tag='tbo: next_callers_dict')
+                if 1:  ###
+                    g.printObj(self.next_callers_dict, tag='tbo: next_callers_dict')
             return result
         except BeautifyError as e:
             print(e)
@@ -1325,14 +1328,14 @@ class TokenBasedOrange:  # Orange is the new Black.
             if token.kind != kind:
                 dump()
                 message = (
-                    f"\nError in {self.filename}:\n"
+                    f"\nError in {g.shortFileName(self.filename)}:\n"
                     f"Expected token.kind: {kind} got {token.kind}\n"
                 )
                 raise BeautifyError(message)
         elif (token.kind, token.value) != (kind, value):
             dump()
             message = (
-                f"\nError in {self.filename}:\n"
+                f"\nError in {g.shortFileName(self.filename)}:\n"
                 f"Expected token.kind: {kind} token.value: {value} got {token!r} {self.filename}\n"
             )
             raise BeautifyError(message)
@@ -1431,7 +1434,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         return token.kind not in (
             'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
         )
-    #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token
+    #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token (**Peformance bug**)
     next_count = 0
     prev_count = 0
     next_callers_dict: dict[str, int] = {}
@@ -1442,20 +1445,29 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Ignore whitespace, indentation, comments, etc.
         """
-        ### caller = g.caller(1)
-        i += 1
-        while i < len(self.tokens):
-            ### This is a performance bottleneck!
-                # self.next_count += 1
-                # try:
-                    # self.next_callers_dict[caller] += 1
-                # except KeyError:
-                    # self.next_callers_dict[caller] = 1
-            token = self.tokens[i]
-            if self.is_significant_token(token):
-                return i
+        if self.trace_performance:  ###
+            caller = g.caller(1)
             i += 1
-        return None
+            while i < len(self.tokens):
+                # Trace the bottleneck!
+                self.next_count += 1
+                try:
+                    self.next_callers_dict[caller] += 1
+                except KeyError:
+                    self.next_callers_dict[caller] = 1
+                token = self.tokens[i]
+                if self.is_significant_token(token):
+                    return i
+                i += 1
+            return None
+        else:
+            i += 1
+            while i < len(self.tokens):
+                token = self.tokens[i]
+                if self.is_significant_token(token):
+                    return i
+                i += 1
+            return None
 
     def prev_token(self, i: int) -> Optional[int]:
         """
@@ -1659,17 +1671,17 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Scan a `from x import` statement just enough to handle leading '.'.
         """
+
         # Aliases.
         is_op, next, set_context = self.is_op, self.next_token, self.set_context
 
         # Find the end of the 'from' statement.
-        i1, i2 = self.index, len(self.tokens)
         end = self.scan_simple_statement()
         if end is None:
-            end = i2
+            return
 
         # Add 'from' context to all '.' tokens.
-        i = i1
+        i = self.index
         while i and i < end:
             if is_op(i, ['.']):
                 set_context(i, 'from')
@@ -1688,19 +1700,16 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240108083829.1: *5* tbo.scan_import
     def scan_import(self) -> None:
 
-        return  ###
-
         # Aliases.
         is_op, next, set_context = self.is_op, self.next_token, self.set_context
 
         # Find the end of the import statement.
-        i1, i2 = self.index, len(self.tokens)
         end = self.scan_simple_statement()
         if end is None:
-            end = i2
-        i = i1
+            return
 
         # Add 'import' context to all '.' operators.
+        i = self.index
         while i and i < end:
             if is_op(i, ['.']):
                 set_context(i, 'import')
@@ -1731,6 +1740,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Scan to the end of a simple statement like an `import` statement.
         """
+        if 1:  ###
+            return None
+
         i = self.index
         ### g.trace(self.tokens[i])
         i = self.find_input_token(i, ['newline'])
