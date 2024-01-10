@@ -1301,10 +1301,10 @@ class TokenBasedOrange:  # Orange is the new Black.
             if 1:
                 lines = g.splitLines(self.contents)
                 n1, n2 = max(0, line_number - 10), line_number + 5
-                g.printObj(lines[n1:n2+1], tag=f"{tag}: lines[{n1}:{n2}]...", offset=n1)
+                g.printObj(lines[n1 : n2 + 1], tag=f"{tag}: lines[{n1}:{n2}]...", offset=n1)
             if 1:
                 i1, i2 = max(0, i - 5), i + 5
-                g.printObj(self.tokens[i1:i2+1], tag=f"{tag}: tokens[{i1}:{i2}]...", offset=i1)
+                g.printObj(self.tokens[i1 : i2 + 1], tag=f"{tag}: tokens[{i1}:{i2}]...", offset=i1)
 
         self.check_token_index(i)
         token = self.tokens[i]
@@ -1514,7 +1514,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan the '('
         i = next(i1)
-        
+
         if not is_op(i, [')']):
 
             # Scan each argument.
