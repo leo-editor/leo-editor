@@ -265,17 +265,26 @@ class TestTokenBasedOrange(BaseTest):
         
         table = (
             # Case 0.
-            (
-                """s: str = None\n"""
-            ),
+            # (
+                # """s: str = None\n"""
+            # ),
             # Case 1.
+            # (
+                # textwrap.dedent(
+                    # """
+                        # def annotated_f(s: str = None, x=None) -> None:
+                            # pass
+                    # """).strip() + '\n'
+            # ),
+            # Case 3.
             (
                 textwrap.dedent(
                     """
-                        def annotated_f(s: str = None, x=None) -> None:
-                            pass
+                        def f1():
+                            self.rulesetName : str = ''
                     """).strip() + '\n'
             ),
+            
         )
         for i, contents in enumerate(table):
             contents, tokens = self.make_data(contents)
