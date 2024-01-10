@@ -618,7 +618,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(e)
             result = None
         t2 = time.process_time()
-        if 1:
+        if 1 and not g.unitTesting:
             print(f"TBO.beautify: {t2-t1:4.1} sec.")
         return result
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry)
@@ -1287,7 +1287,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                 line_number = self.tokens[i].line_number
             except Exception:
                 g.es_exception()
-                line = line_number = 0, 0
+                line = '<no line>'
+                line_number = 0
             print('')
             print(f"{tag}: Error at token {i}, line number: {line_number}:\n")
             print(f"file: {self.filename}")
@@ -1296,10 +1297,10 @@ class TokenBasedOrange:  # Orange is the new Black.
             print('')
             if 1:
                 lines = g.splitLines(self.contents)
-                n1, n2 = max(0, line_number-10), line_number+5
-                g.printObj(lines[n1: n2], tag=f"{tag}: lines[{n1}:{n2}]...")
+                n1, n2 = max(0, line_number - 10), line_number + 5
+                g.printObj(lines[n1:n2], tag=f"{tag}: lines[{n1}:{n2}]...")
             if 1:
-                i1, i2 = max(0, i-5), i+5
+                i1, i2 = max(0, i - 5), i + 5
                 g.printObj(self.tokens[i1:i2], tag=f"{tag}: tokens[{i1}:{i2}]...")
 
         self.check_token_index(i)
@@ -1540,7 +1541,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Quit if there are no args.
         if is_op(i, [')']):
-            i = next(i)
+            ### i = next(i)
             return i
 
         # Scan arguments.
