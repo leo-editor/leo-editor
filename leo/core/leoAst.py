@@ -165,6 +165,7 @@ import os
 import re
 import subprocess
 import textwrap
+import time
 import tokenize
 from typing import Any, Generator, Optional, Union
 
@@ -218,12 +219,16 @@ if 1:  # pragma: no cover
 
         if not check_g():
             return
+        t1 = time.process_time()
         for filename in files:
             if os.path.exists(filename):
                 # print(f"orange {filename}")
                 Orange(settings).beautify_file(filename)
             else:
                 print(f"file not found: {filename}")
+        t2 = time.process_time()
+        if 1:
+            print(f"orange: {len(files):3} files in {t2-t1:3.1f} sec.")
         # print(f"Beautify done: {len(files)} files")
     #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
     def orange_diff_command(files: list[str], settings: Settings = None) -> None:
