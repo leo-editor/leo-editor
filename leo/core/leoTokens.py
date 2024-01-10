@@ -101,8 +101,7 @@ def orange_command(
             print(f"file not found: {filename}")
     t2 = time.process_time()
     if 1:
-        print(f"orange (tbo): {len(files)} files in {t2-t1:3.1f} sec.")
-        
+        print(f"orange (tbo): {len(files):3} files in {t2-t1:3.1f} sec.")
 #@+node:ekr.20240105140814.7: ** leoTokens: top-level functions
 if 1:  # pragma: no cover
     #@+others
@@ -617,13 +616,13 @@ class TokenBasedOrange:  # Orange is the new Black.
                     func()
             # Any post pass would go here.
             result = output_tokens_to_string(self.code_list)
-            if 1:  ### The performance bug!
+            if 0:  ### The performance bug!
                 print(
                     'orange (tbo): '
                     f"prev_count: {self.prev_count:5} next_count: {self.next_count:7} "
                     f"tokens: {len(tokens):6}"
                 )
-            if 1:
+            if 0:  ###
                 g.printObj(self.next_callers_dict, tag='tbo: next_callers_dict')
             return result
         except BeautifyError as e:
@@ -1289,9 +1288,13 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240106090914.1: *5* tbo.expect & expect_ops
     def expect(self, i: int, kind: str, value: str = None) -> None:
 
-        def dump() -> None:
+        trace = False
 
+        def dump() -> None:
+            if not trace:
+                return
             tag = 'TBO.expect'
+            full = False
             try:
                 line = self.tokens[i].line
                 line_number = self.tokens[i].line_number
@@ -1310,19 +1313,28 @@ class TokenBasedOrange:  # Orange is the new Black.
                 n1, n2 = max(0, line_number - 10), line_number + 5
                 g.printObj(lines[n1 : n2 + 1], tag=f"{tag}: lines[{n1}:{n2}]...", offset=n1)
             if 1:
-                i1, i2 = max(0, i - 5), i + 5
-                g.printObj(self.tokens[i1 : i2 + 1], tag=f"{tag}: tokens[{i1}:{i2}]...", offset=i1)
+                if full:
+                    g.printObj(self.tokens, tag=f"{tag}: tokens")
+                else:
+                    i1, i2 = max(0, i - 5), i + 5
+                    g.printObj(self.tokens[i1 : i2 + 1], tag=f"{tag}: tokens[{i1}:{i2}]...", offset=i1)
 
         self.check_token_index(i)
         token = self.tokens[i]
         if value is None:
             if token.kind != kind:
                 dump()
-                message = f"Expected token.kind: {kind} got {token.kind}"
+                message = (
+                    f"\nError in {self.filename}:\n"
+                    f"Expected token.kind: {kind} got {token.kind}\n"
+                )
                 raise BeautifyError(message)
         elif (token.kind, token.value) != (kind, value):
             dump()
-            message = f"Expected token.kind: {kind} token.value: {value} got {token!r}"
+            message = (
+                f"\nError in {self.filename}:\n"
+                f"Expected token.kind: {kind} token.value: {value} got {token!r} {self.filename}\n"
+            )
             raise BeautifyError(message)
 
     def expect_ops(self, i: int, values: list) -> None:
@@ -1430,14 +1442,15 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Ignore whitespace, indentation, comments, etc.
         """
-        caller = g.caller(1)
+        ### caller = g.caller(1)
         i += 1
         while i < len(self.tokens):
-            self.next_count += 1
-            try:
-                self.next_callers_dict[caller] += 1
-            except KeyError:
-                self.next_callers_dict[caller] = 1
+            ### This is a performance bottleneck!
+                # self.next_count += 1
+                # try:
+                    # self.next_callers_dict[caller] += 1
+                # except KeyError:
+                    # self.next_callers_dict[caller] = 1
             token = self.tokens[i]
             if self.is_significant_token(token):
                 return i
@@ -1453,7 +1466,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         i -= 1
         while i >= 0:
             token = self.tokens[i]
-            self.prev_count += 1
+            ### self.prev_count += 1
             if self.is_significant_token(token):
                 return i
             i -= 1
@@ -1675,6 +1688,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240108083829.1: *5* tbo.scan_import
     def scan_import(self) -> None:
 
+        return  ###
+
         # Aliases.
         is_op, next, set_context = self.is_op, self.next_token, self.set_context
 
@@ -1717,7 +1732,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         Scan to the end of a simple statement like an `import` statement.
         """
         i = self.index
-        i = self.find_input_token(i, ['\n'])
+        ### g.trace(self.tokens[i])
+        i = self.find_input_token(i, ['newline'])
         if i is not None:
             self.expect(i, 'newline')
         return i
@@ -1780,14 +1796,14 @@ def main() -> None:  # pragma: no cover
         kind = (
             # 'fstringify' if args.f else
             # 'fstringify-diff' if args.fd else
-            'orange-tokens' if args.o else
+            'orange (tbo)' if args.o else
             # 'orange-diff' if args.od else
             None
         )
         if kind:
             n = len(files)
             n_s = f" {n:>3} file" if n == 1 else f"{n:>3} files"
-            print(f"{kind}: {n_s} in {', '.join(arg_files)}")
+            print(f"{kind}: {n_s:3} in {', '.join(arg_files)}")
     # Do the command.
     # if args.f:
         # fstringify_command(files)
