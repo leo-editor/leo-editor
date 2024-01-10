@@ -2257,7 +2257,6 @@ def objToString(
     offset: int = 0,  # Offset into array-like objects.
 ) -> str:
     """Pretty print any Python object to a string."""
-    # g.trace('offset', offset, obj.__class__.__name__)  ###
     if isinstance(obj, dict):
         if obj:
             result_list = ['{\n']

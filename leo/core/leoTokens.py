@@ -1383,14 +1383,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         Skip inner parens and brackets.
         """
         curly_brackets, parens, square_brackets = 0, 0, 0
-        ### g.trace(i, 'values', values)  ###, self.tokens[i].line.rstrip())
         while i and 0 <= i < len(self.tokens):
             token = self.tokens[i]
-            # g.printObj(self.tokens[i:], tag=str(i))
             kind, value = token.kind, token.value
             # Precheck.
             if (
-                ### kind in ('op', 'newline') and value in values
                 kind == 'op' and value in values
                 and (curly_brackets, parens, square_brackets) == (0, 0, 0)
             ):
@@ -1412,11 +1409,9 @@ class TokenBasedOrange:  # Orange is the new Black.
                     square_brackets -= 1
             # Post-check.
             if (
-                ### kind in ('op', 'newline') and value in values
                 kind == 'op' and value in values
                 and (curly_brackets, parens, square_brackets) == (0, 0, 0)
             ):
-                ### g.trace(i, 'post-check return')
                 return i
             if reverse:
                 i -= 1
@@ -1576,16 +1571,10 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan the '('
         i = next(i1)
-            # Scan each argument.
-        if 1:
-            while i and i < i2 and not is_op(i, [')']):
-                i = self.scan_arg(i)
-        else:  ### works.
-            if not is_op(i, [')']):
-                while i and i < i2:
-                    i = self.scan_arg(i)
-                    if is_op(i, [')']):
-                        break
+
+        # Scan each argument.
+        while i and i < i2 and not is_op(i, [')']):
+            i = self.scan_arg(i)
 
         # Scan the ')'
         expect(i, 'op', ')')
