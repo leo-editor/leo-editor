@@ -84,7 +84,7 @@ Settings = Optional[dict[str, Any]]
 #@-<< leoTokens.py: imports & annotations >>
 
 #@+others
-#@+node:ekr.20240105140814.5: ** command: orange_command
+#@+node:ekr.20240105140814.5: ** command: orange_command (tbo)
 def orange_command(
     files: list[str],
     settings: Settings = None,
@@ -101,7 +101,8 @@ def orange_command(
             print(f"file not found: {filename}")
     t2 = time.process_time()
     if 1:
-        print(f"orange_command: {len(files)} files in {t2-t1:3.1f} sec.")
+        print(f"orange (tbo): {len(files)} files in {t2-t1:3.1f} sec.")
+        
 #@+node:ekr.20240105140814.7: ** leoTokens: top-level functions
 if 1:  # pragma: no cover
     #@+others
@@ -580,7 +581,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         beautify_file and beautify_file_def call this method.
         """
         # Debugging vars...
-        # t1 = time.process_time()
         self.contents = contents
         self.filename = filename
 
@@ -617,13 +617,16 @@ class TokenBasedOrange:  # Orange is the new Black.
                     func()
             # Any post pass would go here.
             result = output_tokens_to_string(self.code_list)
+            if 1:  ### The performance bug!
+                print(
+                    'orange (tbo): '
+                    f"prev_count: {self.prev_count:5} next_count: {self.next_count:7} "
+                    f"tokens: {len(tokens):6}"
+                )
+            return result
         except BeautifyError as e:
             print(e)
-            result = None
-
-        # t2 = time.process_time()
-        # print(f"TBO.beautify: {t2-t1:3.1f} sec. {g.shortFileName(filename)}")
-        return result
+            return None
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
@@ -647,6 +650,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                 print(e)
                 return False  # #2578.
         # Something besides newlines must change.
+        if not results:
+            return False
         if regularize_nls(contents) == regularize_nls(results):
             return False
         # Write the results
@@ -1413,6 +1418,9 @@ class TokenBasedOrange:  # Orange is the new Black.
             'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
         )
     #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token
+    next_count = 0
+    prev_count = 0
+
     def next_token(self, i: int) -> Optional[int]:
         """
         Return the next *significant* token in the list of *input* tokens.
@@ -1421,6 +1429,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         i += 1
         while i < len(self.tokens):
+            self.next_count += 1
             token = self.tokens[i]
             if self.is_significant_token(token):
                 return i
@@ -1436,6 +1445,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         i -= 1
         while i >= 0:
             token = self.tokens[i]
+            self.prev_count += 1
             if self.is_significant_token(token):
                 return i
             i -= 1
