@@ -1544,7 +1544,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Quit if there are no args.
         if is_op(i, [')']):
-            ### i = next(i)
             return i
 
         # Scan arguments.

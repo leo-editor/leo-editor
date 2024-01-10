@@ -389,7 +389,7 @@ class TestTokenBasedOrange(BaseTest):
                 return version
         ''').strip() + '\n'
         contents, tokens = self.make_data(contents)
-        expected = contents ###.rstrip() + '\n'
+        expected = contents
         results = self.beautify(contents, tokens)
         if results != expected:
             g.printObj(contents, tag='contents')
