@@ -229,7 +229,6 @@ if 1:  # pragma: no cover
         t2 = time.process_time()
         if 1:
             print(f"orange: {len(files):3} files in {t2-t1:3.1f} sec.")
-        # print(f"Beautify done: {len(files)} files")
     #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
     def orange_diff_command(files: list[str], settings: Settings = None) -> None:
 
