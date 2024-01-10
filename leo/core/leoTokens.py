@@ -568,7 +568,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 g.trace(f"Unexpected setting: {key} = {value!r}")
                 g.trace('(TokenBasedOrange)', g.callers())
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
-    #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop) (trace_performance)
+    #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def oops(self) -> None:  # pragma: no cover
         g.trace(f"Unknown kind: {self.kind}")
 
@@ -619,14 +619,9 @@ class TokenBasedOrange:  # Orange is the new Black.
                     func()
             # Any post pass would go here.
             result = output_tokens_to_string(self.code_list)
-            if self.trace_performance:  ###
-                print(
-                    'orange (tbo): '
-                    f"prev_count: {self.prev_count:5} next_count: {self.next_count:7} "
-                    f"tokens: {len(tokens):6}"
-                )
-                if 1:  ###
-                    g.printObj(self.next_callers_dict, tag='tbo: next_callers_dict')
+            if self.trace_performance:
+                print(f"tbo: next_count: {self.next_count:7} tokens: {len(tokens):6}")
+                # g.printObj(self.next_callers_dict, tag='tbo: next_callers_dict')
             return result
         except BeautifyError as e:
             print(e)
@@ -1348,7 +1343,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if token.value not in values:
             raise BeautifyError(f"Expected value in {values!r}, got {token.value!r}")
 
-    #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line (revise)
+    #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line
     def find_end_of_line(self) -> Optional[int]:
         """
         Return the index the next newline at the outer paren level.
@@ -1452,9 +1447,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
         )
     #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token (**Peformance bug**)
-    next_count = 0
-    prev_count = 0
-    next_callers_dict: dict[str, int] = {}
+    # next_count = 0
+    # next_callers_dict: dict[str, int] = {}
 
     def next_token(self, i: int) -> Optional[int]:
         """
@@ -1462,11 +1456,11 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Ignore whitespace, indentation, comments, etc.
         """
-        if self.trace_performance:  ###
+        if self.trace_performance:
+            # Trace the bottleneck!
             caller = g.caller(1)
             i += 1
             while i < len(self.tokens):
-                # Trace the bottleneck!
                 self.next_count += 1
                 try:
                     self.next_callers_dict[caller] += 1
@@ -1495,7 +1489,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         i -= 1
         while i >= 0:
             token = self.tokens[i]
-            ### self.prev_count += 1
             if self.is_significant_token(token):
                 return i
             i -= 1
