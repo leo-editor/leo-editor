@@ -1450,8 +1450,9 @@ class TokenBasedOrange:  # Orange is the new Black.
             'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
         )
     #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token (**Peformance bug**)
-    # next_count = 0
-    # next_callers_dict: dict[str, int] = {}
+    if trace_performance:
+        next_count = 0
+        next_callers_dict: dict[str, int] = {}
 
     def next_token(self, i: int) -> Optional[int]:
         """
@@ -1459,6 +1460,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Ignore whitespace, indentation, comments, etc.
         """
+        # pylint: disable=no-else-return
         if self.trace_performance:
             # Trace the bottleneck!
             caller = g.caller(1)
@@ -1823,7 +1825,7 @@ def main() -> None:  # pragma: no cover
         orange_command(files, settings_dict)
     # if args.od:
         # orange_diff_command(files, settings_dict)
-#@+node:ekr.20240105140814.10: *3* function: scan_args
+#@+node:ekr.20240105140814.10: *3* function: scan_args (leoTokens.py)
 def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
     description = textwrap.dedent("""\
         Execute fstringify or beautify commands contained in leoAst.py.
@@ -1845,14 +1847,14 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
         help='diff beautify PATHS')
     # New arguments.
     add2 = parser.add_argument
-    add2('--allow-joined', dest='allow_joined', action='store_true',
-        help='allow joined strings')
-    add2('--max-join', dest='max_join', metavar='N', type=int,
-        help='max unsplit line length (default 0)')
-    add2('--max-split', dest='max_split', metavar='N', type=int,
-        help='max unjoined line length (default 0)')
-    add2('--tab-width', dest='tab_width', metavar='N', type=int,
-        help='tab-width (default -4)')
+    # add2('--allow-joined', dest='allow_joined', action='store_true',
+        # help='allow joined strings')
+    # add2('--max-join', dest='max_join', metavar='N', type=int,
+        # help='max unsplit line length (default 0)')
+    # add2('--max-split', dest='max_split', metavar='N', type=int,
+        # help='max unjoined line length (default 0)')
+    # add2('--tab-width', dest='tab_width', metavar='N', type=int,
+        # help='tab-width (default -4)')
     # Newer arguments.
     add2('--force', dest='force', action='store_true',
         help='force beautification of all files')
