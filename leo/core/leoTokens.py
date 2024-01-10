@@ -1301,10 +1301,10 @@ class TokenBasedOrange:  # Orange is the new Black.
             if 1:
                 lines = g.splitLines(self.contents)
                 n1, n2 = max(0, line_number - 10), line_number + 5
-                g.printObj(lines[n1:n2], tag=f"{tag}: lines[{n1}:{n2}]...")
+                g.printObj(lines[n1:n2+1], tag=f"{tag}: lines[{n1}:{n2}]...", offset=n1)
             if 1:
                 i1, i2 = max(0, i - 5), i + 5
-                g.printObj(self.tokens[i1:i2], tag=f"{tag}: tokens[{i1}:{i2}]...")
+                g.printObj(self.tokens[i1:i2+1], tag=f"{tag}: tokens[{i1}:{i2}]...", offset=i1)
 
         self.check_token_index(i)
         token = self.tokens[i]
@@ -1505,7 +1505,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def scan_args(self, i1: int, i2: int) -> Optional[int]:
         """Scan a comma-separated list of function definition arguments."""
         # Aliases.
-        expect, next = self.expect, self.next_token
+        expect, is_op, next = self.expect, self.is_op, self.next_token
 
         # Sanity checks.
         assert i2 > i1, (i1, i2)
@@ -1514,10 +1514,12 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan the '('
         i = next(i1)
+        
+        if not is_op(i, [')']):
 
-        # Scan each argument.
-        while i and i < i2:
-            i = self.scan_arg(i)
+            # Scan each argument.
+            while i and i < i2:
+                i = self.scan_arg(i)
 
         # Scan the ')'
         expect(i, 'op', ')')

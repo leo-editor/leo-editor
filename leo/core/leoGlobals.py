@@ -2249,7 +2249,8 @@ def pdb(message: str = '') -> None:
     breakpoint()  # New in Python 3.7.
 #@+node:ekr.20050819064157: *4* g.objToString & aliases
 def objToString(
-    obj: Any, *,
+    obj: Any,
+    *,
     indent: int = 0,
     tag: str = None,
     width: int = 120,
@@ -2305,7 +2306,7 @@ def sleep(n: float) -> None:
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
 def printObj(obj: Any, *, tag: str = None, indent: int = 0, offset: int = 0) -> None:
     """Pretty print any Python object using g.pr."""
-    g.pr(objToString(obj, indent=indent, tag=tag))
+    g.pr(objToString(obj, indent=indent, tag=tag, offset=offset))
 
 printDict = printObj
 printList = printObj
