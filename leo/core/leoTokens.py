@@ -1328,7 +1328,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 dump()
                 message = (
                     f"\nError in {self.filename}:\n"
-                    f"Expected token.kind: {kind} got {token.kind}\n"
+                    f"Expected token.kind: {kind!r} got {token}\n"
                     f"At token {i}, line number: {line_number}:\n"
                     f"Line: {line!r}\n"
                 )
@@ -1337,7 +1337,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             dump()
             message = (
                 f"\nError in {self.filename}:\n"
-                f"Expected token.kind: {kind} token.value{value} got {token.kind}\n"
+                f"Expected token.kind: {kind!r} token.value: {value!r} got {token}\n"
                 f"At token {i}, line number: {line_number}:\n"
                 f"Line: {line!r}\n"
             )
@@ -1537,7 +1537,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.set_context(i1, 'arg')
             i = next(i)
             # Handle *,
-            ### token = self.tokens[i1]
             if is_op(i, [',']):
                 i = next(i)
                 return i
@@ -1577,12 +1576,16 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan the '('
         i = next(i1)
-
-        if not is_op(i, [')']):
-
             # Scan each argument.
-            while i and i < i2:
+        if 1:
+            while i and i < i2 and not is_op(i, [')']):
                 i = self.scan_arg(i)
+        else:  ### works.
+            if not is_op(i, [')']):
+                while i and i < i2:
+                    i = self.scan_arg(i)
+                    if is_op(i, [')']):
+                        break
 
         # Scan the ')'
         expect(i, 'op', ')')
@@ -1727,23 +1730,23 @@ class TokenBasedOrange:  # Orange is the new Black.
     def scan_initializer(self, i1: int, has_annotation: bool) -> Optional[int]:
         """Scan an initializer in a function definition argument."""
         # Aliases
-        expect, expect_ops = self.expect, self.expect_ops
+        expect, expect_ops, is_op = self.expect, self.expect_ops, self.is_op
         next, set_context = self.next_token, self.set_context
-
-        if 0:
-            print('')
-            g.trace(i1, has_annotation)
-            g.printObj(self.tokens[i1:])
 
         # Scan the '='.
         expect(i1, 'op', '=')
         set_context(i1, 'initializer')
         i = next(i1)
 
-        # Find the next ',' or ')' at this level.
-        i3 = self.find_input_token(i, [',', ')'])
-        expect_ops(i3, [',', ')'])
-        return i3
+        # Scan up to ',' or ')'
+        if is_op(i, ['(']):
+            i = next(i)
+            i = self.find_input_token(i, [')'])
+            expect(i, 'op', ')')
+        else:
+            i = self.find_input_token(i, [',', ')'])
+            expect_ops(i, [',', ')'])
+        return i
     #@+node:ekr.20240109032639.1: *5* tbo.scan_simple_statement
     def scan_simple_statement(self) -> int:
         """
