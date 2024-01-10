@@ -620,7 +620,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         except BeautifyError as e:
             print(e)
             result = None
-        
+
         # t2 = time.process_time()
         # print(f"TBO.beautify: {t2-t1:3.1f} sec. {g.shortFileName(filename)}")
         return result
@@ -1461,6 +1461,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         if token.kind == 'op' and token.value in ('*', '**'):
             self.set_context(i1, 'arg')
             i = next(i)
+            # Handle *,
+            ### token = self.tokens[i1]
+            if is_op(i, [',']):
+                g.trace('==== *, ====')
+                i = next(i)
+                return i
 
         # Scan the argument's name.
         expect(i, 'name')
@@ -1499,7 +1505,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = next(i1)
 
         # Scan each argument.
-        while i < i2:
+        while i and i < i2:
             i = self.scan_arg(i)
 
         # Scan the ')'

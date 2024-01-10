@@ -542,6 +542,16 @@ class TestTokenBasedOrange(BaseTest):
         """Return True if p.b contains @killbeautify"""
         return 'killbeautify' in g.get_directives_dict(p)
     ''',
+        # Case 5 (new)
+        '''\
+        def reloadSettings():
+            pass
+    ''',
+        # Case 6 (new)
+        '''\
+        def get_tokens_unprocessed(self: Any, text: str, stack: Sequence[str] = ('root',)) -> Generator:
+            pass
+    ''',
         )
         for i, contents in enumerate(table):
             contents, tokens = self.make_data(contents)
