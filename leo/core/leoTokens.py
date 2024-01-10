@@ -1335,7 +1335,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Skip inner parens and brackets.
         """
         curly_brackets, parens, square_brackets = 0, 0, 0
-        g.trace(i, 'values', values)  ###, self.tokens[i].line.rstrip())
+        ### g.trace(i, 'values', values)  ###, self.tokens[i].line.rstrip())
         # Special case for initial '(':
         if 0:  ###
             if self.is_op(i, ['(']):
@@ -1476,7 +1476,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Handle *,
             ### token = self.tokens[i1]
             if is_op(i, [',']):
-                ### g.trace('==== *, ====')
                 i = next(i)
                 return i
 
@@ -1678,9 +1677,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         expect, expect_ops = self.expect, self.expect_ops
         next, set_context = self.next_token, self.set_context
 
-        print('')
-        g.trace(i1, has_annotation)
-        g.printObj(self.tokens[i1:])
+        if 0:
+            print('')
+            g.trace(i1, has_annotation)
+            g.printObj(self.tokens[i1:])
 
         # Scan the '='.
         expect(i1, 'op', '=')
