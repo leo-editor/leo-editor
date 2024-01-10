@@ -576,6 +576,10 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         beautify_file and beautify_file_def call this method.
         """
+        # Debugging vars...
+        self.contents = contents
+        self.filename = filename
+
         # State vars...
         self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
         self.decorator_seen = False  # Set by do_name for do_op.
@@ -593,7 +597,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Init output list and state...
         t1 = time.process_time()
-        self.contents = contents  # For debugging.
         self.code_list: list[OutputToken] = []  # The list of output tokens.
         self.tokens = tokens  # The list of input tokens.
         self.add_token('file-start', '')
@@ -1286,8 +1289,10 @@ class TokenBasedOrange:  # Orange is the new Black.
                 g.es_exception()
                 line = line_number = 0, 0
             print('')
-            print(f"{tag}: Error at token {i}, line number: {line_number}:")
-            print(line)
+            print(f"{tag}: Error at token {i}, line number: {line_number}:\n")
+            print(f"file: {self.filename}")
+            print(f"line: {line!r}\n")
+            print('callers:', g.callers())
             print('')
             if 1:
                 lines = g.splitLines(self.contents)
