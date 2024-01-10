@@ -623,6 +623,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                     f"prev_count: {self.prev_count:5} next_count: {self.next_count:7} "
                     f"tokens: {len(tokens):6}"
                 )
+            if 1:
+                g.printObj(self.next_callers_dict, tag='tbo: next_callers_dict')
             return result
         except BeautifyError as e:
             print(e)
@@ -1420,6 +1422,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token
     next_count = 0
     prev_count = 0
+    next_callers_dict: dict[str, int] = {}
 
     def next_token(self, i: int) -> Optional[int]:
         """
@@ -1427,9 +1430,14 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Ignore whitespace, indentation, comments, etc.
         """
+        caller = g.caller(1)
         i += 1
         while i < len(self.tokens):
             self.next_count += 1
+            try:
+                self.next_callers_dict[caller] += 1
+            except KeyError:
+                self.next_callers_dict[caller] = 1
             token = self.tokens[i]
             if self.is_significant_token(token):
                 return i
