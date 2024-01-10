@@ -637,14 +637,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False  # Not an error.
         assert isinstance(tokens[0], InputToken), repr(tokens[0])
         results = self.beautify(contents, filename, tokens)
-        ### return bool(results)
-        ###
-            # else:
-                # try:
-                    # results = self.beautify(contents, filename, tokens)
-                # except BeautifyError as e:
-                    # print(e)
-                    # return False  # #2578.
         # Something besides newlines must change.
         if not results:
             return False
