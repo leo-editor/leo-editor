@@ -2248,8 +2248,15 @@ def pdb(message: str = '') -> None:
     # pylint: disable=forgotten-debug-statement
     breakpoint()  # New in Python 3.7.
 #@+node:ekr.20050819064157: *4* g.objToString & aliases
-def objToString(obj: Any, *, indent: int = 0, tag: str = None, width: int = 120) -> str:
+def objToString(
+    obj: Any, *,
+    indent: int = 0,
+    tag: str = None,
+    width: int = 120,
+    offset: int = 0,  # Offset into array-like objects.
+) -> str:
     """Pretty print any Python object to a string."""
+    # g.trace('offset', offset, obj.__class__.__name__)  ###
     if isinstance(obj, dict):
         if obj:
             result_list = ['{\n']
@@ -2266,7 +2273,7 @@ def objToString(obj: Any, *, indent: int = 0, tag: str = None, width: int = 120)
             # Return the enumerated lines of the list.
             result_list = ['[\n' if isinstance(obj, list) else '(\n']
             for i, z in enumerate(obj):
-                result_list.append(f"  {i:4}: {z!r}\n")
+                result_list.append(f"  {i+offset:4}: {z!r}\n")
             result_list.append(']\n' if isinstance(obj, list) else ')\n')
             result = ''.join(result_list)
         else:
@@ -2281,7 +2288,7 @@ def objToString(obj: Any, *, indent: int = 0, tag: str = None, width: int = 120)
     else:
         # Return the enumerated lines of the string.
         lines = ''.join([
-            f"  {i:4}: {z!r}\n" for i, z in enumerate(g.splitLines(obj))
+            f"  {i+offset:4}: {z!r}\n" for i, z in enumerate(g.splitLines(obj))
         ])
         result = f"[\n{lines}]\n"
     return f"{tag.strip()}: {result}" if tag and tag.strip() else result
@@ -2296,7 +2303,7 @@ def sleep(n: float) -> None:
     from time import sleep  # type:ignore
     sleep(n)  # type:ignore
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
-def printObj(obj: Any, *, tag: str = None, indent: int = 0) -> None:
+def printObj(obj: Any, *, tag: str = None, indent: int = 0, offset: int = 0) -> None:
     """Pretty print any Python object using g.pr."""
     g.pr(objToString(obj, indent=indent, tag=tag))
 
