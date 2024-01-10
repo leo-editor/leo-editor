@@ -92,13 +92,16 @@ def orange_command(
 
     if not check_g():
         return
+    t1 = time.process_time()
     for filename in files:
         if os.path.exists(filename):
             # print(f"orange {filename}")
             TokenBasedOrange(settings).beautify_file(filename)
         else:
             print(f"file not found: {filename}")
-    # print(f"Beautify done: {len(files)} files")
+    t2 = time.process_time()
+    if 1:
+        print(f"orange_command: {len(files)} files in {t2-t1:3.1f} sec.")
 #@+node:ekr.20240105140814.7: ** leoTokens: top-level functions
 if 1:  # pragma: no cover
     #@+others
@@ -577,6 +580,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         beautify_file and beautify_file_def call this method.
         """
         # Debugging vars...
+        # t1 = time.process_time()
         self.contents = contents
         self.filename = filename
 
@@ -596,7 +600,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.verbatim = False  # True: don't beautify.
 
         # Init output list and state...
-        t1 = time.process_time()
         self.code_list: list[OutputToken] = []  # The list of output tokens.
         self.tokens = tokens  # The list of input tokens.
         self.add_token('file-start', '')
@@ -617,9 +620,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         except BeautifyError as e:
             print(e)
             result = None
-        t2 = time.process_time()
-        if 1 and not g.unitTesting:
-            print(f"TBO.beautify: {t2-t1:4.1} sec.")
+        
+        # t2 = time.process_time()
+        # print(f"TBO.beautify: {t2-t1:3.1f} sec. {g.shortFileName(filename)}")
         return result
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
