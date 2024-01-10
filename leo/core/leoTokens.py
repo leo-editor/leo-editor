@@ -1289,24 +1289,22 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.scan_call(i)
 
         # Finally: generate output tokens.
-        if 1:  ###
-            self.blank()
-            self.add_token('word', s)
-            self.blank()
-            return
+        self.blank()
+        self.add_token('word', s)
+        self.blank()
 
-
-        if self.square_brackets_stack:
-            # A previous 'op-no-blanks' token may cancel this blank.
-            self.blank()
-            self.add_token('word', s)
-        elif self.in_arg_list > 0:
-            self.add_token('word', s)
-            self.blank()
-        else:
-            self.blank()
-            self.add_token('word', s)
-            self.blank()
+        ###
+        # if self.square_brackets_stack:
+            # # A previous 'op-no-blanks' token may cancel this blank.
+            # self.blank()
+            # self.add_token('word', s)
+        # elif self.in_arg_list > 0:
+            # self.add_token('word', s)
+            # self.blank()
+        # else:
+            # self.blank()
+            # self.add_token('word', s)
+            # self.blank()
     #@+node:ekr.20240107141830.1: *5* tbo.word_op
     def word_op(self, s: str) -> None:
         """Add a word-op request to the code list."""
