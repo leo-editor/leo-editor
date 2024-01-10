@@ -1291,7 +1291,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240106090914.1: *5* tbo.expect & expect_ops
     def expect(self, i: int, kind: str, value: str = None) -> None:
 
-        trace = False
+        full = False
+        trace = True
         tag = 'TBO.expect'
         try:
             line = self.tokens[i].line
@@ -1304,9 +1305,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         def dump() -> None:
             if not trace:
                 return
-            full = False
             print('')
-            print(f"{tag}: Error at token {i}, line number: {line_number}:\n")
+            print(f"{tag}: Error at token {i}, line number: {line_number}:")
             print(f"file: {self.filename}")
             print(f"line: {line!r}\n")
             print('callers:', g.callers())
@@ -1315,12 +1315,11 @@ class TokenBasedOrange:  # Orange is the new Black.
                 lines = g.splitLines(self.contents)
                 n1, n2 = max(0, line_number - 10), line_number + 5
                 g.printObj(lines[n1 : n2 + 1], tag=f"{tag}: lines[{n1}:{n2}]...", offset=n1)
-            if 1:
-                if full:
-                    g.printObj(self.tokens, tag=f"{tag}: tokens")
-                else:
-                    i1, i2 = max(0, i - 5), i + 5
-                    g.printObj(self.tokens[i1 : i2 + 1], tag=f"{tag}: tokens[{i1}:{i2}]...", offset=i1)
+            if full:
+                g.printObj(self.tokens, tag=f"{tag}: tokens")
+            else:
+                i1, i2 = max(0, i - 5), i + 5
+                g.printObj(self.tokens[i1 : i2 + 1], tag=f"{tag}: tokens[{i1}:{i2}]...", offset=i1)
 
         self.check_token_index(i)
         token = self.tokens[i]
