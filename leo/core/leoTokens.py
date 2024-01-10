@@ -1348,6 +1348,29 @@ class TokenBasedOrange:  # Orange is the new Black.
         if token.value not in values:
             raise BeautifyError(f"Expected value in {values!r}, got {token.value!r}")
 
+    #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line (revise)
+    def find_end_of_line(self) -> Optional[int]:
+        """
+        Return the index the next newline at the outer paren level.
+        """
+        i = self.index
+        parens = 0
+        while i and 0 <= i < len(self.tokens):
+            token = self.tokens[i]
+            # Precheck.
+            if token.kind == 'newline' and parens == 0:
+                return i
+            if token.kind == 'op':
+                # Bump counts.
+                if token.value == '(':
+                    parens += 1
+                elif token.value == ')':
+                    parens -= 1
+            # Post-check.
+            if token.kind == 'newline' and parens == 0:
+                return i
+            i += 1
+        return None
     #@+node:ekr.20240106110748.1: *5* tbo.find_input_token
     def find_input_token(self,
         i: int, values: list[str], reverse: bool = False,
@@ -1358,21 +1381,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         curly_brackets, parens, square_brackets = 0, 0, 0
         ### g.trace(i, 'values', values)  ###, self.tokens[i].line.rstrip())
-        # Special case for initial '(':
-        if 0:  ###
-            if self.is_op(i, ['(']):
-                g.trace(i, '==== OPEN (')
-                # g.printObj(self.tokens[i:], tag=str(i))
-                # g.trace(self.tokens[i].line)
-                parens += 1
-                i += 1
         while i and 0 <= i < len(self.tokens):
             token = self.tokens[i]
             # g.printObj(self.tokens[i:], tag=str(i))
             kind, value = token.kind, token.value
             # Precheck.
             if (
-                kind in ('op', 'newline') and value in values
+                ### kind in ('op', 'newline') and value in values
+                kind == 'op' and value in values
                 and (curly_brackets, parens, square_brackets) == (0, 0, 0)
             ):
                 # g.trace(i, 'pre-check return')
@@ -1393,7 +1409,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                     square_brackets -= 1
             # Post-check.
             if (
-                kind in ('op', 'newline') and value in values
+                ### kind in ('op', 'newline') and value in values
+                kind == 'op' and value in values
                 and (curly_brackets, parens, square_brackets) == (0, 0, 0)
             ):
                 ### g.trace(i, 'post-check return')
@@ -1676,7 +1693,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         is_op, next, set_context = self.is_op, self.next_token, self.set_context
 
         # Find the end of the 'from' statement.
-        end = self.scan_simple_statement()
+        end = self.find_end_of_line()
         if end is None:
             return
 
@@ -1686,17 +1703,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             if is_op(i, ['.']):
                 set_context(i, 'from')
             i = next(i)
-
-
-            # # Add 'import1' context to the first '.' token.
-            # if i and is_op(i, ['.']):
-                # set_context(i, 'import1')
-                # i = next(i)
-
-            # # Add 'import2' context to all further '.' tokens.
-            # while i and is_op(i, ['.']):
-                # set_context(i, 'import2')
-                # i = next(i)
     #@+node:ekr.20240108083829.1: *5* tbo.scan_import
     def scan_import(self) -> None:
 
@@ -1704,7 +1710,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         is_op, next, set_context = self.is_op, self.next_token, self.set_context
 
         # Find the end of the import statement.
-        end = self.scan_simple_statement()
+        end = self.find_end_of_line()
         if end is None:
             return
 
@@ -1740,14 +1746,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Scan to the end of a simple statement like an `import` statement.
         """
-        if 1:  ###
+        i = self.find_end_of_line()
+        if i is None:
             return None
-
-        i = self.index
-        ### g.trace(self.tokens[i])
-        i = self.find_input_token(i, ['newline'])
-        if i is not None:
-            self.expect(i, 'newline')
+        self.expect(i, 'newline')
         return i
     #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
