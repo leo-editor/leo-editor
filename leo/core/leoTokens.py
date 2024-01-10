@@ -636,24 +636,23 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not (contents and tokens):
             return False  # Not an error.
         assert isinstance(tokens[0], InputToken), repr(tokens[0])
-        # pylint: disable=no-else-return
-        if 1:
-            results = self.beautify(contents, filename, tokens)
-            return bool(results)
-        else:
-            try:
-                results = self.beautify(contents, filename, tokens)
-            except BeautifyError as e:
-                print(e)
-                return False  # #2578.
+        results = self.beautify(contents, filename, tokens)
+        ### return bool(results)
+        ###
+            # else:
+                # try:
+                    # results = self.beautify(contents, filename, tokens)
+                # except BeautifyError as e:
+                    # print(e)
+                    # return False  # #2578.
         # Something besides newlines must change.
         if not results:
             return False
         if regularize_nls(contents) == regularize_nls(results):
             return False
         # Write the results
-        print(f"Beautified: {g.shortFileName(filename)}")
-        write_file(filename, results, encoding=encoding)
+        print(f"tbo: changed {g.shortFileName(filename)}")
+        ### write_file(filename, results, encoding=encoding)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
