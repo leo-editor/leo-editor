@@ -3080,6 +3080,8 @@ class LoadManager:
             previousSettings=lm.getPreviousSettings(None),
         )
         # Use the config params to set the size and location of the window.
+        g.doHook('open0')
+        g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=None)
         frame = c.frame
         frame.setInitialWindowGeometry()
         frame.deiconify()
@@ -3118,6 +3120,7 @@ class LoadManager:
         c.frame.title = c.computeTabTitle()
         c.frame.setTitle(c.frame.title)
 
+        g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
         # Finish.
         frame.c.clearChanged()
         lm.finishOpen(c)

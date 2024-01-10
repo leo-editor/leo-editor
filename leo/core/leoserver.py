@@ -901,9 +901,12 @@ class LeoServer:
         g.getScript = self._getScript
         g.IdleTime = self._idleTime
         #
-        # override for selectLeoWindow 
+        # * hook open2 for commander creation completion and inclusion in windowList
         #
+        g.registerHandler('open2', self._open2Hook)
+        # override for selectLeoWindow 
         g.app.selectLeoWindow = self._selectLeoWindow
+        #
         # override for "revert to file" operation
         g.app.gui.runAskOkDialog = self._runAskOkDialog
         g.app.gui.runAskYesNoDialog = self._runAskYesNoDialog
@@ -918,14 +921,39 @@ class LeoServer:
         t2 = time.process_time()
         if not testing:
             print(f"LeoServer: init leoBridge in {t2-t1:4.2} sec.", flush=True)
+    #@+node:felix.20240110004711.1: *3* server.finishCreate
+    def finishCreate(self, c: Cmdr) -> None:
+        """Finalize commander creation and add to windowList in leoserver"""
+        if c:
+            if not hasattr(c, 'patched_quicksearch_controller'):
+                # Add ftm. This won't happen if opened outside leoserver
+                c.findCommands.ftm = StringFindTabManager(c)  # type: ignore
+                cc = QuickSearchController(c)
+                # Patch up quick-search controller to the commander
+                c.patched_quicksearch_controller = cc
+                # Patch up for 'selection range' in headlines left by the search commands.
+                c.frame.tree.endEditLabel = self._endEditLabel
+                c.recreateGnxDict()  # refresh c.fileCommands.gnxDict used in ap_to_p
+                self._check_outline(c)
+                g.app.windowList.append(c.frame)
+
+        # print(str(tag))
+        # print(str(keywords))
     #@+node:felix.20210622235127.1: *3* server.leo overridden methods
+    #@+node:felix.20240109225617.1: *4* LeoServer_open2Hook
+    def _open2Hook(self, tag: Any, keywords: Any) -> None:
+        """Hook for finalizing commander creation and add to windowList in leoserver"""
+        c = keywords.get('c')
+        g.leoServer.finishCreate(c)
+        # print(str(tag))
+        # print(str(keywords))
     #@+node:felix.20240108011940.1: *4* LeoServer._selectLeoWindow
     def _selectLeoWindow(self, c: Cmdr) -> None:
         """Replaces selectLeoWindow in Leo server"""
-        g.leoserver.c = c
-        g.leoserver.c.selectPosition(c.p)
-        g.leoserver.c.recreateGnxDict() 
-        g.leoserver._check_outline(c) 
+        g.leoServer.c = c
+        g.leoServer.c.selectPosition(c.p)
+        g.leoServer.c.recreateGnxDict() 
+        g.leoServer._check_outline(c) 
 
     #@+node:felix.20230206202334.1: *4* LeoServer._endEditLabel
     def _endEditLabel(self) -> None:
@@ -1240,23 +1268,12 @@ class LeoServer:
                     break
         if not found:
             c = self.bridge.openLeoFile(filename)
-            # Add ftm. This won't happen if opened outside leoserver
-            c.findCommands.ftm = StringFindTabManager(c)
-            cc = QuickSearchController(c)
-            # Patch up quick-search controller to the commander
-            c.patched_quicksearch_controller = cc
-            # Patch up for 'selection range' in headlines left by the search commands.
-            c.frame.tree.endEditLabel = self._endEditLabel
         if not c:  # pragma: no cover
             raise ServerError(f"{tag}: bridge did not open {filename!r}")
         if not c.frame.body.wrapper:  # pragma: no cover
             raise ServerError(f"{tag}: no wrapper")
         # Assign self.c
         self.c = c
-        # c.selectPosition(c.rootPosition())  # Why ? This will create a node change !
-        # Check the outline!
-        c.recreateGnxDict()  # refresh c.fileCommands.gnxDict used in ap_to_p
-        self._check_outline(c)
         if self.log_flag:  # pragma: no cover
             self._dump_outline(c)
 
@@ -1583,7 +1600,12 @@ class LeoServer:
         c = self._check_c(param)
         unl = param.get('unl', '')
         try:
-            g.openUrlOnClick(c, unl)
+            if unl and g.isValidUrl(unl):
+                # Part 2: handle the url
+                p = c.p
+                if not g.doHook("@url1", c=c, p=p, url=unl):
+                    g.handleUrl(unl, c=c, p=p)
+                g.doHook("@url2", c=c, p=p)
         except Exception as e:
             raise ServerError(f"{tag}: exception handling unl: {unl}")
 

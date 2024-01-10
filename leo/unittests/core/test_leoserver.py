@@ -90,6 +90,7 @@ class TestLeoServer(LeoUnitTest):
             'goto_script',
             'tag_children',
             # Other methods
+            'finishCreate',
             'remove_tag', 'tag_node',
             'delete_node', 'cut_node',  # dangerous.
             'click_button', 'get_buttons', 'remove_button',  # Require plugins.
