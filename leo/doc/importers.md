@@ -38,9 +38,9 @@ Languages such a C, Javascript, HTML/XML, PHP and Python contain syntax construc
         pass
     '''
 ```
-    
+
 In general, a character-by-character scan of the input file is required to recognize such syntax *accurately*. Happily, python dictionaries greatly speed such scanning.
-    
+
 **Complication 2: multi-line patterns**
 
 Languages that *don't* have strings, comments, etc. typically *do* have structures whose syntax spans several lines.  Examples are ctext, markdown and reStructuredText. A [beautiful coding pattern](importers.md#recognizing-multi-line-patterns) greatly simplifies these importers.
@@ -168,7 +168,6 @@ Not all importers need a `ScanState` class.  In that case, just delete the `Scan
 
 # Notes
 
-
 ## Recognizing multi-line patterns
 `i.gen_lines` now supports skip counts, using the `skip` ivar. Skip counts allow pattern matching to be done naturally.
 
@@ -222,8 +221,7 @@ But to repeat, there is not much reason actually to have `i.scan_table` go into 
 
 # Conclusion
 This documentation is merely a starting point for studying the code. This documentation is concise for a reason: too many details obscure the big picture.
- 
+
 Once you have a *general* notion of what the code does, and how it does it, you should definitely study the code itself to gain deeper understanding. Use the code to guide your memory, not this documentation! When studying code for the first time, focus on seeing the shape of the outline. What files have many classes? What classes are complex?
 
 If you have questions about the code, please feel free to ask questions.  But do explore the code first. It's usually straightforward.
-

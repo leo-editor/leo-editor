@@ -129,7 +129,6 @@ Title(text, font=None, pane=None, position=None, stylesheet=None)
 
 # Using demo scripts
 
-
 ## Script trees and lists
 
 A **script tree**, a tree of **script nodes**, specifies the script.
@@ -266,7 +265,7 @@ import leo.plugins.demo as demo_module
 
 # << class IntroSlides >>
 class IntroSlides (demo_module.Demo):
-    
+
     def setup(self, p=None):
         c = self.c
         self.end_on_exception = True # Good for debugging.
@@ -286,7 +285,7 @@ class IntroSlides (demo_module.Demo):
 
     def setup_script(self):
         self.delete_widgets()
-        
+
     def teardown(self):
         c = self.c
         self.delete_all_widgets()
@@ -306,7 +305,7 @@ class IntroSlides (demo_module.Demo):
         c.contractAllHeadlines()
         c.clearChanged()
         c.redraw()
-            
+
     def teardown_script(self):
         if self.auto_run:
             self.wait(0.5)
@@ -554,7 +553,7 @@ Don't worry about case or non-alpha characters in menu_name. This method shows a
 ```python
 Image(fn=demo.get_icon_fn('box01.png'), position=(20, 30), magnification=2)
 ```
-    
+
 **demo.set_text_delta(self, delta, w=None)**: Updates the style sheet for the given widget w (default is the body pane). Delta increases the text size by the given number of points.
 
 Presenters may alter the appearance of captions by using changing the
@@ -622,7 +621,7 @@ Subclasses of Demo may override any of the following:
 **demo.get_top_geometry()**: Return the geometry of Leo's main window.
 
 **demo.set_ratios(ratio1, ratio2)**: Restores the body/outline and tree/log ratios.
-   
+
 **demo.set_top_geometry(geometry)**: Restore the geometry of Leo's main window.
 
 **demo.set_window_size(width, height)**: Set the size of Leo's main window, in pixels.
@@ -688,4 +687,3 @@ Edward K. Ream wrote, debugged and documented this plugin from January 29 to Feb
 - Added demo.headline_geometry(p)
 - Added Head helper.
 - Added all Graphics classes and helpers to demo.namespace.
-
