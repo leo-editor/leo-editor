@@ -781,8 +781,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Handle a name token."""
         name = self.val
         if name in self.compound_statements:
-            # There seems to be no need to add context to the trailing ':'.
-            self.word_op(name)
+            self.word(name)  ### Was word_op.
         elif name in self.operator_keywords:
             self.word_op(name)
         else:
@@ -1025,6 +1024,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             context = self.scan_slice()
         # Now we can generate proper code.
         self.clean('blank')
+        ### g.trace(self.index, repr(context))
         if context == 'complex-slice':
             if prev.value not in '[:':
                 self.blank()
@@ -1032,10 +1032,11 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.blank()
         elif context == 'simple-slice':
             self.add_token('op-no-blanks', val)
+        elif context == 'end-statement':
+            self.add_token('op-no-blank', val)
         else:
             self.add_token('op', val)
             self.blank()
-            return
     #@+node:ekr.20240109115925.1: *6* tbo.scan_slice
     def scan_slice(self) -> Optional[str]:
         """
@@ -1116,12 +1117,16 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.curly_brackets_level += 1
         self.clean('blank')
         prev = self.code_list[-1]
+
+        ### g.trace(prev)
+
         if prev.kind in ('op', 'word-op'):
             self.blank()
             self.add_token('lt', val)
         elif prev.kind == 'word':
             # Only suppress blanks before '(' or '[' for non-keywords.
-            if val == '{' or prev.value in ('if', 'else', 'return', 'for'):
+            ### if val == '{' or prev.value in ('if', 'else', 'return', 'for'):
+            if val == '{' or prev.value in ('if', 'else', 'elif', 'return', 'for', 'while'):
                 self.blank()
             elif val == '(':
                 self.in_arg_list += 1
@@ -1181,40 +1186,81 @@ class TokenBasedOrange:  # Orange is the new Black.
     def star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
         val = '*'
-        self.clean('blank')
         context = self.token.context
-        if context not in ('annotation', 'initializer'):
+        prev = self.code_list[-1]
+
+        self.clean('blank')
+
+        ### g.trace('prev:', prev, val, 'context:', context)
+
+        if context == 'arg':
+            self.blank()
+            self.add_token('op-no-blanks', val)
+        else:
             self.blank()
             self.add_token('op', val)
-            return  # #2533
-        if self.paren_level > 0:
-            prev = self.code_list[-1]
-            if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
+            self.blank()
+
+        if 0:  ### OLD
+
+            ### if context not in ('annotation', 'initializer'):
+            if context not in ('arg', 'annotation', 'initializer'):
                 self.blank()
                 self.add_token('op', val)
-                return
-        self.blank()
-        self.add_token('op', val)
-        self.blank()
+                return  # #2533
+
+
+            if self.paren_level > 0:
+                prev = self.code_list[-1]
+                ###
+                # if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
+                    # self.blank()
+                    # self.add_token('op', val)
+                    # return
+                if prev.kind == 'lt':
+                    self.add_token('op', val)
+                    return
+                elif (prev.kind, prev.value) == ('op', ','):
+                    self.blank()
+                    self.add_token('op', val)
+                    return
+
+            self.blank()
+            self.add_token('op', val)
+            self.blank()
     #@+node:ekr.20240105145241.39: *5* tbo.star_star_op
     def star_star_op(self) -> None:
         """Put a ** operator, with a special case for **kwargs."""
         val = '**'
-        self.clean('blank')
         context = self.token.context
-        if context not in ('annotation', 'initializer'):
+        prev = self.code_list[-1]
+
+        self.clean('blank')
+
+        ### g.trace('prev:', prev, val, 'context:', context)
+
+        if context == 'arg':
+            self.blank()
+            self.add_token('op-no-blanks', val)
+        else:
             self.blank()
             self.add_token('op', val)
-            return  # #2533
-        if self.paren_level > 0:
-            prev = self.code_list[-1]
-            if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
+            self.blank()
+
+        if 0:  ### OLD
+            if context not in ('annotation', 'initializer'):
                 self.blank()
                 self.add_token('op', val)
-                return
-        self.blank()
-        self.add_token('op', val)
-        self.blank()
+                return  # #2533
+            if self.paren_level > 0:
+                prev = self.code_list[-1]
+                if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
+                    self.blank()
+                    self.add_token('op', val)
+                    return
+            self.blank()
+            self.add_token('op', val)
+            self.blank()
     #@+node:ekr.20240105145241.40: *5* tbo.word
     def word(self, s: str) -> None:
         """Add a word request to the code list."""
@@ -1225,7 +1271,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Scan special statements, adding context to *later* input tokens.
         func = self.word_dispatch.get(s)
         if func:
+            # Call scan_compound_statement, scan_def, scan_from, scan_import.
             func()
+
+        ### g.trace(s)
 
         # Add context to *this* input token.
         if s in ('class', 'def'):
@@ -1240,6 +1289,13 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.scan_call(i)
 
         # Finally: generate output tokens.
+        if 1:  ###
+            self.blank()
+            self.add_token('word', s)
+            self.blank()
+            return
+
+
         if self.square_brackets_stack:
             # A previous 'op-no-blanks' token may cancel this blank.
             self.blank()
@@ -1490,6 +1546,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Scan optional  * and ** operators.
         i = i1
         token = self.tokens[i1]
+
+        ### g.trace(token)  ###
+
         if token.kind == 'op' and token.value in ('*', '**'):
             self.set_context(i1, 'arg')
             i = next(i)
@@ -1562,10 +1621,16 @@ class TokenBasedOrange:  # Orange is the new Black.
         
         Set context for every '=' operator.
         """
+        ### g.trace(self.tokens[i1])
+
+        # Handle leading * and ** args.
+        if self.is_op(i1, ['*', '**']):  ###
+            self.set_context(i1, 'arg')
         i = self.find_input_token(i1, [',', ')'])
         for i2 in range(i1 + 1, i - 1):
             if self.is_op(i2, ['=']):
                 self.set_context(i2, 'initializer')
+
         return i
     #@+node:ekr.20240107092458.1: *5* tbo.scan_call_args
     def scan_call_args(self, i1: int) -> Optional[int]:
@@ -1600,20 +1665,29 @@ class TokenBasedOrange:  # Orange is the new Black.
         Scan a compound statement, adding 'end-statement' context to the
         trailing ':' token.
         """
+        ### g.trace(self.index, self.tokens[self.index])  ###
+
         # Aliases.
         expect, next, set_context = self.expect, self.next_token, self.set_context
 
         # Scan the keyword.
         i = self.index
-        expect(i, 'word')
+        expect(i, 'name')
+        keyword = self.tokens[i].value
         i = next(i)
 
         # Find the trailing ':'.
         i = self.find_input_token(i, [':'])
-        expect(i, 'op', ':')
-
-        # Set the context.
-        set_context(i, 'end-statement')
+        word_ops = ('if', 'else', 'for')
+        if i is not None:
+            expect(i, 'op', ':')
+            # Set the context.
+            set_context(i, 'end-statement')
+            return
+        if keyword in word_ops:
+            return
+        message = f"Expecting one of {word_ops}, got {keyword!r}"
+        raise BeautifyError(message)
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def
     def scan_def(self) -> None:
         """Scan a complete 'def' statement."""
@@ -1636,7 +1710,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Find i3, the ending ':' of the def statement.
         i3 = self.find_input_token(i, [':'])
         expect(i3, 'op', ':')
-        self.set_context(i3, 'def')
+        self.set_context(i3, 'end-statement')  ### 'def')
 
         # Scan the arguments.
         self.scan_args(i1, i2)
@@ -1723,6 +1797,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Add context *only* if it does not already exist.
         if not token.context:
+            # g.trace(f"{i:4} {context:14} {g.callers(1)}")
             token.context = context
     #@+node:ekr.20240106174317.1: *5* tbo.unexpected_token
     def unexpected_token(self, i: int) -> None:
