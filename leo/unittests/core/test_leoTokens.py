@@ -262,13 +262,20 @@ class TestTokenBasedOrange(BaseTest):
         return black.format_str(contents, mode=mode)
     #@+node:ekr.20240105153425.45: *3* TestTBO.test_annotations
     def test_annotations(self):
-
+        
         table = (
-        # Case 0.
-        '''\
-    def annotated_f(s: str = None, x=None) -> None:
-        pass
-    ''',
+            # Case 0.
+            (
+                """s: str = None\n"""
+            ),
+            # Case 1.
+            (
+                textwrap.dedent(
+                    """
+                        def annotated_f(s: str = None, x=None) -> None:
+                            pass
+                    """).strip() + '\n'
+            ),
         )
         for i, contents in enumerate(table):
             contents, tokens = self.make_data(contents)
