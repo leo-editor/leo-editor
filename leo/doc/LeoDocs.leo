@@ -1581,8 +1581,8 @@
 <v t="ekr.20230909073504.2"><vh>Steve Zatz: in praise of @clean</vh></v>
 <v t="ekr.20230909073504.3"><vh>EKR: Why @clean is so important</vh></v>
 </v>
-<v t="ekr.20230908140206.569"><vh>2016-2018: 5.2 through 5.9: precursors to leoInteg</vh></v>
-<v t="ekr.20230908152641.1"><vh>2019-2023: Leo 6.0 and beyond: supporting leoInteg</vh></v>
+<v t="ekr.20230908140206.569"><vh>2016-2018: 5.2 through 5.9: precursors to LeoInteg</vh></v>
+<v t="ekr.20230908152641.1"><vh>2019-2023: Leo 6.0 and beyond: supporting LeoInteg</vh></v>
 </v>
 </v>
 </v>
@@ -30248,7 +30248,7 @@ Added gdc.diff_pull_request.</t>
 <t tx="ekr.20210405100137.955">https://github.com/leo-editor/leo-editor/issues/1798
 
 Note: Leo can not recognize @path directives in the body text of @file nodes!</t>
-<t tx="ekr.20210405104357.1">- Support for leoInteg: "Leo in vs-code".
+<t tx="ekr.20210405104357.1">- Support for LeoInteg: "Leo in vs-code".
   - Add leoserver.py, stand-alone server for Leo.
   - Support .leojs, a json outline format.
 - Support for Qt6.
@@ -30265,7 +30265,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **The highlights of Leo 6.4**
 
-- Support for [leoInteg](https://github.com/boltex/leointeg#-leo-for-vs-code): "Leo in vs-code".
+- Support for [LeoInteg](https://github.com/boltex/leointeg#-leo-for-vs-code): "Leo in vs-code".
   - Add leoserver.py, stand-alone server for Leo.
   - Add support for .leojs, a json outline format.
 - Support for Qt6.
@@ -30717,7 +30717,7 @@ Leo, https://leo-editor.github.io/leo-editor/ is an [IDE, outliner and PIM](http
 
 **The highlights of Leo 6.6.3**
 
-- Enhance leoserver.py to support leoInteg and leoJS.
+- Enhance leoserver.py to support LeoInteg and LeoJS.
 - Improve how Leo handles url's.
 - Simplify the GlobalConfigManager class.
 - The usual assortment of tweaks and bug fixes.
@@ -30738,17 +30738,17 @@ Leo, https://leo-editor.github.io/leo-editor/ is an [IDE, outliner and PIM](http
 @nowrap
 @language md
 </t>
-<t tx="ekr.20220719064316.1">- Enhance leoserver.py to support leoInteg and leoJS.
+<t tx="ekr.20220719064316.1">- Enhance leoserver.py to support LeoInteg and LeoJS.
 - Improve how Leo handles url's.
 - Simplify the GlobalConfigManager class.
 - The usual assortment of tweaks and bug fixes.</t>
-<t tx="ekr.20220831093321.1">- Enhance leoserver.py to support leoInteg and leoJS.
+<t tx="ekr.20220831093321.1">- Enhance leoserver.py to support LeoInteg and LeoJS.
 - Simplify all of Leo's importers.
 - Importers no longer generate underindented escape strings.
 - Begin annotating Leo's core files.
 - The usual assortment of minor bug fixes.</t>
 <t tx="ekr.20220912154542.1">- Leo now requires Python 3.9 or later.
-- Enhance leoserver.py to support leoInteg and leoJS.
+- Enhance leoserver.py to support LeoInteg and LeoJS.
 - Importers no longer generate underindented escape strings.
 - Delete all of Leo's cover- and test- commands.
 - Allow unit tests to run with the Qt gui.
@@ -31115,7 +31115,7 @@ More inspired Leo's cloned nodes.
 - Виталије Милошевић, (Vitalije Milosevic) made vital code-level contributions.
 - Tsuchi Noko created transparent icons.
 - Neal Norwitz wrote PyChecker.
-- Félix Malboeuf wrote leoInteg, LeoJs, leoserver.py and leoclient.py.
+- Félix Malboeuf wrote LeoInteg, LeoJs, leoserver.py and leoclient.py.
 - Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
 - Paul Paterson created the plugin architecture, helped with spell checking and contributed many plugins.
 - François Pinard wrote pymacs, the foundation of Leo's emacs bridge.
@@ -32685,20 +32685,20 @@ Around this time Félix started a careful code review of *all* of Leo's core, in
 
 6.3 (November 6, 2020): ``leoAst.py``.
 
-June 21, 2021: The dawn of ``leoInteg``: The first commit by Félix Malboeuf for leoserver.py, a stand-alone server for Leo.
+June 21, 2021: The dawn of ``LeoInteg``: The first commit by Félix Malboeuf for leoserver.py, a stand-alone server for Leo.
 
-6.4 (September 20, 2021): The first release supporting ``leoInteg``: integration of Leo with VS code. ``leoInteg`` and ``leoJS`` are the future of Leo. All later releases contain support for ``leoInteg`` and ``leoJS``. This was the first release containing leoserver.py.
+6.4 (September 20, 2021): The first release supporting ``LeoInteg``: integration of Leo with VS code. ``LeoInteg`` and ``LeoJS`` are the future of Leo. All later releases contain support for ``LeoInteg`` and ``LeoJS``. This was the first release containing leoserver.py.
 
 .. _`announcement`: https://groups.google.com/g/leo-editor/c/8SPF7GFo5f4/m/GcaWR7ohBQAJ
 
-Sep 24, 2021: Félix releases leoInteg 1.0, with this `announcement`_.
+Sep 24, 2021: Félix releases LeoInteg 1.0, with this `announcement`_.
 
 This is one of the most important dates in Leo's history:
 
-- leoInteg promises to make millions of people aware of Leo.
-  One click in `vs-code` installs `leoInteg`.
-- `leoJS` will allow Leo to run in a browser!
-- `leoInteg` brings all of `vs-code`'s features to Leo. For example, there
+- LeoInteg promises to make millions of people aware of Leo.
+  One click in `vs-code` installs `LeoInteg`.
+- `LeoJS` will allow Leo to run in a browser!
+- `LeoInteg` brings all of `vs-code`'s features to Leo. For example, there
   are several vim-emulator modes for `vs-code`, each much better than Leo's vim mode.
 
 Leo on vs-code means that Leo will live on. Nothing lasts forever, but when IDE's become obsolete, the replacement might build on `vs-code` and Leo. That's pretty close to immortality in my book.
