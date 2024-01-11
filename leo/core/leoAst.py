@@ -4,6 +4,9 @@
 # Leo's copyright notice is based on the MIT license:
 # https://leo-editor.github.io/leo-editor/license.html
 
+# Don't pollute cff searches with matches from this file!
+#@@nosearch
+
 #@+<< leoAst docstring >>
 #@+node:ekr.20200113081838.1: ** << leoAst docstring >>
 """

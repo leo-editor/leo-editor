@@ -363,7 +363,7 @@ class Tokenizer:
         # Handle each token, appending tokens and between-token whitespace to results.
         self.prev_offset, self.results = -1, []
         for five_tuple in five_tuples:
-            # Subclsasses create lists of Tokens or InputTokens.
+            # Subclasses create lists of Tokens or InputTokens.
             self.do_token(contents, five_tuple)
         # Print results when tracing.
         self.check_results(contents)
@@ -510,6 +510,27 @@ class TokenBasedOrange:  # Orange is the new Black.
     
     This class is simpler and faster than the Orange class in leoAst.py.
     """
+    #@+<< TokenBasedOrange: __slots__ >>
+    #@+node:ekr.20240111035404.1: *4* << TokenBasedOrange: __slots__ >>
+    __slots__ = [
+        # Command-line arguments.
+        'force', 'tab_width', 'verbose',
+        # Debugging.
+        'contents', 'filename',
+        # The input token. Set only in the main loop.
+        'kind', 'index', 'line', 'token', 'val',
+        # Lists of input and output tokens.
+        'code_list', 'tokens',
+        # State data for whitespace. Don't even *think* about changing these!
+        'curly_brackets_level', 'indent_level', 'lws',
+        'paren_level', 'square_brackets_stack',
+        # Parse and Leo-related state.
+        'decorator_seen', 'in_arg_list', 'in_doc_part', 'in_fstring',
+        'state_stack', 'verbatim',
+        # Dispatch dict.
+        'word_dispatch',
+    ]
+    #@-<< TokenBasedOrange: __slots__ >>
     #@+<< TokenBasedOrange: constants >>
     #@+node:ekr.20240108065205.1: *4* << TokenBasedOrange: constants >>
     # Values of operator InputToken that require context assistance.
@@ -584,24 +605,33 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.contents = contents
         self.filename = filename
 
-        # State vars...
-        self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
-        self.decorator_seen = False  # Set by do_name for do_op.
-        self.in_arg_list = 0  # > 0 if in an arg list of a def.
-        self.in_fstring = False  # True: scanning an f-string.
-        self.index = 0  # The index within the tokens array of the token being scanned.
-        self.indent_level = 0  # Set only by do_indent and do_dedent.
-        self.lws = ''  # Leading whitespace.
-        self.paren_level = 0  # Number of unmatched '(' tokens.
-        self.square_brackets_stack: list[bool] = []  # A stack of bools, for self.word().
-        self.state_stack: list["ParseState"] = []  # Stack of ParseState objects.
-        self.tokens = tokens  # The list of input tokens.
-        self.val = None  # The input token's value (a string).
-        self.verbatim = False  # True: don't beautify.
-
-        # Init output list and state...
+        # The input and output lists...
         self.code_list: list[OutputToken] = []  # The list of output tokens.
         self.tokens = tokens  # The list of input tokens.
+
+        # State vars for whitespace.
+        self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
+        self.paren_level = 0  # Number of unmatched '(' tokens.
+        self.square_brackets_stack: list[bool] = []  # A stack of bools, for self.word().
+        self.indent_level = 0  # Set only by do_indent and do_dedent.
+
+        # Parse state.
+        self.decorator_seen = False  # Set by do_name for do_op.
+        self.in_arg_list = 0  # > 0 if in an arg list of a def.
+        self.in_doc_part = False
+        self.in_fstring = False  # True: scanning an f-string.
+        self.state_stack: list["ParseState"] = []  # Stack of ParseState objects.
+
+        # Leo-related state.
+        self.verbatim = False  # True: don't beautify.
+
+        # Ivars describing the present input token...
+        self.index = 0  # The index within the tokens array of the token being scanned.
+        self.lws = ''  # Leading whitespace.
+        self.tokens = tokens  # The list of input tokens.
+        self.val = None  # The input token's value (a string).
+
+
         self.add_token('file-start', '')
         self.push_state('file-start')
         if self.verbose:
@@ -667,6 +697,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         state = ParseState(kind, value)
         self.state_stack.append(state)
     #@+node:ekr.20240105145241.9: *4* tbo: Input visitors & generators
+    # Visitors handle input tokens.
+    # Generators create zero or more output tokens.
     #@+node:ekr.20240105145241.26: *5* tbo.add_token
     def add_token(self, kind: str, value: Any) -> OutputToken:
         """Add an output token to the code list."""
@@ -697,7 +729,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if prev.kind == kind:
             self.code_list.pop()
     #@+node:ekr.20240105145241.10: *5* tbo.do_comment
-    in_doc_part = False
+    ### in_doc_part = False
 
     comment_pat = re.compile(r'^(\s*)#[^@!# \n]')
 
