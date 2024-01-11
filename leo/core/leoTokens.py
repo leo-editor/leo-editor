@@ -240,17 +240,14 @@ class InputToken:  # TBO
 #@+node:ekr.20240105143307.1: *3* class Tokenizer
 class Tokenizer:
     """
-    Create a list of InputTokens from contents using Python's tokenizer
-    module: https://docs.python.org/3/library/tokenize.html
+    Use Python's tokenizer module to create InputTokens
+    See: https://docs.python.org/3/library/tokenize.html
     """
-
+    token_index = 0
     results: list[InputToken] = []
 
     #@+others
     #@+node:ekr.20240105143307.2: *4* itok.add_token
-    token_index = 0
-    prev_line_token = None
-
     def add_token(self, kind: str, line: str, s_row: int, value: str,) -> None:
         """Add an InputToken to the results list."""
         tok = InputToken(kind, value)
