@@ -691,8 +691,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
         return contents, encoding, tokens
     #@+node:ekr.20240105145241.9: *4* tbo: Input visitors & generators
-    # Visitors handle input tokens.
-    # Generators create zero or more output tokens.
+    # Visitors (tbo.do_* methods) handle input tokens.
+    # Generators (tbo.gen_* methods) create zero or more output tokens.
     #@+node:ekr.20240105145241.29: *5* tbo.clean
     def clean(self, kind: str) -> None:
         """Remove the last item of token list if it has the given kind."""
@@ -876,15 +876,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.gen_blank()
     #@+node:ekr.20240105145241.17: *5* tbo.do_newline, do_nl & generators
     def do_newline(self) -> None:
-        """Handle a regular newline."""
-        self.gen_line_end_helper()
+        """
+        do_newline: Handle a regular newline.
 
-    def do_nl(self) -> None:
-        """Handle a continuation line."""
-        self.gen_line_end_helper()
+        do_nl: Handle a continuation line.
 
-    def gen_line_end_helper(self) -> None:
-        """Add a line-end request to the code list."""
+        """
         # Only do_newline and do_nl should call this method.
         token = self.token
         assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
@@ -894,6 +891,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Add the indentation until the next indent/unindent token.
         self.gen_line_indent()
+
+    do_nl = do_newline
     #@+node:ekr.20240105145241.25: *6* tbo.gen_line_end
     def gen_line_end(self) -> OutputToken:
         """Add a line-end request to the code list."""
