@@ -857,6 +857,12 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         do_nl: Handle a continuation line.
 
+        From https://docs.python.org/3/library/token.html
+
+        - NEWLINE tokens end *logical* lines of Python code.
+
+        - NL tokens end *physical* lines. They appear whe when a logical line
+          of code spans multiple physical lines.
         """
         # Only do_newline and do_nl should call this method.
         token = self.token
