@@ -177,15 +177,16 @@ class BeautifyError(Exception):
 class InputToken:  # TBO
     """A class representing a TBO input token."""
 
-    def __init__(self, kind: str, value: str):
-        # Basic data.
+    ### def __init__(self, kind: str, value: str):
+    def __init__(
+        self, kind: str, value: str, index: int, line: str, line_number: int,
+    ) -> None:
+        self.context: str = None
         self.kind = kind
         self.value = value
-        self.context: str = None
-        # Debugging data.
-        self.index = 0
-        self.line = ''  # The entire line containing the token.
-        self.line_number = 0  # The line number, for errors and dumps.
+        self.index = index
+        self.line = line  # The entire line containing the token.
+        self.line_number = 0
 
     def __repr__(self) -> str:  # pragma: no cover
         s = f"{self.index:<3} {self.kind:}"
@@ -248,15 +249,21 @@ class Tokenizer:
 
     #@+others
     #@+node:ekr.20240105143307.2: *4* itok.add_token
-    def add_token(self, kind: str, line: str, s_row: int, value: str,) -> None:
+    def add_token(self, kind: str, line: str, line_number: int, value: str,) -> None:
         """Add an InputToken to the results list."""
-        tok = InputToken(kind, value)
-        tok.index = self.token_index
-        # Bump the token index.
-        self.token_index += 1
-        tok.line = line
-        tok.line_number = s_row
-        self.results.append(tok)
+        if 1:
+            tok = InputToken(kind, value, self.token_index, line, line_number)
+            self.token_index += 1
+            self.results.append(tok)
+
+        # else:
+            # tok = InputToken(kind, value)
+            # tok.index = self.token_index
+            # # Bump the token index.
+            # self.token_index += 1
+            # tok.line = line
+            # tok.line_number = s_row
+            # self.results.append(tok)
     #@+node:ekr.20240105143214.2: *4* itok.check_results
     def check_results(self, contents: str) -> None:
 
