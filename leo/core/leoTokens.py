@@ -612,7 +612,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # State vars for whitespace.
         self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
         self.paren_level = 0  # Number of unmatched '(' tokens.
-        self.square_brackets_stack: list[bool] = []  # A stack of bools, for self.word().
+        self.square_brackets_stack: list[bool] = []  # A stack of bools, for self.gen_word().
         self.indent_level = 0  # Set only by do_indent and do_dedent.
 
         # Parse state.
@@ -697,29 +697,6 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.9: *4* tbo: Input visitors & generators
     # Visitors handle input tokens.
     # Generators create zero or more output tokens.
-    #@+node:ekr.20240105145241.26: *5* tbo.gen_token
-    def gen_token(self, kind: str, value: Any) -> OutputToken:
-        """Add an output token to the code list."""
-        tok = OutputToken(kind, value)
-        tok.index = len(self.code_list)
-        self.code_list.append(tok)
-        return tok
-    #@+node:ekr.20240105145241.27: *5* tbo.gen_blank
-    def gen_blank(self) -> None:
-        """Add a blank request to the code list."""
-        prev = self.code_list[-1]
-        if prev.kind not in (
-            'blank',
-            # 'blank-lines',  # black only: Request for n blank lines.
-            'file-start',
-            'hard-blank',
-            'line-end',
-            'line-indent',
-            'lt',  # A left paren or curly/square bracket.
-            'op-no-blanks',  # A demand that no blank follows this op.
-            'unary-op',
-        ):
-            self.gen_token('blank', ' ')
     #@+node:ekr.20240105145241.29: *5* tbo.clean
     def clean(self, kind: str) -> None:
         """Remove the last item of token list if it has the given kind."""
@@ -812,7 +789,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Handle dedent token."""
         self.indent_level -= 1
         self.lws = self.indent_level * self.tab_width * ' '
-        self.line_indent()
+        self.gen_line_indent()
 
     def do_indent(self) -> None:
         """Handle indent token."""
@@ -835,19 +812,19 @@ class TokenBasedOrange:  # Orange is the new Black.
         elif new_indent < old_indent:  # pragma: no cover (defensive)
             g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
         self.lws = new_indent
-        self.line_indent()
+        self.gen_line_indent()
     #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.val
         if name in self.compound_statements:
-            self.word(name)  ### Was word_op.
+            self.gen_word(name)  ### Was gen_word_op.
         elif name in self.operator_keywords:
-            self.word_op(name)
+            self.gen_word_op(name)
         else:
-            self.word(name)
-    #@+node:ekr.20240105145241.40: *6* tbo.word
-    def word(self, s: str) -> None:
+            self.gen_word(name)
+    #@+node:ekr.20240105145241.40: *6* tbo.gen_word
+    def gen_word(self, s: str) -> None:
         """Add a word request to the code list."""
         assert s and isinstance(s, str), repr(s)
         # Aliases.
@@ -890,8 +867,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             # self.gen_blank()
             # self.gen_token('word', s)
             # self.gen_blank()
-    #@+node:ekr.20240107141830.1: *6* tbo.word_op
-    def word_op(self, s: str) -> None:
+    #@+node:ekr.20240107141830.1: *6* tbo.gen_word_op
+    def gen_word_op(self, s: str) -> None:
         """Add a word-op request to the code list."""
         assert s and isinstance(s, str), repr(s)
         self.gen_blank()
@@ -913,12 +890,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
 
         # Create the 'line-end' output token.
-        self.add_line_end()
+        self.gen_line_end()
 
         # Add the indentation until the next indent/unindent token.
-        self.line_indent()
-    #@+node:ekr.20240105145241.25: *7* tbo.add_line_end
-    def add_line_end(self) -> OutputToken:
+        self.gen_line_indent()
+    #@+node:ekr.20240105145241.25: *7* tbo.gen_line_end
+    def gen_line_end(self) -> OutputToken:
         """Add a line-end request to the code list."""
         # This may be called from do_name as well as do_newline and do_nl.
         assert self.token.kind in ('newline', 'nl'), self.token.kind
@@ -928,8 +905,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Distinguish between kinds of 'line-end' tokens.
         t.newline_kind = self.token.kind
         return t
-    #@+node:ekr.20240105145241.33: *7* tbo.line_indent
-    def line_indent(self) -> None:
+    #@+node:ekr.20240105145241.33: *7* tbo.gen_line_indent
+    def gen_line_indent(self) -> None:
         """Add a line-indent token."""
         self.clean('line-indent')  # Defensive. Should never happen.
         self.gen_token('line-indent', self.lws)
@@ -1317,6 +1294,29 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Retain the indent that won't be cleaned away.
             self.clean('line-indent')
             self.gen_token('hard-blank', val)
+    #@+node:ekr.20240105145241.27: *5* tbo.gen_blank
+    def gen_blank(self) -> None:
+        """Add a blank request to the code list."""
+        prev = self.code_list[-1]
+        if prev.kind not in (
+            'blank',
+            # 'blank-lines',  # black only: Request for n blank lines.
+            'file-start',
+            'hard-blank',
+            'line-end',
+            'line-indent',
+            'lt',  # A left paren or curly/square bracket.
+            'op-no-blanks',  # A demand that no blank follows this op.
+            'unary-op',
+        ):
+            self.gen_token('blank', ' ')
+    #@+node:ekr.20240105145241.26: *5* tbo.gen_token
+    def gen_token(self, kind: str, value: Any) -> OutputToken:
+        """Add an output token to the code list."""
+        tok = OutputToken(kind, value)
+        tok.index = len(self.code_list)
+        self.code_list.append(tok)
+        return tok
     #@+node:ekr.20240105145241.41: *4* tbo: Scanners & helpers
     #@+node:ekr.20240106181128.1: *5* tbo.scan_annotation
     def scan_annotation(self, i1: int) -> Optional[int]:
