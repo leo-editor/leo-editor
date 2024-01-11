@@ -174,10 +174,8 @@ def output_tokens_to_string(tokens: list[OutputToken]) -> str:
 class BeautifyError(Exception):
     """Leading tabs found."""
 #@+node:ekr.20240105140814.53: *3* class InputToken
-class InputToken:
-    """
-    A class representing an Orange input token.
-    """
+class InputToken:  # TBO
+    """A class representing a TBO input token."""
 
     def __init__(self, kind: str, value: str):
         # Basic data.
@@ -253,17 +251,8 @@ class Tokenizer:
     token_index = 0
     prev_line_token = None
 
-    def add_token(
-        self,
-        kind: str,
-        five_tuple: tuple,
-        line: str,
-        s_row: int,
-        value: str,
-    ) -> None:
-        """
-        Add an InputToken to the results list.
-        """
+    def add_token(self, kind: str, line: str, s_row: int, value: str,) -> None:
+        """Add an InputToken to the results list."""
         tok = InputToken(kind, value)
         tok.index = self.token_index
         # Bump the token index.
@@ -357,9 +346,9 @@ class Tokenizer:
         # Add any preceding between-token whitespace.
         ws = contents[self.prev_offset:s_offset]
         if ws:  # Create the 'ws' pseudo-token.
-            self.add_token('ws', five_tuple, line, s_row, ws)
+            self.add_token('ws', line, s_row, ws)
         # Always add token, even if it contributes no text!
-        self.add_token(kind, five_tuple, line, s_row, tok_s)
+        self.add_token(kind, line, s_row, tok_s)
         # Update the ending offset.
         self.prev_offset = e_offset
     #@+node:ekr.20240105143214.6: *4* itok.make_input_tokens
