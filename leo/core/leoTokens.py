@@ -177,15 +177,17 @@ class BeautifyError(Exception):
 class InputToken:  # leoTokens.py.
     """A class representing a TBO input token."""
 
+    __slots__ = 'context', 'index', 'kind', 'line', 'line_number', 'value'
+
     def __init__(
         self, kind: str, value: str, index: int, line: str, line_number: int,
     ) -> None:
         self.context: str = None
-        self.kind = kind
-        self.value = value
         self.index = index
+        self.kind = kind
         self.line = line  # The entire line containing the token.
         self.line_number = 0
+        self.value = value
 
     def __repr__(self) -> str:  # pragma: no cover
         s = f"{self.index:<3} {self.kind:}"
