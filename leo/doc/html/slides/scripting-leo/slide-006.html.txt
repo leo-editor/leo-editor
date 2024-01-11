@@ -8,7 +8,7 @@ Leo defines Python iterators that return positions. These iterators are the easi
 - **c.all_positions()** returns all the positions of the outline in order.
 
   *Note*: Cloned nodes will appear several times in this list.
-  
+
 - **c.all_unique_nodes()** returns all the vnodes of the outline.
 - **p.self_and_subtree()** returns p and all its descendants.
 - **p.children()** returns all of p’s direct children.

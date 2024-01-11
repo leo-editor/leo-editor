@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Writing Plugins &#8212; Leo 6.7.5 documentation</title>
+    <title>Writing Plugins &#8212; Leo 6.7.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=db26dd79" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=524d4423" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8453e47e" />
     
-    <script src="_static/documentation_options.js?v=c4c7ee59"></script>
+    <script src="_static/documentation_options.js?v=f33f6433"></script>
     <script src="_static/doctools.js?v=13a9ecda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="coloring.html" title="Controlling Syntax Coloring"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="intermediatetopics.html" accesskey="U">Advanced Topics</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Writing Plugins</a></li> 
       </ul>
@@ -280,9 +280,11 @@ and the additional arguments passed to the hook in the keywords dictionary.
 For some kind of hooks, Leo will skip its own normal processing if the hook
 returns anything <em>other</em> than None. The table indicates such hooks with ‘yes’ in
 the ‘Stop?’ column.</p>
-<p><strong>Important</strong>: Ever since Leo 4.2, the v, old_v and new_v keys in
-the keyword dictionary contain <em>positions</em>, not vnodes. These keys are
-deprecated. The new_c key is also deprecated. Plugins should use the c key instead.</p>
+<p><strong>Note</strong>:</p>
+<ul class="simple">
+<li><p>The <cite>v</cite>, <cite>old_v</cite> and <cite>new_v</cite> keys below are <em>deprecated</em>. They contain <em>positions</em>, not vnodes.</p></li>
+<li><p>The <cite>new_c</cite> key is also <em>deprecated</em>. Use the <cite>c</cite> key instead.</p></li>
+</ul>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Event name (tag argument)</p></th>
@@ -511,36 +513,6 @@ deprecated. The new_c key is also deprecated. Plugins should use the c key inste
 <td></td>
 <td><p>whenever the hoist stack changes</p></td>
 <td><p>c</p></td>
-</tr>
-<tr class="row-even"><td><p>‘hypercclick1’</p></td>
-<td><p>yes</p></td>
-<td><p>before control click in hyperlink</p></td>
-<td><p>c,p,v,event</p></td>
-</tr>
-<tr class="row-odd"><td><p>‘hypercclick2’</p></td>
-<td></td>
-<td><p>after  control click in hyperlink</p></td>
-<td><p>c,p,v,event</p></td>
-</tr>
-<tr class="row-even"><td><p>‘hyperenter1’</p></td>
-<td><p>yes</p></td>
-<td><p>before entering hyperlink</p></td>
-<td><p>c,p,v,event</p></td>
-</tr>
-<tr class="row-odd"><td><p>‘hyperenter2’</p></td>
-<td></td>
-<td><p>after  entering hyperlink</p></td>
-<td><p>c,p,v,event</p></td>
-</tr>
-<tr class="row-even"><td><p>‘hyperleave1’</p></td>
-<td><p>yes</p></td>
-<td><p>before leaving  hyperlink</p></td>
-<td><p>c,p,v,event</p></td>
-</tr>
-<tr class="row-odd"><td><p>‘hyperleave2’</p></td>
-<td></td>
-<td><p>after  leaving  hyperlink</p></td>
-<td><p>c,p,v,event</p></td>
 </tr>
 <tr class="row-even"><td><p>‘iconclick1’</p></td>
 <td><p>yes</p></td>
@@ -813,7 +785,42 @@ dictionary whose keys are all the tags specified by the user in the body of the
 </pre></div>
 </div>
 </li>
+<li><p>The following links are supported by plugins, not Leo itself:</p></li>
 </ol>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>‘hypercclick1’</p></td>
+<td><p>yes</p></td>
+<td><p>before control click in hyperlink</p></td>
+<td><p>c,p,v,event</p></td>
+</tr>
+<tr class="row-even"><td><p>‘hypercclick2’</p></td>
+<td></td>
+<td><p>after  control click in hyperlink</p></td>
+<td><p>c,p,v,event</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘hyperenter1’</p></td>
+<td><p>yes</p></td>
+<td><p>before entering hyperlink</p></td>
+<td><p>c,p,v,event</p></td>
+</tr>
+<tr class="row-even"><td><p>‘hyperenter2’</p></td>
+<td></td>
+<td><p>after  entering hyperlink</p></td>
+<td><p>c,p,v,event</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘hyperleave1’</p></td>
+<td><p>yes</p></td>
+<td><p>before leaving  hyperlink</p></td>
+<td><p>c,p,v,event</p></td>
+</tr>
+<tr class="row-even"><td><p>‘hyperleave2’</p></td>
+<td></td>
+<td><p>after  leaving  hyperlink</p></td>
+<td><p>c,p,v,event</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 <section id="support-for-unit-testing">
@@ -873,14 +880,14 @@ dictionary whose keys are all the tags specified by the user in the body of the
         <li class="right" >
           <a href="coloring.html" title="Controlling Syntax Coloring"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="intermediatetopics.html" >Advanced Topics</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Writing Plugins</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on November 22, 2023.
+    &#169; Copyright 1997-2024, Edward K. Ream.
+      Last updated on January 11, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
