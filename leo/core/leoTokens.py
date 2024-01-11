@@ -326,24 +326,23 @@ class Tokenizer:
         # Return results, as a list.
         return self.results
     #@+node:ekr.20240105143214.5: *4* itok.do_token (the gem)
-    header_has_been_shown = False
-
     def do_token(self, contents: str, five_tuple: tuple) -> None:
         """
         Handle the given token, optionally including between-token whitespace.
 
-        This is part of the "gem".
+        https://docs.python.org/3/library/tokenize.html
+        https://docs.python.org/3/library/token.html
 
-        Note: this method creates tokens using the *overridden* add_token method.
-
-        Links:
-
-        - 11/13/19: ENB: A much better untokenizer
-          https://groups.google.com/forum/#!msg/leo-editor/DpZ2cMS03WE/VPqtB9lTEAAJ
-
-        - Untokenize does not round-trip ws before bs-nl
-          https://bugs.python.org/issue38663
+        five_tuple is a named tuple with these fields:
+        - type:     The token type;
+        - string:   The token string.
+        - start:    (srow: int, scol: int) The row (line_number!) and column
+                    where the token begins in the source.
+        - end:      (erow: int, ecol: int)) The row (line_number!) and column
+                    where the token ends in the source;
+        - line:     The *physical line on which the token was found.
         """
+
         import token as token_module
         # Unpack..
         tok_type, val, start, end, line = five_tuple
@@ -357,8 +356,7 @@ class Tokenizer:
         tok_s = contents[s_offset:e_offset]
         # Add any preceding between-token whitespace.
         ws = contents[self.prev_offset:s_offset]
-        if ws:
-            # No need for a hook.
+        if ws:  # Create the 'ws' pseudo-token.
             self.add_token('ws', five_tuple, line, s_row, ws)
         # Always add token, even if it contributes no text!
         self.add_token(kind, five_tuple, line, s_row, tok_s)
