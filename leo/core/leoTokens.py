@@ -137,22 +137,6 @@ if 1:  # pragma: no cover
             return [os.path.abspath(z) for z in modified_files]
         finally:
             os.chdir(old_cwd)
-    #@+node:ekr.20240105140814.17: *3* function: write_file
-    def write_file(filename: str, s: str, encoding: str = 'utf-8') -> None:
-        """
-        Write the string s to the file whose name is given.
-
-        Handle all exceptions.
-
-        Before calling this function, the caller should ensure
-        that the file actually has been changed.
-        """
-        try:
-            # Write the file with platform-dependent newlines.
-            with open(filename, 'w', encoding=encoding) as f:
-                f.write(s)
-        except Exception as e:
-            g.trace(f"Error writing {filename}\n{e}")
     #@-others
 #@+node:ekr.20240106220602.1: ** LeoTokens: debugging functions
 #@+node:ekr.20240105140814.41: *3* function: dump_contents
@@ -673,7 +657,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Write the results
         if not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
-        ### write_file(filename, results, encoding=encoding)
+        ### self.write_file(filename, results, encoding=encoding)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
@@ -690,6 +674,22 @@ class TokenBasedOrange:  # Orange is the new Black.
             return None, None, None
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
         return contents, encoding, tokens
+    #@+node:ekr.20240105140814.17: *5* tbo.write_file
+    def write_file(self, filename: str, s: str, encoding: str = 'utf-8') -> None:
+        """
+        Write the string s to the file whose name is given.
+
+        Handle all exceptions.
+
+        Before calling this function, the caller should ensure
+        that the file actually has been changed.
+        """
+        try:
+            # Write the file with platform-dependent newlines.
+            with open(filename, 'w', encoding=encoding) as f:
+                f.write(s)
+        except Exception as e:
+            g.trace(f"Error writing {filename}\n{e}")
     #@+node:ekr.20240105145241.9: *4* tbo: Input visitors & generators
     # Visitors (tbo.do_* methods) handle input tokens.
     # Generators (tbo.gen_* methods) create zero or more output tokens.
