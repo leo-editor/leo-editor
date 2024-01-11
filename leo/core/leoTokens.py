@@ -91,7 +91,7 @@ def orange_command(
     settings: Settings = None,
     verbose: bool = False,
 ) -> None:  # pragma: no cover
-
+    """The outer level of the 'tbo/orange' command."""
     if not check_g():
         return
     t1 = time.process_time()
@@ -101,9 +101,9 @@ def orange_command(
             TokenBasedOrange(settings).beautify_file(filename)
         else:
             print(f"file not found: {filename}")
+    # Report the results.
     t2 = time.process_time()
-    if 1:
-        print(f"tbo: {len(files):3} files in {t2-t1:3.1f} sec. in {','.join(arg_files)}")
+    print(f"tbo: {t2-t1:3.1f} sec. {len(files):3} files in {','.join(arg_files)}")
 #@+node:ekr.20240105140814.7: ** leoTokens: top-level functions
 if 1:  # pragma: no cover
     #@+others
@@ -1849,7 +1849,7 @@ def main() -> None:  # pragma: no cover
 
     # Do the command.
     t2 = time.process_time()
-    if 1:
+    if 0:  # Negligible.
         print(f"files: {len(files)} setup time: {t2-t1:3.1f} sec.")
     if args.o:
         orange_command(arg_files, files, settings_dict, args.verbose)
