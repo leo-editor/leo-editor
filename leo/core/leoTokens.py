@@ -514,7 +514,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240111035404.1: *4* << TokenBasedOrange: __slots__ >>
     __slots__ = [
         # Command-line arguments.
-        'force', 'tab_width', 'verbose',
+        'force', 'silent', 'tab_width', 'verbose',
         # Debugging.
         'contents', 'filename',
         # The input token. Set only in the main loop.
@@ -561,7 +561,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.kind: str = ''
         if settings is None:
             settings = {}
-        valid_keys = ('force', 'orange', 'tab_width', 'verbose')
 
         # Init the dispatch dict for 'word' generator.
         self.word_dispatch: dict[str, Callable] = {
@@ -573,12 +572,13 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.word_dispatch[z] = self.scan_compound_statement
 
         # Default settings...
-        # self.allow_joined_strings = False  # EKR's preference.
         self.force = False
+        self.silent = False
         self.tab_width = 4
         self.verbose = False
 
         # Override from settings dict...
+        valid_keys = ('force', 'orange', 'silent', 'tab_width', 'verbose')
         for key in settings:  # pragma: no cover
             value = settings.get(key)
             if key in valid_keys and value is not None:
@@ -631,12 +631,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.tokens = tokens  # The list of input tokens.
         self.val = None  # The input token's value (a string).
 
-
-        self.add_token('file-start', '')
-        self.push_state('file-start')
+        # Log.
         if self.verbose:
             sfn = filename if '__init__' in filename else g.shortFileName(filename)
             print(f"tbo: {sfn}")
+
+        # The main loop:
+        self.add_token('file-start', '')
+        self.push_state('file-start')
         try:
             for self.index, token in enumerate(tokens):
                 self.token = token
@@ -673,7 +675,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         if regularize_nls(contents) == regularize_nls(results):
             return False
         # Write the results
-        print(f"tbo: changed {g.shortFileName(filename)}")
+        if not self.silent:
+            print(f"tbo: changed {g.shortFileName(filename)}")
         ### write_file(filename, results, encoding=encoding)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
@@ -691,11 +694,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             return None, None, None
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
         return contents, encoding, tokens
-    #@+node:ekr.20240105145241.3: *5* tbo.push_state
-    def push_state(self, kind: str, value: Union[int, str] = None) -> None:
-        """Append a state to the state stack."""
-        state = ParseState(kind, value)
-        self.state_stack.append(state)
     #@+node:ekr.20240105145241.9: *4* tbo: Input visitors & generators
     # Visitors handle input tokens.
     # Generators create zero or more output tokens.
@@ -1182,6 +1180,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         if kind == 'name':
             return False
         return True
+    #@+node:ekr.20240105145241.3: *6* tbo.push_state
+    def push_state(self, kind: str, value: Union[int, str] = None) -> None:
+        """Append a state to the state stack."""
+        state = ParseState(kind, value)
+        self.state_stack.append(state)
     #@+node:ekr.20240105145241.38: *6* tbo.star_op
     def star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
@@ -1813,9 +1816,10 @@ class TokenBasedOrange:  # Orange is the new Black.
 def main() -> None:  # pragma: no cover
     """Run commands specified by sys.argv."""
     args, settings_dict, arg_files = scan_args()
-    # Finalize arguments.
     cwd = os.getcwd()
+
     # Calculate requested files.
+    t1 = time.process_time()
     requested_files: list[str] = []
     for path in arg_files:
         if path.endswith('.py'):
@@ -1828,6 +1832,8 @@ def main() -> None:  # pragma: no cover
     if not requested_files:
         print(f"No files in {arg_files!r}")
         return
+
+    # Calculate the actual list of files.
     files: list[str]
     if args.force:
         # Handle all requested files.
@@ -1840,7 +1846,11 @@ def main() -> None:  # pragma: no cover
         ]
     if not files:
         return
+
     # Do the command.
+    t2 = time.process_time()
+    if 1:
+        print(f"files: {len(files)} setup time: {t2-t1:3.1f} sec.")
     if args.o:
         orange_command(arg_files, files, settings_dict, args.verbose)
     # if args.od:
@@ -1874,6 +1884,8 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
     # Arguments.
     add2('--force', dest='force', action='store_true',
         help='force beautification of all files')
+    add2('--silent', dest='silent', action='store_true',
+        help="don't list changed files")
     add2('--verbose', dest='verbose', action='store_true',
         help='verbose (per-file) output')
 
@@ -1889,24 +1901,24 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
 
     # Create the return values, using EKR's prefs as the defaults.
     parser.set_defaults(
-        # allow_joined=False,
         force=False,
-        # max_join=0,
-        # max_split=0,
+        silent=False,
         recursive=False,
         tab_width=4,
         verbose=False
+        # allow_joined=False, max_join=0, max_split=0,
     )
     args: Any = parser.parse_args()
     files = args.PATHS
     # Create the settings dict, ensuring proper values.
     settings_dict: dict[str, Any] = {
-        # 'allow_joined_strings': bool(args.allow_joined),
         'force': bool(args.force),
+        'tab_width': abs(args.tab_width),  # Must be positive!
+        'silent': bool(args.silent),
+        'verbose': bool(args.verbose),
+        # 'allow_joined_strings': bool(args.allow_joined),
         # 'max_join_line_length': abs(args.max_join),
         # 'max_split_line_length': abs(args.max_split),
-        'tab_width': abs(args.tab_width),  # Must be positive!
-        'verbose': bool(args.verbose),
     }
     return args, settings_dict, files
 #@-others
