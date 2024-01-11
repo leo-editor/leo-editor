@@ -666,8 +666,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Append a state to the state stack."""
         state = ParseState(kind, value)
         self.state_stack.append(state)
-    #@+node:ekr.20240105145241.9: *4* tbo: Input token handlers
-    #@+node:ekr.20240105145241.10: *5* tbo.do_comment
+    #@+node:ekr.20240105145241.9: *4* tbo: Input handlers
+    #@+node:ekr.20240105145241.10: *5* tbo.do_comment & helper
     in_doc_part = False
 
     comment_pat = re.compile(r'^(\s*)#[^@!# \n]')
@@ -776,7 +776,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
         self.lws = new_indent
         self.line_indent()
-    #@+node:ekr.20240105145241.16: *5* tbo.do_name
+    #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.val
@@ -786,6 +786,57 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.word_op(name)
         else:
             self.word(name)
+    #@+node:ekr.20240105145241.40: *6* tbo.word
+    def word(self, s: str) -> None:
+        """Add a word request to the code list."""
+        assert s and isinstance(s, str), repr(s)
+        # Aliases.
+        is_kind, next, set_context = self.is_kind, self.next_token, self.set_context
+
+        # Scan special statements, adding context to *later* input tokens.
+        func = self.word_dispatch.get(s)
+        if func:
+            # Call scan_compound_statement, scan_def, scan_from, scan_import.
+            func()
+
+        ### g.trace(s)
+
+        # Add context to *this* input token.
+        if s in ('class', 'def'):
+            # The defined name is not a function call.
+            i = next(self.index)
+            if is_kind(i, 'name'):
+                set_context(i, 'class/def')
+        elif self.token.context != 'class/def':
+            # A possible function call.
+            i = next(self.index)
+            if i and self.is_op(i, ['(']):
+                self.scan_call(i)
+
+        # Finally: generate output tokens.
+        self.blank()
+        self.add_token('word', s)
+        self.blank()
+
+        ###
+        # if self.square_brackets_stack:
+            # # A previous 'op-no-blanks' token may cancel this blank.
+            # self.blank()
+            # self.add_token('word', s)
+        # elif self.in_arg_list > 0:
+            # self.add_token('word', s)
+            # self.blank()
+        # else:
+            # self.blank()
+            # self.add_token('word', s)
+            # self.blank()
+    #@+node:ekr.20240107141830.1: *6* tbo.word_op
+    def word_op(self, s: str) -> None:
+        """Add a word-op request to the code list."""
+        assert s and isinstance(s, str), repr(s)
+        self.blank()
+        self.add_token('word-op', s)
+        self.blank()
     #@+node:ekr.20240105145241.17: *5* tbo.do_newline & do_nl
     def do_newline(self) -> None:
         """Handle a regular newline."""
@@ -799,7 +850,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Handle a number token."""
         self.blank()
         self.add_token('number', self.val)
-    #@+node:ekr.20240105145241.19: *5* tbo.do_op & helpers
+    #@+node:ekr.20240105145241.19: *5* tbo.do_op, helpers & generators
     def do_op(self) -> None:
         """Handle an op token."""
         val = self.val
@@ -842,6 +893,80 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.blank()
             self.add_token('op', val)
             self.blank()
+    #@+node:ekr.20240105145241.31: *6* tbo.colon
+    def colon(self, val: str) -> None:
+        """Handle a colon."""
+        context = self.token.context
+        prev_i = self.prev_token(self.index)
+        prev = self.tokens[prev_i]
+        if context is None:
+            # Find the boundaries of the slice: the enclosing square brackets.
+            context = self.scan_slice()
+        # Now we can generate proper code.
+        self.clean('blank')
+        ### g.trace(self.index, repr(context))
+        if context == 'complex-slice':
+            if prev.value not in '[:':
+                self.blank()
+            self.add_token('op', val)
+            self.blank()
+        elif context == 'simple-slice':
+            self.add_token('op-no-blanks', val)
+        elif context == 'end-statement':
+            self.add_token('op-no-blank', val)
+        else:
+            self.add_token('op', val)
+            self.blank()
+    #@+node:ekr.20240109115925.1: *7* tbo.scan_slice
+    def scan_slice(self) -> Optional[str]:
+        """
+        Find the enclosing square brackets.
+        
+        Return one of (None, 'simple-slice', 'complex-slice')
+        """
+        # Aliases.
+        is_op, next, set_context = self.is_op, self.next_token, self.set_context
+
+        # Scan backward.
+        i = self.index
+        i1 = self.find_input_token(i, ['['], reverse=True)
+        if i1 is None:
+            return None
+
+        # Scan forward.
+        i2 = self.find_input_token(i, [']'])
+        if i2 is None:
+            return None
+
+        # Sanity check.
+        self.expect(i1, 'op', '[')
+        self.expect(i2, 'op', ']')
+
+        # Set complex if the inner area contains something other than 'name' or 'number' tokens.
+        is_complex = False
+        i = next(i1)
+        while i and i < i2:
+            token = self.tokens[i]
+            if is_op(i, [':']):
+                # Look ahead for '+', '-' unary ops.
+                next_i = next(i)
+                if is_op(next_i, ['-', '+']):
+                    i = next_i  # Skip the unary.
+            elif token.kind == 'number':
+                pass
+            elif token.kind != 'name' or token.value in ('if', 'else'):
+                is_complex = True
+                break
+            i = next(i)
+
+        # Set the context for all ':' tokens.
+        context = 'complex-slice' if is_complex else 'simple-slice'
+        i = next(i1)
+        while i and i < i2:
+            if is_op(i, [':']):
+                set_context(i, context)
+            i = next(i)
+        return context
     #@+node:ekr.20240109035004.1: *6* tbo.do_dot_op
     def do_dot_op(self, val: str) -> None:
         """Handle the '.' input token."""
@@ -886,6 +1011,163 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.clean('blank')
             self.add_token('op-no-blanks', val)
         else:
+            self.blank()
+            self.add_token('op', val)
+            self.blank()
+    #@+node:ekr.20240105145241.34: *6* tbo.lt & rt
+    #@+node:ekr.20240105145241.35: *7* tbo.lt
+    def lt(self, val: str) -> None:
+        """Generate code for a left paren or curly/square bracket."""
+        assert val in '([{', repr(val)
+        if val == '(':
+            self.paren_level += 1
+        elif val == '[':
+            self.square_brackets_stack.append(False)
+        else:
+            self.curly_brackets_level += 1
+        self.clean('blank')
+        prev = self.code_list[-1]
+
+        ### g.trace(prev)
+
+        if prev.kind in ('op', 'word-op'):
+            self.blank()
+            self.add_token('lt', val)
+        elif prev.kind == 'word':
+            # Only suppress blanks before '(' or '[' for non-keywords.
+            ### if val == '{' or prev.value in ('if', 'else', 'return', 'for'):
+            if val == '{' or prev.value in ('if', 'else', 'elif', 'return', 'for', 'while'):
+                self.blank()
+            elif val == '(':
+                self.in_arg_list += 1
+            self.add_token('lt', val)
+        else:
+            self.clean('blank')
+            self.add_token('op-no-blanks', val)
+    #@+node:ekr.20240105145241.36: *7* tbo.rt
+    def rt(self, val: str) -> None:
+        """Generate code for a right paren or curly/square bracket."""
+        assert val in ')]}', repr(val)
+        if val == ')':
+            self.paren_level -= 1
+            self.in_arg_list = max(0, self.in_arg_list - 1)
+        elif val == ']':
+            self.square_brackets_stack.pop()
+        else:
+            self.curly_brackets_level -= 1
+        self.clean('blank')
+        self.add_token('rt', val)
+    #@+node:ekr.20240105145241.37: *6* tbo.possible_unary_op & helper
+    def possible_unary_op(self, s: str) -> None:
+        """Add a unary or binary op to the token list."""
+        self.clean('blank')
+        if self.is_unary_op(s):
+            prev = self.code_list[-1]
+            if prev.kind == 'lt':
+                self.add_token('op-no-blanks', s)
+            else:
+                self.blank()
+                self.add_token('op-no-blanks', s)
+        else:
+            self.blank()
+            self.add_token('op', s)
+            self.blank()
+
+    #@+node:ekr.20240109082712.1: *7* tbo.is_unary_op
+    def is_unary_op(self, s: str) -> bool:
+
+        if s not in '+-~':
+            return False
+        if s == '~':
+            return True
+        prev_i = self.prev_token(self.index)
+        prev_token = self.tokens[prev_i]
+        kind, value = prev_token.kind, prev_token.value
+        if kind == 'number':
+            return False
+        if kind == 'op' and value in ')]':
+            return False
+        if self.is_keyword(prev_token):
+            return True
+        if kind == 'name':
+            return False
+        return True
+    #@+node:ekr.20240105145241.38: *6* tbo.star_op
+    def star_op(self) -> None:
+        """Put a '*' op, with special cases for *args."""
+        val = '*'
+        context = self.token.context
+        prev = self.code_list[-1]
+
+        self.clean('blank')
+
+        ### g.trace('prev:', prev, val, 'context:', context)
+
+        if context == 'arg':
+            self.blank()
+            self.add_token('op-no-blanks', val)
+        else:
+            self.blank()
+            self.add_token('op', val)
+            self.blank()
+
+        if 0:  ### OLD
+
+            ### if context not in ('annotation', 'initializer'):
+            if context not in ('arg', 'annotation', 'initializer'):
+                self.blank()
+                self.add_token('op', val)
+                return  # #2533
+
+
+            if self.paren_level > 0:
+                prev = self.code_list[-1]
+                ###
+                # if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
+                    # self.blank()
+                    # self.add_token('op', val)
+                    # return
+                if prev.kind == 'lt':
+                    self.add_token('op', val)
+                    return
+                elif (prev.kind, prev.value) == ('op', ','):
+                    self.blank()
+                    self.add_token('op', val)
+                    return
+
+            self.blank()
+            self.add_token('op', val)
+            self.blank()
+    #@+node:ekr.20240105145241.39: *6* tbo.star_star_op
+    def star_star_op(self) -> None:
+        """Put a ** operator, with a special case for **kwargs."""
+        val = '**'
+        context = self.token.context
+        prev = self.code_list[-1]
+
+        self.clean('blank')
+
+        ### g.trace('prev:', prev, val, 'context:', context)
+
+        if context == 'arg':
+            self.blank()
+            self.add_token('op-no-blanks', val)
+        else:
+            self.blank()
+            self.add_token('op', val)
+            self.blank()
+
+        if 0:  ### OLD
+            if context not in ('annotation', 'initializer'):
+                self.blank()
+                self.add_token('op', val)
+                return  # #2533
+            if self.paren_level > 0:
+                prev = self.code_list[-1]
+                if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
+                    self.blank()
+                    self.add_token('op', val)
+                    return
             self.blank()
             self.add_token('op', val)
             self.blank()
@@ -942,377 +1224,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Retain the indent that won't be cleaned away.
             self.clean('line-indent')
             self.add_token('hard-blank', val)
-    #@+node:ekr.20240105145241.24: *4* tbo: Output token generators
-    #@+node:ekr.20240105145241.25: *5* tbo.add_line_end
-    def add_line_end(self) -> OutputToken:
-        """Add a line-end request to the code list."""
-        # This may be called from do_name as well as do_newline and do_nl.
-        assert self.token.kind in ('newline', 'nl'), self.token.kind
-        self.clean('blank')  # Important!
-        self.clean('line-indent')
-        t = self.add_token('line-end', '\n')
-        # Distinguish between kinds of 'line-end' tokens.
-        t.newline_kind = self.token.kind
-        return t
-    #@+node:ekr.20240105145241.26: *5* tbo.add_token
-    def add_token(self, kind: str, value: Any) -> OutputToken:
-        """Add an output token to the code list."""
-        tok = OutputToken(kind, value)
-        tok.index = len(self.code_list)
-        self.code_list.append(tok)
-        return tok
-    #@+node:ekr.20240105145241.27: *5* tbo.blank
-    def blank(self) -> None:
-        """Add a blank request to the code list."""
-        prev = self.code_list[-1]
-        if prev.kind not in (
-            'blank',
-            'blank-lines',  # Request for n blank lines.
-            'file-start',
-            'hard-blank',
-            'line-end',
-            'line-indent',
-            'lt',  # A left paren or curly/square bracket.
-            'op-no-blanks',  # A demand that no blank follows this op.
-            'unary-op',
-        ):
-            self.add_token('blank', ' ')
-    #@+node:ekr.20240105145241.28: *5* tbo.blank_lines (black only)
-    def blank_lines(self, n: int) -> None:  # pragma: no cover (black)
-        """
-        Add a request for n blank lines to the code list.
-        Multiple blank-lines request yield at least the maximum of all requests.
-        """
-        self.clean_blank_lines()
-        prev = self.code_list[-1]
-        if prev.kind == 'file-start':
-            self.add_token('blank-lines', n)
-            return
-        for _i in range(0, n + 1):
-            self.add_token('line-end', '\n')
-        # Retain the token (intention) for debugging.
-        self.add_token('blank-lines', n)
-        self.line_indent()
-    #@+node:ekr.20240105145241.29: *5* tbo.clean
-    def clean(self, kind: str) -> None:
-        """Remove the last item of token list if it has the given kind."""
-        prev = self.code_list[-1]
-        if prev.kind == kind:
-            self.code_list.pop()
-    #@+node:ekr.20240105145241.30: *5* tbo.clean_blank_lines
-    def clean_blank_lines(self) -> bool:
-        """
-        Remove all vestiges of previous blank lines.
-
-        Return True if any of the cleaned 'line-end' tokens represented "hard" newlines.
-        """
-        cleaned_newline = False
-        table = ('blank-lines', 'line-end', 'line-indent')
-        while self.code_list[-1].kind in table:
-            t = self.code_list.pop()
-            if t.kind == 'line-end' and getattr(t, 'newline_kind', None) != 'nl':
-                cleaned_newline = True
-        return cleaned_newline
-    #@+node:ekr.20240105145241.31: *5* tbo.colon
-    def colon(self, val: str) -> None:
-        """Handle a colon."""
-        context = self.token.context
-        prev_i = self.prev_token(self.index)
-        prev = self.tokens[prev_i]
-        if context is None:
-            # Find the boundaries of the slice: the enclosing square brackets.
-            context = self.scan_slice()
-        # Now we can generate proper code.
-        self.clean('blank')
-        ### g.trace(self.index, repr(context))
-        if context == 'complex-slice':
-            if prev.value not in '[:':
-                self.blank()
-            self.add_token('op', val)
-            self.blank()
-        elif context == 'simple-slice':
-            self.add_token('op-no-blanks', val)
-        elif context == 'end-statement':
-            self.add_token('op-no-blank', val)
-        else:
-            self.add_token('op', val)
-            self.blank()
-    #@+node:ekr.20240109115925.1: *6* tbo.scan_slice
-    def scan_slice(self) -> Optional[str]:
-        """
-        Find the enclosing square brackets.
-        
-        Return one of (None, 'simple-slice', 'complex-slice')
-        """
-        # Aliases.
-        is_op, next, set_context = self.is_op, self.next_token, self.set_context
-
-        # Scan backward.
-        i = self.index
-        i1 = self.find_input_token(i, ['['], reverse=True)
-        if i1 is None:
-            return None
-
-        # Scan forward.
-        i2 = self.find_input_token(i, [']'])
-        if i2 is None:
-            return None
-
-        # Sanity check.
-        self.expect(i1, 'op', '[')
-        self.expect(i2, 'op', ']')
-
-        # Set complex if the inner area contains something other than 'name' or 'number' tokens.
-        is_complex = False
-        i = next(i1)
-        while i and i < i2:
-            token = self.tokens[i]
-            if is_op(i, [':']):
-                # Look ahead for '+', '-' unary ops.
-                next_i = next(i)
-                if is_op(next_i, ['-', '+']):
-                    i = next_i  # Skip the unary.
-            elif token.kind == 'number':
-                pass
-            elif token.kind != 'name' or token.value in ('if', 'else'):
-                is_complex = True
-                break
-            i = next(i)
-
-        # Set the context for all ':' tokens.
-        context = 'complex-slice' if is_complex else 'simple-slice'
-        i = next(i1)
-        while i and i < i2:
-            if is_op(i, [':']):
-                set_context(i, context)
-            i = next(i)
-        return context
-    #@+node:ekr.20240105145241.32: *5* tbo.line_end
-    def line_end(self) -> None:
-        """Add a line-end request to the code list."""
-        # Only do_newline and do_nl should call this method.
-        token = self.token
-        assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
-
-        # Create the 'line-end' output token.
-        self.add_line_end()
-
-        # Add the indentation until the next indent/unindent token.
-        self.line_indent()
-    #@+node:ekr.20240105145241.33: *5* tbo.line_indent
-    def line_indent(self) -> None:
-        """Add a line-indent token."""
-        self.clean('line-indent')  # Defensive. Should never happen.
-        self.add_token('line-indent', self.lws)
-    #@+node:ekr.20240105145241.34: *5* tbo.lt & rt
-    #@+node:ekr.20240105145241.35: *6* tbo.lt
-    def lt(self, val: str) -> None:
-        """Generate code for a left paren or curly/square bracket."""
-        assert val in '([{', repr(val)
-        if val == '(':
-            self.paren_level += 1
-        elif val == '[':
-            self.square_brackets_stack.append(False)
-        else:
-            self.curly_brackets_level += 1
-        self.clean('blank')
-        prev = self.code_list[-1]
-
-        ### g.trace(prev)
-
-        if prev.kind in ('op', 'word-op'):
-            self.blank()
-            self.add_token('lt', val)
-        elif prev.kind == 'word':
-            # Only suppress blanks before '(' or '[' for non-keywords.
-            ### if val == '{' or prev.value in ('if', 'else', 'return', 'for'):
-            if val == '{' or prev.value in ('if', 'else', 'elif', 'return', 'for', 'while'):
-                self.blank()
-            elif val == '(':
-                self.in_arg_list += 1
-            self.add_token('lt', val)
-        else:
-            self.clean('blank')
-            self.add_token('op-no-blanks', val)
-    #@+node:ekr.20240105145241.36: *6* tbo.rt
-    def rt(self, val: str) -> None:
-        """Generate code for a right paren or curly/square bracket."""
-        assert val in ')]}', repr(val)
-        if val == ')':
-            self.paren_level -= 1
-            self.in_arg_list = max(0, self.in_arg_list - 1)
-        elif val == ']':
-            self.square_brackets_stack.pop()
-        else:
-            self.curly_brackets_level -= 1
-        self.clean('blank')
-        self.add_token('rt', val)
-    #@+node:ekr.20240105145241.37: *5* tbo.possible_unary_op & helper
-    def possible_unary_op(self, s: str) -> None:
-        """Add a unary or binary op to the token list."""
-        self.clean('blank')
-        if self.is_unary_op(s):
-            prev = self.code_list[-1]
-            if prev.kind == 'lt':
-                self.add_token('op-no-blanks', s)
-            else:
-                self.blank()
-                self.add_token('op-no-blanks', s)
-        else:
-            self.blank()
-            self.add_token('op', s)
-            self.blank()
-
-    #@+node:ekr.20240109082712.1: *6* tbo.is_unary_op
-    def is_unary_op(self, s: str) -> bool:
-
-        if s not in '+-~':
-            return False
-        if s == '~':
-            return True
-        prev_i = self.prev_token(self.index)
-        prev_token = self.tokens[prev_i]
-        kind, value = prev_token.kind, prev_token.value
-        if kind == 'number':
-            return False
-        if kind == 'op' and value in ')]':
-            return False
-        if self.is_keyword(prev_token):
-            return True
-        if kind == 'name':
-            return False
-        return True
-    #@+node:ekr.20240105145241.38: *5* tbo.star_op
-    def star_op(self) -> None:
-        """Put a '*' op, with special cases for *args."""
-        val = '*'
-        context = self.token.context
-        prev = self.code_list[-1]
-
-        self.clean('blank')
-
-        ### g.trace('prev:', prev, val, 'context:', context)
-
-        if context == 'arg':
-            self.blank()
-            self.add_token('op-no-blanks', val)
-        else:
-            self.blank()
-            self.add_token('op', val)
-            self.blank()
-
-        if 0:  ### OLD
-
-            ### if context not in ('annotation', 'initializer'):
-            if context not in ('arg', 'annotation', 'initializer'):
-                self.blank()
-                self.add_token('op', val)
-                return  # #2533
-
-
-            if self.paren_level > 0:
-                prev = self.code_list[-1]
-                ###
-                # if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
-                    # self.blank()
-                    # self.add_token('op', val)
-                    # return
-                if prev.kind == 'lt':
-                    self.add_token('op', val)
-                    return
-                elif (prev.kind, prev.value) == ('op', ','):
-                    self.blank()
-                    self.add_token('op', val)
-                    return
-
-            self.blank()
-            self.add_token('op', val)
-            self.blank()
-    #@+node:ekr.20240105145241.39: *5* tbo.star_star_op
-    def star_star_op(self) -> None:
-        """Put a ** operator, with a special case for **kwargs."""
-        val = '**'
-        context = self.token.context
-        prev = self.code_list[-1]
-
-        self.clean('blank')
-
-        ### g.trace('prev:', prev, val, 'context:', context)
-
-        if context == 'arg':
-            self.blank()
-            self.add_token('op-no-blanks', val)
-        else:
-            self.blank()
-            self.add_token('op', val)
-            self.blank()
-
-        if 0:  ### OLD
-            if context not in ('annotation', 'initializer'):
-                self.blank()
-                self.add_token('op', val)
-                return  # #2533
-            if self.paren_level > 0:
-                prev = self.code_list[-1]
-                if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
-                    self.blank()
-                    self.add_token('op', val)
-                    return
-            self.blank()
-            self.add_token('op', val)
-            self.blank()
-    #@+node:ekr.20240105145241.40: *5* tbo.word
-    def word(self, s: str) -> None:
-        """Add a word request to the code list."""
-        assert s and isinstance(s, str), repr(s)
-        # Aliases.
-        is_kind, next, set_context = self.is_kind, self.next_token, self.set_context
-
-        # Scan special statements, adding context to *later* input tokens.
-        func = self.word_dispatch.get(s)
-        if func:
-            # Call scan_compound_statement, scan_def, scan_from, scan_import.
-            func()
-
-        ### g.trace(s)
-
-        # Add context to *this* input token.
-        if s in ('class', 'def'):
-            # The defined name is not a function call.
-            i = next(self.index)
-            if is_kind(i, 'name'):
-                set_context(i, 'class/def')
-        elif self.token.context != 'class/def':
-            # A possible function call.
-            i = next(self.index)
-            if i and self.is_op(i, ['(']):
-                self.scan_call(i)
-
-        # Finally: generate output tokens.
-        self.blank()
-        self.add_token('word', s)
-        self.blank()
-
-        ###
-        # if self.square_brackets_stack:
-            # # A previous 'op-no-blanks' token may cancel this blank.
-            # self.blank()
-            # self.add_token('word', s)
-        # elif self.in_arg_list > 0:
-            # self.add_token('word', s)
-            # self.blank()
-        # else:
-            # self.blank()
-            # self.add_token('word', s)
-            # self.blank()
-    #@+node:ekr.20240107141830.1: *5* tbo.word_op
-    def word_op(self, s: str) -> None:
-        """Add a word-op request to the code list."""
-        assert s and isinstance(s, str), repr(s)
-        self.blank()
-        self.add_token('word-op', s)
-        self.blank()
-    #@+node:ekr.20240105145241.41: *4* tbo: Scanning
+    #@+node:ekr.20240110202908.1: *4* tbo: Input utils
     #@+node:ekr.20240106094211.1: *5* tbo.check_token_index
     def check_token_index(self, i: Optional[int]) -> None:
         if i is None or i < 0 or i >= len(self.tokens):
@@ -1322,6 +1234,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     #@+node:ekr.20240106220724.1: *5* tbo.dump_token_range
     def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:
+        """Dump the given range of input tokens."""
         if tag:
             print(tag)
         for token in self.tokens[i1 : i2 + 1]:
@@ -1389,6 +1302,135 @@ class TokenBasedOrange:  # Orange is the new Black.
         if token.value not in values:
             raise BeautifyError(f"Expected value in {values!r}, got {token.value!r}")
 
+    #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
+    def is_keyword(self, token: InputToken) -> bool:
+        """
+        Return True if the token represents a Python keyword.
+        
+        But return False for 'True', 'False' or 'None':
+        these can appear in expressions.
+        """
+        value = token.value
+        return (
+            token.kind == 'name'
+            and value not in ('True', 'False', None)
+            and (keyword.iskeyword(value) or keyword.issoftkeyword(value))
+        )
+    #@+node:ekr.20240106172054.1: *5* tbo.is_op & is_kind
+    def is_op(self, i: int, values: list[str]) -> bool:
+        self.check_token_index(i)
+        token = self.tokens[i]
+        return token.kind == 'op' and token.value in values
+
+    def is_kind(self, i: int, kind: str) -> bool:
+        self.check_token_index(i)
+        token = self.tokens[i]
+        return token.kind == kind
+
+    #@+node:ekr.20240106093210.1: *5* tbo.is_significant_token
+    def is_significant_token(self, token: InputToken) -> bool:
+        """Return true if the given token is not whitespace."""
+        return token.kind not in (
+            'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
+        )
+    #@+node:ekr.20240106170746.1: *5* tbo.set_context
+    def set_context(self, i: int, context: str) -> None:
+        """
+        Set the context for self.tokens[i].
+        
+        It *is* valid (and expected) for this method to be called more than
+        once for the same token!
+        
+        The rule is: the *first* context is the valid context.
+        """
+        self.check_token_index(i)
+        token = self.tokens[i]
+
+        # Add context *only* if it does not already exist.
+        if not token.context:
+            # g.trace(f"{i:4} {context:14} {g.callers(1)}")
+            token.context = context
+    #@+node:ekr.20240106174317.1: *5* tbo.unexpected_token (not used!)
+    def unexpected_token(self, i: int) -> None:
+        """Raise an error about an unexpected token."""
+        self.check_token_index(i)
+        token = self.tokens[i]
+        message = f"Unexpected InputToken at {i} {token!r}"
+        raise BeautifyError(message)
+    #@+node:ekr.20240105145241.24: *4* tbo: Output generators
+    #@+node:ekr.20240105145241.32: *5* tbo.line_end & helper
+    def line_end(self) -> None:
+        """Add a line-end request to the code list."""
+        # Only do_newline and do_nl should call this method.
+        token = self.token
+        assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
+
+        # Create the 'line-end' output token.
+        self.add_line_end()
+
+        # Add the indentation until the next indent/unindent token.
+        self.line_indent()
+    #@+node:ekr.20240105145241.25: *6* tbo.add_line_end
+    def add_line_end(self) -> OutputToken:
+        """Add a line-end request to the code list."""
+        # This may be called from do_name as well as do_newline and do_nl.
+        assert self.token.kind in ('newline', 'nl'), self.token.kind
+        self.clean('blank')  # Important!
+        self.clean('line-indent')
+        t = self.add_token('line-end', '\n')
+        # Distinguish between kinds of 'line-end' tokens.
+        t.newline_kind = self.token.kind
+        return t
+    #@+node:ekr.20240105145241.33: *5* tbo.line_indent
+    def line_indent(self) -> None:
+        """Add a line-indent token."""
+        self.clean('line-indent')  # Defensive. Should never happen.
+        self.add_token('line-indent', self.lws)
+    #@+node:ekr.20240110202319.1: *4* tbo: Output utils
+    #@+node:ekr.20240105145241.26: *5* tbo.add_token
+    def add_token(self, kind: str, value: Any) -> OutputToken:
+        """Add an output token to the code list."""
+        tok = OutputToken(kind, value)
+        tok.index = len(self.code_list)
+        self.code_list.append(tok)
+        return tok
+    #@+node:ekr.20240105145241.27: *5* tbo.blank
+    def blank(self) -> None:
+        """Add a blank request to the code list."""
+        prev = self.code_list[-1]
+        if prev.kind not in (
+            'blank',
+            # 'blank-lines',  # black only: Request for n blank lines.
+            'file-start',
+            'hard-blank',
+            'line-end',
+            'line-indent',
+            'lt',  # A left paren or curly/square bracket.
+            'op-no-blanks',  # A demand that no blank follows this op.
+            'unary-op',
+        ):
+            self.add_token('blank', ' ')
+    #@+node:ekr.20240105145241.29: *5* tbo.clean
+    def clean(self, kind: str) -> None:
+        """Remove the last item of token list if it has the given kind."""
+        prev = self.code_list[-1]
+        if prev.kind == kind:
+            self.code_list.pop()
+    #@+node:ekr.20240105145241.30: *5* tbo.clean_blank_lines
+    def clean_blank_lines(self) -> bool:
+        """
+        Remove all vestiges of previous blank lines.
+
+        Return True if any of the cleaned 'line-end' tokens represented "hard" newlines.
+        """
+        cleaned_newline = False
+        table = ('line-end', 'line-indent')  # 'blank-lines'
+        while self.code_list[-1].kind in table:
+            t = self.code_list.pop()
+            if t.kind == 'line-end' and getattr(t, 'newline_kind', None) != 'nl':
+                cleaned_newline = True
+        return cleaned_newline
+    #@+node:ekr.20240105145241.41: *4* tbo: Scanners
     #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line
     def find_end_of_line(self) -> Optional[int]:
         """
@@ -1455,37 +1497,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 i += 1
         return None
-    #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
-    def is_keyword(self, token: InputToken) -> bool:
-        """
-        Return True if the token represents a Python keyword.
-        
-        But return False for 'True', 'False' or 'None':
-        these can appear in expressions.
-        """
-        value = token.value
-        return (
-            token.kind == 'name'
-            and value not in ('True', 'False', None)
-            and (keyword.iskeyword(value) or keyword.issoftkeyword(value))
-        )
-    #@+node:ekr.20240106172054.1: *5* tbo.is_op & is_kind
-    def is_op(self, i: int, values: list[str]) -> bool:
-        self.check_token_index(i)
-        token = self.tokens[i]
-        return token.kind == 'op' and token.value in values
-
-    def is_kind(self, i: int, kind: str) -> bool:
-        self.check_token_index(i)
-        token = self.tokens[i]
-        return token.kind == kind
-
-    #@+node:ekr.20240106093210.1: *5* tbo.is_significant_token
-    def is_significant_token(self, token: InputToken) -> bool:
-        """Return true if the given token is not whitespace."""
-        return token.kind not in (
-            'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
-        )
     #@+node:ekr.20240105145241.43: *5* tbo.next/prev_token
     def next_token(self, i: int) -> Optional[int]:
         """
@@ -1780,30 +1791,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             return None
         self.expect(i, 'newline')
         return i
-    #@+node:ekr.20240106170746.1: *5* tbo.set_context
-    def set_context(self, i: int, context: str) -> None:
-        """
-        Set the context for self.tokens[i].
-        
-        It *is* valid (and expected) for this method to be called more than
-        once for the same token!
-        
-        The rule is: the *first* context is the valid context.
-        """
-        self.check_token_index(i)
-        token = self.tokens[i]
-
-        # Add context *only* if it does not already exist.
-        if not token.context:
-            # g.trace(f"{i:4} {context:14} {g.callers(1)}")
-            token.context = context
-    #@+node:ekr.20240106174317.1: *5* tbo.unexpected_token
-    def unexpected_token(self, i: int) -> None:
-        """Raise an error about an unexpected token."""
-        self.check_token_index(i)
-        token = self.tokens[i]
-        message = f"Unexpected InputToken at {i} {token!r}"
-        raise BeautifyError(message)
     #@-others
 #@+node:ekr.20240105140814.121: ** function: (leoTokens.py) main & helpers
 def main() -> None:  # pragma: no cover

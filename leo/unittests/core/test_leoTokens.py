@@ -382,36 +382,6 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.51: *3* TestTBO.xxx_test_bug_1429
-    def xxx_test_bug_1429(self):
-
-        # This test really only tests function calls.
-
-        contents = textwrap.dedent(
-        r'''
-            def get_semver(tag):
-                """bug 1429 docstring"""
-                try:
-                    import semantic_version
-                    version = str(semantic_version.Version.coerce(tag, partial=True))
-                        # tuple of major, minor, build, pre-release, patch
-                        # 5.6b2 --> 5.6-b2
-                except(ImportError, ValueError) as err:
-                    print('\n', err)
-                    print("""*** Failed to parse Semantic Version from git tag '{0}'.
-                    Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
-                    This version can't be uploaded to PyPi.org.""".format(tag))
-                    version = tag
-                return version
-        ''').strip() + '\n'
-        contents, tokens = self.make_data(contents)
-        expected = contents
-        results = self.beautify(contents, tokens)
-        if results != expected:
-            g.printObj(contents, tag='contents')
-            g.printObj(expected, tag='expected')
-            g.printObj(results, tag='results')
-        self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.52: *3* TestTBO.test_bug_1851
     def test_bug_1851(self):
 
@@ -423,6 +393,13 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
+    #@+node:ekr.20240110201739.1: *3* TestTBO.test_colon
+    def test_colon(self):
+        
+        # self.rulesetName : str = ''
+        # def configureTags(self) -> None :
+        # for color in colors :
+        pass  #  g.trace('Not ready yet')
     #@+node:ekr.20240105153425.53: *3* TestTBO.test_comment_indented
     def test_comment_indented(self):
 
@@ -890,16 +867,6 @@ class TestTokenBasedOrange(BaseTest):
         # Don't rely on black for this test.
         # expected = self.blacken(contents)
         expected = contents
-        results = self.beautify(contents, tokens)
-        self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.77: *3* TestTBO.test_sync_tokens
-    def test_sync_tokens(self):
-
-        contents = """if x == 4: pass"""
-        # At present Orange doesn't split lines...
-        expected = """if x == 4: pass"""
-        contents, tokens = self.make_data(contents)
-        expected = self.adjust_expected(expected)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.78: *3* TestTBO.test_ternary
