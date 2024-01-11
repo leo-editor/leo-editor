@@ -958,12 +958,13 @@ class LeoServer:
     #@+node:felix.20230206202334.1: *4* LeoServer._endEditLabel
     def _endEditLabel(self) -> None:
         """Overridden : End editing of a headline and update p.h."""
+        if not hasattr(self, 'c') or not self.c:
+            return
         try:
             gui_w = self.c.edit_widget(self.c.p)
             gui_w.setSelectionRange(0, 0, insert=0)
         except Exception:
             print("Could not reset headline cursor")
-
         # Important: this will redraw if necessary.
         self.c.frame.tree.onHeadChanged(self.c.p)
     #@+node:felix.20210711194729.1: *4* LeoServer._runAskOkDialog
@@ -1237,15 +1238,8 @@ class LeoServer:
         if key:
             try:
                 gnx = key.command.gnx
-                # pylint: disable=undefined-loop-variable
-                for p in c.all_positions():
-                    if p.gnx == gnx:
-                        break
-                if p:
-                    assert c.positionExists(p)
-                    c.selectPosition(p)
-                else:
-                    raise ServerError(f"{tag}: not found {gnx}")
+                sc = getattr(c, "theScriptingController", None)
+                sc.open_gnx(c, gnx)
             except Exception as e:
                 raise ServerError(f"{tag}: exception going to script of button {index!r}: {e}")
         else:
