@@ -915,19 +915,19 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Handle a number token."""
         self.gen_blank()
         self.gen_token('number', self.val)
-    #@+node:ekr.20240105145241.19: *5* tbo.do_op, helpers & generators
+    #@+node:ekr.20240105145241.19: *5* tbo.do_op & generators
     def do_op(self) -> None:
         """Handle an op token."""
         val = self.val
         if val == '.':
-            self.do_dot_op(val)
+            self.gen_dot_op()
         elif val == '@':
             self.clean('blank')
             self.gen_token('op-no-blanks', val)
             self.push_state('decorator')
         elif val == ':':
             # Treat slices differently.
-            self.colon(val)
+            self.gen_colon()
         elif val in ',;':
             # Pep 8: Avoid extraneous whitespace immediately before
             # comma, semicolon, or colon.
@@ -937,18 +937,18 @@ class TokenBasedOrange:  # Orange is the new Black.
         elif val in '([{':
             # Pep 8: Avoid extraneous whitespace immediately inside
             # parentheses, brackets or braces.
-            self.lt(val)
+            self.gen_lt()
         elif val in ')]}':
             # Ditto.
-            self.rt(val)
+            self.gen_rt()
         elif val == '=':
-            self.do_equal_op(val)
+            self.gen_equal_op()
         elif val in '~+-':
-            self.possible_unary_op(val)
+            self.gen_possible_unary_op()
         elif val == '*':
-            self.star_op()
+            self.gen_star_op()
         elif val == '**':
-            self.star_star_op()
+            self.gen_star_star_op()
         else:
             # Pep 8: always surround binary operators with a single space.
             # '==','+=','-=','*=','**=','/=','//=','%=','!=','<=','>=','<','>',
@@ -958,9 +958,10 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240105145241.31: *6* tbo.colon
-    def colon(self, val: str) -> None:
+    #@+node:ekr.20240105145241.31: *6* tbo.gen_colon
+    def gen_colon(self) -> None:
         """Handle a colon."""
+        val = self.val
         context = self.token.context
         prev_i = self.prev_token(self.index)
         prev = self.tokens[prev_i]
@@ -1032,10 +1033,9 @@ class TokenBasedOrange:  # Orange is the new Black.
                 set_context(i, context)
             i = next(i)
         return context
-    #@+node:ekr.20240109035004.1: *6* tbo.do_dot_op
-    def do_dot_op(self, val: str) -> None:
+    #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op
+    def gen_dot_op(self) -> None:
         """Handle the '.' input token."""
-        assert val == '.'
         context = self.token.context
         # Remove previous 'blank' token *before* calculating prev.
         self.clean('blank')
@@ -1061,12 +1061,13 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.gen_token('op-no-blanks', '.')
         else:
             self.gen_token('op-no-blanks', '.')
-    #@+node:ekr.20240105145241.20: *6* tbo.do_equal_op
+    #@+node:ekr.20240105145241.20: *6* tbo.gen_equal_op
     # Keys: token.index of '=' token. Values: count of ???s
     arg_dict: dict[int, int] = {}
 
-    def do_equal_op(self, val: str) -> None:
+    def gen_equal_op(self) -> None:
 
+        val = self.val
         context = self.token.context
         if context == 'initializer':
             # Pep 8: Don't use spaces around the = sign when used to indicate
@@ -1079,10 +1080,10 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240105145241.34: *6* tbo.lt & rt
-    #@+node:ekr.20240105145241.35: *7* tbo.lt
-    def lt(self, val: str) -> None:
+    #@+node:ekr.20240105145241.35: *6* tbo.gen_lt
+    def gen_lt(self) -> None:
         """Generate code for a left paren or curly/square bracket."""
+        val = self.val
         assert val in '([{', repr(val)
         if val == '(':
             self.paren_level += 1
@@ -1109,41 +1110,29 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.clean('blank')
             self.gen_token('op-no-blanks', val)
-    #@+node:ekr.20240105145241.36: *7* tbo.rt
-    def rt(self, val: str) -> None:
-        """Generate code for a right paren or curly/square bracket."""
-        assert val in ')]}', repr(val)
-        if val == ')':
-            self.paren_level -= 1
-            self.in_arg_list = max(0, self.in_arg_list - 1)
-        elif val == ']':
-            self.square_brackets_stack.pop()
-        else:
-            self.curly_brackets_level -= 1
-        self.clean('blank')
-        self.gen_token('rt', val)
-    #@+node:ekr.20240105145241.37: *6* tbo.possible_unary_op & helper
-    def possible_unary_op(self, s: str) -> None:
+    #@+node:ekr.20240105145241.37: *6* tbo.gen_possible_unary_op & helper
+    def gen_possible_unary_op(self) -> None:
         """Add a unary or binary op to the token list."""
+        val = self.val
         self.clean('blank')
-        if self.is_unary_op(s):
+        if self.is_unary_op(val):
             prev = self.code_list[-1]
             if prev.kind == 'lt':
-                self.gen_token('op-no-blanks', s)
+                self.gen_token('op-no-blanks', val)
             else:
                 self.gen_blank()
-                self.gen_token('op-no-blanks', s)
+                self.gen_token('op-no-blanks', val)
         else:
             self.gen_blank()
-            self.gen_token('op', s)
+            self.gen_token('op', val)
             self.gen_blank()
 
     #@+node:ekr.20240109082712.1: *7* tbo.is_unary_op
-    def is_unary_op(self, s: str) -> bool:
+    def is_unary_op(self, val: str) -> bool:
 
-        if s not in '+-~':
+        if val not in '+-~':
             return False
-        if s == '~':
+        if val == '~':
             return True
         prev_i = self.prev_token(self.index)
         prev_token = self.tokens[prev_i]
@@ -1157,15 +1146,24 @@ class TokenBasedOrange:  # Orange is the new Black.
         if kind == 'name':
             return False
         return True
-    #@+node:ekr.20240105145241.3: *6* tbo.push_state
-    def push_state(self, kind: str, value: Union[int, str] = None) -> None:
-        """Append a state to the state stack."""
-        state = ParseState(kind, value)
-        self.state_stack.append(state)
-    #@+node:ekr.20240105145241.38: *6* tbo.star_op
-    def star_op(self) -> None:
+    #@+node:ekr.20240105145241.36: *6* tbo.gen_rt
+    def gen_rt(self) -> None:
+        """Generate code for a right paren or curly/square bracket."""
+        val = self.val
+        assert val in ')]}', repr(val)
+        if val == ')':
+            self.paren_level -= 1
+            self.in_arg_list = max(0, self.in_arg_list - 1)
+        elif val == ']':
+            self.square_brackets_stack.pop()
+        else:
+            self.curly_brackets_level -= 1
+        self.clean('blank')
+        self.gen_token('rt', val)
+    #@+node:ekr.20240105145241.38: *6* tbo.gen_star_op
+    def gen_star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
-        val = '*'
+        val = self.val
         context = self.token.context
         prev = self.code_list[-1]
 
@@ -1208,10 +1206,10 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240105145241.39: *6* tbo.star_star_op
-    def star_star_op(self) -> None:
+    #@+node:ekr.20240105145241.39: *6* tbo.gen_star_star_op
+    def gen_star_star_op(self) -> None:
         """Put a ** operator, with a special case for **kwargs."""
-        val = '**'
+        val = self.val
         context = self.token.context
         prev = self.code_list[-1]
 
@@ -1241,6 +1239,11 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
+    #@+node:ekr.20240105145241.3: *6* tbo.push_state
+    def push_state(self, kind: str, value: Union[int, str] = None) -> None:
+        """Append a state to the state stack."""
+        state = ParseState(kind, value)
+        self.state_stack.append(state)
     #@+node:ekr.20240105145241.21: *5* tbo.do_string
     def do_string(self) -> None:
         """Handle a 'string' token."""
