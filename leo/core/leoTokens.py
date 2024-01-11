@@ -244,21 +244,26 @@ class Tokenizer:
     Use Python's tokenizer module to create InputTokens
     See: https://docs.python.org/3/library/tokenize.html
     """
-    token_index = 0
-    results: list[InputToken] = []
+
+    def __init__(self) -> None:
+        self.token_index = 0
+        # The computed list of input tokens.
+        self.token_list: list[InputToken] = []
+        # The indices of the starting token of the *next* line.
+        self.next_line_indices: list[int] = []
 
     #@+others
     #@+node:ekr.20240105143307.2: *4* itok.add_token
     def add_token(self, kind: str, line: str, line_number: int, value: str,) -> None:
-        """Add an InputToken to the results list."""
+        """Add an InputToken to the token list."""
         tok = InputToken(kind, value, self.token_index, line, line_number)
         self.token_index += 1
-        self.results.append(tok)
+        self.token_list.append(tok)
     #@+node:ekr.20240105143214.2: *4* itok.check_results
     def check_results(self, contents: str) -> None:
 
         # Split the results into lines.
-        result = ''.join([z.to_string() for z in self.results])
+        result = ''.join([z.to_string() for z in self.token_list])
         result_lines = g.splitLines(result)
         # Check.
         ok = result == contents and result_lines == self.lines
@@ -299,15 +304,15 @@ class Tokenizer:
         for line in self.lines:
             last_offset += len(line)
             self.offsets.append(last_offset)
-        # Handle each token, appending tokens and between-token whitespace to results.
-        self.prev_offset, self.results = -1, []
+        # Handle each token, appending tokens and between-token whitespace to self.token_list.
+        self.prev_offset, self.token_list = -1, []
         for five_tuple in five_tuples:
             # Subclasses create lists of Tokens or InputTokens.
             self.do_token(contents, five_tuple)
-        # Print results when tracing.
+        # Print the token list when tracing.
         self.check_results(contents)
         # Return results, as a list.
-        return self.results
+        return self.token_list
     #@+node:ekr.20240105143214.5: *4* itok.do_token (the gem)
     def do_token(self, contents: str, five_tuple: tuple) -> None:
         """
