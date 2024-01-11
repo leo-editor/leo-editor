@@ -84,7 +84,7 @@ Settings = Optional[dict[str, Any]]
 #@-<< leoTokens.py: imports & annotations >>
 
 #@+others
-#@+node:ekr.20240105140814.5: ** command: orange_command (tbo)
+#@+node:ekr.20240105140814.5: ** command: orange_command (tbo) & helper
 def orange_command(
     arg_files: list[str],
     files: list[str],
@@ -104,40 +104,13 @@ def orange_command(
     # Report the results.
     t2 = time.process_time()
     print(f"tbo: {t2-t1:3.1f} sec. {len(files):3} files in {','.join(arg_files)}")
-#@+node:ekr.20240105140814.7: ** leoTokens: top-level functions
-if 1:  # pragma: no cover
-    #@+others
-    #@+node:ekr.20240105140814.8: *3* function: check_g
-    def check_g() -> bool:
-        """print an error message if g is None"""
-        if not g:
-            print('This statement failed: `from leo.core import leoGlobals as g`')
-            print('Please adjust your Python path accordingly')
-        return bool(g)
-    #@+node:ekr.20240105140814.9: *3* function: get_modified_files
-    def get_modified_files(repo_path: str) -> list[str]:
-        """Return the modified files in the given repo."""
-        if not repo_path:
-            return []
-        old_cwd = os.getcwd()
-        os.chdir(repo_path)
-        try:
-            # We are not checking the return code here, so:
-            # pylint: disable=subprocess-run-check
-            result = subprocess.run(
-                ["git", "status", "--porcelain"],
-                capture_output=True, text=True)
-            if result.returncode != 0:
-                print("Error running git command")
-                return []
-            modified_files = []
-            for line in result.stdout.split('\n'):
-                if line.startswith((' M', 'M ', 'A ', ' A')):
-                    modified_files.append(line[3:])
-            return [os.path.abspath(z) for z in modified_files]
-        finally:
-            os.chdir(old_cwd)
-    #@-others
+#@+node:ekr.20240105140814.8: *3* function: check_g
+def check_g() -> bool:
+    """print an error message if g is None"""
+    if not g:
+        print('This statement failed: `from leo.core import leoGlobals as g`')
+        print('Please adjust your Python path accordingly')
+    return bool(g)
 #@+node:ekr.20240106220602.1: ** LeoTokens: debugging functions
 #@+node:ekr.20240105140814.41: *3* function: dump_contents
 def dump_contents(contents: str, tag: str = 'Contents') -> None:
@@ -1861,6 +1834,29 @@ def main() -> None:  # pragma: no cover
         orange_command(arg_files, files, settings_dict, args.verbose)
     # if args.od:
         # orange_diff_command(files, settings_dict)
+#@+node:ekr.20240105140814.9: *3* function: get_modified_files
+def get_modified_files(repo_path: str) -> list[str]:
+    """Return the modified files in the given repo."""
+    if not repo_path:
+        return []
+    old_cwd = os.getcwd()
+    os.chdir(repo_path)
+    try:
+        # We are not checking the return code here, so:
+        # pylint: disable=subprocess-run-check
+        result = subprocess.run(
+            ["git", "status", "--porcelain"],
+            capture_output=True, text=True)
+        if result.returncode != 0:
+            print("Error running git command")
+            return []
+        modified_files = []
+        for line in result.stdout.split('\n'):
+            if line.startswith((' M', 'M ', 'A ', ' A')):
+                modified_files.append(line[3:])
+        return [os.path.abspath(z) for z in modified_files]
+    finally:
+        os.chdir(old_cwd)
 #@+node:ekr.20240105140814.10: *3* function: scan_args (leoTokens.py)
 def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
     description = textwrap.dedent("""\
