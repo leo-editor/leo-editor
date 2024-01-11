@@ -241,7 +241,10 @@ class InputToken:
     #@-others
 #@+node:ekr.20240105143307.1: *3* class Tokenizer
 class Tokenizer:
-    """Create a list of InputTokens from contents."""
+    """
+    Create a list of InputTokens from contents using Python's tokenizer
+    module: https://docs.python.org/3/library/tokenize.html
+    """
 
     results: list[InputToken] = []
 
