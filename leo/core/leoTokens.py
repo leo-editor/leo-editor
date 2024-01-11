@@ -137,10 +137,6 @@ if 1:  # pragma: no cover
             return [os.path.abspath(z) for z in modified_files]
         finally:
             os.chdir(old_cwd)
-    #@+node:ekr.20240105140814.12: *3* function: regularize_nls
-    def regularize_nls(s: str) -> str:
-        """Regularize newlines within s."""
-        return s.replace('\r\n', '\n').replace('\r', '\n')
     #@+node:ekr.20240105140814.17: *3* function: write_file
     def write_file(filename: str, s: str, encoding: str = 'utf-8') -> None:
         """
@@ -672,7 +668,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Something besides newlines must change.
         if not results:
             return False
-        if regularize_nls(contents) == regularize_nls(results):
+        if self.regularize_nls(contents) == self.regularize_nls(results):
             return False
         # Write the results
         if not self.silent:
@@ -704,8 +700,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         if prev.kind == kind:
             self.code_list.pop()
     #@+node:ekr.20240105145241.10: *5* tbo.do_comment
-    ### in_doc_part = False
-
     comment_pat = re.compile(r'^(\s*)#[^@!# \n]')
 
     def do_comment(self) -> None:
@@ -755,11 +749,16 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Exactly two spaces before trailing comments.
             val = '  ' + self.val.rstrip()
         self.gen_token('comment', val)
+    #@+node:ekr.20240111051726.1: *5* tbo.do_dedent
+    def do_dedent(self) -> None:
+        """Handle dedent token."""
+        # Note: other methods use self.indent_level.
+        self.indent_level -= 1
+        self.lws = self.indent_level * self.tab_width * ' '
+        self.gen_line_indent()
     #@+node:ekr.20240105145241.11: *5* tbo.do_encoding
     def do_encoding(self) -> None:
-        """
-        Handle the encoding token.
-        """
+        """Handle the encoding token."""
         pass
     #@+node:ekr.20240105145241.12: *5* tbo.do_endmarker
     def do_endmarker(self) -> None:
@@ -782,19 +781,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.gen_token('verbatim', self.val)
         if self.kind == 'fstring_end':
             self.in_fstring = False
-    #@+node:ekr.20240105145241.14: *5* tbo.do_indent & do_dedent
-    # Note: other methods use self.indent_level.
-
-    def do_dedent(self) -> None:
-        """Handle dedent token."""
-        self.indent_level -= 1
-        self.lws = self.indent_level * self.tab_width * ' '
-        self.gen_line_indent()
-
+    #@+node:ekr.20240105145241.14: *5* tbo.do_indent
     def do_indent(self) -> None:
         """Handle indent token."""
-        # Refuse to beautify files containing leading tabs or unusual indentation.
+        # Note: other methods use self.indent_level.
+
+        #@+<< Raise BeautifyError on bad indentation >>
+        #@+node:ekr.20240111051909.1: *6* << Raise BeautifyError on bad indentation >>
         consider_message = 'consider using python/Tools/scripts/reindent.py'
+
         if '\t' in self.val:  # pragma: no cover
             message = f"Leading tabs found: {self.filename}"
             print(message)
@@ -805,6 +800,9 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(message)
             print(consider_message)
             raise BeautifyError(message)
+        #@-<< Raise BeautifyError on bad indentation >>
+
+        # Handle the token!
         new_indent = self.val
         old_indent = self.indent_level * self.tab_width * ' '
         if new_indent > old_indent:
@@ -826,6 +824,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.40: *6* tbo.gen_word
     def gen_word(self, s: str) -> None:
         """Add a word request to the code list."""
+        assert s == self.val
         assert s and isinstance(s, str), repr(s)
         # Aliases.
         is_kind, next, set_context = self.is_kind, self.next_token, self.set_context
@@ -870,6 +869,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240107141830.1: *6* tbo.gen_word_op
     def gen_word_op(self, s: str) -> None:
         """Add a word-op request to the code list."""
+        assert s == self.val
         assert s and isinstance(s, str), repr(s)
         self.gen_blank()
         self.gen_token('word-op', s)
@@ -877,13 +877,13 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.17: *5* tbo.do_newline, do_nl & generators
     def do_newline(self) -> None:
         """Handle a regular newline."""
-        self.line_end()
+        self.gen_line_end_helper()
 
     def do_nl(self) -> None:
         """Handle a continuation line."""
-        self.line_end()
-    #@+node:ekr.20240105145241.32: *6* tbo.line_end & helpers
-    def line_end(self) -> None:
+        self.gen_line_end_helper()
+
+    def gen_line_end_helper(self) -> None:
         """Add a line-end request to the code list."""
         # Only do_newline and do_nl should call this method.
         token = self.token
@@ -894,7 +894,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Add the indentation until the next indent/unindent token.
         self.gen_line_indent()
-    #@+node:ekr.20240105145241.25: *7* tbo.gen_line_end
+    #@+node:ekr.20240105145241.25: *6* tbo.gen_line_end
     def gen_line_end(self) -> OutputToken:
         """Add a line-end request to the code list."""
         # This may be called from do_name as well as do_newline and do_nl.
@@ -905,7 +905,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Distinguish between kinds of 'line-end' tokens.
         t.newline_kind = self.token.kind
         return t
-    #@+node:ekr.20240105145241.33: *7* tbo.gen_line_indent
+    #@+node:ekr.20240105145241.33: *6* tbo.gen_line_indent
     def gen_line_indent(self) -> None:
         """Add a line-indent token."""
         self.clean('line-indent')  # Defensive. Should never happen.
@@ -1248,7 +1248,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_string(self) -> None:
         """Handle a 'string' token."""
         # Careful: continued strings may contain '\r'
-        val = regularize_nls(self.val)
+        val = self.regularize_nls(self.val)
         self.gen_token('string', val)
         self.gen_blank()
     #@+node:ekr.20240105145241.22: *5* tbo.do_verbatim
@@ -1263,7 +1263,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         kind = self.kind
         #
         # Careful: tokens may contain '\r'
-        val = regularize_nls(self.val)
+        val = self.regularize_nls(self.val)
         if kind == 'comment':
             if self.beautify_pat.match(val):
                 self.verbatim = False
@@ -1320,6 +1320,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         tok.index = len(self.code_list)
         self.code_list.append(tok)
         return tok
+    #@+node:ekr.20240105140814.12: *5* tbo.regularize_nls
+    def regularize_nls(self, s: str) -> str:
+        """Regularize newlines within s."""
+        return s.replace('\r\n', '\n').replace('\r', '\n')
     #@+node:ekr.20240105145241.41: *4* tbo: Scanners & helpers
     #@+node:ekr.20240106181128.1: *5* tbo.scan_annotation
     def scan_annotation(self, i1: int) -> Optional[int]:
