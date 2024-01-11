@@ -174,10 +174,9 @@ def output_tokens_to_string(tokens: list[OutputToken]) -> str:
 class BeautifyError(Exception):
     """Leading tabs found."""
 #@+node:ekr.20240105140814.53: *3* class InputToken
-class InputToken:  # TBO
+class InputToken:  # leoTokens.py.
     """A class representing a TBO input token."""
 
-    ### def __init__(self, kind: str, value: str):
     def __init__(
         self, kind: str, value: str, index: int, line: str, line_number: int,
     ) -> None:
@@ -193,7 +192,6 @@ class InputToken:  # TBO
         return f"Token {s}: {self.show_val(20)}"
 
     __str__ = __repr__
-
 
     def to_string(self) -> str:
         """Return the contribution of the token to the source file."""
@@ -251,19 +249,9 @@ class Tokenizer:
     #@+node:ekr.20240105143307.2: *4* itok.add_token
     def add_token(self, kind: str, line: str, line_number: int, value: str,) -> None:
         """Add an InputToken to the results list."""
-        if 1:
-            tok = InputToken(kind, value, self.token_index, line, line_number)
-            self.token_index += 1
-            self.results.append(tok)
-
-        # else:
-            # tok = InputToken(kind, value)
-            # tok.index = self.token_index
-            # # Bump the token index.
-            # self.token_index += 1
-            # tok.line = line
-            # tok.line_number = s_row
-            # self.results.append(tok)
+        tok = InputToken(kind, value, self.token_index, line, line_number)
+        self.token_index += 1
+        self.results.append(tok)
     #@+node:ekr.20240105143214.2: *4* itok.check_results
     def check_results(self, contents: str) -> None:
 
@@ -335,12 +323,13 @@ class Tokenizer:
                     where the token ends in the source;
         - line:     The *physical line on which the token was found.
         """
-
         import token as token_module
+
         # Unpack..
         tok_type, val, start, end, line = five_tuple
         s_row, s_col = start  # row/col offsets of start of token.
         e_row, e_col = end  # row/col offsets of end of token.
+        line_number = s_row
         kind = token_module.tok_name[tok_type].lower()
         # Calculate the token's start/end offsets: character offsets into contents.
         s_offset = self.offsets[max(0, s_row - 1)] + s_col
@@ -350,9 +339,9 @@ class Tokenizer:
         # Add any preceding between-token whitespace.
         ws = contents[self.prev_offset:s_offset]
         if ws:  # Create the 'ws' pseudo-token.
-            self.add_token('ws', line, s_row, ws)
+            self.add_token('ws', line, line_number, ws)
         # Always add token, even if it contributes no text!
-        self.add_token(kind, line, s_row, tok_s)
+        self.add_token(kind, line, line_number, tok_s)
         # Update the ending offset.
         self.prev_offset = e_offset
     #@+node:ekr.20240105143214.6: *4* itok.make_input_tokens
