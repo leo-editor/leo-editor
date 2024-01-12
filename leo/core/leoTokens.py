@@ -652,7 +652,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Write the results
         if not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
-        if 0:
+        if 0:  ###
             self.write_file(filename, results, encoding=encoding)
         return True
     #@+node:ekr.20240112021737.1: *5* tbo.create_indices
@@ -902,6 +902,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.scan_call(i)
 
         # Finally: generate output tokens.
+        if False and s == 'i':  ###
+            g.trace(self.token.line_number, 's', s, self.token.line.strip())
         self.gen_blank()
         self.gen_token('word', s)
         self.gen_blank()
@@ -1033,6 +1035,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_token('op', val)
             self.gen_blank()
         elif context == 'simple-slice':
+            ### g.trace('simple-slice', self.token.line.strip())  ###
             self.gen_token('op-no-blanks', val)
         elif context == 'end-statement':
             self.gen_token('op-no-blank', val)
@@ -1064,6 +1067,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.expect(i1, 'op', '[')
         self.expect(i2, 'op', ']')
 
+        if 0:  ###
+            g.trace('Found []', 'line:', self.token.line_number,
+                i1, self.index, i2, self.token.line.strip())
+            g.printObj(self.tokens[i1 : i2 + 1])
+
         # Set complex if the inner area contains something other than 'name' or 'number' tokens.
         is_complex = False
         i = next(i1)
@@ -1080,6 +1088,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                 is_complex = True
                 break
             i = next(i)
+
+        ### g.trace('Complex?', is_complex, '\n')
 
         # Set the context for all ':' tokens.
         context = 'complex-slice' if is_complex else 'simple-slice'
@@ -1756,13 +1766,20 @@ class TokenBasedOrange:  # Orange is the new Black.
             token = self.tokens[i]
             kind, value = token.kind, token.value
             # Prechecks.
-            if token.kind == 'newline':
-                return None
-            if (
-                kind == 'op' and value in values
-                and (curly_brackets, parens, square_brackets) == (0, 0, 0)
-            ):
-                return i
+            if 0:
+                if (curly_brackets, parens, square_brackets) == (0, 0, 0):
+                    if token.kind == 'newline':
+                        return None  # Fail
+                    if kind == 'op' and value in values:
+                        return i  # Succeed.
+            else:
+                if token.kind == 'newline':
+                    return None
+                if (
+                    kind == 'op' and value in values
+                    and (curly_brackets, parens, square_brackets) == (0, 0, 0)
+                ):
+                    return i
             if kind == 'op':
                 # Bump counts.
                 if value == '(':
