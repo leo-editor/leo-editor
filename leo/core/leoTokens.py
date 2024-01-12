@@ -631,7 +631,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         except BeautifyError as e:
             print(self.error_message(str(e)))
             return None
-    #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry)
+    #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. possible live)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
         TokenBasedOrange: Beautify the the given external file.
@@ -652,7 +652,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Write the results
         if not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
-        ### self.write_file(filename, results, encoding=encoding)
+        if 0:
+            self.write_file(filename, results, encoding=encoding)
         return True
     #@+node:ekr.20240112021737.1: *5* tbo.create_indices
     def create_indices(self, tokens: list[InputToken]) -> list[int]:
@@ -1190,6 +1191,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         prev_i = self.prev_token(self.index)
         prev_token = self.tokens[prev_i]
         kind, value = prev_token.kind, prev_token.value
+        g.trace('prev', prev_token, self.token.line)
         if kind == 'number':
             return False
         if kind == 'op' and value in ')]':
