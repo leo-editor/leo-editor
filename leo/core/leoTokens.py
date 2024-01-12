@@ -188,7 +188,7 @@ class InputToken:  # leoTokens.py.
         self.index = index
         self.kind = kind
         self.line = line  # The entire line containing the token.
-        self.line_number = 0
+        self.line_number = line_number
         self.value = value
 
     def __repr__(self) -> str:  # pragma: no cover
@@ -229,7 +229,7 @@ class InputToken:  # leoTokens.py.
         """Dump a token for error message."""
         return f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20}"
     #@+node:ekr.20240105140814.58: *4* itoken.show_val
-    def show_val(self, truncate_n: int) -> str:  # pragma: no cover
+    def show_val(self, truncate_n: int = 20) -> str:  # pragma: no cover
         """Return the token.value field."""
         if self.kind in ('ws', 'indent'):
             val = str(len(self.value))
@@ -247,12 +247,23 @@ class Tokenizer:
     See: https://docs.python.org/3/library/tokenize.html
     """
 
+    __slots__ = (
+        'last_offset', 'lines',
+        'offsets', 'prev_offset',
+        'token_index', 'token_list',
+    )
+
     def __init__(self) -> None:
+        # self.token_index = 0
+        # # The computed list of input tokens.
+        # self.token_list: list[InputToken] = []
+        # self.last_offset = 0
+        # self.offsets: list[int] = [0]
+         # Init all ivars.
+        self.offsets: list[int] = [0]  # Index of start of each line.
+        self.prev_offset = -1
         self.token_index = 0
-        # The computed list of input tokens.
         self.token_list: list[InputToken] = []
-        # The indices of the starting token of the *next* line.
-        self.next_line_indices: list[int] = []
 
     #@+others
     #@+node:ekr.20240105143307.2: *4* itok.add_token
@@ -302,18 +313,17 @@ class Tokenizer:
         self.lines = contents.splitlines(True)
 
         # Create the list of character offsets of the start of each physical line.
-        last_offset, self.offsets = 0, [0]
+        last_offset = 0
         for line in self.lines:
             last_offset += len(line)
             self.offsets.append(last_offset)
-        # Handle each token, appending tokens and between-token whitespace to self.token_list.
-        self.prev_offset, self.token_list = -1, []
+
+        # Create self.token_list.
         for five_tuple in five_tuples:
-            # Subclasses create lists of Tokens or InputTokens.
             self.do_token(contents, five_tuple)
+
         # Print the token list when tracing.
         self.check_results(contents)
-        # Return results, as a list.
         return self.token_list
     #@+node:ekr.20240105143214.5: *4* itok.do_token (the gem)
     def do_token(self, contents: str, five_tuple: tuple) -> None:
@@ -462,9 +472,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         'force', 'silent', 'tab_width', 'verbose',
         # Debugging.
         'contents', 'filename',
-        # Set only in the main loop.
+        # The state of the main loop.
         'index', 'token',
-        'line_start', 'line_end', 'line_number', 'prev_line_number',
+        'line_start', 'line_end', 'line_number',
+        'prev_line_end', 'prev_line_number',
         # Global lists.
         'code_list', 'line_indices', 'tokens',
         # State data for whitespace. Don't even *think* about changing these!
@@ -559,6 +570,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.line_end: int = None  # The index of the last token of this line.
         self.line_number: int = None  # The line number of this line.
         self.prev_line_number: int = None  # The previous line number.
+        self.prev_line_end: int = None
 
         # State vars for whitespace.
         self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
@@ -595,8 +607,43 @@ class TokenBasedOrange:  # Orange is the new Black.
             for self.index, self.token in enumerate(tokens):
                 # Set globals for visitors.
                 if self.prev_line_number != self.token.line_number:
+                    #@+<< update line-number data >>
+                    #@+node:ekr.20240112035001.1: *6* << update line-number data >>
+                    # A permanent unit test of the consistency of the line_indices array:
+
+                    if self.prev_line_number is not None:
+                        message = (
+                            '\ntog.beautify: Error in tog.line_indices!\n'
+                            f"line: {self.token.line_number} index: {self.index} token: {self.token}\n"
+                            f"index: {self.index} != old line_end: {self.line_end }\n"
+                        )
+                        # line_indices: index of the first token of the *next* line.
+                        if self.index != self.line_end:
+                            print(message)
+                            g.printObj(self.line_indices[:4], tag='tog.line_indicces[:]')
+                            if 1:
+                                print('line index token.line token')
+                                print('==== ===== ========== =====')
+                                for i, z in enumerate(self.tokens):
+                                    token = self.tokens[i]
+                                    print(
+                                        f"  {token.line_number:<3}  {token.index:<4} "
+                                        f"  {token.line_number:<4}{' '*4}{token.kind} {token.show_val()}")
+                                    if token.kind == 'newline':
+                                        print('')
+
+                        assert self.index == self.line_end, message
+
                     self.line_start = self.token.line_number
                     self.line_end = self.line_indices[self.token.line_number]
+                    self.prev_line_number = self.token.line_number
+
+                    if 0:
+                        g.trace(
+                            f"new prev_line_number: {self.prev_line_number} "
+                            f"new line_start:line_end {self.line_start}:{self.line_end}"
+                        )
+                    #@-<< update line-number data >>
                 # Call the proper visitor.
                 if self.verbatim:
                     self.do_verbatim()
@@ -641,14 +688,17 @@ class TokenBasedOrange:  # Orange is the new Black.
         the *next* line.
         """
         indices: list[int] = []
-        last_line_start = 0
         if not tokens:
             return indices
         assert tokens[0].line_number == 0, tokens[0].line_number
+        # The start of the line 1 is token[1]
+        indices.append(1)
+        last_line_start = 1
         for i, token in enumerate(tokens):
-            if token.line_number != last_line_start:
+            if i > 0 and token.line_number != last_line_start:
                 indices.append(i)
-                last_line_start = i
+                last_line_start = token.line_number
+        # Add an entry for the last line.
         indices.append(len(tokens))
         return indices
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
