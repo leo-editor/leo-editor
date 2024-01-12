@@ -83,6 +83,8 @@ Node = ast.AST
 Settings = Optional[dict[str, Any]]
 #@-<< leoTokens.py: imports & annotations >>
 
+debug: bool = True
+
 #@+others
 #@+node:ekr.20240105140814.5: ** command: orange_command (tbo) & helper
 def orange_command(
@@ -351,13 +353,14 @@ class Tokenizer:
         self.add_token(kind, line, line_number, tok_s)
         # Update the ending offset.
         self.prev_offset = e_offset
-    #@+node:ekr.20240105143214.6: *4* itok.make_input_tokens
+    #@+node:ekr.20240105143214.6: *4* itok.make_input_tokens (entry)
     def make_input_tokens(self, contents: str) -> list[InputToken]:
         """
         Return a list  of InputToken objects using tokenize.tokenize.
 
         Perform consistency checks and handle all exceptions.
         """
+        global debug
         try:
             # Use Python's tokenizer module.
             # https://docs.python.org/3/library/tokenize.html
@@ -368,7 +371,8 @@ class Tokenizer:
             g.es_exception()
             return None
         tokens = self.create_input_tokens(contents, five_tuples)
-        assert self.check_round_trip(contents, tokens)
+        if debug:  # True: 2.9 sec. False: 2.8 sec.
+            assert self.check_round_trip(contents, tokens)
         return tokens
     #@+node:ekr.20240105143214.7: *4* itok.tokens_to_string
     def tokens_to_string(self, tokens: list[InputToken]) -> str:
@@ -620,6 +624,23 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(f"tbo: changed {g.shortFileName(filename)}")
         ### self.write_file(filename, results, encoding=encoding)
         return True
+    #@+node:ekr.20240112021737.1: *5* tbo.create_indices
+    def create_indices(self, tokens: list[InputToken]) -> list[int]:
+        """
+        Create a list (one per logical line) of the index of the first token of
+        the *next* line.
+        """
+        indices: list[int] = []
+        last_line_start = 0
+        if not tokens:
+            return indices
+        assert tokens[0].line_number == 0, tokens[0].line_number
+        for i, token in enumerate(tokens):
+            if token.line_number != last_line_start:
+                indices.append(i)
+                last_line_start = i
+        indices.append(len(tokens))
+        return indices
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
         str, str, list[InputToken]
