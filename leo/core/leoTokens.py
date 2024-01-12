@@ -505,18 +505,9 @@ class TokenBasedOrange:  # Orange is the new Black.
     def __init__(self, settings: Settings = None):
         """Ctor for Orange class."""
         # Init ivars.
-        self.kind: str = ''
+        ### self.kind: str = ''
         if settings is None:
             settings = {}
-
-        # Init the dispatch dict for 'word' generator.
-        self.word_dispatch: dict[str, Callable] = {
-            'from': self.scan_from,
-            'def': self.scan_def,
-            'import': self.scan_import,
-        }
-        for z in self.compound_statements:
-            self.word_dispatch[z] = self.scan_compound_statement
 
         # Default settings...
         self.force = False
@@ -533,10 +524,19 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 g.trace(f"Unexpected setting: {key} = {value!r}")
                 g.trace('(TokenBasedOrange)', g.callers())
+
+        # Init the dispatch dict for 'word' generator.
+        self.word_dispatch: dict[str, Callable] = {
+            'from': self.scan_from,
+            'def': self.scan_def,
+            'import': self.scan_import,
+        }
+        for z in self.compound_statements:
+            self.word_dispatch[z] = self.scan_compound_statement
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def oops(self) -> None:  # pragma: no cover
-        g.trace(f"Unknown kind: {self.kind}")
+        g.trace(f"Unknown kind: {self.token.kind!r}")
 
     def beautify(self,
         contents: str,
@@ -602,7 +602,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             for self.index, token in enumerate(tokens):
                 self.token = token
                 # Set globals for visitors.
-                self.kind, self.val = token.kind, token.value
+                ### self.kind, self.val = token.kind, token.value
+                self.val = token.value
                 self.line, self.line_number = token.line, self.line_number
                 if self.prev_line_number != token.line_number:
                     self.line_start = token.line_number
@@ -780,7 +781,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Exit f-string mode if the token is 'fstring_end'.
         """
         self.gen_token('verbatim', self.val)
-        if self.kind == 'fstring_end':
+        if self.token.kind == 'fstring_end':
             self.in_fstring = False
     #@+node:ekr.20240105145241.14: *5* tbo.do_indent
     def do_indent(self) -> None:
@@ -1266,7 +1267,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Handle one token in verbatim mode.
         End verbatim mode when the appropriate comment is seen.
         """
-        kind = self.kind
+        kind = self.token.kind
         #
         # Careful: tokens may contain '\r'
         val = self.regularize_nls(self.val)
