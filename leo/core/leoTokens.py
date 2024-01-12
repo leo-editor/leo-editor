@@ -462,9 +462,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         'force', 'silent', 'tab_width', 'verbose',
         # Debugging.
         'contents', 'filename',
-        # The input token. Set only in the main loop.
+        # Set only in the main loop.
         'index', 'token',
-        # Line number indices. Set only in the main loop.
         'line_start', 'line_end', 'line_number', 'prev_line_number',
         # Global lists.
         'code_list', 'line_indices', 'tokens',
@@ -593,19 +592,18 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.gen_token('file-start', '')
         self.push_state('file-start')
         try:
-            for self.index, token in enumerate(tokens):
+            for self.index, self.token in enumerate(tokens):
                 # Set globals for visitors.
-                self.token = token
-                if self.prev_line_number != token.line_number:
-                    self.line_start = token.line_number
-                    self.line_end = self.line_indices[token.line_number]
+                if self.prev_line_number != self.token.line_number:
+                    self.line_start = self.token.line_number
+                    self.line_end = self.line_indices[self.token.line_number]
                 # Call the proper visitor.
                 if self.verbatim:
                     self.do_verbatim()
                 elif self.in_fstring:
                     self.continue_fstring()
                 else:
-                    func = getattr(self, f"do_{token.kind}", self.oops)
+                    func = getattr(self, f"do_{self.token.kind}", self.oops)
                     func()
             # Any post pass would go here.
             result = output_tokens_to_string(self.code_list)
