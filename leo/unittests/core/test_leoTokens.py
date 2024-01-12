@@ -296,6 +296,27 @@ class TestTokenBasedOrange(BaseTest):
                 g.printObj(results, tag='Results')
             self.assertEqual(results, expected)
 
+    #@+node:ekr.20240112134732.1: *3* TestTBO.test_def_colons
+    def test_def_colons(self):
+        
+        contents = textwrap.dedent(
+            '''
+                self.configDict: dict[str, Any] = {}
+                self.configUnderlineDict: dict[str, bool] = {}
+            '''
+        ).strip().replace('AT', '@') + '\n'
+
+        contents, tokens = self.make_data(contents)
+        expected = contents
+        results = self.beautify(contents, tokens)
+        if results != expected:
+            # g.printObj(contents, tag='Contents')
+            g.printObj(expected, tag='Expected (same as Contents)')
+            g.printObj(results, tag='Results')
+            
+        self.maxDiff = None
+        self.assertEqual(results, expected)
+
     #@+node:ekr.20240105153425.46: *3* TestTBO.test_at_doc_part
     def test_at_doc_part(self):
 
