@@ -1184,16 +1184,16 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240109082712.1: *7* tbo.is_unary_op
     def is_unary_op(self, val: str) -> bool:
 
-        if val not in '+-~':
-            return False
         if val == '~':
             return True
+        if val not in '+-':
+            return False
         # Get the previous significant token.
         prev_i = self.prev_token(self.index)
         prev_token = self.tokens[prev_i]
         kind, value = prev_token.kind, prev_token.value
-        g.trace('prev', prev_token, repr(self.token.line))
-        if kind == ('number', 'string'):
+        ### g.trace('prev', prev_token, repr(self.token.line))
+        if kind in ('number', 'string'):
             return False
         if kind == 'op' and value in ')]':
             return False
@@ -1201,6 +1201,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             return True
         if kind == 'name':
             return False
+        ### g.trace('Unary!')
         return True
     #@+node:ekr.20240105145241.36: *6* tbo.gen_rt
     def gen_rt(self) -> None:
