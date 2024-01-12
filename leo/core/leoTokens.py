@@ -610,55 +610,27 @@ class TokenBasedOrange:  # Orange is the new Black.
                     #@+<< update line-number data >>
                     #@+node:ekr.20240112035001.1: *6* << update line-number data >>
                     # A permanent unit test of the consistency of the line_indices array:
-                    if False and self.prev_line_number is not None:
-                        message = (
-                            '\ntog.beautify: Error in tog.line_indices!\n'
-                            f"file: {self.filename}\n"
-                            f"line: {self.token.line_number} index: {self.index} token: {self.token}\n"
-                            f"index {self.index} != old line_end: {self.line_end }\n"
-                        )
-                        # line_indices: index of the first token of the *next* line.
-                        # self.line_end: the computed next line from the *old* line.
-                        # self.index: the start of the *new* line.
-                        if self.index != self.line_end:
-                            print(message)
-                            g.printObj(self.line_indices[:4], tag='tog.line_indices[:4]')
-                            if 1:
-                                lines = g.splitLines(self.contents)
-                                n = self.token.line_number
-                                i1, i2 = max(0, n - 10), n
-                                g.printObj(lines[i1:i2], tag=f"Lines[{i1}:{i2}")
-                            if 1:
-                                i1 = max(0, min(self.index, self.line_end) - 20)
-                                i2 = max(self.index, self.line_end)
-                                g.trace('Dump of tokens', i1, i2, '\n')
-                                print('line index token.line token')
-                                print('==== ===== ========== =====')
-                                for i, z in enumerate(self.tokens[i1:i2]):
-                                    token = self.tokens[i + i1]
-                                    print(
-                                        f"  {token.line_number:<3}  {token.index:<4} "
-                                        f"  {token.line_number:<4}{' '*4}{token.kind} {token.show_val()}")
-                                    if token.kind == 'newline':
-                                        print('')
-
-                        assert self.index == self.line_end, message
+                    if self.prev_line_number is not None and self.index != self.line_end:
+                        self.report_token_error()
 
                     self.line_start = self.token.line_number
-                    try:
-                        self.line_end = self.line_indices[self.token.line_number]
-                    except IndexError:
-                        g.trace(
-                            f"OOPS: line: {self.token.line_number:4} >= {len(self.line_indices):4}! "
-                            f"{g.shortFileName(self.filename):20} {self.token}")
-                        self.line_end = len(self.tokens)
-                    self.prev_line_number = self.token.line_number
+                    self.line_end = self.line_indices[self.token.line_number]
 
-                    if 0:
-                        g.trace(
-                            f"new prev_line_number: {self.prev_line_number} "
-                            f"new line_start:line_end {self.line_start}:{self.line_end}"
-                        )
+
+                    # try:
+                        # self.line_end = self.line_indices[self.token.line_number]
+                    # except IndexError:
+                        # g.trace(
+                            # f"OOPS: line: {self.token.line_number:4} >= {len(self.line_indices):4}! "
+                            # f"{g.shortFileName(self.filename):20} {self.token}")
+                        # self.line_end = len(self.tokens)
+                    # self.prev_line_number = self.token.line_number
+
+                    # if 0:
+                        # g.trace(
+                            # f"new prev_line_number: {self.prev_line_number} "
+                            # f"new line_start:line_end {self.line_start}:{self.line_end}"
+                        # )
                     #@-<< update line-number data >>
                 # Call the proper visitor.
                 if self.verbatim:
@@ -674,6 +646,40 @@ class TokenBasedOrange:  # Orange is the new Black.
         except BeautifyError as e:
             print(e)
             return None
+    #@+node:ekr.20240112074218.1: *6* tbo.reort_token_error
+    def report_token_error(self) -> None:
+        """Issue a detailed error about unexpected token data."""
+        message = (
+            '\ntog.beautify: Error in tog.line_indices!\n'
+            f"file: {self.filename}\n"
+            f"line: {self.token.line_number} index: {self.index} token: {self.token}\n"
+            f"index {self.index} != old line_end: {self.line_end }\n"
+        )
+        # line_indices: index of the first token of the *next* line.
+        # self.line_end: the computed next line from the *old* line.
+        # self.index: the start of the *new* line.
+        print(message)
+        g.printObj(self.line_indices[:4], tag='tog.line_indices[:4]')
+        if 1:
+            lines = g.splitLines(self.contents)
+            n = self.token.line_number
+            i1, i2 = max(0, n - 10), n
+            g.printObj(lines[i1:i2], tag=f"Lines[{i1}:{i2}")
+        if 1:
+            i1 = max(0, min(self.index, self.line_end) - 20)
+            i2 = max(self.index, self.line_end)
+            g.trace('Dump of tokens', i1, i2, '\n')
+            print('line index token.line token')
+            print('==== ===== ========== =====')
+            for i, z in enumerate(self.tokens[i1:i2]):
+                token = self.tokens[i + i1]
+                print(
+                    f"  {token.line_number:<3}  {token.index:<4} "
+                    f"  {token.line_number:<4}{' '*4}{token.kind} {token.show_val()}")
+                if token.kind == 'newline':
+                    print('')
+
+        assert self.index == self.line_end, message
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
@@ -711,13 +717,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         indices.append(1)
         prev_line = 1
         for i, token in enumerate(tokens):
-            if token.line_number != prev_line:
+            if i > 0 and token.line_number != prev_line:
                 indices.append(i)
                 # Careful! token.line_number may be > prev_line + 1
                 while len(indices) < token.line_number:
                     indices.append(i)
                 prev_line = token.line_number
-        # g.trace('last_i', last_i, 'last_line_start', last_line_start)
         # Add an entry for the last line.
         indices.append(len(tokens) - 1)
         return indices
