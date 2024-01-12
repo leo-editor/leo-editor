@@ -651,7 +651,7 @@ class ScriptingController:
         Find the node with the given gnx in c, myLeoSettings.leo and leoSettings.leo.
         If found, open the tab/outline and return c,p of the found node.
 
-        Called only from a callback in QtIconBarClass.setCommandForButton.
+        Called from a callback in QtIconBarClass.setCommandForButton and from leoserver.py.
         """
         if not gnx:
             g.trace('can not happen: no gnx')
