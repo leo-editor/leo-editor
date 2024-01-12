@@ -6,7 +6,7 @@ Scripting Leo
 
 .. toctree::
     :maxdepth: 1
-    
+
     Introduction to scripting       <slide-001>
     c, g and p                      <slide-002>
     Official ivars                  <slide-003>

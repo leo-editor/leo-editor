@@ -10,7 +10,7 @@ No node may contain more than one @others directive.
 The expansion of a section reference is the expansion of the body of the
 section definition node. That expansion may include expansions of other
 references appearing in that node.
-    
+
 The expansion of an @others directive is the expansion of all descendant
 nodes that are *not* section definition nodes.
 

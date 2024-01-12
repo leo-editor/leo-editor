@@ -11,6 +11,6 @@ but there are four spaces before the @others directives. So:
 - Leo writes the import statements without additional indentation.
 - Leo adds 4 spaces before all nodes written as the result of the @others
   directive.
- 
+
 .. This slides contains no image.
 

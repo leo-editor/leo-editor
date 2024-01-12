@@ -16,7 +16,7 @@ source_suffix = '.html.txt'
 #@+<< general settings >>
 #@+node:ekr.20230121091126.1: ** << general settings >>
 project = 'Leo'
-copyright = '1997-2023, Edward K. Ream'
+copyright = '1997-2024, Edward K. Ream'
 version = '6.7.6'
 release = '6.7.6'
 

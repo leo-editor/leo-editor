@@ -8,6 +8,6 @@ Indentation is controlled *only* by the indentation of references. The outline l
 This *decoupling* of outline structure from indentation is crucial:
 
   *organizer nodes do not affect the indentation of the lines*.
-  
+
 .. image:: _images/slide-012.png
 
