@@ -472,20 +472,17 @@ class TokenBasedOrange:  # Orange is the new Black.
         'force', 'silent', 'tab_width', 'verbose',
         # Debugging.
         'contents', 'filename',
-        # The state of the main loop.
-        'index', 'token',
-        'line_start', 'line_end', 'line_number',
-        ### 'prev_line_end', 'prev_line_number',
-        # Global lists.
-        'code_list', 'line_indices', 'tokens',
-        # State data for whitespace. Don't even *think* about changing these!
-        'curly_brackets_level', 'indent_level', 'lws',
-        'paren_level', 'square_brackets_stack',
-        # Parse and Leo-related state.
+        # Global data.
+        'code_list', 'line_indices', 'tokens', 'word_dispatch',
+        # Token-related data for visitors.
+        'index', 'line_start', 'line_end', 'line_number', 'token',
+        # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part', 'in_fstring',
         'state_stack', 'verbatim',
-        # Dispatch dict.
-        'word_dispatch',
+        # State data for whitespace visitors.
+        # Don't even *think* about changing these!
+        'curly_brackets_level', 'paren_level', 'square_brackets_stack',
+        'indent_level', 'lws',
     ]
     #@-<< TokenBasedOrange: __slots__ >>
     #@+<< TokenBasedOrange: constants >>
@@ -609,16 +606,17 @@ class TokenBasedOrange:  # Orange is the new Black.
             for self.index, self.token in enumerate(tokens):
                 # Set globals for visitors.
                 if prev_line_number != self.token.line_number:
-                    #@+<< update line-number data >>
-                    #@+node:ekr.20240112035001.1: *6* << update line-number data >>
+                    #@+<< update line-related data >>
+                    #@+node:ekr.20240112035001.1: *6* << update line-related data >>
                     # A permanent unit test of the consistency of the line_indices array:
                     if prev_line_number is not None and self.index != self.line_end:
                         self.report_token_error()
 
+                    # Update the ivars!
                     self.line_start = self.token.line_number
                     self.line_end = self.line_indices[self.token.line_number]
                     prev_line_number = self.token.line_number
-                    #@-<< update line-number data >>
+                    #@-<< update line-related data >>
                 # Call the proper visitor.
                 if self.verbatim:
                     self.do_verbatim()
@@ -633,40 +631,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         except BeautifyError as e:
             print(e)
             return None
-    #@+node:ekr.20240112074218.1: *6* tbo.reort_token_error
-    def report_token_error(self) -> None:
-        """Issue a detailed error about unexpected token data."""
-        message = (
-            '\ntog.beautify: Error in tog.line_indices!\n'
-            f"file: {self.filename}\n"
-            f"line: {self.token.line_number} index: {self.index} token: {self.token}\n"
-            f"index {self.index} != old line_end: {self.line_end }\n"
-        )
-        # line_indices: index of the first token of the *next* line.
-        # self.line_end: the computed next line from the *old* line.
-        # self.index: the start of the *new* line.
-        print(message)
-        g.printObj(self.line_indices[:4], tag='tog.line_indices[:4]')
-        if 1:
-            lines = g.splitLines(self.contents)
-            n = self.token.line_number
-            i1, i2 = max(0, n - 10), n
-            g.printObj(lines[i1:i2], tag=f"Lines[{i1}:{i2}")
-        if 1:
-            i1 = max(0, min(self.index, self.line_end) - 20)
-            i2 = max(self.index, self.line_end)
-            g.trace('Dump of tokens', i1, i2, '\n')
-            print('line index token.line token')
-            print('==== ===== ========== =====')
-            for i, z in enumerate(self.tokens[i1:i2]):
-                token = self.tokens[i + i1]
-                print(
-                    f"  {token.line_number:<3}  {token.index:<4} "
-                    f"  {token.line_number:<4}{' '*4}{token.kind} {token.show_val()}")
-                if token.kind == 'newline':
-                    print('')
-
-        assert self.index == self.line_end, message
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
@@ -728,6 +692,40 @@ class TokenBasedOrange:  # Orange is the new Black.
             return None, None, None
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
         return contents, encoding, tokens
+    #@+node:ekr.20240112074218.1: *5* tbo.reort_token_error
+    def report_token_error(self) -> None:
+        """Issue a detailed error about unexpected token data."""
+        message = (
+            '\ntog.beautify: Error in tog.line_indices!\n'
+            f"file: {self.filename}\n"
+            f"line: {self.token.line_number} index: {self.index} token: {self.token}\n"
+            f"index {self.index} != old line_end: {self.line_end }\n"
+        )
+        # line_indices: index of the first token of the *next* line.
+        # self.line_end: the computed next line from the *old* line.
+        # self.index: the start of the *new* line.
+        print(message)
+        g.printObj(self.line_indices[:4], tag='tog.line_indices[:4]')
+        if 1:
+            lines = g.splitLines(self.contents)
+            n = self.token.line_number
+            i1, i2 = max(0, n - 10), n
+            g.printObj(lines[i1:i2], tag=f"Lines[{i1}:{i2}")
+        if 1:
+            i1 = max(0, min(self.index, self.line_end) - 20)
+            i2 = max(self.index, self.line_end)
+            g.trace('Dump of tokens', i1, i2, '\n')
+            print('line index token.line token')
+            print('==== ===== ========== =====')
+            for i, z in enumerate(self.tokens[i1:i2]):
+                token = self.tokens[i + i1]
+                print(
+                    f"  {token.line_number:<3}  {token.index:<4} "
+                    f"  {token.line_number:<4}{' '*4}{token.kind} {token.show_val()}")
+                if token.kind == 'newline':
+                    print('')
+
+        assert self.index == self.line_end, message
     #@+node:ekr.20240105140814.17: *5* tbo.write_file
     def write_file(self, filename: str, s: str, encoding: str = 'utf-8') -> None:
         """
