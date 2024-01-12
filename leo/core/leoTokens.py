@@ -475,7 +475,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # The state of the main loop.
         'index', 'token',
         'line_start', 'line_end', 'line_number',
-        'prev_line_end', 'prev_line_number',
+        ### 'prev_line_end', 'prev_line_number',
         # Global lists.
         'code_list', 'line_indices', 'tokens',
         # State data for whitespace. Don't even *think* about changing these!
@@ -569,8 +569,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.line_start: int = None  # The index of first token of this line.
         self.line_end: int = None  # The index of the last token of this line.
         self.line_number: int = None  # The line number of this line.
-        self.prev_line_number: int = None  # The previous line number.
-        self.prev_line_end: int = None
+        ###
+        # self.prev_line_number: int = None  # The previous line number.
+        # self.prev_line_end: int = None
 
         # State vars for whitespace.
         self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
@@ -603,34 +604,20 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.line_indices: list[int] = self.create_indices(tokens)
         self.gen_token('file-start', '')
         self.push_state('file-start')
+        prev_line_number: int = None
         try:
             for self.index, self.token in enumerate(tokens):
                 # Set globals for visitors.
-                if self.prev_line_number != self.token.line_number:
+                if prev_line_number != self.token.line_number:
                     #@+<< update line-number data >>
                     #@+node:ekr.20240112035001.1: *6* << update line-number data >>
                     # A permanent unit test of the consistency of the line_indices array:
-                    if self.prev_line_number is not None and self.index != self.line_end:
+                    if prev_line_number is not None and self.index != self.line_end:
                         self.report_token_error()
 
                     self.line_start = self.token.line_number
                     self.line_end = self.line_indices[self.token.line_number]
-
-
-                    # try:
-                        # self.line_end = self.line_indices[self.token.line_number]
-                    # except IndexError:
-                        # g.trace(
-                            # f"OOPS: line: {self.token.line_number:4} >= {len(self.line_indices):4}! "
-                            # f"{g.shortFileName(self.filename):20} {self.token}")
-                        # self.line_end = len(self.tokens)
-                    # self.prev_line_number = self.token.line_number
-
-                    # if 0:
-                        # g.trace(
-                            # f"new prev_line_number: {self.prev_line_number} "
-                            # f"new line_start:line_end {self.line_start}:{self.line_end}"
-                        # )
+                    prev_line_number = self.token.line_number
                     #@-<< update line-number data >>
                 # Call the proper visitor.
                 if self.verbatim:
