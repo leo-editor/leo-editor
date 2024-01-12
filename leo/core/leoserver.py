@@ -1239,7 +1239,10 @@ class LeoServer:
             try:
                 gnx = key.command.gnx
                 sc = getattr(c, "theScriptingController", None)
-                sc.open_gnx(c, gnx)
+                c2, p = sc.open_gnx(c, gnx)
+                if c2:
+                    self.c = c2
+                    c2.selectPosition(p)
             except Exception as e:
                 raise ServerError(f"{tag}: exception going to script of button {index!r}: {e}")
         else:
