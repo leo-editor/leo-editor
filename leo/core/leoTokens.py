@@ -463,7 +463,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Debugging.
         'contents', 'filename',
         # The input token. Set only in the main loop.
-        ### 'kind', 'val'
         'index', 'line', 'token',
         # Line number indices. Set only in the main loop.
         'line_start', 'line_end', 'line_number', 'prev_line_number',
@@ -505,18 +504,15 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.2: *4* tbo.ctor
     def __init__(self, settings: Settings = None):
         """Ctor for Orange class."""
-        # Init ivars.
-        ### self.kind: str = ''
+        # Set default settings.
         if settings is None:
             settings = {}
-
-        # Default settings...
         self.force = False
         self.silent = False
         self.tab_width = 4
         self.verbose = False
 
-        # Override from settings dict...
+        # Override defaults from settings dict.
         valid_keys = ('force', 'orange', 'silent', 'tab_width', 'verbose')
         for key in settings:  # pragma: no cover
             value = settings.get(key)
