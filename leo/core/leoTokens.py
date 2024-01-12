@@ -463,7 +463,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Debugging.
         'contents', 'filename',
         # The input token. Set only in the main loop.
-        ### 'line',
         'index', 'token',
         # Line number indices. Set only in the main loop.
         'line_start', 'line_end', 'line_number', 'prev_line_number',
@@ -580,8 +579,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Ivars describing the present input token...
         self.index = 0  # The index within the tokens array of the token being scanned.
-        ### self.line: str = None  # The entire line.
-        self.lws = ''  # Leading whitespace.
+        self.lws = ''  # Leading whitespace. Required!
         self.token: InputToken = None
 
         # Log.
@@ -596,12 +594,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.push_state('file-start')
         try:
             for self.index, token in enumerate(tokens):
-                self.token = token
                 # Set globals for visitors.
-                ### self.line, self.line_number = token.line, self.line_number
+                self.token = token
                 if self.prev_line_number != token.line_number:
                     self.line_start = token.line_number
                     self.line_end = self.line_indices[token.line_number]
+                # Call the proper visitor.
                 if self.verbatim:
                     self.do_verbatim()
                 elif self.in_fstring:
