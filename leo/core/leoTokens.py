@@ -610,7 +610,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                     #@+<< update line-number data >>
                     #@+node:ekr.20240112035001.1: *6* << update line-number data >>
                     # A permanent unit test of the consistency of the line_indices array:
-
                     if self.prev_line_number is not None:
                         message = (
                             '\ntog.beautify: Error in tog.line_indices!\n'
@@ -618,13 +617,17 @@ class TokenBasedOrange:  # Orange is the new Black.
                             f"index: {self.index} != old line_end: {self.line_end }\n"
                         )
                         # line_indices: index of the first token of the *next* line.
+                        # self.line_end: the computed next line from the *old* line.
+                        # self.index: the start of the *new* line.
                         if self.index != self.line_end:
                             print(message)
-                            g.printObj(self.line_indices[:4], tag='tog.line_indicces[:]')
+                            g.printObj(self.line_indices[:4], tag='tog.line_indices[:4]')
                             if 1:
                                 print('line index token.line token')
                                 print('==== ===== ========== =====')
-                                for i, z in enumerate(self.tokens):
+                                i1 = min(self.index, self.line_end)
+                                i2 = max(self.index, self.line_end)
+                                for i, z in enumerate(self.tokens[i1:i2]):
                                     token = self.tokens[i]
                                     print(
                                         f"  {token.line_number:<3}  {token.index:<4} "
