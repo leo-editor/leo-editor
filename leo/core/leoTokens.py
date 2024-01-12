@@ -463,7 +463,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Debugging.
         'contents', 'filename',
         # The input token. Set only in the main loop.
-        'index', 'line', 'token',
+        ### 'line',
+        'index', 'token',
         # Line number indices. Set only in the main loop.
         'line_start', 'line_end', 'line_number', 'prev_line_number',
         # Global lists.
@@ -579,10 +580,9 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Ivars describing the present input token...
         self.index = 0  # The index within the tokens array of the token being scanned.
-        self.line: str = None  # The entire line.
+        ### self.line: str = None  # The entire line.
         self.lws = ''  # Leading whitespace.
         self.token: InputToken = None
-        ### self.val = None  # The input token's value (a string).
 
         # Log.
         if self.verbose:
@@ -598,8 +598,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             for self.index, token in enumerate(tokens):
                 self.token = token
                 # Set globals for visitors.
-                ### self.val = token.value
-                self.line, self.line_number = token.line, self.line_number
+                ### self.line, self.line_number = token.line, self.line_number
                 if self.prev_line_number != token.line_number:
                     self.line_start = token.line_number
                     self.line_end = self.line_indices[token.line_number]
@@ -731,12 +730,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         #
         # General code: Generate the comment.
         self.clean('blank')
-        entire_line = self.line.lstrip().startswith('#')
+        entire_line = self.token.line.lstrip().startswith('#')
         if entire_line:
             self.clean('hard-blank')
             self.clean('line-indent')
             # #1496: No further munging needed.
-            val = self.line.rstrip()
+            val = self.token.line.rstrip()
             # #3056: Insure one space after '#' in non-sentinel comments.
             #        Do not change bang lines or '##' comments.
             if m := self.comment_pat.match(val):
