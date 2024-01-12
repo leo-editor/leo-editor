@@ -464,8 +464,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         'contents', 'filename',
         # The input token. Set only in the main loop.
         'kind', 'index', 'line', 'token', 'val',
-        # Lists of input and output tokens.
-        'code_list', 'tokens',
+        # Line number indices. Set only in the main loop.
+        'line_start', 'line_end', 'line_number', 'prev_line_number',
+        # Global lists.
+        'code_list', 'line_indices', 'tokens',
         # State data for whitespace. Don't even *think* about changing these!
         'curly_brackets_level', 'indent_level', 'lws',
         'paren_level', 'square_brackets_stack',
@@ -546,6 +548,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         beautify_file and beautify_file_def call this method.
         """
+        #@+<< tbo.beautify: init ivars >>
+        #@+node:ekr.20240112023403.1: *6* << tbo.beautify: init ivars >>
         # Debugging vars...
         self.contents = contents
         self.filename = filename
@@ -553,6 +557,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         # The input and output lists...
         self.code_list: list[OutputToken] = []  # The list of output tokens.
         self.tokens = tokens  # The list of input tokens.
+
+        # The indices of the first/last tokens of the line.
+        self.line_start: int = None  # The index of first token of this line.
+        self.line_end: int = None  # The index of the last token of this line.
+        self.line_number: int = None  # The line number of this line.
+        self.prev_line_number: int = None  # The previous line number.
 
         # State vars for whitespace.
         self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
@@ -572,22 +582,31 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Ivars describing the present input token...
         self.index = 0  # The index within the tokens array of the token being scanned.
+        self.line: str = None  # The entire line.
         self.lws = ''  # Leading whitespace.
-        self.tokens = tokens  # The list of input tokens.
+        self.token: InputToken = None
+        ### self.tokens = tokens  # The list of input tokens.
         self.val = None  # The input token's value (a string).
 
         # Log.
         if self.verbose:
             sfn = filename if '__init__' in filename else g.shortFileName(filename)
             print(f"tbo: {sfn}")
+        #@-<< tbo.beautify: init ivars >>
 
         # The main loop:
+        self.line_indices: list[int] = self.create_indices(tokens)
         self.gen_token('file-start', '')
         self.push_state('file-start')
         try:
             for self.index, token in enumerate(tokens):
                 self.token = token
-                self.kind, self.val, self.line = token.kind, token.value, token.line
+                # Set globals for visitors.
+                self.kind, self.val = token.kind, token.value
+                self.line, self.line_number = token.line, self.line_number
+                if self.prev_line_number != token.line_number:
+                    self.line_start = token.line_number
+                    self.line_end = self.line_indices[token.line_number]
                 if self.verbatim:
                     self.do_verbatim()
                 elif self.in_fstring:
