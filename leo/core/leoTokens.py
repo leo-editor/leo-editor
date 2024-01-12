@@ -1188,11 +1188,12 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False
         if val == '~':
             return True
+        # Get the previous significant token.
         prev_i = self.prev_token(self.index)
         prev_token = self.tokens[prev_i]
         kind, value = prev_token.kind, prev_token.value
-        g.trace('prev', prev_token, self.token.line)
-        if kind == 'number':
+        g.trace('prev', prev_token, repr(self.token.line))
+        if kind == ('number', 'string'):
             return False
         if kind == 'op' and value in ')]':
             return False
