@@ -726,6 +726,15 @@ class TokenBasedOrange:  # Orange is the new Black.
                     print('')
 
         assert self.index == self.line_end, message
+    #@+node:ekr.20240112082350.1: *5* tbo.error_message
+    def error_message(self, message: str) -> str:
+        """Return a full message for BeautifyError."""
+        return (
+            f"\nError in {self.filename}:\n"
+            f"{message}\n"
+            f"At token {self.index}, line number: {self.token.line_number}:\n"
+            f"Line: {self.token.line!r}\n"
+        )
     #@+node:ekr.20240105140814.17: *5* tbo.write_file
     def write_file(self, filename: str, s: str, encoding: str = 'utf-8') -> None:
         """
@@ -843,14 +852,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         consider_message = 'consider using python/Tools/scripts/reindent.py'
 
         if '\t' in self.token.value:  # pragma: no cover
-            message = f"Leading tabs found: {self.filename}"
+            message = self.error_message(f"Leading tabs found: {consider_message}")
             print(message)
-            print(consider_message)
             raise BeautifyError(message)
+
         if (len(self.token.value) % self.tab_width) != 0:  # pragma: no cover
-            message = f" Indentation error: {self.filename}"
+            message = self.error_message(f"Indentation error! {consider_message}")
             print(message)
-            print(consider_message)
             raise BeautifyError(message)
         #@-<< Raise BeautifyError on bad indentation >>
 
@@ -1652,10 +1660,11 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240106094211.1: *6* tbo.check_token_index
     def check_token_index(self, i: Optional[int]) -> None:
         if i is None or i < 0 or i >= len(self.tokens):
-            raise BeautifyError(
+            message = self.error_message(
                 f"IndexError! i: {i}, len(tokens): {len(self.tokens)}"
             )
-
+            print(message)
+            raise BeautifyError(message)
     #@+node:ekr.20240106220724.1: *6* tbo.dump_token_range
     def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:
         """Dump the given range of input tokens."""
@@ -1701,21 +1710,29 @@ class TokenBasedOrange:  # Orange is the new Black.
         if value is None:
             if token.kind != kind:
                 dump()
-                message = (
-                    f"\nError in {self.filename}:\n"
+                message = self.error_message(
                     f"Expected token.kind: {kind!r} got {token}\n"
-                    f"At token {i}, line number: {line_number}:\n"
-                    f"Line: {line!r}\n"
                 )
+                print(message)
+                ###
+                # message = (
+                    # f"\nError in {self.filename}:\n"
+                    # f"At token {i}, line number: {line_number}:\n"
+                    # f"Line: {line!r}\n"
+                # )
                 raise BeautifyError(message)
         elif (token.kind, token.value) != (kind, value):
             dump()
-            message = (
-                f"\nError in {self.filename}:\n"
+            message = self.error_message(
                 f"Expected token.kind: {kind!r} token.value: {value!r} got {token}\n"
-                f"At token {i}, line number: {line_number}:\n"
-                f"Line: {line!r}\n"
             )
+            ###
+            # message = (
+                # f"\nError in {self.filename}:\n"
+                # f"At token {i}, line number: {line_number}:\n"
+                # f"Line: {line!r}\n"
+            # )
+            print(message)
             raise BeautifyError(message)
 
     def expect_ops(self, i: int, values: list) -> None:
@@ -1868,13 +1885,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not token.context:
             # g.trace(f"{i:4} {context:14} {g.callers(1)}")
             token.context = context
-    #@+node:ekr.20240106174317.1: *6* tbo.unexpected_token (not used!)
-    def unexpected_token(self, i: int) -> None:
-        """Raise an error about an unexpected token."""
-        self.check_token_index(i)
-        token = self.tokens[i]
-        message = f"Unexpected InputToken at {i} {token!r}"
-        raise BeautifyError(message)
     #@-others
 #@+node:ekr.20240105140814.121: ** function: (leoTokens.py) main & helpers
 def main() -> None:  # pragma: no cover
