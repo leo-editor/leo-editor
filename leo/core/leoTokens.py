@@ -566,9 +566,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.line_start: int = None  # The index of first token of this line.
         self.line_end: int = None  # The index of the last token of this line.
         self.line_number: int = None  # The line number of this line.
-        ###
-        # self.prev_line_number: int = None  # The previous line number.
-        # self.prev_line_end: int = None
 
         # State vars for whitespace.
         self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
@@ -628,6 +625,9 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Any post pass would go here.
             result = output_tokens_to_string(self.code_list)
             return result
+        except AssertionError as e:
+            print(e)
+            return None
         except BeautifyError as e:
             print(e)
             return None
@@ -876,7 +876,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Handle a name token."""
         name = self.token.value
         if name in self.compound_statements:
-            self.gen_word(name)  ### Was gen_word_op.
+            self.gen_word(name)
         elif name in self.operator_keywords:
             self.gen_word_op(name)
         else:
@@ -894,8 +894,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         if func:
             # Call scan_compound_statement, scan_def, scan_from, scan_import.
             func()
-
-        ### g.trace(s)
 
         # Add context to *this* input token.
         if s in ('class', 'def'):
@@ -1035,7 +1033,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             context = self.scan_slice()
         # Now we can generate proper code.
         self.clean('blank')
-        ### g.trace(self.index, repr(context))
         if context == 'complex-slice':
             if prev.value not in '[:':
                 self.gen_blank()
@@ -1158,8 +1155,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.curly_brackets_level += 1
         self.clean('blank')
         prev = self.code_list[-1]
-
-        ### g.trace(prev)
 
         if prev.kind in ('op', 'word-op'):
             self.gen_blank()
@@ -1714,24 +1709,12 @@ class TokenBasedOrange:  # Orange is the new Black.
                     f"Expected token.kind: {kind!r} got {token}\n"
                 )
                 print(message)
-                ###
-                # message = (
-                    # f"\nError in {self.filename}:\n"
-                    # f"At token {i}, line number: {line_number}:\n"
-                    # f"Line: {line!r}\n"
-                # )
                 raise BeautifyError(message)
         elif (token.kind, token.value) != (kind, value):
             dump()
             message = self.error_message(
                 f"Expected token.kind: {kind!r} token.value: {value!r} got {token}\n"
             )
-            ###
-            # message = (
-                # f"\nError in {self.filename}:\n"
-                # f"At token {i}, line number: {line_number}:\n"
-                # f"Line: {line!r}\n"
-            # )
             print(message)
             raise BeautifyError(message)
 
