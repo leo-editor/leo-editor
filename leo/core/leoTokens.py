@@ -174,7 +174,7 @@ def output_tokens_to_string(tokens: list[OutputToken]) -> str:
 #@+node:ekr.20240105140814.52: ** Classes
 #@+node:ekr.20240105140814.51: *3* class BeautifyError(Exception)
 class BeautifyError(Exception):
-    """Leading tabs found."""
+    """Any error in the beautifier."""
 #@+node:ekr.20240105140814.53: *3* class InputToken
 class InputToken:  # leoTokens.py.
     """A class representing a TBO input token."""
@@ -626,10 +626,10 @@ class TokenBasedOrange:  # Orange is the new Black.
             result = output_tokens_to_string(self.code_list)
             return result
         except AssertionError as e:
-            print(e)
+            print(self.error_message(str(e)))
             return None
         except BeautifyError as e:
-            print(e)
+            print(self.error_message(str(e)))
             return None
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
@@ -843,24 +843,17 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.token.kind == 'fstring_end':
             self.in_fstring = False
     #@+node:ekr.20240105145241.14: *5* tbo.do_indent
+    consider_message = 'consider using python/Tools/scripts/reindent.py'
+
     def do_indent(self) -> None:
         """Handle indent token."""
-        # Note: other methods use self.indent_level.
 
-        #@+<< Raise BeautifyError on bad indentation >>
-        #@+node:ekr.20240111051909.1: *6* << Raise BeautifyError on bad indentation >>
-        consider_message = 'consider using python/Tools/scripts/reindent.py'
-
+        # Refuse to beautify mal-formed files.
         if '\t' in self.token.value:  # pragma: no cover
-            message = self.error_message(f"Leading tabs found: {consider_message}")
-            print(message)
-            raise BeautifyError(message)
+            raise BeautifyError(f"Leading tabs found: {self.consider_message}")
 
         if (len(self.token.value) % self.tab_width) != 0:  # pragma: no cover
-            message = self.error_message(f"Indentation error! {consider_message}")
-            print(message)
-            raise BeautifyError(message)
-        #@-<< Raise BeautifyError on bad indentation >>
+            raise BeautifyError(f"Indentation error! {self.consider_message}")
 
         # Handle the token!
         new_indent = self.token.value
@@ -1555,8 +1548,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             return
         if keyword in word_ops:
             return
-        message = f"Expecting one of {word_ops}, got {keyword!r}"
-        raise BeautifyError(message)
+        raise BeautifyError(f"Expecting one of {word_ops}, got {keyword!r}")
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def
     def scan_def(self) -> None:
         """Scan a complete 'def' statement."""
@@ -1655,11 +1647,9 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240106094211.1: *6* tbo.check_token_index
     def check_token_index(self, i: Optional[int]) -> None:
         if i is None or i < 0 or i >= len(self.tokens):
-            message = self.error_message(
+            raise BeautifyError(
                 f"IndexError! i: {i}, len(tokens): {len(self.tokens)}"
             )
-            print(message)
-            raise BeautifyError(message)
     #@+node:ekr.20240106220724.1: *6* tbo.dump_token_range
     def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:
         """Dump the given range of input tokens."""
@@ -1705,18 +1695,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         if value is None:
             if token.kind != kind:
                 dump()
-                message = self.error_message(
+                raise BeautifyError(
                     f"Expected token.kind: {kind!r} got {token}\n"
                 )
-                print(message)
-                raise BeautifyError(message)
         elif (token.kind, token.value) != (kind, value):
             dump()
-            message = self.error_message(
-                f"Expected token.kind: {kind!r} token.value: {value!r} got {token}\n"
+            raise BeautifyError(
+                f"Expected token.kind: {kind!r} token.value: "
+                f"{value!r} got {token}\n"
             )
-            print(message)
-            raise BeautifyError(message)
 
     def expect_ops(self, i: int, values: list) -> None:
         self.check_token_index(i)
@@ -1724,8 +1711,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         if token.kind != 'op':
             raise BeautifyError(f"Expected op token, got {token.kind!r}")
         if token.value not in values:
-            raise BeautifyError(f"Expected value in {values!r}, got {token.value!r}")
-
+            raise BeautifyError(
+                f"Expected value in {values!r}, got {token.value!r}"
+            )
     #@+node:ekr.20240110062055.1: *6* tbo.find_end_of_line
     def find_end_of_line(self) -> Optional[int]:
         """
