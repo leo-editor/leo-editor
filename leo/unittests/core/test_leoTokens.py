@@ -307,6 +307,7 @@ class TestTokenBasedOrange(BaseTest):
         ).strip().replace('AT', '@') + '\n'
 
         contents, tokens = self.make_data(contents)
+        # dump_tokens(tokens)
         expected = contents
         results = self.beautify(contents, tokens)
         if results != expected:

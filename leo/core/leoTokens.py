@@ -1742,14 +1742,19 @@ class TokenBasedOrange:  # Orange is the new Black.
         i: int, values: list[str], reverse: bool = False,
     ) -> Optional[int]:
         """
-        Return the index of the matching 'op' or 'newline' input token.
-        Skip inner parens and brackets.
+        Return the index of the matching 'op' or 'newline' input token,
+        skipping inner parens and brackets.
+        
+        Limit the seasrch to the present *logical* line: stop at any 'newline'
+        token.
         """
         curly_brackets, parens, square_brackets = 0, 0, 0
         while i and 0 <= i < len(self.tokens):
             token = self.tokens[i]
             kind, value = token.kind, token.value
-            # Precheck.
+            # Prechecks.
+            if token.kind == 'newline':
+                return None
             if (
                 kind == 'op' and value in values
                 and (curly_brackets, parens, square_brackets) == (0, 0, 0)
