@@ -463,7 +463,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Debugging.
         'contents', 'filename',
         # The input token. Set only in the main loop.
-        'kind', 'index', 'line', 'token', 'val',
+        ### 'kind', 'val'
+        'index', 'line', 'token',
         # Line number indices. Set only in the main loop.
         'line_start', 'line_end', 'line_number', 'prev_line_number',
         # Global lists.
@@ -585,8 +586,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.line: str = None  # The entire line.
         self.lws = ''  # Leading whitespace.
         self.token: InputToken = None
-        ### self.tokens = tokens  # The list of input tokens.
-        self.val = None  # The input token's value (a string).
+        ### self.val = None  # The input token's value (a string).
 
         # Log.
         if self.verbose:
@@ -602,8 +602,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             for self.index, token in enumerate(tokens):
                 self.token = token
                 # Set globals for visitors.
-                ### self.kind, self.val = token.kind, token.value
-                self.val = token.value
+                ### self.val = token.value
                 self.line, self.line_number = token.line, self.line_number
                 if self.prev_line_number != token.line_number:
                     self.line_start = token.line_number
@@ -706,7 +705,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     def do_comment(self) -> None:
         """Handle a comment token."""
-        val = self.val
+        val = self.token.value
         #
         # Leo-specific code...
         if self.node_pat.match(val):
@@ -749,7 +748,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 val = val[:i] + '# ' + val[i + 1 :]
         else:
             # Exactly two spaces before trailing comments.
-            val = '  ' + self.val.rstrip()
+            val = '  ' + val.rstrip()
         self.gen_token('comment', val)
     #@+node:ekr.20240111051726.1: *5* tbo.do_dedent
     def do_dedent(self) -> None:
@@ -773,14 +772,14 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_fstring_start(self) -> None:
         """Handle the 'fstring_start' token. Enter f-string mode."""
         self.in_fstring = True
-        self.gen_token('verbatim', self.val)
+        self.gen_token('verbatim', self.token.value)
 
     def continue_fstring(self) -> None:
         """
         Put the next token in f-fstring mode.
         Exit f-string mode if the token is 'fstring_end'.
         """
-        self.gen_token('verbatim', self.val)
+        self.gen_token('verbatim', self.token.value)
         if self.token.kind == 'fstring_end':
             self.in_fstring = False
     #@+node:ekr.20240105145241.14: *5* tbo.do_indent
@@ -792,12 +791,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         #@+node:ekr.20240111051909.1: *6* << Raise BeautifyError on bad indentation >>
         consider_message = 'consider using python/Tools/scripts/reindent.py'
 
-        if '\t' in self.val:  # pragma: no cover
+        if '\t' in self.token.value:  # pragma: no cover
             message = f"Leading tabs found: {self.filename}"
             print(message)
             print(consider_message)
             raise BeautifyError(message)
-        if (len(self.val) % self.tab_width) != 0:  # pragma: no cover
+        if (len(self.token.value) % self.tab_width) != 0:  # pragma: no cover
             message = f" Indentation error: {self.filename}"
             print(message)
             print(consider_message)
@@ -805,7 +804,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         #@-<< Raise BeautifyError on bad indentation >>
 
         # Handle the token!
-        new_indent = self.val
+        new_indent = self.token.value
         old_indent = self.indent_level * self.tab_width * ' '
         if new_indent > old_indent:
             self.indent_level += 1
@@ -816,7 +815,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators
     def do_name(self) -> None:
         """Handle a name token."""
-        name = self.val
+        name = self.token.value
         if name in self.compound_statements:
             self.gen_word(name)  ### Was gen_word_op.
         elif name in self.operator_keywords:
@@ -826,7 +825,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.40: *6* tbo.gen_word
     def gen_word(self, s: str) -> None:
         """Add a word request to the code list."""
-        assert s == self.val
+        assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
         # Aliases.
         is_kind, next, set_context = self.is_kind, self.next_token, self.set_context
@@ -871,7 +870,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240107141830.1: *6* tbo.gen_word_op
     def gen_word_op(self, s: str) -> None:
         """Add a word-op request to the code list."""
-        assert s == self.val
+        assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
         self.gen_blank()
         self.gen_token('word-op', s)
@@ -921,11 +920,11 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_number(self) -> None:
         """Handle a number token."""
         self.gen_blank()
-        self.gen_token('number', self.val)
+        self.gen_token('number', self.token.value)
     #@+node:ekr.20240105145241.19: *5* tbo.do_op & generators
     def do_op(self) -> None:
         """Handle an op token."""
-        val = self.val
+        val = self.token.value
         if val == '.':
             self.gen_dot_op()
         elif val == '@':
@@ -968,7 +967,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.31: *6* tbo.gen_colon
     def gen_colon(self) -> None:
         """Handle a colon."""
-        val = self.val
+        val = self.token.value
         context = self.token.context
         prev_i = self.prev_token(self.index)
         prev = self.tokens[prev_i]
@@ -1074,7 +1073,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     def gen_equal_op(self) -> None:
 
-        val = self.val
+        val = self.token.value
         context = self.token.context
         if context == 'initializer':
             # Pep 8: Don't use spaces around the = sign when used to indicate
@@ -1090,7 +1089,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.35: *6* tbo.gen_lt
     def gen_lt(self) -> None:
         """Generate code for a left paren or curly/square bracket."""
-        val = self.val
+        val = self.token.value
         assert val in '([{', repr(val)
         if val == '(':
             self.paren_level += 1
@@ -1120,7 +1119,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.37: *6* tbo.gen_possible_unary_op & helper
     def gen_possible_unary_op(self) -> None:
         """Add a unary or binary op to the token list."""
-        val = self.val
+        val = self.token.value
         self.clean('blank')
         if self.is_unary_op(val):
             prev = self.code_list[-1]
@@ -1156,7 +1155,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.36: *6* tbo.gen_rt
     def gen_rt(self) -> None:
         """Generate code for a right paren or curly/square bracket."""
-        val = self.val
+        val = self.token.value
         assert val in ')]}', repr(val)
         if val == ')':
             self.paren_level -= 1
@@ -1170,7 +1169,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.38: *6* tbo.gen_star_op
     def gen_star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
-        val = self.val
+        val = self.token.value
         context = self.token.context
         prev = self.code_list[-1]
 
@@ -1216,7 +1215,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.39: *6* tbo.gen_star_star_op
     def gen_star_star_op(self) -> None:
         """Put a ** operator, with a special case for **kwargs."""
-        val = self.val
+        val = self.token.value
         context = self.token.context
         prev = self.code_list[-1]
 
@@ -1255,7 +1254,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_string(self) -> None:
         """Handle a 'string' token."""
         # Careful: continued strings may contain '\r'
-        val = self.regularize_nls(self.val)
+        val = self.regularize_nls(self.token.value)
         self.gen_token('string', val)
         self.gen_blank()
     #@+node:ekr.20240105145241.22: *5* tbo.do_verbatim
@@ -1270,7 +1269,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         kind = self.token.kind
         #
         # Careful: tokens may contain '\r'
-        val = self.regularize_nls(self.val)
+        val = self.regularize_nls(self.token.value)
         if kind == 'comment':
             if self.beautify_pat.match(val):
                 self.verbatim = False
@@ -1291,7 +1290,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Put the whitespace only if if ends with backslash-newline.
         """
-        val = self.val
+        val = self.token.value
         # Handle backslash-newline.
         if '\\\n' in val:
             self.clean('blank')
