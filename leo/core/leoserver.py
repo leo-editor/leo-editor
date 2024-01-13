@@ -1272,7 +1272,7 @@ class LeoServer:
         # Assign self.c
         self.c = c
 
-        if g.unitTesting and str(g.app.pluginsController) == 'NullObject':
+        if g.unitTesting and isinstance(g.app.pluginsController, g.NullObject):
             # REPLACE PLUGIN SYSTEM !
             self.finishCreate(c)
 
@@ -5121,11 +5121,11 @@ class LeoServer:
         tag = "send async output"
         jsonPackage = json.dumps(package, separators=(',', ':'), cls=SetEncoder)
         if "async" not in package:
-            InternalServerError(f"\n{tag}: async member missing in package {jsonPackage} \n")
+            raise InternalServerError(f"\n{tag}: async member missing in package {jsonPackage} \n")
         if self.loop:
             self.loop.create_task(self._async_output(jsonPackage, toAll))
-        else:
-            InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
+        elif 0:  ###
+            raise InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
     #@+node:felix.20210621233316.89: *5* server._async_output
     async def _async_output(self,
         json: str,
