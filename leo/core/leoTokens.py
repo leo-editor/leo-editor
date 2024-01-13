@@ -821,7 +821,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.11: *5* tbo.do_encoding
     def do_encoding(self) -> None:
         """Handle the encoding token."""
-        pass
+        # The top level of the recursive descent parser.
+        self.scan_statements()
     #@+node:ekr.20240105145241.12: *5* tbo.do_endmarker
     def do_endmarker(self) -> None:
         """Handle an endmarker token."""
@@ -1656,6 +1657,20 @@ class TokenBasedOrange:  # Orange is the new Black.
         if i is None:
             return None
         self.expect(i, 'newline')
+        return i
+    #@+node:ekr.20240113054629.1: *5* tbo.scan_statements
+    def scan_statements(self):
+        """Scan the entire file."""
+        i = self.index
+        assert i == 0, repr(i)
+        while i is not None:
+            i = self.scan_statement(i)
+    #@+node:ekr.20240113054641.1: *5* tbo.scan_statement
+    def scan_statement(self, i):
+        """Scan the next statement, including docstrings."""
+        # Aliases.
+        next = self.next_token
+        i = next(i)
         return i
     #@+node:ekr.20240110205127.1: *5* tbo: Scan helpers
     #@+node:ekr.20240106094211.1: *6* tbo.check_token_index
