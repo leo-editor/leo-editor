@@ -3397,7 +3397,7 @@ rem echo reindent leo/commands
 call py %REINDENT_PATH% -r leo\commands
 rem echo reindent leo/plugins/importers
 call py %REINDENT_PATH% -r leo\plugins\importers
-rem echo reindent leo/plugins/commmands
+rem echo reindent leo/plugins/commands
 call py %REINDENT_PATH% leo\plugins\qt_commands.py
 call py %REINDENT_PATH% leo\plugins\qt_events.py
 call py %REINDENT_PATH% leo\plugins\qt_frame.py
