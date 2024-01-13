@@ -286,8 +286,6 @@ class BridgeController:
             g.app.db = g.NullObject()
         fileName = self.completeFileName(fileName)
         c = g.openWithFileName(fileName)  # #2489.
-        # Leo 6.3: support leoInteg.
-        g.app.windowList.append(c.frame)
         if not self.useCaches:
             c.db = g.NullObject()
         # New in Leo 5.1. An alternate fix for bug #130.
