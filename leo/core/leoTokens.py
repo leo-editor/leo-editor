@@ -1659,15 +1659,32 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.expect(i, 'newline')
         return i
     #@+node:ekr.20240113054629.1: *5* tbo.scan_statements
-    def scan_statements(self):
-        """Scan the entire file."""
+    def scan_statements(self) -> None:
+        """
+        Scan the entire file
+        """
         i = self.index
         assert i == 0, repr(i)
         while i is not None:
             i = self.scan_statement(i)
     #@+node:ekr.20240113054641.1: *5* tbo.scan_statement
-    def scan_statement(self, i):
-        """Scan the next statement, including docstrings."""
+    def scan_statement(self, i: int) -> int:
+        """
+        Scan the next statement, including docstrings.
+        
+        Notes & questions.
+        
+        - How does scan_statement coordinate with the main loop?
+        
+        - Maybe via per-statement data?
+        
+        - Maybe a statement_info array, similar to line_indices?
+          
+        - Note: statements do *not* have to start at the star of a line:
+            
+          if 1: a = 2
+          else: a = 3
+        """
         # Aliases.
         next = self.next_token
         i = next(i)
