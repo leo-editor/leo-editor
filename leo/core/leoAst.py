@@ -225,14 +225,19 @@ if 1:  # pragma: no cover
         if not check_g():
             return
         t1 = time.process_time()
+        any_changed = 0
         for filename in files:
             if os.path.exists(filename):
                 # print(f"orange {filename}")
-                Orange(settings).beautify_file(filename)
+                changed = Orange(settings).beautify_file(filename)
+                if changed:
+                    any_changed += 1
             else:
                 print(f"file not found: {filename}")
         t2 = time.process_time()
-        print(f"orange: {t2-t1:3.1f} sec. {len(files):3} files in {','.join(arg_files)}")
+        if any_changed:
+            n, files_s = any_changed, ','.join(arg_files)
+            print(f"orange: {t2-t1:3.1f} sec. changed {n} file{g.plural(n)} in {files_s}")
     #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
     def orange_diff_command(files: list[str], settings: Settings = None) -> None:
 
