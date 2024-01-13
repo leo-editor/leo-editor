@@ -1271,6 +1271,11 @@ class LeoServer:
             raise ServerError(f"{tag}: no wrapper")
         # Assign self.c
         self.c = c
+
+        if g.unitTesting and str(g.app.pluginsController) == 'NullObject':
+            # REPLACE PLUGIN SYSTEM !
+            self.finishCreate(c)
+
         if self.log_flag:  # pragma: no cover
             self._dump_outline(c)
 
