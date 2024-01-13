@@ -594,8 +594,14 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(f"tbo: {sfn}")
         #@-<< tbo.beautify: init ivars >>
 
-        # The main loop:
+        # Create per-line range data.
         self.line_indices: list[int] = self.create_indices(tokens)
+
+        # The top level of a "good enough" recursive descent parser.
+        # Create per-statement range data and per-token context data.
+        self.scan_statements()
+
+        # The main loop:
         self.gen_token('file-start', '')
         self.push_state('file-start')
         prev_line_number: int = None
@@ -821,8 +827,6 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.11: *5* tbo.do_encoding
     def do_encoding(self) -> None:
         """Handle the encoding token."""
-        # The top level of the recursive descent parser.
-        self.scan_statements()
     #@+node:ekr.20240105145241.12: *5* tbo.do_endmarker
     def do_endmarker(self) -> None:
         """Handle an endmarker token."""
