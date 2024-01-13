@@ -5124,7 +5124,7 @@ class LeoServer:
             raise InternalServerError(f"\n{tag}: async member missing in package {jsonPackage} \n")
         if self.loop:
             self.loop.create_task(self._async_output(jsonPackage, toAll))
-        elif 0:  ###
+        elif not g.unitTesting:
             raise InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
     #@+node:felix.20210621233316.89: *5* server._async_output
     async def _async_output(self,
