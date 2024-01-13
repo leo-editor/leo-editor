@@ -1766,7 +1766,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             token = self.tokens[i]
             kind, value = token.kind, token.value
             # Prechecks.
-            if 0:
+            if 0:  ### Why isn't this better????
                 if (curly_brackets, parens, square_brackets) == (0, 0, 0):
                     if token.kind == 'newline':
                         return None  # Fail

@@ -218,7 +218,9 @@ if 1:  # pragma: no cover
             else:
                 print(f"file not found: {filename}")
     #@+node:ekr.20200702115002.1: *3* command: orange_command (leoAst.py)
-    def orange_command(files: list[str], settings: Settings = None) -> None:
+    def orange_command(
+        arg_files: list[str], files: list[str], settings: Settings = None,
+    ) -> None:
 
         if not check_g():
             return
@@ -230,8 +232,7 @@ if 1:  # pragma: no cover
             else:
                 print(f"file not found: {filename}")
         t2 = time.process_time()
-        if 0:
-            print(f"orange: {len(files):3} files in {t2-t1:3.1f} sec.")
+        print(f"orange: {t2-t1:3.1f} sec. {len(files):3} files in {','.join(arg_files)}")
     #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
     def orange_diff_command(files: list[str], settings: Settings = None) -> None:
 
@@ -279,62 +280,6 @@ if 1:  # pragma: no cover
     def regularize_nls(s: str) -> str:
         """Regularize newlines within s."""
         return s.replace('\r\n', '\n').replace('\r', '\n')
-    #@+node:ekr.20220404062739.1: *3* function: scan_ast_args
-    def scan_ast_args() -> tuple[Any, dict[str, Any], list[str]]:
-        description = textwrap.dedent("""\
-            Execute fstringify or beautify commands contained in leoAst.py.
-        """)
-        parser = argparse.ArgumentParser(
-            description=description,
-            formatter_class=argparse.RawTextHelpFormatter)
-        parser.add_argument('PATHS', nargs='*', help='directory or list of files')
-        group = parser.add_mutually_exclusive_group(required=False)  # Don't require any args.
-        add = group.add_argument
-        add('--fstringify', dest='f', action='store_true',
-            help='fstringify PATHS')
-        add('--fstringify-diff', dest='fd', action='store_true',
-            help='fstringify diff PATHS')
-        add('--orange', dest='o', action='store_true',
-            help='beautify PATHS')
-        add('--orange-diff', dest='od', action='store_true',
-            help='diff beautify PATHS')
-        # New arguments.
-        add2 = parser.add_argument
-        add2('--allow-joined', dest='allow_joined', action='store_true',
-            help='allow joined strings')
-        add2('--max-join', dest='max_join', metavar='N', type=int,
-            help='max unsplit line length (default 0)')
-        add2('--max-split', dest='max_split', metavar='N', type=int,
-            help='max unjoined line length (default 0)')
-        add2('--tab-width', dest='tab_width', metavar='N', type=int,
-            help='tab-width (default -4)')
-        # Newer arguments.
-        add2('--force', dest='force', action='store_true',
-            help='force beautification of all files')
-        add2('--verbose', dest='verbose', action='store_true',
-            help='verbose (per-file) output')
-        # Create the return values, using EKR's prefs as the defaults.
-        parser.set_defaults(
-            allow_joined=False,
-            force=False,
-            max_join=0,
-            max_split=0,
-            recursive=False,
-            tab_width=4,
-            verbose=False
-        )
-        args: Any = parser.parse_args()
-        files = args.PATHS
-        # Create the settings dict, ensuring proper values.
-        settings_dict: dict[str, Any] = {
-            'allow_joined_strings': bool(args.allow_joined),
-            'force': bool(args.force),
-            'max_join_line_length': abs(args.max_join),
-            'max_split_line_length': abs(args.max_split),
-            'tab_width': abs(args.tab_width),  # Must be positive!
-            'verbose': bool(args.verbose),
-        }
-        return args, settings_dict, files
     #@+node:ekr.20200103163100.1: *3* function: write_file
     def write_file(filename: str, s: str, encoding: str = 'utf-8') -> None:
         """
@@ -4369,7 +4314,7 @@ class TokenOrderGenerator:
 
         self.visit(node.name)
     #@-others
-#@+node:ekr.20200702102239.1: ** function: main (leoAst.py)
+#@+node:ekr.20200702102239.1: ** function: main (leoAst.py) & helper
 def main() -> None:  # pragma: no cover
     """Run commands specified by sys.argv."""
     args, settings_dict, arg_files = scan_ast_args()
@@ -4404,7 +4349,7 @@ def main() -> None:  # pragma: no cover
             'orange-diff' if args.od else
             None
         )
-        if kind:
+        if kind and kind != 'orange':
             n = len(files)
             n_s = f" {n:>3} file" if n == 1 else f"{n:>3} files"
             print(f"{kind}: {n_s} in {', '.join(arg_files)}")
@@ -4414,9 +4359,65 @@ def main() -> None:  # pragma: no cover
     if args.fd:
         fstringify_diff_command(files)
     if args.o:
-        orange_command(files, settings_dict)
+        orange_command(arg_files, files, settings_dict)
     if args.od:
         orange_diff_command(files, settings_dict)
+#@+node:ekr.20220404062739.1: *3* function: scan_ast_args
+def scan_ast_args() -> tuple[Any, dict[str, Any], list[str]]:
+    description = textwrap.dedent("""\
+        Execute fstringify or beautify commands contained in leoAst.py.
+    """)
+    parser = argparse.ArgumentParser(
+        description=description,
+        formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument('PATHS', nargs='*', help='directory or list of files')
+    group = parser.add_mutually_exclusive_group(required=False)  # Don't require any args.
+    add = group.add_argument
+    add('--fstringify', dest='f', action='store_true',
+        help='fstringify PATHS')
+    add('--fstringify-diff', dest='fd', action='store_true',
+        help='fstringify diff PATHS')
+    add('--orange', dest='o', action='store_true',
+        help='beautify PATHS')
+    add('--orange-diff', dest='od', action='store_true',
+        help='diff beautify PATHS')
+    # New arguments.
+    add2 = parser.add_argument
+    add2('--allow-joined', dest='allow_joined', action='store_true',
+        help='allow joined strings')
+    add2('--max-join', dest='max_join', metavar='N', type=int,
+        help='max unsplit line length (default 0)')
+    add2('--max-split', dest='max_split', metavar='N', type=int,
+        help='max unjoined line length (default 0)')
+    add2('--tab-width', dest='tab_width', metavar='N', type=int,
+        help='tab-width (default -4)')
+    # Newer arguments.
+    add2('--force', dest='force', action='store_true',
+        help='force beautification of all files')
+    add2('--verbose', dest='verbose', action='store_true',
+        help='verbose (per-file) output')
+    # Create the return values, using EKR's prefs as the defaults.
+    parser.set_defaults(
+        allow_joined=False,
+        force=False,
+        max_join=0,
+        max_split=0,
+        recursive=False,
+        tab_width=4,
+        verbose=False
+    )
+    args: Any = parser.parse_args()
+    files = args.PATHS
+    # Create the settings dict, ensuring proper values.
+    settings_dict: dict[str, Any] = {
+        'allow_joined_strings': bool(args.allow_joined),
+        'force': bool(args.force),
+        'max_join_line_length': abs(args.max_join),
+        'max_split_line_length': abs(args.max_split),
+        'tab_width': abs(args.tab_width),  # Must be positive!
+        'verbose': bool(args.verbose),
+    }
+    return args, settings_dict, files
 #@-others
 
 if __name__ == '__main__':
