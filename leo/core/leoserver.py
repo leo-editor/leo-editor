@@ -904,7 +904,7 @@ class LeoServer:
         # * hook open2 for commander creation completion and inclusion in windowList
         #
         g.registerHandler('open2', self._open2Hook)
-        # override for selectLeoWindow 
+        # override for selectLeoWindow
         g.app.selectLeoWindow = self._selectLeoWindow
         #
         # override for "revert to file" operation
@@ -952,8 +952,8 @@ class LeoServer:
         """Replaces selectLeoWindow in Leo server"""
         g.leoServer.c = c
         g.leoServer.c.selectPosition(c.p)
-        g.leoServer.c.recreateGnxDict() 
-        g.leoServer._check_outline(c) 
+        g.leoServer.c.recreateGnxDict()
+        g.leoServer._check_outline(c)
 
     #@+node:felix.20230206202334.1: *4* LeoServer._endEditLabel
     def _endEditLabel(self) -> None:
@@ -1202,7 +1202,7 @@ class LeoServer:
         tag = 'remove_button'
         index = param.get("index")
         c = self._check_c(param)
-        
+
         if not index:
             raise ServerError(f"{tag}: no button index given")
         d = self._check_button_command(c, tag)
@@ -1314,12 +1314,12 @@ class LeoServer:
             commanders = g.app.commanders()
             for commander in commanders:
                 if id(commander) == commanderId:
-                    self.c = commander #  Found commander by id!
+                    self.c = commander  #  Found commander by id!
                     self.c.selectPosition(self.c.p)
                     self._check_outline(self.c)
                     result = {"total": total, "filename": self.c.fileName()}
                     return self._make_response(result)
-                
+
         # By Index
         index = param.get('index') or 0
         if total and index < total:
@@ -1329,7 +1329,7 @@ class LeoServer:
             self._check_outline(self.c)
             result = {"total": total, "filename": self.c.fileName()}
             return self._make_response(result)
-        
+
         raise ServerError(f"{tag}: commander at index {index} does not exist")
     #@+node:felix.20210621233316.16: *5* server.close_file
     def close_file(self, param: Param) -> Response:
@@ -1609,13 +1609,13 @@ class LeoServer:
                     g.handleUrl(unl, c=c, p=p)
                 g.doHook("@url2", c=c, p=p)
         except Exception as e:
-            raise ServerError(f"{tag}: exception handling unl: {unl}")
+            raise ServerError(f"{tag}: exception handling unl: {unl}: {e}")
 
         total = len(g.app.commanders())
         filename = c.fileName() if total else ""
         result = {"total": total, "filename": filename}
         return self._make_response(result)
-        
+
     #@+node:felix.20220714000930.1: *5* server.chapter_main
     def chapter_main(self, param: Param) -> Response:
         tag = 'chapter_main'
@@ -4589,7 +4589,7 @@ class LeoServer:
                 commanders = g.app.commanders()
                 for commander in commanders:
                     if id(commander) == commanderId:
-                        c = commander #  Found commander by id!
+                        c = commander  #  Found commander by id!
                         break
         # Still not found?
         if not c:  # pragma: no cover
