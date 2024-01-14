@@ -1422,6 +1422,11 @@ class TokenBasedOrange:  # Orange is the new Black.
     def scan_annotation(self, i1: int) -> Optional[int]:
         """Scan an annotation if a function definition arg."""
 
+        ###
+        # print('')  ###
+        # g.trace(f"{i1:2} {self.tokens[i1].line!r}")  ###
+        # g.printObj(self.tokens[i1:i1+3], tag=str(i1))  ###
+
         # Scan the ':'
         expect_op(i1, ':')
         set_context(i1, 'annotation')
@@ -1429,6 +1434,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan to the next ',' or '=', ignoring inner parens.
         i3 = self.find_delim(i, [',', '=', ')'])
+        ### g.trace('FOUND', i3, self.tokens[i3])
 
         # Set the contexts of inner ops.
         for i4 in range(i1 + 1, i3 - 1):
@@ -1799,6 +1805,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Skip tokens until one of the delims is found.
         parens, square_brackets = 0, 0
         while i < len(self.tokens):
+            ### g.trace(i, self.tokens[i])
             if is_op(i, '['):
                 square_brackets += 1
             elif is_op(i, ']'):
@@ -1809,7 +1816,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if ')' in delims and (parens, square_brackets) == (0, 0):
                     return i
                 parens -= 1
-            elif is_ops(i, delims) and parens == 0:
+            elif is_ops(i, delims) and (parens, square_brackets) == (0, 0):
                 return i
             i += 1
         return None

@@ -324,6 +324,23 @@ class TestTokenBasedOrange(BaseTest):
         self.maxDiff = None
         self.assertEqual(results, expected)
 
+    #@+node:ekr.20240114100847.1: *3* TestTBO.test_def_square_brackets
+    def test_def_square_brackets(self):
+
+        contents = (
+            """def checkForDuplicateShortcuts(self, c: Cmdr, d: dict[str, str]) -> None:\n"""
+        )
+        contents, tokens = self.make_data(contents)
+        # dump_tokens(tokens)
+        expected = contents
+        results = self.beautify(contents, tokens)
+        if False and results != expected:
+            # g.printObj(contents, tag='Contents')
+            g.printObj(expected, tag='Expected (same as Contents)')
+            g.printObj(results, tag='Results')
+
+        self.maxDiff = None
+        self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.46: *3* TestTBO.test_at_doc_part
     def test_at_doc_part(self):
 
