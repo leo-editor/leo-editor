@@ -667,6 +667,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         except BeautifyError as e:
             print(self.error_message(str(e)))
             return None
+        except IndexError as e:
+            # We assume the incoming file is syntactically correct, so
+            # catching this error saves lots of range tests!
+            print(self.error_message(str(e)))
+            return None
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. possible live)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
