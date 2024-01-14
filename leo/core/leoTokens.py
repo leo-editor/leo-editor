@@ -657,19 +657,10 @@ class TokenBasedOrange:  # Orange is the new Black.
             result = output_tokens_to_string(self.code_list)
             return result
         # We assume the incoming file is syntactically correct, so
-        # catching the following exceptions saves lots unnecessary tests.
-        except AssertionError as e:
-            print(f"AssertionError: {self.error_message(str(e))}")
-        except BeautifyError as e:
-            print(self.error_message(str(e)))
-        except IndexError as e:
-            print(f"IndexError: {self.error_message(str(e))}")
-        except TypeError as e:
-            print(f"TypeError: {self.error_message(str(e))}")
-            return None
+        # catching all exceptions saves lots unnecessary tests.
         except Exception as e:
-            message = f"{str(e)}\ncallers: {g.callers(2)}"
-            print(f"Unexpected exception! {self.error_message(message)}")
+            ### message = f"{e!r}\ncallers: {g.callers(2)}"
+            print(f"{self.error_message(e)}")
         return None
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. possible live)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
@@ -1054,12 +1045,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         # Scan backward.
         i = self.index
-        i1 = self.find_input_token(i, ['['], reverse=True)
+        ### i1 = self.find_input_token(i, ['['], reverse=True)
+        i1 = self.find_open_square_bracket(i)
         if i1 is None:
             return None
 
         # Scan forward.
-        i2 = self.find_input_token(i, [']'])
+        ### i2 = self.find_input_token(i, [']'])
+        i2 = self.find_close_square_bracket(i)
         if i2 is None:
             return None
 
@@ -1402,7 +1395,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = next(i1)
 
         # Scan to the next ',' or '=' at this level.
-        i3 = self.find_input_token(i, [',', '=', ')'])
+        ### i3 = self.find_input_token(i, [',', '=', ')'])
+        i3 = self.find_delim(i, [',', '=', ')'])
 
         # Set the contexts of inner ops.
         for i4 in range(i1 + 1, i3 - 1):
@@ -1492,7 +1486,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Handle leading * and ** args.
         if self.is_ops(i1, ['*', '**']):  ###
             self.set_context(i1, 'arg')
-        i = self.find_input_token(i1, [',', ')'])
+        ### i = self.find_input_token(i1, [',', ')'])
+        i = self.find_delim(i1, [',', ')'])
         for i2 in range(i1 + 1, i - 1):
             if self.is_op(i2, '='):
                 self.set_context(i2, 'initializer')
@@ -1537,7 +1532,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = next(i)
 
         # Find the trailing ':'.
-        i = self.find_input_token(i, [':'])
+        ### i = self.find_input_token(i, [':'])
+        i = self.find_delim(i, [':'])
         word_ops = ('if', 'else', 'for')
         if i is not None:
             expect_op(i, ':')
@@ -1559,13 +1555,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = next(i)
         expect_op(i, '(')
         i1 = i
-        i = i2 = self.find_input_token(i, [')'])
+        ### i = i2 = self.find_input_token(i, [')'])
+        i = i2 = self.find_close_paren(i)
         expect_op(i, ')')
         i = next(i)
         expect_ops(i, ['->', ':'])
 
         # Find i3, the ending ':' of the def statement.
-        i3 = self.find_input_token(i, [':'])
+        ### i3 = self.find_input_token(i, [':'])
+        i3 = self.find_delim(i, [':'])
         expect_op(i3, ':')
         self.set_context(i3, 'end-statement')  ### 'def')
 
@@ -1614,10 +1612,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Scan up to ',' or ')'
         if is_op(i, '('):
             i = next(i)
-            i = self.find_input_token(i, [')'])
+            ### i = self.find_input_token(i, [')'])
+            self.find_close_paren(i)
             expect_op(i, ')')
         else:
-            i = self.find_input_token(i, [',', ')'])
+            ### i = self.find_input_token(i, [',', ')'])
+            i = self.find_delim(i, [',', ')'])
             expect_ops(i, [',', ')'])
         return i
     #@+node:ekr.20240109032639.1: *5* tbo.scan_simple_statement
@@ -1705,33 +1705,43 @@ class TokenBasedOrange:  # Orange is the new Black.
             if token.kind != kind:
                 dump()
                 raise BeautifyError(
-                    f"Expected token.kind: {kind!r} got {token}\n"
+                    f"expect: expected token.kind: {kind!r} got {token}\n"
+                    f"callers: {g.callers()}"
                 )
         elif (token.kind, token.value) != (kind, value):
             dump()
             raise BeautifyError(
-                f"Expected token.kind: {kind!r} token.value: "
+                f"expect: expected token.kind: {kind!r} token.value: "
                 f"{value!r} got {token}\n"
+                f"Callers: {g.callers()}"
             )
     #@+node:ekr.20240114015808.1: *6* tbo.expect_op (with alias)
     def expect_op(self, i: int, value: str) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
         token = self.tokens[i]
         if token.kind != 'op':
-            raise BeautifyError(f"Expected op token, got {token.kind!r}")
+            raise BeautifyError(
+                f"expect_op: expected op token, got {token.kind!r}\n"
+                f"callers: {g.callers()}"
+            )
         if token.value != value:
             raise BeautifyError(
-                f"Expected value: {value!r}, got {token.value!r}"
+                f"expect_op: expected value: {value!r}, got {token.value!r}\n"
+                f"callers: {g.callers()}"
             )
     #@+node:ekr.20240114013952.1: *6* tbo.expect_ops (with alias)
     def expect_ops(self, i: int, values: list) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
         token = self.tokens[i]
         if token.kind != 'op':
-            raise BeautifyError(f"Expected token.kind == 'op', got {token.kind!r}")
+            raise BeautifyError(
+                f"expect_ops: expected token.kind == 'op', got {token.kind!r}\n"
+                f"callers: {g.callers()}"
+            )
         if token.value not in values:
             raise BeautifyError(
-                f"Expected token.value in {values!r}, got {token.value!r}"
+                f"expect_ops: expected token.value in {values!r}, got {token.value!r}\n"
+                f"callers: {g.callers()}"
             )
     #@+node:ekr.20240110062055.1: *6* tbo.find_end_of_line
     def find_end_of_line(self) -> Optional[int]:
@@ -1756,59 +1766,26 @@ class TokenBasedOrange:  # Orange is the new Black.
                 return i
             i += 1
         return None
-    #@+node:ekr.20240106110748.1: *6* tbo.find_input_token (replace??)
-    def find_input_token(self,
-        i: int, values: list[str], reverse: bool = False,
-    ) -> Optional[int]:
-        """
-        Return the index of the matching 'op' token, skipping inner parens and
-        brackets.
-        
-        Stop the search at any 'newline' token.
-        """
-        curly_brackets, parens, square_brackets = 0, 0, 0
-        while i and 0 <= i < len(self.tokens):
-            token = self.tokens[i]
-            kind, value = token.kind, token.value
-            # Prechecks.
-            if 0:  ### Why isn't this better????
-                if (curly_brackets, parens, square_brackets) == (0, 0, 0):
-                    if token.kind == 'newline':
-                        return None  # Fail
-                    if kind == 'op' and value in values:
-                        return i  # Succeed.
-            else:
-                if token.kind == 'newline':
-                    return None
-                if (
-                    kind == 'op' and value in values
-                    and (curly_brackets, parens, square_brackets) == (0, 0, 0)
-                ):
+    #@+node:ekr.20240114063347.1: *6* tbo.find_delim
+    def find_delim(self, i: int, delims: list) -> Optional[int]:
+        """Find the next delimiter token, skipping inner parenthized tokens."""
+        level = 0
+        while i < len(self.tokens):
+            if is_op(i, '('):
+                level += 1
+            elif is_op(i, ')'):
+                if ')' in delims and level == 0:
                     return i
-            if kind == 'op':
-                # Bump counts.
-                if value == '(':
-                    parens += 1
-                elif value == ')':
-                    parens -= 1
-                elif value == '{':
-                    curly_brackets += 1
-                elif value == '}':
-                    curly_brackets -= 1
-                elif value == '[':
-                    square_brackets += 1
-                elif value == ']':
-                    square_brackets -= 1
-            # Post-check.
-            if (
-                kind == 'op' and value in values
-                and (curly_brackets, parens, square_brackets) == (0, 0, 0)
-            ):
+                assert level > 0, f"Unbalanced parens: {self.token.line!r}"
+                level -= 1
+            elif is_ops(i, delims) and level == 0:
                 return i
-            if reverse:
-                i -= 1
-            else:
-                i += 1
+            # elif is_op(i, ')'):
+                # if level == 0:
+                    # return i
+                # assert level > 0, f"Unbalanced parens: {self.token.line!r}"
+                # level -= 1
+            i += 1
         return None
     #@+node:ekr.20240114022135.1: *6* tbo.find_close_paren
     def find_close_paren(self, i: int) -> Optional[int]:
