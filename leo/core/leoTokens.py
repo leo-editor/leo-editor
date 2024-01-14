@@ -658,11 +658,11 @@ class TokenBasedOrange:  # Orange is the new Black.
             return result
         # We can assume the incoming file is syntactically correct!
         # Catching all exceptions saves *lots* of range and value tests.
-        except AssertionError:
-            g.es_exception()  # This is shorter and clearer.
         except Exception as e:
+            g.es_print("Error in Leo's token-based beautifier")
             print(f"{self.error_message(e)}")
             g.es_exception()
+            g.es_print("Please report this message to Leo's developers")
         return None
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. possible live)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
