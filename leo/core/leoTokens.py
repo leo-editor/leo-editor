@@ -1791,16 +1791,25 @@ class TokenBasedOrange:  # Orange is the new Black.
         return None
     #@+node:ekr.20240114063347.1: *6* tbo.find_delim
     def find_delim(self, i: int, delims: list) -> Optional[int]:
-        """Find the next delimiter token, skipping inner parenthized tokens."""
-        level = 0
+        """Find the next delimiter token, skipping inner grouped tokens."""
+
+        # The code assumes only works for ')' and non-grouping tokens.
+        assert not any(z in delims for z in '([]'), (delims, g.callers())
+
+        # Skip tokens until one of the delims is found.
+        parens, square_brackets = 0, 0
         while i < len(self.tokens):
-            if is_op(i, '('):
-                level += 1
+            if is_op(i, '['):
+                square_brackets += 1
+            elif is_op(i, ']'):
+                square_brackets -= 1
+            elif is_op(i, '('):
+                parens += 1
             elif is_op(i, ')'):
-                if ')' in delims and level == 0:
+                if ')' in delims and (parens, square_brackets) == (0, 0):
                     return i
-                level -= 1
-            elif is_ops(i, delims) and level == 0:
+                parens -= 1
+            elif is_ops(i, delims) and parens == 0:
                 return i
             i += 1
         return None
