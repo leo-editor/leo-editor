@@ -502,7 +502,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Global data.
         'code_list', 'line_indices', 'tokens', 'word_dispatch',
         # Token-related data for visitors.
-        'index', 'line_start', 'line_end', 'line_number', 'token',
+        'index', 'line_start', 'line_number', 'token',  # 'line_end'
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part', 'in_fstring',
         'state_stack', 'verbatim',
@@ -594,7 +594,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # The indices of the first/last tokens of the line.
         self.line_start: int = None  # The index of first token of this line.
-        self.line_end: int = None  # The index of the last token of this line.
+        ### self.line_end: int = None  # The index of the last token of this line.
         self.line_number: int = None  # The line number of this line.
 
         # State vars for whitespace.
@@ -625,7 +625,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         #@-<< tbo.beautify: init ivars >>
 
         # Create per-line range data.
-        self.line_indices: list[int] = self.create_indices(tokens)
+        if 0:
+            self.line_indices: list[int] = self.create_indices(tokens)
 
         # The top level of a "good enough" recursive descent parser.
         # Create per-statement range data and per-token context data.
@@ -637,19 +638,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         prev_line_number: int = None
         try:
             for self.index, self.token in enumerate(tokens):
-                # Set globals for visitors.
+                # Set global for visitors.
                 if prev_line_number != self.token.line_number:
-                    #@+<< update line-related data >>
-                    #@+node:ekr.20240112035001.1: *6* << update line-related data >>
-                    # A permanent unit test of the consistency of the line_indices array:
-                    if prev_line_number is not None and self.index != self.line_end:
-                        self.report_token_error()
-
-                    # Update the ivars!
                     self.line_start = self.token.line_number
-                    self.line_end = self.line_indices[self.token.line_number]
                     prev_line_number = self.token.line_number
-                    #@-<< update line-related data >>
                 # Call the proper visitor.
                 if self.verbatim:
                     self.do_verbatim()
