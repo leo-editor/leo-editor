@@ -113,6 +113,14 @@ def check_g() -> bool:
         print('This statement failed: `from leo.core import leoGlobals as g`')
         print('Please adjust your Python path accordingly')
     return bool(g)
+#@+node:ekr.20240114011303.1: ** LeoTokens: alias functions
+def expect(i: int, kind: str, value: str = None) -> None:
+    gBeautifier.expect(i, kind, value)
+
+def next(i: int) -> Optional[int]:
+    return g.Beautifier.next_token(i)
+
+
 #@+node:ekr.20240106220602.1: ** LeoTokens: debugging functions
 #@+node:ekr.20240105140814.41: *3* function: dump_contents
 def dump_contents(contents: str, tag: str = 'Contents') -> None:
@@ -511,6 +519,9 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.2: *4* tbo.ctor
     def __init__(self, settings: Settings = None):
         """Ctor for Orange class."""
+        # Set g.Beautifier for the alias functions.
+        g.Beautifier = self
+
         # Set default settings.
         if settings is None:
             settings = {}
@@ -1022,7 +1033,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240105145241.31: *6* tbo.gen_colon
+    #@+node:ekr.20240105145241.31: *6* tbo.gen_colon & helper
     def gen_colon(self) -> None:
         """Handle a colon."""
         val = self.token.value
@@ -1421,7 +1432,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def scan_arg(self, i1: int) -> Optional[int]:
         """Scan a single function definition argument"""
         # Aliases.
-        expect, is_op = self.expect, self.is_op
+        is_op = self.is_op
         next, set_context = self.next_token, self.set_context
 
         # Scan optional  * and ** operators.
@@ -2051,6 +2062,8 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
     }
     return args, settings_dict, files
 #@-others
+
+gBeautifier: TokenBasedOrange = None
 
 if __name__ == '__main__':
     main()  # pragma: no cover

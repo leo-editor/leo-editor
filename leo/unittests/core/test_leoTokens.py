@@ -22,6 +22,8 @@ except Exception:  # pragma: no cover
 
 from leo.core import leoGlobals as g
 
+import leo.core.leoTokens
+
 # Classes to test.
 from leo.core.leoTokens import InputToken, Tokenizer, TokenBasedOrange
 
@@ -87,6 +89,10 @@ class BaseTest(unittest.TestCase):
         if not filename:
             filename = g.callers(2).split(',')[0]
         orange = TokenBasedOrange()
+
+        # Set the module-level global for the alias functions.
+        leo.core.leoTokens.gBeautifier = orange
+
         result_s = orange.beautify(contents, filename, tokens)
         t2 = get_time()
         self.update_times('22: beautify', t2 - t1)
@@ -262,7 +268,7 @@ class TestTokenBasedOrange(BaseTest):
         return black.format_str(contents, mode=mode)
     #@+node:ekr.20240105153425.45: *3* TestTBO.test_annotations
     def test_annotations(self):
-        
+
         table = (
             # Case 0.
             # (
@@ -284,7 +290,7 @@ class TestTokenBasedOrange(BaseTest):
                             self.rulesetName : str = ''
                     """).strip() + '\n'
             ),
-            
+
         )
         for i, contents in enumerate(table):
             contents, tokens = self.make_data(contents)
@@ -298,7 +304,7 @@ class TestTokenBasedOrange(BaseTest):
 
     #@+node:ekr.20240112134732.1: *3* TestTBO.test_def_colons
     def test_def_colons(self):
-        
+
         contents = textwrap.dedent(
             '''
                 self.configDict: dict[str, Any] = {}
@@ -314,7 +320,7 @@ class TestTokenBasedOrange(BaseTest):
             # g.printObj(contents, tag='Contents')
             g.printObj(expected, tag='Expected (same as Contents)')
             g.printObj(results, tag='Results')
-            
+
         self.maxDiff = None
         self.assertEqual(results, expected)
 
@@ -417,7 +423,7 @@ class TestTokenBasedOrange(BaseTest):
         self.assertEqual(results, expected)
     #@+node:ekr.20240110201739.1: *3* TestTBO.test_colon
     def test_colon(self):
-        
+
         # self.rulesetName : str = ''
         # def configureTags(self) -> None :
         # for color in colors :
@@ -717,7 +723,7 @@ class TestTokenBasedOrange(BaseTest):
 
         tag = 'test_one_line_pet_peeves'
         # Except where noted, all entries are expected values....
-       
+
         table = (
             # Assignments...
             """a = b * c""",
@@ -834,7 +840,7 @@ class TestTokenBasedOrange(BaseTest):
         # See https://peps.python.org/pep-0008/#other-recommendations
 
         tag = 'test_slice'
-        
+
         # Except where noted, all entries are expected values....
         table = (
             # Slices (colons)...
