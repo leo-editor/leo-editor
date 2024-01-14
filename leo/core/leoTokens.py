@@ -96,11 +96,14 @@ def orange_command(
     """The outer level of the 'tbo/orange' command."""
     if not check_g():
         return
+    global gBeautifier
     t1 = time.process_time()
     for filename in files:
         if os.path.exists(filename):
             # print(f"orange {filename}")
-            TokenBasedOrange(settings).beautify_file(filename)
+            tbo = TokenBasedOrange(settings)
+            gBeautifier = tbo
+            tbo.beautify_file(filename)
         else:
             print(f"file not found: {filename}")
     # Report the results.
@@ -665,7 +668,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(f"TypeError: {self.error_message(str(e))}")
             return None
         except Exception as e:
-            message = f"{str(e)}\ncallers: {g.callers()}"
+            message = f"{str(e)}\ncallers: {g.callers(2)}"
             print(f"Unexpected exception! {self.error_message(message)}")
         return None
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. possible live)
