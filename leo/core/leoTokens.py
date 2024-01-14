@@ -114,13 +114,25 @@ def check_g() -> bool:
         print('Please adjust your Python path accordingly')
     return bool(g)
 #@+node:ekr.20240114011303.1: ** LeoTokens: alias functions
+# These functions are aliases for helper methods of the TokenBasedOrange class.
+
 def expect(i: int, kind: str, value: str = None) -> None:
     gBeautifier.expect(i, kind, value)
+
+def expect_ops(i: int, values: list) -> None:
+    gBeautifier.expect_ops(i, values)
 
 def next(i: int) -> Optional[int]:
     return g.Beautifier.next_token(i)
 
+def is_kind(i: int, kind: str) -> bool:
+    return gBeautifier.is_kind(i, kind)
 
+def is_op(i: int, values: list[str]) -> bool:
+    return g.Beautifier.is_ope(i, values)
+
+def set_context(i: int, context: str) -> None:
+    g.Beautifier.set_context(i, context)
 #@+node:ekr.20240106220602.1: ** LeoTokens: debugging functions
 #@+node:ekr.20240105140814.41: *3* function: dump_contents
 def dump_contents(contents: str, tag: str = 'Contents') -> None:
@@ -1718,7 +1730,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(tag)
         for token in self.tokens[i1 : i2 + 1]:
             print(token.dump())
-    #@+node:ekr.20240106090914.1: *6* tbo.expect & expect_ops
+    #@+node:ekr.20240106090914.1: *6* tbo.expect
     def expect(self, i: int, kind: str, value: str = None) -> None:
 
         full = False
@@ -1765,7 +1777,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 f"Expected token.kind: {kind!r} token.value: "
                 f"{value!r} got {token}\n"
             )
-
+    #@+node:ekr.20240114013952.1: *6* tbo.expect_ops
     def expect_ops(self, i: int, values: list) -> None:
         self.check_token_index(i)
         token = self.tokens[i]
