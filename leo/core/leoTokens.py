@@ -656,10 +656,9 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Any post pass would go here.
             result = output_tokens_to_string(self.code_list)
             return result
-        # We assume the incoming file is syntactically correct, so
-        # catching all exceptions saves lots unnecessary tests.
+        # We can assume the incoming file is syntactically correct!
+        # Catching all exceptions saves *lots* of range and value tests.
         except Exception as e:
-            ### message = f"{e!r}\ncallers: {g.callers(2)}"
             print(f"{self.error_message(e)}")
             g.es_exception()
         return None
@@ -1046,18 +1045,16 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         # Scan backward.
         i = self.index
-        ### i1 = self.find_input_token(i, ['['], reverse=True)
         i1 = self.find_open_square_bracket(i)
         if not is_op(i1, '['):
             return None
 
         # Scan forward.
-        ### i2 = self.find_input_token(i, [']'])
         i2 = self.find_close_square_bracket(i)
         if not is_op(i2, ']'):
             return None
 
-        # Sanity check.
+        # Sanity checks.
         expect_op(i1, '[')
         expect_op(i2, ']')
 
@@ -1195,7 +1192,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_token('lt', val)
         elif prev.kind == 'word':
             # Only suppress blanks before '(' or '[' for non-keywords.
-            ### if val == '{' or prev.value in ('if', 'else', 'return', 'for'):
             if val == '{' or prev.value in ('if', 'else', 'elif', 'return', 'for', 'while'):
                 self.gen_blank()
             elif val == '(':
@@ -1431,8 +1427,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         set_context(i1, 'annotation')
         i = next(i1)
 
-        # Scan to the next ',' or '=' at this level.
-        ### i3 = self.find_input_token(i, [',', '=', ')'])
+        # Scan to the next ',' or '=', ignoring inner parens.
         i3 = self.find_delim(i, [',', '=', ')'])
 
         # Set the contexts of inner ops.
@@ -1446,9 +1441,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan optional  * and ** operators.
         i = i1
-        ### token = self.tokens[i1]
-
-        ### if token.kind == 'op' and token.value in ('*', '**'):
         if is_ops(i, ['*', '**']):
             self.set_context(i1, 'arg')
             i = next(i)
@@ -1517,17 +1509,17 @@ class TokenBasedOrange:  # Orange is the new Black.
         
         Set context for every '=' operator.
         """
-        ### g.trace(self.tokens[i1])
-
         # Handle leading * and ** args.
-        if self.is_ops(i1, ['*', '**']):  ###
+        if self.is_ops(i1, ['*', '**']):
             self.set_context(i1, 'arg')
-        ### i = self.find_input_token(i1, [',', ')'])
+
+        # Find the closing ')', ignoring nested parens.
         i = self.find_delim(i1, [',', ')'])
+
+        # Set the context for all args.
         for i2 in range(i1 + 1, i - 1):
             if self.is_op(i2, '='):
                 self.set_context(i2, 'initializer')
-
         return i
     #@+node:ekr.20240107092458.1: *5* tbo.scan_call_args
     def scan_call_args(self, i1: int) -> Optional[int]:
@@ -1559,28 +1551,24 @@ class TokenBasedOrange:  # Orange is the new Black.
         Scan a compound statement, adding 'end-statement' context to the
         trailing ':' token.
         """
-        ### g.trace(self.index, self.tokens[self.index])  ###
-
         # Scan the keyword.
         i = self.index
         expect(i, 'name')
         keyword = self.tokens[i].value
-        ### g.trace(repr(self.token.line))  ###
         i = next(i)
 
-        # Find the trailing ':'.
-        ### i = self.find_input_token(i, [':'])
+        # Find the trailing ':', ignoring nested parens.
         i = self.find_delim(i, [':'])
         if i is not None:
-            ### g.trace('FOUND', self.tokens[i])  ###
-            expect_op(i, ':')
             # Set the context.
+            expect_op(i, ':')
             set_context(i, 'end-statement')
             return
+
+        # Last check.
         word_ops = ('if', 'else', 'for')
-        if keyword in word_ops:
-            return
-        raise BeautifyError(f"Expecting one of {word_ops}, got {keyword!r}")
+        if keyword not in word_ops:
+            raise BeautifyError(f"Expecting one of {word_ops}, got {keyword!r}")
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def
     def scan_def(self) -> None:
         """Scan a complete 'def' statement."""
@@ -1593,17 +1581,17 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = next(i)
         expect_op(i, '(')
         i1 = i
-        ### i = i2 = self.find_input_token(i, [')'])
+
+        # Find the closing ')', ignoring nested parens.
         i = i2 = self.find_close_paren(i)
         expect_op(i, ')')
         i = next(i)
         expect_ops(i, ['->', ':'])
 
         # Find i3, the ending ':' of the def statement.
-        ### i3 = self.find_input_token(i, [':'])
         i3 = self.find_delim(i, [':'])
         expect_op(i3, ':')
-        self.set_context(i3, 'end-statement')  ### 'def')
+        self.set_context(i3, 'end-statement')
 
         # Scan the arguments.
         self.scan_args(i1, i2)
@@ -1649,12 +1637,9 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan up to ',' or ')'
         if is_op(i, '('):
-            ### i = next(i)
-            ### i = self.find_input_token(i, [')'])
             i = self.find_close_paren(i)
             expect_op(i, ')')
         else:
-            ### i = self.find_input_token(i, [',', ')'])
             i = self.find_delim(i, [',', ')'])
             expect_ops(i, [',', ')'])
         return i
@@ -1808,15 +1793,12 @@ class TokenBasedOrange:  # Orange is the new Black.
     def find_delim(self, i: int, delims: list) -> Optional[int]:
         """Find the next delimiter token, skipping inner parenthized tokens."""
         level = 0
-        ### g.trace('delims:', delims, g.callers(2))  ###
         while i < len(self.tokens):
-            ### g.trace(self.tokens[i])  ###
             if is_op(i, '('):
                 level += 1
             elif is_op(i, ')'):
                 if ')' in delims and level == 0:
                     return i
-                ### assert level > 0, f"Unbalanced parens: {self.token.line!r}"
                 level -= 1
             elif is_ops(i, delims) and level == 0:
                 return i
