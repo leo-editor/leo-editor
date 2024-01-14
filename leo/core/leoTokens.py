@@ -661,17 +661,20 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Any post pass would go here.
             result = output_tokens_to_string(self.code_list)
             return result
+        # We assume the incoming file is syntactically correct, so
+        # catching the following exceptions saves lots unnecessary tests.
         except AssertionError as e:
-            print(self.error_message(str(e)))
-            return None
+            print(f"AssertionError: {self.error_message(str(e))}")
         except BeautifyError as e:
             print(self.error_message(str(e)))
-            return None
         except IndexError as e:
-            # We assume the incoming file is syntactically correct, so
-            # catching this error saves lots of range tests!
-            print(self.error_message(str(e)))
+            print(f"IndexError: {self.error_message(str(e))}")
+        except TypeError as e:
+            print(f"TypeError: {self.error_message(str(e))}")
             return None
+        except Exception as e:
+            print(f"Unexpected exception! {self.error_message(str(e))}")
+        return None
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. possible live)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
@@ -1695,12 +1698,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = next(i)
         return i
     #@+node:ekr.20240110205127.1: *5* tbo: Scan helpers
-    #@+node:ekr.20240106094211.1: *6* tbo.check_token_index
-    def check_token_index(self, i: Optional[int]) -> None:
-        if i is None or i < 0 or i >= len(self.tokens):
-            raise BeautifyError(
-                f"IndexError! i: {i}, len(tokens): {len(self.tokens)}"
-            )
     #@+node:ekr.20240106220724.1: *6* tbo.dump_token_range
     def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:
         """Dump the given range of input tokens."""
@@ -1710,7 +1707,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(token.dump())
     #@+node:ekr.20240106090914.1: *6* tbo.expect (with alias)
     def expect(self, i: int, kind: str, value: str = None) -> None:
-
+        """Raise an exception if self.tokens[i] is not as expected."""
         full = False
         trace = True
         tag = 'TBO.expect'
@@ -1741,7 +1738,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                 i1, i2 = max(0, i - 5), i + 5
                 g.printObj(self.tokens[i1 : i2 + 1], tag=f"{tag}: tokens[{i1}:{i2}]...", offset=i1)
 
-        self.check_token_index(i)
         token = self.tokens[i]
         if value is None:
             if token.kind != kind:
@@ -1757,7 +1753,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             )
     #@+node:ekr.20240114015808.1: *6* tbo.expect_op (with alias)
     def expect_op(self, i: int, value: str) -> None:
-        self.check_token_index(i)
+        """Raise an exception if self.tokens[i] is not as expected."""
         token = self.tokens[i]
         if token.kind != 'op':
             raise BeautifyError(f"Expected op token, got {token.kind!r}")
@@ -1767,13 +1763,13 @@ class TokenBasedOrange:  # Orange is the new Black.
             )
     #@+node:ekr.20240114013952.1: *6* tbo.expect_ops (with alias)
     def expect_ops(self, i: int, values: list) -> None:
-        self.check_token_index(i)
+        """Raise an exception if self.tokens[i] is not as expected."""
         token = self.tokens[i]
         if token.kind != 'op':
-            raise BeautifyError(f"Expected op token, got {token.kind!r}")
+            raise BeautifyError(f"Expected token.kind == 'op', got {token.kind!r}")
         if token.value not in values:
             raise BeautifyError(
-                f"Expected value in {values!r}, got {token.value!r}"
+                f"Expected token.value in {values!r}, got {token.value!r}"
             )
     #@+node:ekr.20240110062055.1: *6* tbo.find_end_of_line
     def find_end_of_line(self) -> Optional[int]:
@@ -1912,22 +1908,21 @@ class TokenBasedOrange:  # Orange is the new Black.
             and value not in ('True', 'False', None)
             and (keyword.iskeyword(value) or keyword.issoftkeyword(value))
         )
-    #@+node:ekr.20240106172054.1: *6* tbo.is_op (with alias)
+    #@+node:ekr.20240106172054.1: *6* tbo.is_op & is_ops (with alias)
     def is_op(self, i: int, value: str) -> bool:
-        self.check_token_index(i)
+
         token = self.tokens[i]
         return token.kind == 'op' and token.value == value
-    #@+node:ekr.20240114021151.1: *6* tbo.is_ops (with alias)
+
     def is_ops(self, i: int, values: list[str]) -> bool:
-        self.check_token_index(i)
+
         token = self.tokens[i]
         return token.kind == 'op' and token.value in values
 
     #@+node:ekr.20240114021152.1: *6* tbo.is_kind (with alias)
     def is_kind(self, i: int, kind: str) -> bool:
-        self.check_token_index(i)
-        token = self.tokens[i]
-        return token.kind == kind
+
+        return self.tokens[i].kind == kind
 
     #@+node:ekr.20240106093210.1: *6* tbo.is_significant_token
     def is_significant_token(self, token: InputToken) -> bool:
@@ -1968,17 +1963,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Set the context for self.tokens[i].
         
-        It *is* valid (and expected) for this method to be called more than
-        once for the same token!
+        This method may be called more than once for the same token!
         
-        The rule is: the *first* context is the valid context.
+        The *first* context is the valid context.
         """
-        self.check_token_index(i)
         token = self.tokens[i]
-
-        # Add context *only* if it does not already exist.
         if not token.context:
-            # g.trace(f"{i:4} {context:14} {g.callers(1)}")
+            ### g.trace(f"{i:4} {context:14} {g.callers(1)}")
             token.context = context
     #@-others
 #@+node:ekr.20240105140814.121: ** function: (leoTokens.py) main & helpers
