@@ -1708,7 +1708,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(tag)
         for token in self.tokens[i1 : i2 + 1]:
             print(token.dump())
-    #@+node:ekr.20240106090914.1: *6* tbo.expect
+    #@+node:ekr.20240106090914.1: *6* tbo.expect (with alias)
     def expect(self, i: int, kind: str, value: str = None) -> None:
 
         full = False
@@ -1755,7 +1755,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 f"Expected token.kind: {kind!r} token.value: "
                 f"{value!r} got {token}\n"
             )
-    #@+node:ekr.20240114015808.1: *6* tbo.expect_op
+    #@+node:ekr.20240114015808.1: *6* tbo.expect_op (with alias)
     def expect_op(self, i: int, value: str) -> None:
         self.check_token_index(i)
         token = self.tokens[i]
@@ -1765,7 +1765,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             raise BeautifyError(
                 f"Expected value: {value!r}, got {token.value!r}"
             )
-    #@+node:ekr.20240114013952.1: *6* tbo.expect_ops
+    #@+node:ekr.20240114013952.1: *6* tbo.expect_ops (with alias)
     def expect_ops(self, i: int, values: list) -> None:
         self.check_token_index(i)
         token = self.tokens[i]
@@ -1912,18 +1912,18 @@ class TokenBasedOrange:  # Orange is the new Black.
             and value not in ('True', 'False', None)
             and (keyword.iskeyword(value) or keyword.issoftkeyword(value))
         )
-    #@+node:ekr.20240106172054.1: *6* tbo.is_op
+    #@+node:ekr.20240106172054.1: *6* tbo.is_op (with alias)
     def is_op(self, i: int, value: str) -> bool:
         self.check_token_index(i)
         token = self.tokens[i]
         return token.kind == 'op' and token.value == value
-    #@+node:ekr.20240114021151.1: *6* tbo.is_ops
+    #@+node:ekr.20240114021151.1: *6* tbo.is_ops (with alias)
     def is_ops(self, i: int, values: list[str]) -> bool:
         self.check_token_index(i)
         token = self.tokens[i]
         return token.kind == 'op' and token.value in values
 
-    #@+node:ekr.20240114021152.1: *6* tbo.is_kind
+    #@+node:ekr.20240114021152.1: *6* tbo.is_kind (with alias)
     def is_kind(self, i: int, kind: str) -> bool:
         self.check_token_index(i)
         token = self.tokens[i]
@@ -1935,7 +1935,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         return token.kind not in (
             'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
         )
-    #@+node:ekr.20240105145241.43: *6* tbo.next/prev_token
+    #@+node:ekr.20240105145241.43: *6* tbo.next/prev_token (with aliases)
     def next_token(self, i: int) -> Optional[int]:
         """
         Return the next *significant* token in the list of *input* tokens.
@@ -1963,7 +1963,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 return i
             i -= 1
         return None
-    #@+node:ekr.20240106170746.1: *6* tbo.set_context
+    #@+node:ekr.20240106170746.1: *6* tbo.set_context (with alias)
     def set_context(self, i: int, context: str) -> None:
         """
         Set the context for self.tokens[i].
