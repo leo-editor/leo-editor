@@ -68,9 +68,11 @@ import io
 import os
 import re
 import subprocess
+import sys
 import textwrap
 import time
 import tokenize
+import traceback
 from typing import Any, Callable, Generator, Optional, Union
 
 try:
@@ -659,10 +661,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         # We can assume the incoming file is syntactically correct!
         # Catching all exceptions saves *lots* of range and value tests.
         except Exception as e:
-            g.es_print("Error in Leo's token-based beautifier")
+            print('')
+            print("Error in Leo's token-based beautifier")
             print(f"{self.error_message(e)}")
-            g.es_exception()
-            g.es_print("Please report this message to Leo's developers")
+            print('')
+            typ, val, tb = sys.exc_info()
+            traceback.print_tb(tb)
+            print('')
+            print("Please report this message to Leo's developers")
+            print('')
         return None
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. possible live)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
@@ -730,10 +737,9 @@ class TokenBasedOrange:  # Orange is the new Black.
     def error_message(self, exception: Exception) -> str:
         """Return a full message for BeautifyError."""
         return (
-            f"\nError in {self.filename}:\n"
-            f"{exception}\n"
+            f"\n{exception.__class__.__name__}! {exception!s}\n"
             f"At token {self.index}, line number: {self.token.line_number}:\n"
-            f"Line: {self.token.line!r}\n"
+            f"Line: {self.token.line!r}"
         )
     #@+node:ekr.20240105140814.17: *5* tbo.write_file
     def write_file(self, filename: str, s: str, encoding: str = 'utf-8') -> None:
@@ -1680,7 +1686,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert i == 0, repr(i)
         while i is not None:
             i = self.scan_statement(i)
-    #@+node:ekr.20240113054641.1: *5* tbo.scan_statement
+    #@+node:ekr.20240113054641.1: *5* tbo.scan_statement (** To do **)
     def scan_statement(self, i: int) -> int:
         """
         Scan the next statement, including docstrings.
@@ -1834,9 +1840,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             elif is_op(i, ')'):
                 if ')' in delims and (parens, square_brackets) == (0, 0):
                     return i
-                ### g.trace('delims', delims, parens, square_brackets)  ###
                 parens -= 1
-                assert parens >= 0, (parens, repr(self.tokens[i].line), g.callers())
+                assert parens >= 0, "unexpected ')' token"
             elif is_ops(i, delims) and (parens, square_brackets) == (0, 0):
                 return i
             i += 1
