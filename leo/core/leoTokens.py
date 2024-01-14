@@ -738,8 +738,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Return a full message for BeautifyError."""
         return (
             f"\n{exception.__class__.__name__}! {exception!s}\n"
-            f"At token {self.index}, line number: {self.token.line_number}:\n"
-            f"Line: {self.token.line!r}"
+            f"At token {self.index}, line number: {self.token.line_number}\n"
+            f"Input line: {self.token.line!r}"
         )
     #@+node:ekr.20240105140814.17: *5* tbo.write_file
     def write_file(self, filename: str, s: str, encoding: str = 'utf-8') -> None:
