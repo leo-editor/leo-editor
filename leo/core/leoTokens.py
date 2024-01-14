@@ -115,6 +115,7 @@ def check_g() -> bool:
     return bool(g)
 #@+node:ekr.20240114011303.1: ** LeoTokens: alias functions
 # These functions are aliases for helper methods of the TokenBasedOrange class.
+# The declutter the code.
 
 def expect(i: int, kind: str, value: str = None) -> None:
     gBeautifier.expect(i, kind, value)
@@ -129,7 +130,7 @@ def is_kind(i: int, kind: str) -> bool:
     return gBeautifier.is_kind(i, kind)
 
 def is_op(i: int, values: list[str]) -> bool:
-    return g.Beautifier.is_ope(i, values)
+    return g.Beautifier.is_op(i, values)
 
 def set_context(i: int, context: str) -> None:
     g.Beautifier.set_context(i, context)
@@ -909,7 +910,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
         # Aliases.
-        is_kind, next, set_context = self.is_kind, self.next_token, self.set_context
+        ### is_kind, next, set_context = self.is_kind, self.next_token, self.set_context
 
         # Scan special statements, adding context to *later* input tokens.
         func = self.word_dispatch.get(s)
@@ -1078,7 +1079,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Return one of (None, 'simple-slice', 'complex-slice')
         """
         # Aliases.
-        is_op, next, set_context = self.is_op, self.next_token, self.set_context
+        ### is_op, next, set_context = self.is_op, self.next_token, self.set_context
 
         # Scan backward.
         i = self.index
@@ -1424,8 +1425,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     def scan_annotation(self, i1: int) -> Optional[int]:
         """Scan an annotation if a function definition arg."""
         # Aliases
-        expect, next = self.expect, self.next_token
-        is_op, set_context = self.is_op, self.set_context
+        ### expect, next = self.expect, self.next_token
+        ### is_op, set_context = self.is_op, self.set_context
 
         # Scan the ':'
         expect(i1, 'op', ':')
@@ -1444,8 +1445,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     def scan_arg(self, i1: int) -> Optional[int]:
         """Scan a single function definition argument"""
         # Aliases.
-        is_op = self.is_op
-        next, set_context = self.next_token, self.set_context
+        ### is_op = self.is_op
+        ### next, set_context = self.next_token, self.set_context
 
         # Scan optional  * and ** operators.
         i = i1
@@ -1487,7 +1488,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def scan_args(self, i1: int, i2: int) -> Optional[int]:
         """Scan a comma-separated list of function definition arguments."""
         # Aliases.
-        expect, is_op, next = self.expect, self.is_op, self.next_token
+        ### expect, is_op, next = self.expect, self.is_op, self.next_token
 
         # Sanity checks.
         assert i2 > i1, (i1, i2)
@@ -1508,7 +1509,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def scan_call(self, i1: int) -> None:
         """Scan a function call"""
         # Alias.
-        expect = self.expect
+        ### expect = self.expect
 
         # Find i1 and i2, the boundaries of the argument list.
         expect(i1, 'op', '(')
@@ -1540,8 +1541,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     def scan_call_args(self, i1: int) -> Optional[int]:
         """Scan a comma-separated list of function definition arguments."""
         # Aliases.
-        expect, next = self.expect, self.next_token
-        is_op = self.is_op
+        ### expect, next = self.expect, self.next_token
+        ### is_op = self.is_op
 
         # Scan the '('
         expect(i1, 'op', '(')
@@ -1572,7 +1573,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         ### g.trace(self.index, self.tokens[self.index])  ###
 
         # Aliases.
-        expect, next, set_context = self.expect, self.next_token, self.set_context
+        ### expect, next, set_context = self.expect, self.next_token, self.set_context
 
         # Scan the keyword.
         i = self.index
@@ -1595,7 +1596,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def scan_def(self) -> None:
         """Scan a complete 'def' statement."""
         # Aliases
-        expect, expect_ops, next = self.expect, self.expect_ops, self.next_token
+        ### expect, expect_ops, next = self.expect, self.expect_ops, self.next_token
 
         # Find i1 and i2, the boundaries of the argument list.
         i = self.index
@@ -1624,7 +1625,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
 
         # Aliases.
-        is_op, next, set_context = self.is_op, self.next_token, self.set_context
+        ### is_op, next, set_context = self.is_op, self.next_token, self.set_context
 
         # Find the end of the 'from' statement.
         end = self.find_end_of_line()
@@ -1641,7 +1642,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def scan_import(self) -> None:
 
         # Aliases.
-        is_op, next, set_context = self.is_op, self.next_token, self.set_context
+        ### is_op, next, set_context = self.is_op, self.next_token, self.set_context
 
         # Find the end of the import statement.
         end = self.find_end_of_line()
@@ -1658,8 +1659,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     def scan_initializer(self, i1: int, has_annotation: bool) -> Optional[int]:
         """Scan an initializer in a function definition argument."""
         # Aliases
-        expect, expect_ops, is_op = self.expect, self.expect_ops, self.is_op
-        next, set_context = self.next_token, self.set_context
+        ### expect, expect_ops, is_op = self.expect, self.expect_ops, self.is_op
+        ### next, set_context = self.next_token, self.set_context
 
         # Scan the '='.
         expect(i1, 'op', '=')
@@ -1713,7 +1714,8 @@ class TokenBasedOrange:  # Orange is the new Black.
           else: a = 3
         """
         # Aliases.
-        next = self.next_token
+        ###next = self.next_token
+
         i = next(i)
         return i
     #@+node:ekr.20240110205127.1: *5* tbo: Scan helpers
