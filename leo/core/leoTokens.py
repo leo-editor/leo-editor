@@ -126,14 +126,17 @@ def expect_op(i: int, value: str) -> None:
 def expect_ops(i: int, values: list) -> None:
     gBeautifier.expect_ops(i, values)
 
-def next(i: int) -> Optional[int]:
-    return g.Beautifier.next_token(i)
-
 def is_kind(i: int, kind: str) -> bool:
     return gBeautifier.is_kind(i, kind)
 
-def is_op(i: int, values: list[str]) -> bool:
-    return g.Beautifier.is_op(i, values)
+def is_op(i: int, value: str) -> bool:
+    return g.Beautifier.is_op(i, value)
+
+def is_ops(i: int, values: list[str]) -> bool:
+    return g.Beautifier.is_ops(i, values)
+
+def next(i: int) -> Optional[int]:
+    return g.Beautifier.next_token(i)
 
 def set_context(i: int, context: str) -> None:
     g.Beautifier.set_context(i, context)
@@ -928,7 +931,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         elif self.token.context != 'class/def':
             # A possible function call.
             i = next(self.index)
-            if i and self.is_op(i, ['(']):
+            if i and self.is_op(i, '('):
                 self.scan_call(i)
 
         # Finally: generate output tokens.
@@ -1104,10 +1107,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = next(i1)
         while i and i < i2:
             token = self.tokens[i]
-            if is_op(i, [':']):
+            if is_op(i, ':'):
                 # Look ahead for '+', '-' unary ops.
                 next_i = next(i)
-                if is_op(next_i, ['-', '+']):
+                if is_ops(next_i, ['-', '+']):
                     i = next_i  # Skip the unary.
             elif token.kind == 'number':
                 pass
@@ -1122,7 +1125,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         context = 'complex-slice' if is_complex else 'simple-slice'
         i = next(i1)
         while i and i < i2:
-            if is_op(i, [':']):
+            if is_op(i, ':'):
                 set_context(i, context)
             i = next(i)
         return context
@@ -1433,7 +1436,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Set the contexts of inner ops.
         for i4 in range(i1 + 1, i3 - 1):
-            if is_op(i4, ['=', ':']):
+            if is_ops(i4, ['=', ':']):
                 set_context(i4, 'annotation')
         return i3
     #@+node:ekr.20240106173638.1: *5* tbo.scan_arg
@@ -1450,7 +1453,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.set_context(i1, 'arg')
             i = next(i)
             # Handle *,
-            if is_op(i, [',']):
+            if is_op(i, ','):
                 i = next(i)
                 return i
 
@@ -1459,13 +1462,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = next(i)
 
         # Scan an optional annotation.
-        has_annotation = is_op(i, [':'])
+        has_annotation = is_op(i, ':')
         if has_annotation:
             set_context(i, 'annotation')
             i = self.scan_annotation(i)
 
         # Scan an optional initializer.
-        if is_op(i, ['=']):
+        if is_op(i, '='):
             if has_annotation:
                 set_context(i, 'annotation')
             else:
@@ -1473,7 +1476,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.scan_initializer(i, has_annotation)
 
         # Scan the optional comma.
-        if is_op(i, [',']):
+        if is_op(i, ','):
             i = next(i)
         return i
     #@+node:ekr.20240106172905.1: *5* tbo.scan_args
@@ -1489,7 +1492,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = next(i1)
 
         # Scan each argument.
-        while i and i < i2 and not is_op(i, [')']):
+        while i and i < i2 and not is_op(i, ')'):
             i = self.scan_arg(i)
 
         # Scan the ')'
@@ -1517,11 +1520,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         ### g.trace(self.tokens[i1])
 
         # Handle leading * and ** args.
-        if self.is_op(i1, ['*', '**']):  ###
+        if self.is_ops(i1, ['*', '**']):  ###
             self.set_context(i1, 'arg')
         i = self.find_input_token(i1, [',', ')'])
         for i2 in range(i1 + 1, i - 1):
-            if self.is_op(i2, ['=']):
+            if self.is_op(i2, '='):
                 self.set_context(i2, 'initializer')
 
         return i
@@ -1534,13 +1537,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = next(i1)
 
         # Quit if there are no args.
-        if is_op(i, [')']):
+        if is_op(i, ')'):
             return i
 
         # Scan arguments.
         while i and i < len(self.tokens):
             i = self.scan_call_arg(i)
-            if is_op(i, [')']):
+            if is_op(i, ')'):
                 break
             i = next(i)
 
@@ -1612,7 +1615,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Add 'from' context to all '.' tokens.
         i = self.index
         while i and i < end:
-            if is_op(i, ['.']):
+            if is_op(i, '.'):
                 set_context(i, 'from')
             i = next(i)
     #@+node:ekr.20240108083829.1: *5* tbo.scan_import
@@ -1626,7 +1629,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Add 'import' context to all '.' operators.
         i = self.index
         while i and i < end:
-            if is_op(i, ['.']):
+            if is_op(i, '.'):
                 set_context(i, 'import')
             i = next(i)
     #@+node:ekr.20240106181215.1: *5* tbo.scan_initializer
@@ -1639,7 +1642,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = next(i1)
 
         # Scan up to ',' or ')'
-        if is_op(i, ['(']):
+        if is_op(i, '('):
             i = next(i)
             i = self.find_input_token(i, [')'])
             expect_op(i, ')')
@@ -1858,12 +1861,18 @@ class TokenBasedOrange:  # Orange is the new Black.
             and value not in ('True', 'False', None)
             and (keyword.iskeyword(value) or keyword.issoftkeyword(value))
         )
-    #@+node:ekr.20240106172054.1: *6* tbo.is_op & is_kind
-    def is_op(self, i: int, values: list[str]) -> bool:
+    #@+node:ekr.20240106172054.1: *6* tbo.is_op
+    def is_op(self, i: int, value: str) -> bool:
+        self.check_token_index(i)
+        token = self.tokens[i]
+        return token.kind == 'op' and token.value == value
+    #@+node:ekr.20240114021151.1: *6* tbo.is_ops
+    def is_ops(self, i: int, values: list[str]) -> bool:
         self.check_token_index(i)
         token = self.tokens[i]
         return token.kind == 'op' and token.value in values
 
+    #@+node:ekr.20240114021152.1: *6* tbo.is_kind
     def is_kind(self, i: int, kind: str) -> bool:
         self.check_token_index(i)
         token = self.tokens[i]
