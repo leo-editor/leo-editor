@@ -658,6 +658,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             return result
         # We can assume the incoming file is syntactically correct!
         # Catching all exceptions saves *lots* of range and value tests.
+        except AssertionError:
+            g.es_exception()  # This is shorter and clearer.
         except Exception as e:
             print(f"{self.error_message(e)}")
             g.es_exception()
@@ -865,6 +867,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.token.value
+        ### WRONG: must handle compound statements explicitly #####
         if name in self.compound_statements:
             self.gen_word(name)
         elif name in self.operator_keywords:
@@ -1559,12 +1562,21 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         # Scan the keyword.
         i = self.index
+        ### g.trace('=====', repr(self.tokens[i].line), g.callers())
         expect(i, 'name')
         keyword = self.tokens[i].value
         i = next(i)
 
-        # Find the trailing ':', ignoring nested parens.
+        if is_op(i, '('):
+            # Find the matching ')'
+            i = next(i)
+            i = self.find_delim(i, [')'])
+            i = next(i)
+
+        # Find the trailing ':'.
+        ### g.trace('----', self.tokens[i])
         i = self.find_delim(i, [':'])
+
         if i is not None:
             # Set the context.
             expect_op(i, ':')
@@ -1802,8 +1814,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         # The code assumes only works for ')' and non-grouping tokens.
         assert not any(z in delims for z in '([]'), (delims, g.callers())
 
+        # The code assumes that the first token is *not* '('.
+        if ')' in delims:
+            assert not is_op(i, '('), g.callers()
+
         # Skip tokens until one of the delims is found.
         parens, square_brackets = 0, 0
+        if 0:  ###
+            print('')  ###
+            print(i, 'delims:', delims, repr(self.tokens[i].line), g.callers(2))
         while i < len(self.tokens):
             ### g.trace(i, self.tokens[i])
             if is_op(i, '['):
@@ -1815,7 +1834,9 @@ class TokenBasedOrange:  # Orange is the new Black.
             elif is_op(i, ')'):
                 if ')' in delims and (parens, square_brackets) == (0, 0):
                     return i
+                ### g.trace('delims', delims, parens, square_brackets)  ###
                 parens -= 1
+                assert parens >= 0, (parens, repr(self.tokens[i].line), g.callers())
             elif is_ops(i, delims) and (parens, square_brackets) == (0, 0):
                 return i
             i += 1
