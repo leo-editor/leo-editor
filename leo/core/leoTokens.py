@@ -665,7 +665,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(f"TypeError: {self.error_message(str(e))}")
             return None
         except Exception as e:
-            print(f"Unexpected exception! {self.error_message(str(e))}")
+            message = f"{str(e)}\ncallers: {g.callers()}"
+            print(f"Unexpected exception! {self.error_message(message)}")
         return None
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. possible live)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
@@ -729,40 +730,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             return None, None, None
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
         return contents, encoding, tokens
-    #@+node:ekr.20240112074218.1: *5* tbo.reort_token_error
-    def report_token_error(self) -> None:
-        """Issue a detailed error about unexpected token data."""
-        message = (
-            '\ntog.beautify: Error in tog.line_indices!\n'
-            f"file: {self.filename}\n"
-            f"line: {self.token.line_number} index: {self.index} token: {self.token}\n"
-            f"index {self.index} != old line_end: {self.line_end }\n"
-        )
-        # line_indices: index of the first token of the *next* line.
-        # self.line_end: the computed next line from the *old* line.
-        # self.index: the start of the *new* line.
-        print(message)
-        g.printObj(self.line_indices[:4], tag='tog.line_indices[:4]')
-        if 1:
-            lines = g.splitLines(self.contents)
-            n = self.token.line_number
-            i1, i2 = max(0, n - 10), n
-            g.printObj(lines[i1:i2], tag=f"Lines[{i1}:{i2}")
-        if 1:
-            i1 = max(0, min(self.index, self.line_end) - 20)
-            i2 = max(self.index, self.line_end)
-            g.trace('Dump of tokens', i1, i2, '\n')
-            print('line index token.line token')
-            print('==== ===== ========== =====')
-            for i, z in enumerate(self.tokens[i1:i2]):
-                token = self.tokens[i + i1]
-                print(
-                    f"  {token.line_number:<3}  {token.index:<4} "
-                    f"  {token.line_number:<4}{' '*4}{token.kind} {token.show_val()}")
-                if token.kind == 'newline':
-                    print('')
-
-        assert self.index == self.line_end, message
     #@+node:ekr.20240112082350.1: *5* tbo.error_message
     def error_message(self, message: str) -> str:
         """Return a full message for BeautifyError."""
