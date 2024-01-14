@@ -1798,7 +1798,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 return i
             i += 1
         return None
-    #@+node:ekr.20240106110748.1: *6* tbo.find_input_token
+    #@+node:ekr.20240106110748.1: *6* tbo.find_input_token (replace??)
     def find_input_token(self,
         i: int, values: list[str], reverse: bool = False,
     ) -> Optional[int]:
@@ -1851,6 +1851,52 @@ class TokenBasedOrange:  # Orange is the new Black.
                 i -= 1
             else:
                 i += 1
+        return None
+    #@+node:ekr.20240114022135.1: *6* tbo.find_close_paren
+    def find_close_paren(self, i: int) -> Optional[int]:
+        """Find the  ')' matching this '(' token."""
+        expect_op(i, '(')
+        i = next(i)
+        level = 0
+        while i < len(self.tokens):
+            if is_op(i, '('):
+                level += 1
+            elif is_op(i, ')'):
+                if level == 0:
+                    return i
+                assert level > 0, f"Unbalanced parens: {self.token.line!r}"
+                level -= 1
+            i += 1
+        return None
+    #@+node:ekr.20240114022153.1: *6* tbo.find_close_square_bracket
+    def find_close_square_bracket(self, i: int) -> Optional[int]:
+        """Find the  ']' matching this '[' token."""
+        expect_op(i, '[')
+        i = next(i)
+        level = 0
+        while i < len(self.tokens):
+            if is_op(i, '['):
+                level += 1
+            elif is_op(i, ']'):
+                if level == 0:
+                    return i
+                assert level > 0, f"Unbalanced square brackets: {self.token.line!r}"
+                level -= 1
+            i += 1
+        return None
+    #@+node:ekr.20240114022212.1: *6* tbo.find_open_square_bracket
+    def find_open_square_bracket(self, i: int) -> Optional[int]:
+        """Search backwards for a '[' matching at the same level."""
+        level = 0
+        while i >= 0:
+            if is_op(i, '['):
+                if level == 0:
+                    return i
+                assert level < 0, f"Unbalanced square brackets: {self.token.line!r}"
+            elif is_op(i, ']'):
+                # Now we expect an inner '[' token before the final match.
+                level -= 1
+            i -= 1
         return None
     #@+node:ekr.20240106053414.1: *6* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
