@@ -774,7 +774,7 @@ class TestTokenBasedOrange(BaseTest):
                     f"TestTokenBasedOrange.{tag}: FAIL {fails}\n"
                     f"  contents: {contents.rstrip()}\n"
                     f"     black: {expected.rstrip()}\n"
-                    f"    orange: {results.rstrip()}")
+                    f"    orange: {results.rstrip() if results else 'None'}")
         self.assertEqual(fails, 0)
     #@+node:ekr.20240105153425.70: *3* TestTBO.test_relative_imports
     def test_relative_imports(self):
@@ -939,7 +939,7 @@ class TestTokenBasedOrange(BaseTest):
                     f"TestTokenBasedOrange.test_one_line_pet_peeves: FAIL {fails}\n"
                     f"  contents: {contents.rstrip()}\n"
                     f"     black: {expected.rstrip()}\n"
-                    f"    orange: {results.rstrip()}")
+                    f"    orange: {results.rstrip() if results else 'None'}")
         self.assertEqual(fails, 0)
     #@+node:ekr.20240105153425.79: *3* TestTBO.test_verbatim
     def test_verbatim(self):

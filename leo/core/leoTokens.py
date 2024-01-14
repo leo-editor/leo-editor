@@ -661,6 +661,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         except Exception as e:
             ### message = f"{e!r}\ncallers: {g.callers(2)}"
             print(f"{self.error_message(e)}")
+            g.es_exception()
         return None
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. possible live)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
@@ -725,11 +726,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
         return contents, encoding, tokens
     #@+node:ekr.20240112082350.1: *5* tbo.error_message
-    def error_message(self, message: str) -> str:
+    def error_message(self, exception: Exception) -> str:
         """Return a full message for BeautifyError."""
         return (
             f"\nError in {self.filename}:\n"
-            f"{message}\n"
+            f"{exception}\n"
             f"At token {self.index}, line number: {self.token.line_number}:\n"
             f"Line: {self.token.line!r}\n"
         )
@@ -1036,7 +1037,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240109115925.1: *7* tbo.scan_slice
+    #@+node:ekr.20240109115925.1: *7* tbo.scan_slice & helpers
     def scan_slice(self) -> Optional[str]:
         """
         Find the enclosing square brackets.
@@ -1047,13 +1048,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = self.index
         ### i1 = self.find_input_token(i, ['['], reverse=True)
         i1 = self.find_open_square_bracket(i)
-        if i1 is None:
+        if not is_op(i1, '['):
             return None
 
         # Scan forward.
         ### i2 = self.find_input_token(i, [']'])
         i2 = self.find_close_square_bracket(i)
-        if i2 is None:
+        if not is_op(i2, ']'):
             return None
 
         # Sanity check.
@@ -1092,6 +1093,42 @@ class TokenBasedOrange:  # Orange is the new Black.
                 set_context(i, context)
             i = next(i)
         return context
+    #@+node:ekr.20240114022153.1: *8* tbo.find_close_square_bracket
+    def find_close_square_bracket(self, i: int) -> Optional[int]:
+        """
+        Search forwards for a ']', ignoring ']' tokens inner groups.
+        
+        This strategy is valid assuming the Python text is well formed!
+        """
+        level = 0
+        while i < len(self.tokens):
+            if is_op(i, '['):
+                level += 1
+            elif is_op(i, ']'):
+                if level == 0:
+                    return i
+                assert level > 0, f"Unbalanced square brackets: {self.token.line!r}"
+                level -= 1
+            i += 1
+        return None
+    #@+node:ekr.20240114022212.1: *8* tbo.find_open_square_bracket
+    def find_open_square_bracket(self, i: int) -> Optional[int]:
+        """
+        Search backwards for a '[', ignoring '[' tokens in inner groups.
+        
+        This strategy is valid assuming the Python text is well formed!
+        """
+        level = 0
+        while i >= 0:
+            if is_op(i, '['):
+                if level == 0:
+                    return i
+                assert level < 0, f"Unbalanced square brackets: {self.token.line!r}"
+            elif is_op(i, ']'):
+                # Now we expect an inner '[' token before the final match.
+                level -= 1
+            i -= 1
+        return None
     #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op
     def gen_dot_op(self) -> None:
         """Handle the '.' input token."""
@@ -1803,36 +1840,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                 level -= 1
             i += 1
         return None
-    #@+node:ekr.20240114022153.1: *6* tbo.find_close_square_bracket
-    def find_close_square_bracket(self, i: int) -> Optional[int]:
-        """Find the  ']' matching this '[' token."""
-        expect_op(i, '[')
-        i = next(i)
-        level = 0
-        while i < len(self.tokens):
-            if is_op(i, '['):
-                level += 1
-            elif is_op(i, ']'):
-                if level == 0:
-                    return i
-                assert level > 0, f"Unbalanced square brackets: {self.token.line!r}"
-                level -= 1
-            i += 1
-        return None
-    #@+node:ekr.20240114022212.1: *6* tbo.find_open_square_bracket
-    def find_open_square_bracket(self, i: int) -> Optional[int]:
-        """Search backwards for a '[' matching at the same level."""
-        level = 0
-        while i >= 0:
-            if is_op(i, '['):
-                if level == 0:
-                    return i
-                assert level < 0, f"Unbalanced square brackets: {self.token.line!r}"
-            elif is_op(i, ']'):
-                # Now we expect an inner '[' token before the final match.
-                level -= 1
-            i -= 1
-        return None
     #@+node:ekr.20240106053414.1: *6* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
         """
@@ -1850,14 +1857,17 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240106172054.1: *6* tbo.is_op & is_ops (with alias)
     def is_op(self, i: int, value: str) -> bool:
 
+        if i is None:
+            return False
         token = self.tokens[i]
         return token.kind == 'op' and token.value == value
 
     def is_ops(self, i: int, values: list[str]) -> bool:
 
+        if i is None:
+            return False
         token = self.tokens[i]
         return token.kind == 'op' and token.value in values
-
     #@+node:ekr.20240114021152.1: *6* tbo.is_kind (with alias)
     def is_kind(self, i: int, kind: str) -> bool:
 

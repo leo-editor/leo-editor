@@ -2338,7 +2338,7 @@ class TestOrange(BaseTest):
                     f"TestOrange.test_one_line_pet_peeves: FAIL {fails}\n"
                     f"  contents: {contents.rstrip()}\n"
                     f"     black: {expected.rstrip()}\n"
-                    f"    orange: {results.rstrip()}")
+                    f"    orange: {results.rstrip() if results else 'None'}")
         self.assertEqual(fails, 0)
     #@+node:ekr.20220327135448.1: *4* TestOrange.test_relative_imports
     def test_relative_imports(self):
