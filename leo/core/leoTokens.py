@@ -1565,17 +1565,19 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = self.index
         expect(i, 'name')
         keyword = self.tokens[i].value
+        ### g.trace(repr(self.token.line))  ###
         i = next(i)
 
         # Find the trailing ':'.
         ### i = self.find_input_token(i, [':'])
         i = self.find_delim(i, [':'])
-        word_ops = ('if', 'else', 'for')
         if i is not None:
+            ### g.trace('FOUND', self.tokens[i])  ###
             expect_op(i, ':')
             # Set the context.
             set_context(i, 'end-statement')
             return
+        word_ops = ('if', 'else', 'for')
         if keyword in word_ops:
             return
         raise BeautifyError(f"Expecting one of {word_ops}, got {keyword!r}")
@@ -1806,21 +1808,18 @@ class TokenBasedOrange:  # Orange is the new Black.
     def find_delim(self, i: int, delims: list) -> Optional[int]:
         """Find the next delimiter token, skipping inner parenthized tokens."""
         level = 0
+        ### g.trace('delims:', delims, g.callers(2))  ###
         while i < len(self.tokens):
+            ### g.trace(self.tokens[i])  ###
             if is_op(i, '('):
                 level += 1
             elif is_op(i, ')'):
                 if ')' in delims and level == 0:
                     return i
-                assert level > 0, f"Unbalanced parens: {self.token.line!r}"
+                ### assert level > 0, f"Unbalanced parens: {self.token.line!r}"
                 level -= 1
             elif is_ops(i, delims) and level == 0:
                 return i
-            # elif is_op(i, ')'):
-                # if level == 0:
-                    # return i
-                # assert level > 0, f"Unbalanced parens: {self.token.line!r}"
-                # level -= 1
             i += 1
         return None
     #@+node:ekr.20240114022135.1: *6* tbo.find_close_paren
