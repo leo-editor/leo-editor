@@ -1446,11 +1446,10 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan optional  * and ** operators.
         i = i1
-        token = self.tokens[i1]
+        ### token = self.tokens[i1]
 
-        ### g.trace(token)  ###
-
-        if token.kind == 'op' and token.value in ('*', '**'):
+        ### if token.kind == 'op' and token.value in ('*', '**'):
+        if is_ops(i, ['*', '**']):
             self.set_context(i1, 'arg')
             i = next(i)
             # Handle *,
@@ -1648,9 +1647,9 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan up to ',' or ')'
         if is_op(i, '('):
-            i = next(i)
+            ### i = next(i)
             ### i = self.find_input_token(i, [')'])
-            self.find_close_paren(i)
+            i = self.find_close_paren(i)
             expect_op(i, ')')
         else:
             ### i = self.find_input_token(i, [',', ')'])
