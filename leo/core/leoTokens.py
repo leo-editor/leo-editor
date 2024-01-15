@@ -505,9 +505,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Debugging.
         'contents', 'filename',
         # Global data.
-        'code_list', 'line_indices', 'tokens',  ### 'word_dispatch',
+        'code_list', 'line_indices', 'tokens',
         # Token-related data for visitors.
-        'index', 'line_start', 'line_number', 'token',  ### 'line_end'
+        'index', 'line_start', 'line_number', 'token',
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part', 'in_fstring',
         'state_stack', 'verbatim',
@@ -555,16 +555,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 g.trace(f"Unexpected setting: {key} = {value!r}")
                 g.trace('(TokenBasedOrange)', g.callers())
-
-        ### Obsolete.
-            # # Init the dispatch dict for 'word' generator.
-            # self.word_dispatch: dict[str, Callable] = {
-                # 'from': self.scan_from,
-                # 'def': self.scan_def,
-                # 'import': self.scan_import,
-            # }
-            # for z in self.compound_statements:
-                # self.word_dispatch[z] = self.scan_compound_statement
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def oops(self) -> None:  # pragma: no cover
@@ -592,7 +582,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # The indices of the first/last tokens of the line.
         self.line_start: int = None  # The index of first token of this line.
-        ### self.line_end: int = None  # The index of the last token of this line.
         self.line_number: int = None  # The line number of this line.
 
         # State vars for whitespace.
@@ -880,13 +869,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Add a word request to the code list."""
         assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
-
-        ### OBSOLETE.
-            # # Scan special statements, adding context to *later* input tokens.
-            # func = self.word_dispatch.get(s)
-            # if func:
-                # # Call scan_compound_statement, scan_def, scan_from, scan_import.
-                # func()
 
         # Add context to *this* input token.
         if s in ('class', 'def'):
@@ -1794,7 +1776,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 f"expect_ops: expected token.value in {values!r}, got {token.value!r}\n"
                 f"callers: {g.callers()}"
             )
-    #@+node:ekr.20240110062055.1: *6* tbo.find_end_of_line (test)
+    #@+node:ekr.20240110062055.1: *6* tbo.find_end_of_line
     def find_end_of_line(self, i: int) -> int:
         """
         Return the index the next newline, skipping inner expressions.
@@ -1818,7 +1800,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 i += 1
         raise BeautifyError("matching ')' not found")
-    #@+node:ekr.20240114063347.1: *6* tbo.find_delim (test)
+    #@+node:ekr.20240114063347.1: *6* tbo.find_delim
     def find_delim(self, i: int, delims: list) -> Optional[int]:
         """
         Find the next delimiter token, skipping inner expressions.
@@ -1977,7 +1959,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 i += 1
         raise BeautifyError("matching ')' not found")
-    #@+node:ekr.20240115014845.1: *6* tbo.skip_curly_brackets (test)
+    #@+node:ekr.20240115014845.1: *6* tbo.skip_curly_brackets
     def skip_curly_brackets(self, i: int) -> int:
         """
         Skip from '{' *past* the matching '}'.
@@ -2003,7 +1985,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 i += 1
         raise BeautifyError("matching '}' not found")
-    #@+node:ekr.20240115014857.1: *6* tbo.skip_square_brackets (to do)
+    #@+node:ekr.20240115014857.1: *6* tbo.skip_square_brackets
     def skip_square_brackets(self, i: int) -> int:
         """
         Skip from '[' to the matching ']'.
