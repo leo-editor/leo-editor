@@ -870,15 +870,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
 
-        if 0:  ### Now done in scan_compound_statement
-            # Add context to *this* input token.
-            if s in ('class', 'def'):
-                # The defined name is not a function call.
-                i = next(self.index)
-                if is_kind(i, 'name'):
-                    set_context(i, 'class/def')
-
-        ### Legacy code. Still works???
         if self.token.context != 'class/def':
             # A possible function call.
             i = next(self.index)
