@@ -495,7 +495,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     """
     Leo's token-based beautifier.
     
-    This class is simpler and faster than the Orange class in leoAst.py.
+    This class is faster than the Orange class in leoAst.py.
     """
     #@+<< TokenBasedOrange: __slots__ >>
     #@+node:ekr.20240111035404.1: *4* << TokenBasedOrange: __slots__ >>
@@ -517,14 +517,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         'indent_level', 'lws',
     ]
     #@-<< TokenBasedOrange: __slots__ >>
-    #@+<< TokenBasedOrange: constants >>
-    #@+node:ekr.20240108065205.1: *4* << TokenBasedOrange: constants >>
-    # Values of operator InputToken that require context assistance.
-    # context_op_values: list[str] = [':', '*', '**', '-']
-
-    compound_statements = ('elif', 'else', 'for', 'if', 'while')
-    operator_keywords = ('and', 'in', 'not', 'not in', 'or')
-    #@-<< TokenBasedOrange: constants >>
     #@+<< TokenBasedOrange: patterns >>
     #@+node:ekr.20240108065133.1: *4* << TokenBasedOrange: patterns >>
     # Patterns...
@@ -870,6 +862,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.lws = new_indent
         self.gen_line_indent()
     #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators
+    operator_keywords = ('and', 'in', 'not', 'not in', 'or')
+
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.token.value
@@ -1560,39 +1554,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # The caller will eat the ')'.
         return i
-    #@+node:ekr.20240108062349.1: *5* tbo.scan_compound_statement
-    def scan_compound_statement(self) -> None:
-        """
-        Scan a compound statement, adding 'end-statement' context to the
-        trailing ':' token.
-        """
-        # Scan the keyword.
-        i = self.index
-        ### g.trace('=====', repr(self.tokens[i].line), g.callers())
-        expect(i, 'name')
-        keyword = self.tokens[i].value
-        i = next(i)
-
-        if is_op(i, '('):
-            # Find the matching ')'
-            i = next(i)
-            i = self.find_delim(i, [')'])
-            i = next(i)
-
-        # Find the trailing ':'.
-        ### g.trace('----', self.tokens[i])
-        i = self.find_delim(i, [':'])
-
-        if i is not None:
-            # Set the context.
-            expect_op(i, ':')
-            set_context(i, 'end-statement')
-            return
-
-        # Last check.
-        word_ops = ('if', 'else', 'for')
-        if keyword not in word_ops:
-            raise BeautifyError(f"Expecting one of {word_ops}, got {keyword!r}")
     #@+node:ekr.20240105145241.42: *5* tbo.scan_def
     def scan_def(self) -> None:
         """Scan a complete 'def' statement."""
@@ -1624,14 +1585,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Scan a `from x import` statement just enough to handle leading '.'.
         """
-
         # Find the end of the 'from' statement.
-        end = self.find_end_of_line()
-        if end is None:
-            return
+        i = self.index
+        end = self.find_end_of_line(i)
 
         # Add 'from' context to all '.' tokens.
-        i = self.index
         while i and i < end:
             if is_op(i, '.'):
                 set_context(i, 'from')
@@ -1640,9 +1598,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     def scan_import(self) -> None:
 
         # Find the end of the import statement.
-        end = self.find_end_of_line()
-        if end is None:
-            return
+        i = self.index
+        end = self.find_end_of_line(i)
 
         # Add 'import' context to all '.' operators.
         i = self.index
@@ -1667,17 +1624,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.find_delim(i, [',', ')'])
             expect_ops(i, [',', ')'])
         return i
-    #@+node:ekr.20240109032639.1: *5* tbo.scan_simple_statement
-    def scan_simple_statement(self) -> int:
-        """
-        Scan to the end of a simple statement like an `import` statement.
-        """
-        i = self.find_end_of_line()
-        if i is None:
-            return None
-        self.expect(i, 'newline')
-        return i
-    #@+node:ekr.20240113054629.1: *5* tbo.scan_statements
+    #@+node:ekr.20240113054629.1: *5* tbo.scan_statements & helpers
     def scan_statements(self) -> None:
         """
         Scan the entire file
@@ -1686,25 +1633,75 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert i == 0, repr(i)
         while i is not None:
             i = self.scan_statement(i)
-    #@+node:ekr.20240113054641.1: *5* tbo.scan_statement (** To do **)
+    #@+node:ekr.20240108062349.1: *6* tbo.scan_compound_statement
+    def scan_compound_statement(self, i: int) -> int:
+        """
+        Scan a compound statement, adding 'end-statement' context to the
+        trailing ':' token.
+        """
+        # Scan the keyword.
+        ### g.trace('=====', repr(self.tokens[i].line), g.callers())
+        expect(i, 'name')
+
+        # Special case for 'async':
+        keyword = self.tokens[i].value
+        assert keyword in self.compound_statements, f"Not a compound keyword: {keyword!r}"
+        i = next(i)
+        if keyword == 'async':
+            i = next(i)
+
+        # Just find the trailing ':'!
+        i = self.find_delim(i, [':'])
+
+        # Scan the ':'
+        expect_op(i, ':')
+        set_context(i, 'end-statement')
+        return i
+
+        ### Should not be needed now that we have a full parser.
+            # word_ops = ('if', 'else', 'for')
+            # if keyword not in word_ops:
+                # raise BeautifyError(f"Expecting one of {word_ops}, got {keyword!r}")
+    #@+node:ekr.20240113054641.1: *6* tbo.scan_statement
+    # Statements that must be followed by ':'.
+    # https://docs.python.org/3/reference/compound_stmts.html
+    compound_statements = (
+        'async',  # Must be followed by 'def', 'for', 'with'.
+        'class', 'def', 'elif', 'else', 'except', 'for', 'finally', 'if',
+        'match', 'try', 'while', 'with',
+    )
+
+    # Statements that must *not* be followed by ':'.
+    # https://docs.python.org/3/reference/simple_stmts.html
+
+    simple_statements = (
+        # Assignments statements have no keyword.
+        'assert', 'await', 'break', 'continue', 'del',
+        'from', 'global', 'import', 'nonlocal',
+        'pass', 'raise', 'return', 'type', 'yield',
+    )
+
     def scan_statement(self, i: int) -> int:
         """
         Scan the next statement, including docstrings.
-        
-        Notes & questions.
-        
-        - How does scan_statement coordinate with the main loop?
-        
-        - Maybe via per-statement data?
-        
-        - Maybe a statement_info array, similar to line_indices?
-          
-        - Note: statements do *not* have to start at the star of a line:
-            
-          if 1: a = 2
-          else: a = 3
         """
+
+        token = self.tokens[i]
+        if token.kind == 'name':
+            if token.value in self.compound_statements:
+                return self.scan_compound_statement(i)
+            if token.value in self.simple_statements:
+                return self.scan_simple_statement(i)
+        ### For now, just ensure progress.
         i = next(i)
+        return i
+    #@+node:ekr.20240109032639.1: *6* tbo.scan_simple_statement
+    def scan_simple_statement(self, i: int) -> int:
+        """
+        Scan to the end of a simple statement like an `import` statement.
+        """
+        i = self.find_end_of_line(i)
+        self.expect(i, 'newline')
         return i
     #@+node:ekr.20240110205127.1: *5* tbo: Scan helpers
     #@+node:ekr.20240106220724.1: *6* tbo.dump_token_range
@@ -1790,62 +1787,67 @@ class TokenBasedOrange:  # Orange is the new Black.
                 f"expect_ops: expected token.value in {values!r}, got {token.value!r}\n"
                 f"callers: {g.callers()}"
             )
-    #@+node:ekr.20240110062055.1: *6* tbo.find_end_of_line
-    def find_end_of_line(self) -> Optional[int]:
+    #@+node:ekr.20240110062055.1: *6* tbo.find_end_of_line (test)
+    def find_end_of_line(self, i: int) -> int:
         """
-        Return the index the next newline at the outer paren level.
+        Return the index the next newline, skipping inner expressions.
+        
+        Raise an exception if a matching ')' is not found.
         """
-        i = self.index
-        parens = 0
-        while i and 0 <= i < len(self.tokens):
+        while i < len(self.tokens):
             token = self.tokens[i]
-            # Precheck.
-            if token.kind == 'newline' and parens == 0:
+            if token.kind in ('newline', 'xxx'):
                 return i
             if token.kind == 'op':
-                # Bump counts.
-                if token.value == '(':
-                    parens += 1
-                elif token.value == ')':
-                    parens -= 1
-            # Post-check.
-            if token.kind == 'newline' and parens == 0:
-                return i
-            i += 1
-        return None
-    #@+node:ekr.20240114063347.1: *6* tbo.find_delim
+                value = token.value
+                if value == '[':
+                    i = self.skip_square_brackets(i)
+                elif value == '(':
+                    i = self.skip_parens(i)
+                elif value == '{':
+                    i = self.skip_curly_brackets(i)
+                else:
+                    i += 1
+            else:
+                i += 1
+        raise BeautifyError("matching ')' not found")
+    #@+node:ekr.20240114063347.1: *6* tbo.find_delim (test)
     def find_delim(self, i: int, delims: list) -> Optional[int]:
-        """Find the next delimiter token, skipping inner grouped tokens."""
+        """
+        Find the next delimiter token, skipping inner expressions.
+        
+        Raise an exception if no delim is found.
+        """
+        # We expect only the following 'op' delims: ',', '=', ')' and ':'.
+        for z in delims:
+            assert z in ',=):', f"Invalid delim: {z!r}"
 
-        # The code assumes only works for ')' and non-grouping tokens.
-        assert not any(z in delims for z in '([]'), (delims, g.callers())
-
-        # The code assumes that the first token is *not* '('.
+        # If ')' is in delims the first token must *not* be '('.
         if ')' in delims:
-            assert not is_op(i, '('), g.callers()
+            assert not is_op(i, '('), "Invalid call: the first token is ')'"
+
+        if 0:  ###
+            print('')
+            print(i, 'delims:', delims, repr(self.tokens[i].line), g.callers(2))
 
         # Skip tokens until one of the delims is found.
-        parens, square_brackets = 0, 0
-        if 0:  ###
-            print('')  ###
-            print(i, 'delims:', delims, repr(self.tokens[i].line), g.callers(2))
         while i < len(self.tokens):
-            ### g.trace(i, self.tokens[i])
-            if is_op(i, '['):
-                square_brackets += 1
-            elif is_op(i, ']'):
-                square_brackets -= 1
-            elif is_op(i, '('):
-                parens += 1
-            elif is_op(i, ')'):
-                if ')' in delims and (parens, square_brackets) == (0, 0):
-                    return i
-                parens -= 1
-                assert parens >= 0, "unexpected ')' token"
-            elif is_ops(i, delims) and (parens, square_brackets) == (0, 0):
-                return i
-            i += 1
-        return None
+            token = self.tokens[i]
+            if token.kind == 'op':
+                value = token.value
+                if value == '[':
+                    i = self.skip_square_brackets(i)
+                elif value == '(':
+                    i = self.skip_parens(i)
+                elif value == '{':
+                    i = self.skip_curly_brackets(i)
+                elif value == ')' and ')' in delims:
+                    return i  # The caller will scan the delim.
+                else:
+                    i += 1
+            else:
+                i += 1
+        raise BeautifyError(f"token not found: {delims}")
     #@+node:ekr.20240114022135.1: *6* tbo.find_close_paren
     def find_close_paren(self, i: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
@@ -1942,6 +1944,84 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not token.context:
             ### g.trace(f"{i:4} {context:14} {g.callers(1)}")
             token.context = context
+    #@+node:ekr.20240115014833.1: *6* tbo.skip_parens (test)
+    def skip_parens(self, i: int) -> int:
+        """
+        Skip from '(' *past* the matching ')'.
+
+        Raise an exception if a matching ')' is not found.
+        """
+        expect_op(i, '(')
+        i = next(i)
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            if token.kind == 'op':
+                value = token.value
+                if value == ')':
+                    return i + 1  # Skip the ')'
+                if value == '[':
+                    i = self.skip_square_brackets(i)
+                elif value == '(':
+                    i = self.skip_parens(i)
+                elif value == '{':
+                    i = self.skip_curly_brackets(i)
+                else:
+                    i += 1
+            else:
+                i += 1
+        raise BeautifyError("matching ')' not found")
+    #@+node:ekr.20240115014845.1: *6* tbo.skip_curly_brackets (test)
+    def skip_curly_brackets(self, i: int) -> int:
+        """
+        Skip from '{' *past* the matching '}'.
+
+        Raise an exception if a matching '}' is not found.
+        """
+        expect_op(i, '{')
+        i = next(i)
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            if token.kind == 'op':
+                value = token.value
+                if value == '}':
+                    return i + 1  # Skip the '}'
+                if value == '[':
+                    i = self.skip_square_brackets(i)
+                elif value == '(':
+                    i = self.skip_parens(i)
+                elif value == '{':
+                    i = self.skip_curly_brackets(i)
+                else:
+                    i += 1
+            else:
+                i += 1
+        raise BeautifyError("matching '}' not found")
+    #@+node:ekr.20240115014857.1: *6* tbo.skip_square_brackets (to do)
+    def skip_square_brackets(self, i: int) -> int:
+        """
+        Skip from '[' to the matching ']'.
+
+        Raise an exception if a matching ']' is not found.
+        """
+        expect_op(i, '[')
+        i = next(i)
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            if token.kind == 'op':
+                value = token.value
+                if value == ']':
+                    return i + 1  # Skip the ']'
+                if value == '[':
+                    i = self.skip_square_brackets(i)
+                elif value == '(':
+                    i = self.skip_parens(i)
+                elif value == '{':
+                    i = self.skip_curly_brackets(i)
+                else:
+                    i += 1
+            else:
+                i += 1
+        raise BeautifyError("matching ']' not found")
     #@-others
 #@+node:ekr.20240105140814.121: ** function: (leoTokens.py) main & helpers
 def main() -> None:  # pragma: no cover
