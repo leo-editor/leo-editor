@@ -870,13 +870,16 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
 
-        # Add context to *this* input token.
-        if s in ('class', 'def'):
-            # The defined name is not a function call.
-            i = next(self.index)
-            if is_kind(i, 'name'):
-                set_context(i, 'class/def')
-        elif self.token.context != 'class/def':
+        if 0:  ### Now done in scan_compound_statement
+            # Add context to *this* input token.
+            if s in ('class', 'def'):
+                # The defined name is not a function call.
+                i = next(self.index)
+                if is_kind(i, 'name'):
+                    set_context(i, 'class/def')
+
+        ### Legacy code. Still works???
+        if self.token.context != 'class/def':
             # A possible function call.
             i = next(self.index)
             if i and self.is_op(i, '('):
@@ -1102,6 +1105,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         
         This strategy is valid assuming the Python text is well formed!
         """
+        ###### Revise ???
         level = 0
         while i >= 0:
             if is_op(i, '['):
@@ -1404,7 +1408,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def regularize_nls(self, s: str) -> str:
         """Regularize newlines within s."""
         return s.replace('\r\n', '\n').replace('\r', '\n')
-    #@+node:ekr.20240105145241.41: *4* tbo: Scanners & helpers
+    #@+node:ekr.20240105145241.41: *4* tbo: Scanners (parser) & helpers
     #@+node:ekr.20240106181128.1: *5* tbo.scan_annotation
     def scan_annotation(self, i1: int) -> Optional[int]:
         """Scan an annotation if a function definition arg."""
@@ -1515,7 +1519,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.set_context(i2, 'initializer')
         return i
     #@+node:ekr.20240107092458.1: *5* tbo.scan_call_args
-    def scan_call_args(self, i1: int) -> Optional[int]:
+    def scan_call_args(self, i1: int) -> int:
         """Scan a comma-separated list of function definition arguments."""
 
         # Scan the '('
@@ -1617,38 +1621,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert i == 0, repr(i)
         while i is not None:
             i = self.scan_statement(i)
-    #@+node:ekr.20240108062349.1: *6* tbo.scan_compound_statement
-    def scan_compound_statement(self, i: int) -> int:
-        """
-        Scan a compound statement, adding 'end-statement' context to the
-        trailing ':' token.
-        """
-        # Scan the keyword.
-        ### g.trace('=====', repr(self.tokens[i].line), g.callers())
-        expect(i, 'name')
-
-        # Special case for 'async':
-        keyword = self.tokens[i].value
-        assert keyword in self.compound_statements, f"Not a compound keyword: {keyword!r}"
-        i = next(i)
-
-        if keyword == 'async':
-            i = next(i)
-
-        # Just find the trailing ':'!
-        i = self.find_delim(i, [':'])
-
-        # Scan the ':' and set the context.
-        expect_op(i, ':')
-        set_context(i, 'end-statement')
-        i = next(i)
-        return i
-
-        ### Should not be needed now that we have a full parser.
-            # word_ops = ('if', 'else', 'for')
-            # if keyword not in word_ops:
-                # raise BeautifyError(f"Expecting one of {word_ops}, got {keyword!r}")
-    #@+node:ekr.20240113054641.1: *6* tbo.scan_statement
+    #@+node:ekr.20240113054641.1: *6* tbo.scan_statement & helpers
     # Statements that must be followed by ':'.
     # https://docs.python.org/3/reference/compound_stmts.html
     compound_statements = (
@@ -1673,18 +1646,77 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
 
         token = self.tokens[i]
-        ### g.trace(token)
         if token.kind == 'name':
             if token.value in self.compound_statements:
                 return self.scan_compound_statement(i)
             if token.value in self.simple_statements:
                 return self.scan_simple_statement(i)
+
             ### For now, skip expressions and assignments!
             return self.find_end_of_line(i)
-        ### For now, just ensure progress.
+        if (token.kind, token.value) == ('op', '@'):
+            return self.scan_decorator(i)
+        # Ensure progress.
         i = next(i)
         return i
-    #@+node:ekr.20240109032639.1: *6* tbo.scan_simple_statement
+    #@+node:ekr.20240108062349.1: *7* tbo.scan_compound_statement
+    def scan_compound_statement(self, i: int) -> int:
+        """
+        Scan a compound statement, adding 'end-statement' context to the
+        trailing ':' token.
+        """
+        # Scan the keyword.
+        ### g.trace('=====', repr(self.tokens[i].line), g.callers())
+        expect(i, 'name')
+
+        # Special case for 'async':
+        keyword = self.tokens[i].value
+        assert keyword in self.compound_statements, f"Not a compound keyword: {keyword!r}"
+        i = next(i)
+
+        if keyword == 'async':
+            i = next(i)
+            keyword = self.tokens[i].value
+
+        ### To test.
+        if keyword in ('class', 'def'):
+            # The defined name is *not* a function call.
+            i = next(i)
+            if is_kind(i, 'name'):
+                set_context(i, 'class/def')
+
+        # Just find the trailing ':'!
+        i = self.find_delim(i, [':'])
+
+        # Scan the ':' and set the context.
+        expect_op(i, ':')
+        set_context(i, 'end-statement')
+        i = next(i)
+        return i
+
+        ### Should not be needed now that we have a full parser.
+            # word_ops = ('if', 'else', 'for')
+            # if keyword not in word_ops:
+                # raise BeautifyError(f"Expecting one of {word_ops}, got {keyword!r}")
+    #@+node:ekr.20240115074103.1: *7* tbo.scan_decorartor
+    def scan_decorator(self, i: int) -> int:
+
+        # Scan the @
+        expect_op(i, '@')
+        i = next(i)
+
+        # Scan the name.
+        expect(i, 'name')
+        i = next(i)
+
+        # Set context for any arguments as if they were call arguments.
+        if is_op(i, '('):
+            i = self.scan_call_args(i)
+            expect_op(i, ')')
+            i = next(i)
+        return i
+
+    #@+node:ekr.20240109032639.1: *7* tbo.scan_simple_statement
     def scan_simple_statement(self, i: int) -> int:
         """
         Scan to the end of a simple statement like an `import` statement.
@@ -1805,7 +1837,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # If ')' is in delims the first token must *not* be '('.
         if ')' in delims:
-            assert not is_op(i, '('), "Invalid call: the first token is ')'"
+            assert not is_op(i, '('), "Invalid call: the first token is '('"
 
         if 0:  ###
             print('')
@@ -1934,20 +1966,24 @@ class TokenBasedOrange:  # Orange is the new Black.
             ### g.trace(f"{i:4} {context:14} {g.callers(1)}")
             token.context = context
     #@+node:ekr.20240115071938.1: *6* tbo.skip_* & helper
+    # These methods all raise BeautifyError if the matching delim is not found.
+
     def skip_curly_brackets(self, i: int) -> int:
+        """Skip from '{' *past* the matching '}'."""
         return self.skip_matched(i, '{', '}')
 
     def skip_parens(self, i: int) -> int:
+        """Skip from '(' *past* the matching ')'."""
         return self.skip_matched(i, '(', ')')
 
     def skip_square_brackets(self, i: int) -> int:
+        """Skip from '[' *past* the matching ']'."""
         return self.skip_matched(i, '[', ']')
     #@+node:ekr.20240115072231.1: *7* tbo.skip_matched
     def skip_matched(self, i: int, delim1: str, delim2: str) -> int:
         """
         Skip from delim1 *past* the matching delim2.
-
-        Raise an exception if a matching delim2 is not found.
+        Raise BeautifyError if a matching delim2 is not found.
         """
         expect_op(i, delim1)
         i = next(i)
