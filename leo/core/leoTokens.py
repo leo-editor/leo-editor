@@ -1776,30 +1776,22 @@ class TokenBasedOrange:  # Orange is the new Black.
                 f"expect_ops: expected token.value in {values!r}, got {token.value!r}\n"
                 f"callers: {g.callers()}"
             )
-    #@+node:ekr.20240110062055.1: *6* tbo.find_end_of_line
-    def find_end_of_line(self, i: int) -> int:
-        """
-        Return the index the next newline, skipping inner expressions.
-        
-        Raise an exception if not found.
-        """
+    #@+node:ekr.20240114022135.1: *6* tbo.find_close_paren
+    def find_close_paren(self, i: int) -> Optional[int]:
+        """Find the  ')' matching this '(' token."""
+        expect_op(i, '(')
+        i = next(i)
+        level = 0
         while i < len(self.tokens):
-            token = self.tokens[i]
-            if token.kind in ('newline', 'nl', 'endmarker'):
-                return i
-            if token.kind == 'op':
-                value = token.value
-                if value == '[':
-                    i = self.skip_square_brackets(i)
-                elif value == '(':
-                    i = self.skip_parens(i)
-                elif value == '{':
-                    i = self.skip_curly_brackets(i)
-                else:
-                    i += 1
-            else:
-                i += 1
-        raise BeautifyError("matching ')' not found")
+            if is_op(i, '('):
+                level += 1
+            elif is_op(i, ')'):
+                if level == 0:
+                    return i
+                assert level > 0, f"Unbalanced parens: {self.token.line!r}"
+                level -= 1
+            i += 1
+        return None
     #@+node:ekr.20240114063347.1: *6* tbo.find_delim
     def find_delim(self, i: int, delims: list) -> Optional[int]:
         """
@@ -1837,22 +1829,30 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 i += 1
         raise BeautifyError(f"token not found: {delims}")
-    #@+node:ekr.20240114022135.1: *6* tbo.find_close_paren
-    def find_close_paren(self, i: int) -> Optional[int]:
-        """Find the  ')' matching this '(' token."""
-        expect_op(i, '(')
-        i = next(i)
-        level = 0
+    #@+node:ekr.20240110062055.1: *6* tbo.find_end_of_line
+    def find_end_of_line(self, i: int) -> int:
+        """
+        Return the index the next newline, skipping inner expressions.
+        
+        Raise an exception if not found.
+        """
         while i < len(self.tokens):
-            if is_op(i, '('):
-                level += 1
-            elif is_op(i, ')'):
-                if level == 0:
-                    return i
-                assert level > 0, f"Unbalanced parens: {self.token.line!r}"
-                level -= 1
-            i += 1
-        return None
+            token = self.tokens[i]
+            if token.kind in ('newline', 'nl', 'endmarker'):
+                return i
+            if token.kind == 'op':
+                value = token.value
+                if value == '[':
+                    i = self.skip_square_brackets(i)
+                elif value == '(':
+                    i = self.skip_parens(i)
+                elif value == '{':
+                    i = self.skip_curly_brackets(i)
+                else:
+                    i += 1
+            else:
+                i += 1
+        raise BeautifyError("matching ')' not found")
     #@+node:ekr.20240106053414.1: *6* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
         """
@@ -1867,6 +1867,11 @@ class TokenBasedOrange:  # Orange is the new Black.
             and value not in ('True', 'False', None)
             and (keyword.iskeyword(value) or keyword.issoftkeyword(value))
         )
+    #@+node:ekr.20240114021152.1: *6* tbo.is_kind (with alias)
+    def is_kind(self, i: int, kind: str) -> bool:
+
+        return self.tokens[i].kind == kind
+
     #@+node:ekr.20240106172054.1: *6* tbo.is_op & is_ops (with alias)
     def is_op(self, i: int, value: str) -> bool:
 
@@ -1881,11 +1886,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False
         token = self.tokens[i]
         return token.kind == 'op' and token.value in values
-    #@+node:ekr.20240114021152.1: *6* tbo.is_kind (with alias)
-    def is_kind(self, i: int, kind: str) -> bool:
-
-        return self.tokens[i].kind == kind
-
     #@+node:ekr.20240106093210.1: *6* tbo.is_significant_token
     def is_significant_token(self, token: InputToken) -> bool:
         """Return true if the given token is not whitespace."""
@@ -1933,73 +1933,31 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not token.context:
             ### g.trace(f"{i:4} {context:14} {g.callers(1)}")
             token.context = context
-    #@+node:ekr.20240115014833.1: *6* tbo.skip_parens (test)
-    def skip_parens(self, i: int) -> int:
-        """
-        Skip from '(' *past* the matching ')'.
-
-        Raise an exception if a matching ')' is not found.
-        """
-        expect_op(i, '(')
-        i = next(i)
-        while i < len(self.tokens):
-            token = self.tokens[i]
-            if token.kind == 'op':
-                value = token.value
-                if value == ')':
-                    return i + 1  # Skip the ')'
-                if value == '[':
-                    i = self.skip_square_brackets(i)
-                elif value == '(':
-                    i = self.skip_parens(i)
-                elif value == '{':
-                    i = self.skip_curly_brackets(i)
-                else:
-                    i += 1
-            else:
-                i += 1
-        raise BeautifyError("matching ')' not found")
-    #@+node:ekr.20240115014845.1: *6* tbo.skip_curly_brackets
+    #@+node:ekr.20240115071938.1: *6* tbo.skip_* & helper
     def skip_curly_brackets(self, i: int) -> int:
-        """
-        Skip from '{' *past* the matching '}'.
+        return self.skip_matched(i, '{', '}')
 
-        Raise an exception if a matching '}' is not found.
-        """
-        expect_op(i, '{')
-        i = next(i)
-        while i < len(self.tokens):
-            token = self.tokens[i]
-            if token.kind == 'op':
-                value = token.value
-                if value == '}':
-                    return i + 1  # Skip the '}'
-                if value == '[':
-                    i = self.skip_square_brackets(i)
-                elif value == '(':
-                    i = self.skip_parens(i)
-                elif value == '{':
-                    i = self.skip_curly_brackets(i)
-                else:
-                    i += 1
-            else:
-                i += 1
-        raise BeautifyError("matching '}' not found")
-    #@+node:ekr.20240115014857.1: *6* tbo.skip_square_brackets
+    def skip_parens(self, i: int) -> int:
+        return self.skip_matched(i, '(', ')')
+
     def skip_square_brackets(self, i: int) -> int:
+        return self.skip_matched(i, '[', ']')
+    #@+node:ekr.20240115072231.1: *7* tbo.skip_matched
+    def skip_matched(self, i: int, delim1: str, delim2: str) -> int:
         """
-        Skip from '[' to the matching ']'.
+        Skip from delim1 *past* the matching delim2.
 
-        Raise an exception if a matching ']' is not found.
+        Raise an exception if a matching delim2 is not found.
         """
-        expect_op(i, '[')
+        expect_op(i, delim1)
         i = next(i)
         while i < len(self.tokens):
             token = self.tokens[i]
             if token.kind == 'op':
                 value = token.value
-                if value == ']':
-                    return i + 1  # Skip the ']'
+                if value == delim2:
+                    return i + 1  # Skip the closing delim
+                # Skip inner expressions.
                 if value == '[':
                     i = self.skip_square_brackets(i)
                 elif value == '(':
@@ -2010,7 +1968,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                     i += 1
             else:
                 i += 1
-        raise BeautifyError("matching ']' not found")
+        raise BeautifyError(f"matching {delim2!r} not found")
     #@-others
 #@+node:ekr.20240105140814.121: ** function: (leoTokens.py) main & helpers
 def main() -> None:  # pragma: no cover
