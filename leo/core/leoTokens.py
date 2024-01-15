@@ -73,7 +73,7 @@ import textwrap
 import time
 import tokenize
 import traceback
-from typing import Any, Callable, Generator, Optional, Union
+from typing import Any, Generator, Optional, Union
 
 try:
     from leo.core import leoGlobals as g
@@ -505,9 +505,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Debugging.
         'contents', 'filename',
         # Global data.
-        'code_list', 'line_indices', 'tokens', 'word_dispatch',
+        'code_list', 'line_indices', 'tokens',  ### 'word_dispatch',
         # Token-related data for visitors.
-        'index', 'line_start', 'line_number', 'token',  # 'line_end'
+        'index', 'line_start', 'line_number', 'token',  ### 'line_end'
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part', 'in_fstring',
         'state_stack', 'verbatim',
@@ -556,14 +556,15 @@ class TokenBasedOrange:  # Orange is the new Black.
                 g.trace(f"Unexpected setting: {key} = {value!r}")
                 g.trace('(TokenBasedOrange)', g.callers())
 
-        # Init the dispatch dict for 'word' generator.
-        self.word_dispatch: dict[str, Callable] = {
-            'from': self.scan_from,
-            'def': self.scan_def,
-            'import': self.scan_import,
-        }
-        for z in self.compound_statements:
-            self.word_dispatch[z] = self.scan_compound_statement
+        ### Obsolete.
+            # # Init the dispatch dict for 'word' generator.
+            # self.word_dispatch: dict[str, Callable] = {
+                # 'from': self.scan_from,
+                # 'def': self.scan_def,
+                # 'import': self.scan_import,
+            # }
+            # for z in self.compound_statements:
+                # self.word_dispatch[z] = self.scan_compound_statement
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def oops(self) -> None:  # pragma: no cover
@@ -880,11 +881,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
 
-        # Scan special statements, adding context to *later* input tokens.
-        func = self.word_dispatch.get(s)
-        if func:
-            # Call scan_compound_statement, scan_def, scan_from, scan_import.
-            func()
+        ### OBSOLETE.
+            # # Scan special statements, adding context to *later* input tokens.
+            # func = self.word_dispatch.get(s)
+            # if func:
+                # # Call scan_compound_statement, scan_def, scan_from, scan_import.
+                # func()
 
         # Add context to *this* input token.
         if s in ('class', 'def'):
@@ -1647,15 +1649,17 @@ class TokenBasedOrange:  # Orange is the new Black.
         keyword = self.tokens[i].value
         assert keyword in self.compound_statements, f"Not a compound keyword: {keyword!r}"
         i = next(i)
+
         if keyword == 'async':
             i = next(i)
 
         # Just find the trailing ':'!
         i = self.find_delim(i, [':'])
 
-        # Scan the ':'
+        # Scan the ':' and set the context.
         expect_op(i, ':')
         set_context(i, 'end-statement')
+        i = next(i)
         return i
 
         ### Should not be needed now that we have a full parser.
@@ -1687,11 +1691,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
 
         token = self.tokens[i]
+        ### g.trace(token)
         if token.kind == 'name':
             if token.value in self.compound_statements:
                 return self.scan_compound_statement(i)
             if token.value in self.simple_statements:
                 return self.scan_simple_statement(i)
+            ### For now, skip expressions and assignments!
+            return self.find_end_of_line(i)
         ### For now, just ensure progress.
         i = next(i)
         return i
@@ -1792,11 +1799,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Return the index the next newline, skipping inner expressions.
         
-        Raise an exception if a matching ')' is not found.
+        Raise an exception if not found.
         """
         while i < len(self.tokens):
             token = self.tokens[i]
-            if token.kind in ('newline', 'xxx'):
+            if token.kind in ('newline', 'nl', 'endmarker'):
                 return i
             if token.kind == 'op':
                 value = token.value
@@ -1835,14 +1842,14 @@ class TokenBasedOrange:  # Orange is the new Black.
             token = self.tokens[i]
             if token.kind == 'op':
                 value = token.value
+                if value in delims:
+                    return i
                 if value == '[':
                     i = self.skip_square_brackets(i)
                 elif value == '(':
                     i = self.skip_parens(i)
                 elif value == '{':
                     i = self.skip_curly_brackets(i)
-                elif value == ')' and ')' in delims:
-                    return i  # The caller will scan the delim.
                 else:
                     i += 1
             else:
