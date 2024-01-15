@@ -396,6 +396,8 @@ The prefixes can be overridden for one Babel Script by setting the following var
 * babel_prefix_stdout
 * babel_prefix_stderr
 
+The output prefixes are not added to the lines shown in the Results subtree.
+
 ## Babel Tab
 Parameter Name:  Leo-Babel-Tab-Babel
 
