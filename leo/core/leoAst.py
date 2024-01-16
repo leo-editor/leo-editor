@@ -345,7 +345,7 @@ if 1:  # pragma: no cover
         print('')
         print(f"{tag}...\n")
         print(AstDumper().dump_tree(tokens, tree))
-    #@+node:ekr.20200107040729.1: *4* function: show_diffs
+    #@+node:ekr.20240116115210.1: *4* function: show_diffs
     def show_diffs(s1: str, s2: str, filename: str = '') -> None:
         """Print diffs between strings s1 and s2."""
         lines = list(difflib.unified_diff(
