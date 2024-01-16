@@ -68,10 +68,6 @@ class BaseTest(unittest.TestCase):
     debug_list: list[str] = []
 
     #@+others
-    #@+node:ekr.20240105153420.3: *3* BaseTest.adjust_expected
-    def adjust_expected(self, s):
-        """Adjust leading indentation in the expected string s."""
-        return textwrap.dedent(s.lstrip('\\\n')).rstrip() + '\n'
     #@+node:ekr.20240105153420.13: *3* BaseTest.beautify
     def beautify(self,
         contents,
@@ -80,10 +76,7 @@ class BaseTest(unittest.TestCase):
         max_join_line_length=None,
         max_split_line_length=None,
     ):
-        """
-        BaseTest.beautify.
-        """
-        ### t1 = get_time()
+        """BaseTest.beautify."""
         if not contents:
             return ''  # pragma: no cover
         if not filename:
@@ -93,9 +86,8 @@ class BaseTest(unittest.TestCase):
         # Set the module-level global for the alias functions.
         leo.core.leoTokens.gBeautifier = orange
 
+        # Run the test!
         result_s = orange.beautify(contents, filename, tokens)
-        ### t2 = get_time()
-        ### self.update_times('22: beautify', t2 - t1)
         self.code_list = orange.code_list
         return result_s
     #@+node:ekr.20240105153420.4: *3* BaseTest.check_roundtrip
@@ -122,7 +114,6 @@ class BaseTest(unittest.TestCase):
         # Set debug flags and counts.
         self.debug_list = debug_list or []
         self.trace_token_method = False
-        ### self.update_counts('characters', len(contents))
 
         # Check the debug_list.
         valid = ('contents', 'debug', 'tokens')
@@ -153,20 +144,6 @@ class BaseTest(unittest.TestCase):
         contents = g.readFileIntoUnicodeString(filename)
         contents, tokens = self.make_data(contents, description=filename)
         return contents, tokens
-    #@+node:ekr.20240105153420.8: *3* BaseTest.make_tokens
-    def make_tokens(self, contents):
-        """
-        BaseTest.make_tokens.
-
-        Make tokens from contents.
-        """
-        ### t1 = get_time()
-        # Tokenize.
-        tokens = Tokenizer().make_input_tokens(contents)
-        ### t2 = get_time()
-        ### self.update_counts('tokens', len(tokens))
-        ### self.update_times('01: make-tokens', t2 - t1)
-        return tokens
     #@-others
 #@+node:ekr.20240105153425.2: ** class Optional_TestFiles (BaseTest)
 class Optional_TestFiles(BaseTest):
