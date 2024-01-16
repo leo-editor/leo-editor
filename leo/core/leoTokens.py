@@ -138,10 +138,10 @@ def is_op(i: int, value: str) -> bool:
 def is_ops(i: int, values: list[str]) -> bool:
     return g.Beautifier.is_ops(i, values)
 
-def next(i: int) -> Optional[int]:
+def next(i: int) -> int:
     return g.Beautifier.next_token(i)
 
-def prev(i: int) -> Optional[int]:
+def prev(i: int) -> int:
     return g.Beautifier.prev_token(i)
 
 def set_context(i: int, context: str) -> None:
@@ -1437,7 +1437,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         return s.replace('\r\n', '\n').replace('\r', '\n')
     #@+node:ekr.20240105145241.41: *4* tbo: Parser methods
     #@+node:ekr.20240106181128.1: *5* tbo.parse_annotation
-    def parse_annotation(self, i1: int) -> Optional[int]:
+    def parse_annotation(self, i1: int) -> int:
         """Parse the annotation of a function definition arg."""
 
         # Scan the ':'
@@ -1454,7 +1454,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 set_context(i4, 'annotation')
         return i3
     #@+node:ekr.20240106173638.1: *5* tbo.parse_arg
-    def parse_arg(self, i1: int) -> Optional[int]:
+    def parse_arg(self, i1: int) -> int:
         """Parse a single function definition argument."""
 
         # Scan optional  * and ** operators.
@@ -1518,7 +1518,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert i == i2, repr((i, i2))
         return i
     #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
-    def parse_call_arg(self, i1: int) -> Optional[int]:
+    def parse_call_arg(self, i1: int) -> int:
         """
         Scan a single function definition argument.
 
@@ -1751,7 +1751,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         return end
     #@+node:ekr.20240106181215.1: *6* tbo.parse_initializer
-    def parse_initializer(self, i1: int, has_annotation: bool) -> Optional[int]:
+    def parse_initializer(self, i1: int, has_annotation: bool) -> int:
         """Scan an initializer in a function definition argument."""
 
         # Scan the '='.
@@ -1922,7 +1922,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i += 1
         return None
     #@+node:ekr.20240114063347.1: *5* tbo.find_delim
-    def find_delim(self, i: int, delims: list) -> Optional[int]:
+    def find_delim(self, i: int, delims: list) -> int:
         """
         Find the next delimiter token, skipping inner expressions.
 
