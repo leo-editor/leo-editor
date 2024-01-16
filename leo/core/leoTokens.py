@@ -652,30 +652,23 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.gen_token('file-start', '')
         self.push_state('file-start')
         prev_line_number: int = None
-        ### try:
-        if 1:
-            for self.index, self.token in enumerate(tokens):
-                # Set global for visitors.
-                if prev_line_number != self.token.line_number:
-                    self.line_start = self.token.line_number
-                    prev_line_number = self.token.line_number
-                # Call the proper visitor.
-                if self.verbatim:
-                    self.do_verbatim()
-                elif self.in_fstring:
-                    self.continue_fstring()
-                else:
-                    func = getattr(self, f"do_{self.token.kind}", self.oops)
-                    func()
-            # Any post pass would go here.
-            result = output_tokens_to_string(self.code_list)
-            return result
 
-        # We assume the incoming file is syntactically correct!
-        # Catching all exceptions saves *lots* of range and value tests.
-        # except Exception:
-            # # tbo.error_message creates the detailed error message.
-            # return None
+        for self.index, self.token in enumerate(tokens):
+            # Set global for visitors.
+            if prev_line_number != self.token.line_number:
+                self.line_start = self.token.line_number
+                prev_line_number = self.token.line_number
+            # Call the proper visitor.
+            if self.verbatim:
+                self.do_verbatim()
+            elif self.in_fstring:
+                self.continue_fstring()
+            else:
+                func = getattr(self, f"do_{self.token.kind}", self.oops)
+                func()
+        # Any post pass would go here.
+        result = output_tokens_to_string(self.code_list)
+        return result
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. possible live)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
@@ -887,7 +880,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
         self.lws = new_indent
         self.gen_line_indent()
-    #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators (** change **)
+    #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators
     operator_keywords = ('and', 'in', 'not', 'not in', 'or')
 
     def do_name(self) -> None:
@@ -900,7 +893,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_word_op(name)
         else:
             self.gen_word(name)
-    #@+node:ekr.20240105145241.40: *6* tbo.gen_word (** test **)
+    #@+node:ekr.20240105145241.40: *6* tbo.gen_word
     def gen_word(self, s: str) -> None:
         """Add a word request to the code list."""
         assert s == self.token.value
