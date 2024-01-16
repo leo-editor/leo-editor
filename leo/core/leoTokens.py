@@ -1934,7 +1934,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # The first token must *not* be '(' if ')' is in delims.
         if ')' in delims and is_op(i, '('):
-            raise BeautifyError(self.message("The first token is '('"))
+            raise BeautifyError(self.error_message("The first token is '('"))
 
         if 0:  ###
             print('')
