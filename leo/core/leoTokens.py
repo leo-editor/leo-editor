@@ -1509,7 +1509,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan the ')'
         expect_op(i, ')')
-        i = next(i)
+        ######## i = next(i)
         return i
     #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
     def parse_call_arg(self, i1: int) -> Optional[int]:
@@ -1628,7 +1628,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan the arguments, setting context.
         i3 = self.parse_args(i1, i2)
-        assert i2 <= i3, (i2, i3)
+        ### assert i2 <= i3, (i2, i3)
+        assert i2 == i3, (i2, i3)
 
         # Find the ':' token that ends the 'def' statement.
         i = i2
@@ -1764,6 +1765,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             # A tuple.
             i = self.find_close_paren(i)
             expect_op(i, ')')
+            i = next(i)  # The ')' does *not* end the arg!
 
         # Find the end of the argument.
         i = self.find_delim(i, [',', ')'])
