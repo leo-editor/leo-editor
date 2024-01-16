@@ -892,7 +892,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.token.value
-        ### WRONG: must handle compound statements explicitly #####
+        ### WRONG: must handle compound statements explicitly.
         if name in self.compound_statements:
             self.gen_word(name)
         elif name in self.operator_keywords:
@@ -1132,7 +1132,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         This strategy is valid assuming the Python text is well formed!
         """
-        ###### Revise ???
+        ### Revise ???
         level = 0
         while i >= 0:
             if is_op(i, '['):
@@ -1899,7 +1899,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # This method has an alias function.
         token = self.tokens[i]
         if not token.context:
-            ### g.trace(f"{i:4} {context:14} {g.callers(1)}")
+            # g.trace(f"{i:4} {context:14} {g.callers(1)}")
             token.context = context
     #@+node:ekr.20240106220724.1: *5* tbo.dump_token_range
     def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:
