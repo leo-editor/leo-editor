@@ -210,6 +210,15 @@ class TestTokenBasedOrange(BaseTest):
         except TypeError:  # pragma: no cover
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
+    #@+node:ekr.20240116104552.1: *3* TestTBO.slow_test_leoColorizer
+    def slow_test_leoApp(self) -> None:
+        
+        g.trace('=====')
+        filename = 'leoColorizer.py'
+        test_dir = os.path.dirname(__file__)
+        path = g.os_path_finalize_join(test_dir, '..', '..', 'core', filename)
+        assert os.path.exists(path), repr(path)
+        self.make_file_data(path)
     #@+node:ekr.20240105153425.45: *3* TestTBO.test_annotations
     def test_annotations(self):
 
