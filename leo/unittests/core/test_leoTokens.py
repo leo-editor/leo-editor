@@ -266,45 +266,6 @@ class TestTokenBasedOrange(BaseTest):
                 g.printObj(results, tag='Results')
             self.assertEqual(results, expected)
 
-    #@+node:ekr.20240112134732.1: *3* TestTBO.test_def_colons
-    def test_def_colons(self):
-
-        contents = textwrap.dedent(
-            '''
-                self.configDict: dict[str, Any] = {}
-                self.configUnderlineDict: dict[str, bool] = {}
-            '''
-        ).strip().replace('AT', '@') + '\n'
-
-        contents, tokens = self.make_data(contents)
-        # dump_tokens(tokens)
-        expected = contents
-        results = self.beautify(contents, tokens)
-        if results != expected:
-            # g.printObj(contents, tag='Contents')
-            g.printObj(expected, tag='Expected (same as Contents)')
-            g.printObj(results, tag='Results')
-
-        self.maxDiff = None
-        self.assertEqual(results, expected)
-
-    #@+node:ekr.20240114100847.1: *3* TestTBO.test_def_square_brackets
-    def test_def_square_brackets(self):
-
-        contents = (
-            """def checkForDuplicateShortcuts(self, c: Cmdr, d: dict[str, str]) -> None:\n"""
-        )
-        contents, tokens = self.make_data(contents)
-        # dump_tokens(tokens)
-        expected = contents
-        results = self.beautify(contents, tokens)
-        if False and results != expected:
-            # g.printObj(contents, tag='Contents')
-            g.printObj(expected, tag='Expected (same as Contents)')
-            g.printObj(results, tag='Results')
-
-        self.maxDiff = None
-        self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.46: *3* TestTBO.test_at_doc_part
     def test_at_doc_part(self):
 
@@ -402,13 +363,31 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240110201739.1: *3* TestTBO.test_colon (To do or delete)
-    def test_colon(self):
+    #@+node:ekr.20240116155903.1: *3* TestTBO.test_colorizer_fail
+    def test_colorizer_fail(self):
 
-        # self.rulesetName : str = ''
-        # def configureTags(self) -> None :
-        # for color in colors :
-        pass  #  g.trace('Not ready yet')
+        contents = '''
+
+            # leoColorizer.py: line 2268
+            if j > len(s) and not dots:
+                j = len(s) + 1
+
+                def span(s: str) -> int:
+                    # Note: bindings are frozen by this def.
+                    return self.restart_match_span(s, kind,
+                        delegate=delegate,
+                    )
+        '''
+
+        contents, tokens = self.make_data(contents)
+        # dump_tokens(tokens)
+        expected = contents
+        results = self.beautify(contents, tokens)
+        if False and results != expected:
+            g.printObj(expected, tag='Expected (same as Contents)')
+            g.printObj(results, tag='Results')
+        self.maxDiff = None
+        self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.53: *3* TestTBO.test_comment_indented
     def test_comment_indented(self):
 
@@ -503,6 +482,45 @@ class TestTokenBasedOrange(BaseTest):
             if results != expected:
                 g.trace('Fail:', i)  # pragma: no cover
             self.assertEqual(results, expected)
+    #@+node:ekr.20240112134732.1: *3* TestTBO.test_def_colons
+    def test_def_colons(self):
+
+        contents = textwrap.dedent(
+            '''
+                self.configDict: dict[str, Any] = {}
+                self.configUnderlineDict: dict[str, bool] = {}
+            '''
+        ).strip().replace('AT', '@') + '\n'
+
+        contents, tokens = self.make_data(contents)
+        # dump_tokens(tokens)
+        expected = contents
+        results = self.beautify(contents, tokens)
+        if results != expected:
+            # g.printObj(contents, tag='Contents')
+            g.printObj(expected, tag='Expected (same as Contents)')
+            g.printObj(results, tag='Results')
+
+        self.maxDiff = None
+        self.assertEqual(results, expected)
+
+    #@+node:ekr.20240114100847.1: *3* TestTBO.test_def_square_brackets
+    def test_def_square_brackets(self):
+
+        contents = (
+            """def checkForDuplicateShortcuts(self, c: Cmdr, d: dict[str, str]) -> None:\n"""
+        )
+        contents, tokens = self.make_data(contents)
+        # dump_tokens(tokens)
+        expected = contents
+        results = self.beautify(contents, tokens)
+        if False and results != expected:
+            # g.printObj(contents, tag='Contents')
+            g.printObj(expected, tag='Expected (same as Contents)')
+            g.printObj(results, tag='Results')
+
+        self.maxDiff = None
+        self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.56: *3* TestTBO.test_dont_delete_blank_lines
     def test_dont_delete_blank_lines(self):
 
@@ -530,6 +548,17 @@ class TestTokenBasedOrange(BaseTest):
         if expected != results:
             g.printObj(expected, tag='Explected (blackened)')
             g.printObj(results, tag='Results')
+        self.assertEqual(results, expected)
+    #@+node:ekr.20240107080413.1: *3* TestTBO.test_function_call
+    def test_function_call(self):
+
+        contents = textwrap.dedent(
+            """
+            version = str(semantic_version.Version.coerce(tag, partial=True))
+            """).strip() + '\n'
+        expected = contents
+        contents, tokens = self.make_data(contents)
+        results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.57: *3* TestTBO.test_function_defs
     def test_function_defs(self):
@@ -584,17 +613,6 @@ class TestTokenBasedOrange(BaseTest):
                 g.printObj(expected, tag='Explected (blackened)')
                 g.printObj(results, tag='Results')
             self.assertEqual(results, expected)
-    #@+node:ekr.20240107080413.1: *3* TestTBO.test_function_call
-    def test_function_call(self):
-
-        contents = textwrap.dedent(
-            """
-            version = str(semantic_version.Version.coerce(tag, partial=True))
-            """).strip() + '\n'
-        expected = contents
-        contents, tokens = self.make_data(contents)
-        results = self.beautify(contents, tokens)
-        self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.63: *3* TestTBO.test_leading_stars
     def test_leading_stars(self):
 
