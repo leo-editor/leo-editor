@@ -475,9 +475,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Debugging.
         'contents', 'filename',
         # Global data.
-        'code_list', 'line_indices', 'tokens',
+        'code_list', 'tokens',  # 'line_indices'
         # Token-related data for visitors.
-        'index', 'line_start', 'line_number', 'token',
+        'index', 'line_number', 'token',  # 'line_start'
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part', 'in_fstring',
         'state_stack', 'verbatim',
@@ -575,7 +575,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.tokens = tokens  # The list of input tokens.
 
         # The indices of the first/last tokens of the line.
-        self.line_start: int = None  # The index of first token of this line.
+        ### self.line_start: int = None  # The index of first token of this line.
         self.line_number: int = None  # The line number of this line.
 
         # State vars for whitespace.
@@ -605,10 +605,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(f"tbo: {sfn}")
         #@-<< tbo.beautify: init ivars >>
 
-        # Create per-line range data.
-        if 0:
-            self.line_indices: list[int] = self.create_indices(tokens)
-
         # The top level of a "good enough" recursive descent parser.
         # Create per-statement range data and per-token context data.
         self.parse_statements()
@@ -621,7 +617,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         for self.index, self.token in enumerate(tokens):
             # Set global for visitors.
             if prev_line_number != self.token.line_number:
-                self.line_start = self.token.line_number
+                ### self.line_start = self.token.line_number
                 prev_line_number = self.token.line_number
             # Call the proper visitor.
             if self.verbatim:
@@ -665,29 +661,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         elif 0:  ###
             self.write_file(filename, regularized_results, encoding=encoding)
         return True
-    #@+node:ekr.20240112021737.1: *5* tbo.create_indices
-    def create_indices(self, tokens: list[InputToken]) -> list[int]:
-        """
-        Create a list (one per logical line) of the index of the first token of
-        the *next* line.
-        """
-        indices: list[int] = []
-        if not tokens:
-            return indices
-        assert tokens[0].line_number == 0, tokens[0].line_number
-        # The start of the line 1 is token[1]
-        indices.append(1)
-        prev_line = 1
-        for i, token in enumerate(tokens):
-            if i > 0 and token.line_number != prev_line:
-                indices.append(i)
-                # Careful! token.line_number may be > prev_line + 1
-                while len(indices) < token.line_number:
-                    indices.append(i)
-                prev_line = token.line_number
-        # Add an entry for the last line.
-        indices.append(len(tokens) - 1)
-        return indices
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
         str, str, list[InputToken]
@@ -1807,11 +1780,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         if ')' in delims and self.is_op(i, '('):
             raise BeautifyError(self.error_message("The first token is '('"))
 
-        if 0:  ###
-            print('')
-            g.trace(i, 'delims:', delims, repr(self.tokens[i].line), g.callers(2))
-
         # Skip tokens until one of the delims is found.
+        # Handle apparent function calls.
         prev = None
         while i < len(self.tokens):
             token = self.tokens[i]
@@ -1843,6 +1813,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         Raise an exception if not found.
         """
         prev = None
+
+        # Skip tokens until an end-of-line token is found outside any grouping ops.
+        # Handle apparent function calls.
         while i < len(self.tokens):
             token = self.tokens[i]
             if token.kind in ('newline', 'nl', 'endmarker'):
@@ -1852,11 +1825,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if value == '[':
                     i = self.skip_square_brackets(i)
                 elif value == '(':
-                    ### prev_s = str(prev) or 'None'
-                    ### g.trace(i, f"prev: {prev_s:20} {token}")
                     if prev and prev.kind == 'name':
                         # A function call in a simple statement.
-                        ###g.trace('FOUND CALL', i)
                         self.parse_call(i)  # Ignore the returned index.
                     i = self.skip_parens(i)
                 elif value == '{':
