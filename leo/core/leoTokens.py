@@ -1592,7 +1592,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240115101846.1: *6* tbo.parse_class_or_def
     def parse_class_or_def(self, i: int) -> int:
         """Set context for a class or def statement."""
-        tag = 'parse_class_or_def'
+        ### tag = 'parse_class_or_def'
         expect(i, 'name')  # The 'class' or 'def' keyword.
         token = self.tokens[i]
         keyword_value = token.value
@@ -1627,19 +1627,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         expect_op(i2, ')')
 
         # Scan the arguments, setting context.
-        progress = i
-        i = self.parse_args(i1, i2)
-        assert progress < i, f"{tag}: no progress"
-
-        # Sanity check.
-        g.trace(self.tokens[i])  ###
-
-        expect_ops(i, ['->', ':'])
+        i3 = self.parse_args(i1, i2)
+        assert i2 <= i3, (i2, i3)
 
         # Find the ':' token that ends the 'def' statement.
+        i = i2
         if not is_op(i, ':'):
             i = self.find_delim(i, [':'])
-
         expect_op(i, ':')
 
         # Set the context of the trailing ':'.
@@ -1767,11 +1761,13 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan up to ',' or ')'
         if is_op(i, '('):
+            # A tuple.
             i = self.find_close_paren(i)
             expect_op(i, ')')
-        else:
-            i = self.find_delim(i, [',', ')'])
-            expect_ops(i, [',', ')'])
+
+        # Find the end of the argument.
+        i = self.find_delim(i, [',', ')'])
+        expect_ops(i, [',', ')'])
         return i
     #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement
     def parse_simple_statement(self, i: int) -> int:
@@ -2030,7 +2026,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         while i < len(self.tokens):
             progress = i
             token = self.tokens[i]
-            g.trace(i, token)
+            ### g.trace(i, token)
             if token.kind == 'op':
                 value = token.value
                 if value == delim2:
