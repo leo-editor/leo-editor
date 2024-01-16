@@ -499,6 +499,18 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
+    #@+node:ekr.20240116072845.1: *3* TestTBO.test_expressions
+    def test_expressions(self):
+        
+        contents = """skip_count = max(0, (len(target) - 1))\n"""
+        
+        contents, tokens = self.make_data(contents)
+        expected = self.blacken(contents)  ### .rstrip() + '\n'
+        results = self.beautify(contents, tokens)
+        if expected != results:
+            g.printObj(expected, tag='Explected (blackened)')
+            g.printObj(results, tag='Results')
+        self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.57: *3* TestTBO.test_function_defs
     def test_function_defs(self):
 

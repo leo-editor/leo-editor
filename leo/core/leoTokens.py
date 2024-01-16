@@ -652,7 +652,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.gen_token('file-start', '')
         self.push_state('file-start')
         prev_line_number: int = None
-        try:
+        ### try:
+        if 1:
             for self.index, self.token in enumerate(tokens):
                 # Set global for visitors.
                 if prev_line_number != self.token.line_number:
@@ -672,9 +673,9 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # We assume the incoming file is syntactically correct!
         # Catching all exceptions saves *lots* of range and value tests.
-        except Exception:
-            # tbo.error_message creates the detailed error message.
-            return None
+        # except Exception:
+            # # tbo.error_message creates the detailed error message.
+            # return None
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. possible live)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
