@@ -531,9 +531,10 @@ class TestTokenBasedOrange(BaseTest):
     ''',
         # Case 6 (new)
         '''\
-        def get_tokens_unprocessed(self: Any, text: str, stack: Sequence[str] = ('root',)) -> Generator:
+        def tuple_init(stack: Sequence[str] = ('root',)) -> Generator:
             pass
     ''',
+        # Case 7 (new)
     )
         short_table = (
         '''\

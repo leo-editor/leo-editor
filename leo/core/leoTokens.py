@@ -751,7 +751,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             'Error in token-based beautifier!\n'
             f"{message.strip()}\n"
             '\n'
-            f"At token {self.index}, line: {self.token.line_number}\n"
+            f"At token {self.index}, line: {self.token.line_number} file: {self.filename}\n"
             f"Input line: {self.token.line!r}\n"
             '\n'
             "Please report this message to Leo's developers"
