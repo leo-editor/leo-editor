@@ -1490,8 +1490,12 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = next(i)
         return i
     #@+node:ekr.20240106172905.1: *5* tbo.parse_args
-    def parse_args(self, i1: int, i2: int) -> Optional[int]:
-        """Parse a comma-separated list of function definition arguments."""
+    def parse_args(self, i1: int, i2: int) -> int:
+        """
+        Parse a comma-separated list of function definition arguments.
+        
+        Return the index of ending ')' token.
+        """
 
         # Sanity checks.
         assert i2 > i1, (i1, i2)
@@ -1509,7 +1513,9 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan the ')'
         expect_op(i, ')')
-        ######## i = next(i)
+
+        # An important sanity check.
+        assert i == i2, repr((i, i2))
         return i
     #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
     def parse_call_arg(self, i1: int) -> Optional[int]:
@@ -1592,7 +1598,6 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240115101846.1: *6* tbo.parse_class_or_def
     def parse_class_or_def(self, i: int) -> int:
         """Set context for a class or def statement."""
-        ### tag = 'parse_class_or_def'
         expect(i, 'name')  # The 'class' or 'def' keyword.
         token = self.tokens[i]
         keyword_value = token.value
@@ -1627,12 +1632,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         expect_op(i2, ')')
 
         # Scan the arguments, setting context.
-        i3 = self.parse_args(i1, i2)
-        ### assert i2 <= i3, (i2, i3)
-        assert i2 == i3, (i2, i3)
+        i = self.parse_args(i1, i2)
 
-        # Find the ':' token that ends the 'def' statement.
-        i = i2
         if not is_op(i, ':'):
             i = self.find_delim(i, [':'])
         expect_op(i, ':')
