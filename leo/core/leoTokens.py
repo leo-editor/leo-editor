@@ -722,6 +722,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         
         Print a traceback only if we are *not* unit testing.
         """
+        # Yes, g.unitTesting is correct, regardless of environment.
+        # g.trace(f"g.unitTesting: {g.unitTesting}")
         return (
             '\n\n'
             'Error in token-based beautifier!\n'

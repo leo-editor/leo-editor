@@ -63,9 +63,10 @@ class BaseTest(unittest.TestCase):
 
     This class contains only helpers.
     """
-    # Note: This class does *not* set g.unitTesting.
-
     debug_list: list[str] = []
+    
+    def setUp(self) -> None:
+        g.unitTesting = True
 
     #@+others
     #@+node:ekr.20240105153420.13: *3* BaseTest.beautify
@@ -93,6 +94,8 @@ class BaseTest(unittest.TestCase):
     #@+node:ekr.20240105153420.4: *3* BaseTest.check_roundtrip
     def check_roundtrip(self, contents, *, debug_list: list[str] = None):
         """Check that the tokenizer round-trips the given contents."""
+        # Several unit tests call this method.
+
         contents, tokens = self.make_data(contents, debug_list=debug_list)
         results = output_tokens_to_string(tokens)
         self.assertEqual(contents, results)
@@ -379,7 +382,7 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240110201739.1: *3* TestTBO.test_colon
+    #@+node:ekr.20240110201739.1: *3* TestTBO.test_colon (To do or delete)
     def test_colon(self):
 
         # self.rulesetName : str = ''
