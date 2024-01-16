@@ -648,33 +648,35 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.68: *3* TestTBO.test_multi_line_pet_peeves
     def test_multi_line_pet_peeves(self):
 
-        contents = """\
-    if x == 4: pass
-    if x == 4 : pass
-    print (x, y); x, y = y, x
-    print (x , y) ; x , y = y , x
-    if(1):
-        pass
-    elif(2):
-        pass
-    while(3):
-        pass
-    """
+        contents = textwrap.dedent(
+            """
+                if x == 4: pass
+                if x == 4 : pass
+                print (x, y); x, y = y, x
+                print (x , y) ; x , y = y , x
+                if(1):
+                    pass
+                elif(2):
+                    pass
+                while(3):
+                    pass
+            """).strip() + '\n'
         # At present Orange doesn't split lines...
-        expected = """\
-    if x == 4: pass
-    if x == 4: pass
-    print(x, y); x, y = y, x
-    print(x, y); x, y = y, x
-    if (1):
-        pass
-    elif (2):
-        pass
-    while (3):
-        pass
-    """
+        expected = textwrap.dedent(
+            """
+                if x == 4: pass
+                if x == 4: pass
+                print(x, y); x, y = y, x
+                print(x, y); x, y = y, x
+                if (1):
+                    pass
+                elif (2):
+                    pass
+                while (3):
+                    pass
+            """).strip() + '\n'
         contents, tokens = self.make_data(contents)
-        expected = self.adjust_expected(expected)
+        ### expected = self.adjust_expected(expected)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.69: *3* TestTBO.test_one_line_pet_peeves

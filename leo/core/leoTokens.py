@@ -535,23 +535,29 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240116040458.1: *4* << TokenBasedOrange: python-related constants >>
     # Statements that must be followed by ':'.
     # https://docs.python.org/3/reference/compound_stmts.html
-    compound_statements = (
+    compound_statements = [
         'async',  # Must be followed by 'def', 'for', 'with'.
         'class', 'def', 'elif', 'else', 'except', 'for', 'finally', 'if',
         'match', 'try', 'while', 'with',
-    )
+    ]
 
     # Statements that must *not* be followed by ':'.
     # https://docs.python.org/3/reference/simple_stmts.html
 
-    simple_statements = (
-        # The Parser handles the following as special cases:
-        # 'from', 'import', assignment statements, and expressions.
-        # 'from', 'import'.
+    simple_statements = [
+        # The Parser handles assignments and expressions as special cases:
         'assert', 'await', 'break', 'continue', 'del',
         'global', 'import', 'nonlocal',
         'pass', 'raise', 'return', 'type', 'yield',
-    )
+        # These are special cases:
+        'from', 'import'
+    ]
+
+    # Keywords that may appear in ternary operators.
+    ternary_keywords = ('if', 'else')
+
+    keywords = compound_statements + simple_statements
+
     #@-<< TokenBasedOrange: python-related constants >>
 
     #@+others
@@ -1705,12 +1711,18 @@ class TokenBasedOrange:  # Orange is the new Black.
         if end is None:
             end = len(self.tokens)
 
-
-
-
-
-
-
+        # Look for apparent function calls.
+        while i < end:
+            progress = i
+            token = self.tokens[i]
+            if token.kind == 'name' and token.value not in self.ternary_keywords:
+                assert token.value not in self.keywords, token
+                i = next(i)
+                if is_op(i, '('):
+                    i = self.parse_call(i)
+            else:
+                i = next(i)
+            assert progress < i, token
         return end
     #@+node:ekr.20240107143500.1: *6* tbo.parse_from (test)
     def parse_from(self, i: int) -> int:
