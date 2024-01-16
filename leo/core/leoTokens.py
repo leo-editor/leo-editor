@@ -495,7 +495,7 @@ class ParseState:
 class TokenBasedOrange:  # Orange is the new Black.
     """
     Leo's token-based beautifier.
-    
+
     This class is faster than the Orange class in leoAst.py.
     """
     #@+<< TokenBasedOrange: __slots__ >>
@@ -531,6 +531,28 @@ class TokenBasedOrange:  # Orange is the new Black.
     # Doc parts end with @c or a node sentinel. Specialized for python.
     end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
     #@-<< TokenBasedOrange: patterns >>
+    #@+<< TokenBasedOrange: python-related constants >>
+    #@+node:ekr.20240116040458.1: *4* << TokenBasedOrange: python-related constants >>
+    # Statements that must be followed by ':'.
+    # https://docs.python.org/3/reference/compound_stmts.html
+    compound_statements = (
+        'async',  # Must be followed by 'def', 'for', 'with'.
+        'class', 'def', 'elif', 'else', 'except', 'for', 'finally', 'if',
+        'match', 'try', 'while', 'with',
+    )
+
+    # Statements that must *not* be followed by ':'.
+    # https://docs.python.org/3/reference/simple_stmts.html
+
+    simple_statements = (
+        # The Parser handles the following as special cases:
+        # 'from', 'import', assignment statements, and expressions.
+        # 'from', 'import'.
+        'assert', 'await', 'break', 'continue', 'del',
+        'global', 'import', 'nonlocal',
+        'pass', 'raise', 'return', 'type', 'yield',
+    )
+    #@-<< TokenBasedOrange: python-related constants >>
 
     #@+others
     #@+node:ekr.20240105145241.2: *4* tbo.ctor
@@ -641,21 +663,12 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Any post pass would go here.
             result = output_tokens_to_string(self.code_list)
             return result
-        # We can assume the incoming file is syntactically correct!
+
+        # We assume the incoming file is syntactically correct!
         # Catching all exceptions saves *lots* of range and value tests.
         except Exception:
+            # tbo.error_message creates the detailed error message.
             return None
-            # if 0:  # Now done in error_message.
-                # print('')
-                # print(f"Error in token-based beautifier: {str(e)}")
-                # ### print(f"{self.error_message(e)}")
-                # print('')
-                # typ, val, tb = sys.exc_info()
-                # traceback.print_tb(tb)
-                # print('')
-                # print("Please report this message to Leo's developers")
-                # print('')
-
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. possible live)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
@@ -722,28 +735,21 @@ class TokenBasedOrange:  # Orange is the new Black.
     def error_message(self, message: str) -> str:
         """
         Print a full error message.
-        
+
         Print a traceback only if we are *not* unit testing.
         """
-        # Yes, g.unitTesting is correct, regardless of environment.
+        # g.unitTesting is correct, regardless of environment.
         # g.trace(f"g.unitTesting: {g.unitTesting}")
         return (
             '\n\n'
             'Error in token-based beautifier!\n'
-            f"{message}\n"
+            f"{message.strip()}\n"
             '\n'
             f"At token {self.index}, line number: {self.token.line_number}\n"
             f"Input line: {self.token.line!r}\n"
             '\n'
             "Please report this message to Leo's developers"
         )
-
-        ### Old
-            # return (
-                # f"\n{exception.__class__.__name__}! {exception!s}\n"
-                # f"At token {self.index}, line number: {self.token.line_number}\n"
-                # f"Input line: {self.token.line!r}"
-            # )
     #@+node:ekr.20240105140814.17: *5* tbo.write_file
     def write_file(self, filename: str, s: str, encoding: str = 'utf-8') -> None:
         """
@@ -1045,7 +1051,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def scan_slice(self) -> Optional[str]:
         """
         Find the enclosing square brackets.
-        
+
         Return one of (None, 'simple-slice', 'complex-slice')
         """
         # Scan backward.
@@ -1099,7 +1105,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def find_close_square_bracket(self, i: int) -> Optional[int]:
         """
         Search forwards for a ']', ignoring ']' tokens inner groups.
-        
+
         This strategy is valid assuming the Python text is well formed!
         """
         level = 0
@@ -1117,7 +1123,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def find_open_square_bracket(self, i: int) -> Optional[int]:
         """
         Search backwards for a '[', ignoring '[' tokens in inner groups.
-        
+
         This strategy is valid assuming the Python text is well formed!
         """
         ###### Revise ???
@@ -1499,23 +1505,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         expect_op(i, ')')
         i = next(i)
         return i
-    #@+node:ekr.20240107091700.1: *5* tbo.parse_call (*** not used yet!)
-    def parse_call(self, i1: int) -> None:
-        """Scan a function call"""
-
-        # Find i1 and i2, the boundaries of the argument list.
-        expect_op(i1, '(')
-
-        # Scan the arguments.
-        i = self.parse_call_args(i1)
-
-        # Sanity check.
-        expect_op(i, ')')
     #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
     def parse_call_arg(self, i1: int) -> Optional[int]:
         """
         Scan a single function definition argument.
-        
+
         Set context for every '=' operator.
         """
         # Handle leading * and ** args.
@@ -1554,145 +1548,41 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # The caller will eat the ')'.
         return i
-    #@+node:ekr.20240107143500.1: *5* tbo.parse_from
-    def parse_from(self) -> None:
-        """
-        Scan a `from x import` statement just enough to handle leading '.'.
-        """
-        # Find the end of the 'from' statement.
-        i = self.index
-        end = self.find_end_of_line(i)
-
-        # Add 'from' context to all '.' tokens.
-        while i and i < end:
-            if is_op(i, '.'):
-                set_context(i, 'from')
-            i = next(i)
-    #@+node:ekr.20240108083829.1: *5* tbo.parse_import (** not used yet!)
-    def parse_import(self) -> None:
-
-        # Find the end of the import statement.
-        i = self.index
-        end = self.find_end_of_line(i)
-
-        # Add 'import' context to all '.' operators.
-        i = self.index
-        while i and i < end:
-            if is_op(i, '.'):
-                set_context(i, 'import')
-            i = next(i)
-    #@+node:ekr.20240106181215.1: *5* tbo.parse_initializer
-    def parse_initializer(self, i1: int, has_annotation: bool) -> Optional[int]:
-        """Scan an initializer in a function definition argument."""
-
-        # Scan the '='.
-        expect_op(i1, '=')
-        set_context(i1, 'initializer')
-        i = next(i1)
-
-        # Scan up to ',' or ')'
-        if is_op(i, '('):
-            i = self.find_close_paren(i)
-            expect_op(i, ')')
-        else:
-            i = self.find_delim(i, [',', ')'])
-            expect_ops(i, [',', ')'])
-        return i
-    #@+node:ekr.20240113054641.1: *5* tbo.parse_statement & helpers
-    # Statements that must be followed by ':'.
-    # https://docs.python.org/3/reference/compound_stmts.html
-    compound_statements = (
-        'async',  # Must be followed by 'def', 'for', 'with'.
-        'class', 'def', 'elif', 'else', 'except', 'for', 'finally', 'if',
-        'match', 'try', 'while', 'with',
-    )
-
-    # Statements that must *not* be followed by ':'.
-    # https://docs.python.org/3/reference/simple_stmts.html
-
-    simple_statements = (
-        # Assignments statements have no keyword.
-        'assert', 'await', 'break', 'continue', 'del',
-        'from', 'global', 'import', 'nonlocal',
-        'pass', 'raise', 'return', 'type', 'yield',
-    )
-
+    #@+node:ekr.20240113054641.1: *5* tbo.parse_statement & statement helpers
     def parse_statement(self, i: int) -> int:
         """
         Scan the next statement, including docstrings.
         """
-
         token = self.tokens[i]
         if token.kind == 'name':
+            if token.value == 'from':
+                return self.parse_from(i)
+            if token.value == 'import':
+                return self.parse_import(i)
             if token.value in self.compound_statements:
                 return self.parse_compound_statement(i)
             if token.value in self.simple_statements:
                 return self.parse_simple_statement(i)
-
-            ### For now, skip expressions and assignments!
-            return self.find_end_of_line(i)
+            return self.parse_expression(i)
         if (token.kind, token.value) == ('op', '@'):
             return self.parse_decorator(i)
         # Ensure progress.
         i = next(i)
         return i
-    #@+node:ekr.20240108062349.1: *6* tbo.parse_compound_statement
-    def parse_compound_statement(self, i: int) -> int:
-        """
-        Scan a compound statement, adding 'end-statement' context to the
-        trailing ':' token.
-        """
-        # Scan the keyword.
-        expect(i, 'name')
+    #@+node:ekr.20240107091700.1: *6* tbo.parse_call (*** not used yet!)
+    def parse_call(self, i1: int) -> int:
+        """Scan a function call"""
 
-        # Special case for 'async':
-        keyword = self.tokens[i].value
-        assert keyword in self.compound_statements, f"Not a compound keyword: {keyword!r}"
+        # Find i1 and i2, the boundaries of the argument list.
+        expect_op(i1, '(')
 
-        if keyword == 'async':
-            i = next(i)
-            keyword = self.tokens[i].value
+        # Scan the arguments.
+        i = self.parse_call_args(i1)
 
-        if keyword in ('class', 'def'):
-            return self.parse_class_or_def(i)
+        # Sanity check.
+        expect_op(i, ')')
 
-        # Now skip the keyword.
-        i = next(i)
-
-        # Just find the trailing ':'!
-        i = self.find_delim(i, [':'])
-
-        # Scan the ':' and set the context.
-        expect_op(i, ':')
-        set_context(i, 'end-statement')
-        i = next(i)
-        return i
-    #@+node:ekr.20240115074103.1: *6* tbo.parse_decorator
-    def parse_decorator(self, i: int) -> int:
-
-        # Scan the @
-        expect_op(i, '@')
-        i = next(i)
-
-        # Scan the name.
-        expect(i, 'name')
-        i = next(i)
-
-        # Set context for any arguments as if they were call arguments.
-        if is_op(i, '('):
-            i = self.parse_call_args(i)
-            expect_op(i, ')')
-            i = next(i)
-        return i
-
-    #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement
-    def parse_simple_statement(self, i: int) -> int:
-        """
-        Scan to the end of a simple statement like an `import` statement.
-        """
-        i = self.find_end_of_line(i)
-        self.expect(i, 'newline')
-        return i
+        return next(i)
     #@+node:ekr.20240115101846.1: *6* tbo.parse_class_or_def
     def parse_class_or_def(self, i: int) -> int:
         """Set context for a class or def statement."""
@@ -1751,6 +1641,138 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Move past the ':' token.
         return next(i)
+    #@+node:ekr.20240108062349.1: *6* tbo.parse_compound_statement
+    def parse_compound_statement(self, i: int) -> int:
+        """
+        Scan a compound statement, adding 'end-statement' context to the
+        trailing ':' token.
+        """
+        # Scan the keyword.
+        expect(i, 'name')
+
+        # Special case for 'async':
+        keyword = self.tokens[i].value
+        assert keyword in self.compound_statements, f"Not a compound keyword: {keyword!r}"
+
+        if keyword == 'async':
+            i = next(i)
+            keyword = self.tokens[i].value
+
+        if keyword in ('class', 'def'):
+            return self.parse_class_or_def(i)
+
+        # Now skip the keyword.
+        i = next(i)
+
+        # Just find the trailing ':'!
+        i = self.find_delim(i, [':'])
+
+        # Scan the ':' and set the context.
+        expect_op(i, ':')
+        set_context(i, 'end-statement')
+        i = next(i)
+        return i
+    #@+node:ekr.20240115074103.1: *6* tbo.parse_decorator
+    def parse_decorator(self, i: int) -> int:
+
+        # Scan the @
+        expect_op(i, '@')
+        i = next(i)
+
+        # Scan the name.
+        expect(i, 'name')
+        i = next(i)
+
+        # Set context for any arguments as if they were call arguments.
+        if is_op(i, '('):
+            i = self.parse_call_args(i)
+            expect_op(i, ')')
+            i = next(i)
+        return i
+
+    #@+node:ekr.20240116040636.1: *6* tbo.parse_expression
+    def parse_expression(self, i: int) -> int:
+        """
+        Parse a line containing a 'name' token that isn't one of Python's reserved words.
+
+        For now, we assume the line is an expression.
+        """
+        # Sanity check.
+        token = self.tokens[i]
+        assert token.kind == 'name', f"expecting 'name', got {token!r}"
+
+        end = self.find_end_of_line(i)
+        if end is None:
+            end = len(self.tokens)
+
+
+
+
+
+
+
+        return end
+    #@+node:ekr.20240107143500.1: *6* tbo.parse_from (test)
+    def parse_from(self, i: int) -> int:
+        """
+        Parse a `from x import` statement, setting context for leading '.'
+        tokens.
+        """
+        # Find the end of the 'from' statement.
+        i = self.index
+        end = self.find_end_of_line(i)
+
+        # Add 'from' context to all '.' tokens.
+        while i and i < end:
+            if is_op(i, '.'):
+                set_context(i, 'from')
+            i = next(i)
+
+        return end
+    #@+node:ekr.20240108083829.1: *6* tbo.parse_import (test)
+    def parse_import(self, i: int) -> int:
+
+        # Find the end of the import statement.
+        i = self.index
+        end = self.find_end_of_line(i)
+
+        # Add 'import' context to all '.' operators.
+        i = self.index
+        while i and i < end:
+            if is_op(i, '.'):
+                set_context(i, 'import')
+            i = next(i)
+
+        return end
+    #@+node:ekr.20240106181215.1: *6* tbo.parse_initializer
+    def parse_initializer(self, i1: int, has_annotation: bool) -> Optional[int]:
+        """Scan an initializer in a function definition argument."""
+
+        # Scan the '='.
+        expect_op(i1, '=')
+        set_context(i1, 'initializer')
+        i = next(i1)
+
+        # Scan up to ',' or ')'
+        if is_op(i, '('):
+            i = self.find_close_paren(i)
+            expect_op(i, ')')
+        else:
+            i = self.find_delim(i, [',', ')'])
+            expect_ops(i, [',', ')'])
+        return i
+    #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement
+    def parse_simple_statement(self, i: int) -> int:
+        """
+        Scan to the end of a simple statement like an `import` statement.
+        """
+        # Sanity check
+        token = self.tokens[i]
+        assert token.kind == 'name', f"expecting 'name', got {token!r}"
+
+        end = self.find_end_of_line(i)
+        self.expect(end, 'newline')
+        return end
     #@+node:ekr.20240113054629.1: *5* tbo.parse_statements
     def parse_statements(self) -> None:
         """
@@ -1775,81 +1797,35 @@ class TokenBasedOrange:  # Orange is the new Black.
     def expect(self, i: int, kind: str, value: str = None) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
         # This method has an alias function.
-        full = False
-        trace = True
-        tag = 'TBO.expect'
-        try:
-            line = self.tokens[i].line
-            line_number = self.tokens[i].line_number
-        except Exception:
-            g.es_exception()
-            line = '<no line>'
-            line_number = 0
-
-        def dump() -> None:
-            if not trace:
-                return
-            print('')
-            print(f"{tag}: Error at token {i}, line number: {line_number}:")
-            print(f"file: {self.filename}")
-            print(f"line: {line!r}\n")
-            print('callers:', g.callers())
-            print('')
-            if 1:
-                lines = g.splitLines(self.contents)
-                n1, n2 = max(0, line_number - 10), line_number + 5
-                g.printObj(lines[n1 : n2 + 1], tag=f"{tag}: lines[{n1}:{n2}]...", offset=n1)
-            if full:
-                g.printObj(self.tokens, tag=f"{tag}: tokens")
-            else:
-                i1, i2 = max(0, i - 5), i + 5
-                g.printObj(self.tokens[i1 : i2 + 1], tag=f"{tag}: tokens[{i1}:{i2}]...", offset=i1)
-
         token = self.tokens[i]
-        if value is None:
-            if token.kind != kind:
-                dump()
-                raise BeautifyError(self.error_message(
-                    f"expect: expected token.kind: {kind!r} got {token}\n"
-                    f"callers: {g.callers()}"
-                ))
-        elif (token.kind, token.value) != (kind, value):
-            dump()
+        if token.kind != kind or (value and token.value != value):
             raise BeautifyError(self.error_message(
-                f"expect: expected token.kind: {kind!r} token.value: "
-                f"{value!r} got {token}\n"
-                f"Callers: {g.callers()}"
-            ))
+                f"Expected {kind!r}:{value!r}, got {token!r}"))
     #@+node:ekr.20240114015808.1: *6* tbo.expect_op
     def expect_op(self, i: int, value: str) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
         # This method has an alias function.
         token = self.tokens[i]
-        if token.kind != 'op':
+        if (token.kind, token.value) != ('op', value):
             raise BeautifyError(self.error_message(
-                f"expect_op: expected op token, got {token.kind!r}\n"
-                f"callers: {g.callers()}"
-            ))
-        if token.value != value:
-            raise BeautifyError(self.error_message(
-                f"expect_op: expected value: {value!r}, got {token.value!r}\n"
-                f"callers: {g.callers()}"
-            ))
+                f"Expected 'op':{value!r}, got {token!r}"))
     #@+node:ekr.20240114013952.1: *6* tbo.expect_ops
     def expect_ops(self, i: int, values: list) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
         # This method has an alias function.
         token = self.tokens[i]
-        if token.kind != 'op':
+        if token.kind != 'op' or token.value not in values:
             raise BeautifyError(self.error_message(
-                f"expect_ops: expected token.kind == 'op', got {token.kind!r}\n"
-                f"callers: {g.callers()}"
-            ))
-        if token.value not in values:
+                f"Expected 'op' in {values!r}, got {token!r}"))
+    #@+node:ekr.20240116042811.1: *6* tbo.expect_name
+    def expect_name(self, i: int, value: str) -> None:
+        """Raise an exception if self.tokens[i] is not as expected."""
+        # This method has an alias function.
+        token = self.tokens[i]
+        if (token.kind, token.value) != ('name', 'value'):
             raise BeautifyError(self.error_message(
-                f"expect_ops: expected token.value in {values!r}, got {token.value!r}\n"
-                f"callers: {g.callers()}"
-            ))
+                f"Expected 'name':{value} token, got {token!r}"))
+
     #@+node:ekr.20240114021152.1: *6* tbo.is_kind
     def is_kind(self, i: int, kind: str) -> bool:
         # This method has an alias function.
@@ -1903,9 +1879,9 @@ class TokenBasedOrange:  # Orange is the new Black.
     def set_context(self, i: int, context: str) -> None:
         """
         Set the context for self.tokens[i].
-        
+
         This method may be called more than once for the same token!
-        
+
         The *first* context is the valid context.
         """
         # This method has an alias function.
@@ -1940,7 +1916,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def find_delim(self, i: int, delims: list) -> Optional[int]:
         """
         Find the next delimiter token, skipping inner expressions.
-        
+
         Raise an exception if no delim is found.
         """
         # We expect only the following 'op' delims: ',', '=', ')' and ':'.
@@ -1977,7 +1953,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def find_end_of_line(self, i: int) -> int:
         """
         Return the index the next newline, skipping inner expressions.
-        
+
         Raise an exception if not found.
         """
         while i < len(self.tokens):
@@ -1996,12 +1972,12 @@ class TokenBasedOrange:  # Orange is the new Black.
                     i += 1
             else:
                 i += 1
-        raise BeautifyError(self.error_message("matching ')' not found"))
+        raise BeautifyError(self.error_message("no matching ')'"))
     #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
         """
         Return True if the token represents a Python keyword.
-        
+
         But return False for 'True', 'False' or 'None':
         these can appear in expressions.
         """
@@ -2059,7 +2035,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 i += 1
             assert progress < i, 'skip_match: no progress!'
-        raise BeautifyError(self.error_message(f"matching {delim2!r} not found"))
+        raise BeautifyError(self.error_message(f"no matching {delim2!r}"))
     #@-others
 #@+node:ekr.20240105140814.121: ** function: (leoTokens.py) main & helpers
 def main() -> None:  # pragma: no cover
