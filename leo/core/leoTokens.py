@@ -141,6 +141,9 @@ def is_ops(i: int, values: list[str]) -> bool:
 def next(i: int) -> Optional[int]:
     return g.Beautifier.next_token(i)
 
+def prev(i: int) -> Optional[int]:
+    return g.Beautifier.prev_token(i)
+
 def set_context(i: int, context: str) -> None:
     g.Beautifier.set_context(i, context)
 #@+node:ekr.20240106220602.1: ** LeoTokens: debugging functions
@@ -1420,7 +1423,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def regularize_nls(self, s: str) -> str:
         """Regularize newlines within s."""
         return s.replace('\r\n', '\n').replace('\r', '\n')
-    #@+node:ekr.20240105145241.41: *4* tbo: Scanners (parser) & helpers
+    #@+node:ekr.20240105145241.41: *4* tbo: Scanners (parser)
     #@+node:ekr.20240106181128.1: *5* tbo.scan_annotation
     def scan_annotation(self, i1: int) -> Optional[int]:
         """Scan an annotation if a function definition arg."""
@@ -1760,17 +1763,13 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Move past the ':' token.
         return next(i)
-    #@+node:ekr.20240110205127.1: *5* tbo: Scan helpers
-    #@+node:ekr.20240106220724.1: *6* tbo.dump_token_range
-    def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:
-        """Dump the given range of input tokens."""
-        if tag:
-            print(tag)
-        for token in self.tokens[i1 : i2 + 1]:
-            print(token.dump())
-    #@+node:ekr.20240106090914.1: *6* tbo.expect (with alias)
+    #@+node:ekr.20240110205127.1: *4* tbo: Scan helpers
+    #@+node:ekr.20240115232305.1: *5* --- Helpers with aliases
+    # All these have top-level alias functions.
+    #@+node:ekr.20240106090914.1: *6* tbo.expect
     def expect(self, i: int, kind: str, value: str = None) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
+        # This method has an alias function.
         full = False
         trace = True
         tag = 'TBO.expect'
@@ -1816,9 +1815,10 @@ class TokenBasedOrange:  # Orange is the new Black.
                 f"{value!r} got {token}\n"
                 f"Callers: {g.callers()}"
             ))
-    #@+node:ekr.20240114015808.1: *6* tbo.expect_op (with alias)
+    #@+node:ekr.20240114015808.1: *6* tbo.expect_op
     def expect_op(self, i: int, value: str) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
+        # This method has an alias function.
         token = self.tokens[i]
         if token.kind != 'op':
             raise BeautifyError(self.error_message(
@@ -1830,9 +1830,10 @@ class TokenBasedOrange:  # Orange is the new Black.
                 f"expect_op: expected value: {value!r}, got {token.value!r}\n"
                 f"callers: {g.callers()}"
             ))
-    #@+node:ekr.20240114013952.1: *6* tbo.expect_ops (with alias)
+    #@+node:ekr.20240114013952.1: *6* tbo.expect_ops
     def expect_ops(self, i: int, values: list) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
+        # This method has an alias function.
         token = self.tokens[i]
         if token.kind != 'op':
             raise BeautifyError(self.error_message(
@@ -1844,7 +1845,77 @@ class TokenBasedOrange:  # Orange is the new Black.
                 f"expect_ops: expected token.value in {values!r}, got {token.value!r}\n"
                 f"callers: {g.callers()}"
             ))
-    #@+node:ekr.20240114022135.1: *6* tbo.find_close_paren
+    #@+node:ekr.20240114021152.1: *6* tbo.is_kind
+    def is_kind(self, i: int, kind: str) -> bool:
+        # This method has an alias function.
+        return self.tokens[i].kind == kind
+
+    #@+node:ekr.20240106172054.1: *6* tbo.is_op & is_ops
+    def is_op(self, i: int, value: str) -> bool:
+        # This method has an alias function.
+        if i is None:
+            return False
+        token = self.tokens[i]
+        return token.kind == 'op' and token.value == value
+
+    def is_ops(self, i: int, values: list[str]) -> bool:
+        # This method has an alias function.
+        if i is None:
+            return False
+        token = self.tokens[i]
+        return token.kind == 'op' and token.value in values
+    #@+node:ekr.20240105145241.43: *6* tbo.next_token (aka next)
+    def next_token(self, i: int) -> Optional[int]:
+        """
+        Return the next *significant* token in the list of *input* tokens.
+
+        Ignore whitespace, indentation, comments, etc.
+        """
+        # This method has an alias function call prev.
+        i += 1
+        while i < len(self.tokens):
+            token = self.tokens[i]
+            if self.is_significant_token(token):
+                return i
+            i += 1
+        return None
+    #@+node:ekr.20240115233050.1: *6* tbo.next_prev (aka prev)
+    def prev_token(self, i: int) -> Optional[int]:
+        """
+        Return the previous *significant* token in the list of *input* tokens.
+
+        Ignore whitespace, indentation, comments, etc.
+        """
+        # This method has an alias function call prev.
+        i -= 1
+        while i >= 0:
+            token = self.tokens[i]
+            if self.is_significant_token(token):
+                return i
+            i -= 1
+        return None
+    #@+node:ekr.20240106170746.1: *6* tbo.set_context
+    def set_context(self, i: int, context: str) -> None:
+        """
+        Set the context for self.tokens[i].
+        
+        This method may be called more than once for the same token!
+        
+        The *first* context is the valid context.
+        """
+        # This method has an alias function.
+        token = self.tokens[i]
+        if not token.context:
+            ### g.trace(f"{i:4} {context:14} {g.callers(1)}")
+            token.context = context
+    #@+node:ekr.20240106220724.1: *5* tbo.dump_token_range
+    def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:
+        """Dump the given range of input tokens."""
+        if tag:
+            print(tag)
+        for token in self.tokens[i1 : i2 + 1]:
+            print(token.dump())
+    #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
         expect_op(i, '(')
@@ -1860,7 +1931,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 level -= 1
             i += 1
         return None
-    #@+node:ekr.20240114063347.1: *6* tbo.find_delim
+    #@+node:ekr.20240114063347.1: *5* tbo.find_delim
     def find_delim(self, i: int, delims: list) -> Optional[int]:
         """
         Find the next delimiter token, skipping inner expressions.
@@ -1897,7 +1968,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 i += 1
         raise BeautifyError(self.error_message(f"token not found: {delims}"))
-    #@+node:ekr.20240110062055.1: *6* tbo.find_end_of_line
+    #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line
     def find_end_of_line(self, i: int) -> int:
         """
         Return the index the next newline, skipping inner expressions.
@@ -1921,7 +1992,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 i += 1
         raise BeautifyError(self.error_message("matching ')' not found"))
-    #@+node:ekr.20240106053414.1: *6* tbo.is_keyword
+    #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
         """
         Return True if the token represents a Python keyword.
@@ -1935,73 +2006,13 @@ class TokenBasedOrange:  # Orange is the new Black.
             and value not in ('True', 'False', None)
             and (keyword.iskeyword(value) or keyword.issoftkeyword(value))
         )
-    #@+node:ekr.20240114021152.1: *6* tbo.is_kind (with alias)
-    def is_kind(self, i: int, kind: str) -> bool:
-
-        return self.tokens[i].kind == kind
-
-    #@+node:ekr.20240106172054.1: *6* tbo.is_op & is_ops (with alias)
-    def is_op(self, i: int, value: str) -> bool:
-
-        if i is None:
-            return False
-        token = self.tokens[i]
-        return token.kind == 'op' and token.value == value
-
-    def is_ops(self, i: int, values: list[str]) -> bool:
-
-        if i is None:
-            return False
-        token = self.tokens[i]
-        return token.kind == 'op' and token.value in values
-    #@+node:ekr.20240106093210.1: *6* tbo.is_significant_token
+    #@+node:ekr.20240106093210.1: *5* tbo.is_significant_token
     def is_significant_token(self, token: InputToken) -> bool:
         """Return true if the given token is not whitespace."""
         return token.kind not in (
             'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
         )
-    #@+node:ekr.20240105145241.43: *6* tbo.next/prev_token (with aliases)
-    def next_token(self, i: int) -> Optional[int]:
-        """
-        Return the next *significant* token in the list of *input* tokens.
-
-        Ignore whitespace, indentation, comments, etc.
-        """
-        i += 1
-        while i < len(self.tokens):
-            token = self.tokens[i]
-            if self.is_significant_token(token):
-                return i
-            i += 1
-        return None
-
-    def prev_token(self, i: int) -> Optional[int]:
-        """
-        Return the previous *significant* token in the list of *input* tokens.
-
-        Ignore whitespace, indentation, comments, etc.
-        """
-        i -= 1
-        while i >= 0:
-            token = self.tokens[i]
-            if self.is_significant_token(token):
-                return i
-            i -= 1
-        return None
-    #@+node:ekr.20240106170746.1: *6* tbo.set_context (with alias)
-    def set_context(self, i: int, context: str) -> None:
-        """
-        Set the context for self.tokens[i].
-        
-        This method may be called more than once for the same token!
-        
-        The *first* context is the valid context.
-        """
-        token = self.tokens[i]
-        if not token.context:
-            ### g.trace(f"{i:4} {context:14} {g.callers(1)}")
-            token.context = context
-    #@+node:ekr.20240115071938.1: *6* tbo.skip_* & helper
+    #@+node:ekr.20240115071938.1: *5* tbo.skip_* & helper
     # These methods all raise BeautifyError if the matching delim is not found.
 
     def skip_curly_brackets(self, i: int) -> int:
@@ -2015,7 +2026,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def skip_square_brackets(self, i: int) -> int:
         """Skip from '[' *past* the matching ']'."""
         return self.skip_matched(i, '[', ']')
-    #@+node:ekr.20240115072231.1: *7* tbo.skip_matched
+    #@+node:ekr.20240115072231.1: *6* tbo.skip_matched
     def skip_matched(self, i: int, delim1: str, delim2: str) -> int:
         """
         Skip from delim1 *past* the matching delim2.
