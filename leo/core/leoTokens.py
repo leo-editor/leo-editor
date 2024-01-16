@@ -1634,11 +1634,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Scan the arguments, setting context.
         i = self.parse_args(i1, i2)
 
-        if not is_op(i, ':'):
-            i = self.find_delim(i, [':'])
+        # Set the context of the trailing ':' token.
+        i = self.find_delim(i, [':'])
         expect_op(i, ':')
-
-        # Set the context of the trailing ':'.
         self.set_context(i, 'end-statement')
 
         # Move past the ':' token.
