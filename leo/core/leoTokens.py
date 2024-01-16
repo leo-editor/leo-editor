@@ -554,7 +554,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     ]
 
     # Keywords that may appear in ternary operators.
-    ternary_keywords = ('for', 'if', 'else')
+    expression_keywords = ('for', 'if', 'else')
 
     keywords = compound_statements + simple_statements
 
@@ -1709,7 +1709,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         while i < end:
             progress = i
             token = self.tokens[i]
-            if token.kind == 'name' and token.value not in self.ternary_keywords:
+            if token.kind == 'name' and token.value not in self.expression_keywords:
                 assert token.value not in self.keywords, token
                 i = next(i)
                 if is_op(i, '('):
