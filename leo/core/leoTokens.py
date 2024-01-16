@@ -1419,7 +1419,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # An important sanity check.
         assert i == i2, repr((i, i2))
         return i
-    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg (REWRITE)
+    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
     def parse_call_arg(self, i1: int) -> int:
         """
         Scan a single function definition argument.
@@ -1713,6 +1713,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert token.kind == 'name', f"expecting 'name', got {token!r}"
 
         end = self.find_end_of_line(i)
+
+        # g.printObj(self.tokens[i: end+1], tag=f"{g.my_name()} {i}")
+
         self.expect(end, 'newline')
         return end
     #@+node:ekr.20240113054629.1: *5* tbo.parse_statements
@@ -1833,6 +1836,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Raise an exception if not found.
         """
+        prev = None
         while i < len(self.tokens):
             token = self.tokens[i]
             if token.kind in ('newline', 'nl', 'endmarker'):
@@ -1842,6 +1846,12 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if value == '[':
                     i = self.skip_square_brackets(i)
                 elif value == '(':
+                    ### prev_s = str(prev) or 'None'
+                    ### g.trace(i, f"prev: {prev_s:20} {token}")
+                    if prev and prev.kind == 'name':
+                        # A function call in a simple statement.
+                        ###g.trace('FOUND CALL', i)
+                        self.parse_call(i)  # Ignore the returned index.
                     i = self.skip_parens(i)
                 elif value == '{':
                     i = self.skip_curly_brackets(i)
@@ -1849,6 +1859,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                     i += 1
             else:
                 i += 1
+            if self.is_significant_token(token):
+                prev = token
         raise BeautifyError(self.error_message("no matching ')'"))
     #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
