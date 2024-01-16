@@ -554,7 +554,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     ]
 
     # Keywords that may appear in ternary operators.
-    ternary_keywords = ('if', 'else')
+    ternary_keywords = ('for', 'if', 'else')
 
     keywords = compound_statements + simple_statements
 
