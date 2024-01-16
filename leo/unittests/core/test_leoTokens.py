@@ -85,7 +85,7 @@ class BaseTest(unittest.TestCase):
         orange = TokenBasedOrange()
 
         # Set the module-level global for the alias functions.
-        leo.core.leoTokens.gBeautifier = orange
+        ### leo.core.leoTokens.gBeautifier = orange
 
         # Run the test!
         result_s = orange.beautify(contents, filename, tokens)
@@ -220,7 +220,7 @@ class TestTokenBasedOrange(BaseTest):
         assert os.path.exists(path), repr(path)
 
         tbo = TokenBasedOrange()
-        leo.core.leoTokens.gBeautifier = tbo
+        ### leo.core.leoTokens.gBeautifier = tbo
         tbo.filename = path
 
         if 0:  # Diff only.
