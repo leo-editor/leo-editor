@@ -591,9 +591,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         g.trace(f"Unknown kind: {self.token.kind!r}")
 
     def beautify(self,
-        contents: str,
-        filename: str,
-        tokens: list[InputToken],
+        contents: str, filename: str, tokens: list[InputToken],
     ) -> str:
         """
         The main line. Create output tokens and return the result as a string.
@@ -671,7 +669,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         result = output_tokens_to_string(self.code_list)
         return result
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. write or diff)
-    def beautify_file(self, filename: str) -> bool:  # pragma: no cover
+    def beautify_file(self, filename: str, *, diff_only: bool = False) -> bool:  # pragma: no cover
         """
         TokenBasedOrange: Beautify the the given external file.
 
@@ -696,9 +694,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
         # Print the diffs for testing!
-        if 1:
+        if diff_only:
             self.show_diffs(regularized_contents, regularized_results)
-        if 0:  ###
+        elif 0:  ###
             self.write_file(filename, regularized_results, encoding=encoding)
         return True
     #@+node:ekr.20240112021737.1: *5* tbo.create_indices

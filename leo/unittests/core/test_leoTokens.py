@@ -64,7 +64,7 @@ class BaseTest(unittest.TestCase):
     This class contains only helpers.
     """
     debug_list: list[str] = []
-    
+
     def setUp(self) -> None:
         g.unitTesting = True
 
@@ -212,13 +212,33 @@ class TestTokenBasedOrange(BaseTest):
         return black.format_str(contents, mode=mode)
     #@+node:ekr.20240116104552.1: *3* TestTBO.slow_test_leoColorizer
     def slow_test_leoApp(self) -> None:
-        
+
         g.trace('=====')
         filename = 'leoColorizer.py'
         test_dir = os.path.dirname(__file__)
         path = g.os_path_finalize_join(test_dir, '..', '..', 'core', filename)
         assert os.path.exists(path), repr(path)
-        self.make_file_data(path)
+
+        tbo = TokenBasedOrange()
+        leo.core.leoTokens.gBeautifier = tbo
+        tbo.filename = path
+
+        if 0:  # Diff only.
+            tbo.beautify_file(path, diff_only=True)
+        else:
+            contents, tokens = self.make_file_data(path)
+            expected = contents
+            results = self.beautify(contents, tokens)
+
+            regularized_expected = tbo.regularize_nls(expected)
+            regularized_results = tbo.regularize_nls(results)
+
+            if regularized_expected != regularized_results:
+                tbo.show_diffs(regularized_expected, regularized_results)
+                
+            assert regularized_expected == regularized_results
+
+            ### self.assertEqual(regularized_expected, regularized_results)
     #@+node:ekr.20240105153425.45: *3* TestTBO.test_annotations
     def test_annotations(self):
 
@@ -510,9 +530,9 @@ class TestTokenBasedOrange(BaseTest):
         self.assertEqual(results, expected)
     #@+node:ekr.20240116072845.1: *3* TestTBO.test_expressions
     def test_expressions(self):
-        
+
         contents = """skip_count = max(0, (len(target) - 1))\n"""
-        
+
         contents, tokens = self.make_data(contents)
         expected = self.blacken(contents)
         results = self.beautify(contents, tokens)
