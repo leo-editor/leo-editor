@@ -68,11 +68,9 @@ import io
 import os
 import re
 import subprocess
-import sys
 import textwrap
 import time
 import tokenize
-import traceback
 from typing import Any, Generator, Optional, Union
 
 try:
@@ -642,17 +640,19 @@ class TokenBasedOrange:  # Orange is the new Black.
             return result
         # We can assume the incoming file is syntactically correct!
         # Catching all exceptions saves *lots* of range and value tests.
-        except Exception as e:
-            print('')
-            print("Error in Leo's token-based beautifier")
-            print(f"{self.error_message(e)}")
-            print('')
-            typ, val, tb = sys.exc_info()
-            traceback.print_tb(tb)
-            print('')
-            print("Please report this message to Leo's developers")
-            print('')
-        return None
+        except Exception:
+            return None
+            # if 0:  # Now done in error_message.
+                # print('')
+                # print(f"Error in token-based beautifier: {str(e)}")
+                # ### print(f"{self.error_message(e)}")
+                # print('')
+                # typ, val, tb = sys.exc_info()
+                # traceback.print_tb(tb)
+                # print('')
+                # print("Please report this message to Leo's developers")
+                # print('')
+
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. possible live)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
@@ -716,13 +716,29 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
         return contents, encoding, tokens
     #@+node:ekr.20240112082350.1: *5* tbo.error_message
-    def error_message(self, exception: Exception) -> str:
-        """Return a full message for BeautifyError."""
+    def error_message(self, message: str) -> str:
+        """
+        Print a full error message.
+        
+        Print a traceback only if we are *not* unit testing.
+        """
         return (
-            f"\n{exception.__class__.__name__}! {exception!s}\n"
+            '\n\n'
+            'Error in token-based beautifier!\n'
+            f"{message}\n"
+            '\n'
             f"At token {self.index}, line number: {self.token.line_number}\n"
-            f"Input line: {self.token.line!r}"
+            f"Input line: {self.token.line!r}\n"
+            '\n'
+            "Please report this message to Leo's developers"
         )
+
+        ### Old
+            # return (
+                # f"\n{exception.__class__.__name__}! {exception!s}\n"
+                # f"At token {self.index}, line number: {self.token.line_number}\n"
+                # f"Input line: {self.token.line!r}"
+            # )
     #@+node:ekr.20240105140814.17: *5* tbo.write_file
     def write_file(self, filename: str, s: str, encoding: str = 'utf-8') -> None:
         """
@@ -837,10 +853,12 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Refuse to beautify mal-formed files.
         if '\t' in self.token.value:  # pragma: no cover
-            raise BeautifyError(f"Leading tabs found: {self.consider_message}")
+            raise BeautifyError(self.error_message(
+                f"Leading tabs found: {self.consider_message}"))
 
         if (len(self.token.value) % self.tab_width) != 0:  # pragma: no cover
-            raise BeautifyError(f"Indentation error! {self.consider_message}")
+            raise BeautifyError(self.error_message(
+                f"Indentation error! {self.consider_message}"))
 
         # Handle the token!
         new_indent = self.token.value
@@ -1582,6 +1600,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         i = self.index
         assert i == 0, repr(i)
+        ### Experimental.
+        i = self.index = next(i)
+        self.token = self.tokens[i]  # For debugging.
         while i is not None:
             i = self.scan_statement(i)
     #@+node:ekr.20240113054641.1: *6* tbo.scan_statement & helpers
@@ -1722,11 +1743,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert progress < i, f"{tag}: no progress"
 
         # Sanity check.
-        i = next(i)
+        g.trace(self.tokens[i])  ###
+
         expect_ops(i, ['->', ':'])
 
         # Find the ':' token that ends the 'def' statement.
-        i = self.find_delim(i, [':'])
+        if not is_op(i, ':'):
+            i = self.find_delim(i, [':'])
+
         expect_op(i, ':')
 
         # Set the context of the trailing ':'.
@@ -1779,45 +1803,45 @@ class TokenBasedOrange:  # Orange is the new Black.
         if value is None:
             if token.kind != kind:
                 dump()
-                raise BeautifyError(
+                raise BeautifyError(self.error_message(
                     f"expect: expected token.kind: {kind!r} got {token}\n"
                     f"callers: {g.callers()}"
-                )
+                ))
         elif (token.kind, token.value) != (kind, value):
             dump()
-            raise BeautifyError(
+            raise BeautifyError(self.error_message(
                 f"expect: expected token.kind: {kind!r} token.value: "
                 f"{value!r} got {token}\n"
                 f"Callers: {g.callers()}"
-            )
+            ))
     #@+node:ekr.20240114015808.1: *6* tbo.expect_op (with alias)
     def expect_op(self, i: int, value: str) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
         token = self.tokens[i]
         if token.kind != 'op':
-            raise BeautifyError(
+            raise BeautifyError(self.error_message(
                 f"expect_op: expected op token, got {token.kind!r}\n"
                 f"callers: {g.callers()}"
-            )
+            ))
         if token.value != value:
-            raise BeautifyError(
+            raise BeautifyError(self.error_message(
                 f"expect_op: expected value: {value!r}, got {token.value!r}\n"
                 f"callers: {g.callers()}"
-            )
+            ))
     #@+node:ekr.20240114013952.1: *6* tbo.expect_ops (with alias)
     def expect_ops(self, i: int, values: list) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
         token = self.tokens[i]
         if token.kind != 'op':
-            raise BeautifyError(
+            raise BeautifyError(self.error_message(
                 f"expect_ops: expected token.kind == 'op', got {token.kind!r}\n"
                 f"callers: {g.callers()}"
-            )
+            ))
         if token.value not in values:
-            raise BeautifyError(
+            raise BeautifyError(self.error_message(
                 f"expect_ops: expected token.value in {values!r}, got {token.value!r}\n"
                 f"callers: {g.callers()}"
-            )
+            ))
     #@+node:ekr.20240114022135.1: *6* tbo.find_close_paren
     def find_close_paren(self, i: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
@@ -1870,7 +1894,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                     i += 1
             else:
                 i += 1
-        raise BeautifyError(f"token not found: {delims}")
+        raise BeautifyError(self.error_message(f"token not found: {delims}"))
     #@+node:ekr.20240110062055.1: *6* tbo.find_end_of_line
     def find_end_of_line(self, i: int) -> int:
         """
@@ -1894,7 +1918,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                     i += 1
             else:
                 i += 1
-        raise BeautifyError("matching ')' not found")
+        raise BeautifyError(self.error_message("matching ')' not found"))
     #@+node:ekr.20240106053414.1: *6* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
         """
@@ -2016,7 +2040,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 i += 1
             assert progress < i, 'skip_match: no progress!'
-        raise BeautifyError(f"matching {delim2!r} not found")
+        raise BeautifyError(self.error_message(f"matching {delim2!r} not found"))
     #@-others
 #@+node:ekr.20240105140814.121: ** function: (leoTokens.py) main & helpers
 def main() -> None:  # pragma: no cover

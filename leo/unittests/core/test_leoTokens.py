@@ -22,6 +22,8 @@ except Exception:  # pragma: no cover
 
 from leo.core import leoGlobals as g
 
+### from leo.core.leoTest2 import LeoUnitTest
+
 import leo.core.leoTokens
 
 # Classes to test.
@@ -52,20 +54,18 @@ def compare_lists(list1, list2):  # pragma: no cover
 def get_time():
     return time.process_time()
 #@+node:ekr.20240105153420.2: ** class BaseTest (TestCase)
+# Do *not* use LeoUnitTest as the base class.
+# Doing so slows downt testing considerably.
+
 class BaseTest(unittest.TestCase):
     """
-    The base class of all tests of leoAst.py.
+    The base class of all tests of leoTokens.py.
 
     This class contains only helpers.
     """
+    # Note: This class does *not* set g.unitTesting.
 
-    # Statistics.
-    counts: dict[str, int] = {}
-    times: dict[str, float] = {}
-
-    # Debugging traces & behavior.
     debug_list: list[str] = []
-    link_error: Exception = None
 
     #@+others
     #@+node:ekr.20240105153420.3: *3* BaseTest.adjust_expected
@@ -83,7 +83,7 @@ class BaseTest(unittest.TestCase):
         """
         BaseTest.beautify.
         """
-        t1 = get_time()
+        ### t1 = get_time()
         if not contents:
             return ''  # pragma: no cover
         if not filename:
@@ -94,8 +94,8 @@ class BaseTest(unittest.TestCase):
         leo.core.leoTokens.gBeautifier = orange
 
         result_s = orange.beautify(contents, filename, tokens)
-        t2 = get_time()
-        self.update_times('22: beautify', t2 - t1)
+        ### t2 = get_time()
+        ### self.update_times('22: beautify', t2 - t1)
         self.code_list = orange.code_list
         return result_s
     #@+node:ekr.20240105153420.4: *3* BaseTest.check_roundtrip
@@ -122,7 +122,7 @@ class BaseTest(unittest.TestCase):
         # Set debug flags and counts.
         self.debug_list = debug_list or []
         self.trace_token_method = False
-        self.update_counts('characters', len(contents))
+        ### self.update_counts('characters', len(contents))
 
         # Check the debug_list.
         valid = ('contents', 'debug', 'tokens')
@@ -160,49 +160,13 @@ class BaseTest(unittest.TestCase):
 
         Make tokens from contents.
         """
-        t1 = get_time()
+        ### t1 = get_time()
         # Tokenize.
         tokens = Tokenizer().make_input_tokens(contents)
-        t2 = get_time()
-        self.update_counts('tokens', len(tokens))
-        self.update_times('01: make-tokens', t2 - t1)
+        ### t2 = get_time()
+        ### self.update_counts('tokens', len(tokens))
+        ### self.update_times('01: make-tokens', t2 - t1)
         return tokens
-    #@+node:ekr.20240105153420.14: *3* BaseTest: stats...
-    # Actions should fail by throwing an exception.
-    #@+node:ekr.20240105153420.15: *4* BaseTest.dump_stats & helpers
-    def dump_stats(self):  # pragma: no cover
-        """Show all calculated statistics."""
-        if self.counts or self.times:
-            print('')
-            self.dump_counts()
-            self.dump_times()
-            print('')
-    #@+node:ekr.20240105153420.16: *5* BaseTest.dump_counts
-    def dump_counts(self):  # pragma: no cover
-        """Show all calculated counts."""
-        for key, n in self.counts.items():
-            print(f"{key:>16}: {n:>6}")
-    #@+node:ekr.20240105153420.17: *5* BaseTest.dump_times
-    def dump_times(self):  # pragma: no cover
-        """
-        Show all calculated times.
-
-        Keys should start with a priority (sort order) of the form `[0-9][0-9]:`
-        """
-        for key in sorted(self.times):
-            t = self.times.get(key)
-            key2 = key[3:]
-            print(f"{key2:>16}: {t:6.3f} sec.")
-    #@+node:ekr.20240105153420.18: *4* BaseTest.update_counts & update_times
-    def update_counts(self, key, n):  # pragma: no cover
-        """Update the count statistic given by key, n."""
-        old_n = self.counts.get(key, 0)
-        self.counts[key] = old_n + n
-
-    def update_times(self, key, t):  # pragma: no cover
-        """Update the timing statistic given by key, t."""
-        old_t = self.times.get(key, 0.0)
-        self.times[key] = old_t + t
     #@-others
 #@+node:ekr.20240105153425.2: ** class Optional_TestFiles (BaseTest)
 class Optional_TestFiles(BaseTest):
