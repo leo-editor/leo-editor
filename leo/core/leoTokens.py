@@ -886,32 +886,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
 
-        ###
-            # if self.token.context != 'class/def':
-                # # A possible function call.
-                # i = self.next(self.index)
-                # if i and self.is_op(i, '('):
-                    # self.parse_call(i)
-
-        # Finally: generate output tokens.
-        if False and s == 'i':  ###
-            g.trace(self.token.line_number, 's', s, self.token.line.strip())
         self.gen_blank()
         self.gen_token('word', s)
         self.gen_blank()
-
-        ###
-        # if self.square_brackets_stack:
-            # # A previous 'op-no-blanks' token may cancel this blank.
-            # self.gen_blank()
-            # self.gen_token('word', s)
-        # elif self.in_arg_list > 0:
-            # self.gen_token('word', s)
-            # self.gen_blank()
-        # else:
-            # self.gen_blank()
-            # self.gen_token('word', s)
-            # self.gen_blank()
     #@+node:ekr.20240107141830.1: *6* tbo.gen_word_op
     def gen_word_op(self, s: str) -> None:
         """Add a word-op request to the code list."""
@@ -1078,8 +1055,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                 break
             i = self.next(i)
 
-        ### g.trace('Complex?', is_complex, '\n')
-
         # Set the context for all ':' tokens.
         context = 'complex-slice' if is_complex else 'simple-slice'
         i = self.next(i1)
@@ -1113,7 +1088,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         This strategy is valid assuming the Python text is well formed!
         """
-        ### Revise ???
         level = 0
         while i >= 0:
             if self.is_op(i, '['):
@@ -1227,7 +1201,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         prev_i = self.prev(self.index)
         prev_token = self.tokens[prev_i]
         kind, value = prev_token.kind, prev_token.value
-        ### g.trace('prev', prev_token, repr(self.token.line))
         if kind in ('number', 'string'):
             return False
         if kind == 'op' and value in ')]':
@@ -1236,7 +1209,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             return True
         if kind == 'name':
             return False
-        ### g.trace('Unary!')
         return True
     #@+node:ekr.20240105145241.36: *6* tbo.gen_rt
     def gen_rt(self) -> None:
@@ -1257,44 +1229,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Put a '*' op, with special cases for *args."""
         val = self.token.value
         context = self.token.context
-        prev = self.code_list[-1]
+        ### prev = self.code_list[-1]
 
         self.clean('blank')
-
-        ### g.trace('prev:', prev, val, 'context:', context)
-
         if context == 'arg':
             self.gen_blank()
             self.gen_token('op-no-blanks', val)
         else:
-            self.gen_blank()
-            self.gen_token('op', val)
-            self.gen_blank()
-
-        if 0:  ### OLD
-
-            ### if context not in ('annotation', 'initializer'):
-            if context not in ('arg', 'annotation', 'initializer'):
-                self.gen_blank()
-                self.gen_token('op', val)
-                return  # #2533
-
-
-            if self.paren_level > 0:
-                prev = self.code_list[-1]
-                ###
-                # if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
-                    # self.gen_blank()
-                    # self.gen_token('op', val)
-                    # return
-                if prev.kind == 'lt':
-                    self.gen_token('op', val)
-                    return
-                if (prev.kind, prev.value) == ('op', ','):
-                    self.gen_blank()
-                    self.gen_token('op', val)
-                    return
-
             self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
@@ -1303,31 +1244,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Put a ** operator, with a special case for **kwargs."""
         val = self.token.value
         context = self.token.context
-        prev = self.code_list[-1]
+        ### prev = self.code_list[-1]
 
         self.clean('blank')
-
-        ### g.trace('prev:', prev, val, 'context:', context)
-
         if context == 'arg':
             self.gen_blank()
             self.gen_token('op-no-blanks', val)
         else:
-            self.gen_blank()
-            self.gen_token('op', val)
-            self.gen_blank()
-
-        if 0:  ### OLD
-            if context not in ('annotation', 'initializer'):
-                self.gen_blank()
-                self.gen_token('op', val)
-                return  # #2533
-            if self.paren_level > 0:
-                prev = self.code_list[-1]
-                if prev.kind == 'lt' or (prev.kind, prev.value) == ('op', ','):
-                    self.gen_blank()
-                    self.gen_token('op', val)
-                    return
             self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
@@ -1557,8 +1480,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         i2 = self.find_close_paren(i1)  # Does not skip the ')'.
         self.expect_op(i2, ')')
 
-        ### g.printObj(self.tokens[i1:i2+1], tag=f"{g.my_name()}")
-
         # Scan each argument.
         i = i1 + 1
         while i < i2 and not self.is_op(i, ')'):
@@ -1570,32 +1491,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert i <= i2, repr((i, i2))  ###
         self.expect_op(i2, ')')
         return i2  # Do not scan past the ')'.
-
-        # ======================
-
-        # g.printObj(self.tokens[i1:i2])
-
-
-
-
-        # -------------------
-
-        # # Quit if there are no args.
-        # if self.is_op(i, ')'):
-            # return i
-
-        # # Scan arguments.
-        # while i and i < len(self.tokens):
-            # i = self.parse_call_arg(i)
-            # if self.is_op(i, ')'):
-                # break
-            # i = self.next(i)
-
-        # # Sanity check.
-        # self.expect_op(i, ')')
-
-        # # The caller will eat the ')'.
-        # return i
     #@+node:ekr.20240113054641.1: *5* tbo.parse_statement & statement helpers
     def parse_statement(self, i: int) -> int:
         """
@@ -2067,7 +1962,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         while i < len(self.tokens):
             progress = i
             token = self.tokens[i]
-            ### g.trace(i, token)
             if token.kind == 'op':
                 value = token.value
                 if value == delim2:

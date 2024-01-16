@@ -22,10 +22,6 @@ except Exception:  # pragma: no cover
 
 from leo.core import leoGlobals as g
 
-### from leo.core.leoTest2 import LeoUnitTest
-
-### import leo.core.leoTokens
-
 # Classes to test.
 from leo.core.leoTokens import InputToken, Tokenizer, TokenBasedOrange
 
