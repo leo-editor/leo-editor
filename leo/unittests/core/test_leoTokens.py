@@ -226,7 +226,7 @@ class TestTokenBasedOrange(BaseTest):
 
             if regularized_expected != regularized_results:
                 tbo.show_diffs(regularized_expected, regularized_results)
-                
+
             assert regularized_expected == regularized_results
 
             ### self.assertEqual(regularized_expected, regularized_results)
