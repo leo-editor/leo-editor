@@ -618,7 +618,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # The top level of a "good enough" recursive descent parser.
         # Create per-statement range data and per-token context data.
-        self.scan_statements()
+        self.parse_statements()
 
         # The main loop:
         self.gen_token('file-start', '')
@@ -898,7 +898,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 # # A possible function call.
                 # i = next(self.index)
                 # if i and self.is_op(i, '('):
-                    # self.scan_call(i)
+                    # self.parse_call(i)
 
         # Finally: generate output tokens.
         if False and s == 'i':  ###
@@ -1423,10 +1423,10 @@ class TokenBasedOrange:  # Orange is the new Black.
     def regularize_nls(self, s: str) -> str:
         """Regularize newlines within s."""
         return s.replace('\r\n', '\n').replace('\r', '\n')
-    #@+node:ekr.20240105145241.41: *4* tbo: Scanners (parser)
-    #@+node:ekr.20240106181128.1: *5* tbo.scan_annotation
-    def scan_annotation(self, i1: int) -> Optional[int]:
-        """Scan an annotation if a function definition arg."""
+    #@+node:ekr.20240105145241.41: *4* tbo: Parser methods
+    #@+node:ekr.20240106181128.1: *5* tbo.parse_annotation
+    def parse_annotation(self, i1: int) -> Optional[int]:
+        """Parse the annotation of a function definition arg."""
 
         # Scan the ':'
         expect_op(i1, ':')
@@ -1441,9 +1441,9 @@ class TokenBasedOrange:  # Orange is the new Black.
             if is_ops(i4, ['=', ':']):
                 set_context(i4, 'annotation')
         return i3
-    #@+node:ekr.20240106173638.1: *5* tbo.scan_arg
-    def scan_arg(self, i1: int) -> Optional[int]:
-        """Scan a single function definition argument"""
+    #@+node:ekr.20240106173638.1: *5* tbo.parse_arg
+    def parse_arg(self, i1: int) -> Optional[int]:
+        """Parse a single function definition argument."""
 
         # Scan optional  * and ** operators.
         i = i1
@@ -1463,7 +1463,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         has_annotation = is_op(i, ':')
         if has_annotation:
             set_context(i, 'annotation')
-            i = self.scan_annotation(i)
+            i = self.parse_annotation(i)
 
         # Scan an optional initializer.
         if is_op(i, '='):
@@ -1471,15 +1471,15 @@ class TokenBasedOrange:  # Orange is the new Black.
                 set_context(i, 'annotation')
             else:
                 set_context(i, 'initializer')
-            i = self.scan_initializer(i, has_annotation)
+            i = self.parse_initializer(i, has_annotation)
 
         # Scan the optional comma.
         if is_op(i, ','):
             i = next(i)
         return i
-    #@+node:ekr.20240106172905.1: *5* tbo.scan_args
-    def scan_args(self, i1: int, i2: int) -> Optional[int]:
-        """Scan a comma-separated list of function definition arguments."""
+    #@+node:ekr.20240106172905.1: *5* tbo.parse_args
+    def parse_args(self, i1: int, i2: int) -> Optional[int]:
+        """Parse a comma-separated list of function definition arguments."""
 
         # Sanity checks.
         assert i2 > i1, (i1, i2)
@@ -1492,27 +1492,27 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Scan each argument.
         while i < i2 and not is_op(i, ')'):
             progress = i
-            i = self.scan_arg(i)
-            assert progress < i, 'scan_args: no progress!'
+            i = self.parse_arg(i)
+            assert progress < i, 'parse_args: no progress!'
 
         # Scan the ')'
         expect_op(i, ')')
         i = next(i)
         return i
-    #@+node:ekr.20240107091700.1: *5* tbo.scan_call
-    def scan_call(self, i1: int) -> None:
+    #@+node:ekr.20240107091700.1: *5* tbo.parse_call (*** not used yet!)
+    def parse_call(self, i1: int) -> None:
         """Scan a function call"""
 
         # Find i1 and i2, the boundaries of the argument list.
         expect_op(i1, '(')
 
         # Scan the arguments.
-        i = self.scan_call_args(i1)
+        i = self.parse_call_args(i1)
 
         # Sanity check.
         expect_op(i, ')')
-    #@+node:ekr.20240107092559.1: *5* tbo.scan_call_arg
-    def scan_call_arg(self, i1: int) -> Optional[int]:
+    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
+    def parse_call_arg(self, i1: int) -> Optional[int]:
         """
         Scan a single function definition argument.
         
@@ -1530,8 +1530,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             if self.is_op(i2, '='):
                 self.set_context(i2, 'initializer')
         return i
-    #@+node:ekr.20240107092458.1: *5* tbo.scan_call_args
-    def scan_call_args(self, i1: int) -> int:
+    #@+node:ekr.20240107092458.1: *5* tbo.parse_call_args
+    def parse_call_args(self, i1: int) -> int:
         """Scan a comma-separated list of function definition arguments."""
 
         # Scan the '('
@@ -1544,7 +1544,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan arguments.
         while i and i < len(self.tokens):
-            i = self.scan_call_arg(i)
+            i = self.parse_call_arg(i)
             if is_op(i, ')'):
                 break
             i = next(i)
@@ -1554,8 +1554,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # The caller will eat the ')'.
         return i
-    #@+node:ekr.20240107143500.1: *5* tbo.scan_from
-    def scan_from(self) -> None:
+    #@+node:ekr.20240107143500.1: *5* tbo.parse_from
+    def parse_from(self) -> None:
         """
         Scan a `from x import` statement just enough to handle leading '.'.
         """
@@ -1568,8 +1568,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             if is_op(i, '.'):
                 set_context(i, 'from')
             i = next(i)
-    #@+node:ekr.20240108083829.1: *5* tbo.scan_import
-    def scan_import(self) -> None:
+    #@+node:ekr.20240108083829.1: *5* tbo.parse_import (** not used yet!)
+    def parse_import(self) -> None:
 
         # Find the end of the import statement.
         i = self.index
@@ -1581,8 +1581,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             if is_op(i, '.'):
                 set_context(i, 'import')
             i = next(i)
-    #@+node:ekr.20240106181215.1: *5* tbo.scan_initializer
-    def scan_initializer(self, i1: int, has_annotation: bool) -> Optional[int]:
+    #@+node:ekr.20240106181215.1: *5* tbo.parse_initializer
+    def parse_initializer(self, i1: int, has_annotation: bool) -> Optional[int]:
         """Scan an initializer in a function definition argument."""
 
         # Scan the '='.
@@ -1598,19 +1598,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.find_delim(i, [',', ')'])
             expect_ops(i, [',', ')'])
         return i
-    #@+node:ekr.20240113054629.1: *5* tbo.scan_statements & helpers
-    def scan_statements(self) -> None:
-        """
-        Scan the entire file
-        """
-        i = self.index
-        assert i == 0, repr(i)
-        ### Experimental.
-        i = self.index = next(i)
-        self.token = self.tokens[i]  # For debugging.
-        while i is not None:
-            i = self.scan_statement(i)
-    #@+node:ekr.20240113054641.1: *6* tbo.scan_statement & helpers
+    #@+node:ekr.20240113054641.1: *5* tbo.parse_statement & helpers
     # Statements that must be followed by ':'.
     # https://docs.python.org/3/reference/compound_stmts.html
     compound_statements = (
@@ -1629,7 +1617,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         'pass', 'raise', 'return', 'type', 'yield',
     )
 
-    def scan_statement(self, i: int) -> int:
+    def parse_statement(self, i: int) -> int:
         """
         Scan the next statement, including docstrings.
         """
@@ -1637,19 +1625,19 @@ class TokenBasedOrange:  # Orange is the new Black.
         token = self.tokens[i]
         if token.kind == 'name':
             if token.value in self.compound_statements:
-                return self.scan_compound_statement(i)
+                return self.parse_compound_statement(i)
             if token.value in self.simple_statements:
-                return self.scan_simple_statement(i)
+                return self.parse_simple_statement(i)
 
             ### For now, skip expressions and assignments!
             return self.find_end_of_line(i)
         if (token.kind, token.value) == ('op', '@'):
-            return self.scan_decorator(i)
+            return self.parse_decorator(i)
         # Ensure progress.
         i = next(i)
         return i
-    #@+node:ekr.20240108062349.1: *7* tbo.scan_compound_statement
-    def scan_compound_statement(self, i: int) -> int:
+    #@+node:ekr.20240108062349.1: *6* tbo.parse_compound_statement
+    def parse_compound_statement(self, i: int) -> int:
         """
         Scan a compound statement, adding 'end-statement' context to the
         trailing ':' token.
@@ -1679,8 +1667,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         set_context(i, 'end-statement')
         i = next(i)
         return i
-    #@+node:ekr.20240115074103.1: *7* tbo.scan_decorator
-    def scan_decorator(self, i: int) -> int:
+    #@+node:ekr.20240115074103.1: *6* tbo.parse_decorator
+    def parse_decorator(self, i: int) -> int:
 
         # Scan the @
         expect_op(i, '@')
@@ -1692,20 +1680,20 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Set context for any arguments as if they were call arguments.
         if is_op(i, '('):
-            i = self.scan_call_args(i)
+            i = self.parse_call_args(i)
             expect_op(i, ')')
             i = next(i)
         return i
 
-    #@+node:ekr.20240109032639.1: *7* tbo.scan_simple_statement
-    def scan_simple_statement(self, i: int) -> int:
+    #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement
+    def parse_simple_statement(self, i: int) -> int:
         """
         Scan to the end of a simple statement like an `import` statement.
         """
         i = self.find_end_of_line(i)
         self.expect(i, 'newline')
         return i
-    #@+node:ekr.20240115101846.1: *7* tbo.parse_class_or_def
+    #@+node:ekr.20240115101846.1: *6* tbo.parse_class_or_def
     def parse_class_or_def(self, i: int) -> int:
         """Set context for a class or def statement."""
         tag = 'parse_class_or_def'
@@ -1744,7 +1732,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan the arguments, setting context.
         progress = i
-        i = self.scan_args(i1, i2)
+        i = self.parse_args(i1, i2)
         assert progress < i, f"{tag}: no progress"
 
         # Sanity check.
@@ -1763,6 +1751,23 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Move past the ':' token.
         return next(i)
+    #@+node:ekr.20240113054629.1: *5* tbo.parse_statements
+    def parse_statements(self) -> None:
+        """
+        parse_statements: scan (parse) the entire file, setting context.
+        """
+        i = self.index
+        assert i == 0, repr(i)
+
+        # Skip the encoding token.
+        i = next(i)
+        while i is not None:
+            # Set the 'index' and 'token' ivars for each statement.
+            self.index = i
+            self.token = self.tokens[i]
+
+            # Parse the statement.
+            i = self.parse_statement(i)
     #@+node:ekr.20240110205127.1: *4* tbo: Scan helpers
     #@+node:ekr.20240115232305.1: *5* --- Helpers with aliases
     # All these have top-level alias functions.
@@ -2037,6 +2042,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         while i < len(self.tokens):
             progress = i
             token = self.tokens[i]
+            g.trace(i, token)
             if token.kind == 'op':
                 value = token.value
                 if value == delim2:
