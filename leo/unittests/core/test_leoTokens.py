@@ -502,7 +502,7 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.57: *3* TestTBO.test_function_defs
     def test_function_defs(self):
 
-        table = (
+        long_table = (
         # Case 0.
         """\
     def f1(a=2 + 5):
@@ -534,15 +534,16 @@ class TestTokenBasedOrange(BaseTest):
         def get_tokens_unprocessed(self: Any, text: str, stack: Sequence[str] = ('root',)) -> Generator:
             pass
     ''',
-        ###
-        # )
-        # table = (
-        # '''\
-        # def tuple_init(stack: Sequence[str] = ('root',)) -> Generator:
-            # pass
-    # ''',
-        )
-        for i, contents in enumerate(table):  ###
+    )
+        short_table = (
+        '''\
+        def tuple_init(stack: Sequence[str] = ('root',)) -> Generator:
+            pass
+    ''',
+    )
+        assert long_table and short_table
+        table = short_table  ###
+        for i, contents in enumerate(table):
             contents, tokens = self.make_data(contents)
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens)

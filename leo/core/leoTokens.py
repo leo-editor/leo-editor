@@ -751,7 +751,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             'Error in token-based beautifier!\n'
             f"{message.strip()}\n"
             '\n'
-            f"At token {self.index}, line number: {self.token.line_number}\n"
+            f"At token {self.index}, line: {self.token.line_number}\n"
             f"Input line: {self.token.line!r}\n"
             '\n'
             "Please report this message to Leo's developers"
@@ -886,7 +886,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
         self.lws = new_indent
         self.gen_line_indent()
-    #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators
+    #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators (** change **)
     operator_keywords = ('and', 'in', 'not', 'not in', 'or')
 
     def do_name(self) -> None:
@@ -899,7 +899,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_word_op(name)
         else:
             self.gen_word(name)
-    #@+node:ekr.20240105145241.40: *6* tbo.gen_word
+    #@+node:ekr.20240105145241.40: *6* tbo.gen_word (** test **)
     def gen_word(self, s: str) -> None:
         """Add a word request to the code list."""
         assert s == self.token.value
