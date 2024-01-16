@@ -98,16 +98,24 @@ def orange_command(
     if not check_g():
         return
     t1 = time.process_time()
+    n_changed = 0
     for filename in files:
         if os.path.exists(filename):
             # print(f"orange {filename}")
             tbo = TokenBasedOrange(settings)
-            tbo.beautify_file(filename)
+            changed = tbo.beautify_file(filename)
+            if changed:
+                n_changed += 1
         else:
             print(f"file not found: {filename}")
     # Report the results.
     t2 = time.process_time()
-    print(f"tbo: {t2-t1:3.1f} sec. {len(files):3} files in {','.join(arg_files)}")
+    print(
+        f"tbo: {t2-t1:3.1f} sec. "
+        f"{len(files):3} files "
+        f"{n_changed:3} changed "
+        f"in {','.join(arg_files)}"
+    )
 #@+node:ekr.20240105140814.8: *3* function: check_g
 def check_g() -> bool:
     """print an error message if g is None"""
@@ -595,11 +603,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.index = 0  # The index within the tokens array of the token being scanned.
         self.lws = ''  # Leading whitespace. Required!
         self.token: InputToken = None
-
-        # Log.
-        if self.verbose:
-            sfn = filename if '__init__' in filename else g.shortFileName(filename)
-            print(f"tbo: {sfn}")
         #@-<< tbo.beautify: init ivars >>
 
         # The top level of a "good enough" recursive descent parser.
@@ -633,7 +636,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Return True if the file was changed.
         """
-        if True and self.verbose:
+        if False and self.verbose:
             g.trace(
                 f"force: {int(self.force)} "
                 f"silent: {int(self.silent)} "
@@ -654,8 +657,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         regularized_contents = self.regularize_nls(contents)
         regularized_results = self.regularize_nls(results)
         if regularized_contents == regularized_results:
-            if self.verbose:
-                print(f"Unchanged: {g.shortFileName(filename)}")
+            # print(f"Unchanged: {g.shortFileName(filename)}")
             return False
 
         # Write the results
