@@ -62,6 +62,7 @@ Leo's outline structure. These comments have the form::
 from __future__ import annotations
 import argparse
 import ast
+import difflib
 import glob
 import keyword
 import io
@@ -669,7 +670,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Any post pass would go here.
         result = output_tokens_to_string(self.code_list)
         return result
-    #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. possible live)
+    #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. write or diff)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
         TokenBasedOrange: Beautify the the given external file.
@@ -685,11 +686,16 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Something besides newlines must change.
         if not results:
             return False
+        if 1:
+            self.show_diffs(contents, results)
         if self.regularize_nls(contents) == self.regularize_nls(results):
             return False
         # Write the results
         if not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
+        # Print the diffs for testing!
+        if 0:
+            self.show_diffs(contents, results)
         if 0:  ###
             self.write_file(filename, results, encoding=encoding)
         return True
@@ -766,6 +772,19 @@ class TokenBasedOrange:  # Orange is the new Black.
                 f.write(s)
         except Exception as e:
             g.trace(f"Error writing {filename}\n{e}")
+    #@+node:ekr.20200107040729.1: *5* tbo.show_diffs
+    def show_diffs(self, s1: str, s2: str) -> None:
+        """Print diffs between strings s1 and s2."""
+        filename = self.filename
+        lines = list(difflib.unified_diff(
+            g.splitLines(s1),
+            g.splitLines(s2),
+            fromfile=f"Old {filename}",
+            tofile=f"New {filename}",
+        ))
+        print('')
+        tag = f"Diffs for {filename}"
+        g.printObj(lines, tag=tag)
     #@+node:ekr.20240105145241.9: *4* tbo: Input visitors & generators
     # Visitors (tbo.do_* methods) handle input tokens.
     # Generators (tbo.gen_* methods) create zero or more output tokens.

@@ -505,7 +505,7 @@ class TestTokenBasedOrange(BaseTest):
         contents = """skip_count = max(0, (len(target) - 1))\n"""
         
         contents, tokens = self.make_data(contents)
-        expected = self.blacken(contents)  ### .rstrip() + '\n'
+        expected = self.blacken(contents)
         results = self.beautify(contents, tokens)
         if expected != results:
             g.printObj(expected, tag='Explected (blackened)')
