@@ -87,7 +87,7 @@ Settings = Optional[dict[str, Any]]
 debug: bool = True
 
 #@+others
-#@+node:ekr.20240105140814.5: ** command: orange_command (tbo) & helper
+#@+node:ekr.20240105140814.5: ** command: orange_command & helper (leoTokens.py)
 def orange_command(
     arg_files: list[str],
     files: list[str],
@@ -479,7 +479,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240111035404.1: *4* << TokenBasedOrange: __slots__ >>
     __slots__ = [
         # Command-line arguments.
-        'force', 'silent', 'tab_width', 'verbose',
+        'diff', 'force', 'silent', 'tab_width', 'verbose',
         # Debugging.
         'contents', 'filename',
         # Global data.
@@ -545,13 +545,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Set default settings.
         if settings is None:
             settings = {}
+        self.diff = False
         self.force = False
         self.silent = False
         self.tab_width = 4
         self.verbose = False
 
         # Override defaults from settings dict.
-        valid_keys = ('force', 'orange', 'silent', 'tab_width', 'verbose')
+        valid_keys = ('diff', 'force', 'orange', 'silent', 'tab_width', 'verbose')
         for key in settings:  # pragma: no cover
             value = settings.get(key)
             if key in valid_keys and value is not None:
@@ -630,7 +631,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         result = output_tokens_to_string(self.code_list)
         return result
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. write or diff)
-    def beautify_file(self, filename: str, *, diff_only: bool = False) -> bool:  # pragma: no cover
+    def beautify_file(self, filename: str) -> bool:  # pragma: no cover
+        ###, *, diff_only: bool = False,
         """
         TokenBasedOrange: Beautify the the given external file.
 
@@ -638,10 +640,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         if False and self.verbose:
             g.trace(
+                f"diff: {int(self.diff)} "
                 f"force: {int(self.force)} "
                 f"silent: {int(self.silent)} "
                 f"verbose: {int(self.verbose)} "
-                f"diff_only: {int(diff_only)} "
                 f"{g.shortFileName(filename)}"
             )
         self.filename = filename
@@ -664,7 +666,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
         # Print the diffs for testing!
-        if diff_only:
+        ### if diff_only:
+        if self.diff:
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
         elif 0:  ###
@@ -1973,7 +1976,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             assert progress < i, 'skip_match: no progress!'
         raise BeautifyError(self.error_message(f"no matching {delim2!r}"))
     #@-others
-#@+node:ekr.20240105140814.121: ** function: (leoTokens.py) main & helpers
+#@+node:ekr.20240105140814.121: ** function: main & helpers (leoTokens.py)
 def main() -> None:  # pragma: no cover
     """Run commands specified by sys.argv."""
     args, settings_dict, arg_files = scan_args()
@@ -2066,6 +2069,8 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
             # help='diff beautify PATHS')
 
     # Arguments.
+    add2('--diff', dest='force', action='store_true',
+        help='show diffs instead of changing files')
     add2('--force', dest='force', action='store_true',
         help='force beautification of all files')
     add2('--silent', dest='silent', action='store_true',
@@ -2085,6 +2090,7 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
 
     # Create the return values, using EKR's prefs as the defaults.
     parser.set_defaults(
+        diff=False,
         force=False,
         silent=False,
         recursive=False,
@@ -2096,6 +2102,7 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
     files = args.PATHS
     # Create the settings dict, ensuring proper values.
     settings_dict: dict[str, Any] = {
+        'diff': bool(args.diff),
         'force': bool(args.force),
         'tab_width': abs(args.tab_width),  # Must be positive!
         'silent': bool(args.silent),
