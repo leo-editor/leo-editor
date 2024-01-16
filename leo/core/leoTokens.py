@@ -569,14 +569,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Debugging vars...
         self.contents = contents
         self.filename = filename
+        self.line_number: int = None
 
         # The input and output lists...
         self.code_list: list[OutputToken] = []  # The list of output tokens.
         self.tokens = tokens  # The list of input tokens.
-
-        # The indices of the first/last tokens of the line.
-        ### self.line_start: int = None  # The index of first token of this line.
-        self.line_number: int = None  # The line number of this line.
 
         # State vars for whitespace.
         self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
@@ -617,7 +614,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         for self.index, self.token in enumerate(tokens):
             # Set global for visitors.
             if prev_line_number != self.token.line_number:
-                ### self.line_start = self.token.line_number
                 prev_line_number = self.token.line_number
             # Call the proper visitor.
             if self.verbatim:
@@ -637,26 +633,37 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Return True if the file was changed.
         """
+        if True and self.verbose:
+            g.trace(
+                f"force: {int(self.force)} "
+                f"silent: {int(self.silent)} "
+                f"verbose: {int(self.verbose)} "
+                f"diff_only: {int(diff_only)} "
+                f"{g.shortFileName(filename)}"
+            )
         self.filename = filename
         contents, encoding, tokens = self.init_tokens_from_file(filename)
         if not (contents and tokens):
             return False  # Not an error.
         assert isinstance(tokens[0], InputToken), repr(tokens[0])
         results = self.beautify(contents, filename, tokens)
-        # Something besides newlines must change.
         if not results:
             return False
+
+        # Something besides newlines must change.
         regularized_contents = self.regularize_nls(contents)
         regularized_results = self.regularize_nls(results)
-        # if 1:
-            # self.show_diffs(regularized_contents, regularized_results)
         if regularized_contents == regularized_results:
+            if self.verbose:
+                print(f"Unchanged: {g.shortFileName(filename)}")
             return False
+
         # Write the results
         if not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
         # Print the diffs for testing!
         if diff_only:
+            print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
         elif 0:  ###
             self.write_file(filename, regularized_results, encoding=encoding)
@@ -844,7 +851,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.token.value
-        ### WRONG: must handle compound statements explicitly.
+        ### ???: must handle compound statements explicitly.
         if name in self.compound_statements:
             self.gen_word(name)
         elif name in self.operator_keywords:
