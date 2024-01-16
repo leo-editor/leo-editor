@@ -1812,6 +1812,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             g.trace(i, 'delims:', delims, repr(self.tokens[i].line), g.callers(2))
 
         # Skip tokens until one of the delims is found.
+        prev = None
         while i < len(self.tokens):
             token = self.tokens[i]
             if token.kind == 'op':
@@ -1821,6 +1822,9 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if value == '[':
                     i = self.skip_square_brackets(i)
                 elif value == '(':
+                    if prev and prev.kind == 'name':
+                        # A function call in a compound statement.
+                        self.parse_call(i)  # Ignore the returned index.
                     i = self.skip_parens(i)
                 elif value == '{':
                     i = self.skip_curly_brackets(i)
@@ -1828,6 +1832,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                     i += 1
             else:
                 i += 1
+            if self.is_significant_token(token):
+                prev = token
         raise BeautifyError(self.error_message(f"token not found: {delims}"))
     #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line
     def find_end_of_line(self, i: int) -> int:
