@@ -686,18 +686,20 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Something besides newlines must change.
         if not results:
             return False
-        if 1:
-            self.show_diffs(contents, results)
-        if self.regularize_nls(contents) == self.regularize_nls(results):
+        regularized_contents = self.regularize_nls(contents)
+        regularized_results = self.regularize_nls(results)
+        # if 1:
+            # self.show_diffs(regularized_contents, regularized_results)
+        if regularized_contents == regularized_results:
             return False
         # Write the results
         if not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
         # Print the diffs for testing!
-        if 0:
-            self.show_diffs(contents, results)
+        if 1:
+            self.show_diffs(regularized_contents, regularized_results)
         if 0:  ###
-            self.write_file(filename, results, encoding=encoding)
+            self.write_file(filename, regularized_results, encoding=encoding)
         return True
     #@+node:ekr.20240112021737.1: *5* tbo.create_indices
     def create_indices(self, tokens: list[InputToken]) -> list[int]:
