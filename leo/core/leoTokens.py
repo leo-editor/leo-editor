@@ -97,13 +97,11 @@ def orange_command(
     """The outer level of the 'tbo/orange' command."""
     if not check_g():
         return
-    ### global gBeautifier
     t1 = time.process_time()
     for filename in files:
         if os.path.exists(filename):
             # print(f"orange {filename}")
             tbo = TokenBasedOrange(settings)
-            ### gBeautifier = tbo
             tbo.beautify_file(filename)
         else:
             print(f"file not found: {filename}")
@@ -2221,8 +2219,6 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
     }
     return args, settings_dict, files
 #@-others
-
-### gBeautifier: TokenBasedOrange = None
 
 if __name__ == '__main__':
     main()  # pragma: no cover

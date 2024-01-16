@@ -24,7 +24,7 @@ from leo.core import leoGlobals as g
 
 ### from leo.core.leoTest2 import LeoUnitTest
 
-import leo.core.leoTokens
+### import leo.core.leoTokens
 
 # Classes to test.
 from leo.core.leoTokens import InputToken, Tokenizer, TokenBasedOrange
@@ -82,12 +82,8 @@ class BaseTest(unittest.TestCase):
             return ''  # pragma: no cover
         if not filename:
             filename = g.callers(2).split(',')[0]
+
         orange = TokenBasedOrange()
-
-        # Set the module-level global for the alias functions.
-        ### leo.core.leoTokens.gBeautifier = orange
-
-        # Run the test!
         result_s = orange.beautify(contents, filename, tokens)
         self.code_list = orange.code_list
         return result_s
@@ -220,7 +216,6 @@ class TestTokenBasedOrange(BaseTest):
         assert os.path.exists(path), repr(path)
 
         tbo = TokenBasedOrange()
-        ### leo.core.leoTokens.gBeautifier = tbo
         tbo.filename = path
 
         if 0:  # Diff only.
