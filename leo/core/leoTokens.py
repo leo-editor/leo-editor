@@ -186,9 +186,14 @@ def output_tokens_to_string(tokens: list[OutputToken]) -> str:
         return ''
     return ''.join([z.to_string() for z in tokens])
 #@+node:ekr.20240105140814.52: ** Classes
-#@+node:ekr.20240105140814.51: *3* class BeautifyError(Exception)
-class BeautifyError(Exception):
-    """Any error in the beautifier."""
+#@+node:ekr.20240105140814.51: *3* class InternalBeautifierError(Exception)
+class InternalBeautifierError(Exception):
+    """
+    An internal error in the beautifier.
+    
+    Errors in the user's source code may raise standard Python errors
+    such as IndentationError or SyntaxError.
+    """
 #@+node:ekr.20240105140814.53: *3* class InputToken
 class InputToken:  # leoTokens.py.
     """A class representing a TBO input token."""
@@ -545,7 +550,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.2: *4* tbo.ctor
     def __init__(self, settings: Settings = None):
         """Ctor for Orange class."""
-        
+
         # Global performance count.
         self.n_slice_ops = 0
 
@@ -840,11 +845,11 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Refuse to beautify mal-formed files.
         if '\t' in self.token.value:  # pragma: no cover
-            raise BeautifyError(self.error_message(
+            raise InternalBeautifierError(self.error_message(
                 f"Leading tabs found: {self.consider_message}"))
 
         if (len(self.token.value) % self.tab_width) != 0:  # pragma: no cover
-            raise BeautifyError(self.error_message(
+            raise InternalBeautifierError(self.error_message(
                 f"Indentation error! {self.consider_message}"))
 
         # Handle the token!
@@ -1640,7 +1645,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if 0:  # This assert is invalid. For example, re.match.
                     assert token.value not in self.keywords, token
                     # if token.value in self.keywords:
-                        # raise BeautifyError(self.error_message(
+                        # raise InternalBeautifierError(self.error_message(
                             # f"{token} in {expression_keywords}"))
                 i = self.next(i)
                 if self.is_op(i, '('):
@@ -1747,7 +1752,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # This method has an alias function.
         token = self.tokens[i]
         if token.kind != kind or (value and token.value != value):
-            raise BeautifyError(self.error_message(
+            raise InternalBeautifierError(self.error_message(
                 f"Expected {kind!r}:{value!r}, got {token!r}"))
     #@+node:ekr.20240116042811.1: *5* tbo.expect_name
     def expect_name(self, i: int, value: str) -> None:
@@ -1755,7 +1760,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # This method has an alias function.
         token = self.tokens[i]
         if (token.kind, token.value) != ('name', 'value'):
-            raise BeautifyError(self.error_message(
+            raise InternalBeautifierError(self.error_message(
                 f"Expected 'name':{value} token, got {token!r}"))
 
     #@+node:ekr.20240114015808.1: *5* tbo.expect_op
@@ -1764,7 +1769,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # This method has an alias function.
         token = self.tokens[i]
         if (token.kind, token.value) != ('op', value):
-            raise BeautifyError(self.error_message(
+            raise InternalBeautifierError(self.error_message(
                 f"Expected 'op':{value!r}, got {token!r}"))
     #@+node:ekr.20240114013952.1: *5* tbo.expect_ops
     def expect_ops(self, i: int, values: list) -> None:
@@ -1772,7 +1777,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # This method has an alias function.
         token = self.tokens[i]
         if token.kind != 'op' or token.value not in values:
-            raise BeautifyError(self.error_message(
+            raise InternalBeautifierError(self.error_message(
                 f"Expected 'op' in {values!r}, got {token!r}"))
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i: int) -> Optional[int]:
@@ -1803,7 +1808,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # The first token must *not* be '(' if ')' is in delims.
         if ')' in delims and self.is_op(i, '('):
-            raise BeautifyError(self.error_message("The first token is '('"))
+            raise InternalBeautifierError(self.error_message("The first token is '('"))
 
         # Skip tokens until one of the delims is found.
         # Handle apparent function calls.
@@ -1829,7 +1834,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 i += 1
             if self.is_significant_token(token):
                 prev = token
-        raise BeautifyError(self.error_message(f"token not found: {delims}"))
+        raise InternalBeautifierError(self.error_message(f"token not found: {delims}"))
     #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line
     def find_end_of_line(self, i: int) -> int:
         """
@@ -1862,7 +1867,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 i += 1
             if self.is_significant_token(token):
                 prev = token
-        raise BeautifyError(self.error_message("no matching ')'"))
+        raise InternalBeautifierError(self.error_message("no matching ')'"))
     #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
     def is_keyword(self, token: InputToken) -> bool:
         """
@@ -1947,7 +1952,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             # g.trace(f"{i:4} {context:14} {g.callers(1)}")
             token.context = context
     #@+node:ekr.20240115071938.1: *5* tbo.skip_* & helper
-    # These methods all raise BeautifyError if the matching delim is not found.
+    # These methods all raise InternalBeautifierError if the matching delim is not found.
 
     def skip_curly_brackets(self, i: int) -> int:
         """Skip from '{' *past* the matching '}'."""
@@ -1964,7 +1969,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def skip_matched(self, i: int, delim1: str, delim2: str) -> int:
         """
         Skip from delim1 *past* the matching delim2.
-        Raise BeautifyError if a matching delim2 is not found.
+        Raise InternalBeautifierError if a matching delim2 is not found.
         """
         self.expect_op(i, delim1)
         i = self.next(i)
@@ -1987,7 +1992,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 i += 1
             assert progress < i, 'skip_match: no progress!'
-        raise BeautifyError(self.error_message(f"no matching {delim2!r}"))
+        raise InternalBeautifierError(self.error_message(f"no matching {delim2!r}"))
     #@-others
 #@+node:ekr.20240105140814.121: ** function: main & helpers (leoTokens.py)
 def main() -> None:  # pragma: no cover
