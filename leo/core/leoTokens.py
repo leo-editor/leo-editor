@@ -1511,6 +1511,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Scan the next statement, including docstrings.
         """
+        # All statements add 'end-statement' context "near" the end of the line:
+        # - Simple statements call find_end_of_line.
+        # - Compound statements call find_delim(i, [':'])
         token = self.tokens[i]
         if token.kind == 'name':
             if token.value == 'from':
@@ -1607,15 +1610,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         if keyword in ('class', 'def'):
             return self.parse_class_or_def(i)
 
-        # Now skip the keyword.
+        # Skip the keyword.
         i = self.next(i)
 
-        # Just find the trailing ':'!
+        # Find the trailing ':' and set the context.
         i = self.find_delim(i, [':'])
-
-        # Scan the ':' and set the context.
         self.expect_op(i, ':')
         self.set_context(i, 'end-statement')
+
+        # Scan the ':'.
         i = self.next(i)
         return i
     #@+node:ekr.20240115074103.1: *6* tbo.parse_decorator
@@ -1690,12 +1693,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         end = self.find_end_of_line(i)
 
         # Add 'import' context to all '.' operators.
-        i = self.index
         while i and i < end:
             if self.is_op(i, '.'):
                 self.set_context(i, 'import')
             i = self.next(i)
-
         return end
     #@+node:ekr.20240106181215.1: *6* tbo.parse_initializer
     def parse_initializer(self, i1: int, has_annotation: bool) -> int:
