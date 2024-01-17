@@ -1005,6 +1005,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         context = self.token.context
         prev_i = self.prev(self.index)
         prev = self.tokens[prev_i]
+        # Match the trace in set_context.
+        if 1:
+            context_s = context if context else '<no context>'
+            g.trace(
+                f"   {self.index:3} {g.callers(1):18} {' '*4}"
+                f" {context_s:16}  Line: {self.token.line!r}"
+            )
         if context is None:
             # Find the boundaries of the slice: the enclosing square brackets.
             context = self.scan_slice()
@@ -1087,7 +1094,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         Search forwards for a ']', ignoring ']' tokens inner groups.
         """
         level = 0
-        while i < len(self.tokens) and self.tokens[i].context != 'end-statement':
+        while (
+            i < len(self.tokens)
+            and self.tokens[i].context not in ('array', 'dict', 'end-statement')
+        ):
             self.n_slice_ops += 1  # Measure the cost.
             if self.is_op(i, '['):
                 level += 1
@@ -1105,7 +1115,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Search backwards for a '[', ignoring '[' tokens in inner groups.
         """
         level = 0
-        while i >= 0 and self.tokens[i].context != 'end-statement':
+        while i >= 0 and self.tokens[i].context not in ('array', 'dict', 'end-statement'):
             self.n_slice_ops += 1  # Measure the cost!
             if self.is_op(i, '['):
                 if level == 0:
@@ -1961,35 +1971,42 @@ class TokenBasedOrange:  # Orange is the new Black.
             
         Token       Possible Contexts
         =====       =================
-        ':'         'annotation', 'end-statement'
+        ':'         'annotation', 'dict', 'end-statement'
                     'complex-slice', 'simple-slice'
         '='         'annotation', 'initializer'
-        '*'         'arg', 'expression'
-        '**'        'arg', 'expression'
+        '*', '**'   'arg', 'expression'
         '.'         'from', 'import'
+        '{', '}'    'dict'  (denotes that the dict has been scanned).
+        '[', ']     'array' (denotes that the array has been scanned).
         'name'      'class/def'
         'newline'   'end-statement'
         'nl'        'end-statement'
         """
+        trace = True  # Do not delete these traces.
 
         valid_contexts = (
-            'annotation', 'arg', 'class/def', 'complex-slice',
-            'end-statement', 'expression', 'from', 'import',
-            'initializer', 'simple-slice'
+            'annotation', 'array', 'arg', 'class/def', 'complex-slice',
+            'dict', 'end-statement', 'expression', 'from', 'import',
+            'initializer', 'simple-slice',
         )
         if context not in valid_contexts:
             self.oops(f"Unexpected context! {context!r}")
 
         token = self.tokens[i]
-        if not token.context:
-            # g.trace(f"{i:4} {context:14} {g.callers(1)}")
+        if token.context:
+            if trace:
+                g.trace(f"{i:4} {g.callers(1):18} OLD: {context:16} Token: {token}")
+        else:
+            # An excellent trace for debugging context.
+            if trace:
+                g.trace(f"{i:4} {g.callers(1):18} NEW: {context:16} Token: {token}")
             token.context = context
     #@+node:ekr.20240115071938.1: *5* tbo.skip_* & helper
     # These methods all raise InternalBeautifierError if the matching delim is not found.
 
     def skip_curly_brackets(self, i: int) -> int:
         """Skip from '{' *past* the matching '}'."""
-        return self.skip_matched(i, '{', '}')
+        return self.skip_matched(i, '{', '}', context='dict')
 
     def skip_parens(self, i: int) -> int:
         """Skip from '(' *past* the matching ')'."""
@@ -1997,14 +2014,17 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     def skip_square_brackets(self, i: int) -> int:
         """Skip from '[' *past* the matching ']'."""
-        return self.skip_matched(i, '[', ']')
+        return self.skip_matched(i, '[', ']', context='array')
     #@+node:ekr.20240115072231.1: *6* tbo.skip_matched
-    def skip_matched(self, i: int, delim1: str, delim2: str) -> int:
+    def skip_matched(self, i: int, delim1: str, delim2: str, context: str = None) -> int:
         """
         Skip from delim1 *past* the matching delim2.
         Raise InternalBeautifierError if a matching delim2 is not found.
         """
         self.expect_op(i, delim1)
+        ### context = None  ###
+        if context:
+            self.set_context(i, context)
         i = self.next(i)
         while i < len(self.tokens):
             progress = i
@@ -2012,6 +2032,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             if token.kind == 'op':
                 value = token.value
                 if value == delim2:
+                    if context:
+                        self.set_context(i, context)
                     return i + 1  # Skip the closing delim
                 # Skip inner expressions.
                 if value == '[':
