@@ -1597,7 +1597,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Special case for 'async':
         keyword = self.tokens[i].value
-        assert keyword in self.compound_statements, f"Not a compound keyword: {keyword!r}"
+        if keyword not in self.compound_statements:
+            self.oops(f"Not a compound keyword: {keyword!r}")
 
         if keyword == 'async':
             i = self.next(i)
@@ -1682,7 +1683,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.next(i)
 
         return end
-    #@+node:ekr.20240108083829.1: *6* tbo.parse_import (test)
+    #@+node:ekr.20240108083829.1: *6* tbo.parse_import
     def parse_import(self, i: int) -> int:
         # Find the end of the import statement.
         i = self.index
@@ -1721,14 +1722,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Scan to the end of a simple statement like an `import` statement.
         """
-        # Sanity check
+        # Sanity check.  ??? Is this check valid ???
         token = self.tokens[i]
-        assert token.kind == 'name', f"expecting 'name', got {token!r}"
+        if token.kind != 'name':
+            self.oops(f"expecting 'name', got {token!r}")
 
         end = self.find_end_of_line(i)
-
-        # g.printObj(self.tokens[i: end+1], tag=f"{g.my_name()} {i}")
-
         self.expect(end, 'newline')
         return end
     #@+node:ekr.20240113054629.1: *5* tbo.parse_statements
@@ -1847,9 +1846,10 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line
     def find_end_of_line(self, i: int) -> int:
         """
-        Return the index the next newline, skipping inner expressions.
-
-        Raise an exception if not found.
+        Return the index the next 'newline', 'nl' or 'endmarker' token,
+        skipping inner expressions.
+        
+        Set the context of found token to 'end-statement.
         """
         prev = None
 
@@ -1858,6 +1858,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         while i < len(self.tokens):
             token = self.tokens[i]
             if token.kind in ('newline', 'nl', 'endmarker'):
+                self.set_context(i, 'end-statement')
                 return i
             if token.kind == 'op':
                 value = token.value
@@ -1954,14 +1955,17 @@ class TokenBasedOrange:  # Orange is the new Black.
         
         Here is a table of tokens and the contexts they may have:
             
-        Token   Possible Contexts
-        =====   =================
-        ':'     'annotation', 'end-statement', 'complex-slice', 'simple-slice'
-        '='     'annotation', 'initializer'
-        '*'     'arg', 'expression'
-        '**'    'arg', 'expression'
-        '.'     'from', 'import'
-        'name'  'class/def'
+        Token       Possible Contexts
+        =====       =================
+        ':'         'annotation', 'end-statement'
+                    'complex-slice', 'simple-slice'
+        '='         'annotation', 'initializer'
+        '*'         'arg', 'expression'
+        '**'        'arg', 'expression'
+        '.'         'from', 'import'
+        'name'      'class/def'
+        'newline'   'end-statement'
+        'nl'        'end-statement'
         """
 
         valid_contexts = (
