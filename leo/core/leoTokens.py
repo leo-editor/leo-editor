@@ -684,7 +684,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         contents, encoding, tokens = self.init_tokens_from_file(filename)
         if not (contents and tokens):
             return False  # Not an error.
-        assert isinstance(tokens[0], InputToken), repr(tokens[0])
+        if not isinstance(tokens[0], InputToken):
+            self.oops(f"Not an InputToken: {tokens[0]!r}")
         results = self.beautify(contents, filename, tokens)
         if not results:
             return False
@@ -1090,7 +1091,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             elif self.is_op(i, ']'):
                 if level == 0:
                     return i
-                assert level > 0, f"Unbalanced square brackets: {self.token.line!r}"
+                if level <= 0:  ### ???
+                    self.oops(f"Unbalanced square brackets: {self.token.line!r}")
                 level -= 1
             i += 1
         return None
@@ -1106,7 +1108,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             if self.is_op(i, '['):
                 if level == 0:
                     return i
-                assert level < 0, f"Unbalanced square brackets: {self.token.line!r}"
+                if level >= 0:  ### ???
+                    self.oops(f"Unbalanced square brackets: {self.token.line!r}")
             elif self.is_op(i, ']'):
                 # Now we expect an inner '[' token before the final match.
                 level -= 1
@@ -1501,7 +1504,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             assert progress < i, 'parse_call_args: no progress!'
 
         # Sanity checks
-        assert i <= i2, repr((i, i2))  ###
+        assert i <= i2, repr((i, i2))  ### Make this test stronger!
         self.expect_op(i2, ')')
         return i2  # Do not scan past the ')'.
     #@+node:ekr.20240113054641.1: *5* tbo.parse_statement & statement helpers
@@ -1792,7 +1795,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             elif self.is_op(i, ')'):
                 if level == 0:
                     return i
-                assert level > 0, f"Unbalanced parens: {self.token.line!r}"
+                if level <= 0:
+                    raise SyntaxError(f"Unbalanced parens: {self.token.line!r}")
                 level -= 1
             i += 1
         return None
@@ -1805,7 +1809,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         # We expect only the following 'op' delims: ',', '=', ')' and ':'.
         for z in delims:
-            assert z in ',=):', f"Invalid delim: {z!r}"
+            if z not in ',=):':
+                self.oops(f"Invalid delim: {z!r}")
 
         # The first token must *not* be '(' if ')' is in delims.
         if ')' in delims and self.is_op(i, '('):
