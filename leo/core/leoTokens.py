@@ -1026,8 +1026,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         # This method is a *huge* performance bottleneck.
         # Stats for tbo --force --silent w/o:
-        # 1.8 sec. with this method.
-        # 4.6 sec. w/o this method.
+        # 4.4 sec. with this method.
+        # 1.9 sec. w/o this method.
 
         ### return  ### Performance test.
 
