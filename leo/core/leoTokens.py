@@ -92,12 +92,13 @@ def orange_command(
     arg_files: list[str],
     files: list[str],
     settings: Settings = None,
-    verbose: bool = False,
 ) -> None:  # pragma: no cover
     """The outer level of the 'tbo/orange' command."""
     if not check_g():
         return
     t1 = time.process_time()
+    n_slice_ops = 0
+    n_tokens = 0
     n_changed = 0
     for filename in files:
         if os.path.exists(filename):
@@ -106,6 +107,8 @@ def orange_command(
             changed = tbo.beautify_file(filename)
             if changed:
                 n_changed += 1
+            n_slice_ops += tbo.n_slice_ops
+            n_tokens += len(tbo.tokens)
         else:
             print(f"file not found: {filename}")
     # Report the results.
@@ -114,6 +117,7 @@ def orange_command(
         f"tbo: {t2-t1:3.1f} sec. "
         f"{len(files):3} files "
         f"{n_changed:3} changed "
+        f"n_slice_ops: {n_slice_ops:<8} n_tokens: {n_tokens:<7} "
         f"in {','.join(arg_files)}"
     )
 #@+node:ekr.20240105140814.8: *3* function: check_g
@@ -481,7 +485,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Command-line arguments.
         'diff', 'force', 'silent', 'tab_width', 'verbose',
         # Debugging.
-        'contents', 'filename',
+        'contents', 'filename', 'n_slice_ops',
         # Global data.
         'code_list', 'tokens',  # 'line_indices'
         # Token-related data for visitors.
@@ -541,6 +545,9 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.2: *4* tbo.ctor
     def __init__(self, settings: Settings = None):
         """Ctor for Orange class."""
+        
+        # Global performance count.
+        self.n_slice_ops = 0
 
         # Set default settings.
         if settings is None:
@@ -632,13 +639,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         return result
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. write or diff)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
-        ###, *, diff_only: bool = False,
         """
         TokenBasedOrange: Beautify the the given external file.
 
         Return True if the file was changed.
         """
-        if False and self.verbose:
+        if False:
             g.trace(
                 f"diff: {int(self.diff)} "
                 f"force: {int(self.force)} "
@@ -969,7 +975,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240105145241.31: *6* tbo.gen_colon & helper
+    #@+node:ekr.20240105145241.31: *6* tbo.gen_colon & helper (bottleneck!)
     def gen_colon(self) -> None:
         """Handle a colon."""
         val = self.token.value
@@ -994,13 +1000,20 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240109115925.1: *7* tbo.scan_slice & helpers
+    #@+node:ekr.20240109115925.1: *7* tbo.scan_slice & helpers (bottleneck!)
     def scan_slice(self) -> Optional[str]:
         """
         Find the enclosing square brackets.
 
         Return one of (None, 'simple-slice', 'complex-slice')
         """
+        # This method is a *huge* performance bottleneck.
+        # Stats for tbo --force --silent w/o:
+        # 1.8 sec. with this method.
+        # 4.6 sec. w/o this method.
+
+        ### return  ### Performance test.
+
         # Scan backward.
         i = self.index
         i1 = self.find_open_square_bracket(i)
@@ -1055,6 +1068,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         level = 0
         while i < len(self.tokens):
+            self.n_slice_ops += 1  # Measure the cost!
             if self.is_op(i, '['):
                 level += 1
             elif self.is_op(i, ']'):
@@ -1073,6 +1087,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         level = 0
         while i >= 0:
+            self.n_slice_ops += 1  # Measure the cost!
             if self.is_op(i, '['):
                 if level == 0:
                     return i
@@ -2016,7 +2031,7 @@ def main() -> None:  # pragma: no cover
     if 0:  # Negligible.
         print(f"files: {len(files)} setup time: {t2-t1:3.1f} sec.")
     if args.o:
-        orange_command(arg_files, files, settings_dict, args.verbose)
+        orange_command(arg_files, files, settings_dict)
     # if args.od:
         # orange_diff_command(files, settings_dict)
 #@+node:ekr.20240105140814.9: *3* function: get_modified_files
@@ -2069,7 +2084,7 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
             # help='diff beautify PATHS')
 
     # Arguments.
-    add2('--diff', dest='force', action='store_true',
+    add2('--diff', dest='diff', action='store_true',
         help='show diffs instead of changing files')
     add2('--force', dest='force', action='store_true',
         help='force beautification of all files')
