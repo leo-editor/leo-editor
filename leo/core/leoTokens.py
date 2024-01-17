@@ -1063,9 +1063,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     def find_close_square_bracket(self, i: int) -> Optional[int]:
         """
         Search forwards for a ']', ignoring ']' tokens inner groups.
-
-        This strategy is valid assuming the Python text is well formed!
         """
+        ### To do: limit the search!!!
         level = 0
         while i < len(self.tokens):
             self.n_slice_ops += 1  # Measure the cost!
@@ -1082,9 +1081,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     def find_open_square_bracket(self, i: int) -> Optional[int]:
         """
         Search backwards for a '[', ignoring '[' tokens in inner groups.
-
-        This strategy is valid assuming the Python text is well formed!
         """
+        ### To do: limit the search!!!
         level = 0
         while i >= 0:
             self.n_slice_ops += 1  # Measure the cost!
