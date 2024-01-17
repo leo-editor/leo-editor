@@ -108,6 +108,12 @@ def orange_command(
             if changed:
                 n_changed += 1
             n_slice_ops += tbo.n_slice_ops
+            if 1:  # Sometimes useful.
+                g.trace(
+                    f"n_slice_ops: {tbo.n_slice_ops:7} "
+                    f"tokens: {len(tbo.tokens): 6} "
+                    f"{g.shortFileName(filename)}"
+                )
             n_tokens += len(tbo.tokens)
         else:
             print(f"file not found: {filename}")
@@ -992,7 +998,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240105145241.31: *6* tbo.gen_colon & helper (bottleneck!)
+    #@+node:ekr.20240105145241.31: *6* tbo.gen_colon & helper
     def gen_colon(self) -> None:
         """Handle a colon."""
         val = self.token.value
@@ -1026,10 +1032,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         # This method is a *huge* performance bottleneck.
         # Stats for tbo --force --silent w/o:
-        # 4.4 sec. with this method.
-        # 1.9 sec. w/o this method.
 
-        ### return  ### Performance test.
+        # 4.4 sec. with this method (legacy code).
+        # 1.9 sec. w/o this method.
 
         # Scan backward.
         i = self.index
@@ -1081,10 +1086,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Search forwards for a ']', ignoring ']' tokens inner groups.
         """
-        ### To do: limit the search!!!
         level = 0
-        while i < len(self.tokens):
-            self.n_slice_ops += 1  # Measure the cost!
+        while i < len(self.tokens) and self.tokens[i].context != 'end-statement':
+            self.n_slice_ops += 1  # Measure the cost.
             if self.is_op(i, '['):
                 level += 1
             elif self.is_op(i, ']'):
@@ -1094,15 +1098,14 @@ class TokenBasedOrange:  # Orange is the new Black.
                     self.oops(f"Unbalanced square brackets: {self.token.line!r}")
                 level -= 1
             i += 1
-        return None
+        return None  # No match. This is not an error.
     #@+node:ekr.20240114022212.1: *8* tbo.find_open_square_bracket
     def find_open_square_bracket(self, i: int) -> Optional[int]:
         """
         Search backwards for a '[', ignoring '[' tokens in inner groups.
         """
-        ### To do: limit the search!!!
         level = 0
-        while i >= 0:
+        while i >= 0 and self.tokens[i].context != 'end-statement':
             self.n_slice_ops += 1  # Measure the cost!
             if self.is_op(i, '['):
                 if level == 0:
@@ -1113,7 +1116,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 # Now we expect an inner '[' token before the final match.
                 level -= 1
             i -= 1
-        return None
+        return None  # No match. This is not an error.
     #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op
     def gen_dot_op(self) -> None:
         """Handle the '.' input token."""
