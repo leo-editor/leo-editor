@@ -883,7 +883,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Add a word request to the code list."""
         assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
-
         self.gen_blank()
         self.gen_token('word', s)
         self.gen_blank()
@@ -911,7 +910,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         # Only do_newline and do_nl should call this method.
         token = self.token
-        assert token.kind in ('newline', 'nl'), (token.kind, g.callers())
+        if token.kind not in ('newline', 'nl'):
+            self.oops(f"Unexpected newline token: {token!r}")
 
         # Create the 'line-end' output token.
         self.gen_line_end()
@@ -923,13 +923,21 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.25: *6* tbo.gen_line_end
     def gen_line_end(self) -> OutputToken:
         """Add a line-end request to the code list."""
+
         # This may be called from do_name as well as do_newline and do_nl.
-        assert self.token.kind in ('newline', 'nl'), self.token.kind
+        token = self.token
+        if token.kind not in ('newline', 'nl'):
+            self.oops(f"Unexpected newline token: {token!r}")
+
         self.clean('blank')  # Important!
         self.clean('line-indent')
         t = self.gen_token('line-end', '\n')
+
         # Distinguish between kinds of 'line-end' tokens.
-        t.newline_kind = self.token.kind
+
+        ### Never used!
+        ### t.newline_kind = self.token.kind
+
         return t
     #@+node:ekr.20240105145241.33: *6* tbo.gen_line_indent
     def gen_line_indent(self) -> None:
