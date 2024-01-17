@@ -1665,7 +1665,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 i = self.next(i)
             assert progress < i, token
         return end
-    #@+node:ekr.20240107143500.1: *6* tbo.parse_from (test)
+    #@+node:ekr.20240107143500.1: *6* tbo.parse_from
     def parse_from(self, i: int) -> int:
         """
         Parse a `from x import` statement, setting context for leading '.'
@@ -1684,7 +1684,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         return end
     #@+node:ekr.20240108083829.1: *6* tbo.parse_import (test)
     def parse_import(self, i: int) -> int:
-
         # Find the end of the import statement.
         i = self.index
         end = self.find_end_of_line(i)
@@ -1895,19 +1894,19 @@ class TokenBasedOrange:  # Orange is the new Black.
         )
     #@+node:ekr.20240114021152.1: *5* tbo.is_kind
     def is_kind(self, i: int, kind: str) -> bool:
-        # This method has an alias function.
+
         return self.tokens[i].kind == kind
 
     #@+node:ekr.20240106172054.1: *5* tbo.is_op & is_ops
     def is_op(self, i: int, value: str) -> bool:
-        # This method has an alias function.
+
         if i is None:
             return False
         token = self.tokens[i]
         return token.kind == 'op' and token.value == value
 
     def is_ops(self, i: int, values: list[str]) -> bool:
-        # This method has an alias function.
+
         if i is None:
             return False
         token = self.tokens[i]
@@ -1925,7 +1924,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Ignore whitespace, indentation, comments, etc.
         """
-        # This method has an alias function call prev.
         i += 1
         while i < len(self.tokens):
             token = self.tokens[i]
@@ -1940,7 +1938,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Ignore whitespace, indentation, comments, etc.
         """
-        # This method has an alias function call prev.
         i -= 1
         while i >= 0:
             token = self.tokens[i]
@@ -1951,13 +1948,30 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
         """
-        Set the context for self.tokens[i].
-
-        This method may be called more than once for the same token!
-
-        The *first* context is the valid context.
+        Set self.tokens[i].context, but only if it does not already exist!
+        
+        As a result, the order of scanning tokens in the parser matters!
+        
+        Here is a table of tokens and the contexts they may have:
+            
+        Token   Possible Contexts
+        =====   =================
+        ':'     'annotation', 'end-statement', 'complex-slice', 'simple-slice'
+        '='     'annotation', 'initializer'
+        '*'     'arg', 'expression'
+        '**'    'arg', 'expression'
+        '.'     'from', 'import'
+        'name'  'class/def'
         """
-        # This method has an alias function.
+
+        valid_contexts = (
+            'annotation', 'arg', 'class/def', 'complex-slice',
+            'end-statement', 'expression', 'from', 'import',
+            'initializer', 'simple-slice'
+        )
+        if context not in valid_contexts:
+            self.oops(f"Unexpected context! {context!r}")
+
         token = self.tokens[i]
         if not token.context:
             # g.trace(f"{i:4} {context:14} {g.callers(1)}")
