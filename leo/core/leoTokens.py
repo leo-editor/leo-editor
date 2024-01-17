@@ -531,7 +531,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     # https://docs.python.org/3/reference/simple_stmts.html
 
     simple_statements = [
-        # The Parser handles assignments and expressions as special cases:
+        # The parser handles assignments and expressions as special cases:
         'assert', 'await', 'break', 'continue', 'del',
         'global', 'import', 'nonlocal',
         'pass', 'raise', 'return', 'type', 'yield',
@@ -641,8 +641,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.token: InputToken = None
         #@-<< tbo.beautify: init ivars >>
 
-        # The top level of a "good enough" recursive descent parser.
-        # Create per-statement range data and per-token context data.
+        # Pass 1: start the "good enough" recursive descent parser.
         self.parse_statements()
 
         # The main loop:
@@ -1736,7 +1735,11 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240113054629.1: *5* tbo.parse_statements
     def parse_statements(self) -> None:
         """
-        parse_statements: scan (parse) the entire file, setting context.
+        parse_statements: scan (parse) the entire file.
+        
+        This is the entry point for a "good enough" recursive-descent
+        parser who's *only* purpose is to add context to a few kinds
+        of tokens.  See set_context for more details.
         """
         i = self.index
         assert i == 0, repr(i)
