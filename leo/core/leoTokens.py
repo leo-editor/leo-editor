@@ -552,6 +552,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     #@-<< TokenBasedOrange: python-related constants >>
 
+    trace_context = False
+
     #@+others
     #@+node:ekr.20240105145241.2: *4* tbo.ctor
     def __init__(self, settings: Settings = None):
@@ -1006,7 +1008,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         prev_i = self.prev(self.index)
         prev = self.tokens[prev_i]
         # Match the trace in set_context.
-        if 1:
+        if self.trace_context:
             context_s = context if context else '<no context>'
             g.trace(
                 f"   {self.index:3} {g.callers(1):18} {' '*4}"
@@ -1982,7 +1984,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         'newline'   'end-statement'
         'nl'        'end-statement'
         """
-        trace = True  # Do not delete these traces.
 
         valid_contexts = (
             'annotation', 'array', 'arg', 'class/def', 'complex-slice',
@@ -1994,11 +1995,11 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         token = self.tokens[i]
         if token.context:
-            if trace:
+            if self.trace_context:
                 g.trace(f"{i:4} {g.callers(1):18} OLD: {context:18} Token: {token}")
         else:
             # An excellent trace for debugging context.
-            if trace:
+            if self.trace_context:
                 g.trace(f"{i:4} {g.callers(1):18} NEW: {context:18} Token: {token}")
             token.context = context
     #@+node:ekr.20240115071938.1: *5* tbo.skip_* & helper
