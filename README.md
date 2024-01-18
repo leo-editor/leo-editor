@@ -1,32 +1,18 @@
-Leo https://leo-editor.github.io/leo-editor/ 6.7.6 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+Leo https://leo-editor.github.io/leo-editor/ 6.7.7 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.7.6**
+**The highlights of Leo 6.7.7**
 
-Support for Python 3.12:
-
-- PR #3693: update leoAst.py for Python 3.12.
-- PR #3701: Colorize PEP 701 f-strings.
-
-Other significant improvements:
-
-- PR #3645: Allow mixed external files on the command line.
-            Retire the --load-type command-line option.
-- PR #3575: Add the indented_languages plugin.
-- PR #3642: Add the clean-all-lines command.
-- PR #3659: Add python-to-rust command.
-- PR #3673: Add summarize command.
-- scripts.leo contains `@button` scripts by Thomas Passin.
-
-The usual assortment of minor bug fixes and code-level improvements.
+- PR #3761: Improve leoserver.py to support LeoInteg.
+- Asserted minor improvements.
 
 **Links**
 
 - [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.7.6 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.6+)
-- [6.7.6 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.6)
+- [6.7.7 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.7+)
+- [6.7.7 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.7)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
