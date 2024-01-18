@@ -127,7 +127,7 @@ def test_is_valid_version():
 production = True
 testing = False
 # Dashes are not allowed.
-version = '6.7.6'  ##version Should match version in leoVersion.py
+version = '6.7.7'  ##version Should match version in leoVersion.py
 entry_points = define_entry_points()
 long_description = get_readme_contents()
 assert is_valid_version(version), version
