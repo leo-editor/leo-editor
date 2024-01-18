@@ -1002,7 +1002,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240105145241.31: *6* tbo.gen_colon & helper
+    #@+node:ekr.20240105145241.31: *6* tbo.gen_colon & helper (called the botch)
     def gen_colon(self) -> None:
         """Handle a colon."""
         val = self.token.value
