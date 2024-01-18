@@ -97,7 +97,6 @@ def orange_command(
     if not check_g():
         return
     t1 = time.process_time()
-    n_slice_ops = 0
     n_tokens = 0
     n_changed = 0
     for filename in files:
@@ -107,14 +106,17 @@ def orange_command(
             changed = tbo.beautify_file(filename)
             if changed:
                 n_changed += 1
-            n_slice_ops += tbo.n_slice_ops
-            if 1:  # Sometimes useful.
+            # Report any unusual scanned/total ratio.
+            scanned, tokens = tbo.n_scanned_tokens, len(tbo.tokens)
+            token_ratio: float = scanned / tokens
+            if token_ratio > 1.5:  # Arbitrary cutoff.
+            # A useful performance measure.
+                print('')
                 g.trace(
-                    f"n_slice_ops: {tbo.n_slice_ops:7} "
-                    f"tokens: {len(tbo.tokens): 6} "
-                    f"{g.shortFileName(filename)}"
+                    f"Bad token ratio in {g.shortFileName(filename)}\n"
+                    f"scanned: {scanned} total: {tokens} ratio: {token_ratio:4.2f}"
                 )
-            n_tokens += len(tbo.tokens)
+            n_tokens += tokens
         else:
             print(f"file not found: {filename}")
     # Report the results.
@@ -123,7 +125,7 @@ def orange_command(
         f"tbo: {t2-t1:3.1f} sec. "
         f"{len(files):3} files "
         f"{n_changed:3} changed "
-        f"n_slice_ops: {n_slice_ops:<8} n_tokens: {n_tokens:<7} "
+        # f"n_slice_ops: {n_slice_ops:<8} n_tokens: {n_tokens:<7} "
         f"in {','.join(arg_files)}"
     )
 #@+node:ekr.20240105140814.8: *3* function: check_g
@@ -496,7 +498,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Command-line arguments.
         'diff', 'force', 'silent', 'tab_width', 'verbose',
         # Debugging.
-        'contents', 'filename', 'n_slice_ops',
+        'contents', 'filename', 'n_scanned_tokens',  # 'n_slice_ops',
         # Global data.
         'code_list', 'tokens',  # 'line_indices'
         # Token-related data for visitors.
@@ -560,7 +562,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Ctor for Orange class."""
 
         # Global performance count.
-        self.n_slice_ops = 0
+        self.n_scanned_tokens = 0
 
         # Set default settings.
         if settings is None:
@@ -1014,10 +1016,13 @@ class TokenBasedOrange:  # Orange is the new Black.
                 f"   {self.index:3} {g.callers(1):18} {' '*4}"
                 f" {context_s:18}  Line: {self.token.line!r}"
             )
-        if context is None:
-            # Find the boundaries of the slice: the enclosing square brackets.
-            context = self.scan_slice()
-        # Now we can generate proper code.
+
+        ### Retire the botch (scan_slice)
+            # if context is None:
+                # # Find the boundaries of the slice: the enclosing square brackets.
+                # context = self.scan_slice()
+
+        # Generate the proper code using the context supplied by the parser.
         self.clean('blank')
         if context == 'complex-slice':
             if prev.value not in '[:':
@@ -1032,103 +1037,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240109115925.1: *7* tbo.scan_slice & helpers (bottleneck!)
-    def scan_slice(self) -> Optional[str]:
-        """
-        Find the enclosing square brackets.
-
-        Return one of (None, 'simple-slice', 'complex-slice')
-        """
-        # This method is a *huge* performance bottleneck.
-        # Stats for tbo --force --silent w/o:
-
-        # 4.4 sec. with this method (legacy code).
-        # 1.9 sec. w/o this method.
-
-        # Scan backward.
-        i = self.index
-        i1 = self.find_open_square_bracket(i)
-        if not self.is_op(i1, '['):
-            return None
-
-        # Scan forward.
-        i2 = self.find_close_square_bracket(i)
-        if not self.is_op(i2, ']'):
-            return None
-
-        # Sanity checks.
-        self.expect_op(i1, '[')
-        self.expect_op(i2, ']')
-
-        if 0:  ###
-            g.trace('Found []', 'line:', self.token.line_number,
-                i1, self.index, i2, self.token.line.strip())
-            g.printObj(self.tokens[i1 : i2 + 1])
-
-        # Set complex if the inner area contains something other than 'name' or 'number' tokens.
-        is_complex = False
-        i = self.next(i1)
-        while i and i < i2:
-            token = self.tokens[i]
-            if self.is_op(i, ':'):
-                # Look ahead for '+', '-' unary ops.
-                next_i = self.next(i)
-                if self.is_ops(next_i, ['-', '+']):
-                    i = next_i  # Skip the unary.
-            elif token.kind == 'number':
-                pass
-            elif token.kind != 'name' or token.value in ('if', 'else'):
-                is_complex = True
-                break
-            i = self.next(i)
-
-        # Set the context for all ':' tokens.
-        context = 'complex-slice' if is_complex else 'simple-slice'
-        i = self.next(i1)
-        while i and i < i2:
-            if self.is_op(i, ':'):
-                self.set_context(i, context)
-            i = self.next(i)
-        return context
-    #@+node:ekr.20240114022153.1: *8* tbo.find_close_square_bracket
-    def find_close_square_bracket(self, i: int) -> Optional[int]:
-        """
-        Search forwards for a ']', ignoring ']' tokens inner groups.
-        """
-        level = 0
-        while (
-            i < len(self.tokens)
-            and self.tokens[i].context not in ('array', 'dict', 'end-statement')
-        ):
-            self.n_slice_ops += 1  # Measure the cost.
-            if self.is_op(i, '['):
-                level += 1
-            elif self.is_op(i, ']'):
-                if level == 0:
-                    return i
-                if level <= 0:  ### ???
-                    self.oops(f"Unbalanced square brackets: {self.token.line!r}")
-                level -= 1
-            i += 1
-        return None  # No match. This is not an error.
-    #@+node:ekr.20240114022212.1: *8* tbo.find_open_square_bracket
-    def find_open_square_bracket(self, i: int) -> Optional[int]:
-        """
-        Search backwards for a '[', ignoring '[' tokens in inner groups.
-        """
-        level = 0
-        while i >= 0 and self.tokens[i].context not in ('array', 'dict', 'end-statement'):
-            self.n_slice_ops += 1  # Measure the cost!
-            if self.is_op(i, '['):
-                if level == 0:
-                    return i
-                if level >= 0:  ### ???
-                    self.oops(f"Unbalanced square brackets: {self.token.line!r}")
-            elif self.is_op(i, ']'):
-                # Now we expect an inner '[' token before the final match.
-                level -= 1
-            i -= 1
-        return None  # No match. This is not an error.
     #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op
     def gen_dot_op(self) -> None:
         """Handle the '.' input token."""
@@ -1943,6 +1851,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         i += 1
         while i < len(self.tokens):
+            self.n_scanned_tokens += 1  # Update the statistic.
             token = self.tokens[i]
             if self.is_significant_token(token):
                 return i
@@ -1957,6 +1866,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         i -= 1
         while i >= 0:
+            self.n_scanned_tokens += 1  # Update the statistic.
             token = self.tokens[i]
             if self.is_significant_token(token):
                 return i
