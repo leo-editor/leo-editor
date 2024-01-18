@@ -1010,7 +1010,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             context_s = context if context else '<no context>'
             g.trace(
                 f"   {self.index:3} {g.callers(1):18} {' '*4}"
-                f" {context_s:16}  Line: {self.token.line!r}"
+                f" {context_s:18}  Line: {self.token.line!r}"
             )
         if context is None:
             # Find the boundaries of the slice: the enclosing square brackets.
@@ -1995,11 +1995,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         token = self.tokens[i]
         if token.context:
             if trace:
-                g.trace(f"{i:4} {g.callers(1):18} OLD: {context:16} Token: {token}")
+                g.trace(f"{i:4} {g.callers(1):18} OLD: {context:18} Token: {token}")
         else:
             # An excellent trace for debugging context.
             if trace:
-                g.trace(f"{i:4} {g.callers(1):18} NEW: {context:16} Token: {token}")
+                g.trace(f"{i:4} {g.callers(1):18} NEW: {context:18} Token: {token}")
             token.context = context
     #@+node:ekr.20240115071938.1: *5* tbo.skip_* & helper
     # These methods all raise InternalBeautifierError if the matching delim is not found.
