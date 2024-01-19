@@ -52,8 +52,8 @@ install_requires = [
     'asttokens',  # abstract syntax tree text parsing
     'black',  # coding syntax standards
 
-    # #3603: windows-curses doesn't work with Python 3.12.
-    # This issue has now been fixed.
+    # windows-curses *does* work with Python 3.12.
+    # https://github.com/leo-editor/leo-editor/pull/3692
     'windows-curses; platform_system=="Windows"',  # for console mode on Windows
 ]
 #@-<< define install_requires >>
