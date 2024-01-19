@@ -776,8 +776,7 @@ class TestTokenBasedOrange(BaseTest):
     def test_relative_imports(self):
 
         # #2533.
-        contents = textwrap.dedent(
-            """
+        contents = """
             from .module1 import w
             from . module2 import x
             from ..module1 import y
@@ -788,10 +787,8 @@ class TestTokenBasedOrange(BaseTest):
             from..import d
             from leo.core import leoExternalFiles
             import leo.core.leoGlobals as g
-            """).strip() + '\n'
-
-        expected = textwrap.dedent(
-            """
+        """
+        expected = textwrap.dedent("""
             from .module1 import w
             from .module2 import x
             from ..module1 import y
@@ -802,7 +799,7 @@ class TestTokenBasedOrange(BaseTest):
             from .. import d
             from leo.core import leoExternalFiles
             import leo.core.leoGlobals as g
-            """).strip() + '\n'
+        """).strip() + '\n'
         contents, tokens = self.make_data(contents)
         # dump_tokens(tokens)
         results = self.beautify(contents, tokens)
@@ -942,7 +939,7 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.79: *3* TestTBO.test_verbatim
     def test_verbatim(self):
 
-        contents = textwrap.dedent("""\
+        contents = """
     #@@nobeautify
 
     def addOptionsToParser(self, parser, trace_m):
@@ -966,7 +963,7 @@ class TestTokenBasedOrange(BaseTest):
     docDirective    =  3 # @doc.
 
     #@@beautify
-    """)
+    """
         contents, tokens = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens)
