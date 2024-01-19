@@ -606,41 +606,32 @@ class TestTokenBasedOrange(BaseTest):
     def test_leading_stars(self):
 
         # #2533.
-        contents = textwrap.dedent(
-            """
-                def f(
-                    arg1,
-                    *args,
-                    **kwargs
-                ):
-                    pass
-            """).strip() + '\n'
+        contents = """
+            def f(
+                arg1,
+                *args,
+                **kwargs
+            ):
+                pass
+        """
+        contents, tokens = self.make_data(contents)
         if 1:  # w/o join:
             expected = contents
         else:  # with join.
-            expected = textwrap.dedent(
-            """
+            expected = """
                 def f(arg1, *args, **kwargs):
                     pass
-            """).strip() + '\n'
-        contents, tokens = self.make_data(contents)
+            """
         results = self.beautify(contents, tokens)
         self.assertEqual(expected, results)
     #@+node:ekr.20240105153425.64: *3* TestTBO.test_leading_stars_one_line
     def test_leading_stars_one_line(self):
 
-        # if not use_ast:
-            # self.skipTest('requires use_ast = True')
-
         # #2533.
-        contents = """\
+        contents = """
             def f(arg1, *args, **kwargs):
                 pass
-    """
-        # expected = textwrap.dedent("""\
-            # def f(arg1, *args, **kwargs):
-                # pass
-    # """)
+        """
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         self.assertEqual(contents, results)
@@ -689,19 +680,18 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.68: *3* TestTBO.test_multi_line_pet_peeves
     def test_multi_line_pet_peeves(self):
 
-        contents = textwrap.dedent(
-            """
-                if x == 4: pass
-                if x == 4 : pass
-                print (x, y); x, y = y, x
-                print (x , y) ; x , y = y , x
-                if(1):
-                    pass
-                elif(2):
-                    pass
-                while(3):
-                    pass
-            """).strip() + '\n'
+        contents = """
+            if x == 4: pass
+            if x == 4 : pass
+            print (x, y); x, y = y, x
+            print (x , y) ; x , y = y , x
+            if(1):
+                pass
+            elif(2):
+                pass
+            while(3):
+                pass
+        """
         # At present Orange doesn't split lines...
         expected = textwrap.dedent(
             """
@@ -717,7 +707,6 @@ class TestTokenBasedOrange(BaseTest):
                     pass
             """).strip() + '\n'
         contents, tokens = self.make_data(contents)
-        ### expected = self.adjust_expected(expected)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.69: *3* TestTBO.test_one_line_pet_peeves
