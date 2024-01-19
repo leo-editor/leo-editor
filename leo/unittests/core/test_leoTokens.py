@@ -478,13 +478,10 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240112134732.1: *3* TestTBO.test_def_colons
     def test_def_colons(self):
 
-        contents = textwrap.dedent(
-            '''
-                self.configDict: dict[str, Any] = {}
-                self.configUnderlineDict: dict[str, bool] = {}
-            '''
-        ).strip().replace('AT', '@') + '\n'
-
+        contents = '''
+            self.configDict: dict[str, Any] = {}
+            self.configUnderlineDict: dict[str, bool] = {}
+        '''
         contents, tokens = self.make_data(contents)
         # dump_tokens(tokens)
         expected = contents
@@ -545,12 +542,11 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240107080413.1: *3* TestTBO.test_function_call
     def test_function_call(self):
 
-        contents = textwrap.dedent(
-            """
+        contents = """
             version = str(semantic_version.Version.coerce(tag, partial=True))
-            """).strip() + '\n'
-        expected = contents
+        """
         contents, tokens = self.make_data(contents)
+        expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.57: *3* TestTBO.test_function_defs
