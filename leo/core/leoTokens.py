@@ -487,11 +487,31 @@ class ParseState:
     __str__ = __repr__
 #@+node:ekr.20240105145241.1: *3* class TokenBasedOrange
 class TokenBasedOrange:  # Orange is the new Black.
+
+    #@+<< TokenBasedOrange: docstring >>
+    #@+node:ekr.20240119062227.1: *4* << TokenBasedOrange: docstring >>
     """
     Leo's token-based beautifier.
 
-    This class is faster than the Orange class in leoAst.py.
+    This class is like the Orange class in leoAst.py.
+        
+    - This class does not use Python's parse tree in any way.
+
+      Instead, this class contains a "good-enough" recursuve parser that
+      discovers the context for input tokens requiring help. See
+      tbo.set_context for details.
+      
+    - This class uses bounded look-ahead and look-behind:
+      
+      The parser looks ahead at most one *input* token.
+      The code generators look behind at most one *output* token.
+      
+    - As with leoAst.py, the code generators work much like a peephole
+      optimizer.
+
+    - This class is about twice as fast as the Orange class in leoAst.py.
     """
+    #@-<< TokenBasedOrange: docstring >>
     #@+<< TokenBasedOrange: __slots__ >>
     #@+node:ekr.20240111035404.1: *4* << TokenBasedOrange: __slots__ >>
     __slots__ = [
@@ -761,7 +781,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         print('')
         tag = f"Diffs for {filename}"
         g.printObj(lines, tag=tag)
-    #@+node:ekr.20240105145241.9: *4* tbo: Input visitors & generators
+    #@+node:ekr.20240105145241.9: *4* tbo: Visitors & generators
     # Visitors (tbo.do_* methods) handle input tokens.
     # Generators (tbo.gen_* methods) create zero or more output tokens.
     #@+node:ekr.20240105145241.29: *5* tbo.clean
@@ -1277,7 +1297,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     def regularize_nls(self, s: str) -> str:
         """Regularize newlines within s."""
         return s.replace('\r\n', '\n').replace('\r', '\n')
-    #@+node:ekr.20240105145241.41: *4* tbo: Parser methods
+    #@+node:ekr.20240105145241.41: *4* tbo: Parser
+    # Parsers pre-scan input tokens, adding context to tokens that need help.
     #@+node:ekr.20240106181128.1: *5* tbo.parse_annotation
     def parse_annotation(self, i1: int) -> int:
         """Parse the annotation of a function definition arg."""
@@ -1654,14 +1675,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         end = self.find_end_of_line(i)
         self.expect(end, 'newline')
         return end
-    #@+node:ekr.20240113054629.1: *5* tbo.parse_statements
+    #@+node:ekr.20240113054629.1: *5* tbo.parse_statements (top-level of parser)
     def parse_statements(self) -> None:
         """
         parse_statements: scan (parse) the entire file.
         
         This is the entry point for a "good enough" recursive-descent
         parser who's *only* purpose is to add context to a few kinds
-        of tokens.  See set_context for more details.
+        of tokens.  See set_context for details.
         """
         i = self.index
         assert i == 0, repr(i)
@@ -1675,7 +1696,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
             # Parse the statement.
             i = self.parse_statement(i)
-    #@+node:ekr.20240110205127.1: *4* tbo: Scanners
+    #@+node:ekr.20240110205127.1: *4* tbo: Scanner methods
+    # The parser calls scanner methods to move through the list of input tokens.
     #@+node:ekr.20240106220724.1: *5* tbo.dump_token_range
     def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:
         """Dump the given range of input tokens."""
