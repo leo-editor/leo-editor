@@ -99,11 +99,13 @@ class BaseTest(unittest.TestCase):
         debug_list: str = None,
     ) -> tuple[str, list[InputToken]]:  # pragma: no cover
         """
-        BaseTest.make_data:
-
-        Return (contents, tokens) for the given contents.
+        BaseTest.make_data. Prepare the data for one unit test:
+        - Regularize the contents:
+          contents = textwrap.dedent(contents).strip() + '\n'
+        - Tokenize the contents using the Tokenizer class in leoTokens.py.
+        - Dump the contents or tokens per the debug_list kwarg. 
+        - Return (contents, tokens)
         """
-        contents = contents.lstrip('\\\n')
         assert contents.strip(), g.callers()
 
         # Set debug flags and counts.
