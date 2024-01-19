@@ -883,6 +883,7 @@ class TestTokenBasedOrange(BaseTest):
             """a[:2:3]""",
             """a[1:2:3]""",
         )
+        trace = False  ###
         fails = 0
         for i, contents in enumerate(table):
             description = f"{tag} part {i}"
@@ -891,12 +892,13 @@ class TestTokenBasedOrange(BaseTest):
             results = self.beautify(contents, tokens, filename=description)
             if results != expected:  # pragma: no cover
                 fails += 1
-                print('')
-                print(
-                    f"TestTokenBasedOrange.{tag}: FAIL {fails}\n"
-                    f"  contents: {contents.rstrip()}\n"
-                    f"     black: {expected.rstrip()}\n"
-                    f"    orange: {results.rstrip() if results else 'None'}")
+                if trace:
+                    print('')
+                    print(
+                        f"TestTokenBasedOrange.{tag}: FAIL {fails}\n"
+                        f"  contents: {contents.rstrip()}\n"
+                        f"     black: {expected.rstrip()}\n"
+                        f"    orange: {results.rstrip() if results else 'None'}")
         self.assertEqual(fails, 0)
     #@+node:ekr.20240105153425.76: *3* TestTBO.test_star_star_operator
     def test_star_star_operator(self):
@@ -1015,17 +1017,20 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.81: *3* TestTBO.verbatim2
     def test_verbatim2(self):
 
-        contents = """\
+        # We *do* want this test to contain verbatim sentinels.
+        contents = """
     #@@beautify
     #@@nobeautify
     #@+at Starts doc part
     # More doc part.
     # The @c ends the doc part.
     #@@c
-    """
+        """
         contents, tokens = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens)
+        # g.printObj(results, tag='Results')
+        # g.printObj(expected, tag='Expected')
         self.assertEqual(results, expected, msg=contents)
     #@-others
 #@+node:ekr.20240105153425.85: ** class TestTokens (BaseTest)
