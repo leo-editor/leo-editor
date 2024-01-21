@@ -1626,11 +1626,19 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Sanity check.
         assert i2 <= end, (repr(i2), repr(end))
 
-        ### To do. Call parse_dict if we see a ':' at the top level.
-        i = i2  ### To do
-        # while i <= i2:
-            # ### To do: handle inner expressions.
-            # i = self.next(i)
+        # Search for ':' at the top level.
+        colon_i = self.find_delim(i, i2, [':'])
+        if colon_i is None:
+            # The opening '{' starts a non-empty set.
+            pass
+        else:
+            # The opening '{' is a non-empty dictionary.
+
+            ### To do. Call parse_dict if we see a ':' at the top level.
+            i = i2  ### To do
+            # while i <= i2:
+                # ### To do: handle inner expressions.
+                # i = self.next(i)
 
         # Last sanity check.
         assert i <= i2, (repr(i), repr(i2))
