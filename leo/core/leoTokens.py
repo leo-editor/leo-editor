@@ -1613,19 +1613,27 @@ class TokenBasedOrange:  # Orange is the new Black.
                 i = self.next(i)
             assert progress < i, token
         return end
-    #@+node:ekr.20240121024213.1: *6* tbo.parse_slice (new)
+    #@+node:ekr.20240121024213.1: *6* tbo.parse_slice (WRITE)
     def parse_slice(self, i1: int, end: int) -> int:
-        """Parse a function call"""
+        """
+        Parse a slice (array), setting the context for ':' tokens to
+        'simple-slice' or 'complex-slice'.
+        """
 
-        # Find i1 and i2, the boundaries of the argument list.
-        self.expect_op(i1, '(')
+        self.expect_op(i1, '[')
+        self.expect_op(end, ']')
 
-        # Scan the arguments.
-        i = self.parse_call_args(i1, end)
+        # Scan the '['.
+        i = self.next(i1)
+
+        # Parse the slice.
+        while i <= end:
+            ### To do.
+            i = self.next(i)
 
         # Sanity checks.
-        assert i <= end, (i, g.callers())
-        self.expect_op(i, ')')
+        assert i <= end, (i, end, g.callers())
+        self.expect_op(i, ']')
         return self.next(i)
     #@+node:ekr.20240107143500.1: *6* tbo.parse_from
     def parse_from(self, i: int) -> int:
