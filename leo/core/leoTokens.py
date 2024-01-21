@@ -1646,7 +1646,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 i = self.next(i)
             assert progress < i, token
         return end
-    #@+node:ekr.20240121073127.1: *7* tbo.parse_dict_or_set & helpers
+    #@+node:ekr.20240121073127.1: *7* tbo.parse_dict_or_set
     def parse_dict_or_set(self, i1: int, end: int) -> int:
         """
         Parse a '{', ..., '}'.
@@ -1674,7 +1674,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             # The opening '{' starts a non-empty dict.
             self.parse_dict(i1, i2)
         return self.next(end)
-    #@+node:ekr.20240121073925.1: *8* tbo.parse_dict (Finish)
+    #@+node:ekr.20240121073925.1: *7* tbo.parse_dict (Finish)
     def parse_dict(self, i1: int, end: int) -> None:
         """
         Parse '[', ..., ']'.
@@ -1688,10 +1688,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.expect_op(i1, '{')
         self.expect_op(end, '}')
 
-        ### Set context for all outer-level ':' tokens to 'dict'.
+        # Set context for all outer-level ':' tokens to 'dict'.
         i = self.next(i1)
         while i < end:
-            ### To do: Handle inner expressions.
+            i = self.find_delim(i, end, [':'])
+            if i is None:
+                break
+            self.set_context(i, 'dict')
             i = self.next(i)
     #@+node:ekr.20240121071949.1: *7* tbo.parse_parenthesized_expr
     def parse_parenthesized_expr(self, i: int, end: int) -> int:
@@ -1928,17 +1931,9 @@ class TokenBasedOrange:  # Orange is the new Black.
             if z not in ',=)}]:':
                 self.oops(f"Invalid delim: {z!r}")
 
-        # The first token must *not* be '(' if ')' is in delims.
-        if ')' in delims and self.is_op(i, '('):
-            self.oops("The first token is '('")
-
-        # The first token must *not* be '{' if '}' is in delims.
-        if '}' in delims and self.is_op(i, '{'):
-            self.oops("The first token is '{'")
-
-        # The first token must *not* be '[' if ']' is in delims.
-        if ']' in delims and self.is_op(i, '['):
-            self.oops("The first token is '['")
+        for open_delim, close_delim in (('(', ')'), ('[', ']'), ('{', '}')):
+            if close_delim in delims and self.is_op(i, open_delim):
+                self.oops(f"The first token is {open_delim!r}")
 
         # Skip tokens until one of the delims is found.
         # Handle apparent function calls.
