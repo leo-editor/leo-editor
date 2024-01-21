@@ -1646,8 +1646,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                 i = self.next(i)
             assert progress < i, token
         return end
-    #@+node:ekr.20240121073127.1: *7* tbo.parse_dict_or_set & helpers (Finish)
-    def parse_dict_or_set(self, i: int, end: int) -> int:
+    #@+node:ekr.20240121073127.1: *7* tbo.parse_dict_or_set & helpers
+    def parse_dict_or_set(self, i1: int, end: int) -> int:
         """
         Parse a '{', ..., '}'.
         
@@ -1655,8 +1655,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
 
         # Scan the '{'.
-        self.expect_op(i, '{')
-        i = self.next(i)
+        self.expect_op(i1, '{')
+        i = self.next(i1)
 
         # Find the matching '}'
         i2 = self.find_delim(i, end, ['}'])
@@ -1671,41 +1671,28 @@ class TokenBasedOrange:  # Orange is the new Black.
             # The opening '{' starts a non-empty set.
             pass
         else:
-            # The opening '{' is a non-empty dictionary.
-
-            ### To do. Call parse_dict if we see a ':' at the top level.
-            i = i2  ### To do
-            # while i <= i2:
-                # ### To do: handle inner expressions.
-                # i = self.next(i)
-
-        # Last sanity check.
-        assert i <= i2, (repr(i), repr(i2))
-        return self.next(i2)
-    #@+node:ekr.20240121073925.1: *8* tbo.parse_dict (test)
-    def parse_dict(self, i1: int, i2: int) -> int:
+            # The opening '{' starts a non-empty dict.
+            self.parse_dict(i1, i2)
+        return self.next(end)
+    #@+node:ekr.20240121073925.1: *8* tbo.parse_dict (Finish)
+    def parse_dict(self, i1: int, end: int) -> None:
         """
         Parse '[', ..., ']'.
         
         Set the context of all outer-level ':' tokens to 'dict'.
+        
+        Return None.
         """
 
         # Initial sanity checks.
         self.expect_op(i1, '{')
-        self.expect_op(i2, '}')
+        self.expect_op(end, '}')
 
-        # Scan the '['.
+        ### Set context for all outer-level ':' tokens to 'dict'.
         i = self.next(i1)
-
-        ### To do. Set context for all outer-level ':' tokens to 'dict'.
-        # Scan self.tokens[i: i2-1] Setting context.
-        while i <= i2:
+        while i < end:
             ### To do: Handle inner expressions.
             i = self.next(i)
-
-        # Last sanity check.
-        assert i <= i2, (repr(i), repr(i2))
-        return self.next(i2)
     #@+node:ekr.20240121071949.1: *7* tbo.parse_parenthesized_expr
     def parse_parenthesized_expr(self, i: int, end: int) -> int:
         """
