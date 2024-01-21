@@ -1331,6 +1331,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan to the next ',' or '=', ignoring inner parens.
         i3 = self.find_delim(i, end, [',', '=', ')'])
+        self.expect_ops(i3, [',', '=', ')'])
 
         # Set the contexts of inner ops.
         for i4 in range(i1 + 1, i3 - 1):
@@ -1434,13 +1435,14 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Handle the initializer, setting context for '='
             self.expect_op(i, '=')
             if 1:
+                ### To do ???
                 # Don't try to parse!
                 i = self.find_delim(i, end, [',', ')'])
             else:
                 i = self.parse_initializer(i, end, has_annotation=False)
-                self.expect_ops(i, [',', ')'])
-                if self.is_op(i, ','):
-                    i = self.next(i)
+            self.expect_ops(i, [',', ')'])
+            if self.is_op(i, ','):
+                i = self.next(i)
 
         # Set the context.
         for i3 in range(i1 + 1, i - 1):
@@ -1619,10 +1621,10 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Find the matching '}'
         i2 = self.find_delim(i, end, ['}'])
-
-        # Sanity checks.
-        assert i2 <= end, (repr(i2), repr(end))
         self.expect_op(i2, '}')
+
+        # Sanity check.
+        assert i2 <= end, (repr(i2), repr(end))
 
         ### To do. Call parse_dict if we see a ':' at the top level.
         i = i2  ### To do
@@ -1796,13 +1798,16 @@ class TokenBasedOrange:  # Orange is the new Black.
         
         Such expressions have no context.
         """
+        # Scan the '('.
         self.expect_op(i, '(')
+
+        # Find the matching ')'.
         i = self.next(i)
         i = self.find_delim(i, end, [')'])
-
-        # Sanity checks.
-        assert i < end, (repr(i), repr(end))
         self.expect_op(i, ')')
+
+        # Sanity check.
+        assert i < end, (repr(i), repr(end))
         return i
     #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement
     def parse_simple_statement(self, i: int) -> int:
@@ -1831,10 +1836,10 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Find the matching ']'
         i2 = self.find_delim(i, end, [']'])
-
-        # Sanity checks.
-        assert i2 <= end, (repr(i2), repr(end))
         self.expect_op(i2, ']')
+
+        # Sanity check.
+        assert i2 <= end, (repr(i2), repr(end))
 
         # Scan self.tokens[i: i2-1] Setting context.
         while i <= i2:
@@ -1920,7 +1925,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Find the next delimiter token, skipping inner expressions.
 
-        Raise an exception if no delim is found.
+        It's not necessarily an error if the delim isn't found, so return None
+        instead of raising an exception.
         """
         # We expect only the following 'op' delims: ',', '=', ')' and ':'.
         for z in delims:
@@ -1963,7 +1969,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                 i += 1
             if self.is_significant_token(token):
                 prev = token
-        self.oops(f"token not found: {delims}")
+        # The caller will usual call self.expect or self.expect_ops,
+        # So return None will usually raise an exception.
         return None
     #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line
     def find_end_of_line(self, i: int) -> int:
