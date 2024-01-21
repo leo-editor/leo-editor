@@ -550,6 +550,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240116040458.1: *4* << TokenBasedOrange: python-related constants >>
     # Statements that must be followed by ':'.
     # https://docs.python.org/3/reference/compound_stmts.html
+
+    # The value of 'name' Tokens denoting Python compound statements.
     compound_statements = [
         'async',  # Must be followed by 'def', 'for', 'with'.
         'class', 'def', 'elif', 'else', 'except', 'for', 'finally', 'if',
@@ -559,6 +561,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     # Statements that must *not* be followed by ':'.
     # https://docs.python.org/3/reference/simple_stmts.html
 
+    # The value of 'name' Tokens denoting Python simple statements.
     simple_statements = [
         # The parser handles assignments and expressions as special cases:
         'assert', 'await', 'break', 'continue', 'del',
@@ -568,13 +571,22 @@ class TokenBasedOrange:  # Orange is the new Black.
         'from', 'import'
     ]
 
-    # Keywords that may appear in ternary operators.
-    expression_keywords = ('for', 'if', 'else')
-
     keywords = compound_statements + simple_statements
 
+    # 'name' tokens that may appear in expressions.
+    expression_keywords = ('for', 'if', 'else')
+
+    # 'name' tokens that may appear in expressions.
+    operator_keywords = (
+        'and', 'in', 'not', 'not in', 'or',  # Operators.
+        'True', 'False', 'None',  # Values.
+    )
+
+    # Tokens denoting strings.
     string_kinds = ('string', 'fstring-start', 'fstring-middle', 'fstring-end')
 
+    # 'name' tokens that may appear in ternary operators.
+    ternary_keywords = ('for', 'if', 'else')
     #@-<< TokenBasedOrange: python-related constants >>
 
     trace_context = False
@@ -899,8 +911,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.lws = new_indent
         self.gen_line_indent()
     #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators
-    operator_keywords = ('and', 'in', 'not', 'not in', 'or')
-
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.token.value
@@ -1166,11 +1176,19 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False
         if kind == 'op' and value in ')]':
             return False
-        if self.is_keyword(prev_token):
+        if kind != 'name':
             return True
-        if kind == 'name':
-            return False
-        return True
+
+        # The hard case: prev_token is a 'name' token.
+        # Any Python keyword indicates a unary operator.
+        return keyword.iskeyword(value) or keyword.issoftkeyword(value)
+
+        ### Legacy
+            # if self.is_keyword(prev_token):
+                # return True
+            # if kind == 'name':
+                # return False
+            # return True
     #@+node:ekr.20240105145241.36: *6* tbo.gen_rt
     def gen_rt(self) -> None:
         """Generate code for a right paren or curly/square bracket."""
@@ -1587,23 +1605,22 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.next(i)
         return i
 
-    #@+node:ekr.20240120202324.1: *6* tbo.parse_expr
-    def parse_expr(self, i: int, end: int, *, context: str) -> int:
+    #@+node:ekr.20240120202324.1: *6* tbo.parse_expr (no known context)
+    def parse_expr(self, i: int, end: int) -> int:
         """
-        Parse an expression spanning self.tokens[i:end], looking for the
-        following token patterns:
+        Parse an expression *without* context spanning self.tokens[i:end],
+        looking for the following token patterns:
             
         - A function call:  'name', '(', ... ')'.
         - A slice:          '[', <expr>? ':' <expr> ':'? <expr>? ']'.
         - A dictionary:     '{', <expr> ':' <expr> '}'.
-        
-        Context is one of ('outer', 'args', 'dict', 'slice')
         """
 
         # Function calls are valid regardless of context.
         while i < end:
             progress = i
             token = self.tokens[i]
+            # Look for a function call.
             if token.kind == 'name' and token.value not in self.expression_keywords:
                 # token.value *can* be in self.keywords. For example, re.match.
                 i = self.next(i)
@@ -1727,7 +1744,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # the top-level orange_command should be > 2.0.
 
         end = self.find_end_of_line(i)
-        return self.parse_expr(i, end, context='outer')
+        return self.parse_expr(i, end)  ### , context='outer')
     #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement
     def parse_simple_statement(self, i: int) -> int:
         """
@@ -1891,20 +1908,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                 prev = token
         self.oops("no matching ')'")
         return len(self.tokens)  # For mypy and pylint.
-    #@+node:ekr.20240106053414.1: *5* tbo.is_keyword
-    def is_keyword(self, token: InputToken) -> bool:
-        """
-        Return True if the token represents a Python keyword.
-
-        But return False for 'True', 'False' or 'None':
-        these can appear in expressions.
-        """
-        value = token.value
-        return (
-            token.kind == 'name'
-            and value not in ('True', 'False', None)
-            and (keyword.iskeyword(value) or keyword.issoftkeyword(value))
-        )
     #@+node:ekr.20240114021152.1: *5* tbo.is_kind
     def is_kind(self, i: int, kind: str) -> bool:
 
