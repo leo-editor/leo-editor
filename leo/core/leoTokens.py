@@ -1468,7 +1468,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 return self.parse_compound_statement(i)
             if token.value in self.simple_statements:
                 return self.parse_simple_statement(i)
-            return self.parse_expression(i)
+            return self.parse_outer_expression(i)
         if (token.kind, token.value) == ('op', '@'):
             return self.parse_decorator(i)
         # Ensure progress.
@@ -1583,12 +1583,28 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.next(i)
         return i
 
-    #@+node:ekr.20240116040636.1: *6* tbo.parse_expression
-    def parse_expression(self, i: int) -> int:
+    #@+node:ekr.20240116040636.1: *6* tbo.parse_outer_expression
+    def parse_outer_expression(self, i: int) -> int:
         """
-        Parse a line containing a 'name' token that isn't one of Python's reserved words.
-
-        For now, we assume the line is an expression.
+        Parse a line that *isn't* a simple or compound statement.
+        See https://docs.python.org/3/reference/expressions.html
+           
+        This method's only purpose is to mark the context of '=' and ':'
+        tokens. It can ignore unrelated subtleties of Python's grammar.
+        
+        1. If the next significant token is a string, just scan it.
+        
+        2. Otherwise, we are looking *only* for the following token patterns:
+               
+        - A function call:  'name', '(', ... ')'.
+        - A slice:          '[', <expr>? ':' <expr> ':'? <expr>? ']'.
+        - A dictionary:     '{', <expr> ':' <expr> '}'.
+        
+        Notes:
+        
+        1. <expr> denotes an inner expression.
+        2. ? denotes optional tokens or expressions.
+        3. '=' tokens within function calls always have 'initializer' context.
         """
         expression_keywords = self.expression_keywords
         # Sanity check.
