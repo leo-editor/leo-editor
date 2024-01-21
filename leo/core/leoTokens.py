@@ -1702,33 +1702,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         if token.kind in self.string_kinds:
             return self.next(i)
 
-        # Find the end of the line.
+        # Find the bounds of the expression.
         # This prepass simplifies all the inner logic.
-        # This "redundant" scanning of tokens means that
-        # the token_ratio in orange_command should be > 2.0.
+
+        # Because expressions are scanned twice the token_ratio in
+        # the top-level orange_command should be > 2.0.
+
         end = self.find_end_of_line(i)
         return self.parse_expr(i, end, context='outer')
-
-        if 0:  ### Legacy code.
-            expression_keywords = self.expression_keywords
-            end = self.find_end_of_line(i)
-            if end is None:
-                end = len(self.tokens)
-
-            # Look for function calls.
-            while i < end:
-                progress = i
-                token = self.tokens[i]
-                if token.kind == 'name' and token.value not in expression_keywords:
-                    # This assert is invalid. For example, re.match.
-                    #   assert token.value not in self.keywords, token
-                    i = self.next(i)
-                    if self.is_op(i, '('):
-                        i = self.parse_call(i)
-                else:
-                    i = self.next(i)
-                assert progress < i, token
-            return end
     #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement
     def parse_simple_statement(self, i: int) -> int:
         """
