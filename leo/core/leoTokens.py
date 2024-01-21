@@ -572,6 +572,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     keywords = compound_statements + simple_statements
 
+    string_kinds = ('string', 'fstring-start', 'fstring-middle', 'fstring-end')
+
     #@-<< TokenBasedOrange: python-related constants >>
 
     trace_context = False
@@ -1583,52 +1585,122 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.next(i)
         return i
 
-    #@+node:ekr.20240116040636.1: *6* tbo.parse_outer_expression
+    #@+node:ekr.20240116040636.1: *6* tbo.parse_outer_expression & helpers
     def parse_outer_expression(self, i: int) -> int:
+        #@+<< docstring: tbo.parse_outer_expression >>
+        #@+node:ekr.20240120201047.1: *7* << docstring: tbo.parse_outer_expression >>
         """
         Parse a line that *isn't* a simple or compound statement.
         See https://docs.python.org/3/reference/expressions.html
            
         This method's only purpose is to mark the context of '=' and ':'
         tokens. It can ignore unrelated subtleties of Python's grammar.
-        
+
         1. If the next significant token is a string, just scan it.
-        
+
         2. Otherwise, we are looking *only* for the following token patterns:
                
         - A function call:  'name', '(', ... ')'.
         - A slice:          '[', <expr>? ':' <expr> ':'? <expr>? ']'.
         - A dictionary:     '{', <expr> ':' <expr> '}'.
-        
+
         Notes:
-        
+
         1. <expr> denotes an inner expression.
         2. ? denotes optional tokens or expressions.
         3. '=' tokens within function calls always have 'initializer' context.
         """
-        expression_keywords = self.expression_keywords
-        # Sanity check.
+        #@-<< docstring: tbo.parse_outer_expression >>
+
         token = self.tokens[i]
-        assert token.kind == 'name', f"expecting 'name', got {token!r}"
+        assert self.is_significant_token(token), (token, g.callers())
 
-        end = self.find_end_of_line(i)
-        if end is None:
-            end = len(self.tokens)
+        # Just scan outer strings and f-strings at the outer level.
+        if token.kind in self.string_kinds:
+            return self.next(i)
 
-        # Look for apparent function calls.
-        while i < end:
-            progress = i
+        return self.parse_expr(i, ['newline'])
+
+        if 0:  ### Legacy code.
+            expression_keywords = self.expression_keywords
+
+
+            ### Wrong ### Consider tuple assignments.
+                # # Sanity check.
+                # token = self.tokens[i]
+                # assert token.kind == 'name', f"expecting 'name', got {token!r}"
+
+            ### To do: scan_expression line.
+
+            end = self.find_end_of_line(i)
+            if end is None:
+                end = len(self.tokens)
+
+            # Look for apparent function calls.
+            while i < end:
+                progress = i
+                token = self.tokens[i]
+                if token.kind == 'name' and token.value not in expression_keywords:
+                    # This assert is invalid. For example, re.match.
+                    #   assert token.value not in self.keywords, token
+                    i = self.next(i)
+                    if self.is_op(i, '('):
+                        i = self.parse_call(i)
+                else:
+                    i = self.next(i)
+                assert progress < i, token
+            return end
+    #@+node:ekr.20240120202324.1: *7* tbo.parse_expr
+    def parse_expr(self, i: int, end_tokens: list[str]) -> int:
+        """
+        Parse an inner expression, looking for the following token patterns:
+            
+        - A function call:  'name', '(', ... ')'.
+        - A slice:          '[', <expr>? ':' <expr> ':'? <expr>? ']'.
+        - A dictionary:     '{', <expr> ':' <expr> '}'.
+        
+        end_tokens denotes the token or tokens that will end the expression.
+        
+        The valid values are 'newline', 'op:<val>', or a valid token.kind.
+        """
+
+        expression_keywords = self.expression_keywords
+
+        #@+<< define function: at_end >>
+        #@+node:ekr.20240120204020.1: *8* << define function: at_end >>
+        def at_end(i: int) -> bool:
+            """Return True if self.tokens[i] matches the end_tokens arg."""
             token = self.tokens[i]
-            if token.kind == 'name' and token.value not in expression_keywords:
-                # This assert is invalid. For example, re.match.
-                #   assert token.value not in self.keywords, token
-                i = self.next(i)
-                if self.is_op(i, '('):
-                    i = self.parse_call(i)
-            else:
-                i = self.next(i)
-            assert progress < i, token
-        return end
+            for end_token in end_tokens:
+                if end_token == 'newline' and token.kind in ('newline', 'nl', 'endmarker'):
+                    return True
+                if end_token == token.kind:
+                    return True
+                if end_token == 'op' and token.val == end_token[3:]:
+                    return True
+            return False
+        #@-<< define function: at_end >>
+
+        return self.next(i)  ### Prototype only!
+
+        if 0:  # Legacy.
+            end = self.find_end_of_line(i)
+            if end is None:
+                end = len(self.tokens)
+            # Look for apparent function calls.
+            while i < end:
+                progress = i
+                token = self.tokens[i]
+                if token.kind == 'name' and token.value not in expression_keywords:
+                    # This assert is invalid. For example, re.match.
+                    #   assert token.value not in self.keywords, token
+                    i = self.next(i)
+                    if self.is_op(i, '('):
+                        i = self.parse_call(i)
+                else:
+                    i = self.next(i)
+                assert progress < i, token
+            return end
     #@+node:ekr.20240107143500.1: *6* tbo.parse_from
     def parse_from(self, i: int) -> int:
         """
