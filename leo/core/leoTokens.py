@@ -1931,6 +1931,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             if z not in ',=)}]:':
                 self.oops(f"Invalid delim: {z!r}")
 
+        # The opening delim must *not* be the delim we are searching for.
         for open_delim, close_delim in (('(', ')'), ('[', ']'), ('{', '}')):
             if close_delim in delims and self.is_op(i, open_delim):
                 self.oops(f"The first token is {open_delim!r}")
