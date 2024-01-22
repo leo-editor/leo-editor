@@ -833,6 +833,7 @@ class TestTokenBasedOrange(BaseTest):
         # See https://peps.python.org/pep-0008/#other-recommendations
 
         tag = 'test_slice'
+        fail_fast = True
 
         # Except where noted, all entries are expected values....
         table = (
@@ -881,6 +882,9 @@ class TestTokenBasedOrange(BaseTest):
                         f"  contents: {contents.rstrip()}\n"
                         f"     black: {expected.rstrip()}\n"
                         f"    orange: {results.rstrip() if results else 'None'}")
+            if fail_fast:
+                self.assertEqual(expected, results)
+
         self.assertEqual(fails, 0)
     #@+node:ekr.20240105153425.76: *3* TestTBO.test_star_star_operator
     def test_star_star_operator(self):

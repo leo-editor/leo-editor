@@ -747,7 +747,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
         # Print the diffs for testing!
-        ### if diff_only:
         if self.diff:
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
@@ -977,12 +976,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.clean('blank')  # Important!
         self.clean('line-indent')
         t = self.gen_token('line-end', '\n')
-
-        # Distinguish between kinds of 'line-end' tokens.
-
-        ### Never used!
-        ### t.newline_kind = self.token.kind
-
         return t
     #@+node:ekr.20240105145241.33: *6* tbo.gen_line_indent
     def gen_line_indent(self) -> None:
@@ -1051,11 +1044,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                 f"   {self.index:3} {g.callers(1):18} {' '*4}"
                 f" {context_s:18}  Line: {self.token.line!r}"
             )
-
-        ### Retire the botch (scan_slice)
-            # if context is None:
-                # # Find the boundaries of the slice: the enclosing square brackets.
-                # context = self.scan_slice()
 
         # Generate the proper code using the context supplied by the parser.
         self.clean('blank')
@@ -1184,13 +1172,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         # The hard case: prev_token is a 'name' token.
         # Any Python keyword indicates a unary operator.
         return keyword.iskeyword(value) or keyword.issoftkeyword(value)
-
-        ### Legacy
-            # if self.is_keyword(prev_token):
-                # return True
-            # if kind == 'name':
-                # return False
-            # return True
     #@+node:ekr.20240105145241.36: *6* tbo.gen_rt
     def gen_rt(self) -> None:
         """Generate code for a right paren or curly/square bracket."""
@@ -1210,7 +1191,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Put a '*' op, with special cases for *args."""
         val = self.token.value
         context = self.token.context
-        ### prev = self.code_list[-1]
 
         self.clean('blank')
         if context == 'arg':
@@ -1225,7 +1205,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Put a ** operator, with a special case for **kwargs."""
         val = self.token.value
         context = self.token.context
-        ### prev = self.code_list[-1]
 
         self.clean('blank')
         if context == 'arg':
@@ -1471,10 +1450,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.parse_call_arg(i, end)  # Sets context.
             assert progress < i, 'parse_call_args: no progress!'
 
-        # Sanity checks.
-        ### assert i <= i2 <= end, repr((i, i2, end))
-        self.expect_op(i2, ')')
-        return i2  # Do not scan past the ')'.
+        # Do not scan past the ')'.
+        return i2
     #@+node:ekr.20240113054641.1: *5* tbo.parse_statement & statement helpers
     def parse_statement(self, i: int) -> int:
         """
@@ -1505,13 +1482,11 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Find i1 and i2, the boundaries of the argument list.
         self.expect_op(i1, '(')
-        ### self.expect_op(end, ')')
 
         # Scan the arguments.
         i = self.parse_call_args(i1, end)
 
-        # Sanity checks.
-        ### assert i <= end, (i, g.callers())
+        # Sanity check.
         self.expect_op(i, ')')
         return self.next(i)
     #@+node:ekr.20240115101846.1: *6* tbo.parse_class_or_def
@@ -1835,7 +1810,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # the top-level orange_command should be > 2.0.
 
         end = self.find_end_of_line(i)
-        return self.parse_expr(i, end)  ### , context='outer')
+        return self.parse_expr(i, end)
     #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement
     def parse_simple_statement(self, i: int) -> int:
         """
@@ -2119,7 +2094,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         Raise InternalBeautifierError if a matching delim2 is not found.
         """
         self.expect_op(i, delim1)
-        ### context = None  ###
         if context:
             self.set_context(i, context)
         i = self.next(i)
