@@ -833,7 +833,7 @@ class TestTokenBasedOrange(BaseTest):
         # See https://peps.python.org/pep-0008/#other-recommendations
 
         tag = 'test_slice'
-        fail_fast = True
+        fail_fast = False
 
         # Except where noted, all entries are expected values....
         table = (
