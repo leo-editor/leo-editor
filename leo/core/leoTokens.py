@@ -225,8 +225,8 @@ class InputToken:  # leoTokens.py.
         self.value = value
 
     def __repr__(self) -> str:  # pragma: no cover
-        s = f"{self.index:<3} {self.kind:}"
-        return f"Token {s}: {self.show_val(20)}"
+        s = f"{self.index:<5} {self.kind:>6}"
+        return f"Token {s}: {self.show_val(8):12}"
 
     __str__ = __repr__
 
@@ -262,7 +262,7 @@ class InputToken:  # leoTokens.py.
         """Dump a token for error message."""
         return f"index: {self.index:<3} {self.kind:>12} {self.show_val(20):<20}"
     #@+node:ekr.20240105140814.58: *4* itoken.show_val
-    def show_val(self, truncate_n: int = 20) -> str:  # pragma: no cover
+    def show_val(self, truncate_n: int = 8) -> str:  # pragma: no cover
         """Return the token.value field."""
         if self.kind in ('ws', 'indent'):
             val = str(len(self.value))
@@ -1041,11 +1041,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         context = self.token.context
         prev_i = self.prev(self.index)
         prev = self.tokens[prev_i]
+
         # Match the trace in set_context.
         if self.trace_context:
             context_s = context if context else '<no context>'
             g.trace(
-                f"   {self.index:3} {g.callers(1):18} {' '*4}"
+                f"   {self.index:5} {g.callers(1):18} {' '*4}"
                 f" {context_s:18}  Line: {self.token.line!r}"
             )
 
@@ -1162,21 +1163,27 @@ class TokenBasedOrange:  # Orange is the new Black.
         if val not in '+-':
             return False
         # Get the previous significant token.
-        prev_i = self.prev(i)  ### self.index)
+        prev_i = self.prev(i)
         prev_token = self.tokens[prev_i]
         kind, value = prev_token.kind, prev_token.value
         if kind in ('number', 'string'):
-            return False
-        if kind == 'op' and value in ')]':
-            return False
-        if kind == 'op' and value == ':':
-            return True
-        if kind != 'name':
-            return True
+            return_val = False
+        elif kind == 'op' and value in ')]':
+            return_val = False
+        elif kind == 'op' and value in '{([:':
+            return_val = True
+        elif kind != 'name':
+            return_val = True
+        else:
+            # The hard case: prev_token is a 'name' token.
+            # Any Python keyword indicates a unary operator.
+            return_val = keyword.iskeyword(value) or keyword.issoftkeyword(value)
 
-        # The hard case: prev_token is a 'name' token.
-        # Any Python keyword indicates a unary operator.
-        return keyword.iskeyword(value) or keyword.issoftkeyword(value)
+        if 0:  ### Everything looks good.
+            g.trace(
+                f"Returns {int(return_val)} {i:<5}",
+                prev_token, self.tokens[i], self.tokens[i].line.strip())
+        return return_val
     #@+node:ekr.20240105145241.36: *6* tbo.gen_rt
     def gen_rt(self) -> None:
         """Generate code for a right paren or curly/square bracket."""
@@ -1762,6 +1769,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         for colon_i in colons:
             self.set_context(colon_i, final_context)
 
+        if False and colons:  ###
+            g.trace(f"{i:<5} {final_context:12} {self.tokens[i1].line.strip()}")  ###
+
         # Ignore i.
         return self.next(i2)
     #@+node:ekr.20240107143500.1: *6* tbo.parse_from
@@ -2123,13 +2133,18 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.oops(f"Unexpected context! {context!r}")
 
         token = self.tokens[i]
+
+        if False and context.endswith('-slice'):  ###
+            g.trace(f"{i:5} {context:12} {token} {token.line.strip()}")
+
+        # Match the trace in gen_colon
         if token.context:
             if self.trace_context:
-                g.trace(f"{i:4} {g.callers(1):18} OLD: {context:18} Token: {token}")
+                g.trace(f"{i:5} {g.callers(1):18} OLD: {context:18} Token: {token}")
         else:
             # An excellent trace for debugging context.
             if self.trace_context:
-                g.trace(f"{i:4} {g.callers(1):18} NEW: {context:18} Token: {token}")
+                g.trace(f"{i:5} {g.callers(1):18} NEW: {context:18} Token: {token}")
             token.context = context
     #@+node:ekr.20240115071938.1: *5* tbo.skip_* & helper
     # These methods all raise InternalBeautifierError if the matching delim is not found.
