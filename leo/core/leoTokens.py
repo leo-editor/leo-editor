@@ -109,7 +109,10 @@ def orange_command(
             # Report any unusual scanned/total ratio.
             scanned, tokens = tbo.n_scanned_tokens, len(tbo.tokens)
             token_ratio: float = scanned / tokens
-            # The ratio should be at least 2.0 because tbo scans expressions twice.
+
+            # Check the ratio: calls to tbo.next/total tokens.
+            # This check verifies that there are no serious performance issues.
+            # For Leo's sources, this ratio ranges between 0.48 and 1.51.
             if token_ratio > 2.5:
             # A useful performance measure.
                 print('')
@@ -500,7 +503,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         
     - This class does not use Python's parse tree in any way.
 
-      Instead, this class contains a "good-enough" recursuve parser that
+      Instead, this class contains a "good-enough" recursive parser that
       discovers the context for input tokens requiring help. See
       tbo.set_context for details.
       
@@ -598,7 +601,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     def __init__(self, settings: Settings = None):
         """Ctor for Orange class."""
 
-        # Global performance count.
+        # Global count of the number of calls to tbo.next and tbo.prev.
+        # See the docstrings of tbo.next and orange_command for details.
         self.n_scanned_tokens = 0
 
         # Set default settings.
@@ -949,7 +953,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         - NEWLINE tokens end *logical* lines of Python code.
 
-        - NL tokens end *physical* lines. They appear whe when a logical line
+        - NL tokens end *physical* lines. They appear when when a logical line
           of code spans multiple physical lines.
         """
         # Only do_newline and do_nl should call this method.
@@ -1030,7 +1034,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240105145241.31: *6* tbo.gen_colon & helper (called the botch)
+    #@+node:ekr.20240105145241.31: *6* tbo.gen_colon & helper
     def gen_colon(self) -> None:
         """Handle a colon."""
         val = self.token.value
@@ -1900,6 +1904,9 @@ class TokenBasedOrange:  # Orange is the new Black.
     def find_delim(self, i: int, end: int, delims: list) -> int:
         """
         Find the next delimiter token, skipping inner expressions.
+        
+        The *caller* is responsible for scanning an opening '(', '[', or '{'
+        token when the delims list contains ')', ']', or '}'.
 
         It's not necessarily an error if the delim isn't found, so return None
         instead of raising an exception.
@@ -2009,6 +2016,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         Return the next *significant* token in the list of *input* tokens.
 
         Ignore whitespace, indentation, comments, etc.
+        
+        The **Global Token Ratio** is tbo.n_scanned_tokens / len(tbo.tokens),
+        where tbo.n_scanned_tokens is the total number of calls calls to
+        tbo.next or tbo.prev.
+        
+        For Leo's sources, this ratio ranges between 0.48 and 1.51!
+        
+        The orange_command function warns if this ratio is greater than 2.5.
+        Previous versions of this code suffered much higher ratios.
         """
         i += 1
         while i < len(self.tokens):
