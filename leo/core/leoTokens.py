@@ -1042,12 +1042,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         prev_i = self.prev(self.index)
         prev = self.tokens[prev_i]
 
+        ### To do: remove set_trace_context ivar.
+
         # Match the trace in set_context.
         if self.trace_context:
             context_s = context if context else '<no context>'
             g.trace(
                 f"   {self.index:5} {g.callers(1):18} {' '*4}"
-                f" {context_s:18}  Line: {self.token.line!r}"
+                f" {context_s:18}  Line: {self.token.line_number} {self.token.line!r}"
             )
 
         # Generate the proper code using the context supplied by the parser.
@@ -1100,11 +1102,12 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         val = self.token.value
         context = self.token.context
+        ### g.trace(repr(context), self.token)
         if context == 'initializer':
             # Pep 8: Don't use spaces around the = sign when used to indicate
             #        a keyword argument or a default parameter value.
-            #        However, hen combining an argument annotation with a default value,
-            #        *do* use spaces around the = sign
+            #        However, when combining an argument annotation with a default value,
+            #        *do* use spaces around the = sign.
             self.clean('blank')
             self.gen_token('op-no-blanks', val)
         else:
@@ -1147,6 +1150,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             prev = self.code_list[-1]
             if prev.kind == 'lt':
                 self.gen_token('op-no-blanks', val)
+            elif (prev.kind, prev.value) == ('op', ':'):
+                self.gen_token('op-no-blanks', val)
             else:
                 self.gen_blank()
                 self.gen_token('op-no-blanks', val)
@@ -1179,7 +1184,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Any Python keyword indicates a unary operator.
             return_val = keyword.iskeyword(value) or keyword.issoftkeyword(value)
 
-        if 0:  ### Everything looks good.
+        if 0:  ###
             g.trace(
                 f"Returns {int(return_val)} {i:<5}",
                 prev_token, self.tokens[i], self.tokens[i].line.strip())
@@ -1395,7 +1400,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # An important sanity check.
         assert i == end, repr((i, end))
         return i
-    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg (Finish later)
+    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
     def parse_call_arg(self, i1: int, end: int) -> int:
         """
         Scan a single function definition argument.
@@ -1415,9 +1420,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = self.find_delim(i, end, [',', '=', ')'])
         self.expect_ops(i, [',', '=', ')'])
 
-        if 0:  ###
-            g.trace('TAIL', i, self.tokens[i])
-            g.printObj(self.tokens[i1 : i + 1], tag=f"{g.my_name()}")
+        ###
+            # g.trace('TAIL', i, self.tokens[i])
+            # g.printObj(self.tokens[i1 : i + 1], tag=f"{g.my_name()}")
 
         # Handle the tail.
         if self.is_op(i, ')'):
@@ -1427,12 +1432,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             # Handle the initializer, setting context for '='
             self.expect_op(i, '=')
-            if 1:
-                ### To do ???
-                # Don't try to parse!
-                i = self.find_delim(i, end, [',', ')'])
-            else:
-                i = self.parse_initializer(i, end, has_annotation=False)
+            i = self.parse_initializer(i, end, has_annotation=False)
             self.expect_ops(i, [',', ')'])
             if self.is_op(i, ','):
                 i = self.next(i)
