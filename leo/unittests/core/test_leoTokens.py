@@ -217,7 +217,7 @@ class TestTokenBasedOrange(BaseTest):
         tbo.filename = path
 
         if 0:  # Diff only.
-            tbo.beautify_file(path, diff_only=True)
+            tbo.beautify_file(path)
         else:
             contents, tokens = self.make_file_data(path)
             expected = contents
@@ -539,16 +539,44 @@ class TestTokenBasedOrange(BaseTest):
             g.printObj(expected, tag='Explected (blackened)')
             g.printObj(results, tag='Results')
         self.assertEqual(results, expected)
-    #@+node:ekr.20240107080413.1: *3* TestTBO.test_function_call
-    def test_function_call(self):
+    #@+node:ekr.20240107080413.1: *3* TestTBO.test_function_calls (to do)
+    def test_function_calls(self):
 
-        contents = """
-            version = str(semantic_version.Version.coerce(tag, partial=True))
-        """
-        contents, tokens = self.make_data(contents)
-        expected = contents
-        results = self.beautify(contents, tokens)
-        self.assertEqual(results, expected)
+        table = (
+            # Case 0: (legacy)
+            """version = str(semantic_version.Version.coerce(tag, partial=True))\n""",
+            # Case 1: leoApp, line 1657
+            ("""
+                if home and len(home) > 1 and home[0] == '%' and home[-1] == '%':
+                    # Get the indirect reference to the true home.
+                    home = os.getenv(home[1:-1], default=None)
+            """),
+            # Case 2: LeoApp.py, line 1872.
+            ("""
+                if path.startswith(tag):
+                    return self.computeBindingLetter(c, path=path[len(tag) :])
+            """),
+            # Case 3: LeoApp.py, line 3416.
+            ("""
+                if groupedEntries:
+                    dirCount: dict[str, Any] = {}
+                    for fileName in rf.getRecentFiles()[:n]:
+                        dirName, baseName = g.os_path_split(fileName)
+            """),
+        )
+        fails = 0
+        for i, contents in enumerate(table):
+            contents, tokens = self.make_data(contents)
+            expected = self.blacken(contents).rstrip() + '\n'
+            results = self.beautify(contents, tokens)
+            if results != expected:
+                fails += 1
+                g.printObj(contents, tag='Contents')
+                g.printObj(expected, tag='Expected (blackened)')
+                g.printObj(results, tag='Results')
+        self.assertEqual(fails, 0)
+
+       
     #@+node:ekr.20240105153425.57: *3* TestTBO.test_function_defs
     def test_function_defs(self):
 
