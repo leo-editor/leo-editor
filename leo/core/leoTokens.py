@@ -1142,7 +1142,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Add a unary or binary op to the token list."""
         val = self.token.value
         self.clean('blank')
-        if self.is_unary_op(val):
+        if self.is_unary_op(self.index, val):
             prev = self.code_list[-1]
             if prev.kind == 'lt':
                 self.gen_token('op-no-blanks', val)
@@ -1155,20 +1155,22 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_blank()
 
     #@+node:ekr.20240109082712.1: *7* tbo.is_unary_op
-    def is_unary_op(self, val: str) -> bool:
+    def is_unary_op(self, i: int, val: str) -> bool:
 
         if val == '~':
             return True
         if val not in '+-':
             return False
         # Get the previous significant token.
-        prev_i = self.prev(self.index)
+        prev_i = self.prev(i)  ### self.index)
         prev_token = self.tokens[prev_i]
         kind, value = prev_token.kind, prev_token.value
         if kind in ('number', 'string'):
             return False
         if kind == 'op' and value in ')]':
             return False
+        if kind == 'op' and value == ':':
+            return True
         if kind != 'name':
             return True
 
@@ -1386,7 +1388,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # An important sanity check.
         assert i == end, repr((i, end))
         return i
-    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg (Finish)
+    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg (Finish later)
     def parse_call_arg(self, i1: int, end: int) -> int:
         """
         Scan a single function definition argument.
@@ -1695,12 +1697,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Sanity check.
         assert i < end, (repr(i), repr(end))
         return i
-    #@+node:ekr.20240121024213.1: *7* tbo.parse_slice (Finish)
+    #@+node:ekr.20240121024213.1: *7* tbo.parse_slice
     def parse_slice(self, i1: int, end: int) -> int:
         """
         Parse '[', ..., ']'.
         
-        Set the context for ':' tokens to 'simple-slice' or 'complex-slice'.
+        Set the context for ':' tokens to 'simple-slice' or 'complex-slice'.    
         """
 
         # Scan the '['.
@@ -1708,16 +1710,57 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = self.next(i1)
 
         # Find the matching ']'
+        # Note: this will set context appropriately for all inner ':' tokens.
         i2 = self.find_delim(i, end, [']'])
         self.expect_op(i2, ']')
-
-        # Sanity check.
         assert i2 <= end, (repr(i2), repr(end))
 
-        # Scan self.tokens[i: i2-1] Setting context.
-        while i <= i2:
-            ### To do.
-            i = self.next(i)
+        # Find all outer tokens and compute final_context.
+
+        colons: list[int] = []  # List of outer ':' to be given context.
+        final_context: str = 'simple-slice'  # May become 'complex-slice'.
+        inter_colon_tokens = 0
+
+        def update_context(i: int) -> None:
+            nonlocal colons, final_context, inter_colon_tokens
+            inter_colon_tokens += 1
+            if colons and inter_colon_tokens > 1:
+                final_context = 'complex-slice'
+
+        while i < i2:  # Don't scan the ']' token again.
+            progress = i
+            token = self.tokens[i]
+            value = token.value
+            if token.kind == 'op':
+                if value == ':':
+                    colons.append(i)
+                    inter_colon_tokens = 0
+                    i = self.next(i)
+                elif value in '+-':
+                    # Don't update context for unary ops.
+                    if not self.is_unary_op(i, value):
+                        update_context(i)
+                    i = self.next(i)
+                elif value == '(':
+                    i = self.parse_parenthesized_expr(i, end)
+                    final_context = 'complex-slice'
+                elif value == '[':
+                    i = self.parse_slice(i, end)
+                    final_context = 'complex-slice'
+                elif value == '{':
+                    i = self.parse_dict_or_set(i, end)
+                    final_context = 'complex-slice'
+                else:
+                    update_context(i)
+                    i = self.next(i)
+            else:
+                update_context(i)
+                i = self.next(i)
+            assert progress < i, (token.kind, value)
+
+        # Set the context of all outer-level ':' tokens.
+        for colon_i in colons:
+            self.set_context(colon_i, final_context)
 
         # Ignore i.
         return self.next(i2)
