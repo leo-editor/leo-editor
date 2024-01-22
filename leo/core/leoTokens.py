@@ -1057,7 +1057,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_token('op', val)
             self.gen_blank()
         elif context == 'simple-slice':
-            ### g.trace('simple-slice', self.token.line.strip())  ###
             self.gen_token('op-no-blanks', val)
         elif context == 'end-statement':
             self.gen_token('op-no-blank', val)
@@ -1387,7 +1386,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # An important sanity check.
         assert i == end, repr((i, end))
         return i
-    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
+    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg (Finish)
     def parse_call_arg(self, i1: int, end: int) -> int:
         """
         Scan a single function definition argument.
@@ -1434,7 +1433,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             if self.is_op(i3, '='):
                 self.set_context(i3, 'initializer')
             elif self.is_ops(i3, ['*', '**']):
-                self.set_context(i3, 'expression')  ### Experimental.
+                self.set_context(i3, 'expression')
         return i
     #@+node:ekr.20240107092458.1: *5* tbo.parse_call_args
     def parse_call_args(self, i1: int, end: int) -> int:
@@ -2062,7 +2061,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         =====       =================
         ':'         'annotation', 'dict', 'end-statement'
                     'complex-slice', 'simple-slice'
-        '='         'annotation', 'initializer'
+        '='         'annotation', 'expression', 'initializer'
         '*', '**'   'arg', 'expression'
         '.'         'from', 'import'
         '{', '}'    'dict'  (denotes that the dict has been scanned).
