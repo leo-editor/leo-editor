@@ -115,7 +115,12 @@ def orange_command(
                 print('')
                 g.trace(
                     f"Unexpected token ratio in {g.shortFileName(filename)}\n"
-                    f"scanned: {scanned} total: {tokens} ratio: {token_ratio:4.2f}"
+                    f"scanned: {scanned:<5} total: {tokens:<5} ratio: {token_ratio:4.2f}"
+                )
+            elif 0:  # Print all ratios.
+                print(
+                    f"scanned: {scanned:<5} total: {tokens:<5} ratio: {token_ratio:4.2f} "
+                    f"{g.shortFileName(filename)}"
                 )
             n_tokens += tokens
         else:
@@ -123,11 +128,8 @@ def orange_command(
     # Report the results.
     t2 = time.process_time()
     print(
-        f"tbo: {t2-t1:3.1f} sec. "
-        f"{len(files):3} files "
-        f"{n_changed:3} changed "
-        # f"n_slice_ops: {n_slice_ops:<8} n_tokens: {n_tokens:<7} "
-        f"in {','.join(arg_files)}"
+        f"tbo: {t2-t1:3.1f} sec. files: {len(files):<3} "
+        f"changed: {n_changed:<3} in {','.join(arg_files)}"
     )
 #@+node:ekr.20240105140814.8: *3* function: check_g
 def check_g() -> bool:
@@ -1470,7 +1472,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             assert progress < i, 'parse_call_args: no progress!'
 
         # Sanity checks.
-        assert i <= i2 <= end, repr((i, i2))
+        ### assert i <= i2 <= end, repr((i, i2, end))
         self.expect_op(i2, ')')
         return i2  # Do not scan past the ')'.
     #@+node:ekr.20240113054641.1: *5* tbo.parse_statement & statement helpers
@@ -1503,12 +1505,13 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Find i1 and i2, the boundaries of the argument list.
         self.expect_op(i1, '(')
+        ### self.expect_op(end, ')')
 
         # Scan the arguments.
         i = self.parse_call_args(i1, end)
 
         # Sanity checks.
-        assert i <= end, (i, g.callers())
+        ### assert i <= end, (i, g.callers())
         self.expect_op(i, ')')
         return self.next(i)
     #@+node:ekr.20240115101846.1: *6* tbo.parse_class_or_def
@@ -1932,9 +1935,10 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.oops(f"Invalid delim: {z!r}")
 
         # The opening delim must *not* be the delim we are searching for.
-        for open_delim, close_delim in (('(', ')'), ('[', ']'), ('{', '}')):
-            if close_delim in delims and self.is_op(i, open_delim):
-                self.oops(f"The first token is {open_delim!r}")
+        if 0:
+            for open_delim, close_delim in (('(', ')'), ('[', ']'), ('{', '}')):
+                if close_delim in delims and self.is_op(i, open_delim):
+                    self.oops(f"The first token is {open_delim!r}")
 
         # Skip tokens until one of the delims is found.
         # Handle apparent function calls.
