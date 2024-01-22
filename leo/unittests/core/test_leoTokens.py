@@ -794,6 +794,7 @@ class TestTokenBasedOrange(BaseTest):
             """return -1""",
         )
         fails = 0
+        fail_fast = True
         for i, contents in enumerate(table):
             description = f"{tag} part {i}"
             contents, tokens = self.make_data(contents, description=description)
@@ -807,7 +808,10 @@ class TestTokenBasedOrange(BaseTest):
                     f"  contents: {contents.rstrip()}\n"
                     f"     black: {expected.rstrip()}\n"
                     f"    orange: {results.rstrip() if results else 'None'}")
-        self.assertEqual(fails, 0)
+            if fail_fast:
+                self.assertEqual(results, expected, msg=description)
+        if not fail_fast:
+            self.assertEqual(fails, 0)
     #@+node:ekr.20240105153425.70: *3* TestTBO.test_relative_imports
     def test_relative_imports(self):
 
@@ -948,7 +952,7 @@ class TestTokenBasedOrange(BaseTest):
         # See https://peps.python.org/pep-0008/#pet-peeves
         # See https://peps.python.org/pep-0008/#other-recommendations
 
-        tag = 'test_unary_ops'
+        tag = 'test_unary_op'
 
         # All entries are expected values....
         table = (
@@ -962,6 +966,7 @@ class TestTokenBasedOrange(BaseTest):
             """v = -1 if a < b else -2""",
         )
         fails = 0
+        fail_fast = True
         for i, contents in enumerate(table):
             description = f"{tag} part {i}"
             contents, tokens = self.make_data(contents, description=description)
@@ -971,11 +976,14 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 print('')
                 print(
-                    f"TestTokenBasedOrange.test_one_line_pet_peeves: FAIL {fails}\n"
+                    f"TestTokenBasedOrange.{tag}: FAIL {fails}\n"
                     f"  contents: {contents.rstrip()}\n"
                     f"     black: {expected.rstrip()}\n"
                     f"    orange: {results.rstrip() if results else 'None'}")
-        self.assertEqual(fails, 0)
+            if fail_fast:
+                self.assertEqual(results, expected, msg=description)
+        if not fail_fast:
+            self.assertEqual(fails, 0)
     #@+node:ekr.20240105153425.79: *3* TestTBO.test_verbatim
     def test_verbatim(self):
 
