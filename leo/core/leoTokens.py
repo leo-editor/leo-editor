@@ -1056,13 +1056,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         context = self.token.context
         prev_i = self.prev(self.index)
         prev = self.tokens[prev_i]
-        trace = self.trace
+        trace = self.trace  ###
 
-        ### To do: remove set_trace_context ivar.
-
-        if trace:
+        if trace:  ###
             context_s = context if context else '<no context>'
-            # g.trace(f"{self.index:5} {g.callers(1)} context: {context_s}  {self.token.line!r}")
             g.trace(f"context: {context_s}")
 
         # Generate the proper code using the context supplied by the parser.
@@ -1157,7 +1154,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.clean('blank')
             self.gen_token('op-no-blanks', val)
-    #@+node:ekr.20240105145241.37: *6* tbo.gen_possible_unary_op & helper
+    #@+node:ekr.20240105145241.37: *6* tbo.gen_possible_unary_op & helper (now simpler)
     def gen_possible_unary_op(self) -> None:
         """Add a unary or binary op to the token list."""
         val = self.token.value
@@ -1425,7 +1422,10 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Set context for every '=' operator.
         """
-        trace = self.trace
+
+        # This is similar to parse_expr, but this code must handle initializers.
+
+        trace = True or self.trace
 
         if trace:
             g.trace(i1, self.tokens[i1].line.rstrip())  ###
@@ -1443,8 +1443,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.is_op(i, '('):
             i = self.next(i)
         i = self.find_delim(i, end, [',', '=', ')'])
-        if i is None:
-            breakpoint()  ###
+
         self.expect_ops(i, [',', '=', ')'])
 
         if self.trace:  ###
@@ -1647,9 +1646,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         - A function call:  'name', '(', ..., ')'.
         - A slice:          '[', ..., ']'.
         - A dictionary:     '{', ..., '}'.
+        
+        Set the appropriate context for all inner expressions.
         """
-
-        # Function calls are valid regardless of context.
         while i < end:
             progress = i
             token = self.tokens[i]
@@ -1705,7 +1704,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             # The opening '{' starts a non-empty dict.
             self.parse_dict(i1, i2)
         return self.next(end)
-    #@+node:ekr.20240121073925.1: *7* tbo.parse_dict (test)
+    #@+node:ekr.20240121073925.1: *7* tbo.parse_dict
     def parse_dict(self, i1: int, end: int) -> None:
         """
         Parse '[', ..., ']'.
@@ -1999,7 +1998,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 level -= 1
             i += 1
         return None
-    #@+node:ekr.20240114063347.1: *5* tbo.find_delim
+    #@+node:ekr.20240114063347.1: *5* tbo.find_delim (now calls parse_*)
     def find_delim(self, i1: int, end: int, delims: list) -> int:
         """
         Find the next delimiter token, skipping inner expressions.
@@ -2056,7 +2055,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if trace:
             g.trace(f"{' '*26}Not found\n")
         return None
-    #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line
+    #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line (now calls skip_*)
     def find_end_of_line(self, i: int) -> Optional[int]:
         """
         Return the index the next 'newline', 'nl' or 'endmarker' token,

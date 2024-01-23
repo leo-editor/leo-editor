@@ -757,6 +757,8 @@ class TestTokenBasedOrange(BaseTest):
         # Except where noted, all entries are expected values....
 
         table = (
+            ### Latest fail: duplicate
+            """f({key: 1})""",  ### Duplicate.
             # Assignments...
             """a = b * c""",
             """a = b + c""",
