@@ -595,7 +595,9 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@-<< TokenBasedOrange: python-related constants >>
     #@+<< TokenBasedOrange: trace var >>
     #@+node:ekr.20240122192157.1: *4* << TokenBasedOrange: trace var >>
-    trace = False  # For temporary tracing sets.
+    ### Not a great idea.
+
+    ### trace = False  # For temporary tracing sets.
     #@-<< TokenBasedOrange: trace var >>
 
     #@+others
@@ -942,8 +944,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Add a word request to the code list."""
         assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
-        if self.trace:
-            g.trace(s)  ###
         self.gen_blank()
         self.gen_token('word', s)
         self.gen_blank()
@@ -952,8 +952,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Add a word-op request to the code list."""
         assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
-        if self.trace:
-            g.trace(s)  ###
         self.gen_blank()
         self.gen_token('word-op', s)
         self.gen_blank()
@@ -1056,7 +1054,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         context = self.token.context
         prev_i = self.prev(self.index)
         prev = self.tokens[prev_i]
-        trace = self.trace  ###
+
+        trace = False  ###
 
         if trace:  ###
             context_s = context if context else '<no context>'
@@ -1415,7 +1414,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # An important sanity check.
         assert i == end, repr((i, end))
         return i
-    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg (****rewrite)
+    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg (***test)
     def parse_call_arg(self, i1: int, end: int) -> int:
         """
         Scan a single function definition argument.
@@ -1423,7 +1422,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Set context for every '=' operator.
         """
 
-        trace = True or self.trace
+        trace = False  ###
 
         if trace:
             g.trace(i1, self.tokens[i1].line.rstrip())  ###
@@ -1437,14 +1436,13 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan an arbitrary expression, separated by ',' or '=' or ')'.
         # This is similar to parse_expr, but this code must handle initializers.
-
         while i < end:
             progress = i
             token = self.tokens[i]
             kind, value = token.kind, token.value
             g.trace(token)  ###
             if kind == 'name':
-                if False:  ### value not in self.expression_keywords:
+                if value not in self.expression_keywords:
                     # A function call.
                     # token.value *can* be in self.keywords. For example, re.match.
                     i = self.next(i)
@@ -1457,9 +1455,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                     break
                 for delim1, delim2 in (('(', ')'), ('[', ']'), ('{', '}')):
                     if self.is_op(i, delim1):
+                        # Handle all inner groups
                         i = self.next(i)
-                        ### i = self.find_delim(i, end, [',', '=', delim2])
-                        ### self.expect_ops(i, [',', '=', delim2])
                         i = self.find_delim(i, end, [delim2])
                         self.expect_op(i, delim2)
                         i = self.next(i)
@@ -1468,6 +1465,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                     i = self.next(i)
             else:
                 i = self.next(i)
+            if i is None:
+                self.oops(f"No next: {token}")
             assert progress < i, token
 
         if trace:  ###
@@ -1497,14 +1496,14 @@ class TokenBasedOrange:  # Orange is the new Black.
             elif self.is_ops(i3, ['*', '**']):
                 self.set_context(i3, 'expression')
 
-        if self.trace:
+        if trace:
             g.trace(i1, end, 'return', i)  ###
         return i
     #@+node:ekr.20240107092458.1: *5* tbo.parse_call_args
     def parse_call_args(self, i1: int, end: int) -> int:
         """Scan a comma-separated list of function definition arguments."""
 
-        trace = True or self.trace
+        trace = False  ###
 
         if trace:
             g.trace(i1, end)  ###
@@ -1556,6 +1555,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     def parse_call(self, i1: int, end: int) -> int:
         """Parse a function call"""
 
+        trace = False  ###
+
         # Find i1 and i2, the boundaries of the argument list.
         self.expect_op(i1, '(')
 
@@ -1565,7 +1566,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Sanity check.
         self.expect_op(i, ')')
         i = self.next(i)
-        if self.trace:
+        if trace:
             g.trace(i1, end, 'return', i)  ###
         return i
     #@+node:ekr.20240115101846.1: *6* tbo.parse_class_or_def
@@ -1673,7 +1674,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         - A function call:  'name', '(', ..., ')'.
         - A slice:          '[', ..., ']'.
         - A dictionary:     '{', ..., '}'.
-        
+
         Set the appropriate context for all inner expressions.
         """
         while i < end:
@@ -1870,7 +1871,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.set_context(i, 'import')
             i = self.next(i)
         return end
-    #@+node:ekr.20240106181215.1: *6* tbo.parse_initializer
+    #@+node:ekr.20240106181215.1: *6* tbo.parse_initializer (***handle full expressions!)
     def parse_initializer(self, i1: int, end: int, *, has_annotation: bool) -> int:
         """
         Scan an initializer in a function call or function definition argument.
@@ -1888,7 +1889,11 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.expect_op(i, ')')
             i = self.next(i)  # The ')' does *not* end the arg!
 
+        ### handle a full expression here!
+
         # Find the end of the argument.
+        g.trace(i, self.tokens[i])
+        g.trace(i, end, self.tokens[i].line.rstrip())  ###
         i = self.find_delim(i, end, [',', ')'])
         self.expect_ops(i, [',', ')'])
         return i
@@ -1919,6 +1924,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         #@-<< docstring: tbo.parse_outer_expression >>
 
+        trace = False  ###
+
         token = self.tokens[i1]
         assert self.is_significant_token(token), (token, g.callers())
 
@@ -1934,7 +1941,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         end = self.find_end_of_line(i1)
         i = self.parse_expr(i1, end)
-        if self.trace:
+        if trace:
             g.trace(i1, 'end', end, 'returns', i)  ###
         return i
     #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement
@@ -2008,7 +2015,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i1: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
-        trace = self.trace
+        trace = False  ###
         self.expect_op(i1, '(')
         i = self.next(i1)
         level = 0
@@ -2036,7 +2043,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         It's not necessarily an error if the delim isn't found, so return None
         instead of raising an exception.
         """
-        trace = self.trace
+        trace = False  ###
         # We expect only the following 'op' delims: ',', '=', ')' and ':'.
         for z in delims:
             if z not in ',=)}]:':
@@ -2087,10 +2094,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         skipping inner expressions.
 
         Set the context of found token to 'end-statement.
-        
+
         Do *not* set the context of any other token.
         """
-        trace = self.trace
+        trace = False  ###
         if trace:
             g.trace(i, '\n')
 
@@ -2098,7 +2105,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             token = self.tokens[i]
             if token.kind in ('newline', 'nl', 'endmarker'):
                 self.set_context(i, 'end-statement')
-                if self.trace:
+                if trace:
                     g.trace(f"Returns {i}\n")
                 return i
             if token.kind == 'op':
@@ -2201,7 +2208,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         'newline'   'end-statement'
         'nl'        'end-statement'
         """
-        trace = True or self.trace
+        trace = False  ###
 
         valid_contexts = (
             'annotation', 'array', 'arg', 'class/def', 'complex-slice',

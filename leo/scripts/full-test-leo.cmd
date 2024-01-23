@@ -3,9 +3,11 @@ cls
 cd %~dp0..\..
 
 echo full-test-leo
-rem beautify also removes trailing whitespace.
+
+call reindent-leo.cmd
 call beautify-leo.cmd
 call test-leo.cmd
+
 rem echo.
 call ruff-leo.cmd
 call mypy-leo.cmd
