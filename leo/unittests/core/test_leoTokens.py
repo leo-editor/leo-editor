@@ -873,11 +873,15 @@ class TestTokenBasedOrange(BaseTest):
         # See https://peps.python.org/pep-0008/#other-recommendations
 
         tag = 'test_slice'
-        fail_fast = False
 
         # Except where noted, all entries are expected values....
         table = (
-            # Slices (colons)...
+            # Recent fails.
+            """
+                for name in rf.getRecentFiles()[:n]:
+                    pass
+            """,
+            # Legacy tests.
             """a[:-1]""",
             """a[: 1 if True else 2 :]""",
             """a[1 : 1 + 2]""",
@@ -906,8 +910,9 @@ class TestTokenBasedOrange(BaseTest):
             """a[:2:3]""",
             """a[1:2:3]""",
         )
-        trace = False  ###
+        trace = True  ###
         fails = 0
+        fail_fast = True
         for i, contents in enumerate(table):
             description = f"{tag} part {i}"
             contents, tokens = self.make_data(contents, description=description)
@@ -919,7 +924,7 @@ class TestTokenBasedOrange(BaseTest):
                     print('')
                     print(
                         f"TestTokenBasedOrange.{tag}: FAIL {fails}\n"
-                        f"  contents: {contents.rstrip()}\n"
+                        # f"  contents: {contents.rstrip()}\n"
                         f"     black: {expected.rstrip()}\n"
                         f"    orange: {results.rstrip() if results else 'None'}")
             if fail_fast:
@@ -956,6 +961,8 @@ class TestTokenBasedOrange(BaseTest):
 
         # All entries are expected values....
         table = (
+            # Most recent fail.
+            """d = {key: -3}""",  ### Duplicate.
             # Calls...
             """f(-1)""",
             """f(-1 < 2)""",
