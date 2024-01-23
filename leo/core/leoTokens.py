@@ -204,7 +204,7 @@ def output_tokens_to_string(tokens: list[OutputToken]) -> str:
 class InternalBeautifierError(Exception):
     """
     An internal error in the beautifier.
-    
+
     Errors in the user's source code may raise standard Python errors
     such as IndentationError or SyntaxError.
     """
@@ -500,18 +500,18 @@ class TokenBasedOrange:  # Orange is the new Black.
     Leo's token-based beautifier.
 
     This class is like the Orange class in leoAst.py.
-        
+
     - This class does not use Python's parse tree in any way.
 
       Instead, this class contains a "good-enough" recursive parser that
       discovers the context for input tokens requiring help. See
       tbo.set_context for details.
-      
+
     - This class uses bounded look-ahead and look-behind:
-      
+
       The parser looks ahead at most one *input* token.
       The code generators look behind at most one *output* token.
-      
+
     - As with leoAst.py, the code generators work much like a peephole
       optimizer.
 
@@ -595,7 +595,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@-<< TokenBasedOrange: python-related constants >>
     #@+<< TokenBasedOrange: trace var >>
     #@+node:ekr.20240122192157.1: *4* << TokenBasedOrange: trace var >>
-    trace = True  # For temporary tracing sets.
+    trace = False  # For temporary tracing sets.
     #@-<< TokenBasedOrange: trace var >>
 
     #@+others
@@ -921,19 +921,28 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.token.value
-        ### ???: must handle compound statements explicitly.
-        if name in self.compound_statements:
-            self.gen_word(name)
-        elif name in self.operator_keywords:
-            self.gen_word_op(name)
-        else:
-            self.gen_word(name)
+
+        if 1:  ### Experimental.
+            if name in self.operator_keywords:
+                self.gen_word_op(name)
+            else:
+                self.gen_word(name)
+
+        else:  ### Legacy.
+
+            ### ???: must handle compound statements explicitly.
+            if name in self.compound_statements:
+                self.gen_word(name)
+            elif name in self.operator_keywords:
+                self.gen_word_op(name)
+            else:
+                self.gen_word(name)
     #@+node:ekr.20240105145241.40: *6* tbo.gen_word
     def gen_word(self, s: str) -> None:
         """Add a word request to the code list."""
         assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
-        ### if self.trace: g.trace(s)  ###
+        if self.trace: g.trace(s)  ###
         self.gen_blank()
         self.gen_token('word', s)
         self.gen_blank()
@@ -942,6 +951,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Add a word-op request to the code list."""
         assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
+        if self.trace: g.trace(s)  ###
         self.gen_blank()
         self.gen_token('word-op', s)
         self.gen_blank()
@@ -1044,15 +1054,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         context = self.token.context
         prev_i = self.prev(self.index)
         prev = self.tokens[prev_i]
+        trace = self.trace
 
         ### To do: remove set_trace_context ivar.
 
-        if 0:  ###
+        if trace:
             context_s = context if context else '<no context>'
-            g.trace(
-                f"   {self.index:5} {g.callers(1):18} {' '*4}"
-                f" {context_s:18}  Line: {self.token.line_number} {self.token.line!r}"
-            )
+            # g.trace(f"{self.index:5} {g.callers(1)} context: {context_s}  {self.token.line!r}")
+            g.trace(f"context: {context_s}")
 
         # Generate the proper code using the context supplied by the parser.
         self.clean('blank')
@@ -1065,6 +1074,9 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_token('op-no-blanks', val)
         elif context == 'end-statement':
             self.gen_token('op-no-blank', val)
+        elif context == 'dict':
+            self.gen_token('op', val)
+            self.gen_blank()
         else:
             self.gen_token('op', val)
             self.gen_blank()
@@ -1152,8 +1164,10 @@ class TokenBasedOrange:  # Orange is the new Black.
             prev = self.code_list[-1]
             if prev.kind == 'lt':
                 self.gen_token('op-no-blanks', val)
-            elif (prev.kind, prev.value) == ('op', ':'):
-                self.gen_token('op-no-blanks', val)
+            ### Experimental
+                ### The *previous* token must handle special cases.
+                # elif (prev.kind, prev.value) == ('op', ':'):
+                #    self.gen_token('op-no-blanks', val)
             else:
                 self.gen_blank()
                 self.gen_token('op-no-blanks', val)
@@ -1378,7 +1392,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def parse_args(self, i1: int, end: int) -> int:
         """
         Parse a comma-separated list of function definition arguments.
-        
+
         Return the index of ending ')' token.
         """
 
@@ -1402,24 +1416,30 @@ class TokenBasedOrange:  # Orange is the new Black.
         # An important sanity check.
         assert i == end, repr((i, end))
         return i
-    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
+    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg (****rewrite)
     def parse_call_arg(self, i1: int, end: int) -> int:
         """
         Scan a single function definition argument.
 
         Set context for every '=' operator.
         """
+        g.trace(i1, self.tokens[i1].line.rstrip())  ###
+
         # Handle leading * and ** args.
         if self.is_ops(i1, ['*', '**']):
             self.set_context(i1, 'arg')
             i = self.next(i1)
         else:
             i = i1
+            
+        ### Must handle ARBITRARY expressions:  f({key: 1})
 
         # Scan an arbitrary expression, separated by ',' or '=' or ')'.
         if self.is_op(i, '('):
             i = self.next(i)
         i = self.find_delim(i, end, [',', '=', ')'])
+        if i is None:
+            breakpoint()  ###
         self.expect_ops(i, [',', '=', ')'])
 
         if self.trace:  ###
@@ -1451,8 +1471,10 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240107092458.1: *5* tbo.parse_call_args
     def parse_call_args(self, i1: int, end: int) -> int:
         """Scan a comma-separated list of function definition arguments."""
+        
+        trace = True  # self.trace
 
-        if self.trace: g.trace(i1, end)  ###
+        if trace: g.trace(i1, end)  ###
 
         # Scan the '('
         self.expect_op(i1, '(')
@@ -1613,7 +1635,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Parse an expression spanning self.tokens[i:end],
         looking for the following token patterns:
-            
+
         - A function call:  'name', '(', ..., ')'.
         - A slice:          '[', ..., ']'.
         - A dictionary:     '{', ..., '}'.
@@ -1651,7 +1673,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def parse_dict_or_set(self, i1: int, end: int) -> int:
         """
         Parse a '{', ..., '}'.
-        
+
         Set context for '=' tokens to 'dict' only within dictionaries.
         """
 
@@ -1675,13 +1697,13 @@ class TokenBasedOrange:  # Orange is the new Black.
             # The opening '{' starts a non-empty dict.
             self.parse_dict(i1, i2)
         return self.next(end)
-    #@+node:ekr.20240121073925.1: *7* tbo.parse_dict (***Finish)
+    #@+node:ekr.20240121073925.1: *7* tbo.parse_dict (test)
     def parse_dict(self, i1: int, end: int) -> None:
         """
         Parse '[', ..., ']'.
-        
+
         Set the context of all outer-level ':' tokens to 'dict'.
-        
+
         Return None.
         """
 
@@ -1701,7 +1723,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def parse_parenthesized_expr(self, i: int, end: int) -> int:
         """
         Parse a parenthesized expression.
-        
+
         Such expressions have no context.
         """
         # Scan the '('.
@@ -1719,8 +1741,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     def parse_slice(self, i1: int, end: int) -> int:
         """
         Parse '[', ..., ']'.
-        
-        Set the context for ':' tokens to 'simple-slice' or 'complex-slice'.    
+
+        Set the context for ':' tokens to 'simple-slice' or 'complex-slice'.
         """
 
         # Scan the '['.
@@ -1843,14 +1865,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Parse a line that *isn't* a simple or compound statement.
         See https://docs.python.org/3/reference/expressions.html
-           
+
         This method's only purpose is to mark the context of '=' and ':'
         tokens. It can ignore unrelated subtleties of Python's grammar.
 
         1. If the next significant token is a string, just scan it.
 
         2. Otherwise, we are looking *only* for the following token patterns:
-               
+
         - A function call:  'name', '(', ... ')'.
         - A slice:          '[', <expr>? ':' <expr> ':'? <expr>? ']'.
         - A dictionary:     '{', <expr> ':' <expr> '}'.
@@ -1897,7 +1919,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def parse_statements(self) -> None:
         """
         parse_statements: scan (parse) the entire file.
-        
+
         This is the entry point for a "good enough" recursive-descent
         parser who's *only* purpose is to add context to a few kinds
         of tokens.  See set_context for details.
@@ -1971,20 +1993,21 @@ class TokenBasedOrange:  # Orange is the new Black.
     def find_delim(self, i1: int, end: int, delims: list) -> int:
         """
         Find the next delimiter token, skipping inner expressions.
-        
+
         The *caller* is responsible for scanning an opening '(', '[', or '{'
         token when the delims list contains ')', ']', or '}'.
 
         It's not necessarily an error if the delim isn't found, so return None
         instead of raising an exception.
         """
+        trace = self.trace
         # We expect only the following 'op' delims: ',', '=', ')' and ':'.
         for z in delims:
             if z not in ',=)}]:':
                 self.oops(f"Invalid delim: {z!r}")
 
-        if self.trace:
-            g.trace(i1, delims, self.tokens[i1].line.rstrip())  ###
+        if trace:
+            g.trace(f" {i1:3} {g.callers(1):20} {delims} {self.tokens[i1].line.rstrip()}")
 
         # Skip tokens until one of the delims is found.
         # Handle apparent function calls.
@@ -1995,17 +2018,23 @@ class TokenBasedOrange:  # Orange is the new Black.
             if token.kind == 'op':
                 value = token.value
                 if value in delims:
-                    if self.trace: g.trace(i1, i, self.tokens[i], '\n')  ###
+                    if trace:
+                        token = self.tokens[i]
+                        token_s = f"{token.kind:} {token.value!r}"
+                        return_s = f"Returns {' '*12} {token_s:20}"
+                        g.trace(f" {i:3} {return_s}\n")
                     return i
                 if value == '[':
-                    i = self.skip_square_brackets(i)
+                    ### i = self.skip_square_brackets(i)
+                    i = self.parse_slice(i, end)
                 elif value == '(':
                     if prev and prev.kind == 'name':
                         # A function call in a compound statement.
                         self.parse_call(i, end)  # Ignore the returned index.
                     i = self.skip_parens(i)
                 elif value == '{':
-                    i = self.skip_curly_brackets(i)
+                    ### i = self.skip_curly_brackets(i)
+                    i = self.parse_dict_or_set(i, end)
                 else:
                     i += 1
             else:
@@ -2014,15 +2043,20 @@ class TokenBasedOrange:  # Orange is the new Black.
                 prev = token
         # The caller will usual call self.expect or self.expect_ops,
         # So return None will usually raise an exception.
+        if trace:
+            g.trace(f"{' '*26}Not found\n")
         return None
     #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line
     def find_end_of_line(self, i: int) -> int:
         """
         Return the index the next 'newline', 'nl' or 'endmarker' token,
         skipping inner expressions.
-        
+
         Set the context of found token to 'end-statement.
         """
+        trace = self.trace
+        if trace:
+            g.trace(i, '\n')
         ### prev = None
 
         # Skip tokens until an end-of-line token is found outside any grouping ops.
@@ -2033,7 +2067,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             token = self.tokens[i]
             if token.kind in ('newline', 'nl', 'endmarker'):
                 self.set_context(i, 'end-statement')
-                if self.trace: g.trace(i)  ###
+                if self.trace:
+                    g.trace(f"Returns {i}\n")
                 return i
             if token.kind == 'op':
                 value = token.value
@@ -2087,13 +2122,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         Return the next *significant* token in the list of *input* tokens.
 
         Ignore whitespace, indentation, comments, etc.
-        
+
         The **Global Token Ratio** is tbo.n_scanned_tokens / len(tbo.tokens),
         where tbo.n_scanned_tokens is the total number of calls calls to
         tbo.next or tbo.prev.
-        
+
         For Leo's sources, this ratio ranges between 0.48 and 1.51!
-        
+
         The orange_command function warns if this ratio is greater than 2.5.
         Previous versions of this code suffered much higher ratios.
         """
@@ -2124,11 +2159,11 @@ class TokenBasedOrange:  # Orange is the new Black.
     def set_context(self, i: int, context: str) -> None:
         """
         Set self.tokens[i].context, but only if it does not already exist!
-        
+
         As a result, the order of scanning tokens in the parser matters!
-        
+
         Here is a table of tokens and the contexts they may have:
-            
+
         Token       Possible Contexts
         =====       =================
         ':'         'annotation', 'dict', 'end-statement'
@@ -2151,11 +2186,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         if context not in valid_contexts:
             self.oops(f"Unexpected context! {context!r}")
 
+        token = self.tokens[i]
+
         if self.trace:
-            token = self.tokens[i]
-            token_s = f"{token.kind:12} {token.value!r:8}"
+            token_s = f"{token.kind}: {token.value!r}"
             ignore_s = 'Ignore ' if token.context else ''
-            g.trace(f"{i:3} {g.callers(1):18} {ignore_s} {token_s:20} {context}")
+            g.trace(f"{i:3} {g.callers(1):19} {ignore_s} {token_s:20} {context}")
 
         if not token.context:
             token.context = context
@@ -2173,7 +2209,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def skip_square_brackets(self, i: int) -> int:
         """Skip from '[' *past* the matching ']'."""
         return self.skip_matched(i, '[', ']', context='array')
-    #@+node:ekr.20240115072231.1: *6* tbo.skip_matched
+    #@+node:ekr.20240115072231.1: *6* tbo.skip_matched (Used???)
     def skip_matched(self, i: int, delim1: str, delim2: str, context: str = None) -> int:
         """
         Skip from delim1 *past* the matching delim2.
