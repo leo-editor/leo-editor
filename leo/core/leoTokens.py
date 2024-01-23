@@ -942,7 +942,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Add a word request to the code list."""
         assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
-        if self.trace: g.trace(s)  ###
+        if self.trace:
+            g.trace(s)  ###
         self.gen_blank()
         self.gen_token('word', s)
         self.gen_blank()
@@ -951,7 +952,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Add a word-op request to the code list."""
         assert s == self.token.value
         assert s and isinstance(s, str), repr(s)
-        if self.trace: g.trace(s)  ###
+        if self.trace:
+            g.trace(s)  ###
         self.gen_blank()
         self.gen_token('word-op', s)
         self.gen_blank()
@@ -1423,7 +1425,10 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Set context for every '=' operator.
         """
-        g.trace(i1, self.tokens[i1].line.rstrip())  ###
+        trace = self.trace
+
+        if trace:
+            g.trace(i1, self.tokens[i1].line.rstrip())  ###
 
         # Handle leading * and ** args.
         if self.is_ops(i1, ['*', '**']):
@@ -1431,7 +1436,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.next(i1)
         else:
             i = i1
-            
+
         ### Must handle ARBITRARY expressions:  f({key: 1})
 
         # Scan an arbitrary expression, separated by ',' or '=' or ')'.
@@ -1466,15 +1471,17 @@ class TokenBasedOrange:  # Orange is the new Black.
             elif self.is_ops(i3, ['*', '**']):
                 self.set_context(i3, 'expression')
 
-        if self.trace: g.trace(i1, end, 'return', i)  ###
+        if self.trace:
+            g.trace(i1, end, 'return', i)  ###
         return i
     #@+node:ekr.20240107092458.1: *5* tbo.parse_call_args
     def parse_call_args(self, i1: int, end: int) -> int:
         """Scan a comma-separated list of function definition arguments."""
-        
-        trace = True  # self.trace
 
-        if trace: g.trace(i1, end)  ###
+        trace = True or self.trace
+
+        if trace:
+            g.trace(i1, end)  ###
 
         # Scan the '('
         self.expect_op(i1, '(')
@@ -1491,8 +1498,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             assert progress < i, 'parse_call_args: no progress!'
 
         # Do not scan past the ')'.
-
-        if self.trace: g.trace('return', i2)  ###
+        if trace:
+            g.trace('return', i2)  ###
         return i2
     #@+node:ekr.20240113054641.1: *5* tbo.parse_statement & statement helpers
     def parse_statement(self, i: int) -> int:
@@ -1532,7 +1539,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Sanity check.
         self.expect_op(i, ')')
         i = self.next(i)
-        if self.trace: g.trace(i1, end, 'return', i)  ###
+        if self.trace:
+            g.trace(i1, end, 'return', i)  ###
         return i
     #@+node:ekr.20240115101846.1: *6* tbo.parse_class_or_def
     def parse_class_or_def(self, i: int) -> int:
@@ -1900,7 +1908,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         end = self.find_end_of_line(i1)
         i = self.parse_expr(i1, end)
-        if self.trace: g.trace(i1, 'end', end, 'returns', i)  ###
+        if self.trace:
+            g.trace(i1, 'end', end, 'returns', i)  ###
         return i
     #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement
     def parse_simple_statement(self, i: int) -> int:
@@ -1973,7 +1982,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i1: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
-
+        trace = self.trace
         self.expect_op(i1, '(')
         i = self.next(i1)
         level = 0
@@ -1982,7 +1991,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                 level += 1
             elif self.is_op(i, ')'):
                 if level == 0:
-                    if self.trace: g.trace(i1, 'return', i)  ###
+                    if trace:
+                        g.trace(i1, 'return', i)  ###
                     return i
                 if level <= 0:
                     raise SyntaxError(f"Unbalanced parens: {self.token.line!r}")
@@ -2047,22 +2057,19 @@ class TokenBasedOrange:  # Orange is the new Black.
             g.trace(f"{' '*26}Not found\n")
         return None
     #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line
-    def find_end_of_line(self, i: int) -> int:
+    def find_end_of_line(self, i: int) -> Optional[int]:
         """
         Return the index the next 'newline', 'nl' or 'endmarker' token,
         skipping inner expressions.
 
         Set the context of found token to 'end-statement.
+        
+        Do *not* set the context of any other token.
         """
         trace = self.trace
         if trace:
             g.trace(i, '\n')
-        ### prev = None
 
-        # Skip tokens until an end-of-line token is found outside any grouping ops.
-
-        ### Don't set *any* inner context.
-        ### OLD Handle apparent function calls.
         while i < len(self.tokens):
             token = self.tokens[i]
             if token.kind in ('newline', 'nl', 'endmarker'):
@@ -2075,10 +2082,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if value == '[':
                     i = self.skip_square_brackets(i)
                 elif value == '(':
-                    ###
-                        # if prev and prev.kind == 'name':
-                            # # A function call in a simple statement.
-                            # self.parse_call(i, len(self.tokens))  # Ignore the returned index.
                     i = self.skip_parens(i)
                 elif value == '{':
                     i = self.skip_curly_brackets(i)
@@ -2086,9 +2089,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                     i += 1
             else:
                 i += 1
-            ###
-            # if self.is_significant_token(token):
-                # prev = token
         self.oops("no matching ')'")
         return len(self.tokens)  # For mypy and pylint.
     #@+node:ekr.20240114021152.1: *5* tbo.is_kind
@@ -2209,7 +2209,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def skip_square_brackets(self, i: int) -> int:
         """Skip from '[' *past* the matching ']'."""
         return self.skip_matched(i, '[', ']', context='array')
-    #@+node:ekr.20240115072231.1: *6* tbo.skip_matched (Used???)
+    #@+node:ekr.20240115072231.1: *6* tbo.skip_matched
     def skip_matched(self, i: int, delim1: str, delim2: str, context: str = None) -> int:
         """
         Skip from delim1 *past* the matching delim2.
