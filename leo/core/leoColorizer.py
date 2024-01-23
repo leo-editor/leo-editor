@@ -1851,7 +1851,7 @@ class JEditColorizer(BaseColorizer):
     def match_fstring(self, s: str, i: int) -> int:
         """
         Match a python 3.12 f-string.
-        
+
         Called only for python 3.12+.
         """
         # Fail quickly if possible.
@@ -1906,7 +1906,7 @@ class JEditColorizer(BaseColorizer):
         s is an fstring (or its continuation) *without* the leadin characters and the opening delim.
 
         Return n >= 0 if s[i:] contains with a non-escaped delim at fstring-level 0.
-        
+
         Return len(s) + 1 if the fstring should continue.
         """
         escape, escapes = '\\', 0

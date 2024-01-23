@@ -3058,10 +3058,10 @@ class FastAtRead:
 
     def get_patterns(self, comment_delims: Any) -> None:
         """Create regex patterns for the given comment delims."""
-        
+
         # This must be a function, because of @comments & @delims.
         comment_delim_start, comment_delim_end = comment_delims
-            
+
         # Make no assumption about comment delims.
         delim1 = re.escape(comment_delim_start)
         delim2 = re.escape(comment_delim_end or '')
@@ -3097,7 +3097,7 @@ class FastAtRead:
             self.pattern_ivars.append(ivar)
             assert hasattr(self, ivar), ivar
             setattr(self, ivar, re.compile(pattern))
-            
+
     #@+node:ekr.20180602103135.2: *3* fast_at.scan_header
     header_pattern = re.compile(
         r'''
@@ -3113,7 +3113,7 @@ class FastAtRead:
         """
         Scan for the header line, which follows any @first lines.
         Return (delims, first_lines, i+1) or None
-        
+
         *Note*: delims[0] will end with a blank when reading a file with blackened sentinels!
         """
         first_lines: list[str] = []

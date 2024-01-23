@@ -265,18 +265,18 @@ class TestAtFile(LeoUnitTest):
             @ A single-line doc part.
             #AT-all
         ''').replace('AT', '@')
-        
+
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
             test_s = contents.replace('#@', '# @') if blacken else contents
             expected = expected_contents.replace('#@', '# @') if blacken else expected_contents
 
-            root.b = test_s 
+            root.b = test_s
             at.initWriteIvars(root)
             at.putBody(root)
             results = ''.join(at.outputList)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
@@ -303,18 +303,18 @@ class TestAtFile(LeoUnitTest):
             # doc line 1
             # ATall
         ''').replace('AT', '@')
-        
+
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
             test_s = contents.replace('#@', '# @') if blacken else contents
             expected = expected_contents.replace('#@', '# @') if blacken else expected_contents
-        
-            root.b = test_s 
+
+            root.b = test_s
             at.initWriteIvars(root)
             at.putBody(root)
             results = ''.join(at.outputList)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
@@ -341,26 +341,26 @@ class TestAtFile(LeoUnitTest):
             #AT-others
             #AT-others
         ''').replace('AT', '@')
-        
+
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
             test_s = contents.replace('#@', '# @') if blacken else contents
             expected = expected_contents.replace('#@', '# @') if blacken else expected_contents
 
-            root.b = test_s 
+            root.b = test_s
             at.initWriteIvars(root)
             at.putBody(root)
             results = ''.join(at.outputList)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
                 g.printObj(g.splitLines(expected), tag='expected')
 
             self.assertEqual(results, expected)
-        
-        
+
+
         # root.b = contents
         # at.initWriteIvars(root)
         # at.putBody(root)
@@ -649,7 +649,7 @@ class TestFastAtRead(LeoUnitTest):
         ''').lstrip().replace('AT', '@').replace('LB', '<<')
         expected_contents = expected_contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define expected_contents >>
-        
+
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
@@ -658,14 +658,14 @@ class TestFastAtRead(LeoUnitTest):
 
             x.read_into_root(contents, path='test', root=root)
             results = c.atFileCommands.atFileToString(root, sentinels=True)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
                 g.printObj(g.splitLines(expected), tag='expected')
 
             self.assertEqual(results, expected)
-            
+
             self.assertEqual(root.b, expected_body, msg='mismatch in body')
     #@+node:ekr.20211103093332.1: *3* TestFastAtRead.test_at_all
     def test_at_all(self):
@@ -702,7 +702,7 @@ class TestFastAtRead(LeoUnitTest):
         contents = contents.replace('AT', '@').replace('LB', '<<')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
-        
+
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
@@ -711,7 +711,7 @@ class TestFastAtRead(LeoUnitTest):
 
             x.read_into_root(contents, path='test', root=root)
             results = c.atFileCommands.atFileToString(root, sentinels=True)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
@@ -760,7 +760,7 @@ class TestFastAtRead(LeoUnitTest):
         contents = contents.replace('AT', '@').replace('LB', '<<')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
-        
+
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
@@ -769,7 +769,7 @@ class TestFastAtRead(LeoUnitTest):
 
             x.read_into_root(contents, path='test', root=root)
             results = c.atFileCommands.atFileToString(root, sentinels=True)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
@@ -827,7 +827,7 @@ class TestFastAtRead(LeoUnitTest):
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
 
         #@-<< define contents >>
-        
+
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
@@ -836,7 +836,7 @@ class TestFastAtRead(LeoUnitTest):
 
             x.read_into_root(contents, path='test', root=root)
             results = c.atFileCommands.atFileToString(root, sentinels=True)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
@@ -895,7 +895,7 @@ class TestFastAtRead(LeoUnitTest):
         ATlast # last line
         ''').lstrip().replace('AT', '@')
         #@-<< define expected_body >>
-        
+
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
@@ -904,7 +904,7 @@ class TestFastAtRead(LeoUnitTest):
 
             x.read_into_root(contents, path='test', root=root)
             results = c.atFileCommands.atFileToString(root, sentinels=True)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
@@ -938,7 +938,7 @@ class TestFastAtRead(LeoUnitTest):
         #AT-leo
         ''').replace('AT', '@').replace('LB', '<<')
         #@-<< define contents >>
-        
+
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
@@ -947,7 +947,7 @@ class TestFastAtRead(LeoUnitTest):
 
             x.read_into_root(contents, path='test', root=root)
             results = c.atFileCommands.atFileToString(root, sentinels=True)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
@@ -996,7 +996,7 @@ class TestFastAtRead(LeoUnitTest):
         ''').lstrip().replace('AT', '#@')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
-        
+
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
@@ -1053,7 +1053,7 @@ class TestFastAtRead(LeoUnitTest):
         #AT-leo
         ''').replace('AT', '@').replace('LB', '<<')
         #@-<< define contents >>
-        
+
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
@@ -1062,7 +1062,7 @@ class TestFastAtRead(LeoUnitTest):
 
             x.read_into_root(contents, path='test', root=root)
             results = c.atFileCommands.atFileToString(root, sentinels=True)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
@@ -1135,7 +1135,7 @@ class TestFastAtRead(LeoUnitTest):
         contents = contents.replace('AT', '@').replace('LB', '<<')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
-        
+
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
@@ -1144,7 +1144,7 @@ class TestFastAtRead(LeoUnitTest):
 
             x.read_into_root(contents, path='test', root=root)
             results = c.atFileCommands.atFileToString(root, sentinels=True)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
@@ -1189,15 +1189,15 @@ class TestFastAtRead(LeoUnitTest):
             g.app.write_black_sentinels = blacken
             test_s = contents.replace('#@', '# @') if blacken else contents
             expected = test_s
-            
+
             x.read_into_root(test_s, path='test', root=root)
             results = c.atFileCommands.atFileToString(root, sentinels=True)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
                 g.printObj(g.splitLines(expected), tag='expected')
-           
+
             self.assertEqual(results, expected)
     #@+node:ekr.20231207083858.1: *3* TestFastAtRead.test_doc_parts_html
     def test_doc_parts_html(self):
@@ -1271,19 +1271,19 @@ class TestFastAtRead(LeoUnitTest):
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
-            
+
             # --black-sentinels applies only to python files.
             test_s = contents
             expected = expected_contents
-            
+
             x.read_into_root(test_s, path='test', root=root)
             results = c.atFileCommands.atFileToString(root, sentinels=True)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
                 g.printObj(g.splitLines(expected), tag='expected')
-           
+
             self.assertEqual(results, expected)
     #@+node:ekr.20211101154632.1: *3* TestFastAtRead.test_html_doc_part
     def test_html_doc_part(self):
@@ -1338,18 +1338,18 @@ class TestFastAtRead(LeoUnitTest):
 
             x.read_into_root(contents, path='test', root=root)
             results = c.atFileCommands.atFileToString(root, sentinels=True)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
                 g.printObj(g.splitLines(expected), tag='expected')
 
             self.assertEqual(results, expected)
-        
+
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
         # g.printObj(g.splitLines(s), tag='s')
-        
+
         self.assertEqual(s, expected)
     #@+node:ekr.20231203092436.1: *3* TestFastAtRead.test_minimal_cweb
     #@@language python
@@ -1384,7 +1384,7 @@ class TestFastAtRead(LeoUnitTest):
         ''').lstrip()
         contents = contents.replace('AT', '@').replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
-        
+
         for blacken in (True, False):
 
             g.app.write_black_sentinels = blacken
@@ -1393,7 +1393,7 @@ class TestFastAtRead(LeoUnitTest):
 
             x.read_into_root(contents, path='test', root=root)
             results = c.atFileCommands.atFileToString(root, sentinels=True)
-            
+
             if results != expected:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(results), tag='results')
@@ -1441,7 +1441,7 @@ class TestFastAtRead(LeoUnitTest):
                 expected = expected.replace('# @+node (verbatim)', '#@+node (verbatim)')
 
             x.read_into_root(test_s, path='test', root=root)
-            
+
             if root.b != expected_body:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(root.b), tag='root.b')
@@ -1502,7 +1502,7 @@ class TestFastAtRead(LeoUnitTest):
                 expected = expected.replace('<!-- @+node (verbatim)', '<!--@+node (verbatim)')
 
             x.read_into_root(test_s, path='test', root=root)
-            
+
             if root.b != expected_body:
                 g.printObj(g.splitLines(test_s), tag='test_s')
                 g.printObj(g.splitLines(root.b), tag='root.b')

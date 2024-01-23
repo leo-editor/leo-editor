@@ -49,7 +49,7 @@ class MarkdownWriter(basewriter.BaseWriter):
         - Always write '#' sections.
           This will cause perfect import to fail. The alternatives are worse.
         - Skip !Declarations.
-        
+
         New in Leo 6.7.7:
         - Don't write headlines of placeholder nodes.
         """

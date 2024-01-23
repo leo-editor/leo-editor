@@ -3081,10 +3081,10 @@ def ensure_extension(name: str, ext: str) -> str:
 def fullPath(c: Cmdr, p: Position) -> str:
     """
     Return the full path in effect at p.
-    
+
     If p is an @<file> node, return the path, including the filename.
     Otherwise the return the path to the enclosing directory.
-    
+
     Neither the path nor the fileName will be created if it does not exist.
     """
     return c.fullPath(p)
@@ -7310,7 +7310,7 @@ def getUNLFilePart(s: str) -> str:
 def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     """
     Open the commander for filename s, the file part of an unl.
-    
+
     Use `@data unl-path-prefixes` to convert to relative to absolute paths.
 
     Return None if the file can not be found.

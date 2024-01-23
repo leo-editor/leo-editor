@@ -103,7 +103,7 @@ class BaseTest(unittest.TestCase):
         - Regularize the contents:
           contents = textwrap.dedent(contents).strip() + '\n'
         - Tokenize the contents using the Tokenizer class in leoTokens.py.
-        - Dump the contents or tokens per the debug_list kwarg. 
+        - Dump the contents or tokens per the debug_list kwarg.
         - Return (contents, tokens)
         """
         assert contents.strip(), g.callers()
@@ -584,7 +584,7 @@ class TestTokenBasedOrange(BaseTest):
                 self.assertEqual(expected, results)
         # self.assertEqual(fails, 0)
 
-       
+
     #@+node:ekr.20240105153425.57: *3* TestTBO.test_function_defs
     def test_function_defs(self):
 
