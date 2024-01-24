@@ -1433,7 +1433,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             progress = i
             token = self.tokens[i]
             kind, value = token.kind, token.value
-            ### g.trace(token)  ###
+            g.trace(token)  ###
 
             if kind == 'name':
                 i = self.parse_name(i, end)
@@ -1513,6 +1513,10 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240124012746.1: *5* tbo.parse_op
     def parse_op(self, i: int, end: int) -> int:
         """Parse an operator, including grouping operators."""
+        if not self.is_ops(i, ['(', '[', '{']):
+            i = self.next(i)
+            return i
+
         # Handle all inner groups.
         for delim1, delim2 in (('(', ')'), ('[', ']'), ('{', '}')):
             if self.is_op(i, delim1):
@@ -1526,10 +1530,10 @@ class TokenBasedOrange:  # Orange is the new Black.
                 elif delim1 == '{':
                     self.parse_dict_or_set(i1, i2)
                 i = self.next(i2)
-                break
-        else:
-            i = self.next(i)
-        return i
+                return i
+        # Should never happen
+        self.oops('Can not happen')
+        return None
     #@+node:ekr.20240113054641.1: *5* tbo.parse_statement & statement helpers
     def parse_statement(self, i: int) -> int:
         """
@@ -2041,12 +2045,16 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240114015808.1: *5* tbo.expect_op
     def expect_op(self, i: int, value: str) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
+        if i is None:
+            self.oops(f"Expected 'op':{value!r}, got Null i")
         token = self.tokens[i]
         if (token.kind, token.value) != ('op', value):
             self.oops(f"Expected 'op':{value!r}, got {token!r}")
     #@+node:ekr.20240114013952.1: *5* tbo.expect_ops
     def expect_ops(self, i: int, values: list) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
+        if i is None:
+            self.oops(f"Expected 'op' in {values!r}, got Null i")
         token = self.tokens[i]
         if token.kind != 'op' or token.value not in values:
             self.oops(f"Expected 'op' in {values!r}, got {token!r}")
@@ -2070,7 +2078,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 level -= 1
             i += 1
         return None
-    #@+node:ekr.20240114063347.1: *5* tbo.find_delim
+    #@+node:ekr.20240114063347.1: *5* tbo.find_delim (can return i > end !!!)
     def find_delim(self, i1: int, end: int, delims: list) -> int:
         """
         Find the next delimiter token, skipping inner expressions.
@@ -2095,7 +2103,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Handle apparent function calls.
         prev = None
         i = i1
-        while i < len(self.tokens):
+        ### while i < len(self.tokens):  ### Not end???
+        while i <= end:  ### Experimental.  Should this be '<' ??
             token = self.tokens[i]
             if token.kind == 'op':
                 value = token.value
@@ -2226,6 +2235,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         return None
     #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
+        #@+<< docstring: set_context >>
+        #@+node:ekr.20240124030354.1: *6* << docstring: set_context >>
         """
         Set self.tokens[i].context, but only if it does not already exist!
 
@@ -2246,7 +2257,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         'newline'   'end-statement'
         'nl'        'end-statement'
         """
-        trace = True  ###
+        #@-<< docstring: set_context >>
+
+        trace = False  ###
 
         valid_contexts = (
             'annotation', 'array', 'arg', 'class/def', 'complex-slice',
