@@ -1420,7 +1420,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         trace = True  ###
 
         if trace:
-            g.trace(f" {i1} {end}", self.tokens[i1].line.rstrip())  ###
+            ### g.trace(f" {i1} {end}", self.tokens[i1].line.rstrip())  ###
+            g.trace(f" {i1} {end}", self.dump_line(i1))
 
         # Handle leading * and ** args.
         if self.is_ops(i1, ['*', '**']):
@@ -1477,7 +1478,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         trace = True  ###
 
         if trace:
-            g.trace(i1, end, self.tokens[i1].line.rstrip())
+            ### g.trace(i1, end, self.tokens[i1].line.rstrip())
+            g.trace(i1, end, self.dump_line(i1))
 
         # Scan the '('
         self.expect_op(i1, '(')
@@ -1568,7 +1570,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         if trace:
             print('')
-            g.trace(' ' * 4, i1, end, self.tokens[i1].line.rstrip())
+            ### g.trace(' ' * 4, i1, end, self.tokens[i1].line.rstrip())
+            g.trace(' ' * 4, i1, end, self.dump_line(i1))
 
         # Find i1 and i2, the boundaries of the argument list.
         self.expect_op(i1, '(')
@@ -1697,7 +1700,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Scan an arbitrary expression, bounded only by end.
 
         if trace:
-            g.trace(i, end, self.tokens[i].line.rstrip())
+            ### g.trace(i, end, self.tokens[i].line.rstrip())
+            g.trace(i, end, self.dump_line(i))
 
         while i < end:
             progress = i
@@ -1802,8 +1806,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         trace = True  ###
 
         if trace:
-            print('=============', g.callers())
-            g.trace(i1, end, self.tokens[i1].line.rstrip())  ###
+            ### g.trace(i1, end, self.tokens[i1].line.rstrip())  ###
+            g.trace(i1, end, self.dump_line(i1))
 
         # Scan the '['.
         self.expect_op(i1, '[')
@@ -1816,7 +1820,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert i2 <= end, (repr(i2), repr(end))
 
         if trace:
-            g.trace(i1, i2, end, self.tokens[i1].line.rstrip())
+            ### g.trace(i1, i2, end, self.tokens[i1].line.rstrip())
+            g.trace(i1, i2, end, self.dump_line(i1))
 
         # Find all outer tokens and compute final_context.
 
@@ -1989,7 +1994,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         trace = True  ###
         if trace:
-            g.trace(i, self.tokens[i].line.rstrip())
+            ### g.trace(i, self.tokens[i].line.rstrip())
+            g.trace(i, self.dump_line(i))
 
         # Sanity check.  ??? Is this check valid ???
         token = self.tokens[i]
@@ -2023,6 +2029,15 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.parse_statement(i)
     #@+node:ekr.20240110205127.1: *4* tbo: Scanner methods
     # The parser calls scanner methods to move through the list of input tokens.
+    #@+node:ekr.20240124094344.1: *5* tbo.dump_line
+    def dump_line(self, i: int) -> str:
+
+        try:
+            token = self.tokens[i]
+        except Exception as e:
+            self.oops(f"dump_line: no token at index {i!r}: {e}")
+
+        return token.line.rstrip()
     #@+node:ekr.20240106220724.1: *5* tbo.dump_token_range
     def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:
         """Dump the given range of input tokens."""
@@ -2109,7 +2124,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.oops(f"Invalid delim: {z!r}")
 
         if trace:
-            g.trace(f" {i1:3} {g.callers(1):25} {delims} {self.tokens[i1].line.rstrip()}")
+            ### g.trace(f" {i1:3} {g.callers(1):25} {delims} {self.tokens[i1].line.rstrip()}")
+            g.trace(f" {i1:3} {g.callers(1):25} {delims} {self.dump_line(i1)}")
 
         # Skip tokens until one of the delims is found.
         # Handle apparent function calls.
