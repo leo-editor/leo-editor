@@ -1070,6 +1070,18 @@ class TestTokenBasedOrange(BaseTest):
         # g.printObj(results, tag='Results')
         # g.printObj(expected, tag='Expected')
         self.assertEqual(results, expected, msg=contents)
+    #@+node:ekr.20240124092041.1: *3* TestTBO.test_fstrings
+    def test_fstrings(self):
+
+        ### """g.es_print(f"removing callback: {callback}")\n"""
+
+        # leoApp.py, line 885.
+        contents = """signon = [f"Leo {leoVer}"]\n"""
+        contents, tokens = self.make_data(contents)
+        expected = self.blacken(contents)
+        dump_tokens(tokens)
+        results = self.beautify(contents, tokens)
+        self.assertEqual(results, expected)
     #@-others
 #@+node:ekr.20240105153425.85: ** class TestTokens (BaseTest)
 class TestTokens(BaseTest):

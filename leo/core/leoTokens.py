@@ -2036,7 +2036,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         try:
             token = self.tokens[i]
         except Exception as e:
-            self.oops(f"Expected{kind!r}:{value!r}, got {e} at: {i!r}")
+            self.oops(f"At index {i!r}: Expected{kind!r}:{value!r}, got {e}")
 
         if token.kind != kind or (value and token.value != value):
             self.oops(f"Expected {kind!r}:{value!r}, got {token!r}")
@@ -2046,7 +2046,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         try:
             token = self.tokens[i]
         except Exception as e:
-            self.oops(f"Expected 'name', got {e} at: {i!r}")
+            self.oops(f"At index {i!r}: Expected 'name', got {e}")
 
         if token.kind != 'name':
             self.oops(f"Expected 'name', got {token!r}")
@@ -2055,8 +2055,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Raise an exception if self.tokens[i] is not as expected."""
         try:
             token = self.tokens[i]
-        except IndexError as e:
-            self.oops(f"Expected 'op':{value!r}, got {e} at: {i!r}")
+        except Exception as e:
+            self.oops(f"At index {i!r}: Expected 'op':{value!r}, got {e!r}")
 
         if (token.kind, token.value) != ('op', value):
             self.oops(f"Expected 'op':{value!r}, got {token!r}")
@@ -2066,7 +2066,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         try:
             token = self.tokens[i]
         except Exception as e:
-            self.oops(f"Expected 'op' in {values!r}, got {e} at: {i!r}")
+            self.oops(f"At index {i!r}: Expected 'op' in {values!r}, got {e!r}")
 
         if token.kind != 'op' or token.value not in values:
             self.oops(f"Expected 'op' in {values!r}, got {token!r}")
