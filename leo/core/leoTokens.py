@@ -1414,7 +1414,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # An important sanity check.
         assert i == end, repr((i, end))
         return i
-    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg (test)
+    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg (changed)
     def parse_call_arg(self, i1: int, end: int) -> int:
         """
         Scan a single function definition argument.
@@ -1449,13 +1449,13 @@ class TokenBasedOrange:  # Orange is the new Black.
                     i = self.next(i)
                     if self.is_op(i, '('):
                         i = self.parse_call(i, end)
-                    elif self.is_ops(i, [',', '=', ')']):  ### New
-                        break  ### New
-                    else:
-                        i = self.next(i)
                 else:
                     i = self.next(i)
-            elif kind == 'op':
+                # We have made progress
+                continue
+
+            ### elif kind == 'op':
+            if kind == 'op':
                 if value in ',=)':  ### Was',=':
                     break
                 for delim1, delim2 in (('(', ')'), ('[', ']'), ('{', '}')):
@@ -1489,10 +1489,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Set the context.
         for i3 in range(i1 + 1, i - 1):
-            # if self.is_op(i3, '='):
-                # self.set_context(i3, 'initializer')
-            # el
-
             if self.is_ops(i3, ['*', '**']):
                 self.set_context(i3, 'expression')
 
@@ -1503,10 +1499,10 @@ class TokenBasedOrange:  # Orange is the new Black.
     def parse_call_args(self, i1: int, end: int) -> int:
         """Scan a comma-separated list of function definition arguments."""
 
-        trace = False  ###
+        trace = True  ###
 
         if trace:
-            g.trace(i1, end)  ###
+            g.trace(i1, end, self.tokens[i1].line.rstrip())
 
         # Scan the '('
         self.expect_op(i1, '(')
@@ -1555,7 +1551,11 @@ class TokenBasedOrange:  # Orange is the new Black.
     def parse_call(self, i1: int, end: int) -> int:
         """Parse a function call"""
 
-        trace = False  ###
+        trace = True  ###
+
+        if trace:
+            print('')
+            g.trace(i1, end, self.tokens[i1].line.rstrip())
 
         # Find i1 and i2, the boundaries of the argument list.
         self.expect_op(i1, '(')
@@ -1665,7 +1665,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.next(i)
         return i
 
-    #@+node:ekr.20240120202324.1: *6* tbo.parse_expr & helpers (
+    #@+node:ekr.20240120202324.1: *6* tbo.parse_expr & helpers (Changed)
     def parse_expr(self, i: int, end: int) -> int:
         """
         Parse an expression spanning self.tokens[i:end],
@@ -1677,10 +1677,19 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Set the appropriate context for all inner expressions.
         """
+
+        trace = True  ###
+
+        # Scan an arbitrary expression, bounded only by end.
+
+        if trace:
+            g.trace(i, end, self.tokens[i].line.rstrip())
+
         while i < end:
             progress = i
             token = self.tokens[i]
             kind, value = token.kind, token.value
+            g.trace(i, token)
             if kind == 'name':
                 if value not in self.expression_keywords:
                     # A function call.
@@ -1690,7 +1699,11 @@ class TokenBasedOrange:  # Orange is the new Black.
                         i = self.parse_call(i, end)
                 else:
                     i = self.next(i)
-            elif kind == 'op':
+                # We have made progress.
+                continue
+
+            ### elif kind == 'op':
+            if kind == 'op':
                 if value == '(':
                     # An inner parenthesis adds no context.
                     i = self.parse_parenthesized_expr(i, end)
@@ -1781,6 +1794,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
 
         trace = True  ###
+
+        if trace:
+            g.trace(i1, end, self.tokens[i1].line.rstrip())  ###
 
         # Scan the '['.
         self.expect_op(i1, '[')
@@ -1876,7 +1892,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.set_context(i, 'import')
             i = self.next(i)
         return end
-    #@+node:ekr.20240106181215.1: *6* tbo.parse_initializer (test)
+    #@+node:ekr.20240106181215.1: *6* tbo.parse_initializer (changed)
     def parse_initializer(self, i1: int, end: int, *, has_annotation: bool) -> int:
         """
         Scan an initializer in a function call or function definition argument.
@@ -1894,7 +1910,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             progress = i
             token = self.tokens[i]
             kind, value = token.kind, token.value
-            ### g.trace(token)  ###
+            g.trace(token)  ###
             if kind == 'name':
                 if value not in self.expression_keywords:
                     # A function call.
@@ -1902,14 +1918,14 @@ class TokenBasedOrange:  # Orange is the new Black.
                     i = self.next(i)
                     if self.is_op(i, '('):
                         i = self.parse_call(i, end)
-                    elif self.is_ops(i, [',', ')']):  ### New
-                        break  ### New
-                    else:
-                        i = self.next(i)
                 else:
                     i = self.next(i)
-            elif kind == 'op':
-                if value == ',)':
+                # We have made progress.
+                continue
+
+            ### elif kind == 'op':
+            if kind == 'op':
+                if value in ',)':
                     break
                 for delim1, delim2 in (('(', ')'), ('[', ']'), ('{', '}')):
                     if self.is_op(i, delim1):
@@ -1923,6 +1939,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                     i = self.next(i)
             else:
                 i = self.next(i)
+
             if i is None:
                 self.oops(f"No next: {token}")
             assert progress < i, token
