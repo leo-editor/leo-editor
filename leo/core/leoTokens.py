@@ -1434,18 +1434,17 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             i = i1
 
-        # Scan an arbitrary expression, separated by ',' or '=' or ')'.
-
-        # This is similar to parse_expr, but this code must handle initializers.
+        # Step one: scan one argument up to a possible initializer.
         while i < end:
             progress = i
             token = self.tokens[i]
             kind, value = token.kind, token.value
             ### g.trace(token)  ###
+
             if kind == 'name':
                 i = self.parse_name(i, end)
             elif kind == 'op':
-                if value in ',=)':  ### Was',=':
+                if value in ',=)':
                     break
                 i = self.parse_op(i, end)
             else:
@@ -1458,6 +1457,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             g.trace('TAIL', i, self.tokens[i])
             g.printObj(self.tokens[i1 : i + 1], tag=f"{g.my_name()}")
 
+        # Step 2. Handle the initializer if present.
         if self.is_op(i, ','):
             i = self.next(i)
         elif self.is_op(i, '='):
@@ -1505,9 +1505,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240124012707.1: *5* tbo.parse_name (new)
     def parse_name(self, i: int, end: int) -> int:
         """Parse a name, including possible function calls."""
-        progress = i
         self.expect_name(i)
-
         token = self.tokens[i]
         if token.value in self.expression_keywords:
             i = self.next(i)
@@ -1516,8 +1514,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.next(i)
             if self.is_op(i, '('):
                 i = self.parse_call(i, end)
-
-        assert progress < i, i
         return i
     #@+node:ekr.20240124012746.1: *5* tbo.parse_op (new)
     def parse_op(self, i: int, end: int) -> int:
@@ -1701,19 +1697,9 @@ class TokenBasedOrange:  # Orange is the new Black.
             token = self.tokens[i]
             kind, value = token.kind, token.value
             ### g.trace(i, token)
+
             if kind == 'name':
                 i = self.parse_name(i, end)
-                    # if value not in self.expression_keywords:
-                        # # A function call.
-                        # # token.value *can* be in self.keywords. For example, re.match.
-                        # i = self.next(i)
-                        # if self.is_op(i, '('):
-                            # i = self.parse_call(i, end)
-                    # else:
-                        # i = self.next(i)
-                    # # We have made progress.
-                    # continue
-
             elif kind == 'op':
                 if value == '(':
                     # An inner parenthesis adds no context.
@@ -1923,36 +1909,17 @@ class TokenBasedOrange:  # Orange is the new Black.
             progress = i
             token = self.tokens[i]
             kind, value = token.kind, token.value
-            g.trace(token)  ###
+            ### g.trace(token)  ###
+
             if kind == 'name':
                 i = self.parse_name(i, end)
-                # if value not in self.expression_keywords:
-                    # # A function call.
-                    # # token.value *can* be in self.keywords. For example, re.match.
-                    # i = self.next(i)
-                    # if self.is_op(i, '('):
-                        # i = self.parse_call(i, end)
-                # else:
-                    # i = self.next(i)
-                # # We have made progress.
-                # continue
-
             elif kind == 'op':
                 if value in ',)':
                     break
                 i = self.parse_op(i, end)
-                    # for delim1, delim2 in (('(', ')'), ('[', ']'), ('{', '}')):
-                        # if self.is_op(i, delim1):
-                            # # Handle all inner groups
-                            # i = self.next(i)
-                            # i = self.find_delim(i, end, [delim2])
-                            # self.expect_op(i, delim2)
-                            # i = self.next(i)
-                            # break
-                    # else:
-                        # i = self.next(i)
             else:
                 i = self.next(i)
+
             assert i is not None, token
             assert progress < i, (i, token)
 
