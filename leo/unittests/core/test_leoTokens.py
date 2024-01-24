@@ -550,8 +550,7 @@ class TestTokenBasedOrange(BaseTest):
 
             # Case 1: leoApp, line 1657
             ("""
-                if home and len(home) > 1 and home[0] == '%' and home[-1] == '%':
-                    # Get the indirect reference to the true home.
+                if True:
                     home = os.getenv(home[1:-1], default=None)
             """),
 
