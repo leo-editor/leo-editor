@@ -2032,22 +2032,38 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240106090914.1: *5* tbo.expect
     def expect(self, i: int, kind: str, value: str = None) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
-        token = self.tokens[i]
+        if i is None:
+            self.oops(f"Expected{kind!r}:{value!r}, got Null i")
+        try:
+            token = self.tokens[i]
+        except IndexError:
+            self.oops(f"Expected{kind!r}:{value!r}, got IndexError at: {i}")
+
         if token.kind != kind or (value and token.value != value):
             self.oops(f"Expected {kind!r}:{value!r}, got {token!r}")
-    #@+node:ekr.20240116042811.1: *5* tbo.expect_name (changed)
+    #@+node:ekr.20240116042811.1: *5* tbo.expect_name
     def expect_name(self, i: int) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
-        token = self.tokens[i]
+        if i is None:
+            self.oops("Expected 'name', got Null i")
+        try:
+            token = self.tokens[i]
+        except IndexError:
+            self.oops(f"Expected 'name', got IndexError at: {i}")
+
         if token.kind != 'name':
-            self.oops(f"Expected 'name':{token.value} token, got {token!r}")
+            self.oops(f"Expected 'name', got {token!r}")
 
     #@+node:ekr.20240114015808.1: *5* tbo.expect_op
     def expect_op(self, i: int, value: str) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
         if i is None:
             self.oops(f"Expected 'op':{value!r}, got Null i")
-        token = self.tokens[i]
+        try:
+            token = self.tokens[i]
+        except IndexError:
+            self.oops(f"Expected 'op':{value!r}, got IndexError at: {i}")
+
         if (token.kind, token.value) != ('op', value):
             self.oops(f"Expected 'op':{value!r}, got {token!r}")
     #@+node:ekr.20240114013952.1: *5* tbo.expect_ops
@@ -2055,7 +2071,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Raise an exception if self.tokens[i] is not as expected."""
         if i is None:
             self.oops(f"Expected 'op' in {values!r}, got Null i")
-        token = self.tokens[i]
+        try:
+            token = self.tokens[i]
+        except IndexError:
+            self.oops(f"Expected 'op' in {values!r}, got IndexError at {i}")
+
         if token.kind != 'op' or token.value not in values:
             self.oops(f"Expected 'op' in {values!r}, got {token!r}")
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
