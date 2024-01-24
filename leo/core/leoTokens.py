@@ -593,12 +593,6 @@ class TokenBasedOrange:  # Orange is the new Black.
     # 'name' tokens that may appear in ternary operators.
     ternary_keywords = ('for', 'if', 'else')
     #@-<< TokenBasedOrange: python-related constants >>
-    #@+<< TokenBasedOrange: trace var >>
-    #@+node:ekr.20240122192157.1: *4* << TokenBasedOrange: trace var >>
-    ### Not a great idea.
-
-    ### trace = False  # For temporary tracing sets.
-    #@-<< TokenBasedOrange: trace var >>
 
     #@+others
     #@+node:ekr.20240105145241.2: *4* tbo.ctor
@@ -1634,6 +1628,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Scan a compound statement, adding 'end-statement' context to the
         trailing ':' token.
         """
+
         # Scan the keyword.
         self.expect(i, 'name')
 
@@ -1980,11 +1975,16 @@ class TokenBasedOrange:  # Orange is the new Black.
         if trace:
             g.trace(i1, 'end', end, 'returns', i)  ###
         return i
-    #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement
+    #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement (handle return values!)
     def parse_simple_statement(self, i: int) -> int:
         """
         Scan to the end of a simple statement like an `import` statement.
         """
+
+        trace = True  ###
+        if trace:
+            g.trace(i, self.tokens[i].line.rstrip())
+
         # Sanity check.  ??? Is this check valid ???
         token = self.tokens[i]
         if token.kind != 'name':
@@ -1992,6 +1992,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         end = self.find_end_of_line(i)
         self.expect(end, 'newline')
+
         return end
     #@+node:ekr.20240113054629.1: *5* tbo.parse_statements (top-level of parser)
     def parse_statements(self) -> None:
@@ -2068,7 +2069,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 level -= 1
             i += 1
         return None
-    #@+node:ekr.20240114063347.1: *5* tbo.find_delim (now calls parse_*)
+    #@+node:ekr.20240114063347.1: *5* tbo.find_delim
     def find_delim(self, i1: int, end: int, delims: list) -> int:
         """
         Find the next delimiter token, skipping inner expressions.
