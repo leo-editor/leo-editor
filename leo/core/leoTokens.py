@@ -1489,7 +1489,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if trace:
             g.trace('return', i2)  ###
         return i2
-    #@+node:ekr.20240124012707.1: *5* tbo.parse_name (new)
+    #@+node:ekr.20240124012707.1: *5* tbo.parse_name
     def parse_name(self, i: int, end: int) -> int:
         """Parse a name, including possible function calls."""
         self.expect_name(i)
@@ -2084,7 +2084,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 level -= 1
             i += 1
         return None
-    #@+node:ekr.20240114063347.1: *5* tbo.find_delim (can return i > end !!!)
+    #@+node:ekr.20240114063347.1: *5* tbo.find_delim
     def find_delim(self, i1: int, end: int, delims: list) -> int:
         """
         Find the next delimiter token, skipping inner expressions.
@@ -2263,7 +2263,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         #@-<< docstring: set_context >>
 
-        trace = False  ###
+        trace = False  # Do not delete.
 
         valid_contexts = (
             'annotation', 'array', 'arg', 'class/def', 'complex-slice',
