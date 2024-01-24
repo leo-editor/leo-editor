@@ -281,18 +281,16 @@ class Tokenizer:
     """
 
     __slots__ = (
-        'last_offset', 'lines',
-        'offsets', 'prev_offset',
-        'token_index', 'token_list',
+        'fstring_values',
+        'lines',
+        'offsets',
+        'prev_offset',
+        'token_index',
+        'token_list',
     )
 
     def __init__(self) -> None:
-        # self.token_index = 0
-        # # The computed list of input tokens.
-        # self.token_list: list[InputToken] = []
-        # self.last_offset = 0
-        # self.offsets: list[int] = [0]
-         # Init all ivars.
+        self.fstring_values: Optional[list[str]] = None  # None or a list of values.
         self.offsets: list[int] = [0]  # Index of start of each line.
         self.prev_offset = -1
         self.token_index = 0
@@ -301,7 +299,25 @@ class Tokenizer:
     #@+others
     #@+node:ekr.20240105143307.2: *4* itok.add_token
     def add_token(self, kind: str, line: str, line_number: int, value: str,) -> None:
-        """Add an InputToken to the token list."""
+        """
+        Add an InputToken to the token list.
+
+        Convert fstrings to simple strings.
+        """
+        if self.fstring_values is None:
+            if kind == 'fstring_start':
+                self.fstring_values = [value]
+                return
+        else:
+            # Accumulating an f-string.
+            self.fstring_values.append(value)
+            if kind != 'fstring_end':
+                return
+            # Create a single 'string' token.
+            kind = 'string'
+            value = ''.join(self.fstring_values)
+            self.fstring_values = None
+
         tok = InputToken(kind, value, self.token_index, line, line_number)
         self.token_index += 1
         self.token_list.append(tok)
