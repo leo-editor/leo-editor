@@ -1109,7 +1109,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         val = self.token.value
         context = self.token.context
-        ### g.trace(repr(context), self.token)
+
         if context == 'initializer':
             # Pep 8: Don't use spaces around the = sign when used to indicate
             #        a keyword argument or a default parameter value.
@@ -1420,7 +1420,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         trace = True  ###
 
         if trace:
-            ### g.trace(f" {i1} {end}", self.tokens[i1].line.rstrip())  ###
             g.trace(f" {i1} {end}", self.dump_line(i1))
 
         # Handle leading * and ** args.
@@ -1478,7 +1477,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         trace = True  ###
 
         if trace:
-            ### g.trace(i1, end, self.tokens[i1].line.rstrip())
             g.trace(i1, end, self.dump_line(i1))
 
         # Scan the '('
@@ -1570,7 +1568,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         if trace:
             print('')
-            ### g.trace(' ' * 4, i1, end, self.tokens[i1].line.rstrip())
             g.trace(' ' * 4, i1, end, self.dump_line(i1))
 
         # Find i1 and i2, the boundaries of the argument list.
@@ -1700,14 +1697,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Scan an arbitrary expression, bounded only by end.
 
         if trace:
-            ### g.trace(i, end, self.tokens[i].line.rstrip())
             g.trace(i, end, self.dump_line(i))
 
         while i < end:
             progress = i
             token = self.tokens[i]
             kind, value = token.kind, token.value
-            ### g.trace(i, token)
 
             if kind == 'name':
                 i = self.parse_name(i, end)
@@ -1806,7 +1801,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         trace = True  ###
 
         if trace:
-            ### g.trace(i1, end, self.tokens[i1].line.rstrip())  ###
             g.trace(i1, end, self.dump_line(i1))
 
         # Scan the '['.
@@ -1820,7 +1814,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert i2 <= end, (repr(i2), repr(end))
 
         if trace:
-            ### g.trace(i1, i2, end, self.tokens[i1].line.rstrip())
             g.trace(i1, i2, end, self.dump_line(i1))
 
         # Find all outer tokens and compute final_context.
@@ -1871,7 +1864,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.set_context(colon_i, final_context)
 
         if False and colons:  ###
-            g.trace(f"{i:<5} {final_context:12} {self.tokens[i1].line.strip()}")  ###
+            g.trace(f"{i:<5} {final_context:12} {self.dump_tokens(i1)}")  ###
 
         # Ignore i.
         return self.next(i2)
@@ -1922,7 +1915,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             progress = i
             token = self.tokens[i]
             kind, value = token.kind, token.value
-            ### g.trace(token)  ###
 
             if kind == 'name':
                 i = self.parse_name(i, end)
@@ -1994,7 +1986,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         trace = True  ###
         if trace:
-            ### g.trace(i, self.tokens[i].line.rstrip())
             g.trace(i, self.dump_line(i))
 
         # Sanity check.  ??? Is this check valid ???
@@ -2124,7 +2115,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.oops(f"Invalid delim: {z!r}")
 
         if trace:
-            ### g.trace(f" {i1:3} {g.callers(1):25} {delims} {self.tokens[i1].line.rstrip()}")
             g.trace(f" {i1:3} {g.callers(1):25} {delims} {self.dump_line(i1)}")
 
         # Skip tokens until one of the delims is found.
