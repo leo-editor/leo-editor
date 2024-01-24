@@ -1050,9 +1050,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         prev_i = self.prev(self.index)
         prev = self.tokens[prev_i]
 
-        trace = False  ###
-
-        if trace:  ###
+        if 0:  ###
             context_s = context if context else '<no context>'
             g.trace(f"context: {context_s}")
 
@@ -1157,10 +1155,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             prev = self.code_list[-1]
             if prev.kind == 'lt':
                 self.gen_token('op-no-blanks', val)
-            ### Experimental
-                ### The *previous* token must handle special cases.
-                # elif (prev.kind, prev.value) == ('op', ':'):
-                #    self.gen_token('op-no-blanks', val)
             else:
                 self.gen_blank()
                 self.gen_token('op-no-blanks', val)
@@ -1417,8 +1411,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Set context for every '=' operator.
         """
 
-        trace = True  ###
-
+        trace = False  ###
         if trace:
             g.trace(f" {i1} {end}", self.dump_line(i1))
 
@@ -1434,7 +1427,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             progress = i
             token = self.tokens[i]
             kind, value = token.kind, token.value
-            g.trace(token)  ###
 
             if kind == 'name':
                 i = self.parse_name(i, end)
@@ -1474,8 +1466,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def parse_call_args(self, i1: int, end: int) -> int:
         """Scan a comma-separated list of function definition arguments."""
 
-        trace = True  ###
-
+        trace = False  ###
         if trace:
             g.trace(i1, end, self.dump_line(i1))
 
@@ -1564,8 +1555,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def parse_call(self, i1: int, end: int) -> int:
         """Parse a function call"""
 
-        trace = True  ###
-
+        trace = False  ###
         if trace:
             print('')
             g.trace(' ' * 4, i1, end, self.dump_line(i1))
@@ -1692,13 +1682,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         Set the appropriate context for all inner expressions.
         """
 
-        trace = True  ###
-
-        # Scan an arbitrary expression, bounded only by end.
-
+        trace = False  ###
         if trace:
             g.trace(i, end, self.dump_line(i))
 
+        # Scan an arbitrary expression, bounded only by end.
         while i < end:
             progress = i
             token = self.tokens[i]
@@ -1732,9 +1720,9 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Scan the '{'.
         self.expect_op(i1, '{')
-        i = self.next(i1)
 
         # Find the matching '}'
+        i = self.next(i1)
         i2 = self.find_delim(i, end, ['}'])
         self.expect_op(i2, '}')
 
@@ -1744,12 +1732,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Search for ':' at the top level.
         colon_i = self.find_delim(i, i2, [':'])
         if colon_i is None:
-            # The opening '{' starts a non-empty set.
+            # The opening '{' starts a non-empty set or an f-string!
             pass
         else:
             # The opening '{' starts a non-empty dict.
             self.parse_dict(i1, i2)
-        return self.next(end)
+        return self.next(i2)
     #@+node:ekr.20240121073925.1: *7* tbo.parse_dict
     def parse_dict(self, i1: int, end: int) -> None:
         """
@@ -1798,8 +1786,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Set the context for ':' tokens to 'simple-slice' or 'complex-slice'.
         """
 
-        trace = True  ###
-
+        trace = False  ###
         if trace:
             g.trace(i1, end, self.dump_line(i1))
 
@@ -1984,7 +1971,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Scan to the end of a simple statement like an `import` statement.
         """
 
-        trace = True  ###
+        trace = False  ###
         if trace:
             g.trace(i, self.dump_line(i))
 
@@ -2080,6 +2067,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def find_close_paren(self, i1: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
         trace = False  ###
+
         self.expect_op(i1, '(')
         i = self.next(i1)
         level = 0
@@ -2107,22 +2095,20 @@ class TokenBasedOrange:  # Orange is the new Black.
         It's not necessarily an error if the delim isn't found, so return None
         instead of raising an exception.
         """
-        trace = True  ###
+        trace = False  ###
+        if trace:
+            g.trace(f" {i1:3} {g.callers(1):25} {delims} {self.dump_line(i1)}")
 
         # We expect only the following 'op' delims: ',', '=', ')' and ':'.
         for z in delims:
             if z not in ',=)}]:':
                 self.oops(f"Invalid delim: {z!r}")
 
-        if trace:
-            g.trace(f" {i1:3} {g.callers(1):25} {delims} {self.dump_line(i1)}")
-
         # Skip tokens until one of the delims is found.
         # Handle apparent function calls.
         prev = None
         i = i1
-        ### while i < len(self.tokens):  ### Not end???
-        while i <= end:  ### Experimental.  Should this be '<' ??
+        while i <= end:  ### Should this be '<' ??
             token = self.tokens[i]
             if token.kind == 'op':
                 value = token.value

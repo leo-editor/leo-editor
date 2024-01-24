@@ -1079,7 +1079,7 @@ class TestTokenBasedOrange(BaseTest):
         contents = """signon = [f"Leo {leoVer}"]\n"""
         contents, tokens = self.make_data(contents)
         expected = self.blacken(contents)
-        dump_tokens(tokens)
+        # dump_tokens(tokens)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@-others
