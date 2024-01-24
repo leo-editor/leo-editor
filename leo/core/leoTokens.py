@@ -1414,7 +1414,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # An important sanity check.
         assert i == end, repr((i, end))
         return i
-    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg (changed2)
+    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
     def parse_call_arg(self, i1: int, end: int) -> int:
         """
         Scan a single function definition argument.
@@ -1515,7 +1515,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             if self.is_op(i, '('):
                 i = self.parse_call(i, end)
         return i
-    #@+node:ekr.20240124012746.1: *5* tbo.parse_op (new)
+    #@+node:ekr.20240124012746.1: *5* tbo.parse_op
     def parse_op(self, i: int, end: int) -> int:
         """Parse an operator, including grouping operators."""
         for delim1, delim2 in (('(', ')'), ('[', ']'), ('{', '}')):
@@ -1672,7 +1672,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.next(i)
         return i
 
-    #@+node:ekr.20240120202324.1: *6* tbo.parse_expr & helpers (Changed2, use parse_op ???)
+    #@+node:ekr.20240120202324.1: *6* tbo.parse_expr & helpers (use parse_op??)
     def parse_expr(self, i: int, end: int) -> int:
         """
         Parse an expression spanning self.tokens[i:end],
@@ -1891,7 +1891,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.set_context(i, 'import')
             i = self.next(i)
         return end
-    #@+node:ekr.20240106181215.1: *6* tbo.parse_initializer (changed)
+    #@+node:ekr.20240106181215.1: *6* tbo.parse_initializer
     def parse_initializer(self, i1: int, end: int, *, has_annotation: bool) -> int:
         """
         Scan an initializer in a function call or function definition argument.
