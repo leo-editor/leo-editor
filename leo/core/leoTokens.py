@@ -1443,31 +1443,34 @@ class TokenBasedOrange:  # Orange is the new Black.
             kind, value = token.kind, token.value
             ### g.trace(token)  ###
             if kind == 'name':
-                if value not in self.expression_keywords:
-                    # A function call.
-                    # token.value *can* be in self.keywords. For example, re.match.
-                    i = self.next(i)
-                    if self.is_op(i, '('):
-                        i = self.parse_call(i, end)
-                else:
-                    i = self.next(i)
-                # We have made progress
-                continue
+                i = self.parse_name(i, end)
+                    # if value not in self.expression_keywords:
+                        # # A function call.
+                        # # token.value *can* be in self.keywords. For example, re.match.
+                        # i = self.next(i)
+                        # if self.is_op(i, '('):
+                            # i = self.parse_call(i, end)
+                    # else:
+                        # i = self.next(i)
+                    # # We have made progress
+                    # assert progress < i, i  ### To be removed.
+                    # continue
 
-            ### elif kind == 'op':
-            if kind == 'op':
+
+            elif kind == 'op':
                 if value in ',=)':  ### Was',=':
                     break
-                for delim1, delim2 in (('(', ')'), ('[', ']'), ('{', '}')):
-                    if self.is_op(i, delim1):
-                        # Handle all inner groups
-                        i = self.next(i)
-                        i = self.find_delim(i, end, [delim2])
-                        self.expect_op(i, delim2)
-                        i = self.next(i)
-                        break
-                else:
-                    i = self.next(i)
+                i = self.parse_op(i, end)
+                # for delim1, delim2 in (('(', ')'), ('[', ']'), ('{', '}')):
+                    # if self.is_op(i, delim1):
+                        # # Handle all inner groups
+                        # i = self.next(i)
+                        # i = self.find_delim(i, end, [delim2])
+                        # self.expect_op(i, delim2)
+                        # i = self.next(i)
+                        # break
+                # else:
+                    # i = self.next(i)
             else:
                 i = self.next(i)
             if i is None:
@@ -1522,6 +1525,37 @@ class TokenBasedOrange:  # Orange is the new Black.
         if trace:
             g.trace('return', i2)  ###
         return i2
+    #@+node:ekr.20240124012707.1: *5* tbo.parse_name (new)
+    def parse_name(self, i: int, end: int) -> int:
+        """Parse a name, including possible function calls."""
+        progress = i
+        self.expect_name(i)
+
+        token = self.tokens[i]
+        if token.value in self.expression_keywords:
+            i = self.next(i)
+        else:
+            # token.value *can* be in self.keywords. For example, re.match.
+            i = self.next(i)
+            if self.is_op(i, '('):
+                i = self.parse_call(i, end)
+
+        assert progress < i, i
+        return i
+    #@+node:ekr.20240124012746.1: *5* tbo.parse_op (new)
+    def parse_op(self, i: int, end: int) -> int:
+        """Parse an operator, including grouping operators."""
+        for delim1, delim2 in (('(', ')'), ('[', ']'), ('{', '}')):
+            if self.is_op(i, delim1):
+                # Handle all inner groups
+                i = self.next(i)
+                i = self.find_delim(i, end, [delim2])
+                self.expect_op(i, delim2)
+                i = self.next(i)
+                break
+        else:
+            i = self.next(i)
+        return i
     #@+node:ekr.20240113054641.1: *5* tbo.parse_statement & statement helpers
     def parse_statement(self, i: int) -> int:
         """
@@ -2043,12 +2077,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         token = self.tokens[i]
         if token.kind != kind or (value and token.value != value):
             self.oops(f"Expected {kind!r}:{value!r}, got {token!r}")
-    #@+node:ekr.20240116042811.1: *5* tbo.expect_name
-    def expect_name(self, i: int, value: str) -> None:
+    #@+node:ekr.20240116042811.1: *5* tbo.expect_name (changed)
+    def expect_name(self, i: int) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
         token = self.tokens[i]
-        if (token.kind, token.value) != ('name', 'value'):
-            self.oops(f"Expected 'name':{value} token, got {token!r}")
+        if token.kind != 'name':
+            self.oops(f"Expected 'name':{token.value} token, got {token!r}")
 
     #@+node:ekr.20240114015808.1: *5* tbo.expect_op
     def expect_op(self, i: int, value: str) -> None:
