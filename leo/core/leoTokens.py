@@ -1490,7 +1490,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         while i < i2 and not self.is_op(i, ')'):
             progress = i
             i = self.parse_call_arg(i, end)  # Sets context.
-            assert progress < i, self.tokens[i]
+            if progress >= i:
+                self.oops('parse_call_args: no progress')
 
         # Do not scan past the ')'.
         if trace:
