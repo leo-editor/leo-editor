@@ -568,15 +568,16 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     # The value of 'name' Tokens denoting Python simple statements.
     simple_statements = [
-        # The parser handles assignments and expressions as special cases:
-        'assert', 'await', 'break', 'continue', 'del',
-        'global', 'import', 'nonlocal',
-        'pass', 'raise', 'return', 'type', 'yield',
-        # These are special cases:
-        'from', 'import'
+        ### 'await',
+        'break', 'continue', 'global', 'nonlocal', 'pass',
+        'from', 'import',  # special cases.
     ]
 
-    keywords = compound_statements + simple_statements
+    simple_statements_with_value = [
+        'assert', 'del', 'raise', 'return', 'type', 'yield',
+    ]
+
+    keywords = compound_statements + simple_statements + simple_statements_with_value
 
     # 'name' tokens that may appear in expressions.
     expression_keywords = ('for', 'if', 'else')
