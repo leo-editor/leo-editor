@@ -1422,10 +1422,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         Set context for every '=' operator.
         """
 
-        trace = False  ###
+        trace = True  ###
 
         if trace:
-            g.trace(i1, self.tokens[i1].line.rstrip())  ###
+            g.trace(f" {i1} {end}", self.tokens[i1].line.rstrip())  ###
 
         # Handle leading * and ** args.
         if self.is_ops(i1, ['*', '**']):
@@ -1455,7 +1455,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         if trace:  ###
             g.trace('TAIL', i, self.tokens[i])
-            g.printObj(self.tokens[i1 : i + 1], tag=f"{g.my_name()}")
+            # g.printObj(self.tokens[i1 : i + 1], tag=f"{g.my_name()}")
 
         # Step 2. Handle the initializer if present.
         if self.is_op(i, ','):
@@ -1518,13 +1518,19 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240124012746.1: *5* tbo.parse_op
     def parse_op(self, i: int, end: int) -> int:
         """Parse an operator, including grouping operators."""
+        # Handle all inner groups.
         for delim1, delim2 in (('(', ')'), ('[', ']'), ('{', '}')):
             if self.is_op(i, delim1):
-                # Handle all inner groups
+                # find_delim will *not* call parse_slice or parse_dict_or_set at the outer level.
+                i1 = i
                 i = self.next(i)
-                i = self.find_delim(i, end, [delim2])
-                self.expect_op(i, delim2)
-                i = self.next(i)
+                i2 = self.find_delim(i, end, [delim2])
+                self.expect_op(i2, delim2)
+                if delim1 == '[':
+                    self.parse_slice(i1, i2)
+                elif delim1 == '{':
+                    self.parse_dict_or_set(i1, i2)
+                i = self.next(i2)
                 break
         else:
             i = self.next(i)
@@ -1562,7 +1568,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         if trace:
             print('')
-            g.trace(i1, end, self.tokens[i1].line.rstrip())
+            g.trace(' ' * 4, i1, end, self.tokens[i1].line.rstrip())
 
         # Find i1 and i2, the boundaries of the argument list.
         self.expect_op(i1, '(')
@@ -1795,6 +1801,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         trace = True  ###
 
         if trace:
+            print('=============', g.callers())
             g.trace(i1, end, self.tokens[i1].line.rstrip())  ###
 
         # Scan the '['.

@@ -549,24 +549,24 @@ class TestTokenBasedOrange(BaseTest):
             # """),
 
             # Case 1: leoApp, line 1657
-            ("""
-                if True:
-                    home = os.getenv(home[1:-1], default=None)
-            """),
+            # ("""
+                # if True:
+                    # home = os.getenv(home[1:-1], default=None)
+            # """),
 
             # Case 2: LeoApp.py, line 1872.
-            # ("""
-                # if path.startswith(tag):
-                    # return self.computeBindingLetter(c, path=path[len(tag) :])
-            # """),
+            ("""
+                if path.startswith(tag):
+                    return self.computeBindingLetter(c, path=path[len(tag) :])
+            """),
 
             # Case 3: LeoApp.py, line 3416.
-            # ("""
-                # if groupedEntries:
-                    # dirCount: dict[str, Any] = {}
-                    # for fileName in rf.getRecentFiles()[:n]:
-                        # dirName, baseName = g.os_path_split(fileName)
-            # """),
+            ("""
+                if groupedEntries:
+                    dirCount: dict[str, Any] = {}
+                    for fileName in rf.getRecentFiles()[:n]:
+                        dirName, baseName = g.os_path_split(fileName)
+            """),
         )
         fails = 0
         for i, contents in enumerate(table):
