@@ -616,7 +616,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     # 'name' tokens that may appear in expressions.
     operator_keywords = (
-        'await',  ###
+        'await',  # Debatable.
         'and', 'in', 'not', 'not in', 'or',  # Operators.
         'True', 'False', 'None',  # Values.
     )
@@ -792,7 +792,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.diff:
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
-        elif 0:  ###
+        ### elif 0:  ###
+        else:
             self.write_file(filename, regularized_results, encoding=encoding)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
