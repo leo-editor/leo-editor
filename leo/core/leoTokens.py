@@ -281,6 +281,9 @@ class Tokenizer:
     """
 
     __slots__ = (
+        'contents',
+        'fstring_line',
+        'fstring_line_number',
         'fstring_values',
         'lines',
         'offsets',
@@ -290,14 +293,18 @@ class Tokenizer:
     )
 
     def __init__(self) -> None:
-        self.fstring_values: Optional[list[str]] = None  # None or a list of values.
+        self.contents: str = None
         self.offsets: list[int] = [0]  # Index of start of each line.
         self.prev_offset = -1
         self.token_index = 0
         self.token_list: list[InputToken] = []
+        # Describing the scanned f-string...
+        self.fstring_line: str = None
+        self.fstring_line_number: int = None
+        self.fstring_values: Optional[list[str]] = None
 
     #@+others
-    #@+node:ekr.20240105143307.2: *4* itok.add_token
+    #@+node:ekr.20240105143307.2: *4* Tokenizer.add_token
     def add_token(self, kind: str, line: str, line_number: int, value: str,) -> None:
         """
         Add an InputToken to the token list.
@@ -306,6 +313,8 @@ class Tokenizer:
         """
         if self.fstring_values is None:
             if kind == 'fstring_start':
+                self.fstring_line = line
+                self.fstring_line_number = line_number
                 self.fstring_values = [value]
                 return
         else:
@@ -313,15 +322,22 @@ class Tokenizer:
             self.fstring_values.append(value)
             if kind != 'fstring_end':
                 return
-            # Create a single 'string' token.
+            # Create a single 'string' token from the saved values.
             kind = 'string'
             value = ''.join(self.fstring_values)
+            # Use the line and line number of the 'string-start' token.
+            line = self.fstring_line
+            line_number = self.fstring_line_number
+            # Clear the saved values.
+            self.fstring_line = None
+            self.fstring_line_number = None
             self.fstring_values = None
+            # g.trace(kind, value, line_number, repr(line))
 
         tok = InputToken(kind, value, self.token_index, line, line_number)
         self.token_index += 1
         self.token_list.append(tok)
-    #@+node:ekr.20240105143214.2: *4* itok.check_results
+    #@+node:ekr.20240105143214.2: *4* Tokenizer.check_results
     def check_results(self, contents: str) -> None:
 
         # Split the results into lines.
@@ -336,7 +352,7 @@ class Tokenizer:
             f"result_lines: {result_lines}\n"
             f"       lines: {self.lines}"
         )
-    #@+node:ekr.20240105143214.3: *4* itok.check_round_trip
+    #@+node:ekr.20240105143214.3: *4* Tokenizer.check_round_trip
     def check_round_trip(self, contents: str, tokens: list[InputToken]) -> bool:
         result = self.tokens_to_string(tokens)
         ok = result == contents
@@ -347,7 +363,7 @@ class Tokenizer:
             print('\nResult...\n')
             g.printObj(result)
         return ok
-    #@+node:ekr.20240105143214.4: *4* itok.create_input_tokens
+    #@+node:ekr.20240105143214.4: *4* Tokenizer.create_input_tokens
     def create_input_tokens(
         self,
         contents: str,
@@ -358,6 +374,9 @@ class Tokenizer:
 
         Return list of InputToken's from tokens, a list of 5-tuples.
         """
+        # Remember the contents for debugging.
+        self.contents = contents
+
         # Create the physical lines.
         self.lines = contents.splitlines(True)
 
@@ -374,7 +393,7 @@ class Tokenizer:
         # Print the token list when tracing.
         self.check_results(contents)
         return self.token_list
-    #@+node:ekr.20240105143214.5: *4* itok.do_token (the gem)
+    #@+node:ekr.20240105143214.5: *4* Tokenizer.do_token (the gem)
     def do_token(self, contents: str, five_tuple: tuple) -> None:
         """
         Handle the given token, optionally including between-token whitespace.
@@ -412,7 +431,7 @@ class Tokenizer:
         self.add_token(kind, line, line_number, tok_s)
         # Update the ending offset.
         self.prev_offset = e_offset
-    #@+node:ekr.20240105143214.6: *4* itok.make_input_tokens (entry)
+    #@+node:ekr.20240105143214.6: *4* Tokenizer.make_input_tokens (entry)
     def make_input_tokens(self, contents: str) -> list[InputToken]:
         """
         Return a list  of InputToken objects using tokenize.tokenize.
@@ -433,7 +452,7 @@ class Tokenizer:
         if debug:  # True: 2.9 sec. False: 2.8 sec.
             assert self.check_round_trip(contents, tokens)
         return tokens
-    #@+node:ekr.20240105143214.7: *4* itok.tokens_to_string
+    #@+node:ekr.20240105143214.7: *4* Tokenizer.tokens_to_string
     def tokens_to_string(self, tokens: list[InputToken]) -> str:
         """Return the string represented by the list of tokens."""
         if tokens is None:
