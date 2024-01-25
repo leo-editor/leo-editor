@@ -782,7 +782,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         regularized_contents = self.regularize_nls(contents)
         regularized_results = self.regularize_nls(results)
         if regularized_contents == regularized_results:
-            # print(f"Unchanged: {g.shortFileName(filename)}")
+            return False
+        if not regularized_contents:
+            print(f"tbo: no results {g.shortFileName(filename)}")
             return False
 
         # Write the results
