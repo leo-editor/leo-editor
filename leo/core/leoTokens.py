@@ -794,8 +794,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.diff:
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
-        elif 0:  ###
-            self.write_file(filename, regularized_results, encoding=encoding)
+        self.write_file(filename, regularized_results, encoding=encoding)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
@@ -822,6 +821,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         Before calling this function, the caller should ensure
         that the file actually has been changed.
         """
+        g.trace(s.__class__.__name__)
+        return
+
         try:
             # Write the file with platform-dependent newlines.
             with open(filename, 'w', encoding=encoding) as f:
