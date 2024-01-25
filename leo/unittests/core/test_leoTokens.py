@@ -259,6 +259,23 @@ class TestTokenBasedOrange(BaseTest):
                 g.printObj(results, tag='Results')
             self.assertEqual(results, expected)
 
+    #@+node:ekr.20240124230807.1: *3* TestTBO.test_assignment
+    def test_assignment(self):
+        
+        # From leoFileCommands.py.
+        contents = """
+            for v in vnodes:
+                v.children = [findNode(x) for x in v.children]
+                v.parents = [findNode(x) for x in v.parents]
+            c.hiddenRootNode.children = rootChildren
+        """
+        contents, tokens = self.make_data(contents)
+        ### expected = contents.rstrip() + '\n'
+        expected = self.blacken(contents).rstrip() + '\n'
+        results = self.beautify(contents, tokens)
+        self.assertEqual(results, expected)
+
+        
     #@+node:ekr.20240105153425.46: *3* TestTBO.test_at_doc_part
     def test_at_doc_part(self):
 
@@ -877,39 +894,42 @@ class TestTokenBasedOrange(BaseTest):
 
         # Except where noted, all entries are expected values....
         table = (
-            # Recent fails.
-            """
-                for name in rf.getRecentFiles()[:n]:
-                    pass
+            # Recent fails...
+                # From leoAst.py.
+                """val = val[:i] + '# ' + val[i + 1 :]\n""",
+                # From leoApp.py.
+                """
+                    for name in rf.getRecentFiles()[:n]:
+                        pass
             """,
-            # Legacy tests.
-            """a[:-1]""",
-            """a[: 1 if True else 2 :]""",
-            """a[1 : 1 + 2]""",
-            """a[lower:]""",
-            """a[lower::]""",
-            """a[:upper]""",
-            """a[:upper:]""",
-            """a[::step]""",
-            """a[lower:upper:]""",
-            """a[lower:upper:step]""",
-            """a[lower + offset : upper + offset]""",
-            """a[: upper_fn(x) :]""",
-            """a[: upper_fn(x) : step_fn(x)]""",
-            """a[:: step_fn(x)]""",
-            """a[: upper_fn(x) :]""",
-            """a[: upper_fn(x) : 2 + 1]""",
-            """a[:]""",
-            """a[::]""",
-            """a[1:]""",
-            """a[1::]""",
-            """a[:2]""",
-            """a[:2:]""",
-            """a[::3]""",
-            """a[1:2]""",
-            """a[1:2:]""",
-            """a[:2:3]""",
-            """a[1:2:3]""",
+            # Legacy tests...
+                """a[:-1]""",
+                """a[: 1 if True else 2 :]""",
+                """a[1 : 1 + 2]""",
+                """a[lower:]""",
+                """a[lower::]""",
+                """a[:upper]""",
+                """a[:upper:]""",
+                """a[::step]""",
+                """a[lower:upper:]""",
+                """a[lower:upper:step]""",
+                """a[lower + offset : upper + offset]""",
+                """a[: upper_fn(x) :]""",
+                """a[: upper_fn(x) : step_fn(x)]""",
+                """a[:: step_fn(x)]""",
+                """a[: upper_fn(x) :]""",
+                """a[: upper_fn(x) : 2 + 1]""",
+                """a[:]""",
+                """a[::]""",
+                """a[1:]""",
+                """a[1::]""",
+                """a[:2]""",
+                """a[:2:]""",
+                """a[::3]""",
+                """a[1:2]""",
+                """a[1:2:]""",
+                """a[:2:3]""",
+                """a[1:2:3]""",
         )
         trace = True  ###
         fails = 0
