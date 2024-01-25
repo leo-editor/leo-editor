@@ -261,7 +261,7 @@ class TestTokenBasedOrange(BaseTest):
 
     #@+node:ekr.20240124230807.1: *3* TestTBO.test_assignment
     def test_assignment(self):
-        
+
         # From leoFileCommands.py.
         contents = """
             for v in vnodes:
@@ -270,12 +270,11 @@ class TestTokenBasedOrange(BaseTest):
             c.hiddenRootNode.children = rootChildren
         """
         contents, tokens = self.make_data(contents)
-        ### expected = contents.rstrip() + '\n'
         expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
 
-        
+
     #@+node:ekr.20240105153425.46: *3* TestTBO.test_at_doc_part
     def test_at_doc_part(self):
 

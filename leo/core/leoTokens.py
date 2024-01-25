@@ -668,16 +668,23 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Print a traceback only if we are *not* unit testing.
         """
-        # g.unitTesting is correct, regardless of environment.
-        # g.trace(f"g.unitTesting: {g.unitTesting}")
+        # Compute lines_s.
+        line_number = self.token.line_number
+        lines = g.splitLines(self.contents)
+        n1 = max(0, line_number - 5)
+        prev_lines = ['\n']
+        for i in range(n1, line_number):
+            prev_lines.append(f"line {i+1:4}: {lines[i]!r}\n")
+        context_s = ''.join(prev_lines) + '\n'
+
+        # Return the full error message.
         return (
             '\n\n'
             'Error in token-based beautifier!\n'
             f"{message.strip()}\n"
             '\n'
-            f"At token {self.index}, line: {self.token.line_number} file: {self.filename}\n"
-            f"Input line: {self.token.line!r}\n"
-            '\n'
+            f"At token {self.index}, line: {line_number} file: {self.filename}\n"
+            f"{context_s}"
             "Please report this message to Leo's developers"
         )
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
