@@ -259,7 +259,7 @@ class TestTokenBasedOrange(BaseTest):
                 g.printObj(results, tag='Results')
             self.assertEqual(results, expected)
 
-    #@+node:ekr.20240124230807.1: *3* TestTBO.test_assignment
+    #@+node:ekr.20240124230807.1: *3* TestTBO.test_assignment (Does *not* fail!!!)
     def test_assignment(self):
 
         # From leoFileCommands.py.

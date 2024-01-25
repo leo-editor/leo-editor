@@ -674,7 +674,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         n1 = max(0, line_number - 5)
         prev_lines = ['\n']
         for i in range(n1, line_number):
-            prev_lines.append(f"line {i+1:4}: {lines[i]!r}\n")
+            prev_lines.append(f"Line {i+1:5}: {lines[i]!r}\n")
         context_s = ''.join(prev_lines) + '\n'
 
         # Return the full error message.
