@@ -821,16 +821,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         Before calling this function, the caller should ensure
         that the file actually has been changed.
         """
-        g.trace(s.__class__.__name__)
-        s2 = g.toEncodedString(s, encoding=encoding)
-        g.trace(s2.__class__.__name__)
-        if 0:  ###
-            # Write the file with platform-dependent newlines.
+        g.trace('Writing', filename, encoding, len(s))
+        try:
+            s2 = g.toEncodedString(s, encoding=encoding, reportErrors=True)
             with open(filename, 'wb') as f:
-                try:
-                    f.write(s2)
-                except Exception as e:
-                    g.trace(f"Error writing {filename}\n{e}")
+                f.write(s2)
+        except Exception as e:
+            g.trace(f"Error writing {filename}\n{e}")
     #@+node:ekr.20200107040729.1: *5* tbo.show_diffs
     def show_diffs(self, s1: str, s2: str) -> None:
         """Print diffs between strings s1 and s2."""
