@@ -1530,7 +1530,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             # token.value *can* be in self.keywords. For example, re.match.
             i = self.next(i)
-            if i < end and self.is_op(i, '('):  ### Correct
+            if i < end and self.is_op(i, '('):
                 i = self.parse_call(i, end)
         return i
     #@+node:ekr.20240124012746.1: *5* tbo.parse_op

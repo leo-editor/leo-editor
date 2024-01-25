@@ -259,15 +259,13 @@ class TestTokenBasedOrange(BaseTest):
                 g.printObj(results, tag='Results')
             self.assertEqual(results, expected)
 
-    #@+node:ekr.20240124230807.1: *3* TestTBO.test_assignment (Does *not* fail!!!)
+    #@+node:ekr.20240124230807.1: *3* TestTBO.test_assignment
     def test_assignment(self):
 
         # From leoFileCommands.py.
         contents = """
-            for v in vnodes:
-                v.children = [findNode(x) for x in v.children]
-                v.parents = [findNode(x) for x in v.parents]
             c.hiddenRootNode.children = rootChildren
+            (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
         """
         contents, tokens = self.make_data(contents)
         expected = self.blacken(contents).rstrip() + '\n'
