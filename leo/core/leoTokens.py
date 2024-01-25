@@ -120,7 +120,7 @@ def orange_command(
                     f"Unexpected token ratio in {g.shortFileName(filename)}\n"
                     f"scanned: {scanned:<5} total: {tokens:<5} ratio: {token_ratio:4.2f}"
                 )
-            elif 1:  # Print all ratios.
+            elif 0:  # Print all ratios.
                 print(
                     f"scanned: {scanned:<5} total: {tokens:<5} ratio: {token_ratio:4.2f} "
                     f"{g.shortFileName(filename)}"
@@ -792,8 +792,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.diff:
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
-        ### elif 0:  ###
-        else:
+        elif 0:  ###
             self.write_file(filename, regularized_results, encoding=encoding)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
