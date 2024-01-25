@@ -672,9 +672,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         line_number = self.token.line_number
         lines = g.splitLines(self.contents)
         n1 = max(0, line_number - 5)
+        n2 = min(line_number + 5, len(lines))
         prev_lines = ['\n']
-        for i in range(n1, line_number):
-            prev_lines.append(f"Line {i+1:5}: {lines[i]!r}\n")
+        for i in range(n1, n2):
+            marker_s = '***' if i + 1 == line_number else '   '
+            prev_lines.append(f"Line {i+1:5}:{marker_s}{lines[i]!r}\n")
         context_s = ''.join(prev_lines) + '\n'
 
         # Return the full error message.
@@ -1528,7 +1530,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             # token.value *can* be in self.keywords. For example, re.match.
             i = self.next(i)
-            if i < end and self.is_op(i, '('):
+            if i < end and self.is_op(i, '('):  ### Correct
                 i = self.parse_call(i, end)
         return i
     #@+node:ekr.20240124012746.1: *5* tbo.parse_op
