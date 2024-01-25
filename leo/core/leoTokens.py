@@ -1700,7 +1700,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.next(i)
         return i
 
-    #@+node:ekr.20240120202324.1: *6* tbo.parse_expr & helpers (use parse_op??)
+    #@+node:ekr.20240120202324.1: *6* tbo.parse_expr & helpers
     def parse_expr(self, i: int, end: int) -> int:
         """
         Parse an expression spanning self.tokens[i:end],
@@ -1844,7 +1844,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         def update_context(i: int) -> None:
             nonlocal colons, final_context, inter_colon_tokens
             inter_colon_tokens += 1
-            if colons and inter_colon_tokens > 1:
+            ### g.trace(i, self.tokens[i], 'colons:', inter_colon_tokens)
+            if inter_colon_tokens > 1:
                 final_context = 'complex-slice'
 
         while i < i2:  # Don't scan the ']' token again.
@@ -1997,7 +1998,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if trace:
             g.trace(i1, 'end', end, 'returns', i)  ###
         return i
-    #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement (handle return values!)
+    #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement
     def parse_simple_statement(self, i: int) -> int:
         """
         Scan to the end of a simple statement like an `import` statement.
@@ -2014,6 +2015,10 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         end = self.find_end_of_line(i)
         self.expect(end, 'newline')
+
+        if 1:  ### Experimental.
+            i2 = self.next(i)
+            self.parse_expr(i2, end)
 
         return end
     #@+node:ekr.20240113054629.1: *5* tbo.parse_statements (top-level of parser)
@@ -2295,7 +2300,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         #@-<< docstring: set_context >>
 
-        trace = False  # Do not delete.
+        trace = False  # Do not delete the trace below.
 
         valid_contexts = (
             'annotation', 'array', 'arg', 'class/def', 'complex-slice',
