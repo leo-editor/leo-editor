@@ -120,7 +120,7 @@ def orange_command(
                     f"Unexpected token ratio in {g.shortFileName(filename)}\n"
                     f"scanned: {scanned:<5} total: {tokens:<5} ratio: {token_ratio:4.2f}"
                 )
-            elif 0:  # Print all ratios.
+            elif 1:  # Print all ratios.
                 print(
                     f"scanned: {scanned:<5} total: {tokens:<5} ratio: {token_ratio:4.2f} "
                     f"{g.shortFileName(filename)}"
@@ -600,10 +600,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     # Statements that must *not* be followed by ':'.
     # https://docs.python.org/3/reference/simple_stmts.html
-
-    # The value of 'name' Tokens denoting Python simple statements.
     simple_statements = [
-        ### 'await',
         'break', 'continue', 'global', 'nonlocal', 'pass',
         'from', 'import',  # special cases.
     ]
@@ -619,6 +616,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     # 'name' tokens that may appear in expressions.
     operator_keywords = (
+        'await',  ###
         'and', 'in', 'not', 'not in', 'or',  # Operators.
         'True', 'False', 'None',  # Values.
     )
@@ -945,22 +943,12 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.token.value
+        if name in self.operator_keywords:
+            self.gen_word_op(name)
+        else:
+            self.gen_word(name)
 
-        if 1:  ### Experimental.
-            if name in self.operator_keywords:
-                self.gen_word_op(name)
-            else:
-                self.gen_word(name)
 
-        else:  ### Legacy.
-
-            ### ???: must handle compound statements explicitly.
-            if name in self.compound_statements:
-                self.gen_word(name)
-            elif name in self.operator_keywords:
-                self.gen_word_op(name)
-            else:
-                self.gen_word(name)
     #@+node:ekr.20240105145241.40: *6* tbo.gen_word
     def gen_word(self, s: str) -> None:
         """Add a word request to the code list."""
@@ -1076,10 +1064,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         context = self.token.context
         prev_i = self.prev(self.index)
         prev = self.tokens[prev_i]
-
-        if 0:  ###
-            context_s = context if context else '<no context>'
-            g.trace(f"context: {context_s}")
 
         # Generate the proper code using the context supplied by the parser.
         self.clean('blank')
@@ -1213,11 +1197,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             # The hard case: prev_token is a 'name' token.
             # Any Python keyword indicates a unary operator.
             return_val = keyword.iskeyword(value) or keyword.issoftkeyword(value)
-
-        if 0:  ###
-            g.trace(
-                f"Returns {int(return_val)} {i:<5}",
-                prev_token, self.tokens[i], self.tokens[i].line.strip())
         return return_val
     #@+node:ekr.20240105145241.36: *6* tbo.gen_rt
     def gen_rt(self) -> None:
@@ -1442,10 +1421,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         Set context for every '=' operator.
         """
 
-        trace = False  ###
-        if trace:
-            g.trace(f" {i1} {end}", self.dump_line(i1))
-
         # Handle leading * and ** args.
         if self.is_ops(i1, ['*', '**']):
             self.set_context(i1, 'arg')
@@ -1471,10 +1446,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             assert i is not None, (token)
             assert progress < i, (i, token)
 
-        if trace:  ###
-            g.trace('TAIL', i, self.tokens[i])
-            # g.printObj(self.tokens[i1 : i + 1], tag=f"{g.my_name()}")
-
         # Step 2. Handle the initializer if present.
         if self.is_op(i, ','):
             i = self.next(i)
@@ -1490,16 +1461,10 @@ class TokenBasedOrange:  # Orange is the new Black.
             if self.is_ops(i3, ['*', '**']):
                 self.set_context(i3, 'expression')
 
-        if trace:
-            g.trace(i1, end, 'return', i)  ###
         return i
     #@+node:ekr.20240107092458.1: *5* tbo.parse_call_args
     def parse_call_args(self, i1: int, end: int) -> int:
         """Scan a comma-separated list of function definition arguments."""
-
-        trace = False  ###
-        if trace:
-            g.trace(i1, end, self.dump_line(i1))
 
         # Scan the '('
         self.expect_op(i1, '(')
@@ -1516,9 +1481,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             if progress >= i:
                 self.oops('parse_call_args: no progress')
 
-        # Do not scan past the ')'.
-        if trace:
-            g.trace('return', i2)  ###
         return i2
     #@+node:ekr.20240124012707.1: *5* tbo.parse_name
     def parse_name(self, i: int, end: int) -> int:

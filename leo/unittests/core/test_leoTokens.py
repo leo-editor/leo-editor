@@ -230,8 +230,6 @@ class TestTokenBasedOrange(BaseTest):
                 tbo.show_diffs(regularized_expected, regularized_results)
 
             assert regularized_expected == regularized_results
-
-            ### self.assertEqual(regularized_expected, regularized_results)
     #@+node:ekr.20240105153425.45: *3* TestTBO.test_annotations
     def test_annotations(self):
 
@@ -603,47 +601,47 @@ class TestTokenBasedOrange(BaseTest):
     def test_function_defs(self):
 
         long_table = (
-        # Case 0.
-        """\
-    def f1(a=2 + 5):
-        pass
-    """,
-        # Case 2
-         """\
-    def f2(a):
-        pass
-    """,
-        # Case 3.
-        """\
-    def f3(a: int = 2):
-        pass
-    """,
-        # Case 4.
-        '''\
-    def should_kill_beautify(p):
-        """Return True if p.b contains @killbeautify"""
-        return 'killbeautify' in g.get_directives_dict(p)
-    ''',
-        # Case 5 (new)
-        '''\
-        def reloadSettings():
-            pass
-    ''',
-        # Case 6 (new)
-        '''\
-        def tuple_init(stack: Sequence[str] = ('root',)) -> Generator:
-            pass
-    ''',
-        # Case 7 (new)
-    )
+            # Case 1.
+            """
+                def f1(a=2 + 5):
+                    pass
+            """,
+            # Case 2
+            """
+                def f2(a):
+                    pass
+            """,
+            # Case 3.
+            """
+            def f3(a: int = 2):
+                pass
+            """,
+            # Case 4.
+            '''
+            def should_kill_beautify(p):
+                """Return True if p.b contains @killbeautify"""
+                return 'killbeautify' in g.get_directives_dict(p)
+            ''',
+            # Case 5 (new)
+            '''
+                def reloadSettings():
+                    pass
+            ''',
+            # Case 6 (new)
+            '''
+                def tuple_init(stack: Sequence[str] = ('root',)) -> Generator:
+                    pass
+            ''',
+            # Case 7 (new)
+        )
         short_table = (
-        '''\
-        def tuple_init(stack: Sequence[str] = ('root',)) -> Generator:
-            pass
-    ''',
-    )
+            '''
+                def tuple_init(stack: Sequence[str] = ('root',)) -> Generator:
+                    pass
+            ''',
+        )
         assert long_table and short_table
-        table = short_table  ###
+        table = long_table
         for i, contents in enumerate(table):
             contents, tokens = self.make_data(contents)
             expected = self.blacken(contents).rstrip() + '\n'
@@ -892,7 +890,12 @@ class TestTokenBasedOrange(BaseTest):
 
         # Except where noted, all entries are expected values....
         full_table = (
-            # Recent fails...
+
+            # Differences between leoAst.py and leoTokens.py.
+            # tbo.cmd changes several files, including these.
+            # In all cases, the differences make leoTokens.py *more*
+            # compatible with Black than leoAst.py!
+
                 # From leoAst.py.
                 """val = val[:i] + '# ' + val[i + 1 :]\n""",
                 # From leoApp.py.
