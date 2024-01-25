@@ -1843,8 +1843,25 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         def update_context(i: int) -> None:
             nonlocal colons, final_context, inter_colon_tokens
+
+            ###
+                # # Ignore '-' tokens: they might be a unary operator.
+                # # This is an edge case, imo. Black leaves `a[:-1]` alone.
+                # if self.is_op(i, '-'):
+                    # return
+
+            # Ignore '.' tokens and the preceding 'name' token.
+            # Another edge case.
+            if self.is_op(i, '.'):
+                prev = self.prev(i)
+                if self.is_name(prev):
+                    inter_colon_tokens -= 1
+                return
+
+            # *Now* we can update the effective complexity of the slice.
             inter_colon_tokens += 1
-            ### g.trace(i, self.tokens[i], 'colons:', inter_colon_tokens)
+
+            # g.trace(f"{i:5} {self.tokens[i].kind:8} inter_colon_tokens: {inter_colon_tokens}")
             if inter_colon_tokens > 1:
                 final_context = 'complex-slice'
 
@@ -2016,10 +2033,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         end = self.find_end_of_line(i)
         self.expect(end, 'newline')
 
-        if 1:  ### Experimental.
-            i2 = self.next(i)
-            self.parse_expr(i2, end)
-
+        # A harmless hack: treat the rest of the statement as an expression.
+        i2 = self.next(i)
+        self.parse_expr(i2, end)
         return end
     #@+node:ekr.20240113054629.1: *5* tbo.parse_statements (top-level of parser)
     def parse_statements(self) -> None:
@@ -2229,6 +2245,13 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False
         token = self.tokens[i]
         return token.kind == 'op' and token.value in values
+    #@+node:ekr.20240125082325.1: *5* tbo.is_name
+    def is_name(self, i: int) -> bool:
+
+        if i is None:
+            return False
+        token = self.tokens[i]
+        return token.kind == 'name'
     #@+node:ekr.20240106093210.1: *5* tbo.is_significant_token
     def is_significant_token(self, token: InputToken) -> bool:
         """Return true if the given token is not whitespace."""

@@ -891,7 +891,7 @@ class TestTokenBasedOrange(BaseTest):
         tag = 'test_slice'
 
         # Except where noted, all entries are expected values....
-        table = (
+        full_table = (
             # Recent fails...
                 # From leoAst.py.
                 """val = val[:i] + '# ' + val[i + 1 :]\n""",
@@ -899,7 +899,16 @@ class TestTokenBasedOrange(BaseTest):
                 """
                     for name in rf.getRecentFiles()[:n]:
                         pass
-            """,
+                """,
+                # From leoUndo.py.
+                """s.extend(body_lines[-trailing:])\n""",
+                # From leoTokens.py.
+                """
+                    if line1.startswith(tag) and line1.endswith(tag2):
+                        e = line1[n1 : -n2].strip()
+                        e = line1[n1:-n2].strip()
+                """,
+
             # Legacy tests...
                 """a[:-1]""",
                 """a[: 1 if True else 2 :]""",
@@ -929,9 +938,23 @@ class TestTokenBasedOrange(BaseTest):
                 """a[:2:3]""",
                 """a[1:2:3]""",
         )
+        short_table = (
+            # From leoTokens.py.
+            # There are two conflicting cases here. What's going on.
+            """
+                if line1.startswith(tag) and line1.endswith(tag2):
+                    e = line1[n1 : -n2].strip()
+                    e = line1[n1:-n2].strip()
+            """,
+
+        )
         trace = True  ###
         fails = 0
         fail_fast = True
+        if 1:  # Use the full table.
+            table = full_table
+        else:  # Use the short table. Good for debugging.
+            table = short_table
         for i, contents in enumerate(table):
             description = f"{tag} part {i}"
             contents, tokens = self.make_data(contents, description=description)
@@ -941,11 +964,10 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 if trace:
                     print('')
-                    print(
-                        f"TestTokenBasedOrange.{tag}: FAIL {fails}\n"
-                        # f"  contents: {contents.rstrip()}\n"
-                        f"     black: {expected.rstrip()}\n"
-                        f"    orange: {results.rstrip() if results else 'None'}")
+                    print(f"TestTokenBasedOrange.{tag}: FAIL {fails}")
+                    g.printObj(contents, tag='Contents')
+                    g.printObj(expected, tag='Expected')
+                    g.printObj(results, tag='Results')
             if fail_fast:
                 self.assertEqual(expected, results)
 
