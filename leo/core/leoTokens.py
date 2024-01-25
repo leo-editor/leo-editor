@@ -559,18 +559,18 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Command-line arguments.
         'diff', 'force', 'silent', 'tab_width', 'verbose',
         # Debugging.
-        'contents', 'filename', 'n_scanned_tokens',  # 'n_slice_ops',
+        'contents', 'filename', 'n_scanned_tokens',
         # Global data.
-        'code_list', 'tokens',  # 'line_indices'
+        'code_list', 'tokens',
         # Token-related data for visitors.
         'index', 'line_number', 'token',  # 'line_start'
         # Parsing state for visitors.
-        'decorator_seen', 'in_arg_list', 'in_doc_part', 'in_fstring',
+        'decorator_seen', 'in_arg_list', 'in_doc_part',
         'state_stack', 'verbatim',
         # State data for whitespace visitors.
         # Don't even *think* about changing these!
-        'curly_brackets_level', 'paren_level', 'square_brackets_stack',
-        'indent_level', 'lws',
+        'curly_brackets_level', 'indent_level', 'lws',
+        'paren_level', 'square_brackets_stack',
     ]
     #@-<< TokenBasedOrange: __slots__ >>
     #@+<< TokenBasedOrange: patterns >>
@@ -714,7 +714,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.decorator_seen = False  # Set by do_name for do_op.
         self.in_arg_list = 0  # > 0 if in an arg list of a def.
         self.in_doc_part = False
-        self.in_fstring = False  # True: scanning an f-string.
         self.state_stack: list["ParseState"] = []  # Stack of ParseState objects.
 
         # Leo-related state.
@@ -741,8 +740,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Call the proper visitor.
             if self.verbatim:
                 self.do_verbatim()
-            elif self.in_fstring:
-                self.continue_fstring()
             else:
                 func = getattr(self, f"do_{self.token.kind}", self.no_visitor)
                 func()
@@ -911,20 +908,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         while self.code_list[-1].kind in ('line-end', 'line-indent'):
             self.code_list.pop()
         self.gen_token('line-end', '\n')
-    #@+node:ekr.20240105145241.13: *5* tbo.do_fstring_start & continue_fstring
-    def do_fstring_start(self) -> None:
-        """Handle the 'fstring_start' token. Enter f-string mode."""
-        self.in_fstring = True
-        self.gen_token('verbatim', self.token.value)
-
-    def continue_fstring(self) -> None:
-        """
-        Put the next token in f-fstring mode.
-        Exit f-string mode if the token is 'fstring_end'.
-        """
-        self.gen_token('verbatim', self.token.value)
-        if self.token.kind == 'fstring_end':
-            self.in_fstring = False
     #@+node:ekr.20240105145241.14: *5* tbo.do_indent
     consider_message = 'consider using python/Tools/scripts/reindent.py'
 
@@ -1276,7 +1259,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.state_stack.append(state)
     #@+node:ekr.20240105145241.21: *5* tbo.do_string
     def do_string(self) -> None:
-        """Handle a 'string' token."""
+        """
+        Handle a 'string' token.
+
+        The Tokenizer converts all f-string tokens to a single 'string' token.
+        """
         # Careful: continued strings may contain '\r'
         val = self.regularize_nls(self.token.value)
         self.gen_token('string', val)
@@ -1767,7 +1754,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Search for ':' at the top level.
         colon_i = self.find_delim(i, i2, [':'])
         if colon_i is None:
-            # The opening '{' starts a non-empty set or an f-string!
+            # The opening '{' starts a non-empty set.
+            # Note: the Tokenizer converts all f-strings tokens to a single 'string' token.
             pass
         else:
             # The opening '{' starts a non-empty dict.
