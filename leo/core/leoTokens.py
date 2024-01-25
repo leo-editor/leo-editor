@@ -794,7 +794,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.diff:
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
-        self.write_file(filename, regularized_results, encoding=encoding)
+        if 0:  ### Not yet.
+            self.write_file(filename, regularized_results, encoding=encoding)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
@@ -806,7 +807,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         self.indent_level = 0
         self.filename = filename
-        contents, encoding = g.readFileIntoString(filename)  ###
+        contents, encoding = g.readFileIntoString(filename)
         if not contents:
             return None, None, None
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
