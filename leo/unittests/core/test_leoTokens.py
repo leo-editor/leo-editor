@@ -263,6 +263,7 @@ class TestTokenBasedOrange(BaseTest):
     def test_assignment(self):
 
         # From leoFileCommands.py.
+        # The oops occured in the *first* line because of the *second* line.
         contents = """
             c.hiddenRootNode.children = rootChildren
             (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
