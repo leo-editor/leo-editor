@@ -769,8 +769,6 @@ class TestTokenBasedOrange(BaseTest):
         # Except where noted, all entries are expected values....
 
         table = (
-            ### Latest fail: duplicate
-            """f({key: 1})""",  ### Duplicate.
             # Assignments...
             """a = b * c""",
             """a = b + c""",
@@ -951,7 +949,7 @@ class TestTokenBasedOrange(BaseTest):
             """,
 
         )
-        trace = True  ###
+        trace = True
         fails = 0
         fail_fast = True
         if 1:  # Use the full table.
@@ -1005,8 +1003,6 @@ class TestTokenBasedOrange(BaseTest):
 
         # All entries are expected values....
         table = (
-            # Most recent fail.
-            """d = {key: -3}""",  ### Duplicate.
             # Calls...
             """f(-1)""",
             """f(-1 < 2)""",
@@ -1115,8 +1111,6 @@ class TestTokenBasedOrange(BaseTest):
         self.assertEqual(results, expected, msg=contents)
     #@+node:ekr.20240124092041.1: *3* TestTBO.test_fstrings
     def test_fstrings(self):
-
-        ### """g.es_print(f"removing callback: {callback}")\n"""
 
         # leoApp.py, line 885.
         contents = """signon = [f"Leo {leoVer}"]\n"""

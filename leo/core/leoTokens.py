@@ -1548,11 +1548,6 @@ class TokenBasedOrange:  # Orange is the new Black.
     def parse_call(self, i1: int, end: int) -> int:
         """Parse a function call"""
 
-        trace = False  ###
-        if trace:
-            print('')
-            g.trace(' ' * 4, i1, end, self.dump_line(i1))
-
         # Find i1 and i2, the boundaries of the argument list.
         self.expect_op(i1, '(')
 
@@ -1562,8 +1557,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Sanity check.
         self.expect_op(i, ')')
         i = self.next(i)
-        if trace:
-            g.trace(i1, end, 'return', i)  ###
         return i
     #@+node:ekr.20240115101846.1: *6* tbo.parse_class_or_def
     def parse_class_or_def(self, i: int) -> int:
@@ -1675,10 +1668,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         Set the appropriate context for all inner expressions.
         """
 
-        trace = False  ###
-        if trace:
-            g.trace(i, end, self.dump_line(i))
-
         # Scan an arbitrary expression, bounded only by end.
         while i < end:
             progress = i
@@ -1780,22 +1769,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         Set the context for ':' tokens to 'simple-slice' or 'complex-slice'.
         """
 
-        trace = False  ###
-        if trace:
-            g.trace(i1, end, self.dump_line(i1))
-
         # Scan the '['.
         self.expect_op(i1, '[')
         i = self.next(i1)
 
         # Find the matching ']'
-        # Note: this will set context appropriately for all inner ':' tokens.
+        # This will set context appropriately for all inner ':' tokens.
         i2 = self.find_delim(i, end, [']'])
         self.expect_op(i2, ']')
         assert i2 <= end, (repr(i2), repr(end))
-
-        if trace:
-            g.trace(i1, i2, end, self.dump_line(i1))
 
         # Find all outer tokens and compute final_context.
 
@@ -1806,14 +1788,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         def update_context(i: int) -> None:
             nonlocal colons, final_context, inter_colon_tokens
 
-            ###
-                # # Ignore '-' tokens: they might be a unary operator.
-                # # This is an edge case, imo. Black leaves `a[:-1]` alone.
-                # if self.is_op(i, '-'):
-                    # return
-
             # Ignore '.' tokens and the preceding 'name' token.
-            # Another edge case.
             if self.is_op(i, '.'):
                 prev = self.prev(i)
                 if self.is_name(prev):
@@ -1822,8 +1797,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
             # *Now* we can update the effective complexity of the slice.
             inter_colon_tokens += 1
-
-            # g.trace(f"{i:5} {self.tokens[i].kind:8} inter_colon_tokens: {inter_colon_tokens}")
             if inter_colon_tokens > 1:
                 final_context = 'complex-slice'
 
@@ -1861,9 +1834,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Set the context of all outer-level ':' tokens.
         for colon_i in colons:
             self.set_context(colon_i, final_context)
-
-        if False and colons:  ###
-            g.trace(f"{i:<5} {final_context:12} {self.dump_tokens(i1)}")  ###
 
         # Ignore i.
         return self.next(i2)
@@ -1957,8 +1927,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         #@-<< docstring: tbo.parse_outer_expression >>
 
-        trace = False  ###
-
         token = self.tokens[i1]
         assert self.is_significant_token(token), (token, g.callers())
 
@@ -1974,18 +1942,12 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         end = self.find_end_of_line(i1)
         i = self.parse_expr(i1, end)
-        if trace:
-            g.trace(i1, 'end', end, 'returns', i)  ###
         return i
     #@+node:ekr.20240109032639.1: *6* tbo.parse_simple_statement
     def parse_simple_statement(self, i: int) -> int:
         """
         Scan to the end of a simple statement like an `import` statement.
         """
-
-        trace = False  ###
-        if trace:
-            g.trace(i, self.dump_line(i))
 
         # Sanity check.  ??? Is this check valid ???
         token = self.tokens[i]
@@ -2081,7 +2043,6 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i1: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
-        trace = False  ###
 
         self.expect_op(i1, '(')
         i = self.next(i1)
@@ -2091,8 +2052,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                 level += 1
             elif self.is_op(i, ')'):
                 if level == 0:
-                    if trace:
-                        g.trace(i1, 'return', i)  ###
                     return i
                 if level <= 0:
                     raise SyntaxError(f"Unbalanced parens: {self.token.line!r}")
@@ -2123,7 +2082,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Handle apparent function calls.
         prev = None
         i = i1
-        while i <= end:  ### Should this be '<' ??
+        while i <= end:  # '<=' is required.
             token = self.tokens[i]
             if token.kind == 'op':
                 value = token.value
@@ -2163,16 +2122,11 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Do *not* set the context of any other token.
         """
-        trace = False  ###
-        if trace:
-            g.trace(i, '\n')
 
         while i < len(self.tokens):
             token = self.tokens[i]
             if token.kind in ('newline', 'nl', 'endmarker'):
                 self.set_context(i, 'end-statement')
-                if trace:
-                    g.trace(f"Returns {i}\n")
                 return i
             if token.kind == 'op':
                 value = token.value
