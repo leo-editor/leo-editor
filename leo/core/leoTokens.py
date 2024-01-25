@@ -805,7 +805,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         self.indent_level = 0
         self.filename = filename
-        contents, encoding = g.readFileIntoString(filename)
+        contents, encoding = g.readFileIntoString(filename)  ###
         if not contents:
             return None, None, None
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
