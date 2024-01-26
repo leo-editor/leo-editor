@@ -556,30 +556,40 @@ class TestTokenBasedOrange(BaseTest):
     def test_function_calls(self):
 
         table = (
-            # Case 0: (legacy)
-            ("""
+        
+            # LeoFrame.py, line 1650.
+            """
+                if (
+                    call_event_handlers and g.doHook("select1",
+                    c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+                ):
+                    return
+            """,
+        
+            # Assignment.
+            """
                 version = str(semantic_version.Version.coerce(tag, partial=True))
-            """),
+            """,
 
-            # Case 1: leoApp, line 1657
-            ("""
+            # leoApp, line 1657
+            """
                 if True:
                     home = os.getenv(home[1:-1], default=None)
-            """),
+            """,
 
-            # Case 2: LeoApp.py, line 1872.
-            ("""
+            # LeoApp.py, line 1872.
+            """
                 if path.startswith(tag):
                     return self.computeBindingLetter(c, path=path[len(tag) :])
-            """),
+            """,
 
-            # Case 3: LeoApp.py, line 3416.
-            ("""
+            # LeoApp.py, line 3416.
+            """
                 if groupedEntries:
                     dirCount: dict[str, Any] = {}
                     for fileName in rf.getRecentFiles()[:n]:
                         dirName, baseName = g.os_path_split(fileName)
-            """),
+            """,
         )
         fails = 0
         for i, contents in enumerate(table):
