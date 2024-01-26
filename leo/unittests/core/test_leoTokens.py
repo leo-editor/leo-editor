@@ -536,11 +536,25 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240107080413.1: *3* TestTBO.test_function_calls
     def test_function_calls(self):
 
+        # Put recent failures first.
         table = (
-
-            # Assignment.
+            
+            # leoNodes, line 881.
             """
-            version = str(semantic_version.Version.coerce(tag, partial=True))
+            path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+            """,
+            
+            # leoPersistence, line 526.
+            """
+            return '-->'.join(reversed(
+                [self.expected_headline(p2) for p2 in p.self_and_parents(copy=False)]))
+            """,
+            
+            # leoserver.py, line 2302.
+            """
+            result = [
+                self._get_position_d(p, c) for p in c.all_positions(copy=False)
+            ]
             """,
 
             # leoApp, line 1657
@@ -561,6 +575,11 @@ class TestTokenBasedOrange(BaseTest):
                 dirCount: dict[str, Any] = {}
                 for fileName in rf.getRecentFiles()[:n]:
                     dirName, baseName = g.os_path_split(fileName)
+            """,
+            
+            # Assignment.
+            """
+            version = str(semantic_version.Version.coerce(tag, partial=True))
             """,
         )
         for i, contents in enumerate(table):
