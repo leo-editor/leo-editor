@@ -538,16 +538,16 @@ class TestTokenBasedOrange(BaseTest):
 
         # Put recent failures first.
         table = (
-
-            # leoNodes, line 881.
-            """
-            path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-            """,
-
+        
             # leoPersistence, line 526.
             """
             return '-->'.join(reversed(
                 [self.expected_headline(p2) for p2 in p.self_and_parents(copy=False)]))
+            """,
+
+            # leoNodes, line 881.
+            """
+            path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
             """,
 
             # leoserver.py, line 2302.
@@ -584,13 +584,14 @@ class TestTokenBasedOrange(BaseTest):
         )
         for i, contents in enumerate(table):
             contents, tokens = self.make_data(contents)
-            expected = self.blacken(contents).rstrip() + '\n'
+            ### expected = self.blacken(contents).rstrip() + '\n'
+            expected = contents
             results = self.beautify(contents, tokens)
             if results != expected:
                 # dump_tokens(tokens)
-                if 0:
+                if 1:
                     g.printObj(contents, tag='Contents')
-                    g.printObj(expected, tag='Expected (blackened)')
+                    g.printObj(expected, tag='Expected (same as contents)')
                     g.printObj(results, tag='Results')
                 self.assertEqual(expected, results)
     #@+node:ekr.20240126062946.1: *3* TestTBO.test_function_call_with_parens

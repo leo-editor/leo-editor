@@ -746,19 +746,25 @@ class TokenBasedOrange:  # Orange is the new Black.
             "Please report this message to Leo's developers"
         )
     #@+node:ekr.20240125182219.1: *5* tbo.trace
-    def trace(self, i: int, i2: Optional[int]) -> None:  # pragma: no cover
+    def trace(self, i: int, i2: Optional[int] = None) -> None:  # pragma: no cover
         """
         Print i, token, and dump_line(i).
 
         A surprisingly useful debugging utility.
         """
+        ### return
         token = self.tokens[i]
         indices_s = f"{i:2}" if i2 is None else f"i: {i:2} i2: {i2:2}"
+
+        end_line = self.find_end_of_line(i)
+        tail_s = ''.join([z.to_string() for z in self.tokens[i:end_line]])
+
         # Adjust widths below as necessary.
         print(
             f"{g.callers(1):20} {indices_s} "
             f"token: {token.kind:6}:{token.show_val(10):12} "
-            f"line: {self.dump_line(i)!r}")
+            # f"line: {self.dump_line(i)!r}")
+            f"tail: {tail_s!r}")
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def no_visitor(self) -> None:  # pragma: no cover
@@ -1498,7 +1504,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # An important sanity check.
         assert i == end, repr((i, end))
         return i
-    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
+    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg (changed)
     def parse_call_arg(self, i1: int, end: int) -> int:
         """
         Scan a single function definition argument.
@@ -1516,6 +1522,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = i1
 
         # Step one: scan one argument up to a possible initializer.
+        prev = None  ###
         while i < end:
             progress = i
             token = self.tokens[i]
@@ -1526,10 +1533,22 @@ class TokenBasedOrange:  # Orange is the new Black.
             elif kind == 'op':
                 if value in ',=)':
                     break
-                i = self.parse_op(i, end)
+                ### i = self.parse_op(i, end)
+                if value == '(':
+                    ### self.trace(i)
+                    if prev and prev.kind == 'name':
+                        # A function call in a compound statement.
+                        ### ??? Ignore the returned index.
+                        i = self.parse_call(i, end)
+                    else:
+                        i = self.parse_parenthesized_expr(i, end)
+                else:
+                    i = self.next(i)
             else:
                 i = self.next(i)
 
+            if self.is_significant_token(token):
+                prev = token
             assert i is not None, (token)
             assert progress < i, (i, token)
 
@@ -1546,7 +1565,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Set the context.
         for i3 in range(i1 + 1, i - 1):
             if self.is_ops(i3, ['*', '**']):
-                self.set_context(i3, 'expression')
+                ### self.set_context(i3, 'expression')
+                self.set_context(i3, 'arg')  ### Was 'expression'
+            elif self.is_op(i3, '='):
+                self.set_context(i3, 'arg')
 
         return i
     #@+node:ekr.20240107092458.1: *5* tbo.parse_call_args
@@ -1569,12 +1591,14 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.oops('parse_call_args: no progress')
 
         return i2
-    #@+node:ekr.20240124012707.1: *5* tbo.parse_name
+    #@+node:ekr.20240124012707.1: *5* tbo.parse_name ** why doesn't this always work?
     def parse_name(self, i: int, end: int) -> int:
         """Parse a name, including possible function calls."""
+
+        ### self.trace(i)  ###
+
         self.expect_name(i)
         token = self.tokens[i]
-        ### g.trace(i, token)  ###
         if token.value in self.expression_keywords:
             i = self.next(i)
         else:
@@ -1747,7 +1771,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.next(i)
         return i
 
-    #@+node:ekr.20240120202324.1: *6* tbo.parse_expr & helpers (*** add logic from find_delim)
+    #@+node:ekr.20240120202324.1: *6* tbo.parse_expr & helpers (changed)
     def parse_expr(self, i: int, end: int) -> int:
         """
         Parse an expression spanning self.tokens[i:end],
@@ -1848,7 +1872,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 break
             self.set_context(i, 'dict')
             i = self.next(i)
-    #@+node:ekr.20240121071949.1: *7* tbo.parse_parenthesized_expr
+    #@+node:ekr.20240121071949.1: *7* tbo.parse_parenthesized_expr (changed)
     def parse_parenthesized_expr(self, i: int, end: int) -> int:
         """
         Parse a parenthesized expression.
@@ -2109,7 +2133,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i += 1
         self.oops("Unmatched '('")  # pragma: no cover
         return None  # pragma: no cover
-    #@+node:ekr.20240114063347.1: *5* tbo.find_delim
+    #@+node:ekr.20240114063347.1: *5* tbo.find_delim (changed: only calls skip*)
     def find_delim(self, i1: int, end: int, delims: list) -> int:
         """
         Find the next delimiter token, skipping inner expressions.
@@ -2294,7 +2318,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         #@-<< docstring: set_context >>
 
-        trace = True  # Do not delete the trace below.
+        trace = False  # Do not delete the trace below.
 
         valid_contexts = (
             'annotation', 'array', 'arg', 'class/def', 'complex-slice',
