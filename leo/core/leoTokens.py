@@ -1607,7 +1607,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Move past the ':' token.
         return self.next(i)
-    #@+node:ekr.20240108062349.1: *6* tbo.parse_compound_statement
+    #@+node:ekr.20240108062349.1: *6* tbo.parse_compound_statement (REVISE)
     def parse_compound_statement(self, i: int) -> int:
         """
         Scan a compound statement, adding 'end-statement' context to the
@@ -1636,6 +1636,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = self.find_delim(i, len(self.tokens), [':'])
         self.expect_op(i, ':')
         self.set_context(i, 'end-statement')
+
+        ### To do: look for slices, function calls, dicts, etc!  ###
 
         # Scan the ':'.
         i = self.next(i)
@@ -2315,7 +2317,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         A surprisingly useful debugging utility.
         """
-        print(f"{i:4} {self.dump_line(i)}")
+        print(f"{g.callers(1):20} i: {i:4} line: {self.dump_line(i)!r}")
     #@-others
 #@+node:ekr.20240105140814.121: ** function: main & helpers (leoTokens.py)
 def main() -> None:  # pragma: no cover
