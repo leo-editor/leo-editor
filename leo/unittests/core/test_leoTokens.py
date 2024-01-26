@@ -839,7 +839,7 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         # dump_tokens(tokens)
         results = self.beautify(contents, tokens)
-        if results != expected:
+        if results != expected:  # pragma: no cover
             g.printObj(results, tag='Results')
             g.printObj(expected, tag='Expected')
         self.assertEqual(expected, results)
@@ -983,25 +983,19 @@ class TestTokenBasedOrange(BaseTest):
             # Unary ops...
             """v = -1 if a < b else -2""",
         )
-        fails = 0
-        fail_fast = True
         for i, contents in enumerate(table):
             description = f"{tag} part {i}"
             contents, tokens = self.make_data(contents, description=description)
             expected = self.blacken(contents)
             results = self.beautify(contents, tokens, filename=description)
             if results != expected:  # pragma: no cover
-                fails += 1
                 print('')
                 print(
-                    f"TestTokenBasedOrange.{tag}: FAIL {fails}\n"
+                    f"TestTokenBasedOrange.{tag}:\n"
                     f"  contents: {contents.rstrip()}\n"
                     f"     black: {expected.rstrip()}\n"
                     f"    orange: {results.rstrip() if results else 'None'}")
-            if fail_fast:
-                self.assertEqual(results, expected, msg=description)
-        if not fail_fast:
-            self.assertEqual(fails, 0)
+            self.assertEqual(results, expected, msg=description)
     #@+node:ekr.20240105153425.79: *3* TestTBO.test_verbatim
     def test_verbatim(self):
 
