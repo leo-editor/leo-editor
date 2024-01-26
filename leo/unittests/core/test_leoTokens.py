@@ -557,15 +557,15 @@ class TestTokenBasedOrange(BaseTest):
 
         table = (
             # Case 0: (legacy)
-            # ("""
-                # version = str(semantic_version.Version.coerce(tag, partial=True))
-            # """),
+            ("""
+                version = str(semantic_version.Version.coerce(tag, partial=True))
+            """),
 
             # Case 1: leoApp, line 1657
-            # ("""
-                # if True:
-                    # home = os.getenv(home[1:-1], default=None)
-            # """),
+            ("""
+                if True:
+                    home = os.getenv(home[1:-1], default=None)
+            """),
 
             # Case 2: LeoApp.py, line 1872.
             ("""
@@ -887,7 +887,7 @@ class TestTokenBasedOrange(BaseTest):
         tag = 'test_slice'
 
         # Except where noted, all entries are expected values....
-        full_table = (
+        table = (
 
             # Differences between leoAst.py and leoTokens.py.
             # tbo.cmd changes several files, including these.
@@ -904,6 +904,7 @@ class TestTokenBasedOrange(BaseTest):
                 # From leoUndo.py.
                 """s.extend(body_lines[-trailing:])\n""",
                 # From leoTokens.py.
+                # The expected value of the two last lines is the last line.
                 """
                     if line1.startswith(tag) and line1.endswith(tag2):
                         e = line1[n1 : -n2].strip()
@@ -939,23 +940,9 @@ class TestTokenBasedOrange(BaseTest):
                 """a[:2:3]""",
                 """a[1:2:3]""",
         )
-        short_table = (
-            # From leoTokens.py.
-            # There are two conflicting cases here. What's going on.
-            """
-                if line1.startswith(tag) and line1.endswith(tag2):
-                    e = line1[n1 : -n2].strip()
-                    e = line1[n1:-n2].strip()
-            """,
-
-        )
         trace = True
         fails = 0
         fail_fast = True
-        if 1:  # Use the full table.
-            table = full_table
-        else:  # Use the short table. Good for debugging.
-            table = short_table
         for i, contents in enumerate(table):
             description = f"{tag} part {i}"
             contents, tokens = self.make_data(contents, description=description)
@@ -1116,7 +1103,6 @@ class TestTokenBasedOrange(BaseTest):
         contents = """signon = [f"Leo {leoVer}"]\n"""
         contents, tokens = self.make_data(contents)
         expected = self.blacken(contents)
-        # dump_tokens(tokens)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@-others
