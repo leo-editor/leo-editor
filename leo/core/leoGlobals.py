@@ -4914,13 +4914,13 @@ def getPythonEncodingFromString(s: str) -> str:
         lines = g.splitLines(s)
         line1 = lines[0].strip()
         if line1.startswith(tag) and line1.endswith(tag2):
-            e = line1[n1 : -n2].strip()
+            e = line1[n1:-n2].strip()
             if e and g.isValidEncoding(e):
                 encoding = e
         elif g.match_word(line1, 0, '@first'):  # 2011/10/21.
             line1 = line1[len('@first') :].strip()
             if line1.startswith(tag) and line1.endswith(tag2):
-                e = line1[n1 : -n2].strip()
+                e = line1[n1:-n2].strip()
                 if e and g.isValidEncoding(e):
                     encoding = e
     return encoding

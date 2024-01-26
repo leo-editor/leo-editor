@@ -170,7 +170,7 @@ class Undoer:
                 i -= 1
             # This work regardless of how many items appear after bead n.
                 # g.trace('Cutting undo stack to %d entries' % (n))
-            u.beads = u.beads[-n :]
+            u.beads = u.beads[-n:]
             u.bead = n - 1
         if 'undo' in g.app.debug and 'verbose' in g.app.debug:  # pragma: no cover
             print(f"u.cutStack: {len(u.beads):3}")
@@ -1023,8 +1023,8 @@ class Undoer:
             old_middle_lines = old_lines[leading:]
             new_middle_lines = new_lines[leading:]
         else:
-            old_middle_lines = old_lines[leading : -trailing]
-            new_middle_lines = new_lines[leading : -trailing]
+            old_middle_lines = old_lines[leading:-trailing]
+            new_middle_lines = new_lines[leading:-trailing]
         # Remember how many trailing newlines in the old and new text.
         i = len(oldText) - 1
         old_newlines = 0
@@ -1892,7 +1892,7 @@ class Undoer:
         parent_v = u.p._parentVnode()
         n = len(u.followingSibs)
         # Remove the demoted nodes from p's children.
-        u.p.v.children = u.p.v.children[: -n]
+        u.p.v.children = u.p.v.children[:-n]
         # Add the demoted nodes to the parent's children.
         parent_v.children.extend(u.followingSibs)
         # Adjust the parent links.
@@ -2125,7 +2125,7 @@ class Undoer:
         if oldMidLines:
             s.extend(oldMidLines)
         if trailing > 0:
-            s.extend(body_lines[-trailing :])
+            s.extend(body_lines[-trailing:])
         s = '\n'.join(s)
         # Remove trailing newlines in s.
         while s and s[-1] == '\n':
