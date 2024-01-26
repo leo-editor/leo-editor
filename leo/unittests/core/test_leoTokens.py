@@ -186,7 +186,7 @@ class TestTokenBasedOrange(BaseTest):
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
     #@+node:ekr.20240116104552.1: *3* TestTBO.slow_test_leoColorizer
-    def slow_test_leoApp(self) -> None:
+    def slow_test_leoApp(self) -> None:  # pragma: no cover
 
         g.trace('=====')
         filename = 'leoColorizer.py'
@@ -232,7 +232,7 @@ class TestTokenBasedOrange(BaseTest):
             contents, tokens = self.make_data(contents)
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens)
-            if results != expected:
+            if results != expected:  # pragma: no cover
                 g.printObj(contents, tag='Contents')
                 g.printObj(expected, tag='Expected (blackened)')
                 g.printObj(results, tag='Results')
@@ -480,7 +480,7 @@ class TestTokenBasedOrange(BaseTest):
         # dump_tokens(tokens)
         expected = contents
         results = self.beautify(contents, tokens)
-        if results != expected:
+        if results != expected:  # pragma: no cover
             # g.printObj(contents, tag='Contents')
             g.printObj(expected, tag='Expected (same as Contents)')
             g.printObj(results, tag='Results')
@@ -529,7 +529,7 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         expected = self.blacken(contents)
         results = self.beautify(contents, tokens)
-        if expected != results:
+        if expected != results:  # pragma: no cover
             g.printObj(expected, tag='Explected (blackened)')
             g.printObj(results, tag='Results')
         self.assertEqual(results, expected)
@@ -636,7 +636,7 @@ class TestTokenBasedOrange(BaseTest):
             contents, tokens = self.make_data(contents)
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens)
-            if expected != results:
+            if expected != results:  # pragma: no cover
                 g.printObj(expected, tag='Explected (blackened)')
                 g.printObj(results, tag='Results')
             self.assertEqual(results, expected)
@@ -795,25 +795,19 @@ class TestTokenBasedOrange(BaseTest):
             # Returns...
             """return -1""",
         )
-        fails = 0
-        fail_fast = True
         for i, contents in enumerate(table):
             description = f"{tag} part {i}"
             contents, tokens = self.make_data(contents, description=description)
             expected = self.blacken(contents)
             results = self.beautify(contents, tokens, filename=description)
             if results != expected:  # pragma: no cover
-                fails += 1
                 print('')
                 print(
-                    f"TestTokenBasedOrange.{tag}: FAIL {fails}\n"
+                    f"TestTokenBasedOrange.{tag}: FAIL\n"
                     f"  contents: {contents.rstrip()}\n"
                     f"     black: {expected.rstrip()}\n"
                     f"    orange: {results.rstrip() if results else 'None'}")
-            if fail_fast:
-                self.assertEqual(results, expected, msg=description)
-        if not fail_fast:
-            self.assertEqual(fails, 0)
+            self.assertEqual(results, expected, msg=description)
     #@+node:ekr.20240105153425.70: *3* TestTBO.test_relative_imports
     def test_relative_imports(self):
 
