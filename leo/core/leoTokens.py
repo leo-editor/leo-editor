@@ -857,8 +857,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Write the results
         if not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
+
+        safe = True
+        if safe:
+            print('tbo: safe mode')
+
         # Print the diffs for testing!
-        if self.diff:
+        if safe or self.diff:
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
         else:
