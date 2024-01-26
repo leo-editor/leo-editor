@@ -538,55 +538,92 @@ class TestTokenBasedOrange(BaseTest):
 
         table = (
 
-            # LeoFrame.py, line 1650.
-
-            # The test passes without the redundant parens.
-            """
-                if (g.doHook("select1", c=c, new_p=p)):
-                    return
-            """,
-
             # Assignment.
             """
-                version = str(semantic_version.Version.coerce(tag, partial=True))
+            version = str(semantic_version.Version.coerce(tag, partial=True))
             """,
 
             # leoApp, line 1657
             """
-                if True:
-                    home = os.getenv(home[1:-1], default=None)
+            if True:
+                home = os.getenv(home[1:-1], default=None)
             """,
 
             # LeoApp.py, line 1872.
             """
-                if path.startswith(tag):
-                    return self.computeBindingLetter(c, path=path[len(tag) :])
+            if path.startswith(tag):
+                return self.computeBindingLetter(c, path=path[len(tag) :])
             """,
 
             # LeoApp.py, line 3416.
             """
-                if groupedEntries:
-                    dirCount: dict[str, Any] = {}
-                    for fileName in rf.getRecentFiles()[:n]:
-                        dirName, baseName = g.os_path_split(fileName)
+            if groupedEntries:
+                dirCount: dict[str, Any] = {}
+                for fileName in rf.getRecentFiles()[:n]:
+                    dirName, baseName = g.os_path_split(fileName)
             """,
         )
-        fails = 0
         for i, contents in enumerate(table):
             contents, tokens = self.make_data(contents)
             expected = self.blacken(contents).rstrip() + '\n'
             results = self.beautify(contents, tokens)
             if results != expected:
-                fails += 1
                 # dump_tokens(tokens)
                 if 0:
                     g.printObj(contents, tag='Contents')
                     g.printObj(expected, tag='Expected (blackened)')
                     g.printObj(results, tag='Results')
                 self.assertEqual(expected, results)
-        # self.assertEqual(fails, 0)
+    #@+node:ekr.20240126062946.1: *3* TestTBO.test_function_call_with_parens
+    def test_function_calls_with_parens(self):
 
+        # LeoFrame.py, line 1650.
 
+        # Test 1: The 'if' statement on a single line.
+        contents1 = """
+            if (g.doHook("select1", c = c, new_p=p)):
+                return
+            """
+
+        # Black would remove the outer parens.
+        expected1 = textwrap.dedent(
+            """
+            if (g.doHook("select1", c=c, new_p=p)):
+                return
+            """).strip() + '\n'
+
+        # Test 2: The 'if' statement spans several lines.
+        contents2 = """
+            if (
+                whatever and g.doHook(
+                    "select1", c = c, new_p=p)
+            ):
+                return
+            """
+
+        # Black would remove the outer parens.
+        expected2 = textwrap.dedent(
+            """
+            if (
+                whatever and g.doHook(
+                    "select1", c=c, new_p=p)
+            ):
+                return
+            """).strip() + '\n'
+
+        table = (
+            (contents1, expected1),
+            (contents2, expected2),
+        )
+        for contents, expected in table:
+            contents, tokens = self.make_data(contents)
+            results = self.beautify(contents, tokens)
+            if results != expected:
+                if 1:
+                    g.printObj(contents, tag='Contents')
+                    g.printObj(expected, tag='Expected (blackened)')
+                    g.printObj(results, tag='Results')
+                self.assertEqual(expected, results)
     #@+node:ekr.20240105153425.57: *3* TestTBO.test_function_defs
     def test_function_defs(self):
 

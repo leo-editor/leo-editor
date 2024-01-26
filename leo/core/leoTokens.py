@@ -1676,7 +1676,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Move past the ':' token.
         return self.next(i)
-    #@+node:ekr.20240108062349.1: *6* tbo.parse_compound_statement (REVISE)
+    #@+node:ekr.20240108062349.1: *6* tbo.parse_compound_statement
     def parse_compound_statement(self, i: int) -> int:
         """
         Scan a compound statement, adding 'end-statement' context to the
@@ -1702,15 +1702,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         i = self.next(i)
 
         # Find the trailing ':' and set the context.
-        i = self.find_delim(i, len(self.tokens), [':'])
-        self.expect_op(i, ':')
-        self.set_context(i, 'end-statement')
+        end = self.find_delim(i, len(self.tokens), [':'])
+        self.expect_op(end, ':')
+        self.set_context(end, 'end-statement')
 
-        ### To do: look for slices, function calls, dicts, etc!  ###
+        # A harmless hack: treat the rest of the statement as an expression.
+        self.parse_expr(i, end)
 
         # Scan the ':'.
-        i = self.next(i)
-        return i
+        return self.next(end)
     #@+node:ekr.20240115074103.1: *6* tbo.parse_decorator
     def parse_decorator(self, i: int) -> int:
 
