@@ -2308,6 +2308,14 @@ class TokenBasedOrange:  # Orange is the new Black.
             assert progress < i, 'skip_match: no progress!'
         self.oops(f"no matching {delim2!r}")
         return None
+    #@+node:ekr.20240125182219.1: *5* tbo.trace
+    def trace(self, i: int) -> None:
+        """
+        Print i and dump_line(i).
+
+        A surprisingly useful debugging utility.
+        """
+        print(f"{i:4} {self.dump_line(i)}")
     #@-others
 #@+node:ekr.20240105140814.121: ** function: main & helpers (leoTokens.py)
 def main() -> None:  # pragma: no cover
