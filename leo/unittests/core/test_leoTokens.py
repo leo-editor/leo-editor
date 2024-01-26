@@ -556,7 +556,7 @@ class TestTokenBasedOrange(BaseTest):
     def test_function_calls(self):
 
         table = (
-        
+
             # LeoFrame.py, line 1650.
             """
                 if (
@@ -565,7 +565,7 @@ class TestTokenBasedOrange(BaseTest):
                 ):
                     return
             """,
-        
+
             # Assignment.
             """
                 version = str(semantic_version.Version.coerce(tag, partial=True))
