@@ -130,10 +130,11 @@ def orange_command(
             print(f"file not found: {filename}")
     # Report the results.
     t2 = time.process_time()
-    print(
-        f"tbo: {t2-t1:3.1f} sec. files: {len(files):<3} "
-        f"changed: {n_changed:<3} in {','.join(arg_files)}"
-    )
+    if n_changed or TokenBasedOrange(settings).verbose:
+        print(
+            f"tbo: {t2-t1:3.1f} sec. files: {len(files):<3} "
+            f"changed: {n_changed:<3} in {','.join(arg_files)}"
+        )
 #@+node:ekr.20240105140814.8: *3* function: check_g
 def check_g() -> bool:  # pragma: no cover
     """print an error message if g is None"""
@@ -847,13 +848,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         regularized_contents = self.regularize_nls(contents)
         regularized_results = self.regularize_nls(results)
         if regularized_contents == regularized_results:
+            # g.trace(f"No change: {g.shortFileName(filename)}")
             return False
         if not regularized_contents:
             print(f"tbo: no results {g.shortFileName(filename)}")
             return False
 
         # Write the results
-        if not self.silent:
+        if True:  ### not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
         # Print the diffs for testing!
         if self.diff:
@@ -891,7 +893,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Before calling this function, the caller should ensure
         that the file actually has been changed.
         """
-        g.trace('Writing', filename, encoding, len(s))
+        # g.trace('Writing', filename, encoding, len(s))
         try:
             s2 = g.toEncodedString(s, encoding=encoding, reportErrors=True)
             with open(filename, 'wb') as f:
