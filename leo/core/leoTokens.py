@@ -2087,7 +2087,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         instead of raising an exception.
         """
         trace = False  ###
-        if trace:
+        if trace:  # pragma: no cover
             g.trace(f" {i1:3} {g.callers(1):25} {delims} {self.dump_line(i1)}")
 
         # We expect only the following 'op' delims: ',', '=', ')' and ':'.
@@ -2104,7 +2104,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             if token.kind == 'op':
                 value = token.value
                 if value in delims:
-                    if trace:
+                    if trace:  # pragma: no cover
                         token = self.tokens[i]
                         token_s = f"{token.kind:} {token.value!r}"
                         g.trace(f" {i:3} Returns {token_s}\n")
@@ -2126,7 +2126,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 prev = token
         # The caller will usual call self.expect or self.expect_ops,
         # So return None will usually raise an exception.
-        if trace:
+        if trace:  # pragma: no cover
             g.trace('Not found\n')
         return None
     #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line (now calls skip_*)
@@ -2263,7 +2263,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         token = self.tokens[i]
 
-        if trace:
+        if trace:  # pragma: no cover
             token_s = f"{token.kind}: {token.value!r}"
             ignore_s = 'Ignore' if token.context else ' ' * 6
             g.trace(f"{i:3} {g.callers(1):25} {ignore_s} {token_s:20} {context}")
@@ -2315,8 +2315,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 i += 1
             assert progress < i, 'skip_match: no progress!'
-        self.oops(f"no matching {delim2!r}")
-        return None
+        self.oops(f"no matching {delim2!r}")  # pragma: no cover
+        return None  # pragma: no cover
     #@-others
 #@+node:ekr.20240105140814.121: ** function: main & helpers (leoTokens.py)
 def main() -> None:  # pragma: no cover
@@ -2362,7 +2362,7 @@ def main() -> None:  # pragma: no cover
     # if args.od:
         # orange_diff_command(files, settings_dict)
 #@+node:ekr.20240105140814.9: *3* function: get_modified_files
-def get_modified_files(repo_path: str) -> list[str]:
+def get_modified_files(repo_path: str) -> list[str]:  # pragma: no cover
     """Return the modified files in the given repo."""
     if not repo_path:
         return []
@@ -2385,7 +2385,7 @@ def get_modified_files(repo_path: str) -> list[str]:
     finally:
         os.chdir(old_cwd)
 #@+node:ekr.20240105140814.10: *3* function: scan_args (leoTokens.py)
-def scan_args() -> tuple[Any, dict[str, Any], list[str]]:
+def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
     description = textwrap.dedent("""\
         Execute fstringify or beautify commands contained in leoAst.py.
     """)
