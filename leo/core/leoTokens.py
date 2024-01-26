@@ -855,7 +855,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False
 
         # Write the results
-        if True:  ### not self.silent:
+        if not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
         # Print the diffs for testing!
         if self.diff:
