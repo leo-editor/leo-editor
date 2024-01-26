@@ -235,7 +235,7 @@ if 1:  # pragma: no cover
             else:
                 print(f"file not found: {filename}")
         t2 = time.process_time()
-        if any_changed:
+        if any_changed or Orange(settings).verbose:
             n, files_s = any_changed, ','.join(arg_files)
             print(f"orange: {t2-t1:3.1f} sec. changed {n} file{g.plural(n)} in {files_s}")
     #@+node:ekr.20200702121315.1: *3* command: orange_diff_command
