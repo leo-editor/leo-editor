@@ -859,7 +859,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.diff:
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
-        if 1:  ###
+        else:
             self.write_file(filename, regularized_results, encoding=encoding)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
