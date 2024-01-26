@@ -76,7 +76,7 @@ from typing import Any, Generator, Optional, Union
 
 try:
     from leo.core import leoGlobals as g
-except Exception:
+except Exception:  # pragma: no cover
     # check_g function gives the message.
     g = None
 
@@ -135,7 +135,7 @@ def orange_command(
         f"changed: {n_changed:<3} in {','.join(arg_files)}"
     )
 #@+node:ekr.20240105140814.8: *3* function: check_g
-def check_g() -> bool:
+def check_g() -> bool:  # pragma: no cover
     """print an error message if g is None"""
     if not g:
         print('This statement failed: `from leo.core import leoGlobals as g`')
@@ -143,14 +143,14 @@ def check_g() -> bool:
     return bool(g)
 #@+node:ekr.20240106220602.1: ** LeoTokens: debugging functions
 #@+node:ekr.20240105140814.41: *3* function: dump_contents
-def dump_contents(contents: str, tag: str = 'Contents') -> None:
+def dump_contents(contents: str, tag: str = 'Contents') -> None:  # pragma: no cover
     print('')
     print(f"{tag}...\n")
     for i, z in enumerate(g.splitLines(contents)):
         print(f"{i+1:<3} ", z.rstrip())
     print('')
 #@+node:ekr.20240105140814.42: *3* function: dump_lines
-def dump_lines(tokens: list[InputToken], tag: str = 'lines') -> None:
+def dump_lines(tokens: list[InputToken], tag: str = 'lines') -> None:  # pragma: no cover
     print('')
     print(f"{tag}...\n")
     for z in tokens:
@@ -160,13 +160,13 @@ def dump_lines(tokens: list[InputToken], tag: str = 'lines') -> None:
             print(repr(z.line))
     print('')
 #@+node:ekr.20240105140814.43: *3* function: dump_results
-def dump_results(tokens: list[OutputToken], tag: str = 'Results') -> None:
+def dump_results(tokens: list[OutputToken], tag: str = 'Results') -> None:  # pragma: no cover
     print('')
     print(f"{tag}...\n")
     print(output_tokens_to_string(tokens))
     print('')
 #@+node:ekr.20240105140814.44: *3* function: dump_tokens
-def dump_tokens(tokens: list[InputToken], tag: str = 'Tokens') -> None:
+def dump_tokens(tokens: list[InputToken], tag: str = 'Tokens') -> None:  # pragma: no cover
     print('')
     print(f"{tag}...\n")
     if not tokens:
@@ -180,7 +180,7 @@ def dump_tokens(tokens: list[InputToken], tag: str = 'Tokens') -> None:
         print(z.dump())
     print('')
 #@+node:ekr.20240105140814.27: *3* function: input_tokens_to_string
-def input_tokens_to_string(tokens: list[InputToken]) -> str:
+def input_tokens_to_string(tokens: list[InputToken]) -> str:  # pragma: no cover
     """Return the string represented by the list of tokens."""
     if tokens is None:
         # This indicates an internal error.
@@ -192,7 +192,7 @@ def input_tokens_to_string(tokens: list[InputToken]) -> str:
 #@+node:ekr.20240105140814.24: *3* function: output_tokens_to_string
 def output_tokens_to_string(tokens: list[OutputToken]) -> str:
     """Return the string represented by the list of tokens."""
-    if tokens is None:
+    if tokens is None:  # pragma: no cover
         # This indicates an internal error.
         print('')
         g.trace('===== output token list is None ===== ')
@@ -356,7 +356,7 @@ class Tokenizer:
     def check_round_trip(self, contents: str, tokens: list[InputToken]) -> bool:
         result = self.tokens_to_string(tokens)
         ok = result == contents
-        if not ok:
+        if not ok:  # pragma: no cover
             print('\nRound-trip check FAILS')
             print('Contents...\n')
             g.printObj(contents)
@@ -444,7 +444,7 @@ class Tokenizer:
             # https://docs.python.org/3/library/tokenize.html
             five_tuples = tokenize.tokenize(
                 io.BytesIO(contents.encode('utf-8')).readline)
-        except Exception:
+        except Exception:  # pragma: no cover
             print('make_tokens: exception in tokenize.tokenize')
             g.es_exception()
             return None
@@ -455,7 +455,7 @@ class Tokenizer:
     #@+node:ekr.20240105143214.7: *4* Tokenizer.tokens_to_string
     def tokens_to_string(self, tokens: list[InputToken]) -> str:
         """Return the string represented by the list of tokens."""
-        if tokens is None:
+        if tokens is None:  # pragma: no cover
             # This indicates an internal error.
             print('')
             g.trace('===== No tokens ===== ')
@@ -656,11 +656,11 @@ class TokenBasedOrange:  # Orange is the new Black.
                 g.trace(f"Unexpected setting: {key} = {value!r}")
                 g.trace('(TokenBasedOrange)', g.callers())
     #@+node:ekr.20240117053310.1: *4* tbo.oops & helper
-    def oops(self, message: str) -> None:
+    def oops(self, message: str) -> None:  # pragma: no cover
         """Raise InternalBeautifierError."""
         raise InternalBeautifierError(self.error_message(message))
     #@+node:ekr.20240112082350.1: *5* tbo.error_message
-    def error_message(self, message: str) -> str:
+    def error_message(self, message: str) -> str:  # pragma: no cover
         """
         Print a full error message.
 
@@ -813,7 +813,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
         return contents, encoding, tokens
     #@+node:ekr.20240105140814.17: *5* tbo.write_file
-    def write_file(self, filename: str, s: str, encoding: str = 'utf-8') -> None:
+    def write_file(self,
+        filename: str,
+        s: str,
+        encoding: str = 'utf-8',
+    ) -> None:  # pragma: no cover
         """
         Write the string s to the file whose name is given.
 
@@ -830,7 +834,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         except Exception as e:
             g.trace(f"Error writing {filename}\n{e}")
     #@+node:ekr.20200107040729.1: *5* tbo.show_diffs
-    def show_diffs(self, s1: str, s2: str) -> None:
+    def show_diffs(self, s1: str, s2: str) -> None:  # pragma: no cover
         """Print diffs between strings s1 and s2."""
         filename = self.filename
         lines = list(difflib.unified_diff(
@@ -984,7 +988,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         # Only do_newline and do_nl should call this method.
         token = self.token
-        if token.kind not in ('newline', 'nl'):
+        if token.kind not in ('newline', 'nl'):  # pragma: no cover
             self.oops(f"Unexpected newline token: {token!r}")
 
         # Create the 'line-end' output token.
@@ -1001,7 +1005,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # This may be called from do_name as well as do_newline and do_nl.
         token = self.token
         if token.kind not in ('newline', 'nl'):
-            self.oops(f"Unexpected newline token: {token!r}")
+            self.oops(f"Unexpected newline token: {token!r}")  # pragma: no cover
 
         self.clean('blank')  # Important!
         self.clean('line-indent')
@@ -1481,7 +1485,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         while i < i2 and not self.is_op(i, ')'):
             progress = i
             i = self.parse_call_arg(i, end)  # Sets context.
-            if progress >= i:
+            if progress >= i:  # pragma: no cover
                 self.oops('parse_call_args: no progress')
 
         return i2
@@ -1520,8 +1524,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                 i = self.next(i2)
                 return i
         # Should never happen
-        self.oops('Can not happen')
-        return None
+        self.oops('Can not happen')  # pragma: no cover
+        return None  # pragma: no cover
     #@+node:ekr.20240113054641.1: *5* tbo.parse_statement & statement helpers
     def parse_statement(self, i: int) -> int:
         """
@@ -1619,7 +1623,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Special case for 'async':
         keyword = self.tokens[i].value
-        if keyword not in self.compound_statements:
+        if keyword not in self.compound_statements:  # pragma: no cover
             self.oops(f"Not a compound keyword: {keyword!r}")
 
         if keyword == 'async':
