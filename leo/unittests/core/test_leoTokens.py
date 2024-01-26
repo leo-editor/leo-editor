@@ -924,26 +924,19 @@ class TestTokenBasedOrange(BaseTest):
                 """a[:2:3]""",
                 """a[1:2:3]""",
         )
-        trace = True
-        fails = 0
-        fail_fast = True
+
         for i, contents in enumerate(table):
             description = f"{tag} part {i}"
             contents, tokens = self.make_data(contents, description=description)
             expected = self.blacken(contents)
             results = self.beautify(contents, tokens, filename=description)
             if results != expected:  # pragma: no cover
-                fails += 1
-                if trace:
-                    print('')
-                    print(f"TestTokenBasedOrange.{tag}: FAIL {fails}")
-                    g.printObj(contents, tag='Contents')
-                    g.printObj(expected, tag='Expected')
-                    g.printObj(results, tag='Results')
-            if fail_fast:
-                self.assertEqual(expected, results)
-
-        self.assertEqual(fails, 0)
+                print('')
+                print('TestTokenBasedOrange')
+                g.printObj(contents, tag='Contents')
+                g.printObj(expected, tag='Expected')
+                g.printObj(results, tag='Results')
+            self.assertEqual(expected, results)
     #@+node:ekr.20240105153425.76: *3* TestTBO.test_star_star_operator
     def test_star_star_operator(self):
         # Was tested in pet peeves, but this is more permissive.

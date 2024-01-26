@@ -655,7 +655,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 g.trace(f"Unexpected setting: {key} = {value!r}")
                 g.trace('(TokenBasedOrange)', g.callers())
-    #@+node:ekr.20240126012433.1: *4* tbo: Checking & debugging
+    #@+node:ekr.20240126012433.1: *4* tbo: Checking & dumping
     #@+node:ekr.20240124094344.1: *5* tbo.dump_line
     def dump_line(self, i: int) -> str:  # pragma: no cover
 
@@ -2259,7 +2259,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             'initializer', 'simple-slice',
         )
         if context not in valid_contexts:
-            self.oops(f"Unexpected context! {context!r}")
+            self.oops(f"Unexpected context! {context!r}")  # pragma: no cover
 
         token = self.tokens[i]
 
