@@ -6,7 +6,6 @@
 import os
 import sys
 import textwrap
-import time
 import unittest
 import warnings
 
@@ -32,23 +31,6 @@ v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
 
 #@+others
-#@+node:ekr.20240105153229.3: ** functions: unit testing
-#@+node:ekr.20240105153229.7: *3* function: compare_lists
-def compare_lists(list1, list2):  # pragma: no cover
-    """
-    Compare two lists of strings, showing the first mismatch.
-
-    Return the index of the first mismatched lines, or None if identical.
-    """
-    import itertools
-    it = itertools.zip_longest(list1, list2, fillvalue='Missing!')
-    for i, (s1, s2) in enumerate(it):
-        if s1 != s2:
-            return i
-    return None
-#@+node:ekr.20240105153229.8: *3* function: get_time
-def get_time():
-    return time.process_time()
 #@+node:ekr.20240105153420.2: ** class BaseTest (TestCase)
 # Do *not* use LeoUnitTest as the base class.
 # Doing so slows downt testing considerably.
