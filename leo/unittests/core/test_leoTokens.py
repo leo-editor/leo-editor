@@ -584,8 +584,7 @@ class TestTokenBasedOrange(BaseTest):
         )
         for i, contents in enumerate(table):
             contents, tokens = self.make_data(contents)
-            ### expected = self.blacken(contents).rstrip() + '\n'
-            expected = contents
+            expected = contents  # Black would join lines.
             results = self.beautify(contents, tokens)
             if results != expected:
                 # dump_tokens(tokens)
