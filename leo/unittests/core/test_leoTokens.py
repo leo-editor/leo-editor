@@ -558,7 +558,7 @@ class TestTokenBasedOrange(BaseTest):
         table = (
 
             # LeoFrame.py, line 1650.
-            
+
             # The test passes without the redundant parens.
             """
                 if (g.doHook("select1", c=c, new_p=p)):
