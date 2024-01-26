@@ -655,11 +655,68 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 g.trace(f"Unexpected setting: {key} = {value!r}")
                 g.trace('(TokenBasedOrange)', g.callers())
-    #@+node:ekr.20240117053310.1: *4* tbo.oops & helper
+    #@+node:ekr.20240126012433.1: *4* tbo: Checking & debugging
+    #@+node:ekr.20240124094344.1: *5* tbo.dump_line
+    def dump_line(self, i: int) -> str:  # pragma: no cover
+
+        try:
+            token = self.tokens[i]
+        except Exception as e:
+            self.oops(f"dump_line: no token at index {i!r}: {e}")
+
+        return token.line.rstrip()
+    #@+node:ekr.20240106220724.1: *5* tbo.dump_token_range
+    def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:  # pragma: no cover
+        """Dump the given range of input tokens."""
+        if tag:
+            print(tag)
+        for token in self.tokens[i1 : i2 + 1]:
+            print(token.dump())
+    #@+node:ekr.20240106090914.1: *5* tbo.expect
+    def expect(self, i: int, kind: str, value: str = None) -> None:
+        """Raise an exception if self.tokens[i] is not as expected."""
+        try:
+            token = self.tokens[i]
+        except Exception as e:  # pragma: no cover
+            self.oops(f"At index {i!r}: Expected{kind!r}:{value!r}, got {e}")
+
+        if token.kind != kind or (value and token.value != value):
+            self.oops(f"Expected {kind!r}:{value!r}, got {token!r}")  # pragma: no cover
+    #@+node:ekr.20240116042811.1: *5* tbo.expect_name
+    def expect_name(self, i: int) -> None:
+        """Raise an exception if self.tokens[i] is not as expected."""
+        try:
+            token = self.tokens[i]
+        except Exception as e:  # pragma: no cover
+            self.oops(f"At index {i!r}: Expected 'name', got {e}")
+
+        if token.kind != 'name':
+            self.oops(f"Expected 'name', got {token!r}")  # pragma: no cover
+    #@+node:ekr.20240114015808.1: *5* tbo.expect_op
+    def expect_op(self, i: int, value: str) -> None:
+        """Raise an exception if self.tokens[i] is not as expected."""
+        try:
+            token = self.tokens[i]
+        except Exception as e:  # pragma: no cover
+            self.oops(f"At index {i!r}: Expected 'op':{value!r}, got {e!r}")
+
+        if (token.kind, token.value) != ('op', value):
+            self.oops(f"Expected 'op':{value!r}, got {token!r}")  # pragma: no cover
+    #@+node:ekr.20240114013952.1: *5* tbo.expect_ops
+    def expect_ops(self, i: int, values: list) -> None:
+        """Raise an exception if self.tokens[i] is not as expected."""
+        try:
+            token = self.tokens[i]
+        except Exception as e:  # pragma: no cover
+            self.oops(f"At index {i!r}: Expected 'op' in {values!r}, got {e!r}")
+
+        if token.kind != 'op' or token.value not in values:
+            self.oops(f"Expected 'op' in {values!r}, got {token!r}")  # pragma: no cover
+    #@+node:ekr.20240117053310.1: *5* tbo.oops & helper
     def oops(self, message: str) -> None:  # pragma: no cover
         """Raise InternalBeautifierError."""
         raise InternalBeautifierError(self.error_message(message))
-    #@+node:ekr.20240112082350.1: *5* tbo.error_message
+    #@+node:ekr.20240112082350.1: *6* tbo.error_message
     def error_message(self, message: str) -> str:  # pragma: no cover
         """
         Print a full error message.
@@ -687,6 +744,14 @@ class TokenBasedOrange:  # Orange is the new Black.
             f"{context_s}"
             "Please report this message to Leo's developers"
         )
+    #@+node:ekr.20240125182219.1: *5* tbo.trace
+    def trace(self, i: int) -> None:  # pragma: no cover
+        """
+        Print i and dump_line(i).
+
+        A surprisingly useful debugging utility.
+        """
+        print(f"{g.callers(1):20} i: {i:4} line: {self.dump_line(i)!r}")
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def no_visitor(self) -> None:  # pragma: no cover
@@ -1989,64 +2054,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
             # Parse the statement.
             i = self.parse_statement(i)
-    #@+node:ekr.20240110205127.1: *4* tbo: Scanner methods
+    #@+node:ekr.20240110205127.1: *4* tbo: Scanning
     # The parser calls scanner methods to move through the list of input tokens.
-    #@+node:ekr.20240124094344.1: *5* tbo.dump_line
-    def dump_line(self, i: int) -> str:  # pragma: no cover
-
-        try:
-            token = self.tokens[i]
-        except Exception as e:
-            self.oops(f"dump_line: no token at index {i!r}: {e}")
-
-        return token.line.rstrip()
-    #@+node:ekr.20240106220724.1: *5* tbo.dump_token_range
-    def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:  # pragma: no cover
-        """Dump the given range of input tokens."""
-        if tag:
-            print(tag)
-        for token in self.tokens[i1 : i2 + 1]:
-            print(token.dump())
-    #@+node:ekr.20240106090914.1: *5* tbo.expect
-    def expect(self, i: int, kind: str, value: str = None) -> None:
-        """Raise an exception if self.tokens[i] is not as expected."""
-        try:
-            token = self.tokens[i]
-        except Exception as e:  # pragma: no cover
-            self.oops(f"At index {i!r}: Expected{kind!r}:{value!r}, got {e}")
-
-        if token.kind != kind or (value and token.value != value):
-            self.oops(f"Expected {kind!r}:{value!r}, got {token!r}")  # pragma: no cover
-    #@+node:ekr.20240116042811.1: *5* tbo.expect_name
-    def expect_name(self, i: int) -> None:
-        """Raise an exception if self.tokens[i] is not as expected."""
-        try:
-            token = self.tokens[i]
-        except Exception as e:  # pragma: no cover
-            self.oops(f"At index {i!r}: Expected 'name', got {e}")
-
-        if token.kind != 'name':
-            self.oops(f"Expected 'name', got {token!r}")  # pragma: no cover
-    #@+node:ekr.20240114015808.1: *5* tbo.expect_op
-    def expect_op(self, i: int, value: str) -> None:
-        """Raise an exception if self.tokens[i] is not as expected."""
-        try:
-            token = self.tokens[i]
-        except Exception as e:  # pragma: no cover
-            self.oops(f"At index {i!r}: Expected 'op':{value!r}, got {e!r}")
-
-        if (token.kind, token.value) != ('op', value):
-            self.oops(f"Expected 'op':{value!r}, got {token!r}")  # pragma: no cover
-    #@+node:ekr.20240114013952.1: *5* tbo.expect_ops
-    def expect_ops(self, i: int, values: list) -> None:
-        """Raise an exception if self.tokens[i] is not as expected."""
-        try:
-            token = self.tokens[i]
-        except Exception as e:  # pragma: no cover
-            self.oops(f"At index {i!r}: Expected 'op' in {values!r}, got {e!r}")
-
-        if token.kind != 'op' or token.value not in values:
-            self.oops(f"Expected 'op' in {values!r}, got {token!r}")  # pragma: no cover
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i1: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
@@ -2148,31 +2157,26 @@ class TokenBasedOrange:  # Orange is the new Black.
                     i += 1
             else:
                 i += 1
-        self.oops("no matching ')'")
-        return len(self.tokens)  # For mypy and pylint.
-    #@+node:ekr.20240114021152.1: *5* tbo.is_kind
-    def is_kind(self, i: int, kind: str) -> bool:
-
-        return self.tokens[i].kind == kind
-
+        self.oops("no matching ')'")  # pragma: no cover
+        return len(self.tokens)  # pragma: no cover
     #@+node:ekr.20240106172054.1: *5* tbo.is_op & is_ops
     def is_op(self, i: int, value: str) -> bool:
 
-        if i is None:
+        if i is None:  # pragma: no cover
             return False
         token = self.tokens[i]
         return token.kind == 'op' and token.value == value
 
     def is_ops(self, i: int, values: list[str]) -> bool:
 
-        if i is None:
+        if i is None:  # pragma: no cover
             return False
         token = self.tokens[i]
         return token.kind == 'op' and token.value in values
     #@+node:ekr.20240125082325.1: *5* tbo.is_name
     def is_name(self, i: int) -> bool:
 
-        if i is None:
+        if i is None:  # pragma: no cover
             return False
         token = self.tokens[i]
         return token.kind == 'name'
@@ -2220,7 +2224,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             if self.is_significant_token(token):
                 return i
             i -= 1
-        return None
+        return None  # pragma: no cover
     #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
         #@+<< docstring: set_context >>
@@ -2313,14 +2317,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             assert progress < i, 'skip_match: no progress!'
         self.oops(f"no matching {delim2!r}")
         return None
-    #@+node:ekr.20240125182219.1: *5* tbo.trace
-    def trace(self, i: int) -> None:
-        """
-        Print i and dump_line(i).
-
-        A surprisingly useful debugging utility.
-        """
-        print(f"{g.callers(1):20} i: {i:4} line: {self.dump_line(i)!r}")
     #@-others
 #@+node:ekr.20240105140814.121: ** function: main & helpers (leoTokens.py)
 def main() -> None:  # pragma: no cover
