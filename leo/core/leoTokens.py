@@ -1992,7 +1992,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240110205127.1: *4* tbo: Scanner methods
     # The parser calls scanner methods to move through the list of input tokens.
     #@+node:ekr.20240124094344.1: *5* tbo.dump_line
-    def dump_line(self, i: int) -> str:
+    def dump_line(self, i: int) -> str:  # pragma: no cover
 
         try:
             token = self.tokens[i]
@@ -2001,7 +2001,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         return token.line.rstrip()
     #@+node:ekr.20240106220724.1: *5* tbo.dump_token_range
-    def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:
+    def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:  # pragma: no cover
         """Dump the given range of input tokens."""
         if tag:
             print(tag)
@@ -2012,41 +2012,41 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Raise an exception if self.tokens[i] is not as expected."""
         try:
             token = self.tokens[i]
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             self.oops(f"At index {i!r}: Expected{kind!r}:{value!r}, got {e}")
 
         if token.kind != kind or (value and token.value != value):
-            self.oops(f"Expected {kind!r}:{value!r}, got {token!r}")
+            self.oops(f"Expected {kind!r}:{value!r}, got {token!r}")  # pragma: no cover
     #@+node:ekr.20240116042811.1: *5* tbo.expect_name
     def expect_name(self, i: int) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
         try:
             token = self.tokens[i]
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             self.oops(f"At index {i!r}: Expected 'name', got {e}")
 
         if token.kind != 'name':
-            self.oops(f"Expected 'name', got {token!r}")
+            self.oops(f"Expected 'name', got {token!r}")  # pragma: no cover
     #@+node:ekr.20240114015808.1: *5* tbo.expect_op
     def expect_op(self, i: int, value: str) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
         try:
             token = self.tokens[i]
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             self.oops(f"At index {i!r}: Expected 'op':{value!r}, got {e!r}")
 
         if (token.kind, token.value) != ('op', value):
-            self.oops(f"Expected 'op':{value!r}, got {token!r}")
+            self.oops(f"Expected 'op':{value!r}, got {token!r}")  # pragma: no cover
     #@+node:ekr.20240114013952.1: *5* tbo.expect_ops
     def expect_ops(self, i: int, values: list) -> None:
         """Raise an exception if self.tokens[i] is not as expected."""
         try:
             token = self.tokens[i]
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             self.oops(f"At index {i!r}: Expected 'op' in {values!r}, got {e!r}")
 
         if token.kind != 'op' or token.value not in values:
-            self.oops(f"Expected 'op' in {values!r}, got {token!r}")
+            self.oops(f"Expected 'op' in {values!r}, got {token!r}")  # pragma: no cover
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i1: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
@@ -2061,10 +2061,11 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if level == 0:
                     return i
                 if level <= 0:
-                    raise SyntaxError(f"Unbalanced parens: {self.token.line!r}")
+                    raise SyntaxError(f"Unbalanced parens: {self.token.line!r}")  # pragma: no cover
                 level -= 1
             i += 1
-        return None
+        self.oops("Unmatched '('")  # pragma: no cover
+        return None  # pragma: no cover
     #@+node:ekr.20240114063347.1: *5* tbo.find_delim
     def find_delim(self, i1: int, end: int, delims: list) -> int:
         """
@@ -2083,7 +2084,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # We expect only the following 'op' delims: ',', '=', ')' and ':'.
         for z in delims:
             if z not in ',=)}]:':
-                self.oops(f"Invalid delim: {z!r}")
+                self.oops(f"Invalid delim: {z!r}")  # pragma: no cover
 
         # Skip tokens until one of the delims is found.
         # Handle apparent function calls.
