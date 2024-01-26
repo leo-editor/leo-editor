@@ -173,7 +173,7 @@ class TestTokenBasedOrange(BaseTest):
     """
     #@+others
     #@+node:ekr.20240105153425.43: *3* TestTBO.blacken
-    def blacken(self, contents, line_length=None):
+    def blacken(self, contents):
         """Return the results of running black on contents"""
         if not black:
             self.skipTest('Can not import black')  # pragma: no cover
@@ -181,8 +181,7 @@ class TestTokenBasedOrange(BaseTest):
         try:
             mode = black.FileMode()
             mode.string_normalization = False
-            if line_length is not None:
-                mode.line_length = line_length
+            # mode.line_length = line_length
         except TypeError:  # pragma: no cover
             self.skipTest('old version of black')
         return black.format_str(contents, mode=mode)
