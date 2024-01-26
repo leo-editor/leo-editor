@@ -1958,10 +1958,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         Scan to the end of a simple statement like an `import` statement.
         """
 
-        # Sanity check.  ??? Is this check valid ???
-        token = self.tokens[i]
-        if token.kind != 'name':
-            self.oops(f"expecting 'name', got {token!r}")
+        # Sanity check.
+        self.expect_name(i)
 
         end = self.find_end_of_line(i)
         self.expect(end, 'newline')
