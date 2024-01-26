@@ -538,18 +538,18 @@ class TestTokenBasedOrange(BaseTest):
 
         # Put recent failures first.
         table = (
-            
+
             # leoNodes, line 881.
             """
             path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
             """,
-            
+
             # leoPersistence, line 526.
             """
             return '-->'.join(reversed(
                 [self.expected_headline(p2) for p2 in p.self_and_parents(copy=False)]))
             """,
-            
+
             # leoserver.py, line 2302.
             """
             result = [
@@ -576,7 +576,7 @@ class TestTokenBasedOrange(BaseTest):
                 for fileName in rf.getRecentFiles()[:n]:
                     dirName, baseName = g.os_path_split(fileName)
             """,
-            
+
             # Assignment.
             """
             version = str(semantic_version.Version.coerce(tag, partial=True))

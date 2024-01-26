@@ -746,13 +746,19 @@ class TokenBasedOrange:  # Orange is the new Black.
             "Please report this message to Leo's developers"
         )
     #@+node:ekr.20240125182219.1: *5* tbo.trace
-    def trace(self, i: int) -> None:  # pragma: no cover
+    def trace(self, i: int, i2: Optional[int]) -> None:  # pragma: no cover
         """
-        Print i and dump_line(i).
+        Print i, token, and dump_line(i).
 
         A surprisingly useful debugging utility.
         """
-        print(f"{g.callers(1):20} i: {i:4} line: {self.dump_line(i)!r}")
+        token = self.tokens[i]
+        indices_s = f"{i:2}" if i2 is None else f"i: {i:2} i2: {i2:2}"
+        # Adjust widths below as necessary.
+        print(
+            f"{g.callers(1):20} {indices_s} "
+            f"token: {token.kind:6}:{token.show_val(10):12} "
+            f"line: {self.dump_line(i)!r}")
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def no_visitor(self) -> None:  # pragma: no cover
