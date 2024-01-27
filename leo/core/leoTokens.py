@@ -240,8 +240,9 @@ class InputToken:  # leoTokens.py.
     def brief_dump(self) -> str:  # pragma: no cover
         """Dump a token."""
         return (
-            f"{self.index:>3} line: {self.line_number:<2} "
-            f"{self.kind:>15} {self.show_val(100)}")
+            f"{self.index:>3} line: {self.line_number:<3} "
+            f"{self.kind}:{self.show_val(100)}"
+        )
     #@+node:ekr.20240105140814.55: *4* itoken.dump
     def dump(self) -> str:  # pragma: no cover
         """Dump a token and related links."""
@@ -2306,6 +2307,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.n_scanned_tokens += 1
             token = self.tokens[i]
             if self.is_significant_token(token):
+                g.trace(token.brief_dump())  ###
                 return i
             i += 1
         return None
