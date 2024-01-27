@@ -239,10 +239,9 @@ class InputToken:  # leoTokens.py.
     #@+node:ekr.20240105140814.54: *4* itoken.brief_dump
     def brief_dump(self) -> str:  # pragma: no cover
         """Dump a token."""
-        return (
-            f"{self.index:>3} line: {self.line_number:<3} "
-            f"{self.kind}:{self.show_val(100)}"
-        )
+        token_s = f"{self.kind:>10} : {self.show_val(10):12}"
+        return f"<line: {self.line_number} index: {self.index:3} {token_s}>"
+        
     #@+node:ekr.20240105140814.55: *4* itoken.dump
     def dump(self) -> str:  # pragma: no cover
         """Dump a token and related links."""
@@ -894,10 +893,12 @@ class TokenBasedOrange:  # Orange is the new Black.
             print('tbo: safe mode')
 
         # Print the diffs for testing!
-        if safe or self.diff:
+        if False and self.diff:
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
-        else:
+
+        # Save the file only if all is well.
+        if not safe and not self.diff:
             self.write_file(filename, regularized_results, encoding=encoding)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
@@ -1672,6 +1673,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def parse_call(self, i1: int, end: int) -> int:
         """Parse a function call"""
 
+        print('')  ###
         self.trace(i1, end)  ###
 
         # Find i1 and i2, the boundaries of the argument list.
@@ -1796,6 +1798,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Set the appropriate context for all inner expressions.
         """
 
+        print('')  ###
         self.trace(i, end)  ###
 
         # Scan an arbitrary expression, bounded only by end.
@@ -2185,7 +2188,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if level <= 0:
                     self.oops(f"Unbalanced parens: {self.token.line!r}")  # pragma: no cover
                 level -= 1
-            i = self.next(i)
+            ### i = self.next(i)
+            i += 1
         self.oops("Unmatched '('")  # pragma: no cover
         return None  # pragma: no cover
     #@+node:ekr.20240114063347.1: *5* tbo.find_delim
@@ -2227,9 +2231,11 @@ class TokenBasedOrange:  # Orange is the new Black.
                 elif value == '{':
                     i = self.skip_past_matching_delim(i, '{', '}')
                 else:
-                    i = self.next(i)
+                    ### i = self.next(i)
+                    i += 1
             else:
-                i = self.next(i)
+                ### i = self.next(i)
+                i += 1
         return None
     #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line
     def find_end_of_line(self, i: int) -> Optional[int]:
@@ -2254,9 +2260,11 @@ class TokenBasedOrange:  # Orange is the new Black.
                 elif value == '{':
                     i = self.skip_past_matching_delim(i, '{', '}')
                 else:
-                    i = self.next(i)
+                    ### i = self.next(i)
+                    i += 1
             else:
-                i = self.next(i)
+                ### i = self.next(i)
+                i += 1
         self.oops("no matching ')'")  # pragma: no cover
         return len(self.tokens)  # pragma: no cover
     #@+node:ekr.20240106172054.1: *5* tbo.is_op & is_ops
@@ -2302,12 +2310,18 @@ class TokenBasedOrange:  # Orange is the new Black.
         The orange_command function warns if this ratio is greater than 2.5.
         Previous versions of this code suffered much higher ratios.
         """
+        trace = True  # Do not remove
         i += 1
         while i < len(self.tokens):
             self.n_scanned_tokens += 1
             token = self.tokens[i]
             if self.is_significant_token(token):
-                g.trace(token.brief_dump())  ###
+                if trace and 'find_end_of_line' not in g.callers():  ### Filtered dump!
+                    print(
+                        f"next: {g.callers(1):15} "
+                        f"token: {token.brief_dump()} "
+                        f"line: {self.get_token_line(i)}"
+                    )
                 return i
             i += 1
         return None
@@ -2352,7 +2366,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         #@-<< docstring: set_context >>
 
-        trace = False  # Do not delete the trace below.
+        trace = True  # Do not delete the trace below.
 
         valid_contexts = (
             'annotation', 'array', 'arg', 'class/def', 'complex-slice',
@@ -2365,9 +2379,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         token = self.tokens[i]
 
         if trace:  # pragma: no cover
-            token_s = f"{token.kind}: {token.value!r}"
+            token_s = f"<{token.kind}: {token.show_val(12)}>"
             ignore_s = 'Ignore' if token.context else ' ' * 6
-            g.trace(f"{i:3} {g.callers(1):25} {ignore_s} {token_s:20} {context}")
+            print('')
+            g.trace(f"{i:3} {g.callers(1):15} {ignore_s} token: {token_s} context: {context}")
 
         if not token.context:
             token.context = context
