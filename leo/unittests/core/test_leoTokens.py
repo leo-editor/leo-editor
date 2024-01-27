@@ -538,29 +538,9 @@ class TestTokenBasedOrange(BaseTest):
 
         # Put recent failures first.
         table = (
-
-            # leoNodes, line 881.
+            # Assignment.
             """
-            path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-            """,
-
-            # leoPersistence, line 526.
-            """
-            return '-->'.join(reversed(
-                [self.expected_headline(p2) for p2 in p.self_and_parents(copy=False)]))
-            """,
-
-            # leoserver.py, line 2302.
-            """
-            result = [
-                self._get_position_d(p, c) for p in c.all_positions(copy=False)
-            ]
-            """,
-
-            # leoApp, line 1657
-            """
-            if True:
-                home = os.getenv(home[1:-1], default=None)
+            version = str(version2.Version.coerce(tag, partial=True))
             """,
 
             # LeoApp.py, line 1872.
@@ -577,20 +557,40 @@ class TestTokenBasedOrange(BaseTest):
                     dirName, baseName = g.os_path_split(fileName)
             """,
 
-            # Assignment.
+            # leoPersistence, line 526.
             """
-            version = str(semantic_version.Version.coerce(tag, partial=True))
+            return '-->'.join(reversed(
+                [self.expected_headline(p2) for p2 in p.self_and_parents(copy=False)]))
+            """,
+
+            # leoNodes, line 881.
+            """
+            path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+            """,
+
+            # leoserver.py, line 2302.
+            """
+            result = [
+                self._get_position_d(p, c) for p in c.all_positions(copy=False)
+            ]
+            """,
+
+            # leoApp, line 1657
+            """
+            if True:
+                home = os.getenv(home[1:-1], default=None)
             """,
         )
         for i, contents in enumerate(table):
             contents, tokens = self.make_data(contents)
-            expected = self.blacken(contents).rstrip() + '\n'
+            expected = contents  # Black would join lines.
             results = self.beautify(contents, tokens)
             if results != expected:
                 # dump_tokens(tokens)
-                if 0:
-                    g.printObj(contents, tag='Contents')
-                    g.printObj(expected, tag='Expected (blackened)')
+                if 1:
+                    print('')
+                    # g.printObj(contents, tag='Contents')
+                    g.printObj(expected, tag='Expected (same as contents)')
                     g.printObj(results, tag='Results')
                 self.assertEqual(expected, results)
     #@+node:ekr.20240126062946.1: *3* TestTBO.test_function_call_with_parens
