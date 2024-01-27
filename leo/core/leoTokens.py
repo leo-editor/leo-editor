@@ -1529,6 +1529,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Set context for every '=' operator.
         """
 
+        print('')
         self.trace(i1, tag='before')  ###
 
         # Handle leading * and ** args.
@@ -1544,8 +1545,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             token = self.tokens[i]
             kind, value = token.kind, token.value
 
-            g.trace(token)  ###
-
             if kind == 'name':
                 _is_complex, i = self.parse_name(i, end)
             elif kind == 'op':
@@ -1558,7 +1557,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             assert i is not None, (token)
             assert progress < i, (i, token)
 
-        self.trace(i, tag='after')
+        print('')  ###
+        self.trace(i, tag='after')  ###
 
         # Step 2. Handle the initializer if present.
         if self.is_op(i, ','):
@@ -2315,7 +2315,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             if self.is_significant_token(token):
                 if trace and 'find_end_of_line' not in g.callers():  ### Filtered dump!
                     print(
-                        f"next: {g.callers(1):15} "
+                        f"next: {g.callers(1):25} "
                         f"token: {token.brief_dump()} "
                         f"line: {self.get_token_line(i)}"
                     )

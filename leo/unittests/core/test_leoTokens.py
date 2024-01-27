@@ -588,6 +588,7 @@ class TestTokenBasedOrange(BaseTest):
             if results != expected:
                 # dump_tokens(tokens)
                 if 1:
+                    print('')
                     # g.printObj(contents, tag='Contents')
                     g.printObj(expected, tag='Expected (same as contents)')
                     g.printObj(results, tag='Results')
