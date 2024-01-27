@@ -538,7 +538,7 @@ class TestTokenBasedOrange(BaseTest):
 
         # Put recent failures first.
         table = (
-        
+
             # leoPersistence, line 526.
             """
             return '-->'.join(reversed(
