@@ -635,7 +635,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Ctor for Orange class."""
 
         # Global count of the number of calls to tbo.next and tbo.prev.
-        # See the docstrings of tbo.next and orange_command for details.
+        # See tbo.next and orange_command
         self.n_scanned_tokens = 0
 
         # Set default settings.
@@ -1521,16 +1521,18 @@ class TokenBasedOrange:  # Orange is the new Black.
         # An important sanity check.
         assert i == end, repr((i, end))
         return i
-    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
+    #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg (revise)
     def parse_call_arg(self, i1: int, end: int) -> int:
         """
         Scan a single function definition argument.
 
         Set context for every '=' operator.
         """
-
-        print('')
-        self.trace(i1, tag='before')  ###
+        
+        trace = False  # Leave for now.
+        if trace:
+            print('')
+            self.trace(i1, tag='before')
 
         # Handle leading * and ** args.
         if self.is_ops(i1, ['*', '**']):
@@ -1546,19 +1548,30 @@ class TokenBasedOrange:  # Orange is the new Black.
             kind, value = token.kind, token.value
 
             if kind == 'name':
+                ### version = str(version2.Version.coerce(tag, partial=True))
+                ### The problem is here. It starts a function call, but arguments happen much laters.
                 _is_complex, i = self.parse_name(i, end)
             elif kind == 'op':
                 if value in ',=)':
                     break
-                i = self.parse_op(i, end)
+                # Like parse_op, but remember that we are within an arg!
+                if self.is_op(i, '['):
+                    i = self.parse_slice(i, end)
+                elif self.is_op(i, '{'):
+                    i = self.parse_dict_or_set(i, end)
+                elif self.is_op(i, '('):
+                    i = self.parse_parenthesized_expr(i, end)
+                else:
+                    i = self.next(i)
             else:
                 i = self.next(i)
 
             assert i is not None, (token)
             assert progress < i, (i, token)
 
-        print('')  ###
-        self.trace(i, tag='after')  ###
+        if trace:
+            print('')
+            self.trace(i, tag='after')
 
         # Step 2. Handle the initializer if present.
         if self.is_op(i, ','):
@@ -1570,12 +1583,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.expect_ops(i, [',', ')'])
             if self.is_op(i, ','):
                 i = self.next(i)
-
-        # Set the context.
-        ### Should be done in inner contexts!.
-        # for i3 in range(i1 + 1, i - 1):
-            # if self.is_ops(i3, ['*', '**', '=']):
-                # self.set_context(i3, 'arg')  ### Was 'expression'
 
         return i
     #@+node:ekr.20240107092458.1: *5* tbo.parse_call_args
@@ -1670,8 +1677,9 @@ class TokenBasedOrange:  # Orange is the new Black.
     def parse_call(self, i1: int, end: int) -> int:
         """Parse a function call"""
 
-        print('')  ###
-        self.trace(i1, end)  ###
+        if 0:  # trace.
+            print('')
+            self.trace(i1, end)
 
         # Find i1 and i2, the boundaries of the argument list.
         self.expect_op(i1, '(')
@@ -1794,9 +1802,11 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Set the appropriate context for all inner expressions.
         """
-
-        print('')  ###
-        self.trace(i, end)  ###
+        
+        trace = False  ### For now.
+        if trace:
+            print('')
+            self.trace(i, end)
 
         # Scan an arbitrary expression, bounded only by end.
         while i < end:
@@ -1894,7 +1904,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Sanity check.
         assert i2 <= end, (repr(i2), repr(end))
         return i2
-    #@+node:ekr.20240121024213.1: *7* tbo.parse_slice (TEST)
+    #@+node:ekr.20240121024213.1: *7* tbo.parse_slice
     def parse_slice(self, i1: int, end: int) -> int:
         """
         Parse '[', ..., ']'.
@@ -1902,7 +1912,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Set the context for ':' tokens to 'simple-slice' or 'complex-slice'.
         """
 
-        self.trace(i1, end)  ###
+        # self.trace(i1, end)  ###
 
         # Scan the '['.
         self.expect_op(i1, '[')
@@ -2055,7 +2065,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         Scan an initializer in a function call or function definition argument.
         """
 
-        self.trace(i1)  ###
+        if 0:  ### trace.
+            self.trace(i1)
 
         # Scan the '='.
         self.expect_op(i1, '=')
@@ -2307,7 +2318,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         The orange_command function warns if this ratio is greater than 2.5.
         Previous versions of this code suffered much higher ratios.
         """
-        trace = True  # Do not remove
+        trace = False  # Do not remove
         i += 1
         while i < len(self.tokens):
             self.n_scanned_tokens += 1
@@ -2363,7 +2374,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         #@-<< docstring: set_context >>
 
-        trace = True  # Do not delete the trace below.
+        trace = False  # Do not delete the trace below.
 
         valid_contexts = (
             'annotation', 'array', 'arg', 'class/def', 'complex-slice',
