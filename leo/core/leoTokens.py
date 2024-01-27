@@ -745,7 +745,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             "Please report this message to Leo's developers"
         )
     #@+node:ekr.20240125182219.1: *5* tbo.trace & helpers
-    def trace(self, i: int, i2: Optional[int] = None) -> None:  # pragma: no cover
+    def trace(self, i: int, i2: Optional[int] = None, *, tag: str = None) -> None:  # pragma: no cover
         """
         Print i, token, and get_token_line(i).
 
@@ -753,14 +753,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
 
         token = self.tokens[i]
-        indices_s = f"{i:2}" if i2 is None else f"i: {i:2} i2: {i2:2}"
+        indices_s = f"{i}" if i2 is None else f"i: {i} i2: {i2}"
 
         # Adjust widths below as necessary.
         print(
-            f"{g.callers(1):20} {indices_s}\n"
-            f"token: {token.kind:>6}:{token.show_val(10):12}\n"
-            f" line: {self.get_token_line(i)!r}\n"
-            f"after: {self.get_tokens_after(i)!r}\n"
+            f"{g.callers(1)}: {tag or ''}\n"
+            f"  callers: {g.callers()}\n"
+            f"  indices: {indices_s} token: {token.kind:}:{token.show_val(30)}\n"
+            f"     line: {self.get_token_line(i)!r}\n"
+            f"     tail: {self.get_tokens_after(i)!r}\n"
         )
     #@+node:ekr.20240124094344.1: *6* tbo.get_token_line
     def get_token_line(self, i: int) -> str:  # pragma: no cover
@@ -1529,10 +1530,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Set context for every '=' operator.
         """
 
-        if 1:  ###
-            print('')
-            g.trace(g.callers())
-            self.trace(i1)
+        self.trace(i1, tag='before')  ###
 
         # Handle leading * and ** args.
         if self.is_ops(i1, ['*', '**']):
@@ -1561,8 +1559,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             assert i is not None, (token)
             assert progress < i, (i, token)
 
-        if 1:  ###
-            self.trace(i)
+        self.trace(i, tag='after')
 
         # Step 2. Handle the initializer if present.
         if self.is_op(i, ','):
@@ -1609,11 +1606,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Return (is_complex, i)
         """
-
-        if 0:  ###
-            print('')
-            g.trace(g.callers())
-            self.trace(i)
 
         self.expect_name(i)
 
@@ -1679,10 +1671,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def parse_call(self, i1: int, end: int) -> int:
         """Parse a function call"""
 
-        if 1:  ###
-            print('')
-            g.trace(g.callers())
-            self.trace(i1, end)
+        self.trace(i1, end)  ###
 
         # Find i1 and i2, the boundaries of the argument list.
         self.expect_op(i1, '(')
@@ -1793,7 +1782,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.next(i)
         return i
 
-    #@+node:ekr.20240120202324.1: *6* tbo.parse_expr & helpers (changed)
+    #@+node:ekr.20240120202324.1: *6* tbo.parse_expr & helpers
     def parse_expr(self, i: int, end: int) -> int:
         """
         Parse an expression spanning self.tokens[i:end],
@@ -1806,10 +1795,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Set the appropriate context for all inner expressions.
         """
 
-        if 1:  ###
-            print('')
-            g.trace(g.callers())
-            self.trace(i, end)
+        self.trace(i, end)  ###
 
         # Scan an arbitrary expression, bounded only by end.
         while i < end:
@@ -1914,8 +1900,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Set the context for ':' tokens to 'simple-slice' or 'complex-slice'.
         """
-        if 1:  ###
-            self.trace(i1, end)
+
+        self.trace(i1, end)  ###
 
         # Scan the '['.
         self.expect_op(i1, '[')
@@ -2068,10 +2054,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Scan an initializer in a function call or function definition argument.
         """
 
-        if 1:  ###
-            print('')
-            g.trace(g.callers())
-            self.trace(i1)
+        self.trace(i1)  ###
 
         # Scan the '='.
         self.expect_op(i1, '=')
