@@ -657,15 +657,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                 g.trace(f"Unexpected setting: {key} = {value!r}")
                 g.trace('(TokenBasedOrange)', g.callers())
     #@+node:ekr.20240126012433.1: *4* tbo: Checking & dumping
-    #@+node:ekr.20240124094344.1: *5* tbo.dump_line
-    def dump_line(self, i: int) -> str:  # pragma: no cover
-
-        try:
-            token = self.tokens[i]
-        except Exception as e:
-            self.oops(f"dump_line: no token at index {i!r}: {e}")
-
-        return token.line.rstrip()
     #@+node:ekr.20240106220724.1: *5* tbo.dump_token_range
     def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:  # pragma: no cover
         """Dump the given range of input tokens."""
@@ -721,17 +712,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         except Exception as e:  # pragma: no cover
             self.oops(f"Invalid index: {i!r}: {e}")
         return token
-    #@+node:ekr.20240127053011.1: *5* tbo.get_tokens_after
-    def get_tokens_after(self, i: int) -> str:
-        """Return the string containing the values of self.tokens[i:]."""
-
-        try:
-            tokens = self.tokens[i:]
-        except Exception as e:  # pragma: no cover
-            self.oops(f"Invalid index: {i!r}: {e}")
-        s = ''.join([z.value for z in tokens]).rstrip()
-        # Leading indentation matches self.trace.
-        return f"  {i:3} {s}"
     #@+node:ekr.20240117053310.1: *5* tbo.oops & helper
     def oops(self, message: str) -> None:  # pragma: no cover
         """Raise InternalBeautifierError."""
@@ -764,10 +744,10 @@ class TokenBasedOrange:  # Orange is the new Black.
             f"{context_s}"
             "Please report this message to Leo's developers"
         )
-    #@+node:ekr.20240125182219.1: *5* tbo.trace
+    #@+node:ekr.20240125182219.1: *5* tbo.trace & helpers
     def trace(self, i: int, i2: Optional[int] = None) -> None:  # pragma: no cover
         """
-        Print i, token, and dump_line(i).
+        Print i, token, and get_token_line(i).
 
         A surprisingly useful debugging utility.
         """
@@ -777,10 +757,31 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Adjust widths below as necessary.
         print(
-            f"{g.callers(1):20} {indices_s} "
-            f"token: {token.kind:>6}:{token.show_val(10):12} "
-            f"line: {self.dump_line(i)!r}")
-            # f"tail: {tail_s!r}")
+            f"{g.callers(1):20} {indices_s}\n"
+            f"token: {token.kind:>6}:{token.show_val(10):12}\n"
+            f" line: {self.get_token_line(i)!r}\n"
+            f"after: {self.get_tokens_after(i)!r}\n"
+        )
+    #@+node:ekr.20240124094344.1: *6* tbo.get_token_line
+    def get_token_line(self, i: int) -> str:  # pragma: no cover
+        """return self.tokens[i].line"""
+        try:
+            token = self.tokens[i]
+        except Exception as e:
+            self.oops(f"Bad token index {i!r}: {e}")
+
+        return token.line.rstrip()
+    #@+node:ekr.20240127053011.1: *6* tbo.get_tokens_after
+    def get_tokens_after(self, i: int) -> str:
+        """Return the string containing the values of self.tokens[i:]."""
+        try:
+            tokens = self.tokens[i:]
+        except Exception as e:  # pragma: no cover
+            self.oops(f"Invalid index: {i!r}: {e}")
+        s = ''.join([z.value for z in tokens]).rstrip()
+
+        # Leading indentation should match self.trace.
+        return f"  {i:3} {s}"
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def no_visitor(self) -> None:  # pragma: no cover
@@ -1532,7 +1533,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             print('')
             g.trace(g.callers())
             self.trace(i1)
-            g.trace(self.get_tokens_after(i1))
 
         # Handle leading * and ** args.
         if self.is_ops(i1, ['*', '**']):
@@ -1563,7 +1563,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         if 1:  ###
             self.trace(i)
-            g.trace(self.get_tokens_after(i1))
 
         # Step 2. Handle the initializer if present.
         if self.is_op(i, ','):
@@ -1615,7 +1614,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             print('')
             g.trace(g.callers())
             self.trace(i)
-            g.trace(self.get_tokens_after(i))
 
         self.expect_name(i)
 
@@ -1685,7 +1683,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             print('')
             g.trace(g.callers())
             self.trace(i1, end)
-            g.trace(self.get_tokens_after(i1))
 
         # Find i1 and i2, the boundaries of the argument list.
         self.expect_op(i1, '(')
@@ -1813,7 +1810,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             print('')
             g.trace(g.callers())
             self.trace(i, end)
-            g.trace(self.get_tokens_after(i))
 
         # Scan an arbitrary expression, bounded only by end.
         while i < end:
@@ -1920,7 +1916,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         if 1:  ###
             self.trace(i1, end)
-            g.trace(self.get_tokens_after(i1))
 
         # Scan the '['.
         self.expect_op(i1, '[')
@@ -2077,7 +2072,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             print('')
             g.trace(g.callers())
             self.trace(i1)
-            g.trace(self.get_tokens_after(i1))
 
         # Scan the '='.
         self.expect_op(i1, '=')
@@ -2191,7 +2185,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.parse_statement(i)
     #@+node:ekr.20240110205127.1: *4* tbo: Scanning
     # The parser calls scanner methods to move through the list of input tokens.
-    #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren (does not call self.next)
+    #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i1: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
 
@@ -2210,7 +2204,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.next(i)
         self.oops("Unmatched '('")  # pragma: no cover
         return None  # pragma: no cover
-    #@+node:ekr.20240114063347.1: *5* tbo.find_delim (** fast scan)
+    #@+node:ekr.20240114063347.1: *5* tbo.find_delim
     def find_delim(self, i1: int, end: int, delims: list) -> int:
         """
         Find the next delimiter token, skipping inner expressions.
@@ -2223,7 +2217,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         trace = False  ###
         if trace:  # pragma: no cover
-            g.trace(f" {i1:3} {g.callers(1):25} {delims} {self.dump_line(i1)}")
+            g.trace(f" {i1:3} {g.callers(1):25} {delims} {self.get_token_line(i1)}")
 
         # We expect only the following 'op' delims: ',', '=', ')' and ':'.
         for z in delims:
@@ -2253,7 +2247,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 i = self.next(i)
         return None
-    #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line (** fast scan)
+    #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line
     def find_end_of_line(self, i: int) -> Optional[int]:
         """
         Return the index the next 'newline', 'nl' or 'endmarker' token,
