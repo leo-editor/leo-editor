@@ -538,6 +538,24 @@ class TestTokenBasedOrange(BaseTest):
 
         # Put recent failures first.
         table = (
+            # Assignment.
+            """
+            version = str(version2.Version.coerce(tag, partial=True))
+            """,
+
+            # LeoApp.py, line 1872.
+            """
+            if path.startswith(tag):
+                return self.computeBindingLetter(c, path=path[len(tag) :])
+            """,
+
+            # LeoApp.py, line 3416.
+            """
+            if groupedEntries:
+                dirCount: dict[str, Any] = {}
+                for fileName in rf.getRecentFiles()[:n]:
+                    dirName, baseName = g.os_path_split(fileName)
+            """,
 
             # leoPersistence, line 526.
             """
@@ -561,25 +579,6 @@ class TestTokenBasedOrange(BaseTest):
             """
             if True:
                 home = os.getenv(home[1:-1], default=None)
-            """,
-
-            # LeoApp.py, line 1872.
-            """
-            if path.startswith(tag):
-                return self.computeBindingLetter(c, path=path[len(tag) :])
-            """,
-
-            # LeoApp.py, line 3416.
-            """
-            if groupedEntries:
-                dirCount: dict[str, Any] = {}
-                for fileName in rf.getRecentFiles()[:n]:
-                    dirName, baseName = g.os_path_split(fileName)
-            """,
-
-            # Assignment.
-            """
-            version = str(semantic_version.Version.coerce(tag, partial=True))
             """,
         )
         for i, contents in enumerate(table):
