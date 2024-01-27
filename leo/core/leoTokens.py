@@ -779,7 +779,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             tokens = self.tokens[i:]
         except Exception as e:  # pragma: no cover
             self.oops(f"Invalid index: {i!r}: {e}")
-        return ''.join([z.value for z in tokens[i:]]).rstrip()
+        return ''.join([z.value for z in tokens[i:i+10]]).rstrip()
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def no_visitor(self) -> None:  # pragma: no cover
