@@ -718,11 +718,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         raise InternalBeautifierError(self.error_message(message))
     #@+node:ekr.20240112082350.1: *6* tbo.error_message
     def error_message(self, message: str) -> str:  # pragma: no cover
-        """
-        Print a full error message.
-
-        Print a traceback only if we are *not* unit testing.
-        """
+        """Print a full error message."""
         # Compute lines_s.
         line_number = self.token.line_number
         lines = g.splitLines(self.contents)
@@ -736,7 +732,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Return the full error message.
         return (
-            '\n\n'
+            # '\n\n'
             'Error in token-based beautifier!\n'
             f"{message.strip()}\n"
             '\n'
@@ -825,25 +821,39 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.lws = ''  # Leading whitespace. Required!
         self.token: InputToken = None
         #@-<< tbo.beautify: init ivars >>
-
-        # Pass 1: start the "good enough" recursive descent parser.
-        self.parse_statements()
+        
+        try:
+            # Pass 1: start the "good enough" recursive descent parser.
+            self.parse_statements()
+        except InternalBeautifierError as e:
+            # self.oops calls self.error_message to creates e.
+            print(e)
+        except AssertionError as e:
+            g.es_exception()
+            print(self.error_message(repr(e)))
 
         # The main loop:
         self.gen_token('file-start', '')
         self.push_state('file-start')
         prev_line_number: int = None
-
         for self.index, self.token in enumerate(tokens):
             # Set global for visitors.
             if prev_line_number != self.token.line_number:
                 prev_line_number = self.token.line_number
             # Call the proper visitor.
-            if self.verbatim:
-                self.do_verbatim()
-            else:
-                func = getattr(self, f"do_{self.token.kind}", self.no_visitor)
-                func()
+            try:
+                if self.verbatim:
+                    self.do_verbatim()
+                else:
+                    func = getattr(self, f"do_{self.token.kind}", self.no_visitor)
+                    func()
+            except InternalBeautifierError as e:
+                # self.oops calls self.error_message to creates e.
+                print(e)
+            except AssertionError as e:
+                g.es_exception()
+                print(self.error_message(repr(e)))
+
         # Any post pass would go here.
         result = output_tokens_to_string(self.code_list)
         return result
@@ -1525,6 +1535,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.expect_op(i, ')')
 
         # An important sanity check.
+        ### assert i == end, repr((i, end))  ### Test of error recovery.
         assert i <= end, repr((i, end))  ### Experimental Was '=='
         return i
     #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
