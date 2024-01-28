@@ -1,40 +1,40 @@
 
+@echo off
+cls
+-cd %~dp0..\..
+
 rem leo/scripts/tbo.cmd.
 rem This file runs Leo's token-based beautifier in leoTokens.py.
 rem This file contains four sub-scripts. See the :start: label below.
 
-@echo off
-cls
-cd %~dp0..\..
+rem --diff now prevents changes.
 
-:start:
-
-rem Execute one of the four sub-scripts:
-rem start1: one file
-rem start2: diffs
+rem start1: one file, with diffs
+rem start2: Production
 rem start3: Performance tests
 rem start4: See what files have changed
 
-goto start3
+goto start2
 
 :start1:
 
 rem One file, with diffs
-echo tbo.cmd --diff --force --verbose leoColorizer
+echo tbo.cmd --diff --force --verbose leoGlobals.py
 
-call python312 -m leo.core.leoTokens --orange --diff --force --verbose leo\core\leoColorizer.py
+call python312 -m leo.core.leoTokens --orange --diff --force --verbose leo\core\leoGlobals.py
 goto done
+
 
 :start2:
 
-rem diffs
-echo tbo.cmd --diff --force --verbose
+rem Production
+echo tbo.cmd --force
 
-call python312 -m leo.core.leoTokens --orange --diff --force --verbose leo\core
-call python312 -m leo.core.leoTokens --orange --diff --force --verbose leo\commands
+call python312 -m leo.core.leoTokens --orange --force leo\core
+call python312 -m leo.core.leoTokens --orange --force leo\commands
 
-call python312 -m leo.core.leoTokens --orange --diff --force --verbose leo\plugins\importers
-call python312 -m leo.core.leoTokens --orange --diff --force --verbose leo\plugins\writers
+call python312 -m leo.core.leoTokens --orange --force leo\plugins\importers
+call python312 -m leo.core.leoTokens --orange --force leo\plugins\writers
 goto done
 
 :start3:
@@ -51,6 +51,7 @@ goto done
 
 :start4:
 
+rem --force  # See changed files
 echo tbo.cmd --diff --force --verbose
 
 call python312 -m leo.core.leoTokens --orange --force leo\core
@@ -61,3 +62,6 @@ call python312 -m leo.core.leoTokens --orange --force leo\plugins\writers
 goto done
 
 :done:
+
+rem call python312 -m leo.core.leoTokens --orange --force --silent leo\plugins
+rem call python312 -m leo.core.leoTokens --orange --force --silent leo\modes
