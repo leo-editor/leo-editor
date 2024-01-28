@@ -527,6 +527,32 @@ class ParseState:
         return f"State: {self.kind} {self.value!r}"  # pragma: no cover
 
     __str__ = __repr__
+#@+node:ekr.20240128114842.1: *3* class ScanState
+class ScanState:  # leoTokens.py.
+    """
+    A class representing t.bo pre_scan's scanning state.
+    
+    Valid kind:value pairs:
+        
+      'statement': statement-name or 'assignment'
+            'call: function-name
+      'call-args': index of opening '('
+       'def-args': index of opening '('
+          'slice': index of opening '['
+    'dict-or-set': index of opening '{'
+    """
+
+    __slots__ = ['kind', 'value', 'token']
+
+    def __init__(self, kind: str, value: Any, token: InputToken) -> None:
+        self.kind = kind
+        self.token = token
+        self.value = value
+
+    def __repr__(self) -> str:  # pragma: no cover
+        return f"ScanState: {self.token.index:3} {self.kind:8} {self.value:8}"
+
+    __str__ = __repr__
 #@+node:ekr.20240105145241.1: *3* class TokenBasedOrange
 class TokenBasedOrange:  # Orange is the new Black.
 
@@ -564,7 +590,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Global data.
         'code_list', 'tokens',
         # Token-related data for visitors.
-        'index', 'line_number', 'token',  # 'line_start'
+        'index', 'line_number', 'token',
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part',
         'state_stack', 'verbatim',
@@ -823,8 +849,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         #@-<< tbo.beautify: init ivars >>
         
         try:
-            # Pass 1: start the "good enough" recursive descent parser.
-            self.parse_statements()
+            if 1: # An iterative approach.
+                self.pre_scan()
+            else:
+                # Pass 1: start the "good enough" recursive descent parser.
+                self.parse_statements()
         except InternalBeautifierError as e:
             # self.oops calls self.error_message to creates e.
             print(e)
@@ -2152,6 +2181,56 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.parse_statement(i)
     #@+node:ekr.20240110205127.1: *4* tbo: Scanning
     # The parser calls scanner methods to move through the list of input tokens.
+    #@+node:ekr.20240128114622.1: *5* tbo.pre_scan & helpers
+    ### where is parse_stack?
+
+    def pre_scan(self) -> None:
+        """
+        Scan the entire file in one iterative pass.
+
+        This scan's *only* purpose is to add context to a few kinds of tokens.
+        See set_context for details.
+        """
+        scan_state: list[ScanState] = []
+        # kind: str = None
+        # value: str = None
+        # statement: str = None
+        # assert scan_state is not None  ### Temp.
+        
+        
+        
+        #@+others  # Define helper functions.
+        #@+node:ekr.20240128123013.1: *6* function: pre_scan_name
+        def pre_scan_name(token: InputToken) -> None:
+            
+            if 0:
+                scan_state.append(ScanState('call', token.value, token))
+        #@+node:ekr.20240128123118.1: *6* function: pre_scan_newline
+        def pre_scan_newline(token: InputToken) -> None:
+            pass
+        #@+node:ekr.20240128123117.1: *6* function: pre_scan_op
+        def pre_scan_op(token: InputToken) -> None:
+            pass
+        #@-others
+       
+        for i, token in enumerate(self.tokens):
+            # kind, value = token.kind, token.value
+            kind = token.kind
+            if kind != 'ws':
+                value = token.value
+                val = repr(value) if not value or '\n' in value else value
+                g.trace(f"{i:3} {kind:15} {val}")
+            if kind == 'name':
+                # Handle statements, calls, other names.
+                pre_scan_name(token)
+            elif kind == 'op':
+                # Handle grouping ops and ops that required context.
+                pre_scan_op(token)
+            elif kind == 'newline':
+                # End some statements.
+                pre_scan_newline(token)
+            else:
+                pass
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i1: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
