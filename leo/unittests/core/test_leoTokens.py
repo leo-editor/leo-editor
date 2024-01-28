@@ -251,8 +251,6 @@ class TestTokenBasedOrange(BaseTest):
         expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-
-
     #@+node:ekr.20240105153425.46: *3* TestTBO.test_at_doc_part
     def test_at_doc_part(self):
 
@@ -867,6 +865,15 @@ class TestTokenBasedOrange(BaseTest):
                     f"     black: {expected.rstrip()}\n"
                     f"    orange: {results.rstrip() if results else 'None'}")
             self.assertEqual(results, expected, msg=description)
+    #@+node:ekr.20240128002403.1: *3* TestTBO.ters_percent_op
+    def test_percent_op(self):
+
+        # leo/plugins/writers/basewriter.py, line 38
+        contents = """at.os('%s@+node:%s%s' % (delim, s, delim2))"""
+        contents, tokens = self.make_data(contents)
+        expected = self.blacken(contents).rstrip() + '\n'
+        results = self.beautify(contents, tokens)
+        self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.70: *3* TestTBO.test_relative_imports
     def test_relative_imports(self):
 
