@@ -865,7 +865,7 @@ class TestTokenBasedOrange(BaseTest):
                     f"     black: {expected.rstrip()}\n"
                     f"    orange: {results.rstrip() if results else 'None'}")
             self.assertEqual(results, expected, msg=description)
-    #@+node:ekr.20240128002403.1: *3* TestTBO.ters_percent_op
+    #@+node:ekr.20240128002403.1: *3* TestTBO.test_percent_op
     def test_percent_op(self):
 
         # leo/plugins/writers/basewriter.py, line 38

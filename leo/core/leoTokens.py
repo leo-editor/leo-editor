@@ -847,7 +847,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Any post pass would go here.
         result = output_tokens_to_string(self.code_list)
         return result
-    #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry. write or diff)
+    #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry: traces & diffs)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
         TokenBasedOrange: Beautify the the given external file.
@@ -891,7 +891,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             print('tbo: safe mode')
 
         # Print the diffs for testing!
-        if False and self.diff:
+        if self.diff:
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
 
@@ -1494,7 +1494,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.is_op(i, ','):
             i = self.next(i)
         return i
-    #@+node:ekr.20240106172905.1: *5* tbo.parse_args
+    #@+node:ekr.20240106172905.1: *5* tbo.parse_args (changed sanity check)
     def parse_args(self, i1: int, end: int) -> int:
         """
         Parse a comma-separated list of function definition arguments.
@@ -1525,7 +1525,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.expect_op(i, ')')
 
         # An important sanity check.
-        assert i <= end, repr((i, end)) ### Experimental Was '=='
+        assert i <= end, repr((i, end))  ### Experimental Was '=='
         return i
     #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
     def parse_call_arg(self, i1: int, end: int) -> int:
