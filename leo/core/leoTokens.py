@@ -1525,7 +1525,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.expect_op(i, ')')
 
         # An important sanity check.
-        assert i == end, repr((i, end))
+        assert i <= end, repr((i, end)) ### Experimental Was '=='
         return i
     #@+node:ekr.20240107092559.1: *5* tbo.parse_call_arg
     def parse_call_arg(self, i1: int, end: int) -> int:
@@ -1536,7 +1536,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
 
         trace = False  # Leave for now.
-        if trace:
+        if trace and False:
             print('')
             self.trace(i1, tag='before')
 
@@ -1558,14 +1558,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             elif kind == 'op':
                 if value in ',=)':
                     break
-                if self.is_op(i, '['):
-                    i = self.parse_slice(i, end)
-                elif self.is_op(i, '{'):
-                    i = self.parse_dict_or_set(i, end)
-                elif self.is_op(i, '('):
-                    i = self.parse_parenthesized_expr(i, end)
-                else:
-                    i = self.next(i)
+                i = self.parse_op(i, end)
             else:
                 i = self.next(i)
 
@@ -1619,8 +1612,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Return (is_complex, i)
         """
-        
-        self.trace(i, end)  ###
+
+        # self.trace(i, end)  ###
 
         self.expect_name(i)
 
@@ -1640,7 +1633,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                     i = self.parse_slice(i, end)
                     is_complex = True
         return is_complex, i
-    #@+node:ekr.20240124012746.1: *5* tbo.parse_op ?faux helper?
+    #@+node:ekr.20240124012746.1: *5* tbo.parse_op
     def parse_op(self, i: int, end: int) -> int:
         """
         Parse an operator, including grouping operators.
@@ -1656,7 +1649,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.parse_parenthesized_expr(i, end)
         else:
             i = self.next(i)
-        return self.next(i)
+        return i
     #@+node:ekr.20240113054641.1: *5* tbo.parse_statement & statement helpers
     def parse_statement(self, i: int) -> int:
         """
@@ -1812,7 +1805,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         Set the appropriate context for all inner expressions.
         """
 
-        trace = True  ### For now.
+        trace = False  ### For now.
         if trace:
             print('')
             self.trace(i, end)

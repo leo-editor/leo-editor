@@ -593,6 +593,9 @@ class TestTokenBasedOrange(BaseTest):
                     g.printObj(expected, tag='Expected (same as contents)')
                     g.printObj(results, tag='Results')
                 self.assertEqual(expected, results)
+            if 0: ###
+                g.trace('First case passes')
+                break
     #@+node:ekr.20240126062946.1: *3* TestTBO.test_function_call_with_parens
     def test_function_calls_with_parens(self):
 
@@ -989,8 +992,8 @@ class TestTokenBasedOrange(BaseTest):
             if results != expected:  # pragma: no cover
                 print('')
                 print('TestTokenBasedOrange')
-                g.printObj(contents, tag='Contents')
-                g.printObj(expected, tag='Expected')
+                # g.printObj(contents, tag='Contents')
+                g.printObj(expected, tag='Expected (Black)')
                 g.printObj(results, tag='Results')
             self.assertEqual(expected, results)
     #@+node:ekr.20240105153425.76: *3* TestTBO.test_star_star_operator
