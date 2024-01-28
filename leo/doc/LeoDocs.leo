@@ -32930,7 +32930,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 **The highlights of Leo 6.7.7**
 
 - PR #3761: Improve leoserver.py to support LeoInteg.
-- Asserted minor improvements.
+- Assorted minor improvements.
 
 **Links**
 
