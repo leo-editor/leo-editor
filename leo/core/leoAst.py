@@ -1530,9 +1530,9 @@ class InputToken:
 #@+node:ekr.20200107165250.1: *3* class Orange
 class Orange:  # Orange is the new Black.
     """
-    This class is a demo of the TokenOrderGenerator class.
+    This class is deprecated. Use the TokenBasedOrange class in leoTokens.py
 
-    However, the TokenBasedOrange class in leoTokens.py is better.
+    This class is a demo of the TokenOrderGenerator class.
 
     This is a predominantly a *token-based* beautifier. However,
     orange.do_op, orange.colon, and orange.possible_unary_op use the parse
