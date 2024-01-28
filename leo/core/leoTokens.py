@@ -592,7 +592,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Token-related data for visitors.
         'index', 'line_number', 'token',
         # Pre-scan data.
-        'scan_state', 'prev_token',
+        'scan_stack', 'prev_token',
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part',
         'state_stack', 'verbatim',
@@ -2183,7 +2183,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.parse_statement(i)
     #@+node:ekr.20240110205127.1: *4* tbo: Scanning
     # The parser calls scanner methods to move through the list of input tokens.
-    #@+node:ekr.20240128114622.1: *5* tbo.pre_scan & helpers
+    #@+node:ekr.20240128114622.1: *5* tbo.pre_scan & helper
     def pre_scan(self) -> None:
         """
         Scan the entire file in one iterative pass, adding context to a few
@@ -2191,35 +2191,39 @@ class TokenBasedOrange:  # Orange is the new Black.
         
         See set_context for details.
         """
-        self.scan_state: list[ScanState] = []
-       
+        trace = True
+        self.scan_stack: list[ScanState] = []
+        self.prev_token: InputToken = None
+        insignificant_kinds = (
+            'comment', 'dedent', 'encoding', 'endmarker', 'indent', 'newline', 'nl', 'ws'
+        )
+
+        # The main loop.
         for self.index, self.token in enumerate(self.tokens):
             kind = self.token.kind
-            if kind != 'ws':
+            is_significant = kind not in insignificant_kinds
+          
+            # Trace the significant token.
+            if trace and is_significant:
                 value = self.token.value
                 val = repr(value) if not value or '\n' in value else value
-                g.trace(f"{self.index:3} {kind:15} {val}")
-            if kind == 'name':
-                # Handle statements, calls, other names.
-                self.pre_scan_name()
-            elif kind == 'op':
-                # Handle grouping ops and ops that required context.
+                g.trace(f"{self.index:3} {kind:>8}: {val}")
+
+            # We only need to handle 'op' tokens!!!
+            if kind == 'op':
                 self.pre_scan_op()
-            elif kind == 'newline':
-                # End some statements.
-                self.pre_scan_newline()
-            else:
-                pass
-    #@+node:ekr.20240128123013.1: *6* tbo.pre_scan_name
-    def pre_scan_name(self) -> None:
-        
-        if 0:
-            self.scan_state.append(ScanState('call', self.token.value, self.token))
-    #@+node:ekr.20240128123118.1: *6* tbo.pre_scan_newline
-    def pre_scan_newline(self) -> None:
-        pass
+
+            # Remember the previous significant token.
+            if is_significant:
+                self.prev_token = self.token
+            
+        # Sanity check.
+        if self.scan_stack:
+            g.printObject(self.scan_stack, tag='Error: non-empty tbo.scan_stack')
     #@+node:ekr.20240128123117.1: *6* tbo.pre_scan_op
     def pre_scan_op(self) -> None:
+        
+        # self.scan_state.append(ScanState('call', self.token.value, self.token))
         pass
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i1: int) -> Optional[int]:
