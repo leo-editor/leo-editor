@@ -1185,15 +1185,15 @@ class TokenBasedOrange:  # Orange is the new Black.
     def gen_dot_op(self) -> None:
         """Handle the '.' input token."""
         context = self.token.context
+
         # Remove previous 'blank' token *before* calculating prev.
         self.clean('blank')
 
+        # Now calculate prev & next.
         prev = self.code_list[-1]
         next_i = self.next(self.index)
         next = 'None' if next_i is None else self.tokens[next_i]
         import_is_next = next and next.kind == 'name' and next.value == 'import'
-
-        ### g.trace(f"{self.index:3} context: {context!r:6} {self.token.line.rstrip()}")
 
         if context == 'import':
             if prev.kind == 'word' and prev.value in ('from', 'import'):
@@ -1239,7 +1239,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.clean('blank')
         prev = self.code_list[-1]
 
-        if prev.kind in ('op', 'word-op'):
+        if self.token.context == 'import':
+            self.gen_blank()
+            self.gen_token('lt', val)
+        elif prev.kind in ('op', 'word-op'):
             self.gen_blank()
             self.gen_token('lt', val)
         elif prev.kind == 'word':
@@ -1505,9 +1508,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                     if top_state.kind == 'arg' and value in '**=:,':
                         top_state.value.append(i)
 
-                # Handle '.' in 'import' and 'from' statements.
-                if value == '.' and in_import:
-                    # See gen_dot_op and gen_lt.
+                # Handle '.' and '(' tokens inside 'import' and 'from' statements.
+                if in_import and value in '(.':
                     self.set_context(i, 'import')
                 #@-<< pre-scan 'op' tokens >>
             elif kind == 'name':

@@ -801,14 +801,6 @@ class TestTokenBasedOrange(BaseTest):
             import leo.core.leoGlobals \\
                 as g
         """
-            # from . module2 import x
-            # from ..module1 import y
-            # from .. module2 import z
-            # from . import a
-            # from.import b
-            # from .. import c
-            # from..import d
-            # from leo.core import leoExternalFiles
         contents, tokens = self.make_data(contents)
         expected = contents.strip() + '\n'
         results = self.beautify(contents, tokens)
