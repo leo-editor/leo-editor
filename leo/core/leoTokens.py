@@ -1454,7 +1454,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if in_import and not scan_stack:
                     in_import = False
                 #@-<< pre-scan 'newline' tokens >>
-            elif kind == 'op' and value in '([{}])**+-:=.':
+            elif kind == 'op' and value in '([{}])**+-:=.,':
                 #@+<< pre-scan 'op' tokens >>
                 #@+node:ekr.20240128123117.1: *6* << pre-scan 'op' tokens >>
                 # Set contexts as follows:
@@ -1493,7 +1493,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
                 # Handle '(' and ')'
                 elif value == '(':
-                    if  self.is_python_keyword(prev_token) or prev_token.kind != 'name':
+                    if self.is_python_keyword(prev_token) or prev_token.kind != 'name':
                         state_kind = '('
                     else:
                         state_kind = 'arg'
@@ -1508,7 +1508,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if top_state:
                     if top_state.kind == 'slice' and value == ':':
                         top_state.value.append(i)
-                    if top_state.kind == 'arg' and value in '**=:':
+                    if top_state.kind == 'arg' and value in '**=:,':
                         top_state.value.append(i)
 
                 ### Not ready yet.
@@ -1804,7 +1804,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         if trace:  # pragma: no cover
             token_s = f"<{token.kind}: {token.show_val(12)}>"
             ignore_s = 'Ignore' if token.context else ' ' * 6
-            print('')
             g.trace(f"{i:3} {g.callers(1):15} {ignore_s} token: {token_s} context: {context}")
 
         if not token.context:
