@@ -550,7 +550,7 @@ class ScanState:  # leoTokens.py.
         self.value: list[int] = []  # Not always used.
 
     def __repr__(self) -> str:  # pragma: no cover
-        return f"ScanState: {self.token.index:4} {self.kind:8} {self.value}"
+        return f"ScanState: i: {self.token.index:<4} kind: {self.kind} value: {self.value}"
 
     __str__ = __repr__
 #@+node:ekr.20240105145241.1: *3* class TokenBasedOrange
@@ -2227,8 +2227,10 @@ class TokenBasedOrange:  # Orange is the new Black.
 
                 top_state = scan_stack[-1] if scan_stack else None
 
-                if trace:
-                    g.trace(value, top_state)
+                if 0:  ###
+                    g.trace(f"{value:3} prev: {prev_token} state: {top_state}")
+                if 0:  ###
+                    g.printObj(scan_stack, tag='scan_stack')
 
                 # Handle '[' and ']'.
                 if value == '[':
@@ -2248,7 +2250,8 @@ class TokenBasedOrange:  # Orange is the new Black.
 
                 # Handle '(' and ')'
                 elif value == '(':
-                    state_kind = 'arg' if self.is_python_keyword(prev_token) else '('
+                    state_kind = '(' if self.is_python_keyword(prev_token) or prev_token.kind != 'name' else 'arg'
+                    ### g.trace(f"{i:2} {state_kind}")
                     scan_stack.append(ScanState(state_kind, token))
                 elif value == ')':
                     assert top_state.kind in ('(', 'arg'), repr(top_state)
@@ -2260,7 +2263,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if top_state:
                     if top_state.kind == 'slice' and value == ':':
                         top_state.value.append(i)
-                    if top_state.kind == 'arg' and value in ('*', '**', '=', ':'):
+                    if top_state.kind == 'arg' and value in '**=:': ### ('*', '**', '=', ':'):
                         top_state.value.append(i)
 
                 ### Not ready yet.
@@ -2294,9 +2297,28 @@ class TokenBasedOrange:  # Orange is the new Black.
         i1 = token.index
         assert i1 < end, (i1, end)
 
-        # Do nothing if there are no ':' tokens in the slice.
-        if not values:
-            return
+        # Compute the context for '=' tokens.
+        if any(self.tokens[i].kind == ':' for i in range(i1 + 1, end - 1)):
+            equal_context = 'annotation'
+        else:
+            equal_context = 'initializer'
+
+        if 0:
+            tokens_s = ''.join([z.value for z in self.tokens[i1:end+1]])
+            g.trace(f"{i1:3} {end:3} {values!r:10} equal_context: {equal_context:12} {tokens_s}")
+
+        # Set the context of all outer-level ':' and '=' tokens.
+        for i in values:
+            token = self.tokens[i]
+            assert token.kind == 'op', repr(token)
+            if token.value in '**':
+                self.set_context(i, 'arg')
+            elif token.value == '=':
+                self.set_context(i, equal_context)
+            elif token.value == ':':
+                self.set_context(i, 'annotation')
+            else:
+                assert False, f"Unexpected token: {token}"
     #@+node:ekr.20240128233406.1: *6* tbo.finish_slice
     def finish_slice(self, end: int, state: ScanState) -> None:
 
@@ -2370,9 +2392,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert i1 < end, (i1, end)
 
         # Set the context for all ':' tokens in the dict.
+        if 0:
+            tokens_s = ''.join([z.value for z in self.tokens[i1:end+1]])
+            g.trace(f"{i1:3} {end:3} {colons!r:8} {tokens_s}")
         for i in colons:
             self.set_context(i, 'dict')
-
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i1: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
