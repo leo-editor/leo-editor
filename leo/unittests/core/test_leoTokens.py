@@ -188,7 +188,8 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240116104552.1: *3* TestTBO.slow_test_leoColorizer
     def slow_test_leoApp(self) -> None:  # pragma: no cover
 
-        g.trace('=====')
+        # This test is no longer needed.
+        # The tbo command beautifies all files.
         filename = 'leoColorizer.py'
         test_dir = os.path.dirname(__file__)
         path = g.os_path_finalize_join(test_dir, '..', '..', 'core', filename)

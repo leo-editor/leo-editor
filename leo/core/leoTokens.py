@@ -1714,7 +1714,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         trace = False  # Do not remove
         i += 1
         while i < len(self.tokens):
-            ### self.n_scanned_tokens += 1
             token = self.tokens[i]
             if self.is_significant_token(token):
                 if trace and 'find_end_of_line' not in g.callers():  # Filtered dump!
