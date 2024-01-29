@@ -2263,7 +2263,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if top_state:
                     if top_state.kind == 'slice' and value == ':':
                         top_state.value.append(i)
-                    if top_state.kind == 'arg' and value in '**=:': ### ('*', '**', '=', ':'):
+                    if top_state.kind == 'arg' and value in '**=:':
                         top_state.value.append(i)
 
                 ### Not ready yet.
@@ -2296,29 +2296,41 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert isinstance(values, list), repr(values)
         i1 = token.index
         assert i1 < end, (i1, end)
+        if not values:
+            return
 
-        # Compute the context for '=' tokens.
-        if any(self.tokens[i].kind == ':' for i in range(i1 + 1, end - 1)):
-            equal_context = 'annotation'
-        else:
-            equal_context = 'initializer'
-
-        if 0:
+        if 0:  ###
             tokens_s = ''.join([z.value for z in self.tokens[i1:end+1]])
-            g.trace(f"{i1:3} {end:3} {values!r:10} equal_context: {equal_context:12} {tokens_s}")
+            g.trace(f"{i1:3} {end:3} {values!r} {tokens_s}")
 
-        # Set the context of all outer-level ':' and '=' tokens.
+        # Compute the context for each *separate* '=' token.
+        equal_context = 'initializer'
         for i in values:
             token = self.tokens[i]
             assert token.kind == 'op', repr(token)
-            if token.value in '**':
-                self.set_context(i, 'arg')
+            if token.value == ',':
+                equal_context = 'initializer'
+            elif token.value == ':':
+                equal_context = 'annotation'
             elif token.value == '=':
                 self.set_context(i, equal_context)
-            elif token.value == ':':
-                self.set_context(i, 'annotation')
-            else:
-                assert False, f"Unexpected token: {token}"
+                equal_context = 'initializer'
+
+        # Set the context of all outer-level ':', '*', and '**' tokens.
+        prev:InputToken = None
+        for i in range(i1, end):
+            token = self.tokens[i]
+            if token.kind not in self.insignificant_kinds:
+                if token.kind == 'op':
+                    if token.value in ('*', '**'):
+                        if self.is_unary_op_with_prev(prev, token):
+                            self.set_context(i, 'arg')
+                    elif token.value == '=':
+                        # The code above has set the context.
+                        assert token.context in ('initializer', 'annotation'), (i, repr(token.context))
+                    elif token.value == ':':
+                        self.set_context(i, 'annotation')
+                prev = token
     #@+node:ekr.20240128233406.1: *6* tbo.finish_slice
     def finish_slice(self, end: int, state: ScanState) -> None:
 
@@ -2514,13 +2526,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         if token.value == '~':
             return True
-        assert token.value in '-+', repr(token.value)
+        if prev is None:
+            return True  ### New.
+        assert token.value in '**-+', repr(token.value)
         kind, value = prev.kind, prev.value
         if kind in ('number', 'string'):
             return_val = False
         elif kind == 'op' and value in ')]':
             return_val = False
-        elif kind == 'op' and value in '{([:':
+        elif kind == 'op' and value in '{([:,':  ### Add ,
             return_val = True
         elif kind != 'name':
             return_val = True
