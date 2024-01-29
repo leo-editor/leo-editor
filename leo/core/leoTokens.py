@@ -534,9 +534,11 @@ class ScanState:  # leoTokens.py.
 
     Valid kind:value pairs:
 
-     'args': None
-    'slice': list of colon indices
-     'dict': list of colon indices
+      'args': None
+      'from': None
+    'import': None
+     'slice': list of colon indices
+      'dict': list of colon indices
 
     """
 
@@ -2222,20 +2224,20 @@ class TokenBasedOrange:  # Orange is the new Black.
     def pre_scan_op(self) -> None:
         """
         Set scan_state as follows:
-            
-        
+
         Set contexts as follows:
         
-        Token       Possible Contexts
-        =====       =================
-        ':'         'annotation', 'dict', 'complex-slice', 'simple-slice'
-        '='         'annotation', 'initializer'
-        '*',        'arg'                         
-        '**'        'arg'
-        
-        
+        Token   Possible Contexts (or None)
+        =====   ===========================
+        ':'     'annotation', 'dict', 'complex-slice', 'simple-slice'
+        '='     'annotation', 'initializer'
+        '*'     'arg'                         
+        '**'    'arg'
+        '.'     'from', 'import'
         """
         
+        ### Handling 'from' and 'import will be tricky.
+
         # self.scan_state.append(ScanState('call', self.token.value, self.token))
         pass
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
@@ -2423,6 +2425,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         '='         'annotation', 'initializer'
         '*',        'arg'                         
         '**'        'arg'
+        '.'         'from', 'import'
 
         **No longer used**
 
@@ -2432,7 +2435,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         'name'      'class/def'
         'newline'   'end-statement'
         'nl'        'end-statement'
-        '.'         'from', 'import'
 
         **Legacy table**
 
