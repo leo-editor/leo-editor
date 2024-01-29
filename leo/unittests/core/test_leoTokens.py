@@ -595,8 +595,11 @@ class TestTokenBasedOrange(BaseTest):
 
         # Put recent failures first.
         table = (
+            # leoserver.py, line 584.
+            """timeline.sort(key=lambda x: x[0].gnx, reverse=True)""",
+
             # leoserver.py, line 42 and other lines.
-            """jsonPackage = json.dumps(package, separators=(',', ':'), cls=SetEncoder)"""
+            """jsonPackage = json.dumps(package, separators=(',', ':'), cls=SetEncoder)""",
 
             # #1429: https://github.com/leo-editor/leo-editor/issues/1429
             """
