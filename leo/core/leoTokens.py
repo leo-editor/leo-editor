@@ -544,10 +544,10 @@ class ScanState:  # leoTokens.py.
 
     __slots__ = ['kind', 'value', 'token']
 
-    def __init__(self, kind: str, token: InputToken, value: list[int] = None) -> None:
+    def __init__(self, kind: str, token: InputToken) -> None:
         self.kind = kind
         self.token = token
-        self.value = value
+        self.value: list[int] = []  # Not always used.
 
     def __repr__(self) -> str:  # pragma: no cover
         return f"ScanState: {self.token.index:4} {self.kind:8} {self.value}"
@@ -2230,21 +2230,46 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if trace:
                     g.trace(value, top_state)
 
-                if value in '.(' and in_import:
-                    ### Not ready yet. See gen_dot_op and gen_lt.
-                    self.set_context(i, 'import')
-
+                # Handle '[' and ']'.
                 if value == '[':
-                    scan_stack.append(ScanState('slice', token, []))
+                    scan_stack.append(ScanState('slice', token))
                 elif value == ']':
                     assert top_state.kind == 'slice'
                     self.finish_slice(i, top_state)
                     scan_stack.pop()
-                elif value == ':' and top_state and top_state.kind == 'slice':
-                    top_state.value.append(i)
+                    
+                # Handle '{' and '}'.
+                if value == '{':
+                    scan_stack.append(ScanState('dict', token))
+                elif value == '}':
+                    assert top_state.kind == 'dict'
+                    self.finish_dict(i, top_state)
+                    scan_stack.pop()
+                    
+                # Handle '(' and ')'
                 elif value == '(':
-                    if trace:
-                        g.trace(prev_token)  ### To do.
+                    state_kind = 'arg' if self.is_python_keyword(prev_token) else '('
+                    scan_stack.append(ScanState(state_kind, token))
+                elif value == ')':
+                    assert top_state.kind in ('(', 'arg'), repr(top_state)
+                    if top_state.kind == 'arg':
+                        self.finish_arg(i, top_state)
+                    scan_stack.pop()
+
+                # Handle interior tokens in 'arg' and 'slice' states.
+                if top_state:
+                    if top_state.kind == 'slice' and value == ':':
+                        top_state.value.append(i)
+                    if top_state.kind == 'arg' and value in ('*', '**', '=', ':'):
+                        top_state.value.append(i)
+                            
+                  
+                    
+
+                ### Not ready yet.  
+                # if value in '.(' and in_import:
+                    # # See gen_dot_op and gen_lt.
+                    # self.set_context(i, 'import')
                 #@-<< pre-scan 'op' tokens >>
             elif kind == 'name':
                 #@+<< pre-scan 'name' tokens >>
@@ -2260,6 +2285,21 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Sanity check.
         if scan_stack:
             g.printObj(scan_stack, tag='pre_scan: non-empty scan_stack')
+    #@+node:ekr.20240129041304.1: *6* tbo.finish_arg
+    def finish_arg(self, end: int, state: ScanState) -> None:
+
+        # Sanity checks.
+        assert state.kind == 'arg', repr(state)
+        token = state.token
+        assert token.value == '(', repr(token)
+        values = state.value
+        assert isinstance(values, list), repr(values)
+        i1 = token.index
+        assert i1 < end, (i1, end)
+
+        # Do nothing if there are no ':' tokens in the slice.
+        if not values:
+            return
     #@+node:ekr.20240128233406.1: *6* tbo.finish_slice
     def finish_slice(self, end: int, state: ScanState) -> None:
 
@@ -2320,6 +2360,21 @@ class TokenBasedOrange:  # Orange is the new Black.
             g.trace(f"{final_context:14} {i1:3} {end:3} {colons!r:8} {tokens_s}")
         for i in colons:
             self.set_context(i, final_context)
+    #@+node:ekr.20240129040347.1: *6* tbo.finish_dict
+    def finish_dict(self, end: int, state: ScanState) -> None:
+
+        # Sanity checks.
+        assert state.kind == 'dict', repr(state)
+        token = state.token
+        assert token.value == '{', repr(token)
+        colons = state.value
+        assert isinstance(colons, list), repr(colons)
+        i1 = token.index
+        assert i1 < end, (i1, end)
+
+        # Do nothing if there are no ':' tokens in the slice.
+        if not colons:
+            return
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i1: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
@@ -2449,7 +2504,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             return_val = True
         else:
             # A 'name' token.
-            return_val = keyword.iskeyword(value) or keyword.issoftkeyword(value)
+            ### return_val = keyword.iskeyword(value) or keyword.issoftkeyword(value)
+            return self.is_python_keyword(token)
         return return_val
     #@+node:ekr.20240125082325.1: *5* tbo.is_name
     def is_name(self, i: int) -> bool:
@@ -2458,6 +2514,12 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False
         token = self.tokens[i]
         return token.kind == 'name'
+    #@+node:ekr.20240129035336.1: *5* tbo.is_python_keyword
+    def is_python_keyword(self, token: InputToken) -> bool:
+        """Return True if token is a 'name' token referring to a Python keyword."""
+        if not token or token.kind != 'name':
+            return False
+        return keyword.iskeyword(token.value) or keyword.issoftkeyword(token.value)
     #@+node:ekr.20240106093210.1: *5* tbo.is_significant_token
     def is_significant_token(self, token: InputToken) -> bool:
         """Return true if the given token is not whitespace."""
