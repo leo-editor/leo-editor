@@ -1515,7 +1515,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             elif kind == 'name':
                 #@+<< pre-scan 'name' tokens >>
                 #@+node:ekr.20240128231119.1: *6* << pre-scan 'name' tokens >>
-                if value in ('from', 'import'):
+                prev_is_yield = prev_token and prev_token.kind == 'name' and prev_token.value == 'yield'
+                if value in ('from', 'import') and not prev_is_yield:
                     # 'import' and 'from x import' statements should be at the outer level.
                     assert not scan_stack, scan_stack
                     in_import = True
