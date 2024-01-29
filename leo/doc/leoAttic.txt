@@ -1198,6 +1198,707 @@ def proc_cmds(self):
         for cmd in query['cmd']:
             ans = c.evalController.eval_text(cmd)
     return ans  # the last answer, if multiple commands run
+#@+node:ekr.20240105145241.41: ** tbo: Parser
+# Parsers pre-scan input tokens, adding context to tokens that need help.
+#@+node:ekr.20240106181128.1: *3* tbo.parse_annotation
+def parse_annotation(self, i1: int, end: int) -> int:
+    """Parse the annotation of a function definition arg."""
+
+    # Scan the ':'
+    self.expect_op(i1, ':')
+    self.set_context(i1, 'annotation')
+    i = self.next(i1)
+
+    # Scan to the next ',' or '=', ignoring inner parens.
+    i3 = self.find_delim(i, end, [',', '=', ')'])
+    self.expect_ops(i3, [',', '=', ')'])
+
+    # Set the contexts of inner ops.
+    for i4 in range(i1 + 1, i3 - 1):
+        if self.is_ops(i4, ['=', ':']):
+            self.set_context(i4, 'annotation')
+    return i3
+#@+node:ekr.20240106173638.1: *3* tbo.parse_arg
+def parse_arg(self, i1: int, end: int) -> int:
+    """Parse a single function definition argument."""
+
+    # Scan optional  * and ** operators.
+    i = i1
+    if self.is_ops(i, ['*', '**']):
+        self.set_context(i1, 'arg')
+        i = self.next(i)
+        # Handle *,
+        if self.is_op(i, ','):
+            i = self.next(i)
+            return i
+
+    # Scan the argument's name.
+    self.expect(i, 'name')
+    i = self.next(i)
+
+    # Scan an optional annotation.
+    has_annotation = self.is_op(i, ':')
+    if has_annotation:
+        self.set_context(i, 'annotation')
+        i = self.parse_annotation(i, end)
+
+    # Scan an optional initializer.
+    if self.is_op(i, '='):
+        if has_annotation:
+            self.set_context(i, 'annotation')
+        else:
+            self.set_context(i, 'initializer')
+        i = self.parse_initializer(i, end)  ###, has_annotation=has_annotation)
+
+    # Scan the optional comma.
+    if self.is_op(i, ','):
+        i = self.next(i)
+    return i
+#@+node:ekr.20240106172905.1: *3* tbo.parse_args (changed sanity check)
+def parse_args(self, i1: int, end: int) -> int:
+    """
+    Parse a comma-separated list of function definition arguments.
+
+    Return the index of ending ')' token.
+    """
+
+    # Sanity checks.
+    assert i1 < end, (i1, end)
+    self.expect_op(i1, '(')
+    self.expect_op(end, ')')
+
+    # Scan the '('
+    i = self.next(i1)
+
+    # Scan each argument.
+    while i < end:
+        progress = i
+        if self.is_op(i, ')'):
+            break
+        i = self.parse_arg(i, end)
+        if self.is_op(i, ')'):
+            break
+        if progress >= i:  # pragma: no cover
+            self.oops('parse_args: no progress')
+
+    # Scan the ')'
+    self.expect_op(i, ')')
+
+    # An important sanity check.
+    ### assert i == end, repr((i, end))  ### Test of error recovery.
+    assert i <= end, repr((i, end))  ### Experimental Was '=='
+    return i
+#@+node:ekr.20240107092559.1: *3* tbo.parse_call_arg
+def parse_call_arg(self, i1: int, end: int) -> int:
+    """
+    Scan a single function definition argument.
+
+    Set context for every '=' operator.
+    """
+
+    trace = False  # Leave for now.
+    if trace and False:
+        print('')
+        self.trace(i1, tag='before')
+
+    # Handle leading * and ** args.
+    if self.is_ops(i1, ['*', '**']):
+        self.set_context(i1, 'arg')
+        i = self.next(i1)
+    else:
+        i = i1
+
+    # Step one: scan one argument up to a possible initializer.
+    while i < end:
+        progress = i
+        token = self.tokens[i]
+        kind, value = token.kind, token.value
+
+        if kind == 'name':
+            _is_complex, i = self.parse_name(i, end)
+        elif kind == 'op':
+            if value in ',=)':
+                break
+            i = self.parse_op(i, end)
+        else:
+            i = self.next(i)
+
+        assert i is not None, (token)
+        assert progress < i, (i, token)
+
+    if trace:
+        print('')
+        self.trace(i, tag='after')
+
+    # Step 2. Handle the initializer if present.
+    if self.is_op(i, ','):
+        i = self.next(i)
+    elif self.is_op(i, '='):
+        # Handle the initializer, setting context for '='
+        self.set_context(i, 'initializer')
+        i = self.parse_initializer(i, end)
+        self.expect_ops(i, [',', ')'])
+        if self.is_op(i, ','):
+            i = self.next(i)
+
+    return i
+#@+node:ekr.20240107092458.1: *3* tbo.parse_call_args
+def parse_call_args(self, i1: int, end: int) -> int:
+    """Scan a comma-separated list of function definition arguments."""
+
+    # Scan the '('
+    self.expect_op(i1, '(')
+
+    # Find the matching '('.
+    i2 = self.find_close_paren(i1)  # Does not skip the ')'.
+    self.expect_op(i2, ')')
+
+    # Scan each argument.
+    i = i1 + 1
+    while i < i2:
+        progress = i
+        if self.is_op(i, ')'):
+            break
+        i = self.parse_call_arg(i, i2)  # Sets context.
+        if self.is_op(i, ')'):
+            break
+        if progress >= i:  # pragma: no cover
+            self.oops('parse_call_args: no progress')
+
+    return i2  # Do not skip the ')'.
+#@+node:ekr.20240124012707.1: *3* tbo.parse_name
+def parse_name(self, i: int, end: int) -> tuple[bool, int]:
+    """
+    Parse a name, including possible function calls.
+
+    Return (is_complex, i)
+    """
+
+    # self.trace(i, end)  ###
+
+    self.expect_name(i)
+
+    is_complex = False
+    token = self.tokens[i]
+    if token.value in self.expression_keywords:
+        i = self.next(i)
+    else:
+        # token.value *can* be in self.keywords. For example, re.match.
+        i = self.next(i)
+        token = self.tokens[i]
+        if i < end:
+            if token.value == '(':
+                i = self.parse_call(i, end)
+                is_complex = True
+            elif token.value == '[':
+                i = self.parse_slice(i, end)
+                is_complex = True
+    return is_complex, i
+#@+node:ekr.20240124012746.1: *3* tbo.parse_op
+def parse_op(self, i: int, end: int) -> int:
+    """
+    Parse an operator, including grouping operators.
+
+    Return the index of the *following* token.
+
+    """
+    if self.is_op(i, '['):
+        i = self.parse_slice(i, end)
+    elif self.is_op(i, '{'):
+        i = self.parse_dict_or_set(i, end)
+    elif self.is_op(i, '('):
+        i = self.parse_parenthesized_expr(i, end)
+    else:
+        i = self.next(i)
+    return i
+#@+node:ekr.20240113054641.1: *3* tbo.parse_statement & statement helpers
+def parse_statement(self, i: int) -> int:
+    """
+    Scan the next statement, including docstrings.
+    """
+    # All statements add 'end-statement' context "near" the end of the line:
+    # - Simple statements call find_end_of_line.
+    # - Compound statements call find_delim(i, len(self.tokens), [':'])
+    token = self.tokens[i]
+    if token.kind == 'name':
+        if token.value == 'from':
+            return self.parse_from(i)
+        if token.value == 'import':
+            return self.parse_import(i)
+        if token.value in self.compound_statements:
+            return self.parse_compound_statement(i)
+        if token.value in self.simple_statements:
+            return self.parse_simple_statement(i)
+        # An expression.
+        return self.parse_outer_expression(i)
+    if (token.kind, token.value) == ('op', '@'):
+        return self.parse_decorator(i)
+    # Ensure progress.
+    i = self.next(i)
+    return i
+#@+node:ekr.20240107091700.1: *4* tbo.parse_call
+def parse_call(self, i1: int, end: int) -> int:
+    """Parse a function call"""
+
+    if 0:  # trace.
+        print('')
+        self.trace(i1, end)
+
+    # Find i1 and i2, the boundaries of the argument list.
+    self.expect_op(i1, '(')
+
+    # Scan the arguments.
+    i = self.parse_call_args(i1, end)
+
+    # Sanity check.
+    self.expect_op(i, ')')
+    i = self.next(i)
+    return i
+#@+node:ekr.20240115101846.1: *4* tbo.parse_class_or_def
+def parse_class_or_def(self, i: int) -> int:
+    """Set context for a class or def statement."""
+    self.expect(i, 'name')  # The 'class' or 'def' keyword.
+    token = self.tokens[i]
+    keyword_value = token.value
+    assert keyword_value in ('class', 'def'), f"Expecting 'class' or 'def'. Got {token!r}"
+
+    # Scan the define name of the 'class' or 'def'.
+    i = self.next(i)
+    self.expect(i, 'name')
+
+    # The defined name is *not* a function call.
+    self.set_context(i, 'class/def')
+
+    # Caller will handle the rest of the 'class' statement.
+    if keyword_value == 'class':
+        # Find the trailing ':'!
+        i = self.find_delim(i, len(self.tokens), [':'])
+        self.expect_op(i, ':')
+
+        # Set the context.
+        self.set_context(i, 'end-statement')
+
+        # Move past the ':' token.
+        return self.next(i)
+
+    # Handle the rest of the 'def' statement.
+
+    # Find the '(' and ')' tokens.
+    i = self.next(i)
+    self.expect_op(i, '(')
+    i1 = i
+    i2 = self.find_close_paren(i)  # Does not skip the ')'.
+    self.expect_op(i2, ')')
+
+    # Scan the arguments, setting context.
+    i = self.parse_args(i1, i2)
+
+    # Set the context of the trailing ':' token.
+    i = self.find_delim(i, len(self.tokens), [':'])
+    self.expect_op(i, ':')
+    self.set_context(i, 'end-statement')
+
+    # Move past the ':' token.
+    return self.next(i)
+#@+node:ekr.20240108062349.1: *4* tbo.parse_compound_statement
+def parse_compound_statement(self, i: int) -> int:
+    """
+    Scan a compound statement, adding 'end-statement' context to the
+    trailing ':' token.
+    """
+
+    # Scan the keyword.
+    self.expect(i, 'name')
+
+    # Special case for 'async':
+    keyword = self.tokens[i].value
+    if keyword not in self.compound_statements:  # pragma: no cover
+        self.oops(f"Not a compound keyword: {keyword!r}")
+
+    if keyword == 'async':
+        i = self.next(i)
+        keyword = self.tokens[i].value
+
+    if keyword in ('class', 'def'):
+        return self.parse_class_or_def(i)
+
+    # Skip the keyword.
+    i = self.next(i)
+
+    # Find the trailing ':' and set the context.
+    end = self.find_delim(i, len(self.tokens), [':'])
+    self.expect_op(end, ':')
+    self.set_context(end, 'end-statement')
+
+    # A harmless hack: treat the rest of the statement as an expression.
+    self.parse_expr(i, end)
+
+    # Scan the ':'.
+    return self.next(end)
+#@+node:ekr.20240115074103.1: *4* tbo.parse_decorator
+def parse_decorator(self, i: int) -> int:
+
+    # Scan the @
+    self.expect_op(i, '@')
+    i = self.next(i)
+
+    # Scan the name.
+    self.expect(i, 'name')
+    i = self.next(i)
+
+    # Set context for any arguments as if they were call arguments.
+    if self.is_op(i, '('):
+        i = self.parse_call_args(i, len(self.tokens))
+        self.expect_op(i, ')')
+        i = self.next(i)
+    return i
+
+#@+node:ekr.20240120202324.1: *4* tbo.parse_expr & helpers
+def parse_expr(self, i: int, end: int) -> int:
+    """
+    Parse an expression spanning self.tokens[i:end],
+    looking for the following token patterns:
+
+    - A function call:  'name', '(', ..., ')'.
+    - A slice:          '[', ..., ']'.
+    - A dictionary:     '{', ..., '}'.
+
+    Set the appropriate context for all inner expressions.
+    """
+
+    trace = False  ### For now.
+    if trace:
+        print('')
+        self.trace(i, end)
+
+    # Scan an arbitrary expression, bounded only by end.
+    while i < end:
+        progress = i
+        token = self.tokens[i]
+        kind, value = token.kind, token.value
+
+        if kind == 'name':
+            _is_complex, i = self.parse_name(i, end)
+        elif kind == 'op':
+            if value == '(':
+                i = self.parse_parenthesized_expr(i, end)
+            elif value == '[':
+                i = self.parse_slice(i, end)
+            elif value == '{':
+                i = self.parse_dict_or_set(i, end)
+            else:
+                i = self.next(i)
+        else:
+            i = self.next(i)
+
+        assert i is not None, token
+        assert progress < i, (i, token)
+    return end
+#@+node:ekr.20240121073127.1: *5* tbo.parse_dict_or_set
+def parse_dict_or_set(self, i1: int, end: int) -> int:
+    """
+    Parse a '{', ..., '}'.
+
+    Set context for '=' tokens to 'dict' only within dictionaries.
+    """
+
+    # Scan the '{'.
+    self.expect_op(i1, '{')
+
+    # Find the matching '}'
+    i = self.next(i1)
+    i2 = self.find_delim(i, end, ['}'])
+    self.expect_op(i2, '}')
+
+    # Sanity check.
+    assert i2 <= end, (repr(i2), repr(end))
+
+    # Search for ':' at the top level.
+    colon_i = self.find_delim(i, i2, [':'])
+    if colon_i is None:
+        # The opening '{' starts a non-empty set.
+        # Note: the Tokenizer converts all f-strings tokens to a single 'string' token.
+        pass
+    else:
+        # The opening '{' starts a non-empty dict.
+        self.parse_dict(i1, i2)
+    return self.next(i2)
+#@+node:ekr.20240121073925.1: *5* tbo.parse_dict
+def parse_dict(self, i1: int, end: int) -> None:
+    """
+    Parse '[', ..., ']'.
+
+    Set the context of all outer-level ':' tokens to 'dict'.
+
+    Return None.
+    """
+
+    # Initial sanity checks.
+    self.expect_op(i1, '{')
+    self.expect_op(end, '}')
+
+    # Set context for all outer-level ':' tokens to 'dict'.
+    i = self.next(i1)
+    while i < end:
+        i = self.find_delim(i, end, [':'])
+        if i is None:
+            break
+        self.set_context(i, 'dict')
+        i = self.next(i)
+#@+node:ekr.20240121071949.1: *5* tbo.parse_parenthesized_expr
+def parse_parenthesized_expr(self, i: int, end: int) -> int:
+    """
+    Parse a parenthesized expression.
+
+    Such expressions have no context.
+    """
+    # Scan the '('.
+    self.expect_op(i, '(')
+
+    # Find the matching ')'.
+    i = self.next(i)
+    i2 = self.find_delim(i, end, [')'])
+    self.expect_op(i2, ')')
+
+    # Parse the insides of the expresssion.
+    self.parse_expr(i + 1, i2 - 1)
+
+    # Sanity check.
+    assert i2 <= end, (repr(i2), repr(end))
+    return i2
+#@+node:ekr.20240121024213.1: *5* tbo.parse_slice
+def parse_slice(self, i1: int, end: int) -> int:
+    """
+    Parse '[', ..., ']'.
+
+    Set the context for ':' tokens to 'simple-slice' or 'complex-slice'.
+    """
+
+    # self.trace(i1, end)  ###
+
+    # Scan the '['.
+    self.expect_op(i1, '[')
+    i = self.next(i1)
+
+    i2 = self.find_delim(i, end, [']'])
+    self.expect_op(i2, ']')
+    assert i2 <= end, (repr(i2), repr(end))
+
+    # Context data.
+    colons: list[int] = []  # List of outer ':' to be given context.
+    final_context: str = 'simple-slice'  # May become 'complex-slice'.
+    inter_colon_tokens = 0
+
+    def update_context(i: int) -> None:
+        nonlocal colons, final_context, inter_colon_tokens
+
+        # Ignore '.' tokens and the preceding 'name' token.
+        if self.is_op(i, '.'):
+            prev = self.prev(i)
+            if self.is_name(prev):
+                inter_colon_tokens -= 1
+            return
+
+        # *Now* we can update the effective complexity of the slice.
+        inter_colon_tokens += 1
+        if inter_colon_tokens > 1:
+            final_context = 'complex-slice'
+
+    # Parse the slice to discover possible inner function calls!
+    while i <= i2:  # Required.
+        progress = i
+        token = self.tokens[i]
+        kind, value = token.kind, token.value
+
+        if kind == 'name':
+            is_complex, i = self.parse_name(i, end)
+            if is_complex:
+                final_context = 'complex-slice'
+        elif kind == 'op':
+            if value == ']':
+                # An outer ']'
+                i = self.next(i)
+                break
+            if value == ':':
+                # An outer ':'.
+                colons.append(i)
+                inter_colon_tokens = 0
+                i = self.next(i)
+            elif value in '+-':
+                # Don't update context for unary ops.
+                if not self.is_unary_op(i, value):
+                    update_context(i)
+                i = self.next(i)
+            elif value == '(':
+                i = self.parse_parenthesized_expr(i, end)
+                final_context = 'complex-slice'
+            elif value == '[':
+                i = self.parse_slice(i, end)
+                final_context = 'complex-slice'
+            elif value == '{':
+                i = self.parse_dict_or_set(i, end)
+                final_context = 'complex-slice'
+            else:
+                update_context(i)
+                i = self.next(i)
+        else:
+            i = self.next(i)
+
+        assert i is not None, (token)
+        assert progress < i, (i, token)
+
+    # Set the context of all outer-level ':' tokens.
+    for colon_i in colons:
+        self.set_context(colon_i, final_context)
+
+    return self.next(i2)  # Ignore i.
+#@+node:ekr.20240107143500.1: *4* tbo.parse_from
+def parse_from(self, i: int) -> int:
+    """
+    Parse a `from x import` statement, setting context for leading '.'
+    tokens.
+    """
+    # Find the end of the 'from' statement.
+    i = self.index
+    end = self.find_end_of_line(i)
+
+    # Add 'from' context to all '.' tokens.
+    while i and i < end:
+        if self.is_op(i, '.'):
+            self.set_context(i, 'from')
+        i = self.next(i)
+
+    return end
+#@+node:ekr.20240108083829.1: *4* tbo.parse_import
+def parse_import(self, i: int) -> int:
+    # Find the end of the import statement.
+    i = self.index
+    end = self.find_end_of_line(i)
+
+    # Add 'import' context to all '.' operators.
+    while i and i < end:
+        if self.is_op(i, '.'):
+            self.set_context(i, 'import')
+        i = self.next(i)
+    return end
+#@+node:ekr.20240106181215.1: *4* tbo.parse_initializer
+def parse_initializer(self, i1: int, end: int) -> int:
+    """
+    Scan an initializer in a function call or function definition argument.
+    """
+
+    if 0:  ### trace.
+        self.trace(i1)
+
+    # Scan the '='.
+    self.expect_op(i1, '=')
+
+    # Sanity check.
+    context = self.tokens[i1].context
+    assert context in ('initializer', 'annotation'), repr(context)
+
+    i = self.next(i1)
+
+    # Scan an arbitrary expression, separated by ',' or ')'.
+    while i <= end:
+        progress = i
+        token = self.tokens[i]
+        kind, value = token.kind, token.value
+
+        if kind == 'name':
+            _is_complex, i = self.parse_name(i, end)
+        elif kind == 'op':
+            if value in ',)':
+                break
+            i = self.parse_op(i, end)
+        else:
+            i = self.next(i)
+
+        assert i is not None, token
+        assert progress < i, (i, token)
+
+    # Same expect as in the caller.
+    self.expect_ops(i, [',', ')'])
+    return i
+#@+node:ekr.20240116040636.1: *4* tbo.parse_outer_expression
+def parse_outer_expression(self, i1: int) -> int:
+    << docstring: tbo.parse_outer_expression >>
+
+    token = self.tokens[i1]
+    assert self.is_significant_token(token), (token, g.callers())
+
+    # Just scan outer strings and f-strings at the outer level.
+    if token.kind in self.string_kinds:
+        return self.next(i1)
+
+    # Find the bounds of the expression.
+    # This prepass simplifies all the inner logic.
+
+    # Because expressions are scanned twice the token_ratio in
+    # the top-level orange_command should be > 2.0.
+
+    end = self.find_end_of_line(i1)
+    i = self.parse_expr(i1, end)
+    return i
+#@+node:ekr.20240120201047.1: *5* << docstring: tbo.parse_outer_expression >>
+"""
+Parse a line that *isn't* a simple or compound statement.
+See https://docs.python.org/3/reference/expressions.html
+
+This method's only purpose is to mark the context of '=' and ':'
+tokens. It can ignore unrelated subtleties of Python's grammar.
+
+1. If the next significant token is a string, just scan it.
+
+2. Otherwise, we are looking *only* for the following token patterns:
+
+- A function call:  'name', '(', ... ')'.
+- A slice:          '[', <expr>? ':' <expr> ':'? <expr>? ']'.
+- A dictionary:     '{', <expr> ':' <expr> '}'.
+
+Notes:
+
+1. <expr> denotes an inner expression.
+2. ? denotes optional tokens or expressions.
+3. '=' tokens within function calls always have 'initializer' context.
+"""
+#@+node:ekr.20240109032639.1: *4* tbo.parse_simple_statement
+def parse_simple_statement(self, i: int) -> int:
+    """
+    Scan to the end of a simple statement like an `import` statement.
+    """
+
+    # Sanity check.
+    self.expect_name(i)
+    end = self.find_end_of_line(i)
+    token = self.get_token(end)
+    assert token.context == 'end-statement'
+
+    # Treat the rest of the *statement* as an expression.
+    i2 = self.next(i)
+    self.parse_expr(i2, end)
+    return end
+#@+node:ekr.20240113054629.1: *3* tbo.parse_statements (top-level of parser)
+def parse_statements(self) -> None:
+    """
+    parse_statements: scan (parse) the entire file.
+
+    This is the entry point for a "good enough" recursive-descent
+    parser who's *only* purpose is to add context to a few kinds
+    of tokens.  See set_context for details.
+    """
+    i = self.index
+    assert i == 0, repr(i)
+
+    # Skip the encoding token.
+    i = self.next(i)
+    while i is not None:
+        # Set the 'index' and 'token' ivars for each statement.
+        self.index = i
+        self.token = self.tokens[i]
+
+        # Parse the statement.
+        i = self.parse_statement(i)
 #@-all
 #@@nosearch
 #@-leo
