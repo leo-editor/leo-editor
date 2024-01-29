@@ -544,10 +544,10 @@ class ScanState:  # leoTokens.py.
 
     __slots__ = ['kind', 'value', 'token']
 
-    def __init__(self, kind: str, token: InputToken) -> None:
+    def __init__(self, kind: str, token: InputToken, value: list[int] = None) -> None:
         self.kind = kind
         self.token = token
-        self.value: Optional[list[int]] = []
+        self.value = value
 
     def __repr__(self) -> str:  # pragma: no cover
         return f"ScanState: {self.token.index:4} {self.kind:8} {self.value}"
@@ -592,7 +592,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Token-related data for visitors.
         'index', 'line_number', 'token',
         # Pre-scan data.
-        'scan_stack', 'prev_token', 'in_import',
+        ### 'scan_stack', 'prev_token', 'in_import',
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part',
         'state_stack', 'verbatim',
@@ -849,7 +849,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.lws = ''  # Leading whitespace. Required!
         self.token: InputToken = None
         #@-<< tbo.beautify: init ivars >>
-        
+
         try:
             if 1: # An iterative approach.
                 self.pre_scan()
@@ -2183,81 +2183,166 @@ class TokenBasedOrange:  # Orange is the new Black.
             i = self.parse_statement(i)
     #@+node:ekr.20240110205127.1: *4* tbo: Scanning
     # The parser calls scanner methods to move through the list of input tokens.
-    #@+node:ekr.20240128114622.1: *5* tbo.pre_scan & helper
+    #@+node:ekr.20240128114622.1: *5* tbo.pre_scan & helpers
     def pre_scan(self) -> None:
         """
         Scan the entire file in one iterative pass, adding context to a few
         kinds of tokens.
-        
+
         See set_context for details.
         """
         trace = False
-        self.in_import = False
-        self.scan_stack: list[ScanState] = []
-        self.prev_token: InputToken = None
+        in_import = False
+        scan_stack: list[ScanState] = []
+        prev_token: InputToken = None
         insignificant_kinds = (
             'comment', 'dedent', 'encoding', 'endmarker', 'indent', 'newline', 'nl', 'ws'
         )
 
         # The main loop.
-        for self.index, self.token in enumerate(self.tokens):
-            kind = self.token.kind
-            value = self.token.value
-            is_significant = kind not in insignificant_kinds
+        ### for self.index, self.token in enumerate(self.tokens):
+        for i, token in enumerate(self.tokens):
+            kind, value = token.kind, token.value
 
-            if trace:  ### and is_significant:
+            if trace:
                 val = repr(value) if not value or '\n' in value else value
                 g.trace(f"{self.index:3} {kind:>8}: {val}")
 
-            if kind == 'name' and value in ('from', 'import'):
-                # 'import' and 'from x import' statements should be at the outer level.
-                assert not self.scan_stack, self.scan_stack
-                self.in_import = True
-            elif kind == 'op':
-                self.pre_scan_op()
-            elif kind == 'newline' and self.in_import and not self.scan_stack:
+            if kind in 'newline':
+                #@+<< pre-scan 'newline' tokens >>
+                #@+node:ekr.20240128230812.1: *6* << pre-scan 'newline' tokens >>
                 # 'import' and 'from x import' statements may span lines.
                 # 'ws' tokens represent continued lines like this:   ws: ' \\\n    '
-                self.in_import = False
-        
+                if in_import and not scan_stack:
+                    in_import = False
+                #@-<< pre-scan 'newline' tokens >>
+            elif kind == 'op':
+                #@+<< pre-scan 'op' tokens >>
+                #@+node:ekr.20240128123117.1: *6* << pre-scan 'op' tokens >>
+                # Set contexts as follows:
+
+                # Token   Possible Contexts (or None)
+                # =====   ===========================
+                # ':'     'annotation', 'dict', 'complex-slice', 'simple-slice'
+                # '='     'annotation', 'initializer'
+                # '*'     'arg'
+                # '**'    'arg'
+                # '.'     'import'
+                # '('     'import'   ### Experimental
+
+                top_state = scan_stack[-1] if scan_stack else None
+
+                g.trace(value, top_state)
+
+                if value in '.(' and in_import:
+                    ### Not ready yet. See gen_dot_op and gen_lt.
+                    self.set_context(i, 'import')
+                    
+                if value == '[':
+                    scan_stack.append(ScanState('slice', token, []))
+                elif value == ']':
+                    assert top_state.kind == 'slice'
+                    self.finish_slice(i, top_state)
+                    scan_stack.pop()
+                elif value == ':' and top_state and top_state.kind == 'slice':
+                    top_state.value.append(i)
+                elif value == '(':
+                    g.trace(prev_token)  ### To do.
+                #@-<< pre-scan 'op' tokens >>
+            elif kind == 'name':
+                #@+<< pre-scan 'name' tokens >>
+                #@+node:ekr.20240128231119.1: *6* << pre-scan 'name' tokens >>
+                if value in ('from', 'import'):
+                    # 'import' and 'from x import' statements should be at the outer level.
+                    assert not scan_stack, scan_stack
+                    in_import = True
+                #@-<< pre-scan 'name' tokens >>
+
             # Remember the previous significant token.
-            if is_significant:
-                self.prev_token = self.token
-            
+            if kind not in insignificant_kinds:
+                prev_token = token
+
         # Sanity check.
-        if self.scan_stack:
-            g.printObject(self.scan_stack, tag='Error: non-empty tbo.scan_stack')
-    #@+node:ekr.20240128123117.1: *6* tbo.pre_scan_op
-    def pre_scan_op(self) -> None:
-        """
-        Set scan_state as follows:
+        if scan_stack:
+            g.printObj(scan_stack, tag='pre_scan: non-empty scan_stack')
+    #@+node:ekr.20240128233406.1: *6* tbo.finish_slice
+    def finish_slice(self, i: int, state: ScanState) -> None:
+        g.trace(state)
+        
+        # Sanity checks.
+        assert state.kind == 'slice', repr(state)
+        token = state.token
+        assert token.value == '[', repr(token)
+        colons = state.value
+        assert isinstance(colons, list), repr(colons)
+        assert i > token.index, (i, token.index)
+        
+        # Compute final context.
+        final_context = 'simple-slice'
+        
+        # Set the context of all outer-level ':' tokens.
+        for colon_i in colons:
+            self.set_context(colon_i, final_context)
+        
+        
+        # def update_context(i: int) -> None:
+            # nonlocal colons, final_context, inter_colon_tokens
 
-        Set contexts as follows:
-        
-        Token   Possible Contexts (or None)
-        =====   ===========================
-        ':'     'annotation', 'dict', 'complex-slice', 'simple-slice'
-        '='     'annotation', 'initializer'
-        '*'     'arg'                         
-        '**'    'arg'
-        '.'     'import'
-        '('     'import'   ### Experimental
-        
-        """
-        
-        # Not used yet.
-        # prev = self.prev_token
-        # state = self.scan_state[-1] if self.scan_state else None
+            # # Ignore '.' tokens and the preceding 'name' token.
+            # if self.is_op(i, '.'):
+                # prev = self.prev(i)
+                # if self.is_name(prev):
+                    # inter_colon_tokens -= 1
+                # return
 
-        i = self.index
-        token = self.token
-        kind = token.kind
-        assert kind == 'op', token
-        value = token.value
-        
-        ### See gen_dot_op and gen_lt. 
-        if value in '.(' and self.in_import:
-            self.set_context(i, 'import')
+            # # *Now* we can update the effective complexity of the slice.
+            # inter_colon_tokens += 1
+            # if inter_colon_tokens > 1:
+                # final_context = 'complex-slice'
+
+        # Parse the slice to discover possible inner function calls!
+        # while i <= i2:  # Required.
+            # progress = i
+            # token = self.tokens[i]
+            # kind, value = token.kind, token.value
+
+            # if kind == 'name':
+                # is_complex, i = self.parse_name(i, end)
+                # if is_complex:
+                    # final_context = 'complex-slice'
+            # elif kind == 'op':
+                # if value == ']':
+                    # # An outer ']'
+                    # i = self.next(i)
+                    # break
+                # if value == ':':
+                    # # An outer ':'.
+                    # colons.append(i)
+                    # inter_colon_tokens = 0
+                    # i = self.next(i)
+                # elif value in '+-':
+                    # # Don't update context for unary ops.
+                    # if not self.is_unary_op(i, value):
+                        # update_context(i)
+                    # i = self.next(i)
+                # elif value == '(':
+                    # i = self.parse_parenthesized_expr(i, end)
+                    # final_context = 'complex-slice'
+                # elif value == '[':
+                    # i = self.parse_slice(i, end)
+                    # final_context = 'complex-slice'
+                # elif value == '{':
+                    # i = self.parse_dict_or_set(i, end)
+                    # final_context = 'complex-slice'
+                # else:
+                    # update_context(i)
+                    # i = self.next(i)
+            # else:
+                # i = self.next(i)
+
+            # assert i is not None, (token)
+            # assert progress < i, (i, token)
+
         
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i1: int) -> Optional[int]:
@@ -2437,12 +2522,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         As a result, the order of scanning tokens in the parser matters!
 
         Here is a table of tokens and the contexts they may have:
-            
+
         Token       Possible Contexts
         =====       =================
         ':'         'annotation', 'dict', 'complex-slice', 'simple-slice'
         '='         'annotation', 'initializer'
-        '*',        'arg'                         
+        '*',        'arg'
         '**'        'arg'
         '.'         'from', 'import'
 

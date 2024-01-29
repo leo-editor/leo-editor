@@ -597,7 +597,7 @@ class TestTokenBasedOrange(BaseTest):
         table = (
             # leoserver.py, line 42 and other lines.
             """jsonPackage = json.dumps(package, separators=(',', ':'), cls=SetEncoder)"""
-        
+
             # #1429: https://github.com/leo-editor/leo-editor/issues/1429
             """
             version = str(version2.Version.coerce(tag, partial=True))
