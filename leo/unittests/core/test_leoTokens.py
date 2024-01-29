@@ -787,7 +787,7 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240128181802.1: *3* TestTBO.test_multi_line_imports (new)
+    #@+node:ekr.20240128181802.1: *3* TestTBO.test_multi_line_imports
     def test_multi_line_imports(self):
 
         # The space between 'import' and '(' is correct.

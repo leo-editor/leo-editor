@@ -111,7 +111,7 @@ def orange_command(
             print(f"file not found: {filename}")
     # Report the results.
     t2 = time.process_time()
-    if n_changed or TokenBasedOrange(settings).verbose:
+    if n_changed or not TokenBasedOrange(settings).silent:
         print(
             f"tbo: {t2-t1:3.1f} sec. files: {len(files):<3} "
             f"changed: {n_changed:<3} in {','.join(arg_files)}"
@@ -1454,7 +1454,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if in_import and not scan_stack:
                     in_import = False
                 #@-<< pre-scan 'newline' tokens >>
-            elif kind == 'op' and value in '([{}])**+-:=.,':
+            elif kind == 'op':
                 #@+<< pre-scan 'op' tokens >>
                 #@+node:ekr.20240128123117.1: *6* << pre-scan 'op' tokens >>
                 # Set contexts as follows:
