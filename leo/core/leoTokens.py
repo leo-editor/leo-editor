@@ -1192,9 +1192,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         next_i = self.next(self.index)
         next = 'None' if next_i is None else self.tokens[next_i]
         import_is_next = next and next.kind == 'name' and next.value == 'import'
-      
+
         ### g.trace(f"{self.index:3} context: {context!r:6} {self.token.line.rstrip()}")
-        
+
         if context == 'import':
             if prev.kind == 'word' and prev.value in ('from', 'import'):
                 self.gen_blank()
@@ -1504,7 +1504,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                         top_state.value.append(i)
                     if top_state.kind == 'arg' and value in '**=:,':
                         top_state.value.append(i)
-                        
+
                 # Handle '.' in 'import' and 'from' statements.
                 if value == '.' and in_import:
                     # See gen_dot_op and gen_lt.
