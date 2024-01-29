@@ -566,12 +566,16 @@ class TokenBasedOrange:  # Orange is the new Black.
     __slots__ = [
         # Command-line arguments.
         'diff', 'force', 'silent', 'tab_width', 'verbose',
+
         # Debugging.
-        'contents', 'filename', # 'n_scanned_tokens',
+        'contents', 'filename',
+
         # Global data.
         'code_list', 'tokens',
+
         # Token-related data for visitors.
         'index', 'line_number', 'token',
+
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part',
         'state_stack', 'verbatim',
@@ -613,11 +617,6 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.2: *4* tbo.ctor
     def __init__(self, settings: Settings = None):
         """Ctor for Orange class."""
-
-        ###
-        # Global count of the number of calls to tbo.next and tbo.prev.
-        # See tbo.next and orange_command
-        ### self.n_scanned_tokens = 0
 
         # Set default settings.
         if settings is None:
@@ -1494,8 +1493,10 @@ class TokenBasedOrange:  # Orange is the new Black.
 
                 # Handle '(' and ')'
                 elif value == '(':
-                    state_kind = '(' if self.is_python_keyword(prev_token) or prev_token.kind != 'name' else 'arg'
-                    ### g.trace(f"{i:2} {state_kind}")
+                    if  self.is_python_keyword(prev_token) or prev_token.kind != 'name':
+                        state_kind = '('
+                    else:
+                        state_kind = 'arg'
                     scan_stack.append(ScanState(state_kind, token))
                 elif value == ')':
                     assert top_state.kind in ('(', 'arg'), repr(top_state)
@@ -1653,115 +1654,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             g.trace(f"{i1:3} {end:3} {colons!r:8} {tokens_s}")
         for i in colons:
             self.set_context(i, 'dict')
-    #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
-    def find_close_paren(self, i1: int) -> Optional[int]:
-        """Find the  ')' matching this '(' token."""
-
-        self.expect_op(i1, '(')
-        i = self.next(i1)
-        level = 0
-        while i < len(self.tokens):
-            if self.is_op(i, '('):
-                level += 1
-            elif self.is_op(i, ')'):
-                if level == 0:
-                    return i
-                if level <= 0:
-                    self.oops(f"Unbalanced parens: {self.token.line!r}")  # pragma: no cover
-                level -= 1
-            ### i = self.next(i)
-            i += 1
-        self.oops("Unmatched '('")  # pragma: no cover
-        return None  # pragma: no cover
-    #@+node:ekr.20240114063347.1: *5* tbo.find_delim
-    def find_delim(self, i1: int, end: int, delims: list) -> int:
-        """
-        Find the next delimiter token, skipping inner expressions.
-        Return None if not found. It's not necessarily an error.
-
-        The *caller* is responsible for scanning an opening '(', '[', or '{'
-        token when the delims list contains ')', ']', or '}'.
-
-        The *caller* is responsible for scanning the token at the returned index.
-        """
-        trace = False  ###
-        if trace:  # pragma: no cover
-            g.trace(f" {i1:3} {g.callers(1):25} {delims} {self.get_token_line(i1)}")
-
-        # We expect only the following 'op' delims: ',', '=', ')' and ':'.
-        for z in delims:
-            if z not in ',=)}]:':
-                self.oops(f"Invalid delim: {z!r}")  # pragma: no cover
-
-        # Skip tokens until one of the delims is found.
-        i = i1
-        while i <= end:  # '<=' is required.
-            token = self.tokens[i]
-            if token.kind == 'op':
-                value = token.value
-                if value in delims:
-                    if trace:  ### pragma: no cover
-                        token = self.tokens[i]
-                        token_s = f"{token.kind:} {token.value!r}"
-                        g.trace(f" {i:3} Returns {token_s}\n")
-                    return i
-                if value == '[':
-                    i = self.skip_past_matching_delim(i, '[', ']')
-                elif value == '(':
-                    i = self.skip_past_matching_delim(i, '(', ')')
-                elif value == '{':
-                    i = self.skip_past_matching_delim(i, '{', '}')
-                else:
-                    ### i = self.next(i)
-                    i += 1
-            else:
-                ### i = self.next(i)
-                i += 1
-        return None
-    #@+node:ekr.20240110062055.1: *5* tbo.find_end_of_line
-    def find_end_of_line(self, i: int) -> Optional[int]:
-        """
-        Return the index the next 'newline', 'nl' or 'endmarker' token,
-        skipping inner expressions.
-
-        Set the context of found token to 'end-statement.
-        Do *not* set the context of any other token.
-        """
-        while i < len(self.tokens):
-            token = self.tokens[i]
-            if token.kind in ('newline', 'nl', 'endmarker'):
-                self.set_context(i, 'end-statement')
-                return i
-            if token.kind == 'op':
-                value = token.value
-                if value == '[':
-                    i = self.skip_past_matching_delim(i, '[', ']')
-                elif value == '(':
-                    i = self.skip_past_matching_delim(i, '(', ')')
-                elif value == '{':
-                    i = self.skip_past_matching_delim(i, '{', '}')
-                else:
-                    ### i = self.next(i)
-                    i += 1
-            else:
-                ### i = self.next(i)
-                i += 1
-        self.oops("no matching ')'")  # pragma: no cover
-        return len(self.tokens)  # pragma: no cover
-    #@+node:ekr.20240106172054.1: *5* tbo.is_op & is_ops
-    def is_op(self, i: int, value: str) -> bool:
-
-        if i is None:  # pragma: no cover
-            return False
-        token = self.tokens[i]
-        return token.kind == 'op' and token.value == value
-
-    def is_ops(self, i: int, values: list[str]) -> bool:
-
-        if i is None:  # pragma: no cover
-            return False
-        token = self.tokens[i]
-        return token.kind == 'op' and token.value in values
     #@+node:ekr.20240129034209.1: *5* tbo.is_unary_op_with_prev
     def is_unary_op_with_prev(self, prev: InputToken, token: InputToken) -> bool:
         """
@@ -1917,35 +1809,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         if not token.context:
             token.context = context
-    #@+node:ekr.20240115072231.1: *5* tbo.skip_past_matching_delim
-    def skip_past_matching_delim(self, i: int, delim1: str, delim2: str) -> int:
-        """
-        Skip from delim1 *past* the matching delim2.
-        Raise InternalBeautifierError if a matching delim2 is not found.
-        """
-        self.expect_op(i, delim1)
-        i = self.next(i)
-        while i < len(self.tokens):
-            progress = i
-            token = self.tokens[i]
-            if token.kind == 'op':
-                value = token.value
-                if value == delim2:
-                    return i + 1  # Skip the closing delim
-                if value == '[':
-                    i = self.skip_past_matching_delim(i, '[', ']')
-                elif value == '(':
-                    i = self.skip_past_matching_delim(i, '(', ')')
-                elif value == '{':
-                    i = self.skip_past_matching_delim(i, '{', '}')
-                else:
-                    i = self.next(i)
-            else:
-                i = self.next(i)
-            if progress >= i:
-                self.oops('no progress!')
-        self.oops(f"no matching {delim2!r}")  # pragma: no cover
-        return None  # pragma: no cover
     #@-others
 #@+node:ekr.20240105140814.121: ** function: main & helpers (leoTokens.py)
 def main() -> None:  # pragma: no cover
