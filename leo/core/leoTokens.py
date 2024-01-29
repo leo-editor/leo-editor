@@ -2237,7 +2237,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                     assert top_state.kind == 'slice'
                     self.finish_slice(i, top_state)
                     scan_stack.pop()
-                    
+
                 # Handle '{' and '}'.
                 if value == '{':
                     scan_stack.append(ScanState('dict', token))
@@ -2245,7 +2245,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                     assert top_state.kind == 'dict'
                     self.finish_dict(i, top_state)
                     scan_stack.pop()
-                    
+
                 # Handle '(' and ')'
                 elif value == '(':
                     state_kind = 'arg' if self.is_python_keyword(prev_token) else '('
@@ -2262,11 +2262,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                         top_state.value.append(i)
                     if top_state.kind == 'arg' and value in ('*', '**', '=', ':'):
                         top_state.value.append(i)
-                            
-                  
-                    
 
-                ### Not ready yet.  
+                ### Not ready yet.
                 # if value in '.(' and in_import:
                     # # See gen_dot_op and gen_lt.
                     # self.set_context(i, 'import')
@@ -2372,9 +2369,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         i1 = token.index
         assert i1 < end, (i1, end)
 
-        # Do nothing if there are no ':' tokens in the slice.
-        if not colons:
-            return
+        # Set the context for all ':' tokens in the dict.
+        for i in colons:
+            self.set_context(i, 'dict')
+
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i1: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
