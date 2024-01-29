@@ -531,6 +531,65 @@ class TestTokenBasedOrange(BaseTest):
             g.printObj(expected, tag='Explected (blackened)')
             g.printObj(results, tag='Results')
         self.assertEqual(results, expected)
+    #@+node:ekr.20240124092041.1: *3* TestTBO.test_fstrings
+    def test_fstrings(self):
+
+        # leoApp.py, line 885.
+        contents = """signon = [f"Leo {leoVer}"]\n"""
+        contents, tokens = self.make_data(contents)
+        expected = self.blacken(contents)
+        results = self.beautify(contents, tokens)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20240126062946.1: *3* TestTBO.test_function_call_with_parens
+    def test_function_calls_with_parens(self):
+
+        # LeoFrame.py, line 1650.
+
+        # Test 1: The 'if' statement on a single line.
+        contents1 = """
+            if (g.doHook("select1", c = c, new_p=p)):
+                return
+            """
+
+        # Black would remove the outer parens.
+        expected1 = textwrap.dedent(
+            """
+            if (g.doHook("select1", c=c, new_p=p)):
+                return
+            """).strip() + '\n'
+
+        # Test 2: The 'if' statement spans several lines.
+        contents2 = """
+            if (
+                whatever and g.doHook(
+                    "select1", c = c, new_p=p)
+            ):
+                return
+            """
+
+        # Black would remove the outer parens.
+        expected2 = textwrap.dedent(
+            """
+            if (
+                whatever and g.doHook(
+                    "select1", c=c, new_p=p)
+            ):
+                return
+            """).strip() + '\n'
+
+        table = (
+            (contents1, expected1),
+            (contents2, expected2),
+        )
+        for contents, expected in table:
+            contents, tokens = self.make_data(contents)
+            results = self.beautify(contents, tokens)
+            if results != expected:
+                if 1:
+                    g.printObj(contents, tag='Contents')
+                    g.printObj(expected, tag='Expected (blackened)')
+                    g.printObj(results, tag='Results')
+                self.assertEqual(expected, results)
     #@+node:ekr.20240107080413.1: *3* TestTBO.test_function_calls
     def test_function_calls(self):
 
@@ -597,56 +656,6 @@ class TestTokenBasedOrange(BaseTest):
             if 0: ###
                 g.trace('First case passes')
                 break
-    #@+node:ekr.20240126062946.1: *3* TestTBO.test_function_call_with_parens
-    def test_function_calls_with_parens(self):
-
-        # LeoFrame.py, line 1650.
-
-        # Test 1: The 'if' statement on a single line.
-        contents1 = """
-            if (g.doHook("select1", c = c, new_p=p)):
-                return
-            """
-
-        # Black would remove the outer parens.
-        expected1 = textwrap.dedent(
-            """
-            if (g.doHook("select1", c=c, new_p=p)):
-                return
-            """).strip() + '\n'
-
-        # Test 2: The 'if' statement spans several lines.
-        contents2 = """
-            if (
-                whatever and g.doHook(
-                    "select1", c = c, new_p=p)
-            ):
-                return
-            """
-
-        # Black would remove the outer parens.
-        expected2 = textwrap.dedent(
-            """
-            if (
-                whatever and g.doHook(
-                    "select1", c=c, new_p=p)
-            ):
-                return
-            """).strip() + '\n'
-
-        table = (
-            (contents1, expected1),
-            (contents2, expected2),
-        )
-        for contents, expected in table:
-            contents, tokens = self.make_data(contents)
-            results = self.beautify(contents, tokens)
-            if results != expected:
-                if 1:
-                    g.printObj(contents, tag='Contents')
-                    g.printObj(expected, tag='Expected (blackened)')
-                    g.printObj(results, tag='Results')
-                self.assertEqual(expected, results)
     #@+node:ekr.20240105153425.57: *3* TestTBO.test_function_defs
     def test_function_defs(self):
 
@@ -773,6 +782,32 @@ class TestTokenBasedOrange(BaseTest):
     """
         contents, tokens = self.make_data(contents)
         expected = contents
+        results = self.beautify(contents, tokens)
+        self.assertEqual(results, expected)
+    #@+node:ekr.20240128181802.1: *3* TestTBO.test_multi_line_imports (new)
+    def test_multi_line_imports(self):
+
+        # The space between 'import' and '(' is correct.
+        contents = """
+            from .module1 import \\
+                w
+            from .module1 import (
+                w1,
+                w2,
+            )
+            import leo.core.leoGlobals \\
+                as g
+        """
+            # from . module2 import x
+            # from ..module1 import y
+            # from .. module2 import z
+            # from . import a
+            # from.import b
+            # from .. import c
+            # from..import d
+            # from leo.core import leoExternalFiles
+        contents, tokens = self.make_data(contents)
+        expected = contents.strip() + '\n'
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.68: *3* TestTBO.test_multi_line_pet_peeves
@@ -1136,15 +1171,6 @@ class TestTokenBasedOrange(BaseTest):
         # g.printObj(results, tag='Results')
         # g.printObj(expected, tag='Expected')
         self.assertEqual(results, expected, msg=contents)
-    #@+node:ekr.20240124092041.1: *3* TestTBO.test_fstrings
-    def test_fstrings(self):
-
-        # leoApp.py, line 885.
-        contents = """signon = [f"Leo {leoVer}"]\n"""
-        contents, tokens = self.make_data(contents)
-        expected = self.blacken(contents)
-        results = self.beautify(contents, tokens)
-        self.assertEqual(results, expected)
     #@-others
 #@+node:ekr.20240105153425.85: ** class TestTokens (BaseTest)
 class TestTokens(BaseTest):

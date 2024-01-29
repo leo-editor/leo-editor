@@ -592,7 +592,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Token-related data for visitors.
         'index', 'line_number', 'token',
         # Pre-scan data.
-        'scan_stack', 'prev_token',
+        'scan_stack', 'prev_token', 'in_import',
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part',
         'state_stack', 'verbatim',
@@ -2191,7 +2191,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         
         See set_context for details.
         """
-        trace = True
+        trace = False
+        self.in_import = False
         self.scan_stack: list[ScanState] = []
         self.prev_token: InputToken = None
         insignificant_kinds = (
@@ -2201,18 +2202,24 @@ class TokenBasedOrange:  # Orange is the new Black.
         # The main loop.
         for self.index, self.token in enumerate(self.tokens):
             kind = self.token.kind
+            value = self.token.value
             is_significant = kind not in insignificant_kinds
-          
-            # Trace significant tokens.
-            if trace and is_significant:
-                value = self.token.value
+
+            if trace:  ### and is_significant:
                 val = repr(value) if not value or '\n' in value else value
                 g.trace(f"{self.index:3} {kind:>8}: {val}")
 
-            # We only need to handle 'op' tokens!!!
-            if kind == 'op':
+            if kind == 'name' and value in ('from', 'import'):
+                # 'import' and 'from x import' statements should be at the outer level.
+                assert not self.scan_stack, self.scan_stack
+                self.in_import = True
+            elif kind == 'op':
                 self.pre_scan_op()
-
+            elif kind == 'newline' and self.in_import and not self.scan_stack:
+                # 'import' and 'from x import' statements may span lines.
+                # 'ws' tokens represent continued lines like this:   ws: ' \\\n    '
+                self.in_import = False
+        
             # Remember the previous significant token.
             if is_significant:
                 self.prev_token = self.token
@@ -2233,13 +2240,25 @@ class TokenBasedOrange:  # Orange is the new Black.
         '='     'annotation', 'initializer'
         '*'     'arg'                         
         '**'    'arg'
-        '.'     'from', 'import'
+        '.'     'import'
+        '('     'import'   ### Experimental
+        
         """
         
-        ### Handling 'from' and 'import will be tricky.
+        # Not used yet.
+        # prev = self.prev_token
+        # state = self.scan_state[-1] if self.scan_state else None
 
-        # self.scan_state.append(ScanState('call', self.token.value, self.token))
-        pass
+        i = self.index
+        token = self.token
+        kind = token.kind
+        assert kind == 'op', token
+        value = token.value
+        
+        ### See gen_dot_op and gen_lt. 
+        if value in '.(' and self.in_import:
+            self.set_context(i, 'import')
+        
     #@+node:ekr.20240114022135.1: *5* tbo.find_close_paren
     def find_close_paren(self, i1: int) -> Optional[int]:
         """Find the  ')' matching this '(' token."""
