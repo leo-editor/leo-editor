@@ -892,7 +892,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Any post pass would go here.
         result = output_tokens_to_string(self.code_list)
         return result
-    #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry: traces & diffs)
+    #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry) (stats & diffs)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
         TokenBasedOrange: Beautify the the given external file.
@@ -927,16 +927,16 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(f"tbo: no results {g.shortFileName(filename)}")
             return False
 
+        safe = True
+
         # Write the results
         if not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
-
-        safe = True
-        if safe:
-            print('tbo: safe mode')
+            if safe:
+                print('tbo: safe mode')
 
         # Print the diffs for testing!
-        if self.diff:
+        if False and self.diff:
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
 
@@ -2211,7 +2211,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if in_import and not scan_stack:
                     in_import = False
                 #@-<< pre-scan 'newline' tokens >>
-            elif kind == 'op':
+            elif kind == 'op' and value in '([{}])**+-:=.':
                 #@+<< pre-scan 'op' tokens >>
                 #@+node:ekr.20240128123117.1: *6* << pre-scan 'op' tokens >>
                 # Set contexts as follows:
@@ -2275,22 +2275,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Do nothing if there are no ':' tokens in the slice.
         if not colons:
             return
-            
-        def is_unary(prev: InputToken) -> bool:
-            """Like tbo.is_unary_op, but with a known prev token."""
-            kind, value = prev.kind, prev.value
-            if kind in ('number', 'string'):
-                return_val = False
-            elif kind == 'op' and value in ')]':
-                return_val = False
-            elif kind == 'op' and value in '{([:':
-                return_val = True
-            elif kind != 'name':
-                return_val = True
-            else:
-                # Any Python keyword indicates a unary operator.
-                return_val = keyword.iskeyword(value) or keyword.issoftkeyword(value)
-            return return_val
 
         # Compute final context by scanning the tokens.
         final_context = 'simple-slice'
@@ -2309,11 +2293,20 @@ class TokenBasedOrange:  # Orange is the new Black.
                         inter_colon_tokens = 0
                     elif value in '-+':
                         # Ignore unary '-' or '+' tokens.
-                        if not is_unary(prev):
+                        if not self.is_unary_op_with_prev(prev, token):
                             inter_colon_tokens += 1
                             if inter_colon_tokens > 1:
                                 final_context = 'complex-slice'
                                 break
+                    elif value == '~':
+                        # '~' is always a unary op.
+                        pass
+                    else:
+                        # All other ops contribute.
+                        inter_colon_tokens += 1
+                        if inter_colon_tokens > 1:
+                            final_context = 'complex-slice'
+                            break
                 else:
                     inter_colon_tokens += 1
                     if inter_colon_tokens > 1:
@@ -2436,6 +2429,28 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False
         token = self.tokens[i]
         return token.kind == 'op' and token.value in values
+    #@+node:ekr.20240129034209.1: *5* tbo.is_unary_op_with_prev
+    def is_unary_op_with_prev(self, prev: InputToken, token: InputToken) -> bool:
+        """
+        Return True if token is a unary op in the context of prev, the previous
+        significant token.
+        """
+        if token.value == '~':
+            return True
+        assert token.value in '-+', repr(token.value)
+        kind, value = prev.kind, prev.value
+        if kind in ('number', 'string'):
+            return_val = False
+        elif kind == 'op' and value in ')]':
+            return_val = False
+        elif kind == 'op' and value in '{([:':
+            return_val = True
+        elif kind != 'name':
+            return_val = True
+        else:
+            # A 'name' token.
+            return_val = keyword.iskeyword(value) or keyword.issoftkeyword(value)
+        return return_val
     #@+node:ekr.20240125082325.1: *5* tbo.is_name
     def is_name(self, i: int) -> bool:
 
