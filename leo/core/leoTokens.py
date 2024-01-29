@@ -872,22 +872,16 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(f"tbo: no results {g.shortFileName(filename)}")
             return False
 
-        safe = True
-
         # Write the results
         if not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
-            if safe:
-                print('tbo: safe mode')
 
-        # Print the diffs for testing!
-        if True:  ### self.diff:
+        if self.diff:  # --diff
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
 
-        # Save the file only if all is well.
-        if not safe and not self.diff:
-            self.write_file(filename, regularized_results, encoding=encoding)
+        # Update the file.
+        self.write_file(filename, regularized_results, encoding=encoding)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
