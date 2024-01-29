@@ -806,7 +806,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Pre-scan the token list, setting context.s
             self.pre_scan()
         except InternalBeautifierError as e:
-            # self.oops calls self.error_message to creates e.
+            # oops calls self.error_message to creates e.
             print(e)
         except AssertionError as e:
             g.es_exception()
@@ -828,7 +828,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                     func = getattr(self, f"do_{self.token.kind}", self.no_visitor)
                     func()
             except InternalBeautifierError as e:
-                # self.oops calls self.error_message to creates e.
+                # oops calls self.error_message to creates e.
                 print(e)
             except AssertionError as e:
                 g.es_exception()
@@ -1187,21 +1187,17 @@ class TokenBasedOrange:  # Orange is the new Black.
         context = self.token.context
         # Remove previous 'blank' token *before* calculating prev.
         self.clean('blank')
+
         prev = self.code_list[-1]
         next_i = self.next(self.index)
         next = 'None' if next_i is None else self.tokens[next_i]
         import_is_next = next and next.kind == 'name' and next.value == 'import'
-        if prev.kind == 'word' and prev.value in ('from', 'import'):
-            # Handle previous 'from' and 'import' keyword.
-            self.gen_blank()
-            if import_is_next:
-                self.gen_token('op', '.')
+      
+        ### g.trace(f"{self.index:3} context: {context!r:6} {self.token.line.rstrip()}")
+        
+        if context == 'import':
+            if prev.kind == 'word' and prev.value in ('from', 'import'):
                 self.gen_blank()
-            else:
-                self.gen_token('op-no-blanks', '.')
-        elif context == 'from':
-            # Don't put spaces between '.' tokens.
-            # Do put a space between the last '.' and 'import'.
             if import_is_next:
                 self.gen_token('op', '.')
                 self.gen_blank()
@@ -1466,13 +1462,11 @@ class TokenBasedOrange:  # Orange is the new Black.
                 # '*'     'arg'
                 # '**'    'arg'
                 # '.'     'import'
-                # '('     'import'   ### Experimental
 
                 top_state = scan_stack[-1] if scan_stack else None
 
-                if 0:  ###
+                if trace:
                     g.trace(f"{value:3} prev: {prev_token} state: {top_state}")
-                if 0:  ###
                     g.printObj(scan_stack, tag='scan_stack')
 
                 # Handle '[' and ']'.
@@ -1510,11 +1504,11 @@ class TokenBasedOrange:  # Orange is the new Black.
                         top_state.value.append(i)
                     if top_state.kind == 'arg' and value in '**=:,':
                         top_state.value.append(i)
-
-                ### Not ready yet.
-                # if value in '.(' and in_import:
-                    # # See gen_dot_op and gen_lt.
-                    # self.set_context(i, 'import')
+                        
+                # Handle '.' in 'import' and 'from' statements.
+                if value == '.' and in_import:
+                    # See gen_dot_op and gen_lt.
+                    self.set_context(i, 'import')
                 #@-<< pre-scan 'op' tokens >>
             elif kind == 'name':
                 #@+<< pre-scan 'name' tokens >>
