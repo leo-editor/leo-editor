@@ -531,26 +531,24 @@ class ParseState:
 class ScanState:  # leoTokens.py.
     """
     A class representing t.bo pre_scan's scanning state.
-    
+
     Valid kind:value pairs:
-        
-      'statement': statement-name or 'assignment'
-            'call: function-name
-      'call-args': index of opening '('
-       'def-args': index of opening '('
-          'slice': index of opening '['
-    'dict-or-set': index of opening '{'
+
+     'args': None
+    'slice': list of colon indices
+     'dict': list of colon indices
+
     """
 
     __slots__ = ['kind', 'value', 'token']
 
-    def __init__(self, kind: str, value: Any, token: InputToken) -> None:
+    def __init__(self, kind: str, token: InputToken) -> None:
         self.kind = kind
         self.token = token
-        self.value = value
+        self.value: Optional[list[int]] = []
 
     def __repr__(self) -> str:  # pragma: no cover
-        return f"ScanState: {self.token.index:3} {self.kind:8} {self.value:8}"
+        return f"ScanState: {self.token.index:4} {self.kind:8} {self.value}"
 
     __str__ = __repr__
 #@+node:ekr.20240105145241.1: *3* class TokenBasedOrange
@@ -2203,7 +2201,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             kind = self.token.kind
             is_significant = kind not in insignificant_kinds
           
-            # Trace the significant token.
+            # Trace significant tokens.
             if trace and is_significant:
                 value = self.token.value
                 val = repr(value) if not value or '\n' in value else value
@@ -2222,6 +2220,21 @@ class TokenBasedOrange:  # Orange is the new Black.
             g.printObject(self.scan_stack, tag='Error: non-empty tbo.scan_stack')
     #@+node:ekr.20240128123117.1: *6* tbo.pre_scan_op
     def pre_scan_op(self) -> None:
+        """
+        Set scan_state as follows:
+            
+        
+        Set contexts as follows:
+        
+        Token       Possible Contexts
+        =====       =================
+        ':'         'annotation', 'dict', 'complex-slice', 'simple-slice'
+        '='         'annotation', 'initializer'
+        '*',        'arg'                         
+        '**'        'arg'
+        
+        
+        """
         
         # self.scan_state.append(ScanState('call', self.token.value, self.token))
         pass
@@ -2403,6 +2416,25 @@ class TokenBasedOrange:  # Orange is the new Black.
         As a result, the order of scanning tokens in the parser matters!
 
         Here is a table of tokens and the contexts they may have:
+            
+        Token       Possible Contexts
+        =====       =================
+        ':'         'annotation', 'dict', 'complex-slice', 'simple-slice'
+        '='         'annotation', 'initializer'
+        '*',        'arg'                         
+        '**'        'arg'
+
+        **No longer used**
+
+                    'expression'
+        '{', '}'    'dict'
+        '[', ']     'array'
+        'name'      'class/def'
+        'newline'   'end-statement'
+        'nl'        'end-statement'
+        '.'         'from', 'import'
+
+        **Legacy table**
 
         Token       Possible Contexts
         =====       =================
