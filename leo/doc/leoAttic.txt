@@ -1198,9 +1198,10 @@ def proc_cmds(self):
         for cmd in query['cmd']:
             ans = c.evalController.eval_text(cmd)
     return ans  # the last answer, if multiple commands run
-#@+node:ekr.20240105145241.41: ** tbo: Parser
+#@+node:ekr.20240129094501.1: ** unused from leoTokens.py
+#@+node:ekr.20240105145241.41: *3* tbo: Parser
 # Parsers pre-scan input tokens, adding context to tokens that need help.
-#@+node:ekr.20240106181128.1: *3* tbo.parse_annotation
+#@+node:ekr.20240106181128.1: *4* tbo.parse_annotation
 def parse_annotation(self, i1: int, end: int) -> int:
     """Parse the annotation of a function definition arg."""
 
@@ -1218,7 +1219,7 @@ def parse_annotation(self, i1: int, end: int) -> int:
         if self.is_ops(i4, ['=', ':']):
             self.set_context(i4, 'annotation')
     return i3
-#@+node:ekr.20240106173638.1: *3* tbo.parse_arg
+#@+node:ekr.20240106173638.1: *4* tbo.parse_arg
 def parse_arg(self, i1: int, end: int) -> int:
     """Parse a single function definition argument."""
 
@@ -1254,7 +1255,7 @@ def parse_arg(self, i1: int, end: int) -> int:
     if self.is_op(i, ','):
         i = self.next(i)
     return i
-#@+node:ekr.20240106172905.1: *3* tbo.parse_args (changed sanity check)
+#@+node:ekr.20240106172905.1: *4* tbo.parse_args (changed sanity check)
 def parse_args(self, i1: int, end: int) -> int:
     """
     Parse a comma-separated list of function definition arguments.
@@ -1288,7 +1289,7 @@ def parse_args(self, i1: int, end: int) -> int:
     ### assert i == end, repr((i, end))  ### Test of error recovery.
     assert i <= end, repr((i, end))  ### Experimental Was '=='
     return i
-#@+node:ekr.20240107092559.1: *3* tbo.parse_call_arg
+#@+node:ekr.20240107092559.1: *4* tbo.parse_call_arg
 def parse_call_arg(self, i1: int, end: int) -> int:
     """
     Scan a single function definition argument.
@@ -1342,7 +1343,7 @@ def parse_call_arg(self, i1: int, end: int) -> int:
             i = self.next(i)
 
     return i
-#@+node:ekr.20240107092458.1: *3* tbo.parse_call_args
+#@+node:ekr.20240107092458.1: *4* tbo.parse_call_args
 def parse_call_args(self, i1: int, end: int) -> int:
     """Scan a comma-separated list of function definition arguments."""
 
@@ -1366,7 +1367,7 @@ def parse_call_args(self, i1: int, end: int) -> int:
             self.oops('parse_call_args: no progress')
 
     return i2  # Do not skip the ')'.
-#@+node:ekr.20240124012707.1: *3* tbo.parse_name
+#@+node:ekr.20240124012707.1: *4* tbo.parse_name
 def parse_name(self, i: int, end: int) -> tuple[bool, int]:
     """
     Parse a name, including possible function calls.
@@ -1394,7 +1395,7 @@ def parse_name(self, i: int, end: int) -> tuple[bool, int]:
                 i = self.parse_slice(i, end)
                 is_complex = True
     return is_complex, i
-#@+node:ekr.20240124012746.1: *3* tbo.parse_op
+#@+node:ekr.20240124012746.1: *4* tbo.parse_op
 def parse_op(self, i: int, end: int) -> int:
     """
     Parse an operator, including grouping operators.
@@ -1411,7 +1412,7 @@ def parse_op(self, i: int, end: int) -> int:
     else:
         i = self.next(i)
     return i
-#@+node:ekr.20240113054641.1: *3* tbo.parse_statement & statement helpers
+#@+node:ekr.20240113054641.1: *4* tbo.parse_statement & statement helpers
 def parse_statement(self, i: int) -> int:
     """
     Scan the next statement, including docstrings.
@@ -1436,7 +1437,7 @@ def parse_statement(self, i: int) -> int:
     # Ensure progress.
     i = self.next(i)
     return i
-#@+node:ekr.20240107091700.1: *4* tbo.parse_call
+#@+node:ekr.20240107091700.1: *5* tbo.parse_call
 def parse_call(self, i1: int, end: int) -> int:
     """Parse a function call"""
 
@@ -1454,7 +1455,7 @@ def parse_call(self, i1: int, end: int) -> int:
     self.expect_op(i, ')')
     i = self.next(i)
     return i
-#@+node:ekr.20240115101846.1: *4* tbo.parse_class_or_def
+#@+node:ekr.20240115101846.1: *5* tbo.parse_class_or_def
 def parse_class_or_def(self, i: int) -> int:
     """Set context for a class or def statement."""
     self.expect(i, 'name')  # The 'class' or 'def' keyword.
@@ -1500,7 +1501,7 @@ def parse_class_or_def(self, i: int) -> int:
 
     # Move past the ':' token.
     return self.next(i)
-#@+node:ekr.20240108062349.1: *4* tbo.parse_compound_statement
+#@+node:ekr.20240108062349.1: *5* tbo.parse_compound_statement
 def parse_compound_statement(self, i: int) -> int:
     """
     Scan a compound statement, adding 'end-statement' context to the
@@ -1535,7 +1536,7 @@ def parse_compound_statement(self, i: int) -> int:
 
     # Scan the ':'.
     return self.next(end)
-#@+node:ekr.20240115074103.1: *4* tbo.parse_decorator
+#@+node:ekr.20240115074103.1: *5* tbo.parse_decorator
 def parse_decorator(self, i: int) -> int:
 
     # Scan the @
@@ -1553,7 +1554,7 @@ def parse_decorator(self, i: int) -> int:
         i = self.next(i)
     return i
 
-#@+node:ekr.20240120202324.1: *4* tbo.parse_expr & helpers
+#@+node:ekr.20240120202324.1: *5* tbo.parse_expr & helpers
 def parse_expr(self, i: int, end: int) -> int:
     """
     Parse an expression spanning self.tokens[i:end],
@@ -1594,7 +1595,7 @@ def parse_expr(self, i: int, end: int) -> int:
         assert i is not None, token
         assert progress < i, (i, token)
     return end
-#@+node:ekr.20240121073127.1: *5* tbo.parse_dict_or_set
+#@+node:ekr.20240121073127.1: *6* tbo.parse_dict_or_set
 def parse_dict_or_set(self, i1: int, end: int) -> int:
     """
     Parse a '{', ..., '}'.
@@ -1623,7 +1624,7 @@ def parse_dict_or_set(self, i1: int, end: int) -> int:
         # The opening '{' starts a non-empty dict.
         self.parse_dict(i1, i2)
     return self.next(i2)
-#@+node:ekr.20240121073925.1: *5* tbo.parse_dict
+#@+node:ekr.20240121073925.1: *6* tbo.parse_dict
 def parse_dict(self, i1: int, end: int) -> None:
     """
     Parse '[', ..., ']'.
@@ -1645,7 +1646,7 @@ def parse_dict(self, i1: int, end: int) -> None:
             break
         self.set_context(i, 'dict')
         i = self.next(i)
-#@+node:ekr.20240121071949.1: *5* tbo.parse_parenthesized_expr
+#@+node:ekr.20240121071949.1: *6* tbo.parse_parenthesized_expr
 def parse_parenthesized_expr(self, i: int, end: int) -> int:
     """
     Parse a parenthesized expression.
@@ -1666,7 +1667,7 @@ def parse_parenthesized_expr(self, i: int, end: int) -> int:
     # Sanity check.
     assert i2 <= end, (repr(i2), repr(end))
     return i2
-#@+node:ekr.20240121024213.1: *5* tbo.parse_slice
+#@+node:ekr.20240121024213.1: *6* tbo.parse_slice
 def parse_slice(self, i1: int, end: int) -> int:
     """
     Parse '[', ..., ']'.
@@ -1752,7 +1753,7 @@ def parse_slice(self, i1: int, end: int) -> int:
         self.set_context(colon_i, final_context)
 
     return self.next(i2)  # Ignore i.
-#@+node:ekr.20240107143500.1: *4* tbo.parse_from
+#@+node:ekr.20240107143500.1: *5* tbo.parse_from
 def parse_from(self, i: int) -> int:
     """
     Parse a `from x import` statement, setting context for leading '.'
@@ -1769,7 +1770,7 @@ def parse_from(self, i: int) -> int:
         i = self.next(i)
 
     return end
-#@+node:ekr.20240108083829.1: *4* tbo.parse_import
+#@+node:ekr.20240108083829.1: *5* tbo.parse_import
 def parse_import(self, i: int) -> int:
     # Find the end of the import statement.
     i = self.index
@@ -1781,7 +1782,7 @@ def parse_import(self, i: int) -> int:
             self.set_context(i, 'import')
         i = self.next(i)
     return end
-#@+node:ekr.20240106181215.1: *4* tbo.parse_initializer
+#@+node:ekr.20240106181215.1: *5* tbo.parse_initializer
 def parse_initializer(self, i1: int, end: int) -> int:
     """
     Scan an initializer in a function call or function definition argument.
@@ -1820,7 +1821,7 @@ def parse_initializer(self, i1: int, end: int) -> int:
     # Same expect as in the caller.
     self.expect_ops(i, [',', ')'])
     return i
-#@+node:ekr.20240116040636.1: *4* tbo.parse_outer_expression
+#@+node:ekr.20240116040636.1: *5* tbo.parse_outer_expression
 def parse_outer_expression(self, i1: int) -> int:
     << docstring: tbo.parse_outer_expression >>
 
@@ -1840,7 +1841,7 @@ def parse_outer_expression(self, i1: int) -> int:
     end = self.find_end_of_line(i1)
     i = self.parse_expr(i1, end)
     return i
-#@+node:ekr.20240120201047.1: *5* << docstring: tbo.parse_outer_expression >>
+#@+node:ekr.20240120201047.1: *6* << docstring: tbo.parse_outer_expression >>
 """
 Parse a line that *isn't* a simple or compound statement.
 See https://docs.python.org/3/reference/expressions.html
@@ -1862,7 +1863,7 @@ Notes:
 2. ? denotes optional tokens or expressions.
 3. '=' tokens within function calls always have 'initializer' context.
 """
-#@+node:ekr.20240109032639.1: *4* tbo.parse_simple_statement
+#@+node:ekr.20240109032639.1: *5* tbo.parse_simple_statement
 def parse_simple_statement(self, i: int) -> int:
     """
     Scan to the end of a simple statement like an `import` statement.
@@ -1878,7 +1879,7 @@ def parse_simple_statement(self, i: int) -> int:
     i2 = self.next(i)
     self.parse_expr(i2, end)
     return end
-#@+node:ekr.20240113054629.1: *3* tbo.parse_statements (top-level of parser)
+#@+node:ekr.20240113054629.1: *4* tbo.parse_statements (top-level of parser)
 def parse_statements(self) -> None:
     """
     parse_statements: scan (parse) the entire file.
@@ -1899,6 +1900,26 @@ def parse_statements(self) -> None:
 
         # Parse the statement.
         i = self.parse_statement(i)
+#@+node:ekr.20240129094058.1: *3* ratio code from orange_command
+# Report any unusual scanned/total ratio.
+scanned, tokens = tbo.n_scanned_tokens, len(tbo.tokens)
+token_ratio: float = scanned / tokens
+
+# Check the ratio: calls to tbo.next/total tokens.
+# This check verifies that there are no serious performance issues.
+# For Leo's sources, this ratio ranges between 0.48 and 1.51.
+if token_ratio > 2.5:
+# A useful performance measure.
+    print('')
+    g.trace(
+        f"Unexpected token ratio in {g.shortFileName(filename)}\n"
+        f"scanned: {scanned:<5} total: {tokens:<5} ratio: {token_ratio:4.2f}"
+    )
+elif 0:  # Print all ratios.
+    print(
+        f"scanned: {scanned:<5} total: {tokens:<5} ratio: {token_ratio:4.2f} "
+        f"{g.shortFileName(filename)}"
+    )
 #@-all
 #@@nosearch
 #@-leo

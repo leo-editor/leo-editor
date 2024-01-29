@@ -106,26 +106,7 @@ def orange_command(
             changed = tbo.beautify_file(filename)
             if changed:
                 n_changed += 1
-            # Report any unusual scanned/total ratio.
-            scanned, tokens = tbo.n_scanned_tokens, len(tbo.tokens)
-            token_ratio: float = scanned / tokens
-
-            # Check the ratio: calls to tbo.next/total tokens.
-            # This check verifies that there are no serious performance issues.
-            # For Leo's sources, this ratio ranges between 0.48 and 1.51.
-            if token_ratio > 2.5:
-            # A useful performance measure.
-                print('')
-                g.trace(
-                    f"Unexpected token ratio in {g.shortFileName(filename)}\n"
-                    f"scanned: {scanned:<5} total: {tokens:<5} ratio: {token_ratio:4.2f}"
-                )
-            elif 0:  # Print all ratios.
-                print(
-                    f"scanned: {scanned:<5} total: {tokens:<5} ratio: {token_ratio:4.2f} "
-                    f"{g.shortFileName(filename)}"
-                )
-            n_tokens += tokens
+            n_tokens += len(tbo.tokens)
         else:
             print(f"file not found: {filename}")
     # Report the results.
@@ -586,16 +567,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Command-line arguments.
         'diff', 'force', 'silent', 'tab_width', 'verbose',
         # Debugging.
-        'contents', 'filename', 'n_scanned_tokens',
+        'contents', 'filename', # 'n_scanned_tokens',
         # Global data.
         'code_list', 'tokens',
         # Token-related data for visitors.
         'index', 'line_number', 'token',
-        # Pre-scan data.
-        ### 'scan_stack', 'prev_token', 'in_import',
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part',
         'state_stack', 'verbatim',
+
         # State data for whitespace visitors.
         # Don't even *think* about changing these!
         'curly_brackets_level', 'indent_level', 'lws',
@@ -634,9 +614,10 @@ class TokenBasedOrange:  # Orange is the new Black.
     def __init__(self, settings: Settings = None):
         """Ctor for Orange class."""
 
+        ###
         # Global count of the number of calls to tbo.next and tbo.prev.
         # See tbo.next and orange_command
-        self.n_scanned_tokens = 0
+        ### self.n_scanned_tokens = 0
 
         # Set default settings.
         if settings is None:
@@ -823,11 +804,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         #@-<< tbo.beautify: init ivars >>
 
         try:
-            if 1:  # An iterative approach.
-                self.pre_scan()
-            else:
-                # Start a "good enough" recursive descent parser.
-                self.parse_statements()
+            # Pre-scan the token list, setting context.s
+            self.pre_scan()
         except InternalBeautifierError as e:
             # self.oops calls self.error_message to creates e.
             print(e)
@@ -1847,7 +1825,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         trace = False  # Do not remove
         i += 1
         while i < len(self.tokens):
-            self.n_scanned_tokens += 1
+            ### self.n_scanned_tokens += 1
             token = self.tokens[i]
             if self.is_significant_token(token):
                 if trace and 'find_end_of_line' not in g.callers():  # Filtered dump!
@@ -1868,7 +1846,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         i -= 1
         while i >= 0:
-            self.n_scanned_tokens += 1
+            ### self.n_scanned_tokens += 1
             token = self.tokens[i]
             if self.is_significant_token(token):
                 return i
