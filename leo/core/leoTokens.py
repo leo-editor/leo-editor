@@ -879,9 +879,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.diff:  # --diff
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
-
-        # Update the file.
-        self.write_file(filename, regularized_results, encoding=encoding)
+        else:
+            # Update the file.
+            self.write_file(filename, regularized_results, encoding=encoding)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
