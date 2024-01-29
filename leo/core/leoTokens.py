@@ -855,7 +855,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         #@-<< tbo.beautify: init ivars >>
 
         try:
-            if 1: # An iterative approach.
+            if 1:  # An iterative approach.
                 self.pre_scan()
             else:
                 # Start a "good enough" recursive descent parser.
@@ -936,7 +936,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 print('tbo: safe mode')
 
         # Print the diffs for testing!
-        if False and self.diff:
+        if True:  ### self.diff:
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
 
@@ -2300,7 +2300,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             return
 
         if 0:  ###
-            tokens_s = ''.join([z.value for z in self.tokens[i1:end+1]])
+            tokens_s = ''.join([z.value for z in self.tokens[i1 : end + 1]])
             g.trace(f"{i1:3} {end:3} {values!r} {tokens_s}")
 
         # Compute the context for each *separate* '=' token.
@@ -2317,7 +2317,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 equal_context = 'initializer'
 
         # Set the context of all outer-level ':', '*', and '**' tokens.
-        prev:InputToken = None
+        prev: InputToken = None
         for i in range(i1, end):
             token = self.tokens[i]
             if token.kind not in self.insignificant_kinds:
@@ -2387,7 +2387,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Set the context of all outer-level ':' tokens.
         if 0:
-            tokens_s = ''.join([z.value for z in self.tokens[i1:end+1]])
+            tokens_s = ''.join([z.value for z in self.tokens[i1 : end + 1]])
             g.trace(f"{final_context:14} {i1:3} {end:3} {colons!r:8} {tokens_s}")
         for i in colons:
             self.set_context(i, final_context)
@@ -2405,7 +2405,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Set the context for all ':' tokens in the dict.
         if 0:
-            tokens_s = ''.join([z.value for z in self.tokens[i1:end+1]])
+            tokens_s = ''.join([z.value for z in self.tokens[i1 : end + 1]])
             g.trace(f"{i1:3} {end:3} {colons!r:8} {tokens_s}")
         for i in colons:
             self.set_context(i, 'dict')
