@@ -9,7 +9,7 @@ IF [%1]==[-h] goto help
 IF [%1]==[--help] goto help
 
 :tbo:
-echo tbo 
+echo tbo [%*]
 call python312 -m leo.core.leoTokens leo\core %*
 call python312 -m leo.core.leoTokens leo\commands %*
 call python312 -m leo.core.leoTokens leo\plugins\importers %*
