@@ -13,13 +13,13 @@ leoTokens.py.
 
 usage:
     python -m leo.core.leoTokens --help
-    python -m leo.core.leoTokens --orange [ARGS] PATHS
+    python -m leo.core.leoTokens [ARGS] PATHS
     python -m leo.core.leoTokens --py-cov [ARGS]
     python -m leo.core.leoTokens --pytest [ARGS]
     python -m leo.core.leoTokens --unittest [ARGS]
 
 examples:
-    python -m leo.core.leoTokens --orange --force --verbose PATHS
+    python -m leo.core.leoTokens --force --verbose PATHS
     python -m leo.core.leoTokens --py-cov "-f TestOrange"
     python -m leo.core.leoTokens --pytest "-f TestOrange"
     python -m leo.core.leoTokens --unittest TestOrange
@@ -29,9 +29,8 @@ positional arguments:
 
 optional arguments:
   -h, --help         show this help message and exit
-  --force            operate on all files. Otherwise operate only on modified files
-  --orange           leonine text formatter (Orange is the new Black)
-  --orange-diff      show orange diff
+  --force            beautify all files. Otherwise beautify only modified files
+  --diff             show diffs
   --py-cov           run pytest --cov on leoAst.py
   --pytest           run pytest on leoAst.py
   --unittest         run unittest on leoAst.py
@@ -1847,12 +1846,12 @@ def get_modified_files(repo_path: str) -> list[str]:  # pragma: no cover
         os.chdir(old_cwd)
 #@+node:ekr.20240105140814.10: *3* function: scan_args (leoTokens.py)
 def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
-    description = textwrap.dedent("""\
-        Execute fstringify or beautify commands contained in leoAst.py.
-    """)
+    description = textwrap.dedent(
+    """Beautify or diff files""")
     parser = argparse.ArgumentParser(
         description=description,
-        formatter_class=argparse.RawTextHelpFormatter)
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
     parser.add_argument('PATHS', nargs='*', help='directory or list of files')
     add2 = parser.add_argument
 
@@ -1863,9 +1862,9 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
     add2('--diff', dest='diff', action='store_true',
         help='show diffs instead of changing files')
     add2('--force', dest='force', action='store_true',
-        help='force beautification of all files')
+        help='beautify all files')
     add2('--safe', dest='safe', action='store_true',
-        help="don't write changed files")
+        help="don't write files")
     add2('--silent', dest='silent', action='store_true',
         help="don't list changed files")
     add2('--verbose', dest='verbose', action='store_true',
@@ -1887,7 +1886,6 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
         force=False,
         safe=False,
         silent=False,
-        recursive=False,
         tab_width=4,
         verbose=False
         # allow_joined=False, max_join=0, max_split=0,
