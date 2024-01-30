@@ -565,7 +565,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240111035404.1: *4* << TokenBasedOrange: __slots__ >>
     __slots__ = [
         # Command-line arguments.
-        'diff', 'force', 'silent', 'tab_width', 'verbose',
+        'diff', 'force', 'safe', 'silent', 'tab_width', 'verbose',
 
         # Debugging.
         'contents', 'filename',
@@ -623,12 +623,13 @@ class TokenBasedOrange:  # Orange is the new Black.
             settings = {}
         self.diff = False
         self.force = False
+        self.safe = False
         self.silent = False
         self.tab_width = 4
         self.verbose = False
 
         # Override defaults from settings dict.
-        valid_keys = ('diff', 'force', 'orange', 'silent', 'tab_width', 'verbose')
+        valid_keys = ('diff', 'force', 'orange', 'safe', 'silent', 'tab_width', 'verbose')
         for key in settings:  # pragma: no cover
             value = settings.get(key)
             if key in valid_keys and value is not None:
@@ -720,7 +721,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             f"{context_s}"
             "Please report this message to Leo's developers"
         )
-    #@+node:ekr.20240125182219.1: *5* tbo.trace & helpers
+    #@+node:ekr.20240125182219.1: *5* tbo.trace & helper
     def trace(self, i: int, i2: Optional[int] = None, *, tag: str = None) -> None:  # pragma: no cover
         """
         Print i, token, and get_token_line(i).
@@ -737,7 +738,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             f"  callers: {g.callers()}\n"
             f"  indices: {indices_s} token: {token.kind:}:{token.show_val(30)}\n"
             f"     line: {self.get_token_line(i)!r}\n"
-            f"     tail: {self.get_tokens_after(i)!s}\n"
         )
     #@+node:ekr.20240124094344.1: *6* tbo.get_token_line
     def get_token_line(self, i: int) -> str:  # pragma: no cover
@@ -748,15 +748,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.oops(f"Bad token index {i!r}: {e}")
 
         return token.line.rstrip()
-    #@+node:ekr.20240127053011.1: *6* tbo.get_tokens_after
-    def get_tokens_after(self, i: int) -> str:
-        """Return the string containing the values of self.tokens[i:]."""
-        try:
-            tokens = self.tokens[i:]
-        except Exception as e:  # pragma: no cover
-            self.oops(f"Invalid index: {i!r}: {e}")
-        end = self.find_end_of_line(i)
-        return repr(''.join([z.value for z in tokens[i:end]]))
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def no_visitor(self) -> None:  # pragma: no cover
@@ -848,6 +839,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             g.trace(
                 f"diff: {int(self.diff)} "
                 f"force: {int(self.force)} "
+                f"safe: {int(self.safe)} "
                 f"silent: {int(self.silent)} "
                 f"verbose: {int(self.verbose)} "
                 f"{g.shortFileName(filename)}"
@@ -866,21 +858,18 @@ class TokenBasedOrange:  # Orange is the new Black.
         regularized_contents = self.regularize_nls(contents)
         regularized_results = self.regularize_nls(results)
         if regularized_contents == regularized_results:
-            # g.trace(f"No change: {g.shortFileName(filename)}")
             return False
         if not regularized_contents:
             print(f"tbo: no results {g.shortFileName(filename)}")
             return False
 
-        # Write the results
+        # Handle the args.
         if not self.silent:
             print(f"tbo: changed {g.shortFileName(filename)}")
-
-        if self.diff:  # --diff
+        if self.diff:  # --diff.
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
-        else:
-            # Update the file.
+        if not self.safe:  # --safe.
             self.write_file(filename, regularized_results, encoding=encoding)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
@@ -1806,7 +1795,6 @@ def main() -> None:  # pragma: no cover
     cwd = os.getcwd()
 
     # Calculate requested files.
-    t1 = time.process_time()
     requested_files: list[str] = []
     for path in arg_files:
         if path.endswith('.py'):
@@ -1831,17 +1819,9 @@ def main() -> None:  # pragma: no cover
         files = [
             z for z in requested_files if os.path.abspath(z) in modified_files
         ]
-    if not files:
-        return
-
-    # Do the command.
-    t2 = time.process_time()
-    if 0:  # Negligible.
-        print(f"files: {len(files)} setup time: {t2-t1:3.1f} sec.")
-    if args.o:
+    if files:
+        # Do the command.
         orange_command(arg_files, files, settings_dict)
-    # if args.od:
-        # orange_diff_command(files, settings_dict)
 #@+node:ekr.20240105140814.9: *3* function: get_modified_files
 def get_modified_files(repo_path: str) -> list[str]:  # pragma: no cover
     """Return the modified files in the given repo."""
@@ -1874,28 +1854,18 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
         description=description,
         formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('PATHS', nargs='*', help='directory or list of files')
-    # Don't require any args.
-    group = parser.add_mutually_exclusive_group(required=False)
-    add = group.add_argument
     add2 = parser.add_argument
 
-    # Commands.
-    add('--orange', dest='o', action='store_true',
-        help='beautify PATHS')
-
-    # Unused commands...
-        # add('--fstringify', dest='f', action='store_true',
-            # help='fstringify PATHS')
-        # add('--fstringify-diff', dest='fd', action='store_true',
-            # help='fstringify diff PATHS')
-        # add('--orange-diff', dest='od', action='store_true',
-            # help='diff beautify PATHS')
+    # group = parser.add_mutually_exclusive_group(required=False)
+    # add = group.add_argument
 
     # Arguments.
     add2('--diff', dest='diff', action='store_true',
         help='show diffs instead of changing files')
     add2('--force', dest='force', action='store_true',
         help='force beautification of all files')
+    add2('--safe', dest='safe', action='store_true',
+        help="don't write changed files")
     add2('--silent', dest='silent', action='store_true',
         help="don't list changed files")
     add2('--verbose', dest='verbose', action='store_true',
@@ -1915,6 +1885,7 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
     parser.set_defaults(
         diff=False,
         force=False,
+        safe=False,
         silent=False,
         recursive=False,
         tab_width=4,
@@ -1928,6 +1899,7 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
         'diff': bool(args.diff),
         'force': bool(args.force),
         'tab_width': abs(args.tab_width),  # Must be positive!
+        'safe': bool(args.safe),
         'silent': bool(args.silent),
         'verbose': bool(args.verbose),
         # 'allow_joined_strings': bool(args.allow_joined),

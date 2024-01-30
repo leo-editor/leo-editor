@@ -2017,6 +2017,15 @@ def find_end_of_line(self, i: int) -> Optional[int]:
             i += 1
     self.oops("no matching ')'")  # pragma: no cover
     return len(self.tokens)  # pragma: no cover
+#@+node:ekr.20240127053011.1: *4* tbo.get_tokens_after
+def get_tokens_after(self, i: int) -> str:
+    """Return the string containing the values of self.tokens[i:]."""
+    try:
+        tokens = self.tokens[i:]
+    except Exception as e:  # pragma: no cover
+        self.oops(f"Invalid index: {i!r}: {e}")
+    end = self.find_end_of_line(i)
+    return repr(''.join([z.value for z in tokens[i:end]]))
 #@+node:ekr.20240106172054.1: *4* tbo.is_op & is_ops
 def is_op(self, i: int, value: str) -> bool:
 
