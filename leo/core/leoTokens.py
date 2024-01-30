@@ -53,7 +53,9 @@ debug: bool = True
 #@+node:ekr.20240105140814.5: ** command: orange_command & helper (leoTokens.py)
 def orange_command(
     arg_files: list[str],
-    files: list[str],
+    requested_files: list[str],
+    dirty_files: list[str],
+    to_be_checked_files: list[str],
     settings: Settings = None,
 ) -> None:  # pragma: no cover
     """The outer level of the 'tbo/orange' command."""
@@ -62,9 +64,8 @@ def orange_command(
     t1 = time.process_time()
     n_tokens = 0
     n_changed = 0
-    for filename in files:
+    for filename in to_be_checked_files:  ###files:
         if os.path.exists(filename):
-            # print(f"orange {filename}")
             tbo = TokenBasedOrange(settings)
             changed = tbo.beautify_file(filename)
             if changed:
@@ -76,8 +77,10 @@ def orange_command(
     t2 = time.process_time()
     if n_changed or not TokenBasedOrange(settings).silent:
         print(
-            f"tbo: {t2-t1:3.1f} sec. files: {len(files):<3} "
-            f"changed: {n_changed:<3} in {','.join(arg_files)}"
+            f"tbo: {t2-t1:3.1f} sec. "
+            f"dirty: {len(dirty_files):<3} "
+            f"checked: {len(to_be_checked_files):<3} "
+            f"beautified: {n_changed:<3} in {','.join(arg_files)}"
         )
 #@+node:ekr.20240105140814.8: *3* function: check_g
 def check_g() -> bool:  # pragma: no cover
@@ -1756,19 +1759,26 @@ def main() -> None:  # pragma: no cover
         return
 
     # Calculate the actual list of files.
-    files: list[str]
+    modified_files = get_modified_files(cwd)
+
+    def is_dirty(path: str) -> bool:
+        return os.path.abspath(path) in modified_files
+
+    # Compute the files to be checked.
     if args.force:
         # Handle all requested files.
-        files = requested_files
+        to_be_checked_files = requested_files
     else:
         # Handle only modified files.
-        modified_files = get_modified_files(cwd)
-        files = [
-            z for z in requested_files if os.path.abspath(z) in modified_files
-        ]
-    if files:
-        # Do the command.
-        orange_command(arg_files, files, settings_dict)
+        to_be_checked_files = [z for z in requested_files if is_dirty(z)]
+
+    # Compute the dirty files among the to-be-checked files.
+    dirty_files = [z for z in to_be_checked_files if is_dirty(z)]
+
+    # Do the command.
+    if to_be_checked_files:
+        ### orange_command(arg_files, files, settings_dict)
+        orange_command(arg_files, requested_files, dirty_files, to_be_checked_files, settings_dict)
 #@+node:ekr.20240105140814.9: *3* function: get_modified_files
 def get_modified_files(repo_path: str) -> list[str]:  # pragma: no cover
     """Return the modified files in the given repo."""
