@@ -7,50 +7,14 @@
 #@+<< leoTokens.py: docstring >>
 #@+node:ekr.20240105140814.2: ** << leoTokens.py: docstring >>
 """
-leoTokens.py.
+leoTokens.py: A token-based beautifier for Python.
 
-**Stand-alone operation**
+For help: `python -m leo.core.leoTokens --help`
 
-usage:
-    python -m leo.core.leoTokens --help
-    python -m leo.core.leoTokens [ARGS] PATHS
-    python -m leo.core.leoTokens --py-cov [ARGS]
-    python -m leo.core.leoTokens --pytest [ARGS]
-    python -m leo.core.leoTokens --unittest [ARGS]
+Use Leo https://leo-editor.github.io/leo-editor/ to study this code!
+when studying this code.
 
-examples:
-    python -m leo.core.leoTokens --force --verbose PATHS
-    python -m leo.core.leoTokens --py-cov "-f TestOrange"
-    python -m leo.core.leoTokens --pytest "-f TestOrange"
-    python -m leo.core.leoTokens --unittest TestOrange
-
-positional arguments:
-  PATHS              directory or list of files
-
-optional arguments:
-  -h, --help         show this help message and exit
-  --force            beautify all files. Otherwise beautify only modified files
-  --diff             show diffs
-  --py-cov           run pytest --cov on leoAst.py
-  --pytest           run pytest on leoAst.py
-  --unittest         run unittest on leoAst.py
-  --verbose          verbose output
-
-**Links**
-
-Leo...
-Ask for help:       https://groups.google.com/forum/#!forum/leo-editor
-Report a bug:       https://github.com/leo-editor/leo-editor/issues
-
-black:              https://pypi.org/project/black/
-tokenize.py:        https://docs.python.org/3/library/tokenize.html
-
-**Studying this file**
-
-I strongly recommend that you use Leo when studying this code so that you
-will see the file's intended outline structure.
-
-Without Leo, you will see only special **sentinel comments** that create
+Without Leo, you will see special **sentinel comments** that create
 Leo's outline structure. These comments have the form::
 
     `#@<comment-kind>:<user-id>.<timestamp>.<number>: <outline-level> <headline>`
@@ -541,23 +505,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     """
     Leo's token-based beautifier.
 
-    This class is like the Orange class in leoAst.py.
-
-    - This class does not use Python's parse tree in any way.
-
-      Instead, this class contains a "good-enough" recursive parser that
-      discovers the context for input tokens requiring help. See
-      tbo.set_context for details.
-
-    - This class uses bounded look-ahead and look-behind:
-
-      The parser looks ahead at most one *input* token.
-      The code generators look behind at most one *output* token.
-
-    - As with leoAst.py, the code generators work much like a peephole
-      optimizer.
-
-    - This class is about twice as fast as the Orange class in leoAst.py.
+    It's about three times as fast as the Orange class in leoAst.py.
     """
     #@-<< TokenBasedOrange: docstring >>
     #@+<< TokenBasedOrange: __slots__ >>
@@ -1855,9 +1803,6 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
     parser.add_argument('PATHS', nargs='*', help='directory or list of files')
     add2 = parser.add_argument
 
-    # group = parser.add_mutually_exclusive_group(required=False)
-    # add = group.add_argument
-
     # Arguments.
     add2('--diff', dest='diff', action='store_true',
         help='show diffs instead of changing files')
@@ -1870,16 +1815,6 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
     add2('--verbose', dest='verbose', action='store_true',
         help='verbose (per-file) output')
 
-    # Unused arguments..
-        # add2('--allow-joined', dest='allow_joined', action='store_true',
-            # help='allow joined strings')
-        # add2('--max-join', dest='max_join', metavar='N', type=int,
-            # help='max unsplit line length (default 0)')
-        # add2('--max-split', dest='max_split', metavar='N', type=int,
-            # help='max unjoined line length (default 0)')
-        # add2('--tab-width', dest='tab_width', metavar='N', type=int,
-            # help='tab-width (default -4)')
-
     # Create the return values, using EKR's prefs as the defaults.
     parser.set_defaults(
         diff=False,
@@ -1888,10 +1823,10 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
         silent=False,
         tab_width=4,
         verbose=False
-        # allow_joined=False, max_join=0, max_split=0,
     )
     args: Any = parser.parse_args()
     files = args.PATHS
+
     # Create the settings dict, ensuring proper values.
     settings_dict: dict[str, Any] = {
         'diff': bool(args.diff),
@@ -1900,9 +1835,6 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
         'safe': bool(args.safe),
         'silent': bool(args.silent),
         'verbose': bool(args.verbose),
-        # 'allow_joined_strings': bool(args.allow_joined),
-        # 'max_join_line_length': abs(args.max_join),
-        # 'max_split_line_length': abs(args.max_split),
     }
     return args, settings_dict, files
 #@-others
