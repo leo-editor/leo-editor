@@ -34,7 +34,7 @@ class CommanderWrapper:
     """
     A class that creates distinct keys for all commanders, allowing
     commanders to share g.app.db without collisions.
-    
+
     Instances of this class are c.db.
     """
 
@@ -69,9 +69,9 @@ class CommanderWrapper:
 class GlobalCacher:
     """
     A class creating a singleton global database, g.app.db.
-    
+
     This DB resides in ~/.leo/db.
-    
+
     New in Leo 6.7.7: All instances of c.db may use g.app.db because the
     CommanderWrapper class creates distinct keys for each commander.
     """
@@ -130,7 +130,7 @@ _sentinel = object()
 class SqlitePickleShare:
     """
     The main 'connection' object for SqlitePickleShare database.
-    
+
     Opening this DB may fail. If so the GlobalCacher class uses a plain
     Python dict instead.
     """
@@ -275,7 +275,7 @@ class SqlitePickleShare:
     def clear(self) -> None:
         """
         Deletes all files in the fcache subdirectory.
-        
+
         It would be more thorough to delete everything
         below the root directory, but it's not necessary.
         """

@@ -59,7 +59,7 @@ class TestMDWriter(BaseTestWriter):
     #@+others
     #@+node:ekr.20231219151402.1: *3* TestMDWriter.test_markdown_sections
     def test_markdown_sections(self):
-        
+
         c, root = self.c, self.c.p
         #@+<< define contents: test_markdown_sections >>
         #@+node:ekr.20231221072635.1: *4* << define contents: test_markdown_sections >>
@@ -76,7 +76,7 @@ class TestMDWriter(BaseTestWriter):
 
             ## 2nd level title B
 
-            some body content of the 2nd node 
+            some body content of the 2nd node
         """).strip() + '\n'  # End the last node with '\n'.
         #@-<< define contents: test_markdown_sections >>
 
@@ -100,7 +100,7 @@ class TestMDWriter(BaseTestWriter):
         self.assertEqual(results_s, contents)
     #@+node:ekr.20231225025012.1: *3* TestMDWriter.test_markdown_image
     def test_markdown_image(self):
-        
+
         c, root = self.c, self.c.p
         #@+<< define contents: test_markdown_image >>
         #@+node:ekr.20231225025012.2: *4* << define contents: test_markdown_image >>
@@ -133,7 +133,7 @@ class TestMDWriter(BaseTestWriter):
         self.assertEqual(results_s, contents)
     #@+node:ekr.20231227225308.1: *3* TestMDWriter.test_placeholders
     def test_markdown_placeholders(self):
-        
+
         c, root = self.c, self.c.p
         #@+<< define contents: test_markdown_placeholders >>
         #@+node:ekr.20231227225358.1: *4* << define contents: test_markdown_placeholders >>

@@ -1596,7 +1596,7 @@ class TestJava(BaseTestImporter):
         self.new_run_test(s, expected_results)
     #@+node:ekr.20231225065750.1: *3* TestJava.test_round_trip
     def test_round_trip(self):
-        
+
         c, root = self.c, self.c.p
         at = c.atFileCommands
         #@+<< define contents: test_round_trip >>
@@ -1630,7 +1630,7 @@ class TestJava(BaseTestImporter):
         # Write the tree as if it were an @auto node.
         root.h = '@auto test.java'
         results = at.atAutoToString(root)
-        
+
         # A hack, acknowledging that the importer strips trailing blank lines in each node.
         expected = results.replace('\n\n', '\n')
 

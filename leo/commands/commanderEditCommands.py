@@ -878,8 +878,8 @@ def find_bound_paragraph(c: Cmdr) -> tuple[str, list[str], str]:
             else:
                 n += 1
         if n > 0:
-            para_lines = head_lines[-n :] + para_lines
-            head_lines = head_lines[: -n]
+            para_lines = head_lines[-n:] + para_lines
+            head_lines = head_lines[:-n]
     ended, started = False, False
     for i, s in enumerate(para_lines):
         if started:

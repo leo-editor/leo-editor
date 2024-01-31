@@ -2,14 +2,10 @@
 cls
 cd %~dp0..\..
 
-echo full-test-leo
-rem beautify also removes trailing whitespace.
-call beautify-leo.cmd
-call test-leo.cmd
-rem echo.
+rem Run all of Leo's pre-commit tests.
+
+call tbo.cmd --force
+call python312 -m unittest
 call ruff-leo.cmd
 call mypy-leo.cmd
-rem call flake8-leo.cmd
-rem call pylint-leo.cmd
-rem echo.
 echo Done!

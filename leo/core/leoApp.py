@@ -2965,7 +2965,7 @@ class LoadManager:
     def openWithFileName(self, fn: str, gui: LeoGui, old_c: Cmdr) -> Optional[Cmdr]:
         """
         Completely read a file, creating the corresponding outline.
-        
+
         1. If fn is an existing .leo, .db or .leojs file:
            - Read fn once with a NullGui to discover all settings.
            - Read fn again with the requested gui to create the outline.
@@ -3069,7 +3069,7 @@ class LoadManager:
     def openExternalFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
         """
         Create a wrapper commander (in a new tab) for the given external file.
-        
+
         The commander's outline contains an @edit or @file node for the external file.
         """
         lm = self

@@ -15,7 +15,7 @@ class MarkdownWriter(basewriter.BaseWriter):
         """Write all the *descendants* of an @auto-markdown node."""
         self.root = root
         self.write_root(root)
-        total = sum(1 for _ in  root.subtree()) 
+        total = sum(1 for _ in root.subtree())
         count = 0
         for p in root.subtree():
             count += 1
@@ -29,7 +29,7 @@ class MarkdownWriter(basewriter.BaseWriter):
                 self.write_headline(p)
                 # Ensure that every section ends with exactly two newlines.
                 if p.b.rstrip():
-                    s = p.b.rstrip() + ('\n' if lastFlag else '\n\n' )
+                    s = p.b.rstrip() + ('\n' if lastFlag else '\n\n')
                     lines = s.splitlines(False)
                     for s in lines:
                         if not g.isDirective(s):
@@ -49,7 +49,7 @@ class MarkdownWriter(basewriter.BaseWriter):
         - Always write '#' sections.
           This will cause perfect import to fail. The alternatives are worse.
         - Skip !Declarations.
-        
+
         New in Leo 6.7.7:
         - Don't write headlines of placeholder nodes.
         """

@@ -1907,7 +1907,7 @@ class LeoFind:
         """
         The summarize command. Prompt for a regex and list all matches in a new
         top-level node.
-        
+
         This command shows *only* m.group(0).
         Append `.*` to the pattern to see the remainder of the line.
         """

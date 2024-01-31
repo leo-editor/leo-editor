@@ -1441,7 +1441,7 @@ class TestColorizer(LeoUnitTest):
         c = self.c
         from leo.core.leoColorizer import JEditColorizer
         colorizer = JEditColorizer(c, None)
-        
+
         table = (
             # These are *plain* strings that start *after* the opening delim.
             # These strings do *not* end with the closing delim.
@@ -1450,7 +1450,7 @@ class TestColorizer(LeoUnitTest):
             "{my_dict['key']=}",
             "{'#' * level} {p.h.lstrip()}",  # #3739.
         )
-        
+
         # These examples assume that the lead-in is f".
         delim = '"'
         for terminated in (True, False):
