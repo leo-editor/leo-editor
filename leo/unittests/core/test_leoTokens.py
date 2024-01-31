@@ -657,9 +657,6 @@ class TestTokenBasedOrange(BaseTest):
                     g.printObj(expected, tag='Expected (same as contents)')
                     g.printObj(results, tag='Results')
                 self.assertEqual(expected, results)
-            if 0: ###
-                g.trace('First case passes')
-                break
     #@+node:ekr.20240105153425.57: *3* TestTBO.test_function_defs
     def test_function_defs(self):
 

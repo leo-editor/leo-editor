@@ -595,54 +595,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(tag)
         for token in self.tokens[i1 : i2 + 1]:
             print(token.dump())
-    #@+node:ekr.20240106090914.1: *5* tbo.expect
-    def expect(self, i: int, kind: str, value: str = None) -> None:
-        """Raise an exception if self.tokens[i] is not as expected."""
-        try:
-            token = self.tokens[i]
-        except Exception as e:  # pragma: no cover
-            self.oops(f"At index {i!r}: Expected{kind!r}:{value!r}, got {e}")
-
-        if token.kind != kind or (value and token.value != value):
-            self.oops(f"Expected {kind!r}:{value!r}, got {token!r}")  # pragma: no cover
-    #@+node:ekr.20240116042811.1: *5* tbo.expect_name
-    def expect_name(self, i: int) -> None:
-        """Raise an exception if self.tokens[i] is not as expected."""
-        try:
-            token = self.tokens[i]
-        except Exception as e:  # pragma: no cover
-            self.oops(f"At index {i!r}: Expected 'name', got {e}")
-
-        if token.kind != 'name':
-            self.oops(f"Expected 'name', got {token!r}")  # pragma: no cover
-    #@+node:ekr.20240114015808.1: *5* tbo.expect_op
-    def expect_op(self, i: int, value: str) -> None:
-        """Raise an exception if self.tokens[i] is not as expected."""
-        try:
-            token = self.tokens[i]
-        except Exception as e:  # pragma: no cover
-            self.oops(f"At index {i!r}: Expected 'op':{value!r}, got {e!r}")
-
-        if (token.kind, token.value) != ('op', value):
-            self.oops(f"Expected 'op':{value!r}, got {token!r}")  # pragma: no cover
-    #@+node:ekr.20240114013952.1: *5* tbo.expect_ops
-    def expect_ops(self, i: int, values: list) -> None:
-        """Raise an exception if self.tokens[i] is not as expected."""
-        try:
-            token = self.tokens[i]
-        except Exception as e:  # pragma: no cover
-            self.oops(f"At index {i!r}: Expected 'op' in {values!r}, got {e!r}")
-
-        if token.kind != 'op' or token.value not in values:
-            self.oops(f"Expected 'op' in {values!r}, got {token!r}")  # pragma: no cover
-    #@+node:ekr.20240127051941.1: *5* tbo.get_token
-    def get_token(self, i: int) -> InputToken:
-        """Return the token at i, with full error checking."""
-        try:
-            token = self.tokens[i]
-        except Exception as e:  # pragma: no cover
-            self.oops(f"Invalid index: {i!r}: {e}")
-        return token
     #@+node:ekr.20240117053310.1: *5* tbo.oops & helper
     def oops(self, message: str) -> None:  # pragma: no cover
         """Raise InternalBeautifierError."""
@@ -671,33 +623,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             f"{context_s}"
             "Please report this message to Leo's developers"
         )
-    #@+node:ekr.20240125182219.1: *5* tbo.trace & helper
-    def trace(self, i: int, i2: Optional[int] = None, *, tag: str = None) -> None:  # pragma: no cover
-        """
-        Print i, token, and get_token_line(i).
-
-        A surprisingly useful debugging utility.
-        """
-
-        token = self.tokens[i]
-        indices_s = f"{i}" if i2 is None else f"i: {i} i2: {i2}"
-
-        # Adjust widths below as necessary.
-        print(
-            f"{g.callers(1)}: {tag or ''}\n"
-            f"  callers: {g.callers()}\n"
-            f"  indices: {indices_s} token: {token.kind:}:{token.show_val(30)}\n"
-            f"     line: {self.get_token_line(i)!r}\n"
-        )
-    #@+node:ekr.20240124094344.1: *6* tbo.get_token_line
-    def get_token_line(self, i: int) -> str:  # pragma: no cover
-        """return self.tokens[i].line"""
-        try:
-            token = self.tokens[i]
-        except Exception as e:
-            self.oops(f"Bad token index {i!r}: {e}")
-
-        return token.line.rstrip()
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def no_visitor(self) -> None:  # pragma: no cover
@@ -746,10 +671,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         try:
             # Pre-scan the token list, setting context.s
             self.pre_scan()
-        except InternalBeautifierError as e:
+        except InternalBeautifierError as e:  # pragma: no cover
             # oops calls self.error_message to creates e.
             print(e)
-        except AssertionError as e:
+        except AssertionError as e:  # pragma: no cover
             g.es_exception()
             print(self.error_message(repr(e)))
 
@@ -768,10 +693,10 @@ class TokenBasedOrange:  # Orange is the new Black.
                 else:
                     func = getattr(self, f"do_{self.token.kind}", self.no_visitor)
                     func()
-            except InternalBeautifierError as e:
+            except InternalBeautifierError as e:  # pragma: no cover
                 # oops calls self.error_message to creates e.
                 print(e)
-            except AssertionError as e:
+            except AssertionError as e:  # pragma: no cover
                 g.es_exception()
                 print(self.error_message(repr(e)))
 
@@ -856,7 +781,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             s2 = g.toEncodedString(s, encoding=encoding, reportErrors=True)
             with open(filename, 'wb') as f:
                 f.write(s2)
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             g.trace(f"Error writing {filename}\n{e}")
     #@+node:ekr.20200107040729.1: *5* tbo.show_diffs
     def show_diffs(self, s1: str, s2: str) -> None:  # pragma: no cover
@@ -1106,8 +1031,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_blank()
         elif context == 'simple-slice':
             self.gen_token('op-no-blanks', val)
-        elif context == 'end-statement':
-            self.gen_token('op-no-blank', val)
         elif context == 'dict':
             self.gen_token('op', val)
             self.gen_blank()
@@ -1375,7 +1298,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         prev_token: InputToken = None
         for i, token in enumerate(self.tokens):
             kind, value = token.kind, token.value
-            if trace:
+            if trace:  # pragma: no cover
                 val = repr(value) if not value or '\n' in value else value
                 g.trace(f"{self.index:3} {kind:>8}: {val}")
             if kind in 'newline':
@@ -1401,7 +1324,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
                 top_state = scan_stack[-1] if scan_stack else None
 
-                if trace:
+                if trace:  # pragma: no cover
                     g.trace(f"{value:3} prev: {prev_token} state: {top_state}")
                     g.printObj(scan_stack, tag='scan_stack')
 
@@ -1436,7 +1359,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
                 # Handle interior tokens in 'arg' and 'slice' states.
                 if top_state:
-                    if top_state.kind == 'slice' and value == ':':
+                    if top_state.kind in ('dict', 'slice') and value == ':':
                         top_state.value.append(i)
                     if top_state.kind == 'arg' and value in '**=:,':
                         top_state.value.append(i)
@@ -1458,7 +1381,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             if kind not in self.insignificant_kinds:
                 prev_token = token
         # Sanity check.
-        if scan_stack:
+        if scan_stack:  # pragma: no cover
             g.printObj(scan_stack, tag='pre_scan: non-empty scan_stack')
     #@+node:ekr.20240129041304.1: *6* tbo.finish_arg
     def finish_arg(self, end: int, state: ScanState) -> None:
@@ -1474,7 +1397,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not values:
             return
 
-        if 0:  ###
+        if 0:  # pragma: no cover
             tokens_s = ''.join([z.value for z in self.tokens[i1 : end + 1]])
             g.trace(f"{i1:3} {end:3} {values!r} {tokens_s}")
 
@@ -1533,7 +1456,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if kind == 'op':
                     if value == '.':
                         # Ignore '.' tokens and any preceding 'name' token.
-                        if prev and prev.kind == 'name':
+                        if prev and prev.kind == 'name':  # pragma: no cover
                             inter_colon_tokens -= 1
                     elif value == ':':
                         inter_colon_tokens = 0
@@ -1593,29 +1516,21 @@ class TokenBasedOrange:  # Orange is the new Black.
         if token.value == '~':
             return True
         if prev is None:
-            return True  ### New.
+            return True  # pragma: no cover
         assert token.value in '**-+', repr(token.value)
         kind, value = prev.kind, prev.value
         if kind in ('number', 'string'):
             return_val = False
         elif kind == 'op' and value in ')]':
             return_val = False
-        elif kind == 'op' and value in '{([:,':  ### Add ,
+        elif kind == 'op' and value in '{([:,':
             return_val = True
         elif kind != 'name':
             return_val = True
         else:
             # A 'name' token.
-            ### return_val = keyword.iskeyword(value) or keyword.issoftkeyword(value)
             return self.is_python_keyword(token)
         return return_val
-    #@+node:ekr.20240125082325.1: *5* tbo.is_name
-    def is_name(self, i: int) -> bool:
-
-        if i is None:  # pragma: no cover
-            return False
-        token = self.tokens[i]
-        return token.kind == 'name'
     #@+node:ekr.20240129035336.1: *5* tbo.is_python_keyword
     def is_python_keyword(self, token: InputToken) -> bool:
         """Return True if token is a 'name' token referring to a Python keyword."""
@@ -1667,7 +1582,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         i -= 1
         while i >= 0:
-            ### self.n_scanned_tokens += 1
             token = self.tokens[i]
             if self.is_significant_token(token):
                 return i
