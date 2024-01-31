@@ -2888,7 +2888,7 @@ class Commands:
         use_temp = not root.isAnyAtFileNode()
         if use_temp:
             fd, root_path = tempfile.mkstemp(suffix=ext, prefix="")
-            with os.fdopen(fd, 'w', encoding = 'utf-8') as f:
+            with os.fdopen(fd, 'w', encoding='utf-8') as f:
                 f.write(script)
         else:
             root_path = c.fullPath(root)
