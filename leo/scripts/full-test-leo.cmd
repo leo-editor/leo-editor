@@ -2,16 +2,10 @@
 cls
 cd %~dp0..\..
 
-echo full-test-leo
+rem Run all of Leo's pre-commit tests.
 
-call reindent-leo.cmd
-call beautify-leo.cmd
-call test-leo.cmd
-
-rem echo.
+call tbo.cmd --force
+call python312 -m unittest
 call ruff-leo.cmd
 call mypy-leo.cmd
-rem call flake8-leo.cmd
-rem call pylint-leo.cmd
-rem echo.
 echo Done!
