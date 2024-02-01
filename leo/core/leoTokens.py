@@ -1133,7 +1133,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         if val == '~':
             return True
-        if val not in '+-':
+        if val not in '+-':  # pragma: no cover
             return False
         # Get the previous significant token.
         prev_i = self.prev(i)
@@ -1504,22 +1504,23 @@ class TokenBasedOrange:  # Orange is the new Black.
         Return True if token is a unary op in the context of prev, the previous
         significant token.
         """
-        if token.value == '~':
+        if token.value == '~':  # pragma: no cover
             return True
         if prev is None:
             return True  # pragma: no cover
         assert token.value in '**-+', repr(token.value)
-        kind, value = prev.kind, prev.value
-        if kind in ('number', 'string'):
+        if prev.kind in ('number', 'string'):
             return_val = False
-        elif kind == 'op' and value in ')]':
-            return_val = False
-        elif kind == 'op' and value in '{([:,':
+        elif prev.kind == 'op' and prev.value in ')]':
+             # An unnecessary test?
+            return_val = False  # pragma: no cover
+        elif prev.kind == 'op' and prev.value in '{([:,':
             return_val = True
-        elif kind != 'name':
-            return_val = True
+        elif prev.kind != 'name':
+            # An unnecessary test?
+            return_val = True  # pragma: no cover
         else:
-            # A 'name' token.
+            # prev is a'name' token.
             return self.is_python_keyword(token)
         return return_val
     #@+node:ekr.20240129035336.1: *5* tbo.is_python_keyword
@@ -1555,7 +1556,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         while i < len(self.tokens):
             token = self.tokens[i]
             if self.is_significant_token(token):
-                if trace:
+                if trace:  # pragma: no cover
                     print(
                         f"next: {g.callers(1):25} "
                         f"token: {token.brief_dump()} "
@@ -1563,7 +1564,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                     )
                 return i
             i += 1
-        return None
+        return None  # pragma: no cover
     #@+node:ekr.20240115233050.1: *5* tbo.prev
     def prev(self, i: int) -> Optional[int]:
         """

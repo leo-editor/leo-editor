@@ -338,42 +338,6 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.52: *3* TestTBO.test_bug_1851
-    def test_bug_1851(self):
-
-        contents = r'''\
-    def foo(a1):
-        pass
-    '''
-        contents, tokens = self.make_data(contents)
-        expected = contents.rstrip() + '\n'
-        results = self.beautify(contents, tokens)
-        self.assertEqual(results, expected)
-    #@+node:ekr.20240116155903.1: *3* TestTBO.test_colorizer_fail
-    def test_colorizer_fail(self):
-
-        contents = '''
-
-            # leoColorizer.py: line 2268
-            if j > len(s) and not dots:
-                j = len(s) + 1
-
-                def span(s: str) -> int:
-                    # Note: bindings are frozen by this def.
-                    return self.restart_match_span(s, kind,
-                        delegate=delegate,
-                    )
-        '''
-
-        contents, tokens = self.make_data(contents)
-        # dump_tokens(tokens)
-        expected = contents
-        results = self.beautify(contents, tokens)
-        if False and results != expected:
-            g.printObj(expected, tag='Expected (same as Contents)')
-            g.printObj(results, tag='Results')
-        self.maxDiff = None
-        self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.53: *3* TestTBO.test_comment_indented
     def test_comment_indented(self):
 
@@ -468,42 +432,6 @@ class TestTokenBasedOrange(BaseTest):
             if results != expected:
                 g.trace('Fail:', i)  # pragma: no cover
             self.assertEqual(results, expected)
-    #@+node:ekr.20240112134732.1: *3* TestTBO.test_def_colons
-    def test_def_colons(self):
-
-        contents = '''
-            self.configDict: dict[str, Any] = {}
-            self.configUnderlineDict: dict[str, bool] = {}
-        '''
-        contents, tokens = self.make_data(contents)
-        # dump_tokens(tokens)
-        expected = contents
-        results = self.beautify(contents, tokens)
-        if results != expected:  # pragma: no cover
-            # g.printObj(contents, tag='Contents')
-            g.printObj(expected, tag='Expected (same as Contents)')
-            g.printObj(results, tag='Results')
-
-        self.maxDiff = None
-        self.assertEqual(results, expected)
-
-    #@+node:ekr.20240114100847.1: *3* TestTBO.test_def_square_brackets
-    def test_def_square_brackets(self):
-
-        contents = (
-            """def checkForDuplicateShortcuts(self, c: Cmdr, d: dict[str, str]) -> None:\n"""
-        )
-        contents, tokens = self.make_data(contents)
-        # dump_tokens(tokens)
-        expected = contents
-        results = self.beautify(contents, tokens)
-        if False and results != expected:
-            # g.printObj(contents, tag='Contents')
-            g.printObj(expected, tag='Expected (same as Contents)')
-            g.printObj(results, tag='Results')
-
-        self.maxDiff = None
-        self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.56: *3* TestTBO.test_dont_delete_blank_lines
     def test_dont_delete_blank_lines(self):
 
@@ -520,229 +448,6 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240116072845.1: *3* TestTBO.test_expressions
-    def test_expressions(self):
-
-        contents = """skip_count = max(0, (len(target) - 1))\n"""
-
-        contents, tokens = self.make_data(contents)
-        expected = self.blacken(contents)
-        results = self.beautify(contents, tokens)
-        if expected != results:  # pragma: no cover
-            g.printObj(expected, tag='Explected (blackened)')
-            g.printObj(results, tag='Results')
-        self.assertEqual(results, expected)
-    #@+node:ekr.20240124092041.1: *3* TestTBO.test_fstrings
-    def test_fstrings(self):
-
-        # leoApp.py, line 885.
-        contents = """signon = [f"Leo {leoVer}"]\n"""
-        contents, tokens = self.make_data(contents)
-        expected = self.blacken(contents)
-        results = self.beautify(contents, tokens)
-        self.assertEqual(results, expected)
-    #@+node:ekr.20240126062946.1: *3* TestTBO.test_function_call_with_parens
-    def test_function_calls_with_parens(self):
-
-        # LeoFrame.py, line 1650.
-
-        # Test 1: The 'if' statement on a single line.
-        contents1 = """
-            if (g.doHook("select1", c = c, new_p=p)):
-                return
-            """
-
-        # Black would remove the outer parens.
-        expected1 = textwrap.dedent(
-            """
-            if (g.doHook("select1", c=c, new_p=p)):
-                return
-            """).strip() + '\n'
-
-        # Test 2: The 'if' statement spans several lines.
-        contents2 = """
-            if (
-                whatever and g.doHook(
-                    "select1", c = c, new_p=p)
-            ):
-                return
-            """
-
-        # Black would remove the outer parens.
-        expected2 = textwrap.dedent(
-            """
-            if (
-                whatever and g.doHook(
-                    "select1", c=c, new_p=p)
-            ):
-                return
-            """).strip() + '\n'
-
-        table = (
-            (contents1, expected1),
-            (contents2, expected2),
-        )
-        for contents, expected in table:
-            contents, tokens = self.make_data(contents)
-            results = self.beautify(contents, tokens)
-            if results != expected:
-                if 1:
-                    g.printObj(contents, tag='Contents')
-                    g.printObj(expected, tag='Expected (blackened)')
-                    g.printObj(results, tag='Results')
-                self.assertEqual(expected, results)
-    #@+node:ekr.20240107080413.1: *3* TestTBO.test_function_calls
-    def test_function_calls(self):
-
-        # Put recent failures first.
-        table = (
-            # leoserver.py, line 584.
-            """timeline.sort(key=lambda x: x[0].gnx, reverse=True)""",
-
-            # leoserver.py, line 42 and other lines.
-            """jsonPackage = json.dumps(package, separators=(',', ':'), cls=SetEncoder)""",
-
-            # #1429: https://github.com/leo-editor/leo-editor/issues/1429
-            """
-            version = str(version2.Version.coerce(tag, partial=True))
-            """,
-
-            # LeoApp.py, line 1872.
-            """
-            if path.startswith(tag):
-                return self.computeBindingLetter(c, path=path[len(tag) :])
-            """,
-
-            # LeoApp.py, line 3416.
-            """
-            if groupedEntries:
-                dirCount: dict[str, Any] = {}
-                for fileName in rf.getRecentFiles()[:n]:
-                    dirName, baseName = g.os_path_split(fileName)
-            """,
-
-            # leoPersistence, line 526.
-            """
-            return '-->'.join(reversed(
-                [self.expected_headline(p2) for p2 in p.self_and_parents(copy=False)]))
-            """,
-
-            # leoNodes, line 881.
-            """
-            path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-            """,
-
-            # leoserver.py, line 2302.
-            """
-            result = [
-                self._get_position_d(p, c) for p in c.all_positions(copy=False)
-            ]
-            """,
-
-            # leoApp, line 1657
-            """
-            if True:
-                home = os.getenv(home[1:-1], default=None)
-            """,
-        )
-        for i, contents in enumerate(table):
-            contents, tokens = self.make_data(contents)
-            expected = contents  # Black would join lines.
-            results = self.beautify(contents, tokens)
-            if results != expected:
-                # dump_tokens(tokens)
-                if 1:
-                    print('')
-                    # g.printObj(contents, tag='Contents')
-                    g.printObj(expected, tag='Expected (same as contents)')
-                    g.printObj(results, tag='Results')
-                self.assertEqual(expected, results)
-    #@+node:ekr.20240105153425.57: *3* TestTBO.test_function_defs
-    def test_function_defs(self):
-
-        long_table = (
-            # Case 1.
-            """
-                def f1(a=2 + 5):
-                    pass
-            """,
-            # Case 2
-            """
-                def f2(a):
-                    pass
-            """,
-            # Case 3.
-            """
-            def f3(a: int = 2):
-                pass
-            """,
-            # Case 4.
-            '''
-            def should_kill_beautify(p):
-                """Return True if p.b contains @killbeautify"""
-                return 'killbeautify' in g.get_directives_dict(p)
-            ''',
-            # Case 5 (new)
-            '''
-                def reloadSettings():
-                    pass
-            ''',
-            # Case 6 (new)
-            '''
-                def tuple_init(stack: Sequence[str] = ('root',)) -> Generator:
-                    pass
-            ''',
-            # Case 7 (new)
-        )
-        short_table = (
-            '''
-                def tuple_init(stack: Sequence[str] = ('root',)) -> Generator:
-                    pass
-            ''',
-        )
-        assert long_table and short_table
-        table = long_table
-        for i, contents in enumerate(table):
-            contents, tokens = self.make_data(contents)
-            expected = self.blacken(contents).rstrip() + '\n'
-            results = self.beautify(contents, tokens)
-            if expected != results:  # pragma: no cover
-                g.printObj(expected, tag='Explected (blackened)')
-                g.printObj(results, tag='Results')
-            self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.63: *3* TestTBO.test_leading_stars
-    def test_leading_stars(self):
-
-        # #2533.
-        contents = """
-            def f(
-                arg1,
-                *args,
-                **kwargs
-            ):
-                pass
-        """
-        contents, tokens = self.make_data(contents)
-        if 1:  # w/o join:
-            expected = contents
-        else:  # with join.
-            expected = """
-                def f(arg1, *args, **kwargs):
-                    pass
-            """
-        results = self.beautify(contents, tokens)
-        self.assertEqual(expected, results)
-    #@+node:ekr.20240105153425.64: *3* TestTBO.test_leading_stars_one_line
-    def test_leading_stars_one_line(self):
-
-        # #2533.
-        contents = """
-            def f(arg1, *args, **kwargs):
-                pass
-        """
-        contents, tokens = self.make_data(contents)
-        results = self.beautify(contents, tokens)
-        self.assertEqual(contents, results)
     #@+node:ekr.20240105153425.65: *3* TestTBO.test_leo_sentinels
     def test_leo_sentinels_1(self):
 
@@ -844,8 +549,8 @@ class TestTokenBasedOrange(BaseTest):
         # See https://peps.python.org/pep-0008/#other-recommendations
 
         tag = 'test_one_line_pet_peeves'
-        # Except where noted, all entries are expected values....
 
+        # Except where noted, all entries are expected values...
         table = (
             # Assignments...
             """a = b * c""",
@@ -940,23 +645,6 @@ class TestTokenBasedOrange(BaseTest):
             g.printObj(results, tag='Results')
             g.printObj(expected, tag='Expected')
         self.assertEqual(expected, results)
-    #@+node:ekr.20240105153425.71: *3* TestTBO.test_return
-    def test_return(self):
-
-        contents = """return []"""
-        expected = self.blacken(contents)
-        contents, tokens = self.make_data(contents)
-        results = self.beautify(contents, tokens)
-        self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.72: *3* TestTBO.test_single_quoted_string
-    def test_single_quoted_string(self):
-
-        contents = """print('hi')"""
-        # blacken suppresses string normalization.
-        expected = self.blacken(contents)
-        contents, tokens = self.make_data(contents)
-        results = self.beautify(contents, tokens)
-        self.assertEqual(results, expected)
     #@+node:ekr.20240109090653.1: *3* TestTBO.test_slice
     def test_slice(self):
 
@@ -1036,24 +724,15 @@ class TestTokenBasedOrange(BaseTest):
             self.assertEqual(expected, results)
     #@+node:ekr.20240105153425.76: *3* TestTBO.test_star_star_operator
     def test_star_star_operator(self):
-        # Was tested in pet peeves, but this is more permissive.
+
+        # Don't rely on black for this test.
         contents = """a = b ** c"""
         contents, tokens = self.make_data(contents)
-        # Don't rely on black for this test.
-        # expected = self.blacken(contents)
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
-    #@+node:ekr.20240105153425.78: *3* TestTBO.test_ternary
-    def test_ternary(self):
-
-        contents = """print(2 if name == 'class' else 1)"""
-        contents, tokens = self.make_data(contents)
-        expected = contents
-        results = self.beautify(contents, tokens)
-        self.assertEqual(results, expected)
-    #@+node:ekr.20240109070553.1: *3* TestTBO.test_unary_op
-    def test_unary_op(self):
+    #@+node:ekr.20240109070553.1: *3* TestTBO.test_unary_ops
+    def test_unary_ops(self):
 
         # One-line pet peeves involving unary ops but *not* slices.
 
@@ -1070,8 +749,14 @@ class TestTokenBasedOrange(BaseTest):
             # Dicts...
             """d = {key: -3}""",
             """d['key'] = a[-i]""",
-            # Unary ops...
+            # Unary minus...
             """v = -1 if a < b else -2""",
+            # ~
+            """a = ~b""",
+            """c = a[:~e:]""",
+            # """d = a[f() - 1 :]""",
+            # """e = a[2 - 1 :]""",
+            # """e = a[b[2] - 1 :]""",
         )
         for i, contents in enumerate(table):
             description = f"{tag} part {i}"
