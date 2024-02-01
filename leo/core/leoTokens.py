@@ -592,6 +592,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.tab_width = 4
         self.verbose = False
 
+        # Make sure tokens is defined, even for empty files.
+        self.tokens: list[InputToken] = []
+
         # Override defaults from settings dict.
         valid_keys = ('diff', 'force', 'orange', 'safe', 'silent', 'tab_width', 'verbose')
         for key in settings:  # pragma: no cover
