@@ -1605,7 +1605,7 @@ class TestJava(BaseTestImporter):
         #@+node:ekr.20231225065840.1: *4* << define contents: test_round_trip >>
         # #3727: The blank lines below cause the round-trip to fail.
         #        For now, this unit test will hack the expected lines.
-        contents =  textwrap.dedent("""
+        contents = """
             public class Main {
                 public static void main(String[] args) {
                     myMethod();
@@ -1616,8 +1616,7 @@ class TestJava(BaseTestImporter):
                 }
 
             }
-
-        """).strip() + '\n'
+        """.strip() + '\n'
         #@-<< define contents: test_round_trip >>
 
         # Import contents into root's tree.
@@ -1690,7 +1689,7 @@ class TestJavascript(BaseTestImporter):
     #@+node:ekr.20210904065459.36: *3* TestJavascript.test_var_equal_function
     def test_var_equal_function(self):
 
-        s = textwrap.dedent("""\
+        s = """
             var c3 = (function () {
                 "use strict";
 
@@ -1703,7 +1702,7 @@ class TestJavascript(BaseTestImporter):
 
                 return c3;
             }());
-        """)
+        """
 
         expected_results = (
             (0, '',  # Ignore the first headline.
@@ -1728,7 +1727,6 @@ class TestJavascript(BaseTestImporter):
                     '};\n'
             ),
         )
-        # g.printObj(g.splitLines(s), tag='source')
         self.new_run_test(s, expected_results)
     #@+node:ekr.20220814014851.1: *3* TestJavascript.test_comments
     def test_comments(self):
@@ -2412,7 +2410,7 @@ class TestPascal(BaseTestImporter):
 
         #@+<< define s >>
         #@+node:ekr.20230518071612.1: *4* << define s >>
-        s = textwrap.dedent(
+        s = textwrap.dedent(  # dedent is required.
         """
             unit Unit1;
 
@@ -4348,20 +4346,17 @@ class TestXML(BaseTestImporter):
     def test_standard_opening_elements(self):
 
         s = """
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE note SYSTEM "Note.dtd">
-        <html>
-        <head>
-            <title>Bodystring</title>
-        </head>
-        <body class='bodystring'>
-        <div id='bodydisplay'></div>
-        </body>
-        </html>
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE note SYSTEM "Note.dtd">
+            <html>
+            <head>
+                <title>Bodystring</title>
+            </head>
+            <body class='bodystring'>
+            <div id='bodydisplay'></div>
+            </body>
+            </html>
         """
-
-        # A good trace while single-stepping.
-        # g.printObj(g.splitLines(textwrap.dedent(s)), tag='Input File')
 
         expected_results = (
             (0, '',  # Ignore level 0 headlines.
