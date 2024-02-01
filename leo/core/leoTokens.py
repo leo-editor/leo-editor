@@ -64,7 +64,7 @@ def orange_command(
     t1 = time.process_time()
     n_tokens = 0
     n_changed = 0
-    for filename in to_be_checked_files:  ###files:
+    for filename in to_be_checked_files:
         if os.path.exists(filename):
             tbo = TokenBasedOrange(settings)
             changed = tbo.beautify_file(filename)
@@ -1645,7 +1645,6 @@ def main() -> None:  # pragma: no cover
 
     # Do the command.
     if to_be_checked_files:
-        ### orange_command(arg_files, files, settings_dict)
         orange_command(arg_files, requested_files, dirty_files, to_be_checked_files, settings_dict)
 #@+node:ekr.20240105140814.9: *3* function: get_modified_files
 def get_modified_files(repo_path: str) -> list[str]:  # pragma: no cover
