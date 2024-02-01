@@ -824,7 +824,8 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.30: *5* clean-lines
     def test_clean_lines(self):
         """Test case for clean-lines"""
-        before_b = textwrap.dedent("""\
+        before_b = textwrap.dedent(
+        """
             # Should remove all trailing whitespace.
 
             a = 2
@@ -1978,6 +1979,7 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20210926144000.1: *5* insert-newline-bug-2230
     def test_insert_newline_bug_2230(self):
         """Test case for insert-newline"""
+        # The backslash is required.
         before_b = textwrap.dedent("""\
     #@@language python
     def spam():
@@ -2317,6 +2319,7 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20220517064432.1: *5* merge-node-with-next-node
     def test_merge_node_with_next_node(self):
         c, u = self.c, self.c.undoer
+        # The backslash is required.
         prev_b = textwrap.dedent("""\
     def spam():
         pass
@@ -2351,6 +2354,7 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20220517064507.1: *5* merge-node-with-prev-node
     def test_merge_node_with_prev_node(self):
         c, u = self.c, self.c.undoer
+        # The backslash is required.
         prev_b = textwrap.dedent("""\
     def spam():
         pass
@@ -2521,14 +2525,15 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.91: *5* newline-and-indent
     def test_newline_and_indent(self):
         """Test case for newline-and-indent"""
-        before_b = textwrap.dedent("""\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """)
+        before_b = textwrap.dedent(
+        """
+            first line
+            line 1
+                line a
+                    line b
+            line c
+            last line
+        """).strip() + '\n'
         # docstrings strip blank lines, so we can't use a docstring here!
         after_b = ''.join([
             'first line\n'
@@ -4391,7 +4396,8 @@ class TestEditCommands(LeoUnitTest):
         )
         #@-<< define table >>
         w = c.frame.body.wrapper
-        s = textwrap.dedent("""\
+        s = textwrap.dedent(
+        """
             Paragraph 1.
                 line 2.
 
