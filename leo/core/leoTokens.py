@@ -773,6 +773,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.filename = filename
         contents, encoding = g.readFileIntoString(filename)
         if not contents:
+            self.tokens = []
             return None, None, None
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
         return contents, encoding, tokens
