@@ -1542,7 +1542,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         class Python_To_Rust: Convert Python text to Rust text.
 
         The conversion is not perfect, but it eliminates lots of tedious text manipulation.
-            
+
         The Rust compiler will complain about the following:
 
         - Calls are not allowed in f-strings.
@@ -2158,7 +2158,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def pre_pass(self, s: str) -> list[str]:
             """
             The pre-pass for s, a multi-line string.
-            
+
             Split the lines and comment out all decorators.
             """
             result = []

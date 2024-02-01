@@ -354,6 +354,7 @@ class LeoApp:
             "iss":      "inno_setup",
             "java":     "java",
             "jhtml":    "jhtml",
+            "jl":       "julia",
             "jmk":      "jmk",
             "js":       "javascript", # For javascript import test.
             "jsp":      "javaserverpage",
@@ -374,6 +375,7 @@ class LeoApp:
             "mpl":      "maple",
             "mqsc":     "mqsc",
             "nqc":      "nqc",
+            "nim":      "nim",
             "nsi":      "nsi", # EKR: 2010/10/27
             # "nsi":      "nsis2",
             "nw":       "noweb",
@@ -556,6 +558,7 @@ class LeoApp:
             "jmk"                : "#",
             "json"               : "#", # EKR: 2020/07/27: Json has no delims. This is a dummy entry.
             "jsp"                : "<%-- --%>",
+            "julia"              : "#",
             "jupyter"            : "<%-- --%>", # Default to markdown?
             "kivy"               : "#", # PeckJ 2014/05/05
             "kshell"             : "#", # Leo 4.5.1.
@@ -576,6 +579,7 @@ class LeoApp:
             "moin"               : "##",
             "mqsc"               : "*",
             "netrexx"            : "-- /* */",
+            "nim"                : "#",
             "noweb"              : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
             "nqc"                : "// /* */",
             "nsi"                : ";", # EKR: 2010/10/27
@@ -739,6 +743,7 @@ class LeoApp:
             "jmk"           : "jmk",
             "json"          : "json",
             "jsp"           : "jsp",
+            "julia"         : "jl",
             # "jupyter"       : "ipynb",
             "kivy"          : "kv", # PeckJ 2014/05/05
             "kshell"        : "ksh", # Leo 4.5.1.
@@ -754,6 +759,7 @@ class LeoApp:
             "modula3"       : "mod",
             "moin"          : "wiki",
             "mqsc"          : "mqsc",
+            "nim"           : "nim",
             "noweb"         : "nw",
             "nqc"           : "nqc",
             "nsi"           : "nsi", # EKR: 2010/10/27
@@ -2959,7 +2965,7 @@ class LoadManager:
     def openWithFileName(self, fn: str, gui: LeoGui, old_c: Cmdr) -> Optional[Cmdr]:
         """
         Completely read a file, creating the corresponding outline.
-        
+
         1. If fn is an existing .leo, .db or .leojs file:
            - Read fn once with a NullGui to discover all settings.
            - Read fn again with the requested gui to create the outline.
@@ -3063,7 +3069,7 @@ class LoadManager:
     def openExternalFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
         """
         Create a wrapper commander (in a new tab) for the given external file.
-        
+
         The commander's outline contains an @edit or @file node for the external file.
         """
         lm = self

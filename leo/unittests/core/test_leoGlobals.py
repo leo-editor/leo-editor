@@ -1081,7 +1081,7 @@ class TestGlobals(LeoUnitTest):
         if 0:
             for p in sib.self_and_subtree():
                 print(f"{p.gnx:30} {p.h}")
-        
+
         # Create a table of various kinds of unls.
         bad_gnx = 'TestLeoId.20231229001812.666'
         file_name = c.fileName()

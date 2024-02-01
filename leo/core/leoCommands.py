@@ -379,7 +379,7 @@ class Commands:
         # A list of other classes that have a reloadSettings method
         c.configurables = c.subCommanders[:]
         c.db = CommanderWrapper(c)
-        
+
         # #2485: Load the free_layout plugin in the proper context.
         #        g.app.pluginsController.loadOnePlugin won't work here.
         try:
@@ -640,7 +640,6 @@ class Commands:
         Set the cwd before calling the command.
         """
         c, p, tag = self, self.p, 'execute-general-script'
-
         def get_setting_for_language(setting: str) -> Optional[str]:
             """
             Return the setting from the given @data setting.
@@ -2371,10 +2370,10 @@ class Commands:
     def fullPath(self, p: Position) -> str:
         """
         Return the full path in effect at p.
-        
+
         If p is an @<file> node, return the path, including the filename.
         Otherwise the return the path to the enclosing directory.
-        
+
         Neither the path nor the fileName will be created if it does not exist.
         """
         c = self
@@ -2889,7 +2888,7 @@ class Commands:
         use_temp = not root.isAnyAtFileNode()
         if use_temp:
             fd, root_path = tempfile.mkstemp(suffix=ext, prefix="")
-            with os.fdopen(fd, 'w') as f:
+            with os.fdopen(fd, 'w', encoding='utf-8') as f:
                 f.write(script)
         else:
             root_path = c.fullPath(root)
@@ -3317,7 +3316,7 @@ class Commands:
     def openRecentFile(self, event: Event = None, fn: str = None) -> None:
         """
         c.openRecentFile: This is not a command!
-        
+
         This method is a helper called only from the recentFilesCallback in
         rf.createRecentFilesMenuItems.
         """

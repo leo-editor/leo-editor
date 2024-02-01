@@ -18,11 +18,11 @@ class TestGotoCommands(LeoUnitTest):
 
         c = self.c
         x = GoToCommands(c)
-        
+
         clean_contents: list[str]
         real_clean_contents: list[str]
         root: Position
-        
+
         #@+others  # Create helpers
         #@+node:ekr.20230804093924.1: *4* function: create_test_tree
         def create_test_tree() -> Position:
@@ -49,7 +49,7 @@ class TestGotoCommands(LeoUnitTest):
             return root
         #@+node:ekr.20230804093956.1: *4* function: init_unchanging_data
         def init_unchanging_data() -> None:
-            
+
             nonlocal clean_contents, real_clean_contents
 
             # Init the comment delims.
@@ -72,10 +72,10 @@ class TestGotoCommands(LeoUnitTest):
                 for i, z in enumerate(contents)
                 if not g.is_invisible_sentinel(delims, contents, i)
             ]
-            
+
             # Test 0: A strong test of g.is_invisible_sentinel.
             self.assertEqual(clean_contents, real_clean_contents)
-            
+
         #@+node:ekr.20230804094419.1: *4* test1
         def test1() -> None:
 

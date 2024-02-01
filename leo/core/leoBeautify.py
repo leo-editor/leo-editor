@@ -506,9 +506,9 @@ class CPrettyPrinter:
                 s = s.replace('\t', ' ' * w)
                 if s.startswith('\n'):
                     s2 = s[1:]
-                    self.result.append('\n' + s2[: -w])
+                    self.result.append('\n' + s2[:-w])
                 else:
-                    self.result.append(s[: -w])
+                    self.result.append(s[:-w])
     #@+node:ekr.20110918225821.6819: *3* cpp.match
     def match(self, s: str, i: int, pat: str) -> bool:
         return i < len(s) and s[i] == pat
