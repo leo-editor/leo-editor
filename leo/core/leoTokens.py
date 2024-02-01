@@ -1289,18 +1289,23 @@ class TokenBasedOrange:  # Orange is the new Black.
     def pre_scan(self) -> None:
         """
         Scan the entire file in one iterative pass, adding context to a few
-        kinds of tokens. See set_context for details.
+        kinds of tokens as follows:
+        
+        Token   Possible Contexts (or None)
+        =====   ===========================
+        ':'     'annotation', 'dict', 'complex-slice', 'simple-slice'
+        '='     'annotation', 'initializer'
+        '*'     'arg'
+        '**'    'arg'
+        '.'     'import'
         """
-        trace = False
+
         # The main loop.
         in_import = False
         scan_stack: list[ScanState] = []
         prev_token: InputToken = None
         for i, token in enumerate(self.tokens):
             kind, value = token.kind, token.value
-            if trace:  # pragma: no cover
-                val = repr(value) if not value or '\n' in value else value
-                g.trace(f"{self.index:3} {kind:>8}: {val}")
             if kind in 'newline':
                 #@+<< pre-scan 'newline' tokens >>
                 #@+node:ekr.20240128230812.1: *6* << pre-scan 'newline' tokens >>
@@ -1312,21 +1317,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             elif kind == 'op':
                 #@+<< pre-scan 'op' tokens >>
                 #@+node:ekr.20240128123117.1: *6* << pre-scan 'op' tokens >>
-                # Set contexts as follows:
-
-                # Token   Possible Contexts (or None)
-                # =====   ===========================
-                # ':'     'annotation', 'dict', 'complex-slice', 'simple-slice'
-                # '='     'annotation', 'initializer'
-                # '*'     'arg'
-                # '**'    'arg'
-                # '.'     'import'
-
                 top_state = scan_stack[-1] if scan_stack else None
-
-                if trace:  # pragma: no cover
-                    g.trace(f"{value:3} prev: {prev_token} state: {top_state}")
-                    g.printObj(scan_stack, tag='scan_stack')
 
                 # Handle '[' and ']'.
                 if value == '[':
@@ -1385,6 +1376,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             g.printObj(scan_stack, tag='pre_scan: non-empty scan_stack')
     #@+node:ekr.20240129041304.1: *6* tbo.finish_arg
     def finish_arg(self, end: int, state: ScanState) -> None:
+        """Set context for all ':' when scanning from '(' to ')'."""
 
         # Sanity checks.
         assert state.kind == 'arg', repr(state)
@@ -1396,10 +1388,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         assert i1 < end, (i1, end)
         if not values:
             return
-
-        if 0:  # pragma: no cover
-            tokens_s = ''.join([z.value for z in self.tokens[i1 : end + 1]])
-            g.trace(f"{i1:3} {end:3} {values!r} {tokens_s}")
 
         # Compute the context for each *separate* '=' token.
         equal_context = 'initializer'
@@ -1431,6 +1419,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 prev = token
     #@+node:ekr.20240128233406.1: *6* tbo.finish_slice
     def finish_slice(self, end: int, state: ScanState) -> None:
+        """Set context for all ':' when scanning from '[' to ']'."""
 
         # Sanity checks.
         assert state.kind == 'slice', repr(state)
@@ -1484,13 +1473,18 @@ class TokenBasedOrange:  # Orange is the new Black.
                 prev = token
 
         # Set the context of all outer-level ':' tokens.
-        if 0:
-            tokens_s = ''.join([z.value for z in self.tokens[i1 : end + 1]])
-            g.trace(f"{final_context:14} {i1:3} {end:3} {colons!r:8} {tokens_s}")
         for i in colons:
             self.set_context(i, final_context)
     #@+node:ekr.20240129040347.1: *6* tbo.finish_dict
     def finish_dict(self, end: int, state: ScanState) -> None:
+        """
+        Set context for all ':' when scanning from '{' to '}'
+        
+        Strictly speaking, setting this context is unnecessary because
+        tbo.gen_colon generates the same code regardless of this context.
+
+        In other words, this method can be a do-nothing!
+        """
 
         # Sanity checks.
         assert state.kind == 'dict', repr(state)
@@ -1501,10 +1495,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         i1 = token.index
         assert i1 < end, (i1, end)
 
-        # Set the context for all ':' tokens in the dict.
-        if 0:
-            tokens_s = ''.join([z.value for z in self.tokens[i1 : end + 1]])
-            g.trace(f"{i1:3} {end:3} {colons!r:8} {tokens_s}")
+        # Set the context for all ':' tokens.
         for i in colons:
             self.set_context(i, 'dict')
     #@+node:ekr.20240129034209.1: *5* tbo.is_unary_op_with_prev
@@ -1564,7 +1555,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         while i < len(self.tokens):
             token = self.tokens[i]
             if self.is_significant_token(token):
-                if trace and 'find_end_of_line' not in g.callers():  # Filtered dump!
+                if trace:
                     print(
                         f"next: {g.callers(1):25} "
                         f"token: {token.brief_dump()} "
@@ -1589,55 +1580,17 @@ class TokenBasedOrange:  # Orange is the new Black.
         return None  # pragma: no cover
     #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
-        #@+<< docstring: set_context >>
-        #@+node:ekr.20240124030354.1: *6* << docstring: set_context >>
         """
         Set self.tokens[i].context, but only if it does not already exist!
-
-        As a result, the order of scanning tokens in the parser matters!
-
-        Here is a table of tokens and the contexts they may have:
-
-        Token       Possible Contexts
-        =====       =================
-        ':'         'annotation', 'dict', 'complex-slice', 'simple-slice'
-        '='         'annotation', 'initializer'
-        '*',        'arg'
-        '**'        'arg'
-        '.'         'from', 'import'
-
-        **No longer used**
-
-                    'expression'
-        '{', '}'    'dict'
-        '[', ']     'array'
-        'name'      'class/def'
-        'newline'   'end-statement'
-        'nl'        'end-statement'
-
-        **Legacy table**
-
-        Token       Possible Contexts
-        =====       =================
-        ':'         'annotation', 'dict', 'end-statement'
-                    'complex-slice', 'simple-slice'
-        '='         'annotation', 'expression', 'initializer'
-        '*', '**'   'arg', 'expression'
-        '.'         'from', 'import'
-        '{', '}'    'dict'  (denotes that the dict has been scanned).
-        '[', ']     'array' (denotes that the array has been scanned).
-        'name'      'class/def'
-        'newline'   'end-statement'
-        'nl'        'end-statement'
+        
+        See the docstring for pre_scan for details.
         """
-        #@-<< docstring: set_context >>
 
         trace = False  # Do not delete the trace below.
 
         valid_contexts = (
-            'annotation', 'array', 'arg', 'class/def', 'complex-slice',
-            'dict', 'end-statement', 'expression', 'from', 'import',
-            'initializer', 'simple-slice',
+            'annotation', 'arg', 'complex-slice', 'simple-slice',
+            'dict', 'import', 'initializer',
         )
         if context not in valid_contexts:
             self.oops(f"Unexpected context! {context!r}")  # pragma: no cover
