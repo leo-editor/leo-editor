@@ -2519,8 +2519,7 @@ class TestOrange(BaseTest):
 
         line_length = 40  # For testing.
 
-        # The backslash is required.
-        contents = textwrap.dedent("""\
+        contents = textwrap.dedent("""
     #@@nobeautify
 
     def addOptionsToParser(self, parser, trace_m):
@@ -2544,7 +2543,7 @@ class TestOrange(BaseTest):
     docDirective    =  3 # @doc.
 
     #@@beautify
-    """)
+    """).lstrip()
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree,
