@@ -21,15 +21,15 @@ class Test_To_Python(BaseTestImporter):
         c = self.c
         x1 = ConvertCommandsClass(c)
         x = x1.C_To_Python(c)
-        s = textwrap.dedent("""\
-        void hello_world()
-        {
-            print('hi')
-            if a == 2 {
-                print('2')
+        s = """
+            void hello_world()
+            {
+                print('hi')
+                if a == 2 {
+                    print('2')
+                }
             }
-        }
-        """)
+        """
         lines = g.splitLines(s)
         x.convertCodeList(lines)
     #@-others
@@ -62,13 +62,14 @@ class TestAddMypyAnnotations(LeoUnitTest):
     #@+node:ekr.20220108091352.1: *3* test_ama.test_already_annotated
     def test_already_annotated(self):
         p = self.p
-        p.b = contents = textwrap.dedent('''\
+        p.b = contents = textwrap.dedent(
+        '''
             def f1(i: int, s: str) -> str:
                 return s
 
             def f2(self, c: Cmdr, g: Any, ivars: list[str]) -> Any:
                 pass
-    ''')
+        ''')
         self.x.convert_body(p)
         self.assertEqual(p.b, contents)
     #@+node:ekr.20220416053117.1: *3* test_ama.test_bug_2606
@@ -76,7 +77,8 @@ class TestAddMypyAnnotations(LeoUnitTest):
         # https://github.com/leo-editor/leo-editor/issues/2606
         p = self.p
         # Make sure any adjustment to the args logic doesn't affect following functions.
-        p.b = textwrap.dedent('''\
+        p.b = textwrap.dedent(
+        '''
             def f1(root=p and p.copy()):
                 pass
 
@@ -85,8 +87,9 @@ class TestAddMypyAnnotations(LeoUnitTest):
 
             def f3(a, self=self):
                 pass
-    ''')
-        expected = textwrap.dedent('''\
+        ''')
+        expected = textwrap.dedent(
+        '''
             def f1(root: Any=p and p.copy()) -> None:
                 pass
 
@@ -95,26 +98,29 @@ class TestAddMypyAnnotations(LeoUnitTest):
 
             def f3(a: Any, self=self) -> None:
                 pass
-    ''')
+        ''')
         self.x.convert_body(p)
         self.assertEqual(p.b, expected)
     #@+node:ekr.20220108093044.1: *3* test_ama.test_initializers
     def test_initializers(self):
         p = self.p
-        p.b = textwrap.dedent('''\
+        p.b = textwrap.dedent(
+        '''
             def f3(i = 2, f = 1.1, b = True, s = 'abc', x = None):
                 pass
-    ''')
-        expected = textwrap.dedent('''\
+        ''')
+        expected = textwrap.dedent(
+        '''
             def f3(i: int=2, f: float=1.1, b: bool=True, s: str='abc', x: Any=None) -> None:
                 pass
-    ''')
+        ''')
         self.x.convert_body(p)
         self.assertEqual(p.b, expected)
     #@+node:ekr.20220108093621.1: *3* test_ama.test_multiline_def
     def test_multiline_def(self):
         p = self.p
-        p.b = textwrap.dedent('''\
+        p.b = textwrap.dedent(
+        '''
             def f (
                 self,
                 a,
@@ -124,8 +130,9 @@ class TestAddMypyAnnotations(LeoUnitTest):
                 **kwargs,
             ):
                 pass
-    ''')
-        expected = textwrap.dedent('''\
+        ''')
+        expected = textwrap.dedent(
+        '''
             def f(
                 self,
                 a: Any,
@@ -135,13 +142,14 @@ class TestAddMypyAnnotations(LeoUnitTest):
                 **kwargs: Any,
             ) -> None:
                 pass
-    ''')
+        ''')
         self.x.convert_body(p)
         self.assertEqual(p.b, expected)
     #@+node:ekr.20220108153333.1: *3* test_ama.test_multiline_def_with_comments
     def test_multiline_def_with_comments(self):
         p = self.p
-        p.b = textwrap.dedent('''\
+        p.b = textwrap.dedent(
+        '''
             def f (
                 self,# comment 1
                 a,   # comment, 2
@@ -150,9 +158,10 @@ class TestAddMypyAnnotations(LeoUnitTest):
                 e=3,
             ):
                 pass
-    ''')
+        ''')
         # Note: The command insert exactly two spaces before comments.
-        expected = textwrap.dedent('''\
+        expected = textwrap.dedent(
+        '''
             def f(
                 self,  # comment 1
                 a: Any,  # comment, 2
@@ -161,27 +170,30 @@ class TestAddMypyAnnotations(LeoUnitTest):
                 e: int=3,
             ) -> None:
                 pass
-    ''')
+        ''')
         self.x.convert_body(p)
         # g.printObj(p.b)
         self.assertEqual(p.b, expected)
     #@+node:ekr.20220108083112.4: *3* test_ama.test_plain_args
     def test_plain_args(self):
         p = self.p
-        p.b = textwrap.dedent('''\
+        p.b = textwrap.dedent(
+        '''
             def f1(event, i, s):
                 pass
-    ''')
-        expected = textwrap.dedent('''\
+        ''')
+        expected = textwrap.dedent(
+        '''
             def f1(event: Event, i: int, s: str) -> None:
                 pass
-    ''')
+        ''')
         self.x.convert_body(p)
         self.assertEqual(p.b, expected)
     #@+node:ekr.20220416082758.1: *3* test_ama.test_special_methods
     def test_special_methods(self):
         p = self.p
-        p.b = textwrap.dedent('''\
+        p.b = textwrap.dedent(
+        '''
             def __init__(self):
                 pass
 
@@ -190,8 +202,9 @@ class TestAddMypyAnnotations(LeoUnitTest):
 
             def __str__(self):
                 pass
-    ''')
-        expected = textwrap.dedent('''\
+        ''')
+        expected = textwrap.dedent(
+        '''
             def __init__(self) -> None:
                 pass
 
@@ -200,7 +213,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
 
             def __str__(self) -> str:
                 pass
-    ''')
+        ''')
         self.x.convert_body(p)
         self.assertEqual(p.b, expected)
     #@-others

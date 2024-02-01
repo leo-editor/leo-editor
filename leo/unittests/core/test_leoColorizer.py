@@ -530,7 +530,8 @@ class TestColorizer(LeoUnitTest):
         self.color('html', text)
     #@+node:ekr.20210905170507.17: *3* TestColorizer.test_colorizer_Java
     def test_colorizer_Java(self):
-        text = textwrap.dedent('''\
+        text = textwrap.dedent(
+        '''
             @ doc part
             @c
 
@@ -1099,7 +1100,8 @@ class TestColorizer(LeoUnitTest):
     #@+node:ekr.20210905170507.26: *3* TestColorizer.test_colorizer_Python2
     def test_colorizer_Python2(self):
 
-        text = textwrap.dedent('''\
+        text = textwrap.dedent(
+        '''
             """This creates a free-floating copy of v's tree for undo.
             The copied trees must use different vnodes than the original."""
 
@@ -1424,7 +1426,8 @@ class TestColorizer(LeoUnitTest):
     #@+node:ekr.20210905170507.36: *3* TestColorizer.test_colorizer_wikiTest
     def test_colorizer_wikiTest(self):
         # both color_markup & add_directives plugins must be enabled.
-        text = textwrap.dedent('''\
+        text = textwrap.dedent(
+        '''
             @markup wiki
 
             """ text~~red:some text~~more text"""

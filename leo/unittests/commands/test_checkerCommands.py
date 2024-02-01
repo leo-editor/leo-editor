@@ -51,5 +51,4 @@ class TestChecker(LeoUnitTest):
     #@-others
 #@-others
 
-
 #@-leo

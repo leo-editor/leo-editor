@@ -3929,29 +3929,29 @@ class TestRust(BaseTestImporter):
 
         # From ruff/crates/ruff_formatter/shared_traits.rs
         s = textwrap.dedent(  # dedent is required.
-    """
-        /// Used to get an object that knows how to format this object.
-        pub trait AsFormat<Context> {
-            type Format<'a>: ruff_formatter::Format<Context>
-            where
-                Self: 'a;
+            """
+                /// Used to get an object that knows how to format this object.
+                pub trait AsFormat<Context> {
+                    type Format<'a>: ruff_formatter::Format<Context>
+                    where
+                        Self: 'a;
 
-            /// Returns an object that is able to format this object.
-            fn format(&self) -> Self::Format<'_>;
-        }
+                    /// Returns an object that is able to format this object.
+                    fn format(&self) -> Self::Format<'_>;
+                }
 
-        /// Implement [`AsFormat`] for references to types that implement [`AsFormat`].
-        impl<T, C> AsFormat<C> for &T
-        where
-            T: AsFormat<C>,
-        {
-            type Format<'a> = T::Format<'a> where Self: 'a;
+                /// Implement [`AsFormat`] for references to types that implement [`AsFormat`].
+                impl<T, C> AsFormat<C> for &T
+                where
+                    T: AsFormat<C>,
+                {
+                    type Format<'a> = T::Format<'a> where Self: 'a;
 
-            fn format(&self) -> Self::Format<'_> {
-                AsFormat::format(&**self)
-            }
-        }
-    """)
+                    fn format(&self) -> Self::Format<'_> {
+                        AsFormat::format(&**self)
+                    }
+                }
+            """)
         expected_results = (
             (0, '',  # Ignore the first headline.
                     '@others\n'

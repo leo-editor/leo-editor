@@ -169,40 +169,40 @@ class TestIndentedTypeScript(LeoUnitTest):
         # Contains "over-indented" parenthesized lines, a good test for check_indentation.
 
         contents = textwrap.dedent(  # dedent is required.
-        """\
-        import { NodeIndices, VNode, Position } from './leoNodes';
+            """
+            import { NodeIndices, VNode, Position } from './leoNodes';
 
-        export class Config implements ConfigMembers {
+            export class Config implements ConfigMembers {
 
-        constructor(
-            private _context: vscode.ExtensionContext,
-            private _leoUI: LeoUI
-        ) { }
+            constructor(
+                private _context: vscode.ExtensionContext,
+                private _leoUI: LeoUI
+            ) { }
 
-        const w_config: FontSettings = {
-            zoomLevel: Number(w_zoomLevel),
-            fontSize: Number(w_fontSize)
-        };
+            const w_config: FontSettings = {
+                zoomLevel: Number(w_zoomLevel),
+                fontSize: Number(w_fontSize)
+            };
 
-        public getFontConfig(): FontSettings {
-            let w_zoomLevel = vscode.workspace.getConfiguration(
-                "window"
-            ).get("zoomLevel");
+            public getFontConfig(): FontSettings {
+                let w_zoomLevel = vscode.workspace.getConfiguration(
+                    "window"
+                ).get("zoomLevel");
 
-            return w_config;
-        }
-
-        public getEncodingFromHeader(fileName: string, s: string): BufferEncoding {
-            if (at.errors) {
-                if (g.unitTesting) {
-                    console.assert(false, g.callers());
-                }
-            } else {
-                at.initReadLine(s);
+                return w_config;
             }
-        }
-        }
-        """)
+
+            public getEncodingFromHeader(fileName: string, s: string): BufferEncoding {
+                if (at.errors) {
+                    if (g.unitTesting) {
+                        console.assert(false, g.callers());
+                    }
+                } else {
+                    at.initReadLine(s);
+                }
+            }
+            }
+            """)
         #@-<< define contents: test_typescript >>
 
         # Set p.h and p.b.

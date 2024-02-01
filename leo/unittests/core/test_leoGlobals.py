@@ -477,11 +477,13 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20210905203541.17: *4* TestGlobals.test_g_getDocString
     def test_g_getDocString(self):
         s1 = 'no docstring'
-        s2 = textwrap.dedent('''\
+        s2 = textwrap.dedent(
+        '''
     # comment
     """docstring2."""
     ''')
-        s3 = textwrap.dedent('''\
+        s3 = textwrap.dedent(
+        '''
     """docstring3."""
     \'\'\'docstring2.\'\'\'
     ''')
