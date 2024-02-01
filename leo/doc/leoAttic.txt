@@ -2152,6 +2152,327 @@ def get_token_line(self, i: int) -> str:  # pragma: no cover
         self.oops(f"Bad token index {i!r}: {e}")
 
     return token.line.rstrip()
+#@+node:ekr.20240201023006.1: *3* deleted unit tests
+#@+node:ekr.20240105153425.52: *4* TestTBO.xxx_test_bug_1851
+def xxx_test_bug_1851(self):
+
+    contents = r'''\
+def foo(a1):
+    pass
+'''
+    contents, tokens = self.make_data(contents)
+    expected = contents.rstrip() + '\n'
+    results = self.beautify(contents, tokens)
+    self.assertEqual(results, expected)
+#@+node:ekr.20240116155903.1: *4* TestTBO.xxx_test_colorizer_fail
+def xxx_test_colorizer_fail(self):
+
+    contents = '''
+
+        # leoColorizer.py: line 2268
+        if j > len(s) and not dots:
+            j = len(s) + 1
+
+            def span(s: str) -> int:
+                # Note: bindings are frozen by this def.
+                return self.restart_match_span(s, kind,
+                    delegate=delegate,
+                )
+    '''
+
+    contents, tokens = self.make_data(contents)
+    # dump_tokens(tokens)
+    expected = contents
+    results = self.beautify(contents, tokens)
+    if False and results != expected:
+        g.printObj(expected, tag='Expected (same as Contents)')
+        g.printObj(results, tag='Results')
+    self.maxDiff = None
+    self.assertEqual(results, expected)
+#@+node:ekr.20240112134732.1: *4* TestTBO.xxx_test_def_colons
+def xxx_test_def_colons(self):
+
+    contents = '''
+        self.configDict: dict[str, Any] = {}
+        self.configUnderlineDict: dict[str, bool] = {}
+    '''
+    contents, tokens = self.make_data(contents)
+    # dump_tokens(tokens)
+    expected = contents
+    results = self.beautify(contents, tokens)
+    if results != expected:  # pragma: no cover
+        # g.printObj(contents, tag='Contents')
+        g.printObj(expected, tag='Expected (same as Contents)')
+        g.printObj(results, tag='Results')
+
+    self.maxDiff = None
+    self.assertEqual(results, expected)
+
+#@+node:ekr.20240114100847.1: *4* TestTBO.xxx_test_def_square_brackets
+def xxx_test_def_square_brackets(self):
+
+    contents = (
+        """def checkForDuplicateShortcuts(self, c: Cmdr, d: dict[str, str]) -> None:\n"""
+    )
+    contents, tokens = self.make_data(contents)
+    # dump_tokens(tokens)
+    expected = contents
+    results = self.beautify(contents, tokens)
+    if False and results != expected:
+        # g.printObj(contents, tag='Contents')
+        g.printObj(expected, tag='Expected (same as Contents)')
+        g.printObj(results, tag='Results')
+
+    self.maxDiff = None
+    self.assertEqual(results, expected)
+#@+node:ekr.20240116072845.1: *4* TestTBO.xxx_test_expressions
+def xxx_test_expressions(self):
+
+    contents = """skip_count = max(0, (len(target) - 1))\n"""
+
+    contents, tokens = self.make_data(contents)
+    expected = self.blacken(contents)
+    results = self.beautify(contents, tokens)
+    if expected != results:  # pragma: no cover
+        g.printObj(expected, tag='Explected (blackened)')
+        g.printObj(results, tag='Results')
+    self.assertEqual(results, expected)
+#@+node:ekr.20240124092041.1: *4* TestTBO.xxx_test_fstrings
+def xxx_test_fstrings(self):
+
+    # leoApp.py, line 885.
+    contents = """signon = [f"Leo {leoVer}"]\n"""
+    contents, tokens = self.make_data(contents)
+    expected = self.blacken(contents)
+    results = self.beautify(contents, tokens)
+    self.assertEqual(results, expected)
+#@+node:ekr.20240126062946.1: *4* TestTBO.xxx_test_function_call_with_parens
+def xxx_test_function_calls_with_parens(self):
+
+    # LeoFrame.py, line 1650.
+
+    # Test 1: The 'if' statement on a single line.
+    contents1 = """
+        if (g.doHook("select1", c = c, new_p=p)):
+            return
+        """
+
+    # Black would remove the outer parens.
+    expected1 = textwrap.dedent(
+        """
+        if (g.doHook("select1", c=c, new_p=p)):
+            return
+        """).strip() + '\n'
+
+    # Test 2: The 'if' statement spans several lines.
+    contents2 = """
+        if (
+            whatever and g.doHook(
+                "select1", c = c, new_p=p)
+        ):
+            return
+        """
+
+    # Black would remove the outer parens.
+    expected2 = textwrap.dedent(
+        """
+        if (
+            whatever and g.doHook(
+                "select1", c=c, new_p=p)
+        ):
+            return
+        """).strip() + '\n'
+
+    table = (
+        (contents1, expected1),
+        (contents2, expected2),
+    )
+    for contents, expected in table:
+        contents, tokens = self.make_data(contents)
+        results = self.beautify(contents, tokens)
+        if results != expected:
+            if 1:
+                g.printObj(contents, tag='Contents')
+                g.printObj(expected, tag='Expected (blackened)')
+                g.printObj(results, tag='Results')
+            self.assertEqual(expected, results)
+#@+node:ekr.20240107080413.1: *4* TestTBO.xxx_test_function_calls
+def xxx_test_function_calls(self):
+
+    # Put recent failures first.
+    table = (
+        # leoserver.py, line 584.
+        """timeline.sort(key=lambda x: x[0].gnx, reverse=True)""",
+
+        # leoserver.py, line 42 and other lines.
+        """jsonPackage = json.dumps(package, separators=(',', ':'), cls=SetEncoder)""",
+
+        # #1429: https://github.com/leo-editor/leo-editor/issues/1429
+        """
+        version = str(version2.Version.coerce(tag, partial=True))
+        """,
+
+        # LeoApp.py, line 1872.
+        """
+        if path.startswith(tag):
+            return self.computeBindingLetter(c, path=path[len(tag) :])
+        """,
+
+        # LeoApp.py, line 3416.
+        """
+        if groupedEntries:
+            dirCount: dict[str, Any] = {}
+            for fileName in rf.getRecentFiles()[:n]:
+                dirName, baseName = g.os_path_split(fileName)
+        """,
+
+        # leoPersistence, line 526.
+        """
+        return '-->'.join(reversed(
+            [self.expected_headline(p2) for p2 in p.self_and_parents(copy=False)]))
+        """,
+
+        # leoNodes, line 881.
+        """
+        path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+        """,
+
+        # leoserver.py, line 2302.
+        """
+        result = [
+            self._get_position_d(p, c) for p in c.all_positions(copy=False)
+        ]
+        """,
+
+        # leoApp, line 1657
+        """
+        if True:
+            home = os.getenv(home[1:-1], default=None)
+        """,
+    )
+    for i, contents in enumerate(table):
+        contents, tokens = self.make_data(contents)
+        expected = contents  # Black would join lines.
+        results = self.beautify(contents, tokens)
+        if results != expected:
+            # dump_tokens(tokens)
+            if 1:
+                print('')
+                # g.printObj(contents, tag='Contents')
+                g.printObj(expected, tag='Expected (same as contents)')
+                g.printObj(results, tag='Results')
+            self.assertEqual(expected, results)
+#@+node:ekr.20240105153425.57: *4* TestTBO.xxx_test_function_defs
+def xxx_test_function_defs(self):
+
+    long_table = (
+        # Case 1.
+        """
+            def f1(a=2 + 5):
+                pass
+        """,
+        # Case 2
+        """
+            def f2(a):
+                pass
+        """,
+        # Case 3.
+        """
+        def f3(a: int = 2):
+            pass
+        """,
+        # Case 4.
+        '''
+        def should_kill_beautify(p):
+            """Return True if p.b contains @killbeautify"""
+            return 'killbeautify' in g.get_directives_dict(p)
+        ''',
+        # Case 5 (new)
+        '''
+            def reloadSettings():
+                pass
+        ''',
+        # Case 6 (new)
+        '''
+            def tuple_init(stack: Sequence[str] = ('root',)) -> Generator:
+                pass
+        ''',
+        # Case 7 (new)
+    )
+    short_table = (
+        '''
+            def tuple_init(stack: Sequence[str] = ('root',)) -> Generator:
+                pass
+        ''',
+    )
+    assert long_table and short_table
+    table = long_table
+    for i, contents in enumerate(table):
+        contents, tokens = self.make_data(contents)
+        expected = self.blacken(contents).rstrip() + '\n'
+        results = self.beautify(contents, tokens)
+        if expected != results:  # pragma: no cover
+            g.printObj(expected, tag='Explected (blackened)')
+            g.printObj(results, tag='Results')
+        self.assertEqual(results, expected)
+#@+node:ekr.20240105153425.64: *4* TestTBO.xxx_test_leading_stars_one_line
+def xxx_test_leading_stars_one_line(self):
+
+    # #2533.
+    contents = """
+        def f(arg1, *args, **kwargs):
+            pass
+    """
+    contents, tokens = self.make_data(contents)
+    results = self.beautify(contents, tokens)
+    self.assertEqual(contents, results)
+#@+node:ekr.20240105153425.63: *4* TestTBO.xxx_test_leading_stars
+def xxx_test_leading_stars(self):
+
+    # #2533.
+    contents = """
+        def f(
+            arg1,
+            *args,
+            **kwargs
+        ):
+            pass
+    """
+    contents, tokens = self.make_data(contents)
+    if 1:  # w/o join:
+        expected = contents
+    else:  # with join.
+        expected = """
+            def f(arg1, *args, **kwargs):
+                pass
+        """
+    results = self.beautify(contents, tokens)
+    self.assertEqual(expected, results)
+#@+node:ekr.20240105153425.71: *4* TestTBO.xxx_test_return
+def xxx_test_return(self):
+
+    contents = """return []"""
+    expected = self.blacken(contents)
+    contents, tokens = self.make_data(contents)
+    results = self.beautify(contents, tokens)
+    self.assertEqual(results, expected)
+#@+node:ekr.20240105153425.72: *4* TestTBO.xxx_test_single_quoted_string
+def xxx_test_single_quoted_string(self):
+
+    contents = """print('hi')"""
+    # blacken suppresses string normalization.
+    expected = self.blacken(contents)
+    contents, tokens = self.make_data(contents)
+    results = self.beautify(contents, tokens)
+    self.assertEqual(results, expected)
+#@+node:ekr.20240105153425.78: *4* TestTBO.xxx_test_ternary
+def xxx_test_ternary(self):
+
+    contents = """print(2 if name == 'class' else 1)"""
+    contents, tokens = self.make_data(contents)
+    expected = contents
+    results = self.beautify(contents, tokens)
+    self.assertEqual(results, expected)
 #@-all
 #@@nosearch
 #@-leo
