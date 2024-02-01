@@ -64,7 +64,7 @@ def orange_command(
     t1 = time.process_time()
     n_tokens = 0
     n_changed = 0
-    for filename in to_be_checked_files:  ###files:
+    for filename in to_be_checked_files:
         if os.path.exists(filename):
             tbo = TokenBasedOrange(settings)
             changed = tbo.beautify_file(filename)
@@ -505,10 +505,24 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     #@+<< TokenBasedOrange: docstring >>
     #@+node:ekr.20240119062227.1: *4* << TokenBasedOrange: docstring >>
-    """
-    Leo's token-based beautifier.
+    #@@language rest
 
-    It's about three times as fast as the Orange class in leoAst.py.
+    """
+    Leo's token-based beautifier, three times faster than the beautifier in leoAst.py.
+
+    **Design**
+
+    The *pre_scan* method calls three *finishers*.
+
+    Each finisher uses a list of *relevant earlier tokens* to set the context for later tokens.
+
+    Finishers embody *zero-cost unlimited look-behind*.
+
+    After the pre-scan, *tbo.beautify* (the main loop) calls *visitors* for each separate type of token.
+
+    Visitors call *code generators*. Code generators call *code generation helpers*.
+
+    These helpers form a peephole optimizer that looks behind a bounded number of *output* tokens.
     """
     #@-<< TokenBasedOrange: docstring >>
     #@+<< TokenBasedOrange: __slots__ >>
@@ -577,6 +591,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.silent = False
         self.tab_width = 4
         self.verbose = False
+
+        # Make sure tokens is defined, even for empty files.
+        self.tokens: list[InputToken] = []
 
         # Override defaults from settings dict.
         valid_keys = ('diff', 'force', 'orange', 'safe', 'silent', 'tab_width', 'verbose')
@@ -759,6 +776,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.filename = filename
         contents, encoding = g.readFileIntoString(filename)
         if not contents:
+            self.tokens = []
             return None, None, None
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
         return contents, encoding, tokens
@@ -1645,7 +1663,6 @@ def main() -> None:  # pragma: no cover
 
     # Do the command.
     if to_be_checked_files:
-        ### orange_command(arg_files, files, settings_dict)
         orange_command(arg_files, requested_files, dirty_files, to_be_checked_files, settings_dict)
 #@+node:ekr.20240105140814.9: *3* function: get_modified_files
 def get_modified_files(repo_path: str) -> list[str]:  # pragma: no cover

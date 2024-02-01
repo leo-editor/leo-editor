@@ -23,11 +23,12 @@ class TestLeoImport(BaseTestImporter):
         target.h = 'target'
         from leo.core.leoImport import MindMapImporter
         x = MindMapImporter(c)
-        s = textwrap.dedent("""\
+        s = textwrap.dedent(
+        """
             header1, header2, header3
             a1, b1, c1
             a2, b2, c2
-        """)
+        """).lstrip()
         f = StringIO(s)
         x.scan(f, target)
 

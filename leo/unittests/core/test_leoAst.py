@@ -1390,17 +1390,17 @@ class TestFstringify(BaseTest):
     #@+node:ekr.20210318054321.1: *5* TestFstringify.test_bug_1851
     def test_bug_1851(self):
         # leoCheck.py.
-        contents = """\
-    from dataclasses import dataclass
+        contents = """
+            from dataclasses import dataclass
 
-    @dataclass(frozen=True)
-    class TestClass:
-        value: str
-        start: int
-        end: int
+            @dataclass(frozen=True)
+            class TestClass:
+                value: str
+                start: int
+                end: int
 
-    f = TestClass('abc', 0, 10)
-    """
+            f = TestClass('abc', 0, 10)
+        """
         contents, tokens, tree = self.make_data(contents)
         expected = textwrap.dedent(contents).rstrip() + '\n'
         results = self.fstringify(contents, tokens, tree)
@@ -1516,15 +1516,16 @@ class TestFstringify(BaseTest):
     #@+node:ekr.20200122035055.1: *4* TestFstringify.test_call_with_comments
     def test_call_with_comments(self):
 
-        contents = """\
-    print('%s in %5.2f sec' % (
-        "done", # message
-        2.9, # time
-    )) # trailing comment"""
+        contents = """
+            print('%s in %5.2f sec' % (
+                "done", # message
+                2.9, # time
+            )) # trailing comment
+        """
 
         expected = """\
-    print(f'{"done"} in {2.9:5.2f} sec') # trailing comment
-    """
+            print(f'{"done"} in {2.9:5.2f} sec') # trailing comment
+        """
         contents, tokens, tree = self.make_data(contents)
         expected = textwrap.dedent(expected).rstrip() + '\n'
         results = self.fstringify(contents, tokens, tree)
@@ -2014,17 +2015,17 @@ class TestOrange(BaseTest):
     #@+node:ekr.20200116104031.1: *4* TestOrange.test_join_and_strip_condition
     def test_join_and_strip_condition(self):
 
-        contents = """\
-    if (
-        a == b or
-        c == d
-    ):
-        pass
-    """
-        expected = """\
-    if (a == b or c == d):
-        pass
-    """
+        contents = """
+            if (
+                a == b or
+                c == d
+            ):
+                pass
+        """.strip() + '\n'
+        expected = """
+            if (a == b or c == d):
+                pass
+        """.strip() + '\n'
         contents, tokens, tree = self.make_data(contents)
         expected = textwrap.dedent(expected)
         # Black also removes parens, which is beyond our scope at present.
@@ -2102,18 +2103,18 @@ class TestOrange(BaseTest):
     #@+node:ekr.20200210051900.1: *4* TestOrange.test_join_suppression
     def test_join_suppression(self):
 
-        contents = """\
-    class T:
-        a = 1
-        print(
-           a
-        )
-    """
-        expected = """\
-    class T:
-        a = 1
-        print(a)
-    """
+        contents = """
+            class T:
+                a = 1
+                print(
+                   a
+                )
+        """.strip() + '\n'
+        expected = """
+            class T:
+                a = 1
+                print(a)
+        """.strip() + '\n'
         contents, tokens, tree = self.make_data(contents)
         expected = textwrap.dedent(expected)
         results = self.beautify(contents, tokens, tree)
@@ -2154,18 +2155,19 @@ class TestOrange(BaseTest):
     def test_leading_stars(self):
 
         # #2533.
-        contents = """\
+        contents = """
             def f(
                 arg1,
                 *args,
                 **kwargs
             ):
                 pass
-    """
-        expected = textwrap.dedent("""\
+        """.strip() + '\n'
+
+        expected = """
             def f(arg1, *args, **kwargs):
                 pass
-    """)
+        """.strip() + '\n'
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tokens, tree)
         self.assertEqual(expected, results)
@@ -2344,7 +2346,8 @@ class TestOrange(BaseTest):
     def test_relative_imports(self):
 
         # #2533.
-        contents = """\
+        contents = textwrap.dedent(
+        """
             from .module1 import w
             from . module2 import x
             from ..module1 import y
@@ -2353,8 +2356,10 @@ class TestOrange(BaseTest):
             from.import b
             from leo.core import leoExternalFiles
             import leo.core.leoGlobals as g
-    """
-        expected = textwrap.dedent("""\
+        """).strip() + '\n'
+
+        expected = textwrap.dedent(
+        """
             from .module1 import w
             from .module2 import x
             from ..module1 import y
@@ -2363,7 +2368,8 @@ class TestOrange(BaseTest):
             from . import b
             from leo.core import leoExternalFiles
             import leo.core.leoGlobals as g
-    """)
+        """).strip() + '\n'
+
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tokens, tree)
         self.assertEqual(expected, results)
@@ -2512,7 +2518,8 @@ class TestOrange(BaseTest):
     def test_verbatim(self):
 
         line_length = 40  # For testing.
-        contents = textwrap.dedent("""\
+
+        contents = textwrap.dedent("""
     #@@nobeautify
 
     def addOptionsToParser(self, parser, trace_m):
@@ -2536,7 +2543,7 @@ class TestOrange(BaseTest):
     docDirective    =  3 # @doc.
 
     #@@beautify
-    """)
+    """).lstrip()
         contents, tokens, tree = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens, tree,

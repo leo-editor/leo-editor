@@ -8,7 +8,6 @@ from ast import NodeVisitor
 import glob
 import os
 import re
-import textwrap
 import unittest
 from leo.core import leoGlobals as g
 #@-<< test_design imports >>
@@ -106,7 +105,7 @@ class AnnotationsTraverser(NodeVisitor):
             # Problem annotating Cmdr in leoCommands.py...
             'add_commandCallback', 'bringToFront', 'universalCallback',
             #
-            'find_language', # p_or_v is a false match.
+            'find_language',  # p_or_v is a false match.
             # These methods should always be annotated Any.
             '__eq__', '__ne__',
             'resolveArchivedPosition',
@@ -155,7 +154,7 @@ class AnnotationsTraverser(NodeVisitor):
             if annotation:
                 id_s = arg.arg
                 self.test_annotation(node, id_s, annotation)
-        self.generic_visit(node) # Visit all children.
+        self.generic_visit(node)  # Visit all children.
     #@-others
 #@+node:ekr.20230506111927.1: *3* class ChainsTraverser(NodeVisitor)
 class ChainsTraverser(NodeVisitor):
@@ -180,7 +179,7 @@ class TestAnnotations(unittest.TestCase):
         traverser = AnnotationsTraverser(tester=self)
         for path in files_dict:
             self.path = path
-            contents, tree = files_dict [path]
+            contents, tree = files_dict[path]
             traverser.visit(tree)
         if 0:
             for s in sorted(list(traverser.annotations_set)):
@@ -211,7 +210,7 @@ class TestChains(unittest.TestCase):
         traverser = ChainsTraverser()
         traverser.chains_set = set()
         for path in files_dict:
-            contents, tree = files_dict [path]
+            contents, tree = files_dict[path]
             traverser.visit(tree)
         chains_list = [filter_chain(z) for z in sorted(list(traverser.chains_set))]
         long_chains_list = [z for z in chains_list if z.count('.') > 2]
@@ -241,9 +240,7 @@ class TestChains(unittest.TestCase):
         self.assertEqual(chain, 'leoImport.MORE_Importer().import_file')
     #@+node:ekr.20230507122925.1: *3* TestChains.test_one_chain
     def test_one_chain(self):
-        contents = textwrap.dedent('''\
-            w = c.frame.body.wrapper.widget
-    ''')
+        contents = """w = c.frame.body.wrapper.widget"""
         tree = ast.parse(contents, filename='test_one_chain')
         traverser = ChainsTraverser()
         traverser.chains_set = set()

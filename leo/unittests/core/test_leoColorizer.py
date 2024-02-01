@@ -21,7 +21,8 @@ class TestColorizer(LeoUnitTest):
         c.recolor_now()
     #@+node:ekr.20210905170507.2: *3* TestColorizer.test__comment_after_language_plain
     def test__comment_after_language_plain(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             @comment # /* */
 
             This is plain text.
@@ -34,7 +35,7 @@ class TestColorizer(LeoUnitTest):
             continues */
 
             More plain text.
-        """)
+        """).lstrip()
         self.color('plain', text)
     #@+node:ekr.20210905170507.3: *3* TestColorizer.test_bc_scanLanguageDirectives
     def test_bc_scanLanguageDirectives(self):
@@ -101,7 +102,8 @@ class TestColorizer(LeoUnitTest):
             self.assertEqual(got, expected, msg=f"i: {i} {language}")
     #@+node:ekr.20210905170507.5: *3* TestColorizer.test_colorizer_Actionscript
     def test_colorizer_Actionscript(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             break
             call, continue
             delete, do
@@ -157,11 +159,12 @@ class TestColorizer(LeoUnitTest):
             _x, _xmouse, _xscale
             _y, _ymouse, _yscale
             and, add, eq, ge, gt, le, lt, ne, not, or, Array, Boolean, Color, Date, Key, Math, MovieClip, Mouse, Number, Object, Selection, Sound, String, XML, XMLSocket
-    """)
+    """).lstrip()
         self.color('actionscript', text)
     #@+node:ekr.20210905170507.6: *3* TestColorizer.test_colorizer_C
     def test_colorizer_C(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             @comment /* */
 
             @
@@ -178,11 +181,12 @@ class TestColorizer(LeoUnitTest):
             #include "eeprom.h"
             #include <hpc_ram.h>
             #include <rlydef.h>
-    """)
+        """).lstrip()
         self.color('c', text)
     #@+node:ekr.20210905170507.7: *3* TestColorizer.test_colorizer_C_
     def test_colorizer_C_(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             @ comment
             @c
 
@@ -213,11 +217,12 @@ class TestColorizer(LeoUnitTest):
             value virtual void volatile
             where while
             yield
-    """)
+    """).lstrip()
         self.color('csharp', text)
     #@+node:ekr.20210905170507.8: *3* TestColorizer.test_colorizer_css
     def test_colorizer_css(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             /* New in 4.2. */
 
             /*html tags*/
@@ -285,7 +290,7 @@ class TestColorizer(LeoUnitTest):
             /*aural values*/
             stress, azimuth, elevation, pitch, richness, volume,
             page-break, page-after, page-inside
-    """)
+        """).lstrip()
         self.color('css', text)
     #@+node:ekr.20210905170507.9: *3* TestColorizer.test_colorizer_CWEB
     def test_colorizer_CWEB(self):
@@ -315,7 +320,8 @@ class TestColorizer(LeoUnitTest):
         self.color('cweb', text)
     #@+node:ekr.20210905170507.10: *3* TestColorizer.test_colorizer_cython
     def test_colorizer_cython(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             by cdef cimport cpdef ctypedef enum except?
             extern gil include nogil property public
             readonly struct union DEF IF ELIF ELSE
@@ -327,11 +333,12 @@ class TestColorizer(LeoUnitTest):
                 pass
             except Exception:
                 pass
-    """)
+        """).lstrip()
         self.color('cython', text)
     #@+node:ekr.20210905170507.11: *3* TestColorizer.test_colorizer_elisp
     def test_colorizer_elisp(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             ; Maybe...
             error princ
 
@@ -351,19 +358,21 @@ class TestColorizer(LeoUnitTest):
             t type-of
             unless
             when while
-    """)
+        """).lstrip()
         self.color('elisp', text)
     #@+node:ekr.20210905170507.12: *3* TestColorizer.test_colorizer_erlang
     def test_colorizer_erlang(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             halt()
 
             -module()
-    """)
+        """).lstrip()
         self.color('erlang', text)
     #@+node:ekr.20210905170507.13: *3* TestColorizer.test_colorizer_forth
     def test_colorizer_forth(self):
-        text = textwrap.dedent(r"""\\\
+        text = textwrap.dedent(
+        r"""\\\
             \ tiny demo of Leo forth syntax colouring
 
             : some-forth-word ( x1 x2 -- x3 ) \ blue :, black/bold some-forth-word
@@ -394,11 +403,12 @@ class TestColorizer(LeoUnitTest):
                [ a b c
                x y z]
             ;
-    """)
+        """)
         self.color('forth', text)
     #@+node:ekr.20210905170507.15: *3* TestColorizer.test_colorizer_HTML1
     def test_colorizer_HTML1(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             <HTML>
             <!-- Author: Edward K. Ream, edream@tds.net -->
             <HEAD>
@@ -490,20 +500,22 @@ class TestColorizer(LeoUnitTest):
 
             </BODY>
             </HTML>
-    """)
+        """).lstrip()
         self.color('html', text)
     #@+node:ekr.20210905170507.16: *3* TestColorizer.test_colorizer_HTML2
     def test_colorizer_HTML2(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             <? xml version="1.0">
             <!-- test -->
             <project name="Converter" default="dist">
             </project>
-    """)
+        """).lstrip()
         self.color('html', text)
     #@+node:ekr.20230421104052.1: *3* TestColorizer.test_colorizer_HTML_script_tag
     def test_colorizer_HTML_script_tag(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             <html>
             <head>
             <script>
@@ -519,18 +531,20 @@ class TestColorizer(LeoUnitTest):
             This is a test.
             </body>
             </html>
-    """)
+        """).lstrip()
         self.color('html', text)
     #@+node:ekr.20210905170507.14: *3* TestColorizer.test_colorizer_HTML_string_bug
     def test_colorizer_HTML_string_bug(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             b = "cd"
             d
-    """)
+        """).lstrip()
         self.color('html', text)
     #@+node:ekr.20210905170507.17: *3* TestColorizer.test_colorizer_Java
     def test_colorizer_Java(self):
-        text = textwrap.dedent('''\
+        text = textwrap.dedent(
+        '''
             @ doc part
             @c
 
@@ -573,7 +587,8 @@ class TestColorizer(LeoUnitTest):
         self.color('latex', text)
     #@+node:ekr.20210905170507.19: *3* TestColorizer.test_colorizer_lisp
     def test_colorizer_lisp(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             ; Maybe...
             error princ
 
@@ -593,11 +608,12 @@ class TestColorizer(LeoUnitTest):
             t type-of
             unless
             when while
-    """)
+        """).lstrip()
         self.color('lisp', text)
     #@+node:ekr.20210905170507.20: *3* TestColorizer.test_colorizer_objective_c
     def test_colorizer_objective_c(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             @interface Application
                 -(void) init;
                 -(void) showMessage;
@@ -628,11 +644,12 @@ class TestColorizer(LeoUnitTest):
             @var test
             @todo
             */
-    """)
+        """).lstrip()
         self.color('objective_c', text)
     #@+node:ekr.20210905170507.21: *3* TestColorizer.test_colorizer_perl
     def test_colorizer_perl(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             # From a perl tutorial.
 
             print 'Hello world.';               # Print a message
@@ -686,11 +703,12 @@ class TestColorizer(LeoUnitTest):
                 ($a =~ /$b/ || $b =~ /$a/);     # Is $b inside $a
                                 #   or $a inside $b?
             }
-    """)
+        """).lstrip()
         self.color('perl', text)
     #@+node:ekr.20210905170507.22: *3* TestColorizer.test_colorizer_PHP
     def test_colorizer_PHP(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             @ doc
             This is a doc part.
             @c
@@ -704,11 +722,12 @@ class TestColorizer(LeoUnitTest):
             __CLASS__
             <?php and or array() ?>
             <?PHP and or array() ?>
-    """)
+        """).lstrip()
         self.color('php', text)
     #@+node:ekr.20210905170507.23: *3* TestColorizer.test_colorizer_plsql
     def test_colorizer_plsql(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             "a string"
             -- reserved keywords
             ABORT,
@@ -1086,20 +1105,22 @@ class TestColorizer(LeoUnitTest):
             work,
             write,
             xor
-    """)
+        """).lstrip()
         self.color('plsql', text)
     #@+node:ekr.20210905170507.25: *3* TestColorizer.test_colorizer_Python1
     def test_colorizer_Python1(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             int
             float
             dict
-    """)
+        """).lstrip()
         self.color('python', text)
     #@+node:ekr.20210905170507.26: *3* TestColorizer.test_colorizer_Python2
     def test_colorizer_Python2(self):
 
-        text = textwrap.dedent('''\
+        text = textwrap.dedent(
+        '''
             """This creates a free-floating copy of v's tree for undo.
             The copied trees must use different vnodes than the original."""
 
@@ -1160,18 +1181,20 @@ class TestColorizer(LeoUnitTest):
         self.color('html', text)
     #@+node:ekr.20210905170507.27: *3* TestColorizer.test_colorizer_r
     def test_colorizer_r(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             x <- rnorm(10)
 
             vv <- function(z) return(z)
 
             def python_funct(uu):
             return uu
-    """)
+        """).lstrip()
         self.color('r', text)
     #@+node:ekr.20210905170507.28: *3* TestColorizer.test_colorizer_rapidq
     def test_colorizer_rapidq(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             ' New in 4.2.
             ' a comment.
 
@@ -1201,11 +1224,12 @@ class TestColorizer(LeoUnitTest):
             SUB,SUBI,SWAP,TALLY,TAN,THEN,TIME$,TIMER,TO,TYPE,UBOUND,
             UCASE$,UNLOADLIBRARY,UNTIL,VAL,VARIANT,VARPTR,VARPTR$,VARTYPE,
             WEND,WHILE,WITH,WORD,XOR
-    """)
+        """).lstrip()
         self.color('rapidq', text)
     #@+node:ekr.20210905170507.29: *3* TestColorizer.test_colorizer_Rebol
     def test_colorizer_Rebol(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
         ; a comment
         about abs absolute add alert alias all alter and and~ any append arccosine arcsine arctangent array ask at
         back bind boot-prefs break browse build-port build-tag
@@ -1270,7 +1294,7 @@ class TestColorizer(LeoUnitTest):
         value? view?
         within? word?
         zero?
-    """)
+        """).lstrip()
         self.color('rebol', text)
     #@+node:ekr.20210905170507.30: *3* TestColorizer.test_colorizer_rest
     def test_colorizer_rest(self):
@@ -1341,7 +1365,8 @@ class TestColorizer(LeoUnitTest):
         self.color('rest', text)
     #@+node:ekr.20210905170507.31: *3* TestColorizer.test_colorizer_scala
     def test_colorizer_scala(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             /* A comment */
 
             object HelloWorld {
@@ -1349,11 +1374,12 @@ class TestColorizer(LeoUnitTest):
                   println("Hello, world!")
                 }
               }
-    """)
+        """).lstrip()
         self.color('scala', text)
     #@+node:ekr.20210905170507.32: *3* TestColorizer.test_colorizer_shell
     def test_colorizer_shell(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             # New in 4.2.
 
             # comment
@@ -1373,11 +1399,12 @@ class TestColorizer(LeoUnitTest):
             exit,kill,newgrp,pwd,read,readonly,
             shift,test,trap,ulimit,
             umask,wait
-    """)
+        """).lstrip()
         self.color('shell', text)
     #@+node:ekr.20210905170507.33: *3* TestColorizer.test_colorizer_shellscript
     def test_colorizer_shellscript(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             # comment
             $# not a comment
             break
@@ -1395,11 +1422,12 @@ class TestColorizer(LeoUnitTest):
             exit,kill,newgrp,pwd,read,readonly,
             shift,test,trap,ulimit,
             umask,wait
-    """)
+        """).lstrip()
         self.color('shellscript', text)
     #@+node:ekr.20210905170507.34: *3* TestColorizer.test_colorizer_tex_xml_jEdit_
     def test_colorizer_tex_xml_jEdit_(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             <!-- ekr uses the MARK_FOLLOWING to mark _anything_ after \\ -->
 
             <?xml version="1.0"?>
@@ -1419,12 +1447,13 @@ class TestColorizer(LeoUnitTest):
                     < < math rules > >
                 </RULES>
             </MODE>
-    """)
+        """).lstrip()
         self.color('html', text)
     #@+node:ekr.20210905170507.36: *3* TestColorizer.test_colorizer_wikiTest
     def test_colorizer_wikiTest(self):
         # both color_markup & add_directives plugins must be enabled.
-        text = textwrap.dedent('''\
+        text = textwrap.dedent(
+        '''
             @markup wiki
 
             """ text~~red:some text~~more text"""
@@ -1470,10 +1499,11 @@ class TestColorizer(LeoUnitTest):
         self.assertEqual(language, 'python')
     #@+node:ekr.20210905170507.40: *3* TestColorizer.test_vbscript
     def test_vbscript(self):
-        text = textwrap.dedent("""\
+        text = textwrap.dedent(
+        """
             if
             IF
-    """)
+        """).lstrip()
         self.color('vbscript', text)
     #@-others
 #@-others

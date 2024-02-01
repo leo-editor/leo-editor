@@ -164,45 +164,45 @@ class TestIndentedTypeScript(LeoUnitTest):
 
         #@+<< define contents: test_typescript >>
         #@+node:ekr.20231022133716.1: *4* << define contents: test_typescript >>
-
         # Snippets from indented_typescript_test.ts.
 
         # Contains "over-indented" parenthesized lines, a good test for check_indentation.
-        contents = textwrap.dedent(
-        """\
-        import { NodeIndices, VNode, Position } from './leoNodes';
 
-        export class Config implements ConfigMembers {
+        contents = textwrap.dedent(  # dedent is required.
+            """
+            import { NodeIndices, VNode, Position } from './leoNodes';
 
-        constructor(
-            private _context: vscode.ExtensionContext,
-            private _leoUI: LeoUI
-        ) { }
+            export class Config implements ConfigMembers {
 
-        const w_config: FontSettings = {
-            zoomLevel: Number(w_zoomLevel),
-            fontSize: Number(w_fontSize)
-        };
+            constructor(
+                private _context: vscode.ExtensionContext,
+                private _leoUI: LeoUI
+            ) { }
 
-        public getFontConfig(): FontSettings {
-            let w_zoomLevel = vscode.workspace.getConfiguration(
-                "window"
-            ).get("zoomLevel");
+            const w_config: FontSettings = {
+                zoomLevel: Number(w_zoomLevel),
+                fontSize: Number(w_fontSize)
+            };
 
-            return w_config;
-        }
+            public getFontConfig(): FontSettings {
+                let w_zoomLevel = vscode.workspace.getConfiguration(
+                    "window"
+                ).get("zoomLevel");
 
-        public getEncodingFromHeader(fileName: string, s: string): BufferEncoding {
-            if (at.errors) {
-                if (g.unitTesting) {
-                    console.assert(false, g.callers());
-                }
-            } else {
-                at.initReadLine(s);
+                return w_config;
             }
-        }
-        }
-        """)
+
+            public getEncodingFromHeader(fileName: string, s: string): BufferEncoding {
+                if (at.errors) {
+                    if (g.unitTesting) {
+                        console.assert(false, g.callers());
+                    }
+                } else {
+                    at.initReadLine(s);
+                }
+            }
+            }
+            """)
         #@-<< define contents: test_typescript >>
 
         # Set p.h and p.b.
@@ -235,23 +235,22 @@ class TestIndentedLisp(LeoUnitTest):
     def test_lisp_reduce_fraction(self):
 
         c, p = self.c, self.c.p
-        contents = textwrap.dedent(
-    """\
-    (defun test (a)
-        (+ 1 (* 2 a))
-        (= 0 (% (cadr result) divisor))
-    )
+        contents = """
+            (defun test (a)
+                (+ 1 (* 2 a))
+                (= 0 (% (cadr result) divisor))
+            )
 
-    (defun reduce-fraction (f divisor)
-        "Eliminates divisor from fraction if present"
-        (while (and (= 0 (% (car result) divisor))
-             (= 0 (% (cadr result) divisor))
-             (< 1 (cadr result))
-             (< 0 (car result)))
-        (setq result (list (/ (car result) divisor) (/ (cadr result) divisor))))
-        result
-    )
-    """)
+            (defun reduce-fraction (f divisor)
+                "Eliminates divisor from fraction if present"
+                (while (and (= 0 (% (car result) divisor))
+                     (= 0 (% (cadr result) divisor))
+                     (< 1 (cadr result))
+                     (< 0 (car result)))
+                (setq result (list (/ (car result) divisor) (/ (cadr result) divisor))))
+                result
+            )
+        """
 
         # Setup.
         p.h = '@@file reduce_fraction.el'

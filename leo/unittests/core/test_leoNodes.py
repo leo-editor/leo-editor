@@ -890,7 +890,8 @@ class TestNodes(LeoUnitTest):
     def test_p_nosentinels(self):
 
         p = self.c.p
-        p.b = textwrap.dedent("""\
+        p.b = textwrap.dedent(
+        """
 
             def not_a_sentinel(x):
                 pass
@@ -898,8 +899,7 @@ class TestNodes(LeoUnitTest):
             @not_a_sentinel
             def spam():
                 pass
-
-    """)
+        """).lstrip()
         self.assertEqual(p.b, p.nosentinels)
     #@+node:ekr.20210830095545.22: *4* TestNodes.test_p_relinkAsCloneOf
     def test_p_relinkAsCloneOf(self):

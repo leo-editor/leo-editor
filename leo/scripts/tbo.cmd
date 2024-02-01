@@ -1,7 +1,7 @@
 
 @echo off
 cls
--cd %~dp0..\..
+cd %~dp0..\..
 
 rem Use leoTokens.py to beautify all files.
 

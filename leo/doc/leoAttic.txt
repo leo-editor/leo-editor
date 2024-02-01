@@ -2153,6 +2153,19 @@ def get_token_line(self, i: int) -> str:  # pragma: no cover
 
     return token.line.rstrip()
 #@+node:ekr.20240201023006.1: *3* deleted unit tests
+#@+node:ekr.20240124230807.1: *4* TestTBO.xxx_test_assignment
+def xxx_test_assignment(self):
+
+    # From leoFileCommands.py.
+    # The oops occurred in the *first* line because of the *second* line.
+    contents = """
+        c.hiddenRootNode.children = rootChildren
+        (w, h, x, y, r1, r2, encoding) = fc.getWindowGeometryFromDb(conn)
+    """
+    contents, tokens = self.make_data(contents)
+    expected = self.blacken(contents).rstrip() + '\n'
+    results = self.beautify(contents, tokens)
+    self.assertEqual(results, expected)
 #@+node:ekr.20240105153425.52: *4* TestTBO.xxx_test_bug_1851
 def xxx_test_bug_1851(self):
 
@@ -2415,17 +2428,6 @@ def xxx_test_function_defs(self):
             g.printObj(expected, tag='Explected (blackened)')
             g.printObj(results, tag='Results')
         self.assertEqual(results, expected)
-#@+node:ekr.20240105153425.64: *4* TestTBO.xxx_test_leading_stars_one_line
-def xxx_test_leading_stars_one_line(self):
-
-    # #2533.
-    contents = """
-        def f(arg1, *args, **kwargs):
-            pass
-    """
-    contents, tokens = self.make_data(contents)
-    results = self.beautify(contents, tokens)
-    self.assertEqual(contents, results)
 #@+node:ekr.20240105153425.63: *4* TestTBO.xxx_test_leading_stars
 def xxx_test_leading_stars(self):
 
@@ -2448,6 +2450,17 @@ def xxx_test_leading_stars(self):
         """
     results = self.beautify(contents, tokens)
     self.assertEqual(expected, results)
+#@+node:ekr.20240105153425.64: *4* TestTBO.xxx_test_leading_stars_one_line
+def xxx_test_leading_stars_one_line(self):
+
+    # #2533.
+    contents = """
+        def f(arg1, *args, **kwargs):
+            pass
+    """
+    contents, tokens = self.make_data(contents)
+    results = self.beautify(contents, tokens)
+    self.assertEqual(contents, results)
 #@+node:ekr.20240105153425.71: *4* TestTBO.xxx_test_return
 def xxx_test_return(self):
 
