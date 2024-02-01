@@ -8,7 +8,6 @@ from ast import NodeVisitor
 import glob
 import os
 import re
-import textwrap
 import unittest
 from leo.core import leoGlobals as g
 #@-<< test_design imports >>
@@ -241,9 +240,7 @@ class TestChains(unittest.TestCase):
         self.assertEqual(chain, 'leoImport.MORE_Importer().import_file')
     #@+node:ekr.20230507122925.1: *3* TestChains.test_one_chain
     def test_one_chain(self):
-        contents = textwrap.dedent('''\
-            w = c.frame.body.wrapper.widget
-    ''')
+        contents = """w = c.frame.body.wrapper.widget"""
         tree = ast.parse(contents, filename='test_one_chain')
         traverser = ChainsTraverser()
         traverser.chains_set = set()

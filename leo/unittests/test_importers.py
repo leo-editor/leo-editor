@@ -162,13 +162,14 @@ class TestImporterClass(LeoUnitTest):
 
         c = self.c
         importer = Python_Importer(c)
-        lines = g.splitLines(textwrap.dedent(
+        lines = g.splitLines(
             """
-            import sys\n
+            import sys
             def spam_and_eggs():
-               pass'
+               pass
             """
-        ))
+        )
+
         # Test that Importer.trace_block doesn't crash.
         # Comment out the assignment to sys.stdout to see the actual results.
         try:
@@ -181,13 +182,13 @@ class TestImporterClass(LeoUnitTest):
     #@+node:ekr.20231011021056.1: *3* TestImporterClass.test_long_repr
     def test_long_repr(self):
 
-        lines = g.splitLines(textwrap.dedent(
+        lines = g.splitLines(
             """
-            import sys\n
+            import sys
             def spam_and_eggs():
-               pass'
+               pass
             """
-        ))
+        )
         block = Block('def', 'spam_and_eggs', start=3, start_body=4, end=5, lines=lines)
 
         # Test that long_repr doesn't crash.
@@ -484,35 +485,36 @@ class TestC(BaseTestImporter):
     def test_find_blocks(self):
 
         importer = C_Importer(self.c)
-        lines = g.splitLines(textwrap.dedent("""\
+        lines = g.splitLines(textwrap.dedent(  # dedent is required.
+        """
 
-        # enable-trace
+            # enable-trace
 
-        namespace {
-            n1;
-        }
+            namespace {
+                n1;
+            }
 
-        namespace outer {
-            n2;
-        }
+            namespace outer {
+                n2;
+            }
 
-        int foo () {
-            foo1;
-            foo2;
-        }
+            int foo () {
+                foo1;
+                foo2;
+            }
 
-        class class1 {
-            class1;
-        }
+            class class1 {
+                class1;
+            }
 
-        class class2 {
-            x = 2;
-            int bar (a, b) {
-                if (0) {
-                    a = 1;
+            class class2 {
+                x = 2;
+                int bar (a, b) {
+                    if (0) {
+                        a = 1;
+                    }
                 }
             }
-        }
         """))
         importer.lines = lines
         importer.guide_lines = importer.make_guide_lines(lines)
