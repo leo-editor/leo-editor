@@ -505,10 +505,24 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     #@+<< TokenBasedOrange: docstring >>
     #@+node:ekr.20240119062227.1: *4* << TokenBasedOrange: docstring >>
-    """
-    Leo's token-based beautifier.
+    #@@language rest
 
-    It's about three times as fast as the Orange class in leoAst.py.
+    """
+    Leo's token-based beautifier, three times faster than the beautifier in leoAst.py.
+
+    **Design**
+
+    The *pre_scan* method calls three *finishers*.
+
+    Each finisher uses a list of *relevant earlier tokens* to set the context for later tokens.
+
+    Finishers embody *zero-cost unlimited look-behind*.
+
+    After the pre-scan, *tbo.beautify* (the main loop) calls *visitors* for each separate type of token.
+
+    Visitors call *code generators*. Code generators call *code generation helpers*.
+
+    These helpers form a peephole optimizer that looks behind a bounded number of *output* tokens.
     """
     #@-<< TokenBasedOrange: docstring >>
     #@+<< TokenBasedOrange: __slots__ >>

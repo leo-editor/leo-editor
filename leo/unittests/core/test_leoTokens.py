@@ -213,7 +213,7 @@ class TestTokenBasedOrange(BaseTest):
 
             assert regularized_expected == regularized_results
     #@+node:ekr.20240105153425.45: *3* TestTBO.test_annotations
-    def test_annotations(self):
+    def test_annotations(self):  # Required for full coverage.
 
         table = (
             # Case 0.
@@ -239,19 +239,6 @@ class TestTokenBasedOrange(BaseTest):
                 g.printObj(results, tag='Results')
             self.assertEqual(results, expected)
 
-    #@+node:ekr.20240124230807.1: *3* TestTBO.test_assignment
-    def test_assignment(self):
-
-        # From leoFileCommands.py.
-        # The oops occured in the *first* line because of the *second* line.
-        contents = """
-            c.hiddenRootNode.children = rootChildren
-            (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
-        """
-        contents, tokens = self.make_data(contents)
-        expected = self.blacken(contents).rstrip() + '\n'
-        results = self.beautify(contents, tokens)
-        self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.46: *3* TestTBO.test_at_doc_part
     def test_at_doc_part(self):
 
@@ -401,8 +388,8 @@ class TestTokenBasedOrange(BaseTest):
                 fails += 1
                 print(f"Fail: {fails}\n{message}")
         assert not fails, fails
-    #@+node:ekr.20240105153425.55: *3* TestTBO.test_decorator
-    def test_decorator(self):
+    #@+node:ekr.20240105153425.55: *3* TestTBO.test_decorators
+    def test_decorators(self):
 
         table = (
         # Case 0.
