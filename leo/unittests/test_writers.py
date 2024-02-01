@@ -63,7 +63,7 @@ class TestMDWriter(BaseTestWriter):
         c, root = self.c, self.c.p
         #@+<< define contents: test_markdown_sections >>
         #@+node:ekr.20231221072635.1: *4* << define contents: test_markdown_sections >>
-        contents = textwrap.dedent("""
+        contents = """
             # 1st level title X
 
             some text in body X
@@ -77,7 +77,7 @@ class TestMDWriter(BaseTestWriter):
             ## 2nd level title B
 
             some body content of the 2nd node
-        """).strip() + '\n'  # End the last node with '\n'.
+        """.strip() + '\n'  # End the last node with '\n'.
         #@-<< define contents: test_markdown_sections >>
 
         # Import contents into root's tree.
@@ -104,13 +104,13 @@ class TestMDWriter(BaseTestWriter):
         c, root = self.c, self.c.p
         #@+<< define contents: test_markdown_image >>
         #@+node:ekr.20231225025012.2: *4* << define contents: test_markdown_image >>
-        contents = textwrap.dedent("""
+        contents = """
             declaration text
 
             # ![label](https://raw.githubusercontent.com/boltext/leojs/master/resources/leoapp.png)
 
             Body text
-        """).strip() + '\n'  # End the last node with '\n'.
+        """.strip() + '\n'  # End the last node with '\n'.
         #@-<< define contents: test_markdown_image >>
 
         # Import contents into root's tree.
@@ -138,7 +138,7 @@ class TestMDWriter(BaseTestWriter):
         #@+<< define contents: test_markdown_placeholders >>
         #@+node:ekr.20231227225358.1: *4* << define contents: test_markdown_placeholders >>
         # There must be two newlines after each node.
-        contents = textwrap.dedent("""
+        contents = """
             # Level 1
 
             Level 1 text.
@@ -146,7 +146,7 @@ class TestMDWriter(BaseTestWriter):
             ### Level 3
 
             Level 3 text.
-        """).strip() + '\n'  # End the last node with '\n'.
+        """.strip() + '\n'  # End the last node with '\n'.
         #@-<< define contents: test_markdown_placeholders >>
 
         # Import contents into root's tree.
@@ -179,7 +179,8 @@ class TestRstWriter(BaseTestWriter):
         child = root.insertAsLastChild()
         child.h = 'h'
         # For full coverage, we don't want a leading newline.
-        child.b = textwrap.dedent("""\
+        child.b = textwrap.dedent(  # dedent is required.
+        """
             .. toc
 
             ====

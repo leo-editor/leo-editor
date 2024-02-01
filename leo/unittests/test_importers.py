@@ -2504,7 +2504,7 @@ class TestPascal(BaseTestImporter):
         # From GSTATOBJ.PAS
         #@+<< define s >>
         #@+node:ekr.20220830112013.1: *4* << define s >>
-        s = textwrap.dedent(
+        s = textwrap.dedent(  # Dedent is required.
         """
         unit gstatobj;
 
@@ -3928,7 +3928,7 @@ class TestRust(BaseTestImporter):
     def test_rust_import_fails(self):
 
         # From ruff/crates/ruff_formatter/shared_traits.rs
-        s = textwrap.dedent(
+        s = textwrap.dedent(  # dedent is required.
     """
         /// Used to get an object that knows how to format this object.
         pub trait AsFormat<Context> {
@@ -3991,27 +3991,26 @@ class TestRust(BaseTestImporter):
     def test_rust_postpass(self):
 
         # Modified from ruff/crates/ruff_formatter/src/arguments.rs
-        s = textwrap.dedent(
-    """
-    use super::{Buffer, Format, Formatter};
-    use crate::FormatResult;
+        s = """
+            use super::{Buffer, Format, Formatter};
+            use crate::FormatResult;
 
-    /// Mono-morphed type to format an object.
-    /// Used by the [`crate::format`!].
-    ///
-    /// This struct is similar to a dynamic dispatch (using `dyn Format`)
-    /// because it stores a pointer to the value.
-    pub struct Argument<'fmt, Context> {
-        /// The value to format stored as a raw pointer where `lifetime` stores the value's lifetime.
-        value: *const c_void,
+            /// Mono-morphed type to format an object.
+            /// Used by the [`crate::format`!].
+            ///
+            /// This struct is similar to a dynamic dispatch (using `dyn Format`)
+            /// because it stores a pointer to the value.
+            pub struct Argument<'fmt, Context> {
+                /// The value to format stored as a raw pointer where `lifetime` stores the value's lifetime.
+                value: *const c_void,
 
-        /// Stores the lifetime of the value.
-        lifetime: PhantomData<&'fmt ()>,
+                /// Stores the lifetime of the value.
+                lifetime: PhantomData<&'fmt ()>,
 
-        /// The function pointer to `value`'s `Format::format` method
-        formatter: fn(*const c_void, &mut Formatter<'_, Context>) -> FormatResult<()>,
-    }
-    """)
+                /// The function pointer to `value`'s `Format::format` method
+                formatter: fn(*const c_void, &mut Formatter<'_, Context>) -> FormatResult<()>,
+            }
+        """
         expected_results = (
             (0, '',  # Ignore the first headline.
                     'use super::{Buffer, Format, Formatter};\n'
@@ -4051,15 +4050,14 @@ class TestRust(BaseTestImporter):
     def test_invalid_runon_string(self):
 
         # From ruff_linter/src/rules/eradicate/detection.rs
-        s = textwrap.dedent(
+        s = """
+            #[test]
+            fn comment_contains_code_basic() {
+                assert!(comment_contains_code("#import eradicate", &[]));
+                assert!(comment_contains_code(r#"#"key": value,"#, &[]));
+                assert!(comment_contains_code(r#"#"key": "value","#, &[]));
+            }
     """
-        #[test]
-        fn comment_contains_code_basic() {
-            assert!(comment_contains_code("#import eradicate", &[]));
-            assert!(comment_contains_code(r#"#"key": value,"#, &[]));
-            assert!(comment_contains_code(r#"#"key": "value","#, &[]));
-        }
-    """)
         expected_results = (
             (0, '',  # Ignore the first headline.
                     '@others\n'
