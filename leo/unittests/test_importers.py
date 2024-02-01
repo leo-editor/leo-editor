@@ -523,7 +523,7 @@ class TestC(BaseTestImporter):
         # The result lines must tile (cover) the original lines.
         result_lines = []
         for block in blocks:
-            result_lines.extend(lines[block.start : block.end])
+            result_lines.extend(lines[block.start:block.end])
         self.assertEqual(lines, result_lines)
     #@+node:ekr.20230511073719.1: *3* TestC.test_codon_file
     def test_codon_file(self):
@@ -539,7 +539,7 @@ class TestC(BaseTestImporter):
         if 1:  # Test gen_lines.
             importer.root = c.p
             importer.gen_lines(lines, c.p)
-        else: # Test find_blocks.
+        else:  # Test find_blocks.
             importer.guide_lines = importer.make_guide_lines(lines)
             result = importer.find_blocks(0, len(importer.guide_lines))
 
@@ -547,7 +547,7 @@ class TestC(BaseTestImporter):
             result_lines = []
             for z in result:
                 kind, name, start, start_body, end = z
-                result_lines.extend(lines[start : end])
+                result_lines.extend(lines[start:end])
             self.assertEqual(lines, result_lines)
     #@+node:ekr.20230607164309.1: *3* TestC.test_struct
     def test_struct(self):
@@ -913,7 +913,7 @@ class TestElisp(BaseTestImporter):
                (+ 1 2 3))
         """
         expected_results = (
-            (0, '', # Ignore the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language lisp\n'
                     '@tabwidth -4\n'
@@ -1518,7 +1518,7 @@ class TestJava(BaseTestImporter):
 
         """
         expected_results = (
-            (0, '', # Ignore the first headline.
+            (0, '',  # Ignore the first headline.
                 '@others\n'
                 '@language java\n'
                 '@tabwidth -4\n'
@@ -1763,7 +1763,7 @@ class TestJavascript(BaseTestImporter):
         assert not line1.strip(), repr(line1)
     #@-others
 #@+node:ekr.20220816082603.1: ** class TestLua (BaseTestImporter)
-class TestLua (BaseTestImporter):
+class TestLua(BaseTestImporter):
 
     ext = '.lua'
 
@@ -1792,7 +1792,7 @@ class TestLua (BaseTestImporter):
              print("main", coroutine.resume(co, "x", "y"))
         """
         expected_results = (
-            (0, '', # Ignore the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     'print("main", coroutine.resume(co, 1, 10))\n'
                     'print("main", coroutine.resume(co, "r"))\n'
@@ -4100,7 +4100,7 @@ class TestScheme(BaseTestImporter):
                (+ 1 2 3))
         """
         expected_results = (
-            (0, '', # Ignore the first headline.
+            (0, '',  # Ignore the first headline.
                     '@others\n'
                     '@language scheme\n'
                     '@tabwidth -4\n'
@@ -4124,7 +4124,7 @@ class TestScheme(BaseTestImporter):
         self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20220813174450.1: ** class TestTcl (BaseTestImporter)
-class TestTcl (BaseTestImporter):
+class TestTcl(BaseTestImporter):
 
     ext = '.tcl'
 
@@ -4187,7 +4187,7 @@ class TestTcl (BaseTestImporter):
         self.new_run_test(s, expected_results)
     #@-others
 #@+node:ekr.20220809161015.1: ** class TestTreepad (BaseTestImporter)
-class TestTreepad (BaseTestImporter):
+class TestTreepad(BaseTestImporter):
 
     ext = '.hjt'
 
