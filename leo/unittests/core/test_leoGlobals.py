@@ -460,13 +460,14 @@ class TestGlobals(LeoUnitTest):
         c = self.c
         p = c.p
         # Note: @comment must follow @language.
-        p.b = textwrap.dedent("""\
+        p.b = textwrap.dedent(
+        """
             ATlanguage python
             ATcomment a b c
             ATtabwidth -8
             ATpagewidth 72
             ATencoding utf-8
-    """).replace('AT', '@')
+        """).lstrip().replace('AT', '@')
         d = g.get_directives_dict(p)
         self.assertEqual(d.get('language'), 'python')
         self.assertEqual(d.get('tabwidth'), '-8')
@@ -479,14 +480,14 @@ class TestGlobals(LeoUnitTest):
         s1 = 'no docstring'
         s2 = textwrap.dedent(
         '''
-    # comment
-    """docstring2."""
-    ''')
+            # comment
+            """docstring2."""
+        ''')
         s3 = textwrap.dedent(
         '''
-    """docstring3."""
-    \'\'\'docstring2.\'\'\'
-    ''')
+            """docstring3."""
+            \'\'\'docstring2.\'\'\'
+        ''')
         table = (
             (s1, ''),
             (s2, 'docstring2.'),
@@ -1209,7 +1210,8 @@ class TestGlobals(LeoUnitTest):
 
         # Set @data unl-path-prefixes
 
-        s = textwrap.dedent("""
+        s = textwrap.dedent(
+        """
             # lines have the form:
             # x.leo: <absolute path to x.leo>
 

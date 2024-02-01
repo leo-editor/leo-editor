@@ -32,19 +32,21 @@ class TestRst(LeoUnitTest):
         child = root.insertAsLastChild()
         child.h = '@rst-no-head section'
         # Insert the body texts.  Overindent to eliminate @verbatim sentinels.
-        root.b = textwrap.dedent("""\
+        root.b = textwrap.dedent(
+        """
             #####
             Title
             #####
 
             This is test.html
 
-            """)
-        child.b = textwrap.dedent("""\
-            This is the body of the section.
-            """)
+        """).lstrip()
+
+        child.b = """This is the body of the section.\n"""
+        
         # Define the expected output.
-        expected = textwrap.dedent(f"""\
+        expected = textwrap.dedent(
+        f"""
             .. rst3: filename: {fn}
 
             .. _http-node-marker-1:
@@ -57,7 +59,7 @@ class TestRst(LeoUnitTest):
 
             This is the body of the section.
 
-    """)
+        """).lstrip()
         # Get and check the rst result.
         rc.nodeNumber = 0
         rc.http_server_support = True  # Override setting for testing.
@@ -93,13 +95,16 @@ class TestRst(LeoUnitTest):
         root = c.rootPosition().insertAfter()
         root.h = fn = '@rst unicode_test.html'
         # Insert the body text.  Overindent to eliminate @verbatim sentinels.
-        root.b = textwrap.dedent("""\
+        root.b = textwrap.dedent(
+        """
             Test of unicode characters: ÀǋϢﻙ
 
             End of test.
-        """)
+        """).lstrip()
+
         # Define the expected output.
-        expected = textwrap.dedent(f"""\
+        expected = textwrap.dedent(
+        f"""
             .. rst3: filename: {fn}
 
             .. _http-node-marker-1:
@@ -108,7 +113,7 @@ class TestRst(LeoUnitTest):
 
             End of test.
 
-    """)
+        """).lstrip()
         # Get and check the rst result.
         rc.nodeNumber = 0
         rc.http_server_support = True  # Override setting for testing.
@@ -128,7 +133,8 @@ class TestRst(LeoUnitTest):
         child = root.insertAsLastChild()
         child.h = 'section'
         # Insert the body texts.  Overindent to eliminate @verbatim sentinels.
-        root.b = textwrap.dedent("""\
+        root.b = textwrap.dedent(
+        """
             @language rest
 
             #####
@@ -136,15 +142,17 @@ class TestRst(LeoUnitTest):
             #####
 
             This is test.html
-        """)
-        child.b = textwrap.dedent("""\
+        """).lstrip()
+        child.b = textwrap.dedent(
+        """
             @ This is a doc part
             it has two lines.
             @c
             This is the body of the section.
-        """)
+        """).lstrip()
         # Define the expected output.
-        expected = textwrap.dedent(f"""\
+        expected = textwrap.dedent(
+        f"""
             .. rst3: filename: {fn}
 
             .. _http-node-marker-1:
@@ -167,7 +175,7 @@ class TestRst(LeoUnitTest):
             @c
             This is the body of the section.
 
-    """)
+        """).lstrip()
         # Get and check the rst result.
         rc.nodeNumber = 0
         rc.http_server_support = True  # Override setting for testing.
