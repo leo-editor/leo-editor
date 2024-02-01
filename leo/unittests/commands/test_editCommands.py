@@ -1979,21 +1979,20 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20210926144000.1: *5* insert-newline-bug-2230
     def test_insert_newline_bug_2230(self):
         """Test case for insert-newline"""
-        # The backslash is required.
-        before_b = textwrap.dedent("""\
+        before_b = textwrap.dedent("""
     #@@language python
     def spam():
         if 1:  # test
     # after line
-    """)
+    """).strip() + '\n'
         # There are 8 spaces in the line after "if 1:..."
-        after_b = textwrap.dedent("""\
+        after_b = textwrap.dedent("""
     #@@language python
     def spam():
         if 1:  # test
 
     # after line
-    """)
+    """).strip() + '\n'
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2319,20 +2318,24 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20220517064432.1: *5* merge-node-with-next-node
     def test_merge_node_with_next_node(self):
         c, u = self.c, self.c.undoer
-        # The backslash is required.
-        prev_b = textwrap.dedent("""\
-    def spam():
-        pass
-    """)
-        next_b = textwrap.dedent("""\
-    spam2 = spam
-    """)
-        result_b = textwrap.dedent("""\
-    def spam():
-        pass
+        prev_b = textwrap.dedent(
+        """
+            def spam():
+                pass
+        """).strip() + '\n'
 
-    spam2 = spam
-    """)
+        next_b = textwrap.dedent(
+        """
+            spam2 = spam
+        """).strip() + '\n'
+
+        result_b = textwrap.dedent(
+        """
+            def spam():
+                pass
+
+            spam2 = spam
+        """).strip() + '\n'
         self.before_p.b = prev_b
         self.after_p.b = next_b
         c.selectPosition(self.before_p)
@@ -2354,20 +2357,24 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20220517064507.1: *5* merge-node-with-prev-node
     def test_merge_node_with_prev_node(self):
         c, u = self.c, self.c.undoer
-        # The backslash is required.
-        prev_b = textwrap.dedent("""\
-    def spam():
-        pass
-    """)
-        next_b = textwrap.dedent("""\
-    spam2 = spam
-    """)
-        result_b = textwrap.dedent("""\
-    def spam():
-        pass
+        prev_b = textwrap.dedent(
+        """
+            def spam():
+                pass
+        """).strip() + '\n'
 
-    spam2 = spam
-    """)
+        next_b = textwrap.dedent(
+        """
+            spam2 = spam
+        """).strip() + '\n'
+
+        result_b = textwrap.dedent(
+        """
+            def spam():
+                pass
+
+            spam2 = spam
+        """).strip() + '\n'
         self.before_p.b = prev_b
         self.after_p.b = next_b
         c.selectPosition(self.after_p)
@@ -2726,23 +2733,25 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.99: *5* test_rectangle-string
     def test_rectangle_string(self):
         """Test case for rectangle-string"""
-        # The backslash is required.
-        before_b = textwrap.dedent("""\
+        before_b = textwrap.dedent(
+        """
             before
             aaaxxxbbb
             aaaxxxbbb
             aaaxxxbbb
             aaaxxxbbb
             after
-    """)
-        after_b = textwrap.dedent("""\
+        """).strip() + '\n'
+        after_b = textwrap.dedent(
+        """
             before
             aaas...sbbb
             aaas...sbbb
             aaas...sbbb
             aaas...sbbb
             after
-    """)
+        """).strip() + '\n'
+
         # A hack. The command tests for g.unitTesting!
         self.run_test(
             before_b=before_b,
@@ -2754,24 +2763,26 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.100: *5* test_rectangle-yank
     def test_rectangle_yank(self):
         """Test case for rectangle-yank"""
-        # The backslash is required.
-        before_b = textwrap.dedent("""\
+        before_b = textwrap.dedent(
+        """
             before
             aaaxxxbbb
             aaaxxxbbb
             aaaxxxbbb
             aaaxxxbbb
             after
-        """)
-        after_b = textwrap.dedent("""\
+        """).strip() + '\n'
+
+        after_b = textwrap.dedent(
+        """
             before
             aaaY1Ybbb
             aaaY2Ybbb
             aaaY3Ybbb
             aaaY4Ybbb
             after
-        """)
-        # A hack. The command tests for g.unitTesting!
+        """).strip() + '\n'
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,

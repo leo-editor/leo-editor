@@ -204,7 +204,7 @@ class TestUndo(LeoUnitTest):
 
                 pass
         """).lstrip()
-        after = textwrap.dedent("""\
+        after = textwrap.dedent("""
             @language python
 
             def deleteCommentTest():

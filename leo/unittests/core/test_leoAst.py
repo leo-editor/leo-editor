@@ -2346,8 +2346,8 @@ class TestOrange(BaseTest):
     def test_relative_imports(self):
 
         # #2533.
-        # backslash is required.
-        contents = """\
+        contents = textwrap.dedent(
+        """
             from .module1 import w
             from . module2 import x
             from ..module1 import y
@@ -2356,8 +2356,10 @@ class TestOrange(BaseTest):
             from.import b
             from leo.core import leoExternalFiles
             import leo.core.leoGlobals as g
+        """).strip() + '\n'
+
+        expected = textwrap.dedent(
         """
-        expected = textwrap.dedent("""\
             from .module1 import w
             from .module2 import x
             from ..module1 import y
@@ -2366,7 +2368,8 @@ class TestOrange(BaseTest):
             from . import b
             from leo.core import leoExternalFiles
             import leo.core.leoGlobals as g
-        """)
+        """).strip() + '\n'
+
         contents, tokens, tree = self.make_data(contents)
         results = self.beautify(contents, tokens, tree)
         self.assertEqual(expected, results)
@@ -2515,6 +2518,7 @@ class TestOrange(BaseTest):
     def test_verbatim(self):
 
         line_length = 40  # For testing.
+
         # The backslash is required.
         contents = textwrap.dedent("""\
     #@@nobeautify
