@@ -2515,6 +2515,7 @@ class TestOrange(BaseTest):
     def test_verbatim(self):
 
         line_length = 40  # For testing.
+        # The backslash is required.
         contents = textwrap.dedent("""\
     #@@nobeautify
 
