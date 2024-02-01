@@ -835,7 +835,7 @@ class TestEditCommands(LeoUnitTest):
             d = 5
             e = 6
             x
-            """)
+        """)
         after_b = before_b
         # Add some trailing ws to before_b
         i = 1 + before_b.find('3')
@@ -2534,6 +2534,7 @@ class TestEditCommands(LeoUnitTest):
             line c
             last line
         """).strip() + '\n'
+
         # docstrings strip blank lines, so we can't use a docstring here!
         after_b = ''.join([
             'first line\n'
@@ -2725,6 +2726,7 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.99: *5* test_rectangle-string
     def test_rectangle_string(self):
         """Test case for rectangle-string"""
+        # The backslash is required.
         before_b = textwrap.dedent("""\
             before
             aaaxxxbbb
@@ -2752,6 +2754,7 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.100: *5* test_rectangle-yank
     def test_rectangle_yank(self):
         """Test case for rectangle-yank"""
+        # The backslash is required.
         before_b = textwrap.dedent("""\
             before
             aaaxxxbbb
@@ -4403,7 +4406,7 @@ class TestEditCommands(LeoUnitTest):
 
             Paragraph 2.
             line 2, paragraph 2
-    """)
+        """)
         w.setAllText(s)
         child = c.rootPosition().insertAfter()
         c.selectPosition(child)
