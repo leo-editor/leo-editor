@@ -613,7 +613,8 @@ class TestTokenBasedOrange(BaseTest):
             from leo.core import leoExternalFiles
             import leo.core.leoGlobals as g
         """
-        expected = textwrap.dedent("""
+        expected = textwrap.dedent(
+        """
             from .module1 import w
             from .module2 import x
             from ..module1 import y
