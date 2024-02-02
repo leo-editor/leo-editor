@@ -1,5 +1,33 @@
-# Just a dot ( . )   delegates all the requirements to setup.py
-# instead of hard coding version numbers and duplicating package lists.
-# https://stackoverflow.com/a/49684835/14420
-# https://caremad.io/posts/2013/07/setup-vs-requirement/
---editable .
+
+# For emergency install message.
+
+tk          # tkinter.
+
+# For commands...
+
+pylint
+pyflakes
+
+# For plugins...
+
+docutils    # For Sphinx and rST plugins.
+flexx       # leoflexx.py plugin.
+meta        # livecode.py plugin.
+pyenchant   # The spell tab.
+sphinx      # rST plugin.
+windows-curses; platform_system=="Windows"  # cursesGui2 plugin on Windows.
+
+# For leoAst.py and leoTokens.py...
+
+asttokens   # For unit tests.
+black       # For unit tests.
+
+# Developer stuff...
+
+# pyshortcuts >= 1.7  # desktop integration (#1243)
+# build >= 0.6.0  # simple PEP 517 package builder.
+
+# Optional Qt dependencies.
+
+PyQt5 [Qt] >= 5.15  # #2884: require v5.15. #1217: require v5.12+.
+PyQtWebEngine [Qt]
