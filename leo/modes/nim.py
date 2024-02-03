@@ -31,11 +31,12 @@ attributesDictDict = {
     "nim_main": nim_main_attributes_dict,
 }
 #@-<< Attributes Dicts >>
-#@+<< Keywords Dicts >>
-#@+node:ekr.20240202211600.3: ** << Keywords Dicts >>
+
 # Keywords dict for nim_main ruleset.
 nim_main_keywords_dict = {
-    # Nim keywords. Some are reserved for future use.
+    #@+<< Nim keywords >>
+    #@+node:ekr.20240203080736.1: ** << Nim keywords >>
+    # Some are reserved for future use.
     "addr": "keyword1",
     "and": "keyword1",
     "as": "keyword1",
@@ -102,84 +103,90 @@ nim_main_keywords_dict = {
     "while": "keyword1",
     "xor": "keyword1",
     "yield": "keyword1",
+    #@-<< Nim keywords >>
+    #@+<< Names defined in system module >>
+    #@+node:ekr.20240203080936.1: ** << Names defined in system module >>
+        
 
-    # Names defined in system module.
-    # https://nim-lang.org/docs/system.html
+        # Names defined in system module.
+        # https://nim-lang.org/docs/system.html
 
-    # Functions that are also keywords.
-    # "and", "or", "not".
-    # "div", "mod", "shl", "shr", "xor".
-    # "len".
-    # "addr", "isnot".
+        # Functions that are also keywords.
+        # "and", "or", "not".
+        # "div", "mod", "shl", "shr", "xor".
+        # "len".
+        # "addr", "isnot".
 
-    # Defined on multiple types.
-    "add": "keyword3",
+        # Defined on multiple types.
+        "add": "keyword3",
 
-    # Strings and characters.
-    "chr": "keyword3",
-    "ord": "keyword3",
+        # Strings and characters.
+        "chr": "keyword3",
+        "ord": "keyword3",
 
-    # Seqs.
-    "del": "keyword3",
-    "delete": "keyword3",
-    "insert": "keyword3",
-    "newSeq": "keyword3",
-    "newSeqOfCap": "keyword3",
-    "pop": "keyword3",
-    "setLen": "keyword3",
+        # Seqs.
+        "del": "keyword3",
+        "delete": "keyword3",
+        "insert": "keyword3",
+        "newSeq": "keyword3",
+        "newSeqOfCap": "keyword3",
+        "pop": "keyword3",
+        "setLen": "keyword3",
 
-    # Sets.
-    "card": "keyword3",
-    "contains": "keyword3",
-    "excl": "keyword3",
-    "incl": "keyword3",
+        # Sets.
+        "card": "keyword3",
+        "contains": "keyword3",
+        "excl": "keyword3",
+        "incl": "keyword3",
 
-    # Numbers.
-    "ashr": "keyword3",
-    "toFloat": "keyword3",
-    "toInt": "keyword3",
+        # Numbers.
+        "ashr": "keyword3",
+        "toFloat": "keyword3",
+        "toInt": "keyword3",
 
-    # Ordinals.
-    "dec": "keyword3",
-    "high": "keyword3",
-    "inc": "keyword3",
-    "low": "keyword3",
-    "pred": "keyword3",
-    "succ": "keyword3",
+        # Ordinals.
+        "dec": "keyword3",
+        "high": "keyword3",
+        "inc": "keyword3",
+        "low": "keyword3",
+        "pred": "keyword3",
+        "succ": "keyword3",
 
-    # Misc.
-    "runnableExamples": "keyword3",
+        # Misc.
+        "runnableExamples": "keyword3",
 
-    ### Types.
+        ### Types.
 
-    ### Vars.
+        ### Vars.
 
-    ### Consts.
+        ### Consts.
 
-    ### Procs.  Many!
+        ### Procs.  Many!
 
-    "echo": "keyword3",
+        "echo": "keyword3",
 
-    ### Iterators.
+        ### Iterators.
 
-    ### Macros.
+        ### Macros.
 
-    ### Templates
+        ### Templates
 
-    ###
+        ###
 
-    # Constants.
-    "false": "keyword3",
-    "true": "keyword3",
+        # Constants.
+        "false": "keyword3",
+        "true": "keyword3",
+    #@-<< Names defined in system module >>
 }
 
 # Dictionary of keywords dictionaries for nim mode.
 keywordsDictDict = {
     "nim_main": nim_main_keywords_dict,
 }
-#@-<< Keywords Dicts >>
+
+#@+<< Nim rules >>
+#@+node:ekr.20240202211600.4: ** << Nim rules >>
 #@+others
-#@+node:ekr.20240202211600.4: ** nim rules
 #@+node:ekr.20240202211600.5: *3* nim_rule0
 def nim_rule0(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="#")
@@ -274,10 +281,11 @@ def nim_rule19(colorer, s, i):
 def nim_keyword(colorer, s, i):
     return colorer.match_keywords(s, i)
 #@-others
-#@+<< Rules Dicts >>
-#@+node:ekr.20240202211600.29: ** << Rules Dicts >>
+#@-<< Nim rules >>
+#@+<< nim_rules_dict >>
+#@+node:ekr.20240202211600.29: ** << nim_rules_dict >>
 # Rules dict for nim_main ruleset.
-rulesDict1 = {
+nim_rules_dict = {
     "!": [nim_rule6],
     "\"": [nim_rule1, nim_rule3],
     "#": [nim_rule0],
@@ -360,12 +368,10 @@ rulesDict1 = {
     "|": [nim_rule17],
     "~": [nim_rule19],
 }
-
-# x.rulesDictDict for nim mode.
+#@-<< nim_rules_dict >>
 rulesDictDict = {
-    "nim_main": rulesDict1,
+    "nim_main": nim_rules_dict,
 }
-#@-<< Rules Dicts >>
 
 # Import dict for nim mode.
 importDict = {}
