@@ -102,10 +102,72 @@ nim_main_keywords_dict = {
     "while": "keyword1",
     "xor": "keyword1",
     "yield": "keyword1",
-    
-    # Functions.
+
+    # Names defined in system module.
+    # https://nim-lang.org/docs/system.html
+
+    # Functions that are also keywords.
+    # "and", "or", "not".
+    # "div", "mod", "shl", "shr", "xor".
+    # "len".
+    # "addr", "isnot".
+
+    # Defined on multiple types.
+    "add": "keyword3",
+
+    # Strings and characters.
+    "chr": "keyword3",
+    "ord": "keyword3",
+
+    # Seqs.
+    "del": "keyword3",
+    "delete": "keyword3",
+    "insert": "keyword3",
+    "newSeq": "keyword3",
+    "newSeqOfCap": "keyword3",
+    "pop": "keyword3",
+    "setLen": "keyword3",
+
+    # Sets.
+    "card": "keyword3",
+    "contains": "keyword3",
+    "excl": "keyword3",
+    "incl": "keyword3",
+
+    # Numbers.
+    "ashr": "keyword3",
+    "toFloat": "keyword3",
+    "toInt": "keyword3",
+
+    # Ordinals.
+    "dec": "keyword3",
+    "high": "keyword3",
+    "inc": "keyword3",
+    "low": "keyword3",
+    "pred": "keyword3",
+    "succ": "keyword3",
+
+    # Misc.
+    "runnableExamples": "keyword3",
+
+    ### Types.
+
+    ### Vars.
+
+    ### Consts.
+
+    ### Procs.  Many!
+
     "echo": "keyword3",
-    
+
+    ### Iterators.
+
+    ### Macros.
+
+    ### Templates
+
+    ###
+
     # Constants.
     "false": "keyword3",
     "true": "keyword3",
