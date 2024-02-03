@@ -1,3 +1,7 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20240201175949.1: * @file ../../requirements.txt
+#@@language python
+#@@nosearch
 
 # For emergency install message.
 
@@ -31,3 +35,4 @@ black       # For unit tests.
 
 PyQt5 [Qt] >= 5.15  # #2884: require v5.15. #1217: require v5.12+.
 PyQtWebEngine [Qt]
+#@-leo
