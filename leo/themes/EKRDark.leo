@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -157,11 +157,11 @@
 <v t="ekr.20180318145515.780"><vh>@color url_color = purple</vh></v>
 </v>
 <v t="ekr.20180318145515.781"><vh>Colors: patch (diff)</vh>
-<v t="ekr.20180318145515.782"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
-<v t="ekr.20180318145515.783"><vh>@color patch_keyword2_color = @solarized-red</vh></v>
-<v t="ekr.20180318145515.784"><vh>@color patch_keyword3_color = @solarized-blue</vh></v>
-<v t="ekr.20180318145515.785"><vh>@color patch_literal1_color = @solarized-blue</vh></v>
-<v t="ekr.20180318145515.786"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
+<v t="ekr.20180318145515.782"><vh>@color patch.keyword1 = @solarized-green</vh></v>
+<v t="ekr.20180318145515.783"><vh>@color patch.keyword2 = @solarized-red</vh></v>
+<v t="ekr.20180318145515.784"><vh>@color patch.keyword3 = @solarized-blue</vh></v>
+<v t="ekr.20180318145515.785"><vh>@color patch.literal1 = @solarized-blue</vh></v>
+<v t="ekr.20180318145515.786"><vh>@color patch.literal2 = @solarized-blue</vh></v>
 </v>
 </v>
 </v>
