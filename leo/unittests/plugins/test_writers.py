@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20220812224747.1: * @file ../unittests/test_writers.py
+#@+node:ekr.20220812224747.1: * @file ../unittests/plugins/test_writers.py
 """Tests of leo/plugins/writers"""
 import textwrap
 from leo.core import leoGlobals as g

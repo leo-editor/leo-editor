@@ -402,14 +402,14 @@ class TestOutlineCommands(LeoUnitTest):
         #@+node:ekr.20230730070124.1: *4* function: init_dicts
         def init_dicts() -> None:
             for z in vnodes_list:
-                children_dict [z.gnx] = z.children[:]
+                children_dict[z.gnx] = z.children[:]
             for z in vnodes_list:
-                parents_dict [z.gnx] = z.parents[:]
+                parents_dict[z.gnx] = z.parents[:]
         #@+node:ekr.20230730070250.1: *4* function: restore_tree
         def restore_tree():
             for v in vnodes_list:
-                v.children = children_dict [v.gnx][:]
-                v.parents = parents_dict [v.gnx][:]
+                v.children = children_dict[v.gnx][:]
+                v.parents = parents_dict[v.gnx][:]
         #@+node:ekr.20230729124541.1: *4* function: do_defect
         def do_defect(parent: Position, child: Position, defect: str) -> None:
             """
@@ -442,7 +442,7 @@ class TestOutlineCommands(LeoUnitTest):
             option: 's' for strict, 'v' for verbose.
             """
             g.app.debug = []
-            for descriptor  in options:
+            for descriptor in options:
                 selector, option = descriptor
                 if selector in ('all', parent.h):
                     if 's' in option and 'test:strict' not in g.app.debug:

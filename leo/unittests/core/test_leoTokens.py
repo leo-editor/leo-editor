@@ -73,7 +73,7 @@ class BaseTest(unittest.TestCase):
         contents, tokens = self.make_data(contents, debug_list=debug_list)
         results = output_tokens_to_string(tokens)
         self.assertEqual(contents, results)
-    #@+node:ekr.20240105153425.44: *3* BaseTest.make_data
+    #@+node:ekr.20240105153425.44: *3* BaseTest.make_data (test_leoTokens.py)
     def make_data(self,
         contents: str,
         *,
@@ -242,7 +242,7 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.46: *3* TestTBO.test_at_doc_part
     def test_at_doc_part(self):
 
-        contents = """\
+        contents = """
     #@+at Line 1
     # Line 2
     #@@c
@@ -273,7 +273,7 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.48: *3* TestTBO.test_blank_lines_after_function
     def test_blank_lines_after_function(self):
 
-        contents = """\
+        contents = """
     # Comment line 1.
     # Comment line 2.
 
@@ -292,7 +292,7 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.49: *3* TestTBO.test_blank_lines_after_function_2
     def test_blank_lines_after_function_2(self):
 
-        contents = """\
+        contents = """
     # Leading comment line 1.
     # Leading comment lines 2.
 
@@ -310,7 +310,7 @@ class TestTokenBasedOrange(BaseTest):
     def test_blank_lines_after_function_3(self):
 
         # From leoAtFile.py.
-        contents = r"""\
+        contents = """
     def writeAsisNode(self, p):
         print('1')
 
@@ -329,12 +329,13 @@ class TestTokenBasedOrange(BaseTest):
     def test_comment_indented(self):
 
         table = (
-    """\
+    """
     if 1:
         pass
             # An indented comment.
     """,
-    """\
+
+    """
     table = (
         # Indented comment.
     )
@@ -393,20 +394,20 @@ class TestTokenBasedOrange(BaseTest):
 
         table = (
         # Case 0.
-        """\
+        """
     @my_decorator(1)
     def func():
         pass
     """,
         # Case 1.
-        """\
+        """
     if 1:
         @my_decorator
         def func():
             pass
     """,
         # Case 2.
-        '''\
+        '''
     @g.commander_command('promote')
     def promote(self, event=None, undoFlag=True):
         """Make all children of the selected nodes siblings of the selected node."""
@@ -422,7 +423,7 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.56: *3* TestTBO.test_dont_delete_blank_lines
     def test_dont_delete_blank_lines(self):
 
-        contents = """\
+        contents = """
     class Test:
 
         def test_func():
@@ -441,7 +442,7 @@ class TestTokenBasedOrange(BaseTest):
         # Careful: don't put a sentinel into the file directly.
         # That would corrupt leoAst.py.
         sentinel = '#@+node:ekr.20200105143308.54: ** test'
-        contents = f"""\
+        contents = f"""
     {sentinel}
     def spam():
         pass
@@ -456,7 +457,7 @@ class TestTokenBasedOrange(BaseTest):
         # Careful: don't put a sentinel into the file directly.
         # That would corrupt leoAst.py.
         sentinel = '#@+node:ekr.20200105143308.54: ** test'
-        contents = f"""\
+        contents = f"""
     {sentinel}
     class TestClass:
         pass
@@ -468,7 +469,7 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.67: *3* TestTBO.test_lines_before_class
     def test_lines_before_class(self):
 
-        contents = """\
+        contents = """
     a = 2
     class aClass:
         pass
@@ -794,7 +795,7 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240105153425.80: *3* TestTBO.test_verbatim_with_pragma
     def test_verbatim_with_pragma(self):
 
-        contents = """\
+        contents = """
     # pragma: no beautify
 
     def addOptionsToParser(self, parser, trace_m):
@@ -847,7 +848,7 @@ class TestTokens(BaseTest):
 
         # Will only be run when enabled explicitly.
 
-        contents = """\
+        contents = """
     print('line 1')
     print('line 2')
     print('line 3')
@@ -859,7 +860,7 @@ class TestTokens(BaseTest):
     def test_bs_nl_tokens(self):
         # Test https://bugs.python.org/issue38663.
 
-        contents = """\
+        contents = """
     print \
         ('abc')
     """
@@ -867,7 +868,7 @@ class TestTokens(BaseTest):
     #@+node:ekr.20240105153425.95: *3* TT.test_continuation_1
     def test_continuation_1(self):
 
-        contents = """\
+        contents = """
     a = (3,4,
         5,6)
     y = [3, 4,
@@ -890,7 +891,7 @@ class TestTokens(BaseTest):
     #@+node:ekr.20240105153425.97: *3* TT.test_continuation_3
     def test_continuation_3(self):
 
-        contents = """\
+        contents = """
     # Comment \\\n
     x = 0
     """

@@ -18,8 +18,8 @@ class TestEditCommands(LeoUnitTest):
             before_sel: str,
             after_sel: str,  # before and after selection ranges.
             command_name: str,
-            directives: str='',
-            dedent: bool=True,
+            directives: str = '',
+            dedent: bool = True,
         ):
         """
         A helper for many commands tests.
@@ -4184,7 +4184,7 @@ class TestEditCommands(LeoUnitTest):
         ec = c.editCommands
         w = c.frame.body.wrapper
         for i, j, python in (
-            #('1.0','4.5',False),
+            # ('1.0','4.5',False),
             (5, 50, True),
         ):
             event = None

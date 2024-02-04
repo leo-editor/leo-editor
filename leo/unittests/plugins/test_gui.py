@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20210910084607.1: * @file ../unittests/test_gui.py
+#@+node:ekr.20210910084607.1: * @file ../unittests/plugins/test_gui.py
 """Tests of gui base classes"""
 #@+<< test_gui imports >>
 #@+node:ekr.20220911102700.1: ** << test_gui imports >>

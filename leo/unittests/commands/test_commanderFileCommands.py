@@ -12,7 +12,7 @@ assert textwrap
 
 #@+others
 #@+node:ekr.20230710105810.1: ** class TestCommanderFileCommands (LeoUnitTest)
-class TestCommanderFileCommands (LeoUnitTest):
+class TestCommanderFileCommands(LeoUnitTest):
     #@+others
     #@+node:ekr.20230710105853.1: *3* TestCommanderFileCommands.test_refresh_from_disk
     def test_refresh_from_disk(self):
@@ -44,7 +44,7 @@ class TestCommanderFileCommands (LeoUnitTest):
                 p.b = contents
                 msg = f"{pass_number}, {kind}"
                 # Create the file (with sentinels for @file).
-                if kind  == 'file':
+                if kind == 'file':
                     at.writeOneAtFileNode(p)
                     file_contents = ''.join(at.outputList)
                 else:
