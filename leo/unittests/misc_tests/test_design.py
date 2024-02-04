@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20230506095312.1: * @file ../unittests/test_design.py
+#@+node:ekr.20230506095312.1: * @file ../unittests/misc_tests/test_design.py
 """Global design tests."""
 #@+<< test_design imports >>
 #@+node:ekr.20230507094414.1: ** << test_design imports >>

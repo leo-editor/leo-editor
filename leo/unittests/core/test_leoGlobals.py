@@ -38,9 +38,9 @@ class TestGlobals(LeoUnitTest):
     files_data = (
         # The hard case: __init__.py
         ('@file', '../plugins/importers/__init__.py'),
-        ('@file',  '../plugins/writers/__init__.py'),
+        ('@file', '../plugins/writers/__init__.py'),
         ('@clean', '../plugins/leo_babel/__init__.py'),
-        ('@file',  '../plugins/editpane/__init__.py'),
+        ('@file', '../plugins/editpane/__init__.py'),
         # Other files.
         ('@file', 'leoApp.py'),
         ('@file', '../commands/abbrevCommands.py'),
@@ -53,22 +53,22 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20230701060854.1: *4* << define error_patterns >>
     # m.group(1) is the filename and m.group(2) is the line number.
     error_patterns = {
-        'flake8': g.flake8_pat,     # r'(.+?):([0-9]+):[0-9]+:.*$'
-        'mypy':  g.mypy_pat,        # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
-        'pyflakes': g.pyflakes_pat, # r'^(.*):([0-9]+):[0-9]+ .*?$'
-        'pylint': g.pylint_pat,     # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
-        'python': g.python_pat,     # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
+        'flake8': g.flake8_pat,  # r'(.+?):([0-9]+):[0-9]+:.*$'
+        'mypy': g.mypy_pat,  # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
+        'pyflakes': g.pyflakes_pat,  # r'^(.*):([0-9]+):[0-9]+ .*?$'
+        'pylint': g.pylint_pat,  # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
+        'python': g.python_pat,  # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
     }
     #@-<< define error_patterns >>
     #@+<< define error_templates >>
     #@+node:ekr.20230701071240.1: *4* << define error_templates >>
     # Error message templates.
     error_templates = {
-        'flake8':   'FILE:LINE:COL:ERR',
-        'mypy':     'FILE:LINE:error ERR',
+        'flake8': 'FILE:LINE:COL:ERR',
+        'mypy': 'FILE:LINE:error ERR',
         'pyflakes': 'FILE:LINE:COL ERR',
-        'pylint':   'FILE:LINE:COL: (ERR)',
-        'python':   'File "FILE", line LINE',
+        'pylint': 'FILE:LINE:COL: (ERR)',
+        'python': 'File "FILE", line LINE',
     }
     #@-<< define error_templates >>
     #@+<< define invalid_unls >>
@@ -76,9 +76,9 @@ class TestGlobals(LeoUnitTest):
     # Syntactically invalid unls.
     invalid_unls = (
         'unl:gnx:xyzzy#.20230622112649.1',  # Missing '//'
-        'unl:gnx://xyzzy.20230622112649.1', # Missing '#'
-        'unl:gnx//xyzzy#.20230622112649.1', # Missing ':'
-        'unl//xyzzy#.20230622112649.1', # Missing ':'
+        'unl:gnx://xyzzy.20230622112649.1',  # Missing '#'
+        'unl:gnx//xyzzy#.20230622112649.1',  # Missing ':'
+        'unl//xyzzy#.20230622112649.1',  # Missing ':'
 
     )
 
@@ -154,7 +154,7 @@ class TestGlobals(LeoUnitTest):
         # Error messages for every tool and every absolute path.
         self.error_messages = {}
         for tool in self.tools:
-            self.error_messages [tool] = []
+            self.error_messages[tool] = []
             for path in self.absolute_paths:
                 template = self.error_templates[tool]
                 self.error_messages[tool].append(
@@ -526,22 +526,25 @@ class TestGlobals(LeoUnitTest):
         table = (
             'test_leoGlobals.py", line',
             'in test_g_handleScriptException',
-            'print(1/0)',
-            'ZeroDivisionError: division by zero'
+            'print(1 / 0)',
+            'ZeroDivisionError: division by zero',
         )
+
         with self.assertRaises(ZeroDivisionError):
             try:
-                print(1/0)
+                print(1 / 0)  # Must be beautified.
             except ZeroDivisionError:
                 old_stdout = sys.stdout
                 sys.stdout = io.StringIO()
+                #  Create the report
                 g.handleScriptException(c, c.p)
                 report = sys.stdout.getvalue()
+                # Restore sys.stdout before looking at the results!
+                sys.stdout = old_stdout
+                # g.printObj(g.splitLines(report), tag='Report')
                 for s in table:
                     assert s in report, repr(s)
-                sys.stdout = old_stdout
-                # print(report)
-                raise
+                raise  # Must reraise
     #@+node:ekr.20210905203541.23: *4* TestGlobals.test_g_import_module
     def test_g_import_module(self):
         assert g.import_module('leo.core.leoAst')
@@ -648,7 +651,7 @@ class TestGlobals(LeoUnitTest):
             (TestClass, "Class"),
             (TestClass(), "Instance"),
             (TestClass.test_function, 'unbound method'),
-            (TestClass().test_function,'bound method')
+            (TestClass().test_function, 'bound method')
         )
         for data, tag in table:
             result = g.objToString(data, tag=tag)
@@ -691,7 +694,7 @@ class TestGlobals(LeoUnitTest):
             '--load-type=@auto', '--load-type=@clean',
             '--screen-shot', '--screen-shot=', '--screen-shot-',
             '--script=xyzzy.py',
-            '--trace','--trace-', 'trace=', '--trace=xxx',
+            '--trace', '--trace-', 'trace=', '--trace=xxx',
             '--trace-binding', '--trace-binding-', '--trace-binding=',
             '--window-', 'window=',
             '--window-size', '--window-size=', '--window-size=100',

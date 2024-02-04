@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20210904064440.2: * @file ../unittests/test_importers.py
+#@+node:ekr.20210904064440.2: * @file ../unittests/plugins/test_importers.py
 """Tests of leo/plugins/importers"""
 import glob
 import importlib

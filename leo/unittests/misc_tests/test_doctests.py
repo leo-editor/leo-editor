@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20210926044012.1: * @file ../unittests/test_doctests.py
+#@+node:ekr.20210926044012.1: * @file ../unittests/misc_tests/test_doctests.py
 """Run all doctests."""
 import doctest
 import glob
@@ -8,7 +8,7 @@ import unittest
 from leo.core import leoGlobals as g
 
 unittest_dir = os.path.dirname(__file__)
-leo_dir = os.path.abspath(os.path.join(unittest_dir, '..'))
+leo_dir = os.path.abspath(os.path.join(unittest_dir, '..', '..'))
 
 #@+others  # Define a function containing a doctest.
 #@+node:ekr.20210926053601.1: ** factorial (test_dectests.py)
@@ -17,7 +17,7 @@ def factorial(n):
     # Must import factorial. See: stackoverflow.com/questions/65066002
     """Return the factorial of n, an exact integer >= 0.
 
-    >>> from leo.unittests.test_doctests import factorial
+    >>> from leo.unittests.misc_tests.test_doctests import factorial
 
     >>> [factorial(n) for n in range(6)]
     [1, 1, 2, 6, 24, 120]

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20210907081548.1: * @file ../unittests/test_plugins.py
+#@+node:ekr.20210907081548.1: * @file ../unittests/plugins/test_plugins.py
 """General tests of plugins."""
 
 import glob
