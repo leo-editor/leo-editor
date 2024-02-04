@@ -14,8 +14,8 @@ properties = {
     "lineComment": "#",
 }
 
-#@+<< Attributes Dicts >>
-#@+node:ekr.20240202211600.2: ** << Attributes Dicts >>
+#@+<< Nim attributes dicts >>
+#@+node:ekr.20240202211600.2: ** << Nim attributes dicts >>
 # Attributes dict for nim_main ruleset.
 nim_main_attributes_dict = {
     "default": "null",
@@ -30,7 +30,7 @@ nim_main_attributes_dict = {
 attributesDictDict = {
     "nim_main": nim_main_attributes_dict,
 }
-#@-<< Attributes Dicts >>
+#@-<< Nim attributes dicts >>
 
 # Keywords dict for nim_main ruleset.
 nim_main_keywords_dict = {
@@ -104,79 +104,549 @@ nim_main_keywords_dict = {
     "xor": "keyword1",
     "yield": "keyword1",
     #@-<< Nim keywords >>
-    #@+<< Names defined in system module >>
-    #@+node:ekr.20240203080936.1: ** << Names defined in system module >>
-        
+    #@+<< Nim type names >>
+    #@+node:ekr.20240203094444.1: ** << Nim type names >>
+    # Type names should be colorized like reserved words.
+        "any": "keyword1",
+        "array": "keyword1",
+        "auto": "keyword1",
+        # "bool": "keyword1",
+        "byte": "keyword1",
+        "char": "keyword1",
+        "csize": "keyword1",
+        "cstring": "keyword1",
+        # "float": "keyword1",
+        "float32": "keyword1",
+        "float64": "keyword1",
+        # "int": "keyword1",
+        "int8": "keyword1",
+        "int16": "keyword1",
+        "int32": "keyword1",
+        "int64": "keyword1",
+        "lent": "keyword1",
+        "iterable": "keyword1",
+        "openArray": "keyword1",
+        "owned": "keyword1",
+        "pointer": "keyword1",
+        # "range": "keyword1",
+        "seq": "keyword1",
+        # "set": "keyword1",
+        "sink": "keyword1",
+        "string": "keyword1",
+        "typed": "keyword1",
+        "typedesc": "keyword1",
+        "uint": "keyword1",
+        "uint8": "keyword1",
+        "uint16": "keyword1",
+        "uint32": "keyword1",
+        "uint64": "keyword1",
+        "untyped": "keyword1",
+        "varargs": "keyword1",
+        "void": "keyword1",
+    #@-<< Nim type names >>
+    #@+<< Nim constants >>
+    #@+node:ekr.20240203093634.1: ** << Nim constants >>
+    "false": "keyword2",
+    "true": "keyword2",
+    #@-<< Nim constants >>
+    # https://nim-lang.org/docs/system.html
+    #@+<< Nim upper-case names defined in system module >>
+    #@+node:ekr.20240203194744.1: ** << Nim upper-case names defined in system module >>
+    # Type constants.
 
-        # Names defined in system module.
-        # https://nim-lang.org/docs/system.html
+    "AllocStats": "keyword3",
+    "BackwardsIndex": "keyword3",
+    "CatchableError": "keyword3",
+    "Channel": "keyword3",
+    "Defect": "keyword3",
+    "Endianness": "keyword3",
+    "Exception": "keyword3",
+    "ForeignCell": "keyword3",
+    "ForLoopStmt": "keyword3",
+    "GC_Strategy": "keyword3",
+    "HSlice": "keyword3",
+    "JsRoot": "keyword3",
+    "Natural": "keyword3",
+    "NimNode": "keyword3",
+    "Ordinal": "keyword3",
+    "PFrame": "keyword3",
+    "Positive": "keyword3",
+    "RootEffect": "keyword3",
+    "RootObj": "keyword3",
+    "RootRef": "keyword3",
+    "Slice": "keyword3",
+    "SomeFloat": "keyword3",
+    "SomeInteger": "keyword3",
+    "SomeNumber": "keyword3",
+    "SomeOrdinal": "keyword3",
+    "SomeSignedInt": "keyword3",
+    "SomeUnsignedInt": "keyword3",
+    "StackTraceEntry": "keyword3",
+    "TaintedString": "keyword3",
+    "TFrame": "keyword3",
+    "TypeOfMode": "keyword3",
+    "UncheckedArray": "keyword3",
 
-        # Functions that are also keywords.
-        # "and", "or", "not".
-        # "div", "mod", "shl", "shr", "xor".
-        # "len".
-        # "addr", "isnot".
+    # Consts
 
-        # Defined on multiple types.
-        "add": "keyword3",
+    "CompileDate": "keyword3",
+    "CompileTime": "keyword3",
+    "NimMajor": "keyword3",
+    "NimMinor": "keyword3",
+    "NimPatch": "keyword3",
+    "NimVersion": "keyword3",
+    "QuitFailure": "keyword3",
+    "QuitSuccess": "keyword3",
 
-        # Strings and characters.
-        "chr": "keyword3",
-        "ord": "keyword3",
+    # Procs.
 
-        # Seqs.
-        "del": "keyword3",
-        "delete": "keyword3",
-        "insert": "keyword3",
-        "newSeq": "keyword3",
-        "newSeqOfCap": "keyword3",
-        "pop": "keyword3",
-        "setLen": "keyword3",
+    "GC_collectZct": "keyword3",
+    "GC_disable": "keyword3",
+    "GC_disableMarkAndSweep": "keyword3",
+    "GC_enable": "keyword3",
+    "GC_enableMarkAndSweep": "keyword3",
+    "GC_fullCollect": "keyword3",
+    "GC_getStatistics": "keyword3",
+    "GC_ref": "keyword3",
+    "GC_unref": "keyword3",
 
-        # Sets.
-        "card": "keyword3",
-        "contains": "keyword3",
-        "excl": "keyword3",
-        "incl": "keyword3",
+    # Exceptions.
 
-        # Numbers.
-        "ashr": "keyword3",
-        "toFloat": "keyword3",
-        "toInt": "keyword3",
+    "AccessViolationDefect": "keyword3",
+    "AccessViolationError": "keyword3",
+    "ArithmeticDefect": "keyword3",
+    "ArithmeticError": "keyword3",
+    "AssertionDefect": "keyword3",
+    "AssertionError": "keyword3",
+    "DeadThreadDefect": "keyword3",
+    "DeadThreadError": "keyword3",
+    "DivByZeroDefect": "keyword3",
+    "DivByZeroError": "keyword3",
+    "EOFError": "keyword3",
+    "ExecIOEffect": "keyword3",
+    "FieldDefect": "keyword3",
+    "FieldError": "keyword3",
+    "FloatDivByZeroDefect": "keyword3",
+    "FloatDivByZeroError": "keyword3",
+    "FloatInexactDefect": "keyword3",
+    "FloatInexactError": "keyword3",
+    "FloatInvalidOpDefect": "keyword3",
+    "FloatInvalidOpError": "keyword3",
+    "FloatOverflowDefect": "keyword3",
+    "FloatOverflowError": "keyword3",
+    "FloatUnderflowDefect": "keyword3",
+    "FloatUnderflowError": "keyword3",
+    "FloatingPointDefect": "keyword3",
+    "FloatingPointError": "keyword3",
+    "IOEffect": "keyword3",
+    "IOError": "keyword3",
+    "IndexDefect": "keyword3",
+    "IndexError": "keyword3",
+    "KeyError": "keyword3",
+    "LibraryError": "keyword3",
+    "NilAccessDefect": "keyword3",
+    "NilAccessError": "keyword3",
+    "OSError": "keyword3",
+    "ObjectAssignmentDefect": "keyword3",
+    "ObjectAssignmentError": "keyword3",
+    "ObjectConversionDefect": "keyword3",
+    "ObjectConversionError": "keyword3",
+    "OutOfMemDefect": "keyword3",
+    "OutOfMemError": "keyword3",
+    "OverflowDefect": "keyword3",
+    "OverflowError": "keyword3",
+    "RangeDefect": "keyword3",
+    "RangeError": "keyword3",
+    "ReadIOEffect": "keyword3",
+    "ReraiseDefect": "keyword3",
+    "ReraiseError": "keyword3",
+    "ResourceExhaustedError": "keyword3",
+    "StackOverflowDefect": "keyword3",
+    "StackOverflowError": "keyword3",
+    "TimeEffect": "keyword3",
+    "ValueError": "keyword3",
+    "WriteIOEffect": "keyword3",
 
-        # Ordinals.
-        "dec": "keyword3",
-        "high": "keyword3",
-        "inc": "keyword3",
-        "low": "keyword3",
-        "pred": "keyword3",
-        "succ": "keyword3",
+    # Number-related constants.
 
-        # Misc.
-        "runnableExamples": "keyword3",
+    "BiggestFloat": "keyword3",
+    "BiggestInt": "keyword3",
+    "BiggestUInt": "keyword3",
+    "ByteAddress": "keyword3",
+    "Inf": "keyword3",
+    "NaN": "keyword3",
+    "NegInf": "keyword3",
+    "PFloat32": "keyword3",
+    "PFloat64": "keyword3",
+    "PInt32": "keyword3",
+    "PInt64": "keyword3",
+    "Utf16Char": "keyword3",
+    "WideCString": "keyword3",
+    "WideCStringObj": "keyword3",
 
-        ### Types.
+    # Atomic operations.
 
-        ### Vars.
+    "ATOMIC_ACQUIRE": "keyword3",
+    "ATOMIC_ACQ_REL": "keyword3",
+    "ATOMIC_CONSUME": "keyword3",
+    "ATOMIC_RELAXED": "keyword3",
+    "ATOMIC_RELEASE": "keyword3",
+    "ATOMIC_SEQ_CST": "keyword3",
+    "AtomMemModel": "keyword3",
+    "AtomType": "keyword3",
 
-        ### Consts.
+    # I/O.
 
-        ### Procs.  Many!
+    "File": "keyword3",
+    "FileHandle": "keyword3",
+    "FileMode": "keyword3",
+    "FileSeekPos": "keyword3",
+    "Thread": "keyword4",
+    #@-<< Nim upper-case names defined in system module >>
+    #@+<< Nim lower-case names defined in system module >>
+    #@+node:ekr.20240203080936.1: ** << Nim lower-case names defined in system module >>
+    # Functions defined on multiple types.
+    "add": "keyword4",
 
-        "echo": "keyword3",
+    # Strings and characters.
+    "chr": "keyword4",
+    "ord": "keyword4",
 
-        ### Iterators.
+    # Seqs.
+    "del": "keyword4",
+    "delete": "keyword4",
+    "insert": "keyword4",
+    "newSeq": "keyword4",
+    "newSeqOfCap": "keyword4",
+    "pop": "keyword4",
+    "setLen": "keyword4",
 
-        ### Macros.
+    # Sets.
+    "card": "keyword4",
+    "contains": "keyword4",
+    "excl": "keyword4",
+    "incl": "keyword4",
 
-        ### Templates
+    # Numbers.
+    "ashr": "keyword4",
+    "toFloat": "keyword4",
+    "toInt": "keyword4",
 
-        ###
+    # Ordinals.
+    "dec": "keyword4",
+    "high": "keyword4",
+    "inc": "keyword4",
+    "low": "keyword4",
+    "pred": "keyword4",
+    "succ": "keyword4",
 
-        # Constants.
-        "false": "keyword3",
-        "true": "keyword3",
-    #@-<< Names defined in system module >>
+    # Misc.
+    "runnableExamples": "keyword4",
+    "echo": "keyword4",
+
+    # Vars
+
+    "errorMessageWriter": "keyword4",
+    "globalRaiseHook": "keyword4",
+    "localRaiseHook": "keyword4",
+    "nimThreadDestructionHandlers": "keyword4",
+    "onUnhandledException": "keyword4",
+    "outOfMemHook": "keyword4",
+    "programResult": "keyword4",
+    "unhandledExceptionHook": "keyword4",
+
+    # Lets.
+
+    "nimvm": "keyword4",
+
+    # Consts.
+
+    "appType": "keyword4",
+    "isMainModule": "keyword4",
+    "cpuEndian": "keyword4",
+    "hostCPU": "keyword4",
+    "hostOS": "keyword4",
+    "off": "keyword4",
+    "on": "keyword4",
+
+    # Procs.
+
+    "abs": "keyword4",
+    "addEscapedChar": "keyword4",
+    "addQuitProc": "keyword4",
+    "addQuoted": "keyword4",
+    "alignof": "keyword4",
+    "alloc0Impl": "keyword4",
+    "allocCStringArray": "keyword4",
+    "allocImpl": "keyword4",
+    "allocShared0Impl": "keyword4",
+    "allocSharedImpl": "keyword4",
+    "arrayWith": "keyword4",
+    "astToStr": "keyword4",
+    "capacity": "keyword4",
+    "clamp": "keyword4",
+    "close": "keyword4",
+    "cmp": "keyword4",
+    "cmpMem": "keyword4",
+    "compileOption": "keyword4",
+    "compiles": "keyword4",
+    "copyMem": "keyword4",
+    "create": "keyword4",
+    "createShared": "keyword4",
+    "createSharedU": "keyword4",
+    "createU": "keyword4",
+    "cstringArrayToSeq": "keyword4",
+    "dealloc": "keyword4",
+    "deallocCStringArray": "keyword4",
+    "deallocHeap": "keyword4",
+    "deallocImpl": "keyword4",
+    "deallocShared": "keyword4",
+    "deallocSharedImpl": "keyword4",
+    "debugEcho": "keyword4",
+    "declared": "keyword4",
+    "declaredInScope": "keyword4",
+    "deepCopy": "keyword4",
+    "default": "keyword4",
+    "defined": "keyword4",
+    "dispose": "keyword4",
+    "ensureMove": "keyword4",
+    "equalMem": "keyword4",
+    "find": "keyword4",
+    "finished": "keyword4",
+    "freeShared": "keyword4",
+    "gcInvariant": "keyword4",
+    "getAllocStats": "keyword4",
+    "getCurrentException": "keyword4",
+    "getCurrentExceptionMsg": "keyword4",
+    "getFrame": "keyword4",
+    "getFrameState": "keyword4",
+    "getFreeMem": "keyword4",
+    "getFreeSharedMem": "keyword4",
+    "getGcFrame": "keyword4",
+    "getMaxMem": "keyword4",
+    "getOccupiedMem": "keyword4",
+    "getOccupiedSharedMem": "keyword4",
+    "getStackTrace": "keyword4",
+    "getStackTraceEntries": "keyword4",
+    "getTotalMem": "keyword4",
+    "getTotalSharedMem": "keyword4",
+    "getTypeInfo": "keyword4",
+    "gorge": "keyword4",
+    "gorgeEx": "keyword4",
+    "instantiationInfo": "keyword4",
+    "internalNew": "keyword4",
+    "isNil": "keyword4",
+    "isNotForeign": "keyword4",
+    "iterToProc": "keyword4",
+    "len": "keyword4",
+    "locals": "keyword4",
+    "max": "keyword4",
+    "min": "keyword4",
+    "move": "keyword4",
+    "moveMem": "keyword4",
+    "new": "keyword4",
+    "newSeqUninitialized": "keyword4",
+    "newString": "keyword4",
+    "newStringOfCap": "keyword4",
+    "nimGC_setStackBottom": "keyword4",
+    "onThreadDestruction": "keyword4",
+    "open": "keyword4",
+    "peek": "keyword4",
+    "popGcFrame": "keyword4",
+    "prepareMutation": "keyword4",
+    "procCall": "keyword4",
+    "protect": "keyword4",
+    "pushGcFrame": "keyword4",
+    "quit": "keyword4",
+    "rawEnv": "keyword4",
+    "rawProc": "keyword4",
+    "ready": "keyword4",
+    "realloc0": "keyword4",
+    "realloc0Impl": "keyword4",
+    "reallocImpl": "keyword4",
+    "reallocShared": "keyword4",
+    "reallocShared0": "keyword4",
+    "reallocShared0Impl": "keyword4",
+    "reallocSharedImpl": "keyword4",
+    "recv": "keyword4",
+    "repr": "keyword4",
+    "reprDiscriminant": "keyword4",
+    "reset": "keyword4",
+    "resize": "keyword4",
+    "resizeShared": "keyword4",
+    "send": "keyword4",
+    "setControlCHook": "keyword4",
+    "setCurrentException": "keyword4",
+    "setFrame": "keyword4",
+    "setFrameState": "keyword4",
+    "setGcFrame": "keyword4",
+    "setupForeignThreadGc": "keyword4",
+    "shallow": "keyword4",
+    "shallowCopy": "keyword4",
+    "sizeof": "keyword4",
+    "slurp": "keyword4",
+    "stackTraceAvailable": "keyword4",
+    "staticExec": "keyword4",
+    "staticRead": "keyword4",
+    "substr": "keyword4",
+    "swap": "keyword4",
+    "tearDownForeignThreadGc": "keyword4",
+    "toBiggestFloat": "keyword4",
+    "toBiggestInt": "keyword4",
+    "toOpenArray": "keyword4",
+    "toOpenArrayByte": "keyword4",
+    "tryRecv": "keyword4",
+    "trySend": "keyword4",
+    "typeof": "keyword4",
+    "unlikely": "keyword4",
+    "unown": "keyword4",
+    "unsafeAddr": "keyword4",
+    "unsafeNew": "keyword4",
+    "unsetControlCHook": "keyword4",
+    "wasMoved": "keyword4",
+    "writeStackTrace": "keyword4",
+    "zeroDefault": "keyword4",
+    "zeroMem": "keyword4",
+
+    # Iterators
+
+    "countdown": "keyword4",
+    "countup": "keyword4",
+
+    # Macros
+
+    "varargsLen": "keyword4",
+
+    # Templates
+
+    "alloc": "keyword4",
+    "alloc0": "keyword4",
+    "allocShared": "keyword4",
+    "allocShared0": "keyword4",
+    "closureScope": "keyword4",
+    "currentSourcePath": "keyword4",
+    "disarm": "keyword4",
+    "dumpAllocstats": "keyword4",
+    "formatErrorIndexBound": "keyword4",
+    "formatFieldDefect": "keyword4",
+    "likely": "keyword4",
+    "newException": "keyword4",
+    "nimThreadProcWrapperBody": "keyword4",
+    "offsetOf": "keyword4",
+    "once": "keyword4",
+    "rangeCheck": "keyword4",
+    "realloc": "keyword4",
+
+    # Exports
+
+    # Number-related constants.
+
+    "cfloat": "keyword4",
+    "cushort": "keyword4",
+    "csize_t": "keyword4",
+    "culonglong": "keyword4",
+    "cuint": "keyword4",
+    "cshort": "keyword4",
+    "clonglong": "keyword4",
+    "clong": "keyword4",
+    "cuchar": "keyword4",
+    "culong": "keyword4",
+    "cschar": "keyword4",
+    "cstringArray": "keyword4",
+    "cchar": "keyword4",
+    "cdouble": "keyword4",
+    "clongdouble": "keyword4",
+    "cint": "keyword4",
+
+    # Atomic operations.
+
+    "atomicAddFetch": "keyword4",
+    "atomicAlwaysLockFree": "keyword4",
+    "atomicAndFetch": "keyword4",
+    "atomicClear": "keyword4",
+    "atomicCompareExchange": "keyword4",
+    "atomicCompareExchangeN": "keyword4",
+    "atomicDec": "keyword4",
+    "atomicExchange": "keyword4",
+    "atomicExchangeN": "keyword4",
+    "atomicFetchAdd": "keyword4",
+    "atomicFetchAnd": "keyword4",
+    "atomicFetchNand": "keyword4",
+    "atomicFetchOr": "keyword4",
+    "atomicFetchSub": "keyword4",
+    "atomicFetchXor": "keyword4",
+    "atomicInc": "keyword4",
+    "atomicIsLockFree": "keyword4",
+    "atomicLoad": "keyword4",
+    "atomicLoadN": "keyword4",
+    "atomicNandFetch": "keyword4",
+    "atomicOrFetch": "keyword4",
+    "atomicSignalFence": "keyword4",
+    "atomicStore": "keyword4",
+    "atomicStoreN": "keyword4",
+    "atomicSubFetch": "keyword4",
+    "atomicTestAndSet": "keyword4",
+    "atomicThreadFence": "keyword4",
+    "atomicXorFetch": "keyword4",
+
+    "addFloat": "keyword4",
+    "addInt": "keyword4",
+    "assert": "keyword4",
+
+    # I/O.
+
+    "cas": "keyword4",
+    "cpuRelax": "keyword4",
+    "createThread": "keyword4",
+    "doAssert": "keyword4",
+    "doAssertRaises": "keyword4",
+    "endOfFile": "keyword4",
+    "failedAssertImpl": "keyword4",
+    "fence": "keyword4",
+    "fieldPairs": "keyword4",
+    "fields": "keyword4",
+    "flushFile": "keyword4",
+    "getFileHandle": "keyword4",
+    "getFilePos": "keyword4",
+    "getFileSize": "keyword4",
+    "getOsFileHandle": "keyword4",
+    "getThreadId": "keyword4",
+    "handle": "keyword4",
+    "items": "keyword4",
+    "joinThread": "keyword4",
+    "joinThreads": "keyword4",
+    "lines": "keyword4",
+    "mitems": "keyword4",
+    "mpairs": "keyword4",
+    "newWideCString": "keyword4",
+    "onFailedAssert": "keyword4",
+    "pairs": "keyword4",
+    "pinToCpu": "keyword4",
+    "raiseAssert": "keyword4",
+    "readAll": "keyword4",
+    "readBuffer": "keyword4",
+    "readBytes": "keyword4",
+    "readChar": "keyword4",
+    "readChars": "keyword4",
+    "readFile": "keyword4",
+    "readLine": "keyword4",
+    "readLines": "keyword4",
+    "reopen": "keyword4",
+    "running": "keyword4",
+    "setFilePos": "keyword4",
+    "setInheritable": "keyword4",
+    "setStdIoUnbuffered": "keyword4",
+    "stderr": "keyword4",
+    "stdin": "keyword4",
+    "stdmsg": "keyword4",
+    "stdout": "keyword4",
+    "write": "keyword4",
+    "writeBuffer": "keyword4",
+    "writeBytes": "keyword4",
+    "writeChars": "keyword4",
+    "writeFile": "keyword4",
+    "writeLine": "keyword4",
+    #@-<< Nim lower-case names defined in system module >>
 }
 
 # Dictionary of keywords dictionaries for nim mode.
@@ -369,6 +839,7 @@ nim_rules_dict = {
     "~": [nim_rule19],
 }
 #@-<< nim_rules_dict >>
+
 rulesDictDict = {
     "nim_main": nim_rules_dict,
 }
