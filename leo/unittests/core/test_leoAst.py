@@ -1800,7 +1800,7 @@ class TestOrange(BaseTest):
     def test_blank_lines_after_function_3(self):
 
         # From leoAtFile.py.
-        contents = r"""\
+        contents = """
     def writeAsisNode(self, p):
         print('1')
 
