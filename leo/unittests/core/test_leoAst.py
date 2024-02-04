@@ -165,7 +165,7 @@ class BaseTest(unittest.TestCase):
     ) -> tuple[str, list[Token], ast.AST]:  # pragma: no cover
         """Return (contents, tokens, tree) for the given contents."""
         assert contents.strip(), g.callers()
-        
+
         # Set debug flags and counts.
         self.debug_list = debug_list or []
         self.trace_token_method = False
@@ -2035,7 +2035,7 @@ class TestOrange(BaseTest):
 
         line_length = 40  # For testing.
         table = (
-                            #1234567890x1234567890x1234567890x1234567890x
+                            # 1234567890x1234567890x1234567890x1234567890x
     """
     if 1:
         print('4444',
@@ -2073,7 +2073,7 @@ class TestOrange(BaseTest):
         # Except where noted, all entries are expected values....
         line_length = 40  # For testing.
         table = (
-            #1234567890x1234567890x1234567890x1234567890x
+            # 1234567890x1234567890x1234567890x1234567890x
             """print('4444',\n    '5555')""",
             """print('4444', '5555')\n""",
         )
@@ -2123,7 +2123,7 @@ class TestOrange(BaseTest):
         # Except where noted, all entries are expected values....
         line_length = 40  # For testing.
         table = (
-                            #1234567890x1234567890x1234567890x1234567890x
+                            # 1234567890x1234567890x1234567890x1234567890x
             (
                 """print('aaaaaaaaaaaa',\n    'bbbbbbbbbbbb', 'cccccccccccccccc')""",
                 """print('aaaaaaaaaaaa',\n    'bbbbbbbbbbbb', 'cccccccccccccccc')\n""",
@@ -2393,7 +2393,7 @@ class TestOrange(BaseTest):
 
         line_length = 40  # For testing.
         table = (
-        #1234567890x1234567890x1234567890x1234567890x
+        # 1234567890x1234567890x1234567890x1234567890x
             """
     if 1:
         print('1111111111', '2222222222', '3333333333')

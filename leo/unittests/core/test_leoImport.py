@@ -84,7 +84,7 @@ class TestLeoImport(BaseTestImporter):
         # Test undo
         u.undo()
         self.assertEqual(target.b, body_1, msg='undo test')
-        self.assertFalse(target.hasChildren(),  msg='undo test')
+        self.assertFalse(target.hasChildren(), msg='undo test')
         # Test redo
         u.redo()
         self.check_outline(target, expected_results)
@@ -115,7 +115,7 @@ class TestLeoImport(BaseTestImporter):
                 dir_=dir_,
                 kind=kind,
                 recursive=True,
-                safe_at_file = True,
+                safe_at_file=True,
                 theTypes=['.py'],
                 verbose=False,
             )

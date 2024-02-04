@@ -43,7 +43,7 @@ class TestRst(LeoUnitTest):
         """).lstrip()
 
         child.b = """This is the body of the section.\n"""
-        
+
         # Define the expected output.
         expected = textwrap.dedent(
         f"""

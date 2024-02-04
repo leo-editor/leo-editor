@@ -75,7 +75,7 @@ class TestApp(LeoUnitTest):
             '--screen-shot', '--screen-shot=', '--screen-shot-',
             '--screen-shot=xyzzy',
             '--script=xyzzy.py',
-            '--trace','--trace-', 'trace=', '--trace=xxx',
+            '--trace', '--trace-', 'trace=', '--trace=xxx',
             '--trace-binding', '--trace-binding-', '--trace-binding=',
             '--window-', 'window=',
             '--window-size', '--window-size=', '--window-size=100',
