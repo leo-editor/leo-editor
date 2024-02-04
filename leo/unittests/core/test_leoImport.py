@@ -5,7 +5,7 @@
 import io
 import os
 import textwrap
-from leo.unittests.test_importers import BaseTestImporter
+from leo.unittests.plugins.test_importers import BaseTestImporter
 from leo.core import leoImport
 from leo.core import leoGlobals as g
 StringIO = io.StringIO

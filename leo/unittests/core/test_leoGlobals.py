@@ -526,22 +526,25 @@ class TestGlobals(LeoUnitTest):
         table = (
             'test_leoGlobals.py", line',
             'in test_g_handleScriptException',
-            'print(1/0)',
-            'ZeroDivisionError: division by zero'
+            'print(1 / 0)',
+            'ZeroDivisionError: division by zero',
         )
+
         with self.assertRaises(ZeroDivisionError):
             try:
-                print(1 / 0)
+                print(1 / 0)  # Must be beautified.
             except ZeroDivisionError:
                 old_stdout = sys.stdout
                 sys.stdout = io.StringIO()
+                #  Create the report
                 g.handleScriptException(c, c.p)
                 report = sys.stdout.getvalue()
+                # Restore sys.stdout before looking at the results!
+                sys.stdout = old_stdout
+                # g.printObj(g.splitLines(report), tag='Report')
                 for s in table:
                     assert s in report, repr(s)
-                sys.stdout = old_stdout
-                # print(report)
-                raise
+                raise  # Must reraise
     #@+node:ekr.20210905203541.23: *4* TestGlobals.test_g_import_module
     def test_g_import_module(self):
         assert g.import_module('leo.core.leoAst')

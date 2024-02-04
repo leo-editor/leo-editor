@@ -7,7 +7,7 @@ import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 from leo.commands.convertCommands import ConvertCommandsClass
-from leo.unittests.test_importers import BaseTestImporter
+from leo.unittests.plugins.test_importers import BaseTestImporter
 
 #@+others
 #@+node:ekr.20220824193803.1: ** class Test_To_Python(BaseTestImporter):
