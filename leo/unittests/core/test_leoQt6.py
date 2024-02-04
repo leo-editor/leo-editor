@@ -4,7 +4,7 @@
 #@@first
 """Tests of Qt6 methods and attributes."""
 
-from leo.unittests.test_importers import BaseTestImporter
+from leo.unittests.plugins.test_importers import BaseTestImporter
 from leo.core import leoGlobals as g
 
 #@+others

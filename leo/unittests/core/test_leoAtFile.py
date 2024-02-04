@@ -105,7 +105,7 @@ class TestAtFile(LeoUnitTest):
     def test_checkPythonSyntax(self):
 
         at, p = self.at, self.c.p
-        
+
         # dedent is required.
         s = textwrap.dedent('''
             # no error
@@ -378,7 +378,7 @@ class TestAtFile(LeoUnitTest):
         at, c = self.at, self.c
         root = c.rootPosition()
         root.h = '@file test.html'
-        
+
         contents = textwrap.dedent(
         '''
             @doc
@@ -1453,7 +1453,7 @@ class TestFastAtRead(LeoUnitTest):
             #ATverbatim
             #AT+node (verbatim)
             #AT-leo
-        ''').lstrip().replace('AT', '@') # .replace('LB', '<<')
+        ''').lstrip().replace('AT', '@')  # .replace('LB', '<<')
         #@-<< define contents >>
         #@+<< define expected_body >>
         #@+node:ekr.20211106070035.1: *4* << define expected_body >> (test_verbatim)
@@ -1514,7 +1514,7 @@ class TestFastAtRead(LeoUnitTest):
                 <!--ATverbatim-->
                 <!--AT+node (verbatim)-->
             <!--AT-leo-->
-        ''').lstrip().replace('AT', '@') # .replace('LB', '<<')
+        ''').lstrip().replace('AT', '@')  # .replace('LB', '<<')
         #@-<< define contents >>
         #@+<< define expected_body >>
         #@+node:ekr.20231207080536.3: *4* << define expected_body >> (test_verbatim_html)
