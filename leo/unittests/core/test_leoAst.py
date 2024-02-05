@@ -2021,17 +2021,19 @@ class TestOrange(BaseTest):
     #@+node:ekr.20200116104031.1: *4* TestOrange.test_join_and_strip_condition
     def test_join_and_strip_condition(self):
 
-        contents = """
+        contents = self.prep(
+        """
             if (
                 a == b or
                 c == d
             ):
                 pass
-        """.strip() + '\n'
-        expected = """
+        """)
+        expected = self.prep(
+        """
             if (a == b or c == d):
                 pass
-        """.strip() + '\n'
+        """)
         contents, tokens, tree = self.make_data(contents)
         expected = self.prep(expected)
         # Black also removes parens, which is beyond our scope at present.
@@ -2109,18 +2111,18 @@ class TestOrange(BaseTest):
     #@+node:ekr.20200210051900.1: *4* TestOrange.test_join_suppression
     def test_join_suppression(self):
 
-        contents = """
+        contents = self.prep("""
             class T:
                 a = 1
                 print(
                    a
                 )
-        """.strip() + '\n'
-        expected = """
+        """)
+        expected = self.prep("""
             class T:
                 a = 1
                 print(a)
-        """.strip() + '\n'
+        """)
         contents, tokens, tree = self.make_data(contents)
         expected = self.prep(expected)
         results = self.beautify(contents, tokens, tree)

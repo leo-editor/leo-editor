@@ -2740,7 +2740,7 @@ class TestEditCommands(LeoUnitTest):
             aaaxxxbbb
             aaaxxxbbb
             after
-        """).strip() + '\n'
+        """)
         after_b = self.prep(
         """
             before
@@ -2749,7 +2749,7 @@ class TestEditCommands(LeoUnitTest):
             aaas...sbbb
             aaas...sbbb
             after
-        """).strip() + '\n'
+        """)
 
         # A hack. The command tests for g.unitTesting!
         self.run_test(
