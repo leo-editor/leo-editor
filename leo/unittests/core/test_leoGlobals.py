@@ -7,7 +7,6 @@ import os
 import re
 import stat
 import sys
-import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -460,14 +459,14 @@ class TestGlobals(LeoUnitTest):
         c = self.c
         p = c.p
         # Note: @comment must follow @language.
-        p.b = textwrap.dedent(
+        p.b = self.prep(
         """
             ATlanguage python
             ATcomment a b c
             ATtabwidth -8
             ATpagewidth 72
             ATencoding utf-8
-        """).lstrip().replace('AT', '@')
+        """).replace('AT', '@')
         d = g.get_directives_dict(p)
         self.assertEqual(d.get('language'), 'python')
         self.assertEqual(d.get('tabwidth'), '-8')
@@ -478,12 +477,12 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20210905203541.17: *4* TestGlobals.test_g_getDocString
     def test_g_getDocString(self):
         s1 = 'no docstring'
-        s2 = textwrap.dedent(
+        s2 = self.prep(
         '''
             # comment
             """docstring2."""
         ''')
-        s3 = textwrap.dedent(
+        s3 = self.prep(
         '''
             """docstring3."""
             \'\'\'docstring2.\'\'\'
@@ -1213,7 +1212,7 @@ class TestGlobals(LeoUnitTest):
 
         # Set @data unl-path-prefixes
 
-        s = textwrap.dedent(
+        s = self.prep(
         """
             # lines have the form:
             # x.leo: <absolute path to x.leo>

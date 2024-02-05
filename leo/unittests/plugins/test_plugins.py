@@ -5,7 +5,6 @@
 import glob
 import os
 import re
-import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core.leoPlugins import LeoPluginsController
@@ -168,7 +167,7 @@ class TestIndentedTypeScript(LeoUnitTest):
 
         # Contains "over-indented" parenthesized lines, a good test for check_indentation.
 
-        contents = textwrap.dedent(  # dedent is required.
+        contents = self.prep(
             """
             import { NodeIndices, VNode, Position } from './leoNodes';
 

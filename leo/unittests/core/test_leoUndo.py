@@ -2,7 +2,6 @@
 #@+node:ekr.20210906141410.1: * @file ../unittests/core/test_leoUndo.py
 """Tests of leoUndo.py"""
 
-import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 assert g
@@ -44,7 +43,7 @@ class TestUndo(LeoUnitTest):
     #@+node:ekr.20210906172626.2: *3* TestUndo.test_addComments
     def test_addComments(self):
         c = self.c
-        before = textwrap.dedent(
+        before = self.prep(
         """
             @language python
 
@@ -55,8 +54,8 @@ class TestUndo(LeoUnitTest):
                     b = 3
 
                 pass
-        """).lstrip()
-        after = textwrap.dedent(
+        """)
+        after = self.prep(
         """
             @language python
 
@@ -67,7 +66,7 @@ class TestUndo(LeoUnitTest):
                     # b = 3
 
                 pass
-        """).lstrip()
+        """)
         i = before.find('if 1')
         j = before.find('b = 3')
         func = c.addComments
@@ -75,7 +74,7 @@ class TestUndo(LeoUnitTest):
     #@+node:ekr.20210906172626.3: *3* TestUndo.test_convertAllBlanks
     def test_convertAllBlanks(self):
         c = self.c
-        before = textwrap.dedent(
+        before = self.prep(
         """
             @tabwidth -4
 
@@ -83,23 +82,8 @@ class TestUndo(LeoUnitTest):
                 line 2
                   line 3
             line4
-        """).lstrip()
-        after = textwrap.dedent(
-        """
-            @tabwidth -4
-
-            line 1
-            TABline 2
-            TAB  line 3
-            line4
-        """).lstrip().replace('TAB', '\t')
-        i, j = 13, len(before)
-        func = c.convertAllBlanks
-        self.runTest(before, after, i, j, func)
-    #@+node:ekr.20210906172626.4: *3* TestUndo.test_convertAllTabs
-    def test_convertAllTabs(self):
-        c = self.c
-        before = textwrap.dedent(
+        """)
+        after = self.prep(
         """
             @tabwidth -4
 
@@ -108,7 +92,22 @@ class TestUndo(LeoUnitTest):
             TAB  line 3
             line4
         """).replace('TAB', '\t')
-        after = textwrap.dedent(
+        i, j = 13, len(before)
+        func = c.convertAllBlanks
+        self.runTest(before, after, i, j, func)
+    #@+node:ekr.20210906172626.4: *3* TestUndo.test_convertAllTabs
+    def test_convertAllTabs(self):
+        c = self.c
+        before = self.prep(
+        """
+            @tabwidth -4
+
+            line 1
+            TABline 2
+            TAB  line 3
+            line4
+        """).replace('TAB', '\t')
+        after = self.prep(
         """
             @tabwidth -4
 
@@ -123,7 +122,7 @@ class TestUndo(LeoUnitTest):
     #@+node:ekr.20210906172626.5: *3* TestUndo.test_convertBlanks
     def test_convertBlanks(self):
         c = self.c
-        before = textwrap.dedent(
+        before = self.prep(
         """
             @tabwidth -4
 
@@ -132,7 +131,7 @@ class TestUndo(LeoUnitTest):
                   line 3
             line4
         """)
-        after = textwrap.dedent(
+        after = self.prep(
         """
             @tabwidth -4
 
@@ -147,7 +146,7 @@ class TestUndo(LeoUnitTest):
     #@+node:ekr.20210906172626.6: *3* TestUndo.test_convertTabs
     def test_convertTabs(self):
         c = self.c
-        before = textwrap.dedent(
+        before = self.prep(
         """
             @tabwidth -4
 
@@ -156,7 +155,7 @@ class TestUndo(LeoUnitTest):
             TAB  line 3
             line4
         """).replace('TAB', '\t')
-        after = textwrap.dedent(
+        after = self.prep(
         """
             @tabwidth -4
 
@@ -171,14 +170,14 @@ class TestUndo(LeoUnitTest):
     #@+node:ekr.20210906172626.7: *3* TestUndo.test_dedentBody
     def test_dedentBody(self):
         c = self.c
-        before = textwrap.dedent(
+        before = self.prep(
         """
             line 1
                 line 2
                 line 3
             line 4
         """)
-        after = textwrap.dedent(
+        after = self.prep(
         """
             line 1
             line 2
@@ -192,7 +191,7 @@ class TestUndo(LeoUnitTest):
     #@+node:ekr.20210906172626.8: *3* TestUndo.test_deleteComments
     def test_deleteComments(self):
         c = self.c
-        before = textwrap.dedent(
+        before = self.prep(
         """
             @language python
 
@@ -203,8 +202,8 @@ class TestUndo(LeoUnitTest):
             #         b = 3
 
                 pass
-        """).lstrip()
-        after = textwrap.dedent("""
+        """)
+        after = self.prep("""
             @language python
 
             def deleteCommentTest():
@@ -214,7 +213,7 @@ class TestUndo(LeoUnitTest):
                     b = 3
 
                 pass
-        """).lstrip()
+        """)
         i = before.find('if 1')
         j = before.find('b = 3')
         func = c.deleteComments
@@ -222,7 +221,7 @@ class TestUndo(LeoUnitTest):
     #@+node:ekr.20210906172626.9: *3* TestUndo.test_deleteComments 2
     def test_deleteComments_2(self):
         c = self.c
-        before = textwrap.dedent(
+        before = self.prep(
         """
             @language python
 
@@ -237,8 +236,8 @@ class TestUndo(LeoUnitTest):
                     # b = 3
 
                 pass
-        """).lstrip()
-        after = textwrap.dedent(
+        """)
+        after = self.prep(
         """
             @language python
 
@@ -253,7 +252,7 @@ class TestUndo(LeoUnitTest):
                     b = 3
 
                 pass
-        """).lstrip()
+        """)
         i = before.find('if 1')
         j = before.find('# b = 3')
         func = c.deleteComments
@@ -288,7 +287,7 @@ class TestUndo(LeoUnitTest):
     #@+node:ekr.20210906172626.10: *3* TestUndo.test_extract_test
     def test_extract_test(self):
         c = self.c
-        before = textwrap.dedent(
+        before = self.prep(
         """
             before
                 < < section > >
@@ -296,13 +295,13 @@ class TestUndo(LeoUnitTest):
                     sec line 2 indented
             sec line 3
             after
-        """).lstrip()
-        after = textwrap.dedent(
+        """)
+        after = self.prep(
         """
             before
                 < < section > >
             after
-        """).lstrip()
+        """)
         i = before.find('< <')
         j = before.find('line 3')
         func = c.extract
@@ -310,17 +309,17 @@ class TestUndo(LeoUnitTest):
     #@+node:ekr.20210906172626.14: *3* TestUndo.test_line_to_headline
     def test_line_to_headline(self):
         c = self.c
-        before = textwrap.dedent(
+        before = self.prep(
         """
             before
             headline
             after
-        """).lstrip()
-        after = textwrap.dedent(
+        """)
+        after = self.prep(
         """
             before
             after
-        """).lstrip()
+        """)
         i, j = 10, 10
         func = c.line_to_headline
         self.runTest(before, after, i, j, func)
@@ -352,7 +351,7 @@ class TestUndo(LeoUnitTest):
         # The buggy redoGroup code worked if the undo group was the first item on the undo stack.
         c, p = self.c, self.c.p
         original = p.insertAfter()
-        original_s = original.b = textwrap.dedent(
+        original_s = original.b = self.prep(
         """
             @tabwidth -4
 
@@ -360,7 +359,7 @@ class TestUndo(LeoUnitTest):
                 line 2
                   line 3
             line4
-        """).lstrip()
+        """)
         c.undoer.clearUndoState()
         c.selectPosition(original)
         c.copyOutline()  # Add state to the undo stack!
