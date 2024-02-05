@@ -14,7 +14,7 @@ class TestCommands(LeoUnitTest):
     #@+node:ekr.20210906075242.28: *3* TestCommands.test_add_comments_with_multiple_language_directives
     def test_add_comments_with_multiple_language_directives(self):
         c, p, w = self.c, self.c.p, self.c.frame.body.wrapper
-        p.b = textwrap.dedent(
+        p.b = self.prep(
         """
             @language rest
             rest text.
@@ -22,7 +22,7 @@ class TestCommands(LeoUnitTest):
             def spam():
                 pass
             # after
-    """).lstrip()
+        """)
         expected = textwrap.dedent(
         """
             @language rest
