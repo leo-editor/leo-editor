@@ -485,7 +485,7 @@ class TestC(BaseTestImporter):
     def test_find_blocks(self):
 
         importer = C_Importer(self.c)
-        lines = g.splitLines(textwrap.dedent(  # dedent is required.
+        lines = g.splitLines(self.prep(
         """
 
             # enable-trace

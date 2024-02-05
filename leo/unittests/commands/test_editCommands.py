@@ -2320,24 +2320,21 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20220517064432.1: *5* merge-node-with-next-node
     def test_merge_node_with_next_node(self):
         c, u = self.c, self.c.undoer
-        prev_b = textwrap.dedent(
+        prev_b = self.prep(
         """
             def spam():
                 pass
-        """).strip() + '\n'
+        """)
 
-        next_b = textwrap.dedent(
-        """
-            spam2 = spam
-        """).strip() + '\n'
+        next_b = self.prep("""spam2 = spam""")
 
-        result_b = textwrap.dedent(
+        result_b = self.prep(
         """
             def spam():
                 pass
 
             spam2 = spam
-        """).strip() + '\n'
+        """)
         self.before_p.b = prev_b
         self.after_p.b = next_b
         c.selectPosition(self.before_p)
@@ -2359,24 +2356,24 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20220517064507.1: *5* merge-node-with-prev-node
     def test_merge_node_with_prev_node(self):
         c, u = self.c, self.c.undoer
-        prev_b = textwrap.dedent(
+        prev_b = self.prep(
         """
             def spam():
                 pass
-        """).strip() + '\n'
+        """)
 
-        next_b = textwrap.dedent(
+        next_b = self.prep(
         """
             spam2 = spam
-        """).strip() + '\n'
+        """)
 
-        result_b = textwrap.dedent(
+        result_b = self.prep(
         """
             def spam():
                 pass
 
             spam2 = spam
-        """).strip() + '\n'
+        """)
         self.before_p.b = prev_b
         self.after_p.b = next_b
         c.selectPosition(self.after_p)
@@ -2534,7 +2531,7 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.91: *5* newline-and-indent
     def test_newline_and_indent(self):
         """Test case for newline-and-indent"""
-        before_b = textwrap.dedent(
+        before_b = self.prep(
         """
             first line
             line 1
@@ -2542,7 +2539,7 @@ class TestEditCommands(LeoUnitTest):
                     line b
             line c
             last line
-        """).strip() + '\n'
+        """)
 
         # docstrings strip blank lines, so we can't use a docstring here!
         after_b = ''.join([
@@ -2735,7 +2732,7 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.99: *5* test_rectangle-string
     def test_rectangle_string(self):
         """Test case for rectangle-string"""
-        before_b = textwrap.dedent(
+        before_b = self.prep(
         """
             before
             aaaxxxbbb
@@ -2744,7 +2741,7 @@ class TestEditCommands(LeoUnitTest):
             aaaxxxbbb
             after
         """).strip() + '\n'
-        after_b = textwrap.dedent(
+        after_b = self.prep(
         """
             before
             aaas...sbbb
@@ -2765,7 +2762,7 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.100: *5* test_rectangle-yank
     def test_rectangle_yank(self):
         """Test case for rectangle-yank"""
-        before_b = textwrap.dedent(
+        before_b = self.prep(
         """
             before
             aaaxxxbbb
@@ -2773,9 +2770,9 @@ class TestEditCommands(LeoUnitTest):
             aaaxxxbbb
             aaaxxxbbb
             after
-        """).strip() + '\n'
+        """)
 
-        after_b = textwrap.dedent(
+        after_b = self.prep(
         """
             before
             aaaY1Ybbb
@@ -2783,7 +2780,7 @@ class TestEditCommands(LeoUnitTest):
             aaaY3Ybbb
             aaaY4Ybbb
             after
-        """).strip() + '\n'
+        """)
 
         self.run_test(
             before_b=before_b,

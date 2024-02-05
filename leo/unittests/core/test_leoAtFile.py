@@ -3,7 +3,6 @@
 """Tests of leoAtFile.py"""
 import os
 import tempfile
-import textwrap
 from leo.core import leoGlobals as g
 from leo.core import leoAtFile
 from leo.core import leoBridge
@@ -107,14 +106,14 @@ class TestAtFile(LeoUnitTest):
         at, p = self.at, self.c.p
 
         # dedent is required.
-        s = textwrap.dedent('''
+        s = self.prep('''
             # no error
             def spam():
                 pass
         ''')
         assert at.checkPythonSyntax(p, s), 'fail 1'
 
-        s2 = textwrap.dedent('''
+        s2 = self.prep('''
             # syntax error
             def spam:  # missing parens.
                 pass
@@ -220,14 +219,14 @@ class TestAtFile(LeoUnitTest):
         at, c = self.at, self.c
         root = c.rootPosition()
         root.h = '@file test.html'
-        contents = textwrap.dedent(
+        contents = self.prep(
         '''
             @doc
             First @doc part
             @doc
             Second @doc part
         ''')
-        expected = textwrap.dedent(
+        expected = self.prep(
         '''
             <!--@+doc-->
             <!--
@@ -251,17 +250,17 @@ class TestAtFile(LeoUnitTest):
         root.h = '@file test.py'
         child = root.insertAsLastChild()
         child.h = 'child'
-        child.b = textwrap.dedent(
+        child.b = self.prep(
         '''
             def spam():
                 pass
 
             @ A single-line doc part.
-        ''').lstrip()
+        ''')
 
         child.v.fileIndex = '<GNX>'
         contents = '''ATall'''.replace('AT', '@')
-        expected_contents = textwrap.dedent('''
+        expected_contents = self.prep('''
             #AT+all
             #AT+node:<GNX>: ** child
             def spam():
@@ -269,7 +268,7 @@ class TestAtFile(LeoUnitTest):
 
             @ A single-line doc part.
             #AT-all
-        ''').lstrip().replace('AT', '@')
+        ''').replace('AT', '@')
 
         for blacken in (True, False):
 
@@ -294,22 +293,22 @@ class TestAtFile(LeoUnitTest):
         at, c = self.at, self.c
         root = c.rootPosition()
         root.h = '@file test.py'
-        contents = textwrap.dedent(
+        contents = self.prep(
         '''
             ATdoc
             doc line 1
             ATall
-        ''').lstrip().replace('AT', '@')
+        ''').replace('AT', '@')
 
         # Only @c or @code end an @doc part.
         # Therefore, the @all line is part of the @doc part.
 
-        expected_contents = textwrap.dedent(
+        expected_contents = self.prep(
         '''
             #AT+doc
             # doc line 1
             # ATall
-        ''').lstrip().replace('AT', '@')
+        ''').replace('AT', '@')
 
         for blacken in (True, False):
 
@@ -339,14 +338,14 @@ class TestAtFile(LeoUnitTest):
         child.b = '@others\n'
         child.v.fileIndex = '<GNX>'
         contents = '''ATothers'''.replace('AT', '@')
-        expected_contents = textwrap.dedent(
+        expected_contents = self.prep(
         '''
             #AT+others
             #AT+node:<GNX>: ** child
             #AT+others
             #AT-others
             #AT-others
-        ''').lstrip().replace('AT', '@')
+        ''').replace('AT', '@')
 
         for blacken in (True, False):
 
@@ -379,19 +378,19 @@ class TestAtFile(LeoUnitTest):
         root = c.rootPosition()
         root.h = '@file test.html'
 
-        contents = textwrap.dedent(
+        contents = self.prep(
         '''
             @doc
             Unterminated @doc parts (not an error)
-        ''').lstrip()
+        ''')
 
-        expected = textwrap.dedent(
+        expected = self.prep(
         '''
             <!--@+doc-->
             <!--
             Unterminated @doc parts (not an error)
             -->
-        ''').lstrip()
+        ''')
         root.b = contents
         at.initWriteIvars(root)
         at.putBody(root)
@@ -565,22 +564,22 @@ class TestAtFile(LeoUnitTest):
         at, p = self.at, self.c.p
 
         # Test 1.
-        s = textwrap.dedent(
+        s = self.prep(
         """
             # no error
             def spam():
                 pass
-        """).lstrip()
+        """)
         at.tabNannyNode(p, body=s)
 
         # Test 2.
-        s2 = textwrap.dedent(
+        s2 = self.prep(
         """
             # syntax error
             def spam:
                 pass
               a = 2
-        """).lstrip()
+        """)
         try:
             at.tabNannyNode(p, body=s2)
         except IndentationError:

@@ -21,7 +21,7 @@ class TestColorizer(LeoUnitTest):
         c.recolor_now()
     #@+node:ekr.20210905170507.2: *3* TestColorizer.test__comment_after_language_plain
     def test__comment_after_language_plain(self):
-        text = textwrap.dedent(
+        text = self.prep(
         """
             @comment # /* */
 
@@ -35,7 +35,7 @@ class TestColorizer(LeoUnitTest):
             continues */
 
             More plain text.
-        """).lstrip()
+        """)
         self.color('plain', text)
     #@+node:ekr.20210905170507.3: *3* TestColorizer.test_bc_scanLanguageDirectives
     def test_bc_scanLanguageDirectives(self):
