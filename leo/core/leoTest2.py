@@ -14,6 +14,7 @@ tests in leo/unittest. Eventually these classes will move to scripts.leo.
 from __future__ import annotations
 import os
 import sys
+import textwrap
 import time
 import unittest
 import warnings
@@ -139,6 +140,74 @@ class LeoUnitTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.c = None
+    #@+node:ekr.20230703103458.1: *3* LeoUnitTest._set_setting
+    def _set_setting(self, c: Cmdr, kind: str, name: str, val: Any) -> None:
+        """
+        Call c.config.set with the given args, suppressing stdout.
+        """
+        try:
+            old_stdout = sys.stdout
+            sys.stdout = open(os.devnull, 'w')
+            c.config.set(p=None, kind=kind, name=name, val=val)
+        finally:
+            sys.stdout = old_stdout
+    #@+node:ekr.20240205005844.1: *3* LeoUnitTest.prep
+    def prep(self, s: str) -> str:
+        """
+        Return the "prepped" version of s.
+        
+        This should eliminate the need for backslashes in tests.
+        """
+        return textwrap.dedent(s).strip() + '\n'
+    #@+node:ekr.20230808113542.1: *3* LeoUnitTest: dumps
+    #@+node:ekr.20230724174102.1: *4* LeoUnitTest.dump_bodies
+    def dump_bodies(self, c: Cmdr) -> None:  # pragma: no cover
+        """Dump all headlines."""
+        print('')
+        g.trace(c.fileName())
+        print('')
+        for p in c.all_positions():
+            head_s = f"{' '*p.level()} {p.h}"
+            print(f"{p.gnx:<28} {head_s:<20} body: {p.b!r}")
+
+    #@+node:ekr.20230720210931.1: *4* LeoUnitTest.dump_clone_info
+    def dump_clone_info(self, c: Cmdr, tag: str = None) -> None:
+        """Dump all clone info."""
+        print('')
+        g.trace(f"{tag or ''} {c.fileName()}")
+        print('')
+        for p in c.all_positions():
+            head_s = f"{' '*p.level()}{p.h}"
+            print(
+                f"clone? {int(p.isCloned())} id(v): {id(p.v)} gnx: {p.gnx:30}: "
+                f"{head_s:<10} parents: {p.v.parents}"
+            )
+    #@+node:ekr.20220805071838.1: *4* LeoUnitTest.dump_headlines
+    def dump_headlines(self, c: Cmdr, tag: str = None) -> None:  # pragma: no cover
+        """Dump all headlines."""
+        print('')
+        g.trace(f"{tag or ''} {c.fileName()}")
+        print('')
+        for p in c.all_positions():
+            print(f"{p.gnx:25}: {' '*p.level()}{p.h}")
+    #@+node:ekr.20220806170537.1: *4* LeoUnitTest.dump_string
+    def dump_string(self, s: str, tag: str = None) -> None:
+        if tag:
+            print(tag)
+        g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
+    #@+node:ekr.20211129062220.1: *4* LeoUnitTest.dump_tree
+    def dump_tree(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
+        """
+        Dump root's tree, or the entire tree if root is None.
+        """
+        print('')
+        if tag:
+            print(tag)
+        _iter = root.self_and_subtree if root else self.c.all_positions
+        for p in _iter():
+            print('')
+            print('level:', p.level(), p.h)
+            g.printObj(g.splitLines(p.v.b))
     #@+node:ekr.20230808113454.1: *3* LeoUnitTest: setup utils
     #@+node:ekr.20230724140745.1: *4* LeoUnitTest.clean_tree
     def clean_tree(self) -> None:
@@ -276,66 +345,6 @@ class LeoUnitTest(unittest.TestCase):
             child.h = h
 
 
-    #@+node:ekr.20230703103458.1: *3* LeoUnitTest._set_setting
-    def _set_setting(self, c: Cmdr, kind: str, name: str, val: Any) -> None:
-        """
-        Call c.config.set with the given args, suppressing stdout.
-        """
-        try:
-            old_stdout = sys.stdout
-            sys.stdout = open(os.devnull, 'w')
-            c.config.set(p=None, kind=kind, name=name, val=val)
-        finally:
-            sys.stdout = old_stdout
-    #@+node:ekr.20230808113542.1: *3* LeoUnitTest: dumps
-    #@+node:ekr.20230724174102.1: *4* LeoUnitTest.dump_bodies
-    def dump_bodies(self, c: Cmdr) -> None:  # pragma: no cover
-        """Dump all headlines."""
-        print('')
-        g.trace(c.fileName())
-        print('')
-        for p in c.all_positions():
-            head_s = f"{' '*p.level()} {p.h}"
-            print(f"{p.gnx:<28} {head_s:<20} body: {p.b!r}")
-
-    #@+node:ekr.20230720210931.1: *4* LeoUnitTest.dump_clone_info
-    def dump_clone_info(self, c: Cmdr, tag: str = None) -> None:
-        """Dump all clone info."""
-        print('')
-        g.trace(f"{tag or ''} {c.fileName()}")
-        print('')
-        for p in c.all_positions():
-            head_s = f"{' '*p.level()}{p.h}"
-            print(
-                f"clone? {int(p.isCloned())} id(v): {id(p.v)} gnx: {p.gnx:30}: "
-                f"{head_s:<10} parents: {p.v.parents}"
-            )
-    #@+node:ekr.20220805071838.1: *4* LeoUnitTest.dump_headlines
-    def dump_headlines(self, c: Cmdr, tag: str = None) -> None:  # pragma: no cover
-        """Dump all headlines."""
-        print('')
-        g.trace(f"{tag or ''} {c.fileName()}")
-        print('')
-        for p in c.all_positions():
-            print(f"{p.gnx:25}: {' '*p.level()}{p.h}")
-    #@+node:ekr.20220806170537.1: *4* LeoUnitTest.dump_string
-    def dump_string(self, s: str, tag: str = None) -> None:
-        if tag:
-            print(tag)
-        g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
-    #@+node:ekr.20211129062220.1: *4* LeoUnitTest.dump_tree
-    def dump_tree(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
-        """
-        Dump root's tree, or the entire tree if root is None.
-        """
-        print('')
-        if tag:
-            print(tag)
-        _iter = root.self_and_subtree if root else self.c.all_positions
-        for p in _iter():
-            print('')
-            print('level:', p.level(), p.h)
-            g.printObj(g.splitLines(p.v.b))
     #@-others
 #@-others
 #@-leo
