@@ -824,7 +824,7 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.30: *5* clean-lines
     def test_clean_lines(self):
         """Test case for clean-lines"""
-        before_b = textwrap.dedent(
+        before_b = self.prep(
         """
             # Should remove all trailing whitespace.
 
@@ -1979,20 +1979,22 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20210926144000.1: *5* insert-newline-bug-2230
     def test_insert_newline_bug_2230(self):
         """Test case for insert-newline"""
-        before_b = textwrap.dedent("""
-    #@@language python
-    def spam():
-        if 1:  # test
-    # after line
-    """).strip() + '\n'
-        # There are 8 spaces in the line after "if 1:..."
-        after_b = textwrap.dedent("""
-    #@@language python
-    def spam():
-        if 1:  # test
+        before_b = self.prep("""
+            @language python
+            def spam():
+                if 1:  # test
+            # after line
+        """)
 
-    # after line
-    """).strip() + '\n'
+        # There are 8 spaces in the line after "if 1:..."
+        after_b = self.prep(
+        """
+            @language python
+            def spam():
+                if 1:  # test
+
+            # after line
+        """)
         self.run_test(
             before_b=before_b,
             after_b=after_b,

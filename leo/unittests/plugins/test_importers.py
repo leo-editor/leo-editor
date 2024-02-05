@@ -2410,7 +2410,7 @@ class TestPascal(BaseTestImporter):
 
         #@+<< define s >>
         #@+node:ekr.20230518071612.1: *4* << define s >>
-        s = textwrap.dedent(  # dedent is required.
+        s = self.prep(
         """
             unit Unit1;
 
@@ -2447,7 +2447,7 @@ class TestPascal(BaseTestImporter):
             end;
 
             end. // interface
-        """).strip() + '\n'
+        """)
         #@-<< define s >>
 
         expected_results = (
@@ -2504,7 +2504,7 @@ class TestPascal(BaseTestImporter):
         # From GSTATOBJ.PAS
         #@+<< define s >>
         #@+node:ekr.20220830112013.1: *4* << define s >>
-        s = textwrap.dedent(  # Dedent is required.
+        s = self.prep(
         """
         unit gstatobj;
 
@@ -2573,7 +2573,7 @@ class TestPascal(BaseTestImporter):
         for i := 1 to max do
             data^[i].y := data^[i].y + pstatObj(source)^.data^[i].y;
         end;
-        """).strip() + '\n'
+        """)
         #@-<< define s >>
         expected_results = (
             (0, '',  # Ignore the first headline.

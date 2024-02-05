@@ -611,10 +611,10 @@ class TestFastAtRead(LeoUnitTest):
         root = c.rootPosition()
         root.h = h  # To match contents.
         #@+<< define contents >>
-        #@+node:ekr.20211106112233.1: *4* << define contents >>
+        #@+node:ekr.20211106112233.1: *4* << define contents >> (test_afterref)
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
-        contents = textwrap.dedent(
+        contents = self.prep(
             '''
                 #AT+leo-ver=5-thin
                 #AT+node:{root.gnx}: * {h}
@@ -630,16 +630,14 @@ class TestFastAtRead(LeoUnitTest):
                  ):
                     a = 2
                 #AT-leo
-            ''').lstrip()
-
-        contents = contents.replace('AT', '@').replace('LB', '<<')
+            ''').replace('AT', '@').replace('LB', '<<')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
         #@+<< define expected_body >>
         #@+node:ekr.20211106115654.1: *4* << define expected_body >>
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
-        expected_body = textwrap.dedent(
+        expected_body = self.prep(
         '''
             ATlanguage python
 
@@ -647,13 +645,13 @@ class TestFastAtRead(LeoUnitTest):
             if (
             LB test >> ):
                 a = 2
-        ''').lstrip().replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', '@').replace('LB', '<<')
         #@-<< define expected_body >>
         #@+<< define expected_contents >>
         #@+node:ekr.20211107053133.1: *4* << define expected_contents >>
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
-        expected_contents = textwrap.dedent(
+        expected_contents = self.prep(
         '''
             #AT+leo-ver=5-thin
             #AT+node:{root.gnx}: * {h}
@@ -664,7 +662,7 @@ class TestFastAtRead(LeoUnitTest):
             LB test >> ):
                 a = 2
             #AT-leo
-        ''').lstrip().replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', '@').replace('LB', '<<')
         expected_contents = expected_contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define expected_contents >>
 
@@ -696,7 +694,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+node:ekr.20211103093424.1: *4* << define contents >> (test_at_all)
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
-        contents = textwrap.dedent(
+        contents = self.prep(
         '''
             #AT+leo-ver=5-thin
             #AT+node:{root.gnx}: * {h}
@@ -717,8 +715,7 @@ class TestFastAtRead(LeoUnitTest):
             #AT-all
             #AT@nosearch
             #AT-leo
-        ''').lstrip()
-        contents = contents.replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', '@').replace('LB', '<<')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
 
@@ -748,7 +745,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+node:ekr.20211101090447.1: *4* << define contents >> (test_at_comment)
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
-        contents = textwrap.dedent(
+        contents = self.prep(
         '''
             !!! -*- coding: utf-8 -*-
             !!!AT+leo-ver=5-thin
@@ -776,8 +773,7 @@ class TestFastAtRead(LeoUnitTest):
 
             !!!AT@language plain
             !!!AT-leo
-        ''').lstrip()
-        contents = contents.replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', '@').replace('LB', '<<')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
 
@@ -817,7 +813,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+node:ekr.20211101111652.1: *4* << define contents >> (test_at_delims)
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
-        contents = textwrap.dedent(
+        contents = self.prep(
         '''
             # -*- coding: utf-8 -*-
             #AT+leo-ver=5-thin
@@ -843,8 +839,7 @@ class TestFastAtRead(LeoUnitTest):
 
             !!AT@language python
             !!AT-leo
-        ''').lstrip()
-        contents = contents.replace('AT', '@').replace('LB', '<<').replace('SPACE', ' ')
+        ''').replace('AT', '@').replace('LB', '<<').replace('SPACE', ' ')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
 
         #@-<< define contents >>
@@ -886,7 +881,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+node:ekr.20211103095959.1: *4* << define contents >> (test_at_last)
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
-        contents = textwrap.dedent(
+        contents = self.prep(
         '''
             #AT+leo-ver=5-thin
             #AT+node:{root.gnx}: * {h}
@@ -900,8 +895,7 @@ class TestFastAtRead(LeoUnitTest):
             #AT@last
             #AT-leo
             # last line
-        ''').lstrip()
-        contents = contents.replace('AT', '@')
+        ''').replace('AT', '@')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
 
 
@@ -910,13 +904,13 @@ class TestFastAtRead(LeoUnitTest):
         #@+node:ekr.20211104052937.1: *4* << define expected_body >> (test_at_last)
         # Use neither a raw string nor an f-string here.
         # Be careful: no line should look like a Leo sentinel!
-        expected_body = textwrap.dedent(
+        expected_body = self.prep(
         '''
             # Test of @last
             ATothers
             ATlanguage python
             ATlast # last line
-        ''').lstrip().replace('AT', '@')
+        ''').replace('AT', '@')
         #@-<< define expected_body >>
 
         for blacken in (True, False):
@@ -947,7 +941,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+<< define contents >>
         #@+node:ekr.20211103092228.2: *4* << define contents >> (test_at_others)
         # Be careful: no line should look like a Leo sentinel!
-        contents = textwrap.dedent(
+        contents = self.prep(
         f'''
             #AT+leo-ver=5-thin
             #AT+node:{root.gnx}: * {h}
@@ -960,7 +954,7 @@ class TestFastAtRead(LeoUnitTest):
                     pass
                 #AT-others
             #AT-leo
-        ''').lstrip().replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', '@').replace('LB', '<<')
         #@-<< define contents >>
 
         for blacken in (True, False):
@@ -992,7 +986,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+node:ekr.20211101050923.1: *4* << define contents >> (test_at_section_delim)
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
-        contents = textwrap.dedent(
+        contents = self.prep(
         '''
             AT+leo-ver=5-thin
             AT+node:{root.gnx}: * {h}
@@ -1018,8 +1012,7 @@ class TestFastAtRead(LeoUnitTest):
 
             AT@language python
             AT-leo
-        ''').lstrip().replace('AT', '#@')
-        contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
+        ''').replace('AT', '#@').replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
 
         for blacken in (True, False):
@@ -1058,7 +1051,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+<< define contents >>
         #@+node:ekr.20211101155930.2: *4* << define contents >> (test_clones)
         # Be careful: no line should look like a Leo sentinel!
-        contents = textwrap.dedent(
+        contents = self.prep(
         f'''
             #AT+leo-ver=5-thin
             #AT+node:{root.gnx}: * {h}
@@ -1077,7 +1070,7 @@ class TestFastAtRead(LeoUnitTest):
             a = 3
             #AT-others
             #AT-leo
-        ''').lstrip().replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', '@').replace('LB', '<<')
         #@-<< define contents >>
 
         for blacken in (True, False):
@@ -1126,7 +1119,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+node:ekr.20211103080718.2: *4* << define contents >> (test_cweb)
         # Lines must not look like Leo sentinels!
         # Use neither a raw string nor an f-string here.
-        contents = textwrap.dedent(
+        contents = self.prep(
         '''
             ATq@@+leo-ver=5-thin@>
             ATq@@+node:{root.gnx}: * @{h}@>
@@ -1158,8 +1151,7 @@ class TestFastAtRead(LeoUnitTest):
             BSLaTeX and BSc should not be colored.
             if else, while, do // C keywords.
             ATq@@-leo@>
-        ''').lstrip()
-        contents = contents.replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', '@').replace('LB', '<<')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
 
@@ -1190,7 +1182,7 @@ class TestFastAtRead(LeoUnitTest):
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
         # The doc part should contain at least one blank line.
-        contents = textwrap.dedent(
+        contents = self.prep(
         '''
             #AT+leo-ver=5-thin
             #AT+node:{root.gnx}: * {h}
@@ -1209,7 +1201,7 @@ class TestFastAtRead(LeoUnitTest):
             #AT@c
 
             #AT-leo
-        ''').lstrip().replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', '@').replace('LB', '<<')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
         for blacken in (True, False):
@@ -1240,7 +1232,7 @@ class TestFastAtRead(LeoUnitTest):
         # Use neither a raw string nor an f-string here.
 
         # The doc part should contain at least one blank line.
-        contents = textwrap.dedent(
+        contents = self.prep(
         '''
             <!--AT+leo-ver=5-thin-->
             <!--AT+node:{root.gnx}: * {h}-->
@@ -1263,7 +1255,7 @@ class TestFastAtRead(LeoUnitTest):
             <!--AT@c-->
 
             <!--AT-leo
-        ''').lstrip().replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', '@').replace('LB', '<<')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
         #@+<< define expected_contents >>
@@ -1271,7 +1263,7 @@ class TestFastAtRead(LeoUnitTest):
         # For languages with a trailing delim,
         #@verbatim
         # @doc parts contain extra lines for the start/end delims.
-        expected_contents = textwrap.dedent(
+        expected_contents = self.prep(
         '''
             <!--AT+leo-ver=5-thin-->
             <!--AT+node:{root.gnx}: * {h}-->
@@ -1294,7 +1286,7 @@ class TestFastAtRead(LeoUnitTest):
             <!--AT@c-->
 
             <!--AT-leo-->
-        ''').lstrip().replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', '@').replace('LB', '<<')
         expected_contents = expected_contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define expected_contents >>
 
@@ -1327,7 +1319,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+node:ekr.20211101154651.1: *4* << define contents >> (test_html_doc_part)
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
-        contents = textwrap.dedent(
+        contents = self.prep(
         '''
             <!--AT+leo-ver=5-thin-->
             <!--AT+node:{root.gnx}: * {h}-->
@@ -1338,14 +1330,14 @@ class TestFastAtRead(LeoUnitTest):
             Line 2.
             <!--AT@c-->
             <!--AT-leo-->
-        ''').lstrip().replace('AT', '@').replace('LB', '<<')
+        ''').replace('AT', '@').replace('LB', '<<')
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
         #@+<< define expected >>
         #@+node:ekr.20231204050205.1: *4* << define expected >> (test_html_doc_part)
         # Be careful: no line should look like a Leo sentinel!
         # Use neither a raw string nor an f-string here.
-        expected = textwrap.dedent(
+        expected = self.prep(
         '''
             <!--AT+leo-ver=5-thin-->
             <!--AT+node:{root.gnx}: * {h}-->
@@ -1358,8 +1350,7 @@ class TestFastAtRead(LeoUnitTest):
             -->
             <!--AT@c-->
             <!--AT-leo-->
-        ''').lstrip().replace('AT', '@')
-        expected = expected.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
+        ''').replace('AT', '@').replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define expected >>
 
         for blacken in (True, False):
@@ -1396,7 +1387,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+node:ekr.20231203092436.2: *4* << define contents >> (test_cweb)
         # Be careful: no line should look like a Leo sentinel!
         # Use a raw string so pyflakes won't complain about \document.
-        contents = textwrap.dedent(
+        contents = self.prep(
         r'''
             ATq@@+leo-ver=5-thin@>
             ATq@@+node:{root.gnx}: * @{h}@>
@@ -1414,8 +1405,7 @@ class TestFastAtRead(LeoUnitTest):
             AT
             \end{document}
             ATq@@-leo@>
-        ''').lstrip()
-        contents = contents.replace('AT', '@').replace('{root.gnx}', root.gnx).replace('{h}', root.h)
+        ''').replace('AT', '@').replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
 
         for blacken in (True, False):
@@ -1443,7 +1433,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+<< define contents >>
         #@+node:ekr.20211101180404.1: *4* << define contents >> (test_verbatim)
         # Be careful: no line should look like a Leo sentinel!
-        contents = textwrap.dedent(
+        contents = self.prep(
         f'''
             #AT+leo-ver=5-thin
             #AT+node:{root.gnx}: * {h}
@@ -1453,17 +1443,17 @@ class TestFastAtRead(LeoUnitTest):
             #ATverbatim
             #AT+node (verbatim)
             #AT-leo
-        ''').lstrip().replace('AT', '@')  # .replace('LB', '<<')
+        ''').replace('AT', '@')  # .replace('LB', '<<')
         #@-<< define contents >>
         #@+<< define expected_body >>
         #@+node:ekr.20211106070035.1: *4* << define expected_body >> (test_verbatim)
-        expected_body = textwrap.dedent(
+        expected_body = self.prep(
         '''
-        ATlanguage python
-        # Test of @verbatim
-        print('hi')
-        #AT+node (verbatim)
-        ''').lstrip().replace('AT', '@')
+            ATlanguage python
+            # Test of @verbatim
+            print('hi')
+            #AT+node (verbatim)
+        ''').replace('AT', '@')
         #@-<< define expected_body >>
         for blacken in (True, False):
             g.app.write_black_sentinels = blacken
@@ -1502,7 +1492,7 @@ class TestFastAtRead(LeoUnitTest):
         #@+<< define contents >>
         #@+node:ekr.20231207080536.2: *4* << define contents >> (test_verbatim_html)
         # Be careful: no line should look like a Leo sentinel!
-        contents = textwrap.dedent(
+        contents = self.prep(
         f'''
             <!--AT+leo-ver=5-thin-->
             <!--AT+node:{root.gnx}: * {h}-->
@@ -1514,18 +1504,18 @@ class TestFastAtRead(LeoUnitTest):
                 <!--ATverbatim-->
                 <!--AT+node (verbatim)-->
             <!--AT-leo-->
-        ''').lstrip().replace('AT', '@')  # .replace('LB', '<<')
+        ''').replace('AT', '@')  # .replace('LB', '<<')
         #@-<< define contents >>
         #@+<< define expected_body >>
         #@+node:ekr.20231207080536.3: *4* << define expected_body >> (test_verbatim_html)
-        expected_body = textwrap.dedent(
+        expected_body = self.prep(
         '''
             ATlanguage html
             <!-- Test of @verbatim-->
             print('hi')
             <!--AT+node (verbatim)-->
                 <!--AT+node (verbatim)-->
-        ''').lstrip().replace('AT', '@')
+        ''').replace('AT', '@')
         #@-<< define expected_body >>
 
         for blacken in (True, False):
