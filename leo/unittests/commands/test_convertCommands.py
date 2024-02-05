@@ -3,7 +3,6 @@
 """Tests of leo.commands.leoConvertCommands."""
 import os
 import re
-import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 from leo.commands.convertCommands import ConvertCommandsClass
@@ -62,7 +61,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
     #@+node:ekr.20220108091352.1: *3* test_ama.test_already_annotated
     def test_already_annotated(self):
         p = self.p
-        p.b = contents = textwrap.dedent(
+        p.b = contents = self.prep(
         '''
             def f1(i: int, s: str) -> str:
                 return s
@@ -77,7 +76,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
         # https://github.com/leo-editor/leo-editor/issues/2606
         p = self.p
         # Make sure any adjustment to the args logic doesn't affect following functions.
-        p.b = textwrap.dedent(
+        p.b = self.prep(
         '''
             def f1(root=p and p.copy()):
                 pass
@@ -88,7 +87,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
             def f3(a, self=self):
                 pass
         ''')
-        expected = textwrap.dedent(
+        expected = self.prep(
         '''
             def f1(root: Any=p and p.copy()) -> None:
                 pass
@@ -104,12 +103,12 @@ class TestAddMypyAnnotations(LeoUnitTest):
     #@+node:ekr.20220108093044.1: *3* test_ama.test_initializers
     def test_initializers(self):
         p = self.p
-        p.b = textwrap.dedent(
+        p.b = self.prep(
         '''
             def f3(i = 2, f = 1.1, b = True, s = 'abc', x = None):
                 pass
         ''')
-        expected = textwrap.dedent(
+        expected = self.prep(
         '''
             def f3(i: int=2, f: float=1.1, b: bool=True, s: str='abc', x: Any=None) -> None:
                 pass
@@ -119,7 +118,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
     #@+node:ekr.20220108093621.1: *3* test_ama.test_multiline_def
     def test_multiline_def(self):
         p = self.p
-        p.b = textwrap.dedent(
+        p.b = self.prep(
         '''
             def f (
                 self,
@@ -131,7 +130,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
             ):
                 pass
         ''')
-        expected = textwrap.dedent(
+        expected = self.prep(
         '''
             def f(
                 self,
@@ -148,7 +147,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
     #@+node:ekr.20220108153333.1: *3* test_ama.test_multiline_def_with_comments
     def test_multiline_def_with_comments(self):
         p = self.p
-        p.b = textwrap.dedent(
+        p.b = self.prep(
         '''
             def f (
                 self,# comment 1
@@ -160,7 +159,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
                 pass
         ''')
         # Note: The command insert exactly two spaces before comments.
-        expected = textwrap.dedent(
+        expected = self.prep(
         '''
             def f(
                 self,  # comment 1
@@ -177,12 +176,12 @@ class TestAddMypyAnnotations(LeoUnitTest):
     #@+node:ekr.20220108083112.4: *3* test_ama.test_plain_args
     def test_plain_args(self):
         p = self.p
-        p.b = textwrap.dedent(
+        p.b = self.prep(
         '''
             def f1(event, i, s):
                 pass
         ''')
-        expected = textwrap.dedent(
+        expected = self.prep(
         '''
             def f1(event: Event, i: int, s: str) -> None:
                 pass
@@ -192,7 +191,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
     #@+node:ekr.20220416082758.1: *3* test_ama.test_special_methods
     def test_special_methods(self):
         p = self.p
-        p.b = textwrap.dedent(
+        p.b = self.prep(
         '''
             def __init__(self):
                 pass
@@ -203,7 +202,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
             def __str__(self):
                 pass
         ''')
-        expected = textwrap.dedent(
+        expected = self.prep(
         '''
             def __init__(self) -> None:
                 pass

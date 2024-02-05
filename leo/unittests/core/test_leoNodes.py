@@ -4,7 +4,6 @@
 
 # pylint has troubles finding Commands methods.
 # pylint: disable=no-member
-import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -890,7 +889,7 @@ class TestNodes(LeoUnitTest):
     def test_p_nosentinels(self):
 
         p = self.c.p
-        p.b = textwrap.dedent(
+        p.b = self.prep(
         """
 
             def not_a_sentinel(x):
@@ -899,7 +898,7 @@ class TestNodes(LeoUnitTest):
             @not_a_sentinel
             def spam():
                 pass
-        """).lstrip()
+        """)
         self.assertEqual(p.b, p.nosentinels)
     #@+node:ekr.20210830095545.22: *4* TestNodes.test_p_relinkAsCloneOf
     def test_p_relinkAsCloneOf(self):
