@@ -178,7 +178,7 @@ class TestRstWriter(BaseTestWriter):
         child = root.insertAsLastChild()
         child.h = 'h'
         # For full coverage, we don't want a leading newline.
-        child.b = self.prep(  # dedent is required.
+        child.b = self.prep(
         """
             .. toc
 
