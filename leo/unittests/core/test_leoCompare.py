@@ -3,7 +3,6 @@
 """Tests of leoCompare.py"""
 import os
 import tempfile
-import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 assert g
@@ -81,8 +80,8 @@ class TestCompare(LeoUnitTest):
         self.assertEqual(c.lastTopLevel(), root)
 
         # The contents of a small .leo file.
-        contents1 = textwrap.dedent(
-            """
+        contents1 = self.prep(
+        """
             <?xml version="1.0" encoding="utf-8"?>
             <!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
             <leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
@@ -97,7 +96,7 @@ class TestCompare(LeoUnitTest):
             <t tx="ekr.20230714162224.2"></t>
             </tnodes>
             </leo_file>
-            """).lstrip()  # Leo doesn't tolerate a leading blank line!
+        """)
         contents2 = contents1.replace('test_file1.leo', 'test_file2.leo')
 
         # Create the absolute paths.

@@ -123,6 +123,14 @@ class BaseTest(unittest.TestCase):
         contents = g.readFileIntoUnicodeString(filename)
         contents, tokens = self.make_data(contents, description=filename)
         return contents, tokens
+    #@+node:ekr.20240205025458.1: *3* BaseTest.prep
+    def prep(self, s: str) -> str:
+        """
+        Return the "prepped" version of s.
+        
+        This should eliminate the need for backslashes in tests.
+        """
+        return textwrap.dedent(s).strip() + '\n'
     #@-others
 #@+node:ekr.20240105153425.2: ** class Optional_TestFiles (BaseTest)
 class Optional_TestFiles(BaseTest):
@@ -512,7 +520,7 @@ class TestTokenBasedOrange(BaseTest):
                 pass
         """
         # At present Orange doesn't split lines...
-        expected = textwrap.dedent(
+        expected = self.prep(
             """
                 if x == 4: pass
                 if x == 4: pass
@@ -524,7 +532,7 @@ class TestTokenBasedOrange(BaseTest):
                     pass
                 while (3):
                     pass
-            """).strip() + '\n'
+            """)
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
@@ -614,7 +622,7 @@ class TestTokenBasedOrange(BaseTest):
             from leo.core import leoExternalFiles
             import leo.core.leoGlobals as g
         """
-        expected = textwrap.dedent(
+        expected = self.prep(
         """
             from .module1 import w
             from .module2 import x
@@ -626,7 +634,7 @@ class TestTokenBasedOrange(BaseTest):
             from .. import d
             from leo.core import leoExternalFiles
             import leo.core.leoGlobals as g
-        """).strip() + '\n'
+        """)
         contents, tokens = self.make_data(contents)
         # dump_tokens(tokens)
         results = self.beautify(contents, tokens)

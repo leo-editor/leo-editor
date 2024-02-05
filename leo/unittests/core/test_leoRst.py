@@ -2,7 +2,6 @@
 #@+node:ekr.20210902055206.1: * @file ../unittests/core/test_leoRst.py
 """Tests of leoRst.py"""
 
-import textwrap
 try:
     import docutils
 except Exception:  # pragma: no cover
@@ -32,20 +31,19 @@ class TestRst(LeoUnitTest):
         child = root.insertAsLastChild()
         child.h = '@rst-no-head section'
         # Insert the body texts.  Overindent to eliminate @verbatim sentinels.
-        root.b = textwrap.dedent(
+        root.b = self.prep(
         """
             #####
             Title
             #####
 
             This is test.html
-
-        """).lstrip()
+        """)
 
         child.b = """This is the body of the section.\n"""
 
         # Define the expected output.
-        expected = textwrap.dedent(
+        expected = self.prep(
         f"""
             .. rst3: filename: {fn}
 
@@ -58,8 +56,7 @@ class TestRst(LeoUnitTest):
             This is test.html
 
             This is the body of the section.
-
-        """).lstrip()
+        """) + '\n'  # Required.
         # Get and check the rst result.
         rc.nodeNumber = 0
         rc.http_server_support = True  # Override setting for testing.
@@ -95,15 +92,15 @@ class TestRst(LeoUnitTest):
         root = c.rootPosition().insertAfter()
         root.h = fn = '@rst unicode_test.html'
         # Insert the body text.  Overindent to eliminate @verbatim sentinels.
-        root.b = textwrap.dedent(
+        root.b = self.prep(
         """
             Test of unicode characters: ÀǋϢﻙ
 
             End of test.
-        """).lstrip()
+        """)
 
         # Define the expected output.
-        expected = textwrap.dedent(
+        expected = self.prep(
         f"""
             .. rst3: filename: {fn}
 
@@ -112,8 +109,8 @@ class TestRst(LeoUnitTest):
             Test of unicode characters: ÀǋϢﻙ
 
             End of test.
+        """) + '\n'  # Required.
 
-        """).lstrip()
         # Get and check the rst result.
         rc.nodeNumber = 0
         rc.http_server_support = True  # Override setting for testing.
@@ -133,7 +130,7 @@ class TestRst(LeoUnitTest):
         child = root.insertAsLastChild()
         child.h = 'section'
         # Insert the body texts.  Overindent to eliminate @verbatim sentinels.
-        root.b = textwrap.dedent(
+        root.b = self.prep(
         """
             @language rest
 
@@ -142,16 +139,16 @@ class TestRst(LeoUnitTest):
             #####
 
             This is test.html
-        """).lstrip()
-        child.b = textwrap.dedent(
+        """)
+        child.b = self.prep(
         """
             @ This is a doc part
             it has two lines.
             @c
             This is the body of the section.
-        """).lstrip()
+        """)
         # Define the expected output.
-        expected = textwrap.dedent(
+        expected = self.prep(
         f"""
             .. rst3: filename: {fn}
 
@@ -174,8 +171,8 @@ class TestRst(LeoUnitTest):
             it has two lines.
             @c
             This is the body of the section.
+        """) + '\n'  # Required.
 
-        """).lstrip()
         # Get and check the rst result.
         rc.nodeNumber = 0
         rc.http_server_support = True  # Override setting for testing.

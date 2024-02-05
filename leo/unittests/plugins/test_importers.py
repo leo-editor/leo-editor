@@ -3928,7 +3928,7 @@ class TestRust(BaseTestImporter):
     def test_rust_import_fails(self):
 
         # From ruff/crates/ruff_formatter/shared_traits.rs
-        s = textwrap.dedent(  # dedent is required.
+        s = self.prep(
             """
                 /// Used to get an object that knows how to format this object.
                 pub trait AsFormat<Context> {

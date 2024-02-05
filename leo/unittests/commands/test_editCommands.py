@@ -4409,7 +4409,7 @@ class TestEditCommands(LeoUnitTest):
         )
         #@-<< define table >>
         w = c.frame.body.wrapper
-        s = textwrap.dedent(
+        s = self.prep(
         """
             Paragraph 1.
                 line 2.
