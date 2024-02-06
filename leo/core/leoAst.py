@@ -19,7 +19,7 @@ the parse tree. For more details, see the "Overview" section below.
 See also leoTokens.py. It defines a Python beautifier that uses only
 Python's tokenize module.
 
-This file requires Python 3.9 or above.
+This commands in this file require Python 3.9 or above.
 
 
 **Stand-alone operation**
@@ -166,6 +166,7 @@ import glob
 import io
 import os
 import re
+import sys
 import subprocess
 import textwrap
 import time
@@ -181,6 +182,10 @@ except Exception:
 Node = ast.AST
 Settings = Optional[dict[str, Any]]
 #@-<< leoAst imports & annotations >>
+
+v1, v2, junk1, junk2, junk3 = sys.version_info
+if (v1, v2) < (3, 9):  # pragma: no cover
+    raise ImportError('The commands in leoAst.py require Python 3.9 or above')
 
 #@+others
 #@+node:ekr.20200702114522.1: **  leoAst.py: top-level commands
