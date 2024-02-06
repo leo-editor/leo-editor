@@ -3,23 +3,26 @@
 global-exclude *.py[cod] __pycache__ *.so
 
 # Root folder
-include *.TXT
-include LICENSE
-include pyproject.toml
 
-# # # include launchLeo.py
-# # # include profileLeo.py
-# # # include pylint-leo.bat
-# # # include pylint-leo.py
-# # # include *.nsi
+include PKG-INFO.TXT
+include LICENSE
+include README.md
+include pyproject.toml
 
 # Exclusions
 
+global-exclude ekr-spellpyx.txt
+global-exclude git-manifest.txt
+global-exclude launchLeo.py
+global-exclude profileLeo.py
+
+prune leo/config
 prune leo/core
 prune leo/commands
 prune leo/dist
 prune leo/doc
 prune leo/docs
+prune leo/extensions
 prune leo/external
 prune leo/Icons
 prune leo/modes
