@@ -611,6 +611,36 @@ class TestColorizer(LeoUnitTest):
             when while
         """)
         self.color('lisp', text)
+    #@+node:ekr.20240206051426.1: *3* TestColorizer.test_colorizer_nim
+    def test_colorizer_nim(self):
+        text = self.prep(
+        """
+            #[ A multi-line comment: bright red as a warning.
+            ]#
+
+            a: any = none
+            b: bool = false
+            s: string = "Single string"
+            i64: int64 = 0
+
+            # GitHub colors all other constants blue, including system constants:
+            42
+            3.5
+            AllocStats
+            DivByZeroError
+            BiggestUInt
+            Slice
+            SomeFloat
+
+            # GitHub colors system functions purple:
+            echo "Hi"
+            alloc()
+
+            # GitHub does not color modules that "system" imports.
+            import exceptions  # Imported by system module.
+            import Exception  # Defined in system module.
+        """)
+        self.color('lisp', text)
     #@+node:ekr.20210905170507.20: *3* TestColorizer.test_colorizer_objective_c
     def test_colorizer_objective_c(self):
         text = self.prep(

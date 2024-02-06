@@ -654,6 +654,10 @@ number_regex = re.compile(r'([0-9\.]+)')
 
 def nim_number(colorer, s, i):
     return colorer.match_compiled_regexp(s, i, 'literal2', regexp=number_regex)
+#@+node:ekr.20240206051847.1: *3* nim_op
+def nim_op(colorer, s: str, i: int) -> int:
+    # Don't color ordinary ops.
+    return 0
 #@+node:ekr.20240202211600.8: *3* nim_string
 def nim_string(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
@@ -738,21 +742,20 @@ nim_rules_dict = {
     "x": [nim_keyword],
     "y": [nim_keyword],
     "z": [nim_keyword],
-
-    # "%": [nim_rule15],
-    # "&": [nim_rule16],
-    # "(": [nim_rule20],
-    # "*": [nim_rule12],
-    # "+": [nim_rule9],
-    # "-": [nim_rule10],
-    # "/": [nim_rule11],
-    # "<": [nim_rule8, nim_rule14],
-    # "=": [nim_rule5],
-    # ">": [nim_rule7, nim_rule13],
-    # "@": [nim_keyword],
-    # "^": [nim_rule18],
-    # "|": [nim_rule17],
-    # "~": [nim_rule19],
+    "%": [nim_op],
+    "&": [nim_op],
+    "(": [nim_op],
+    "*": [nim_op],
+    "+": [nim_op],
+    "-": [nim_op],
+    "/": [nim_op],
+    "<": [nim_op],
+    "=": [nim_op],
+    ">": [nim_op],
+    "@": [nim_op],
+    "^": [nim_op],
+    "|": [nim_op],
+    "~": [nim_op],
 }
 #@-<< nim_rules_dict >>
 
