@@ -45,14 +45,6 @@ class TestSyntax(LeoUnitTest):
                     fn = g.shortFileName(z)
                     s, e = g.readFileIntoString(z)
                     self.assertTrue(self.check_syntax(fn, s), msg=fn)
-    #@+node:ekr.20210901140645.22: *4* TestSyntax.test_syntax_of_setup_py
-    def test_syntax_of_setup_py(self):
-        fn = g.finalize_join(g.app.loadDir, '..', '..', 'setup.py')
-        # Only run this test if setup.py exists: it may not in the actual distribution.
-        if not g.os_path_exists(fn):
-            self.skipTest('setup.py not found')  # pragma: no cover
-        s, e = g.readFileIntoString(fn)
-        assert self.check_syntax(fn, s)
     #@-others
 #@-others
 #@-leo

@@ -57,7 +57,7 @@ class TestQtGui(LeoUnitTest):
             from leo.core.leoQt import Qt
             assert Qt
         except Exception:
-            self.skipTest('Qt not installed')
+            self.skipTest('Requires Qt')
     #@+node:ekr.20210913120449.1: *3* TestQtGui.test_bug_2164
     def test_bug_2164(self):
         # show-invisibles crashes with PyQt6.
@@ -106,7 +106,7 @@ class TestQtGui(LeoUnitTest):
         # https://github.com/leo-editor/leo-editor/issues/1973 list of enums
 
         if not QtCore and QtCore.Qt:
-            self.skipTest('no qt')  # pragma: no cover
+            self.skipTest('Requires Qt')  # pragma: no cover
         table = (
             'DropAction', 'ItemFlag', 'KeyboardModifier',
             'MouseButton', 'Orientation',
