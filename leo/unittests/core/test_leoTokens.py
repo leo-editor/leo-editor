@@ -184,14 +184,14 @@ class TestTokenBasedOrange(BaseTest):
     def blacken(self, contents):
         """Return the results of running black on contents"""
         if not black:
-            self.skipTest('Can not import black')  # pragma: no cover
+            self.skipTest('Requires Black')  # pragma: no cover
         # Suppress string normalization!
         try:
             mode = black.FileMode()
             mode.string_normalization = False
             # mode.line_length = line_length
         except TypeError:  # pragma: no cover
-            self.skipTest('old version of black')
+            self.skipTest('Requires newer version of Black')
         return black.format_str(contents, mode=mode)
     #@+node:ekr.20240116104552.1: *3* TestTBO.slow_test_leoColorizer
     def slow_test_leoApp(self) -> None:  # pragma: no cover

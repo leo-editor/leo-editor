@@ -28,7 +28,7 @@ class TestSpellCommands(LeoUnitTest):
             import enchant
             assert enchant
         except Exception:  # May throw WinError(!)
-            self.skipTest('enchant not found')
+            self.skipTest('Requires enchant')
 
         from leo.core.leoCommands import Commands as Cmdr
         from leo.commands.spellCommands import SpellTabHandler

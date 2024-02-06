@@ -18,7 +18,7 @@ class TestRst(LeoUnitTest):
     def setUp(self):
         super().setUp()
         if not docutils:
-            self.skipTest('no docutils')  # pragma: no cover
+            self.skipTest('Requires docutils')  # pragma: no cover
 
     #@+others
     #@+node:ekr.20210902211919.12: *3* TestRst.test_at_no_head
