@@ -4,6 +4,7 @@
 # Leo colorizer control file for nim mode.
 # This file is in the public domain.
 
+import re
 import sys
 
 v1, v2, junk1, junk2, junk3 = sys.version_info
@@ -35,7 +36,7 @@ attributesDictDict = {
 # Keywords dict for nim_main ruleset.
 nim_main_keywords_dict = {
     #@+<< Nim keywords >>
-    #@+node:ekr.20240203080736.1: ** << Nim keywords >>
+    #@+node:ekr.20240203080736.1: ** << Nim keywords >> (keyword1)
     # Some are reserved for future use.
     "addr": "keyword1",
     "and": "keyword1",
@@ -105,12 +106,12 @@ nim_main_keywords_dict = {
     "yield": "keyword1",
     #@-<< Nim keywords >>
     #@+<< Nim type names >>
-    #@+node:ekr.20240203094444.1: ** << Nim type names >>
+    #@+node:ekr.20240203094444.1: ** << Nim type names >> (keyword1)
     # Type names should be colorized like reserved words.
         "any": "keyword1",
         "array": "keyword1",
         "auto": "keyword1",
-        # "bool": "keyword1",
+        "bool": "keyword1",
         "byte": "keyword1",
         "char": "keyword1",
         "csize": "keyword1",
@@ -145,8 +146,9 @@ nim_main_keywords_dict = {
         "void": "keyword1",
     #@-<< Nim type names >>
     #@+<< Nim constants >>
-    #@+node:ekr.20240203093634.1: ** << Nim constants >>
+    #@+node:ekr.20240203093634.1: ** << Nim constants >> (keyword2)
     "false": "keyword2",
+    "none": "keyword2",
     "true": "keyword2",
     #@-<< Nim constants >>
     # https://nim-lang.org/docs/system.html
@@ -640,135 +642,57 @@ keywordsDictDict = {
 #@+node:ekr.20240202211600.5: *3* nim_comment #
 def nim_comment(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="#")
-#@+node:ekr.20240202211600.6: *3* nim_triple_quote """
-def nim_triple_quote(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"")
-#@+node:ekr.20240202211600.7: *3* nim_rule2 '''
-def nim_rule2(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''")
-#@+node:ekr.20240202211600.8: *3* nim_rule3 "
-def nim_rule3(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
-#@+node:ekr.20240202211600.9: *3* nim_rule4 '
-def nim_rule4(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
-#@+node:ekr.20240202211600.10: *3* nim_rule5
-def nim_rule5(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
-
-
-#@+node:ekr.20240202211600.11: *3* nim_rule6
-def nim_rule6(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
-
-
-#@+node:ekr.20240202211600.12: *3* nim_rule7
-def nim_rule7(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
-
-
-#@+node:ekr.20240202211600.13: *3* nim_rule8
-def nim_rule8(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
-
-
-#@+node:ekr.20240202211600.14: *3* nim_rule9
-def nim_rule9(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
-
-
-#@+node:ekr.20240202211600.15: *3* nim_rule10
-def nim_rule10(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
-
-
-#@+node:ekr.20240202211600.16: *3* nim_rule11
-def nim_rule11(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
-
-
-#@+node:ekr.20240202211600.17: *3* nim_rule12
-def nim_rule12(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
-
-
-#@+node:ekr.20240202211600.18: *3* nim_rule13
-def nim_rule13(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
-
-
-#@+node:ekr.20240202211600.19: *3* nim_rule14
-def nim_rule14(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
-
-
-#@+node:ekr.20240202211600.20: *3* nim_rule15
-def nim_rule15(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
-
-
-#@+node:ekr.20240202211600.21: *3* nim_rule16
-def nim_rule16(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
-
-
-#@+node:ekr.20240202211600.22: *3* nim_rule17
-def nim_rule17(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
-
-
-#@+node:ekr.20240202211600.23: *3* nim_rule18
-def nim_rule18(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
-
-
-#@+node:ekr.20240202211600.24: *3* nim_rule19
-def nim_rule19(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
-
-
+#@+node:ekr.20240206040507.1: *3* nim_multi_line_comment #[
+def nim_multi_line_comment(colorer, s, i):
+    # Does *not* support nested comments.
+    return colorer.match_span(s, i, kind="comment2", begin="#[", end="]#")
 #@+node:ekr.20240202211600.26: *3* nim_keyword
 def nim_keyword(colorer, s, i):
     return colorer.match_keywords(s, i)
+#@+node:ekr.20240206033640.1: *3* nim_number
+number_regex = re.compile(r'([0-9\.]+)')
+
+def nim_number(colorer, s, i):
+    return colorer.match_compiled_regexp(s, i, 'literal2', regexp=number_regex)
+#@+node:ekr.20240202211600.8: *3* nim_string
+def nim_string(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
+#@+node:ekr.20240202211600.9: *3* nim_single_quote (keyword1)
+def nim_single_quote(colorer, s, i):
+    # Nim single quotes are much like keywords!
+    return colorer.match_span(s, i, kind="keyword1", begin="'", end="'")
+#@+node:ekr.20240202211600.6: *3* nim_triple_quote
+def nim_triple_quote(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"")
 #@-others
 #@-<< Nim rules >>
 #@+<< nim_rules_dict >>
 #@+node:ekr.20240202211600.29: ** << nim_rules_dict >>
 # Rules dict for nim_main ruleset.
 nim_rules_dict = {
-    "!": [nim_rule6],
-    '"': [nim_triple_quote, nim_rule3],
-    "#": [nim_comment],
-    "%": [nim_rule15],
-    "&": [nim_rule16],
-    "'": [nim_rule2, nim_rule4],
-    # "(": [nim_rule20],
-    "*": [nim_rule12],
-    "+": [nim_rule9],
-    "-": [nim_rule10],
-    "/": [nim_rule11],
-    "0": [nim_keyword],
-    "1": [nim_keyword],
-    "2": [nim_keyword],
-    "3": [nim_keyword],
-    "4": [nim_keyword],
-    "5": [nim_keyword],
-    "6": [nim_keyword],
-    "7": [nim_keyword],
-    "8": [nim_keyword],
-    "9": [nim_keyword],
-    "<": [nim_rule8, nim_rule14],
-    "=": [nim_rule5],
-    ">": [nim_rule7, nim_rule13],
-    "@": [nim_keyword],
+    # "!": [nim_rule6],
+    '"': [nim_triple_quote, nim_string],
+    "#": [nim_multi_line_comment, nim_comment],
+    "'": [nim_single_quote],
+    ".": [nim_number],
+    "0": [nim_number],
+    "1": [nim_number],
+    "2": [nim_number],
+    "3": [nim_number],
+    "4": [nim_number],
+    "5": [nim_number],
+    "6": [nim_number],
+    "7": [nim_number],
+    "8": [nim_number],
+    "9": [nim_number],
     "A": [nim_keyword],
     "B": [nim_keyword],
     "C": [nim_keyword],
     "D": [nim_keyword],
     "E": [nim_keyword],
-    "F": [nim_keyword],  # nim_rule_f_url,
+    "F": [nim_keyword],
     "G": [nim_keyword],
-    "H": [nim_keyword],  # nim_rule_h_url,
+    "H": [nim_keyword],
     "I": [nim_keyword],
     "J": [nim_keyword],
     "K": [nim_keyword],
@@ -787,16 +711,15 @@ nim_rules_dict = {
     "X": [nim_keyword],
     "Y": [nim_keyword],
     "Z": [nim_keyword],
-    "^": [nim_rule18],
     "_": [nim_keyword],
     "a": [nim_keyword],
     "b": [nim_keyword],
     "c": [nim_keyword],
     "d": [nim_keyword],
     "e": [nim_keyword],
-    "f": [nim_keyword],  # nim_rule_f_url
+    "f": [nim_keyword],
     "g": [nim_keyword],
-    "h": [nim_keyword],  # nim_rule_h_url
+    "h": [nim_keyword],
     "i": [nim_keyword],
     "j": [nim_keyword],
     "k": [nim_keyword],
@@ -815,8 +738,21 @@ nim_rules_dict = {
     "x": [nim_keyword],
     "y": [nim_keyword],
     "z": [nim_keyword],
-    "|": [nim_rule17],
-    "~": [nim_rule19],
+
+    # "%": [nim_rule15],
+    # "&": [nim_rule16],
+    # "(": [nim_rule20],
+    # "*": [nim_rule12],
+    # "+": [nim_rule9],
+    # "-": [nim_rule10],
+    # "/": [nim_rule11],
+    # "<": [nim_rule8, nim_rule14],
+    # "=": [nim_rule5],
+    # ">": [nim_rule7, nim_rule13],
+    # "@": [nim_keyword],
+    # "^": [nim_rule18],
+    # "|": [nim_rule17],
+    # "~": [nim_rule19],
 }
 #@-<< nim_rules_dict >>
 
