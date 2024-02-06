@@ -163,6 +163,18 @@
 <v t="ekr.20180318145515.785"><vh>@color patch.literal1 = @solarized-blue</vh></v>
 <v t="ekr.20180318145515.786"><vh>@color patch.literal2 = @solarized-blue</vh></v>
 </v>
+<v t="ekr.20240206072249.1"><vh>Colors: nim</vh>
+<v t="ekr.20240206072249.2"><vh>@color nim.keyword1 = @solarized-red</vh></v>
+<v t="ekr.20240206072249.3"><vh>@color nim.keyword2 = @solarized-blue</vh></v>
+<v t="ekr.20240206072249.4"><vh>@color nim.keyword3 = @solarized-blue</vh></v>
+<v t="ekr.20240206072249.5"><vh>@color nim.keyword4 = @solarized-purple</vh></v>
+<v t="ekr.20240206072249.6"><vh>@color nim.literal1 = @alt-solarized-green</vh></v>
+<v t="ekr.20240206072249.7"><vh>@color nim.literal2 = @solarized-blue</vh></v>
+<v t="ekr.20240206072249.8"><vh>@color nim.comment1 = #d33682</vh></v>
+<v t="ekr.20240206072249.9"><vh>@color nim.comment2 = red</vh></v>
+<v t="ekr.20240206072249.10"><vh>@color nim.comment3 = red</vh></v>
+<v t="ekr.20240206072249.11"><vh>@color nim.comment4 = red</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20180318145515.796"></v>
@@ -973,5 +985,16 @@ QLineEdit#editorLabel {
 <t tx="ekr.20201221073843.1"></t>
 <t tx="ekr.20201221075212.1">The path to the icon folder.</t>
 <t tx="ekr.20201221102453.1">These settings must exist because they are *not* used in the css.</t>
+<t tx="ekr.20240206072249.1"></t>
+<t tx="ekr.20240206072249.10"></t>
+<t tx="ekr.20240206072249.11"></t>
+<t tx="ekr.20240206072249.2">Official keywords and type names.</t>
+<t tx="ekr.20240206072249.3">Constants: true, false, none.</t>
+<t tx="ekr.20240206072249.4">Uppercase constants defined in system.</t>
+<t tx="ekr.20240206072249.5">Procs.</t>
+<t tx="ekr.20240206072249.6">Strings.</t>
+<t tx="ekr.20240206072249.7">Numbers</t>
+<t tx="ekr.20240206072249.8">Standard Leo comment color.</t>
+<t tx="ekr.20240206072249.9">Nim nested comment.</t>
 </tnodes>
 </leo_file>
