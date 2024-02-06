@@ -411,9 +411,6 @@ class TestTOG(BaseTest):
     #@+node:ekr.20210914161519.1: *5* test_bug_2171
     def test_bug_2171(self):
 
-        if py_version < (3, 9):
-            self.skipTest('Requires Python 3.9')  # pragma: no cover
-
         contents = "'HEAD:%s' % g.os_path_join( *(relative_path + [filename]) )"
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210318213133.1: *5* test_full_grammar
@@ -422,8 +419,7 @@ class TestTOG(BaseTest):
         dir_ = os.path.dirname(__file__)
         path = os.path.abspath(os.path.join(dir_, '..', 'py3_test_grammar.py'))
         assert os.path.exists(path), path
-        if py_version < (3, 9):
-            self.skipTest('Requires Python 3.9 or above')  # pragma: no cover
+
         # Verify that leoAst can parse the file.
         contents = g.readFileIntoUnicodeString(path)
         self.make_data(contents)
@@ -456,9 +452,6 @@ class TestTOG(BaseTest):
     #@+node:ekr.20210320065202.1: *5* test_line_483
     def test_line_483(self):
 
-        if py_version < (3, 8):
-            # Python 3.8: https://bugs.python.org/issue32117
-            self.skipTest(f"Python {v1}.{v2} does not support generalized iterable assignment")  # pragma: no cover
         contents = '''def g3(): return 1, *return_list'''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210320065344.1: *5* test_line_494
@@ -471,9 +464,6 @@ class TestTOG(BaseTest):
         requires enclosing parentheses. This brings the yield and return syntax
         into better agreement with normal assignment syntax.
         """
-        if py_version < (3, 8):
-            # Python 3.8: https://bugs.python.org/issue32117
-            self.skipTest(f"Python {v1}.{v2} does not support generalized iterable assignment")  # pragma: no cover
         contents = '''def g2(): yield 1, *yield_list'''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20210319130349.1: *5* test_line_875
@@ -489,8 +479,6 @@ class TestTOG(BaseTest):
     #@+node:ekr.20210320085705.1: *5* test_walrus_operator
     def test_walrus_operator(self):
 
-        if py_version < (3, 8):
-            self.skipTest(f"Python {v1}.{v2} does not support assignment expressions")  # pragma: no cover
         contents = '''if (n := len(a)) > 10: pass'''
         contents, tokens, tree = self.make_data(contents)
     #@+node:ekr.20191227052446.10: *4* TestTOG.Contexts...
@@ -542,10 +530,7 @@ class TestTOG(BaseTest):
     #@+node:ekr.20210802162650.1: *5* test_FunctionDef_with_posonly_args
     def test_FunctionDef_with_posonly_args(self):
 
-        if py_version < (3, 9):
-            self.skipTest('Requires Python 3.9')  # pragma: no cover
-
-        # From PEP 570
+        # From PEP 570. (Python 3.9+).
         contents = r"""
     def pos_only_arg(arg, /):
         pass
@@ -1121,7 +1106,7 @@ class TestTOG(BaseTest):
     def test_Match(self):
 
         if py_version < (3, 10):  # pragma: no cover
-            self.skipTest('Require python 3.10')
+            self.skipTest('Requires python 3.10+')
         #@+<< test_Match: define contents >>
         #@+node:ekr.20231215010832.1: *6* << test_Match: define contents >>
         contents = """
@@ -1177,7 +1162,7 @@ class TestTOG(BaseTest):
     def test_TryStar(self):
 
         if py_version < (3, 11):
-            self.skipTest('Python 3.11+ only')
+            self.skipTest('Requires Python 3.11+')
 
         contents = r"""
     try:
@@ -1297,7 +1282,7 @@ class Optional_TestFiles(BaseTest):
     def compare_tog_vs_asttokens(self):  # pragma: no cover
         """Compare asttokens token lists with TOG token lists."""
         if not asttokens:
-            self.skipTest('requires asttokens')
+            self.skipTest('Requires asttokens')
         # Define TestToken class and helper functions.
         stack: list[ast.AST] = []
         #@+others
@@ -1705,7 +1690,7 @@ class TestOrange(BaseTest):
     def blacken(self, contents, line_length=None):
         """Return the results of running black on contents"""
         if not black:
-            self.skipTest('Can not import black')  # pragma: no cover
+            self.skipTest('Requires Black')  # pragma: no cover
         # Suppress string normalization!
         try:
             mode = black.FileMode()
@@ -1713,7 +1698,7 @@ class TestOrange(BaseTest):
             if line_length is not None:
                 mode.line_length = line_length
         except TypeError:  # pragma: no cover
-            self.skipTest('old version of black')
+            self.skipTest('Requires later version of Black')
         return black.format_str(contents, mode=mode)
     #@+node:ekr.20230115150916.1: *4* TestOrange.test_annotations
     def test_annotations(self):

@@ -112,7 +112,7 @@ class TestPlugins(LeoUnitTest):
         try:
             import leo.plugins.cursesGui2 as cursesGui2
         except Exception:
-            self.skipTest('Missing cursesGui2 requirements')
+            self.skipTest('Requires cursesGui2 requirements')
 
         # Instantiating this class caused the crash.
         cursesGui2.LeoTreeData()

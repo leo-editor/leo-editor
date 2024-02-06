@@ -3496,7 +3496,7 @@ class TestRst(BaseTestImporter):
             import docutils
             assert docutils
         except Exception:  # pragma: no cover
-            self.skipTest('no docutils')
+            self.skipTest('Requires docutils')
 
         s = """
             .. toc
@@ -3596,7 +3596,7 @@ class TestRst(BaseTestImporter):
             import docutils
             assert docutils
         except Exception:  # pragma: no cover
-            self.skipTest('no docutils')
+            self.skipTest('Requires docutils')
 
         s = """
             .. toc
@@ -3633,7 +3633,7 @@ class TestRst(BaseTestImporter):
             import docutils
             assert docutils
         except Exception:  # pragma: no cover
-            self.skipTest('no docutils')
+            self.skipTest('Requires docutils')
 
         s = """
             .. toc
@@ -3732,7 +3732,7 @@ class TestRst(BaseTestImporter):
             import docutils
             assert docutils
         except Exception:  # pragma: no cover
-            self.skipTest('no docutils')
+            self.skipTest('Requires docutils')
 
         s = """
             .. toc
@@ -3764,7 +3764,7 @@ class TestRst(BaseTestImporter):
             import docutils
             assert docutils
         except Exception:  # pragma: no cover
-            self.skipTest('no docutils')
+            self.skipTest('Requires docutils')
 
         s = """
             .. toc
@@ -3797,7 +3797,7 @@ class TestRst(BaseTestImporter):
             import docutils
             assert docutils
         except Exception:  # pragma: no cover
-            self.skipTest('no docutils')
+            self.skipTest('Requires docutils')
 
         s = """
             .. toc
@@ -3834,7 +3834,7 @@ class TestRst(BaseTestImporter):
             import docutils
             assert docutils
         except Exception:  # pragma: no cover
-            self.skipTest('no docutils')
+            self.skipTest('Requires docutils')
 
         # All heading must be followed by an empty line.
         s = """\
