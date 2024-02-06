@@ -624,8 +624,9 @@ class TestColorizer(LeoUnitTest):
             a: any = none
             b: bool = false
             s: string = "Single string"
-            f1: float64 = 0.0d64
+            f1: float64 = 0.0d
             f2: float32 = -.0f32
+            f3: float = 1f+1
 
             # GitHub colors all other constants blue, including system constants:
             42

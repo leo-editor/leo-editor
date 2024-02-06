@@ -651,7 +651,8 @@ def nim_multi_line_comment(colorer, s, i):
     return colorer.match_span(s, i, kind="comment2",
         begin="#[", end="]#", nested=True)
 #@+node:ekr.20240206033640.1: *3* nim_number (literal2)
-number_regex = re.compile(r'[+-]?([0-9\.]+)(\-|\+|b|B|d|D|f|F|i|I|u|U|x|X|32|64)*')
+# Only an approximation.
+number_regex = re.compile(r'([0-9]+)(b|B|d|D|f|F|i|I|u|U|x|X|32|64)*')
 
 def nim_number(colorer, s, i):
     return colorer.match_compiled_regexp(s, i, 'literal2', regexp=number_regex)
@@ -669,6 +670,11 @@ def nim_string(colorer, s, i):
 #@+node:ekr.20240202211600.6: *3* nim_triple_quote (literal2)
 def nim_triple_quote(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"")
+#@+node:ekr.20240206062831.1: *3* nim_unary
+unary_pattern = re.compile(r'(\+|\-)')
+
+def nim_unary(colorer, s, i):
+    return colorer.match_seq_regexp(s, i, kind="keyword1", regexp=unary_pattern)
 #@-others
 #@-<< Nim rules >>
 #@+<< nim_rules_dict >>
@@ -680,8 +686,8 @@ nim_rules_dict = {
     "#": [nim_multi_line_comment, nim_comment],
     "'": [nim_single_quote],
     ".": [nim_number, nim_op],
-    "+": [nim_number, nim_op],
-    "-": [nim_number, nim_op],
+    "+": [nim_unary],
+    "-": [nim_unary],
     "0": [nim_number],
     "1": [nim_number],
     "2": [nim_number],
