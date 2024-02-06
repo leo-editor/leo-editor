@@ -615,13 +615,17 @@ class TestColorizer(LeoUnitTest):
     def test_colorizer_nim(self):
         text = self.prep(
         """
-            #[ A multi-line comment: bright red as a warning.
+            #[ A multi-line comment.
+                #[
+                    Inner comment.
+                ]#
             ]#
 
             a: any = none
             b: bool = false
             s: string = "Single string"
-            i64: int64 = 0
+            f1: float64 = 0.0d64
+            f2: float32 = -.0f32
 
             # GitHub colors all other constants blue, including system constants:
             42

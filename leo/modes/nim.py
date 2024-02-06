@@ -108,42 +108,42 @@ nim_main_keywords_dict = {
     #@+<< Nim type names >>
     #@+node:ekr.20240203094444.1: ** << Nim type names >> (keyword1)
     # Type names should be colorized like reserved words.
-        "any": "keyword1",
-        "array": "keyword1",
-        "auto": "keyword1",
-        "bool": "keyword1",
-        "byte": "keyword1",
-        "char": "keyword1",
-        "csize": "keyword1",
-        "cstring": "keyword1",
-        # "float": "keyword1",
-        "float32": "keyword1",
-        "float64": "keyword1",
-        # "int": "keyword1",
-        "int8": "keyword1",
-        "int16": "keyword1",
-        "int32": "keyword1",
-        "int64": "keyword1",
-        "lent": "keyword1",
-        "iterable": "keyword1",
-        "openArray": "keyword1",
-        "owned": "keyword1",
-        "pointer": "keyword1",
-        # "range": "keyword1",
-        "seq": "keyword1",
-        # "set": "keyword1",
-        "sink": "keyword1",
-        "string": "keyword1",
-        "typed": "keyword1",
-        "typedesc": "keyword1",
-        "uint": "keyword1",
-        "uint8": "keyword1",
-        "uint16": "keyword1",
-        "uint32": "keyword1",
-        "uint64": "keyword1",
-        "untyped": "keyword1",
-        "varargs": "keyword1",
-        "void": "keyword1",
+    "any": "keyword1",
+    "array": "keyword1",
+    "auto": "keyword1",
+    "bool": "keyword1",
+    "byte": "keyword1",
+    "char": "keyword1",
+    "csize": "keyword1",
+    "cstring": "keyword1",
+    "float": "keyword1",
+    "float32": "keyword1",
+    "float64": "keyword1",
+    "int": "keyword1",
+    "int8": "keyword1",
+    "int16": "keyword1",
+    "int32": "keyword1",
+    "int64": "keyword1",
+    "lent": "keyword1",
+    "iterable": "keyword1",
+    "openArray": "keyword1",
+    "owned": "keyword1",
+    "pointer": "keyword1",
+    "range": "keyword1",
+    "seq": "keyword1",
+    "set": "keyword1",
+    "sink": "keyword1",
+    "string": "keyword1",
+    "typed": "keyword1",
+    "typedesc": "keyword1",
+    "uint": "keyword1",
+    "uint8": "keyword1",
+    "uint16": "keyword1",
+    "uint32": "keyword1",
+    "uint64": "keyword1",
+    "untyped": "keyword1",
+    "varargs": "keyword1",
+    "void": "keyword1",
     #@-<< Nim type names >>
     #@+<< Nim constants >>
     #@+node:ekr.20240203093634.1: ** << Nim constants >> (keyword2)
@@ -639,33 +639,34 @@ keywordsDictDict = {
 #@+<< Nim rules >>
 #@+node:ekr.20240202211600.4: ** << Nim rules >>
 #@+others
-#@+node:ekr.20240202211600.5: *3* nim_comment #
+#@+node:ekr.20240202211600.5: *3* nim_comment (comment1)
 def nim_comment(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="#")
-#@+node:ekr.20240206040507.1: *3* nim_multi_line_comment #[
-def nim_multi_line_comment(colorer, s, i):
-    # Does *not* support nested comments.
-    return colorer.match_span(s, i, kind="comment2", begin="#[", end="]#")
 #@+node:ekr.20240202211600.26: *3* nim_keyword
 def nim_keyword(colorer, s, i):
     return colorer.match_keywords(s, i)
-#@+node:ekr.20240206033640.1: *3* nim_number
-number_regex = re.compile(r'([0-9\.]+)')
+#@+node:ekr.20240206040507.1: *3* nim_multi_line_comment (comment2)
+def nim_multi_line_comment(colorer, s, i):
+
+    return colorer.match_span(s, i, kind="comment2",
+        begin="#[", end="]#", nested=True)
+#@+node:ekr.20240206033640.1: *3* nim_number (literal2)
+number_regex = re.compile(r'[+-]?([0-9\.]+)(\-|\+|b|B|d|D|f|F|i|I|u|U|x|X|32|64)*')
 
 def nim_number(colorer, s, i):
     return colorer.match_compiled_regexp(s, i, 'literal2', regexp=number_regex)
-#@+node:ekr.20240206051847.1: *3* nim_op
+#@+node:ekr.20240206051847.1: *3* nim_op (do-nothing)
 def nim_op(colorer, s: str, i: int) -> int:
     # Don't color ordinary ops.
     return 0
-#@+node:ekr.20240202211600.8: *3* nim_string
-def nim_string(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 #@+node:ekr.20240202211600.9: *3* nim_single_quote (keyword1)
 def nim_single_quote(colorer, s, i):
     # Nim single quotes are much like keywords!
     return colorer.match_span(s, i, kind="keyword1", begin="'", end="'")
-#@+node:ekr.20240202211600.6: *3* nim_triple_quote
+#@+node:ekr.20240202211600.8: *3* nim_string (literal1)
+def nim_string(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
+#@+node:ekr.20240202211600.6: *3* nim_triple_quote (literal2)
 def nim_triple_quote(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"")
 #@-others
@@ -678,7 +679,9 @@ nim_rules_dict = {
     '"': [nim_triple_quote, nim_string],
     "#": [nim_multi_line_comment, nim_comment],
     "'": [nim_single_quote],
-    ".": [nim_number],
+    ".": [nim_number, nim_op],
+    "+": [nim_number, nim_op],
+    "-": [nim_number, nim_op],
     "0": [nim_number],
     "1": [nim_number],
     "2": [nim_number],
@@ -746,8 +749,6 @@ nim_rules_dict = {
     "&": [nim_op],
     "(": [nim_op],
     "*": [nim_op],
-    "+": [nim_op],
-    "-": [nim_op],
     "/": [nim_op],
     "<": [nim_op],
     "=": [nim_op],
