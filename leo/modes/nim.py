@@ -637,11 +637,11 @@ keywordsDictDict = {
 #@+<< Nim rules >>
 #@+node:ekr.20240202211600.4: ** << Nim rules >>
 #@+others
-#@+node:ekr.20240202211600.5: *3* nim_rule0
-def nim_rule0(colorer, s, i):
+#@+node:ekr.20240202211600.5: *3* nim_comment #
+def nim_comment(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="#")
-#@+node:ekr.20240202211600.6: *3* nim_rule1 """
-def nim_rule1(colorer, s, i):
+#@+node:ekr.20240202211600.6: *3* nim_triple_quote """
+def nim_triple_quote(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"")
 #@+node:ekr.20240202211600.7: *3* nim_rule2 '''
 def nim_rule2(colorer, s, i):
@@ -737,8 +737,8 @@ def nim_keyword(colorer, s, i):
 # Rules dict for nim_main ruleset.
 nim_rules_dict = {
     "!": [nim_rule6],
-    "\"": [nim_rule1, nim_rule3],
-    "#": [nim_rule0],
+    '"': [nim_triple_quote, nim_rule3],
+    "#": [nim_comment],
     "%": [nim_rule15],
     "&": [nim_rule16],
     "'": [nim_rule2, nim_rule4],
