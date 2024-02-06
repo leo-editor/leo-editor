@@ -24,10 +24,7 @@ classifiers = [
 ]
 #@-<< define classifiers >>
 version = '6.7.7.1'  # Dashes are not allowed.
-description = (
-    'An IDE, PIM and Outliner\n'
-    'Distributed only at GitHub: https://github.com/leo-editor/leo-editor/releases'
-)
+description = 'An IDE, PIM and Outliner. Distributed only at GitHub: https://github.com/leo-editor/leo-editor/releases'
 setuptools.setup(
     name='leo',
     version=version,
@@ -35,7 +32,6 @@ setuptools.setup(
     author_email='edreamleo@gmail.com',
     url='https://leo-editor.github.io/leo-editor',
     license='MIT License',
-    project_url='https://leo-editor.github.io/leo-editor/',
     description=description,  # becomes 'Summary' in pkg-info
     long_description=description,
     long_description_content_type="text/plain",
