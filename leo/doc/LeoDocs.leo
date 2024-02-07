@@ -458,6 +458,23 @@
 </v>
 <v t="ekr.20101115152915.4937"><vh>Backup of wikipedia entry</vh></v>
 <v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
+<v t="ekr.20240206191839.1"><vh>Old installation notes</vh>
+<v t="tbrown.20140412113009.50227"><vh>Snapshots</vh></v>
+<v t="maphew.20200616225715.1"><vh>Standalone Leo.exe</vh></v>
+<v t="ekr.20180130033527.1"><vh>Installing Leo with pip</vh>
+<v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
+</v>
+<v t="ekr.20180126191031.1"><vh>Installing everything with Anaconda or Miniconda</vh></v>
+<v t="ekr.20101125062332.5090"><vh>Installing packages</vh></v>
+<v t="ekr.20170206073848.1"><vh>Installing Leo itself</vh>
+<v t="ekr.20170206073747.2"><vh>Installing Leo on Windows</vh>
+<v t="ekr.20170206073747.4"><vh>Installing from sources (Windows)</vh></v>
+<v t="ekr.20170206073747.5"><vh>Creating Windows file associations</vh></v>
+</v>
+<v t="mhw.20191010004650.1"><vh>Installing Leo from sources (all platforms)</vh></v>
+<v t="ekr.20170206073747.9"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20230121110345.1"><vh>Script files</vh>
 <v t="ekr.20230121110340.1"><vh>@clean ../scripts/make-clean.cmd</vh></v>
@@ -654,26 +671,10 @@
 </v>
 <v t="ekr.20131008041326.16092"><vh>Installing &amp; running Leo</vh>
 <v t="ekr.20131015104133.16766"><vh>@rst html/getting-started.html</vh></v>
-<v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh>
-<v t="tbrown.20140412113009.50227"><vh>Snapshots</vh></v>
-<v t="maphew.20200616225715.1"><vh>@ignore Standalone Leo.exe</vh></v>
-</v>
+<v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh></v>
 <v t="ekr.20131008041326.16094"><vh>@rst html/installing.html</vh>
 <v t="ekr.20141105052052.4"><vh>Dependencies</vh></v>
-<v t="ekr.20180130033527.1"><vh>Installing Leo with pip</vh>
-<v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
-</v>
-<v t="ekr.20101125062332.5090"><vh>Installing packages</vh></v>
-<v t="ekr.20170206073848.1"><vh>Installing Leo itself</vh>
-<v t="ekr.20170206073747.2"><vh>Installing Leo on Windows</vh>
-<v t="ekr.20170206073747.4"><vh>Installing from sources (Windows)</vh></v>
-<v t="ekr.20170206073747.5"><vh>Creating Windows file associations</vh></v>
-</v>
-<v t="mhw.20191010004650.1"><vh>Installing Leo from sources (all platforms)</vh></v>
 <v t="ekr.20170206073747.10"><vh>Installing Leo with git</vh></v>
-<v t="ekr.20170206073747.9"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
-</v>
-<v t="ekr.20180126191031.1"><vh>Installing everything with Anaconda or Miniconda</vh></v>
 </v>
 <v t="ekr.20131008041326.16140"><vh>@rst html/running.html</vh>
 <v t="ekr.20131008041326.16151"><vh>Running Leo</vh>
@@ -2522,6 +2523,8 @@
 <v t="ekr.20180125034510.1"></v>
 <v t="ekr.20240118094134.1"></v>
 <v t="ekr.20240118094108.1"></v>
+<v t="ekr.20240206191839.1"></v>
+<v t="ekr.20131008041326.16092"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -11655,23 +11658,16 @@ creates a permanent reference to the window so the window won't be garbage colle
 
 </t>
 <t tx="ekr.20111127144911.5544">.. _`Installing Leo with git`:  installing.html#installing-leo-with-git
-.. _`Installing Leo with pip`:  installing.html#installing-leo-with-pip
-.. _`Nightly snapshot`:         download.html#snapshots       
-.. _`Python wheel`:             https://pythonwheels.com/
 .. _`git`:                      https://git-scm.com/
-.. .. _`Standalone leo.exe`:       download.html#standalone
 
-###############
-Downloading Leo
-###############
+########################
+Downloading Leo with Git
+########################
 
-There are two ways to download Leo:
+You must Leo using `git`_, see `Installing Leo with git`_.
+Git gives you the latest, thoroughly tested code with nothing missing.
 
-- ``pip install leo`` will automatically download *and* install Leo, including all Leo's dependencies, less a couple of non-essential things. See `Installing Leo with pip`_.
-
-- Recommended: install Leo using `git`_, see `Installing Leo with git`_. Git gives you the latest, thoroughly tested code with nothing missing.
-
-- If you prefer a new development version and don't want to use git download a `Nightly snapshot`_.</t>
+</t>
 <t tx="ekr.20120130101219.10182">def computeBindingLetter(self, kind):
     # lm = self
     if not kind:
@@ -15593,12 +15589,6 @@ You might call this a FAQ for scripts...
 Downloading, Installing &amp; Running Leo
 #####################################
 
-.. _`Python`:                   https://www.python.org/
-.. _`Leo's dependencies`:       installing.html#dependencies
-.. _`Installing Leo using pip`:    installing.html#installing-leo-with-pip
-
-**Overview**: Leo is a `Python`_ program.  You must install Python itself, `Leo's dependencies`_, and then download and install Leo itself.
-
 .. toctree::
    :maxdepth: 4
 
@@ -17096,8 +17086,7 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 .. _`Markdown`:   http://daringfireball.net/projects/markdown/syntax
 .. _`Python`:     https://www.python.org/
 .. _`PyEnchant`:  http://pyenchant.github.io/pyenchant/install.html
-.. _`Missing files when installing Leo from PyPI using "pip install leo"`: https://github.com/leo-editor/leo-editor/issues/603
-.. _`PythonTidy`: https://pypi.python.org/pypi/PythonTidy/
+.. .. _`PythonTidy`: https://pypi.python.org/pypi/PythonTidy/
 .. _`PyQt`:       http://www.riverbankcomputing.co.uk/software/pyqt/intro
 .. _`PyQt5`:      http://www.riverbankcomputing.com/software/pyqt/download5
 .. _`Sphinx`:     http://www.sphinx-doc.org/en/stable/
@@ -17114,7 +17103,10 @@ The following packages are optional, but recommended:
 * `Sphinx`_: required to regenerate Leo's documentation.
 * `PyEnchant`_: required for spell checking.
 
-Plugins may require other packages.  For example, viewrendered requires `Markdown`_ if one wishes to use markdown rendering, but it is optional. rss.py will not function without `feedparser`_. Etc.
+Plugins may require other packages:
+
+- viewrendered will use `Markdown`_ if available.
+- rss.py requires `feedparser`_.
 </t>
 <t tx="ekr.20141105055521.5">The ``livecode-show`` commands shows the live code evaluation pane. Hover on the buttons for helpful tool-tips.
 
@@ -32958,6 +32950,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 - `PR #3761`_: Improve leoserver.py to support LeoInteg.
 </t>
+<t tx="ekr.20240206191839.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
