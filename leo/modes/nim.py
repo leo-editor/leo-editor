@@ -693,7 +693,8 @@ def nim_multi_line_comment(colorer, s, i):
         kind="comment2", begin="#[", end="]#", nested=True)
 #@+node:ekr.20240206033640.1: *3* nim_number (literal2)
 # Only an approximation.
-number_regex = re.compile(r'([0-9]+)(b|B|d|D|f|F|i|I|u|U|x|X|32|64)*')
+# Underscores are allowed in numbers.
+number_regex = re.compile(r'([0-9_]+)(b|B|d|D|f|F|i|I|u|U|x|X|32|64)*')
 
 def nim_number(colorer, s, i):
     return colorer.match_compiled_regexp(s, i, 'literal2', regexp=number_regex)
