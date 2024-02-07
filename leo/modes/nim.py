@@ -108,6 +108,11 @@ nim_main_keywords_dict = {
     #@+<< Nim type names >>
     #@+node:ekr.20240203094444.1: ** << Nim type names >> (keyword1)
     # Type names should be colorized like reserved words.
+
+    # Defined in std/unicode.
+    "Rune": "keyword1",
+
+    # Defined in system module...
     "any": "keyword1",
     "array": "keyword1",
     "auto": "keyword1",
@@ -152,8 +157,8 @@ nim_main_keywords_dict = {
     "true": "keyword2",
     #@-<< Nim constants >>
     # https://nim-lang.org/docs/system.html
-    #@+<< Nim upper-case constants defined in system module >>
-    #@+node:ekr.20240203194744.1: ** << Nim upper-case constants defined in system module >>
+    #@+<< Nim upper-case constants >>
+    #@+node:ekr.20240203194744.1: ** << Nim upper-case constants >>
     # Upper-case names are constants.
 
     "ATOMIC_ACQUIRE": "keyword3",
@@ -307,11 +312,13 @@ nim_main_keywords_dict = {
     "WideCString": "keyword3",
     "WideCStringObj": "keyword3",
     "WriteIOEffect": "keyword3",
-    #@-<< Nim upper-case constants defined in system module >>
-    #@+<< Nim lower-case functions defined in system module >>
-    #@+node:ekr.20240203080936.1: ** << Nim lower-case functions defined in system module >>
-    # These are procs.
+    #@-<< Nim upper-case constants >>
+    #@+<< Nim lower-case functions >>
+    #@+node:ekr.20240203080936.1: ** << Nim lower-case functions >>
+    # From the unitcode module.
+    "runes": "keyword4",
 
+    # From the system module...
     "abs": "keyword4",
     "add": "keyword4",
     "addEscapedChar": "keyword4",
@@ -628,7 +635,7 @@ nim_main_keywords_dict = {
 
     "zeroDefault": "keyword4",
     "zeroMem": "keyword4",
-    #@-<< Nim lower-case functions defined in system module >>
+    #@-<< Nim lower-case functions >>
 }
 
 # Dictionary of keywords dictionaries for nim mode.
