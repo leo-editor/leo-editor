@@ -639,6 +639,40 @@ keywordsDictDict = {
 #@+<< Nim rules >>
 #@+node:ekr.20240202211600.4: ** << Nim rules >>
 #@+others
+#@+node:ekr.20240207062639.1: *3* nim_character_literal
+def nim_character_literal(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
+#@+node:ekr.20240207063117.1: *3* nim_custom_numeric_literal (keyword1)
+lower_suffixes = [
+    z for z in ('b,e,f,o,x,i,i8,i16,i32,i64,u,u8,u16,u32,u64').split(',')
+]
+suffixes = tuple(lower_suffixes + [z.upper() for z in lower_suffixes])
+word_pattern = re.compile(r'\w+')
+
+def nim_custom_numeric_literal(colorer, s, i):
+
+    # Find the suffix.
+    assert s[i : i + 1] == "'", repr(s)
+    head = s[:i]
+    for suffix in suffixes:
+        if head.endswith(suffix):
+            break
+    else:
+        return 0
+    m = word_pattern.match(s, i + 1)
+    if not m:
+        return 0
+
+    # Color the suffix.
+    colorer.colorRangeWithTag(s, i - len(suffix), i, tag='literal1')
+
+    # Color the single quote.
+    colorer.colorRangeWithTag(s, i, i + 1, tag='keyword1')
+
+    # Color the following word.
+    word = m.group(0)
+    colorer.colorRangeWithTag(s, i + 1, i + 1 + len(word), tag='literal1')
+    return 1 + len(word)
 #@+node:ekr.20240202211600.5: *3* nim_comment (comment1)
 def nim_comment(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="#")
@@ -663,7 +697,7 @@ def nim_op(colorer, s: str, i: int) -> int:
 #@+node:ekr.20240202211600.9: *3* nim_single_quote (keyword1)
 def nim_single_quote(colorer, s, i):
     # Nim single quotes are much like keywords!
-    return colorer.match_span(s, i, kind="keyword1", begin="'", end="'")
+    return colorer.match_seq(s, i, kind="keyword1", seq="'")
 #@+node:ekr.20240202211600.8: *3* nim_string (literal1)
 def nim_string(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
@@ -681,10 +715,9 @@ def nim_unary(colorer, s, i):
 #@+node:ekr.20240202211600.29: ** << nim_rules_dict >>
 # Rules dict for nim_main ruleset.
 nim_rules_dict = {
-    # "!": [nim_rule6],
     '"': [nim_triple_quote, nim_string],
     "#": [nim_multi_line_comment, nim_comment],
-    "'": [nim_single_quote],
+    "'": [nim_custom_numeric_literal, nim_character_literal, nim_single_quote],
     ".": [nim_number, nim_op],
     "+": [nim_unary],
     "-": [nim_unary],
@@ -751,6 +784,8 @@ nim_rules_dict = {
     "x": [nim_keyword],
     "y": [nim_keyword],
     "z": [nim_keyword],
+    # The following are all do-notings.
+    "!": [nim_op],
     "%": [nim_op],
     "&": [nim_op],
     "(": [nim_op],
