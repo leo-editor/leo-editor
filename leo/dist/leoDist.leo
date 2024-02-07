@@ -29,29 +29,16 @@
 </v>
 </v>
 <v t="ekr.20161024113526.1"><vh>Notes</vh>
-<v t="ekr.20161024113542.1"><vh>#106 Homebrew (MacOS) notes</vh>
-<v t="ekr.20161025114444.1"><vh>The latest formula</vh></v>
-<v t="ekr.20161025114433.1"><vh>Posts</vh>
-<v t="ekr.20161024113553.1"><vh>Post 1: Winn Dixie</vh></v>
-<v t="ekr.20161024113810.1"><vh>Post 2: ludwigschwardt</vh></v>
-<v t="ekr.20161024114150.1"><vh>Post 3: me April 15, 2015</vh></v>
-<v t="ekr.20161025091538.1"><vh>Post 4: me April 24, 2015</vh></v>
-<v t="ekr.20161025091621.1"><vh>Post 5: ludwidswardt April 24, 2015</vh></v>
-<v t="ekr.20161024115114.1"><vh>Post 4: me May 1, 2015</vh></v>
-</v>
-<v t="ekr.20161024115257.1"><vh>How to compute the sha256 hash</vh></v>
-</v>
-<v t="EKR.20040519091259.1"><vh>Download statistics from SourceForge</vh></v>
-<v t="maphew.20180128212042.1"><vh>How to build Leo's PyPi Package</vh>
+<v t="ekr.20240206185544.1"><vh>Obsolete Notes</vh>
+<v t="maphew.20180128212042.1"><vh>Obsolete: How to build Leo's PyPi Package</vh>
 <v t="maphew.20180128212042.3"><vh>Create an PyPi.org account</vh></v>
 <v t="maphew.20180128212042.2"><vh>Build requirements</vh></v>
 <v t="maphew.20180128212042.4"><vh>Build &amp; publish a release</vh></v>
 <v t="maphew.20180128213245.1"><vh>Not recommended: Test with TestPyPI</vh></v>
 <v t="maphew.20180128212042.5"><vh>Caveats</vh></v>
 </v>
-<v t="maphew.20200506223713.1"><vh>How to build Leo exe (draft)</vh></v>
-<v t="ekr.20141118074110.3"><vh>How to Install Leo on Linux</vh></v>
-<v t="ekr.20101027160251.1500"><vh>NSIS Notes</vh>
+<v t="maphew.20200506223713.1"><vh>Obsolete: How to build Leo exe (draft)</vh></v>
+<v t="ekr.20101027160251.1500"><vh>Obsolete: NSIS Notes</vh>
 <v t="ekr.20101027135430.1492"><vh>@url nsi new ui readme</vh></v>
 <v t="ekr.20101027135430.1493"><vh>@url about pages</vh></v>
 <v t="ekr.20101027160251.1497"><vh>@url nsDialogs</vh></v>
@@ -92,6 +79,20 @@
 <v t="ekr.20180301115911.1"><vh>Create python wheel</vh></v>
 <v t="ekr.20150326055410.1"><vh>Update versions</vh></v>
 </v>
+<v t="ekr.20210815103531.1"><vh>Obsolete: Create pypi distro</vh></v>
+<v t="ekr.20161024113542.1"><vh>#106 Homebrew (MacOS) notes</vh>
+<v t="ekr.20161025114444.1"><vh>The latest formula</vh></v>
+<v t="ekr.20161025114433.1"><vh>Posts</vh>
+<v t="ekr.20161024113553.1"><vh>Post 1: Winn Dixie</vh></v>
+<v t="ekr.20161024113810.1"><vh>Post 2: ludwigschwardt</vh></v>
+<v t="ekr.20161024114150.1"><vh>Post 3: me April 15, 2015</vh></v>
+<v t="ekr.20161025091538.1"><vh>Post 4: me April 24, 2015</vh></v>
+<v t="ekr.20161025091621.1"><vh>Post 5: ludwidswardt April 24, 2015</vh></v>
+<v t="ekr.20161024115114.1"><vh>Post 4: me May 1, 2015</vh></v>
+</v>
+<v t="ekr.20161024115257.1"><vh>How to compute the sha256 hash</vh></v>
+</v>
+</v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -102,9 +103,6 @@
 <v t="ekr.20040630210818"><vh>July 2004</vh></v>
 <v t="EKR.20040519091259.3"><vh>November 2003</vh></v>
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
-</v>
-<v t="matt.20181004031246.1"><vh>Travis Continual Integration</vh>
-<v t="maphew.20181010205346.1"><vh>Troubleshooting</vh></v>
 </v>
 </v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
@@ -145,7 +143,6 @@
 <v t="ekr.20190802115604.1"><vh>After-merge testing in master</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
-<v t="ekr.20210815103531.1"><vh>Create pypi distro</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel</vh></v>
 <v t="ekr.20230301084201.1"><vh>Update this checklist</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
@@ -249,29 +246,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 @nowrap
 @language rest
 </t>
-<t tx="EKR.20040519091259.1">5.1:        setup: 1,114    zip: 2,912
-5.0:        setup: 552      zip: 1,617
-4.4.5       setup: 547   zip: 379  2007-12-11
-4.4.4       setup: 856  zip: 539  2007-11-02
-4.4.3.1     setup: 1092 zip: 743  2007-7-03
-4.4.3       setup: 363  zip: 282  2007-6-26
-4.4.2.1     setup: 2847 zip: 2044 2006-10-19
-4.4.1.1     setup: 1041 zip: 813  2006-9-3
-4.4         setup: 1318 zip: 1075 2006-5-11
-3.3.3       setup: 1503 zip: 1145 2005-9-19
-4.3.2 final setup: 409  zip: 222
-4.3.1 final setup: 2168 zip: 1781
-4.3 final   setup: 942  zip: 686
-4.2.1 final setup: 413  zip: 490
-4.2-final   setup: 1828 zip: 1508
-4.2b3       setup: 563, zip: 338
-4.1rc3      setup: 870  zip: 630
-4.1 b5      setup: 195, zip: 128
-4.0.4       setup: 340, zip: 385
-4.0                     zip: 382
-3.12        setup: 953  zip: 592
-3.11                    zip: 102
-3.10                    zip: 1193</t>
 <t tx="EKR.20040519091259.2"></t>
 <t tx="EKR.20040519091259.3">I like Leo more the more I use it...It's an unexpected pleasure to
 see my (linearly written) code outlined in Leo. I can't wait to use
@@ -406,7 +380,6 @@ leo/test/unittest/.leo_shadow/  export-ignore
 </t>
 <t tx="ekr.20141117135127.2"></t>
 <t tx="ekr.20141117135127.3"></t>
-<t tx="ekr.20141118074110.3">https://groups.google.com/forum/#!topic/leo-editor/VvnDYjV4aIk</t>
 <t tx="ekr.20150326055410.1">@language rest
 
 1. Search for ##version
@@ -1605,6 +1578,7 @@ python -m pip uninstall leo
 <t tx="ekr.20230301084201.1">- Change 6.7.8 (the old version) to 6.7.9.
   Be careful about the new version in this node!
 </t>
+<t tx="ekr.20240206185544.1"></t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
@@ -1729,35 +1703,6 @@ That said, here's my recipe for packaging a new release for Test PyPi:
 
 Remove broken releases (still can't re-use identical version numbers and file names though):
 https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
-</t>
-<t tx="maphew.20181010205346.1">**Pushed a commit but nothing is happening in the dashboard?**
-Check the _requests_ log: https://travis-ci.org/leo-editor/leo-editor/requests
-The link is hidden under [more options] at right.
-
-**"Could not parse .travis.yml" requests error**
-Debug with `travis lint` local client.
-
-**Clarification on using `travis encrypt` for passwords**
-https://github.com/travis-ci/travis-ci/issues/10051
-
-**fatal: No names found, cannot describe anything**
-The git clone is too shallow and `git describe --tags` doesn't include a tag. Increase the depth in `.travis.yml`:
-
-    git:
-      depth: 100
-
-Or from command line:
-
-    git fetch --depth=100
-
-**Build only dependencies don't get installed**
-Signified by error like `('\n', ImportError('No module named
-semantic_version',))` in Travis report log even though module is listed in
-`pyproject.toml`. Is because travis pip version in Oct 2018 is v9 and v10+ is
-needed to leverage PEP-518. Fix: upgrade pip in `.travis.yml`
-
-    python -m pip install --upgrade pip
-
 </t>
 <t tx="maphew.20190206032329.1">[build-system]
 requires = ["setuptools&gt;=38.6.0",
@@ -2061,24 +2006,6 @@ jobs:
       with:
         name: leo-windows-exe
         path: dist/*.zip
-</t>
-<t tx="matt.20181004031246.1">@language md
-
-_Initiating issue: https://github.com/leo-editor/leo-editor/issues/672_
-
-Everything is controlled by `.travis.yml`. With this file present every commit
-triggers a travis build and test. Build status and history can be viewed at
-https://travis-ci.org/leo-editor/leo-editor
-
-As currently configured if the commit is a tag AND the branch is `master` travis
-will also attempt to deploy a release automatically to PyPi.org.
-- Deploying to PyPi, https://docs.travis-ci.com/user/deployment/pypi/
-
-Command line client: https://github.com/travis-ci/travis.rb
-Not essential, but useful. Note: using `travis` command line client in a way
-that updates yml file will delete any comments within it. (e.g. `travis encrypt
-...`)
-
 </t>
 <t tx="matt.20190205105334.1">@language yaml
 language: python
