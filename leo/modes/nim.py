@@ -6,6 +6,8 @@
 
 import re
 import sys
+from leo.core import leoGlobals as g
+assert g
 
 v1, v2, junk1, junk2, junk3 = sys.version_info
 
@@ -649,7 +651,10 @@ keywordsDictDict = {
 #@+node:ekr.20240207062639.1: *3* nim_character_literal
 def nim_character_literal(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
-#@+node:ekr.20240207063117.1: *3* nim_custom_numeric_literal (keyword1)
+#@+node:ekr.20240202211600.5: *3* nim_comment (comment1)
+def nim_comment(colorer, s, i):
+    return colorer.match_eol_span(s, i, kind="comment1", seq="#")
+#@+node:ekr.20240208152632.8: *3* nim_custom_numeric_literal (keyword1)
 # Note: The suffix comes *before* the single quote.
 lower_suffixes = [
     z for z in ('b,e,f,o,x,i,i8,i16,i32,i64,u,u8,u16,u32,u64').split(',')
@@ -659,6 +664,13 @@ word_pattern = re.compile(r'\b(\w+)')
 
 def nim_custom_numeric_literal(colorer, s, i):
 
+    def fail() -> int:
+        # Color a prefixed "'" as a keyword.
+        if i > 0 and s[i - 1] in colorer.word_chars:
+            colorer.colorRangeWithTag(s, i, i + 1, tag='keyword1')
+            return 1
+        return 0
+
     # Find the suffix.
     assert s[i : i + 1] == "'", repr(s)
     head = s[:i]
@@ -666,18 +678,18 @@ def nim_custom_numeric_literal(colorer, s, i):
         if head.endswith(suffix):
             break
     else:
-        return 0
+        return fail()  # pragma: no cover
 
     # Make sure the suffix is a word.
     j = i - len(suffix)
     is_word = j == 0 or j > 0 and s[j - 1] not in colorer.word_chars
     if not is_word:
-        return 0
+        return fail()  # pragma: no cover
 
     # Find the preceding word.
     m = word_pattern.match(s, i + 1)
     if not m:
-        return 0
+        return fail()  # pragma: no cover
 
     # Color the suffix.
     colorer.colorRangeWithTag(s, i - len(suffix), i, tag='literal1')
@@ -689,9 +701,6 @@ def nim_custom_numeric_literal(colorer, s, i):
     word = m.group(0)
     colorer.colorRangeWithTag(s, i + 1, i + 1 + len(word), tag='literal1')
     return 1 + len(word)
-#@+node:ekr.20240202211600.5: *3* nim_comment (comment1)
-def nim_comment(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="#")
 #@+node:ekr.20240202211600.26: *3* nim_keyword
 def nim_keyword(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -711,10 +720,6 @@ def nim_number(colorer, s, i):
 def nim_op(colorer, s: str, i: int) -> int:
     # Don't color ordinary ops.
     return 0
-#@+node:ekr.20240202211600.9: *3* nim_single_quote (keyword1)
-def nim_single_quote(colorer, s, i):
-    # Nim single quotes are much like keywords!
-    return colorer.match_seq(s, i, kind="keyword1", seq="'")
 #@+node:ekr.20240202211600.8: *3* nim_string (literal1)
 def nim_string(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
@@ -734,7 +739,7 @@ def nim_unary(colorer, s, i):
 nim_rules_dict = {
     '"': [nim_triple_quote, nim_string],
     "#": [nim_multi_line_comment, nim_comment],
-    "'": [nim_custom_numeric_literal, nim_character_literal, nim_single_quote],
+    "'": [nim_custom_numeric_literal, nim_character_literal],
     ".": [nim_number, nim_op],
     "+": [nim_unary],
     "-": [nim_unary],

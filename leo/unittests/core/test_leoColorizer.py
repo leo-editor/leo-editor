@@ -637,6 +637,7 @@ class TestColorizer(LeoUnitTest):
             ]#
             
             # Custom numeric literals.
+            var x = 5'u4
             u'abd: Natural = 2u32
             s1: string = 'Félix'
             c = 'c'
