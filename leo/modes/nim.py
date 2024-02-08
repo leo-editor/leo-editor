@@ -672,10 +672,10 @@ def nim_custom_numeric_literal(colorer, s, i):
 
     # Make sure the suffix is a word.
     j = i - len(suffix)
-    is_word = j == 0 or j > 0 and not s[j-1].isalnum()
+    is_word = j == 0 or j > 0 and not s[j - 1].isalnum()
     if not is_word:
         return 0
-    
+
     # Find the preceding word.
     m = word_pattern.match(s, i + 1)
     if not m:
