@@ -3,9 +3,11 @@
 """Tests of leoColorizer.py"""
 
 from leo.core import leoGlobals as g
-from leo.core.leoTest2 import LeoUnitTest
+from leo.core import leoColorizer
 from leo.core.leoQt import Qt
-import leo.core.leoColorizer as leoColorizer
+from leo.core.leoTest2 import LeoUnitTest
+
+assert g
 
 #@+others
 #@+node:ekr.20210905151702.2: ** class TestColorizer(LeoUnitTest)
@@ -16,8 +18,21 @@ class TestColorizer(LeoUnitTest):
     def color(self, language_name, text):
         """Run the test by colorizing a node with the given text."""
         c = self.c
-        c.p.b = text.replace('> >', '>>').replace('< <', '<<')
-        c.recolor_now()
+        p = c.p
+        text = text.replace('> >', '>>').replace('< <', '<<')
+        p.b = f"@language {language_name}\n{text}"
+
+        # Instatiate the colorizer and init it.
+        x = leoColorizer.JEditColorizer(c, None)
+        x.language = language_name
+        x.enabled = True
+        x.init()
+        x.init_all_state(p.v)
+        n = x.initBlock0()
+
+        # Colorize all the lines!
+        for s in g.splitLines(text):
+            x.mainLoop(n, s)
     #@+node:ekr.20210905170507.2: *3* TestColorizer.test__comment_after_language_plain
     def test__comment_after_language_plain(self):
         text = self.prep(
@@ -648,7 +663,7 @@ class TestColorizer(LeoUnitTest):
             import exceptions  # Imported by system module.
             import Exception  # Defined in system module.
         """)
-        self.color('lisp', text)
+        self.color('nim', text)
     #@+node:ekr.20210905170507.20: *3* TestColorizer.test_colorizer_objective_c
     def test_colorizer_objective_c(self):
         text = self.prep(

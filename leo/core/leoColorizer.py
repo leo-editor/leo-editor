@@ -1255,6 +1255,7 @@ class JEditColorizer(BaseColorizer):
             progress = i
             functions = self.rulesDict.get(s[i], [])
             for f in functions:
+                # g.trace(f"n: {n:<2} i: {i:<3} {f.__name__:30} {s.rstrip()}")
                 n = f(self, s, i)
                 if n is None:
                     g.trace('Can not happen: n is None', repr(f))
