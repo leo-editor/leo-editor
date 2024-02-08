@@ -650,11 +650,14 @@ keywordsDictDict = {
 def nim_character_literal(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 #@+node:ekr.20240207063117.1: *3* nim_custom_numeric_literal (keyword1)
+# Note: The suffix comes *before* the single quote.
 lower_suffixes = [
     z for z in ('b,e,f,o,x,i,i8,i16,i32,i64,u,u8,u16,u32,u64').split(',')
 ]
 suffixes = tuple(lower_suffixes + [z.upper() for z in lower_suffixes])
-word_pattern = re.compile(r'\w+')
+word_pattern = re.compile(r'\b(\w+)')
+
+### Try regex again?
 
 def nim_custom_numeric_literal(colorer, s, i):
 
@@ -666,6 +669,14 @@ def nim_custom_numeric_literal(colorer, s, i):
             break
     else:
         return 0
+
+    # Make sure the suffix is a word.
+    j = i - len(suffix)
+    is_word = j == 0 or j > 0 and not s[j-1].isalnum()
+    if not is_word:
+        return 0
+    
+    # Find the preceding word.
     m = word_pattern.match(s, i + 1)
     if not m:
         return 0
