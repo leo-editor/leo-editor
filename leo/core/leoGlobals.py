@@ -2260,10 +2260,10 @@ def objToString(
     if isinstance(obj, dict):
         if obj:
             result_list = ['{\n']
-            pad = max([len(key) for key in obj])
+            pad = max([len(str(key)) for key in obj])
             for key in sorted(obj):
-                pad_s = ' ' * max(0, pad - len(key))
-                result_list.append(f"  {pad_s}{key}: {obj.get(key)}\n")
+                pad_s = ' ' * max(0, pad - len(str(key)))
+                result_list.append(f"  {pad_s}{str(key)}: {obj.get(key)}\n")
             result_list.append('}')
             result = ''.join(result_list)
         else:
