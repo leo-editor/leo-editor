@@ -657,8 +657,6 @@ lower_suffixes = [
 suffixes = tuple(lower_suffixes + [z.upper() for z in lower_suffixes])
 word_pattern = re.compile(r'\b(\w+)')
 
-### Try regex again?
-
 def nim_custom_numeric_literal(colorer, s, i):
 
     # Find the suffix.
@@ -672,7 +670,7 @@ def nim_custom_numeric_literal(colorer, s, i):
 
     # Make sure the suffix is a word.
     j = i - len(suffix)
-    is_word = j == 0 or j > 0 and not s[j - 1].isalnum()
+    is_word = j == 0 or j > 0 and s[j - 1] not in colorer.word_chars
     if not is_word:
         return 0
 
