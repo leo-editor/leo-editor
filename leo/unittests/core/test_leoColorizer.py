@@ -620,10 +620,13 @@ class TestColorizer(LeoUnitTest):
                     Inner comment.
                 ]#
             ]#
-
+            
+            # Custom numeric literals.
+            u'abd: Natural = 2u32
+            s1: string = 'Félix'
+            c = 'c'
             a: any = none
             b: bool = false
-            s: string = "Single string"
             f1: float64 = 0.0d
             f2: float32 = -.0f32
             f3: float = 1f+1

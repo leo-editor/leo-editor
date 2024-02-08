@@ -730,7 +730,7 @@ class BaseColorizer:
             s2 = repr(s[i:j])
             if len(s2) > 20:
                 s2 = repr(s[i : i + 17 - 2] + '...')
-            delegate_s = f"{self.delegate_name}:" if self.delegate_name else ''
+            delegate_s = f":{self.delegate_name}:" if self.delegate_name else ''
             font_s = id(font) if font else 'None'
             matcher_name = g.caller(3)
             print(
