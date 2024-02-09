@@ -3,9 +3,11 @@
 """Tests of leoColorizer.py"""
 
 from leo.core import leoGlobals as g
-from leo.core.leoTest2 import LeoUnitTest
+from leo.core import leoColorizer
 from leo.core.leoQt import Qt
-import leo.core.leoColorizer as leoColorizer
+from leo.core.leoTest2 import LeoUnitTest
+
+assert g
 
 #@+others
 #@+node:ekr.20210905151702.2: ** class TestColorizer(LeoUnitTest)
@@ -16,8 +18,21 @@ class TestColorizer(LeoUnitTest):
     def color(self, language_name, text):
         """Run the test by colorizing a node with the given text."""
         c = self.c
-        c.p.b = text.replace('> >', '>>').replace('< <', '<<')
-        c.recolor_now()
+        p = c.p
+        text = text.replace('> >', '>>').replace('< <', '<<')
+        p.b = f"@language {language_name}\n{text}"
+
+        # Instatiate the colorizer and init it.
+        x = leoColorizer.JEditColorizer(c, None)
+        x.language = language_name
+        x.enabled = True
+        x.init()
+        x.init_all_state(p.v)
+        n = x.initBlock0()
+
+        # Colorize all the lines!
+        for s in g.splitLines(text):
+            x.mainLoop(n, s)
     #@+node:ekr.20210905170507.2: *3* TestColorizer.test__comment_after_language_plain
     def test__comment_after_language_plain(self):
         text = self.prep(
@@ -611,6 +626,45 @@ class TestColorizer(LeoUnitTest):
             when while
         """)
         self.color('lisp', text)
+    #@+node:ekr.20240206051426.1: *3* TestColorizer.test_colorizer_nim
+    def test_colorizer_nim(self):
+        text = self.prep(
+        """
+            #[ A multi-line comment.
+                #[
+                    Inner comment.
+                ]#
+            ]#
+            
+            # Custom numeric literals.
+            var x = 5'u4
+            u'abd: Natural = 2u32
+            s1: string = 'Félix'
+            c = 'c'
+            a: any = none
+            b: bool = false
+            f1: float64 = 0.0d
+            f2: float32 = -.0f32
+            f3: float = 1f+1
+
+            # GitHub colors all other constants blue, including system constants:
+            42
+            3.5
+            AllocStats
+            DivByZeroError
+            BiggestUInt
+            Slice
+            SomeFloat
+
+            # GitHub colors system functions purple:
+            echo "Hi"
+            alloc()
+
+            # GitHub does not color modules that "system" imports.
+            import exceptions  # Imported by system module.
+            import Exception  # Defined in system module.
+        """)
+        self.color('nim', text)
     #@+node:ekr.20210905170507.20: *3* TestColorizer.test_colorizer_objective_c
     def test_colorizer_objective_c(self):
         text = self.prep(

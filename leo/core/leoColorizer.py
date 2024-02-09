@@ -730,7 +730,7 @@ class BaseColorizer:
             s2 = repr(s[i:j])
             if len(s2) > 20:
                 s2 = repr(s[i : i + 17 - 2] + '...')
-            delegate_s = f"{self.delegate_name}:" if self.delegate_name else ''
+            delegate_s = f":{self.delegate_name}:" if self.delegate_name else ''
             font_s = id(font) if font else 'None'
             matcher_name = g.caller(3)
             print(
@@ -885,6 +885,8 @@ class JEditColorizer(BaseColorizer):
         self.after_doc_language: str = None
         self.initialStateNumber = -1
         self.old_v: VNode = None
+        self.nested = False  # True: allow nested comments, etc.
+        self.nested_level = 0  # Nesting level if self.nested is True.
         self.nextState = 1  # Don't use 0.
         self.n2languageDict: dict[int, str] = {-1: c.target_language}
         self.prev: tuple[int, int, str] = None
@@ -1253,6 +1255,7 @@ class JEditColorizer(BaseColorizer):
             progress = i
             functions = self.rulesDict.get(s[i], [])
             for f in functions:
+                # g.trace(f"n: {n:<2} i: {i:<3} {f.__name__:30} {s.rstrip()}")
                 n = f(self, s, i)
                 if n is None:
                     g.trace('Can not happen: n is None', repr(f))
@@ -2215,11 +2218,14 @@ class JEditColorizer(BaseColorizer):
         at_word_start: bool = False,
         delegate: str = '',
         exclude_match: bool = False,
+        nested: bool = False,  # New in Leo 6.7.8.
         no_escape: bool = False,
         no_line_break: bool = False,
         no_word_break: bool = False,
     ) -> int:
         """Succeed if s[i:] starts with 'begin' and contains a following 'end'."""
+        self.nested = nested
+        self.nesting_level = -1
         if i >= len(s):
             return 0
         if at_line_start and i != 0 and s[i - 1] != '\n':
@@ -2234,7 +2240,7 @@ class JEditColorizer(BaseColorizer):
             return 0
 
         # We have matched the start of the span.
-        j = self.match_span_helper(s, i + len(begin), end,
+        j = self.match_span_helper(s, i + len(begin), begin, end,
             no_escape=no_escape,
             no_line_break=no_line_break,
             no_word_break=no_word_break,
@@ -2269,10 +2275,11 @@ class JEditColorizer(BaseColorizer):
             j = len(s) + 1
 
             def span(s: str) -> int:
-                # Note: bindings are frozen by this def.
+                # Freeze all bindings.
                 return self.restart_match_span(s, kind,
                     # Keyword args...
                     delegate=delegate,
+                    begin=begin,
                     end=end,
                     exclude_match=exclude_match,
                     no_escape=no_escape,
@@ -2294,7 +2301,8 @@ class JEditColorizer(BaseColorizer):
     def match_span_helper(self,
         s: str,
         i: int,
-        pattern: str,
+        begin_pattern: str,
+        end_pattern: str,
         *,
         no_escape: bool,
         no_line_break: bool,
@@ -2305,12 +2313,22 @@ class JEditColorizer(BaseColorizer):
         """
         esc = self.escape
         while 1:
-            j = s.find(pattern, i)
+            if self.nested:
+                j = s.find(begin_pattern, i)
+                if j > -1:
+                    self.nesting_level += 1
+                    i += len(begin_pattern)
+                    continue
+            j = s.find(end_pattern, i)
             if j == -1:
                 # Match to end of text if not found and no_line_break is False
                 if no_line_break:
                     return -1
                 return len(s) + 1
+            if self.nested:
+                self.nesting_level -= 1
+                if self.nesting_level > 0:
+                    return -1
             if no_word_break and j > 0 and s[j - 1] in self.word_chars:
                 return -1  # New in Leo 4.5.
             if no_line_break and '\n' in s[i:j]:
@@ -2338,6 +2356,7 @@ class JEditColorizer(BaseColorizer):
         s: str,
         kind: str,
         *,
+        begin: str,
         end: str,
         delegate: str = '',
         exclude_match: bool = False,
@@ -2347,7 +2366,7 @@ class JEditColorizer(BaseColorizer):
     ) -> int:
         """Remain in this state until 'end' is seen."""
         i = 0
-        j = self.match_span_helper(s, i, end,
+        j = self.match_span_helper(s, i, begin, end,
             # Must be keyword arguments.
             no_escape=no_escape,
             no_line_break=no_line_break,
@@ -2375,6 +2394,7 @@ class JEditColorizer(BaseColorizer):
                 return self.restart_match_span(s, kind,
                     # Must be keyword arguments.
                     delegate=delegate,
+                    begin=begin,
                     end=end,
                     exclude_match=exclude_match,
                     no_escape=no_escape,
@@ -2581,8 +2601,8 @@ class JEditColorizer(BaseColorizer):
             j = len(s) + 1
 
             def span(s: str) -> int:
-                # Note: bindings are frozen by this def.
-                return self.restart_match_span(s, kind, end=end)
+                # Freeze all bindings.
+                return self.restart_match_span(s, kind, begin=begin, end=end)
 
             self.setRestart(span,
                 # These must be keyword args.
