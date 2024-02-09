@@ -15,6 +15,7 @@ call python312 -m leo.core.leoTokens leo\core %*
 call python312 -m leo.core.leoTokens leo\commands %*
 call python312 -m leo.core.leoTokens leo\plugins\importers %*
 call python312 -m leo.core.leoTokens leo\plugins\writers %*
+call python312 -m leo.core.leoTokens leo\modes %*
 
 call python312 -m leo.core.leoTokens leo\unittests\core %*
 call python312 -m leo.core.leoTokens leo\unittests\commands %*
