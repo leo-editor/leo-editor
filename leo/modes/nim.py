@@ -654,7 +654,7 @@ def nim_character_literal(colorer, s, i):
 #@+node:ekr.20240202211600.5: *3* nim_comment (comment1)
 def nim_comment(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="#")
-#@+node:ekr.20240208152632.8: *3* nim_custom_numeric_literal (keyword1)
+#@+node:ekr.20240208152632.8: *3* nim_unusual_single_quote (keyword1)
 # Note: The suffix comes *before* the single quote.
 lower_suffixes = [
     z for z in ('b,e,f,o,x,i,i8,i16,i32,i64,u,u8,u16,u32,u64').split(',')
@@ -662,7 +662,12 @@ lower_suffixes = [
 suffixes = tuple(lower_suffixes + [z.upper() for z in lower_suffixes])
 word_pattern = re.compile(r'\b(\w+)')
 
-def nim_custom_numeric_literal(colorer, s, i):
+def nim_unusual_single_quote(colorer, s, i):
+    """
+    Handle unusual single quotes, including custom_numeric_literals.
+    
+    Color all such single quotes as a keyword1.
+    """
 
     def fail() -> int:
         # Color a prefixed "'" as a keyword.
@@ -739,7 +744,7 @@ def nim_unary(colorer, s, i):
 nim_rules_dict = {
     '"': [nim_triple_quote, nim_string],
     "#": [nim_multi_line_comment, nim_comment],
-    "'": [nim_custom_numeric_literal, nim_character_literal],
+    "'": [nim_unusual_single_quote, nim_character_literal],
     ".": [nim_number, nim_op],
     "+": [nim_unary],
     "-": [nim_unary],
