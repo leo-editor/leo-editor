@@ -13,6 +13,7 @@
 <v t="ekr.20210530065000.2"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530065000.3"><vh>@data exec-script-patterns</vh></v>
 <v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
+<v t="ekr.20240107154430.1"><vh>@int max-find-long-lines-length = 90</vh></v>
 <v t="ekr.20220904210247.1"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 <v t="ekr.20200212095937.1"><vh>Beautify command settings</vh>
@@ -26,11 +27,8 @@
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20231107062256.1"><vh>@button check-leoPy.leo</vh></v>
 <v t="ekr.20230508145335.1"><vh>@command slow-tests</vh></v>
-<v t="ekr.20220306092217.1"><vh>@command test-one</vh>
+<v t="ekr.20220306092217.1"><vh>@command test-one @key=F5</vh>
 <v t="ekr.20230511074046.1"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
-<v t="ekr.20230724084617.1"><vh>&lt;&lt; old tests &gt;&gt;</vh></v>
-<v t="ekr.20230926025203.1"><vh>&lt;&lt; importer tests &gt;&gt;</vh></v>
-<v t="ekr.20231203092737.1"><vh>&lt;&lt; recent tests &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20201013034659.1"><vh>@ignore Unused buttons and commands</vh>
 <v t="ekr.20211020091540.1"><vh>@@command b</vh></v>
@@ -162,7 +160,6 @@
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
-<v t="ekr.20231119151610.1"><vh>@@file leoBeautify.rs (in ekr-3658-python-to-rust)</vh></v>
 <v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20161026193447.1"><vh>@file leoBackground.py</vh></v>
 <v t="ekr.20150521115018.1"><vh>@file leoBeautify.py</vh></v>
@@ -196,6 +193,7 @@
 <v t="ekr.20120420054855.14241"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20180121041003.1"><vh>@file leoTips.py</vh></v>
+<v t="ekr.20240105140814.1"><vh>@file leoTokens.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
 <v t="ekr.20131109170017.16504"><vh>@file leoVim.py</vh></v>
 </v>
@@ -230,17 +228,18 @@
 </v>
 <v t="ekr.20180225010644.1"><vh>Other files</vh>
 <v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
-<v t="ekr.20220222130955.1"><vh>@edit ../../.mypy.ini</vh></v>
 <v t="ekr.20230702120645.1"><vh>@@edit ../../.dmypy.ini</vh></v>
+<v t="ekr.20240201175949.1"><vh>@@file ../../requirements.txt</vh></v>
+<v t="ekr.20220222130955.1"><vh>@edit ../../.mypy.ini</vh></v>
+<v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
+<v t="ekr.20240206163135.1"><vh>@edit ../../manifest.in</vh></v>
+<v t="ekr.20240206153029.1"><vh>@edit ../../readme.md</vh></v>
+<v t="ekr.20240206161713.1"><vh>@edit ../../setup.cfg </vh></v>
 <v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
 <v t="ekr.20181014073705.1"><vh>@file ../../run_pytest_tests.py</vh></v>
 <v t="ekr.20181009072707.1"><vh>@file ../../run_travis_unit_tests.py</vh></v>
-<v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
-<v t="ekr.20221129164042.1"><vh>@edit ../../setup.cfg</vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
-<v t="ekr.20221201080228.1"><vh>To be deleted ../../blacken_leo.py</vh></v>
-<v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
 </v>
 <v t="ekr.20230717210524.1"><vh>In leo/docs</vh>
 <v t="ekr.20230716154653.1"><vh>@edit ../../docs/load-leo.html</vh></v>
@@ -344,14 +343,9 @@
 <v t="ekr.20230419050031.1"><vh>@file ../modes/html.py</vh></v>
 <v t="ekr.20230419052236.1"><vh>@file ../modes/javascript.py</vh></v>
 <v t="ekr.20210223151922.1"><vh>@file ../modes/julia.py</vh></v>
+<v t="ekr.20240202211600.1"><vh>@file ../modes/nim.py</vh></v>
 <v t="ekr.20210219115553.109"><vh>@file ../modes/python.py</vh></v>
 <v t="ekr.20231103124615.1"><vh>@file ../modes/rust.py</vh></v>
-<v t="tbrown.20140801105909.47549"><vh>../plugins/importers/ctext.py</vh>
-<v t="tbrown.20140801105909.47551"><vh>class CText_Importer(Importer)</vh>
-<v t="ekr.20161130053507.1"><vh>&lt;&lt; ctext docstring &gt;&gt;</vh></v>
-<v t="tbrown.20140801105909.47553"><vh>ctext_i.import_from_string</vh></v>
-</v>
-</v>
 <v t="ekr.20231012163843.1"><vh>@file ../modes/scheme.py</vh></v>
 </v>
 </v>
@@ -655,18 +649,12 @@
 <v t="ekr.20230628105236.1"><vh>@clean ../scripts/ruff-leo.cmd</vh></v>
 <v t="ekr.20221201043917.1"><vh>@clean ../scripts/test-leo.cmd</vh></v>
 <v t="ekr.20221204071220.1"><vh>@clean ../scripts/test-one-leo.cmd</vh></v>
+<v t="ekr.20240119060724.1"><vh>@clean ../scripts/tbo.cmd</vh></v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
 <v t="ekr.20201129023817.1"><vh>@file leoTest2.py</vh></v>
 </v>
 <v t="ekr.20201202144529.1"><vh>leo/unittests</vh>
-<v t="ekr.20230506095312.1"><vh>@file ../unittests/test_design.py</vh></v>
-<v t="ekr.20210926044012.1"><vh>@file ../unittests/test_doctests.py</vh></v>
-<v t="ekr.20210910084607.1"><vh>@file ../unittests/test_gui.py</vh></v>
-<v t="ekr.20210904064440.2"><vh>@file ../unittests/test_importers.py</vh></v>
-<v t="ekr.20210907081548.1"><vh>@file ../unittests/test_plugins.py</vh></v>
-<v t="ekr.20210901140718.1"><vh>@file ../unittests/test_syntax.py</vh></v>
-<v t="ekr.20220812224747.1"><vh>@file ../unittests/test_writers.py</vh></v>
 <v t="ekr.20210912064148.1"><vh>in unittests/commands</vh>
 <v t="ekr.20210904022712.2"><vh>@file ../unittests/commands/test_checkerCommands.py</vh></v>
 <v t="ekr.20230710105542.1"><vh>@file ../unittests/commands/test_commanderFileCommands.py</vh></v>
@@ -700,8 +688,20 @@
 <v t="ekr.20210820203000.1"><vh>@file ../unittests/core/test_leoserver.py</vh></v>
 <v t="ekr.20210902092024.1"><vh>@file ../unittests/core/test_leoShadow.py</vh></v>
 <v t="ekr.20230722095455.1"><vh>@file ../unittests/core/test_leoTest2.py</vh></v>
+<v t="ekr.20240105151507.1"><vh>@file ../unittests/core/test_leoTokens.py</vh></v>
 <v t="ekr.20210906141410.1"><vh>@file ../unittests/core/test_leoUndo.py</vh></v>
 <v t="ekr.20210910072917.1"><vh>@file ../unittests/core/test_leoVim.py</vh></v>
+</v>
+<v t="ekr.20240204082420.1"><vh>in unittests/misc_tests</vh>
+<v t="ekr.20230506095312.1"><vh>@file ../unittests/misc_tests/test_design.py</vh></v>
+<v t="ekr.20210926044012.1"><vh>@file ../unittests/misc_tests/test_doctests.py</vh></v>
+<v t="ekr.20210901140718.1"><vh>@file ../unittests/misc_tests/test_syntax.py</vh></v>
+</v>
+<v t="ekr.20240204082924.1"><vh>in unittests/plugins</vh>
+<v t="ekr.20220812224747.1"><vh>@file ../unittests/plugins/test_writers.py</vh></v>
+<v t="ekr.20210907081548.1"><vh>@file ../unittests/plugins/test_plugins.py</vh></v>
+<v t="ekr.20210904064440.2"><vh>@file ../unittests/plugins/test_importers.py</vh></v>
+<v t="ekr.20210910084607.1"><vh>@file ../unittests/plugins/test_gui.py</vh></v>
 </v>
 </v>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
@@ -1210,9 +1210,10 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 @language python
 </t>
 <t tx="ekr.20150425145248.1">test-one
-python-to-rust
+ctrl-click-at-cursor
 execute-script
 
+# python-to-rust
 # goto-prev-history-node
 # goto-next-history-node
 # beautify-files
@@ -1552,32 +1553,6 @@ prefix_lines:
 
 [General Patterns]
 </t>
-<t tx="ekr.20161130053507.1">"""
-Read/Write simple text files with hierarchy embedded in headlines::
-
-    Leading text in root node of subtree
-
-    Etc. etc.
-
-    ### A level one node #####################################
-
-    This would be the text in this level one node.
-
-    And this.
-
-    ### Another level one node ###############################
-
-    Another one
-
-    #### A level 2 node ######################################
-
-    See what we did there - one more '#' - this is a subnode.
-
-Leading / trailing whitespace may not be preserved.  '-' and '/'
-are used in place of '#' for SQL and JavaScript.
-
-"""
-</t>
 <t tx="ekr.20170427112302.1">g.cls()
 import glob
 files = glob.glob(g.os_path_join(g.app.loadDir, '*.py'))
@@ -1606,14 +1581,12 @@ else:
 """Recursively import all python files in a directory and clean the result."""
 @tabwidth -4 # For a better match.
 g.cls()
-# dir_ = r'C:\Repos\codon\codon\app'
-dir_ = r'C:\Repos\ekr-mypy2\mypy'
+dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
 c.recursiveImport(
     dir_=dir_,
     kind = '@clean', # '@auto', '@clean', '@nosent','@file',
     recursive = True,
     safe_at_file = False,
-    # ['.codon', '.cpp', '.html', '.js', '.json', '.py', '.rs', '.svg', '.ts', '.tsx']
     theTypes = ['.py'],
     verbose = False,
 )
@@ -1930,8 +1903,8 @@ efc.GitDiffController(c).diff_two_branches(
 <t tx="ekr.20190402091335.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='master',  # Old
-    rev2='devel',   # New
+    rev1='ekr-3744-pr3-token-based-orange',  # Old
+    rev2='tbo-test',   # New
 )
 </t>
 <t tx="ekr.20190406154306.1">g.openWithFileName(r'C:\apps\pyzo\pyzo.leo')</t>
@@ -2818,18 +2791,18 @@ def do_sec(i, m, s):
 if c.isChanged():
     c.save()
 &lt;&lt; prefixes &gt;&gt;
-&lt;&lt; old tests &gt;&gt;
-&lt;&lt; importer tests &gt;&gt;
-&lt;&lt; recent tests &gt;&gt;
-commands = (
-    # 2023/12/15: Everything passes w/o warnings.
-    # f"{core}.test_leoAst",
-    # f"{core}.test_leoAst.Optional_TestFiles",
-    # f"{core}.test_leoAst.TestTOG",
-)
-verbose_flag = ''  # -v
-commands_s = f"python -m unittest {verbose_flag} {' '.join(commands)}"
-g.execute_shell_commands(commands_s)
+if 0:  # run.cmd runs Nim tests.
+    g.execute_shell_commands('run')
+else:  # Leo unit test.
+    commands = (
+        # All commands must start with .test_.
+        
+        # f"{core}.test_leoUndo",
+        f"{core}.test_leoColorizer",
+    )
+    verbose_flag = ''  # -v
+    commands_s = f"python -m unittest {verbose_flag} {' '.join(commands)}"
+    g.execute_shell_commands(commands_s)
 </t>
 <t tx="ekr.20220318085657.1">"""
 Find and mark all nodes containing underindented trailing comments in c's outline.
@@ -3308,28 +3281,6 @@ call reindent-leo.cmd
 echo test-leo
 py -m unittest %*
 </t>
-<t tx="ekr.20221201080228.1">@language python
-#!/usr/bin/env python3
-
-# from leo.core import leoGlobals as g
-
-tag = 'blacken_leo.py:'
-
-try:
-    import black
-    print('blacken_leo.py: black', black)
-except ImportError:
-    print('blacken_leo.py: can not import black')
-    
-print(tag, '*** Call black.main ***')
-black.main()
-    
-# try:
-    # from black import __main__
-    # print(tag, __main__)
-# except Exception as e:
-    # print(tag, e)
-</t>
 <t tx="ekr.20221204070905.1"></t>
 <t tx="ekr.20221204071056.1">@language batch
 @echo off
@@ -3363,18 +3314,13 @@ call py -m unittest leo.unittests.core.test_leoGlobals.TestGlobals.test_g_handle
 cls
 cd %~dp0..\..
 
-echo full-test-leo
-rem beautify also removes trailing whitespace.
-call beautify-leo.cmd
-call test-leo.cmd
-rem echo.
+rem Run all of Leo's pre-commit tests.
+
+call tbo.cmd --force
+call python312 -m unittest
 call ruff-leo.cmd
 call mypy-leo.cmd
-rem call flake8-leo.cmd
-rem call pylint-leo.cmd
-rem echo.
-echo Done!
-</t>
+echo Done!</t>
 <t tx="ekr.20221204072154.1">@language batch
 @echo off
 cd %~dp0..\..
@@ -3472,17 +3418,25 @@ g.execute_shell_commands(
 </t>
 <t tx="ekr.20230511074046.1">commands = 'leo.unittests.commands'
 core = 'leo.unittests.core'
-design = 'leo.unittests.test_design'
 gui = 'leo.unittests.test_gui'
-importers = 'leo.unittests.test_importers'
-plugins = 'leo.unittests.test_plugins'
-syntax = 'leo.unittests.test_syntax'
+importers = 'leo.unittests.plugins.test_importers'
+misc = 'leo.unittests.misc_tests'
+plugins = 'leo.unittests.plugins'
+syntax = 'leo.unittests.plugins.test_syntax'
+writers = 'leo.unittests.plugins.test_writers'
 
-testAtFile = 'test_leoAtFile.TestAtFile'
-testColorizer = 'test_leoColorizer.TestColorizer'
-testCommands = 'test_leoCommands.TestCommands'
-testCommanderFileCommands = 'test_commanderFileCommands.TestCommanderFileCommands'
-testGlobals = 'test_leoGlobals.TestGlobals'
+# f"{core}.test_leoAst",
+# f"{core}.test_leoGlobals",
+# f"{core}.test_leoTokens",
+
+# f"{misc}.test_design",
+# f"{misc}.test_doctests",
+# f"{misc}.test_syntax",
+
+# f"{plugins}.test_gui",
+# f"{plugins}.test_importers",
+# f"{plugins}.test_plugins",
+# f"{plugins}.test_writers",
 </t>
 <t tx="ekr.20230624114517.1"></t>
 <t tx="ekr.20230628105236.1">@language batch
@@ -3511,37 +3465,6 @@ gnxs = (
     'tbrown.20140311095634.15188',  # Terry's original node.
 )
 x.node_history(path, gnxs, limit=60)
-</t>
-<t tx="ekr.20230724084617.1"># f" {core}.test_leoApp.TestApp",
-# f" {core}.test_leoAst.TestTOG"
-# f" {core}.test_leoCommands.TestCommands",
-# f" {core}.test_leoCompare.TestCompare",
-# f" {core}.test_leoGlobals.TestGlobals",
-# f" {core}.test_leoImport.TestLeoImport",
-# f" {core}.test_leoNodes.TestNodes",
-# f" {core}.test_leoTest2.TestTest2",
-
-# f" {commands}.test_editFileCommands",
-# f" {commands}.test_gotoCommands",
-# f" {commands}.test_outlineCommands",
-</t>
-<t tx="ekr.20230926025203.1"># Python tests.
-
-# f" {core}.test_leoImport.TestLeoImport.test_python_importer_parse_body",
-# f" {importers}.TestPython",
-
-# All other tests.
-
-# f" {importers}.TestC",
-# f" {importers}.TestCSharp",
-# f" {importers}.TestCoffeescript",
-# f" {importers}.TestCython",
-# f" {importers}.TestHtml",
-# f" {importers}.TestJavascript",
-# f" {importers}.TestLua",
-# f" {importers}.TestRust",
-# f" {importers}.TestTcl",
-# f" {importers}.TestXML",
 </t>
 <t tx="ekr.20231107062256.1">"""Ensure that all expected @&lt;file&gt; nodes exist."""
 g.cls()
@@ -3627,84 +3550,75 @@ call py -m leo.core.leoAst --orange --verbose leo\modes
 rem call py -m leo.core.leoAst --orange --force --verbose leo\plugins\importers
 rem call py -m leo.core.leoAst --orange --force --verbose leo\plugins\writers
 </t>
-<t tx="ekr.20231119151610.1"></t>
-<t tx="ekr.20231203092737.1"># f"{commands}.test_convertCommands",
-# f"{commands}.test_gotoCommands.TestGotoCommands",
-# f"{commands}.test_spellCommands.TestSpellCommands",
-# f"{commands}.{testCommanderFileCommands}",
+<t tx="ekr.20240107154430.1"># 79: PEP8 recommendation.</t>
+<t tx="ekr.20240119060724.1">@language batch
 
-# f"{core}.test_leoAtFile.TestAtFile
-# f"{core}.test_leoAtFile.TestFastAtRead",
+@echo off
+cls
+cd %~dp0..\..
 
-# f"{importers}.TestJavascript",
+rem Use leoTokens.py to beautify all files.
 
-# f"{plugins}.TestIndentedTypeScript",
+IF [%1]==[-h] goto help
+IF [%1]==[--help] goto help
+
+:tbo:
+
+echo tbo [%*]
+call python312 -m leo.core.leoTokens leo\core %*
+call python312 -m leo.core.leoTokens leo\commands %*
+call python312 -m leo.core.leoTokens leo\plugins\importers %*
+call python312 -m leo.core.leoTokens leo\plugins\writers %*
+call python312 -m leo.core.leoTokens leo\modes %*
+
+call python312 -m leo.core.leoTokens leo\unittests\core %*
+call python312 -m leo.core.leoTokens leo\unittests\commands %*
+call python312 -m leo.core.leoTokens leo\unittests\plugins %*
+call python312 -m leo.core.leoTokens leo\unittests\misc_tests %*
+goto done
+
+:help:
+call python312 -m leo.core.leoTokens  --help
+
+:done:
 </t>
-<t tx="tbrown.20140801105909.47549">from __future__ import annotations
-import re
-from typing import TYPE_CHECKING
-from leo.core import leoGlobals as g  # Required
-from leo.plugins.importers.base_importer import Importer
+<t tx="ekr.20240201175949.1">@language python
+@nosearch
 
-if TYPE_CHECKING:
-    from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position, VNode
+# For emergency install message.
 
-@others
+tk          # tkinter.
 
-def do_import(c: Cmdr, parent: Position, s: str) -&gt; None:
-    """The importer callback for ctext."""
-    CText_Importer(c).import_from_string(parent, s)
+# For commands...
 
-importer_dict = {
-    '@auto': ['@auto-ctext'],
-    'extensions': ['.ctext'],  # A made-up extension for unit tests.
-    'func': do_import,
-}
-@language python
-@tabwidth -4
+pylint
+pyflakes
+
+# For plugins...
+
+docutils    # For Sphinx and rST plugins.
+flexx       # leoflexx.py plugin.
+meta        # livecode.py plugin.
+pyenchant   # The spell tab.
+sphinx      # rST plugin.
+windows-curses; platform_system=="Windows"  # cursesGui2 plugin on Windows.
+
+# For leoAst.py and leoTokens.py...
+
+asttokens   # For unit tests.
+black       # For unit tests.
+
+# Developer stuff...
+
+# pyshortcuts &gt;= 1.7  # desktop integration (#1243)
+# build &gt;= 0.6.0  # simple PEP 517 package builder.
+
+# Optional Qt dependencies.
+
+PyQt5 [Qt] &gt;= 5.15  # #2884: require v5.15. #1217: require v5.12+.
+PyQtWebEngine [Qt]
 </t>
-<t tx="tbrown.20140801105909.47551">class CText_Importer(Importer):
-    &lt;&lt; ctext docstring &gt;&gt;
-
-    language = 'plain'  # A reasonable default.
-
-    @others
-</t>
-<t tx="tbrown.20140801105909.47553">def import_from_string(self, parent: Position, s: str) -&gt; None:
-    """CText_Importer.import_from_string."""
-    c = self.c
-    root = parent.copy()
-    ft = c.importCommands.fileType.lower()
-    cchar = (
-        '#' if g.unitTesting else
-        '-' if ft == '.sql' else
-        '/' if ft == '.js' else '#'
-    )
-    header_pat = re.compile(fr"^\s*({cchar}{{3,}})(.*?){cchar}*\s*$")
-    lines_dict: dict[VNode, list[str]] = {root.v: []}
-    parents: list[Position] = [root]
-    for line in g.splitLines(s):
-        if m := header_pat.match(line):
-            level = len(m.group(1)) - 2
-            assert level &gt;= 1, m.group(1)
-            parents = parents[:level]
-            self.create_placeholders(level, lines_dict, parents)
-            parent = parents[-1]
-            child = parent.insertAsLastChild()
-            child.h = m.group(2).strip()
-            lines_dict[child.v] = []
-            parents.append(child)
-        else:
-            parent = parents[-1]
-            lines_dict[parent.v].append(line)
-
-    for p in root.self_and_subtree():
-        p.b = ''.join(lines_dict[p.v])
-
-    # Importers should dirty neither nodes nor the outline.
-    for p in root.self_and_subtree():
-        p.clearDirty()
-</t>
+<t tx="ekr.20240204082420.1"></t>
+<t tx="ekr.20240204082924.1"></t>
 </tnodes>
 </leo_file>
