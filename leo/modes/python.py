@@ -330,7 +330,7 @@ def python_op1(colorer, s, i):
     """Color a s[i] as an operator."""
     colorer.colorRangeWithTag(s, i, i + 1, tag='operator')
     return 1
-#@+node:ekr.20240213105320.1: *3* python_number (new)
+#@+node:ekr.20240213105320.1: *3* python_number
 # Does not include suffixes or hex digits.
 int_s = r'[0-9]+'
 float_s = fr'{int_s}\.({int_s})?'
@@ -403,7 +403,7 @@ rulesDict1 = {
     ">": [python_op_gt],
 
     # Quotes and quotes.
-    "\"": [python_double_quote_docstring, python_double_quote],
+    '"': [python_double_quote_docstring, python_double_quote],
     "'": [python_single_quote_docstring, python_single_quote],
     "#": [python_comment],
 
