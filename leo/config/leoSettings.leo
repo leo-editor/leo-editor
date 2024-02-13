@@ -2048,31 +2048,30 @@
 <v t="ekr.20170202104705.1"><vh>@bool color-doc-parts-as-rest = True</vh></v>
 <v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="ekr.20111024091133.16650"><vh>Colors for Leo constructs</vh>
-<v t="ekr.20111004182631.15542"><vh>@color doc-part = firebrick3</vh></v>
-<v t="ekr.20111004182631.15546"><vh>@color leo-keyword = #00aa00</vh></v>
-<v t="ekr.20111004182631.15548"><vh>@color section-name = red</vh></v>
-<v t="ekr.20111004182631.15549"><vh>@color show-invisibles-space = #E5E5E5</vh></v>
-<v t="ekr.20111004182631.15550"><vh>@color show-invisibles-tab = #CCCCCC</vh></v>
-<v t="ekr.20111004182631.15552"><vh>@color undefined-section-name = red</vh></v>
-<v t="ekr.20111024091133.16671"><vh>@color url = purple</vh></v>
+<v t="ekr.20111004182631.15542"><vh>@color doc-part-color = firebrick3</vh></v>
+<v t="ekr.20111004182631.15546"><vh>@color leo-keyword-color = #00aa00</vh></v>
+<v t="ekr.20111004182631.15548"><vh>@color section-name-color = red</vh></v>
+<v t="ekr.20111004182631.15549"><vh>@color show-invisibles-space-color = #E5E5E5</vh></v>
+<v t="ekr.20111004182631.15550"><vh>@color show-invisibles-tab-color = #CCCCCC</vh></v>
+<v t="ekr.20111004182631.15552"><vh>@color undefined-section-name-color = red</vh></v>
+<v t="ekr.20111024091133.16671"><vh>@color url-color = purple</vh></v>
 </v>
 <v t="ekr.20111024091133.16651"><vh>Colors for standard jEdit tags</vh>
-<v t="ekr.20060504140351"><vh>@color comment1 = firebrick3</vh></v>
-<v t="ekr.20060504140408"><vh>@color comment2 = firebrick3</vh></v>
-<v t="ekr.20060504140408.1"><vh>@color comment3 = plum3</vh></v>
-<v t="ekr.20060504140408.2"><vh>@color comment4 = orchid1</vh></v>
-<v t="ekr.20060504131831.1"><vh>@color keyword1 = blue</vh></v>
-<v t="ekr.20060827102902"><vh>@color keyword2 = blue</vh></v>
-<v t="ekr.20060827102902.1"><vh>@color keyword3 = blue</vh></v>
-<v t="ekr.20060827102902.2"><vh>@color keyword4 = blue</vh></v>
-<v t="ekr.20060704090341"><vh>@color label = red</vh></v>
-<v t="ekr.20060504131831.2"><vh>@color literal1 = #00aa00</vh></v>
-<v t="ekr.20060504134056"><vh>@color literal2 = #00aa00</vh></v>
-<v t="ekr.20060504134056.1"><vh>@color literal3 = #00aa00</vh></v>
-<v t="ekr.20060504134056.2"><vh>@color literal4 = #00aa00</vh></v>
-<v t="ekr.20060826152759"><vh>@color markup = blue</vh></v>
-<v t="ekr.20240213110617.1"><vh>@color number = None</vh></v>
-<v t="ekr.20060713101831"><vh>@color operator = None</vh></v>
+<v t="ekr.20060504140351"><vh>@color comment1-color = firebrick3</vh></v>
+<v t="ekr.20060504140408"><vh>@color comment2-color = firebrick3</vh></v>
+<v t="ekr.20060504140408.1"><vh>@color comment3-color = plum3</vh></v>
+<v t="ekr.20060504140408.2"><vh>@color comment4-color = orchid1</vh></v>
+<v t="ekr.20060504131831.1"><vh>@color keyword1-color = blue</vh></v>
+<v t="ekr.20060827102902"><vh>@color keyword2-color = blue</vh></v>
+<v t="ekr.20060827102902.1"><vh>@color keyword3-color = blue</vh></v>
+<v t="ekr.20060827102902.2"><vh>@color keyword4-color = blue</vh></v>
+<v t="ekr.20060704090341"><vh>@color label-color = red</vh></v>
+<v t="ekr.20060504131831.2"><vh>@color literal1-color = #00aa00</vh></v>
+<v t="ekr.20060504134056"><vh>@color literal2-color = #00aa00</vh></v>
+<v t="ekr.20060504134056.1"><vh>@color literal3-color = #00aa00</vh></v>
+<v t="ekr.20060504134056.2"><vh>@color literal4-color = #00aa00</vh></v>
+<v t="ekr.20060826152759"><vh>@color markup-color = blue</vh></v>
+<v t="ekr.20060713101831"><vh>@color operator-color = None</vh></v>
 </v>
 <v t="ekr.20190324140542.1"><vh>Colors for pygments tags</vh>
 <v t="ekr.20190325050733.1"><vh>@color comment = solarized-orange</vh></v>
@@ -2100,20 +2099,20 @@
 </v>
 <v t="ekr.20060828110551.1"><vh>Language-specific fonts and colors</vh>
 <v t="ekr.20170819113555.1"><vh>patch</vh>
-<v t="ekr.20170819113555.2"><vh>@color patch-keyword1 = green</vh></v>
-<v t="ekr.20170819113555.3"><vh>@color patch-keyword2 = red</vh></v>
-<v t="ekr.20170819170521.1"><vh>@color patch-keyword3 = blue</vh></v>
-<v t="ekr.20170819113555.4"><vh>@color patch-literal1 = blue</vh></v>
-<v t="ekr.20170819113555.5"><vh>@color patch-literal2 = blue</vh></v>
+<v t="ekr.20170819113555.2"><vh>@color patch-keyword1-color = green</vh></v>
+<v t="ekr.20170819113555.3"><vh>@color patch-keyword2-color = red</vh></v>
+<v t="ekr.20170819170521.1"><vh>@color patch-keyword3-color = blue</vh></v>
+<v t="ekr.20170819113555.4"><vh>@color patch-literal1-color = blue</vh></v>
+<v t="ekr.20170819113555.5"><vh>@color patch-literal2-color = blue</vh></v>
 </v>
 <v t="ekr.20060828110551.2"><vh>php</vh>
-<v t="ekr.20060828110551.3"><vh>@color php-operator = DodgerBlue1</vh></v>
+<v t="ekr.20060828110551.3"><vh>@color php-operator-color = DodgerBlue1</vh></v>
 <v t="ekr.20060828145228.1"><vh>@font php.keyword</vh></v>
 </v>
 <v t="ekr.20080703111151.18"><vh>Forth fonts, colors &amp; settings</vh>
-<v t="ekr.20080703111151.21"><vh>@color forth-keyword3 = black</vh></v>
-<v t="ekr.20080703111151.22"><vh>@color forth-keyword4 = black</vh></v>
-<v t="ekr.20080703111151.23"><vh>@color forth-keyword5 = black</vh></v>
+<v t="ekr.20080703111151.21"><vh>@color forth-keyword3-color = black</vh></v>
+<v t="ekr.20080703111151.22"><vh>@color forth-keyword4-color = black</vh></v>
+<v t="ekr.20080703111151.23"><vh>@color forth-keyword5-color = black</vh></v>
 <v t="ekr.20080705064822.2"><vh>@data forth-bold-italic-words</vh></v>
 <v t="ekr.20080705064822.3"><vh>@data forth-bold-words</vh></v>
 <v t="ekr.20080705064822.1"><vh>@data forth-defwords</vh></v>
@@ -2193,39 +2192,39 @@
 <v t="ekr.20230627202839.1"><vh>@data unl-path-prefixes</vh></v>
 </v>
 <v t="ekr.20110611092035.16471"><vh>Widget colors</vh>
-<v t="ekr.20041119034357.67"><vh>@color split-bar = LightSteelBlue2</vh></v>
+<v t="ekr.20041119034357.67"><vh>@color split-bar-color = LightSteelBlue2</vh></v>
 <v t="ekr.20130705090546.10663"><vh>@int colorer-delay = 200</vh></v>
 <v t="ekr.20130705090546.10662"><vh>@int colorer-max-lines = 100</vh></v>
 <v t="ekr.20080326060254.3"><vh>@string target-language = plain</vh></v>
 <v t="ekr.20041213105007.2"><vh>Body pane colors (deprecated)</vh>
-<v t="ekr.20041119034357.41"><vh>@color body-cursor-background = None</vh></v>
-<v t="ekr.20041119034357.40"><vh>@color body-cursor-foreground = None</vh></v>
-<v t="ekr.20041119034357.50"><vh>@color body-insertion-cursor = None</vh></v>
-<v t="ekr.20041119034357.49"><vh>@color body-text-background = None</vh></v>
-<v t="ekr.20041119034357.48"><vh>@color body-text-foreground = None</vh></v>
-<v t="ekr.20060605081712"><vh>@color command-mode-bg = #f2fdff</vh></v>
-<v t="ekr.20060822101942.1"><vh>@color command-mode-fg = None</vh></v>
-<v t="ekr.20080514082950.2"><vh>@color insert-mode-bg = #fdf5f5</vh></v>
-<v t="ekr.20060605081712.3"><vh>@color insert-mode-fg = black</vh></v>
-<v t="ekr.20060606085536"><vh>@color overwrite-mode-bg = azure2</vh></v>
-<v t="ekr.20060606085536.1"><vh>@color overwrite-mode-fg = black</vh></v>
-<v t="ekr.20080511041907.1"><vh>@color unselected-body-bg = #ffffef</vh></v>
-<v t="ekr.20080511041907.2"><vh>@color unselected-body-fg = black</vh></v>
+<v t="ekr.20041119034357.41"><vh>@color body-cursor-background-color = None</vh></v>
+<v t="ekr.20041119034357.40"><vh>@color body-cursor-foreground-color = None</vh></v>
+<v t="ekr.20041119034357.50"><vh>@color body-insertion-cursor-color = None</vh></v>
+<v t="ekr.20041119034357.49"><vh>@color body-text-background-color = None</vh></v>
+<v t="ekr.20041119034357.48"><vh>@color body-text-foreground-color = None</vh></v>
+<v t="ekr.20060605081712"><vh>@color command-mode-bg-color = #f2fdff</vh></v>
+<v t="ekr.20060822101942.1"><vh>@color command-mode-fg-color = None</vh></v>
+<v t="ekr.20080514082950.2"><vh>@color insert-mode-bg-color = #fdf5f5</vh></v>
+<v t="ekr.20060605081712.3"><vh>@color insert-mode-fg-color = black</vh></v>
+<v t="ekr.20060606085536"><vh>@color overwrite-mode-bg-color = azure2</vh></v>
+<v t="ekr.20060606085536.1"><vh>@color overwrite-mode-fg-color = black</vh></v>
+<v t="ekr.20080511041907.1"><vh>@color unselected-body-bg-color = #ffffef</vh></v>
+<v t="ekr.20080511041907.2"><vh>@color unselected-body-fg-color = black</vh></v>
 </v>
 <v t="ekr.20041213105007.3"><vh>Log pane colors</vh>
-<v t="ekr.20041119052015"><vh>@color log-error = red</vh></v>
-<v t="ekr.20120928142052.11488"><vh>@color log-warning = blue</vh></v>
-<v t="ekr.20041119052015.2"><vh>@color log-text-foreground = None</vh></v>
-<v t="ekr.20041119053445"><vh>@color log-text-background = None</vh></v>
-<v t="ekr.20041217184352.2"><vh>@color log-pane-background = #f2fdff</vh></v>
-<v t="ekr.20051020125928"><vh>@color log-pane-Find-tab-background = #d6c7d3</vh></v>
-<v t="ekr.20051025070845"><vh>@color log-pane-Spell-tab-background = MistyRose1</vh></v>
+<v t="ekr.20041119052015"><vh>@color log-error-color = red</vh></v>
+<v t="ekr.20120928142052.11488"><vh>@color log-warning-color = blue</vh></v>
+<v t="ekr.20041119052015.2"><vh>@color log-text-foreground-color = None</vh></v>
+<v t="ekr.20041119053445"><vh>@color log-text-background-color = None</vh></v>
+<v t="ekr.20041217184352.2"><vh>@color log-pane-background-color = #f2fdff</vh></v>
+<v t="ekr.20051020125928"><vh>@color log-pane-Find-tab-background-color = #d6c7d3</vh></v>
+<v t="ekr.20051025070845"><vh>@color log-pane-Spell-tab-background-color = MistyRose1</vh></v>
 </v>
 <v t="ekr.20100313080341.8368"><vh>Minibuffer background colors</vh>
-<v t="ekr.20100313080341.8369"><vh>@color minibuffer-background = lightblue</vh></v>
-<v t="ekr.20100313080341.8370"><vh>@color minibuffer-error = red</vh></v>
-<v t="ekr.20120926072255.11432"><vh>@color minibuffer-foreground = black</vh></v>
-<v t="ekr.20100313080341.8371"><vh>@color minibuffer-warning = lightgrey</vh></v>
+<v t="ekr.20100313080341.8369"><vh>@color minibuffer-background-color = lightblue</vh></v>
+<v t="ekr.20100313080341.8370"><vh>@color minibuffer-error-color = red</vh></v>
+<v t="ekr.20120926072255.11432"><vh>@color minibuffer-foreground-color = black</vh></v>
+<v t="ekr.20100313080341.8371"><vh>@color minibuffer-warning-color = lightgrey</vh></v>
 </v>
 <v t="ekr.20160514162747.1"><vh>Tab colors</vh>
 <v t="ekr.20160514162753.1"><vh>@color selected-tab-bg = @LightSteelBlue1</vh></v>
@@ -2277,7 +2276,7 @@
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20051101160257"></v>
 <v t="ekr.20051007200824.1"></v>
-<v t="ekr.20240213110617.1"></v>
+<v t="ekr.20041119034357.70"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3363,7 +3362,7 @@ aquamarine1</t>
 <t tx="ekr.20060627121646.2">The number of times to flash matching brackets.</t>
 <t tx="ekr.20060627121646.3">One half the total cycle time of bracket flashes, in milliseconds.</t>
 <t tx="ekr.20060704090341"></t>
-<t tx="ekr.20060713101831"></t>
+<t tx="ekr.20060713101831"># Support for solarized colors requires black.</t>
 <t tx="ekr.20060730101451"></t>
 <t tx="ekr.20060730101451.3"></t>
 <t tx="ekr.20060730101451.5"></t>
@@ -11645,7 +11644,6 @@ False:          Display only the .leo file's name in the status area.
 True:  (Recommended) Search backwards from the end of the outline.
 False: (Legacy)      Search forwards from the start of the outline.
 </t>
-<t tx="ekr.20240213110617.1">New in Leo 6.7.8</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
