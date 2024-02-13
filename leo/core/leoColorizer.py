@@ -425,7 +425,7 @@ class BaseColorizer:
             #
             # Number...
             # tag name              :( option name,         default color
-            'number'                :('number',             None),
+            'number'                :('number',             '#666666'),
             'number.bin'            :('number.bin',         '#666666'),
             'number.float'          :('number.float',       '#666666'),
             'number.hex'            :('number.hex',         '#666666'),

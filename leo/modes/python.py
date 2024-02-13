@@ -337,7 +337,10 @@ float_s = fr'{int_s}\.({int_s})?'
 number_pat = re.compile(fr'({float_s}|{int_s})')
 
 def python_number(colorer, s, i):
-    # Numbers have never been colored before!
+    if 1:  # Legacy: don't colorize numbers.
+        return 0
+        
+    # New, experimental.
     n = colorer.match_seq_regexp(s, i, kind='number', regexp=number_pat)
     # print(f"python_number: i: {i:3} n: {n:2} {s[i : i + n]!r}")
     return n
