@@ -4,6 +4,7 @@
 # Leo colorizer control file for python mode.
 # This file is in the public domain.
 
+import re
 import sys
 
 v1, v2, junk1, junk2, junk3 = sys.version_info
@@ -330,9 +331,16 @@ def python_op1(colorer, s, i):
     colorer.colorRangeWithTag(s, i, i + 1, tag='operator')
     return 1
 #@+node:ekr.20240213105320.1: *3* python_number (new)
+# Does not include suffixes or hex digits.
+int_s = r'[0-9]+'
+float_s = fr'{int_s}\.({int_s})?'
+number_pat = re.compile(fr'({float_s}|{int_s})')
+
 def python_number(colorer, s, i):
     # Numbers have never been colored before!
-    return 0
+    n = colorer.match_seq_regexp(s, i, kind='number', regexp=number_pat)
+    # print(f"python_number: i: {i:3} n: {n:2} {s[i : i + n]!r}")
+    return n
 #@+node:ekr.20240213103850.1: *3* python_op_gt/lt & helpers
 def python_op_gt(colorer, s, i):
     """Color '>=' and '>'. """
@@ -394,15 +402,13 @@ rulesDict1 = {
     "<": [python_op_lt],
     ">": [python_op_gt],
 
-    # Quotes.
+    # Quotes and quotes.
     "\"": [python_double_quote_docstring, python_double_quote],
     "'": [python_single_quote_docstring, python_single_quote],
-
-    # Special cases.
     "#": [python_comment],
-    "@": [python_keyword],  ### To do.
 
     # Numbers...
+    "@": [python_keyword],  # A special case.
     ".": [python_number],
     "0": [python_number],
     "1": [python_number],

@@ -2071,6 +2071,7 @@
 <v t="ekr.20060504134056.1"><vh>@color literal3-color = #00aa00</vh></v>
 <v t="ekr.20060504134056.2"><vh>@color literal4-color = #00aa00</vh></v>
 <v t="ekr.20060826152759"><vh>@color markup-color = blue</vh></v>
+<v t="ekr.20240213110617.1"><vh>@color number-color = None</vh></v>
 <v t="ekr.20060713101831"><vh>@color operator-color = None</vh></v>
 </v>
 <v t="ekr.20190324140542.1"><vh>Colors for pygments tags</vh>
@@ -2276,6 +2277,7 @@
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20051101160257"></v>
 <v t="ekr.20051007200824.1"></v>
+<v t="ekr.20240213110617.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3361,7 +3363,7 @@ aquamarine1</t>
 <t tx="ekr.20060627121646.2">The number of times to flash matching brackets.</t>
 <t tx="ekr.20060627121646.3">One half the total cycle time of bracket flashes, in milliseconds.</t>
 <t tx="ekr.20060704090341"></t>
-<t tx="ekr.20060713101831"># Support for solarized colors requires black.</t>
+<t tx="ekr.20060713101831"></t>
 <t tx="ekr.20060730101451"></t>
 <t tx="ekr.20060730101451.3"></t>
 <t tx="ekr.20060730101451.5"></t>
@@ -11643,6 +11645,7 @@ False:          Display only the .leo file's name in the status area.
 True:  (Recommended) Search backwards from the end of the outline.
 False: (Legacy)      Search forwards from the start of the outline.
 </t>
+<t tx="ekr.20240213110617.1">New in Leo 6.7.8</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
