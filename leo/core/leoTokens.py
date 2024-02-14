@@ -632,7 +632,10 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240111035404.1: *4* << TokenBasedOrange: __slots__ >>
     __slots__ = [
         # Command-line arguments.
-        'all', 'changed', 'diff', 'report', 'write', 'tab_width',
+        'all', 'changed', 'diff', 'report', 'write',
+        
+        # Hard-coded ivar.
+        'tab_width',
 
         # Debugging.
         'contents', 'filename',
