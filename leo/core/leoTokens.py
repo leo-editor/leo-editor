@@ -813,7 +813,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                     func = getattr(self, f"do_{self.token.kind}", self.no_visitor)
                     func()
 
-            # Compute the result.
+            # Return the result.
             result = output_tokens_to_string(self.code_list)
             return result
 
