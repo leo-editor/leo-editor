@@ -194,7 +194,7 @@ def orange_command(
             print(f"file not found: {filename}")
     # Report the results.
     t2 = time.process_time()
-    if n_beautified or TokenBasedOrange(settings).report:
+    if n_beautified or settings.get('report'):
         print(
             f"tbo: {t2-t1:3.1f} sec. "
             f"dirty: {len(dirty_files):<3} "
