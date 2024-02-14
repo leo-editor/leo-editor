@@ -184,8 +184,9 @@ def orange_command(
     n_changed = 0
     for filename in to_be_checked_files:
         if os.path.exists(filename):
+            was_dirty = filename in dirty_files
             tbo = TokenBasedOrange(settings)
-            changed = tbo.beautify_file(filename)
+            changed = tbo.beautify_file(filename, was_dirty)
             if changed:
                 n_changed += 1
             n_tokens += len(tbo.tokens)
@@ -829,7 +830,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         result = output_tokens_to_string(self.code_list)
         return result
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry) (stats & diffs)
-    def beautify_file(self, filename: str) -> bool:  # pragma: no cover
+    def beautify_file(self, filename: str, was_dirty: bool) -> bool:  # pragma: no cover
         """
         TokenBasedOrange: Beautify the the given external file.
 
@@ -858,6 +859,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         regularized_contents = self.regularize_nls(contents)
         regularized_results = self.regularize_nls(results)
         if regularized_contents == regularized_results:
+            # Nothing changed, but report the scanned file if requested.
+            if self.changed and was_dirty:  # --changed.
+                print(f"tbo: changed, not beautified: {g.shortFileName(filename)}")
             return False
         if not regularized_contents:
             print(f"tbo: no results {g.shortFileName(filename)}")
@@ -865,7 +869,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Handle the args.
         if self.changed:  # --changed.
-            print(f"tbo: changed {g.shortFileName(filename)}")
+            print(f"tbo: changed: {g.shortFileName(filename)}")
         if self.diff:  # --diff.
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
