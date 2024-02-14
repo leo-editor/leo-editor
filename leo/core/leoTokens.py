@@ -849,18 +849,21 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not isinstance(tokens[0], InputToken):
             self.oops(f"Not an InputToken: {tokens[0]!r}")
 
-        # Beautify the contents.
+        # Beautify the contents, returning the original contents on any error.
         results = self.beautify(contents, filename, tokens)
-        if contents == results:
-            # beautify returns the *unchanged* contents on any error.
+        
+        # Ignore changes only to newlines.
+        if self.regularize_newlines(contents) == self.regularize_newlines(results):
             return False
 
-        # Handle the command-line arguments.
+        # print reports reports.
         if self.beautified:  # --beautified.
             print(f"tbo: beautified: {g.shortFileName(filename)}")
         if self.diff:  # --diff.
             print(f"Diffs: {filename}")
             self.show_diffs(contents, results)
+            
+        # Write the (changed) file .
         if self.write:  # --write.
             self.write_file(filename, results, encoding=encoding)
         return True
