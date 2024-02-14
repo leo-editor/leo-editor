@@ -2739,6 +2739,27 @@ class LeoServer:
         p = self._get_p(param)
         p.expand()
         return self._make_response()
+    #@+node:ekr.20240214055709.1: *5* server.get_unl
+    def get_unl(self, param: Param) -> Response:
+        """
+        Return the unl as it appears in the status line for given position.
+        
+        By default, this is the full legacy (headline-based) unl.
+        """
+        tag = 'get_unl'
+        p = self._get_p(param)
+        valid_kinds = (
+            'full-gnx',  #    'unl:gnx:' + f"//{c.fileName()}#{self.gnx}"
+            'full-legacy',  # 'unl:'     + f"//{c.fileName()}#{'-->'.join(<parents_headline_list>}"
+        )
+        kind = getattr(param, "unl-kind", None) or 'full-legacy'
+        if kind not in valid_kinds:
+            raise ServerError(f"{tag}: invalid unl-kind: {kind!r}")
+        if kind == 'full-gnx':
+            unl = p.get_full_legacy_UNL()
+        else:
+            unl = p.get_full_gnx_UNL()
+        return self._make_minimal_response({"unl": unl})
     #@+node:felix.20210621233316.55: *5* server.insert_node
     def insert_node(self, param: Param) -> Response:
         """
