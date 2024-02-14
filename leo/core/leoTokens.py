@@ -851,7 +851,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Beautify the contents, returning the original contents on any error.
         results = self.beautify(contents, filename, tokens)
-        
+
         # Ignore changes only to newlines.
         if self.regularize_newlines(contents) == self.regularize_newlines(results):
             return False
@@ -862,7 +862,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.diff:  # --diff.
             print(f"Diffs: {filename}")
             self.show_diffs(contents, results)
-            
+
         # Write the (changed) file .
         if self.write:  # --write.
             self.write_file(filename, results, encoding=encoding)
