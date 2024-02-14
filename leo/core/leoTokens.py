@@ -155,7 +155,7 @@ def main() -> None:  # pragma: no cover
         return os.path.abspath(path) in modified_files
 
     # Compute the files to be checked.
-    if args.force:
+    if args.all:
         # Handle all requested files.
         to_be_checked_files = requested_files
     else:
@@ -193,7 +193,7 @@ def orange_command(
             print(f"file not found: {filename}")
     # Report the results.
     t2 = time.process_time()
-    if n_changed or not TokenBasedOrange(settings).silent:
+    if n_changed or TokenBasedOrange(settings).report:
         print(
             f"tbo: {t2-t1:3.1f} sec. "
             f"dirty: {len(dirty_files):<3} "
@@ -222,37 +222,32 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
     add2 = parser.add_argument
 
     # Arguments.
-    add2('--diff', dest='diff', action='store_true',
+    add2('-a', '--all', dest='all', action='store_true',
+        help='Beautify all files, even unchanged files')
+    add2('-c', '--changed', dest='changed', action='store_true',
+        help='Report changed files individually')
+    add2('-d', '--diff', dest='diff', action='store_true',
         help='show diffs instead of changing files')
-    add2('--force', dest='force', action='store_true',
-        help='beautify all files')
-    add2('--safe', dest='safe', action='store_true',
-        help="don't write files")
-    add2('--silent', dest='silent', action='store_true',
-        help="don't list changed files")
-    add2('--verbose', dest='verbose', action='store_true',
-        help='verbose (per-file) output')
+    add2('-r', '--report', dest='report', action='store_true',
+        help='show summary report')
+    add2('-w', '--write', dest='write', action='store_true',
+        help='write beautifed files (dry-run mode otherwise)')
 
     # Create the return values, using EKR's prefs as the defaults.
     parser.set_defaults(
-        diff=False,
-        force=False,
-        safe=False,
-        silent=False,
+        all=False, changed=False, diff=False, report=False, write=False,
         tab_width=4,
-        verbose=False
     )
     args: Any = parser.parse_args()
     files = args.PATHS
 
     # Create the settings dict, ensuring proper values.
     settings_dict: dict[str, Any] = {
+        'all': bool(args.all),
+        'changed': bool(args.changed),
         'diff': bool(args.diff),
-        'force': bool(args.force),
-        'tab_width': abs(args.tab_width),  # Must be positive!
-        'safe': bool(args.safe),
-        'silent': bool(args.silent),
-        'verbose': bool(args.verbose),
+        'report': bool(args.report),
+        'write': bool(args.write)
     }
     return args, settings_dict, files
 #@+node:ekr.20240105140814.52: ** Classes
@@ -637,7 +632,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240111035404.1: *4* << TokenBasedOrange: __slots__ >>
     __slots__ = [
         # Command-line arguments.
-        'diff', 'force', 'safe', 'silent', 'tab_width', 'verbose',
+        'all', 'changed', 'diff', 'report', 'write', 'tab_width',
 
         # Debugging.
         'contents', 'filename',
@@ -693,18 +688,20 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Set default settings.
         if settings is None:
             settings = {}
+        self.all = False
+        self.changed = False
         self.diff = False
-        self.force = False
-        self.safe = False
-        self.silent = False
-        self.tab_width = 4
-        self.verbose = False
+        self.report = False
+        self.write = False
 
-        # Make sure tokens is defined, even for empty files.
+        # Hard-code 4-space tabs.
+        self.tab_width = 4
+
+        # Define tokens even for empty files.
         self.tokens: list[InputToken] = []
 
         # Override defaults from settings dict.
-        valid_keys = ('diff', 'force', 'orange', 'safe', 'silent', 'tab_width', 'verbose')
+        valid_keys = ('all', 'changed', 'diff', 'report', 'write')
         for key in settings:  # pragma: no cover
             value = settings.get(key)
             if key in valid_keys and value is not None:
@@ -835,13 +832,13 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Return True if the file was changed.
         """
-        if False:
+        if 0:
             g.trace(
+                f"all: {int(self.all)} "
+                f"changed: {int(self.changed)} "
                 f"diff: {int(self.diff)} "
-                f"force: {int(self.force)} "
-                f"safe: {int(self.safe)} "
-                f"silent: {int(self.silent)} "
-                f"verbose: {int(self.verbose)} "
+                f"report: {int(self.report)} "
+                f"write: {int(self.write)} "
                 f"{g.shortFileName(filename)}"
             )
         self.filename = filename
@@ -864,12 +861,12 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False
 
         # Handle the args.
-        if not self.silent:
+        if self.changed:  # --changed.
             print(f"tbo: changed {g.shortFileName(filename)}")
         if self.diff:  # --diff.
             print(f"Diffs: {filename}")
             self.show_diffs(regularized_contents, regularized_results)
-        if not self.safe:  # --safe.
+        if self.write:  # --write.
             self.write_file(filename, regularized_results, encoding=encoding)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
