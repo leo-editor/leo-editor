@@ -2739,30 +2739,47 @@ class LeoServer:
         p = self._get_p(param)
         p.expand()
         return self._make_response()
-    #@+node:felix.20210621233316.55: *5* server.insert_node
-    def insert_node(self, param: Param) -> Response:
+    #@+node:ekr.20240214045900.1: *5* server.get_unl (Leo 6.7.8)
+    def get_unl(self, param: Param) -> Response:
         """
-        Insert a node at given node. If a position is given
-        that is not the current position, re-select the original position.
+        Return the unl as it appears in the status line for given position.
+        
+        By default, this is the full legacy (headline-based) unl.
+        """
+        tag = 'get_unl'
+        p = self._get_p(param)
+        valid_kinds = (
+            'full-gnx',  #    'unl:gnx:' + f"//{c.fileName()}#{self.gnx}"
+            'full-legacy',  # 'unl:'     + f"//{c.fileName()}#{'-->'.join(<parents_headline_list>}"
+        )
+        kind = getattr(param, "unl-kind", None) or 'full-legacy'
+        if kind not in valid_kinds:
+            raise ServerError(f"{tag}: invalid unl-kind: {kind!r}")
+        if kind == 'full-gnx':
+            unl = p.get_full_legacy_UNL()
+        else:
+            unl = p.get_full_gnx_UNL()
+        return self._make_minimal_response({"unl": unl})
+    #@+node:felix.20210703021441.1: *5* server.insert_child_named_node
+    def insert_child_named_node(self, param: Param) -> Response:
+        """
+        Insert a child node at given node, set its headline, select it and finally return it
         """
         c = self._check_c(param)
         p = self._get_p(param)
-
-        if p == c.p:
-            c.insertHeadline()  # Handles undo, sets c.p
+        newHeadline = param.get('name')
+        bunch = c.undoer.beforeInsertNode(p)
+        if c.config.getBool('insert-new-nodes-at-end'):
+            newNode = p.insertAsLastChild()
         else:
-            oldPosition = c.p
-            c.selectPosition(p)
-            c.insertHeadline()  # Handles undo, sets c.p
-            if c.positionExists(oldPosition):
-                c.selectPosition(oldPosition)
-            else:
-                oldPosition._childIndex = oldPosition._childIndex + 1
-                # Try again with childIndex incremented
-                if c.positionExists(oldPosition):
-                    # additional try with lowered childIndex
-                    c.selectPosition(oldPosition)
-
+            newNode = p.insertAsNthChild(0)
+        # Set this node's new headline
+        newNode.h = newHeadline
+        newNode.setDirty()
+        c.setChanged()
+        c.undoer.afterInsertNode(
+            newNode, 'Insert Node', bunch)
+        c.selectPosition(newNode)
         return self._make_response()
     #@+node:felix.20210703021435.1: *5* server.insert_child_node
     def insert_child_node(self, param: Param) -> Response:
@@ -2815,47 +2832,45 @@ class LeoServer:
 
         c.setChanged()
         return self._make_response()
-    #@+node:felix.20210703021441.1: *5* server.insert_child_named_node
-    def insert_child_named_node(self, param: Param) -> Response:
+    #@+node:felix.20210621233316.55: *5* server.insert_node
+    def insert_node(self, param: Param) -> Response:
         """
-        Insert a child node at given node, set its headline, select it and finally return it
+        Insert a node at given node. If a position is given
+        that is not the current position, re-select the original position.
         """
         c = self._check_c(param)
         p = self._get_p(param)
-        newHeadline = param.get('name')
-        bunch = c.undoer.beforeInsertNode(p)
-        if c.config.getBool('insert-new-nodes-at-end'):
-            newNode = p.insertAsLastChild()
+
+        if p == c.p:
+            c.insertHeadline()  # Handles undo, sets c.p
         else:
-            newNode = p.insertAsNthChild(0)
-        # Set this node's new headline
-        newNode.h = newHeadline
-        newNode.setDirty()
-        c.setChanged()
-        c.undoer.afterInsertNode(
-            newNode, 'Insert Node', bunch)
-        c.selectPosition(newNode)
+            oldPosition = c.p
+            c.selectPosition(p)
+            c.insertHeadline()  # Handles undo, sets c.p
+            if c.positionExists(oldPosition):
+                c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with lowered childIndex
+                    c.selectPosition(oldPosition)
+
         return self._make_response()
-    #@+node:felix.20220616010755.1: *5* server.scroll_top
-    def scroll_top(self, param: Param) -> Response:
+    #@+node:felix.20210621233316.65: *5* server.mark_node
+    def mark_node(self, param: Param) -> Response:
         """
-        Utility method for connected clients to simulate scroll to the top
+        Mark a node.
+        Try to keep selection, then return the selected node that remains.
         """
-        c = self._check_c(param)
-        p = c.firstVisible()
-        if p:
-            c.treeSelectHelper(p)
-        return self._make_response()
-    #@+node:felix.20220616010756.1: *5* server.scroll_bottom
-    def scroll_bottom(self, param: Param) -> Response:
-        """
-        Utility method for connected clients to simulate scroll to bottom
-        """
-        c = self._check_c(param)
-        p = c.lastVisible()
-        if p:
-            c.treeSelectHelper(p)
-        return self._make_response()
+        # pylint: disable=no-else-return
+        self._check_c(param)
+        p = self._get_p(param)
+        if p.isMarked():
+            return self._make_response()
+        else:
+            return self.toggle_mark(param)
+
     #@+node:felix.20210621233316.57: *5* server.page_down
     def page_down(self, param: Param) -> Response:
         """
@@ -2907,35 +2922,6 @@ class LeoServer:
             else:
                 c.goToFirstSibling()
 
-        return self._make_response()
-    #@+node:felix.20220222173659.1: *5* server.paste_node
-    def paste_node(self, param: Param) -> Response:
-        """
-        Pastes a node,
-        Try to keep selection, then return the selected node.
-        """
-        tag = 'paste_node'
-        c = self._check_c(param)
-        p = self._get_p(param)
-        s = param.get('name')
-        if s is None:  # pragma: no cover
-            raise ServerError(f"{tag}: no string given")
-        g.app.gui.replaceClipboardWith(s)
-        if p == c.p:
-            c.pasteOutline(s=s)
-        else:
-            oldPosition = c.p  # not same node, save position to possibly return to
-            c.selectPosition(p)
-            c.pasteOutline(s=s)
-            if c.positionExists(oldPosition):
-                # select if old position still valid
-                c.selectPosition(oldPosition)
-            else:
-                oldPosition._childIndex = oldPosition._childIndex + 1
-                # Try again with childIndex incremented
-                if c.positionExists(oldPosition):
-                    # additional try with higher childIndex
-                    c.selectPosition(oldPosition)
         return self._make_response()
     #@+node:felix.20220222173707.1: *5* server.paste_as_clone_node
     def paste_as_clone_node(self, param: Param) -> Response:
@@ -2994,6 +2980,35 @@ class LeoServer:
                     # additional try with higher childIndex
                     c.selectPosition(oldPosition)
         return self._make_response()
+    #@+node:felix.20220222173659.1: *5* server.paste_node
+    def paste_node(self, param: Param) -> Response:
+        """
+        Pastes a node,
+        Try to keep selection, then return the selected node.
+        """
+        tag = 'paste_node'
+        c = self._check_c(param)
+        p = self._get_p(param)
+        s = param.get('name')
+        if s is None:  # pragma: no cover
+            raise ServerError(f"{tag}: no string given")
+        g.app.gui.replaceClipboardWith(s)
+        if p == c.p:
+            c.pasteOutline(s=s)
+        else:
+            oldPosition = c.p  # not same node, save position to possibly return to
+            c.selectPosition(p)
+            c.pasteOutline(s=s)
+            if c.positionExists(oldPosition):
+                # select if old position still valid
+                c.selectPosition(oldPosition)
+            else:
+                oldPosition._childIndex = oldPosition._childIndex + 1
+                # Try again with childIndex incremented
+                if c.positionExists(oldPosition):
+                    # additional try with higher childIndex
+                    c.selectPosition(oldPosition)
+        return self._make_response()
     #@+node:felix.20210621233316.59: *5* server.redo
     def redo(self, param: Param) -> Response:
         """Undo last un-doable operation with optional redo repeat count"""
@@ -3003,6 +3018,26 @@ class LeoServer:
         for _i in range(total):
             if u.canRedo():
                 u.redo()
+        return self._make_response()
+    #@+node:felix.20220616010756.1: *5* server.scroll_bottom
+    def scroll_bottom(self, param: Param) -> Response:
+        """
+        Utility method for connected clients to simulate scroll to bottom
+        """
+        c = self._check_c(param)
+        p = c.lastVisible()
+        if p:
+            c.treeSelectHelper(p)
+        return self._make_response()
+    #@+node:felix.20220616010755.1: *5* server.scroll_top
+    def scroll_top(self, param: Param) -> Response:
+        """
+        Utility method for connected clients to simulate scroll to the top
+        """
+        c = self._check_c(param)
+        p = c.firstVisible()
+        if p:
+            c.treeSelectHelper(p)
         return self._make_response()
     #@+node:felix.20210621233316.60: *5* server.set_body
     def set_body(self, param: Param) -> Response:
@@ -3126,6 +3161,16 @@ class LeoServer:
         v.selectionStart = startSel
         v.selectionLength = abs(startSel - endSel)
         return self._make_response()
+    #@+node:felix.20211114202058.1: *5* server.set_ua
+    def set_ua(self, param: Param) -> Response:
+        """
+        Replace / set the whole user attribute dict of a node.
+        """
+        self._check_c(param)
+        p = self._get_p(param)
+        ua = param.get('ua', {})
+        p.v.u = ua
+        return self._make_response()
     #@+node:felix.20211114202046.1: *5* server.set_ua_member
     def set_ua_member(self, param: Param) -> Response:
         """
@@ -3139,16 +3184,6 @@ class LeoServer:
             p.v.u = {}  # assert at least an empty dict if null or non existent
         if name and isinstance(name, str):
             p.v.u[name] = value
-        return self._make_response()
-    #@+node:felix.20211114202058.1: *5* server.set_ua
-    def set_ua(self, param: Param) -> Response:
-        """
-        Replace / set the whole user attribute dict of a node.
-        """
-        self._check_c(param)
-        p = self._get_p(param)
-        ua = param.get('ua', {})
-        p.v.u = ua
         return self._make_response()
     #@+node:felix.20210621233316.64: *5* server.toggle_mark
     def toggle_mark(self, param: Param) -> Response:
@@ -3168,20 +3203,17 @@ class LeoServer:
                 c.selectPosition(oldPosition)
         # return selected node either ways
         return self._make_response()
-    #@+node:felix.20210621233316.65: *5* server.mark_node
-    def mark_node(self, param: Param) -> Response:
-        """
-        Mark a node.
-        Try to keep selection, then return the selected node that remains.
-        """
-        # pylint: disable=no-else-return
-        self._check_c(param)
-        p = self._get_p(param)
-        if p.isMarked():
-            return self._make_response()
-        else:
-            return self.toggle_mark(param)
-
+    #@+node:felix.20210621233316.67: *5* server.undo
+    def undo(self, param: Param) -> Response:
+        """Undo last un-doable operation with optional undo repeat count"""
+        c = self._check_c(param)
+        u = c.undoer
+        total = param.get('repeat', 1)  # Facultative repeat undo count
+        for _i in range(total):
+            if u.canUndo():
+                u.undo()
+        # Félix: Caller can get focus using other calls.
+        return self._make_response()
     #@+node:felix.20210621233316.66: *5* server.unmark_node
     def unmark_node(self, param: Param) -> Response:
         """
@@ -3195,17 +3227,6 @@ class LeoServer:
             return self._make_response()
         else:
             return self.toggle_mark(param)
-    #@+node:felix.20210621233316.67: *5* server.undo
-    def undo(self, param: Param) -> Response:
-        """Undo last un-doable operation with optional undo repeat count"""
-        c = self._check_c(param)
-        u = c.undoer
-        total = param.get('repeat', 1)  # Facultative repeat undo count
-        for _i in range(total):
-            if u.canUndo():
-                u.undo()
-        # Félix: Caller can get focus using other calls.
-        return self._make_response()
     #@+node:felix.20210621233316.68: *4* server.server commands
     #@+node:felix.20210914230846.1: *5* server.get_version
     def get_version(self, param: Param) -> Response:
