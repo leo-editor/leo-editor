@@ -2739,7 +2739,7 @@ class LeoServer:
         p = self._get_p(param)
         p.expand()
         return self._make_response()
-    #@+node:ekr.20240214055709.1: *5* server.get_unl
+    #@+node:ekr.20240214055709.1: *5* server.get_unl (Leo 6.7.8)
     def get_unl(self, param: Param) -> Response:
         """
         Return the unl as it appears in the status line for given position.
@@ -2750,7 +2750,7 @@ class LeoServer:
         p = self._get_p(param)
         valid_kinds = (
             'full-gnx',  #    'unl:gnx:' + f"//{c.fileName()}#{self.gnx}"
-            'full-legacy',  # 'unl:'     + f"//{c.fileName()}#{'-->'.join(<parents_headline_list>}"
+            'full-legacy',  # 'unl:'     + f"//{c.fileName()}#{'-->'.join(<parents_headline_list>)}"
         )
         kind = getattr(param, "unl-kind", None) or 'full-legacy'
         if kind not in valid_kinds:
