@@ -181,25 +181,25 @@ def orange_command(
         return
     t1 = time.process_time()
     n_tokens = 0
-    n_changed = 0
+    n_beautified = 0
     for filename in to_be_checked_files:
         if os.path.exists(filename):
             was_dirty = filename in dirty_files
             tbo = TokenBasedOrange(settings)
-            changed = tbo.beautify_file(filename, was_dirty)
-            if changed:
-                n_changed += 1
+            beautified = tbo.beautify_file(filename, was_dirty)
+            if beautified:
+                n_beautified += 1
             n_tokens += len(tbo.tokens)
         else:
             print(f"file not found: {filename}")
     # Report the results.
     t2 = time.process_time()
-    if n_changed or TokenBasedOrange(settings).report:
+    if n_beautified or settings.get('report'):
         print(
             f"tbo: {t2-t1:3.1f} sec. "
             f"dirty: {len(dirty_files):<3} "
             f"checked: {len(to_be_checked_files):<3} "
-            f"beautified: {n_changed:<3} in {','.join(arg_files)}"
+            f"beautified: {n_beautified:<3} in {','.join(arg_files)}"
         )
 #@+node:ekr.20240105140814.24: *3* function: output_tokens_to_string
 def output_tokens_to_string(tokens: list[OutputToken]) -> str:
@@ -225,8 +225,8 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
     # Arguments.
     add2('-a', '--all', dest='all', action='store_true',
         help='Beautify all files, even unchanged files')
-    add2('-c', '--changed', dest='changed', action='store_true',
-        help='Report changed files individually')
+    add2('-b', '--beautified', dest='beautified', action='store_true',
+        help='Report beautified files individually, even if not written')
     add2('-d', '--diff', dest='diff', action='store_true',
         help='show diffs instead of changing files')
     add2('-r', '--report', dest='report', action='store_true',
@@ -236,7 +236,7 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
 
     # Create the return values, using EKR's prefs as the defaults.
     parser.set_defaults(
-        all=False, changed=False, diff=False, report=False, write=False,
+        all=False, beautified=False, diff=False, report=False, write=False,
         tab_width=4,
     )
     args: Any = parser.parse_args()
@@ -245,7 +245,7 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
     # Create the settings dict, ensuring proper values.
     settings_dict: dict[str, Any] = {
         'all': bool(args.all),
-        'changed': bool(args.changed),
+        'beautified': bool(args.beautified),
         'diff': bool(args.diff),
         'report': bool(args.report),
         'write': bool(args.write)
@@ -633,8 +633,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240111035404.1: *4* << TokenBasedOrange: __slots__ >>
     __slots__ = [
         # Command-line arguments.
-        'all', 'changed', 'diff', 'report', 'write',
-        
+        'all', 'beautified', 'diff', 'report', 'write',
+
         # Hard-coded ivar.
         'tab_width',
 
@@ -693,7 +693,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if settings is None:
             settings = {}
         self.all = False
-        self.changed = False
+        self.beautified = False
         self.diff = False
         self.report = False
         self.write = False
@@ -705,7 +705,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.tokens: list[InputToken] = []
 
         # Override defaults from settings dict.
-        valid_keys = ('all', 'changed', 'diff', 'report', 'write')
+        valid_keys = ('all', 'beautified', 'diff', 'report', 'write')
         for key in settings:  # pragma: no cover
             value = settings.get(key)
             if key in valid_keys and value is not None:
@@ -797,49 +797,46 @@ class TokenBasedOrange:  # Orange is the new Black.
         try:
             # Pre-scan the token list, setting context.s
             self.pre_scan()
+
+            # The main loop:
+            self.gen_token('file-start', '')
+            self.push_state('file-start')
+            prev_line_number: int = None
+            for self.index, self.token in enumerate(tokens):
+                # Set global for visitors.
+                if prev_line_number != self.token.line_number:
+                    prev_line_number = self.token.line_number
+                # Call the proper visitor.
+                if self.verbatim:
+                    self.do_verbatim()
+                else:
+                    func = getattr(self, f"do_{self.token.kind}", self.no_visitor)
+                    func()
+
+            # Return the result.
+            result = output_tokens_to_string(self.code_list)
+            return result
+
+        # Make no change if there is any error.
         except InternalBeautifierError as e:  # pragma: no cover
             # oops calls self.error_message to creates e.
             print(e)
         except AssertionError as e:  # pragma: no cover
             g.es_exception()
             print(self.error_message(repr(e)))
+        return contents
 
-        # The main loop:
-        self.gen_token('file-start', '')
-        self.push_state('file-start')
-        prev_line_number: int = None
-        for self.index, self.token in enumerate(tokens):
-            # Set global for visitors.
-            if prev_line_number != self.token.line_number:
-                prev_line_number = self.token.line_number
-            # Call the proper visitor.
-            try:
-                if self.verbatim:
-                    self.do_verbatim()
-                else:
-                    func = getattr(self, f"do_{self.token.kind}", self.no_visitor)
-                    func()
-            except InternalBeautifierError as e:  # pragma: no cover
-                # oops calls self.error_message to creates e.
-                print(e)
-            except AssertionError as e:  # pragma: no cover
-                g.es_exception()
-                print(self.error_message(repr(e)))
-
-        # Any post pass would go here.
-        result = output_tokens_to_string(self.code_list)
-        return result
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry) (stats & diffs)
     def beautify_file(self, filename: str, was_dirty: bool) -> bool:  # pragma: no cover
         """
         TokenBasedOrange: Beautify the the given external file.
 
-        Return True if the file was changed.
+        Return True if the file was beautified.
         """
         if 0:
             g.trace(
                 f"all: {int(self.all)} "
-                f"changed: {int(self.changed)} "
+                f"beautified: {int(self.beautified)} "
                 f"diff: {int(self.diff)} "
                 f"report: {int(self.report)} "
                 f"write: {int(self.write)} "
@@ -851,30 +848,24 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False  # Not an error.
         if not isinstance(tokens[0], InputToken):
             self.oops(f"Not an InputToken: {tokens[0]!r}")
+
+        # Beautify the contents, returning the original contents on any error.
         results = self.beautify(contents, filename, tokens)
-        if not results:
+
+        # Ignore changes only to newlines.
+        if self.regularize_newlines(contents) == self.regularize_newlines(results):
             return False
 
-        # Something besides newlines must change.
-        regularized_contents = self.regularize_nls(contents)
-        regularized_results = self.regularize_nls(results)
-        if regularized_contents == regularized_results:
-            # Nothing changed, but report the scanned file if requested.
-            if self.changed and was_dirty:  # --changed.
-                print(f"tbo: changed, not beautified: {g.shortFileName(filename)}")
-            return False
-        if not regularized_contents:
-            print(f"tbo: no results {g.shortFileName(filename)}")
-            return False
-
-        # Handle the args.
-        if self.changed:  # --changed.
-            print(f"tbo: changed: {g.shortFileName(filename)}")
+        # print reports reports.
+        if self.beautified:  # --beautified.
+            print(f"tbo: beautified: {g.shortFileName(filename)}")
         if self.diff:  # --diff.
             print(f"Diffs: {filename}")
-            self.show_diffs(regularized_contents, regularized_results)
+            self.show_diffs(contents, results)
+
+        # Write the (changed) file .
         if self.write:  # --write.
-            self.write_file(filename, regularized_results, encoding=encoding)
+            self.write_file(filename, results, encoding=encoding)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
@@ -1337,7 +1328,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         The Tokenizer converts all f-string tokens to a single 'string' token.
         """
         # Careful: continued strings may contain '\r'
-        val = self.regularize_nls(self.token.value)
+        val = self.regularize_newlines(self.token.value)
         self.gen_token('string', val)
         self.gen_blank()
     #@+node:ekr.20240105145241.22: *5* tbo.do_verbatim
@@ -1352,7 +1343,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         kind = self.token.kind
         #
         # Careful: tokens may contain '\r'
-        val = self.regularize_nls(self.token.value)
+        val = self.regularize_newlines(self.token.value)
         if kind == 'comment':
             if self.beautify_pat.match(val):
                 self.verbatim = False
@@ -1409,8 +1400,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         tok.index = len(self.code_list)
         self.code_list.append(tok)
         return tok
-    #@+node:ekr.20240105140814.12: *5* tbo.regularize_nls
-    def regularize_nls(self, s: str) -> str:
+    #@+node:ekr.20240105140814.12: *5* tbo.regularize_newlines
+    def regularize_newlines(self, s: str) -> str:
         """Regularize newlines within s."""
         return s.replace('\r\n', '\n').replace('\r', '\n')
     #@+node:ekr.20240110205127.1: *4* tbo: Scanning
@@ -1420,7 +1411,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Scan the entire file in one iterative pass, adding context to a few
         kinds of tokens as follows:
-        
+
         Token   Possible Contexts (or None)
         =====   ===========================
         ':'     'annotation', 'dict', 'complex-slice', 'simple-slice'
@@ -1609,7 +1600,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def finish_dict(self, end: int, state: ScanState) -> None:
         """
         Set context for all ':' when scanning from '{' to '}'
-        
+
         Strictly speaking, setting this context is unnecessary because
         tbo.gen_colon generates the same code regardless of this context.
 
@@ -1713,7 +1704,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def set_context(self, i: int, context: str) -> None:
         """
         Set self.tokens[i].context, but only if it does not already exist!
-        
+
         See the docstring for pre_scan for details.
         """
 
