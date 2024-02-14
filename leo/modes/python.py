@@ -4,6 +4,7 @@
 # Leo colorizer control file for python mode.
 # This file is in the public domain.
 
+import re
 import sys
 
 v1, v2, junk1, junk2, junk3 = sys.version_info
@@ -309,107 +310,53 @@ keywordsDictDict = {
 #@-<< Keywords Dicts >>
 #@+others
 #@+node:ekr.20230419163736.1: ** Python rules
-#@+node:ekr.20230419163819.1: *3* python_rule0
-def python_rule0(colorer, s, i):
+#@+node:ekr.20230419163819.1: *3* python_comment
+def python_comment(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="#")
-#@+node:ekr.20230419163819.2: *3* python_rule1 """
-def python_rule1(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"")
-#@+node:ekr.20230419163819.3: *3* python_rule2 '''
-def python_rule2(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''")
-#@+node:ekr.20230419163819.4: *3* python_rule3 "
-def python_rule3(colorer, s, i):
+#@+node:ekr.20230419163819.4: *3* python_double_quote
+def python_double_quote(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
-#@+node:ekr.20230419163819.5: *3* python_rule4 '
-def python_rule4(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
-#@+node:ekr.20230419163819.6: *3* python_rule5
-def python_rule5(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
-
-
-#@+node:ekr.20230419163819.7: *3* python_rule6
-def python_rule6(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
-
-
-#@+node:ekr.20230419163819.8: *3* python_rule7
-def python_rule7(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
-
-
-#@+node:ekr.20230419163819.9: *3* python_rule8
-def python_rule8(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
-
-
-#@+node:ekr.20230419163819.10: *3* python_rule9
-def python_rule9(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
-
-
-#@+node:ekr.20230419163819.11: *3* python_rule10
-def python_rule10(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
-
-
-#@+node:ekr.20230419163819.12: *3* python_rule11
-def python_rule11(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
-
-
-#@+node:ekr.20230419163819.13: *3* python_rule12
-def python_rule12(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
-
-
-#@+node:ekr.20230419163819.14: *3* python_rule13
-def python_rule13(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
-
-
-#@+node:ekr.20230419163819.15: *3* python_rule14
-def python_rule14(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
-
-
-#@+node:ekr.20230419163819.16: *3* python_rule15
-def python_rule15(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
-
-
-#@+node:ekr.20230419163819.17: *3* python_rule16
-def python_rule16(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
-
-
-#@+node:ekr.20230419163819.18: *3* python_rule17
-def python_rule17(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
-
-
-#@+node:ekr.20230419163819.19: *3* python_rule18
-def python_rule18(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
-
-
-#@+node:ekr.20230419163819.20: *3* python_rule19
-def python_rule19(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
-
-
-#@+node:ekr.20230419163819.21: *3* python_rule20 (not used)
-if 0:  # #1821.
-    def python_rule20(colorer, s, i):
-        return colorer.match_mark_previous(s, i, kind="function", pattern="(")
-#@+node:ekr.20230419163819.22: *3* python_rule21 (keyword)
-def python_rule21(colorer, s, i):
-    return colorer.match_keywords(s, i)
-#@+node:ekr.20231209010502.1: *3* python_rule_fstring
-def python_rule_fstring(colorer, s, i):
+#@+node:ekr.20230419163819.2: *3* python_double_quote_docstring
+def python_double_quote_docstring(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal2", begin="\"\"\"", end="\"\"\"")
+#@+node:ekr.20231209010502.1: *3* python_fstring (not used)
+def python_fstring(colorer, s, i):
     return colorer.match_fstring(s, i)
-#@+node:ekr.20230419163931.1: *3* python_rule_h_url/rule_f_url (not used)
+#@+node:ekr.20230419163819.22: *3* python_keyword
+def python_keyword(colorer, s, i):
+    return colorer.match_keywords(s, i)
+#@+node:ekr.20240213104932.1: *3* python_len_op1 (all single-character ops)
+def python_op1(colorer, s, i):
+    """Color a s[i] as an operator."""
+    colorer.colorRangeWithTag(s, i, i + 1, tag='operator')
+    return 1
+#@+node:ekr.20240213105320.1: *3* python_number
+# Does not include suffixes or hex digits.
+int_s = r'[0-9]+'
+float_s = fr'{int_s}\.({int_s})?'
+number_pat = re.compile(fr'({float_s}|{int_s})')
+
+def python_number(colorer, s, i):
+    if 1:  # Legacy: don't colorize numbers.
+        return 0
+
+    # New, experimental.
+    n = colorer.match_seq_regexp(s, i, kind='number', regexp=number_pat)
+    # print(f"python_number: i: {i:3} n: {n:2} {s[i : i + n]!r}")
+    return n
+#@+node:ekr.20240213103850.1: *3* python_op_gt/lt & helpers
+def python_op_gt(colorer, s, i):
+    """Color '>=' and '>'. """
+    n = 2 if s[i : i + 2] == '>=' else 1
+    colorer.colorRangeWithTag(s, i, i + n, tag='operator')
+    return n
+
+def python_op_lt(colorer, s, i):
+    """Color '<=' and '<'. """
+    n = 2 if s[i : i + 2] == '<=' else 1
+    colorer.colorRangeWithTag(s, i, i + n, tag='operator')
+    return n
+#@+node:ekr.20230419163931.1: *3* python_rule_h/f_url (not used)
 if 0:
     url = False
 
@@ -417,113 +364,127 @@ if 0:
         h_url_regex = r"""(http|https)://[^\s'"]+[\w=/]"""
         f_url_regex = r"""(file|ftp)://[^\s'"]+[\w=/]"""
 
-        def python_rule_h_url(colorer, s, i):
+        def python_h_url(colorer, s, i):
             return colorer.match_seq_regexp(s, i, kind="keyword", regexp=h_url_regex)
 
-        def python_rule_f_url(colorer, s, i):
+        def python_f_url(colorer, s, i):
             return colorer.match_seq_regexp(s, i, kind="keyword", regexp=f_url_regex)
 
     else:
         # Always fail.
-        def python_rule_h_url(colorer, s, i):
+        def python_h_url(colorer, s, i):
             return 0
 
-        def python_rule_f_url(colorer, s, i):
+        def python_f_url(colorer, s, i):
             return 0
+#@+node:ekr.20230419163819.5: *3* python_single_quote
+def python_single_quote(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
+#@+node:ekr.20230419163819.3: *3* python_single_quote_docstring
+def python_single_quote_docstring(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''")
 #@-others
 #@+<< Rules Dicts >>
 #@+node:ekr.20230419164059.1: ** << Rules Dicts >>
 # Rules dict for python_main ruleset.
 rulesDict1 = {
-    "!": [python_rule6],
-    "\"": [python_rule1, python_rule3],
-    "#": [python_rule0],
-    "%": [python_rule15],
-    "&": [python_rule16],
-    "'": [python_rule2, python_rule4],
-    # "(": [python_rule20],
-    "*": [python_rule12],
-    "+": [python_rule9],
-    "-": [python_rule10],
-    "/": [python_rule11],
-    "0": [python_rule21],
-    "1": [python_rule21],
-    "2": [python_rule21],
-    "3": [python_rule21],
-    "4": [python_rule21],
-    "5": [python_rule21],
-    "6": [python_rule21],
-    "7": [python_rule21],
-    "8": [python_rule21],
-    "9": [python_rule21],
-    "<": [python_rule8, python_rule14],
-    "=": [python_rule5],
-    ">": [python_rule7, python_rule13],
-    "@": [python_rule21],
-    "A": [python_rule21],
-    "B": [python_rule21],
-    "C": [python_rule21],
-    "D": [python_rule21],
-    "E": [python_rule21],
-    "F": [python_rule21],  # python_rule_f_url,
-    "G": [python_rule21],
-    "H": [python_rule21],  # python_rule_h_url,
-    "I": [python_rule21],
-    "J": [python_rule21],
-    "K": [python_rule21],
-    "L": [python_rule21],
-    "M": [python_rule21],
-    "N": [python_rule21],
-    "O": [python_rule21],
-    "P": [python_rule21],
-    "Q": [python_rule21],
-    "R": [python_rule21],
-    "S": [python_rule21],
-    "T": [python_rule21],
-    "U": [python_rule21],
-    "V": [python_rule21],
-    "W": [python_rule21],
-    "X": [python_rule21],
-    "Y": [python_rule21],
-    "Z": [python_rule21],
-    "^": [python_rule18],
-    "_": [python_rule21],
-    "a": [python_rule21],
-    "b": [python_rule21],
-    "c": [python_rule21],
-    "d": [python_rule21],
-    "e": [python_rule21],
-    "f": [python_rule21],  # python_rule_f_url
-    "g": [python_rule21],
-    "h": [python_rule21],  # python_rule_h_url
-    "i": [python_rule21],
-    "j": [python_rule21],
-    "k": [python_rule21],
-    "l": [python_rule21],
-    "m": [python_rule21],
-    "n": [python_rule21],
-    "o": [python_rule21],
-    "p": [python_rule21],
-    "q": [python_rule21],
-    "r": [python_rule21],
-    "s": [python_rule21],
-    "t": [python_rule21],
-    "u": [python_rule21],
-    "v": [python_rule21],
-    "w": [python_rule21],
-    "x": [python_rule21],
-    "y": [python_rule21],
-    "z": [python_rule21],
-    "|": [python_rule17],
-    "~": [python_rule19],
-}
+    # Operators of length 1.
+    "!": [python_op1],
+    "%": [python_op1],
+    "&": [python_op1],
+    "|": [python_op1],
+    "~": [python_op1],
+    "*": [python_op1],
+    "+": [python_op1],
+    "-": [python_op1],
+    "/": [python_op1],
+    "=": [python_op1],
+    "^": [python_op1],
 
+    # Operators of length 1 or 2.
+    "<": [python_op_lt],
+    ">": [python_op_gt],
+
+    # Quotes and quotes.
+    '"': [python_double_quote_docstring, python_double_quote],
+    "'": [python_single_quote_docstring, python_single_quote],
+    "#": [python_comment],
+
+    # Numbers...
+    "@": [python_keyword],  # A special case.
+    ".": [python_number],
+    "0": [python_number],
+    "1": [python_number],
+    "2": [python_number],
+    "3": [python_number],
+    "4": [python_number],
+    "5": [python_number],
+    "6": [python_number],
+    "7": [python_number],
+    "8": [python_number],
+    "9": [python_number],
+
+    # names or keywords.
+    "A": [python_keyword],
+    "B": [python_keyword],
+    "C": [python_keyword],
+    "D": [python_keyword],
+    "E": [python_keyword],
+    "F": [python_keyword],  # python_f_url
+    "G": [python_keyword],
+    "H": [python_keyword],  # python_h_url
+    "I": [python_keyword],
+    "J": [python_keyword],
+    "K": [python_keyword],
+    "L": [python_keyword],
+    "M": [python_keyword],
+    "N": [python_keyword],
+    "O": [python_keyword],
+    "P": [python_keyword],
+    "Q": [python_keyword],
+    "R": [python_keyword],  # python_f_url
+    "S": [python_keyword],
+    "T": [python_keyword],
+    "U": [python_keyword],
+    "V": [python_keyword],
+    "W": [python_keyword],
+    "X": [python_keyword],
+    "Y": [python_keyword],
+    "Z": [python_keyword],
+    "_": [python_keyword],
+    "a": [python_keyword],
+    "b": [python_keyword],
+    "c": [python_keyword],
+    "d": [python_keyword],
+    "e": [python_keyword],
+    "f": [python_keyword],  # python_f_url
+    "g": [python_keyword],
+    "h": [python_keyword],  # python_h_url
+    "i": [python_keyword],
+    "j": [python_keyword],
+    "k": [python_keyword],
+    "l": [python_keyword],
+    "m": [python_keyword],
+    "n": [python_keyword],
+    "o": [python_keyword],
+    "p": [python_keyword],
+    "q": [python_keyword],
+    "r": [python_keyword],
+    "s": [python_keyword],
+    "t": [python_keyword],
+    "u": [python_keyword],
+    "v": [python_keyword],
+    "w": [python_keyword],
+    "x": [python_keyword],
+    "y": [python_keyword],
+    "z": [python_keyword],
+}
 
 if False:  # #3770: Revert colorizing of PEP 701 f-strings.
     if (v1, v2) >= (3, 12):
         # Update rules to for Python 3.12+ f-strings.
         for key in 'frFR':
-            rulesDict1[key] = [python_rule_fstring, python_rule21]
+            rulesDict1[key] = [python_fstring, python_keyword]
 
 # x.rulesDictDict for python mode.
 rulesDictDict = {
