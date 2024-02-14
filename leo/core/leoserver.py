@@ -64,7 +64,7 @@ Socket = Any
 #@-<< leoserver annotations >>
 #@+<< leoserver version >>
 #@+node:ekr.20220820160619.1: ** << leoserver version >>
-version_tuple = (1, 0, 9)
+version_tuple = (1, 0, 10)
 # Version History
 # 1.0.1 Initial commit.
 # 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info.
@@ -75,6 +75,7 @@ version_tuple = (1, 0, 9)
 # 1.0.7 September 2023: Fixed message for file change detection.
 # 1.0.8 October 2023: Added history commands, Fixed leo document change detection, allowed more minibuffer commands.
 # 1.0.9 January 2024: Added support for UNL and specific commander targeting for any command.
+# 1.0.10 Febuary 2024: Added support getting UNL for a specific node (for status bar display, etc.)
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -2591,6 +2592,22 @@ class LeoServer:
             response = {"bead": undoer.bead, "undos": undos}
         except Exception:  # pragma: no cover
             response = {"bead": 0, "undos": []}
+        # _make_response adds all the cheap redraw data.
+        return self._make_minimal_response(response)
+    #@+node:felix.20240213234032.1: *5* server.get_unl
+    def get_unl(self, param: Param) -> Response:
+        """Return UNL for specific position, or currently selected node"""
+        c = self._check_c(param)
+        p = self._get_p(param)
+        unl = ""
+        try:
+            if p and p.v:
+                kind = c.config.getString('unl-status-kind') or ''
+                method = p.get_legacy_UNL if kind.lower() == 'legacy' else p.get_UNL
+                unl = method()
+            response = {"unl": unl}
+        except Exception:  # pragma: no cover
+            response = {"unl": unl}
         # _make_response adds all the cheap redraw data.
         return self._make_minimal_response(response)
     #@+node:felix.20210621233316.49: *4* server.node commands
