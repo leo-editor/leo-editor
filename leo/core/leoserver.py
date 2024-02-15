@@ -1881,7 +1881,7 @@ class LeoServer:
         fc = c.findCommands
         ftm = fc.ftm
 
-        if hasattr(param, "fromOutline"):
+        if "fromOutline" in param:
             fromOutline = param.get("fromOutline", False)
             fromBody = not fromOutline
             #
@@ -2603,34 +2603,34 @@ class LeoServer:
         """
         c = self._check_c(param)
         p = self._get_p(param)
-        unl = ""
-        if p and p.v:
-            # Set a method to get an UNL: either specific, or the default status-bar method.
-            if (hasattr(param, 'short') or hasattr(param, 'legacy')):
-                # Parameter given: Specific UNL method
-                method = p.get_short_gnx_UNL  # Default to short gnx UNL.
-                short = param.get('short', True)
-                legacy = param.get('legacy', False)
-                if short == False:
-                    method = p.get_full_gnx_UNL
-                    if legacy == True:
-                        method = p.get_full_legacy_UNL
-                elif legacy == True:
-                    method = p.get_short_legacy_UNL
-            else: 
-                # No parameter: UNL for status bar (use same logic as original Leo.)
-                kind = c.config.getString('unl-status-kind') or ''
-                method = p.get_legacy_UNL if kind.lower() == 'legacy' else p.get_UNL
+        if not p or not p.v:
+            response = {"unl": ""}
+            return self._make_minimal_response(response)
 
-        # Ok, a method was chosen. Get the unl and send it to the client     
+        # Set a method to get an UNL: either specific, or the default status-bar method.
+        if 'short' in param or 'legacy'in param:
+            # Parameter given: Use a specific method.
+            short = param.get('short', True)
+            legacy = param.get('legacy', False)
+            if short:
+                method = p.get_short_legacy_UNL if legacy else p.get_short_gnx_UNL
+            else:
+                method = p.get_full_legacy_UNL if legacy else p.get_full_gnx_UNL
+        else:
+            # No parameter: (UNL for status bar): use same logic as original Leo.
+            kind = c.config.getString('unl-status-kind') or ''
+            method = p.get_legacy_UNL if kind.lower() == 'legacy' else p.get_UNL
+
+        # Get the unl.
         try:
             unl = method()
-            response = {"unl": unl}
         except Exception:  # pragma: no cover
-            response = {"unl": unl}
+            unl = ""
 
-        # minimal response 
+        # Return the response.
+        response = {"unl": unl}
         return self._make_minimal_response(response)
+        
     #@+node:felix.20210621233316.49: *4* server.node commands
     #@+node:felix.20210621233316.50: *5* server.clone_node
     def clone_node(self, param: Param) -> Response:
@@ -2677,7 +2677,7 @@ class LeoServer:
         p = self._get_p(param)
 
         copyMethod = c.copyOutline
-        if hasattr(param, "asJSON"):
+        if "asJSON" in param:
             if param["asJSON"]:
                 copyMethod = c.copyOutlineAsJSON
 
@@ -2723,7 +2723,7 @@ class LeoServer:
         c = self._check_c(param)
         p = self._get_p(param)
         copyMethod = c.copyOutline
-        if hasattr(param, "asJSON"):
+        if "asJSON" in param:
             if param["asJSON"]:
                 copyMethod = c.copyOutlineAsJSON
         if p == c.p:
