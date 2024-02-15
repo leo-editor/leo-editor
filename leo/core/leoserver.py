@@ -2608,7 +2608,7 @@ class LeoServer:
             return self._make_minimal_response(response)
 
         # Set a method to get an UNL: either specific, or the default status-bar method.
-        if 'short' in param or 'legacy'in param:
+        if 'short' in param or 'legacy' in param:
             # Parameter given: Use a specific method.
             short = param.get('short', True)
             legacy = param.get('legacy', False)
@@ -2630,7 +2630,7 @@ class LeoServer:
         # Return the response.
         response = {"unl": unl}
         return self._make_minimal_response(response)
-        
+
     #@+node:felix.20210621233316.49: *4* server.node commands
     #@+node:felix.20210621233316.50: *5* server.clone_node
     def clone_node(self, param: Param) -> Response:
