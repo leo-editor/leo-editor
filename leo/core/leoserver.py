@@ -1881,7 +1881,7 @@ class LeoServer:
         fc = c.findCommands
         ftm = fc.ftm
 
-        if hasattr(param, "fromOutline"):
+        if "fromOutline" in param:
             fromOutline = param.get("fromOutline", False)
             fromBody = not fromOutline
             #
@@ -2606,7 +2606,7 @@ class LeoServer:
         unl = ""
         if p and p.v:
             # Set a method to get an UNL: either specific, or the default status-bar method.
-            if (hasattr(param, 'short') or hasattr(param, 'legacy')):
+            if 'short' in  param or 'legacy' in param:
                 # Parameter given: Specific UNL method
                 method = p.get_short_gnx_UNL  # Default to short gnx UNL.
                 short = param.get('short', True)
@@ -2677,7 +2677,7 @@ class LeoServer:
         p = self._get_p(param)
 
         copyMethod = c.copyOutline
-        if hasattr(param, "asJSON"):
+        if "asJSON" in param:
             if param["asJSON"]:
                 copyMethod = c.copyOutlineAsJSON
 
@@ -2723,7 +2723,7 @@ class LeoServer:
         c = self._check_c(param)
         p = self._get_p(param)
         copyMethod = c.copyOutline
-        if hasattr(param, "asJSON"):
+        if "asJSON" in param:
             if param["asJSON"]:
                 copyMethod = c.copyOutlineAsJSON
         if p == c.p:
