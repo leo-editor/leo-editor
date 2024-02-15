@@ -6,6 +6,20 @@
 #@@language python
 #@@killbeautify
 #@+all
+#@+node:ekr.20230628105236.1: ** don't use ruff: ../scripts/ruff-leo.cmd
+@language batch
+@echo off
+cd %~dp0..\..
+
+rem qt_main.py is auto generated.
+rem call py -m ruff leo/plugins/qt*.py
+
+echo ruff leo/core, leo/commands, leo/plugins/qt...
+call py -m ruff leo/core
+call py -m ruff leo/commands
+call py -m ruff leo/plugins/qt_gui.py
+call py -m ruff leo/plugins/qt_text.py
+call py -m ruff leo/plugins/qt_tree.py
 #@+node:ekr.20231009061250.1: ** retire all eval commands
 # mod_scripting.py contained the EvalController class.
 
