@@ -6,7 +6,8 @@
 #@@language python
 #@@killbeautify
 #@+all
-#@+node:ekr.20230628105236.1: ** don't use ruff: ../scripts/ruff-leo.cmd
+#@+node:ekr.20240215062420.1: ** retire ruff
+#@+node:ekr.20230628105236.1: *3* ../scripts/ruff-leo.cmd
 @language batch
 @echo off
 cd %~dp0..\..
