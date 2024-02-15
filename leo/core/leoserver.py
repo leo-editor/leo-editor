@@ -2596,19 +2596,40 @@ class LeoServer:
         return self._make_minimal_response(response)
     #@+node:felix.20240213234032.1: *5* server.get_unl
     def get_unl(self, param: Param) -> Response:
-        """Return UNL for specific position, or currently selected node"""
+        """
+        Return UNL for specific position, or currently selected node.
+        This defaults to using the normal status bar UNL indicator method 
+        unless 'short' or 'legacy' boolean parameters are used.
+        """
         c = self._check_c(param)
         p = self._get_p(param)
         unl = ""
-        try:
-            if p and p.v:
+        if p and p.v:
+            # Set a method to get an UNL: either specific, or the default status-bar method.
+            if (hasattr(param, 'short') or hasattr(param, 'legacy')):
+                # Parameter given: Specific UNL method
+                method = p.get_short_gnx_UNL  # Default to short gnx UNL.
+                short = param.get('short', True)
+                legacy = param.get('legacy', False)
+                if short == False:
+                    method = p.get_full_gnx_UNL
+                    if legacy == True:
+                        method = p.get_full_legacy_UNL
+                elif legacy == True:
+                    method = p.get_short_legacy_UNL
+            else: 
+                # No parameter: UNL for status bar (use same logic as original Leo.)
                 kind = c.config.getString('unl-status-kind') or ''
                 method = p.get_legacy_UNL if kind.lower() == 'legacy' else p.get_UNL
-                unl = method()
+
+        # Ok, a method was chosen. Get the unl and send it to the client     
+        try:
+            unl = method()
             response = {"unl": unl}
         except Exception:  # pragma: no cover
             response = {"unl": unl}
-        # _make_response adds all the cheap redraw data.
+
+        # minimal response 
         return self._make_minimal_response(response)
     #@+node:felix.20210621233316.49: *4* server.node commands
     #@+node:felix.20210621233316.50: *5* server.clone_node
