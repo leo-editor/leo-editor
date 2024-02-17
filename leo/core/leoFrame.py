@@ -971,7 +971,7 @@ class LeoFrame:
         if name.startswith('body'):
             p.v.b = w.getAllText()
             u.afterChangeBody(p, 'Cut', bunch)
-        # If it's the headline, the headline is not officially changed yet.
+        # If it's the headline, the headline has not officially changed yet.
 
     OnCutFromMenu = cutText
     #@+node:ekr.20070130115927.7: *5* LeoFrame.pasteText
