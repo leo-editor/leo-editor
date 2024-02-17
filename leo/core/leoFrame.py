@@ -942,6 +942,7 @@ class LeoFrame:
         # 2016/03/27: Fix a recent buglet.
         # Don't clear the clipboard if we hit ctrl-c by mistake.
         s = w.get(i, j)
+        s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         if s:
             g.app.gui.replaceClipboardWith(s)
 
@@ -1006,6 +1007,7 @@ class LeoFrame:
             start, end = c.k.previousSelection
             s = w.getAllText()
             s = s[start:end]
+            s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
             c.k.previousSelection = None
         else:
             s = g.app.gui.getTextFromClipboard()
