@@ -4600,9 +4600,7 @@ This chapter lists almost all of Leo's commands. It starts with a discussion of 
     :local:
 
 </t>
-<t tx="ekr.20050901101608.4">&lt;customizing.html#specifying-settings&gt;`_
-
-################
+<t tx="ekr.20050901101608.4">################
 Customizing Leo
 ################
 

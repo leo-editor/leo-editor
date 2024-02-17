@@ -185,7 +185,7 @@ class QTextMixin:
         if w.changingText:
             return
         if tree.tree_select_lockout:
-            g.trace('*** LOCKOUT', g.callers())
+            # g.trace('*** LOCKOUT', g.callers())
             return
         if not p:
             return

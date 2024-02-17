@@ -44,7 +44,7 @@ Settings
 import re
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtGui
-from leo.core.leoQt import MoveMode
+from leo.core.leoQt import MoveMode, MoveOperation
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -171,12 +171,12 @@ class WikiView:
         if cfmt.fontPointSize() == self.pts or all:
             if all:
                 cursor.setPosition(0)
-                cursor.setPosition(len(w.toPlainText()), cursor.KeepAnchor)
+                cursor.setPosition(len(w.toPlainText()), MoveMode.KeepAnchor)
             else:
                 end = cursor.position()
                 # move left to find left end of range
                 while (
-                    cursor.movePosition(cursor.PreviousCharacter) and
+                    cursor.movePosition(MoveOperation.PreviousCharacter) and
                     cursor.charFormat().fontPointSize() == self.pts
                 ):
                     pass
@@ -184,12 +184,12 @@ class WikiView:
                 # move right to find left end of range
                 cursor.setPosition(end)
                 while (
-                    cursor.movePosition(cursor.NextCharacter) and
+                    cursor.movePosition(MoveOperation.NextCharacter) and
                     cursor.charFormat().fontPointSize() == self.pts
                 ):
                     pass
                 # select range and restore normal size
-                cursor.setPosition(start, cursor.KeepAnchor)
+                cursor.setPosition(start, MoveMode.KeepAnchor)
             # Common code.
             cfmt.setFontPointSize(self.size)
             cfmt.setFontLetterSpacing(100)
