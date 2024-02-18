@@ -814,7 +814,7 @@ class AutoCompleterClass:
         return obj, prefix
     #@+node:ekr.20061031131434.38: *4* ac.info
     def info(self) -> None:
-        """Show the docstring for the present completion."""
+        """Show the signature and docstring for the present completion."""
         c = self.c
         obj, prefix = self.get_object()
         c.frame.log.clearTab('Info', wrap='word')
@@ -823,34 +823,10 @@ class AutoCompleterClass:
             self.put('', s, tabName='Info')
 
         put(prefix)
-        try:
-            argspec = inspect.getargspec(obj)
-            # uses None instead of empty list
-            argn = len(argspec.args or [])
-            defn = len(argspec.defaults or [])
-            put("args:")
-            simple_args = argspec.args[: argn - defn]
-            if not simple_args:
-                put('    (none)')
-            else:
-                put('    ' + ', '.join(' ' + i for i in simple_args))
-            put("keyword args:")
-            if not argspec.defaults:
-                put('    (none)')
-            for i in range(defn):
-                arg = argspec.args[-defn + i]
-                put(f"    {arg} = {repr(argspec.defaults[i])}")
-            if argspec.varargs:
-                put("varargs: *" + argspec.varargs)
-            if argspec.keywords:
-                put("keywords: **" + argspec.keywords)
-            put('\n')
-        except Exception:
-            # In Python 3.12, inspect does not handle bound methods!
-            # See https://github.com/python/cpython/issues/115630.
-            pass
+        put(f"Signature: {inspect.signature(obj)!s}")
         doc = inspect.getdoc(obj)
-        put(doc if doc else "No docstring for " + repr(prefix))
+        if doc:
+            put(f"Docstring:\n{doc!s}")
     #@+node:ekr.20110510071925.14586: *4* ac.init_qcompleter
     def init_qcompleter(self, event: Event = None) -> None:
 
