@@ -306,7 +306,7 @@ class AutoCompleterClass:
         """Show the autocompleter status."""
         k = self.k
         if not g.unitTesting:
-            s = f"calltips {'On'}" if k.enable_calltips else 'Off'
+            s = f"calltips {'On' if k.enable_calltips else 'Off'}"
             g.red(s)
     #@+node:ekr.20061031131434.16: *3* ac.Helpers
     #@+node:ekr.20110512212836.14469: *4* ac.exit
@@ -468,22 +468,13 @@ class AutoCompleterClass:
         self.insert_string('(')
     #@+node:ekr.20110512090917.14469: *5* ac.calltip_success
     def calltip_success(self, prefix: str, obj: Any) -> None:
+
         try:
-            # Get the parenthesized argument list.
-            s1, s2, s3, s4 = inspect.getargspec(obj)
-            s = inspect.formatargspec(s1, s2, s3, s4)
+            s = str(inspect.signature(obj))
+            self.insert_string(s, select=True)
         except Exception:
-            self.insert_string('(')
-            return
-        # Clean s and insert it: don't include the opening "(".
-        if g.match(s, 1, 'self,'):
-            s = s[6:].strip()
-        elif g.match_word(s, 1, 'self'):
-            s = s[5:].strip()
-        else:
-            s = s[1:].strip()
-        self.insert_string("(", select=False)
-        self.insert_string(s, select=True)
+            # g.es_exception()
+            pass
     #@+node:ekr.20061031131434.28: *4* ac.compute_completion_list & helper
     def compute_completion_list(self) -> tuple[str, str, list]:
         """Return the autocompleter completion list."""
@@ -826,7 +817,7 @@ class AutoCompleterClass:
         put(f"Signature: {inspect.signature(obj)!s}")
         doc = inspect.getdoc(obj)
         if doc:
-            put(f"Docstring:\n{doc!s}")
+            put(str(doc))
     #@+node:ekr.20110510071925.14586: *4* ac.init_qcompleter
     def init_qcompleter(self, event: Event = None) -> None:
 
