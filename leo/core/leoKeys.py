@@ -844,9 +844,11 @@ class AutoCompleterClass:
                 put("varargs: *" + argspec.varargs)
             if argspec.keywords:
                 put("keywords: **" + argspec.keywords)
-            put('\n')  # separate docstring
-        except TypeError:
-            put('\n')  # not a callable
+            put('\n')
+        except Exception:
+            # In Python 3.12, inspect does not handle bound methods!
+            # See https://github.com/python/cpython/issues/115630.
+            pass
         doc = inspect.getdoc(obj)
         put(doc if doc else "No docstring for " + repr(prefix))
     #@+node:ekr.20110510071925.14586: *4* ac.init_qcompleter
