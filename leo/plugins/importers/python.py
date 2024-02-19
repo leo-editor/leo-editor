@@ -146,7 +146,7 @@ class Python_Importer(Importer):
 
         Return the index of the line *following* the entire class/def
 
-        Note: All following blank/comment lines are *excluded* from the block.
+        Exclude trailing blank/comment lines, but *include* docstrings!
         """
         def lws_n(s: str) -> int:
             """Return the length of the leading whitespace for s."""
@@ -165,23 +165,32 @@ class Python_Importer(Importer):
                 i += 1
                 if ')' in self.guide_lines[i - 1]:
                     break
+        lws1 = lws_n(prev_line)
+        non_blank_lines = -1  # Exclude the class/def line itself.
         tail_lines = 0
-        if i < i2:
-            lws1 = lws_n(prev_line)
-            while i < i2:
-                s = self.guide_lines[i]
-                i += 1
-                if s.strip():
-                    if lws_n(s) <= lws1:
-                        # A non-comment line that ends the block.
+        while i < i2:
+            s = self.guide_lines[i]
+            ### g.trace(f"{i:2} {lws1} {non_blank_lines} {tail_lines} {s!r}")
+            i += 1
+            if s.strip():
+                if lws_n(s) <= lws1:
+                    # A non-comment line that ends the block.
+                    if True:  ### non_blank_lines > 0:
                         # Exclude all tail lines.
                         return i - tail_lines - 1
-                    # A non-comment line that does not end the block.
-                    tail_lines = 0
-                else:
-                    # A comment line.
-                    tail_lines += 1
+                    # Do *not* exclude tail lines.
+                    return i - 1
+                # A non-comment line that does not end the block.
+                tail_lines = 0
+                non_blank_lines += 1
+            else:
+                # A comment line.
+                tail_lines += 1
+
         return i2 - tail_lines
+        ###
+            # g.trace(non_blank_lines, tail_lines)
+            # return i2 - tail_lines if non_blank_lines > 0 else i2
     #@+node:ekr.20230825095926.1: *3* python_i.postprocess & helpers
     def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:
         """
