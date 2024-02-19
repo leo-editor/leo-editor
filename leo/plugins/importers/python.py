@@ -168,14 +168,20 @@ class Python_Importer(Importer):
         lws1 = lws_n(prev_line)
         non_blank_lines = -1  # Exclude the class/def line itself.
         tail_lines = 0
-        while i < i2:
+        limit = min(i2 + 1, len(self.guide_lines) - 1)
+        ### limit = i2  ### For now.
+        ### g.trace('i2:', i2, 'Limit:', limit)
+        ### while i < i2:
+        g.trace('Entry', repr(prev_line))
+        while i < limit:
             s = self.guide_lines[i]
             ### g.trace(f"{i:2} {lws1} {non_blank_lines} {tail_lines} {s!r}")
             i += 1
             if s.strip():
                 if lws_n(s) <= lws1:
+                    g.trace('Done 1!')
                     # A non-comment line that ends the block.
-                    if True:  ### non_blank_lines > 0:
+                    if non_blank_lines > 0:
                         # Exclude all tail lines.
                         return i - tail_lines - 1
                     # Do *not* exclude tail lines.
@@ -187,10 +193,9 @@ class Python_Importer(Importer):
                 # A comment line.
                 tail_lines += 1
 
-        return i2 - tail_lines
-        ###
-            # g.trace(non_blank_lines, tail_lines)
-            # return i2 - tail_lines if non_blank_lines > 0 else i2
+        ### return i2 - tail_lines
+        g.trace('Done 2!')
+        return i2 - tail_lines if non_blank_lines > 0 else i2
     #@+node:ekr.20230825095926.1: *3* python_i.postprocess & helpers
     def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:
         """

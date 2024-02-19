@@ -2979,7 +2979,7 @@ class TestPython(BaseTestImporter):
             class TracerCore:
                 
                 def start(self):
-                    """Start this tracer"""
+                    """Start this tracer."""
                     
                 def stop(self):
                     """Stop this tracer."""
@@ -2995,13 +2995,13 @@ class TestPython(BaseTestImporter):
                     'class TracerCore:\n'
                     '    ATothers\n'.replace('AT', '@')
             ),
-            (2, 'def start',
-                    'def start()\n'
-                    '"""Start this tracer"""\n'
+            (2, 'TracerCore.start',
+                    'def start(self):\n'
+                    '    """Start this tracer."""\n'
             ),
-            (2, 'def stop',
-                    'def stop()\n'
-                    '"""Stop this tracer"""\n'
+            (2, 'TracerCore.stop',
+                    'def stop(self):\n'
+                    '    """Stop this tracer."""\n'
             ),
         )
         self.new_run_test(s, expected_results)
