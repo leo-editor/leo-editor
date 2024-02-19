@@ -21142,7 +21142,7 @@ or download Leo's sources directly.
 
 Download Leo’s sources using one of the methods described at `Leo's download page`_.
 
-After download unpack the zip archive where you like and from a python enabled command shell:
+After download unpack the zip archive where you like and from a python enabled command shell::
 
 	pip install --editable C:\\path\\to\\leo-editor
 
