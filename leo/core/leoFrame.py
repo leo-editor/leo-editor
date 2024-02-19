@@ -942,6 +942,7 @@ class LeoFrame:
         # 2016/03/27: Fix a recent buglet.
         # Don't clear the clipboard if we hit ctrl-c by mistake.
         s = w.get(i, j)
+        s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         if s:
             g.app.gui.replaceClipboardWith(s)
 
@@ -959,26 +960,18 @@ class LeoFrame:
         oldText = w.getAllText()
         i, j = w.getSelectionRange()
         # Update the widget and set the clipboard text.
-        s = w.get(i, j)
-        if i != j:
-            w.delete(i, j)
-            w.see(i)  # 2016/01/19: important
-            g.app.gui.replaceClipboardWith(s)
-        else:
+        if i == j:
             ins = w.getInsertPoint()
             i, j = g.getLine(oldText, ins)
-            s = w.get(i, j)
-            w.delete(i, j)
-            w.see(i)  # 2016/01/19: important
-            g.app.gui.replaceClipboardWith(s)
+        s = w.get(i, j)
+        w.delete(i, j)
+        w.see(i)  # Required.
+        s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
+        g.app.gui.replaceClipboardWith(s)
         if name.startswith('body'):
             p.v.b = w.getAllText()
             u.afterChangeBody(p, 'Cut', bunch)
-        elif name.startswith('head'):
-            # The headline is not officially changed yet.
-            s = w.getAllText()
-        else:
-            pass
+        # If it's the headline, the headline has not officially changed yet.
 
     OnCutFromMenu = cutText
     #@+node:ekr.20070130115927.7: *5* LeoFrame.pasteText
@@ -1010,6 +1003,7 @@ class LeoFrame:
         else:
             s = g.app.gui.getTextFromClipboard()
         s = g.checkUnicode(s)
+        s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
         singleLine = wname.startswith('head') or wname.startswith('minibuffer')
         if singleLine:
             # Strip trailing newlines so the truncation doesn't cause confusion.
