@@ -3,7 +3,7 @@
 #@+<< leoHistory imports & annotations >>
 #@+node:ekr.20221213120137.1: ** << leoHistory imports & annotations >>
 from __future__ import annotations
-from typing import Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -30,10 +30,9 @@ class NodeHistory:
     #@+node:ekr.20160426061203.1: *3* NodeHistory.dump
     def dump(self) -> None:
         """Dump the beadList"""
-        c = self.c
         if g.unitTesting or not self.beadList:
             return
-        print(f"NodeHistory.beadList: {c.shortFileName()}:")
+        # print(f"NodeHistory.beadList: {self.c.shortFileName()}:")
         for i, data in enumerate(self.beadList):
             p, chapter = data
             p_s = p.h if p else 'no p'
@@ -42,81 +41,75 @@ class NodeHistory:
             print(f"{mark_s} {chapter_s} {p_s}")
         print('')
     #@+node:ekr.20070615134813: *3* NodeHistory.goNext
-    def goNext(self) -> Optional[Position]:
+    def goNext(self) -> None:
         """Select the next node, if possible."""
-        if self.beadPointer + 1 < len(self.beadList):
-            self.beadPointer += 1
-            p, chapter = self.beadList[self.beadPointer]
-            self.select(p, chapter)
-            return p
-        return None
-    #@+node:ekr.20130915111638.11288: *3* NodeHistory.goPrev
-    def goPrev(self) -> Optional[Position]:
-        """Select the previously visited node, if possible."""
-        if self.beadPointer > 0:
-            self.beadPointer -= 1
-            p, chapter = self.beadList[self.beadPointer]
-            self.select(p, chapter)
-            return p
-        return None
-    #@+node:ekr.20130915111638.11294: *3* NodeHistory.select
-    def select(self, p: Position, chapter: Any) -> None:
-        """
-        Update the history list when selecting p.
-
-        Only self.goNext and self.goPrev call this method.
-        """
-        c, cc = self.c, self.c.chapterController
+        c = self.c
+        if self.beadPointer + 1 >= len(self.beadList):
+            return
+        self.beadPointer += 1
+        p, chapter = self.beadList[self.beadPointer]
         if c.positionExists(p):
-            self.skipBeadUpdate = True
-            try:
-                oldChapter = cc.getSelectedChapter()
-                if oldChapter != chapter:
-                    cc.selectChapterForPosition(p, chapter=chapter)
-                c.selectPosition(p)  # Calls cc.selectChapterForPosition
-            finally:
-                self.skipBeadUpdate = False
-        # Fix bug #180: Always call self.update here.
-        self.update(p, change=False)
+            p, chapter = self.beadList[self.beadPointer]
+            self.update(p)
+            self.select(p, chapter)
+        else:
+            del self.beadList[self.beadPointer]
+            self.beadPointer -= 1
+    #@+node:ekr.20130915111638.11288: *3* NodeHistory.goPrev
+    def goPrev(self) -> None:
+        """Select the previously visited node, if possible."""
+        c = self.c
+        if self.beadPointer <= 0:
+            return
+        self.beadPointer -= 1
+        p, chapter = self.beadList[self.beadPointer]
+        if c.positionExists(p):
+            p, chapter = self.beadList[self.beadPointer]
+            self.update(p)
+            self.select(p, chapter)
+        else:
+            del self.beadList[self.beadPointer]
+            self.beadPointer += 1
+    #@+node:ekr.20130915111638.11294: *3* NodeHistory.select
+    def select(self, p: Position, chapter: Chapter) -> None:
+        """Select p in the given chapter."""
+        c, cc = self.c, self.c.chapterController
+        assert c.positionExists(p), repr(p)
+        oldChapter = cc.getSelectedChapter()
+        if oldChapter != chapter:
+            cc.selectChapterForPosition(p, chapter=chapter)
+        c.selectPosition(p)  # Calls cc.selectChapterForPosition
     #@+node:ville.20090724234020.14676: *3* NodeHistory.update
-    def update(self, p: Position, change: bool = True) -> None:
+    def update(self, p: Position) -> None:
         """
         Update the beadList while p is being selected.
-
-        change: True:  The caller is c.frame.tree.selectHelper.
-                False: The caller is NodeHistory.select.
         """
         c, cc = self.c, self.c.chapterController
-        if not p or not c.positionExists(p) or self.skipBeadUpdate:
+        if not p or not c.positionExists(p):
             return
-        # A hack: don't add @chapter nodes.
+
+        # Don't add @chapter nodes.
         # These are selected during the transitions to a new chapter.
         if p.h.startswith('@chapter '):
             return
-        # Fix bug #180: handle the change flag.
-        aList: list[tuple[Position, Chapter]] = []
-        found = -1
-        for i, data in enumerate(self.beadList):
-            p2, junk_chapter = data
-            if c.positionExists(p2):
-                if p == p2:
-                    if change:
-                        pass  # We'll append later.
-                    elif found == -1:
-                        found = i
-                        aList.append(data)
-                    else:
-                        pass  # Remove any duplicate.
-                else:
-                    aList.append(data)
-        if change or found == -1:
-            data = (p.copy(), cc.getSelectedChapter())
-            aList.append(data)
-            self.beadPointer = len(aList) - 1
-        else:
-            self.beadPointer = found
-        self.beadList = aList
-        # self.dump()
+
+        # #3800: Do nothing if p is the top of the bead list.
+        last_p = self.beadList[-1][0] if self.beadList else None
+        if last_p == p:
+            return
+
+        # #3800: Remove p from the bead list, adjusting the bead pointer.
+        n_deleted = 0
+        for z in self.beadList:
+            if z[0].v == p.v:
+                n_deleted += 1
+        self.beadList = [z for z in self.beadList if z[0].v != p.v]
+        self.beadPointer -= n_deleted
+
+        # #3800: Insert an entry in the *middle* of the bead list, *not* at the end.
+        data = (p.copy(), cc.getSelectedChapter())
+        self.beadList.insert(self.beadPointer + 1, data)
+        self.beadPointer += 1
     #@-others
 #@-others
 #@@language python
