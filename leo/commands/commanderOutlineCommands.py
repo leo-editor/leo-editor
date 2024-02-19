@@ -689,27 +689,13 @@ def findNextClone(self: Cmdr, event: Event = None) -> None:
 def goNextVisitedNode(self: Cmdr, event: Event = None) -> None:
     """Select the next visited node."""
     c = self
-    p = c.nodeHistory.goNext()
-    if p:
-        c.nodeHistory.skipBeadUpdate = True
-        try:
-            c.selectPosition(p)
-        finally:
-            c.nodeHistory.skipBeadUpdate = False
-            c.redraw_after_select(p)
+    c.nodeHistory.goNext()
 #@+node:ekr.20031218072017.1627: *3* c_oc.goPrevVisitedNode
 @g.commander_command('go-back')
 def goPrevVisitedNode(self: Cmdr, event: Event = None) -> None:
     """Select the previously visited node."""
     c = self
-    p = c.nodeHistory.goPrev()
-    if p:
-        c.nodeHistory.skipBeadUpdate = True
-        try:
-            c.selectPosition(p)
-        finally:
-            c.nodeHistory.skipBeadUpdate = False
-            c.redraw_after_select(p)
+    c.nodeHistory.goPrev()
 #@+node:ekr.20031218072017.2914: *3* c_oc.goToFirstNode
 @g.commander_command('goto-first-node')
 def goToFirstNode(self: Cmdr, event: Event = None) -> None:
