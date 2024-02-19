@@ -2971,6 +2971,40 @@ class TestPython(BaseTestImporter):
     ext = '.py'
 
     #@+others
+    #@+node:ekr.20240219045037.1: *3* TestPython.test_almost_empty_defs
+    def test_almost_empty_defs(self):
+
+        # #3803. Adapated from the TracerCore class in the coverage package.
+        s = '''
+            class TracerCore:
+                
+                def start(self):
+                    """Start this tracer"""
+                    
+                def stop(self):
+                    """Stop this tracer."""
+            '''
+
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                   '@others\n'
+                   '@language python\n'
+                   '@tabwidth -4\n'
+            ),
+            (1, 'class TracerCore',
+                    'class TracerCore:\n'
+                    '    ATothers\n'.replace('AT', '@')
+            ),
+            (2, 'def start',
+                    'def start()\n'
+                    '"""Start this tracer"""\n'
+            ),
+            (2, 'def stop',
+                    'def stop()\n'
+                    '"""Stop this tracer"""\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20230514195224.1: *3* TestPython.test_delete_comments_and_strings
     def test_delete_comments_and_strings(self):
 
