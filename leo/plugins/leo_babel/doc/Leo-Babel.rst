@@ -759,6 +759,9 @@ following variables in the scripts Babel Script:
 -  babel_prefix_stdout
 -  babel_prefix_stderr
 
+The output prefixes are not added to the lines shown in the Results
+subtree.
+
 Babel Tab
 ---------
 
