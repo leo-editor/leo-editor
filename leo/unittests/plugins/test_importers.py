@@ -3157,16 +3157,6 @@ class TestPython(BaseTestImporter):
                        'def method23():\n'
                        '    pass\n'
             ),
-            # (1, 'class Class3',
-                # 'class Class3:\n'
-                # '@others\n'  # The underindented comments prevents indention
-            # ),
-            # (2, 'Class3.u1',
-                    # '# Outer underindented comment\n'
-                    # '    def u1():\n'
-                    # '    # Underindented comment in u1.\n'
-                    # '        pass\n'
-            # ),
             (1, 'function: main',
                    '# About main.\n'
                    '\n'
@@ -3331,15 +3321,14 @@ class TestPython(BaseTestImporter):
                 main()
         """
 
-        # Note: new_gen_block deletes leading and trailing whitespace from all blocks.
         expected_results = (
             (0, '',  # Ignore the first headline.
-                    'import sys\n'
-                    '@others\n'
-                    "if __name__ == '__main__':\n"
-                    '    main()\n'
-                    '@language python\n'
-                    '@tabwidth -4\n'
+                'import sys\n'
+                '@others\n'
+                "if __name__ == '__main__':\n"
+                '    main()\n'
+                '@language python\n'
+                '@tabwidth -4\n'
             ),
             (1, 'function: f1',
                     'def f1():\n'
@@ -3537,17 +3526,16 @@ class TestPython(BaseTestImporter):
             """).replace('AT', '@')
 
         expected_results = (
-            (0, '',  # Ignore the first headline.
-                    # 'import sys\n'
-                    '@others\n'
-                    "if __name__ == '__main__':\n"
-                    '    main()\n'
-                    '@language python\n'
-                    '@tabwidth -4\n'
+            (0, '',
+                '@others\n'
+                "if __name__ == '__main__':\n"
+                '    main()\n'
+                '@language python\n'
+                '@tabwidth -4\n'
             ),
             (1, 'class Class3',
                 'class Class3:\n'
-                '@others\n'  # The underindented comments prevents indention
+                '@others\n'
             ),
             (2, 'Class3.u1',
                     '# Outer underindented comment\n'
@@ -3556,10 +3544,10 @@ class TestPython(BaseTestImporter):
                     '        pass\n'
             ),
             (1, 'function: main',
-                       '# About main.\n'
-                       '\n'
-                       'def main():\n'
-                       '    pass\n'
+                   '# About main.\n'
+                   '\n'
+                   'def main():\n'
+                   '    pass\n'
             ),
         )
         self.new_run_test(s, expected_results)
