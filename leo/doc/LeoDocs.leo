@@ -1646,6 +1646,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20240222121346.1"><vh>What's new in Leo 6.7.8</vh></v>
 <v t="ekr.20240118094134.1"><vh>What's new in Leo 6.7.7</vh></v>
 <v t="ekr.20231126120048.1"><vh>What's new in Leo 6.7.6</vh></v>
 <v t="ekr.20230901233844.1"><vh>What's new in Leo 6.7.5</vh></v>
@@ -1824,6 +1825,7 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20240222121215.1"><vh>Leo 6.7.8 release notes</vh></v>
 <v t="ekr.20240118094108.1"><vh>Leo 6.7.7 release notes</vh></v>
 <v t="ekr.20231126121710.1"><vh>Leo 6.7.6 release notes </vh></v>
 <v t="ekr.20230901233131.1"><vh>Leo 6.7.5 release notes</vh></v>
@@ -2518,10 +2520,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101025080245.5791"></v>
-<v t="ekr.20180125034510.1"></v>
-<v t="ekr.20240118094134.1"></v>
-<v t="ekr.20240118094108.1"></v>
+<v t="ekr.20240222121346.1"></v>
+<v t="ekr.20240222121215.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32955,6 +32955,55 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #3761`: https://github.com/leo-editor/leo-editor/pull/3761
 
 - `PR #3761`_: Improve leoserver.py to support LeoInteg.
+</t>
+<t tx="ekr.20240222121215.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.8 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.7.8**
+
+- PR #3757: (leoTokens.py) Make Leo's beautifier 3x faster.
+- PR #3771: Revert colorizing of f-strings.
+- PR #3786: Support Nim.
+- PR #3790: Add "get-unl" command to Leo's server.
+- PR #3805: Fix problems with auto-completion and calltips.
+- PR #3806: Fix problems with Leo's `go-back` and `go-forward` commands.
+- PR #3807: Improve Leo's Python importer.
+- Assorted minor code improvements and bug fixes.
+
+**Links**
+
+- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.7.8 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.8+)
+- [6.7.8 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.8)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
+<t tx="ekr.20240222121346.1">.. Use the link-pr abbreviation to create these links.
+
+.. _`PR #3757`: https://github.com/leo-editor/leo-editor/pull/3757
+.. _`PR #3771`: https://github.com/leo-editor/leo-editor/pull/3771
+.. _`PR #3786`: https://github.com/leo-editor/leo-editor/pull/3786
+.. _`PR #3790`: https://github.com/leo-editor/leo-editor/pull/3790
+.. _`PR #3805`: https://github.com/leo-editor/leo-editor/pull/3805
+.. _`PR #3806`: https://github.com/leo-editor/leo-editor/pull/3806
+.. _`PR #3807`: https://github.com/leo-editor/leo-editor/pull/3807
+
+- `PR #3757`_: (leoTokens.py) Make Leo's beautifier 3x faster.
+- `PR #3771`_: Revert colorizing of f-strings.
+- `PR #3786`_: Support Nim.
+- `PR #3790`_: Add "get-unl" command to Leo's server.
+- `PR #3805`_: Fix problems with auto-completion and calltips.
+- `PR #3806`_: Fix problems with Leo's `go-back` and `go-forward` commands.
+- `PR #3807`_: Improve Leo's Python importer.
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
