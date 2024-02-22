@@ -2974,7 +2974,8 @@ class TestPython(BaseTestImporter):
     #@+node:ekr.20240219045037.1: *3* TestPython.test_almost_empty_defs
     def test_almost_empty_defs(self):
 
-        # #3803. Adapated from the TracerCore class in the coverage package.
+        # #3803. Adapated from the TracerCore class coverage/types.py.
+        #        Designed to test find_end_of_block.
         s = '''
             class TracerCore:
                 
@@ -2983,11 +2984,20 @@ class TestPython(BaseTestImporter):
                     
                 def stop(self):
                     """Stop this tracer."""
+
+            # About main
+            def main():
+                pass
+
+            if __name__ == '__main__':
+                main()
             '''
 
         expected_results = (
             (0, '',  # Ignore the first headline.
                    '@others\n'
+                   "if __name__ == '__main__':\n"
+                    '    main()\n'
                    '@language python\n'
                    '@tabwidth -4\n'
             ),
@@ -3002,6 +3012,11 @@ class TestPython(BaseTestImporter):
             (2, 'TracerCore.stop',
                     'def stop(self):\n'
                     '    """Stop this tracer."""\n'
+            ),
+            (1, 'function: main',
+                    '# About main\n'
+                    'def main():\n'
+                    '    pass\n'
             ),
         )
         self.new_run_test(s, expected_results)
@@ -3309,14 +3324,12 @@ class TestPython(BaseTestImporter):
             @dec_for_f2
             def f2(): pass
 
-            # About main.
             def main():
                 pass
 
             if __name__ == '__main__':
                 main()
         """
-        ###    class A: pass
 
         # Note: new_gen_block deletes leading and trailing whitespace from all blocks.
         expected_results = (
@@ -3335,19 +3348,11 @@ class TestPython(BaseTestImporter):
             (1, 'class Class1',
                     'class Class1:pass\n'
             ),
-            # This is a difficult special case.
-            # Trying to do better would greatly complicate find_end_of_block.
             (1, 'function: f2',
                     'a = 2\n'
                     '@dec_for_f2\n'
                     'def f2(): pass\n'
-                    '\n'
-                    '# About main.\n'
             ),
-            # (1, 'class A',  # This is a bizarre special case.
-                    # 'class A: pass\n'
-                    # '# About main.\n'
-            # ),
             (1, 'function: main',
                     'def main():\n'
                     '    pass\n'

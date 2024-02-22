@@ -133,6 +133,8 @@ class Python_Importer(Importer):
                     ):
                         i = end
                     else:
+                        # Keep this trace.
+                        g.printObj(self.lines[prev_i:end], tag=f"{prev_i}:{end} {name}")
                         block = Block(kind, name, start=prev_i, start_body=i, end=end, lines=self.lines)
                         results.append(block)
                         i = prev_i = end
@@ -144,20 +146,16 @@ class Python_Importer(Importer):
         """
         i is the index of the class/def line (within the *guide* lines).
 
-        Return the index of the line *following* the entire class/def
-
-        Note: All following blank/comment lines are *excluded* from the block.
+        Return the index of the line *following* the entire class/def.
         """
         def lws_n(s: str) -> int:
             """Return the length of the leading whitespace for s."""
             return len(s) - len(s.lstrip())
 
-        if i >= i2:
-            return i2
-
         prev_line = self.guide_lines[i - 1]
         kinds = ('class', 'def', '->')  # '->' denotes a coffeescript function.
         assert any(z in prev_line for z in kinds), (i, repr(prev_line))
+        is_class = 'class' in prev_line
 
         # Handle multi-line def's. Scan to the line containing a close parenthesis.
         if prev_line.strip().startswith('def ') and ')' not in prev_line:
@@ -165,26 +163,43 @@ class Python_Importer(Importer):
                 i += 1
                 if ')' in self.guide_lines[i - 1]:
                     break
-                    
-        # The following code ignores indentation of comments.
-        # This choice simplifies the code but can produce non-optimal results.
+
+        g.trace('Entry', i, repr(prev_line))  ###
         non_tail_lines = tail_lines = 0
         if i < i2:
             lws1 = lws_n(prev_line)
             while i < i2:
                 s = self.guide_lines[i]
-                i += 1
+                # g.trace(f"{i:2} {self.lines[i]!r}")
                 if s.strip():
+                    # A code line.
                     if lws_n(s) <= lws1:
-                        # A non-comment line that ends the block.
+                        # A code line that ends the block.
                         # Exclude all tail lines except if there are no other lines.
-                        return i - 1 if non_tail_lines == 0 else i - tail_lines - 1
-                    # A non-comment line that does not end the block.
+                        g.trace('Last code', is_class, repr(self.lines[i]))
+                        ### return i if non_tail_lines == 0 or is_class else i - tail_lines
+                        return i if non_tail_lines == 0 else i - tail_lines
+                    # A code line in the block.
                     non_tail_lines += 1
                     tail_lines = 0
                 else:
-                    # A comment line.
-                    tail_lines += 1
+                    # A comment or docstring line.
+                    s = self.lines[i]
+                    s_strip = s.strip()
+                    is_comment = s_strip.startswith('#')
+                    if is_comment:
+                        if s_strip and lws_n(s) < lws1:
+                            # An underindented comment.
+                            # Make sure classes contain as much as possible.
+                            if non_tail_lines > 0:
+                                g.trace('Last comment', is_class)
+                                return i if is_class else i - tail_lines
+                        tail_lines += 1
+                    else:
+                        non_tail_lines += 1
+                        tail_lines = 0
+                i += 1
+        g.trace('END', i2)  ###
         return i2
     #@+node:ekr.20230825095926.1: *3* python_i.postprocess & helpers
     def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:
