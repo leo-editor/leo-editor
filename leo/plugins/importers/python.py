@@ -177,22 +177,24 @@ class Python_Importer(Importer):
                     # A code line in the block.
                     non_tail_lines += 1
                     tail_lines = 0
+                    i += 1
+                    continue
+                # A blank, comment or docstring line.
+                s = self.lines[i]
+                s_strip = s.strip()
+                if not s_strip:
+                    # A blank line.
+                    tail_lines += 1
+                elif s_strip.startswith('#'):
+                    # A comment line.
+                    if s_strip and lws_n(s) < lws1:
+                        if non_tail_lines > 0:
+                            return i - tail_lines
+                    tail_lines += 1
                 else:
-                    # A comment or docstring line.
-                    s = self.lines[i]
-                    s_strip = s.strip()
-                    is_comment = s_strip.startswith('#')
-                    if not s_strip:
-                        # A blank line.
-                        tail_lines += 1
-                    elif is_comment:
-                        if s_strip and lws_n(s) < lws1:
-                            if non_tail_lines > 0:
-                                return i - tail_lines
-                        tail_lines += 1
-                    else:
-                        non_tail_lines += 1
-                        tail_lines = 0
+                    # A string/docstring line.
+                    non_tail_lines += 1
+                    tail_lines = 0
                 i += 1
         return i2
     #@+node:ekr.20230825095926.1: *3* python_i.postprocess & helpers
