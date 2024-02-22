@@ -458,23 +458,6 @@
 </v>
 <v t="ekr.20101115152915.4937"><vh>Backup of wikipedia entry</vh></v>
 <v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
-<v t="ekr.20240206191839.1"><vh>Old installation notes</vh>
-<v t="tbrown.20140412113009.50227"><vh>Snapshots</vh></v>
-<v t="maphew.20200616225715.1"><vh>Standalone Leo.exe</vh></v>
-<v t="ekr.20180130033527.1"><vh>Installing Leo with pip</vh>
-<v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
-</v>
-<v t="ekr.20180126191031.1"><vh>Installing everything with Anaconda or Miniconda</vh></v>
-<v t="ekr.20101125062332.5090"><vh>Installing packages</vh></v>
-<v t="ekr.20170206073848.1"><vh>Installing Leo itself</vh>
-<v t="ekr.20170206073747.2"><vh>Installing Leo on Windows</vh>
-<v t="ekr.20170206073747.4"><vh>Installing from sources (Windows)</vh></v>
-<v t="ekr.20170206073747.5"><vh>Creating Windows file associations</vh></v>
-</v>
-<v t="mhw.20191010004650.1"><vh>Installing Leo from sources (all platforms)</vh></v>
-<v t="ekr.20170206073747.9"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
-</v>
-</v>
 </v>
 <v t="ekr.20230121110345.1"><vh>Script files</vh>
 <v t="ekr.20230121110340.1"><vh>@clean ../scripts/make-clean.cmd</vh></v>
@@ -671,10 +654,26 @@
 </v>
 <v t="ekr.20131008041326.16092"><vh>Installing &amp; running Leo</vh>
 <v t="ekr.20131015104133.16766"><vh>@rst html/getting-started.html</vh></v>
-<v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh></v>
+<v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh>
+<v t="tbrown.20140412113009.50227"><vh>Snapshots</vh></v>
+<v t="maphew.20200616225715.1"><vh>@ignore Standalone Leo.exe</vh></v>
+</v>
 <v t="ekr.20131008041326.16094"><vh>@rst html/installing.html</vh>
 <v t="ekr.20141105052052.4"><vh>Dependencies</vh></v>
+<v t="ekr.20180130033527.1"><vh>Installing Leo with pip</vh>
+<v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
+</v>
+<v t="ekr.20101125062332.5090"><vh>Installing packages</vh></v>
+<v t="ekr.20170206073848.1"><vh>Installing Leo itself</vh>
+<v t="ekr.20170206073747.2"><vh>Installing Leo on Windows</vh>
+<v t="ekr.20170206073747.4"><vh>Installing from sources (Windows)</vh></v>
+<v t="ekr.20170206073747.5"><vh>Creating Windows file associations</vh></v>
+</v>
+<v t="mhw.20191010004650.1"><vh>Installing Leo from sources (all platforms)</vh></v>
 <v t="ekr.20170206073747.10"><vh>Installing Leo with git</vh></v>
+<v t="ekr.20170206073747.9"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
+</v>
+<v t="ekr.20180126191031.1"><vh>Installing everything with Anaconda or Miniconda</vh></v>
 </v>
 <v t="ekr.20131008041326.16140"><vh>@rst html/running.html</vh>
 <v t="ekr.20131008041326.16151"><vh>Running Leo</vh>
@@ -1647,6 +1646,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20240222121346.1"><vh>What's new in Leo 6.7.8</vh></v>
 <v t="ekr.20240118094134.1"><vh>What's new in Leo 6.7.7</vh></v>
 <v t="ekr.20231126120048.1"><vh>What's new in Leo 6.7.6</vh></v>
 <v t="ekr.20230901233844.1"><vh>What's new in Leo 6.7.5</vh></v>
@@ -1825,6 +1825,7 @@
 </v>
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
+<v t="ekr.20240222121215.1"><vh>Leo 6.7.8 release notes</vh></v>
 <v t="ekr.20240118094108.1"><vh>Leo 6.7.7 release notes</vh></v>
 <v t="ekr.20231126121710.1"><vh>Leo 6.7.6 release notes </vh></v>
 <v t="ekr.20230901233131.1"><vh>Leo 6.7.5 release notes</vh></v>
@@ -2519,12 +2520,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101025080245.5791"></v>
-<v t="ekr.20180125034510.1"></v>
-<v t="ekr.20240118094134.1"></v>
-<v t="ekr.20240118094108.1"></v>
-<v t="ekr.20240206191839.1"></v>
-<v t="ekr.20131008041326.16092"></v>
+<v t="ekr.20240222121346.1"></v>
+<v t="ekr.20240222121215.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -11656,16 +11653,23 @@ creates a permanent reference to the window so the window won't be garbage colle
 
 </t>
 <t tx="ekr.20111127144911.5544">.. _`Installing Leo with git`:  installing.html#installing-leo-with-git
+.. _`Installing Leo with pip`:  installing.html#installing-leo-with-pip
+.. _`Nightly snapshot`:         download.html#snapshots       
+.. _`Python wheel`:             https://pythonwheels.com/
 .. _`git`:                      https://git-scm.com/
+.. .. _`Standalone leo.exe`:       download.html#standalone
 
-########################
-Downloading Leo with Git
-########################
+###############
+Downloading Leo
+###############
 
-You must Leo using `git`_, see `Installing Leo with git`_.
-Git gives you the latest, thoroughly tested code with nothing missing.
+There are two ways to download Leo:
 
-</t>
+- ``pip install leo`` will automatically download *and* install Leo, including all Leo's dependencies, less a couple of non-essential things. See `Installing Leo with pip`_.
+
+- Recommended: install Leo using `git`_, see `Installing Leo with git`_. Git gives you the latest, thoroughly tested code with nothing missing.
+
+- If you prefer a new development version and don't want to use git download a `Nightly snapshot`_.</t>
 <t tx="ekr.20120130101219.10182">def computeBindingLetter(self, kind):
     # lm = self
     if not kind:
@@ -15587,6 +15591,12 @@ You might call this a FAQ for scripts...
 Downloading, Installing &amp; Running Leo
 #####################################
 
+.. _`Python`:                   https://www.python.org/
+.. _`Leo's dependencies`:       installing.html#dependencies
+.. _`Installing Leo using pip`:    installing.html#installing-leo-with-pip
+
+**Overview**: Leo is a `Python`_ program.  You must install Python itself, `Leo's dependencies`_, and then download and install Leo itself.
+
 .. toctree::
    :maxdepth: 4
 
@@ -17084,7 +17094,8 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 .. _`Markdown`:   http://daringfireball.net/projects/markdown/syntax
 .. _`Python`:     https://www.python.org/
 .. _`PyEnchant`:  http://pyenchant.github.io/pyenchant/install.html
-.. .. _`PythonTidy`: https://pypi.python.org/pypi/PythonTidy/
+.. _`Missing files when installing Leo from PyPI using "pip install leo"`: https://github.com/leo-editor/leo-editor/issues/603
+.. _`PythonTidy`: https://pypi.python.org/pypi/PythonTidy/
 .. _`PyQt`:       http://www.riverbankcomputing.co.uk/software/pyqt/intro
 .. _`PyQt5`:      http://www.riverbankcomputing.com/software/pyqt/download5
 .. _`Sphinx`:     http://www.sphinx-doc.org/en/stable/
@@ -17101,10 +17112,7 @@ The following packages are optional, but recommended:
 * `Sphinx`_: required to regenerate Leo's documentation.
 * `PyEnchant`_: required for spell checking.
 
-Plugins may require other packages:
-
-- viewrendered will use `Markdown`_ if available.
-- rss.py requires `feedparser`_.
+Plugins may require other packages.  For example, viewrendered requires `Markdown`_ if one wishes to use markdown rendering, but it is optional. rss.py will not function without `feedparser`_. Etc.
 </t>
 <t tx="ekr.20141105055521.5">The ``livecode-show`` commands shows the live code evaluation pane. Hover on the buttons for helpful tool-tips.
 
@@ -32948,7 +32956,55 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 - `PR #3761`_: Improve leoserver.py to support LeoInteg.
 </t>
-<t tx="ekr.20240206191839.1"></t>
+<t tx="ekr.20240222121215.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.8 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.7.8**
+
+- PR #3757: (leoTokens.py) Make Leo's beautifier 3x faster.
+- PR #3771: Revert colorizing of f-strings.
+- PR #3786: Support Nim.
+- PR #3790: Add "get-unl" command to Leo's server.
+- PR #3805: Fix problems with auto-completion and calltips.
+- PR #3806: Fix problems with Leo's `go-back` and `go-forward` commands.
+- PR #3807: Improve Leo's Python importer.
+- Assorted minor code improvements and bug fixes.
+
+**Links**
+
+- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.7.8 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.8+)
+- [6.7.8 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.8)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
+<t tx="ekr.20240222121346.1">.. Use the link-pr abbreviation to create these links.
+
+.. _`PR #3757`: https://github.com/leo-editor/leo-editor/pull/3757
+.. _`PR #3771`: https://github.com/leo-editor/leo-editor/pull/3771
+.. _`PR #3786`: https://github.com/leo-editor/leo-editor/pull/3786
+.. _`PR #3790`: https://github.com/leo-editor/leo-editor/pull/3790
+.. _`PR #3805`: https://github.com/leo-editor/leo-editor/pull/3805
+.. _`PR #3806`: https://github.com/leo-editor/leo-editor/pull/3806
+.. _`PR #3807`: https://github.com/leo-editor/leo-editor/pull/3807
+
+- `PR #3757`_: (leoTokens.py) Make Leo's beautifier 3x faster.
+- `PR #3771`_: Revert colorizing of f-strings.
+- `PR #3786`_: Support Nim.
+- `PR #3790`_: Add "get-unl" command to Leo's server.
+- `PR #3805`_: Fix problems with auto-completion and calltips.
+- `PR #3806`_: Fix problems with Leo's `go-back` and `go-forward` commands.
+- `PR #3807`_: Improve Leo's Python importer.
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
