@@ -6800,16 +6800,16 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         file_part = g.getUNLFilePart(unl)
         tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
 
-        # If there is a file part, search *only* the given commander!
+        # First, search the open commander.
+        # #3811: Do *not* fail if this search fails.
         if file_part:
             c2 = g.openUNLFile(c, file_part)
-            if not c2:
-                return None
-            p = g.findGnx(tail, c2)
-            return p  # May be None.
+            if c2:
+                p = g.findGnx(tail, c2)
+                if p:
+                    return p
 
-        # New in Leo 6.7.7:
-        # There is no file part, so search all open commanders, starting with c.
+        # Search all open commanders, starting with c.
         p = g.findGnx(tail, c)
         if p:
             return p
