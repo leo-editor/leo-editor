@@ -6717,8 +6717,17 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
 #    For example, the link: `unl:gnx://#ekr.20031218072017.2406` refers to this
 #    outline's "Code" node. Try it. The link works in this outline.
 #
-#    *Note*: `{outline}` is optional. It can be an absolute path name or a relative
-#    path name resolved using `@data unl-path-prefixes`.
+#    *Note*: `{outline}` can be:
+#
+#    - An absolute path to a .leo file.
+#      The link fails unless the given file exits.
+#
+#    - A relative path to a .leo file.
+#      Leo searches for the gnx:
+#      a) among the paths in `@data unl-path-prefixes`,
+#      b) among all open commanders.
+#
+#    - Empty. Leo searches for the gnx in all open commanders.
 #
 # 3. Leo's headline-based UNLs, as shown in the status pane:
 #
