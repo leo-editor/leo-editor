@@ -247,7 +247,7 @@ class TestGlobals(LeoUnitTest):
         Patch @data unl-path-prefixes so that g.findAnyUnl will find nodes in
         the new commander.
 
-        Return the commander for the new outline.
+        Return the commander for the *second* new outline.
         """
         from leo.core.leoCommands import Commands
         c = c1 = self.c
@@ -266,24 +266,6 @@ class TestGlobals(LeoUnitTest):
         c2.mFileName = os.path.normpath(os.path.join(directory, c2_name))
         self.assertEqual(c1_name, os.path.basename(c.fileName()))
         self.assertEqual(c2_name, os.path.basename(c2.fileName()))
-
-        def make_line(c):
-            file_name = c.fileName()
-            key = os.path.basename(file_name)
-            # Values must be directories.
-            value = os.path.normpath(os.path.dirname(file_name))
-            # print(f"{key:17} {value}")
-            return f"{key}: {value}"
-
-        # Init the @data unl-path-prefixes.
-        lines = [make_line(z) for z in (c, c2)]
-        self._set_setting(c, kind='data', name='unl-path-prefixes', val=lines)
-        lines2 = c.config.getData('unl-path-prefixes')
-        self.assertEqual(list(sorted(lines)), list(sorted(lines2)))
-        d = g.parsePathData(c)
-        if 0:
-            print('')
-            g.printObj(d)
         return c2
     #@+node:ekr.20230701084035.1: *4* TestGlobals.test_per_commander_data
     def test_per_commander_data(self):
@@ -1197,7 +1179,7 @@ class TestGlobals(LeoUnitTest):
         # Create a new commander
         c1 = self.c
         c2 = self._patch_at_data_unl_path_prefixes()
-        # Change both filenames.
+        # Use short file names.
         file_name1 = os.path.basename(c1.fileName())
         file_name2 = os.path.basename(c2.fileName())
         # Cross-file tests.

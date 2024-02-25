@@ -7319,14 +7319,19 @@ def getUNLFilePart(s: str) -> str:
 def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     """
     Open the commander for filename s, the file part of an unl.
-
-    Use `@data unl-path-prefixes` to convert to relative to absolute paths.
-
     Return None if the file can not be found.
     """
+    # Aliases.
     base = os.path.basename
+    dirname = os.path.dirname
+    exists = os.path.exists
+    isabs = os.path.isabs
+    join = g.os_path_finalize_join  # Not os.path.join
     norm = os.path.normpath
+
+    # c's name and directory.
     c_name = c.fileName()
+    c_dir = dirname(c_name)
 
     def standard(path: str) -> str:
         """Standardize the path for easy comparison."""
@@ -7338,35 +7343,41 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
         s = s[2:-1]
     if not s.strip():
         return None
+
     # Always match within the present file.
     if os.path.isabs(s) and standard(s) == standard(c_name):
         return c
     if not os.path.isabs(s) and standard(s) == standard(base(c_name)):
         return c
-    if os.path.isabs(s):
-        path = standard(s)
+
+    # #3814: From here on we must test that the given file exists.
+
+    # #3814: There is no choice for absolute files.
+    if isabs(s):
+        return g.openWithFileName(s) if exists(s) else None
+
+    # #3814: Prefer paths in `@data unl-path-prefixes` to any defaults.
+    #        Such paths must match exactly.
+    base_s = base(s)
+    d = g.parsePathData(c)
+    directory = d.get(base_s)
+    if directory:
+        path = standard(join(directory, base_s))
+        if not exists(path):
+            return None
     else:
-        # Use `@data unl-path-prefixes` to convert to relative to absolute paths.
-        # Keys are file names; values are directives.
-        d = g.parsePathData(c)
-        base_s = base(s)
-        directory = d.get(base_s)
-        if not directory:
-            return None
-        if not os.path.exists(directory):
-            return None
-        path = standard(os.path.join(directory, base_s))
+        # Resolve relative file parts using c's directory.
+        path = standard(join(c_dir, base_s))
+
+    # Search all other open commanders, starting with c.
     if path == standard(c_name):
         return c
-    # Search all open commanders.
-    # This is a good shortcut, and it helps unit tests.
     for c2 in g.app.commanders():
         if path == standard(c2.fileName()):
             return c2
-    # Open the file if possible.
-    if not os.path.exists(path):
-        return None
-    return g.openWithFileName(path)
+
+    # #3814: *Open* the file and return the commander.
+    return g.openWithFileName(path) if exists(path) else None
 #@+node:ekr.20230630132341.1: *4* g.parsePathData
 path_data_pattern = re.compile(r'(.+?):\s*(.+)')
 
@@ -7377,7 +7388,7 @@ def parsePathData(c: Cmdr) -> dict[str, str]:
     """
     lines = c.config.getData('unl-path-prefixes')
     d: dict[str, str] = {}
-    for line in lines:
+    for line in lines or []:
         if m := path_data_pattern.match(line):
             key, path = m.group(1), m.group(2)
             if key in d:
