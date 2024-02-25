@@ -1475,7 +1475,8 @@ unl:gnx://#ekr.20050831195449
 # lines have the form:
 # x.leo: &lt;absolute path to x.leo&gt;
 
-test.leo:    c:/Repos/leo-editor/leo/test
-LeoDocs.leo: c:/Repos/leo-editor/leo/doc</t>
+# test.leo:    c:/Repos/leo-editor/leo/test
+# LeoDocs.leo: c:/Repos/leo-editor/leo/doc
+</t>
 </tnodes>
 </leo_file>

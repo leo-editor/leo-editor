@@ -6717,8 +6717,17 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
 #    For example, the link: `unl:gnx://#ekr.20031218072017.2406` refers to this
 #    outline's "Code" node. Try it. The link works in this outline.
 #
-#    *Note*: `{outline}` is optional. It can be an absolute path name or a relative
-#    path name resolved using `@data unl-path-prefixes`.
+#    *Note*: `{outline}` can be:
+#
+#    - An absolute path to a .leo file.
+#      The link fails unless the given file exits.
+#
+#    - A relative path to a .leo file.
+#      Leo searches for the gnx:
+#      a) among the paths in `@data unl-path-prefixes`,
+#      b) among all open commanders.
+#
+#    - Empty. Leo searches for the gnx in all open commanders.
 #
 # 3. Leo's headline-based UNLs, as shown in the status pane:
 #
@@ -6791,16 +6800,16 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         file_part = g.getUNLFilePart(unl)
         tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
 
-        # If there is a file part, search *only* the given commander!
+        # First, search the open commander.
+        # #3811: Do *not* fail if this search fails.
         if file_part:
             c2 = g.openUNLFile(c, file_part)
-            if not c2:
-                return None
-            p = g.findGnx(tail, c2)
-            return p  # May be None.
+            if c2:
+                p = g.findGnx(tail, c2)
+                if p:
+                    return p
 
-        # New in Leo 6.7.7:
-        # There is no file part, so search all open commanders, starting with c.
+        # Search all open commanders, starting with c.
         p = g.findGnx(tail, c)
         if p:
             return p

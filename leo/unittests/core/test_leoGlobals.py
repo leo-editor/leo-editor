@@ -1205,6 +1205,9 @@ class TestGlobals(LeoUnitTest):
         self.assertEqual(c3, c2)
         c4 = g.openUNLFile(c2, file_name1)
         self.assertEqual(c4, c1)
+        # Test of short file names.
+        c5 = g.openUNLFile(c1, c1.shortFileName())
+        self.assertEqual(c5, c1)
     #@+node:ekr.20230701103509.1: *4* TestGlobals.test_g_parsePathData
     def test_g_parsePathData(self) -> None:
 
