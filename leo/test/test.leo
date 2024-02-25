@@ -90,6 +90,7 @@
 <v t="ekr.20230906100141.24"><vh>script: asttokens</vh></v>
 <v t="ekr.20230906100141.25"><vh>QToolBar test</vh></v>
 </v>
+<v t="ekr.20231231164138.1"></v>
 <v t="ekr.20230622112641.1"><vh>--- tests of UNL (do not delete!)</vh>
 <v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
 <v t="ekr.20230622112535.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
@@ -1475,8 +1476,8 @@ unl:gnx://#ekr.20050831195449
 # lines have the form:
 # x.leo: &lt;absolute path to x.leo&gt;
 
-# test.leo:    c:/Repos/leo-editor/leo/test
-# LeoDocs.leo: c:/Repos/leo-editor/leo/doc
+test.leo:    c:/Repos/leo-editor/leo/test
+LeoDocs.leo: c:/Repos/leo-editor/leo/doc
 </t>
 </tnodes>
 </leo_file>

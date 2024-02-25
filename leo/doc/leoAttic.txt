@@ -2678,6 +2678,26 @@ def xxx_test_ternary(self):
     expected = contents
     results = self.beautify(contents, tokens)
     self.assertEqual(results, expected)
+#@+node:ekr.20240225091259.1: ** unused from _patch_at_data_unl_path_prefixes
+
+    def make_line(c):
+        file_name = c.fileName()
+        key = os.path.basename(file_name)
+        # Values must be directories.
+        value = os.path.normpath(os.path.dirname(file_name))
+        # print(f"{key:17} {value}")
+        return f"{key}: {value}"
+
+    # Init the @data unl-path-prefixes.
+    lines = [make_line(z) for z in (c, c2)]
+    self._set_setting(c, kind='data', name='unl-path-prefixes', val=lines)
+    lines2 = c.config.getData('unl-path-prefixes')
+    self.assertEqual(list(sorted(lines)), list(sorted(lines2)))
+    d = g.parsePathData(c)
+    if 0:
+        print('')
+        g.printObj(d)
+    return c2
 #@-all
 #@@nosearch
 #@-leo
