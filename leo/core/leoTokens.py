@@ -721,13 +721,9 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(tag)
         for token in self.tokens[i1 : i2 + 1]:
             print(token.dump())
-    #@+node:ekr.20240117053310.1: *5* tbo.oops & helper
-    def oops(self, message: str) -> None:  # pragma: no cover
-        """Raise InternalBeautifierError."""
-        raise InternalBeautifierError(self.error_message(message))
-    #@+node:ekr.20240112082350.1: *6* tbo.error_message
-    def error_message(self, message: str) -> str:  # pragma: no cover
-        """Print a full error message."""
+    #@+node:ekr.20240112082350.1: *5* tbo.internal_error_message
+    def internal_error_message(self, message: str) -> str:  # pragma: no cover
+        """Print a message about an error in the beautifier itself."""
         # Compute lines_s.
         line_number = self.token.line_number
         lines = g.splitLines(self.contents)
@@ -749,6 +745,31 @@ class TokenBasedOrange:  # Orange is the new Black.
             f"{context_s}"
             "Please report this message to Leo's developers"
         )
+    #@+node:ekr.20240226131015.1: *5* tbo.user_error_message
+    def user_error_message(self, message: str) -> str:  # pragma: no cover
+        """Print a message about a user error."""
+        # Compute lines_s.
+        line_number = self.token.line_number
+        lines = g.splitLines(self.contents)
+        n1 = max(0, line_number - 5)
+        n2 = min(line_number + 5, len(lines))
+        prev_lines = ['\n']
+        for i in range(n1, n2):
+            marker_s = '***' if i + 1 == line_number else '   '
+            prev_lines.append(f"Line {i+1:5}:{marker_s}{lines[i]!r}\n")
+        context_s = ''.join(prev_lines) + '\n'
+
+        # Return the full error message.
+        return (
+            f"{message.strip()}\n"
+            '\n'
+            f"At token {self.index}, line: {line_number} file: {self.filename}\n"
+            f"{context_s}"
+        )
+    #@+node:ekr.20240117053310.1: *5* tbo.oops
+    def oops(self, message: str) -> None:  # pragma: no cover
+        """Raise InternalBeautifierError."""
+        raise InternalBeautifierError(self.internal_error_message(message))
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def no_visitor(self) -> None:  # pragma: no cover
@@ -819,11 +840,11 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Make no change if there is any error.
         except InternalBeautifierError as e:  # pragma: no cover
-            # oops calls self.error_message to creates e.
+            # oops calls self.internal_error_message to creates e.
             print(e)
         except AssertionError as e:  # pragma: no cover
             g.es_exception()
-            print(self.error_message(repr(e)))
+            print(self.internal_error_message(repr(e)))
         return contents
 
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry) (stats & diffs)
@@ -1001,11 +1022,11 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Refuse to beautify mal-formed files.
         if '\t' in self.token.value:  # pragma: no cover
-            raise IndentationError(self.error_message(
+            raise IndentationError(self.user_error_message(
                 f"Leading tabs found: {self.consider_message}"))
 
         if (len(self.token.value) % self.tab_width) != 0:  # pragma: no cover
-            raise IndentationError(self.error_message(
+            raise IndentationError(self.user_error_message(
                 f"Indentation error! {self.consider_message}"))
 
         # Handle the token!
