@@ -6800,6 +6800,11 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         file_part = g.getUNLFilePart(unl)
         tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
 
+        # #3816: Just open the file if there is no tail.
+        if not tail:
+            c2 = g.openUNLFile(c, file_part)
+            return c2.p if c2 else None
+
         # First, search the open commander.
         # #3811: Do *not* fail if this search fails.
         if file_part:
@@ -7304,7 +7309,7 @@ def unquoteUrl(url: str) -> str:  # pragma: no cover
 #@+node:ekr.20230627143007.1: *3* g: file part utils
 
 #@+node:ekr.20230630132339.1: *4* g.getUNLFilePart
-file_part_pattern = re.compile(r'//(.*?)#.+')
+file_part_pattern = re.compile(r'//(.*?)#.*')
 
 def getUNLFilePart(s: str) -> str:
     """Return the file part of a unl, that is, everything *between* '//' and '#'."""
@@ -7322,6 +7327,7 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     Return None if the file can not be found.
     """
     # Aliases.
+    abspath = os.path.abspath
     base = os.path.basename
     dirname = os.path.dirname
     exists = os.path.exists
@@ -7335,7 +7341,7 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
 
     def standard(path: str) -> str:
         """Standardize the path for easy comparison."""
-        return norm(path).lower()
+        return norm(path).lower() if g.isWindows else norm(path)
 
     if not s.strip():
         return None
@@ -7356,18 +7362,25 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     if isabs(s):
         return g.openWithFileName(s) if exists(s) else None
 
-    # #3814: Prefer paths in `@data unl-path-prefixes` to any defaults.
-    #        Such paths must match exactly.
-    base_s = base(s)
-    d = g.parsePathData(c)
-    directory = d.get(base_s)
-    if directory:
-        path = standard(join(directory, base_s))
-        if not exists(path):
-            return None
+    if g.isWindows:
+        s = s.replace('/', '\\')
+    is_relative = os.sep in s
+    if is_relative:
+        # #3816: Resolve relative paths via c's directory.
+        path = standard(abspath(join(c_dir, s)))  # Not base_s.
     else:
-        # Resolve relative file parts using c's directory.
-        path = standard(join(c_dir, base_s))
+        # #3814: Prefer short paths in `@data unl-path-prefixes` to any defaults.
+        #        Such paths must match exactly.
+        base_s = base(s)
+        d = g.parsePathData(c)
+        directory = d.get(base_s)
+        if directory:
+            path = standard(join(directory, base_s))
+            if not exists(path):
+                return None
+        else:
+            # Resolve relative file parts using c's directory.
+            path = standard(join(c_dir, base_s))
 
     # Search all other open commanders, starting with c.
     if path == standard(c_name):
