@@ -6708,26 +6708,30 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
 #    provided the outline contains an `@<file>` node for file mentioned in
 #    the error message.
 #
-# 2. New in Leo 6.7.4: UNLs based on gnx's (global node indices):
+# 2. UNLs based on gnx's (global node indices):
 #
 #    Links of the form `unl:gnx:` + `//{outline}#{gnx}` open the given
-#    outline and select the first outline node with the given gnx. These UNLs
-#    will work as long as the node exists anywhere in the outline.
+#    outline and select the first outline node with the given gnx.
 #
 #    For example, the link: `unl:gnx://#ekr.20031218072017.2406` refers to this
 #    outline's "Code" node. Try it. The link works in this outline.
 #
-#    *Note*: `{outline}` can be:
+#    Either `{outline}` or `{gnx}` may be empty, but at least one must exist.
 #
-#    - An absolute path to a .leo file.
-#      The link fails unless the given file exits.
+#    `{outline}` can be:
 #
-#    - A relative path to a .leo file.
-#      Leo searches for the gnx:
+#    - An *absolute path* to a .leo file.
+#    - A *relative path*, resolved using the outline's directory.
+#
+#      Leo will select the outline if it is already open.
+#      Otherwise, Leo will open the outline if it exists.
+#
+#    - A *short* name, say x.leo.
+#      Leo searches for x.leo file:
 #      a) among the paths in `@data unl-path-prefixes`,
 #      b) among all open commanders.
 #
-#    - Empty. Leo searches for the gnx in all open commanders.
+#    - *Empty*. Leo searches for the gnx in all open outlines.
 #
 # 3. Leo's headline-based UNLs, as shown in the status pane:
 #
