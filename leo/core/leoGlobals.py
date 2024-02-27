@@ -6740,8 +6740,11 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
 #
 #    This link works: `unl://#Code-->About this file`.
 #
-#    *Note*: `{outline}` is optional. It can be an absolute path name or a relative
-#    path name resolved using `@data unl-path-prefixes`.
+#    As in point 2 above, `{outline}` or `{gnx}` may be empty, but at least
+#    one must exist.
+#
+#    `{outline}` may be an absolute path name or a *short* name resolved
+#    using `@data unl-path-prefixes`.
 #
 # 4. Web URLs: file, ftp, gopher, http, https, mailto, news, nntp, prospero, telnet, wais.
 #
