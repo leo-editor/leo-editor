@@ -5,7 +5,7 @@
 
 # For emergency install message.
 
-tk          # tkinter.
+tk  # tkinter.
 
 # For commands...
 
@@ -28,11 +28,6 @@ black       # For unit tests.
 
 # Developer stuff...
 
-# pyshortcuts >= 1.7  # desktop integration (#1243)
-# build >= 0.6.0  # simple PEP 517 package builder.
-
-# Optional Qt dependencies.
-
-PyQt5 [Qt] >= 5.15  # #2884: require v5.15. #1217: require v5.12+.
-PyQtWebEngine [Qt]
+PyQt5 >= 5.15  # #2884: require v5.15. #1217: require v5.12+.
+PyQtWebEngine
 #@-leo
