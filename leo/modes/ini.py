@@ -1,4 +1,8 @@
-# Leo colorizer control file for ini mode.
+#@+leo-ver=5-thin
+#@+node:ekr.20240227082119.1: * @file ../modes/ini.py
+#@@language python
+
+# Leo's colorizer control file for .ini and .toml files.
 # This file is in the public domain.
 
 # Properties for ini mode.
@@ -31,29 +35,29 @@ keywordsDictDict = {
 
 # Rules for ini_main ruleset.
 
-def ini_rule0(colorer, s, i):
+def ini_list(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="[", end="]",
           at_line_start=True)
 
-def ini_rule1(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq=";",
-          at_line_start=True)
+def ini_semi_comment(colorer, s, i):
+    return colorer.match_eol_span(s, i, kind="comment1", seq=";")
 
-def ini_rule2(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="#",
-          at_line_start=True)
+def ini_pound_comment(colorer, s, i):
+    return colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
-def ini_rule3(colorer, s, i):
-    return colorer.match_mark_previous(s, i, kind="keyword1", pattern="=",
-          at_line_start=True,
-          exclude_match=True)
+def ini_equal_op(colorer, s, i):
+    return colorer.match_seq(s, i, kind="keyword1", seq="=")
+
+def ini_string(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal1", begin='"', end='"')
 
 # Rules dict for ini_main ruleset.
 rulesDict1 = {
-    "#": [ini_rule2,],
-    ";": [ini_rule1,],
-    "=": [ini_rule3,],
-    "[": [ini_rule0,],
+    "#": [ini_pound_comment],
+    ";": [ini_semi_comment],
+    "=": [ini_equal_op],
+    "[": [ini_list],
+    '"': [ini_string],
 }
 
 # x.rulesDictDict for ini mode.
@@ -63,3 +67,4 @@ rulesDictDict = {
 
 # Import dict for ini mode.
 importDict = {}
+#@-leo

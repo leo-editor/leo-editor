@@ -1,11 +1,76 @@
+;@+leo-ver=5-thin
+;@+node:ekr.20240227064614.1: * @file ../../pyproject.toml
+;@@language ini
+;@@nowrap
+
+# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+
 [build-system]
-requires = ["setuptools>=38.6.0",
+
+requires = [
+    "setuptools>=61.0",
     "build>=0.6.0",
-    "setupext-janitor>=1.1",
-    "wheel>=0.31.0",
-    "twine>=1.11.0"]
-    
+    "wheel>=0.42.0",
+    "twine>=5.0.0",
+]
 build-backend = 'setuptools.build_meta'
+    
+[project]
+;@+<< project info >>
+;@+node:ekr.20240227084103.1: ** << project info >>
+authors = [
+    {name = "Edward K. Ream", email = "edreamleo@gmail.com"},
+    {name = "Félix Malboeuf", email = "felixgraphx@gmail.com"},
+    {name = "Thomas Passin", email = "pub1@tompassin.net"},
+    {name = "Виталије Милошевић, (Vitalije Milosevic) ", email = "vitalijem@gmail.com"},
+]
+
+maintainers = [
+    {name = "Edward K. Ream", email = "edreamleo@gmail.com"},
+    {name = "Félix Malboeuf", email = "felixgraphx@gmail.com"},
+    {name = "Thomas Passin", email = "pub1@tompassin.net"},
+    {name = "Виталије Милошевић, (Vitalije Milosevic) ", email = "vitalijem@gmail.com"},
+]
+
+dynamic = ["version"]
+name = "leo"
+requires-python = ">= 3.9"
+version = "6.7.8"
+;@-<< project info >>
+dependencies = [
+    "asttokens",    # For unit tests.
+    "black",        # For unit tests.
+    "docutils",     # various plugins and commands.
+    "flexx",        # leoflexx.py plugin.
+    "meta",         # livecode.py plugin.
+    "pyenchant",    # The spell tab.
+    "pyflakes"      # pyflakes command.
+    "pylint",       # pylint command.
+    "sphinx",       # various plugins and commands.
+    "tk",           # tkinter: for emergency dialogs
+]
+
+[project.optional-dependencies]
+gui = [
+    "PyQt5>= 5.15",             # #2884: require v5.15.
+    "PyQtWebEngine",
+    "pyshortcuts >= 1.9.0",     # #1243: desktop integration.
+    # cursesGui2 plugin on Windows.
+    "windows-curses; os_name == 'nt'",
+]
 
 [tool.ruff]
 line-length = 120
+
+# https://stackoverflow.com/questions/72294299
+# multiple-top-level-packages-discovered-in-a-flat-layout
+
+; [tool.setuptools]
+; py-modules = []
+
+; [tool.setuptools.packages.find]
+; # where = ["."]  # list of folders that contain the packages (["."] by default)
+; include = ["leo"]  # package names should match these glob patterns (["*"] by default)
+; exclude = []  # exclude packages matching these glob patterns (empty by default)
+; namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
+;@-leo
