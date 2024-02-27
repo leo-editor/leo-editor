@@ -6708,26 +6708,30 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
 #    provided the outline contains an `@<file>` node for file mentioned in
 #    the error message.
 #
-# 2. New in Leo 6.7.4: UNLs based on gnx's (global node indices):
+# 2. UNLs based on gnx's (global node indices):
 #
 #    Links of the form `unl:gnx:` + `//{outline}#{gnx}` open the given
-#    outline and select the first outline node with the given gnx. These UNLs
-#    will work as long as the node exists anywhere in the outline.
+#    outline and select the first outline node with the given gnx.
 #
 #    For example, the link: `unl:gnx://#ekr.20031218072017.2406` refers to this
 #    outline's "Code" node. Try it. The link works in this outline.
 #
-#    *Note*: `{outline}` can be:
+#    Either `{outline}` or `{gnx}` may be empty, but at least one must exist.
 #
-#    - An absolute path to a .leo file.
-#      The link fails unless the given file exits.
+#    `{outline}` can be:
 #
-#    - A relative path to a .leo file.
-#      Leo searches for the gnx:
+#    - An *absolute path* to a .leo file.
+#    - A *relative path*, resolved using the outline's directory.
+#
+#      Leo will select the outline if it is already open.
+#      Otherwise, Leo will open the outline if it exists.
+#
+#    - A *short* name, say x.leo.
+#      Leo searches for x.leo file:
 #      a) among the paths in `@data unl-path-prefixes`,
 #      b) among all open commanders.
 #
-#    - Empty. Leo searches for the gnx in all open commanders.
+#    - *Empty*. Leo searches for the gnx in all open outlines.
 #
 # 3. Leo's headline-based UNLs, as shown in the status pane:
 #
@@ -6736,8 +6740,11 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
 #
 #    This link works: `unl://#Code-->About this file`.
 #
-#    *Note*: `{outline}` is optional. It can be an absolute path name or a relative
-#    path name resolved using `@data unl-path-prefixes`.
+#    As in point 2 above, `{outline}` or `{gnx}` may be empty, but at least
+#    one must exist.
+#
+#    `{outline}` may be an absolute path name or a *short* name resolved
+#    using `@data unl-path-prefixes`.
 #
 # 4. Web URLs: file, ftp, gopher, http, https, mailto, news, nntp, prospero, telnet, wais.
 #
@@ -6799,6 +6806,11 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
         unl = unl[8:]
         file_part = g.getUNLFilePart(unl)
         tail = unl[3 + len(file_part) :]  # 3: Skip the '//' and '#'
+
+        # #3816: Just open the file if there is no tail.
+        if not tail:
+            c2 = g.openUNLFile(c, file_part)
+            return c2.p if c2 else None
 
         # First, search the open commander.
         # #3811: Do *not* fail if this search fails.
@@ -7304,7 +7316,7 @@ def unquoteUrl(url: str) -> str:  # pragma: no cover
 #@+node:ekr.20230627143007.1: *3* g: file part utils
 
 #@+node:ekr.20230630132339.1: *4* g.getUNLFilePart
-file_part_pattern = re.compile(r'//(.*?)#.+')
+file_part_pattern = re.compile(r'//(.*?)#.*')
 
 def getUNLFilePart(s: str) -> str:
     """Return the file part of a unl, that is, everything *between* '//' and '#'."""
@@ -7322,6 +7334,7 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     Return None if the file can not be found.
     """
     # Aliases.
+    abspath = os.path.abspath
     base = os.path.basename
     dirname = os.path.dirname
     exists = os.path.exists
@@ -7335,7 +7348,7 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
 
     def standard(path: str) -> str:
         """Standardize the path for easy comparison."""
-        return norm(path).lower()
+        return norm(path).lower() if g.isWindows else norm(path)
 
     if not s.strip():
         return None
@@ -7356,18 +7369,25 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr:
     if isabs(s):
         return g.openWithFileName(s) if exists(s) else None
 
-    # #3814: Prefer paths in `@data unl-path-prefixes` to any defaults.
-    #        Such paths must match exactly.
-    base_s = base(s)
-    d = g.parsePathData(c)
-    directory = d.get(base_s)
-    if directory:
-        path = standard(join(directory, base_s))
-        if not exists(path):
-            return None
+    if g.isWindows:
+        s = s.replace('/', '\\')
+    is_relative = os.sep in s
+    if is_relative:
+        # #3816: Resolve relative paths via c's directory.
+        path = standard(abspath(join(c_dir, s)))  # Not base_s.
     else:
-        # Resolve relative file parts using c's directory.
-        path = standard(join(c_dir, base_s))
+        # #3814: Prefer short paths in `@data unl-path-prefixes` to any defaults.
+        #        Such paths must match exactly.
+        base_s = base(s)
+        d = g.parsePathData(c)
+        directory = d.get(base_s)
+        if directory:
+            path = standard(join(directory, base_s))
+            if not exists(path):
+                return None
+        else:
+            # Resolve relative file parts using c's directory.
+            path = standard(join(c_dir, base_s))
 
     # Search all other open commanders, starting with c.
     if path == standard(c_name):
