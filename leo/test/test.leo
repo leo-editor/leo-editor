@@ -100,6 +100,7 @@
 <v t="ekr.20230623141357.1"><vh>URLs and UNLs: </vh></v>
 <v t="ekr.20231231043342.1"><vh>New UNLs with empty file parts</vh></v>
 <v t="ekr.20230627150454.1"><vh>New UNLs with short file parts</vh></v>
+<v t="ekr.20240226115140.1"><vh>New UNLs with relative file parts</vh></v>
 <v t="ekr.20230707065449.1"><vh>New UNLS with long(absolute) file parts</vh></v>
 </v>
 </vnodes>
@@ -1479,5 +1480,13 @@ unl:gnx://#ekr.20050831195449
 test.leo:    c:/Repos/leo-editor/leo/test
 LeoDocs.leo: c:/Repos/leo-editor/leo/doc
 </t>
+<t tx="ekr.20240226115140.1"># In LeoDocs.leo: Leo 6.7.3 release notes
+unl:gnx://../doc/LeoDocs.leo#ekr.20230409052507.1
+
+# In LeoDocs.leo: ** Leo's Documentation **
+unl:gnx://../doc/LeoDocs.leo#ekr.20040414161647
+
+# Just open LeoDocs.leo.
+unl:gnx://../doc/LeoDocs.leo#</t>
 </tnodes>
 </leo_file>
