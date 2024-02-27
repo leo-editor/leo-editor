@@ -1,7 +1,7 @@
-;@+leo-ver=5-thin
-;@+node:ekr.20240227064614.1: * @file ../../pyproject.toml
-;@@language ini
-;@@nowrap
+#@+leo-ver=5-thin
+#@+node:ekr.20240227064614.1: * @file ../../pyproject.toml
+#@@language toml
+#@@nowrap
 
 # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
 
@@ -16,16 +16,16 @@ requires = [
 build-backend = 'setuptools.build_meta'
     
 [project]
-;@+<< project info >>
-;@+node:ekr.20240227084103.1: ** << project info >>
-authors = [
+#@+<< project info >>
+#@+node:ekr.20240227084103.1: ** << project info >>
+authors =  [
     {name = "Edward K. Ream", email = "edreamleo@gmail.com"},
     {name = "Félix Malboeuf", email = "felixgraphx@gmail.com"},
     {name = "Thomas Passin", email = "pub1@tompassin.net"},
     {name = "Виталије Милошевић, (Vitalije Milosevic) ", email = "vitalijem@gmail.com"},
 ]
 
-maintainers = [
+maintainers =  [
     {name = "Edward K. Ream", email = "edreamleo@gmail.com"},
     {name = "Félix Malboeuf", email = "felixgraphx@gmail.com"},
     {name = "Thomas Passin", email = "pub1@tompassin.net"},
@@ -36,7 +36,7 @@ dynamic = ["version"]
 name = "leo"
 requires-python = ">= 3.9"
 version = "6.7.8"
-;@-<< project info >>
+#@-<< project info >>
 dependencies = [
     "asttokens",    # For unit tests.
     "black",        # For unit tests.
@@ -44,13 +44,14 @@ dependencies = [
     "flexx",        # leoflexx.py plugin.
     "meta",         # livecode.py plugin.
     "pyenchant",    # The spell tab.
-    "pyflakes"      # pyflakes command.
+    "pyflakes",     # pyflakes command.
     "pylint",       # pylint command.
     "sphinx",       # various plugins and commands.
     "tk",           # tkinter: for emergency dialogs
 ]
 
 [project.optional-dependencies]
+
 gui = [
     "PyQt5>= 5.15",             # #2884: require v5.15.
     "PyQtWebEngine",
@@ -60,6 +61,7 @@ gui = [
 ]
 
 [tool.ruff]
+
 line-length = 120
 
 # https://stackoverflow.com/questions/72294299
@@ -73,4 +75,4 @@ line-length = 120
 ; include = ["leo"]  # package names should match these glob patterns (["*"] by default)
 ; exclude = []  # exclude packages matching these glob patterns (empty by default)
 ; namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
-;@-leo
+#@-leo

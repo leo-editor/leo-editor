@@ -425,6 +425,7 @@ class LeoApp:
             # "tcl":    "tcltk",
             "tex":      "latex",
             # "tex":      "tex",
+            "toml":     "toml",
             "tpl":      "tpl",
             "ts":       "typescript",
             "txt":      "plain",
@@ -641,6 +642,7 @@ class LeoApp:
             "tex"                : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
             "text"               : "#", # We must pick something.
             "texinfo"            : "@c",
+            "toml"               : "#",
             "tpl"                : "<!-- -->",
             "tsql"               : "-- /* */",
             "typescript"         : "// /* */", # For typescript import test.
@@ -811,6 +813,7 @@ class LeoApp:
             "tex"           : "tex",
             "texinfo"       : "info",
             "text"          : "txt",
+            "toml"          : "toml",
             "tpl"           : "tpl",
             "tsql"          : "sql", # A guess.
             "typescript"    : "ts",
