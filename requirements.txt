@@ -20,6 +20,7 @@ meta        # livecode.py plugin.
 pyenchant   # The spell tab.
 sphinx      # rST plugin.
 windows-curses; platform_system=="Windows"  # cursesGui2 plugin on Windows.
+Send2Trash; platform_system=="Windows"
 
 # For leoAst.py and leoTokens.py...
 
