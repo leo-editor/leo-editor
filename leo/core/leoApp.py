@@ -959,6 +959,7 @@ class LeoApp:
         """A convenience routines for plugins to create the default gui class."""
         app = self
         argName = app.guiArgName
+        g.trace(argName, g.callers())
         if g.in_bridge:
             return  # The bridge will create the gui later.
         if app.gui:
@@ -2363,7 +2364,7 @@ class LoadManager:
         # Create the outline with workbook's name.
         c.frame.title = title = c.computeWindowTitle()
         c.frame.setTitle(title)
-        if hasattr(c.frame, 'top'):
+        if getattr(c.frame, 'top', None):
             c.frame.top.leo_master.setTabName(c, fn)
         # Finish: Do *not* save the file!
         g.chdir(fn)
