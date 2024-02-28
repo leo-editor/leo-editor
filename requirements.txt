@@ -29,6 +29,7 @@ black       # For unit tests.
 
 # Developer stuff...
 
-PyQt5 >= 5.15  # #2884: require v5.15. #1217: require v5.12+.
+# PyQt5 >= 5.15  # #2884: require v5.15. #1217: require v5.12+.
+PyQt6 >= 6.6
 PyQtWebEngine
 #@-leo
