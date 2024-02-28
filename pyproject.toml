@@ -74,7 +74,8 @@ dependencies = [
 
 [project.optional-dependencies]
 gui = [
-    "PyQt5>= 5.15",  # #2884: require v5.15.
+    # "PyQt5>= 5.15",  # #2884: require v5.15.
+    "PyQt6>= 6.6",
     "PyQtWebEngine",
     "pyshortcuts >= 1.9.0",  # #1243: desktop integration.
     "windows-curses; os_name == 'nt'",  # cursesGui2 plugin on Windows.
