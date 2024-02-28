@@ -1,5 +1,7 @@
 @echo off
 
+rem Install all of Leo's requirements. This does *not* install leo itself.
+
 echo cd leo-editor
 cd %~dp0..\..
 
