@@ -6544,7 +6544,8 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
         return s
     #
     # Scan the lines, extracting only the valid lines.
-    extracting, result = False, []
+    extracting = False
+    result: list[str] = []
     for line in g.splitLines(s):
         if m := re.match(pattern, line):
             extracting = m.group(1) == language

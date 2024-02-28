@@ -49,7 +49,8 @@ class C_Importer(Importer):
         Return a list of Blocks, that is, tuples(name, start, start_body, end).
         """
         lines = self.guide_lines
-        i, prev_i, results = i1, i1, []
+        i, prev_i = i1, i1
+        results: list[Block] = []
         while i < i2:
             s = lines[i]
             i += 1
