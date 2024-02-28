@@ -9,6 +9,14 @@ tk  # tkinter.
 
 # For commands...
 
+mypy
+types-docutils
+types-Markdown
+types-paramiko
+types-PyYAML
+types-requests
+types-six
+
 pylint
 pyflakes
 

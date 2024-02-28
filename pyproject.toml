@@ -65,11 +65,18 @@ dependencies = [
     "docutils",     # various plugins and commands.
     "flexx",        # leoflexx.py plugin.
     "meta",         # livecode.py plugin.
+    "mypy",         # testing.
     "pyenchant",    # The spell tab.
     "pyflakes",     # pyflakes command.
     "pylint",       # pylint command.
     "sphinx",       # various plugins and commands.
     "tk",           # tkinter: for emergency dialogs
+    "types-docutils", 
+    "types-Markdown",
+    "types-paramiko",
+    "types-PyYAML",
+    "types-requests",
+    "types-six",
 ]
 
 [project.optional-dependencies]
