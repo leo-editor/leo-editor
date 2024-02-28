@@ -3,13 +3,11 @@
 #@@language python
 #@@nosearch
 
-# For emergency install message.
-
-tk  # tkinter.
-
-# For commands...
+# For mypy...
 
 mypy
+mypy-extensions
+typing_extensions
 types-docutils
 types-Markdown
 types-paramiko
@@ -17,27 +15,27 @@ types-PyYAML
 types-requests
 types-six
 
-pylint
-pyflakes
+# General packages...
 
-# For plugins...
-
+asttokens   # For unit tests.
+black       # For unit tests.
 docutils    # For Sphinx and rST plugins.
 flexx       # leoflexx.py plugin.
 meta        # livecode.py plugin.
 pyenchant   # The spell tab.
-sphinx      # rST plugin.
-windows-curses; platform_system=="Windows"  # cursesGui2 plugin on Windows.
-Send2Trash; platform_system=="Windows"
+pyflakes
+pylint
+sphinx
+tk          # tkinter, for emergency dialogs.
+urllib3
 
-# For leoAst.py and leoTokens.py...
+# Gui packages...
 
-asttokens   # For unit tests.
-black       # For unit tests.
+# Note: the packages above pull in PyQt5.
+# PyQt5>= 5.15  # #2884: require v5.15.
 
-# Developer stuff...
-
-# PyQt5 >= 5.15  # #2884: require v5.15. #1217: require v5.12+.
 PyQt6 >= 6.6
 PyQtWebEngine
+Send2Trash; platform_system=="Windows"  # picture_viewer plugin.
+windows-curses; platform_system=="Windows"  # cursesGui2 plugin.
 #@-leo

@@ -60,28 +60,37 @@ readme = "README.md"
 requires-python = ">= 3.9"
 version = "6.7.8"
 dependencies = [
-    "asttokens",    # For unit tests.
-    "black",        # For unit tests.
-    "docutils",     # various plugins and commands.
-    "flexx",        # leoflexx.py plugin.
-    "meta",         # livecode.py plugin.
-    "mypy",         # testing.
-    "pyenchant",    # The spell tab.
-    "pyflakes",     # pyflakes command.
-    "pylint",       # pylint command.
-    "sphinx",       # various plugins and commands.
-    "tk",           # tkinter: for emergency dialogs
+    # For mypy...
+    "mypy",
+    "mypy-extensions",
+    "typing_extensions",
     "types-docutils", 
     "types-Markdown",
     "types-paramiko",
     "types-PyYAML",
     "types-requests",
     "types-six",
+    
+    # General packages...
+    
+    "asttokens",    # For unit tests.
+    "black",        # For unit tests.
+    "docutils",     # various plugins and commands.
+    "flexx",        # leoflexx.py plugin.
+    "meta",         # livecode.py plugin.
+    "pyenchant",    # The spell tab.
+    "pyflakes",     # pyflakes command.
+    "pylint",       # pylint command.
+    "sphinx",       # various plugins and commands.
+    "tk",           # tkinter: for emergency dialogs
+    "urllib3",
 ]
 
 [project.optional-dependencies]
 gui = [
+    # Note: the packages above pull in PyQt5.
     # "PyQt5>= 5.15",  # #2884: require v5.15.
+
     "PyQt6>= 6.6",
     "PyQtWebEngine",
     "pyshortcuts >= 1.9.0",  # #1243: desktop integration.
