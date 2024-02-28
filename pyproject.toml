@@ -78,6 +78,7 @@ gui = [
     "PyQtWebEngine",
     "pyshortcuts >= 1.9.0",  # #1243: desktop integration.
     "windows-curses; os_name == 'nt'",  # cursesGui2 plugin on Windows.
+    "Send2Trash; os_name == 'nt'",
 ]
 
 [project.urls]
