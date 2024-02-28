@@ -1134,7 +1134,7 @@ class todoController:
             p = self.c.currentPosition()
         g.es('\n Current distribution:')
         self.showDist()
-        dat = {}
+        dat: dict = {}
         for end in 'from', 'to':
             if QtConst:
                 x0, ok = QtWidgets.QInputDialog.getText(

@@ -482,7 +482,7 @@ def babelExec(event):
 
             langCur = language
             pattern = re.compile(r'\s*@language\s+(\w+)')
-            result = []
+            result: list[str] = []
             for line in leoG.splitLines(s):
                 m = pattern.match(line)
                 if m:  # Found an @language directive.

@@ -1,11 +1,114 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20240227064614.1: * @file ../../pyproject.toml
+#@@language toml
+#@@nowrap
+
+# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+
 [build-system]
-requires = ["setuptools>=38.6.0",
-    "build>=0.6.0",
-    "setupext-janitor>=1.1",
-    "wheel>=0.31.0",
-    "twine>=1.11.0"]
-    
+requires = [
+    "build>=1.0",
+    "setuptools>=61.0",
+]
 build-backend = 'setuptools.build_meta'
+
+[tool.setuptools]
+py-modules = []
+    
+[project]
+#@+<< developer info >>
+#@+node:ekr.20240227084103.1: ** << developer info >>
+authors =  [
+    {name = "Edward K. Ream"},
+    {email = "edreamleo@gmail.com"},
+]
+
+maintainers =  [
+    {name = "Edward K. Ream", email = "edreamleo@gmail.com"},
+    {name = "Félix Malboeuf", email = "felixgraphx@gmail.com"},
+    {name = "Thomas Passin", email = "pub1@tompassin.net"},
+    {name = "Виталије Милошевић, (Vitalije Milosevic) ", email = "vitalijem@gmail.com"},
+]
+#@-<< developer info >>
+#@+<< description >>
+#@+node:ekr.20240227162726.1: ** << description >>
+classifiers = [
+  "Author :: Edward K. Ream",
+  "Development Status :: 6 - Mature",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development",
+  "License :: MIT License",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development",
+  "Topic :: Text Processing",
+]
+
+description = "A PIM, IDE and Outliner"
+keywords = ["PIM", "IDE", "Outliner"]
+license = {text = "MIT License"}
+name = "leo"
+readme = "README.md"
+#@-<< description >>
+requires-python = ">= 3.9"
+version = "6.7.8"
+dependencies = [
+    # For mypy...
+    "mypy",
+    "mypy-extensions",
+    "typing_extensions",
+    "types-docutils", 
+    "types-Markdown",
+    "types-paramiko",
+    "types-PyYAML",
+    "types-requests",
+    "types-six",
+    
+    # General packages...
+    
+    "asttokens",    # For unit tests.
+    "black",        # For unit tests.
+    "docutils",     # various plugins and commands.
+    "flexx",        # leoflexx.py plugin.
+    "meta",         # livecode.py plugin.
+    "pyenchant",    # The spell tab.
+    "pyflakes",     # pyflakes command.
+    "pylint",       # pylint command.
+    "sphinx",       # various plugins and commands.
+    "tk",           # tkinter: for emergency dialogs
+    "urllib3",
+]
+
+[project.optional-dependencies]
+gui = [
+    # Note: the packages above pull in PyQt5.
+    # "PyQt5>= 5.15",  # #2884: require v5.15.
+
+    "PyQt6>= 6.6",
+    "PyQtWebEngine",
+    "pyshortcuts >= 1.9.0",  # #1243: desktop integration.
+    "windows-curses; os_name == 'nt'",  # cursesGui2 plugin on Windows.
+    "Send2Trash; os_name == 'nt'",  # picture_viewer plugin on Windows.
+]
+
+[project.urls]
+#@+<< urls >>
+#@+node:ekr.20240227162816.1: ** << urls >>
+Documentation = "https://leo-editor.github.io/leo-editor/leo_toc.html"
+"Home Page" = "https://leo-editor.github.io/leo-editor/"
+Issues = "https://github.com/leo-editor/leo-editor/issues"
+"Pull Requests" = "https://github.com/leo-editor/leo-editor/pulls"
+"GitHub Repository" = "https://github.com/leo-editor/leo-editor"
+"What People Are Saying about Leo" = "http://leo-editor.github.io/leo-editor/testimonials.html"
+#@-<< urls >>
 
 [tool.ruff]
 line-length = 120
+#@-leo

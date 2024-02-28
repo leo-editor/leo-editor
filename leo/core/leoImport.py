@@ -1620,7 +1620,9 @@ class RecursiveImportController:
             if self.verbose:
                 print(f"importing: {os.path.normpath(dir_)}")
             files = list(sorted(os.listdir(dir_)))
-        dirs, files2 = [], []
+
+        dirs: list[str] = []
+        files2: list[str] = []
         for path in files:
             try:
                 # Catch path exceptions: keep going on small errors.
