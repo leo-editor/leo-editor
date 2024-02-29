@@ -97,7 +97,7 @@ dependencies = [
 
     # Use PyQt5 by default.
     "PyQt5>= 5.15; os_name != 'nt'",
-    "PyQtWebEngine; ; os_name != 'nt'",
+    "PyQtWebEngine; os_name != 'nt'",
 
     # Use PyQt6 on Windows.
     "PyQt6>= 6.6; os_name == 'nt'",
