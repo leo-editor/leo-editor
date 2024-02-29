@@ -89,17 +89,19 @@ dependencies = [
     "tk",           # tkinter: for emergency dialogs
     "urllib3",
 
-    # Windows-only packages...
+    # Platform-specific packages...
     "windows-curses; os_name == 'nt'",  # cursesGui2 plugin on Windows.
-    "Send2Trash; os_name == 'nt'",  # picture_viewer plugin on Windows.d
+    "Send2Trash; os_name == 'nt'",  # picture_viewer plugin on Windows.
 
     # Gui packages...
 
-    # "PyQt5>= 5.15",  # #2884: require v5.15.
-    # "PyQtWebEngine",  # Latest version is 5.15.6, which pulls in PyQt5.
+    # Use PyQt5 by default.
+    "PyQt5>= 5.15; os_name != 'nt'",
+    "PyQtWebEngine; ; os_name != 'nt'",
 
-    "PyQt6>= 6.6",
-    "PyQt6-WebEngine",
+    # Use PyQt6 on Windows.
+    "PyQt6>= 6.6; os_name == 'nt'",
+    "PyQt6-WebEngine; os_name == 'nt'",
 ]
 
 # [project.optional-dependencies]
