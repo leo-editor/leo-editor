@@ -38,6 +38,7 @@ urllib3
 # PyQtWebEngine
 
 PyQt6 >= 6.6
+PyQt6-WebEngine
 Send2Trash; platform_system=="Windows"  # picture_viewer plugin.
 windows-curses; platform_system=="Windows"  # cursesGui2 plugin.
 #@-leo
