@@ -15,7 +15,7 @@ types-PyYAML
 types-requests
 types-six
 
-# General packages...
+# General packages, including various plugins and commands...
 
 asttokens   # For unit tests.
 black       # For unit tests.
@@ -25,6 +25,8 @@ meta        # livecode.py plugin.
 pyenchant   # The spell tab.
 pyflakes
 pylint
+pytest      # For coverage testing.
+pytest-cov  # For coverage testing.
 sphinx
 tk          # tkinter, for emergency dialogs.
 urllib3
@@ -33,9 +35,9 @@ urllib3
 
 # Note: the packages above pull in PyQt5.
 # PyQt5>= 5.15  # #2884: require v5.15.
+# PyQtWebEngine
 
 PyQt6 >= 6.6
-PyQtWebEngine
 Send2Trash; platform_system=="Windows"  # picture_viewer plugin.
 windows-curses; platform_system=="Windows"  # cursesGui2 plugin.
 #@-leo

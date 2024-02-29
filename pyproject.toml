@@ -60,7 +60,9 @@ readme = "README.md"
 requires-python = ">= 3.9"
 version = "6.7.8"
 dependencies = [
+
     # For mypy...
+
     "mypy",
     "mypy-extensions",
     "typing_extensions",
@@ -70,15 +72,17 @@ dependencies = [
     "types-PyYAML",
     "types-requests",
     "types-six",
-    
-    # General packages...
-    
+
+    # General packages, including various plugins and commands...
+
     "asttokens",    # For unit tests.
     "black",        # For unit tests.
     "docutils",     # various plugins and commands.
     "flexx",        # leoflexx.py plugin.
     "meta",         # livecode.py plugin.
     "pyenchant",    # The spell tab.
+    "pytest",       # For coverage testing.
+    "pytest-cov",   # For coverage testing.
     "pyflakes",     # pyflakes command.
     "pylint",       # pylint command.
     "sphinx",       # various plugins and commands.
@@ -90,9 +94,8 @@ dependencies = [
 gui = [
     # Note: the packages above pull in PyQt5.
     # "PyQt5>= 5.15",  # #2884: require v5.15.
-
+    # "PyQtWebEngine",  # Latest version is 5.15.6, which pulls in PyQt5.
     "PyQt6>= 6.6",
-    "PyQtWebEngine",
     "pyshortcuts >= 1.9.0",  # #1243: desktop integration.
     "windows-curses; os_name == 'nt'",  # cursesGui2 plugin on Windows.
     "Send2Trash; os_name == 'nt'",  # picture_viewer plugin on Windows.
