@@ -95,13 +95,17 @@ dependencies = [
 
     # Gui packages...
 
-    # Use PyQt5 by default.
-    "PyQt5>= 5.15; os_name != 'nt'",
-    "PyQtWebEngine; os_name != 'nt'",
+    # Use PyQt6 only on Windows.
+        # "PyQt5>= 5.15; os_name != 'nt'",
+        # "PyQtWebEngine; os_name != 'nt'",
 
-    # Use PyQt6 on Windows.
-    "PyQt6>= 6.6; os_name == 'nt'",
-    "PyQt6-WebEngine; os_name == 'nt'",
+        # # Use PyQt6 on Windows.
+        # "PyQt6>= 6.6; os_name == 'nt'",
+        # "PyQt6-WebEngine; os_name == 'nt'",
+        
+    # Use PyQt6 on all platforms.
+    "PyQt6>= 6.6",
+    "PyQt6-WebEngine",
 ]
 
 # [project.optional-dependencies]
