@@ -60,7 +60,7 @@ name = "leo"
 readme = "README.md"
 #@-<< description >>
 #@+<< dependencies >>
-#@+node:ekr.20240229082807.1: ** << dependencies >>
+#@+node:ekr.20240229082807.1: ** << dependencies >> (pyproject.toml)
 dependencies = [
     # For mypy...
     "mypy",
@@ -74,19 +74,20 @@ dependencies = [
     "types-six",
 
     # General packages, including various plugins and commands...
-    "asttokens",    # For unit tests.
-    "black",        # For unit tests.
-    "docutils",     # various plugins and commands.
-    "flexx",        # leoflexx.py plugin.
-    "meta",         # livecode.py plugin.
-    "pyenchant",    # The spell tab.
-    "pytest",       # For coverage testing.
-    "pytest-cov",   # For coverage testing.
-    "pyflakes",     # pyflakes command.
-    "pylint",       # pylint command.
-    "sphinx",       # various plugins and commands.
-    "pyshortcuts",  # #1243: desktop integration.
-    "tk",           # tkinter: for emergency dialogs
+    "asttokens",        # For unit tests.
+    "beautifulsoup4",   # For link testing.
+    "black",            # For unit tests.
+    "docutils",         # various plugins and commands.
+    "flexx",            # leoflexx.py plugin.
+    "meta",             # livecode.py plugin.
+    "pyenchant",        # The spell tab.
+    "pytest",           # For coverage testing.
+    "pytest-cov",       # For coverage testing.
+    "pyflakes",         # pyflakes command.
+    "pylint",           # pylint command.
+    "sphinx",           # various plugins and commands.
+    "pyshortcuts",      # #1243: desktop integration.
+    "tk",               # tkinter: for emergency dialogs
     "urllib3",
 
     # Platform-specific packages...
