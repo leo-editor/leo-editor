@@ -198,7 +198,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.7.7
+Version: 6.7.8
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -217,21 +217,28 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.7.7 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.7.8 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.7.7**
+**The highlights of Leo 6.7.8**
 
-- PR #3761: Improve leoserver.py to support LeoInteg.
-- Asserted minor improvements.
+- PR #3757: (leoTokens.py) Make Leo's beautifier 3x faster.
+- PR #3771: Revert colorizing of f-strings.
+- PR #3786: Support Nim.
+- PR #3790: Add "get-unl" command to Leo's server.
+- PR #3805: Fix problems with auto-completion and calltips.
+- PR #3806: Fix problems with Leo's `go-back` and `go-forward` commands.
+- PR #3807: Improve Leo's Python importer.
+- PR #3817: Allow relative paths in gnx-based UNLs.
+- The usual minor improvements and bug fixes.
 
 **Links**
 
 - [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.7.7 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.7+)
-- [6.7.7 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.7)
+- [6.7.8 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.8+)
+- [6.7.8 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.8)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
@@ -241,11 +248,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
 - [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
-- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
-
-@nowrap
-@language rest
-</t>
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
 <t tx="EKR.20040519091259.2"></t>
 <t tx="EKR.20040519091259.3">I like Leo more the more I use it...It's an unexpected pleasure to
 see my (linearly written) code outlined in Leo. I can't wait to use
@@ -1483,41 +1486,54 @@ Public announcements, after creating a package.
 - full-test-leo
 </t>
 <t tx="ekr.20210814054641.1">@language unknown_language
+
 # Processed in order listed
+
 # Global
-#recursive-include leo *.*     # not needed when using `graft`
+
 graft leo
 global-exclude *.py[cod] __pycache__ *.so
 
 # Root folder
+
 include *.TXT
 include launchLeo.py
 include profileLeo.py
-include pylint-leo.bat
-include pylint-leo.py
-include *.nsi
+
+# include pylint-leo.bat
+# include pylint-leo.py
+# include *.nsi
+
 include LICENSE
+
 # obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
 include pyproject.toml
 
 # Exclusions
+
 # same as scrub_datafiles in setup.py, prior to Github commit 9982d17e2470ac8313050b8a0288cd39d7ad4f5b
 # Issue #2633: execute-script requires that leo/test exist.
 #              test-all requires that leo/test/test.leo exist.
 # prune leo/test
+
 prune leo/doc/html
+
 # EKR: 2021/08/14: further exclusions.
+
 prune leo/core/.mypy_cache
 prune leo/core/mypy_stubs
 prune leo/core/.gitattributes
 prune leo/unittests/htmlcov
 
 # Issue #603, https://github.com/leo-editor/leo-editor/issues/603
+
 include leo/doc/html/conf.py
 include leo/doc/html/index.html
 
 # Issue #3177: https://github.com/leo-editor/leo-editor/issues/3177
-prune leo/docs</t>
+
+prune leo/docs
+</t>
 <t tx="ekr.20210815103531.1">**build**
 
 - git checkout master
@@ -1704,22 +1720,144 @@ That said, here's my recipe for packaging a new release for Test PyPi:
 Remove broken releases (still can't re-use identical version numbers and file names though):
 https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 </t>
-<t tx="maphew.20190206032329.1">[build-system]
-requires = ["setuptools&gt;=38.6.0",
-    "build&gt;=0.6.0",
-    "setupext-janitor&gt;=1.1",
-    "wheel&gt;=0.31.0",
-    "twine&gt;=1.11.0"]
-    
+<t tx="maphew.20190206032329.1">#@+leo-ver=5-thin
+#@+node:ekr.20240227064614.1: * @file ../../pyproject.toml
+#@@language toml
+#@@nowrap
+
+# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+
+[build-system]
+requires = [
+    "build&gt;=1.0",
+    "setuptools&gt;=61.0",
+]
 build-backend = 'setuptools.build_meta'
+
+[tool.setuptools]
+py-modules = []
+    
+[project]
+requires-python = "&gt;= 3.9"
+version = "6.7.8"
+#@+&lt;&lt; developer info &gt;&gt;
+#@+node:ekr.20240227084103.1: ** &lt;&lt; developer info &gt;&gt;
+authors =  [
+    {name = "Edward K. Ream"},
+    {email = "edreamleo@gmail.com"},
+]
+
+maintainers =  [
+    {name = "Edward K. Ream", email = "edreamleo@gmail.com"},
+    {name = "Félix Malboeuf", email = "felixgraphx@gmail.com"},
+    {name = "Thomas Passin", email = "pub1@tompassin.net"},
+    {name = "Виталије Милошевић, (Vitalije Milosevic) ", email = "vitalijem@gmail.com"},
+]
+#@-&lt;&lt; developer info &gt;&gt;
+#@+&lt;&lt; description &gt;&gt;
+#@+node:ekr.20240227162726.1: ** &lt;&lt; description &gt;&gt;
+classifiers = [
+  "Author :: Edward K. Ream",
+  "Development Status :: 6 - Mature",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development",
+  "License :: MIT License",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development",
+  "Topic :: Text Processing",
+]
+
+description = "A PIM, IDE and Outliner"
+keywords = ["PIM", "IDE", "Outliner"]
+license = {text = "MIT License"}
+name = "leo"
+readme = "README.md"
+#@-&lt;&lt; description &gt;&gt;
+#@+&lt;&lt; dependencies &gt;&gt;
+#@+node:ekr.20240229082807.1: ** &lt;&lt; dependencies &gt;&gt; (pyproject.toml)
+dependencies = [
+    # For mypy...
+    "mypy",
+    "mypy-extensions",
+    "typing_extensions",
+    "types-docutils", 
+    "types-Markdown",
+    "types-paramiko",
+    "types-PyYAML",
+    "types-requests",
+    "types-six",
+
+    # General packages, including various plugins and commands...
+    "asttokens",        # For unit tests.
+    "beautifulsoup4",   # For link testing.
+    "black",            # For unit tests.
+    "docutils",         # various plugins and commands.
+    "flexx",            # leoflexx.py plugin.
+    "meta",             # livecode.py plugin.
+    "pyenchant",        # The spell tab.
+    "pytest",           # For coverage testing.
+    "pytest-cov",       # For coverage testing.
+    "pyflakes",         # pyflakes command.
+    "pylint",           # pylint command.
+    "sphinx",           # various plugins and commands.
+    "pyshortcuts",      # #1243: desktop integration.
+    "tk",               # tkinter: for emergency dialogs
+    "urllib3",
+
+    # Platform-specific packages...
+    "windows-curses; os_name == 'nt'",  # cursesGui2 plugin on Windows.
+    "Send2Trash; os_name == 'nt'",  # picture_viewer plugin on Windows.
+
+    # Gui packages...
+
+    # Use PyQt6 only on Windows.
+        # "PyQt5&gt;= 5.15; os_name != 'nt'",
+        # "PyQtWebEngine; os_name != 'nt'",
+
+        # # Use PyQt6 on Windows.
+        # "PyQt6&gt;= 6.6; os_name == 'nt'",
+        # "PyQt6-WebEngine; os_name == 'nt'",
+        
+    # Use PyQt6 on all platforms.
+    "PyQt6&gt;= 6.6",
+    "PyQt6-WebEngine",
+]
+
+# [project.optional-dependencies]
+#@-&lt;&lt; dependencies &gt;&gt;
+
+[project.urls]
+#@+&lt;&lt; urls &gt;&gt;
+#@+node:ekr.20240227162816.1: ** &lt;&lt; urls &gt;&gt;
+Documentation = "https://leo-editor.github.io/leo-editor/leo_toc.html"
+"Home Page" = "https://leo-editor.github.io/leo-editor/"
+Issues = "https://github.com/leo-editor/leo-editor/issues"
+"Pull Requests" = "https://github.com/leo-editor/leo-editor/pulls"
+"GitHub Repository" = "https://github.com/leo-editor/leo-editor"
+"What People Are Saying about Leo" = "http://leo-editor.github.io/leo-editor/testimonials.html"
+#@-&lt;&lt; urls &gt;&gt;
 
 [tool.ruff]
 line-length = 120
+#@-leo
 </t>
 <t tx="maphew.20190208135916.1">[bdist_wheel]
 
 # Leo only supports Python 3, so universal should be zero.
 universal=0
+
+[metadata]
+
+# Becomes the home-page in `pip show leo`.
+url = https://leo-editor.github.io/leo-editor/
 
 [flake8]
 
