@@ -660,10 +660,10 @@
 </v>
 <v t="ekr.20131008041326.16094"><vh>@rst html/installing.html</vh>
 <v t="ekr.20141105052052.4"><vh>Dependencies</vh></v>
-<v t="ekr.20180130033527.1"><vh>Installing Leo with pip</vh>
+<v t="ekr.20180130033527.1"><vh>Installing Leo from PyPi</vh>
 <v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
 </v>
-<v t="ekr.20101125062332.5090"><vh>Installing packages</vh></v>
+<v t="ekr.20240302082146.1"><vh>Installing Leo from GitHub</vh></v>
 <v t="ekr.20170206073848.1"><vh>Installing Leo itself</vh>
 <v t="ekr.20170206073747.2"><vh>Installing Leo on Windows</vh>
 <v t="ekr.20170206073747.4"><vh>Installing from sources (Windows)</vh></v>
@@ -2522,6 +2522,7 @@
 </v>
 <v t="ekr.20240222121346.1"></v>
 <v t="ekr.20240222121215.1"></v>
+<v t="ekr.20131008041326.16092"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -4000,7 +4001,7 @@ Enough of this commentary, I just looked at the clock. Best wishes to anyone wil
 #1 Reason would probably be clone nodes. One node can point to another. Another way of putting this is is that a leaf can be on more than one tree. For example, suppose you have a list of recipes. You simultaneously put a single recipe under multiple categories or even multiple hierarchies. You could put "3 bean enchilada" simultaneously under Recipes-Mexican and Food-Gas. Another example would be, if you are a biologist trying to decide under which genus to put a new species, you could put the species under two simultaneously. In effect, you can build a 3-D tree.
 
 
-#2 Reason would probably be that Leo outlines can be embedded in external text files. So, a Leo outline is more than an outline, it is a meta-structure that can be added to another text without changing that text, but rather providing an external road map to the text. Microsoft Word has a text (xml) version with a commenting convention, so Leo can even be used to add outlines into Word docs, although it isn't set up to do that now. For example, see http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm In this case, the upper window of Leo is the meta-structure, and the bottom window is the file to which the meta-structure is being applied, viewed one node at a time.
+#2 Reason would probably be that Leo outlines can be embedded in external text files. So, a Leo outline is more than an outline, it is a meta-structure that can be added to another text without changing that text, but rather providing an external road map to the text. Microsoft Word has a text (xml) version with a commenting convention, so Leo can even be used to add outlines into Word docs, although it isn't set up to do that now.
 
 I may not have made #2 very clear, but it is actually a very useful feature. It takes some getting used to before one sees all of the possibilities tho. One way to think of it is that Leo allows you to throw external documents into your outline, and yet the external document remains independent and can still be edited separately.
 
@@ -11117,17 +11118,6 @@ Leo's outline or hierarchical structure is distinct from the web of interleaved 
 [[Category:Software that uses Scintilla]]
 [[Category:Software using the MIT license]]
 </t>
-<t tx="ekr.20101125062332.5090">**Python**: Leo will work on any platform that supports Python 3.9 or above.
-To install Python, see http://python.org.
-
-**PyQt**: `PyQt`_ provides Leo's widgets:
-
-* Download PyQt5 from http://www.riverbankcomputing.com/software/pyqt/download5.
-
-**Important**: The PyQt version must match your installed Python version. Remember that Leo requires Python 3.9 or later.
-
-**PyEnchant**: You must install `PyEnchant`_ if you want to use Leo's Spell tab.
-</t>
 <t tx="ekr.20110521135104.18151">Any outline (.leo file) may contain clones that appear in multiple external files defined *within* that outline. There is no problem with such **intra-outline clones**.
 
 In contrast, **cross-outline clones** are clones that appear in more than one outline.  Leo's paste-retaining-clones command makes it possible for two outlines to contain nodes with the same gnx. Conceivably, both outlines could use those clones in the *same* external file!
@@ -14562,13 +14552,18 @@ Installing Leo
 
 This chapter tells how to install and run Leo on Windows, Linux and MacOS.
 
-These instructions look complicated because they're long, but really they just boil down to:
+The short summary:
 
-- install python. Python 3.9 or later is required.
-- run `pip install leo` from a python enabled command prompt.
-- run leo from that same python enabled command prompt.
+1. Install Python 3.9 or later.
 
-**Important**: If you have *any* problems installing Leo, please ask for help on `Leo's help forum`_.
+2. Install Leo either from PyPi or GitHub:
+
+   - From PyPi: `pip install leo` 
+   - From GitHub:
+     `git clone https://github.com/leo-editor/leo-editor.git`
+     `pip install - requirements.txt`
+
+If you have *any* problems installing Leo, please *ask for help* on `Leo's help forum`_.
 
 .. contents:: Contents
     :depth: 4
@@ -17096,15 +17091,13 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
 .. _`PyEnchant`:  http://pyenchant.github.io/pyenchant/install.html
 .. _`Missing files when installing Leo from PyPI using "pip install leo"`: https://github.com/leo-editor/leo-editor/issues/603
 .. _`PythonTidy`: https://pypi.python.org/pypi/PythonTidy/
-.. _`PyQt`:       http://www.riverbankcomputing.co.uk/software/pyqt/intro
-.. _`PyQt5`:      http://www.riverbankcomputing.com/software/pyqt/download5
+.. _`PyQt6`:      https://pypi.org/project/PyQt6/
 .. _`Sphinx`:     http://www.sphinx-doc.org/en/stable/
 
 Leo's minimal dependencies are:
 
 * `Python`_ 3.9 or later.
-* `PyQt5`_.
-* `PyQtWebEngine`
+* `PyQt6`_.
 
 The following packages are optional, but recommended:
 
@@ -24436,26 +24429,14 @@ the headline of any node.
 .. _`pip`:              https://pypi.org/pypi/pip
 .. _`PyPi`:              https://pypi.org/
 
-Python's `pip`_ tool will download *and* install Leo and all of Leo's dependencies automatically.
+The following will install Leo from `PyPi`_, Python's package repository.
 
-1. `Install Python`_ first, if necessary. Make sure to install Python 3, not Python 2.
-
-2. Check whether pip has been installed using the terminal window command below. If there's an error `Install pip`_::
-
-    pip --version
-
-In some circumstances using pip as a module works better:
-
-    python -m pip --version
-
-3. Download and install Leo and all required packages from `PyPi`_::
-
-    pip install leo
-
-or 
+1. `Install Python`_ 3.9 or above.
+2. `Install pip`_.
+3. Download and install Leo (including all required packages)::
 
     python -m pip install leo
-    </t>
+</t>
 <t tx="ekr.20180130055320.1">https://github.com/leo-editor/leo-editor/issues/562</t>
 <t tx="ekr.20180130092843.1">.. https://groups.google.com/forum/#!topic/leo-editor/yAtfcG6AL70
 
@@ -30897,8 +30878,7 @@ Report broken links in all .html files leo-editor/docs.
 Adapted from https://brianli.com/2021/06/how-to-find-broken-links-with-python/
 
 pip install beautifulsoup4
-
-https://www.crummy.com/software/BeautifulSoup/bs4/doc/
+https://www.crummy.com/software/BeautifulSoup/
 """
 @language python
 g.cls()
@@ -30959,8 +30939,6 @@ g.es_print(f"Found {n1} link{g.plural(n1)}, {n2} broken")
     broken_links = []
     suppress = (
         '&lt;|URL|&gt;',
-        # In a how-to item.
-        'https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py',
     )
 
     def validate_url(url):
@@ -32969,7 +32947,8 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - PR #3805: Fix problems with auto-completion and calltips.
 - PR #3806: Fix problems with Leo's `go-back` and `go-forward` commands.
 - PR #3807: Improve Leo's Python importer.
-- Assorted minor code improvements and bug fixes.
+- PR #3817: Allow relative paths in gnx-based UNLs.
+- The usual minor improvements and bug fixes.
 
 **Links**
 
@@ -32996,6 +32975,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #3805`: https://github.com/leo-editor/leo-editor/pull/3805
 .. _`PR #3806`: https://github.com/leo-editor/leo-editor/pull/3806
 .. _`PR #3807`: https://github.com/leo-editor/leo-editor/pull/3807
+.. _`PR #3817`: https://github.com/leo-editor/leo-editor/pull/3817
 
 - `PR #3757`_: (leoTokens.py) Make Leo's beautifier 3x faster.
 - `PR #3771`_: Revert colorizing of f-strings.
@@ -33004,6 +32984,21 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - `PR #3805`_: Fix problems with auto-completion and calltips.
 - `PR #3806`_: Fix problems with Leo's `go-back` and `go-forward` commands.
 - `PR #3807`_: Improve Leo's Python importer.
+- `PR #3817`_: Allow relative paths in gnx-based UNLs.
+</t>
+<t tx="ekr.20240302082146.1">.. _`Leo's GitHub repository`:  https://github.com/leo-editor/leo-editor
+.. _`Install Git`: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+
+The following will install Leo from `Leo's GitHub repository`_.
+
+1. `Install Python`_ 3.9 or above.
+2. `Install pip`_.
+3. `Install Git`_.
+4. Clone Leo's repository::
+    git clone https://github.com/leo-editor/leo-editor.git
+5. Install Leo's dependencies from Leo's `requirements.txt` file::
+
+    python -m pip install -r requirements.txt
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py

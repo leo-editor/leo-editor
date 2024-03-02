@@ -3307,7 +3307,7 @@ def readFileIntoString(
         g.error(f"readFileIntoString: unexpected exception reading {fileName}")
         g.es_exception()
     return None, None
-#@+node:ekr.20160504062833.1: *3* g.readFileToUnicodeString
+#@+node:ekr.20160504062833.1: *3* g.readFileIntoUnicodeString
 def readFileIntoUnicodeString(
     fn: str,
     encoding: Optional[str] = None,

@@ -38,7 +38,6 @@ def set_name_and_title(c: Cmdr, fileName: str) -> str:
 
     Return the finalized name.
     """
-
     # Finalize fileName.
     if fileName.endswith(('.leo', '.db', '.leojs')):
         c.mFileName = fileName

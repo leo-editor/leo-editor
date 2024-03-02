@@ -17,25 +17,26 @@ types-six
 
 # General packages, including various plugins and commands...
 
-asttokens   # For unit tests.
-black       # For unit tests.
-docutils    # For Sphinx and rST plugins.
-flexx       # leoflexx.py plugin.
-meta        # livecode.py plugin.
-pyenchant   # The spell tab.
+asttokens       # For unit tests.
+beautifulsoup4  # For link testing.
+black           # For unit tests.
+docutils        # For Sphinx and rST plugins.
+flexx           # leoflexx.py plugin.
+meta            # livecode.py plugin.
+pyenchant       # The spell tab.
 pyflakes
 pylint
-pytest      # For coverage testing.
-pytest-cov  # For coverage testing.
+pytest          # For coverage testing.
+pytest-cov      # For coverage testing.
 sphinx
-tk          # tkinter, for emergency dialogs.
+tk              # tkinter, for emergency dialogs.
 urllib3
 
 # Gui packages...
 
 # Note: the packages above pull in PyQt5.
-# PyQt5>= 5.15  # #2884: require v5.15.
-# PyQtWebEngine
+    # PyQt5>= 5.15  # #2884: require v5.15.
+    # PyQtWebEngine
 
 PyQt6 >= 6.6
 PyQt6-WebEngine
