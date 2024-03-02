@@ -229,7 +229,7 @@
 <v t="ekr.20180225010644.1"><vh>Other files</vh>
 <v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
 <v t="ekr.20230702120645.1"><vh>@@edit ../../.dmypy.ini</vh></v>
-<v t="ekr.20240201175949.1"><vh>@@file ../../requirements.txt</vh></v>
+<v t="ekr.20240201175949.1"><vh>@file ../../requirements.txt</vh></v>
 <v t="ekr.20220222130955.1"><vh>@edit ../../.mypy.ini</vh></v>
 <v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
@@ -341,6 +341,7 @@
 <v t="ekr.20221129095254.1"><vh>@file ../modes/batch.py</vh></v>
 <v t="ekr.20150326145530.1"><vh>@file ../modes/forth.py</vh></v>
 <v t="ekr.20230419050031.1"><vh>@file ../modes/html.py</vh></v>
+<v t="ekr.20240227082119.1"><vh>@file ../modes/ini.py</vh></v>
 <v t="ekr.20230419052236.1"><vh>@file ../modes/javascript.py</vh></v>
 <v t="ekr.20210223151922.1"><vh>@file ../modes/julia.py</vh></v>
 <v t="ekr.20240202211600.1"><vh>@file ../modes/nim.py</vh></v>
@@ -646,7 +647,6 @@
 <v t="ekr.20221204071146.1"><vh>@clean ../scripts/mypy-leo.cmd</vh></v>
 <v t="ekr.20221204071056.1"><vh>@clean ../scripts/pylint-leo.cmd</vh></v>
 <v t="ekr.20221204072154.1"><vh>@clean ../scripts/reindent-leo.cmd</vh></v>
-<v t="ekr.20230628105236.1"><vh>@clean ../scripts/ruff-leo.cmd</vh></v>
 <v t="ekr.20221201043917.1"><vh>@clean ../scripts/test-leo.cmd</vh></v>
 <v t="ekr.20221204071220.1"><vh>@clean ../scripts/test-one-leo.cmd</vh></v>
 <v t="ekr.20240119060724.1"><vh>@clean ../scripts/tbo.cmd</vh></v>
@@ -2797,8 +2797,14 @@ else:  # Leo unit test.
     commands = (
         # All commands must start with .test_.
         
+        f"{core}.test_leoGlobals.TestGlobals.test_g_openUNLFile",
         # f"{core}.test_leoUndo",
-        f"{core}.test_leoColorizer",
+        # f"{core}.test_leoColorizer",
+        
+        # f"{importers}.TestPython",
+        # f"{importers}.TestPython.test_almost_empty_defs",
+        # f"{importers}.TestPython.test_general_test_1",
+        # f"{importers}.TestPython.test_nested_defs",
     )
     verbose_flag = ''  # -v
     commands_s = f"python -m unittest {verbose_flag} {' '.join(commands)}"
@@ -3316,11 +3322,12 @@ cd %~dp0..\..
 
 rem Run all of Leo's pre-commit tests.
 
-call tbo.cmd --force
+call tbo.cmd --all --beautified --report --write
 call python312 -m unittest
 call ruff-leo.cmd
 call mypy-leo.cmd
-echo Done!</t>
+echo Done!
+</t>
 <t tx="ekr.20221204072154.1">@language batch
 @echo off
 cd %~dp0..\..
@@ -3439,20 +3446,6 @@ writers = 'leo.unittests.plugins.test_writers'
 # f"{plugins}.test_writers",
 </t>
 <t tx="ekr.20230624114517.1"></t>
-<t tx="ekr.20230628105236.1">@language batch
-@echo off
-cd %~dp0..\..
-
-rem qt_main.py is auto generated.
-rem call py -m ruff leo/plugins/qt*.py
-
-echo ruff leo/core, leo/commands, leo/plugins/qt...
-call py -m ruff leo/core
-call py -m ruff leo/commands
-call py -m ruff leo/plugins/qt_gui.py
-call py -m ruff leo/plugins/qt_text.py
-call py -m ruff leo/plugins/qt_tree.py
-</t>
 <t tx="ekr.20230702120645.1"></t>
 <t tx="ekr.20230717210524.1"></t>
 <t tx="ekr.20230720115916.1">g.cls()
@@ -3581,42 +3574,6 @@ goto done
 call python312 -m leo.core.leoTokens  --help
 
 :done:
-</t>
-<t tx="ekr.20240201175949.1">@language python
-@nosearch
-
-# For emergency install message.
-
-tk          # tkinter.
-
-# For commands...
-
-pylint
-pyflakes
-
-# For plugins...
-
-docutils    # For Sphinx and rST plugins.
-flexx       # leoflexx.py plugin.
-meta        # livecode.py plugin.
-pyenchant   # The spell tab.
-sphinx      # rST plugin.
-windows-curses; platform_system=="Windows"  # cursesGui2 plugin on Windows.
-
-# For leoAst.py and leoTokens.py...
-
-asttokens   # For unit tests.
-black       # For unit tests.
-
-# Developer stuff...
-
-# pyshortcuts &gt;= 1.7  # desktop integration (#1243)
-# build &gt;= 0.6.0  # simple PEP 517 package builder.
-
-# Optional Qt dependencies.
-
-PyQt5 [Qt] &gt;= 5.15  # #2884: require v5.15. #1217: require v5.12+.
-PyQtWebEngine [Qt]
 </t>
 <t tx="ekr.20240204082420.1"></t>
 <t tx="ekr.20240204082924.1"></t>
