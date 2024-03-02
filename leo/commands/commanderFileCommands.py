@@ -39,7 +39,6 @@ def set_name_and_title(c: Cmdr, fileName: str) -> str:
 
     Return the finalized name.
     """
-    oldFilename = c.mFileName
     # Finalize fileName.
     if fileName.endswith(('.leo', '.db', '.leojs')):
         c.mFileName = fileName
@@ -50,11 +49,6 @@ def set_name_and_title(c: Cmdr, fileName: str) -> str:
     title = c.computeWindowTitle()
     c.frame.title = title
     c.frame.setTitle(title)
-
-    # #3822 if name changed 'save-as' needs to change the keys of settings saved in db.
-    if oldFilename != c.mFileName:
-        c.db = CommanderWrapper(c)
-
     try:
         # Does not exist during unit testing. May not exist in all guis.
         c.frame.top.leo_master.setTabName(c, c.mFileName)
