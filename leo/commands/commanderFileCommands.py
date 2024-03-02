@@ -10,6 +10,7 @@ import time
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoImport
+from leo.core.leoCache import CommanderWrapper
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -38,7 +39,6 @@ def set_name_and_title(c: Cmdr, fileName: str) -> str:
 
     Return the finalized name.
     """
-
     # Finalize fileName.
     if fileName.endswith(('.leo', '.db', '.leojs')):
         c.mFileName = fileName

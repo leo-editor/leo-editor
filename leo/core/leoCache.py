@@ -39,32 +39,31 @@ class CommanderWrapper:
     """
 
     def __init__(self, c: Cmdr) -> None:
-        self.c = c
+        self.c = c  # Key is c.mFilemane to fix #3822
         self.db = g.app.db
-        self.key = c.mFileName
         self.user_keys: set[str] = set()
 
     def get(self, key: str, default: Any = None) -> Any:
-        value = self.db.get(f"{self.key}:::{key}")
+        value = self.db.get(f"{self.c.mFileName}:::{key}")
         return default if value is None else value
 
     def keys(self) -> list[str]:
         return sorted(list(self.user_keys))
 
     def __contains__(self, key: Any) -> bool:
-        return f"{self.key}:::{key}" in self.db
+        return f"{self.c.mFileName}:::{key}" in self.db
 
     def __delitem__(self, key: Any) -> None:
         if key in self.user_keys:
             self.user_keys.remove(key)
-        del self.db[f"{self.key}:::{key}"]
+        del self.db[f"{self.c.mFileName}:::{key}"]
 
     def __getitem__(self, key: str) -> Any:
-        return self.db[f"{self.key}:::{key}"]  # May (properly) raise KeyError
+        return self.db[f"{self.c.mFileName}:::{key}"]  # May (properly) raise KeyError
 
     def __setitem__(self, key: str, value: Any) -> None:
         self.user_keys.add(key)
-        self.db[f"{self.key}:::{key}"] = value
+        self.db[f"{self.c.mFileName}:::{key}"] = value
 #@+node:ekr.20180627041556.1: ** class GlobalCacher (g.app.db)
 class GlobalCacher:
     """
