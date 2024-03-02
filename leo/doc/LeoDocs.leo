@@ -664,16 +664,8 @@
 <v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
 </v>
 <v t="ekr.20240302082146.1"><vh>Installing Leo from GitHub</vh></v>
-<v t="ekr.20170206073848.1"><vh>Installing Leo itself</vh>
-<v t="ekr.20170206073747.2"><vh>Installing Leo on Windows</vh>
-<v t="ekr.20170206073747.4"><vh>Installing from sources (Windows)</vh></v>
-<v t="ekr.20170206073747.5"><vh>Creating Windows file associations</vh></v>
-</v>
-<v t="mhw.20191010004650.1"><vh>Installing Leo from sources (all platforms)</vh></v>
-<v t="ekr.20170206073747.10"><vh>Installing Leo with git</vh></v>
-<v t="ekr.20170206073747.9"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
-</v>
 <v t="ekr.20180126191031.1"><vh>Installing everything with Anaconda or Miniconda</vh></v>
+<v t="ekr.20170206073747.9"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
 </v>
 <v t="ekr.20131008041326.16140"><vh>@rst html/running.html</vh>
 <v t="ekr.20131008041326.16151"><vh>Running Leo</vh>
@@ -693,7 +685,7 @@
 <v t="ekr.20050830120007"><vh>@rst-no-head Links (FAQ)</vh></v>
 <v t="ekr.20090212054250.5"><vh>Getting Leo</vh>
 <v t="ekr.20090212054250.6"><vh>Where can I get official releases of Leo?</vh></v>
-<v t="ekr.20170206073747.10"></v>
+<v t="ekr.20170206073747.10"><vh>Installing Leo with git</vh></v>
 <v t="ekr.20090212054250.7"><vh>How can I get recent snapshots of Leo?</vh></v>
 </v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
@@ -794,7 +786,6 @@
 <v t="ekr.20210607135729.1"><vh>How can I run scripts in languages other than python?</vh></v>
 <v t="ekr.20160428105918.1"><vh>How can I run pylint outside of Leo?</vh></v>
 <v t="ekr.20131115075142.16636"><vh>How can I test settings easily?</vh></v>
-<v t="ekr.20160304081437.4"><vh>How can I use Leo in virtualenv?</vh></v>
 <v t="ekr.20141108064630.12"><vh>How can I use setuptools instead of .bat files?</vh></v>
 <v t="ekr.20141108064630.13"><vh>How can scripts call functions from Leo's core?</vh></v>
 <v t="ekr.20170612093902.1"><vh>How do I choose between @others and section references?</vh></v>
@@ -14568,8 +14559,6 @@ If you have *any* problems installing Leo, please *ask for help* on `Leo's help 
 .. contents:: Contents
     :depth: 4
     :local:
-
-
 </t>
 <t tx="ekr.20131008041326.16099">###################
 Advanced Topics
@@ -19667,47 +19656,6 @@ You can also define a theme directly in myLeoSettings.leo as follows:
 - *Move* the copied tree to the *end* of the @settings tree.
 - *Test* by restarting Leo.
 </t>
-<t tx="ekr.20160304081437.4">https://groups.google.com/d/msg/leo-editor/LePOMe_ckeg/_UasKCKP6NMJ
-
-Some time ago there were a discussion about Leo in virtualenv.
-
-Now I could test it in Python3, PyQt5 on Kubuntu:
-
-Here are the steps (I worked in a folder with write permission '/leo'):
-
-1. Install PyQt5 in the system:
-
-sudo aptitude install python3-pyqt5
-
-2. Create the virtual environment with the '--system-site-packages' switch and without pip (I've found this the only way, which worked):
-
-pyvenv-3.4 --system-site-packages --without-pip py3-pyqt5
-
-3. Install setuptools and pip into the created environment:
-
-wget --no-check-certificate https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O ez_setup.py
-
-py3-pyqt5/bin/python ez_setup.py --insecure
-
-wget --no-check-certificate https://pypi.python.org/packages/source/p/pip/pip-6.2.tar.gz#md5=2332e6f97e75ded3bddde0ced01dbda3
-
-tar xzvf pip-6.2.tar.gz
-
-cd pip-6.2
-
-../py3-pyqt5/bin/python setup.py install
-
-cd ..
-
-Now you can install what you want in the created environment, without affecting the system.
-
-py3-pyqt5/bin/pip install Sphinx
-
-4. From the leo-editor source folder launch Leo with the new interpreter:
-
-In my case:
-
-/leo/py3-pyqt5/bin/python launchLeo.py</t>
 <t tx="ekr.20160304081437.5">Imo, git rivals python as the greatest productivity tool ever devised for programmers.
 
 My workflow on Ubuntu and Windows is essentially identical. Simple aliases (Ubuntu) and .bat files (Windows) support the following console commands::
@@ -21125,38 +21073,6 @@ Leo.
 
 And that's it! You can run leo with `PYTHONHOME/Scripts/leo` or `python leo-editor/launchLeo.py`. When you want to refresh the code with latest modifications from GitHub, run ``git pull``.
 </t>
-<t tx="ekr.20170206073747.2">Install Python and Qt, as described above (`Installing Packages`_).
-
-Now you have a choice.  You can use Leo's binary (single-click) installer
-or download Leo's sources directly.
-</t>
-<t tx="ekr.20170206073747.4">.. _`Leo's download page`: download.html
-.. _`Running Leo`: running.html
-
-Download Leo’s sources using one of the methods described at `Leo's download page`_.
-
-After download unpack the zip archive where you like and from a python enabled command shell::
-
-	pip install --editable C:\\path\\to\\leo-editor
-
-This will leave Leo where it is and and create launch scripts in
-PYTHONHOME\\Scripts.
-
-Next see `Running Leo`_ and then optionally come back here for `Creating Windows file associations`_.
-</t>
-<t tx="ekr.20170206073747.5">From *Settings* menu select **Open Desktop Integration**.
-The new Leo file that opens will add 4 buttons under the menu bar:
-
-*[Register-leo]* - Creates registry keys for Leo file type and .leo
-file association. Afterwards .leo files will show Leo icon and
-double-clicking them will open in Leo Editor.
-
-*[Unregister-leo]* - Removes the above.
-
-*[add-desktop-links]* - Creates launch shortcuts in desktop and system menu
-
-*[remove-desktop-links]* - Removes the launch shortcuts
-</t>
 <t tx="ekr.20170206073747.9">.. .. http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
 
 Many thanks to Ludwig Schwardt for the following installation instructions. Using the HomeBrew installation method is *much* easier than before.
@@ -21220,7 +21136,6 @@ Here is my installation write-up:
 
 It would really be great to get a Leo formula going for Homebrew. As mentioned before, the main question is just where to place all the Leo files in the /usr/local hierarchy.
 </t>
-<t tx="ekr.20170206073848.1"></t>
 <t tx="ekr.20170206095132.1">https://github.com/leo-editor/leo-editor/issues/402
 
 Added g.input_, but this is not a great solution.
@@ -33177,41 +33092,6 @@ The Leo ``@adoc`` directive and the ``adoc`` command need either **Asciidoc3** o
 
 
 If you run into difficulties see https://asciidoc3.org/pypi.html#_asciidoc3_pip_install_windows
-</t>
-<t tx="mhw.20191010004650.1">Generic recipe for all platforms. Adjustment for local norms is expected. For example `7z` could be `unzip` or interactive extraction and `wget` could be a browser download. 
-
-Linux: it's generally advised to use pip ``--user`` flag instead of `sudo`.
-
-Assumes **Python 3.9 or later** is installed and in PATH.
-
-Installing from source code into a new environment must be done in discrete steps: **download**, **unpack archive**, and **install as editable** mode.
-
-Example::
-
-    wget https://github.com/leo-editor/leo-editor/archive/devel.zip
-    7z x devel.zip -o C:\apps
-    pip install --editable C:\apps\leo-editor-devel
-
-For easier upgrading substitute ``git clone`` for wget &amp; 7z steps::
-
-    git clone --no-single-branch -b devel --depth=200 https://github.com/leo-editor/leo-editor.git
-    pip install --editable leo-editor
-
-time passes, upgrade desired::
-
-    pushd c:\apps\leo-editor
-    git pull
-    pip uninstall leo
-    pip install --editable .
-
-`b` and `depth` are optional, but will dramatically speed up download time as it only grabs the latest development branch, the tips of other branches, and skips all but the last couple weeks or months of history.
-
-**Note**
-
-Direct ``pip install https://github.com/leo-editor/leo-editor/archive/devel.zip`` does *not* work. For proper operation Leo relies on presence of certain files outside of the standard Python `site-packages` folder structure.
-
-
-See `Running Leo`_ for how to run Leo after installing it.
 </t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
