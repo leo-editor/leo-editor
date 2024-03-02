@@ -32914,6 +32914,17 @@ The following will install Leo from `Leo's GitHub repository`_.
 5. Install Leo's dependencies from Leo's `requirements.txt` file::
 
     python -m pip install -r requirements.txt
+    
+**Note for Ubuntu**
+
+
+After installing on Ubuntu you may get this error messages when attempting to run Leo::
+
+    qt.qpa.plugin: From 6.5.0, xcb-cursor0 or libxcb-cursor0 is needed to load the Qt xcb platform plugin.
+
+To install the missing library run::
+
+    sudo apt install libxcb-cursor0
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
