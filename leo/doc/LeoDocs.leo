@@ -458,7 +458,7 @@
 </v>
 <v t="ekr.20101115152915.4937"><vh>Backup of wikipedia entry</vh></v>
 <v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
-<v t="ekr.20240303055534.1"><vh>Obsolete FAQ entries</vh>
+<v t="ekr.20240303055534.1"><vh>Obsolete FAQ &amp; HowTo entries</vh>
 <v t="ekr.20090212054250.5"><vh>FAQ: Getting Leo</vh>
 <v t="ekr.20090212054250.6"><vh>Where can I get official releases of Leo?</vh></v>
 <v t="ekr.20170206073747.10"><vh>Installing Leo with git</vh></v>
@@ -471,6 +471,15 @@
 <v t="ekr.20190731085740.1"><vh>Tip: use shallow git clones to speed pip install</vh></v>
 </v>
 <v t="ekr.20120229094652.15137"><vh>FAQ: What's the recommended way to upgrade Leo?</vh></v>
+<v t="ekr.20131017094004.16739"><vh>How to...</vh>
+<v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
+<v t="ekr.20090620131445.5595"><vh>Post from ville</vh></v>
+<v t="ekr.20090401113141.2"><vh>@@rst test.html</vh>
+<v t="ekr.20090401113141.4"><vh>section 1</vh></v>
+</v>
+</v>
+<v t="ekr.20101104024804.4898"><vh>How to generate these docs</vh></v>
+</v>
 </v>
 </v>
 <v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
@@ -603,15 +612,6 @@
 <v t="ekr.20230122101508.2"><vh>@rst html/slides/minibuffer/slide-010.html</vh></v>
 <v t="ekr.20230122101508.3"><vh>@rst html/slides/minibuffer/slide-011.html</vh></v>
 </v>
-</v>
-<v t="ekr.20131017094004.16739"><vh>How to...</vh>
-<v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
-<v t="ekr.20090620131445.5595"><vh>Post from ville</vh></v>
-<v t="ekr.20090401113141.2"><vh>@@rst test.html</vh>
-<v t="ekr.20090401113141.4"><vh>section 1</vh></v>
-</v>
-</v>
-<v t="ekr.20101104024804.4898"><vh>How to generate these docs</vh></v>
 </v>
 <v t="ekr.20131023151757.17122"><vh>Preliminaries</vh>
 <v t="ekr.20131008041326.16079"><vh>@rst html/preliminaries.html</vh></v>
@@ -3703,32 +3703,10 @@ They contain restructured text markup for the sphinx tool. See::
 
 To generate these docs:
 
-1. Select this node, then run the rst3 command.
-
-   This command will generate about 50 .html.txt files in leo/doc/html folder.
-
-2. From a console::
-
-    cd leo/doc/html
-    make html
-
-    This creates html files in the leo/doc/html/_build/html directory.
-
-    The make file requires sphinx to be installed,
-    but sphinx does not have to be installed to use the resulting html files.
-
-3. Copy the entire leo/doc/html/_build/html directory to the server, but
-
-   **do not copy _build/html/searchindex.js**
-
-   I don't remember why searchindex.js is toxic, but it is.
-
-Important files:
-
-- doc\html\conf.py contains settings, including the name of the master toctree
-  document, leo_toc.html.txt.
-
-- leo_toc.html.txt contains a list of all file to be included.
+    `git checkout gh-pages`
+    Click the `make-sphinx` button
+    `git commit -m "log message"`
+    `git push`
 </t>
 <t tx="ekr.20040414172218.4">
 ################
@@ -14520,9 +14498,6 @@ Installing Leo
 
 .. _`Leo's help forum`: http://groups.google.com/group/leo-editor
 
-..  .. _`Python`:                   https://www.python.org/
-..  .. _`Leo's dependencies`:       installing.html#dependencies
-
 
 This chapter tells how to install and run Leo on Windows, Linux and MacOS.
 
@@ -14581,9 +14556,9 @@ Leo and Other Programs
    leoserver
 
 </t>
-<t tx="ekr.20131008041326.16140">##############
+<t tx="ekr.20131008041326.16140">###########
 Running Leo
-##############
+###########
 
 .. index:: Running Leo
 
@@ -14592,7 +14567,6 @@ This chapter tells how to run Leo and discusses Leo's command-line options.
 .. contents:: Contents
     :depth: 3
     :local:
-
 
 </t>
 <t tx="ekr.20131008041326.16151">You can run Leo from a Python interpreter as follows::
