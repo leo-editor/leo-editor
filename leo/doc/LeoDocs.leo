@@ -14506,9 +14506,10 @@ The short summary:
 
 1. Install Python 3.9 or later, including pip.
 
-2. Install Leo (include all of Leo's dependencies) from either from PyPi or GitHub:
+2. Install Leo (including all of Leo's dependencies) from either from PyPi or GitHub:
 
-   - From PyPi: `pip install leo` 
+   - From PyPi: `pip install leo`
+
    - From GitHub:
      `git clone https://github.com/leo-editor/leo-editor.git`
      `pip install - requirements.txt`
@@ -24250,7 +24251,10 @@ button using Ctrl-P.
 <t tx="ekr.20180126185857.1"></t>
 <t tx="ekr.20180126190015.1"></t>
 <t tx="ekr.20180126190053.1"></t>
-<t tx="ekr.20180126191031.1">The `Anaconda`_ scientific computing environment includes Python, NumPy, SciPy, PyQt, and over a thousand other tools, packages and libraries. It's a 500+ MB download but you're guaranteed to have everything needed.
+<t tx="ekr.20180126191031.1">.. _`Anaconda`:   https://pypi.org/project/anaconda/
+.. _`Miniconda`:  https://docs.anaconda.com/free/miniconda/index.html
+
+The `Anaconda`_ scientific computing environment includes Python, NumPy, SciPy, PyQt, and over a thousand other tools, packages and libraries. It's a 500+ MB download but you're guaranteed to have everything needed.
 
 The `Miniconda`_ environment includes just Python and the `conda` package management tool. Pick and choose from the full Anaconda ecosystem.
 
