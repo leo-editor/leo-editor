@@ -2519,6 +2519,16 @@ class LeoServer:
                 for p in c.all_unique_positions(copy=False)
         }
         return self._make_minimal_response({"position-data-dict": result})
+    #@+node:felix.20240302203609.1: *5* server.get_recent_files
+    def get_recent_files(self, param: Param) -> Response:
+        """
+        Return the recent files list
+        """
+        try:
+            recentFiles = g.app.recentFilesManager.recentFiles
+        except Exception:  # pragma: no cover
+            recentFiles = []
+        return self._make_minimal_response({"files": recentFiles})
     #@+node:felix.20210621233316.46: *5* server.get_ua
     def get_ua(self, param: Param) -> Response:
         """Return p.v.u, making sure it can be serialized."""
