@@ -458,7 +458,22 @@
 </v>
 <v t="ekr.20101115152915.4937"><vh>Backup of wikipedia entry</vh></v>
 <v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
+<v t="ekr.20240303055534.1"><vh>Obsolete FAQ entries</vh>
+<v t="ekr.20090212054250.5"><vh>FAQ: Getting Leo</vh>
+<v t="ekr.20090212054250.6"><vh>Where can I get official releases of Leo?</vh></v>
+<v t="ekr.20170206073747.10"><vh>Installing Leo with git</vh></v>
+<v t="ekr.20090212054250.7"><vh>How can I get recent snapshots of Leo?</vh></v>
 </v>
+<v t="ekr.20070623145346"><vh>FAQ: Installing Leo</vh>
+<v t="matt.20180826201749.1"><vh>How to  Pip install from GitHub?</vh></v>
+<v t="ekr.20090202191501.7"><vh>Leo's installer failed, what do I do?</vh></v>
+<v t="ekr.20150313053238.40"><vh>Common problems</vh></v>
+<v t="ekr.20190731085740.1"><vh>Tip: use shallow git clones to speed pip install</vh></v>
+</v>
+<v t="ekr.20120229094652.15137"><vh>FAQ: What's the recommended way to upgrade Leo?</vh></v>
+</v>
+</v>
+<v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
 <v t="ekr.20230121110345.1"><vh>Script files</vh>
 <v t="ekr.20230121110340.1"><vh>@clean ../scripts/make-clean.cmd</vh></v>
 <v t="ekr.20230121110533.1"><vh>@clean ../scripts/make-html.cmd</vh></v>
@@ -654,15 +669,9 @@
 </v>
 <v t="ekr.20131008041326.16092"><vh>Installing &amp; running Leo</vh>
 <v t="ekr.20131015104133.16766"><vh>@rst html/getting-started.html</vh></v>
-<v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh>
-<v t="tbrown.20140412113009.50227"><vh>Snapshots</vh></v>
-<v t="maphew.20200616225715.1"><vh>@ignore Standalone Leo.exe</vh></v>
-</v>
 <v t="ekr.20131008041326.16094"><vh>@rst html/installing.html</vh>
 <v t="ekr.20141105052052.4"><vh>Dependencies</vh></v>
-<v t="ekr.20180130033527.1"><vh>Installing Leo from PyPi</vh>
-<v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
-</v>
+<v t="ekr.20180130033527.1"><vh>Installing Leo from PyPi</vh></v>
 <v t="ekr.20240302082146.1"><vh>Installing Leo from GitHub</vh></v>
 <v t="ekr.20180126191031.1"><vh>Installing everything with Anaconda or Miniconda</vh></v>
 <v t="ekr.20170206073747.9"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
@@ -683,17 +692,6 @@
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
 <v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links (FAQ)</vh></v>
-<v t="ekr.20090212054250.5"><vh>Getting Leo</vh>
-<v t="ekr.20090212054250.6"><vh>Where can I get official releases of Leo?</vh></v>
-<v t="ekr.20170206073747.10"><vh>Installing Leo with git</vh></v>
-<v t="ekr.20090212054250.7"><vh>How can I get recent snapshots of Leo?</vh></v>
-</v>
-<v t="ekr.20070623145346"><vh>Installing Leo</vh>
-<v t="matt.20180826201749.1"><vh>How to  Pip install from GitHub?</vh></v>
-<v t="ekr.20090202191501.7"><vh>Leo's installer failed, what do I do?</vh></v>
-<v t="ekr.20150313053238.40"><vh>Common problems</vh></v>
-<v t="ekr.20190731085740.1"><vh>Tip: use shallow git clones to speed pip install</vh></v>
-</v>
 <v t="ekr.20050830115714.1"><vh>Learning to use Leo</vh>
 <v t="ekr.20161207052511.1"><vh>How can I learn Leo, or python, or anything</vh></v>
 <v t="ekr.20050830115714.2"><vh>What's the best way to learn to use Leo?</vh></v>
@@ -828,7 +826,6 @@
 <v t="ekr.20050830115714.119"><vh>How can I see two nodes at once?</vh></v>
 <v t="ekr.20090706042206.14718"><vh>How can I use Leo cooperatively without sentinels?</vh></v>
 <v t="ekr.20141109053526.8"><vh>How can I use the GTD workflow in Leo?</vh></v>
-<v t="ekr.20120229094652.15137"><vh>What's the recommended way to upgrade Leo?</vh></v>
 </v>
 </v>
 </v>
@@ -7098,9 +7095,9 @@ To load Leo's source, load leoPyRef.leo::
     python launchLeo.py --gui=qt leo\\core\\leoPyRef.leo
 </t>
 <t tx="ekr.20090212054250.5"></t>
-<t tx="ekr.20090212054250.6">See `Leo's download page &lt;download.html&gt;`_.
+<t tx="ekr.20090212054250.6">See Leo's download page &lt;download.html&gt;
 </t>
-<t tx="ekr.20090212054250.7">Daily snapshots are available `here &lt;download.html&gt;`_.
+<t tx="ekr.20090212054250.7">Daily snapshots are available at download.html
 </t>
 <t tx="ekr.20090221070927.1">#################
 Leo's MIT license
@@ -11633,24 +11630,6 @@ run-all-unit-tests-externally = Alt-5
 creates a permanent reference to the window so the window won't be garbage collected after the Leo script exits.
 
 </t>
-<t tx="ekr.20111127144911.5544">.. _`Installing Leo with git`:  installing.html#installing-leo-with-git
-.. _`Installing Leo with pip`:  installing.html#installing-leo-with-pip
-.. _`Nightly snapshot`:         download.html#snapshots       
-.. _`Python wheel`:             https://pythonwheels.com/
-.. _`git`:                      https://git-scm.com/
-.. .. _`Standalone leo.exe`:       download.html#standalone
-
-###############
-Downloading Leo
-###############
-
-There are two ways to download Leo:
-
-- ``pip install leo`` will automatically download *and* install Leo, including all Leo's dependencies, less a couple of non-essential things. See `Installing Leo with pip`_.
-
-- Recommended: install Leo using `git`_, see `Installing Leo with git`_. Git gives you the latest, thoroughly tested code with nothing missing.
-
-- If you prefer a new development version and don't want to use git download a `Nightly snapshot`_.</t>
 <t tx="ekr.20120130101219.10182">def computeBindingLetter(self, kind):
     # lm = self
     if not kind:
@@ -14541,6 +14520,10 @@ Installing Leo
 
 .. _`Leo's help forum`: http://groups.google.com/group/leo-editor
 
+..  .. _`Python`:                   https://www.python.org/
+..  .. _`Leo's dependencies`:       installing.html#dependencies
+
+
 This chapter tells how to install and run Leo on Windows, Linux and MacOS.
 
 The short summary:
@@ -15571,20 +15554,15 @@ You might call this a FAQ for scripts...
     :local:
 </t>
 <t tx="ekr.20131015104133.16763"></t>
-<t tx="ekr.20131015104133.16766">#####################################
-Downloading, Installing &amp; Running Leo
-#####################################
+<t tx="ekr.20131015104133.16766">########################
+Installing &amp; Running Leo
+########################
 
-.. _`Python`:                   https://www.python.org/
-.. _`Leo's dependencies`:       installing.html#dependencies
-.. _`Installing Leo using pip`:    installing.html#installing-leo-with-pip
-
-**Overview**: Leo is a `Python`_ program.  You must install Python itself, `Leo's dependencies`_, and then download and install Leo itself.
+This chapter tells how to install and run Leo.
 
 .. toctree::
    :maxdepth: 4
 
-   download
    installing
    running
 </t>
@@ -20813,7 +20791,6 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
 - [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
@@ -22397,7 +22374,6 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
 - [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
@@ -23921,7 +23897,6 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
@@ -23930,9 +23905,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 @language md
 </t>
-<t tx="ekr.20180125034510.1">.. Note: Leo versions 5.5 and earlier contained links to SourceForge:
-..       [Download](http://sourceforge.net/projects/leo/files/)
-..       I have retained these links where still valid.</t>
+<t tx="ekr.20180125034510.1"></t>
 <t tx="ekr.20180125034531.1"></t>
 <t tx="ekr.20180125034637.1">Fixed dozens of bugs. See:
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A5.7+label%3ABug</t>
@@ -24747,7 +24720,6 @@ Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.i
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
@@ -24885,7 +24857,6 @@ Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.i
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
@@ -25324,7 +25295,6 @@ Leo is an IDE, outliner and PIM, as described [here](https://leo-editor.github.i
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
@@ -30767,7 +30737,6 @@ Other changes:
 
 **Links**
 
-- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
 - [6.7.2 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.2+)
 - [6.7.2 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2)
@@ -30775,7 +30744,6 @@ Other changes:
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
@@ -32242,7 +32210,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **Links**
 
-- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
 - [6.7.3 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.3+)
 - [6.7.3 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.3)
@@ -32250,7 +32217,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
@@ -32375,7 +32341,6 @@ See the first comment of PR #3424 for full details.
 
 **Links**
 
-- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
 - [6.7.4 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.4+)
 - [6.7.4 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.4)
@@ -32383,7 +32348,6 @@ See the first comment of PR #3424 for full details.
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
@@ -32493,7 +32457,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **Links**
 
-- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
 - [6.7.5 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.5+)
 - [6.7.5 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.5)
@@ -32501,7 +32464,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
@@ -32706,7 +32668,6 @@ The usual assortment of minor bug fixes and code-level improvements.
 
 **Links**
 
-- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
 - [6.7.6 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.6+)
 - [6.7.6 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.6)
@@ -32714,7 +32675,6 @@ The usual assortment of minor bug fixes and code-level improvements.
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
@@ -32825,7 +32785,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **Links**
 
-- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
 - [6.7.7 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.7+)
 - [6.7.7 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.7)
@@ -32833,7 +32792,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
@@ -32867,7 +32825,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **Links**
 
-- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
 - [6.7.8 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.8+)
 - [6.7.8 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.8)
@@ -32875,7 +32832,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
@@ -32926,6 +32882,7 @@ To install the missing library run::
 
     sudo apt install libxcb-cursor0
 </t>
+<t tx="ekr.20240303055534.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
@@ -33001,33 +32958,6 @@ first draft of the all-important ws_handler function.
 
 Edward K. Ream made the code more pythonic and provided Leo-specific
 advice.
-</t>
-<t tx="maphew.20200616225715.1">.. This section is no longer valid.
-
-Getting to the archive in order to download is a bit of work as there isn't a stable url.
-
-Getting to the latest leo.exe:
-
- 1. Navigate to **Actions**
- 2. Select `Build standalone leo.exe`_ from workflow list in the left table of contents
- 3. Look for a recent event with a check mark and click on it
- 4. Look for **Artifacts** heading and under it: **leo-windows-exe** in blue.
-
-.. image:: https://user-images.githubusercontent.com/486200/83912441-bb38a600-a722-11ea-9abf-43ce833723c2.png
-
-.. image:: https://user-images.githubusercontent.com/486200/83912469-c390e100-a722-11ea-868a-cf56c379eec0.png
-
-.. _`Build standalone leo.exe`: https://github.com/leo-editor/leo-editor/actions?query=workflow:%22Build+standalone+leo.exe%22
-
-
-##################
-Upgrading in place
-##################
-
- 1. Download source archive from Github repository, `devel branch`_
- 2. Replace contents of ``C:\Apps\leo\leo\*.*`` with contents of ``leo-editor\leo\*.*``. (Note: the nested "leo\leo" folder structure is significant.)
-
-.. _`devel branch`: https://github.com/leo-editor/leo-editor/tree/devel
 </t>
 <t tx="matt.20180826201749.1">**Problem**
 
@@ -33148,33 +33078,6 @@ os.system('make latex')
 os.chdir('_build/latex')
 os.system('../../fixup.pl &lt; Leodocumentation.tex &gt; LeoDoc.tex')
 os.system('make LeoDoc.pdf')
-</t>
-<t tx="tbrown.20140412113009.50227">.zip snapshots can be downloaded directly from `GitHub &lt;https://github.com/leo-editor&gt;`_. No account is required.  The downloaded file will have a name like::
-
-  leo-editor-50c070b715b9fec50c31be5853055a0ebc72cad5.zip
-
-where the ``50c0...cad5`` part is the ID or fingerprint of the version you've downloaded.  Except "Latest", which is just ``leo-editor-master.zip``.
-
-Here are direct download links for the "devel" branch, which changes frequently and contains all recent bug fixes:
-
-  - `Latest devel &lt;https://github.com/leo-editor/leo-editor/archive/devel.zip&gt;`_
-  - `devel: 1 day ago &lt;https://github.com/leo-editor/leo-editor/archive/devel@{1%20day%20ago}.zip&gt;`_
-  - `devel: 2 days ago &lt;https://github.com/leo-editor/leo-editor/archive/devel@{2%20days%20ago}.zip&gt;`_
-  - `devel: 5 days ago &lt;https://github.com/leo-editor/leo-editor/archive/devel@{5%20days%20ago}.zip&gt;`_
-  - `devel: 10 days ago &lt;https://github.com/leo-editor/leo-editor/archive/devel@{10%20days%20ago}.zip&gt;`_
-  - `devel: 30 days ago &lt;https://github.com/leo-editor/leo-editor/archive/devel@{30%20days%20ago}.zip&gt;`_
-  - `devel: 90 days ago &lt;https://github.com/leo-editor/leo-editor/archive/devel@{90%20days%20ago}.zip&gt;`_
-
-
-Here are direct download links for the "master" branch, which rarely changes and contains the most stable code:
-
-  - `Latest master &lt;https://github.com/leo-editor/leo-editor/archive/master.zip&gt;`_
-  - `master: 1 day ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{1%20day%20ago}.zip&gt;`_
-  - `master: 2 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{2%20days%20ago}.zip&gt;`_
-  - `master: 5 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{5%20days%20ago}.zip&gt;`_
-  - `master: 10 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{10%20days%20ago}.zip&gt;`_
-  - `master: 30 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{30%20days%20ago}.zip&gt;`_
-  - `master: 90 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{90%20days%20ago}.zip&gt;`_
 </t>
 <t tx="tom.20230107235603.1">Title case means that all words start with capital letters.  The
 following script converts the selected body text to title case.  If
