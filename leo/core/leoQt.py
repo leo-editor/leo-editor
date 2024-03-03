@@ -1,61 +1,146 @@
-# flake8: noqa
 #@+leo-ver=5-thin
 #@+node:ekr.20140810053602.18074: * @file leoQt.py
-#@@first
-#@@nopyflakes
-"""
-General import wrapper for PyQt5 and PyQt6.
+"""Leo's Qt import wrapper, specialized for Qt6."""
 
-Provides the *PyQt6* spellings of Qt modules, classes, enums and constants:
+from typing import Any
 
-- QtWidgets, not QtGui, for all widget classes.
-- QtGui, not QtWidgets, for all other classes in the *PyQt4* QtGui module.
-- QtWebKitWidgets, not QtWebKit.
-- Enums: KeyboardModifier, not KeyboardModifiers, etc.
-"""
-import leo.core.leoGlobals as g
-#
-# Set defaults.
-isQt6 = isQt5 = False
-#
-# Make *sure* this module always imports the following symbols.
-Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = QCloseEvent = None
-QtDeclarative = Qsci = QtSvg = QtMultimedia = QtWebKit = QtWebKitWidgets = None
-phonon = uic = None
-QtMultimedia = None  # Replacement for phonon.
-qt_version = '<no qt version>'
-printsupport = Signal = None
-#
-# Skip all other imports in the bridge.
-if not g.in_bridge:
-    #
-    # Pyflakes will complaint about * imports.
-    #
-    # pylint: disable=unused-wildcard-import,wildcard-import
-    #
-    # Set the isQt* constants only if all required imports succeed.
-    try:
-        if 0:  # Testing: Force Qt5.
-            raise AttributeError
-        from leo.core.leoQt6 import *  # type:ignore
-        #
-        # Restore the exec_method!
-        def exec_(self, *args, **kwargs):
-            return self.exec(*args, **kwargs)
+# py--lint: disable=unused-import
 
-        # pylint: disable=c-extension-no-member
-        g.funcToMethod(exec_, QtWidgets.QWidget)
-        isQt6 = True
-        # print('\n===== Qt6 =====')
-    except Exception:
-        # g.es_exception()
-        try:
-            from leo.core.leoQt5 import *  # type:ignore
-            isQt5 = True
-            # print('\n===== Qt5 =====')
-        except Exception:
-            # Don't print anything here.
-            # g.app.createQtGui will handle the error if the user wants Qt.
-            if 0:
-                print('Can not import pyQt5 or pyQt6')
+# disable=c-extension-no-member does not seem to work.
+# py--lint: disable=c-extension-no-member
+
+# Instead, run pylint like this:
+# py--lint leo --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets
+
+from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtCore import Qt, QUrl  # pylint: disable=no-name-in-module
+from PyQt6.QtGui import QAction, QActionGroup, QCloseEvent  # pylint: disable=no-name-in-module
+
+#@+<< optional PyQt6 imports >>
+#@+node:ekr.20240303142509.2: ** << optional PyQt6 imports >>
+
+# Optional imports: #2005
+# Must import this before creating the GUI
+try:
+    from PyQt6 import QtWebEngineWidgets
+    from PyQt6 import QtWebEngineCore  # included with PyQt6-WebEngine
+    assert QtWebEngineWidgets
+    has_WebEngineWidgets = True
+except ImportError:
+    # 2866: This message pollutes leoserver.py.
+        # print('No Qt6 QtWebEngineWidgets')
+        # print('pip install PyQt6-WebEngine')
+    has_WebEngineWidgets = False
+
+try:
+    from PyQt6 import QtPrintSupport as printsupport
+except Exception:
+    printsupport = None
+
+try:
+    from PyQt6 import Qsci
+except ImportError:
+    Qsci = None
+try:
+    import PyQt6.QtSvg as QtSvg
+except ImportError:
+    QtSvg = None
+try:
+    from PyQt6 import uic
+except ImportError:
+    uic = None
+
+# Contrary to #2005: *Do* import these by default.
+try:
+    from PyQt6 import QtDesigner  # pylint: disable=unused-import
+except Exception:
+    QtDesigner = None
+
+try:
+    from PyQt6 import QtOpenGL  # pylint: disable=unused-import
+except Exception:
+    QtOpenGL = None
+
+try:
+    from PyQt6 import QtMultimedia  # pylint: disable=unused-import
+except ImportError:
+    QtMultimedia = None
+
+try:
+    from PyQt6 import QtNetwork  # pylint: disable=unused-import
+except Exception:
+    QtNetwork = None
+#@-<< optional PyQt6 imports >>
+#@+<< PyQt6 enumerations >>
+#@+node:ekr.20240303142509.3: ** << PyQt6 enumerations >>
+Alignment = Qt.AlignmentFlag
+ButtonRole = QtWidgets.QMessageBox.ButtonRole
+ContextMenuPolicy = Qt.ContextMenuPolicy
+ControlType = QtWidgets.QSizePolicy.ControlType
+DialogCode = QtWidgets.QDialog.DialogCode
+DropAction = Qt.DropAction
+EndEditHint = QtWidgets.QAbstractItemDelegate.EndEditHint
+FocusPolicy = Qt.FocusPolicy
+FocusReason = Qt.FocusReason
+Format = QtGui.QImage.Format
+GlobalColor = Qt.GlobalColor
+Icon = QtWidgets.QMessageBox.Icon
+Information = Icon.Information
+ItemDataRole = Qt.ItemDataRole  # 2347
+ItemFlag = Qt.ItemFlag
+Key = Qt.Key
+KeyboardModifier = Qt.KeyboardModifier
+Modifier = Qt.Modifier
+MouseButton = Qt.MouseButton
+MoveMode = QtGui.QTextCursor.MoveMode
+MoveOperation = QtGui.QTextCursor.MoveOperation
+Orientation = Qt.Orientation
+Policy = QtWidgets.QSizePolicy.Policy
+ScrollBarPolicy = Qt.ScrollBarPolicy
+SelectionBehavior = QtWidgets.QAbstractItemView.SelectionBehavior
+SelectionMode = QtWidgets.QAbstractItemView.SelectionMode
+Shadow = QtWidgets.QFrame.Shadow
+Shape = QtWidgets.QFrame.Shape
+SizeAdjustPolicy = QtWidgets.QComboBox.SizeAdjustPolicy
+SliderAction = QtWidgets.QAbstractSlider.SliderAction
+SolidLine = Qt.PenStyle.SolidLine
+StandardButton = QtWidgets.QDialogButtonBox.StandardButton
+StandardPixmap = QtWidgets.QStyle.StandardPixmap
+Style = QtGui.QFont.Style
+TextInteractionFlag = Qt.TextInteractionFlag
+TextOption = QtGui.QTextOption
+ToolBarArea = Qt.ToolBarArea
+Type = QtCore.QEvent.Type
+UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle
+Weight = QtGui.QFont.Weight
+WidgetAttribute = Qt.WidgetAttribute
+WindowState = Qt.WindowState
+WindowType = Qt.WindowType
+WrapMode = QtGui.QTextOption.WrapMode
+#@-<< PyQt6 enumerations >>
+### Temporary...
+isQt5, isQt6 = False, True
+QtConst = Qt
+
+# For pyflakes.
+assert QtCore and QtGui and QtWidgets and QUrl
+assert QAction and QActionGroup and QCloseEvent
+
+# No longer available modules
+phonon = None
+QtDeclarative = None
+QtWebKit = None
+QtWebKitWidgets = None
+
+# Standard abbreviations.
+qt_version = QtCore.QT_VERSION_STR
+
+QWebEngineSettings: Any
+WebEngineAttribute: Any
+if has_WebEngineWidgets:
+    QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
+    WebEngineAttribute = QWebEngineSettings.WebAttribute
+else:
+    QWebEngineSettings = None
+    WebEngineAttribute = None
 #@-leo
