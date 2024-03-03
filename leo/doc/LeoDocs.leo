@@ -14511,8 +14511,8 @@ The short summary:
    - From PyPi: `pip install leo`
 
    - From GitHub:
-     `git clone https://github.com/leo-editor/leo-editor.git`
-     `pip install - requirements.txt`
+     git clone https://github.com/leo-editor/leo-editor.git
+     pip install -r requirements.txt
 
 If you have *any* problems installing Leo, please *ask for help* on `Leo's help forum`_.
 
