@@ -15,6 +15,9 @@
 <v t="ekr.20240110034554.3"><vh>@data:@auto-md importers.md </vh>
 <v t="ekr.20240110034554.4"><vh>@gnxs</vh></v>
 </v>
+<v t="ekr.20240303071512.1"><vh>@data:@auto-rst treecaching.txt</vh>
+<v t="ekr.20240303071512.2"><vh>@gnxs</vh></v>
+</v>
 </v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
 <v t="ekr.20150318043636.16"><vh>@bool check_outline_after_read = True</vh></v>
@@ -458,7 +461,7 @@
 </v>
 <v t="ekr.20101115152915.4937"><vh>Backup of wikipedia entry</vh></v>
 <v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
-<v t="ekr.20240303055534.1"><vh>Obsolete FAQ &amp; HowTo entries</vh>
+<v t="ekr.20240303055534.1"><vh>Obsolete installation, FAQ &amp; HowTo entries</vh>
 <v t="ekr.20090212054250.5"><vh>FAQ: Getting Leo</vh>
 <v t="ekr.20090212054250.6"><vh>Where can I get official releases of Leo?</vh></v>
 <v t="ekr.20170206073747.10"><vh>Installing Leo with git</vh></v>
@@ -480,6 +483,8 @@
 </v>
 <v t="ekr.20101104024804.4898"><vh>How to generate these docs</vh></v>
 </v>
+<v t="ekr.20141105052052.4"><vh>Dependencies</vh></v>
+<v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 </v>
 </v>
 <v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
@@ -488,10 +493,8 @@
 <v t="ekr.20230121110533.1"><vh>@clean ../scripts/make-html.cmd</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
-<v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@file html/conf.py</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
-<v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home pages</vh>
 <v t="ekr.20230110155708.1"><vh>@file ../../docs/redirect_index.html</vh></v>
 <v t="ekr.20100808060203.4273"><vh>@file ../../docs/index.html</vh></v>
@@ -670,7 +673,6 @@
 <v t="ekr.20131008041326.16092"><vh>Installing &amp; running Leo</vh>
 <v t="ekr.20131015104133.16766"><vh>@rst html/getting-started.html</vh></v>
 <v t="ekr.20131008041326.16094"><vh>@rst html/installing.html</vh>
-<v t="ekr.20141105052052.4"><vh>Dependencies</vh></v>
 <v t="ekr.20180130033527.1"><vh>Installing Leo from PyPi</vh></v>
 <v t="ekr.20240302082146.1"><vh>Installing Leo from GitHub</vh></v>
 <v t="ekr.20180126191031.1"><vh>Installing everything with Anaconda or Miniconda</vh></v>
@@ -8950,7 +8952,6 @@ controller(c).run()
             break
     return ''.join(result)
 </t>
-<t tx="ekr.20101112045055.5065" str_atime="1376412774.0">http://www.greygreen.org/tmp/plugins.html</t>
 <t tx="ekr.20101112222250.5322">def allowFile (self,p):
 
     '''Return True if we should allow scan of a file at p.'''
@@ -14503,9 +14504,9 @@ This chapter tells how to install and run Leo on Windows, Linux and MacOS.
 
 The short summary:
 
-1. Install Python 3.9 or later.
+1. Install Python 3.9 or later, including pip.
 
-2. Install Leo either from PyPi or GitHub:
+2. Install Leo (include all of Leo's dependencies) from either from PyPi or GitHub:
 
    - From PyPi: `pip install leo` 
    - From GitHub:
@@ -32855,6 +32856,15 @@ To install the missing library run::
     sudo apt install libxcb-cursor0
 </t>
 <t tx="ekr.20240303055534.1"></t>
+<t tx="ekr.20240303071512.1">gnx: ville.20090609182215.5676
+</t>
+<t tx="ekr.20240303071512.2">gnx: ekr.20240303070818.1
+unl: Python list based description of trees ('objtrees')
+gnx: ekr.20240303070818.2
+unl: Using objtrees for caching
+gnx: ekr.20240303070818.3
+unl: The `Leo database` (c.db, g.app.db)
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
