@@ -32846,7 +32846,9 @@ The following will install Leo from `Leo's GitHub repository`_.
 2. `Install pip`_.
 3. `Install Git`_.
 4. Clone Leo's repository::
+
     git clone https://github.com/leo-editor/leo-editor.git
+
 5. Install Leo's dependencies from Leo's `requirements.txt` file::
 
     python -m pip install -r requirements.txt
