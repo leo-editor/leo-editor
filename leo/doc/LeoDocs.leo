@@ -14515,6 +14515,7 @@ The short summary:
    - From GitHub::
 
         git clone https://github.com/leo-editor/leo-editor.git
+        cd leo-editor
         pip install -r requirements.txt
 
 If you have *any* problems installing Leo, please *ask for help* on `Leo's help forum`_.
@@ -32851,6 +32852,7 @@ The following will install Leo from `Leo's GitHub repository`_.
 
 5. Install Leo's dependencies from Leo's `requirements.txt` file::
 
+    cd leo-editor
     python -m pip install -r requirements.txt
     
 **Note for Ubuntu**
