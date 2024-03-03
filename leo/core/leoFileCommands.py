@@ -546,7 +546,6 @@ class FastRead:
 
                     v._headString = v_dict.get('vh', '')
                     v._bodyString = gnx2body.get(gnx, '')
-                    v.statusBits = v_dict.get('status', 0)  # Needed ?
                     if v.isExpanded():
                         fc.descendentExpandedList.append(gnx)
                     if v.isMarked():
@@ -1728,14 +1727,6 @@ class FileCommands:
         if forceWrite or self.usingClipboard:
             v.setWriteBit()  # 4.2: Indicate we wrote the body text.
 
-        status = 0
-        if v.isMarked():
-            status |= v.markedBit
-        if p.isExpanded():
-            status |= v.expandedBit
-        if p == c.p:
-            status |= v.selectedBit
-
         children: list[dict[str, Any]] = []  # Start empty
 
         if p.hasChildren() and (forceWrite or self.usingClipboard):
@@ -1759,10 +1750,6 @@ class FileCommands:
             gnxSet.add(v.fileIndex)
             if children:
                 result['children'] = children
-
-        # Else, just add status if needed
-        if status:
-            result['status'] = status
 
         return result
     #@+node:ekr.20100119145629.6111: *5* fc.write_xml_file
