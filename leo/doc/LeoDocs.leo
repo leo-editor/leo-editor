@@ -17023,17 +17023,15 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
         insert-file-name
         pylint
         style-reload</t>
-<t tx="ekr.20141105052052.4">.. _`Anaconda`:   https://www.anaconda.com/download/
-.. _`Miniconda`:  https://conda.io/miniconda.html
-.. _`Docutils`:   http://docutils.sourceforge.net
-.. _`feedparser`: https://pypi.python.org/pypi/feedparser
-.. _`Markdown`:   http://daringfireball.net/projects/markdown/syntax
+<t tx="ekr.20141105052052.4">.. _`Anaconda`:   https://pypi.org/project/anaconda/
+.. _`Miniconda`:  https://docs.anaconda.com/free/miniconda/index.html
+.. _`Docutils`:   https://pypi.org/project/docutils/
+.. _`feedparser`: https://pypi.org/project/feedparser/
+.. _`Markdown`:   https://pypi.org/project/Markdown/
 .. _`Python`:     https://www.python.org/
-.. _`PyEnchant`:  http://pyenchant.github.io/pyenchant/install.html
-.. _`Missing files when installing Leo from PyPI using "pip install leo"`: https://github.com/leo-editor/leo-editor/issues/603
-.. _`PythonTidy`: https://pypi.python.org/pypi/PythonTidy/
+.. _`PyEnchant`:  https://pypi.org/project/pyenchant/
 .. _`PyQt6`:      https://pypi.org/project/PyQt6/
-.. _`Sphinx`:     http://www.sphinx-doc.org/en/stable/
+.. _`Sphinx`:     https://pypi.org/project/Sphinx/
 
 Leo's minimal dependencies are:
 
