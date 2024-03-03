@@ -24287,9 +24287,9 @@ methods then search again, matching if the given headline is a prefix of
 the headline of any node.
 </t>
 <t tx="ekr.20180130033527.1">.. _`Install pip`:      https://pip.pypa.io/en/stable/installation/               
-.. _`Install Python`:   http://python.org.
+.. _`Install Python`:   http://python.org
 .. _`pip`:              https://pypi.org/pypi/pip
-.. _`PyPi`:              https://pypi.org/
+.. _`PyPi`:             https://pypi.org/
 
 The following will install Leo from `PyPi`_, Python's package repository.
 
