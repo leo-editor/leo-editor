@@ -32,7 +32,6 @@ class TestNullGui(LeoUnitTest):
         # Make sure the ctors don't crash.
         gui = g.app.gui
         gui.runAboutLeoDialog(c, 'version', 'copyright', 'url', 'email')
-        gui.runAskLeoIDDialog()
         gui.runAskOkDialog(c, 'title', 'message')
         gui.runAskOkCancelNumberDialog(c, 'title', 'message')
         gui.runAskOkCancelStringDialog(c, 'title', 'message')
@@ -94,7 +93,6 @@ class TestQtGui(LeoUnitTest):
         gui = g.app.gui
         self.assertEqual(gui.__class__.__name__, 'LeoQtGui')
         gui.runAboutLeoDialog(c, 'version', 'copyright', 'url', 'email')
-        gui.runAskLeoIDDialog()
         gui.runAskOkDialog(c, 'title', 'message')
         gui.runAskOkCancelNumberDialog(c, 'title', 'message')
         gui.runAskOkCancelStringDialog(c, 'title', 'message')

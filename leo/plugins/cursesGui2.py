@@ -1647,23 +1647,6 @@ class LeoCursesGui(leoGui.LeoGui):
             # form_color='STANDOUT', wrap=True, wide=False, editw=0)
             utilNotify.notify_confirm(message, title="About Leo")
 
-    #@+node:ekr.20171126182120.3: *5* CGui.runAskLeoIDDialog
-    def runAskLeoIDDialog(self) -> None:
-        """Create and run a dialog to get g.app.LeoID."""
-        if not g.unitTesting:
-            message = (
-                "leoID.txt not found\n\n" +
-                "The curses gui can not set this file." +
-                "Exiting..."
-            )
-            g.trace(message)
-            # "Please enter an id that identifies you uniquely.\n" +
-            # "Your cvs/bzr login name is a good choice.\n\n" +
-            # "Leo uses this id to uniquely identify nodes.\n\n" +
-            # "Your id must contain only letters and numbers\n" +
-            # "and must be at least 3 characters in length."
-            sys.exit(0)
-
     #@+node:ekr.20171126182120.5: *5* CGui.runAskOkCancelNumberDialog
     def runAskOkCancelNumberDialog(self,
         c: Cmdr,
