@@ -292,8 +292,11 @@ class SqlitePickleShare:
     #@+node:vitalije.20170716201700.17: *3* has_key (SqlitePickleShare)
     def has_key(self, key: str) -> bool:
         sql = 'select 1 from cachevalues where key=?;'
-        for _row in self.conn.execute(sql, (key,)):
-            return True
+        try:
+            for _row in self.conn.execute(sql, (key,)):
+                return True
+        except Exception:
+            pass
         return False
     #@+node:vitalije.20170716201700.18: *3* items
     def items(self) -> Generator:

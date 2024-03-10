@@ -173,7 +173,7 @@ def openLeoScripts(self: Self, event: Event = None) -> None:
         if c2:
             return
     g.es('not found:', fileName)
-#@+node:ekr.20031218072017.2943: *3* c_help.openLeoSettings & openMyLeoSettings & helper
+#@+node:ekr.20031218072017.2943: *3* c_help.openLeoSettings
 @g.commander_command('open-leo-settings')
 @g.commander_command('open-leo-settings-leo')  # #1343.
 @g.commander_command('leo-settings')
@@ -186,6 +186,7 @@ def openLeoSettings(self: Self, event: Event = None) -> Optional[Cmdr]:
     g.es('not found: leoSettings.leo')
     return None
 
+#@+node:ekr.20240310102116.1: *3* c_help.openMyLeoSettings & helper
 @g.commander_command('open-my-leo-settings')
 @g.commander_command('open-my-leo-settings-leo')  # #1343.
 @g.commander_command('my-leo-settings')
@@ -205,29 +206,31 @@ def createMyLeoSettings(c: Cmdr) -> Optional[Cmdr]:
     homeLeoDir = g.app.homeLeoDir
     loadDir = g.app.loadDir
     configDir = g.app.globalConfigDir
-    # check it doesn't already exist
+
+    # Do nothing if myLeoSettings.leo exists.
     for path in homeLeoDir, loadDir, configDir:
         fileName = g.os_path_join(path, name)
         if g.os_path_exists(fileName):
             return None
+
+    # Ask to create the file.
     ok = g.app.gui.runAskYesNoDialog(c,
         title='Create myLeoSettings.leo?',
         message=f"Create myLeoSettings.leo in {homeLeoDir}?",
     )
     if ok == 'no':
         return None
-    # get '@enabled-plugins' from g.app.globalConfigDir
+
+    # Get the text of '@enabled-plugins' from leoSettings.leo
     fileName = g.os_path_join(configDir, "leoSettings.leo")
     leosettings = g.openWithFileName(fileName, old_c=c)
-    enabledplugins = g.findNodeAnywhere(leosettings, '@enabled-plugins')
-    if not enabledplugins:
-        return None
-    enabledplugins = enabledplugins.b
-    leosettings.close()
-    # now create "~/.leo/myLeoSettings.leo"
+    enabled_plugins = g.findNodeAnywhere(leosettings, '@enabled-plugins')
+
+    # Create "~/.leo/myLeoSettings.leo"
     fileName = g.os_path_join(homeLeoDir, name)
     c2 = g.openWithFileName(fileName, old_c=c)
-    # add content to outline
+
+    # Add content to outline.
     nd = c2.rootPosition()
     nd.h = "Settings README"
     nd.b = (
@@ -242,7 +245,7 @@ def createMyLeoSettings(c: Cmdr) -> Optional[Cmdr]:
     nd.h = '@settings'
     nd = nd.insertAsNthChild(0)
     nd.h = '@enabled-plugins'
-    nd.b = enabledplugins
+    nd.b = enabled_plugins.b if enabled_plugins else ''
     nd = nd.insertAfter()
     nd.h = '@keys'
     nd = nd.insertAsNthChild(0)
@@ -252,6 +255,7 @@ def createMyLeoSettings(c: Cmdr) -> Optional[Cmdr]:
         "#\n"
         "#    some-command Shift-F5\n"
     )
+    c2.setChanged()
     c2.redraw()
     return c2
 #@+node:ekr.20171124093507.1: ** c_help.Open Leo web pages
