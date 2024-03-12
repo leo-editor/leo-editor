@@ -579,14 +579,15 @@ class ParseState:
 
     __slots__ = ('kind', 'value')
 
-    def __init__(self, kind: str, value: Union[int, str]) -> None:
+    def __init__(self, kind: str, value: Union[int, str, None]) -> None:
         self.kind = kind
         self.value = value
 
     def __repr__(self) -> str:
         return f"State: {self.kind} {self.value!r}"  # pragma: no cover
 
-    __str__ = __repr__
+    def __str__(self) -> str:
+        return f"State: {self.kind} {self.value!r}"  # pragma: no cover
 #@+node:ekr.20240128114842.1: *3* class ScanState
 class ScanState:  # leoTokens.py.
     """
