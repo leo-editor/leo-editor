@@ -1761,4 +1761,5 @@ if __name__ == '__main__':
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+#@@nosearch
 #@-leo
