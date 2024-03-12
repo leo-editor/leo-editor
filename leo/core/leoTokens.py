@@ -12,7 +12,6 @@ leoTokens.py: A token-based beautifier for Python.
 For help: `python -m leo.core.leoTokens --help`
 
 Use Leo https://leo-editor.github.io/leo-editor/ to study this code!
-when studying this code.
 
 Without Leo, you will see special **sentinel comments** that create
 Leo's outline structure. These comments have the form::
@@ -264,7 +263,14 @@ class InternalBeautifierError(Exception):
 class InputToken:  # leoTokens.py.
     """A class representing a TBO input token."""
 
-    __slots__ = 'context', 'index', 'kind', 'line', 'line_number', 'value'
+    __slots__ = (
+        'context',
+        'index',
+        'kind',
+        'line',
+        'line_number',
+        'value',
+    )
 
     def __init__(
         self, kind: str, value: str, index: int, line: str, line_number: int,
@@ -521,6 +527,9 @@ class OutputToken:
     A class representing an Orange output token.
     """
 
+    __slots__ = ('index', 'kind', 'value')
+
+
     def __init__(self, kind: str, value: str):
 
         self.kind = kind
@@ -570,6 +579,8 @@ class ParseState:
                         twice if state.value == self.level.
     """
 
+    __slots__ = ('kind', 'value')
+
     def __init__(self, kind: str, value: Union[int, str]) -> None:
         self.kind = kind
         self.value = value
@@ -593,7 +604,7 @@ class ScanState:  # leoTokens.py.
 
     """
 
-    __slots__ = ['kind', 'value', 'token']
+    __slots__ = ('kind', 'token', 'value')
 
     def __init__(self, kind: str, token: InputToken) -> None:
         self.kind = kind
