@@ -198,7 +198,7 @@ def orange_command(
             f"checked: {len(to_be_checked_files):<3} "
             f"beautified: {n_beautified:<3} in {','.join(arg_files)}"
         )
-#@+node:ekr.20240105140814.24: *3* function: output_tokens_to_string
+#@+node:ekr.20240312115008.1: *3* function: output_tokens_to_string
 def output_tokens_to_string(tokens: list[OutputToken]) -> str:
     """Return the string represented by the list of tokens."""
     if tokens is None:  # pragma: no cover

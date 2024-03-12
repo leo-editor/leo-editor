@@ -25,7 +25,7 @@ from leo.core import leoGlobals as g
 from leo.core.leoTokens import InputToken, Tokenizer, TokenBasedOrange
 
 # Utility functions.
-from leo.core.leoTokens import dump_contents, dump_tokens, output_tokens_to_string
+from leo.core.leoTokens import dump_contents, dump_tokens, input_tokens_to_string
 #@-<< test_leoTokens imports >>
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
@@ -71,7 +71,7 @@ class BaseTest(unittest.TestCase):
         # Several unit tests call this method.
 
         contents, tokens = self.make_data(contents, debug_list=debug_list)
-        results = output_tokens_to_string(tokens)
+        results = input_tokens_to_string(tokens)
         self.assertEqual(contents, results)
     #@+node:ekr.20240105153425.44: *3* BaseTest.make_data (test_leoTokens.py)
     def make_data(self,
