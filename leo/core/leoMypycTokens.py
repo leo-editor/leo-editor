@@ -35,11 +35,8 @@ import time
 import tokenize
 from typing import Any, Generator, Optional, Union
 
-try:
-    from leo.core import leoGlobals as g
-except Exception:  # pragma: no cover
-    # check_g function gives the message.
-    g = None
+# Leo Imports.
+from leo.core import leoGlobals as g
 
 Settings = Optional[dict[str, Union[int, bool]]]
 #@-<< leoMypycTokens.py: imports & annotations >>
@@ -273,7 +270,7 @@ class InputToken:  # leoTokens.py.
     def __init__(
         self, kind: str, value: str, index: int, line: str, line_number: int,
     ) -> None:
-        self.context: str = None
+        self.context: Optional[str] = None
         self.index = index
         self.kind = kind
         self.line = line  # The entire line containing the token.
@@ -1551,7 +1548,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 equal_context = 'initializer'
 
         # Set the context of all outer-level ':', '*', and '**' tokens.
-        prev: InputToken = None
+        prev: Optional[InputToken] = None
         for i in range(i1, end):
             token = self.tokens[i]
             if token.kind not in self.insignificant_kinds:
@@ -1647,7 +1644,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         for i in colons:
             self.set_context(i, 'dict')
     #@+node:ekr.20240312053644.93: *5* tbo.is_unary_op_with_prev
-    def is_unary_op_with_prev(self, prev: InputToken, token: InputToken) -> bool:
+    def is_unary_op_with_prev(self, prev: Optional[InputToken], token: InputToken) -> bool:
         """
         Return True if token is a unary op in the context of prev, the previous
         significant token.
@@ -1708,7 +1705,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                     print(
                         f"next: {g.callers(1):25} "
                         f"token: {token.brief_dump()} "
-                        f"line: {self.get_token_line(i)}"
                     )
                 return i
             i += 1

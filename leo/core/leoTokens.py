@@ -1708,7 +1708,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                     print(
                         f"next: {g.callers(1):25} "
                         f"token: {token.brief_dump()} "
-                        f"line: {self.get_token_line(i)}"
                     )
                 return i
             i += 1
