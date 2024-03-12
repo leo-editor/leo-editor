@@ -7,7 +7,7 @@
 #@+<< leoTokens.py: docstring >>
 #@+node:ekr.20240105140814.2: ** << leoTokens.py: docstring >>
 """
-leoTokens.py: A token-based beautifier for Python.
+leoTokens.py: A beautifier for Python that uses *only* tokens.
 
 For help: `python -m leo.core.leoTokens --help`
 
@@ -23,7 +23,6 @@ Leo's outline structure. These comments have the form::
 #@+node:ekr.20240105140814.3: ** << leoTokens.py: imports & annotations >>
 from __future__ import annotations
 import argparse
-import ast
 import difflib
 import glob
 import keyword
@@ -42,8 +41,7 @@ except Exception:  # pragma: no cover
     # check_g function gives the message.
     g = None
 
-Node = ast.AST
-Settings = Optional[dict[str, Any]]
+Settings = Optional[dict[str, Union[int, bool]]]
 #@-<< leoTokens.py: imports & annotations >>
 
 debug: bool = True
