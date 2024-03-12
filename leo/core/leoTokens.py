@@ -619,23 +619,20 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+<< TokenBasedOrange: docstring >>
     #@+node:ekr.20240119062227.1: *4* << TokenBasedOrange: docstring >>
     #@@language rest
+    #@@wrap
 
     """
     Leo's token-based beautifier, three times faster than the beautifier in leoAst.py.
 
     **Design**
 
-    The *pre_scan* method calls three *finishers*.
+    The *pre_scan* method is the heart of the algorithm. It sets context for the `:`, `=`, `**` and `.` tokens *without* using the parse tree. *pre_scan* calls three *finishers*.
 
-    Each finisher uses a list of *relevant earlier tokens* to set the context for later tokens.
+    Each finisher uses a list of *relevant earlier tokens* to set the context for one kind of (input) token. Finishers look behind (in the stream of input tokens) with essentially no cost.
 
-    Finishers embody *zero-cost unlimited look-behind*.
+    After the pre-scan, *tbo.beautify* (the main loop) calls *visitors* for each separate type of *input* token.
 
-    After the pre-scan, *tbo.beautify* (the main loop) calls *visitors* for each separate type of token.
-
-    Visitors call *code generators*. Code generators call *code generation helpers*.
-
-    These helpers form a peephole optimizer that looks behind a bounded number of *output* tokens.
+    Visitors call *code generators* to generate *output* tokens. Code generation *helpers* form a peephole optimizer that looks behind a bounded number of (output) tokens.
     """
     #@-<< TokenBasedOrange: docstring >>
     #@+<< TokenBasedOrange: __slots__ >>
@@ -969,7 +966,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.in_doc_part = False
             self.verbatim = False
             self.decorator_seen = False
-            # Do *not clear other state, which may persist across @others.
+            # Do *not* clear other state, which may persist across @others.
                 # self.curly_brackets_level = 0
                 # self.in_arg_list = 0
                 # self.indent_level = 0
@@ -1019,7 +1016,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.12: *5* tbo.do_endmarker
     def do_endmarker(self) -> None:
         """Handle an endmarker token."""
-        # Ensure exactly one blank at the end of the file.
+        # Ensure exactly one blank line at the end of the file.
         while self.code_list[-1].kind in ('line-end', 'line-indent'):
             self.code_list.pop()
         self.gen_token('line-end', '\n')
