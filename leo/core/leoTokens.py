@@ -41,6 +41,9 @@ from leo.core import leoGlobals as g
 Settings = dict[str, Union[int, bool]]
 #@-<< leoTokens.py: imports & annotations >>
 
+# This file may be compiled with mypyc as follows:
+# python -m mypyc leo\core\leoTokens.py --strict-optional
+
 debug: bool = True
 
 #@+others
