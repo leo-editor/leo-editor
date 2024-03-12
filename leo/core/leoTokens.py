@@ -531,8 +531,8 @@ class OutputToken:
     __slots__ = ('index', 'kind', 'value')
 
 
-    def __init__(self, kind: str, value: str):
-
+    def __init__(self, kind: str, value: str, index: int):
+        self.index = index
         self.kind = kind
         self.value = value
 
@@ -1422,8 +1422,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.26: *5* tbo.gen_token
     def gen_token(self, kind: str, value: Any) -> OutputToken:
         """Add an output token to the code list."""
-        tok = OutputToken(kind, value)
-        tok.index = len(self.code_list)
+        tok = OutputToken(kind, value, len(self.code_list))
         self.code_list.append(tok)
         return tok
     #@+node:ekr.20240105140814.12: *5* tbo.regularize_newlines
@@ -1764,5 +1763,4 @@ if __name__ == '__main__':
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-#@@nosearch
 #@-leo
