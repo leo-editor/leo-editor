@@ -615,7 +615,7 @@ class ScanState:  # leoTokens.py.
 
     def __str__(self) -> str:  # pragma: no cover
         return f"ScanState: i: {self.token.index:<4} kind: {self.kind} value: {self.value}"
-#@+node:ekr.20240312053644.36: *3* class TokenBasedOrange
+#@+node:ekr.20240312053644.36: *3* class TokenBasedOrange (to be deleted)
 class TokenBasedOrange:  # Orange is the new Black.
 
     #@+<< TokenBasedOrange: docstring >>
