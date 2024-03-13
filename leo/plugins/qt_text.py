@@ -837,11 +837,12 @@ if QtWidgets:
 
             #@+<< Recalculate Color >>
             #@+node:tom.20210909124441.1: *5* << Recalculate Color >>
-            config_setting = c.config.getString('line-highlight-color') \
-                or ''
-            config_setting = (config_setting.replace("'", '')
+            config_setting = c.config.getString('line-highlight-color') or ''
+            config_setting = (
+                config_setting.replace("'", '')
                               .replace('"', '').lower()
-                              .replace('none', ''))
+                              .replace('none', '')
+            )
 
             last_color_setting = params['last_color_setting']
             config_setting_changed = config_setting != last_color_setting

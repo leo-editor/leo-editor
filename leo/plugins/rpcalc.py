@@ -129,7 +129,7 @@ The license for the modified code is:
 
 #@+others
 #@+node:tom.20230424130102.154: **  optiondefaults
-defaultList = [\
+defaultList = [
     "# Options for the rpCalc program",
     "#",
     "# Colors for extra views:",
@@ -302,8 +302,11 @@ class AltBaseDialog(QWidget):  # type: ignore
         self.baseBoxes[self.dlgRef.calc.base].setHighlight(False)
         self.baseBoxes[base].setHighlight(True)
         self.buttons.button(base).setChecked(True)
-        if endEntryMode and self.dlgRef.calc.base != base and \
-                self.dlgRef.calc.flag == Mode.entryMode:
+        if (
+            endEntryMode
+            and self.dlgRef.calc.base != base
+            and self.dlgRef.calc.flag == Mode.entryMode
+        ):
             self.dlgRef.calc.flag = Mode.saveMode
         self.dlgRef.calc.base = base
 
@@ -638,8 +641,10 @@ class CalcCore:
         if number == 0:
             return '0'
         if self.useTwosComplement:
-            if number >= 2 ** (self.numBits - 1) or \
-                    number < -2 ** (self.numBits - 1):
+            if (
+                number >= 2 ** (self.numBits - 1) or
+                number < -2 ** (self.numBits - 1)
+            ):
                 return 'overflow'
             if number < 0:
                 number = 2 ** self.numBits + number
@@ -878,14 +883,11 @@ class CalcCore:
                 elif cmdStr == 'LN':  # natural log
                     self.stack[0] = math.log(self.stack[0])
                 elif cmdStr == 'ASIN':  # arcsine
-                    self.stack[0] = math.asin(self.stack[0]) \
-                                    / self.angleConv()
+                    self.stack[0] = math.asin(self.stack[0]) / self.angleConv()
                 elif cmdStr == 'ACOS':  # arccosine
-                    self.stack[0] = math.acos(self.stack[0]) \
-                                    / self.angleConv()
+                    self.stack[0] = math.acos(self.stack[0]) / self.angleConv()
                 elif cmdStr == 'ATAN':  # arctangent
-                    self.stack[0] = math.atan(self.stack[0]) \
-                                    / self.angleConv()
+                    self.stack[0] = math.atan(self.stack[0]) / self.angleConv()
                 elif cmdStr == 'LOG':  # base 10 log
                     self.stack[0] = math.log10(self.stack[0])
                 else:
@@ -1056,11 +1058,9 @@ class CalcDlg(QWidget):  # type: ignore
         self.addMainButton(Qt.Key.Key_0, '0', 4, 0, 0, 1)
         self.addMainButton(Qt.Key.Key_Period, '.', 4, 2)
 
-        self.mainDict[Qt.Key.Key_Return] = \
-                     self.mainDict[Qt.Key.Key_Enter]
+        self.mainDict[Qt.Key.Key_Return] = self.mainDict[Qt.Key.Key_Enter]
         # added for european keyboards:
-        self.mainDict[Qt.Key.Key_Comma] = \
-                     self.mainDict[Qt.Key.Key_Period]
+        self.mainDict[Qt.Key.Key_Comma] = self.mainDict[Qt.Key.Key_Period]
         self.cmdDict['ENT'] = self.mainDict[Qt.Key.Key_Enter]
         self.cmdDict['OPT'] = self.mainDict[0]
 
@@ -1100,8 +1100,10 @@ class CalcDlg(QWidget):  # type: ignore
     def updateEntryLabel(self, subsText=''):
         """Set entry & status label text, use entryStr or subsText, options.
         """
-        numFormat = self.calc.option.boolData('ForceSciNotation') and 'sci' \
-                    or 'fix'
+        numFormat = (
+            self.calc.option.boolData('ForceSciNotation') and 'sci'
+            or 'fix'
+        )
         decPlcs = self.calc.option.intData('NumDecimalPlaces', 0, 9)
         angle = self.calc.option.strData('AngleUnit')
         self.statusLabel.setText('{0} {1}  {2}'.format(numFormat, decPlcs,
@@ -1175,8 +1177,10 @@ class CalcDlg(QWidget):  # type: ignore
     def setLcdHighlight(self):
         """Set lcd highlight based on option.
         """
-        opt = self.calc.option.boolData('HideLcdHighlight') and \
-              SegmentStyle.Flat or SegmentStyle.Filled
+        opt = (
+            self.calc.option.boolData('HideLcdHighlight') and SegmentStyle.Flat
+            or SegmentStyle.Filled
+        )
         self.lcd.setSegmentStyle(opt)
         for lcd in self.extraLcds:
             lcd.setSegmentStyle(opt)
@@ -1317,8 +1321,10 @@ class CalcDlg(QWidget):  # type: ignore
         """Sets display back to CalcCore string.
         """
         numDigits = int(self.calc.option.numData('NumDecimalPlaces', 0, 9)) + 9
-        if self.calc.option.boolData('ThousandsSeparator') or \
-                self.calc.option.boolData('UseEngNotation'):
+        if (
+            self.calc.option.boolData('ThousandsSeparator') or
+            self.calc.option.boolData('UseEngNotation')
+        ):
             numDigits += 2
         self.lcd.setDisplay(self.calc.xStr, numDigits)
         if self.calc.option.boolData('ViewRegisters'):
@@ -1411,14 +1417,13 @@ class CalcDlg(QWidget):  # type: ignore
                     self.altBaseView.copyValue()
                 elif letter == 'C':
                     self.altBaseView.close()
-        elif not self.entryStr and self.calc.base == 16 and \
-                 'A' <= letter <= 'F':
+        elif not self.entryStr and self.calc.base == 16 and 'A' <= letter <= 'F':
             self.issueCmd(keyEvent.text())
-        elif self.altBaseView and self.altBaseView.isVisible() and \
-                (self.calc.xStr == ' 0' or \
-                 (self.calc.stack[0] == 0.0 and self.calc.base != 10)) and \
-                self.calc.flag == Mode.entryMode and \
-                letter in ('X', 'O', 'B', 'D'):
+        elif (
+                self.altBaseView and self.altBaseView.isVisible()
+                and (self.calc.xStr == ' 0' or (self.calc.stack[0] == 0.0 and self.calc.base != 10))
+                and self.calc.flag == Mode.entryMode and letter in ('X', 'O', 'B', 'D')
+            ):
             self.altBaseView.setCodedBase(letter, True)
         elif not self.entryStr and keyEvent.key() == Qt.Key.Key_Backspace:
             button = self.cmdDict['<-']
@@ -1663,7 +1668,7 @@ class HistViewWidget(ExtraViewWidget):
         maxLen = self.calcRef.option.intData('MaxHistLength',
                                              self.calcRef.minMaxHist,
                                              self.calcRef.maxMaxHist)
-        for eqn, value in self.calcRef.history[-self.calcRef.histChg :]:
+        for eqn, value in self.calcRef.history[-self.calcRef.histChg:]:
             item = QTreeWidgetItem(self,
                                          [eqn, self.calcRef.formatNum(value)])
             if self.topLevelItemCount() > maxLen:
@@ -2141,8 +2146,10 @@ class Option:
             if val:
                 try:
                     num = float(val)
-                    if (min == None or num >= min) and \
-                       (max == None or num <= max):
+                    if (
+                        (min == None or num >= min) and
+                        (max == None or num <= max)
+                    ):
                         return num
                 except ValueError:
                     pass
@@ -2158,8 +2165,10 @@ class Option:
             if val:
                 try:
                     num = int(val)
-                    if (min == None or num >= min) and \
-                       (max == None or num <= max):
+                    if (
+                        (min == None or num >= min) and
+                        (max == None or num <= max)
+                    ):
                         return num
                 except ValueError:
                     pass
@@ -2409,8 +2418,7 @@ class OptionDlgDbl(OptionDlgItem):
         """
         text = self.control.text()
         unusedPos = 0
-        if self.control.validator().validate(text, unusedPos)[0] != \
-                QValidator.Acceptable:
+        if self.control.validator().validate(text, unusedPos)[0] != QValidator.Acceptable:
             return
         num = float(text)
         if num != self.dlg.option.numData(self.key):

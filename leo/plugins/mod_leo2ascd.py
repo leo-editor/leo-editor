@@ -176,8 +176,6 @@ def WriteNode(v, startinglevel, ascFile):
         containsSectionDefinition = patternSectionDefinition.match(line)
         if containsSectionDefinition:
             # dump the angle brackets, etc.
-            #       line = containsSectionDefinition.group(2)  + '\n' + \
-            #       (SectionUnderline(containsSectionDefinition.group(2),2,v))
             line = '.' + containsSectionDefinition.group(2)
             pendinglineType = CV.LINE_PENDING_CODE
             startingCodeExtract = True
@@ -219,9 +217,12 @@ def WriteNode(v, startinglevel, ascFile):
         if containsOtherDirective:
             containsRootDirective = patternRootDirective.match(line)
             if containsRootDirective:
-                line = "*note*\nThe code sections that follow, when extracted from a " + \
-                       "Leo outline, will be located in: %s\n*note*" % \
-                       containsRootDirective.group(1)
+                line = (
+                    "*note*\nThe code sections that follow, "
+                    "when extracted from a Leo outline,"
+                    f" will be located in: {containsRootDirective.group(1)}\n"
+                    "*note*"
+                )
             else:
                 continue
         # We have something to print, so print heading.

@@ -14,7 +14,7 @@ try:
     FigureManagerBase = backend_bases.FigureManagerBase
 
     from matplotlib.backends.qt_compat import QtWidgets
-    from matplotlib.backends.backend_qtagg import(
+    from matplotlib.backends.backend_qtagg import (
         FigureCanvas, FigureManager)
     from matplotlib.figure import Figure
 
