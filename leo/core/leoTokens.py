@@ -1784,10 +1784,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@-others
 #@-others
 
-if __name__ == '__main__':
-    print('===== slow leoTokens.py')
-    main()  # pragma: no cover
-elif 'leoTokens' in __name__:
+if __name__ == '__main__' or 'leoTokens' in __name__:
     main()  # pragma: no cover
 
 #@@language python
