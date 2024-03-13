@@ -227,6 +227,8 @@ def orange_command(
     t1 = time.process_time()
     n_tokens = 0
     n_beautified = 0
+    if settings is None:
+        settings = {}
     for filename in to_be_checked_files:
         if os.path.exists(filename):
             was_dirty = filename in dirty_files
@@ -239,7 +241,7 @@ def orange_command(
             print(f"file not found: {filename}")
     # Report the results.
     t2 = time.process_time()
-    if True:  ### n_beautified or settings and settings.get('report'):
+    if n_beautified or settings.get('report'):
         print(
             f"tbo: {t2-t1:3.1f} sec. "
             f"dirty: {len(dirty_files):<3} "
@@ -884,11 +886,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Make no change if there is any error.
         except InternalBeautifierError as e:  # pragma: no cover
             # oops calls self.internal_error_message to creates e.
-            print(e)
+            print(repr(e))
         except AssertionError as e:  # pragma: no cover
             print(self.internal_error_message(repr(e)))
         return contents
-
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry) (stats & diffs)
     def beautify_file(self, filename: str, was_dirty: bool) -> bool:  # pragma: no cover
         """
@@ -919,7 +920,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.regularize_newlines(contents) == self.regularize_newlines(results):
             return False
 
-        # print reports reports.
+        # Print reports.
         if self.beautified:  # --beautified.
             print(f"tbo: beautified: {g_short_file_name(filename)}")
         if self.diff:  # --diff.

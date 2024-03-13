@@ -2220,8 +2220,7 @@ class Option:
                                    line.replace('#', ' ', 1).strip().
                                    split(None, 1)[:1] == [key]]
                     if hitList:
-                        fileList[fileList.index(hitList[-1])] = '{0}{1}\n'.\
-                                format(key.ljust(self.keySpaces),
+                        fileList[fileList.index(hitList[-1])] = '{0}{1}\n'.format(key.ljust(self.keySpaces),
                                        self.userDict[key])
                         self.chgList.remove(key)
                 for key in self.chgList:

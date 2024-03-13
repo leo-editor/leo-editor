@@ -232,8 +232,10 @@ def WriteNode(v, startinglevel, ascFile):
                 WriteOutputLine(SectionUnderline(h, v.level() - startinglevel, v))
                 lastLinePrintedType = CV.LINE_WAS_HEAD
         if pendinglineType == CV.LINE_PENDING_DOC:
-            if lastLinePrintedType != CV.LINE_WAS_DOC and \
-               lastLinePrintedType != CV.LINE_WAS_HEAD:
+            if (
+                lastLinePrintedType != CV.LINE_WAS_DOC and
+                lastLinePrintedType != CV.LINE_WAS_HEAD
+            ):
                 WriteOutputLine("%s" % Conf.current["delimiterForCodeEnd"])
                 if inCodeExtract:
                     WriteOutputLine("\n%s" % Conf.current["delimiterForCodeSectionDefinition"])

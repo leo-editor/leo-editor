@@ -744,8 +744,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             with open(self.rst_csspath, encoding=ENCODING) as f:
                 self.rst_stylesheet = f.read()
         else:
-            self.rst_stylesheet = RST_STYLESHEET_DARK if is_dark \
-                                  else RST_STYLESHEET_LIGHT
+            self.rst_stylesheet = RST_STYLESHEET_DARK if is_dark else RST_STYLESHEET_LIGHT
         #@-<<set stylesheets>>
         #@+<<set up editor>>
         #@+node:tom.20210602172856.1: *4* <<set up editor>>
