@@ -120,11 +120,7 @@ def to_encoded_string(s: str) -> bytes:
         return s.encode('utf-8', "strict")
     except UnicodeError as e:
         print(f"{tag}Error {e!r}\n{s}")
-        try:
-            return s.encode('utf-8', "replace")
-        except Exception as e:
-            print(f"{tag}: unexpected error: {e!r}\n{s!r}")
-            return bytes('')
+        return s.encode('utf-8', "replace")
 #@+node:ekr.20240313051124.1: *3* function: g.to_unicode
 def to_unicode(s: bytes) -> str:
     """Convert bytes to unicode."""
@@ -949,7 +945,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         contents = read_file(filename)
         if not contents:
             self.tokens = []
-            return '', '', []
+            return '', []
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
         return contents, tokens
     #@+node:ekr.20240105140814.17: *5* tbo.write_file
@@ -963,11 +959,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         that the file actually has been changed.
         """
         try:
-            s2 = to_encoded_string(s)
+            s2 = to_encoded_string(s)  # May raise exception.
             with open(filename, 'wb') as f:
                 f.write(s2)
         except Exception as e:  # pragma: no cover
-            print(f"Error writing {filename}\n{e}")
+            print(f"Error {e!r}: {filename!r}")
     #@+node:ekr.20200107040729.1: *5* tbo.show_diffs
     def show_diffs(self, s1: str, s2: str) -> None:  # pragma: no cover
         """Print diffs between strings s1 and s2."""
@@ -1790,9 +1786,10 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@-others
 #@-others
 
-print('===== leoTokens.py =====', repr(__name__))
-
-if __name__ in ('__main__', 'leo.core.leoTokens'):
+if __name__ == '__main__':
+    main()  # pragma: no cover
+elif 'leoTokens' in __name__:
+    print('===== compiled leoTokens.py')
     main()  # pragma: no cover
 
 #@@language python
