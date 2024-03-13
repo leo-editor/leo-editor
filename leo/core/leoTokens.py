@@ -4,6 +4,9 @@
 # Leo's copyright notice is based on the MIT license:
 # https://leo-editor.github.io/leo-editor/license.html
 
+# This file may be compiled with mypyc as follows:
+# python -m mypyc leo\core\leoTokens.py --strict-optional
+
 #@+<< leoTokens.py: docstring >>
 #@+node:ekr.20240105140814.2: ** << leoTokens.py: docstring >>
 """
@@ -39,10 +42,6 @@ from typing import Any, Generator, Optional, Union
 
 Settings = dict[str, Union[int, bool]]
 #@-<< leoTokens.py: imports & annotations >>
-
-
-# This file may be compiled with mypyc as follows:
-# python -m mypyc leo\core\leoTokens.py --strict-optional
 
 #@+others
 #@+node:ekr.20240214065940.1: ** top-level functions (leoTokens.py)
@@ -1786,9 +1785,9 @@ class TokenBasedOrange:  # Orange is the new Black.
 #@-others
 
 if __name__ == '__main__':
+    print('===== slow leoTokens.py')
     main()  # pragma: no cover
 elif 'leoTokens' in __name__:
-    print('===== compiled leoTokens.py')
     main()  # pragma: no cover
 
 #@@language python
