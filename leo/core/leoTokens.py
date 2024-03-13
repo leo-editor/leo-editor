@@ -89,13 +89,13 @@ def read_file(file_name: str) -> str:
     tag = 'readFileIntoString'
     if not file_name:
         print(f"{tag}: no file_name")
-        return None
+        return ''
     if not os.path.exists(file_name):
         print(f"{tag}: file not found: {file_name}")
-        return None
+        return ''
     if os.path.isdir(file_name):
         print(f"{tag}: not a file: {file_name}")
-        return None
+        return ''
     with open(file_name, 'rb') as f:
         byte_string = f.read()
     assert isinstance(byte_string, bytes), byte_string.__class__.__name__
