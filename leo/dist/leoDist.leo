@@ -1606,6 +1606,11 @@ python -m pip uninstall leo
 - Delete files in leoeditor/dist
 - python -m build
 
+**test build**
+
+cd dist
+pip install dist/leo-6.7.8-py3-none-any.whl
+
 **upload**
 
 - ***Disable VPN***
@@ -1615,7 +1620,7 @@ python -m twine upload -r pypi dist/*
 .. Testing URL
 
 
-twine upload - testpypi dist/*
+python -m twine upload -r testpypi dist/*
 
 .. This now uses ~/.pypirc
            
