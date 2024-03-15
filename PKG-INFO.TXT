@@ -10,7 +10,6 @@ License: MIT
 Keywords: Outliner, IDE, PIM, DAG, Scripting
 Platform: Windows, Linux, MacOS
 Classifier: Development Status :: 6 - Mature
-Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: MacOS
 Classifier: Operating System :: Microsoft :: Windows
 Classifier: Operating System :: POSIX :: Linux

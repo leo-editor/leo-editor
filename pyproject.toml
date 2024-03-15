@@ -35,11 +35,9 @@ maintainers =  [
 #@+<< description >>
 #@+node:ekr.20240227162726.1: ** << description >>
 classifiers = [
-  "Author :: Edward K. Ream",
   "Development Status :: 6 - Mature",
   "Intended Audience :: Developers",
   "Topic :: Software Development",
-  "License :: MIT License",
   "Operating System :: MacOS",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX :: Linux",
