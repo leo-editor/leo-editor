@@ -142,6 +142,7 @@
 <v t="ekr.20190618104430.1"><vh>Merge release branch into master</vh></v>
 <v t="ekr.20190802115604.1"><vh>After-merge testing in master</vh></v>
 <v t="ekr.20180405171433.7"><vh>Create git tag in master</vh></v>
+<v t="ekr.20240315161850.1"><vh>Create pypi distro</vh></v>
 <v t="ekr.20190618104622.1"><vh>Publish release</vh></v>
 <v t="ekr.20181001112218.1"><vh>Update version in devel</vh></v>
 <v t="ekr.20230301084201.1"><vh>Update this checklist</vh></v>
@@ -208,7 +209,6 @@ License: MIT
 Keywords: Outliner, IDE, PIM, DAG, Scripting
 Platform: Windows, Linux, MacOS
 Classifier: Development Status :: 6 - Mature
-Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: MacOS
 Classifier: Operating System :: Microsoft :: Windows
 Classifier: Operating System :: POSIX :: Linux
@@ -1598,6 +1598,53 @@ python -m pip uninstall leo
   Be careful about the new version in this node!
 </t>
 <t tx="ekr.20240206185544.1"></t>
+<t tx="ekr.20240315161850.1">**build**
+
+*** Remove leo-editor/egg-info if it exists.
+
+- git checkout master
+- Delete files in leoeditor/dist
+- python -m build
+
+**upload**
+
+- ***Disable VPN***
+
+python -m twine upload -r pypi dist/*
+
+.. Testing URL
+
+
+twine upload - testpypi dist/*
+
+.. This now uses ~/.pypirc
+           
+File names must be unique.
+If there are conflicting names, add -NNN to the filename, like this:
+    leo-6.7.7-2-py3-none-any.whl
+    leo-6.7.7-2.tar.gz
+
+**install**
+
+- Remove leo-editor from sitecustomize.py if it exists.
+
+python -m pip install --index-url https://pypi.org/simple/ --no-deps leo==6.7.8
+
+.. Using test.pypi.or:
+
+python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6.7.8
+
+**test**
+
+cd ~  # Anywhere except leo-editor folder!
+python -m leo.core.runLeo
+
+**uninstall after testing**
+
+python -m pip uninstall leo
+
+-restore sitecustomize.py if necessary.
+</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
@@ -1741,6 +1788,7 @@ build-backend = 'setuptools.build_meta'
 py-modules = []
     
 [project]
+name = "leo"
 requires-python = "&gt;= 3.9"
 version = "6.7.8"
 #@+&lt;&lt; developer info &gt;&gt;
@@ -1760,11 +1808,9 @@ maintainers =  [
 #@+&lt;&lt; description &gt;&gt;
 #@+node:ekr.20240227162726.1: ** &lt;&lt; description &gt;&gt;
 classifiers = [
-  "Author :: Edward K. Ream",
   "Development Status :: 6 - Mature",
   "Intended Audience :: Developers",
   "Topic :: Software Development",
-  "License :: MIT License",
   "Operating System :: MacOS",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX :: Linux",
@@ -1781,7 +1827,6 @@ classifiers = [
 description = "A PIM, IDE and Outliner"
 keywords = ["PIM", "IDE", "Outliner"]
 license = {text = "MIT License"}
-name = "leo"
 readme = "README.md"
 #@-&lt;&lt; description &gt;&gt;
 #@+&lt;&lt; dependencies &gt;&gt;
