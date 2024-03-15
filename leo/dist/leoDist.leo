@@ -1636,6 +1636,9 @@ python -m pip install --index-url https://test.pypi.org/simple/ --no-deps leo==6
 
 **test**
 
+.. https://stackoverflow.com/questions/50585246/pip-install-creates-only-the-dist-info-not-the-package
+.. pip show -f leo
+
 cd ~  # Anywhere except leo-editor folder!
 python -m leo.core.runLeo
 
@@ -1786,6 +1789,9 @@ build-backend = 'setuptools.build_meta'
 
 [tool.setuptools]
 py-modules = []
+
+[tool.setuptools.packages]
+find = {}  # Scan the project directory with the default parameters
     
 [project]
 name = "leo"
