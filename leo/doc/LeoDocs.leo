@@ -32794,6 +32794,9 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **The highlights of Leo 6.7.8**
 
+This release simplifies Leo's install process.
+See https://leo-editor.github.io/leo-editor/getting-started.html
+
 - PR #3757: (leoTokens.py) Make Leo's beautifier 3x faster.
 - PR #3771: Revert colorizing of f-strings.
 - PR #3786: Support Nim.
@@ -32828,6 +32831,9 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #3806`: https://github.com/leo-editor/leo-editor/pull/3806
 .. _`PR #3807`: https://github.com/leo-editor/leo-editor/pull/3807
 .. _`PR #3817`: https://github.com/leo-editor/leo-editor/pull/3817
+
+This release simplifies Leo's install process.
+See https://leo-editor.github.io/leo-editor/getting-started.html
 
 - `PR #3757`_: (leoTokens.py) Make Leo's beautifier 3x faster.
 - `PR #3771`_: Revert colorizing of f-strings.
