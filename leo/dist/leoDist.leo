@@ -1604,7 +1604,7 @@ python -m pip uninstall leo
 
 - git checkout master
 - Delete files in leoeditor/dist
-- python -m build
+- python -m build --wheel
 
 **test build**
 
