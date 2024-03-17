@@ -232,7 +232,6 @@
 <v t="ekr.20220222130955.1"><vh>@edit ../../.mypy.ini</vh></v>
 <v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
-<v t="ekr.20240206163135.1"><vh>@edit ../../manifest.in</vh></v>
 <v t="ekr.20240206153029.1"><vh>@edit ../../readme.md</vh></v>
 <v t="ekr.20240206161713.1"><vh>@edit ../../setup.cfg </vh></v>
 <v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
@@ -1580,7 +1579,8 @@ else:
 """Recursively import all python files in a directory and clean the result."""
 @tabwidth -4 # For a better match.
 g.cls()
-dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
+# dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
+dir_ = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'setup.py')
 c.recursiveImport(
     dir_=dir_,
     kind = '@clean', # '@auto', '@clean', '@nosent','@file',
