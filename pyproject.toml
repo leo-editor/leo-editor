@@ -12,36 +12,21 @@ requires = [
 ]
 build-backend = 'setuptools.build_meta'
 
-#@+<< specify files >>
-#@+node:ekr.20240317053753.1: ** << specify files >>
-### [tool.setuptools]
-### py-modules = []
-
-# [tool.setuptools.packages]
-# find = {}  # Scan the project directory with the default parameters
+# See also MANIFEST.IN.
 
 [tool.setuptools.packages.find]
 where = ["leo"]
 
 [tool.setuptools.exclude-package-data]
-leo = [
-    # ".gitattributes",
-    # "leo.egg-info",
+"*" = [
+    "*.py[cod]",
+    "*.so",
+    "*.egg-info",
+    "*.gitattributes", 
+    "*.mypy_cache",
+    "*.pytest_cache",
 ]
 
-[tool.setuptools.package-data]
-# "*" = ["*.txt"]
-# mypkg1 = ["data1.rst"]
-"*" = [
-    "*.cfg",
-    "*.leo",
-    # "*.py*",
-    "*.txt",
-    # "__init__.py",
-    # "ekr-spellpyx.txt",
-]
-#@-<< specify files >>
-    
 [project]
 name = "leo"
 requires-python = ">= 3.9"
