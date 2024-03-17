@@ -232,6 +232,7 @@
 <v t="ekr.20220222130955.1"><vh>@edit ../../.mypy.ini</vh></v>
 <v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
+<v t="ekr.20240317061516.1"><vh>@clean ../../MANIFEST.in</vh></v>
 <v t="ekr.20240206153029.1"><vh>@edit ../../readme.md</vh></v>
 <v t="ekr.20240206161713.1"><vh>@edit ../../setup.cfg </vh></v>
 <v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
@@ -3575,5 +3576,32 @@ call python312 -m leo.core.leoTokens  --help
 </t>
 <t tx="ekr.20240204082420.1"></t>
 <t tx="ekr.20240204082924.1"></t>
+<t tx="ekr.20240317061516.1">@language ini
+
+# Order matters!
+
+# Global exclusions...
+
+graft leo
+
+# Inclusions...
+
+include *.TXT
+include launchLeo.py
+include profileLeo.py
+include LICENSE
+include pyproject.toml
+
+# Exclusions...
+
+prune leo/doc/html
+prune leo/unittests/htmlcov
+prune leo/core/__pycache__
+prune leo/commands/__pycache__
+
+# Override the general exclusion of leo/doc/html.
+
+include leo/doc/html/conf.py
+</t>
 </tnodes>
 </leo_file>
