@@ -1,9 +1,11 @@
 
 # Order matters!
 
+graft leo
+
 # Global exclusions...
 
-graft leo
+global-exclude */__pycache__/*
 
 # Inclusions...
 
@@ -17,8 +19,6 @@ include pyproject.toml
 
 prune leo/doc/html
 prune leo/unittests/htmlcov
-prune leo/core/__pycache__
-prune leo/commands/__pycache__
 
 # Override the general exclusion of leo/doc/html.
 
