@@ -17,7 +17,8 @@ py-modules = []
     
 [project]
 requires-python = ">= 3.9"
-version = "6.7.8"
+version = "6.7.8.1"
+name = "leo"
 #@+<< developer info >>
 #@+node:ekr.20240227084103.1: ** << developer info >>
 authors =  [
@@ -54,7 +55,6 @@ classifiers = [
 description = "A PIM, IDE and Outliner"
 keywords = ["PIM", "IDE", "Outliner"]
 license = {text = "MIT License"}
-name = "leo"
 readme = "README.md"
 #@-<< description >>
 #@+<< dependencies >>

@@ -198,7 +198,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.7.8
+Version: 6.7.8.post1
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -208,7 +208,6 @@ License: MIT
 Keywords: Outliner, IDE, PIM, DAG, Scripting
 Platform: Windows, Linux, MacOS
 Classifier: Development Status :: 6 - Mature
-Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: MacOS
 Classifier: Operating System :: Microsoft :: Windows
 Classifier: Operating System :: POSIX :: Linux
@@ -1760,11 +1759,9 @@ maintainers =  [
 #@+&lt;&lt; description &gt;&gt;
 #@+node:ekr.20240227162726.1: ** &lt;&lt; description &gt;&gt;
 classifiers = [
-  "Author :: Edward K. Ream",
   "Development Status :: 6 - Mature",
   "Intended Audience :: Developers",
   "Topic :: Software Development",
-  "License :: MIT License",
   "Operating System :: MacOS",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX :: Linux",
