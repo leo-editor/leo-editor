@@ -14,8 +14,19 @@ build-backend = 'setuptools.build_meta'
 
 # See also MANIFEST.IN.
 
+# Use MANIFEST.in for sdist and package_data for wheels;
+
+[tool.setuptools]
+py-modules = []
+
 [tool.setuptools.packages.find]
 where = ["leo"]
+
+# Important. Always build both sdist and the wheel.
+
+#  By default, a source distribution (sdist) is built from {srcdir}
+# and a binary distribution (wheel) is built from the sdist.
+# This is recommended as it will ensure the sdist can be used to build wheels. 
 
 [tool.setuptools.exclude-package-data]
 "*" = [
