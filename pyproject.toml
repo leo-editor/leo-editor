@@ -16,6 +16,8 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools]
 packages = [
     "leo",
+    #@+<< directories that do not contain __init__.py >>
+    #@+node:ekr.20240319155009.1: ** << directories that do not contain __init__.py >>
     "leo.Icons",
     "leo.Icons.Tango",
     "leo.Icons.cleo",
@@ -224,6 +226,7 @@ packages = [
     "leo.unittests.misc_tests",
     "leo.unittests.plugins",
     "leo.www",
+    #@-<< directories that do not contain __init__.py >>
 ]
 
 [project]
