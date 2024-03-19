@@ -16,10 +16,6 @@ build-backend = 'setuptools.build_meta'
 [tool.setuptools]
 packages = ["leo"]
 
-### where = ["leo"]
-### [tool.setuptools]
-### py-modules = []
-    
 [project]
 requires-python = ">= 3.9"
 version = "6.7.8"
