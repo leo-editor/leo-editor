@@ -1,36 +1,22 @@
 
 # Processed in order listed
 
-# Global
-
+# Include *everything* in the leo folder.
 graft leo
 
-global-exclude *.py[cod] __pycache__ *.so
+global-exclude *.py[cod] *.__pycache__ *.so
+global-exclude *.mypy_cache, *.mypy_stubs, *.gitattributes, *.htmlcov
 
-# Root folder
+# Add files in the leo-editor folder.
 
 include *.TXT
 include launchLeo.py
 include profileLeo.py
-
 include LICENSE
-
-# obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
 include pyproject.toml
 
-# Exclusions...
+# Tweaks
 
 prune leo/doc/html
-prune leo/core/.mypy_cache
-prune leo/core/mypy_stubs
-prune leo/core/.gitattributes
 prune leo/unittests/htmlcov
-
-# Issue #603, https://github.com/leo-editor/leo-editor/issues/603
-
 include leo/doc/html/conf.py
-include leo/doc/html/index.html
-
-# Issue #3177: https://github.com/leo-editor/leo-editor/issues/3177
-
-prune leo/docs
