@@ -231,7 +231,7 @@ packages = [
 
 [project]
 requires-python = ">= 3.9"
-version = "6.7.8"
+version = "6.7.8.post1"
 name = "leo"
 #@+<< developer info >>
 #@+node:ekr.20240227084103.1: ** << developer info >>
