@@ -1,5 +1,5 @@
 
-# Processed in order listed
+# Order matters!
 
 # Include *everything* in the leo folder.
 graft leo
@@ -7,16 +7,13 @@ graft leo
 global-exclude *.py[cod] *.__pycache__ *.so
 global-exclude *.mypy_cache, *.mypy_stubs, *.gitattributes, *.htmlcov
 
-# Add files in the leo-editor folder.
+# Add files in the top-level leo-editor folder.
 
+include *.py
 include *.TXT
-include launchLeo.py
-include profileLeo.py
-include LICENSE
-include pyproject.toml
 
 # Tweaks
 
-prune leo/doc/html
 prune leo/unittests/htmlcov
+prune leo/doc/html
 include leo/doc/html/conf.py
