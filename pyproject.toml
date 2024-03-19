@@ -1,9 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20240227064614.1: * @file ../../pyproject.toml
 #@@language toml
-#@@nowrap
 
 # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+#     pypi: https://pypi.org/project/leo/
+# testpypi: https://test.pypi.org/project/leo/
 
 [build-system]
 requires = [
@@ -13,11 +14,15 @@ requires = [
 build-backend = 'setuptools.build_meta'
 
 [tool.setuptools]
-py-modules = []
+packages = ["leo"]
+
+### where = ["leo"]
+### [tool.setuptools]
+### py-modules = []
     
 [project]
 requires-python = ">= 3.9"
-version = "6.7.8.1"
+version = "6.7.8"
 name = "leo"
 #@+<< developer info >>
 #@+node:ekr.20240227084103.1: ** << developer info >>
