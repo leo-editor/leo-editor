@@ -231,8 +231,9 @@ packages = [
 
 [project]
 requires-python = ">= 3.9"
-version = "6.7.8.post1"
+version = "6.7.8.post3"
 name = "leo"
+
 #@+<< developer info >>
 #@+node:ekr.20240227084103.1: ** << developer info >>
 authors =  [
@@ -323,6 +324,11 @@ dependencies = [
 
 # [project.optional-dependencies]
 #@-<< dependencies >>
+
+[project.scripts]
+leo = "leo.core.runLeo:run"
+leo-c = "leo.core.runLeo:run_console"
+leo-console = "leo.core.runLeo:run_console"
 
 [project.urls]
 #@+<< urls >>
