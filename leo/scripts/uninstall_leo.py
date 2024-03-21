@@ -18,7 +18,7 @@ print('uninstall_leo.py')
 home_dir = os.path.expanduser("~")
 os.chdir(home_dir)
 
-# Uninstall.
+# Uninstall.    
 command = 'python -m pip uninstall leo'
 g.execute_shell_commands(command)
 #@-leo
