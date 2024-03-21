@@ -2,6 +2,18 @@
 #@+node:ekr.20240321122822.1: * @file ../scripts/build-leo.py
 #@@language python
 
+import os
+import sys
+
+# Make sure leo is on the path.
+leo_dir = os.path.abspath(os.path.join(__file__, '..', '..'))
+if leo_dir not in sys.path:
+    # print(f"add {leo_dir!r} to sys.path")
+    sys.path.insert(0, leo_dir)
+assert leo_dir in sys.path
+print('Done!')
+
+
 #@verbatim
 # @echo off
 
