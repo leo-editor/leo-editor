@@ -11,7 +11,7 @@ mypy_cache/
 *.orig
 
 # Build log
-build_leo.txt
+build_log.txt
 
 # Other programs
 leoProfile
