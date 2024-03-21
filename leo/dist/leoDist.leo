@@ -148,6 +148,7 @@
 <v t="ekr.20230301084201.1"><vh>Update this checklist</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 </v>
+<v t="ekr.20240321104936.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -1573,16 +1574,17 @@ python -m pip uninstall leo
 <t tx="ekr.20240321104936.1">.. How to create pypi distributions:
 .. https://github.com/leo-editor/leo-editor/issues/3837
 
-*Note*: All scripts mentioned below are python scripts in leo/scripts.
+*Note*: All scripts mentioned below are *Python* scripts in leo/scripts.
 
-Step 1: Create and test the distribution files in leo/dist:
+Step 1: Create and test the distribution files in `leo/dist`:
 
 - Update `PKG-INFO.TXT` with the proper version. 
-  Use .postN (not `-N) suffixes if necessary to create distinct versions.
-- Run the `build-leo` script to create .whl and .tar.gz files in the leo/dist directory.
+  Use `.postN` (not `-N`) suffixes if necessary to create distinct versions.
+- Run the `build-leo` script.
+  - This script create `.whl` and `.tar.gz` files in the `leo/dist` directory.
   - Ignore warning: `no previously-included files matching`...
   - Make sure the filenames are as expected!
-- (Optional) Run the `wheel-inspect` script.
+- (Optional) Run the `inspect-wheel` script.
 
 Step 2: Install locally and test:
 
@@ -1601,7 +1603,7 @@ Step 3: Upload to testpypi and test:
 - Run the `upload-leo-to-testpypi` script.
   The upload will fail if testpypi has *ever* contained a file with
   the same contents or filename.
-  If the upload fails you must go back to step 1 and add a unique .postN prefix.
+  If the upload fails you must go back to step 1 and add a unique `.postN` prefix.
 - Run the `install-leo-from-testpypi` script.
 - Test and uninstall as in step 2 above.
 
