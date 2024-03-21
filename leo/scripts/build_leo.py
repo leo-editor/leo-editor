@@ -8,7 +8,6 @@ import sys
 # Make sure leo-editor is on the path.
 leo_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 if leo_dir not in sys.path:
-    # print(f"add {leo_dir!r} to sys.path")
     sys.path.insert(0, leo_dir)
 from leo.core import leoGlobals as g
 
@@ -24,5 +23,5 @@ for z in glob.glob(f"{leo_dir}{os.sep}dist{os.sep}*.*"):
 command = 'python -m build > build_log.txt'
 g.execute_shell_commands(command)
 
-# print('build_leo.py: done')
+print('See build_log.txt')
 #@-leo
