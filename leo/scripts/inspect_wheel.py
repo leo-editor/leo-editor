@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20240321122917.1: * @file ../scripts/inspect-wheel.py
+#@+node:ekr.20240321122917.1: * @file ../scripts/inspect_wheel.py
 #@@language python
 
 #@verbatim

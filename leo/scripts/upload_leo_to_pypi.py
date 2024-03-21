@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20240321123225.4: * @file ../scripts/upload-leo-to-pypi.py
+#@+node:ekr.20240321123225.4: * @file ../scripts/upload_leo_to_pypi.py
 #@@language python
 
 #@verbatim

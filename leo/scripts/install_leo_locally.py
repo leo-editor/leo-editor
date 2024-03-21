@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20240321123225.3: * @file ../scripts/install-leo-from-testpypi.py
+#@+node:ekr.20240321123214.1: * @file ../scripts/install_leo_locally.py
 #@verbatim
 # @language python
 
@@ -10,9 +10,7 @@
 # cls
 # cd c:\Users\Dev
 
-# echo install from testpypi
-
-# call python -m pip install leo --index-url https://test.pypi.org/simple/
+# call python -m pip install c:\Repos\leo-editor\dist\leo-6.7.8.post3-py3-none-any.whl
 
 # echo ls Python3.12\Lib\site-packages\leo*.*
 # ls C:\Python\Python3.12\Lib\site-packages\leo*.*

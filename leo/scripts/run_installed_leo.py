@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20240321123225.1: * @file ../scripts/uninstall-leo.py
+#@+node:ekr.20240321123224.1: * @file ../scripts/run_installed_leo.py
 #@@language python
 
 #@verbatim
@@ -9,5 +9,5 @@
 # cls
 # cd c:\Users\Dev
 
-# pip uninstall leo
+# python -m leo.core.runLeo
 #@-leo

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20240321123226.1: * @file ../scripts/install-leo-from-pypi-leo.py
+#@+node:ekr.20240321123226.1: * @file ../scripts/install_leo_from_pypi_leo.py
 #@@language python
 
 #@verbatim
