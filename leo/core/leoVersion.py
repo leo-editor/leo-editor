@@ -49,10 +49,11 @@ leoVersion.version:     Leo's version number.
 # 6.7.5:  November 7, 2023.
 # 6.7.6:  December 19, 2023.
 # 6.7.7:  January 20, 2024.
-# 6.7.8:  March 15, 2024.
+# 6.7.8:       March 14, 2024.
+# 6.7.8.post3: March 22, 2024.
 #@-<< version dates >>
 version = '6.7.8'
-static_date = 'March 15, 2024'
+static_date = 'March 20, 2024'
 #@@language python
 #@@tabwidth -4
 #@-leo
