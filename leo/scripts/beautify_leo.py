@@ -25,7 +25,7 @@ python = 'py' if g.isWindows else 'python'
 g.execute_shell_commands([
     fr'{python} -c "import leo.core.leoTokens" {args} leo\commands',
     fr'{python} -c "import leo.core.leoTokens" {args} leo\commands',
-    fr'{python} -c "import leo.core.leoTokens" {args} --write leo\plugins',
+    fr'{python} -c "import leo.core.leoTokens" {args} leo\plugins',
     fr'{python} -c "import leo.core.leoTokens" {args} leo\modes',
     fr'{python} -c "import leo.core.leoTokens" {args} leo\unittests\commands',
     fr'{python} -c "import leo.core.leoTokens" {args} leo\unittests\plugins',
