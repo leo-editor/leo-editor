@@ -7,8 +7,13 @@ beautify_leo.py: beautify Leo's most important files with the leoTokens beautifi
 
 Works regardless of whether mypyc has compiled leoTokens.py!
 """
+
+import os
 import subprocess
 import sys
+
+# cd to leo-editor
+os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
 
 args = ' '.join(sys.argv[1:])
 isWindows = sys.platform.startswith('win')
