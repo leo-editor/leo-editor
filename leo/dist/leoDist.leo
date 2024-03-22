@@ -131,7 +131,6 @@
 <v t="maphew.20200424174722.1"><vh>@auto ../dist/conda/leo/meta.yaml</vh></v>
 </v>
 </v>
-<v t="ekr.20240322063820.1"><vh>Update this checklist</vh></v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist</vh>
 <v t="ekr.20180405171433.4"><vh>Pre-testing (in release branch)</vh></v>
 <v t="ekr.20230301070738.1"><vh>LeoSettings.leo</vh></v>
@@ -149,7 +148,6 @@
 <v t="ekr.20230301084201.1"><vh>Update this checklist</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 </v>
-<v t="ekr.20240321104936.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -1408,7 +1406,7 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create the **release branch**: 6.7.8.
+Create the **release branch**: 6.7.9.
 Change version in this checklist to match.
 
 It's ok to merge devel into release branch
@@ -1428,7 +1426,7 @@ It's ok to merge devel into release branch
 
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
-- git merge 6.7.8
+- git merge 6.7.9
 - Run the `make-sphinx` from LeoDocs.leo
   This script copies files from leo/doc/html/_build/html to leo-editor/docs
 - Commit the changes and push.
@@ -1447,7 +1445,7 @@ It's ok to merge devel into release branch
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
-git tag -a v6.7.8 -m "Added v6.7.8 tag"
+git tag -a v6.7.9 -m "Added v6.7.9 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
@@ -1456,15 +1454,15 @@ git push --follow-tags
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout devel
-- git merge 6.7.8
+- git merge 6.7.9
 - update version in leoVersion.py.
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.8 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.9 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.7.8</t>
+- git merge 6.7.9</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -1552,7 +1550,7 @@ python -m pip uninstall leo
 <t tx="ekr.20230301070404.1">LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for 6.7.
-  The final version in PKG-INFO.TXT must be called 6.7.8, not 6.7.8-final.
+  The final version in PKG-INFO.TXT must be called 6.7.9, not 6.7.9-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Update version in 'PKG-INFO.TXT'
@@ -1568,7 +1566,7 @@ python -m pip uninstall leo
 - Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
 - Open LeoPyRef.leo. Verify the diff after saving.
 </t>
-<t tx="ekr.20230301084201.1">- Change 6.7.8 (the old version) to 6.7.9.
+<t tx="ekr.20230301084201.1">- Change 6.7.9 (the old version) to 6.7.10.
   Be careful about the new version in this node!
 </t>
 <t tx="ekr.20240206185544.1"></t>
@@ -1622,9 +1620,6 @@ Make *sure* all is well before uploading to pypi.
 - Run the `install_leo_from_pypi` script.
 - Test and uninstall as in step 2 above.
 
-</t>
-<t tx="ekr.20240322063820.1">- Change 6.7.8 (the old version) to 6.7.9.
-  Be careful about the new version in this node!
 </t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
