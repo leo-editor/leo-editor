@@ -486,8 +486,10 @@ class LeoCloud:
         background = []  # things to check in background
         for lc_v in self.find_clouds():
             kwargs = self.kw_from_node(lc_v)
-            if from_background and \
-                (kwargs['remote'], kwargs['ID']) not in from_background:
+            if (
+                from_background
+                and (kwargs['remote'], kwargs['ID']) not in from_background
+            ):
                 # only process nodes from the background checking
                 continue
             read = False

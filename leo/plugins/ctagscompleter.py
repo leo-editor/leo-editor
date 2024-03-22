@@ -142,7 +142,7 @@ class CtagsController:
             extra = len(cmpl) - len(prefix)
             tc.movePosition(tc.Left)
             tc.movePosition(tc.EndOfWord)
-            tc.insertText(cmpl[-extra :])
+            tc.insertText(cmpl[-extra:])
             w.setTextCursor(tc)
         self.kill()
     #@+node:ekr.20110307141357.14198: *3* ctags.kill

@@ -25,7 +25,7 @@ from leo.core import leoGlobals as g
 from leo.core.leoTokens import InputToken, Tokenizer, TokenBasedOrange
 
 # Utility functions.
-from leo.core.leoTokens import dump_contents, dump_tokens, output_tokens_to_string
+from leo.core.leoTokens import dump_contents, dump_tokens, input_tokens_to_string
 #@-<< test_leoTokens imports >>
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
@@ -71,7 +71,7 @@ class BaseTest(unittest.TestCase):
         # Several unit tests call this method.
 
         contents, tokens = self.make_data(contents, debug_list=debug_list)
-        results = output_tokens_to_string(tokens)
+        results = input_tokens_to_string(tokens)
         self.assertEqual(contents, results)
     #@+node:ekr.20240105153425.44: *3* BaseTest.make_data (test_leoTokens.py)
     def make_data(self,
@@ -171,6 +171,76 @@ class Optional_TestFiles(BaseTest):
     def test_runLeo(self):
 
         self.make_file_data('runLeo.py')
+    #@-others
+#@+node:ekr.20240105153425.85: ** class TestTokens (BaseTest)
+class TestTokens(BaseTest):
+    """Unit tests for tokenizing."""
+    #@+others
+    #@+node:ekr.20240105153425.93: *3* TT.show_example_dump
+    def show_example_dump(self):  # pragma: no cover
+
+        # Will only be run when enabled explicitly.
+
+        contents = """
+    print('line 1')
+    print('line 2')
+    print('line 3')
+    """
+        contents, tokens = self.make_data(contents)
+        dump_contents(contents)
+        dump_tokens(tokens)
+    #@+node:ekr.20240105153425.94: *3* TT.test_bs_nl_tokens
+    def test_bs_nl_tokens(self):
+        # Test https://bugs.python.org/issue38663.
+
+        contents = """
+    print \
+        ('abc')
+    """
+        self.check_roundtrip(contents)
+    #@+node:ekr.20240105153425.95: *3* TT.test_continuation_1
+    def test_continuation_1(self):
+
+        contents = """
+    a = (3,4,
+        5,6)
+    y = [3, 4,
+        5]
+    z = {'a': 5,
+        'b':15, 'c':True}
+    x = len(y) + 5 - a[
+        3] - a[2] + len(z) - z[
+        'b']
+    """
+        self.check_roundtrip(contents)
+    #@+node:ekr.20240105153425.96: *3* TT.test_continuation_2
+    def test_continuation_2(self):
+        # Backslash means line continuation, except for comments
+        contents = (
+            'x=1+\\\n    2'
+            '# This is a comment\\\n    # This also'
+        )
+        self.check_roundtrip(contents)
+    #@+node:ekr.20240105153425.97: *3* TT.test_continuation_3
+    def test_continuation_3(self):
+
+        contents = """
+    # Comment \\\n
+    x = 0
+    """
+        self.check_roundtrip(contents)
+    #@+node:ekr.20240105153425.98: *3* TT.test_string_concatenation_1
+    def test_string_concatentation_1(self):
+        # Two *plain* string literals on the same line
+        self.check_roundtrip("""'abc' 'xyz'""")
+    #@+node:ekr.20240105153425.99: *3* TT.test_string_concatenation_2
+    def test_string_concatentation_2(self):
+        # f-string followed by plain string on the same line
+        self.check_roundtrip("""f'abc' 'xyz'""")
+    #@+node:ekr.20240105153425.100: *3* TT.test_string_concatenation_3
+    def test_string_concatentation_3(self):
+        # plain string followed by f-string on the same line
+        self.check_roundtrip("""'abc' f'xyz'""")
     #@-others
 #@+node:ekr.20240105153425.42: ** class TestTokenBasedOrange (BaseTest)
 class TestTokenBasedOrange(BaseTest):
@@ -846,76 +916,6 @@ class TestTokenBasedOrange(BaseTest):
         # g.printObj(results, tag='Results')
         # g.printObj(expected, tag='Expected')
         self.assertEqual(results, expected, msg=contents)
-    #@-others
-#@+node:ekr.20240105153425.85: ** class TestTokens (BaseTest)
-class TestTokens(BaseTest):
-    """Unit tests for tokenizing."""
-    #@+others
-    #@+node:ekr.20240105153425.93: *3* TT.show_example_dump
-    def show_example_dump(self):  # pragma: no cover
-
-        # Will only be run when enabled explicitly.
-
-        contents = """
-    print('line 1')
-    print('line 2')
-    print('line 3')
-    """
-        contents, tokens = self.make_data(contents)
-        dump_contents(contents)
-        dump_tokens(tokens)
-    #@+node:ekr.20240105153425.94: *3* TT.test_bs_nl_tokens
-    def test_bs_nl_tokens(self):
-        # Test https://bugs.python.org/issue38663.
-
-        contents = """
-    print \
-        ('abc')
-    """
-        self.check_roundtrip(contents)
-    #@+node:ekr.20240105153425.95: *3* TT.test_continuation_1
-    def test_continuation_1(self):
-
-        contents = """
-    a = (3,4,
-        5,6)
-    y = [3, 4,
-        5]
-    z = {'a': 5,
-        'b':15, 'c':True}
-    x = len(y) + 5 - a[
-        3] - a[2] + len(z) - z[
-        'b']
-    """
-        self.check_roundtrip(contents)
-    #@+node:ekr.20240105153425.96: *3* TT.test_continuation_2
-    def test_continuation_2(self):
-        # Backslash means line continuation, except for comments
-        contents = (
-            'x=1+\\\n    2'
-            '# This is a comment\\\n    # This also'
-        )
-        self.check_roundtrip(contents)
-    #@+node:ekr.20240105153425.97: *3* TT.test_continuation_3
-    def test_continuation_3(self):
-
-        contents = """
-    # Comment \\\n
-    x = 0
-    """
-        self.check_roundtrip(contents)
-    #@+node:ekr.20240105153425.98: *3* TT.test_string_concatenation_1
-    def test_string_concatentation_1(self):
-        # Two *plain* string literals on the same line
-        self.check_roundtrip("""'abc' 'xyz'""")
-    #@+node:ekr.20240105153425.99: *3* TT.test_string_concatenation_2
-    def test_string_concatentation_2(self):
-        # f-string followed by plain string on the same line
-        self.check_roundtrip("""f'abc' 'xyz'""")
-    #@+node:ekr.20240105153425.100: *3* TT.test_string_concatenation_3
-    def test_string_concatentation_3(self):
-        # plain string followed by f-string on the same line
-        self.check_roundtrip("""'abc' f'xyz'""")
     #@-others
 #@-others
 #@-leo

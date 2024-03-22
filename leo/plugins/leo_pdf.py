@@ -1023,17 +1023,13 @@ if docutils:  # NOQA
         def pop(self, kind):
 
             bunch = self.context.pop()
-            assert bunch.kind == kind,\
-                'wrong bunch kind popped.  Expected: %s Got: %s' % (
-                    kind, bunch.kind)
+            assert bunch.kind == kind, f"Expected: {kind} Got: {bunch.kind}"
             return bunch
 
         def peek(self, kind):
 
             bunch = self.context[-1]
-            assert bunch.kind == kind,\
-                'peek at wrong bunch.  Expected: %s Got: %s' % (
-                    kind, bunch.kind)
+            assert bunch.kind == kind, f"Expected: {kind} Got: {bunch.kind}"
             return bunch
         #@+node:ekr.20090704103932.5224: *4* putHead & putTail
         def putHead(self, start, style='Normal', bulletText=None):

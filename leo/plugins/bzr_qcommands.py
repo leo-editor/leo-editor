@@ -36,11 +36,12 @@ def bzr_qcommands(c, p, menu):
     action = menu.addAction('stat')
     # action.connect(action, QtCore.SIGNAL("triggered()"), bzr_stat)
     action.triggered.connect(bzr_stat)
-
-    qcoms = "qadd qannotate qbind qbranch qbrowse qcat qcommit qconfig " \
-            "qconflicts qdiff qexport qgetnew qgetupdates qinfo qinit " \
-            "qlog qmerge qplugins qpull qpush qrevert qrun qsend " \
-            "qswitch qtag qunbind quncommit qupdate qversion qviewer".split()
+    qcoms = (
+        "qadd qannotate qbind qbranch qbrowse qcat qcommit qconfig "
+        "qconflicts qdiff qexport qgetnew qgetupdates qinfo qinit "
+        "qlog qmerge qplugins qpull qpush qrevert qrun qsend "
+        "qswitch qtag qunbind quncommit qupdate qversion qviewer"
+    ).split()
     for qcom in qcoms:
         def cmd(c=c, p=p, qcom=qcom):
             path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)

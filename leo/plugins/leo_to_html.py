@@ -609,8 +609,10 @@ class Leo_to_HTML:
                 subprocess.Popen([self.browser_command, url])
                 return
             except Exception:
-                msg = 'can\'t open browser using \n    %s\n' % self.browser_command + \
-                'Using default browser instead.'
+                msg = (
+                    f"can not open browser using \n{self.browser_command!r}\n"
+                    'Using default browser instead.'
+                )
         if msg:
             self.announce_fail(msg)
         webbrowser.open(url)
