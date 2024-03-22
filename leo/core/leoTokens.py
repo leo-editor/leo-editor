@@ -1123,7 +1123,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_nl(self) -> None:
         """
         do_nl: Handle a continuation line.
-        
+
         From https://docs.python.org/3/library/token.html
 
         NL tokens end *physical* lines. They appear when when a logical line of

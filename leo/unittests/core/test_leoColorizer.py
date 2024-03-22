@@ -635,7 +635,7 @@ class TestColorizer(LeoUnitTest):
                     Inner comment.
                 ]#
             ]#
-            
+
             # Custom numeric literals.
             var x = 5'u4
             u'abd: Natural = 2u32

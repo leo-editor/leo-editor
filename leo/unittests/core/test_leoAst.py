@@ -249,7 +249,7 @@ class BaseTest(unittest.TestCase):
     def prep(self, s: str) -> str:
         """
         Return the "prepped" version of s.
-        
+
         This should eliminate the need for backslashes in tests.
         """
         return textwrap.dedent(s).strip() + '\n'

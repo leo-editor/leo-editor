@@ -2608,7 +2608,7 @@ class LeoServer:
     def get_unl(self, param: Param) -> Response:
         """
         Return UNL for specific position, or currently selected node.
-        This defaults to using the normal status bar UNL indicator method 
+        This defaults to using the normal status bar UNL indicator method
         unless 'short' or 'legacy' boolean parameters are used.
         """
         c = self._check_c(param)
