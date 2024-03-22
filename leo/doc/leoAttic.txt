@@ -471,6 +471,187 @@ def show(self, item: Any) -> str:
 def stop(self) -> None:
     """Stop all tracing."""
     sys.settrace(None)
+#@+node:ekr.20240322064529.1: ** retire .cmd scripts
+#@+node:ekr.20240322064529.2: *3* beautify-leo.cmd
+@language batch
+@echo off
+cd %~dp0..\..
+
+echo beautify-leo
+
+call py -m leo.core.leoAst --orange --verbose leo\core
+call py -m leo.core.leoAst --orange --verbose leo\commands
+call py -m leo.core.leoAst --orange --verbose leo\plugins
+call py -m leo.core.leoAst --orange --verbose leo\modes
+#@+node:ekr.20240322064529.3: *3* beautify-leo-force.cmd
+@language batch
+@echo off
+cd %~dp0..\..
+
+echo beautify-leo
+
+call py -m leo.core.leoAst --orange --force --verbose leo\core
+call py -m leo.core.leoAst --orange --force --verbose leo\commands
+
+rem It's ok to beautify everything:
+
+call py -m leo.core.leoAst --orange --verbose leo\plugins
+call py -m leo.core.leoAst --orange --verbose leo\modes
+
+rem call py -m leo.core.leoAst --orange --force --verbose leo\plugins\importers
+rem call py -m leo.core.leoAst --orange --force --verbose leo\plugins\writers
+#@+node:ekr.20240322064529.4: *3* blacken-leo.cmd
+@language batch
+@echo off
+cd %~dp0..\..
+
+rem not recommended!
+echo black leo.core
+call py -m black --skip-string-normalization leo\core
+#@+node:ekr.20240322064529.5: *3* flake8-leo.cmd
+@language batch
+@echo off
+cd %~dp0..\..
+
+rem: See leo-editor/setup.cfg for defaults.
+
+echo flake8-leo
+py -m flake8 %*
+#@+node:ekr.20240322064529.6: *3* full-test-leo.cmd
+@language batch
+@echo off
+cls
+cd %~dp0..\..
+
+rem Run all of Leo's pre-commit tests.
+
+call tbo.cmd --all --beautified --report --write
+call python312 -m unittest
+call ruff-leo.cmd
+call mypy-leo.cmd
+echo Done!
+#@+node:ekr.20240322064529.7: *3* make-leo.cmd
+@language batch
+@echo off
+cls
+rem -a: write all files  (make clean)
+cd %~dp0..\..
+cd leo\doc\html
+
+echo.
+echo sphinx-build -a (make clean)
+echo.
+sphinx-build -M html . _build -a
+#@+node:ekr.20240322064529.8: *3* mypy-leo.cmd
+@language batch
+@echo off
+cd %~dp0..\..
+
+rem See leo-editor/.mypy.ini for exclusions!
+rem Always use the fast (official) version of mypy.
+
+echo mypy-leo
+py -m mypy --debug-cache leo %*
+#@+node:ekr.20240322064529.9: *3* pylint-leo.cmd
+@language batch
+@echo off
+cd %~dp0..\..
+
+echo pylint-leo
+time /T
+call py -m pylint leo --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets %*
+time /T
+#@+node:ekr.20240322064529.10: *3* reindent-leo.cmd
+@language batch
+@echo off
+cd %~dp0..\..
+
+:: Save path to reindent.py to a file .leo\reindent-path.txt
+call py %~dp0\find-reindent.py
+
+set PATH_FILE=%USERPROFILE%\.leo\reindent-path.txt
+set /P "REINDENT_PATH="< %PATH_FILE%
+
+:: echo %REINDENT_PATH%
+
+if "%REINDENT_PATH%"=="" goto no_reindent
+
+echo reindent-leo
+
+rem echo reindent leo/core
+call py %REINDENT_PATH% -r leo\core
+rem echo reindent leo/commands
+call py %REINDENT_PATH% -r leo\commands
+rem echo reindent leo/plugins/importers
+call py %REINDENT_PATH% -r leo\plugins\importers
+rem echo reindent leo/plugins/commands
+call py %REINDENT_PATH% leo\plugins\qt_commands.py
+call py %REINDENT_PATH% leo\plugins\qt_events.py
+call py %REINDENT_PATH% leo\plugins\qt_frame.py
+call py %REINDENT_PATH% leo\plugins\qt_gui.py
+call py %REINDENT_PATH% leo\plugins\qt_idle_time.py
+call py %REINDENT_PATH% leo\plugins\qt_text.py
+call py %REINDENT_PATH% leo\plugins\qt_tree.py
+rem echo reindent leo/plugins/writers
+call py %REINDENT_PATH% -r leo\plugins\writers
+rem echo reindent leo/unittests
+call py %REINDENT_PATH% -r leo\unittests
+rem echo reindent official plugins.
+call py %REINDENT_PATH% leo\plugins\indented_languages.py
+goto done
+
+:no_reindent
+echo Cannot find reindent.py, skipping reindentation
+
+:done
+#@+node:ekr.20240322064529.11: *3* test-leo.cmd
+@language batch
+@echo off
+cd %~dp0..\..
+
+call reindent-leo.cmd
+
+echo test-leo
+py -m unittest %*
+#@+node:ekr.20240322064529.12: *3* test-one-leo.cmd
+@language batch
+@echo off
+cls
+cd %~dp0..\..
+
+echo test-one-leo
+call py -m unittest leo.unittests.core.test_leoGlobals.TestGlobals.test_g_handleScriptException
+#@+node:ekr.20240322064529.13: *3* tbo.cmd
+@language batch
+
+@echo off
+cls
+cd %~dp0..\..
+
+rem Use leoTokens.py to beautify all files.
+
+IF [%1]==[-h] goto help
+IF [%1]==[--help] goto help
+
+:tbo:
+
+echo tbo [%*]
+call python312 -m leo.core.leoTokens leo\core %*
+call python312 -m leo.core.leoTokens leo\commands %*
+call python312 -m leo.core.leoTokens leo\plugins\importers %*
+call python312 -m leo.core.leoTokens leo\plugins\writers %*
+call python312 -m leo.core.leoTokens leo\modes %*
+
+call python312 -m leo.core.leoTokens leo\unittests\core %*
+call python312 -m leo.core.leoTokens leo\unittests\commands %*
+call python312 -m leo.core.leoTokens leo\unittests\plugins %*
+call python312 -m leo.core.leoTokens leo\unittests\misc_tests %*
+goto done
+
+:help:
+call python312 -m leo.core.leoTokens  --help
+
+:done:
 #@-all
 #@@nosearch
 #@-leo
