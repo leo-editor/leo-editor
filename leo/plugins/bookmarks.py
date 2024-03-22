@@ -953,7 +953,7 @@ class BookMarkDisplay:
             # pylint: disable=undefined-loop-variable
             # pylint bug, fix released: http://www.logilab.org/ticket/89092
             # pylint: disable=undefined-variable
-            top.mouseReleaseEvent = (lambda event, links=links, row_parent=row_parent:
+            top.mouseReleaseEvent = (lambda event, links = links, row_parent = row_parent:
                 self.background_clicked(event, links, row_parent))
             top.setMinimumSize(10, 10)  # so there's something to click when empty
             size_policy = QtWidgets.QSizePolicy(Policy.Expanding, Policy.Expanding)
@@ -982,7 +982,7 @@ class BookMarkDisplay:
 
                 # pylint: disable=undefined-variable
                 # 'but' *is* defined.
-                but.mouseReleaseEvent = (lambda event, bm=bm, but=but:
+                but.mouseReleaseEvent = (lambda event, bm = bm, but = but:
                     self.button_clicked(event, bm, but))
 
                 layout.addWidget(but)

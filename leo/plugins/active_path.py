@@ -453,9 +453,11 @@ def openDir(c, parent, d):
                 entry = entry[len(directive[0]) :].strip()
         # find existing inc/exc nodes to remove
         # using p.h allows for example exc=/ to remove all directories
-        if not checkIncExc(p.h, inc, exc, regEx) or \
-               (excdirs and entry in dirs) or \
-               (excfiles and entry in files):
+        if (
+            not checkIncExc(p.h, inc, exc, regEx)
+            or (excdirs and entry in dirs)
+            or (excfiles and entry in files)
+        ):
             toRemove.add(p.h)  #must not strip '/', so nodes can be removed
         else:
             oldlist.add(entry)

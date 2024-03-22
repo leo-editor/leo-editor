@@ -670,8 +670,7 @@ class graphcanvasController:
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.graph_manual_layout = \
-            c.config.getBool('graph-manual-layout', default=False)
+        self.graph_manual_layout = c.config.getBool('graph-manual-layout', default=False)
     #@+node:bob.20110119123023.7410: *3* initIvars
     def initIvars(self):
         """initialize, called by __init__ and clear"""

@@ -310,7 +310,7 @@ class NodeDiffController:
                 'git',
                 '--work-tree=%s' % path,
                 'show',
-                'HEAD:%s' % g.os_path_join(* (relative_path + [filename])),
+                'HEAD:%s' % g.os_path_join(*(relative_path + [filename])),
             ]
 
         if mode == 'bzr':

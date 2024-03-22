@@ -1260,11 +1260,11 @@ def find_exe(exename):
         local_python_appdata_dir = os.path.dirname(site.getusersitepackages())
         scripts_local_dir = os.path.join(local_python_appdata_dir, 'Scripts')
 
-    exe = shutil.which(exename, os.X_OK, scriptsdir) \
-            or shutil.which(exename, os.X_OK, scripts_local_dir) \
-            or shutil.which(exename, os.X_OK)
-
-    return exe
+    return (
+        shutil.which(exename, os.X_OK, scriptsdir)
+        or shutil.which(exename, os.X_OK, scripts_local_dir)
+        or shutil.which(exename, os.X_OK)
+    )
 #@+node:tom.20211127234312.1: ** find_dir()
 def find_dir(name, path):
     """Given a starting directory, return the full path to the named directory.
@@ -1425,10 +1425,11 @@ def init():
         return False  # #1248.
     # if g.app.gui.guiName()
     if not QtWidgets or not g.app.gui.guiName().startswith('qt'):
-        if (not g.unitTesting\
-            and not g.app.batchMode\
+        if (
+            not g.unitTesting
+            and not g.app.batchMode
             and g.app.gui.guiName() in ('browser', 'curses')  # EKR.
-           ):
+        ):
             g.es_print('viewrendered3 requires Qt')
         return False
     if not has_webengineview:
@@ -2462,11 +2463,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.asciidoctor_suppress_footer = c.config.getBool('vr3-asciidoctor-nofooter', default=False)
         self.asciidoctor_icons = c.config.getString('vr3-asciidoctor-icons') or ''
         self.asciidoctor_imagesdir = c.config.getString('vr3-asciidoctor-imagesdir') or ''
-        self.asciidoctor_diagram = asciidoc_has_diagram and \
-                                       c.config.getBool('vr3-asciidoctor-diagram', default=False)
-
+        self.asciidoctor_diagram = (
+            asciidoc_has_diagram and
+            c.config.getBool('vr3-asciidoctor-diagram', default=False)
+        )
         self.external_editor = c.config.getString('vr3-ext-editor') or ''
-
         self.DEBUG = bool(os.environ.get("VR3_DEBUG", None))
     #@+node:TomP.20200329223820.16: *4* vr3.set_md_stylesheet
     def set_md_stylesheet(self):
@@ -2647,8 +2648,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if use_default:
             leo_theme_path = g.app.loadManager.computeThemeFilePath()
             leo_theme_name = g.os_path_basename(leo_theme_path)
-            use_dark_theme = self.use_dark_theme or 'dark' in leo_theme_name \
-                                or leo_theme_name == LEO_THEME_NAME
+            use_dark_theme = (
+                self.use_dark_theme
+                or 'dark' in leo_theme_name
+                or leo_theme_name == LEO_THEME_NAME
+            )
             if use_dark_theme:
                 stylesheet = RST_DEFAULT_DARK_STYLESHEET
             else:
@@ -4285,10 +4289,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
             #@+node:TomP.20200112103729.5: *7* << fill_chunks >>
 
             _cleanline = line.strip()
-            _starts_with_at = not _got_language and line and \
-                              line[0] == '@' and\
-                              not _cleanline == '@' and\
-                              not _cleanline == '@c'
+            _starts_with_at = (
+                not _got_language
+                and line
+                and line[0] == '@'
+                and not _cleanline == '@'
+                and not _cleanline == '@c'
+            )
 
             if i == 0 and not _got_language:
                 # Set up the first chunk (unless the first line changes the language)
