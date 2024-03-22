@@ -131,6 +131,7 @@
 <v t="maphew.20200424174722.1"><vh>@auto ../dist/conda/leo/meta.yaml</vh></v>
 </v>
 </v>
+<v t="ekr.20240322063820.1"><vh>Update this checklist</vh></v>
 <v t="ekr.20180405171433.1"><vh>Distribution checklist</vh>
 <v t="ekr.20180405171433.4"><vh>Pre-testing (in release branch)</vh></v>
 <v t="ekr.20230301070738.1"><vh>LeoSettings.leo</vh></v>
@@ -200,7 +201,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.7.8.post3
+Version: 6.7.9.a1
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -1576,23 +1577,27 @@ python -m pip uninstall leo
 
 *Note*: All scripts mentioned below are *Python* scripts in leo/scripts.
 
-Step 1: Create and test the distribution files in `leo/dist`:
+This checklist may seem daunting. In most cases errors are harmless, so don't despair.
+
+Step 1: Create and test the distribution files in leo/dist:
 
 - Update `PKG-INFO.TXT` with the proper version. 
   Use `.postN` (not `-N`) suffixes if necessary to create distinct versions.
-- Run the `build-leo` script.
-  - This script create `.whl` and `.tar.gz` files in the `leo/dist` directory.
-  - Ignore warning: `no previously-included files matching`...
+- Run the `build_leo` script to create `.whl` and `.tar.gz` files in the leo/dist directory.
+  - Ignore warnings like `no previously-included files matching...`.
   - Make sure the filenames are as expected!
-- (Optional) Run the `inspect-wheel` script.
+- (Optional) Run the `inspect_wheel` script to inspect the metadata in the `.whl` file.
 
 Step 2: Install locally and test:
 
-- Run the `install-leo-locally.py` script. It should:
+Everything, including filenames, must be perfect before uploading to testpypi or pypi.
+
+- Run the `install_leo_locally` script. It should:
   - create a leo folder in the `Python3.x/Lib/site-packages` directory.
   - create three leo executables in the `Python3.x/scripts` directory.
-- Run the `run-installed-leo` script to test the distribution.
-- Run the `uninstall-leo script` to uninstall Leo. It should report:
+  - When in doubt, run `pip cache purge`.
+- Run the `run_installed_leo` script to test the distribution.
+- Run the `uninstall_leo` script to uninstall Leo. It should report:
   - Two deleted folders from `Python3.x/Lib/site-packages`.
   - Three deleted scripts `Python3.x/scripts`.
 
@@ -1600,21 +1605,26 @@ When all is well, go to step 3:
 
 Step 3: Upload to testpypi and test:
 
-- Run the `upload-leo-to-testpypi` script.
-  The upload will fail if testpypi has *ever* contained a file with
-  the same contents or filename.
-  If the upload fails you must go back to step 1 and add a unique `.postN` prefix.
-- Run the `install-leo-from-testpypi` script.
-- Test and uninstall as in step 2 above.
+Any glitch will require a new version number, a new `PKG-INFO.TXT`, and a new filename!
 
-Important: Make sure all is well before uploading to pypi.
+- Run the `upload_leo_to_testpypi` script.
+  The upload will fail if testpypi has *ever* contained a file with the same contents or filename.
+  If the upload fails you must go back to step 1 and add a unique `.postN` prefix.
+- Run the `install_leo_from_testpypi` script.
+- Test and uninstall as in step 2 above.
 
 Step 3: Upload to pypi and test:
 
-- Run the `upload-leo-to-pypi` script.
-  If the upload fails, go back to step 1 and add a unique .postN prefix.
-- Run the `install-leo-from-pypi` script.
+Make *sure* all is well before uploading to pypi.
+
+- Run the `upload_leo_to_pypi` script.
+  If the upload fails, go back to step 1 and add a unique `.postN` prefix.
+- Run the `install_leo_from_pypi` script.
 - Test and uninstall as in step 2 above.
+
+</t>
+<t tx="ekr.20240322063820.1">- Change 6.7.8 (the old version) to 6.7.9.
+  Be careful about the new version in this node!
 </t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
@@ -1974,7 +1984,7 @@ packages = [
 
 [project]
 requires-python = "&gt;= 3.9"
-version = "6.7.8.post3"
+version = "6.7.9.a1"
 name = "leo"
 
 #@+&lt;&lt; developer info &gt;&gt;
