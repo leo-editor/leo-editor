@@ -7,22 +7,14 @@ beautify_leo.py: beautify Leo's most important files with the leoTokens beautifi
 
 Works regardless of whether mypyc has compiled leoTokens.py!
 """
-import os
+import subprocess
 import sys
 
-# Make sure leo-editor is on the path.
-leo_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
-if leo_dir not in sys.path:
-    sys.path.insert(0, leo_dir)
+args = ' '.join(sys.argv[1:])
+isWindows = sys.platform.startswith('win')
+python = 'py' if isWindows else 'python'
 
-from leo.core import leoGlobals as g
-
-print('beautify_leo.py')
-os.chdir(leo_dir)
-
-args = '--all --beautified --report --write'
-python = 'py' if g.isWindows else 'python'
-g.execute_shell_commands([
+for command in [
     fr'{python} -c "import leo.core.leoTokens" {args} leo\commands',
     fr'{python} -c "import leo.core.leoTokens" {args} leo\commands',
     fr'{python} -c "import leo.core.leoTokens" {args} leo\plugins',
@@ -30,5 +22,6 @@ g.execute_shell_commands([
     fr'{python} -c "import leo.core.leoTokens" {args} leo\unittests\commands',
     fr'{python} -c "import leo.core.leoTokens" {args} leo\unittests\plugins',
     fr'{python} -c "import leo.core.leoTokens" {args} leo\unittests\misc_tests',
-])
+]:
+    subprocess.Popen(command, shell=True).communicate()
 #@-leo
