@@ -2,6 +2,13 @@
 #@+node:ekr.20240321123224.1: * @file ../scripts/run_installed_leo.py
 #@@language python
 
+"""
+run_installed_leo.py: run leo from Python's `site-packages` folder.
+
+Info item #3837 describes all distribution-related scripts.
+https://github.com/leo-editor/leo-editor/issues/3837
+"""
+
 import os
 import sys
 

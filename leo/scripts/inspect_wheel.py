@@ -2,6 +2,15 @@
 #@+node:ekr.20240321122917.1: * @file ../scripts/inspect_wheel.py
 #@@language python
 
+"""
+inspect_wheel.py: inspect the metada of wheel files.
+
+pip install wheel-inpect
+
+Info item #3837 describes all distribution-related scripts.
+https://github.com/leo-editor/leo-editor/issues/3837
+"""
+
 import os
 import sys
 

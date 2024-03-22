@@ -2,6 +2,13 @@
 #@+node:ekr.20240321123214.1: * @file ../scripts/install_leo_locally.py
 #@@language python
 
+"""
+install_leo_locally.py: install leo from a wheel file in the `leo/dist` folder.
+
+Info item #3837 describes all distribution-related scripts.
+https://github.com/leo-editor/leo-editor/issues/3837
+"""
+
 import glob
 import os
 import sys

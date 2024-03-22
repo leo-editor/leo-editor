@@ -2,6 +2,13 @@
 #@+node:ekr.20240321123225.1: * @file ../scripts/uninstall_leo.py
 #@@language python
 
+"""
+uninstall_leo.py: run `pip uninstall leo`.
+
+Info item #3837 describes all distribution-related scripts.
+https://github.com/leo-editor/leo-editor/issues/3837
+"""
+
 import os
 import sys
 

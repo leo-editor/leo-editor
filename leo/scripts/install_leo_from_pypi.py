@@ -2,6 +2,13 @@
 #@+node:ekr.20240321123226.1: * @file ../scripts/install_leo_from_pypi.py
 #@@language python
 
+"""
+install_leo_from_pypi.py: install leo from https://pypi.org/project/leo/.
+
+Info item #3837 describes all distribution-related scripts.
+https://github.com/leo-editor/leo-editor/issues/3837
+"""
+
 import os
 import sys
 

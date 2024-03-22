@@ -1,6 +1,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20240321122822.1: * @file ../scripts/build_leo.py
 #@@language python
+
+"""
+build_leo.py: delete all files in the `leo/dist` folder and run `python -m build`.
+
+Info item #3837 describes all distribution-related scripts.
+https://github.com/leo-editor/leo-editor/issues/3837
+"""
 import glob
 import os
 import sys
