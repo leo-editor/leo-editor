@@ -2,8 +2,6 @@
 #@+node:ekr.20240321123225.2: * @file ../scripts/upload_leo_to_testpypi.py
 #@@language python
 
-#@@language python
-
 import os
 import sys
 
@@ -13,7 +11,6 @@ if leo_dir not in sys.path:
     sys.path.insert(0, leo_dir)
 from leo.core import leoGlobals as g
 
-g.cls()
 print('upload_leo_to_testpypi.py')
 os.chdir(leo_dir)
 

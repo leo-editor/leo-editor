@@ -11,7 +11,6 @@ if leo_dir not in sys.path:
     sys.path.insert(0, leo_dir)
 from leo.core import leoGlobals as g
 
-g.cls()
 print('upload_leo_to_pypi.py')
 os.chdir(leo_dir)
 
