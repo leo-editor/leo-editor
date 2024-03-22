@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20240321123225.3: * @file ../scripts/install_leo_from_testpypi.py
+#@+node:ekr.20240321123226.1: * @file ../scripts/install_leo_from_pypi.py
 #@@language python
 
 import os
@@ -12,13 +12,13 @@ if leo_dir not in sys.path:
 from leo.core import leoGlobals as g
 
 g.cls()
-print('install_leo_from_testpypi.py')
+print('install_leo_from_pypi.py')
 
 # Do *not* install from leo-editor!
 home_dir = os.path.expanduser("~")
 os.chdir(home_dir)
 
 # Install.
-command = 'python -m pip install -i https://test.pypi.org/simple/ leo'
+command = 'python -m pip install leo'
 g.execute_shell_commands(command)
 #@-leo
