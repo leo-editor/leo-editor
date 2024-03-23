@@ -18,7 +18,7 @@ print(os.path.basename(__file__))
 home_dir = os.path.expanduser("~")
 os.chdir(home_dir)
 
-# Run. 
+# Run.
 command = 'python -m leo.core.runLeo'
 print(command)
 subprocess.Popen(command, shell=True).communicate()
