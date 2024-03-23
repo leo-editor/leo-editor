@@ -2,21 +2,18 @@
 #@+node:ekr.20240321122413.9: * @file ../scripts/pylint_leo.py
 #@@language python
 
-# REM  @echo off
-# REM  cd %~dp0..\..
-
-# REM  echo pylint-leo
-# REM  time /T
-# REM  call py -m pylint leo --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets %*
-# REM  time /T
-
 """
 pylint_leo.py: Run pylint on Leo's core files.
+
+Info item #3867 describes all of Leo's test scripts:
+https://github.com/leo-editor/leo-editor/issues/2867
 """
 
 import os
 import subprocess
 import sys
+
+print(os.path.basename(__file__))
 
 # cd to leo-editor
 os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))

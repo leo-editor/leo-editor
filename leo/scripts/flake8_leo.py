@@ -3,12 +3,17 @@
 """
 flake8_leo.py: run flake8 on Leo.
 
-See leo-editor/setup.cfg for defaults
+See leo-editor/setup.cfg for defaults.
+
+Info item #3867 describes all of Leo's test scripts:
+https://github.com/leo-editor/leo-editor/issues/2867
 """
 
 import os
 import subprocess
 import sys
+
+print(os.path.basename(__file__))
 
 # cd to leo-editor
 os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))

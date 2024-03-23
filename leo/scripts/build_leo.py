@@ -12,6 +12,8 @@ import glob
 import os
 import sys
 
+print(os.path.basename(__file__))
+
 # Make sure leo-editor is on the path.
 leo_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 if leo_dir not in sys.path:

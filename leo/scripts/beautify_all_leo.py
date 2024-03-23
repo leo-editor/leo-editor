@@ -1,9 +1,9 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20240322065528.1: * @file ../scripts/beautify_leo.py
+#@+node:ekr.20240323050520.1: * @file ../scripts/beautify_all_leo.py
 #@@language python
 
 """
-beautify_leo.py: beautify only changed files in Leo's core.
+beautify_all_leo.py: beautify all of Leo's most important files.
 
 Works regardless of whether mypyc has compiled leoTokens.py!
 
@@ -21,7 +21,7 @@ print(os.path.basename(__file__))
 os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
 
 # args = ' '.join(sys.argv[1:])
-args = '--beautified --write --report'
+args = '--all --beautified --write --report'
 isWindows = sys.platform.startswith('win')
 python = 'py' if isWindows else 'python'
 
