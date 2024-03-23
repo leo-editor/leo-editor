@@ -3,7 +3,7 @@
 #@@language python
 
 """
-beautify_leo.py: beautify only changed files in Leo's core.
+beautify_leo.py: Beautify only changed files in Leo's core.
 
 Works regardless of whether mypyc has compiled leoTokens.py!
 

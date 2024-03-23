@@ -1,7 +1,13 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20240323051724.1: * @file ../scripts/full_test_leo.py
 """
-full_test_leo.py: Run all Leo's tests and beautify all files.
+full_test_leo.py: Run all Leo's tests as follows:
+    
+- Beautify all files.
+- Run all of Leo's unit tests.
+- Run mypy and pylint.
+
+Devs: *please* run this script before pushing!
 
 Info item #3867 describes all of Leo's test scripts:
 https://github.com/leo-editor/leo-editor/issues/2867

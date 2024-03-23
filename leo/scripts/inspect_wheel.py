@@ -3,9 +3,10 @@
 #@@language python
 
 """
-inspect_wheel.py: inspect the metada of wheel files.
+inspect_wheel.py: Inspect the metadata of wheel files.
+                  Output goes to inspect_wheel.txt.
 
-pip install wheel-inpect
+pip install wheel-inspect
 
 Info item #3837 describes all distribution-related scripts.
 https://github.com/leo-editor/leo-editor/issues/3837

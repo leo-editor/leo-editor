@@ -3,7 +3,7 @@
 #@@language python
 
 """
-upload_leo_to_testpypi.py: run `python -m twine upload -r testpypi dist/*.*`.
+upload_leo_to_testpypi.py: Run `python -m twine upload -r testpypi dist/*.*`.
 
 Info item #3837 describes all distribution-related scripts.
 https://github.com/leo-editor/leo-editor/issues/3837

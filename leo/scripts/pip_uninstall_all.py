@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20240322173731.1: * @file ../scripts/pip_uninstall_all.py
 """
-pip_uninstall_leo.py: uninstall *all* installed files.
+pip_uninstall_leo.py: Uninstall *all* installed files.
 
 Don't use this script unless you know what you are doing!
 

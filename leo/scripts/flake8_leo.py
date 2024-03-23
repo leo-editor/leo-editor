@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20240322084902.1: * @file ../scripts/flake8_leo.py
 """
-flake8_leo.py: run flake8 on Leo.
+flake8_leo.py: Run flake8 on Leo.
 
 See leo-editor/setup.cfg for defaults.
 

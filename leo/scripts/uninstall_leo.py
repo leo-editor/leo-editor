@@ -3,7 +3,7 @@
 #@@language python
 
 """
-uninstall_leo.py: run `pip uninstall leo`.
+uninstall_leo.py: Run `pip uninstall leo`.
 
 Info item #3837 describes all distribution-related scripts.
 https://github.com/leo-editor/leo-editor/issues/3837

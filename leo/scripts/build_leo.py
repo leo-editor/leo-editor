@@ -3,7 +3,10 @@
 #@@language python
 
 """
-build_leo.py: delete all files in the `leo/dist` folder and run `python -m build`.
+build_leo.py: Build Leo as follows:
+    
+- Delete all files in the `leo/dist` folder.
+- Run `python -m build > build_log.txt`.
 
 Info item #3837 describes all distribution-related scripts.
 https://github.com/leo-editor/leo-editor/issues/3837

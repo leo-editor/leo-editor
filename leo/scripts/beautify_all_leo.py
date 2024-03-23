@@ -3,7 +3,7 @@
 #@@language python
 
 """
-beautify_all_leo.py: beautify all of Leo's most important files.
+beautify_all_leo.py: Beautify all of Leo's most important files.
 
 Works regardless of whether mypyc has compiled leoTokens.py!
 

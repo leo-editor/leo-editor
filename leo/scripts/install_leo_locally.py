@@ -3,7 +3,7 @@
 #@@language python
 
 """
-install_leo_locally.py: install leo from a wheel file in the `leo/dist` folder.
+install_leo_locally.py: Install leo from a wheel file in the `leo/dist` folder.
 
 Info item #3837 describes all distribution-related scripts.
 https://github.com/leo-editor/leo-editor/issues/3837

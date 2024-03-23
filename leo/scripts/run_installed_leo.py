@@ -3,7 +3,7 @@
 #@@language python
 
 """
-run_installed_leo.py: run leo from Python's `site-packages` folder.
+run_installed_leo.py: Run leo from Python's `site-packages` folder.
 
 Info item #3837 describes all distribution-related scripts.
 https://github.com/leo-editor/leo-editor/issues/3837

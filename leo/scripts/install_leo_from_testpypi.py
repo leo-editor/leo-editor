@@ -3,7 +3,7 @@
 #@@language python
 
 """
-install_leo_from_testpypi.py: install leo from https://test.pypi.org/project/leo/.
+install_leo_from_testpypi.py: Install leo from https://test.pypi.org/project/leo/.
 
 Info item #3837 describes all distribution-related scripts.
 https://github.com/leo-editor/leo-editor/issues/3837
