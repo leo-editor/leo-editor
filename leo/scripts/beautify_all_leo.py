@@ -20,7 +20,7 @@ print(os.path.basename(__file__))
 # cd to leo-editor
 os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
 
-# args = ' '.join(sys.argv[1:])
+# Beautify all, and always issue a report.
 args = '--all --beautified --write --report'
 isWindows = sys.platform.startswith('win')
 python = 'py' if isWindows else 'python'
