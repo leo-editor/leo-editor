@@ -10,21 +10,17 @@ https://github.com/leo-editor/leo-editor/issues/3837
 """
 
 import os
-import sys
+import subprocess
 
 print(os.path.basename(__file__))
 
-# Make sure leo-editor is on the path.
-leo_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
-if leo_dir not in sys.path:
-    sys.path.insert(0, leo_dir)
-from leo.core import leoGlobals as g
-
-print('upload_leo_to_pypi.py')
-os.chdir(leo_dir)
+# cd to leo-editor
+os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
 
 # Upload.
 if 0:  # Don't do this until we are ready to release.
     command = 'python -m twine upload -r pypi dist/*.*'
-    g.execute_shell_commands(command)
+    print(command)
+    subprocess.Popen(command, shell=True).communicate()
+
 #@-leo

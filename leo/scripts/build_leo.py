@@ -10,27 +10,26 @@ https://github.com/leo-editor/leo-editor/issues/3837
 """
 import glob
 import os
-import sys
+import subprocess
 
 print(os.path.basename(__file__))
 
-# Make sure leo-editor is on the path.
-leo_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
-if leo_dir not in sys.path:
-    sys.path.insert(0, leo_dir)
-from leo.core import leoGlobals as g
-
-g.cls()
-print('build_leo.py')
-os.chdir(leo_dir)
+# cd to leo-editor
+leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
+os.chdir(leo_editor_dir)
 
 # delete leo/dist/*.*
-for z in glob.glob(f"{leo_dir}{os.sep}dist{os.sep}*.*"):
+dist_dir = os.path.abspath(os.path.join(leo_editor_dir, 'dist'))
+assert os.path.exists(dist_dir), dist_dir
+for z in glob.glob(f"{dist_dir}{os.sep}*.*"):
     os.remove(z)
 
 # build *both* sdist and wheel.
 command = 'python -m build > build_log.txt'
-g.execute_shell_commands(command)
+print('')
+print(command)
+print('')
+subprocess.Popen(command, shell=True).communicate()
 
 print('See build_log.txt')
 #@-leo

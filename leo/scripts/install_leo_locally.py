@@ -12,26 +12,21 @@ https://github.com/leo-editor/leo-editor/issues/3837
 import glob
 import os
 import sys
+import subprocess
 
 print(os.path.basename(__file__))
-
-# Make sure leo-editor is on the path.
-leo_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
-if leo_dir not in sys.path:
-    sys.path.insert(0, leo_dir)
-from leo.core import leoGlobals as g
-
-g.cls()
-print('install_leo_locally.py')
 
 # Do *not* install from leo-editor!
 home_dir = os.path.expanduser("~")
 os.chdir(home_dir)
 
 # Install.
+dist_dir = os.path.abspath(os.path.join(__file__, '..', '..', 'dist'))
+assert os.path.exists(dist_dir), dist_dir
 wheel_file = 'leo-6.7.9a1-py3-none-any.whl'
-command = fr"python -m pip install {leo_dir}{os.sep}dist{os.sep}{wheel_file}"
-g.execute_shell_commands(command)
+command = fr"python -m pip install {dist_dir}{os.sep}{wheel_file}"
+print(command)
+subprocess.Popen(command, shell=True).communicate()
 
 # List site-packages/leo*.
 python_dir = os.path.dirname(sys.executable)

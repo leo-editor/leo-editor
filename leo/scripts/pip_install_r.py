@@ -23,5 +23,6 @@ for command in [
    f"{python} -m pip install -r requirements.txt --no-warn-script-location",
    f"{python} -m pip list",
 ]:
+    print(command)
     subprocess.Popen(command, shell=True).communicate()
 #@-leo
