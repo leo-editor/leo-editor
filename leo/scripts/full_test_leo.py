@@ -22,16 +22,13 @@ print(os.path.basename(__file__))
 # cd to leo-editor
 os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
 
-# # # leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
-# # # os.chdir(leo_editor_dir)
-
 args = ' '.join(sys.argv[1:])
 isWindows = sys.platform.startswith('win')
 python = 'py' if isWindows else 'python'
 
 for command in [
     fr'{python} -m "leo.scripts.beautify_all_leo',
-    fr'{python} -m "leo.scripts.test_leo',
+    fr'{python} -m "leo.scripts.run_test_leo',
     fr'{python} -m "leo.scripts.mypy_leo',
     fr'{python} -m "leo.scripts.pylint_leo',
 ]:
