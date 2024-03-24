@@ -286,7 +286,6 @@ class PrintingController:
         if not printsupport:
             g.trace('Qt.printsupport not found.')
             return
-        # pylint: disable=no-member
         dialog = printsupport.QPrintDialog()
         dialog.setStyleSheet(self.stylesheet)
         result = dialog.exec()

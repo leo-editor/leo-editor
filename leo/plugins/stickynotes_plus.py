@@ -478,8 +478,7 @@ class notetextedit(QTextEdit):
 
         pos = event.pos()
         anch = self.anchorAt(pos)
-        self.viewport().setCursor(
-            Qt.PointingHandCursor if anch else Qt.IBeamCursor)
+        self.viewport().setCursor(Qt.PointingHandCursor if anch else Qt.IBeamCursor)
         QTextEdit.mouseMoveEvent(self, event)  #? recursion
 
     #@+node:ekr.20100103100944.5417: *3* mouseReleaseEvent
@@ -534,9 +533,6 @@ class notetextedit(QTextEdit):
                     fragment = iterator.fragment()
                     if fragment.isValid():
                         char_format = fragment.charFormat()
-                        # pylint: disable=no-member
-                        # EKR: I'm not sure whether this warning is valid.
-                        # I'm going to kill it because this is an experimental plugin.
                         text = Qt.escape(fragment.text())  # turns chars like < into entities &lt;
                         font_size = char_format.font().pointSize()
                         # a fragment can only be an anchor, italics or bold

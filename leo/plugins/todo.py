@@ -72,7 +72,7 @@ from typing import Any, Iterable, Optional, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets, uic
-from leo.core.leoQt import AlignLeft, AlignRight
+from leo.core.leoQt import Checked, Unchecked
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -85,14 +85,6 @@ if TYPE_CHECKING:  # pragma: no cover
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< todo imports & annotations >>
-
-# Aliases: these should be in leoQt5.py or leoQt6.py.
-Checked = Qt.CheckState.Checked
-Unchecked = Qt.CheckState.Unchecked
-
-###
-    # Checked = QtConst.CheckState.Checked if isQt6 else QtConst.Checked
-    # Unchecked = QtConst.CheckState.Unchecked if isQt6 else QtConst.Unchecked
 
 NO_TIME = datetime.date(3000, 1, 1)
 

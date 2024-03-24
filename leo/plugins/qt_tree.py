@@ -942,17 +942,7 @@ class LeoQtTree(leoFrame.LeoTree):
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
         item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
         ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
-        item.setChildIndicatorPolicy(
-            ChildIndicatorPolicy.DontShowIndicatorWhenChildless)  # py--lint: disable=no-member
-
-        ###
-            # if isQt6:
-                # item.setFlags(item.flags() | ItemFlag.ItemIsEditable)
-                # ChildIndicatorPolicy = QtWidgets.QTreeWidgetItem.ChildIndicatorPolicy
-                # item.setChildIndicatorPolicy(
-                    # ChildIndicatorPolicy.DontShowIndicatorWhenChildless)  # pylint: disable=no-member
-            # else:
-                # item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable | item.DontShowIndicatorWhenChildless)
+        item.setChildIndicatorPolicy(ChildIndicatorPolicy.DontShowIndicatorWhenChildless)
         try:
             g.visit_tree_item(self.c, p, item)
         except leoPlugins.TryNext:
