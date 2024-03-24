@@ -63,7 +63,7 @@ class ModelWrapper:
 #@+node:ville.20120604212857.4237: ** class NbController
 class NbController:
     #@+others
-    #@+node:ville.20120604212857.4241: *3* __init__
+    #@+node:ville.20120604212857.4241: *3* __init__ (NBController, notebook.py)
     def __init__(self, c):
         """Ctor for NbController class."""
         self.c = c

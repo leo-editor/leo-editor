@@ -4,17 +4,9 @@
 
 from typing import Any
 
-# py--lint: disable=unused-import
-
-# disable=c-extension-no-member does not seem to work.
-# py--lint: disable=c-extension-no-member
-
-# Instead, run pylint like this:
-# py--lint leo --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets
-
 from PyQt6 import QtCore, QtGui, QtWidgets
-from PyQt6.QtCore import Qt, QUrl  # pylint: disable=no-name-in-module
-from PyQt6.QtGui import QAction, QActionGroup, QCloseEvent  # pylint: disable=no-name-in-module
+from PyQt6.QtCore import Qt, QUrl
+from PyQt6.QtGui import QAction, QActionGroup, QCloseEvent
 
 #@+<< optional PyQt6 imports >>
 #@+node:ekr.20240303142509.2: ** << optional PyQt6 imports >>
@@ -71,6 +63,7 @@ try:
 except Exception:
     QtNetwork = None
 #@-<< optional PyQt6 imports >>
+
 #@+<< PyQt6 enumerations >>
 #@+node:ekr.20240303142509.3: ** << PyQt6 enumerations >>
 Alignment = Qt.AlignmentFlag
@@ -118,6 +111,7 @@ WindowState = Qt.WindowState
 WindowType = Qt.WindowType
 WrapMode = QtGui.QTextOption.WrapMode
 #@-<< PyQt6 enumerations >>
+
 ### Temporary...
 isQt5, isQt6 = False, True
 QtConst = Qt
