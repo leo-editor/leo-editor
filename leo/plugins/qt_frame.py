@@ -42,11 +42,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoGui
     from leo.core.leoNodes import Position
     from leo.plugins.mod_scripting import ScriptingController
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 
     Event = Any
     QWidget = QtWidgets.QWidget
     Widget = Any
+    Wrapper = Any
 #@-<< qt_frame annotations >>
 #@+<< qt_frame decorators >>
 #@+node:ekr.20210228142208.1: ** << qt_frame decorators >>
@@ -349,7 +349,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         secondary_splitter.setOrientation(Orientation.Horizontal)
         # Official ivar:
         self.verticalLayout = vLayout
-        self.setSizePolicy(secondary_splitter)
+        self.set_widget_size_policy(secondary_splitter)
         self.verticalLayout.addWidget(main_splitter)
         return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18147: *5* dw.createMenuBar
@@ -510,7 +510,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             shape = Shape.NoFrame
         #
         w = QtWidgets.QFrame(parent)
-        self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
+        self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
         w.setFrameShape(shape)
         w.setFrameShadow(shadow)
         w.setLineWidth(lineWidth)
@@ -570,7 +570,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         vPolicy: Policy = None,
     ) -> Widget:  # QtWidgets.QStackedWidget
         w = QtWidgets.QStackedWidget(parent)
-        self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
+        self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
         w.setAcceptDrops(True)
         w.setLineWidth(1)
         self.setName(w, name)
@@ -582,7 +582,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         w = QtWidgets.QTabWidget(parent)
         # tb = w.tabBar()
         # tb.setTabsClosable(True)
-        self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
+        self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
         self.setName(w, name)
         return w
     #@+node:ekr.20110605121601.18163: *5* dw.createText (creates QTextBrowser)
@@ -616,7 +616,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
     def createTreeWidget(self, parent: LeoQtFrame, name: str) -> LeoQtFrame:
         c = self.leo_c
         w = LeoQTreeWidget(c, parent)
-        self.setSizePolicy(w)
+        self.set_widget_size_policy(w)
         # 12/01/07: add new config setting.
         multiple_selection = c.config.getBool('qt-tree-multiple-selection', default=True)
         if multiple_selection:
@@ -657,7 +657,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         spacerItem = QtWidgets.QSpacerItem(20, 40, Policy.Minimum, Policy.Expanding)
         grid.addItem(spacerItem, 5, 0, 1, 1)
         listBox = QtWidgets.QListWidget(spellFrame)
-        self.setSizePolicy(listBox, kind1=Policy.MinimumExpanding, kind2=Policy.Expanding)
+        self.set_widget_size_policy(listBox, kind1=Policy.MinimumExpanding, kind2=Policy.Expanding)
         listBox.setMinimumSize(QtCore.QSize(0, 0))
         listBox.setMaximumSize(QtCore.QSize(150, 150))
         listBox.setObjectName("leo_spell_listBox")
@@ -977,8 +977,8 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             # if not name.startswith('leo_'):
                 # name = 'leo_' + name
             widget.setObjectName(name)
-    #@+node:ekr.20110605121601.18170: *5* dw.setSizePolicy
-    def setSizePolicy(self, widget: LeoQtFrame, kind1: Policy = None, kind2: Policy = None) -> None:
+    #@+node:ekr.20110605121601.18170: *5* dw.set_widget_size_policy
+    def set_widget_size_policy(self, widget: QWidget, kind1: Policy = None, kind2: Policy = None) -> None:
         if kind1 is None:
             kind1 = Policy.Ignored
         if kind2 is None:
@@ -988,9 +988,9 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(widget.sizePolicy().hasHeightForWidth())
         widget.setSizePolicy(sizePolicy)
-    #@+node:ekr.20110605121601.18171: *5* dw.tr
-    def tr(self, s: str) -> str:
-        return QtWidgets.QApplication.translate('MainWindow', s, None)
+    #@+node:ekr.20110605121601.18171: *5* dw.tr (no longer used)
+    # def tr(self, s: str) -> str:
+        # return QtWidgets.QApplication.translate('MainWindow', s, None)
 
     #@+node:ekr.20110605121601.18173: *3* dw.select
     def select(self, c: Cmdr) -> None:
@@ -998,7 +998,9 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         # Called from the save commands.
         self.leo_master.select(c)
     #@+node:ekr.20110605121601.18178: *3* dw.setGeometry
-    def setGeometry(self, rect: Any) -> None:
+    # Weird mypy error.
+
+    def setGeometry(self, rect: Any) -> None:  # type:ignore
         """Set the window geometry, but only once when using the qt gui."""
         m = self.leo_master
         assert self.leo_master
@@ -1353,7 +1355,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):  # type:ignore
         self.detached: list[Any] = []
         self.setMovable(True)
 
-        def tabContextMenu(point: str) -> None:
+        def tabContextMenu(point: Any) -> None:
             index = self.tabBar().tabAt(point)
             if index < 0:  # or (self.count() < 1 and not self.detached):
                 return
@@ -1375,6 +1377,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):  # type:ignore
 
             global_point = self.mapToGlobal(point)
             menu.exec(global_point)
+
         self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(tabContextMenu)
     #@+node:ekr.20180123082452.1: *3* qt_base_tab.new_outline
@@ -1466,7 +1469,7 @@ class LeoQtBody(leoFrame.LeoBody):
         assert c.frame == frame and frame.c == c
         self.colorizer: Any = None  # A Union
         self.wrapper: Wrapper = None
-        self.widget: LeoQtFrame = None
+        self.widget: Widget = None
         self.reloadSettings()
         self.set_widget()  # Sets self.widget and self.wrapper.
         self.setWrap(c.p)
@@ -1476,11 +1479,11 @@ class LeoQtBody(leoFrame.LeoBody):
         self.numberOfEditors = 1
         self.totalNumberOfEditors = 1
         # For renderer panes.
-        self.canvasRenderer = None
-        self.canvasRendererLabel: Widget = None  # A QLineEdit.
+        self.canvasRenderer: QtWidgets.QGraphicsView = None
+        self.canvasRendererLabel: QtWidgets.QLineEdit = None
         self.canvasRendererVisible = False
-        self.textRenderer: Widget = None  # A QFrame
-        self.textRendererLabel: Widget = None  # A QLineEdit.
+        self.textRenderer: QtWidgets.QFrame = None
+        self.textRendererLabel: QtWidgets.QLineEdit = None
         self.textRendererVisible = False
         self.textRendererWrapper: Wrapper = None
     #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
@@ -1808,7 +1811,7 @@ class LeoQtBody(leoFrame.LeoBody):
         w.leo_p = c.p.copy()
         return False
     #@+node:ekr.20110605121601.18211: *5* LeoQtBody.injectIvars
-    def injectIvars(self, parentFrame: Wrapper, name: str, p: Position, wrapper: Wrapper) -> None:
+    def injectIvars(self, parentFrame: QWidget, name: str, p: Position, wrapper: Wrapper) -> None:
 
         trace = g.app.debug == 'select' and not g.unitTesting
         tag = 'qt_body.injectIvars'
@@ -1868,7 +1871,7 @@ class LeoQtBody(leoFrame.LeoBody):
             item.setGeometry(QtCore.QRect(0, 0, 0, 0))
             layout.removeItem(item)
     #@+node:ekr.20110605121601.18215: *5* LeoQtBody.updateInjectedIvars
-    def updateInjectedIvars(self, w: Wrapper, p: Position) -> None:
+    def updateInjectedIvars(self, w: Any, p: Position) -> None:
 
         c = self.c
         cc = c.chapterController
@@ -1991,7 +1994,7 @@ class LeoQtBody(leoFrame.LeoBody):
                 w.leo_label = None
         self.selectEditor(new_wrapper)
     #@+node:ekr.20110605121601.18220: *4* LeoQtBody.packRenderer
-    def packRenderer(self, f: str, name: str, w: Wrapper) -> Widget:  # A QLineEdit
+    def packRenderer(self, f: QWidget, name: str, w: QtWidgets.QFrame) -> QtWidgets.QLineEdit:
         n = max(1, self.numberOfEditors)
         assert isinstance(f, QtWidgets.QFrame), f
         layout = f.layout()
@@ -2001,8 +2004,8 @@ class LeoQtBody(leoFrame.LeoBody):
         lab.setObjectName(f"{name} Label")
         lab.setText(name)
         # Pack the label and the widget.
-        layout.addWidget(lab, 0, max(0, n - 1), AlignmentFlag.AlignVCenter)
-        layout.addWidget(w, 1, max(0, n - 1))
+        layout.addWidget(lab, 0, max(0, n - 1), AlignmentFlag.AlignVCenter)  # type:ignore
+        layout.addWidget(w, 1, max(0, n - 1))  # type:ignore
         layout.setRowStretch(0, 0)
         layout.setRowStretch(1, 1)  # Give row 1 as much as possible.
         return lab
@@ -2482,6 +2485,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20190611053431.4: *4* qtFrame.get_window_info
     def get_window_info(self) -> tuple[int, int, int, int]:
         """Return the geometry of the top window."""
+        f: QWidget
         if getattr(self.top, 'leo_master', None):
             f = self.top.leo_master
         else:
