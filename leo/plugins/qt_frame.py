@@ -2497,7 +2497,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def getFocus(self) -> None:
         return g.app.gui.get_focus(self.c)  # Bug fix: 2009/6/30.
     #@+node:ekr.20190611053431.7: *4* qtFrame.getTitle
-    def getTitle(self) -> None:
+    def getTitle(self) -> str:
         # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
         # For qt, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
         w = self.top.leo_master
@@ -2652,17 +2652,17 @@ class LeoQtLog(leoFrame.LeoLog):
         if not (font and ok):
             return
         style = font.style()
+        style_s: str = ''
         table1 = (
             (Style.StyleNormal, 'normal'),  # #2330.
             (Style.StyleItalic, 'italic'),
             (Style.StyleOblique, 'oblique'))
         for val, name in table1:
             if style == val:
-                style = name
+                style_s = name
                 break
-        else:
-            style = ''
-        weight = font.weight()
+        weight: int = font.weight()
+        weight_s: str = ''
         table2 = (
             (Weight.Light, 'light'),  # #2330.
             (Weight.Normal, 'normal'),
@@ -2671,15 +2671,13 @@ class LeoQtLog(leoFrame.LeoLog):
             (Weight.Black, 'black'))
         for val2, name2 in table2:
             if weight == val2:
-                weight = name2
+                weight_s = name2
                 break
-        else:
-            weight = ''
         table3 = (
             ('family', str(font.family())),
             ('size  ', font.pointSize()),
-            ('style ', style),
-            ('weight', weight),
+            ('style ', style_s),
+            ('weight', weight_s),
         )
         for key3, val3 in table3:
             if val3:
@@ -2839,7 +2837,7 @@ class LeoQtLog(leoFrame.LeoLog):
             w.clear()  # w is a QTextBrowser.
     #@+node:ekr.20110605121601.18326: *4* LeoQtLog.createTab
     def createTab(self,
-        tabName: str, createText: bool = True, widget: LeoQtFrame = None, wrap: str = 'none',
+        tabName: str, createText: bool = True, widget: QWidget = None, wrap: str = 'none',
     ) -> Any:  # Widget or LeoQTextBrowser.
         """
         Create a new tab in tab widget
@@ -3122,7 +3120,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             g.trace('no action for menu', label)
         return menu
     #@+node:ekr.20110605121601.18353: *5* LeoQtMenu.new_menu
-    def new_menu(self, parent: LeoQtFrame, tearoff: int = 0, label: str = '') -> Any:  # label is for debugging.
+    def new_menu(self, parent: QWidget, tearoff: int = 0, label: str = '') -> Any:  # label is for debugging.
         """Wrapper for the Tkinter new_menu menu method."""
         c, leoFrame = self.c, self.frame
         # Parent can be None, in which case it will be added to the menuBar.
@@ -3229,7 +3227,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
 #@+node:ekr.20110605121601.18363: ** class LeoQTreeWidget (QTreeWidget)
 class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
 
-    def __init__(self, c: Cmdr, parent: LeoQtFrame) -> None:
+    def __init__(self, c: Cmdr, parent: QWidget) -> None:
         super().__init__(parent)
         self.setAcceptDrops(True)
         enable_drag = c.config.getBool('enable-tree-dragging')
@@ -3459,7 +3457,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         u.beforeChangeGroup(c.p, undoType)
         changed = False
         for z in urls:
-            url = QtCore.QUrl(z)
+            url = str(QtCore.QUrl(z))
             scheme = url.scheme()
             if scheme == 'file':
                 changed |= self.doFileUrl(p, url)
@@ -4015,11 +4013,11 @@ class QtIconBarClass:
 
             def __init__(self, parent: QWidget, text: str, toolbar: QtIconBarClass) -> None:
                 super().__init__(parent)
-                self.button: Widget = None  # A QPushButton
-                self.text_val = text  # self.text is a method.
+                self.button: QtWidgets.QPushButton = None
+                self.text_val = text  # self.text is a method!
                 self.toolbar = toolbar
 
-            def createWidget(self, parent: QWidget) -> None:
+            def createWidget(self, parent: QWidget) -> QtWidgets.QPushButton:
                 self.button = QtWidgets.QPushButton(self.text_val, parent)
                 self.button.setProperty('button_kind', kind)  # for styling
                 return self.button
