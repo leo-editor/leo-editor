@@ -155,10 +155,12 @@ def main():
     args = get_args()
     ok = RemoveDuplicates().run(**args)
     if ok:
-        if isQt5:
-            sys.exit(gApp.exec_())
-        else:
-            sys.exit(gApp.exec())
+        sys.exit(gApp.exec())
+        ###
+            # if isQt5:
+                # sys.exit(gApp.exec_())
+            # else:
+                # sys.exit(gApp.exec())
 #@+node:ekr.20220126054240.13: ** class RemoveDuplicates
 class RemoveDuplicates:
 

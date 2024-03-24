@@ -82,10 +82,12 @@ def main():
     g.procs.add(['ls', '/tmp'])
     g.procs.add(['ls', '-la'])
     b.show()
-    if isQt6:
-        a.exec()
-    else:
-        a.exec_()
+    a.exec()
+    ###
+        # if isQt6:
+            # a.exec()
+        # else:
+            # a.exec_()
 #@+node:ekr.20121126095734.12433: ** class NowOrLater
 class NowOrLater:
     #@+others

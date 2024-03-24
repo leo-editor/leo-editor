@@ -38,7 +38,7 @@ Requires the whoosh library ('easy_install whoosh') to do full text searches.
 import os
 import sys
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets, QtWebKitWidgets
+from leo.core.leoQt import QtCore, QtWidgets  ### isQt5, isQt6, , QtWebKitWidgets
 # This code no longer uses leo.plugins.leofts.
 try:
     # pylint: disable=no-name-in-module
@@ -100,15 +100,21 @@ class BigDash:
         self.w = w = QtWidgets.QWidget()
         w.setWindowTitle("Leo search")
         lay = QtWidgets.QVBoxLayout()
-        if (
-            # Workaround #1114: https://github.com/leo-editor/leo-editor/issues/1114
-            not QtWebKitWidgets
-            # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
-            or isQt5 and sys.platform.startswith('win')
-        ):
-            self.web = web = QtWidgets.QTextBrowser(w)
-        else:
-            self.web = web = QtWebKitWidgets.QWebView(w)
+
+        ###
+        # if (
+            # # Workaround #1114: https://github.com/leo-editor/leo-editor/issues/1114
+            # not QtWebKitWidgets
+            # # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
+            # or isQt5 and sys.platform.startswith('win')
+        # ):
+            # self.web = web = QtWidgets.QTextBrowser(w)
+
+        self.web = web = QtWidgets.QTextBrowser(w)
+
+        ###
+        # else:
+            # self.web = web = QtWebKitWidgets.QWebView(w)
         try:
             # PyQt4
             self.web.linkClicked.connect(self._lnk_handler)
@@ -573,10 +579,12 @@ class GnxCache:
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     bd = GlobalSearch()
-    if isQt6:
-        sys.exit(app.exec())
-    else:
-        sys.exit(app.exec_())
+    sys.exit(app.exec())
+    ###
+    # if isQt6:
+        # sys.exit(app.exec())
+    # else:
+        # sys.exit(app.exec_())
 
 #@@language python
 #@@tabwidth -4

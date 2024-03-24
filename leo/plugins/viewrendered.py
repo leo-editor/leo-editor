@@ -210,14 +210,19 @@ from typing import Any, Optional, TYPE_CHECKING
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
-from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
+from leo.core.leoQt import QtMultimedia, QtSvg  ### phonon, QtWebKitWidgets
 from leo.core.leoQt import ContextMenuPolicy, Orientation, WrapMode
 from leo.plugins import qt_text
 from leo.plugins import free_layout
-try:
-    BaseTextWidget = QtWebKitWidgets.QWebView  # type:ignore
-except Exception:
-    BaseTextWidget = QtWidgets.QTextBrowser  # type:ignore
+
+###
+    # try:
+        # BaseTextWidget = QtWebKitWidgets.QWebView  # type:ignore
+    # except Exception:
+        # BaseTextWidget = QtWidgets.QTextBrowser  # type:ignore
+
+BaseTextWidget = QtWidgets.QTextBrowser
+
 #
 # Optional third-party imports...
 #
@@ -1273,10 +1278,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             w = pc.ensure_text_widget()
             w.setPlainText('Not found: %s' % (path))
             return
-        if not phonon and not QtMultimedia:
+        ### if not phonon and not QtMultimedia:
+        if not QtMultimedia:
             if not self.movie_warning:
                 self.movie_warning = True
-                g.es_print('No phonon and no QtMultimedia modules')
+                g.es_print('No QtMultimedia module')
             w = pc.ensure_text_widget()
             w.setPlainText('')
             return
@@ -1286,30 +1292,32 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             pc.vp.deleteLater()
         # Create a fresh player.
         g.es_print('playing', path)
-        if QtMultimedia:
+        if True:  ### QtMultimedia:
             url = QtCore.QUrl.fromLocalFile(path)
             content = QtMultimedia.QMediaContent(url)
             pc.vp = vp = QtMultimedia.QMediaPlayer()
             vp.setMedia(content)
             # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
             vp.play()
-        else:
-            pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
-            vw = vp.videoWidget()
-            vw.setObjectName('video-renderer')
-            # Embed the widgets
 
-            def delete_callback() -> None:
-                if pc.vp:
-                    pc.vp.stop()
-                    pc.vp.deleteLater()
-                    pc.vp = None
+        ###
+        # else:
+            # pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
+            # vw = vp.videoWidget()
+            # vw.setObjectName('video-renderer')
+            # # Embed the widgets
 
-            pc.embed_widget(vp, delete_callback=delete_callback)
-            pc.show()
-            vp = pc.vp
-            vp.load(phonon.MediaSource(path))
-            vp.play()
+            # def delete_callback() -> None:
+                # if pc.vp:
+                    # pc.vp.stop()
+                    # pc.vp.deleteLater()
+                    # pc.vp = None
+
+            # pc.embed_widget(vp, delete_callback=delete_callback)
+            # pc.show()
+            # vp = pc.vp
+            # vp.load(phonon.MediaSource(path))
+            # vp.play()
     #@+node:ekr.20110320120020.14484: *4* vr.update_networkx
     def update_networkx(self, s: str, keywords: Any) -> None:
         """Update a networkx graphic in the vr pane."""

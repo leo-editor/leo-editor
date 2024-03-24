@@ -2,67 +2,22 @@
 #@+node:ekr.20140810053602.18074: * @file leoQt.py
 """Leo's Qt import wrapper, specialized for Qt6."""
 
-from typing import Any
-
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt, QUrl
 from PyQt6.QtGui import QAction, QActionGroup, QCloseEvent
 
-#@+<< optional PyQt6 imports >>
-#@+node:ekr.20240303142509.2: ** << optional PyQt6 imports >>
+# Previously optional imports...
 
-# Optional imports: #2005
-# Must import this before creating the GUI
-try:
-    from PyQt6 import QtWebEngineWidgets
-    from PyQt6 import QtWebEngineCore  # included with PyQt6-WebEngine
-    assert QtWebEngineWidgets
-    has_WebEngineWidgets = True
-except ImportError:
-    # 2866: This message pollutes leoserver.py.
-        # print('No Qt6 QtWebEngineWidgets')
-        # print('pip install PyQt6-WebEngine')
-    has_WebEngineWidgets = False
-
-try:
-    from PyQt6 import QtPrintSupport as printsupport
-except Exception:
-    printsupport = None
-
-try:
-    from PyQt6 import Qsci
-except ImportError:
-    Qsci = None
-try:
-    import PyQt6.QtSvg as QtSvg
-except ImportError:
-    QtSvg = None
-try:
-    from PyQt6 import uic
-except ImportError:
-    uic = None
-
-# Contrary to #2005: *Do* import these by default.
-try:
-    from PyQt6 import QtDesigner  # pylint: disable=unused-import
-except Exception:
-    QtDesigner = None
-
-try:
-    from PyQt6 import QtOpenGL  # pylint: disable=unused-import
-except Exception:
-    QtOpenGL = None
-
-try:
-    from PyQt6 import QtMultimedia  # pylint: disable=unused-import
-except ImportError:
-    QtMultimedia = None
-
-try:
-    from PyQt6 import QtNetwork  # pylint: disable=unused-import
-except Exception:
-    QtNetwork = None
-#@-<< optional PyQt6 imports >>
+import PyQt6.QtSvg as QtSvg
+from PyQt6 import QtDesigner
+from PyQt6 import QtMultimedia
+from PyQt6 import QtNetwork
+from PyQt6 import QtOpenGL
+from PyQt6 import QtPrintSupport as printsupport
+from PyQt6 import Qsci  # Now required.
+from PyQt6 import QtWebEngineCore  # included with PyQt6-WebEngine
+from PyQt6 import QtWebEngineWidgets
+from PyQt6 import uic
 
 #@+<< PyQt6 enumerations >>
 #@+node:ekr.20240303142509.3: ** << PyQt6 enumerations >>
@@ -117,24 +72,47 @@ isQt5, isQt6 = False, True
 QtConst = Qt
 
 # For pyflakes.
-assert QtCore and QtGui and QtWidgets and QUrl
-assert QAction and QActionGroup and QCloseEvent
+assert QAction
+assert QActionGroup
+assert QCloseEvent
+assert QUrl
+assert Qsci
+assert QtCore
+assert QtDesigner
+assert QtGui
+assert QtMultimedia
+assert QtNetwork
+assert QtOpenGL
+assert QtSvg
+assert printsupport
+assert QtWebEngineCore
+assert QtWebEngineWidgets
+assert QtWidgets
+assert uic
 
 # No longer available modules
-phonon = None
-QtDeclarative = None
-QtWebKit = None
-QtWebKitWidgets = None
+
+### has_WebEngineWidgets = True
+### phonon = None
+### QtDeclarative = None
+### QtWebKit = None
+### QtWebKitWidgets = None
 
 # Standard abbreviations.
 qt_version = QtCore.QT_VERSION_STR
 
-QWebEngineSettings: Any
-WebEngineAttribute: Any
-if has_WebEngineWidgets:
-    QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
-    WebEngineAttribute = QWebEngineSettings.WebAttribute
-else:
-    QWebEngineSettings = None
-    WebEngineAttribute = None
+###
+    # QWebEngineSettings: Any
+    # WebEngineAttribute: Any
+
+QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
+WebEngineAttribute = QWebEngineSettings.WebAttribute
+
+###
+    # if has_WebEngineWidgets:
+        # QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
+        # WebEngineAttribute = QWebEngineSettings.WebAttribute
+    # else:
+        # QWebEngineSettings = None
+        # WebEngineAttribute = None
 #@-leo

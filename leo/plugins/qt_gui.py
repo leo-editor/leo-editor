@@ -509,7 +509,8 @@ class LeoQtGui(leoGui.LeoGui):
             self._save_focus(c)
             c.in_qt_dialog = True
             dialog.raise_()
-            dialog.exec_()
+            ### dialog.exec_()
+            dialog.exec()
         finally:
             c.in_qt_dialog = False
             self._restore_focus(c)
@@ -798,10 +799,12 @@ class LeoQtGui(leoGui.LeoGui):
         dialog.addButton('Ok', ButtonRole.YesRole)
         try:
             c.in_qt_dialog = True
-            if isQt6:
-                dialog.exec()
-            else:
-                dialog.exec_()
+            dialog.exec()
+            ###
+                # if isQt6:
+                    # dialog.exec()
+                # else:
+                    # dialog.exec_()
         finally:
             c.in_qt_dialog = False
         #@-<< emergency fallback >>

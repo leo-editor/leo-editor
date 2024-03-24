@@ -12,8 +12,9 @@ from leo.core import leoGlobals as g
 assert g
 from leo.core.leoQt import QtGui, QtWidgets, Qsci
 
-if Qsci is None:  # leo.core.leoQt eats ImportErrors
-    raise ImportError
+###
+# if Qsci is None:  # leo.core.leoQt eats ImportErrors
+    # raise ImportError
 #@-<< vanillascintilla imports >>
 #@+others
 #@+node:tbrown.20171028115501.2: ** DBG

@@ -785,7 +785,8 @@ class BookMarkDisplay:
         act.triggered.connect(follow)
         menu.addAction(act)
 
-        point = event.position().toPoint() if isQt6 else event.pos()  # Qt6 documentation is wrong.
+        ### point = event.position().toPoint() if isQt6 else event.pos()  # Qt6 documentation is wrong.
+        point = event.position().toPoint()  # Qt6 documentation is wrong.
         global_point = but.mapToGlobal(point)
         menu.exec_(global_point)
     #@+node:tbnorth.20160830110146.1: *3* context_menu

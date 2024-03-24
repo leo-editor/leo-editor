@@ -6,7 +6,9 @@
 # TNB: No, there are two HTML viewers, this one must be QtWebEngineWidgets
 #      it's ok if it fails to load
 # pylint: disable=no-name-in-module
-from PyQt5 import QtWebEngineWidgets
+### from PyQt5 import QtWebEngineWidgets
+
+from leo.core.leoQt import QtWebKitWidgets
 from leo.core import leoGlobals as g
 assert g
 #@-<< webengineview imports >>

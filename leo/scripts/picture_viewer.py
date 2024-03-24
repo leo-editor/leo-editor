@@ -203,10 +203,12 @@ def main():
     args = get_args()
     ok = Slides().run(**args)
     if ok:
-        if isQt5:
-            sys.exit(gApp.exec_())
-        else:
-            sys.exit(gApp.exec())
+        sys.exit(gApp.exec())
+        ###
+            # if isQt5:
+                # sys.exit(gApp.exec_())
+            # else:
+                # sys.exit(gApp.exec())
 #@+node:ekr.20211021202356.1: ** class Slides(QWidget)
 class Slides(QtWidgets.QWidget):  # type:ignore
 
