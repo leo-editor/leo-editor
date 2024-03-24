@@ -101,38 +101,31 @@ class BigDash:
         w.setWindowTitle("Leo search")
         lay = QtWidgets.QVBoxLayout()
 
-        ###
-        # if (
-            # # Workaround #1114: https://github.com/leo-editor/leo-editor/issues/1114
-            # not QtWebKitWidgets
-            # # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
-            # or isQt5 and sys.platform.startswith('win')
-        # ):
-            # self.web = web = QtWidgets.QTextBrowser(w)
-
         self.web = web = QtWidgets.QTextBrowser(w)
 
         ###
-        # else:
-            # self.web = web = QtWebKitWidgets.QWebView(w)
-        try:
-            # PyQt4
-            self.web.linkClicked.connect(self._lnk_handler)
-            # AttributeError: 'QWebEngineView' object has no attribute 'linkClicked'
-        except AttributeError:
-            # PyQt5
-            pass  # Not clear what to do.
+            # try:
+                # # PyQt4
+                # self.web.linkClicked.connect(self._lnk_handler)
+                # # AttributeError: 'QWebEngineView' object has no attribute 'linkClicked'
+            # except AttributeError:
+                # # PyQt5
+                # pass  # Not clear what to do.
+
         self.led = led = QtWidgets.QLineEdit(w)
         led.returnPressed.connect(self.docmd)
         lay.addWidget(led)
         lay.addWidget(web)
-        self.lc = lc = LeoConnector()
-        try:
-            web.page().mainFrame().addToJavaScriptWindowObject("leo", lc)
-            web.page().setLinkDelegationPolicy(QtWebKitWidgets.QWebPage.DelegateAllLinks)
-        except AttributeError:
-            # PyQt5
-            pass  # Not clear what to do.
+        self.lc = LeoConnector()
+
+        ###
+            # try:
+                # web.page().mainFrame().addToJavaScriptWindowObject("leo", lc)
+                # web.page().setLinkDelegationPolicy(QtWebKitWidgets.QWebPage.DelegateAllLinks)
+            # except AttributeError:
+                # # PyQt5
+                # pass  # Not clear what to do.
+
         w.setLayout(lay)
         self.show_help()
 
@@ -581,10 +574,10 @@ if __name__ == '__main__':
     bd = GlobalSearch()
     sys.exit(app.exec())
     ###
-    # if isQt6:
-        # sys.exit(app.exec())
-    # else:
-        # sys.exit(app.exec_())
+        # if isQt6:
+            # sys.exit(app.exec())
+        # else:
+            # sys.exit(app.exec_())
 
 #@@language python
 #@@tabwidth -4

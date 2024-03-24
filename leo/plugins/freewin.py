@@ -754,7 +754,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         #@+<<set up editor>>
         #@+node:tom.20210602172856.1: *4* <<set up editor>>
         self.doc = self.editor.document()
-        self.editor.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)  # pylint: disable=no-member
+        self.editor.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)  # py--lint: disable=no-member
 
         # Adjust editor stylesheet color to match body fg, bg
         fg, bg = get_body_colors(self.c)

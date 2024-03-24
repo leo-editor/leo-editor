@@ -90,8 +90,8 @@ Checked = QtConst.CheckState.Checked
 Unchecked = QtConst.CheckState.Unchecked
 
 ###
-# Checked = QtConst.CheckState.Checked if isQt6 else QtConst.Checked
-# Unchecked = QtConst.CheckState.Unchecked if isQt6 else QtConst.Unchecked
+    # Checked = QtConst.CheckState.Checked if isQt6 else QtConst.Checked
+    # Unchecked = QtConst.CheckState.Unchecked if isQt6 else QtConst.Unchecked
 
 NO_TIME = datetime.date(3000, 1, 1)
 

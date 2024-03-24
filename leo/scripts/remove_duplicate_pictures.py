@@ -228,7 +228,7 @@ class RemoveDuplicates:
         try:
             ### TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
             TransformationMode = QtCore.Qt.TransformationMode
-            image = pixmap.scaledToHeight(self.window_height, TransformationMode.SmoothTransformation)  # pylint: disable=no-member
+            image = pixmap.scaledToHeight(self.window_height, TransformationMode.SmoothTransformation)  # py--lint: disable=no-member
             picture.setPixmap(image)
             picture.adjustSize()
             return frame

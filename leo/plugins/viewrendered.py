@@ -198,7 +198,7 @@ Jacob Peck added markdown support to this plugin.
 #@-<< vr docstring >>
 #@+<< vr imports >>
 #@+node:tbrown.20100318101414.5993: ** << vr imports >>
-# pylint: disable = c-extension-no-member
+# py--lint: disable = c-extension-no-member
 from __future__ import annotations
 from collections.abc import Callable
 import json
@@ -1102,9 +1102,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             assert w == pc.w
         else:
             w = pc.w
-        ###
-            # if isQt5:
-                # w.hide()  # This forces a proper update.
         w.setHtml(s)
         w.show()
         c.bodyWantsFocusNow()

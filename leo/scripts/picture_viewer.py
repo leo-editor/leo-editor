@@ -259,7 +259,7 @@ class Slides(QtWidgets.QWidget):  # type:ignore
             pixmap = QtGui.QPixmap(file_name)
             ### TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
             TransformationMode = QtCore.Qt.TransformationMode
-            transform = TransformationMode.SmoothTransformation  # pylint: disable=no-member
+            transform = TransformationMode.SmoothTransformation  # py--lint: disable=no-member
             # Scale appropriately. Do *not* change this!
             image1 = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
             image2 = pixmap.scaledToWidth(int(self.width() * self.scale), transform)
@@ -426,7 +426,7 @@ class Slides(QtWidgets.QWidget):  # type:ignore
             w.full_screen = True
             ### WindowState = QtCore.Qt if isQt5 else QtCore.Qt.WindowState
             WindowState = QtCore.Qt.WindowState
-            w.setWindowState(WindowState.WindowFullScreen)  # pylint: disable=no-member
+            w.setWindowState(WindowState.WindowFullScreen)  # py--lint: disable=no-member
             w.picture.setGeometry(0, 0, w.width(), w.height())
             w.picture.adjustSize()
     #@+node:ekr.20211021200821.18: *4* Slides.zoom_in & zoom_out
@@ -616,7 +616,7 @@ class Slides(QtWidgets.QWidget):  # type:ignore
         area.setWidget(self.picture)
         ### AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
         AlignmentFlag = QtCore.Qt.AlignmentFlag
-        area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)  # pylint: disable=no-member
+        area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)  # py--lint: disable=no-member
 
         # Remember the viewport:
         w.view_port = area.viewport()
@@ -624,8 +624,8 @@ class Slides(QtWidgets.QWidget):  # type:ignore
         # Disable scrollbars.
         ### ScrollBarPolicy = QtCore.Qt if isQt5 else QtCore.Qt.ScrollBarPolicy
         ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy
-        area.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)  # pylint: disable=no-member
-        area.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)  # pylint: disable=no-member
+        area.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)  # py--lint: disable=no-member
+        area.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)  # py--lint: disable=no-member
 
         # Init the layout.
         layout = QtWidgets.QVBoxLayout()
