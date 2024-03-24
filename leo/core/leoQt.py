@@ -86,23 +86,9 @@ assert QtWebEngineWidgets
 assert QtWidgets
 assert uic
 
-
-
 # Standard abbreviations.
 qt_version = QtCore.QT_VERSION_STR
 
-###
-    # QWebEngineSettings: Any
-    # WebEngineAttribute: Any
-
 QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
 WebEngineAttribute = QWebEngineSettings.WebAttribute
-
-###
-    # if has_WebEngineWidgets:
-        # QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
-        # WebEngineAttribute = QWebEngineSettings.WebAttribute
-    # else:
-        # QWebEngineSettings = None
-        # WebEngineAttribute = None
 #@-leo

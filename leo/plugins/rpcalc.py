@@ -20,8 +20,6 @@ from leo.core.leoQt import QtCore, MouseButton
 from leo.core.leoQt import QtGui, FocusPolicy
 from leo.core.leoQt import QtWidgets, QAction
 from leo.core.leoQt import Shape, Shadow, KeyboardModifier
-from leo.core.leoQt import Qt as Qt1
-
 from leo.core.leoQt import WindowType, DialogCode
 
 import leo.core.leoGlobals as g
@@ -76,10 +74,7 @@ QVBoxLayout = QtWidgets.QVBoxLayout
 QValidator = QtGui.QValidator
 QWidget = QtWidgets.QWidget
 
-try:
-    SegmentStyle = QLCDNumber.SegmentStyle
-except AttributeError:
-    SegmentStyle = Qt1
+SegmentStyle = QLCDNumber.SegmentStyle
 
 pyqtSignal = QtCore.pyqtSignal
 
@@ -1599,7 +1594,7 @@ class ExtraViewWidget(QTreeWidget):  # type: ignore
     #@+others
     #@+node:tom.20230424130102.95: *4* __init__
     def __init__(self, calcRef, parent=None):
-        QListView.__init__(self, parent)
+        QListView.__init__(self, parent)  # type:ignore
         self.calcRef = calcRef
         self.setRootIsDecorated(False)
 
