@@ -16,7 +16,7 @@ from typing import Any, Optional, Union, TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
-from leo.core.leoQt import Qsci, QtConst, QtCore
+from leo.core.leoQt import Qt, Qsci, QtCore
 from leo.core.leoQt import QtGui, QtWidgets, QtSvg
 from leo.core.leoQt import ButtonRole, DialogCode, Icon, Information, Policy
 # This import causes pylint to fail on this file and on leoBridge.py.
@@ -1353,7 +1353,7 @@ class LeoQtGui(leoGui.LeoGui):
             cb.setObjectName('TipCheckbox')
             cb.setText('Show Tip On Startup')
             # #2383: State is a tri-state, so use the official constants.
-            state = QtConst.CheckState.Checked if checked else QtConst.CheckState.Unchecked
+            state = Qt.CheckState.Checked if checked else Qt.CheckState.Unchecked
             cb.setCheckState(state)  # #2127.
             cb.stateChanged.connect(controller.onClick)
             layout.addWidget(cb, 4, 0, -1, -1)

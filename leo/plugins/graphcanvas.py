@@ -32,7 +32,7 @@ import urllib.request as urllib
 
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
-from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets, uic
+from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets, uic
 from leo.core.leoQt import KeyboardModifier
 # Third-party imports
 try:
@@ -207,7 +207,7 @@ class GraphicsView(QtWidgets.QGraphicsView):  # type:ignore
 
             self.scale(scale, scale)
 
-        elif int(event.modifiers() & QtConst.AltModifier):
+        elif int(event.modifiers() & Qt.AltModifier):
 
             self.glue.scale_centers(event.delta() / 120)
 
@@ -358,7 +358,7 @@ class nodeRect(nodeBase):
         self.setZValue(20)
         self.bg.setZValue(10)
         self.text.setZValue(15)
-        self.bg.setPen(QtGui.QPen(QtConst.NoPen))
+        self.bg.setPen(QtGui.QPen(Qt.NoPen))
 
         self.text.setPos(QtCore.QPointF(0, self.iconVPos))
         self.addToGroup(self.text)
@@ -619,7 +619,7 @@ class linkItem(QtWidgets.QGraphicsItemGroup):  # type:ignore
         else:
             self.head.setBrush(QtGui.QBrush(QtGui.QColor(0, 0, 0)))
 
-        self.head.setPen(QtGui.QPen(QtConst.NoPen))
+        self.head.setPen(QtGui.QPen(Qt.NoPen))
         self.addToGroup(self.head)
     #@+node:bob.20110119123023.7406: *3* mousePressEvent
     def mousePressEvent(self, event):
@@ -773,7 +773,7 @@ class graphcanvasController:
         self.do_update(adjust=False)
         self.center_graph()
         # self.ui.canvasView.centerOn(self.ui.canvas.sceneRect().center())
-        # self.ui.canvasView.fitInView(self.ui.canvas.sceneRect(), QtConst.KeepAspectRatio)
+        # self.ui.canvasView.fitInView(self.ui.canvas.sceneRect(), Qt.KeepAspectRatio)
     #@+node:bob.20110119133133.3353: *3* loadGraph
     def loadGraph(self, what='node', create=True, pnt=None):
 
@@ -950,7 +950,7 @@ class graphcanvasController:
             not isinstance(lastNode, nodeNone) and
             not isinstance(lastNode, nodeImage)
         ):
-            lastNode.bg.setPen(QtGui.QPen(QtConst.NoPen))
+            lastNode.bg.setPen(QtGui.QPen(Qt.NoPen))
 
         if (not isinstance(nodeItem, nodeNone) and
              not isinstance(nodeItem, nodeImage)
@@ -969,7 +969,7 @@ class graphcanvasController:
         if not blc:
             return
 
-        if event and event.modifiers() & QtConst.ShiftModifier:
+        if event and event.modifiers() & Qt.ShiftModifier:
             links = blc.linksFrom(self.node[oldItem])
             if self.node[nodeItem] not in links:
                 blc.vlink(self.node[oldItem], self.node[nodeItem])
@@ -1136,7 +1136,7 @@ class graphcanvasController:
         bbox = self.ui.canvas.itemsBoundingRect()
         self.ui.canvas.setSceneRect(bbox)
         self.ui.canvasView.updateSceneRect(bbox)
-        self.ui.canvasView.fitInView(bbox, QtConst.KeepAspectRatio)
+        self.ui.canvasView.fitInView(bbox, Qt.KeepAspectRatio)
         self.ui.canvasView.centerOn(bbox.center())
 
         # and add space around it for movement

@@ -71,7 +71,7 @@ import time
 from typing import Any, Iterable, Optional, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets, uic
+from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets, uic
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -86,8 +86,8 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< todo imports & annotations >>
 
 # Aliases: these should be in leoQt5.py or leoQt6.py.
-Checked = QtConst.CheckState.Checked
-Unchecked = QtConst.CheckState.Unchecked
+Checked = Qt.CheckState.Checked
+Unchecked = Qt.CheckState.Unchecked
 
 ###
     # Checked = QtConst.CheckState.Checked if isQt6 else QtConst.Checked
@@ -1142,7 +1142,7 @@ class todoController:
         self.showDist()
         dat: dict = {}
         for end in 'from', 'to':
-            if QtConst:
+            if Qt:
                 x0, ok = QtWidgets.QInputDialog.getText(
                     None, 'Reclassify priority', '%s priorities (1-9,19)' % end)
                 if not ok:

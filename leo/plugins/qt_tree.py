@@ -634,8 +634,8 @@ class LeoQtTree(leoFrame.LeoTree):
                 if hasattr(g.app.gui, 'qtApp'):
                     mods = g.app.gui.qtApp.keyboardModifiers()
                     isCtrl = bool(mods & KeyboardModifier.ControlModifier)
-                    # We could also add support for QtConst.ShiftModifier, QtConst.AltModifier
-                    # & QtConst.MetaModifier.
+                    # We could also add support for Qt.ShiftModifier, Qt.AltModifier
+                    # & Qt.MetaModifier.
                     if isCtrl:
                         if g.doHook("iconctrlclick1", c=c, p=p, event=event) is None:
                             c.frame.tree.OnIconCtrlClick(p)  # Call the base class method.

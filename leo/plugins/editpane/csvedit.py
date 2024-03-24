@@ -11,7 +11,7 @@ import csv
 from collections import namedtuple
 import leo.core.leoGlobals as g
 assert g
-from leo.core.leoQt import QtCore, QtWidgets, QtConst, QtGui
+from leo.core.leoQt import Qt, QtCore, QtWidgets, QtGui
 from leo.core.leoQt import ItemFlag, ItemDataRole, StandardPixmap  #2347
 
 try:
@@ -368,7 +368,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
             r = max(0, r + DELTA[name][0])
             c = max(0, c + DELTA[name][1])
         self.ui.table.setCurrentIndex(self.ui.data.index(r, c))
-        self.ui.table.setFocus(QtConst.OtherFocusReason)
+        self.ui.table.setFocus(Qt.OtherFocusReason)
 
     #@+node:ekr.20211210174103.19: *3* move
     def move(self, name):

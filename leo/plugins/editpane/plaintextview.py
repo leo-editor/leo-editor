@@ -1,11 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.1: * @file ../plugins/editpane/plaintextview.py
-#@+<< plaintextview imports >>
-#@+node:tbrown.20171028115502.1: ** << plaintextview imports >>
-from leo.core import leoGlobals as g
-assert g
-from leo.core.leoQt import QtWidgets  # QtCore, QtGui, QtConst
-#@-<< plaintextview imports >>
+# from leo.core import leoGlobals as g
+from leo.core.leoQt import QtWidgets
+
 #@+others
 #@+node:tbrown.20171028115502.2: ** class LEP_PlainTextView
 class LEP_PlainTextView(QtWidgets.QTextBrowser):

@@ -67,8 +67,7 @@ WindowType = Qt.WindowType
 WrapMode = QtGui.QTextOption.WrapMode
 #@-<< PyQt6 enumerations >>
 
-### Temporary...
-QtConst = Qt
+### QtConst = Qt
 
 # For pyflakes.
 assert QAction

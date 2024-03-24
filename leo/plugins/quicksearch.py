@@ -86,7 +86,7 @@ import re
 from typing import Any, Iterable, Iterator, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore, QtConst, QtWidgets
+from leo.core.leoQt import Qt, QtCore, QtWidgets
 from leo.core.leoQt import KeyboardModifier
 from leo.plugins import threadutil
 from leo.plugins import qt_quicksearch_sub as qt_quicksearch
@@ -180,7 +180,7 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
         wid = topgeo.width()
         w.setGeometry(wid / 2, 0, wid / 2, 500)
         w.show()
-        w.setFocus(QtConst.OtherFocusReason)
+        w.setFocus(Qt.OtherFocusReason)
         c._popout = w
 
     c.frame.nav = wdg
@@ -267,13 +267,13 @@ class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
             lw = self.listWidget
             k = event.key()
             moved = False
-            if k == QtConst.Key_Up:
+            if k == Qt.Key_Up:
                 lw.setCurrentRow(lw.currentRow() - 1)
                 moved = True
-            if k == QtConst.Key_Down:
+            if k == Qt.Key_Down:
                 lw.setCurrentRow(lw.currentRow() + 1)
                 moved = True
-            if k == QtConst.Key_Return:
+            if k == Qt.Key_Return:
                 lw.setCurrentRow(lw.currentRow() + 1)
                 moved = True
             if moved:
