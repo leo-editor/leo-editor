@@ -652,138 +652,620 @@ goto done
 call python312 -m leo.core.leoTokens  --help
 
 :done:
-#@+node:ekr.20210407010914.1: ** leoQt5.py (no longer used)
+#@+node:ekr.20240324061253.1: ** retire Qt5 plugins & files
+#@+node:ville.20120604212857.4215: *3* @@@file ../plugins/notebook.py
+""" QML Notebook
+
+Edit several nodes at once, in a pannable "notebook" view.
+
+Use <Alt-x>nb-<tab> to see the list of commands.
+"""
+from typing import Any
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtCore, QtGui  ### QtDeclarative
+#
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+
+controllers: dict[str, Any] = {}  # keys are c.hash(), values are NavControllers
+
+@others
+#@+node:ville.20120604212857.4219: *4* init
+def init():
+    """Return True if the plugin has loaded successfully."""
+    ok = g.app.gui.guiName() == "qt"
+    if ok:
+        g.registerHandler('after-create-leo-frame', onCreate)
+        g.plugin_signon(__name__)
+    return ok
+#@+node:ville.20120604212857.4231: *4* onCreate
+def onCreate(tag, keys):
+    """notebook.py onCreate"""
+    global controllers
+    c = keys.get('c')
+    if c:
+        h = c.hash()
+        nb = controllers.get(h)
+        if not nb:
+            controllers[h] = NbController(c)
+#@+node:ville.20120604212857.4227: *4* class ModelWrapper
+class ModelWrapper:
+    @others
+#@+node:ville.20120604212857.4228: *5* __init__
+def __init__(self, fieldlist):
+    """Ctor for ModelWrapper class."""
+    self.rolenames = rn = {}
+    self.roleids = ri = {}
+    for n, f in enumerate(fieldlist):
+        rid = n + 100
+        rn[rid] = f
+        ri[f] = rid
+    self.model = mo = QtGui.QStandardItemModel()
+    try:
+        mo.setRoleNames(rn)
+    except AttributeError:
+        pass
+#@+node:ville.20120604212857.4229: *5* mkitem
+def mkitem(self, d):
+    """ dict with field->value """
+    si = QtGui.QStandardItem()
+    for k, v in d.items():
+        rid = self.roleids[k]
+        si.setData(v, rid)
+    return si
+#@+node:ville.20120604212857.4237: *4* class NbController
+class NbController:
+    @others
+#@+node:ville.20120604212857.4241: *5* __init__ (NBController, notebook.py)
+def __init__(self, c):
+    """Ctor for NbController class."""
+    self.c = c
+    self.gnxcache = {}
+    self.mw = ModelWrapper(["h", "b", "gnx", "level", "style"])
+    try:
+        # pylint: disable=import-error, no-name-in-module
+        from PyQt5.QtQuick import QQuickView
+        self.view = view = QQuickView()
+    except Exception:  #1746.
+        self.view = view = QtDeclarative.QDeclarativeView()
+    ctx = view.rootContext()
+
+    @g.command("nb-all")
+    def nb_all_f(event):
+        self.add_all_nodes()
+        self.view.show()
+
+    @g.command("nb-subtree")
+    def nb_subtree_f(event):
+        p = self.c.p
+        self.add_subtree(p)
+        self.view.show()
+
+    ctx.setContextProperty("nodesModel", self.mw.model)
+    path = g.os_path_join(g.computeLeoDir(), 'plugins', 'qmlnb', 'qml', 'leonbmain.qml')
+    view.setSource(QtCore.QUrl(path))
+    mode = view.SizeRootObjectToView
+    view.setResizeMode(mode)
+    # Display the user interface and allow the user to interact with it.
+    view.hide()
+    view.setGeometry(100, 100, 800, 600)
+    c.dummy = view
+#@+node:ville.20120604212857.4239: *5* add_all_nodes
+def add_all_nodes(self):
+    self.mw.model.clear()
+    for p in self.c.all_positions():
+        self.addNode(p)
+#@+node:ville.20120604212857.4240: *5* add_subtree
+def add_subtree(self, pos):
+    self.mw.model.clear()
+    for p in pos.self_and_subtree():
+        self.addNode(p)
+
+#@+node:ville.20120604212857.4238: *5* addNode
+def addNode(self, p, styling=None):
+    if styling is None:
+        styling = {}
+    v = p.v
+    d = {
+        "h": v.h,
+        "b": v.b,
+        "gnx": v.gnx,
+        "level": p.level(),
+    }
+    d.update(styling)
+    self.gnxcache[v.gnx] = v
+    si = self.mw.mkitem(d)
+    self.mw.model.appendRow(si)
+#@+node:tbrown.20171028115143.1: *3* @@@file ../plugins/editpane/webkitview.py
+<< webkitview imports >>
+@others
+@language python
+@tabwidth -4
+#@+node:tbrown.20171028115457.1: *4* << webkitview imports >> (webkitview.py)
+import os
+from leo.core import leoGlobals as g
+assert g
+from leo.core.leoQt import QtWebKit QtWebKitWidgets
+if not QtWebKitWidgets or 'engine' in g.os_path_basename(
+    QtWebKitWidgets.__file__).lower():
+    # not loading webkit view, webengine masquerading as webkit
+    raise ImportError
+#@+node:tbrown.20171028115457.2: *4* _path_from_pos
+def _path_from_pos(c, p):
+    """_path_from_pos - get folder for position
+
+    FIXME: should be in Leo core somewhere.
+
+    Args:
+        p (position): position
+
+    Returns:
+        str: path
+    """
+    p = p.copy()
+
+    def atfile(p):
+        word0 = p.h.split()[0]
+        return (
+            word0 in g.app.atFileNames | set(['@auto']) or
+            word0.startswith('@auto-')
+        )
+
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    while c.positionExists(p):
+        if atfile(p):  # see if it's a @<file> node of some sort
+            nodepath = p.h.split(None, 1)[-1]
+            nodepath = g.os_path_join(path, nodepath)
+            if not g.os_path_isdir(nodepath):  # remove filename
+                nodepath = g.os_path_dirname(nodepath)
+            if g.os_path_isdir(nodepath):  # append if it's a directory
+                path = nodepath
+            break
+        p.moveToParent()
+
+    return path
+#@+node:tbrown.20171028115457.3: *4* class LEP_WebKitView
+class LEP_WebKitView(QtWebKitWidgets.QWebView):
+    """LEP_WebKitView - Web Kit View
+    """
+    lep_type = "HTML"
+    lep_name = "Web Kit View"
+    @others
+#@+node:tbrown.20171028115457.4: *5* __init__
+def __init__(self, c=None, lep=None, *args, **kwargs):
+    """set up"""
+    super().__init__(*args, **kwargs)
+    self.c = c
+    self.lep = lep
+
+    # enable inspector
+    try:
+        QtWebKit.QWebSettings.globalSettings().setAttribute(
+          QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
+    except AttributeError:
+        # leoQt substitutes QtWebEngine for QtWebKit
+        # if QtWebKit isn't available, causing this to fail
+        pass
+#@+node:tbrown.20171028115457.5: *5* new_text
+def new_text(self, text):
+    """new_text - update for new text
+
+    Args:
+        text (str): new text
+    """
+    owd = os.getcwd()
+    path = _path_from_pos(self.c, self.c.p)
+    g.es("FIXME: _path_from_pos() in WebKitView - not self.c.p")
+    os.chdir(path)
+    g.es(path)
+    self.setHtml(text)
+    os.chdir(owd)
+#@+node:tbrown.20171028115457.6: *5* update_text
+def update_text(self, text):
+    """update_text - update for current text
+
+    Args:
+        text (str): current text
+    """
+    self.new_text(text)
+#@+node:tbrown.20130813134319.11942: *3* @@@file ../plugins/richtext.py
 @nosearch
 
-"""Import wrapper for pyQt5"""
+<< docstring >>
+<< imports >>
+@others
+@language python
+@tabwidth -4
+#@+node:tbrown.20130813134319.14333: *4* << docstring >> (richtext.py)
+"""
+richtext.py - Rich text editing
+===============================
 
-# pylint: disable=import-error,no-name-in-module,unused-import
+This plugin allows you to use CKEditor__ to edit rich text
+in Leo.  Text is stored as HTML in Leo nodes.
 
-# Required imports
-from PyQt5 import Qt
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import QUrl
-from PyQt5.QtCore import pyqtSignal as Signal
-from PyQt5.QtGui import QCloseEvent
-QtConst = QtCore.Qt
-printsupport = Qt
-qt_version = QtCore.QT_VERSION_STR
-assert Qt and QtCore and QtGui and QtWidgets  # For pyflakes.
-assert QCloseEvent and QUrl and Signal  # For pyflakes.
-# Optional imports: Import this before creating the GUI.
-try:
-    # pylint: disable=ungrouped-imports
-    from PyQt5 import QtWebEngineWidgets
-    assert QtWebEngineWidgets
-    has_WebEngineWidgets = True
-except ImportError:
-    # print('No Qt5 QtWebEngineWidgets')
-    has_WebEngineWidgets = False
-try:
-    import PyQt5.QtDeclarative as QtDeclarative
-except ImportError:
-    QtDeclarative = None
-try:
-    import PyQt5.phonon as phonon
-    phonon = phonon.Phonon
-except ImportError:
-    phonon = None
-try:
-    from PyQt5 import QtMultimedia
-except ImportError:
-    QtMultimedia = None
-try:
-    from PyQt5 import Qsci
-except ImportError:
-    Qsci = None
-try:
-    import PyQt5.QtSvg as QtSvg
-except ImportError:
-    QtSvg = None
-try:
-    from PyQt5 import uic
-except ImportError:
-    uic = None
-try:
-    from PyQt5 import QtWebKit
-except ImportError:
-    # 2016/07/13: Reinhard: Support pyqt 5.6...
-    try:
-        from PyQt5 import QtWebEngineCore as QtWebKit
-    except ImportError:
-        QtWebKit = None
-try:
-    import PyQt5.QtWebKitWidgets as QtWebKitWidgets
-except ImportError:
-    try:
-        # https://groups.google.com/d/msg/leo-editor/J_wVIzqQzXg/KmXMxJSAAQAJ
-        # Reinhard: Support pyqt 5.6...
-        # used by viewrendered(2|3).py, bigdash.py, richtext.py.
-        import PyQt5.QtWebEngineWidgets as QtWebKitWidgets  # type:ignore
-        QtWebKitWidgets.QWebView = QtWebKitWidgets.QWebEngineView
-        QtWebKit.QWebSettings = QtWebKitWidgets.QWebEngineSettings
-        QtWebKitWidgets.QWebPage = QtWebKitWidgets.QWebEnginePage
-    except ImportError:
-        QtWebKitWidgets = None
+__ http://ckeditor.com/
+
+``richtext.py`` provides these ``Alt-X`` commands (also available from
+Plugins -> richtext menu):
+
+  cke-text-close
+    Close the rich text editor, unhide the regular editor.
+  cke-text-open
+    Open the rich text editor, hide the regular editor.
+  cke-text-switch
+    Switch between regular and rich text editor.
+  cke-text-toggle-autosave
+    Toggle autosaving of changes when you leave a node.
+    Be careful not to convert plain text (e.g. source code) to rich
+    text unintentionally.  As long as you make no edits, the original
+    text will not be changed.
+
+Unless autosaving is enabled, you must confirm saving of edits
+each time you edit a node with the rich text editor.
+
+``@rich`` in the headline or first few lines (1000 characters) of a node or its
+ancestors will automatically open the rich text editor. ``@norich`` cancels this
+action.  Manually opened editors are not affected.
+
+``richtext.py`` uses these ``@settings``:
+
+  @bool richtext_cke_autosave = False
+    Set this to True for rich text edits to be saved automatically.
+
+    *BE CAREFUL* - plain-text nodes will be converted to rich text
+    without confirmation if you edit them in rich text mode when
+    this is True.
+
+  @data richtext_cke_config Configuration info. for CKEditor, see
+    http://docs.ckeditor.com/#!/guide/dev_configuration the content of this node
+    is the javascript object passed to ``CKEDITOR.replace()`` as it's second
+    argument. The version supplied in LeoSettings.leo sets up a sensible
+    toolbar. To enable *all* CKEditor toolbar features copy this setting to
+    myLeoSettings.leo and remove the default content, i.e. make this node blank,
+    then CKEditor will generate a toolbar with all available features.
+
+To make a button to toggle the editor on and off, use::
+
+    @button rich
+      c.doCommandByName('cke-text-switch')
+
+"""
+#@+node:tbrown.20130813134319.14335: *4* << imports >> (richtext.py)
+import time
+from urllib.parse import unquote
+from leo.core import leoGlobals as g
+from leo.core.leoQt import QtCore, QtWidgets  ###, QtWebKitWidgets, QtWebKit
 #
-# Default enum values. These apply to both Qt4 and Qt5
-Alignment = QtCore.Qt
-ButtonRole = QtWidgets.QMessageBox
-ContextMenuPolicy = QtCore.Qt
-ControlType = QtWidgets.QSizePolicy
-DialogCode = QtWidgets.QDialog
-DropAction = QtCore.Qt
-EndEditHint = QtWidgets.QAbstractItemDelegate
-FocusPolicy = QtCore.Qt
-FocusReason = QtCore.Qt
-Format = QtGui.QImage
-GlobalColor = QtCore.Qt
-Icon = QtWidgets.QMessageBox
-Information = QtWidgets.QMessageBox
-ItemFlag = QtCore.Qt  # 2347
-ItemDataRole = QtCore.Qt  # 2347
-Key = QtCore.Qt
-KeyboardModifier = QtCore.Qt
-Modifier = QtCore.Qt
-MouseButton = QtCore.Qt
-MoveMode = QtGui.QTextCursor
-MoveOperation = QtGui.QTextCursor
-Orientation = QtCore.Qt
-Policy = QtWidgets.QSizePolicy
-QAction = QtWidgets.QAction
-QActionGroup = QtWidgets.QActionGroup
-QStyle = QtWidgets.QStyle
-ScrollBarPolicy = QtCore.Qt
-SelectionBehavior = QtWidgets.QAbstractItemView
-SelectionMode = QtWidgets.QAbstractItemView
-Shadow = QtWidgets.QFrame
-Shape = QtWidgets.QFrame
-SizeAdjustPolicy = QtWidgets.QComboBox
-SliderAction = QtWidgets.QAbstractSlider
-SolidLine = QtCore.Qt.SolidLine
-StandardButton = QtWidgets.QDialogButtonBox
-StandardPixmap = QtWidgets.QStyle
-Style = QtGui.QFont
-TextInteractionFlag = QtCore.Qt
-TextOption = QtGui.QTextOption
-ToolBarArea = QtCore.Qt
-Type = QtCore.QEvent
-UnderlineStyle = QtGui.QTextCharFormat
-if has_WebEngineWidgets:
-    QWebEngineSettings = QtWebEngineWidgets.QWebEngineSettings
-    WebEngineAttribute = QtWebEngineWidgets.QWebEngineSettings
-else:
-    QWebEngineSettings = None  # type:ignore
-    WebEngineAttribute = None  # type:ignore
+# Fail fast, right after all imports.
+g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+#
+# Alias.
+### real_webkit = QtWebKit and 'engine' not in g.os_path_basename(QtWebKit.__file__).lower()
+real_webkit = False
+#@+node:tbrown.20130813134319.14337: *4* init (richtext.py)
+def init():
+    """Return True if the plugin has loaded successfully."""
+    if not QtWebKit:
+        return False
+    name = g.app.gui.guiName()
+    ok = name == 'qt'
+    if ok:
+        g.registerHandler('after-create-leo-frame', onCreate)
+        g.registerHandler('select3', at_rich_check)
+        g.plugin_signon(__name__)
+    elif name != 'nullGui':
+        print('richtext.py plugin not loading because gui is not Qt')
+    return ok
+#@+node:tbrown.20130813134319.5691: *4* class CKEEditor
+class CKEEditor(QtWidgets.QWidget):  # type:ignore
+    @others
+#@+node:tbrown.20130813134319.7225: *5* __init__ & reloadSettings (CKEEditor)
+def __init__(self, *args, **kwargs):
 
-Weight = QtGui.QFont
-WindowType = QtCore.Qt
-WindowState = QtCore.Qt
-WidgetAttribute = QtCore.Qt  # #2347
-WrapMode = QtGui.QTextOption
-#@+node:ekr.20210407011013.1: ** leoQt6.py (no longer used)
+    self.c = kwargs['c']
+    del kwargs['c']
+    super().__init__(*args, **kwargs)
+    # were we opened by an @ rich node? Calling code will set
+    self.at_rich = False
+    # are we being closed by leaving an @ rich node? Calling code will set
+    self.at_rich_close = False
+    # read settings.
+    self.reloadSettings()
+    # load HTML template
+    template_path = g.os_path_join(g.computeLeoDir(), 'plugins', 'cke_template.html')
+    self.template = open(template_path).read()
+    path = g.os_path_join(g.computeLeoDir(), 'external', 'ckeditor')
+    self.template = self.template.replace(
+        '[CKEDITOR]', QtCore.QUrl.fromLocalFile(path).toString())
+    # make widget containing QWebView
+    self.setLayout(QtWidgets.QVBoxLayout())
+    self.layout().setSpacing(0)
+    self.layout().setContentsMargins(0, 0, 0, 0)
+    ###
+        # # enable inspector, if this really is QtWebKit
+        # if real_webkit:
+            # QtWebKit.QWebSettings.globalSettings().setAttribute(
+                # QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
+    self.webview = QtWebKitWidgets.QWebView()
+    self.layout().addWidget(self.webview)
+    g.registerHandler('select3', self.select_node)
+    g.registerHandler('unselect1', self.unselect_node)
+    # load current node
+    self.select_node('', {'c': self.c, 'new_p': self.c.p})
+
+def reloadSettings(self):
+    c = self.c
+    c.registerReloadSettings(self)
+    # read autosave preference
+    if not hasattr(self.c, '_ckeeditor_autosave'):
+        auto = self.c.config.getBool("richtext-cke-autosave") or False
+        self.c._ckeeditor_autosave = auto
+        if auto:
+            g.es("NOTE: automatic saving of rich text edits")
+    # load config
+    self.config = self.c.config.getData("richtext_cke_config")
+    if self.config:
+        self.config = '\n'.join(self.config).strip()
+#@+node:tbrown.20130813134319.7226: *5* select_node
+def select_node(self, tag, kwargs):
+    c = kwargs['c']
+    if c != self.c:
+        return
+
+    p = kwargs['new_p']
+
+    self.v = p.v  # to ensure unselect_node is working on the right node
+    # currently (20130814) insert doesn't trigger unselect/select, but
+    # even if it did, this would be safest
+
+    data = self.template
+    if p.b.startswith('<'):  # already rich text, probably
+        content = p.b
+        self.was_rich = True
+    else:
+        self.was_rich = p.b.strip() == ''
+        # put anything except whitespace in a <pre/>
+        content = "<pre>%s</pre>" % p.b if not self.was_rich else ''
+
+    data = data.replace('[CONTENT]', content)
+
+    # replace textarea with CKEditor, with or without config.
+    if self.config:
+        data = data.replace('[CONFIG]', ', ' + self.config)
+    else:
+        data = data.replace('[CONFIG]', '')
+
+    # try and make the path for URL evaluation relative to the node's path
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    if p.h.startswith('@'):  # see if it's a @<file> node of some sort
+        nodepath = p.h.split(None, 1)[-1]
+        nodepath = g.os_path_join(path, nodepath)
+        if not g.os_path_isdir(nodepath):  # remove filename
+            nodepath = g.os_path_dirname(nodepath)
+        if g.os_path_isdir(nodepath):  # append if it's a directory
+            path = nodepath
+
+    self.webview.setHtml(data, QtCore.QUrl.fromLocalFile(path + "/"))
+#@+node:tbrown.20130813134319.7228: *5* unselect_node
+def unselect_node(self, tag, kwargs):
+
+    c = kwargs['c']
+    if c != self.c:
+        return None
+    # read initial content and request and wait for final content
+    frame = self.webview.page().mainFrame()
+    ele = frame.findFirstElement("#initial")
+    text = str(ele.toPlainText()).strip()
+    if text == '[empty]':
+        return None  # no edit
+    frame.evaluateJavaScript('save_final();')
+    ele = frame.findFirstElement("#final")
+    for attempt in range(10):  # wait for up to 1 second
+        new_text = str(ele.toPlainText()).strip()
+        if new_text == '[empty]':
+            time.sleep(0.1)
+            continue
+        break
+    if new_text == '[empty]':
+        print("Didn't get new text")
+        return None
+    text = unquote(str(text))
+    new_text = unquote(str(new_text))
+    if new_text != text:
+        if self.c._ckeeditor_autosave:
+            ans = 'yes'
+        else:
+            text = "Save edits?"
+            if not self.was_rich:
+                text += " *converting plain text to rich*"
+            ans = g.app.gui.runAskYesNoCancelDialog(
+                self.c,
+                "Save edits?",
+                text
+            )
+        if ans == 'yes':
+            c.vnode2position(self.v).b = new_text
+            c.redraw()  # but node has content marker still doesn't appear?
+        elif ans == 'cancel':
+            return 'STOP'
+        else:
+            pass  # discard edits
+    return None
+#@+node:tbrown.20130813134319.7229: *5* close
+def close(self):
+    if self.c and not self.at_rich_close:
+        # save changes?
+        self.unselect_node('', {'c': self.c, 'old_p': self.c.p})
+    self.c = None
+    g.unregisterHandler('select3', self.select_node)
+    g.unregisterHandler('unselect1', self.unselect_node)
+    return QtWidgets.QWidget.close(self)
+#@+node:tbrown.20130813134319.5694: *4* class CKEPaneProvider
+class CKEPaneProvider:
+    ns_id = '_add_cke_pane'
+
+    def __init__(self, c):
+        self.c = c
+        # Careful: we may be unit testing.
+        if hasattr(c, 'free_layout'):
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.register_provider(self)
+
+    def ns_provides(self):
+        return [('Rich text CKE editor', self.ns_id)]
+
+    def ns_provide(self, id_):
+        if id_ == self.ns_id:
+            w = CKEEditor(c=self.c)
+            return w
+        return None
+
+    def ns_provider_id(self):
+        # used by register_provider() to unregister previously registered
+        # providers of the same service
+        return self.ns_id
+#@+node:tbrown.20130813134319.14339: *4* onCreate
+def onCreate(tag, key):
+
+    c = key.get('c')
+
+    CKEPaneProvider(c)
+#@+node:tbrown.20130814090427.22458: *4* at_rich_check
+def at_rich_check(tag, key):
+
+    p = key.get('new_p')
+
+    do = 'close'
+    for nd in p.self_and_parents():
+        if '@norich' in nd.h or '@norich' in nd.b[:1000]:
+            do = 'close'
+            break
+        if '@rich' in nd.h or '@rich' in nd.b[:1000]:
+            do = 'open'
+            break
+
+    if do == 'close':
+        cmd_CloseEditor(key, at_rich=True)
+    elif do == 'open':
+        cmd_OpenEditor(key, at_rich=True)
+#@+node:tbrown.20130813134319.5692: *4* @g.command('cke-text-open')
+@g.command('cke-text-open')
+def cmd_OpenEditor(event=None, at_rich=False):
+    """Open the rich text editor, hide the regular editor."""
+    c = event.get('c')
+    splitter = c.free_layout.get_top_splitter()
+    rte = splitter.find_child(CKEEditor, '')
+    if rte:
+        if not at_rich:
+            g.es("CKE Editor appears to be open already")
+        return
+    body = splitter.find_child(QtWidgets.QWidget, 'bodyFrame')
+    w = CKEEditor(c=c)
+    w.at_rich = at_rich
+    splitter = body.parent()
+    splitter.replace_widget(body, w)
+#@+node:tbrown.20130813134319.5693: *4* @g.command('cke-text-close')
+@g.command('cke-text-close')
+def cmd_CloseEditor(event=None, at_rich=False):
+    """Close the rich text editor, unhide the regular editor."""
+    c = event.get('c')
+    splitter = c.free_layout.get_top_splitter()
+    if not splitter:
+        return
+    rte = splitter.find_child(CKEEditor, '')
+    if not rte:
+        if not at_rich:
+            g.es("No editor open")
+        return
+    if at_rich and not rte.at_rich:
+        # don't close manually opened editor
+        return
+    body = splitter.get_provided('_leo_pane:bodyFrame')
+    splitter = rte.parent()
+    rte.at_rich_close = True
+    splitter.replace_widget(rte, body)
+#@+node:tbrown.20130813134319.7233: *4* @g.command('cke-text-switch')
+@g.command('cke-text-switch')
+def cmd_SwitchEditor(event):
+    """Switch between regular and rich text editor."""
+    c = event.get('c')
+    splitter = c.free_layout.get_top_splitter()
+    rte = splitter.find_child(CKEEditor, '')
+    if not rte:
+        cmd_OpenEditor(event)
+    else:
+        cmd_CloseEditor(event)
+#@+node:tbrown.20130813134319.7231: *4* @g.command('cke-text-toggle-autosave')
+@g.command('cke-text-toggle-autosave')
+def cmd_ToggleAutosave(event):
+    """
+    Toggle autosaving of changes when you leave a node.
+
+    Be careful not to convert plain text (e.g. source code) to rich
+    text unintentionally.  As long as you make no edits, the original
+    text will not be changed.
+    """
+    c = event.get('c')
+    c._ckeeditor_autosave = not c._ckeeditor_autosave
+    g.es("Rich text autosave " +
+         ("ENABLED" if c._ckeeditor_autosave else "disabled"))
+#@+node:tbrown.20171028115143.2: *3* @@@file ../plugins/editpane/webengineview.py
+@nosearch
+
+<< webengineview imports >>
+@others
+@language python
+@tabwidth -4
+#@+node:tbrown.20171028115459.1: *4* << webengineview imports >>
+# EKR: Use QtWebKitWidgets instead of QtWebEngineWidgets
+# TNB: No, there are two HTML viewers, this one must be QtWebEngineWidgets
+#      it's ok if it fails to load
+# pylint: disable=no-name-in-module
+### from PyQt5 import QtWebEngineWidgets
+
+### from leo.core.leoQt import QtWebKitWidgets
+from leo.core import leoGlobals as g
+assert g
+#@+node:tbrown.20171028115459.2: *4* class LEP_WebEngineView
+class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
+    """LEP_PlainTextView - simplest possible LeoEditorPane viewer
+    """
+    lep_type = "HTML"
+    lep_name = "Web Engine View"
+    @others
+#@+node:tbrown.20171028115459.3: *5* __init__
+def __init__(self, c=None, lep=None, *args, **kwargs):
+    """set up"""
+    super().__init__(*args, **kwargs)
+    self.c = c
+    self.lep = lep
+#@+node:tbrown.20171028115459.4: *5* new_text
+def new_text(self, text):
+    """new_text - update for new text
+
+    :param str text: new text
+    """
+    # see https://stackoverflow.com/questions/36609489,
+    # widget grabs focus on .setHTML()
+    self.setEnabled(False)
+    self.setHtml(text)
+    self.setEnabled(True)
+#@+node:tbrown.20171028115459.5: *5* update_text
+def update_text(self, text):
+    """update_text - update for current text
+
+    :param str text: current text
+    """
+    # h = self.horizontalScrollBar().value()
+    # v = self.verticalScrollBar().value()
+    self.new_text(text)
+    # self.horizontalScrollBar().setValue(h)
+    # self.verticalScrollBar().setValue(v)
+#@+node:ekr.20210407011013.1: *3* @@@file leoQt6.py
 @nosearch
 
 """
@@ -936,6 +1418,137 @@ else:
 
 Weight = QtGui.QFont.Weight
 WrapMode = QtGui.QTextOption.WrapMode
+#@+node:ekr.20210407010914.1: *3* @@@file leoQt5.py
+@nosearch
+
+"""Import wrapper for pyQt5"""
+
+# pylint: disable=import-error,no-name-in-module,unused-import
+
+# Required imports
+from PyQt5 import Qt
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import pyqtSignal as Signal
+from PyQt5.QtGui import QCloseEvent
+QtConst = QtCore.Qt
+printsupport = Qt
+qt_version = QtCore.QT_VERSION_STR
+assert Qt and QtCore and QtGui and QtWidgets  # For pyflakes.
+assert QCloseEvent and QUrl and Signal  # For pyflakes.
+# Optional imports: Import this before creating the GUI.
+try:
+    # pylint: disable=ungrouped-imports
+    from PyQt5 import QtWebEngineWidgets
+    assert QtWebEngineWidgets
+    has_WebEngineWidgets = True
+except ImportError:
+    # print('No Qt5 QtWebEngineWidgets')
+    has_WebEngineWidgets = False
+try:
+    import PyQt5.QtDeclarative as QtDeclarative
+except ImportError:
+    QtDeclarative = None
+try:
+    import PyQt5.phonon as phonon
+    phonon = phonon.Phonon
+except ImportError:
+    phonon = None
+try:
+    from PyQt5 import QtMultimedia
+except ImportError:
+    QtMultimedia = None
+try:
+    from PyQt5 import Qsci
+except ImportError:
+    Qsci = None
+try:
+    import PyQt5.QtSvg as QtSvg
+except ImportError:
+    QtSvg = None
+try:
+    from PyQt5 import uic
+except ImportError:
+    uic = None
+try:
+    from PyQt5 import QtWebKit
+except ImportError:
+    # 2016/07/13: Reinhard: Support pyqt 5.6...
+    try:
+        from PyQt5 import QtWebEngineCore as QtWebKit
+    except ImportError:
+        QtWebKit = None
+try:
+    import PyQt5.QtWebKitWidgets as QtWebKitWidgets
+except ImportError:
+    try:
+        # https://groups.google.com/d/msg/leo-editor/J_wVIzqQzXg/KmXMxJSAAQAJ
+        # Reinhard: Support pyqt 5.6...
+        # used by viewrendered(2|3).py, bigdash.py, richtext.py.
+        import PyQt5.QtWebEngineWidgets as QtWebKitWidgets  # type:ignore
+        QtWebKitWidgets.QWebView = QtWebKitWidgets.QWebEngineView
+        QtWebKit.QWebSettings = QtWebKitWidgets.QWebEngineSettings
+        QtWebKitWidgets.QWebPage = QtWebKitWidgets.QWebEnginePage
+    except ImportError:
+        QtWebKitWidgets = None
+#
+# Default enum values. These apply to both Qt4 and Qt5
+Alignment = QtCore.Qt
+ButtonRole = QtWidgets.QMessageBox
+ContextMenuPolicy = QtCore.Qt
+ControlType = QtWidgets.QSizePolicy
+DialogCode = QtWidgets.QDialog
+DropAction = QtCore.Qt
+EndEditHint = QtWidgets.QAbstractItemDelegate
+FocusPolicy = QtCore.Qt
+FocusReason = QtCore.Qt
+Format = QtGui.QImage
+GlobalColor = QtCore.Qt
+Icon = QtWidgets.QMessageBox
+Information = QtWidgets.QMessageBox
+ItemFlag = QtCore.Qt  # 2347
+ItemDataRole = QtCore.Qt  # 2347
+Key = QtCore.Qt
+KeyboardModifier = QtCore.Qt
+Modifier = QtCore.Qt
+MouseButton = QtCore.Qt
+MoveMode = QtGui.QTextCursor
+MoveOperation = QtGui.QTextCursor
+Orientation = QtCore.Qt
+Policy = QtWidgets.QSizePolicy
+QAction = QtWidgets.QAction
+QActionGroup = QtWidgets.QActionGroup
+QStyle = QtWidgets.QStyle
+ScrollBarPolicy = QtCore.Qt
+SelectionBehavior = QtWidgets.QAbstractItemView
+SelectionMode = QtWidgets.QAbstractItemView
+Shadow = QtWidgets.QFrame
+Shape = QtWidgets.QFrame
+SizeAdjustPolicy = QtWidgets.QComboBox
+SliderAction = QtWidgets.QAbstractSlider
+SolidLine = QtCore.Qt.SolidLine
+StandardButton = QtWidgets.QDialogButtonBox
+StandardPixmap = QtWidgets.QStyle
+Style = QtGui.QFont
+TextInteractionFlag = QtCore.Qt
+TextOption = QtGui.QTextOption
+ToolBarArea = QtCore.Qt
+Type = QtCore.QEvent
+UnderlineStyle = QtGui.QTextCharFormat
+if has_WebEngineWidgets:
+    QWebEngineSettings = QtWebEngineWidgets.QWebEngineSettings
+    WebEngineAttribute = QtWebEngineWidgets.QWebEngineSettings
+else:
+    QWebEngineSettings = None  # type:ignore
+    WebEngineAttribute = None  # type:ignore
+
+Weight = QtGui.QFont
+WindowType = QtCore.Qt
+WindowState = QtCore.Qt
+WidgetAttribute = QtCore.Qt  # #2347
+WrapMode = QtGui.QTextOption
 #@-all
 #@@nosearch
 #@-leo
