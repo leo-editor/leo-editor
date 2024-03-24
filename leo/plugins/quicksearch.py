@@ -83,7 +83,7 @@ from collections.abc import Callable
 import fnmatch
 import itertools
 import re
-from typing import Any, Iterable, Iterator, Union
+from typing import Any, Iterable, Iterator, TypeAlias, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qt, QtCore, QtWidgets
@@ -98,14 +98,16 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+node:ekr.20220828094201.1: ** << quicksearch annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.core.leoQt import QObject
+    Event: TypeAlias = QObject
     Match = re.Match
     Match_Iter = Iterator[re.Match[str]]
     Match_List = list[tuple[Position, Match_Iter]]
+    QWidget = QtWidgets.QWidget
+    QListWidget = QtWidgets.QListWidget
+    QListWidgetItem = Any  # Mysterious
     RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
-    Widget = Any
 #@-<< quicksearch annotations >>
 #@+others
 #@+node:ekr.20190210123045.1: ** top level
@@ -249,7 +251,7 @@ class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
 
     #@+others
     #@+node:ekr.20111015194452.15718: *3* quick_ev.ctor
-    def __init__(self, c: Cmdr, w: Wrapper, lineedit: Any) -> None:
+    def __init__(self, c: Cmdr, w: QListWidget, lineedit: Any) -> None:
 
         super().__init__()
         self.c = c
@@ -288,13 +290,13 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
 
     #@+others
     #@+node:ekr.20111015194452.15695: *3* quick_w.ctor
-    def __init__(self, c: Cmdr, mode: str = "nav", parent: Position = None) -> None:
+    def __init__(self, c: Cmdr, mode: str = "nav", parent: QWidget = None) -> None:
 
         super().__init__(parent)
-        self.ui = qt_quicksearch.Ui_LeoQuickSearchWidget()
+        self.ui: Any = qt_quicksearch.Ui_LeoQuickSearchWidget()
         self.ui.setupUi(self)
         self.frozen = False  # True: disable live updates.
-        w = self.ui.listWidget
+        w: QListWidget = self.ui.listWidget
         u = self.ui
         cc = QuickSearchController(c, w, u)
         self.scon = cc
@@ -352,10 +354,10 @@ class QuickSearchController:
 
     #@+others
     #@+node:ekr.20111015194452.15685: *3* QuickSearchController.__init__
-    def __init__(self, c: Cmdr, listWidget: Widget, ui: Any) -> None:
+    def __init__(self, c: Cmdr, listWidget: QListWidget, ui: Any) -> None:
         self.c = c
-        self.lw: Widget = listWidget  # A QListWidget.
-        w = listWidget
+        self.lw: QListWidgetItem = listWidget
+        w: QListWidgetItem = listWidget
         self.its: dict[int, Callable] = {}  # Keys are id(w),values are tuples (p,pos)
         self.worker = threadutil.UnitWorker()
         self.widgetUI = ui
@@ -411,6 +413,7 @@ class QuickSearchController:
     #@+node:ekr.20111015194452.15689: *3* addBodyMatches
     def addBodyMatches(self, positions: Match_List) -> int:
         lineMatchHits = 0
+        it: QListWidgetItem
         for p in positions:
             it = QtWidgets.QListWidgetItem(p[0].h, self.lw)
             f = it.font()
@@ -429,6 +432,7 @@ class QuickSearchController:
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
     def addParentMatches(self, parent_list: dict[str, Match_List]) -> int:
         lineMatchHits = 0
+        it: QListWidgetItem
         for parent_key, parent_value in parent_list.items():
             if isinstance(parent_key, str):
                 v = self.c.fileCommands.gnxDict.get(parent_key)
@@ -458,14 +462,15 @@ class QuickSearchController:
         return lineMatchHits
 
     #@+node:ekr.20111015194452.15690: *3* addGeneric
-    def addGeneric(self, text: Any, f: Any) -> None:
+    def addGeneric(self, text: Any, f: Any) -> QListWidgetItem:
         """ Add generic callback """
-        it = QtWidgets.QListWidgetItem(text, self.lw)
+        it: QListWidgetItem = QtWidgets.QListWidgetItem(text, self.lw)
         self.its[id(it)] = f
         return it
     #@+node:ekr.20111015194452.15688: *3* addHeadlineMatches
     def addHeadlineMatches(self, poslist: Match_List) -> None:
 
+        it: QListWidgetItem
         for p in poslist:
             it = QtWidgets.QListWidgetItem(p[0].h, self.lw)
             f = it.font()
