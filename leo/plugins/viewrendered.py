@@ -283,7 +283,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
-    
+
     # These need more work!
     Event = Any
     QWidget = QtWidgets.QWidget

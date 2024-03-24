@@ -84,7 +84,7 @@ if g.app.gui.guiName() == "qt":
                 for name, func in table:
                     w = QtWidgets.QPushButton()
                     w.setText(name)
-                    w.clicked.connect(func)
+                    w.clicked.connect(func)  # type:ignore
                     hlayout.addWidget(w)
                 vlayout.addLayout(hlayout)
             layout.addLayout(vlayout)
