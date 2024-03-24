@@ -34,10 +34,6 @@ urllib3
 
 # Gui packages...
 
-# Note: the packages above pull in PyQt5.
-    # PyQt5>= 5.15  # #2884: require v5.15.
-    # PyQtWebEngine
-
 PyQt6 >= 6.6
 PyQt6-WebEngine
 Send2Trash; platform_system=="Windows"  # picture_viewer plugin.
