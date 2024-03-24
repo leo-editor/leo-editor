@@ -111,8 +111,8 @@ except Exception:
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
-    Widget = Any
+    from leo.core.leoNodes import Position, VNode
+    QWidget = QtWidgets.QWidget
 #@-<< nodetags imports & annotations >>
 
 #@+others
@@ -267,15 +267,15 @@ if QtWidgets:
     class LeoTagWidget(QtWidgets.QWidget):  # type:ignore
         #@+others
         #@+node:peckj.20140804114520.15200: *3* tag_w.__init__
-        def __init__(self, c: Cmdr, parent: Widget = None) -> None:
+        def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
             super().__init__(parent)
             self.c = c
             self.tc = self.c.theTagController
             self.initUI()
             self.registerCallbacks()
-            self.mapping = {}
+            self.mapping: dict[int, VNode] = {}
             self.search_re = r'(&|\||-|\^)'
-            self.custom_searches = []
+            self.custom_searches: list[str] = []
             g.registerHandler('select2', self.select2_hook)
             # fix tag jumplist positions after new node insertion
             g.registerHandler('create-node', self.command2_hook)
@@ -382,7 +382,7 @@ if QtWidgets:
                 label.setText(tag)
                 label.setObjectName('nodetags-label3')
                 layout.addWidget(label)
-                label.mouseReleaseEvent = self.callback_factory(tag)
+                label.mouseReleaseEvent = self.callback_factory(tag)  # type:ignore
         #@+node:peckj.20140804194839.6569: *6* tag_w.callback_factory
         def callback_factory(self, tag: str) -> Callable:
             c = self.c
