@@ -122,7 +122,7 @@ def showColorWheel(self, event=None):
     except(ValueError, IndexError) as e:
         g.trace('error caught', e)
 
-    result = picker.exec_()
+    result = picker.exec()
     if not result:
         g.es("No color selected")
     elif in_color_setting:
@@ -158,7 +158,7 @@ def showFonts(self, event=None):
         pass
     except Exception:
         g.es_exception()
-    result = picker.exec_()
+    result = picker.exec()
     if not result:
         g.es("No font selected")
     else:

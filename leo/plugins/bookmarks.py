@@ -788,7 +788,7 @@ class BookMarkDisplay:
         ### point = event.position().toPoint() if isQt6 else event.pos()  # Qt6 documentation is wrong.
         point = event.position().toPoint()  # Qt6 documentation is wrong.
         global_point = but.mapToGlobal(point)
-        menu.exec_(global_point)
+        menu.exec(global_point)
     #@+node:tbnorth.20160830110146.1: *3* context_menu
     def context_menu(self, event, container=None):
         """context_menu
@@ -815,7 +815,7 @@ class BookMarkDisplay:
         ### point = event.position().toPoint() if isQt6 else event.pos()  # Qt6 documentation is wrong.
         point = event.position().toPoint()  # Qt6 documentation is wrong.
         global_point = menu.mapToGlobal(point)
-        menu.exec_(global_point)
+        menu.exec(global_point)
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
         """make a consistent light background color for text"""

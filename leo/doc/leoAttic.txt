@@ -653,6 +653,271 @@ call python312 -m leo.core.leoTokens  --help
 
 :done:
 #@+node:ekr.20240324061253.1: ** retire Qt5 plugins & files
+#@+node:tbrown.20171028115144.3: *3* @@@file ../plugins/editpane/pandownview.py
+<< pandownview imports >>
+@others
+@language python
+@tabwidth -4
+#@+node:tbrown.20171028115505.1: *4* << pandownview imports >>
+"""Markdown view using Pandoc.
+
+There could also be a more generic Pandoc view that handles more input
+languages, but this just does markdown.
+"""
+from subprocess import Popen, PIPE
+
+from leo.core import leoGlobals as g
+assert g
+# from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
+
+# FIXME: for now, prefer the older WebKit over WebEngine.  WebEngine is
+# probably superior, but needs --disable-web-security passed to the
+# QApplication to load local images without a server.
+try:
+    from leo.plugins.editpane.webkitview import LEP_WebKitView as HtmlView
+except ImportError:
+    from leo.plugins.editpane.webengineview import LEP_WebEngineView as HtmlView
+
+from leo.plugins.editpane.plaintextview import LEP_PlainTextView as TextView
+
+#@+node:tbrown.20171028115505.2: *4* to_html
+def to_html(text, from_='markdown'):
+    """to_html - convert to HTML
+
+    Args:
+        text (str): markdown text to convert
+
+    Returns:
+        str: html
+    """
+
+    cmd = f"pandoc --smart --standalone --mathjax --from {from_} --to html"
+    cmd = cmd.split()
+    proc = Popen(cmd, stdin=PIPE, stdout=PIPE)
+    out, err = proc.communicate(text)
+    return out
+
+# see if Pandoc's installed
+
+try:
+    to_html("test")
+except:  # pylint: disable=raise-missing-from
+    raise ImportError
+#@+node:tbrown.20171028115505.3: *4* class LEP_PanDownView
+class LEP_PanDownView(HtmlView):
+    """LEP_MarkdownView -
+    """
+    lep_type = "MARKDOWN"
+    lep_name = "PanDoc Markdown View"
+    from_fmt = 'markdown'
+    @others
+#@+node:tbrown.20171028115505.4: *5* __init__
+def __init__(self, c=None, lep=None, *args, **kwargs):
+    """set up"""
+    super().__init__(c=c, lep=lep, *args, **kwargs)
+    self.c = c
+    self.lep = lep
+#@+node:tbrown.20171028115505.5: *5* new_text
+def new_text(self, text):
+    """new_text - update for new text
+
+    Args:
+        text (str): new text
+    """
+    self.setHtml(to_html(text, from_=self.from_fmt))
+#@+node:tbrown.20171028115505.6: *5* update_text
+def update_text(self, text):
+    """update_text - update for current text
+
+    Args:
+        text (str): current text
+    """
+    # h = self.horizontalScrollBar().value()
+    # v = self.verticalScrollBar().value()
+    self.new_text(text)
+    # self.horizontalScrollBar().setValue(h)
+    # self.verticalScrollBar().setValue(v)
+#@+node:tbrown.20171028115505.7: *4* class LEP_PanDownHtmlView
+class LEP_PanDownHtmlView(TextView):
+    """LEP_PanDownHtmlView - view the HTML for markdown from PanDoc
+    """
+    lep_type = "MARKDOWN-HTML"
+    lep_name = "PanDoc Markdown Html View"
+    from_fmt = 'markdown'
+    @others
+#@+node:tbrown.20171028115505.8: *5* __init__
+def __init__(self, c=None, lep=None, *args, **kwargs):
+    """set up"""
+    super().__init__(c=c, lep=lep, *args, **kwargs)
+    self.c = c
+    self.lep = lep
+#@+node:tbrown.20171028115505.9: *5* new_text
+def new_text(self, text):
+    """new_text - update for new text
+
+    Args:
+        text (str): new text
+    """
+    self.setPlainText(to_html(text, from_=self.from_fmt))
+#@+node:tbrown.20171128074654.1: *4* class LEP_PanRstView
+class LEP_PanRstView(LEP_PanDownView):
+    """LEP_PanDownView -
+    """
+    lep_type = "RST"
+    lep_name = "PanDoc rst View"
+    from_fmt = 'rst'
+#@+node:tbrown.20171128074707.1: *4* class LEP_PanRstHtmlView
+class LEP_PanRstHtmlView(LEP_PanDownHtmlView):
+    """LEP_PanDownHtmlView -
+    """
+    lep_type = "RST-HTML"
+    lep_name = "PanDoc rst Html View"
+    from_fmt = 'rst'
+#@+node:tbrown.20171028115143.2: *3* @@@file ../plugins/editpane/webengineview.py
+@nosearch
+
+<< webengineview imports >>
+@others
+@language python
+@tabwidth -4
+#@+node:tbrown.20171028115459.1: *4* << webengineview imports >>
+# EKR: Use QtWebKitWidgets instead of QtWebEngineWidgets
+# TNB: No, there are two HTML viewers, this one must be QtWebEngineWidgets
+#      it's ok if it fails to load
+# pylint: disable=no-name-in-module
+### from PyQt5 import QtWebEngineWidgets
+
+### from leo.core.leoQt import QtWebKitWidgets
+from leo.core import leoGlobals as g
+assert g
+#@+node:tbrown.20171028115459.2: *4* class LEP_WebEngineView
+class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
+    """LEP_PlainTextView - simplest possible LeoEditorPane viewer
+    """
+    lep_type = "HTML"
+    lep_name = "Web Engine View"
+    @others
+#@+node:tbrown.20171028115459.3: *5* __init__
+def __init__(self, c=None, lep=None, *args, **kwargs):
+    """set up"""
+    super().__init__(*args, **kwargs)
+    self.c = c
+    self.lep = lep
+#@+node:tbrown.20171028115459.4: *5* new_text
+def new_text(self, text):
+    """new_text - update for new text
+
+    :param str text: new text
+    """
+    # see https://stackoverflow.com/questions/36609489,
+    # widget grabs focus on .setHTML()
+    self.setEnabled(False)
+    self.setHtml(text)
+    self.setEnabled(True)
+#@+node:tbrown.20171028115459.5: *5* update_text
+def update_text(self, text):
+    """update_text - update for current text
+
+    :param str text: current text
+    """
+    # h = self.horizontalScrollBar().value()
+    # v = self.verticalScrollBar().value()
+    self.new_text(text)
+    # self.horizontalScrollBar().setValue(h)
+    # self.verticalScrollBar().setValue(v)
+#@+node:tbrown.20171028115143.1: *3* @@@file ../plugins/editpane/webkitview.py
+<< webkitview imports >>
+@others
+@language python
+@tabwidth -4
+#@+node:tbrown.20171028115457.1: *4* << webkitview imports >> (webkitview.py)
+import os
+from leo.core import leoGlobals as g
+assert g
+from leo.core.leoQt import QtWebKit QtWebKitWidgets
+if not QtWebKitWidgets or 'engine' in g.os_path_basename(
+    QtWebKitWidgets.__file__).lower():
+    # not loading webkit view, webengine masquerading as webkit
+    raise ImportError
+#@+node:tbrown.20171028115457.2: *4* _path_from_pos
+def _path_from_pos(c, p):
+    """_path_from_pos - get folder for position
+
+    FIXME: should be in Leo core somewhere.
+
+    Args:
+        p (position): position
+
+    Returns:
+        str: path
+    """
+    p = p.copy()
+
+    def atfile(p):
+        word0 = p.h.split()[0]
+        return (
+            word0 in g.app.atFileNames | set(['@auto']) or
+            word0.startswith('@auto-')
+        )
+
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    while c.positionExists(p):
+        if atfile(p):  # see if it's a @<file> node of some sort
+            nodepath = p.h.split(None, 1)[-1]
+            nodepath = g.os_path_join(path, nodepath)
+            if not g.os_path_isdir(nodepath):  # remove filename
+                nodepath = g.os_path_dirname(nodepath)
+            if g.os_path_isdir(nodepath):  # append if it's a directory
+                path = nodepath
+            break
+        p.moveToParent()
+
+    return path
+#@+node:tbrown.20171028115457.3: *4* class LEP_WebKitView
+class LEP_WebKitView(QtWebKitWidgets.QWebView):
+    """LEP_WebKitView - Web Kit View
+    """
+    lep_type = "HTML"
+    lep_name = "Web Kit View"
+    @others
+#@+node:tbrown.20171028115457.4: *5* __init__
+def __init__(self, c=None, lep=None, *args, **kwargs):
+    """set up"""
+    super().__init__(*args, **kwargs)
+    self.c = c
+    self.lep = lep
+
+    # enable inspector
+    try:
+        QtWebKit.QWebSettings.globalSettings().setAttribute(
+          QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
+    except AttributeError:
+        # leoQt substitutes QtWebEngine for QtWebKit
+        # if QtWebKit isn't available, causing this to fail
+        pass
+#@+node:tbrown.20171028115457.5: *5* new_text
+def new_text(self, text):
+    """new_text - update for new text
+
+    Args:
+        text (str): new text
+    """
+    owd = os.getcwd()
+    path = _path_from_pos(self.c, self.c.p)
+    g.es("FIXME: _path_from_pos() in WebKitView - not self.c.p")
+    os.chdir(path)
+    g.es(path)
+    self.setHtml(text)
+    os.chdir(owd)
+#@+node:tbrown.20171028115457.6: *5* update_text
+def update_text(self, text):
+    """update_text - update for current text
+
+    Args:
+        text (str): current text
+    """
+    self.new_text(text)
 #@+node:ville.20120604212857.4215: *3* @@@file ../plugins/notebook.py
 """ QML Notebook
 
@@ -776,99 +1041,6 @@ def addNode(self, p, styling=None):
     self.gnxcache[v.gnx] = v
     si = self.mw.mkitem(d)
     self.mw.model.appendRow(si)
-#@+node:tbrown.20171028115143.1: *3* @@@file ../plugins/editpane/webkitview.py
-<< webkitview imports >>
-@others
-@language python
-@tabwidth -4
-#@+node:tbrown.20171028115457.1: *4* << webkitview imports >> (webkitview.py)
-import os
-from leo.core import leoGlobals as g
-assert g
-from leo.core.leoQt import QtWebKit QtWebKitWidgets
-if not QtWebKitWidgets or 'engine' in g.os_path_basename(
-    QtWebKitWidgets.__file__).lower():
-    # not loading webkit view, webengine masquerading as webkit
-    raise ImportError
-#@+node:tbrown.20171028115457.2: *4* _path_from_pos
-def _path_from_pos(c, p):
-    """_path_from_pos - get folder for position
-
-    FIXME: should be in Leo core somewhere.
-
-    Args:
-        p (position): position
-
-    Returns:
-        str: path
-    """
-    p = p.copy()
-
-    def atfile(p):
-        word0 = p.h.split()[0]
-        return (
-            word0 in g.app.atFileNames | set(['@auto']) or
-            word0.startswith('@auto-')
-        )
-
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
-    while c.positionExists(p):
-        if atfile(p):  # see if it's a @<file> node of some sort
-            nodepath = p.h.split(None, 1)[-1]
-            nodepath = g.os_path_join(path, nodepath)
-            if not g.os_path_isdir(nodepath):  # remove filename
-                nodepath = g.os_path_dirname(nodepath)
-            if g.os_path_isdir(nodepath):  # append if it's a directory
-                path = nodepath
-            break
-        p.moveToParent()
-
-    return path
-#@+node:tbrown.20171028115457.3: *4* class LEP_WebKitView
-class LEP_WebKitView(QtWebKitWidgets.QWebView):
-    """LEP_WebKitView - Web Kit View
-    """
-    lep_type = "HTML"
-    lep_name = "Web Kit View"
-    @others
-#@+node:tbrown.20171028115457.4: *5* __init__
-def __init__(self, c=None, lep=None, *args, **kwargs):
-    """set up"""
-    super().__init__(*args, **kwargs)
-    self.c = c
-    self.lep = lep
-
-    # enable inspector
-    try:
-        QtWebKit.QWebSettings.globalSettings().setAttribute(
-          QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
-    except AttributeError:
-        # leoQt substitutes QtWebEngine for QtWebKit
-        # if QtWebKit isn't available, causing this to fail
-        pass
-#@+node:tbrown.20171028115457.5: *5* new_text
-def new_text(self, text):
-    """new_text - update for new text
-
-    Args:
-        text (str): new text
-    """
-    owd = os.getcwd()
-    path = _path_from_pos(self.c, self.c.p)
-    g.es("FIXME: _path_from_pos() in WebKitView - not self.c.p")
-    os.chdir(path)
-    g.es(path)
-    self.setHtml(text)
-    os.chdir(owd)
-#@+node:tbrown.20171028115457.6: *5* update_text
-def update_text(self, text):
-    """update_text - update for current text
-
-    Args:
-        text (str): current text
-    """
-    self.new_text(text)
 #@+node:tbrown.20130813134319.11942: *3* @@@file ../plugins/richtext.py
 @nosearch
 
@@ -1213,58 +1385,137 @@ def cmd_ToggleAutosave(event):
     c._ckeeditor_autosave = not c._ckeeditor_autosave
     g.es("Rich text autosave " +
          ("ENABLED" if c._ckeeditor_autosave else "disabled"))
-#@+node:tbrown.20171028115143.2: *3* @@@file ../plugins/editpane/webengineview.py
+#@+node:ekr.20210407010914.1: *3* @@@file leoQt5.py
 @nosearch
 
-<< webengineview imports >>
-@others
-@language python
-@tabwidth -4
-#@+node:tbrown.20171028115459.1: *4* << webengineview imports >>
-# EKR: Use QtWebKitWidgets instead of QtWebEngineWidgets
-# TNB: No, there are two HTML viewers, this one must be QtWebEngineWidgets
-#      it's ok if it fails to load
-# pylint: disable=no-name-in-module
-### from PyQt5 import QtWebEngineWidgets
+"""Import wrapper for pyQt5"""
 
-### from leo.core.leoQt import QtWebKitWidgets
-from leo.core import leoGlobals as g
-assert g
-#@+node:tbrown.20171028115459.2: *4* class LEP_WebEngineView
-class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
-    """LEP_PlainTextView - simplest possible LeoEditorPane viewer
-    """
-    lep_type = "HTML"
-    lep_name = "Web Engine View"
-    @others
-#@+node:tbrown.20171028115459.3: *5* __init__
-def __init__(self, c=None, lep=None, *args, **kwargs):
-    """set up"""
-    super().__init__(*args, **kwargs)
-    self.c = c
-    self.lep = lep
-#@+node:tbrown.20171028115459.4: *5* new_text
-def new_text(self, text):
-    """new_text - update for new text
+# pylint: disable=import-error,no-name-in-module,unused-import
 
-    :param str text: new text
-    """
-    # see https://stackoverflow.com/questions/36609489,
-    # widget grabs focus on .setHTML()
-    self.setEnabled(False)
-    self.setHtml(text)
-    self.setEnabled(True)
-#@+node:tbrown.20171028115459.5: *5* update_text
-def update_text(self, text):
-    """update_text - update for current text
+# Required imports
+from PyQt5 import Qt
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import pyqtSignal as Signal
+from PyQt5.QtGui import QCloseEvent
+QtConst = QtCore.Qt
+printsupport = Qt
+qt_version = QtCore.QT_VERSION_STR
+assert Qt and QtCore and QtGui and QtWidgets  # For pyflakes.
+assert QCloseEvent and QUrl and Signal  # For pyflakes.
+# Optional imports: Import this before creating the GUI.
+try:
+    # pylint: disable=ungrouped-imports
+    from PyQt5 import QtWebEngineWidgets
+    assert QtWebEngineWidgets
+    has_WebEngineWidgets = True
+except ImportError:
+    # print('No Qt5 QtWebEngineWidgets')
+    has_WebEngineWidgets = False
+try:
+    import PyQt5.QtDeclarative as QtDeclarative
+except ImportError:
+    QtDeclarative = None
+try:
+    import PyQt5.phonon as phonon
+    phonon = phonon.Phonon
+except ImportError:
+    phonon = None
+try:
+    from PyQt5 import QtMultimedia
+except ImportError:
+    QtMultimedia = None
+try:
+    from PyQt5 import Qsci
+except ImportError:
+    Qsci = None
+try:
+    import PyQt5.QtSvg as QtSvg
+except ImportError:
+    QtSvg = None
+try:
+    from PyQt5 import uic
+except ImportError:
+    uic = None
+try:
+    from PyQt5 import QtWebKit
+except ImportError:
+    # 2016/07/13: Reinhard: Support pyqt 5.6...
+    try:
+        from PyQt5 import QtWebEngineCore as QtWebKit
+    except ImportError:
+        QtWebKit = None
+try:
+    import PyQt5.QtWebKitWidgets as QtWebKitWidgets
+except ImportError:
+    try:
+        # https://groups.google.com/d/msg/leo-editor/J_wVIzqQzXg/KmXMxJSAAQAJ
+        # Reinhard: Support pyqt 5.6...
+        # used by viewrendered(2|3).py, bigdash.py, richtext.py.
+        import PyQt5.QtWebEngineWidgets as QtWebKitWidgets  # type:ignore
+        QtWebKitWidgets.QWebView = QtWebKitWidgets.QWebEngineView
+        QtWebKit.QWebSettings = QtWebKitWidgets.QWebEngineSettings
+        QtWebKitWidgets.QWebPage = QtWebKitWidgets.QWebEnginePage
+    except ImportError:
+        QtWebKitWidgets = None
+#
+# Default enum values. These apply to both Qt4 and Qt5
+Alignment = QtCore.Qt
+ButtonRole = QtWidgets.QMessageBox
+ContextMenuPolicy = QtCore.Qt
+ControlType = QtWidgets.QSizePolicy
+DialogCode = QtWidgets.QDialog
+DropAction = QtCore.Qt
+EndEditHint = QtWidgets.QAbstractItemDelegate
+FocusPolicy = QtCore.Qt
+FocusReason = QtCore.Qt
+Format = QtGui.QImage
+GlobalColor = QtCore.Qt
+Icon = QtWidgets.QMessageBox
+Information = QtWidgets.QMessageBox
+ItemFlag = QtCore.Qt  # 2347
+ItemDataRole = QtCore.Qt  # 2347
+Key = QtCore.Qt
+KeyboardModifier = QtCore.Qt
+Modifier = QtCore.Qt
+MouseButton = QtCore.Qt
+MoveMode = QtGui.QTextCursor
+MoveOperation = QtGui.QTextCursor
+Orientation = QtCore.Qt
+Policy = QtWidgets.QSizePolicy
+QAction = QtWidgets.QAction
+QActionGroup = QtWidgets.QActionGroup
+QStyle = QtWidgets.QStyle
+ScrollBarPolicy = QtCore.Qt
+SelectionBehavior = QtWidgets.QAbstractItemView
+SelectionMode = QtWidgets.QAbstractItemView
+Shadow = QtWidgets.QFrame
+Shape = QtWidgets.QFrame
+SizeAdjustPolicy = QtWidgets.QComboBox
+SliderAction = QtWidgets.QAbstractSlider
+SolidLine = QtCore.Qt.SolidLine
+StandardButton = QtWidgets.QDialogButtonBox
+StandardPixmap = QtWidgets.QStyle
+Style = QtGui.QFont
+TextInteractionFlag = QtCore.Qt
+TextOption = QtGui.QTextOption
+ToolBarArea = QtCore.Qt
+Type = QtCore.QEvent
+UnderlineStyle = QtGui.QTextCharFormat
+if has_WebEngineWidgets:
+    QWebEngineSettings = QtWebEngineWidgets.QWebEngineSettings
+    WebEngineAttribute = QtWebEngineWidgets.QWebEngineSettings
+else:
+    QWebEngineSettings = None  # type:ignore
+    WebEngineAttribute = None  # type:ignore
 
-    :param str text: current text
-    """
-    # h = self.horizontalScrollBar().value()
-    # v = self.verticalScrollBar().value()
-    self.new_text(text)
-    # self.horizontalScrollBar().setValue(h)
-    # self.verticalScrollBar().setValue(v)
+Weight = QtGui.QFont
+WindowType = QtCore.Qt
+WindowState = QtCore.Qt
+WidgetAttribute = QtCore.Qt  # #2347
+WrapMode = QtGui.QTextOption
 #@+node:ekr.20210407011013.1: *3* @@@file leoQt6.py
 @nosearch
 
@@ -1418,137 +1669,6 @@ else:
 
 Weight = QtGui.QFont.Weight
 WrapMode = QtGui.QTextOption.WrapMode
-#@+node:ekr.20210407010914.1: *3* @@@file leoQt5.py
-@nosearch
-
-"""Import wrapper for pyQt5"""
-
-# pylint: disable=import-error,no-name-in-module,unused-import
-
-# Required imports
-from PyQt5 import Qt
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import QUrl
-from PyQt5.QtCore import pyqtSignal as Signal
-from PyQt5.QtGui import QCloseEvent
-QtConst = QtCore.Qt
-printsupport = Qt
-qt_version = QtCore.QT_VERSION_STR
-assert Qt and QtCore and QtGui and QtWidgets  # For pyflakes.
-assert QCloseEvent and QUrl and Signal  # For pyflakes.
-# Optional imports: Import this before creating the GUI.
-try:
-    # pylint: disable=ungrouped-imports
-    from PyQt5 import QtWebEngineWidgets
-    assert QtWebEngineWidgets
-    has_WebEngineWidgets = True
-except ImportError:
-    # print('No Qt5 QtWebEngineWidgets')
-    has_WebEngineWidgets = False
-try:
-    import PyQt5.QtDeclarative as QtDeclarative
-except ImportError:
-    QtDeclarative = None
-try:
-    import PyQt5.phonon as phonon
-    phonon = phonon.Phonon
-except ImportError:
-    phonon = None
-try:
-    from PyQt5 import QtMultimedia
-except ImportError:
-    QtMultimedia = None
-try:
-    from PyQt5 import Qsci
-except ImportError:
-    Qsci = None
-try:
-    import PyQt5.QtSvg as QtSvg
-except ImportError:
-    QtSvg = None
-try:
-    from PyQt5 import uic
-except ImportError:
-    uic = None
-try:
-    from PyQt5 import QtWebKit
-except ImportError:
-    # 2016/07/13: Reinhard: Support pyqt 5.6...
-    try:
-        from PyQt5 import QtWebEngineCore as QtWebKit
-    except ImportError:
-        QtWebKit = None
-try:
-    import PyQt5.QtWebKitWidgets as QtWebKitWidgets
-except ImportError:
-    try:
-        # https://groups.google.com/d/msg/leo-editor/J_wVIzqQzXg/KmXMxJSAAQAJ
-        # Reinhard: Support pyqt 5.6...
-        # used by viewrendered(2|3).py, bigdash.py, richtext.py.
-        import PyQt5.QtWebEngineWidgets as QtWebKitWidgets  # type:ignore
-        QtWebKitWidgets.QWebView = QtWebKitWidgets.QWebEngineView
-        QtWebKit.QWebSettings = QtWebKitWidgets.QWebEngineSettings
-        QtWebKitWidgets.QWebPage = QtWebKitWidgets.QWebEnginePage
-    except ImportError:
-        QtWebKitWidgets = None
-#
-# Default enum values. These apply to both Qt4 and Qt5
-Alignment = QtCore.Qt
-ButtonRole = QtWidgets.QMessageBox
-ContextMenuPolicy = QtCore.Qt
-ControlType = QtWidgets.QSizePolicy
-DialogCode = QtWidgets.QDialog
-DropAction = QtCore.Qt
-EndEditHint = QtWidgets.QAbstractItemDelegate
-FocusPolicy = QtCore.Qt
-FocusReason = QtCore.Qt
-Format = QtGui.QImage
-GlobalColor = QtCore.Qt
-Icon = QtWidgets.QMessageBox
-Information = QtWidgets.QMessageBox
-ItemFlag = QtCore.Qt  # 2347
-ItemDataRole = QtCore.Qt  # 2347
-Key = QtCore.Qt
-KeyboardModifier = QtCore.Qt
-Modifier = QtCore.Qt
-MouseButton = QtCore.Qt
-MoveMode = QtGui.QTextCursor
-MoveOperation = QtGui.QTextCursor
-Orientation = QtCore.Qt
-Policy = QtWidgets.QSizePolicy
-QAction = QtWidgets.QAction
-QActionGroup = QtWidgets.QActionGroup
-QStyle = QtWidgets.QStyle
-ScrollBarPolicy = QtCore.Qt
-SelectionBehavior = QtWidgets.QAbstractItemView
-SelectionMode = QtWidgets.QAbstractItemView
-Shadow = QtWidgets.QFrame
-Shape = QtWidgets.QFrame
-SizeAdjustPolicy = QtWidgets.QComboBox
-SliderAction = QtWidgets.QAbstractSlider
-SolidLine = QtCore.Qt.SolidLine
-StandardButton = QtWidgets.QDialogButtonBox
-StandardPixmap = QtWidgets.QStyle
-Style = QtGui.QFont
-TextInteractionFlag = QtCore.Qt
-TextOption = QtGui.QTextOption
-ToolBarArea = QtCore.Qt
-Type = QtCore.QEvent
-UnderlineStyle = QtGui.QTextCharFormat
-if has_WebEngineWidgets:
-    QWebEngineSettings = QtWebEngineWidgets.QWebEngineSettings
-    WebEngineAttribute = QtWebEngineWidgets.QWebEngineSettings
-else:
-    QWebEngineSettings = None  # type:ignore
-    WebEngineAttribute = None  # type:ignore
-
-Weight = QtGui.QFont
-WindowType = QtCore.Qt
-WindowState = QtCore.Qt
-WidgetAttribute = QtCore.Qt  # #2347
-WrapMode = QtGui.QTextOption
 #@-all
 #@@nosearch
 #@-leo

@@ -573,11 +573,6 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     bd = GlobalSearch()
     sys.exit(app.exec())
-    ###
-        # if isQt6:
-            # sys.exit(app.exec())
-        # else:
-            # sys.exit(app.exec_())
 
 #@@language python
 #@@tabwidth -4

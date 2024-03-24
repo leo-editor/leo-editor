@@ -473,7 +473,7 @@ def free_layout_load(event: Event) -> None:
     for k in d:
         menu.addAction(k)
     pos = c.frame.top.window().frameGeometry().center()
-    action = menu.exec_(pos)
+    action = menu.exec(pos)
     if action is None:
         return
     name = str(action.text())

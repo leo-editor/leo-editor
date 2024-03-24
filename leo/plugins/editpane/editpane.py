@@ -6,21 +6,23 @@
 from collections import defaultdict
 from importlib import import_module
 import os
-try:
-    # pylint: disable=import-error
-    # this can fix an issue with Qt Web views in Ubuntu
-    from OpenGL import GL
-    assert GL  # To keep pyflakes happy.
-except Exception:
-    # but not need to stop if it doesn't work
-    pass
-from leo.core.leoQt import QtCore, QtWidgets
+
+###
+    # try:
+        # # pylint: disable=import-error
+        # # this can fix an issue with Qt Web views in Ubuntu
+        # from OpenGL import GL
+        # assert GL  # To keep pyflakes happy.
+    # except Exception:
+        # # but not need to stop if it doesn't work
+        # pass
+from leo.core.leoQt import QtWidgets
 from leo.core.leoQt import QAction, ContextMenuPolicy, Orientation, Policy
 from leo.core.leoQt import WidgetAttribute  # 2347
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
-if QtCore is not None:
-    from leo.plugins.editpane.clicky_splitter import ClickySplitter
+###if QtCore is not None:
+from leo.plugins.editpane.clicky_splitter import ClickySplitter
 #@-<<editpane imports>>
 #@+others
 #@+node:tbrown.20171028115438.2: ** DBG
@@ -75,7 +77,8 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
     """
     #@+others
     #@+node:tbrown.20171028115438.5: *3* __init__
-    def __init__(self, c=None, p=None, mode='edit', show_head=True, show_control=True,
+    def __init__(self,
+        c=None, p=None, mode='edit', show_head=True, show_control=True,
         update=True, recurse=False, lep_type=None, *args, **kwargs):
         """LeoEditPane.__init__ - bind to outline
 
@@ -447,7 +450,7 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
         ### point = button.position().toPoint() if isQt6 else button.pos()  # Qt6 documentation is wrong.
         point = button.position().toPoint()  # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
-        menu.exec_(global_point)
+        menu.exec(global_point)
     #@+node:tbrown.20171028115438.28: *3* mode_menu
     def mode_menu(self):
         """build menu on Action button"""
@@ -467,7 +470,7 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
         ### point = button.position().toPoint() if isQt6 else button.pos()  # Qt6 documentation is wrong.
         point = button.position().toPoint()  # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
-        menu.exec_(global_point)
+        menu.exec(global_point)
 
     #@+node:tbrown.20171028115438.29: *3* new_position
     def new_position(self, p):

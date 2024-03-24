@@ -204,11 +204,6 @@ def main():
     ok = Slides().run(**args)
     if ok:
         sys.exit(gApp.exec())
-        ###
-            # if isQt5:
-                # sys.exit(gApp.exec_())
-            # else:
-                # sys.exit(gApp.exec())
 #@+node:ekr.20211021202356.1: ** class Slides(QWidget)
 class Slides(QtWidgets.QWidget):  # type:ignore
 
@@ -319,7 +314,6 @@ class Slides(QtWidgets.QWidget):  # type:ignore
 
         dialog.keyPressEvent = dialog_keypress_event
         dialog.raise_()
-        ### result = dialog.exec() if isQt6 else dialog.exec_()
         result = dialog.exec()
         if result == 0:
             # Move the file to the trash.

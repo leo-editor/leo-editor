@@ -580,7 +580,7 @@ class quickMove:
                 current_submenu.addAction(k)
 
         pos = c.frame.top.window().frameGeometry().center()
-        action = menu.exec_(pos)
+        action = menu.exec(pos)
         if action is None:
             return
         k = str(action.text())
@@ -632,7 +632,7 @@ class quickMove:
             return
 
         ld = ListDialog(None, 'Pick parent', 'Pick parent', parents)
-        ld.exec_()
+        ld.exec()
         if ld.result() == DialogCode.Rejected:
             return
 

@@ -1371,7 +1371,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):  # type:ignore
                 a.triggered.connect(lambda checked: self.reattach_all())
 
             global_point = self.mapToGlobal(point)
-            menu.exec_(global_point)
+            menu.exec(global_point)
         self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(tabContextMenu)
     #@+node:ekr.20180123082452.1: *3* qt_base_tab.new_outline

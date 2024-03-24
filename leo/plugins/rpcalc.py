@@ -1155,7 +1155,7 @@ class CalcDlg(QWidget):  # type: ignore
         OptionDlgInt(self.optDlg, 'MaxHistLength',
                                'Saved history steps', CalcCore.minMaxHist,
                                CalcCore.maxMaxHist, True, 10)
-        if self.optDlg.exec_() == QDialog.DialogCode.Accepted:
+        if self.optDlg.exec() == QDialog.DialogCode.Accepted:
             self.calc.option.writeChanges()
             newViewReg = self.calc.option.boolData('ViewRegisters')
             if newViewReg != oldViewReg:
@@ -1533,7 +1533,7 @@ class LcdBox(QFrame):  # type: ignore
         """
         if event.button() == MouseButton.RightButton:
             popup = self.parentWidget().popupMenu
-            popup.exec_(self.mapToGlobal(event.pos()))
+            popup.exec(self.mapToGlobal(event.pos()))
             popup.clearFocus()
         QFrame.mouseReleaseEvent(self, event)
     #@-others
@@ -1981,7 +1981,7 @@ class HelpViewer(QTextBrowser):  # type: ignore
     def contextMenuEvent(self, event):
         """Init popup menu on right click"".
         """
-        self.parentWidget().menu.exec_(event.globalPos())
+        self.parentWidget().menu.exec(event.globalPos())
     #@-others
 #@-others
 #@@language python

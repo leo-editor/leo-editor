@@ -5379,8 +5379,6 @@ def main() -> None:  # pragma: no cover (tested in client)
             dialog.setFocus()
             g.app.processEvents()
             # val is the same as the creation order.
-            # Tested with both Qt6 and Qt5.
-            ### val = dialog.exec() if isQt6 else dialog.exec_()
             val = dialog.exec()
             if val == 0:
                 print(f"Saved: {c.fileName()}")

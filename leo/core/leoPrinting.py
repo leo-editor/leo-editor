@@ -289,7 +289,7 @@ class PrintingController:
         # pylint: disable=no-member
         dialog = printsupport.QPrintDialog()
         dialog.setStyleSheet(self.stylesheet)
-        result = dialog.exec_()
+        result = dialog.exec()
         if result == DialogCode.Accepted:
             try:
                 doc.print_(dialog.printer())
@@ -303,7 +303,7 @@ class PrintingController:
         dialog.setSizeGripEnabled(True)
         dialog.setStyleSheet(self.stylesheet)
         dialog.paintRequested.connect(doc.print)
-        dialog.exec_()
+        dialog.exec()
     #@-others
 #@-others
 #@@language python

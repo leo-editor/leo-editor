@@ -330,7 +330,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
         ### point = pos.toPoint() if isQt6 else pos   # Qt6 documentation is wrong.
         point = pos
         global_point = self.mapToGlobal(point)
-        menu.exec_(global_point)
+        menu.exec(global_point)
 
         for i in 0, 1:
             widget[i].setStyleSheet(sheet[i])
@@ -578,7 +578,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
 
         point = button.pos()
         global_point = button.mapToGlobal(point)
-        menu.exec_(global_point)
+        menu.exec(global_point)
     #@+node:tbrown.20120418121002.25712: *3* ns.closing
     def closing(self, window):
         """forget a top-level additional layout which was closed"""

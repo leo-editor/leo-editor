@@ -150,11 +150,6 @@ def main():
 
     win.show()
     sys.exit(app.exec())
-    ###
-        # if isQt6:
-            # sys.exit(app.exec())
-        # else:
-            # sys.exit(app.exec_())
 
 if __name__ == '__main__':
     main()

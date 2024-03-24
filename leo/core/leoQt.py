@@ -67,9 +67,7 @@ WindowType = Qt.WindowType
 WrapMode = QtGui.QTextOption.WrapMode
 #@-<< PyQt6 enumerations >>
 
-### QtConst = Qt
-
-# For pyflakes.
+# For pyflakes so it doesn't complain about unused imports.
 assert QAction
 assert QActionGroup
 assert QCloseEvent
@@ -88,13 +86,7 @@ assert QtWebEngineWidgets
 assert QtWidgets
 assert uic
 
-# No longer available modules
 
-### has_WebEngineWidgets = True
-### phonon = None
-### QtDeclarative = None
-### QtWebKit = None
-### QtWebKitWidgets = None
 
 # Standard abbreviations.
 qt_version = QtCore.QT_VERSION_STR

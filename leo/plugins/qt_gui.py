@@ -213,7 +213,7 @@ class LeoQtGui(leoGui.LeoGui):
         try:
             c.in_qt_dialog = True
             dialog.raise_()
-            dialog.exec_()
+            dialog.exec()
         finally:
             c.in_qt_dialog = False
     #@+node:ekr.20110605121601.18489: *4* qt_gui.makeFilter
@@ -250,7 +250,7 @@ class LeoQtGui(leoGui.LeoGui):
             dialog.activateWindow()
         else:
             dialog.show()
-            dialog.exec_()
+            dialog.exec()
     #@+node:ekr.20150619053138.1: *5* qt_gui.createFindDialog
     def createFindDialog(self, c: Cmdr) -> Widget:
         """Create and init a non-modal Find dialog."""
@@ -318,7 +318,7 @@ class LeoQtGui(leoGui.LeoGui):
             self._save_focus(c)
             c.in_qt_dialog = True
             dialog.raise_()
-            dialog.exec_()
+            dialog.exec()
         finally:
             c.in_qt_dialog = False
             self._restore_focus(c)
@@ -414,14 +414,12 @@ class LeoQtGui(leoGui.LeoGui):
             try:
                 c.in_qt_dialog = True
                 dialog.raise_()
-                ### val = dialog.exec() if isQt6 else dialog.exec_()
                 val = dialog.exec()
             finally:
                 c.in_qt_dialog = False
         else:
             dialog.setWindowTitle(title)
             dialog.raise_()
-            ### val = dialog.exec() if isQt6 else dialog.exec_()
             val = dialog.exec()
         if val == DialogCode.Accepted:
             return dialog.dt.dateTime().toPyDateTime()
@@ -448,7 +446,7 @@ class LeoQtGui(leoGui.LeoGui):
             dialog.setOkButtonText(okButtonText)
         self.attachLeoIcon(dialog)
         dialog.raise_()
-        ok = dialog.exec_()
+        ok = dialog.exec()
         n = dialog.textValue()
         try:
             n = float(n)
@@ -489,7 +487,7 @@ class LeoQtGui(leoGui.LeoGui):
             dialog.setOkButtonText(okButtonText)
         self.attachLeoIcon(dialog)
         dialog.raise_()
-        ok = dialog.exec_()
+        ok = dialog.exec()
         return str(dialog.textValue()) if ok else None
     #@+node:ekr.20110605121601.18495: *4* qt_gui.runAskOkDialog (changed)
     def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> None:
@@ -511,7 +509,6 @@ class LeoQtGui(leoGui.LeoGui):
             self._save_focus(c)
             c.in_qt_dialog = True
             dialog.raise_()
-            ### dialog.exec_()
             dialog.exec()
         finally:
             c.in_qt_dialog = False
@@ -561,7 +558,6 @@ class LeoQtGui(leoGui.LeoGui):
             self._save_focus(c)
             c.in_qt_dialog = True
             dialog.raise_()  # #2246.
-            ### val = dialog.exec() if isQt6 else dialog.exec_()
             val = dialog.exec()
         finally:
             c.in_qt_dialog = False
@@ -612,7 +608,6 @@ class LeoQtGui(leoGui.LeoGui):
                 self._save_focus(c)
                 c.in_qt_dialog = True
                 dialog.raise_()
-                ### val = dialog.exec() if isQt6 else dialog.exec_()
                 val = dialog.exec()
             finally:
                 c.in_qt_dialog = False
@@ -620,7 +615,6 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             # There is no way to save/restore focus.
             dialog.raise_()
-            ### val = dialog.exec() if isQt6 else dialog.exec_()
             val = dialog.exec()
 
         # Create the return dictionary.
@@ -805,11 +799,6 @@ class LeoQtGui(leoGui.LeoGui):
         try:
             c.in_qt_dialog = True
             dialog.exec()
-            ###
-                # if isQt6:
-                    # dialog.exec()
-                # else:
-                    # dialog.exec_()
         finally:
             c.in_qt_dialog = False
         #@-<< emergency fallback >>
@@ -1305,11 +1294,6 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             # This can be alarming when using Python's -i option.
             sys.exit(self.qtApp.exec())
-            ###
-                # if isQt6:
-                    # sys.exit(self.qtApp.exec())
-                # else:
-                    # sys.exit(self.qtApp.exec_())
     #@+node:ekr.20130930062914.16001: *4* qt_gui.runWithIpythonKernel (commands)
     def runWithIpythonKernel(self) -> None:
         """Init Leo to run in an IPython shell."""
@@ -1375,7 +1359,7 @@ class LeoQtGui(leoGui.LeoGui):
             m = self.DialogWithCheckBox(controller=self, checked=self.show_tips_flag, tip=tip)
             try:
                 c.in_qt_dialog = True
-                m.exec_()
+                m.exec()
             finally:
                 c.in_qt_dialog = False
             b = m.clickedButton()

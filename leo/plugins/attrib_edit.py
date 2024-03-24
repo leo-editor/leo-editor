@@ -699,7 +699,6 @@ class attrib_edit_Controller:
         dat.sort(key=lambda x: x[0])
         res = ListDialog(self.parent, "Enter attribute path",
             "Enter path to attribute (space separated words)", dat)
-        ### res.exec_()
         res.exec()
         if res.result() == DialogCode.Rejected:
             return
@@ -710,7 +709,6 @@ class attrib_edit_Controller:
                 res = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question,
                     "Really delete attributes?", "Really delete attributes?",
                     QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel, self.parent)
-                ### if res.exec_() == QtWidgets.QMessageBox.Cancel:
                 if res.exec() == QtWidgets.QMessageBox.Cancel:
                     return
                 break
@@ -734,7 +732,6 @@ class attrib_edit_Controller:
             "Enter path to attribute (space separated words)",
             modes)
 
-        ### res.exec_()
         res.exec()
         if res.result() == DialogCode.Rejected:
             return

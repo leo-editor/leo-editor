@@ -389,7 +389,7 @@ class leoscreen_Controller:
                    for i in out.split('\n') if i.startswith('\t')]  # type:ignore
 
         ld = ListDialog(None, 'Pick screen', 'Pick screen', screens)
-        ld.exec_()
+        ld.exec()
 
         screen = [i for i in screens if i[1]]
         if screen:
