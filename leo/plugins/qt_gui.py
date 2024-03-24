@@ -37,9 +37,9 @@ assert qt_commands
 #@+node:ekr.20220415183421.1: ** << qt_gui annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    Event = Any
     Widget = Any
 #@-<< qt_gui annotations >>
 #@+others
@@ -258,7 +258,8 @@ class LeoQtGui(leoGui.LeoGui):
         """Create and init a non-modal Find dialog."""
         if c:
             g.app.globalFindTabManager = c.findCommands.ftm
-        top = c and c.frame.top  # top is the DynamicWindow class.
+        top: Optional[QtWidgets.QWidget] = c.frame.top if c else None
+        ### top = c and c.frame.top  # top is the DynamicWindow class.
         w = top.findTab  # type:ignore
         dialog = QtWidgets.QDialog()
         # Fix #516: Hide the dialog. Never delete it.
@@ -267,7 +268,7 @@ class LeoQtGui(leoGui.LeoGui):
             event.ignore()
             dialog.hide()
 
-        dialog.closeEvent = closeEvent
+        dialog.closeEvent = closeEvent  # type:ignore
         layout = QtWidgets.QVBoxLayout(dialog)
         layout.addWidget(w)
         self.attachLeoIcon(dialog)
@@ -295,7 +296,7 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return None
         return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
-    #@+node:ekr.20110605121601.18493: *4* qt_gui.runAboutLeoDialog (changed)
+    #@+node:ekr.20110605121601.18493: *4* qt_gui.runAboutLeoDialog
     def runAboutLeoDialog(self,
         c: Cmdr, version: str, theCopyright: str, url: str, email: str,
     ) -> None:
@@ -304,7 +305,8 @@ class LeoQtGui(leoGui.LeoGui):
             return
 
         # Create the dialog.
-        dialog = QtWidgets.QMessageBox(c and c.frame.top)
+        top_frame: Optional[QtWidgets.QWidget] = c.frame.top if c else None
+        dialog = QtWidgets.QMessageBox(top_frame)
         ssm = g.app.gui.styleSheetManagerClass(c)
         w = ssm.get_master_widget()
         sheet = w.styleSheet()
@@ -332,7 +334,7 @@ class LeoQtGui(leoGui.LeoGui):
         message: str = 'Select Date/Time',
         init: datetime.datetime = None,
         step_min: dict = None,
-    ) -> None:
+    ) -> Optional[Any]:
         """Create and run a qt date/time selection dialog.
 
         init - a datetime, default now
@@ -350,15 +352,14 @@ class LeoQtGui(leoGui.LeoGui):
         """
         #@+<< define date/time classes >>
         #@+node:ekr.20211005103909.1: *5* << define date/time classes >>
-
-
         class DateTimeEditStepped(QtWidgets.QDateTimeEdit):  # type:ignore
-            """QDateTimeEdit which allows you to set minimum steps on fields, e.g.
+            """
+            QDateTimeEdit which allows you to set minimum steps on fields, e.g.
               DateTimeEditStepped(parent, {QtWidgets.QDateTimeEdit.MinuteSection: 5})
             for a minimum 5 minute increment on the minute field.
             """
 
-            def __init__(self, parent: Widget = None, init: bool = None, step_min: dict = None) -> None:
+            def __init__(self, parent: Widget = None, init: Any = None, step_min: dict = None) -> None:
                 if step_min is None:
                     step_min = {}
                 self.step_min = step_min
@@ -404,7 +405,8 @@ class LeoQtGui(leoGui.LeoGui):
             step_min = {}
         if not init:
             init = datetime.datetime.now()
-        dialog = Calendar(c and c.frame.top, message=message, init=init, step_min=step_min)
+        top_frame: Optional[QtWidgets.QWidget] = c.frame.top if c else None
+        dialog = Calendar(top_frame, message=message, init=init, step_min=step_min)
         if c:
             ssm = g.app.gui.styleSheetManagerClass(c)
             w = ssm.get_master_widget()
@@ -449,12 +451,15 @@ class LeoQtGui(leoGui.LeoGui):
         self.attachLeoIcon(dialog)
         dialog.raise_()
         ok = dialog.exec()
+        if not ok:
+            return None
         n = dialog.textValue()
+        int_n: Optional[int]
         try:
-            n = float(n)
+            int_n = int(n)
         except ValueError:
-            n = None
-        return n if ok else None
+            int_n = None
+        return int_n
     #@+node:ekr.20110605121601.18490: *4* qt_gui.runAskOkCancelStringDialog
     def runAskOkCancelStringDialog(
         self,
@@ -498,7 +503,8 @@ class LeoQtGui(leoGui.LeoGui):
             return
 
         # Create the dialog.
-        dialog = QtWidgets.QMessageBox(c and c.frame.top)
+        top_frame: Optional[QtWidgets.QWidget] = c.frame.top if c else None
+        dialog = QtWidgets.QMessageBox(top_frame)
         dialog.setWindowTitle(title)
         if message:
             dialog.setText(message)
@@ -515,7 +521,7 @@ class LeoQtGui(leoGui.LeoGui):
         finally:
             c.in_qt_dialog = False
             self._restore_focus(c)
-    #@+node:ekr.20110605121601.18497: *4* qt_gui.runAskYesNoCancelDialog (changed)
+    #@+node:ekr.20110605121601.18497: *4* qt_gui.runAskYesNoCancelDialog
     def runAskYesNoCancelDialog(
         self,
         c: Cmdr,
@@ -537,7 +543,8 @@ class LeoQtGui(leoGui.LeoGui):
             return None
 
         # Create the dialog.
-        dialog = QtWidgets.QMessageBox(c and c.frame.top)
+        top_frame: Optional[QtWidgets.QWidget] = c.frame.top if c else None
+        dialog = QtWidgets.QMessageBox(top_frame)
         if message:
             dialog.setText(message)
         dialog.setIcon(Information.Warning)
@@ -570,7 +577,7 @@ class LeoQtGui(leoGui.LeoGui):
         return {
             0: 'yes', 1: 'no', 2: 'cancel', 3: 'yes-to-all',
         }.get(val, 'cancel')
-    #@+node:ekr.20110605121601.18498: *4* qt_gui.runAskYesNoDialog (changed)
+    #@+node:ekr.20110605121601.18498: *4* qt_gui.runAskYesNoDialog
     def runAskYesNoDialog(self,
         c: Cmdr, title: str, message: str = None, yes_all: bool = False, no_all: bool = False,
     ) -> str:
@@ -589,7 +596,8 @@ class LeoQtGui(leoGui.LeoGui):
             return None
 
         # Create the dialog.
-        dialog = QtWidgets.QMessageBox(c and c.frame.top)
+        top_frame: Optional[QtWidgets.QWidget] = c.frame.top if c else None
+        dialog = QtWidgets.QMessageBox(top_frame)
         # Creation order determines returned value.
         yes = dialog.addButton('Yes', ButtonRole.YesRole)
         dialog.addButton('No', ButtonRole.NoRole)
@@ -665,6 +673,7 @@ class LeoQtGui(leoGui.LeoGui):
         dialog = QtWidgets.QFileDialog()
         self.attachLeoIcon(dialog)
         func = dialog.getOpenFileNames if multiple else dialog.getOpenFileName
+        val: Any  # A necessary hack.
         if c:
             try:
                 c.in_qt_dialog = True
@@ -1342,7 +1351,7 @@ class LeoQtGui(leoGui.LeoGui):
             state = Checked if checked else Unchecked
             cb.setCheckState(state)  # #2127.
             cb.stateChanged.connect(controller.onClick)
-            layout.addWidget(cb, 4, 0, -1, -1)
+            layout.addWidget(cb, 4, 0, -1, -1)  # type:ignore
             if 0:  # Does not work well.
                 sizePolicy = QtWidgets.QSizePolicy
                 vSpacer = QtWidgets.QSpacerItem(
