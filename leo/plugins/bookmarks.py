@@ -785,7 +785,6 @@ class BookMarkDisplay:
         act.triggered.connect(follow)
         menu.addAction(act)
 
-        ### point = event.position().toPoint() if isQt6 else event.pos()  # Qt6 documentation is wrong.
         point = event.position().toPoint()  # Qt6 documentation is wrong.
         global_point = but.mapToGlobal(point)
         menu.exec(global_point)
@@ -812,7 +811,6 @@ class BookMarkDisplay:
             act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
             menu.addAction(act)
 
-        ### point = event.position().toPoint() if isQt6 else event.pos()  # Qt6 documentation is wrong.
         point = event.position().toPoint()  # Qt6 documentation is wrong.
         global_point = menu.mapToGlobal(point)
         menu.exec(global_point)
@@ -952,10 +950,12 @@ class BookMarkDisplay:
         while todo:
             links = todo.pop(0) if todo else []
             top = QtWidgets.QWidget()
-            top.mouseReleaseEvent = (
-                lambda event, links = links, row_parent = row_parent:  # type:ignore
-                    self.background_clicked(event, links, row_parent)
-            )
+
+            def top_mouseReleaseEvent(event, links=links, row_parent=row_parent) -> None:
+                self.background_clicked(event, links, row_parent)
+
+            top.mouseReleaseEvent = top_mouseReleaseEvent  # type:ignore
+
             top.setMinimumSize(10, 10)  # so there's something to click when empty
             size_policy = QtWidgets.QSizePolicy(Policy.Expanding, Policy.Expanding)
             size_policy.setHorizontalStretch(1)
@@ -981,11 +981,10 @@ class BookMarkDisplay:
                 if bm.url:
                     but.setToolTip(bm.url)
 
-                but.mouseReleaseEvent = (
-                    lambda event, bm = bm, but = but:  # type:ignore
-                        self.button_clicked(event, bm, but)
-                )
+                def button_mouseReleaseEvent(event, bm=bm, but=but) -> None:
+                    self.button_clicked(event, bm, but)
 
+                but.mouseReleaseEvent = button_mouseReleaseEvent  # type:ignore
                 layout.addWidget(but)
 
                 showing = False
