@@ -214,7 +214,8 @@ class SFTPController:
         message = "Please enter password for user '%s' on host '%s':" % (username, hostname)
         parent = None
         title = "Enter Password"
-        password, ok = QtWidgets.QInputDialog.getText(
+        # Mode is valid keyword.
+        password, ok = QtWidgets.QInputDialog.getText(  # type:ignore
             parent, title, message, mode=QtWidgets.QLineEdit.Password)
         password = str(password)
         if ok is False:
