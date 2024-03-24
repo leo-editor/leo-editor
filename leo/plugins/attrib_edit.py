@@ -106,9 +106,11 @@ from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import DialogCode, Orientation
-#
+
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+
+QWidget = QtWidgets.QWidget
 
 #@+others
 #@+node:tbrown.20091009210724.10975: ** init
@@ -522,6 +524,7 @@ class attrib_edit_Controller:
         # self.guiMode = c.config.getString('attrib-edit-placement') or 'tab'
         self.guiMode = 'tab'
         # body mode in not compatible with nested_splitter, causes hard crash
+        self.holder: Any
         if self.guiMode == 'body':
             self.holder = QtWidgets.QSplitter(Orientation.Vertical)
             self.holder.setMinimumWidth(300)
@@ -697,6 +700,8 @@ class attrib_edit_Controller:
             g.es('No attributes seen (yet)')
             return
         dat.sort(key=lambda x: x[0])
+
+        res: QWidget
         res = ListDialog(self.parent, "Enter attribute path",
             "Enter path to attribute (space separated words)", dat)
         res.exec()
