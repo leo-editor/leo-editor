@@ -1263,6 +1263,7 @@ class graphcanvasController:
             return
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
+        newcolor: Any
 
         if 'color' in node.u['_bklnk']:
             color = node.u['_bklnk']['color']
@@ -1284,6 +1285,7 @@ class graphcanvasController:
             return
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
+        newcolor: Any
 
         if 'tcolor' in node.u['_bklnk']:
             color = node.u['_bklnk']['tcolor']
