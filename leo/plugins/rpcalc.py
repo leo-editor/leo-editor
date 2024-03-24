@@ -19,6 +19,7 @@ from typing import Any
 from leo.core.leoQt import QtCore, MouseButton
 from leo.core.leoQt import QtGui, FocusPolicy
 from leo.core.leoQt import QtWidgets, QAction
+from leo.core.leoQt import AlignmentFlag, AlignLeft, AlignRight
 from leo.core.leoQt import Shape, Shadow, KeyboardModifier
 from leo.core.leoQt import WindowType, DialogCode
 
@@ -239,29 +240,29 @@ class AltBaseDialog(QWidget):  # type: ignore
         self.baseBoxes = {}
         hexButton = QPushButton('He&x')
         self.buttons.addButton(hexButton, 16)
-        mainLay.addWidget(hexButton, 0, 0, Qt.AlignmentFlag.AlignRight)
+        mainLay.addWidget(hexButton, 0, 0, AlignRight)
         self.baseBoxes[16] = AltBaseBox(16, self.dlgRef.calc)
         mainLay.addWidget(self.baseBoxes[16], 0, 1)
         octalButton = QPushButton('&Octal')
         self.buttons.addButton(octalButton, 8)
-        mainLay.addWidget(octalButton, 1, 0, Qt.AlignmentFlag.AlignRight)
+        mainLay.addWidget(octalButton, 1, 0, AlignRight)
         self.baseBoxes[8] = AltBaseBox(8, self.dlgRef.calc)
         mainLay.addWidget(self.baseBoxes[8], 1, 1)
         binaryButton = QPushButton('&Binary')
         self.buttons.addButton(binaryButton, 2)
-        mainLay.addWidget(binaryButton, 2, 0, Qt.AlignmentFlag.AlignRight)
+        mainLay.addWidget(binaryButton, 2, 0, AlignRight)
         self.baseBoxes[2] = AltBaseBox(2, self.dlgRef.calc)
         mainLay.addWidget(self.baseBoxes[2], 2, 1)
         decimalButton = QPushButton('&Decimal')
         self.buttons.addButton(decimalButton, 10)
-        mainLay.addWidget(decimalButton, 3, 0, Qt.AlignmentFlag.AlignRight)
+        mainLay.addWidget(decimalButton, 3, 0, AlignRight)
         self.baseBoxes[10] = AltBaseBox(10, self.dlgRef.calc)
         mainLay.addWidget(self.baseBoxes[10], 3, 1)
         for button in self.buttons.buttons():
             button.setCheckable(True)
         self.buttons.buttonClicked.connect(self.changeBase)
         self.bitsLabel = QLabel()
-        self.bitsLabel.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.bitsLabel.setAlignment(AlignmentFlag.AlignHCenter)
         self.bitsLabel.setFrameStyle(Shape.Box | Shadow.Plain)
         topLay.addSpacing(3)
         topLay.addWidget(self.bitsLabel)
@@ -982,16 +983,16 @@ class CalcDlg(QWidget):  # type: ignore
         #@+<< populate lcd widget >>
         #@+node:tom.20230428234437.1: *4* << populate lcd widget >>
         for i in range(3):
-            lcdLay.addWidget(self.extraLabels[i], i, 0, Qt.AlignmentFlag.AlignLeft)
+            lcdLay.addWidget(self.extraLabels[i], i, 0, AlignLeft)
         self.extraLcds = [Lcd(1.5, 13), Lcd(1.5, 13), Lcd(1.5, 13)]
-        lcdLay.addWidget(self.extraLcds[2], 0, 1, Qt.AlignmentFlag.AlignRight)
-        lcdLay.addWidget(self.extraLcds[1], 1, 1, Qt.AlignmentFlag.AlignRight)
-        lcdLay.addWidget(self.extraLcds[0], 2, 1, Qt.AlignmentFlag.AlignRight)
+        lcdLay.addWidget(self.extraLcds[2], 0, 1, AlignRight)
+        lcdLay.addWidget(self.extraLcds[1], 1, 1, AlignRight)
+        lcdLay.addWidget(self.extraLcds[0], 2, 1, AlignRight)
         if not self.calc.option.boolData('ViewRegisters'):
             for w in self.extraLabels + self.extraLcds:
                 w.hide()
         self.lcd = Lcd(2.0, 13)
-        lcdLay.addWidget(self.lcd, 3, 0, 1, 2, Qt.AlignmentFlag.AlignRight)
+        lcdLay.addWidget(self.lcd, 3, 0, 1, 2, AlignRight)
         self.setLcdHighlight()
         self.updateLcd()
         self.updateColors()
@@ -1071,7 +1072,7 @@ class CalcDlg(QWidget):  # type: ignore
         statusLay.addWidget(self.entryLabel)
         statusLay.setContentsMargins(1, 1, 1, 1)
         self.statusLabel = QLabel(statusBox)
-        self.statusLabel.setAlignment(Qt.AlignmentFlag.AlignRight)
+        self.statusLabel.setAlignment(AlignRight)
         statusLay.addWidget(self.statusLabel)
 
         if self.calc.option.boolData('ExtraViewStartup'):
@@ -1619,7 +1620,7 @@ class RegViewWidget(ExtraViewWidget):
         for text in ['T', 'Y', 'Z', 'X']:
             item = QTreeWidgetItem(self)
             item.setText(0, text)
-            item.setTextAlignment(0, Qt.AlignmentFlag.AlignCenter)
+            item.setTextAlignment(0, AlignmentFlag.AlignCenter)
         self.resizeColumnToContents(0)
         self.setCurrentItem(item)
         self.updateData()
@@ -1697,7 +1698,7 @@ class MemViewWidget(ExtraViewWidget):
         for num in range(10):
             item = QTreeWidgetItem(self)
             item.setText(0, repr(num))
-            item.setTextAlignment(0, Qt.AlignmentFlag.AlignCenter)
+            item.setTextAlignment(0, AlignmentFlag.AlignCenter)
         self.resizeColumnToContents(0)
         self.setCurrentItem(self.topLevelItem(0))
         self.updateData()

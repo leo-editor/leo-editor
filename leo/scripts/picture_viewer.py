@@ -72,7 +72,7 @@ except Exception:
     print('picture_viewer.py: can not import leo.core.leoGlobals as g')
 try:
     from leo.core.leoQt import QtCore, QtGui, QtWidgets
-    from leo.core.leoQt import ButtonRole, Information
+    from leo.core.leoQt import AlignmentFlag, ButtonRole, Information
 except Exception:
     print('picture_viewer.py: Qt required')
     print('pip install pyqt6')
@@ -608,10 +608,7 @@ class Slides(QtWidgets.QWidget):  # type:ignore
         w.scroll_area = area = QtWidgets.QScrollArea()
         w.scroll_area.scrollContentsBy = self.scrollContentsBy
         area.setWidget(self.picture)
-        ### AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
-        AlignmentFlag = QtCore.Qt.AlignmentFlag
-        area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)  # py--lint: disable=no-member
-
+        area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)
         # Remember the viewport:
         w.view_port = area.viewport()
 

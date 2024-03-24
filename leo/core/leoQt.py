@@ -21,9 +21,12 @@ from PyQt6 import uic
 
 #@+<< PyQt6 enumerations >>
 #@+node:ekr.20240303142509.3: ** << PyQt6 enumerations >>
-Alignment = Qt.AlignmentFlag
+AlignmentFlag = Qt.AlignmentFlag
+AlignLeft = Qt.AlignmentFlag.AlignLeft
+AlignRight = Qt.AlignmentFlag.AlignRight
 ButtonRole = QtWidgets.QMessageBox.ButtonRole
 ContextMenuPolicy = Qt.ContextMenuPolicy
+Checked = Qt.CheckState.Checked
 ControlType = QtWidgets.QSizePolicy.ControlType
 DialogCode = QtWidgets.QDialog.DialogCode
 DropAction = Qt.DropAction
@@ -59,6 +62,7 @@ TextInteractionFlag = Qt.TextInteractionFlag
 TextOption = QtGui.QTextOption
 ToolBarArea = Qt.ToolBarArea
 Type = QtCore.QEvent.Type
+Unchecked = Qt.CheckState.Unchecked
 UnderlineStyle = QtGui.QTextCharFormat.UnderlineStyle
 Weight = QtGui.QFont.Weight
 WidgetAttribute = Qt.WidgetAttribute

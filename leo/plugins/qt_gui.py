@@ -18,7 +18,7 @@ from leo.core import leoGlobals as g
 from leo.core import leoGui
 from leo.core.leoQt import Qt, Qsci, QtCore
 from leo.core.leoQt import QtGui, QtWidgets, QtSvg
-from leo.core.leoQt import ButtonRole, DialogCode, Icon, Information, Policy
+from leo.core.leoQt import ButtonRole, Checked, DialogCode, Icon, Information, Policy, Unchecked
 # This import causes pylint to fail on this file and on leoBridge.py.
 # The failure is in astroid: raw_building.py.
 from leo.core.leoQt import Shadow, Shape, StandardButton, Weight, WindowType
@@ -29,6 +29,8 @@ from leo.plugins import qt_text
 # This defines the commands defined by @g.command.
 from leo.plugins import qt_commands
 from leo.core.leoTips import UserTip
+
+assert Qt
 assert qt_commands
 #@-<< qt_gui imports  >>
 #@+<< qt_gui annotations >>
@@ -1337,7 +1339,7 @@ class LeoQtGui(leoGui.LeoGui):
             cb.setObjectName('TipCheckbox')
             cb.setText('Show Tip On Startup')
             # #2383: State is a tri-state, so use the official constants.
-            state = Qt.CheckState.Checked if checked else Qt.CheckState.Unchecked
+            state = Checked if checked else Unchecked
             cb.setCheckState(state)  # #2127.
             cb.stateChanged.connect(controller.onClick)
             layout.addWidget(cb, 4, 0, -1, -1)

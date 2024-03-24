@@ -72,6 +72,7 @@ from typing import Any, Iterable, Optional, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets, uic
+from leo.core.leoQt import AlignLeft, AlignRight
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr

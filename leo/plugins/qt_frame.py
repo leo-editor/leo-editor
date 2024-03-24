@@ -22,7 +22,8 @@ from leo.core import leoMenu
 from leo.commands import gotoCommands
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction, Qsci
-from leo.core.leoQt import Alignment, ContextMenuPolicy, DropAction, FocusReason, KeyboardModifier
+from leo.core.leoQt import AlignmentFlag, AlignLeft
+from leo.core.leoQt import ContextMenuPolicy, DropAction, FocusReason, KeyboardModifier
 from leo.core.leoQt import MoveOperation, Orientation, MouseButton
 from leo.core.leoQt import Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, SizeAdjustPolicy
 from leo.core.leoQt import Shadow, Shape, Style
@@ -712,7 +713,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         if False:
             dw = self
             lab1 = dw.createLabel(parent, 'findHeading', 'Find/Change Settings...')
-            grid.addWidget(lab1, row, 0, 1, 2, Alignment.AlignLeft)  # AlignHCenter
+            grid.addWidget(lab1, row, 0, 1, 2, AlignLeft)  # AlignHCenter
             row += 1
         return row
     #@+node:ekr.20131118152731.16848: *6* dw.create_find_findbox
@@ -1998,7 +1999,7 @@ class LeoQtBody(leoFrame.LeoBody):
         lab.setObjectName(f"{name} Label")
         lab.setText(name)
         # Pack the label and the widget.
-        layout.addWidget(lab, 0, max(0, n - 1), Alignment.AlignVCenter)
+        layout.addWidget(lab, 0, max(0, n - 1), AlignmentFlag.AlignVCenter)
         layout.addWidget(w, 1, max(0, n - 1))
         layout.setRowStretch(0, 0)
         layout.setRowStretch(1, 1)  # Give row 1 as much as possible.
