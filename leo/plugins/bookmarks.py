@@ -217,7 +217,7 @@ import hashlib
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import ControlType, KeyboardModifier, MouseButton, Orientation, Policy, QAction
-#
+
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
@@ -952,11 +952,10 @@ class BookMarkDisplay:
         while todo:
             links = todo.pop(0) if todo else []
             top = QtWidgets.QWidget()
-            # pylint: disable=undefined-loop-variable
-            # pylint bug, fix released: http://www.logilab.org/ticket/89092
-            # pylint: disable=undefined-variable
-            top.mouseReleaseEvent = (lambda event, links = links, row_parent = row_parent:
-                self.background_clicked(event, links, row_parent))
+            top.mouseReleaseEvent = (
+                lambda event, links = links, row_parent = row_parent:  # type:ignore
+                    self.background_clicked(event, links, row_parent)
+            )
             top.setMinimumSize(10, 10)  # so there's something to click when empty
             size_policy = QtWidgets.QSizePolicy(Policy.Expanding, Policy.Expanding)
             size_policy.setHorizontalStretch(1)
@@ -982,10 +981,10 @@ class BookMarkDisplay:
                 if bm.url:
                     but.setToolTip(bm.url)
 
-                # pylint: disable=undefined-variable
-                # 'but' *is* defined.
-                but.mouseReleaseEvent = (lambda event, bm = bm, but = but:
-                    self.button_clicked(event, bm, but))
+                but.mouseReleaseEvent = (
+                    lambda event, bm = bm, but = but:  # type:ignore
+                        self.button_clicked(event, bm, but)
+                )
 
                 layout.addWidget(but)
 
@@ -1044,7 +1043,7 @@ class BookMarkDisplay:
                 def mouseReleaseHandler2(event, bm=bm, but=but):
                     self.button_clicked(event, bm, but, up=True)
 
-                but.mouseReleaseEvent = mouseReleaseHandler2
+                but.mouseReleaseEvent = mouseReleaseHandler2  # type:ignore
                 next_row.addWidget(but)
                 # rotate to start of layout, FlowLayout() has no insertWidget()
                 next_row.itemList[:] = next_row.itemList[-1:] + next_row.itemList[:-1]
