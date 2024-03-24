@@ -327,14 +327,14 @@ class TextEditSearch(QtWidgets.QWidget):  # type:ignore
         super().__init__(*args, **kwargs)
         self.textedit = QtWidgets.QTextEdit(*args, **kwargs)
         # need to call focusin/out set on parent by FocusingPlaintextEdit / mknote
-        self.textedit.focusInEvent = self._call_old_first(
+        self.textedit.focusInEvent = self._call_old_first(  # type:ignore
             self.textedit.focusInEvent, self.focusin)
-        self.textedit.focusOutEvent = self._call_old_first(
+        self.textedit.focusOutEvent = self._call_old_first(  # type:ignore
             self.textedit.focusOutEvent, self.focusout)
         self.searchbox = QLineEdit()
-        self.searchbox.focusInEvent = self._call_old_first(
+        self.searchbox.focusInEvent = self._call_old_first(  # type:ignore
             self.searchbox.focusInEvent, self.focusin)
-        self.searchbox.focusOutEvent = self._call_old_first(
+        self.searchbox.focusOutEvent = self._call_old_first(  # type:ignore
             self.searchbox.focusOutEvent, self.focusout)
 
         # invoke find when return pressed
