@@ -282,10 +282,13 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+node:ekr.20220828161918.1: ** << vr annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    
+    # These need more work!
+    Event = Any
+    QWidget = QtWidgets.QWidget
     Widget = Any
+    Wrapper = Any
 #@-<< vr annotations >>
 trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')
@@ -667,7 +670,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     """A class to control rendering in a rendering pane."""
     #@+others
     #@+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
-    def __init__(self, c: Cmdr, parent: Position = None) -> None:
+    def __init__(self, c: Cmdr, parent: Widget = None) -> None:
         """Ctor for ViewRenderedController class."""
         self.c = c
         # Create the widget.
@@ -863,7 +866,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20101112195628.5426: *3* vr.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
 
-    def update(self, tag: str, keywords: Any) -> None:
+    def update(self, tag: str, keywords: Any) -> None:  # type:ignore
         """Update the vr pane. Called at idle time."""
         pc = self
         p = pc.c.p
@@ -1705,7 +1708,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         url = url.strip()
         return url
     #@+node:ekr.20110322031455.5763: *5* vr.must_change_widget
-    def must_change_widget(self, widget_class: Any) -> bool:
+    def must_change_widget(self, widget_class: Widget) -> bool:
         pc = self
         return not pc.w or pc.w.__class__ != widget_class
     #@+node:ekr.20110320120020.14485: *5* vr.remove_directives
