@@ -83,7 +83,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             # parent is a LeoTabbedTopLevel.
         super().__init__(parent)
         self.leo_c = c
-        self.leo_master: "LeoTabbedTopLevel" = None  # Set in construct.
+        self.leo_master: LeoTabbedTopLevel = None  # Set in construct.
         self.leo_menubar = None  # Set in createMenuBar.
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
         self.reloadSettings()
@@ -145,7 +145,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         else:
             event.ignore()
     #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers
-    def construct(self, master: "LeoTabbedTopLevel" = None) -> None:
+    def construct(self, master: LeoTabbedTopLevel = None) -> None:
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         c = self.leo_c
         self.leo_master = master
@@ -2070,11 +2070,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # "Official ivars created in createLeoFrame and its allies.
         self.bar1: LeoQtFrame = None
         self.bar2: LeoQtFrame = None
-        self.body: "LeoQtBody" = None
-        self.iconFrame: "QtIconBarClass" = None
-        self.log: "LeoQtLog" = None
+        self.body: LeoQtBody = None
+        self.iconFrame: QtIconBarClass = None
+        self.log: LeoQtLog = None
         self.statusFrame: LeoQtFrame = None
-        self.top: "DynamicWindow" = None
+        self.top: DynamicWindow = None
         self.tree: LeoQtTree = None
         # Used by event handlers...
         self.controlKeyIsDown = False  # For control-drags
@@ -2556,7 +2556,7 @@ class LeoQtLog(leoFrame.LeoLog):
         self.eventFilters: list = []  # Apparently needed to make filters work!
         self.logCtrl: Wrapper = None
         self.logDict: dict[str, Widget] = {}  # Keys are tab names; values are the widgets.
-        self.logWidget: "LeoQtLog" = None  # Set in finishCreate.
+        self.logWidget: LeoQtLog = None  # Set in finishCreate.
         self.menu: Widget = None  # A Qt menu that pops up on right clicks in the hull or in tabs.
         self.tabWidget: Widget = c.frame.top.tabWidget  # A QTabWidget that holds all the tabs.
         tw = self.tabWidget
@@ -3851,7 +3851,7 @@ class LeoQtTreeTab:
     #@+others
     #@+node:ekr.20110605121601.18439: *3*  Birth & death
     #@+node:ekr.20110605121601.18440: *4*  ctor (LeoQtTreeTab)
-    def __init__(self, c: Cmdr, iconBar: "LeoQtLog") -> None:
+    def __init__(self, c: Cmdr, iconBar: LeoQtLog) -> None:
         """Ctor for LeoQtTreeTab class."""
 
         self.c = c
@@ -3870,7 +3870,7 @@ class LeoQtTreeTab:
         class LeoQComboBox(QtWidgets.QComboBox):  # type:ignore
             """Create a subclass in order to handle focusInEvents."""
 
-            def __init__(self, tt: "LeoQtTreeTab") -> None:
+            def __init__(self, tt: LeoQtTreeTab) -> None:
                 self.leo_tt = tt
                 super().__init__()
                 # Fix #458: Chapters drop-down list is not automatically resized.
