@@ -38,7 +38,7 @@ Requires the whoosh library ('easy_install whoosh') to do full text searches.
 import os
 import sys
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore, QtWidgets  ### isQt5, isQt6, , QtWebKitWidgets
+from leo.core.leoQt import QtCore, QtWidgets  ### QtWebKitWidgets
 # This code no longer uses leo.plugins.leofts.
 try:
     # pylint: disable=no-name-in-module

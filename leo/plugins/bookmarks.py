@@ -215,7 +215,7 @@ it to edit the bookmark node itself, and delete the body text (UNL) there.
 from collections import namedtuple
 import hashlib
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import ControlType, KeyboardModifier, MouseButton, Orientation, Policy, QAction
 #
 # Fail fast, right after all imports.
@@ -812,7 +812,8 @@ class BookMarkDisplay:
             act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
             menu.addAction(act)
 
-        point = event.position().toPoint() if isQt6 else event.pos()  # Qt6 documentation is wrong.
+        ### point = event.position().toPoint() if isQt6 else event.pos()  # Qt6 documentation is wrong.
+        point = event.position().toPoint()  # Qt6 documentation is wrong.
         global_point = menu.mapToGlobal(point)
         menu.exec_(global_point)
     #@+node:tbrown.20110712100955.18925: *3* color

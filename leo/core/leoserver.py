@@ -5390,7 +5390,7 @@ def main() -> None:  # pragma: no cover (tested in client)
         #@-others
         try:
             # Careful: raise the Tk dialog if there are errors in the Qt code.
-            from leo.core.leoQt import isQt6, QtGui, QtWidgets
+            from leo.core.leoQt import QtGui, QtWidgets
             from leo.core.leoQt import ButtonRole, Information
             if QtGui and QtWidgets:
                 app = QtWidgets.QApplication([])

@@ -71,7 +71,7 @@ try:
 except Exception:
     print('picture_viewer.py: can not import leo.core.leoGlobals as g')
 try:
-    from leo.core.leoQt import isQt5, isQt6, QtCore, QtGui, QtWidgets
+    from leo.core.leoQt import QtCore, QtGui, QtWidgets
     from leo.core.leoQt import ButtonRole, Information
 except Exception:
     print('picture_viewer.py: Qt required')
@@ -257,7 +257,8 @@ class Slides(QtWidgets.QWidget):  # type:ignore
                 self.reset_scroll()
             # Create the pixmap.
             pixmap = QtGui.QPixmap(file_name)
-            TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
+            ### TransformationMode = QtCore.Qt if isQt5 else QtCore.Qt.TransformationMode
+            TransformationMode = QtCore.Qt.TransformationMode
             transform = TransformationMode.SmoothTransformation  # pylint: disable=no-member
             # Scale appropriately. Do *not* change this!
             image1 = pixmap.scaledToHeight(int(self.height() * self.scale), transform)
@@ -318,7 +319,8 @@ class Slides(QtWidgets.QWidget):  # type:ignore
 
         dialog.keyPressEvent = dialog_keypress_event
         dialog.raise_()
-        result = dialog.exec() if isQt6 else dialog.exec_()
+        ### result = dialog.exec() if isQt6 else dialog.exec_()
+        result = dialog.exec()
         if result == 0:
             # Move the file to the trash.
             send2trash(file_name)
@@ -422,7 +424,8 @@ class Slides(QtWidgets.QWidget):  # type:ignore
             w.showNormal()
         else:
             w.full_screen = True
-            WindowState = QtCore.Qt if isQt5 else QtCore.Qt.WindowState
+            ### WindowState = QtCore.Qt if isQt5 else QtCore.Qt.WindowState
+            WindowState = QtCore.Qt.WindowState
             w.setWindowState(WindowState.WindowFullScreen)  # pylint: disable=no-member
             w.picture.setGeometry(0, 0, w.width(), w.height())
             w.picture.adjustSize()
@@ -611,14 +614,16 @@ class Slides(QtWidgets.QWidget):  # type:ignore
         w.scroll_area = area = QtWidgets.QScrollArea()
         w.scroll_area.scrollContentsBy = self.scrollContentsBy
         area.setWidget(self.picture)
-        AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
+        ### AlignmentFlag = QtCore.Qt if isQt5 else QtCore.Qt.AlignmentFlag
+        AlignmentFlag = QtCore.Qt.AlignmentFlag
         area.setAlignment(AlignmentFlag.AlignHCenter | AlignmentFlag.AlignVCenter)  # pylint: disable=no-member
 
         # Remember the viewport:
         w.view_port = area.viewport()
 
         # Disable scrollbars.
-        ScrollBarPolicy = QtCore.Qt if isQt5 else QtCore.Qt.ScrollBarPolicy
+        ### ScrollBarPolicy = QtCore.Qt if isQt5 else QtCore.Qt.ScrollBarPolicy
+        ScrollBarPolicy = QtCore.Qt.ScrollBarPolicy
         area.setHorizontalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)  # pylint: disable=no-member
         area.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOff)  # pylint: disable=no-member
 

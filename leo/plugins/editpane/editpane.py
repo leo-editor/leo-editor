@@ -14,7 +14,7 @@ try:
 except Exception:
     # but not need to stop if it doesn't work
     pass
-from leo.core.leoQt import isQt6, QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import QAction, ContextMenuPolicy, Orientation, Policy
 from leo.core.leoQt import WidgetAttribute  # 2347
 from leo.core import leoGlobals as g
@@ -444,7 +444,8 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
                 menu.addAction(act)
 
         button = self.control_menu_button
-        point = button.position().toPoint() if isQt6 else button.pos()  # Qt6 documentation is wrong.
+        ### point = button.position().toPoint() if isQt6 else button.pos()  # Qt6 documentation is wrong.
+        point = button.position().toPoint()  # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
         menu.exec_(global_point)
     #@+node:tbrown.20171028115438.28: *3* mode_menu
@@ -463,7 +464,8 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
             menu.addAction(act)
 
         button = self.btn_mode
-        point = button.position().toPoint() if isQt6 else button.pos()  # Qt6 documentation is wrong.
+        ### point = button.position().toPoint() if isQt6 else button.pos()  # Qt6 documentation is wrong.
+        point = button.position().toPoint()  # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
         menu.exec_(global_point)
 

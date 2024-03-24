@@ -16,7 +16,7 @@ from typing import Any, Optional, Union, TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
-from leo.core.leoQt import isQt5, isQt6, Qsci, QtConst, QtCore
+from leo.core.leoQt import Qsci, QtConst, QtCore
 from leo.core.leoQt import QtGui, QtWidgets, QtSvg
 from leo.core.leoQt import ButtonRole, DialogCode, Icon, Information, Policy
 # This import causes pylint to fail on this file and on leoBridge.py.
@@ -414,13 +414,15 @@ class LeoQtGui(leoGui.LeoGui):
             try:
                 c.in_qt_dialog = True
                 dialog.raise_()
-                val = dialog.exec() if isQt6 else dialog.exec_()
+                ### val = dialog.exec() if isQt6 else dialog.exec_()
+                val = dialog.exec()
             finally:
                 c.in_qt_dialog = False
         else:
             dialog.setWindowTitle(title)
             dialog.raise_()
-            val = dialog.exec() if isQt6 else dialog.exec_()
+            ### val = dialog.exec() if isQt6 else dialog.exec_()
+            val = dialog.exec()
         if val == DialogCode.Accepted:
             return dialog.dt.dateTime().toPyDateTime()
         return None
@@ -559,7 +561,8 @@ class LeoQtGui(leoGui.LeoGui):
             self._save_focus(c)
             c.in_qt_dialog = True
             dialog.raise_()  # #2246.
-            val = dialog.exec() if isQt6 else dialog.exec_()
+            ### val = dialog.exec() if isQt6 else dialog.exec_()
+            val = dialog.exec()
         finally:
             c.in_qt_dialog = False
             self._restore_focus(c)
@@ -609,14 +612,16 @@ class LeoQtGui(leoGui.LeoGui):
                 self._save_focus(c)
                 c.in_qt_dialog = True
                 dialog.raise_()
-                val = dialog.exec() if isQt6 else dialog.exec_()
+                ### val = dialog.exec() if isQt6 else dialog.exec_()
+                val = dialog.exec()
             finally:
                 c.in_qt_dialog = False
                 self._restore_focus(c)
         else:
             # There is no way to save/restore focus.
             dialog.raise_()
-            val = dialog.exec() if isQt6 else dialog.exec_()
+            ### val = dialog.exec() if isQt6 else dialog.exec_()
+            val = dialog.exec()
 
         # Create the return dictionary.
         # val is the same as the creation order.
@@ -1299,10 +1304,12 @@ class LeoQtGui(leoGui.LeoGui):
             self.runWithIpythonKernel()
         else:
             # This can be alarming when using Python's -i option.
-            if isQt6:
-                sys.exit(self.qtApp.exec())
-            else:
-                sys.exit(self.qtApp.exec_())
+            sys.exit(self.qtApp.exec())
+            ###
+                # if isQt6:
+                    # sys.exit(self.qtApp.exec())
+                # else:
+                    # sys.exit(self.qtApp.exec_())
     #@+node:ekr.20130930062914.16001: *4* qt_gui.runWithIpythonKernel (commands)
     def runWithIpythonKernel(self) -> None:
         """Init Leo to run in an IPython shell."""
@@ -1482,70 +1489,80 @@ class LeoQtGui(leoGui.LeoGui):
             name = repr(w)
         return name
     #@+node:ekr.20111027083744.16532: *4* qt_gui.enableSignalDebugging
-    if isQt5:
-        # pylint: disable=no-name-in-module
-        # To do: https://doc.qt.io/qt-5/qsignalspy.html
-        from PyQt5.QtTest import QSignalSpy
-        assert QSignalSpy
-    elif isQt6:
-        # pylint: disable=c-extension-no-member,no-name-in-module
-        import PyQt6.QtTest as QtTest
-        # mypy complains about assigning to a type.
-        QSignalSpy = QtTest.QSignalSpy  # type:ignore
-        assert QSignalSpy
-    else:
-        # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.
-        _oldConnect = QtCore.QObject.connect
-        _oldDisconnect = QtCore.QObject.disconnect
-        _oldEmit = QtCore.QObject.emit
+    # pylint: disable=c-extension-no-member,no-name-in-module
 
-        def _wrapConnect(self, callableObject: Callable) -> Callable:
-            """Returns a wrapped call to the old version of QtCore.QObject.connect"""
+    import PyQt6.QtTest as QtTest
+    ### mypy complains about assigning to a type.
+    QSignalSpy = QtTest.QSignalSpy  # type:ignore
+    assert QSignalSpy
 
-            @staticmethod  # type:ignore
-            def call(*args: Any) -> None:
-                callableObject(*args)
-                self._oldConnect(*args)
+    ###
+    # if isQt5:
+        # # pylint: disable=no-name-in-module
+        # # To do: https://doc.qt.io/qt-5/qsignalspy.html
+        # from PyQt5.QtTest import QSignalSpy
+        # assert QSignalSpy
+    # elif isQt6:
+        # # pylint: disable=c-extension-no-member,no-name-in-module
+        # import PyQt6.QtTest as QtTest
+        # # mypy complains about assigning to a type.
+        # QSignalSpy = QtTest.QSignalSpy  # type:ignore
+        # assert QSignalSpy
+    # else:
+        # # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.
+        # _oldConnect = QtCore.QObject.connect
+        # _oldDisconnect = QtCore.QObject.disconnect
+        # _oldEmit = QtCore.QObject.emit
 
-            return call
+        # def _wrapConnect(self, callableObject: Callable) -> Callable:
+            # """Returns a wrapped call to the old version of QtCore.QObject.connect"""
 
-        def _wrapDisconnect(self, callableObject: Callable) -> Callable:
-            """Returns a wrapped call to the old version of QtCore.QObject.disconnect"""
+            #@verbatim
+            # @staticmethod  # type:ignore
+            # def call(*args: Any) -> None:
+                # callableObject(*args)
+                # self._oldConnect(*args)
 
-            @staticmethod  # type:ignore
-            def call(*args: Any) -> None:
-                callableObject(*args)
-                self._oldDisconnect(*args)
+            # return call
 
-            return call
+        # def _wrapDisconnect(self, callableObject: Callable) -> Callable:
+            # """Returns a wrapped call to the old version of QtCore.QObject.disconnect"""
 
-        def enableSignalDebugging(self, **kwargs: Any) -> None:
-            """Call this to enable Qt Signal debugging. This will trap all
-            connect, and disconnect calls."""
+            #@verbatim
+            # @staticmethod  # type:ignore
+            # def call(*args: Any) -> None:
+                # callableObject(*args)
+                # self._oldDisconnect(*args)
 
-            def f(*args):
-                return None
-            connectCall: Callable = kwargs.get('connectCall', f)
-            disconnectCall: Callable = kwargs.get('disconnectCall', f)
-            emitCall: Callable = kwargs.get('emitCall', f)
+            # return call
 
-            def printIt(msg: str) -> Callable:
+        # def enableSignalDebugging(self, **kwargs: Any) -> None:
+            # """Call this to enable Qt Signal debugging. This will trap all
+            # connect, and disconnect calls."""
 
-                def call(*args: Any) -> None:
-                    print(msg, args)
+            # def f(*args):
+                # return None
+            # connectCall: Callable = kwargs.get('connectCall', f)
+            # disconnectCall: Callable = kwargs.get('disconnectCall', f)
+            # emitCall: Callable = kwargs.get('emitCall', f)
 
-                return call
+            # def printIt(msg: str) -> Callable:
 
-            # Monkey-patch.
+                # def call(*args: Any) -> None:
+                    # print(msg, args)
 
-            QtCore.QObject.connect = self._wrapConnect(connectCall)
-            QtCore.QObject.disconnect = self._wrapDisconnect(disconnectCall)
+                # return call
 
-            def new_emit(self, *args: Any) -> None:  # type:ignore
-                emitCall(self, *args)
-                self._oldEmit(self, *args)
+            # # Monkey-patch.
 
-            QtCore.QObject.emit = new_emit
+            # QtCore.QObject.connect = self._wrapConnect(connectCall)
+            # QtCore.QObject.disconnect = self._wrapDisconnect(disconnectCall)
+
+            # def new_emit(self, *args: Any) -> None:  # type:ignore
+                # emitCall(self, *args)
+                # self._oldEmit(self, *args)
+
+            # QtCore.QObject.emit = new_emit
     #@+node:ekr.20190819091957.1: *3* qt_gui.Widgets...
     #@+node:ekr.20190819094016.1: *4* qt_gui.createButton
     def createButton(self, parent: Widget, name: str, label: str) -> Widget:

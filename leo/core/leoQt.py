@@ -68,7 +68,7 @@ WrapMode = QtGui.QTextOption.WrapMode
 #@-<< PyQt6 enumerations >>
 
 ### Temporary...
-isQt5, isQt6 = False, True
+### isQt5, isQt6 = False, True
 QtConst = Qt
 
 # For pyflakes.

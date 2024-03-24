@@ -209,7 +209,7 @@ import textwrap
 from typing import Any, Optional, TYPE_CHECKING
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QtMultimedia, QtSvg  ### phonon, QtWebKitWidgets
 from leo.core.leoQt import ContextMenuPolicy, Orientation, WrapMode
 from leo.plugins import qt_text
@@ -1102,8 +1102,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             assert w == pc.w
         else:
             w = pc.w
-        if isQt5:
-            w.hide()  # This forces a proper update.
+        ###
+            # if isQt5:
+                # w.hide()  # This forces a proper update.
         w.setHtml(s)
         w.show()
         c.bodyWantsFocusNow()

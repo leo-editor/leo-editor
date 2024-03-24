@@ -81,7 +81,7 @@ where the extra information is the name of the linked node's parent.
 
 from leo.core import leoGlobals as g
 try:  # #2343
-    from leo.core.leoQt import isQt6, QtGui, QtWidgets, uic
+    from leo.core.leoQt import QtGui, QtWidgets, uic
 except Exception:
     QtGui = QtWidgets = None
 #@+others
@@ -779,10 +779,12 @@ if QtWidgets:
             ui = self.UI
             fg = QtGui.QColor(color)
             pal = QtGui.QPalette(ui.label.palette())
-            if isQt6:
-                pal.setColor(pal.ColorRole.Window, fg)  # #2197
-            else:
-                pal.setColor(QtGui.QPalette.WindowText, fg)
+            pal.setColor(pal.ColorRole.Window, fg)  # #2197
+            ###
+                # if isQt6:
+                    # pal.setColor(pal.ColorRole.Window, fg)  # #2197
+                # else:
+                    # pal.setColor(QtGui.QPalette.WindowText, fg)
             ui.label.setPalette(pal)
             ui.label.setText(msg)
         #@-others

@@ -20,7 +20,7 @@ from leo.core import leoFrame
 from leo.core import leoGui
 from leo.core import leoMenu
 from leo.commands import gotoCommands
-from leo.core.leoQt import isQt6, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction, Qsci
 from leo.core.leoQt import Alignment, ContextMenuPolicy, DropAction, FocusReason, KeyboardModifier
 from leo.core.leoQt import MoveOperation, Orientation, MouseButton
@@ -3289,7 +3289,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             g.trace('no mimeData!')
             return
         try:
-            mods = ev.modifiers() if isQt6 else int(ev.keyboardModifiers())
+            ### mods = ev.modifiers() if isQt6 else int(ev.keyboardModifiers())
+            mods = ev.modifiers()
             self.was_alt_drag = bool(mods & KeyboardModifier.AltModifier)
             self.was_control_drag = bool(mods & KeyboardModifier.ControlModifier)
         except Exception:  # Defensive.
@@ -3298,7 +3299,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             return
         c, tree = self.c, self.c.frame.tree
         p = None
-        point = ev.position().toPoint() if isQt6 else ev.pos()
+        ### point = ev.position().toPoint() if isQt6 else ev.pos()
+        point = ev.position().toPoint()
         item = self.itemAt(point)
         if item:
             itemHash = tree.itemHash(item)
