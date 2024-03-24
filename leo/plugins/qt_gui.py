@@ -424,23 +424,6 @@ class LeoQtGui(leoGui.LeoGui):
         if val == DialogCode.Accepted:
             return dialog.dt.dateTime().toPyDateTime()
         return None
-    #@+node:ekr.20110605121601.18494: *4* qt_gui.runAskLeoIDDialog (not used)
-    def runAskLeoIDDialog(self) -> Optional[str]:
-        """Create and run a dialog to get g.app.LeoID."""
-        if g.unitTesting:
-            return None
-        message = (
-            "leoID.txt not found\n\n" +
-            "Please enter an id that identifies you uniquely.\n" +
-            "Your cvs/bzr login name is a good choice.\n\n" +
-            "Leo uses this id to uniquely identify nodes.\n\n" +
-            "Your id must contain only letters and numbers\n" +
-            "and must be at least 3 characters in length.")
-        parent = None
-        title = 'Enter Leo id'
-        s, ok = QtWidgets.QInputDialog.getText(parent, title, message)
-
-        return s
     #@+node:ekr.20110605121601.18491: *4* qt_gui.runAskOkCancelNumberDialog (not used)
     def runAskOkCancelNumberDialog(self,
         c: Cmdr, title: str, message: str, cancelButtonText: str = None, okButtonText: str = None,

@@ -208,8 +208,10 @@ if g.app.gui.guiName() == "qt":
 
             offsets = self.owner.c.config.getData('todo_due_date_offsets')
             if not offsets:
-                offsets = '+7 +0 +1 +2 +3 +4 +5 +6 +10 +14 +21 +28 +42 +60 +90 +120 +150 ' \
-                          '>7 <7 <14 >14 <28 >28'.split()
+                offsets = (
+                    '+7 +0 +1 +2 +3 +4 +5 +6 +10 +14 +21 +28 +42 +60 +90 +120 +150 '
+                    '>7 <7 <14 >14 <28 >28'
+                ).split()
             self.date_offset_default = int(offsets[0].strip('>').replace('<', '-'))
             offsets = sorted(set(offsets), key=lambda x: (x[0], int(x[1:].strip('>').replace('<', '-'))))
             u.dueDateOffset.addItems(offsets)

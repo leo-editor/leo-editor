@@ -6,7 +6,7 @@ A simple script to install Leo on Linux.
 Contributed by David McNab <david@rebirthing.co.nz>
 """
 
-import commands,os,sys # commands module is for Unix only.
+import commands, os, sys  # commands module is for Unix only.
 
 # We must be root to use this script.
 if os.getuid() != 0:

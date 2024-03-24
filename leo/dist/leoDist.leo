@@ -138,6 +138,7 @@
 <v t="ekr.20180405171433.2"><vh>LeoDocs.leo</vh></v>
 <v t="ekr.20230301070404.1"><vh>LeoDist.leo</vh></v>
 <v t="ekr.20180405171433.3"><vh>Web docs</vh></v>
+<v t="ekr.20240321104936.1"><vh>Create pypi distro</vh></v>
 <v t="ekr.20180828095843.1"><vh>Update versions.py in release branch</vh></v>
 <v t="ekr.20190618104430.1"><vh>Merge release branch into master</vh></v>
 <v t="ekr.20190802115604.1"><vh>After-merge testing in master</vh></v>
@@ -198,7 +199,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.7.8
+Version: 6.7.9.a1
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -208,7 +209,6 @@ License: MIT
 Keywords: Outliner, IDE, PIM, DAG, Scripting
 Platform: Windows, Linux, MacOS
 Classifier: Development Status :: 6 - Mature
-Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: MacOS
 Classifier: Operating System :: Microsoft :: Windows
 Classifier: Operating System :: POSIX :: Linux
@@ -222,6 +222,9 @@ Download-URL: https://github.com/leo-editor/leo-editor/releases
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
 **The highlights of Leo 6.7.8**
+
+This release simplifies Leo's install process.
+See https://leo-editor.github.io/leo-editor/getting-started.html
 
 - PR #3757: (leoTokens.py) Make Leo's beautifier 3x faster.
 - PR #3771: Revert colorizing of f-strings.
@@ -1403,7 +1406,7 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create the **release branch**: 6.7.8.
+Create the **release branch**: 6.7.9.
 Change version in this checklist to match.
 
 It's ok to merge devel into release branch
@@ -1423,7 +1426,7 @@ It's ok to merge devel into release branch
 
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
-- git merge 6.7.8
+- git merge 6.7.9
 - Run the `make-sphinx` from LeoDocs.leo
   This script copies files from leo/doc/html/_build/html to leo-editor/docs
 - Commit the changes and push.
@@ -1442,7 +1445,7 @@ It's ok to merge devel into release branch
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
-git tag -a v6.7.8 -m "Added v6.7.8 tag"
+git tag -a v6.7.9 -m "Added v6.7.9 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
@@ -1451,15 +1454,15 @@ git push --follow-tags
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout devel
-- git merge 6.7.8
+- git merge 6.7.9
 - update version in leoVersion.py.
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.8 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.9 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.7.8</t>
+- git merge 6.7.9</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -1487,52 +1490,24 @@ Public announcements, after creating a package.
 </t>
 <t tx="ekr.20210814054641.1">@language unknown_language
 
-# Processed in order listed
+# Order matters!
 
-# Global
-
+# Include *everything* in the leo folder.
 graft leo
-global-exclude *.py[cod] __pycache__ *.so
 
-# Root folder
+global-exclude *.py[cod] *.__pycache__ *.so
+global-exclude *.mypy_cache, *.mypy_stubs, *.gitattributes, *.htmlcov
 
+# Add files in the top-level leo-editor folder.
+
+include *.py
 include *.TXT
-include launchLeo.py
-include profileLeo.py
 
-# include pylint-leo.bat
-# include pylint-leo.py
-# include *.nsi
+# Tweaks
 
-include LICENSE
-
-# obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
-include pyproject.toml
-
-# Exclusions
-
-# same as scrub_datafiles in setup.py, prior to Github commit 9982d17e2470ac8313050b8a0288cd39d7ad4f5b
-# Issue #2633: execute-script requires that leo/test exist.
-#              test-all requires that leo/test/test.leo exist.
-# prune leo/test
-
-prune leo/doc/html
-
-# EKR: 2021/08/14: further exclusions.
-
-prune leo/core/.mypy_cache
-prune leo/core/mypy_stubs
-prune leo/core/.gitattributes
 prune leo/unittests/htmlcov
-
-# Issue #603, https://github.com/leo-editor/leo-editor/issues/603
-
+prune leo/doc/html
 include leo/doc/html/conf.py
-include leo/doc/html/index.html
-
-# Issue #3177: https://github.com/leo-editor/leo-editor/issues/3177
-
-prune leo/docs
 </t>
 <t tx="ekr.20210815103531.1">**build**
 
@@ -1575,7 +1550,7 @@ python -m pip uninstall leo
 <t tx="ekr.20230301070404.1">LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for 6.7.
-  The final version in PKG-INFO.TXT must be called 6.7.8, not 6.7.8-final.
+  The final version in PKG-INFO.TXT must be called 6.7.9, not 6.7.9-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Update version in 'PKG-INFO.TXT'
@@ -1591,10 +1566,61 @@ python -m pip uninstall leo
 - Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
 - Open LeoPyRef.leo. Verify the diff after saving.
 </t>
-<t tx="ekr.20230301084201.1">- Change 6.7.8 (the old version) to 6.7.9.
+<t tx="ekr.20230301084201.1">- Change 6.7.9 (the old version) to 6.7.10.
   Be careful about the new version in this node!
 </t>
 <t tx="ekr.20240206185544.1"></t>
+<t tx="ekr.20240321104936.1">.. How to create pypi distributions:
+.. https://github.com/leo-editor/leo-editor/issues/3837
+
+*Note*: All scripts mentioned below are *Python* scripts in leo/scripts.
+
+This checklist may seem daunting. In most cases errors are harmless, so don't despair.
+
+Step 1: Create and test the distribution files in leo/dist:
+
+- Update `PKG-INFO.TXT` with the proper version. 
+  Use `.postN` (not `-N`) suffixes if necessary to create distinct versions.
+- Run the `build_leo` script to create `.whl` and `.tar.gz` files in the leo/dist directory.
+  - Ignore warnings like `no previously-included files matching...`.
+  - Make sure the filenames are as expected!
+- (Optional) Run the `inspect_wheel` script to inspect the metadata in the `.whl` file.
+
+Step 2: Install locally and test:
+
+Everything, including filenames, must be perfect before uploading to testpypi or pypi.
+
+- Run the `install_leo_locally` script. It should:
+  - create a leo folder in the `Python3.x/Lib/site-packages` directory.
+  - create three leo executables in the `Python3.x/scripts` directory.
+  - When in doubt, run `pip cache purge`.
+- Run the `run_installed_leo` script to test the distribution.
+- Run the `uninstall_leo` script to uninstall Leo. It should report:
+  - Two deleted folders from `Python3.x/Lib/site-packages`.
+  - Three deleted scripts `Python3.x/scripts`.
+
+When all is well, go to step 3:
+
+Step 3: Upload to testpypi and test:
+
+Any glitch will require a new version number, a new `PKG-INFO.TXT`, and a new filename!
+
+- Run the `upload_leo_to_testpypi` script.
+  The upload will fail if testpypi has *ever* contained a file with the same contents or filename.
+  If the upload fails you must go back to step 1 and add a unique `.postN` prefix.
+- Run the `install_leo_from_testpypi` script.
+- Test and uninstall as in step 2 above.
+
+Step 3: Upload to pypi and test:
+
+Make *sure* all is well before uploading to pypi.
+
+- Run the `upload_leo_to_pypi` script.
+  If the upload fails, go back to step 1 and add a unique `.postN` prefix.
+- Run the `install_leo_from_pypi` script.
+- Test and uninstall as in step 2 above.
+
+</t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
 
@@ -1723,23 +1749,239 @@ https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 <t tx="maphew.20190206032329.1">#@+leo-ver=5-thin
 #@+node:ekr.20240227064614.1: * @file ../../pyproject.toml
 #@@language toml
-#@@nowrap
 
 # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+#     pypi: https://pypi.org/project/leo/
+# testpypi: https://test.pypi.org/project/leo/
 
 [build-system]
 requires = [
     "build&gt;=1.0",
     "setuptools&gt;=61.0",
 ]
-build-backend = 'setuptools.build_meta'
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-py-modules = []
-    
+packages = [
+    "leo",
+    #@+&lt;&lt; directories that do not contain __init__.py &gt;&gt;
+    #@+node:ekr.20240319155009.1: ** &lt;&lt; directories that do not contain __init__.py &gt;&gt;
+    "leo.Icons",
+    "leo.Icons.Tango",
+    "leo.Icons.cleo",
+    "leo.Icons.cleo.small",
+    "leo.Icons.dark",
+    "leo.Icons.dark.Icons",
+    "leo.Icons.file_icons",
+    "leo.Icons.light",
+    "leo.Icons.recorder",
+    "leo.Icons.transparent.boxes",
+    "leo.Icons.transparent.boxes.black",
+    "leo.Icons.transparent.boxes.solarized",
+    "leo.Icons.transparent.boxes.white",
+    "leo.Icons.transparent.icons.declutter.directives",
+    "leo.Icons.transparent.icons.declutter.directives.black",
+    "leo.Icons.transparent.icons.declutter.directives.solarized",
+    "leo.Icons.transparent.icons.declutter.directives.white",
+    "leo.Icons.transparent.icons.declutter.file",
+    "leo.Icons.transparent.icons.declutter.file.black.empty",
+    "leo.Icons.transparent.icons.declutter.file.black.text",
+    "leo.Icons.transparent.icons.declutter.file.solarized.empty.outlined",
+    "leo.Icons.transparent.icons.declutter.file.solarized.empty.solid",
+    "leo.Icons.transparent.icons.declutter.file.solarized.text.outlined",
+    "leo.Icons.transparent.icons.declutter.file.solarized.text.solid",       
+    "leo.Icons.transparent.icons.declutter.file.white.empty",
+    "leo.Icons.transparent.icons.declutter.file.white.text",                
+    "leo.Icons.transparent.icons.declutter.folder",
+    "leo.Icons.transparent.icons.declutter.folder.black",
+    "leo.Icons.transparent.icons.declutter.folder.black.horizontal",                
+    "leo.Icons.transparent.icons.declutter.folder.black.path",
+    "leo.Icons.transparent.icons.declutter.folder.black.vertical",
+    "leo.Icons.transparent.icons.declutter.folder.solarized",
+    "leo.Icons.transparent.icons.declutter.folder.solarized.horizontal.outlined",
+    "leo.Icons.transparent.icons.declutter.folder.solarized.horizontal.solid",
+    "leo.Icons.transparent.icons.declutter.folder.solarized.path.outlined",
+    "leo.Icons.transparent.icons.declutter.folder.solarized.path.solid",
+    "leo.Icons.transparent.icons.declutter.folder.solarized.vertical.outlined",
+    "leo.Icons.transparent.icons.declutter.folder.solarized.vertical.solid",
+    "leo.Icons.transparent.icons.declutter.folder.white",
+    "leo.Icons.transparent.icons.declutter.folder.white.horizontal",
+    "leo.Icons.transparent.icons.declutter.folder.white.path",
+    "leo.Icons.transparent.icons.declutter.folder.white.vertical",
+    "leo.Icons.transparent.icons.misc",
+    "leo.Icons.transparent.icons.misc.black",
+    "leo.Icons.transparent.icons.misc.solarized",
+    "leo.Icons.transparent.icons.misc.white",
+    "leo.Icons.transparent.icons.nodes.plusminus.black",
+    "leo.Icons.transparent.icons.nodes.plusminus.solarized",
+    "leo.Icons.transparent.icons.nodes.plusminus.white",
+    "leo.Icons.transparent.icons.nodes.triangles.black",
+    "leo.Icons.transparent.icons.nodes.triangles.solarized",
+    "leo.Icons.transparent.icons.nodes.triangles.white",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base0",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base00",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base01",       
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base02",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base03",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base1",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base2",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base3",                
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.black1",                
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.black2",                
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.blue",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.cyan",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.green",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.magenta",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.orange",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.red",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.violet",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.white",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.yellow",
+    "leo.Icons.transparent.icons.task.solarized.regular",
+    "leo.Icons.transparent.icons.task.solarized.small",
+    "leo.Icons.transparent.icons.toolbar",
+    "leo.Icons.transparent.icons.toolbar.black",
+    "leo.Icons.transparent.icons.toolbar.white",
+    "leo.commands",
+    "leo.config",
+    "leo.core",
+    "leo.dist",
+    "leo.dist.conda.leo",
+    "leo.doc",
+    "leo.doc._images",
+    "leo.doc._sources",
+    "leo.doc._sources.slides",
+    "leo.doc._sources.slides.basics",
+    "leo.doc._sources.slides.minibuffer",
+    "leo.doc._static",
+    "leo.doc.html",
+    "leo.doc.slides",
+    "leo.doc.slides.basics",
+    "leo.doc.slides.minibuffer",
+    "leo.extensions",
+    "leo.external",
+    "leo.external.ckeditor",
+    "leo.external.ckeditor.adapters",
+    "leo.external.ckeditor.lang",
+    "leo.external.ckeditor.plugins",
+    "leo.external.ckeditor.plugins.a11yhelp.dialogs",
+    "leo.external.ckeditor.plugins.a11yhelp.dialogs.lang",
+    "leo.external.ckeditor.plugins.about.dialogs",
+    "leo.external.ckeditor.plugins.about.dialogs.hidpi",
+    "leo.external.ckeditor.plugins.clipboard.dialogs",
+    "leo.external.ckeditor.plugins.colordialog.dialogs",
+    "leo.external.ckeditor.plugins.dialog",
+    "leo.external.ckeditor.plugins.div.dialogs",
+    "leo.external.ckeditor.plugins.find.dialogs",
+    "leo.external.ckeditor.plugins.flash.dialogs",
+    "leo.external.ckeditor.plugins.flash.images",
+    "leo.external.ckeditor.plugins.forms.dialogs",
+    "leo.external.ckeditor.plugins.forms.images",
+    "leo.external.ckeditor.plugins.iframe.dialogs",
+    "leo.external.ckeditor.plugins.iframe.images",
+    "leo.external.ckeditor.plugins.image.dialogs",
+    "leo.external.ckeditor.plugins.image.images",
+    "leo.external.ckeditor.plugins.link.dialogs",
+    "leo.external.ckeditor.plugins.link.images",
+    "leo.external.ckeditor.plugins.link.images.hidpi",
+    "leo.external.ckeditor.plugins.liststyle.dialogs",
+    "leo.external.ckeditor.plugins.magicline.images",
+    "leo.external.ckeditor.plugins.magicline.images.hidpi",
+    "leo.external.ckeditor.plugins.pagebreak.images",
+    "leo.external.ckeditor.plugins.pastefromword.filter",
+    "leo.external.ckeditor.plugins.preview",
+    "leo.external.ckeditor.plugins.scayt",
+    "leo.external.ckeditor.plugins.scayt.dialogs",
+    "leo.external.ckeditor.plugins.showblocks.images",
+    "leo.external.ckeditor.plugins.smiley.dialogs",
+    "leo.external.ckeditor.plugins.smiley.images",
+    "leo.external.ckeditor.plugins.specialchar.dialogs",
+    "leo.external.ckeditor.plugins.specialchar.dialogs.lang",
+    "leo.external.ckeditor.plugins.table.dialogs",
+    "leo.external.ckeditor.plugins.tabletools.dialogs",
+    "leo.external.ckeditor.plugins.templates.dialogs",
+    "leo.external.ckeditor.plugins.templates.templates",
+    "leo.external.ckeditor.plugins.templates.templates.images",
+    "leo.external.ckeditor.plugins.wsc",
+    "leo.external.ckeditor.plugins.wsc.dialogs",
+    "leo.external.ckeditor.samples",
+    "leo.external.ckeditor.samples.assets",
+    "leo.external.ckeditor.samples.assets.inlineall",
+    "leo.external.ckeditor.samples.assets.outputxhtml",
+    "leo.external.ckeditor.samples.assets.uilanguages",
+    "leo.external.ckeditor.samples.plugins.dialog",
+    "leo.external.ckeditor.samples.plugins.dialog.assets",
+    "leo.external.ckeditor.samples.plugins.enterkey",
+    "leo.external.ckeditor.samples.plugins.htmlwriter",
+    "leo.external.ckeditor.samples.plugins.htmlwriter.assets.outputforflash",
+    "leo.external.ckeditor.samples.plugins.magicline",
+    "leo.external.ckeditor.samples.plugins.toolbar",
+    "leo.external.ckeditor.samples.plugins.wysiwygarea",
+    "leo.external.ckeditor.skins",
+    "leo.external.ckeditor.skins.moono",
+    "leo.external.ckeditor.skins.moono.images",
+    "leo.external.ckeditor.skins.moono.images.hidpi",
+    "leo.external.concurrent",
+    "leo.external.concurrent.futures",
+    "leo.external.leoserver",
+    "leo.external.npyscreen",
+    "leo.external.npyscreen.compatibility_code",
+    "leo.external.obsolete",
+    "leo.modes",
+    "leo.plugins",
+    "leo.plugins.GraphCanvas",
+    "leo.plugins.editpane",
+    "leo.plugins.examples",
+    "leo.plugins.importers",
+    "leo.plugins.leo_babel",
+    "leo.plugins.leo_babel.doc",
+    "leo.plugins.leo_babel.examples",
+    "leo.plugins.leo_babel.results",
+    "leo.plugins.leo_babel.tests",
+    "leo.plugins.obsolete",
+    "leo.plugins.pygeotag",
+    "leo.plugins.qmlnb",
+    "leo.plugins.qmlnb.qml",
+    "leo.plugins.rpcalc",
+    "leo.plugins.rpcalc.doc",
+    "leo.plugins.rpcalc.icons",
+    "leo.plugins.test",
+    "leo.plugins.viewrendered3",
+    "leo.plugins.viewrendered3.asciidoc",
+    "leo.plugins.viewrendered3.asciidoc3",
+    "leo.plugins.writers",
+    "leo.scripts",
+    "leo.scripts.win",
+    "leo.test",
+    "leo.themes",
+    "leo.themes.dark",
+    "leo.themes.dark.Icons",
+    "leo.themes.dark.Icons.img_src",
+    "leo.themes.ekr_dark.Icons",
+    "leo.themes.fixed_width_icons",
+    "leo.themes.generic.Icons",
+    "leo.themes.leo_dark_0.Icons",
+    "leo.themes.leo_dark_0.Icons.Tango",
+    "leo.themes.leo_dark_0.Icons.cleo",
+    "leo.themes.leo_dark_0.Icons.cleo.small",
+    "leo.themes.leo_dark_0.Icons.file_icons",
+    "leo.themes.light",
+    "leo.themes.light.Icons",
+    "leo.themes.light.Icons.img_src",
+    "leo.unittests",
+    "leo.unittests.commands",
+    "leo.unittests.core",
+    "leo.unittests.misc_tests",
+    "leo.unittests.plugins",
+    "leo.www",
+    #@-&lt;&lt; directories that do not contain __init__.py &gt;&gt;
+]
+
 [project]
 requires-python = "&gt;= 3.9"
-version = "6.7.8"
+version = "6.7.9.a1"
+name = "leo"
+
 #@+&lt;&lt; developer info &gt;&gt;
 #@+node:ekr.20240227084103.1: ** &lt;&lt; developer info &gt;&gt;
 authors =  [
@@ -1757,11 +1999,9 @@ maintainers =  [
 #@+&lt;&lt; description &gt;&gt;
 #@+node:ekr.20240227162726.1: ** &lt;&lt; description &gt;&gt;
 classifiers = [
-  "Author :: Edward K. Ream",
   "Development Status :: 6 - Mature",
   "Intended Audience :: Developers",
   "Topic :: Software Development",
-  "License :: MIT License",
   "Operating System :: MacOS",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX :: Linux",
@@ -1778,7 +2018,6 @@ classifiers = [
 description = "A PIM, IDE and Outliner"
 keywords = ["PIM", "IDE", "Outliner"]
 license = {text = "MIT License"}
-name = "leo"
 readme = "README.md"
 #@-&lt;&lt; description &gt;&gt;
 #@+&lt;&lt; dependencies &gt;&gt;
@@ -1833,6 +2072,11 @@ dependencies = [
 
 # [project.optional-dependencies]
 #@-&lt;&lt; dependencies &gt;&gt;
+
+[project.scripts]
+leo = "leo.core.runLeo:run"
+leo-c = "leo.core.runLeo:run_console"
+leo-console = "leo.core.runLeo:run_console"
 
 [project.urls]
 #@+&lt;&lt; urls &gt;&gt;

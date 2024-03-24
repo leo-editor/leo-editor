@@ -736,8 +736,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             with open(self.editor_csspath, encoding=ENCODING) as f:
                 self.editor_style = f.read()
         else:
-            self.editor_style = EDITOR_STYLESHEET_DARK if is_dark \
-                                else EDITOR_STYLESHEET_LIGHT
+            self.editor_style = EDITOR_STYLESHEET_DARK if is_dark else EDITOR_STYLESHEET_LIGHT
 
         # If a stylesheet exists for RsT, we cache its contents.
         self.rst_stylesheet = None
@@ -745,8 +744,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             with open(self.rst_csspath, encoding=ENCODING) as f:
                 self.rst_stylesheet = f.read()
         else:
-            self.rst_stylesheet = RST_STYLESHEET_DARK if is_dark \
-                                  else RST_STYLESHEET_LIGHT
+            self.rst_stylesheet = RST_STYLESHEET_DARK if is_dark else RST_STYLESHEET_LIGHT
         #@-<<set stylesheets>>
         #@+<<set up editor>>
         #@+node:tom.20210602172856.1: *4* <<set up editor>>
@@ -788,8 +786,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.render_button = QPushButton("Rendered <--> Plain")
         self.render_button.clicked.connect(self.switch_and_render)
 
-        b_style = RENDER_BTN_STYLESHEET_DARK if is_dark \
-            else RENDER_BTN_STYLESHEET_LIGHT
+        b_style = RENDER_BTN_STYLESHEET_DARK if is_dark else RENDER_BTN_STYLESHEET_LIGHT
         self.render_button.setStyleSheet(b_style)
         #@-<<set up render button>>
 
@@ -938,16 +935,17 @@ class ZEditorWin(QtWidgets.QMainWindow):
             elif keyval == F7_KEY:
                 # Copy our gnx to clipboard.
                 copy2clip(self.p.v.gnx)
-            elif self.render_pane_type == NAV_VIEW \
-                    or self.render_kind == EDITOR:
+            elif self.render_pane_type == NAV_VIEW or self.render_kind == EDITOR:
                 # change host's selected node to new target
                 if keyval == F9_KEY:
                     gnx = getGnx(getLine(w))
                     found_gnx = gotoHostGnx(self.c, gnx)
                     if not found_gnx:
                         g.es(f'Could not find gnx "{gnx}"')
-            elif self.render_kind == BROWSER \
-                    and self.render_pane_type == BROWSER_VIEW:
+            elif (
+                self.render_kind == BROWSER
+                and self.render_pane_type == BROWSER_VIEW
+            ):
                 # Zoom/unzoom
                 if bare_key == '=':
                     _zf = w.zoomFactor()

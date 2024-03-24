@@ -101,10 +101,6 @@ class LeoGui:
         """Create and run Leo's About Leo dialog."""
         raise NotImplementedError
 
-    def runAskLeoIDDialog(self) -> Any:
-        """Create and run a dialog to get g.app.LeoID."""
-        raise NotImplementedError
-
     def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> Any:
         """Create and run an askOK dialog ."""
         raise NotImplementedError
@@ -366,9 +362,6 @@ class NullGui(LeoGui):
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs
     def runAboutLeoDialog(self, c: Cmdr, version: str, theCopyright: str, url: str, email: str) -> str:
         return self.simulateDialog("aboutLeoDialog", None)
-
-    def runAskLeoIDDialog(self) -> str:
-        return self.simulateDialog("leoIDDialog", None)
 
     def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> str:
         return self.simulateDialog("okDialog", "Ok")

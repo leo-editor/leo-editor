@@ -10,6 +10,10 @@ mypy_cache/
 *.history
 *.orig
 
+# Build logs
+build_log.txt
+inspect_wheel.txt
+
 # Other programs
 leoProfile
 leo/.vscode/

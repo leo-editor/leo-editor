@@ -228,7 +228,6 @@
 </v>
 <v t="ekr.20180225010644.1"><vh>Other files</vh>
 <v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
-<v t="ekr.20230702120645.1"><vh>@@edit ../../.dmypy.ini</vh></v>
 <v t="ekr.20240201175949.1"><vh>@file ../../requirements.txt</vh></v>
 <v t="ekr.20220222130955.1"><vh>@edit ../../.mypy.ini</vh></v>
 <v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
@@ -3446,7 +3445,6 @@ writers = 'leo.unittests.plugins.test_writers'
 # f"{plugins}.test_writers",
 </t>
 <t tx="ekr.20230624114517.1"></t>
-<t tx="ekr.20230702120645.1"></t>
 <t tx="ekr.20230717210524.1"></t>
 <t tx="ekr.20230720115916.1">g.cls()
 import leo.commands.editFileCommands as efc

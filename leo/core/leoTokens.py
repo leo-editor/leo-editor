@@ -4,15 +4,17 @@
 # Leo's copyright notice is based on the MIT license:
 # https://leo-editor.github.io/leo-editor/license.html
 
+# This file may be compiled with mypyc as follows:
+# python -m mypyc leo\core\leoTokens.py --strict-optional
+
 #@+<< leoTokens.py: docstring >>
 #@+node:ekr.20240105140814.2: ** << leoTokens.py: docstring >>
 """
-leoTokens.py: A token-based beautifier for Python.
+leoTokens.py: A beautifier for Python that uses *only* tokens.
 
 For help: `python -m leo.core.leoTokens --help`
 
 Use Leo https://leo-editor.github.io/leo-editor/ to study this code!
-when studying this code.
 
 Without Leo, you will see special **sentinel comments** that create
 Leo's outline structure. These comments have the form::
@@ -24,7 +26,6 @@ Leo's outline structure. These comments have the form::
 #@+node:ekr.20240105140814.3: ** << leoTokens.py: imports & annotations >>
 from __future__ import annotations
 import argparse
-import ast
 import difflib
 import glob
 import keyword
@@ -37,32 +38,18 @@ import time
 import tokenize
 from typing import Any, Generator, Optional, Union
 
-try:
-    from leo.core import leoGlobals as g
-except Exception:  # pragma: no cover
-    # check_g function gives the message.
-    g = None
+# Leo Imports.
 
-Node = ast.AST
-Settings = Optional[dict[str, Any]]
+Settings = dict[str, Union[int, bool]]
 #@-<< leoTokens.py: imports & annotations >>
-
-debug: bool = True
 
 #@+others
 #@+node:ekr.20240214065940.1: ** top-level functions (leoTokens.py)
-#@+node:ekr.20240105140814.8: *3* function: check_g
-def check_g() -> bool:  # pragma: no cover
-    """print an error message if g is None"""
-    if not g:
-        print('This statement failed: `from leo.core import leoGlobals as g`')
-        print('Please adjust your Python path accordingly')
-    return bool(g)
 #@+node:ekr.20240105140814.41: *3* function: dump_contents
 def dump_contents(contents: str, tag: str = 'Contents') -> None:  # pragma: no cover
     print('')
     print(f"{tag}...\n")
-    for i, z in enumerate(g.splitLines(contents)):
+    for i, z in enumerate(g_split_lines(contents)):
         print(f"{i+1:<3} ", z.rstrip())
     print('')
 #@+node:ekr.20240105140814.42: *3* function: dump_lines
@@ -95,6 +82,66 @@ def dump_tokens(tokens: list[InputToken], tag: str = 'Tokens') -> None:  # pragm
     for z in tokens:
         print(z.dump())
     print('')
+#@+node:ekr.20240313044116.1: *3* function: g_read_file
+def g_read_file(file_name: str) -> str:
+    """Return the contents of the file whose full path is given."""
+    tag = 'readFileIntoString'
+    if not file_name:
+        print(f"{tag}: no file_name")
+        return ''
+    if not os.path.exists(file_name):
+        print(f"{tag}: file not found: {file_name}")
+        return ''
+    if os.path.isdir(file_name):
+        print(f"{tag}: not a file: {file_name}")
+        return ''
+    with open(file_name, 'rb') as f:
+        byte_string = f.read()
+    assert isinstance(byte_string, bytes), byte_string.__class__.__name__
+    return to_unicode(byte_string)
+#@+node:ekr.20240313045222.1: *3* function: g_short_file_name
+def g_short_file_name(fileName: str) -> str:
+    """Return the base name of a path."""
+    return os.path.basename(fileName) if fileName else ''
+#@+node:ekr.20240313043444.1: *3* function: g_split_lines
+def g_split_lines(s: str) -> list[str]:
+    """
+    Split s into lines, preserving the number of lines and
+    the endings of all lines, including the last line.
+    """
+    # The guard protects only against s == None.
+    return s.splitlines(True) if s else []  # This is a Python string function!
+#@+node:ekr.20240313043705.1: *3* function: g_to_encoded_string
+def g_to_encoded_string(s: str) -> bytes:
+    """Convert unicode string to an encoded string."""
+    try:
+        return s.encode('utf-8', "strict")
+    except UnicodeError as e:
+        print(f"g_to_encoded_string: Error {e!r}\n{s}")
+        return s.encode('utf-8', "replace")
+#@+node:ekr.20240313051124.1: *3* function: g.to_unicode
+def to_unicode(s: bytes) -> str:
+    """Convert bytes to unicode."""
+    encoding = 'utf-8'
+    tag = 'leoTokens:toUnicode'
+    try:
+        return s.decode(encoding, 'strict')
+    except(UnicodeDecodeError, UnicodeError):  # noqa
+        print(f"{tag}: unicode error:\n{s!r}")
+        try:
+            return s.decode(encoding, 'replace')
+        except Exception as e:
+            print(f"{tag}: unexpected error: {e!r}\n{s!r}")
+            return ''
+#@+node:ekr.20240313045422.1: *3* function: g_truncate
+def g_truncate(s: str, n: int) -> str:
+    """Return s truncated to n characters."""
+    if len(s) <= n:
+        return s
+    s2 = s[: n - 3] + f"...({len(s)})"
+    if s.endswith('\n'):
+        return s2 + '\n'
+    return s2
 #@+node:ekr.20240105140814.9: *3* function: get_modified_files
 def get_modified_files(repo_path: str) -> list[str]:  # pragma: no cover
     """Return the modified files in the given repo."""
@@ -124,7 +171,7 @@ def input_tokens_to_string(tokens: list[InputToken]) -> str:  # pragma: no cover
     if tokens is None:
         # This indicates an internal error.
         print('')
-        g.trace('===== input token list is None ===== ')
+        print('===== input token list is None ===== ')
         print('')
         return ''
     return ''.join([z.to_string() for z in tokens])
@@ -145,7 +192,7 @@ def main() -> None:  # pragma: no cover
                 glob.glob(f'{root_dir}**{os.sep}*.py', recursive=True)
             )
     if not requested_files:
-        print(f"No files in {arg_files!r}")
+        # print(f"No files in {arg_files!r}")
         return
 
     # Calculate the actual list of files.
@@ -174,14 +221,14 @@ def orange_command(
     requested_files: list[str],
     dirty_files: list[str],
     to_be_checked_files: list[str],
-    settings: Settings = None,
+    settings: Optional[Settings] = None,
 ) -> None:  # pragma: no cover
     """The outer level of the 'tbo/orange' command."""
-    if not check_g():
-        return
     t1 = time.process_time()
     n_tokens = 0
     n_beautified = 0
+    if settings is None:
+        settings = {}
     for filename in to_be_checked_files:
         if os.path.exists(filename):
             was_dirty = filename in dirty_files
@@ -201,13 +248,13 @@ def orange_command(
             f"checked: {len(to_be_checked_files):<3} "
             f"beautified: {n_beautified:<3} in {','.join(arg_files)}"
         )
-#@+node:ekr.20240105140814.24: *3* function: output_tokens_to_string
+#@+node:ekr.20240312115008.1: *3* function: output_tokens_to_string
 def output_tokens_to_string(tokens: list[OutputToken]) -> str:
     """Return the string represented by the list of tokens."""
     if tokens is None:  # pragma: no cover
         # This indicates an internal error.
         print('')
-        g.trace('===== output token list is None ===== ')
+        print('===== output token list is None ===== ')
         print('')
         return ''
     return ''.join([z.to_string() for z in tokens])
@@ -264,12 +311,19 @@ class InternalBeautifierError(Exception):
 class InputToken:  # leoTokens.py.
     """A class representing a TBO input token."""
 
-    __slots__ = 'context', 'index', 'kind', 'line', 'line_number', 'value'
+    __slots__ = (
+        'context',
+        'index',
+        'kind',
+        'line',
+        'line_number',
+        'value',
+    )
 
     def __init__(
         self, kind: str, value: str, index: int, line: str, line_number: int,
     ) -> None:
-        self.context: str = None
+        self.context: Optional[str] = None
         self.index = index
         self.kind = kind
         self.line = line  # The entire line containing the token.
@@ -280,7 +334,9 @@ class InputToken:  # leoTokens.py.
         s = f"{self.index:<5} {self.kind:>8}"
         return f"Token {s}: {self.show_val(20):22}"
 
-    __str__ = __repr__
+    def __str__(self) -> str:  # pragma: no cover
+        s = f"{self.index:<5} {self.kind:>8}"
+        return f"Token {s}: {self.show_val(20):22}"
 
     def to_string(self) -> str:
         """Return the contribution of the token to the source file."""
@@ -320,9 +376,9 @@ class InputToken:  # leoTokens.py.
             val = str(len(self.value))
         elif self.kind == 'string' or self.kind.startswith('fstring'):
             # repr would be confusing.
-            val = g.truncate(self.value, truncate_n)
+            val = g_truncate(self.value, truncate_n)
         else:
-            val = g.truncate(repr(self.value), truncate_n)
+            val = g_truncate(repr(self.value), truncate_n)
         return val
     #@-others
 #@+node:ekr.20240105143307.1: *3* class Tokenizer
@@ -345,14 +401,14 @@ class Tokenizer:
     )
 
     def __init__(self) -> None:
-        self.contents: str = None
+        self.contents: str = ''
         self.offsets: list[int] = [0]  # Index of start of each line.
         self.prev_offset = -1
         self.token_index = 0
         self.token_list: list[InputToken] = []
         # Describing the scanned f-string...
-        self.fstring_line: str = None
-        self.fstring_line_number: int = None
+        self.fstring_line: Optional[str] = None
+        self.fstring_line_number: Optional[int] = None
         self.fstring_values: Optional[list[str]] = None
 
     #@+others
@@ -378,8 +434,9 @@ class Tokenizer:
             kind = 'string'
             value = ''.join(self.fstring_values)
             # Use the line and line number of the 'string-start' token.
-            line = self.fstring_line
-            line_number = self.fstring_line_number
+            line = self.fstring_line or ''
+            line_number = self.fstring_line_number or 0
+
             # Clear the saved values.
             self.fstring_line = None
             self.fstring_line_number = None
@@ -394,7 +451,7 @@ class Tokenizer:
 
         # Split the results into lines.
         result = ''.join([z.to_string() for z in self.token_list])
-        result_lines = g.splitLines(result)
+        result_lines = g_split_lines(result)
         # Check.
         ok = result == contents and result_lines == self.lines
         assert ok, (
@@ -411,9 +468,9 @@ class Tokenizer:
         if not ok:  # pragma: no cover
             print('\nRound-trip check FAILS')
             print('Contents...\n')
-            g.printObj(contents)
+            print(contents)
             print('\nResult...\n')
-            g.printObj(result)
+            print(result)
         return ok
     #@+node:ekr.20240105143214.4: *4* Tokenizer.create_input_tokens
     def create_input_tokens(
@@ -490,18 +547,14 @@ class Tokenizer:
 
         Perform consistency checks and handle all exceptions.
         """
-        global debug
         try:
-            # Use Python's tokenizer module.
-            # https://docs.python.org/3/library/tokenize.html
             five_tuples = tokenize.tokenize(
                 io.BytesIO(contents.encode('utf-8')).readline)
-        except Exception:  # pragma: no cover
-            print('make_tokens: exception in tokenize.tokenize')
-            g.es_exception()
-            return None
+        except Exception as e:  # pragma: no cover
+            print(f"make_input_tokens: exception {e!r}")
+            return []
         tokens = self.create_input_tokens(contents, five_tuples)
-        if debug:  # True: 2.9 sec. False: 2.8 sec.
+        if True:  # True: 2.9 sec. False: 2.8 sec.
             assert self.check_round_trip(contents, tokens)
         return tokens
     #@+node:ekr.20240105143214.7: *4* Tokenizer.tokens_to_string
@@ -510,7 +563,7 @@ class Tokenizer:
         if tokens is None:  # pragma: no cover
             # This indicates an internal error.
             print('')
-            g.trace('===== No tokens ===== ')
+            print('===== No tokens ===== ')
             print('')
             return ''
         return ''.join([z.to_string() for z in tokens])
@@ -521,16 +574,19 @@ class OutputToken:
     A class representing an Orange output token.
     """
 
-    def __init__(self, kind: str, value: str):
+    __slots__ = ('index', 'kind', 'value')
 
+
+    def __init__(self, kind: str, value: str, index: int):
+        self.index = index
         self.kind = kind
         self.value = value
 
     def __repr__(self) -> str:  # pragma: no cover
         return f"OutputToken: {self.show_val(20)}"
 
-    __str__ = __repr__
-
+    def __str__(self) -> str:  # pragma: no cover
+        return f"OutputToken: {self.show_val(20)}"
 
     def to_string(self) -> str:
         """Return the contribution of the token to the source file."""
@@ -544,9 +600,9 @@ class OutputToken:
             val = str(len(self.value))
         elif self.kind == 'string' or self.kind.startswith('fstring'):
             # repr would be confusing.
-            val = g.truncate(self.value, truncate_n)
+            val = g_truncate(self.value, truncate_n)
         else:
-            val = g.truncate(repr(self.value), truncate_n)
+            val = g_truncate(repr(self.value), truncate_n)
         return val
     #@-others
 #@+node:ekr.20240105140814.108: *3* class ParseState
@@ -570,14 +626,17 @@ class ParseState:
                         twice if state.value == self.level.
     """
 
-    def __init__(self, kind: str, value: Union[int, str]) -> None:
+    __slots__ = ('kind', 'value')
+
+    def __init__(self, kind: str, value: Union[int, str, None]) -> None:
         self.kind = kind
         self.value = value
 
     def __repr__(self) -> str:
         return f"State: {self.kind} {self.value!r}"  # pragma: no cover
 
-    __str__ = __repr__
+    def __str__(self) -> str:
+        return f"State: {self.kind} {self.value!r}"  # pragma: no cover
 #@+node:ekr.20240128114842.1: *3* class ScanState
 class ScanState:  # leoTokens.py.
     """
@@ -593,7 +652,7 @@ class ScanState:  # leoTokens.py.
 
     """
 
-    __slots__ = ['kind', 'value', 'token']
+    __slots__ = ('kind', 'token', 'value')
 
     def __init__(self, kind: str, token: InputToken) -> None:
         self.kind = kind
@@ -603,30 +662,28 @@ class ScanState:  # leoTokens.py.
     def __repr__(self) -> str:  # pragma: no cover
         return f"ScanState: i: {self.token.index:<4} kind: {self.kind} value: {self.value}"
 
-    __str__ = __repr__
+    def __str__(self) -> str:  # pragma: no cover
+        return f"ScanState: i: {self.token.index:<4} kind: {self.kind} value: {self.value}"
 #@+node:ekr.20240105145241.1: *3* class TokenBasedOrange
 class TokenBasedOrange:  # Orange is the new Black.
 
     #@+<< TokenBasedOrange: docstring >>
     #@+node:ekr.20240119062227.1: *4* << TokenBasedOrange: docstring >>
     #@@language rest
+    #@@wrap
 
     """
     Leo's token-based beautifier, three times faster than the beautifier in leoAst.py.
 
     **Design**
 
-    The *pre_scan* method calls three *finishers*.
+    The *pre_scan* method is the heart of the algorithm. It sets context for the `:`, `=`, `**` and `.` tokens *without* using the parse tree. *pre_scan* calls three *finishers*.
 
-    Each finisher uses a list of *relevant earlier tokens* to set the context for later tokens.
+    Each finisher uses a list of *relevant earlier tokens* to set the context for one kind of (input) token. Finishers look behind (in the stream of input tokens) with essentially no cost.
 
-    Finishers embody *zero-cost unlimited look-behind*.
+    After the pre-scan, *tbo.beautify* (the main loop) calls *visitors* for each separate type of *input* token.
 
-    After the pre-scan, *tbo.beautify* (the main loop) calls *visitors* for each separate type of token.
-
-    Visitors call *code generators*. Code generators call *code generation helpers*.
-
-    These helpers form a peephole optimizer that looks behind a bounded number of *output* tokens.
+    Visitors call *code generators* to generate *output* tokens. Code generation *helpers* form a peephole optimizer that looks behind a bounded number of (output) tokens.
     """
     #@-<< TokenBasedOrange: docstring >>
     #@+<< TokenBasedOrange: __slots__ >>
@@ -635,41 +692,23 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Command-line arguments.
         'all', 'beautified', 'diff', 'report', 'write',
 
-        # Hard-coded ivar.
-        'tab_width',
-
-        # Debugging.
-        'contents', 'filename',
-
         # Global data.
-        'code_list', 'tokens',
+        'code_list', 'contents', 'filename', 'tab_width', 'tokens',
 
         # Token-related data for visitors.
         'index', 'line_number', 'token',
 
         # Parsing state for visitors.
-        'decorator_seen', 'in_arg_list', 'in_doc_part',
-        'state_stack', 'verbatim',
+        'decorator_seen', 'in_arg_list', 'in_doc_part', 'state_stack', 'verbatim',
 
-        # State data for whitespace visitors.
-        # Don't even *think* about changing these!
-        'curly_brackets_level', 'indent_level', 'lws',
-        'paren_level', 'square_brackets_stack',
+        # Whitespace state. Don't even *think* about changing these!
+        'curly_brackets_level', 'indent_level', 'lws', 'paren_level', 'square_brackets_stack',
+
+        # Regular expressions.
+        'at_others_pat', 'beautify_pat', 'comment_pat', 'end_doc_pat',
+        'nobeautify_pat', 'node_pat', 'start_doc_pat',
     ]
     #@-<< TokenBasedOrange: __slots__ >>
-    #@+<< TokenBasedOrange: patterns >>
-    #@+node:ekr.20240108065133.1: *4* << TokenBasedOrange: patterns >>
-    # Patterns...
-    nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
-
-    # Patterns from FastAtRead class, specialized for python delims.
-    node_pat = re.compile(r'^(\s*)#@\+node:([^:]+): \*(\d+)?(\*?) (.*)$')  # @node
-    start_doc_pat = re.compile(r'^\s*#@\+(at|doc)?(\s.*?)?$')  # @doc or @
-    at_others_pat = re.compile(r'^(\s*)#@(\+|-)others\b(.*)$')  # @others
-
-    # Doc parts end with @c or a node sentinel. Specialized for python.
-    end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
-    #@-<< TokenBasedOrange: patterns >>
     #@+<< TokenBasedOrange: python-related constants >>
     #@+node:ekr.20240116040458.1: *4* << TokenBasedOrange: python-related constants >>
     insignificant_kinds = (
@@ -686,17 +725,12 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     #@+others
     #@+node:ekr.20240105145241.2: *4* tbo.ctor
-    def __init__(self, settings: Settings = None):
+    def __init__(self, settings: Optional[Settings] = None):
         """Ctor for Orange class."""
 
         # Set default settings.
         if settings is None:
             settings = {}
-        self.all = False
-        self.beautified = False
-        self.diff = False
-        self.report = False
-        self.write = False
 
         # Hard-code 4-space tabs.
         self.tab_width = 4
@@ -704,18 +738,29 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Define tokens even for empty files.
         self.tokens: list[InputToken] = []
 
-        # Override defaults from settings dict.
-        valid_keys = ('all', 'beautified', 'diff', 'report', 'write')
-        for key in settings:  # pragma: no cover
-            value = settings.get(key)
-            if key in valid_keys and value is not None:
-                setattr(self, key, value)
-            else:
-                g.trace(f"Unexpected setting: {key} = {value!r}")
-                g.trace('(TokenBasedOrange)', g.callers())
+        # Set ivars from the settings dict *without* using setattr.
+        self.all = settings.get('all', False)
+        self.beautified = settings.get('beautified', False)
+        self.diff = settings.get('diff', False)
+        self.report = settings.get('report', False)
+        self.write = settings.get('write', False)
+
+        # General patterns.
+        self.beautify_pat = re.compile(
+            r'#\s*pragma:\s*beautify\b|#\s*@@beautify|#\s*@\+node|#\s*@[+-]others|#\s*@[+-]<<')
+        self.comment_pat = re.compile(r'^(\s*)#[^@!# \n]')
+        self.nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
+
+        # Patterns from FastAtRead class, specialized for python delims.
+        self.node_pat = re.compile(r'^(\s*)#@\+node:([^:]+): \*(\d+)?(\*?) (.*)$')  # @node
+        self.start_doc_pat = re.compile(r'^\s*#@\+(at|doc)?(\s.*?)?$')  # @doc or @
+        self.at_others_pat = re.compile(r'^(\s*)#@(\+|-)others\b(.*)$')  # @others
+
+        # Doc parts end with @c or a node sentinel. Specialized for python.
+        self.end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
     #@+node:ekr.20240126012433.1: *4* tbo: Checking & dumping
     #@+node:ekr.20240106220724.1: *5* tbo.dump_token_range
-    def dump_token_range(self, i1: int, i2: int, tag: str = None) -> None:  # pragma: no cover
+    def dump_token_range(self, i1: int, i2: int, tag: Optional[str] = None) -> None:  # pragma: no cover
         """Dump the given range of input tokens."""
         if tag:
             print(tag)
@@ -726,7 +771,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Print a message about an error in the beautifier itself."""
         # Compute lines_s.
         line_number = self.token.line_number
-        lines = g.splitLines(self.contents)
+        lines = g_split_lines(self.contents)
         n1 = max(0, line_number - 5)
         n2 = min(line_number + 5, len(lines))
         prev_lines = ['\n']
@@ -750,7 +795,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Print a message about a user error."""
         # Compute lines_s.
         line_number = self.token.line_number
-        lines = g.splitLines(self.contents)
+        lines = g_split_lines(self.contents)
         n1 = max(0, line_number - 5)
         n2 = min(line_number + 5, len(lines))
         prev_lines = ['\n']
@@ -788,7 +833,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Debugging vars...
         self.contents = contents
         self.filename = filename
-        self.line_number: int = None
+        self.line_number: Optional[int] = None
 
         # The input and output lists...
         self.code_list: list[OutputToken] = []  # The list of output tokens.
@@ -804,7 +849,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.decorator_seen = False  # Set by do_name for do_op.
         self.in_arg_list = 0  # > 0 if in an arg list of a def.
         self.in_doc_part = False
-        self.state_stack: list["ParseState"] = []  # Stack of ParseState objects.
+        self.state_stack: list[ParseState] = []  # Stack of ParseState objects.
 
         # Leo-related state.
         self.verbatim = False  # True: don't beautify.
@@ -812,7 +857,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Ivars describing the present input token...
         self.index = 0  # The index within the tokens array of the token being scanned.
         self.lws = ''  # Leading whitespace. Required!
-        self.token: InputToken = None
         #@-<< tbo.beautify: init ivars >>
 
         try:
@@ -822,7 +866,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             # The main loop:
             self.gen_token('file-start', '')
             self.push_state('file-start')
-            prev_line_number: int = None
+            prev_line_number: int = 0
+            self.token: InputToken
             for self.index, self.token in enumerate(tokens):
                 # Set global for visitors.
                 if prev_line_number != self.token.line_number:
@@ -841,12 +886,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Make no change if there is any error.
         except InternalBeautifierError as e:  # pragma: no cover
             # oops calls self.internal_error_message to creates e.
-            print(e)
+            print(repr(e))
         except AssertionError as e:  # pragma: no cover
-            g.es_exception()
             print(self.internal_error_message(repr(e)))
         return contents
-
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry) (stats & diffs)
     def beautify_file(self, filename: str, was_dirty: bool) -> bool:  # pragma: no cover
         """
@@ -855,16 +898,16 @@ class TokenBasedOrange:  # Orange is the new Black.
         Return True if the file was beautified.
         """
         if 0:
-            g.trace(
+            print(
                 f"all: {int(self.all)} "
                 f"beautified: {int(self.beautified)} "
                 f"diff: {int(self.diff)} "
                 f"report: {int(self.report)} "
                 f"write: {int(self.write)} "
-                f"{g.shortFileName(filename)}"
+                f"{g_short_file_name(filename)}"
             )
         self.filename = filename
-        contents, encoding, tokens = self.init_tokens_from_file(filename)
+        contents, tokens = self.init_tokens_from_file(filename)
         if not (contents and tokens):
             return False  # Not an error.
         if not isinstance(tokens[0], InputToken):
@@ -877,20 +920,20 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.regularize_newlines(contents) == self.regularize_newlines(results):
             return False
 
-        # print reports reports.
+        # Print reports.
         if self.beautified:  # --beautified.
-            print(f"tbo: beautified: {g.shortFileName(filename)}")
+            print(f"tbo: beautified: {g_short_file_name(filename)}")
         if self.diff:  # --diff.
             print(f"Diffs: {filename}")
             self.show_diffs(contents, results)
 
         # Write the (changed) file .
         if self.write:  # --write.
-            self.write_file(filename, results, encoding=encoding)
+            self.write_file(filename, results)
         return True
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
-        str, str, list[InputToken]
+        str, list[InputToken]
     ]:  # pragma: no cover
         """
         Create the list of tokens for the given file.
@@ -898,18 +941,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         self.indent_level = 0
         self.filename = filename
-        contents, encoding = g.readFileIntoString(filename)
+        contents = g_read_file(filename)
         if not contents:
             self.tokens = []
-            return None, None, None
+            return '', []
         self.tokens = tokens = Tokenizer().make_input_tokens(contents)
-        return contents, encoding, tokens
+        return contents, tokens
     #@+node:ekr.20240105140814.17: *5* tbo.write_file
-    def write_file(self,
-        filename: str,
-        s: str,
-        encoding: str = 'utf-8',
-    ) -> None:  # pragma: no cover
+    def write_file(self, filename: str, s: str) -> None:  # pragma: no cover
         """
         Write the string s to the file whose name is given.
 
@@ -918,26 +957,25 @@ class TokenBasedOrange:  # Orange is the new Black.
         Before calling this function, the caller should ensure
         that the file actually has been changed.
         """
-        # g.trace('Writing', filename, encoding, len(s))
         try:
-            s2 = g.toEncodedString(s, encoding=encoding, reportErrors=True)
+            s2 = g_to_encoded_string(s)  # May raise exception.
             with open(filename, 'wb') as f:
                 f.write(s2)
         except Exception as e:  # pragma: no cover
-            g.trace(f"Error writing {filename}\n{e}")
+            print(f"Error {e!r}: {filename!r}")
     #@+node:ekr.20200107040729.1: *5* tbo.show_diffs
     def show_diffs(self, s1: str, s2: str) -> None:  # pragma: no cover
         """Print diffs between strings s1 and s2."""
         filename = self.filename
         lines = list(difflib.unified_diff(
-            g.splitLines(s1),
-            g.splitLines(s2),
+            g_split_lines(s1),
+            g_split_lines(s2),
             fromfile=f"Old {filename}",
             tofile=f"New {filename}",
         ))
         print('')
-        tag = f"Diffs for {filename}"
-        g.printObj(lines, tag=tag)
+        print(f"Diffs for {filename}")
+        print(lines)
     #@+node:ekr.20240105145241.9: *4* tbo: Visitors & generators
     # Visitors (tbo.do_* methods) handle input tokens.
     # Generators (tbo.gen_* methods) create zero or more output tokens.
@@ -948,8 +986,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         if prev.kind == kind:
             self.code_list.pop()
     #@+node:ekr.20240105145241.10: *5* tbo.do_comment
-    comment_pat = re.compile(r'^(\s*)#[^@!# \n]')
-
     def do_comment(self) -> None:
         """Handle a comment token."""
         val = self.token.value
@@ -960,7 +996,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.in_doc_part = False
             self.verbatim = False
             self.decorator_seen = False
-            # Do *not clear other state, which may persist across @others.
+            # Do *not* clear other state, which may persist across @others.
                 # self.curly_brackets_level = 0
                 # self.in_arg_list = 0
                 # self.indent_level = 0
@@ -1010,7 +1046,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.12: *5* tbo.do_endmarker
     def do_endmarker(self) -> None:
         """Handle an endmarker token."""
-        # Ensure exactly one blank at the end of the file.
+        # Ensure exactly one blank line at the end of the file.
         while self.code_list[-1].kind in ('line-end', 'line-indent'):
             self.code_list.pop()
         self.gen_token('line-end', '\n')
@@ -1035,7 +1071,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if new_indent > old_indent:
             self.indent_level += 1
         elif new_indent < old_indent:  # pragma: no cover (defensive)
-            g.trace('\n===== can not happen', repr(new_indent), repr(old_indent))
+            print(f"\n===== do_indent: can not happen {new_indent!r}, {old_indent!r}")
         self.lws = new_indent
         self.gen_line_indent()
     #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators
@@ -1069,14 +1105,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         do_newline: Handle a regular newline.
 
-        do_nl: Handle a continuation line.
-
         From https://docs.python.org/3/library/token.html
 
-        - NEWLINE tokens end *logical* lines of Python code.
-
-        - NL tokens end *physical* lines. They appear when when a logical line
-          of code spans multiple physical lines.
+        NEWLINE tokens end *logical* lines of Python code.
         """
         # Only do_newline and do_nl should call this method.
         token = self.token
@@ -1089,7 +1120,16 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Add the indentation until the next indent/unindent token.
         self.gen_line_indent()
 
-    do_nl = do_newline
+    def do_nl(self) -> None:
+        """
+        do_nl: Handle a continuation line.
+
+        From https://docs.python.org/3/library/token.html
+
+        NL tokens end *physical* lines. They appear when when a logical line of
+        code spans multiple physical lines.
+        """
+        return self.do_newline()
     #@+node:ekr.20240105145241.25: *6* tbo.gen_line_end
     def gen_line_end(self) -> OutputToken:
         """Add a line-end request to the code list."""
@@ -1162,12 +1202,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         val = self.token.value
         context = self.token.context
         prev_i = self.prev(self.index)
-        prev = self.tokens[prev_i]
+        prev = None if prev_i is None else self.tokens[prev_i]
 
         # Generate the proper code using the context supplied by the parser.
         self.clean('blank')
         if context == 'complex-slice':
-            if prev.value not in '[:':
+            if prev and prev.value not in '[:':
                 self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
@@ -1204,9 +1244,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.gen_token('op-no-blanks', '.')
     #@+node:ekr.20240105145241.20: *6* tbo.gen_equal_op
-    # Keys: token.index of '=' token. Values: count of ???s
-    arg_dict: dict[int, int] = {}
-
     def gen_equal_op(self) -> None:
 
         val = self.token.value
@@ -1279,8 +1316,9 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False
         # Get the previous significant token.
         prev_i = self.prev(i)
-        prev_token = self.tokens[prev_i]
-        kind, value = prev_token.kind, prev_token.value
+        prev_token = None if prev_i is None else self.tokens[prev_i]
+        kind = prev_token.kind if prev_token else ''
+        value = prev_token.value if prev_token else ''
         if kind in ('number', 'string'):
             return_val = False
         elif kind == 'op' and value in ')]':
@@ -1337,7 +1375,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_token('op', val)
             self.gen_blank()
     #@+node:ekr.20240105145241.3: *6* tbo.push_state
-    def push_state(self, kind: str, value: Union[int, str] = None) -> None:
+    def push_state(self, kind: str, value: Union[int, str, None] = None) -> None:
         """Append a state to the state stack."""
         state = ParseState(kind, value)
         self.state_stack.append(state)
@@ -1353,9 +1391,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.gen_token('string', val)
         self.gen_blank()
     #@+node:ekr.20240105145241.22: *5* tbo.do_verbatim
-    beautify_pat = re.compile(
-        r'#\s*pragma:\s*beautify\b|#\s*@@beautify|#\s*@\+node|#\s*@[+-]others|#\s*@[+-]<<')
-
     def do_verbatim(self) -> None:
         """
         Handle one token in verbatim mode.
@@ -1417,8 +1452,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.26: *5* tbo.gen_token
     def gen_token(self, kind: str, value: Any) -> OutputToken:
         """Add an output token to the code list."""
-        tok = OutputToken(kind, value)
-        tok.index = len(self.code_list)
+        tok = OutputToken(kind, value, len(self.code_list))
         self.code_list.append(tok)
         return tok
     #@+node:ekr.20240105140814.12: *5* tbo.regularize_newlines
@@ -1445,7 +1479,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # The main loop.
         in_import = False
         scan_stack: list[ScanState] = []
-        prev_token: InputToken = None
+        prev_token: Optional[InputToken] = None
         for i, token in enumerate(self.tokens):
             kind, value = token.kind, token.value
             if kind in 'newline':
@@ -1459,13 +1493,13 @@ class TokenBasedOrange:  # Orange is the new Black.
             elif kind == 'op':
                 #@+<< pre-scan 'op' tokens >>
                 #@+node:ekr.20240128123117.1: *6* << pre-scan 'op' tokens >>
-                top_state = scan_stack[-1] if scan_stack else None
+                top_state: Optional[ScanState] = scan_stack[-1] if scan_stack else None
 
                 # Handle '[' and ']'.
                 if value == '[':
                     scan_stack.append(ScanState('slice', token))
                 elif value == ']':
-                    assert top_state.kind == 'slice'
+                    assert top_state and top_state.kind == 'slice'
                     self.finish_slice(i, top_state)
                     scan_stack.pop()
 
@@ -1473,19 +1507,19 @@ class TokenBasedOrange:  # Orange is the new Black.
                 if value == '{':
                     scan_stack.append(ScanState('dict', token))
                 elif value == '}':
-                    assert top_state.kind == 'dict'
+                    assert top_state and top_state.kind == 'dict'
                     self.finish_dict(i, top_state)
                     scan_stack.pop()
 
                 # Handle '(' and ')'
                 elif value == '(':
-                    if self.is_python_keyword(prev_token) or prev_token.kind != 'name':
+                    if self.is_python_keyword(prev_token) or prev_token and prev_token.kind != 'name':
                         state_kind = '('
                     else:
                         state_kind = 'arg'
                     scan_stack.append(ScanState(state_kind, token))
                 elif value == ')':
-                    assert top_state.kind in ('(', 'arg'), repr(top_state)
+                    assert top_state and top_state.kind in ('(', 'arg'), repr(top_state)
                     if top_state.kind == 'arg':
                         self.finish_arg(i, top_state)
                     scan_stack.pop()
@@ -1515,12 +1549,15 @@ class TokenBasedOrange:  # Orange is the new Black.
                 prev_token = token
         # Sanity check.
         if scan_stack:  # pragma: no cover
-            g.printObj(scan_stack, tag='pre_scan: non-empty scan_stack')
+            print('pre_scan: non-empty scan_stack')
+            print(scan_stack)
     #@+node:ekr.20240129041304.1: *6* tbo.finish_arg
-    def finish_arg(self, end: int, state: ScanState) -> None:
+    def finish_arg(self, end: int, state: Optional[ScanState]) -> None:
         """Set context for all ':' when scanning from '(' to ')'."""
 
         # Sanity checks.
+        if not state:
+            return
         assert state.kind == 'arg', repr(state)
         token = state.token
         assert token.value == '(', repr(token)
@@ -1545,7 +1582,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 equal_context = 'initializer'
 
         # Set the context of all outer-level ':', '*', and '**' tokens.
-        prev: InputToken = None
+        prev: Optional[InputToken] = None
         for i in range(i1, end):
             token = self.tokens[i]
             if token.kind not in self.insignificant_kinds:
@@ -1618,7 +1655,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         for i in colons:
             self.set_context(i, final_context)
     #@+node:ekr.20240129040347.1: *6* tbo.finish_dict
-    def finish_dict(self, end: int, state: ScanState) -> None:
+    def finish_dict(self, end: int, state: Optional[ScanState]) -> None:
         """
         Set context for all ':' when scanning from '{' to '}'
 
@@ -1629,6 +1666,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
 
         # Sanity checks.
+        if not state:
+            return
         assert state.kind == 'dict', repr(state)
         token = state.token
         assert token.value == '{', repr(token)
@@ -1641,7 +1680,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         for i in colons:
             self.set_context(i, 'dict')
     #@+node:ekr.20240129034209.1: *5* tbo.is_unary_op_with_prev
-    def is_unary_op_with_prev(self, prev: InputToken, token: InputToken) -> bool:
+    def is_unary_op_with_prev(self, prev: Optional[InputToken], token: InputToken) -> bool:
         """
         Return True if token is a unary op in the context of prev, the previous
         significant token.
@@ -1666,7 +1705,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             return self.is_python_keyword(token)
         return return_val
     #@+node:ekr.20240129035336.1: *5* tbo.is_python_keyword
-    def is_python_keyword(self, token: InputToken) -> bool:
+    def is_python_keyword(self, token: Optional[InputToken]) -> bool:
         """Return True if token is a 'name' token referring to a Python keyword."""
         if not token or token.kind != 'name':
             return False
@@ -1699,11 +1738,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             token = self.tokens[i]
             if self.is_significant_token(token):
                 if trace:  # pragma: no cover
-                    print(
-                        f"next: {g.callers(1):25} "
-                        f"token: {token.brief_dump()} "
-                        f"line: {self.get_token_line(i)}"
-                    )
+                    print(f"token: {token.brief_dump()}")
                 return i
             i += 1
         return None  # pragma: no cover
@@ -1743,14 +1778,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         if trace:  # pragma: no cover
             token_s = f"<{token.kind}: {token.show_val(12)}>"
             ignore_s = 'Ignore' if token.context else ' ' * 6
-            g.trace(f"{i:3} {g.callers(1):15} {ignore_s} token: {token_s} context: {context}")
+            print(f"{i:3} {ignore_s} token: {token_s} context: {context}")
 
         if not token.context:
             token.context = context
     #@-others
 #@-others
 
-if __name__ == '__main__':
+if __name__ == '__main__' or 'leoTokens' in __name__:
     main()  # pragma: no cover
 
 #@@language python

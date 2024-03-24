@@ -1,23 +1,239 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20240227064614.1: * @file ../../pyproject.toml
 #@@language toml
-#@@nowrap
 
 # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+#     pypi: https://pypi.org/project/leo/
+# testpypi: https://test.pypi.org/project/leo/
 
 [build-system]
 requires = [
     "build>=1.0",
     "setuptools>=61.0",
 ]
-build-backend = 'setuptools.build_meta'
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-py-modules = []
-    
+packages = [
+    "leo",
+    #@+<< directories that do not contain __init__.py >>
+    #@+node:ekr.20240319155009.1: ** << directories that do not contain __init__.py >>
+    "leo.Icons",
+    "leo.Icons.Tango",
+    "leo.Icons.cleo",
+    "leo.Icons.cleo.small",
+    "leo.Icons.dark",
+    "leo.Icons.dark.Icons",
+    "leo.Icons.file_icons",
+    "leo.Icons.light",
+    "leo.Icons.recorder",
+    "leo.Icons.transparent.boxes",
+    "leo.Icons.transparent.boxes.black",
+    "leo.Icons.transparent.boxes.solarized",
+    "leo.Icons.transparent.boxes.white",
+    "leo.Icons.transparent.icons.declutter.directives",
+    "leo.Icons.transparent.icons.declutter.directives.black",
+    "leo.Icons.transparent.icons.declutter.directives.solarized",
+    "leo.Icons.transparent.icons.declutter.directives.white",
+    "leo.Icons.transparent.icons.declutter.file",
+    "leo.Icons.transparent.icons.declutter.file.black.empty",
+    "leo.Icons.transparent.icons.declutter.file.black.text",
+    "leo.Icons.transparent.icons.declutter.file.solarized.empty.outlined",
+    "leo.Icons.transparent.icons.declutter.file.solarized.empty.solid",
+    "leo.Icons.transparent.icons.declutter.file.solarized.text.outlined",
+    "leo.Icons.transparent.icons.declutter.file.solarized.text.solid",       
+    "leo.Icons.transparent.icons.declutter.file.white.empty",
+    "leo.Icons.transparent.icons.declutter.file.white.text",                
+    "leo.Icons.transparent.icons.declutter.folder",
+    "leo.Icons.transparent.icons.declutter.folder.black",
+    "leo.Icons.transparent.icons.declutter.folder.black.horizontal",                
+    "leo.Icons.transparent.icons.declutter.folder.black.path",
+    "leo.Icons.transparent.icons.declutter.folder.black.vertical",
+    "leo.Icons.transparent.icons.declutter.folder.solarized",
+    "leo.Icons.transparent.icons.declutter.folder.solarized.horizontal.outlined",
+    "leo.Icons.transparent.icons.declutter.folder.solarized.horizontal.solid",
+    "leo.Icons.transparent.icons.declutter.folder.solarized.path.outlined",
+    "leo.Icons.transparent.icons.declutter.folder.solarized.path.solid",
+    "leo.Icons.transparent.icons.declutter.folder.solarized.vertical.outlined",
+    "leo.Icons.transparent.icons.declutter.folder.solarized.vertical.solid",
+    "leo.Icons.transparent.icons.declutter.folder.white",
+    "leo.Icons.transparent.icons.declutter.folder.white.horizontal",
+    "leo.Icons.transparent.icons.declutter.folder.white.path",
+    "leo.Icons.transparent.icons.declutter.folder.white.vertical",
+    "leo.Icons.transparent.icons.misc",
+    "leo.Icons.transparent.icons.misc.black",
+    "leo.Icons.transparent.icons.misc.solarized",
+    "leo.Icons.transparent.icons.misc.white",
+    "leo.Icons.transparent.icons.nodes.plusminus.black",
+    "leo.Icons.transparent.icons.nodes.plusminus.solarized",
+    "leo.Icons.transparent.icons.nodes.plusminus.white",
+    "leo.Icons.transparent.icons.nodes.triangles.black",
+    "leo.Icons.transparent.icons.nodes.triangles.solarized",
+    "leo.Icons.transparent.icons.nodes.triangles.white",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base0",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base00",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base01",       
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base02",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base03",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base1",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base2",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.base3",                
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.black1",                
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.black2",                
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.blue",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.cyan",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.green",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.magenta",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.orange",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.red",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.violet",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.white",
+    "leo.Icons.transparent.icons.task.solarized.monochromatic.yellow",
+    "leo.Icons.transparent.icons.task.solarized.regular",
+    "leo.Icons.transparent.icons.task.solarized.small",
+    "leo.Icons.transparent.icons.toolbar",
+    "leo.Icons.transparent.icons.toolbar.black",
+    "leo.Icons.transparent.icons.toolbar.white",
+    "leo.commands",
+    "leo.config",
+    "leo.core",
+    "leo.dist",
+    "leo.dist.conda.leo",
+    "leo.doc",
+    "leo.doc._images",
+    "leo.doc._sources",
+    "leo.doc._sources.slides",
+    "leo.doc._sources.slides.basics",
+    "leo.doc._sources.slides.minibuffer",
+    "leo.doc._static",
+    "leo.doc.html",
+    "leo.doc.slides",
+    "leo.doc.slides.basics",
+    "leo.doc.slides.minibuffer",
+    "leo.extensions",
+    "leo.external",
+    "leo.external.ckeditor",
+    "leo.external.ckeditor.adapters",
+    "leo.external.ckeditor.lang",
+    "leo.external.ckeditor.plugins",
+    "leo.external.ckeditor.plugins.a11yhelp.dialogs",
+    "leo.external.ckeditor.plugins.a11yhelp.dialogs.lang",
+    "leo.external.ckeditor.plugins.about.dialogs",
+    "leo.external.ckeditor.plugins.about.dialogs.hidpi",
+    "leo.external.ckeditor.plugins.clipboard.dialogs",
+    "leo.external.ckeditor.plugins.colordialog.dialogs",
+    "leo.external.ckeditor.plugins.dialog",
+    "leo.external.ckeditor.plugins.div.dialogs",
+    "leo.external.ckeditor.plugins.find.dialogs",
+    "leo.external.ckeditor.plugins.flash.dialogs",
+    "leo.external.ckeditor.plugins.flash.images",
+    "leo.external.ckeditor.plugins.forms.dialogs",
+    "leo.external.ckeditor.plugins.forms.images",
+    "leo.external.ckeditor.plugins.iframe.dialogs",
+    "leo.external.ckeditor.plugins.iframe.images",
+    "leo.external.ckeditor.plugins.image.dialogs",
+    "leo.external.ckeditor.plugins.image.images",
+    "leo.external.ckeditor.plugins.link.dialogs",
+    "leo.external.ckeditor.plugins.link.images",
+    "leo.external.ckeditor.plugins.link.images.hidpi",
+    "leo.external.ckeditor.plugins.liststyle.dialogs",
+    "leo.external.ckeditor.plugins.magicline.images",
+    "leo.external.ckeditor.plugins.magicline.images.hidpi",
+    "leo.external.ckeditor.plugins.pagebreak.images",
+    "leo.external.ckeditor.plugins.pastefromword.filter",
+    "leo.external.ckeditor.plugins.preview",
+    "leo.external.ckeditor.plugins.scayt",
+    "leo.external.ckeditor.plugins.scayt.dialogs",
+    "leo.external.ckeditor.plugins.showblocks.images",
+    "leo.external.ckeditor.plugins.smiley.dialogs",
+    "leo.external.ckeditor.plugins.smiley.images",
+    "leo.external.ckeditor.plugins.specialchar.dialogs",
+    "leo.external.ckeditor.plugins.specialchar.dialogs.lang",
+    "leo.external.ckeditor.plugins.table.dialogs",
+    "leo.external.ckeditor.plugins.tabletools.dialogs",
+    "leo.external.ckeditor.plugins.templates.dialogs",
+    "leo.external.ckeditor.plugins.templates.templates",
+    "leo.external.ckeditor.plugins.templates.templates.images",
+    "leo.external.ckeditor.plugins.wsc",
+    "leo.external.ckeditor.plugins.wsc.dialogs",
+    "leo.external.ckeditor.samples",
+    "leo.external.ckeditor.samples.assets",
+    "leo.external.ckeditor.samples.assets.inlineall",
+    "leo.external.ckeditor.samples.assets.outputxhtml",
+    "leo.external.ckeditor.samples.assets.uilanguages",
+    "leo.external.ckeditor.samples.plugins.dialog",
+    "leo.external.ckeditor.samples.plugins.dialog.assets",
+    "leo.external.ckeditor.samples.plugins.enterkey",
+    "leo.external.ckeditor.samples.plugins.htmlwriter",
+    "leo.external.ckeditor.samples.plugins.htmlwriter.assets.outputforflash",
+    "leo.external.ckeditor.samples.plugins.magicline",
+    "leo.external.ckeditor.samples.plugins.toolbar",
+    "leo.external.ckeditor.samples.plugins.wysiwygarea",
+    "leo.external.ckeditor.skins",
+    "leo.external.ckeditor.skins.moono",
+    "leo.external.ckeditor.skins.moono.images",
+    "leo.external.ckeditor.skins.moono.images.hidpi",
+    "leo.external.concurrent",
+    "leo.external.concurrent.futures",
+    "leo.external.leoserver",
+    "leo.external.npyscreen",
+    "leo.external.npyscreen.compatibility_code",
+    "leo.external.obsolete",
+    "leo.modes",
+    "leo.plugins",
+    "leo.plugins.GraphCanvas",
+    "leo.plugins.editpane",
+    "leo.plugins.examples",
+    "leo.plugins.importers",
+    "leo.plugins.leo_babel",
+    "leo.plugins.leo_babel.doc",
+    "leo.plugins.leo_babel.examples",
+    "leo.plugins.leo_babel.results",
+    "leo.plugins.leo_babel.tests",
+    "leo.plugins.obsolete",
+    "leo.plugins.pygeotag",
+    "leo.plugins.qmlnb",
+    "leo.plugins.qmlnb.qml",
+    "leo.plugins.rpcalc",
+    "leo.plugins.rpcalc.doc",
+    "leo.plugins.rpcalc.icons",
+    "leo.plugins.test",
+    "leo.plugins.viewrendered3",
+    "leo.plugins.viewrendered3.asciidoc",
+    "leo.plugins.viewrendered3.asciidoc3",
+    "leo.plugins.writers",
+    "leo.scripts",
+    "leo.scripts.win",
+    "leo.test",
+    "leo.themes",
+    "leo.themes.dark",
+    "leo.themes.dark.Icons",
+    "leo.themes.dark.Icons.img_src",
+    "leo.themes.ekr_dark.Icons",
+    "leo.themes.fixed_width_icons",
+    "leo.themes.generic.Icons",
+    "leo.themes.leo_dark_0.Icons",
+    "leo.themes.leo_dark_0.Icons.Tango",
+    "leo.themes.leo_dark_0.Icons.cleo",
+    "leo.themes.leo_dark_0.Icons.cleo.small",
+    "leo.themes.leo_dark_0.Icons.file_icons",
+    "leo.themes.light",
+    "leo.themes.light.Icons",
+    "leo.themes.light.Icons.img_src",
+    "leo.unittests",
+    "leo.unittests.commands",
+    "leo.unittests.core",
+    "leo.unittests.misc_tests",
+    "leo.unittests.plugins",
+    "leo.www",
+    #@-<< directories that do not contain __init__.py >>
+]
+
 [project]
 requires-python = ">= 3.9"
-version = "6.7.8"
+version = "6.7.9.a1"
+name = "leo"
+
 #@+<< developer info >>
 #@+node:ekr.20240227084103.1: ** << developer info >>
 authors =  [
@@ -35,11 +251,9 @@ maintainers =  [
 #@+<< description >>
 #@+node:ekr.20240227162726.1: ** << description >>
 classifiers = [
-  "Author :: Edward K. Ream",
   "Development Status :: 6 - Mature",
   "Intended Audience :: Developers",
   "Topic :: Software Development",
-  "License :: MIT License",
   "Operating System :: MacOS",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX :: Linux",
@@ -56,7 +270,6 @@ classifiers = [
 description = "A PIM, IDE and Outliner"
 keywords = ["PIM", "IDE", "Outliner"]
 license = {text = "MIT License"}
-name = "leo"
 readme = "README.md"
 #@-<< description >>
 #@+<< dependencies >>
@@ -111,6 +324,11 @@ dependencies = [
 
 # [project.optional-dependencies]
 #@-<< dependencies >>
+
+[project.scripts]
+leo = "leo.core.runLeo:run"
+leo-c = "leo.core.runLeo:run_console"
+leo-console = "leo.core.runLeo:run_console"
 
 [project.urls]
 #@+<< urls >>

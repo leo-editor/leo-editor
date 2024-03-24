@@ -1706,7 +1706,7 @@ class FileCommands:
     #@+node:ekr.20210316085413.2: *6* fc.leojs_vnodes
     def leojs_vnode(self, p: Position, gnxSet: Any, isIgnore: bool = False) -> dict[str, Any]:
         """Return a jsonized vnode."""
-        c = self.c
+        # c = self.c
         fc = self
         v = p.v
         # Precompute constants.

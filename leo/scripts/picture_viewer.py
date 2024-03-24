@@ -466,12 +466,12 @@ class Slides(QtWidgets.QWidget):  # type:ignore
         file_name = self.files_list[self.slide_number]
         if file_name in self.db:
             try:
-                self.scale, self.dx, self.dy = self.db [file_name]
+                self.scale, self.dx, self.dy = self.db[file_name]
                 self.dx = int(self.dx)
                 self.dy = int(self.dy)
             except TypeError:
                 g.trace('TypeError', file_name)
-                self.scale = self.db [file_name]  # type:ignore
+                self.scale = self.db[file_name]  # type:ignore
                 self.dx = self.dy = 0
         else:
             self.scale = 1.0
@@ -490,7 +490,7 @@ class Slides(QtWidgets.QWidget):  # type:ignore
                     f"save_data: {g.caller():<20} {self.slide_number} scale: {self.scale:9.8} "
                     f"x: {self.dx} y: {self.dy}")
             file_name = self.files_list[self.slide_number]
-            self.db [file_name] = [self.scale, int(self.dx), int(self.dy)]
+            self.db[file_name] = [self.scale, int(self.dx), int(self.dy)]
     #@+node:ekr.20230219044202.1: *3* Slides: event handlers
     def closeEvent(self, event):
         """Override QWidget.closeEvent."""
@@ -509,7 +509,7 @@ class Slides(QtWidgets.QWidget):  # type:ignore
         if not s:
             return
         d = {
-            '\x1b':  self.quit,  # ESC.
+            '\x1b': self.quit,  # ESC.
             '\b': self.prev_slide,
             '\r': self.next_slide,
             '\n': self.next_slide,
@@ -548,10 +548,10 @@ class Slides(QtWidgets.QWidget):  # type:ignore
             w.scroll_lockout = True  # Lock out scrollContentsBy.
             if 1:  # The scale won't make much difference.
                 hbar.setValue(dx)
-                vbar.setValue(-dy) # tbpassin: use -dy
+                vbar.setValue(-dy)  # tbpassin: use -dy
             else:
                 hbar.setValue(int(self.scale * dx))
-                vbar.setValue(-int(self.scale * dy)) # tbpassin: use -dy
+                vbar.setValue(-int(self.scale * dy))  # tbpassin: use -dy
         finally:
             w.scroll_lockout = False
     #@+node:ekr.20230224054937.1: *4* Slides.reset_scroll (not used)
