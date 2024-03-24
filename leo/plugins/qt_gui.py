@@ -1475,80 +1475,10 @@ class LeoQtGui(leoGui.LeoGui):
             name = repr(w)
         return name
     #@+node:ekr.20111027083744.16532: *4* qt_gui.enableSignalDebugging
-    # pylint: disable=c-extension-no-member,no-name-in-module
-
     import PyQt6.QtTest as QtTest
-    ### mypy complains about assigning to a type.
+
     QSignalSpy = QtTest.QSignalSpy  # type:ignore
     assert QSignalSpy
-
-    ###
-    # if isQt5:
-        # # pylint: disable=no-name-in-module
-        # # To do: https://doc.qt.io/qt-5/qsignalspy.html
-        # from PyQt5.QtTest import QSignalSpy
-        # assert QSignalSpy
-    # elif isQt6:
-        # # pylint: disable=c-extension-no-member,no-name-in-module
-        # import PyQt6.QtTest as QtTest
-        # # mypy complains about assigning to a type.
-        # QSignalSpy = QtTest.QSignalSpy  # type:ignore
-        # assert QSignalSpy
-    # else:
-        # # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.
-        # _oldConnect = QtCore.QObject.connect
-        # _oldDisconnect = QtCore.QObject.disconnect
-        # _oldEmit = QtCore.QObject.emit
-
-        # def _wrapConnect(self, callableObject: Callable) -> Callable:
-            # """Returns a wrapped call to the old version of QtCore.QObject.connect"""
-
-            #@verbatim
-            # @staticmethod  # type:ignore
-            # def call(*args: Any) -> None:
-                # callableObject(*args)
-                # self._oldConnect(*args)
-
-            # return call
-
-        # def _wrapDisconnect(self, callableObject: Callable) -> Callable:
-            # """Returns a wrapped call to the old version of QtCore.QObject.disconnect"""
-
-            #@verbatim
-            # @staticmethod  # type:ignore
-            # def call(*args: Any) -> None:
-                # callableObject(*args)
-                # self._oldDisconnect(*args)
-
-            # return call
-
-        # def enableSignalDebugging(self, **kwargs: Any) -> None:
-            # """Call this to enable Qt Signal debugging. This will trap all
-            # connect, and disconnect calls."""
-
-            # def f(*args):
-                # return None
-            # connectCall: Callable = kwargs.get('connectCall', f)
-            # disconnectCall: Callable = kwargs.get('disconnectCall', f)
-            # emitCall: Callable = kwargs.get('emitCall', f)
-
-            # def printIt(msg: str) -> Callable:
-
-                # def call(*args: Any) -> None:
-                    # print(msg, args)
-
-                # return call
-
-            # # Monkey-patch.
-
-            # QtCore.QObject.connect = self._wrapConnect(connectCall)
-            # QtCore.QObject.disconnect = self._wrapDisconnect(disconnectCall)
-
-            # def new_emit(self, *args: Any) -> None:  # type:ignore
-                # emitCall(self, *args)
-                # self._oldEmit(self, *args)
-
-            # QtCore.QObject.emit = new_emit
     #@+node:ekr.20190819091957.1: *3* qt_gui.Widgets...
     #@+node:ekr.20190819094016.1: *4* qt_gui.createButton
     def createButton(self, parent: Widget, name: str, label: str) -> Widget:

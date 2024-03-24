@@ -19,7 +19,7 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< demo.py imports >>
 
-# pylint: disable=no-member,not-callable
+# pylint: disable=not-callable
 #@@language python
 #@@tabwidth -4
 #@+others

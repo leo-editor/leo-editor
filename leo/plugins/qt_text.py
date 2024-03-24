@@ -17,12 +17,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     MousePressEvent = Any
     Widget = Any
-#@-<< qt_text imports & annotations>>
-# pylint: disable = c-extension-no-member
 
-FullWidthSelection = 0x06000  # works for both Qt5 and Qt6
+FullWidthSelection = 0x06000
 QColor = QtGui.QColor
 QFontMetrics = QtGui.QFontMetrics
+#@-<< qt_text imports & annotations>>
 
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands

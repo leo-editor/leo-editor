@@ -2316,7 +2316,7 @@ class LeoFlexxTree(flx.Widget):
     def create_item_with_parent(self, item, parent):
         """Create a tree item for item and all its visible children."""
         # pylint: disable=no-member
-            # set_collapsed is in the base class.
+        # set_collapsed is in the base class.
         trace = 'drawing' in g.app.debug
         tag = 'create_item_with_parent'
         ap = item['ap']

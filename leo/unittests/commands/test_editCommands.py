@@ -4130,7 +4130,6 @@ class TestEditCommands(LeoUnitTest):
         c = self.c
         u = c.undoer
         assert u
-        # pylint: disable=no-member
         c.insertHeadlineBefore()
         self.assertEqual(u.undoMenuLabel, 'Undo Insert Node Before')
         c.undoer.undo()
@@ -4140,7 +4139,6 @@ class TestEditCommands(LeoUnitTest):
         c = self.c
         u = c.undoer
         assert u
-        # pylint: disable=no-member
         c.insertHeadline()
         self.assertEqual(u.undoMenuLabel, 'Undo Insert Node')
         c.undoer.undo()
@@ -4149,7 +4147,6 @@ class TestEditCommands(LeoUnitTest):
     def test_inserting_a_new_node_draws_the_screen_exactly_once(self):
         c = self.c
         n = c.frame.tree.redrawCount
-        # pylint: disable=no-member
         c.insertHeadline()
         c.outerUpdate()  # Not actually needed, but should not matter.
         n2 = c.frame.tree.redrawCount
@@ -4476,7 +4473,6 @@ class TestEditCommands(LeoUnitTest):
         c.selectPosition(p)
         body = 'This is a test'
         c.setBodyString(p, body)
-        # pylint: disable=no-member
         self.assertEqual(p.b, body)
         c.insertHeadline()
         c.undoer.undo()

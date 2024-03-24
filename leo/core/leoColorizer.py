@@ -2962,8 +2962,6 @@ if Qsci:
             """Configure the QScintilla lexer."""
             # c = self.leo_c
             lexer = self
-            # To do: use c.config setting.
-            # pylint: disable=no-member
             font = QtGui.QFont("DejaVu Sans Mono", 14)
             lexer.setFont(font)
 #@+node:ekr.20190319151826.1: ** class PygmentsColorizer(BaseColorizer)

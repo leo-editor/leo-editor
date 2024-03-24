@@ -245,7 +245,6 @@ class InteractBASH(Interact):
     def bashReader(self, proc):
         cnt = 0
         timeout = False
-        # pylint: disable=maybe-no-member
         while not timeout:
             dat = []
             try:

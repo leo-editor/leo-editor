@@ -198,7 +198,6 @@ Jacob Peck added markdown support to this plugin.
 #@-<< vr docstring >>
 #@+<< vr imports >>
 #@+node:tbrown.20100318101414.5993: ** << vr imports >>
-# py--lint: disable = c-extension-no-member
 from __future__ import annotations
 from collections.abc import Callable
 import json
@@ -210,22 +209,15 @@ from typing import Any, Optional, TYPE_CHECKING
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
-from leo.core.leoQt import QtMultimedia, QtSvg  ### phonon, QtWebKitWidgets
+from leo.core.leoQt import QtMultimedia, QtSvg
 from leo.core.leoQt import ContextMenuPolicy, Orientation, WrapMode
 from leo.plugins import qt_text
 from leo.plugins import free_layout
 
-###
-    # try:
-        # BaseTextWidget = QtWebKitWidgets.QWebView  # type:ignore
-    # except Exception:
-        # BaseTextWidget = QtWidgets.QTextBrowser  # type:ignore
-
 BaseTextWidget = QtWidgets.QTextBrowser
 
-#
 # Optional third-party imports...
-#
+
 # Docutils.
 try:
     # pylint: disable=import-error
@@ -246,13 +238,13 @@ if docutils:
         g.es_exception()
 else:
     got_docutils = False
-#
+
 # Jinja.
 try:
     from jinja2 import Template
 except ImportError:
     Template = None  # type:ignore
-#
+
 # Markdown.
 try:
     # pylint: disable=import-error
@@ -260,13 +252,12 @@ try:
     got_markdown = True
 except ImportError:
     got_markdown = False  # type:ignore
-#
+
 # nbformat (@jupyter) support.
 try:
     # pylint: disable=import-error
     import nbformat
     from nbconvert import HTMLExporter
-    # from traitlets.config import Config
 except ImportError:
     nbformat = None
 
@@ -296,7 +287,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Widget = Any
 #@-<< vr annotations >>
-# pylint: disable=no-member
 trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')
 asciidoc3_exec = shutil.which('asciidoc3')

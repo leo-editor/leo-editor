@@ -3,7 +3,7 @@
 #@@language python
 r"""
 #@+<< docstring >>
-#@+node:tom.20210603022210.1: ** << docstring >>
+#@+node:tom.20210603022210.1: ** << docstring >> (freewin.py)
 Freewin - a plugin with a basic editor pane that tracks an
 outline node.
 
@@ -242,7 +242,7 @@ Leo themes.
 #@-<< docstring >>
 """
 #@+<< imports >>
-#@+node:tom.20210527153415.1: ** << imports >>
+#@+node:tom.20210527153415.1: ** << imports >> (freewin.py)
 from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 from os.path import exists, join as osp_join
@@ -250,17 +250,6 @@ import re
 
 from leo.core import leoColorizer
 from leo.plugins import qt_text
-
-# pylint: disable=ungrouped-imports
-# pylint: disable=c-extension-no-member
-try:
-    # pylint: disable=import-error
-    # this can fix an issue with Qt Web views in Ubuntu
-    from OpenGL import GL
-    assert GL  # To keep pyflakes happy.
-except Exception:
-    # but no need to stop if it doesn't work
-    pass
 
 from leo.core import leoGlobals as g
 
@@ -754,7 +743,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         #@+<<set up editor>>
         #@+node:tom.20210602172856.1: *4* <<set up editor>>
         self.doc = self.editor.document()
-        self.editor.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)  # py--lint: disable=no-member
+        self.editor.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
 
         # Adjust editor stylesheet color to match body fg, bg
         fg, bg = get_body_colors(self.c)

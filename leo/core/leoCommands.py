@@ -3170,7 +3170,7 @@ class Commands:
             path = fn
         if path:
             # pylint: disable=no-member
-                # Defined in commanderFileCommands.py.
+            # Defined in commanderFileCommands.py.
             c.saveTo(fileName=path, silent=silent)  # Issues saved message.
             # g.es('in', theDir)
         return path

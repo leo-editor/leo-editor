@@ -1570,9 +1570,6 @@ class LeoCursesGui(leoGui.LeoGui):
 
         if 1:  # Call our own version of curses.initscr().
             import _curses
-            # This crashes on Python 3.12.
-                # setupterm(term=_os.environ.get("TERM", "unknown"),
-                    # fd=_sys.__stdout__.fileno())
             stdscr = _curses.initscr()
             for key, value in _curses.__dict__.items():
                 if key[0:4] == 'ACS_' or key in ('LINES', 'COLS'):
@@ -2781,7 +2778,6 @@ class LeoBody(npyscreen.MultiLineEditable):
         trace_widgets = False
         self._my_widgets = []
         height = self.height // self.__class__._contained_widget_height
-        # g.trace(self.__class__.__name__, height)
         for h in range(height):
             self._my_widgets.append(
                 self._contained_widgets(
