@@ -39,11 +39,13 @@ from leo.plugins.nested_splitter import NestedSplitter
 #@+node:ekr.20220415080427.1: ** << qt_frame annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoGui import LeoGui
     from leo.core.leoNodes import Position
     from leo.plugins.mod_scripting import ScriptingController
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+
+    Event = Any
+    QWidget = QtWidgets.QWidget
     Widget = Any
 #@-<< qt_frame annotations >>
 #@+<< qt_frame decorators >>
@@ -75,7 +77,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
     """
     #@+others
     #@+node:ekr.20110605121601.18138: *3*  dw.ctor & reloadSettings
-    def __init__(self, c: Cmdr, parent: "LeoQtFrame" = None) -> None:
+    def __init__(self, c: Cmdr, parent: LeoQtFrame = None) -> None:
         """Ctor for the DynamicWindow class.  The main window is c.frame.top"""
             # Called from LeoQtFrame.finishCreate.
             # parent is a LeoTabbedTopLevel.
@@ -4011,14 +4013,14 @@ class QtIconBarClass:
 
         class leoIconBarButton(QtWidgets.QWidgetAction):  # type:ignore
 
-            def __init__(self, parent: LeoQtFrame, text: str, toolbar: "QtIconBarClass") -> None:
+            def __init__(self, parent: QWidget, text: str, toolbar: QtIconBarClass) -> None:
                 super().__init__(parent)
                 self.button: Widget = None  # A QPushButton
-                self.text = text
+                self.text_val = text  # self.text is a method.
                 self.toolbar = toolbar
 
-            def createWidget(self, parent: LeoQtFrame) -> None:
-                self.button = QtWidgets.QPushButton(self.text, parent)
+            def createWidget(self, parent: QWidget) -> None:
+                self.button = QtWidgets.QPushButton(self.text_val, parent)
                 self.button.setProperty('button_kind', kind)  # for styling
                 return self.button
 
@@ -4203,7 +4205,7 @@ class QtIconBarClass:
 class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore
     #@+others
     #@+node:ekr.20110605121601.18459: *3* ctor and __repr__(QtMenuWrapper)
-    def __init__(self, c: Cmdr, frame: LeoQtFrame, parent: LeoQtFrame, label: str) -> None:
+    def __init__(self, c: Cmdr, frame: LeoQtFrame, parent: QWidget, label: str) -> None:
         """ctor for QtMenuWrapper class."""
         assert c
         assert frame
@@ -4302,7 +4304,7 @@ class QtStatusLineClass:
     # Keys are widgets, values are stylesheets.
     styleSheetCache: dict[Any, str] = {}
 
-    def put_helper(self, s: str, w: LeoQtFrame, bg: str = None, fg: str = None) -> None:
+    def put_helper(self, s: str, w: Widget, bg: str = None, fg: str = None) -> None:
         """Put string s in the indicated widget, with proper colors."""
         c = self.c
         bg = bg or c.config.getColor('status-bg') or 'white'
@@ -4448,7 +4450,7 @@ class QtStatusLineClass:
 class QtTabBarWrapper(QtWidgets.QTabBar):  # type:ignore
     #@+others
     #@+node:peckj.20140516114832.10108: *3* __init__
-    def __init__(self, parent: LeoQtFrame = None) -> None:
+    def __init__(self, parent: Widget = None) -> None:
         super().__init__(parent)
         self.setMovable(True)
     #@+node:peckj.20140516114832.10109: *3* mouseReleaseEvent (QtTabBarWrapper)
@@ -4473,11 +4475,11 @@ class TabbedFrameFactory:
         # Will be created when first frame appears.
         # Workaround a problem setting the window title when tabs are shown.
         self.alwaysShowTabs = True
-        self.leoFrames: dict["DynamicWindow", LeoQtFrame] = {}
-        self.masterFrame: "LeoTabbedTopLevel" = None
+        self.leoFrames: dict[Widget, Widget] = {}
+        self.masterFrame: Widget = None
         self.createTabCommands()
     #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame
-    def createFrame(self, leoFrame: LeoQtFrame) -> LeoQtFrame:
+    def createFrame(self, leoFrame: LeoQtFrame) -> DynamicWindow:
 
         c = leoFrame.c
         tabw = self.masterFrame
@@ -4526,7 +4528,7 @@ class TabbedFrameFactory:
         if g.app.start_minimized:
             window.showMinimized()
     #@+node:ekr.20110605121601.18472: *3* frameFactory.createTabCommands
-    def detachTab(self, wdg: "DynamicWindow") -> None:
+    def detachTab(self, wdg: DynamicWindow) -> None:
         """ Detach specified tab as individual toplevel window """
         del self.leoFrames[wdg]
         wdg.setParent(None)
@@ -4582,7 +4584,7 @@ class TabbedFrameFactory:
             tab_cycle(-1)
         #@-<< Commands for tabs >>
     #@+node:ekr.20110605121601.18467: *3* frameFactory.deleteFrame
-    def deleteFrame(self, wdg: "DynamicWindow") -> None:
+    def deleteFrame(self, wdg: DynamicWindow) -> None:
 
         if not wdg:
             return
@@ -4631,7 +4633,7 @@ class TabbedFrameFactory:
         # This keeps the log and the QTabbedWidget in sync.
         c.close(new_c=None)
 
-    def slotCurrentChanged(self, idx: str) -> None:
+    def slotCurrentChanged(self, idx: int) -> None:
         # Two events are generated, one for the tab losing focus,
         # and another event for the tab gaining focus.
         tabw = self.masterFrame
