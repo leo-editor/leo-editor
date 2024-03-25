@@ -1,7 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210903162431.1: * @file ../unittests/core/test_leoCommands.py
 """Tests of leoCommands.py"""
-# py--lint: disable=no-member
 
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
