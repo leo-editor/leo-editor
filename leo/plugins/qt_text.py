@@ -14,7 +14,7 @@ from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, W
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    Event = Any
     MousePressEvent = Any
     QWidget = QtWidgets.QWidget
     Widget = Any
@@ -138,6 +138,7 @@ class QTextMixin:
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
         self.useScintilla = False  # This is used!
         self.virtualInsertPoint = None
+        self.widget: Any = None
         if c:
             self.injectIvars(c)
     #@+node:ekr.20140901062324.18721: *4* qtm.injectIvars
@@ -223,7 +224,7 @@ class QTextMixin:
         if 'focus' in g.app.debug:
             print('BaseQTextWrapper.setFocus', self.widget)
         # Call the base class
-        assert isinstance(self.widget, (
+        assert isinstance(self.widget, (  # type:ignore
             QtWidgets.QTextBrowser,
             QtWidgets.QLineEdit,
             QtWidgets.QTextEdit,
@@ -451,7 +452,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):  # type:ignore
     This class *has* a QTextEdit.
     """
     #@+others
-    #@+node:ekr.20150403094706.9: *3* __init__(LeoLineTextWidget)
+    #@+node:ekr.20150403094706.9: *3* LeoLineTextWidget.__init__
     def __init__(self, c: Cmdr, e: Any, *args: Any) -> None:
         """Ctor for LineTextWidget."""
         super().__init__(*args)
@@ -473,7 +474,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):  # type:ignore
         hbox.addWidget(e)
         e.installEventFilter(self)
         e.viewport().installEventFilter(self)
-    #@+node:ekr.20150403094706.10: *3* eventFilter
+    #@+node:ekr.20150403094706.10: *3* LeoLineTextWidget.eventFilter
     def eventFilter(self, obj: Any, event: Event) -> Any:
         """
         Update the line numbers for all events on the text edit and the viewport.
@@ -482,7 +483,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):  # type:ignore
         if obj in (self.edit, self.edit.viewport()):
             self.number_bar.update()
             return False
-        return QtWidgets.QFrame.eventFilter(obj, event)
+        return QtWidgets.QFrame.eventFilter(self, obj, event)  # Bug fix: 2024/03/24
     #@-others
 #@+node:ekr.20110605121601.18005: ** class LeoQTextBrowser (QtWidgets.QTextBrowser)
 if QtWidgets:
@@ -644,7 +645,7 @@ if QtWidgets:
             def set_position(self, c: Cmdr) -> None:
                 """Set the position of the QListWidget."""
 
-                def glob(obj: Any, pt: str) -> Any:
+                def to_global(obj: Any, pt: QtCore.QPoint) -> Any:
                     """Convert pt from obj's local coordinates to global coordinates."""
                     return obj.mapToGlobal(pt)
 
@@ -652,20 +653,13 @@ if QtWidgets:
                 vp = self.viewport()
                 r = w.cursorRect()
                 geom = self.geometry()  # In viewport coordinates.
-                gr_topLeft = glob(w, r.topLeft())
+                gr_topLeft = to_global(w, r.topLeft())
                 # As a workaround to the Qt setGeometry bug,
                 # The window is destroyed instead of being hidden.
                 if self.leo_geom_set:
                     g.trace('Error: leo_geom_set')
                     return
-                # This code illustrates the Qt bug...
-                    # if self.leo_geom_set:
-                        # # Unbelievable: geom is now in *global* coords.
-                        # gg_topLeft = geom.topLeft()
-                    # else:
-                        # # Per documentation, geom in local (viewport) coords.
-                        # gg_topLeft = glob(vp,geom.topLeft())
-                gg_topLeft = glob(vp, geom.topLeft())
+                gg_topLeft = to_global(vp, geom.topLeft())
                 delta_x = gr_topLeft.x() - gg_topLeft.x()
                 delta_y = gr_topLeft.y() - gg_topLeft.y()
                 # These offset are reasonable. Perhaps they should depend on font size.
@@ -679,15 +673,15 @@ if QtWidgets:
                 # These tests fail once offsets are added.
                 if x_offset == 0 and y_offset == 0:
                     if self.leo_geom_set:
-                        if geom2.topLeft() != glob(w, r.topLeft()):
+                        if geom2.topLeft() != to_global(w, r.topLeft()):
                             g.trace(
                                 f"Error: geom.topLeft: {geom2.topLeft()}, "
-                                f"geom2.topLeft: {glob(w, r.topLeft())}")
+                                f"geom2.topLeft: {to_global(w, r.topLeft())}")
                     else:
-                        if glob(vp, geom2.topLeft()) != glob(w, r.topLeft()):
+                        if to_global(vp, geom2.topLeft()) != to_global(w, r.topLeft()):
                             g.trace(
-                                f"Error 2: geom.topLeft: {glob(vp, geom2.topLeft())}, "
-                                f"geom2.topLeft: {glob(w, r.topLeft())}")
+                                f"Error 2: geom.topLeft: {to_global(vp, geom2.topLeft())}, "
+                                f"geom2.topLeft: {to_global(w, r.topLeft())}")
                 self.setGeometry(geom2)
                 self.leo_geom_set = True
             #@+node:ekr.20110605121601.18016: *5* lqlw.show_completions
@@ -1198,9 +1192,9 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
             target_r = QtCore.QRect(
                 self.fm.width(s) + 16,
                 top_left.y() + self.y_adjust - 2,
-                16.0, 16.0)
+                16, 16)
             if self.image:
-                source_r = QtCore.QRect(0.0, 0.0, 16.0, 16.0)
+                source_r = QtCore.QRect(0, 0, 16, 16)
                 painter.drawImage(target_r, self.image, source_r)
             else:
                 painter.drawEllipse(target_r)

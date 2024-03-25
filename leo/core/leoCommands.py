@@ -3950,7 +3950,7 @@ class Commands:
     #@+node:ekr.20080514131122.19: *5* c.xWantsFocusNow
     # widgetWantsFocusNow does an automatic update.
 
-    def widgetWantsFocusNow(self, w: Wrapper) -> None:
+    def widgetWantsFocusNow(self, w: Any) -> None:
         c = self
         if w:
             c.set_focus(w)

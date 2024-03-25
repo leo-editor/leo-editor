@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17954: * @file ../plugins/nested_splitter.py
 """Nested splitter classes."""
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Orientation, QAction
@@ -852,7 +853,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
         psp = self.parent()
         if self.count() == 2 and isinstance(psp, NestedSplitter):
             i = psp.indexOf(self)
-            sizes = psp.sizes()
+            sizes: list = psp.sizes()
             [a, b] = self.sizes()
             s = sizes[i]
             s1 = a * s / (a + b)
@@ -933,8 +934,9 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
         self.equalize_sizes()
         osplitter.equalize_sizes()
     #@+node:ekr.20110605121601.17988: *3* ns.top
-    def top(self, local=False):
+    def top(self, local=False) -> Any:
         """find top (outer) widget, which is not necessarily root"""
+        top: Any
         if local:
             top = self
             while isinstance(top.parent(), NestedSplitter):
