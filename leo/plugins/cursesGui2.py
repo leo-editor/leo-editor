@@ -345,7 +345,7 @@ class LeoTreeData(npyscreen.TreeData):
             content = p.h
         else:
             content = self.content
-        return len(content)
+        return len(content)  # type:ignore
 
     def __repr__(self) -> str:
         if native:
