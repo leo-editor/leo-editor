@@ -5637,13 +5637,17 @@ def trace(*args: Any, **keys: Any) -> None:
 # Keys are strings: g.callers. Values are lists of str(value).
 trace_unique_dict: dict[str, list[str]] = {}
 
-def traceUnique(value: Any, *, n: int = 2) -> None:
+def traceUnique(value: Any, *, n: int = 2, pad: int = 30) -> None:
     """Print unique values associated with g.callers(n)."""
+    if pad is None:
+        pad = 30
     key = g.callers(n)
     value_s = str(value)
     values: list[str] = trace_unique_dict.get(key, [])
     if value_s not in values:
-        print(f"{key:30} {value_s}")
+        pad_s = ' ' * max(0, pad - len(key))
+        key_s = pad_s + key  # right justify.
+        print(f"{key_s} {value_s}")
         values.append(value_s)
         trace_unique_dict [key] = values
     
@@ -5652,13 +5656,15 @@ trace_unique = traceUnique
 # Keys are strings: g.callers. Values are lists of obj.__class__.__name__.
 trace_unique_class_dict: dict[str, list[str]] = {}
 
-def traceUniqueClass(obj: Any, *, n: int = 2) -> None:
+def traceUniqueClass(obj: Any, *, n: int = 2, pad: int = 30) -> None:
     """Print unique class names associated with g.callers(n)."""
     key = g.callers(n)
     value_s = obj.__class__.__name__
     values: list[str] = trace_unique_class_dict.get(key, [])
     if value_s not in values:
-        print(f"{key:30} {value_s}")
+        pad_s = ' ' * max(0, pad - len(key))
+        key_s = pad_s + key  # Right justify.
+        print(f"{key_s} {value_s}")
         values.append(value_s)
         trace_unique_class_dict [key] = values
     
