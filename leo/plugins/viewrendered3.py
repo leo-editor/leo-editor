@@ -951,7 +951,7 @@ try:
     from leo.plugins import qt_text
     from leo.plugins import free_layout
     from leo.core.leoQt import QtCore, QtWidgets
-    from leo.core.leoQt import QtMultimedia, QtSvg  ### phonon
+    from leo.core.leoQt import QtMultimedia, QtSvg
     from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
     from leo.core.leoQt import QAction, QActionGroup
 except ImportError:
@@ -3732,11 +3732,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w = pc.ensure_text_widget()
             w.setPlainText(f'Not found: {path}')
             return
-        ### if not phonon and not QtMultimedia:
         if not QtMultimedia:
             if not self.movie_warning:
                 self.movie_warning = True
-                ### g.es_print('No phonon and no QtMultimedia modules')
                 g.es_print('No QtMultimedia module')
             w = pc.ensure_text_widget()
             w.setPlainText('')
@@ -3760,7 +3758,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         pc.embed_widget(vp, delete_callback=delete_callback)
         pc.show()
         vp = pc.vp
-        ### vp.load(phonon.MediaSource(path))
         vp.play()
     #@+node:TomP.20191215195433.68: *4* vr3.update_networkx
     def update_networkx(self, s, keywords):

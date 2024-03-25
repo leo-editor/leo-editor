@@ -38,11 +38,9 @@ Requires the whoosh library ('easy_install whoosh') to do full text searches.
 import os
 import sys
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore, QtWidgets  ### QtWebKitWidgets
+from leo.core.leoQt import QtCore, QtWidgets
 # This code no longer uses leo.plugins.leofts.
 try:
-    # pylint: disable=no-name-in-module
-    # index,fields,qparser,analysis *are* defined.
     import whoosh
     from whoosh.index import create_in, open_dir
     from whoosh.fields import TEXT, ID, Schema
@@ -50,7 +48,7 @@ try:
     from whoosh.analysis import RegexTokenizer, LowercaseFilter, StopFilter
 except ImportError:
     whoosh = None
-#
+
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
@@ -100,32 +98,12 @@ class BigDash:
         self.w = w = QtWidgets.QWidget()
         w.setWindowTitle("Leo search")
         lay = QtWidgets.QVBoxLayout()
-
         self.web = web = QtWidgets.QTextBrowser(w)
-
-        ###
-            # try:
-                # # PyQt4
-                # self.web.linkClicked.connect(self._lnk_handler)
-                # # AttributeError: 'QWebEngineView' object has no attribute 'linkClicked'
-            # except AttributeError:
-                # # PyQt5
-                # pass  # Not clear what to do.
-
         self.led = led = QtWidgets.QLineEdit(w)
         led.returnPressed.connect(self.docmd)
         lay.addWidget(led)
         lay.addWidget(web)
         self.lc = LeoConnector()
-
-        ###
-            # try:
-                # web.page().mainFrame().addToJavaScriptWindowObject("leo", lc)
-                # web.page().setLinkDelegationPolicy(QtWebKitWidgets.QWebPage.DelegateAllLinks)
-            # except AttributeError:
-                # # PyQt5
-                # pass  # Not clear what to do.
-
         w.setLayout(lay)
         self.show_help()
 
@@ -134,6 +112,7 @@ class BigDash:
                 self.show_help()
                 return True
             return False
+
         self.add_cmd_handler(help_handler)
         self.led.setFocus()
     #@+node:ekr.20140919160020.17910: *3* docmd
