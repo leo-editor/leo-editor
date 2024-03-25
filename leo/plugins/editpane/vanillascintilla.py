@@ -25,7 +25,7 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
     lep_type = "EDITOR"
     lep_name = "Vanilla Scintilla"
     #@+others
-    #@+node:tbrown.20171028115501.4: *3* __init__
+    #@+node:tbrown.20171028115501.4: *3* __init__ (LEP_VanillaScintilla)
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
         super().__init__(*args, **kwargs)

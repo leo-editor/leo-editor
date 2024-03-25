@@ -14,10 +14,17 @@ from PyQt6 import QtMultimedia
 from PyQt6 import QtNetwork
 from PyQt6 import QtOpenGL
 from PyQt6 import QtPrintSupport as printsupport
-from PyQt6 import Qsci  # Now required.
 from PyQt6 import QtWebEngineCore  # included with PyQt6-WebEngine
 from PyQt6 import QtWebEngineWidgets
 from PyQt6 import uic
+
+# requirements.txt now contains PyQt6-QScintilla, so this should usually succeed.
+# But for now (until Leo 6.7.9), let's be careful.
+try:
+    from PyQt6 import Qsci  # Now required.
+    assert Qsci
+except Exception:
+    Qsci = None
 
 #@+<< PyQt6 enumerations >>
 #@+node:ekr.20240303142509.3: ** << PyQt6 enumerations >>
@@ -76,7 +83,7 @@ assert QAction
 assert QActionGroup
 assert QCloseEvent
 assert QUrl
-assert Qsci
+# assert Qsci
 assert QtCore
 assert QtDesigner
 assert QtGui

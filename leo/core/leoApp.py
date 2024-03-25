@@ -978,7 +978,8 @@ class LeoApp:
             message = (
                 f"Can not load the requested gui: {argName}\n"
                 '*** Leo could not be started ***\n\n'
-                "Please verify you've installed the required dependencies:\n"
+                'Please verify you have installed the required dependencies:\n'
+                'pip install -r requirements.txt\n'
                 'https://leo-editor.github.io/leo-editor/installing.html\n'
             )
             try:
