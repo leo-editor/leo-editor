@@ -71,7 +71,7 @@ def edit_pane_csv(event):
         w = w.parent()
     w.insert(-1, LeoEditPane(c=c, show_control=False, lep_type='EDITOR-CSV'))
 #@+node:tbrown.20171028115438.4: ** class LeoEditPane
-class LeoEditPane(QtWidgets.QWidget):  # type:ignore
+class LeoEditPane(QtWidgets.QWidget):
     """
     Leo node body editor / viewer
     """
@@ -123,7 +123,7 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
         )
 
         self.track = self.cb_track.isChecked()
-        self.update = self.cb_update.isChecked()
+        self.update_flag = self.cb_update.isChecked()
         self.recurse = self.cb_recurse.isChecked()
         self.goto = self.cb_goto.isChecked()
 
@@ -364,12 +364,12 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
         self.track = bool(state)
     #@+node:tbrown.20171028115438.21: *3* change_update
     def change_update(self, state, one_shot=False):
-        self.update = one_shot or bool(state)
-        if self.update:
+        self.update_flag = one_shot or bool(state)
+        if self.update_flag:
             p = self.get_position()
             if p is not None:
                 self.new_position(p)
-        self.update = bool(state)
+        self.update_flag = bool(state)
     #@+node:tbrown.20171028115438.22: *3* close
     def close(self):
         """close - clean up
@@ -538,7 +538,7 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
 
         if p.gnx == our_p.gnx:
             self.update_position_edit(p)
-            if self.update:
+            if self.update_flag:
                 self.update_position_view(p)
     #@+node:tbrown.20171028115438.34: *3* update_position_edit
     def update_position_edit(self, p):
@@ -564,7 +564,7 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
         """
 
         DBG("update view position")
-        if self.update and self.mode != 'edit':
+        if self.update_flag and self.mode != 'edit':
             if self.recurse:
                 text = g.getScript(self.c, p, useSelectedText=False, useSentinels=False)
             else:
