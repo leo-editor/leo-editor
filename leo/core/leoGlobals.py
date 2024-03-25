@@ -4855,6 +4855,25 @@ def unCamel(s: str) -> list[str]:
         result.append(''.join(word))
     return result
 #@+node:ekr.20031218072017.1498: *3* g.Unicode
+#@+node:ekr.20240325175438.1: *4* g.bytesToStr
+def bytesToStr(b: bytes, reportErrors: bool = False) -> str:
+    """Convert bytes to unicode."""
+    assert isinstance(b, bytes), g.callers()
+    tag = 'g.bytesToStr'
+    encoding = 'utf-8'
+    try:
+        s = b.decode(encoding, 'strict')
+    except(UnicodeDecodeError, UnicodeError):  # noqa
+        # https://wiki.python.org/moin/UnicodeDecodeError
+        s = b.decode(encoding, 'replace')
+        if reportErrors:
+            g.error(f"{tag}: unicode error. encoding: {encoding!r}, s:\n{s!r}")
+            g.trace(g.callers())
+    except Exception:
+        g.es_exception()
+        g.error(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
+        g.trace(g.callers())
+    return s
 #@+node:ekr.20190505052756.1: *4* g.checkUnicode
 checkUnicode_dict: dict[str, bool] = {}
 
@@ -4974,6 +4993,19 @@ def stripBOM(s_bytes: bytes) -> tuple[str, bytes]:
             if bom == s_bytes[: len(bom)]:
                 return e, s_bytes[len(bom) :]
     return None, s_bytes
+#@+node:ekr.20240325175449.1: *4* g.strToBytes
+def strToBytes(s: str, reportErrors: bool = False) -> bytes:
+    """Convert unicode string to an encoded string."""
+    assert isinstance(s, str), g.callers()
+    encoding = 'utf-8'
+    try:
+        b = s.encode(encoding, "strict")
+    except UnicodeError:
+        b = s.encode(encoding, "replace")
+        if reportErrors:
+            g.error(f"Error converting {s} from unicode to {encoding}")
+    # Tracing these calls directly yields thousands of calls.
+    return b
 #@+node:ekr.20050208093800: *4* g.toEncodedString
 def toEncodedString(s: str, encoding: str = 'utf-8', reportErrors: bool = False) -> bytes:
     """Convert unicode string to an encoded string."""
