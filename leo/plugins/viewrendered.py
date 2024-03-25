@@ -1290,7 +1290,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
         vp.play()
 
-       
+
     #@+node:ekr.20110320120020.14484: *4* vr.update_networkx
     def update_networkx(self, s: str, keywords: Any) -> None:
         """Update a networkx graphic in the vr pane."""
