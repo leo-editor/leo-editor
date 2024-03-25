@@ -459,9 +459,6 @@ class LeoLineTextWidget(QtWidgets.QFrame):  # type:ignore
         self.c = c
         Raised = Shadow.Raised
         NoFrame = Shape.NoFrame
-        ###
-            # Raised = Shadow.Raised if isQt6 else self.StyledPanel
-            # NoFrame = Shape.NoFrame if isQt6 else self.NoFrame
         self.setFrameStyle(Raised)
         self.edit = e  # A QTextEdit
         e.setFrameStyle(NoFrame)
@@ -1121,14 +1118,7 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
         """
         # w_adjust is used to compensate for the current line being bold.
         # Always allocate room for 2 columns
-        # width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
-
         width = self.fm.boundingRect(str(max(1000, self.highest_line))).width() + self.w_adjust
-        ###
-            # if isQt6:
-                # width = self.fm.boundingRect(str(max(1000, self.highest_line))).width() + self.w_adjust
-            # else:
-                # width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
         if self.width() != width:
             self.setFixedWidth(width)
         QtWidgets.QWidget.update(self, *args)
@@ -1553,11 +1543,6 @@ class QTextEditWrapper(QTextMixin):
         w.setWordWrapMode(WrapMode.NoWrap)
         # tab stop in pixels - no config for this (yet)
         w.setTabStopDistance(24)
-        ###
-            # if isQt6:
-                # w.setTabStopDistance(24)
-            # else:
-                # w.setTabStopWidth(24)
     #@+node:ekr.20140901062324.18566: *4* QTextEditWrapper.set_signals (should be distributed?)
     def set_signals(self) -> None:
         """Set up signals."""

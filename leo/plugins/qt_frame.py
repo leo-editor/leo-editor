@@ -3288,7 +3288,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             g.trace('no mimeData!')
             return
         try:
-            ### mods = ev.modifiers() if isQt6 else int(ev.keyboardModifiers())
             mods = ev.modifiers()
             self.was_alt_drag = bool(mods & KeyboardModifier.AltModifier)
             self.was_control_drag = bool(mods & KeyboardModifier.ControlModifier)
@@ -3298,7 +3297,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
             return
         c, tree = self.c, self.c.frame.tree
         p = None
-        ### point = ev.position().toPoint() if isQt6 else ev.pos()
         point = ev.position().toPoint()
         item = self.itemAt(point)
         if item:
@@ -4288,11 +4286,11 @@ class QtStatusLineClass:
     def __init__(self, c: Cmdr, parentFrame: LeoQtFrame) -> None:
         """Ctor for LeoQtFrame class."""
         self.c = c
-        ### self.statusBar = c.frame.top.statusBar
         self.statusBar = c.frame.top.leo_statusBar
         self.lastFcol = 0
         self.lastRow = 0
         self.lastCol = 0
+
         # Create the text widgets.
         self.textWidget1 = w1 = QtWidgets.QLineEdit(self.statusBar)
         self.textWidget2 = w2 = QtWidgets.QLineEdit(self.statusBar)

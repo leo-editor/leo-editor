@@ -6,16 +6,11 @@ but does not try to add Leo key handling
 
 Terry Brown, Terry_N_Brown@yahoo.com, Sat Feb  4 12:38:26 2017
 """
-#@+<< vanillascintilla imports >>
-#@+node:tbrown.20171028115501.1: ** << vanillascintilla imports >>
+
 from leo.core import leoGlobals as g
 assert g
 from leo.core.leoQt import QtGui, QtWidgets, Qsci
 
-###
-# if Qsci is None:  # leo.core.leoQt eats ImportErrors
-    # raise ImportError
-#@-<< vanillascintilla imports >>
 #@+others
 #@+node:tbrown.20171028115501.2: ** DBG
 def DBG(text):

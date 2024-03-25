@@ -328,7 +328,6 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
             if hasattr(provider, 'ns_context'):
                 load_items(menu, provider.ns_context())
 
-        ### point = pos.toPoint() if isQt6 else pos   # Qt6 documentation is wrong.
         point = pos
         global_point = self.mapToGlobal(point)
         menu.exec(global_point)
@@ -1009,14 +1008,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
             self.setOrientation(Orientation.Horizontal)
         else:
             self.setOrientation(Orientation.Vertical)
-        ###
-            # if isQt6:
-                # if layout['orientation'] == 1:
-                    # self.setOrientation(Orientation.Horizontal)
-                # else:
-                    # self.setOrientation(Orientation.Vertical)
-            # else:
-                # self.setOrientation(layout['orientation'])
+
         found = 0
         if level == 0:
             for i in self.self_and_descendants():

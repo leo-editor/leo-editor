@@ -1269,7 +1269,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             w = pc.ensure_text_widget()
             w.setPlainText('Not found: %s' % (path))
             return
-        ### if not phonon and not QtMultimedia:
         if not QtMultimedia:
             if not self.movie_warning:
                 self.movie_warning = True
@@ -1281,34 +1280,17 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             vp = pc.vp
             pc.vp.stop()
             pc.vp.deleteLater()
+
         # Create a fresh player.
         g.es_print('playing', path)
-        if True:  ### QtMultimedia:
-            url = QtCore.QUrl.fromLocalFile(path)
-            content = QtMultimedia.QMediaContent(url)
-            pc.vp = vp = QtMultimedia.QMediaPlayer()
-            vp.setMedia(content)
-            # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
-            vp.play()
+        url = QtCore.QUrl.fromLocalFile(path)
+        content = QtMultimedia.QMediaContent(url)
+        pc.vp = vp = QtMultimedia.QMediaPlayer()
+        vp.setMedia(content)
+        # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
+        vp.play()
 
-        ###
-        # else:
-            # pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
-            # vw = vp.videoWidget()
-            # vw.setObjectName('video-renderer')
-            # # Embed the widgets
-
-            # def delete_callback() -> None:
-                # if pc.vp:
-                    # pc.vp.stop()
-                    # pc.vp.deleteLater()
-                    # pc.vp = None
-
-            # pc.embed_widget(vp, delete_callback=delete_callback)
-            # pc.show()
-            # vp = pc.vp
-            # vp.load(phonon.MediaSource(path))
-            # vp.play()
+       
     #@+node:ekr.20110320120020.14484: *4* vr.update_networkx
     def update_networkx(self, s: str, keywords: Any) -> None:
         """Update a networkx graphic in the vr pane."""

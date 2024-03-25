@@ -6,22 +6,11 @@
 from collections import defaultdict
 from importlib import import_module
 import os
-
-###
-    # try:
-        # # pylint: disable=import-error
-        # # this can fix an issue with Qt Web views in Ubuntu
-        # from OpenGL import GL
-        # assert GL  # To keep pyflakes happy.
-    # except Exception:
-        # # but not need to stop if it doesn't work
-        # pass
 from leo.core.leoQt import QtWidgets
 from leo.core.leoQt import QAction, ContextMenuPolicy, Orientation, Policy
 from leo.core.leoQt import WidgetAttribute  # 2347
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
-###if QtCore is not None:
 from leo.plugins.editpane.clicky_splitter import ClickySplitter
 #@-<<editpane imports>>
 #@+others
@@ -447,7 +436,6 @@ class LeoEditPane(QtWidgets.QWidget):
                 menu.addAction(act)
 
         button = self.control_menu_button
-        ### point = button.position().toPoint() if isQt6 else button.pos()  # Qt6 documentation is wrong.
         point = button.position().toPoint()  # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
         menu.exec(global_point)
@@ -467,7 +455,6 @@ class LeoEditPane(QtWidgets.QWidget):
             menu.addAction(act)
 
         button = self.btn_mode
-        ### point = button.position().toPoint() if isQt6 else button.pos()  # Qt6 documentation is wrong.
         point = button.position().toPoint()  # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
         menu.exec(global_point)

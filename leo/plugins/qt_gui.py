@@ -259,9 +259,9 @@ class LeoQtGui(leoGui.LeoGui):
         if c:
             g.app.globalFindTabManager = c.findCommands.ftm
         top: Optional[QtWidgets.QWidget] = c.frame.top if c else None
-        ### top = c and c.frame.top  # top is the DynamicWindow class.
         w = top.findTab  # type:ignore
         dialog = QtWidgets.QDialog()
+
         # Fix #516: Hide the dialog. Never delete it.
 
         def closeEvent(event: Event) -> None:

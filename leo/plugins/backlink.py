@@ -780,11 +780,6 @@ if QtWidgets:
             fg = QtGui.QColor(color)
             pal = QtGui.QPalette(ui.label.palette())
             pal.setColor(pal.ColorRole.Window, fg)  # #2197
-            ###
-                # if isQt6:
-                    # pal.setColor(pal.ColorRole.Window, fg)  # #2197
-                # else:
-                    # pal.setColor(QtGui.QPalette.WindowText, fg)
             ui.label.setPalette(pal)
             ui.label.setText(msg)
         #@-others
