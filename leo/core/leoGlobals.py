@@ -5498,6 +5498,30 @@ def internalError(*args: Any) -> None:
     g.es_print(*args)
     g.es_print('Called from', ', '.join(callers[:-1]))
     g.es_print('Please report this error to Leo\'s developers', color='red')
+#@+node:ekr.20240325161046.1: *3* g.isUniqueClass
+# Keys are strings: g.callers. Values are lists of obj.__class__.__name__.
+is_unique_class_dict: dict[str, list[str]] = {}
+
+def isUniqueClass(obj: Any, list_or_class: Any, *, n: int = 2) -> None:
+    """Print a message (once) if obj is not an instance of list_or_class."""
+    try:
+        if isinstance(obj, list_or_class):
+            return
+    except Exception as e:
+        print(
+            f"\ng.isUniqueClass: {g.callers()}\n"
+            f"Bad arg 2: {list_or_class!r}\n{e!r}\n"
+        )
+        return
+    key = g.callers(n)
+    value_s = obj.__class__.__name__
+    values: list[str] = is_unique_class_dict.get(key, [])
+    if value_s not in values:
+        print(f"{key}: Fail: isinstance({value_s}, {list_or_class})")
+        values.append(value_s)
+        is_unique_class_dict[key] = values
+
+is_unique_class = isUniqueClass
 #@+node:ekr.20150127060254.5: *3* g.log_to_file
 def log_to_file(s: str, fn: str = None) -> None:
     """Write a message to ~/test/leo_log.txt."""
@@ -5649,8 +5673,8 @@ def traceUnique(value: Any, *, n: int = 2, pad: int = 30) -> None:
         key_s = pad_s + key  # right justify.
         print(f"{key_s} {value_s}")
         values.append(value_s)
-        trace_unique_dict [key] = values
-    
+        trace_unique_dict[key] = values
+
 trace_unique = traceUnique
 
 # Keys are strings: g.callers. Values are lists of obj.__class__.__name__.
@@ -5666,8 +5690,8 @@ def traceUniqueClass(obj: Any, *, n: int = 2, pad: int = 30) -> None:
         key_s = pad_s + key  # Right justify.
         print(f"{key_s} {value_s}")
         values.append(value_s)
-        trace_unique_class_dict [key] = values
-    
+        trace_unique_class_dict[key] = values
+
 trace_unique_class = traceUniqueClass
 #@+node:ekr.20080220111323: *3* g.translateArgs
 console_encoding = None
