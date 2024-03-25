@@ -2815,9 +2815,9 @@ if QtGui:
             if not c.config.getBool('use-pygments', default=False):
                 return
             # Init pygments ivars.
-            self._brushes = {}
+            self._brushes: dict = {}
             self._document = document
-            self._formats = {}
+            self._formats: dict = {}
             self.colorizer.style_name = 'default'
             # Style gallery: https://help.farbox.com/pygments.html
             # Dark styles: fruity, monokai, native, vim
@@ -2944,7 +2944,7 @@ if Qsci:
     class NullScintillaLexer(Qsci.QsciLexerCustom):  # type:ignore
         """A do-nothing colorizer for Scintilla."""
 
-        def __init__(self, c: Cmdr, parent: Position = None) -> None:
+        def __init__(self, c: Cmdr, parent: QtWidgets.QWidget = None) -> None:
             super().__init__(parent)  # Init the pase class
             self.leo_c = c
             self.configure_lexer()
@@ -2984,6 +2984,7 @@ class PygmentsColorizer(BaseColorizer):
             )
         # State unique to this class...
         self.color_enabled = self.enabled
+        self.getDefaultFormat: Any
         self.old_v = None
         # Monkey-patch g.isValidLanguage.
         g.isValidLanguage = self.pygments_isValidLanguage
@@ -3037,6 +3038,7 @@ class PygmentsColorizer(BaseColorizer):
         # Do basic inits.
         super().reloadSettings()
         # Bind methods.
+        
         if self.use_pygments_styles:
             self.getDefaultFormat = QtGui.QTextCharFormat
             self.getFormat = self.getPygmentsFormat
