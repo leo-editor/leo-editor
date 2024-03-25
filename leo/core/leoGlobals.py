@@ -5633,6 +5633,33 @@ def trace(*args: Any, **keys: Any) -> None:
     if name.endswith(".pyc"):
         name = name[:-1]
     g.pr(name, *args)
+#@+node:ekr.20240325064618.1: *3* g.traceUnique & traceUniqueClass
+# Keys are strings: g.callers.
+trace_unique_dict: dict[str, list[str]] = {}
+
+def traceUnique(value: Any, *, n: int = 2) -> None:
+    """Print unique values associated with g.callers(n)."""
+    key = g.callers(n)
+    value_s = str(value)
+    values: list[str] = trace_unique_dict.get(key, [])
+    if value_s not in values:
+        print(f"{key:30} {value_s}")
+        values.append(value_s)
+        trace_unique_dict [key] = values
+    
+trace_unique = traceUnique
+
+def traceUniqueClass(obj: Any, *, n: int = 2) -> None:
+    """Print unique class names associated with g.callers(n)."""
+    key = g.callers(n)
+    value_s = obj.__class__.__name__
+    values: list[str] = trace_unique_dict.get(key, [])
+    if value_s not in values:
+        print(f"{key:30} {value_s}")
+        values.append(value_s)
+        trace_unique_dict [key] = values
+    
+trace_unique_class = traceUniqueClass
 #@+node:ekr.20080220111323: *3* g.translateArgs
 console_encoding = None
 
