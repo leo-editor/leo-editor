@@ -3038,7 +3038,7 @@ class PygmentsColorizer(BaseColorizer):
         # Do basic inits.
         super().reloadSettings()
         # Bind methods.
-        
+
         if self.use_pygments_styles:
             self.getDefaultFormat = QtGui.QTextCharFormat
             self.getFormat = self.getPygmentsFormat
