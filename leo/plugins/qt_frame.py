@@ -1495,8 +1495,6 @@ class LeoQtBody(leoFrame.LeoBody):
         d = c.frame.body.wrapper.widget.document()
         option = QtGui.QTextOption()
         if c.frame.body.colorizer.showInvisibles:
-            # The following works with both Qt5 and Qt6.
-            # pylint: disable=no-member
             option.setFlags(option.Flag.ShowTabsAndSpaces)
         d.setDefaultTextOption(option)
     #@+node:ekr.20140901062324.18563: *5* LeoQtBody.set_widget

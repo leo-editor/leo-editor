@@ -290,10 +290,7 @@ class PrintingController:
         dialog.setStyleSheet(self.stylesheet)
         result = dialog.exec()
         if result == DialogCode.Accepted:
-            try:
-                doc.print_(dialog.printer())
-            except AttributeError:
-                doc.print(dialog.printer())
+            doc.print(dialog.printer())
     #@+node:ekr.20150419124739.13: *4* pr.preview_doc
     def preview_doc(self, doc: Any) -> None:
         """Preview the document."""

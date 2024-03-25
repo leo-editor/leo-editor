@@ -59,18 +59,18 @@ class TestQtGui(LeoUnitTest):
             self.skipTest('Requires Qt')
     #@+node:ekr.20210913120449.1: *3* TestQtGui.test_bug_2164
     def test_bug_2164(self):
+
         # show-invisibles crashes with PyQt6.
         from leo.core.leoQt import QtGui
+
         # Test the commands.
         c = self.c
         for command in ('toggle-invisibles', 'hide-invisibles', 'show-invisibles'):
             c.doCommandByName(command)
-        option = QtGui.QTextOption()
 
-        # Skip this test when using PyQt5.
-        with self.assertRaises(AttributeError):
-            option.ShowTabsAndSpaces  # pylint: disable=pointless-statement
-        return
+        # Test the Qt6 flag.
+        option = QtGui.QTextOption()
+        assert hasattr(option.Flag, 'ShowTabsAndSpaces')
     #@+node:ekr.20210912140946.1: *3* TestQtGui.test_do_nothing1/2/3
     # These tests exist to test the startup logic.
     if 0:  # pragma: no cover
