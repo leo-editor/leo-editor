@@ -203,16 +203,16 @@ python_main_keywords_dict = {
     "apply": "keyword2",
     "as": "keyword1",
     "assert": "keyword1",
-    "async": "keyword1",  # Python 3.7
-    "await": "keyword1",  # Python 3.7.
-    "basestring": "keyword2",  # Only in Python 2.
+    "async": "keyword1",
+    "await": "keyword1",
     "bool": "keyword2",
     "break": "keyword1",
     "buffer": "keyword2",
+    "bytes": "keyword2",
     "callable": "keyword2",
     "chr": "keyword2",
     "class": "keyword1",
-    "@classmethod": "keyword2",  # Bug fix: 5/14/2016
+    "@classmethod": "keyword2",
     "cmp": "keyword2",
     "coerce": "keyword2",
     "compile": "keyword2",
@@ -286,7 +286,7 @@ python_main_keywords_dict = {
     "setattr": "keyword2",
     "slice": "keyword2",
     "sorted": "keyword2",
-    "@staticmethod": "keyword2",  # Bug fix: 5/14/2016
+    "@staticmethod": "keyword2",
     "str": "keyword2",
     "sum": "keyword2",
     "super": "keyword2",
@@ -297,7 +297,7 @@ python_main_keywords_dict = {
     "unicode": "keyword2",
     "vars": "keyword2",
     "while": "keyword1",
-    "with": "keyword1",  # Fix bug 1174532: Python mode file missing 'with' keyword
+    "with": "keyword1",
     "xrange": "keyword2",
     "yield": "keyword1",
     "zip": "keyword2",
