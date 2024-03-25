@@ -50,7 +50,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+
+Wrapper = Any
 #@-<< free_layout annotations >>
 #@+others
 #@+node:tbrown.20110203111907.5521: ** free_layout:init
