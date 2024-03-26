@@ -43,9 +43,11 @@ if TYPE_CHECKING:  # pragma: no cover
     QEvent: TypeAlias = QtCore.QEvent
     # Widgets
     QDialog = QtWidgets.QDialog
+    QFont = QtGui.QFont
     QFrame = QtWidgets.QFrame
     QGridLayout = QtWidgets.QGridLayout
     QHBoxLayout = QtWidgets.QHBoxLayout
+    QIcon = QtGui.QIcon
     QLabel = QtWidgets.QLabel
     QPushButton = QtWidgets.QPushButton
     QTabWidget = QtWidgets.QTabWidget
@@ -76,7 +78,7 @@ class LeoQtGui(leoGui.LeoGui):
         super().__init__('qt')  # Initialize the base class.
         self.active = True
         self.consoleOnly = False  # Console is separate from the log.
-        self.iconimages: dict[str, Any] = {}  # Keys are paths, values are Icons.
+        self.iconimages: dict[str, QIcon] = {}  # Keys are paths, values are Icons.
         self.globalFindDialog: QDialog = None
         self.idleTimeClass = qt_idle_time.IdleTime
         self.insert_char_flag = False  # A flag for eventFilter.
@@ -302,7 +304,7 @@ class LeoQtGui(leoGui.LeoGui):
         """Create a new Leo frame."""
         return qt_frame.LeoQtFrame(c, title, gui=self)
 
-    def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> qt_frame.LeoQtSpellTab:
+    def createSpellTab(self, c: Cmdr, spellHandler: Callable, tabName: str) -> qt_frame.LeoQtSpellTab:
         if g.unitTesting:
             return None
         return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
@@ -974,7 +976,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     def getFontFromParams(self,
         family: str, size: str, slant: str, weight: str, defaultSize: int = 12, tag='',
-    ) -> Any:
+    ) -> Optional[QFont]:
         """Required to handle syntax coloring."""
         if isinstance(size, str):
             if size.endswith('pt'):
@@ -1034,7 +1036,7 @@ class LeoQtGui(leoGui.LeoGui):
         if self.appIcon:
             window.setWindowIcon(self.appIcon)
     #@+node:ekr.20110605121601.18516: *4* qt_gui.getIconImage
-    def getIconImage(self, name: str) -> Any:
+    def getIconImage(self, name: str) -> Optional[QIcon]:
         """Load the icon and return it."""
         # Return the image from the cache if possible.
         if name in self.iconimages:
