@@ -51,7 +51,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QComboBox = Any
     QLayout = Any
     QMenu = QtWidgets.QMenu
-    QTabWidget = Any
+    QTabWidget = QtWidgets.QTabWidget
     Wrapper = Any
 #@-<< qt_frame annotations >>
 #@+<< qt_frame decorators >>
@@ -2559,7 +2559,7 @@ class LeoQtLog(leoFrame.LeoLog):
         self.eventFilters: list = []  # Apparently needed to make filters work!
         self.logCtrl: Wrapper = None  # A union.
         self.logDict: dict[str, Any] = {}  # Keys are tab names.
-        self.logWidget: LeoQtLog = None  # Set in finishCreate.
+        self.logWidget: Any = None  # Set in finishCreate.
         self.menu: qt_text.LeoQTextBrowser = None  # A Qt menu that pops up on right clicks in the hull or in tabs.
         self.tabWidget: QTabWidget = c.frame.top.tabWidget  # A QTabWidget that holds all the tabs.
         tw = self.tabWidget
@@ -2604,7 +2604,7 @@ class LeoQtLog(leoFrame.LeoLog):
         #
         # 794: Clicking Find Tab should do exactly what pushing Ctrl-F does
 
-        def tab_callback(index: str) -> None:
+        def tab_callback(index: int) -> None:
             name = w.tabText(index)
             if name == 'Find':
                 c.findCommands.startSearch(event=None)
