@@ -48,8 +48,8 @@ if TYPE_CHECKING:  # pragma: no cover
     QMouseEvent: TypeAlias = QtGui.QMouseEvent
     QWidget = QtWidgets.QWidget
     # Widgets
-    QComboBox = Any
-    QLayout = Any
+    QComboBox = QtWidgets.QComboBox
+    QLayout = QtWidgets.QWidget
     QMenu = QtWidgets.QMenu
     QTabWidget = QtWidgets.QTabWidget
     Wrapper = Any
