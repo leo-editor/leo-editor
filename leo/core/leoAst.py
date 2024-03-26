@@ -291,7 +291,7 @@ if 1:  # pragma: no cover
         """Regularize newlines within s."""
         return s.replace('\r\n', '\n').replace('\r', '\n')
     #@+node:ekr.20200103163100.1: *3* function: write_file
-    def write_file(filename: str, s: str, encoding: str = 'utf-8') -> None:
+    def write_file(filename: str, contents: str, encoding: str = 'utf-8') -> None:
         """
         Write the string s to the file whose name is given.
 
@@ -301,11 +301,13 @@ if 1:  # pragma: no cover
         that the file actually has been changed.
         """
         try:
-            # Write the file with platform-dependent newlines.
-            with open(filename, 'w', encoding=encoding) as f:
-                f.write(s)
+            # Do the conversion first, so errors do not destroy the file.
+            byte_contents = g.toEncodedString(contents, encoding=encoding)
+            # 'wb' preserves line endings.
+            with open(filename, 'wb') as f:
+                f.write(byte_contents)
         except Exception as e:
-            g.trace(f"Error writing {filename}\n{e}")
+            print(f"exception writing: {filename}:\n{e}")
     #@+node:ekr.20191231110051.1: *3* functions: dumpers...
     #@+node:ekr.20191027074436.1: *4* function: dump_ast
     def dump_ast(ast: Node, tag: str = 'dump_ast') -> None:
