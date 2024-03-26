@@ -5,7 +5,7 @@
 #@+node:ekr.20220416085845.1: ** << qt_text imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional, TypeAlias, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier
@@ -14,8 +14,12 @@ from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, W
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    Event = Any
-    MousePressEvent = Any
+    from leo.core.leoGui import LeoKeyEvent
+    QEvent: TypeAlias = QtCore.QEvent
+    QKeyEvent: TypeAlias = QtGui.QKeyEvent
+    QMouseEvent: TypeAlias = QtGui.QMouseEvent
+    QPaintEvent: TypeAlias = QtGui.QPaintEvent
+    QWheelEvent: TypeAlias = QtGui.QWheelEvent
     QWidget = QtWidgets.QWidget
     Widget = Any
 
@@ -28,7 +32,7 @@ QFontMetrics = QtGui.QFontMetrics
 #@+node:ekr.20191001084541.1: **  zoom commands
 #@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")
 @g.command("zoom-in")
-def zoom_in(event: Event = None, delta: int = 1) -> None:
+def zoom_in(event: LeoKeyEvent = None, delta: int = 1) -> None:
     """increase body font size by one
 
     @font-size-body must be present in the stylesheet
@@ -36,7 +40,7 @@ def zoom_in(event: Event = None, delta: int = 1) -> None:
     zoom_helper(event, delta=1)
 #@+node:ekr.20191001084646.1: *3* @g.command("zoom-out")
 @g.command("zoom-out")
-def zoom_out(event: Event = None) -> None:
+def zoom_out(event: LeoKeyEvent = None) -> None:
     """decrease body font size by one
 
     @font-size-body must be present in the stylesheet
@@ -44,7 +48,7 @@ def zoom_out(event: Event = None) -> None:
     # zoom_in(event=event, delta=-1)
     zoom_helper(event=event, delta=-1)
 #@+node:ekr.20191001084612.1: *3* zoom_helper
-def zoom_helper(event: Event, delta: int) -> None:
+def zoom_helper(event: LeoKeyEvent, delta: int) -> None:
     """
     Common helper for zoom commands.
     """
@@ -94,7 +98,7 @@ Valid values are standard css color names like `lightgrey`, and css rgb values l
 '''
 
 @g.command('help-for-highlight-current-line')
-def helpForLineHighlight(self: Any, event: Event = None) -> None:
+def helpForLineHighlight(self: Any, event: LeoKeyEvent = None) -> None:
     """Displays Settings used by current line highlighter."""
     self.c.putHelpFor(hilite_doc)
 
@@ -161,7 +165,7 @@ class QTextMixin:
     #@+node:ekr.20140901122110.18733: *3* qtm.Event handlers
     # These are independent of the kind of Qt widget.
     #@+node:ekr.20140901062324.18716: *4* qtm.onCursorPositionChanged
-    def onCursorPositionChanged(self, event: Event = None) -> None:
+    def onCursorPositionChanged(self, event: QEvent = None) -> None:
 
         c = self.c
         name = c.widget_name(self)
@@ -472,7 +476,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):  # type:ignore
         e.installEventFilter(self)
         e.viewport().installEventFilter(self)
     #@+node:ekr.20150403094706.10: *3* LeoLineTextWidget.eventFilter
-    def eventFilter(self, obj: Any, event: Event) -> Any:
+    def eventFilter(self, obj: Any, event: QEvent) -> Any:
         """
         Update the line numbers for all events on the text edit and the viewport.
         This is easier than connecting all necessary signals.
@@ -546,7 +550,7 @@ if QtWidgets:
                 self.leo_geom_set = False  # When true, self.geom returns global coords!
                 self.itemClicked.connect(self.select_callback)
             #@+node:ekr.20110605121601.18011: *5* lqlw.closeEvent
-            def closeEvent(self, event: Event) -> None:
+            def closeEvent(self, event: QEvent) -> None:
                 """Kill completion and close the window."""
                 self.leo_c.k.autoCompleter.abort()
             #@+node:ekr.20110605121601.18012: *5* lqlw.end_completer
@@ -567,7 +571,7 @@ if QtWidgets:
                 """Return the presently selected item's text."""
                 return self.currentItem().text()
             #@+node:ekr.20110605121601.18013: *5* lqlw.keyPressEvent
-            def keyPressEvent(self, event: Event) -> None:
+            def keyPressEvent(self, event: QKeyEvent) -> None:
                 """Handle a key event from QListWidget."""
                 c = self.leo_c
                 w = c.frame.body.wrapper
@@ -909,7 +913,7 @@ if QtWidgets:
             sb = w.verticalScrollBar()
             sb.setSliderPosition(pos)
         #@+node:ekr.20110605121601.18019: *3* lqtb.leo_dumpButton
-        def leo_dumpButton(self, event: Event, tag: str) -> str:
+        def leo_dumpButton(self, event: LeoKeyEvent, tag: str) -> str:
             button = event.button()
             table = (
                 (MouseButton.NoButton, 'no button'),
@@ -949,7 +953,7 @@ if QtWidgets:
 
         leo_vim_mode = None
 
-        def paintEvent(self, event: Event) -> None:
+        def paintEvent(self, event: QPaintEvent) -> None:
             """
             LeoQTextBrowser.paintEvent.
 
@@ -1039,7 +1043,7 @@ if QtWidgets:
             qp.end()
 
         #@+node:tbrown.20130411145310.18855: *3* lqtb.wheelEvent
-        def wheelEvent(self, event: Event) -> None:
+        def wheelEvent(self, event: QWheelEvent) -> None:
             """Handle a wheel event."""
             if KeyboardModifier.ControlModifier & event.modifiers():
                 d = {'c': self.leo_c}
@@ -1084,7 +1088,7 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
         # The y offset of the first line of the gutter.
         self.y_adjust = c.config.getInt('gutter-y-adjust') or 10
     #@+node:ekr.20181005085507.1: *3* NumberBar.mousePressEvent
-    def mousePressEvent(self, event: MousePressEvent) -> None:
+    def mousePressEvent(self, event: QMouseEvent) -> None:
 
         c = self.c
 
@@ -1123,7 +1127,7 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
             self.setFixedWidth(width)
         QtWidgets.QWidget.update(self, *args)
     #@+node:ekr.20150403094706.6: *3* NumberBar.paintEvent
-    def paintEvent(self, event: Event) -> None:
+    def paintEvent(self, event: QPaintEvent) -> None:
         """
         Enhance QFrame.paintEvent.
         Paint all visible text blocks in the editor's document.
@@ -1251,7 +1255,7 @@ class QMinibufferWrapper(QLineEditWrapper):
         # Monkey-patch the event handlers
         #@+<< define mouseReleaseEvent >>
         #@+node:ekr.20110605121601.18132: *3* << define mouseReleaseEvent >> (QMinibufferWrapper)
-        def mouseReleaseEvent(event: Event, self: Any = self) -> None:
+        def mouseReleaseEvent(event: QEvent, self: Any = self) -> None:
             """Override QLineEdit.mouseReleaseEvent.
 
             Simulate alt-x if we are not in an input state.
@@ -1558,7 +1562,7 @@ class QTextEditWrapper(QTextMixin):
             # Monkey patch the event handler.
             #@+others
             #@+node:ekr.20140901062324.18565: *5* QTextEditWrapper.mouseReleaseEvent (monkey-patch)
-            def mouseReleaseEvent(event: Event, self: Any = self) -> None:
+            def mouseReleaseEvent(event: QMouseEvent, self: Any = self) -> None:
                 """
                 Monkey patch for self.widget (QTextEditWrapper) mouseReleaseEvent.
                 """
