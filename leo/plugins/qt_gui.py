@@ -12,7 +12,7 @@ import re
 import sys
 import textwrap
 from time import sleep
-from typing import Any, Optional, Union, TYPE_CHECKING
+from typing import Any, Optional, Union, TypeAlias, TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
@@ -37,9 +37,10 @@ assert qt_commands
 #@+node:ekr.20220415183421.1: ** << qt_gui annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    Event = Any
+    QEvent: TypeAlias = QtCore.QEvent
     Widget = Any
 #@-<< qt_gui annotations >>
 #@+others
@@ -264,7 +265,7 @@ class LeoQtGui(leoGui.LeoGui):
 
         # Fix #516: Hide the dialog. Never delete it.
 
-        def closeEvent(event: Event) -> None:
+        def closeEvent(event: QEvent) -> None:
             event.ignore()
             dialog.hide()
 
@@ -815,7 +816,7 @@ class LeoQtGui(leoGui.LeoGui):
         #@-<< emergency fallback >>
     #@+node:ekr.20110607182447.16456: *3* qt_gui.Event handlers
     #@+node:ekr.20190824094650.1: *4* qt_gui.close_event
-    def close_event(self, event: Event) -> None:
+    def close_event(self, event: QEvent) -> None:
 
         # Save session data.
         g.app.saveSession()
@@ -832,7 +833,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     deactivated_widget = None
 
-    def onDeactivateEvent(self, event: Event, c: Cmdr, obj: Any, tag: str) -> None:
+    def onDeactivateEvent(self, event: QEvent, c: Cmdr, obj: Any, tag: str) -> None:
         """
         Gracefully deactivate the Leo window.
         Called several times for each window activation.
@@ -856,7 +857,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18480: *4* qt_gui.onActivateEvent
     # Called from eventFilter
 
-    def onActivateEvent(self, event: Event, c: Cmdr, obj: Any, tag: str) -> None:
+    def onActivateEvent(self, event: QEvent, c: Cmdr, obj: Any, tag: str) -> None:
         """
         Restore the focus when the Leo window is activated.
         Called several times for each window activation.
@@ -1120,7 +1121,7 @@ class LeoQtGui(leoGui.LeoGui):
             return image, image.height()
         return None, None
     #@+node:ekr.20131007055150.17608: *3* qt_gui.insertKeyEvent
-    def insertKeyEvent(self, event: Event, i: int) -> None:
+    def insertKeyEvent(self, event: QEvent, i: int) -> None:
         """Insert the key given by event in location i of widget event.w."""
         assert isinstance(event, leoGui.LeoKeyEvent)
         qevent = event.event
@@ -1170,13 +1171,13 @@ class LeoQtGui(leoGui.LeoGui):
         #@-<< create the button b >>
         #@+<< define the callbacks for b >>
         #@+node:ekr.20110605121601.18530: *4* << define the callbacks for b >>
-        def deleteButtonCallback(event: Event = None, b: Widget = b, c: Cmdr = c) -> None:
+        def deleteButtonCallback(event: LeoKeyEvent = None, b: Widget = b, c: Cmdr = c) -> None:
             if b:
                 b.pack_forget()
             c.bodyWantsFocus()
 
         def executeScriptCallback(
-            event: Event = None,
+            event: LeoKeyEvent = None,
             b: Widget = b,
             c: Cmdr = c,
             buttonText: str = buttonText,
@@ -1318,7 +1319,7 @@ class LeoQtGui(leoGui.LeoGui):
             sys.exit(1)
     #@+node:ekr.20180117053546.1: *3* qt_gui.show_tips & helpers
     @g.command('show-tips')
-    def show_next_tip(self, event: Event = None) -> None:
+    def show_next_tip(self, event: LeoKeyEvent = None) -> None:
         c = g.app.log and g.app.log.c
         if c:
             g.app.gui.show_tips(c)
