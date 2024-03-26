@@ -12,7 +12,7 @@ from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_frame import LeoQtTreeTab
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
@@ -78,7 +78,9 @@ class ChapterController:
         if commandName in c.commandsDict:
             return
 
-        def select_chapter_callback(event: Event, cc: ChapterController = cc, name: str = chapterName) -> None:
+        def select_chapter_callback(
+            event: LeoKeyEvent, cc: ChapterController = cc, name: str = chapterName,
+        ) -> None:
             """
             Select specific chapter.
             """
@@ -108,7 +110,7 @@ class ChapterController:
             c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
     #@+node:ekr.20070604165126: *3* cc: chapter-select
     @cmd('chapter-select')
-    def selectChapter(self, event: Event = None) -> None:
+    def selectChapter(self, event: LeoKeyEvent = None) -> None:
         """Prompt for a chapter name and select the given chapter."""
         cc, k = self, self.c.k
         names = cc.setAllChapterNames()
@@ -116,7 +118,7 @@ class ChapterController:
         k.setLabelBlue('Select chapter: ')
         k.get1Arg(event, handler=self.selectChapter1, tabList=names)
 
-    def selectChapter1(self, event: Event) -> None:
+    def selectChapter1(self, event: LeoKeyEvent) -> None:
         cc, k = self, self.c.k
         k.clearState()
         k.resetLabel()
@@ -124,7 +126,7 @@ class ChapterController:
             cc.selectChapterByName(k.arg)
     #@+node:ekr.20170202061705.1: *3* cc: chapter-back/next
     @cmd('chapter-back')
-    def backChapter(self, event: Event = None) -> None:
+    def backChapter(self, event: LeoKeyEvent = None) -> None:
         """Select the previous chapter."""
         cc = self
         names = cc.setAllChapterNames()
@@ -134,7 +136,7 @@ class ChapterController:
         cc.selectChapterByName(new_name)
 
     @cmd('chapter-next')
-    def nextChapter(self, event: Event = None) -> None:
+    def nextChapter(self, event: LeoKeyEvent = None) -> None:
         """Select the next chapter."""
         cc = self
         names = cc.setAllChapterNames()

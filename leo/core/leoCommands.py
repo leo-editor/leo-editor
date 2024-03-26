@@ -24,7 +24,7 @@ from leo.core import leoNodes
 #@+node:ekr.20220820051212.1: ** << leoCommands annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoApp import PreviousSettings
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
     # 11 subcommanders...
     from leo.core.leoAtFile import AtFile
@@ -626,7 +626,7 @@ class Commands:
             c.windowPosition = 500, 700, 50, 50  # width,height,left,top.
     #@+node:ekr.20210530065748.1: *3* @cmd c.execute-general-script
     @cmd('execute-general-script')
-    def execute_general_script_command(self, event: Event = None) -> None:
+    def execute_general_script_command(self, event: LeoKeyEvent = None) -> None:
         """
         Execute c.p and all its descendants as a script.
 
@@ -679,7 +679,7 @@ class Commands:
     #@+node:tom.20230308193758.1: *3* @cmd c.execute-external-file
     #@@language python
     @cmd('execute-external-file')
-    def execute_external_file(self, event: Event = None) -> None:
+    def execute_external_file(self, event: LeoKeyEvent = None) -> None:
         r"""
         #@+<< docstring >>
         #@+node:tom.20230308193758.2: *4* << docstring >>
@@ -1089,7 +1089,7 @@ class Commands:
             g.es('Cannot find an @- file', color='red')
     #@+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
     @cmd('execute-pytest')
-    def execute_pytest(self, event: Event = None) -> None:
+    def execute_pytest(self, event: LeoKeyEvent = None) -> None:
         """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
         c = self
 
@@ -1153,7 +1153,7 @@ class Commands:
     @cmd('execute-script')
     def executeScript(
         self,
-        event: Event = None,
+        event: LeoKeyEvent = None,
         args: Any = None,
         p: Position = None,
         script: str = None,
@@ -1284,7 +1284,7 @@ class Commands:
             g.restoreStdout()
     #@+node:ekr.20080514131122.12: *3* @cmd recolor
     @cmd('recolor')
-    def recolorCommand(self, event: Event = None) -> None:
+    def recolorCommand(self, event: LeoKeyEvent = None) -> None:
         """Force a full recolor."""
         c = self
         wrapper = c.frame.body.wrapper
@@ -1451,7 +1451,7 @@ class Commands:
     currentVnode = currentPosition
     #@+node:ekr.20190506060937.1: *5* c.dumpExpanded
     @cmd('dump-expanded')
-    def dump_expanded(self, event: Event) -> None:
+    def dump_expanded(self, event: LeoKeyEvent) -> None:
         """Print all non-empty v.expandedPositions lists."""
         c = event.get('c')
         if not c:
@@ -2230,7 +2230,7 @@ class Commands:
     #@+node:ekr.20031218072017.1765: *4* c.validateOutline (compatibility only)
     # Makes sure all nodes are valid.
 
-    def validateOutline(self, event: Event = None) -> bool:
+    def validateOutline(self, event: LeoKeyEvent = None) -> bool:
         """
         A legacy outline checker, retained only for compatibility.
 
@@ -2244,7 +2244,7 @@ class Commands:
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
     #@+node:ekr.20040723094220.1: *4* c.checkAllPythonCode
-    def checkAllPythonCode(self, event: Event = None, ignoreAtIgnore: bool = True) -> str:
+    def checkAllPythonCode(self, event: LeoKeyEvent = None, ignoreAtIgnore: bool = True) -> str:
         """Check all nodes in the selected tree for syntax and tab errors."""
         c = self
         count = 0
@@ -2278,7 +2278,7 @@ class Commands:
     #@+node:ekr.20040723094220.3: *4* c.checkPythonCode
     def checkPythonCode(
         self,
-        event: Event = None,
+        event: LeoKeyEvent = None,
         ignoreAtIgnore: bool = True,
         checkOnSave: bool = False,
     ) -> str:
@@ -2433,7 +2433,7 @@ class Commands:
         self.frame.body.updateSyntaxColorer(p)
     #@+node:ekr.20180503110307.1: *4* c.interactive*
     #@+node:ekr.20180504075937.1: *5* c.interactive
-    def interactive(self, callback: Callable, event: Event, prompts: Any) -> None:
+    def interactive(self, callback: Callable, event: LeoKeyEvent, prompts: Any) -> None:
         #@+<< c.interactive docstring >>
         #@+node:ekr.20180503131222.1: *6* << c.interactive docstring >>
         """
@@ -2444,11 +2444,11 @@ class Commands:
         Use the @command decorator to define commands.  Examples:
 
             @g.command('i3')
-            def i3_command(event: Event) -> None:
+            def i3_command(event: LeoKeyEvent) -> None:
                 c = event.get('c')
                 if not c: return
 
-                def callback(args: Any, c: Cmdr, event: Event) -> None:
+                def callback(args: Any, c: Cmdr, event: LeoKeyEvent) -> None:
                     g.trace(args)
                     c.bodyWantsFocus()
 
@@ -2467,12 +2467,12 @@ class Commands:
         else:
             g.trace('At most 3 arguments are supported.')
     #@+node:ekr.20180503111213.1: *5* c.interactive1
-    def interactive1(self, callback: Callable, event: Event, prompts: Any) -> None:
+    def interactive1(self, callback: Callable, event: LeoKeyEvent, prompts: Any) -> None:
 
         c, k = self, self.k
         prompt = prompts[0]
 
-        def state1(event: Event) -> None:
+        def state1(event: LeoKeyEvent) -> None:
             callback(args=[k.arg], c=c, event=event)
             k.clearState()
             k.resetLabel()
@@ -2481,17 +2481,17 @@ class Commands:
         k.setLabelBlue(prompt)
         k.get1Arg(event, handler=state1)
     #@+node:ekr.20180503111249.1: *5* c.interactive2
-    def interactive2(self, callback: Callable, event: Event, prompts: Any) -> None:
+    def interactive2(self, callback: Callable, event: LeoKeyEvent, prompts: Any) -> None:
 
         c, d, k = self, {}, self.k
         prompt1, prompt2 = prompts
 
-        def state1(event: Event) -> None:
+        def state1(event: LeoKeyEvent) -> None:
             d['arg1'] = k.arg
             k.extendLabel(prompt2, select=False, protect=True)
             k.getNextArg(handler=state2)
 
-        def state2(event: Event) -> None:
+        def state2(event: LeoKeyEvent) -> None:
             callback(args=[d.get('arg1'), k.arg], c=c, event=event)
             k.clearState()
             k.resetLabel()
@@ -2500,22 +2500,22 @@ class Commands:
         k.setLabelBlue(prompt1)
         k.get1Arg(event, handler=state1)
     #@+node:ekr.20180503111249.2: *5* c.interactive3
-    def interactive3(self, callback: Callable, event: Event, prompts: Any) -> None:
+    def interactive3(self, callback: Callable, event: LeoKeyEvent, prompts: Any) -> None:
 
         c, d, k = self, {}, self.k
         prompt1, prompt2, prompt3 = prompts
 
-        def state1(event: Event) -> None:
+        def state1(event: LeoKeyEvent) -> None:
             d['arg1'] = k.arg
             k.extendLabel(prompt2, select=False, protect=True)
             k.getNextArg(handler=state2)
 
-        def state2(event: Event) -> None:
+        def state2(event: LeoKeyEvent) -> None:
             d['arg2'] = k.arg
             k.extendLabel(prompt3, select=False, protect=True)
             k.get1Arg(event, handler=state3)  # Restart.
 
-        def state3(event: Event) -> None:
+        def state3(event: LeoKeyEvent) -> None:
             args = [d.get('arg1'), d.get('arg2'), k.arg]
             callback(args=args, c=c, event=event)
             k.clearState()
@@ -2659,7 +2659,7 @@ class Commands:
         return path
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
-    def check_event(self, event: Event) -> None:
+    def check_event(self, event: LeoKeyEvent) -> None:
         """Check an event object."""
         # c = self
         from leo.core import leoGui
@@ -2687,7 +2687,7 @@ class Commands:
     #@+node:ekr.20031218072017.2817: *4* c.doCommand
     command_count = 0
 
-    def doCommand(self, command_func: Any, command_name: Any, event: Event) -> Any:
+    def doCommand(self, command_func: Any, command_name: Any, event: LeoKeyEvent) -> Any:
         """
         Execute the given command function, invoking hooks and catching exceptions.
 
@@ -2743,7 +2743,7 @@ class Commands:
             g.doHook("command2", c=c, p=p, label=command_name)
         return return_value
     #@+node:ekr.20200522075411.1: *4* c.doCommandByName
-    def doCommandByName(self, command_name: Any, event: Event = None) -> Any:
+    def doCommandByName(self, command_name: Any, event: LeoKeyEvent = None) -> Any:
         """
         Execute one command, given the name of the command.
 
@@ -2921,7 +2921,7 @@ class Commands:
                 os.remove(root_path)
             os.chdir(old_dir)
     #@+node:ekr.20200523135601.1: *4* c.insertCharFromEvent
-    def insertCharFromEvent(self, event: Event) -> None:
+    def insertCharFromEvent(self, event: LeoKeyEvent) -> None:
         """
         Handle the character given by event, ignoring various special keys:
         - getArg state: k.getArg.
@@ -3038,7 +3038,7 @@ class Commands:
         if rclick is not installed.
         """
 
-        def minibufferCallback(event: Event, function: Callable = function) -> None:
+        def minibufferCallback(event: LeoKeyEvent, function: Callable = function) -> None:
             # Avoid a pylint complaint.
             if hasattr(self, 'theContextMenuController'):
                 cm = self.theContextMenuController
@@ -3244,7 +3244,7 @@ class Commands:
             g.es_exception()
             return False
     #@+node:ekr.20031218072017.2925: *4* c.markAllAtFileNodesDirty
-    def markAllAtFileNodesDirty(self, event: Event = None) -> None:
+    def markAllAtFileNodesDirty(self, event: LeoKeyEvent = None) -> None:
         """Mark all @file nodes as changed."""
         c = self
         c.endEditing()
@@ -3257,7 +3257,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20031218072017.2926: *4* c.markAtFileNodesDirty
-    def markAtFileNodesDirty(self, event: Event = None) -> None:
+    def markAtFileNodesDirty(self, event: LeoKeyEvent = None) -> None:
         """Mark all @file nodes in the selected tree as changed."""
         c = self
         p = c.p
@@ -3273,7 +3273,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20031218072017.2823: *4* c.openWith
-    def openWith(self, event: Event = None, d: dict[str, Any] = None) -> None:
+    def openWith(self, event: LeoKeyEvent = None, d: dict[str, Any] = None) -> None:
         """
         This is *not* a command.
 
@@ -3313,7 +3313,7 @@ class Commands:
                 g.internalError(f"no gnx for vnode: {v}")
         c.fileCommands.gnxDict = d
     #@+node:ekr.20031218072017.2081: *4* c.openRecentFile
-    def openRecentFile(self, event: Event = None, fn: str = None) -> None:
+    def openRecentFile(self, event: LeoKeyEvent = None, fn: str = None) -> None:
         """
         c.openRecentFile: This is not a command!
 
@@ -3624,7 +3624,7 @@ class Commands:
         c.enableRedrawFlag = True
     #@+node:ekr.20090110073010.1: *6* c.redraw
     @cmd('redraw')
-    def redraw_command(self, event: Event) -> None:
+    def redraw_command(self, event: LeoKeyEvent) -> None:
         c = event.get('c')
         if c:
             c.redraw()
@@ -3724,7 +3724,7 @@ class Commands:
         return g.app.gui.widget_name(widget) if g.app.gui else '<no widget>'
     #@+node:ekr.20171124101045.1: *4* c.Events
     #@+node:ekr.20060923202156: *5* c.onCanvasKey
-    def onCanvasKey(self, event: Event) -> None:
+    def onCanvasKey(self, event: LeoKeyEvent) -> None:
         """
         Navigate to the next headline starting with ch = event.char.
         If ch is uppercase, search all headlines; otherwise search only visible headlines.
@@ -3810,7 +3810,7 @@ class Commands:
         return ''
     #@+node:ekr.20031218072017.2909: *4* c.Expand/contract
     #@+node:ekr.20171124091426.1: *5* c.contractAllHeadlines
-    def contractAllHeadlines(self, event: Event = None) -> None:
+    def contractAllHeadlines(self, event: LeoKeyEvent = None) -> None:
         """Contract all nodes in the outline."""
         c = self
         for v in c.all_nodes():

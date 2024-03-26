@@ -19,7 +19,7 @@ from leo.core import leoAst
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
 #@-<< leoBeautify imports & annotations >>
 
@@ -29,7 +29,7 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+node:ekr.20150528131012.3: *4* beautify-c
 @g.command('beautify-c')
 @g.command('pretty-print-c')
-def beautifyCCode(event: Event) -> None:
+def beautifyCCode(event: LeoKeyEvent) -> None:
     """Beautify all C code in the selected tree."""
     c = event.get('c')
     if c:
@@ -37,7 +37,7 @@ def beautifyCCode(event: Event) -> None:
 #@+node:ekr.20200107165628.1: *4* beautify-file-diff
 @g.command('diff-beautify-files')
 @g.command('beautify-files-diff')
-def orange_diff_files(event: Event) -> None:
+def orange_diff_files(event: LeoKeyEvent) -> None:
     """
     Show the diffs that would result from beautifying the external files at
     c.p.
@@ -67,7 +67,7 @@ def orange_diff_files(event: Event) -> None:
     g.es_print(f"{tag}: {len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200107165603.1: *4* beautify-files
 @g.command('beautify-files')
-def orange_files(event: Event) -> None:
+def orange_files(event: LeoKeyEvent) -> None:
     """beautify one or more files at c.p."""
     c = event.get('c')
     if not c or not c.p:
@@ -94,7 +94,7 @@ def orange_files(event: Event) -> None:
         f"in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200103055814.1: *4* blacken-files
 @g.command('blacken-files')
-def blacken_files(event: Event) -> None:
+def blacken_files(event: LeoKeyEvent) -> None:
     """Run black on one or more files at c.p."""
     tag = 'blacken-files'
     if not black:
@@ -114,7 +114,7 @@ def blacken_files(event: Event) -> None:
             g.es(f"{tag}: file not found:\n{path}")
 #@+node:ekr.20200103060057.1: *4* blacken-files-diff
 @g.command('blacken-files-diff')
-def blacken_files_diff(event: Event) -> None:
+def blacken_files_diff(event: LeoKeyEvent) -> None:
     """
     Show the diffs that would result from blacking the external files at
     c.p.
@@ -137,7 +137,7 @@ def blacken_files_diff(event: Event) -> None:
             g.es(f"{tag}: file not found:\n{path}")
 #@+node:ekr.20191025072511.1: *4* fstringify-files
 @g.command('fstringify-files')
-def fstringify_files(event: Event) -> None:
+def fstringify_files(event: LeoKeyEvent) -> None:
     """fstringify one or more files at c.p."""
     c = event.get('c')
     if not c or not c.p:
@@ -170,7 +170,7 @@ def fstringify_files(event: Event) -> None:
 #@+node:ekr.20200103055858.1: *4* fstringify-files-diff
 @g.command('diff-fstringify-files')
 @g.command('fstringify-files-diff')
-def fstringify_diff_files(event: Event) -> None:
+def fstringify_diff_files(event: LeoKeyEvent) -> None:
     """
     Show the diffs that would result from fstringifying the external files at
     c.p.
@@ -200,7 +200,7 @@ def fstringify_diff_files(event: Event) -> None:
 #@+node:ekr.20200112060001.1: *4* fstringify-files-silent
 @g.command('silent-fstringify-files')
 @g.command('fstringify-files-silent')
-def fstringify_files_silent(event: Event) -> None:
+def fstringify_files_silent(event: LeoKeyEvent) -> None:
     """Silently fstringifying the external files at c.p."""
     c = event.get('c')
     if not c or not c.p:

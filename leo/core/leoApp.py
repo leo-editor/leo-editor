@@ -28,7 +28,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoConfig import GlobalConfigManager
     from leo.core.leoExternalFiles import ExternalFilesController
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoGui import LeoGui
     from leo.core.leoIPython import InternalIPKernel
     from leo.core.leoNodes import NodeIndices, Position
@@ -1349,7 +1349,7 @@ class LeoApp:
     #@+node:ekr.20031218072017.2617: *4* app.onQuit
     @cmd('exit-leo')
     @cmd('quit-leo')
-    def onQuit(self, event: Event = None) -> None:
+    def onQuit(self, event: LeoKeyEvent = None) -> None:
         """Exit Leo, prompting to save unsaved outlines first."""
         if 'shutdown' in g.app.debug:
             g.trace()
@@ -1459,7 +1459,7 @@ class LeoApp:
     #@+node:ekr.20170429152049.1: *3* app.listenToLog
     @cmd('listen-to-log')
     @cmd('log-listen')
-    def listenToLog(self, event: Event = None) -> None:
+    def listenToLog(self, event: LeoKeyEvent = None) -> None:
         """
         A socket listener, listening on localhost. See:
         https://docs.python.org/2/howto/logging-cookbook.html#sending-and-receiving-logging-events-across-a-network
@@ -3437,7 +3437,7 @@ class RecentFilesManager:
             if name.strip() == "":
                 continue  # happens with empty list/new file
 
-            def recentFilesCallback(event: Event = None, c: Cmdr = c, name: str = name) -> None:
+            def recentFilesCallback(event: LeoKeyEvent = None, c: Cmdr = c, name: str = name) -> None:
                 c.openRecentFile(fn=name)
 
             if groupedEntries:
@@ -3697,14 +3697,14 @@ class RecentFilesManager:
 #@+node:ekr.20150514125218.1: ** Top-level-commands
 #@+node:ekr.20150514125218.2: *3* ctrl-click-at-cursor
 @g.command('ctrl-click-at-cursor')
-def ctrlClickAtCursor(event: Event) -> None:
+def ctrlClickAtCursor(event: LeoKeyEvent) -> None:
     """Simulate a control-click at the cursor."""
     c = event.get('c')
     if c:
         g.openUrlOnClick(event)
 #@+node:ekr.20180213045148.1: *3* demangle-recent-files
 @g.command('demangle-recent-files')
-def demangle_recent_files_command(event: Event) -> None:
+def demangle_recent_files_command(event: LeoKeyEvent) -> None:
     """
     Path demangling potentially alters the paths in the recent files list
     according to find/replace patterns in the @data path-demangle setting.
@@ -3724,28 +3724,28 @@ def demangle_recent_files_command(event: Event) -> None:
             g.es_print('No patterns in @data path-demangle')
 #@+node:ekr.20150514125218.3: *3* enable/disable/toggle-idle-time-events
 @g.command('disable-idle-time-events')
-def disable_idle_time_events(event: Event) -> None:
+def disable_idle_time_events(event: LeoKeyEvent) -> None:
     """Disable default idle-time event handling."""
     g.app.idle_time_hooks_enabled = False
 
 @g.command('enable-idle-time-events')
-def enable_idle_time_events(event: Event) -> None:
+def enable_idle_time_events(event: LeoKeyEvent) -> None:
     """Enable default idle-time event handling."""
     g.app.idle_time_hooks_enabled = True
 
 @g.command('toggle-idle-time-events')
-def toggle_idle_time_events(event: Event) -> None:
+def toggle_idle_time_events(event: LeoKeyEvent) -> None:
     """Toggle default idle-time event handling."""
     g.app.idle_time_hooks_enabled = not g.app.idle_time_hooks_enabled
 #@+node:ekr.20150514125218.4: *3* join-leo-irc
 @g.command('join-leo-irc')
-def join_leo_irc(event: Event = None) -> None:
+def join_leo_irc(event: LeoKeyEvent = None) -> None:
     """Open the web page to Leo's irc channel on freenode.net."""
     import webbrowser
     webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
 #@+node:ekr.20150514125218.5: *3* open-url
 @g.command('open-url')
-def openUrl(event: Event = None) -> None:
+def openUrl(event: LeoKeyEvent = None) -> None:
     """
     Open the url in the headline or body text of the selected node.
 
@@ -3757,7 +3757,7 @@ def openUrl(event: Event = None) -> None:
         g.openUrl(c.p)
 #@+node:ekr.20150514125218.6: *3* open-url-under-cursor
 @g.command('open-url-under-cursor')
-def openUrlUnderCursor(event: Event = None) -> Any:
+def openUrlUnderCursor(event: LeoKeyEvent = None) -> Any:
     """Open the url under the cursor."""
     return g.openUrlOnClick(event)
 #@-others

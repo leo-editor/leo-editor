@@ -14,14 +14,14 @@ from leo.core.leoQt import QtCore
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     Pattern = Union[Any, str]
 #@-<< leoBackground imports & annotations >>
 
 #@+others
 #@+node:ekr.20220415160700.1: ** bpm-status
 @g.command('bpm-status')
-def bpm_status(event: Event) -> None:
+def bpm_status(event: LeoKeyEvent) -> None:
     bpm = g.app.backgroundProcessManager
     bpm.show_status()
 #@+node:ekr.20161028090624.1: **  class BPM.ProcessData

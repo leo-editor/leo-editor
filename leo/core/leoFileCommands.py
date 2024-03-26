@@ -30,7 +30,7 @@ from leo.core import leoNodes
 #@+node:ekr.20220819121640.1: ** << leoFileCommands annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
 
 #@-<< leoFileCommands annotations >>
@@ -42,7 +42,7 @@ def cmd(name: Any) -> Callable:
 #@+node:ekr.20210316035506.1: **  commands (leoFileCommands.py)
 #@+node:ekr.20180708114847.1: *3* dump-clone-parents
 @g.command('dump-clone-parents')
-def dump_clone_parents(event: Event) -> None:
+def dump_clone_parents(event: LeoKeyEvent) -> None:
     """Print the parent vnodes of all cloned vnodes."""
     c = event.get('c')
     if not c:
@@ -56,7 +56,7 @@ def dump_clone_parents(event: Event) -> None:
             g.printObj(v.parents)
 #@+node:ekr.20210309114903.1: *3* dump-gnx-dict
 @g.command('dump-gnx-dict')
-def dump_gnx_dict(event: Event) -> None:
+def dump_gnx_dict(event: LeoKeyEvent) -> None:
     """Dump c.fileCommands.gnxDict."""
     c = event.get('c')
     if not c:
@@ -622,7 +622,7 @@ class FileCommands:
     #@+node:ekr.20210316042224.1: *3* fc: Commands
     #@+node:ekr.20031218072017.2012: *4* write-at-file-nodes
     @cmd('write-at-file-nodes')
-    def writeAtFileNodes(self, event: Event = None) -> None:
+    def writeAtFileNodes(self, event: LeoKeyEvent = None) -> None:
         """Write all @file nodes in the selected outline."""
         c = self.c
         c.endEditing()
@@ -631,7 +631,7 @@ class FileCommands:
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20031218072017.1666: *4* write-dirty-at-file-nodes
     @cmd('write-dirty-at-file-nodes')
-    def writeDirtyAtFileNodes(self, event: Event = None) -> None:
+    def writeDirtyAtFileNodes(self, event: LeoKeyEvent = None) -> None:
         """Write all changed @file Nodes."""
         c = self.c
         c.endEditing()
@@ -640,14 +640,14 @@ class FileCommands:
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20031218072017.2013: *4* write-missing-at-file-nodes
     @cmd('write-missing-at-file-nodes')
-    def writeMissingAtFileNodes(self, event: Event = None) -> None:
+    def writeMissingAtFileNodes(self, event: LeoKeyEvent = None) -> None:
         """Write all @file nodes for which the corresponding external file does not exist."""
         c = self.c
         c.endEditing()
         c.atFileCommands.writeMissing(c.p)
     #@+node:ekr.20031218072017.3050: *4* write-outline-only
     @cmd('write-outline-only')
-    def writeOutlineOnly(self, event: Event = None) -> None:
+    def writeOutlineOnly(self, event: LeoKeyEvent = None) -> None:
         """Write the entire outline without writing any derived files."""
         c = self.c
         c.endEditing()
@@ -655,7 +655,7 @@ class FileCommands:
 
     #@+node:ekr.20230406053535.1: *4* write-zip-archive
     @cmd('write-zip-archive')
-    def writeZipArchive(self, event: Event = None) -> None:
+    def writeZipArchive(self, event: LeoKeyEvent = None) -> None:
         """
         Write a .zip file containing this .leo file and all external files.
 
