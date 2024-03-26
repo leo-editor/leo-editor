@@ -12,7 +12,7 @@ import string
 import sys
 import time
 import urllib
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional, TypeAlias, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
@@ -39,10 +39,13 @@ from leo.plugins.nested_splitter import NestedSplitter
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoGui
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
     from leo.plugins.mod_scripting import ScriptingController
 
-    Event = Any
+    QEvent: TypeAlias = QtCore.QEvent
+    QFocusEvent: TypeAlias = QtGui.QFocusEvent
+    QMouseEvent: TypeAlias = QtGui.QMouseEvent
     QWidget = QtWidgets.QWidget
     Widget = Any
     Wrapper = Any
@@ -129,7 +132,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
     def do_leo_spell_btn_Ignore(self) -> None:
         self.doSpellBtn('onIgnoreButton')
     #@+node:ekr.20110605121601.18140: *3* dw.closeEvent
-    def closeEvent(self, event: Event) -> None:
+    def closeEvent(self, event: QEvent) -> None:
         """Handle a close event in the Leo window."""
         c = self.leo_c
         if not c.exists:
@@ -376,11 +379,11 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         class VisLineEdit(QtWidgets.QLineEdit):  # type:ignore
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
-            def focusInEvent(self, event: Event) -> None:
+            def focusInEvent(self, event: QFocusEvent) -> None:
                 self.parent().show()
                 super().focusInEvent(event)  # Call the base class method.
 
-            def focusOutEvent(self, event: Event) -> None:
+            def focusOutEvent(self, event: QFocusEvent) -> None:
                 self.store_selection()
                 super().focusOutEvent(event)
 
@@ -919,7 +922,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
                         d[stroke.s] = cmd_name
                 return d
             #@+node:ekr.20131118172620.16893: *8* EventWrapper.wrapper
-            def wrapper(self, event: Event) -> Any:
+            def wrapper(self, event: LeoKeyEvent) -> Any:
 
                 type_ = event.type()
                 # Must intercept KeyPress for events that generate FocusOut!
@@ -929,7 +932,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
                     return self.keyRelease(event)
                 return self.oldEvent(event)
             #@+node:ekr.20131118172620.16894: *8* EventWrapper.keyPress
-            def keyPress(self, event: Event) -> Any:
+            def keyPress(self, event: LeoKeyEvent) -> Any:
 
                 s = event.text()
                 out = s and s in '\t\r\n'
@@ -958,7 +961,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
                 # Do the normal processing.
                 return self.oldEvent(event)
             #@+node:ekr.20131118172620.16895: *8* EventWrapper.keyRelease
-            def keyRelease(self, event: Event) -> Any:
+            def keyRelease(self, event: QEvent) -> Any:
                 return self.oldEvent(event)
             #@-others
         #@-others
@@ -1437,7 +1440,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):  # type:ignore
         if i > -1:
             self.setTabText(i, g.shortFileName(fileName))
     #@+node:ekr.20131115120119.17397: *3* qt_base_tab.closeEvent
-    def closeEvent(self, event: Event) -> None:
+    def closeEvent(self, event: QEvent) -> None:
         """Handle a close event."""
         g.app.gui.close_event(event)
     #@+node:ekr.20131115120119.17398: *3* qt_base_tab.select (leoTabbedTopLevel)
@@ -1546,7 +1549,7 @@ class LeoQtBody(leoFrame.LeoBody):
 
     @body_cmd('editor-add')
     @body_cmd('add-editor')
-    def add_editor_command(self, event: Event = None) -> None:
+    def add_editor_command(self, event: LeoKeyEvent = None) -> None:
         """Add another editor to the body pane."""
         c, p = self.c, self.c.p
         d = self.editorWrappers
@@ -1601,7 +1604,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18199: *5* LeoQtBody.delete_editor_command
     @body_cmd('delete-editor')
     @body_cmd('editor-delete')
-    def delete_editor_command(self, event: Event = None) -> None:
+    def delete_editor_command(self, event: LeoKeyEvent = None) -> None:
         """Delete the presently selected body text editor."""
         c, d = self.c, self.editorWrappers
         wrapper = c.frame.body.wrapper
@@ -1913,7 +1916,7 @@ class LeoQtBody(leoFrame.LeoBody):
                 pass
     #@+node:ekr.20110605121601.18217: *3* LeoQtBody.Renderer panes
     #@+node:ekr.20110605121601.18218: *4* LeoQtBody.hideCanvasRenderer
-    def hideCanvasRenderer(self, event: Event = None) -> None:
+    def hideCanvasRenderer(self, event: LeoKeyEvent = None) -> None:
         """Hide canvas pane."""
         c, d = self.c, self.editorWrappers
         wrapper = c.frame.body.wrapper
@@ -1950,7 +1953,7 @@ class LeoQtBody(leoFrame.LeoBody):
                 w.leo_label = None  # 2011/11/12
         self.selectEditor(new_wrapper)
     #@+node:ekr.20110605121601.18219: *4* LeoQtBody.hideTextRenderer
-    def hideCanvas(self, event: Event = None) -> None:
+    def hideCanvas(self, event: LeoKeyEvent = None) -> None:
         """Hide canvas pane."""
         c, d = self.c, self.editorWrappers
         wrapper = c.frame.body.wrapper
@@ -2004,7 +2007,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18221: *4* LeoQtBody.showCanvasRenderer
     # An override of leoFrame.addEditor.
 
-    def showCanvasRenderer(self, event: Event = None) -> None:
+    def showCanvasRenderer(self, event: LeoKeyEvent = None) -> None:
         """Show the canvas area in the body pane, creating it if necessary."""
         c = self.c
         f = c.frame.top.leo_body_inner_frame
@@ -2019,7 +2022,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18222: *4* LeoQtBody.showTextRenderer
     # An override of leoFrame.addEditor.
 
-    def showTextRenderer(self, event: Event = None) -> None:
+    def showTextRenderer(self, event: LeoKeyEvent = None) -> None:
         """Show the canvas area in the body pane, creating it if necessary."""
         c = self.c
         f = c.frame.top.leo_body_inner_frame
@@ -2352,19 +2355,19 @@ class LeoQtFrame(leoFrame.LeoFrame):
         else:
             g.app.closeLeoWindow(self)
     #@+node:ekr.20110605121601.18287: *4* qtFrame.OnControlKeyUp/Down
-    def OnControlKeyDown(self, event: Event = None) -> None:
+    def OnControlKeyDown(self, event: QEvent = None) -> None:
         self.controlKeyIsDown = True
 
-    def OnControlKeyUp(self, event: Event = None) -> None:
+    def OnControlKeyUp(self, event: QEvent = None) -> None:
         self.controlKeyIsDown = False
     #@+node:ekr.20110605121601.18290: *4* qtFrame.OnActivateTree
-    def OnActivateTree(self, event: Event = None) -> None:
+    def OnActivateTree(self, event: QEvent = None) -> None:
         pass
     #@+node:ekr.20110605121601.18293: *3* qtFrame.Gui-dependent commands
     #@+node:ekr.20110605121601.18301: *4* qtFrame.Window Menu...
     #@+node:ekr.20110605121601.18302: *5* qtFrame.toggleActivePane
     @frame_cmd('toggle-active-pane')
-    def toggleActivePane(self, event: Event = None) -> None:
+    def toggleActivePane(self, event: LeoKeyEvent = None) -> None:
         """Toggle the focus between the outline and body panes."""
         frame = self
         c = frame.c
@@ -2377,16 +2380,16 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c.treeWantsFocus()
     #@+node:ekr.20110605121601.18304: *5* qtFrame.equalSizedPanes
     @frame_cmd('equal-sized-panes')
-    def equalSizedPanes(self, event: Event = None) -> None:
+    def equalSizedPanes(self, event: LeoKeyEvent = None) -> None:
         """Make the outline and body panes have the same size."""
         self.resizePanesToRatio(0.5, self.secondary_ratio)
     #@+node:ekr.20110605121601.18305: *5* qtFrame.hideLogWindow
-    def hideLogWindow(self, event: Event = None) -> None:
+    def hideLogWindow(self, event: LeoKeyEvent = None) -> None:
         """Hide the log pane."""
         self.divideLeoSplitter2(0.99)
     #@+node:ekr.20110605121601.18306: *5* qtFrame.minimizeAll
     @frame_cmd('minimize-all')
-    def minimizeAll(self, event: Event = None) -> None:
+    def minimizeAll(self, event: LeoKeyEvent = None) -> None:
         """Minimize all Leo's windows."""
         for frame in g.app.windowList:
             self.minimize(frame)
@@ -2401,13 +2404,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 w.setWindowState(WindowState.WindowMinimized)
     #@+node:ekr.20110605121601.18307: *5* qtFrame.toggleSplitDirection
     @frame_cmd('toggle-split-direction')
-    def toggleSplitDirection(self, event: Event = None) -> None:
+    def toggleSplitDirection(self, event: LeoKeyEvent = None) -> None:
         """Toggle the split direction in the present Leo window."""
         if hasattr(self.c, 'free_layout'):
             self.c.free_layout.get_top_splitter().rotate()
     #@+node:ekr.20110605121601.18308: *5* qtFrame.resizeToScreen
     @frame_cmd('resize-to-screen')
-    def resizeToScreen(self, event: Event = None) -> None:
+    def resizeToScreen(self, event: LeoKeyEvent = None) -> None:
         """Resize the Leo window so it fill the entire screen."""
         frame = self
         # This unit test will fail when run externally.
@@ -2611,7 +2614,7 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20150717102728.1: *3* LeoQtLog: clear-log & dump-log
     @log_cmd('clear-log')
     @log_cmd('log-clear')
-    def clearLog(self, event: Event = None) -> None:
+    def clearLog(self, event: LeoKeyEvent = None) -> None:
         """Clear the log pane."""
         # self.logCtrl may be either a wrapper or a widget.
         w = self.logCtrl.widget
@@ -2620,7 +2623,7 @@ class LeoQtLog(leoFrame.LeoLog):
 
     @log_cmd('dump-log')
     @log_cmd('log-dump')
-    def dumpLog(self, event: Event = None) -> None:
+    def dumpLog(self, event: LeoKeyEvent = None) -> None:
         """Clear the log pane."""
         # self.logCtrl may be either a wrapper or a widget.
         w = self.logCtrl.widget
@@ -2679,7 +2682,7 @@ class LeoQtLog(leoFrame.LeoLog):
             if val3:
                 g.es(key3, val3, tabName='Fonts')
     #@+node:ekr.20110605121601.18339: *4* LeoQtLog.hideFontTab
-    def hideFontTab(self, event: Event = None) -> None:
+    def hideFontTab(self, event: LeoKeyEvent = None) -> None:
         c = self.c
         c.frame.log.selectTab('Log')
         c.bodyWantsFocus()
@@ -3242,13 +3245,13 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
     __str__ = __repr__
 
 
-    def dragMoveEvent(self, ev: Event) -> None:  # Called during drags.
+    def dragMoveEvent(self, ev: QEvent) -> None:  # Called during drags.
         pass
 
     #@+others
     #@+node:ekr.20111022222228.16980: *3* LeoQTreeWidget: Event handlers
     #@+node:ekr.20110605121601.18364: *4* LeoQTreeWidget.dragEnterEvent & helper
-    def dragEnterEvent(self, ev: Event) -> None:
+    def dragEnterEvent(self, ev: QEvent) -> None:
         """Export c.p's tree as a Leo mime-data."""
         c = self.c
         if not ev:
@@ -3277,7 +3280,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         s = c.fileCommands.outline_to_clipboard_string()
         md.setText(f"{fn},{s}")
     #@+node:ekr.20110605121601.18365: *4* LeoQTreeWidget.dropEvent & helpers
-    def dropEvent(self, ev: Event) -> None:
+    def dropEvent(self, ev: QEvent) -> None:
         """Handle a drop event in the QTreeWidget."""
         if not ev:
             return
@@ -3703,7 +3706,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
         return True
     #@+node:ekr.20110605121601.18381: *3* LeoQTreeWidget: utils
     #@+node:ekr.20110605121601.18382: *4* LeoQTreeWidget.dump
-    def dump(self, ev: Event, p: Position, tag: str) -> None:
+    def dump(self, ev: LeoKeyEvent, p: Position, tag: str) -> None:
         if ev:
             md = ev.mimeData()
             s = g.checkUnicode(md.text(), encoding='utf-8')
@@ -3743,14 +3746,14 @@ class LeoQtSpellTab:
         """Handle a click in the Add button in the Check Spelling dialog."""
         self.handler.add()
     #@+node:ekr.20110605121601.18391: *4* onChangeButton & onChangeThenFindButton
-    def onChangeButton(self, event: Event = None) -> None:
+    def onChangeButton(self, event: QEvent = None) -> None:
         """Handle a click in the Change button in the Spell tab."""
         state = self.updateButtons()
         if state:
             self.handler.change()
         self.updateButtons()
 
-    def onChangeThenFindButton(self, event: Event = None) -> None:
+    def onChangeThenFindButton(self, event: QEvent = None) -> None:
         """Handle a click in the "Change, Find" button in the Spell tab."""
         state = self.updateButtons()
         if state:
@@ -3771,15 +3774,15 @@ class LeoQtSpellTab:
         """Handle a click in the Hide button in the Spell tab."""
         self.handler.hide()
     #@+node:ekr.20110605121601.18394: *4* onIgnoreButton
-    def onIgnoreButton(self, event: Event = None) -> None:
+    def onIgnoreButton(self, event: QEvent = None) -> None:
         """Handle a click in the Ignore button in the Check Spelling dialog."""
         self.handler.ignore()
     #@+node:ekr.20110605121601.18395: *4* onMap
-    def onMap(self, event: Event = None) -> None:
+    def onMap(self, event: QEvent = None) -> None:
         """Respond to a Tk <Map> event."""
         self.update(show=False, fill=False)
     #@+node:ekr.20110605121601.18396: *4* onSelectListBox
-    def onSelectListBox(self, event: Event = None) -> None:
+    def onSelectListBox(self, event: QEvent = None) -> None:
         """Respond to a click in the selection listBox."""
         c = self.c
         self.updateButtons()
@@ -3868,7 +3871,7 @@ class LeoQtTreeTab:
                 # Fix #458: Chapters drop-down list is not automatically resized.
                 self.setSizeAdjustPolicy(SizeAdjustPolicy.AdjustToContents)
 
-            def focusInEvent(self, event: Event) -> None:
+            def focusInEvent(self, event: QFocusEvent) -> None:
                 self.leo_tt.setNames()
                 QtWidgets.QComboBox.focusInEvent(self, event)  # Call the base class
 
@@ -4041,7 +4044,7 @@ class QtIconBarClass:
         rb.triggered.connect(delete_callback)
         if command:
 
-            def button_callback(event: Event, c: Cmdr = c, command: Callable = command) -> None:
+            def button_callback(event: QEvent, c: Cmdr = c, command: Callable = command) -> None:
                 val = command()
                 if c.exists:
                     # c.bodyWantsFocus()
@@ -4447,7 +4450,7 @@ class QtTabBarWrapper(QtWidgets.QTabBar):  # type:ignore
         super().__init__(parent)
         self.setMovable(True)
     #@+node:peckj.20140516114832.10109: *3* mouseReleaseEvent (QtTabBarWrapper)
-    def mouseReleaseEvent(self, event: Event) -> None:
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         # middle click close on tabs -- JMP 20140505
         # closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
         if event.button() == MouseButton.MiddleButton:
@@ -4531,7 +4534,7 @@ class TabbedFrameFactory:
         #@+<< Commands for tabs >>
         #@+node:ekr.20110605121601.18473: *4* << Commands for tabs >>
         @g.command('tab-detach')
-        def tab_detach(event: Event) -> None:
+        def tab_detach(event: LeoKeyEvent) -> None:
             """ Detach current tab from tab bar """
             if len(self.leoFrames) < 2:
                 g.es_print_error("Can't detach last tab")
@@ -4545,7 +4548,7 @@ class TabbedFrameFactory:
         # this is actually not tab-specific, move elsewhere?
 
         @g.command('close-others')
-        def close_others(event: Event) -> None:
+        def close_others(event: LeoKeyEvent) -> None:
             """Close all windows except the present window."""
             myc = event['c']
             for c in g.app.commanders():
@@ -4567,12 +4570,12 @@ class TabbedFrameFactory:
             self.focusCurrentBody()
 
         @g.command('tab-cycle-next')
-        def tab_cycle_next(event: Event) -> None:
+        def tab_cycle_next(event: LeoKeyEvent) -> None:
             """ Cycle to next tab """
             tab_cycle(1)
 
         @g.command('tab-cycle-previous')
-        def tab_cycle_previous(event: Event) -> None:
+        def tab_cycle_previous(event: LeoKeyEvent) -> None:
             """ Cycle to next tab """
             tab_cycle(-1)
         #@-<< Commands for tabs >>
@@ -4650,7 +4653,7 @@ class TabbedFrameFactory:
 #@+node:ekr.20200303082511.6: *3* 'contract-body-pane' & 'expand-outline-pane'
 @g.command('contract-body-pane')
 @g.command('expand-outline-pane')
-def contractBodyPane(event: Event) -> None:
+def contractBodyPane(event: LeoKeyEvent) -> None:
     """Contract the body pane. Expand the outline/log splitter."""
     c = event.get('c')
     if not c:
@@ -4662,7 +4665,7 @@ def contractBodyPane(event: Event) -> None:
 expandOutlinePane = contractBodyPane
 #@+node:ekr.20200303084048.1: *3* 'contract-log-pane'
 @g.command('contract-log-pane')
-def contractLogPane(event: Event) -> None:
+def contractLogPane(event: LeoKeyEvent) -> None:
     """Contract the log pane. Expand the outline pane."""
     c = event.get('c')
     if not c:
@@ -4673,7 +4676,7 @@ def contractLogPane(event: Event) -> None:
 #@+node:ekr.20200303084225.1: *3* 'contract-outline-pane' & 'expand-body-pane'
 @g.command('contract-outline-pane')
 @g.command('expand-body-pane')
-def contractOutlinePane(event: Event) -> None:
+def contractOutlinePane(event: LeoKeyEvent) -> None:
     """Contract the outline pane. Expand the body pane."""
     c = event.get('c')
     if not c:
@@ -4685,7 +4688,7 @@ def contractOutlinePane(event: Event) -> None:
 expandBodyPane = contractOutlinePane
 #@+node:ekr.20200303084226.1: *3* 'expand-log-pane'
 @g.command('expand-log-pane')
-def expandLogPane(event: Event) -> None:
+def expandLogPane(event: LeoKeyEvent) -> None:
     """Expand the log pane. Contract the outline pane."""
     c = event.get('c')
     if not c:
@@ -4695,7 +4698,7 @@ def expandLogPane(event: Event) -> None:
     f.divideLeoSplitter2(r)
 #@+node:ekr.20200303084610.1: *3* 'hide-body-pane'
 @g.command('hide-body-pane')
-def hideBodyPane(event: Event) -> None:
+def hideBodyPane(event: LeoKeyEvent) -> None:
     """Hide the body pane. Fully expand the outline/log splitter."""
     c = event.get('c')
     if not c:
@@ -4703,21 +4706,21 @@ def hideBodyPane(event: Event) -> None:
     c.frame.divideLeoSplitter1(1.0)
 #@+node:ekr.20231102130853.1: *3* 'hide-icon-bar', 'show-icon-bar', 'toggle-icon-bar'
 @g.command('hide-icon-bar')
-def hideIconBar(event: Event) -> None:
+def hideIconBar(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if c:
         dw = c.frame.top
         dw.iconBar.hide()
 
 @g.command('show-icon-bar')
-def showIconBar(event: Event) -> None:
+def showIconBar(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if c:
         dw = c.frame.top
         dw.iconBar.show()
 
 @g.command('toggle-icon-bar')
-def toggleIconBar(event: Event) -> None:
+def toggleIconBar(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if c:
         dw = c.frame.top
@@ -4728,7 +4731,7 @@ def toggleIconBar(event: Event) -> None:
             w.show()
 #@+node:ekr.20200303084625.1: *3* 'hide-log-pane'
 @g.command('hide-log-pane')
-def hideLogPane(event: Event) -> None:
+def hideLogPane(event: LeoKeyEvent) -> None:
     """Hide the log pane. Fully expand the outline pane."""
     c = event.get('c')
     if not c:
@@ -4736,21 +4739,21 @@ def hideLogPane(event: Event) -> None:
     c.frame.divideLeoSplitter2(1.0)
 #@+node:ekr.20231102131048.1: *3* 'hide-minibuffer', 'show-minibuffer', 'toggle-minibuffer'
 @g.command('hide-minibuffer')
-def hideMinibuffer(event: Event) -> None:
+def hideMinibuffer(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if c:
         dw = c.frame.top
         dw.leo_minibuffer_frame.hide()
 
 @g.command('show-minibuffer')
-def showMinibuffer(event: Event) -> None:
+def showMinibuffer(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if c:
         dw = c.frame.top
         dw.leo_minibuffer_frame.show()
 
 @g.command('toggle-minibuffer')
-def toggleMinibuffer(event: Event) -> None:
+def toggleMinibuffer(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if c:
         dw = c.frame.top
@@ -4762,7 +4765,7 @@ def toggleMinibuffer(event: Event) -> None:
 
 #@+node:ekr.20200303082511.7: *3* 'hide-outline-pane'
 @g.command('hide-outline-pane')
-def hideOutlinePane(event: Event) -> None:
+def hideOutlinePane(event: LeoKeyEvent) -> None:
     """Hide the outline/log splitter. Fully expand the body pane."""
     c = event.get('c')
     if not c:
@@ -4771,21 +4774,21 @@ def hideOutlinePane(event: Event) -> None:
 
 #@+node:ekr.20231102130902.1: *3* 'hide-status-bar', 'show-status-bar', 'toggle-staus-bar'
 @g.command('hide-status-bar')
-def hideStatusBar(event: Event) -> None:
+def hideStatusBar(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if c:
         dw = c.frame.top
         dw.statusBar.hide()
 
 @g.command('show-status-bar')
-def showStatusBar(event: Event) -> None:
+def showStatusBar(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if c:
         dw = c.frame.top
         dw.statusBar.show()
 
 @g.command('toggle-status-bar')
-def toggleStatusBar(event: Event) -> None:
+def toggleStatusBar(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if c:
         dw = c.frame.top
