@@ -42,12 +42,16 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
     from leo.plugins.mod_scripting import ScriptingController
-
+    # Events
     QEvent: TypeAlias = QtCore.QEvent
     QFocusEvent: TypeAlias = QtGui.QFocusEvent
     QMouseEvent: TypeAlias = QtGui.QMouseEvent
     QWidget = QtWidgets.QWidget
-    Widget = Any
+    # Widgets
+    QComboBox = Any
+    QLayout = Any
+    QMenu = Any
+    QTabWidget = Any
     Wrapper = Any
 #@-<< qt_frame annotations >>
 #@+<< qt_frame decorators >>
@@ -569,7 +573,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         lineWidth: int = 1,
         hPolicy: Policy = None,
         vPolicy: Policy = None,
-    ) -> Widget:  # QtWidgets.QStackedWidget
+    ) -> QWidget:  # QtWidgets.QStackedWidget
         w = QtWidgets.QStackedWidget(parent)
         self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
         w.setAcceptDrops(True)
@@ -1384,7 +1388,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):  # type:ignore
         c = w.leo_c
         c.new()
     #@+node:ekr.20131115120119.17391: *3* qt_base_tab.detach
-    def detach(self, index: int) -> Widget:  # A QIcon.
+    def detach(self, index: int) -> QWidget:  # A QIcon.
         """detach tab (from tab's context menu)"""
         w = self.widget(index)
         name = self.tabText(index)
@@ -1466,7 +1470,7 @@ class LeoQtBody(leoFrame.LeoBody):
         assert c.frame == frame and frame.c == c
         self.colorizer: Any = None  # A Union
         self.wrapper: Wrapper = None
-        self.widget: Widget = None
+        self.widget: QWidget = None
         self.reloadSettings()
         self.set_widget()  # Sets self.widget and self.wrapper.
         self.setWrap(c.p)
@@ -1856,7 +1860,7 @@ class LeoQtBody(leoFrame.LeoBody):
                 cc.selectChapterByName(name)
                 c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18216: *5* LeoQtBody.unpackWidget
-    def unpackWidget(self, layout: Widget, w: Wrapper) -> None:
+    def unpackWidget(self, layout: QLayout, w: Wrapper) -> None:
 
         index = layout.indexOf(w)
         if index == -1:
@@ -2551,13 +2555,13 @@ class LeoQtLog(leoFrame.LeoLog):
         # logCtrl may be either a wrapper or a widget.
         assert self.logCtrl is None, self.logCtrl
         self.c = c = frame.c  # Also set in the base constructor, but we need it here.
-        self.contentsDict: dict[str, Widget] = {}  # Keys are tab names.  Values are Qt widgets.
+        self.contentsDict: dict[str, Any] = {}  # Keys are tab names.
         self.eventFilters: list = []  # Apparently needed to make filters work!
-        self.logCtrl: Wrapper = None
-        self.logDict: dict[str, Widget] = {}  # Keys are tab names; values are the widgets.
+        self.logCtrl: Wrapper = None  # A union.
+        self.logDict: dict[str, Any] = {}  # Keys are tab names.
         self.logWidget: LeoQtLog = None  # Set in finishCreate.
-        self.menu: Widget = None  # A Qt menu that pops up on right clicks in the hull or in tabs.
-        self.tabWidget: Widget = c.frame.top.tabWidget  # A QTabWidget that holds all the tabs.
+        self.menu: qt_text.LeoQTextBrowser = None  # A Qt menu that pops up on right clicks in the hull or in tabs.
+        self.tabWidget: QTabWidget = c.frame.top.tabWidget  # A QTabWidget that holds all the tabs.
         tw = self.tabWidget
 
         # Bug 917814: Switching Log Pane tabs is done incompletely.
@@ -3010,8 +3014,8 @@ class LeoQtMenu(leoMenu.LeoMenu):
     #@+node:ekr.20110605121601.18343: *4* LeoQtMenu.Methods with Tk spellings
     #@+node:ekr.20110605121601.18344: *5* LeoQtMenu.add_cascade
     def add_cascade(self,
-        parent: LeoQtFrame, label: str, menu: Widget, underline: int,
-    ) -> Widget:  # A QMenu.
+        parent: LeoQtFrame, label: str, menu: QMenu, underline: int,
+    ) -> QMenu:
         """Wrapper for the Tkinter add_cascade menu method.
 
         Adds a submenu to the parent menu, or the menubar."""
@@ -3029,7 +3033,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         return menu
     #@+node:ekr.20110605121601.18345: *5* LeoQtMenu.add_command (Called by createMenuEntries)
     def add_command(self,
-        menu: Widget,  # A QMenu.
+        menu: QMenu,
         accelerator: str = '',
         command: Callable = None,
         commandName: str = None,
@@ -3053,7 +3057,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
 
             action.triggered.connect(qt_add_command_callback)
     #@+node:ekr.20110605121601.18346: *5* LeoQtMenu.add_separator
-    def add_separator(self, menu: Widget) -> None:
+    def add_separator(self, menu: QMenu) -> None:
         """Wrapper for the Tkinter add_separator menu method."""
         if menu:
             action = menu.addSeparator()
@@ -3101,9 +3105,9 @@ class LeoQtMenu(leoMenu.LeoMenu):
         parent: LeoQtFrame,
         index: int,
         label: str,
-        menu: Widget,  # A QMenu.
+        menu: QMenu,
         underline: int,  # Not used
-    ) -> Widget:  # A QMenu.
+    ) -> QMenu:
         """Wrapper for the Tkinter insert_cascade menu method."""
         menu.setTitle(label)
         label.replace('&', '').lower()
@@ -3127,7 +3131,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         return menu
     #@+node:ekr.20110605121601.18354: *4* LeoQtMenu.Methods with other spellings
     #@+node:ekr.20110605121601.18355: *5* LeoQtMenu.clearAccel
-    def clearAccel(self, menu: Widget, name: str) -> None:
+    def clearAccel(self, menu: QMenu, name: str) -> None:
         pass
         # if not menu:
             # return
@@ -3155,7 +3159,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             menu.insert_cascade(parent, index, label, menu, underline=amp_index)
         return menu
     #@+node:ekr.20110605121601.18358: *5* LeoQtMenu.disable/enableMenu (not used)
-    def disableMenu(self, menu: Widget, name: str) -> None:
+    def disableMenu(self, menu: QMenu, name: str) -> None:
         self.enableMenu(menu, name, False)
 
     def enableMenu(self, menu: Wrapper, name: str, val: bool) -> None:
@@ -3167,12 +3171,12 @@ class LeoQtMenu(leoMenu.LeoMenu):
                     action.setEnabled(val)
                     break
     #@+node:ekr.20110605121601.18359: *5* LeoQtMenu.getMenuLabel
-    def getMenuLabel(self, menu: Widget, name: str) -> None:
+    def getMenuLabel(self, menu: QMenu, name: str) -> None:
         """Return the index of the menu item whose name (or offset) is given.
         Return None if there is no such menu item."""
         # At present, it is valid to always return None.
     #@+node:ekr.20110605121601.18360: *5* LeoQtMenu.setMenuLabel
-    def setMenuLabel(self, menu: Widget, name: str, label: str, underline: int = -1) -> None:
+    def setMenuLabel(self, menu: QMenu, name: str, label: str, underline: int = -1) -> None:
 
         def munge(s: str) -> str:
             return (s or '').replace('&', '')
@@ -3855,7 +3859,7 @@ class LeoQtTreeTab:
         self.iconBar = iconBar
         self.lockout = False  # True: do not redraw.
         self.tabNames: list[str] = []  # The list of tab names. Changes when tabs are renamed.
-        self.w: Widget = None  # A QComboBox
+        self.w: QComboBox = None
         # self.reloadSettings()
         self.createControl()
     #@+node:ekr.20110605121601.18441: *4* tt.createControl (defines class LeoQComboBox)
@@ -4329,7 +4333,7 @@ class QtStatusLineClass:
     # Keys are widgets, values are stylesheets.
     styleSheetCache: dict[Any, str] = {}
 
-    def put_helper(self, s: str, w: Widget, bg: str = None, fg: str = None) -> None:
+    def put_helper(self, s: str, w: QWidget, bg: str = None, fg: str = None) -> None:
         """Put string s in the indicated widget, with proper colors."""
         c = self.c
         bg = bg or c.config.getColor('status-bg') or 'white'
@@ -4446,7 +4450,7 @@ class QtStatusLineClass:
 class QtTabBarWrapper(QtWidgets.QTabBar):  # type:ignore
     #@+others
     #@+node:peckj.20140516114832.10108: *3* __init__
-    def __init__(self, parent: Widget = None) -> None:
+    def __init__(self, parent: QWidget = None) -> None:
         super().__init__(parent)
         self.setMovable(True)
     #@+node:peckj.20140516114832.10109: *3* mouseReleaseEvent (QtTabBarWrapper)
@@ -4471,8 +4475,8 @@ class TabbedFrameFactory:
         # Will be created when first frame appears.
         # Workaround a problem setting the window title when tabs are shown.
         self.alwaysShowTabs = True
-        self.leoFrames: dict[Widget, Widget] = {}
-        self.masterFrame: Widget = None
+        self.leoFrames: dict[QWidget, QWidget] = {}
+        self.masterFrame: LeoTabbedTopLevel = None
         self.createTabCommands()
     #@+node:ekr.20110605121601.18466: *3* frameFactory.createFrame
     def createFrame(self, leoFrame: QWidget) -> QWidget:
