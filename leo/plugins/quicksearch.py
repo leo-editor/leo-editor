@@ -99,8 +99,8 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
-    from leo.core.leoQt import QObject
-    Event: TypeAlias = QObject
+    from leo.core.leoGui import LeoKeyEvent
+    QEvent: TypeAlias = QtCore.QEvent
     Match = re.Match
     Match_Iter = Iterator[re.Match[str]]
     Match_List = list[tuple[Position, Match_Iter]]
@@ -131,16 +131,16 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
     wdg = LeoQuickSearchWidget(c, mode="nav")
     c.frame.log.createTab("Nav", widget=wdg)
 
-    def focus_quicksearch_entry(event: Event) -> None:
+    def focus_quicksearch_entry(event: QEvent) -> None:
         c.frame.log.selectTab('Nav')
         wdg.ui.lineEdit.selectAll()
         wdg.ui.lineEdit.setFocus()
 
-    def focus_to_nav(event: Event) -> None:
+    def focus_to_nav(event: QEvent) -> None:
         c.frame.log.selectTab('Nav')
         wdg.ui.listWidget.setFocus()
 
-    def find_selected(event: Event) -> None:
+    def find_selected(event: QEvent) -> None:
         text = c.frame.body.wrapper.getSelectedText()
         if text.strip():
             wdg.ui.lineEdit.setText(text)
@@ -149,15 +149,15 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
         else:
             focus_quicksearch_entry(event)
 
-    def nodehistory(event: Event) -> None:
+    def nodehistory(event: QEvent) -> None:
         c.frame.log.selectTab('Nav')
         wdg.scon.doNodeHistory()
 
-    def show_dirty(event: Event) -> None:
+    def show_dirty(event: QEvent) -> None:
         c.frame.log.selectTab('Nav')
         wdg.scon.doChanged()
 
-    def timeline(event: Event) -> None:
+    def timeline(event: QEvent) -> None:
         c.frame.log.selectTab('Nav')
         wdg.scon.doTimeline()
 
@@ -170,12 +170,12 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
     c.k.registerCommand('history', nodehistory)
 
     @g.command('marked-list')
-    def showmarks(event: Event) -> None:
+    def showmarks(event: LeoKeyEvent) -> None:
         """ List marked nodes in nav tab """
         wdg.scon.doShowMarked()
 
     @g.command('go-anywhere')
-    def find_popout_f(event: Event) -> None:
+    def find_popout_f(event: LeoKeyEvent) -> None:
         c = event['c']
         w = LeoQuickSearchWidget(c, mode="popout", parent=c.frame.top)
         topgeo = c.frame.top.geometry()
@@ -221,7 +221,7 @@ def onCreate(tag: str, keys: Any) -> None:
     install_qt_quicksearch_tab(c)
 
 #@+node:tbrown.20111011152601.48461: *3* show_unittest_failures
-def show_unittest_failures(event: Event) -> None:
+def show_unittest_failures(event: LeoKeyEvent) -> None:
     c = event.get('c')
     fails = c.db.get('unittest/cur/fail')
     nav = c.frame.nav
@@ -258,7 +258,7 @@ class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
         self.listWidget = w
         self.lineEdit = lineedit
     #@+node:ekr.20111015194452.15719: *3* quick_ev.eventFilter
-    def eventFilter(self, obj: Any, event: Event) -> bool:
+    def eventFilter(self, obj: Any, event: QEvent) -> bool:
 
         eventType = event.type()
         ev = QtCore.QEvent
@@ -747,7 +747,7 @@ class QuickSearchController:
                     w.seeInsertPoint()
                 self.lw.setFocus()
     #@+node:tbrown.20111018130925.3642: *4* onActivated
-    def onActivated(self, event: Event) -> None:
+    def onActivated(self, event: QEvent) -> None:
 
         c = self.c
         c.bodyWantsFocusNow()
