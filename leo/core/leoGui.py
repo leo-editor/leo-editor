@@ -18,7 +18,6 @@ from leo.core import leoFrame
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    ### from leo.core.leoGui import LeoKeyEvent  # pylint: disable=import-self
     from leo.core.leoNodes import Position
     from leo.plugins.qt_frame import FindTabManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
