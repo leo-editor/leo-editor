@@ -7,7 +7,7 @@ from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
 
 #@+others
 #@+node:ekr.20120420054855.14349: ** class SessionManager
@@ -111,7 +111,7 @@ class SessionManager:
 #@+node:ekr.20120420054855.14375: ** Commands (leoSession.py)
 #@+node:ekr.20120420054855.14388: *3* session-clear
 @g.command('session-clear')
-def session_clear_command(event: Event) -> None:
+def session_clear_command(event: LeoKeyEvent) -> None:
     """Close all tabs except the presently selected tab."""
     c = event.get('c')
     m = g.app.sessionManager
@@ -119,7 +119,7 @@ def session_clear_command(event: Event) -> None:
         m.clear_session(c)
 #@+node:ekr.20120420054855.14385: *3* session-create
 @g.command('session-create')
-def session_create_command(event: Event) -> None:
+def session_create_command(event: LeoKeyEvent) -> None:
     """Create a new @session node."""
     c = event.get('c')
     m = g.app.sessionManager
@@ -131,7 +131,7 @@ def session_create_command(event: Event) -> None:
         c.redraw()
 #@+node:ekr.20120420054855.14387: *3* session-refresh
 @g.command('session-refresh')
-def session_refresh_command(event: Event) -> None:
+def session_refresh_command(event: LeoKeyEvent) -> None:
     """Refresh the current @session node."""
     c = event.get('c')
     m = g.app.sessionManager
@@ -141,7 +141,7 @@ def session_refresh_command(event: Event) -> None:
         c.redraw()
 #@+node:ekr.20120420054855.14386: *3* session-restore
 @g.command('session-restore')
-def session_restore_command(event: Event) -> None:
+def session_restore_command(event: LeoKeyEvent) -> None:
     """Open a tab for each item in the @session node & select the indicated node in each."""
     c = event.get('c')
     m = g.app.sessionManager
@@ -153,7 +153,7 @@ def session_restore_command(event: Event) -> None:
             print('Please select an "@session" node')
 #@+node:ekr.20120420054855.14390: *3* session-snapshot-load
 @g.command('session-snapshot-load')
-def session_snapshot_load_command(event: Event) -> None:
+def session_snapshot_load_command(event: LeoKeyEvent) -> None:
     """Load a snapshot of a session from the leo.session file."""
     c = event.get('c')
     m = g.app.sessionManager
@@ -162,7 +162,7 @@ def session_snapshot_load_command(event: Event) -> None:
         m.load_session(c, aList)
 #@+node:ekr.20120420054855.14389: *3* session-snapshot-save
 @g.command('session-snapshot-save')
-def session_snapshot_save_command(event: Event) -> None:
+def session_snapshot_save_command(event: LeoKeyEvent) -> None:
     """Save a snapshot of the present session to the leo.session file."""
     if m := g.app.sessionManager:
         m.save_snapshot()
