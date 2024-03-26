@@ -20,7 +20,7 @@ from leo.plugins import qt_text
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoFrame import LeoQTreeWidget
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_frame import LeoQtFrame
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
@@ -579,7 +579,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17885: *3* qtree.Event handlers
     #@+node:ekr.20110605121601.17887: *4*  qtree.Click Box
     #@+node:ekr.20110605121601.17888: *5* qtree.onClickBoxClick
-    def onClickBoxClick(self, event: Event, p: Position = None) -> None:
+    def onClickBoxClick(self, event: LeoKeyEvent, p: Position = None) -> None:
         if self.busy:
             return
         c = self.c
@@ -587,7 +587,7 @@ class LeoQtTree(leoFrame.LeoTree):
         g.doHook("boxclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17889: *5* qtree.onClickBoxRightClick
-    def onClickBoxRightClick(self, event: Event, p: Position = None) -> None:
+    def onClickBoxRightClick(self, event: LeoKeyEvent, p: Position = None) -> None:
         if self.busy:
             return
         c = self.c
@@ -595,7 +595,7 @@ class LeoQtTree(leoFrame.LeoTree):
         g.doHook("boxrclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17890: *5* qtree.onPlusBoxRightClick
-    def onPlusBoxRightClick(self, event: Event, p: Position = None) -> None:
+    def onPlusBoxRightClick(self, event: LeoKeyEvent, p: Position = None) -> None:
         if self.busy:
             return
         c = self.c
@@ -604,7 +604,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17891: *4*  qtree.Icon Box
     # For Qt, there seems to be no way to trigger these events.
     #@+node:ekr.20110605121601.17892: *5* qtree.onIconBoxClick
-    def onIconBoxClick(self, event: Event, p: Position = None) -> None:
+    def onIconBoxClick(self, event: LeoKeyEvent, p: Position = None) -> None:
         if self.busy:
             return
         c = self.c
@@ -612,7 +612,7 @@ class LeoQtTree(leoFrame.LeoTree):
         g.doHook("iconclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17893: *5* qtree.onIconBoxRightClick
-    def onIconBoxRightClick(self, event: Event, p: Position = None) -> None:
+    def onIconBoxRightClick(self, event: LeoKeyEvent, p: Position = None) -> None:
         """Handle a right click in any outline widget."""
         if self.busy:
             return
@@ -621,7 +621,7 @@ class LeoQtTree(leoFrame.LeoTree):
         g.doHook("iconrclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17894: *5* qtree.onIconBoxDoubleClick
-    def onIconBoxDoubleClick(self, event: Event, p: Position = None) -> None:
+    def onIconBoxDoubleClick(self, event: LeoKeyEvent, p: Position = None) -> None:
         if self.busy:
             return
         c = self.c
