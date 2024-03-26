@@ -1,7 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140907085654.18699: * @file ../plugins/qt_gui.py
 """This file contains the gui wrapper for Qt: g.app.gui."""
-# pylint: disable=import-error
 #@+<< qt_gui imports  >>
 #@+node:ekr.20140918102920.17891: ** << qt_gui imports >>
 from __future__ import annotations
@@ -40,8 +39,18 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    # Events.
     QEvent: TypeAlias = QtCore.QEvent
-    Widget = Any
+    # Widgets
+    QDialog = QtWidgets.QDialog
+    QFrame = QtWidgets.QFrame
+    QGridLayout = QtWidgets.QGridLayout
+    QHBoxLayout = QtWidgets.QHBoxLayout
+    QLabel = QtWidgets.QLabel
+    QPushButton = QtWidgets.QPushButton
+    QTabWidget = QtWidgets.QTabWidget
+    QVBoxLayout = QtWidgets.QVBoxLayout
+    QWidget = QtWidgets.QWidget
 #@-<< qt_gui annotations >>
 #@+others
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
@@ -68,7 +77,7 @@ class LeoQtGui(leoGui.LeoGui):
         self.active = True
         self.consoleOnly = False  # Console is separate from the log.
         self.iconimages: dict[str, Any] = {}  # Keys are paths, values are Icons.
-        self.globalFindDialog: Widget = None
+        self.globalFindDialog: QDialog = None
         self.idleTimeClass = qt_idle_time.IdleTime
         self.insert_char_flag = False  # A flag for eventFilter.
         self.mGuiName = 'qt'
@@ -255,11 +264,11 @@ class LeoQtGui(leoGui.LeoGui):
             dialog.show()
             dialog.exec()
     #@+node:ekr.20150619053138.1: *5* qt_gui.createFindDialog
-    def createFindDialog(self, c: Cmdr) -> Widget:
+    def createFindDialog(self, c: Cmdr) -> QDialog:
         """Create and init a non-modal Find dialog."""
         if c:
             g.app.globalFindTabManager = c.findCommands.ftm
-        top: Optional[QtWidgets.QWidget] = c.frame.top if c else None
+        top: Optional[QWidget] = c.frame.top if c else None
         w = top.findTab  # type:ignore
         dialog = QtWidgets.QDialog()
 
@@ -285,15 +294,15 @@ class LeoQtGui(leoGui.LeoGui):
         """Create a qt color picker panel."""
         pass  # This window is optional.
 
-    def createFindTab(self, c: Cmdr, parentFrame: Widget) -> None:
+    def createFindTab(self, c: Cmdr, parentFrame: QWidget) -> None:
         """Create a qt find tab in the indicated frame."""
         pass  # Now done in dw.createFindTab.
 
-    def createLeoFrame(self, c: Cmdr, title: str) -> Widget:
+    def createLeoFrame(self, c: Cmdr, title: str) -> qt_frame.LeoQtFrame:
         """Create a new Leo frame."""
         return qt_frame.LeoQtFrame(c, title, gui=self)
 
-    def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> Widget:
+    def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> qt_frame.LeoQtSpellTab:
         if g.unitTesting:
             return None
         return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
@@ -306,7 +315,7 @@ class LeoQtGui(leoGui.LeoGui):
             return
 
         # Create the dialog.
-        top_frame: Optional[QtWidgets.QWidget] = c.frame.top if c else None
+        top_frame: Optional[QWidget] = c.frame.top if c else None
         dialog = QtWidgets.QMessageBox(top_frame)
         ssm = g.app.gui.styleSheetManagerClass(c)
         w = ssm.get_master_widget()
@@ -360,7 +369,7 @@ class LeoQtGui(leoGui.LeoGui):
             for a minimum 5 minute increment on the minute field.
             """
 
-            def __init__(self, parent: Widget = None, init: Any = None, step_min: dict = None) -> None:
+            def __init__(self, parent: QWidget = None, init: Any = None, step_min: dict = None) -> None:
                 if step_min is None:
                     step_min = {}
                 self.step_min = step_min
@@ -380,7 +389,7 @@ class LeoQtGui(leoGui.LeoGui):
 
             def __init__(
                 self,
-                parent: Widget = None,
+                parent: QWidget = None,
                 message: str = 'Select Date/Time',
                 init: Any = None,  # Hard to annotate.
                 step_min: dict = None,
@@ -406,7 +415,7 @@ class LeoQtGui(leoGui.LeoGui):
             step_min = {}
         if not init:
             init = datetime.datetime.now()
-        top_frame: Optional[QtWidgets.QWidget] = c.frame.top if c else None
+        top_frame: Optional[QWidget] = c.frame.top if c else None
         dialog = Calendar(top_frame, message=message, init=init, step_min=step_min)
         if c:
             ssm = g.app.gui.styleSheetManagerClass(c)
@@ -504,7 +513,7 @@ class LeoQtGui(leoGui.LeoGui):
             return
 
         # Create the dialog.
-        top_frame: Optional[QtWidgets.QWidget] = c.frame.top if c else None
+        top_frame: Optional[QWidget] = c.frame.top if c else None
         dialog = QtWidgets.QMessageBox(top_frame)
         dialog.setWindowTitle(title)
         if message:
@@ -544,7 +553,7 @@ class LeoQtGui(leoGui.LeoGui):
             return None
 
         # Create the dialog.
-        top_frame: Optional[QtWidgets.QWidget] = c.frame.top if c else None
+        top_frame: Optional[QWidget] = c.frame.top if c else None
         dialog = QtWidgets.QMessageBox(top_frame)
         if message:
             dialog.setText(message)
@@ -597,7 +606,7 @@ class LeoQtGui(leoGui.LeoGui):
             return None
 
         # Create the dialog.
-        top_frame: Optional[QtWidgets.QWidget] = c.frame.top if c else None
+        top_frame: Optional[QWidget] = c.frame.top if c else None
         dialog = QtWidgets.QMessageBox(top_frame)
         # Creation order determines returned value.
         yes = dialog.addButton('Yes', ButtonRole.YesRole)
@@ -926,7 +935,7 @@ class LeoQtGui(leoGui.LeoGui):
                 factory.setTabForCommander(c)
                 c.bodyWantsFocusNow()
     #@+node:ekr.20190601054958.1: *4* qt_gui.get_focus (no longer used)
-    def get_focus(self, c: Cmdr = None, raw: bool = False, at_idle: bool = False) -> Widget:
+    def get_focus(self, c: Cmdr = None, raw: bool = False, at_idle: bool = False) -> QWidget:
         """Returns the widget that has focus."""
         trace = 'focus' in g.app.debug
         trace_idle = False
@@ -1171,14 +1180,14 @@ class LeoQtGui(leoGui.LeoGui):
         #@-<< create the button b >>
         #@+<< define the callbacks for b >>
         #@+node:ekr.20110605121601.18530: *4* << define the callbacks for b >>
-        def deleteButtonCallback(event: LeoKeyEvent = None, b: Widget = b, c: Cmdr = c) -> None:
+        def deleteButtonCallback(event: LeoKeyEvent = None, b: Any = b, c: Cmdr = c) -> None:
             if b:
                 b.pack_forget()
             c.bodyWantsFocus()
 
         def executeScriptCallback(
             event: LeoKeyEvent = None,
-            b: Widget = b,
+            b: Any = b,
             c: Cmdr = c,
             buttonText: str = buttonText,
             p: Position = p and p.copy(),
@@ -1393,7 +1402,7 @@ class LeoQtGui(leoGui.LeoGui):
         return True
     #@+node:ekr.20111215193352.10220: *3* qt_gui.Splash Screen
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
-    def createSplashScreen(self) -> Widget:
+    def createSplashScreen(self) -> QWidget:
         """Put up a splash screen with Leo's logo."""
         try:
             QApplication = QtWidgets.QApplication
@@ -1491,7 +1500,7 @@ class LeoQtGui(leoGui.LeoGui):
     assert QSignalSpy
     #@+node:ekr.20190819091957.1: *3* qt_gui.Widgets...
     #@+node:ekr.20190819094016.1: *4* qt_gui.createButton
-    def createButton(self, parent: Widget, name: str, label: str) -> Widget:
+    def createButton(self, parent: QWidget, name: str, label: str) -> QPushButton:
         w = QtWidgets.QPushButton(parent)
         w.setObjectName(name)
         w.setText(label)
@@ -1499,14 +1508,14 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20190819091122.1: *4* qt_gui.createFrame
     def createFrame(
         self,
-        parent: Widget,
+        parent: QWidget,
         name: str,
         hPolicy: Policy = None,
         vPolicy: Policy = None,
         lineWidth: int = 1,
         shadow: Shadow = None,
         shape: Shape = None,
-    ) -> Widget:
+    ) -> QFrame:
         """Create a Qt Frame."""
         if shadow is None:
             shadow = Shadow.Plain
@@ -1521,40 +1530,42 @@ class LeoQtGui(leoGui.LeoGui):
         w.setObjectName(name)
         return w
     #@+node:ekr.20190819091851.1: *4* qt_gui.createGrid
-    def createGrid(self, parent: Widget, name: str, margin: int = 0, spacing: int = 0) -> Widget:
+    def createGrid(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -> QGridLayout:
         w = QtWidgets.QGridLayout(parent)
         w.setContentsMargins(QtCore.QMargins(margin, margin, margin, margin))
         w.setSpacing(spacing)
         w.setObjectName(name)
         return w
     #@+node:ekr.20190819093830.1: *4* qt_gui.createHLayout & createVLayout
-    def createHLayout(self, parent: Widget, name: str, margin: int = 0, spacing: int = 0) -> Any:
+    def createHLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -> QHBoxLayout:
         hLayout = QtWidgets.QHBoxLayout(parent)
         hLayout.setObjectName(name)
         hLayout.setSpacing(spacing)
         hLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
         return hLayout
 
-    def createVLayout(self, parent: Widget, name: str, margin: int = 0, spacing: int = 0) -> Any:
+    def createVLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -> QVBoxLayout:
         vLayout = QtWidgets.QVBoxLayout(parent)
         vLayout.setObjectName(name)
         vLayout.setSpacing(spacing)
         vLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
         return vLayout
     #@+node:ekr.20190819094302.1: *4* qt_gui.createLabel
-    def createLabel(self, parent: Widget, name: str, label: str) -> Widget:
+    def createLabel(self, parent: QWidget, name: str, label: str) -> QLabel:
         w = QtWidgets.QLabel(parent)
         w.setObjectName(name)
         w.setText(label)
         return w
     #@+node:ekr.20190819092523.1: *4* qt_gui.createTabWidget
-    def createTabWidget(self, parent: Widget, name: str, hPolicy: Policy = None, vPolicy: Policy = None) -> Widget:
+    def createTabWidget(self,
+        parent: QWidget, name: str, hPolicy: Policy = None, vPolicy: Policy = None,
+    ) -> QTabWidget:
         w = QtWidgets.QTabWidget(parent)
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
         w.setObjectName(name)
         return w
     #@+node:ekr.20190819091214.1: *4* qt_gui.setSizePolicy
-    def setSizePolicy(self, widget: Widget, kind1: Policy = None, kind2: Policy = None) -> None:
+    def setSizePolicy(self, widget: QWidget, kind1: Policy = None, kind2: Policy = None) -> None:
         if kind1 is None:
             kind1 = Policy.Ignored
         if kind2 is None:
@@ -1769,7 +1780,7 @@ class StyleSheetManager:
         sheet = w.styleSheet()
         print(f"style sheet for: {w}...\n\n{sheet}")
     #@+node:ekr.20110605121601.18175: *4* ssm.set_style_sheets
-    def set_style_sheets(self, all: bool = True, top: Widget = None, w: Widget = None) -> None:
+    def set_style_sheets(self, all: bool = True, top: QWidget = None, w: QWidget = None) -> None:
         """Set the master style sheet for all widgets using config settings."""
         c = self.c
         if top is None:
@@ -2066,7 +2077,7 @@ class StyleSheetManager:
         return newsheet
     #@+node:ekr.20180316092116.1: *3* ssm.Widgets
     #@+node:ekr.20140913054442.19390: *4* ssm.get_master_widget
-    def get_master_widget(self, top: Widget = None) -> Widget:
+    def get_master_widget(self, top: QWidget = None) -> QWidget:
         """
         Carefully return the master widget.
         c.frame.top is a DynamicWindow.
