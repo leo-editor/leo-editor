@@ -15,7 +15,7 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Stroke = Any
@@ -228,7 +228,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     else:
                         g.trace(f"no definition for {abbrev_name}")
     #@+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
-    def expandAbbrev(self, event: Event, stroke: Stroke) -> bool:
+    def expandAbbrev(self, event: LeoKeyEvent, stroke: Stroke) -> bool:
         """
         Not a command.  Expand abbreviations in event.widget.
 
@@ -565,7 +565,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             self.save_sel = i + delta, j + delta
             self.save_ins = ins + delta
     #@+node:ekr.20161121111502.1: *4* abbrev_get_ch
-    def get_ch(self, event: Event, stroke: Stroke, w: Wrapper) -> str:
+    def get_ch(self, event: LeoKeyEvent, stroke: Stroke, w: Wrapper) -> str:
         """Get the ch from the stroke."""
         ch = g.checkUnicode(event and event.char or '')
         if self.expanding:
@@ -607,7 +607,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.19: *3* abbrev.dynamic abbreviation...
     #@+node:ekr.20150514043850.20: *4* abbrev.dynamicCompletion C-M-/
     @cmd('dabbrev-completion')
-    def dynamicCompletion(self, event: Event = None) -> None:
+    def dynamicCompletion(self, event: LeoKeyEvent = None) -> None:
         """
         dabbrev-completion
         Insert the common prefix of all dynamic abbrev's matching the present word.
@@ -641,7 +641,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.recolor()
     #@+node:ekr.20150514043850.21: *4* abbrev.dynamicExpansion M-/ & helper
     @cmd('dabbrev-expands')
-    def dynamicExpansion(self, event: Event = None) -> None:
+    def dynamicExpansion(self, event: LeoKeyEvent = None) -> None:
         """
         dabbrev-expands (M-/ in Emacs).
 
@@ -669,7 +669,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.dynamicExpandHelper(event, prefix, aList, w)
     #@+node:ekr.20150514043850.22: *5* abbrev.dynamicExpandHelper
     def dynamicExpandHelper(self,
-        event: Event,
+        event: LeoKeyEvent,
         prefix: str = None,
         aList: list[str] = None,
         w: Wrapper = None,
@@ -687,7 +687,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         k.setLabelBlue(prefix2 + prefix, protect=False)
         k.get1Arg(event, handler=self.dynamicExpandHelper1, tabList=aList, prefix=prefix)
 
-    def dynamicExpandHelper1(self, event: Event) -> None:
+    def dynamicExpandHelper1(self, event: LeoKeyEvent) -> None:
         """Finisher for dabbrev-expands."""
         c, k = self.c, self.c.k
         p = c.p
@@ -747,12 +747,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             g.es_print(f"bad abbreviation: {s}")
     #@+node:ekr.20150514043850.28: *4* abbrev.killAllAbbrevs
     @cmd('abbrev-kill-all')
-    def killAllAbbrevs(self, event: Event) -> None:
+    def killAllAbbrevs(self, event: LeoKeyEvent) -> None:
         """Delete all abbreviations."""
         self.abbrevs = {}
     #@+node:ekr.20150514043850.29: *4* abbrev.listAbbrevs
     @cmd('abbrev-list')
-    def listAbbrevs(self, event: Event = None) -> None:
+    def listAbbrevs(self, event: LeoKeyEvent = None) -> None:
         """List all abbreviations."""
         d = self.abbrevs
         if d:
@@ -769,7 +769,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             g.es_print('No present abbreviations')
     #@+node:ekr.20150514043850.32: *4* abbrev.toggleAbbrevMode
     @cmd('toggle-abbrev-mode')
-    def toggleAbbrevMode(self, event: Event = None) -> None:
+    def toggleAbbrevMode(self, event: LeoKeyEvent = None) -> None:
         """Toggle abbreviation mode."""
         k = self.c.k
         k.abbrevOn = not k.abbrevOn
