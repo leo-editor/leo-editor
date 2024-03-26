@@ -9,7 +9,7 @@ from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     Widget = Any
     Wrapper = Any
 #@-<< leoMenu imports & annotations >>
@@ -336,7 +336,7 @@ class LeoMenu:
         # The command must be a callable.
         if not callable(command):
 
-            def dummy_menu_callback(event: Event = None) -> None:
+            def dummy_menu_callback(event: LeoKeyEvent = None) -> None:
                 pass
 
             g.trace(f"bad command: {command!r}", color='red')
@@ -545,9 +545,14 @@ class LeoMenu:
                     underline=underline)
     #@+node:ekr.20031218072017.4118: *6* LeoMenu.defineOpenWithMenuCallback
     def defineOpenWithMenuCallback(self, d: dict[str, str] = None) -> Callable:
-        # The first parameter must be event, and it must default to None.
 
-        def openWithMenuCallback(event: Event = None, self: Any = self, d: dict[str, str] = d) -> Any:
+        # The first parameter must be a LeoKeyEvent, and it must default to None.
+
+        def openWithMenuCallback(
+            event: LeoKeyEvent = None,
+            self: LeoMenu = self,
+            d: dict[str, str] = d,
+        ) -> Any:
             d1 = d.copy() if d else {}
             return self.c.openWith(d=d1)
 

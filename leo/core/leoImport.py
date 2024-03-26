@@ -1969,7 +1969,7 @@ class TabImporter:
     def scan(self, s1: str, fn: str = None, root: Position = None) -> Position:
         """Create the outline corresponding to s1."""
         c = self.c
-        # Self.root can be None if we are called from a script or unit test.
+        # self.root can be None if we are called from a script or unit test.
         if not self.root:
             last = root if root else c.lastTopLevel()  # For unit testing.
             self.root = last.insertAfter()
