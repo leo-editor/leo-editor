@@ -56,9 +56,8 @@ StringIO = io.StringIO
 #@+node:ekr.20220824084642.1: ** << leoGlobals annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoGui
+    from leo.core.leoGui import LeoGui, LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-    Event = Any
 #@-<< leoGlobals annotations >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
@@ -2397,7 +2396,7 @@ def clearStats() -> None:
     g.app.statsDict = {}
 #@+node:ekr.20031218072017.3135: *4* g.printStats
 @command('show-stats')
-def printStats(event: Event = None, name: str = None) -> None:
+def printStats(event: LeoKeyEvent = None, name: str = None) -> None:
     """
     Print all gathered statistics.
 
@@ -5853,7 +5852,7 @@ def CheckVersionToInt(s: str) -> int:
         return 0
 #@+node:ekr.20111103205308.9657: *3* g.cls
 @command('cls')
-def cls(event: Event = None) -> None:
+def cls(event: LeoKeyEvent = None) -> None:
     """Clear the screen."""
     if sys.platform.lower().startswith('win'):
         # Leo 6.7.5: Two calls seem to be required!

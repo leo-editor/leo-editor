@@ -50,12 +50,12 @@ g.app.ipython_inited = IPKernelApp is not None
 #@+node:ekr.20220901090431.1: ** << leoIPython annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
 #@-<< leoIPython annotations >>
 #@+others
 #@+node:ekr.20190927110149.1: ** @g.command("ipython-new")
 @g.command("ipython-new")
-def qtshell_f(event: Event) -> None:
+def qtshell_f(event: LeoKeyEvent) -> None:
     """ Launch new ipython shell window, associated with the same ipython kernel """
     ipk = getattr(g.app, 'ipk', None)
     if not ipk:
@@ -64,7 +64,7 @@ def qtshell_f(event: Event) -> None:
     g.app.ipk.new_qt_console(event=event)
 #@+node:ekr.20190927110150.1: ** @g.command("ipython-exec")
 @g.command("ipython-exec")
-def ipython_exec(event: Event) -> None:
+def ipython_exec(event: LeoKeyEvent) -> None:
     """ Execute script in current node in ipython namespace """
     ipk = getattr(g.app, 'ipk', None)
     if not ipk:
@@ -104,7 +104,7 @@ class InternalIPKernel:
             self.namespace['kernelApp'] = kernelApp
             self.namespace['app_counter'] = 0
     #@+node:ekr.20130930062914.15998: *3* ileo.cleanup_consoles
-    def cleanup_consoles(self, event: Event = None) -> None:
+    def cleanup_consoles(self, event: LeoKeyEvent = None) -> None:
         """Kill all ipython consoles.  Called from app.finishQuit."""
         trace = 'ipython' in g.app.debug
         for console in self.consoles:
@@ -115,10 +115,10 @@ class InternalIPKernel:
             # console.terminate()
             console.kill()
     #@+node:ekr.20130930062914.15997: *3* ileo.count
-    def count(self, event: Event = None) -> None:
+    def count(self, event: LeoKeyEvent = None) -> None:
         self.namespace['app_counter'] += 1
     #@+node:ekr.20130930062914.15996: *3* ileo.new_qt_console
-    def new_qt_console(self, event: Event = None) -> Any:
+    def new_qt_console(self, event: LeoKeyEvent = None) -> Any:
         """
         Start a new qtconsole connected to our kernel.
 
@@ -159,7 +159,7 @@ class InternalIPKernel:
         # This works, but there are no IPython sources.
         breakpoint()  # New in Python 3.7.
     #@+node:ekr.20130930062914.15995: *3* ileo.print_namespace
-    def print_namespace(self, event: Event = None) -> None:
+    def print_namespace(self, event: LeoKeyEvent = None) -> None:
         print("\n***Variables in User namespace***")
         for k, v in self.namespace.items():
             if k not in self._init_keys and not k.startswith('_'):

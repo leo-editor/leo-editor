@@ -11,7 +11,7 @@ from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
 #@-<< leoPersistence imports & annotations >>
 
@@ -19,7 +19,7 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+node:ekr.20140711111623.17886: ** Commands (leoPersistence.py)
 
 @g.command('clean-persistence')
-def view_pack_command(event: Event) -> None:
+def view_pack_command(event: LeoKeyEvent) -> None:
     """Remove all @data nodes that do not correspond to an existing foreign file."""
     c = event.get('c')
     if c and c.persistenceController:
