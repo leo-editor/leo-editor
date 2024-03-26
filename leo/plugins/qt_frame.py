@@ -50,7 +50,7 @@ if TYPE_CHECKING:  # pragma: no cover
     # Widgets
     QComboBox = Any
     QLayout = Any
-    QMenu = Any
+    QMenu = QtWidgets.QMenu
     QTabWidget = Any
     Wrapper = Any
 #@-<< qt_frame annotations >>
@@ -3015,7 +3015,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
     #@+node:ekr.20110605121601.18344: *5* LeoQtMenu.add_cascade
     def add_cascade(self,
         parent: LeoQtFrame, label: str, menu: QMenu, underline: int,
-    ) -> QMenu:
+    ) -> None:
         """Wrapper for the Tkinter add_cascade menu method.
 
         Adds a submenu to the parent menu, or the menubar."""
@@ -3030,7 +3030,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             self.menuBar.addMenu(menu)
         label = label.replace('&', '').lower()
         menu.leo_menu_label = label
-        return menu
+        ### return menu
     #@+node:ekr.20110605121601.18345: *5* LeoQtMenu.add_command (Called by createMenuEntries)
     def add_command(self,
         menu: QMenu,

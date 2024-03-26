@@ -514,7 +514,7 @@ class LeoMenu:
         for d in table:
             k.bindOpenWith(d)
     #@+node:ekr.20051022043608.1: *5* LeoMenu.createOpenWithMenuItemsFromTable & callback
-    def createOpenWithMenuItemsFromTable(self, menu: str, table: list[dict]) -> None:
+    def createOpenWithMenuItemsFromTable(self, menu: Any, table: list[dict]) -> None:
         """
         Create an entry in the Open with Menu from the table, a list of dictionaries.
 
@@ -558,7 +558,7 @@ class LeoMenu:
 
         return openWithMenuCallback
     #@+node:tbrown.20080509212202.7: *4* LeoMenu.deleteRecentFilesMenuItems
-    def deleteRecentFilesMenuItems(self, menu: str) -> None:
+    def deleteRecentFilesMenuItems(self, menu: Any) -> None:
         """Delete recent file menu entries"""
         rf = g.app.recentFilesManager
         # Why not just delete all the entries?
@@ -618,7 +618,7 @@ class LeoMenu:
         cmn = self.canonicalizeMenuName(menuName)
         return self.menus.get(cmn)
 
-    def setMenu(self, menuName: str, menu: str) -> None:
+    def setMenu(self, menuName: str, menu: Any) -> None:
         cmn = self.canonicalizeMenuName(menuName)
         self.menus[cmn] = menu
 
@@ -635,7 +635,7 @@ class LeoMenu:
     ) -> None:
         pass
 
-    def add_separator(self, menu: str) -> None:
+    def add_separator(self, menu: Any) -> None:
         pass
 
     def delete(self, menu: Any, realItemName: str) -> None:
@@ -659,7 +659,7 @@ class LeoMenu:
     def activateMenu(self, menuName: str) -> None:  # New in Leo 4.4b2.
         pass
 
-    def clearAccel(self, menu: str, name: str) -> None:
+    def clearAccel(self, menu: Any, name: str) -> None:
         pass
 
     def createMenuBar(self, frame: Widget) -> None:
@@ -668,7 +668,7 @@ class LeoMenu:
     def createOpenWithMenu(self, parent: Any, label: str, index: int, amp_index: int) -> Any:
         pass
 
-    def disableMenu(self, menu: str, name: str) -> None:
+    def disableMenu(self, menu: Any, name: str) -> None:
         pass
 
     def enableMenu(self, menu: Widget, name: str, val: bool) -> None:
@@ -677,10 +677,10 @@ class LeoMenu:
     def getMacHelpMenu(self, table: list) -> Any:
         pass
 
-    def getMenuLabel(self, menu: str, name: str) -> str:
+    def getMenuLabel(self, menu: Any, name: str) -> str:
         return ''
 
-    def setMenuLabel(self, menu: str, name: str, label: str, underline: int = -1) -> None:
+    def setMenuLabel(self, menu: Any, name: str, label: str, underline: int = -1) -> None:
         pass
     #@-others
 #@+node:ekr.20031218072017.3811: ** class NullMenu(LeoMenu)
