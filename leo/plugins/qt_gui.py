@@ -1335,7 +1335,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     #@+<< define DialogWithCheckBox >>
     #@+node:ekr.20220123052350.1: *4* << define DialogWithCheckBox >>
-    class DialogWithCheckBox(QtWidgets.QMessageBox):  # type:ignore
+    class DialogWithCheckBox(QtWidgets.QMessageBox):
 
         def __init__(self, controller: Any, checked: bool, tip: UserTip) -> None:
             super().__init__()
@@ -1349,8 +1349,8 @@ class LeoQtGui(leoGui.LeoGui):
                 # selecting multiple tips.
             self.setWindowTitle('Leo Tips')
             self.setText(repr(tip))
-            self.next_tip_button = self.addButton('Show Next Tip', ButtonRole.ActionRole)  # #2127
-            self.addButton('Ok', ButtonRole.YesRole)  # #2127.
+            self.next_tip_button = self.addButton('Show Next Tip', ButtonRole.ActionRole)
+            self.addButton('Ok', ButtonRole.YesRole)
             c.styleSheetManager.set_style_sheets(w=self)
             # Workaround #693.
             layout = self.layout()

@@ -21,7 +21,6 @@ if TYPE_CHECKING:  # pragma: no cover
     QPaintEvent: TypeAlias = QtGui.QPaintEvent
     QWheelEvent: TypeAlias = QtGui.QWheelEvent
     QWidget = QtWidgets.QWidget
-    Widget = Any
 
 FullWidthSelection = 0x06000
 QColor = QtGui.QColor
@@ -146,7 +145,7 @@ class QTextMixin:
         if c:
             self.injectIvars(c)
     #@+node:ekr.20140901062324.18721: *4* qtm.injectIvars
-    def injectIvars(self, c: Cmdr) -> Widget:
+    def injectIvars(self, c: Cmdr) -> QTextMixin:
         """Inject standard leo ivars into the QTextEdit or QsciScintilla widget."""
         w = self
         w.leo_p = c.p.copy() if c.p else None
@@ -329,7 +328,7 @@ class QLineEditWrapper(QTextMixin):
     """
     #@+others
     #@+node:ekr.20110605121601.18060: *3* qlew.Birth
-    def __init__(self, widget: Widget, name: str, c: Cmdr = None) -> None:
+    def __init__(self, widget: QWidget, name: str, c: Cmdr = None) -> None:
         """Ctor for QLineEditWrapper class."""
         super().__init__(c)
         self.widget = widget
@@ -695,7 +694,7 @@ if QtWidgets:
                 self.setFocus()
             #@-others
         #@+node:ekr.20110605121601.18017: *4* lqtb.lqtb.init_completer
-        def init_completer(self, options: list[str]) -> Widget:
+        def init_completer(self, options: list[str]) -> LeoQListWidget:
             """Connect a QCompleter."""
             c = self.leo_c
             self.leo_qc = qc = self.LeoQListWidget(c)
@@ -1203,7 +1202,7 @@ class NumberBar(QtWidgets.QFrame):  # type:ignore
 class PlainTextWrapper(QTextMixin):
     """A Qt class for use by the find code."""
 
-    def __init__(self, widget: Widget) -> None:
+    def __init__(self, widget: QWidget) -> None:
         """Ctor for the PlainTextWrapper class."""
         super().__init__()
         self.widget = widget
@@ -1215,7 +1214,7 @@ class QHeadlineWrapper(QLineEditWrapper):
     """
     #@+others
     #@+node:ekr.20110605121601.18117: *3* qhw.Birth
-    def __init__(self, c: Cmdr, item: str, name: str, widget: Widget) -> None:
+    def __init__(self, c: Cmdr, item: str, name: str, widget: QWidget) -> None:
         """The ctor for the QHeadlineWrapper class."""
         assert isinstance(widget, QtWidgets.QLineEdit), widget
         super().__init__(widget, name, c)
@@ -1301,7 +1300,7 @@ class QScintillaWrapper(QTextMixin):
     """
     #@+others
     #@+node:ekr.20110605121601.18105: *3* qsciw.ctor
-    def __init__(self, widget: Widget, c: Cmdr, name: str = None) -> None:
+    def __init__(self, widget: QWidget, c: Cmdr, name: str = None) -> None:
         """Ctor for the QScintillaWrapper class."""
         super().__init__(c)
         self.baseClassName = 'QScintillaWrapper'
@@ -1525,7 +1524,7 @@ class QTextEditWrapper(QTextMixin):
     """A wrapper for a QTextEdit/QTextBrowser supporting the high-level interface."""
     #@+others
     #@+node:ekr.20110605121601.18073: *3* QTextEditWrapper.ctor & helpers
-    def __init__(self, widget: Widget, name: str = 'TestWrapper', c: Cmdr = None) -> None:
+    def __init__(self, widget: QWidget, name: str = 'TestWrapper', c: Cmdr = None) -> None:
         """Ctor for QTextEditWrapper class. widget is a QTextEdit/QTextBrowser."""
         super().__init__(c)
         # Make sure all ivars are set.
@@ -1657,7 +1656,7 @@ class QTextEditWrapper(QTextMixin):
             self.flashCount -= 1
             after(removeFlashCallback)
 
-        def removeFlashCallback(self: Any = self, w: Widget = w) -> None:
+        def removeFlashCallback(self: QTextEditWrapper = self, w: QWidget = w) -> None:
             w.setExtraSelections(last_selections)
             if self.flashCount > 0:
                 after(addFlashCallback)
