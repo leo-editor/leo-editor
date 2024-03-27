@@ -12,7 +12,7 @@ from leo.core.leoQt import QtWidgets
 from leo.core.leoQt import MouseButton, Orientation
 
 
-class ClickySplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
+class ClickySplitterHandle(QtWidgets.QSplitterHandle):
     """Handle which notifies splitter when it's clicked"""
 
     def mouseReleaseEvent(self, event):
@@ -26,7 +26,7 @@ class ClickySplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
         self.splitter().flip_spin()
 
 
-class ClickySplitter(QtWidgets.QSplitter):  # type:ignore
+class ClickySplitter(QtWidgets.QSplitter):
     """Splitter that rotates / flips when its handle's clicked"""
 
     def __init__(self, *args, **kwargs):

@@ -51,6 +51,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QComboBox = QtWidgets.QComboBox
     QLayout = QtWidgets.QWidget
     QMenu = QtWidgets.QMenu
+    # QRect = QtCore.QRect
     QTabWidget = QtWidgets.QTabWidget
     Wrapper = Any
 #@-<< qt_frame annotations >>
@@ -70,7 +71,7 @@ def log_cmd(name: str) -> Callable:
 #@-<< qt_frame decorators >>
 #@+others
 #@+node:ekr.20110605121601.18137: ** class  DynamicWindow (QMainWindow)
-class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
+class DynamicWindow(QtWidgets.QMainWindow):
     """
     A class representing all parts of the main Qt window.
 
@@ -359,17 +360,6 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self.set_widget_size_policy(secondary_splitter)
         self.verticalLayout.addWidget(main_splitter)
         return main_splitter, secondary_splitter
-    #@+node:ekr.20110605121601.18147: *5* dw.createMenuBar
-    def createMenuBar(self) -> None:
-        """Create Leo's menu bar."""
-        dw = self
-        w = QtWidgets.QMenuBar(dw)
-        w.setNativeMenuBar(platform.system() == 'Darwin')
-        w.setGeometry(QtCore.QRect(0, 0, 957, 22))
-        w.setObjectName("menubar")
-        dw.setMenuBar(w)
-        # Official ivars.
-        self.leo_menubar = w
     #@+node:ekr.20110605121601.18148: *5* dw.createMiniBuffer (class VisLineEdit)
     def createMiniBuffer(self, parent: QWidget) -> QWidget:
         """Create the widgets for Leo's minibuffer area."""
@@ -380,7 +370,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         label = self.createLabel(frame, 'minibufferLabel', 'Minibuffer:')
 
 
-        class VisLineEdit(QtWidgets.QLineEdit):  # type:ignore
+        class VisLineEdit(QtWidgets.QLineEdit):
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
             def focusInEvent(self, event: QFocusEvent) -> None:
@@ -432,6 +422,17 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self.leo_minibuffer_frame = frame
         # self.leo_minibuffer_layout = layout
         return frame
+    #@+node:ekr.20110605121601.18147: *5* dw.createMenuBar
+    def createMenuBar(self) -> None:
+        """Create Leo's menu bar."""
+        dw = self
+        w = QtWidgets.QMenuBar(dw)
+        w.setNativeMenuBar(platform.system() == 'Darwin')
+        w.setGeometry(QtCore.QRect(0, 0, 957, 22))
+        w.setObjectName("menubar")
+        dw.setMenuBar(w)
+        # Official ivars.
+        self.leo_menubar = w
     #@+node:ekr.20110605121601.18149: *5* dw.createOutlinePane
     def createOutlinePane(self, parent: QWidget) -> QWidget:
         """Create the widgets and ivars for Leo's outline."""
@@ -730,7 +731,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         fc = c.findCommands
         ftm = fc.ftm
         assert ftm.find_findbox is None
-        ftm.find_findbox = w = dw.createLineEdit(  # type:ignore
+        ftm.find_findbox = w = dw.createLineEdit(
             parent, 'findPattern', disabled=fc.expert_mode)
         lab2 = self.createLabel(parent, 'findLabel', 'Find:')
         grid.addWidget(lab2, row, 0)
@@ -744,9 +745,9 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         fc = c.findCommands
         ftm = fc.ftm
         assert ftm.find_replacebox is None
-        ftm.find_replacebox = w = dw.createLineEdit(  # type:ignore
+        ftm.find_replacebox = w = dw.createLineEdit(
             parent, 'findChange', disabled=fc.expert_mode)
-        lab3 = dw.createLabel(parent, 'changeLabel', 'Replace:')  # Leo 4.11.1.
+        lab3 = dw.createLabel(parent, 'changeLabel', 'Replace:')
         grid.addWidget(lab3, row, 0)
         grid.addWidget(w, row, 1, 1, 2)
         row += 1
@@ -888,8 +889,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
                 self.eventFilter = qt_events.LeoQtEventFilter(c, w, 'EventWrapper')
                 self.func = func
                 self.oldEvent: Any = w.event
-                w.event = self.wrapper  # type:ignore
-
+                w.event = self.wrapper  # type:ignore # cannot assign to a method.
             #@+others
             #@+node:ekr.20131120054058.16281: *8* EventWrapper.create_d
             def create_d(self) -> dict[str, str]:
@@ -998,7 +998,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         """Select the window or tab for c."""
         # Called from the save commands.
         self.leo_master.select(c)
-    #@+node:ekr.20110605121601.18178: *3* dw.setGeometry
+    #@+node:ekr.20110605121601.18178: *3* dw.set_geometry
     # Weird mypy error.
 
     def setGeometry(self, rect: Any) -> None:  # type:ignore
@@ -1010,7 +1010,6 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             m.leo_geom_inited = True
             self.leo_master.setGeometry(rect)
             super().setGeometry(rect)
-
     #@+node:ekr.20110605121601.18177: *3* dw.setLeoWindowIcon
     def setLeoWindowIcon(self) -> None:
         """ Set icon visible in title bar and task bar """
@@ -1048,8 +1047,8 @@ class FindTabManager:
         self.c = c
         self.entry_focus = None  # The widget that had focus before find-pane entered.
         # Find/change text boxes.
-        self.find_findbox = None
-        self.find_replacebox = None
+        self.find_findbox: QWidget = None
+        self.find_replacebox: QWidget = None
         # Check boxes.
         self.check_box_ignore_case = None
         self.check_box_mark_changes = None
