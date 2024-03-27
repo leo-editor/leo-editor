@@ -2554,10 +2554,10 @@ class LeoQtLog(leoFrame.LeoLog):
         # logCtrl may be either a wrapper or a widget.
         assert self.logCtrl is None, self.logCtrl
         self.c = c = frame.c  # Also set in the base constructor, but we need it here.
-        self.contentsDict: dict[str, Any] = {}  # Keys are tab names.
+        self.contentsDict: dict[str, Wrapper] = {}  # Keys are tab names.
         self.eventFilters: list = []  # Apparently needed to make filters work!
         self.logCtrl: Wrapper = None  # A union.
-        self.logDict: dict[str, Any] = {}  # Keys are tab names.
+        self.logDict: dict[str, Wrapper] = {}  # Keys are tab names.
         self.logWidget: Any = None  # Set in finishCreate.
         self.menu: qt_text.LeoQTextBrowser = None  # A Qt menu that pops up on right clicks in the hull or in tabs.
         self.tabWidget: QTabWidget = c.frame.top.tabWidget  # A QTabWidget that holds all the tabs.
