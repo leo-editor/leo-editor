@@ -21,8 +21,6 @@ class TestLeoServer(LeoUnitTest):
     #@+node:felix.20210621233316.99: *3* TestLeoServer: Setup and TearDown
     @classmethod
     def setUpClass(cls):
-        # Assume we are running in the leo-editor directory.
-        # pylint: disable=import-self
         global g, g_leoserver, g_server
         g_leoserver = leoserver
         g_server = leoserver.LeoServer(testing=True)
