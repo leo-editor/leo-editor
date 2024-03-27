@@ -999,7 +999,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Called from the save commands.
         self.leo_master.select(c)
     #@+node:ekr.20110605121601.18178: *3* dw.set_geometry
-    # Weird mypy error.
+    # Mypy complaint because this overrides QMainWindow.setGeometry.
 
     def setGeometry(self, rect: Any) -> None:  # type:ignore
         """Set the window geometry, but only once when using the qt gui."""
@@ -1340,7 +1340,7 @@ class FindTabManager:
             find.show_find_options_in_status_area()
     #@-others
 #@+node:ekr.20131115120119.17376: ** class LeoBaseTabWidget(QTabWidget)
-class LeoBaseTabWidget(QtWidgets.QTabWidget):  # type:ignore
+class LeoBaseTabWidget(QtWidgets.QTabWidget):
     """Base class for all QTabWidgets in Leo."""
     #@+others
     #@+node:ekr.20131115120119.17390: *3* qt_base_tab.__init__
@@ -3227,7 +3227,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         return None
     #@-others
 #@+node:ekr.20110605121601.18363: ** class LeoQTreeWidget (QTreeWidget)
-class LeoQTreeWidget(QtWidgets.QTreeWidget):  # type:ignore
+class LeoQTreeWidget(QtWidgets.QTreeWidget):
 
     def __init__(self, c: Cmdr, parent: QWidget) -> None:
         super().__init__(parent)
@@ -3865,7 +3865,7 @@ class LeoQtTreeTab:
     def createControl(self) -> None:
 
 
-        class LeoQComboBox(QtWidgets.QComboBox):  # type:ignore
+        class LeoQComboBox(QtWidgets.QComboBox):
             """Create a subclass in order to handle focusInEvents."""
 
             def __init__(self, tt: LeoQtTreeTab) -> None:
@@ -4009,7 +4009,7 @@ class QtIconBarClass:
         # image = keys.get('image')
 
 
-        class leoIconBarButton(QtWidgets.QWidgetAction):  # type:ignore
+        class leoIconBarButton(QtWidgets.QWidgetAction):
 
             def __init__(self, parent: QWidget, text: str, toolbar: QtIconBarClass) -> None:
                 super().__init__(parent)
@@ -4200,6 +4200,8 @@ class QtIconBarClass:
             )
     #@-others
 #@+node:ekr.20110605121601.18458: ** class QtMenuWrapper (LeoQtMenu,QMenu)
+# mypy complains about the font ivar and incompatible destroy methods(!)
+
 class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore
     #@+others
     #@+node:ekr.20110605121601.18459: *3* ctor and __repr__(QtMenuWrapper)
@@ -4446,7 +4448,7 @@ class QtStatusLineClass:
         pass
     #@-others
 #@+node:peckj.20140505102552.10377: ** class QtTabBarWrapper (QTabBar)
-class QtTabBarWrapper(QtWidgets.QTabBar):  # type:ignore
+class QtTabBarWrapper(QtWidgets.QTabBar):
     #@+others
     #@+node:peckj.20140516114832.10108: *3* __init__
     def __init__(self, parent: QWidget = None) -> None:

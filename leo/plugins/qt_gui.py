@@ -283,7 +283,7 @@ class LeoQtGui(leoGui.LeoGui):
             event.ignore()
             dialog.hide()
 
-        dialog.closeEvent = closeEvent  # type:ignore
+        dialog.closeEvent = closeEvent  # type:ignore # cannot assign to method.
         layout = QtWidgets.QVBoxLayout(dialog)
         layout.addWidget(w)
         self.attachLeoIcon(dialog)
@@ -367,7 +367,7 @@ class LeoQtGui(leoGui.LeoGui):
         """
         #@+<< define date/time classes >>
         #@+node:ekr.20211005103909.1: *5* << define date/time classes >>
-        class DateTimeEditStepped(QtWidgets.QDateTimeEdit):  # type:ignore
+        class DateTimeEditStepped(QtWidgets.QDateTimeEdit):
             """
             QDateTimeEdit which allows you to set minimum steps on fields, e.g.
               DateTimeEditStepped(parent, {QtWidgets.QDateTimeEdit.MinuteSection: 5})
@@ -390,7 +390,7 @@ class LeoQtGui(leoGui.LeoGui):
                 QtWidgets.QDateTimeEdit.stepBy(self, step)
 
 
-        class Calendar(QtWidgets.QDialog):  # type:ignore
+        class Calendar(QtWidgets.QDialog):
 
             def __init__(
                 self,
@@ -1501,7 +1501,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20111027083744.16532: *4* qt_gui.enableSignalDebugging
     import PyQt6.QtTest as QtTest
 
-    QSignalSpy = QtTest.QSignalSpy  # type:ignore
+    QSignalSpy = QtTest.QSignalSpy
     assert QSignalSpy
     #@+node:ekr.20190819091957.1: *3* qt_gui.Widgets...
     #@+node:ekr.20190819094016.1: *4* qt_gui.createButton

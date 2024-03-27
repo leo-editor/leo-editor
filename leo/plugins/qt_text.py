@@ -231,7 +231,7 @@ class QTextMixin:
             QtWidgets.QTextBrowser,
             QtWidgets.QLineEdit,
             QtWidgets.QTextEdit,
-            Qsci and Qsci.QsciScintilla,
+            Qsci and Qsci.QsciScintilla,  # This line causes the mypy complaint.
         )), self.widget
         QtWidgets.QTextBrowser.setFocus(self.widget)
     #@+node:ekr.20140901062324.18717: *4* qtm.Generic text
@@ -448,7 +448,7 @@ class QLineEditWrapper(QTextMixin):
                 w.setSelection(i, length)
     #@-others
 #@+node:ekr.20150403094619.1: ** class LeoLineTextWidget(QFrame)
-class LeoLineTextWidget(QtWidgets.QFrame):  # type:ignore
+class LeoLineTextWidget(QtWidgets.QFrame):
     """
     A QFrame supporting gutter line numbers.
 
@@ -488,7 +488,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):  # type:ignore
 #@+node:ekr.20110605121601.18005: ** class LeoQTextBrowser (QtWidgets.QTextBrowser)
 if QtWidgets:
 
-    class LeoQTextBrowser(QtWidgets.QTextBrowser):  # type:ignore
+    class LeoQTextBrowser(QtWidgets.QTextBrowser):
         """A subclass of QTextBrowser that overrides the mouse event handlers."""
         #@+others
         #@+node:ekr.20110605121601.18006: *3*  lqtb.ctor
@@ -534,7 +534,7 @@ if QtWidgets:
         __str__ = __repr__
         #@+node:ekr.20110605121601.18008: *3* lqtb.Auto completion
         #@+node:ekr.20110605121601.18009: *4* class LeoQListWidget(QListWidget)
-        class LeoQListWidget(QtWidgets.QListWidget):  # type:ignore
+        class LeoQListWidget(QtWidgets.QListWidget):
             #@+others
             #@+node:ekr.20110605121601.18010: *5* lqlw.ctor
             def __init__(self, c: Cmdr) -> None:
@@ -782,7 +782,7 @@ if QtWidgets:
         #@+node:tom.20210827225119.5: *4* lqtb.calc_hl
         #@@language python
         @staticmethod
-        def calc_hl(palette: QtGui.QPalette) -> QColor:  # type:ignore
+        def calc_hl(palette: QtGui.QPalette) -> QColor:
             """Return the line highlight color.
 
             ARGUMENT
@@ -1060,7 +1060,7 @@ if QtWidgets:
             QtWidgets.QTextBrowser.wheelEvent(self, event)
         #@-others
 #@+node:ekr.20150403094706.2: ** class NumberBar(QFrame)
-class NumberBar(QtWidgets.QFrame):  # type:ignore
+class NumberBar(QtWidgets.QFrame):
     #@+others
     #@+node:ekr.20150403094706.3: *3* NumberBar.__init__
     def __init__(self, c: Cmdr, e: Any, *args: Any) -> None:
