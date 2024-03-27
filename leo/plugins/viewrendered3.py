@@ -1322,7 +1322,6 @@ def configure_asciidoc():
     plantuml diagram, the diagram will be rendered).
     #@-<< asciidoc docstring >>
     """
-    # pylint: disable = import-outside-toplevel
     global AsciiDocAPI, AsciiDoc3API, ad3, ad3_file
     global asciidoc_ok, asciidoc3_ok, asciidoc_processors
     global asciidoc_dirs
@@ -1866,7 +1865,6 @@ def markup_to_editor(event):
         f.write(vr3.last_markup)
 
     cmd = [editor, 'vr3_last_markup.txt']
-    # pylint: disable = consider-using-with
     subprocess.Popen(cmd)
 
 #@+node:tom.20211103011049.1: *3* g.command('vr3-plot-2d')
@@ -3264,7 +3262,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             asciidoc_processors = []
             #@+<< Find available processors >>
             #@+node:tom.20211122104636.1: *6* << Find available processors >>
-            # pylint: disable = undefined-variable
             if asciidoc_ok:
                 asciidoc_processors.append(AsciiDocAPI())
             if asciidoc3_ok:

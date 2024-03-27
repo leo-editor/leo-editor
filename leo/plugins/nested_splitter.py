@@ -283,7 +283,6 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
             # set owner to main splitter explicitly.  Not sure how right now.
             submenu = menu.addMenu('Open window')
             if 1:
-                # pylint: disable=unnecessary-lambda
                 self.add_item(lambda: splitter.open_window(), submenu, "Empty")
             # adapted from choice_menu()
             if (splitter.root.marked and
@@ -522,7 +521,6 @@ class NestedSplitter(QtWidgets.QSplitter):
         l = hunter(layout, widget_id)
         if l is None:
             return False
-        # pylint: disable=unpacking-non-sequence
         layout, pos = l
         orient = layout['orientation']
         if (orient == horizontal and side in ('right-of', 'left-of') or

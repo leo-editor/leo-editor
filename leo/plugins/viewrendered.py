@@ -220,7 +220,6 @@ BaseTextWidget = QtWidgets.QTextBrowser
 
 # Docutils.
 try:
-    # pylint: disable=import-error
     import docutils
     import docutils.core
 except ImportError:
@@ -247,7 +246,6 @@ except ImportError:
 
 # Markdown.
 try:
-    # pylint: disable=import-error
     from markdown import markdown
     got_markdown = True
 except ImportError:
@@ -255,21 +253,18 @@ except ImportError:
 
 # nbformat (@jupyter) support.
 try:
-    # pylint: disable=import-error
     import nbformat
     from nbconvert import HTMLExporter
 except ImportError:
     nbformat = None
 
 try:
-    # pylint: disable=import-error
     import pyperclip
 except Exception:
     pyperclip = None
 
 got_pyplot = False
 try:
-    # pylint: disable=import-error
     from matplotlib import pyplot
     got_pyplot = True
 except ImportError:
@@ -957,7 +952,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20110321072702.14510: *5* vr.setBackgroundColor
     def setBackgroundColor(self, colorName: str, name: str, w: Wrapper) -> None:
         """Set the background color of the vr pane."""
-        # pylint: disable = using-constant-test
         if 0:  # Do not do this! It interferes with themes.
             pc = self
             if not colorName:
@@ -1547,7 +1541,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     # http://doc.trolltech.com/4.4/qtsvg.html
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
     def update_svg(self, s: str, keywords: Any) -> None:
-        # pylint: disable=no-name-in-module
+
         pc = self
         if hasattr(QtSvg, "QSvgWidget"):  # #2134
             QSvgWidget = QtSvg.QSvgWidget

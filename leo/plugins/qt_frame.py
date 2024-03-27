@@ -4160,7 +4160,6 @@ class QtIconBarClass:
         if top_level:
             button = action_container
         for rc in rclicks:
-            # pylint: disable=cell-var-from-loop
             headline = rc.position.h[8:].strip()
             act = QAction(headline, action_container)
             if '---' in headline and headline.strip().strip('-') == '':

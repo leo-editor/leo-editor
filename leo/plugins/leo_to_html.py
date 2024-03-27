@@ -175,8 +175,6 @@ def createExportMenus(tag, keywords):
     appear in the menu and where.
 
     """
-    # pylint: disable=undefined-variable
-    # c *is* defined.
     c = keywords.get("c")
     if c.config.getBool('leo-to-html-no-menus'):
         return

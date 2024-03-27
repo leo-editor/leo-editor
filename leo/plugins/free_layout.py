@@ -276,8 +276,6 @@ class FreeLayoutController:
         if d:
             for name in sorted(d.keys()):
 
-                # pylint: disable=cell-var-from-loop
-
                 def func(event: LeoKeyEvent) -> None:
                     layout = d.get(name)
                     if layout:

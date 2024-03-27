@@ -26,7 +26,6 @@ from xml.dom import minidom
 from leo.core import leoGlobals as g
 # Third-part imports
 try:
-    # pylint: disable=import-error
     import Ft
     from Ft.Xml import InputSource
     from Ft.Xml.Xslt.Processor import Processor
@@ -221,8 +220,6 @@ def styleNodeSelected(c):
 #@+node:mork.20041010100633: ** addMenu
 def addMenu(tag, keywords):
 
-    # pylint: disable=undefined-variable
-    # c *is* defined.
     c = keywords.get('c')
     if not c:
         return
@@ -254,7 +251,6 @@ def addMenu(tag, keywords):
     xsltkeys = list(xslt.keys())
     xsltkeys.sort()
     for z in xsltkeys:
-        # pylint: disable=cell-var-from-loop
         c.add_command(menu2,
             label=z,
             command=lambda c=c, element=xslt[z]: addXSLTElement(c, element))

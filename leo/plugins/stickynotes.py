@@ -262,11 +262,7 @@ if encOK:
 
     def get_AES():
         if hasattr(AES, 'MODE_EAX'):
-            # pylint: disable=no-member
-            # #1265: When in doubt, use MODE_EAX.
-            # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
             return AES.new(__ENCKEY[0], AES.MODE_EAX)
-        # pylint: disable=no-value-for-parameter
         return AES.new(__ENCKEY[0])
 
     def sn_decode(s):

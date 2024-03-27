@@ -53,7 +53,6 @@ from leo.core.leoGui import LeoKeyEvent
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event  # pylint: disable=reimported
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 
@@ -69,7 +68,7 @@ inited = False
 #@+node:ville.20090701224704.9805: *3* 'cm-external-editor'
 # cm is 'contextmenu' prefix
 @g.command('cm-external-editor')
-def cm_external_editor(event: Event) -> None:
+def cm_external_editor(event: LeoKeyEvent) -> None:
     """ Open node in external editor
 
     Set LEO_EDITOR/EDITOR environment variable to get the editor you want.
@@ -87,7 +86,7 @@ def cm_external_editor(event: Event) -> None:
     c.openWith(d=d)
 #@+node:tbrown.20121123075838.19937: *3* 'context_menu_open'
 @g.command('context-menu-open')
-def context_menu_open(event: Event) -> None:
+def context_menu_open(event: LeoKeyEvent) -> None:
     """Provide a command for key binding to open the context menu"""
     event.c.frame.tree.onContextMenu(QtCore.QPoint(0, 0))
 #@+node:ekr.20200304124723.1: ** startup

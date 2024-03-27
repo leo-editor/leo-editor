@@ -197,8 +197,6 @@ class RSSController:
         c = self.c
         g.es("Parsing feed: %s" % feed.h, color='blue')
         feedurl = g.getUrlFromNode(feed)
-        # pylint: disable=no-member
-        # feedparser.parse *does* exist.
         data = feedparser.parse(feedurl)
         # check for bad feed
         if data.bozo == 1:
@@ -215,7 +213,6 @@ class RSSController:
         headline_format = c.config.getString('rss-headline-format') or '[<date>] <title>'
         date_format = c.config.getString('rss-date-format') or '%Y-%m-%d %I:%M %p'
         # process entries
-        # pylint: disable=unnecessary-lambda
         stories = sorted(data.entries, key=lambda entry: self.grab_date_parsed(entry))
         if sort_newest_first:
             stories.reverse()
