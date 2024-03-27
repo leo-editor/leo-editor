@@ -3433,7 +3433,6 @@ class RecentFilesManager:
                     dirCount[baseName] = {'dirs': [], 'entry': None}
                 dirCount[baseName]['dirs'].append(dirName)
         for name in rf.getRecentFiles()[:n]:
-            # pylint: disable=cell-var-from-loop
             if name.strip() == "":
                 continue  # happens with empty list/new file
 

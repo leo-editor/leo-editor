@@ -836,7 +836,7 @@ class Commands:
                     keyval = line.split(':', 1)
                     key = keyval[0].strip()
                     val = keyval[1].strip()
-                    active_map[key] = val  # # pylint: disable=unsupported-assignment-operation
+                    active_map[key] = val
             return processor_map, extension_map, terminal
         #@+node:tom.20230308193758.7: *4* getExeKind
         def getExeKind(pos: Position, ext: str) -> str:

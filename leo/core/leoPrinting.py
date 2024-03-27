@@ -294,7 +294,6 @@ class PrintingController:
     #@+node:ekr.20150419124739.13: *4* pr.preview_doc
     def preview_doc(self, doc: Any) -> None:
         """Preview the document."""
-        # pylint: disable=no-member
         dialog = printsupport.QPrintPreviewDialog()
         dialog.setSizeGripEnabled(True)
         dialog.setStyleSheet(self.stylesheet)

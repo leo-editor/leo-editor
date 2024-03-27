@@ -1337,7 +1337,6 @@ class AtFile:
             if aClass and g.match_word(root.h, 0, key):
 
                 def writer_for_at_auto_cb(root: Position) -> Optional[str]:
-                    # pylint: disable=cell-var-from-loop
                     try:
                         writer = aClass(at.c)  # noqa
                         s = writer.write(root)
@@ -1585,7 +1584,6 @@ class AtFile:
     #@+node:ekr.20190109160056.1: *6* at.atAsisToString
     def atAsisToString(self, root: Position) -> str:  # pragma: no cover
         """Write the @asis node to a string."""
-        # pylint: disable=used-before-assignment
         at, c = self, self.c
         try:
             c.endEditing()

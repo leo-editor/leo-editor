@@ -127,7 +127,7 @@ class InternalIPKernel:
         trace = 'ipython' in g.app.debug
         console = None
         if not self.namespace.get('_leo'):
-            self.namespace['_leo'] = LeoNameSpace()  # pylint: disable=unsupported-assignment-operation
+            self.namespace['_leo'] = LeoNameSpace()
         if trace:
             self.put_log('new_qt_console: connecting...')
             self.put_log(self.kernelApp.connection_file, raw=True)

@@ -1994,7 +1994,6 @@ class FileCommands:
         vnodes = {}
         for p in theIter:
             # Make *sure* the file index has the proper form.
-            # pylint: disable=unbalanced-tuple-unpacking
             index = p.v.fileIndex
             vnodes[index] = p.v
         # Put all vnodes in index order.
