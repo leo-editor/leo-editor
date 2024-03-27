@@ -1,11 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17954: * @file ../plugins/nested_splitter.py
 """Nested splitter classes."""
+from __future__ import annotations
 from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Orientation, QAction
-# pylint: disable=cell-var-from-loop
+
 #@+others
 #@+node:ekr.20110605121601.17956: ** init
 def init():

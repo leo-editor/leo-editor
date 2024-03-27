@@ -51,6 +51,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
 
+    QSplitter = QtWidgets.QSplitter
+    QWidget = QtWidgets.QWidget
+
 Wrapper = Any
 #@-<< free_layout annotations >>
 #@+others
@@ -306,7 +309,7 @@ class FreeLayoutController:
         ans.append(('Help for this menu', '_fl_help:'))
         return ans
     #@+node:tbrown.20110628083641.11732: *3* flc.ns_do_context
-    def ns_do_context(self, id_: Any, splitter: Any, index: int) -> bool:
+    def ns_do_context(self, id_: QWidget, splitter: QSplitter, index: int) -> bool:
 
         c = self.c
         if id_.startswith('_fl_embed_layout'):
