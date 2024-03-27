@@ -3169,8 +3169,6 @@ class Commands:
         else:
             path = fn
         if path:
-            # pylint: disable=no-member
-            # Defined in commanderFileCommands.py.
             c.saveTo(fileName=path, silent=silent)  # Issues saved message.
             # g.es('in', theDir)
         return path
@@ -4714,7 +4712,6 @@ class Commands:
                 or getattr(obj, 'reload_settings', None)  # An official alias.
             )
             if func:
-                # pylint: disable=not-callable
                 try:
                     func()
                     g.doHook("after-reload-settings", c=c)

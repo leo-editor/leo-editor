@@ -183,7 +183,6 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocus()
         w = self.w
         self.beginCommand(w, 'string-rectangle')
-        # pylint: disable=unpacking-non-sequence
         r1, r2, r3, r4 = self.stringRect
         s = w.getAllText()
         for r in range(r1, r3 + 1):

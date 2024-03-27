@@ -287,7 +287,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             # Restore the selection range.
             if self.save_ins:
                 ins = self.save_ins
-                # pylint: disable=unpacking-non-sequence
                 sel1, sel2 = self.save_sel
                 if sel1 == sel2:
                     # New in Leo 5.5
@@ -558,7 +557,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             u.afterChangeBody(p, 'Abbreviation', bunch)
         # Adjust self.save_sel & self.save_ins
         if s is not None and self.save_sel is not None:
-            # pylint: disable=unpacking-non-sequence
             i, j = self.save_sel
             ins = self.save_ins
             delta = len(s) - len(abbrev)

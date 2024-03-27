@@ -436,7 +436,6 @@ class BindingInfo:
                 val = getattr(self, ivar)
                 if val not in (None, 'none', 'None', ''):
                     if ivar == 'func':
-                        # pylint: disable=no-member
                         val = val.__name__
                     s = f"{ivar}: {val!r}"
                     result.append(s)

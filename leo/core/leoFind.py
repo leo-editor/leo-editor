@@ -700,7 +700,6 @@ class LeoFind:
     #@+node:ekr.20150629095511.1: *5* find._restore_after_find_def
     def _restore_after_find_def(self) -> None:
         """Restore find settings in effect before a find-def command."""
-        # pylint: disable=no-member
         b = self.find_def_data  # A g.Bunch
         if b:
             self.ignore_case = b.ignore_case
@@ -2225,7 +2224,6 @@ class LeoFind:
     def compile_pattern(self) -> bool:
         """Precompile the regexp pattern if necessary."""
         try:  # Precompile the regexp.
-            # pylint: disable=no-member
             flags = re.MULTILINE
             if self.ignore_case:
                 flags |= re.IGNORECASE  # pragma: no cover

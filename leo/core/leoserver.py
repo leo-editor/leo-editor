@@ -9,7 +9,7 @@ Written by Félix Malboeuf and Edward K. Ream.
 """
 #@+<< leoserver imports >>
 #@+node:felix.20210621233316.2: ** << leoserver imports >>
-# pylint: disable=import-self,raise-missing-from,wrong-import-position
+# pylint: disable=raise-missing-from
 import argparse
 import asyncio
 from collections.abc import Callable
@@ -5217,7 +5217,7 @@ class LeoServer:
 #@+node:felix.20210621233316.105: ** main & helpers
 def main() -> None:  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
-    # pylint: disable=used-before-assignment
+
     global websockets
     global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
     if not websockets:
@@ -5628,14 +5628,14 @@ def main() -> None:  # pragma: no cover (tested in client)
 
     try:
         try:
-            server = websockets.serve(ws_handler, wsHost, wsPort, max_size=None)  # pylint: disable=no-member
+            server = websockets.serve(ws_handler, wsHost, wsPort, max_size=None)
             realtime_server = loop.run_until_complete(server)
         except OSError as e:
             print(e)
             print("Trying with IPv4 Family", flush=True)
             server = websockets.serve(
                 ws_handler, wsHost, wsPort,
-                family=socket.AF_INET, max_size=None)  # pylint: disable=no-member
+                family=socket.AF_INET, max_size=None)
             realtime_server = loop.run_until_complete(server)
 
         signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}.\n"

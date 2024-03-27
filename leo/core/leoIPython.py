@@ -31,8 +31,6 @@ def import_fail(s: str) -> None:
     if not g.unitTesting:
         print(f"leoIpython.py: can not import {s}")
 
-# pylint: disable=import-error
-
 try:
     from ipykernel.connect import connect_qtconsole
 except ImportError:

@@ -1278,7 +1278,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         relPath = path  # for finding icon on load in different environment
         path = g.app.gui.getImageFinder(path)
-        # pylint: disable=unpacking-non-sequence
         image, image_height = g.app.gui.getTreeImage(c, path)
         if not image:
             g.es('can not load image:', path)

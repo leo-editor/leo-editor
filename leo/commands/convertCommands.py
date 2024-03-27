@@ -3043,7 +3043,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20150514063305.180: *7* handle_scope_keyword
             def handle_scope_keyword(self, lines: list[str], i: int) -> int:
                 i1 = i
-                # pylint: disable=undefined-loop-variable
                 for word in ('public', 'private', 'export'):
                     if self.match_word(lines, i, word):
                         i += len(word)

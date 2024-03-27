@@ -9,8 +9,6 @@ import re
 from typing import Any, Optional, TYPE_CHECKING
 # Third-party annotations
 try:
-    # We can't assume the user has enchant..
-    # pylint: disable=import-error
     import enchant
 except Exception:  # May throw WinError(!)
     enchant = None

@@ -34,8 +34,6 @@ class LeoMenu:
 
     def define_enable_dict(self) -> None:
 
-        # pylint: disable=unnecessary-lambda
-        # The lambdas *are* necessary.
         c = self.c
         if not c.commandsDict:
             return # This is not an error: it happens during init.

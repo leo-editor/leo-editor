@@ -690,7 +690,6 @@ class RstCommands:
         """
         if self.user_filter_h and not self.at_auto_write:
             try:
-                # pylint: disable=not-callable
                 return self.user_filter_h(c, p)
             except Exception:
                 g.es_exception()

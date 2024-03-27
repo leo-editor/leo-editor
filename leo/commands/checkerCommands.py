@@ -13,7 +13,6 @@ import time
 from typing import Any, Optional, TYPE_CHECKING
 #
 # Third-party imports.
-# pylint: disable=import-error
 try:
     from mypy import api as mypy_api
 except Exception:
@@ -33,7 +32,6 @@ try:
 except Exception:
     pyflakes = None  # type:ignore
 try:
-    # pylint: disable=import-error
     from pylint import lint
 except Exception:
     lint = None  # type:ignore
@@ -317,7 +315,7 @@ def pylint_command(event: LeoKeyEvent) -> None:
             c.save()
         data = PylintCommand(c).run(last_path=last_pylint_path)
         if data:
-            path, p = data  # pylint: disable=unpacking-non-sequence
+            path, p = data
             last_pylint_path = path
 #@+node:ekr.20230221105941.1: ** class CheckNodes
 class CheckNodes:

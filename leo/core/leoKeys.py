@@ -1195,7 +1195,6 @@ class FileNameChooser:
             path = self.get_label()
             k.keyboardQuit()
             if self.callback:
-                # pylint: disable=not-callable
                 self.callback(path)
             else:
                 g.trace('no callback')
@@ -1510,7 +1509,6 @@ class GetArg:
         self.log.deleteTab('Completion')
         self.reset_tab_cycling()
         if handler:
-            # pylint: disable=not-callable
             handler(event)
     #@+node:ekr.20140817110228.18317: *4* ga.do_state_zero
     def do_state_zero(
@@ -3757,7 +3755,6 @@ class KeyHandlerClass:
         d = g.app.config.modeCommandsDict  # Keys are command names: enter-x-mode.
         # Create the callback functions and update c.commandsDict.
         for key in d.keys():
-            # pylint: disable=cell-var-from-loop
 
             def enterModeCallback(event: LeoKeyEvent = None, name: str = key) -> None:
                 k.enterNamedMode(event, name)

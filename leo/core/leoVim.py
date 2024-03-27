@@ -686,7 +686,6 @@ class VimCommands:
         Handle all non-Alt arrows in any mode.
         This method attempts to leave focus unchanged.
         """
-        # pylint: disable=maybe-no-member
         s = self.stroke.s if g.isStroke(self.stroke) else self.stroke
         if s.find('Alt+') > -1:
             # Any Alt key changes c.p.

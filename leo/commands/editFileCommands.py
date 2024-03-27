@@ -240,8 +240,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         else:
             g.es_print('no @clean node found', p.h, color='blue')
             return
-        # pylint: disable=undefined-loop-variable
-        # p is certainly defined here.
         n = 0
         for p2 in p.subtree():
             if self.cleanAtCleanNode(p2):

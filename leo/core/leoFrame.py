@@ -1579,7 +1579,6 @@ class LeoTree:
                 else:
                     c.outerUpdate()  # Bring the tree up to date.
                     if hasattr(self, 'setItemForCurrentPosition'):
-                        # pylint: disable=no-member
                         self.setItemForCurrentPosition()
             else:
                 c.requestLaterRedraw = True
@@ -1633,7 +1632,6 @@ class LeoTree:
             self.endEditLabel()
             # #1168: Ctrl-minus selects multiple nodes.
             if hasattr(self, 'unselectItem'):
-                # pylint: disable=no-member
                 self.unselectItem(old_p)
         if call_event_handlers:
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
@@ -1713,7 +1711,7 @@ class LeoTreeTab:
         self.nb: NbController = None  # Created in createControl.
         self.parentFrame: Widget = parentFrame
     #@+node:ekr.20070317073755: *3* LeoTreeTab: Must be defined in subclasses
-    def createControl(self) -> Wrapper:  # pylint: disable=useless-return
+    def createControl(self) -> Wrapper:
         raise NotImplementedError
 
     def createTab(self, tabName: str, createText: bool = True, widget: Widget = None, select: bool = True) -> None:
