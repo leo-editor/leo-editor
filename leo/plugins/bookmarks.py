@@ -771,7 +771,6 @@ class BookMarkDisplay:
                 lambda e: cmd_bookmark_organizer(event={'c': bm.v.context})),
         ]
         for action in actions:
-            # pylint: disable=cell-var-from-loop
             act = QAction(action[0], menu)
             act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
             menu.addAction(act)
@@ -804,9 +803,6 @@ class BookMarkDisplay:
             ),
         ]
         for action in actions:
-            # pylint: disable=cell-var-from-loop
-            # pylint: disable=undefined-variable
-            # weird: bm clearly *is* defined.
             act = QAction(action[0], menu)
             act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
             menu.addAction(act)

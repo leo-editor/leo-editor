@@ -1631,8 +1631,6 @@ class Pdb(bdb.Bdb, cmd.Cmd):
             return filename
         for dirname in sys.path:
             if hasattr(os, 'readlink'):
-                # pylint: disable=no-member
-                # we have just checked to see that readlink exists.
                 while os.path.islink(dirname):
                     dirname = os.readlink(dirname)
             fullname = os.path.join(dirname, filename)

@@ -28,8 +28,6 @@ def init():
 #@+node:danr7.20060912105041.5: ** createPasteAsHeadlinesMenu
 def createPasteAsHeadlinesMenu(tag, keywords):
 
-    # pylint: disable=undefined-variable
-    # c *is* defined.
     c = keywords.get("c")
     if not c:
         return

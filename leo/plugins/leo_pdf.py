@@ -134,14 +134,12 @@ import operator
 from leo.core import leoGlobals as g
 # Third-party imports
 try:
-    # pylint: disable=import-error
     import docutils
 except ImportError:
     print('leo_pdf.py: can not import docutils')
     docutils = None
     raise
 try:
-    # pylint: disable=import-error
     import reportlab.platypus
     import reportlab.platypus.para
 except ImportError:
@@ -149,7 +147,6 @@ except ImportError:
     reportlab = None
     # raise
 try:
-    # pylint: disable=import-error
     # copyright ReportLab Inc. 2000
     # see rllicense.txt for license details
     # http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/

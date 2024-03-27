@@ -24,8 +24,6 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+node:ekr.20170619151859.4: ** onCreate
 def onCreate(tag, keys):
     """auto_colorize onCreate handler."""
-    # pylint: disable=no-member
-    # g.visit_tree_item does exist.
     try:
         c = keys.get('c')
         init_dict(c)

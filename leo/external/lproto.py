@@ -178,8 +178,6 @@ class LProtoClient:
         '''Connect to the server.  Return True if the connection was established.'''
         if hasattr(socket, 'AF_UNIX'):
             try:
-                # pylint: disable=no-member
-                # Module 'socket' has no 'AF_UNIX' member
                 self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
                 self.socket.connect(fname)
                 return True

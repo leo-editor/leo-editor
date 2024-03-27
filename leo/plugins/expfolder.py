@@ -41,8 +41,6 @@ def init():
     fileName = os.path.join(g.app.loadDir, "../", "plugins", "expfolder.ini")
     config = ConfigParser.ConfigParser()
     config.read(fileName)
-    # pylint: disable=no-member
-    # config.get returns a string.
     try:
         texts = config.get("Main", "TextExtensions").split()
         textexts.extend(texts)

@@ -147,8 +147,7 @@ from leo.plugins.attrib_edit import DialogCode, ListDialog
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
-# broad-exception-raised: Not valid in later pylints.
-# pylint: disable=cell-var-from-loop
+
 #@+others
 #@+node:tbrown.20070117104409.3: ** init and onCreate
 def init():
@@ -265,7 +264,6 @@ class quickMove:
         # build callables for imp list
         todo: Sequence[Any]
         for name, first_last, long, short in quickMove.flavors:
-            # pylint: disable=undefined-loop-variable
             self.txts[name] = short
 
             if first_last:
@@ -344,7 +342,6 @@ class quickMove:
             g.tree_popup_handlers.append(self.popup)
     #@+node:tbrown.20091207120031.5356: *3* dtor
     def __del__(self, c=None):
-        # pylint: disable=unexpected-special-method-signature
         if g.app.gui.guiName() == "qt":
             g.tree_popup_handlers.remove(self.popup)
     #@+node:ekr.20070117113133.2: *3* addButton (quickMove.py)

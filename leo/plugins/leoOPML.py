@@ -220,7 +220,7 @@ class OpmlController:
             s = self.cleanSaxInputString(s)
         except IOError:
             return g.trace('can not open %s' % path)
-        # pylint:disable=catching-non-exception
+
         try:
             theFile = BytesIO(s)
             parser = xml.sax.make_parser()
