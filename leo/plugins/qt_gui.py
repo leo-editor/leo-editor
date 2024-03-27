@@ -49,6 +49,9 @@ if TYPE_CHECKING:  # pragma: no cover
     QHBoxLayout = QtWidgets.QHBoxLayout
     QIcon = QtGui.QIcon
     QLabel = QtWidgets.QLabel
+    QMainWindow = QtWidgets.QMainWindow
+    QPixmap = QtGui.QPixmap
+    QPoint = QtCore.QPoint
     QPushButton = QtWidgets.QPushButton
     QTabWidget = QtWidgets.QTabWidget
     QVBoxLayout = QtWidgets.QVBoxLayout
@@ -1031,7 +1034,7 @@ class LeoQtGui(leoGui.LeoGui):
         return f"PyQt {qtLevel}"
     #@+node:ekr.20110605121601.18514: *3* qt_gui.Icons
     #@+node:ekr.20110605121601.18515: *4* qt_gui.attachLeoIcon
-    def attachLeoIcon(self, window: Any) -> None:
+    def attachLeoIcon(self, window: Union[QMainWindow, QDialog]) -> None:
         """Attach a Leo icon to the window."""
         if self.appIcon:
             window.setWindowIcon(self.appIcon)
@@ -1064,7 +1067,7 @@ class LeoQtGui(leoGui.LeoGui):
             return None
     #@+node:ekr.20110605121601.18517: *4* qt_gui.getImageImage
     @functools.lru_cache(maxsize=128)
-    def getImageImage(self, name: str) -> Any:
+    def getImageImage(self, name: str) -> Optional[QPixmap]:
         """Load the image in file named `name` and return it."""
         fullname = self.getImageFinder(name)
         try:
@@ -1126,7 +1129,7 @@ class LeoQtGui(leoGui.LeoGui):
         return None
     #@+node:ekr.20110605121601.18518: *4* qt_gui.getTreeImage
     @functools.lru_cache(maxsize=128)
-    def getTreeImage(self, c: Cmdr, path: str) -> tuple[Any, int]:
+    def getTreeImage(self, c: Cmdr, path: str) -> tuple[QPixmap, int]:
         image = QtGui.QPixmap(path)
         if image.height() > 0 and image.width() > 0:
             return image, image.height()
@@ -1182,14 +1185,14 @@ class LeoQtGui(leoGui.LeoGui):
         #@-<< create the button b >>
         #@+<< define the callbacks for b >>
         #@+node:ekr.20110605121601.18530: *4* << define the callbacks for b >>
-        def deleteButtonCallback(event: LeoKeyEvent = None, b: Any = b, c: Cmdr = c) -> None:
+        def deleteButtonCallback(event: LeoKeyEvent = None, b: QPushButton = b, c: Cmdr = c) -> None:
             if b:
                 b.pack_forget()
             c.bodyWantsFocus()
 
         def executeScriptCallback(
             event: LeoKeyEvent = None,
-            b: Any = b,
+            b: QPushButton = b,
             c: Cmdr = c,
             buttonText: str = buttonText,
             p: Position = p and p.copy(),
@@ -1230,7 +1233,7 @@ class LeoQtGui(leoGui.LeoGui):
         k.registerCommand(buttonCommandName, executeScriptCallback, pane='button')
         #@-<< create press-buttonText-button command >>
     #@+node:ekr.20200304125716.1: *3* qt_gui.onContextMenu
-    def onContextMenu(self, c: Cmdr, w: Wrapper, point: Any) -> None:
+    def onContextMenu(self, c: Cmdr, w: Wrapper, point: QPoint) -> None:
         """LeoQtGui: Common context menu handling."""
         # #1286.
         handlers = g.tree_popup_handlers
@@ -1339,7 +1342,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20220123052350.1: *4* << define DialogWithCheckBox >>
     class DialogWithCheckBox(QtWidgets.QMessageBox):
 
-        def __init__(self, controller: Any, checked: bool, tip: UserTip) -> None:
+        def __init__(self, controller: LeoQtGui, checked: bool, tip: UserTip) -> None:
             super().__init__()
             c = g.app.log.c
             self.leo_checked = True
@@ -1389,7 +1392,7 @@ class LeoQtGui(leoGui.LeoGui):
             if b != m.next_tip_button:
                 break
     #@+node:ekr.20180117080131.1: *4* onButton (not used)
-    def onButton(self, m: Any) -> None:
+    def onButton(self, m: QPushButton) -> None:
         m.hide()
     #@+node:ekr.20180117073603.1: *4* onClick
     def onClick(self, state: str) -> None:
@@ -2064,7 +2067,7 @@ class StyleSheetManager:
         """
         RE = r'([=:])[ ]*([.1234567890]+)(p[tx])'
 
-        def scale(matchobj: Any, scale: float = factor) -> str:
+        def scale(matchobj: re.Match, scale: float = factor) -> str:
             prefix = matchobj.group(1)
             sz = matchobj.group(2)
             units = matchobj.group(3)
