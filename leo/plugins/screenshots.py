@@ -324,11 +324,11 @@ from leo.core.leoQt import QtCore
 
 # Third-party imports: Warnings will be given later.
 try:
-    from PIL import Image  # pylint: disable=import-error
+    from PIL import Image
 except Exception:
     Image = None
 try:
-    from PIL import ImageChops  # pylint: disable=import-error
+    from PIL import ImageChops
 except ImportError:
     ImageChops = None
 
@@ -1729,8 +1729,6 @@ class ScreenShotController:
                     z.expand()
         # Save the file silently.
         c.fileCommands.save(fn)
-        # pylint: disable=no-member
-            # c.close does exist.
         c.close()
         return fn
     #@+node:ekr.20100913085058.5659: *5* setup_screen_shot & helpers

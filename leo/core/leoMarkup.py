@@ -17,7 +17,7 @@ StringIO = io.StringIO
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
     File_List = Optional[list[str]]
 #@-<< leoMarkup imports & annotations >>
@@ -30,7 +30,7 @@ sphinx_build = which('sphinx-build')
 #@+node:ekr.20191006153522.1: ** adoc, pandoc & sphinx commands
 #@+node:ekr.20190515070742.22: *3* @g.command: 'adoc' & 'adoc-with-preview')
 @g.command('adoc')
-def adoc_command(event: Event = None, verbose: bool = True) -> File_List:
+def adoc_command(event: LeoKeyEvent = None, verbose: bool = True) -> File_List:
     #@+<< adoc command docstring >>
     #@+node:ekr.20190515115100.1: *4* << adoc command docstring >>
     """
@@ -91,7 +91,7 @@ def adoc_command(event: Event = None, verbose: bool = True) -> File_List:
     return c.markupCommands.adoc_command(event, preview=False, verbose=verbose)
 
 @g.command('adoc-with-preview')
-def adoc_with_preview_command(event: Event = None, verbose: bool = True) -> File_List:
+def adoc_with_preview_command(event: LeoKeyEvent = None, verbose: bool = True) -> File_List:
     """Run the adoc command, then show the result in the browser."""
     c = event and event.get('c')
     if not c:
@@ -99,7 +99,7 @@ def adoc_with_preview_command(event: Event = None, verbose: bool = True) -> File
     return c.markupCommands.adoc_command(event, preview=True, verbose=verbose)
 #@+node:ekr.20191006153411.1: *3* @g.command: 'pandoc' & 'pandoc-with-preview'
 @g.command('pandoc')
-def pandoc_command(event: Event, verbose: bool = True) -> File_List:
+def pandoc_command(event: LeoKeyEvent, verbose: bool = True) -> File_List:
     #@+<< pandoc command docstring >>
     #@+node:ekr.20191006153547.1: *4* << pandoc command docstring >>
     """
@@ -150,7 +150,9 @@ def pandoc_command(event: Event, verbose: bool = True) -> File_List:
     return c.markupCommands.pandoc_command(event, verbose=verbose)
 
 @g.command('pandoc-with-preview')
-def pandoc_with_preview_command(event: Event = None, verbose: bool = True) -> File_List:
+def pandoc_with_preview_command(
+    event: LeoKeyEvent = None, verbose: bool = True,
+) -> File_List:
     """Run the pandoc command, then show the result in the browser."""
     c = event and event.get('c')
     if not c:
@@ -158,7 +160,7 @@ def pandoc_with_preview_command(event: Event = None, verbose: bool = True) -> Fi
     return c.markupCommands.pandoc_command(event, preview=True, verbose=verbose)
 #@+node:ekr.20191017163422.1: *3* @g.command: 'sphinx' & 'sphinx-with-preview'
 @g.command('sphinx')
-def sphinx_command(event: Event, verbose: bool = True) -> File_List:
+def sphinx_command(event: LeoKeyEvent, verbose: bool = True) -> File_List:
     #@+<< sphinx command docstring >>
     #@+node:ekr.20191017163422.2: *4* << sphinx command docstring >>
     """
@@ -209,7 +211,9 @@ def sphinx_command(event: Event, verbose: bool = True) -> File_List:
     return c.markupCommands.sphinx_command(event, verbose=verbose)
 
 @g.command('sphinx-with-preview')
-def sphinx_with_preview_command(event: Event = None, verbose: bool = True) -> File_List:
+def sphinx_with_preview_command(
+    event: LeoKeyEvent = None, verbose: bool = True,
+) -> File_List:
     """Run the sphinx command, then show the result in the browser."""
     c = event and event.get('c')
     if not c:
@@ -236,7 +240,9 @@ class MarkupCommands:
 
     #@+others
     #@+node:ekr.20191006153233.1: *3* markup.command_helper & helpers
-    def command_helper(self, event: Event, kind: str, preview: bool, verbose: bool) -> list[str]:
+    def command_helper(self,
+        event: LeoKeyEvent, kind: str, preview: bool, verbose: bool,
+    ) -> list[str]:
 
         def predicate(p: Position) -> str:
             return self.filename(p)
@@ -470,7 +476,9 @@ class MarkupCommands:
             result.append(s)
         return ''.join(result)
     #@+node:ekr.20191006155051.1: *3* markup.commands
-    def adoc_command(self, event: Event = None, preview: bool = False, verbose: bool = True) -> File_List:
+    def adoc_command(self,
+        event: LeoKeyEvent = None, preview: bool = False, verbose: bool = True,
+    ) -> File_List:
         global asciidoctor_exec, asciidoc3_exec
         if asciidoctor_exec or asciidoc3_exec:
             return self.command_helper(
@@ -479,7 +487,9 @@ class MarkupCommands:
         g.es_print(f"{name} requires either asciidoctor or asciidoc3")
         return []
 
-    def pandoc_command(self, event: Event = None, preview: bool = False, verbose: bool = True) -> File_List:
+    def pandoc_command(self,
+        event: LeoKeyEvent = None, preview: bool = False, verbose: bool = True,
+    ) -> File_List:
         global pandoc_exec
         if pandoc_exec:
             return self.command_helper(
@@ -488,7 +498,9 @@ class MarkupCommands:
         g.es_print(f"{name} requires pandoc")
         return []
 
-    def sphinx_command(self, event: Event = None, preview: bool = False, verbose: bool = True) -> File_List:
+    def sphinx_command(self,
+        event: LeoKeyEvent = None, preview: bool = False, verbose: bool = True,
+    ) -> File_List:
         global sphinx_build
         if sphinx_build:
             return self.command_helper(

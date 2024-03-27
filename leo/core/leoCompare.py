@@ -12,7 +12,7 @@ from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent as LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
 #@-<< leoCompare imports & annotations >>
 
@@ -626,7 +626,7 @@ class CompareLeoOutlines:
 #@+node:ekr.20180214041049.1: ** Top-level commands and helpers
 #@+node:ekr.20180213104556.1: *3* @g.command(diff-and-open-leo-files)
 @g.command('diff-and-open-leo-files')
-def diff_and_open_leo_files(event: Event) -> None:
+def diff_and_open_leo_files(event: LeoKeyEvent) -> None:
     """
     Open a dialog prompting for two or more .leo files.
 
@@ -639,7 +639,7 @@ def diff_and_open_leo_files(event: Event) -> None:
     )
 #@+node:ekr.20180213040339.1: *3* @g.command(diff-leo-files)
 @g.command('diff-leo-files')
-def diff_leo_files(event: Event) -> None:
+def diff_leo_files(event: LeoKeyEvent) -> None:
     """
     Open a dialog prompting for two or more .leo files.
 
@@ -651,7 +651,7 @@ def diff_leo_files(event: Event) -> None:
     )
 #@+node:ekr.20160331191740.1: *3* @g.command(diff-marked-nodes)
 @g.command('diff-marked-nodes')
-def diffMarkedNodes(event: Event) -> None:
+def diffMarkedNodes(event: LeoKeyEvent) -> None:
     """
     When two or more nodes are marked, this command creates a
     "diff marked node" as the last top-level node. The body of
@@ -696,7 +696,7 @@ def diffMarkedNodes(event: Event) -> None:
     c.selectPosition(root)
     c.redraw()
 #@+node:ekr.20180213104627.1: *3* diff_leo_files_helper
-def diff_leo_files_helper(event: Event, title: str, visible: bool) -> None:
+def diff_leo_files_helper(event: LeoKeyEvent, title: str, visible: bool) -> None:
     """Prompt for a list of Leo files to open."""
     c = event and event.get('c')
     if not c:

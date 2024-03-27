@@ -103,7 +103,6 @@ class IdleTime:
         while True:
             if not cls.list_active:
                 break
-            # pylint: disable=no-member
             os.sched_yield()
             timeCur = time.process_time()
             idleTimeObj = cls.list_active.pop(0)

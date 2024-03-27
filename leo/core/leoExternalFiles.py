@@ -491,7 +491,7 @@ class ExternalFilesController:
             self.destroy_temp_file(ef)
         self.files = []
     #@+node:ekr.20150405110219.1: *3* efc.utilities
-    # pylint: disable=no-value-for-parameter
+
     #@+node:ekr.20150405200212.1: *4* efc.ask
     def ask(self, c: Cmdr, path: str, p: Position = None) -> str:
         """

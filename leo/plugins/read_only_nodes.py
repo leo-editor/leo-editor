@@ -57,7 +57,7 @@ Davide Salomoni
 
 #@+<< imports >>
 #@+node:ekr.20050311091110.1: ** << imports >>
-from formatter import AbstractFormatter, DumbWriter  # pylint: disable=import-error
+from formatter import AbstractFormatter, DumbWriter
 import ftplib
 import html.parser as HTMLParser
 import io

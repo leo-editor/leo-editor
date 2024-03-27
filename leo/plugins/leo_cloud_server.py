@@ -49,13 +49,6 @@ Maybe more granular and regular synchronization.
  - goal would be for an older Raspberry Pi to be sufficient server
    wise, so recursive hash speed there might be an issue (Phase 2)
 """
-
-# pylint: disable=unused-import
-# import os
-# import sys
-# from collections import namedtuple, defaultdict
-
-
 #@-others
 #@@language python
 #@@tabwidth -4

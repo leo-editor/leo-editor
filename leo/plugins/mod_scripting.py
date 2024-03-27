@@ -215,7 +215,6 @@ def build_rclick_tree(command_p: Position, rclicks: list[Any] = None, top_level:
         if command_p.b.strip():
             return []  # sub menus can't have body text
         for child in command_p.children():
-            # pylint: disable=no-member
             rc = RClick(position=child.copy(), children=[])
             rclicks.append(rc)
             build_rclick_tree(rc.position, rc.children, top_level=False)
@@ -427,13 +426,10 @@ class ScriptingController:
                     f.write('# Actual script starts here.\n')
                     f.write(script + '\n')
                 #@-<< create leoScriptModule >>
-                # pylint: disable=no-name-in-module
                 g.app.scriptDict['c'] = c
                 g.app.scriptDict = {'script_gnx': p.gnx}
                 if 'leoScriptModule' in sys.modules.keys():
                     del sys.modules['leoScriptModule']  # Essential.
-                # pylint: disable=import-error
-                    # This *will* exist.
                 from leo.core import leoScriptModule
                 assert leoScriptModule  # for pyflakes.
             else:

@@ -9,7 +9,7 @@ from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Widget = Any
 #@-<< baseCommands imports & abbreviations >>
@@ -75,7 +75,7 @@ class BaseEditCommandsClass:
             else:
                 k.resetLabel()
     #@+node:ekr.20150514043714.7: *3* BaseEdit.editWidget
-    def editWidget(self, event: Event, forceFocus: bool = True) -> Widget:
+    def editWidget(self, event: LeoKeyEvent, forceFocus: bool = True) -> Widget:
         """Return the edit widget for the event. Also sets self.w"""
         c = self.c
         w = event and event.widget
@@ -94,7 +94,7 @@ class BaseEditCommandsClass:
         return ''.join([ch if ch == '\t' else ' ' for ch in s])
     #@+node:ekr.20150514043714.10: *3* BaseEdit.Helpers
     #@+node:ekr.20150514043714.11: *4* BaseEdit._chckSel
-    def _chckSel(self, event: Event, warning: str = 'no selection') -> bool:
+    def _chckSel(self, event: LeoKeyEvent, warning: str = 'no selection') -> bool:
         """Return True if there is a selection in the edit widget."""
         w = self.editWidget(event)
         val = bool(w and w.hasSelection())
@@ -112,7 +112,7 @@ class BaseEditCommandsClass:
         r3, r4 = g.convertPythonIndexToRowCol(s, j)
         return r1 + 1, r2, r3 + 1, r4
     #@+node:ekr.20150514043714.14: *4* BaseEdit.keyboardQuit
-    def keyboardQuit(self, event: Event = None) -> None:  # pragma: no cover
+    def keyboardQuit(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover
         """Clear the state and the minibuffer label."""
         self.c.k.keyboardQuit()
     #@-others

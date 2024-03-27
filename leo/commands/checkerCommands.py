@@ -13,7 +13,6 @@ import time
 from typing import Any, Optional, TYPE_CHECKING
 #
 # Third-party imports.
-# pylint: disable=import-error
 try:
     from mypy import api as mypy_api
 except Exception:
@@ -33,7 +32,6 @@ try:
 except Exception:
     pyflakes = None  # type:ignore
 try:
-    # pylint: disable=import-error
     from pylint import lint
 except Exception:
     lint = None  # type:ignore
@@ -45,14 +43,15 @@ from leo.core import leoGlobals as g
 #@+node:ekr.20220826075856.1: ** << checkerCommands annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
-Event = Any
+
 #@-<< checkerCommands annotations >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
 #@+node:ekr.20230104132446.1: *3* check-nodes
 @g.command('check-nodes')
-def check_nodes(event: Event) -> None:
+def check_nodes(event: LeoKeyEvent) -> None:
     """
     Find **dubious* nodes, that is, nodes that:
 
@@ -94,10 +93,13 @@ def check_nodes(event: Event) -> None:
       Headlines that match these suppressions *exactly* are not considered dubious.
       Default: None.
     """
-    CheckNodes().check(event)
+    c = event and event.get('c')
+    if not c:
+        return
+    CheckNodes(c).check(event)
 #@+node:ekr.20190608084751.1: *3* find-long-lines
 @g.command('find-long-lines')
-def find_long_lines(event: Event) -> None:
+def find_long_lines(event: LeoKeyEvent) -> None:
     """
     Report long lines in c.p's tree.
     Generate clickable links in the log.
@@ -154,7 +156,7 @@ def find_long_lines(event: Event) -> None:
         f"{len(files)} file{g.plural(len(files))}")
 #@+node:ekr.20190615180048.1: *3* find-missing-docstrings
 @g.command('find-missing-docstrings')
-def find_missing_docstrings(event: Event) -> None:
+def find_missing_docstrings(event: LeoKeyEvent) -> None:
     """Report missing docstrings in the log, with clickable links."""
     c = event and event.get('c')
     if not c:
@@ -218,7 +220,7 @@ def find_missing_docstrings(event: Event) -> None:
         f"in {time.process_time() - t1:5.2f} sec.")
 #@+node:ekr.20160517133001.1: *3* flake8-files command
 @g.command('flake8-files')
-def flake8_command(event: Event) -> None:
+def flake8_command(event: LeoKeyEvent) -> None:
     """
     Run flake8 on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
@@ -241,12 +243,12 @@ def flake8_command(event: Event) -> None:
 #@+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
 @g.command('pylint-kill')
-def kill_pylint(event: Event) -> None:
+def kill_pylint(event: LeoKeyEvent) -> None:
     """Kill any running pylint processes and clear the queue."""
     g.app.backgroundProcessManager.kill('pylint')
 #@+node:ekr.20210302111730.1: *3* mypy command
 @g.command('mypy')
-def mypy_command(event: Event) -> None:
+def mypy_command(event: LeoKeyEvent) -> None:
     """
     Run mypy on all @<file> nodes of the selected tree, or the first
     @<file> node in an ancestor. Running mypy on a single file usually
@@ -280,7 +282,7 @@ def mypy_command(event: Event) -> None:
         g.es_print('can not import mypy')
 #@+node:ekr.20160516072613.1: *3* pyflakes command
 @g.command('pyflakes')
-def pyflakes_command(event: Event) -> None:
+def pyflakes_command(event: LeoKeyEvent) -> None:
     """
     Run pyflakes on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
@@ -300,7 +302,7 @@ def pyflakes_command(event: Event) -> None:
 last_pylint_path: str = None
 
 @g.command('pylint')
-def pylint_command(event: Event) -> None:
+def pylint_command(event: LeoKeyEvent) -> None:
     """
     Run pylint on all nodes of the selected tree,
     or the first @<file> node in an ancestor,
@@ -313,7 +315,7 @@ def pylint_command(event: Event) -> None:
             c.save()
         data = PylintCommand(c).run(last_path=last_pylint_path)
         if data:
-            path, p = data  # pylint: disable=unpacking-non-sequence
+            path, p = data
             last_pylint_path = path
 #@+node:ekr.20230221105941.1: ** class CheckNodes
 class CheckNodes:
@@ -323,13 +325,16 @@ class CheckNodes:
     ok_head_prefixes: list[str]
     suppressions: list[str]
 
+    ### Possible bug fix???
+    def __init__(self, c: Cmdr) -> None:
+        """ctor for CheckNodes class."""
+        self.c = c
+
     #@+others
     #@+node:ekr.20230221110024.1: *3* CheckNodes.check
-    def check(self, event: Event) -> None:
+    def check(self, event: LeoKeyEvent) -> None:
 
-        self.c = c = event and event.get('c')
-        if not c:
-            return
+        c = self.c
         self.get_data()
         self.clones = [z.copy() for z in c.all_unique_positions() if self.is_dubious_node(z)]
         # Report.

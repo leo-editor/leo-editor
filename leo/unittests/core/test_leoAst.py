@@ -16,8 +16,6 @@ import warnings
 
 warnings.simplefilter("ignore")
 
-# pylint: disable=import-error
-
 # Third-party.
 try:
     import asttokens
@@ -30,7 +28,6 @@ try:
 except Exception:  # pragma: no cover
     black = None
 
-# pylint: disable=wrong-import-position
 from leo.core import leoGlobals as g
 
 from leo.core.leoAst import AstNotEqual
@@ -2618,7 +2615,6 @@ class TestTokens(BaseTest):
         - Inject parent/child links into ast nodes.
         - Inject many-to-many links between tokens and ast nodes.
         """
-        # pylint: disable=import-error,reimported
         import ast
         import asttokens
         import token as token_module

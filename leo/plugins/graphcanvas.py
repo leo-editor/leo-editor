@@ -36,8 +36,6 @@ from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets, uic
 from leo.core.leoQt import KeyboardModifier
 # Third-party imports
 try:
-    # pylint: disable=import-error
-        # These are optional.
     import pydot
     import dot_parser
     assert dot_parser

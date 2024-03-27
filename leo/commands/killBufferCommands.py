@@ -11,7 +11,7 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 #@-<< killBufferCommands imports & annotations >>
@@ -55,7 +55,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             g.app.globalKillBuffer.insert(0, text)
     #@+node:ekr.20150514063305.412: *3* backwardKillSentence
     @cmd('backward-kill-sentence')
-    def backwardKillSentence(self, event: Event) -> None:
+    def backwardKillSentence(self, event: LeoKeyEvent) -> None:
         """Kill the previous sentence."""
         w = self.editWidget(event)
         if not w:
@@ -73,7 +73,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.413: *3* backwardKillWord & killWord
     @cmd('backward-kill-word')
-    def backwardKillWord(self, event: Event) -> None:
+    def backwardKillWord(self, event: LeoKeyEvent) -> None:
         """Kill the previous word."""
         c = self.c
         w = self.editWidget(event)
@@ -83,14 +83,14 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.killWordHelper(event)
 
     @cmd('kill-word')
-    def killWord(self, event: Event) -> None:
+    def killWord(self, event: LeoKeyEvent) -> None:
         """Kill the word containing the cursor."""
         w = self.editWidget(event)
         if w:
             self.beginCommand(w, undoType='kill-word')
             self.killWordHelper(event)
 
-    def killWordHelper(self, event: Event) -> None:
+    def killWordHelper(self, event: LeoKeyEvent) -> None:
         c = self.c
         e = c.editCommands
         w = e.editWidget(event)
@@ -102,7 +102,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.414: *3* clearKillRing
     @cmd('clear-kill-ring')
-    def clearKillRing(self, event: Event = None) -> None:
+    def clearKillRing(self, event: LeoKeyEvent = None) -> None:
         """Clear the kill ring."""
         g.app.globalKillbuffer = []
     #@+node:ekr.20150514063305.415: *3* getClipboard
@@ -152,7 +152,9 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def iterateKillBuffer(self) -> KillBufferIterClass:
         return self.KillBufferIterClass(self.c)
     #@+node:ekr.20150514063305.419: *3* ec.killHelper
-    def killHelper(self, event: Event, frm: int, to: int, w: Wrapper, undoType: str = None) -> None:
+    def killHelper(self,
+        event: LeoKeyEvent, frm: int, to: int, w: Wrapper, undoType: str = None,
+    ) -> None:
         """
         A helper method for all kill commands except kill-paragraph commands.
         """
@@ -176,7 +178,9 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.endCommand(changed=True, setLabel=True)
         g.app.gui.set_focus(c, w)  # 2607
     #@+node:ekr.20220121073752.1: *3* ec.killParagraphHelper
-    def killParagraphHelper(self, event: Event, frm: Any, to: Any, undoType: str = None) -> None:
+    def killParagraphHelper(self,
+        event: LeoKeyEvent, frm: Any, to: Any, undoType: str = None,
+    ) -> None:
         """A helper method for kill-paragraph commands."""
         w = self.editWidget(event)
         if not w:
@@ -192,7 +196,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.420: *3* ec.killToEndOfLine
     @cmd('kill-to-end-of-line')
-    def killToEndOfLine(self, event: Event) -> None:
+    def killToEndOfLine(self, event: LeoKeyEvent) -> None:
         """Kill from the cursor to end of the line."""
         w = self.editWidget(event)
         if not w:
@@ -215,7 +219,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.killHelper(event, i, j, w, undoType='kill-to-end-of-line')
     #@+node:ekr.20150514063305.421: *3* ec.killLine
     @cmd('kill-line')
-    def killLine(self, event: Event) -> None:
+    def killLine(self, event: LeoKeyEvent) -> None:
         """Kill the line containing the cursor."""
         w = self.editWidget(event)
         if not w:
@@ -235,7 +239,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.killHelper(event, i, j, w, undoType='kill-line')
     #@+node:ekr.20150514063305.422: *3* killRegion & killRegionSave
     @cmd('kill-region')
-    def killRegion(self, event: Event) -> None:
+    def killRegion(self, event: LeoKeyEvent) -> None:
         """Kill the text selection."""
         w = self.editWidget(event)
         if not w:
@@ -251,7 +255,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         g.app.gui.replaceClipboardWith(s)
 
     @cmd('kill-region-save')
-    def killRegionSave(self, event: Event) -> None:
+    def killRegionSave(self, event: LeoKeyEvent) -> None:
         """Add the selected text to the kill ring, but do not delete it."""
         w = self.editWidget(event)
         if not w:
@@ -264,7 +268,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         g.app.gui.replaceClipboardWith(s)
     #@+node:ekr.20150514063305.423: *3* ec.killSentence
     @cmd('kill-sentence')
-    def killSentence(self, event: Event) -> None:
+    def killSentence(self, event: LeoKeyEvent) -> None:
         """Kill the sentence containing the cursor."""
         w = self.editWidget(event)
         if not w:
@@ -282,7 +286,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.424: *3* killWs
     @cmd('kill-ws')
-    def killWs(self, event: Event, undoType: str = 'kill-ws') -> None:
+    def killWs(self, event: LeoKeyEvent, undoType: str = 'kill-ws') -> None:
         """Kill whitespace."""
         ws = ''
         w = self.editWidget(event)
@@ -308,16 +312,16 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.425: *3* yank & yankPop
     @cmd('yank')
     @cmd('yank')
-    def yank(self, event: Event = None) -> None:
+    def yank(self, event: LeoKeyEvent = None) -> None:
         """Insert the next entry of the kill ring."""
         self.yankHelper(event, pop=False)
 
     @cmd('yank-pop')
-    def yankPop(self, event: Event = None) -> None:
+    def yankPop(self, event: LeoKeyEvent = None) -> None:
         """Insert the first entry of the kill ring."""
         self.yankHelper(event, pop=True)
 
-    def yankHelper(self, event: Event, pop: bool) -> None:
+    def yankHelper(self, event: LeoKeyEvent, pop: bool) -> None:
         """
         Helper for yank and yank-pop:
         pop = False: insert the first entry of the kill ring.
@@ -361,7 +365,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.427: *3* zapToCharacter
     @cmd('zap-to-character')
-    def zapToCharacter(self, event: Event) -> None:
+    def zapToCharacter(self, event: LeoKeyEvent) -> None:
         """Kill characters from the insertion point to a given character."""
         k = self.c.k
         w = self.editWidget(event)

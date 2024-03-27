@@ -1,11 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17954: * @file ../plugins/nested_splitter.py
 """Nested splitter classes."""
+from __future__ import annotations
 from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Orientation, QAction
-# pylint: disable=cell-var-from-loop
+
 #@+others
 #@+node:ekr.20110605121601.17956: ** init
 def init():
@@ -13,7 +14,7 @@ def init():
     # but it should never be necessary to do so.
     return True
 #@+node:tbrown.20120418121002.25711: ** class NestedSplitterTopLevel (QWidget)
-class NestedSplitterTopLevel(QtWidgets.QWidget):  # type:ignore
+class NestedSplitterTopLevel(QtWidgets.QWidget):
     """A QWidget to wrap a NestedSplitter to allow it to live in a top
     level window and handle close events properly.
 
@@ -68,7 +69,7 @@ class NestedSplitterTopLevel(QtWidgets.QWidget):  # type:ignore
             event.ignore()
     #@-others
 #@+node:ekr.20110605121601.17959: ** class NestedSplitterChoice (QWidget)
-class NestedSplitterChoice(QtWidgets.QWidget):  # type:ignore
+class NestedSplitterChoice(QtWidgets.QWidget):
     """When a new pane is opened in a nested splitter layout, this widget
     presents a button, labeled 'Action', which provides a popup menu
     for the user to select what to do in the new pane"""
@@ -87,7 +88,7 @@ class NestedSplitterChoice(QtWidgets.QWidget):  # type:ignore
         button.clicked.connect(lambda: self.parent().choice_menu(self, button.pos()))
     #@-others
 #@+node:ekr.20110605121601.17961: ** class NestedSplitterHandle (QSplitterHandle)
-class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
+class NestedSplitterHandle(QtWidgets.QSplitterHandle):
     """Show the context menu on a NestedSplitter splitter-handle to access
     NestedSplitter's special features"""
     #@+others
@@ -282,7 +283,6 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
             # set owner to main splitter explicitly.  Not sure how right now.
             submenu = menu.addMenu('Open window')
             if 1:
-                # pylint: disable=unnecessary-lambda
                 self.add_item(lambda: splitter.open_window(), submenu, "Empty")
             # adapted from choice_menu()
             if (splitter.root.marked and
@@ -363,7 +363,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
         self.splitter()._splitter_clicked(self, event, release=True, double=True)
     #@-others
 #@+node:ekr.20110605121601.17966: ** class NestedSplitter (QSplitter)
-class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
+class NestedSplitter(QtWidgets.QSplitter):
     # Allow special behavior to be turned of at import stage.
     # useful if other code must run to set up callbacks, that other code can re-enable.
     enabled = True
@@ -521,7 +521,6 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
         l = hunter(layout, widget_id)
         if l is None:
             return False
-        # pylint: disable=unpacking-non-sequence
         layout, pos = l
         orient = layout['orientation']
         if (orient == horizontal and side in ('right-of', 'left-of') or

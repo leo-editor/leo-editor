@@ -1,7 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20130925160837.11429: * @file leoConfig.py
 """Configuration classes for Leo."""
-# pylint: disable=unsubscriptable-object
 #@+<< leoConfig imports & annotations >>
 #@+node:ekr.20041227063801: ** << leoConfig imports & annotations >>
 from __future__ import annotations

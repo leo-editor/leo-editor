@@ -28,8 +28,7 @@ class TestChecker(LeoUnitTest):
     def test_check_nodes(self):
         c = self.c
         from leo.commands import checkerCommands
-        x = checkerCommands.CheckNodes()
-        x.c = c
+        x = checkerCommands.CheckNodes(c)
         x.ok_head_patterns = []
         table = (
             """

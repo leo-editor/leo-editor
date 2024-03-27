@@ -82,8 +82,6 @@ def init():
 #@+node:mork.20041019091317: *3* addMenu
 def addMenu(tag, keywords):
 
-    # pylint: disable=undefined-variable
-    # c *is* defined.
     c = keywords.get('c')
     if not c or c in haveseen:
         return

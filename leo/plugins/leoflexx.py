@@ -48,8 +48,6 @@ if path not in sys.path:
     sys.path.insert(0, path)
 del path
 
-# pylint: disable=wrong-import-position
-
 # This is what Leo typically does.
 # JS code can *not* use g.trace, g.callers or g.pdb.
 from leo.core import leoGlobals as g
@@ -60,7 +58,6 @@ from leo.core import leoMenu
 from leo.core import leoNodes
 # Third-party imports.
 try:
-    # pylint: disable=import-error
     from flexx import flx
     from pscript import RawJS
 except Exception:
@@ -120,8 +117,6 @@ def make_editor_function(name, node):
     Making this a top-level function avoids the need to create a common
     base class that only defines this as a method.
     """
-    # pylint: disable=undefined-variable
-        # window looks undefined.
     global window
     ace = window.ace.edit(node, 'editor')
     ace.navigateFileEnd()  # otherwise all lines highlighted

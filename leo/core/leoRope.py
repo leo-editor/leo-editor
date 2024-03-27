@@ -7,7 +7,6 @@ import importlib
 from leo.core import leoGlobals as g
 # Third-party imports.
 try:
-    # pylint: disable=import-error
     import rope.base.project as project
     import rope.base.simplify as simplify
     import rope.refactor as refactor

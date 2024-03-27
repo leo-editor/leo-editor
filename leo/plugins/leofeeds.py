@@ -72,8 +72,6 @@ def emit(r, h, b):
 
 def emitfeed(url, p):
 
-    # pylint: disable=no-member
-    # feedparser *does* have a parse method.
     d = feedparser.parse(url)
     r = p.insertAsLastChild()
     r.h = d.channel.title

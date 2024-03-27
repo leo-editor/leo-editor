@@ -17,7 +17,6 @@ from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction, KeyboardModifier, Weight
 # Third-party tools.
 try:
-    # pylint: disable=import-error
     import markdown
 except ImportError:
     print('stickynotes_plus.py: can not import markdown')

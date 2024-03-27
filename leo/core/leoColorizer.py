@@ -3150,7 +3150,6 @@ class PygmentsColorizer(BaseColorizer):
             lexer = lexers.get_lexer_by_name(lexer_name)
         except Exception:
             # One of the lexer's will not exist.
-            # pylint: disable=no-member
             if trace and language not in self.unknown_languages:
                 self.unknown_languages.append(language)
                 g.trace(f"\nno pygments lexer for {language!r}. Using python 3 lexer\n")
@@ -3372,7 +3371,6 @@ class QScintillaColorizer(BaseColorizer):
             class_name = 'QsciLexer' + language_name
             lexer_class = getattr(Qsci, class_name, None)
             if lexer_class:
-                # pylint: disable=not-callable
                 lexer = lexer_class(parent=parent)
                 self.configure_lexer(lexer)
                 d[language_name.lower()] = lexer

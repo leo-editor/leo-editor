@@ -329,7 +329,6 @@ def pr(*args, **keys):  # (codewise!)
 #@+node:ekr.20180311193230.1: *5* shortFileName (codewise)
 def shortFileName(fileName, n=None):
     '''Return the base name of a path.'''
-    # pylint: disable=invalid-unary-operand-type
     if not fileName:
         return ''
     if n is None or n < 1:

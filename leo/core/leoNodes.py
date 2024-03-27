@@ -15,7 +15,7 @@ from leo.core import signal_manager
 
 # Third party.
 try:
-    import ksuid  # pylint: disable=import-error
+    import ksuid
 except Exception:
     ksuid = None
 
@@ -193,8 +193,8 @@ class NodeIndices:
     def updateLastIndex(self, gnx: str) -> None:
         """Update ni.lastIndex if the gnx affects it."""
         id_, t, n = self.scanGnx(gnx)
+        # Don't you dare touch this code to keep pylint happy.
         # pylint: disable=literal-comparison
-            # Don't you dare touch this code to keep pylint happy.
         if not id_ or (n != 0 and not n):
             return  # the gnx is not well formed or n in ('',None)
         if id_ == self.userId and t == self.timeString:

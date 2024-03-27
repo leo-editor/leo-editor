@@ -18,7 +18,6 @@ from leo.core import leoFrame
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event  # pylint: disable=import-self
     from leo.core.leoNodes import Position
     from leo.plugins.qt_frame import FindTabManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
@@ -64,13 +63,13 @@ class LeoGui:
         c: Cmdr,
         binding: str = None,
         char: str = None,
-        event: Event = None,
+        event: LeoKeyEvent = None,
         w: Wrapper = None,
         x: int = None,
         x_root: int = None,
         y: int = None,
         y_root: int = None,
-    ) -> Event:
+    ) -> LeoKeyEvent:
         # Do not call strokeFromSetting here!
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
         # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
@@ -295,7 +294,7 @@ class LeoKeyEvent:
         self,
         c: Cmdr,
         char: str,
-        event: Event,
+        event: LeoKeyEvent,
         binding: Any,
         w: Any,
         x: int = None,

@@ -37,7 +37,7 @@ StringIO = io.StringIO
 #@+node:ekr.20220821210220.1: ** << leoImport annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
 #@-<< leoImport annotations >>
 #@+others
@@ -1969,7 +1969,7 @@ class TabImporter:
     def scan(self, s1: str, fn: str = None, root: Position = None) -> Position:
         """Create the outline corresponding to s1."""
         c = self.c
-        # Self.root can be None if we are called from a script or unit test.
+        # self.root can be None if we are called from a script or unit test.
         if not self.root:
             last = root if root else c.lastTopLevel()  # For unit testing.
             self.root = last.insertAfter()
@@ -2532,7 +2532,7 @@ class LegacyExternalFileImporter:
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
 #@+node:ekr.20160504050255.1: *3* @g.command(import-free-mind-files)
 @g.command('import-free-mind-files')
-def import_free_mind_files(event: Event) -> None:
+def import_free_mind_files(event: LeoKeyEvent) -> None:
     """Prompt for free-mind files and import them."""
     c = event.get('c')
     if c:
@@ -2540,42 +2540,42 @@ def import_free_mind_files(event: Event) -> None:
 
 #@+node:ekr.20200424154303.1: *3* @g.command(import-legacy-external-file)
 @g.command('import-legacy-external-files')
-def import_legacy_external_files(event: Event) -> None:
+def import_legacy_external_files(event: LeoKeyEvent) -> None:
     """Prompt for legacy external files and import them."""
     c = event.get('c')
     if c:
         LegacyExternalFileImporter(c).prompt_for_files()
 #@+node:ekr.20160504050325.1: *3* @g.command(import-mind-map-files
 @g.command('import-mind-jet-files')
-def import_mind_jet_files(event: Event) -> None:
+def import_mind_jet_files(event: LeoKeyEvent) -> None:
     """Prompt for mind-jet files and import them."""
     c = event.get('c')
     if c:
         MindMapImporter(c).prompt_for_files()
 #@+node:ekr.20161006100854.1: *3* @g.command(import-MORE-files)
 @g.command('import-MORE-files')
-def import_MORE_files_command(event: Event) -> None:
+def import_MORE_files_command(event: LeoKeyEvent) -> None:
     """Prompt for MORE files and import them."""
     c = event.get('c')
     if c:
         MORE_Importer(c).prompt_for_files()
 #@+node:ekr.20161006072227.1: *3* @g.command(import-tabbed-files)
 @g.command('import-tabbed-files')
-def import_tabbed_files_command(event: Event) -> None:
+def import_tabbed_files_command(event: LeoKeyEvent) -> None:
     """Prompt for tabbed files and import them."""
     c = event.get('c')
     if c:
         TabImporter(c).prompt_for_files()
 #@+node:ekr.20200310095703.1: *3* @g.command(import-todo-text-files)
 @g.command('import-todo-text-files')
-def import_todo_text_files(event: Event) -> None:
+def import_todo_text_files(event: LeoKeyEvent) -> None:
     """Prompt for free-mind files and import them."""
     c = event.get('c')
     if c:
         ToDoImporter(c).prompt_for_files()
 #@+node:ekr.20141210051628.33: *3* @g.command(import-zim-folder)
 @g.command('import-zim-folder')
-def import_zim_command(event: Event) -> None:
+def import_zim_command(event: LeoKeyEvent) -> None:
     """
     Import a zim folder, http://zim-wiki.org/, as the last top-level node of the outline.
 
@@ -2593,7 +2593,7 @@ def import_zim_command(event: Event) -> None:
         ZimImportController(c).run()
 #@+node:ekr.20120429125741.10057: *3* @g.command(parse-body)
 @g.command('parse-body')
-def parse_body_command(event: Event) -> None:
+def parse_body_command(event: LeoKeyEvent) -> None:
     """Parse p.b as source code, creating a tree of descendant nodes."""
     c = event.get('c')
     if c and c.p:

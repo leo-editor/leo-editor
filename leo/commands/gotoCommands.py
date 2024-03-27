@@ -10,7 +10,7 @@ from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
 #@-<< gotoCommands imports & annotations >>
 
@@ -469,7 +469,7 @@ class GoToCommands:
     #@-others
 #@+node:ekr.20180517041303.1: ** show-file-line
 @g.command('show-file-line')
-def show_file_line(event: Event) -> None:
+def show_file_line(event: LeoKeyEvent) -> None:
     """
     Print the external file line number that corresponds to the line
     containing the cursor.

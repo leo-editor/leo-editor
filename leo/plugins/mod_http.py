@@ -406,9 +406,7 @@ if asyncore:
         #@-others
 #@+node:EKR.20040517080250.20: ** class leo_interface
 class leo_interface:
-    # .path, .send_error, .send_response and .end_headers
-    # appear to be undefined.
-    # pylint: disable=no-member
+
     #@+others
     #@+node:bwmulder.20050322224921: *3* send_head & helpers
     def send_head(self):

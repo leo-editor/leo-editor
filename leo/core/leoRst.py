@@ -41,7 +41,7 @@ if 'plugins' in getattr(g.app, 'debug', []):
 #@+node:ekr.20220901082236.1: ** << leoRst annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
 #@-<< leoRst annotations >>
 
@@ -127,7 +127,7 @@ class RstCommands:
     #@+node:ekr.20210403150303.1: *4* rst.rst-convert-legacy-outline
     @cmd('rst-convert-legacy-outline')
     @cmd('convert-legacy-rst-outline')
-    def convert_legacy_outline(self, event: Event = None) -> None:
+    def convert_legacy_outline(self, event: LeoKeyEvent = None) -> None:
         """
         Convert @rst-preformat nodes and `@ @rst-options` doc parts.
         """
@@ -165,7 +165,7 @@ class RstCommands:
         print(f"{old_h} => {p.h}")
     #@+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
     @cmd('rst3')
-    def rst3(self, event: Event = None) -> int:
+    def rst3(self, event: LeoKeyEvent = None) -> int:
         """Write all @rst nodes."""
         t1 = time.time()
         self.n_intermediate = self.n_docutils = 0
@@ -690,7 +690,6 @@ class RstCommands:
         """
         if self.user_filter_h and not self.at_auto_write:
             try:
-                # pylint: disable=not-callable
                 return self.user_filter_h(c, p)
             except Exception:
                 g.es_exception()

@@ -161,7 +161,6 @@ def open_mimetype(tag, keywords, val=None):
 # launches the viewer and returns immediately.
 #@@c
 
-
 # open_func is called with the full file path
 open_func = None
 
@@ -182,7 +181,6 @@ if sys.platform == 'linux2':
         pass
 elif sys.platform == 'win32':
     # Use this directly as 1-arg fn, default action is 'open'
-    # pylint: disable=no-member
     open_func = os.startfile
 #@-<< guess file association handler >>
 #@-leo

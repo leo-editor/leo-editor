@@ -1806,7 +1806,8 @@ class LeoCursesGui(leoGui.LeoGui):
             shortcut=shortcut,
             w=w,
         )
-        k.masterKeyHandler(event)
+        # mypy can't know that KeyEvent is compatible with LeoKeyEvent.
+        k.masterKeyHandler(event)  # type:ignore
         g.app.gui.show_label(c)
         c.outerUpdate()
     #@+node:ekr.20171128041920.1: *4* CGui.Focus
@@ -3161,8 +3162,9 @@ class LeoMiniBuffer(npyscreen.Textfield):
             k.w = self.leo_wrapper
             k.arg = val
             g.app.gui.curses_gui_arg = val
-            k.masterKeyHandler(
-                event=KeyEvent(c, char='\n', event='', shortcut='\n', w=None))
+            event = KeyEvent(c, char='\n', event='', shortcut='\n', w=None)
+            # mypy can't know that KeyEvent is compatible with LeoKeyEvent.
+            k.masterKeyHandler(event)  # type:ignore
             g.app.gui.curses_gui_arg = None
             k.clearState()
         elif commandName == 'repeat-complex-command':

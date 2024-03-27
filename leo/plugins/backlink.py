@@ -415,7 +415,7 @@ class backlinkController:
         )
         if url is None or not url.strip():
             return
-        if '://' not in url:  # pylint: disable=unsupported-membership-test
+        if '://' not in url:
             url = 'unl://' + url
             g.es("Assuming unl:// url, use file:// explicitly for files")
         self.initBacklink(c.p.v)
@@ -653,7 +653,6 @@ class backlinkController:
             if dests:
                 self.ui.enableDelete(True)
                 self.showMessage('Click a link to follow it', optional=True)
-                # pylint: disable=cell-var-from-loop
                 for i in dests:
 
                     if i[1] is None:  # destination node is deleted

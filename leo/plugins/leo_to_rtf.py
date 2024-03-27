@@ -33,8 +33,6 @@ def init():
 #@+node:danr7.20060902083957.2: ** createExportMenu (leo_to_rtf)
 def createExportMenu(tag, keywords):
 
-    # pylint: disable=undefined-variable
-    # c *is* defined.
     c = keywords.get("c")
     if not c:
         return

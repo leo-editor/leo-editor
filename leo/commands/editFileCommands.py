@@ -15,7 +15,7 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
 #@-<< editFileCommands imports & annotations >>
 
@@ -157,7 +157,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20210308051724.1: *3* efc.convert-at-root
     @cmd('convert-at-root')
-    def convert_at_root(self, event: Event = None) -> None:
+    def convert_at_root(self, event: LeoKeyEvent = None) -> None:
         #@+<< convert-at-root docstring >>
         #@+node:ekr.20210309035627.1: *4* << convert-at-root docstring >>
         #@@wrap
@@ -190,7 +190,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170806094319.11: *3* efc.clean-at-clean commands
     #@+node:ekr.20170806094319.5: *4* efc.cleanAtCleanFiles
     @cmd('clean-at-clean-files')
-    def cleanAtCleanFiles(self, event: Event) -> None:
+    def cleanAtCleanFiles(self, event: LeoKeyEvent) -> None:
         """Adjust whitespace in all @clean files."""
         c = self.c
         undoType = 'clean-at-clean-files'
@@ -226,7 +226,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         return changed
     #@+node:ekr.20170806094319.10: *4* efc.cleanAtCleanTree
     @cmd('clean-at-clean-tree')
-    def cleanAtCleanTree(self, event: Event) -> None:
+    def cleanAtCleanTree(self, event: LeoKeyEvent) -> None:
         """
         Clean whitespace in the nearest @clean tree.
 
@@ -240,8 +240,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         else:
             g.es_print('no @clean node found', p.h, color='blue')
             return
-        # pylint: disable=undefined-loop-variable
-        # p is certainly defined here.
         n = 0
         for p2 in p.subtree():
             if self.cleanAtCleanNode(p2):
@@ -253,7 +251,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170806094317.6: *3* efc.compareAnyTwoFiles & helpers
     @cmd('file-compare-two-leo-files')
     @cmd('compare-two-leo-files')
-    def compareAnyTwoFiles(self, event: Event) -> None:
+    def compareAnyTwoFiles(self, event: LeoKeyEvent) -> None:
         """Compare two files."""
         c = c1 = self.c
         w = c.frame.body.wrapper
@@ -458,14 +456,14 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         CompareTreesController().run(self.c, p1, p2, tag)
     #@+node:ekr.20170806094318.1: *3* efc.deleteFile
     @cmd('file-delete')
-    def deleteFile(self, event: Event) -> None:
+    def deleteFile(self, event: LeoKeyEvent) -> None:
         """Prompt for the name of a file and delete it."""
         k = self.c.k
         k.setLabelBlue('Delete File: ')
         k.extendLabel(os.getcwd() + os.sep)
         k.get1Arg(event, handler=self.deleteFile1)
 
-    def deleteFile1(self, event: Event) -> None:
+    def deleteFile1(self, event: LeoKeyEvent) -> None:
         k = self.c.k
         k.keyboardQuit()
         k.clearState()
@@ -476,7 +474,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             k.setStatusLabel(f"Not Deleted: {k.arg}")
     #@+node:ekr.20170806094318.3: *3* efc.diff (file-diff-files)
     @cmd('file-diff-files')
-    def diff(self, event: Event = None) -> None:
+    def diff(self, event: LeoKeyEvent = None) -> None:
         """Creates a node and puts the diff between 2 files into it."""
         c, u = self.c, self.c.undoer
         fn = self.getReadableTextFile()
@@ -513,20 +511,20 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170819035801.90: *3* efc.gitDiff (gd & git-diff)
     @cmd('git-diff')
     @cmd('gd')
-    def gitDiff(self, event: Event = None) -> None:
+    def gitDiff(self, event: LeoKeyEvent = None) -> None:
         """Produce a Leonine git diff."""
         GitDiffController(c=self.c).git_diff(rev1='HEAD')
     #@+node:ekr.20201215093414.1: *3* efc.gitDiffPR (git-diff-pr & git-diff-pull-request)
     @cmd('git-diff-pull-request')
     @cmd('git-diff-pr')
-    def gitDiffPullRequest(self, event: Event = None) -> None:
+    def gitDiffPullRequest(self, event: LeoKeyEvent = None) -> None:
         """
         Produce a Leonine diff of pull request in the current branch.
         """
         GitDiffController(c=self.c).diff_pull_request()
     #@+node:ekr.20170806094318.7: *3* efc.insertFile
     @cmd('file-insert')
-    def insertFile(self, event: Event) -> None:
+    def insertFile(self, event: LeoKeyEvent) -> None:
         """
         Prompt for the name of a file.
         Insert the file's contents in the body at the insertion point.
@@ -546,14 +544,14 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20170806094318.9: *3* efc.makeDirectory
     @cmd('directory-make')
-    def makeDirectory(self, event: Event) -> None:
+    def makeDirectory(self, event: LeoKeyEvent) -> None:
         """Prompt for the name of a directory and create it."""
         k = self.c.k
         k.setLabelBlue('Make Directory: ')
         k.extendLabel(os.getcwd() + os.sep)
         k.get1Arg(event, handler=self.makeDirectory1)
 
-    def makeDirectory1(self, event: Event) -> None:
+    def makeDirectory1(self, event: LeoKeyEvent) -> None:
         k = self.c.k
         k.keyboardQuit()
         k.clearState()
@@ -564,14 +562,14 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             k.setStatusLabel(f"Not Created: {k.arg}")
     #@+node:ekr.20170806094318.14: *3* efc.removeDirectory
     @cmd('directory-remove')
-    def removeDirectory(self, event: Event) -> None:
+    def removeDirectory(self, event: LeoKeyEvent) -> None:
         """Prompt for the name of a directory and delete it."""
         k = self.c.k
         k.setLabelBlue('Remove Directory: ')
         k.extendLabel(os.getcwd() + os.sep)
         k.get1Arg(event, handler=self.removeDirectory1)
 
-    def removeDirectory1(self, event: Event) -> None:
+    def removeDirectory1(self, event: LeoKeyEvent) -> None:
         k = self.c.k
         k.keyboardQuit()
         k.clearState()
@@ -583,7 +581,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170806094318.15: *3* efc.saveFile (save-file-by-name)
     @cmd('file-save-by-name')
     @cmd('save-file-by-name')
-    def saveFile(self, event: Event) -> None:
+    def saveFile(self, event: LeoKeyEvent) -> None:
         """Prompt for the name of a file and put the body text of the selected node into it.."""
         c = self.c
         w = self.editWidget(event)
@@ -602,7 +600,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 g.es('can not create', fileName)
     #@+node:ekr.20170806094319.15: *3* efc.toggleAtAutoAtEdit & helpers
     @cmd('toggle-at-auto-at-edit')
-    def toggleAtAutoAtEdit(self, event: Event) -> None:
+    def toggleAtAutoAtEdit(self, event: LeoKeyEvent) -> None:
         """Toggle between @auto and @edit, preserving insert point, etc."""
         p = self.c.p
         if p.isAtEditNode():

@@ -9,7 +9,7 @@ from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     Widget = Any
     Wrapper = Any
 #@-<< leoMenu imports & annotations >>
@@ -34,8 +34,6 @@ class LeoMenu:
 
     def define_enable_dict(self) -> None:
 
-        # pylint: disable=unnecessary-lambda
-        # The lambdas *are* necessary.
         c = self.c
         if not c.commandsDict:
             return # This is not an error: it happens during init.
@@ -336,7 +334,7 @@ class LeoMenu:
         # The command must be a callable.
         if not callable(command):
 
-            def dummy_menu_callback(event: Event = None) -> None:
+            def dummy_menu_callback(event: LeoKeyEvent = None) -> None:
                 pass
 
             g.trace(f"bad command: {command!r}", color='red')
@@ -514,7 +512,7 @@ class LeoMenu:
         for d in table:
             k.bindOpenWith(d)
     #@+node:ekr.20051022043608.1: *5* LeoMenu.createOpenWithMenuItemsFromTable & callback
-    def createOpenWithMenuItemsFromTable(self, menu: str, table: list[dict]) -> None:
+    def createOpenWithMenuItemsFromTable(self, menu: Any, table: list[dict]) -> None:
         """
         Create an entry in the Open with Menu from the table, a list of dictionaries.
 
@@ -545,15 +543,20 @@ class LeoMenu:
                     underline=underline)
     #@+node:ekr.20031218072017.4118: *6* LeoMenu.defineOpenWithMenuCallback
     def defineOpenWithMenuCallback(self, d: dict[str, str] = None) -> Callable:
-        # The first parameter must be event, and it must default to None.
 
-        def openWithMenuCallback(event: Event = None, self: Any = self, d: dict[str, str] = d) -> Any:
+        # The first parameter must be a LeoKeyEvent, and it must default to None.
+
+        def openWithMenuCallback(
+            event: LeoKeyEvent = None,
+            self: LeoMenu = self,
+            d: dict[str, str] = d,
+        ) -> Any:
             d1 = d.copy() if d else {}
             return self.c.openWith(d=d1)
 
         return openWithMenuCallback
     #@+node:tbrown.20080509212202.7: *4* LeoMenu.deleteRecentFilesMenuItems
-    def deleteRecentFilesMenuItems(self, menu: str) -> None:
+    def deleteRecentFilesMenuItems(self, menu: Any) -> None:
         """Delete recent file menu entries"""
         rf = g.app.recentFilesManager
         # Why not just delete all the entries?
@@ -613,7 +616,7 @@ class LeoMenu:
         cmn = self.canonicalizeMenuName(menuName)
         return self.menus.get(cmn)
 
-    def setMenu(self, menuName: str, menu: str) -> None:
+    def setMenu(self, menuName: str, menu: Any) -> None:
         cmn = self.canonicalizeMenuName(menuName)
         self.menus[cmn] = menu
 
@@ -630,7 +633,7 @@ class LeoMenu:
     ) -> None:
         pass
 
-    def add_separator(self, menu: str) -> None:
+    def add_separator(self, menu: Any) -> None:
         pass
 
     def delete(self, menu: Any, realItemName: str) -> None:
@@ -654,7 +657,7 @@ class LeoMenu:
     def activateMenu(self, menuName: str) -> None:  # New in Leo 4.4b2.
         pass
 
-    def clearAccel(self, menu: str, name: str) -> None:
+    def clearAccel(self, menu: Any, name: str) -> None:
         pass
 
     def createMenuBar(self, frame: Widget) -> None:
@@ -663,7 +666,7 @@ class LeoMenu:
     def createOpenWithMenu(self, parent: Any, label: str, index: int, amp_index: int) -> Any:
         pass
 
-    def disableMenu(self, menu: str, name: str) -> None:
+    def disableMenu(self, menu: Any, name: str) -> None:
         pass
 
     def enableMenu(self, menu: Widget, name: str, val: bool) -> None:
@@ -672,10 +675,10 @@ class LeoMenu:
     def getMacHelpMenu(self, table: list) -> Any:
         pass
 
-    def getMenuLabel(self, menu: str, name: str) -> str:
+    def getMenuLabel(self, menu: Any, name: str) -> str:
         return ''
 
-    def setMenuLabel(self, menu: str, name: str, label: str, underline: int = -1) -> None:
+    def setMenuLabel(self, menu: Any, name: str, label: str, underline: int = -1) -> None:
         pass
     #@-others
 #@+node:ekr.20031218072017.3811: ** class NullMenu(LeoMenu)

@@ -56,9 +56,8 @@ StringIO = io.StringIO
 #@+node:ekr.20220824084642.1: ** << leoGlobals annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoGui
+    from leo.core.leoGui import LeoGui, LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-    Event = Any
 #@-<< leoGlobals annotations >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
@@ -437,7 +436,6 @@ class BindingInfo:
                 val = getattr(self, ivar)
                 if val not in (None, 'none', 'None', ''):
                     if ivar == 'func':
-                        # pylint: disable=no-member
                         val = val.__name__
                     s = f"{ivar}: {val!r}"
                     result.append(s)
@@ -808,14 +806,11 @@ class KeyStroke:
             "space": " ",
             "underscore": "_",
         }
-        #
-        # pylint: disable=undefined-loop-variable
-            # Looks like a pylint bug.
         if s in (None, 'none', 'None'):
             return 'None'
         if s.lower() in translate_d:
             s = translate_d.get(s.lower())
-            return self.strip_shift(s)  # type:ignore
+            return self.strip_shift(s)
         if len(s) > 1 and s.find(' ') > -1:
             # #917: not a pure, but should be ignored.
             return ''
@@ -1007,7 +1002,6 @@ class KeyStroke:
     #@+node:ekr.20180417100834.1: *4* ks.toInsertableChar
     def toInsertableChar(self) -> str:
         """Convert self to an (insertable) char."""
-        # pylint: disable=len-as-condition
         s = self.s
         if not s or self.find_mods(s):
             return ''
@@ -1968,7 +1962,6 @@ class TestLeoGlobals(unittest.TestCase):
     #@+node:ekr.20200219071958.1: *4* TestLeoGlobals.test_comment_delims_from_extension
     def test_comment_delims_from_extension(self) -> None:
 
-        # pylint: disable=import-self
         from leo.core import leoGlobals as leo_g
         from leo.core import leoApp
         leo_g.app = leoApp.LeoApp()
@@ -1978,7 +1971,6 @@ class TestLeoGlobals(unittest.TestCase):
     #@+node:ekr.20200219072957.1: *4* TestLeoGlobals.test_is_sentinel
     def test_is_sentinel(self) -> None:
 
-        # pylint: disable=import-self
         from leo.core import leoGlobals as leo_g
         # Python. Test regular and blackened sentinels.
         py_delims = leo_g.comment_delims_from_extension('.py')
@@ -2397,7 +2389,7 @@ def clearStats() -> None:
     g.app.statsDict = {}
 #@+node:ekr.20031218072017.3135: *4* g.printStats
 @command('show-stats')
-def printStats(event: Event = None, name: str = None) -> None:
+def printStats(event: LeoKeyEvent = None, name: str = None) -> None:
     """
     Print all gathered statistics.
 
@@ -2452,9 +2444,6 @@ def printDiffTime(message: str, start: float) -> float:
 def timeSince(start: float) -> str:
     return f"{time.time()-start:5.2f} sec."
 #@+node:ekr.20031218072017.1380: ** g.Directives
-# Weird pylint bug, activated by TestLeoGlobals class.
-# Disabling this will be safe, because pyflakes will still warn about true redefinitions
-# pylint: disable=function-redefined
 #@+node:EKR.20040504150046.4: *3* g.comment_delims_from_extension
 def comment_delims_from_extension(filename: str) -> tuple[str, str, str]:
     """
@@ -5758,8 +5747,6 @@ def translateArgs(args: Iterable[Any], d: dict[str, Any]) -> str:
 #@+node:ekr.20060810095921: *3* g.translateString & tr
 def translateString(s: str) -> str:
     """Return the translated text of s."""
-    # pylint: disable=undefined-loop-variable
-    # looks like a pylint bug
     upper = app and getattr(app, 'translateToUpperCase', None)
     if not isinstance(s, str):
         s = str(s, 'utf-8')
@@ -5853,7 +5840,7 @@ def CheckVersionToInt(s: str) -> int:
         return 0
 #@+node:ekr.20111103205308.9657: *3* g.cls
 @command('cls')
-def cls(event: Event = None) -> None:
+def cls(event: LeoKeyEvent = None) -> None:
     """Clear the screen."""
     if sys.platform.lower().startswith('win'):
         # Leo 6.7.5: Two calls seem to be required!
@@ -5933,7 +5920,6 @@ def input_(message: str = '', c: Cmdr = None) -> str:
     if app.gui.isNullGui:
         return ''
     # Prompt for input from the console, assuming there is one.
-    # pylint: disable=no-member
     from leo.core.leoQt import QtCore
     QtCore.pyqtRemoveInputHook()
     return input(message)
@@ -6228,13 +6214,11 @@ def os_startfile(fname: str) -> None:
             stderr2log(g, ree, fname)
             ree.close()
     #@-others
-    # pylint: disable=used-before-assignment
     if fname.find('"') > -1:
         quoted_fname = f"'{fname}'"
     else:
         quoted_fname = f'"{fname}"'
     if sys.platform.startswith('win'):
-        # pylint: disable=no-member
         os.startfile(quoted_fname)  # Exists only on Windows.
     elif sys.platform == 'darwin':
         # From Marc-Antoine Parent.

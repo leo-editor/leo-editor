@@ -53,11 +53,9 @@ from leo.core.leoNodes import Position, VNode
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 #@-<< leoUndo imports & annotations >>
-
-# pylint: disable=unpacking-non-sequence
 
 def cmd(name: str) -> Callable:
     """Command decorator for the Undoer class."""
@@ -67,9 +65,6 @@ def cmd(name: str) -> Callable:
 #@+node:ekr.20031218072017.3605: ** class Undoer
 class Undoer:
     """A class that implements unlimited undo and redo."""
-    # pylint: disable=not-an-iterable
-    # pylint: disable=unsubscriptable-object
-    # So that ivars can be inited to None rather than [].
     #@+others
     #@+node:ekr.20150509193307.1: *3* u.Birth
     #@+node:ekr.20031218072017.3606: *4* u.__init__
@@ -1360,7 +1355,7 @@ class Undoer:
             ni.check_gnx(c, v.fileIndex, v)
     #@+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
-    def redo(self, event: Event = None) -> None:
+    def redo(self, event: LeoKeyEvent = None) -> None:
         """Redo the operation undone by the last undo."""
         c, u = self.c, self
         if not c.p:
@@ -1731,7 +1726,7 @@ class Undoer:
             w.setYScrollPosition(u.yview)
     #@+node:ekr.20031218072017.2039: *3* u.undo
     @cmd('undo')
-    def undo(self, event: Event = None) -> None:
+    def undo(self, event: LeoKeyEvent = None) -> None:
         """Undo the operation described by the undo parameters."""
         c, u = self.c, self
         if not c.p:

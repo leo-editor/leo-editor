@@ -528,7 +528,7 @@ class todoController:
 
             self.redrawLevels += 1
             try:
-                ans = fn(self, *args, **kargs)  # pylint: disable=not-callable
+                ans = fn(self, *args, **kargs)
             finally:
                 self.redrawLevels -= 1
                 if self.redrawLevels == 0:
@@ -543,7 +543,6 @@ class todoController:
 
         # pylint: disable=no-self-argument
         def project_changer_callback(self, *args: Any, **kargs: Any) -> Any:  # type:ignore
-            # pylint: disable=not-callable
             ans = fn(self, *args, **kargs)
             self.update_project()
             return ans
@@ -1270,7 +1269,6 @@ class todoController:
         self.ui.setDueTime(self.getat(v, 'duetime'))
         self.ui.setNextWorkDate(self.getat(v, 'nextworkdate'))
         self.ui.setNextWorkTime(self.getat(v, 'nextworktime'))
-        # pylint: disable=maybe-no-member
         created = self.getat(v, 'created')
         if created and isinstance(created, datetime.datetime) and created.year >= 1900:
             self.ui.UI.createdTxt.setText(created.strftime("%d %b %y"))

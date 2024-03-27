@@ -141,7 +141,7 @@ class LeoFts:
     def statistics(self):
         r = {}
         with self.ix.searcher() as s:
-            r['documents'] = list(s.lexicon("doc"))  # pylint:disable=no-member
+            r['documents'] = list(s.lexicon("doc"))
         print("stats", r)
         return r
 

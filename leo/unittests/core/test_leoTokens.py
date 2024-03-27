@@ -9,8 +9,6 @@ import textwrap
 import unittest
 import warnings
 
-# pylint: disable=wrong-import-position
-
 # warnings.simplefilter("ignore")
 try:
     # Suppress a warning about imp being deprecated.

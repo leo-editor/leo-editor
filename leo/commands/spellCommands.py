@@ -9,8 +9,6 @@ import re
 from typing import Any, Optional, TYPE_CHECKING
 # Third-party annotations
 try:
-    # We can't assume the user has enchant..
-    # pylint: disable=import-error
     import enchant
 except Exception:  # May throw WinError(!)
     enchant = None
@@ -19,7 +17,7 @@ from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
 #@-<< spellCommands imports & annotations >>
 
@@ -432,7 +430,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
         self.page_width = c.config.getInt("page-width")  # for wrapping
     #@+node:ekr.20150514063305.484: *3* openSpellTab
     @cmd('spell-tab-open')
-    def openSpellTab(self, event: Event = None) -> None:
+    def openSpellTab(self, event: LeoKeyEvent = None) -> None:
         """Open the Spell Checker tab in the log pane."""
         if g.unitTesting:
             return
@@ -456,7 +454,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.485: *3* commands...(SpellCommandsClass)
     #@+node:ekr.20171205043931.1: *4* add
     @cmd('spell-add')
-    def add(self, event: Event = None) -> None:
+    def add(self, event: LeoKeyEvent = None) -> None:
         """
         Simulate pressing the 'add' button in the Spell tab.
 
@@ -471,7 +469,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.486: *4* spell-find
     @cmd('spell-find')
-    def find(self, event: Event = None) -> None:
+    def find(self, event: LeoKeyEvent = None) -> None:
         """
         Simulate pressing the 'Find' button in the Spell tab.
 
@@ -486,7 +484,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.487: *4* change
     @cmd('spell-change')
-    def change(self, event: Event = None) -> None:
+    def change(self, event: LeoKeyEvent = None) -> None:
         """Simulate pressing the 'Change' button in the Spell tab."""
         if self.handler:
             self.openSpellTab()
@@ -495,7 +493,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.488: *4* changeThenFind
     @cmd('spell-change-then-find')
-    def changeThenFind(self, event: Event = None) -> None:
+    def changeThenFind(self, event: LeoKeyEvent = None) -> None:
         """Simulate pressing the 'Change, Find' button in the Spell tab."""
         if self.handler:
             self.openSpellTab()
@@ -505,14 +503,14 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.489: *4* hide
     @cmd('spell-tab-hide')
-    def hide(self, event: Event = None) -> None:
+    def hide(self, event: LeoKeyEvent = None) -> None:
         """Hide the Spell tab."""
         if self.handler:
             self.c.frame.log.selectTab('Log')
             self.c.bodyWantsFocus()
     #@+node:ekr.20150514063305.490: *4* ignore
     @cmd('spell-ignore')
-    def ignore(self, event: Event = None) -> None:
+    def ignore(self, event: LeoKeyEvent = None) -> None:
         """Simulate pressing the 'Ignore' button in the Spell tab."""
         if self.handler:
             self.openSpellTab()
@@ -521,7 +519,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             self.openSpellTab()
     #@+node:ekr.20150514063305.491: *4* focusToSpell
     @cmd('focus-to-spell-tab')
-    def focusToSpell(self, event: Event = None) -> None:
+    def focusToSpell(self, event: LeoKeyEvent = None) -> None:
         """Put focus in the spell tab."""
         self.openSpellTab()  # Makes Spell tab visible.
         # This is not a great idea. There is no indication of focus.
@@ -530,7 +528,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.492: *3* as_you_type_* commands
     #@+node:ekr.20150514063305.493: *4* as_you_type_toggle
     @cmd('spell-as-you-type-toggle')
-    def as_you_type_toggle(self, event: Event) -> None:
+    def as_you_type_toggle(self, event: LeoKeyEvent) -> None:
         """as_you_type_toggle - toggle spell as you type."""
         if self.spell_as_you_type:
             self.spell_as_you_type = False
@@ -544,7 +542,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
         g.es("Spell as you type enabled")
     #@+node:ekr.20150514063305.494: *4* as_you_type_wrap
     @cmd('spell-as-you-type-wrap')
-    def as_you_type_wrap(self, event: Event) -> None:
+    def as_you_type_wrap(self, event: LeoKeyEvent) -> None:
         """as_you_type_wrap - toggle wrap as you type."""
         if self.wrap_as_you_type:
             self.wrap_as_you_type = False
@@ -558,7 +556,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
         g.es("Wrap as you type enabled")
     #@+node:ekr.20150514063305.495: *4* as_you_type_next
     @cmd('spell-as-you-type-next')
-    def as_you_type_next(self, event: Event) -> None:
+    def as_you_type_next(self, event: LeoKeyEvent) -> None:
         """as_you_type_next - cycle word behind cursor to next suggestion."""
         if not self.suggestions:
             g.es('[no suggestions]')
@@ -568,7 +566,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
         self.as_you_type_replace(word)
     #@+node:ekr.20150514063305.496: *4* as_you_type_undo
     @cmd('spell-as-you-type-undo')
-    def as_you_type_undo(self, event: Event) -> None:
+    def as_you_type_undo(self, event: LeoKeyEvent) -> None:
         """as_you_type_undo - replace word behind cursor with word
         user typed before it started cycling suggestions.
         """
@@ -685,7 +683,7 @@ class SpellTabHandler:
             self.tab = None
     #@+node:ekr.20150514063305.502: *3* Commands
     #@+node:ekr.20150514063305.503: *4* SpellTabHandler.add
-    def add(self, event: Event = None) -> None:
+    def add(self, event: LeoKeyEvent = None) -> None:
         """Add the selected suggestion to the dictionary."""
         if self.loaded:
             w = self.currentWord
@@ -693,7 +691,7 @@ class SpellTabHandler:
                 self.spellController.add(w)
                 self.tab.onFindButton()
     #@+node:ekr.20150514063305.504: *4* SpellTabHandler.change
-    def change(self, event: Event = None) -> bool:
+    def change(self, event: LeoKeyEvent = None) -> bool:
         """Make the selected change to the text"""
         if not self.loaded:
             return False
@@ -734,7 +732,7 @@ class SpellTabHandler:
     re_part = re.compile(r'[a-zA-z]+')
     re_http = re.compile(r'.*?(http|https)://(.*?)$')
 
-    def find(self, event: Event = None) -> Optional[str]:
+    def find(self, event: LeoKeyEvent = None) -> Optional[str]:
         """
         Find the next unknown word.
 
@@ -893,10 +891,10 @@ class SpellTabHandler:
         else:
             c.selectPosition(p)
     #@+node:ekr.20150514063305.508: *4* SpellTabHandler.hide
-    def hide(self, event: Event = None) -> None:
+    def hide(self, event: LeoKeyEvent = None) -> None:
         self.c.frame.log.selectTab('Log')
     #@+node:ekr.20150514063305.509: *4* SpellTabHandler.ignore
-    def ignore(self, event: Event = None) -> None:
+    def ignore(self, event: LeoKeyEvent = None) -> None:
         """Ignore the incorrect word for the duration of this spell check session."""
         if self.loaded:
             w = self.currentWord
@@ -906,13 +904,13 @@ class SpellTabHandler:
     #@-others
 #@+node:ekr.20180209141207.1: ** @g.command('show-spell-info')
 @g.command('show-spell-info')
-def show_spell_info(event: Event = None) -> None:
+def show_spell_info(event: LeoKeyEvent = None) -> None:
     c = event.get('c')
     if c:
         c.spellCommands.handler.spellController.show_info()
 #@+node:ekr.20180211104019.1: ** @g.command('clean-main-spell-dict')
 @g.command('clean-main-spell-dict')
-def clean_main_spell_dict(event: Event) -> None:
+def clean_main_spell_dict(event: LeoKeyEvent) -> None:
     """
     Clean the main spelling dictionary used *only* by the default spell
     checker.
@@ -924,7 +922,7 @@ def clean_main_spell_dict(event: Event) -> None:
         DefaultWrapper(c).save_main_dict(trace=True)
 #@+node:ekr.20180211105748.1: ** @g.command('clean-user-spell-dict')
 @g.command('clean-user-spell-dict')
-def clean_user_spell_dict(event: Event) -> None:
+def clean_user_spell_dict(event: LeoKeyEvent) -> None:
     """
     Clean the user spelling dictionary used *only* by the default spell
     checker. Mostly for debugging, because this happens automatically.

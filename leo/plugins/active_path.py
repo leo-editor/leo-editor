@@ -126,10 +126,8 @@ def init():
 # defer binding event until c exists
 def attachToCommander(t, k):
 
-    # pylint: disable=simplifiable-if-statement
     c = k.get('c')
     event = c.config.getString('active-path-event') or "headdclick1"
-    # pylint: disable=unnecessary-lambda
     g.registerHandler(event, lambda t, k: onSelect(t, k))
 
     # not using a proper class, so
