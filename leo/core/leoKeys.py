@@ -29,9 +29,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
-    ### from leo.core.leoQt import QtCore
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    ### QEvent: TypeAlias = QtCore.QEvent
     Stroke = Any
 #@-<< leoKeys annotations >>
 #@+<< Key bindings, an overview >>

@@ -3029,7 +3029,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             self.menuBar.addMenu(menu)
         label = label.replace('&', '').lower()
         menu.leo_menu_label = label
-        ### return menu
+
     #@+node:ekr.20110605121601.18345: *5* LeoQtMenu.add_command (Called by createMenuEntries)
     def add_command(self,
         menu: QMenu,
