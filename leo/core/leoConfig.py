@@ -9,11 +9,11 @@ import sys
 import re
 import textwrap
 from typing import Any, Generator, Optional, TYPE_CHECKING
-from leo.core.leoCommands import Commands as Cmdr
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
     from leo.core.leoApp import PreviousSettings
     Widget = Any
