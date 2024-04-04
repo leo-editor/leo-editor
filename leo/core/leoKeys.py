@@ -16,7 +16,6 @@ import textwrap
 import time
 from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.commands import gotoCommands
 from leo.external import codewise
 try:
     import jedi
@@ -682,7 +681,7 @@ class AutoCompleterClass:
         #
         # Get the entire source for jedi.
         t1 = time.process_time()
-        goto = gotoCommands.GoToCommands(c)
+        goto = c.gotoCommands
         root, fileName = goto.find_root(p)
         if root:
             source = goto.get_external_file_with_sentinels(root=root or p)
