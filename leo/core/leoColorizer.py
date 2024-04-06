@@ -611,9 +611,9 @@ class BaseColorizer:
         self.configureTags()
         self.init()
     #@+node:ekr.20190327053604.1: *4* BaseColorizer.report_changes
-    prev_use_pygments = None
-    prev_use_styles = None
-    prev_style = None
+    prev_use_pygments: bool = None
+    prev_use_styles: bool = None
+    prev_style: str = None
 
     def report_changes(self) -> None:
         """Report changes to pygments settings"""
