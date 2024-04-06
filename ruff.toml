@@ -16,13 +16,21 @@ ignore = [
 ]
 
 exclude = [
+    # Exclude entire folders...
+    "leo/external/*.py",
+    "leo/external/npyscreen/*.py",
+    "leo/external/npyscreen/compatibility_code/*.py",
     "leo/plugins/obsolete/*.py",
     "leo/plugins/leo_babel/babel*.py",
-    "leo/plugins/md_docer.py",
     "leo/plugins/leo_babel/tests/*.py",
+    "leo/scripts/*.py",
+    # Exclude unusual plugins.
+    "leo/doc/sphinx-docs/conf.py",
+    "leo/plugins/md_docer.py",
     "leo/plugins/qt_main.py",  # Generated automatically.
     "leo/plugins/test/failed_import.py",  # Contains unused import of 'xyzzy'.
     "leo/plugins/pygeotag/pygeotag.py",  # Contains strange errors.
+    "leo/unittests/py3_test_grammar.py",  # Contains many errors on purpose.
 ]
     
 #@-leo
