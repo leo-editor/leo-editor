@@ -3,10 +3,11 @@
 #@@language python
 #@@nosearch
 
-# For mypy...
+# For mypy and ruff.
 
 mypy
 mypy-extensions
+ruff
 typing_extensions
 types-docutils
 types-Markdown
