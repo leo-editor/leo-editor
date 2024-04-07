@@ -947,7 +947,7 @@ if QtWidgets:
         #@+node:ekr.20201204172235.1: *3* lqtb.paintEvent
         leo_cursor_width = 0
 
-        leo_vim_mode = None
+        leo_vim_mode: bool = None
 
         def paintEvent(self, event: Event) -> None:
             """

@@ -17,6 +17,7 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position
     from leo.core.leoApp import PreviousSettings
+    Setting = Any
     Widget = Any
 #@-<< leoConfig imports & annotations >>
 #@+<< class ParserBaseClass >>
@@ -1486,7 +1487,7 @@ class LocalConfigManager:
     """A class to hold config settings for commanders."""
     #@+others
     #@+node:ekr.20041118104831.2: *3*  c.config.ctor
-    def __init__(self, c: Cmdr, previousSettings: "PreviousSettings" = None) -> None:
+    def __init__(self, c: Cmdr, previousSettings: PreviousSettings = None) -> None:
         self.c = c
         lm = g.app.loadManager
         if previousSettings:
@@ -1519,7 +1520,7 @@ class LocalConfigManager:
         """
         ActiveSettingsOutline(self.c)
     #@+node:ekr.20190901181116.1: *3* c.config.getSource
-    def getSource(self, setting: str) -> str:
+    def getSource(self, setting: Setting) -> str:
         """
         Return a string representing the source file of the given setting,
         one of ("local_file", "theme_file", "myLeoSettings", "leoSettings", "ignore", "error")
@@ -1546,7 +1547,7 @@ class LocalConfigManager:
     #@+node:ekr.20041123092357: *4* c.config.findSettingsPosition & helper
     # This was not used prior to Leo 4.5.
 
-    def findSettingsPosition(self, setting: str) -> Position:
+    def findSettingsPosition(self, setting: Setting) -> Position:
         """Return the position for the setting in the @settings tree for c."""
         munge = g.app.config.munge
         root = self.settingsRoot()
@@ -1589,7 +1590,7 @@ class LocalConfigManager:
     #     getShortcut (self,commandName)
     #     getString (self,setting)
     #@+node:ekr.20120215072959.12519: *5* c.config.get & allies
-    def get(self, setting: str, kind: str) -> Any:
+    def get(self, setting: Setting, kind: str) -> Any:
         """Get the setting and make sure its type matches the expected type."""
         d = self.settingsDict
         if d:

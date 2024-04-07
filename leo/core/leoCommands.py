@@ -24,6 +24,7 @@ from leo.core import leoNodes
 #@+node:ekr.20220820051212.1: ** << leoCommands annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoApp import PreviousSettings
+    from leo.core.leoConfig import LocalConfigManager
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     # 11 subcommanders...
@@ -107,8 +108,8 @@ class Commands:
         self.frame: Widget = None
         self.parentFrame: Widget = parentFrame  # New in Leo 6.0.
         self.gui: LeoGui = gui or g.app.gui
-        ### New ivars
-        self.config: Any = None  ###
+        # New ivars
+        self.config: LocalConfigManager = None
         self.idle_focus_count = 0
         self.last_unusual_focus = 0
         self.ipythonController: InternalIPKernel = None  # Set only by the ipython plugin.
