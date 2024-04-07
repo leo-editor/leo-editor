@@ -166,11 +166,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
         #@verbatim
         # @data abbreviations-subst-env must *only* be defined in leoSettings.leo or myLeoSettings.leo!
+        self.subst_env: list[str]
         if c.config:
             key = 'abbreviations-subst-env'
             if c.config.isLocalSetting(key, 'data'):
                 g.issueSecurityWarning(f"@data {key}")
-                self.subst_env = ""
+                self.subst_env = []
             else:
                 self.subst_env = c.config.getData(key, strip_data=False)
     #@+node:ekr.20150514043850.9: *6* abbrev.init_tree_abbrev
