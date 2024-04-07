@@ -162,8 +162,8 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
         self.leo_menubar = self.menuBar()
         self.leo_statusBar = QtWidgets.QStatusBar()
         self.setStatusBar(self.leo_statusBar)
-        orientation = c.config.getString('initial-split-orientation')
-        self.setSplitDirection(main_splitter, secondary_splitter, orientation)
+        orientation_s = c.config.getString('initial-split-orientation')
+        self.setSplitDirection(main_splitter, secondary_splitter, orientation_s)
         if hasattr(c, 'styleSheetManager'):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
     #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
@@ -175,10 +175,10 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
             'right': ToolBarArea.RightToolBarArea,
             'top': ToolBarArea.TopToolBarArea,
         }
-        where = self.toolbar_orientation
-        if not where:
-            where = 'top'
-        where = d.get(where.lower())
+        where_s = self.toolbar_orientation
+        if not where_s:
+            where_s = 'top'
+        where = d.get(where_s.lower())
         if where:
             self.addToolBar(where, self.iconBar)
     #@+node:ekr.20110605121601.18141: *3* dw.createMainWindow & helpers
@@ -1013,7 +1013,7 @@ class DynamicWindow(QtWidgets.QMainWindow):  # type:ignore
     def setSplitDirection(self,
         main_splitter: QWidget,
         secondary_splitter: QWidget,
-        orientation: Orientation,
+        orientation: str,
     ) -> None:
         """Set the orientations of the splitters in the Leo main window."""
         # c = self.leo_c
@@ -4299,8 +4299,8 @@ class QtStatusLineClass:
         splitter = QtWidgets.QSplitter()
         self.statusBar.addWidget(splitter, True)
         sizes = c.config.getString('status-line-split-sizes') or '1 2'
-        sizes = [int(i) for i in sizes.replace(',', ' ').split()]
-        for n, i in enumerate(sizes):
+        int_sizes = [int(i) for i in sizes.replace(',', ' ').split()]
+        for n, i in enumerate(int_sizes):
             w = [w1, w2][n]
             policy = w.sizePolicy()
             policy.setHorizontalStretch(i)
