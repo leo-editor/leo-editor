@@ -812,7 +812,7 @@ class Commands:
             a tuple (processor_map, extension_map, terminal)
             """
 
-            data: str = c.config.getData(MAP_SETTING_NODE, None)
+            data: list[str] = c.config.getData(MAP_SETTING_NODE, None)
             if not data:
                 return None, None, ''
 
