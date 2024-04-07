@@ -1896,8 +1896,8 @@ class LocalConfigManager:
             if fn.endswith(fn2.lower()):
                 return False
         return True
-    #@+node:ekr.20120224140548.10528: *4* c.exists
-    def exists(self, c: Cmdr, setting: str, kind: str) -> bool:
+    #@+node:ekr.20120224140548.10528: *4* c.config.exists
+    def exists(self, setting: str, kind: str) -> bool:
         """Return true if a setting of the given kind exists, even if it is None."""
         d = self.settingsDict
         if d:
