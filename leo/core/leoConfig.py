@@ -1351,7 +1351,7 @@ class GlobalConfigManager:
         return default
     #@+node:ekr.20070926082018: *4* gcm.getButtons
     def getButtons(self) -> list:
-        """Return a list of tuples (x,y) for common @button nodes."""
+        """Return a list of tuples for common @button nodes."""
         return g.app.config.atCommonButtonsList
     #@+node:ekr.20041122070339: *4* gcm.getColor
     def getColor(self, setting: str) -> str:
@@ -1853,11 +1853,11 @@ class LocalConfigManager:
         """Return the value of @string setting."""
         return self.get(setting, "string")
     #@+node:ekr.20120215072959.12543: *4* c.config.Getters: redirect to g.app.config
-    def getButtons(self) -> list[tuple[str, str]]:
-        """Return a list of tuples (x,y) for common @button nodes."""
+    def getButtons(self) -> list[tuple]:
+        """Return a list of tuples (x, y) for common @button nodes."""
         return g.app.config.atCommonButtonsList  # unusual.
 
-    def getCommands(self) -> list[tuple[str, str]]:
+    def getCommands(self) -> list[tuple[Position, str]]:
         """Return the list of tuples (headline,script) for common @command nodes."""
         return g.app.config.atCommonCommandsList  # unusual.
 
