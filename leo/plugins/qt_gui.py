@@ -1777,14 +1777,15 @@ class StyleSheetManager:
         if all:
             selectors.append('qt-gui-user-style-sheet')
         sheets = []
+        sheet = ""
         for name in selectors:
             # don't strip `#selector_name { ...` type syntax
-            sheet = c.config.getData(name, strip_comments=False)
-            if sheet:
-                if '\n' in sheet[0]:
-                    sheet = ''.join(sheet)
+            sheet_data = c.config.getData(name, strip_comments=False)
+            if sheet_data:
+                if '\n' in sheet_data[0]:
+                    sheet = ''.join(sheet_data)
                 else:
-                    sheet = '\n'.join(sheet)
+                    sheet = '\n'.join(sheet_data)
             if sheet and sheet.strip():
                 line0 = f"\n/* ===== From {name} ===== */\n\n"
                 sheet = line0 + sheet
