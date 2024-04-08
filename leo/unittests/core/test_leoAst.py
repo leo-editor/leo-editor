@@ -2795,7 +2795,7 @@ class TestTokens(BaseTest):
         aList = [z for z in aList if not z[0].islower()]
             # Remove base classes.
         aList = [z for z in aList
-            if not z.startswith('_') and not z in remove]
+            if not z.startswith('_') and z not in remove]
         # Now test them.
         table = (
             TokenOrderGenerator,

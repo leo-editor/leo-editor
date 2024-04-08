@@ -3,10 +3,11 @@
 #@@language python
 #@@nosearch
 
-# For mypy...
+# For mypy and ruff.
 
 mypy
 mypy-extensions
+ruff
 typing_extensions
 types-docutils
 types-Markdown
@@ -25,7 +26,7 @@ flexx           # leoflexx.py plugin.
 meta            # livecode.py plugin.
 pyenchant       # The spell tab.
 pyflakes
-pylint
+# pylint        # Use ruff instead.
 pytest          # For coverage testing.
 pytest-cov      # For coverage testing.
 sphinx

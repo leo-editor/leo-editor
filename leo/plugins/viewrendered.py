@@ -1244,8 +1244,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 s = pc.underline(pc.title) + s
                 pc.title = None
             mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
-            mdext = [x.strip() for x in mdext.split(',')]
-            s = markdown(s, extensions=mdext)
+            mdext_list = [x.strip() for x in mdext.split(',')]
+            s = markdown(s, extensions=mdext_list)
             s = g.toUnicode(s)
         except SystemMessage as sm:
             msg = sm.args[0]

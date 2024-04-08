@@ -528,9 +528,9 @@ def extractDef(c: Cmdr, s: str) -> str:
     Return the defined function/method/class name if s
     looks like definition. Tries several different languages.
     """
-    for pat in c.config.getData('extract-patterns') or []:
+    for pat_s in c.config.getData('extract-patterns') or []:
         try:
-            pat = re.compile(pat)
+            pat = re.compile(pat_s)
             if m := pat.search(s):
                 return m.group(1)
         except Exception:

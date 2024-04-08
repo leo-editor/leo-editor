@@ -268,7 +268,7 @@ class BaseColorizer:
         `key`: key for the zoom_dict.
         """
         c = self.c
-        default_size: str = c.config.defaultBodyFontSize
+        default_size = str(c.config.defaultBodyFontSize)
         # Compute i_size.
         i_size: int
         if key in self.zoom_dict:
@@ -611,9 +611,9 @@ class BaseColorizer:
         self.configureTags()
         self.init()
     #@+node:ekr.20190327053604.1: *4* BaseColorizer.report_changes
-    prev_use_pygments = None
-    prev_use_styles = None
-    prev_style = None
+    prev_use_pygments: bool = None
+    prev_use_styles: bool = None
+    prev_style: str = None
 
     def report_changes(self) -> None:
         """Report changes to pygments settings"""
@@ -625,7 +625,7 @@ class BaseColorizer:
         if trace:
             g.es_print('\nreport changes...')
 
-        def show(setting: str, val: str) -> None:
+        def show(setting: str, val: Any) -> None:
             if trace:
                 g.es_print(f"{setting:35}: {val}")
 
@@ -3305,11 +3305,13 @@ class QScintillaColorizer(BaseColorizer):
             lexer.setStringsOverNewlineAllowed(False)
         table: list[tuple[str, str]] = []
         aList = c.config.getData('qt-scintilla-styles')
+        color: Any
+        style: Any
         if aList:
-            aList = [s.split(',') for s in aList]
+            aList = [s.split(',') for s in aList]  # type:ignore
             for z in aList:
                 if len(z) == 2:
-                    color, style = z
+                    color, style = z  # type:ignore
                     table.append((color.strip(), style.strip()),)
                 else:
                     g.trace(f"entry: {z}")

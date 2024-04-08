@@ -5247,7 +5247,7 @@ class StateMachine:
         (State.ASCDOC_READY_FOR_FENCE, Marker.ASCDOC_CODE_MARKER):
                     # Start a new code chunk
                     (Action.new_chunk, State.FENCED_CODE),
-        (State.FENCED_CODE, Marker.MARKER_NONE): (Action.add_line, State.FENCED_CODE),
+        # (State.FENCED_CODE, Marker.MARKER_NONE): (Action.add_line, State.FENCED_CODE),
         (State.FENCED_CODE, Marker.ASCDOC_CODE_MARKER):
                     # End fenced code chunk
                     (Action.new_chunk, State.BASE)

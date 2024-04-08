@@ -16,6 +16,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
     from leo.core.leoApp import PreviousSettings
+    Setting = Any
     Widget = Any
 #@-<< leoConfig imports & annotations >>
 #@+<< class ParserBaseClass >>
@@ -1349,7 +1350,7 @@ class GlobalConfigManager:
         return default
     #@+node:ekr.20070926082018: *4* gcm.getButtons
     def getButtons(self) -> list:
-        """Return a list of tuples (x,y) for common @button nodes."""
+        """Return a list of tuples for common @button nodes."""
         return g.app.config.atCommonButtonsList
     #@+node:ekr.20041122070339: *4* gcm.getColor
     def getColor(self, setting: str) -> str:
@@ -1485,7 +1486,7 @@ class LocalConfigManager:
     """A class to hold config settings for commanders."""
     #@+others
     #@+node:ekr.20041118104831.2: *3*  c.config.ctor
-    def __init__(self, c: Cmdr, previousSettings: "PreviousSettings" = None) -> None:
+    def __init__(self, c: Cmdr, previousSettings: PreviousSettings = None) -> None:
         self.c = c
         lm = g.app.loadManager
         if previousSettings:
@@ -1518,7 +1519,7 @@ class LocalConfigManager:
         """
         ActiveSettingsOutline(self.c)
     #@+node:ekr.20190901181116.1: *3* c.config.getSource
-    def getSource(self, setting: str) -> str:
+    def getSource(self, setting: Setting) -> str:
         """
         Return a string representing the source file of the given setting,
         one of ("local_file", "theme_file", "myLeoSettings", "leoSettings", "ignore", "error")
@@ -1545,7 +1546,7 @@ class LocalConfigManager:
     #@+node:ekr.20041123092357: *4* c.config.findSettingsPosition & helper
     # This was not used prior to Leo 4.5.
 
-    def findSettingsPosition(self, setting: str) -> Position:
+    def findSettingsPosition(self, setting: Setting) -> Position:
         """Return the position for the setting in the @settings tree for c."""
         munge = g.app.config.munge
         root = self.settingsRoot()
@@ -1588,7 +1589,7 @@ class LocalConfigManager:
     #     getShortcut (self,commandName)
     #     getString (self,setting)
     #@+node:ekr.20120215072959.12519: *5* c.config.get & allies
-    def get(self, setting: str, kind: str) -> Any:
+    def get(self, setting: Setting, kind: str) -> Any:
         """Get the setting and make sure its type matches the expected type."""
         d = self.settingsDict
         if d:
@@ -1851,11 +1852,11 @@ class LocalConfigManager:
         """Return the value of @string setting."""
         return self.get(setting, "string")
     #@+node:ekr.20120215072959.12543: *4* c.config.Getters: redirect to g.app.config
-    def getButtons(self) -> list[tuple[str, str]]:
-        """Return a list of tuples (x,y) for common @button nodes."""
+    def getButtons(self) -> list[tuple]:
+        """Return a list of tuples (x, y) for common @button nodes."""
         return g.app.config.atCommonButtonsList  # unusual.
 
-    def getCommands(self) -> list[tuple[str, str]]:
+    def getCommands(self) -> list[tuple[Position, str]]:
         """Return the list of tuples (headline,script) for common @command nodes."""
         return g.app.config.atCommonCommandsList  # unusual.
 
@@ -1894,8 +1895,8 @@ class LocalConfigManager:
             if fn.endswith(fn2.lower()):
                 return False
         return True
-    #@+node:ekr.20120224140548.10528: *4* c.exists
-    def exists(self, c: Cmdr, setting: str, kind: str) -> bool:
+    #@+node:ekr.20120224140548.10528: *4* c.config.exists
+    def exists(self, setting: str, kind: str) -> bool:
         """Return true if a setting of the given kind exists, even if it is None."""
         d = self.settingsDict
         if d:

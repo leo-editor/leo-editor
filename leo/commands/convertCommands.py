@@ -1335,8 +1335,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 if aList is None:
                     g.trace(f"warning: no @data {kind} node")
                 for s in aList or []:
+                    # Split s into two strings.
                     name, value = s.split(':', 1)
-                    d[name.strip()] = value.strip()
+                    d[name.strip()] = value.strip()  # type:ignore
                 return d
             #@+node:ekr.20160213070235.5: *6* msf.scan_patterns
             def scan_patterns(self, kind: str) -> list[str]:

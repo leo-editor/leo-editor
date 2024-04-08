@@ -25,6 +25,7 @@ from leo.core import leoNodes
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoApp import PreviousSettings
     from leo.core.leoGui import LeoKeyEvent
+    from leo.core.leoConfig import LocalConfigManager
     from leo.core.leoNodes import Position, VNode
     # 11 subcommanders...
     from leo.core.leoAtFile import AtFile
@@ -70,6 +71,8 @@ def cmd(name: str) -> Callable:
 #@+others
 #@+node:ekr.20160514120615.1: ** class Commands
 class Commands:
+    #@+<< docstring: Commands class >>
+    #@+node:ekr.20240406100300.1: *3* << docstring: Commands class >>
     """
     A per-outline class that implements most of Leo's commands. The
     "c" predefined object is an instance of this class.
@@ -84,6 +87,7 @@ class Commands:
 
     The @g..commander_command decorator injects methods into this class.
     """
+    #@-<< docstring: Commands class >>
     #@+others
     #@+node:ekr.20031218072017.2811: *3*  c.Birth & death
     #@+node:ekr.20031218072017.2812: *4* c.__init__ & helpers
@@ -100,9 +104,14 @@ class Commands:
         # Official ivars.
         self._currentPosition: Optional[Position] = None
         self._topPosition: Optional[Position] = None
+        self.command_count = 0
         self.frame: Widget = None
         self.parentFrame: Widget = parentFrame  # New in Leo 6.0.
         self.gui: LeoGui = gui or g.app.gui
+        # New ivars
+        self.config: LocalConfigManager = None
+        self.idle_focus_count = 0
+        self.last_unusual_focus = 0
         self.ipythonController: InternalIPKernel = None  # Set only by the ipython plugin.
         # Declare subcommanders (and one alias) (created later).
         self.atFileCommands: AtFile = None
@@ -144,6 +153,7 @@ class Commands:
         c.initFileIvars(fileName, relativeFileName)
         c.initOptionsIvars()
         # Instantiate c.config *before* initing objects.
+        self.config = None
         c.initSettings(previousSettings)
         # Initialize all subsidiary objects, including subcommanders.
         c.initObjects(self.gui)
@@ -494,8 +504,6 @@ class Commands:
             return g.finalize(c.mFileName).lower()
         return f"{id(self)!s}"
     #@+node:ekr.20110509064011.14563: *4* c.idle_focus_helper & helpers
-    idle_focus_count = 0
-
     def idle_focus_helper(self, tag: str, keys: Any) -> None:
         """An idle-time handler that ensures that focus is *somewhere*."""
         trace = 'focus' in g.app.debug
@@ -544,9 +552,6 @@ class Commands:
         from leo.plugins import qt_frame
         return isinstance(w, qt_frame.QtTabBarWrapper)
     #@+node:ekr.20150403063658.1: *5* c.trace_idle_focus
-    last_unusual_focus = None
-    # last_no_focus = False
-
     def trace_idle_focus(self, w: Wrapper) -> None:
         """Trace the focus for w, minimizing chatter."""
         from leo.core.leoQt import QtWidgets
@@ -807,7 +812,7 @@ class Commands:
             a tuple (processor_map, extension_map, terminal)
             """
 
-            data: str = c.config.getData(MAP_SETTING_NODE, None)
+            data: list[str] = c.config.getData(MAP_SETTING_NODE, None)
             if not data:
                 return None, None, ''
 
@@ -2685,8 +2690,6 @@ class Commands:
         if expected != got:
             g.trace(f"stroke: {stroke!r}, expected char: {expected!r}, got: {got!r}")
     #@+node:ekr.20031218072017.2817: *4* c.doCommand
-    command_count = 0
-
     def doCommand(self, command_func: Any, command_name: Any, event: LeoKeyEvent) -> Any:
         """
         Execute the given command function, invoking hooks and catching exceptions.
