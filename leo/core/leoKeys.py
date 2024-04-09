@@ -2579,8 +2579,8 @@ class KeyHandlerClass:
                 c = p.v.context
                 tag = 'M' if c.shortFileName().endswith('myLeoSettings.leo') else 'G'
                 data.append((p.h, tag),)
-        for aList in [g.app.config.atLocalButtonsList, g.app.config.atLocalCommandsList]:
-            for p in aList:
+        for aList2 in [g.app.config.atLocalButtonsList, g.app.config.atLocalCommandsList]:
+            for p in aList2:
                 data.append((p.h, 'L'),)
         result = [f"{z[1]} {z[0]}" for z in sorted(data)]
         result.extend([
