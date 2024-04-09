@@ -3757,7 +3757,7 @@ def openUrl(event: LeoKeyEvent = None) -> None:
         g.openUrl(c.p)
 #@+node:ekr.20150514125218.6: *3* open-url-under-cursor
 @g.command('open-url-under-cursor')
-def openUrlUnderCursor(event: LeoKeyEvent = None) -> Any:
+def openUrlUnderCursor(event: LeoKeyEvent = None) -> Optional[str]:
     """Open the url under the cursor."""
     return g.openUrlOnClick(event)
 #@-others
