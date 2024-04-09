@@ -195,7 +195,7 @@ class TextFrame(leoFrame.LeoFrame):
     #@+node:ekr.20150107090324.25: *3* destroySelf
     def destroySelf(self):
         pass
-    #@+node:ekr.20150107090324.26: *3* finishCreate
+    #@+node:ekr.20150107090324.26: *3* finishCreate (cursesGui.py)
     def finishCreate(self):
         c, f = self.c, self
         f.tree = textTree(self)

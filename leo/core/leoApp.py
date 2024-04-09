@@ -28,7 +28,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoConfig import GlobalConfigManager
     from leo.core.leoExternalFiles import ExternalFilesController
-    from leo.core.leoGui import LeoKeyEvent, LeoGui
+    from leo.core.leoGui import LeoKeyEvent, LeoFrame, LeoGui
     from leo.core.leoIPython import InternalIPKernel
     from leo.core.leoNodes import NodeIndices, Position
     from leo.core.leoPlugins import LeoPluginsController
@@ -176,7 +176,7 @@ class LeoApp:
         self.paste_c: Cmdr = None  # The commander that pasted the last outline.
         self.spellDict: dict = None  # The singleton PyEnchant spell dict.
         self.numberOfUntitledWindows = 0  # Number of opened untitled windows.
-        self.windowList: list[Any] = []  # Global list of all frames.
+        self.windowList: list[LeoFrame] = []  # Global list of all frames.
         self.realMenuNameDict: dict[str, str] = {}  # Translations of menu names.
         #@-<< LeoApp: global data >>
         #@+<< LeoApp: global controller/manager objects >>
@@ -1178,7 +1178,7 @@ class LeoApp:
                     pass
                 g.error('can not create', tag, 'in', theDir)
     #@+node:ekr.20031218072017.1847: *4* app.setLog, lockLog, unlocklog
-    def setLog(self, log: Any) -> None:
+    def setLog(self, log: LeoFrame) -> None:
         """set the frame to which log messages will go"""
         if not self.logIsLocked:
             self.log = log
