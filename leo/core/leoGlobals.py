@@ -62,6 +62,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoGui, LeoKeyEvent, LeoFrame
     from leo.core.leoNodes import Position, VNode
     from leo.core.leoQt import QMouseEvent
+    Args = Any
+    KWargs = Any
     Event = Any
 #@-<< leoGlobals annotations >>
 in_bridge = False  # True: leoApp object loads a null Gui.
@@ -198,7 +200,7 @@ class Command:
     g can *not* be used anywhere in this class!
     """
 
-    def __init__(self, name: str, **kwargs: Any) -> None:
+    def __init__(self, name: str, **kwargs: KWargs) -> None:
         """Ctor for command decorator class."""
         self.name = name
 
@@ -239,7 +241,7 @@ class CommanderCommand:
     g can *not* be used anywhere in this class!
     """
 
-    def __init__(self, name: str, **kwargs: Any) -> None:
+    def __init__(self, name: str, **kwargs: KWargs) -> None:
         """Ctor for command decorator class."""
         self.name = name
 
@@ -469,7 +471,7 @@ class Bunch:
                 point.isok = True
     """
 
-    def __init__(self, **kwargs: Any) -> None:
+    def __init__(self, **kwargs: KWargs) -> None:
         self.__dict__.update(kwargs)
 
     def __repr__(self) -> str:
@@ -1563,7 +1565,7 @@ class RedirectClass:
     #@+node:ekr.20041012082437.2: *5* flush
     # For LeoN: just for compatibility.
 
-    def flush(self, *args: Any) -> None:
+    def flush(self, *args: Args) -> None:
         return
     #@+node:ekr.20041012091252: *5* rawPrint
     def rawPrint(self, s: str) -> None:
@@ -1865,9 +1867,9 @@ def startTracer(limit: int = 0, trace: bool = False, verbose: bool = False) -> C
 tracing_tags: dict[int, str] = {}  # Keys are id's, values are tags.
 class NullObject:
     """An object that does nothing, and does it very well."""
-    def __init__(self, ivars: list[str]=None, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, ivars: list[str]=None, *args: Args, **kwargs: KWargs) -> None:
         pass
-    def __call__(self, *args: Any, **kwargs: Any) -> "NullObject":
+    def __call__(self, *args: Args, **kwargs: KWargs) -> "NullObject":
         return self
     def __repr__(self) -> str:
         return "NullObject"
@@ -1900,9 +1902,9 @@ class NullObject:
 
 class TracingNullObject:
     """Tracing NullObject."""
-    def __init__(self, tag: str, ivars: list[str]=None, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, tag: str, ivars: list[str]=None, *args: Args, **kwargs: KWargs) -> None:
         tracing_tags [id(self)] = tag
-    def __call__(self, *args: Any, **kwargs: Any) -> "TracingNullObject":
+    def __call__(self, *args: Args, **kwargs: KWargs) -> "TracingNullObject":
         return self
     def __repr__(self) -> str:
         return f'TracingNullObject: {tracing_tags.get(id(self), "<NO TAG>")}'
@@ -1941,7 +1943,7 @@ class TracingNullObject:
         g.null_object_print(id(self), '__setitem__')
         # pylint doesn't like trailing return None.
 #@+node:ekr.20190330072832.1: *4* g.null_object_print
-def null_object_print(id_: int, kind: Any, *args: Any) -> None:
+def null_object_print(id_: int, kind: Any, *args: Args) -> None:
     tag = tracing_tags.get(id_, "<NO TAG>")
     callers = g.callers(3).split(',')
     callers_s = ','.join(callers[:-1])
@@ -4483,7 +4485,7 @@ act_on_node = dummy_act_on_node
 childrenModifiedSet: set[VNode] = set()
 contentModifiedSet: set[VNode] = set()
 #@+node:ekr.20031218072017.1596: *3* g.doHook
-def doHook(tag: str, *args: Any, **kwargs: Any) -> Any:
+def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Any:
     """
     This global function calls a hook routine. Hooks are identified by the
     tag param.
@@ -4571,7 +4573,7 @@ def disableIdleTimeHook() -> None:
     """Disable the global idle-time hook."""
     g.app.idle_time_hooks_enabled = False
 #@+node:EKR.20040602125018: *3* g.enableIdleTimeHook
-def enableIdleTimeHook(*args: Any, **kwargs: Any) -> None:
+def enableIdleTimeHook(*args: Args, **kwargs: KWargs) -> None:
     """Enable idle-time processing."""
     g.app.idle_time_hooks_enabled = True
 #@+node:ekr.20140825042850.18410: *3* g.IdleTime
@@ -5322,22 +5324,22 @@ def enl(tabName: str = 'Log') -> None:
         log.newlines += 1
         log.putnl(tabName)
 #@+node:ekr.20100914094836.5892: *3* g.error, g.note, g.warning, g.red, g.blue
-def blue(*args: Any, **kwargs: Any) -> None:
+def blue(*args: Args, **kwargs: KWargs) -> None:
     g.es_print(color='blue', *args, **kwargs)
 
-def error(*args: Any, **kwargs: Any) -> None:
+def error(*args: Args, **kwargs: KWargs) -> None:
     g.es_print(color='error', *args, **kwargs)
 
-def note(*args: Any, **kwargs: Any) -> None:
+def note(*args: Args, **kwargs: KWargs) -> None:
     g.es_print(color='note', *args, **kwargs)
 
-def red(*args: Any, **kwargs: Any) -> None:
+def red(*args: Args, **kwargs: KWargs) -> None:
     g.es_print(color='red', *args, **kwargs)
 
-def warning(*args: Any, **kwargs: Any) -> None:
+def warning(*args: Args, **kwargs: KWargs) -> None:
     g.es_print(color='warning', *args, **kwargs)
 #@+node:ekr.20070626132332: *3* g.es
-def es(*args: Any, **kwargs: Any) -> None:
+def es(*args: Args, **kwargs: KWargs) -> None:
     """Put all non-keyword args to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
@@ -5397,13 +5399,13 @@ def es_dump(s: str, n: int = 30, title: str = None) -> None:
         g.es_print('', aList)
         i += n
 #@+node:ekr.20031218072017.3110: *3* g.es_error & es_print_error
-def es_error(*args: Any, **keys: Any) -> None:
+def es_error(*args: Args, **keys: Any) -> None:
     color = keys.get('color')
     if color is None and g.app.config:
         keys['color'] = g.app.config.getColor("log-error-color") or 'red'
     g.es(*args, **keys)
 
-def es_print_error(*args: Any, **keys: Any) -> None:
+def es_print_error(*args: Args, **keys: Any) -> None:
     color = keys.get('color')
     if color is None and g.app and g.app.config:
         keys['color'] = g.app.config.getColor("log-error-color") or 'red'
@@ -5435,7 +5437,7 @@ def es_exception_type(c: Cmdr = None, color: str = "red") -> None:
 #@+node:ekr.20050707064040: *3* g.es_print
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
-def es_print(*args: Any, **keys: Any) -> None:
+def es_print(*args: Args, **keys: Any) -> None:
     """
     Print all non-keyword args, and put them to the log pane.
 
@@ -5446,7 +5448,7 @@ def es_print(*args: Any, **keys: Any) -> None:
     if g.app and not g.unitTesting:
         g.es(*args, **keys)
 #@+node:ekr.20050707065530: *3* g.es_trace
-def es_trace(*args: Any, **keys: Any) -> None:
+def es_trace(*args: Args, **keys: Any) -> None:
     if args:
         try:
             s = args[0]
@@ -5514,7 +5516,7 @@ def goto_last_exception(c: Cmdr) -> None:
     else:
         g.trace('No previous exception')
 #@+node:ekr.20100126062623.6240: *3* g.internalError
-def internalError(*args: Any) -> None:
+def internalError(*args: Args) -> None:
     """Report a serious internal error in Leo."""
     callers = g.callers(20).split(',')
     caller = callers[-1]
@@ -5561,7 +5563,7 @@ def log_to_file(s: str, fn: str = None) -> None:
 #@+node:ekr.20080710101653.1: *3* g.pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
-def pr(*args: Any, **keys: Any) -> None:
+def pr(*args: Args, **keys: Any) -> None:
     """
     Print all non-keyword args. This is a wrapper for the print statement.
 
@@ -5675,7 +5677,7 @@ def printLeoModules(message: str = None) -> None:
 def printStack() -> None:
     traceback.print_stack()
 #@+node:ekr.20031218072017.2317: *3* g.trace
-def trace(*args: Any, **keys: Any) -> None:
+def trace(*args: Args, **keys: Any) -> None:
     """Print the name of the calling function followed by all the args."""
     name = g._callerName(2)
     if name.endswith(".pyc"):
@@ -6009,7 +6011,7 @@ def finalize(path: str) -> str:
 
 os_path_finalize = finalize  # Compatibility.
 #@+node:ekr.20230410133838.1: *3* g.finalize_join
-def finalize_join(*args: Any) -> str:
+def finalize_join(*args: Args) -> str:
     """
     Join and finalize. Do not call os.path.realpath.
 
@@ -6108,7 +6110,7 @@ def os_path_isfile(path: str) -> bool:
     """Return True if path is a file."""
     return os.path.isfile(path) if path else False
 #@+node:ekr.20031218072017.2154: *3* g.os_path_join
-def os_path_join(*args: Any, **keys: Any) -> str:
+def os_path_join(*args: Args, **keys: Any) -> str:
     """
     Wrap os.path.join, *without* finalizing the result.
     """
