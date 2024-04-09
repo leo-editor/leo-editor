@@ -234,7 +234,7 @@ class LeoQtGui(leoGui.LeoGui):
         finally:
             c.in_qt_dialog = False
     #@+node:ekr.20110605121601.18489: *4* qt_gui.makeFilter
-    def makeFilter(self, filetypes: list[str]) -> str:
+    def makeFilter(self, filetypes: list[tuple[str, str]]) -> str:
         """Return the Qt-style dialog filter from filetypes list."""
         # Careful: the second %s is *not* replaced.
         filters = ['%s (%s)' % (z) for z in filetypes]

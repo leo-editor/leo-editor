@@ -165,7 +165,7 @@ class LeoGui:
         title: str,
         *,
         filetypes: list[tuple[str, str]],
-        defaultextension: str,
+        defaultextension: str = '',
         multiple: bool = False,
         startpath: str = None,
     ) -> Union[list[str], str]:  # Return type depends on the evil multiple keyword.
