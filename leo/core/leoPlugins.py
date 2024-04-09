@@ -487,7 +487,7 @@ class LeoPluginsController:
         Using a module name allows plugins to be loaded from outside the leo/plugins directory.
         """
         global optional_modules
-        
+
         moduleName: str
 
         trace = verbose or 'plugins' in g.app.debug
