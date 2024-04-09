@@ -23,6 +23,7 @@ StringIO = io.StringIO
 #@+<< leoApp annotations >>
 #@+node:ekr.20220819191617.1: ** << leoApp annotations >>
 if TYPE_CHECKING:  # pragma: no cover
+    from types import Module
     from leo.core.leoBackground import BackgroundProcessManager
     from leo.core.leoCache import GlobalCacher
     from leo.core.leoCommands import Commands as Cmdr
@@ -36,7 +37,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_events import LossageData
     from leo.plugins.qt_idle_time import IdleTime
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    Module = Any
     Widget = Any
 #@-<< leoApp annotations >>
 #@+others
