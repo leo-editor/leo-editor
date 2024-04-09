@@ -1747,7 +1747,7 @@ class Tracer:
     def __init__(self, limit: int = 0, trace: bool = False, verbose: bool = False) -> None:
         # Keys are function names.
         # Values are the number of times the function was called by the caller.
-        self.callDict: dict[str, Any] = {}
+        self.callDict: dict[str, dict] = {}
         # Keys are function names.
         # Values are the total number of times the function was called.
         self.calledDict: dict[str, int] = {}
