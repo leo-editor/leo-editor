@@ -181,12 +181,10 @@ class DefaultWrapper(BaseSpellWrapper):
         # pylint: disable=super-init-not-called
         self.c = c
         if not g.app.spellDict:
-            g.app.spellDict = DefaultDict()
-        self.d = g.app.spellDict
+            g.app.spellDict = DefaultDict().d  # 2024/04/09: bug fix.
+        self.d: dict = g.app.spellDict
         self.user_fn = self.find_user_dict()
         if not g.os_path_exists(self.user_fn):
-            # Fix bug 1175013: leo/plugins/spellpyx.txt is
-            # both source controlled and customized.
             self.create(self.user_fn)
         self.main_fn = self.find_main_dict()
         table = (
