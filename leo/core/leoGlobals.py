@@ -55,10 +55,13 @@ StringIO = io.StringIO
 #@+<< leoGlobals annotations >>
 #@+node:ekr.20220824084642.1: ** << leoGlobals annotations >>
 if TYPE_CHECKING:  # pragma: no cover
+    from types import Module
+    from leo.core import LeoGlobals
     from leo.core.leoApp import LeoApp
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoGui, LeoKeyEvent
+    from leo.core.leoGui import LeoGui, LeoKeyEvent, LeoFrame
     from leo.core.leoNodes import Position, VNode
+    Event = Any
 #@-<< leoGlobals annotations >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
@@ -108,7 +111,7 @@ directives_pat = None  # Set below.
 # The cmd_instance_dict supports per-class @cmd decorators. For example, the
 # following appears in leo.commands.
 #
-#     def cmd(name: Any) -> Any:
+#     def cmd(name: str) -> Any:
 #         """Command decorator for the abbrevCommands class."""
 #         return g.new_cmd_decorator(name, ['c', 'abbrevCommands',])
 #
@@ -164,7 +167,7 @@ python_pat = re.compile(r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$')
 #@+node:ekr.20150508165324.1: ** << define g.Decorators >>
 #@+others
 #@+node:ekr.20150510104148.1: *3* g.check_cmd_instance_dict
-def check_cmd_instance_dict(c: Cmdr, g: Any) -> None:
+def check_cmd_instance_dict(c: Cmdr, g: LeoGlobals) -> None:
     """
     Check g.check_cmd_instance_dict.
     This is a permanent unit test, called from c.finishCreate.
@@ -242,7 +245,7 @@ class CommanderCommand:
     def __call__(self, func: Callable) -> Callable:
         """Register command for all future commanders."""
 
-        def commander_command_wrapper(event: Any) -> None:
+        def commander_command_wrapper(event: LeoKeyEvent) -> None:
             c = event.get('c')
             method = getattr(c, func.__name__, None)
             method(event=event)
@@ -264,7 +267,7 @@ class CommanderCommand:
 
 commander_command = CommanderCommand
 #@+node:ekr.20150508164812.1: *3* g.ivars2instance
-def ivars2instance(c: Cmdr, g: Any, ivars: list[str]) -> Any:
+def ivars2instance(c: Cmdr, g: LeoGlobals, ivars: list[str]) -> Any:
     """
     Return the instance of c given by ivars.
     ivars is a list of strings.
@@ -296,7 +299,7 @@ def new_cmd_decorator(name: str, ivars: list[str]) -> Callable:
 
     def _decorator(func: Callable) -> Callable:
 
-        def new_cmd_wrapper(event: Any) -> None:
+        def new_cmd_wrapper(event: LeoKeyEvent) -> None:
             if isinstance(event, dict):
                 c = event.get('c')
             else:
@@ -465,8 +468,8 @@ class Bunch:
                 point.isok = True
     """
 
-    def __init__(self, **keywords: Any) -> None:
-        self.__dict__.update(keywords)
+    def __init__(self, **kwargs: Any) -> None:
+        self.__dict__.update(kwargs)
 
     def __repr__(self) -> str:
         return self.toString()
@@ -496,14 +499,12 @@ class Bunch:
 
     def __getitem__(self, key: str) -> Any:
         """Support aBunch[key]"""
-        # g.pr('g.Bunch.__getitem__', key)
         return operator.getitem(self.__dict__, key)
 
     def get(self, key: str, theDefault: Any = None) -> Any:
         return self.__dict__.get(key, theDefault)
 
-    def __contains__(self, key: str) -> bool:  # New.
-        # g.pr('g.Bunch.__contains__', key in self.__dict__, key)
+    def __contains__(self, key: str) -> bool:
         return key in self.__dict__
 
 bunch = Bunch
@@ -583,7 +584,7 @@ class EmergencyDialog:
         self.top.destroy()
         self.top = None
     #@+node:ekr.20120219154958.10497: *4* emergencyDialog.onKey
-    def onKey(self, event: Any) -> None:
+    def onKey(self, event: Event) -> None:
         """Handle Key events in askOk dialogs."""
         self.okButton()
     #@+node:ekr.20120219154958.10498: *4* emergencyDialog.run
@@ -1710,7 +1711,7 @@ class TkIDDialog(EmergencyDialog):
 
     #@+others
     #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey
-    def onKey(self, event: Any) -> None:
+    def onKey(self, event: Event) -> None:
         """Handle Key events in askOk dialogs."""
         if event.char in '\n\r':
             self.okButton()
@@ -1759,7 +1760,7 @@ class Tracer:
         self.trace = trace
         self.verbose = verbose  # True: print returns as well as calls.
     #@+node:ekr.20080531075119.3: *4* computeName
-    def computeName(self, frame: Any) -> str:
+    def computeName(self, frame: LeoFrame) -> str:
         if not frame:
             return ''
         code = frame.f_code
@@ -1802,7 +1803,7 @@ class Tracer:
         sys.settrace(None)
         self.report()
     #@+node:ekr.20080531075119.6: *4* tracer
-    def tracer(self, frame: Any, event: Any, arg: Any) -> Optional[Callable]:
+    def tracer(self, frame: LeoFrame, event: Event, arg: Any) -> Optional[Callable]:
         """A function to be passed to sys.settrace."""
         n = len(self.stack)
         if event == 'return':
@@ -1865,7 +1866,7 @@ class NullObject:
     """An object that does nothing, and does it very well."""
     def __init__(self, ivars: list[str]=None, *args: Any, **kwargs: Any) -> None:
         pass
-    def __call__(self, *args: Any, **keys: Any) -> "NullObject":
+    def __call__(self, *args: Any, **kwargs: Any) -> "NullObject":
         return self
     def __repr__(self) -> str:
         return "NullObject"
@@ -1989,7 +1990,7 @@ class TestLeoGlobals(unittest.TestCase):
         assert not leo_g.is_sentinel("<!--comment-->", html_delims)
     #@-others
 #@+node:ekr.20140904112935.18526: *3* g.isTextWrapper & isTextWidget
-def isTextWidget(w: Any) -> bool:
+def isTextWidget(w: LeoFrame) -> bool:
     return g.app.gui.isTextWidget(w)
 
 def isTextWrapper(w: Any) -> bool:
@@ -2152,12 +2153,12 @@ def dump_encoded_string(encoding: str, s: str) -> None:
         elif ch == '\n':
             in_comment = False
 #@+node:ekr.20031218072017.1317: *4* g.file/module/plugin_date
-def module_date(mod: Any, format: str = None) -> str:
+def module_date(mod: Module, format: str = None) -> str:
     theFile = g.os_path_join(app.loadDir, mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=format)
 
-def plugin_date(plugin_mod: Any, format: str = None) -> str:
+def plugin_date(plugin_mod: Module, format: str = None) -> str:
     theFile = g.os_path_join(app.loadDir, "..", "plugins", plugin_mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=str)
@@ -3452,7 +3453,7 @@ def find_word(s: str, word: str, i: int = 0) -> int:
         assert progress < i
     return -1
 #@+node:ekr.20211029090118.1: *3* g.findAncestorVnodeByPredicate
-def findAncestorVnodeByPredicate(p: Position, v_predicate: Any) -> Optional[VNode]:
+def findAncestorVnodeByPredicate(p: Position, v_predicate: Optional[Callable]) -> Optional[VNode]:
     """
     Return first ancestor vnode matching the predicate.
 
@@ -4470,7 +4471,7 @@ def gitInfo(path: str = None) -> tuple[str, str]:
     return branch, commit
 #@+node:ekr.20031218072017.3139: ** g.Hooks & Plugins
 #@+node:ekr.20101028131948.5860: *3* g.act_on_node
-def dummy_act_on_node(c: Cmdr, p: Position, event: Any) -> None:
+def dummy_act_on_node(c: Cmdr, p: Position, event: Event) -> None:
     pass
 
 # This dummy definition keeps pylint happy.
@@ -4481,7 +4482,7 @@ act_on_node = dummy_act_on_node
 childrenModifiedSet: set[VNode] = set()
 contentModifiedSet: set[VNode] = set()
 #@+node:ekr.20031218072017.1596: *3* g.doHook
-def doHook(tag: str, *args: Any, **keywords: Any) -> Any:
+def doHook(tag: str, *args: Any, **kwargs: Any) -> Any:
     """
     This global function calls a hook routine. Hooks are identified by the
     tag param.
@@ -4507,7 +4508,7 @@ def doHook(tag: str, *args: Any, **keywords: Any) -> Any:
             g.warning("Plugins disabled: use_plugins is 0 in a leoSettings.leo file.")
         return None
     # Get the hook handler function.  Usually this is doPlugins.
-    c = keywords.get("c")
+    c = kwargs.get("c")
     # pylint: disable=consider-using-ternary
     f = (c and c.hookFunction) or g.app.hookFunction
     if not f:
@@ -4515,7 +4516,7 @@ def doHook(tag: str, *args: Any, **keywords: Any) -> Any:
     try:
         # Pass the hook to the hook handler.
         # g.pr('doHook',f.__name__,keywords.get('c'))
-        return f(tag, keywords)
+        return f(tag, kwargs)
     except Exception:
         g.es_exception()
         g.app.hookError = True  # Suppress this function.
@@ -4528,7 +4529,7 @@ def loadOnePlugin(pluginName: str, verbose: bool = False) -> Any:
     pc = g.app.pluginsController
     return pc.loadOnePlugin(pluginName, verbose=verbose)
 
-def registerExclusiveHandler(tags: list[str], fn: str) -> Any:
+def registerExclusiveHandler(tags: Any, fn: str) -> Any:
     pc = g.app.pluginsController
     return pc.registerExclusiveHandler(tags, fn)
 
@@ -4569,11 +4570,11 @@ def disableIdleTimeHook() -> None:
     """Disable the global idle-time hook."""
     g.app.idle_time_hooks_enabled = False
 #@+node:EKR.20040602125018: *3* g.enableIdleTimeHook
-def enableIdleTimeHook(*args: Any, **keys: Any) -> None:
+def enableIdleTimeHook(*args: Any, **kwargs: Any) -> None:
     """Enable idle-time processing."""
     g.app.idle_time_hooks_enabled = True
 #@+node:ekr.20140825042850.18410: *3* g.IdleTime
-def IdleTime(handler: Any, delay: int = 500, tag: str = None) -> Any:
+def IdleTime(handler: Callable, delay: int = 500, tag: str = None) -> Any:
     """
     A thin wrapper for the LeoQtGui.IdleTime class.
 
@@ -4637,7 +4638,7 @@ def cantImport(moduleName: str, pluginName: str = None, verbose: bool = True) ->
     else:
         g.warning('', s)
 #@+node:ekr.20191220044128.1: *3* g.import_module
-def import_module(name: str, package: str = None) -> Any:
+def import_module(name: str, package: str = None) -> Optional[Module]:
     """
     A thin wrapper over importlib.import_module.
     """
@@ -5320,22 +5321,22 @@ def enl(tabName: str = 'Log') -> None:
         log.newlines += 1
         log.putnl(tabName)
 #@+node:ekr.20100914094836.5892: *3* g.error, g.note, g.warning, g.red, g.blue
-def blue(*args: Any, **keys: Any) -> None:
-    g.es_print(color='blue', *args, **keys)
+def blue(*args: Any, **kwargs: Any) -> None:
+    g.es_print(color='blue', *args, **kwargs)
 
-def error(*args: Any, **keys: Any) -> None:
-    g.es_print(color='error', *args, **keys)
+def error(*args: Any, **kwargs: Any) -> None:
+    g.es_print(color='error', *args, **kwargs)
 
-def note(*args: Any, **keys: Any) -> None:
-    g.es_print(color='note', *args, **keys)
+def note(*args: Any, **kwargs: Any) -> None:
+    g.es_print(color='note', *args, **kwargs)
 
-def red(*args: Any, **keys: Any) -> None:
-    g.es_print(color='red', *args, **keys)
+def red(*args: Any, **kwargs: Any) -> None:
+    g.es_print(color='red', *args, **kwargs)
 
-def warning(*args: Any, **keys: Any) -> None:
-    g.es_print(color='warning', *args, **keys)
+def warning(*args: Any, **kwargs: Any) -> None:
+    g.es_print(color='warning', *args, **kwargs)
 #@+node:ekr.20070626132332: *3* g.es
-def es(*args: Any, **keys: Any) -> None:
+def es(*args: Any, **kwargs: Any) -> None:
     """Put all non-keyword args to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
@@ -5354,7 +5355,7 @@ def es(*args: Any, **keys: Any) -> None:
         'tabName': 'Log',
         'nodeLink': None,
     }
-    d = g.doKeywordArgs(keys, d)
+    d = g.doKeywordArgs(kwargs, d)
     color = d.get('color')
     if color == 'suppress':
         return  # New in 4.3.
