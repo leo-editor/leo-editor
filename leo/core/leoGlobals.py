@@ -61,7 +61,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoGui, LeoKeyEvent, LeoFrame
     from leo.core.leoNodes import Position, VNode
-    from leo.core.leoQt import QMouseEvent
+    from leo.core.leoQt import QMouseEvent, QWidget
     Args = Any
     KWargs = Any
     Event = Any
@@ -5636,7 +5636,7 @@ def print_exception(
     except Exception:
         return "<no file>", 0
 #@+node:ekr.20031218072017.3113: *3* g.printBindings
-def print_bindings(name: str, window: Any) -> None:
+def print_bindings(name: str, window: QWidget) -> None:
     bindings = window.bind()
     g.pr("\nBindings for", name)
     for b in bindings:
