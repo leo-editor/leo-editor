@@ -33,8 +33,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import NodeIndices, Position
     from leo.core.leoPlugins import LeoPluginsController
     from leo.core.leoSessions import SessionManager
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_events import LossageData
     from leo.plugins.qt_idle_time import IdleTime
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Widget = Any
 #@-<< leoApp annotations >>
 #@+others
@@ -171,7 +172,7 @@ class LeoApp:
         self.globalKillBuffer: list[str] = []  # The global kill buffer.
         self.globalRegisters: dict[str, str] = {}  # The global register list.
         self.leoID: str = None  # The id part of gnx's.
-        self.lossage: list[Any] = []  # List of last 100 keystrokes.
+        self.lossage: list[LossageData] = []  # List of last 100 keystrokes.
         self.paste_c: Cmdr = None  # The commander that pasted the last outline.
         self.spellDict: dict = None  # The singleton PyEnchant spell dict.
         self.numberOfUntitledWindows = 0  # Number of opened untitled windows.
