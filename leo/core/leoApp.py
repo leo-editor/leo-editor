@@ -3256,7 +3256,7 @@ class LoadManager:
         c.frame.setTitle(title)
         c.clearChanged()
     #@+node:ekr.20120223062418.10410: *5* LM.openZipFile
-    def openZipFile(self, fn: str) -> Any:
+    def openZipFile(self, fn: str) -> Optional[StringIO]:
         """
         Open a zipped file for reading.
         Return a StringIO file if successful.
