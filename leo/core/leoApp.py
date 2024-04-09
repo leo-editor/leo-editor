@@ -122,7 +122,7 @@ class LeoApp:
         self.failFast = False  # True: Use the failfast option in unit tests.
         self.gui: LeoGui = None  # The gui class.
         self.guiArgName: str = None  # The gui name given in --gui option.
-        self.ipython_inited = False  # True if leoIpython.py imports succeeded.
+        self.ipython_inited: bool = False  # True if leoIpython.py imports succeeded.
         self.isTheme = False  # True: load files as theme files (ignore myLeoSettings.leo).
         self.listen_to_log_flag = False  # True: execute listen-to-log command.
         self.loaded_session = False  # Set by startup logic to True if no files specified on the command line.

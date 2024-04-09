@@ -42,7 +42,7 @@ except ImportError:
     IPKernelApp = None  # type:ignore
     import_fail('IPKernelApp')
 
-g.app.ipython_inited = IPKernelApp is not None
+g.app.ipython_inited = bool(IPKernelApp is not None)
 #@-<< leoIPython imports >>
 #@+<< leoIPython annotations >>
 #@+node:ekr.20220901090431.1: ** << leoIPython annotations >>
