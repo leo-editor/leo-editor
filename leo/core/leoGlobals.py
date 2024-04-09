@@ -3328,7 +3328,7 @@ def readFileIntoUnicodeString(
 # same.
 #@@c
 
-def readlineForceUnixNewline(f: Any, fileName: Optional[str] = None) -> str:
+def readlineForceUnixNewline(f: IO, fileName: Optional[str] = None) -> str:
     try:
         s = f.readline()
     except UnicodeDecodeError:
