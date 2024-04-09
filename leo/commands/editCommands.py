@@ -435,7 +435,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('dump-caches')
     def dumpCaches(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover
         """Dump, all of Leo's file caches."""
-        g.app.global_cacher.dump()
+        if hasattr(g.app.global_cacher, 'dump'):
+            g.app.global_cacher.dump()
+        else:
+            g.printObj(g.app.global_cacher)
     #@+node:ekr.20150514063305.118: *3* ec.doNothing
     @cmd('do-nothing')
     def doNothing(self, event: LeoKeyEvent) -> None:
