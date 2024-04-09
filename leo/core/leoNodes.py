@@ -9,7 +9,7 @@ import copy
 import os
 import time
 import uuid
-from typing import Any, Generator, Optional, TYPE_CHECKING
+from typing import Any, Generator, Iterable, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 
@@ -2089,7 +2089,7 @@ class VNode:
         return {}
     #@+node:ekr.20031218072017.3346: *3* v.Comparisons
     #@+node:ekr.20040705201018: *4* v.findAtFileName
-    def findAtFileName(self, names: tuple, h: Optional[str] = None) -> str:
+    def findAtFileName(self, names: Iterable, h: Optional[str] = None) -> str:
         """Return the name following one of the names in nameList or """
         # Allow h argument for unit testing.
         if not h:
