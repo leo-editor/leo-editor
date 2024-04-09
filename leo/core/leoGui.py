@@ -415,6 +415,15 @@ class NullGui(LeoGui):
     ) -> str:
         return ''
 
+    def runSaveFileDialog(self,
+        c: Cmdr,
+        title: str,
+        *,
+        filetypes: list[tuple[str, str]] = None,
+        defaultextension: str = '',
+    ) -> str:
+        return ''
+
     def runOpenFilesDialog(
         self,
         c: Cmdr,
@@ -426,14 +435,6 @@ class NullGui(LeoGui):
     ) -> list[str]:
         return []
 
-    def runSaveFileDialog(self,
-        c: Cmdr,
-        title: str,
-        *,
-        filetypes: list[tuple[str, str]] = None,
-        defaultextension: str = '',
-    ) -> list[str]:
-        return ''
 
     def runAskYesNoDialog(
         self,
