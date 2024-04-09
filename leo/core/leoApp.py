@@ -36,6 +36,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_events import LossageData
     from leo.plugins.qt_idle_time import IdleTime
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    Module = Any
     Widget = Any
 #@-<< leoApp annotations >>
 #@+others
@@ -2437,7 +2438,7 @@ class LoadManager:
                         g.warning(f"can not import leo.plugins.importers.{module_name}")
                         g.printObj(filenames)
     #@+node:ekr.20140723140445.18076: *7* LM.parse_importer_dict
-    def parse_importer_dict(self, sfn: str, m: Any) -> None:
+    def parse_importer_dict(self, sfn: str, m: Module) -> None:
         """
         Set entries in g.app.classDispatchDict, g.app.atAutoDict and
         g.app.atAutoNames using entries in m.importer_dict.
@@ -2497,7 +2498,7 @@ class LoadManager:
             g.trace('LM.atAutoWritersDict')
             g.printDict(g.app.atAutoWritersDict)
     #@+node:ekr.20140728040812.17991: *7* LM.parse_writer_dict
-    def parse_writer_dict(self, sfn: str, m: Any) -> None:
+    def parse_writer_dict(self, sfn: str, m: Module) -> None:
         """
         Set entries in g.app.writersDispatchDict and g.app.atAutoWritersDict
         using entries in m.writers_dict.
