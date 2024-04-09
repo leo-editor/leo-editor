@@ -1173,7 +1173,7 @@ class MatchBrackets:
             return left, right, s[right], right
         return None, None, None, None
     #@+node:ekr.20061113221414: *4* mb.find_matching_bracket
-    def find_matching_bracket(self, ch1: str, s: str, i: int) -> Any:
+    def find_matching_bracket(self, ch1: str, s: str, i: int) -> Optional[int]:
         """Find the bracket matching s[i] for self.language."""
         self.forward = ch1 in self.open_brackets
         # Find the character matching the initial bracket.
@@ -6173,7 +6173,7 @@ def os_path_splitext(path: str) -> tuple[str, str]:
 def os_startfile(fname: str) -> None:
     #@+others
     #@+node:bob.20170516112250.1: *4* stderr2log()
-    def stderr2log(g: Any, ree: Any, fname: str) -> None:
+    def stderr2log(g: LeoGlobals, ree: Any, fname: str) -> None:
         """ Display stderr output in the Leo-Editor log pane
 
         Arguments:
@@ -6192,7 +6192,7 @@ def os_startfile(fname: str) -> None:
             else:
                 break
     #@+node:bob.20170516112304.1: *4* itPoll()
-    def itPoll(fname: str, ree: Any, subPopen: Any, g: Any, ito: Any) -> None:
+    def itPoll(fname: str, ree: Any, subPopen: Any, g: LeoGlobals, ito: Any) -> None:
         """ Poll for subprocess done
 
         Arguments:
@@ -7189,7 +7189,7 @@ def handleUrlHelper(url: str, c: Cmdr, p: Position) -> None:  # pragma: no cover
             webbrowser.open(url)
         except Exception:
             pass
-#@+node:ekr.20170226060816.1: *4* g.traceUrl
+#@+node:ekr.20170226060816.1: *4* g.traceUrl (not used)
 def traceUrl(c: Cmdr, path: str, parsed: Any, url: str) -> None:  # pragma: no cover
 
     print()
