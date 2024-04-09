@@ -28,13 +28,13 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoConfig import GlobalConfigManager
     from leo.core.leoExternalFiles import ExternalFilesController
-    from leo.core.leoGui import LeoKeyEvent
-    from leo.core.leoGui import LeoGui
+    from leo.core.leoGui import LeoKeyEvent, LeoGui
     from leo.core.leoIPython import InternalIPKernel
     from leo.core.leoNodes import NodeIndices, Position
     from leo.core.leoPlugins import LeoPluginsController
     from leo.core.leoSessions import SessionManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_idle_time import IdleTime
     Widget = Any
 #@-<< leoApp annotations >>
 #@+others
@@ -139,7 +139,7 @@ class LeoApp:
         self.debug_dict: dict[str, Any] = {}  # For general use.
         self.disable_redraw = False  # True: disable all redraws.
         self.disableSave = False  # May be set by plugins.
-        self.idle_timers: list[Any] = []  # A list of IdleTime instances, so they persist.
+        self.idle_timers: list[IdleTime] = []  # A list of IdleTime instances, so they persist.
         self.log_listener: Any = None  # The external process created by the 'listen-for-log' command.
         self.positions = 0  # The number of positions generated.
         self.scanErrors = 0  # The number of errors seen by g.scanError.
