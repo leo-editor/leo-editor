@@ -1400,7 +1400,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c, p = self.c, self.c.p
         iconDir = g.finalize_join(g.app.loadDir, "..", "Icons")
         os.chdir(iconDir)
-        paths = g.app.gui.runOpenFileDialog(c,
+        paths = g.app.gui.runOpenFilesDialog(c,
             title='Get Icons',
             filetypes=[
                 ('All files', '*'),
@@ -1408,7 +1408,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                 ('Bitmap', '*.bmp'),
                 ('Icon', '*.ico'),
             ],
-            defaultextension=None, multiple=True)
+            defaultextension=None,
+        )
         if not paths:
             return
         aList: list[Any] = []

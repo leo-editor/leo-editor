@@ -151,11 +151,11 @@ def importAnyFile(self: Self, event: LeoKeyEvent = None) -> None:
         ("Python files", "*.py"),
         ("Text files", "*.txt"),
     ]
-    names = g.app.gui.runOpenFileDialog(c,
+    names = g.app.gui.runOpenFilesDialog(c,
         title="Import File",
         filetypes=filetypes,
         defaultextension=".py",
-        multiple=True)
+    )
     c.bringToFront()
     if names:
         g.chdir(names[0])
@@ -742,11 +742,11 @@ def removeSentinels(self: Self, event: LeoKeyEvent = None) -> None:
         ("Pascal files", "*.pas"),
         ("Python files", "*.py"),
     ]
-    names = g.app.gui.runOpenFileDialog(c,
+    names = g.app.gui.runOpenFilesDialog(c,
         title="Remove Sentinels",
         filetypes=filetypes,
         defaultextension=".py",
-        multiple=True)
+    )
     c.bringToFront()
     if names:
         g.chdir(names[0])

@@ -110,13 +110,11 @@ def rclick_path_importfile(c, p, menu):
             ("All files", "*"),
             ("Python files", "*.py"),
         ]
-        # This is incomplete: files is not used.
-        # files = g.app.gui.runOpenFileDialog(c,
-        g.app.gui.runOpenFileDialog(c,
+        g.app.gui.runOpenFilesDialog(c,
             title="Import files",
             filetypes=filetypes,
             defaultextension='.notused',
-            multiple=True)
+        )
         print("import files from", path)
 
     action = menu.addAction("Import files")

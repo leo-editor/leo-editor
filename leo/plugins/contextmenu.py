@@ -319,12 +319,12 @@ def openwith_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
             ("All files", "*"),
             ("Python files", "*.py"),
         ]
-        fnames = g.app.gui.runOpenFileDialog(c,
+        fnames = g.app.gui.runOpenFilesDialog(c,
             title="Import files",
             filetypes=filetypes,
             defaultextension='.notused',
-            multiple=True,
-            startpath=path)
+            startpath=path,
+        )
         adds = [guess_file_type(pth) + " " + shorten(pth, path) for pth in fnames]
         for a in adds:
             chi = p.insertAsLastChild()

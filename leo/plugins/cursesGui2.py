@@ -1735,20 +1735,30 @@ class LeoCursesGui(leoGui.LeoGui):
         self.in_dialog = False
         return 'yes' if val else 'no'
 
-    #@+node:ekr.20171126182120.9: *5* CGui.runOpenFileDialog
+    #@+node:ekr.20171126182120.9: *5* CGui.runOpenFileDialog & runOpenFilesDialog
     def runOpenFileDialog(self,
         c: Cmdr,
         title: str,
         *,
         filetypes: list[tuple[str, str]],
         defaultextension: str = '',
-        multiple: bool = False,
         startpath: str = None,
-    ) -> Union[list[str], str]:  # Return type depends on the evil multiple keyword.
+    ) -> str:
         if not g.unitTesting:
             g.trace('not ready yet', title)
         return ''
 
+    def runOpenFilesDialog(self,
+        c: Cmdr,
+        title: str,
+        *,
+        filetypes: list[tuple[str, str]],
+        defaultextension: str = '',
+        startpath: str = None,
+    ) -> list[str]:
+        if not g.unitTesting:
+            g.trace('not ready yet', title)
+        return []
     #@+node:ekr.20171126182120.10: *5* CGui.runPropertiesDialog
     def runPropertiesDialog(
         self,
