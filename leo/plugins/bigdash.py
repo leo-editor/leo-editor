@@ -37,6 +37,7 @@ Requires the whoosh library ('easy_install whoosh') to do full text searches.
 #@+node:ekr.20140920041848.17949: ** << imports >> (bigdash.py)
 import os
 import sys
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 # This code no longer uses leo.plugins.leofts.
@@ -326,7 +327,7 @@ class GlobalSearch:
             return
         s = ss[2:]
         for ndxc, c2 in enumerate(g.app.commanders()):
-            hits = c2.find_b(s)
+            hits: Any = c2.find_b(s)  # type:ignore
             for ndxh, h in enumerate(hits):
                 b = h[0].b
                 mlines = self.matchlines(b, h[1])  # [1] Contains matchiter
