@@ -2896,11 +2896,11 @@ class LoadManager:
                 g.es_print = self.write
                 g.pr = self.write
 
-            def flush(self, *args: Any, **keys: Any) -> None:
+            def flush(self, *args: list, **keys: dict) -> None:
                 pass
             #@+others
             #@+node:ekr.20160718102306.1: *7* LeoStdOut.write
-            def write(self, *args: Any, **keys: Any) -> None:
+            def write(self, *args: list, **keys: dict) -> None:
                 """Put all non-keyword args to the log pane, as in g.es."""
                 #
                 # Tracing will lead to unbounded recursion unless
