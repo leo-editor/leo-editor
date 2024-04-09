@@ -153,7 +153,7 @@ class LeoGui:
 
     def runPropertiesDialog(self,
         title: str = 'Properties',
-        data: str = None,
+        data: Any = None,
         callback: Callable = None,
         buttons: list[str] = None,
     ) -> Any:
