@@ -55,6 +55,7 @@ StringIO = io.StringIO
 #@+<< leoGlobals annotations >>
 #@+node:ekr.20220824084642.1: ** << leoGlobals annotations >>
 if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoApp import LeoApp
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoGui, LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
@@ -347,8 +348,8 @@ url_kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
 url_regex = re.compile(fr"""\b{url_kinds}://[^\s'"]+""")
 #@-<< define regexes >>
 tree_popup_handlers: list[Callable] = []  # Set later.
-user_dict: dict[Any, Any] = {}  # Non-persistent dictionary for scripts and plugins.
-app: Any = None  # The singleton app object. Set by runLeo.py.
+user_dict: dict[str, Any] = {}  # Non-persistent dictionary for scripts and plugins.
+app: LeoApp = None  # The singleton app object. Set by runLeo.py.
 # Global status vars.
 inScript = False  # A synonym for app.inScript
 unitTesting = False  # A synonym for app.unitTesting.

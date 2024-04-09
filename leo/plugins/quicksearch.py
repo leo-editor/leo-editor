@@ -117,7 +117,7 @@ def dumpfocus() -> None:
     g.es("Focus: " + f)
     print("Focus: " + f)
 #@+node:ville.20090314215508.8: *3* init (quicksearch.py)
-def init() -> None:
+def init() -> bool:
     """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == "qt"
     if ok:

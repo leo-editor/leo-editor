@@ -8,7 +8,7 @@ import fnmatch
 import os
 import pickle
 import sqlite3
-from typing import Any, Generator, Optional, Sequence, TYPE_CHECKING
+from typing import Any, Generator, Optional, Sequence, TYPE_CHECKING, Union
 import zlib
 from leo.core import leoGlobals as g
 
@@ -78,7 +78,7 @@ class GlobalCacher:
     def __init__(self) -> None:
         """Ctor for the GlobalCacher class."""
         trace = 'cache' in g.app.debug
-        self.db: Any
+        self.db: Union[dict, SqlitePickleShare]
         try:
             path = join(g.app.homeLeoDir, 'db', 'g_app_db')
             if trace:

@@ -185,7 +185,7 @@ class LeoApp:
         # Singleton applications objects...
         self.backgroundProcessManager: BackgroundProcessManager = None  # A BackgroundProcessManager.
         self.config: GlobalConfigManager = None  # g.app.config.
-        self.db: GlobalCacher = None  # A global db, managed by g.app.global_cacher.
+        self.db: dict = None  # A global db, managed by g.app.global_cacher.
         self.externalFilesController: ExternalFilesController = None
         self.global_cacher: GlobalCacher = None
         self.idleTimeManager: IdleTimeManager = None
