@@ -667,7 +667,8 @@ class LeoQtGui(leoGui.LeoGui):
         self,
         c: Cmdr,
         title: str,
-        filetypes: list[str],
+        *,
+        filetypes: list[tuple[str, str]],
         defaultextension: str = '',
         multiple: bool = False,
         startpath: str = None,
@@ -721,9 +722,12 @@ class LeoQtGui(leoGui.LeoGui):
         if not g.unitTesting:
             g.warning('Properties menu not supported for Qt gui')
         return 'Cancel', {}
-    #@+node:ekr.20110605121601.18502: *4* qt_gui.runSaveFileDialog (changed)
+    #@+node:ekr.20110605121601.18502: *4* qt_gui.runSaveFileDialog
     def runSaveFileDialog(self,
-        c: Cmdr, title: str = 'Save', filetypes: list[str] = None, defaultextension: str = '',
+        c: Cmdr,
+        title: str = 'Save',
+        filetypes: list[tuple[str, str]] = None,
+        defaultextension: str = '',
     ) -> str:
         """Create and run an Qt save file dialog ."""
         if g.unitTesting:

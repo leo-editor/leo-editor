@@ -163,7 +163,8 @@ class LeoGui:
     def runOpenFileDialog(self,
         c: Cmdr,
         title: str,
-        filetypes: list[str],
+        *,
+        filetypes: list[tuple[str, str]],
         defaultextension: str,
         multiple: bool = False,
         startpath: str = None,
@@ -171,7 +172,14 @@ class LeoGui:
         """Create and run an open file dialog ."""
         raise NotImplementedError
 
-    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: list[str], defaultextension: str) -> str:
+    def runSaveFileDialog(
+        self,
+        c: Cmdr,
+        title: str,
+        *,
+        filetypes: list[tuple[str, str]],
+        defaultextension: str,
+    ) -> str:
         """Create and run a save file dialog ."""
         raise NotImplementedError
     #@+node:ekr.20031218072017.3732: *4* LeoGui.panels
@@ -394,14 +402,21 @@ class NullGui(LeoGui):
         self,
         c: Cmdr,
         title: str,
-        filetypes: list[str],
-        defaultextension: str,
+        *,
+        filetypes: list[tuple[str, str]] = None,
+        defaultextension: str = '',
         multiple: bool = False,
         startpath: str = None,
     ) -> Union[list[str], str]:  # Return type depends on the evil multiple keyword.
         return self.simulateDialog("openFileDialog", None)
 
-    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: list[str], defaultextension: str) -> str:
+    def runSaveFileDialog(self,
+        c: Cmdr,
+        title: str,
+        *,
+        filetypes: list[tuple[str, str]] = None,
+        defaultextension: str = '',
+    ) -> str:
         return self.simulateDialog("saveFileDialog", None)
 
     def runAskYesNoDialog(

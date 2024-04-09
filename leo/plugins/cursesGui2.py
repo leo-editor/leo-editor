@@ -1739,7 +1739,8 @@ class LeoCursesGui(leoGui.LeoGui):
     def runOpenFileDialog(self,
         c: Cmdr,
         title: str,
-        filetypes: list[str],
+        *,
+        filetypes: list[tuple[str, str]],
         defaultextension: str,
         multiple: bool = False,
         startpath: str = None,
@@ -1761,7 +1762,13 @@ class LeoCursesGui(leoGui.LeoGui):
             g.trace('not ready yet', title)
 
     #@+node:ekr.20171126182120.11: *5* CGui.runSaveFileDialog
-    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: list[str], defaultextension: str) -> str:
+    def runSaveFileDialog(self,
+        c: Cmdr,
+        title: str,
+        *,
+        filetypes: list[tuple[str, str]],
+        defaultextension: str,
+    ) -> str:
         if g.unitTesting:
             return None
         # Not tested.

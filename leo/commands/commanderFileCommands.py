@@ -134,7 +134,7 @@ def importAnyFile(self: Self, event: LeoKeyEvent = None) -> None:
     """Import one or more files."""
     c = self
     ic = c.importCommands
-    types = [
+    filetypes = [
         ("All files", "*"),
         ("C/C++ files", "*.c"),
         ("C/C++ files", "*.cpp"),
@@ -153,7 +153,7 @@ def importAnyFile(self: Self, event: LeoKeyEvent = None) -> None:
     ]
     names = g.app.gui.runOpenFileDialog(c,
         title="Import File",
-        filetypes=types,
+        filetypes=filetypes,
         defaultextension=".py",
         multiple=True)
     c.bringToFront()
@@ -299,18 +299,18 @@ def new(self: Self, event: LeoKeyEvent = None, gui: LeoGui = None) -> Cmdr:
 def open_outline(self: Self, event: LeoKeyEvent = None) -> None:
     """Open a Leo window containing the contents of a .leo file."""
     c = self
-    table = [
+    filetypes = [
         ("Leo files", "*.leo *.leojs *.db"),
         ("Python files", "*.py"),
         ("All files", "*"),
     ]
     fileName = g.app.gui.runOpenFileDialog(c,
         defaultextension=g.defaultLeoFileExtension(c),
-        filetypes=table,
+        filetypes=filetypes,
         title="Open",
     )
     if fileName:
-        g.openWithFileName(fileName, old_c=c)
+        g.openWithFileName(fileName, old_c=c)  # type:ignore
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
 @g.commander_command('refresh-from-disk')
 def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
@@ -731,7 +731,7 @@ def removeSentinels(self: Self, event: LeoKeyEvent = None) -> None:
     while removing any sentinels they contain.
     """
     c = self
-    types = [
+    filetypes = [
         ("All files", "*"),
         ("C/C++ files", "*.c"),
         ("C/C++ files", "*.cpp"),
@@ -740,10 +740,11 @@ def removeSentinels(self: Self, event: LeoKeyEvent = None) -> None:
         ("Java files", "*.java"),
         ("Lua files", "*.lua"),
         ("Pascal files", "*.pas"),
-        ("Python files", "*.py")]
+        ("Python files", "*.py"),
+    ]
     names = g.app.gui.runOpenFileDialog(c,
         title="Remove Sentinels",
-        filetypes=types,
+        filetypes=filetypes,
         defaultextension=".py",
         multiple=True)
     c.bringToFront()
@@ -820,13 +821,19 @@ def readFileIntoNode(self: Self, event: LeoKeyEvent = None) -> None:
     u = c.undoer
     undoType = 'Read File Into Node'
     c.endEditing()
-    filetypes = [("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo *.leojs"),]
+    filetypes = [
+        ("All files", "*"),
+        ("Python files", "*.py"),
+        ("Leo files", "*.leo *.leojs"),
+    ]
     fileName = g.app.gui.runOpenFileDialog(c,
         title="Read File Into Node",
         filetypes=filetypes,
         defaultextension=None)
     if not fileName:
         return
+    if isinstance(fileName, list):
+        fileName = fileName[0]
     s, e = g.readFileIntoString(fileName)
     if s is None:
         return
@@ -859,7 +866,11 @@ def writeFileFromNode(self: Self, event: LeoKeyEvent = None) -> None:
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
             title='Write File From Node',
-            filetypes=[("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo *.leojs")],
+            filetypes=[
+                ("All files", "*"),
+                ("Python files", "*.py"),
+                ("Leo files", "*.leo *.leojs"),
+            ],
             defaultextension=None)
     if fileName:
         try:
@@ -894,7 +905,11 @@ def writeFileFromSubtree(self: Self, event: LeoKeyEvent = None) -> None:
     if not fileName:
         fileName = g.app.gui.runSaveFileDialog(c,
             title='Write File From Node',
-            filetypes=[("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo *.leojs")],
+            filetypes=[
+                ("All files", "*"),
+                ("Python files", "*.py"),
+                ("Leo files", "*.leo *.leojs"),
+            ],
             defaultextension=None)
     if fileName:
         try:

@@ -120,13 +120,13 @@ class FreeMindImporter:
             g.trace("FreeMind importer requires lxml")
             return
         c = self.c
-        types = [
+        filetypes = [
             ("FreeMind files", "*.mm.html"),
             ("All files", "*"),
         ]
         names = g.app.gui.runOpenFileDialog(c,
             title="Import FreeMind File",
-            filetypes=types,
+            filetypes=filetypes,
             defaultextension=".html",
             multiple=True)
         c.bringToFront()
@@ -1308,13 +1308,13 @@ class MindMapImporter:
     def prompt_for_files(self) -> None:
         """Prompt for a list of MindJet (.csv) files and import them."""
         c = self.c
-        types = [
+        filetypes = [
             ("MindJet files", "*.csv"),
             ("All files", "*"),
         ]
         names = g.app.gui.runOpenFileDialog(c,
             title="Import MindJet File",
-            filetypes=types,
+            filetypes=filetypes,
             defaultextension=".csv",
             multiple=True)
         c.bringToFront()
@@ -1387,12 +1387,12 @@ class MORE_Importer:
     def prompt_for_files(self) -> None:
         """Prompt for a list of MORE files and import them."""
         c = self.c
-        types = [
+        filetypes = [
             ("All files", "*"),
         ]
         names = g.app.gui.runOpenFileDialog(c,
             title="Import MORE Files",
-            filetypes=types,
+            filetypes=filetypes,
             # defaultextension=".txt",
             multiple=True)
         c.bringToFront()
@@ -2515,13 +2515,13 @@ class LegacyExternalFileImporter:
     def prompt_for_files(self) -> None:
         """Prompt for a list of legacy external .py files and import them."""
         c = self.c
-        types = [
+        filetypes = [
             ("Legacy external files", "*.py"),
             ("All files", "*"),
         ]
         paths = g.app.gui.runOpenFileDialog(c,
             title="Import Legacy External Files",
-            filetypes=types,
+            filetypes=filetypes,
             defaultextension=".py",
             multiple=True)
         c.bringToFront()

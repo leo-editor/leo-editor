@@ -68,7 +68,7 @@ def importCiscoConfig(c):
 
     name = g.app.gui.runOpenFileDialog(c,
         title="Import Cisco Configuration File",
-        filetypes=[("All files", "*")],
+        filetypes=[("All files", "*"),],
         defaultextension='ini',
     )
 
@@ -80,7 +80,7 @@ def importCiscoConfig(c):
     c.redraw()
 
     try:
-        fh = open(name)
+        fh = open(name)  # type:ignore
         g.es("importing: %s" % name)
         linelist = fh.read().splitlines()
         fh.close()
