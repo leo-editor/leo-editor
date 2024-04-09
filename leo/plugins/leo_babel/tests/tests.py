@@ -71,7 +71,8 @@ def main():
     """
 
     args = cmdLineHandler()
-    leoG.IdleTime = idle_time.IdleTime
+    # 2024/04/09: This statement is almost certainly wrong.
+    # leoG.IdleTime = idle_time.IdleTime
     bridge = leoBridge.controller(gui='nullGui', silent=True,
         verbose=False, loadPlugins=True, readSettings=True)
     cmdrT = bridge.openLeoFile(args.fpnTests)

@@ -62,6 +62,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoGui, LeoKeyEvent, LeoFrame
     from leo.core.leoNodes import Position, VNode
     from leo.core.leoQt import QMouseEvent, QWidget
+    from leo.plugins.qt_idle_time import IdleTime as QtIdleTime
     Args = Any
     KWargs = Any
     Event = Any
@@ -4577,7 +4578,7 @@ def enableIdleTimeHook(*args: Args, **kwargs: KWargs) -> None:
     """Enable idle-time processing."""
     g.app.idle_time_hooks_enabled = True
 #@+node:ekr.20140825042850.18410: *3* g.IdleTime
-def IdleTime(handler: Callable, delay: int = 500, tag: str = None) -> Any:
+def IdleTime(handler: Callable, delay: int = 500, tag: str = None) -> QtIdleTime:
     """
     A thin wrapper for the LeoQtGui.IdleTime class.
 

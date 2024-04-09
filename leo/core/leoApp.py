@@ -58,7 +58,7 @@ class IdleTimeManager:
     def __init__(self) -> None:
         """Ctor for IdleTimeManager class."""
         self.callback_list: list[Callable] = []
-        self.timer = None
+        self.timer: IdleTime = None
     #@+others
     #@+node:ekr.20161026125611.1: *3* itm.add_callback
     def add_callback(self, callback: Callable) -> None:
