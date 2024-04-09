@@ -4558,7 +4558,7 @@ def getLoadedPlugins() -> list:
     pc = g.app.pluginsController
     return pc.getLoadedPlugins()
 
-def getPluginModule(moduleName: str) -> Any:
+def getPluginModule(moduleName: str) -> Optional[Module]:
     pc = g.app.pluginsController
     return pc.getPluginModule(moduleName)
 
@@ -6362,7 +6362,7 @@ def exec_file(path: str, d: dict[str, Any], script: str = None) -> None:
             script = f.read()
     exec(compile(script, path, 'exec'), d)
 #@+node:ekr.20131016032805.16721: *3* g.execute_shell_commands
-def execute_shell_commands(commands: Any, trace: bool = False) -> None:
+def execute_shell_commands(commands: Union[str, list[str]], trace: bool = False) -> None:
     """
     Execute each shell command in a separate process.
     Wait for each command to complete, except those starting with '&'
@@ -7127,7 +7127,7 @@ def handleUnl(unl_s: str, c: Cmdr) -> Optional[Cmdr]:
     c2.redraw(p)
     return c2
 #@+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
-def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Any:
+def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Optional[str]:
     """Open a url or a unl."""
     if c and not p:
         p = c.p
