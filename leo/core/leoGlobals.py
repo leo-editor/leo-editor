@@ -61,6 +61,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoGui, LeoKeyEvent, LeoFrame
     from leo.core.leoNodes import Position, VNode
+    from leo.core.leoQt import QMouseEvent
     Event = Any
 #@-<< leoGlobals annotations >>
 in_bridge = False  # True: leoApp object loads a null Gui.
@@ -3250,7 +3251,7 @@ def readFileIntoString(
     encoding: str = 'utf-8',  # BOM may override this.
     kind: str = None,  # @file, @edit, ...
     verbose: bool = True,
-) -> tuple[Any, Any]:
+) -> tuple[Any, Any]:  # bytes or string.
     """
     Return the contents of the file whose full path is fileName.
 
@@ -7242,7 +7243,7 @@ def openUrl(p: Position) -> None:  # pragma: no cover
                 g.handleUrl(url, c=c, p=p)
             g.doHook("@url2", c=c, p=p, url=url)
 #@+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
-def openUrlOnClick(event: Any, url: str = None) -> Optional[str]:  # pragma: no cover
+def openUrlOnClick(event: QMouseEvent, url: str = None) -> Optional[str]:  # pragma: no cover
     """Open the URL under the cursor.  Return it for unit testing."""
     # QTextEditWrapper.mouseReleaseEvent calls this outside Leo's command logic.
     # Make sure to catch all exceptions!
@@ -7252,7 +7253,7 @@ def openUrlOnClick(event: Any, url: str = None) -> Optional[str]:  # pragma: no 
         g.es_exception()
         return None
 #@+node:ekr.20170216091704.1: *4* g.openUrlHelper
-def openUrlHelper(event: Any, url: str = None) -> Optional[str]:
+def openUrlHelper(event: LeoKeyEvent, url: str = None) -> Optional[str]:
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
     c = getattr(event, 'c', None)
     if not c:
