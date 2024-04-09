@@ -404,7 +404,7 @@ class BindingInfo:
     # Important: The startup code uses this class,
     # so it is convenient to define it in leoGlobals.py.
     #@+others
-    #@+node:ekr.20120129040823.10254: *4* bi.__init__
+    #@+node:ekr.20120129040823.10254: *4* BindingInfo.__init__
     def __init__(
         self,
         kind: str,
@@ -422,10 +422,10 @@ class BindingInfo:
         self.nextMode = nextMode
         self.pane = pane
         self.stroke = stroke  # The *caller* must canonicalize the shortcut.
-    #@+node:ekr.20120203153754.10031: *4* bi.__hash__
+    #@+node:ekr.20120203153754.10031: *4* BindingInfo.__hash__
     def __hash__(self) -> Any:
         return self.stroke.__hash__() if self.stroke else 0
-    #@+node:ekr.20120125045244.10188: *4* bi.__repr__ & ___str_& dump
+    #@+node:ekr.20120125045244.10188: *4* BindingInfo.__repr__ & ___str_& dump
     def __repr__(self) -> str:
         return self.dump()
 
@@ -445,7 +445,7 @@ class BindingInfo:
                     result.append(s)
         # Clearer w/o f-string.
         return "<%s>" % ' '.join(result).strip()
-    #@+node:ekr.20120129040823.10226: *4* bi.isModeBinding
+    #@+node:ekr.20120129040823.10226: *4* BindingInfo.isModeBinding
     def isModeBinding(self) -> bool:
         return self.kind.startswith('*mode')
     #@-others
@@ -1954,7 +1954,7 @@ def null_object_print(id_: int, kind: Any, *args: Any) -> None:
 class UiTypeException(Exception):
     pass
 
-def assertUi(uitype: Any) -> None:
+def assertUi(uitype: str) -> None:
     if not g.app.gui.guiName() == uitype:
         raise UiTypeException
 #@+node:ekr.20200219071828.1: *3* class TestLeoGlobals (leoGlobals.py)
