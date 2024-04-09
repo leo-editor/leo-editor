@@ -5399,17 +5399,17 @@ def es_dump(s: str, n: int = 30, title: str = None) -> None:
         g.es_print('', aList)
         i += n
 #@+node:ekr.20031218072017.3110: *3* g.es_error & es_print_error
-def es_error(*args: Args, **keys: Any) -> None:
-    color = keys.get('color')
+def es_error(*args: Args, **kwargs: KWargs) -> None:
+    color = kwargs.get('color')
     if color is None and g.app.config:
-        keys['color'] = g.app.config.getColor("log-error-color") or 'red'
-    g.es(*args, **keys)
+        kwargs['color'] = g.app.config.getColor("log-error-color") or 'red'
+    g.es(*args, **kwargs)
 
-def es_print_error(*args: Args, **keys: Any) -> None:
-    color = keys.get('color')
+def es_print_error(*args: Args, **kwargs: KWargs) -> None:
+    color = kwargs.get('color')
     if color is None and g.app and g.app.config:
-        keys['color'] = g.app.config.getColor("log-error-color") or 'red'
-    g.es_print(*args, **keys)
+        kwargs['color'] = g.app.config.getColor("log-error-color") or 'red'
+    g.es_print(*args, **kwargs)
 #@+node:ekr.20031218072017.3111: *3* g.es_event_exception
 def es_event_exception(eventName: str, full: bool = False) -> None:
     g.es("exception handling ", eventName, "event")
@@ -5437,25 +5437,25 @@ def es_exception_type(c: Cmdr = None, color: str = "red") -> None:
 #@+node:ekr.20050707064040: *3* g.es_print
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
-def es_print(*args: Args, **keys: Any) -> None:
+def es_print(*args: Args, **kwargs: KWargs) -> None:
     """
     Print all non-keyword args, and put them to the log pane.
 
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     """
-    g.pr(*args, **keys)
+    g.pr(*args, **kwargs)
     if g.app and not g.unitTesting:
-        g.es(*args, **keys)
+        g.es(*args, **kwargs)
 #@+node:ekr.20050707065530: *3* g.es_trace
-def es_trace(*args: Args, **keys: Any) -> None:
+def es_trace(*args: Args, **kwargs: KWargs) -> None:
     if args:
         try:
             s = args[0]
             g.trace(g.toEncodedString(s, 'ascii'))
         except Exception:
             pass
-    g.es(*args, **keys)
+    g.es(*args, **kwargs)
 #@+node:ekr.20220820050145.1: *3* g.function_name
 def function_name() -> str:
     """Return the name of function or method that called this function."""
@@ -5563,7 +5563,7 @@ def log_to_file(s: str, fn: str = None) -> None:
 #@+node:ekr.20080710101653.1: *3* g.pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
-def pr(*args: Args, **keys: Any) -> None:
+def pr(*args: Args, **kwargs: KWargs) -> None:
     """
     Print all non-keyword args. This is a wrapper for the print statement.
 
@@ -5572,7 +5572,7 @@ def pr(*args: Args, **keys: Any) -> None:
     """
     # Compute the effective args.
     d = {'commas': False, 'newline': True, 'spaces': True}
-    d = doKeywordArgs(keys, d)
+    d = doKeywordArgs(kwargs, d)
     newline = d.get('newline')
     # Unit tests require sys.stdout.
     stdout = sys.stdout if sys.stdout and g.unitTesting else sys.__stdout__
@@ -5677,7 +5677,7 @@ def printLeoModules(message: str = None) -> None:
 def printStack() -> None:
     traceback.print_stack()
 #@+node:ekr.20031218072017.2317: *3* g.trace
-def trace(*args: Args, **keys: Any) -> None:
+def trace(*args: Args, **kwargs: KWargs) -> None:
     """Print the name of the calling function followed by all the args."""
     name = g._callerName(2)
     if name.endswith(".pyc"):
@@ -5940,9 +5940,9 @@ def issueSecurityWarning(setting: str) -> None:
 #@+node:ekr.20031218072017.3144: *3* g.makeDict (Python Cookbook)
 # From the Python cookbook.
 
-def makeDict(**keys: Any) -> dict:
+def makeDict(**kwargs: KWargs) -> dict:
     """Returns a Python dictionary from using the optional keyword arguments."""
-    return keys
+    return kwargs
 #@+node:ekr.20140528065727.17963: *3* g.pep8_class_name
 def pep8_class_name(s: str) -> str:
     """Return the proper class name for s."""
@@ -6110,7 +6110,7 @@ def os_path_isfile(path: str) -> bool:
     """Return True if path is a file."""
     return os.path.isfile(path) if path else False
 #@+node:ekr.20031218072017.2154: *3* g.os_path_join
-def os_path_join(*args: Args, **keys: Any) -> str:
+def os_path_join(*args: Args, **kwargs: KWargs) -> str:
     """
     Wrap os.path.join, *without* finalizing the result.
     """
