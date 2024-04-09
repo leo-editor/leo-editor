@@ -225,7 +225,7 @@ def init() -> bool:
     if g.app.gui is None:
         g.app.createQtGui(__file__)
     # This plugin is now gui-independent.
-    ok = g.app.gui and g.app.gui.guiName() in ('qt', 'nullGui')
+    ok = bool(g.app.gui) and g.app.gui.guiName() in ('qt', 'nullGui')
     if ok:
         sc = 'ScriptingControllerClass'
         if (not hasattr(g.app.gui, sc) or
