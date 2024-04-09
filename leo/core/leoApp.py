@@ -17,6 +17,7 @@ import zipfile
 import platform
 from leo.core import leoGlobals as g
 from leo.core import leoExternalFiles
+from leo.core.leoCache import GlobalCacher
 from leo.core.leoQt import QCloseEvent
 StringIO = io.StringIO
 #@-<< leoApp imports >>
@@ -27,7 +28,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from types import Module
     from leo.commands.spellCommands import SqlitePickleShare
     from leo.core.leoBackground import BackgroundProcessManager
-    from leo.core.leoCache import GlobalCacher
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoConfig import GlobalConfigManager
     from leo.core.leoExternalFiles import ExternalFilesController
