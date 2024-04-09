@@ -12,7 +12,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING, Union
 import zipfile
 import platform
 from leo.core import leoGlobals as g
@@ -25,6 +25,7 @@ StringIO = io.StringIO
 if TYPE_CHECKING:  # pragma: no cover
     from subprocess import Popen
     from types import Module
+    from leo.commands.spellCommands import SqlitePickleShare
     from leo.core.leoBackground import BackgroundProcessManager
     from leo.core.leoCache import GlobalCacher
     from leo.core.leoCommands import Commands as Cmdr
@@ -129,8 +130,8 @@ class LeoApp:
         self.start_fullscreen = False  # For qt_frame plugin.
         self.start_maximized = False  # For qt_frame plugin.
         self.start_minimized = False  # For qt_frame plugin.
-        self.trace_binding: bool = None  # The name of a binding to trace, or None.
-        self.trace_setting: bool = None  # The name of a setting to trace, or None.
+        self.trace_binding: Optional[str] = None  # The name of a binding to trace, or None.
+        self.trace_setting: Optional[str] = None  # The name of a setting to trace, or None.
         self.translateToUpperCase = False  # Never set to True.
         self.useIpython = False  # True: add support for IPython.
         self.use_splash_screen = True  # True: put up a splash screen.
@@ -185,9 +186,9 @@ class LeoApp:
         # Singleton applications objects...
         self.backgroundProcessManager: BackgroundProcessManager = None  # A BackgroundProcessManager.
         self.config: GlobalConfigManager = None  # g.app.config.
-        self.db: dict = None  # A global db, managed by g.app.global_cacher.
+        self.db: Union[dict, SqlitePickleShare] = None  # A global db, managed by g.app.global_cacher.
         self.externalFilesController: ExternalFilesController = None
-        self.global_cacher: GlobalCacher = None
+        self.global_cacher: Union[dict, GlobalCacher] = None
         self.idleTimeManager: IdleTimeManager = None
         self.ipk: InternalIPKernel = None  # A python kernel.
         self.loadManager: LoadManager = None
@@ -1309,7 +1310,8 @@ class LeoApp:
         if not g.app.killed:
             g.doHook("end1")
             if g.app.global_cacher:  # #1766.
-                g.app.global_cacher.commit_and_close()
+                if isinstance(g.app.global_cacher, GlobalCacher):
+                    g.app.global_cacher.commit_and_close()
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         g.app.destroyAllOpenWithFiles()

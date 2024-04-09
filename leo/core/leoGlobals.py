@@ -409,7 +409,7 @@ class BindingInfo:
         func: Callable = None,
         nextMode: str = None,
         pane: str = None,
-        stroke: "KeyStroke" = None,
+        stroke: KeyStroke = None,
     ) -> None:
         if not g.isStrokeOrNone(stroke):
             g.trace('***** (BindingInfo) oops', repr(stroke))
