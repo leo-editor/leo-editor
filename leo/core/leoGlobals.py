@@ -5979,7 +5979,7 @@ def truncate(s: str, n: int) -> str:
     return s2
 #@+node:ekr.20031218072017.3150: *3* g.windows
 def windows() -> Optional[list]:
-    return app and app.windowList
+    return app.windowList if app else None
 #@+node:ekr.20031218072017.2145: ** g.os_path_ Wrappers
 #@+at Note: all these methods return Unicode strings. It is up to the user to
 # convert to an encoded string as needed, say when opening a file.
