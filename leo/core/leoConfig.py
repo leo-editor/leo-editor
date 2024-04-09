@@ -8,13 +8,13 @@ import os
 import sys
 import re
 import textwrap
-from typing import Any, Generator, Optional, TYPE_CHECKING
+from typing import Any, Callable, Generator, Optional, TYPE_CHECKING
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position
+    from leo.core.leoNodes import Position, VNode
     from leo.core.leoApp import PreviousSettings
     Setting = Any
     Widget = Any
@@ -70,9 +70,9 @@ class ParserBaseClass:
         """Ctor for the ParserBaseClass class."""
         self.c = c
         self.clipBoard: list[str] = []
-        # True if this is the .leo file being opened,
-        # as opposed to myLeoSettings.leo or leoSettings.leo.
-        self.localFlag = localFlag
+
+        # True if this is the .leo file being opened, not myLeoSettings.leo or leoSettings.leo.
+        self.localFlag: bool = localFlag
         self.shortcutsDict: dict[str, list[g.BindingInfo]] = g.SettingsDict('parser.shortcutsDict')
         # A list of dicts containing 'name','shortcut','command' keys.
         self.openWithList: list[dict[str, Any]] = []
@@ -153,7 +153,8 @@ class ParserBaseClass:
     def doButtons(self, p: Position, kind: str, name: str, val: Any) -> None:
         """Create buttons for each @button node in an @buttons tree."""
         c, tag = self.c, '@button'
-        aList, seen = [], []
+        aList: list[tuple[Position, str, list[Callable]]] = []
+        seen: list[VNode] = []
         after = p.nodeAfterTree()
         while p and p != after:
             if p.v in seen:
@@ -192,7 +193,7 @@ class ParserBaseClass:
     def doCommands(self, p: Position, kind: str, name: str, val: Any) -> None:
         """Handle an @commands tree."""
         c = self.c
-        aList = []
+        aList: list[tuple[Position, str]] = []
         tag = '@command'
         seen = []
         after = p.nodeAfterTree()
@@ -215,7 +216,6 @@ class ParserBaseClass:
         # This setting is handled differently from most other settings,
         # because the last setting must be retrieved before any commander exists.
         if aList:
-            # Bug fix: 2011/11/24: Extend the list, don't replace it.
             g.app.config.atCommonCommandsList.extend(aList)
     #@+node:ekr.20071214140900: *4* pbc.doData
     def doData(self, p: Position, kind: str, name: str, val: Any) -> None:
@@ -1200,15 +1200,15 @@ class GlobalConfigManager:
 
         # List of info (command_p, script, rclicks) for common @buttons nodes.
         # where rclicks is a namedtuple('RClick', 'position,children')
-        self.atCommonButtonsList: list[tuple[Cmdr, str, Any]] = []
-        self.atCommonCommandsList: list[tuple[Cmdr, str]] = []  # List of info for common @commands nodes.
+        self.atCommonButtonsList: list[tuple[Position, str, list[Callable]]] = []  # List of info for common @buttons nodes.
+        self.atCommonCommandsList: list[tuple[Position, str]] = []  # List of info for common @commands nodes.
         self.atLocalButtonsList: list[Position] = []  # List of positions of @button nodes.
         self.atLocalCommandsList: list[Position] = []  # List of positions of @command nodes.
         self.buttonsFileName = ''
         self.configsExist = False  # True when we successfully open a setting file.
         self.default_derived_file_encoding = 'utf-8'
-        self.enabledPluginsFileName = None
-        self.enabledPluginsString = ''
+        self.enabledPluginsFileName: Optional[str] = None
+        self.enabledPluginsString: Optional[str] = ''
         self.menusList: list[Any] = []
         self.menusFileName = ''
         self.modeCommandsDict: dict[str, g.SettingsDict] = g.SettingsDict('modeCommandsDict')
@@ -1360,8 +1360,8 @@ class GlobalConfigManager:
             col = self.get(col[1:], "color")
         return col
     #@+node:ekr.20080312071248.7: *4* gcm.getCommonCommands
-    def getCommonAtCommands(self) -> list[tuple[str, str]]:
-        """Return the list of tuples (headline,script) for common @command nodes."""
+    def getCommonAtCommands(self) -> list[tuple[Position, str]]:
+        """Return the list of tuples (Position, headline, script) for common @command nodes."""
         return g.app.config.atCommonCommandsList
     #@+node:ekr.20071214140900.1: *4* gcm.getData & getOutlineData
     def getData(self,
@@ -1376,7 +1376,7 @@ class GlobalConfigManager:
             data = [z.strip() for z in data if z.strip()]
         return data
 
-    def getOutlineData(self, setting: str) -> None:
+    def getOutlineData(self, setting: str) -> Optional[list[str]]:
         """Return the pastable (xml text) of the entire @outline-data tree."""
         return self.get(setting, "outlinedata")
     #@+node:ekr.20041117093009.1: *4* gcm.getDirectory
