@@ -1994,7 +1994,7 @@ class TestLeoGlobals(unittest.TestCase):
 def isTextWidget(w: LeoFrame) -> bool:
     return g.app.gui.isTextWidget(w)
 
-def isTextWrapper(w: Any) -> bool:
+def isTextWrapper(w: LeoFrame) -> bool:
     return g.app.gui.isTextWrapper(w)
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
