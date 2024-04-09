@@ -37,7 +37,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_events import LossageData
     from leo.plugins.qt_idle_time import IdleTime
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    Widget = Any
 #@-<< leoApp annotations >>
 #@+others
 #@+node:ekr.20150509193629.1: ** cmd (decorator)
@@ -237,7 +236,7 @@ class LeoApp:
         #@-<< LeoApp: global status vars >>
         #@+<< LeoApp: the global log >>
         #@+node:ekr.20161028040141.1: *5* << LeoApp: the global log >>
-        self.log: Widget = None  # The LeoFrame containing the present log.
+        self.log: LeoFrame = None  # The LeoFrame containing the present log.
         self.logInited = False  # False: all log message go to logWaiting list.
         self.logIsLocked = False  # True: no changes to log are allowed.
         self.logWaiting: list[tuple] = []  # List of tuples (s, color, newline) waiting to go to a log.
@@ -1237,7 +1236,7 @@ class LeoApp:
         return self.log and self.log.c
     #@+node:ekr.20171127111053.1: *3* app.Closing
     #@+node:ekr.20031218072017.2609: *4* app.closeLeoWindow
-    def closeLeoWindow(self, frame: Widget, new_c: Cmdr = None, finish_quit: bool = True) -> bool:
+    def closeLeoWindow(self, frame: LeoFrame, new_c: Cmdr = None, finish_quit: bool = True) -> bool:
         """
         Attempt to close a Leo window.
 
@@ -1288,7 +1287,7 @@ class LeoApp:
             g.app.externalFilesController.shut_down()
             g.app.externalFilesController = None
     #@+node:ekr.20031218072017.2615: *4* app.destroyWindow
-    def destroyWindow(self, frame: Widget) -> None:
+    def destroyWindow(self, frame: LeoFrame) -> None:
         """Destroy all ivars in a Leo frame."""
         if 'shutdown' in g.app.debug:
             g.pr(f"destroyWindow:  {frame.c.shortFileName()}")
