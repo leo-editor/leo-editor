@@ -600,7 +600,7 @@ class LeoMenu:
         cmn = self.canonicalizeTranslatedMenuName(menuName)
         return g.app.realMenuNameDict.get(cmn, menuName)
 
-    def setRealMenuName(self, untrans: str, trans: list) -> None:
+    def setRealMenuName(self, untrans: str, trans: str) -> None:
         cmn = self.canonicalizeTranslatedMenuName(untrans)
         g.app.realMenuNameDict[cmn] = trans
 
