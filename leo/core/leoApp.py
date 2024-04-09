@@ -3337,8 +3337,8 @@ class RecentFilesManager:
     def __init__(self) -> None:
 
         self.edit_headline = 'Recent files. Do not change this headline!'
-        self.groupedMenus: list[str] = []  # Set in rf.createRecentFilesMenuItems.
-        self.recentFiles: list[Any] = []  # List of g.Bunches describing .leoRecentFiles.txt files.
+        self.groupedMenus: list[str] = []
+        self.recentFiles: list[str] = []
         self.recentFilesMenuName = 'Recent Files'  # May be changed later.
         self.recentFileMessageWritten = False  # To suppress all but the first message.
         self.write_recent_files_as_needed = False  # Will be set later.
