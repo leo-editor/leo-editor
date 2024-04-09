@@ -90,7 +90,7 @@ def project_wizard(event):
     fname = g.app.gui.runOpenFileDialog(c,
         title="Open", filetypes=filetypes, defaultextension=".leo")
 
-    pth = os.path.dirname(os.path.abspath(fname))
+    pth = os.path.dirname(os.path.abspath(fname))  # type:ignore
 
     g.es(pth)
     tgt = c.currentPosition().insertAsLastChild()
