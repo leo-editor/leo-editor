@@ -23,6 +23,7 @@ StringIO = io.StringIO
 #@+<< leoApp annotations >>
 #@+node:ekr.20220819191617.1: ** << leoApp annotations >>
 if TYPE_CHECKING:  # pragma: no cover
+    from subprocess import Popen
     from types import Module
     from leo.core.leoBackground import BackgroundProcessManager
     from leo.core.leoCache import GlobalCacher
@@ -141,7 +142,7 @@ class LeoApp:
         self.disable_redraw = False  # True: disable all redraws.
         self.disableSave = False  # May be set by plugins.
         self.idle_timers: list[IdleTime] = []  # A list of IdleTime instances, so they persist.
-        self.log_listener: Any = None  # The external process created by the 'listen-for-log' command.
+        self.log_listener: Optional[Popen] = None  # The external process created by the 'listen-for-log' command.
         self.positions = 0  # The number of positions generated.
         self.scanErrors = 0  # The number of errors seen by g.scanError.
         self.statsDict: dict[str, Any] = {}  # dict used by g.stat, g.clear_stats, g.print_stats.
