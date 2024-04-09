@@ -435,7 +435,7 @@ class MypyCommand:
         if not mypy:
             print('install mypy with `pip install mypy`')
             return
-        command = f"{sys.executable} -m mypy {fn}".split()
+        command = f"{sys.executable} -m mypy {fn}"
         bpm = g.app.backgroundProcessManager
         bpm.start_process(c, command, fn=fn, kind='mypy')
     #@+node:ekr.20210302111935.7: *3* mypy.run (entry)
