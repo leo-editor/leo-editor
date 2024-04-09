@@ -139,7 +139,7 @@ def createPluginsMenu(tag: str, keywords: Any) -> None:
         def key(aList: list) -> str:
             return aList.split('.')[-1].lower()
 
-        impModSpecList.sort(key=key)
+        impModSpecList.sort(key=key)  # type:ignore
         plgObList: list[PlugIn] = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
         c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu(menu_name)
         # 2013/12/13: Add any items in @menu plugins
