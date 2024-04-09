@@ -1131,7 +1131,7 @@ class MatchBrackets:
         right: int,
         max_right: int,
         expand: bool = False,
-    ) -> tuple[Any, Any, Any, Any]:
+    ) -> tuple[Optional[int], Optional[int], Optional[str], Optional[int]]:
         """
         Find the bracket nearest the cursor searching outwards left and right.
 
