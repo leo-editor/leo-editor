@@ -61,11 +61,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoGui, LeoKeyEvent, LeoFrame
     from leo.core.leoNodes import Position, VNode
-    from leo.core.leoQt import QMouseEvent, QWidget
+    from leo.core.leoQt import QMouseEvent, QWidget, QEvent
     from leo.plugins.qt_idle_time import IdleTime as QtIdleTime
-    Args = Any
-    KWargs = Any
-    Event = Any
+    # Mypy could do better with *args and **kwargs.
+    Args = Any  # Good enough.
+    KWargs = Any  # Good enough.
 #@-<< leoGlobals annotations >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
@@ -588,7 +588,7 @@ class EmergencyDialog:
         self.top.destroy()
         self.top = None
     #@+node:ekr.20120219154958.10497: *4* emergencyDialog.onKey
-    def onKey(self, event: Event) -> None:
+    def onKey(self, event: QEvent) -> None:
         """Handle Key events in askOk dialogs."""
         self.okButton()
     #@+node:ekr.20120219154958.10498: *4* emergencyDialog.run
@@ -1715,7 +1715,7 @@ class TkIDDialog(EmergencyDialog):
 
     #@+others
     #@+node:ekr.20191013145710.1: *4* leo_id_dialog.onKey
-    def onKey(self, event: Event) -> None:
+    def onKey(self, event: QEvent) -> None:
         """Handle Key events in askOk dialogs."""
         if event.char in '\n\r':
             self.okButton()
@@ -1807,7 +1807,7 @@ class Tracer:
         sys.settrace(None)
         self.report()
     #@+node:ekr.20080531075119.6: *4* tracer
-    def tracer(self, frame: LeoFrame, event: Event, arg: Any) -> Optional[Callable]:
+    def tracer(self, frame: LeoFrame, event: QEvent, arg: Any) -> Optional[Callable]:
         """A function to be passed to sys.settrace."""
         n = len(self.stack)
         if event == 'return':
@@ -4475,7 +4475,7 @@ def gitInfo(path: str = None) -> tuple[str, str]:
     return branch, commit
 #@+node:ekr.20031218072017.3139: ** g.Hooks & Plugins
 #@+node:ekr.20101028131948.5860: *3* g.act_on_node
-def dummy_act_on_node(c: Cmdr, p: Position, event: Event) -> None:
+def dummy_act_on_node(c: Cmdr, p: Position, event: QEvent) -> None:
     pass
 
 # This dummy definition keeps pylint happy.
