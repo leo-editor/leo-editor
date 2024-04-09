@@ -35,7 +35,7 @@ import textwrap
 import time
 import traceback
 import types
-from typing import Any, Generator, Iterable, Optional, Sequence, Union, TYPE_CHECKING
+from typing import Any, Generator, IO, Iterable, Optional, Sequence, Union, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -2166,7 +2166,7 @@ def plugin_date(plugin_mod: Module, format: str = None) -> str:
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=str)
 
-def file_date(theFile: Any, format: str = None) -> str:
+def file_date(theFile: IO, format: str = None) -> str:
     if theFile and g.os_path_exists(theFile):
         try:
             n = g.os_path_getmtime(theFile)
@@ -2525,7 +2525,7 @@ def findLanguageDirectives(c: Cmdr, p: Position) -> Optional[str]:
 
     v0 = p.v
 
-    def find_language(p_or_v: Any) -> Optional[str]:
+    def find_language(p_or_v: Union[Position, VNode]) -> Optional[str]:
         for s in p_or_v.h, p_or_v.b:
             for m in g_language_pat.finditer(s):
                 language = m.group(1)
@@ -3031,7 +3031,7 @@ def computeMachineName() -> str:
 def computeStandardDirectories() -> str:
     return g.app.loadManager.computeStandardDirectories()
 #@+node:ekr.20031218072017.3117: *3* g.create_temp_file
-def create_temp_file(textMode: bool = False) -> tuple[Any, str]:
+def create_temp_file(textMode: bool = False) -> tuple[IO, str]:
     """
     Return a tuple (theFile,theFileName)
 
