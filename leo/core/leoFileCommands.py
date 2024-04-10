@@ -18,7 +18,7 @@ import shutil
 import sqlite3
 import tempfile
 import time
-from typing import Any, IO, Optional, Union, TYPE_CHECKING
+from typing import Any, IO, Iterable, Optional, Union, TYPE_CHECKING
 import zipfile
 import xml.etree.ElementTree as ElementTree
 import xml.sax
@@ -314,7 +314,7 @@ class FastRead:
     def scanVnodes(self,
         gnx2body: dict[str, str],
         gnx2vnode: dict[str, VNode],
-        gnx2ua: dict[str, Any],
+        gnx2ua: dict[str, Obj],
         v_elements: Element,
     ) -> VNode:
 
@@ -435,7 +435,7 @@ class FastRead:
         return hidden_v, g_element
 
     #@+node:felix.20220618181309.1: *4* fast.scanJsonGlobals
-    def scanJsonGlobals(self, json_d: dict) -> None:
+    def scanJsonGlobals(self, json_d: Element) -> None:
         """Set the geometries from the globals dict."""
         c = self.c
 
@@ -508,7 +508,7 @@ class FastRead:
     def scanJsonVnodes(self,
         gnx2body: dict[str, str],
         gnx2vnode: dict[str, VNode],
-        gnx2ua: dict[str, Any],
+        gnx2ua: dict[str, Obj],
         v_elements: Element,
     ) -> Optional[VNode]:
 
@@ -602,8 +602,8 @@ class FileCommands:
         self.checking = False  # True: checking only: do *not* alter the outline.
         self.descendentExpandedList: list[str] = []  # List of gnx's.
         self.descendentMarksList: list[str] = []  # List of gnx's.
-        self.descendentTnodeUaDictList: list[Any] = []
-        self.descendentVnodeUaDictList: list[Any] = []
+        self.descendentTnodeUaDictList: list[Obj] = []
+        self.descendentVnodeUaDictList: list[Obj] = []
         self.ratio = 0.5
         self.currentVnode: VNode = None
         # For writing...
@@ -615,8 +615,8 @@ class FileCommands:
         # New in 3.12...
         self.copiedTree: Position = None
         # fc.gnxDict is never re-inited.
-        self.gnxDict: dict[str, VNode] = {}  # Keys are gnx strings. Values are vnodes.
-        self.vnodesDict: dict[str, Any] = {}  # keys are gnx strings; values are ignored
+        self.gnxDict: dict[str, VNode] = {}  # Keys are gnx strings.
+        self.vnodesDict: dict[str, bool] = {}  # keys are gnx strings.
     #@+node:ekr.20210316042224.1: *3* fc: Commands
     #@+node:ekr.20031218072017.2012: *4* write-at-file-nodes
     @cmd('write-at-file-nodes')
@@ -1460,7 +1460,7 @@ class FileCommands:
         conn.execute(
             '''create table if not exists extra_infos(name primary key, value)''')
     #@+node:vitalije.20170701161851.1: *6* fc.exportVnodesToSqlite
-    def exportVnodesToSqlite(self, conn: Conn, rows: Any) -> None:
+    def exportVnodesToSqlite(self, conn: Conn, rows: Iterable) -> None:
         conn.executemany(
             '''insert into vnodes
             (gnx, head, body, children, parents,
@@ -1706,7 +1706,7 @@ class FileCommands:
             }
         return d
     #@+node:ekr.20210316085413.2: *6* fc.leojs_vnodes
-    def leojs_vnode(self, p: Position, gnxSet: Any, isIgnore: bool = False) -> dict[str, Obj]:
+    def leojs_vnode(self, p: Position, gnxSet: Obj, isIgnore: bool = False) -> dict[str, Obj]:
         """Return a jsonized vnode."""
         # c = self.c
         fc = self
@@ -1743,7 +1743,7 @@ class FileCommands:
             p.moveToParent()  # Restore p in the caller.
 
         # At least will contain  the gnx
-        result: dict[str, Any] = {
+        result: dict[str, Obj] = {
             'gnx': v.fileIndex,
         }
 
