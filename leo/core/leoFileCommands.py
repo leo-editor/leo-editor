@@ -1198,7 +1198,7 @@ class FileCommands:
             s_bytes = g.toEncodedString(s)  # 2011/02/22
             # Throws a TypeError if val is not a hex string.
             bin = binascii.unhexlify(s_bytes)
-            val = pickle.loads(bin)
+            val = pickle.loads(bin)  # Returns a Python object.
             return val
         except Exception:
             g.es_exception()
@@ -1243,7 +1243,11 @@ class FileCommands:
         for p in aList:
             p.setAllAncestorAtFileNodesDirty()
     #@+node:ekr.20080805132422.3: *5* fc.resolveArchivedPosition
-    def resolveArchivedPosition(self, archivedPosition: list[str], root_v: Any) -> Optional[VNode]:
+    def resolveArchivedPosition(
+        self,
+        archivedPosition: list[str],
+        root_v: VNode,
+    ) -> Optional[VNode]:
         """
         Return a VNode corresponding to the archived position relative to root
         node root_v.
