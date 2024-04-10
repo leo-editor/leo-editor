@@ -3279,7 +3279,7 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20031218072017.2823: *4* c.openWith
-    def openWith(self, event: LeoKeyEvent = None, d: dict[str, Any] = None) -> None:
+    def openWith(self, event: LeoKeyEvent = None, d: dict[str, Position] = None) -> None:
         """
         This is *not* a command.
 
@@ -3387,7 +3387,7 @@ class Commands:
         c.ignored_at_file_nodes = []
         c.orphan_at_file_nodes = []
     #@+node:ekr.20171123135805.1: *5* c.notValidInBatchMode
-    def notValidInBatchMode(self, commandName: Any) -> None:
+    def notValidInBatchMode(self, commandName: str) -> None:
         g.es('the', commandName, "command is not valid in batch mode")
     #@+node:ekr.20110530082209.18250: *5* c.putHelpFor
     def putHelpFor(self, s: str, short_title: str = '') -> None:
@@ -3791,7 +3791,7 @@ class Commands:
             return False  # mypy.
         return time.time() - c.navTime < deltaTime
     #@+node:ekr.20061002095711: *6* c.navHelper
-    def navHelper(self, p: Position, ch: str, extend: Any) -> str:
+    def navHelper(self, p: Position, ch: str, extend: bool) -> str:
         c = self
         h = p.h.lower()
         if extend:
