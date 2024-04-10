@@ -7,7 +7,7 @@ from __future__ import annotations
 from collections.abc import Callable
 import re
 import string
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -20,7 +20,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 #@+others
 #@+node:ekr.20150509030349.1: ** cc.cmd (decorator)
-def cmd(name: Any) -> Callable:
+def cmd(name: str) -> Callable:
     """Command decorator for the ChapterController class."""
     return g.new_cmd_decorator(name, ['c', 'chapterController',])
 #@+node:ekr.20070317085437: ** class ChapterController
@@ -33,10 +33,10 @@ class ChapterController:
         """Ctor for ChapterController class."""
         self.c = c
         # Note: chapter names never change, even if their @chapter node changes.
-        self.chaptersDict: dict[str, Any] = {}  # Keys are chapter names, values are chapters.
+        self.chaptersDict: dict[str, Chapter] = {}  # Keys are chapter names, values are chapters.
         self.initing = True  # #31: True: suppress undo when creating chapters.
         self.re_chapter: re.Pattern = None  # Set where used.
-        self.selectedChapter = None
+        self.selectedChapter: Optional[Chapter] = None
         self.selectChapterLockout = False  # True: cc.selectChapterForPosition does nothing.
         self.tt: LeoQtTreeTab = None  # May be set in createChaptersIcon.
         self.reloadSettings()
@@ -145,7 +145,7 @@ class ChapterController:
         new_name = names[i + 1 if i + 1 < len(names) else 0]
         cc.selectChapterByName(new_name)
     #@+node:ekr.20070317130250: *3* cc.selectChapterByName & helper
-    def selectChapterByName(self, name: Any) -> None:
+    def selectChapterByName(self, name: str) -> None:
         """Select a chapter without redrawing."""
         cc = self
         if self.selectChapterLockout:
@@ -164,7 +164,7 @@ class ChapterController:
         finally:
             cc.selectChapterLockout = False
     #@+node:ekr.20090306060344.2: *4* cc.selectChapterByNameHelper
-    def selectChapterByNameHelper(self, chapter: Any, collapse: bool = True) -> None:
+    def selectChapterByNameHelper(self, chapter: Chapter, collapse: bool = True) -> None:
         """Select the chapter."""
         cc, c = self, self.c
         if not cc.selectedChapter and chapter.name == 'main':
@@ -228,7 +228,7 @@ class ChapterController:
                     return name
         return 'main'
     #@+node:ekr.20070325093617: *4* cc.findChapterNode
-    def findChapterNode(self, name: Any) -> Optional[Position]:
+    def findChapterNode(self, name: str) -> Optional[Position]:
         """
         Return the position of the first @chapter node with the given name
         anywhere in the entire outline.
@@ -244,11 +244,11 @@ class ChapterController:
                 return p
         return None  # Not an error.
     #@+node:ekr.20070318124004: *4* cc.getChapter
-    def getChapter(self, name: Any) -> Any:
+    def getChapter(self, name: str) -> Chapter:
         cc = self
         return cc.chaptersDict.get(name)
     #@+node:ekr.20070318122708: *4* cc.getSelectedChapter
-    def getSelectedChapter(self) -> Any:
+    def getSelectedChapter(self) -> Chapter:
         cc = self
         return cc.selectedChapter
     #@+node:ekr.20070605124356: *4* cc.inChapter
@@ -356,14 +356,14 @@ class Chapter:
     """A class representing the non-gui data of a single chapter."""
     #@+others
     #@+node:ekr.20070317085708.1: *3* chapter.__init__
-    def __init__(self, c: Cmdr, chapterController: Any, name: str) -> None:
+    def __init__(self, c: Cmdr, chapterController: ChapterController, name: str) -> None:
         self.c = c
         self.cc = cc = chapterController
         self.name: str = g.checkUnicode(name)
         self.selectLockout = False  # True: in chapter.select logic.
         # State variables: saved/restored when the chapter is unselected/selected.
-        self.p = c.p
-        self.root = self.findRootNode()
+        self.p: Optional[Position] = c.p
+        self.root: Optional[Position] = self.findRootNode()
         if cc.tt:
             cc.tt.createTab(name)
     #@+node:ekr.20070317085708.2: *3* chapter.__str__ and __repr__
