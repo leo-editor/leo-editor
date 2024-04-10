@@ -18,7 +18,7 @@ import shutil
 import sqlite3
 import tempfile
 import time
-from typing import Any, Optional, Union, TYPE_CHECKING
+from typing import Any, IO, Optional, Union, TYPE_CHECKING
 import zipfile
 import xml.etree.ElementTree as ElementTree
 import xml.sax
@@ -96,7 +96,7 @@ class FastRead:
 
     #@+others
     #@+node:ekr.20180604110143.1: *3* fast.readFile
-    def readFile(self, theFile: Any, path: str) -> VNode:
+    def readFile(self, theFile: IO, path: str) -> VNode:
         """Read the file, change splitter ratios, and return its hidden vnode."""
         s = theFile.read()
         v, g_element = self.readWithElementTree(path, s)
@@ -113,7 +113,7 @@ class FastRead:
         return v
 
     #@+node:felix.20220618164929.1: *3* fast.readJsonFile
-    def readJsonFile(self, theFile: Any, path: str) -> Optional[VNode]:
+    def readJsonFile(self, theFile: IO, path: str) -> Optional[VNode]:
         """Read the leojs JSON file, change splitter ratios, and return its hidden vnode."""
         s = theFile.read()
         v, g_dict = self.readWithJsonTree(path, s)
@@ -191,7 +191,8 @@ class FastRead:
         fc.descendentExpandedList = expanded
         fc.descendentMarksList = marked
     #@+node:ekr.20180606041211.1: *4* fast.resolveUa
-    def resolveUa(self, attr: Any, val: Any, kind: str = None) -> Any:  # Kind is for unit testing.
+    def resolveUa(self, attr: str, val: Any, kind: str = None) -> Any:
+        # Kind is for unit testing.
         """Parse an unknown attribute in a <v> or <t> element."""
         try:
             val = g.toEncodedString(val)
@@ -737,7 +738,7 @@ class FileCommands:
             g.error("exception deleting backup file:", fileName)
             g.es_exception()
     #@+node:ekr.20100119145629.6108: *4* fc.handleWriteLeoFileException
-    def handleWriteLeoFileException(self, fileName: str, backupName: str, f: Any) -> None:
+    def handleWriteLeoFileException(self, fileName: str, backupName: str, f: IO) -> None:
         """Report an exception. f is an open file, or None."""
         # c = self.c
         g.es("exception writing:", fileName)
@@ -1242,7 +1243,7 @@ class FileCommands:
         for p in aList:
             p.setAllAncestorAtFileNodesDirty()
     #@+node:ekr.20080805132422.3: *5* fc.resolveArchivedPosition
-    def resolveArchivedPosition(self, archivedPosition: Any, root_v: Any) -> Optional[VNode]:
+    def resolveArchivedPosition(self, archivedPosition: list[str], root_v: Any) -> Optional[VNode]:
         """
         Return a VNode corresponding to the archived position relative to root
         node root_v.
@@ -2095,7 +2096,7 @@ class FileCommands:
             else:
                 fc.put(f"{v_head}</v>\n")  # Call put only once.
     #@+node:ekr.20031218072017.1865: *6* fc.compute_attribute_bits
-    def compute_attribute_bits(self, forceWrite: Any, p: Position) -> str:
+    def compute_attribute_bits(self, forceWrite: bool, p: Position) -> str:
         """Return the initial values of v's attributes."""
         attrs = []
         if p.hasChildren() and not forceWrite and not self.usingClipboard:
