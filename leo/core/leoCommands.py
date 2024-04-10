@@ -3028,7 +3028,7 @@ class Commands:
         c = self
         c.k.mb_history.insert(0, commandName)
     #@+node:bobjack.20080509080123.2: *4* c.universalCallback & minibufferCallback
-    def universalCallback(self, source_c: Any, function: Any) -> Callable:
+    def universalCallback(self, source_c: Commands, function: Callable) -> Callable:
         """Create a universal command callback.
 
         Create and return a callback that wraps a function with an rClick
@@ -3077,7 +3077,7 @@ class Commands:
     # fix bobjack's spelling error.
     universallCallback = universalCallback
     #@+node:ekr.20070115135502: *4* c.writeScriptFile (changed: does not expand expressions)
-    def writeScriptFile(self, script: Any) -> str:
+    def writeScriptFile(self, script: str) -> str:
 
         # Get the path to the file.
         c = self
@@ -3956,7 +3956,7 @@ class Commands:
     #@+node:ekr.20080514131122.19: *5* c.xWantsFocusNow
     # widgetWantsFocusNow does an automatic update.
 
-    def widgetWantsFocusNow(self, w: Any) -> None:
+    def widgetWantsFocusNow(self, w: Widget) -> None:
         c = self
         if w:
             c.set_focus(w)
