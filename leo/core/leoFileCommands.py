@@ -33,7 +33,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
     Conn = sqlite3.Connection
-    Element = Any
+    Element = ElementTree.Element
 #@-<< leoFileCommands annotations >>
 #@+others
 #@+node:ekr.20150509194827.1: ** cmd (decorator)
@@ -294,7 +294,7 @@ class FastRead:
             'r1': 0.5, 'r2': 0.5,
         }
     #@+node:ekr.20180602062323.8: *4* fast.scanTnodes
-    def scanTnodes(self, t_elements: Any) -> tuple[dict[str, str], dict[str, Any]]:
+    def scanTnodes(self, t_elements: Element) -> tuple[dict[str, str], dict[str, Any]]:
 
         gnx2body: dict[str, str] = {}
         gnx2ua: dict[str, dict] = defaultdict(dict)
@@ -494,7 +494,7 @@ class FastRead:
             mf.show()
 
     #@+node:felix.20220618174623.1: *4* fast.scanJsonTnodes
-    def scanJsonTnodes(self, t_elements: Any) -> dict[str, str]:
+    def scanJsonTnodes(self, t_elements: Element) -> dict[str, str]:
 
         gnx2body: dict[str, str] = {}
 
@@ -529,7 +529,6 @@ class FastRead:
                 try:
                     v = gnx2vnode.get(gnx)
                 except KeyError:
-                    # g.trace('no "t" attrib')
                     gnx = None
                     v = None
                 if v:
@@ -552,16 +551,12 @@ class FastRead:
                         fc.descendentExpandedList.append(gnx)
                     if v.isMarked():
                         fc.descendentMarksList.append(gnx)
-                    #
-
                     # Handle vnode uA's
                     uaDict = gnx2ua[gnx]  # A defaultdict(dict)
-
                     if uaDict:
                         v.unknownAttributes = uaDict
-
                     # Recursively create the children.
-                    v_element_visitor(v_dict.get('children', []), v)
+                    v_element_visitor(v_dict.get('children', []), v)  # type:ignore
 
         gnx = 'hidden-root-vnode-gnx'
         hidden_v = leoNodes.VNode(context=c, gnx=gnx)
