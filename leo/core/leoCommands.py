@@ -60,6 +60,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoGui
     from leo.plugins.qt_gui import StyleSheetManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    KWargs = Any
     RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
     Widget = Any
 #@-<< leoCommands annotations >>
@@ -2191,7 +2192,11 @@ class Commands:
         return n
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
-    def checkMoveWithParentWithWarning(self, root: Any, parent: Any, warningFlag: bool) -> bool:
+    def checkMoveWithParentWithWarning(self,
+        root: Position,
+        parent: Position,
+        warningFlag: bool,
+    ) -> bool:
         """
         Return False if root or any of root's descendants is a clone of parent
         or any of parents ancestors.
@@ -2212,7 +2217,7 @@ class Commands:
                 return False
         return True
     #@+node:ekr.20070910105044.1: *5* c.checkDrag
-    def checkDrag(self, root: Any, target: Any) -> bool:
+    def checkDrag(self, root: Position, target: Position) -> bool:
         """Return False if target is any descendant of root."""
         c = self
         message = "Can not drag a node into its descendant tree."
@@ -2690,7 +2695,7 @@ class Commands:
         if expected != got:
             g.trace(f"stroke: {stroke!r}, expected char: {expected!r}, got: {got!r}")
     #@+node:ekr.20031218072017.2817: *4* c.doCommand
-    def doCommand(self, command_func: Any, command_name: Any, event: LeoKeyEvent) -> Any:
+    def doCommand(self, command_func: Callable, command_name: str, event: LeoKeyEvent) -> Any:
         """
         Execute the given command function, invoking hooks and catching exceptions.
 
@@ -2746,7 +2751,7 @@ class Commands:
             g.doHook("command2", c=c, p=p, label=command_name)
         return return_value
     #@+node:ekr.20200522075411.1: *4* c.doCommandByName
-    def doCommandByName(self, command_name: Any, event: LeoKeyEvent = None) -> Any:
+    def doCommandByName(self, command_name: str, event: LeoKeyEvent = None) -> Any:
         """
         Execute one command, given the name of the command.
 
@@ -3485,7 +3490,7 @@ class Commands:
         c.redraw(p)
         c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2353: *5* c.dragAfter
-    def dragAfter(self, p: Position, after: Any) -> None:
+    def dragAfter(self, p: Position, after: Optional[Position]) -> None:
         c, p, u = self, self.p, self.undoer
         if not c.checkDrag(p, after):
             return
@@ -4300,7 +4305,7 @@ class Commands:
         if not keepMinibuffer:
             c.outerUpdate()
     #@+node:ekr.20031218072017.2997: *5* c.selectPosition
-    def selectPosition(self, p: Position, **kwargs: Any) -> None:
+    def selectPosition(self, p: Position, **kwargs: KWargs) -> None:
         """
         Select a new position, redrawing the screen *only* if we must
         change chapters.
@@ -4464,7 +4469,7 @@ class Commands:
             g.es(failMsg, color='red')
         return root
     #@+node:ekr.20160304054950.1: *5* c.setCloneFindByPredicateIcon
-    def setCloneFindByPredicateIcon(self, iconPath: Any, p: Position) -> None:
+    def setCloneFindByPredicateIcon(self, iconPath: str, p: Position) -> None:
         """Attach an icon to p.v.u."""
         if iconPath and g.os_path_exists(iconPath) and not g.os_path_isdir(iconPath):
             aList = p.v.u.get('icons', [])
@@ -4547,7 +4552,7 @@ class Commands:
         u.afterChangeGroup(parent, undoType)
         return parent  # actually the last created/found position
     #@+node:ekr.20100802121531.5804: *4* c.deletePositionsInList
-    def deletePositionsInList(self, aList: list) -> list[Any]:
+    def deletePositionsInList(self, aList: list) -> list[tuple[str, int, str]]:
         """
         Delete all vnodes corresponding to the positions in aList.
 
