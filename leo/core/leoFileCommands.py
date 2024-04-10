@@ -1830,7 +1830,7 @@ class FileCommands:
         theFile.close()
     #@+node:ekr.20210316034532.1: *4* fc.Writing Utils
     #@+node:ekr.20080805085257.2: *5* fc.pickle
-    def pickle(self, v: VNode, val: Any, tag: str) -> str:
+    def pickle(self, *, v: VNode, val: Any, tag: str) -> str:
         """Pickle val and return the hexlified result."""
         try:
             s = pickle.dumps(val, protocol=1)
@@ -1857,38 +1857,34 @@ class FileCommands:
         Return the a uA field for descendant VNode attributes,
         suitable for reconstituting uA's for anonymous vnodes.
         """
-        # Create aList of tuples (p,v) having a valid unknownAttributes dict.
-        # Create dictionary: keys are vnodes, values are corresponding archived positions.
-        aList: list[tuple[Position, VNode]] = []
+        # Create list of vnodes.
+        vnode_list: list[VNode] = []
         pDict: dict[VNode, str] = {}
         for p2 in p.self_and_subtree(copy=False):
             if hasattr(p2.v, "unknownAttributes"):
-                aList.append((p2.copy(), p2.v),)
+                vnode_list.append(p2.v)
                 pDict[p2.v] = p2.archivedPosition(root_p=p)
-        # Create aList of pairs (v,d) where d contains only pickleable entries.
-        if not aList:
+        if not vnode_list:
             return ''
-        aList2: list[tuple[VNode, dict]] = self.createUaList(aList)
-        # Create d, an enclosing dict to hold all the inner dicts.
-        d = {}
-        aList3: list[str]
+        # Create aList of pairs (v,d) where d contains only pickleable entries.
+        aList2: list[tuple[VNode, dict]] = self.createUaList(vnode_list)
+        d: dict[str, dict] = {}
         for v, d2 in aList2:
             aList3 = [str(z) for z in pDict.get(v)]
             key = '.'.join(aList3)
             d[key] = d2
-        # Pickle and hexlify d
         if not d:
             return ''
+        # Pickle and hexlify d.
         return self.pickle(v=p.v, val=d, tag='descendentVnodeUnknownAttributes')
     #@+node:ekr.20080805085257.1: *6* fc.createUaList
-    def createUaList(self, aList: list[tuple[Position, VNode]]) -> list[tuple[VNode, dict]]:
-    ### def createUaList(self, aList: list[tuple[Position, VNode]]) -> list[tuple[VNode, dict]]:
+    def createUaList(self, vnode_list: list[VNode]) -> list[tuple[VNode, dict]]:
         """
-        Given aList of pairs (p, v), return a list of pairs (v, d)
+        Given a list of vnodes, return a list of pairs (v, d)
         where d contains all picklable items of v.unknownAttributes.
         """
         result: list[tuple[VNode, dict]] = []
-        for p, v in aList:
+        for v in vnode_list:
             if isinstance(v.unknownAttributes, dict):
                 # Create a new dict containing only entries that can be pickled.
                 d = dict(v.unknownAttributes)  # Copy the dict.
@@ -1897,11 +1893,11 @@ class FileCommands:
                     ok = self.pickle(v=v, val=d.get(key), tag=None)
                     if not ok:
                         del d[key]
-                        g.warning("ignoring bad unknownAttributes key", key, "in", p.h)
+                        g.warning("ignoring bad unknownAttributes key", key, "in", v.h)
                 if d:
                     result.append((v, d),)
             else:
-                g.warning("ignoring non-dictionary uA for", p)
+                g.warning("ignoring non-dictionary uA for", v.h)
         return result
     #@+node:ekr.20031218072017.3035: *5* fc.putFindSettings
     def putFindSettings(self) -> None:
