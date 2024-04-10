@@ -100,11 +100,11 @@ class FastRead:
     def readFile(self, theFile: IO, path: str) -> VNode:
         """Read the file, change splitter ratios, and return its hidden vnode."""
         s = theFile.read()
-        v, g_element = self.readWithElementTree(path, s)
+        v, _g_element = self.readWithElementTree(path, s)
         if not v:  # #1510.
             return None
         # #1047: only this method changes splitter sizes.
-        self.scanGlobals(g_element)
+        self.scanGlobals()
         #
         # #1111: ensure that all outlines have at least one node.
         if not v.children:
@@ -234,7 +234,7 @@ class FastRead:
                 g.trace(f"can not unpickle {attr}={val}")
                 return ''
     #@+node:ekr.20180605062300.1: *4* fast.scanGlobals & helper
-    def scanGlobals(self, g_element: Any) -> None:
+    def scanGlobals(self) -> None:
         """Get global data from the cache, with reasonable defaults."""
         c = self.c
         d = self.getGlobalData()
