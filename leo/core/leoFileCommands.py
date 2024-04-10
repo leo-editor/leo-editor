@@ -32,7 +32,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-
+    Conn = sqlite3.Connection
 #@-<< leoFileCommands annotations >>
 #@+others
 #@+node:ekr.20150509194827.1: ** cmd (decorator)
@@ -1084,7 +1084,7 @@ class FileCommands:
                 n2.setBodyString(b2)
         return root
     #@+node:vitalije.20170630152841.1: *5* fc.retrieveVnodesFromDb & helpers
-    def retrieveVnodesFromDb(self, conn: Any) -> VNode:
+    def retrieveVnodesFromDb(self, conn: Conn) -> VNode:
         """
         Recreates tree from the data contained in table vnodes.
 
@@ -1142,7 +1142,7 @@ class FileCommands:
         c.setCurrentPosition(p)
         return rootChildren[0]
     #@+node:vitalije.20170815162307.1: *6* fc.initNewDb
-    def initNewDb(self, conn: Any, path: str = None) -> VNode:
+    def initNewDb(self, conn: Conn, path: str = None) -> VNode:
         """ Initializes tables and returns None"""
         c, fc = self.c, self
         v = leoNodes.VNode(context=c)
@@ -1153,7 +1153,7 @@ class FileCommands:
         fc.exportToSqlite(path or c.mFileName)
         return v
     #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
-    def getWindowGeometryFromDb(self, conn: Any) -> tuple:
+    def getWindowGeometryFromDb(self, conn: Conn) -> tuple:
         geom = (600, 400, 50, 50, 0.5, 0.5, '')
         keys = ('width', 'height', 'left', 'top',
                   'ratio', 'secondary_ratio',
@@ -1442,7 +1442,7 @@ class FileCommands:
         res.append(mk % (p.gnx, p._childIndex))
         return jn.join(res)
     #@+node:vitalije.20170811130512.1: *6* fc.prepareDbTables
-    def prepareDbTables(self, conn: Any) -> None:
+    def prepareDbTables(self, conn: Conn) -> None:
         conn.execute('''drop table if exists vnodes;''')
         conn.execute(
             '''
@@ -1459,7 +1459,7 @@ class FileCommands:
         conn.execute(
             '''create table if not exists extra_infos(name primary key, value)''')
     #@+node:vitalije.20170701161851.1: *6* fc.exportVnodesToSqlite
-    def exportVnodesToSqlite(self, conn: Any, rows: Any) -> None:
+    def exportVnodesToSqlite(self, conn: Conn, rows: Any) -> None:
         conn.executemany(
             '''insert into vnodes
             (gnx, head, body, children, parents,
@@ -1468,7 +1468,7 @@ class FileCommands:
             rows,
         )
     #@+node:vitalije.20170701162052.1: *6* fc.exportGeomToSqlite
-    def exportGeomToSqlite(self, conn: Any) -> None:
+    def exportGeomToSqlite(self, conn: Conn) -> None:
         c = self.c
         data = zip(
             (
@@ -1484,11 +1484,11 @@ class FileCommands:
         )
         conn.executemany('replace into extra_infos(name, value) values(?, ?)', data)
     #@+node:vitalije.20170811130559.1: *6* fc.exportDbVersion
-    def exportDbVersion(self, conn: Any) -> None:
+    def exportDbVersion(self, conn: Conn) -> None:
         conn.execute(
             "replace into extra_infos(name, value) values('dbversion', ?)", ('1.0',))
     #@+node:vitalije.20170701162204.1: *6* fc.exportHashesToSqlite
-    def exportHashesToSqlite(self, conn: Any) -> None:
+    def exportHashesToSqlite(self, conn: Conn) -> None:
         c = self.c
 
         def md5(x: str) -> str:
