@@ -3092,7 +3092,7 @@ class FastAtRead:
         re.VERBOSE,
     )
 
-    def scan_header(self, lines: list[str]) -> Optional[tuple[Any, Any, Any]]:
+    def scan_header(self, lines: list[str]) -> Optional[tuple[tuple, list[str], int]]:
         """
         Scan for the header line, which follows any @first lines.
         Return (delims, first_lines, i+1) or None
