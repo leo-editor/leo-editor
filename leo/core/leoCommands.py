@@ -1233,11 +1233,11 @@ class Commands:
             self.unredirectScriptOutput()
     #@+node:ekr.20171123135625.5: *4* c.executeScriptHelper
     def executeScriptHelper(self,
-        args: Any,
-        define_g: Any,
-        define_name: Any,
-        namespace: Any,
-        script: Any,
+        args: list,
+        define_g: bool,
+        define_name: str,
+        namespace: dict,
+        script: str,
     ) -> None:
         c = self
         if c.p:
@@ -2779,7 +2779,7 @@ class Commands:
             c.frame.updateStatusLine()
         return val
     #@+node:ekr.20200526074132.1: *4* c.executeMinibufferCommand
-    def executeMinibufferCommand(self, commandName: Any) -> Any:
+    def executeMinibufferCommand(self, commandName: str) -> Any:
         """Call c.doCommandByName, creating the required event."""
         c = self
         event = g.app.gui.create_key_event(c)
@@ -3474,7 +3474,7 @@ class Commands:
             )
     #@+node:ekr.20031218072017.2945: *4* c.Dragging
     #@+node:ekr.20031218072017.2947: *5* c.dragToNthChildOf
-    def dragToNthChildOf(self, p: Position, parent: Any, n: int) -> None:
+    def dragToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
         c, p, u = self, self.p, self.undoer
         if not c.checkDrag(p, parent):
             return
@@ -3506,7 +3506,7 @@ class Commands:
         c.redraw(p)
         c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2946: *5* c.dragCloneToNthChildOf
-    def dragCloneToNthChildOf(self, p: Position, parent: Any, n: int) -> None:
+    def dragCloneToNthChildOf(self, p: Position, parent: Position, n: int) -> None:
         c = self
         u = c.undoer
         undoType = 'Clone Drag'
@@ -3529,7 +3529,7 @@ class Commands:
         c.redraw(clone)
         c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
     #@+node:ekr.20031218072017.2948: *5* c.dragCloneAfter
-    def dragCloneAfter(self, p: Position, after: Any) -> None:
+    def dragCloneAfter(self, p: Position, after: Position) -> None:
         c = self
         u = c.undoer
         undoType = 'Clone Drag'
