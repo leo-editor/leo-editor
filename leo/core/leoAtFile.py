@@ -12,7 +12,7 @@ import sys
 import tabnanny
 import time
 import tokenize
-from typing import Any, Optional, Union, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 
@@ -225,7 +225,7 @@ class AtFile:
         root = leoNodes.Position(root_v)
         FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
     #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
-    def openFileForReading(self, fromString: str = None) -> Union[tuple[str, str], tuple[None, None]]:
+    def openFileForReading(self, fromString: str = None) -> tuple[Optional[str], Optional[str]]:
         """
         Open the file given by at.root.
         This will be the private file for @shadow nodes.
