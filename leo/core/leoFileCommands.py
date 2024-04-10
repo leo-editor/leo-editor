@@ -1830,7 +1830,7 @@ class FileCommands:
         theFile.close()
     #@+node:ekr.20210316034532.1: *4* fc.Writing Utils
     #@+node:ekr.20080805085257.2: *5* fc.pickle
-    def pickle(self, torv: Any, val: Any, tag: str) -> str:
+    def pickle(self, v: VNode, val: Any, tag: str) -> str:
         """Pickle val and return the hexlified result."""
         try:
             s = pickle.dumps(val, protocol=1)
@@ -1840,10 +1840,10 @@ class FileCommands:
             return field
         except pickle.PicklingError:
             if tag:  # The caller will print the error if tag is None.
-                g.warning("ignoring non-pickleable value", val, "in", torv)
+                g.warning("ignoring non-pickleable value", val, "in", v)
             return ''
         except Exception:
-            g.error("fc.pickle: unexpected exception in", torv)
+            g.error("fc.pickle: unexpected exception in", v)
             g.es_exception()
             return ''
     #@+node:ekr.20031218072017.1470: *5* fc.put
@@ -1859,46 +1859,47 @@ class FileCommands:
         """
         # Create aList of tuples (p,v) having a valid unknownAttributes dict.
         # Create dictionary: keys are vnodes, values are corresponding archived positions.
-        aList = []
-        pDict = {}
+        aList: list[tuple[Position, VNode]] = []
+        pDict: dict[VNode, str] = {}
         for p2 in p.self_and_subtree(copy=False):
             if hasattr(p2.v, "unknownAttributes"):
                 aList.append((p2.copy(), p2.v),)
                 pDict[p2.v] = p2.archivedPosition(root_p=p)
         # Create aList of pairs (v,d) where d contains only pickleable entries.
-        if aList:
-            aList = self.createUaList(aList)
         if not aList:
             return ''
+        aList2: list[tuple[VNode, dict]] = self.createUaList(aList)
         # Create d, an enclosing dict to hold all the inner dicts.
         d = {}
-        for v, d2 in aList:
-            aList2 = [str(z) for z in pDict.get(v)]
-            key = '.'.join(aList2)
+        aList3: list[str]
+        for v, d2 in aList2:
+            aList3 = [str(z) for z in pDict.get(v)]
+            key = '.'.join(aList3)
             d[key] = d2
         # Pickle and hexlify d
         if not d:
             return ''
-        return self.pickle(torv=p.v, val=d, tag='descendentVnodeUnknownAttributes')
+        return self.pickle(v=p.v, val=d, tag='descendentVnodeUnknownAttributes')
     #@+node:ekr.20080805085257.1: *6* fc.createUaList
-    def createUaList(self, aList: list) -> list[tuple[Any, dict]]:
+    def createUaList(self, aList: list[tuple[Position, VNode]]) -> list[tuple[VNode, dict]]:
+    ### def createUaList(self, aList: list[tuple[Position, VNode]]) -> list[tuple[VNode, dict]]:
         """
-        Given aList of pairs (p,torv), return a list of pairs (torv,d)
-        where d contains all picklable items of torv.unknownAttributes.
+        Given aList of pairs (p, v), return a list of pairs (v, d)
+        where d contains all picklable items of v.unknownAttributes.
         """
-        result = []
-        for p, torv in aList:
-            if isinstance(torv.unknownAttributes, dict):
+        result: list[tuple[VNode, dict]] = []
+        for p, v in aList:
+            if isinstance(v.unknownAttributes, dict):
                 # Create a new dict containing only entries that can be pickled.
-                d = dict(torv.unknownAttributes)  # Copy the dict.
+                d = dict(v.unknownAttributes)  # Copy the dict.
                 for key in d:
                     # Just see if val can be pickled.  Suppress any error.
-                    ok = self.pickle(torv=torv, val=d.get(key), tag=None)
+                    ok = self.pickle(v=v, val=d.get(key), tag=None)
                     if not ok:
                         del d[key]
                         g.warning("ignoring bad unknownAttributes key", key, "in", p.h)
                 if d:
-                    result.append((torv, d),)
+                    result.append((v, d),)
             else:
                 g.warning("ignoring non-dictionary uA for", p)
         return result
@@ -2011,7 +2012,7 @@ class FileCommands:
                 # This prevents the file from being written.
                 raise BadLeoFile(f"no VNode for {repr(index)}")
     #@+node:ekr.20050418161620.2: *5* fc.putUaHelper
-    def putUaHelper(self, torv: Any, key: str, val: Any) -> str:
+    def putUaHelper(self, torv: VNode, key: str, val: Any) -> str:
         """Put attribute whose name is key and value is val to the output stream."""
         # New in 4.3: leave string attributes starting with 'str_' alone.
         if key.startswith('str_'):
@@ -2033,7 +2034,7 @@ class FileCommands:
             else:
                 attr = f' {key}={xml.sax.saxutils.quoteattr(val)}'
                 return attr
-        return self.pickle(torv=torv, val=val, tag=key)
+        return self.pickle(v=torv, val=val, tag=key)
     #@+node:EKR.20040526202501: *5* fc.putUnknownAttributes
     def putUnknownAttributes(self, v: VNode) -> str:
         """Put pickleable values for all keys in v.unknownAttributes dictionary."""
