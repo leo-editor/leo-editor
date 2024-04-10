@@ -8,14 +8,14 @@ from collections.abc import Callable
 import subprocess
 import _thread as thread
 from time import sleep
-from typing import Any, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 
 if TYPE_CHECKING:  # pragma: no cover
+    from subprocess import Popen
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    Pattern = Union[Any, str]
 #@-<< leoBackground imports & annotations >>
 
 #@+others
@@ -92,7 +92,7 @@ class BackgroundProcessManager:
         """Ctor for the base BackgroundProcessManager class."""
         self.data: ProcessData = None  # a ProcessData instance.
         self.process_queue: list = []  # List of g.Bunches.
-        self.pid: str = None  # The process id of the running process.
+        self.pid: Popen = None  # The process id of the running process.
         self.lock = thread.allocate_lock()
         self.process_return_data: list[str] = None
         # #2528: A timer that runs independently of idle time.
@@ -236,7 +236,7 @@ class BackgroundProcessManager:
         #
         #       However, we do not expect tools such as pylint, mypy, etc.
         #       to create error messages that contain shell injection attacks!
-        def open_process(data: Any) -> Any:
+        def open_process(data: ProcessData) -> Popen:
             g.es_print(f'{data.kind}: {g.shortFileName(data.fn)}')
             self.process_return_data = []
             proc = subprocess.Popen(
@@ -258,7 +258,7 @@ class BackgroundProcessManager:
         if self.pid:
             # A process is already active.
             # Add a new callback to .process_queue for start_process().
-            def callback(data: Any = data, kind: str = kind) -> None:
+            def callback(data: ProcessData = data, kind: str = kind) -> None:
                 """This is called when a previous process ends."""
                 self.pid = open_process(data)
                 start_timer()
