@@ -14,7 +14,7 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import Any, Generator, Iterable, Optional, Union, TYPE_CHECKING
+from typing import Any, Generator, Iterable, Optional, Sequence, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 # The leoCommands ctor now does most leo.core.leo* imports,
 # thereby breaking circular dependencies.
@@ -251,7 +251,7 @@ class Commands:
         self.requestedFocusWidget: Widget = None
         self.requestLaterRedraw = False
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
-    def initFileIvars(self, fileName: str, relativeFileName: Any) -> None:
+    def initFileIvars(self, fileName: str, relativeFileName: str) -> None:
         """Init file-related ivars of the commander."""
         self.changed = False  # True: the outline has changed since the last save.
         self.ignored_at_file_nodes: list[Position] = []  # List of nodes for c.raise_error_dialogs.
@@ -2443,7 +2443,7 @@ class Commands:
         self.frame.body.updateSyntaxColorer(p)
     #@+node:ekr.20180503110307.1: *4* c.interactive*
     #@+node:ekr.20180504075937.1: *5* c.interactive
-    def interactive(self, callback: Callable, event: LeoKeyEvent, prompts: Any) -> None:
+    def interactive(self, callback: Callable, event: LeoKeyEvent, prompts: Sequence) -> None:
         #@+<< c.interactive docstring >>
         #@+node:ekr.20180503131222.1: *6* << c.interactive docstring >>
         """
@@ -2477,7 +2477,7 @@ class Commands:
         else:
             g.trace('At most 3 arguments are supported.')
     #@+node:ekr.20180503111213.1: *5* c.interactive1
-    def interactive1(self, callback: Callable, event: LeoKeyEvent, prompts: Any) -> None:
+    def interactive1(self, callback: Callable, event: LeoKeyEvent, prompts: Sequence) -> None:
 
         c, k = self, self.k
         prompt = prompts[0]
@@ -2491,7 +2491,7 @@ class Commands:
         k.setLabelBlue(prompt)
         k.get1Arg(event, handler=state1)
     #@+node:ekr.20180503111249.1: *5* c.interactive2
-    def interactive2(self, callback: Callable, event: LeoKeyEvent, prompts: Any) -> None:
+    def interactive2(self, callback: Callable, event: LeoKeyEvent, prompts: Sequence) -> None:
 
         c, d, k = self, {}, self.k
         prompt1, prompt2 = prompts
@@ -2510,7 +2510,7 @@ class Commands:
         k.setLabelBlue(prompt1)
         k.get1Arg(event, handler=state1)
     #@+node:ekr.20180503111249.2: *5* c.interactive3
-    def interactive3(self, callback: Callable, event: LeoKeyEvent, prompts: Any) -> None:
+    def interactive3(self, callback: Callable, event: LeoKeyEvent, prompts: Sequence) -> None:
 
         c, d, k = self, {}, self.k
         prompt1, prompt2, prompt3 = prompts
