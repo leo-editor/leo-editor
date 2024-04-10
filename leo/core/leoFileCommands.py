@@ -137,7 +137,7 @@ class FastRead:
 
         Unlike readFile above, this does not affect splitter sizes.
         """
-        hidden_v, g_element = self.readWithElementTree(path=None, s_or_b=s_or_b)
+        hidden_v, _g_element = self.readWithElementTree(path=None, s_or_b=s_or_b)
         if not hidden_v:
             return None
         #
@@ -174,9 +174,9 @@ class FastRead:
             print('')
             return None, None
 
-        g_element = xroot.find('globals')
-        v_elements = xroot.find('vnodes')
-        t_elements = xroot.find('tnodes')
+        g_element: Element = xroot.find('globals')
+        v_elements: Element = xroot.find('vnodes')
+        t_elements: Element = xroot.find('tnodes')
         gnx2body, gnx2ua = self.scanTnodes(t_elements)
         hidden_v = self.scanVnodes(gnx2body, self.gnx2vnode, gnx2ua, v_elements)
         self.handleBits()
@@ -314,7 +314,7 @@ class FastRead:
         gnx2body: dict[str, str],
         gnx2vnode: dict[str, VNode],
         gnx2ua: dict[str, Any],
-        v_elements: Any,
+        v_elements: Element,
     ) -> VNode:
 
         c, fc = self.c, self.c.fileCommands
@@ -418,9 +418,9 @@ class FastRead:
             return None, None
 
         try:
-            g_element = d.get('globals', {})  # globals is optional
-            v_elements = d.get('vnodes')
-            t_elements = d.get('tnodes')
+            g_element: Element = d.get('globals', {})  # globals is optional
+            v_elements: Element = d.get('vnodes')
+            t_elements: Element = d.get('tnodes')
             gnx2ua: dict = defaultdict(dict)
             gnx2ua.update(d.get('uas', {}))  # User attributes in their own dict for leojs files
             gnx2body = self.scanJsonTnodes(t_elements)
@@ -508,7 +508,7 @@ class FastRead:
         gnx2body: dict[str, str],
         gnx2vnode: dict[str, VNode],
         gnx2ua: dict[str, Any],
-        v_elements: Any,
+        v_elements: Element,
     ) -> Optional[VNode]:
 
         c, fc = self.c, self.c.fileCommands
