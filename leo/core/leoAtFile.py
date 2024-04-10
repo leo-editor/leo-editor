@@ -12,7 +12,7 @@ import sys
 import tabnanny
 import time
 import tokenize
-from typing import Any, Optional, Sequence, Union, TYPE_CHECKING
+from typing import Any, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 
@@ -20,7 +20,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-    Args = Any
 #@-<< leoAtFile imports & annotations >>
 
 #@+others
@@ -561,7 +560,7 @@ class AtFile:
         g.doHook('after-reading-external-file', c=c, p=root)
         return True  # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
-    def dump(self, lines: list[str], tag: str) -> None:  # pragma: no cover
+    def dump(self, lines: list[str], tag: Any) -> None:  # pragma: no cover
         """Dump all lines."""
         print(f"***** {tag} lines...\n")
         for s in lines:
@@ -1718,8 +1717,24 @@ class AtFile:
             if not s.endswith('\n'):
                 s = s + '\n'
 
+
+        class Status:
+            at_comment_seen = False
+            at_delims_seen = False
+            at_warning_given = False
+            has_at_others = False
+            in_code = True
+
+            def __repr__(self) -> str:  # pragma: no cover (testing)
+                return (
+                    f"code? {int(self.in_code)} "
+                    # f"comment? {int(self.at_comment_seen)} "
+                    # f"delims? {int(self.at_delims_seen)} "
+                    # f"@others? {int(self.has_at_others)} "
+                )
+
         i = 0
-        status = LeoIOStatus()
+        status = Status()
         while i < len(s):
             next_i = g.skip_line(s, i)
             assert next_i > i, 'putBody'
@@ -1730,7 +1745,7 @@ class AtFile:
             at.putEndDocLine()
         return status.has_at_others
     #@+node:ekr.20041005105605.163: *6* at.putLine
-    def putLine(self, i: int, kind: int, p: Position, s: str, status: LeoIOStatus) -> None:
+    def putLine(self, i: int, kind: int, p: Position, s: str, status: Any) -> None:
         """Put the line at s[i:] of the given kind, updating the status."""
         at = self
         if kind == at.noDirective:
@@ -2037,7 +2052,7 @@ class AtFile:
             at.os(at.endSentinelComment)
             at.onl()  # Note: no trailing whitespace.
     #@+node:ekr.20041005105605.182: *6* at.putStartDocLine
-    def putStartDocLine(self, s: str, i: int, kind: int) -> None:
+    def putStartDocLine(self, s: str, i: int, kind: Any) -> None:
         """Write the start of a doc part."""
         at = self
         sentinel = "@+doc" if kind == at.docDirective else "@+at"
@@ -2194,7 +2209,7 @@ class AtFile:
         if not ok:
             g.app.syntax_error_files.append(g.shortFileName(fileName))
     #@+node:ekr.20090514111518.5663: *6* at.checkPythonSyntax
-    def checkPythonSyntax(self, p: Position, body: str) -> bool:
+    def checkPythonSyntax(self, p: Position, body: Any) -> bool:
         at = self
         try:
             body = body.replace('\r', '')
@@ -2209,7 +2224,7 @@ class AtFile:
             g.es_exception()
         return False
     #@+node:ekr.20090514111518.5666: *7* at.syntaxError (leoAtFile)
-    def syntaxError(self, p: Position, body: str) -> None:  # pragma: no cover
+    def syntaxError(self, p: Position, body: Any) -> None:  # pragma: no cover
         """Report a syntax error."""
         g.error(f"Syntax error in: {p.h}")
         typ, val, tb = sys.exc_info()
@@ -2337,7 +2352,7 @@ class AtFile:
             return True, i + len(at.section_delim2)
         return False, -1
     #@+node:ekr.20190111112442.1: *5* at.isWritable
-    def isWritable(self, path: str) -> bool:  # pragma: no cover
+    def isWritable(self, path: Any) -> bool:  # pragma: no cover
         """Return True if the path is writable."""
         try:
             # os.access() may not exist on all platforms.
@@ -2761,12 +2776,12 @@ class AtFile:
         at.addToOrphanList(root)
     #@+node:ekr.20041005105605.219: *3* at.Utilities
     #@+node:ekr.20041005105605.220: *4* at.error & printError
-    def error(self, *args: Args) -> None:  # pragma: no cover
+    def error(self, *args: Any) -> None:  # pragma: no cover
         at = self
         at.printError(*args)
         at.errors += 1
 
-    def printError(self, *args: Args) -> None:  # pragma: no cover
+    def printError(self, *args: Any) -> None:  # pragma: no cover
         """Print an error message that may contain non-ascii characters."""
         at = self
         if at.errors:
@@ -2780,7 +2795,7 @@ class AtFile:
     #@+node:ekr.20050104131929: *4* at.file operations...
     # Error checking versions of corresponding functions in Python's os module.
     #@+node:ekr.20050104131820: *5* at.chmod
-    def chmod(self, fileName: str, mode: int) -> None:  # pragma: no cover
+    def chmod(self, fileName: str, mode: Any) -> None:  # pragma: no cover
         # Do _not_ call self.error here.
         if mode is None:
             return
@@ -2804,7 +2819,7 @@ class AtFile:
                 g.es_exception()
             return False
     #@+node:ekr.20050104132026: *5* at.stat
-    def stat(self, fileName: str) -> int:  # pragma: no cover
+    def stat(self, fileName: str) -> Any:  # pragma: no cover
         """Return the access mode of named file, removing any setuid, setgid, and sticky bits."""
         # Do _not_ call self.error here.
         try:
@@ -2820,7 +2835,7 @@ class AtFile:
             return d.get('path')  # type:ignore
         return ''
 
-    def setPathUa(self, p: Position, path: str) -> None:
+    def setPathUa(self, p: Position, path: Any) -> None:
         if not hasattr(p.v, 'tempAttributes'):
             p.v.tempAttributes = {}
         d = p.v.tempAttributes.get('read-path', {})
@@ -3007,22 +3022,6 @@ class AtFile:
             g.error("read only:", fn)  # pragma: no cover
     #@-others
 atFile = AtFile  # compatibility
-#@+node:ekr.20240410110352.1: ** class LeoIOStatus
-class LeoIOStatus:
-    """A class representing the status of a Leo file operation"""
-    at_comment_seen = False
-    at_delims_seen = False
-    at_warning_given = False
-    has_at_others = False
-    in_code = True
-
-    def __repr__(self) -> str:  # pragma: no cover (testing)
-        return (
-            f"code? {int(self.in_code)} "
-            # f"comment? {int(self.at_comment_seen)} "
-            # f"delims? {int(self.at_delims_seen)} "
-            # f"@others? {int(self.has_at_others)} "
-        )
 #@+node:ekr.20180602102448.1: ** class FastAtRead
 class FastAtRead:
     """
@@ -3055,7 +3054,7 @@ class FastAtRead:
     #@+node:ekr.20180602103135.3: *3* fast_at.get_patterns
     #@@nobeautify
 
-    def get_patterns(self, comment_delims: Sequence) -> None:
+    def get_patterns(self, comment_delims: Any) -> None:
         """Create regex patterns for the given comment delims."""
 
         # This must be a function, because of @comments & @delims.
@@ -3096,6 +3095,7 @@ class FastAtRead:
             self.pattern_ivars.append(ivar)
             assert hasattr(self, ivar), ivar
             setattr(self, ivar, re.compile(pattern))
+
     #@+node:ekr.20180602103135.2: *3* fast_at.scan_header
     header_pattern = re.compile(
         r'''
@@ -3107,7 +3107,7 @@ class FastAtRead:
         re.VERBOSE,
     )
 
-    def scan_header(self, lines: list[str]) -> Optional[tuple[Any, Any, Any]]:
+    def scan_header(self, lines: Any) -> Optional[tuple[Any, Any, Any]]:
         """
         Scan for the header line, which follows any @first lines.
         Return (delims, first_lines, i+1) or None
@@ -3123,7 +3123,7 @@ class FastAtRead:
             first_lines.append(line)
         return None  # pragma: no cover (defensive)
     #@+node:ekr.20180602103135.8: *3* fast_at.scan_lines
-    def scan_lines(self, comment_delims: Sequence, first_lines: Any, lines: Any, path: Any, start: Any) -> None:
+    def scan_lines(self, comment_delims: Any, first_lines: Any, lines: Any, path: Any, start: Any) -> None:
         """Scan all lines of the file, creating vnodes."""
         #@+<< init scan_lines >>
         #@+node:ekr.20180602103135.9: *4* << init scan_lines >>

@@ -428,15 +428,20 @@ class TestAtFile(LeoUnitTest):
         at.putLeadInSentinel(s, 0, 2)
     #@+node:ekr.20211104142459.1: *3* TestAtFile.test_putLine
     def test_putLine(self):
-        
-        from leo.core.leoAtFile import LeoIOStatus
 
         at, p = self.at, self.c.p
         at.initWriteIvars(p)
 
+        class Status:  # at.putBody defines the status class.
+            at_comment_seen = False
+            at_delims_seen = False
+            at_warning_given = True  # Always suppress warning messages.
+            has_at_others = False
+            in_code = True
+
         # For now, test only the case that hasn't been covered:
         # kind == at.othersDirective and not status.in_code
-        status = LeoIOStatus()
+        status = Status()
         status.in_code = False
         i, kind = 0, at.othersDirective
         s = 'A doc line\n'
