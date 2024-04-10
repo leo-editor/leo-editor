@@ -505,7 +505,7 @@ class Commands:
             return g.finalize(c.mFileName).lower()
         return f"{id(self)!s}"
     #@+node:ekr.20110509064011.14563: *4* c.idle_focus_helper & helpers
-    def idle_focus_helper(self, tag: str, keys: Any) -> None:
+    def idle_focus_helper(self, tag: str, keys: dict) -> None:
         """An idle-time handler that ensures that focus is *somewhere*."""
         trace = 'focus' in g.app.debug
         trace_inactive_focus = False  # Too disruptive for --trace-focus
@@ -2537,7 +2537,7 @@ class Commands:
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20171123135625.33: *4* c.getLanguageAtCursor
-    def getLanguageAtCursor(self, p: Position, language: Any) -> str:
+    def getLanguageAtCursor(self, p: Position, language: str) -> str:
         """
         Return the language in effect at the present insert point.
         Use the language argument as a default if no @language directive seen.
@@ -3846,7 +3846,7 @@ class Commands:
             p.expand()
             p = p.moveToThreadNext()
     #@+node:ekr.20031218072017.2912: *5* c.expandToLevel
-    def expandToLevel(self, level: Any) -> None:
+    def expandToLevel(self, level: int) -> None:
 
         c = self
         n = c.p.level()
