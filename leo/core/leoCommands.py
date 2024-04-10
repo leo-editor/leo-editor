@@ -2343,7 +2343,7 @@ class Commands:
     #@+node:ekr.20040723094220.6: *4* c.tabNannyNode
     # This code is based on tabnanny.check.
 
-    def tabNannyNode(self, p: Position, headline: Any, body: Any) -> None:
+    def tabNannyNode(self, p: Position, headline: str, body: str) -> None:
         """Check indentation using tabnanny."""
         try:
             readline = g.ReadLinesClass(body).next
@@ -3023,7 +3023,7 @@ class Commands:
         s = stroke.toGuiChar()
         log_w.insert(i, s)
     #@+node:ekr.20131016084446.16724: *4* c.setComplexCommand
-    def setComplexCommand(self, commandName: Any) -> None:
+    def setComplexCommand(self, commandName: str) -> None:
         """Make commandName the command to be executed by repeat-complex-command."""
         c = self
         c.k.mb_history.insert(0, commandName)
