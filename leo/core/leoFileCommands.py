@@ -33,6 +33,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
     Conn = sqlite3.Connection
+    Element = Any
 #@-<< leoFileCommands annotations >>
 #@+others
 #@+node:ekr.20150509194827.1: ** cmd (decorator)
@@ -319,7 +320,7 @@ class FastRead:
         c, fc = self.c, self.c.fileCommands
         #@+<< define v_element_visitor >>
         #@+node:ekr.20180605102822.1: *5* << define v_element_visitor >>
-        def v_element_visitor(parent_e: Any, parent_v: VNode) -> None:
+        def v_element_visitor(parent_e: Element, parent_v: VNode) -> None:
             """Visit the given element, creating or updating the parent vnode."""
             for e in parent_e:
                 assert e.tag in ('v', 'vh'), e.tag
@@ -512,7 +513,7 @@ class FastRead:
 
         c, fc = self.c, self.c.fileCommands
 
-        def v_element_visitor(parent_e: Any, parent_v: VNode) -> None:
+        def v_element_visitor(parent_e: Element, parent_v: VNode) -> None:
             """Visit the given element, creating or updating the parent vnode."""
             for i, v_dict in enumerate(parent_e):
                 # Get the gnx.
