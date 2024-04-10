@@ -2008,7 +2008,7 @@ class FileCommands:
                 # This prevents the file from being written.
                 raise BadLeoFile(f"no VNode for {repr(index)}")
     #@+node:ekr.20050418161620.2: *5* fc.putUaHelper
-    def putUaHelper(self, torv: VNode, key: str, val: Any) -> str:
+    def putUaHelper(self, v: VNode, key: str, val: Any) -> str:
         """Put attribute whose name is key and value is val to the output stream."""
         # New in 4.3: leave string attributes starting with 'str_' alone.
         if key.startswith('str_'):
@@ -2017,7 +2017,7 @@ class FileCommands:
                 attr = f' {key}={xml.sax.saxutils.quoteattr(val)}'
                 return attr
             g.trace(type(val), repr(val))
-            g.warning("ignoring non-string attribute", key, "in", torv)
+            g.warning("ignoring non-string attribute", key, "in", v)
             return ''
         # Support JSON encoded attributes
         if key.startswith('json_'):
@@ -2026,11 +2026,11 @@ class FileCommands:
             except TypeError:
                 # fall back to pickle
                 g.trace(type(val), repr(val))
-                g.warning("pickling JSON incompatible attribute", key, "in", torv)
+                g.warning("pickling JSON incompatible attribute", key, "in", v)
             else:
                 attr = f' {key}={xml.sax.saxutils.quoteattr(val)}'
                 return attr
-        return self.pickle(v=torv, val=val, tag=key)
+        return self.pickle(v=v, val=val, tag=key)
     #@+node:EKR.20040526202501: *5* fc.putUnknownAttributes
     def putUnknownAttributes(self, v: VNode) -> str:
         """Put pickleable values for all keys in v.unknownAttributes dictionary."""
