@@ -17,6 +17,8 @@ from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Callable
 from typing import Any
+Args = Any
+KWargs = Any
 #@-<< signal_manager imports >>
 
 #@+others
@@ -38,7 +40,7 @@ def _setup(obj: Any) -> None:
     if not hasattr(obj, '_signal_data'):
         obj._signal_data = SignalData()
 #@+node:tbrown.20171028115601.6: ** emit
-def emit(source: Any, signal_name: str, *args: Any, **kwargs: Any) -> None:
+def emit(source: Any, signal_name: str, *args: Args, **kwargs: KWargs) -> None:
     """Emit signal to all listeners"""
     if not hasattr(source, '_signal_data'):
         return
@@ -96,7 +98,7 @@ class SignalManager:
     """SignalManager - light weight signal management mixin."""
     #@+others
     #@+node:tbrown.20171028115601.13: *3* emit
-    def emit(self, signal_name: str, *args: Any, **kwargs: Any) -> None:
+    def emit(self, signal_name: str, *args: Args, **kwargs: KWargs) -> None:
         """Emit signal to all listeners"""
         emit(self, signal_name, *args, **kwargs)
     #@+node:tbrown.20171028115601.14: *3* connect

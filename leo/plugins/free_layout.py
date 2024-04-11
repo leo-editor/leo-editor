@@ -117,7 +117,7 @@ class FreeLayoutController:
         # Plugins must be loaded first to provide their widgets in panels etc.
         g.registerHandler('after-create-leo-frame2', self.loadLayouts)
     #@+node:tbrown.20110203111907.5522: *3*  flc.init
-    def init(self, tag: str, keys: Any) -> None:
+    def init(self, tag: str, keys: dict) -> None:
         """Attach to an outline and
 
         - add tags to widgets to indicate that they're essential
@@ -233,7 +233,7 @@ class FreeLayoutController:
             return child and child.top()
         return None
     #@+node:ekr.20120419095424.9927: *3* flc.loadLayouts (sets wrap=True)
-    def loadLayouts(self, tag: str, keys: Any, reloading: bool = False) -> None:
+    def loadLayouts(self, tag: str, keys: dict, reloading: bool = False) -> None:
         """loadLayouts - Load the outline's layout
 
         :Parameters:

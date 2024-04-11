@@ -42,6 +42,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
     from leo.plugins.mod_scripting import ScriptingController
+    Args = Any
+    KWargs = Any
     # Events
     QEvent: TypeAlias = QtCore.QEvent
     QFocusEvent: TypeAlias = QtGui.QFocusEvent
@@ -295,7 +297,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.centralwidget = w
         return w
     #@+node:ekr.20110605121601.18145: *5* dw.createLogPane & helpers
-    def createLogPane(self, parent: Any) -> None:
+    def createLogPane(self, parent: QWidget) -> None:
         """Create all parts of Leo's log pane."""
         c = self.leo_c
         #
@@ -1344,7 +1346,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
     """Base class for all QTabWidgets in Leo."""
     #@+others
     #@+node:ekr.20131115120119.17390: *3* qt_base_tab.__init__
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Args, **kwargs: KWargs) -> None:
         #
         # Called from frameFactory.createMaster.
         #
@@ -2535,7 +2537,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 g.trace(w, h, x, y, self.c.shortFileName(), g.callers())
             self.top.setGeometry(QtCore.QRect(x, y, w, h))
     #@+node:ekr.20190611053431.10: *4* qtFrame.update
-    def update(self, *args: Any, **keys: Any) -> None:
+    def update(self, *args: Args, **keys: KWargs) -> None:
         if 'size' in g.app.debug:
             g.trace(bool(self.top))
         self.top.update()
@@ -3145,7 +3147,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         """
         self.createMenusFromTables()  # This is LeoMenu.createMenusFromTables.
     #@+node:ekr.20110605121601.18357: *5* LeoQtMenu.createOpenWithMenu
-    def createOpenWithMenu(self, parent: Any, label: str, index: int, amp_index: int) -> Any:
+    def createOpenWithMenu(self, parent: QWidget, label: str, index: int, amp_index: int) -> Any:
         """
         Create the File:Open With submenu.
 
@@ -3277,7 +3279,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         # Always accept the drag, even if we are already dragging.
         ev.accept()
     #@+node:ekr.20110605121601.18384: *5* LeoQTreeWidget.setText
-    def setText(self, md: Any) -> None:
+    def setText(self, md: QWidget) -> None:
         c = self.c
         fn = self.fileName()
         s = c.fileCommands.outline_to_clipboard_string()
@@ -3325,7 +3327,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 self.nodeDrop(md, p)
         g.app.dragging = False
     #@+node:ekr.20110605121601.18366: *5* LeoQTreeWidget.nodeDrop & helpers
-    def nodeDrop(self, md: Any, p: Position) -> None:
+    def nodeDrop(self, md: QWidget, p: Position) -> None:
         """
         Handle a drop event when not md.urls().
         This will happen when we drop an outline node.
@@ -3435,7 +3437,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             else:
                 c.redraw(p2)
     #@+node:ekr.20110605121601.18383: *6* LeoQTreeWidget.parseText
-    def parseText(self, md: Any) -> tuple[str, str]:
+    def parseText(self, md: QWidget) -> tuple[str, str]:
         """Parse md.text() into (fn,s)"""
         fn = ''
         s = md.text()
@@ -3448,7 +3450,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 s = s[i + 1 :]
         return fn, s
     #@+node:ekr.20110605121601.18369: *5* LeoQTreeWidget.urlDrop & helpers
-    def urlDrop(self, md: Any, p: Position) -> None:
+    def urlDrop(self, md: QWidget, p: Position) -> None:
         """Handle a drop when md.urls()."""
         c, u, undoType = self.c, self.c.undoer, 'Drag Urls'
         urls = md.urls()
@@ -3956,7 +3958,7 @@ class LeoQtTreeTab:
 class LeoTabbedTopLevel(LeoBaseTabWidget):
     """ Toplevel frame for tabbed ui """
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Args, **kwargs: KWargs) -> None:
         super().__init__(*args, **kwargs)
         ## middle click close on tabs -- JMP 20140505
         self.setMovable(False)
@@ -3993,7 +3995,7 @@ class QtIconBarClass:
     def getNewFrame(self) -> None:
         return None  # To do
     #@+node:ekr.20110605121601.18265: *3* QtIconBar.add
-    def add(self, *args: Any, **keys: Any) -> Any:
+    def add(self, *args: Args, **keys: KWargs) -> Any:
         """Add a button to the icon bar."""
         c = self.c
         if not self.w:
@@ -4225,7 +4227,7 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore
     def __repr__(self) -> str:
         return f"<QtMenuWrapper {self.leo_menu_label}>"
     #@+node:ekr.20110605121601.18460: *3* onAboutToShow & helpers (QtMenuWrapper)
-    def onAboutToShow(self, *args: Any, **keys: Any) -> None:
+    def onAboutToShow(self, *args: Args, **keys: KWargs) -> None:
 
         name = self.leo_menu_label
         if not name:

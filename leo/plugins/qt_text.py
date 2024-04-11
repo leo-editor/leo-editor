@@ -15,6 +15,8 @@ from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, W
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
+    Args = Any
+    KWargs = Any
     QEvent: TypeAlias = QtCore.QEvent
     QKeyEvent: TypeAlias = QtGui.QKeyEvent
     QMouseEvent: TypeAlias = QtGui.QMouseEvent
@@ -456,7 +458,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):
     """
     #@+others
     #@+node:ekr.20150403094706.9: *3* LeoLineTextWidget.__init__
-    def __init__(self, c: Cmdr, e: Any, *args: Any) -> None:
+    def __init__(self, c: Cmdr, e: Any, *args: Args) -> None:
         """Ctor for LineTextWidget."""
         super().__init__(*args)
         self.c = c
@@ -1063,7 +1065,7 @@ if QtWidgets:
 class NumberBar(QtWidgets.QFrame):
     #@+others
     #@+node:ekr.20150403094706.3: *3* NumberBar.__init__
-    def __init__(self, c: Cmdr, e: Any, *args: Any) -> None:
+    def __init__(self, c: Cmdr, e: Any, *args: Args) -> None:
         """Ctor for NumberBar class."""
         super().__init__(*args)
         self.c = c
@@ -1114,7 +1116,7 @@ class NumberBar(QtWidgets.QFrame):
         else:
             xdb.qc.put(f"b {path}:{n}")
     #@+node:ekr.20150403094706.5: *3* NumberBar.update
-    def update(self, *args: Any) -> None:
+    def update(self, *args: Args) -> None:
         """
         Updates the number bar to display the current set of numbers.
         Also, adjusts the width of the number bar if necessary.
@@ -1254,7 +1256,7 @@ class QMinibufferWrapper(QLineEditWrapper):
         # Monkey-patch the event handlers
         #@+<< define mouseReleaseEvent >>
         #@+node:ekr.20110605121601.18132: *3* << define mouseReleaseEvent >> (QMinibufferWrapper)
-        def mouseReleaseEvent(event: QEvent, self: Any = self) -> None:
+        def mouseReleaseEvent(event: QEvent, self: QMinibufferWrapper = self) -> None:
             """Override QLineEdit.mouseReleaseEvent.
 
             Simulate alt-x if we are not in an input state.
@@ -1561,7 +1563,7 @@ class QTextEditWrapper(QTextMixin):
             # Monkey patch the event handler.
             #@+others
             #@+node:ekr.20140901062324.18565: *5* QTextEditWrapper.mouseReleaseEvent (monkey-patch)
-            def mouseReleaseEvent(event: QMouseEvent, self: Any = self) -> None:
+            def mouseReleaseEvent(event: QMouseEvent, self: QTextEditWrapper = self) -> None:
                 """
                 Monkey patch for self.widget (QTextEditWrapper) mouseReleaseEvent.
                 """
@@ -1639,7 +1641,7 @@ class QTextEditWrapper(QTextMixin):
         def after(func: Callable) -> None:
             QtCore.QTimer.singleShot(delay, func)
 
-        def addFlashCallback(self: Any = self, w: str = w) -> None:
+        def addFlashCallback(self: QTextEditWrapper = self, w: str = w) -> None:
             i = self.flashIndex
             cursor = w.textCursor()  # Must be the widget's cursor.
             cursor.setPosition(i)

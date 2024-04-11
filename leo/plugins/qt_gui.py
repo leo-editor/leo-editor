@@ -39,6 +39,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    Args = Any
+    KWargs = Any
     # Events.
     QEvent: TypeAlias = QtCore.QEvent
     # Widgets
@@ -807,7 +809,7 @@ class LeoQtGui(leoGui.LeoGui):
         label: str = '',
         msg: str = '',
         c: Cmdr = None,
-        **keys: Any,
+        **keys: KWargs,
     ) -> None:
         if g.unitTesting:
             return None
@@ -1441,7 +1443,7 @@ class LeoQtGui(leoGui.LeoGui):
             c.config.setUserSetting('@bool show-tips', self.show_tips_flag)
             c.redraw()  # #2390: Show the change immediately.
     #@+node:ekr.20180127103142.1: *4* onNext (not used)
-    def onNext(self, *args: Any, **keys: Any) -> bool:
+    def onNext(self, *args: Args, **keys: KWargs) -> bool:
         g.trace(args, keys)
         return True
     #@+node:ekr.20111215193352.10220: *3* qt_gui.Splash Screen
