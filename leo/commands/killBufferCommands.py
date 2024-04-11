@@ -45,7 +45,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         self.addWsToKillRing = c.config.getBool('add-ws-to-kill-ring')
     #@+node:ekr.20150514063305.411: *3* addToKillBuffer
-    def addToKillBuffer(self, text: Any) -> None:
+    def addToKillBuffer(self, text: str) -> None:
         """
         Insert the text into the kill buffer if force is True or
         the text contains something other than whitespace.
@@ -179,7 +179,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         g.app.gui.set_focus(c, w)  # 2607
     #@+node:ekr.20220121073752.1: *3* ec.killParagraphHelper
     def killParagraphHelper(self,
-        event: LeoKeyEvent, frm: Any, to: Any, undoType: str = None,
+        event: LeoKeyEvent, frm: int, to: int, undoType: str = None,
     ) -> None:
         """A helper method for kill-paragraph commands."""
         w = self.editWidget(event)

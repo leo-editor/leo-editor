@@ -19,6 +19,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
+    KWargs = Any
 #@-<< spellCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
@@ -69,14 +70,14 @@ class BaseSpellWrapper:
             g.error(f"unexpected error creating: {fn}")
             g.es_exception()
     #@+node:ekr.20180207074613.1: *3* BaseSpellWrapper.default_dict
-    def default_dict(self, language: Any) -> dict[str, str]:
+    def default_dict(self, language: str) -> dict[str, str]:
 
         try:
             return enchant.Dict(language)
         except Exception:
             return {}
     #@+node:ekr.20180207073536.1: *3* BaseSpellWrapper.create_dict_from_file
-    def create_dict_from_file(self, fn: str, language: Any) -> dict[str, str]:
+    def create_dict_from_file(self, fn: str, language: str) -> dict[str, str]:
 
         try:
             return enchant.DictWithPWL(language, fn)
@@ -114,7 +115,7 @@ class DefaultDict:
         self.words.add(word)
         self.added_words.add(word)
     #@+node:ekr.20180207101513.1: *3* DefaultDict.add_words_from_dict
-    def add_words_from_dict(self, kind: str, fn: str, words: Any) -> None:
+    def add_words_from_dict(self, kind: str, fn: str, words: list[str]) -> None:
         """For use by DefaultWrapper."""
         for word in words or []:
             self.words.add(word)
@@ -222,7 +223,7 @@ class DefaultWrapper(BaseSpellWrapper):
         fn = g.finalize_join(g.app.homeDir, '.leo', 'spellpyx.txt')
         return fn if g.os_path_exists(fn) else None
     #@+node:ekr.20180207073815.1: *3* DefaultWrapper.read_words
-    def read_words(self, kind: Any, fn: str) -> set[str]:
+    def read_words(self, kind: str, fn: str) -> set[str]:
         """Return all the words from the dictionary file."""
         words = set()
         try:
@@ -573,7 +574,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             return
         self.as_you_type_replace(self.word)
     #@+node:ekr.20150514063305.497: *4* as_you_type_onkey
-    def as_you_type_onkey(self, tag: str, kwargs: Any) -> None:
+    def as_you_type_onkey(self, tag: str, kwargs: KWargs) -> None:
         """as_you_type_onkey - handle a keystroke in the body when
         spell as you type is active
 
@@ -655,7 +656,7 @@ class SpellTabHandler:
     """A class to create and manage Leo's Spell Check dialog."""
     #@+others
     #@+node:ekr.20150514063305.501: *3* SpellTabHandler.__init__
-    def __init__(self, c: Cmdr, tabName: Any) -> None:
+    def __init__(self, c: Cmdr, tabName: str) -> None:
         """Ctor for SpellTabHandler class."""
         # New in Leo 6.7.5: This class works in a null gui.
         self.c = c

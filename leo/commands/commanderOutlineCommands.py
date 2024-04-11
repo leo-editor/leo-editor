@@ -432,7 +432,7 @@ def contractAllOtherNodes(self: Cmdr, event: LeoKeyEvent = None) -> None:
         contractIfNotCurrent(c, p, leaveOpen)
     c.redraw()
 #@+node:ekr.20080819075811.7: *4* def contractIfNotCurrent
-def contractIfNotCurrent(c: Cmdr, p: Position, leaveOpen: Any) -> None:
+def contractIfNotCurrent(c: Cmdr, p: Position, leaveOpen: Position) -> None:
     if p == leaveOpen or not p.isAncestorOf(leaveOpen):
         p.contract()
     for child in p.children():

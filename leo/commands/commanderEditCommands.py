@@ -921,7 +921,7 @@ def rp_get_args(c: Cmdr) -> tuple[int, int, str, int, int]:
     oldYview = w.getYScrollPosition()
     return oldSel, oldYview, original, pageWidth, tabWidth
 #@+node:ekr.20171123135625.46: *3* function: rp_get_leading_ws
-def rp_get_leading_ws(c: Cmdr, lines: Any, tabWidth: Any) -> tuple[list[int], list[str]]:
+def rp_get_leading_ws(c: Cmdr, lines: list[str], tabWidth: int) -> tuple[list[int], list[str]]:
     """Compute and return indents and leading_ws."""
     # c = self
     indents = [0, 0]
@@ -984,8 +984,8 @@ def rp_reformat(
 #@+node:ekr.20171123135625.48: *3* function: rp_wrap_all_lines
 def rp_wrap_all_lines(
     c: Cmdr,
-    indents: Any,
-    leading_ws: Any,
+    indents: list[int],
+    leading_ws: list[str],
     lines: list[str],
     pageWidth: int,
 ) -> str:

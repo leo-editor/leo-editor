@@ -16,6 +16,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    KWargs = Any
 #@-<< editCommands imports & annotations  >>
 
 def cmd(name: str) -> Callable:
@@ -1277,7 +1278,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # - Tree control recomputes height of each line.
     #@+node:ekr.20150514063305.230: *4* ec. Helpers
     #@+node:ekr.20150514063305.231: *5* ec.appendImageDictToList
-    def appendImageDictToList(self, aList: list, path: str, xoffset: int, **kargs: Any) -> int:
+    def appendImageDictToList(self, aList: list, path: str, xoffset: int, **kargs: KWargs) -> int:
         c = self.c
         relPath = path  # for finding icon on load in different environment
         path = g.app.gui.getImageFinder(path)
@@ -1425,7 +1426,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         p.setDirty()
         c.setChanged()
     #@+node:ekr.20150514063305.241: *4* ec.insertIconFromFile
-    def insertIconFromFile(self, path: str, p: Position = None, pos: int = None, **kargs: Any) -> None:
+    def insertIconFromFile(self, path: str, p: Position = None, pos: int = None, **kargs: KWargs) -> None:
         c = self.c
         if not p:
             p = c.p
@@ -2820,7 +2821,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Toggle extend mode, i.e., toggle whether cursor movement commands extend the selections."""
         self.extendModeHelper(event, not self.extendMode)
 
-    def extendModeHelper(self, event: LeoKeyEvent, val: Any) -> None:
+    def extendModeHelper(self, event: LeoKeyEvent, val: bool) -> None:
         c = self.c
         w = self.editWidget(event)
         if w:

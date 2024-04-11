@@ -10,7 +10,7 @@ import shlex
 import sys
 import tempfile
 import time
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 #
 # Third-party imports.
 try:
@@ -177,7 +177,7 @@ def find_missing_docstrings(event: LeoKeyEvent) -> None:
                 return True
         return False
     #@+node:ekr.20190615181104.2: *4* function: is_a_definition
-    def is_a_definition(line: Any) -> bool:
+    def is_a_definition(line: str) -> bool:
         """Return True if line is a definition line."""
         # By Виталије Милошевић.
         # It may be useful to skip __init__ methods because their docstring
@@ -418,7 +418,7 @@ class MypyCommand:
 
     #@+others
     #@+node:ekr.20210302111935.3: *3* mypy.check_all
-    def check_all(self, roots: Any) -> None:
+    def check_all(self, roots: list[Position]) -> None:
         """Run mypy on all files in paths."""
         c = self.c
         if not mypy:

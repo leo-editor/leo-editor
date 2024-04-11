@@ -5,7 +5,7 @@
 #@+node:ekr.20150514045750.1: ** << bufferCommands imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 
@@ -230,7 +230,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         g.es_print("no node named", name, color='orange')
         return None
     #@+node:ekr.20150514045829.17: *4* getBufferName
-    def getBufferName(self, event: LeoKeyEvent, finisher: Any) -> None:
+    def getBufferName(self, event: LeoKeyEvent, finisher: Callable) -> None:
         """Get a buffer name into k.arg and call k.setState(kind,n,handler)."""
         k = self.c.k
         self.computeData()

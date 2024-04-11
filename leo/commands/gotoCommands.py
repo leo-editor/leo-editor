@@ -5,7 +5,7 @@
 #@+node:ekr.20220827065126.1: ** << gotoCommands imports & annotations >>
 from __future__ import annotations
 import re
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -290,7 +290,7 @@ class GoToCommands:
         return gnx, h, offset
     #@+node:ekr.20150624142449.1: *3* goto.Utils
     #@+node:ekr.20150625133523.1: *4* goto.fail
-    def fail(self, lines: Any, n: int, root: Position) -> None:
+    def fail(self, lines: list[str], n: int, root: Position) -> None:
         """Select the last line of the last node of root's tree."""
         c = self.c
         w = c.frame.body.wrapper
@@ -411,7 +411,7 @@ class GoToCommands:
             useSentinels=True,
         )
     #@+node:ekr.20150623175738.1: *4* goto.get_script_node_info
-    def get_script_node_info(self, s: str, delim2: Any) -> tuple[str, str]:
+    def get_script_node_info(self, s: str, delim2: str) -> tuple[str, str]:
         """Return the gnx and headline of a #@+node."""
         i = s.find(':', 0)
         j = s.find(':', i + 1)
