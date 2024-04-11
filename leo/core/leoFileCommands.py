@@ -34,7 +34,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     Conn = sqlite3.Connection
     Element = ElementTree.Element
-    Obj = Any  # Denotes that 'Any' is correct.
+
 #@-<< leoFileCommands annotations >>
 #@+others
 #@+node:ekr.20150509194827.1: ** cmd (decorator)
@@ -68,7 +68,7 @@ def dump_gnx_dict(event: LeoKeyEvent) -> None:
 #@+node:felix.20220618222639.1: ** class SetEncoder
 class SetJSONEncoder(json.JSONEncoder):
     # Used to encode JSON in leojs files
-    def default(self, obj: Obj) -> Obj:
+    def default(self, obj: Any) -> Any:
         if isinstance(obj, set):
             return list(obj)
         return json.JSONEncoder.default(self, obj)
@@ -154,7 +154,7 @@ class FastRead:
 
     bad_path_dict: dict[str, bool] = {}
 
-    def readWithElementTree(self, path: str, s_or_b: Union[str, bytes]) -> tuple[VNode, Obj]:
+    def readWithElementTree(self, path: str, s_or_b: Union[str, bytes]) -> tuple[VNode, Any]:
 
         contents = g.toUnicode(s_or_b)
         table = contents.maketrans(self.translate_dict)  # type:ignore #1510.
@@ -193,7 +193,7 @@ class FastRead:
         fc.descendentExpandedList = expanded
         fc.descendentMarksList = marked
     #@+node:ekr.20180606041211.1: *4* fast.resolveUa
-    def resolveUa(self, attr: str, val: Obj, kind: str = None) -> Obj:
+    def resolveUa(self, attr: str, val: Any, kind: str = None) -> Any:
         # Kind is for unit testing.
         """Parse an unknown attribute in a <v> or <t> element."""
         try:
@@ -270,7 +270,7 @@ class FastRead:
         else:
             mf.show()
     #@+node:ekr.20180708060437.1: *5* fast.getGlobalData
-    def getGlobalData(self) -> dict[str, Obj]:
+    def getGlobalData(self) -> dict[str, Any]:
         """Return a dict containing all global data."""
         c = self.c
         try:
@@ -295,7 +295,7 @@ class FastRead:
             'r1': 0.5, 'r2': 0.5,
         }
     #@+node:ekr.20180602062323.8: *4* fast.scanTnodes
-    def scanTnodes(self, t_elements: Element) -> tuple[dict[str, str], dict[str, Obj]]:
+    def scanTnodes(self, t_elements: Element) -> tuple[dict[str, str], dict[str, Any]]:
 
         gnx2body: dict[str, str] = {}
         gnx2ua: dict[str, dict] = defaultdict(dict)
@@ -314,7 +314,7 @@ class FastRead:
     def scanVnodes(self,
         gnx2body: dict[str, str],
         gnx2vnode: dict[str, VNode],
-        gnx2ua: dict[str, Obj],
+        gnx2ua: dict[str, Any],
         v_elements: Element,
     ) -> VNode:
 
@@ -410,7 +410,7 @@ class FastRead:
             v.children = [new_vnode]
         return v
     #@+node:felix.20220618165345.1: *3* fast.readWithJsonTree & helpers
-    def readWithJsonTree(self, path: str, s: str) -> tuple[VNode, Obj]:
+    def readWithJsonTree(self, path: str, s: str) -> tuple[VNode, Any]:
         try:
             d = json.loads(s)
         except Exception:
@@ -508,7 +508,7 @@ class FastRead:
     def scanJsonVnodes(self,
         gnx2body: dict[str, str],
         gnx2vnode: dict[str, VNode],
-        gnx2ua: dict[str, Obj],
+        gnx2ua: dict[str, Any],
         v_elements: Element,
     ) -> Optional[VNode]:
 
@@ -602,8 +602,8 @@ class FileCommands:
         self.checking = False  # True: checking only: do *not* alter the outline.
         self.descendentExpandedList: list[str] = []  # List of gnx's.
         self.descendentMarksList: list[str] = []  # List of gnx's.
-        self.descendentTnodeUaDictList: list[Obj] = []
-        self.descendentVnodeUaDictList: list[Obj] = []
+        self.descendentTnodeUaDictList: list[Any] = []
+        self.descendentVnodeUaDictList: list[Any] = []
         self.ratio = 0.5
         self.currentVnode: VNode = None
         # For writing...
@@ -1188,7 +1188,7 @@ class FileCommands:
     # Pre Leo 4.5 Only @thin vnodes had the descendentTnodeUnknownAttributes field.
     # New in Leo 4.5: @thin & @shadow vnodes have descendentVnodeUnknownAttributes field.
 
-    def getDescendentUnknownAttributes(self, s: str, v: VNode = None) -> Obj:
+    def getDescendentUnknownAttributes(self, s: str, v: VNode = None) -> Any:
         """Unhexlify and unpickle t/v.descendentUnknownAttribute field."""
         try:
             # Changed in version 3.2: Accept only bytestring or bytearray objects as input.
@@ -1622,7 +1622,7 @@ class FileCommands:
             self.handleWriteLeoFileException(fileName, backupName, f)
             return False
     #@+node:ekr.20210316095706.1: *6* fc.leojs_outline_dict
-    def leojs_outline_dict(self, p: Position = None) -> dict[str, Obj]:
+    def leojs_outline_dict(self, p: Position = None) -> dict[str, Any]:
         """Return a dict representing the outline."""
         c = self.c
         uas = {}
@@ -1682,7 +1682,7 @@ class FileCommands:
             self.setCachedBits()
         return result
     #@+node:ekr.20210316092313.1: *6* fc.leojs_globals (sets window_position)
-    def leojs_globals(self) -> Optional[dict[str, Obj]]:
+    def leojs_globals(self) -> Optional[dict[str, Any]]:
         """Put json representation of Leo's cached globals."""
         c = self.c
         width, height, left, top = c.frame.get_window_info()
@@ -1706,7 +1706,7 @@ class FileCommands:
             }
         return d
     #@+node:ekr.20210316085413.2: *6* fc.leojs_vnodes
-    def leojs_vnode(self, p: Position, gnxSet: Obj, isIgnore: bool = False) -> dict[str, Obj]:
+    def leojs_vnode(self, p: Position, gnxSet: Any, isIgnore: bool = False) -> dict[str, Any]:
         """Return a jsonized vnode."""
         # c = self.c
         fc = self
@@ -1729,7 +1729,7 @@ class FileCommands:
         if forceWrite or self.usingClipboard:
             v.setWriteBit()  # 4.2: Indicate we wrote the body text.
 
-        children: list[dict[str, Obj]] = []  # Start empty
+        children: list[dict[str, Any]] = []  # Start empty
 
         if p.hasChildren() and (forceWrite or self.usingClipboard):
             # This optimization eliminates all "recursive" copies.
@@ -1743,7 +1743,7 @@ class FileCommands:
             p.moveToParent()  # Restore p in the caller.
 
         # At least will contain  the gnx
-        result: dict[str, Obj] = {
+        result: dict[str, Any] = {
             'gnx': v.fileIndex,
         }
 
@@ -1831,7 +1831,7 @@ class FileCommands:
         theFile.close()
     #@+node:ekr.20210316034532.1: *4* fc.Writing Utils
     #@+node:ekr.20080805085257.2: *5* fc.pickle
-    def pickle(self, *, v: VNode, val: Obj, tag: str) -> str:
+    def pickle(self, *, v: VNode, val: Any, tag: str) -> str:
         """Pickle val and return the hexlified result."""
         try:
             s = pickle.dumps(val, protocol=1)
@@ -2009,7 +2009,7 @@ class FileCommands:
                 # This prevents the file from being written.
                 raise BadLeoFile(f"no VNode for {repr(index)}")
     #@+node:ekr.20050418161620.2: *5* fc.putUaHelper
-    def putUaHelper(self, v: VNode, key: str, val: Obj) -> str:
+    def putUaHelper(self, v: VNode, key: str, val: Any) -> str:
         """Put attribute whose name is key and value is val to the output stream."""
         # New in 4.3: leave string attributes starting with 'str_' alone.
         if key.startswith('str_'):
