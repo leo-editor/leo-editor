@@ -21,6 +21,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGlobals import KeyStroke as Stroke
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    KWargs = Any
     MatchGroups = tuple  # Best we can do so far.
     Settings = g.Bunch
     UndoData = g.Bunch
@@ -1913,7 +1914,7 @@ class LeoFind:
 
         c = self.c
 
-        def summarize_callback(**kwargs: Any) -> None:
+        def summarize_callback(**kwargs: KWargs) -> None:
 
             # Get and check pattern.
             pattern_s = kwargs['args'][0]

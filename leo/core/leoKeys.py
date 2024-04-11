@@ -26,10 +26,14 @@ except ImportError:
 #@+node:ekr.20220414165644.1: ** << leoKeys annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGlobals import BindingInfo
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    Args = Any
+    KWargs = Any
     Stroke = Any
+    Widget = Any
 #@-<< leoKeys annotations >>
 #@+<< Key bindings, an overview >>
 #@+node:ekr.20130920121326.11281: ** << Key bindings, an overview >>
@@ -165,7 +169,7 @@ class AutoCompleterClass:
     """
     #@+others
     #@+node:ekr.20061031131434.5: *3* ac.ctor & reloadSettings
-    def __init__(self, k: Any) -> None:
+    def __init__(self, k: KeyHandlerClass) -> None:
         """Ctor for AutoCompleterClass class."""
         # Ivars...
         self.c = k.c
@@ -174,10 +178,11 @@ class AutoCompleterClass:
         # additional namespaces to search for objects, other code
         # can append namespaces to this to extend scope of search
         self.namespaces: list[dict] = []
+        self.qcompleter: Any = None
         self.qw = None  # The object that supports qcompletion methods.
         self.tabName: str = None  # The name of the main completion tab.
         self.verbose = False  # True: print all members, regardless of how many there are.
-        self.w = None  # The widget that gets focus after autocomplete is done.
+        self.w: Widget = None  # The widget that gets focus after autocomplete is done.
         self.warnings: dict[str, str] = {}  # Keys are language names.
         # Codewise pre-computes...
         self.codewiseSelfList: list[str] = []  # The (global) completions for "self."
@@ -362,7 +367,7 @@ class AutoCompleterClass:
             self.tabName = newTabName
             log.clearTab(self.tabName)
     #@+node:ekr.20110509064011.14556: *4* ac.attr_matches
-    def attr_matches(self, s: str, namespace: Any) -> Optional[list[str]]:
+    def attr_matches(self, s: str, namespace: dict) -> Optional[list[str]]:
         """Compute matches when string s is of the form name.name....name.
 
         Evaluates s using eval(s,namespace)
@@ -926,7 +931,7 @@ class AutoCompleterClass:
         ))
         return c.shortFileName().lower() in table
     #@+node:ekr.20101101175644.5891: *4* ac.put
-    def put(self, *args: Any, **keys: Any) -> None:
+    def put(self, *args: Args, **keys: KWargs) -> None:
         """Put s to the given tab.
 
         May be overridden in subclasses."""
@@ -2105,7 +2110,7 @@ class KeyHandlerClass:
                 result.append(bi)
         return result
     #@+node:ekr.20061031131434.93: *5* k.bindKeyToDict
-    def bindKeyToDict(self, pane: str, stroke: Stroke, bi: Any) -> None:
+    def bindKeyToDict(self, pane: str, stroke: Stroke, bi: BindingInfo) -> None:
         """Update k.masterBindingsDict for the stroke."""
         # New in Leo 4.4.1: Allow redefinitions.
         # Called from makeBindingsFromCommandsDict.
@@ -2947,7 +2952,7 @@ class KeyHandlerClass:
         allowBinding: bool = False,
         pane: str = 'all',
         shortcut: str = None,  # Must be None unless allowBindings is True.
-        **kwargs: Any,  # Used only to warn about deprecated kwargs.
+        **kwargs: KWargs,  # Used only to warn about deprecated kwargs.
     ) -> None:
         """
         Make the function available as a minibuffer command.
@@ -4231,7 +4236,7 @@ class ModeInfo:
         c = self.c
         key = 'enter-' + self.name.replace(' ', '-')
 
-        def enterModeCallback(event: LeoKeyEvent = None, self: Any = self) -> None:
+        def enterModeCallback(event: LeoKeyEvent = None, self: ModeInfo = self) -> None:
             self.enterMode()
 
         c.commandsDict[key] = f = enterModeCallback

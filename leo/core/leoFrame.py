@@ -35,6 +35,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     from leo.plugins.qt_text import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree, QtIconBarClass
     from leo.plugins.notebook import NbController
+    Args = Any
+    KWargs = Any
     Widget = Any
 #@-<< leoFrame annotations >>
 #@+<< leoFrame: about handling events >>
@@ -1184,7 +1186,7 @@ class LeoLog:
         self.logNumber = 0  # To create unique name fields for text widgets.
         self.newTabCount = 0  # Number of new tabs created.
         self.textDict: dict[str, Widget] = {}  # Keys are page names. Values are logCtrl's (text widgets).
-        self.wrapper: Any = None  # For cursesGui2.py.
+        self.wrapper: Wrapper = None  # For cursesGui2.py.
     #@+node:ekr.20070302094848.1: *3* LeoLog.clearTab
     def clearTab(self, tabName: str, wrap: str = 'none') -> None:
         self.selectTab(tabName, wrap=wrap)
@@ -1970,7 +1972,7 @@ class NullIconBarClass:
     def show(self) -> None:
         pass
     #@+node:ekr.20070301164543.2: *3* NullIconBarClass.add
-    def add(self, *args: Any, **keys: Any) -> Widget:
+    def add(self, *args: Args, **keys: KWargs) -> Widget:
         """Add a (virtual) button to the (virtual) icon bar."""
         command: Callable = keys.get('command')
         text = keys.get('text')
@@ -1990,7 +1992,7 @@ class NullIconBarClass:
 
         class nullButtonWidget:
 
-            def __init__(self, c: Cmdr, command: Any, name: str, text: str) -> None:
+            def __init__(self, c: Cmdr, command: Callable, name: str, text: str) -> None:
                 self.c = c
                 self.command = command
                 self.name = name
@@ -2036,7 +2038,7 @@ class NullLog(LeoLog):
         # self.logCtrl is now a property of the base LeoLog class.
         self.logNumber = 0
         self.widget: Widget = self.createControl(parentFrame)
-        self.wrapper: Any = None  # For cursesGui2.py.
+        self.wrapper: Wrapper = None  # For cursesGui2.py.
     #@+node:ekr.20120216123546.10951: *4* NullLog.finishCreate
     def finishCreate(self) -> None:
         pass
