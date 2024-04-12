@@ -1969,7 +1969,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             # Regex replacements.
             table = (
                 # Annotations.
-                ('str', 'String:'),
+                ('str', 'String'),
                 ('int', 'i32'),
                 ('float', 'f64'),
                 # Constants.
