@@ -27,17 +27,15 @@ make sense to focus on pydot.
 from math import atan2, sin, cos
 import os
 import tempfile
-from typing import Any, Dict
+from typing import Any
 import urllib.request as urllib
 
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
-from leo.core.leoQt import QtConst, QtCore, QtGui, QtWidgets, uic
+from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets, uic
 from leo.core.leoQt import KeyboardModifier
 # Third-party imports
 try:
-    # pylint: disable=import-error
-        # These are optional.
     import pydot
     import dot_parser
     assert dot_parser
@@ -207,7 +205,7 @@ class GraphicsView(QtWidgets.QGraphicsView):  # type:ignore
 
             self.scale(scale, scale)
 
-        elif int(event.modifiers() & QtConst.AltModifier):
+        elif int(event.modifiers() & Qt.AltModifier):
 
             self.glue.scale_centers(event.delta() / 120)
 
@@ -260,7 +258,7 @@ class GetImage:
                 testpath = testpath.split('//', 1)[-1]
             #
             # file on local file system
-            testpath = g.os_path_finalize_join(path, testpath)
+            testpath = g.finalize_join(path, testpath)
             if g.os_path_exists(testpath):
                 return QtWidgets.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
             #
@@ -295,7 +293,7 @@ class GetImage:
 #@+node:tbrown.20110407091036.17531: ** class nodeBase
 class nodeBase(QtWidgets.QGraphicsItemGroup):  # type:ignore
 
-    node_types: Dict[str, Any] = {}
+    node_types: dict[str, Any] = {}
 
     @classmethod
     def make_node(cls, owner, node, ntype):
@@ -358,7 +356,7 @@ class nodeRect(nodeBase):
         self.setZValue(20)
         self.bg.setZValue(10)
         self.text.setZValue(15)
-        self.bg.setPen(QtGui.QPen(QtConst.NoPen))
+        self.bg.setPen(QtGui.QPen(Qt.NoPen))
 
         self.text.setPos(QtCore.QPointF(0, self.iconVPos))
         self.addToGroup(self.text)
@@ -619,7 +617,7 @@ class linkItem(QtWidgets.QGraphicsItemGroup):  # type:ignore
         else:
             self.head.setBrush(QtGui.QBrush(QtGui.QColor(0, 0, 0)))
 
-        self.head.setPen(QtGui.QPen(QtConst.NoPen))
+        self.head.setPen(QtGui.QPen(Qt.NoPen))
         self.addToGroup(self.head)
     #@+node:bob.20110119123023.7406: *3* mousePressEvent
     def mousePressEvent(self, event):
@@ -670,8 +668,7 @@ class graphcanvasController:
     def reloadSettings(self):
         c = self.c
         c.registerReloadSettings(self)
-        self.graph_manual_layout = \
-            c.config.getBool('graph-manual-layout', default=False)
+        self.graph_manual_layout = c.config.getBool('graph-manual-layout', default=False)
     #@+node:bob.20110119123023.7410: *3* initIvars
     def initIvars(self):
         """initialize, called by __init__ and clear"""
@@ -774,7 +771,7 @@ class graphcanvasController:
         self.do_update(adjust=False)
         self.center_graph()
         # self.ui.canvasView.centerOn(self.ui.canvas.sceneRect().center())
-        # self.ui.canvasView.fitInView(self.ui.canvas.sceneRect(), QtConst.KeepAspectRatio)
+        # self.ui.canvasView.fitInView(self.ui.canvas.sceneRect(), Qt.KeepAspectRatio)
     #@+node:bob.20110119133133.3353: *3* loadGraph
     def loadGraph(self, what='node', create=True, pnt=None):
 
@@ -951,7 +948,7 @@ class graphcanvasController:
             not isinstance(lastNode, nodeNone) and
             not isinstance(lastNode, nodeImage)
         ):
-            lastNode.bg.setPen(QtGui.QPen(QtConst.NoPen))
+            lastNode.bg.setPen(QtGui.QPen(Qt.NoPen))
 
         if (not isinstance(nodeItem, nodeNone) and
              not isinstance(nodeItem, nodeImage)
@@ -970,7 +967,7 @@ class graphcanvasController:
         if not blc:
             return
 
-        if event and event.modifiers() & QtConst.ShiftModifier:
+        if event and event.modifiers() & Qt.ShiftModifier:
             links = blc.linksFrom(self.node[oldItem])
             if self.node[nodeItem] not in links:
                 blc.vlink(self.node[oldItem], self.node[nodeItem])
@@ -1137,7 +1134,7 @@ class graphcanvasController:
         bbox = self.ui.canvas.itemsBoundingRect()
         self.ui.canvas.setSceneRect(bbox)
         self.ui.canvasView.updateSceneRect(bbox)
-        self.ui.canvasView.fitInView(bbox, QtConst.KeepAspectRatio)
+        self.ui.canvasView.fitInView(bbox, Qt.KeepAspectRatio)
         self.ui.canvasView.centerOn(bbox.center())
 
         # and add space around it for movement
@@ -1264,6 +1261,7 @@ class graphcanvasController:
             return
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
+        newcolor: Any
 
         if 'color' in node.u['_bklnk']:
             color = node.u['_bklnk']['color']
@@ -1285,6 +1283,7 @@ class graphcanvasController:
             return
         node = self.node[self.lastNodeItem]
         item = self.nodeItem[node]
+        newcolor: Any
 
         if 'tcolor' in node.u['_bklnk']:
             color = node.u['_bklnk']['tcolor']

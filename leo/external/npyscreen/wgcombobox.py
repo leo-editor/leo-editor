@@ -104,7 +104,7 @@ class TitleCombo(titlefield.TitleText):
         try:
             self.entry_widget.values = values
         except Exception:
-            # probably trying to set the value before the textarea is initialised
+            # probably trying to set the value before the textarea is initialized
             self.__tmp_values = values
 
     #@+node:ekr.20170428084207.574: *3* del_values

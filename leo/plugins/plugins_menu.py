@@ -60,7 +60,7 @@ __plugin_priority__
 from __future__ import annotations
 import configparser as ConfigParser
 import os
-from typing import Any, Dict, List, Sequence, TYPE_CHECKING
+from typing import Any, Sequence, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -78,7 +78,7 @@ __plugin_group__ = "Core"
 #@+others
 #@+node:ekr.20060107091318: ** Functions
 #@+node:EKR.20040517080555.24: *3* addPluginMenuItem
-def addPluginMenuItem(plugin: "PlugIn", c: Cmdr) -> None:
+def addPluginMenuItem(plugin: PlugIn, c: Cmdr) -> None:
     """
     @param plugin:  Plugin object for one currently loaded plugin
     @param c:       Leo-editor "commander" for the current .leo file
@@ -89,7 +89,7 @@ def addPluginMenuItem(plugin: "PlugIn", c: Cmdr) -> None:
         # Check at runtime to see if the plugin has actually been loaded.
         # This prevents us from calling hasTopLevel() on unloaded plugins.
 
-        def callback(event: Event, c: Cmdr=c, plugin: "PlugIn"=plugin) -> None:
+        def callback(event: Event, c: Cmdr = c, plugin: "PlugIn" = plugin) -> None:
             path, name = g.os_path_split(plugin.filename)
             name, ext = g.os_path_splitext(name)
             pc = g.app.pluginsController
@@ -136,11 +136,11 @@ def createPluginsMenu(tag: str, keywords: Any) -> None:
     if lmd:
         impModSpecList = list(lmd.keys())
 
-        def key(aList: List) -> str:
+        def key(aList: list) -> str:
             return aList.split('.')[-1].lower()
 
-        impModSpecList.sort(key=key)
-        plgObList: List[PlugIn] = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
+        impModSpecList.sort(key=key)  # type:ignore
+        plgObList: list[PlugIn] = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
         c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu(menu_name)
         # 2013/12/13: Add any items in @menu plugins
         add_menu_from_settings(c)
@@ -192,9 +192,9 @@ class _PluginDatabase:
     #@+node:pap.20050305152751.1: *3* __init__
     def __init__(self) -> None:
         """Initialize"""
-        self.plugins_by_group: Dict[Group, List[Any]] = {}
-        self.groups_by_plugin: Dict[Any, List[Group]] = {}
-        self.menus: Dict[str, Menu] = {}
+        self.plugins_by_group: dict[Group, list[Any]] = {}
+        self.groups_by_plugin: dict[Any, list[Group]] = {}
+        self.menus: dict[str, Menu] = {}
     #@+node:pap.20050305152751.2: *3* addPlugin
     def addPlugin(self, item: Item, group: Group) -> None:
         """Add a plugin"""
@@ -202,7 +202,7 @@ class _PluginDatabase:
             self.plugins_by_group.setdefault(group, []).append(item)
             self.groups_by_plugin[item] = group
     #@+node:pap.20050305152751.3: *3* getGroups
-    def getGroups(self) -> List[Any]:
+    def getGroups(self) -> list[Any]:
         """Return a list of groups"""
         groups = list(self.plugins_by_group.keys())
         groups.sort()
@@ -226,7 +226,7 @@ class PlugIn:
     """A class to hold information about one plugin"""
     #@+others
     #@+node:EKR.20040517080555.4: *3* PlugIn.__init__ & helper
-    def __init__(self, plgMod: Any, c: Cmdr=None) -> None:
+    def __init__(self, plgMod: Any, c: Cmdr = None) -> None:
         """
         @param plgMod: Module object for the plugin represented by this instance.
         @param c:  Leo-editor "commander" for the current .leo file
@@ -274,7 +274,7 @@ class PlugIn:
             if getattr(func, 'is_command', None):
                 self.othercmds[func.command_name] = func
     #@+node:EKR.20040517080555.8: *3* PlugIn.about
-    def about(self, event: Event=None) -> None:
+    def about(self, event: Event = None) -> None:
         """Put information about this plugin in a scrolledMessage dialog."""
         c = self.c
         msg = self.doc.strip() + '\n' if self.doc else ''
@@ -296,7 +296,7 @@ class PlugIn:
             name = name[4:]
         return name.capitalize()
     #@+node:EKR.20040517080555.9: *3* PlugIn.properties
-    def properties(self, event: Event=None) -> None:
+    def properties(self, event: Event = None) -> None:
         """Display a modal properties dialog for this plugin"""
         if self.hasapply:
 

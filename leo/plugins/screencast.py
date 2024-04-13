@@ -361,7 +361,7 @@ class ScreenCastController:
         c = m.c
         # Named commands handle their own undo!
         # The undo handling in m.next should suffice.
-        c.k.simulateCommand(command_name)
+        c.doCommandByName(command_name)
         c.redraw()
         m.repaint('all')
     #@+node:ekr.20120922041923.10612: *4* sc.dismiss_menu_bar
@@ -792,8 +792,8 @@ class ScreenCastController:
     def resolve_icon_fn(self, fn):
         """Resolve fn relative to the Icons directory."""
         # m = self
-        dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
-        path = g.os_path_finalize_join(dir_, fn)
+        dir_ = g.finalize_join(g.app.loadDir, '..', 'Icons')
+        path = g.finalize_join(dir_, fn)
         if g.os_path_exists(path):
             return path
         g.trace('does not exist: %s' % (path))

@@ -146,7 +146,6 @@ import os
 import time
 import tempfile
 import difflib
-from typing import List
 from leo.core import leoGlobals as g
 try:
     from leo.plugins import stickynotes
@@ -184,7 +183,7 @@ class leoscreen_Controller:
         # pulling in lines from output, this is the next one to get
         self.next_unread_line = self.first_line
         # output from last command
-        self.output: List[str] = []
+        self.output: list[str] = []
         self.old_output = []
         # file name for hardcopy and paste commands
         fd, self.tmpfile = tempfile.mkstemp()
@@ -390,7 +389,7 @@ class leoscreen_Controller:
                    for i in out.split('\n') if i.startswith('\t')]  # type:ignore
 
         ld = ListDialog(None, 'Pick screen', 'Pick screen', screens)
-        ld.exec_()
+        ld.exec()
 
         screen = [i for i in screens if i[1]]
         if screen:

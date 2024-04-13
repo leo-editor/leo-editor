@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -42,9 +42,17 @@
 </v>
 </v>
 </v>
-<v t="ekr.20220922123340.1"><vh>Leo 6.7.0: Code cleanups</vh></v>
-<v t="ekr.20221108065046.1"><vh>Leo 6.7.1: Support for leoInteg</vh></v>
+<v t="ekr.20230717044724.1"><vh>Leo 6.7.x</vh>
+<v t="ekr.20240302141717.1"><vh>Leo 6.7.8: Faster beautifier, better UNLs</vh></v>
+<v t="ekr.20240118095852.1"><vh>Leo 6.7.7: Support for LeoInteg</vh></v>
+<v t="ekr.20231217091511.1"><vh>Leo 6.7.6: Python 3.12 compatibility</vh></v>
+<v t="ekr.20231107093704.1"><vh>Leo 6.7.5: Improved importers and spell-checking</vh></v>
+<v t="ekr.20230717044632.1"><vh>Leo 6.7.4: gnx-based UNLs</vh></v>
+<v t="ekr.20230507084859.1"><vh>Leo 6.7.3: Code cleanups</vh></v>
 <v t="ekr.20230301072845.1"><vh>Leo 6.7.2: Use GitHub Pages</vh></v>
+<v t="ekr.20221108065046.1"><vh>Leo 6.7.1: Support for leoInteg</vh></v>
+<v t="ekr.20220922123340.1"><vh>Leo 6.7.0: Code cleanups</vh></v>
+</v>
 <v t="ekr.20230301073004.1"><vh>Leo 6.x</vh>
 <v t="ekr.20220831114826.1"><vh>Leo 6.6.4: Support for leoInteg, leoJS</vh></v>
 <v t="ekr.20220719105058.1"><vh>Leo 6.6.3: Support for leoInteg</vh></v>
@@ -26773,5 +26781,257 @@ Other changes:
 - [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
 <t tx="ekr.20230301073004.1"></t>
+<t tx="ekr.20230507084859.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.3 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.7.3**
+
+- PR #3260: Improved and safer handling of paths in `@&lt;file&gt;` nodes.
+            Leo supports Python's standard os.path expansions.
+            Leo no longer supports {{python-expression}} in headlines.
+            
+- Several large code cleanups: 460+ files changed.
+
+**Commands**
+
+- PR #3227: Add commands to add/remove numbers from headlines.
+- PR #3255: Add write-zip-archive command.
+- PR #3192: Add show-color-settings and the show-font-settings commands.
+
+**Other changes**
+
+- PR #3208: Add 'reload-settings' hook.
+- PR #3214: Optionally expand headlines on mouse-over.
+- PR #3224: Improve mod_autosave plugin.
+- PR #3241: Simplify Leo's path wrappers.
+- PRs #3264 and #3277: Simplify Leo's path-related code.
+- Tweaks and small bug fixes: 20+ issues and 30+ pull requests.
+
+**Links**
+
+- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.7.3 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.3+)
+- [6.7.3 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.3)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
+
+@nowrap
+@language rest
+</t>
+<t tx="ekr.20230717044632.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.4 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.7.4**
+
+**Warning: breaking changes to Leo's api**
+
+p.get_UNL returns gnx-based unls. Previously it returned path-based gnxs.
+See the first comment of PR #3424 for full details.
+
+**gnx-based unls**
+
+- PR #3215 and #3424: gnx-based unls (clickable links).
+  These links will break only if the original node is deleted.
+  
+**New settings**
+  
+- @string unl-status-kind = gnx
+- @bool full-unl-paths = True
+- @data unl-path-prefixes
+  
+**Other improvements**
+  
+- PR #3330: Improve importers for C, C++, and cython.
+- PR #3345: Improve importer architecture.
+- PR #3363 &amp; #3379: Improve c.recursiveImport.
+- PR #3376: Improve python importer.
+
+**Large code changes**
+
+- PR #3365: Simplify mypy annotations (128 files).
+- PR #3367: Import Callable from collections.abc instead of typing (50 files).
+
+**Retire three plugins**
+
+- PR #3215: Retire the settings_finder, backlink, and quickMove plugins.
+
+- 50+ issues and 70+ pull requests.
+
+**Links**
+
+- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.7.4 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.4+)
+- [6.7.4 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.4)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
+</t>
+<t tx="ekr.20230717044724.1"></t>
+<t tx="ekr.20231107093704.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.5 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.7.5**
+
+- PR #3568: Improve word-oriented finds and improve Leo's spell checker.
+- PRs #3515 and #3517: Significantly improve python importer.
+- PRs #3509 and #3511: Improve rust importer.
+
+**Other improvements**
+
+- PR #3560: Retire the g.SherlockTracer class.
+- PR #3552: Clear dirty bits when writing sqLite DBs.
+- PR #3541: Use c.doCommandByName instead of c.k.simulateCommand.
+- PR #3538: Make file-diff-files undoable.
+- PR #3533: Reload outlines rather than restarting Leo.
+- PR #3531: Add move-outline-to-first-child &amp; move-outline-to-last-child commands.
+- PR #3528: Improve copy-gnx command.
+- PR #3525: Add promote-section-references command.
+- PR #3521: Improve what-line command.
+- PR #3519: Make the mark-node-and-parents and unmark-node-and-parents commands undoable.
+- PR #3503: Fix bug involving back slashes in search patterns.
+- PR #3499: Retire the read-outline-only command.
+- PR #3607: Add scheme importer
+- Fix several other minor bugs.
+
+**Links**
+
+- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.7.5 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.5+)
+- [6.7.5 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.5)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
+
+@nowrap
+@language rest
+</t>
+<t tx="ekr.20231217091511.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.6 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.7.6**
+
+Support for Python 3.12:
+
+- PR #3693: update leoAst.py for Python 3.12.
+- PR #3701: Colorize PEP 701 f-strings.
+
+Other significant improvements:
+
+- PR #3645: Allow mixed external files on the command line.
+            Retire the --load-type command-line option.
+- PR #3575: Add the indented_languages plugin.
+- PR #3642: Add the clean-all-lines command.
+- PR #3659: Add python-to-rust command.
+- PR #3673: Add summarize command.
+- scripts.leo contains `@button` scripts by Thomas Passin.
+
+The usual assortment of minor bug fixes and code-level improvements.
+
+**Links**
+
+- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.7.6 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.6+)
+- [6.7.6 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.6)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
+<t tx="ekr.20240118095852.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.7 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.7.7**
+
+- PR #3761: Improve leoserver.py to support LeoInteg.
+- Asserted minor improvements.
+
+**Links**
+
+- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.7.7 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.7+)
+- [6.7.7 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.7)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
+
+@nowrap
+@language rest
+</t>
+<t tx="ekr.20240302141717.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.8 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.7.8**
+
+- PR #3757: (leoTokens.py) Make Leo's beautifier 3x faster.
+- PR #3771: Revert colorizing of f-strings.
+- PR #3786: Support Nim.
+- PR #3790: Add "get-unl" command to Leo's server.
+- PR #3805: Fix problems with auto-completion and calltips.
+- PR #3806: Fix problems with Leo's `go-back` and `go-forward` commands.
+- PR #3807: Improve Leo's Python importer.
+- PR #3817: Allow relative paths in gnx-based UNLs.
+- The usual minor improvements and bug fixes.
+
+**Links**
+
+- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.7.8 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.8+)
+- [6.7.8 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.8)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
 </tnodes>
 </leo_file>

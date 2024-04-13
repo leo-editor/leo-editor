@@ -9,10 +9,10 @@ which pane has focus. Using arrow keys is **much**
 easier than using the mouse.
 
 **Focus in outline pane**
-    
+
     The **plain** arrow keys **select** nodes,
     expanding or contracting nodes as needed.
-    
+
     The **shift** arrow keys **move** nodes. The
     Shift-Left-Arrow and Shift-Up-Arrow contract
     nodes as needed. **Note**: the
@@ -24,7 +24,7 @@ easier than using the mouse.
     As usual, the **plain** arrow keys move the
     cursor and the **shift** arrow keys move the
     cursor and extend the solution.
-    
+
     The **alt** arrow keys move the focus to the
     outline pane and then select nodes. The
     **alt-shift** arrow keys move the focus to the
@@ -36,7 +36,7 @@ easier than using the mouse.
 ..  - The Right-Arrow key contracts a node if the node
 ..  is expanded. Otherwise the Right-Arrow key
 ..  selects the node's parent.
-  
+
 ..  - The Left-Arrow key does nothing if the selected
 ..  node has no children.  If the node does have
 ..  children, the Left-Arrow key expands the node

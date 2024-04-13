@@ -32,7 +32,7 @@ def git_dump_f(event):
             codecs.open(fname, 'w', encoding='utf-8').write(p.b)
             print("wrote", fname)
 
-    flatroot = g.os_path_finalize('~/.leo/dump')
+    flatroot = g.finalize('~/.leo/dump')
     if not os.path.isdir(flatroot):
         g.es("Initializing git repo at " + flatroot)
         os.makedirs(flatroot)
@@ -43,7 +43,7 @@ def git_dump_f(event):
     if not comment:
         comment = "Leo dump"
     wb = c.config.getString(setting='default_leo_file')
-    wb = g.os_path_finalize(wb)
+    wb = g.finalize(wb)
     shutil.copy2(wb, flatroot)
     os.chdir(flatroot)
     dump_nodes()

@@ -1,22 +1,18 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Writing Plugins &#8212; Leo 6.7.2 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <title>Writing Plugins &#8212; Leo 6.7.8 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=db26dd79" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=524d4423" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8453e47e" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=bf5d43e8"></script>
+    <script src="_static/doctools.js?v=13a9ecda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <script src="_static/sidebar.js"></script>
     
@@ -37,7 +33,7 @@
         <li class="right" >
           <a href="coloring.html" title="Controlling Syntax Coloring"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="intermediatetopics.html" accesskey="U">Advanced Topics</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Writing Plugins</a></li> 
       </ul>
@@ -49,7 +45,7 @@
           <div class="body" role="main">
             
   <section id="writing-plugins">
-<h1>Writing Plugins<a class="headerlink" href="#writing-plugins" title="Permalink to this heading">¶</a></h1>
+<h1>Writing Plugins<a class="headerlink" href="#writing-plugins" title="Link to this heading">¶</a></h1>
 <p>Plugins modify how Leo works. With plugins you can give Leo new commands,
 modify how existing commands work, or change any other aspect of Leo’s look
 and feel.</p>
@@ -64,7 +60,7 @@ defined in leoPy.leo.</p></li>
 details, see the section called <a class="reference internal" href="#handling-events">Handling Events</a> later in this chapter.</p></li>
 </ol>
 <p>The rest of this chapters discusses topics related specifically to plugins.</p>
-<div class="contents local topic" id="contents">
+<nav class="contents local" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#id1" id="id2">Writing Plugins</a></p></li>
@@ -78,9 +74,9 @@ details, see the section called <a class="reference internal" href="#handling-ev
 </li>
 <li><p><a class="reference internal" href="#support-for-unit-testing" id="id8">Support for unit testing</a></p></li>
 </ul>
-</div>
+</nav>
 <section id="id1">
-<h2><a class="toc-backref" href="#id2">Writing Plugins</a><a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Writing Plugins</a><a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
 <p>A plugin is a Python file in Leo’s plugins folder.</p>
 <p>Every plugin should have a top-level init function that returns True if the plugin has been initialized properly. The init function typically:</p>
 <ol class="arabic simple">
@@ -140,7 +136,7 @@ details, see the section called <a class="reference internal" href="#handling-ev
 <p>Once c is determined, the presently selected position is simply c.p.</p>
 </section>
 <section id="important-security-warnings">
-<h2><a class="toc-backref" href="#id3">Important security warnings</a><a class="headerlink" href="#important-security-warnings" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Important security warnings</a><a class="headerlink" href="#important-security-warnings" title="Link to this heading">¶</a></h2>
 <p>Naively using plugins can expose you and your .leo files to malicious attacks. The fundamental principles are:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Scripts</span> <span class="ow">and</span> <span class="n">plugins</span> <span class="n">must</span> <span class="n">never</span> <span class="n">blindly</span> <span class="n">execute</span> <span class="n">code</span> <span class="kn">from</span> <span class="nn">untrusted</span> <span class="n">sources</span><span class="o">.</span>
 </pre></div>
@@ -170,7 +166,7 @@ is in our &quot;own&quot; documents!
 <p>In Python it is very easy to write a script that will blindly execute other scripts:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Warning: extremely dangerous code</span>
 
-<span class="c1"># Execute the body text of all nodes that start with `@script`.</span>
+<span class="c1"># Execute the body text of all nodes that start with ``@script``.</span>
 <span class="k">def</span> <span class="nf">onLoadFile</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">():</span>
         <span class="n">h</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
@@ -194,12 +190,12 @@ for p in c.all_positions():
 <p>This script will introduce a security hole the .leo file without doing anything prohibited by rexec, and without leaving any traces of the perpetrating script behind. The damage will become permanent <em>outside</em> this script when the user saves the .leo file.</p>
 </section>
 <section id="documenting-plugins">
-<h2><a class="toc-backref" href="#id4">Documenting plugins</a><a class="headerlink" href="#documenting-plugins" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Documenting plugins</a><a class="headerlink" href="#documenting-plugins" title="Link to this heading">¶</a></h2>
 <p>Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.</p>
 <ul>
 <li><p>Document the plugin thoroughly in the plugin’s docstring. This allows the documentation to be accessed from the Plugins menu.</p></li>
 <li><p>Document any new commands with a proper docstring. This allows the minibuffer command <cite>help-for-command</cite> to provide help for the command.</p></li>
-<li><p>In <cite>leo/doc/sphinx-docs/sphinxDocs.leo</cite>, to the node <cite>&#64;file leo.plugins.rst</cite>, add the following snippet (preferably in alphabetical order), with the name of the plugin modified to the name of your plugin (here <cite>ipython</cite>). This allows the API docs to be automatically updated:</p>
+<li><p>In <code class="docutils literal notranslate"><span class="pre">leo/doc/sphinx-docs/sphinxDocs.leo</span></code>, to the node <code class="docutils literal notranslate"><span class="pre">&#64;file</span> <span class="pre">leo.plugins.rst</span></code>, add the following snippet (preferably in alphabetical order), with the name of the plugin modified to the name of your plugin (here <cite>ipython</cite>). This allows the API docs to be automatically updated:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>:mod:`ipython` Module
 ---------------------
 
@@ -213,13 +209,9 @@ for p in c.all_positions():
 </ul>
 </section>
 <section id="c-ivars-properties">
-<h2><a class="toc-backref" href="#id5">c ivars &amp; properties</a><a class="headerlink" href="#c-ivars-properties" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">c ivars &amp; properties</a><a class="headerlink" href="#c-ivars-properties" title="Link to this heading">¶</a></h2>
 <p>For any commander c:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 41%" />
-<col style="width: 59%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><strong>Property</strong></p></td>
 <td><p><strong>Value</strong></p></td>
@@ -256,7 +248,7 @@ plugins. Does not persist when Leo exists.</p></td>
 </table>
 </section>
 <section id="handling-events">
-<h2><a class="toc-backref" href="#id6">Handling events</a><a class="headerlink" href="#handling-events" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Handling events</a><a class="headerlink" href="#handling-events" title="Link to this heading">¶</a></h2>
 <p>Plugins and other scripts can register event handlers (also known as hooks):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s2">&quot;after-create-leo-frame&quot;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
 <span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s2">&quot;idle&quot;</span><span class="p">,</span> <span class="n">on_idle</span><span class="p">)</span>
@@ -282,22 +274,18 @@ plugins. Does not persist when Leo exists.</p></td>
 </pre></div>
 </div>
 <section id="summary-of-event-handlers">
-<h3><a class="toc-backref" href="#id7">Summary of event handlers</a><a class="headerlink" href="#summary-of-event-handlers" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Summary of event handlers</a><a class="headerlink" href="#summary-of-event-handlers" title="Link to this heading">¶</a></h3>
 <p>The following table tells about each event handler: its name, when it is called,
 and the additional arguments passed to the hook in the keywords dictionary.
 For some kind of hooks, Leo will skip its own normal processing if the hook
 returns anything <em>other</em> than None. The table indicates such hooks with ‘yes’ in
 the ‘Stop?’ column.</p>
-<p><strong>Important</strong>: Ever since Leo 4.2, the v, old_v and new_v keys in
-the keyword dictionary contain <em>positions</em>, not vnodes. These keys are
-deprecated. The new_c key is also deprecated. Plugins should use the c key instead.</p>
+<p><strong>Note</strong>:</p>
+<ul class="simple">
+<li><p>The <cite>v</cite>, <cite>old_v</cite> and <cite>new_v</cite> keys below are <em>deprecated</em>. They contain <em>positions</em>, not vnodes.</p></li>
+<li><p>The <cite>new_c</cite> key is also <em>deprecated</em>. Use the <cite>c</cite> key instead.</p></li>
+</ul>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 7%" />
-<col style="width: 30%" />
-<col style="width: 37%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Event name (tag argument)</p></th>
 <th class="head"><p>Stop?</p></th>
@@ -321,387 +309,372 @@ deprecated. The new_c key is also deprecated. Plugins should use the c key inste
 <td><p>end of tree.redraw</p></td>
 <td><p>c (note 6)</p></td>
 </tr>
+<tr class="row-odd"><td><p>‘after-reading-external-file’</p></td>
+<td></td>
+<td><p>after reading each external file</p></td>
+<td><p>c,p</p></td>
+</tr>
+<tr class="row-even"><td><p>‘after-reload-settings’</p></td>
+<td></td>
+<td><p>after ‘reload-settings’ command</p></td>
+<td><p>c</p></td>
+</tr>
 <tr class="row-odd"><td><p>‘before-create-leo-frame’</p></td>
 <td></td>
 <td><p>before frame.finishCreate</p></td>
 <td><p>c</p></td>
 </tr>
-<tr class="row-even"><td><p>‘bodyclick1’</p></td>
+<tr class="row-even"><td><p>‘before-writing-external-file’</p></td>
+<td></td>
+<td><p>before writing each external file</p></td>
+<td><p>c,p</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘bodyclick1’</p></td>
 <td><p>yes</p></td>
 <td><p>before normal click in body</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘bodyclick2’</p></td>
+<tr class="row-even"><td><p>‘bodyclick2’</p></td>
 <td></td>
 <td><p>after normal click in body</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-even"><td><p>‘bodydclick1’</p></td>
+<tr class="row-odd"><td><p>‘bodydclick1’</p></td>
 <td><p>yes</p></td>
 <td><p>before double click in body</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘bodydclick2’</p></td>
+<tr class="row-even"><td><p>‘bodydclick2’</p></td>
 <td></td>
 <td><p>after  double click in body</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-even"><td><p>‘bodykey1’</p></td>
+<tr class="row-odd"><td><p>‘bodykey1’</p></td>
 <td><p>yes</p></td>
 <td><p>before body keystrokes</p></td>
 <td><p>c,p,v,ch,oldSel,undoType</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘bodykey2’</p></td>
+<tr class="row-even"><td><p>‘bodykey2’</p></td>
 <td></td>
 <td><p>after  body keystrokes</p></td>
 <td><p>c,p,v,ch,oldSel,undoType</p></td>
 </tr>
-<tr class="row-even"><td><p>‘bodyrclick1’</p></td>
+<tr class="row-odd"><td><p>‘bodyrclick1’</p></td>
 <td><p>yes</p></td>
 <td><p>before right click in body</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘bodyrclick2’</p></td>
+<tr class="row-even"><td><p>‘bodyrclick2’</p></td>
 <td></td>
 <td><p>after  right click in body</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-even"><td><p>‘boxclick1’</p></td>
+<tr class="row-odd"><td><p>‘boxclick1’</p></td>
 <td><p>yes</p></td>
 <td><p>before click in +- box</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘boxclick2’</p></td>
+<tr class="row-even"><td><p>‘boxclick2’</p></td>
 <td></td>
 <td><p>after  click in +- box</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-even"><td><p>‘clear-all-marks’</p></td>
+<tr class="row-odd"><td><p>‘clear-all-marks’</p></td>
 <td></td>
 <td><p>after clear-all-marks command</p></td>
 <td><p>c,p,v</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘clear-mark’</p></td>
+<tr class="row-even"><td><p>‘clear-mark’</p></td>
 <td></td>
 <td><p>when mark is set</p></td>
 <td><p>c,p,v</p></td>
 </tr>
-<tr class="row-even"><td><p>‘close-frame’</p></td>
+<tr class="row-odd"><td><p>‘close-frame’</p></td>
 <td></td>
 <td><p>in app.closeLeoWindow</p></td>
 <td><p>c</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘color-optional-markup’</p></td>
+<tr class="row-even"><td><p>‘color-optional-markup’</p></td>
 <td><p>yes *</p></td>
 <td><p>(note 7)</p></td>
 <td><p>colorer,p,v,s,i,j,colortag (note 7)</p></td>
 </tr>
-<tr class="row-even"><td><p>‘command1’</p></td>
+<tr class="row-odd"><td><p>‘command1’</p></td>
 <td><p>yes</p></td>
 <td><p>before each command</p></td>
 <td><p>c,p,v,label (note 2)</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘command2’</p></td>
+<tr class="row-even"><td><p>‘command2’</p></td>
 <td></td>
 <td><p>after  each command</p></td>
 <td><p>c,p,v,label (note 2)</p></td>
 </tr>
-<tr class="row-even"><td><p>‘create-optional-menus’</p></td>
+<tr class="row-odd"><td><p>‘create-optional-menus’</p></td>
 <td></td>
 <td><p>(note 8)</p></td>
 <td><p>c (note 8)</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘create-popup-menu-items’</p></td>
+<tr class="row-even"><td><p>‘create-popup-menu-items’</p></td>
 <td></td>
 <td><p>in tree.OnPopup</p></td>
 <td><p>c,p,v,event (new)</p></td>
 </tr>
-<tr class="row-even"><td><p>‘draw-outline-box’</p></td>
+<tr class="row-odd"><td><p>‘draw-outline-box’</p></td>
 <td><p>yes</p></td>
 <td><p>when drawing +- box</p></td>
 <td><p>tree,p,v,x,y</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘draw-outline-icon’</p></td>
+<tr class="row-even"><td><p>‘draw-outline-icon’</p></td>
 <td><p>yes</p></td>
 <td><p>when drawing icon</p></td>
 <td><p>tree,p,v,x,y</p></td>
 </tr>
-<tr class="row-even"><td><p>‘draw-outline-node’</p></td>
+<tr class="row-odd"><td><p>‘draw-outline-node’</p></td>
 <td><p>yes</p></td>
 <td><p>when drawing node</p></td>
 <td><p>tree,p,v,x,y</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘draw-outline-text-box’</p></td>
+<tr class="row-even"><td><p>‘draw-outline-text-box’</p></td>
 <td><p>yes</p></td>
 <td><p>when drawing headline</p></td>
 <td><p>tree,p,v,x,y</p></td>
 </tr>
-<tr class="row-even"><td><p>‘drag1’</p></td>
+<tr class="row-odd"><td><p>‘drag1’</p></td>
 <td><p>yes</p></td>
 <td><p>before start of drag</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘drag2’</p></td>
+<tr class="row-even"><td><p>‘drag2’</p></td>
 <td></td>
 <td><p>after  start of drag</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-even"><td><p>‘dragging1’</p></td>
+<tr class="row-odd"><td><p>‘dragging1’</p></td>
 <td><p>yes</p></td>
 <td><p>before continuing to drag</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘dragging2’</p></td>
+<tr class="row-even"><td><p>‘dragging2’</p></td>
 <td></td>
 <td><p>after  continuing to drag</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-even"><td><p>‘enable-popup-menu-items’</p></td>
+<tr class="row-odd"><td><p>‘enable-popup-menu-items’</p></td>
 <td></td>
 <td><p>in tree.OnPopup</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘end1’</p></td>
+<tr class="row-even"><td><p>‘end1’</p></td>
 <td></td>
 <td><p>start of app.quit()</p></td>
 <td><p>None</p></td>
 </tr>
-<tr class="row-even"><td><p>‘enddrag1’</p></td>
+<tr class="row-odd"><td><p>‘enddrag1’</p></td>
 <td><p>yes</p></td>
 <td><p>before end of drag</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘enddrag2’</p></td>
+<tr class="row-even"><td><p>‘enddrag2’</p></td>
 <td></td>
 <td><p>after  end of drag</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-even"><td><p>‘headclick1’</p></td>
+<tr class="row-odd"><td><p>‘headclick1’</p></td>
 <td><p>yes</p></td>
 <td><p>before normal click in headline</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘headclick2’</p></td>
+<tr class="row-even"><td><p>‘headclick2’</p></td>
 <td></td>
 <td><p>after  normal click in headline</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-even"><td><p>‘headrclick1’</p></td>
+<tr class="row-odd"><td><p>‘headrclick1’</p></td>
 <td><p>yes</p></td>
 <td><p>before right click in headline</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘headrclick2’</p></td>
+<tr class="row-even"><td><p>‘headrclick2’</p></td>
 <td></td>
 <td><p>after  right click in headline</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-even"><td><p>‘headkey1’</p></td>
+<tr class="row-odd"><td><p>‘headkey1’</p></td>
 <td><p>yes</p></td>
 <td><p>before headline keystrokes</p></td>
 <td><p>c,p,v,ch (note 12)</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘headkey2’</p></td>
+<tr class="row-even"><td><p>‘headkey2’</p></td>
 <td></td>
 <td><p>after  headline keystrokes</p></td>
 <td><p>c,p,v,ch (note 12)</p></td>
 </tr>
-<tr class="row-even"><td><p>‘hoist-changed’</p></td>
+<tr class="row-odd"><td><p>‘hoist-changed’</p></td>
 <td></td>
 <td><p>whenever the hoist stack changes</p></td>
 <td><p>c</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘hypercclick1’</p></td>
-<td><p>yes</p></td>
-<td><p>before control click in hyperlink</p></td>
-<td><p>c,p,v,event</p></td>
-</tr>
-<tr class="row-even"><td><p>‘hypercclick2’</p></td>
-<td></td>
-<td><p>after  control click in hyperlink</p></td>
-<td><p>c,p,v,event</p></td>
-</tr>
-<tr class="row-odd"><td><p>‘hyperenter1’</p></td>
-<td><p>yes</p></td>
-<td><p>before entering hyperlink</p></td>
-<td><p>c,p,v,event</p></td>
-</tr>
-<tr class="row-even"><td><p>‘hyperenter2’</p></td>
-<td></td>
-<td><p>after  entering hyperlink</p></td>
-<td><p>c,p,v,event</p></td>
-</tr>
-<tr class="row-odd"><td><p>‘hyperleave1’</p></td>
-<td><p>yes</p></td>
-<td><p>before leaving  hyperlink</p></td>
-<td><p>c,p,v,event</p></td>
-</tr>
-<tr class="row-even"><td><p>‘hyperleave2’</p></td>
-<td></td>
-<td><p>after  leaving  hyperlink</p></td>
-<td><p>c,p,v,event</p></td>
-</tr>
-<tr class="row-odd"><td><p>‘iconclick1’</p></td>
+<tr class="row-even"><td><p>‘iconclick1’</p></td>
 <td><p>yes</p></td>
 <td><p>before single click in icon box</p></td>
 <td><p>c,p,v,event (note 15)</p></td>
 </tr>
-<tr class="row-even"><td><p>‘iconclick2’</p></td>
+<tr class="row-odd"><td><p>‘iconclick2’</p></td>
 <td></td>
 <td><p>after  single click in icon box</p></td>
 <td><p>c,p,v,event (note 15)</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘iconrclick1’</p></td>
+<tr class="row-even"><td><p>‘iconrclick1’</p></td>
 <td><p>yes</p></td>
 <td><p>before right click in icon box</p></td>
 <td><p>c,p,v,event (note 15)</p></td>
 </tr>
-<tr class="row-even"><td><p>‘iconrclick2’</p></td>
+<tr class="row-odd"><td><p>‘iconrclick2’</p></td>
 <td></td>
 <td><p>after  right click in icon box</p></td>
 <td><p>c,p,v,event (note 15)</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘icondclick1’</p></td>
+<tr class="row-even"><td><p>‘icondclick1’</p></td>
 <td><p>yes</p></td>
 <td><p>before double click in icon box</p></td>
 <td><p>c,p,v,event (note 15)</p></td>
 </tr>
-<tr class="row-even"><td><p>‘icondclick2’</p></td>
+<tr class="row-odd"><td><p>‘icondclick2’</p></td>
 <td></td>
 <td><p>after  double click in icon box</p></td>
 <td><p>c,p,v,event (note 15)</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘idle’</p></td>
+<tr class="row-even"><td><p>‘idle’</p></td>
 <td></td>
 <td><p>periodically (at idle time)</p></td>
 <td><p>c</p></td>
 </tr>
-<tr class="row-even"><td><p>‘init-color-markup’</p></td>
+<tr class="row-odd"><td><p>‘init-color-markup’</p></td>
 <td></td>
 <td><p>(note 7)</p></td>
 <td><p>colorer,p,v (note 7)</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘menu1’</p></td>
+<tr class="row-even"><td><p>‘menu1’</p></td>
 <td><p>yes</p></td>
 <td><p>before creating menus</p></td>
 <td><p>c,p,v (note 3)</p></td>
 </tr>
-<tr class="row-even"><td><p>‘menu2’</p></td>
+<tr class="row-odd"><td><p>‘menu2’</p></td>
 <td><p>yes</p></td>
 <td><p>during creating menus</p></td>
 <td><p>c,p,v (note 3)</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘menu-update’</p></td>
+<tr class="row-even"><td><p>‘menu-update’</p></td>
 <td><p>yes</p></td>
 <td><p>before updating menus</p></td>
 <td><p>c,p,v</p></td>
 </tr>
-<tr class="row-even"><td><p>‘new’</p></td>
+<tr class="row-odd"><td><p>‘new’</p></td>
 <td></td>
 <td><p>start of New command</p></td>
 <td><p>c,old_c,new_c (note 9)</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘open1’</p></td>
+<tr class="row-even"><td><p>‘open1’</p></td>
 <td><p>yes</p></td>
 <td><p>before opening any file</p></td>
 <td><p>c,old_c,new_c,fileName (note 4)</p></td>
 </tr>
-<tr class="row-even"><td><p>‘open2’</p></td>
+<tr class="row-odd"><td><p>‘open2’</p></td>
 <td></td>
 <td><p>after  opening any file</p></td>
 <td><p>c,old_c,new_c,fileName (note 4)</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘openwith1’</p></td>
+<tr class="row-even"><td><p>‘openwith1’</p></td>
 <td><p>yes</p></td>
 <td><p>before Open With command</p></td>
 <td><p>c,p,v,d (note 14)</p></td>
 </tr>
-<tr class="row-even"><td><p>‘openwith2’</p></td>
+<tr class="row-odd"><td><p>‘openwith2’</p></td>
 <td></td>
 <td><p>after  Open With command</p></td>
 <td><p>c,p,v,(note 14)</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘recentfiles1’</p></td>
+<tr class="row-even"><td><p>‘recentfiles1’</p></td>
 <td><p>yes</p></td>
 <td><p>before Recent Files command</p></td>
 <td><p>c,p,v,fileName</p></td>
 </tr>
-<tr class="row-even"><td><p>‘recentfiles2’</p></td>
+<tr class="row-odd"><td><p>‘recentfiles2’</p></td>
 <td></td>
 <td><p>after  Recent Files command</p></td>
 <td><p>c,p,v,fileName</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘redraw-entire-outline’</p></td>
+<tr class="row-even"><td><p>‘redraw-entire-outline’</p></td>
 <td><p>yes</p></td>
 <td><p>start of tree.redraw</p></td>
 <td><p>c (note 6)</p></td>
 </tr>
-<tr class="row-even"><td><p>‘save1’</p></td>
+<tr class="row-odd"><td><p>‘save1’</p></td>
 <td><p>yes</p></td>
 <td><p>before any Save command</p></td>
 <td><p>c,p,v,fileName</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘save2’</p></td>
+<tr class="row-even"><td><p>‘save2’</p></td>
 <td></td>
 <td><p>after  any Save command</p></td>
 <td><p>c,p,v,fileName</p></td>
 </tr>
-<tr class="row-even"><td><p>‘scan-directives’</p></td>
+<tr class="row-odd"><td><p>‘scan-directives’</p></td>
 <td></td>
 <td><p>in scanDirectives</p></td>
 <td><p>c,p,v,s,old_dict,dict,pluginsList (note 10)</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘select1’</p></td>
+<tr class="row-even"><td><p>‘select1’</p></td>
 <td><p>yes</p></td>
 <td><p>before selecting a position</p></td>
 <td><p>c,new_p,old_p,new_v,old_v</p></td>
 </tr>
-<tr class="row-even"><td><p>‘select2’</p></td>
+<tr class="row-odd"><td><p>‘select2’</p></td>
 <td></td>
 <td><p>after  selecting a position</p></td>
 <td><p>c,new_p,old_p,new_v,old_v</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘select3’</p></td>
+<tr class="row-even"><td><p>‘select3’</p></td>
 <td></td>
 <td><p>after  selecting a position</p></td>
 <td><p>c,new_p,old_p,new_v,old_v</p></td>
 </tr>
-<tr class="row-even"><td><p>‘set-mark’</p></td>
+<tr class="row-odd"><td><p>‘set-mark’</p></td>
 <td></td>
 <td><p>when a mark is set</p></td>
 <td><p>c,p,v</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘show-popup-menu’</p></td>
+<tr class="row-even"><td><p>‘show-popup-menu’</p></td>
 <td></td>
 <td><p>in tree.OnPopup</p></td>
 <td><p>c,p,v,event</p></td>
 </tr>
-<tr class="row-even"><td><p>‘start1’</p></td>
+<tr class="row-odd"><td><p>‘start1’</p></td>
 <td></td>
 <td><p>after app.finishCreate()</p></td>
 <td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘start2’</p></td>
+<tr class="row-even"><td><p>‘start2’</p></td>
 <td></td>
 <td><p>after opening first Leo window</p></td>
 <td><p>c,p,v,fileName</p></td>
 </tr>
-<tr class="row-even"><td><p>‘unselect1’</p></td>
+<tr class="row-odd"><td><p>‘unselect1’</p></td>
 <td><p>yes</p></td>
 <td><p>before unselecting a vnode</p></td>
 <td><p>c,new_p,old_p,new_v,old_v</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘unselect2’</p></td>
+<tr class="row-even"><td><p>‘unselect2’</p></td>
 <td></td>
 <td><p>after  unselecting a vnode</p></td>
 <td><p>c,new_p,old_p,old_v,old_v</p></td>
 </tr>
-<tr class="row-even"><td><p>‘&#64;url1’</p></td>
+<tr class="row-odd"><td><p>‘&#64;url1’</p></td>
 <td><p>yes</p></td>
 <td><p>before double-click &#64;url node</p></td>
 <td><p>c,p,v,url (note 5)</p></td>
 </tr>
-<tr class="row-odd"><td><p>‘&#64;url2’</p></td>
+<tr class="row-even"><td><p>‘&#64;url2’</p></td>
 <td></td>
 <td><p>after  double-click &#64;url node</p></td>
 <td><p>c,p,v(note 5)</p></td>
@@ -772,11 +745,6 @@ dictionary whose keys are all the tags specified by the user in the body of the
 </ol>
 <p>The following events can <em>only</em> be called be called by minibuffer commands:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 47%" />
-<col style="width: 15%" />
-<col style="width: 38%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Event name (tag argument)</p></th>
 <th class="head"><p>Stop?</p></th>
@@ -817,11 +785,46 @@ dictionary whose keys are all the tags specified by the user in the body of the
 </pre></div>
 </div>
 </li>
+<li><p>The following links are supported by plugins, not Leo itself:</p></li>
 </ol>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>‘hypercclick1’</p></td>
+<td><p>yes</p></td>
+<td><p>before control click in hyperlink</p></td>
+<td><p>c,p,v,event</p></td>
+</tr>
+<tr class="row-even"><td><p>‘hypercclick2’</p></td>
+<td></td>
+<td><p>after  control click in hyperlink</p></td>
+<td><p>c,p,v,event</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘hyperenter1’</p></td>
+<td><p>yes</p></td>
+<td><p>before entering hyperlink</p></td>
+<td><p>c,p,v,event</p></td>
+</tr>
+<tr class="row-even"><td><p>‘hyperenter2’</p></td>
+<td></td>
+<td><p>after  entering hyperlink</p></td>
+<td><p>c,p,v,event</p></td>
+</tr>
+<tr class="row-odd"><td><p>‘hyperleave1’</p></td>
+<td><p>yes</p></td>
+<td><p>before leaving  hyperlink</p></td>
+<td><p>c,p,v,event</p></td>
+</tr>
+<tr class="row-even"><td><p>‘hyperleave2’</p></td>
+<td></td>
+<td><p>after  leaving  hyperlink</p></td>
+<td><p>c,p,v,event</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 <section id="support-for-unit-testing">
-<h2><a class="toc-backref" href="#id8">Support for unit testing</a><a class="headerlink" href="#support-for-unit-testing" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Support for unit testing</a><a class="headerlink" href="#support-for-unit-testing" title="Link to this heading">¶</a></h2>
 <p>If a plugin has a function at the outer (module) level called unitTest, Leo’s unit tests will call that function.</p>
 <p>So it would be good if writers of plugins would create such a unitTest function. To indicate a failure the unitTest can just throw an exception. Leo’s plugins test suite takes care of the rest.</p>
 </section>
@@ -877,15 +880,15 @@ dictionary whose keys are all the tags specified by the user in the body of the
         <li class="right" >
           <a href="coloring.html" title="Controlling Syntax Coloring"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="intermediatetopics.html" >Advanced Topics</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Writing Plugins</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on March 01, 2023.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    &#169; Copyright 1997-2024, Edward K. Ream.
+      Last updated on March 03, 2024.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

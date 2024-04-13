@@ -65,6 +65,7 @@ disable=
         consider-using-dict-items,
         consider-using-generator,
         consider-using-max-builtin,
+        consider-using-min-builtin,
         consider-using-set-comprehension,
         consider-using-ternary,
         consider-using-with,
@@ -101,6 +102,7 @@ disable=
         use-dict-literal,
         use-list-literal,
         use-maxsplit-arg, # What is this??
+        use-yield-from,
         using-constant-test,
 
     # Good warnings. Don't suppress these.

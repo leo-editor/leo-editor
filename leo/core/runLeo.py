@@ -8,7 +8,7 @@
 import os
 import sys
 import traceback
-#
+
 # Override sys.excepthook
 def leo_excepthook(typ, val, tb):
     # Like g.es_exception.
@@ -22,7 +22,7 @@ def leo_excepthook(typ, val, tb):
     print('')
 
 sys.excepthook = leo_excepthook
-#
+
 # Partial fix for #541.
 # See https://stackoverflow.com/questions/24835155/
 if sys.executable.endswith("pythonw.exe"):
@@ -33,19 +33,24 @@ if sys.executable.endswith("pythonw.exe"):
         "w")
 path = os.getcwd()
 if path not in sys.path:
-    # print('appending %s to sys.path' % path)
     sys.path.append(path)
 try:
     # #1472: bind to g immediately.
     from leo.core import leoGlobals as g
     from leo.core import leoApp
     g.app = leoApp.LeoApp()
+
 except Exception as e:
+    # The full traceback would alarm users!
+    # Note: app.createDefaultGui reports problems importing Qt.
     print(e)
-    msg = "\n*** Leo could not be started ***"
-    msg += "\nPlease verify you've installed the required dependencies:"
-    msg += "\nhttps://leoeditor.com/installing.html"
-    sys.exit(msg)
+    message = (
+        '*** Leo could not be started ***\n'
+        "Please verify you've installed the required dependencies:\n"
+        'https://leo-editor.github.io/leo-editor/installing.html'
+    )
+    print(message)
+    sys.exit(message)
 #@-<< imports and inits >>
 #@+others
 #@+node:ekr.20031218072017.2607: ** profile_leo (runLeo.py)
@@ -60,6 +65,7 @@ def profile_leo():
     # Work around a Python distro bug: can fail on Ubuntu.
     try:
         import pstats
+        from leo.core import leoGlobals as g
     except ImportError:
         g.es_print('can not import pstats: this is a Python distro bug')
         g.es_print(

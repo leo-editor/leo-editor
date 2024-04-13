@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20201202144422.1: * @file ../unittests/commands/test_editCommands.py
-"""Tests for leo.commands.editCommands."""
+"""Tests of leo.commands.editCommands."""
 import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
@@ -18,8 +18,8 @@ class TestEditCommands(LeoUnitTest):
             before_sel: str,
             after_sel: str,  # before and after selection ranges.
             command_name: str,
-            directives: str='',
-            dedent: bool=True,
+            directives: str = '',
+            dedent: bool = True,
         ):
         """
         A helper for many commands tests.
@@ -52,7 +52,7 @@ class TestEditCommands(LeoUnitTest):
         i, j = toInt(i), toInt(j)
         w.setSelectionRange(i, j, insert=j)
         # Run the command!
-        c.k.simulateCommand(command_name)
+        c.doCommandByName(command_name)
         self.assertEqual(self.tempNode.b, self.after_p.b, msg=command_name)
     #@+node:ekr.20201201084621.1: *3* TestEditCommands.setUp
     def setUp(self):
@@ -824,7 +824,8 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.30: *5* clean-lines
     def test_clean_lines(self):
         """Test case for clean-lines"""
-        before_b = textwrap.dedent("""\
+        before_b = self.prep(
+        """
             # Should remove all trailing whitespace.
 
             a = 2
@@ -834,7 +835,7 @@ class TestEditCommands(LeoUnitTest):
             d = 5
             e = 6
             x
-            """)
+        """)
         after_b = before_b
         # Add some trailing ws to before_b
         i = 1 + before_b.find('3')
@@ -1978,20 +1979,22 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20210926144000.1: *5* insert-newline-bug-2230
     def test_insert_newline_bug_2230(self):
         """Test case for insert-newline"""
-        before_b = textwrap.dedent("""\
-    #@@language python
-    def spam():
-        if 1:  # test
-    # after line
-    """)
-        # There are 8 spaces in the line after "if 1:..."
-        after_b = textwrap.dedent("""\
-    #@@language python
-    def spam():
-        if 1:  # test
+        before_b = self.prep("""
+            @language python
+            def spam():
+                if 1:  # test
+            # after line
+        """)
 
-    # after line
-    """)
+        # There are 8 spaces in the line after "if 1:..."
+        after_b = self.prep(
+        """
+            @language python
+            def spam():
+                if 1:  # test
+
+            # after line
+        """)
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -2317,24 +2320,26 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20220517064432.1: *5* merge-node-with-next-node
     def test_merge_node_with_next_node(self):
         c, u = self.c, self.c.undoer
-        prev_b = textwrap.dedent("""\
-    def spam():
-        pass
-    """)
-        next_b = textwrap.dedent("""\
-    spam2 = spam
-    """)
-        result_b = textwrap.dedent("""\
-    def spam():
-        pass
+        prev_b = self.prep(
+        """
+            def spam():
+                pass
+        """)
 
-    spam2 = spam
-    """)
+        next_b = self.prep("""spam2 = spam""")
+
+        result_b = self.prep(
+        """
+            def spam():
+                pass
+
+            spam2 = spam
+        """)
         self.before_p.b = prev_b
         self.after_p.b = next_b
         c.selectPosition(self.before_p)
         # Delete 'before', select 'after'
-        c.k.simulateCommand('merge-node-with-next-node')
+        c.doCommandByName('merge-node-with-next-node')
         self.assertEqual(c.p.h, 'after')
         self.assertEqual(c.p.b, result_b)
         self.assertFalse(c.p.next())
@@ -2351,24 +2356,29 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20220517064507.1: *5* merge-node-with-prev-node
     def test_merge_node_with_prev_node(self):
         c, u = self.c, self.c.undoer
-        prev_b = textwrap.dedent("""\
-    def spam():
-        pass
-    """)
-        next_b = textwrap.dedent("""\
-    spam2 = spam
-    """)
-        result_b = textwrap.dedent("""\
-    def spam():
-        pass
+        prev_b = self.prep(
+        """
+            def spam():
+                pass
+        """)
 
-    spam2 = spam
-    """)
+        next_b = self.prep(
+        """
+            spam2 = spam
+        """)
+
+        result_b = self.prep(
+        """
+            def spam():
+                pass
+
+            spam2 = spam
+        """)
         self.before_p.b = prev_b
         self.after_p.b = next_b
         c.selectPosition(self.after_p)
         # Delete 'after', select 'before'
-        c.k.simulateCommand('merge-node-with-prev-node')
+        c.doCommandByName('merge-node-with-prev-node')
         self.assertEqual(c.p.h, 'before')
         self.assertEqual(c.p.b, result_b)
         self.assertFalse(c.p.next())
@@ -2521,15 +2531,17 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.91: *5* newline-and-indent
     def test_newline_and_indent(self):
         """Test case for newline-and-indent"""
-        before_b = textwrap.dedent("""\
-    first line
-    line 1
-        line a
-            line b
-    line c
-    last line
-    """)
-        # docstrings strip blank lines, so we can't use a doctring here!
+        before_b = self.prep(
+        """
+            first line
+            line 1
+                line a
+                    line b
+            line c
+            last line
+        """)
+
+        # docstrings strip blank lines, so we can't use a docstring here!
         after_b = ''.join([
             'first line\n'
             'line 1\n'
@@ -2720,22 +2732,25 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.99: *5* test_rectangle-string
     def test_rectangle_string(self):
         """Test case for rectangle-string"""
-        before_b = textwrap.dedent("""\
+        before_b = self.prep(
+        """
             before
             aaaxxxbbb
             aaaxxxbbb
             aaaxxxbbb
             aaaxxxbbb
             after
-    """)
-        after_b = textwrap.dedent("""\
+        """)
+        after_b = self.prep(
+        """
             before
             aaas...sbbb
             aaas...sbbb
             aaas...sbbb
             aaas...sbbb
             after
-    """)
+        """)
+
         # A hack. The command tests for g.unitTesting!
         self.run_test(
             before_b=before_b,
@@ -2747,7 +2762,8 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20201130090918.100: *5* test_rectangle-yank
     def test_rectangle_yank(self):
         """Test case for rectangle-yank"""
-        before_b = textwrap.dedent("""\
+        before_b = self.prep(
+        """
             before
             aaaxxxbbb
             aaaxxxbbb
@@ -2755,7 +2771,9 @@ class TestEditCommands(LeoUnitTest):
             aaaxxxbbb
             after
         """)
-        after_b = textwrap.dedent("""\
+
+        after_b = self.prep(
+        """
             before
             aaaY1Ybbb
             aaaY2Ybbb
@@ -2763,7 +2781,7 @@ class TestEditCommands(LeoUnitTest):
             aaaY4Ybbb
             after
         """)
-        # A hack. The command tests for g.unitTesting!
+
         self.run_test(
             before_b=before_b,
             after_b=after_b,
@@ -4030,7 +4048,7 @@ class TestEditCommands(LeoUnitTest):
         c.bodyWantsFocus()
         w.setInsertPoint(2)
         c.outerUpdate()  # This fixed the problem.
-        c.k.simulateCommand('delete-char')
+        c.doCommandByName('delete-char')
         self.assertEqual(p.b, s[:-1])
         c.selectPosition(p.threadBack())
         c.selectPosition(p)
@@ -4112,7 +4130,6 @@ class TestEditCommands(LeoUnitTest):
         c = self.c
         u = c.undoer
         assert u
-        # pylint: disable=no-member
         c.insertHeadlineBefore()
         self.assertEqual(u.undoMenuLabel, 'Undo Insert Node Before')
         c.undoer.undo()
@@ -4122,7 +4139,6 @@ class TestEditCommands(LeoUnitTest):
         c = self.c
         u = c.undoer
         assert u
-        # pylint: disable=no-member
         c.insertHeadline()
         self.assertEqual(u.undoMenuLabel, 'Undo Insert Node')
         c.undoer.undo()
@@ -4131,7 +4147,6 @@ class TestEditCommands(LeoUnitTest):
     def test_inserting_a_new_node_draws_the_screen_exactly_once(self):
         c = self.c
         n = c.frame.tree.redrawCount
-        # pylint: disable=no-member
         c.insertHeadline()
         c.outerUpdate()  # Not actually needed, but should not matter.
         n2 = c.frame.tree.redrawCount
@@ -4165,7 +4180,7 @@ class TestEditCommands(LeoUnitTest):
         ec = c.editCommands
         w = c.frame.body.wrapper
         for i, j, python in (
-            #('1.0','4.5',False),
+            # ('1.0','4.5',False),
             (5, 50, True),
         ):
             event = None
@@ -4391,13 +4406,14 @@ class TestEditCommands(LeoUnitTest):
         )
         #@-<< define table >>
         w = c.frame.body.wrapper
-        s = textwrap.dedent("""\
+        s = self.prep(
+        """
             Paragraph 1.
                 line 2.
 
             Paragraph 2.
             line 2, paragraph 2
-    """)
+        """)
         w.setAllText(s)
         child = c.rootPosition().insertAfter()
         c.selectPosition(child)
@@ -4457,7 +4473,6 @@ class TestEditCommands(LeoUnitTest):
         c.selectPosition(p)
         body = 'This is a test'
         c.setBodyString(p, body)
-        # pylint: disable=no-member
         self.assertEqual(p.b, body)
         c.insertHeadline()
         c.undoer.undo()

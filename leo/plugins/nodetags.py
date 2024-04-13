@@ -97,18 +97,22 @@ whitespace (calling .strip()).
 #@+<< nodetags imports & annotations >>
 #@+node:ekr.20220828131647.1: ** << nodetags imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import re
-from typing import Any, Callable, Dict, Generator, List, TYPE_CHECKING
+from typing import Any, Generator, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-from leo.core.leoQt import QtCore, QtWidgets
-from leo.core.leoQt import MouseButton
+try:
+    from leo.core.leoQt import QtCore, QtWidgets
+    from leo.core.leoQt import MouseButton
+except Exception:
+    QtCore = QtWidgets = None
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position
-    Widget = Any
+    from leo.core.leoNodes import Position, VNode
+    QWidget = QtWidgets.QWidget
 #@-<< nodetags imports & annotations >>
 
 #@+others
@@ -147,7 +151,7 @@ class TagController:
     def __init__(self, c: Cmdr) -> None:
 
         self.c = c
-        self.taglist: List[str] = []
+        self.taglist: list[str] = []
         self.initialize_taglist()
         c.theTagController = self
         # #2031: Init the widgets only if we are using Qt.
@@ -166,15 +170,15 @@ class TagController:
 
     #@+node:peckj.20140804103733.9264: *3* tag_c.outline-level
     #@+node:peckj.20140804103733.9268: *4* tag_c.get_all_tags
-    def get_all_tags(self) -> List[str]:
+    def get_all_tags(self) -> list[str]:
         """ return a list of all tags in the outline """
         return self.taglist
     #@+node:ekr.20201030095446.1: *4* tag_c.show_all_tags
     def show_all_tags(self) -> None:
         """Show all tags, organized by node."""
         c, tc = self.c, self
-        aList: List[str]
-        d: Dict[str, List[str]] = {}
+        aList: list[str]
+        d: dict[str, list[str]] = {}
         for p in c.all_unique_positions():
             u = p.v.u
             tags = set(u.get(tc.TAG_LIST_KEY, set([])))
@@ -203,9 +207,9 @@ class TagController:
         if hasattr(self, 'ui'):
             self.ui.update_all()
     #@+node:peckj.20140804103733.9258: *4* tag_c.get_tagged_nodes
-    def get_tagged_nodes(self, tag: str) -> List[Position]:
+    def get_tagged_nodes(self, tag: str) -> list[Position]:
         """ return a list of *positions* of nodes containing the tag, with * as a wildcard """
-        nodelist: List[Position] = []
+        nodelist: list[Position] = []
         # replace * with .* for regex compatibility
         tag = tag.replace('*', '.*')
         regex = re.compile(tag)
@@ -226,7 +230,7 @@ class TagController:
                     yield p.v.gnx
     #@+node:peckj.20140804103733.9265: *3* tag_c.individual nodes
     #@+node:peckj.20140804103733.9259: *4* tag_c.get_tags
-    def get_tags(self, p: Position) -> List[str]:
+    def get_tags(self, p: Position) -> list[str]:
         """ returns a list of tags applied to position p."""
         if p:
             tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
@@ -263,15 +267,15 @@ if QtWidgets:
     class LeoTagWidget(QtWidgets.QWidget):  # type:ignore
         #@+others
         #@+node:peckj.20140804114520.15200: *3* tag_w.__init__
-        def __init__(self, c: Cmdr, parent: Widget=None) -> None:
+        def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
             super().__init__(parent)
             self.c = c
             self.tc = self.c.theTagController
             self.initUI()
             self.registerCallbacks()
-            self.mapping = {}
+            self.mapping: dict[int, VNode] = {}
             self.search_re = r'(&|\||-|\^)'
-            self.custom_searches = []
+            self.custom_searches: list[str] = []
             g.registerHandler('select2', self.select2_hook)
             # fix tag jumplist positions after new node insertion
             g.registerHandler('create-node', self.command2_hook)
@@ -378,7 +382,7 @@ if QtWidgets:
                 label.setText(tag)
                 label.setObjectName('nodetags-label3')
                 layout.addWidget(label)
-                label.mouseReleaseEvent = self.callback_factory(tag)
+                label.mouseReleaseEvent = self.callback_factory(tag)  # type:ignore
         #@+node:peckj.20140804194839.6569: *6* tag_w.callback_factory
         def callback_factory(self, tag: str) -> Callable:
             c = self.c
@@ -464,7 +468,7 @@ if QtWidgets:
             self.update_list()
             self.update_current_tags(self.c.p)
         #@+node:peckj.20140806145948.6579: *4* tag_w.add_tag
-        def add_tag(self, event: Event=None) -> None:
+        def add_tag(self, event: Event = None) -> None:
             p = self.c.p
             tag = str(self.comboBox.currentText()).strip()
             if not tag:

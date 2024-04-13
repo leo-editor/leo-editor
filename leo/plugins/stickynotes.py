@@ -56,7 +56,7 @@ process for each one.
 #@+node:vivainio2.20091008133028.5823: ** << imports >> (stickynotes.py)
 import os
 import time
-from typing import Any, Dict
+from typing import Any
 #
 # Third-party imports.
 try:
@@ -78,6 +78,8 @@ from leo.core.leoQt import QAction, Weight
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 
+# broad-exception-raised: Not valid in later pylints.
+
 # Aliases...
 # These can *not* be used as the base classes.
 QInputDialog = QtWidgets.QInputDialog
@@ -87,7 +89,7 @@ QTextCharFormat = QtGui.QTextCharFormat
 QTimer = QtCore.QTimer
 
 # Keys are commanders. Values are inner dicts: keys are gnx's; values are widgets.
-outer_dict: Dict[Any, Dict[str, Any]] = {}  # #2471
+outer_dict: dict[Any, dict[str, Any]] = {}  # #2471
 #@+others
 #@+node:vivainio2.20091008140054.14555: ** decorate_window
 def decorate_window(c, w):
@@ -260,11 +262,7 @@ if encOK:
 
     def get_AES():
         if hasattr(AES, 'MODE_EAX'):
-            # pylint: disable=no-member
-            # #1265: When in doubt, use MODE_EAX.
-            # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
             return AES.new(__ENCKEY[0], AES.MODE_EAX)
-        # pylint: disable=no-value-for-parameter
         return AES.new(__ENCKEY[0])
 
     def sn_decode(s):
@@ -303,7 +301,7 @@ if encOK:
         md5.update(txt.encode('utf-8'))
         __ENCKEY[0] = sha.digest()[:16] + md5.digest()[:16]
         if len(__ENCKEY[0]) != 32:
-            raise Exception("sn_getenckey failed to build key")
+            raise KeyError("sn_getenckey failed to build key")
 #@+node:tbrown.20141214173054.3: ** class TextEditSearch
 class TextEditSearch(QtWidgets.QWidget):  # type:ignore
     """A QTextEdit with a search box
@@ -325,14 +323,14 @@ class TextEditSearch(QtWidgets.QWidget):  # type:ignore
         super().__init__(*args, **kwargs)
         self.textedit = QtWidgets.QTextEdit(*args, **kwargs)
         # need to call focusin/out set on parent by FocusingPlaintextEdit / mknote
-        self.textedit.focusInEvent = self._call_old_first(
+        self.textedit.focusInEvent = self._call_old_first(  # type:ignore
             self.textedit.focusInEvent, self.focusin)
-        self.textedit.focusOutEvent = self._call_old_first(
+        self.textedit.focusOutEvent = self._call_old_first(  # type:ignore
             self.textedit.focusOutEvent, self.focusout)
         self.searchbox = QLineEdit()
-        self.searchbox.focusInEvent = self._call_old_first(
+        self.searchbox.focusInEvent = self._call_old_first(  # type:ignore
             self.searchbox.focusInEvent, self.focusin)
-        self.searchbox.focusOutEvent = self._call_old_first(
+        self.searchbox.focusOutEvent = self._call_old_first(  # type:ignore
             self.searchbox.focusOutEvent, self.focusout)
 
         # invoke find when return pressed
@@ -635,8 +633,6 @@ class Tabula(QtWidgets.QMainWindow):  # type:ignore
             return n
         n = mknote(self.c, p, parent=self.mdi)
         sw = self.mdi.addSubWindow(n)
-        # pylint: disable=maybe-no-member
-        # Qt.WA_DeleteOnClose does exist.
         try:
             sw.setAttribute(Qt.WA_DeleteOnClose, False)
         except AttributeError:

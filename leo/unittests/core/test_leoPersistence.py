@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210908171733.1: * @file ../unittests/core/test_leoPersistence.py
-"""Tests for leo.core.leoPersistence"""
+"""Test of leoPersistence.py"""
 
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
@@ -44,7 +44,7 @@ class TestPersistence(LeoUnitTest):
     def test_p_sort_key(self):
         c, p = self.c, self.c.p
         aList = [z.copy() for z in c.all_positions()]
-        aList2 = sorted(reversed(aList), key=p.sort_key)
+        aList2 = sorted(aList, key=p.sort_key)
         for i, p in enumerate(aList2):
             p2 = aList[i]
             self.assertEqual(p, p2, msg=f"i: {i}, p.h: {p.h}. p2: {p2.h}")

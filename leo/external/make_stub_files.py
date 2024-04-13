@@ -112,7 +112,7 @@ def unit_test(raise_on_fail=True):
         'FunctionType', 'NamedExpr', 'TypeIgnore',
     ]
     aList = [z for z in aList if not z[0].islower()]
-        # Remove base classe
+        # Remove base class.
     aList = [z for z in aList if not z.startswith('_') and not z in remove]
     # Now test them.
     table = (
@@ -886,7 +886,7 @@ class AstFormatter:
         result.append(self.indent('%swith ' % 'async ' if async_flag else ''))
         vars_list = []
         if getattr(node, 'context_expression', None):
-            result.append(self.visit(node.context_expresssion))
+            result.append(self.visit(node.context_expression))
         if getattr(node, 'optional_vars', None):
             try:
                 for z in node.optional_vars:
@@ -1096,6 +1096,8 @@ class LeoGlobals:
     def cls(self):
         '''Clear the screen.'''
         if sys.platform.lower().startswith('win'):
+            # Leo 6.7.5: Two calls seem to be required!
+            os.system('cls')
             os.system('cls')
     #@+node:ekr.20160318093308.1: *3* g.isString & isUnicode (make_stub_files.py)
     def isString(self, s):
@@ -1115,7 +1117,6 @@ class LeoGlobals:
             return isinstance(s, types.UnicodeType)
     #@+node:ekr.20160317054700.92: *3* g.shortFileName
     def shortFileName(self, fileName, n=None):
-        # pylint: disable=invalid-unary-operand-type
         if n is None or n < 1:
             return os.path.basename(fileName)
         else:
@@ -1429,7 +1430,7 @@ class ReduceTypes:
             if s2 == s:
                 return True
             else:
-                # Don't look inside bracketss.
+                # Don't look inside brackets.
                 pattern = Pattern(s2 + '[*]', s)
                 if pattern.match_entire_string(s):
                     return True
@@ -2107,7 +2108,7 @@ class StubFormatter(AstFormatter):
         '''StubFormatter.List.'''
         elts = [self.visit(z) for z in node.elts]
         elts = [z for z in elts if z]  # Defensive.
-        return 'List[%s]' % ', '.join(elts)
+        return 'list[%s]' % ', '.join(elts)
     #@+node:ekr.20160317054700.150: *4* sf.Name
     seen_names = []
 
@@ -2274,7 +2275,7 @@ class StubFormatter(AstFormatter):
     #@+node:ekr.20160317054700.161: *3* sf.Return
     def do_Return(self, node):
         '''
-        StubFormatter ast.Return vsitor.
+        StubFormatter ast.Return visitor.
         Return only the return expression itself.
         '''
         s = AstFormatter.do_Return(self, node)
@@ -2802,7 +2803,7 @@ class StubTraverser(ast.NodeVisitor):
             return s + ': ...'
     #@+node:ekr.20160317054700.185: *5* st.get_def_name
     def get_def_name(self, node):
-        '''Return the representaion of a function or method name.'''
+        '''Return the representation of a function or method name.'''
         if self.class_name_stack:
             name = '%s.%s' % (self.class_name_stack[-1], node.name)
             # All ctors should return None

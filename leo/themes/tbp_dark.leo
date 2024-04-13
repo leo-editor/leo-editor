@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -97,7 +97,7 @@
 <v t="tom.20230218225544.76"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
 <v t="tom.20230218225544.77"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
 <v t="tom.20230218225544.78"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="tom.20230218225544.79"><vh>@color url_color = @solarized-purple</vh></v>
+<v t="tom.20230218225544.79"><vh>@color url_color = @solarized-violet</vh></v>
 </v>
 <v t="tom.20230218225544.80"><vh>Colors: patch (diff)</vh>
 <v t="tom.20230218225544.81"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
@@ -122,7 +122,7 @@
 </v>
 </v>
 <v t="tom.20230218225340.96"><vh>Fonts &amp; text sizes</vh>
-<v t="tom.20230218225340.97"><vh>@string font-family = Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="tom.20230218225340.97"><vh>@string font-family = Cousine, Consolas, "Droid Sans Mono", "DejaVu Sans Mono"</vh></v>
 <v t="tom.20230218225340.98"><vh>@string font-family-ui = "Open Sans", "Segoe UI", Verdana, sans-serif</vh></v>
 <v t="tom.20230218225340.99"><vh>@string font-size-text = 10.5pt</vh></v>
 <v t="tom.20230218225340.100"><vh>@string font-size-ui = 9.5pt</vh></v>

@@ -14,7 +14,6 @@ This plugin makes line numbers in gutter (if used), to represent
 #@+node:vitalije.20170727201931.1: ** << imports >>
 from contextlib import contextmanager
 import re
-from typing import Dict, Tuple
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 #
@@ -91,7 +90,7 @@ NUMBERINGS = {}
 
 def renumber(c):
     if c.user_dict.get(LNOFF, False):
-        nums: Tuple = tuple()
+        nums: tuple = tuple()
     else:
         p = new_p = c.p
         for p in new_p.self_and_parents():
@@ -104,8 +103,13 @@ def renumber(c):
         at.scanAllDirectives(new_p)
         delim_st = at.startSentinelComment
         delim_en = at.endSentinelComment
-        if (p.isAtCleanNode() or p.isAtAutoNode() or p.isAtEditNode() or p.isAtNoSentFileNode()) \
-            or not p.isAnyAtFileNode():
+        if (
+            p.isAtCleanNode()
+            or p.isAtAutoNode()
+            or p.isAtEditNode()
+            or p.isAtNoSentFileNode()
+            or not p.isAnyAtFileNode()
+        ):
             delim_st = ''
             delim_en = ''
         nums = universal_line_numbers(root, new_p, delim_st, delim_en)
@@ -117,7 +121,7 @@ def renumber(c):
             w.update()
     finish_update(c)
 #@+node:vitalije.20170727214225.1: ** request & finish_update
-REQUESTS: Dict[str, bool] = {}
+REQUESTS: dict[str, bool] = {}
 
 def request_update(c):
     h = c.hash()
@@ -148,7 +152,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
 
     code_pattern = re.compile('^(@code|@c)$')
     #@+node:vitalije.20170726120813.1: *3* vlines
-    vlinescache: Dict[str, Tuple] = {}
+    vlinescache: dict[str, tuple] = {}
     def vlines(p):
         if p.gnx in vlinescache:
             return vlinescache[p.gnx]
@@ -206,8 +210,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
         if is_verbatim(line):
             return 1, 2
         #@+node:vitalije.20170726193927.1: *4* others
-        m = others_pat.match(line)
-        if m:
+        if m := others_pat.match(line):
             n = inc(st)
             for p1 in others_iterator(p):
                 n = numerate_node(p1, n)
@@ -234,8 +237,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
                 flines_data[pkey(p1)] = tuple(flines), n
             return 1, n - st
         #@+node:vitalije.20170726193920.1: *4* section reference
-        m = section_pat.match(line)
-        if m:
+        if m := section_pat.match(line):
             p1 = g.findReference(m.group(2), p)
             if not p1:
                 g.warning('unresolved section reference %s' % m.group(2))

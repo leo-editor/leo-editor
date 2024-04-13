@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.618: * @file ../external/npyscreen/wgFormControlCheckbox.py
-#!/usr/bin/env pyton
+#!/usr/bin/env python
 
 #@+others
 #@+node:ekr.20170428084207.619: ** Declarations

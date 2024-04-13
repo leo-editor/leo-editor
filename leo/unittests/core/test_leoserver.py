@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210820203000.1: * @file ../unittests/core/test_leoserver.py
-"""Unit tests for leo/core/leoserver.py"""
+"""Tests of leoserver.py"""
 
 import json
 import os
@@ -21,8 +21,6 @@ class TestLeoServer(LeoUnitTest):
     #@+node:felix.20210621233316.99: *3* TestLeoServer: Setup and TearDown
     @classmethod
     def setUpClass(cls):
-        # Assume we are running in the leo-editor directory.
-        # pylint: disable=import-self
         global g, g_leoserver, g_server
         g_leoserver = leoserver
         g_server = leoserver.LeoServer(testing=True)
@@ -72,7 +70,7 @@ class TestLeoServer(LeoUnitTest):
         server = self.server
         tag = 'test_most_public_server_methods'
         assert isinstance(server, g_leoserver.LeoServer), self.server
-        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+        test_dot_leo = g.finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
         # Remove all uA's.
         methods = server._get_all_server_commands()
@@ -90,6 +88,7 @@ class TestLeoServer(LeoUnitTest):
             'goto_script',
             'tag_children',
             # Other methods
+            'finishCreate',
             'remove_tag', 'tag_node',
             'delete_node', 'cut_node',  # dangerous.
             'click_button', 'get_buttons', 'remove_button',  # Require plugins.
@@ -119,7 +118,7 @@ class TestLeoServer(LeoUnitTest):
             # "paste_node": {"name", "paste-node-name"},
             # "paste_as_clone_node": {"name", "paste-node-name"},
         }
-        # First open a test file & performa all tests.
+        # First open a test file & perform all tests.
         server.open_file({"filename": test_dot_leo})  # A real file.
         # Remove all uA's that can't be serialized.
         file_c = g.openWithFileName(test_dot_leo)
@@ -152,7 +151,7 @@ class TestLeoServer(LeoUnitTest):
     #@+node:felix.20210621233316.103: *3* TestLeoServer.test_open_and_close
     def test_open_and_close(self):
         # server = self.server
-        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+        test_dot_leo = g.finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
         log = False
         table = [
@@ -182,7 +181,7 @@ class TestLeoServer(LeoUnitTest):
     def test_find_commands(self):
 
         tag = 'test_find_commands'
-        test_dot_leo = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
+        test_dot_leo = g.finalize_join(g.app.loadDir, '..', 'test', 'test.leo')
         assert os.path.exists(test_dot_leo), repr(test_dot_leo)
         log = False
         # Open the file & create the StringFindTabManager.

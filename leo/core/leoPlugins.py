@@ -4,19 +4,21 @@
 #@+<< leoPlugins imports & annotations >>
 #@+node:ekr.20220901071118.1: ** << leoPlugins imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import sys
-from typing import Any, Callable, Dict, Iterator, List, TYPE_CHECKING
+from typing import Any, Iterator, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     # mypy doesn't seem to handle this.
+    Keywords = dict[str, list[g.Bunch]]
     Tag_List = Any  # Union[str, Sequence[str]]
 #@-<< leoPlugins imports & annotations >>
 
 # Define modules that may be enabled by default
-# but that mignt not load because imports may fail.
+# but that might not load because imports may fail.
 optional_modules = [
     'leo.plugins.livecode',
     'leo.plugins.cursesGui2',
@@ -53,7 +55,7 @@ class CommandChainDispatcher:
 
     """
 
-    def __init__(self, commands: List[Any] = None) -> None:
+    def __init__(self, commands: list[Any] = None) -> None:
         if commands is None:
             self.chain = []
         else:
@@ -114,7 +116,7 @@ class BaseLeoPlugin:
 
     - in the __init__ method of the class, call the parent constructor::
 
-        def __init__(self, tag: str, keywords: Any) -> None:
+        def __init__(self, tag: str, keywords: Keywords) -> None:
             super().__init__(tag, keywords)
 
     - put the actual plugin code into a method; for this example, the work
@@ -169,7 +171,7 @@ class BaseLeoPlugin:
     Contents of file ``<LeoDir>/plugins/hello.py``::
 
         class Hello(BaseLeoPlugin):
-            def __init__(self, tag: str, keywords: Any) -> None:
+            def __init__(self, tag: str, keywords: Keywords) -> None:
 
                 # call parent __init__
                 super().__init__(tag, keywords)
@@ -192,13 +194,13 @@ class BaseLeoPlugin:
                 # define a command using setMenuItem
                 self.setMenuItem('Cmds', 'Ciao baby', self.ciao)
 
-            def hello(self, event: Event) -> None:
+            def hello(self, event: LeoKeyEvent) -> None:
                 g.pr("hello from node %s" % self.c.p.h)
 
-            def hola(self, event: Event) -> None:
+            def hola(self, event: LeoKeyEvent) -> None:
                 g.pr("hola from node %s" % self.c.p.h)
 
-            def ciao(self, event: Event) -> None:
+            def ciao(self, event: LeoKeyEvent) -> None:
                 g.pr("ciao baby (%s)" % self.c.p.h)
 
         leoPlugins.registerHandler("after-create-leo-frame", Hello)
@@ -207,11 +209,13 @@ class BaseLeoPlugin:
     #@-<<docstring>>
     #@+others
     #@+node:ekr.20100908125007.6012: *3* __init__ (BaseLeoPlugin)
-    def __init__(self, tag: str, keywords: Any) -> None:
-        """Set self.c to be the ``commander`` of the active node
+    def __init__(self, tag: str, keywords: Keywords) -> None:
         """
-        self.c: Cmdr = keywords['c']
-        self.commandNames: List[str] = []
+        Ctor for the BaseLeoPlugin class.
+        """
+        # mypy can't infer the type of keywords['c'].
+        self.c: Cmdr = keywords['c']  # type:ignore
+        self.commandNames: list[str] = []
     #@+node:ekr.20100908125007.6013: *3* setCommand
     def setCommand(
         self,
@@ -259,7 +263,7 @@ class BaseLeoPlugin:
                 raise NameError(f"setButton error, {commandName} is not a commandName")
         if color is None:
             color = 'grey'
-        script = f"c.k.simulateCommand('{self.commandName}')"
+        script = f"c.doCommandByName('{self.commandName}')"
         g.app.gui.makeScriptButton(
             self.c,
             args=None,
@@ -275,14 +279,14 @@ class LeoPluginsController:
     def __init__(self) -> None:
 
         # Keys are tags, values are lists of bunches.
-        self.handlers: Dict[str, Any] = {}
+        self.handlers: dict[str, list[g.Bunch]] = {}
         # Keys are regularized module names, values are the names of .leo files
         # containing @enabled-plugins nodes that caused the plugin to be loaded
-        self.loadedModulesFilesDict: Dict[str, str] = {}
+        self.loadedModulesFilesDict: dict[str, str] = {}
         # Keys are regularized module names, values are modules.
-        self.loadedModules: Dict[str, Any] = {}
+        self.loadedModules: dict[str, Any] = {}
         # The stack of module names. The top is the module being loaded.
-        self.loadingModuleNameStack: List[str] = []
+        self.loadingModuleNameStack: list[str] = []
         self.signonModule = None  # A hack for plugin_signon.
         # Settings.  Set these here in case finishCreate is never called.
         self.warn_on_failure = True
@@ -307,7 +311,7 @@ class LeoPluginsController:
                 # This would be a MAJOR leak of positions.
                 g.doHook("idle", c=c)
     #@+node:ekr.20100908125007.6017: *4* plugins.doHandlersForTag & helper
-    def doHandlersForTag(self, tag: str, keywords: List[str]) -> Any:
+    def doHandlersForTag(self, tag: str, keywords: Keywords) -> Any:
         """
         Execute all handlers for a given tag, in alphabetical order.
         The caller, doHook, catches all exceptions.
@@ -327,7 +331,7 @@ class LeoPluginsController:
                 self.callTagHandler(bunch, tag, keywords)
         return None
     #@+node:ekr.20100908125007.6016: *5* plugins.callTagHandler
-    def callTagHandler(self, bunch: Any, tag: str, keywords: List[str]) -> Any:
+    def callTagHandler(self, bunch: Any, tag: str, keywords: Keywords) -> Any:
         """Call the event handler."""
         handler, moduleName = bunch.fn, bunch.moduleName
         # Make sure the new commander exists.
@@ -349,7 +353,7 @@ class LeoPluginsController:
         self.loadingModuleNameStack.pop()
         return result
     #@+node:ekr.20100908125007.6018: *4* plugins.doPlugins (g.app.hookFunction)
-    def doPlugins(self, tag: str, keywords: List[str]) -> Any:
+    def doPlugins(self, tag: str, keywords: Keywords) -> Any:
         """The default g.app.hookFunction."""
         if g.app.killed:
             return None
@@ -358,7 +362,7 @@ class LeoPluginsController:
         return self.doHandlersForTag(tag, keywords)
     #@+node:ekr.20100909065501.5950: *3* plugins.Information
     #@+node:ekr.20100908125007.6019: *4* plugins.getHandlersForTag
-    def getHandlersForTag(self, tags: List[str]) -> List[Any]:
+    def getHandlersForTag(self, tags: list[str]) -> list[Any]:
         if isinstance(tags, (list, tuple)):
             result = []
             for tag in tags:
@@ -367,10 +371,10 @@ class LeoPluginsController:
             return result
         return self.getHandlersForOneTag(tags)
 
-    def getHandlersForOneTag(self, tag: str) -> List[Any]:
+    def getHandlersForOneTag(self, tag: str) -> list[Any]:
         return self.handlers.get(tag, [])
     #@+node:ekr.20100910075900.10204: *4* plugins.getLoadedPlugins
-    def getLoadedPlugins(self) -> List[str]:
+    def getLoadedPlugins(self) -> list[str]:
         return list(self.loadedModules.keys())
     #@+node:ekr.20100908125007.6020: *4* plugins.getPluginModule
     def getPluginModule(self, moduleName: str) -> Any:
@@ -386,7 +390,7 @@ class LeoPluginsController:
         g.es_print('all plugin handlers...\n', tabName=tabName)
         data = []
         # keys are module names: values are lists of tags.
-        modules_d: dict[str, List[str]] = {}
+        modules_d: dict[str, list[str]] = {}
         for tag in self.handlers:
             bunches = self.handlers.get(tag)
             for bunch in bunches:
@@ -452,7 +456,7 @@ class LeoPluginsController:
         return "leo.plugins." + g.os_path_splitext(fn)[0]
     #@+node:ekr.20100909065501.5953: *3* plugins.Load & unload
     #@+node:ekr.20100908125007.6022: *4* plugins.loadHandlers
-    def loadHandlers(self, tag: str, keys: List[str]) -> None:
+    def loadHandlers(self, tag: str, keywords: Keywords) -> None:
         """
         Load all enabled plugins.
 
@@ -460,9 +464,9 @@ class LeoPluginsController:
         be loaded from outside the leo/plugins directory.
         """
 
-        def pr(*args: Any, **keys: Any) -> None:
+        def pr(*args: Any, **keywords: Keywords) -> None:
             if not g.unitTesting:
-                g.es_print(*args, **keys)
+                g.es_print(*args, **keywords)
 
         s = g.app.config.getEnabledPlugins()
         if not s:
@@ -483,10 +487,13 @@ class LeoPluginsController:
         Using a module name allows plugins to be loaded from outside the leo/plugins directory.
         """
         global optional_modules
-        trace = 'plugins' in g.app.debug
+
+        moduleName: str
+
+        trace = verbose or 'plugins' in g.app.debug
 
         def report(message: str) -> None:
-            if trace and not g.unitTesting:
+            if trace:
                 g.es_print(f"loadOnePlugin: {message}")
 
         # Define local helper functions.

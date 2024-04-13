@@ -3,8 +3,10 @@
 """Tests of leoImport.py"""
 
 import io
-import textwrap
-from leo.unittests.test_importers import BaseTestImporter
+import os
+from leo.unittests.plugins.test_importers import BaseTestImporter
+from leo.core import leoImport
+from leo.core import leoGlobals as g
 StringIO = io.StringIO
 
 #@+others
@@ -20,32 +22,36 @@ class TestLeoImport(BaseTestImporter):
         target.h = 'target'
         from leo.core.leoImport import MindMapImporter
         x = MindMapImporter(c)
-        s = textwrap.dedent("""\
+        s = self.prep(
+        """
             header1, header2, header3
             a1, b1, c1
             a2, b2, c2
         """)
         f = StringIO(s)
         x.scan(f, target)
-        # self.dump_tree(target, tag='Actual results...')
 
         # #2760: These results ignore way too much.
 
+        # Don't call run_test.
         self.check_outline(target, (
-            (0, '',  # check_outline ignores the top-level headline.
+            (0, '',  # Ignore the top-level headline.
                 ''
             ),
             (1, 'a1', ''),
             (1, 'a2', ''),
         ))
-    #@+node:ekr.20221104065722.1: *3* TestLeoImport.test_parse_body
-    def test_parse_body(self):
+    #@+node:ekr.20221104065722.1: *3* TestLeoImport.test_python_importer_parse_body
+    def test_python_importer_parse_body(self):
 
         c = self.c
+        u = c.undoer
         x = c.importCommands
         target = c.p.insertAfter()
         target.h = 'target'
-        target.b = textwrap.dedent("""\
+
+        body_1 = self.prep(
+        """
             import os
 
             def macro(func):
@@ -53,12 +59,11 @@ class TestLeoImport(BaseTestImporter):
                     raise RuntimeError('blah blah blah')
             return new_func
         """)
+        target.b = body_1
         x.parse_body(target)
 
-        # self.dump_tree(target, tag='Actual results...')
-
-        self.check_outline(target, (
-            (0, '',  # check_outline ignores the top-level headline.
+        expected_results = (
+            (0, '',  # Ignore the top-level headline.
                 'import os\n'
                 '\n'
                 '@others\n'
@@ -66,15 +71,61 @@ class TestLeoImport(BaseTestImporter):
                 '@language python\n'
                 '@tabwidth -4\n'
             ),
-            (1, 'macro',
+            (1, 'function: macro',
                 'def macro(func):\n'
-                '    @others\n'
+                '    def new_func(*args, **kwds):\n'
+                "        raise RuntimeError('blah blah blah')\n"
             ),
-            (2, 'new_func',
-                'def new_func(*args, **kwds):\n'
-                "    raise RuntimeError('blah blah blah')\n"
-            ),
-        ))
+        )
+        # Don't call run_test.
+        self.check_outline(target, expected_results)
+
+        # Test undo
+        u.undo()
+        self.assertEqual(target.b, body_1, msg='undo test')
+        self.assertFalse(target.hasChildren(), msg='undo test')
+        # Test redo
+        u.redo()
+        self.check_outline(target, expected_results)
+    #@+node:ekr.20230715004610.1: *3* TestLeoImport.slow_test_ric_run
+    def slow_test_ric_run(self):
+        c = self.c
+        u = c.undoer
+
+        # Setup.
+        root = c.rootPosition()
+        root.deleteAllChildren()
+        while root.hasNext():
+            root.next().doDelete()
+        c.selectPosition(root)
+        self.assertEqual(c.lastTopLevel(), root)
+        if 1:
+            # 0.9 sec to import only leoGlobals.py
+            dir_ = g.os_path_finalize_join(g.app.loadDir, 'leoGlobals.py')
+        else:
+            # 4.1 sec. to import leo/core/*.py.
+            dir_ = os.path.normpath(g.app.loadDir)
+        self.assertTrue(os.path.exists(dir_), msg=dir_)
+
+        # Run the tests.
+        expected_headline = 'imported files'
+        for kind in ('@clean', '@file'):
+            x = leoImport.RecursiveImportController(c,
+                dir_=dir_,
+                kind=kind,
+                recursive=True,
+                safe_at_file=True,
+                theTypes=['.py'],
+                verbose=False,
+            )
+            x.run(dir_)
+            self.assertEqual(c.lastTopLevel().h, expected_headline)
+            u.undo()
+            self.assertEqual(c.lastTopLevel(), root)
+            u.redo()
+            self.assertEqual(c.lastTopLevel().h, expected_headline)
+            u.undo()
+            self.assertEqual(c.lastTopLevel(), root)
     #@-others
 #@-others
 #@-leo

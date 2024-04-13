@@ -64,68 +64,56 @@ keywordsDictDict = {
 
 def mail_rule0(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment3", seq=">>>",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def mail_rule1(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment2", seq=">>",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def mail_rule2(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq=">",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def mail_rule3(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="|",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def mail_rule4(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq=":",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def mail_rule5(colorer, s, i):
     return colorer.match_seq(s, i, kind="comment2", seq="--",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="mail::signature")
+          at_line_start=True,
+          delegate="mail::signature")
 
 def mail_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=":-)",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=":-)")
 
 def mail_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=":-(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=":-(")
 
 def mail_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=":)",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=":)")
 
 def mail_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=":(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=":(")
 
 def mail_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=";-)",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=";-)")
 
 def mail_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=";-(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=";-(")
 
 def mail_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=";)",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=";)")
 
 def mail_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword1", seq=";(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword1", seq=";(")
 
 def mail_rule14(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+          at_line_start=True)
 
 # Rules dict for mail_main ruleset.
 rulesDict1 = {
@@ -145,9 +133,7 @@ rulesDict2 = {}
 
 def mail_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 # Rules dict for mail_header ruleset.
 rulesDict3 = {

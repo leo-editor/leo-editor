@@ -75,7 +75,6 @@ If True, when expanding as above, skip blank dict entries.
 import io
 import xml.sax
 import xml.sax.saxutils
-from typing import List
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoPlugins
@@ -84,7 +83,7 @@ StringIO = io.StringIO
 BytesIO = io.BytesIO
 #@-<< imports >>
 # For traces.
-printElements: List[str] = []  # ['all','outline','head','body',]
+printElements: list[str] = []  # ['all','outline','head','body',]
 #@+others
 #@+node:ekr.20060904132527.9: ** Module level
 #@+node:ekr.20060904103412.4: *3* init
@@ -221,7 +220,7 @@ class OpmlController:
             s = self.cleanSaxInputString(s)
         except IOError:
             return g.trace('can not open %s' % path)
-        # pylint:disable=catching-non-exception
+
         try:
             theFile = BytesIO(s)
             parser = xml.sax.make_parser()
@@ -717,7 +716,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
                 except ValueError:
                     pass
         self.ratio = ratio
-    #@+node:ekr.20060917190349: *4* startOutline
+    #@+node:ekr.20060917190349: *4* startOutline (leoOpml)
     def startOutline(self, attrs):
         if self.inElement('head'):
             self.error('<outline> inside <head>')

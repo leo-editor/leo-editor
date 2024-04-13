@@ -10,7 +10,7 @@ from . import wgtitlefield
 
 #@+node:ekr.20170428084208.368: ** class TextTokens
 class TextTokens(wgtextbox.Textfield, wgwidget.Widget):
-    """This is an experiemental widget"""
+    """This is an experimental widget"""
 
     # NB IT DOES NOT CURRENTLY SUPPORT THE HIGHLIGHTING COLORS
     # OF THE TEXTFIELD CLASS.

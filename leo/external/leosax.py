@@ -8,7 +8,7 @@ multiple .leo files quickly.
 """
 from binascii import unhexlify
 from pickle import loads
-from typing import Any, Dict
+from typing import Any
 from xml.sax.handler import ContentHandler
 from xml.sax import parseString
 from leo.core import leoGlobals as g
@@ -40,7 +40,7 @@ class LeoNode:
     def __init__(self):
         """Set ivars"""
         self.children = []
-        self.u: Dict = {}
+        self.u: dict = {}
         self.unknownAttributes = self.u  # for compatibility
         self.h = []
         self.b = []
@@ -51,7 +51,7 @@ class LeoNode:
     #@+node:ekr.20120519121124.9923: *3* __str__
     def __str__(self, level=0):
         """Return long text representation of node and
-        descendents with indentation"""
+        descendants with indentation"""
         ans = [("%s%s (%s)" % ('  ' * (level - 1), self.h, self.gnx))[:78]]
         for k in self.u:
             s = self.u[k]
@@ -62,10 +62,10 @@ class LeoNode:
             ans.append(child.__str__(level=level + 1))
         return '\n'.join(ans)
 
-    #@+node:ekr.20120519121124.9924: *3* UNL
+    #@+node:ekr.20120519121124.9924: *3* UNL (leosax.py)
     def node_pos_count(self, node):
         """node_pos_count - return the position (index) and count of
-        preceeding siblings with the same name, also return headline
+        preceding siblings with the same name, also return headline
 
         :param LeoNode node: node to characterize
         :return: h, pos, count
@@ -109,7 +109,7 @@ class LeoReader(ContentHandler):
         `in_`
           name of XML element we're current in, used for SAX read
         in_attr
-          attributes of element tag we're currentl in, used for SAX read
+          attributes of element tag we're currently in, used for SAX read
         path
           list of nodes leading to current node
 
@@ -190,7 +190,7 @@ class LeoReader(ContentHandler):
     #@-others
 #@+node:ekr.20120519121124.9931: ** get_leo_data
 def get_leo_data(source):
-    """Return the root node for the specificed .leo file (path or file)"""
+    """Return the root node for the specified .leo file (path or file)"""
     parser = LeoReader()
     if g.os_path_isfile(source):
         source = g.readFileIntoEncodedString(source)

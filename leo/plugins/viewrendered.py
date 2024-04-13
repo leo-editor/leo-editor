@@ -198,31 +198,28 @@ Jacob Peck added markdown support to this plugin.
 #@-<< vr docstring >>
 #@+<< vr imports >>
 #@+node:tbrown.20100318101414.5993: ** << vr imports >>
-# pylint: disable = c-extension-no-member
 from __future__ import annotations
+from collections.abc import Callable
 import json
 import os
 from pathlib import Path
 import shutil
 import textwrap
-from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
-from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtMultimedia, QtSvg
 from leo.core.leoQt import ContextMenuPolicy, Orientation, WrapMode
 from leo.plugins import qt_text
 from leo.plugins import free_layout
-try:
-    BaseTextWidget = QtWebKitWidgets.QWebView  # type:ignore
-except Exception:
-    BaseTextWidget = QtWidgets.QTextBrowser  # type:ignore
-#
+
+BaseTextWidget = QtWidgets.QTextBrowser
+
 # Optional third-party imports...
-#
+
 # Docutils.
 try:
-    # pylint: disable=import-error
     import docutils
     import docutils.core
 except ImportError:
@@ -240,39 +237,34 @@ if docutils:
         g.es_exception()
 else:
     got_docutils = False
-#
+
 # Jinja.
 try:
     from jinja2 import Template
 except ImportError:
     Template = None  # type:ignore
-#
+
 # Markdown.
 try:
-    # pylint: disable=import-error
     from markdown import markdown
     got_markdown = True
 except ImportError:
     got_markdown = False  # type:ignore
-#
+
 # nbformat (@jupyter) support.
 try:
-    # pylint: disable=import-error
     import nbformat
     from nbconvert import HTMLExporter
-    # from traitlets.config import Config
 except ImportError:
     nbformat = None
 
 try:
-    # pylint: disable=import-error
     import pyperclip
 except Exception:
     pyperclip = None
 
 got_pyplot = False
 try:
-    # pylint: disable=import-error
     from matplotlib import pyplot
     got_pyplot = True
 except ImportError:
@@ -285,12 +277,14 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+node:ekr.20220828161918.1: ** << vr annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+
+    # These need more work!
+    Event = Any
+    QWidget = QtWidgets.QWidget
     Widget = Any
+    Wrapper = Any
 #@-<< vr annotations >>
-# pylint: disable=no-member
 trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')
 asciidoc3_exec = shutil.which('asciidoc3')
@@ -326,8 +320,8 @@ latex_template = '''\
 </html>
 '''
 #@-<< vr define html templates >>
-controllers: Dict[str, Any] = {}  # Dict[c.hash(), PluginControllers (QWidget's)].
-layouts: Dict[str, Tuple] = {}  # Dict[c.hash(), Tuple[layout_when_closed, layout_when_open]].
+controllers: dict[str, Any] = {}  # Dict[c.hash(), PluginControllers (QWidget's)].
+layouts: dict[str, tuple] = {}  # Dict[c.hash(), tuple[layout_when_closed, layout_when_open]].
 #@+others
 #@+node:ekr.20110320120020.14491: ** vr.Top-level
 #@+node:tbrown.20100318101414.5994: *3* vr.decorate_window
@@ -355,14 +349,14 @@ def init() -> bool:
 def isVisible() -> bool:
     """Return True if the VR pane is visible."""
 #@+node:ekr.20110317024548.14376: *3* vr.onCreate
-def onCreate(tag: str, keys: Dict) -> None:
+def onCreate(tag: str, keys: dict) -> None:
     c = keys.get('c')
     if not c:
         return
     provider = ViewRenderedProvider(c)
     free_layout.register_provider(c, provider)
 #@+node:vitalije.20170712174157.1: *3* vr.onClose
-def onClose(tag: str, keys: Dict) -> None:
+def onClose(tag: str, keys: dict) -> None:
     c = keys.get('c')
     h = c.hash()
     vr = controllers.get(h)
@@ -393,7 +387,7 @@ def show_scrolled_message(tag: str, kw: Any) -> bool:
     )
     return True
 #@+node:vitalije.20170713082256.1: *3* vr.split_last_sizes
-def split_last_sizes(sizes: List[int]) -> List[int]:
+def split_last_sizes(sizes: list[int]) -> list[int]:
     result = [2 * x for x in sizes[:-1]]
     result.append(sizes[-1])
     result.append(sizes[-1])
@@ -479,7 +473,7 @@ def hide_rendering_pane(event: Event) -> None:
     vr.deactivate()
     vr.deleteLater()
 
-    def at_idle(c: Cmdr=c, _vr: ViewRenderedController=vr) -> None:
+    def at_idle(c: Cmdr = c, _vr: ViewRenderedController = vr) -> None:
         _vr.adjust_layout('closed')
         c.bodyWantsFocusNow()
 
@@ -655,7 +649,7 @@ class ViewRenderedProvider:
         # return f"vr_id:{self.c.shortFileName()}"
         return '_leo_viewrendered'
     #@+node:tbrown.20110629084915.35150: *3* vr.ns_provides
-    def ns_provides(self) -> List[Tuple[str, str]]:
+    def ns_provides(self) -> list[tuple[str, str]]:
         # #1671: Better Window names.
         # #1678: duplicates in Open Window list
         return [('Viewrendered', self.ns_provider_id())]
@@ -671,7 +665,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     """A class to control rendering in a rendering pane."""
     #@+others
     #@+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
-    def __init__(self, c: Cmdr, parent: Position=None) -> None:
+    def __init__(self, c: Cmdr, parent: Widget = None) -> None:
         """Ctor for ViewRenderedController class."""
         self.c = c
         # Create the widget.
@@ -679,7 +673,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.create_pane(parent)
         # Set the ivars.
         self.active = False
-        self.badColors: List[str] = []
+        self.badColors: list[str] = []
         self.delete_callback: Callable = None
         self.gnx: str = None
         self.graphics_class = QtWidgets.QGraphicsWidget
@@ -690,8 +684,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.length = 0  # The length of previous p.b.
         self.locked = False
         self.pyplot_active = False
-        self.scrollbar_pos_dict: Dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
-        self.sizes: List[int] = []  # Saved splitter sizes.
+        self.scrollbar_pos_dict: dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
+        self.sizes: list[int] = []  # Saved splitter sizes.
         self.splitter = None
         self.splitter_index: int = None  # The index of the rendering pane in the splitter.
         self.title: str = None
@@ -705,7 +699,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.activate()
         self.zoomed = False
     #@+node:ekr.20110320120020.14478: *4* vr.create_dispatch_dict
-    def create_dispatch_dict(self) -> Dict[str, Callable]:
+    def create_dispatch_dict(self) -> dict[str, Callable]:
         pc = self
         d = {
             'asciidoc': pc.update_asciidoc,
@@ -867,7 +861,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20101112195628.5426: *3* vr.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
 
-    def update(self, tag: str, keywords: Any) -> None:
+    def update(self, tag: str, keywords: Any) -> None:  # type:ignore
         """Update the vr pane. Called at idle time."""
         pc = self
         p = pc.c.p
@@ -932,7 +926,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 pass
         return w
     #@+node:ekr.20110320120020.14486: *4* vr.embed_widget & helper
-    def embed_widget(self, w: Wrapper, delete_callback: Callable=None) -> None:
+    def embed_widget(self, w: Wrapper, delete_callback: Callable = None) -> None:
         """Embed widget w in the free_layout splitter."""
         pc = self
         c = pc.c
@@ -958,7 +952,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20110321072702.14510: *5* vr.setBackgroundColor
     def setBackgroundColor(self, colorName: str, name: str, w: Wrapper) -> None:
         """Set the background color of the vr pane."""
-        # pylint: disable = using-constant-test
         if 0:  # Do not do this! It interferes with themes.
             pc = self
             if not colorName:
@@ -1041,8 +1034,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         global asciidoctor_exec, asciidoc3_exec
         assert asciidoctor_exec or asciidoc3_exec, g.callers()
         home = g.os.path.expanduser('~')
-        i_path = g.os_path_finalize_join(home, 'vr_input.adoc')
-        o_path = g.os_path_finalize_join(home, 'vr_output.html')
+        i_path = g.finalize_join(home, 'vr_input.adoc')
+        o_path = g.finalize_join(home, 'vr_output.html')
         # Write the input file.
         with open(i_path, 'w') as f:
             f.write(s)
@@ -1096,8 +1089,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             assert w == pc.w
         else:
             w = pc.w
-        if isQt5:
-            w.hide()  # This forces a proper update.
         w.setHtml(s)
         w.show()
         c.bodyWantsFocusNow()
@@ -1253,8 +1244,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 s = pc.underline(pc.title) + s
                 pc.title = None
             mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
-            mdext = [x.strip() for x in mdext.split(',')]
-            s = markdown(s, extensions=mdext)
+            mdext_list = [x.strip() for x in mdext.split(',')]
+            s = markdown(s, extensions=mdext_list)
             s = g.toUnicode(s)
         except SystemMessage as sm:
             msg = sm.args[0]
@@ -1272,10 +1263,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             w = pc.ensure_text_widget()
             w.setPlainText('Not found: %s' % (path))
             return
-        if not phonon and not QtMultimedia:
+        if not QtMultimedia:
             if not self.movie_warning:
                 self.movie_warning = True
-                g.es_print('No phonon and no QtMultimedia modules')
+                g.es_print('No QtMultimedia module')
             w = pc.ensure_text_widget()
             w.setPlainText('')
             return
@@ -1283,32 +1274,17 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             vp = pc.vp
             pc.vp.stop()
             pc.vp.deleteLater()
+
         # Create a fresh player.
         g.es_print('playing', path)
-        if QtMultimedia:
-            url = QtCore.QUrl.fromLocalFile(path)
-            content = QtMultimedia.QMediaContent(url)
-            pc.vp = vp = QtMultimedia.QMediaPlayer()
-            vp.setMedia(content)
-            # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
-            vp.play()
-        else:
-            pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
-            vw = vp.videoWidget()
-            vw.setObjectName('video-renderer')
-            # Embed the widgets
+        url = QtCore.QUrl.fromLocalFile(path)
+        content = QtMultimedia.QMediaContent(url)
+        pc.vp = vp = QtMultimedia.QMediaPlayer()
+        vp.setMedia(content)
+        # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
+        vp.play()
 
-            def delete_callback() -> None:
-                if pc.vp:
-                    pc.vp.stop()
-                    pc.vp.deleteLater()
-                    pc.vp = None
 
-            pc.embed_widget(vp, delete_callback=delete_callback)
-            pc.show()
-            vp = pc.vp
-            vp.load(phonon.MediaSource(path))
-            vp.play()
     #@+node:ekr.20110320120020.14484: *4* vr.update_networkx
     def update_networkx(self, s: str, keywords: Any) -> None:
         """Update a networkx graphic in the vr pane."""
@@ -1363,8 +1339,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         global pandoc_exec
         assert pandoc_exec, g.callers()
         home = g.os.path.expanduser('~')
-        i_path = g.os_path_finalize_join(home, 'vr_input.pandoc')
-        o_path = g.os_path_finalize_join(home, 'vr_output.html')
+        i_path = g.finalize_join(home, 'vr_input.pandoc')
+        o_path = g.finalize_join(home, 'vr_output.html')
         # Write the input file.
         with open(i_path, 'w') as f:
             f.write(s)
@@ -1385,7 +1361,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         c = self.c
 
         if pyplot.get_backend() != 'module://leo.plugins.pyplot_backend':
-            backend = g.os_path_finalize_join(
+            backend = g.finalize_join(
                 g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
             if g.os_path_exists(backend):
                 try:
@@ -1504,14 +1480,14 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if not h.startswith('@jinja'):
             return
 
-        def find_root(p: Position) -> Optional[Tuple[Position, Position]]:
+        def find_root(p: Position) -> Optional[tuple[Position, Position]]:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja':
                     oldp, p = p, newp
                     return oldp, p
             return None, None
 
-        def find_inputs(p: Position) -> Optional[Tuple[Position, Position]]:
+        def find_inputs(p: Position) -> Optional[tuple[Position, Position]]:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja inputs':
                     oldp, p = p, newp
@@ -1536,7 +1512,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         template_data = {}
         for child in p.children():
             if child.h == '@jinja template':
-                template_path = g.os_path_finalize_join(c.getNodePath(p), untangle(c, child).strip())
+                template_path = g.finalize_join(c.getNodePath(p), untangle(c, child).strip())
             elif child.h == '@jinja inputs':
                 for template_var_node in child.children():
                     # pylint: disable=line-too-long
@@ -1565,7 +1541,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     # http://doc.trolltech.com/4.4/qtsvg.html
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
     def update_svg(self, s: str, keywords: Any) -> None:
-        # pylint: disable=no-name-in-module
+
         pc = self
         if hasattr(QtSvg, "QSvgWidget"):  # #2134
             QSvgWidget = QtSvg.QSvgWidget
@@ -1642,7 +1618,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
             w.customContextMenuRequested.connect(contextMenuCallback)
 
-            def handleClick(url: str, w: Widget=w) -> None:
+            def handleClick(url: str, w: Widget = w) -> None:
                 wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
                 event = g.Bunch(c=c, w=wrapper)
                 g.openUrlOnClick(event, url=url)
@@ -1683,29 +1659,23 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 return language
         return None
     #@+node:ekr.20110320233639.5776: *5* vr.get_fn
-    def get_fn(self, s: str, tag: str) -> Tuple[bool, str]:
+    def get_fn(self, s: str, tag: str) -> tuple[bool, str]:
         pc = self
         c = pc.c
         fn = s or c.p.h[len(tag) :]
         fn = fn.strip()
         # Similar to code in g.computeFileUrl
         if fn.startswith('~'):
-            # Expand '~' and handle Leo expressions.
             fn = fn[1:]
-            fn = g.os_path_expanduser(fn)
-            fn = c.expand_path_expression(fn)
-            fn = g.os_path_finalize(fn)
+            fn = g.finalize(fn)
         else:
-            # Handle Leo expressions.
-            fn = c.expand_path_expression(fn)
             # Handle ancestor @path directives.
-            if c and c.openDirectory:
+            if c and c.fileName():
                 base = c.getNodePath(c.p)
-                fn = g.os_path_finalize_join(c.openDirectory, base, fn)
+                fn = g.finalize_join(g.os_path_dirname(c.fileName()), base, fn)
             else:
-                fn = g.os_path_finalize(fn)
+                fn = g.finalize(fn)
         ok = g.os_path_exists(fn)
-        # if not ok: g.trace('not found', fn)
         return ok, fn
     #@+node:ekr.20110321005148.14536: *5* vr.get_url
     def get_url(self, s: str, tag: str) -> str:
@@ -1714,7 +1684,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         url = url.strip()
         return url
     #@+node:ekr.20110322031455.5763: *5* vr.must_change_widget
-    def must_change_widget(self, widget_class: Any) -> bool:
+    def must_change_widget(self, widget_class: Widget) -> bool:
         pc = self
         return not pc.w or pc.w.__class__ != widget_class
     #@+node:ekr.20110320120020.14485: *5* vr.remove_directives

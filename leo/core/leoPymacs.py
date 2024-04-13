@@ -25,7 +25,6 @@ Notes:
 #@-<< leoPymacs docstring>>
 
 # As in leo.py we must be very careful about imports.
-# pylint: disable = global-variable-not-assigned
 
 g = None  # set by init: do *not* import it here!
 inited = False
@@ -65,10 +64,11 @@ def init():
     # Add the parent path of this file to sys.path
     import os
     import sys
-    theDir = os.path.abspath(os.path.join(os.path.dirname(pymacsFile), '..', '..'))
-    if theDir not in sys.path:
-        print('leoPymacs:adding', theDir, 'to sys.path')
-        sys.path.append(theDir)
+    path = os.path.normpath(os.path.join(os.path.dirname(pymacsFile), '..', '..'))
+    if path not in sys.path:
+        print(f"leoPymacs: Append {path!r} to sys.path")
+        sys.path.insert(0, path)
+    del path
     # Create the dummy app
     try:
         from leo.core import runLeo as leo

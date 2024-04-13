@@ -14,7 +14,7 @@ try:
     FigureManagerBase = backend_bases.FigureManagerBase
 
     from matplotlib.backends.qt_compat import QtWidgets
-    from matplotlib.backends.backend_qtagg import(
+    from matplotlib.backends.backend_qtagg import (
         FigureCanvas, FigureManager)
     from matplotlib.figure import Figure
 
@@ -49,9 +49,8 @@ def new_figure_manager_given_figure(num, figure):
 #@+node:ekr.20160929050151.1: *3* class LeoFigureManagerQT
 # From backend_qt5.py
 
-# pylint: disable=no-member
-    # matplotlib.backends.backend_qt5.FigureManager probably does exist. See:
-    # https://github.com/matplotlib/matplotlib/blob/master/lib/matplotlib/backends/backend_qt5.py
+# matplotlib.backends.backend_qt5.FigureManager probably does exist. See:
+# https://github.com/matplotlib/matplotlib/blob/master/lib/matplotlib/backends/backend_qt5.py
 
 class LeoFigureManagerQT(FigureManager):
     """

@@ -17,7 +17,6 @@ from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction, KeyboardModifier, Weight
 # Third-party tools.
 try:
-    # pylint: disable=import-error
     import markdown
 except ImportError:
     print('stickynotes_plus.py: can not import markdown')
@@ -326,7 +325,7 @@ class notetextedit(QTextEdit):
     def contextMenuEvent(self, event):  # this catches the context menu right click
         self.textEffectMenu()
 
-    #@+node:ekr.20100103100944.5411: *3* keyPressEvent__ (stickynotes)
+    #@+node:ekr.20100103100944.5411: *3* keyPressEvent__ (stickynotes_plus.py)
     def keyPressEvent__(self, event):
         # needed because text edit is not going to recognize short cuts
         # because will do something with control key
@@ -434,7 +433,7 @@ class notetextedit(QTextEdit):
         self.ensureCursorVisible()
 
         global_point = self.viewport().mapToGlobal(self.cursorRect().center())
-        menu.exec_(global_point)
+        menu.exec(global_point)
     #@+node:ekr.20100103100944.5415: *3* setTextEffect
     def setTextEffect(self):
         action = self.sender()
@@ -473,13 +472,12 @@ class notetextedit(QTextEdit):
             elif what == notetextedit.Save:
                 self.save()
 
-    #@+node:ekr.20100103100944.5416: *3* mouseMoveEvent (stickynotes.py)
+    #@+node:ekr.20100103100944.5416: *3* mouseMoveEvent (stickynotes_plus.py)
     def mouseMoveEvent(self, event):
 
         pos = event.pos()
         anch = self.anchorAt(pos)
-        self.viewport().setCursor(
-            Qt.PointingHandCursor if anch else Qt.IBeamCursor)
+        self.viewport().setCursor(Qt.PointingHandCursor if anch else Qt.IBeamCursor)
         QTextEdit.mouseMoveEvent(self, event)  #? recursion
 
     #@+node:ekr.20100103100944.5417: *3* mouseReleaseEvent
@@ -534,9 +532,6 @@ class notetextedit(QTextEdit):
                     fragment = iterator.fragment()
                     if fragment.isValid():
                         char_format = fragment.charFormat()
-                        # pylint: disable=no-member
-                        # EKR: I'm not sure whether this warning is valid.
-                        # I'm going to kill it because this is an experimental plugin.
                         text = Qt.escape(fragment.text())  # turns chars like < into entities &lt;
                         font_size = char_format.font().pointSize()
                         # a fragment can only be an anchor, italics or bold

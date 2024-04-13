@@ -7,9 +7,9 @@ import logging
 import sys
 import time
 import traceback
-from typing import Any, List
+from typing import Any
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtWidgets
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 log = None
@@ -51,7 +51,7 @@ def leo_echo_cb(out, err, code, ent):
         g.es_error(err)
 
 #@+node:ekr.20121126095734.12430: *3* log_filedes
-garbage: List[Any] = []
+garbage: list[Any] = []
 
 def log_filedes(f, level):
 
@@ -82,10 +82,7 @@ def main():
     g.procs.add(['ls', '/tmp'])
     g.procs.add(['ls', '-la'])
     b.show()
-    if isQt6:
-        a.exec()
-    else:
-        a.exec_()
+    a.exec()
 #@+node:ekr.20121126095734.12433: ** class NowOrLater
 class NowOrLater:
     #@+others

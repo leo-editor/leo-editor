@@ -320,8 +320,7 @@ keywordsDictDict = {
 # Rules for scala_main ruleset.
 
 def scala_rule0(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="label", pattern="@",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="label", pattern="@")
 
 
 # Rules dict for scala_main ruleset.
@@ -332,191 +331,144 @@ rulesDict1 = {
 # Rules for scala_primary ruleset.
 
 def scala_rule1(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment1", seq="/**/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="comment1", seq="/**/")
 
 def scala_rule2(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq="//",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq="//")
 
 def scala_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="scala::scaladoc", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="scala::scaladoc")
 
 def scala_rule4(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
 
 def scala_rule5(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="comment2", regexp="<!--",
-        at_line_start=False, at_whitespace_end=True, at_word_start=False, delegate="scala::xml_comment")
+          at_whitespace_end=True,
+          delegate="scala::xml_comment")
 
 def scala_rule6(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal3", regexp="<\\/?\\w*",
-        at_line_start=False, at_whitespace_end=True, at_word_start=False, delegate="scala::xml_tag")
+          at_whitespace_end=True,
+          delegate="scala::xml_tag")
 
 def scala_rule7(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"\"\"", end="\"\"\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="\"\"\"", end="\"\"\"")
 
 def scala_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def scala_rule9(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal1", regexp="'([^']|\\\\.)'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal1", regexp="'([^']|\\\\.)'")
 
 def scala_rule10(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="'[0-9a-zA-Z><=+]([0-9a-zA-Z><=+]|_[0-9a-zA-Z><=+])*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="label", regexp="'[0-9a-zA-Z><=+]([0-9a-zA-Z><=+]|_[0-9a-zA-Z><=+])*")
 
 def scala_rule11(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal3", regexp="\\[[^\\[\\]]*(\\[[^\\[\\]]*(\\[[^\\[\\]]*\\][^\\[\\]]*)*\\][^\\[\\]]*)*\\]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal3", regexp="\\[[^\\[\\]]*(\\[[^\\[\\]]*(\\[[^\\[\\]]*\\][^\\[\\]]*)*\\][^\\[\\]]*)*\\]")
 
 def scala_rule12(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="<:\\s*\\w+(\\.\\w+)*(#\\w+)?",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="<:\\s*\\w+(\\.\\w+)*(#\\w+)?")
 
 def scala_rule13(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal2", regexp=">:\\s*\\w+(\\.\\w+)*(#\\w+)?",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal2", regexp=">:\\s*\\w+(\\.\\w+)*(#\\w+)?")
 
 def scala_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=")")
 
 def scala_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def scala_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def scala_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def scala_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">:",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">:")
 
 def scala_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def scala_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<:",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<:")
 
 def scala_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def scala_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def scala_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def scala_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def scala_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def scala_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def scala_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def scala_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def scala_rule29(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def scala_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def scala_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="`",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="`")
 
 def scala_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def scala_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def scala_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def scala_rule35(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=".",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=".")
 
 def scala_rule36(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=",",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=",")
 
 def scala_rule37(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=";")
 
 def scala_rule38(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="]")
 
 def scala_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="[",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="[")
 
 def scala_rule40(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="?",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="?")
 
 def scala_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=":")
 
 def scala_rule42(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal2", regexp=":\\s*\\w+(\\.\\w+)*(#\\w+)?",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="literal2", regexp=":\\s*\\w+(\\.\\w+)*(#\\w+)?")
 
 def scala_rule43(colorer, s, i):
-    return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_previous(s, i, kind="function", pattern="(")
 
 def scala_rule44(colorer, s, i):
     return colorer.match_span(s, i, kind="", begin="case", end="=>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="scala::pattern", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="scala::pattern",
+          no_line_break=True)
 
 def scala_rule45(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -619,8 +571,7 @@ rulesDict2 = {
 
 
 def scala_rule46(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="@",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
 
 # Rules dict for scala_pattern ruleset.
 rulesDict3 = {
@@ -630,42 +581,30 @@ rulesDict3 = {
 # Rules for scala_scaladoc ruleset.
 
 def scala_rule47(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="{")
 
 def scala_rule48(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="*")
 
 def scala_rule49(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<pre>", end="</pre>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="scala::scaladoc_pre", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="scala::scaladoc_pre")
 
 def scala_rule50(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 def scala_rule51(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="<<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="<<")
 
 def scala_rule52(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="<=")
 
 def scala_rule53(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment3", seq="< ",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="comment3", seq="< ")
 
 def scala_rule54(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="xml::tags")
 
 def scala_rule55(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -751,37 +690,31 @@ rulesDict5 = {}
 
 def scala_rule56(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def scala_rule57(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def scala_rule58(colorer, s, i):
     return colorer.match_span(s, i, kind="", begin="{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="scala::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="scala::main")
 
 def scala_rule59(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal3", regexp=">$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="scala::main")
+          delegate="scala::main")
 
 def scala_rule60(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal3", regexp=">\\s*;",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="scala::main")
+          delegate="scala::main")
 
 def scala_rule61(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal3", regexp=">\\s*\\)",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="scala::main")
+          delegate="scala::main")
 
 def scala_rule62(colorer, s, i):
     return colorer.match_seq(s, i, kind="literal3", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="scala::xml_text")
+          delegate="scala::xml_text")
 
 # Rules dict for scala_xml_tag ruleset.
 rulesDict6 = {
@@ -795,17 +728,15 @@ rulesDict6 = {
 
 def scala_rule63(colorer, s, i):
     return colorer.match_span(s, i, kind="", begin="{", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="scala::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="scala::main")
 
 def scala_rule64(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="comment2", regexp="<!--",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="scala::xml_comment")
+          delegate="scala::xml_comment")
 
 def scala_rule65(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal3", regexp="<\\/?\\w*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="scala::xml_tag")
+          delegate="scala::xml_tag")
 
 # Rules dict for scala_xml_text ruleset.
 rulesDict7 = {
@@ -817,15 +748,15 @@ rulesDict7 = {
 
 def scala_rule66(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="comment2", regexp="-->$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="scala::main")
+          delegate="scala::main")
 
 def scala_rule67(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="comment2", regexp="-->\\s*;",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="scala::main")
+          delegate="scala::main")
 
 def scala_rule68(colorer, s, i):
     return colorer.match_seq(s, i, kind="comment2", seq="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="scala::xml_text")
+          delegate="scala::xml_text")
 
 # Rules dict for scala_xml_comment ruleset.
 rulesDict8 = {

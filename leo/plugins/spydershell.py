@@ -28,7 +28,6 @@ def spyder_launch(event):
     """ Launch spyder """
     # Options
     try:
-        # pylint: disable=import-error
         from spyderlib import spyder
     except ImportError:
         g.es_print('Can not import spyderlib')

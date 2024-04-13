@@ -6,7 +6,7 @@
 from __future__ import annotations
 import random
 import textwrap
-from typing import Any, List, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -54,9 +54,9 @@ class TipManager:
 class UserTip:
     """A User Tip."""
 
-    def __init__(self, n: int = 0, tags: List[str] = None, text: str = '', title: str = '') -> None:
+    def __init__(self, n: int = 0, tags: list[str] = None, text: str = '', title: str = '') -> None:
         self.n = n  # Not used.
-        self.tags: List[str] = tags or []  # Not used.
+        self.tags: list[str] = tags or []  # Not used.
         self.title = title.strip()
         self.text = text.strip()
 
@@ -89,7 +89,7 @@ def make_tips(c: Cmdr) -> None:
     import requests
     url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=Tip&state='
 
-    def get_tips(data: Any) -> List[UserTip]:
+    def get_tips(data: Any) -> list[UserTip]:
         """get_tips - get tips from GitHub issues
         :param dict data: GitHub API issues list
         :return: list of Tips
@@ -126,7 +126,7 @@ UserTip(
 '''
     template = textwrap.dedent(template)
     for kind in ('open',):  # 'closed':
-        data = requests.get(url + kind).json()
+        data = requests.get(url + kind, timeout=2.0).json()
         for tip in get_tips(data):
             tags = [f"{z}" for z in tip.tags or []]
             title = tip.title.lstrip('Tip:').lstrip('tip:').strip()
@@ -153,7 +153,7 @@ def make_tip_nodes(c: Cmdr) -> None:
 #@-others
 
 # The global tips array.
-tips: List[UserTip] = [
+tips: list[UserTip] = [
 #@+<< define tips >>
 #@+node:ekr.20180121053422.1: ** << define tips >>
 #@@wrap
@@ -171,7 +171,6 @@ Become familiar with Leo's most important plugins:
 - bookmarks.py manages bookmarks.
 - contextmenu.py shows a menu when when right-clicking.
 - mod_scripting.py supports @button and @command nodes.
-  The eval* command support persistent evaluation.
 - quicksearch.py adds a Nav tab for searching.
 - todo.py handles to-do lists and is a project manager.
 - viewrendered.py renders content in the rendering pane.
@@ -358,7 +357,7 @@ UserTip(
     text="""\
 <p>The rst3 command converts an @rst tree to a document file.</p>
 
-<p>See <a href="http://leoeditor.com/tutorial-rst3.html">Leo's rst3 tutorial.</a></p>
+<p>See <a href="https://leo-editor.github.io/leo-editor/tutorial-rst3.html">Leo's rst3 tutorial.</a></p>
 
 </html>"""),
 #@+node:ekr.20180324072625.1: *4* sort-siblings command
@@ -401,7 +400,7 @@ For example:</p>
 <p><pre>    g.trace(g.callers())</pre></p>
 
 <p>You must
-<a href="http://leoeditor.com/running.html#running-leo-from-a-console-window">
+<a href="https://leo-editor.github.io/leo-editor/running.html#running-leo-from-a-console-window">
 run Leo from a console</a> for this to work.</p>
 
 </html>"""),
@@ -416,7 +415,7 @@ UserTip(
 adapted for Leo.</p>
 
 <p>You must
-<a href="http://leoeditor.com/running.html#running-leo-from-a-console-window">
+<a href="https://leo-editor.github.io/leo-editor/running.html#running-leo-from-a-console-window">
 run Leo from a console</a> for this to work.</p>
 
 </html>"""),
@@ -431,7 +430,7 @@ UserTip(
 <p>It's great for seeing patterns in running code.</p>
 
 <p>You must
-<a href="http://leoeditor.com/running.html#running-leo-from-a-console-window">
+<a href="https://leo-editor.github.io/leo-editor/running.html#running-leo-from-a-console-window">
 run Leo from a console</a> for this to work.</p>
 
 </html>"""),
@@ -506,7 +505,7 @@ UserTip(
     text="""
 
 <p>Leo's
-<a href="http://leoeditor.com/tutorial-pim.html#using-abbreviations-and-templates">
+<a href="https://leo-editor.github.io/leo-editor/tutorial-pim.html#using-abbreviations-and-templates">
 abbreviations</a>
 can correct spelling mistakes, expand to multiple lines or even trees of nodes.
 </p>
@@ -522,7 +521,7 @@ UserTip(
     title="<html>Clones",
     text="""
 <p>
-<a href="http://leoeditor.com/tutorial-pim.html#clones">Clones</a>
+<a href="https://leo-editor.github.io/leo-editor/tutorial-pim.html#clones">Clones</a>
 are "live" copies of the node itself and all its descendants.</p>
 
 <p>Clones are a unique feature of Leo.</p>

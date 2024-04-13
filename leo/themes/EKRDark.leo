@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -154,14 +154,26 @@
 <v t="ekr.20180318145515.777"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
 <v t="ekr.20180318145515.778"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
 <v t="ekr.20180318145515.779"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20180318145515.780"><vh>@color url_color = @solarized-purple</vh></v>
+<v t="ekr.20180318145515.780"><vh>@color url_color = purple</vh></v>
 </v>
 <v t="ekr.20180318145515.781"><vh>Colors: patch (diff)</vh>
-<v t="ekr.20180318145515.782"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
-<v t="ekr.20180318145515.783"><vh>@color patch_keyword2_color = @solarized-red</vh></v>
-<v t="ekr.20180318145515.784"><vh>@color patch_keyword3_color = @solarized-blue</vh></v>
-<v t="ekr.20180318145515.785"><vh>@color patch_literal1_color = @solarized-blue</vh></v>
-<v t="ekr.20180318145515.786"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
+<v t="ekr.20180318145515.782"><vh>@color patch.keyword1 = @solarized-green</vh></v>
+<v t="ekr.20180318145515.783"><vh>@color patch.keyword2 = @solarized-red</vh></v>
+<v t="ekr.20180318145515.784"><vh>@color patch.keyword3 = @solarized-blue</vh></v>
+<v t="ekr.20180318145515.785"><vh>@color patch.literal1 = @solarized-blue</vh></v>
+<v t="ekr.20180318145515.786"><vh>@color patch.literal2 = @solarized-blue</vh></v>
+</v>
+<v t="ekr.20240206072249.1"><vh>Colors: nim</vh>
+<v t="ekr.20240206072249.2"><vh>@color nim.keyword1 = @solarized-red</vh></v>
+<v t="ekr.20240206072249.3"><vh>@color nim.keyword2 = @solarized-blue</vh></v>
+<v t="ekr.20240206072249.4"><vh>@color nim.keyword3 = @solarized-blue</vh></v>
+<v t="ekr.20240206072249.5"><vh>@color nim.keyword4 = @solarized-purple</vh></v>
+<v t="ekr.20240206072249.6"><vh>@color nim.literal1 = @alt-solarized-green</vh></v>
+<v t="ekr.20240206072249.7"><vh>@color nim.literal2 = @solarized-blue</vh></v>
+<v t="ekr.20240206072249.8"><vh>@color nim.comment1 = #d33682</vh></v>
+<v t="ekr.20240206072249.9"><vh>@color nim.comment2 = red</vh></v>
+<v t="ekr.20240206072249.10"><vh>@color nim.comment3 = red</vh></v>
+<v t="ekr.20240206072249.11"><vh>@color nim.comment4 = red</vh></v>
 </v>
 </v>
 </v>
@@ -676,7 +688,7 @@ something to see)</t>
 
 url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
 <t tx="ekr.20180318145515.809">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
-<t tx="ekr.20180318145515.811" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
+<t tx="ekr.20180318145515.811">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
 <t tx="ekr.20180318145515.813">/*
 @language css
@@ -973,5 +985,16 @@ QLineEdit#editorLabel {
 <t tx="ekr.20201221073843.1"></t>
 <t tx="ekr.20201221075212.1">The path to the icon folder.</t>
 <t tx="ekr.20201221102453.1">These settings must exist because they are *not* used in the css.</t>
+<t tx="ekr.20240206072249.1"></t>
+<t tx="ekr.20240206072249.10"></t>
+<t tx="ekr.20240206072249.11"></t>
+<t tx="ekr.20240206072249.2">Official keywords and type names.</t>
+<t tx="ekr.20240206072249.3">Constants: true, false, none.</t>
+<t tx="ekr.20240206072249.4">Uppercase constants defined in system.</t>
+<t tx="ekr.20240206072249.5">Procs.</t>
+<t tx="ekr.20240206072249.6">Strings.</t>
+<t tx="ekr.20240206072249.7">Numbers</t>
+<t tx="ekr.20240206072249.8">Standard Leo comment color.</t>
+<t tx="ekr.20240206072249.9">Nim nested comment.</t>
 </tnodes>
 </leo_file>

@@ -9,7 +9,7 @@ This is a step-by-step introduction showing you how to use Leo outlines.
 .. no slide 1
 .. toctree::
     :maxdepth: 1
-    
+
     The workbook file               <slide-002>
     Editing headlines               <slide-003>
     Typing in a headline            <slide-004>

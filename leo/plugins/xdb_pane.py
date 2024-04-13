@@ -6,7 +6,7 @@ commands, and an input area in which the user can type other commands.
 """
 #@+<< imports: xdb_pane.py >>
 #@+node:ekr.20220424085736.1: ** << imports: xdb_pane.py >>
-from typing import Any, Dict
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoQt import ScrollBarPolicy, WrapMode
@@ -15,7 +15,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports: xdb_pane.py >>
 
 # Globals.
-controllers: Dict[str, Any] = {}
+controllers: dict[str, Any] = {}
 
 #@+others
 #@+node:ekr.20181005051820.1: ** Top-level functions
@@ -84,7 +84,7 @@ if g.app.gui.guiName() == "qt":
                 for name, func in table:
                     w = QtWidgets.QPushButton()
                     w.setText(name)
-                    w.clicked.connect(func)
+                    w.clicked.connect(func)  # type:ignore
                     hlayout.addWidget(w)
                 vlayout.addLayout(hlayout)
             layout.addLayout(vlayout)
@@ -122,18 +122,17 @@ if g.app.gui.guiName() == "qt":
         #@+node:ekr.20181004143535.20: *4* get_icon
         def get_icon(self, fn):
             """return the icon from Icons/debug_icons"""
-            path = g.os_path_finalize_join(
-                g.app.loadDir, '..', 'Icons', 'debug_icons', fn)
+            path = g.finalize_join(g.app.loadDir, '..', 'Icons', 'debug_icons', fn)
             return QtGui.QIcon(g.app.gui.getImageImage(path))
         #@+node:ekr.20181005042637.1: *3* debug_*
         def debug_break(self, checked):
-            self.c.k.simulateCommand('db-b')
+            self.c.doCommandByName('db-b')
 
         def debug_continue(self, checked):
-            self.c.k.simulateCommand('db-c')
+            self.c.doCommandByName('db-c')
 
         def debug_help(self, checked):
-            self.c.k.simulateCommand('db-h')
+            self.c.doCommandByName('db-h')
 
         def debug_input(self):
             xdb = getattr(g.app, 'xdb', None)
@@ -144,25 +143,25 @@ if g.app.gui.guiName() == "qt":
                 print('xdb not active')
 
         def debug_list(self, checked):
-            self.c.k.simulateCommand('db-l')
+            self.c.doCommandByName('db-l')
 
         def debug_next(self, checked):
-            self.c.k.simulateCommand('db-n')
+            self.c.doCommandByName('db-n')
 
         def debug_quit(self, *args):
-            self.c.k.simulateCommand('db-q')
+            self.c.doCommandByName('db-q')
 
         def debug_return(self, *args):
-            self.c.k.simulateCommand('db-r')
+            self.c.doCommandByName('db-r')
 
         def debug_step(self, *args):
-            self.c.k.simulateCommand('db-s')
+            self.c.doCommandByName('db-s')
 
         def debug_where(self, *args):
-            self.c.k.simulateCommand('db-w')
+            self.c.doCommandByName('db-w')
 
         def debug_xdb(self, *args):
-            self.c.k.simulateCommand('xdb')
+            self.c.doCommandByName('xdb')
         #@+node:ekr.20181006161938.1: *3* write & clear
         def clear(self):
             """Clear the output area."""

@@ -1,10 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210910065135.1: * @file ../unittests/core/test_leoFileCommands.py
-"""
-Tests of leoFileCommands.py.
-
-test-file-commands runs these tests.
-"""
+"""Tests of leoFileCommands.py."""
 
 import leo.core.leoFileCommands as leoFileCommands
 from leo.core.leoTest2 import LeoUnitTest
@@ -29,7 +25,7 @@ class TestFileCommands(LeoUnitTest):
         table = (
             # Errors.
             (None, '-1'),
-            (None, '1'),
+            # (None, '1'),
             (None, '0.2'),
             (None, '0.0.0'),
             (None, '0.1.2'),
@@ -45,8 +41,12 @@ class TestFileCommands(LeoUnitTest):
             (greatGrandChild22.v, '0.1.1.1'),
         )
         for v, archivedPosition in table:
-            v2 = c.fileCommands.resolveArchivedPosition(archivedPosition, root_v)
-            self.assertEqual(v, v2)
+            if v is None:
+                with self.assertRaises(AssertionError):
+                    c.fileCommands.resolveArchivedPosition(archivedPosition, root_v)
+            else:
+                v2 = c.fileCommands.resolveArchivedPosition(archivedPosition, root_v)
+                self.assertEqual(v, v2)
     #@+node:ekr.20210909194336.33: *3* TestFileCommands.test_p_archivedPosition
     def test_p_archivedPosition(self):
         p, root = self.c.p, self.root_p

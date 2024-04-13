@@ -12,6 +12,9 @@ tests in leo/unittest. Eventually these classes will move to scripts.leo.
 #@+<< leoTest2 imports & annotations >>
 #@+node:ekr.20220901083840.1: ** << leoTest2 imports & annotations >>
 from __future__ import annotations
+import os
+import sys
+import textwrap
 import time
 import unittest
 import warnings
@@ -47,7 +50,11 @@ def create_app(gui_name: str = 'null') -> Cmdr:
     from leo.core import leoCommands
     from leo.core.leoGui import NullGui
     if gui_name == 'qt':
-        from leo.plugins.qt_gui import LeoQtGui
+        # Don't fail if Qt has not been installed.
+        try:
+            from leo.plugins.qt_gui import LeoQtGui
+        except Exception:
+            gui_name = 'null'
     t2 = time.process_time()
     g.app.recentFilesManager = leoApp.RecentFilesManager()
     g.app.loadManager = lm = leoApp.LoadManager()
@@ -58,7 +65,6 @@ def create_app(gui_name: str = 'null') -> Cmdr:
     # Disable dangerous code.
     g.app.db = g.NullObject('g.app.db')  # type:ignore
     g.app.pluginsController = g.NullObject('g.app.pluginsController')  # type:ignore
-    g.app.commander_cacher = g.NullObject('g.app.commander_cacher')  # type:ignore
     if gui_name == 'null':
         g.app.gui = NullGui()
     elif gui_name == 'qt':
@@ -93,14 +99,17 @@ class LeoUnitTest(unittest.TestCase):
     """
     The base class for all unit tests in Leo.
 
-    Contains setUp/tearDown methods and various utilites.
+    Contains setUp/tearDown methods and various utilities.
+
+    This class must not contain any  test_* methods!
     """
-    #@+others
-    #@+node:ekr.20210901140855.2: *3* LeoUnitTest.setUp, tearDown & setUpClass
+
     @classmethod
     def setUpClass(cls: Any) -> None:
         create_app(gui_name='null')
 
+    #@+others
+    #@+node:ekr.20210901140855.2: *3*  LeoUnitTest.setUp & tearDown
     def setUp(self) -> None:
         """
         Create a commander using g.app.gui.
@@ -117,7 +126,8 @@ class LeoUnitTest(unittest.TestCase):
 
         # Create a new commander for each test.
         # This is fast, because setUpClass has done all the imports.
-        self.c = c = leoCommands.Commands(fileName=None, gui=g.app.gui)
+        fileName = g.os_path_finalize_join(g.app.loadDir, 'LeoPyRef.leo')
+        self.c = c = leoCommands.Commands(fileName=fileName, gui=g.app.gui)
 
         # Init the 'root' and '@settings' nodes.
         self.root_p = c.rootPosition()
@@ -130,7 +140,94 @@ class LeoUnitTest(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.c = None
-    #@+node:ekr.20210830151601.1: *3* LeoUnitTest.create_test_outline
+    #@+node:ekr.20230703103458.1: *3* LeoUnitTest._set_setting
+    def _set_setting(self, c: Cmdr, kind: str, name: str, val: Any) -> None:
+        """
+        Call c.config.set with the given args, suppressing stdout.
+        """
+        try:
+            old_stdout = sys.stdout
+            sys.stdout = open(os.devnull, 'w')
+            c.config.set(p=None, kind=kind, name=name, val=val)
+        finally:
+            sys.stdout = old_stdout
+    #@+node:ekr.20240205005844.1: *3* LeoUnitTest.prep
+    def prep(self, s: str) -> str:
+        """
+        Return the "prepped" version of s.
+
+        This should eliminate the need for backslashes in tests.
+        """
+        return textwrap.dedent(s).strip() + '\n'
+    #@+node:ekr.20230808113542.1: *3* LeoUnitTest: dumps
+    #@+node:ekr.20230724174102.1: *4* LeoUnitTest.dump_bodies
+    def dump_bodies(self, c: Cmdr) -> None:  # pragma: no cover
+        """Dump all headlines."""
+        print('')
+        g.trace(c.fileName())
+        print('')
+        for p in c.all_positions():
+            head_s = f"{' '*p.level()} {p.h}"
+            print(f"{p.gnx:<28} {head_s:<20} body: {p.b!r}")
+
+    #@+node:ekr.20230720210931.1: *4* LeoUnitTest.dump_clone_info
+    def dump_clone_info(self, c: Cmdr, tag: str = None) -> None:
+        """Dump all clone info."""
+        print('')
+        g.trace(f"{tag or ''} {c.fileName()}")
+        print('')
+        for p in c.all_positions():
+            head_s = f"{' '*p.level()}{p.h}"
+            print(
+                f"clone? {int(p.isCloned())} id(v): {id(p.v)} gnx: {p.gnx:30}: "
+                f"{head_s:<10} parents: {p.v.parents}"
+            )
+    #@+node:ekr.20220805071838.1: *4* LeoUnitTest.dump_headlines
+    def dump_headlines(self, c: Cmdr, tag: str = None) -> None:  # pragma: no cover
+        """Dump all headlines."""
+        print('')
+        g.trace(f"{tag or ''} {c.fileName()}")
+        print('')
+        for p in c.all_positions():
+            print(f"{p.gnx:25}: {' '*p.level()}{p.h}")
+    #@+node:ekr.20220806170537.1: *4* LeoUnitTest.dump_string
+    def dump_string(self, s: str, tag: str = None) -> None:
+        if tag:
+            print(tag)
+        g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
+    #@+node:ekr.20211129062220.1: *4* LeoUnitTest.dump_tree
+    def dump_tree(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
+        """
+        Dump root's tree, or the entire tree if root is None.
+        """
+        print('')
+        if tag:
+            print(tag)
+        _iter = root.self_and_subtree if root else self.c.all_positions
+        for p in _iter():
+            print('')
+            print('level:', p.level(), p.h)
+            g.printObj(g.splitLines(p.v.b))
+    #@+node:ekr.20230808113454.1: *3* LeoUnitTest: setup utils
+    #@+node:ekr.20230724140745.1: *4* LeoUnitTest.clean_tree
+    def clean_tree(self) -> None:
+        """Clear everything but the root node."""
+        p = self.root_p
+        assert p.h == 'root'
+        p.deleteAllChildren()
+        while p.hasNext():
+            p.next().doDelete()
+    #@+node:ekr.20230724141139.1: *4* LeoUnitTest.copy_node
+    def copy_node(self, is_json: bool = False) -> str:
+        """Copy c.p to the clipboard."""
+        c = self.c
+        if is_json:
+            s = c.fileCommands.outline_to_clipboard_json_string()
+        else:
+            s = c.fileCommands.outline_to_clipboard_string()
+        g.app.gui.replaceClipboardWith(s)
+        return s
+    #@+node:ekr.20210830151601.1: *4* LeoUnitTest.create_test_outline
     def create_test_outline(self) -> None:
         p = self.c.p
         # Create the following outline:
@@ -173,35 +270,81 @@ class LeoUnitTest(unittest.TestCase):
         # Clone 'child b'
         clone = child_b.clone()
         clone.moveToLastChildOf(p)
-    #@+node:ekr.20220806170537.1: *3* LeoUnitTest.dump_string
-    def dump_string(self, s: str, tag: str = None) -> None:
-        if tag:
-            print(tag)
-        g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
-    #@+node:ekr.20220805071838.1: *3* LeoUnitTest.dump_headlines
-    def dump_headlines(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
+    #@+node:ekr.20230724140451.1: *4* LeoUnitTest.create_test_paste_outline
+    def create_test_paste_outline(self) -> Position:
         """
-        Dump root's headlines, or all headlines if root is None.
+        Create the following tree:
+
+            aa
+                aa:child1
+            bb
+            cc:child1 (clone)
+            cc
+              cc:child1 (clone)
+              cc:child2
+            dd
+              dd:child1
+                dd:child1:child1
+              dd:child2
+            ee
+
+        return cc.
         """
-        print('')
-        if tag:
-            print(tag)
-        _iter = root.self_and_subtree if root else self.c.all_positions
-        for p in _iter():
-            print('level:', p.level(), p.h)
-    #@+node:ekr.20211129062220.1: *3* LeoUnitTest.dump_tree
-    def dump_tree(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
-        """
-        Dump root's tree, or the entire tree if root is None.
-        """
-        print('')
-        if tag:
-            print(tag)
-        _iter = root.self_and_subtree if root else self.c.all_positions
-        for p in _iter():
-            print('')
-            print('level:', p.level(), p.h)
-            g.printObj(g.splitLines(p.v.b))
+        c = self.c
+        root = c.rootPosition()
+        aa = root.insertAfter()
+        aa.h = 'aa'
+        aa_child1 = aa.insertAsLastChild()
+        aa_child1.h = 'aa:child1'
+        bb = aa.insertAfter()
+        bb.h = 'bb'
+        cc = bb.insertAfter()
+        cc.h = 'cc'
+        cc_child1 = cc.insertAsLastChild()
+        cc_child1.h = 'cc:child1'
+        cc_child2 = cc_child1.insertAfter()
+        cc_child2.h = 'cc:child2'
+        dd = cc.insertAfter()
+        dd.h = 'dd'
+        dd_child1 = dd.insertAsLastChild()
+        dd_child1.h = 'dd:child1'
+        dd_child2 = dd.insertAsLastChild()
+        dd_child2.h = 'dd:child2'
+        dd_child1_child1 = dd_child1.insertAsLastChild()
+        dd_child1_child1.h = 'dd:child1:child1'
+        ee = dd.insertAfter()
+        ee.h = 'ee'
+        clone = cc_child1.clone()
+        clone.moveAfter(bb)
+        assert clone.v == cc_child1.v
+        # Careful: position cc has changed.
+        cc = clone.next().copy()
+        # Initial checks.
+        assert cc.h == 'cc'
+        # Make *sure* clones are as expected.
+        for p in c.all_positions():
+            if p.h == 'cc:child1':
+                assert p.isCloned(), p.h
+            else:
+                assert not p.isCloned(), p.h
+        return cc
+    #@+node:ekr.20221113064908.1: *4* LeoUnitTest.create_test_sort_outline
+    def create_test_sort_outline(self) -> None:
+        """Create a test outline suitable for sort commands."""
+        p = self.c.p
+        assert p == self.root_p
+        assert p.h == 'root'
+        table = (
+            'child a',
+            'child z',
+            'child b',
+            'child w',
+        )
+        for h in table:
+            child = p.insertAsLastChild()
+            child.h = h
+
+
     #@-others
 #@-others
 #@-leo

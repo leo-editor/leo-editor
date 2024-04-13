@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -10,7 +10,6 @@
 <v t="ekr.20131030071311.18741"><vh>@button make-sphinx</vh></v>
 <v t="ekr.20131030071311.17126"><vh>@settings</vh>
 <v t="ekr.20181015143002.1"><vh>@bool body_pane_wraps = True</vh></v>
-<v t="mhw.20181210130732.1"><vh>@bool put-expansion-bits-in-leo-files = False</vh></v>
 <v t="ekr.20131030071311.18671"><vh>@string target_language = rest</vh></v>
 <v t="ekr.20131030071311.17128"><vh>For rst3 command</vh>
 <v t="ekr.20131030071311.17127"><vh>@bool rst3_call_docutils = True</vh></v>
@@ -39,6 +38,7 @@
 <v t="ekr.20131019184243.16695"><vh>Pre-defined symbols</vh></v>
 <v t="ekr.20170315015836.1"><vh>LeoApp class</vh></v>
 <v t="ekr.20131019184243.16697"><vh>Commands class</vh></v>
+<v t="ekr.20230904052052.1"><vh>Executing commands by name</vh></v>
 <v t="ekr.20190101084845.1"><vh>Undoing commands</vh>
 <v t="ekr.20190101092126.1"><vh>Undoably changing body text</vh></v>
 <v t="ekr.20190101092129.1"><vh>Undoably changing multiple nodes</vh></v>
@@ -46,7 +46,6 @@
 <v t="ekr.20131019184243.16698"><vh>VNode class</vh></v>
 <v t="ekr.20131019184243.16699"><vh>Position class</vh></v>
 <v t="ekr.20131019184243.16700"><vh>The leoGlobals module</vh></v>
-<v t="ekr.20170311121717.1"><vh>Test driven development</vh></v>
 <v t="ekr.20170403190104.1"><vh>Performance gotchas</vh></v>
 <v t="ekr.20180503073939.1"><vh>Prompting for command arguments</vh>
 <v t="ekr.20180503073954.1"><vh>Example 1: Prompt for one arg</vh></v>
@@ -106,6 +105,7 @@
 <v t="ekr.20180405093127.30"><vh>reStructuredText docstring example</vh></v>
 <v t="ekr.20180405093127.32"><vh>reStructureText text example</vh></v>
 </v>
+<v t="ekr.20230716045242.1"><vh>Clickable links</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20131019184243.16683">This Cheat Sheet contains a summary of many of Leo's important features.</t>
@@ -286,7 +286,7 @@ This overrides the following default binding in leoSettings.leo::
 - todo.py: Manages to-do lists and simple project management.
 - valuespace.py: Creates an outline-oriented spreadsheet.
 - viewrendered.py: Creates a rendering pane. Automatically loaded by Leo's help commands.
-</t>
+- viewrendered3.py: An alternate version of viewrendered.py.</t>
 <t tx="ekr.20131019184243.16693">@&lt;file&gt; nodes create external files:
 
     @asis &lt;filename&gt;        write only, no sentinels, exact line endings
@@ -948,10 +948,6 @@ Expansion of section names and @others:
     @file {{os.path.abspath(os.curdir)}}/abc.py
     
 refers to the file abc.py in (absolute path of) the current directory.
-</t>
-<t tx="ekr.20170311121717.1">- Use imp.reload to reload all changed modules.
-- Make sure to *instantiate* any changed objects.
-- See "Unit testing with Leo" for full details.
 </t>
 <t tx="ekr.20170311122518.1">@nowrap
 
@@ -1747,13 +1743,23 @@ c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
             reportFlag=False,
             dirtyVnodeList=dirtyVnodeList)
 </t>
-<t tx="mhw.20181210130732.1">True (recommended):
-    Write "E" attribute bits in &lt;v&gt; elements.
-    Leo outlines will record the expansion state of all nodes.
-    
-False: (Good for files like unitTest.leo)
-    Suppress "E" attribute bits in &lt;v&gt; elements.
-    Only the ancestors of the presently selected node will
-    be expanded when Leo opens an outline.</t>
+<t tx="ekr.20230716045242.1">Leo syntax colors clickable links in the body pane. For example:
+
+Leo's home page: https://leo-editor.github.io/leo-editor/
+
+The status area shows the UNL (*Universal Node Locator*) for each node.
+
+Control-clicking a UNL will take you to its target node, even if the target is in another Leo file!
+gnx-based UNLs won't break even if you move or rename the target node.
+
+Try these examples!
+
+The "Key bindings" node in this file:
+unl:gnx://CheatSheet.leo#ekr.20131019184243.16685
+
+The "6.7.4 release notes" node in LeoDocs.leo.
+unl:gnx://LeoDocs.leo#ekr.20230703101804.1
+</t>
+<t tx="ekr.20230904052052.1">c.doCommandByName(command_name) executes the command with the given name.</t>
 </tnodes>
 </leo_file>

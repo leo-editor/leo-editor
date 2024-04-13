@@ -1,7 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17996: * @file ../plugins/qt_commands.py
 """Leo's Qt-related commands defined by @g.command."""
-from typing import List
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoConfig
@@ -81,7 +80,7 @@ def showColorNames(event=None):
     if getattr(c, ivar, None):
         g.es('The color picker already exists in the icon bar.')
     else:
-        color_list: List[str] = []
+        color_list: list[str] = []
         box = QtWidgets.QComboBox()
 
         def onActivated(n, *args, **keys):
@@ -123,7 +122,7 @@ def showColorWheel(self, event=None):
     except(ValueError, IndexError) as e:
         g.trace('error caught', e)
 
-    result = picker.exec_()
+    result = picker.exec()
     if not result:
         g.es("No color selected")
     elif in_color_setting:
@@ -150,11 +149,16 @@ def showFonts(self, event=None):
             font.setFamily(family)
         font.setBold(weight)
         font.setItalic(slant)
-        font.setPointSize(size)
+        try:
+            font.setPointSizeF(float(size))
+        except TypeError:
+            font.setPointSize(int(size))
         picker.setCurrentFont(font)
     except ValueError:
         pass
-    result = picker.exec_()
+    except Exception:
+        g.es_exception()
+    result = picker.exec()
     if not result:
         g.es("No font selected")
     else:

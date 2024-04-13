@@ -1,6 +1,12 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20231103124615.1: * @file ../modes/rust.py
 # Leo colorizer control file for rust mode.
 # This file is in the public domain.
 
+import re
+
+#@+<< Rust dictionaries >>
+#@+node:ekr.20231103125350.1: ** << Rust dictionaries >>
 # Properties for c mode.
 properties = {
     "commentEnd": "*/",
@@ -106,218 +112,231 @@ rust_main_keywords_dict = {
 keywordsDictDict = {
     "rust_main": rust_main_keywords_dict,
 }
+#@-<< Rust dictionaries >>
 
 # Rules for rust_main ruleset.
 
 def rust_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="doxygen::doxygen", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="doxygen::doxygen")
 
 def rust_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/*!", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="doxygen::doxygen", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="doxygen::doxygen")
 
 def rust_rule2(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
 
 def rust_rule3(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"")
 
-def rust_rule4(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal3", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+# A single quote does not always denote a character literal.
+
+# These patterns are the same as in the rust importer:
+
+char10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")  # '\u{7FFF}'
+char6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")  # '\x7F'
+char4_pat = re.compile(r"'\\[\\\"'nrt0]'")  # '\n', '\r', '\t', '\\', '\0', '\'', '\"'
+char3_pat = re.compile(r"'.'", re.UNICODE)  # 'x' where x is any unicode character.
+
+def rust_char10(colorer, s, i):
+    return colorer.match_span_regexp(s, i, kind="literal2", begin=char10_pat)
+
+def rust_char6(colorer, s, i):
+    return colorer.match_span_regexp(s, i, kind="literal2", begin=char6_pat)
+
+def rust_char4(colorer, s, i):
+    return colorer.match_span_regexp(s, i, kind="literal2", begin=char4_pat)
+
+def rust_char3(colorer, s, i):
+    return colorer.match_span_regexp(s, i, kind="literal2", begin=char3_pat)
+
+# #3631
+# https://doc.rust-lang.org/reference/tokens.html#raw-string-literals
+# Up to 255 '#' are allowed. Ruff only uses 1 and 3.
+
+def rust_raw_string_literal3(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal2", begin='r###"', end='"###')
+
+def rust_raw_string_literal2(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal2", begin='r##"', end='"##')
+
+def rust_raw_string_literal1(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal2", begin='r#"', end='"#')
+
+def rust_at_operator(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
 
 def rust_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="##",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="##")
 
 def rust_rule6(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#")
 
 def rust_rule7(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq="//",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment2", seq="//")
 
 def rust_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def rust_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def rust_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def rust_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def rust_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def rust_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def rust_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def rust_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def rust_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def rust_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def rust_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def rust_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def rust_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def rust_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def rust_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def rust_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def rust_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def rust_rule25(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-        at_line_start=False, at_whitespace_end=True, at_word_start=False, exclude_match=True)
+          at_whitespace_end=True,
+          exclude_match=True)
 
 def rust_rule26(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+          exclude_match=True)
 
 def rust_rule27(colorer, s, i):
     return colorer.match_keywords(s, i)
 
 # Rules dict for c_main ruleset.
 rulesDict1 = {
-    "!": [rust_rule9,],
-    "\"": [rust_rule3,],
-    "#": [rust_rule5, rust_rule6,],
-    "%": [rust_rule18,],
-    "&": [rust_rule19,],
-    "'": [rust_rule4,],
-    "(": [rust_rule26,],
-    "*": [rust_rule15,],
-    "+": [rust_rule12,],
-    "-": [rust_rule13,],
-    "/": [rust_rule0, rust_rule1, rust_rule2, rust_rule7, rust_rule14,],
-    "0": [rust_rule27,],
-    "1": [rust_rule27,],
-    "2": [rust_rule27,],
-    "3": [rust_rule27,],
-    "4": [rust_rule27,],
-    "5": [rust_rule27,],
-    "6": [rust_rule27,],
-    "7": [rust_rule27,],
-    "8": [rust_rule27,],
-    "9": [rust_rule27,],
-    ":": [rust_rule25,],
-    "<": [rust_rule11, rust_rule17,],
-    "=": [rust_rule8,],
-    ">": [rust_rule10, rust_rule16,],
-    "@": [rust_rule27,],
-    "A": [rust_rule27,],
-    "B": [rust_rule27,],
-    "C": [rust_rule27,],
-    "D": [rust_rule27,],
-    "E": [rust_rule27,],
-    "F": [rust_rule27,],
-    "G": [rust_rule27,],
-    "H": [rust_rule27,],
-    "I": [rust_rule27,],
-    "J": [rust_rule27,],
-    "K": [rust_rule27,],
-    "L": [rust_rule27,],
-    "M": [rust_rule27,],
-    "N": [rust_rule27,],
-    "O": [rust_rule27,],
-    "P": [rust_rule27,],
-    "Q": [rust_rule27,],
-    "R": [rust_rule27,],
-    "S": [rust_rule27,],
-    "T": [rust_rule27,],
-    "U": [rust_rule27,],
-    "V": [rust_rule27,],
-    "W": [rust_rule27,],
-    "X": [rust_rule27,],
-    "Y": [rust_rule27,],
-    "Z": [rust_rule27,],
-    "^": [rust_rule21,],
-    "_": [rust_rule27,],
-    "a": [rust_rule27,],
-    "b": [rust_rule27,],
-    "c": [rust_rule27,],
-    "d": [rust_rule27,],
-    "e": [rust_rule27,],
-    "f": [rust_rule27,],
-    "g": [rust_rule27,],
-    "h": [rust_rule27,],
-    "i": [rust_rule27,],
-    "j": [rust_rule27,],
-    "k": [rust_rule27,],
-    "l": [rust_rule27,],
-    "m": [rust_rule27,],
-    "n": [rust_rule27,],
-    "o": [rust_rule27,],
-    "p": [rust_rule27,],
-    "q": [rust_rule27,],
-    "r": [rust_rule27,],
-    "s": [rust_rule27,],
-    "t": [rust_rule27,],
-    "u": [rust_rule27,],
-    "v": [rust_rule27,],
-    "w": [rust_rule27,],
-    "x": [rust_rule27,],
-    "y": [rust_rule27,],
-    "z": [rust_rule27,],
-    "{": [rust_rule24,],
-    "|": [rust_rule20,],
-    "}": [rust_rule23,],
-    "~": [rust_rule22,],
+    "!": [rust_rule9],
+    "\"": [rust_rule3],
+    "#": [rust_rule5, rust_rule6],
+    "%": [rust_rule18],
+    "&": [rust_rule19],
+
+    "'": [
+        rust_char10,
+        rust_char6,
+        rust_char4,
+        rust_char3,
+    ],
+
+    "(": [rust_rule26],
+    "*": [rust_rule15],
+    "+": [rust_rule12],
+    "-": [rust_rule13],
+    "/": [rust_rule0, rust_rule1, rust_rule2, rust_rule7, rust_rule14],
+    "0": [rust_rule27],
+    "1": [rust_rule27],
+    "2": [rust_rule27],
+    "3": [rust_rule27],
+    "4": [rust_rule27],
+    "5": [rust_rule27],
+    "6": [rust_rule27],
+    "7": [rust_rule27],
+    "8": [rust_rule27],
+    "9": [rust_rule27],
+    ":": [rust_rule25],
+    "<": [rust_rule11, rust_rule17],
+    "=": [rust_rule8],
+    ">": [rust_rule10, rust_rule16],
+    "@": [rust_at_operator],
+    "A": [rust_rule27],
+    "B": [rust_rule27],
+    "C": [rust_rule27],
+    "D": [rust_rule27],
+    "E": [rust_rule27],
+    "F": [rust_rule27],
+    "G": [rust_rule27],
+    "H": [rust_rule27],
+    "I": [rust_rule27],
+    "J": [rust_rule27],
+    "K": [rust_rule27],
+    "L": [rust_rule27],
+    "M": [rust_rule27],
+    "N": [rust_rule27],
+    "O": [rust_rule27],
+    "P": [rust_rule27],
+    "Q": [rust_rule27],
+    "R": [rust_rule27],
+    "S": [rust_rule27],
+    "T": [rust_rule27],
+    "U": [rust_rule27],
+    "V": [rust_rule27],
+    "W": [rust_rule27],
+    "X": [rust_rule27],
+    "Y": [rust_rule27],
+    "Z": [rust_rule27],
+    "^": [rust_rule21],
+    "_": [rust_rule27],
+    "a": [rust_rule27],
+    "b": [rust_rule27],
+    "c": [rust_rule27],
+    "d": [rust_rule27],
+    "e": [rust_rule27],
+    "f": [rust_rule27],
+    "g": [rust_rule27],
+    "h": [rust_rule27],
+    "i": [rust_rule27],
+    "j": [rust_rule27],
+    "k": [rust_rule27],
+    "l": [rust_rule27],
+    "m": [rust_rule27],
+    "n": [rust_rule27],
+    "o": [rust_rule27],
+    "p": [rust_rule27],
+    "q": [rust_rule27],
+    "r": [
+        rust_raw_string_literal3,
+        rust_raw_string_literal2,
+        rust_raw_string_literal1,
+        rust_rule27,
+    ],
+    "s": [rust_rule27],
+    "t": [rust_rule27],
+    "u": [rust_rule27],
+    "v": [rust_rule27],
+    "w": [rust_rule27],
+    "x": [rust_rule27],
+    "y": [rust_rule27],
+    "z": [rust_rule27],
+    "{": [rust_rule24],
+    "|": [rust_rule20],
+    "}": [rust_rule23],
+    "~": [rust_rule22],
 }
 
 
@@ -328,3 +347,4 @@ rulesDictDict = {
 
 # Import dict for rust mode.
 importDict = {}
+#@-leo

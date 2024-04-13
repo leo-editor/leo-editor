@@ -154,40 +154,27 @@ keywordsDictDict = {
 # Rules for zpt_main ruleset.
 
 def zpt_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 def zpt_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<SCRIPT", end="</SCRIPT>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="zpt::javascript", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="zpt::javascript")
 
 def zpt_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE", end="</STYLE>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="zpt::css", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="zpt::css")
 
 def zpt_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="xml::dtd-tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="xml::dtd-tags")
 
 def zpt_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="zpt::tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="zpt::tags")
 
 def zpt_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=True)
+          no_word_break=True)
 
 # Rules dict for zpt_main ruleset.
 rulesDict1 = {
@@ -199,19 +186,14 @@ rulesDict1 = {
 
 def zpt_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="zpt::attribute", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="zpt::attribute")
 
 def zpt_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="zpt::attribute", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="zpt::attribute")
 
 def zpt_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def zpt_rule9(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -290,34 +272,26 @@ rulesDict2 = {
 # Rules for zpt_attribute ruleset.
 
 def zpt_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
 def zpt_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 def zpt_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
 def zpt_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def zpt_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="literal2", seq="$$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="literal2", seq="$$")
 
 def zpt_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="${", end="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def zpt_rule16(colorer, s, i):
-    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+    return colorer.match_mark_following(s, i, kind="keyword2", pattern="$")
 
 def zpt_rule17(colorer, s, i):
     return colorer.match_keywords(s, i)
@@ -399,11 +373,11 @@ rulesDict3 = {
 
 def zpt_rule18(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="javascript::main")
+          delegate="javascript::main")
 
 def zpt_rule19(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="SRC=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="zpt::back_to_html")
+          delegate="zpt::back_to_html")
 
 # Rules dict for zpt_javascript ruleset.
 rulesDict4 = {
@@ -415,7 +389,7 @@ rulesDict4 = {
 
 def zpt_rule20(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="zpt::main")
+          delegate="zpt::main")
 
 # Rules dict for zpt_back_to_html ruleset.
 rulesDict5 = {
@@ -426,7 +400,7 @@ rulesDict5 = {
 
 def zpt_rule21(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="css::main")
+          delegate="css::main")
 
 # Rules dict for zpt_css ruleset.
 rulesDict6 = {

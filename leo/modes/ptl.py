@@ -41,12 +41,10 @@ keywordsDictDict = {
 
 
 def ptl_rule0(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword4", seq="[html]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword4", seq="[html]")
 
 def ptl_rule1(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword4", seq="[plain]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="keyword4", seq="[plain]")
 
 def ptl_rule2(colorer, s, i):
     return colorer.match_keywords(s, i)

@@ -44,15 +44,15 @@ And call this in your plugin *once*::
 #@+<< contextmenu imports & annotations >>
 #@+node:ekr.20220828123814.1: ** << contextmenu imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import os
-from typing import Any, Callable, Dict, Tuple, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 from leo.core.leoGui import LeoKeyEvent
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event # pylint: disable=reimported
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 
@@ -68,7 +68,7 @@ inited = False
 #@+node:ville.20090701224704.9805: *3* 'cm-external-editor'
 # cm is 'contextmenu' prefix
 @g.command('cm-external-editor')
-def cm_external_editor(event: Event) -> None:
+def cm_external_editor(event: LeoKeyEvent) -> None:
     """ Open node in external editor
 
     Set LEO_EDITOR/EDITOR environment variable to get the editor you want.
@@ -86,7 +86,7 @@ def cm_external_editor(event: Event) -> None:
     c.openWith(d=d)
 #@+node:tbrown.20121123075838.19937: *3* 'context_menu_open'
 @g.command('context-menu-open')
-def context_menu_open(event: Event) -> None:
+def context_menu_open(event: LeoKeyEvent) -> None:
     """Provide a command for key binding to open the context menu"""
     event.c.frame.tree.onContextMenu(QtCore.QPoint(0, 0))
 #@+node:ekr.20200304124723.1: ** startup
@@ -120,7 +120,7 @@ def install_handlers() -> None:
     ]
     g.tree_popup_handlers.extend(handlers)
 #@+node:tom.20210717164029.1: ** getEditor
-def getEditor(c: Cmdr) -> Tuple[str, str]:
+def getEditor(c: Cmdr) -> tuple[str, str]:
     """Return system's best guess editor quoted.
 
     RETURNS
@@ -162,7 +162,7 @@ def configuredcommands_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
             # #2000: The log pane is a confusing special case.
             wrapper = getattr(w, 'wrapper', None) or getattr(w, 'leo_log_wrapper', None)  # #2000.
             key_event = LeoKeyEvent(c, char=None, event=None, binding=None, w=wrapper)
-            return lambda: c.k.simulateCommand(command_name, event=key_event)
+            return lambda: c.doCommandByName(command_name, event=key_event)
 
         configcmd_rclick_cb = create_callback(command_name)
         action.triggered.connect(configcmd_rclick_cb)
@@ -231,7 +231,7 @@ def editnode_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
     editor, basename = getEditor(c)
 
     def editnode_rclick_cb() -> None:
-        d: Dict[str, Any] = {'kind': 'subprocess.Popen', 'args': [editor], 'ext': None}
+        d: dict[str, Any] = {'kind': 'subprocess.Popen', 'args': [editor], 'ext': None}
         c.openWith(d=d)
 
     action = menu.addAction("Edit with " + basename)
@@ -315,14 +315,16 @@ def openwith_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
 
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList) + "/"
-        table = [
+        filetypes = [
             ("All files", "*"),
             ("Python files", "*.py"),
         ]
-        fnames = g.app.gui.runOpenFileDialog(c,
-            title="Import files", filetypes=table,
+        fnames = g.app.gui.runOpenFilesDialog(c,
+            title="Import files",
+            filetypes=filetypes,
             defaultextension='.notused',
-            multiple=True, startpath=path)
+            startpath=path,
+        )
         adds = [guess_file_type(pth) + " " + shorten(pth, path) for pth in fnames]
         for a in adds:
             chi = p.insertAsLastChild()
@@ -342,7 +344,7 @@ def openwith_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
         return
 
     path = g.scanAllAtPathDirectives(c, p)
-    absp = g.os_path_finalize_join(path, fname)
+    absp = g.finalize_join(path, fname)
     exists = os.path.exists(absp)
     if not exists and head == "@path":
         action = menu.addAction("Create dir " + absp + "/")
@@ -368,7 +370,7 @@ def pylint_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
     action = menu.addAction("Run Pylint")
 
     def pylint_rclick_cb(aBool: bool) -> None:
-        c.k.simulateCommand('pylint')
+        c.doCommandByName('pylint')
 
     action.triggered.connect(pylint_rclick_cb)
 #@+node:ekr.20140724211116.19256: ** Helpers

@@ -7,7 +7,7 @@ from __future__ import annotations
 import sys
 import os
 import time
-from typing import Any, Dict, List, Union, TYPE_CHECKING
+from typing import Any, Union, TYPE_CHECKING
 # Third-party tools.
 try:
     import black
@@ -19,7 +19,7 @@ from leo.core import leoAst
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
 #@-<< leoBeautify imports & annotations >>
 
@@ -29,7 +29,7 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+node:ekr.20150528131012.3: *4* beautify-c
 @g.command('beautify-c')
 @g.command('pretty-print-c')
-def beautifyCCode(event: Event) -> None:
+def beautifyCCode(event: LeoKeyEvent) -> None:
     """Beautify all C code in the selected tree."""
     c = event.get('c')
     if c:
@@ -37,7 +37,7 @@ def beautifyCCode(event: Event) -> None:
 #@+node:ekr.20200107165628.1: *4* beautify-file-diff
 @g.command('diff-beautify-files')
 @g.command('beautify-files-diff')
-def orange_diff_files(event: Event) -> None:
+def orange_diff_files(event: LeoKeyEvent) -> None:
     """
     Show the diffs that would result from beautifying the external files at
     c.p.
@@ -51,7 +51,7 @@ def orange_diff_files(event: Event) -> None:
     settings = orange_settings(c)
     roots = g.findRootsWithPredicate(c, c.p)
     for root in roots:
-        filename = g.fullPath(c, root)
+        filename = c.fullPath(root)
         if os.path.exists(filename):
             print('')
             print(f"{tag}: {g.shortFileName(filename)}")
@@ -67,7 +67,7 @@ def orange_diff_files(event: Event) -> None:
     g.es_print(f"{tag}: {len(roots)} file{g.plural(len(roots))} in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200107165603.1: *4* beautify-files
 @g.command('beautify-files')
-def orange_files(event: Event) -> None:
+def orange_files(event: LeoKeyEvent) -> None:
     """beautify one or more files at c.p."""
     c = event.get('c')
     if not c or not c.p:
@@ -79,7 +79,7 @@ def orange_files(event: Event) -> None:
     roots = g.findRootsWithPredicate(c, c.p)
     n_changed = 0
     for root in roots:
-        filename = g.fullPath(c, root)
+        filename = c.fullPath(root)
         if os.path.exists(filename):
             changed = leoAst.Orange(settings=settings).beautify_file(filename)
             if changed:
@@ -94,7 +94,7 @@ def orange_files(event: Event) -> None:
         f"in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200103055814.1: *4* blacken-files
 @g.command('blacken-files')
-def blacken_files(event: Event) -> None:
+def blacken_files(event: LeoKeyEvent) -> None:
     """Run black on one or more files at c.p."""
     tag = 'blacken-files'
     if not black:
@@ -105,7 +105,7 @@ def blacken_files(event: Event) -> None:
         return
     python = sys.executable
     for root in g.findRootsWithPredicate(c, c.p):
-        path = g.fullPath(c, root)
+        path = c.fullPath(root)
         if path and os.path.exists(path):
             g.es_print(f"{tag}: {path}")
             g.execute_shell_commands(f'&"{python}" -m black --skip-string-normalization "{path}"')
@@ -114,7 +114,7 @@ def blacken_files(event: Event) -> None:
             g.es(f"{tag}: file not found:\n{path}")
 #@+node:ekr.20200103060057.1: *4* blacken-files-diff
 @g.command('blacken-files-diff')
-def blacken_files_diff(event: Event) -> None:
+def blacken_files_diff(event: LeoKeyEvent) -> None:
     """
     Show the diffs that would result from blacking the external files at
     c.p.
@@ -128,7 +128,7 @@ def blacken_files_diff(event: Event) -> None:
         return
     python = sys.executable
     for root in g.findRootsWithPredicate(c, c.p):
-        path = g.fullPath(c, root)
+        path = c.fullPath(root)
         if path and os.path.exists(path):
             g.es_print(f"{tag}: {path}")
             g.execute_shell_commands(f'&"{python}" -m black --skip-string-normalization --diff "{path}"')
@@ -137,7 +137,7 @@ def blacken_files_diff(event: Event) -> None:
             g.es(f"{tag}: file not found:\n{path}")
 #@+node:ekr.20191025072511.1: *4* fstringify-files
 @g.command('fstringify-files')
-def fstringify_files(event: Event) -> None:
+def fstringify_files(event: LeoKeyEvent) -> None:
     """fstringify one or more files at c.p."""
     c = event.get('c')
     if not c or not c.p:
@@ -148,7 +148,7 @@ def fstringify_files(event: Event) -> None:
     roots = g.findRootsWithPredicate(c, c.p)
     n_changed = 0
     for root in roots:
-        filename = g.fullPath(c, root)
+        filename = c.fullPath(root)
         if os.path.exists(filename):
             print('')
             print(g.shortFileName(filename))
@@ -170,7 +170,7 @@ def fstringify_files(event: Event) -> None:
 #@+node:ekr.20200103055858.1: *4* fstringify-files-diff
 @g.command('diff-fstringify-files')
 @g.command('fstringify-files-diff')
-def fstringify_diff_files(event: Event) -> None:
+def fstringify_diff_files(event: LeoKeyEvent) -> None:
     """
     Show the diffs that would result from fstringifying the external files at
     c.p.
@@ -183,7 +183,7 @@ def fstringify_diff_files(event: Event) -> None:
     g.es(f"{tag}...")
     roots = g.findRootsWithPredicate(c, c.p)
     for root in roots:
-        filename = g.fullPath(c, root)
+        filename = c.fullPath(root)
         if os.path.exists(filename):
             print('')
             print(g.shortFileName(filename))
@@ -200,7 +200,7 @@ def fstringify_diff_files(event: Event) -> None:
 #@+node:ekr.20200112060001.1: *4* fstringify-files-silent
 @g.command('silent-fstringify-files')
 @g.command('fstringify-files-silent')
-def fstringify_files_silent(event: Event) -> None:
+def fstringify_files_silent(event: LeoKeyEvent) -> None:
     """Silently fstringifying the external files at c.p."""
     c = event.get('c')
     if not c or not c.p:
@@ -211,7 +211,7 @@ def fstringify_files_silent(event: Event) -> None:
     n_changed = 0
     roots = g.findRootsWithPredicate(c, c.p)
     for root in roots:
-        filename = g.fullPath(c, root)
+        filename = c.fullPath(root)
         if os.path.exists(filename):
             changed = leoAst.Fstringify().fstringify_file_silent(filename)
             if changed:
@@ -228,7 +228,7 @@ def fstringify_files_silent(event: Event) -> None:
         f"{n_changed} changed file{g.plural(n_changed)} "
         f"in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200108045048.1: *4* orange_settings
-def orange_settings(c: Cmdr) -> Dict[str, Any]:
+def orange_settings(c: Cmdr) -> dict[str, Any]:
     """Return a dictionary of settings for the leo.core.leoAst.Orange class."""
     allow_joined_strings = c.config.getBool(
         'beautify-allow-joined-strings', default=False)
@@ -299,7 +299,7 @@ class CPrettyPrinter:
         self.brackets = 0  # The brackets indentation level.
         self.p: Position = None  # Set in indent.
         self.parens = 0  # The parenthesis nesting level.
-        self.result: List[Any] = []  # The list of tokens that form the final result.
+        self.result: list[Any] = []  # The list of tokens that form the final result.
         self.tab_width = 4  # The number of spaces in each unit of leading indentation.
     #@+node:ekr.20191104195610.1: *3* cpp.pretty_print_tree
     def pretty_print_tree(self, p: Position) -> None:
@@ -325,7 +325,7 @@ class CPrettyPrinter:
             g.es("Command did not find any content to beautify")
         c.bodyWantsFocus()
     #@+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
-    def indent(self, p: Position, toList: bool = False, giveWarnings: bool = True) -> Union[str, List[str]]:
+    def indent(self, p: Position, toList: bool = False, giveWarnings: bool = True) -> Union[str, list[str]]:
         """Beautify a node with @language C in effect."""
         if not should_beautify(p):
             return [] if toList else ''  # #2271
@@ -343,7 +343,7 @@ class CPrettyPrinter:
             self.put_token(s)
         return self.result if toList else ''.join(self.result)
     #@+node:ekr.20110918225821.6815: *4* cpp.add_statement_braces
-    def add_statement_braces(self, s: str, giveWarnings: bool = False) -> List[str]:
+    def add_statement_braces(self, s: str, giveWarnings: bool = False) -> list[str]:
         p = self.p
 
         def oops(message: str, i: int, j: int) -> None:
@@ -353,7 +353,7 @@ class CPrettyPrinter:
                 g.es_print(f'{message} after\n{repr("".join(s[i:j]))}')
 
         i, n = 0, len(s)
-        result: List[str] = []
+        result: list[str] = []
         while i < n:
             token = s[i]
             progress = i
@@ -506,16 +506,16 @@ class CPrettyPrinter:
                 s = s.replace('\t', ' ' * w)
                 if s.startswith('\n'):
                     s2 = s[1:]
-                    self.result.append('\n' + s2[: -w])
+                    self.result.append('\n' + s2[:-w])
                 else:
-                    self.result.append(s[: -w])
+                    self.result.append(s[:-w])
     #@+node:ekr.20110918225821.6819: *3* cpp.match
     def match(self, s: str, i: int, pat: str) -> bool:
         return i < len(s) and s[i] == pat
     #@+node:ekr.20110917174948.6930: *3* cpp.tokenize & helper
-    def tokenize(self, s: str) -> List[str]:
+    def tokenize(self, s: str) -> list[str]:
         """Tokenize comments, strings, identifiers, whitespace and operators."""
-        result: List[str] = []
+        result: list[str] = []
         i = 0
         while i < len(s):
             # Loop invariant: at end: j > i and s[i:j] is the new token.

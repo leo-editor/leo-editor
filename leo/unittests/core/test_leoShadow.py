@@ -4,7 +4,6 @@
 
 import glob
 import os
-import textwrap
 from leo.core import leoGlobals as g
 from leo.core.leoShadow import ShadowController
 from leo.core.leoTest2 import LeoUnitTest
@@ -20,7 +19,7 @@ class TestAtShadow(LeoUnitTest):
         delims = '#', '', ''
         c = self.c
         base_dir = os.path.dirname(__file__)
-        c.mFileName = g.os_path_finalize_join(base_dir, '..', '..', 'test666.leo')
+        c.mFileName = g.finalize_join(base_dir, '..', '..', 'test666.leo')
         self.shadow_controller = ShadowController(c)
         self.marker = self.shadow_controller.Marker(delims)
 
@@ -102,7 +101,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             ATothers
             node 1 line 1
             node 1 line 2
@@ -112,7 +112,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             ATothers
             node 1 line 1
             node 1 line 1 changed
@@ -128,7 +129,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             line 1
             line 2
             line 3
@@ -136,7 +138,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             line 1 changed
             line 2
             line 3
@@ -150,7 +153,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             line 1
             line 2
             line 3
@@ -158,7 +162,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             line 1
             line 2
             line 3 changed
@@ -172,7 +177,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             line 1
             line 2
             line 3
@@ -180,7 +186,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             line 1
             line 2 changed
             line 3
@@ -194,7 +201,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 1 line 2
@@ -204,7 +212,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 1 line 2
@@ -220,7 +229,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 1 line 2
@@ -230,7 +240,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 2 line 1
@@ -245,7 +256,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 2 line 1
@@ -254,7 +266,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 2 line 2
@@ -268,7 +281,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             line 1
             line 2
             line 3
@@ -276,7 +290,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             line 2
             line 3
         """)
@@ -289,7 +304,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             line 1
             line 2
             line 3
@@ -297,7 +313,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             line 1
             line 2
         """)
@@ -310,7 +327,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             line 1
             line 2
             line 3
@@ -318,7 +336,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             line 1
             line 3
         """)
@@ -331,7 +350,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             line 1
             line 2
             line 3
@@ -339,7 +359,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             line 1
             line 2
             line 3
@@ -354,7 +375,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             line 1
             line 2
             line 3
@@ -362,7 +384,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             inserted line
             line 1
             line 2
@@ -377,7 +400,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             line 1
             line 2
             line 3
@@ -385,7 +409,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             line 1
             inserted line
             line 2
@@ -400,7 +425,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             line 1
             line 2
             line 3
@@ -408,7 +434,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             line 1
             line 2
             inserted line
@@ -423,7 +450,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 2 line 1
@@ -431,7 +459,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             inserted node at end of node 1
@@ -446,7 +475,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             inserted node 1 at end of node 1
@@ -456,7 +486,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 2 line 1
@@ -470,7 +501,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 1 line 2
@@ -481,7 +513,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 1 line 2 changed
@@ -498,7 +531,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 1 line 2
@@ -508,7 +542,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 1 line 2
@@ -524,7 +559,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 1 line 2
@@ -535,7 +571,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 2 line 1
@@ -550,7 +587,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 2 line 1
@@ -560,7 +598,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 2 line 3
@@ -574,7 +613,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 1 line 2
@@ -584,7 +624,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 1 line 2 changed
@@ -600,13 +641,15 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             line
         """)
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             line
         """)
         # Run the test.
@@ -620,24 +663,26 @@ class TestAtShadow(LeoUnitTest):
         old.b = '@others\n'
         old_node1 = old.insertAsLastChild()
         old_node1.h = 'node1'
-        old_node1.b = textwrap.dedent("""\
+        old_node1.b = self.prep(
+        """
             node 1 line 1
             node 1 old line 1
             node 1 old line 2
             node 1 line 2
-    """)
+        """)
         new = p.insertAsLastChild()
         new.h = 'new'
         new.b = '@others\n'
         new_node1 = new.insertAsLastChild()
         new_node1.h = 'node1'
-        new_node1.b = textwrap.dedent("""\
+        new_node1.b = self.prep(
+        """
             node 1 line 1
             node 1 new line 1
             node 1 new line 2
             node 1 new line 3
             node 1 line 2
-    """)
+        """)
         results, expected = self.make_lines(old, new)
         self.assertEqual(results, expected)
     #@+node:ekr.20210908134131.2: *4* TestShadow.test_replace_in_node_new_lt_old
@@ -649,7 +694,8 @@ class TestAtShadow(LeoUnitTest):
         old.b = '@others\n'
         old_node1 = old.insertAsLastChild()
         old_node1.h = 'node1'
-        old_node1.b = textwrap.dedent("""\
+        old_node1.b = self.prep(
+        """
             node 1 line 1
             node 1 old line 1
             node 1 old line 2
@@ -663,7 +709,8 @@ class TestAtShadow(LeoUnitTest):
         new.b = '@others\n'
         new_node1 = new.insertAsLastChild()
         new_node1.h = 'node1'
-        new_node1.b = textwrap.dedent("""\
+        new_node1.b = self.prep(
+        """
             node 1 line 1
             node 1 new line 1
             node 1 new line 2
@@ -678,7 +725,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 1 line 2
@@ -688,7 +736,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             at-verbatim
@@ -706,7 +755,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             at-verbatim
@@ -719,7 +769,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             line 1 line 3
@@ -736,7 +787,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             at-verbatim
@@ -747,7 +799,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 2 line 1
@@ -762,7 +815,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             at-verbatim
@@ -772,7 +826,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             node 2 line 2
@@ -786,7 +841,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'old' node.
         old = p.insertAsLastChild()
         old.h = 'old'
-        old.b = textwrap.dedent("""\
+        old.b = self.prep(
+        """
             at-others
             node 1 line 1
             at-verbatim
@@ -799,7 +855,8 @@ class TestAtShadow(LeoUnitTest):
         # Create the 'new' node.
         new = p.insertAsLastChild()
         new.h = 'new'
-        new.b = textwrap.dedent("""\
+        new.b = self.prep(
+        """
             at-others
             node 1 line 1
             at-verbatim

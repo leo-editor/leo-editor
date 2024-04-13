@@ -4,18 +4,18 @@
 #@+<< editFileCommands imports & annotations >>
 #@+node:ekr.20170806094317.4: ** << editFileCommands imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import difflib
-import io
 import os
 import re
-from typing import Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
 #@-<< editFileCommands imports & annotations >>
 
@@ -37,8 +37,8 @@ class ConvertAtRoot:
     errors = 0
     root = None  # Root of @root tree.
     root_pat = re.compile(r'^@root\s+(.+)$', re.MULTILINE)
-    section_pat = re.compile(r'\s*<\<.+>\>')
-    units: List[Position] = []  # List of positions containing @unit.
+    section_pat = re.compile(r'\s*<\<(.+)>\>')
+    units: list[Position] = []  # List of positions containing @unit.
 
     #@+others
     #@+node:ekr.20210308044128.1: *3* atRoot.check_move
@@ -60,7 +60,6 @@ class ConvertAtRoot:
                 return False
         return True
     #@+node:ekr.20210307060752.2: *3* atRoot.convert_file
-    @cmd('convert-at-root')
     def convert_file(self, c: Cmdr) -> None:
         """Convert @root to @clean in the the .leo file at the given path."""
         self.find_all_units(c)
@@ -79,7 +78,7 @@ class ConvertAtRoot:
                 self.root = None
         #
         # Check the results.
-        link_errors = c.checkOutline(check_links=True)
+        link_errors = c.checkOutline()
         self.errors += link_errors
         print(f"{self.errors} error{g.plural(self.errors)} in {c.shortFileName()}")
         c.redraw()
@@ -114,13 +113,10 @@ class ConvertAtRoot:
                 return p
         return None
     #@+node:ekr.20210307075325.1: *3* atRoot.make_clones
-    section_pat = re.compile(r'\s*<\<(.*)>\>')
-
     def make_clones(self, p: Position) -> None:
         """Make clones for all undefined sections in p.b."""
         for s in g.splitLines(p.b):
-            m = self.section_pat.match(s)
-            if m:
+            if m := self.section_pat.match(s):
                 section_name = g.angleBrackets(m.group(1).strip())
                 section_p = self.make_clone(p, section_name)
                 if not section_p:
@@ -161,7 +157,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20210308051724.1: *3* efc.convert-at-root
     @cmd('convert-at-root')
-    def convert_at_root(self, event: Event = None) -> None:
+    def convert_at_root(self, event: LeoKeyEvent = None) -> None:
         #@+<< convert-at-root docstring >>
         #@+node:ekr.20210309035627.1: *4* << convert-at-root docstring >>
         #@@wrap
@@ -194,18 +190,18 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170806094319.11: *3* efc.clean-at-clean commands
     #@+node:ekr.20170806094319.5: *4* efc.cleanAtCleanFiles
     @cmd('clean-at-clean-files')
-    def cleanAtCleanFiles(self, event: Event) -> None:
+    def cleanAtCleanFiles(self, event: LeoKeyEvent) -> None:
         """Adjust whitespace in all @clean files."""
         c = self.c
-        undoType = 'clean-@clean-files'
+        undoType = 'clean-at-clean-files'
         c.undoer.beforeChangeGroup(c.p, undoType, verboseUndoGroup=True)
         total = 0
         for p in c.all_unique_positions():
-            if g.match_word(p.h, 0, '@clean') and p.h.rstrip().endswith(('py', 'pyw')):
+            if p.isAtCleanNode():
                 n = 0
                 for p2 in p.subtree():
                     bunch2 = c.undoer.beforeChangeNodeContents(p2)
-                    if self.cleanAtCleanNode(p2, undoType):
+                    if self.cleanAtCleanNode(p2):
                         n += 1
                         total += 1
                         c.undoer.afterChangeNodeContents(p2, undoType, bunch2)
@@ -216,7 +212,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             g.es("Command did not find any whitespace to adjust")
         g.es_print(f"{total} total node{g.plural(total)}")
     #@+node:ekr.20170806094319.8: *4* efc.cleanAtCleanNode
-    def cleanAtCleanNode(self, p: Position, undoType: str) -> bool:
+    def cleanAtCleanNode(self, p: Position) -> bool:
         """Adjust whitespace in p, part of an @clean tree."""
         s = p.b.strip()
         if not s or p.h.strip().startswith('<<'):
@@ -230,36 +226,32 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         return changed
     #@+node:ekr.20170806094319.10: *4* efc.cleanAtCleanTree
     @cmd('clean-at-clean-tree')
-    def cleanAtCleanTree(self, event: Event) -> None:
+    def cleanAtCleanTree(self, event: LeoKeyEvent) -> None:
         """
-        Adjust whitespace in the nearest @clean tree,
-        searching c.p and its ancestors.
+        Clean whitespace in the nearest @clean tree.
+
+        This command is not undoable.
         """
         c = self.c
         # Look for an @clean node.
         for p in c.p.self_and_parents(copy=False):
-            if g.match_word(p.h, 0, '@clean') and \
-                            p.h.rstrip().endswith(('py', 'pyw')):
+            if p.isAtCleanNode():
                 break
         else:
-            g.es_print('no an @clean node found', p.h, color='blue')
+            g.es_print('no @clean node found', p.h, color='blue')
             return
-        # pylint: disable=undefined-loop-variable
-        # p is certainly defined here.
-        bunch = c.undoer.beforeChangeTree(p)
         n = 0
-        undoType = 'clean-@clean-tree'
         for p2 in p.subtree():
-            if self.cleanAtCleanNode(p2, undoType):
+            if self.cleanAtCleanNode(p2):
                 n += 1
         if n > 0:
             c.setChanged()
-            c.undoer.afterChangeTree(p, undoType, bunch)
+            c.undoer.clearAndWarn('clean-at-clean-tree')
         g.es_print(f"{n} node{g.plural(n)} cleaned")
     #@+node:ekr.20170806094317.6: *3* efc.compareAnyTwoFiles & helpers
     @cmd('file-compare-two-leo-files')
     @cmd('compare-two-leo-files')
-    def compareAnyTwoFiles(self, event: Event) -> None:
+    def compareAnyTwoFiles(self, event: LeoKeyEvent) -> None:
         """Compare two files."""
         c = c1 = self.c
         w = c.frame.body.wrapper
@@ -267,8 +259,8 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         if g.app.diff:
             if len(commanders) == 2:
                 c1, c2 = commanders
-                fn1 = g.shortFileName(c1.wrappedFileName) or c1.shortFileName()
-                fn2 = g.shortFileName(c2.wrappedFileName) or c2.shortFileName()
+                fn1 = c1.shortFileName()
+                fn2 = c2.shortFileName()
                 g.es('--diff auto compare', color='red')
                 g.es(fn1)
                 g.es(fn2)
@@ -277,9 +269,12 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 return
         else:
             # Prompt for the file to be compared with the present outline.
-            filetypes = [("Leo files", "*.leo"), ("All files", "*"),]
+            filetypes = [
+                ("Leo files", "*.leo *.leojs *.db"),
+                ("All files", "*"),
+            ]
             fileName = g.app.gui.runOpenFileDialog(c,
-                title="Compare .leo Files", filetypes=filetypes, defaultextension='.leo')
+                title="Compare Leo Files", filetypes=filetypes, defaultextension='.leo')
             if not fileName:
                 return
             # Read the file into the hidden commander.
@@ -297,8 +292,10 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             g.app.forgetOpenFile(fn=c2.fileName())
             c2.frame.destroySelf()
             g.app.gui.set_focus(c, w)
+        # The inserted, deleted and changed dicts nodes may come from c2, a different Commander.
+        c.recreateGnxDict()  # So update c.fileCommands.gnxDict.
     #@+node:ekr.20170806094317.9: *4* efc.computeChangeDicts
-    def computeChangeDicts(self, d1: Dict, d2: Dict) -> Tuple[Dict, Dict, Dict]:
+    def computeChangeDicts(self, d1: dict, d2: dict) -> tuple[dict, dict, dict]:
         """
         Compute inserted, deleted, changed dictionaries.
 
@@ -324,9 +321,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     def createAllCompareClones(self,
         c1: Cmdr,
         c2: Cmdr,
-        inserted: Dict,
-        deleted: Dict,
-        changed: Dict,
+        inserted: dict,
+        deleted: dict,
+        changed: dict,
     ) -> None:
         """Create the comparison trees."""
         c = self.c  # Always use the visible commander
@@ -338,9 +335,8 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         parent = c.p.insertAfter()
         parent.setHeadString(undoType)
         u.afterInsertNode(parent, undoType, undoData)
-        # Use the wrapped file name if possible.
-        fn1 = g.shortFileName(c1.wrappedFileName) or c1.shortFileName()
-        fn2 = g.shortFileName(c2.wrappedFileName) or c2.shortFileName()
+        fn1 = c1.shortFileName()
+        fn2 = c2.shortFileName()
         for d, kind in (
             (deleted, f"not in {fn2}"),
             (inserted, f"not in {fn1}"),
@@ -351,14 +347,14 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         u.afterChangeGroup(parent, undoType)
         c.redraw()
     #@+node:ekr.20170806094317.12: *5* efc.createCompareClones
-    def createCompareClones(self, d: Dict[str, str], kind: str, parent: Position) -> None:
+    def createCompareClones(self, d: dict[str, str], kind: str, parent: Position) -> None:
         if d:
             c = self.c  # Use the visible commander.
             parent = parent.insertAsLastChild()
             parent.setHeadString(kind)
             for key in d:
                 p = d.get(key)
-                if not kind.endswith('.leo') and p.isAnyAtFileNode():
+                if not kind.endswith(('.leo', '.leojs')) and p.isAnyAtFileNode():
                     # Don't make clones of @<file> nodes for wrapped files.
                     pass
                 elif p.v.context == c:
@@ -371,9 +367,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     for p2 in copy.self_and_subtree(copy=False):
                         p2.v.context = c
     #@+node:ekr.20170806094317.17: *4* efc.createFileDict
-    def createFileDict(self, c: Cmdr) -> Dict[str, Position]:
+    def createFileDict(self, c: Cmdr) -> dict[str, Position]:
         """Create a dictionary of all relevant positions in commander c."""
-        d: Dict[str, Position] = {}
+        d: dict[str, Position] = {}
         for p in c.all_positions():
             d[p.v.fileIndex] = p.copy()
         return d
@@ -381,9 +377,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     def dumpCompareNodes(self,
         fileName1: str,
         fileName2: str,
-        inserted: Dict,
-        deleted: Dict,
-        changed: Dict,
+        inserted: dict,
+        deleted: dict,
+        changed: dict,
     ) -> None:
         for d, kind in (
             (inserted, f"inserted (only in {fileName1})"),
@@ -401,13 +397,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         class CompareTreesController:
             #@+others
             #@+node:ekr.20170806094318.18: *4* ct.compare
-            def compare(self,
-                d1: Dict,
-                d2: Dict,
-                p1: Position,
-                p2: Position,
-                root: Position,
-            ) -> Position:
+            def compare(self, d1: dict, d2: dict, root: Position) -> Position:
                 """Compare dicts d1 and d2."""
                 for h in sorted(d1.keys()):
                     p1, p2 = d1.get(h), d2.get(h)
@@ -441,19 +431,19 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 root.h = tag
                 d1 = self.scan(p1)
                 d2 = self.scan(p2)
-                self.compare(d1, d2, p1, p2, root)
+                self.compare(d1, d2, root)
                 c.p.contract()
                 root.expand()
                 c.selectPosition(root)
                 c.redraw()
             #@+node:ekr.20170806094319.2: *4* ct.scan
-            def scan(self, p1: Position) -> Dict[str, Position]:
+            def scan(self, p1: Position) -> dict[str, Position]:
                 """
                 Create a dict of the methods in p1.
                 Keys are headlines, stripped of prefixes.
                 Values are copies of positions.
                 """
-                d: Dict[str, Position] = {}
+                d: dict[str, Position] = {}
                 for p in p1.self_and_subtree(copy=False):
                     h = p.h.strip()
                     i = h.find('.')
@@ -465,17 +455,18 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                         d[h] = p.copy()
                 return d
             #@-others
+
         CompareTreesController().run(self.c, p1, p2, tag)
     #@+node:ekr.20170806094318.1: *3* efc.deleteFile
     @cmd('file-delete')
-    def deleteFile(self, event: Event) -> None:
+    def deleteFile(self, event: LeoKeyEvent) -> None:
         """Prompt for the name of a file and delete it."""
         k = self.c.k
         k.setLabelBlue('Delete File: ')
         k.extendLabel(os.getcwd() + os.sep)
         k.get1Arg(event, handler=self.deleteFile1)
 
-    def deleteFile1(self, event: Event) -> None:
+    def deleteFile1(self, event: LeoKeyEvent) -> None:
         k = self.c.k
         k.keyboardQuit()
         k.clearState()
@@ -486,9 +477,9 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             k.setStatusLabel(f"Not Deleted: {k.arg}")
     #@+node:ekr.20170806094318.3: *3* efc.diff (file-diff-files)
     @cmd('file-diff-files')
-    def diff(self, event: Event = None) -> None:
+    def diff(self, event: LeoKeyEvent = None) -> None:
         """Creates a node and puts the diff between 2 files into it."""
-        c = self.c
+        c, u = self.c, self.c.undoer
         fn = self.getReadableTextFile()
         if not fn:
             return
@@ -503,9 +494,13 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             return
         lines1, lines2 = g.splitLines(s1), g.splitLines(s2)
         aList = difflib.ndiff(lines1, lines2)
+        # add as last top level like other 'diff' result nodes
+        c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
+        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
         p = c.p.insertAfter()
         p.h = 'diff'
         p.b = ''.join(aList)
+        u.afterInsertNode(p, 'file-diff-files', undoData)
         c.redraw()
     #@+node:ekr.20170806094318.6: *3* efc.getReadableTextFile
     def getReadableTextFile(self) -> str:
@@ -519,21 +514,24 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170819035801.90: *3* efc.gitDiff (gd & git-diff)
     @cmd('git-diff')
     @cmd('gd')
-    def gitDiff(self, event: Event = None) -> None:  # 2020/07/18, for leoInteg.
+    def gitDiff(self, event: LeoKeyEvent = None) -> None:
         """Produce a Leonine git diff."""
         GitDiffController(c=self.c).git_diff(rev1='HEAD')
     #@+node:ekr.20201215093414.1: *3* efc.gitDiffPR (git-diff-pr & git-diff-pull-request)
     @cmd('git-diff-pull-request')
     @cmd('git-diff-pr')
-    def gitDiffPullRequest(self, event: Event = None) -> None:
+    def gitDiffPullRequest(self, event: LeoKeyEvent = None) -> None:
         """
         Produce a Leonine diff of pull request in the current branch.
         """
         GitDiffController(c=self.c).diff_pull_request()
     #@+node:ekr.20170806094318.7: *3* efc.insertFile
     @cmd('file-insert')
-    def insertFile(self, event: Event) -> None:
-        """Prompt for the name of a file and put the selected text into it."""
+    def insertFile(self, event: LeoKeyEvent) -> None:
+        """
+        Prompt for the name of a file.
+        Insert the file's contents in the body at the insertion point.
+        """
         w = self.editWidget(event)
         if not w:
             return
@@ -549,14 +547,14 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20170806094318.9: *3* efc.makeDirectory
     @cmd('directory-make')
-    def makeDirectory(self, event: Event) -> None:
+    def makeDirectory(self, event: LeoKeyEvent) -> None:
         """Prompt for the name of a directory and create it."""
         k = self.c.k
         k.setLabelBlue('Make Directory: ')
         k.extendLabel(os.getcwd() + os.sep)
         k.get1Arg(event, handler=self.makeDirectory1)
 
-    def makeDirectory1(self, event: Event) -> None:
+    def makeDirectory1(self, event: LeoKeyEvent) -> None:
         k = self.c.k
         k.keyboardQuit()
         k.clearState()
@@ -565,39 +563,16 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             k.setStatusLabel(f"Created: {k.arg}")
         except Exception:
             k.setStatusLabel(f"Not Created: {k.arg}")
-    #@+node:ekr.20170806094318.12: *3* efc.openOutlineByName
-    @cmd('file-open-by-name')
-    def openOutlineByName(self, event: Event) -> None:
-        """file-open-by-name: Prompt for the name of a Leo outline and open it."""
-        c, k = self.c, self.c.k
-        fileName = ''.join(k.givenArgs)
-        # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
-        if fileName and g.os_path_exists(fileName):
-            g.openWithFileName(fileName, old_c=c)
-        else:
-            k.setLabelBlue('Open Leo Outline: ')
-            k.getFileName(event, callback=self.openOutlineByNameFinisher)
-
-    def openOutlineByNameFinisher(self, fn: str) -> None:
-        c = self.c
-        if fn and g.os_path_exists(fn) and not g.os_path_isdir(fn):
-            c2 = g.openWithFileName(fn, old_c=c)
-            try:
-                g.app.gui.runAtIdle(c2.treeWantsFocusNow)
-            except Exception:
-                pass
-        else:
-            g.es(f"ignoring: {fn}")
     #@+node:ekr.20170806094318.14: *3* efc.removeDirectory
     @cmd('directory-remove')
-    def removeDirectory(self, event: Event) -> None:
+    def removeDirectory(self, event: LeoKeyEvent) -> None:
         """Prompt for the name of a directory and delete it."""
         k = self.c.k
         k.setLabelBlue('Remove Directory: ')
         k.extendLabel(os.getcwd() + os.sep)
         k.get1Arg(event, handler=self.removeDirectory1)
 
-    def removeDirectory1(self, event: Event) -> None:
+    def removeDirectory1(self, event: LeoKeyEvent) -> None:
         k = self.c.k
         k.keyboardQuit()
         k.clearState()
@@ -609,7 +584,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170806094318.15: *3* efc.saveFile (save-file-by-name)
     @cmd('file-save-by-name')
     @cmd('save-file-by-name')
-    def saveFile(self, event: Event) -> None:
+    def saveFile(self, event: LeoKeyEvent) -> None:
         """Prompt for the name of a file and put the body text of the selected node into it.."""
         c = self.c
         w = self.editWidget(event)
@@ -628,7 +603,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 g.es('can not create', fileName)
     #@+node:ekr.20170806094319.15: *3* efc.toggleAtAutoAtEdit & helpers
     @cmd('toggle-at-auto-at-edit')
-    def toggleAtAutoAtEdit(self, event: Event) -> None:
+    def toggleAtAutoAtEdit(self, event: LeoKeyEvent) -> None:
         """Toggle between @auto and @edit, preserving insert point, etc."""
         p = self.c.p
         if p.isAtEditNode():
@@ -707,10 +682,8 @@ class GitDiffController:
         """
         Create an outline describing the git diffs for fn.
         """
-        # Common code.
         c = self.c
-        # #1781, #2143
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return
         s1 = self.get_file_from_rev(rev1, fn)
@@ -733,9 +706,9 @@ class GitDiffController:
             self.file_node.h = f"Deleted: {self.file_node.h}"
             return
         # Finish.
-        path = g.os_path_finalize_join(directory, fn)  # #1781: bug fix.
+        path = g.finalize_join(directory, fn)  # #1781: bug fix.
         c1 = c2 = None
-        if fn.endswith('.leo'):
+        if fn.endswith(('.leo', '.leojs')):
             c1 = self.make_leo_outline(fn, path, s1, rev1)
             c2 = self.make_leo_outline(fn, path, s2, rev2)
         else:
@@ -757,7 +730,7 @@ class GitDiffController:
         Create a Leonine version of the diffs that would be
         produced by a pull request between two branches.
         """
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return
         aList = g.execGitCommand("git rev-parse devel", directory)
@@ -775,8 +748,11 @@ class GitDiffController:
     def diff_two_branches(self, branch1: str, branch2: str, fn: str) -> None:
         """Create an outline describing the git diffs for fn."""
         c = self.c
-        if not self.get_directory():
+        u, undoType = c.undoer, 'diff-two-branches'
+        if not self.get_parent_of_git_directory():
             return
+        c.selectPosition(c.lastTopLevel())
+        undoData = u.beforeInsertNode(c.p)
         self.root = p = c.lastTopLevel().insertAfter()
         p.h = f"git-diff-branches {branch1} {branch2}"
         s1 = self.get_file_from_branch(branch1, fn)
@@ -799,6 +775,7 @@ class GitDiffController:
         if c1 and c2:
             self.make_diff_outlines(c1, c2, fn)
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
+        u.afterInsertNode(self.root, undoType, undoData)
         self.finish()
     #@+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
     def diff_two_revs(self, rev1: str = 'HEAD', rev2: str = '') -> None:
@@ -808,38 +785,34 @@ class GitDiffController:
         """
         c, u = self.c, self.c.undoer
 
-        if not self.get_directory():
+        if not self.get_parent_of_git_directory():
             return
         # Get list of changed files.
         files = self.get_files(rev1, rev2)
         n = len(files)
         message = f"diffing {n} file{g.plural(n)}"
-        if n > 5:
-            message += ". This may take awhile..."
-        g.es_print(message)
-
-        undoType = 'Git Diff'
+        if not g.unitTesting:
+            if n > 5:
+                message += ". This may take awhile..."
+            g.es_print(message)
         c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
-        u.beforeChangeGroup(c.p, undoType)
+
         # Create the root node.
         undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
         self.root = c.lastTopLevel().insertAfter()
         self.root.h = f"git diff revs: {rev1} {rev2}"
         self.root.b = '@ignore\n@nosearch\n'
-        u.afterInsertNode(self.root, 'Create diff root node', undoData)
 
         # Create diffs of all files.
         for fn in files:
-            undoData = u.beforeChangeTree(self.root)
             self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
-            u.afterChangeTree(self.root, undoType, undoData)
 
-        u.afterChangeGroup(c.p, undoType=undoType)
+        u.afterInsertNode(self.root, 'diff-two-revs', undoData)
         self.finish()
     #@+node:ekr.20170806094320.12: *4* gdc.git_diff & helper
     def git_diff(self, rev1: str = 'HEAD', rev2: str = '') -> None:
         """The main line of the git diff command."""
-        if not self.get_directory():
+        if not self.get_parent_of_git_directory():
             return
         # Diff the given revs.
         ok = self.diff_revs(rev1, rev2)
@@ -858,30 +831,309 @@ class GitDiffController:
             g.es_print('no changed readable files from HEAD@{1}..HEAD@{5}')
     #@+node:ekr.20170820082125.1: *5* gdc.diff_revs
     def diff_revs(self, rev1: str, rev2: str) -> bool:
-        """Diff all files given by rev1 and rev2."""
+        """
+        A helper for Leo's git-diff command
+
+        Diff all files given by rev1 and rev2.
+        """
+        c = self.c
+        u = c.undoer
+        undoType = 'git-diff-revs'
         files = self.get_files(rev1, rev2)
-        if files:
-            c, u = self.c, self.c.undoer
-            undoType = 'Git Diff'
-            c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
-            u.beforeChangeGroup(c.p, undoType)
+        if not files:
+            return False
+        c.selectPosition(c.lastTopLevel())
+        undoData = u.beforeInsertNode(c.p)
+        self.root = self.create_root(rev1, rev2)
+        for fn in files:
+            self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+        u.afterInsertNode(self.root, undoType, undoData)
+        self.finish()
+        return True
+    #@+node:ekr.20230705082614.1: *4* gdc.node_history & helpers
+    def node_history(self, path: str, gnxs: list[str], limit: int = None) -> None:
+        """Produce a Leonine history of the node whose file name and gnx are given."""
+        c = self.c
+        # The path must be absolute.
+        if not os.path.isabs(path):
+            g.trace(f"Not absolute: {path!r}")
+            return
+        # Get all the revs.
+        rev_list = self._get_revs_for_path(path)
+        # Get the files.
+        contents_list = self._get_contents_for_revs(path, rev_list, limit)
+        # Truncate revs_list so it has the same length as contents_list.
+        truncated_revs_list = rev_list[: len(contents_list)]
+        # Find changed nodes.
+        diff_list = self._get_diff_list(contents_list, gnxs, path, truncated_revs_list)
+        if not diff_list:
+            return
+        # Create the root node.
+        self.root = p = c.lastTopLevel().insertAfter()
+        limit_s = 'None' if limit is None else limit
+        p.h = f"node_history: {g.shortFileName(path)}"
+        p.b = f"@ignore\n@nosearch\n\n# gnxs: {', '.join(gnxs)}\n# limit: {limit_s}"
+        # Generate all other nodes.
+        self._generate_nodes(diff_list, truncated_revs_list)
+        self.finish()
+    #@+node:ekr.20230719161306.1: *5* gdc._get_action
+    def _get_action(self,
+        i: int,  # The index into contents_list and revs_list
+        path: str,
+        contents_list: list[list[str]],  # Lines for each contents.
+        node_patterns: list[tuple[str, re.Pattern]],  # Patterns matching @+node sentinels for each gnx.
+        revs_list: list[str]
+    ) -> Optional[g.Bunch]:
+        """
+        Return a g.Bunch describing the action to be taken at rev i.
+        """
+        assert len(contents_list) == len(revs_list)
+        if i + 1 >= len(revs_list):
+            return None  # Can't diff past this rev.
 
-            self.root = self.create_root(rev1, rev2)  # creates it's own undo bead
+        # Step 1: Find all nodes matching one of the gnx's in contents[i], contents[i+1]
+        nodes: list[list[tuple]] = [
+            [],  # Tuples describing nodes in rev i.
+            [],  # Tuples describing nodes in rev i + 1
+        ]
+        for index in (0, 1):
+            rev_i = i + index
+            for gnx, pattern in node_patterns:
+                node_info = self._find_node(contents_list[rev_i], pattern, gnx, revs_list[rev_i])
+                if node_info:
+                    nodes[index].append((rev_i, gnx, node_info))
 
-            for fn in files:
-                undoData = u.beforeChangeTree(self.root)
-                self.diff_file(fn=fn, rev1=rev1, rev2=rev2)
-                u.afterChangeTree(self.root, undoType, undoData)
+        # Quick test: are both sets of lines the same?
+        if not nodes[0] and not nodes[1]:
+            skip_flag = True
+        elif nodes[0] and nodes[1]:
+            range0 = nodes[0][0][2]
+            range1 = nodes[1][0][2]
+            contents0 = contents_list[i]
+            contents1 = contents_list[i + 1]
+            body0 = contents0[range0[0] : range0[1]]
+            body1 = contents1[range1[0] : range1[1]]
+            skip_flag = body0 == body1
+        else:
+            skip_flag = False
 
-            u.afterChangeGroup(c.p, undoType=undoType)
-            self.finish()
-        return bool(files)
+        # Return if there is nothing to diff.
+        if skip_flag:
+            return None
+
+        # Step 2: Create the g.Bunch
+        kind = 'add' if not nodes[0] else 'delete' if not nodes[1] else 'diff'
+        nodes0, nodes1 = nodes[0], nodes[1]
+        if nodes0:
+            gnx0 = nodes0[0][1]
+            range0 = nodes0[0][2]
+            contents0 = contents_list[i]
+            body0 = contents0[range0[0] : range0[1]]
+        else:
+            gnx0 = range0 = contents0 = body0 = None
+        if nodes1:
+            gnx1 = nodes1[0][1]
+            range1 = nodes1[0][2]
+            contents1 = contents_list[i + 1]
+            body1 = contents1[range1[0] : range1[1]]
+        else:
+            gnx1 = range1 = contents1 = body1 = None
+        return g.Bunch(
+            i=i, kind=kind,
+            gnx0=gnx0, gnx1=gnx1,
+            rev0=revs_list[i], rev1=revs_list[i + 1],
+            body0=body0, body1=body1,
+            # Optional debugging info.
+            nodes0=nodes0, contents0=contents0, range0=range0,
+            nodes1=nodes1, contents1=contents1, range1=range1,
+        )
+    #@+node:ekr.20230719170046.1: *5* gdc._find_node
+    node_ending_patterns = (
+        re.compile(r'^\s*#@\+node:(.*?):'),  # A start node sentinel.
+        re.compile(r'^\s*#@\-others'),  # A -others sentinel
+        re.compile(r'^\s*#@\-leo'),  # A -leo sentinel.
+    )
+
+    def _find_node(self,
+        contents: list[str],  # The list of lines.
+        pattern: re.Pattern,
+        # For debugging only.
+        gnx: str,  # gnx being matched.
+        rev: str,  # Full hash.
+        ) -> Optional[tuple[int, int]]:
+        """
+        Return (i1, i2) the range of lines of the node, or None.
+        i1: The index of the line matching pattern.
+        i2: The index of the line ending the node.
+
+
+        The lines start at the first line matching the pattern.
+
+        The lines end at the first line matching one of the ending patterns.
+        """
+        for i, line in enumerate(contents):
+            if pattern.match(line):
+                break
+        else:
+            return None
+        i1 = i
+        i += 1
+        while i < len(contents):
+            line = contents[i]
+            i += 1
+            if any(z.match(line) for z in self.node_ending_patterns):
+                # g.printObj(contents[i1:i], tag=f"Found {rev[:7]} {gnx} {i1}:{i}")
+                return (i1, i - 1)
+        return None
+    #@+node:ekr.20230720085415.1: *5* gdc._generate_nodes
+    def _generate_nodes(self, diff_list: list[g.Bunch], revs_list: list[str]) -> None:
+        """
+        Generate all diff nodes from diff_list, a list of g.Bunches returned from _get_action.
+        """
+        # self._trace_diff_list(diff_list)
+        for b in diff_list:
+            # self._trace_kind(b, revs_list)
+            p = self.root.insertAsLastChild()
+            gnx0_s = b.gnx0 or ''
+            gnx1_s = b.gnx1 or ''
+            gnxs_s = gnx0_s if b.gnx0 == b.gnx1 else f"{gnx0_s} {gnx1_s}"
+            p.h = f"{b.i:>4} {b.kind}"  # {gnx0_s} {gnx1_s}"
+            if b.kind == 'diff':
+                diff = list(difflib.unified_diff(b.body0 or [], b.body1 or [], b.rev0, b.rev1))
+                p.b = f"diff {gnxs_s}\n\n{''.join(diff)}"
+                child1 = p.insertAsLastChild()
+                child1.h = 'old'
+                child1.b = ''.join(b.body0 or [])
+                child2 = p.insertAsLastChild()
+                child2.h = 'new'
+                child2.b = ''.join(b.body1 or [])
+            elif b.kind == 'add':
+                p.b = f"add {gnxs_s}\n\n{''.join(b.body1 or [])}"
+            elif b.kind == 'delete':
+                p.b = f"delete {gnxs_s}\n\n{''.join(b.body0 or [])}"
+            else:
+                g.trace(f"Bad b.kind: {b.kind!r}")
+    #@+node:ekr.20230705085430.1: *5* gdc._get_contents_for_revs
+    def _get_contents_for_revs(self,
+        path: str,
+        rev_list: list[str],
+        limit: Optional[int] = None,
+    ) -> list[list[str]]:
+        """
+        Return the contents of the file as a list of lines.
+        path: the full path to the file.
+        rev_list: the list of full git hashes for each rev.
+        limit: None (no limit), the number revs to search.
+        """
+        # Note: the time module excludes sleep time. It's inaccurate here.
+
+        # Run the command itself in the leo-editor, the parent of the .git directory.
+        git_parent_directory = self.get_parent_of_git_directory()
+
+        # Compute the path relative to the parent.
+        relative_path = os.path.relpath(path, git_parent_directory).replace('\\', '/')
+
+        # Get full file contents of rev.
+        result: list[list[str]] = []
+        of_s = '' if limit is None else f" of {len(rev_list)}"
+        n = len(rev_list) if limit is None else min(limit, len(rev_list))
+        g.es_print(f"Reading {n}{of_s} revs!\nThis will take a few minutes.")
+        for i, rev in enumerate(rev_list[:limit]):
+            command = fr"git show {rev}:{relative_path}"
+            aList = g.execGitCommand(command, git_parent_directory)
+            result.append(aList)
+            if i > 0 and (i % 100) == 0:
+                g.es_print(f"Progress: {i} revs")
+        g.es_print(f"Done! {n}{of_s} revs")
+        return result
+    #@+node:ekr.20230719122859.1: *5* gdc._get_diff_list
+    def _get_diff_list(self,
+        contents_list: list[list[str]],  # List of lines for each file.
+        gnxs: list[str],
+        path: str,
+        revs_list: list[str],
+    ) -> list[g.Bunch]:
+        """Return a list of Bunches describing the nodes to be diffed."""
+
+        assert len(contents_list) == len(revs_list)
+
+        # Compile the patterns once.
+        node_patterns = [
+            (gnx, re.compile(fr'^\s*#@\+node:({gnx}):')) for gnx in gnxs
+        ]
+
+        # Create the list of g.Bunches.
+        node_data_list = []
+        for i in range(len(contents_list)):
+            bunch = self._get_action(i, path, contents_list, node_patterns, revs_list)
+            if bunch:
+                node_data_list.append(bunch)
+        return node_data_list
+    #@+node:ekr.20230705084709.1: *5* gdc._get_revs_for_path
+    def _get_revs_for_path(self, path: str) -> list[str]:
+        """
+        Return the list of full hashes for all commits to the given absolute path.
+        """
+        # Run the command itself in leo-editor, the parent of the .git directory.
+        git_parent_directory = self.get_parent_of_git_directory()
+
+        # Human readable summary.
+        # %h (%an %cs %s): Abbreviated hash, author, date, commit message
+        args_s = "--no-patch --pretty='format:%H'"  # Just the long hash.
+        command = fr"git log {args_s} -- {path}"
+        aList = g.execGitCommand(command, git_parent_directory)
+        result = [z.strip() for z in aList]
+        return result
+    #@+node:ekr.20230720085122.1: *5* gdc._trace_diff_list
+    def _trace_diff_list(self, diff_list: list[g.Bunch]) -> None:
+        """Trace the diff_list."""
+        if 1:  # Brief.
+            for z in diff_list:
+                body_n0 = 'None' if z.body0 is None else len(z.body0)
+                body_n1 = 'None' if z.body1 is None else len(z.body1)
+                print(
+                    f"{z.i:>4} {z.kind:>7} {z.rev0[:7]} {z.rev1[:7]} "
+                    # f"len(contents0/1: {n0} {n1} range0/1: {z.range0} {z.range1}")
+                    f"len(body0/1): {body_n0} {body_n1}")
+        elif 0:  # Too verbose.
+            g.printObj(diff_list, tag='diff_list')
+        else:  # Verbose.
+            for bunch in diff_list:
+                result = []
+                for key in ('i', 'kind', 'rev0', 'rev1', 'body0', 'body1', 'range0', 'range1'):
+                    val = bunch.get(key)
+                    if val is None:
+                        continue
+                    if key == 'i':
+                        pad_s = ' ' * max(0, 4 - len(str(val)))
+                        result.append(f"{key}:{pad_s} {val}")
+                    elif key == 'kind':
+                        result.append(f"{key}: {val:<6}")
+                    elif key.startswith(('body', 'contents')):
+                        result.append(f"{key}: {len(val):<3}")
+                    elif key.startswith('rev'):
+                        result.append(f"{key}: {val[:7]}")
+                    else:
+                        result.append(f"{key}: {val}")
+                print(' '.join(result))
+    #@+node:ekr.20230720091027.1: *5* gdc._trace_kind
+    def _trace_kind(self, b: g.Bunch, revs_list: list[str]) -> None:
+        tag = f"{b.i:>4}: {b.rev0[:7]} {b.rev1[:7]}"
+        if b.kind == 'add':
+            print(f"{tag}:    add len(body1):   {len(b.body1)}")
+        elif b.kind == 'delete':
+            print(f"{tag}: delete len(body0):   {len(b.body0)}")
+        elif b.kind == 'diff':
+            # pad_s = ' ' * (9 + len(tag))
+            print(f"{tag}:   diff len(body0/2): {len(b.body0)} {len(b.nodes1)}")
+        else:
+            g.trace('Unknown kind', repr(b.kind))
     #@+node:ekr.20180510095801.1: *3* gdc.Utils
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
     def create_compare_node(self,
         c1: Cmdr,
         c2: Cmdr,
-        d: Dict[str, Tuple[VNode, VNode]],
+        d: dict[str, tuple[VNode, VNode]],
         kind: str,
         rev1: str,
         rev2: str,
@@ -940,7 +1192,7 @@ class GitDiffController:
                 p.h = v.h
                 p.b = v.b
     #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
-    def create_file_node(self, diff_list: List[str], fn: str) -> Position:
+    def create_file_node(self, diff_list: list[str], fn: str) -> Position:
         """Create an organizer node for the file."""
         p = self.root.insertAsLastChild()
         p.h = 'diff: ' + fn.strip()
@@ -949,11 +1201,7 @@ class GitDiffController:
     #@+node:ekr.20170806094320.18: *4* gdc.create_root
     def create_root(self, rev1: str, rev2: str) -> Position:
         """Create the top-level organizer node describing the git diff."""
-        c, u = self.c, self.c.undoer
-        undoType = 'Create diff root node'  # Same undoType is reused for all inner undos
-        c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
-        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
-
+        c = self.c
         r1, r2 = rev1 or '', rev2 or ''
         p = c.lastTopLevel().insertAfter()
         p.h = f"git diff {r1} {r2}"
@@ -964,8 +1212,6 @@ class GitDiffController:
                 f"{r2}={self.get_revno(r2)}")
         else:
             p.b += f"{r1}={self.get_revno(r1)}"
-
-        u.afterInsertNode(p, undoType, undoData)
         return p
     #@+node:ekr.20170806094320.7: *4* gdc.find_file
     def find_file(self, fn: str) -> Optional[Position]:
@@ -982,9 +1228,9 @@ class GitDiffController:
     def find_git_working_directory(self, directory: str) -> Optional[str]:
         """Return the git working directory, starting at directory."""
         while directory:
-            if g.os_path_exists(g.os_path_finalize_join(directory, '.git')):
+            if g.os_path_exists(g.finalize_join(directory, '.git')):
                 return directory
-            path2 = g.os_path_finalize_join(directory, '..')
+            path2 = g.finalize_join(directory, '..')
             if path2 == directory:
                 break
             directory = path2
@@ -1004,8 +1250,8 @@ class GitDiffController:
         self.root.expand()
         c.redraw(self.root)
         c.treeWantsFocusNow()
-    #@+node:ekr.20210819080657.1: *4* gdc.get_directory
-    def get_directory(self) -> Optional[str]:
+    #@+node:ekr.20210819080657.1: *4* gdc.get_parent_of_git_directory
+    def get_parent_of_git_directory(self) -> Optional[str]:
         """
         #2143.
         Resolve filename to the nearest directory containing a .git directory.
@@ -1027,13 +1273,13 @@ class GitDiffController:
             print(f"git-diff: no .git directory: {directory!r} filename: {filename!r}")
             return None
         # This should guarantee that the directory contains a .git directory.
-        directory = g.os_path_finalize_join(base_directory, '..', '..')
+        directory = g.finalize_join(base_directory, '..', '..')
         return directory
     #@+node:ekr.20180506064102.11: *4* gdc.get_file_from_branch
     def get_file_from_branch(self, branch: str, fn: str) -> str:
         """Get the file from the head of the given branch."""
         # #2143
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return ''
         command = f"git show {branch}:{fn}"
@@ -1043,33 +1289,40 @@ class GitDiffController:
     #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
     def get_file_from_rev(self, rev: str, fn: str) -> str:
         """Get the file from the given rev, or the working directory if None."""
-        # #2143
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return ''
-        path = g.os_path_finalize_join(directory, fn)
-        if not g.os_path_exists(path):
-            g.trace(f"File not found: {path!r} fn: {fn!r}")
-            return ''
+        path = g.finalize_join(directory, fn)
+
+        # Find all the files in the rev.
         if rev:
+            command = f"git ls-tree -r {rev} --name-only"
+            lines = g.execGitCommand(command, directory)
+            if not any(fn in z for z in lines):
+                # g.trace(f"{fn} not in {rev}")
+                return ''
             # Get the file using git.
             # Use the file name, not the path.
             command = f"git show {rev}:{fn}"
             lines = g.execGitCommand(command, directory)
             return g.toUnicode(''.join(lines)).replace('\r', '')
+
+        # Read the file.
+        if not os.path.exists(path):
+            # This is not an error. The user has inserted or deleted the file.
+            return ''
         try:
             with open(path, 'rb') as f:
                 b = f.read()
             return g.toUnicode(b).replace('\r', '')
         except Exception:
-            g.es_print('Can not read', path)
             g.es_exception()
             return ''
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
-    def get_files(self, rev1: str, rev2: str) -> List[str]:
+    def get_files(self, rev1: str, rev2: str) -> list[str]:
         """Return a list of changed files."""
         # #2143
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         if not directory:
             return []
         command = f"git diff --name-only {(rev1 or '')} {(rev2 or '')}"
@@ -1080,13 +1333,13 @@ class GitDiffController:
         ]
     #@+node:ekr.20170821052348.1: *4* gdc.get_revno
     def get_revno(self, revspec: str, abbreviated: bool = True) -> str:
-        """Return the abbreviated hash the given revision spec."""
+        """Return the abbreviated hash for the given revision spec."""
         if not revspec:
             return 'uncommitted'
         # Return only the abbreviated hash for the revspec.
         format_s = 'h' if abbreviated else 'H'
         command = f"git show --format=%{format_s} --no-patch {revspec}"
-        directory = self.get_directory()
+        directory = self.get_parent_of_git_directory()
         lines = g.execGitCommand(command, directory=directory)
         return ''.join(lines).strip()
     #@+node:ekr.20170820084258.1: *4* gdc.make_at_clean_outline
@@ -1164,7 +1417,7 @@ class GitDiffController:
         for d, kind in table:
             self.create_compare_node(c1, c2, d, kind, rev1, rev2)
     #@+node:ekr.20170806191707.1: *5* gdc.compute_dicts
-    def compute_dicts(self, c1: Cmdr, c2: Cmdr) -> Tuple[Dict, Dict, Dict]:
+    def compute_dicts(self, c1: Cmdr, c2: Cmdr) -> tuple[dict, dict, dict]:
         """Compute inserted, deleted, changed dictionaries."""
         # Special case the root: only compare the body text.
         root1, root2 = c1.rootPosition().v, c2.rootPosition().v
@@ -1202,13 +1455,8 @@ class GitDiffController:
         hidden_c.frame.createFirstTreeNode()
         root = hidden_c.rootPosition()
         root.h = fn + ':' + rev if rev else fn
-        hidden_c.fileCommands.getLeoFile(
-            theFile=io.StringIO(initial_value=s),
-            fileName=path,
-            readAtFileNodesFlag=False,
-            silent=False,
-            checkOpenFiles=False,
-        )
+        fc = hidden_c.fileCommands
+        fc.getAnyLeoFileByName(path, checkOpenFiles=False, readAtFileNodesFlag=False)
         return hidden_c
     #@-others
 #@-others

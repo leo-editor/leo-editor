@@ -76,10 +76,12 @@ where the extra information is the name of the linked node's parent.
 # - linkClicked(n) (zero based)
 #@-<< notes >>
 # By TNB. Revised for Qt6 by EKR.
-from typing import List
+
+# EKR: gnx-based unls make this plugin obsolete.
+
 from leo.core import leoGlobals as g
 try:  # #2343
-    from leo.core.leoQt import isQt6, QtGui, QtWidgets, uic
+    from leo.core.leoQt import QtGui, QtWidgets, uic
 except Exception:
     QtGui = QtWidgets = None
 #@+others
@@ -204,35 +206,44 @@ class backlinkController:
         else:
             self.showMessage('Click a link to follow it')
     #@+node:tbnorth.20170616105931.1: *3* bc.handleURL
-    def handleURL(self, url):
+    def handleURL(self, url: str) -> None:
         """handleUrl - user clicked an URL / UNL link
 
         :param str url: URL for link
         """
+        c = self.c
         g.es(url)
-        # UNL detection copied from g.handleUrl()
-        if (
-            url.lower().startswith('unl://') or
-            url.lower().startswith('file://') and url.find('-->') > -1 or
-            url.startswith('#')
-        ):
-            our_unl = 'unl://' + self.c.p.get_UNL()
-            new_c = g.handleUnl(url, self.c)
-            if new_c and hasattr(new_c, 'backlinkController'):
-                unlList = url.replace('%20', ' ').split('#', 1)[-1].split('-->')
-                new_p = g.findUNL(unlList, new_c)
-                if not new_p:
-                    g.es("No perfect match, not creating backlink")
-                    return
-                new_c.backlinkController.initBacklink(new_p.v)
-                if our_unl not in [i.rsplit('##', 1)[0] for i in new_p.v.u['_bklnk']['urls']]:
-                    new_p.v.u['_bklnk']['urls'].append("%s##%s" % (our_unl, self.c.p.h))
-                    new_c.backlinkController.updateTabInt()
-                    new_p.setDirty()
-                    new_c.setChanged()
-                    g.es("NOTE: created back link automatically")
-        else:
-            g.handleUrl(url, c=self.c)
+        if not g.isValidUnl(url):
+            g.handleUrl(url, c=c)
+            return
+        our_unl = c.p.get_UNL()
+
+        ### This is too early.
+            # new_c = g.handleUnl(url, c)
+            # if not new_c or not hasattr(new_c, 'backlinkController'):
+                # return
+
+        new_p = g.findAnyUnl(our_unl, c)
+        if not new_p:
+            g.es(f"unl not found: {our_unl!r}. not creating backlink")
+            return
+        new_c = new_p.v.context
+        if not hasattr(new_c, 'backlinkController'):
+            g.es('No controller. not creating backlink')
+            return
+
+        ### To do: should this code switch outlines???
+            # new_c = new_p.v.context
+            # if new_c != c:
+                # g.app.selectLeoWindow(new_c)  # Switch outlines.
+
+        new_c.backlinkController.initBacklink(new_p.v)
+        if our_unl not in [i.rsplit('##', 1)[0] for i in new_p.v.u['_bklnk']['urls']]:
+            new_p.v.u['_bklnk']['urls'].append("%s##%s" % (our_unl, self.c.p.h))
+            new_c.backlinkController.updateTabInt()
+            new_p.setDirty()
+            new_c.setChanged()
+            g.es("NOTE: created back link automatically")
     #@+node:ekr.20090616105756.3946: *3* bc.initBacklink
     def initBacklink(self, v):
         """set up a vnode to support links"""
@@ -350,7 +361,7 @@ class backlinkController:
         self.updateTabInt()
     #@+node:ekr.20090616105756.3953: *3* bc.linksFrom
     def linksFrom(self, v, type_='S'):
-        ans: List = []
+        ans: list = []
         if not (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
             return ans
 
@@ -404,7 +415,7 @@ class backlinkController:
         )
         if url is None or not url.strip():
             return
-        if '://' not in url:  # pylint: disable=unsupported-membership-test
+        if '://' not in url:
             url = 'unl://' + url
             g.es("Assuming unl:// url, use file:// explicitly for files")
         self.initBacklink(c.p.v)
@@ -496,7 +507,7 @@ class backlinkController:
         """
 
         c = self.c
-        hits: List[List] = [[]]  # hits/including before the current node
+        hits: list[list] = [[]]  # hits/including before the current node
 
         current = c.p.v
 
@@ -608,7 +619,7 @@ class backlinkController:
             return  # not our problem
 
         self.updateTabInt()
-    #@+node:ekr.20090616105756.3968: *3* bc.updateTabInt
+    #@+node:ekr.20090616105756.3968: *3* bc.updateTabInt (backlink.py)
     def updateTabInt(self):
         """called on new position (leo hook) and when links added / deleted"""
         c = self.c
@@ -626,7 +637,7 @@ class backlinkController:
         texts = []
         if (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
             links = v.u['_bklnk']['links']
-            dests: List = []
+            dests: list = []
             self.dests = dests
             for data in links[:]:  # Must use a copy.
                 linkType, other = data
@@ -642,7 +653,6 @@ class backlinkController:
             if dests:
                 self.ui.enableDelete(True)
                 self.showMessage('Click a link to follow it', optional=True)
-                # pylint: disable=cell-var-from-loop
                 for i in dests:
 
                     if i[1] is None:  # destination node is deleted
@@ -694,7 +704,7 @@ if QtWidgets:
 
     class backlinkQtUI(QtWidgets.QWidget):  # type:ignore
         #@+others
-        #@+node:ekr.20140920145803.17987: *3* __init__
+        #@+node:ekr.20140920145803.17987: *3* bc.__init__
         def __init__(self, owner):
             """Ctor for backlinkQtUI class."""
             self.owner = owner
@@ -768,10 +778,7 @@ if QtWidgets:
             ui = self.UI
             fg = QtGui.QColor(color)
             pal = QtGui.QPalette(ui.label.palette())
-            if isQt6:
-                pal.setColor(pal.ColorRole.Window, fg)  # #2197
-            else:
-                pal.setColor(QtGui.QPalette.WindowText, fg)
+            pal.setColor(pal.ColorRole.Window, fg)  # #2197
             ui.label.setPalette(pal)
             ui.label.setText(msg)
         #@-others

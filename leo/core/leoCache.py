@@ -8,8 +8,7 @@ import fnmatch
 import os
 import pickle
 import sqlite3
-import stat
-from typing import Any, Dict, Generator, List, Optional, Sequence, Set, TYPE_CHECKING
+from typing import Any, Generator, Optional, Sequence, TYPE_CHECKING, Union
 import zlib
 from leo.core import leoGlobals as g
 
@@ -30,128 +29,56 @@ join = g.os_path_join
 normcase = g.os_path_normcase
 split = g.os_path_split
 #@+others
-#@+node:ekr.20100208062523.5885: ** class CommanderCacher
-class CommanderCacher:
-    """A class to manage per-commander caches."""
-
-    def __init__(self) -> None:
-        self.db: Any
-        try:
-            path = join(g.app.homeLeoDir, 'db', 'global_data')
-            self.db = SqlitePickleShare(path)
-        except Exception:
-            self.db = {}  # type:ignore
-    #@+others
-    #@+node:ekr.20100209160132.5759: *3* cacher.clear
-    def clear(self) -> None:
-        """Clear the cache for all commanders."""
-        # Careful: self.db may be a Python dict.
-        try:
-            self.db.clear()
-        except Exception:
-            g.trace('unexpected exception')
-            g.es_exception()
-            self.db = {}  # type:ignore
-    #@+node:ekr.20180627062431.1: *3* cacher.close
-    def close(self) -> None:
-        # Careful: self.db may be a dict.
-        if hasattr(self.db, 'conn'):
-            # pylint: disable=no-member
-            self.db.conn.commit()
-            self.db.conn.close()
-    #@+node:ekr.20180627042809.1: *3* cacher.commit
-    def commit(self) -> None:
-        # Careful: self.db may be a dict.
-        if hasattr(self.db, 'conn'):
-            # pylint: disable=no-member
-            self.db.conn.commit()
-    #@+node:ekr.20180611054447.1: *3* cacher.dump
-    def dump(self) -> None:
-        """Dump the indicated cache if --trace-cache is in effect."""
-        dump_cache(g.app.commander_db, tag='Commander Cache')
-    #@+node:ekr.20180627053508.1: *3* cacher.get_wrapper
-    def get_wrapper(self, c: Cmdr, fn: str = None) -> "CommanderWrapper":
-        """Return a new wrapper for c."""
-        return CommanderWrapper(c, fn=fn)
-    #@+node:ekr.20100208065621.5890: *3* cacher.test
-    def test(self) -> bool:
-
-        # pylint: disable=no-member
-        if g.app.gui.guiName() == 'nullGui':
-            # Null gui's don't normally set the g.app.gui.db.
-            g.app.setGlobalDb()
-        # Fixes bug 670108.
-        assert g.app.db is not None  # a PickleShareDB instance.
-        # Make sure g.guessExternalEditor works.
-        g.app.db.get("LEO_EDITOR")
-        # self.initFileDB('~/testpickleshare')
-        db = self.db
-        db.clear()
-        assert not list(db.items())
-        db['hello'] = 15
-        db['aku ankka'] = [1, 2, 313]
-        db['paths/nest/ok/keyname'] = [1, (5, 46)]
-        db.uncache()  # frees memory, causes re-reads later
-        # print(db.keys())
-        db.clear()
-        return True
-    #@+node:ekr.20100210163813.5747: *3* cacher.save
-    def save(self, c: Cmdr, fn: str) -> None:
-        """
-        Save the per-commander cache.
-
-        Change the cache prefix if changeName is True.
-
-        save and save-as set changeName to True, save-to does not.
-        """
-        self.commit()
-        if fn:
-            # 1484: Change only the key!
-            if isinstance(c.db, CommanderWrapper):
-                c.db.key = fn
-                self.commit()
-            else:
-                g.trace('can not happen', c.db.__class__.__name__)
-    #@-others
-#@+node:ekr.20180627052459.1: ** class CommanderWrapper
+#@+node:ekr.20180627052459.1: ** class CommanderWrapper (c.db)
 class CommanderWrapper:
-    """A class to distinguish keys from separate commanders."""
+    """
+    A class that creates distinct keys for all commanders, allowing
+    commanders to share g.app.db without collisions.
 
-    def __init__(self, c: Cmdr, fn: str = None) -> None:
-        self.c = c
+    Instances of this class are c.db.
+    """
+
+    def __init__(self, c: Cmdr) -> None:
+        self.c = c  # Key is c.mFilemane to fix #3822
         self.db = g.app.db
-        self.key = fn or c.mFileName
-        self.user_keys: Set[str] = set()
+        self.user_keys: set[str] = set()
 
     def get(self, key: str, default: Any = None) -> Any:
-        value = self.db.get(f"{self.key}:::{key}")
+        value = self.db.get(f"{self.c.mFileName}:::{key}")
         return default if value is None else value
 
-    def keys(self) -> List[str]:
+    def keys(self) -> list[str]:
         return sorted(list(self.user_keys))
 
     def __contains__(self, key: Any) -> bool:
-        return f"{self.key}:::{key}" in self.db
+        return f"{self.c.mFileName}:::{key}" in self.db
 
     def __delitem__(self, key: Any) -> None:
         if key in self.user_keys:
             self.user_keys.remove(key)
-        del self.db[f"{self.key}:::{key}"]
+        del self.db[f"{self.c.mFileName}:::{key}"]
 
     def __getitem__(self, key: str) -> Any:
-        return self.db[f"{self.key}:::{key}"]  # May (properly) raise KeyError
+        return self.db[f"{self.c.mFileName}:::{key}"]  # May (properly) raise KeyError
 
     def __setitem__(self, key: str, value: Any) -> None:
         self.user_keys.add(key)
-        self.db[f"{self.key}:::{key}"] = value
-#@+node:ekr.20180627041556.1: ** class GlobalCacher
+        self.db[f"{self.c.mFileName}:::{key}"] = value
+#@+node:ekr.20180627041556.1: ** class GlobalCacher (g.app.db)
 class GlobalCacher:
-    """A singleton global cacher, g.app.db"""
+    """
+    A class creating a singleton global database, g.app.db.
+
+    This DB resides in ~/.leo/db.
+
+    New in Leo 6.7.7: All instances of c.db may use g.app.db because the
+    CommanderWrapper class creates distinct keys for each commander.
+    """
 
     def __init__(self) -> None:
         """Ctor for the GlobalCacher class."""
         trace = 'cache' in g.app.debug
-        self.db: Any
+        self.db: Union[dict, SqlitePickleShare]
         try:
             path = join(g.app.homeLeoDir, 'db', 'g_app_db')
             if trace:
@@ -172,13 +99,13 @@ class GlobalCacher:
         if 'cache' in g.app.debug:
             g.trace('clear g.app.db')
         try:
-            self.db.clear()
+            self.db.clear()  # SqlitePickleShare.clear.
         except TypeError:
-            self.db.clear()
+            self.db = {}  # self.db was a dict.
         except Exception:
             g.trace('unexpected exception')
             g.es_exception()
-            self.db = {}  # type:ignore
+            self.db = {}
     #@+node:ekr.20180627042948.1: *3* g_cacher.commit_and_close()
     def commit_and_close(self) -> None:
         # Careful: self.db may be a dict.
@@ -195,283 +122,17 @@ class GlobalCacher:
         tag2 = f"{tag0}: {tag}" if tag else tag0
         dump_cache(self.db, tag2)  # Careful: g.app.db may not be set yet.
     #@-others
-#@+node:ekr.20100208223942.5967: ** class PickleShareDB
-_sentinel = object()
-
-
-class PickleShareDB:
-    """ The main 'connection' object for PickleShare database """
-    #@+others
-    #@+node:ekr.20100208223942.5968: *3*  Birth & special methods
-    #@+node:ekr.20100208223942.5969: *4*  __init__ (PickleShareDB)
-    def __init__(self, root: str) -> None:
-        """
-        Init the PickleShareDB class.
-        root: The directory that contains the data. Created if it doesn't exist.
-        """
-        self.root: str = abspath(expanduser(root))
-        if not isdir(self.root) and not g.unitTesting:
-            self._makedirs(self.root)
-        # Keys are normalized file names.
-        # Values are tuples (obj, orig_mod_time)
-        self.cache: Dict[str, Any] = {}
-
-        def loadz(fileobj: Any) -> None:
-            if fileobj:
-                # Retain this code for maximum compatibility.
-                try:
-                    val = pickle.loads(
-                        zlib.decompress(fileobj.read()))
-                except ValueError:
-                    g.es("Unpickling error - Python 3 data accessed from Python 2?")
-                    return None
-                return val
-            return None
-
-        def dumpz(val: Any, fileobj: Any) -> None:
-            if fileobj:
-                try:
-                    # Use Python 2's highest protocol, 2, if possible
-                    data = pickle.dumps(val, 2)
-                except Exception:
-                    # Use best available if that doesn't work (unlikely)
-                    data = pickle.dumps(val, pickle.HIGHEST_PROTOCOL)
-                compressed = zlib.compress(data)
-                fileobj.write(compressed)
-
-        self.loader = loadz
-        self.dumper = dumpz
-    #@+node:ekr.20100208223942.5970: *4* __contains__(PickleShareDB)
-    def __contains__(self, key: Any) -> bool:
-
-        return self.has_key(key)  # NOQA
-    #@+node:ekr.20100208223942.5971: *4* __delitem__
-    def __delitem__(self, key: str) -> None:
-        """ del db["key"] """
-        fn = join(self.root, key)
-        self.cache.pop(fn, None)
-        try:
-            os.remove(fn)
-        except OSError:
-            # notfound and permission denied are ok - we
-            # lost, the other process wins the conflict
-            pass
-    #@+node:ekr.20100208223942.5972: *4* __getitem__ (PickleShareDB)
-    def __getitem__(self, key: str) -> Any:
-        """ db['key'] reading """
-        fn = join(self.root, key)
-        try:
-            mtime = (os.stat(fn)[stat.ST_MTIME])
-        except OSError:
-            raise KeyError(key)
-        if fn in self.cache and mtime == self.cache[fn][1]:
-            obj = self.cache[fn][0]
-            return obj
-        try:
-            # The cached item has expired, need to read
-            obj = self.loader(self._openFile(fn, 'rb'))
-        except Exception:
-            raise KeyError(key)
-        self.cache[fn] = (obj, mtime)
-        return obj
-    #@+node:ekr.20100208223942.5973: *4* __iter__
-    def __iter__(self) -> Generator:
-
-        for k in list(self.keys()):
-            yield k
-    #@+node:ekr.20100208223942.5974: *4* __repr__
-    def __repr__(self) -> str:
-        return f"PickleShareDB('{self.root}')"
-    #@+node:ekr.20100208223942.5975: *4* __setitem__ (PickleShareDB)
-    def __setitem__(self, key: str, value: Any) -> None:
-        """ db['key'] = 5 """
-        fn = join(self.root, key)
-        parent, junk = split(fn)
-        if parent and not isdir(parent):
-            self._makedirs(parent)
-        self.dumper(value, self._openFile(fn, 'wb'))
-        try:
-            mtime = os.path.getmtime(fn)
-            self.cache[fn] = (value, mtime)
-        except OSError as e:
-            if e.errno != 2:
-                raise
-    #@+node:ekr.20100208223942.10452: *3* _makedirs
-    def _makedirs(self, fn: str, mode: int = 0o777) -> None:
-
-        os.makedirs(fn, mode)
-    #@+node:ekr.20100208223942.10458: *3* _openFile (PickleShareDB)
-    def _openFile(self, fn: str, mode: str = 'r') -> Optional[Any]:
-        """ Open this file.  Return a file object.
-
-        Do not print an error message.
-        It is not an error for this to fail.
-        """
-        try:
-            return open(fn, mode)
-        except Exception:
-            return None
-    #@+node:ekr.20100208223942.10454: *3* _walkfiles & helpers
-    def _walkfiles(self, s: str, pattern: str = None) -> Generator:
-        """ D.walkfiles() -> iterator over files in D, recursively.
-
-        The optional argument, pattern, limits the results to files
-        with names that match the pattern.  For example,
-        mydir.walkfiles('*.tmp') yields only files with the .tmp
-        extension.
-        """
-        for child in self._listdir(s):
-            if isfile(child):
-                if pattern is None or self._fn_match(child, pattern):
-                    yield child
-            elif isdir(child):
-                for f in self._walkfiles(child, pattern):
-                    yield f
-    #@+node:ekr.20100208223942.10456: *4* _listdir
-    def _listdir(self, s: str, pattern: str = None) -> List[str]:
-        """ D.listdir() -> List of items in this directory.
-
-        Use D.files() or D.dirs() instead if you want a listing
-        of just files or just subdirectories.
-
-        The elements of the list are path objects.
-
-        With the optional 'pattern' argument, this only lists
-        items whose names match the given pattern.
-        """
-        names = os.listdir(s)
-        if pattern is not None:
-            names = fnmatch.filter(names, pattern)
-        return [join(s, child) for child in names]
-    #@+node:ekr.20100208223942.10464: *4* _fn_match
-    def _fn_match(self, s: str, pattern: str) -> bool:
-        """ Return True if self.name matches the given pattern.
-
-        pattern - A filename pattern with wildcards, for example '*.py'.
-        """
-        return fnmatch.fnmatch(basename(s), pattern)
-    #@+node:ekr.20100208223942.5978: *3* clear (PickleShareDB)
-    def clear(self) -> None:
-        # Deletes all files in the fcache subdirectory.
-        # It would be more thorough to delete everything
-        # below the root directory, but it's not necessary.
-        for z in self.keys():
-            self.__delitem__(z)
-    #@+node:ekr.20100208223942.5979: *3* get
-    def get(self, key: str, default: Any = None) -> Any:
-
-        try:
-            val = self[key]
-            return val
-        except KeyError:
-            return default
-    #@+node:ekr.20100208223942.5980: *3* has_key (PickleShareDB)
-    def has_key(self, key: str) -> bool:
-
-        try:
-            self[key]
-        except KeyError:
-            return False
-        return True
-    #@+node:ekr.20100208223942.5981: *3* items
-    def items(self) -> List[Any]:
-        return [z for z in self]
-    #@+node:ekr.20100208223942.5982: *3* keys & helpers (PickleShareDB)
-    # Called by clear, and during unit testing.
-
-    def keys(self, globpat: str = None) -> List[str]:
-        """Return all keys in DB, or all keys matching a glob"""
-        files: List[str]
-        if globpat is None:
-            files = self._walkfiles(self.root)  # type:ignore
-        else:
-            # Do not call g.glob_glob here.
-            files = [z for z in join(self.root, globpat)]
-        result = [self._normalized(s) for s in files if isfile(s)]
-        return result
-    #@+node:ekr.20100208223942.5976: *4* _normalized
-    def _normalized(self, filename: str) -> str:
-        """ Make a key suitable for user's eyes """
-        # os.path.relpath doesn't work here.
-        return self._relpathto(self.root, filename).replace('\\', '/')
-    #@+node:ekr.20100208223942.10460: *4* _relpathto
-    # Used only by _normalized.
-
-    def _relpathto(self, src: str, dst: str) -> str:
-        """ Return a relative path from self to dst.
-
-        If there is no relative path from self to dst, for example if
-        they reside on different drives in Windows, then this returns
-        dst.abspath().
-        """
-        origin = abspath(src)
-        dst = abspath(dst)
-        orig_list = self._splitall(normcase(origin))
-        # Don't normcase dst!  We want to preserve the case.
-        dest_list = self._splitall(dst)
-        if orig_list[0] != normcase(dest_list[0]):
-            # Can't get here from there.
-            return dst
-        # Find the location where the two paths start to differ.
-        i = 0
-        for start_seg, dest_seg in zip(orig_list, dest_list):
-            if start_seg != normcase(dest_seg):
-                break
-            i += 1
-        # Now i is the point where the two paths diverge.
-        # Need a certain number of "os.pardir"s to work up
-        # from the origin to the point of divergence.
-        segments = [os.pardir] * (len(orig_list) - i)
-        # Need to add the diverging part of dest_list.
-        segments += dest_list[i:]
-        if segments:
-            return join(*segments)
-        # If they happen to be identical, use os.curdir.
-        return os.curdir
-    #@+node:ekr.20100208223942.10462: *4* _splitall
-    # Used by relpathto.
-
-    def _splitall(self, s: str) -> List[str]:
-        """ Return a list of the path components in this path.
-
-        The first item in the list will be a path.  Its value will be
-        either os.curdir, os.pardir, empty, or the root directory of
-        this path (for example, '/' or 'C:\\').  The other items in
-        the list will be strings.
-
-        path.path.joinpath(*result) will yield the original path.
-        """
-        parts = []
-        loc = s
-        while loc != os.curdir and loc != os.pardir:
-            prev = loc
-            loc, child = split(prev)
-            if loc == prev:
-                break
-            parts.append(child)
-        parts.append(loc)
-        parts.reverse()
-        return parts
-    #@+node:ekr.20100208223942.5989: *3* uncache
-    def uncache(self, *items: Any) -> None:
-        """ Removes all, or specified items from cache
-
-        Use this after reading a large amount of large objects
-        to free up memory, when you won't be needing the objects
-        for a while.
-
-        """
-        if not items:
-            self.cache = {}
-        for it in items:
-            self.cache.pop(it, None)
-    #@-others
 #@+node:vitalije.20170716201700.1: ** class SqlitePickleShare
 _sentinel = object()
 
 
 class SqlitePickleShare:
-    """ The main 'connection' object for SqlitePickleShare database """
+    """
+    The main 'connection' object for SqlitePickleShare database.
+
+    Opening this DB may fail. If so the GlobalCacher class uses a plain
+    Python dict instead.
+    """
     #@+others
     #@+node:vitalije.20170716201700.2: *3*  Birth & special methods
     def init_dbtables(self, conn: Any) -> None:
@@ -491,7 +152,7 @@ class SqlitePickleShare:
         self.init_dbtables(self.conn)
         # Keys are normalized file names.
         # Values are tuples (obj, orig_mod_time)
-        self.cache: Dict[str, Any] = {}
+        self.cache: dict[str, Any] = {}
 
         def loadz(data: Any) -> Optional[Any]:
             if data:
@@ -587,7 +248,7 @@ class SqlitePickleShare:
         extension.
         """
     #@+node:vitalije.20170716201700.13: *4* _listdir
-    def _listdir(self, s: str, pattern: str = None) -> List[str]:
+    def _listdir(self, s: str, pattern: str = None) -> list[str]:
         """ D.listdir() -> List of items in this directory.
 
         Use D.files() or D.dirs() instead if you want a listing
@@ -611,9 +272,12 @@ class SqlitePickleShare:
         return fnmatch.fnmatch(basename(s), pattern)
     #@+node:vitalije.20170716201700.15: *3* clear (SqlitePickleShare)
     def clear(self) -> None:
-        # Deletes all files in the fcache subdirectory.
-        # It would be more thorough to delete everything
-        # below the root directory, but it's not necessary.
+        """
+        Deletes all files in the fcache subdirectory.
+
+        It would be more thorough to delete everything
+        below the root directory, but it's not necessary.
+        """
         self.conn.execute('delete from cachevalues;')
     #@+node:vitalije.20170716201700.16: *3* get  (SqlitePickleShare)
     def get(self, key: str, default: Any = None) -> Any:
@@ -625,11 +289,14 @@ class SqlitePickleShare:
             return val
         except Exception:  # #1444: Was KeyError.
             return default
-    #@+node:vitalije.20170716201700.17: *3* has_key (SqlightPickleShare)
+    #@+node:vitalije.20170716201700.17: *3* has_key (SqlitePickleShare)
     def has_key(self, key: str) -> bool:
         sql = 'select 1 from cachevalues where key=?;'
-        for _row in self.conn.execute(sql, (key,)):
-            return True
+        try:
+            for _row in self.conn.execute(sql, (key,)):
+                return True
+        except Exception:
+            pass
         return False
     #@+node:vitalije.20170716201700.18: *3* items
     def items(self) -> Generator:
@@ -697,7 +364,7 @@ def dump_cache(db: Any, tag: str) -> None:
         print('db is None!')
         return
     # Create a dict, sorted by file prefixes.
-    d: Dict[str, Any] = {}
+    d: dict[str, Any] = {}
     for key in db.keys():
         key = key[0]
         val = db.get(key)
@@ -719,7 +386,7 @@ def dump_cache(db: Any, tag: str) -> None:
         heading = f"All others ({tag})" if files else None
         dump_list(heading, d.get('None'))
 
-def dump_list(heading: Any, aList: List) -> None:
+def dump_list(heading: Any, aList: list) -> None:
     if heading:
         print(f'\n{heading}...\n')
     for aTuple in aList:

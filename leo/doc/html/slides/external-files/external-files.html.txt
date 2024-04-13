@@ -6,7 +6,7 @@ Using external files
 
 .. toctree::
     :maxdepth: 1
-    
+
     About external files                <slide-001>
     Loading and saving files            <slide-002>
     Sentinel lines                      <slide-003>
@@ -28,6 +28,6 @@ Using external files
     Using @auto nodes                   <slide-020>
     @auto example                       <slide-021>
     Using @edit nodes                   <slide-022>
-    
+
 ..  Using @others to group code         <slide-018>
 

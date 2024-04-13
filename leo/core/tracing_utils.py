@@ -15,7 +15,7 @@ import os
 import pprint
 import sys
 import traceback
-from typing import Any, List, Sequence
+from typing import Any, Sequence
 
 
 #@+others
@@ -60,7 +60,7 @@ def callers(n: int = 4) -> str:
         i += 1
     return ",".join(reversed(result))
 #@+node:ekr.20230203163544.5: ** tracing_utils.callers_list
-def callers_list(n: int = 4) -> List[str]:
+def callers_list(n: int = 4) -> list[str]:
     """
     Return a string containing a comma-separated list of the calling
     function's callers.
@@ -107,7 +107,7 @@ def short_file_name(file_name: str) -> str:
     """Return the base name of a path."""
     return os.path.basename(file_name) if file_name else ""
 #@+node:ekr.20230203163544.10: ** tracing_utils.split_lines
-def split_lines(s: str) -> List[str]:
+def split_lines(s: str) -> list[str]:
     """
     Split s into lines, preserving the number of lines and
     the endings of all lines, including the last line.

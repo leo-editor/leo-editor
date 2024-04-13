@@ -1,11 +1,15 @@
 #@+leo-ver=5-thin
 #@+node:EKR.20040517080250.1: * @file ../plugins/mod_http.py
 # pylint: disable=line-too-long
+# mypy: ignore-errors
 #@+<< docstring >>
 #@+node:ekr.20050111111238: ** << docstring >>
 #@@language rest
 #@@wrap
-"""An http plug-in for LEO, based on AsyncHttpServer.py.
+"""
+An http plug-in for LEO, based on AsyncHttpServer.py.
+
+*This plugin does not work with Python 3.12 and above.*
 
 Adapted and extended from the Python Cookbook:
 http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/259148
@@ -214,8 +218,11 @@ which node is selected.
 #@+node:EKR.20040517080250.3: ** << imports >>
 # pylint: disable=deprecated-method
     # parse_qs
-import asynchat
-import asyncore
+try:
+    import asynchat
+    import asyncore
+except Exception:
+    asynchat = asyncore = None
 import http.server
 import json
 import io
@@ -224,7 +231,6 @@ import select
 import shutil
 import socket
 import time
-from typing import List
 import urllib.parse as urlparse
 from xml.sax.saxutils import quoteattr
 from leo.core import leoGlobals as g
@@ -243,23 +249,34 @@ sockets_to_close = []
 #@-<< data >>
 #@+others
 #@+node:ekr.20060830091349: ** init & helpers (mod_http.py)
+message_given = False
+
 def init():
     """Return True if the plugin has loaded successfully."""
-    if 0:
-        g.registerHandler("open2", onFileOpen)
-    else:
-        getGlobalConfiguration()
-        if config.http_active:
-            try:
-                Server(config.http_ip, config.http_port, RequestHandler)
-            except socket.error as e:
-                g.es("mod_http server initialization failed (%s:%s): %s" % (
-                    config.http_ip, config.http_port, e))
-                return False
-            asyncore.read = a_read
-            g.registerHandler("idle", plugin_wrapper)
-            g.es("http serving enabled at %s:%s" % (
-                config.http_ip, config.http_port), color="purple")
+    global message_given
+    ok = asynchat and asyncore
+    if not ok:
+        if not message_given:
+            message_given = True
+            print('')
+            g.es_print(
+                'mod_http plugin does not work on Python 3.12 and above.',
+                color='red',
+            )
+            print('')
+        return False
+    getGlobalConfiguration()
+    if config.http_active:
+        try:
+            Server(config.http_ip, config.http_port, RequestHandler)
+        except socket.error as e:
+            g.es("mod_http server initialization failed (%s:%s): %s" % (
+                config.http_ip, config.http_port, e))
+            return False
+        asyncore.read = a_read
+        g.registerHandler("idle", plugin_wrapper)
+        g.es("http serving enabled at %s:%s" % (
+            config.http_ip, config.http_port), color="purple")
     g.plugin_signon(__name__)
     return True
 #@+node:tbrown.20111005140148.18223: *3* getGlobalConfiguration
@@ -349,48 +366,47 @@ class config:
     http_port = 8130
     rst2_http_attributename = 'rst_http_attribute'
 #@+node:EKR.20040517080250.4: ** class delayedSocketStream
-class delayedSocketStream(asyncore.dispatcher_with_send):
-    #@+others
-    #@+node:EKR.20040517080250.5: *3* __init__
-    def __init__(self, sock):
-        # pylint: disable=super-init-not-called
-        self._map = asyncore.socket_map
-        self.socket = sock
-        self.socket.setblocking(False)
-        self.closed = 1  # compatibility with SocketServer
-        self.buffer = []
-    #@+node:EKR.20040517080250.6: *3* write
-    def write(self, data):
-        self.buffer.append(data)
-    #@+node:EKR.20040517080250.7: *3* initiate_sending
-    def initiate_sending(self):
-        # Create a bytes string.
-        aList = [g.toEncodedString(z) for z in self.buffer]
-        self.out_buffer = b''.join(aList)
-        del self.buffer
-        self.set_socket(self.socket, None)
-        self.socket.setblocking(False)
-        self.connected = True
-        try:
-            self.addr = self.socket.getpeername()
-        except socket.error:
-            # The addr isn't crucial
+if asyncore:
+    class delayedSocketStream(asyncore.dispatcher_with_send):
+        #@+others
+        #@+node:EKR.20040517080250.5: *3* __init__
+        def __init__(self, sock):
+            # pylint: disable=super-init-not-called
+            self._map = asyncore.socket_map
+            self.socket = sock
+            self.socket.setblocking(False)
+            self.closed = 1  # compatibility with SocketServer
+            self.buffer = []
+        #@+node:EKR.20040517080250.6: *3* write
+        def write(self, data):
+            self.buffer.append(data)
+        #@+node:EKR.20040517080250.7: *3* initiate_sending
+        def initiate_sending(self):
+            # Create a bytes string.
+            aList = [g.toEncodedString(z) for z in self.buffer]
+            self.out_buffer = b''.join(aList)
+            del self.buffer
+            self.set_socket(self.socket, None)
+            self.socket.setblocking(False)
+            self.connected = True
+            try:
+                self.addr = self.socket.getpeername()
+            except socket.error:
+                # The addr isn't crucial
+                pass
+        #@+node:EKR.20040517080250.8: *3* handle_read
+        def handle_read(self):
             pass
-    #@+node:EKR.20040517080250.8: *3* handle_read
-    def handle_read(self):
-        pass
-    #@+node:EKR.20040517080250.9: *3* writable
-    def writable(self):
-        result = (not self.connected) or len(self.out_buffer)
-        if not result:
-            sockets_to_close.append(self)
-        return result
-    #@-others
+        #@+node:EKR.20040517080250.9: *3* writable
+        def writable(self):
+            result = (not self.connected) or len(self.out_buffer)
+            if not result:
+                sockets_to_close.append(self)
+            return result
+        #@-others
 #@+node:EKR.20040517080250.20: ** class leo_interface
 class leo_interface:
-    # .path, .send_error, .send_response and .end_headers
-    # appear to be undefined.
-    # pylint: disable=no-member
+
     #@+others
     #@+node:bwmulder.20050322224921: *3* send_head & helpers
     def send_head(self):
@@ -579,7 +595,7 @@ class leo_interface:
         window = [w for w in g.app.windowList if w.c.rootVnode().v == root.v][0]
         result = self.create_leo_h_reference(window, vnode)
         return result
-    #@+node:EKR.20040517080250.21: *4* add_leo_links
+    #@+node:EKR.20040517080250.21: *4* add_leo_links (mod_http.py)
     def add_leo_links(self, window, node, f):
         """
         Given a node 'node', add links to:
@@ -684,7 +700,6 @@ class LeoActions:
     def __init__(self, request_handler):
         self.request_handler = request_handler
         self.bookmark_unl = g.app.commanders()[0].config.getString('http-bookmark-unl')
-        self.exec_handler = ExecHandler(request_handler)
     #@+node:tbrown.20110930220448.18075: *3* add_bookmark
     def add_bookmark(self):
         """Return the file like 'f' that leo_interface.send_head makes
@@ -712,7 +727,7 @@ class LeoActions:
             if c:
                 g.es_print("Opened '%s' for bookmarks" % path)
                 if parsed.fragment:
-                    g.findUNL(parsed.fragment.split("-->"), c)
+                    g.findAnyUnl(parsed.fragment, c)
                 parent = c.currentPosition()
                 if parent.hasChildren():
                     previous = parent.getFirstChild()
@@ -881,89 +896,21 @@ class LeoActions:
             return f
         except Exception:
             return None
-    #@+node:tbrown.20110930220448.18076: *3* get_response
+    #@+node:tbrown.20110930220448.18076: *3* get_response (mod_http.py)
     def get_response(self):
         """Return the file like 'f' that leo_interface.send_head makes"""
         if self.request_handler.path.startswith('/_/add/bkmk/'):
             return self.add_bookmark()
-        if self.request_handler.path.startswith('/_/exec/'):
-            return self.exec_handler.get_response()
+
+        # No longer used.
+        # mod_scripting.py used to define the EvalController class, but that class was buggy.
+
+        # if self.request_handler.path.startswith('/_/exec/'):
+            # return self.exec_handler.get_response()
+
         f = StringIO()
         f.write("Unknown URL in LeoActions.get_response()")
         return f
-    #@-others
-#@+node:tbrown.20150729112701.1: ** class ExecHandler
-class ExecHandler:
-    """
-    Quasi-RPC GET based interface
-    """
-    #@+others
-    #@+node:tbrown.20150729112701.2: *3* __init__
-    def __init__(self, request_handler):
-        self.request_handler = request_handler
-    #@+node:tbrown.20150729112808.1: *3* get_response
-    def get_response(self):
-        """Return the file like 'f' that leo_interface.send_head makes"""
-        # self.request_handler.path.startswith('/_/exec/')
-
-        if not g.app.config.getBool("http-allow-remote-exec"):
-            return None  # fail deliberately
-
-        c = g.app and g.app.log and g.app.log.c
-        if c and config.enable is None:
-            if c.config.isLocalSetting('http-allow-remote-exec', 'bool'):
-                g.issueSecurityWarning('@bool http-allow-remote-exec')
-                config.enable = False
-            else:
-                config.enable = True
-
-        parsed_url = urlparse.urlparse(self.request_handler.path)
-        query = urlparse.parse_qs(parsed_url.query)
-
-        enc = query.get("enc", ["str"])[0]
-
-        if parsed_url.path.startswith('/_/exec/commanders/'):
-            ans = [i.fileName() for i in g.app.commanders()]
-            if enc != 'json':
-                ans = '\n'.join(ans)  # type:ignore
-        else:
-            ans = self.proc_cmds()
-
-        f = StringIO()
-        f.mime_type = query.get("mime_type", ["text/plain"])[0]
-        enc = query.get("enc", ["str"])[0]
-        if enc == 'json':
-            f.write(json.dumps(ans))
-        elif enc == 'repr':
-            f.write(repr(ans))
-        else:
-            f.write(str(ans))
-        return f
-
-    #@+node:tbrown.20150729150843.1: *3* proc_cmds (mod_http.py)
-    def proc_cmds(self):
-
-        parsed_url = urlparse.urlparse(self.request_handler.path)
-        query = urlparse.parse_qs(parsed_url.query)
-        # work out which commander to use, zero index int, full path name, or file name
-        c_idx = query.get('c', [0])[0]
-        # pylint: disable=literal-comparison
-        if c_idx != 0:
-            try:
-                c_idx = int(c_idx)
-            except ValueError:
-                paths = [i.fileName() for i in g.app.commanders()]
-                if c_idx in paths:
-                    c_idx = paths.index(c_idx)
-                else:
-                    paths = [os.path.basename(i) for i in paths]
-                    c_idx = paths.index(c_idx)
-        ans = None
-        c = g.app.commanders()[c_idx]
-        if c and c.evalController:
-            for cmd in query['cmd']:
-                ans = c.evalController.eval_text(cmd)
-        return ans  # the last answer, if multiple commands run
     #@-others
 #@+node:EKR.20040517080250.10: ** class nodeNotFound
 class nodeNotFound(Exception):
@@ -976,193 +923,195 @@ class noLeoNodePath(Exception):
     """
     pass
 #@+node:EKR.20040517080250.13: ** class RequestHandler
-class RequestHandler(
-    leo_interface,
-    asynchat.async_chat,
-    SimpleHTTPRequestHandler
-):
-    # pylint: disable=too-many-ancestors
-    # pylint: disable=super-init-not-called
-    #@+others
-    #@+node:EKR.20040517080250.14: *3* __init__
-    def __init__(self, conn, addr, server):
-        self.leo_actions = LeoActions(self)
-        super().__init__(conn)
-        self.client_address = addr
-        self.connection = conn
-        self.server = server
-        self.wfile = delayedSocketStream(self.socket)  # type:ignore
-        # Sets the terminator. When it is received, this means that the
-        # http request is complete, control will be passed to self.found_terminator
-        self.term = g.toEncodedString('\r\n\r\n')
-        self.set_terminator(self.term)
-        self.buffer = BytesIO()
-        # Set self.use_encoding and self.encoding.
-        # This is used by asyn_chat.
-        self.use_encoding = True
-        self.encoding = 'utf-8'
-    #@+node:EKR.20040517080250.15: *3* copyfile
-    def copyfile(self, source, outputfile):
-        """Copy all data between two file objects.
+if asynchat:
+    class RequestHandler(
+        leo_interface,
+        asynchat.async_chat,
+        SimpleHTTPRequestHandler
+    ):
+        # pylint: disable=too-many-ancestors
+        # pylint: disable=super-init-not-called
+        #@+others
+        #@+node:EKR.20040517080250.14: *3* __init__
+        def __init__(self, conn, addr, server):
+            self.leo_actions = LeoActions(self)
+            super().__init__(conn)
+            self.client_address = addr
+            self.connection = conn
+            self.server = server
+            self.wfile = delayedSocketStream(self.socket)  # type:ignore
+            # Sets the terminator. When it is received, this means that the
+            # http request is complete, control will be passed to self.found_terminator
+            self.term = g.toEncodedString('\r\n\r\n')
+            self.set_terminator(self.term)
+            self.buffer = BytesIO()
+            # Set self.use_encoding and self.encoding.
+            # This is used by asyn_chat.
+            self.use_encoding = True
+            self.encoding = 'utf-8'
+        #@+node:EKR.20040517080250.15: *3* copyfile
+        def copyfile(self, source, outputfile):
+            """Copy all data between two file objects.
 
-        The SOURCE argument is a file object open for reading
-        (or anything with a read() method) and the DESTINATION
-        argument is a file object open for writing (or
-        anything with a write() method).
+            The SOURCE argument is a file object open for reading
+            (or anything with a read() method) and the DESTINATION
+            argument is a file object open for writing (or
+            anything with a write() method).
 
-        The only reason for overriding this would be to change
-        the block size or perhaps to replace newlines by CRLF
-        -- note however that this the default server uses this
-        to copy binary data as well.
-         """
-        shutil.copyfileobj(source, outputfile, length=255)
-    #@+node:EKR.20040517080250.16: *3* log_message
-    def log_message(self, format, *args):
-        """Log an arbitrary message.
+            The only reason for overriding this would be to change
+            the block size or perhaps to replace newlines by CRLF
+            -- note however that this the default server uses this
+            to copy binary data as well.
+             """
+            shutil.copyfileobj(source, outputfile, length=255)
+        #@+node:EKR.20040517080250.16: *3* log_message
+        def log_message(self, format, *args):
+            """Log an arbitrary message.
 
-         This is used by all other logging functions.  Override
-         it if you have specific logging wishes.
+             This is used by all other logging functions.  Override
+             it if you have specific logging wishes.
 
-         The first argument, FORMAT, is a format string for the
-         message to be logged.  If the format string contains
-         any % escapes requiring parameters, they should be
-         specified as subsequent arguments (it's just like
-         printf!).
+             The first argument, FORMAT, is a format string for the
+             message to be logged.  If the format string contains
+             any % escapes requiring parameters, they should be
+             specified as subsequent arguments (it's just like
+             printf!).
 
-         The client host and current date/time are prefixed to
-         every message.
+             The client host and current date/time are prefixed to
+             every message.
 
-         """
-        message = "%s - - [%s] %s\n" % (
-            self.address_string(),
-            self.log_date_time_string(),
-            format % args)
-        g.es(message)
-    #@+node:EKR.20040517080250.17: *3* collect_incoming_data
-    def collect_incoming_data(self, data):
-        """Collects the data arriving on the connexion"""
-        self.buffer.write(data)
-    #@+node:EKR.20040517080250.18: *3* prepare_POST
-    def prepare_POST(self):
-        """Prepare to read the request body"""
-        bytesToRead = int(self.headers.getheader('content-length'))
-        # set terminator to length (will read bytesToRead bytes)
-        self.set_terminator(bytesToRead)
-        self.buffer = StringIO()  # type:ignore
-        # control will be passed to a new found_terminator
-        self.found_terminator = self.handle_post_data  # type:ignore
-    #@+node:EKR.20040517080250.19: *3* handle_post_data
-    def handle_post_data(self):
-        """Called when a POST request body has been read"""
-        self.rfile = StringIO(self.buffer.getvalue())  # type:ignore
-        self.do_POST()
-        self.finish()
-    #@+node:EKR.20040517080250.31: *3* do_GET
-    def do_GET(self):
-        """Begins serving a GET request"""
-        # nothing more to do before handle_data()
-        self.handle_data()
-    #@+node:EKR.20040517080250.32: *3* do_POST
-    def do_POST(self):
-        """
-        Begins serving a POST request. The request data must be readable
-        on a file-like object called self.rfile
-        """
-        header = self.headers.getheader('content-type')
-        g.trace('not ready yet', repr(header))
-    #@+node:EKR.20040517080250.33: *3* query
-    def query(self, parsedQuery):
-        """Returns the QUERY dictionary, similar to the result of urllib.parse_qs
-         except that :
-         - if the key ends with [], returns the value (a Python list)
-         - if not, returns a string, empty if the list is empty, or with the
-         first value in the list"""
-        res = {}
-        for item in parsedQuery.keys():
-            value = parsedQuery[item]  # a Python list
-            if item.endswith("[]"):
-                res[item[:-2]] = value
+             """
+            message = "%s - - [%s] %s\n" % (
+                self.address_string(),
+                self.log_date_time_string(),
+                format % args)
+            g.es(message)
+        #@+node:EKR.20040517080250.17: *3* collect_incoming_data
+        def collect_incoming_data(self, data):
+            """Collects the data arriving on the connexion"""
+            self.buffer.write(data)
+        #@+node:EKR.20040517080250.18: *3* prepare_POST
+        def prepare_POST(self):
+            """Prepare to read the request body"""
+            bytesToRead = int(self.headers.getheader('content-length'))
+            # set terminator to length (will read bytesToRead bytes)
+            self.set_terminator(bytesToRead)
+            self.buffer = StringIO()  # type:ignore
+            # control will be passed to a new found_terminator
+            self.found_terminator = self.handle_post_data  # type:ignore
+        #@+node:EKR.20040517080250.19: *3* handle_post_data
+        def handle_post_data(self):
+            """Called when a POST request body has been read"""
+            self.rfile = StringIO(self.buffer.getvalue())  # type:ignore
+            self.do_POST()
+            self.finish()
+        #@+node:EKR.20040517080250.31: *3* do_GET
+        def do_GET(self):
+            """Begins serving a GET request"""
+            # nothing more to do before handle_data()
+            self.handle_data()
+        #@+node:EKR.20040517080250.32: *3* do_POST
+        def do_POST(self):
+            """
+            Begins serving a POST request. The request data must be readable
+            on a file-like object called self.rfile
+            """
+            header = self.headers.getheader('content-type')
+            g.trace('not ready yet', repr(header))
+        #@+node:EKR.20040517080250.33: *3* query
+        def query(self, parsedQuery):
+            """Returns the QUERY dictionary, similar to the result of urllib.parse_qs
+             except that :
+             - if the key ends with [], returns the value (a Python list)
+             - if not, returns a string, empty if the list is empty, or with the
+             first value in the list"""
+            res = {}
+            for item in parsedQuery.keys():
+                value = parsedQuery[item]  # a Python list
+                if item.endswith("[]"):
+                    res[item[:-2]] = value
+                else:
+                    res[item] = value[0] if value else ''
+            return res
+        #@+node:EKR.20040517080250.34: *3* handle_data
+        def handle_data(self):
+            """Class to override"""
+            f = self.send_head()
+            if f:
+                self.copyfile(f, self.wfile)
+        #@+node:ekr.20110522152535.18254: *3* handle_read_event (NEW)
+        def handle_read_event(self):
+            """Over-ride SimpleHTTPRequestHandler.handle_read_event."""
+            asynchat.async_chat.handle_read_event(self)
+        #@+node:EKR.20040517080250.35: *3* handle_request_line (aka found_terminator)
+        def handle_request_line(self):
+            """Called when the http request line and headers have been received"""
+            # prepare attributes needed in parse_request()
+            self.rfile = BytesIO(self.buffer.getvalue())
+            self.raw_requestline = self.rfile.readline()
+            self.parse_request()
+            # if there is a Query String, decodes it in a QUERY dictionary
+            self.path_without_qs, self.qs = self.path, ''
+            if self.path.find('?') >= 0:
+                self.qs = self.path[self.path.find('?') + 1 :]
+                self.path_without_qs = self.path[: self.path.find('?')]
+            self.QUERY = self.query(urlparse.parse_qs(self.qs, 1))  # type:ignore
+            if self.command in ['GET', 'HEAD']:
+                # if method is GET or HEAD, call do_GET or do_HEAD and finish
+                method = "do_" + self.command
+                if hasattr(self, method):
+                    f = getattr(self, method)
+                    f()
+                    self.finish()
+            elif self.command == "POST":
+                # if method is POST, call prepare_POST, don't finish before
+                self.prepare_POST()
             else:
-                res[item] = value[0] if value else ''
-        return res
-    #@+node:EKR.20040517080250.34: *3* handle_data
-    def handle_data(self):
-        """Class to override"""
-        f = self.send_head()
-        if f:
-            self.copyfile(f, self.wfile)
-    #@+node:ekr.20110522152535.18254: *3* handle_read_event (NEW)
-    def handle_read_event(self):
-        """Over-ride SimpleHTTPRequestHandler.handle_read_event."""
-        asynchat.async_chat.handle_read_event(self)
-    #@+node:EKR.20040517080250.35: *3* handle_request_line (aka found_terminator)
-    def handle_request_line(self):
-        """Called when the http request line and headers have been received"""
-        # prepare attributes needed in parse_request()
-        self.rfile = BytesIO(self.buffer.getvalue())
-        self.raw_requestline = self.rfile.readline()
-        self.parse_request()
-        # if there is a Query String, decodes it in a QUERY dictionary
-        self.path_without_qs, self.qs = self.path, ''
-        if self.path.find('?') >= 0:
-            self.qs = self.path[self.path.find('?') + 1 :]
-            self.path_without_qs = self.path[: self.path.find('?')]
-        self.QUERY = self.query(urlparse.parse_qs(self.qs, 1))  # type:ignore
-        if self.command in ['GET', 'HEAD']:
-            # if method is GET or HEAD, call do_GET or do_HEAD and finish
-            method = "do_" + self.command
-            if hasattr(self, method):
-                f = getattr(self, method)
-                f()
-                self.finish()
-        elif self.command == "POST":
-            # if method is POST, call prepare_POST, don't finish before
-            self.prepare_POST()
-        else:
-            self.send_error(501, "Unsupported method (%s)" % self.command)
-    #@+node:ekr.20110522152535.18256: *3* found_terminator
-    def found_terminator(self):
-        # pylint: disable=method-hidden
-        # Control may be passed to another found_terminator.
-        self.handle_request_line()
-    #@+node:EKR.20040517080250.36: *3* finish
-    def finish(self):
-        """Reset terminator (required after POST method), then close"""
-        self.set_terminator(self.term)
-        self.wfile.initiate_sending()
-        # self.close()
-    #@-others
+                self.send_error(501, "Unsupported method (%s)" % self.command)
+        #@+node:ekr.20110522152535.18256: *3* found_terminator
+        def found_terminator(self):
+            # pylint: disable=method-hidden
+            # Control may be passed to another found_terminator.
+            self.handle_request_line()
+        #@+node:EKR.20040517080250.36: *3* finish
+        def finish(self):
+            """Reset terminator (required after POST method), then close"""
+            self.set_terminator(self.term)
+            self.wfile.initiate_sending()
+            # self.close()
+        #@-others
 #@+node:EKR.20040517080250.37: ** class Server
-class Server(asyncore.dispatcher):
-    """Copied from http_server in medusa"""
-    #@+others
-    #@+node:EKR.20040517080250.38: *3* __init__
-    def __init__(self, ip, port, handler):
-        self.ip = ip
-        self.port = port
-        self.handler = handler
-        super().__init__()
-        self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.set_reuse_addr()
-        self.bind((ip, port))
-        # lower this to 5 if your OS complains
-        self.listen(1024)
-    #@+node:EKR.20040517080250.39: *3* handle_accept
-    def handle_accept(self):
-        try:
-            # pylint: disable=unpacking-non-sequence
-            # The following except statements catch this.
-            conn, addr = self.accept()
-        except socket.error:
-            self.log_info('warning: server accept() threw an exception', 'warning')
-            return
-        except TypeError:
-            self.log_info('warning: server accept() threw EWOULDBLOCK', 'warning')
-            return
-        # creates an instance of the handler class to handle the request/response
-        # on the incoming connexion
-        self.handler(conn, addr, self)
-    #@-others
+if asyncore:
+    class Server(asyncore.dispatcher):
+        """Copied from http_server in medusa"""
+        #@+others
+        #@+node:EKR.20040517080250.38: *3* __init__
+        def __init__(self, ip, port, handler):
+            self.ip = ip
+            self.port = port
+            self.handler = handler
+            super().__init__()
+            self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.set_reuse_addr()
+            self.bind((ip, port))
+            # lower this to 5 if your OS complains
+            self.listen(1024)
+        #@+node:EKR.20040517080250.39: *3* handle_accept
+        def handle_accept(self):
+            try:
+                # pylint: disable=unpacking-non-sequence
+                # The following except statements catch this.
+                conn, addr = self.accept()
+            except socket.error:
+                self.log_info('warning: server accept() threw an exception', 'warning')
+                return
+            except TypeError:
+                self.log_info('warning: server accept() threw EWOULDBLOCK', 'warning')
+                return
+            # creates an instance of the handler class to handle the request/response
+            # on the incoming connexion
+            self.handler(conn, addr, self)
+        #@-others
 #@+node:ekr.20140920145803.17997: ** functions
 #@+node:EKR.20040517080250.47: *3* a_read (asynchore override)
 def a_read(obj):
@@ -1226,9 +1175,9 @@ def poll(timeout=0.0):
     map = asyncore.socket_map
     if not map:
         return False
-    e: List
-    r: List = []
-    w: List
+    e: list
+    r: list = []
+    w: list
     while 1:
         e = w = []
         for fd, obj in map.items():

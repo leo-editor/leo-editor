@@ -4,14 +4,15 @@
 #@+<< leoChapters imports & annotations >>
 #@+node:ekr.20220824080606.1: ** << leoChapters imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import re
 import string
-from typing import Any, Callable, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_frame import LeoQtTreeTab
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
@@ -19,7 +20,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 #@+others
 #@+node:ekr.20150509030349.1: ** cc.cmd (decorator)
-def cmd(name: Any) -> Callable:
+def cmd(name: str) -> Callable:
     """Command decorator for the ChapterController class."""
     return g.new_cmd_decorator(name, ['c', 'chapterController',])
 #@+node:ekr.20070317085437: ** class ChapterController
@@ -32,10 +33,10 @@ class ChapterController:
         """Ctor for ChapterController class."""
         self.c = c
         # Note: chapter names never change, even if their @chapter node changes.
-        self.chaptersDict: Dict[str, Any] = {}  # Keys are chapter names, values are chapters.
+        self.chaptersDict: dict[str, Chapter] = {}  # Keys are chapter names, values are chapters.
         self.initing = True  # #31: True: suppress undo when creating chapters.
         self.re_chapter: re.Pattern = None  # Set where used.
-        self.selectedChapter = None
+        self.selectedChapter: Optional[Chapter] = None
         self.selectChapterLockout = False  # True: cc.selectChapterForPosition does nothing.
         self.tt: LeoQtTreeTab = None  # May be set in createChaptersIcon.
         self.reloadSettings()
@@ -77,7 +78,9 @@ class ChapterController:
         if commandName in c.commandsDict:
             return
 
-        def select_chapter_callback(event: Event, cc: ChapterController = cc, name: str = chapterName) -> None:
+        def select_chapter_callback(
+            event: LeoKeyEvent, cc: ChapterController = cc, name: str = chapterName,
+        ) -> None:
             """
             Select specific chapter.
             """
@@ -107,7 +110,7 @@ class ChapterController:
             c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
     #@+node:ekr.20070604165126: *3* cc: chapter-select
     @cmd('chapter-select')
-    def selectChapter(self, event: Event = None) -> None:
+    def selectChapter(self, event: LeoKeyEvent = None) -> None:
         """Prompt for a chapter name and select the given chapter."""
         cc, k = self, self.c.k
         names = cc.setAllChapterNames()
@@ -115,7 +118,7 @@ class ChapterController:
         k.setLabelBlue('Select chapter: ')
         k.get1Arg(event, handler=self.selectChapter1, tabList=names)
 
-    def selectChapter1(self, event: Event) -> None:
+    def selectChapter1(self, event: LeoKeyEvent) -> None:
         cc, k = self, self.c.k
         k.clearState()
         k.resetLabel()
@@ -123,7 +126,7 @@ class ChapterController:
             cc.selectChapterByName(k.arg)
     #@+node:ekr.20170202061705.1: *3* cc: chapter-back/next
     @cmd('chapter-back')
-    def backChapter(self, event: Event = None) -> None:
+    def backChapter(self, event: LeoKeyEvent = None) -> None:
         """Select the previous chapter."""
         cc = self
         names = cc.setAllChapterNames()
@@ -133,7 +136,7 @@ class ChapterController:
         cc.selectChapterByName(new_name)
 
     @cmd('chapter-next')
-    def nextChapter(self, event: Event = None) -> None:
+    def nextChapter(self, event: LeoKeyEvent = None) -> None:
         """Select the next chapter."""
         cc = self
         names = cc.setAllChapterNames()
@@ -142,7 +145,7 @@ class ChapterController:
         new_name = names[i + 1 if i + 1 < len(names) else 0]
         cc.selectChapterByName(new_name)
     #@+node:ekr.20070317130250: *3* cc.selectChapterByName & helper
-    def selectChapterByName(self, name: Any) -> None:
+    def selectChapterByName(self, name: str) -> None:
         """Select a chapter without redrawing."""
         cc = self
         if self.selectChapterLockout:
@@ -161,7 +164,7 @@ class ChapterController:
         finally:
             cc.selectChapterLockout = False
     #@+node:ekr.20090306060344.2: *4* cc.selectChapterByNameHelper
-    def selectChapterByNameHelper(self, chapter: Any, collapse: bool = True) -> None:
+    def selectChapterByNameHelper(self, chapter: Chapter, collapse: bool = True) -> None:
         """Select the chapter."""
         cc, c = self, self.c
         if not cc.selectedChapter and chapter.name == 'main':
@@ -225,7 +228,7 @@ class ChapterController:
                     return name
         return 'main'
     #@+node:ekr.20070325093617: *4* cc.findChapterNode
-    def findChapterNode(self, name: Any) -> Optional[Position]:
+    def findChapterNode(self, name: str) -> Optional[Position]:
         """
         Return the position of the first @chapter node with the given name
         anywhere in the entire outline.
@@ -241,11 +244,11 @@ class ChapterController:
                 return p
         return None  # Not an error.
     #@+node:ekr.20070318124004: *4* cc.getChapter
-    def getChapter(self, name: Any) -> Any:
+    def getChapter(self, name: str) -> Chapter:
         cc = self
         return cc.chaptersDict.get(name)
     #@+node:ekr.20070318122708: *4* cc.getSelectedChapter
-    def getSelectedChapter(self) -> Any:
+    def getSelectedChapter(self) -> Chapter:
         cc = self
         return cc.selectedChapter
     #@+node:ekr.20070605124356: *4* cc.inChapter
@@ -254,7 +257,7 @@ class ChapterController:
         theChapter = cc.getSelectedChapter()
         return bool(theChapter and theChapter.name != 'main')
     #@+node:ekr.20160411152842.1: *4* cc.parseHeadline
-    def parseHeadline(self, p: Position) -> Tuple[str, str]:
+    def parseHeadline(self, p: Position) -> tuple[str, str]:
         """Return the chapter name and key binding for p.h."""
         if not self.re_chapter:
             self.re_chapter = re.compile(
@@ -262,8 +265,7 @@ class ChapterController:
                 #@verbatim
                 # @chapter (all up to @) (@key=(binding))?
                 # name=group(1), binding=group(3)
-        m = self.re_chapter.search(p.h)
-        if m:
+        if m := self.re_chapter.search(p.h):
             chapterName, binding = m.group(1), m.group(3)
             if chapterName:
                 chapterName = self.sanitize(chapterName)
@@ -330,7 +332,7 @@ class ChapterController:
         # New in Leo 5.6: don't call c.redraw immediately.
         c.redraw_later()
     #@+node:ekr.20130915052002.11289: *4* cc.setAllChapterNames
-    def setAllChapterNames(self) -> List[str]:
+    def setAllChapterNames(self) -> list[str]:
         """Called early and often to discover all chapter names."""
         c, cc = self.c, self
         # sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
@@ -354,14 +356,14 @@ class Chapter:
     """A class representing the non-gui data of a single chapter."""
     #@+others
     #@+node:ekr.20070317085708.1: *3* chapter.__init__
-    def __init__(self, c: Cmdr, chapterController: Any, name: str) -> None:
+    def __init__(self, c: Cmdr, chapterController: ChapterController, name: str) -> None:
         self.c = c
         self.cc = cc = chapterController
         self.name: str = g.checkUnicode(name)
         self.selectLockout = False  # True: in chapter.select logic.
         # State variables: saved/restored when the chapter is unselected/selected.
-        self.p = c.p
-        self.root = self.findRootNode()
+        self.p: Optional[Position] = c.p
+        self.root: Optional[Position] = self.findRootNode()
         if cc.tt:
             cc.tt.createTab(name)
     #@+node:ekr.20070317085708.2: *3* chapter.__str__ and __repr__

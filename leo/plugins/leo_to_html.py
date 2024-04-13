@@ -128,7 +128,6 @@ import configparser as ConfigParser
 import os
 import subprocess
 import tempfile
-from typing import List
 import webbrowser
 from leo.core import leoGlobals as g
 #@-<< imports >>
@@ -152,9 +151,7 @@ def safe(s):
 #@+node:bob.20080110210953: *3* abspath
 def abspath(*args):
     """Join the arguments and convert to an absolute file path."""
-    # return g.os_path_abspath(g.os_path_join(*args))
-
-    return g.os_path_finalize_join(*args)
+    return g.finalize_join(*args)
 #@+node:bob.20080107154936.3: *3* onCreate
 def onCreate(tag, keys):
 
@@ -178,8 +175,6 @@ def createExportMenus(tag, keywords):
     appear in the menu and where.
 
     """
-    # pylint: disable=undefined-variable
-    # c *is* defined.
     c = keywords.get("c")
     if c.config.getBool('leo-to-html-no-menus'):
         return
@@ -191,7 +186,7 @@ def createExportMenus(tag, keywords):
     ):
         c.frame.menu.insert('Export...', 3,
             label=item,
-            command=lambda c=c, cmd=cmd: c.k.simulateCommand(cmd)
+            command=lambda c=c, cmd=cmd: c.doCommandByName(cmd)
         )
 #@+node:bob.20080107154757: ** class pluginController
 class pluginController:
@@ -342,7 +337,7 @@ class Leo_to_HTML:
         wrapper code to turn it into a file.
         """
 
-        xhtml: List[str] = []
+        xhtml: list[str] = []
 
         if node:
             root = self.c.p
@@ -598,11 +593,11 @@ class Leo_to_HTML:
         Setting browser_command to a bad command will slow down browser launch.
 
         """
-        tempdir = g.os_path_finalize_join(tempfile.gettempdir(), 'leo_show')
+        tempdir = g.finalize_join(tempfile.gettempdir(), 'leo_show')
         if not g.os_path_exists(tempdir):
             os.mkdir(tempdir)
         filename = g.sanitize_filename(self.myFileName)
-        filepath = g.os_path_finalize_join(tempdir, filename + '.html')
+        filepath = g.finalize_join(tempdir, filename + '.html')
         self.write(filepath, self.xhtml, basedir='', path='')
         url = "file://%s" % filepath
         msg = ''
@@ -612,8 +607,10 @@ class Leo_to_HTML:
                 subprocess.Popen([self.browser_command, url])
                 return
             except Exception:
-                msg = 'can\'t open browser using \n    %s\n' % self.browser_command + \
-                'Using default browser instead.'
+                msg = (
+                    f"can not open browser using \n{self.browser_command!r}\n"
+                    'Using default browser instead.'
+                )
         if msg:
             self.announce_fail(msg)
         webbrowser.open(url)

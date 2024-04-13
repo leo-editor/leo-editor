@@ -43,11 +43,12 @@ import sys
 import time
 from typing import Optional
 
-# This is what Leo typically does.
-# pylint: disable=wrong-import-position
 path = os.getcwd()
 if path not in sys.path:
-    sys.path.append(path)
+    sys.path.insert(0, path)
+del path
+
+# This is what Leo typically does.
 # JS code can *not* use g.trace, g.callers or g.pdb.
 from leo.core import leoGlobals as g
 from leo.core import leoFastRedraw
@@ -57,7 +58,6 @@ from leo.core import leoMenu
 from leo.core import leoNodes
 # Third-party imports.
 try:
-    # pylint: disable=import-error
     from flexx import flx
     from pscript import RawJS
 except Exception:
@@ -117,8 +117,6 @@ def make_editor_function(name, node):
     Making this a top-level function avoids the need to create a common
     base class that only defines this as a method.
     """
-    # pylint: disable=undefined-variable
-        # window looks undefined.
     global window
     ace = window.ace.edit(node, 'editor')
     ace.navigateFileEnd()  # otherwise all lines highlighted
@@ -183,7 +181,7 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         super().setInsertPoint(pos, s)
         self.finish_set_insert('setInsertPoint')
 
-    def setSelectionRange(self, i: int, j: int, insert: Optional[int]=None):
+    def setSelectionRange(self, i: int, j: int, insert: Optional[int] = None):
         super().setSelectionRange(i, j, insert)
         self.finish_set_insert('setSelectionRange')
     #@+node:ekr.20181127121642.1: *4* API_Wrapper.Text Setters
@@ -222,7 +220,7 @@ class API_Wrapper(leoFrame.StringTextWrapper):
         super().appendText(s)
         self.finish_setter('appendText')
 
-    def delete(self, i: int, j: Optional[int]=None):
+    def delete(self, i: int, j: Optional[int] = None):
         super().delete(i, j)
         self.finish_setter('delete')
 
@@ -330,7 +328,7 @@ class LeoBrowserApp(flx.PyComponent):
             w.body.set_focus()
         # Set the inited flag *last*.
         self.inited = True
-    #@+node:ekr.20181216042806.1: *5* app.init
+    #@+node:ekr.20181216042806.1: *5* app.init (leoflexx.py)
     def init(self):
         # Set the ivars.
         global g  # Always use the imported g.
@@ -362,7 +360,7 @@ class LeoBrowserApp(flx.PyComponent):
         for frame in g.app.windowList:
             assert isinstance(frame, DummyFrame), repr(frame)
         # Instantiate all wrappers here, not in app.finish_create.
-        title = c.computeWindowTitle(c.mFileName)
+        title = c.computeWindowTitle()
         c.frame = gui.lastFrame = LeoBrowserFrame(c, title, gui)
         # The main window will be created (much) later.
         main_window = LeoFlexxMainWindow()
@@ -1441,7 +1439,7 @@ class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
         w.minibuffer.set_selection(i, j)
         w.minibuffer.set_insert(self.ins)
 
-    def delete(self, i: int, j: Optional[int]=None):
+    def delete(self, i: int, j: Optional[int] = None):
         super().delete(i, j)
         self.update('delete')
 
@@ -1456,7 +1454,7 @@ class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
         super().setAllText(s)
         self.update('setAllText')
 
-    def setSelectionRange(self, i: int, j: int, insert: Optional[int]=None):
+    def setSelectionRange(self, i: int, j: int, insert: Optional[int] = None):
         super().setSelectionRange(i, j, insert)
         self.update('setSelectionRange')
 
@@ -1670,7 +1668,7 @@ class LeoBrowserTree(leoFrame.NullTree):
         w = self.root.main_window
         w.tree.set_focus()
     #@-others
-#@+node:ekr.20181119094122.1: *3* class TracingNullObject
+#@+node:ekr.20181119094122.1: *3* class TracingNullObject (leoflexx.py)
 #@@nobeautify
 
 class TracingNullObject:
@@ -2313,7 +2311,7 @@ class LeoFlexxTree(flx.Widget):
     def create_item_with_parent(self, item, parent):
         """Create a tree item for item and all its visible children."""
         # pylint: disable=no-member
-            # set_collapsed is in the base class.
+        # set_collapsed is in the base class.
         trace = 'drawing' in g.app.debug
         tag = 'create_item_with_parent'
         ap = item['ap']

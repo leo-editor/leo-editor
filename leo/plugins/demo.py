@@ -11,7 +11,6 @@ Revised by EKR February 6-7, 2017.
 #@+<< demo.py imports >>
 #@+node:ekr.20170128213103.3: **  << demo.py imports >>
 import random
-from typing import List
 from leo.core import leoGlobals as g
 from leo.plugins import qt_events
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
@@ -20,7 +19,7 @@ from leo.core.leoQt import QtCore, QtGui, QtWidgets
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< demo.py imports >>
 
-# pylint: disable=no-member,not-callable
+# pylint: disable=not-callable
 #@@language python
 #@@tabwidth -4
 #@+others
@@ -313,7 +312,7 @@ class Demo:
         Return a list of strings.
         """
         aList = []
-        lines: List[str] = []
+        lines: list[str] = []
         for s in g.splitLines(script_string):
             if s.startswith(delim):
                 if lines:
@@ -331,7 +330,7 @@ class Demo:
             aList.append(''.join(lines))
         return aList
     #@+node:ekr.20170128213103.43: *4* demo.wait & key_wait
-    def key_wait(self, speed: float=None, n1=None, n2=None):
+    def key_wait(self, speed: float = None, n1=None, n2=None):
         """Wait for an interval between n1 and n2, in seconds."""
         if n1 is None:
             n1 = self.n1
@@ -392,8 +391,8 @@ class Demo:
     #@+node:ekr.20170208093727.1: *4* demo.get_icon_fn
     def get_icon_fn(self, fn):
         """Resolve fn relative to the Icons directory."""
-        dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'Icons')
-        path = g.os_path_finalize_join(dir_, fn)
+        dir_ = g.finalize_join(g.app.loadDir, '..', 'Icons')
+        path = g.finalize_join(dir_, fn)
         if g.os_path_exists(path):
             return path
         g.trace('does not exist: %s' % (path))
@@ -499,7 +498,7 @@ class Demo:
             p = g.findNodeAnywhere(c, headline)
         return p
     #@+node:ekr.20170211045602.1: *4* demo.insert_node
-    def insert_node(self, headline, end=True, keys=False, speed: float=None):
+    def insert_node(self, headline, end=True, keys=False, speed: float = None):
         """Helper for inserting a node."""
         c = self.c
         p = c.insertHeadline()

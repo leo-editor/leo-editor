@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -84,43 +84,14 @@
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
 <v t="ekr.20200227064211.1"><vh>Notes</vh>
-<v t="ekr.20200229053354.1"><vh>Changed settings</vh>
-<v t="edward.20081129091117.12"><vh>@string initial-split-orientation = horizontal</vh></v>
+<v t="ekr.20200226103829.1"><vh>Recently deleted settings</vh>
+<v t="ekr.20230613071616.1"><vh>--- old import options</vh>
+<v t="tbrown.20180525163032.1"><vh>@@bool add-context-to-headlines = True</vh></v>
+<v t="ekr.20200620064409.1"><vh>@@bool add-file-context-to-headlines = True</vh></v>
+<v t="ekr.20211209060458.1"><vh>@@bool put-class-in-imported-headlines = True</vh></v>
+<v t="ekr.20200620060909.1"><vh>@@bool put-cython-decorators-in-imported-headlines = False</vh></v>
 </v>
-<v t="ekr.20200226103829.1"><vh>Deleted settings</vh>
-<v t="ekr.20190915192551.1"><vh>blacken command settings (no longer used)</vh>
-<v t="ekr.20190915192702.1"><vh>@@bool black-keep-comment-indentation = True</vh></v>
-<v t="ekr.20190915192705.1"><vh>@@bool black-string-normalization = False</vh></v>
-<v t="ekr.20190915192705.2"><vh>@@int black-line-length = 88</vh></v>
-</v>
-<v t="ekr.20141010095448.19779"><vh>@@bool beautify-keep-comment-indentation = True</vh></v>
-<v t="ekr.20110510071925.14590"><vh>@@bool use_codewise = False</vh></v>
-<v t="ekr.20200227181439.1"><vh>@@bool find-def-creates-clones = False</vh></v>
-<v t="ekr.20210327192658.1"><vh>rst No longer used</vh>
-<v t="ekr.20071213060514.1"><vh>rst3 mode options</vh>
-<v t="ekr.20071213061923"><vh>@bool rst3-code-mode = False</vh></v>
-<v t="ekr.20071213061923.1"><vh>@bool rst3-doc-only-mode = False</vh></v>
-</v>
-<v t="ekr.20071213060514.2"><vh>rst3 formatting options</vh>
-<v t="ekr.20071213061811"><vh>@bool rst3-number-code-lines = True</vh></v>
-<v t="ekr.20071213061930.1"><vh>@bool rst3-show-headlines = True</vh></v>
-<v t="ekr.20071213061930.3"><vh>@bool rst3-show-options-nodes = False</vh></v>
-<v t="ekr.20071213061930.2"><vh>@bool rst3-show-organizer-nodes = True</vh></v>
-<v t="ekr.20071213061930.4"><vh>@bool rst3-strip-at-file-prefixes = True</vh></v>
-</v>
-<v t="ekr.20071213061923.3"><vh>rst3 formatting options (code mode only)</vh>
-<v t="ekr.20071213062019"><vh>@bool rst3-show-doc-parts-as-paragraphs = False</vh></v>
-<v t="ekr.20071213062019.1"><vh>@bool rst3-show-leo-directives = True</vh></v>
-<v t="ekr.20071213062019.2"><vh>@bool rst3-show-markup-doc-parts = False</vh></v>
-<v t="ekr.20071213062019.3"><vh>@bool rst3-show-options-doc-parts = False</vh></v>
-<v t="ekr.20090430173906.1"><vh>@@string rst3_code_block_string = \n.. class:: code\n..\n\n::\n</vh></v>
-</v>
-<v t="ekr.20210327193058.1"><vh>rst3 http options</vh>
-<v t="ekr.20071213061454"><vh>@bool rst3-clear-http-attributes = False</vh></v>
-<v t="ekr.20071213061454.2"><vh>@string rst3-http-attributename = rst-http-attribute</vh></v>
-</v>
-<v t="ekr.20071213061923.2"><vh>@bool rst3-generate-rst = True</vh></v>
-</v>
+<v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
 </v>
 <v t="ekr.20200226104131.1"><vh>Future settings</vh>
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
@@ -544,6 +515,7 @@
 <v t="ekr.20111115083813.12518"><vh>@bool indent-added-comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
 <v t="ekr.20220624062948.1"><vh>@bool redirect-execute-script-output-to-log_pane = False</vh></v>
+<v t="ekr.20230804112912.1"><vh>@bool search-links-backwards=True</vh></v>
 <v t="ekr.20180117074230.1"><vh>@bool show-tips = True</vh></v>
 <v t="ekr.20060323131801"><vh>@bool warn-about-missing-settings = False</vh></v>
 <v t="ekr.20220105172501.1"><vh>@data add-mypy-annotations</vh></v>
@@ -579,7 +551,7 @@
 </v>
 <v t="ekr.20110611092035.16482"><vh>Headline commands settings</vh>
 <v t="ekr.20181018105904.1"><vh>@bool headline-gmt-time = False</vh></v>
-<v t="ekr.20041119050749.10"><vh>@string headline-time-format-string = %m/%d</vh></v>
+<v t="ekr.20041119050749.10"><vh>@string headline-time-format-string = %m/%d/%Y %H:%M:%S</vh></v>
 </v>
 <v t="ekr.20160127043440.1"><vh>make-stub-files settings</vh>
 <v t="ekr.20160127051552.1"><vh>@bool stub-overwrite = False</vh></v>
@@ -630,6 +602,10 @@
 <v t="ekr.20060127050605"><vh>@int max-undo-stack-size = 0</vh></v>
 <v t="ekr.20050126083026"><vh>@string undo-granularity = None</vh></v>
 </v>
+<v t="peckj.20130514082859.5599"><vh>print settings</vh>
+<v t="peckj.20130514082859.5600"><vh>@string printing-font-size = 12</vh></v>
+<v t="peckj.20130514082859.5601"><vh>@string printing-font-family = DejaVu Sans Mono</vh></v>
+</v>
 </v>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh></v>
@@ -649,7 +625,6 @@
 <v t="ekr.20181018113730.1"><vh>@string external-editor = None</vh></v>
 </v>
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
-<v t="ekr.20061210091932"><vh>@bool chdir-to-relative-path = False</vh></v>
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
 <v t="felix.20220628162804.1"><vh>@bool json-outline-clipboard = False</vh></v>
@@ -658,10 +633,8 @@
 <v t="ekr.20230113102630.1"><vh>@string gnx-kind = none</vh></v>
 <v t="ekr.20181018113812.1"><vh>@string initial-chooser-directory = None</vh></v>
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
-<v t="ekr.20041119041304.1"><vh>@string relative-path-base-directory = .</vh></v>
 <v t="ekr.20181018113813.1"><vh>@string script-file-path = None</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
-<v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
 <v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
 <v t="ekr.20090514111518.8379"><vh>@bool check-python-code-on-write = True</vh></v>
 <v t="ekr.20221128115636.1"><vh>@bool run-flake8-on-write = False</vh></v>
@@ -720,10 +693,6 @@
 </v>
 </v>
 <v t="ekr.20110611092035.16480"><vh>Import options</vh>
-<v t="ekr.20211209060458.1"><vh>@bool put-class-in-imported-headlines = True</vh></v>
-<v t="tbrown.20180525163032.1"><vh>@bool add-context-to-headlines = True</vh></v>
-<v t="ekr.20200620064409.1"><vh>@bool add-file-context-to-headlines = True</vh></v>
-<v t="ekr.20200620060909.1"><vh>@bool put-cython-decorators-in-imported-headlines = False</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress-import-parsing = False</vh></v>
 <v t="ekr.20170825083426.1"><vh>@data c-import-typedefs</vh></v>
 <v t="ekr.20111029055127.16616"><vh>@data import-html-tags</vh></v>
@@ -985,14 +954,13 @@
 <v t="ekr.20070925144552"><vh>Menus</vh>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
 <v t="ekr.20071010123015.1"><vh>@item new</vh></v>
-<v t="ekr.20071010123223.1"><vh>@item open-outline</vh></v>
+<v t="ekr.20071010123223.1"><vh>@item open-file</vh></v>
 </v>
 <v t="ekr.20131213135427.21826"><vh>@menus</vh>
 <v t="ekr.20131213135427.21827"><vh>@menu &amp;File</vh>
 <v t="ekr.20131213135427.21833"><vh>@item &amp;close-window</vh></v>
-<v t="ekr.20140917063815.21917"><vh>@item &amp;file-open-by-name</vh></v>
 <v t="ekr.20131213135427.21828"><vh>@item &amp;new</vh></v>
-<v t="ekr.20131213135427.21829"><vh>@item &amp;open-outline</vh></v>
+<v t="ekr.20131213135427.21829"><vh>@item &amp;open-file</vh></v>
 <v t="ekr.20180403155811.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21830"><vh>@menu Open &amp;With</vh></v>
 <v t="ekr.20151225142626.1"><vh>@menu Open Specific &amp;Leo File</vh>
@@ -1030,7 +998,6 @@
 <v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write Files</vh>
 <v t="ekr.20131213135427.21844"><vh>@item file-compare-two-leo-files</vh></v>
 <v t="ekr.20131213135427.21845"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21846"><vh>@item read-outline-only</vh></v>
 <v t="ekr.20131213135427.21847"><vh>@item read-file-into-node</vh></v>
 <v t="ekr.20131213135427.21848"><vh>@item read-at-auto-nodes</vh></v>
 <v t="ekr.20131213135427.21849"><vh>@item read-at-file-nodes</vh></v>
@@ -1443,13 +1410,6 @@
 <v t="ekr.20131213135427.22196"><vh>@item &amp;keyboard-quit</vh></v>
 <v t="ekr.20131213135427.22197"><vh>@item &amp;repeat-complex-command</vh></v>
 <v t="ekr.20131213135427.22198"><vh>@item &amp;view-lossage</vh></v>
-<v t="ekr.20180405112939.1"><vh>@item -</vh></v>
-<v t="ekr.20180403105526.1"><vh>@item &amp;eval</vh></v>
-<v t="ekr.20180403105636.1"><vh>@item &amp;eval-block</vh></v>
-<v t="ekr.20180403105541.1"><vh>@item &amp;eval-last</vh></v>
-<v t="ekr.20180403105609.1"><vh>@item &amp;eval-last-pretty</vh></v>
-<v t="ekr.20180403105722.1"><vh>@item &amp;eval-replace</vh></v>
-<v t="ekr.20180405112923.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22131"><vh>@menu &amp;Control Garbage Collection</vh>
 <v t="ekr.20131213135427.22132"><vh>@item gc-&amp;collect-garbage</vh></v>
 <v t="ekr.20131213135427.22133"><vh>@item gc-dump-&amp;all-objects</vh></v>
@@ -1902,6 +1862,7 @@
 </v>
 <v t="vitalije.20100306144625.8944"><vh>autosave plugin</vh>
 <v t="vitalije.20100306144625.8945"><vh>@bool mod-autosave-active = True</vh></v>
+<v t="ekr.20230507080533.1"><vh>@bool mod-autosave-verbose = False</vh></v>
 <v t="vitalije.20100306144625.8946"><vh>@int mod-autosave-interval = 300</vh></v>
 </v>
 <v t="tbrown.20110430104941.30247"><vh>backlink</vh>
@@ -1968,8 +1929,6 @@
 </v>
 <v t="ekr.20110611092035.16483"><vh>mod_scripting plugin</vh>
 <v t="tbrown.20100524101550.4704"><vh>@string mod-scripting-subtext = ▼</vh></v>
-<v t="ekr.20181018105342.1"><vh>@bool eval-redirect = False</vh></v>
-<v t="ekr.20181018105355.1"><vh>@bool legacy-eval = False</vh></v>
 </v>
 <v t="TL.20090225102340.33"><vh>nodeActions plugin</vh>
 <v t="TL.20090225102340.34"><vh>@bool nodeActions-save-atFile-nodes = False</vh></v>
@@ -1991,10 +1950,6 @@
 <v t="ekr.20060919173031.1"><vh>@bool opml-write-leo-globals-attributes = True</vh></v>
 <v t="ekr.20060922110220"><vh>@bool opml-write-uAs = True</vh></v>
 <v t="ekr.20060919171527.2"><vh>@string opml-namespace = leo:com:leo-opml-version-1</vh></v>
-</v>
-<v t="peckj.20130514082859.5599"><vh>printing plugin</vh>
-<v t="peckj.20130514082859.5600"><vh>@string printing-font-size = 12</vh></v>
-<v t="peckj.20130514082859.5601"><vh>@string printing-font-family = DejaVu Sans Mono</vh></v>
 </v>
 <v t="tbrown.20130813134319.7223"><vh>richtext plugin</vh>
 <v t="tbrown.20130813134319.7224"><vh>@bool richtext-cke-autosave = False</vh></v>
@@ -2128,7 +2083,7 @@
 <v t="ekr.20190325050733.7"><vh>@color generic.strong = solarized-blue</vh></v>
 <v t="ekr.20190325050733.8"><vh>@color generic.subheading = solarized-magenta</vh></v>
 <v t="ekr.20190325050733.9"><vh>@color keyword = solarized-blue</vh></v>
-<v t="ekr.20190325050733.10"><vh>@color name = white</vh></v>
+<v t="ekr.20190325050733.10"><vh>@color name = solarized-red</vh></v>
 <v t="ekr.20190325050733.11"><vh>@color name.class = white</vh></v>
 <v t="ekr.20190325050733.12"><vh>@color name.decorator = solarized-orange</vh></v>
 <v t="ekr.20190325050733.13"><vh>@color name.entity = solarized-blue</vh></v>
@@ -2231,6 +2186,11 @@
 <v t="ekr.20060325071042.3"><vh>@bool test-darwin-setting = True</vh></v>
 </v>
 </v>
+<v t="ekr.20230627131213.1"><vh>UNLs</vh>
+<v t="ekr.20230627130611.1"><vh>@string unl-status-kind = gnx</vh></v>
+<v t="ekr.20230627131227.1"><vh>@bool full-unl-paths = False</vh></v>
+<v t="ekr.20230627202839.1"><vh>@data unl-path-prefixes</vh></v>
+</v>
 <v t="ekr.20110611092035.16471"><vh>Widget colors</vh>
 <v t="ekr.20041119034357.67"><vh>@color split-bar-color = LightSteelBlue2</vh></v>
 <v t="ekr.20130705090546.10663"><vh>@int colorer-delay = 200</vh></v>
@@ -2306,7 +2266,7 @@
 </v>
 <v t="ekr.20041213105954.2"><vh>Splitter options</vh>
 <v t="ekr.20041119034357.69"><vh>@int split-bar-width = 6</vh></v>
-<v t="edward.20081129091117.12"></v>
+<v t="edward.20081129091117.12"><vh>@string initial-split-orientation = horizontal</vh></v>
 <v t="ekr.20041119034357.68"><vh>@string split-bar-relief = groove</vh></v>
 <v t="tbrown.20130916082438.55678"><vh>@string status-line-split-sizes = 1 2</vh></v>
 </v>
@@ -2314,6 +2274,8 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
+<v t="ekr.20051101160257"></v>
+<v t="ekr.20051007200824.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2577,22 +2539,6 @@ False: The undo buffer persists across saves.</t>
 
 True:  Leo attempts to create directories if they do not exist.
 False: Leo never attempts to create directories.</t>
-<t tx="ekr.20041119041304.1">This option specifies the directory to be used as a prefix for &lt;filename&gt; in
-
-@path &lt;filename&gt;
-@file &lt;filename&gt;
-@root &lt;filename&gt;
-
-when &lt;filename&gt; is a relative path.
-
-Valid values for this option:
-
-'!' means relative to the location leo.py (recommended).
-'.' means relative to the location of the .leo file in the top window.
-
-An absolute path (in platform-dependent format).
-
-Relative paths are not allowed because their meaning would depend on the changing value of the current working directory.</t>
 <t tx="ekr.20041119041747">nl or lf: (recommended) All lines end with "\n"
 cr:       All lines end with "\r"
 crlf:     All lines end with "\r\n"
@@ -2755,16 +2701,14 @@ script can find them.
 
 - The *active* set should be *outside* of the @ignore and its descendants.
 </t>
-<t tx="ekr.20051007200824.1">The following special single characters may be used in the tails of shortcuts.
-They are listed along with their associated Tk binding value. Leo contains
-special code to handle these characters. No other single characters may be
-specified.
+<t tx="ekr.20051007200824.1">Leo uses Tk key names internally, even when using the Qt gui. 
 
-For example, you could specify Ctrl+! as a shortcut, and Leo will create a
-binding for &lt;Control+exclam&gt;. Some of these values may be invalid on some
-machines.
+See https://www.tcl.tk/man/tcl8.4/TkCmd/keysyms.html for the full list of Tk key names.
 
-The full list is at http://tcl.activestate.com/man/tcl8.4/TkCmd/keysyms.htm
+For convenience (and compatibility with existing settings files), Leo
+translates non-Tk names to Tk names in two ways:
+
+1. Leo translates the following single characters to longer binding names:
 
 ! exclam
 " quotedbl
@@ -2799,8 +2743,10 @@ _ underscore
 } braceright
 ~ asciitilde
 
-Leo recognizes the following mult-character names, and translates the indicated
-strings in the menu items:
+For example, you could specify Ctrl+! as a shortcut, and Leo will create a
+binding for &lt;Control+exclam&gt;.
+
+2. Leo also translates these strings in menu items:
     
 "bksp"     : "BkSp"
 "dnarrow"  : "DnArrow"
@@ -2810,27 +2756,7 @@ strings in the menu items:
 "pageup"   : "PgUp"),
 "pagedn"   : "PgDn")
 
-For example, "Ctrl-uparrow"  will appear as "Ctrl+UpArrow" in the menu.
-
-Leo passes all other mult-character names verbatim to Qt, so on some platforms
-you may be able to use any of the following. Most appear on the numeric keypad.
-For example, the following may work on some systems:
-    
-"Ctrl+BackSpace"
-
-Don't use these if you want to be sure that the binding work on all platforms.
-The complete list of names may be found at:
-http://tcl.activestate.com/man/tcl8.4/TkCmd/keysyms.htm.
-    
-F1, F2, F3, F4, F5, F6, F7, F8, F9, F10,
-BackSpace, Break, Clear, Delete, Escape, Linefeed, Return, Tab, 
-Down, Left, Right, Up,
-Begin, End, Home, Next, Prior,
-Num_Lock, Pause, Scroll_Lock, Sys_Req,
-KP_Add, KP_Decimal, KP_Divide, KP_Enter, KP_Equal,
-KP_Multiply, KP_Separator, KP_Space, KP_Subtract, KP_Tab,
-KP_F1, KP_F2, KP_F3, KP_F4,
-KP_0, KP_1, KP_2, KP_3, KP_4, KP_5, KP_6, KP_7, KP_8, KP_9</t>
+For example, "Ctrl-uparrow"  will appear as "Ctrl+UpArrow" in the menu.</t>
 <t tx="ekr.20051020125928">#d6c7d3
 #d2cad0
 #c6d3d7</t>
@@ -2876,11 +2802,16 @@ Notes:
 
 1. The case of plain letters is significant:  a is not A.
 
-2. The Shift- (or Shift+) prefix can be applied *only* to letters or multi-letter tails. Leo will ignore (with a warning) the shift prefix applied to other single letters, e.g., Ctrl-Shift-(
+2. The Shift- (or Shift+) prefix can be applied *only* to letters or
+   multi-letter tails. Leo will ignore (with a warning) the shift prefix
+   applied to other single letters, e.g., Ctrl-Shift-(
 
-3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not* significant.
+3. The case of letters prefixed by Ctrl-, Alt-, Key- or Shift- is *not*
+   significant.
 
-The following table illustrates these rules.  In each row, the first entry is the key (for k.bindingsDict) and the other entries are equivalents that the user may specify in leoSettings.leo:
+The following table illustrates these rules. In each row, the first entry
+is the key (for k.bindingsDict) and the other entries are equivalents that
+the user may specify in leoSettings.leo:
 
 a, Key-a, Key-A
 A, Shift-A
@@ -3703,10 +3634,6 @@ changes your personal myLeoSettings.leo file.
 </t>
 <t tx="ekr.20061012122620">True:  When a node is expanded, insert new nodes as the last child.
 False: (legacy &amp; recommended) When a node is expanded, insert new nodes as the first child.</t>
-<t tx="ekr.20061210091932">True: call os.chdir(base) when handling a relative path.
-      as specified by the @string relative_path_base_directory setting.
-      
-False: Do not call os.chdir(base) when handing a relative path.</t>
 <t tx="ekr.20070115134125">True: (Recommended) The execute script command writes the script to be executed
       to a file, then executes the script using Python's execFile function. The
       script_file_path setting specifies the path to this file.
@@ -3912,9 +3839,6 @@ for which leading whitespace is not terribly significant.
 True: @auto warns about mismatches that occur solely in leading whitespace.</t>
 <t tx="ekr.20071114072753">True: the vim plugin will open @url nodes when they are double clicked.</t>
 <t tx="ekr.20071213060239">@color</t>
-<t tx="ekr.20071213060514.1"></t>
-<t tx="ekr.20071213060514.2"># Formatting options that apply to both code and rst modes....</t>
-<t tx="ekr.20071213061454"></t>
 <t tx="ekr.20071213061454.1">True: Writes **node markers** for use by the http plugin.
 
 Node markers are rst named hyperlink targets. By default they look like:
@@ -3923,7 +3847,6 @@ Node markers are rst named hyperlink targets. By default they look like:
 `@string rst3-node-begin-marker` specifies the format of these node markers.
 
 </t>
-<t tx="ekr.20071213061454.2"></t>
 <t tx="ekr.20071213061454.3">The string used for node markers.  See `@bool rst3-http-server-support`.
 </t>
 <t tx="ekr.20071213061504">The path to be prepended to *relative* filenames given in @rst nodes.
@@ -3949,7 +3872,6 @@ The setting should be comma-separated list of strings: For example, the option::
 results in the call::
 
     publish(['--language=de','--documentclass=report','--use-latex-toc'])</t>
-<t tx="ekr.20071213061811"></t>
 <t tx="ekr.20071213061811.1">The underlining characters to be used to specify rST sections.
 
 The first character is reserved (not used) so you can specify the top-level
@@ -3962,18 +3884,6 @@ The name of the intermediate file is the name of the output file with the extens
 
 `@string rst3-write-intermediate-extension`.
 </t>
-<t tx="ekr.20071213061923"># True: generate rst markup from @code and @doc parts.</t>
-<t tx="ekr.20071213061923.1"># True: generate only from @doc parts.</t>
-<t tx="ekr.20071213061923.2"># True: generate rst markup. False: generate plain text.</t>
-<t tx="ekr.20071213061923.3"></t>
-<t tx="ekr.20071213061930.1"># Can be set by @rst-no-head headlines.</t>
-<t tx="ekr.20071213061930.2"></t>
-<t tx="ekr.20071213061930.3"></t>
-<t tx="ekr.20071213061930.4"></t>
-<t tx="ekr.20071213062019"></t>
-<t tx="ekr.20071213062019.1"></t>
-<t tx="ekr.20071213062019.2"></t>
-<t tx="ekr.20071213062019.3"></t>
 <t tx="ekr.20071217093419">The body text should contain the data, one string per line. Lines starting with '#' are *included* in the data.
 
 @data nodes may be split: the data consists of the body text of the @data node itself and the body text of all descendant nodes, in outline order. Two fine points about the concatenation of data:
@@ -4272,7 +4182,7 @@ move-lines-up               ! body = Keypad+Ctrl-UpArrow
 move-lines-down             ! body = Keypad+Ctrl-DnArrow
   
 goto-first-visible-node     = Alt-Home
-goto-last-sibling           = Alt-End
+goto-last-visible-node      = Alt-End
 #
 # Keypad variants...
 goto-first-visible-node     = Keypad+Alt-Home
@@ -4668,21 +4578,6 @@ print ('done')
 .. rst3: filename: &lt;filename&gt;
 
 at these start of the output.</t>
-<t tx="ekr.20090430173906.1">@nocolor-node
-
-The rST markup string preceding code parts.
-
-The default for the C, Perl, Python and Ruby languages is: 
-
-'**code**:\n\n.. code-block:: %s\n' % language.title()
-
-The default for all other languages is:
-    
-'**code**:\n\n.. class:: code\n..\n\n::\n'
-
-A reasonable alternative would be:
-    
-'\n.. class:: code\n..\n\n::\n'</t>
 <t tx="ekr.20090514111518.8379"></t>
 <t tx="ekr.20090724102842.2492">If zero, all nodes are colorized, regardless of length of body text.
 If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
@@ -4700,7 +4595,7 @@ If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
 For information about supported languages, see:
 http://pythonhosted.org/pyenchant/tutorial.html#adding-language-dictionaries
 </t>
-<t tx="ekr.20100904095239.8441">Defaults to leo/plugins/spellpyx.txt</t>
+<t tx="ekr.20100904095239.8441">Defaults to ~/.leo/spellpyx.txt</t>
 <t tx="ekr.20100904134301.11000">@language python
 </t>
 <t tx="ekr.20100904134301.11002"># Blanks lines and comments (lines starting with '#') are ignored.
@@ -4774,9 +4669,6 @@ False: show completions in Leo's Completions tab.
 
 **Note**: this option has effect only when using the qt or qttabs gui's.
 </t>
-<t tx="ekr.20110510071925.14590">This setting is no longer used!
-
-Instead, enable the codewisecompleter.py plugin.</t>
 <t tx="ekr.20110512085854.14461">True: Automatically extend the completed text to the longest common prefix of all completions.</t>
 <t tx="ekr.20110601103939.19339">True: A *single* click in an already selected node begins editing of the headline.</t>
 <t tx="ekr.20110611092035.16463"></t>
@@ -5492,7 +5384,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.21841"></t>
 <t tx="ekr.20131213135427.21844">&amp;Compare Leo Files...</t>
 <t tx="ekr.20131213135427.21845"></t>
-<t tx="ekr.20131213135427.21846"></t>
 <t tx="ekr.20131213135427.21847"></t>
 <t tx="ekr.20131213135427.21848">Read @auto Nodes</t>
 <t tx="ekr.20131213135427.21849">Read @&lt;file&gt; Nodes</t>
@@ -6081,7 +5972,6 @@ quick-command                   = Ctrl-c
 re-search-backward              = None
 re-search-forward               = None
 read-at-file-nodes              = None
-read-outline-only               = None         # Removed Shift-Ctrl-R: not useful enough.
 redo                            = None         # Ctrl-Z not defined, so Shift-Ctrl-Z less useful.
 rectangle-clear                 = None
 rectangle-close                 = None
@@ -6523,7 +6413,6 @@ quick-command                       = None
 re-search-backward                  = None
 re-search-forward                   = None
 read-at-file-nodes                  = None
-read-outline-only                   = None
 rectangle-clear                     = None
 rectangle-close                     = None
 rectangle-delete                    = None
@@ -8994,9 +8883,9 @@ QLabel#minibufferLabel {
 QPlainTextEdit#screencastcaption {
     background-color:   @screencast-bg;
     font-family:        @screencast-font-family;
-    font-size:          @screencaset-font-size;
+    font-size:          @screencast-font-size;
     font-weight:        @screencast-font-weight;
-    font-style:         @screencaset-font-style;
+    font-style:         @screencast-font-slant;
 }
 </t>
 <t tx="ekr.20140915194122.19466">/*  ========== Dialogs (QLabel) ========== 
@@ -9249,7 +9138,6 @@ Don't change these unless you are aware of the consequences</t>
 <t tx="ekr.20140916113003.19609"></t>
 <t tx="ekr.20140916113003.20415"></t>
 <t tx="ekr.20140917051508.19548">The children of this node determine how Leo looks.</t>
-<t tx="ekr.20140917063815.21917"></t>
 <t tx="ekr.20140918165611.38050">'''
 Show a color wheel.
 Writes the selected color to the clipboard.
@@ -9260,7 +9148,6 @@ c.k.simulateCommand('show-color-wheel')
 <t tx="ekr.20140922124047.19517"></t>
 <t tx="ekr.20140922124047.20313"></t>
 <t tx="ekr.20141010095448.19776"></t>
-<t tx="ekr.20141010095448.19779">True: Retain indentation of overindented stand-alone comment lines.</t>
 <t tx="ekr.20141024165714.1">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
 False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>
@@ -10949,11 +10836,6 @@ Use different names instead.</t>
 <t tx="ekr.20180403104732.1"></t>
 <t tx="ekr.20180403104751.1"></t>
 <t tx="ekr.20180403105112.1"></t>
-<t tx="ekr.20180403105526.1"></t>
-<t tx="ekr.20180403105541.1"></t>
-<t tx="ekr.20180403105609.1"></t>
-<t tx="ekr.20180403105636.1"></t>
-<t tx="ekr.20180403105722.1"></t>
 <t tx="ekr.20180403114533.1"></t>
 <t tx="ekr.20180403114558.1"></t>
 <t tx="ekr.20180403114818.1"></t>
@@ -10984,8 +10866,6 @@ Use different names instead.</t>
 <t tx="ekr.20180405110859.1"></t>
 <t tx="ekr.20180405112647.1"></t>
 <t tx="ekr.20180405112755.1"></t>
-<t tx="ekr.20180405112923.1"></t>
-<t tx="ekr.20180405112939.1"></t>
 <t tx="ekr.20180406013812.1"></t>
 <t tx="ekr.20180411070112.1">The setting only has effect on MacOS.
 False: Legacy operation.
@@ -11151,8 +11031,6 @@ See https://jedi.readthedocs.io/en/latest/index.html
 </t>
 <t tx="ekr.20181018103813.1">True: use verbose mode.</t>
 <t tx="ekr.20181018104056.1">True: use smart quotes when typing.</t>
-<t tx="ekr.20181018105342.1"></t>
-<t tx="ekr.20181018105355.1"></t>
 <t tx="ekr.20181018105433.1"></t>
 <t tx="ekr.20181018105440.1"></t>
 <t tx="ekr.20181018105515.1"></t>
@@ -11290,10 +11168,6 @@ c.redraw()
 <t tx="ekr.20190608085550.1">The maximum line length allowed by the find-long-lines command.</t>
 <t tx="ekr.20190622093004.1"></t>
 <t tx="ekr.20190712053127.1"></t>
-<t tx="ekr.20190915192551.1"></t>
-<t tx="ekr.20190915192702.1">True: Retain indentation of overindented stand-alone comment lines.</t>
-<t tx="ekr.20190915192705.1"></t>
-<t tx="ekr.20190915192705.2">Split lines longer than this length.  Join lines shorter than this length.</t>
 <t tx="ekr.20190926105603.1">Should be &lt;= beautify-max-split-line-length.
 Zero suppresses all line joining.</t>
 <t tx="ekr.20190926105638.1">Zero suppresses all line splitting.</t>
@@ -11353,8 +11227,6 @@ opened longest. You can this setting to specify an alternative location.
 For example: /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
 </t>
 <t tx="ekr.20200227064211.1">@nosearch</t>
-<t tx="ekr.20200227181439.1">True: find-def (ctrl-click on word) creates a clone of the defining node.</t>
-<t tx="ekr.20200229053354.1"></t>
 <t tx="ekr.20200620060909.1">True: The cython importer will copy the first decorator preceding a
       function/method into the headline of the imported node.
       
@@ -11412,8 +11284,6 @@ False: Use ``asciidoc``</t>
 <t tx="ekr.20201118055941.1"></t>
 <t tx="ekr.20201118060235.1"></t>
 <t tx="ekr.20210324162150.1">Save As .db (&amp;SQLite)...</t>
-<t tx="ekr.20210327192658.1"></t>
-<t tx="ekr.20210327193058.1"></t>
 <t tx="ekr.20210327193418.1">This setting has effect only if `@bool rst3-call-docutils = True`.
 
 True: Docutils will embed a the stylesheet in the output file.
@@ -11745,16 +11615,34 @@ date;;={|{x=time.asctime()}|}
 # hellow=hello
 
 </t>
-<t tx="ekr.20230316031838.1">screencast_family = Times New Roman
-screencast_size = 18pt
-screencast_weight = normal
-screencaset_style = normal
+<t tx="ekr.20230316031838.1">screencast_font_family = Times New Roman
+screencast_font_size = 18pt
+screencast_font_weight = normal
+screencast_font_slant = normal
 </t>
 <t tx="ekr.20230327033157.1">True: expand/contract nodes when the mouse hovers over the outline:
     &lt;CTRL-hover&gt;: expand.
     &lt;SHIFT-hover&gt;: contract.
     
 False: do nothing when the mouse hovers over nodes.</t>
+<t tx="ekr.20230507080533.1"></t>
+<t tx="ekr.20230613071616.1"></t>
+<t tx="ekr.20230627130611.1">gnx:    Show gnx-based unls in the status area.
+legacy: Show legacy (headline-based) uns in the status area.</t>
+<t tx="ekr.20230627131213.1"></t>
+<t tx="ekr.20230627131227.1">True: (legacy): Display full path names in the status area.
+False:          Display only the .leo file's name in the status area.
+</t>
+<t tx="ekr.20230627202839.1"># lines have the form:
+# x.leo: &lt;absolute path to x.leo&gt;
+
+# test.leo:    c:/Repos/leo-editor/leo/test
+# LeoDocs.leo: c:/Repos/leo-editor/leo/doc</t>
+<t tx="ekr.20230804112912.1">This setting tells how Leo should search when the user clicks a clickable link.
+
+True:  (Recommended) Search backwards from the end of the outline.
+False: (Legacy)      Search forwards from the start of the outline.
+</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
@@ -11806,7 +11694,7 @@ Leo accepts outline 'paste' data in both XML Leo format, or JSON format</t>
 <t tx="peckj.20130514082859.5599"></t>
 <t tx="peckj.20130514082859.5600">This defines the font size for body text in print outs.
 
-Size is in px.  Default 12.</t>
+Size is in points.  Default 12.</t>
 <t tx="peckj.20130514082859.5601">This determines the font family for print outs.  It's highly recommended
 to choose a monospaced font.
 
@@ -12044,9 +11932,8 @@ valid values are: normal,bold,100,..,900
 <t tx="tbrown.20140102100730.27778">Number of levels (rows) of hieararchical bookmarks to show.  0 (zero)
 collapse hieracrch and show all bookmarks.  1 or more sets max. levels
 displayed at once, see bookmarks plugin docs.</t>
-<t tx="tbrown.20140505094209.37266">Show close box (the 'X') on outlien tabs - they can be closed with
-Ctrl-W or middle mouse click, so this optionally hides the
-redundant 'X'</t>
+<t tx="tbrown.20140505094209.37266">True: Show the close box [x] on outline tabs.
+</t>
 <t tx="tbrown.20140514191846.42168">These give the width and style of the border surrounding the active pane.
 </t>
 <t tx="tbrown.20140514191846.42169"># Set to None to disable border styling.</t>

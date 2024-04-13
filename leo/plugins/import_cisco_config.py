@@ -27,7 +27,6 @@ All created sections are alphabetically ordered.
 
 """
 #@-<< docstring >>
-from typing import Dict
 from leo.core import leoGlobals as g
 
 #@+others
@@ -69,7 +68,7 @@ def importCiscoConfig(c):
 
     name = g.app.gui.runOpenFileDialog(c,
         title="Import Cisco Configuration File",
-        filetypes=[("All files", "*")],
+        filetypes=[("All files", "*"),],
         defaultextension='ini',
     )
 
@@ -81,7 +80,7 @@ def importCiscoConfig(c):
     c.redraw()
 
     try:
-        fh = open(name)
+        fh = open(name)  # type:ignore
         g.es("importing: %s" % name)
         linelist = fh.read().splitlines()
         fh.close()
@@ -96,7 +95,7 @@ def importCiscoConfig(c):
                     'ip community-list', 'access-list', 'snmp-server', 'ntp',
                     'boot', 'service', 'logging']
     out = []
-    blocks: Dict = {}
+    blocks: dict = {}
     children = []
     lines = len(linelist)
     i = 0
@@ -108,7 +107,7 @@ def importCiscoConfig(c):
                 linelist[i].startswith('no %s' % customLine)
             ):
                 #@+<< process custom line >>
-                #@+node:edream.110203113231.674: *3* << process custom line >>
+                #@+node:edream.110203113231.674: *3* << process custom line >> (import_cisco_config.py)
                 if customLine not in blocks:
                     blocks[customLine] = []
                     out.append(g.angleBrackets(customLine))
@@ -126,7 +125,7 @@ def importCiscoConfig(c):
         else:
             if linelist[i + 1].startswith(' '):
                 #@+<< process indented block >>
-                #@+node:edream.110203113231.675: *3* << process indented block >>
+                #@+node:edream.110203113231.675: *3* << process indented block >> (import_cisco_config.py)
                 space = linelist[i].find(' ')
                 if space == -1:
                     space = len(linelist[i])

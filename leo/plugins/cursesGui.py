@@ -9,8 +9,9 @@
 # pylint: disable=arguments-differ
 #@+<< imports >>
 #@+node:ekr.20150107090324.2: ** << imports >>
+from collections.abc import Callable
 import os
-from typing import Any, Callable, Tuple
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core import leoChapters
 from leo.core import leoGui
@@ -108,14 +109,17 @@ class textGui(leoGui.LeoGui):
     #@+node:ekr.20150107090324.15: *3* runMainLoop
     def runMainLoop(self):
         self.text_run()
-    #@+node:ekr.20150107090324.16: *3* runOpenFileDialog
+    #@+node:ekr.20150107090324.16: *3* runOpenFileDialog (cursesGui2)
     def runOpenFileDialog(self,
-        c, title, filetypes, defaultextension, multiple=False, startpath=None,
+        c,
+        title,
+        *,
+        filetypes: list[tuple[str, str]],
+        defaultextension,
+        startpath=None,
     ) -> str:
         initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
         ret = get_input("Open which %s file (from %s?) > " % (repr(filetypes), initialdir))
-        if multiple:
-            return [ret,]
         return ret
     #@+node:ekr.20150107090324.18: *3* text_run & helper
     def text_run(self):
@@ -194,7 +198,7 @@ class TextFrame(leoFrame.LeoFrame):
     #@+node:ekr.20150107090324.25: *3* destroySelf
     def destroySelf(self):
         pass
-    #@+node:ekr.20150107090324.26: *3* finishCreate
+    #@+node:ekr.20150107090324.26: *3* finishCreate (cursesGui.py)
     def finishCreate(self):
         c, f = self.c, self
         f.tree = textTree(self)
@@ -334,7 +338,7 @@ class textLeoMenu(leoMenu.LeoMenu):
         self._top_menu = textLeoMenu(frame)
         self.createMenusFromTables()
     #@+node:ekr.20150107090324.48: *3* new_menu
-    def new_menu(self, parent: Widget, tearoff: int=0, labe: str=''):
+    def new_menu(self, parent: Widget, tearoff: int = 0, labe: str = ''):
         if tearoff:
             raise NotImplementedError(repr(tearoff))
         menu = textLeoMenu(parent or self.frame)
@@ -347,11 +351,11 @@ class textLeoMenu(leoMenu.LeoMenu):
         parent.entries.append(textMenuCascade(menu, label, underline,))
     #@+node:ekr.20150107090324.50: *3* add_command (cursesGui.py)
     def add_command(self, menu: Widget,
-        accelerator: str='',
-        command: Callable=None,
-        commandName: str=None,
-        label: str=None,
-        underline: int=0,
+        accelerator: str = '',
+        command: Callable = None,
+        commandName: str = None,
+        label: str = None,
+        underline: int = 0,
     ) -> None:
         # ?
         # underline - Offset into label. For those who memorised Alt, F, X rather than Alt+F4.
@@ -466,7 +470,7 @@ class textTree(leoFrame.LeoTree):
         w.setAllText(p.b)
         # and something to do with undo?
     #@+node:ekr.20150107090324.66: *3* editLabel & edit_widget
-    def editLabel(self, v, selectAll: bool=False, selection: Tuple=None):
+    def editLabel(self, v, selectAll: bool = False, selection: tuple = None):
         pass  # N/A?
 
     def edit_widget(self, p):

@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210829124658.1: * @file ../unittests/core/test_leoFind.py
-"""Tests for leo.core.leoFind"""
+"""Tests of leoFind.py"""
 
 import re
 from leo.core import leoGlobals as g
@@ -276,8 +276,6 @@ class TestFind(LeoUnitTest):
                 result_dict = x.do_find_all(settings)
                 count = result_dict['total_matches']
                 self.assertEqual(count, expected_count, msg=find_text)
-
-        ### return
 
         # Test 2.
         init()
@@ -934,11 +932,17 @@ class TestFind(LeoUnitTest):
         c = self.c
         x = leoFind.LeoFind(c)
         table = (
-            ('\\\\', '\\'),
+            # Only replace \n, \\n, \t and \\t.
+            ('\\', '\\'),
+            ('\\\\', '\\\\'),
+            (r'a\bc', r'a\bc'),
+            (r'a\\bc', r'a\\bc'),
+            (r'a \ b', r'a \ b'),
+            (r'a \\ b', r'a \\ b'),
+            (r'a \\\ b', r'a \\\ b'),
+
             ('\\n', '\n'),
             ('\\t', '\t'),
-            (r'a\bc', r'a\bc'),
-            (r'a\\bc', r'a\bc'),
             (r'a\tc', 'a\tc'),  # Replace \t by a tab.
             (r'a\nc', 'a\nc'),  # Replace \n by a newline.
         )

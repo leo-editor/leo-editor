@@ -83,13 +83,14 @@ def project_wizard(event):
     """ Launch project wizard """
     import os
     c = event['c']
-    table = [("All files", "*"),
-        ("Python files", "*.py"),]
-
+    filetypes = [
+        ("All files", "*"),
+        ("Python files", "*.py"),
+    ]
     fname = g.app.gui.runOpenFileDialog(c,
-        title="Open", filetypes=table, defaultextension=".leo")
+        title="Open", filetypes=filetypes, defaultextension=".leo")
 
-    pth = os.path.dirname(os.path.abspath(fname))
+    pth = os.path.dirname(os.path.abspath(fname))  # type:ignore
 
     g.es(pth)
     tgt = c.currentPosition().insertAsLastChild()
@@ -105,17 +106,15 @@ def rclick_path_importfile(c, p, menu):
     def importfiles_rclick_cb():
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
-        table = [
+        filetypes = [
             ("All files", "*"),
             ("Python files", "*.py"),
         ]
-        # This is incomplete: files is not used.
-        # files = g.app.gui.runOpenFileDialog(c,
-        g.app.gui.runOpenFileDialog(c,
+        g.app.gui.runOpenFilesDialog(c,
             title="Import files",
-            filetypes=table,
+            filetypes=filetypes,
             defaultextension='.notused',
-            multiple=True)
+        )
         print("import files from", path)
 
     action = menu.addAction("Import files")

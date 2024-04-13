@@ -134,14 +134,12 @@ import operator
 from leo.core import leoGlobals as g
 # Third-party imports
 try:
-    # pylint: disable=import-error
     import docutils
 except ImportError:
     print('leo_pdf.py: can not import docutils')
     docutils = None
     raise
 try:
-    # pylint: disable=import-error
     import reportlab.platypus
     import reportlab.platypus.para
 except ImportError:
@@ -149,7 +147,6 @@ except ImportError:
     reportlab = None
     # raise
 try:
-    # pylint: disable=import-error
     # copyright ReportLab Inc. 2000
     # see rllicense.txt for license details
     # http://docutils.sourceforge.net/sandbox/dreamcatcher/rlpdf/
@@ -939,7 +936,7 @@ if docutils:  # NOQA
                 'footnote_refs'
                 'footnotes'
                 'id_start'
-                'ids'  # keys are sectinon names, values are section objects or reference objects.
+                'ids'  # keys are section names, values are section objects or reference objects.
                 'indirect_targets'
                 'nameids'  # This might be what we want: keys are section names, values are munged names.
                 # 'nametypes'
@@ -1023,17 +1020,13 @@ if docutils:  # NOQA
         def pop(self, kind):
 
             bunch = self.context.pop()
-            assert bunch.kind == kind,\
-                'wrong bunch kind popped.  Expected: %s Got: %s' % (
-                    kind, bunch.kind)
+            assert bunch.kind == kind, f"Expected: {kind} Got: {bunch.kind}"
             return bunch
 
         def peek(self, kind):
 
             bunch = self.context[-1]
-            assert bunch.kind == kind,\
-                'peek at wrong bunch.  Expected: %s Got: %s' % (
-                    kind, bunch.kind)
+            assert bunch.kind == kind, f"Expected: {kind} Got: {bunch.kind}"
             return bunch
         #@+node:ekr.20090704103932.5224: *4* putHead & putTail
         def putHead(self, start, style='Normal', bulletText=None):

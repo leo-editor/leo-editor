@@ -173,9 +173,8 @@ class BridgeController:
         if self.useCaches:
             g.app.setGlobalDb()  # #556.
         else:
-            g.app.db = g.NullObject()
-            g.app.commander_cacher = g.NullObject()
-            g.app.global_cacher = g.NullObject()
+            g.app.db = g.NullObject()  # type:ignore
+            g.app.global_cacher = g.NullObject()  # type:ignore
         if self.readSettings:
             # reads only standard settings files, using a null gui.
             # uses lm.files[0] to compute the local directory
@@ -205,17 +204,19 @@ class BridgeController:
     def adjustSysPath(self) -> None:
         """Adjust sys.path to enable imports as usual with Leo."""
         g = self.g
-        leoDirs = (
-            'config', 'doc', 'extensions', 'modes', 'plugins', 'core', 'test')  # 2008/7/30
+        leoDirs = (  # 2008/7/30
+            'config', 'doc', 'extensions', 'modes', 'plugins', 'core', 'test'
+        )
         for theDir in leoDirs:
-            path = g.os_path_finalize_join(g.app.loadDir, '..', theDir)
+            path = os.path.normpath(os.path.join(g.app.loadDir, '..', theDir))
             if path not in sys.path:
-                sys.path.append(path)
+                sys.path.insert(0, path)
+
         # #258: leoBridge does not work with @auto-md subtrees.
         for theDir in ('importers', 'writers'):
-            path = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', theDir)
+            path = os.path.normpath(os.path.join(g.app.loadDir, '..', 'plugins', theDir))
             if path not in sys.path:
-                sys.path.append(path)
+                sys.path.insert(0, path)
     #@+node:ekr.20070227095743: *4* bridge.createGui
     def createGui(self) -> None:
         g = self.g
@@ -231,35 +232,31 @@ class BridgeController:
     def isValidPython(self) -> bool:
         if sys.platform == 'cli':
             return True
-        message = """\
-    Leo requires Python 3.6 or higher.
-    You may download Python from http://python.org/download/
-    """
+        tag = 'leoBridge: isValidPython'
         try:
             # This will fail if True/False are not defined.
             from leo.core import leoGlobals as g
-            # print('leoBridge:isValidPython:g',g)
+
             # Set leoGlobals.g here, rather than in leoGlobals.py.
-            leoGlobals = g  # Don't set g.g, it would pollute the autocompleter.
+            leoGlobals = g
             leoGlobals.g = g
-        except ImportError:
-            print("isValidPython: can not import leoGlobals")
+        except Exception as e:
+            print(f"{tag}: can not import leoGlobals: {e}")
             return False
-        except Exception:
-            print("isValidPython: unexpected exception importing leoGlobals")
-            traceback.print_exc()
-            return False
+
+        message = (
+            f"Leo requires Python {g.minimum_python_version} or higher"
+            "You may download Python from http://python.org/download/"
+        )
+
         try:
-            version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
-            ok = g.CheckVersion(version, g.minimum_python_version)
-            if not ok:
+            if not g.isValidPython:
                 print(message)
                 g.app.gui.runAskOkDialog(
                     None, "Python version error", message=message, text="Exit")
-            return ok
-        except Exception:
-            print("isValidPython: unexpected exception: g.CheckVersion")
-            traceback.print_exc()
+            return g.isValidPython
+        except Exception as e:
+            print(f"{tag}: unexpected exception: {e}")
             return False
     #@+node:ekr.20070227093629.9: *4* bridge.reportDirectories
     def reportDirectories(self) -> None:
@@ -289,8 +286,6 @@ class BridgeController:
             g.app.db = g.NullObject()
         fileName = self.completeFileName(fileName)
         c = g.openWithFileName(fileName)  # #2489.
-        # Leo 6.3: support leoInteg.
-        g.app.windowList.append(c.frame)
         if not self.useCaches:
             c.db = g.NullObject()
         # New in Leo 5.1. An alternate fix for bug #130.
@@ -309,7 +304,7 @@ class BridgeController:
         g = self.g
         if not (fileName and fileName.strip()):
             return ''
-        fileName = g.os_path_finalize_join(os.getcwd(), fileName)
+        fileName = g.finalize_join(os.getcwd(), fileName)
         head, ext = g.os_path_splitext(fileName)
         if not ext:
             fileName = fileName + ".leo"
@@ -323,8 +318,6 @@ class BridgeController:
         except Exception:
             g.app.global_cacher = leoCache.GlobalCacher()
             g.app.db = g.app.global_cacher.db
-            g.app.commander_cacher = leoCache.CommanderCacher()
-            g.app.commander_db = g.app.commander_cacher.db
     #@-others
 #@-others
 #@-leo

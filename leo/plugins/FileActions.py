@@ -127,7 +127,7 @@ def applyFileAction(p, filename, c):
     redirect = c.config.getBool('redirect-execute-script-output-to-log_pane')
     if script:
         working_directory = os.getcwd()
-        file_directory = c.frame.openDirectory
+        file_directory = g.os_path_dirname(filename)
         os.chdir(file_directory)
         script += '\n'
         if redirect:

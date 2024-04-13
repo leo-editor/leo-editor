@@ -45,7 +45,6 @@ from typing import Any
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 try:
-    # pylint: disable=import-error
     import pexpect
 except ImportError:
     pass
@@ -146,7 +145,6 @@ class InteractPSQL(Interact):
     def psqlReader(self, proc):
         cnt = 0
         timeout = False
-        # pylint: disable=maybe-no-member
         while not timeout:
             dat = []
             try:
@@ -245,7 +243,6 @@ class InteractBASH(Interact):
     def bashReader(self, proc):
         cnt = 0
         timeout = False
-        # pylint: disable=maybe-no-member
         while not timeout:
             dat = []
             try:

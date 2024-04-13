@@ -34,7 +34,7 @@
 # rules.
 #@-<< about internal bindings >>
 import sys
-from typing import Any, List
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core import leoGui
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
@@ -70,7 +70,7 @@ class LossageData:
 
     __str__ = __repr__
 #@+node:ekr.20141028061518.17: ** class LeoQtEventFilter
-class LeoQtEventFilter(QtCore.QObject):  # type:ignore
+class LeoQtEventFilter(QtCore.QObject):
     #@+others
     #@+node:ekr.20110605121601.18539: *3* filter.ctor
     def __init__(self, c, w, tag=''):
@@ -410,7 +410,7 @@ class LeoQtEventFilter(QtCore.QObject):  # type:ignore
         c, e = self.c, QtCore.QEvent
         eventType = event.type()
         # http://doc.qt.io/qt-5/qevent.html
-        show: List[Any] = []
+        show: list[Any] = []
         ignore = [
             e.Type.MetaCall,  # 43
             e.Type.Timer,  # 1
@@ -431,7 +431,6 @@ class LeoQtEventFilter(QtCore.QObject):  # type:ignore
             (e.Type.ShowToParent, 'show-to-parent'),  # 26
         ]
         if hasattr(e, 'FocusAboutToChange'):
-            # pylint: disable=no-member
             focus_events.extend([
                 (e.Type.FocusAboutToChange, 'focus-about-to-change'),  # 23
             ])
@@ -453,7 +452,6 @@ class LeoQtEventFilter(QtCore.QObject):  # type:ignore
             (e.Type.ShortcutOverride, 'shortcut-override'),  # 51
         ]
         if hasattr(e, 'InputMethodQuery'):
-            # pylint: disable=no-member
             key_events.extend([
                 (e.Type.InputMethodQuery, 'input-method-query'),  # 207
             ])

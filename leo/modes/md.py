@@ -159,82 +159,66 @@ keywordsDictDict = {
 def md_heading(colorer, s, i):
     # issue 386.
     # print('md_heading',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"^[#]+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"^[#]+")
 
 def md_link(colorer, s, i):
     # issue 386.
     # print('md_link',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\[[^]]+\]\([^)]+\)",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\[[^]]+\]\([^)]+\)")
 
 def md_star_emphasis1(colorer, s, i):
     # issue 386.
     # print('md_underscore_emphasis1',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\\*[^\\s*][^*]*\\*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\*[^\s*][^*]*\*")
 
 def md_star_emphasis2(colorer, s, i):
     # issue 386.
     # print('md_star_emphasis2',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\\*\\*[^*]+\\*\\*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\*\*[^*]+\*\*")
 
 def md_underscore_emphasis1(colorer, s, i):
     # issue 386.
     # print('md_underscore_emphasis1',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"_[^_]+_",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"_[^_]+_")
 
 def md_underline_equals(colorer, s, i):
     # issue 386.
     # print('md_underline_equals',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"^===[=]+$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"^===[=]+$")
 
 def md_underline_minus(colorer, s, i):
     # issue 386.
     # print('md_underline_minus',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"---[-]+$",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"---[-]+$")
 
 def md_underscore_emphasis2(colorer, s, i):
     # issue 386.
     # print('md_underscore_emphasis2',i)
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"__[^_]+__",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"__[^_]+__")
 
 def md_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 def md_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script", end="</script>",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="html::javascript", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True,
+          delegate="html::javascript")
 
 def md_rule2(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="markup", regexp="<hr\\b([^<>])*?/?>",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def md_rule3(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="markup", begin="<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|noscript|form|fieldset|iframe|math|ins|del)\\b", end="</$1>",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="md::block_html_tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True,
+          delegate="md::block_html_tags")
 
 def md_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=" < ",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=" < ")
 
 def md_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="md::inline_markup", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="md::inline_markup")
 
 
 # Rules dict for md_main ruleset.
@@ -261,35 +245,26 @@ if 0:  # Rules 6 & 7 will never match?
 
     def md_rule6(colorer, s, i):
         return colorer.match_eol_span_regexp(s, i, kind="invalid", regexp="[\\S]+",
-            at_line_start=True, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False)
+          at_line_start=True)
 
     def md_rule7(colorer, s, i):
         return colorer.match_eol_span_regexp(s, i, kind="invalid", regexp="{1,3}[\\S]+",
-            at_line_start=True, at_whitespace_end=False, at_word_start=False,
-            delegate="", exclude_match=False)
+          at_line_start=True)
 
 def md_rule8(colorer, s, i):
     # leadin: [ \t]
     return colorer.match_eol_span_regexp(s, i, kind="", regexp="( {4}|\\t)",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="html::main", exclude_match=False)
+          at_line_start=True,
+          delegate="html::main")
 
 def md_rule9(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 
 def md_rule10(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 
 def md_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 # Rules dict for md_block_html_tags ruleset.
 rulesDict3 = {
@@ -308,103 +283,84 @@ rulesDict3 = {
 def md_rule12(colorer, s, i):
     # Leadins: [ \t>]
     return colorer.match_eol_span_regexp(s, i, kind="", regexp="[ \\t]*(>[ \\t]{1})+",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="md::markdown_blockquote", exclude_match=False)
+          at_line_start=True,
+          delegate="md::markdown_blockquote")
 
 def md_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="*")
 
 def md_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="_",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="_")
 
 def md_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="\\][",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="\\][")
 
 def md_rule16(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
 
 def md_rule17(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="``` ruby", end="```",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="ruby::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True,
+          delegate="ruby::main")
 
 def md_rule18(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="```", end="```",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          at_line_start=True)
 
 def md_rule19(colorer, s, i):
     # leadin: `
-    return colorer.match_span_regexp(s, i, kind="literal2", begin="(`{1,2})", end="$1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span_regexp(s, i, kind="literal2", begin="(`{1,2})", end="$1")
 
 def md_rule20(colorer, s, i):
     # Leadins are [ \t]
     return colorer.match_eol_span_regexp(s, i, kind="literal2", regexp="( {4,}|\\t+)\\S",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def md_rule21(colorer, s, i):
     # Leadins are [=-]
     return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="[=-]+",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def md_rule22(colorer, s, i):
     # Leadin is #
     return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="#{1,6}[ \\t]*(.+?)",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def md_rule23(colorer, s, i):
     # Leadins are [ \t -_*]
     return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="[ ]{0,2}([ ]?[-_*][ ]?){3,}[ \\t]*",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+          at_line_start=True)
 
 def md_rule24(colorer, s, i):
     # Leadins are [ \t*+-]
     return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="[ \\t]{0,}[*+-][ \\t]+",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def md_rule25(colorer, s, i):
     # Leadins are [ \t0123456789]
     return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="[ \\t]{0,}\\d+\\.[ \\t]+",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, delegate="")
+          at_line_start=True)
 
 def md_rule26(colorer, s, i):
     return colorer.match_eol_span_regexp(s, i, kind="label", regexp="\\[(.*?)\\]\\:",
-        at_line_start=False, at_whitespace_end=True, at_word_start=False,
-        delegate="md::link_label_definition", exclude_match=False)
+          at_whitespace_end=True,
+          delegate="md::link_label_definition")
 
 def md_rule27(colorer, s, i):
     # leadin: [
     return colorer.match_span_regexp(s, i, kind="keyword4", begin="!?\\[[\\p{Alnum}\\p{Blank}]*", end="\\]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="md::link_inline_url_title", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="md::link_inline_url_title",
+          no_line_break=True)
 
 def md_rule28(colorer, s, i):
     # Leadins: [*_]
     return colorer.match_span_regexp(s, i, kind="literal3", begin="(\\*\\*|__)", end="$1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 def md_rule29(colorer, s, i):
     # Leadins: [*_]
     return colorer.match_span_regexp(s, i, kind="literal4", begin="(\\*|_)", end="$1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          no_line_break=True)
 
 # Rules dict for md_markdown ruleset.
 rulesDict4 = {
@@ -439,20 +395,16 @@ rulesDict4 = {
 # Rules for md_link_label_definition ruleset.
 
 def md_rule30(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
 
 def md_rule31(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="\"")
 
 def md_rule32(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="(")
 
 def md_rule33(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=")")
 
 # Rules dict for md_link_label_definition ruleset.
 rulesDict5 = {
@@ -465,20 +417,17 @@ rulesDict5 = {
 # Rules for md_link_inline_url_title ruleset.
 
 def md_rule34(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
 def md_rule35(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="keyword4", begin="\\[", end="\\]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="md::link_inline_label_close", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="md::link_inline_label_close",
+          no_line_break=True)
 
 def md_rule36(colorer, s, i):
     return colorer.match_span_regexp(s, i, kind="keyword4", begin="\\(", end="\\)",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="md::link_inline_url_title_close", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="md::link_inline_url_title_close",
+          no_line_break=True)
 
 # Rules dict for md_link_inline_url_title ruleset.
 rulesDict6 = {
@@ -491,8 +440,7 @@ rulesDict6 = {
 
 def md_rule37(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="null", seq=")",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="md::main", exclude_match=False)
+          delegate="md::main")
 
 # Rules dict for md_link_inline_url_title_close ruleset.
 rulesDict7 = {
@@ -503,8 +451,7 @@ rulesDict7 = {
 
 def md_rule38(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="null", seq="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="md::main", exclude_match=False)
+          delegate="md::main")
 
 # Rules dict for md_link_inline_label_close ruleset.
 rulesDict8 = {
@@ -514,100 +461,72 @@ rulesDict8 = {
 # Rules for md_markdown_blockquote ruleset.
 
 def md_rule39(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq=" < ",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq=" < ")
 
 def md_rule40(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="md::inline_markup", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="md::inline_markup")
 
 def md_rule41(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="*")
 
 def md_rule42(colorer, s, i):
-    return colorer.match_seq(s, i, kind="null", seq="_",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="_")
 
 def md_rule43(colorer, s, i):
     # leadin: backslash.
-    return colorer.match_seq(s, i, kind="null", seq="\\][",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="null", seq="\\][")
 
 def md_rule44(colorer, s, i):
     # leadin: backslash.
-    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
 
 def md_rule45(colorer, s, i):
     # leadin: `
-    return colorer.match_span_regexp(s, i, kind="literal2", begin="(`{1,2})", end="$1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span_regexp(s, i, kind="literal2", begin="(`{1,2})", end="$1")
 
 def md_rule46(colorer, s, i):
     # leadins: [ \t]
-    return colorer.match_eol_span_regexp(s, i, kind="literal2", regexp="( {4,}|\\t+)\\S",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span_regexp(s, i, kind="literal2", regexp="( {4,}|\\t+)\\S")
 
 def md_rule47(colorer, s, i):
     # leadins: [=-]
-    return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="[=-]+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="[=-]+")
 
 def md_rule48(colorer, s, i):
     # leadin: #
-    return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="#{1,6}[ \\t]*(.+?)",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="#{1,6}[ \\t]*(.+?)")
 
 def md_rule49(colorer, s, i):
     # leadins: [ -_*]
-    return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="[ ]{0,2}([ ]?[-_*][ ]?){3,}[ \\t]*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span_regexp(s, i, kind="keyword1", regexp="[ ]{0,2}([ ]?[-_*][ ]?){3,}[ \\t]*")
 
 def md_rule50(colorer, s, i):
     # leadins: [ \t*+-]
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="[ \\t]{0,}[*+-][ \\t]+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="[ \\t]{0,}[*+-][ \\t]+")
 
 def md_rule51(colorer, s, i):
     # leadins: [ \t0123456789]
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="[ \\t]{0,}\\d+\\.[ \\t]+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="[ \\t]{0,}\\d+\\.[ \\t]+")
 
 def md_rule52(colorer, s, i):
     # leadin: [
     return colorer.match_eol_span_regexp(s, i, kind="label", regexp="\\[(.*?)\\]\\:",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="md::link_label_definition", exclude_match=False)
+          delegate="md::link_label_definition")
 
 def md_rule53(colorer, s, i):
     # leadin: [
     return colorer.match_span_regexp(s, i, kind="keyword4", begin="!?\\[[\\p{Alnum}\\p{Blank}]*", end="\\]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="md::link_inline_url_title", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+          delegate="md::link_inline_url_title",
+          no_line_break=True)
 
 def md_rule54(colorer, s, i):
     # leadins: [*_]
-    return colorer.match_span_regexp(s, i, kind="literal3", begin="(\\*\\*|__)", end="$1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span_regexp(s, i, kind="literal3", begin="(\\*\\*|__)", end="$1")
 
 def md_rule55(colorer, s, i):
      # leadins: [*_]
-    return colorer.match_span_regexp(s, i, kind="literal4", begin="(\\*|_)", end="$1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span_regexp(s, i, kind="literal4", begin="(\\*|_)", end="$1")
 
 # Rules dict for md_markdown_blockquote ruleset.
 rulesDict9 = {

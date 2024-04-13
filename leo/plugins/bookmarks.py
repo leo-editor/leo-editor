@@ -162,8 +162,6 @@ all the time.
 Other notes
 -----------
 
-The ``quickMove.py`` plugin also provides actions for adding nodes to a bookmark list.
-
 The free_layout Action button context menu will also allow you to add one of
 these bookmark panes, and they will be saved and loaded again if the layout is
 saved and loaded.
@@ -216,11 +214,10 @@ it to edit the bookmark node itself, and delete the body text (UNL) there.
 #@+node:tbrown.20070322113635.3: ** << imports >>
 from collections import namedtuple
 import hashlib
-from typing import List
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import ControlType, KeyboardModifier, MouseButton, Orientation, Policy, QAction
-#
+
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
@@ -774,7 +771,6 @@ class BookMarkDisplay:
                 lambda e: cmd_bookmark_organizer(event={'c': bm.v.context})),
         ]
         for action in actions:
-            # pylint: disable=cell-var-from-loop
             act = QAction(action[0], menu)
             act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
             menu.addAction(act)
@@ -788,9 +784,9 @@ class BookMarkDisplay:
         act.triggered.connect(follow)
         menu.addAction(act)
 
-        point = event.position().toPoint() if isQt6 else event.pos()  # Qt6 documentation is wrong.
+        point = event.position().toPoint()  # Qt6 documentation is wrong.
         global_point = but.mapToGlobal(point)
-        menu.exec_(global_point)
+        menu.exec(global_point)
     #@+node:tbnorth.20160830110146.1: *3* context_menu
     def context_menu(self, event, container=None):
         """context_menu
@@ -807,16 +803,13 @@ class BookMarkDisplay:
             ),
         ]
         for action in actions:
-            # pylint: disable=cell-var-from-loop
-            # pylint: disable=undefined-variable
-            # weird: bm clearly *is* defined.
             act = QAction(action[0], menu)
             act.triggered.connect(lambda checked, bm=bm, f=action[1]: f(bm))
             menu.addAction(act)
 
-        point = event.position().toPoint() if isQt6 else event.pos()  # Qt6 documentation is wrong.
+        point = event.position().toPoint()  # Qt6 documentation is wrong.
         global_point = menu.mapToGlobal(point)
-        menu.exec_(global_point)
+        menu.exec(global_point)
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
         """make a consistent light background color for text"""
@@ -875,7 +868,7 @@ class BookMarkDisplay:
                 s = s[4:]
             return s.strip()
 
-        result: List = []
+        result: list = []
 
         def recurse_bm(node, result, ancestors=None):
 
@@ -895,7 +888,7 @@ class BookMarkDisplay:
                     url = url.replace(' ', '%20')
                 h = self.fix_text(p.h)
 
-                children: List = []
+                children: list = []
                 bm = self.Bookmark(
                     h, url, ancestors, result, children, p.v)
 
@@ -910,7 +903,7 @@ class BookMarkDisplay:
 
         return result
 
-    #@+node:tbrown.20140103082018.24102: *3* get_unl
+    #@+node:tbrown.20140103082018.24102: *3* get_unl (bookmarks.py)
     def get_unl(self, p=None):
         """get_unl - Return a UNL which is local (with_file=False)
         if self.c == self.v.context, otherwise includes the file path.
@@ -953,11 +946,12 @@ class BookMarkDisplay:
         while todo:
             links = todo.pop(0) if todo else []
             top = QtWidgets.QWidget()
-            # pylint: disable=undefined-loop-variable
-            # pylint bug, fix released: http://www.logilab.org/ticket/89092
-            # pylint: disable=undefined-variable
-            top.mouseReleaseEvent = (lambda event, links=links, row_parent=row_parent:
-                self.background_clicked(event, links, row_parent))
+
+            def top_mouseReleaseEvent(event, links=links, row_parent=row_parent) -> None:
+                self.background_clicked(event, links, row_parent)
+
+            top.mouseReleaseEvent = top_mouseReleaseEvent  # type:ignore
+
             top.setMinimumSize(10, 10)  # so there's something to click when empty
             size_policy = QtWidgets.QSizePolicy(Policy.Expanding, Policy.Expanding)
             size_policy.setHorizontalStretch(1)
@@ -983,11 +977,10 @@ class BookMarkDisplay:
                 if bm.url:
                     but.setToolTip(bm.url)
 
-                # pylint: disable=undefined-variable
-                # 'but' *is* defined.
-                but.mouseReleaseEvent = (lambda event, bm=bm, but=but:
-                    self.button_clicked(event, bm, but))
+                def button_mouseReleaseEvent(event, bm=bm, but=but) -> None:
+                    self.button_clicked(event, bm, but)
 
+                but.mouseReleaseEvent = button_mouseReleaseEvent  # type:ignore
                 layout.addWidget(but)
 
                 showing = False
@@ -1045,7 +1038,7 @@ class BookMarkDisplay:
                 def mouseReleaseHandler2(event, bm=bm, but=but):
                     self.button_clicked(event, bm, but, up=True)
 
-                but.mouseReleaseEvent = mouseReleaseHandler2
+                but.mouseReleaseEvent = mouseReleaseHandler2  # type:ignore
                 next_row.addWidget(but)
                 # rotate to start of layout, FlowLayout() has no insertWidget()
                 next_row.itemList[:] = next_row.itemList[-1:] + next_row.itemList[:-1]
@@ -1166,7 +1159,7 @@ class BookMarkDisplayProvider:
     def ns_provides(self):
         return [('Bookmarks', '_leo_bookmarks_show')]
 
-    #@+node:tbrown.20110712121053.19749: *3* ns_provide
+    #@+node:tbrown.20110712121053.19749: *3* ns_provide (bookmarks.py)
     def ns_provide(self, id_):
         if id_.startswith('_leo_bookmarks_show'):
 
@@ -1197,8 +1190,7 @@ class BookMarkDisplayProvider:
                                 factory.setTabForCommander(c)
 
                         g.es("NOTE: bookmarks for this outline\nare in a different outline:\n  '%s'" % file_)
-
-                    other_p = g.findUNL(UNL.split('-->'), other_c)
+                    other_p = g.findAnyUnl(UNL, other_c)
                     if other_p:
                         v = other_p.v
                     else:

@@ -102,13 +102,15 @@ plugins. Here are some points of interest:
 """
 #@-<< docstring >>
 # Written by TNB.
-from typing import Any, List, Tuple
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import DialogCode, Orientation
-#
+
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+
+QWidget = QtWidgets.QWidget
 
 #@+others
 #@+node:tbrown.20091009210724.10975: ** init
@@ -129,7 +131,7 @@ def onCreate(tag, key):
 #@+node:tbrown.20091103080354.1400: ** class AttributeGetter
 class AttributeGetter:
 
-    implementations: List[Any] = []
+    implementations: list[Any] = []
 
     typeMap = {
         '_int': int,
@@ -212,7 +214,7 @@ class AttributeGetterUA(AttributeGetter):
         v.uA['inventory']['_edit']['_int']['cars'] respectively
         """
 
-        ans: List[Tuple] = []
+        ans: list[tuple] = []
         d = v.u
 
         self.recSearch(d, [], ans)
@@ -522,6 +524,7 @@ class attrib_edit_Controller:
         # self.guiMode = c.config.getString('attrib-edit-placement') or 'tab'
         self.guiMode = 'tab'
         # body mode in not compatible with nested_splitter, causes hard crash
+        self.holder: Any
         if self.guiMode == 'body':
             self.holder = QtWidgets.QSplitter(Orientation.Vertical)
             self.holder.setMinimumWidth(300)
@@ -697,9 +700,11 @@ class attrib_edit_Controller:
             g.es('No attributes seen (yet)')
             return
         dat.sort(key=lambda x: x[0])
+
+        res: QWidget
         res = ListDialog(self.parent, "Enter attribute path",
             "Enter path to attribute (space separated words)", dat)
-        res.exec_()
+        res.exec()
         if res.result() == DialogCode.Rejected:
             return
 
@@ -709,7 +714,7 @@ class attrib_edit_Controller:
                 res = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question,
                     "Really delete attributes?", "Really delete attributes?",
                     QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel, self.parent)
-                if res.exec_() == QtWidgets.QMessageBox.Cancel:
+                if res.exec() == QtWidgets.QMessageBox.Cancel:
                     return
                 break
 
@@ -732,7 +737,7 @@ class attrib_edit_Controller:
             "Enter path to attribute (space separated words)",
             modes)
 
-        res.exec_()
+        res.exec()
         if res.result() == DialogCode.Rejected:
             return
 

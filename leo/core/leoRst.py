@@ -2,22 +2,24 @@
 #@+node:ekr.20090502071837.3: * @file leoRst.py
 #@+<< leoRst docstring >>
 #@+node:ekr.20090502071837.4: ** << leoRst docstring >>
-"""Support for restructured text (rST), adapted from rst3 plugin.
+"""
+Support for restructured text (rST).
 
-For full documentation, see: http://leoeditor.com/rstplugin3.html
+Documentation: https://leo-editor.github.io/leo-editor/tutorial-rst3.html
 
-To generate documents from rST files, Python's docutils_ module must be
-installed. The code will use the SilverCity_ syntax coloring package if is is
-available."""
+Requires python's docutils_ module to generate documents from rST files.
+https://pypi.org/project/docutils/
+"""
 #@-<< leoRst docstring >>
 #@+<< leoRst imports >>
 #@+node:ekr.20100908120927.5971: ** << leoRst imports >>
 from __future__ import annotations
+from collections.abc import Callable
 import io
 import os
 import re
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, Set, TYPE_CHECKING
+from typing import Any, Generator, Optional, TYPE_CHECKING
 # Third-part imports...
 try:
     import docutils
@@ -39,7 +41,7 @@ if 'plugins' in getattr(g.app, 'debug', []):
 #@+node:ekr.20220901082236.1: ** << leoRst annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
 #@-<< leoRst annotations >>
 
@@ -65,18 +67,18 @@ class RstCommands:
         self.n_docutils = 0  # Number of docutils files written.
 
         # Http support for HtmlParserClass.  See http_addNodeMarker.
-        self.anchor_map: Dict[str, Position] = {}  # Keys are anchors. Values are positions
-        self.http_map: Dict[str, Position] = {}  # Keys are named hyperlink targets.  Value are positions.
+        self.anchor_map: dict[str, Position] = {}  # Keys are anchors. Values are positions
+        self.http_map: dict[str, Position] = {}  # Keys are named hyperlink targets.  Value are positions.
         self.nodeNumber = 0  # Unique node number.
 
         # For writing.
         self.at_auto_underlines = ''  # Full set of underlining characters.
         self.at_auto_write = False  # True: in @auto-rst importer.
-        self.changed_positions: List[Position] = []
-        self.changed_vnodes: Set[VNode] = set()
+        self.changed_positions: list[Position] = []
+        self.changed_vnodes: set[VNode] = set()
         self.encoding = 'utf-8'  # From any @encoding directive.
         self.path = ''  # The path from any @path directive.
-        self.result_list: List[str] = []  # The intermediate results.
+        self.result_list: list[str] = []  # The intermediate results.
         self.root: Position = None  # The @rst node being processed.
 
         # Default settings.
@@ -125,7 +127,7 @@ class RstCommands:
     #@+node:ekr.20210403150303.1: *4* rst.rst-convert-legacy-outline
     @cmd('rst-convert-legacy-outline')
     @cmd('convert-legacy-rst-outline')
-    def convert_legacy_outline(self, event: Event = None) -> None:
+    def convert_legacy_outline(self, event: LeoKeyEvent = None) -> None:
         """
         Convert @rst-preformat nodes and `@ @rst-options` doc parts.
         """
@@ -163,7 +165,7 @@ class RstCommands:
         print(f"{old_h} => {p.h}")
     #@+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
     @cmd('rst3')
-    def rst3(self, event: Event = None) -> int:
+    def rst3(self, event: LeoKeyEvent = None) -> int:
         """Write all @rst nodes."""
         t1 = time.time()
         self.n_intermediate = self.n_docutils = 0
@@ -380,9 +382,10 @@ class RstCommands:
         i = s.find('<title></title>')
         if i == -1:
             return s
-        m = re.search(r'<h1>([^<]*)</h1>', s)
-        if not m:
-            m = re.search(r'<h1><[^>]+>([^<]*)</a></h1>', s)
+        m = (
+            re.search(r'<h1>([^<]*)</h1>', s) or
+            re.search(r'<h1><[^>]+>([^<]*)</a></h1>', s)
+        )
         if m:
             s = s.replace('<title></title>',
                 f"<title>{m.group(1)}</title>")
@@ -391,15 +394,15 @@ class RstCommands:
     def computeOutputFileName(self, fn: str) -> str:
         """Return the full path to the output file."""
         c = self.c
-        openDirectory = c.frame.openDirectory
+        openDirectory = g.os_path_dirname(c.fileName())
         if self.default_path:
-            path = g.os_path_finalize_join(self.path, self.default_path, fn)
+            path = g.finalize_join(self.path, self.default_path, fn)
         elif self.path:
-            path = g.os_path_finalize_join(self.path, fn)
+            path = g.finalize_join(self.path, fn)
         elif openDirectory:
-            path = g.os_path_finalize_join(self.path, openDirectory, fn)
+            path = g.finalize_join(self.path, openDirectory, fn)
         else:
-            path = g.os_path_finalize_join(fn)
+            path = g.finalize_join(fn)
         return path
     #@+node:ekr.20100813041139.5914: *5* rst.createDirectoryForFile
     def createDirectoryForFile(self, fn: str) -> bool:
@@ -412,7 +415,7 @@ class RstCommands:
         """
         c = self.c
         theDir, junk = g.os_path_split(fn)
-        theDir = g.os_path_finalize(theDir)  # 1341
+        theDir = g.finalize(theDir)
         if g.os_path_exists(theDir):
             return True
         if c and c.config and c.config.getBool('create-nonexistent-directories', default=False):
@@ -446,11 +449,12 @@ class RstCommands:
     #@+node:ekr.20090502071837.65: *5* rst.writeToDocutils & helper
     def writeToDocutils(self, s: str, ext: str) -> Optional[str]:
         """Send s to docutils using the writer implied by ext and return the result."""
+        c = self.c
         if not docutils:
             g.error('writeToDocutils: docutils not present')
             return None
-        join = g.os_path_finalize_join
-        openDirectory = self.c.frame.openDirectory
+        join = g.finalize_join
+        openDirectory = g.os_path_dirname(c.fileName())
         overrides = {'output_encoding': self.encoding}
         #
         # Compute the args list if the stylesheet path does not exist.
@@ -522,7 +526,7 @@ class RstCommands:
             g.es_exception()
         return result
     #@+node:ekr.20090502071837.66: *6* rst.handleMissingStyleSheetArgs
-    def handleMissingStyleSheetArgs(self, s: str = None) -> Dict[str, str]:
+    def handleMissingStyleSheetArgs(self, s: str = None) -> dict[str, str]:
         """
         Parse the publish_argv_for_missing_stylesheets option,
         returning a dict containing the parsed args.
@@ -686,7 +690,6 @@ class RstCommands:
         """
         if self.user_filter_h and not self.at_auto_write:
             try:
-                # pylint: disable=not-callable
                 return self.user_filter_h(c, p)
             except Exception:
                 g.es_exception()
@@ -728,7 +731,7 @@ class RstCommands:
         """Concatenate all strings in self.result, ensuring exactly one blank line between strings."""
         return ''.join(f"{s.rstrip()}\n\n" for s in self.result_list if s.strip())
     #@+node:ekr.20090502071837.43: *4* rst.dumpDict
-    def dumpDict(self, d: Dict[str, str], tag: str) -> None:
+    def dumpDict(self, d: dict[str, str], tag: str) -> None:
         """Dump the given settings dict."""
         g.pr(tag + '...')
         for key in sorted(d):
@@ -742,8 +745,7 @@ class RstCommands:
         """Issue a report to the log pane."""
         if self.silent:
             return
-        name = g.os_path_finalize(name)  # 1341
-        g.pr(f"wrote: {name}")
+        g.pr(f"wrote: {g.finalize(name)}")
     #@+node:ekr.20090502071837.92: *4* rst.rstComment
     def rstComment(self, s: str) -> str:
         return f".. {s}"

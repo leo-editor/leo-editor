@@ -37,13 +37,11 @@ Requires the whoosh library ('easy_install whoosh') to do full text searches.
 #@+node:ekr.20140920041848.17949: ** << imports >> (bigdash.py)
 import os
 import sys
-from typing import Dict
+from typing import Any
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt5, isQt6, QtCore, QtWidgets, QtWebKitWidgets
+from leo.core.leoQt import QtCore, QtWidgets
 # This code no longer uses leo.plugins.leofts.
 try:
-    # pylint: disable=no-name-in-module
-    # index,fields,qparser,analysis *are* defined.
     import whoosh
     from whoosh.index import create_in, open_dir
     from whoosh.fields import TEXT, ID, Schema
@@ -51,7 +49,7 @@ try:
     from whoosh.analysis import RegexTokenizer, LowercaseFilter, StopFilter
 except ImportError:
     whoosh = None
-#
+
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
@@ -101,33 +99,12 @@ class BigDash:
         self.w = w = QtWidgets.QWidget()
         w.setWindowTitle("Leo search")
         lay = QtWidgets.QVBoxLayout()
-        if (
-            # Workaround #1114: https://github.com/leo-editor/leo-editor/issues/1114
-            not QtWebKitWidgets
-            # Workaround #304: https://github.com/leo-editor/leo-editor/issues/304
-            or isQt5 and sys.platform.startswith('win')
-        ):
-            self.web = web = QtWidgets.QTextBrowser(w)
-        else:
-            self.web = web = QtWebKitWidgets.QWebView(w)
-        try:
-            # PyQt4
-            self.web.linkClicked.connect(self._lnk_handler)
-            # AttributeError: 'QWebEngineView' object has no attribute 'linkClicked'
-        except AttributeError:
-            # PyQt5
-            pass  # Not clear what to do.
+        self.web = web = QtWidgets.QTextBrowser(w)
         self.led = led = QtWidgets.QLineEdit(w)
         led.returnPressed.connect(self.docmd)
         lay.addWidget(led)
         lay.addWidget(web)
-        self.lc = lc = LeoConnector()
-        try:
-            web.page().mainFrame().addToJavaScriptWindowObject("leo", lc)
-            web.page().setLinkDelegationPolicy(QtWebKitWidgets.QWebPage.DelegateAllLinks)
-        except AttributeError:
-            # PyQt5
-            pass  # Not clear what to do.
+        self.lc = LeoConnector()
         w.setLayout(lay)
         self.show_help()
 
@@ -136,6 +113,7 @@ class BigDash:
                 self.show_help()
                 return True
             return False
+
         self.add_cmd_handler(help_handler)
         self.led.setFocus()
     #@+node:ekr.20140919160020.17910: *3* docmd
@@ -226,7 +204,7 @@ class GlobalSearch:
         """]
         fts_max_hits = self.fts_max_hits
         res = fts.search(q, fts_max_hits)
-        outlines: Dict = {}
+        outlines: dict = {}
         for r in res:
             if '#' in r["parent"]:
                 file_name, junk = r["parent"].split('#', 1)
@@ -349,7 +327,7 @@ class GlobalSearch:
             return
         s = ss[2:]
         for ndxc, c2 in enumerate(g.app.commanders()):
-            hits = c2.find_b(s)
+            hits: Any = c2.find_b(s)  # type:ignore
             for ndxh, h in enumerate(hits):
                 b = h[0].b
                 mlines = self.matchlines(b, h[1])  # [1] Contains matchiter
@@ -394,8 +372,7 @@ class GlobalSearch:
         parts = unl.split("#", 1)
         c = g.openWithFileName(parts[0])
         if len(parts) > 1:
-            segs = parts[1].split("-->")
-            g.findUNL(segs, c)
+            g.findAnyUnl(parts[1], c)
     #@+node:ekr.20140919160020.17899: *3* show
     def show(self):
         """Show the global search window."""
@@ -488,10 +465,8 @@ class LeoFts:
     #@+node:ekr.20140920041848.17945: *3* fts.statistics
     def statistics(self):
         r = {}
-        # pylint: disable=no-member
         with self.ix.searcher() as s:
             r['documents'] = list(s.lexicon("doc"))
-        # print("stats: %s" % r)
         return r
     #@+node:ekr.20140920041848.17946: *3* fts.search
     def search(self, searchstring, limit=30):
@@ -575,10 +550,7 @@ class GnxCache:
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     bd = GlobalSearch()
-    if isQt6:
-        sys.exit(app.exec())
-    else:
-        sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 #@@language python
 #@@tabwidth -4

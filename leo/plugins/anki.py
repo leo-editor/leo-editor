@@ -31,6 +31,8 @@ act-on-node`. This pushes the card to AnkiConnect. If any errors happen, a child
 to `@anki` called `@anki error` is populated with the relevant error details.
 """
 
+# broad-exception-raised: Not valid in later pylints.
+
 import leo.core.leoGlobals as g
 from leo.core import leoPlugins
 
@@ -56,13 +58,13 @@ def _invoke(action, **params):
     requestJson = json.dumps(_request(action, **params)).encode('utf-8')
     response = json.load(urllib.request.urlopen(urllib.request.Request('http://localhost:8765', requestJson)))
     if len(response) != 2:
-        raise Exception('response has an unexpected number of fields')
+        raise TypeError('response has an unexpected number of fields')
     if 'error' not in response:
-        raise Exception('response is missing required error field')
+        raise TypeError('response is missing required error field')
     if 'result' not in response:
-        raise Exception('response is missing required result field')
+        raise TypeError('response is missing required result field')
     if response['error'] is not None:
-        raise Exception(response['error'])
+        raise TypeError(response['error'])
     return response['result']
 
 

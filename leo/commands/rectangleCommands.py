@@ -4,13 +4,14 @@
 #@+<< rectangleCommands imports & annotations >>
 #@+node:ekr.20150514050446.1: ** << rectangleCommands imports & annotations >>
 from __future__ import annotations
-from typing import Callable, List, Tuple, TYPE_CHECKING
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
 #@-<< rectangleCommands imports & annotations >>
 
 def cmd(name: str) -> Callable:
@@ -26,8 +27,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         """Ctor for RectangleCommandsClass."""
         # pylint: disable=super-init-not-called
         self.c = c
-        self.theKillRectangle: List[str] = []  # Do not re-init this!
-        self.stringRect: Tuple[int, int, int, int] = None
+        self.theKillRectangle: list[str] = []  # Do not re-init this!
+        self.stringRect: tuple[int, int, int, int] = None
         self.commandsDict = {
             'c': ('clear-rectangle', self.clearRectangle),
             'd': ('delete-rectangle', self.deleteRectangle),
@@ -38,7 +39,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             'y': ('yank-rectangle', self.yankRectangle),
         }
     #@+node:ekr.20150514063305.451: *3* check
-    def check(self, event: Event, warning: str = 'No rectangle selected') -> bool:
+    def check(self, event: LeoKeyEvent, warning: str = 'No rectangle selected') -> bool:
         """
         Return True if there is a selection.
         Otherwise, return False and issue a warning.
@@ -47,7 +48,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.453: *3* rectangle.Entries
     #@+node:ekr.20150514063305.454: *4* clearRectangle
     @cmd('rectangle-clear')
-    def clearRectangle(self, event: Event) -> None:
+    def clearRectangle(self, event: LeoKeyEvent) -> None:
         """Clear the rectangle defined by the start and end of selected text."""
         w = self.editWidget(event)
         if not w or not self.check(event):
@@ -67,7 +68,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         self.endCommand()
     #@+node:ekr.20150514063305.455: *4* closeRectangle
     @cmd('rectangle-close')
-    def closeRectangle(self, event: Event) -> None:
+    def closeRectangle(self, event: LeoKeyEvent) -> None:
         """Delete the rectangle if it contains nothing but whitespace.."""
         w = self.editWidget(event)
         if not w or not self.check(event):
@@ -92,7 +93,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         self.endCommand()
     #@+node:ekr.20150514063305.456: *4* deleteRectangle
     @cmd('rectangle-delete')
-    def deleteRectangle(self, event: Event) -> None:
+    def deleteRectangle(self, event: LeoKeyEvent) -> None:
         """Delete the rectangle defined by the start and end of selected text."""
         w = self.editWidget(event)
         if not w or not self.check(event):
@@ -111,7 +112,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         self.endCommand()
     #@+node:ekr.20150514063305.457: *4* killRectangle
     @cmd('rectangle-kill')
-    def killRectangle(self, event: Event) -> None:
+    def killRectangle(self, event: LeoKeyEvent) -> None:
         """Kill the rectangle defined by the start and end of selected text."""
         w = self.editWidget(event)
         if not w or not self.check(event):
@@ -134,7 +135,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         self.endCommand()
     #@+node:ekr.20150514063305.458: *4* openRectangle
     @cmd('rectangle-open')
-    def openRectangle(self, event: Event) -> None:
+    def openRectangle(self, event: LeoKeyEvent) -> None:
         """
         Insert blanks in the rectangle defined by the start and end of selected
         text. This pushes the previous contents of the rectangle rightward.
@@ -157,7 +158,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         self.endCommand()
     #@+node:ekr.20150514063305.459: *4* stringRectangle
     @cmd('rectangle-string')
-    def stringRectangle(self, event: Event) -> None:
+    def stringRectangle(self, event: LeoKeyEvent) -> None:
         """
         Prompt for a string, then replace the contents of a rectangle
         with a string on each line.
@@ -175,14 +176,13 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             k.setLabelBlue('String rectangle: ')
             k.get1Arg(event, handler=self.stringRectangle1)
 
-    def stringRectangle1(self, event: Event) -> None:
+    def stringRectangle1(self, event: LeoKeyEvent) -> None:
         c, k = self.c, self.c.k
         k.clearState()
         k.resetLabel()
         c.bodyWantsFocus()
         w = self.w
         self.beginCommand(w, 'string-rectangle')
-        # pylint: disable=unpacking-non-sequence
         r1, r2, r3, r4 = self.stringRect
         s = w.getAllText()
         for r in range(r1, r3 + 1):
@@ -199,7 +199,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         c.frame.body.recolor(c.p)
     #@+node:ekr.20150514063305.460: *4* yankRectangle
     @cmd('rectangle-yank')
-    def yankRectangle(self, event: Event) -> None:
+    def yankRectangle(self, event: LeoKeyEvent) -> None:
         """Yank into the rectangle defined by the start and end of selected text."""
         # c = self.c
         k = self.c.k

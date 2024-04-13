@@ -7,7 +7,7 @@ import leo, string, re
 
 #@+others
 #@+node:EKR.20040502195118.1:changeAll
-def changeAll ( commander, findPat, changePat, bodyFlag = 1 ):
+def changeAll(commander, findPat, changePat, bodyFlag=1):
     """
     changeAll       make changes in an entire Leo outline.
 
@@ -25,7 +25,7 @@ def changeAll ( commander, findPat, changePat, bodyFlag = 1 ):
 #@nonl
 #@-node:EKR.20040502195118.1:changeAll
 #@+node:EKR.20040502195118.2:changeNext
-def changeNext ( v, pos, findPat, changePat, bodyFlag = 1 ):
+def changeNext(v, pos, findPat, changePat, bodyFlag=1):
     """
     changeNext:     use string.find() to change text in a Leo outline.
 
@@ -49,19 +49,19 @@ def changeNext ( v, pos, findPat, changePat, bodyFlag = 1 ):
     if bodyFlag:
         s = v.bodyString()
         # s[pos:pos+n] = changePat
-        s = s[:pos] + changePat + s[pos+n:]
+        s = s[:pos] + changePat + s[pos + n :]
         v.setBodyStringOrPane(s)
     else:
         s = v.headString()
         # s[pos:pos+n] = changePat
-        s = s[:pos] + changePat + s[pos+n:]
+        s = s[:pos] + changePat + s[pos + n :]
         v.setHeadStringOrHeadline(s)
         print("setting head string: ", result)
     return v, pos
 #@nonl
 #@-node:EKR.20040502195118.2:changeNext
 #@+node:EKR.20040502195118.3:changePrev
-def changePrev ( v, pos, findPat, changePat, bodyFlag = 1 ):
+def changePrev(v, pos, findPat, changePat, bodyFlag=1):
     """
     changePrev:     use string.rfind() to change text in a Leo outline.
 
@@ -85,18 +85,18 @@ def changePrev ( v, pos, findPat, changePat, bodyFlag = 1 ):
     if bodyFlag:
         s = v.bodyString()
         # s[pos:pos+n] = changePat
-        s = s[:pos] + changePat + s[pos+n:]
+        s = s[:pos] + changePat + s[pos + n :]
         v.setBodyStringOrPane(s)
     else:
         s = v.headString()
-        #s[pos:pos+n] = changePat
-        s = s[:pos] + changePat + s[pos+n:]
+        # s[pos:pos+n] = changePat
+        s = s[:pos] + changePat + s[pos + n :]
         v.setHeadStringOrHeadline(s)
     return v, pos
 #@nonl
 #@-node:EKR.20040502195118.3:changePrev
 #@+node:EKR.20040502195118.4:findAll
-def findAll(c,pattern,bodyFlag=1):
+def findAll(c, pattern, bodyFlag=1):
     """
     findAll         search an entire Leo outline for a pattern.
 
@@ -109,17 +109,17 @@ def findAll(c,pattern,bodyFlag=1):
     """
     v = c.rootVnode()
     n = len(pattern)
-    result = [] ; pos = 0
+    result = []; pos = 0
     while v != None:
-        v, pos = findNext(v,pos,pattern,bodyFlag)
+        v, pos = findNext(v, pos, pattern, bodyFlag)
         if v:
-            result.append ((v, pos),)
+            result.append((v, pos),)
         pos = pos + n
     return result
 #@nonl
 #@-node:EKR.20040502195118.4:findAll
 #@+node:EKR.20040502195118.5:findNext
-def findNext ( v, pos, pattern, bodyFlag = 1 ):
+def findNext(v, pos, pattern, bodyFlag=1):
     """
     findNext:       use string.find() to find a pattern in a Leo outline.
 
@@ -139,7 +139,7 @@ def findNext ( v, pos, pattern, bodyFlag = 1 ):
             s = v.bodyString()
         else:
             s = v.headString()
-        pos = s.find(pattern,pos )
+        pos = s.find(pattern, pos)
         if pos != -1:
             return v, pos
         v = v.threadNext()
@@ -148,7 +148,7 @@ def findNext ( v, pos, pattern, bodyFlag = 1 ):
 #@nonl
 #@-node:EKR.20040502195118.5:findNext
 #@+node:EKR.20040502195118.6:findPrev
-def findPrev ( v, pos, pattern, bodyFlag = 1 ):
+def findPrev(v, pos, pattern, bodyFlag=1):
     """
     findPrev:       use string.rfind() to find a pattern in a Leo outline.
 
@@ -168,16 +168,16 @@ def findPrev ( v, pos, pattern, bodyFlag = 1 ):
             s = v.bodyString()
         else:
             s = v.headString()
-        pos = s.rfind(pattern,0,pos)
+        pos = s.rfind(pattern, 0, pos)
         if pos != -1:
             return v, pos
-        v  = v.threadBack()
+        v = v.threadBack()
         pos = -1
     return None, 0
 #@nonl
 #@-node:EKR.20040502195118.6:findPrev
 #@+node:EKR.20040502195118.7:reChangeAll
-def reChangeAll ( commander, findPat, changePat, bodyFlag, reFlags = None ):
+def reChangeAll(commander, findPat, changePat, bodyFlag, reFlags=None):
     """
     reChangeAll: make changes in an entire Leo outline using re module.
 
@@ -197,7 +197,7 @@ def reChangeAll ( commander, findPat, changePat, bodyFlag, reFlags = None ):
 #@nonl
 #@-node:EKR.20040502195118.7:reChangeAll
 #@+node:EKR.20040502195118.8:reChangeNext
-def reChangeNext ( v, pos, findPat, changePat, bodyFlag, reFlags = None ):
+def reChangeNext(v, pos, findPat, changePat, bodyFlag, reFlags=None):
     """
     reChangeNext: use re.search() to change text in a Leo outline.
 
@@ -223,18 +223,18 @@ def reChangeNext ( v, pos, findPat, changePat, bodyFlag, reFlags = None ):
         s = v.bodyString()
         print(s, findPat, changePat)
         # s[pos:pos+n] = changePat
-        s = s[:pos] + changePat + s[pos+n:]
+        s = s[:pos] + changePat + s[pos + n :]
         v.setBodyStringOrPane(s)
     else:
         s = v.headString()
         # s[pos:pos+n] = changePat
-        s = s[:pos] + changePat + s[pos+n:]
+        s = s[:pos] + changePat + s[pos + n :]
         v.setHeadStringOrHeadline(s)
     return v, mo, pos
 #@nonl
 #@-node:EKR.20040502195118.8:reChangeNext
 #@+node:EKR.20040502195118.9:reChangePrev
-def reChangePrev ( v, pos, findPat, changePat, bodyFlag, reFlags = None ):
+def reChangePrev(v, pos, findPat, changePat, bodyFlag, reFlags=None):
     """
     reChangePrev: use re.search() to change text in a Leo outline.
 
@@ -259,18 +259,18 @@ def reChangePrev ( v, pos, findPat, changePat, bodyFlag, reFlags = None ):
     if bodyFlag:
         s = v.bodyString()
         # s[pos:pos+n] = changePat
-        s = s[:pos] + changePat + s[pos+n:]
+        s = s[:pos] + changePat + s[pos + n :]
         v.setBodyStringOrPane(s)
     else:
         s = v.headString()
         # s[pos:pos+n] = changePat
-        s = s[:pos] + changePat + s[pos+n:]
+        s = s[:pos] + changePat + s[pos + n :]
         v.setHeadStringOrHeadline(s)
     return v, mo, pos
 #@nonl
 #@-node:EKR.20040502195118.9:reChangePrev
 #@+node:EKR.20040502195118.10:reFindAll
-def reFindAll(c,findPat,bodyFlag,reFlags=None):
+def reFindAll(c, findPat, bodyFlag, reFlags=None):
     """
     reFindAll       search an entire Leo outline using re module.
 
@@ -284,17 +284,17 @@ def reFindAll(c,findPat,bodyFlag,reFlags=None):
     """
     v = c.rootVnode()
     n = len(findPat)
-    result = [] ; pos = 0
+    result = []; pos = 0
     while v != None:
-        v, mo, pos = reFindNext(v,pos,findPat,bodyFlag,reFlags)
+        v, mo, pos = reFindNext(v, pos, findPat, bodyFlag, reFlags)
         if v != None:
-            result.append ( (v,mo,pos) )
+            result.append((v, mo, pos))
         pos = pos + n
     return result
 #@nonl
 #@-node:EKR.20040502195118.10:reFindAll
 #@+node:EKR.20040502195118.11:reFindNext
-def reFindNext ( v, pos, pattern, bodyFlag, reFlags = None ):
+def reFindNext(v, pos, pattern, bodyFlag, reFlags=None):
     """
     reFindNext:     use re.search() to find pattern in a Leo outline.
 
@@ -317,9 +317,9 @@ def reFindNext ( v, pos, pattern, bodyFlag, reFlags = None ):
         else:
             s = v.headString()
         if reFlags == None:
-            mo = re.search ( pattern, s[pos:] )
+            mo = re.search(pattern, s[pos:])
         else:
-            mo = re.search ( pattern, s[pos:], reFlags )
+            mo = re.search(pattern, s[pos:], reFlags)
         if mo != None:
             return v, mo, pos + mo.start()
         v = v.threadNext()
@@ -328,7 +328,7 @@ def reFindNext ( v, pos, pattern, bodyFlag, reFlags = None ):
 #@nonl
 #@-node:EKR.20040502195118.11:reFindNext
 #@+node:EKR.20040502195118.12:reFindPrev
-def reFindPrev ( v, pos, pattern, bodyFlag, reFlags = None ):
+def reFindPrev(v, pos, pattern, bodyFlag, reFlags=None):
     """
     reFindPrev:     use re.search() to find pattern in a Leo outline.
 
@@ -354,11 +354,11 @@ def reFindPrev ( v, pos, pattern, bodyFlag, reFlags = None ):
             s = v.headString()
         # Forward search through text...
         if reFlags == None:
-            mo = re.search ( pattern, s[pos:] )
+            mo = re.search(pattern, s[pos:])
         else:
-            mo = re.search ( pattern, s[pos:], reFlags )
+            mo = re.search(pattern, s[pos:], reFlags)
         if mo != None:
-            return v, mo, pos+mo.start()
+            return v, mo, pos + mo.start()
         # Reverse search through vnode.
         v = v.threadBack()
         pos = 0
@@ -366,7 +366,7 @@ def reFindPrev ( v, pos, pattern, bodyFlag, reFlags = None ):
 #@nonl
 #@-node:EKR.20040502195118.12:reFindPrev
 #@+node:EKR.20040502195118.13:lineAtPos
-def lineAtPos ( s, pos ):
+def lineAtPos(s, pos):
     """
     lineAtPos: return the line of a string containing the given index.
     s               a string
@@ -376,7 +376,7 @@ def lineAtPos ( s, pos ):
     if len(s) < 1:
         return ""
     if pos > len(s):
-        pos = len(s)-1
+        pos = len(s) - 1
 
     while pos > 0:
         if s[pos] == '\n':
@@ -391,7 +391,7 @@ def lineAtPos ( s, pos ):
 #@nonl
 #@-node:EKR.20040502195118.13:lineAtPos
 #@+node:EKR.20040502195118.14:printFindList
-def printFindList( findList, bodyFlag = 1 ):
+def printFindList(findList, bodyFlag=1):
     """
     printFindList:  Print matching lines from the list.
 
@@ -399,7 +399,7 @@ def printFindList( findList, bodyFlag = 1 ):
     Only the line containing the match is printed.
     Lines are printed once for each match found on the line.
     """
-    for v,pos in findList:
+    for v, pos in findList:
         if v != None:
             if bodyFlag:
                 s = v.bodyString()

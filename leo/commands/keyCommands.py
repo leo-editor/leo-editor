@@ -11,7 +11,7 @@ from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
 #@-<< keyCommands imports and abbreviations >>
 
 #@+others
@@ -21,7 +21,7 @@ class KeyHandlerCommandsClass(BaseEditCommandsClass):
     #@+others
     #@+node:ekr.20150514063305.406: *3* menuShortcutPlaceHolder
     @g.command('menu-shortcut')
-    def menuShortcutPlaceHolder(self, event: Event = None) -> None:
+    def menuShortcutPlaceHolder(self, event: LeoKeyEvent = None) -> None:
         """
         This will never be called.
         A placeholder for the show-bindings command.

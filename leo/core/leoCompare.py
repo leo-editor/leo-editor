@@ -7,12 +7,12 @@ from __future__ import annotations
 import difflib
 import filecmp
 import os
-from typing import Any, BinaryIO, Dict, List, Optional, Tuple, TYPE_CHECKING
+from typing import Any, BinaryIO, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent as LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
 #@-<< leoCompare imports & annotations >>
 
@@ -152,7 +152,7 @@ class BaseLeoCompare:
             return
         self.compare_two_files(name1, name2)
     #@+node:ekr.20180211123531.1: *3* compare_list_of_files (entry for scripts)
-    def compare_list_of_files(self, aList1: List[str]) -> None:
+    def compare_list_of_files(self, aList1: list[str]) -> None:
 
         aList = list(set(aList1))
         while len(aList) > 1:
@@ -471,27 +471,26 @@ class CompareLeoOutlines:
         self.path2: str = None
     #@+others
     #@+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
-    def diff_list_of_files(self, aList: List[str], visible: bool = True) -> None:
-        """The main entry point for scripts."""
+    def diff_list_of_files(self, aList: list[str], visible: bool = True) -> None:
+        """
+        The main entry point for scripts.
+        """
+        c = self.c
+        u = c.undoer
         if len(aList) < 2:
             g.trace('Not enough files in', repr(aList))
             return
-        c, u = self.c, self.c.undoer
-        undoType = 'Diff Leo files'
-        u.beforeChangeGroup(c.p, undoType)
-
-        self.root = self.create_root(aList)  # creates it's own undo bead
-
+        undoType = 'diff-files'
+        c.selectPosition(c.lastTopLevel())
+        undoData = u.beforeInsertNode(c.p)
+        self.root = self.create_root(aList)
         self.visible = visible
         while len(aList) > 1:
             path1 = aList[0]
             aList = aList[1:]
             for path2 in aList:
-                undoData = u.beforeChangeTree(self.root)
                 self.diff_two_files(path1, path2)  # adds to self.root
-                u.afterChangeTree(self.root, undoType, undoData)
-
-        u.afterChangeGroup(c.p, undoType=undoType)
+        u.afterInsertNode(self.root, undoType, undoData)
         self.finish()
     #@+node:ekr.20180211170333.3: *3* loc.diff_two_files
     def diff_two_files(self, fn1: str, fn2: str) -> None:
@@ -514,7 +513,7 @@ class CompareLeoOutlines:
                 f"@language {c2.target_language}\n")
     #@+node:ekr.20180211170333.4: *3* loc.Utils
     #@+node:ekr.20180211170333.5: *4* loc.compute_dicts
-    def compute_dicts(self, c1: Cmdr, c2: Cmdr) -> Tuple[Dict, Dict, Dict]:
+    def compute_dicts(self, c1: Cmdr, c2: Cmdr) -> tuple[dict, dict, dict]:
         """Compute inserted, deleted, changed dictionaries."""
         d1 = {v.fileIndex: v for v in c1.all_unique_nodes()}
         d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
@@ -531,7 +530,7 @@ class CompareLeoOutlines:
                     changed[key] = (v1, v2)
         return added, deleted, changed
     #@+node:ekr.20180211170333.6: *4* loc.create_compare_node
-    def create_compare_node(self, c1: Cmdr, c2: Cmdr, d: Dict[str, Tuple[VNode, VNode]], kind: str) -> None:
+    def create_compare_node(self, c1: Cmdr, c2: Cmdr, d: dict[str, tuple[VNode, VNode]], kind: str) -> None:
         """Create nodes describing the changes."""
         if not d:
             return
@@ -570,25 +569,19 @@ class CompareLeoOutlines:
                 p.h = v.h
                 p.b = v.b
     #@+node:ekr.20180211170333.7: *4* loc.create_file_node
-    def create_file_node(self, diff_list: List, fn1: str, fn2: str) -> Position:
+    def create_file_node(self, diff_list: list, fn1: str, fn2: str) -> Position:
         """Create an organizer node for the file."""
         p = self.root.insertAsLastChild()
         p.h = f"{g.shortFileName(fn1).strip()}, {g.shortFileName(fn2).strip()}"
         p.b = ''.join(diff_list)
         return p
     #@+node:ekr.20180211170333.8: *4* loc.create_root
-    def create_root(self, aList: List[str]) -> Position:
+    def create_root(self, aList: list[str]) -> Position:
         """Create the top-level organizer node describing all the diffs."""
-        c, u = self.c, self.c.undoer
-        undoType = 'Create diff root node'  # Same undoType is reused for all inner undos
-        c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
-        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
-
+        c = self.c
         p = c.lastTopLevel().insertAfter()
         p.h = 'diff-leo-files'
         p.b = '\n'.join(aList) + '\n'
-
-        u.afterInsertNode(p, undoType, undoData)
         return p
     #@+node:ekr.20180211170333.10: *4* loc.finish
     def finish(self) -> None:
@@ -633,7 +626,7 @@ class CompareLeoOutlines:
 #@+node:ekr.20180214041049.1: ** Top-level commands and helpers
 #@+node:ekr.20180213104556.1: *3* @g.command(diff-and-open-leo-files)
 @g.command('diff-and-open-leo-files')
-def diff_and_open_leo_files(event: Event) -> None:
+def diff_and_open_leo_files(event: LeoKeyEvent) -> None:
     """
     Open a dialog prompting for two or more .leo files.
 
@@ -646,7 +639,7 @@ def diff_and_open_leo_files(event: Event) -> None:
     )
 #@+node:ekr.20180213040339.1: *3* @g.command(diff-leo-files)
 @g.command('diff-leo-files')
-def diff_leo_files(event: Event) -> None:
+def diff_leo_files(event: LeoKeyEvent) -> None:
     """
     Open a dialog prompting for two or more .leo files.
 
@@ -658,7 +651,7 @@ def diff_leo_files(event: Event) -> None:
     )
 #@+node:ekr.20160331191740.1: *3* @g.command(diff-marked-nodes)
 @g.command('diff-marked-nodes')
-def diffMarkedNodes(event: Event) -> None:
+def diffMarkedNodes(event: LeoKeyEvent) -> None:
     """
     When two or more nodes are marked, this command creates a
     "diff marked node" as the last top-level node. The body of
@@ -674,71 +667,64 @@ def diffMarkedNodes(event: Event) -> None:
     if not c:
         return
     u = c.undoer
-    undoType = 'Diff marked nodes'  # Same undoType is reused for all inner undos
-
+    undoType = 'diff-marked-nodes'
     aList = [z for z in c.all_unique_positions() if z.isMarked()]
-    n = 0
-    if len(aList) >= 2:
-        u.beforeChangeGroup(c.p, undoType)  # going to perform many operations
-
-        c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
-        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
-        root = c.lastTopLevel().insertAfter()
-        root.h = 'diff marked nodes'
-        root.b = '\n'.join([z.h for z in aList]) + '\n'
-        u.afterInsertNode(root, 'Create diff root node', undoData)
-
-        while len(aList) > 1:
-            n += 1
-            p1, p2 = aList[0], aList[1]
-            aList = aList[1:]
-            lines = difflib.Differ().compare(
-                g.splitLines(p1.b.rstrip() + '\n'),
-                g.splitLines(p2.b.rstrip() + '\n'))
-
-            undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
-            p = root.insertAsLastChild()
-            # p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 22), g.truncate(p2.h, 22))
-            p.h = f"diff {n}"
-            p.b = f"1: {p1.h}\n2: {p2.h}\n{''.join(list(lines))}"
-            u.afterInsertNode(p, undoType, undoData)
-
-            undoData = u.beforeChangeTree(p)
-            for p3 in (p1, p2):
-                clone = p3.clone()
-                clone.moveToLastChildOf(p)
-            u.afterChangeTree(p, undoType, undoData)
-
-        root.expand()
-        # c.unmarkAll()
-        c.selectPosition(root)
-        # Add the changes to the outer undo group.
-        u.afterChangeGroup(c.p, undoType=undoType)
-        c.redraw()
-    else:
+    if len(aList) < 2:
         g.es_print('Please mark at least 2 nodes')
+        return
+    c.selectPosition(c.lastTopLevel())
+    undoData = u.beforeInsertNode(c.p)
+    root = c.lastTopLevel().insertAfter()
+    root.h = 'diff marked nodes'
+    root.b = '\n'.join([z.h for z in aList]) + '\n'
+    n = 0
+    while len(aList) > 1:
+        n += 1
+        p1, p2 = aList[0], aList[1]
+        aList = aList[1:]
+        lines = difflib.Differ().compare(
+            g.splitLines(p1.b.rstrip() + '\n'),
+            g.splitLines(p2.b.rstrip() + '\n'))
+        p = root.insertAsLastChild()
+        p.h = f"diff {n}"
+        p.b = f"1: {p1.h}\n2: {p2.h}\n{''.join(list(lines))}"
+        for p3 in (p1, p2):
+            clone = p3.clone()
+            clone.moveToLastChildOf(p)
+    u.afterInsertNode(root, undoType, undoData)
+    root.expand()
+    c.selectPosition(root)
+    c.redraw()
 #@+node:ekr.20180213104627.1: *3* diff_leo_files_helper
-def diff_leo_files_helper(event: Event, title: str, visible: bool) -> None:
-    """Prompt for a list of .leo files to open."""
+def diff_leo_files_helper(event: LeoKeyEvent, title: str, visible: bool) -> None:
+    """Prompt for a list of Leo files to open."""
     c = event and event.get('c')
     if not c:
         return
-    types = [
-        ("Leo files", "*.leo"),
+    filetypes = [
+        ("Leo files", "*.leo *.leojs *.db"),
         ("All files", "*"),
     ]
-    paths = g.app.gui.runOpenFileDialog(c,
+    paths = g.app.gui.runOpenFilesDialog(c,
         title=title,
-        filetypes=types,
+        filetypes=filetypes,
         defaultextension=".leo",
-        multiple=True,
     )
+    if not paths:
+        return
+    if len(paths) == 1:
+        # Prompt for another file.
+        paths2 = g.app.gui.runOpensFileDialog(c,
+            title=title,
+            filetypes=filetypes,
+            defaultextension=".leo",
+        )
+        if not paths2:
+            return
+        paths.extend(paths2)
     c.bringToFront()
-    # paths = [z for z in paths if g.os_path_exists(z)]
-    if len(paths) > 1:
-        CompareLeoOutlines(c).diff_list_of_files(paths, visible=visible)
-    elif len(paths) == 1:
-        g.es_print('Please pick two or more .leo files')
+    assert len(paths) > 1
+    CompareLeoOutlines(c).diff_list_of_files(paths, visible=visible)
 #@-others
 #@@language python
 #@@tabwidth -4

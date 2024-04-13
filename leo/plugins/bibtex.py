@@ -62,7 +62,6 @@ BibTeX file.
 
 """
 #@-<< docstring >>
-from typing import List, Tuple
 from leo.core import leoGlobals as g
 # By Timo Honkasalo: contributed under the same license as Leo.py itself.
 # 2017/02/23: Rewritten by EKR
@@ -165,7 +164,7 @@ def onIconDoubleClick(tag, keywords):
     h = p.h.strip()
     if g.match_word(h, 0, "@bibtex"):
         base = g.os_path_dirname(c.fileName() or '')
-        fn = g.os_path_finalize_join(base, h[8:])
+        fn = g.finalize_join(base, h[8:])
         if p.hasChildren():
             writeTreeAsBibTex(c, fn, p)
         else:
@@ -183,9 +182,9 @@ def readBibTexFileIntoTree(c, fn, p):
     s = g.toUnicode(s_b, encoding=encoding)
     if not s.strip():
         return
-    aList: List[Tuple] = []  # A list of tuples (h, b).
-    strings: List[str] = []
-    entries: List[Tuple] = []
+    aList: list[tuple] = []  # A list of tuples (h, b).
+    strings: list[str] = []
+    entries: list[tuple] = []
     s = '\n' + ''.join([z.lstrip() for z in g.splitLines(s)])
     for line in s.split('\n@')[1:]:
         kind, rest = line[:6], line[7:].strip()

@@ -78,7 +78,7 @@ FUNCTION, the most important one, contains functions/methods, along with CLASS
  used to give calltips, or used as a regexp to find the method from file
  quickly.
 
-You can browse the data by installing sqlitebrovser and doing 'sqlitebrowser
+You can browse the data by installing sqlitebrowser and doing 'sqlitebrowser
 ~/codewise.db'
 
 If you know the class name you want to find the methods for,
@@ -96,8 +96,6 @@ import sys
 import sqlite3
 from sqlite3 import ProgrammingError
 import traceback
-from typing import List
-
 #@-<< imports >>
 consoleEncoding = None
 #@+<< define usage >>
@@ -119,7 +117,7 @@ codewise m MyClass
  Show all methods in MyClass
 
 codewise f PREFIX
- Show all symbols (also nonmember functiosn) starting with PREFIX.
+ Show all symbols (also nonmember functions) starting with PREFIX.
  PREFIX can be omitted to get a list of all symbols
 
 codewise parseall
@@ -294,7 +292,7 @@ def getLastTracebackFileAndLineNumber():
         return val.filename, val.lineno  # type:ignore
     #
     # Data is a list of tuples, one per stack entry.
-    # Tupls have the form (filename,lineNumber,functionName,text).
+    # Tuples have the form (filename,lineNumber,functionName,text).
     data = traceback.extract_tb(tb)
     if data:
         item = data[-1]  # Get the item at the top of the stack.
@@ -331,7 +329,6 @@ def pr(*args, **keys):  # (codewise!)
 #@+node:ekr.20180311193230.1: *5* shortFileName (codewise)
 def shortFileName(fileName, n=None):
     '''Return the base name of a path.'''
-    # pylint: disable=invalid-unary-operand-type
     if not fileName:
         return ''
     if n is None or n < 1:
@@ -383,7 +380,7 @@ def translateArgs(args, d):
     if not consoleEncoding:
         e = sys.getdefaultencoding()
         consoleEncoding = e if isValidEncoding(e) else 'utf-8'
-    result: List[str] = []
+    result: list[str] = []
     n = 0
     spaces = d.get('spaces')
     for arg in args:
@@ -450,7 +447,7 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
     return s
 #@+node:ekr.20110310093050.14287: *5* toUnicode (codewise)
 def toUnicode(s, encoding='utf-8', reportErrors=False):
-    '''Connvert a non-unicode string with the given encoding to unicode.'''
+    '''Convert a non-unicode string with the given encoding to unicode.'''
     if isUnicode(s):
         return s
     if not encoding:

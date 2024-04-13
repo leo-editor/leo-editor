@@ -12,6 +12,7 @@ tk dialogs.
 
 """
 import subprocess
+from typing import Optional
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
 trace = False
@@ -43,29 +44,39 @@ def onStart2(tag, keywords):
     g.funcToMethod(runOpenFileDialog, g.app.gui)
     g.funcToMethod(runSaveFileDialog, g.app.gui)
 #@+node:ekr.20101110095557.5892: ** callZenity
-def callZenity(title, multiple=False, save=False, test=False):
+def callZenity(title: str, save: bool = False, test: bool = False) -> Optional[bytes]:
 
     command = ['zenity', '--file-selection', '--title=%s' % title]
     if save:
         command.append('--save')
-    if multiple:
-        command.append('--multiple')
+    # if multiple:
+        # command.append('--multiple')
     o = subprocess.Popen(command, stdout=subprocess.PIPE)
     o.wait()
     filename = o.communicate()[0].rstrip()
     ret = o.returncode
     if ret:
-        return ''
-    if multiple:
-        return filename.split('|')  # type:ignore
+        return None
+    # if multiple:
+        # return filename.split('|')  # type:ignore
     return filename
 #@+node:ekr.20101110095557.5894: ** runOpenFileDialog
-def runOpenFileDialog(title=None, filetypes=None, defaultextension=None, multiple=False):
+def runOpenFileDialog(
+    title,
+    *,
+    filetypes: list[tuple[str, str]] = None,
+    defaultextension=None,
+):
     """Call zenity's open file(s) dialog."""
     # initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
-    return callZenity(title, multiple=multiple)
+    return callZenity(title)
 #@+node:ekr.20101110095557.5896: ** runSaveFileDialog
-def runSaveFileDialog(title=None, filetypes=None, defaultextension=None) -> str:
+def runSaveFileDialog(
+    title=None,
+    *,
+    filetypes: list[tuple[str, str]] = None,
+    defaultextension=None,
+) -> bytes:
     """Call zenity's save file dialog."""
     # initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
     return callZenity(title, save=True)

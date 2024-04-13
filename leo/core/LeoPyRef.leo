@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -13,8 +13,8 @@
 <v t="ekr.20210530065000.2"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530065000.3"><vh>@data exec-script-patterns</vh></v>
 <v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
+<v t="ekr.20240107154430.1"><vh>@int max-find-long-lines-length = 90</vh></v>
 <v t="ekr.20220904210247.1"><vh>@enabled-plugins</vh></v>
-<v t="ekr.20140920064112.17946"><vh>@int fts_max_hits = 100</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 <v t="ekr.20200212095937.1"><vh>Beautify command settings</vh>
 <v t="ekr.20200212095937.2"><vh>@bool beautify-allow-joined-strings = False</vh></v>
@@ -25,12 +25,14 @@
 <v t="ekr.20160122104332.1"><vh>Buttons &amp; commands</vh>
 <v t="ekr.20150502050609.1"><vh>@button backup</vh></v>
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
-<v t="ekr.20220823130338.1"><vh>@button check-leoPy.leo</vh></v>
-<v t="ekr.20211020091540.1"><vh>@command b</vh></v>
+<v t="ekr.20231107062256.1"><vh>@button check-leoPy.leo</vh></v>
+<v t="ekr.20230508145335.1"><vh>@command slow-tests</vh></v>
+<v t="ekr.20220306092217.1"><vh>@command test-one @key=F5</vh>
+<v t="ekr.20230511074046.1"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20201013034659.1"><vh>@ignore Unused buttons and commands</vh>
+<v t="ekr.20211020091540.1"><vh>@@command b</vh></v>
 <v t="ekr.20220527065937.1"><vh>@command json-to-outline</vh></v>
-<v t="ekr.20210113054702.1"><vh>@command pwd</vh></v>
-<v t="ekr.20220306092217.1"><vh>@command test-one</vh></v>
-<v t="ekr.20201013034659.1"><vh>Unused buttons</vh>
 <v t="ekr.20150413091056.1"><vh>@@button check-clones</vh></v>
 <v t="ekr.20180324065741.1"><vh>@@button copy-to-next</vh></v>
 <v t="ekr.20150507170849.1"><vh>@@button create decorators</vh>
@@ -104,62 +106,6 @@
 <v t="ekr.20210110092457.7"><vh>@@@button unit</vh></v>
 </v>
 </v>
-<v t="ekr.20140103105930.16446"><vh>@views</vh>
-<v t="ekr.20140102162014.16438"><vh>@view added strip_comments keyword arg to two config.getData methods</vh></v>
-</v>
-<v t="ekr.20140808103117.18035"><vh>@persistence</vh>
-<v t="ekr.20140808103117.18038"><vh>@data:@auto ../plugins/qt_main.py</vh>
-<v t="ekr.20160425070345.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20140808103117.18040"><vh>@data:@auto ../plugins/qt_main.ui</vh>
-<v t="ekr.20160425070345.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20140808103117.18042"><vh>@data:@auto ../plugins/qt_quicksearch.py</vh>
-<v t="ekr.20160420054135.4"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20140808103117.18044"><vh>@data:@auto ../plugins/qt_quicksearch.ui</vh>
-<v t="ekr.20160420054135.5"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20150604130353.1"><vh>@data:@auto test/unit_tests.py</vh>
-<v t="ekr.20150604130353.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20201012111649.1"><vh>@data:@auto leo_cloud.py</vh>
-<v t="ekr.20210509083811.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20201012111649.3"><vh>@data:@auto leo_cloud_server.py</vh>
-<v t="ekr.20210509083811.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20210911191729.1"><vh>@data:@auto ../test/external_files/at-auto-line-number-test.py</vh>
-<v t="ekr.20211107080227.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20210911191730.1"><vh>@data:@auto ../test/external_files/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20211107080227.2"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20210911191730.3"><vh>@data:@auto ../test/external_files/at-auto-section-ref-test.py</vh>
-<v t="ekr.20211107080227.3"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20210911191731.1"><vh>@data:@auto ../test/external_files/at-auto-test.py</vh>
-<v t="ekr.20211118024343.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20210911191731.3"><vh>@data:@auto ../test/external_files/at-auto-unit-test.py</vh>
-<v t="ekr.20211107080227.5"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20210911191731.5"><vh>@data:@auto-org ../test/external_files/at-auto-org-line-number-test.org</vh>
-<v t="ekr.20211107080227.6"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20210911191731.7"><vh>@data:@auto-otl ../test/external_files/at-auto-otl-line-number-test.otl</vh>
-<v t="ekr.20211107080227.7"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20220811130331.1"><vh>@data:@auto-json c:\test\at-auto-json-test.py</vh>
-<v t="ekr.20220811162331.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20220829104501.1"><vh>@data:@auto c:\test\GSTATOBJ.PAS</vh>
-<v t="ekr.20220830153132.1"><vh>@gnxs</vh></v>
-</v>
-<v t="ekr.20220830152850.1"><vh>@data:@auto c:\test\extract.pas</vh>
-<v t="ekr.20220830152850.2"><vh>@gnxs</vh></v>
-</v>
-</v>
 <v t="ekr.20170427114412.1"><vh>scripts</vh>
 <v t="ekr.20170427112302.1"><vh>check leoPy.leo</vh></v>
 <v t="ekr.20170428084123.1"><vh>Recursive import script</vh></v>
@@ -188,6 +134,7 @@
 <v t="ekr.20220503084045.1"><vh>function: scan</vh></v>
 </v>
 <v t="ekr.20201015145257.1"><vh>script: import legacy file</vh></v>
+<v t="ekr.20230720115916.1"><vh>script: node-history</vh></v>
 <v t="ekr.20210630070717.1"><vh>script: restore gnxs in leoserver.py (full version)</vh>
 <v t="ekr.20210701044426.1"><vh>&lt;&lt; setup &gt;&gt;</vh></v>
 <v t="ekr.20210701044513.1"><vh>&lt;&lt; read into a1_s, b1_s &gt;&gt;</vh></v>
@@ -204,22 +151,8 @@
 <v t="EKR.20040430162943"><vh>Notes</vh>
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
 </v>
-<v t="ekr.20221204070905.1"><vh>Script files</vh>
-<v t="tom.20230319122643.1"><vh>@clean ../scripts/set-repo-dir.cmd</vh></v>
-<v t="tom.20230321222112.1"><vh>@clean ../scripts/find-reindent.py</vh></v>
-<v t="ekr.20221204072456.1"><vh>@clean ../scripts/beautify-leo.cmd</vh></v>
-<v t="ekr.20230115020533.1"><vh>@clean ../scripts/blacken-leo.cmd</vh></v>
-<v t="ekr.20221204074235.1"><vh>@clean ../scripts/flake8-leo.cmd</vh></v>
-<v t="ekr.20221204071554.1"><vh>@clean ../scripts/full-test-leo.cmd</vh></v>
-<v t="ekr.20230206004301.1"><vh>@clean ../scripts/make-leo.cmd</vh></v>
-<v t="ekr.20221204071146.1"><vh>@clean ../scripts/mypy-leo.cmd</vh></v>
-<v t="ekr.20221204071056.1"><vh>@clean ../scripts/pylint-leo.cmd</vh></v>
-<v t="ekr.20221204072154.1"><vh>@clean ../scripts/reindent-leo.cmd</vh></v>
-<v t="ekr.20221201043917.1"><vh>@clean ../scripts/test-leo.cmd</vh></v>
-<v t="ekr.20221204071220.1"><vh>@clean ../scripts/test-one-leo.cmd</vh></v>
-</v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
-<v t="ekr.20140902032918.18591"><vh> About this file</vh>
+<v t="ekr.20140902032918.18591"><vh>About this file</vh>
 <v t="ekr.20140831085423.18639"><vh>About widgets and wrappers</vh></v>
 <v t="ekr.20140831085423.18630"><vh>Terminology</vh></v>
 <v t="ekr.20140831085423.18631"><vh>Official ivars</vh></v>
@@ -260,6 +193,7 @@
 <v t="ekr.20120420054855.14241"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20180121041003.1"><vh>@file leoTips.py</vh></v>
+<v t="ekr.20240105140814.1"><vh>@file leoTokens.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
 <v t="ekr.20131109170017.16504"><vh>@file leoVim.py</vh></v>
 </v>
@@ -294,15 +228,20 @@
 </v>
 <v t="ekr.20180225010644.1"><vh>Other files</vh>
 <v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
+<v t="ekr.20240201175949.1"><vh>@file ../../requirements.txt</vh></v>
 <v t="ekr.20220222130955.1"><vh>@edit ../../.mypy.ini</vh></v>
+<v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
+<v t="ekr.20240206163135.1"><vh>@edit ../../manifest.in</vh></v>
+<v t="ekr.20240206153029.1"><vh>@edit ../../readme.md</vh></v>
+<v t="ekr.20240206161713.1"><vh>@edit ../../setup.cfg </vh></v>
 <v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
 <v t="ekr.20181014073705.1"><vh>@file ../../run_pytest_tests.py</vh></v>
 <v t="ekr.20181009072707.1"><vh>@file ../../run_travis_unit_tests.py</vh></v>
-<v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
-<v t="ekr.20221129164042.1"><vh>@edit ../../setup.cfg</vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
-<v t="ekr.20221201080228.1"><vh>To be deleted ../../blacken_leo.py</vh></v>
+</v>
+<v t="ekr.20230717210524.1"><vh>In leo/docs</vh>
+<v t="ekr.20230716154653.1"><vh>@edit ../../docs/load-leo.html</vh></v>
 </v>
 <v t="ekr.20180225010913.1"><vh>In leo/core</vh>
 <v t="ekr.20210202110241.1"><vh>@file leoclient.py</vh></v>
@@ -398,40 +337,22 @@
 </v>
 </v>
 <v t="ekr.20180225010850.1"><vh>In leo/modes</vh>
-<v t="ekr.20221129095254.1"><vh>@clean ../modes/batch.py</vh>
-<v t="ekr.20221129095311.1"><vh>batch_rule0</vh></v>
-<v t="ekr.20221129095311.2"><vh>batch_rule1</vh></v>
-<v t="ekr.20221129095311.3"><vh>batch_rule2</vh></v>
-<v t="ekr.20221129095311.4"><vh>batch_rule3</vh></v>
-<v t="ekr.20221129095311.5"><vh>batch_rule4</vh></v>
-<v t="ekr.20221129095311.6"><vh>batch_rule5</vh></v>
-<v t="ekr.20221129095311.7"><vh>batch_rule6</vh></v>
-<v t="ekr.20221129095311.8"><vh>batch_rule7</vh></v>
-<v t="ekr.20221129095311.9"><vh>batch_rule8</vh></v>
-<v t="ekr.20221129095311.10"><vh>batch_rule9</vh></v>
-<v t="ekr.20221129095311.11"><vh>batch_rule10</vh></v>
-<v t="ekr.20221129095311.12"><vh>batch_rule11</vh></v>
-<v t="ekr.20221129095311.13"><vh>batch_rule12</vh></v>
-<v t="ekr.20221129095311.14"><vh>batch_rule13</vh></v>
-<v t="ekr.20221129095311.15"><vh>batch_rule14</vh></v>
-<v t="ekr.20221129095311.16"><vh>batch_rule15</vh></v>
-<v t="ekr.20221129095311.17"><vh>batch_rule16</vh></v>
-<v t="ekr.20221129095311.18"><vh>batch_rule17</vh></v>
-<v t="ekr.20221129095311.19"><vh>batch_rule18</vh></v>
-<v t="ekr.20221129095311.20"><vh>batch_rule19</vh></v>
-<v t="ekr.20221129095311.21"><vh>batch_rule20</vh></v>
-<v t="ekr.20221129095311.22"><vh>batch_rule21</vh></v>
-<v t="ekr.20221129095311.23"><vh>batch_rule22</vh></v>
-</v>
-<v t="ekr.20210219115553.109"><vh>@edit ../modes/python.py</vh></v>
+<v t="ekr.20221129095254.1"><vh>@file ../modes/batch.py</vh></v>
 <v t="ekr.20150326145530.1"><vh>@file ../modes/forth.py</vh></v>
+<v t="ekr.20230419050031.1"><vh>@file ../modes/html.py</vh></v>
+<v t="ekr.20240227082119.1"><vh>@file ../modes/ini.py</vh></v>
+<v t="ekr.20230419052236.1"><vh>@file ../modes/javascript.py</vh></v>
 <v t="ekr.20210223151922.1"><vh>@file ../modes/julia.py</vh></v>
+<v t="ekr.20240202211600.1"><vh>@file ../modes/nim.py</vh></v>
+<v t="ekr.20210219115553.109"><vh>@file ../modes/python.py</vh></v>
+<v t="ekr.20231103124615.1"><vh>@file ../modes/rust.py</vh></v>
+<v t="ekr.20231012163843.1"><vh>@file ../modes/scheme.py</vh></v>
 </v>
 </v>
 <v t="ekr.20201012111545.1"><vh>Plugins</vh>
 <v t="ekr.20090430075506.3"><vh>@file ../plugins/leoPluginNotes.txt</vh></v>
-<v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
-<v t="ekr.20050303051035"><vh>  Templates</vh>
+<v t="EKR.20040517090508"><vh>Enable plugins using @enabled-plugins nodes</vh></v>
+<v t="ekr.20050303051035"><vh>Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
 <v t="ekr.20050306071629"><vh>Template for plugins that override commander methods</vh>
 <v t="ekr.20050306071629.1"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
@@ -466,7 +387,6 @@
 <v t="TL.20090225102340.32"><vh>@file ../plugins/nodeActions.py</vh></v>
 <v t="edream.110203113231.720"><vh>@file ../plugins/outline_export.py</vh></v>
 <v t="danr7.20060912105041.1"><vh>@file ../plugins/paste_as_headlines.py</vh></v>
-<v t="tbrown.20070117104409"><vh>@file ../plugins/quickMove.py</vh></v>
 <v t="ekr.20081214160729.1"><vh>@file ../plugins/setHomeDirectory.py</vh></v>
 <v t="ajones.20070122160142"><vh>@file ../plugins/textnode.py</vh></v>
 <v t="danr7.20061010105952.1"><vh>@file ../plugins/word_count.py</vh></v>
@@ -490,13 +410,14 @@
 <v t="ekr.20180119164431.1"><vh>@file ../plugins/patch_python_colorizer.py</vh></v>
 <v t="ekr.20210329114352.1"><vh>@file ../plugins/example_rst_filter.py</vh></v>
 </v>
-<v t="ekr.20101110150056.9457"><vh>Experimental</vh>
+<v t="ekr.20101110150056.9457"><vh>Experimental/Obsolete</vh>
+<v t="tbrown.20081223111325.3"><vh>@file ../plugins/backlink.py</vh></v>
 <v t="ekr.20090704103932.5160"><vh>@file ../plugins/leo_pdf.py</vh></v>
 <v t="danr7.20060902083957"><vh>@file ../plugins/leo_to_rtf.py</vh></v>
 <v t="ekr.20040205071616"><vh>@file ../plugins/mnplugins.py</vh></v>
 <v t="ekr.20101110094759.5843"><vh>@file ../plugins/mod_speedups.py</vh></v>
+<v t="tbrown.20070117104409"><vh>@file ../plugins/quickMove.py</vh></v>
 <v t="ekr.20040910070811.1"><vh>@file ../plugins/run_nodes.py</vh></v>
-<v t="ekr.20170313020320.1"><vh>@file ../plugins/settings_finder.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@file ../plugins/stickynotes_plus.py</vh></v>
 <v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
 <v t="ekr.20101110093449.5822"><vh>@file ../plugins/mod_leo2ascd.py</vh></v>
@@ -520,7 +441,6 @@
 <v t="ekr.20040915085351"><vh>@file ../plugins/at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@file ../plugins/at_view.py</vh></v>
 <v t="ekr.20170619151859.2"><vh>@file ../plugins/auto_colorize2_0.py</vh></v>
-<v t="tbrown.20081223111325.3"><vh>@file ../plugins/backlink.py</vh></v>
 <v t="tbrown.20070322113635"><vh>@file ../plugins/bookmarks.py</vh></v>
 <v t="ekr.20060807103814.1"><vh>@file ../plugins/datenodes.py</vh></v>
 <v t="ajones.20070122153625"><vh>@file ../plugins/expfolder.py</vh></v>
@@ -547,10 +467,10 @@
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file ../plugins/importers/__init__.py</vh></v>
+<v t="ekr.20230529075138.1"><vh>@file ../plugins/importers/base_importer.py</vh></v>
 <v t="ekr.20140723122936.17926"><vh>@file ../plugins/importers/c.py</vh></v>
 <v t="ekr.20160505094722.1"><vh>@file ../plugins/importers/coffeescript.py</vh></v>
 <v t="ekr.20140723122936.18140"><vh>@file ../plugins/importers/csharp.py</vh></v>
-<v t="tbrown.20140801105909.47549"><vh>@file ../plugins/importers/ctext.py</vh></v>
 <v t="ekr.20200619141135.1"><vh>@file ../plugins/importers/cython.py</vh></v>
 <v t="ekr.20141116100154.1"><vh>@file ../plugins/importers/dart.py</vh></v>
 <v t="ekr.20140723122936.18141"><vh>@file ../plugins/importers/elisp.py</vh></v>
@@ -559,7 +479,6 @@
 <v t="ekr.20140723122936.18143"><vh>@file ../plugins/importers/java.py</vh></v>
 <v t="ekr.20140723122936.18144"><vh>@file ../plugins/importers/javascript.py</vh></v>
 <v t="ekr.20140723122936.18151"><vh>@file ../plugins/importers/leo_rst.py</vh></v>
-<v t="ekr.20161108125620.1"><vh>@file ../plugins/importers/linescanner.py</vh></v>
 <v t="ekr.20170530024520.2"><vh>@file ../plugins/importers/lua.py</vh></v>
 <v t="ekr.20140725190808.18066"><vh>@file ../plugins/importers/markdown.py</vh></v>
 <v t="ekr.20140723122936.18146"><vh>@file ../plugins/importers/org.py</vh></v>
@@ -569,13 +488,14 @@
 <v t="ekr.20140723122936.18148"><vh>@file ../plugins/importers/php.py</vh></v>
 <v t="ekr.20211209153303.1"><vh>@file ../plugins/importers/python.py</vh></v>
 <v t="ekr.20200316100818.1"><vh>@file ../plugins/importers/rust.py</vh></v>
+<v t="ekr.20231012140553.1"><vh>@file ../plugins/importers/scheme.py</vh></v>
 <v t="ekr.20170615153639.2"><vh>@file ../plugins/importers/tcl.py</vh></v>
 <v t="ekr.20180201203240.2"><vh>@file ../plugins/importers/treepad.py</vh></v>
 <v t="ekr.20140723122936.18152"><vh>@file ../plugins/importers/typescript.py</vh></v>
 <v t="ekr.20140723122936.18137"><vh>@file ../plugins/importers/xml.py</vh></v>
 </v>
 <v t="ekr.20180504192522.1"><vh>leo_babel</vh>
-<v t="ekr.20180504191650.34"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
+<v t="ekr.20230624114517.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
 <v t="ekr.20180504191650.36"><vh>examples</vh>
 <v t="bob.20170716135108.2"><vh>@file ../plugins/leo_babel/examples/slowOut.py</vh></v>
 <v t="bob.20170716135108.3"><vh>@file ../plugins/leo_babel/examples/slowOutNoFlush.py</vh></v>
@@ -612,8 +532,8 @@
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
 <v t="ekr.20170128213103.1"><vh>@file ../plugins/demo.py</vh></v>
-<v t="ekr.20211021200745.1"><vh>@file ../plugins/picture_viewer.py</vh></v>
-<v t="ekr.20220126054240.1"><vh>@file ../plugins/remove_duplicate_pictures.py</vh></v>
+<v t="ekr.20211021200745.1"><vh>@file ../scripts/picture_viewer.py</vh></v>
+<v t="ekr.20220126054240.1"><vh>@file ../scripts/remove_duplicate_pictures.py</vh></v>
 <v t="ekr.20120913110135.10579"><vh>@file ../plugins/screencast.py</vh></v>
 <v t="ekr.20101121031443.5330"><vh>@file ../plugins/screenshots.py</vh></v>
 <v t="ekr.20060831165821"><vh>@file ../plugins/slideshow.py</vh></v>
@@ -639,7 +559,7 @@
 <v t="ekr.20121126095734.12418"><vh>@file ../plugins/threadutil.py</vh></v>
 </v>
 <v t="ekr.20040915073259"><vh>User interface</vh>
-<v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
+<v t="ekr.20101110150056.9453"><vh>Qt only plugins</vh>
 <v t="tbrown.20091029123555.5319"><vh>@file ../plugins/attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file ../plugins/colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file ../plugins/contextmenu.py</vh></v>
@@ -668,6 +588,7 @@
 <v t="EKR.20040517080555.2"><vh>@file ../plugins/plugins_menu.py</vh></v>
 <v t="ekr.20160519123329.1"><vh>@file ../plugins/QNCalendarWidget.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file ../plugins/redirect_to_log.py</vh></v>
+<v t="tom.20230424140347.1"><vh>@file ../plugins/rpcalc.py</vh></v>
 <v t="ville.20110304230157.6513"><vh>@file ../plugins/systray.py</vh></v>
 <v t="tbrown.20141101114322.1"><vh>@file ../plugins/wikiview.py</vh></v>
 <v t="ekr.20181004143535.1"><vh>@file ../plugins/xdb_pane.py</vh></v>
@@ -676,7 +597,6 @@
 <v t="ekr.20140726091031.18071"><vh>Writer plugins</vh>
 <v t="ekr.20140726091031.18152"><vh>@file ../plugins/writers/__init__.py</vh></v>
 <v t="ekr.20140726091031.18143"><vh>@file ../plugins/writers/basewriter.py</vh></v>
-<v t="tbrown.20140804103545.29975"><vh>@file ../plugins/writers/ctext.py</vh></v>
 <v t="ekr.20141116100154.2"><vh>@file ../plugins/writers/dart.py</vh></v>
 <v t="ekr.20140726091031.18080"><vh>@file ../plugins/writers/leo_rst.py</vh></v>
 <v t="ekr.20140726091031.18073"><vh>@file ../plugins/writers/markdown.py</vh></v>
@@ -716,21 +636,33 @@
 <v t="ekr.20161223152017.1"><vh>@edit ../plugins/qt_quicksearch.py</vh></v>
 <v t="ekr.20161223152353.1"><vh>@edit ../plugins/qt_quicksearch_sub.py</vh></v>
 </v>
+<v t="ekr.20221204070905.1"><vh>Script files</vh>
+<v t="ekr.20221204072456.1"><vh>@clean ../scripts/beautify-leo.cmd</vh></v>
+<v t="ekr.20231114224211.1"><vh>@clean ../scripts/beautify-leo-force.cmd</vh></v>
+<v t="ekr.20230115020533.1"><vh>@clean ../scripts/blacken-leo.cmd</vh></v>
+<v t="ekr.20221204074235.1"><vh>@clean ../scripts/flake8-leo.cmd</vh></v>
+<v t="ekr.20221204071554.1"><vh>@clean ../scripts/full-test-leo.cmd</vh></v>
+<v t="ekr.20230206004301.1"><vh>@clean ../scripts/make-leo.cmd</vh></v>
+<v t="ekr.20221204071146.1"><vh>@clean ../scripts/mypy-leo.cmd</vh></v>
+<v t="ekr.20221204071056.1"><vh>@clean ../scripts/pylint-leo.cmd</vh></v>
+<v t="ekr.20221204072154.1"><vh>@clean ../scripts/reindent-leo.cmd</vh></v>
+<v t="ekr.20221201043917.1"><vh>@clean ../scripts/test-leo.cmd</vh></v>
+<v t="ekr.20221204071220.1"><vh>@clean ../scripts/test-one-leo.cmd</vh></v>
+<v t="ekr.20240119060724.1"><vh>@clean ../scripts/tbo.cmd</vh></v>
+</v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
 <v t="ekr.20201129023817.1"><vh>@file leoTest2.py</vh></v>
 </v>
 <v t="ekr.20201202144529.1"><vh>leo/unittests</vh>
-<v t="ekr.20210926044012.1"><vh>@file ../unittests/test_doctests.py</vh></v>
-<v t="ekr.20210910084607.1"><vh>@file ../unittests/test_gui.py</vh></v>
-<v t="ekr.20210904064440.2"><vh>@file ../unittests/test_importers.py</vh></v>
-<v t="ekr.20210907081548.1"><vh>@file ../unittests/test_plugins.py</vh></v>
-<v t="ekr.20210901140718.1"><vh>@file ../unittests/test_syntax.py</vh></v>
-<v t="ekr.20220812224747.1"><vh>@file ../unittests/test_writers.py</vh></v>
 <v t="ekr.20210912064148.1"><vh>in unittests/commands</vh>
-<v t="ekr.20221113062857.1"><vh>@file ../unittests/commands/test_outlineCommands.py</vh></v>
-<v t="ekr.20201202144422.1"><vh>@file ../unittests/commands/test_editCommands.py</vh></v>
 <v t="ekr.20210904022712.2"><vh>@file ../unittests/commands/test_checkerCommands.py</vh></v>
+<v t="ekr.20230710105542.1"><vh>@file ../unittests/commands/test_commanderFileCommands.py</vh></v>
 <v t="ekr.20211013081056.1"><vh>@file ../unittests/commands/test_convertCommands.py</vh></v>
+<v t="ekr.20201202144422.1"><vh>@file ../unittests/commands/test_editCommands.py</vh></v>
+<v t="ekr.20230705083159.1"><vh>@file ../unittests/commands/test_editFileCommands.py</vh></v>
+<v t="ekr.20230802060212.1"><vh>@file ../unittests/commands/test_gotoCommands.py</vh></v>
+<v t="ekr.20221113062857.1"><vh>@file ../unittests/commands/test_outlineCommands.py</vh></v>
+<v t="ekr.20230916141635.1"><vh>@file ../unittests/commands/test_spellCommands.py</vh></v>
 </v>
 <v t="ekr.20210912064205.1"><vh>in unittests/core</vh>
 <v t="ekr.20210901170451.1"><vh>@file ../unittests/core/test_leoApp.py</vh></v>
@@ -739,6 +671,7 @@
 <v t="ekr.20210903153138.1"><vh>@file ../unittests/core/test_leoBridge.py</vh></v>
 <v t="ekr.20210905151702.1"><vh>@file ../unittests/core/test_leoColorizer.py</vh></v>
 <v t="ekr.20210903162431.1"><vh>@file ../unittests/core/test_leoCommands.py</vh></v>
+<v t="ekr.20230714131540.1"><vh>@file ../unittests/core/test_leoCompare.py</vh></v>
 <v t="ekr.20210910073303.1"><vh>@file ../unittests/core/test_leoConfig.py</vh></v>
 <v t="ekr.20210911052754.1"><vh>@file ../unittests/core/test_leoExternalFiles.py</vh></v>
 <v t="ekr.20210910065135.1"><vh>@file ../unittests/core/test_leoFileCommands.py</vh></v>
@@ -749,11 +682,25 @@
 <v t="ekr.20210903155556.1"><vh>@file ../unittests/core/test_leoKeys.py</vh></v>
 <v t="ekr.20201203042030.1"><vh>@file ../unittests/core/test_leoNodes.py</vh></v>
 <v t="ekr.20210908171733.1"><vh>@file ../unittests/core/test_leoPersistence.py</vh></v>
+<v t="ekr.20220911163718.1"><vh>@file ../unittests/core/test_leoQt6.py</vh></v>
 <v t="ekr.20210902055206.1"><vh>@file ../unittests/core/test_leoRst.py</vh></v>
 <v t="ekr.20210820203000.1"><vh>@file ../unittests/core/test_leoserver.py</vh></v>
 <v t="ekr.20210902092024.1"><vh>@file ../unittests/core/test_leoShadow.py</vh></v>
+<v t="ekr.20230722095455.1"><vh>@file ../unittests/core/test_leoTest2.py</vh></v>
+<v t="ekr.20240105151507.1"><vh>@file ../unittests/core/test_leoTokens.py</vh></v>
 <v t="ekr.20210906141410.1"><vh>@file ../unittests/core/test_leoUndo.py</vh></v>
 <v t="ekr.20210910072917.1"><vh>@file ../unittests/core/test_leoVim.py</vh></v>
+</v>
+<v t="ekr.20240204082420.1"><vh>in unittests/misc_tests</vh>
+<v t="ekr.20230506095312.1"><vh>@file ../unittests/misc_tests/test_design.py</vh></v>
+<v t="ekr.20210926044012.1"><vh>@file ../unittests/misc_tests/test_doctests.py</vh></v>
+<v t="ekr.20210901140718.1"><vh>@file ../unittests/misc_tests/test_syntax.py</vh></v>
+</v>
+<v t="ekr.20240204082924.1"><vh>in unittests/plugins</vh>
+<v t="ekr.20220812224747.1"><vh>@file ../unittests/plugins/test_writers.py</vh></v>
+<v t="ekr.20210907081548.1"><vh>@file ../unittests/plugins/test_plugins.py</vh></v>
+<v t="ekr.20210904064440.2"><vh>@file ../unittests/plugins/test_importers.py</vh></v>
+<v t="ekr.20210910084607.1"><vh>@file ../unittests/plugins/test_gui.py</vh></v>
 </v>
 </v>
 <v t="ekr.20090802181029.5988"><vh>Version</vh>
@@ -789,7 +736,7 @@ in LeoDocs.leo for full details.
 <t tx="edream.110203113231.872">@nocolor-node
 
 These plugins create new kinds of nodes, some of which affect the file system.</t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
+<t tx="ekr.20031218072017.2406"># This file contains almost all of Leo's sources.
 
 # See the "About this file" node for important notes.
 </t>
@@ -1040,7 +987,7 @@ returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction.
 </t>
-<t tx="ekr.20051031040240" annotate="7d71002858080000007072696f7269747971014d0f27580a000000707269736574646174657102580a000000323032302d31312d31307103752e"></t>
+<t tx="ekr.20051031040240"></t>
 <t tx="ekr.20071113084440"># These plugins are for testing Leo's own plugin loading logic.
 # There is no reason ever to enable these plugins.</t>
 <t tx="ekr.20080412053100.5">@language rest
@@ -1066,12 +1013,6 @@ g.app.debug_widgets = not g.app.debug_widgets
 print('g.app.debug_app: %s' % g.app.debug_app)
 print('g.app.debug_widgets: %s' % g.app.debug_widgets)
 </t>
-<t tx="ekr.20140102162014.16438">unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;class LocalConfigManager--&gt;c.config.Getters--&gt;c.config.Getters--&gt;c.config.getData
-unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;class GlobalConfigManager--&gt;gcm.Getters...--&gt;gcm.getData &amp; getOutlineData
-unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;&lt;&lt; class ParserBaseClass &gt;&gt;--&gt;kind handlers (ParserBaseClass)--&gt;doData
-@language rest
-The parser for @data nodes, doData, no longer strips *anything*.</t>
-<t tx="ekr.20140103105930.16446"></t>
 <t tx="ekr.20140723122936.17925"># Leo loads these plugins automatically.  Do not add them to @enabled-plugins nodes.
 
 # These plugins now contain the importer code for all kinds of @auto nodes.
@@ -1083,15 +1024,6 @@ The parser for @data nodes, doData, no longer strips *anything*.</t>
 # These plugins contain the write code for all kinds of special @auto nodes.
 # Each plugin must define a top-level writer_dict dictionary describing the plugin.
 @language python
-</t>
-<t tx="ekr.20140808103117.18035"></t>
-<t tx="ekr.20140808103117.18038">gnx: ekr.20110605121601.18698
-</t>
-<t tx="ekr.20140808103117.18040">gnx: ekr.20110605121601.18703
-</t>
-<t tx="ekr.20140808103117.18042">gnx: ekr.20110605121601.18704
-</t>
-<t tx="ekr.20140808103117.18044">gnx: ekr.20110605121601.18709
 </t>
 <t tx="ekr.20140831085423.18630">This outline contains all of Leo's core source code.
 
@@ -1137,7 +1069,7 @@ c.frame.body.wrapper    The high level interface for the body widget.
 c.frame.iconBar         The icon bar.
 c.frame.log             The log pane.
 c.frame.log.widget      The gui widget for the log pane.
-c.frame.log.wrapper     The high-level inteface for the log pane.
+c.frame.log.wrapper     The high-level interface for the log pane.
 c.frame.tree            The tree pane.
 
 The following were official ivars that no longer exist:
@@ -1179,7 +1111,6 @@ Valid values are (case is ignored):
 
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
-<t tx="ekr.20140920064112.17946"></t>
 <t tx="ekr.20150304130753.4">@language xml
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;xsl:stylesheet version="1.0"
@@ -1277,12 +1208,20 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 @tabwidth -4
 @language python
 </t>
-<t tx="ekr.20150425145248.1">beautify-files
-expand-all-subheads
-pylint
-backup
-show-commands
-show-bindings</t>
+<t tx="ekr.20150425145248.1">test-one
+ctrl-click-at-cursor
+execute-script
+
+# python-to-rust
+# goto-prev-history-node
+# goto-next-history-node
+# beautify-files
+# expand-all-subheads
+# pylint
+# backup
+# show-commands
+# show-bindings
+</t>
 <t tx="ekr.20150502050609.1">"""
 Back up this .leo file.
 
@@ -1397,8 +1336,8 @@ CreateDecorators(c,make_changes=False).run()
     for s in lines:
         aList = s.split()
         if len(aList) &gt; 2:
-            aList = [aList[0],' '.join(aList[1:])]
-        c_name,f_name = aList[0].strip(),aList[1].strip()
+            aList = [alist[0],' '.join(alist[1:])]
+        c_name,f_name = alist[0].strip(),alist[1].strip()
         if ' ' not in f_name:
             f_name = f_name.split('.')[-1]
         # if '(' in f_name:
@@ -1498,8 +1437,8 @@ CreateDecorators().run()
     for s in lines:
         aList = s.split()
         if len(aList) &gt; 2:
-            aList = [aList[0],' '.join(aList[1:])]
-        c_name,f_name = aList[0].strip(),aList[1].strip()
+            aList = [alist[0],' '.join(alist[1:])]
+        c_name,f_name = alist[0].strip(),alist[1].strip()
         if ' ' not in f_name:
             f_name = f_name.split('.')[-1]
         if trace:
@@ -1576,9 +1515,6 @@ CreateDecorators().run()
     print('%s commands %s failed' % (self.n,self.n_fail))
 </t>
 <t tx="ekr.20150514035207.1"></t>
-<t tx="ekr.20150604130353.1">gnx: ekr.20150604130223.363
-</t>
-<t tx="ekr.20150604130353.2"></t>
 <t tx="ekr.20150703061709.1">@language python
 
 """myLeoSettings.py: save the outline and run the pylint command"""
@@ -1609,33 +1545,13 @@ output_directory: ~/stubs
 
 prefix_lines:
     # Lines to be inserted at the start of each stub file.
-    from typing import TypeVar, Iterable, Tuple
+    from typing import TypeVar, Iterable
     T = TypeVar('T', int, float, complex)
 
 [Def Name Patterns]
 
 [General Patterns]
 </t>
-<t tx="ekr.20160420054135.4">gnx: ekr.20160412193816.5
-unl: qt_quicksearch declarations
-gnx: ekr.20160412193816.6
-unl: class Ui_LeoQuickSearchWidget
-gnx: ekr.20160412193816.7
-unl: class Ui_LeoQuickSearchWidget--&gt;setupUi
-gnx: ekr.20160412193816.8
-unl: class Ui_LeoQuickSearchWidget--&gt;retranslateUi
-</t>
-<t tx="ekr.20160420054135.5"></t>
-<t tx="ekr.20160425070345.1">gnx: ekr.20160412193816.1
-unl: qt_main declarations
-gnx: ekr.20160412193816.2
-unl: class Ui_MainWindow
-gnx: ekr.20160412193816.3
-unl: class Ui_MainWindow--&gt;setupUi
-gnx: ekr.20160412193816.4
-unl: class Ui_MainWindow--&gt;retranslateUi
-</t>
-<t tx="ekr.20160425070345.2"></t>
 <t tx="ekr.20170427112302.1">g.cls()
 import glob
 files = glob.glob(g.os_path_join(g.app.loadDir, '*.py'))
@@ -1660,25 +1576,26 @@ else:
         print('done')
         </t>
 <t tx="ekr.20170427114412.1"></t>
-<t tx="ekr.20170428084123.1">"""Recursively import all python files in a directory and clean the result."""
+<t tx="ekr.20170428084123.1">@language python
+"""Recursively import all python files in a directory and clean the result."""
+@tabwidth -4 # For a better match.
 g.cls()
-if 0:
-    import importlib
-    import leo.core.leoImport as leoImport
-    importlib.reload(leoImport)
-# dir_ = r'C:\Users\edreamleo\Anaconda3\Lib\site-packages\black.py'
-# dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
-dir_ = r'C:\Users\Edward Ream\Python\python39\Lib\site-packages\mypy'
-assert g.os_path_exists(dir_), repr(dir_)
+dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
 c.recursiveImport(
-    add_context = False,
-    dir_ = dir_,
-    kind = '@clean', # '@clean', '@edit', '@nosent','@auto','@file',
-    recursive = False,
+    dir_=dir_,
+    kind = '@clean', # '@auto', '@clean', '@nosent','@file',
+    recursive = True,
     safe_at_file = False,
-    theTypes = ['.py',]
+    theTypes = ['.py'],
+    verbose = False,
 )
-</t>
+if 1:
+    last = c.lastTopLevel()
+    last.expand()
+    if last.hasChildren():
+        last.firstChild().expand()
+    c.redraw(last)
+print('Done')</t>
 <t tx="ekr.20170428084208.443">#!/usr/bin/python
 # This file generates pyflakes warnings for *all* imported symbols.
 @others
@@ -1817,7 +1734,7 @@ else:
 assert g.os_path_exists(new_dir), repr(new_dir)
 assert g.os_path_exists(path), repr(path)
 stamp = time.strftime("%Y%m%d-%H%M%S")
-fn = g.os_path_finalize_join(path, f"leo-bundle-all-{stamp}")
+fn = g.finalize_join(path, f"leo-bundle-all-{stamp}")
 bundle_command = 'git bundle create %s --all' % fn
 print(bundle_command)
 os.chdir(new_dir)
@@ -1846,7 +1763,6 @@ if s.strip():
 else:
     g.es_print('no text selected')
 </t>
-<t tx="ekr.20180504191650.34"></t>
 <t tx="ekr.20180504191650.36"></t>
 <t tx="ekr.20180504191650.42"></t>
 <t tx="ekr.20180504191650.68"></t>
@@ -1968,17 +1884,17 @@ precede the node's line that have not already been returned.
 <t tx="ekr.20180816105258.1">g.cls()
 import os
 import leo.commands.editFileCommands as efc
-path = g.os_path_finalize_join(g.app.loadDir, '..', '..')
-print('path:', path)
+path = g.finalize_join(g.app.loadDir, '..', '..')
+# print(f"os.chdir({path})")
 os.chdir(path)
 
 # Any revspec is valid as an argument to the "branch1" and "branch2" args.
 # See https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='6.6.4', # old branch/rev
-    branch2='ekr-index', # new branch/rev
-    fn='leo/plugins/qt_text.py',  # Don't use back slashes.
+    branch1='master', # old branch/rev
+    branch2='ekr-3702-scan_lines-warnings', # new branch/rev
+    fn='leo/core/leoAtFile.py',  # Don't use back slashes.
 )
 </t>
 <t tx="ekr.20180824065751.1">print(p.gnx)</t>
@@ -1986,10 +1902,8 @@ efc.GitDiffController(c).diff_two_branches(
 <t tx="ekr.20190402091335.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    # rev1='f85969ae8cb',  # Before.
-    # rev2='dd0fadf7b15',  # After.
-    rev1='6.6.4',               # Old
-    rev2='devel',   # New
+    rev1='ekr-3744-pr3-token-based-orange',  # Old
+    rev2='tbo-test',   # New
 )
 </t>
 <t tx="ekr.20190406154306.1">g.openWithFileName(r'C:\apps\pyzo\pyzo.leo')</t>
@@ -2030,7 +1944,7 @@ while True:
         break
 </t>
 <t tx="ekr.20200308193719.1">d = {}  # Keys are gnxs, values is a list of vnodes with that gnx.
-for v in c.all_nodes():
+for v in c.all_unique_nodes():
     gnx = v.gnx
     aList = d.get(gnx, [])
     if v not in aList:
@@ -2043,10 +1957,6 @@ print('done')</t>
 <t tx="ekr.20201012111545.1">@language python
 @tabwidth -4
 @pagewidth 80
-</t>
-<t tx="ekr.20201012111649.1">gnx: ekr.20170925083314.1
-</t>
-<t tx="ekr.20201012111649.3">gnx: ekr.20170925083853.1
 </t>
 <t tx="ekr.20201013034659.1"></t>
 <t tx="ekr.20201013034742.10"># These can be overridden in subclasses.
@@ -2382,7 +2292,7 @@ main(node_list = ['Startup', 'Notes', 'Script files', 'Code'])
     if not 'leoPy.leo' in c.shortFileName():
         oops('Run this script only from leoPy.leo')
         return None
-    fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoPyRef.leo')
+    fileName = g.finalize_join(g.app.loadDir, '..', 'core', 'leoPyRef.leo')
     if not os.path.exists(fileName):
         oops(f"Not found: {fileName}")
         return None
@@ -2439,6 +2349,9 @@ def clean(s):
 for path in paths:
     d = {}
     c = g.createHiddenCommander(path)
+    if not c:
+        print('Not a .leo file:', path)
+        continue
     sfn = c.shortFileName()
     if sfn == 'old_themes.leo':
         continue
@@ -2469,8 +2382,6 @@ os.system('moz htmlcov/leo_core_leoFind_py.html')</t>
 import os
 os.system('python -m unittest leoFind.py')
 g.es_print('done')</t>
-<t tx="ekr.20210113054702.1">import os
-print(f"\nos.curdir: {os.path.abspath(os.curdir)}")</t>
 <t tx="ekr.20210118013157.1">"""
 Convert defs in LeoFind to pep8 names.
 - Don't change defs containing underscores.
@@ -2551,92 +2462,6 @@ for key in sorted(d.keys()):
         else:
             print('no position for', v)
 print('done')</t>
-<t tx="ekr.20210509083811.1">gnx: ekr.20201012111338.2
-unl: Declarations (leo_cloud.py)
-gnx: ekr.20201012111338.3
-unl: init (leo_cloud.py)
-gnx: ekr.20201012111338.4
-unl: onCreate (leo_cloud.py)
-gnx: ekr.20201012111338.5
-unl: onSave (leo_cloud.py)
-gnx: ekr.20201012111338.6
-unl: lc_read_current (leo_cloud.py)
-gnx: ekr.20201012111338.7
-unl: lc_write_current (leo_cloud.py)
-gnx: ekr.20201012111338.8
-unl: class LeoCloudIOBase
-gnx: ekr.20201012111338.9
-unl: class LeoCloudIOBase--&gt;LeoCloudIOBase.__init__
-gnx: ekr.20201012111338.10
-unl: class LeoCloudIOBase--&gt;LeoCloudIOBase.get_subtree
-gnx: ekr.20201012111338.11
-unl: class LeoCloudIOBase--&gt;LeoCloudIOBase.put_subtree
-gnx: ekr.20201012111338.12
-unl: class LeoCloudIOFileSystem(LeoCloudIOBase)
-gnx: ekr.20201012111338.13
-unl: class LeoCloudIOFileSystem(LeoCloudIOBase)--&gt;LeoCloudIOFileSystem(LeoCloudIOBase).__init__
-gnx: ekr.20201012111338.14
-unl: class LeoCloudIOFileSystem(LeoCloudIOBase)--&gt;LeoCloudIOFileSystem(LeoCloudIOBase).get_data
-gnx: ekr.20201012111338.15
-unl: class LeoCloudIOFileSystem(LeoCloudIOBase)--&gt;LeoCloudIOFileSystem(LeoCloudIOBase).put_data
-gnx: ekr.20201012111338.16
-unl: class LeoCloudIOGit(LeoCloudIOBase)
-gnx: ekr.20201012111338.17
-unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase).__init__
-gnx: ekr.20201012111338.18
-unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase)._run_git
-gnx: ekr.20201012111338.19
-unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase).get_data
-gnx: ekr.20201012111338.20
-unl: class LeoCloudIOGit(LeoCloudIOBase)--&gt;LeoCloudIOGit(LeoCloudIOBase).put_data
-gnx: ekr.20201012111338.21
-unl: class LeoCloud
-gnx: ekr.20201012111338.22
-unl: class LeoCloud--&gt;LeoCloud.__init__
-gnx: ekr.20201012111338.23
-unl: class LeoCloud--&gt;LeoCloud.bg_check
-gnx: ekr.20201012111338.24
-unl: class LeoCloud--&gt;LeoCloud.bg_post_process
-gnx: ekr.20201012111338.25
-unl: class LeoCloud--&gt;LeoCloud.find_at_leo_cloud
-gnx: ekr.20201012111338.26
-unl: class LeoCloud--&gt;LeoCloud._find_clouds_recursive
-gnx: ekr.20201012111338.27
-unl: class LeoCloud--&gt;LeoCloud.find_clouds
-gnx: ekr.20201012111338.28
-unl: class LeoCloud--&gt;LeoCloud._from_dict_recursive
-gnx: ekr.20201012111338.29
-unl: class LeoCloud--&gt;LeoCloud.from_dict
-gnx: ekr.20201012111338.30
-unl: class LeoCloud--&gt;LeoCloud.io_from_node
-gnx: ekr.20201012111338.31
-unl: class LeoCloud--&gt;LeoCloud.kw_from_node
-gnx: ekr.20201012111338.32
-unl: class LeoCloud--&gt;LeoCloud.load_clouds
-gnx: ekr.20201012111338.33
-unl: class LeoCloud--&gt;LeoCloud.read_current
-gnx: ekr.20201012111338.34
-unl: class LeoCloud--&gt;LeoCloud.recursive_hash
-gnx: ekr.20201012111338.35
-unl: class LeoCloud--&gt;LeoCloud.save_clouds
-gnx: ekr.20201012111338.36
-unl: class LeoCloud--&gt;LeoCloud.subtree_changed
-gnx: ekr.20201012111338.37
-unl: class LeoCloud--&gt;LeoCloud._to_json_serial
-gnx: ekr.20201012111338.38
-unl: class LeoCloud--&gt;LeoCloud.to_json
-gnx: ekr.20201012111338.39
-unl: class LeoCloud--&gt;LeoCloud._to_dict_recursive
-gnx: ekr.20201012111338.40
-unl: class LeoCloud--&gt;LeoCloud.to_dict
-gnx: ekr.20201012111338.41
-unl: class LeoCloud--&gt;LeoCloud._ua_clean
-gnx: ekr.20201012111338.42
-unl: class LeoCloud--&gt;LeoCloud.write_current
-</t>
-<t tx="ekr.20210509083811.2">gnx: ekr.20201012111338.43
-unl: Declarations (leo_cloud_server.py)
-</t>
 <t tx="ekr.20210510071427.1">def put_prolog():
     """Same as fc.putProlog, without the stylysheet."""
     fc = c.fileCommands
@@ -2701,7 +2526,7 @@ rust: rustc
 # The other group defines the file name.
 
 
-go ^\s*(.*):([0-9]+):([0-9]+):.+$
+go: ^\s*(.*):([0-9]+):([0-9]+):.+$
 python: ^\s*File "(.+)", line ([0-9]+), in .+$
 rust: ^\s*--&gt; (.+):([0-9]+):([0-9]+)\s*$</t>
 <t tx="ekr.20210630070717.1">"""
@@ -2856,20 +2681,6 @@ converter = convertCommands.ConvertAtTests()
 # converter = convertCommands.ConvertUndoTests()
 # converter = convertCommands.ConvertColorizerTests()
 convertCommands.convert_at_test_nodes(c, converter, root, copy_tree=True)</t>
-<t tx="ekr.20210911191729.1">gnx: ekr.20190113123439.5
-</t>
-<t tx="ekr.20210911191730.1">gnx: ekr.20190113123439.7
-</t>
-<t tx="ekr.20210911191730.3">gnx: ekr.20190113123439.11
-</t>
-<t tx="ekr.20210911191731.1">gnx: ekr.20190113121550.1
-</t>
-<t tx="ekr.20210911191731.3">gnx: ekr.20190113123439.16
-</t>
-<t tx="ekr.20210911191731.5">gnx: ekr.20190113123635.2
-</t>
-<t tx="ekr.20210911191731.7">gnx: ekr.20190113123635.5
-</t>
 <t tx="ekr.20210912064148.1"></t>
 <t tx="ekr.20210912064205.1"></t>
 <t tx="ekr.20211011090013.1">"""
@@ -2931,8 +2742,7 @@ count = 0
 parents = [('prefix', prefix)]  # Tuples: (kind, p)
 for i, s in enumerate(g.splitLines(contents)):
     for pattern, helper in table:
-        m = pattern.match(s)
-        if m:
+        if m := pattern.match(s):
             helper(i, m, s)  # m not used at present.
             count += 1
     else:
@@ -2976,54 +2786,28 @@ def do_sec(i, m, s):
 </t>
 <t tx="ekr.20211020091540.1">c.backup_helper(sub_dir='leoPy')
 </t>
-<t tx="ekr.20211107080227.1">gnx: ekr.20210911191226.3
-unl: at_auto_child (at-auto-line-number-test.py)
-</t>
-<t tx="ekr.20211107080227.2">gnx: ekr.20210911191226.4
-unl: !Declarations
-gnx: ekr.20210911191226.5
-unl: section 1
-gnx: ekr.20210911191226.6
-unl: section 2
-</t>
-<t tx="ekr.20211107080227.3">gnx: ekr.20210911191226.7
-unl: Declarations (at-auto-section-ref-test.py)
-</t>
-<t tx="ekr.20211107080227.5">gnx: ekr.20210911191226.10
-unl: class class1
-gnx: ekr.20210911191226.11
-unl: class class1--&gt;class1_method1
-gnx: ekr.20210911191226.12
-unl: class class1--&gt;class1_method2
-gnx: ekr.20210911191226.13
-unl: class class2
-gnx: ekr.20210911191226.14
-unl: class class2--&gt;class2_method1
-gnx: ekr.20210911191226.15
-unl: class class2--&gt;class2_method2
-</t>
-<t tx="ekr.20211107080227.6">gnx: ekr.20210911191226.16
-unl: section 1
-gnx: ekr.20210911191226.17
-unl: section 2
-</t>
-<t tx="ekr.20211107080227.7">gnx: ekr.20210911191226.18
-unl: First line.
-gnx: ekr.20210911191226.19
-unl: section 1
-gnx: ekr.20210911191226.20
-unl: section 2
-</t>
-<t tx="ekr.20211118024343.1">gnx: ekr.20210911191226.8
-unl: spam (at-auto-test.py)
-gnx: ekr.20210911191226.9
-unl: eggs (at-auto-test.py)
-</t>
 <t tx="ekr.20220306092217.1">g.cls()
-import os
-leo_editor_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
-os.chdir(leo_editor_dir)
-g.execute_shell_commands('test-one-leo')
+if c.isChanged():
+    c.save()
+&lt;&lt; prefixes &gt;&gt;
+if 0:  # run.cmd runs Nim tests.
+    g.execute_shell_commands('run')
+else:  # Leo unit test.
+    commands = (
+        # All commands must start with .test_.
+        
+        f"{core}.test_leoGlobals.TestGlobals.test_g_openUNLFile",
+        # f"{core}.test_leoUndo",
+        # f"{core}.test_leoColorizer",
+        
+        # f"{importers}.TestPython",
+        # f"{importers}.TestPython.test_almost_empty_defs",
+        # f"{importers}.TestPython.test_general_test_1",
+        # f"{importers}.TestPython.test_nested_defs",
+    )
+    verbose_flag = ''  # -v
+    commands_s = f"python -m unittest {verbose_flag} {' '.join(commands)}"
+    g.execute_shell_commands(commands_s)
 </t>
 <t tx="ekr.20220318085657.1">"""
 Find and mark all nodes containing underindented trailing comments in c's outline.
@@ -3197,7 +2981,7 @@ import re
 &lt;&lt; init core_p, command_p and globals_p &gt;&gt;
 d = {}  # Dict[func-name, True]
 # If I were going to do more work I would do the following:
-# exclusions: Dict[str, List[str]] = {}
+# exclusions: Dict[str, list[str]] = {}
 exclusions = set()  # Set[func-name]
 @others
 # Create d...
@@ -3221,8 +3005,7 @@ def scan(root: "Position") -&gt; None:
     """Add entries in d for all function/method definitions."""
     for p in root.subtree():
         for s in p.b.split('\n'):
-            m = def_pat.match(s)
-            if m:
+            if m := def_pat.match(s):
                 name = m.group(1)
                 if not name.startswith('__'):
                     d [m.group(1)] = True</t>
@@ -3364,58 +3147,6 @@ make_outline(d, top, topFlag=True)
 top.b = f"{{\n{textwrap.indent(top.b.strip(),' '*4)}\n}}\n"
 c.redraw(top)
     </t>
-<t tx="ekr.20220811130331.1">gnx: ekr.20220811130232.1
-</t>
-<t tx="ekr.20220811162331.1">gnx: ekr.20220811130300.1
-unl: spam
-gnx: ekr.20220811162311.1
-unl: spam--&gt;ham
-gnx: ekr.20220811130530.1
-unl: eggs
-</t>
-<t tx="ekr.20220823130338.1">"""Ensure that all expected @&lt;file&gt; nodes exist."""
-# #2743 is a duplicate of #1789. 
-g.cls()
-import glob
-import os
-join, norm, sep = os.path.join, os.path.normpath, os.sep
-
-# Compute the directories.
-leo_dir = norm(join(g.app.loadDir, '..'))
-core_dir = join(leo_dir, 'core')
-commands_dir = join(leo_dir, 'commands')
-external_dir = join(leo_dir, 'external')
-plugins_dir = join(leo_dir, 'plugins')
-
-def make_list(pattern):
-    return [norm(z) for z in glob.glob(pattern) if '__init__' not in z]
-
-# Find paths on disk.
-core_files = make_list(f"{core_dir}{sep}*.py")
-commands_files = make_list(f"{commands_dir}{sep}*.py")
-external_files = make_list(f"{external_dir}{sep}*.py")
-plugin_files = make_list(f"{plugins_dir}{sep}*.py")
-
-# Compute paths from @&lt;file&gt; nodes.
-at_file_paths = sorted([
-    norm(g.fullPath(c, z))
-        for z in c.all_unique_positions()
-            if z.isAnyAtFileNode()
-])
-
-excluded_files = (
-    r'plugins\qt_main.py',  # Generated automatically.
-    r'plugins\baseNativeTree.py',  # No longer used.
-)
-
-def is_excluded(path):
-    return any(z in path for z in excluded_files)
-
-# Ensure that @&lt;file&gt; nodes exist for every file on disk.
-for z in core_files + external_files + plugin_files:
-    if z not in at_file_paths and not is_excluded(z):
-        print('Missing:', z)
-print('done')</t>
 <t tx="ekr.20220823195205.1">"""
 Stand alone GUI free index builder for Leo's full text search system::
 
@@ -3527,468 +3258,38 @@ while todo:
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20220829104501.1">gnx: ekr.20220829102658.1
-</t>
-<t tx="ekr.20220830152850.1">gnx: ekr.20220830152749.1
-</t>
-<t tx="ekr.20220830152850.2"></t>
-<t tx="ekr.20220830153132.1">gnx: ekr.20220830152857.1
-unl: procedure statObj.scale
-gnx: ekr.20220830152857.2
-unl: procedure statObj.multiplyGraph
-gnx: ekr.20220830152857.3
-unl: function statObj.divideGraph
-gnx: ekr.20220830152857.4
-unl: procedure statObj.addGraph
-gnx: ekr.20220830152857.5
-unl: procedure statObj.subtract
-gnx: ekr.20220830152857.6
-unl: procedure statObj.addConstant
-gnx: ekr.20220830152857.7
-unl: procedure statObj.square
-gnx: ekr.20220830152857.8
-unl: { ------------------------------------------------------------------------
-gnx: ekr.20220830152857.9
-unl: procedure statObj.convolve
-gnx: ekr.20220830152857.10
-unl: (*{ ------------------------------------------------------------------------
-gnx: ekr.20220830152857.11
-unl: procedure statObj.convolve
-gnx: ekr.20220830152857.12
-unl: procedure statObj.shiftRight
-gnx: ekr.20220830152857.13
-unl: procedure statObj.shiftLeft
-gnx: ekr.20220830152857.14
-unl: { ----------------------------------------------------------------------
-gnx: ekr.20220830152857.15
-unl: procedure statObj.sortOnX
-gnx: ekr.20220830152857.16
-unl: procedure statObj.sortOnY
-gnx: ekr.20220830152857.17
-unl: constructor statObj.init;
-gnx: ekr.20220830152857.18
-unl: destructor statObj.byebye;
-gnx: ekr.20220830152857.19
-unl: procedure statObj.clear
-gnx: ekr.20220830152857.20
-unl: { -----------------------------------------------------------------------
-gnx: ekr.20220830152857.21
-unl: function statObj.getXStep
-gnx: ekr.20220830152857.22
-unl: procedure statObj.pad
-gnx: ekr.20220830152857.23
-unl: procedure statObj.copyData
-gnx: ekr.20220830152857.24
-unl: { Return true if ASCII, false if file contains bytes }
-gnx: ekr.20220830152857.25
-unl: function testDataType
-gnx: ekr.20220830152857.26
-unl: function statObj.sendXData
-gnx: ekr.20220830152857.27
-unl: function statObj.sendYData
-gnx: ekr.20220830152857.28
-unl: procedure statObj.getXData
-gnx: ekr.20220830152857.29
-unl: procedure statObj.getYData
-gnx: ekr.20220830152857.30
-unl: { -----------------------------------------------------------------------
-gnx: ekr.20220830152857.31
-unl: procedure statObj.importData
-gnx: ekr.20220830152857.32
-unl: { -----------------------------------------------------------------------
-gnx: ekr.20220830152857.33
-unl: procedure statObj.exportData
-gnx: ekr.20220830152857.34
-unl: procedure statObj.getYMax
-gnx: ekr.20220830152857.35
-unl: procedure statObj.getYMin
-gnx: ekr.20220830152857.36
-unl: procedure statObj.getXMax
-gnx: ekr.20220830152857.37
-unl: procedure statObj.getXMin
-gnx: ekr.20220830152857.38
-unl: { ------------------------------------------------------------------------
-gnx: ekr.20220830152857.39
-unl: procedure statObj.Integrate
-gnx: ekr.20220830152857.40
-unl: { ------------------------------------------------------------------------
-gnx: ekr.20220830152857.41
-unl: procedure statObj.differentiate
-</t>
 <t tx="ekr.20220904210247.1"># This is a copy of the @enabled-plugins node from leoSettings.leo,
 # ensuring that the @enabled-plugins node in myLeoSettings.leo has no effect.
 
 # Standard plugins...
 
 plugins_menu.py     # Adds 'Plugins' menu.
-contextmenu.py      # Required by the vim.py and xemacs.py plugins.
 mod_scripting.py
+contextmenu.py      # Required by the vim.py and xemacs.py plugins.
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
-nodetags.py
-quicksearch.py      # Nav pane.
-todo.py             # Task pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
+
+# Disabled standard menus...
+
+# mod_autosave.py   # Creates .bak files.
+# nodetags.py       # Supports tags via uA's.
+# quicksearch.py      # Nav pane.
+# todo.py             # Task pane.
 </t>
 <t tx="ekr.20221129012213.1"># See flake8 settings in setup.cfg.</t>
-<t tx="ekr.20221129095254.1">@language python
-
-# Leo colorizer control file for batch mode.
-# This file is in the public domain.
-
-# Properties for batch mode.
-properties = {
-    "lineComment": "rem",
-}
-
-# Attributes dict for batch_main ruleset.
-batch_main_attributes_dict = {
-    "default": "null",
-    "digit_re": "",
-    "escape": "",
-    "highlight_digits": "false",
-    "ignore_case": "true",
-    "no_word_sep": "",
-}
-
-# Dictionary of attributes dictionaries for batch mode.
-attributesDictDict = {
-    "batch_main": batch_main_attributes_dict,
-}
-
-# Keywords dict for batch_main ruleset.
-batch_main_keywords_dict = {
-    "append": "function",
-    "attrib": "function",
-    "aux": "keyword2",
-    "call": "keyword1",
-    "cd": "keyword1",
-    "chdir": "keyword1",
-    "chkdsk": "function",
-    "choice": "function",
-    "cls": "keyword1",
-    "copy": "keyword1",
-    "debug": "function",
-    "defined": "keyword2",
-    "defrag": "function",
-    "del": "keyword1",
-    "deltree": "function",
-    "diskcomp": "function",
-    "diskcopy": "function",
-    "do": "keyword2",
-    "doskey": "function",
-    "drvspace": "function",
-    "echo": "keyword1",
-    "echo.": "keyword1",
-    "else": "keyword2",
-    "emm386": "function",
-    "endlocal": "keyword1",
-    "errorlevel": "keyword2",
-    "exist": "keyword2",
-    "exit": "keyword1",
-    "expand": "function",
-    "fastopen": "function",
-    "fc": "function",
-    "fdisk": "function",
-    "find": "function",
-    "for": "keyword1",
-    "format": "function",
-    "goto": "keyword3",
-    "graphics": "function",
-    "if": "keyword1",
-    "in": "keyword2",
-    "keyb": "function",
-    "label": "function",
-    "loadfix": "function",
-    "md": "keyword1",
-    "mem": "function",
-    "mkdir": "keyword1",
-    "mode": "function",
-    "more": "function",
-    "move": "function",
-    "mscdex": "function",
-    "nlsfunc": "function",
-    "not": "keyword1",
-    "nul": "keyword2",
-    "pause": "keyword1",
-    "power": "function",
-    "print": "function",
-    "prn": "keyword2",
-    "rd": "function",
-    "ren": "keyword1",
-    "replace": "function",
-    "restore": "function",
-    "set": "keyword1",
-    "setlocal": "keyword1",
-    "setver": "function",
-    "share": "function",
-    "shift": "keyword1",
-    "sort": "function",
-    "subst": "function",
-    "sys": "function",
-    "tree": "function",
-    "undelete": "function",
-    "unformat": "function",
-    "vsafe": "function",
-    "xcopy": "function",
-}
-
-# Dictionary of keywords dictionaries for batch mode.
-keywordsDictDict = {
-    "batch_main": batch_main_keywords_dict,
-}
-
-# Rules for batch_main ruleset.
-
-@others
-# Rules dict for batch_main ruleset.
-rulesDict1 = {
-    "!": [batch_rule4],
-    "\"": [batch_rule9],
-    "%": [
-        batch_rule10, batch_rule11, batch_rule12, batch_rule13, batch_rule14,
-        batch_rule15, batch_rule16, batch_rule17, batch_rule18, batch_rule19,
-        batch_rule20, batch_rule21
-    ],
-    "&amp;": [batch_rule3],
-    "+": [batch_rule1],
-    ".": [batch_rule22],
-    "0": [batch_rule22],
-    "1": [batch_rule22],
-    "2": [batch_rule22],
-    "3": [batch_rule22],
-    "4": [batch_rule22],
-    "5": [batch_rule22],
-    "6": [batch_rule22],
-    "7": [batch_rule22],
-    "8": [batch_rule22],
-    "9": [batch_rule22],
-    ":": [batch_rule7],
-    "&lt;": [batch_rule6],
-    "&gt;": [batch_rule5],
-    "@": [batch_rule0, batch_rule22],
-    "A": [batch_rule22],
-    "B": [batch_rule22],
-    "C": [batch_rule22],
-    "D": [batch_rule22],
-    "E": [batch_rule22],
-    "F": [batch_rule22],
-    "G": [batch_rule22],
-    "H": [batch_rule22],
-    "I": [batch_rule22],
-    "J": [batch_rule22],
-    "K": [batch_rule22],
-    "L": [batch_rule22],
-    "M": [batch_rule22],
-    "N": [batch_rule22],
-    "O": [batch_rule22],
-    "P": [batch_rule22],
-    "Q": [batch_rule22],
-    "R": [batch_rule8, batch_rule22],
-    "S": [batch_rule22],
-    "T": [batch_rule22],
-    "U": [batch_rule22],
-    "V": [batch_rule22],
-    "W": [batch_rule22],
-    "X": [batch_rule22],
-    "Y": [batch_rule22],
-    "Z": [batch_rule22],
-    "a": [batch_rule22],
-    "b": [batch_rule22],
-    "c": [batch_rule22],
-    "d": [batch_rule22],
-    "e": [batch_rule22],
-    "f": [batch_rule22],
-    "g": [batch_rule22],
-    "h": [batch_rule22],
-    "i": [batch_rule22],
-    "j": [batch_rule22],
-    "k": [batch_rule22],
-    "l": [batch_rule22],
-    "m": [batch_rule22],
-    "n": [batch_rule22],
-    "o": [batch_rule22],
-    "p": [batch_rule22],
-    "q": [batch_rule22],
-    "r": [batch_rule8a, batch_rule22],
-    "s": [batch_rule22],
-    "t": [batch_rule22],
-    "u": [batch_rule22],
-    "v": [batch_rule22],
-    "w": [batch_rule22],
-    "x": [batch_rule22],
-    "y": [batch_rule22],
-    "z": [batch_rule22],
-    "|": [batch_rule2],
-}
-
-# x.rulesDictDict for batch mode.
-rulesDictDict = {
-    "batch_main": rulesDict1,
-}
-
-# Import dict for batch mode.
-importDict = {}
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20221129095311.1">def batch_rule0(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword3", seq="@",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.10">def batch_rule9(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
-
-</t>
-<t tx="ekr.20221129095311.11">def batch_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%0",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.12">def batch_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%1",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.13">def batch_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%2",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.14">def batch_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%3",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.15">def batch_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%4",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.16">def batch_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%5",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.17">def batch_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%6",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.18">def batch_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%7",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.19">def batch_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%8",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.2">def batch_rule1(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.20">def batch_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="keyword2", seq="%9",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.21">def batch_rule20(colorer, s, i):
-    return colorer.match_span(s, i, kind="keyword2", begin="%[", end="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.22">def batch_rule21(colorer, s, i):
-    return colorer.match_span(s, i, kind="keyword2", begin="%", end="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
-
-</t>
-<t tx="ekr.20221129095311.23">def batch_rule22(colorer, s, i):
-    return colorer.match_keywords(s, i)
-
-</t>
-<t tx="ekr.20221129095311.3">def batch_rule2(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.4">def batch_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&amp;",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.5">def batch_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.6">def batch_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&gt;",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.7">def batch_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&lt;",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
-
-</t>
-<t tx="ekr.20221129095311.8">def batch_rule7(colorer, s, i):
-    # Labels.
-    return colorer.match_eol_span(s, i, kind="label", seq=":",
-        at_line_start=True, at_whitespace_end=False, at_word_start=False, exclude_match=False)
-
-</t>
-<t tx="ekr.20221129095311.9">def batch_rule8(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="REM",
-        at_line_start=True, at_whitespace_end=True, at_word_start=True,
-        delegate="", exclude_match=False)
-
-def batch_rule8a(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="rem",
-        at_line_start=True, at_whitespace_end=True, at_word_start=True,
-        delegate="", exclude_match=False)
-
-</t>
 <t tx="ekr.20221201043917.1">@language batch
-echo off
-call %~dp0\set-repo-dir
+@echo off
+cd %~dp0..\..
+
+call reindent-leo.cmd
 
 echo test-leo
 py -m unittest %*
 </t>
-<t tx="ekr.20221201080228.1">@language python
-#!/usr/bin/env python3
-
-# from leo.core import leoGlobals as g
-
-tag = 'blacken_leo.py:'
-
-try:
-    import black
-    print('blacken_leo.py: black', black)
-except ImportError:
-    print('blacken_leo.py: can not import black')
-    
-print(tag, '*** Call black.main ***')
-black.main()
-    
-# try:
-    # from black import __main__
-    # print(tag, __main__)
-# except Exception as e:
-    # print(tag, e)
-</t>
 <t tx="ekr.20221204070905.1"></t>
 <t tx="ekr.20221204071056.1">@language batch
-echo off
-call %~dp0\set-repo-dir
+@echo off
+cd %~dp0..\..
 
 echo pylint-leo
 time /T
@@ -3996,8 +3297,8 @@ call py -m pylint leo --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.
 time /T
 </t>
 <t tx="ekr.20221204071146.1">@language batch
-echo off
-call %~dp0\set-repo-dir
+@echo off
+cd %~dp0..\..
 
 rem See leo-editor/.mypy.ini for exclusions!
 rem Always use the fast (official) version of mypy.
@@ -4006,63 +3307,83 @@ echo mypy-leo
 py -m mypy --debug-cache leo %*
 </t>
 <t tx="ekr.20221204071220.1">@language batch
-echo off
+@echo off
 cls
-::cd c:\Repos\leo-editor
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
-echo test-one-leo: test_leoFind.TestFind
+echo test-one-leo
 call py -m unittest leo.unittests.core.test_leoGlobals.TestGlobals.test_g_handleScriptException
 </t>
 <t tx="ekr.20221204071554.1">@language batch
-echo off
+@echo off
 cls
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 
-echo full-test-leo
-call reindent-leo.cmd
-call beautify-leo.cmd
-call test-leo.cmd
-echo.
+rem Run all of Leo's pre-commit tests.
+
+call tbo.cmd --all --beautified --report --write
+call python312 -m unittest
+call ruff-leo.cmd
 call mypy-leo.cmd
-echo.
-call flake8-leo.cmd
-call pylint-leo.cmd
-echo.
 echo Done!
 </t>
-<t tx="ekr.20221204072154.1">@echo off
+<t tx="ekr.20221204072154.1">@language batch
+@echo off
+cd %~dp0..\..
+
 :: Save path to reindent.py to a file .leo\reindent-path.txt
-py %~dp0\find-reindent.py
+call py %~dp0\find-reindent.py
 
 set PATH_FILE=%USERPROFILE%\.leo\reindent-path.txt
 set /P "REINDENT_PATH="&lt; %PATH_FILE%
 
+:: echo %REINDENT_PATH%
+
 if "%REINDENT_PATH%"=="" goto no_reindent
-echo re-indenting
-py %REINDENT_PATH% -r leo
+
+echo reindent-leo
+
+rem echo reindent leo/core
+call py %REINDENT_PATH% -r leo\core
+rem echo reindent leo/commands
+call py %REINDENT_PATH% -r leo\commands
+rem echo reindent leo/plugins/importers
+call py %REINDENT_PATH% -r leo\plugins\importers
+rem echo reindent leo/plugins/commands
+call py %REINDENT_PATH% leo\plugins\qt_commands.py
+call py %REINDENT_PATH% leo\plugins\qt_events.py
+call py %REINDENT_PATH% leo\plugins\qt_frame.py
+call py %REINDENT_PATH% leo\plugins\qt_gui.py
+call py %REINDENT_PATH% leo\plugins\qt_idle_time.py
+call py %REINDENT_PATH% leo\plugins\qt_text.py
+call py %REINDENT_PATH% leo\plugins\qt_tree.py
+rem echo reindent leo/plugins/writers
+call py %REINDENT_PATH% -r leo\plugins\writers
+rem echo reindent leo/unittests
+call py %REINDENT_PATH% -r leo\unittests
+rem echo reindent official plugins.
+call py %REINDENT_PATH% leo\plugins\indented_languages.py
 goto done
 
 :no_reindent
 echo Cannot find reindent.py, skipping reindentation
 
 :done
-
 </t>
 <t tx="ekr.20221204072456.1">@language batch
-echo off
-call %~dp0\set-repo-dir
+@echo off
+cd %~dp0..\..
 
 echo beautify-leo
-call py -m leo.core.leoAst --orange --recursive leo\core
-call py -m leo.core.leoAst --orange --recursive leo\commands
-call py -m leo.core.leoAst --orange --recursive leo\plugins\importers
-call py -m leo.core.leoAst --orange --recursive leo\plugins\writers
+
+call py -m leo.core.leoAst --orange --verbose leo\core
+call py -m leo.core.leoAst --orange --verbose leo\commands
+call py -m leo.core.leoAst --orange --verbose leo\plugins
+call py -m leo.core.leoAst --orange --verbose leo\modes
 </t>
 <t tx="ekr.20221204074235.1">@language batch
-echo off
-::cd c:\Repos\leo-editor
-call %~dp0\set-repo-dir
+@echo off
+cd %~dp0..\..
 
 rem: See leo-editor/setup.cfg for defaults.
 
@@ -4070,21 +3391,18 @@ echo flake8-leo
 py -m flake8 %*
 </t>
 <t tx="ekr.20230115020533.1">@language batch
-echo off
-::cd c:\Repos\leo-editor
-call %~dp0\set-repo-dir
+@echo off
+cd %~dp0..\..
 
+rem not recommended!
 echo black leo.core
 call py -m black --skip-string-normalization leo\core
-
-rem echo.
-rem echo black leo.commands
-rem call python -m black --skip-string-normalization leo\commands</t>
+</t>
 <t tx="ekr.20230206004301.1">@language batch
-echo off
+@echo off
 cls
 rem -a: write all files  (make clean)
-call %~dp0\set-repo-dir
+cd %~dp0..\..
 cd leo\doc\html
 
 echo.
@@ -4092,30 +3410,170 @@ echo sphinx-build -a (make clean)
 echo.
 sphinx-build -M html . _build -a
 </t>
-<t tx="tom.20230319122643.1">:: Change directory from ...\leo-editor\leo\scripts to ...\leo-editor
+<t tx="ekr.20230508145335.1"># These tests load (once) all files in leo/core, leo/commands and leo/plugins/qt_*.py.
+g.cls()
+g.execute_shell_commands(
+    'python -m unittest '
+    # 'leo.unittests.test_design.TestAnnotations.slow_test_all_paths '
+    # 'leo.unittests.test_design.TestChains.slow_test_all_paths'
+    # 'leo.unittests.core.test_leoImport.TestLeoImport.slow_test_ric_run',
+    # 'leo.unittests.commands.test_editFileCommands.TestEditFileCommands.verbose_test_git_diff',
+    # f" {commands}.test_editFileCommands.TestEditFileCommands.slow_test_gdc_node_history",
+
+)
+</t>
+<t tx="ekr.20230511074046.1">commands = 'leo.unittests.commands'
+core = 'leo.unittests.core'
+gui = 'leo.unittests.test_gui'
+importers = 'leo.unittests.plugins.test_importers'
+misc = 'leo.unittests.misc_tests'
+plugins = 'leo.unittests.plugins'
+syntax = 'leo.unittests.plugins.test_syntax'
+writers = 'leo.unittests.plugins.test_writers'
+
+# f"{core}.test_leoAst",
+# f"{core}.test_leoGlobals",
+# f"{core}.test_leoTokens",
+
+# f"{misc}.test_design",
+# f"{misc}.test_doctests",
+# f"{misc}.test_syntax",
+
+# f"{plugins}.test_gui",
+# f"{plugins}.test_importers",
+# f"{plugins}.test_plugins",
+# f"{plugins}.test_writers",
+</t>
+<t tx="ekr.20230624114517.1"></t>
+<t tx="ekr.20230717210524.1"></t>
+<t tx="ekr.20230720115916.1">g.cls()
+import leo.commands.editFileCommands as efc
+
+x = efc.GitDiffController(c=c)
+path = g.os_path_finalize_join(g.app.loadDir, 'leoGlobals.py')
+gnxs = (
+    'ekr.20230626064652.1',  # EKR's replacement gnx
+    'tbrown.20140311095634.15188',  # Terry's original node.
+)
+x.node_history(path, gnxs, limit=60)
+</t>
+<t tx="ekr.20231107062256.1">"""Ensure that all expected @&lt;file&gt; nodes exist."""
+g.cls()
+import glob
+import os
+join, sep = os.path.join, os.sep
+
+def norm(path):
+    return os.path.normpath(path).lower()
+
+# Compute the directories.
+leo_dir = norm(join(g.app.loadDir, '..'))  ### '..'))
+core_dir = join(leo_dir, 'core')
+commands_dir = join(leo_dir, 'commands')
+external_dir = join(leo_dir, 'external')
+importers_dir = join(leo_dir, 'plugins', 'importers')
+plugins_dir = join(leo_dir, 'plugins')
+unittests_dir = join(leo_dir, '..', 'unittests')
+writers_dir = join(leo_dir, 'plugins', 'writers')
+
+def make_list(pattern):
+    return [norm(z) for z in glob.glob(pattern) if '__init__' not in z]
+
+# Find paths on disk.
+core_files = make_list(f"{core_dir}{sep}*.py")
+commands_files = make_list(f"{commands_dir}{sep}*.py")
+external_files = make_list(f"{external_dir}{sep}*.py")
+importer_files = make_list(f"{importers_dir}{sep}*.py")
+# plugin_files = make_list(f"{plugins_dir}{sep}*.py")
+qt_files = make_list(f"{plugins_dir}{sep}qt*.py")
+unittests_files = make_list(f"{unittests_dir}{sep}*.py")
+writer_files = make_list(f"{writers_dir}{sep}*.py")
+
+# Compute paths from @&lt;file&gt; nodes.
+at_file_paths = sorted([
+    norm(c.fullPath(z))
+        for z in c.all_unique_positions()
+            if z.isAnyAtFileNode()
+])
+
+excluded_files = (
+    r'plugins\qt_main.py',  # Generated automatically.
+    r'plugins\baseNativeTree.py',  # No longer used.
+)
+
+def is_excluded(path):
+    return any(z in path for z in excluded_files)
+    
+if 0:
+    for files, kind in (
+        (at_file_paths, 'all known paths'),
+        (core_files, 'core_files'),
+        (qt_files, 'qt_files'),
+        (importer_files, 'importer_files'),
+        (writer_files, 'writer_files'),
+    ):
+        g.printObj(files, tag=f"{kind}")
+
+# Ensure that @&lt;file&gt; nodes exist for every file on disk.
+missing = []
+for z in core_files + external_files + qt_files + importer_files + writer_files:
+    if z not in at_file_paths and not is_excluded(z):
+        missing.append(z)
+if missing:
+    g.printObj(missing, tag='missing @&lt;file&gt; nodes')
+else:
+    print('No missing files!')
+print('done')</t>
+<t tx="ekr.20231114224211.1">@language batch
 @echo off
 cd %~dp0..\..
+
+echo beautify-leo
+
+call py -m leo.core.leoAst --orange --force --verbose leo\core
+call py -m leo.core.leoAst --orange --force --verbose leo\commands
+
+rem It's ok to beautify everything:
+
+call py -m leo.core.leoAst --orange --verbose leo\plugins
+call py -m leo.core.leoAst --orange --verbose leo\modes
+
+rem call py -m leo.core.leoAst --orange --force --verbose leo\plugins\importers
+rem call py -m leo.core.leoAst --orange --force --verbose leo\plugins\writers
 </t>
-<t tx="tom.20230321222112.1">"""Find reindent.py script.
+<t tx="ekr.20240107154430.1"># 79: PEP8 recommendation.</t>
+<t tx="ekr.20240119060724.1">@language batch
 
-Writes the path to a file named "reindent-dir.txt" in the user's .leo directory.
-"""
+@echo off
+cls
+cd %~dp0..\..
 
-import sys, os, os.path
+rem Use leoTokens.py to beautify all files.
 
-SUFFIX = r'Tools\Scripts\reindent.py'
-LEO_HOME_DIR = os.environ['USERPROFILE'] + r'\.leo'
-PATH_FILE = LEO_HOME_DIR + r'\reindent-path.txt'
+IF [%1]==[-h] goto help
+IF [%1]==[--help] goto help
 
-path = None
-for p in sys.path:
-    candidate = os.path.join(p, SUFFIX)
-    if os.path.exists(candidate):
-        path = candidate
-        break
+:tbo:
 
-if path:
-     with open(PATH_FILE, 'w', encoding = 'utf-8') as f:
-         f.write(path)</t>
+echo tbo [%*]
+call python312 -m leo.core.leoTokens leo\core %*
+call python312 -m leo.core.leoTokens leo\commands %*
+call python312 -m leo.core.leoTokens leo\plugins\importers %*
+call python312 -m leo.core.leoTokens leo\plugins\writers %*
+call python312 -m leo.core.leoTokens leo\modes %*
+
+call python312 -m leo.core.leoTokens leo\unittests\core %*
+call python312 -m leo.core.leoTokens leo\unittests\commands %*
+call python312 -m leo.core.leoTokens leo\unittests\plugins %*
+call python312 -m leo.core.leoTokens leo\unittests\misc_tests %*
+goto done
+
+:help:
+call python312 -m leo.core.leoTokens  --help
+
+:done:
+</t>
+<t tx="ekr.20240204082420.1"></t>
+<t tx="ekr.20240204082924.1"></t>
 </tnodes>
 </leo_file>

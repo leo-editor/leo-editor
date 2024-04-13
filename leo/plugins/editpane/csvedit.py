@@ -4,14 +4,13 @@
 #@@tabwidth -4
 #@@language python
 
-# pylint: disable=no-member
 #@+<< imports >>
 #@+node:ekr.20211210174132.1: ** << imports >>
 import csv
 from collections import namedtuple
 import leo.core.leoGlobals as g
 assert g
-from leo.core.leoQt import QtCore, QtWidgets, QtConst, QtGui
+from leo.core.leoQt import Qt, QtCore, QtWidgets, QtGui
 from leo.core.leoQt import ItemFlag, ItemDataRole, StandardPixmap  #2347
 
 try:
@@ -77,7 +76,7 @@ class ListTable(QtCore.QAbstractTableModel):
         if delim is None:
             delim = DEFAULTDELIM
 
-        # look for seperator not in text
+        # look for separator not in text
         sep_i = 0
         while SEPS[sep_i] in text and sep_i < len(SEPS) - 1:
             sep_i += 1
@@ -141,7 +140,7 @@ class ListTable(QtCore.QAbstractTableModel):
     #@+node:ekr.20211210174103.9: *3* get_text
     def get_text(self):
 
-        # look for seperator not in text
+        # look for separator not in text
         sep_i = 0
         tmp = ''.join([''.join(i) for i in self._data])
         while SEPS[sep_i] in tmp and sep_i < len(SEPS) - 1:
@@ -368,7 +367,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
             r = max(0, r + DELTA[name][0])
             c = max(0, c + DELTA[name][1])
         self.ui.table.setCurrentIndex(self.ui.data.index(r, c))
-        self.ui.table.setFocus(QtConst.OtherFocusReason)
+        self.ui.table.setFocus(Qt.OtherFocusReason)
 
     #@+node:ekr.20211210174103.19: *3* move
     def move(self, name):

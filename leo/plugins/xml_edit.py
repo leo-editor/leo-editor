@@ -96,9 +96,11 @@ These commands attempt to deal with all of this.
 
 """
 
+# broad-exception-raised: Not valid in later pylints.
+
 import os
 import traceback  # for XML parse error display
-from typing import Any, Dict
+from typing import Any
 from lxml import etree
 from leo.core import leoGlobals as g
 
@@ -110,13 +112,13 @@ tail_sentinel = """
 """
 
 # for file open/save dialog
-table = [
+filetypes = [
     ("XML files", "*.xml"),
     ("All files", "*"),
 ]
 
 # xml namespace mapping from prefix to full namespace
-NSMAP: Dict[str, Any] = {}
+NSMAP: dict[str, Any] = {}
 
 #@+node:tbrown.20110428102237.20325: ** append_element
 def append_element(xml_node, to_leo_node):
@@ -236,9 +238,9 @@ def leo2xml(event):
 
     cd_here(c, p)
     file_name = g.app.gui.runSaveFileDialog(
-            c, title="Open", filetypes=table, defaultextension=".xml")
+        c, title="Open", filetypes=filetypes, defaultextension=".xml")
     if not file_name:
-        raise Exception("No file selected")
+        raise ImportError("No file selected")
 
     open(file_name, 'w').write(ans)
 
@@ -291,10 +293,10 @@ def xml2leo(event, from_string=None):
         parser_func = etree.parse
         cd_here(c, p)
         file_name = g.app.gui.runOpenFileDialog(
-                c, title="Open", filetypes=table, defaultextension=".xml")
+                c, title="Open", filetypes=filetypes, defaultextension=".xml")
 
         if not file_name:
-            raise Exception("No file selected")
+            raise ImportError("No file selected")
 
     try:
         xml_ = parser_func(file_name)

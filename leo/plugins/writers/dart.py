@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20141116100154.2: * @file ../plugins/writers/dart.py
-"""The @auto write code for Emacs org-mode (.org) files."""
+"""The @auto write code for dart."""
 from leo.core import leoGlobals as g  # Required
 from leo.core.leoNodes import Position
 import leo.plugins.writers.basewriter as basewriter

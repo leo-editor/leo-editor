@@ -1,8 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084208.398: * @file ../external/npyscreen/wgwidget.py
 #!/usr/bin/python
+# mypy: ignore-errors
 # pylint: disable=no-member,access-member-before-definition
-# type: ignore
+
 #@+<< wgwidget imports >>
 #@+node:ekr.20170428084208.399: ** << wgwidget imports >>
 import copy
@@ -141,7 +142,7 @@ class InputHandler:
         """
         InputHandler.set_up_handlers.
 
-        This function should be called somewhere during object initialisation
+        This function should be called somewhere during object initialization
         (which all library-defined widgets do). You might like to override this
         in your own definition, but in most cases the add_handers or
         add_complex_handlers methods are what you want.
@@ -307,8 +308,8 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         except Exception:
             self.name = name
 
-        self.request_width = width  # widgets should honour if possible
-        self.request_height = height  # widgets should honour if possible
+        self.request_width = width  # widgets should honor if possible
+        self.request_height = height  # widgets should honor if possible
 
         self.max_height = max_height
         self.max_width = max_width
@@ -508,7 +509,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self.parent.refresh()
     #@+node:ekr.20170428084208.419: *3* Widget.do_colors
     def do_colors(self):
-        "Returns True if the widget should try to paint in coloour."
+        "Returns True if the widget should try to paint in colour."
         if curses.has_colors() and not GlobalOptions.DISABLE_ALL_COLORS:
             return True
         else:
@@ -595,7 +596,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         return (mouse_id, rel_x, rel_y, z, bstate)
 
     #def when_parent_changes_value(self):
-        # Can be called by forms when they chage their value.
+        # Can be called by forms when they change their value.
         #pass
     #@+node:ekr.20170429213619.9: *3* Widget.intersted_in_mouse_event
     def intersted_in_mouse_event(self, mouse_event):
@@ -787,7 +788,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 self.width = nx  # width is needed space
             else:
                 self.width = RAISEERROR  # else raise an error
-        elif self.max_width:  # otherwise if a max width is speciied
+        elif self.max_width:  # otherwise if a max width is specified
             if max_width <= mx:
                 self.width = max_width
             else:

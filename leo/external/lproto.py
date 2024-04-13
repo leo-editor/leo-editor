@@ -178,14 +178,12 @@ class LProtoClient:
         '''Connect to the server.  Return True if the connection was established.'''
         if hasattr(socket, 'AF_UNIX'):
             try:
-                # pylint: disable=no-member
-                # Module 'socket' has no 'AF_UNIX' member
                 self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
                 self.socket.connect(fname)
                 return True
             except Exception:
                 g.es_print('lproto.py: failed to connect!', fname)
-                g.es_exception(full=False, c=None)
+                g.es_exception()
                 return False
         else:
             try:
@@ -198,7 +196,7 @@ class LProtoClient:
             except Exception:
                 g.es_print('lproto.py: failed to connect! host: %s, port: %s' % (
                     host, port))
-                g.es_exception(full=False, c=None)
+                g.es_exception()
                 return False
     #@+node:ekr.20111012070545.7211: *3* send
     def send(self, msg):

@@ -59,8 +59,7 @@ def md_write_files(event):
             yield hl(v, lev)
             yield ''
         for line in v.b.splitlines(False):
-            m = pat.match(line)
-            if m:
+            if m := pat.match(line):
                 v1 = c.fileCommands.gnxDict.get(m.group(2))
                 if not v1:
                     g.es('gnx not found:[%s]' % m.group(2))
@@ -94,7 +93,7 @@ def md_write_files(event):
             h = v.h
             if h.startswith('md:'):
                 pth = c.getNodePath(p)
-                fname = g.os_path_finalize_join(pth, h[3:].strip())
+                fname = g.finalize_join(pth, h[3:].strip())
                 if not fname.endswith('.md'):
                     fname = fname + '.md'
                 process(v, fname)

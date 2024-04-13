@@ -105,38 +105,28 @@ keywordsDictDict = {
 # Rules for lotos_main ruleset.
 
 def lotos_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="(*", end="*)",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="(*", end="*)")
 
 def lotos_rule1(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">>")
 
 def lotos_rule2(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[>")
 
 def lotos_rule3(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|||",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|||")
 
 def lotos_rule4(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="||",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="||")
 
 def lotos_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|[",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|[")
 
 def lotos_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]|")
 
 def lotos_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[]")
 
 def lotos_rule8(colorer, s, i):
     return colorer.match_keywords(s, i)

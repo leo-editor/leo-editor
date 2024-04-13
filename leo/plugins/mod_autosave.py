@@ -15,7 +15,7 @@ This plugin is active only if::
 # By Paul Paterson. Rewritten by EKR.
 from __future__ import annotations
 import time
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -24,7 +24,7 @@ if TYPE_CHECKING:  # pragma: no cover
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 # The global settings dict: Keys are commanders. Values are settings dicts.
-gDict: Dict[Cmdr, Dict] = {}
+gDict: dict[Cmdr, dict] = {}
 
 #@+others
 #@+node:ekr.20060108123141.2: ** init (mod_autosave.py)

@@ -131,10 +131,12 @@ Tags
 
 # By Terry Brown, 2007-01-12
 
+# EKR: gnx-based unls make this plugin obsolete.
+
 #@+<< imports >>
 #@+node:tbrown.20070117104409.2: ** << imports >>
 from copy import deepcopy
-from typing import Any, List, Sequence, Tuple
+from typing import Any, Sequence
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 # for the right click context menu, and child items
@@ -145,7 +147,7 @@ from leo.plugins.attrib_edit import DialogCode, ListDialog
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
-# pylint: disable=cell-var-from-loop
+
 #@+others
 #@+node:tbrown.20070117104409.3: ** init and onCreate
 def init():
@@ -204,7 +206,7 @@ class quickMove:
        creating buttons, and creates buttons as needed
     """
 
-    flavors: List[Tuple] = [
+    flavors: list[tuple] = [
       # name   first/last  long  short
       ('move', True, "Move", "to"),
       ('copy', True, "Copy", "to"),
@@ -262,7 +264,6 @@ class quickMove:
         # build callables for imp list
         todo: Sequence[Any]
         for name, first_last, long, short in quickMove.flavors:
-            # pylint: disable=undefined-loop-variable
             self.txts[name] = short
 
             if first_last:
@@ -330,7 +331,7 @@ class quickMove:
 
         # c.frame.menu.createNewMenu('Move', 'Outline')
 
-        self.local_imps: List[Tuple] = []  # make table for createMenuItemsFromTable()
+        self.local_imps: list[tuple] = []  # make table for createMenuItemsFromTable()
         for func, name, text in self.imps:
             self.local_imps.append((text, None, func))
 
@@ -341,7 +342,6 @@ class quickMove:
             g.tree_popup_handlers.append(self.popup)
     #@+node:tbrown.20091207120031.5356: *3* dtor
     def __del__(self, c=None):
-        # pylint: disable=unexpected-special-method-signature
         if g.app.gui.guiName() == "qt":
             g.tree_popup_handlers.remove(self.popup)
     #@+node:ekr.20070117113133.2: *3* addButton (quickMove.py)
@@ -386,7 +386,7 @@ class quickMove:
             b = sc.createIconButton(
                 args=None,
                 text=text,
-                command = mb.moveCurrentNodeToTarget,
+                command=mb.moveCurrentNodeToTarget,
                 statusLine='%s current node to %s child of %s' % (
                     type_.title(), which, v.h),
                 kind="quick-move"
@@ -577,7 +577,7 @@ class quickMove:
                 current_submenu.addAction(k)
 
         pos = c.frame.top.window().frameGeometry().center()
-        action = menu.exec_(pos)
+        action = menu.exec(pos)
         if action is None:
             return
         k = str(action.text())
@@ -629,7 +629,7 @@ class quickMove:
             return
 
         ld = ListDialog(None, 'Pick parent', 'Pick parent', parents)
-        ld.exec_()
+        ld.exec()
         if ld.result() == DialogCode.Rejected:
             return
 
@@ -755,7 +755,7 @@ class quickMove:
             path, unl = full_path.split('#', 1)
             c2 = g.openWithFileName(path, old_c=self.c)
             self.c.bringToFront(c2=self.c)
-            maxp = g.findUNL(unl.split('-->'), c2)
+            maxp = g.findAnyUnl(unl, c2)
             if maxp:
                 if not bookmark and (for_p == maxp or for_p.isAncestorOf(maxp)):
                     g.es("Invalid move")
@@ -897,13 +897,13 @@ class quickMoveButton:
                     p.moveToLastChildOf(p2)
                 elif self.which in ('next sibling', 'prev sibling'):
                     if not p2.parent():
-                        raise Exception("Not implemented for top-level nodes")  #FIXME
+                        raise NotImplementedError("Not implemented for top-level nodes")  #FIXME
                     if self.which == 'next sibling':
                         p.moveToNthChildOf(p2.parent(), p2._childIndex)
                     elif self.which == 'prev sibling':
                         p.moveToNthChildOf(p2.parent(), p2._childIndex - 1)
                 else:
-                    raise Exception("Unknown move type " + self.which)
+                    raise TypeError(f"Unknown move type: {self.which!r}")
 
             elif self.type_ == 'bkmk':
                 unl = self.computeUNL(p)  # before tree changes
@@ -916,7 +916,7 @@ class quickMoveButton:
                 elif self.which == 'prev sibling':
                     nd = p2.insertBefore()
                 else:
-                    raise Exception("Unknown move type " + self.which)
+                    raise TypeError(f"Unknown move type: {self.which!r}")
                 h = p.anyAtFileNodeName() or p.h
                 while h and h[0] == '@':
                     h = h[1:]
@@ -939,7 +939,7 @@ class quickMoveButton:
                     nd = p2.insertBefore()
                     quickMove.copy_recursively(p, nd)
                 else:
-                    raise Exception("Unknown move type " + self.which)
+                    raise TypeError(f"Unknown move type: {self.which!r}")
 
             elif self.type_ in ('linkTo', 'linkFrom'):
                 blc = getattr(c, 'backlinkController', None)
@@ -980,7 +980,7 @@ class quickMoveButton:
     def computeUNL(self, p):
 
         p = p.copy()
-        heads: List[str] = []
+        heads: list[str] = []
         while p:
             heads.insert(0, p.h)
             p = p.parent()

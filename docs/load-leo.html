@@ -1,76 +1,34 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<script type="text/javascript" src="scripts/upclick-min.js"></script>
-<script type="text/javascript" src="scripts/jquery.min.js"></script>
-<title>Load Your Leo File</title>
-</head>
-<body>
-<form name="form1">
-<input type="button" id="uploader" value="Upload From Your Hard Drive">
-</form>
-<p style="margin:0;font-size:1em;">&nbsp;</p>
-Or
-<p style="margin:0;font-size:1em;">&nbsp;</p>
-<form id="form2">
-Upload from the Internet.<br>Enter the URL below.<br>
-<input type="text" style="width:600px;" id="get_name" value="https://github.com/leo-editor/leo-editor/raw/master/leo/doc/LeoDocs.leo"><br>&nbsp;<br>
-<input type="button" value="Upload From the Internet" onClick="loader();">
-</form>
-<div style="margin:0 auto;text-align:left;" id="leo-data">
-</div>
-<script type="text/javascript">
-var a_meg        = 1048576;
-var script_name  = "do-leo.php";
-var leo_div      = document.getElementById('leo-data');
-var name_element = document.getElementById('get_name')
-var uploader     = document.getElementById('uploader');
-var do_return = function (data)
-{
-  var is_leo = data.split("-");
-  if (!(is_leo[0] == "show"))
-  {
-     leo_div.innerHTML = data;
-     return;
-  }
-  if (!(is_leo[1] == "leo"))
-  {
-     leo_div.innerHTML = data;
-     return;
-  }
-  document.location = "./tmp/" + data;
-};
-var loader = function()
-{
-  //alert(xget_name);
-  var xget_name  = name_element.value
-  var res = $.post( script_name, {get_name: xget_name});
-  res.done(function(data)
-  {
-     //document.getElementById('leo-data').innerHTML = data;
-     do_return(data);
-  });
-};
-upclick(
- {
-   element: uploader,
-   action:  script_name,
-   maxsize: 20 * a_meg, // max allowed file size, in bytes
-   onstart: function(filename)
-   {
-     //alert('Start upload: '+filename);
-     var x = 2;
-   },
-   oncomplete:
-   function(data) 
-   {
-     do_return(data); 
-   }
-});
-</script>
-<script type="text/javascript">
-</script>
-</body>
-</html>
- 
+<!doctype html>
+<html>
+
+<head>
+<title>leoJS: Leo in your browser</title>
+</head>
+
+<body style="background-color:#ffffec">
+<h2>3Q 2023: Edit Leo files in your browser with vs-code!</h2>
+
+<img 
+    src="_static/LeoLogo.svg"
+    alt="Splash-Screen"
+    style="width:50px;height:60px;"
+>
+
+<p>
+Coming soon: the <a leoInteg href="https://github.com/boltex/leojs">leoJS</a>
+plugin for <a href="https://code.visualstudio.com/">vs-code</a>
+will bring all of Leo to vs-code.
+</p>
+
+<p>
+<i>Right now</i> you can run vs-code in your browser with
+<a href="https://vscode.dev">vscode.dev</a> (Edge or Chrome only).
+</p>
+
+<p>
+When leoJS becomes available later this summer you'll
+be able to browse, edit, and save your Leo outlines directly in your browser!
+</p>
+
+</body>
+</html>

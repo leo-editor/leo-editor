@@ -3,11 +3,12 @@
 #@+<< leoExternalFiles imports & annotations >>
 #@+node:ekr.20220821202943.1: ** << leoExternalFiles imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable
 import getpass
 import os
 import subprocess
 import tempfile
-from typing import Any, Callable, Dict, List, Optional, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -64,24 +65,24 @@ class ExternalFilesController:
     #@+node:ekr.20150404083533.1: *3* efc.ctor
     def __init__(self, c: Cmdr = None) -> None:
         """Ctor for ExternalFiles class."""
-        self.checksum_d: Dict[str, str] = {}  # Keys are full paths, values are file checksums.
+        self.checksum_d: dict[str, str] = {}  # Keys are full paths, values are file checksums.
         # For efc.on_idle.
         # Keys are commanders.
         # Values are cached @bool check-for-changed-external-file settings.
-        self.enabled_d: Dict[Cmdr, bool] = {}
+        self.enabled_d: dict[Cmdr, bool] = {}
         # List of ExternalFile instances created by self.open_with.
-        self.files: List[Any] = []
+        self.files: list[Any] = []
         # Keys are commanders. Values are bools.
         # Used only to limit traces.
-        self.has_changed_d: Dict[Cmdr, bool] = {}
+        self.has_changed_d: dict[Cmdr, bool] = {}
         # Copy of g.app.commanders()
-        self.unchecked_commanders: List[Cmdr] = []
+        self.unchecked_commanders: list[Cmdr] = []
         # Copy of self file. Only one files is checked at idle time.
-        self.unchecked_files: List[Any] = []
+        self.unchecked_files: list[Any] = []
         # Keys are full paths, values are modification times.
         # DO NOT alter directly, use set_time(path) and
         # get_time(path), see set_time() for notes.
-        self._time_d: Dict[str, float] = {}
+        self._time_d: dict[str, float] = {}
         self.yesno_all_answer: str = None  # answer, 'yes-all', or 'no-all'
         g.app.idleTimeManager.add_callback(self.on_idle)
     #@+node:ekr.20150405105938.1: *3* efc.entries
@@ -93,14 +94,9 @@ class ExternalFilesController:
         Return True if the file given by fn has not been changed
         since Leo read it or if the user agrees to overwrite it.
         """
-        if c.sqlite_connection and c.mFileName == path:
-            # sqlite database file is never actually overwritten by Leo
-            # so no need to check its timestamp. It is modified through
-            # sqlite methods.
-            return True
-        if self.has_changed(path):
+        if self.has_changed(path):  # has_changed handles all special cases.
             val = self.ask(c, path)
-            return val in ('yes', 'yes-all')  # #1888
+            return val in ('yes', 'yes-all')
         return True
     #@+node:ekr.20031218072017.2613: *4* efc.destroy_frame
     def destroy_frame(self, frame: Widget) -> None:
@@ -180,7 +176,7 @@ class ExternalFilesController:
         for p in c.all_unique_positions():
             if not p.isAnyAtFileNode():
                 continue
-            path = g.fullPath(c, p)
+            path = c.fullPath(p)
             if not self.has_changed(path):
                 continue
             # Prevent further checks for path.
@@ -194,24 +190,27 @@ class ExternalFilesController:
             if state in ('yes', 'no'):
                 state = self.ask(c, path, p=p)
             if state in ('yes', 'yes-all'):
-                c.redraw(p=p)
-                c.refreshFromDisk(p)
-                c.redraw()
+                old_c = c.p
+                c.selectPosition(p)  # Required.
+                c.refreshFromDisk()
+                c.redraw(old_c)  # #3695: Don't change c.p!
     #@+node:ekr.20201207055713.1: *5* efc.idle_check_leo_file
     def idle_check_leo_file(self, c: Cmdr) -> None:
         """Check c's .leo file for external changes."""
         path = c.fileName()
         if not self.has_changed(path):
             return
+
         # Always update the path & time to prevent future warnings.
         self.set_time(path)
         self.checksum_d[path] = self.checksum(path)
+
         # #1888:
         val = self.ask(c, path)
         if val in ('yes', 'yes-all'):
             # Do a complete restart of Leo.
-            g.es_print('restarting Leo...')
-            c.restartLeo()
+            g.app.loadManager.revertCommander(c)
+            g.es_print(f"reloaded {path}")
     #@+node:ekr.20150407124259.1: *5* efc.idle_check_open_with_file & helper
     def idle_check_open_with_file(self, c: Cmdr, ef: Any) -> None:
         """Update the open-with node given by ef."""
@@ -251,7 +250,7 @@ class ExternalFilesController:
             p.setDirty()
             c.setChanged()
     #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers
-    def open_with(self, c: Cmdr, d: Dict[str, Any]) -> None:
+    def open_with(self, c: Cmdr, d: dict[str, Any]) -> None:
         """
         Called by c.openWith to handle items in the Open With... menu.
 
@@ -270,7 +269,7 @@ class ExternalFilesController:
                 root: Position = d.get('p')
                 if root:
                     # Open the external file itself.
-                    path = g.fullPath(c, root)  # #1914.
+                    path = c.fullPath(root)  # #1914.
                     self.open_file_in_external_editor(c, d, path)
                 else:
                     # Open a temp file containing just the node.
@@ -394,7 +393,7 @@ class ExternalFilesController:
         self.files.append(ExternalFile(c, ext, p, path, time))
         return path
     #@+node:ekr.20031218072017.2829: *5* efc.open_file_in_external_editor
-    def open_file_in_external_editor(self, c: Cmdr, d: Dict[str, Any], fn: str, testing: bool = False) -> str:
+    def open_file_in_external_editor(self, c: Cmdr, d: dict[str, Any], fn: str, testing: bool = False) -> str:
         """
         Open a file fn in an external editor.
 
@@ -410,7 +409,7 @@ class ExternalFilesController:
             'shortcut': menu shortcut (used only by the menu code).
         """
         testing = testing or g.unitTesting
-        arg_tuple: List[str] = d.get('args', [])
+        arg_tuple: list[str] = d.get('args', [])
         arg = ' '.join(arg_tuple)
         kind: Callable = d.get('kind')
         try:
@@ -492,7 +491,7 @@ class ExternalFilesController:
             self.destroy_temp_file(ef)
         self.files = []
     #@+node:ekr.20150405110219.1: *3* efc.utilities
-    # pylint: disable=no-value-for-parameter
+
     #@+node:ekr.20150405200212.1: *4* efc.ask
     def ask(self, c: Cmdr, path: str, p: Position = None) -> str:
         """
@@ -506,11 +505,11 @@ class ExternalFilesController:
             return ''
         is_leo = path.endswith(('.leo', '.db'))
         is_external_file = not is_leo
-        #
-        # Create the message.
-        message1 = f"{g.splitLongFileName(path)} has changed outside Leo.\n"
+
+        # Create the message. Concatenate strings to make finding this message easier.
+        message1 = path + '\n' + 'has changed outside Leo.\n\n'
         if is_leo:
-            message2 = 'Restart Leo?'
+            message2 = 'Reload this outline?'
         elif p:
             message2 = f"Reload {p.h}?"
         else:
@@ -520,18 +519,19 @@ class ExternalFilesController:
                     break
             else:
                 message2 = f"Reload {path}?"
-        #
+
         # #1240: Note: This dialog prevents idle time.
+
         result = g.app.gui.runAskYesNoDialog(c,
-            'Overwrite the version in Leo?',
+            message2,
             message1 + message2,
             yes_all=is_external_file,
             no_all=is_external_file,
         )
-        #
+
         # #1961. Re-init the checksum to suppress concurrent dialogs.
         self.checksum_d[path] = self.checksum(path)
-        #
+
         # #1888: return one of ('yes', 'no', 'yes-all', 'no-all')
         return result.lower() if result else 'no'
     #@+node:ekr.20150404052819.1: *4* efc.checksum
@@ -572,7 +572,9 @@ class ExternalFilesController:
             return False
         if g.os_path_isdir(path):
             return False
-        #
+        if path.endswith('.db'):
+            return False
+
         # First, check the modification times.
         old_time = self.get_time(path)
         new_time = self.get_mtime(path)
@@ -583,18 +585,18 @@ class ExternalFilesController:
             return False
         if old_time == new_time:
             return False
-        #
+
         # Check the checksums *only* if the mod times don't match.
         old_sum = self.checksum_d.get(path)
         new_sum = self.checksum(path)
         if new_sum == old_sum:
-            # The modtime changed, but it's contents didn't.
+            # The modtime changed, but its contents didn't.
             # Update the time, so we don't keep checking the checksums.
             # Return False so we don't prompt the user for an update.
             self.set_time(path, new_time)
             return False
+
         # The file has really changed.
-        assert old_time, path
         return True
     #@+node:ekr.20150405104340.1: *4* efc.is_enabled
     def is_enabled(self, c: Cmdr) -> bool:
@@ -633,16 +635,17 @@ class ExternalFilesController:
         if g.unitTesting or c not in g.app.commanders():
             return
         if not p:
-            g.trace('NO P')
             return
+        path_name = g.splitLongFileName(path)
+        kind = '@asis' if p.h.startswith('@asis') else '@nosent'
         g.app.gui.runAskOkDialog(
             c=c,
-            message='\n'.join([
-                f"{g.splitLongFileName(path)} has changed outside Leo.\n",
-                'Leo can not update this file automatically.\n',
-                f"This file was created from {p.h}.\n",
-                'Warning: refresh-from-disk will destroy all children.'
-            ]),
+            message=(
+                f"{path_name} has changed outside Leo.\n\n"
+                f"An {kind} node created this file.\n\n"
+                'Warning: Leo can not update this node!\n'
+                'Neither refresh-from-disk nor restarting Leo will work.\n'
+            ),
             title='External file changed',
         )
     #@-others

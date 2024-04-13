@@ -1,22 +1,18 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Running Leo &#8212; Leo 6.7.2 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <title>Running Leo &#8212; Leo 6.7.8 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=db26dd79" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=524d4423" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8453e47e" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=bf5d43e8"></script>
+    <script src="_static/doctools.js?v=13a9ecda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
     <script src="_static/sidebar.js"></script>
     
@@ -37,8 +33,8 @@
         <li class="right" >
           <a href="installing.html" title="Installing Leo"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.2 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="getting-started.html" accesskey="U">Downloading, Installing &amp; Running Leo</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.8 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="getting-started.html" accesskey="U">Installing &amp; Running Leo</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Running Leo</a></li> 
       </ul>
     </div>  
@@ -49,9 +45,9 @@
           <div class="body" role="main">
             
   <section id="running-leo">
-<h1>Running Leo<a class="headerlink" href="#running-leo" title="Permalink to this heading">¶</a></h1>
+<h1>Running Leo<a class="headerlink" href="#running-leo" title="Link to this heading">¶</a></h1>
 <p id="index-0">This chapter tells how to run Leo and discusses Leo’s command-line options.</p>
-<div class="contents local topic" id="contents">
+<nav class="contents local" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#id1" id="id2">Running Leo</a></p>
@@ -67,9 +63,9 @@
 <li><p><a class="reference internal" href="#leo-s-workbook-file" id="id9">Leo’s workbook file</a></p></li>
 <li><p><a class="reference internal" href="#using-sessions" id="id10">Using sessions</a></p></li>
 </ul>
-</div>
+</nav>
 <section id="id1">
-<h2><a class="toc-backref" href="#id2">Running Leo</a><a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Running Leo</a><a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
 <p>You can run Leo from a Python interpreter as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">leo</span>
 <span class="n">leo</span><span class="o">.</span><span class="n">run</span><span class="p">()</span> <span class="c1"># runs Leo, opening a new outline or,</span>
@@ -98,7 +94,7 @@ following .bat file in c:\Windows:</p>
 <p>Here &lt;path-to-leo&gt; is the path to the directory <em>containing</em> the leo directory,
 that is, the directory containing launchLeo.py.</p>
 <section id="running-leo-the-first-time">
-<h3><a class="toc-backref" href="#id3">Running Leo the first time</a><a class="headerlink" href="#running-leo-the-first-time" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Running Leo the first time</a><a class="headerlink" href="#running-leo-the-first-time" title="Link to this heading">¶</a></h3>
 <p>The first time you start Leo, a dialog will ask you for a unique identifier. If
 you are using a source code control system such as git, use your git login name.
 Otherwise your initials will do.</p>
@@ -108,7 +104,7 @@ directory, and finally in Leo’s core directory. You can change this identifier
 at any time by editing .leoID.txt.</p>
 </section>
 <section id="running-leo-in-batch-mode">
-<h3><a class="toc-backref" href="#id4">Running Leo in batch mode</a><a class="headerlink" href="#running-leo-in-batch-mode" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">Running Leo in batch mode</a><a class="headerlink" href="#running-leo-in-batch-mode" title="Link to this heading">¶</a></h3>
 <p>On startup, Leo looks for two arguments of the form:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">script</span> <span class="n">scriptFile</span>
 </pre></div>
@@ -134,14 +130,14 @@ headlines in that file:</p>
 </div>
 </section>
 <section id="running-leo-from-a-console-window">
-<h3><a class="toc-backref" href="#id5">Running Leo from a console window</a><a class="headerlink" href="#running-leo-from-a-console-window" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Running Leo from a console window</a><a class="headerlink" href="#running-leo-from-a-console-window" title="Link to this heading">¶</a></h3>
 <p>Leo sends more detailed error messages to stderr,
 the output stream that goes to the console window. In Linux and MacOS
 environments, python programs normally execute with the console window visible.</p>
 <p>On Windows, you can run Leo with the console window visible by <a class="reference external" href="installing.html#creating-windows-file-associations">associating .leo files with python.exe</a> <em>not</em> pythonw.exe.</p>
 </section>
 <section id="running-leo-after-pip-install-leo">
-<h3><a class="toc-backref" href="#id6">Running Leo after pip install leo</a><a class="headerlink" href="#running-leo-after-pip-install-leo" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Running Leo after pip install leo</a><a class="headerlink" href="#running-leo-after-pip-install-leo" title="Link to this heading">¶</a></h3>
 <p>After running <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">leo</span></code> from a console type:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>``leo`` - start Leo in normal graphical mode (qt)
 ``leo-c``, ``leo-console`` - start Leo in console (curses) mode
@@ -155,13 +151,13 @@ environments, python programs normally execute with the console window visible.<
 </div>
 </section>
 <section id="the-leo-directory">
-<h3><a class="toc-backref" href="#id7">The .leo directory</a><a class="headerlink" href="#the-leo-directory" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">The .leo directory</a><a class="headerlink" href="#the-leo-directory" title="Link to this heading">¶</a></h3>
 <p>Leo uses os.expanduser(‘~’) to determine the HOME directory if no HOME environment variable exists.</p>
 <p>Leo puts several files in your HOME/.leo directory: .leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.</p>
 </section>
 </section>
 <section id="leo-s-command-line-options">
-<h2><a class="toc-backref" href="#id8">Leo’s command-line options</a><a class="headerlink" href="#leo-s-command-line-options" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Leo’s command-line options</a><a class="headerlink" href="#leo-s-command-line-options" title="Link to this heading">¶</a></h2>
 <p>Leo supports the following command-line options. As usual, you can see the list by typing the following in a console window:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">leo</span> <span class="o">-</span><span class="n">h</span>
 </pre></div>
@@ -225,11 +221,11 @@ leo --gui=browser-firefox-browser​
 <p>For details, see <a class="reference external" href="https://github.com/leo-editor/leo-editor/issues/1005">https://github.com/leo-editor/leo-editor/issues/1005</a>.</p>
 </section>
 <section id="leo-s-workbook-file">
-<h2><a class="toc-backref" href="#id9">Leo’s workbook file</a><a class="headerlink" href="#leo-s-workbook-file" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Leo’s workbook file</a><a class="headerlink" href="#leo-s-workbook-file" title="Link to this heading">¶</a></h2>
 <p>If you give no file arguments on the command line Leo will open <code class="docutils literal notranslate"><span class="pre">~/.leo/workbook.leo</span></code>.  Initially, this file contains Leo’s cheat sheet and an example from the rst3 tutorial.</p>
 </section>
 <section id="using-sessions">
-<h2><a class="toc-backref" href="#id10">Using sessions</a><a class="headerlink" href="#using-sessions" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Using sessions</a><a class="headerlink" href="#using-sessions" title="Link to this heading">¶</a></h2>
 <p>A <strong>session</strong> specifies a list of .leo files that Leo opens automatically when Leo first starts.  Leo will reload the last session provided that command-line arguments <em>don’t</em> contain any file names.</p>
 <p>Leo stores session state in <code class="docutils literal notranslate"><span class="pre">~/.leo/leo.session</span></code>. Session state consists of the list of open files and the selected node in each file.</p>
 </section>
@@ -285,15 +281,15 @@ leo --gui=browser-firefox-browser​
         <li class="right" >
           <a href="installing.html" title="Installing Leo"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.2 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="getting-started.html" >Downloading, Installing &amp; Running Leo</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.7.8 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="getting-started.html" >Installing &amp; Running Leo</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Running Leo</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 1997-2023, Edward K. Ream.
-      Last updated on March 01, 2023.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    &#169; Copyright 1997-2024, Edward K. Ream.
+      Last updated on March 03, 2024.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
 </html>

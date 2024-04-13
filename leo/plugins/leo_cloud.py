@@ -80,7 +80,7 @@ import shlex
 import subprocess
 import tempfile
 import threading
-from typing import Any, Dict, List, Set
+from typing import Any
 from copy import deepcopy
 from datetime import date, datetime
 from hashlib import sha1
@@ -169,8 +169,6 @@ class LeoCloudIOBase:
 
         :returns: vnode build from lc_id
         """
-        # pylint: disable=no-member
-        # self.get_data
         return self.c._leo_cloud.from_dict(self.get_data(lc_id))
 
     #@+node:ekr.20201012111338.11: *3* LeoCloudIOBase.put_subtree
@@ -181,8 +179,6 @@ class LeoCloudIOBase:
             lc_id (str(?)): place to put it
             v (vnode): subtree to put
         """
-        # pylint: disable=no-member
-        # self.put_data
         self.put_data(lc_id, LeoCloud.to_dict(v))
 
 
@@ -404,7 +400,7 @@ class LeoCloud:
 
         respects @ignore in headlines, doesn't recurse into @leo_cloud nodes
         """
-        found: Set = set()
+        found: set = set()
         self._find_clouds_recursive(self.c.hiddenRootNode, found)
         valid = []
         for lc in found:
@@ -462,7 +458,7 @@ class LeoCloud:
         Returns:
             dict
         """
-        kwargs: Dict[str, Any] = {'remote': None}
+        kwargs: dict[str, Any] = {'remote': None}
         # some methods assume 'remote' exists, but it's absent in LeoCloudIOFileSystem
         for line in p.b.split('\n'):
             kwarg = KWARG_RE.match(line)
@@ -486,8 +482,10 @@ class LeoCloud:
         background = []  # things to check in background
         for lc_v in self.find_clouds():
             kwargs = self.kw_from_node(lc_v)
-            if from_background and \
-                (kwargs['remote'], kwargs['ID']) not in from_background:
+            if (
+                from_background
+                and (kwargs['remote'], kwargs['ID']) not in from_background
+            ):
                 # only process nodes from the background checking
                 continue
             read = False
@@ -590,8 +588,8 @@ class LeoCloud:
 
         Trailing newlines are ignored in body text.
         """
-        childs: List = []
-        hashes: List = [LeoCloud.recursive_hash(child, childs) for child in nd.children]
+        childs: list = []
+        hashes: list = [LeoCloud.recursive_hash(child, childs) for child in nd.children]
         if include_current:
             hashes.extend([nd.h + nd.b.rstrip('\n') + json.dumps(LeoCloud._ua_clean(nd.u), sort_keys=True)])
         whole_hash = sha1(''.join(hashes).encode('utf-8')).hexdigest()

@@ -13,7 +13,7 @@ Terry_N_Brown@yahoo.com, Tue Oct 15 09:53:38 2013
 import sys
 import datetime
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, QtCore, QtWidgets
+from leo.core.leoQt import QtCore, QtWidgets
 #
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -149,11 +149,7 @@ def main():
     last.calendarWidget().build(5, 4)
 
     win.show()
-
-    if isQt6:
-        sys.exit(app.exec())
-    else:
-        sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 if __name__ == '__main__':
     main()

@@ -11,14 +11,13 @@ Plugins may define their own gui classes by setting g.app.gui.
 #@+<< leoGui imports & annotations >>
 #@+node:ekr.20220414080546.1: ** << leoGui imports & annotations >>
 from __future__ import annotations
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
-from typing import TYPE_CHECKING
+from collections.abc import Callable
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event  # pylint: disable=import-self
     from leo.core.leoNodes import Position
     from leo.plugins.qt_frame import FindTabManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
@@ -54,9 +53,9 @@ class LeoGui:
         self.ScriptingControllerClass = NullScriptingControllerClass
         #
         # Define special keys that may be overridden is subclasses.
-        self.ignoreChars: List[str] = []  # Keys that should always be ignored.
-        self.FKeys: List[str] = []  # The representation of F-keys.
-        self.specialChars: List[str] = []  # A list of characters/keys to be handle specially.
+        self.ignoreChars: list[str] = []  # Keys that should always be ignored.
+        self.FKeys: list[str] = []  # The representation of F-keys.
+        self.specialChars: list[str] = []  # A list of characters/keys to be handle specially.
     #@+node:ekr.20061109212618.1: *3* LeoGui: Must be defined only in base class
     #@+node:ekr.20110605121601.18847: *4* LeoGui.create_key_event (LeoGui)
     def create_key_event(
@@ -64,13 +63,13 @@ class LeoGui:
         c: Cmdr,
         binding: str = None,
         char: str = None,
-        event: Event = None,
+        event: LeoKeyEvent = None,
         w: Wrapper = None,
         x: int = None,
         x_root: int = None,
         y: int = None,
         y_root: int = None,
-    ) -> Event:
+    ) -> LeoKeyEvent:
         # Do not call strokeFromSetting here!
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
         # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
@@ -99,10 +98,6 @@ class LeoGui:
         c: Cmdr, version: str, theCopyright: str, url: str, email: str,
     ) -> Any:  # Must be any, for compatibility with testing subclass.
         """Create and run Leo's About Leo dialog."""
-        raise NotImplementedError
-
-    def runAskLeoIDDialog(self) -> Any:
-        """Create and run a dialog to get g.app.LeoID."""
         raise NotImplementedError
 
     def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> Any:
@@ -158,9 +153,9 @@ class LeoGui:
 
     def runPropertiesDialog(self,
         title: str = 'Properties',
-        data: str = None,
+        data: Any = None,
         callback: Callable = None,
-        buttons: List[str] = None,
+        buttons: list[str] = None,
     ) -> Any:
         """Display a modal TkPropertiesDialog"""
         raise NotImplementedError
@@ -168,15 +163,33 @@ class LeoGui:
     def runOpenFileDialog(self,
         c: Cmdr,
         title: str,
-        filetypes: List[str],
-        defaultextension: str,
-        multiple: bool = False,
+        *,
+        filetypes: list[tuple[str, str]],
+        defaultextension: str = '',
         startpath: str = None,
-    ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
+    ) -> str:
         """Create and run an open file dialog ."""
         raise NotImplementedError
 
-    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: List[str], defaultextension: str) -> str:
+    def runOpenFilesDialog(self,
+        c: Cmdr,
+        title: str,
+        *,
+        filetypes: list[tuple[str, str]],
+        defaultextension: str = '',
+        startpath: str = None,
+    ) -> list[str]:
+        """Create and run an open files dialog ."""
+        raise NotImplementedError
+
+    def runSaveFileDialog(
+        self,
+        c: Cmdr,
+        title: str,
+        *,
+        filetypes: list[tuple[str, str]],
+        defaultextension: str,
+    ) -> str:
         """Create and run a save file dialog ."""
         raise NotImplementedError
     #@+node:ekr.20031218072017.3732: *4* LeoGui.panels
@@ -232,7 +245,7 @@ class LeoGui:
         """Create a labeled frame."""
         raise NotImplementedError
 
-    def get_window_info(self, window: str) -> Tuple[int, int, int, int]:
+    def get_window_info(self, window: str) -> tuple[int, int, int, int]:
         """Return the window information."""
         raise NotImplementedError
     #@+node:ekr.20031218072017.3736: *5* LeoGui.Font
@@ -299,7 +312,7 @@ class LeoKeyEvent:
         self,
         c: Cmdr,
         char: str,
-        event: Event,
+        event: LeoKeyEvent,
         binding: Any,
         w: Any,
         x: int = None,
@@ -358,19 +371,17 @@ class NullGui(LeoGui):
         super().__init__(guiName)
         self.clipboardContents = ''
         self.focusWidget: Widget = None
-        self.script = None
-        self.lastFrame: Widget = None  # The outer frame, to set g.app.log in runMainLoop.
         self.isNullGui = True
         self.idleTimeClass: Any = g.NullObject
+        self.lastFrame: Widget = None  # The outer frame, to set g.app.log in runMainLoop.
+        self.plainTextWidget: Widget = g.NullObject
+        self.script = None
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs
     def runAboutLeoDialog(self, c: Cmdr, version: str, theCopyright: str, url: str, email: str) -> str:
-        return self.simulateDialog("aboutLeoDialog", None)
-
-    def runAskLeoIDDialog(self) -> str:
-        return self.simulateDialog("leoIDDialog", None)
+        return None
 
     def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> str:
-        return self.simulateDialog("okDialog", "Ok")
+        return 'Ok'
 
     def runAskOkCancelNumberDialog(
         self,
@@ -380,7 +391,7 @@ class NullGui(LeoGui):
         cancelButtonText: str = None,
         okButtonText: str = None,
     ) -> str:
-        return self.simulateDialog("numberDialog", 'no')
+        return 'no'
 
     def runAskOkCancelStringDialog(
         self,
@@ -392,24 +403,38 @@ class NullGui(LeoGui):
         default: str = "",
         wide: bool = False,
     ) -> str:
-        return self.simulateDialog("stringDialog", '')
+        return ''
 
     def runCompareDialog(self, c: Cmdr) -> str:
-        return self.simulateDialog("compareDialog", '')
+        return ''
 
-    def runOpenFileDialog(
+    def runOpenFileDialog(self, c: Cmdr, title: str, *,
+        filetypes: list[tuple[str, str]] = None,
+        defaultextension: str = '',
+        startpath: str = None,
+    ) -> str:
+        return ''
+
+    def runSaveFileDialog(self,
+        c: Cmdr,
+        title: str,
+        *,
+        filetypes: list[tuple[str, str]] = None,
+        defaultextension: str = '',
+    ) -> str:
+        return ''
+
+    def runOpenFilesDialog(
         self,
         c: Cmdr,
         title: str,
-        filetypes: List[str],
-        defaultextension: str,
-        multiple: bool = False,
+        *,
+        filetypes: list[tuple[str, str]] = None,
+        defaultextension: str = '',
         startpath: str = None,
-    ) -> Union[List[str], str]:  # Return type depends on the evil multiple keyword.
-        return self.simulateDialog("openFileDialog", None)
+    ) -> list[str]:
+        return []
 
-    def runSaveFileDialog(self, c: Cmdr, title: str, filetypes: List[str], defaultextension: str) -> str:
-        return self.simulateDialog("saveFileDialog", None)
 
     def runAskYesNoDialog(
         self,
@@ -419,7 +444,7 @@ class NullGui(LeoGui):
         yes_all: bool = False,
         no_all: bool = False,
     ) -> str:
-        return self.simulateDialog("yesNoDialog", "no")
+        return 'no'
 
     def runAskYesNoCancelDialog(
         self,
@@ -432,10 +457,7 @@ class NullGui(LeoGui):
         defaultButton: str = "Yes",
         cancelMessage: str = None,
     ) -> str:
-        return self.simulateDialog("yesNoCancelDialog", "cancel")
-
-    def simulateDialog(self, key: str, defaultVal: str) -> str:
-        return defaultVal
+        return 'cancel'
     #@+node:ekr.20170613101737.1: *3* NullGui.clipboard & focus
     def get_focus(self, *args: str, **kwargs: str) -> Widget:
         return self.focusWidget
@@ -448,6 +470,20 @@ class NullGui(LeoGui):
 
     def set_focus(self, commander: str, widget: str) -> None:
         self.focusWidget = widget
+    #@+node:ekr.20230916153234.1: *3* NullGui.createSpellTab
+    def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> Any:
+
+        class NullSpellTab:
+
+            def __init__(self, c: Cmdr, spellHandler: Any, tabName: str) -> None:
+                self.c = c
+                self.spellHandler = spellHandler
+                self.tabName = tabName
+
+            def fillbox(self, alts: list[str], word: str) -> None:
+                pass
+
+        return NullSpellTab(c, spellHandler, tabName)
     #@+node:ekr.20070301171901: *3* NullGui.do nothings
     def alert(self, c: Cmdr, message: str) -> None:
         pass
@@ -475,7 +511,7 @@ class NullGui(LeoGui):
     def getTreeImage(self, c: Cmdr, path: str) -> None:
         return None
 
-    def get_window_info(self, window: str) -> Tuple[int, int, int, int]:
+    def get_window_info(self, window: str) -> tuple[int, int, int, int]:
         return 600, 500, 20, 20
 
     def onActivateEvent(self, *args: str, **keys: str) -> None:
@@ -790,7 +826,7 @@ class UnitTestGui(NullGui):
     # Presently used only by the import/export unit tests.
     #@+others
     #@+node:ekr.20031218072017.3743: *3* UnitTestGui.__init__
-    def __init__(self, theDict: Dict = None) -> None:
+    def __init__(self, theDict: dict = None) -> None:
         """ctor for the UnitTestGui class."""
         self.oldGui = g.app.gui
         super().__init__("UnitTestGui")
@@ -800,8 +836,9 @@ class UnitTestGui(NullGui):
     def destroySelf(self) -> None:
         g.app.gui = self.oldGui
     #@+node:ekr.20071128094234.1: *3* UnitTestGui.createSpellTab
-    def createSpellTab(self, c: Cmdr, spellHandler: str, tabName: str) -> None:
+    def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> None:
         pass  # This method keeps pylint happy.
+
     #@+node:ekr.20111001155050.15484: *3* UnitTestGui.runAtIdle
     if 1:  # Huh?
 

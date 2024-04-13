@@ -356,8 +356,7 @@ def get_gnx_from_file(file_s, p, path):
     """Set p's gnx from the @file node in the derived file."""
     pat = re.compile(r'^#@\+node:(.*): \*+ @file (.+)$')
     for line in g.splitLines(file_s):
-        m = pat.match(line)
-        if m:
+        if m := pat.match(line):
             gnx, path2 = m.group(1), m.group(2)
             path2 = path2.replace('\\', '/')
             p.v.fileIndex = gnx
@@ -414,7 +413,7 @@ def make_at_file_node(line, path):
     c = g.app.log.c
     if not c:
         return None
-    path = g.os_path_finalize(path).replace('\\', '/')
+    path = g.finalize(path)
     if not g.os_path_exists(path):
         g.trace('Not found:', repr(path))
         return None
@@ -432,20 +431,20 @@ def make_at_file_node(line, path):
     c.selectPosition(p)
     c.refreshFromDisk()
     return p
-#@+node:ekr.20180701061957.1: *3* function: show_line
+#@+node:ekr.20180701061957.1: *3* function: show_line (leoDebugger.py)
 def show_line(line, fn) -> None:
     """
     Put the cursor on the requested line of the given file.
     fn should be a full path to a file.
     """
     c = g.app.log.c
-    target = g.os_path_finalize(fn).replace('\\', '/')
+    target = g.finalize(fn)
     if not g.os_path_exists(fn):
         g.trace('===== Does not exist', fn)
         return
     for p in c.all_positions():
         if p.isAnyAtFileNode():
-            path = g.fullPath(c, p).replace('\\', '/')
+            path = c.fullPath(p).replace('\\', '/')
             if target == path:
                 # Select the line.
                 p, junk_offset = c.gotoCommands.find_file_line(n=line, p=p)
@@ -487,7 +486,7 @@ def xdb_breakpoint(event):
     if not root:
         g.trace('no root', p.h)
         return
-    path = g.fullPath(c, root)
+    path = c.fullPath(root)
     n0 = x.find_node_start(p=p)
     if n0 is None:
         g.trace('no n0')

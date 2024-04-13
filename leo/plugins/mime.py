@@ -103,7 +103,7 @@ def open_mimetype(tag, keywords, val=None):
         # honor @path
         d = c.scanAllDirectives(p)
         path = d.get('path')
-        fpath = g.os_path_finalize_join(path, fname)
+        fpath = g.finalize_join(path, fname)
 
         # stop here if the file doesn't exist
         if not g.os_path_exists(fpath):
@@ -161,7 +161,6 @@ def open_mimetype(tag, keywords, val=None):
 # launches the viewer and returns immediately.
 #@@c
 
-
 # open_func is called with the full file path
 open_func = None
 
@@ -182,7 +181,6 @@ if sys.platform == 'linux2':
         pass
 elif sys.platform == 'win32':
     # Use this directly as 1-arg fn, default action is 'open'
-    # pylint: disable=no-member
     open_func = os.startfile
 #@-<< guess file association handler >>
 #@-leo

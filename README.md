@@ -1,38 +1,28 @@
-Leo https://leo-editor.github.io/leo-editor/ 6.7.2 is now available on
-[GitHub](https://github.com/leo-editor/leo-editor/releases) and
-[pypi](https://pypi.org/project/leo/).
+Leo https://leo-editor.github.io/leo-editor/ 6.7.8 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.7.2**
+**The highlights of Leo 6.7.8**
 
-- PR #3019: Leo's website has moved to Github Pages: https://leo-editor.github.io/leo-editor/
+This release simplifies Leo's install process.
+See https://leo-editor.github.io/leo-editor/getting-started.html
 
-Commands:
-
-- PR #3031: Add `check-nodes` command. It helps keep `@clean` files in sync.
-- PR #3056: Leo's beautify command is now PEP8 compliant.
-- PR #3140: Run pylint on node.
-- PR #3166: Add the `execute-external-file` command.
-
-Settings and features:
-
-- PR #2979: Add `@bool run-flake8-on-write` setting.
-- PR #2983: Add `--black-sentinels` command-line option.
-- PR #3038: Add `@string rst3-action` setting.
-- PR #3053: Add `@string gxn-kind` setting: Support gnxs formatted as UUIDs.
-- PR #3132: Add `@bool rst3-remove-leo-directives` setting.
-
-Other changes:
-
-- 80+ issues and 100+ pull requests.
+- PR #3757: (leoTokens.py) Make Leo's beautifier 3x faster.
+- PR #3771: Revert colorizing of f-strings.
+- PR #3786: Support Nim.
+- PR #3790: Add "get-unl" command to Leo's server.
+- PR #3805: Fix problems with auto-completion and calltips.
+- PR #3806: Fix problems with Leo's `go-back` and `go-forward` commands.
+- PR #3807: Improve Leo's Python importer.
+- PR #3817: Allow relative paths in gnx-based UNLs.
+- The usual minor improvements and bug fixes.
 
 **Links**
 
 - [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.7.2 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.2+)
-- [6.7.2 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.2)
+- [6.7.8 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.8+)
+- [6.7.8 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.8)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)

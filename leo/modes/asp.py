@@ -124,97 +124,69 @@ keywordsDictDict = {
 
 def asp_rule0(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="<%@LANGUAGE=\"VBSCRIPT\"%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="asp::aspvb")
+          delegate="asp::aspvb")
 
 def asp_rule1(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="<%@LANGUAGE=\"JSCRIPT\"%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="asp::aspjs")
+          delegate="asp::aspjs")
 
 def asp_rule2(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="<%@LANGUAGE=\"JAVASCRIPT\"%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="asp::aspjs")
+          delegate="asp::aspjs")
 
 def asp_rule3(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="<%@LANGUAGE=\"PERLSCRIPT\"%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="asp::asppl")
+          delegate="asp::asppl")
 
 def asp_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%", end="%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="vbscript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="vbscript::main")
 
 def asp_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"vbscript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="vbscript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="vbscript::main")
 
 def asp_rule6(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"jscript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule7(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"javascript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule8(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"perlscript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="perl::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="perl::main")
 
 def asp_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"jscript\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule10(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"javascript\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule11(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script>", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule12(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="<!--#", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="markup", begin="<!--#", end="-->")
 
 def asp_rule13(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 def asp_rule14(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE>", end="</STYLE>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="css::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="css::main")
 
 def asp_rule15(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="asp::aspvb_tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="asp::aspvb_tags")
 
 def asp_rule16(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=True)
+          no_word_break=True)
 
 # Rules dict for asp_main ruleset.
 rulesDict1 = {
@@ -226,87 +198,57 @@ rulesDict1 = {
 
 def asp_rule17(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%", end="%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="vbscript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="vbscript::main")
 
 def asp_rule18(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"vbscript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="vbscript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="vbscript::main")
 
 def asp_rule19(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"jscript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule20(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"javascript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule21(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"perlscript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="perl::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="perl::main")
 
 def asp_rule22(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"jscript\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule23(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"javascript\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule24(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script>", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule25(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="<!--#", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="markup", begin="<!--#", end="-->")
 
 def asp_rule26(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 def asp_rule27(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE>", end="</STYLE>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="css::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="css::main")
 
 def asp_rule28(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="</", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="asp::aspvb_tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="asp::aspvb_tags")
 
 def asp_rule29(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="asp::aspvb_tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="asp::aspvb_tags")
 
 def asp_rule30(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=True)
+          no_word_break=True)
 
 # Rules dict for asp_aspvb ruleset.
 rulesDict2 = {
@@ -318,87 +260,57 @@ rulesDict2 = {
 
 def asp_rule31(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%", end="%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule32(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"vbscript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="vbscript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="vbscript::main")
 
 def asp_rule33(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"jscript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule34(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"javascript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule35(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"perlscript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="perl::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="perl::main")
 
 def asp_rule36(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"jscript\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule37(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"javascript\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule38(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script>", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule39(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="<!--#", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="markup", begin="<!--#", end="-->")
 
 def asp_rule40(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 def asp_rule41(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE>", end="</STYLE>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="css::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="css::main")
 
 def asp_rule42(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="</", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="asp::aspjs_tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="asp::aspjs_tags")
 
 def asp_rule43(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="asp::aspjs_tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="asp::aspjs_tags")
 
 def asp_rule44(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=True)
+          no_word_break=True)
 
 # Rules dict for asp_aspjs ruleset.
 rulesDict3 = {
@@ -410,87 +322,57 @@ rulesDict3 = {
 
 def asp_rule45(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%", end="%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="perl::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="perl::main")
 
 def asp_rule46(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"vbscript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="vbscript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="vbscript::main")
 
 def asp_rule47(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"jscript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule48(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"javascript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 def asp_rule49(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"perlscript\" runat=\"server\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="perl::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="perl::main")
 
 def asp_rule50(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"jscript\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="asp::asppl_csjs", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="asp::asppl_csjs")
 
 def asp_rule51(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script language=\"javascript\">", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="asp::asppl_csjs", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="asp::asppl_csjs")
 
 def asp_rule52(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<script>", end="</script>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="asp::asppl_csjs", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="asp::asppl_csjs")
 
 def asp_rule53(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="<!--#", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="markup", begin="<!--#", end="-->")
 
 def asp_rule54(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
 def asp_rule55(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<STYLE>", end="</STYLE>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="css::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="css::main")
 
 def asp_rule56(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="</", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="asp::asppl_tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="asp::asppl_tags")
 
 def asp_rule57(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="asp::asppl_tags", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="asp::asppl_tags")
 
 def asp_rule58(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=True)
+          no_word_break=True)
 
 # Rules dict for asp_asppl ruleset.
 rulesDict4 = {
@@ -502,9 +384,7 @@ rulesDict4 = {
 
 def asp_rule59(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%", end="%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="vbscript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="vbscript::main")
 
 # Rules dict for asp_aspvb_tags ruleset.
 rulesDict5 = {
@@ -515,9 +395,7 @@ rulesDict5 = {
 
 def asp_rule60(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%", end="%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="javascript::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="javascript::main")
 
 # Rules dict for asp_aspjs_tags ruleset.
 rulesDict6 = {
@@ -528,9 +406,7 @@ rulesDict6 = {
 
 def asp_rule61(colorer, s, i):
     return colorer.match_span(s, i, kind="markup", begin="<%", end="%>",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="perl::main", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="perl::main")
 
 # Rules dict for asp_asppl_tags ruleset.
 rulesDict7 = {

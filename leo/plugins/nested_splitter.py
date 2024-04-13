@@ -1,10 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17954: * @file ../plugins/nested_splitter.py
 """Nested splitter classes."""
+from __future__ import annotations
+from typing import Any
 from leo.core import leoGlobals as g
-from leo.core.leoQt import isQt6, Qt, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Orientation, QAction
-# pylint: disable=cell-var-from-loop
+
 #@+others
 #@+node:ekr.20110605121601.17956: ** init
 def init():
@@ -12,7 +14,7 @@ def init():
     # but it should never be necessary to do so.
     return True
 #@+node:tbrown.20120418121002.25711: ** class NestedSplitterTopLevel (QWidget)
-class NestedSplitterTopLevel(QtWidgets.QWidget):  # type:ignore
+class NestedSplitterTopLevel(QtWidgets.QWidget):
     """A QWidget to wrap a NestedSplitter to allow it to live in a top
     level window and handle close events properly.
 
@@ -67,9 +69,9 @@ class NestedSplitterTopLevel(QtWidgets.QWidget):  # type:ignore
             event.ignore()
     #@-others
 #@+node:ekr.20110605121601.17959: ** class NestedSplitterChoice (QWidget)
-class NestedSplitterChoice(QtWidgets.QWidget):  # type:ignore
+class NestedSplitterChoice(QtWidgets.QWidget):
     """When a new pane is opened in a nested splitter layout, this widget
-    presents a button, labled 'Action', which provides a popup menu
+    presents a button, labeled 'Action', which provides a popup menu
     for the user to select what to do in the new pane"""
     #@+others
     #@+node:ekr.20110605121601.17960: *3* __init__ (NestedSplitterChoice)
@@ -86,7 +88,7 @@ class NestedSplitterChoice(QtWidgets.QWidget):  # type:ignore
         button.clicked.connect(lambda: self.parent().choice_menu(self, button.pos()))
     #@-others
 #@+node:ekr.20110605121601.17961: ** class NestedSplitterHandle (QSplitterHandle)
-class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
+class NestedSplitterHandle(QtWidgets.QSplitterHandle):
     """Show the context menu on a NestedSplitter splitter-handle to access
     NestedSplitter's special features"""
     #@+others
@@ -281,7 +283,6 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
             # set owner to main splitter explicitly.  Not sure how right now.
             submenu = menu.addMenu('Open window')
             if 1:
-                # pylint: disable=unnecessary-lambda
                 self.add_item(lambda: splitter.open_window(), submenu, "Empty")
             # adapted from choice_menu()
             if (splitter.root.marked and
@@ -327,10 +328,9 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
             if hasattr(provider, 'ns_context'):
                 load_items(menu, provider.ns_context())
 
-        # point = pos.toPoint() if isQt6 else pos   # Qt6 documentation is wrong.
         point = pos
         global_point = self.mapToGlobal(point)
-        menu.exec_(global_point)
+        menu.exec(global_point)
 
         for i in 0, 1:
             widget[i].setStyleSheet(sheet[i])
@@ -363,7 +363,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):  # type:ignore
         self.splitter()._splitter_clicked(self, event, release=True, double=True)
     #@-others
 #@+node:ekr.20110605121601.17966: ** class NestedSplitter (QSplitter)
-class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
+class NestedSplitter(QtWidgets.QSplitter):
     # Allow special behavior to be turned of at import stage.
     # useful if other code must run to set up callbacks, that other code can re-enable.
     enabled = True
@@ -407,7 +407,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
             # actual splitters, current and future
             root._splitterClickedArgs = []  # save for future added splitters
         for args in root._splitterClickedArgs:
-            # apply any .connect() calls that occured earlier
+            # apply any .connect() calls that occurred earlier
             self._splitterClickedSignal.connect(*args)
 
         self.root = root
@@ -521,14 +521,13 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
         l = hunter(layout, widget_id)
         if l is None:
             return False
-        # pylint: disable=unpacking-non-sequence
         layout, pos = l
         orient = layout['orientation']
         if (orient == horizontal and side in ('right-of', 'left-of') or
             orient == vertical and side in ('above', 'below')
         ):
             # easy case, just insert the new thing, what,
-            # either side of old, in existng splitter
+            # either side of old, in existing splitter
             if side in ('right-of', 'below'):
                 pos += 1
             layout['splitter'].insert(pos, what)
@@ -578,7 +577,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
 
         point = button.pos()
         global_point = button.mapToGlobal(point)
-        menu.exec_(global_point)
+        menu.exec(global_point)
     #@+node:tbrown.20120418121002.25712: *3* ns.closing
     def closing(self, window):
         """forget a top-level additional layout which was closed"""
@@ -606,7 +605,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
                     break
     #@+node:ekr.20110605121601.17973: *3* ns.contains
     def contains(self, widget):
-        """check if widget is a descendent of self"""
+        """check if widget is a descendant of self"""
         for i in range(self.count()):
             if widget == self.widget(i):
                 return True
@@ -640,7 +639,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
           if the neighbours are not NestedSplitters, i.e.
           [ns0, ns1] or [None, ns1] or [ns0, None] or [None, None]
         count
-          the pair of nested counts of widgets / spliters around the handle
+          the pair of nested counts of widgets / splitters around the handle
         """
         widget = [self.widget(index - 1), self.widget(index)]
         neighbour = [(i if isinstance(i, NestedSplitter) else None) for i in widget]
@@ -678,7 +677,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
         return w
     #@+node:ekr.20110605121601.17976: *3* ns.invalid_swap
     def invalid_swap(self, w0, w1):
-        """check for swap violating hierachy"""
+        """check for swap violating hierarchy"""
         return (
             w0 == w1 or
             isinstance(w0, NestedSplitter) and w0.contains(w1) or
@@ -836,7 +835,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
             self.setSizes(sizes)
     #@+node:ekr.20110605121601.17983: *3* ns.rotate
     def rotate(self, descending=False):
-        """Change orientation - current rotates entire hierachy, doing less
+        """Change orientation - current rotates entire hierarchy, doing less
         is visually confusing because you end up with nested splitters with
         the same orientation - avoiding that would mean doing rotation by
         inserting out widgets into our ancestors, etc.
@@ -848,11 +847,11 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
                 i.setOrientation(Orientation.Vertical)
     #@+node:vitalije.20170713085342.1: *3* ns.rotateOne
     def rotateOne(self, index):
-        """Change orientation - only of splithandle at index."""
+        """Change orientation - only of splitter handle at index."""
         psp = self.parent()
         if self.count() == 2 and isinstance(psp, NestedSplitter):
             i = psp.indexOf(self)
-            sizes = psp.sizes()
+            sizes: list = psp.sizes()
             [a, b] = self.sizes()
             s = sizes[i]
             s1 = a * s / (a + b)
@@ -920,7 +919,6 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
         self.insertWidget(index - 1, self.widget(index))
     #@+node:ekr.20110605121601.17987: *3* ns.swap_with_marked
     def swap_with_marked(self, index, side):
-        # pylint: disable=unpacking-non-sequence
         osplitter, oidx, oside, ow = self.root.marked
         idx = index + side - 1
         # convert from handle index to widget index
@@ -934,8 +932,9 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
         self.equalize_sizes()
         osplitter.equalize_sizes()
     #@+node:ekr.20110605121601.17988: *3* ns.top
-    def top(self, local=False):
+    def top(self, local=False) -> Any:
         """find top (outer) widget, which is not necessarily root"""
+        top: Any
         if local:
             top = self
             while isinstance(top.parent(), NestedSplitter):
@@ -1004,13 +1003,11 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
             g.trace('level', level)
             tag = f"layout: {c.shortFileName()}"
             g.printObj(layout, tag=tag)
-        if isQt6:
-            if layout['orientation'] == 1:
-                self.setOrientation(Orientation.Horizontal)
-            else:
-                self.setOrientation(Orientation.Vertical)
+        if layout['orientation'] == 1:
+            self.setOrientation(Orientation.Horizontal)
         else:
-            self.setOrientation(layout['orientation'])
+            self.setOrientation(Orientation.Vertical)
+
         found = 0
         if level == 0:
             for i in self.self_and_descendants():
@@ -1120,7 +1117,7 @@ class NestedSplitter(QtWidgets.QSplitter):  # type:ignore
                     # this splitter could have been added since
                     ns.setSizes(ns._unzoom)
         else:
-            focused = Qt.QApplication.focusWidget()
+            focused = g.app.gui.qtApp.focusWidget()
             parents = []
             parent = focused
             while parent:

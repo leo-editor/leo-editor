@@ -74,7 +74,7 @@ class pluginController:
     def _getpath(self, p):
 
         c = self.c
-        path = g.fullPath(c, p)  # #1914
+        path = c.fullPath(p)  # #1914
         # Use os.path.normpath to give system separators.
         return os.path.normpath(g.os_path_dirname(path))  # #1914
     #@+node:EKR.20040517080049.8: *3* _getCurrentNodePath

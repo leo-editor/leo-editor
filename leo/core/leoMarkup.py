@@ -9,7 +9,7 @@ from shutil import which
 import os
 import re
 import time
-from typing import List, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 import leo.core.leoGlobals as g
 
 # Abbreviation.
@@ -17,9 +17,9 @@ StringIO = io.StringIO
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
-    File_List = Optional[List[str]]
+    File_List = Optional[list[str]]
 #@-<< leoMarkup imports & annotations >>
 
 asciidoctor_exec = which('asciidoctor')
@@ -30,7 +30,7 @@ sphinx_build = which('sphinx-build')
 #@+node:ekr.20191006153522.1: ** adoc, pandoc & sphinx commands
 #@+node:ekr.20190515070742.22: *3* @g.command: 'adoc' & 'adoc-with-preview')
 @g.command('adoc')
-def adoc_command(event: Event = None, verbose: bool = True) -> File_List:
+def adoc_command(event: LeoKeyEvent = None, verbose: bool = True) -> File_List:
     #@+<< adoc command docstring >>
     #@+node:ekr.20190515115100.1: *4* << adoc command docstring >>
     """
@@ -72,7 +72,7 @@ def adoc_command(event: Event = None, verbose: bool = True) -> File_List:
 
     Scripts may invoke the adoc command as follows::
 
-        event = g.Bunch(base_dicrectory=my_directory, p=some_node)
+        event = g.Bunch(base_directory=my_directory, p=some_node)
         c.markupCommands.adoc_command(event=event)
 
     This @button node runs the adoc command and coverts all results to .html::
@@ -91,7 +91,7 @@ def adoc_command(event: Event = None, verbose: bool = True) -> File_List:
     return c.markupCommands.adoc_command(event, preview=False, verbose=verbose)
 
 @g.command('adoc-with-preview')
-def adoc_with_preview_command(event: Event = None, verbose: bool = True) -> File_List:
+def adoc_with_preview_command(event: LeoKeyEvent = None, verbose: bool = True) -> File_List:
     """Run the adoc command, then show the result in the browser."""
     c = event and event.get('c')
     if not c:
@@ -99,7 +99,7 @@ def adoc_with_preview_command(event: Event = None, verbose: bool = True) -> File
     return c.markupCommands.adoc_command(event, preview=True, verbose=verbose)
 #@+node:ekr.20191006153411.1: *3* @g.command: 'pandoc' & 'pandoc-with-preview'
 @g.command('pandoc')
-def pandoc_command(event: Event, verbose: bool = True) -> File_List:
+def pandoc_command(event: LeoKeyEvent, verbose: bool = True) -> File_List:
     #@+<< pandoc command docstring >>
     #@+node:ekr.20191006153547.1: *4* << pandoc command docstring >>
     """
@@ -131,7 +131,7 @@ def pandoc_command(event: Event, verbose: bool = True) -> File_List:
 
     Scripts may invoke the adoc command as follows::
 
-        event = g.Bunch(base_dicrectory=my_directory, p=some_node)
+        event = g.Bunch(base_directory=my_directory, p=some_node)
         c.markupCommands.pandoc_command(event=event)
 
     This @button node runs the adoc command and coverts all results to .html::
@@ -150,7 +150,9 @@ def pandoc_command(event: Event, verbose: bool = True) -> File_List:
     return c.markupCommands.pandoc_command(event, verbose=verbose)
 
 @g.command('pandoc-with-preview')
-def pandoc_with_preview_command(event: Event = None, verbose: bool = True) -> File_List:
+def pandoc_with_preview_command(
+    event: LeoKeyEvent = None, verbose: bool = True,
+) -> File_List:
     """Run the pandoc command, then show the result in the browser."""
     c = event and event.get('c')
     if not c:
@@ -158,7 +160,7 @@ def pandoc_with_preview_command(event: Event = None, verbose: bool = True) -> Fi
     return c.markupCommands.pandoc_command(event, preview=True, verbose=verbose)
 #@+node:ekr.20191017163422.1: *3* @g.command: 'sphinx' & 'sphinx-with-preview'
 @g.command('sphinx')
-def sphinx_command(event: Event, verbose: bool = True) -> File_List:
+def sphinx_command(event: LeoKeyEvent, verbose: bool = True) -> File_List:
     #@+<< sphinx command docstring >>
     #@+node:ekr.20191017163422.2: *4* << sphinx command docstring >>
     """
@@ -190,7 +192,7 @@ def sphinx_command(event: Event, verbose: bool = True) -> File_List:
 
     Scripts may invoke the sphinx command as follows::
 
-        event = g.Bunch(base_dicrectory=my_directory, p=some_node)
+        event = g.Bunch(base_directory=my_directory, p=some_node)
         c.markupCommands.sphinx_command(event=event)
 
     This @button node runs the sphinx command and coverts all results to .html::
@@ -209,7 +211,9 @@ def sphinx_command(event: Event, verbose: bool = True) -> File_List:
     return c.markupCommands.sphinx_command(event, verbose=verbose)
 
 @g.command('sphinx-with-preview')
-def sphinx_with_preview_command(event: Event = None, verbose: bool = True) -> File_List:
+def sphinx_with_preview_command(
+    event: LeoKeyEvent = None, verbose: bool = True,
+) -> File_List:
     """Run the sphinx command, then show the result in the browser."""
     c = event and event.get('c')
     if not c:
@@ -236,7 +240,9 @@ class MarkupCommands:
 
     #@+others
     #@+node:ekr.20191006153233.1: *3* markup.command_helper & helpers
-    def command_helper(self, event: Event, kind: str, preview: bool, verbose: bool) -> List[str]:
+    def command_helper(self,
+        event: LeoKeyEvent, kind: str, preview: bool, verbose: bool,
+    ) -> list[str]:
 
         def predicate(p: Position) -> str:
             return self.filename(p)
@@ -259,7 +265,7 @@ class MarkupCommands:
                 # #1398.
                 i_path = c.expand_path_expression(i_path)
                 n_path = c.getNodePath(c.p)  # node path
-                i_path = g.os_path_finalize_join(n_path, i_path)
+                i_path = g.finalize_join(n_path, i_path)
                 with open(i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
                     self.write_root(p)
                     i_paths.append(i_path)
@@ -305,8 +311,7 @@ class MarkupCommands:
         kind = self.kind
         h = p.h.rstrip()
         if kind == 'adoc':
-            m = self.adoc_pattern.match(h)
-            if m:
+            if m := self.adoc_pattern.match(h):
                 prefix = m.group(1)
                 return h[1 + len(prefix) :].strip()
             return None
@@ -320,7 +325,7 @@ class MarkupCommands:
     #@+node:ekr.20191007053522.1: *4* markup.compute_opath
     def compute_opath(self, i_path: str) -> str:
         """
-        Neither asciidoctor nor pandoc handles extra extentions well.
+        Neither asciidoctor nor pandoc handles extra extensions well.
         """
         c = self.c
         for _i in range(3):
@@ -329,7 +334,7 @@ class MarkupCommands:
                 break
         # #1373.
         base_dir = os.path.dirname(c.fileName())
-        return g.os_path_finalize_join(base_dir, i_path + '.html')
+        return g.finalize_join(base_dir, i_path + '.html')
     #@+node:ekr.20191007043110.1: *4* markup.run_asciidoctor
     def run_asciidoctor(self, i_path: str, o_path: str) -> None:
         """
@@ -358,8 +363,7 @@ class MarkupCommands:
         """Process i_path and o_path with sphinx."""
         trace = True
         # cd to the command directory, or i_path's directory.
-        command_dir = g.os_path_finalize(
-            self.sphinx_command_dir or os.path.dirname(i_path))
+        command_dir = g.finalize(self.sphinx_command_dir or os.path.dirname(i_path))
         if os.path.exists(command_dir):
             if trace:
                 g.trace(f"\nos.chdir: {command_dir!r}")
@@ -376,14 +380,13 @@ class MarkupCommands:
             g.execute_shell_commands(self.sphinx_default_command)
             return
         # Compute the input directory.
-        input_dir = g.os_path_finalize(
+        input_dir = g.finalize(
             self.sphinx_input_dir or os.path.dirname(i_path))
         if not os.path.exists(input_dir):
             g.error(f"input directory not found: {input_dir!r}")
             return
         # Compute the output directory.
-        output_dir = g.os_path_finalize(
-            self.sphinx_output_dir or os.path.dirname(o_path))
+        output_dir = g.finalize(self.sphinx_output_dir or os.path.dirname(o_path))
         if not os.path.exists(output_dir):
             g.error(f"output directory not found: {output_dir!r}")
             return
@@ -473,7 +476,9 @@ class MarkupCommands:
             result.append(s)
         return ''.join(result)
     #@+node:ekr.20191006155051.1: *3* markup.commands
-    def adoc_command(self, event: Event = None, preview: bool = False, verbose: bool = True) -> File_List:
+    def adoc_command(self,
+        event: LeoKeyEvent = None, preview: bool = False, verbose: bool = True,
+    ) -> File_List:
         global asciidoctor_exec, asciidoc3_exec
         if asciidoctor_exec or asciidoc3_exec:
             return self.command_helper(
@@ -482,7 +487,9 @@ class MarkupCommands:
         g.es_print(f"{name} requires either asciidoctor or asciidoc3")
         return []
 
-    def pandoc_command(self, event: Event = None, preview: bool = False, verbose: bool = True) -> File_List:
+    def pandoc_command(self,
+        event: LeoKeyEvent = None, preview: bool = False, verbose: bool = True,
+    ) -> File_List:
         global pandoc_exec
         if pandoc_exec:
             return self.command_helper(
@@ -491,7 +498,9 @@ class MarkupCommands:
         g.es_print(f"{name} requires pandoc")
         return []
 
-    def sphinx_command(self, event: Event = None, preview: bool = False, verbose: bool = True) -> File_List:
+    def sphinx_command(self,
+        event: LeoKeyEvent = None, preview: bool = False, verbose: bool = True,
+    ) -> File_List:
         global sphinx_build
         if sphinx_build:
             return self.command_helper(

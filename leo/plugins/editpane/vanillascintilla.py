@@ -6,15 +6,11 @@ but does not try to add Leo key handling
 
 Terry Brown, Terry_N_Brown@yahoo.com, Sat Feb  4 12:38:26 2017
 """
-#@+<< vanillascintilla imports >>
-#@+node:tbrown.20171028115501.1: ** << vanillascintilla imports >>
+
 from leo.core import leoGlobals as g
 assert g
 from leo.core.leoQt import QtGui, QtWidgets, Qsci
 
-if Qsci is None:  # leo.core.leoQt eats ImportErrors
-    raise ImportError
-#@-<< vanillascintilla imports >>
 #@+others
 #@+node:tbrown.20171028115501.2: ** DBG
 def DBG(text):
@@ -29,7 +25,7 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
     lep_type = "EDITOR"
     lep_name = "Vanilla Scintilla"
     #@+others
-    #@+node:tbrown.20171028115501.4: *3* __init__
+    #@+node:tbrown.20171028115501.4: *3* __init__ (LEP_VanillaScintilla)
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
         super().__init__(*args, **kwargs)

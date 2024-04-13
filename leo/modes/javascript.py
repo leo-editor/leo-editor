@@ -1,6 +1,10 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20230419052236.1: * @file ../modes/javascript.py
 # Leo colorizer control file for javascript mode.
 # This file is in the public domain.
 
+#@+<< properties dict >>
+#@+node:ekr.20230419052315.1: ** << properties dict >>
 # Properties for javascript mode.
 properties = {
     "commentEnd": "*/",
@@ -14,6 +18,9 @@ properties = {
     "wordBreakChars": ",+-=<>/?^&*",
 }
 
+#@-<< properties dict >>
+#@+<< attributes dicts >>
+#@+node:ekr.20230419052414.1: ** << attributes dicts >>
 # Attributes dict for javascript_main ruleset.
 javascript_main_attributes_dict = {
     "default": "null",
@@ -29,6 +36,9 @@ attributesDictDict = {
     "javascript_main": javascript_main_attributes_dict,
 }
 
+#@-<< attributes dicts >>
+#@+<< keywords dicts >>
+#@+node:ekr.20230419053014.1: ** << keywords dicts >>
 # Keywords dict for javascript_main ruleset.
 javascript_main_keywords_dict = {
     "Array": "keyword3",
@@ -192,142 +202,148 @@ keywordsDictDict = {
     "javascript_main": javascript_main_keywords_dict,
 }
 
+#@-<< keywords dicts >>
+#@+others
+#@+node:ekr.20230419052628.1: ** javascript_main ruleset
 # Rules for javascript_main ruleset.
 
+#@+others
+#@+node:ekr.20230419052250.1: *3* javascript_rule0
 def javascript_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
 
+#@+node:ekr.20230419052250.2: *3* javascript_rule1
 def javascript_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+        no_line_break=True)
 
+#@+node:ekr.20230419052250.3: *3* javascript_rule2
 def javascript_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False,
-        no_escape=False, no_line_break=True, no_word_break=False)
+        no_line_break=True)
 
+#@+node:ekr.20230419052250.4: *3* javascript_rule3
 def javascript_rule3(colorer, s, i):
-    return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=True)
+    return colorer.match_mark_previous(s, i, "function", pattern="(",
+        exclude_match=True)
 
+#@+node:ekr.20230419052250.5: *3* javascript_rule4
 def javascript_rule4(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq="//",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, "comment2", seq="//")
 
+#@+node:ekr.20230419052250.6: *3* javascript_rule5
 def javascript_rule5(colorer, s, i):
-    return colorer.match_seq(s, i, kind="comment1", seq="<!--",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="comment1", seq="<!--")
 
+#@+node:ekr.20230419052250.7: *3* javascript_rule6
 def javascript_rule6(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
+#@+node:ekr.20230419052250.8: *3* javascript_rule7
 def javascript_rule7(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="!",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
+#@+node:ekr.20230419052250.9: *3* javascript_rule8
 def javascript_rule8(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
+#@+node:ekr.20230419052250.10: *3* javascript_rule9
 def javascript_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<=",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
+#@+node:ekr.20230419052250.11: *3* javascript_rule10
 def javascript_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="+",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
+#@+node:ekr.20230419052250.12: *3* javascript_rule11
 def javascript_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="-",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
+#@+node:ekr.20230419052250.13: *3* javascript_rule12
 def javascript_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="/",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
+#@+node:ekr.20230419052250.14: *3* javascript_rule13
 def javascript_rule13(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
+#@+node:ekr.20230419052250.15: *3* javascript_rule14
 def javascript_rule14(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=">",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
+#@+node:ekr.20230419052250.16: *3* javascript_rule15
 def javascript_rule15(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="<",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
+#@+node:ekr.20230419052250.17: *3* javascript_rule16
 def javascript_rule16(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="%",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
+#@+node:ekr.20230419052250.18: *3* javascript_rule17
 def javascript_rule17(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="&",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
+#@+node:ekr.20230419052250.19: *3* javascript_rule18
 def javascript_rule18(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="|",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
+#@+node:ekr.20230419052250.20: *3* javascript_rule19
 def javascript_rule19(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="^",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
+#@+node:ekr.20230419052250.21: *3* javascript_rule20
 def javascript_rule20(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="~",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
+#@+node:ekr.20230419052250.22: *3* javascript_rule21
 def javascript_rule21(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=".",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=".")
 
+#@+node:ekr.20230419052250.23: *3* javascript_rule22
 def javascript_rule22(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="}",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
+#@+node:ekr.20230419052250.24: *3* javascript_rule23
 def javascript_rule23(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="{",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
+#@+node:ekr.20230419052250.25: *3* javascript_rule24
 def javascript_rule24(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=",",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=",")
 
+#@+node:ekr.20230419052250.26: *3* javascript_rule25
 def javascript_rule25(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=";",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
+#@+node:ekr.20230419052250.27: *3* javascript_rule26
 def javascript_rule26(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="]",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="]")
 
+#@+node:ekr.20230419052250.28: *3* javascript_rule27
 def javascript_rule27(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="[",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="[")
 
+#@+node:ekr.20230419052250.29: *3* javascript_rule28
 def javascript_rule28(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq="?",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq="?")
 
+#@+node:ekr.20230419052250.30: *3* javascript_rule29
 def javascript_rule29(colorer, s, i):
-    return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-        at_line_start=False, at_whitespace_end=True, at_word_start=False, exclude_match=True)
+    return colorer.match_mark_previous(s, i, "label", pattern=":",
+        at_whitespace_end=True, exclude_match=True)
 
+#@+node:ekr.20230419052250.31: *3* javascript_rule30
 def javascript_rule30(colorer, s, i):
-    return colorer.match_seq(s, i, kind="operator", seq=":",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    return colorer.match_plain_seq(s, i, kind="operator", seq=":")
 
+#@+node:ekr.20230419052250.32: *3* javascript_rule31
 def javascript_rule31(colorer, s, i):
     return colorer.match_keywords(s, i)
 
+#@-others
+
+#@+<< Rules dict for javascript_main ruleset >>
+#@+node:ekr.20230419052844.1: *3* << Rules dict for javascript_main ruleset >>
 # Rules dict for javascript_main ruleset.
 rulesDict1 = {
     "!": [javascript_rule7,],
@@ -420,10 +436,16 @@ rulesDict1 = {
     "~": [javascript_rule20,],
 }
 
+#@-<< Rules dict for javascript_main ruleset >>
+
 # x.rulesDictDict for javascript mode.
 rulesDictDict = {
     "javascript_main": rulesDict1,
 }
 
+#@-others
 # Import dict for javascript mode.
 importDict = {}
+#@@language python
+#@@tabwidth -4
+#@-leo

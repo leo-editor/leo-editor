@@ -44,15 +44,11 @@ keywordsDictDict = {
 # Rules for kivy_main ruleset.
 
 def kivy_rule0(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment1", seq="#",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="", exclude_match=False)
+    return colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
 def kivy_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False,
-        delegate="kivy::literal_one", exclude_match=False,
-        no_escape=False, no_line_break=False, no_word_break=False)
+          delegate="kivy::literal_one")
 
 def kivy_rule2(colorer, s, i):
     return colorer.match_keywords(s, i)

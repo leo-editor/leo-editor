@@ -6,21 +6,12 @@
 from collections import defaultdict
 from importlib import import_module
 import os
-try:
-    # pylint: disable=import-error
-    # this can fix an issue with Qt Web views in Ubuntu
-    from OpenGL import GL
-    assert GL  # To keep pyflakes happy.
-except Exception:
-    # but not need to stop if it doesn't work
-    pass
-from leo.core.leoQt import isQt6, QtCore, QtWidgets
+from leo.core.leoQt import QtWidgets
 from leo.core.leoQt import QAction, ContextMenuPolicy, Orientation, Policy
 from leo.core.leoQt import WidgetAttribute  # 2347
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
-if QtCore is not None:
-    from leo.plugins.editpane.clicky_splitter import ClickySplitter
+from leo.plugins.editpane.clicky_splitter import ClickySplitter
 #@-<<editpane imports>>
 #@+others
 #@+node:tbrown.20171028115438.2: ** DBG
@@ -69,13 +60,14 @@ def edit_pane_csv(event):
         w = w.parent()
     w.insert(-1, LeoEditPane(c=c, show_control=False, lep_type='EDITOR-CSV'))
 #@+node:tbrown.20171028115438.4: ** class LeoEditPane
-class LeoEditPane(QtWidgets.QWidget):  # type:ignore
+class LeoEditPane(QtWidgets.QWidget):
     """
     Leo node body editor / viewer
     """
     #@+others
     #@+node:tbrown.20171028115438.5: *3* __init__
-    def __init__(self, c=None, p=None, mode='edit', show_head=True, show_control=True,
+    def __init__(self,
+        c=None, p=None, mode='edit', show_head=True, show_control=True,
         update=True, recurse=False, lep_type=None, *args, **kwargs):
         """LeoEditPane.__init__ - bind to outline
 
@@ -120,7 +112,7 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
         )
 
         self.track = self.cb_track.isChecked()
-        self.update = self.cb_update.isChecked()
+        self.update_flag = self.cb_update.isChecked()
         self.recurse = self.cb_recurse.isChecked()
         self.goto = self.cb_goto.isChecked()
 
@@ -361,12 +353,12 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
         self.track = bool(state)
     #@+node:tbrown.20171028115438.21: *3* change_update
     def change_update(self, state, one_shot=False):
-        self.update = one_shot or bool(state)
-        if self.update:
+        self.update_flag = one_shot or bool(state)
+        if self.update_flag:
             p = self.get_position()
             if p is not None:
                 self.new_position(p)
-        self.update = bool(state)
+        self.update_flag = bool(state)
     #@+node:tbrown.20171028115438.22: *3* close
     def close(self):
         """close - clean up
@@ -444,9 +436,9 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
                 menu.addAction(act)
 
         button = self.control_menu_button
-        point = button.position().toPoint() if isQt6 else button.pos()  # Qt6 documentation is wrong.
+        point = button.position().toPoint()  # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
-        menu.exec_(global_point)
+        menu.exec(global_point)
     #@+node:tbrown.20171028115438.28: *3* mode_menu
     def mode_menu(self):
         """build menu on Action button"""
@@ -463,9 +455,9 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
             menu.addAction(act)
 
         button = self.btn_mode
-        point = button.position().toPoint() if isQt6 else button.pos()  # Qt6 documentation is wrong.
+        point = button.position().toPoint()  # Qt6 documentation is wrong.
         global_point = button.mapToGlobal(point)
-        menu.exec_(global_point)
+        menu.exec(global_point)
 
     #@+node:tbrown.20171028115438.29: *3* new_position
     def new_position(self, p):
@@ -533,7 +525,7 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
 
         if p.gnx == our_p.gnx:
             self.update_position_edit(p)
-            if self.update:
+            if self.update_flag:
                 self.update_position_view(p)
     #@+node:tbrown.20171028115438.34: *3* update_position_edit
     def update_position_edit(self, p):
@@ -559,7 +551,7 @@ class LeoEditPane(QtWidgets.QWidget):  # type:ignore
         """
 
         DBG("update view position")
-        if self.update and self.mode != 'edit':
+        if self.update_flag and self.mode != 'edit':
             if self.recurse:
                 text = g.getScript(self.c, p, useSelectedText=False, useSentinels=False)
             else:
