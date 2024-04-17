@@ -1416,26 +1416,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.indent_level -= 1
             self.lws = self.indent_level * self.tab_width * ' '
         self.gen_token('verbatim', val)
-    #@+node:ekr.20240105145241.23: *5* tbo.do_ws
-    def do_ws(self) -> None:
-        """
-        Handle the "ws" pseudo-token.  See Tokenizer.itok.do_token (the gem).
-
-        Put the whitespace only if if ends with backslash-newline.
-        """
-        val = self.token.value
-        # Handle backslash-newline.
-        if '\\\n' in val:
-            self.clean('blank')
-            self.gen_token('op-no-blanks', val)
-            return
-        # Handle start-of-line whitespace.
-        prev = self.code_list[-1]
-        inner = self.paren_level or self.square_brackets_stack or self.curly_brackets_level
-        if prev.kind == 'line-indent' and inner:
-            # Retain the indent that won't be cleaned away.
-            self.clean('line-indent')
-            self.gen_token('hard-blank', val)
     #@+node:ekr.20240105145241.27: *5* tbo.gen_blank
     def gen_blank(self) -> None:
         """Add a blank request to the code list."""
