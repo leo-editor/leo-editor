@@ -500,7 +500,7 @@ class Tokenizer:
             self.do_token(contents, five_tuple)
 
         # Print the token list when tracing.
-        self.check_results(contents)
+        ### self.check_results(contents)
         return self.token_list
     #@+node:ekr.20240105143214.5: *4* Tokenizer.do_token (the gem)
     def do_token(self, contents: str, five_tuple: tuple) -> None:
@@ -533,9 +533,10 @@ class Tokenizer:
         # tok_s is corresponding string in the line.
         tok_s = contents[s_offset:e_offset]
         # Add any preceding between-token whitespace.
-        ws = contents[self.prev_offset:s_offset]
-        if ws:  # Create the 'ws' pseudo-token.
-            self.add_token('ws', line, line_number, ws)
+        if 0:  ###
+            ws = contents[self.prev_offset:s_offset]
+            if ws:  # Create the 'ws' pseudo-token.
+                self.add_token('ws', line, line_number, ws)
         # Always add token, even if it contributes no text!
         self.add_token(kind, line, line_number, tok_s)
         # Update the ending offset.
@@ -554,7 +555,8 @@ class Tokenizer:
             print(f"make_input_tokens: exception {e!r}")
             return []
         tokens = self.create_input_tokens(contents, five_tuples)
-        if True:  # True: 2.9 sec. False: 2.8 sec.
+        if 0:  ###
+            # True: 2.9 sec. False: 2.8 sec.
             assert self.check_round_trip(contents, tokens)
         return tokens
     #@+node:ekr.20240105143214.7: *4* Tokenizer.tokens_to_string
@@ -975,7 +977,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         ))
         print('')
         print(f"Diffs for {filename}")
-        print(lines)
+        for line in lines:
+            print(line)
     #@+node:ekr.20240105145241.9: *4* tbo: Visitors & generators
     # Visitors (tbo.do_* methods) handle input tokens.
     # Generators (tbo.gen_* methods) create zero or more output tokens.
