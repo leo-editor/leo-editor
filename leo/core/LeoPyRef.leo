@@ -109,6 +109,7 @@
 <v t="ekr.20170427114412.1"><vh>scripts</vh>
 <v t="ekr.20170427112302.1"><vh>check leoPy.leo</vh></v>
 <v t="ekr.20170428084123.1"><vh>Recursive import script</vh></v>
+<v t="ekr.20240403111007.1"><vh>script: add toolbar buttons</vh></v>
 <v t="ekr.20201222095250.1"><vh>script: check for duplicate settings in theme files</vh></v>
 <v t="ekr.20200308193719.1"><vh>script: check gnx's</vh></v>
 <v t="ekr.20210429045101.1"><vh>script: check gnxDict</vh></v>
@@ -126,6 +127,7 @@
 <v t="ekr.20220319151900.1"><vh>function: make_diff_outlines_ignoring_comments</vh></v>
 <v t="ekr.20220319152417.1"><vh>function: strip_comments</vh></v>
 </v>
+<v t="ekr.20240403090451.1"><vh>script: expand-toolbar</vh></v>
 <v t="ekr.20220318085657.1"><vh>script: find trailing comments</vh></v>
 <v t="ekr.20220503081113.1"><vh>script: find-non-calls</vh>
 <v t="ekr.20220503193901.1"><vh>old suppressions</vh></v>
@@ -161,7 +163,6 @@
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
 <v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
-<v t="ekr.20161026193447.1"><vh>@file leoBackground.py</vh></v>
 <v t="ekr.20150521115018.1"><vh>@file leoBeautify.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
@@ -186,8 +187,6 @@
 <v t="ekr.20150419124739.1"><vh>@file leoPrinting.py</vh></v>
 <v t="ekr.20061024060248.1"><vh>@file leoPymacs.py</vh></v>
 <v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
-<v t="ekr.20210407010914.1"><vh>@file leoQt5.py</vh></v>
-<v t="ekr.20210407011013.1"><vh>@file leoQt6.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
 <v t="ekr.20120420054855.14241"><vh>@file leoSessions.py</vh></v>
@@ -228,14 +227,17 @@
 </v>
 <v t="ekr.20180225010644.1"><vh>Other files</vh>
 <v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
-<v t="ekr.20240201175949.1"><vh>@file ../../requirements.txt</vh></v>
+<v t="ekr.20240317061516.1"><vh>@clean ../../MANIFEST.in</vh></v>
 <v t="ekr.20220222130955.1"><vh>@edit ../../.mypy.ini</vh></v>
 <v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
-<v t="ekr.20240206163135.1"><vh>@edit ../../manifest.in</vh></v>
+<v t="ekr.20240319094534.1"><vh>@edit ../../PKG-INFO.TXT</vh></v>
 <v t="ekr.20240206153029.1"><vh>@edit ../../readme.md</vh></v>
 <v t="ekr.20240206161713.1"><vh>@edit ../../setup.cfg </vh></v>
 <v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
+<v t="ekr.20240227064614.1"><vh>@file ../../pyproject.toml</vh></v>
+<v t="ekr.20240406013108.1"><vh>@file ../../ruff.toml</vh></v>
+<v t="ekr.20240201175949.1"><vh>@file ../../requirements.txt</vh></v>
 <v t="ekr.20181014073705.1"><vh>@file ../../run_pytest_tests.py</vh></v>
 <v t="ekr.20181009072707.1"><vh>@file ../../run_travis_unit_tests.py</vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
@@ -552,7 +554,6 @@
 <v t="tbrown.20130930160706.23451"><vh>@file ../plugins/markup_inline.py</vh></v>
 <v t="vitalije.20180804172140.1"><vh>@file ../plugins/md_docer.py</vh></v>
 <v t="peckj.20140113150237.7083"><vh>@file ../plugins/nodediff.py</vh></v>
-<v t="tbrown.20130813134319.11942"><vh>@file ../plugins/richtext.py</vh></v>
 <v t="ekr.20170217164004.1"><vh>@file ../plugins/tables.py</vh></v>
 </v>
 <v t="ekr.20121126102050.10134"><vh>Threading</vh>
@@ -566,7 +567,6 @@
 <v t="tom.20210613135525.1"><vh>@file ../plugins/freewin.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file ../plugins/graphcanvas.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file ../plugins/nav_qt.py</vh></v>
-<v t="ville.20120604212857.4215"><vh>@file ../plugins/notebook.py</vh></v>
 <v t="ekr.20090622063842.5264"><vh>@file ../plugins/projectwizard.py</vh></v>
 <v t="ekr.20160928073518.1"><vh>@file ../plugins/pyplot_backend.py</vh></v>
 <v t="ville.20090314215508.4"><vh>@file ../plugins/quicksearch.py</vh></v>
@@ -607,18 +607,15 @@
 </v>
 <v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
 <v t="ekr.20171031111403.1"><vh>Leo Edit Pane</vh>
+<v t="tbrown.20171028115144.8"><vh>@file ../plugins/editpane/__init__.py</vh></v>
 <v t="tbrown.20171029210211.1"><vh>@file ../plugins/editpane/clicky_splitter.py</vh></v>
 <v t="ekr.20211210102459.1"><vh>@file ../plugins/editpane/csvedit.py</vh></v>
 <v t="tbrown.20171028115144.6"><vh>@file ../plugins/editpane/editpane.py</vh></v>
 <v t="tbrown.20171028115144.5"><vh>@file ../plugins/editpane/leotextedit.py</vh></v>
 <v t="tbrown.20171028115144.4"><vh>@file ../plugins/editpane/markdownview.py</vh></v>
-<v t="tbrown.20171028115144.3"><vh>@file ../plugins/editpane/pandownview.py</vh></v>
 <v t="tbrown.20171028115144.2"><vh>@file ../plugins/editpane/plaintextedit.py</vh></v>
 <v t="tbrown.20171028115144.1"><vh>@file ../plugins/editpane/plaintextview.py</vh></v>
 <v t="tbrown.20171028115143.3"><vh>@file ../plugins/editpane/vanillascintilla.py</vh></v>
-<v t="tbrown.20171028115143.2"><vh>@file ../plugins/editpane/webengineview.py</vh></v>
-<v t="tbrown.20171028115143.1"><vh>@file ../plugins/editpane/webkitview.py</vh></v>
-<v t="tbrown.20171028115144.8"><vh>@file ../plugins/editpane/__init__.py</vh></v>
 <v t="tbrown.20171028115541.1"><vh>@file signal_manager.py</vh></v>
 </v>
 <v t="ekr.20120419093256.10048"><vh>@file ../plugins/free_layout.py</vh></v>
@@ -637,18 +634,29 @@
 <v t="ekr.20161223152353.1"><vh>@edit ../plugins/qt_quicksearch_sub.py</vh></v>
 </v>
 <v t="ekr.20221204070905.1"><vh>Script files</vh>
-<v t="ekr.20221204072456.1"><vh>@clean ../scripts/beautify-leo.cmd</vh></v>
-<v t="ekr.20231114224211.1"><vh>@clean ../scripts/beautify-leo-force.cmd</vh></v>
-<v t="ekr.20230115020533.1"><vh>@clean ../scripts/blacken-leo.cmd</vh></v>
-<v t="ekr.20221204074235.1"><vh>@clean ../scripts/flake8-leo.cmd</vh></v>
-<v t="ekr.20221204071554.1"><vh>@clean ../scripts/full-test-leo.cmd</vh></v>
-<v t="ekr.20230206004301.1"><vh>@clean ../scripts/make-leo.cmd</vh></v>
-<v t="ekr.20221204071146.1"><vh>@clean ../scripts/mypy-leo.cmd</vh></v>
-<v t="ekr.20221204071056.1"><vh>@clean ../scripts/pylint-leo.cmd</vh></v>
-<v t="ekr.20221204072154.1"><vh>@clean ../scripts/reindent-leo.cmd</vh></v>
-<v t="ekr.20221201043917.1"><vh>@clean ../scripts/test-leo.cmd</vh></v>
-<v t="ekr.20221204071220.1"><vh>@clean ../scripts/test-one-leo.cmd</vh></v>
-<v t="ekr.20240119060724.1"><vh>@clean ../scripts/tbo.cmd</vh></v>
+<v t="ekr.20240321122705.1"><vh>--- build scripts</vh>
+<v t="ekr.20240321122822.1"><vh>@file ../scripts/build_leo.py</vh></v>
+<v t="ekr.20240321122917.1"><vh>@file ../scripts/inspect_wheel.py</vh></v>
+<v t="ekr.20240321123226.1"><vh>@file ../scripts/install_leo_from_pypi.py</vh></v>
+<v t="ekr.20240321123225.3"><vh>@file ../scripts/install_leo_from_testpypi.py</vh></v>
+<v t="ekr.20240321123214.1"><vh>@file ../scripts/install_leo_locally.py</vh></v>
+<v t="ekr.20240322173704.1"><vh>@file ../scripts/pip_install_r.py</vh></v>
+<v t="ekr.20240322173731.1"><vh>@file ../scripts/pip_uninstall_all.py</vh></v>
+<v t="ekr.20240321123224.1"><vh>@file ../scripts/run_installed_leo.py</vh></v>
+<v t="ekr.20240321123225.1"><vh>@file ../scripts/uninstall_leo.py</vh></v>
+<v t="ekr.20240321123225.4"><vh>@file ../scripts/upload_leo_to_pypi.py</vh></v>
+<v t="ekr.20240321123225.2"><vh>@file ../scripts/upload_leo_to_testpypi.py</vh></v>
+</v>
+<v t="ekr.20240321122614.1"><vh>--- test scripts</vh>
+<v t="ekr.20240323050520.1"><vh>@file ../scripts/beautify_all_leo.py</vh></v>
+<v t="ekr.20240322065528.1"><vh>@file ../scripts/beautify_leo.py</vh></v>
+<v t="ekr.20240322084902.1"><vh>@file ../scripts/flake8_leo.py</vh></v>
+<v t="ekr.20240323051724.1"><vh>@file ../scripts/full_test_leo.py</vh></v>
+<v t="ekr.20240321122413.8"><vh>@file ../scripts/mypy_leo.py</vh></v>
+<v t="ekr.20240321122413.9"><vh>@file ../scripts/pylint_leo.py</vh></v>
+<v t="ekr.20240406061929.1"><vh>@file ../scripts/ruff_leo.py</vh></v>
+<v t="ekr.20240322162616.1"><vh>@file ../scripts/run_test_leo.py</vh></v>
+</v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
 <v t="ekr.20201129023817.1"><vh>@file leoTest2.py</vh></v>
@@ -1580,7 +1588,8 @@ else:
 """Recursively import all python files in a directory and clean the result."""
 @tabwidth -4 # For a better match.
 g.cls()
-dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
+# dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
+dir_ = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'setup.py')
 c.recursiveImport(
     dir_=dir_,
     kind = '@clean', # '@auto', '@clean', '@nosent','@file',
@@ -2790,15 +2799,27 @@ def do_sec(i, m, s):
 if c.isChanged():
     c.save()
 &lt;&lt; prefixes &gt;&gt;
-if 0:  # run.cmd runs Nim tests.
-    g.execute_shell_commands('run')
+if 1:
+    for command in (
+        'python c:/test/mypy_test.py',
+        'python -m mypy c:/test/mypy_test.py',
+        'python -m ruff check c:/test/mypy_test.py',
+        'python -m pyflakes c:/test/mypy_test.py',
+    ):
+        print(command)
+        g.execute_shell_commands(command)
+elif 1:
+    # command = 'run'  # run Nim tests.
+    script = 'build-leo.py'
+    command = fr"python C:\Repos\leo-editor\leo\scripts\{script}"
+    g.execute_shell_commands(command)
 else:  # Leo unit test.
     commands = (
         # All commands must start with .test_.
         
         f"{core}.test_leoGlobals.TestGlobals.test_g_openUNLFile",
         # f"{core}.test_leoUndo",
-        # f"{core}.test_leoColorizer",
+        # f"{core}.test_leoColorizer",  
         
         # f"{importers}.TestPython",
         # f"{importers}.TestPython.test_almost_empty_defs",
@@ -3277,139 +3298,7 @@ viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 # todo.py             # Task pane.
 </t>
 <t tx="ekr.20221129012213.1"># See flake8 settings in setup.cfg.</t>
-<t tx="ekr.20221201043917.1">@language batch
-@echo off
-cd %~dp0..\..
-
-call reindent-leo.cmd
-
-echo test-leo
-py -m unittest %*
-</t>
 <t tx="ekr.20221204070905.1"></t>
-<t tx="ekr.20221204071056.1">@language batch
-@echo off
-cd %~dp0..\..
-
-echo pylint-leo
-time /T
-call py -m pylint leo --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets %*
-time /T
-</t>
-<t tx="ekr.20221204071146.1">@language batch
-@echo off
-cd %~dp0..\..
-
-rem See leo-editor/.mypy.ini for exclusions!
-rem Always use the fast (official) version of mypy.
-
-echo mypy-leo
-py -m mypy --debug-cache leo %*
-</t>
-<t tx="ekr.20221204071220.1">@language batch
-@echo off
-cls
-cd %~dp0..\..
-
-echo test-one-leo
-call py -m unittest leo.unittests.core.test_leoGlobals.TestGlobals.test_g_handleScriptException
-</t>
-<t tx="ekr.20221204071554.1">@language batch
-@echo off
-cls
-cd %~dp0..\..
-
-rem Run all of Leo's pre-commit tests.
-
-call tbo.cmd --all --beautified --report --write
-call python312 -m unittest
-call ruff-leo.cmd
-call mypy-leo.cmd
-echo Done!
-</t>
-<t tx="ekr.20221204072154.1">@language batch
-@echo off
-cd %~dp0..\..
-
-:: Save path to reindent.py to a file .leo\reindent-path.txt
-call py %~dp0\find-reindent.py
-
-set PATH_FILE=%USERPROFILE%\.leo\reindent-path.txt
-set /P "REINDENT_PATH="&lt; %PATH_FILE%
-
-:: echo %REINDENT_PATH%
-
-if "%REINDENT_PATH%"=="" goto no_reindent
-
-echo reindent-leo
-
-rem echo reindent leo/core
-call py %REINDENT_PATH% -r leo\core
-rem echo reindent leo/commands
-call py %REINDENT_PATH% -r leo\commands
-rem echo reindent leo/plugins/importers
-call py %REINDENT_PATH% -r leo\plugins\importers
-rem echo reindent leo/plugins/commands
-call py %REINDENT_PATH% leo\plugins\qt_commands.py
-call py %REINDENT_PATH% leo\plugins\qt_events.py
-call py %REINDENT_PATH% leo\plugins\qt_frame.py
-call py %REINDENT_PATH% leo\plugins\qt_gui.py
-call py %REINDENT_PATH% leo\plugins\qt_idle_time.py
-call py %REINDENT_PATH% leo\plugins\qt_text.py
-call py %REINDENT_PATH% leo\plugins\qt_tree.py
-rem echo reindent leo/plugins/writers
-call py %REINDENT_PATH% -r leo\plugins\writers
-rem echo reindent leo/unittests
-call py %REINDENT_PATH% -r leo\unittests
-rem echo reindent official plugins.
-call py %REINDENT_PATH% leo\plugins\indented_languages.py
-goto done
-
-:no_reindent
-echo Cannot find reindent.py, skipping reindentation
-
-:done
-</t>
-<t tx="ekr.20221204072456.1">@language batch
-@echo off
-cd %~dp0..\..
-
-echo beautify-leo
-
-call py -m leo.core.leoAst --orange --verbose leo\core
-call py -m leo.core.leoAst --orange --verbose leo\commands
-call py -m leo.core.leoAst --orange --verbose leo\plugins
-call py -m leo.core.leoAst --orange --verbose leo\modes
-</t>
-<t tx="ekr.20221204074235.1">@language batch
-@echo off
-cd %~dp0..\..
-
-rem: See leo-editor/setup.cfg for defaults.
-
-echo flake8-leo
-py -m flake8 %*
-</t>
-<t tx="ekr.20230115020533.1">@language batch
-@echo off
-cd %~dp0..\..
-
-rem not recommended!
-echo black leo.core
-call py -m black --skip-string-normalization leo\core
-</t>
-<t tx="ekr.20230206004301.1">@language batch
-@echo off
-cls
-rem -a: write all files  (make clean)
-cd %~dp0..\..
-cd leo\doc\html
-
-echo.
-echo sphinx-build -a (make clean)
-echo.
-sphinx-build -M html . _build -a
-</t>
 <t tx="ekr.20230508145335.1"># These tests load (once) all files in leo/core, leo/commands and leo/plugins/qt_*.py.
 g.cls()
 g.execute_shell_commands(
@@ -3431,7 +3320,6 @@ plugins = 'leo.unittests.plugins'
 syntax = 'leo.unittests.plugins.test_syntax'
 writers = 'leo.unittests.plugins.test_writers'
 
-# f"{core}.test_leoAst",
 # f"{core}.test_leoGlobals",
 # f"{core}.test_leoTokens",
 
@@ -3524,56 +3412,118 @@ if missing:
 else:
     print('No missing files!')
 print('done')</t>
-<t tx="ekr.20231114224211.1">@language batch
-@echo off
-cd %~dp0..\..
-
-echo beautify-leo
-
-call py -m leo.core.leoAst --orange --force --verbose leo\core
-call py -m leo.core.leoAst --orange --force --verbose leo\commands
-
-rem It's ok to beautify everything:
-
-call py -m leo.core.leoAst --orange --verbose leo\plugins
-call py -m leo.core.leoAst --orange --verbose leo\modes
-
-rem call py -m leo.core.leoAst --orange --force --verbose leo\plugins\importers
-rem call py -m leo.core.leoAst --orange --force --verbose leo\plugins\writers
-</t>
 <t tx="ekr.20240107154430.1"># 79: PEP8 recommendation.</t>
-<t tx="ekr.20240119060724.1">@language batch
-
-@echo off
-cls
-cd %~dp0..\..
-
-rem Use leoTokens.py to beautify all files.
-
-IF [%1]==[-h] goto help
-IF [%1]==[--help] goto help
-
-:tbo:
-
-echo tbo [%*]
-call python312 -m leo.core.leoTokens leo\core %*
-call python312 -m leo.core.leoTokens leo\commands %*
-call python312 -m leo.core.leoTokens leo\plugins\importers %*
-call python312 -m leo.core.leoTokens leo\plugins\writers %*
-call python312 -m leo.core.leoTokens leo\modes %*
-
-call python312 -m leo.core.leoTokens leo\unittests\core %*
-call python312 -m leo.core.leoTokens leo\unittests\commands %*
-call python312 -m leo.core.leoTokens leo\unittests\plugins %*
-call python312 -m leo.core.leoTokens leo\unittests\misc_tests %*
-goto done
-
-:help:
-call python312 -m leo.core.leoTokens  --help
-
-:done:
-</t>
 <t tx="ekr.20240204082420.1"></t>
 <t tx="ekr.20240204082924.1"></t>
+<t tx="ekr.20240317061516.1">@language python
+
+# Order matters!
+
+# Include *everything* in the leo folder.
+graft leo
+
+global-exclude *.py[cod] *.__pycache__ *.so
+global-exclude *.mypy_cache, *.mypy_stubs, *.gitattributes, *.htmlcov
+
+# Add files in the top-level leo-editor folder.
+
+include *.py
+include *.TXT
+
+# Tweaks
+
+prune leo/unittests/htmlcov
+prune leo/doc/html
+include leo/doc/html/conf.py
+</t>
+<t tx="ekr.20240321122614.1"># These are Leo's test scripts.
+
+# Run these scripts from the leo-editor folder.
+
+# Info item #3867 describes these scripts:
+# https://github.com/leo-editor/leo-editor/issues/2867</t>
+<t tx="ekr.20240321122705.1"># Here are Leo's distribution-related scripts.
+
+# Run these scripts from the leo-editor folder.
+
+# Info item #3837 describes these scripts:
+# https://github.com/leo-editor/leo-editor/issues/3837</t>
+<t tx="ekr.20240403090451.1">"""
+Expand button bar.
+
+Clicking this button does nothing if all buttons are already visible.
+Otherwise, this button shows all buttons, using separate lines if necessary.
+"""
+
+# https://doc.qt.io/qt-6/qtoolbar.html
+
+from PyQt6.QtCore import QPointF, Qt
+from PyQt6.QtGui import QMouseEvent
+from PyQt6.QtWidgets import QApplication
+
+pos = QPointF(0, 0)
+button = Qt.MouseButton.LeftButton
+btns = Qt.MouseButton(0)
+mods = Qt.KeyboardModifier(0)
+
+# Define the event types directly without accessing them through Qt
+e1 = QMouseEvent(QMouseEvent.Type.MouseButtonPress, pos, button, btns, mods)
+e2 = QMouseEvent(QMouseEvent.Type.MouseButtonRelease, pos, button, btns, mods)
+
+iconBar = c.frame.iconBar.w
+# print(iconBar)
+
+for i in range(20):
+    iconBar.addAction(str(i))
+    
+if 0:
+    # Assuming 'c' and 'w' are already defined
+    for w in c.frame.iconBar.w.children():
+        print(repr(w.objectName()))
+        if w.objectName() == 'qt_toolbar_ext_button':
+            QApplication.sendEvent(w, e1)
+            QApplication.sendEvent(w, e2)
+            break
+        
+print('Done!')
+
+@language python
+</t>
+<t tx="ekr.20240403111007.1">"""Add toolbar buttons, centered in new rows."""
+
+g.cls()
+
+# https://doc.qt.io/qt-6/qtoolbar.html
+from PyQt6.QtCore import QPointF, Qt
+from PyQt6.QtGui import QMouseEvent
+from PyQt6.QtWidgets import QApplication, QSizePolicy, QWidget
+
+pos = QPointF(0, 0)
+button = Qt.MouseButton.LeftButton
+btns = Qt.MouseButton(0)
+mods = Qt.KeyboardModifier(0)
+
+# Define the event types directly without accessing them through Qt
+e1 = QMouseEvent(QMouseEvent.Type.MouseButtonPress, pos, button, btns, mods)
+e2 = QMouseEvent(QMouseEvent.Type.MouseButtonRelease, pos, button, btns, mods)
+
+iconBar = c.frame.iconBar.w
+# print(iconBar)
+
+def addSpacer():
+    w = QWidget()
+    policy = QSizePolicy()
+    w.setSizePolicy(policy.Policy.Expanding, policy.Policy.Preferred)
+    iconBar.addWidget(w)
+    
+for i in range(20):
+    iconBar.addAction(str(i))
+    if i in (4, 8, 12, 16):
+        addSpacer()
+
+print('Done!')
+
+@language python
+</t>
 </tnodes>
 </leo_file>

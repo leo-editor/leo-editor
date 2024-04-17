@@ -1669,6 +1669,945 @@ else:
 
 Weight = QtGui.QFont.Weight
 WrapMode = QtGui.QTextOption.WrapMode
+#@+node:ekr.20240417071834.1: ** prototype: leoTokens.rs
+#@+node:ekr.20240417071834.2: *3* @@@edit Cargo.toml
+@language toml
+
+[package]
+name = "rust_beautifier"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# fstrings = "0.2.3"
+# regex = "1.10.4"
+textwrap = "0.16.1"
+rustpython-parser = {version = "0.3.1", features = ["full-lexer"]}
+#@+node:ekr.20240417071834.3: *3* @@@file src/main.rs
+mod leotokens;
+
+fn main() {
+    leotokens::entry();
+}
+
+@language rust
+@tabwidth -4
+#@+node:ekr.20240417071834.4: *3* @@@file src/leotokens.rs
+<< leoTokens.rs: docstring >>
+<< leoTokens.rs: global suppressions >>
+<< leoTokens.rs: use statements >>
+
+@others
+
+@language rust
+@tabwidth -4
+@pagewidth 70
+#@+node:ekr.20240417071834.5: *4* << leoTokens.rs: docstring >>
+//! leoTokens.rs: A beautifier for Python that uses *only* tokens.
+//!
+//! Use Leo https://leo-editor.github.io/leo-editor/ to study this code!
+//!
+//! Without Leo, you will see special **sentinel comments** that create
+//! Leo's outline structure. These comments have the form::
+//!
+//! `#@<comment-kind>:<user-id>.<timestamp>.<number>: <outline-level> <headline>`
+//!
+//! This file is part of Leo: https://leo-editor.github.io/leo-editor
+//! Leo's copyright notice is based on the MIT license:
+//! https://leo-editor.github.io/leo-editor/license.html
+#@+node:ekr.20240417071834.6: *4* << leoTokens.rs: global suppressions >>
+// All suppressions are local to a class or statement.
+
+// #![allow(non_snake_case)]
+// #![allow(unused_imports)]
+// #![allow(unreachable_code)]
+// #![allow(unused_mut)]
+// #![allow(unused_variables)]
+#@+node:ekr.20240417071834.7: *4* << leoTokens.rs: use statements >>
+use rustpython_parser::{lexer::lex, Mode, Tok};
+
+use std::env;
+use std::fs;
+use std::fmt;
+// use std::time;
+
+use textwrap;
+#@+node:ekr.20240417071834.8: *4* Classes (leoTokens.rs)
+#@+node:ekr.20240417071834.9: *5* class Beautifier 
+#[derive(Debug)]
+pub struct Beautifier {
+    args: Vec<String>,
+    files_list: Vec<String>,
+    input_list: Vec<InputTok>,
+    output_list: Vec<OutputTok>,
+}
+
+///// Temporary.
+#[allow(dead_code)]
+#[allow(non_snake_case)]
+impl Beautifier {
+    @others
+}
+#@+node:ekr.20240417071834.10: *6* Beautifier::add_input_token
+// #[allow(dead_code)]
+fn add_input_token (&mut self, kind: &str, value: &str) {
+    //! Add one token to the output list.
+    // println!("{:?}", kind);
+    self.input_list.push(InputTok {
+        kind: kind.to_string(),
+        value: value.to_string(),
+    });
+}
+#@+node:ekr.20240417071834.11: *6* Beautifier::add_output_token
+fn add_output_token (&mut self, kind: &str, value: &str) {
+    //! Add one token to the output list.
+    self.output_list.push(OutputTok {
+        kind: kind.to_string(),
+        value: value.to_string(),
+    });
+}
+#@+node:ekr.20240417071834.12: *6* Beautifier::beautify_all_files
+pub fn beautify_all_files(&mut self) {
+    for file_name in self.files_list.clone() {
+        self.beautify_one_file(file_name);
+    }
+}
+
+#@+node:ekr.20240417071834.13: *6* Beautifier::beautify_one_file
+fn beautify_one_file(&mut self, file_name: String) {
+    // println!("beautifiy_one_file: {file_name}");
+    self.output_list = Vec::new();
+    // Read the file into contents (a String).
+    let t1 = std::time::Instant::now();
+    let contents = fs::read_to_string(file_name.clone())
+        .expect("Error reading{file_name}");
+    // print_type(&contents, "contents");
+    let t2 = t1.elapsed();
+    // Tokenize.
+    let t3 = std::time::Instant::now();
+    let n_tokens = self.tokenize_contents(contents);
+    let t4 = t3.elapsed();
+    // Report
+    if self.enabled("--report") {
+        println!(" file name: {file_name}");
+        println!("      read: {:.2?}", t2);
+        println!("  tokenize: {:.2?}", t4);
+        println!("    tokens: {n_tokens}");
+    }
+    // Show tokens.
+    << show output_list >>
+}
+#@+node:ekr.20240417071834.14: *7* << show output_list >>
+if false {  // --show-output
+    self.show_output_list()
+}
+#@+node:ekr.20240417071834.15: *6* Beautifier::do_*
+#@+node:ekr.20240417071834.16: *7* Handlers with values
+#@+node:ekr.20240417071834.17: *8* do_Comment
+fn do_Comment(&mut self, tok_value: &str) {
+    // print!("{tok_value}");  // Correct.
+    // print!("{value} ");  // Wrong!
+    self.add_output_token("Comment", tok_value);
+}
+#@+node:ekr.20240417071834.18: *8* do_Complex
+fn do_Complex(&mut self, tok_value: &str) {
+    self.add_output_token("Complex", tok_value);
+}
+#@+node:ekr.20240417071834.19: *8* do_Float
+fn do_Float(&mut self, tok_value: &str) {
+    self.add_output_token("Float", tok_value);
+}
+#@+node:ekr.20240417071834.20: *8* do_Int
+fn do_Int(&mut self, tok_value: &str) {
+    self.add_output_token("Int", tok_value);
+}
+#@+node:ekr.20240417071834.21: *8* do_Name
+fn do_Name(&mut self, tok_value: &str) {
+    self.add_output_token("Name", tok_value);
+}
+#@+node:ekr.20240417071834.22: *8* do_String
+fn do_String(&mut self, tok_value: &str) {
+    // correct.
+    // print!("{tok_value}");
+    
+    // incorrect.
+        // let quote = if *triple_quoted {"'''"} else {"'"};
+        // print!("{:?}:{quote}{value}{quote}", kind);
+
+    self.add_output_token("String", tok_value);
+}
+#@+node:ekr.20240417071834.23: *7* Handlers using lws
+#@+node:ekr.20240417071834.24: *8* do_Dedent
+fn do_Dedent(&mut self, tok_value: &str) {
+    self.add_output_token("Dedent", tok_value);
+}
+#@+node:ekr.20240417071834.25: *8* do_Indent
+fn do_Indent(&mut self, tok_value: &str) {
+    self.add_output_token("Indent", tok_value);
+}
+#@+node:ekr.20240417071834.26: *8* do_Newline
+fn do_Newline(&mut self) {
+    self.add_output_token("Indent", "\n");
+}
+#@+node:ekr.20240417071834.27: *8* do_NonLogicalNewline
+fn do_NonLogicalNewline(&mut self) {
+    self.add_output_token("Indent", "\n");
+}
+#@+node:ekr.20240417071834.28: *7* Handlers w/o values
+#@+node:ekr.20240417071834.29: *8* do_Amper
+fn do_Amper(&mut self) {
+    self.add_output_token("Amper", "&");
+}
+#@+node:ekr.20240417071834.30: *8* do_AmperEqual
+fn do_AmperEqual(&mut self) {
+    self.add_output_token("AmperEqual", "&=");
+}
+#@+node:ekr.20240417071834.31: *8* do_And
+fn do_And(&mut self) {
+    self.add_output_token("And", "and");
+}
+#@+node:ekr.20240417071834.32: *8* do_As
+fn do_As(&mut self) {
+    self.add_output_token("As", "as");
+}
+#@+node:ekr.20240417071834.33: *8* do_Assert
+fn do_Assert(&mut self) {
+    self.add_output_token("Assert", "assert");
+}
+#@+node:ekr.20240417071834.34: *8* do_Async
+fn do_Async(&mut self) {
+    self.add_output_token("Async", "async");
+}
+#@+node:ekr.20240417071834.35: *8* do_At
+fn do_At(&mut self) {
+    self.add_output_token("At", "@");
+}
+#@+node:ekr.20240417071834.36: *8* do_AtEqual
+fn do_AtEqual(&mut self) {
+    self.add_output_token("AtEqual", "@=");
+}
+#@+node:ekr.20240417071834.37: *8* do_Await
+fn do_Await(&mut self) {
+    self.add_output_token("Await", "await");
+}
+#@+node:ekr.20240417071834.38: *8* do_Break
+fn do_Break(&mut self) {
+    self.add_output_token("Break", "break");
+}
+#@+node:ekr.20240417071834.39: *8* do_Case
+fn do_Case(&mut self) {
+    self.add_output_token("Case", "case");
+}
+#@+node:ekr.20240417071834.40: *8* do_CircumFlex
+fn do_CircumFlex(&mut self) {
+    self.add_output_token("CircumFlex", "^");
+}
+#@+node:ekr.20240417071834.41: *8* do_CircumflexEqual
+fn do_CircumflexEqual(&mut self) {
+    self.add_output_token("CircumflexEqual", "^=");
+}
+#@+node:ekr.20240417071834.42: *8* do_Class
+fn do_Class(&mut self) {
+    self.add_output_token("Class", "class");
+}
+#@+node:ekr.20240417071834.43: *8* do_Colon
+fn do_Colon(&mut self) {
+    self.add_output_token("Colon", ":");
+}
+#@+node:ekr.20240417071834.44: *8* do_ColonEqual
+fn do_ColonEqual(&mut self) {
+    self.add_output_token("ColonEqual", ":=");
+}
+#@+node:ekr.20240417071834.45: *8* do_Comma
+fn do_Comma(&mut self) {
+    self.add_output_token("Comma", ",");
+}
+#@+node:ekr.20240417071834.46: *8* do_Continue
+fn do_Continue(&mut self) {
+    self.add_output_token("Continue", "continue");
+}
+#@+node:ekr.20240417071834.47: *8* do_Def
+fn do_Def(&mut self) {
+    self.add_output_token("Def", "def");
+}
+#@+node:ekr.20240417071834.48: *8* do_Del
+fn do_Del(&mut self) {
+    self.add_output_token("Del", "del");
+}
+#@+node:ekr.20240417071834.49: *8* do_Dot
+fn do_Dot(&mut self) {
+    self.add_output_token("Dot", ".");
+}
+#@+node:ekr.20240417071834.50: *8* do_DoubleSlash
+fn do_DoubleSlash(&mut self) {
+    self.add_output_token("DoubleSlash", "//");
+}
+#@+node:ekr.20240417071834.51: *8* do_DoubleSlashEqual
+fn do_DoubleSlashEqual(&mut self) {
+    self.add_output_token("DoubleSlashEqual", "//=");
+}
+#@+node:ekr.20240417071834.52: *8* do_DoubleStar
+fn do_DoubleStar(&mut self) {
+    self.add_output_token("DoubleStar", "**");
+}
+#@+node:ekr.20240417071834.53: *8* do_DoubleStarEqual
+fn do_DoubleStarEqual(&mut self) {
+    self.add_output_token("DoubleStarEqual", "**=");
+}
+#@+node:ekr.20240417071834.54: *8* do_Elif
+fn do_Elif(&mut self) {
+    self.add_output_token("Elif", "elif");
+}
+#@+node:ekr.20240417071834.55: *8* do_Ellipsis
+fn do_Ellipsis(&mut self) {
+    self.add_output_token("Ellipsis", "...");
+}
+#@+node:ekr.20240417071834.56: *8* do_Else
+fn do_Else(&mut self) {
+    self.add_output_token("Else", "else");
+}
+#@+node:ekr.20240417071834.57: *8* do_EndOfFile
+fn do_EndOfFile(&mut self) {
+    self.add_output_token("EndOfFile", "EOF");
+}
+#@+node:ekr.20240417071834.58: *8* do_EqEqual
+fn do_EqEqual(&mut self) {
+    self.add_output_token("EqEqual", "==");
+}
+#@+node:ekr.20240417071834.59: *8* do_Equal
+fn do_Equal(&mut self) {
+    self.add_output_token("Equal", "=");
+}
+#@+node:ekr.20240417071834.60: *8* do_Except
+fn do_Except(&mut self) {
+    self.add_output_token("Except", "except");
+}
+#@+node:ekr.20240417071834.61: *8* do_False
+fn do_False(&mut self) {
+    self.add_output_token("False", "False");
+}
+#@+node:ekr.20240417071834.62: *8* do_Finally
+fn do_Finally(&mut self) {
+    self.add_output_token("Finally", "finally");
+}
+#@+node:ekr.20240417071834.63: *8* do_For
+fn do_For(&mut self) {
+    self.add_output_token("For", "for");
+}
+#@+node:ekr.20240417071834.64: *8* do_From
+fn do_From(&mut self) {
+    self.add_output_token("From", "from");
+}
+#@+node:ekr.20240417071834.65: *8* do_Global
+fn do_Global(&mut self) {
+    self.add_output_token("Global", "global");
+}
+#@+node:ekr.20240417071834.66: *8* do_Greater
+fn do_Greater(&mut self) {
+    self.add_output_token("Greater", ">");
+}
+#@+node:ekr.20240417071834.67: *8* do_GreaterEqual
+fn do_GreaterEqual(&mut self) {
+    self.add_output_token("GreaterEqual", ">-");
+}
+#@+node:ekr.20240417071834.68: *8* do_If
+fn do_If(&mut self) {
+    self.add_output_token("If", "if");
+}
+#@+node:ekr.20240417071834.69: *8* do_Import
+fn do_Import(&mut self) {
+    self.add_output_token("Import", "import");
+}
+#@+node:ekr.20240417071834.70: *8* do_In
+fn do_In(&mut self) {
+    self.add_output_token("In", "in");
+}
+#@+node:ekr.20240417071834.71: *8* do_Is
+fn do_Is(&mut self) {
+    self.add_output_token("Is", "is");
+}
+#@+node:ekr.20240417071834.72: *8* do_Lambda
+fn do_Lambda(&mut self) {
+    self.add_output_token("Lambda", "lambda");
+}
+#@+node:ekr.20240417071834.73: *8* do_Lbrace
+fn do_Lbrace(&mut self) {
+    self.add_output_token("Lbrace", "[");
+}
+#@+node:ekr.20240417071834.74: *8* do_LeftShift
+fn do_LeftShift(&mut self) {
+    self.add_output_token("LeftShift", "<<");
+}
+#@+node:ekr.20240417071834.75: *8* do_LeftShiftEqual
+fn do_LeftShiftEqual(&mut self) {
+    self.add_output_token("LeftShiftEqual", "<<=");
+}
+#@+node:ekr.20240417071834.76: *8* do_Less
+fn do_Less(&mut self) {
+    self.add_output_token("Less", "<");
+}
+#@+node:ekr.20240417071834.77: *8* do_LessEqual
+fn do_LessEqual(&mut self) {
+    self.add_output_token("LessEqual", "<=");
+}
+#@+node:ekr.20240417071834.78: *8* do_Lpar
+fn do_Lpar(&mut self) {
+    self.add_output_token("Lpar", "(");
+}
+#@+node:ekr.20240417071834.79: *8* do_Lsqb
+fn do_Lsqb(&mut self) {
+    self.add_output_token("Lsqb", "[");
+}
+#@+node:ekr.20240417071834.80: *8* do_Match
+fn do_Match(&mut self) {
+    self.add_output_token("Match", "match");
+}
+#@+node:ekr.20240417071834.81: *8* do_Minus
+fn do_Minus(&mut self) {
+    self.add_output_token("Minus", "-");
+}
+#@+node:ekr.20240417071834.82: *8* do_MinusEqual
+fn do_MinusEqual(&mut self) {
+    self.add_output_token("MinusEqual", "-=");
+}
+#@+node:ekr.20240417071834.83: *8* do_None
+fn do_None(&mut self) {
+    self.add_output_token("None", "None");
+}
+#@+node:ekr.20240417071834.84: *8* do_Nonlocal
+fn do_Nonlocal(&mut self) {
+    self.add_output_token("Nonlocal", "nonlocal");
+}
+#@+node:ekr.20240417071834.85: *8* do_Not
+fn do_Not(&mut self) {
+    self.add_output_token("Not", "not");
+}
+#@+node:ekr.20240417071834.86: *8* do_NotEqual
+fn do_NotEqual(&mut self) {
+    self.add_output_token("NotEqual", "!=");
+}
+#@+node:ekr.20240417071834.87: *8* do_Or
+fn do_Or(&mut self) {
+    self.add_output_token("Or", "or");
+}
+#@+node:ekr.20240417071834.88: *8* do_Pass
+fn do_Pass(&mut self) {
+    self.add_output_token("Pass", "pass");
+}
+#@+node:ekr.20240417071834.89: *8* do_Percent
+fn do_Percent(&mut self) {
+    self.add_output_token("Percent", "%");
+}
+#@+node:ekr.20240417071834.90: *8* do_PercentEqual
+fn do_PercentEqual(&mut self) {
+    self.add_output_token("PercentEqual", "%=");
+}
+#@+node:ekr.20240417071834.91: *8* do_Plus
+fn do_Plus(&mut self) {
+    self.add_output_token("Plus", "+");
+}
+#@+node:ekr.20240417071834.92: *8* do_PlusEqual
+fn do_PlusEqual(&mut self) {
+    self.add_output_token("PlusEqual", "+=");
+}
+#@+node:ekr.20240417071834.93: *8* do_Raise
+fn do_Raise(&mut self) {
+    self.add_output_token("Raise", "raise");
+}
+#@+node:ekr.20240417071834.94: *8* do_Rarrow
+fn do_Rarrow(&mut self) {
+    self.add_output_token("Rarrow", "->");
+}
+#@+node:ekr.20240417071834.95: *8* do_Rbrace
+fn do_Rbrace(&mut self) {
+    self.add_output_token("Rbrace", "]");
+}
+#@+node:ekr.20240417071834.96: *8* do_Return
+fn do_Return(&mut self) {
+    self.add_output_token("Return", "return");
+}
+#@+node:ekr.20240417071834.97: *8* do_RightShift
+fn do_RightShift(&mut self) {
+    self.add_output_token("RightShift", ">>");
+}
+#@+node:ekr.20240417071834.98: *8* do_RightShiftEqual
+fn do_RightShiftEqual(&mut self) {
+    self.add_output_token("RightShiftEqual", ">>=");
+}
+#@+node:ekr.20240417071834.99: *8* do_Rpar
+fn do_Rpar(&mut self) {
+    self.add_output_token("Rpar", ")");
+}
+#@+node:ekr.20240417071834.100: *8* do_Rsqb
+fn do_Rsqb(&mut self) {
+    self.add_output_token("Rsqb", "]");
+}
+#@+node:ekr.20240417071834.101: *8* do_Semi
+fn do_Semi(&mut self) {
+    self.add_output_token("Semi", ";");
+}
+#@+node:ekr.20240417071834.102: *8* do_Slash
+fn do_Slash(&mut self) {
+    self.add_output_token("Slash", "/");
+}
+#@+node:ekr.20240417071834.103: *8* do_SlashEqual
+fn do_SlashEqual(&mut self) {
+    self.add_output_token("SlashEqual", "/=");
+}
+#@+node:ekr.20240417071834.104: *8* do_Star
+fn do_Star(&mut self) {
+    self.add_output_token("Star", "*");
+}
+#@+node:ekr.20240417071834.105: *8* do_StarEqual
+fn do_StarEqual(&mut self) {
+    self.add_output_token("StarEqual", "*=");
+}
+#@+node:ekr.20240417071834.106: *8* do_StartExpression
+fn do_StartExpression(&mut self) {
+    // self.add_output_token("StartExpression", "");
+}
+#@+node:ekr.20240417071834.107: *8* do_StartInteractive
+fn do_StartInteractive(&mut self) {
+    // self.add_output_token("StartModule", "");
+}
+#@+node:ekr.20240417071834.108: *8* do_StarModule
+fn do_StartModule(&mut self) {
+    // self.add_output_token("StartModule", "");
+    println!("do_StartModule");
+}
+#@+node:ekr.20240417071834.109: *8* do_Tilde
+fn do_Tilde(&mut self) {
+    self.add_output_token("Tilde", "~");
+}
+#@+node:ekr.20240417071834.110: *8* do_True
+fn do_True(&mut self) {
+    self.add_output_token("True", "True");
+}
+#@+node:ekr.20240417071834.111: *8* do_Try
+fn do_Try(&mut self) {
+    self.add_output_token("Try", "try");
+}
+#@+node:ekr.20240417071834.112: *8* do_Type
+fn do_Type(&mut self) {
+    self.add_output_token("Type", "type");
+}
+#@+node:ekr.20240417071834.113: *8* do_Vbar
+fn do_Vbar(&mut self) {
+    self.add_output_token("Vbar", "|");
+}
+#@+node:ekr.20240417071834.114: *8* do_VbarEqual
+fn do_VbarEqual(&mut self) {
+    self.add_output_token("VbarEqual", "|=");
+}
+#@+node:ekr.20240417071834.115: *8* do_While
+fn do_While(&mut self) {
+    self.add_output_token("While", "while");
+}
+#@+node:ekr.20240417071834.116: *8* do_With
+fn do_With(&mut self) {
+    self.add_output_token("With", "with");
+}
+#@+node:ekr.20240417071834.117: *8* do_Yield
+fn do_Yield(&mut self) {
+    self.add_output_token("Yield", "yield");
+}
+#@+node:ekr.20240417071834.118: *6* Beautifier::enabled
+fn enabled(&self, arg: &str) -> bool {
+    //! Beautifier::enabled: return true if the given command-line argument is enabled.
+    //! Example:  x.enabled("--report");
+    return self.args.contains(&arg.to_string());
+
+}
+#@+node:ekr.20240417071834.119: *6* Beautifier::get_args
+fn get_args(&mut self) {
+    //! Beautifier::get_args: Set the args and files_list ivars.
+    let args: Vec<String> = env::args().collect();
+    let valid_args = vec![
+        "--all", 
+        "--beautified",
+        "--diff",
+        "-h", "--help",
+        "--report",
+        "--write",
+    ];
+    for (i, arg) in args.iter().enumerate() {
+        if i > 0 {
+            if valid_args.contains(&arg.as_str()) {
+                self.args.push(arg.to_string())
+            }
+            else if 
+                arg.as_str().starts_with("--") ||
+                arg.as_str().starts_with("--")
+            {
+                println!("Ignoring invalid arg: {arg}");
+            }
+            else {
+                println!("File: {arg}");
+                self.files_list.push(arg.to_string());
+            }
+        }
+    }
+}
+#@+node:ekr.20240417071834.120: *6* Beautifier::make_input_list
+fn make_input_list(&mut self, contents: &str) -> u32 {
+
+    let mut count: u32 = 0;
+    let results = lex(&contents, Mode::Module);  // An iterator yielding Option(Tok).
+    for result in results {
+        use Tok::*;
+        count += 1;
+        let token = result.ok().unwrap();
+        let (ref tok_class, tok_range) = token;
+        let tok_value = &contents[tok_range];
+
+        // Variants names are necessary, but otherwise not used.
+        #[allow(unused_variables)]
+        let class_name = match tok_class {
+            // Tokens with values...
+            // Use tok_value for *all* values.
+            Comment(value) => "Comment",  // No idea why parens are needed here.
+            Complex { real, imag } => "Complex",
+            Float { value } => "Float",
+            Int { value } => "Int",
+            Name { name } => "Name",
+            Tok::String { value, kind, triple_quoted } => "String",
+            
+            // Common tokens...
+            Class => "Class",
+            Dedent => "Dedent",
+            Def => "Def",
+            Indent => "Indent",
+            Newline => "Newline",
+            NonLogicalNewline => "NonLogicalNewline",
+
+            // All other tokens...
+            Amper => "Amper",
+            AmperEqual => "AmperEqual",
+            And => "And",
+            As => "As",
+            Assert => "Assert",
+            Async => "Async",
+            At => "At",
+            AtEqual => "AtEqual",
+            Await => "Await",
+            Break => "Break",
+            Case => "Case",
+            CircumFlex => "CircumFlex",
+            CircumflexEqual => "CircumflexEqual",
+            Colon => "Colon",
+            ColonEqual => "ColonEqual",
+            Comma => "Comma",
+            Continue => "Continue",
+            Del => "Del",
+            Dot => "Dot",
+            DoubleSlash => "DoubleSlash",
+            DoubleSlashEqual => "DoubleSlashEqual",
+            DoubleStar => "DoubleStar",
+            DoubleStarEqual => "DoubleStarEqual",
+            Elif => "Elif",
+            Ellipsis => "Ellipsis",
+            Else => "Else",
+            EndOfFile => "EndOfFile",
+            EqEqual => "EqEqual",
+            Equal => "Equal",
+            Except => "Except",
+            False => "False",
+            Finally => "Finally",
+            For => "For",
+            From => "From",
+            Global => "Global",
+            Greater => "Greater",
+            GreaterEqual => "GreaterEqual",
+            If => "If",
+            Import => "Import",
+            In => "In",
+            Is => "Is",
+            Lambda => "Lambda",
+            Lbrace => "Lbrace",
+            LeftShift => "LeftShift",
+            LeftShiftEqual => "LeftShiftEqual",
+            Less => "Less",
+            LessEqual => "LessEqual",
+            Lpar => "Lpar",
+            Lsqb => "Lsqb",
+            Match => "Match",
+            Minus => "Minus",
+            MinusEqual => "MinusEqual",
+            None => "None",
+            Nonlocal => "Nonlocal",
+            Not => "Not",
+            NotEqual => "NotEqual",
+            Or => "Or",
+            Pass => "Pass",
+            Percent => "Percent",
+            PercentEqual => "PercentEqual",
+            Plus => "Plus",
+            PlusEqual => "PlusEqual",
+            Raise => "Raise",
+            Rarrow => "Rarrow",
+            Rbrace => "Rbrace",
+            Return => "Return",
+            RightShift => "RightShift",
+            RightShiftEqual => "RightShiftEqual",
+            Rpar => "Rpar",
+            Rsqb => "Rsqb",
+            Semi => "Semi",
+            Slash => "Slash",
+            SlashEqual => "SlashEqual",
+            Star => "Star",
+            StarEqual => "StarEqual",
+            StartExpression => "StartExpression",
+            StartInteractive => "StartInteractive",
+            StartModule => "StartModule",
+            Tilde => "Tilde",
+            True => "True",
+            Try => "Try",
+            Type => "Type",
+            Vbar => "Vbar",
+            VbarEqual => "VbarEqual",
+            While => "While",
+            With => "With",
+            Yield => "Yield",
+        };
+        self.add_input_token(class_name, tok_value);
+    }
+    return count;
+}
+#@+node:ekr.20240417071834.121: *6* Beautifier::make_output_list
+fn make_output_list(&mut self) {
+
+    //// let mut lws = String::new();
+
+    // for input_token in self.input_list.iter() {
+    for input_token in &self.input_list.clone() {
+        // println!("{:?}", input_token);
+        self.make_output_token(input_token);
+    }
+}
+#@+node:ekr.20240417071834.122: *6* Beautifier::make_output_token
+fn make_output_token(&mut self, input_token: &InputTok) {
+    self.add_output_token (input_token.kind.as_str(), input_token.value.as_str());
+}
+#@+node:ekr.20240417071834.123: *6* Beautifier::new
+pub fn new() -> Beautifier {
+    let mut x = Beautifier {
+        args: Vec::new(),
+        files_list: Vec::new(),
+        input_list: Vec::new(),
+        output_list: Vec::new(),
+    };
+    x.get_args();
+    return x;
+}
+#@+node:ekr.20240417071834.124: *6* Beautifier::show_args
+fn show_args (&self) {
+    println!("Command-line arguments...");
+    for (i, arg) in self.args.iter().enumerate() {
+        if i > 0 {
+            println!("  {arg}");
+        }
+    }
+    for file_arg in self.files_list.iter() {
+        println!("  {file_arg}");
+    }
+}
+#@+node:ekr.20240417071834.125: *6* Beautifier::show_help
+fn show_help (&self) {
+    //! Beautifier::show_help: print the help messages.
+    println!("{}", textwrap::dedent("
+        Beautify or diff files.
+
+        -h --help:      Print this help message and exit.
+        --all:          Beautify all files, even unchanged files.
+        --beautified:   Report beautified files individually, even if not written.
+        --diff:         Show diffs instead of changing files.
+        --report:       Print summary report.
+        --write:        Write beautifed files (dry-run mode otherwise).
+    "));
+}
+#@+node:ekr.20240417071834.126: *6* Beautifier::show_output_list
+fn show_output_list (&self) {
+    println!("\nOutput tokens...");
+    for (i, arg) in self.output_list.iter().enumerate() {
+        if i > 0 {
+            print!("{:?}", arg);
+        }
+    }
+}
+#@+node:ekr.20240417071834.127: *6* Beautifier::tokenize_contents
+fn tokenize_contents(&mut self, contents: String ) -> u32 {
+
+    let count = self.make_input_list(&contents);
+    self.make_output_list();
+    return count;
+}
+#@+node:ekr.20240417071834.128: *5* class InputTok
+// Only Clone is valid for String.
+#[derive(Clone)]
+struct InputTok {
+    kind: String,
+    value: String,
+}
+
+impl fmt::Debug for InputTok {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let kind_s = format!("{:?}", self.kind);
+        let mut value = self.value.to_string();
+        if true {
+            return write!(f, "{value} ");
+        }
+        else {  // Debug format.
+            value.truncate(60);
+            // repr format is not useful.
+            // let value_s = format!("{:?}", value);
+            let value_s = format!("{}", value);
+            return write!(f, "InputTok: {kind_s:>10}: {value_s}");
+        }
+    }
+}
+#@+node:ekr.20240417071834.129: *5* class OutputTok
+struct OutputTok {
+    kind: String,
+    value: String,
+}
+
+impl fmt::Debug for OutputTok {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let kind_s = format!("{:?}", self.kind);
+        let mut value = self.value.to_string();
+        if true {
+            return write!(f, "{value} ");
+        }
+        else {  // Debug format.
+            value.truncate(60);
+            // repr format is not useful.
+            // let value_s = format!("{:?}", value);
+            let value_s = format!("{}", value);
+            return write!(f, "OutputTok: {kind_s:>10}: {value_s}");
+        }
+    }
+}
+#@+node:ekr.20240417071834.130: *4* pub fn entry & helpers
+pub fn entry() {
+
+    if false {
+        tokenize();
+        return;
+    }
+    // Main line of beautifier.
+    let mut x = Beautifier::new();
+    if x.enabled("--help") || x.enabled("-h") {
+        x.show_help();
+        return;
+    }
+    x.show_args();
+    x.beautify_all_files();
+}
+#@+node:ekr.20240417071834.131: *5* fn tokenize
+fn tokenize() {
+    << tokenize: define contents >>
+    println!("fn tokenize");
+    println!("\nSource:\n{contents}");
+
+    for debug in [true, false].iter() {
+
+        println!("{}", if *debug {"Tokens..."} else {"\nBeautified:"});
+
+        let results = lex(contents, Mode::Module);  // An iterator yielding Option(Tok).
+        let mut count = 0;
+        let mut lws = String::new();
+        for (i, result) in results.enumerate() {
+            use Tok::*;
+            let token = result.ok().unwrap();
+            let (ref tok_class, tok_range) = token;
+            let tok_value = &contents[tok_range];
+
+            if *debug {
+                let s = format!("{tok_class}");
+                print!("\nToken: {s:20} {:?}", tok_value);
+            }
+            else {
+                // Comment(value), Name(name)
+                #[allow(unused_variables)]
+                match tok_class {
+                    Comment(value) => {
+                        // print!("{value} ");  // Wrong!
+                        print!("{tok_value}");
+                    },
+                    Dedent => {
+                        lws.pop();
+                        lws.pop();
+                        print!("{lws}");
+                    },
+                    Def => {
+                        print!("{tok_value} ");
+                    },
+                    Indent => {
+                        lws.push_str("    ");
+                        print!("{lws}");
+                    },
+                    Name {name} => {
+                        print!("{tok_value} ");
+                    },
+                    Newline => {
+                        print!("{tok_value}");
+                        print!("{lws}");
+                        if false {  // old
+                            println!("");
+                            print!("{lws}");
+                        }
+                    },
+                    NonLogicalNewline => {
+                        println!("");
+                        print!("{lws}");
+                    },
+                    Return => {
+                        print!("{tok_value} ");
+                    },
+                    Tok::String {value, kind, triple_quoted} => {
+                        // correct.
+                        print!("{tok_value}");
+                        if false {  // incorrect.
+                            let quote = if *triple_quoted {"'''"} else {"'"};
+                            print!("{:?}:{quote}{value}{quote}", kind);
+                        }
+                    },
+                    _ => {
+                        print!("{tok_value}");
+                        if false {
+                            // to_string quotes values!
+                            let s = tok_class.to_string().replace("'", "");
+                            print!("{s}");
+                        }
+                    },
+                }
+            }
+            count = i
+        }
+        if *debug {
+            println!("\n{count} tokens")
+        }
+    }
+}
+#@+node:ekr.20240417071834.132: *6* << tokenize: define contents >>
+let contents = r#"
+def test():
+# Comment 1.
+print('abc')
+# Comment 2.
+"#;
+
+// print("xyz")
+// print(rf'pdb')
+// print(fr'pdb2')
+// return bool(i & 1)
+#@+node:ekr.20240417071834.133: *4* fn print_type & type_of
+#[allow(dead_code)]
+fn print_type<T>(_: &T, tag: &str) {
+    println!("{tag} type: {}", std::any::type_name::<T>())
+}
 #@-all
 #@@nosearch
 #@-leo
