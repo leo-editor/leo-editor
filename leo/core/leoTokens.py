@@ -243,7 +243,7 @@ def orange_command(
     t2 = time.process_time()
     if n_beautified or settings.get('report'):
         print(
-            f"tbo: {t2-t1:3.1f} sec. "
+            f"tbo: {t2-t1:4.2f} sec. "
             f"dirty: {len(dirty_files):<3} "
             f"checked: {len(to_be_checked_files):<3} "
             f"beautified: {n_beautified:<3} in {','.join(arg_files)}"
