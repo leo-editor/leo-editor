@@ -722,7 +722,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Dump the given range of input tokens."""
         if tag:
             print(tag)
-        for token in self.tokens[i1 : i2 + 1]:
+        for token in self.input_tokens[i1 : i2 + 1]:
             print(token.dump())
     #@+node:ekr.20240112082350.1: *5* tbo.internal_error_message
     def internal_error_message(self, message: str) -> str:  # pragma: no cover
@@ -1172,7 +1172,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         val = self.input_token.value
         context = self.input_token.context
         prev_i = self.prev(self.index)
-        prev = None if prev_i is None else self.tokens[prev_i]
+        prev = None if prev_i is None else self.input_tokens[prev_i]
 
         # Generate the proper code using the context supplied by the parser.
         ### self.clean('blank')
@@ -1202,7 +1202,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             # # Now calculate prev & next.
             # prev = self.code_list[-1]
             # next_i = self.next(self.index)
-            # next = 'None' if next_i is None else self.tokens[next_i]
+            # next = 'None' if next_i is None else self.input_tokens[next_i]
             # import_is_next = next and next.kind == 'name' and next.value == 'import'
 
             # if context == 'import':
@@ -1293,7 +1293,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False
         # Get the previous significant token.
         prev_i = self.prev(i)
-        prev_token = None if prev_i is None else self.tokens[prev_i]
+        prev_token = None if prev_i is None else self.input_tokens[prev_i]
         kind = prev_token.kind if prev_token else ''
         value = prev_token.value if prev_token else ''
         if kind in ('number', 'string'):
@@ -1452,7 +1452,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         in_import = False
         scan_stack: list[ScanState] = []
         prev_token: Optional[InputToken] = None
-        for i, token in enumerate(self.tokens):
+        for i, token in enumerate(self.input_tokens):
             kind, value = token.kind, token.value
             if kind in 'newline':
                 #@+<< pre-scan 'newline' tokens >>
@@ -1543,7 +1543,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Compute the context for each *separate* '=' token.
         equal_context = 'initializer'
         for i in values:
-            token = self.tokens[i]
+            token = self.input_tokens[i]
             assert token.kind == 'op', repr(token)
             if token.value == ',':
                 equal_context = 'initializer'
@@ -1556,7 +1556,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Set the context of all outer-level ':', '*', and '**' tokens.
         prev: Optional[InputToken] = None
         for i in range(i1, end):
-            token = self.tokens[i]
+            token = self.input_tokens[i]
             if token.kind not in self.insignificant_kinds:
                 if token.kind == 'op':
                     if token.value in ('*', '**'):
@@ -1590,7 +1590,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         inter_colon_tokens = 0
         prev = token
         for i in range(i1 + 1, end - 1):
-            token = self.tokens[i]
+            token = self.input_tokens[i]
             kind, value = token.kind, token.value
             if kind not in self.insignificant_kinds:
                 if kind == 'op':
@@ -1706,8 +1706,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         trace = False  # Do not remove
         i += 1
-        while i < len(self.tokens):
-            token = self.tokens[i]
+        while i < len(self.input_tokens):
+            token = self.input_tokens[i]
             if self.is_significant_token(token):
                 if trace:  # pragma: no cover
                     print(f"token: {token.brief_dump()}")
@@ -1723,7 +1723,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         i -= 1
         while i >= 0:
-            token = self.tokens[i]
+            token = self.input_tokens[i]
             if self.is_significant_token(token):
                 return i
             i -= 1
@@ -1731,7 +1731,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
         """
-        Set self.tokens[i].context, but only if it does not already exist!
+        Set self.input_tokens[i].context, but only if it does not already exist!
 
         See the docstring for pre_scan for details.
         """
@@ -1745,7 +1745,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if context not in valid_contexts:
             self.oops(f"Unexpected context! {context!r}")  # pragma: no cover
 
-        token = self.tokens[i]
+        token = self.input_tokens[i]
 
         if trace:  # pragma: no cover
             token_s = f"<{token.kind}: {token.show_val(12)}>"

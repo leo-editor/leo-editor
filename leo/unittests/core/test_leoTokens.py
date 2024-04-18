@@ -61,7 +61,7 @@ class BaseTest(unittest.TestCase):
 
         orange = TokenBasedOrange()
         result_s = orange.beautify(contents, filename, tokens)
-        self.code_list = orange.code_list
+        self.output_list = orange.output_list
         return result_s
     #@+node:ekr.20240105153420.4: *3* BaseTest.check_roundtrip
     def check_roundtrip(self, contents, *, debug_list: list[str] = None):
