@@ -648,11 +648,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         'all', 'beautified', 'diff', 'report', 'write',
 
         # Global data.
-        'output_list', 'contents', 'filename', 'tab_width', 'tokens',
+        'contents', 'filename', 'input_tokens', 'output_list', 'tab_width',
 
         # Token-related data for visitors.
-        'index', 'line_number', 'token',
-        'prev_output_kind',  # New.
+        'index', 'input_token', 'line_number',
+        'pending_ws', 'prev_output_kind',  # New.
 
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part', 'state_stack', 'verbatim',
@@ -692,7 +692,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.tab_width = 4
 
         # Define tokens even for empty files.
-        self.tokens: list[InputToken] = []
+        self.input_tokens: list[InputToken] = []
+        self.pending_ws: str = ""
         self.prev_output_kind: str = None
 
         # Set ivars from the settings dict *without* using setattr.
@@ -727,7 +728,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def internal_error_message(self, message: str) -> str:  # pragma: no cover
         """Print a message about an error in the beautifier itself."""
         # Compute lines_s.
-        line_number = self.token.line_number
+        line_number = self.input_token.line_number
         lines = g_split_lines(self.contents)
         n1 = max(0, line_number - 5)
         n2 = min(line_number + 5, len(lines))
@@ -751,7 +752,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def user_error_message(self, message: str) -> str:  # pragma: no cover
         """Print a message about a user error."""
         # Compute lines_s.
-        line_number = self.token.line_number
+        line_number = self.input_token.line_number
         lines = g_split_lines(self.contents)
         n1 = max(0, line_number - 5)
         n2 = min(line_number + 5, len(lines))
@@ -775,10 +776,10 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def no_visitor(self) -> None:  # pragma: no cover
-        self.oops(f"Unknown kind: {self.token.kind!r}")
+        self.oops(f"Unknown kind: {self.input_token.kind!r}")
 
     def beautify(self,
-        contents: str, filename: str, tokens: list[InputToken],
+        contents: str, filename: str, input_tokens: list[InputToken],
     ) -> str:
         """
         The main line. Create output tokens and return the result as a string.
@@ -794,7 +795,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # The input and output lists...
         self.output_list: list[str] = []
-        self.tokens = tokens  # The list of input tokens.
+        self.input_tokens = input_tokens  # The list of input tokens.
 
         # State vars for whitespace.
         self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
@@ -819,22 +820,25 @@ class TokenBasedOrange:  # Orange is the new Black.
         try:
             # Pre-scan the token list, setting context.s
             self.pre_scan()
-
-            # The main loop:
+            
+            # Init ivars for the main loop.
             self.gen_token('file-start', '')
             self.push_state('file-start')
-            prev_line_number: int = 0
+            self.pending_ws = ""
             self.prev_output_kind = None
-            self.token: InputToken
-            for self.index, self.token in enumerate(tokens):
+            self.input_token: InputToken
+        
+            # The main loop:
+            prev_line_number: int = 0
+            for self.index, self.input_token in enumerate(input_tokens):
                 # Set global for visitors.
-                if prev_line_number != self.token.line_number:
-                    prev_line_number = self.token.line_number
+                if prev_line_number != self.input_token.line_number:
+                    prev_line_number = self.input_token.line_number
                 # Call the proper visitor.
                 if self.verbatim:
                     self.do_verbatim()
                 else:
-                    func = getattr(self, f"do_{self.token.kind}", self.no_visitor)
+                    func = getattr(self, f"do_{self.input_token.kind}", self.no_visitor)
                     func()
 
             # Return the result.
@@ -901,10 +905,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.filename = filename
         contents = g_read_file(filename)
         if not contents:
-            self.tokens = []
+            self.input_tokens = []
             return '', []
-        self.tokens = tokens = Tokenizer().make_input_tokens(contents)
-        return contents, tokens
+        self.input_tokens = input_tokens = Tokenizer().make_input_tokens(contents)
+        return contents, input_tokens
     #@+node:ekr.20240105140814.17: *5* tbo.write_file
     def write_file(self, filename: str, s: str) -> None:  # pragma: no cover
         """
@@ -941,7 +945,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.10: *5* tbo.do_comment
     def do_comment(self) -> None:
         """Handle a comment token."""
-        val = self.token.value
+        val = self.input_token.value
         #
         # Leo-specific code...
         if self.node_pat.match(val):
@@ -971,12 +975,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         #
         # General code: Generate the comment.
         ### self.clean('blank')
-        entire_line = self.token.line.lstrip().startswith('#')
+        entire_line = self.input_token.line.lstrip().startswith('#')
         if entire_line:
             ### self.clean('hard-blank')
             ### self.clean('line-indent')
             # #1496: No further munging needed.
-            val = self.token.line.rstrip()
+            val = self.input_token.line.rstrip()
             # #3056: Insure one space after '#' in non-sentinel comments.
             #        Do not change bang lines or '##' comments.
             if m := self.comment_pat.match(val):
@@ -1011,16 +1015,16 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Handle indent token."""
 
         # Refuse to beautify mal-formed files.
-        if '\t' in self.token.value:  # pragma: no cover
+        if '\t' in self.input_token.value:  # pragma: no cover
             raise IndentationError(self.user_error_message(
                 f"Leading tabs found: {self.consider_message}"))
 
-        if (len(self.token.value) % self.tab_width) != 0:  # pragma: no cover
+        if (len(self.input_token.value) % self.tab_width) != 0:  # pragma: no cover
             raise IndentationError(self.user_error_message(
                 f"Indentation error! {self.consider_message}"))
 
         # Handle the token!
-        new_indent = self.token.value
+        new_indent = self.input_token.value
         old_indent = self.indent_level * self.tab_width * ' '
         if new_indent > old_indent:
             self.indent_level += 1
@@ -1031,7 +1035,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators
     def do_name(self) -> None:
         """Handle a name token."""
-        name = self.token.value
+        name = self.input_token.value
         if name in self.operator_keywords:
             self.gen_word_op(name)
         else:
@@ -1041,7 +1045,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.40: *6* tbo.gen_word
     def gen_word(self, s: str) -> None:
         """Add a word request to the code list."""
-        assert s == self.token.value
+        assert s == self.input_token.value
         assert s and isinstance(s, str), repr(s)
         self.gen_blank()
         self.gen_token('word', s)
@@ -1049,7 +1053,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240107141830.1: *6* tbo.gen_word_op
     def gen_word_op(self, s: str) -> None:
         """Add a word-op request to the code list."""
-        assert s == self.token.value
+        assert s == self.input_token.value
         assert s and isinstance(s, str), repr(s)
         self.gen_blank()
         self.gen_token('word-op', s)
@@ -1064,7 +1068,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         NEWLINE tokens end *logical* lines of Python code.
         """
         # Only do_newline and do_nl should call this method.
-        token = self.token
+        token = self.input_token
         if token.kind not in ('newline', 'nl'):  # pragma: no cover
             self.oops(f"Unexpected newline token: {token!r}")
 
@@ -1089,7 +1093,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Add a line-end request to the code list."""
 
         # This may be called from do_name as well as do_newline and do_nl.
-        token = self.token
+        token = self.input_token
         if token.kind not in ('newline', 'nl'):
             self.oops(f"Unexpected newline token: {token!r}")  # pragma: no cover
 
@@ -1109,11 +1113,11 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_number(self) -> None:
         """Handle a number token."""
         self.gen_blank()
-        self.gen_token('number', self.token.value)
+        self.gen_token('number', self.input_token.value)
     #@+node:ekr.20240105145241.19: *5* tbo.do_op & generators
     def do_op(self) -> None:
         """Handle an op token."""
-        val = self.token.value
+        val = self.input_token.value
         if val == '.':
             self.gen_dot_op()
         elif val == '@':
@@ -1156,8 +1160,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.31: *6* tbo.gen_colon & helper
     def gen_colon(self) -> None:
         """Handle a colon."""
-        val = self.token.value
-        context = self.token.context
+        val = self.input_token.value
+        context = self.input_token.context
         prev_i = self.prev(self.index)
         prev = None if prev_i is None else self.tokens[prev_i]
 
@@ -1181,7 +1185,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Handle the '.' input token."""
         ### To do.
         
-            # context = self.token.context
+            # context = self.input_token.context
 
             # # Remove previous 'blank' token *before* calculating prev.
             # self.clean('blank')
@@ -1205,8 +1209,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.20: *6* tbo.gen_equal_op
     def gen_equal_op(self) -> None:
 
-        val = self.token.value
-        context = self.token.context
+        val = self.input_token.value
+        context = self.input_token.context
 
         if context == 'initializer':
             # Pep 8: Don't use spaces around the = sign when used to indicate
@@ -1222,7 +1226,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.35: *6* tbo.gen_lt
     def gen_lt(self) -> None:
         """Generate code for a left paren or curly/square bracket."""
-        val = self.token.value
+        val = self.input_token.value
         assert val in '([{', repr(val)
         if val == '(':
             self.paren_level += 1
@@ -1236,7 +1240,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         
             # prev = self.code_list[-1]
 
-            # if self.token.context == 'import':
+            # if self.input_token.context == 'import':
                 # self.gen_blank()
                 # self.gen_token('lt', val)
             # elif prev.kind in ('op', 'word-op'):
@@ -1257,7 +1261,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Add a unary or binary op to the token list."""
         
         ### To do.
-            # val = self.token.value
+            # val = self.input_token.value
             # ### self.clean('blank')
             # if self.is_unary_op(self.index, val):
                 # prev = self.code_list[-1]
@@ -1299,7 +1303,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.36: *6* tbo.gen_rt
     def gen_rt(self) -> None:
         """Generate code for a right paren or curly/square bracket."""
-        val = self.token.value
+        val = self.input_token.value
         assert val in ')]}', repr(val)
         if val == ')':
             self.paren_level -= 1
@@ -1313,8 +1317,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.38: *6* tbo.gen_star_op
     def gen_star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
-        val = self.token.value
-        context = self.token.context
+        val = self.input_token.value
+        context = self.input_token.context
 
         ### self.clean('blank')
         if context == 'arg':
@@ -1327,8 +1331,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.39: *6* tbo.gen_star_star_op
     def gen_star_star_op(self) -> None:
         """Put a ** operator, with a special case for **kwargs."""
-        val = self.token.value
-        context = self.token.context
+        val = self.input_token.value
+        context = self.input_token.context
 
         ### self.clean('blank')
         if context == 'arg':
@@ -1351,7 +1355,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         The Tokenizer converts all f-string tokens to a single 'string' token.
         """
         # Careful: continued strings may contain '\r'
-        val = self.regularize_newlines(self.token.value)
+        val = self.regularize_newlines(self.input_token.value)
         self.gen_token('string', val)
         self.gen_blank()
     #@+node:ekr.20240105145241.22: *5* tbo.do_verbatim
@@ -1360,10 +1364,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         Handle one token in verbatim mode.
         End verbatim mode when the appropriate comment is seen.
         """
-        kind = self.token.kind
+        kind = self.input_token.kind
         #
         # Careful: tokens may contain '\r'
-        val = self.regularize_newlines(self.token.value)
+        val = self.regularize_newlines(self.input_token.value)
         if kind == 'comment':
             if self.beautify_pat.match(val):
                 self.verbatim = False
