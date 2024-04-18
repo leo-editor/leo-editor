@@ -560,43 +560,6 @@ class Tokenizer:
             return ''
         return ''.join([z.to_string() for z in tokens])
     #@-others
-#@+node:ekr.20240105140814.106: *3* class OutputToken
-class OutputToken:
-    """
-    A class representing an Orange output token.
-    """
-
-    __slots__ = ('index', 'kind', 'value')
-
-
-    def __init__(self, kind: str, value: str, index: int):
-        self.index = index
-        self.kind = kind
-        self.value = value
-
-    def __repr__(self) -> str:  # pragma: no cover
-        return f"OutputToken: {self.show_val(20)}"
-
-    def __str__(self) -> str:  # pragma: no cover
-        return f"OutputToken: {self.show_val(20)}"
-
-    def to_string(self) -> str:
-        """Return the contribution of the token to the source file."""
-        return self.value if isinstance(self.value, str) else ''
-
-    #@+others
-    #@+node:ekr.20240105140814.107: *4* otoken.show_val
-    def show_val(self, truncate_n: int) -> str:  # pragma: no cover
-        """Return the token.value field."""
-        if self.kind in ('ws', 'indent'):
-            val = str(len(self.value))
-        elif self.kind == 'string' or self.kind.startswith('fstring'):
-            # repr would be confusing.
-            val = g_truncate(self.value, truncate_n)
-        else:
-            val = g_truncate(repr(self.value), truncate_n)
-        return val
-    #@-others
 #@+node:ekr.20240105140814.108: *3* class ParseState
 class ParseState:
     """
