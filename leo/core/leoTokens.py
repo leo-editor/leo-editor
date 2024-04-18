@@ -1200,19 +1200,13 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         context = self.input_token.context
 
-        # Remove previous 'blank' token *before* calculating prev.
-        ### self.clean('blank')
-        ### self.pending_ws = ''
-
-        # Now calculate prev & next.
-        ### prev = self.code_list[-1]
-        
         prev = self.input_token
         next_i = self.next(self.index)
         next = 'None' if next_i is None else self.input_tokens[next_i]
         import_is_next = next and next.kind == 'name' and next.value == 'import'
 
         if context == 'import':
+            g.trace('import context')
             if prev.kind == 'word' and prev.value in ('from', 'import'):
                 self.gen_blank()
             if import_is_next:
@@ -1240,7 +1234,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240105145241.35: *6* tbo.gen_lt (passes)
+    #@+node:ekr.20240105145241.35: *6* tbo.gen_lt
     def gen_lt(self) -> None:
         """Generate code for a left paren or curly/square bracket."""
         val = self.input_token.value
@@ -1252,7 +1246,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.curly_brackets_level += 1
             
-        ### g.trace('val', val, self.prev_output_kind, self.prev_output_value)
+        ###
+        # g.trace(
+            # 'context', self.input_token.context,
+            # 'val', val, self.prev_output_kind, self.prev_output_value)
         
         if self.input_token.context == 'import':
             self.gen_blank()
@@ -1271,6 +1268,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.gen_blank()
             elif val == '(':
                 self.in_arg_list += 1
+                self.pending_ws = ''  ### New, correct.
+            else:
                 self.pending_ws = ''  ### New, correct.
             self.gen_token('lt', val)
         else:

@@ -619,6 +619,9 @@ class TestTokenBasedOrange(BaseTest):
 
         # Except where noted, all entries are expected values...
         table = (
+            ### Duplicate entry to fail first.
+            """f(a[1 + 2])""",
+        
             # Assignments...
             """a = b * c""",
             """a = b + c""",
