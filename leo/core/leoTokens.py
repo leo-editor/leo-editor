@@ -909,6 +909,10 @@ class TokenBasedOrange:  # Orange is the new Black.
             return '', []
         self.input_tokens = input_tokens = Tokenizer().make_input_tokens(contents)
         return contents, input_tokens
+    #@+node:ekr.20240105140814.12: *5* tbo.regularize_newlines
+    def regularize_newlines(self, s: str) -> str:
+        """Regularize newlines within s."""
+        return s.replace('\r\n', '\n').replace('\r', '\n')
     #@+node:ekr.20240105140814.17: *5* tbo.write_file
     def write_file(self, filename: str, s: str) -> None:  # pragma: no cover
         """
@@ -972,13 +976,14 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.in_doc_part = True
             if self.end_doc_pat.match(val):
                 self.in_doc_part = False
-        #
+
         # General code: Generate the comment.
         ### self.clean('blank')
         entire_line = self.input_token.line.lstrip().startswith('#')
         if entire_line:
             ### self.clean('hard-blank')
             ### self.clean('line-indent')
+
             # #1496: No further munging needed.
             val = self.input_token.line.rstrip()
             # #3056: Insure one space after '#' in non-sentinel comments.
@@ -1033,6 +1038,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.lws = new_indent
         self.gen_line_indent()
     #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators
+    #@+node:ekr.20240418050017.1: *6* tbo.do_name
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.input_token.value
@@ -1040,8 +1046,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_word_op(name)
         else:
             self.gen_word(name)
-
-
     #@+node:ekr.20240105145241.40: *6* tbo.gen_word
     def gen_word(self, s: str) -> None:
         """Add a word request to the code list."""
@@ -1059,6 +1063,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.gen_token('word-op', s)
         self.gen_blank()
     #@+node:ekr.20240105145241.17: *5* tbo.do_newline, do_nl & generators
+    #@+node:ekr.20240418043826.1: *6* tbo.do_newlines
     def do_newline(self) -> None:
         """
         do_newline: Handle a regular newline.
@@ -1077,7 +1082,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Add the indentation until the next indent/unindent token.
         self.gen_line_indent()
-
+    #@+node:ekr.20240418043827.1: *6* tbo.do_nl
     def do_nl(self) -> None:
         """
         do_nl: Handle a continuation line.
@@ -1088,8 +1093,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         code spans multiple physical lines.
         """
         return self.do_newline()
-    #@+node:ekr.20240105145241.25: *6* tbo.gen_line_end
-    def gen_line_end(self) -> None: ### OutputToken:
+    #@+node:ekr.20240105145241.25: *6* tbo.gen_line_end (test)
+    def gen_line_end(self) -> None:
         """Add a line-end request to the code list."""
 
         # This may be called from do_name as well as do_newline and do_nl.
@@ -1099,22 +1104,26 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         ### self.clean('blank')  # Important!
         ### self.clean('line-indent')
-        
-        ### Legacy
-            # t = self.gen_token('line-end', '\n')
-            # return t
-        self.gen_token('line-end', '\n')
-    #@+node:ekr.20240105145241.33: *6* tbo.gen_line_indent
+        ### self.gen_token('line-end', '\n')
+
+        self.output_list.append('\n')
+        self.pending_ws = ""
+    #@+node:ekr.20240105145241.33: *6* tbo.gen_line_indent (test)
     def gen_line_indent(self) -> None:
         """Add a line-indent token."""
         ### self.clean('line-indent')  # Defensive. Should never happen.
-        self.gen_token('line-indent', self.lws)
+        ### self.gen_token('line-indent', self.lws)
+        if self.lws:
+            self.output_list.append(self.lws)
+        self.pending_ws = ' '
+        self.prev_output_kind = 'line-indent'
     #@+node:ekr.20240105145241.18: *5* tbo.do_number
     def do_number(self) -> None:
         """Handle a number token."""
         self.gen_blank()
         self.gen_token('number', self.input_token.value)
     #@+node:ekr.20240105145241.19: *5* tbo.do_op & generators
+    #@+node:ekr.20240418045924.1: *6* tbo.do_op
     def do_op(self) -> None:
         """Handle an op token."""
         val = self.input_token.value
@@ -1381,13 +1390,22 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.indent_level -= 1
             self.lws = self.indent_level * self.tab_width * ' '
         self.gen_token('verbatim', val)
-    #@+node:ekr.20240105145241.27: *5* tbo.gen_blank
+    #@+node:ekr.20240105145241.27: *5* tbo.gen_blank (test: uses prev_output_kind)
     def gen_blank(self) -> None:
-        """Add a blank request to the code list."""
+        """
+        Queue a *request* for a blank.
+        Do *not* change prev_output_kind.
+        """
+
         ### prev = self.code_list[-1]
         ### if prev.kind not in (
+
+        if self.pending_ws:
+            # There is already a pending request.
+            return
+
         if self.prev_output_kind not in (
-            'blank',
+            ### 'blank',
             # 'blank-lines',  # black only: Request for n blank lines.
             'file-start',
             'hard-blank',
@@ -1397,22 +1415,22 @@ class TokenBasedOrange:  # Orange is the new Black.
             'op-no-blanks',  # A demand that no blank follows this op.
             'unary-op',
         ):
-            self.gen_token('blank', ' ')
-    #@+node:ekr.20240105145241.26: *5* tbo.gen_token
-    def gen_token(self, kind: str, value: Any) -> None:  ### OutputToken:
+            ### self.gen_token('blank', ' ')
+            return
+            
+        # Ask for a blank.
+        self.pending_ws = ' '
+    #@+node:ekr.20240105145241.26: *5* tbo.gen_token (test)
+    def gen_token(self, kind: str, value: Any) -> None:
         """Add an output token to the code list."""
+
         ### Legacy:
             # tok = OutputToken(kind, value, len(self.code_list))
             # self.code_list.append(tok)
-            
-        ### To do: generate whitespace only as needed.
-        self.output_list = value
+
+        assert kind != 'blank'
+        self.output_list.append(value)
         self.prev_output_kind = kind
-        ### return tok
-    #@+node:ekr.20240105140814.12: *5* tbo.regularize_newlines
-    def regularize_newlines(self, s: str) -> str:
-        """Regularize newlines within s."""
-        return s.replace('\r\n', '\n').replace('\r', '\n')
     #@+node:ekr.20240110205127.1: *4* tbo: Scanning
     # The parser calls scanner methods to move through the list of input tokens.
     #@+node:ekr.20240128114622.1: *5* tbo.pre_scan & helpers
