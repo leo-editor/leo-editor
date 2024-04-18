@@ -43,6 +43,10 @@ from typing import Any, Generator, Optional, Union
 Settings = dict[str, Union[int, bool]]
 #@-<< leoTokens.py: imports & annotations >>
 
+### For testing only.
+from leo.core import leoGlobals as g  ###
+assert g
+
 #@+others
 #@+node:ekr.20240214065940.1: ** top-level functions (leoTokens.py)
 #@+node:ekr.20240105140814.41: *3* function: dump_contents
@@ -652,7 +656,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Token-related data for visitors.
         'index', 'input_token', 'line_number',
-        'pending_ws', 'prev_output_kind',  # New.
+        'pending_ws', 'prev_output_kind', 'prev_output_value', # New.
 
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part', 'state_stack', 'verbatim',
@@ -692,9 +696,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.tab_width = 4
 
         # Define tokens even for empty files.
+        self.input_token: InputToken = None
         self.input_tokens: list[InputToken] = []
         self.pending_ws: str = ""
         self.prev_output_kind: str = None
+        self.prev_output_value: str = None
 
         # Set ivars from the settings dict *without* using setattr.
         self.all = settings.get('all', False)
@@ -820,14 +826,16 @@ class TokenBasedOrange:  # Orange is the new Black.
         try:
             # Pre-scan the token list, setting context.s
             self.pre_scan()
-            
-            # Init ivars for the main loop.
+
+            # Init ivars first.
+            self.prev_output_kind = None
+            self.pending_ws = ""
+            self.input_token = None
+
+            # Init state.
             self.gen_token('file-start', '')
             self.push_state('file-start')
-            self.pending_ws = ""
-            self.prev_output_kind = None
-            self.input_token: InputToken
-        
+
             # The main loop:
             prev_line_number: int = 0
             for self.index, self.input_token in enumerate(input_tokens):
@@ -979,10 +987,12 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # General code: Generate the comment.
         ### self.clean('blank')
+        self.pending_ws = ''
         entire_line = self.input_token.line.lstrip().startswith('#')
         if entire_line:
             ### self.clean('hard-blank')
             ### self.clean('line-indent')
+            self.pending_ws = ''
 
             # #1496: No further munging needed.
             val = self.input_token.line.rstrip()
@@ -994,6 +1004,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             # Exactly two spaces before trailing comments.
             val = '  ' + val.rstrip()
+        g.trace(f"{entire_line} {val!r}")
         self.gen_token('comment', val)
     #@+node:ekr.20240111051726.1: *5* tbo.do_dedent
     def do_dedent(self) -> None:
@@ -1051,6 +1062,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Add a word request to the code list."""
         assert s == self.input_token.value
         assert s and isinstance(s, str), repr(s)
+        g.trace(s)  ###
         self.gen_blank()
         self.gen_token('word', s)
         self.gen_blank()
@@ -1063,7 +1075,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.gen_token('word-op', s)
         self.gen_blank()
     #@+node:ekr.20240105145241.17: *5* tbo.do_newline, do_nl & generators
-    #@+node:ekr.20240418043826.1: *6* tbo.do_newlines
+    #@+node:ekr.20240418043826.1: *6* tbo.do_newline
     def do_newline(self) -> None:
         """
         do_newline: Handle a regular newline.
@@ -1108,14 +1120,19 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         self.output_list.append('\n')
         self.pending_ws = ""
-    #@+node:ekr.20240105145241.33: *6* tbo.gen_line_indent (test)
+    #@+node:ekr.20240105145241.33: *6* tbo.gen_line_indent (test: sets prev_output_kind)
     def gen_line_indent(self) -> None:
         """Add a line-indent token."""
         ### self.clean('line-indent')  # Defensive. Should never happen.
         ### self.gen_token('line-indent', self.lws)
-        if self.lws:
-            self.output_list.append(self.lws)
-        self.pending_ws = ' '
+        
+        ### Wrong.
+            # if self.lws:
+                # self.output_list.append(self.lws)
+            # self.pending_ws = ' '
+
+        g.trace('pending lws:', repr(self.lws), g.callers(1))
+        self.pending_ws = self.lws
         self.prev_output_kind = 'line-indent'
     #@+node:ekr.20240105145241.18: *5* tbo.do_number
     def do_number(self) -> None:
@@ -1131,6 +1148,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_dot_op()
         elif val == '@':
             ### self.clean('blank')
+            self.pending_ws = ''
             self.gen_token('op-no-blanks', val)
             self.push_state('decorator')
         elif val == ':':
@@ -1140,6 +1158,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Pep 8: Avoid extraneous whitespace immediately before
             # comma, semicolon, or colon.
             ### self.clean('blank')
+            self.pending_ws = ''
             self.gen_token('op', val)
             self.gen_blank()
         elif val in '([{':
@@ -1176,6 +1195,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Generate the proper code using the context supplied by the parser.
         ### self.clean('blank')
+        self.pending_ws = ''
         if context == 'complex-slice':
             if prev and prev.value not in '[:':
                 self.gen_blank()
@@ -1189,9 +1209,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op
+    #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op (to do)
     def gen_dot_op(self) -> None:
         """Handle the '.' input token."""
+        self.pending_ws = ''
         ### To do.
         
             # context = self.input_token.context
@@ -1227,12 +1248,13 @@ class TokenBasedOrange:  # Orange is the new Black.
             #        However, when combining an argument annotation with a default value,
             #        *do* use spaces around the = sign.
             ### self.clean('blank')
+            self.pending_ws = ''
             self.gen_token('op-no-blanks', val)
         else:
             self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240105145241.35: *6* tbo.gen_lt
+    #@+node:ekr.20240105145241.35: *6* tbo.gen_lt (to do)
     def gen_lt(self) -> None:
         """Generate code for a left paren or curly/square bracket."""
         val = self.input_token.value
@@ -1244,34 +1266,43 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.curly_brackets_level += 1
         ### self.clean('blank')
+        self.pending_ws = ''
         
-        ### To do.
         
-            # prev = self.code_list[-1]
+        ### prev = self.code_list[-1]
 
-            # if self.input_token.context == 'import':
-                # self.gen_blank()
-                # self.gen_token('lt', val)
-            # elif prev.kind in ('op', 'word-op'):
-                # self.gen_blank()
-                # self.gen_token('lt', val)
-            # elif prev.kind == 'word':
-                # # Only suppress blanks before '(' or '[' for non-keywords.
-                # if val == '{' or prev.value in ('if', 'else', 'elif', 'return', 'for', 'while'):
-                    # self.gen_blank()
-                # elif val == '(':
-                    # self.in_arg_list += 1
-                # self.gen_token('lt', val)
-            # else:
-                # self.clean('blank')
-                # self.gen_token('op-no-blanks', val)
-    #@+node:ekr.20240105145241.37: *6* tbo.gen_possible_unary_op & helper (now simpler)
+        if self.input_token.context == 'import':
+            self.gen_blank()
+            self.gen_token('lt', val)
+        ### elif prev.kind in ('op', 'word-op'):
+        elif self.prev_output_kind in ('op', 'word-op'):
+            self.gen_blank()
+            self.gen_token('lt', val)
+        ### elif prev.kind == 'word':
+        elif self.prev_output_kind == 'word':
+            # Only suppress blanks before '(' or '[' for non-keywords.
+            ### if val == '{' or prev.value in ('if', 'else', 'elif', 'return', 'for', 'while'):
+            if val == '{' or self.prev_output_value in (
+                'if', 'else', 'elif', 'return', 'for', 'while',
+            ):
+                self.gen_blank()
+            elif val == '(':
+                self.in_arg_list += 1
+            self.gen_token('lt', val)
+        else:
+            ## # self.clean('blank')
+            self.pending_ws = ''
+            self.gen_token('op-no-blanks', val)
+    #@+node:ekr.20240105145241.37: *6* tbo.gen_possible_unary_op & helper (to do)
     def gen_possible_unary_op(self) -> None:
         """Add a unary or binary op to the token list."""
         
         ### To do.
             # val = self.input_token.value
+            
             # ### self.clean('blank')
+            # self.pending_ws = ''
+            
             # if self.is_unary_op(self.index, val):
                 # prev = self.code_list[-1]
                 # if prev.kind == 'lt':
@@ -1309,7 +1340,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Any Python keyword indicates a unary operator.
             return_val = keyword.iskeyword(value) or keyword.issoftkeyword(value)
         return return_val
-    #@+node:ekr.20240105145241.36: *6* tbo.gen_rt
+    #@+node:ekr.20240105145241.36: *6* tbo.gen_rt (test)
     def gen_rt(self) -> None:
         """Generate code for a right paren or curly/square bracket."""
         val = self.input_token.value
@@ -1322,6 +1353,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.curly_brackets_level -= 1
         ### self.clean('blank')
+        self.pending_ws = ''
         self.gen_token('rt', val)
     #@+node:ekr.20240105145241.38: *6* tbo.gen_star_op
     def gen_star_op(self) -> None:
@@ -1330,6 +1362,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         context = self.input_token.context
 
         ### self.clean('blank')
+        ### self.pending_ws = ''
         if context == 'arg':
             self.gen_blank()
             self.gen_token('op-no-blanks', val)
@@ -1344,6 +1377,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         context = self.input_token.context
 
         ### self.clean('blank')
+        ### self.pending_ws = ''
+
         if context == 'arg':
             self.gen_blank()
             self.gen_token('op-no-blanks', val)
@@ -1399,12 +1434,10 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         ### prev = self.code_list[-1]
         ### if prev.kind not in (
+        
+        g.trace('pending:', repr(self.pending_ws), g.callers(1))
 
-        if self.pending_ws:
-            # There is already a pending request.
-            return
-
-        if self.prev_output_kind not in (
+        if self.prev_output_kind in (
             ### 'blank',
             # 'blank-lines',  # black only: Request for n blank lines.
             'file-start',
@@ -1414,21 +1447,28 @@ class TokenBasedOrange:  # Orange is the new Black.
             'lt',  # A left paren or curly/square bracket.
             'op-no-blanks',  # A demand that no blank follows this op.
             'unary-op',
-        ):
+        ):  
+            # Suppress the blank.
+            self.pending_ws = ''
+        elif self.pending_ws:
+            # Use the existing pending ws.
+            pass
+        else:
             ### self.gen_token('blank', ' ')
-            return
-            
-        # Ask for a blank.
-        self.pending_ws = ' '
-    #@+node:ekr.20240105145241.26: *5* tbo.gen_token (test)
+            self.pending_ws = ' '
+    #@+node:ekr.20240105145241.26: *5* tbo.gen_token (test: sets prev_output_kind)
     def gen_token(self, kind: str, value: Any) -> None:
         """Add an output token to the code list."""
 
         ### Legacy:
             # tok = OutputToken(kind, value, len(self.code_list))
             # self.code_list.append(tok)
+            
+        g.trace(kind, repr(value))
 
         assert kind != 'blank'
+        if self.pending_ws:
+             self.output_list.append(self.pending_ws)
         self.output_list.append(value)
         self.prev_output_kind = kind
     #@+node:ekr.20240110205127.1: *4* tbo: Scanning

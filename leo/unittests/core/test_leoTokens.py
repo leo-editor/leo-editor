@@ -364,6 +364,7 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens)
+        g.printObj(results, tag='Results')  ###
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.49: *3* TestTBO.test_blank_lines_after_function_2
     def test_blank_lines_after_function_2(self):
