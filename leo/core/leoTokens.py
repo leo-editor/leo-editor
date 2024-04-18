@@ -1193,7 +1193,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op (to do)
+    #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op
     def gen_dot_op(self) -> None:
         """Handle the '.' input token."""
         self.pending_ws = ''
@@ -1282,12 +1282,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Add a unary or binary op to the token list."""
         
         val = self.input_token.value
-        
-        ### self.clean('blank')
-        ### self.pending_ws = ''
-        
         if self.is_unary_op(self.index, val):
-            prev = self.code_list[-1]
+            ### prev = self.code_list[-1]
+            prev = self.input_token
             if prev.kind == 'lt':
                 self.gen_token('op-no-blanks', val)
             else:
