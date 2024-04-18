@@ -693,6 +693,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Define tokens even for empty files.
         self.tokens: list[InputToken] = []
+        self.prev_output_kind: str = None
 
         # Set ivars from the settings dict *without* using setattr.
         self.all = settings.get('all', False)
@@ -823,6 +824,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_token('file-start', '')
             self.push_state('file-start')
             prev_line_number: int = 0
+            self.prev_output_kind = None
             self.token: InputToken
             for self.index, self.token in enumerate(tokens):
                 # Set global for visitors.
