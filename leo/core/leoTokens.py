@@ -1102,13 +1102,12 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         NEWLINE tokens end *logical* lines of Python code.
         """
-        
+
         # Defensive check.
         token = self.input_token
         if token.kind not in ('newline', 'nl'):  # pragma: no cover
             self.oops(f"Unexpected newline token: {token!r}")
 
-        
         self.output_list.append('\n')
         self.pending_ws = self.lws
         self.prev_output_kind = 'line-indent'
@@ -1436,23 +1435,20 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Put the whitespace only if if ends with backslash-newline.
         """
-        ### val = self.token.value
         val = self.input_token.value
 
         # Handle backslash-newline.
         if '\\\n' in val:
-            ### self.clean('blank')
             self.pending_ws = None
             self.gen_token('op-no-blanks', val)
             return
+
         # Handle start-of-line whitespace.
-        ### prev = self.code_list[-1]
-        
         inner = self.paren_level or self.square_brackets_stack or self.curly_brackets_level
-        ### if prev.kind == 'line-indent' and inner:
         if self.prev_output_kind == 'line-indent' and inner:
+            ### g.trace('***', repr(val))
+
             # Retain the indent that won't be cleaned away.
-            ### self.clean('line-indent')
             self.pending_ws = None
             self.gen_token('hard-blank', val)
     #@+node:ekr.20240105145241.27: *5* tbo.gen_blank
@@ -1463,7 +1459,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
 
         if self.prev_output_kind in (
-            ### 'bs_nl',
             'dedent',
             'file-start',
             'indent',
