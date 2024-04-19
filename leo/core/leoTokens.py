@@ -229,7 +229,7 @@ def orange_command(
 ) -> None:  # pragma: no cover
     """The outer level of the 'tbo/orange' command."""
     t1 = time.process_time()
-    n_tokens = 0
+    # n_tokens = 0
     n_beautified = 0
     if settings is None:
         settings = {}
@@ -240,7 +240,7 @@ def orange_command(
             beautified = tbo.beautify_file(filename, was_dirty)
             if beautified:
                 n_beautified += 1
-            n_tokens += len(tbo.tokens)
+            # n_tokens += len(tbo.input_tokens)
         else:
             print(f"file not found: {filename}")
     # Report the results.
