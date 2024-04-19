@@ -1420,7 +1420,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.indent_level -= 1
             self.lws = self.indent_level * self.tab_width * ' '
         self.gen_token('verbatim', val)
-    #@+node:ekr.20240105145241.23: *5* tbo.do_ws (restored)
+    #@+node:ekr.20240105145241.23: *5* tbo.do_ws
     def do_ws(self) -> None:
         """
         Handle the "ws" pseudo-token.  See Tokenizer.itok.do_token (the gem).
