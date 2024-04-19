@@ -1100,7 +1100,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if token.kind not in ('newline', 'nl'):  # pragma: no cover
             self.oops(f"Unexpected newline token: {token!r}")
             
-        ### g.trace()  ###
+        g.trace('value', repr(self.input_token.value))
 
         self.output_list.append('\n')
         self.pending_ws = self.lws
@@ -1126,6 +1126,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_op(self) -> None:
         """Handle an op token."""
         val = self.input_token.value
+      
         if val == '.':
             self.gen_dot_op()
         elif val == '@':
@@ -1261,19 +1262,17 @@ class TokenBasedOrange:  # Orange is the new Black.
         
         elif self.prev_output_kind == 'word':
             # Only suppress blanks before '(' or '[' for non-keywords.
-            ### if val == '{' or prev.value in ('if', 'else', 'elif', 'return', 'for', 'while'):
             if val == '{' or self.prev_output_value in (
                 'if', 'else', 'elif', 'return', 'for', 'while',
             ):
                 self.gen_blank()
             elif val == '(':
                 self.in_arg_list += 1
-                self.pending_ws = ''  ### New, correct.
+                self.pending_ws = ''
             else:
-                self.pending_ws = ''  ### New, correct.
+                self.pending_ws = ''
             self.gen_token('lt', val)
         else:
-            ### self.clean('blank')
             self.pending_ws = ''
             self.gen_token('op-no-blanks', val)
     #@+node:ekr.20240105145241.37: *6* tbo.gen_possible_unary_op & helper (to do)
@@ -1436,7 +1435,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def gen_token(self, kind: str, value: Any) -> None:
         """Add an output token to the code list."""
 
-        ### g.trace(kind, value, repr(self.pending_ws))
+        # g.trace(kind, value, repr(self.pending_ws), g.callers()) ###
         if self.pending_ws:
              self.output_list.append(self.pending_ws)
         self.output_list.append(value)
