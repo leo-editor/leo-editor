@@ -535,12 +535,9 @@ class Tokenizer:
         # Add any preceding between-token whitespace.
         
         ws = contents[self.prev_offset:s_offset]
-        if ws and '\\\n' in ws:
-            ### g.trace('prev_kind', prev_kind, 'ws', repr(ws))
-            self.add_token('bs_nl', line, line_number, ws)
-            ###
+        if ws:
             # Create the 'ws' pseudo-token.
-            # self.add_token('ws', line, line_number, ws)
+            self.add_token('ws', line, line_number, ws)
 
         # Always add token, even if it contributes no text!
         self.add_token(kind, line, line_number, tok_s)
@@ -725,7 +722,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.report = settings.get('report', False)
         self.write = settings.get('write', False)
         
-        self.insignificant_tokens = ('bs_nl', 'comment', 'dedent', 'indent', 'newline', 'nl') # 'ws'
+        # The list of tokens that tbo._next/_prev skip.
+        self.insignificant_tokens = (
+            'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
+        ) 
 
         # General patterns.
         self.beautify_pat = re.compile(
@@ -972,14 +972,6 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.9: *4* tbo: Visitors & generators
     # Visitors (tbo.do_* methods) handle input tokens.
     # Generators (tbo.gen_* methods) create zero or more output tokens.
-    #@+node:ekr.20240419074417.1: *5* tbo.do_bs_nl
-    def do_bs_nl(self) -> None:
-        """Handle the bs_nl pseudo token."""
-        val = self.input_token.value
-        self.output_list.append(val)
-        # g.trace(repr(val))
-        self.prev_output_kind = 'bs_nl'
-        self.pending_ws = ''
     #@+node:ekr.20240105145241.10: *5* tbo.do_comment
     def do_comment(self) -> None:
         """Handle a comment token."""
@@ -1116,8 +1108,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if token.kind not in ('newline', 'nl'):  # pragma: no cover
             self.oops(f"Unexpected newline token: {token!r}")
 
-        ### g.trace(repr(self.lws))
-            
+        
         self.output_list.append('\n')
         self.pending_ws = self.lws
         self.prev_output_kind = 'line-indent'
@@ -1438,6 +1429,32 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.indent_level -= 1
             self.lws = self.indent_level * self.tab_width * ' '
         self.gen_token('verbatim', val)
+    #@+node:ekr.20240105145241.23: *5* tbo.do_ws (restored)
+    def do_ws(self) -> None:
+        """
+        Handle the "ws" pseudo-token.  See Tokenizer.itok.do_token (the gem).
+
+        Put the whitespace only if if ends with backslash-newline.
+        """
+        ### val = self.token.value
+        val = self.input_token.value
+
+        # Handle backslash-newline.
+        if '\\\n' in val:
+            ### self.clean('blank')
+            self.pending_ws = None
+            self.gen_token('op-no-blanks', val)
+            return
+        # Handle start-of-line whitespace.
+        ### prev = self.code_list[-1]
+        
+        inner = self.paren_level or self.square_brackets_stack or self.curly_brackets_level
+        ### if prev.kind == 'line-indent' and inner:
+        if self.prev_output_kind == 'line-indent' and inner:
+            # Retain the indent that won't be cleaned away.
+            ### self.clean('line-indent')
+            self.pending_ws = None
+            self.gen_token('hard-blank', val)
     #@+node:ekr.20240105145241.27: *5* tbo.gen_blank
     def gen_blank(self) -> None:
         """
@@ -1446,7 +1463,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
 
         if self.prev_output_kind in (
-            'bs_nl',
+            ### 'bs_nl',
             'dedent',
             'file-start',
             'indent',
