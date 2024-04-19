@@ -700,6 +700,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.input_tokens: list[InputToken] = []
         self.lws: str = ""  # Set only by Indent/Dedent tokens.
         self.pending_ws: str = ""
+
+        # Set by gen_token and all do_* methods that bypass gen_token.
         self.prev_output_kind: str = None
         self.prev_output_value: str = None
 
@@ -1064,7 +1066,12 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.input_token.value
-        if name in self.operator_keywords:
+        if name == 'import':
+            # New special case.
+            # g.trace(repr(context), self.prev_output_kind, self.prev_output_value)
+            #if self.prev_output_kind == 'op' and self.prev_output_value == '.':
+            self.gen_word(name)
+        elif name in self.operator_keywords:
             self.gen_word_op(name)
         else:
             self.gen_word(name)
@@ -1100,7 +1107,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if token.kind not in ('newline', 'nl'):  # pragma: no cover
             self.oops(f"Unexpected newline token: {token!r}")
             
-        g.trace('value', repr(self.input_token.value))
+        ### g.trace('value', repr(self.input_token.value))
 
         self.output_list.append('\n')
         self.pending_ws = self.lws
@@ -1197,25 +1204,24 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op
     def gen_dot_op(self) -> None:
         """Handle the '.' input token."""
-        self.pending_ws = ''
 
         context = self.input_token.context
-
-        prev = self.input_token
         next_i = self.next(self.index)
         next = 'None' if next_i is None else self.input_tokens[next_i]
         import_is_next = next and next.kind == 'name' and next.value == 'import'
-
+        
         if context == 'import':
-            g.trace('import context')
-            if prev.kind == 'word' and prev.value in ('from', 'import'):
+            if self.prev_output_kind == 'word' and self.prev_output_value in ('from', 'import'):
                 self.gen_blank()
-            if import_is_next:
+                self.gen_token('op' if import_is_next else 'op-no-blanks', '.')
+            elif import_is_next:
                 self.gen_token('op', '.')
                 self.gen_blank()
             else:
+                self.pending_ws = ''
                 self.gen_token('op-no-blanks', '.')
         else:
+            self.pending_ws = ''
             self.gen_token('op-no-blanks', '.')
     #@+node:ekr.20240105145241.20: *6* tbo.gen_equal_op
     def gen_equal_op(self) -> None:
