@@ -1468,7 +1468,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def gen_token(self, kind: str, value: Any) -> None:
         """Add an output token to the code list."""
         if self.pending_ws:
-             self.output_list.append(self.pending_ws)
+            self.output_list.append(self.pending_ws)
         self.output_list.append(value)
         self.pending_ws = ''
         self.prev_output_value = value
