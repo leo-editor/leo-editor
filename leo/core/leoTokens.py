@@ -1179,12 +1179,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op
+    #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op & next
     def gen_dot_op(self) -> None:
         """Handle the '.' input token."""
-
         context = self.input_token.context
-        next_i = self.next(self.index)
+
+        # Get the previous significant **input** token.
+        # This is the only call to next(i) anywhere!
+        next_i = self._next(self.index)
         next = 'None' if next_i is None else self.input_tokens[next_i]
         import_is_next = next and next.kind == 'name' and next.value == 'import'
         
@@ -1201,6 +1203,30 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.pending_ws = ''
             self.gen_token('op-no-blanks', '.')
+    #@+node:ekr.20240105145241.43: *7* tbo._next
+    def _next(self, i: int) -> Optional[int]:
+        """
+        Return the next *significant* input token.
+
+        Ignore insignificant tokens: whitespace, indentation, comments, etc.
+
+        The **Global Token Ratio** is tbo.n_scanned_tokens / len(tbo.tokens),
+        where tbo.n_scanned_tokens is the total number of calls calls to
+        tbo.next or tbo.prev.
+
+        For Leo's sources, this ratio ranges between 0.48 and 1.51!
+
+        The orange_command function warns if this ratio is greater than 2.5.
+        Previous versions of this code suffered much higher ratios.
+        """
+        i += 1
+        while i < len(self.input_tokens):
+            token = self.input_tokens[i]
+            if token not in self.insignificant_tokens:
+                # print(f"token: {token.brief_dump()}")
+                return i
+            i += 1
+        return None  # pragma: no cover
     #@+node:ekr.20240105145241.20: *6* tbo.gen_equal_op
     def gen_equal_op(self) -> None:
 
@@ -1255,7 +1281,6 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.37: *6* tbo.gen_possible_unary_op & helper
     def gen_possible_unary_op(self) -> None:
         """Add a unary or binary op to the token list."""
-        
         val = self.input_token.value
         if self.is_unary_op(self.index, val):
             prev = self.input_token
@@ -1269,18 +1294,21 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_token('op', val)
             self.gen_blank()
 
-    #@+node:ekr.20240109082712.1: *7* tbo.is_unary_op
+    #@+node:ekr.20240109082712.1: *7* tbo.is_unary_op & _prev
     def is_unary_op(self, i: int, val: str) -> bool:
 
         if val == '~':
             return True
         if val not in '+-':  # pragma: no cover
             return False
-        # Get the previous significant token.
-        prev_i = self.prev(i)
+
+        # Get the previous significant **input** token.
+        # This is the only call to _prev(i) anywhere!
+        prev_i = self._prev(i)
         prev_token = None if prev_i is None else self.input_tokens[prev_i]
         kind = prev_token.kind if prev_token else ''
         value = prev_token.value if prev_token else ''
+
         if kind in ('number', 'string'):
             return_val = False
         elif kind == 'op' and value in ')]':
@@ -1294,6 +1322,20 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Any Python keyword indicates a unary operator.
             return_val = keyword.iskeyword(value) or keyword.issoftkeyword(value)
         return return_val
+    #@+node:ekr.20240115233050.1: *8* tbo._prev
+    def _prev(self, i: int) -> Optional[int]:
+        """
+        Return the previous *significant* input token.
+
+        Ignore insignificant tokens: whitespace, indentation, comments, etc.
+        """
+        i -= 1
+        while i >= 0:
+            token = self.input_tokens[i]
+            if token not in self.insignificant_tokens:
+                return i
+            i -= 1
+        return None  # pragma: no cover
     #@+node:ekr.20240105145241.36: *6* tbo.gen_rt
     def gen_rt(self) -> None:
         """Generate code for a right paren or curly/square bracket."""
@@ -1657,44 +1699,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not token or token.kind != 'name':
             return False
         return keyword.iskeyword(token.value) or keyword.issoftkeyword(token.value)
-    #@+node:ekr.20240105145241.43: *5* tbo.next
-    def next(self, i: int) -> Optional[int]:
-        """
-        Return the next *significant* token in the list of *input* tokens.
-
-        Ignore insignificant tokens: whitespace, indentation, comments, etc.
-
-        The **Global Token Ratio** is tbo.n_scanned_tokens / len(tbo.tokens),
-        where tbo.n_scanned_tokens is the total number of calls calls to
-        tbo.next or tbo.prev.
-
-        For Leo's sources, this ratio ranges between 0.48 and 1.51!
-
-        The orange_command function warns if this ratio is greater than 2.5.
-        Previous versions of this code suffered much higher ratios.
-        """
-        i += 1
-        while i < len(self.input_tokens):
-            token = self.input_tokens[i]
-            if token not in self.insignificant_tokens:
-                # print(f"token: {token.brief_dump()}")
-                return i
-            i += 1
-        return None  # pragma: no cover
-    #@+node:ekr.20240115233050.1: *5* tbo.prev
-    def prev(self, i: int) -> Optional[int]:
-        """
-        Return the previous *significant* token in the list of *input* tokens.
-
-        Ignore insignificant tokens: whitespace, indentation, comments, etc.
-        """
-        i -= 1
-        while i >= 0:
-            token = self.input_tokens[i]
-            if token not in self.insignificant_tokens:
-                return i
-            i -= 1
-        return None  # pragma: no cover
     #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
         """
