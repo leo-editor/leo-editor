@@ -653,10 +653,11 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Global data.
         'contents', 'filename', 'input_tokens', 'output_list', 'tab_width',
+        'insignificant_tokens',  # New.
 
         # Token-related data for visitors.
         'index', 'input_token', 'line_number',
-        'pending_ws', 'prev_output_kind', 'prev_output_value', # New.
+        'pending_ws', 'prev_output_kind', 'prev_output_value',  # New.
 
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part', 'state_stack', 'verbatim',
@@ -711,6 +712,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.diff = settings.get('diff', False)
         self.report = settings.get('report', False)
         self.write = settings.get('write', False)
+        
+        self.insignificant_tokens = ('comment', 'dedent', 'indent', 'newline', 'nl') # 'ws'
 
         # General patterns.
         self.beautify_pat = re.compile(
@@ -1654,18 +1657,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not token or token.kind != 'name':
             return False
         return keyword.iskeyword(token.value) or keyword.issoftkeyword(token.value)
-    #@+node:ekr.20240106093210.1: *5* tbo.is_significant_token
-    def is_significant_token(self, token: InputToken) -> bool:
-        """Return true if the given token is not whitespace."""
-        return token.kind not in (
-            'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
-        )
     #@+node:ekr.20240105145241.43: *5* tbo.next
     def next(self, i: int) -> Optional[int]:
         """
         Return the next *significant* token in the list of *input* tokens.
 
-        Ignore whitespace, indentation, comments, etc.
+        Ignore insignificant tokens: whitespace, indentation, comments, etc.
 
         The **Global Token Ratio** is tbo.n_scanned_tokens / len(tbo.tokens),
         where tbo.n_scanned_tokens is the total number of calls calls to
@@ -1676,13 +1673,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         The orange_command function warns if this ratio is greater than 2.5.
         Previous versions of this code suffered much higher ratios.
         """
-        trace = False  # Do not remove
         i += 1
         while i < len(self.input_tokens):
             token = self.input_tokens[i]
-            if self.is_significant_token(token):
-                if trace:  # pragma: no cover
-                    print(f"token: {token.brief_dump()}")
+            if token not in self.insignificant_tokens:
+                # print(f"token: {token.brief_dump()}")
                 return i
             i += 1
         return None  # pragma: no cover
@@ -1691,12 +1686,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         Return the previous *significant* token in the list of *input* tokens.
 
-        Ignore whitespace, indentation, comments, etc.
+        Ignore insignificant tokens: whitespace, indentation, comments, etc.
         """
         i -= 1
         while i >= 0:
             token = self.input_tokens[i]
-            if self.is_significant_token(token):
+            if token not in self.insignificant_tokens:
                 return i
             i -= 1
         return None  # pragma: no cover
