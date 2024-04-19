@@ -496,7 +496,7 @@ class Tokenizer:
             prev_kind = self.do_token(contents, five_tuple, prev_kind)
 
         # Print the token list when tracing.
-        ### self.check_results(contents)
+        self.check_results(contents)
         return self.token_list
     #@+node:ekr.20240105143214.5: *4* Tokenizer.do_token (the gem)
     def do_token(self,
@@ -1446,8 +1446,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Handle start-of-line whitespace.
         inner = self.paren_level or self.square_brackets_stack or self.curly_brackets_level
         if self.prev_output_kind == 'line-indent' and inner:
-            ### g.trace('***', repr(val))
-
             # Retain the indent that won't be cleaned away.
             self.pending_ws = None
             self.gen_token('hard-blank', val)
