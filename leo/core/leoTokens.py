@@ -437,6 +437,7 @@ class Tokenizer:
             self.fstring_values = None
             # g.trace(kind, value, line_number, repr(line))
 
+        ### g.trace(kind, repr(value))  ###
         tok = InputToken(kind, value, self.token_index, line, line_number)
         self.token_index += 1
         self.token_list.append(tok)
@@ -490,14 +491,19 @@ class Tokenizer:
             self.offsets.append(last_offset)
 
         # Create self.token_list.
+        prev_kind: str = None
         for five_tuple in five_tuples:
-            self.do_token(contents, five_tuple)
+            prev_kind = self.do_token(contents, five_tuple, prev_kind)
 
         # Print the token list when tracing.
         ### self.check_results(contents)
         return self.token_list
     #@+node:ekr.20240105143214.5: *4* Tokenizer.do_token (the gem)
-    def do_token(self, contents: str, five_tuple: tuple) -> None:
+    def do_token(self,
+        contents: str,
+        five_tuple: tuple,
+        prev_kind: Optional[str],
+    ) -> Optional[str]:
         """
         Handle the given token, optionally including between-token whitespace.
 
@@ -527,14 +533,20 @@ class Tokenizer:
         # tok_s is corresponding string in the line.
         tok_s = contents[s_offset:e_offset]
         # Add any preceding between-token whitespace.
-        if 0:  ###
-            ws = contents[self.prev_offset:s_offset]
-            if ws:  # Create the 'ws' pseudo-token.
-                self.add_token('ws', line, line_number, ws)
+        
+        ws = contents[self.prev_offset:s_offset]
+        if ws and '\\\n' in ws:
+            ### g.trace('prev_kind', prev_kind, 'ws', repr(ws))
+            self.add_token('bs_nl', line, line_number, ws)
+            ###
+            # Create the 'ws' pseudo-token.
+            # self.add_token('ws', line, line_number, ws)
+
         # Always add token, even if it contributes no text!
         self.add_token(kind, line, line_number, tok_s)
         # Update the ending offset.
         self.prev_offset = e_offset
+        return kind
     #@+node:ekr.20240105143214.6: *4* Tokenizer.make_input_tokens (entry)
     def make_input_tokens(self, contents: str) -> list[InputToken]:
         """
@@ -713,7 +725,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.report = settings.get('report', False)
         self.write = settings.get('write', False)
         
-        self.insignificant_tokens = ('comment', 'dedent', 'indent', 'newline', 'nl') # 'ws'
+        self.insignificant_tokens = ('bs_nl', 'comment', 'dedent', 'indent', 'newline', 'nl') # 'ws'
 
         # General patterns.
         self.beautify_pat = re.compile(
@@ -960,6 +972,14 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.9: *4* tbo: Visitors & generators
     # Visitors (tbo.do_* methods) handle input tokens.
     # Generators (tbo.gen_* methods) create zero or more output tokens.
+    #@+node:ekr.20240419074417.1: *5* tbo.do_bs_nl
+    def do_bs_nl(self) -> None:
+        """Handle the bs_nl pseudo token."""
+        val = self.input_token.value
+        self.output_list.append(val)
+        # g.trace(repr(val))
+        self.prev_output_kind = 'bs_nl'
+        self.pending_ws = ''
     #@+node:ekr.20240105145241.10: *5* tbo.do_comment
     def do_comment(self) -> None:
         """Handle a comment token."""
@@ -1095,6 +1115,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         token = self.input_token
         if token.kind not in ('newline', 'nl'):  # pragma: no cover
             self.oops(f"Unexpected newline token: {token!r}")
+
+        ### g.trace(repr(self.lws))
             
         self.output_list.append('\n')
         self.pending_ws = self.lws
@@ -1424,6 +1446,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
 
         if self.prev_output_kind in (
+            'bs_nl',
             'dedent',
             'file-start',
             'indent',

@@ -275,6 +275,8 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         # expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens)
+        # g.printObj(tokens, tag='Tokens')
+        # g.printObj(results, tag='Results')
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.48: *3* TestTBO.test_blank_lines_after_function
     def test_blank_lines_after_function(self):
@@ -492,18 +494,25 @@ class TestTokenBasedOrange(BaseTest):
 
         # The space between 'import' and '(' is correct.
         contents = """
-            from .module1 import \\
-                w
             from .module1 import (
                 w1,
                 w2,
             )
-            import leo.core.leoGlobals \\
-                as g
         """
+            # from .module1 import \\
+                # w
+            # from .module1 import (
+                # w1,
+                # w2,
+            # )
+            # import leo.core.leoGlobals \\
+                # as g
         contents, tokens = self.make_data(contents)
         expected = contents.strip() + '\n'
         results = self.beautify(contents, tokens)
+        # g.printObj(tokens, tag='Tokens')
+        # g.printObj(results, tag='Results')
+        # g.printObj(expected, tag='Expected')
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.68: *3* TestTBO.test_multi_line_pet_peeves
     def test_multi_line_pet_peeves(self):
