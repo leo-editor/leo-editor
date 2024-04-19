@@ -989,16 +989,11 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.in_doc_part = False
 
         # General code: Generate the comment.
-
-        ### self.clean('blank')
         self.pending_ws = ''
-
         entire_line = self.input_token.line.lstrip().startswith('#')
+        
         if entire_line:
-            ### self.clean('hard-blank')
-            ### self.clean('line-indent')
             self.pending_ws = ''
-
             # #1496: No further munging needed.
             val = self.input_token.line.rstrip()
             # #3056: Insure one space after '#' in non-sentinel comments.
@@ -1010,7 +1005,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Exactly two spaces before trailing comments.
             val = '  ' + val.rstrip()
 
-        ### g.trace(f"{entire_line} {val!r}")
         self.gen_token('comment', val)
     #@+node:ekr.20240111051726.1: *5* tbo.do_dedent
     def do_dedent(self) -> None:
@@ -1056,22 +1050,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         elif new_indent < old_indent:  # pragma: no cover (defensive)
             print(f"\n===== do_indent: can not happen {new_indent!r}, {old_indent!r}")
         self.lws = new_indent
-        ### self.gen_line_indent()
         self.pending_ws = self.lws
         self.prev_output_kind = 'indent'
-        
-        ### g.trace(repr(new_indent))  ###
     #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators
     #@+node:ekr.20240418050017.1: *6* tbo.do_name
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.input_token.value
-        if name == 'import':
-            # New special case.
-            # g.trace(repr(context), self.prev_output_kind, self.prev_output_value)
-            #if self.prev_output_kind == 'op' and self.prev_output_value == '.':
-            self.gen_word(name)
-        elif name in self.operator_keywords:
+        if name in self.operator_keywords:
             self.gen_word_op(name)
         else:
             self.gen_word(name)
@@ -1080,7 +1066,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Add a word request to the code list."""
         assert s == self.input_token.value
         assert s and isinstance(s, str), repr(s)
-
         self.gen_blank()
         self.gen_token('word', s)
         self.gen_blank()
@@ -1102,13 +1087,12 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         NEWLINE tokens end *logical* lines of Python code.
         """
-        # Only do_newline and do_nl should call this method.
+        
+        # Defensive check.
         token = self.input_token
         if token.kind not in ('newline', 'nl'):  # pragma: no cover
             self.oops(f"Unexpected newline token: {token!r}")
             
-        ### g.trace('value', repr(self.input_token.value))
-
         self.output_list.append('\n')
         self.pending_ws = self.lws
         self.prev_output_kind = 'line-indent'
@@ -1137,10 +1121,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         if val == '.':
             self.gen_dot_op()
         elif val == '@':
-            ### self.clean('blank')
-            ### self.pending_ws = ''
-
-            ### g.trace('@', g.callers())  ###
             self.gen_token('op-no-blanks', val)
             self.push_state('decorator')
         elif val == ':':
@@ -1149,7 +1129,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         elif val in ',;':
             # Pep 8: Avoid extraneous whitespace immediately before
             # comma, semicolon, or colon.
-            ### self.clean('blank')
             self.pending_ws = ''
             self.gen_token('op', val)
             self.gen_blank()
@@ -1182,14 +1161,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Handle a colon."""
         val = self.input_token.value
         context = self.input_token.context
-        prev_i = self.prev(self.index)
-        prev = None if prev_i is None else self.input_tokens[prev_i]
 
-        # Generate the proper code using the context supplied by the parser.
-        ### self.clean('blank')
         self.pending_ws = ''
         if context == 'complex-slice':
-            if prev and prev.value not in '[:':
+            if self.prev_output_value not in '[:':
                 self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
@@ -1234,7 +1209,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             #        a keyword argument or a default parameter value.
             #        However, when combining an argument annotation with a default value,
             #        *do* use spaces around the = sign.
-            ### self.clean('blank')
             self.pending_ws = ''
             self.gen_token('op-no-blanks', val)
         else:
@@ -1252,20 +1226,13 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.square_brackets_stack.append(False)
         else:
             self.curly_brackets_level += 1
-            
-        ###
-        # g.trace(
-            # 'context', self.input_token.context,
-            # 'val', val, self.prev_output_kind, self.prev_output_value)
-        
+
         if self.input_token.context == 'import':
             self.gen_blank()
-            self.gen_token('lt', val)
-
+            self.gen_token('op-no-blanks', val)
         elif self.prev_output_kind in ('op', 'word-op'):
             self.gen_blank()
-            self.gen_token('lt', val)
-        
+            self.gen_token('op-no-blanks', val)
         elif self.prev_output_kind == 'word':
             # Only suppress blanks before '(' or '[' for non-keywords.
             if val == '{' or self.prev_output_value in (
@@ -1277,17 +1244,16 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.pending_ws = ''
             else:
                 self.pending_ws = ''
-            self.gen_token('lt', val)
+            self.gen_token('op-no-blanks', val)
         else:
             self.pending_ws = ''
             self.gen_token('op-no-blanks', val)
-    #@+node:ekr.20240105145241.37: *6* tbo.gen_possible_unary_op & helper (to do)
+    #@+node:ekr.20240105145241.37: *6* tbo.gen_possible_unary_op & helper
     def gen_possible_unary_op(self) -> None:
         """Add a unary or binary op to the token list."""
         
         val = self.input_token.value
         if self.is_unary_op(self.index, val):
-            ### prev = self.code_list[-1]
             prev = self.input_token
             if prev.kind == 'lt':
                 self.gen_token('op-no-blanks', val)
@@ -1324,7 +1290,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Any Python keyword indicates a unary operator.
             return_val = keyword.iskeyword(value) or keyword.issoftkeyword(value)
         return return_val
-    #@+node:ekr.20240105145241.36: *6* tbo.gen_rt (passes)
+    #@+node:ekr.20240105145241.36: *6* tbo.gen_rt
     def gen_rt(self) -> None:
         """Generate code for a right paren or curly/square bracket."""
         val = self.input_token.value
@@ -1337,17 +1303,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.curly_brackets_level -= 1
 
-        ### self.clean('blank')
-        self.pending_ws = ''  ### Correct.
+        self.pending_ws = ''
         self.gen_token('rt', val)
     #@+node:ekr.20240105145241.38: *6* tbo.gen_star_op
     def gen_star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
         val = self.input_token.value
         context = self.input_token.context
-
-        ### self.clean('blank')
-        ### self.pending_ws = ''
 
         if context == 'arg':
             self.gen_blank()
@@ -1361,9 +1323,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Put a ** operator, with a special case for **kwargs."""
         val = self.input_token.value
         context = self.input_token.context
-
-        ### self.clean('blank')
-        ### self.pending_ws = ''
 
         if context == 'arg':
             self.gen_blank()
@@ -1424,10 +1383,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             'indent',
             'hard-blank',
             'line-indent',
-            'newline',  ### Experimental.
-            'lt',  # A left paren or curly/square bracket.
+            'newline',
             'op-no-blanks',  # A demand that no blank follows this op.
-            'unary-op',
         ):  
             # Suppress the blank.
             pass
@@ -1435,18 +1392,15 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Use the existing pending ws.
             pass
         else:
-            ### g.trace('pending blank')
             self.pending_ws = ' '
     #@+node:ekr.20240105145241.26: *5* tbo.gen_token
     def gen_token(self, kind: str, value: Any) -> None:
         """Add an output token to the code list."""
-
-        # g.trace(kind, value, repr(self.pending_ws), g.callers()) ###
         if self.pending_ws:
              self.output_list.append(self.pending_ws)
         self.output_list.append(value)
         self.pending_ws = ''
-        self.prev_output_value = value  ### New
+        self.prev_output_value = value
         self.prev_output_kind = kind
     #@+node:ekr.20240110205127.1: *4* tbo: Scanning
     # The parser calls scanner methods to move through the list of input tokens.
