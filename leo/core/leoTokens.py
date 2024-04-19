@@ -1179,7 +1179,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op & next
+    #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op & _next
     def gen_dot_op(self) -> None:
         """Handle the '.' input token."""
         context = self.input_token.context
