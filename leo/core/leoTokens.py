@@ -1227,12 +1227,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.curly_brackets_level += 1
 
+        # Generate or suppress the leading blank.
+        # Update self.in_arg_list if necessary.
         if self.input_token.context == 'import':
             self.gen_blank()
-            self.gen_token('op-no-blanks', val)
         elif self.prev_output_kind in ('op', 'word-op'):
             self.gen_blank()
-            self.gen_token('op-no-blanks', val)
         elif self.prev_output_kind == 'word':
             # Only suppress blanks before '(' or '[' for non-keywords.
             if val == '{' or self.prev_output_value in (
@@ -1244,10 +1244,11 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.pending_ws = ''
             else:
                 self.pending_ws = ''
-            self.gen_token('op-no-blanks', val)
         else:
             self.pending_ws = ''
-            self.gen_token('op-no-blanks', val)
+            
+        # Output the token!
+        self.gen_token('op-no-blanks', val)
     #@+node:ekr.20240105145241.37: *6* tbo.gen_possible_unary_op & helper
     def gen_possible_unary_op(self) -> None:
         """Add a unary or binary op to the token list."""
