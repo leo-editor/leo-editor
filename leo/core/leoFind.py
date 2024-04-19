@@ -887,13 +887,17 @@ class LeoFind:
         self.update_change_list(self.change_text)  # Optional. An edge case.
         settings = self._compute_find_def_settings(find_pattern)
         # Do the command!
-        result = self.do_find_var(settings)
-        if result[0]:
-            # Keep the settings that found the match.
+        if 1:  # Restore all settings.
+            self.do_find_var(settings)
             ftm.set_widgets_from_dict(settings)
-        else:
-            # Restore the previous find settings!
-            self._restore_after_find_def()
+        else:  # Restore settings only if there is no match.
+            result = self.do_find_var(settings)
+            if result[0]:
+                # Keep the settings that found the match.
+                ftm.set_widgets_from_dict(settings)
+            else:
+                # Restore the previous find settings!
+                self._restore_after_find_def()
 
     def do_find_var(self, settings: Settings) -> tuple[Position, int, int]:
         """A standalone helper for unit tests."""
