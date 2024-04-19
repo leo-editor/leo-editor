@@ -491,19 +491,14 @@ class Tokenizer:
             self.offsets.append(last_offset)
 
         # Create self.token_list.
-        prev_kind: str = None
         for five_tuple in five_tuples:
-            prev_kind = self.do_token(contents, five_tuple, prev_kind)
+            self.do_token(contents, five_tuple)
 
         # Print the token list when tracing.
         self.check_results(contents)
         return self.token_list
     #@+node:ekr.20240105143214.5: *4* Tokenizer.do_token (the gem)
-    def do_token(self,
-        contents: str,
-        five_tuple: tuple,
-        prev_kind: Optional[str],
-    ) -> Optional[str]:
+    def do_token(self, contents: str, five_tuple: tuple) -> None:
         """
         Handle the given token, optionally including between-token whitespace.
 
@@ -533,17 +528,14 @@ class Tokenizer:
         # tok_s is corresponding string in the line.
         tok_s = contents[s_offset:e_offset]
         # Add any preceding between-token whitespace.
-        
         ws = contents[self.prev_offset:s_offset]
         if ws:
             # Create the 'ws' pseudo-token.
             self.add_token('ws', line, line_number, ws)
-
         # Always add token, even if it contributes no text!
         self.add_token(kind, line, line_number, tok_s)
         # Update the ending offset.
         self.prev_offset = e_offset
-        return kind
     #@+node:ekr.20240105143214.6: *4* Tokenizer.make_input_tokens (entry)
     def make_input_tokens(self, contents: str) -> list[InputToken]:
         """
