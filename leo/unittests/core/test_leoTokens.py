@@ -417,7 +417,7 @@ class TestTokenBasedOrange(BaseTest):
 
     """
     table = (
-        # Indented comment.
+        # Regular comment.
     )
     """
         )
@@ -427,14 +427,16 @@ class TestTokenBasedOrange(BaseTest):
             contents, tokens = self.make_data(contents)
             expected = contents
             results = self.beautify(contents, tokens)
-            message = (
-                f"\n"
-                f"  contents: {contents!r}\n"
-                f"  expected: {expected!r}\n"
-                f"       got: {results!r}")
+            # message = (
+                # f"\n"
+                # f"  contents: {contents!r}\n"
+                # f"  expected: {expected!r}\n"
+                # f"       got: {results!r}")
             if results != expected:  # pragma: no cover
                 fails += 1
-                print(f"Fail: {fails}\n{message}")
+                print(f"Fail: {fails}")
+                g.printObj(results, tag='Results')
+                g.printObj(expected, tag='Expected')
         assert not fails, fails
     #@+node:ekr.20240105153425.54: *3* TestTBO.test_comment_space_after_delim
     def test_comment_space_after_delim(self):

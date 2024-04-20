@@ -968,7 +968,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_comment(self) -> None:
         """Handle a comment token."""
         val = self.input_token.value
-        #
+        #@+<< do_comment: update comment-related state >>
+        #@+node:ekr.20240420034216.1: *6* << do_comment: update comment-related state >>
         # Leo-specific code...
         if self.node_pat.match(val):
             # Clear per-node state.
@@ -994,8 +995,9 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.in_doc_part = True
             if self.end_doc_pat.match(val):
                 self.in_doc_part = False
+        #@-<< do_comment: update comment-related state >>
 
-        # General code: Generate the comment.
+        # Generate the comment.
         self.pending_ws = ''
         entire_line = self.input_token.line.lstrip().startswith('#')
         
@@ -1012,6 +1014,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Exactly two spaces before trailing comments.
             val = '  ' + val.rstrip()
 
+        ### g.trace(repr(self.pending_ws), repr(val))
         self.gen_token('comment', val)
     #@+node:ekr.20240111051726.1: *5* tbo.do_dedent
     def do_dedent(self) -> None:
@@ -1438,9 +1441,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Handle start-of-line whitespace.
         inner = self.paren_level or self.square_brackets_stack or self.curly_brackets_level
         if self.prev_output_kind == 'line-indent' and inner:
-            # Retain the indent that won't be cleaned away.
+            #Retain the indent that won't be cleaned away.
             self.pending_ws = None
-            self.gen_token('hard-blank', val)
+            ### Wrong.
+            ### self.gen_token('hard-blank', val)
     #@+node:ekr.20240105145241.27: *5* tbo.gen_blank
     def gen_blank(self) -> None:
         """
