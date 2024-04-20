@@ -624,18 +624,20 @@ class TestTokenBasedOrange(BaseTest):
     def test_multi_line_statements(self):
 
         contents = """
-            def orange_command(
-                arg_files: list[str], files: list[str], settings: Settings = None,
-            ) -> None:
-                pass
+            if 1:  # Simulate indent.
+                def orange_command(
+                    arg_files: list[str], files: list[str], settings: Settings = None,
+                ) -> None:
+                    pass
 
-            return (
-                whatever
-            )
+                return (
+                    whatever
+                )
         """
         # At present Orange doesn't split lines...
         expected = self.prep(
             """
+            if 1:  # Simulate indent.    
                 def orange_command(
                     arg_files: list[str], files: list[str], settings: Settings = None,
                 ) -> None:
