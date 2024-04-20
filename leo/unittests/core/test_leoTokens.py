@@ -629,11 +629,11 @@ class TestTokenBasedOrange(BaseTest):
                     s: str,
                 ) -> None:
                     pass
-
+            if 1:
+                return (
+                    whatever
+                )
         """
-                # return (
-                    # whatever
-                # )
         # At present Orange doesn't split lines...
         expected = self.prep(
             """
@@ -642,10 +642,11 @@ class TestTokenBasedOrange(BaseTest):
                     s: str,
                 ) -> None:
                     pass
+            if 1:
+                return (
+                    whatever
+                )
             """)
-                # return (
-                    # whatever
-                # )
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         if results != expected:
