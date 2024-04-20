@@ -1199,11 +1199,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         next = 'None' if next_i is None else self.input_tokens[next_i]
         import_is_next = next and next.kind == 'name' and next.value == 'import'
         
-        ### g.trace('prev', self.prev_output_kind, self.prev_output_value)
+        ### g.trace('next:', next)
         
         if context == 'import':
-            ### g.trace('pending:', repr(self.pending_ws))
             if self.prev_output_kind == 'word' and self.prev_output_value in ('from', 'import'):
+                ### g.trace('prev', self.prev_output_kind, self.prev_output_value)
+                ### g.trace('pending:', repr(self.pending_ws))
                 self.gen_blank()
                 self.gen_token('op' if import_is_next else 'op-no-blanks', '.')
             elif import_is_next:
@@ -1234,8 +1235,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         i += 1
         while i < len(self.input_tokens):
             token = self.input_tokens[i]
-            if token not in self.insignificant_tokens:
-                # print(f"token: {token.brief_dump()}")
+            if token.kind not in self.insignificant_tokens:
+                # g.trace(f"token: {token!r}")
                 return i
             i += 1
         return None  # pragma: no cover
@@ -1344,7 +1345,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         i -= 1
         while i >= 0:
             token = self.input_tokens[i]
-            if token not in self.insignificant_tokens:
+            if token.kind not in self.insignificant_tokens:
                 return i
             i -= 1
         return None  # pragma: no cover

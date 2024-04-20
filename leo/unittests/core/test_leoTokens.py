@@ -698,32 +698,30 @@ class TestTokenBasedOrange(BaseTest):
 
         # #2533.
         contents = """
+            from .module1 import w
+            from . module2 import x
+            from ..module1 import y
             from .. module2 import z
+            from . import a
+            from.import b
+            from .. import c
+            from..import d
+            from leo.core import leoExternalFiles
+            import leo.core.leoGlobals as g
         """
-            # from .module1 import w
-            # from . module2 import x
-            # from ..module1 import y
-            # from .. module2 import z
-            # from . import a
-            # from.import b
-            # from .. import c
-            # from..import d
-            # from leo.core import leoExternalFiles
-            # import leo.core.leoGlobals as g
         expected = self.prep(
         """
+            from .module1 import w
+            from .module2 import x
+            from ..module1 import y
             from ..module2 import z
+            from . import a
+            from . import b
+            from .. import c
+            from .. import d
+            from leo.core import leoExternalFiles
+            import leo.core.leoGlobals as g
         """)
-            # from .module1 import w
-            # from .module2 import x
-            # from ..module1 import y
-            # from ..module2 import z
-            # from . import a
-            # from . import b
-            # from .. import c
-            # from .. import d
-            # from leo.core import leoExternalFiles
-            # import leo.core.leoGlobals as g
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         if results != expected:  # pragma: no cover
