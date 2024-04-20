@@ -1199,7 +1199,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         next = 'None' if next_i is None else self.input_tokens[next_i]
         import_is_next = next and next.kind == 'name' and next.value == 'import'
         
+        ### g.trace('prev', self.prev_output_kind, self.prev_output_value)
+        
         if context == 'import':
+            ### g.trace('pending:', repr(self.pending_ws))
             if self.prev_output_kind == 'word' and self.prev_output_value in ('from', 'import'):
                 self.gen_blank()
                 self.gen_token('op' if import_is_next else 'op-no-blanks', '.')
@@ -1456,17 +1459,20 @@ class TokenBasedOrange:  # Orange is the new Black.
         Queue a *request* for a blank.
         Do *not* change prev_output_kind.
         """
-
-        if self.prev_output_kind in (
+        
+        ### g.trace('prev_output_kind', self.prev_output_kind, 'pending:', repr(self.pending_ws))  ###
+        
+        if self.prev_output_kind == 'op-no-blanks':
+            # A demand that no blank follows this op.
+            self.pending_ws = ''
+        elif self.prev_output_kind in (
             'dedent',
             'file-start',
             'indent',
             'hard-blank',
             'line-indent',
-            ### 'newline',  ### Does not appear in the output list.
-            'op-no-blanks',  # A demand that no blank follows this op.
         ):  
-            # Suppress the blank.
+            # Suppress the blank, but do *not* change the pending ws.
             pass
         elif self.pending_ws:
             # Use the existing pending ws.
