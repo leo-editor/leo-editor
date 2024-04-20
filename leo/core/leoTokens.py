@@ -1264,6 +1264,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Generate code for a left paren or curly/square bracket."""
         val = self.input_token.value
         assert val in '([{', repr(val)
+        
+        # Update state vars.
         if val == '(':
             self.paren_level += 1
         elif val == '[':
@@ -1288,7 +1290,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.pending_ws = ''
             else:
                 self.pending_ws = ''
-        else:
+        elif self.prev_output_kind != 'line-indent':
             self.pending_ws = ''
             
         # Output the token!
@@ -1356,6 +1358,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Generate code for a right paren or curly/square bracket."""
         val = self.input_token.value
         assert val in ')]}', repr(val)
+        
+        # Update state vars.
         if val == ')':
             self.paren_level -= 1
             self.in_arg_list = max(0, self.in_arg_list - 1)
@@ -1364,8 +1368,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.curly_brackets_level -= 1
             
+        ### g.trace('prev_kind:', self.prev_output_kind)
+            
         if self.prev_output_kind != 'line-indent':
-            self.pending_ws = ''
+            self.pending_ws = ''  ### Experimental.
         self.gen_token('rt', val)
     #@+node:ekr.20240105145241.38: *6* tbo.gen_star_op
     def gen_star_op(self) -> None:
@@ -1486,7 +1492,9 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.26: *5* tbo.gen_token
     def gen_token(self, kind: str, value: Any) -> None:
         """Add an output token to the code list."""
-        ### g.trace(kind, repr(value), 'pending:', repr(self.pending_ws))
+        ###
+            # if self.pending_ws == ' ' * 4:
+                # g.trace(kind, repr(value), 'pending:', repr(self.pending_ws))
         if self.pending_ws:
             self.output_list.append(self.pending_ws)
         self.output_list.append(value)

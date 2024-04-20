@@ -623,24 +623,24 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240420050005.1: *3* TestTBO.test_multi_line_statement
     def test_multi_line_statements(self):
 
+            # if 1:  # Simulate indent.
+                # def orange_command(
+                    # s: str,
+                # ) -> None:
+                    # pass
         contents = """
-            if 1:  # Simulate indent.
-                def orange_command(
-                    s: str,
-                ) -> None:
-                    pass
             if 1:  # The trailing ]) causes the problem.
                 return ''.join(
                     ['%s%s' % (sep, self.dump_ast(z, level + 1)) for z in node])
         """
-        # At present Orange doesn't split lines...
+
+            # if 1:  # Simulate indent.
+                # def orange_command(
+                    # s: str,
+                # ) -> None:
+                    # pass
         expected = self.prep(
             """
-            if 1:  # Simulate indent.
-                def orange_command(
-                    s: str,
-                ) -> None:
-                    pass
             if 1:  # The trailing ]) causes the problem.
                 return ''.join(
                     ['%s%s' % (sep, self.dump_ast(z, level + 1)) for z in node])
