@@ -629,10 +629,9 @@ class TestTokenBasedOrange(BaseTest):
                     s: str,
                 ) -> None:
                     pass
-            if 1:
-                return (
-                    whatever
-                )
+            if 1:  # The trailing ]) causes the problem.
+                return ''.join(
+                    ['%s%s' % (sep, self.dump_ast(z, level + 1)) for z in node])
         """
         # At present Orange doesn't split lines...
         expected = self.prep(
@@ -642,10 +641,9 @@ class TestTokenBasedOrange(BaseTest):
                     s: str,
                 ) -> None:
                     pass
-            if 1:
-                return (
-                    whatever
-                )
+            if 1:  # The trailing ]) causes the problem.
+                return ''.join(
+                    ['%s%s' % (sep, self.dump_ast(z, level + 1)) for z in node])
             """)
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
