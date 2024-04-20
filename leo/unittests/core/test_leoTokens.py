@@ -620,6 +620,34 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
+    #@+node:ekr.20240420050005.1: *3* TestTBO.test_multi_line_statement
+    def test_multi_line_statements(self):
+
+        contents = """
+            def orange_command(
+                arg_files: list[str], files: list[str], settings: Settings = None,
+            ) -> None:
+                pass
+
+            return (
+                whatever
+            )
+        """
+        # At present Orange doesn't split lines...
+        expected = self.prep(
+            """
+                def orange_command(
+                    arg_files: list[str], files: list[str], settings: Settings = None,
+                ) -> None:
+                    pass
+
+                return (
+                    whatever
+                )
+            """)
+        contents, tokens = self.make_data(contents)
+        results = self.beautify(contents, tokens)
+        self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.69: *3* TestTBO.test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
 
