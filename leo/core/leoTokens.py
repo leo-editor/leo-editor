@@ -1067,6 +1067,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.input_token.value
+        ### g.trace('pending:', repr(self.pending_ws), name)
         if name in self.operator_keywords:
             self.gen_word_op(name)
         else:
@@ -1103,6 +1104,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if token.kind not in ('newline', 'nl'):  # pragma: no cover
             self.oops(f"Unexpected newline token: {token!r}")
 
+        ### g.trace("lws:", repr(self.lws))
         self.output_list.append('\n')
         self.pending_ws = self.lws
         self.prev_output_kind = 'line-indent'
@@ -1436,15 +1438,18 @@ class TokenBasedOrange:  # Orange is the new Black.
         if '\\\n' in val:
             self.pending_ws = None
             self.gen_token('op-no-blanks', val)
-            return
+        else:
+            self.pending_ws = val
 
-        # Handle start-of-line whitespace.
-        inner = self.paren_level or self.square_brackets_stack or self.curly_brackets_level
-        if self.prev_output_kind == 'line-indent' and inner:
-            #Retain the indent that won't be cleaned away.
-            self.pending_ws = None
-            ### Wrong.
-            ### self.gen_token('hard-blank', val)
+        ### Don't handle this special case here!
+            # # Handle start-of-line whitespace.
+            # inner = self.paren_level or self.square_brackets_stack or self.curly_brackets_level
+            # if self.prev_output_kind == 'line-indent' and inner:
+                # self.pending_ws = None
+                # ### Wrong.
+                # ### Retain the indent that won't be cleaned away.
+                # ### self.gen_token('hard-blank', val)
+       
     #@+node:ekr.20240105145241.27: *5* tbo.gen_blank
     def gen_blank(self) -> None:
         """
@@ -1458,7 +1463,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             'indent',
             'hard-blank',
             'line-indent',
-            'newline',
+            ### 'newline',  ### Does not appear in the output list.
             'op-no-blanks',  # A demand that no blank follows this op.
         ):  
             # Suppress the blank.
@@ -1471,6 +1476,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.26: *5* tbo.gen_token
     def gen_token(self, kind: str, value: Any) -> None:
         """Add an output token to the code list."""
+        ### g.trace(kind, repr(value), 'pending:', repr(self.pending_ws))
         if self.pending_ws:
             self.output_list.append(self.pending_ws)
         self.output_list.append(value)
