@@ -1099,10 +1099,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         NEWLINE tokens end *logical* lines of Python code.
         """
 
-        # Defensive check.
-        token = self.input_token
-        if token.kind not in ('newline', 'nl'):  # pragma: no cover
-            self.oops(f"Unexpected newline token: {token!r}")
+        ###
+            # Defensive check.
+            # token = self.input_token
+            # if token.kind not in ('newline', 'nl'):  # pragma: no cover
+                # self.oops(f"Unexpected newline token: {token!r}")
 
         ### g.trace("lws:", repr(self.lws))
         self.output_list.append('\n')
@@ -1362,8 +1363,9 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.square_brackets_stack.pop()
         else:
             self.curly_brackets_level -= 1
-
-        self.pending_ws = ''
+            
+        if self.prev_output_kind != 'line-indent':
+            self.pending_ws = ''
         self.gen_token('rt', val)
     #@+node:ekr.20240105145241.38: *6* tbo.gen_star_op
     def gen_star_op(self) -> None:

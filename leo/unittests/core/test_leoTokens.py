@@ -626,29 +626,31 @@ class TestTokenBasedOrange(BaseTest):
         contents = """
             if 1:  # Simulate indent.
                 def orange_command(
-                    arg_files: list[str], files: list[str], settings: Settings = None,
+                    s: str,
                 ) -> None:
                     pass
 
-                return (
-                    whatever
-                )
         """
+                # return (
+                    # whatever
+                # )
         # At present Orange doesn't split lines...
         expected = self.prep(
             """
-            if 1:  # Simulate indent.    
+            if 1:  # Simulate indent.
                 def orange_command(
-                    arg_files: list[str], files: list[str], settings: Settings = None,
+                    s: str,
                 ) -> None:
                     pass
-
-                return (
-                    whatever
-                )
             """)
+                # return (
+                    # whatever
+                # )
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
+        if results != expected:
+            g.printObj(results, tag='Results')
+            g.printObj(expected, tag='Expected')
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.69: *3* TestTBO.test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
