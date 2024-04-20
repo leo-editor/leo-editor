@@ -3,9 +3,9 @@
 #@@language python
 
 """
-beautify_all_leo.py: Beautify all of Leo's most important files.
+beautify_all_leo.py: Beautify (almost) all of Leo's files.
 
-Works regardless of whether mypyc has compiled leoTokens.py!
+This script should work regardless of whether mypyc has compiled leoTokens.py!
 
 Info item #3867 describes all of Leo's test scripts:
 https://github.com/leo-editor/leo-editor/issues/2867
@@ -21,10 +21,8 @@ print(os.path.basename(__file__))
 os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
 
 # Beautify all, and always issue a report.
-if 1:  # Timing
-    args = '--all --report'
-else:
-    args = '--all --beautified --write --report'
+args = '--all --report'  # Testing only.
+# args = '--all --beautified --write --report'
 isWindows = sys.platform.startswith('win')
 python = 'py' if isWindows else 'python'
 
