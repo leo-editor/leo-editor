@@ -1206,7 +1206,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                 ### g.trace('prev', self.prev_output_kind, self.prev_output_value)
                 ### g.trace('pending:', repr(self.pending_ws))
                 self.gen_blank()
-                self.gen_token('op' if import_is_next else 'op-no-blanks', '.')
+                op = 'op' if import_is_next else 'op-no-blanks'
+                self.gen_token(op, '.')
             elif import_is_next:
                 self.gen_token('op', '.')
                 self.gen_blank()
