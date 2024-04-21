@@ -21,8 +21,7 @@ print(os.path.basename(__file__))
 os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
 
 # Beautify all, and always issue a report.
-args = '--all --report'  # Testing only.
-# args = '--all --beautified --write --report'
+args = '--all --beautified --write --report'
 isWindows = sys.platform.startswith('win')
 python = 'py' if isWindows else 'python'
 

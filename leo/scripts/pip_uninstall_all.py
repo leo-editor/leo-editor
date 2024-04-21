@@ -34,7 +34,7 @@ for command in [
     f"{python} -m pip freeze > temp_requirements.txt",
     f"{python} -m pip uninstall -r temp_requirements.txt -y --verbose",
     f"{python} -m pip list",
-    
+
 ]:
     print('')
     print(command)
