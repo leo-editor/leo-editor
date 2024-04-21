@@ -715,11 +715,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.diff = settings.get('diff', False)
         self.report = settings.get('report', False)
         self.write = settings.get('write', False)
-        
+
         # The list of tokens that tbo._next/_prev skip.
         self.insignificant_tokens = (
             'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
-        ) 
+        )
 
         # General patterns.
         self.beautify_pat = re.compile(
@@ -1004,7 +1004,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Generate the comment.
         self.pending_ws = ''
         entire_line = self.input_token.line.lstrip().startswith('#')
-        
+
         if entire_line:
             # The comment includes all ws.
             self.pending_lws = ''
@@ -1030,7 +1030,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Note: other methods use self.indent_level.
         self.indent_level -= 1
         self.lws = self.indent_level * self.tab_width * ' '
-        
+
         ### g.trace(repr(self.lws))  ###
 
         self.pending_lws = self.lws
@@ -1042,7 +1042,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.12: *5* tbo.do_endmarker
     def do_endmarker(self) -> None:
         """Handle an endmarker token."""
-        
+
         # Ensure exactly one newline at the end of file.
         if self.prev_output_kind not in (
             'indent', 'dedent', 'line-indent', 'newline',
@@ -1058,7 +1058,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Only warn about indentation errors.
         if (
-            '\t' in self.input_token.value or 
+            '\t' in self.input_token.value or
             (len(self.input_token.value) % self.tab_width) != 0
         ):  # pragma: no cover
             print(f"Leading tabs found: {self.consider_message}")
@@ -1070,7 +1070,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.indent_level += 1
         elif new_indent < old_indent:  # pragma: no cover (defensive)
             print(f"\n===== do_indent: can not happen {new_indent!r}, {old_indent!r}")
-            
+
         ### g.trace(repr(new_indent))  ###
 
         self.lws = new_indent
@@ -1145,7 +1145,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_op(self) -> None:
         """Handle an op token."""
         val = self.input_token.value
-      
+
         if val == '.':
             self.gen_dot_op()
         elif val == '@':
@@ -1214,9 +1214,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         next_i = self._next(self.index)
         next = 'None' if next_i is None else self.input_tokens[next_i]
         import_is_next = next and next.kind == 'name' and next.value == 'import'
-        
+
         ### g.trace('next:', next)
-        
+
         if context == 'import':
             if self.prev_output_kind == 'word' and self.prev_output_value in ('from', 'import'):
                 ### g.trace('prev', self.prev_output_kind, self.prev_output_value)
@@ -1279,7 +1279,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Generate code for a left paren or curly/square bracket."""
         val = self.input_token.value
         assert val in '([{', repr(val)
-        
+
         # Update state vars.
         if val == '(':
             self.paren_level += 1
@@ -1307,7 +1307,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.pending_ws = ''
         elif self.prev_output_kind != 'line-indent':
             self.pending_ws = ''
-            
+
         # Output the token!
         self.gen_token('op-no-blanks', val)
     #@+node:ekr.20240105145241.37: *6* tbo.gen_possible_unary_op & helper
@@ -1373,7 +1373,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Generate code for a right paren or curly/square bracket."""
         val = self.input_token.value
         assert val in ')]}', repr(val)
-        
+
         # Update state vars.
         if val == ')':
             self.paren_level -= 1
@@ -1382,9 +1382,9 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.square_brackets_stack.pop()
         else:
             self.curly_brackets_level -= 1
-            
+
         ### g.trace('prev_kind:', self.prev_output_kind)
-            
+
         if self.prev_output_kind != 'line-indent':
             self.pending_ws = ''  ### Experimental.
         self.gen_token('rt', val)
@@ -1464,7 +1464,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         last_token = self.input_tokens[self.index - 1]
 
         ### g.trace(f"val:', {val!r:16}")  ### last_token: {last_token}")
-        
+
         if last_token.kind in ('nl', 'newline'):
             self.pending_lws = val
             self.pending_ws = ''
@@ -1479,14 +1479,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         Queue a *request* a blank.
         Change *neither* prev_output_kind *nor* pending_lws.
         """
-        
+
         if 0:  ###
             g.trace(
                 'pending_lws:', repr(self.pending_lws),
                 'pending_ws:', repr(self.pending_ws),
                 g.callers(1))
                 # 'prev_output_kind', self.prev_output_kind)
-                
+
         prev_kind = self.prev_output_kind
         if prev_kind == 'op-no-blanks':
             # A demand that no blank follows this op.
@@ -1500,7 +1500,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             'indent',
             'line-indent',
             'newline',
-        ):  
+        ):
             # Suppress the blank, but do *not* change the pending ws.
             pass
         elif self.pending_ws:
@@ -1511,14 +1511,14 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.26: *5* tbo.gen_token
     def gen_token(self, kind: str, value: Any) -> None:
         """Add an output token to the code list."""
-        if 0:  ### 
+        if 0:  ###
             if self.pending_lws or self.pending_ws:  ###
                 g.trace(kind, repr(value),
                     'pending_lws:', repr(self.pending_lws),
                     'pending_ws:', repr(self.pending_ws))
             else:
                 g.trace(kind, repr(value))
-                
+
         if self.pending_lws:
             self.output_list.append(self.pending_lws)
         elif self.pending_ws:
