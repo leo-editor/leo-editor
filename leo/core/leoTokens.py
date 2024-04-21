@@ -1021,9 +1021,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Note: other methods use self.indent_level.
         self.indent_level -= 1
         self.lws = self.indent_level * self.tab_width * ' '
-
-        ### g.trace(repr(self.lws))  ###
-
         self.pending_lws = self.lws
         self.pending_ws = ''
         self.prev_output_kind = 'dedent'
@@ -1061,8 +1058,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.indent_level += 1
         elif new_indent < old_indent:  # pragma: no cover (defensive)
             print(f"\n===== do_indent: can not happen {new_indent!r}, {old_indent!r}")
-
-        ### g.trace(repr(new_indent))  ###
 
         self.lws = new_indent
         self.pending_lws = self.lws
@@ -1104,13 +1099,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         NEWLINE tokens end *logical* lines of Python code.
         """
 
-        if 0:  ###
-            print('')
-            g.trace("value", repr(self.input_token.value), "lws:", repr(self.lws))
-            print('')
-
         self.output_list.append('\n')
-        ### self.pending_lws = self.lws
         self.pending_lws = ''  # Set only by 'dedent', 'indent' or 'ws' tokens.
         self.pending_ws = ''
         self.prev_output_kind = 'newline'
@@ -1206,12 +1195,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         next = 'None' if next_i is None else self.input_tokens[next_i]
         import_is_next = next and next.kind == 'name' and next.value == 'import'
 
-        ### g.trace('next:', next)
-
         if context == 'import':
-            if self.prev_output_kind == 'word' and self.prev_output_value in ('from', 'import'):
-                ### g.trace('prev', self.prev_output_kind, self.prev_output_value)
-                ### g.trace('pending:', repr(self.pending_ws))
+            if (
+                self.prev_output_kind == 'word'
+                and self.prev_output_value in ('from', 'import')
+            ):
                 self.gen_blank()
                 op = 'op' if import_is_next else 'op-no-blanks'
                 self.gen_token(op, '.')
@@ -1374,10 +1362,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.curly_brackets_level -= 1
 
-        ### g.trace('prev_kind:', self.prev_output_kind)
-
         if self.prev_output_kind != 'line-indent':
-            self.pending_ws = ''  ### Experimental.
+            self.pending_ws = ''
         self.gen_token('rt', val)
     #@+node:ekr.20240105145241.38: *6* tbo.gen_star_op
     def gen_star_op(self) -> None:
@@ -1454,8 +1440,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         val = self.input_token.value
         last_token = self.input_tokens[self.index - 1]
 
-        ### g.trace(f"val:', {val!r:16}")  ### last_token: {last_token}")
-
         if last_token.kind in ('nl', 'newline'):
             self.pending_lws = val
             self.pending_ws = ''
@@ -1470,13 +1454,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         Queue a *request* a blank.
         Change *neither* prev_output_kind *nor* pending_lws.
         """
-
-        if 0:  ###
-            g.trace(
-                'pending_lws:', repr(self.pending_lws),
-                'pending_ws:', repr(self.pending_ws),
-                g.callers(1))
-                # 'prev_output_kind', self.prev_output_kind)
 
         prev_kind = self.prev_output_kind
         if prev_kind == 'op-no-blanks':
@@ -1502,13 +1479,6 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.26: *5* tbo.gen_token
     def gen_token(self, kind: str, value: Any) -> None:
         """Add an output token to the code list."""
-        if 0:  ###
-            if self.pending_lws or self.pending_ws:  ###
-                g.trace(kind, repr(value),
-                    'pending_lws:', repr(self.pending_lws),
-                    'pending_ws:', repr(self.pending_ws))
-            else:
-                g.trace(kind, repr(value))
 
         if self.pending_lws:
             self.output_list.append(self.pending_lws)
