@@ -1002,13 +1002,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         #@-<< do_comment: update comment-related state >>
 
         # Generate the comment.
+        self.pending_lws = ''
         self.pending_ws = ''
         entire_line = self.input_token.line.lstrip().startswith('#')
 
         if entire_line:
             # The comment includes all ws.
-            self.pending_lws = ''
-            self.pending_ws = ''
             # #1496: No further munging needed.
             val = self.input_token.line.rstrip()
             # #3056: Insure one space after '#' in non-sentinel comments.
@@ -1018,11 +1017,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 val = val[:i] + '# ' + val[i + 1 :]
         else:
             # Exactly two spaces before trailing comments.
-            self.pending_lws = ''
-            self.pending_ws = ''
             val = '  ' + val.rstrip()
-
-        ### g.trace(repr(self.pending_ws), repr(val))
         self.gen_token('comment', val)
     #@+node:ekr.20240111051726.1: *5* tbo.do_dedent
     def do_dedent(self) -> None:
