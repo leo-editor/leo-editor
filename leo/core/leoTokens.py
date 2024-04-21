@@ -43,6 +43,9 @@ from typing import Any, Generator, Optional, Union
 Settings = dict[str, Union[int, bool]]
 #@-<< leoTokens.py: imports & annotations >>
 
+from leo.core import leoGlobals as g
+assert g
+
 #@+others
 #@+node:ekr.20240214065940.1: ** top-level functions (leoTokens.py)
 #@+node:ekr.20240105140814.41: *3* function: dump_contents
@@ -63,10 +66,10 @@ def dump_lines(tokens: list[InputToken], tag: str = 'lines') -> None:  # pragma:
             print(repr(z.line))
     print('')
 #@+node:ekr.20240105140814.43: *3* function: dump_results
-def dump_results(tokens: list[OutputToken], tag: str = 'Results') -> None:  # pragma: no cover
+def dump_results(results: list[str], tag: str = 'Results') -> None:  # pragma: no cover
     print('')
     print(f"{tag}...\n")
-    print(output_tokens_to_string(tokens))
+    print(''.join(results))
     print('')
 #@+node:ekr.20240105140814.44: *3* function: dump_tokens
 def dump_tokens(tokens: list[InputToken], tag: str = 'Tokens') -> None:  # pragma: no cover
@@ -225,7 +228,7 @@ def orange_command(
 ) -> None:  # pragma: no cover
     """The outer level of the 'tbo/orange' command."""
     t1 = time.process_time()
-    n_tokens = 0
+    # n_tokens = 0
     n_beautified = 0
     if settings is None:
         settings = {}
@@ -236,28 +239,18 @@ def orange_command(
             beautified = tbo.beautify_file(filename, was_dirty)
             if beautified:
                 n_beautified += 1
-            n_tokens += len(tbo.tokens)
+            # n_tokens += len(tbo.input_tokens)
         else:
             print(f"file not found: {filename}")
     # Report the results.
     t2 = time.process_time()
     if n_beautified or settings.get('report'):
         print(
-            f"tbo: {t2-t1:3.1f} sec. "
+            f"tbo: {t2-t1:4.2f} sec. "
             f"dirty: {len(dirty_files):<3} "
             f"checked: {len(to_be_checked_files):<3} "
             f"beautified: {n_beautified:<3} in {','.join(arg_files)}"
         )
-#@+node:ekr.20240312115008.1: *3* function: output_tokens_to_string
-def output_tokens_to_string(tokens: list[OutputToken]) -> str:
-    """Return the string represented by the list of tokens."""
-    if tokens is None:  # pragma: no cover
-        # This indicates an internal error.
-        print('')
-        print('===== output token list is None ===== ')
-        print('')
-        return ''
-    return ''.join([z.to_string() for z in tokens])
 #@+node:ekr.20240105140814.10: *3* function: scan_args (leoTokens.py)
 def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
     description = textwrap.dedent(
@@ -372,8 +365,9 @@ class InputToken:  # leoTokens.py.
     #@+node:ekr.20240105140814.58: *4* itoken.show_val
     def show_val(self, truncate_n: int = 8) -> str:  # pragma: no cover
         """Return the token.value field."""
-        if self.kind in ('ws', 'indent'):
-            val = str(len(self.value))
+        if self.kind in ('dedent', 'indent', 'newline', 'ws'):
+            # val = str(len(self.value))
+            val = repr(self.value)
         elif self.kind == 'string' or self.kind.startswith('fstring'):
             # repr would be confusing.
             val = g_truncate(self.value, truncate_n)
@@ -436,12 +430,10 @@ class Tokenizer:
             # Use the line and line number of the 'string-start' token.
             line = self.fstring_line or ''
             line_number = self.fstring_line_number or 0
-
             # Clear the saved values.
             self.fstring_line = None
             self.fstring_line_number = None
             self.fstring_values = None
-            # g.trace(kind, value, line_number, repr(line))
 
         tok = InputToken(kind, value, self.token_index, line, line_number)
         self.token_index += 1
@@ -534,7 +526,8 @@ class Tokenizer:
         tok_s = contents[s_offset:e_offset]
         # Add any preceding between-token whitespace.
         ws = contents[self.prev_offset:s_offset]
-        if ws:  # Create the 'ws' pseudo-token.
+        if ws:
+            # Create the 'ws' pseudo-token.
             self.add_token('ws', line, line_number, ws)
         # Always add token, even if it contributes no text!
         self.add_token(kind, line, line_number, tok_s)
@@ -554,7 +547,8 @@ class Tokenizer:
             print(f"make_input_tokens: exception {e!r}")
             return []
         tokens = self.create_input_tokens(contents, five_tuples)
-        if True:  # True: 2.9 sec. False: 2.8 sec.
+        if 1:
+            # True: 2.9 sec. False: 2.8 sec.
             assert self.check_round_trip(contents, tokens)
         return tokens
     #@+node:ekr.20240105143214.7: *4* Tokenizer.tokens_to_string
@@ -567,43 +561,6 @@ class Tokenizer:
             print('')
             return ''
         return ''.join([z.to_string() for z in tokens])
-    #@-others
-#@+node:ekr.20240105140814.106: *3* class OutputToken
-class OutputToken:
-    """
-    A class representing an Orange output token.
-    """
-
-    __slots__ = ('index', 'kind', 'value')
-
-
-    def __init__(self, kind: str, value: str, index: int):
-        self.index = index
-        self.kind = kind
-        self.value = value
-
-    def __repr__(self) -> str:  # pragma: no cover
-        return f"OutputToken: {self.show_val(20)}"
-
-    def __str__(self) -> str:  # pragma: no cover
-        return f"OutputToken: {self.show_val(20)}"
-
-    def to_string(self) -> str:
-        """Return the contribution of the token to the source file."""
-        return self.value if isinstance(self.value, str) else ''
-
-    #@+others
-    #@+node:ekr.20240105140814.107: *4* otoken.show_val
-    def show_val(self, truncate_n: int) -> str:  # pragma: no cover
-        """Return the token.value field."""
-        if self.kind in ('ws', 'indent'):
-            val = str(len(self.value))
-        elif self.kind == 'string' or self.kind.startswith('fstring'):
-            # repr would be confusing.
-            val = g_truncate(self.value, truncate_n)
-        else:
-            val = g_truncate(repr(self.value), truncate_n)
-        return val
     #@-others
 #@+node:ekr.20240105140814.108: *3* class ParseState
 class ParseState:
@@ -683,7 +640,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     After the pre-scan, *tbo.beautify* (the main loop) calls *visitors* for each separate type of *input* token.
 
-    Visitors call *code generators* to generate *output* tokens. Code generation *helpers* form a peephole optimizer that looks behind a bounded number of (output) tokens.
+    Visitors call *code generators* to generate strings in the output_list. The code generators and their helpers use *lazy evaluation* to generate whitespace.
     """
     #@-<< TokenBasedOrange: docstring >>
     #@+<< TokenBasedOrange: __slots__ >>
@@ -693,10 +650,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         'all', 'beautified', 'diff', 'report', 'write',
 
         # Global data.
-        'code_list', 'contents', 'filename', 'tab_width', 'tokens',
+        'contents', 'filename', 'input_tokens', 'output_list', 'tab_width',
+        'insignificant_tokens',  # New.
 
         # Token-related data for visitors.
-        'index', 'line_number', 'token',
+        'index', 'input_token', 'line_number',
+        'pending_lws', 'pending_ws', 'prev_output_kind', 'prev_output_value',  # New.
 
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part', 'state_stack', 'verbatim',
@@ -736,7 +695,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.tab_width = 4
 
         # Define tokens even for empty files.
-        self.tokens: list[InputToken] = []
+        self.input_token: InputToken = None
+        self.input_tokens: list[InputToken] = []
+        self.lws: str = ""  # Set only by Indent/Dedent tokens.
+        self.pending_lws: str = ""
+        self.pending_ws: str = ""
+
+        # Set by gen_token and all do_* methods that bypass gen_token.
+        self.prev_output_kind: str = None
+        self.prev_output_value: str = None
 
         # Set ivars from the settings dict *without* using setattr.
         self.all = settings.get('all', False)
@@ -744,6 +711,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.diff = settings.get('diff', False)
         self.report = settings.get('report', False)
         self.write = settings.get('write', False)
+
+        # The list of tokens that tbo._next/_prev skip.
+        self.insignificant_tokens = (
+            'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
+        )
 
         # General patterns.
         self.beautify_pat = re.compile(
@@ -764,13 +736,13 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Dump the given range of input tokens."""
         if tag:
             print(tag)
-        for token in self.tokens[i1 : i2 + 1]:
+        for token in self.input_tokens[i1 : i2 + 1]:
             print(token.dump())
     #@+node:ekr.20240112082350.1: *5* tbo.internal_error_message
     def internal_error_message(self, message: str) -> str:  # pragma: no cover
         """Print a message about an error in the beautifier itself."""
         # Compute lines_s.
-        line_number = self.token.line_number
+        line_number = self.input_token.line_number
         lines = g_split_lines(self.contents)
         n1 = max(0, line_number - 5)
         n2 = min(line_number + 5, len(lines))
@@ -794,7 +766,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def user_error_message(self, message: str) -> str:  # pragma: no cover
         """Print a message about a user error."""
         # Compute lines_s.
-        line_number = self.token.line_number
+        line_number = self.input_token.line_number
         lines = g_split_lines(self.contents)
         n1 = max(0, line_number - 5)
         n2 = min(line_number + 5, len(lines))
@@ -818,10 +790,10 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def no_visitor(self) -> None:  # pragma: no cover
-        self.oops(f"Unknown kind: {self.token.kind!r}")
+        self.oops(f"Unknown kind: {self.input_token.kind!r}")
 
     def beautify(self,
-        contents: str, filename: str, tokens: list[InputToken],
+        contents: str, filename: str, input_tokens: list[InputToken],
     ) -> str:
         """
         The main line. Create output tokens and return the result as a string.
@@ -836,8 +808,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.line_number: Optional[int] = None
 
         # The input and output lists...
-        self.code_list: list[OutputToken] = []  # The list of output tokens.
-        self.tokens = tokens  # The list of input tokens.
+        self.output_list: list[str] = []
+        self.input_tokens = input_tokens  # The list of input tokens.
 
         # State vars for whitespace.
         self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
@@ -863,24 +835,32 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Pre-scan the token list, setting context.s
             self.pre_scan()
 
-            # The main loop:
+            # Init ivars first.
+            self.input_token = None
+            self.pending_lws = ''
+            self.pending_ws = ''
+            self.prev_output_kind = None
+            self.prev_output_value = None
+
+            # Init state.
             self.gen_token('file-start', '')
             self.push_state('file-start')
+
+            # The main loop:
             prev_line_number: int = 0
-            self.token: InputToken
-            for self.index, self.token in enumerate(tokens):
+            for self.index, self.input_token in enumerate(input_tokens):
                 # Set global for visitors.
-                if prev_line_number != self.token.line_number:
-                    prev_line_number = self.token.line_number
+                if prev_line_number != self.input_token.line_number:
+                    prev_line_number = self.input_token.line_number
                 # Call the proper visitor.
                 if self.verbatim:
                     self.do_verbatim()
                 else:
-                    func = getattr(self, f"do_{self.token.kind}", self.no_visitor)
+                    func = getattr(self, f"do_{self.input_token.kind}", self.no_visitor)
                     func()
 
             # Return the result.
-            result = output_tokens_to_string(self.code_list)
+            result = ''.join(self.output_list)
             return result
 
         # Make no change if there is any error.
@@ -943,10 +923,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.filename = filename
         contents = g_read_file(filename)
         if not contents:
-            self.tokens = []
+            self.input_tokens = []
             return '', []
-        self.tokens = tokens = Tokenizer().make_input_tokens(contents)
-        return contents, tokens
+        self.input_tokens = input_tokens = Tokenizer().make_input_tokens(contents)
+        return contents, input_tokens
+    #@+node:ekr.20240105140814.12: *5* tbo.regularize_newlines
+    def regularize_newlines(self, s: str) -> str:
+        """Regularize newlines within s."""
+        return s.replace('\r\n', '\n').replace('\r', '\n')
     #@+node:ekr.20240105140814.17: *5* tbo.write_file
     def write_file(self, filename: str, s: str) -> None:  # pragma: no cover
         """
@@ -975,21 +959,17 @@ class TokenBasedOrange:  # Orange is the new Black.
         ))
         print('')
         print(f"Diffs for {filename}")
-        print(lines)
+        for line in lines:
+            print(line)
     #@+node:ekr.20240105145241.9: *4* tbo: Visitors & generators
     # Visitors (tbo.do_* methods) handle input tokens.
     # Generators (tbo.gen_* methods) create zero or more output tokens.
-    #@+node:ekr.20240105145241.29: *5* tbo.clean
-    def clean(self, kind: str) -> None:
-        """Remove the last item of token list if it has the given kind."""
-        prev = self.code_list[-1]
-        if prev.kind == kind:
-            self.code_list.pop()
     #@+node:ekr.20240105145241.10: *5* tbo.do_comment
     def do_comment(self) -> None:
         """Handle a comment token."""
-        val = self.token.value
-        #
+        val = self.input_token.value
+        #@+<< do_comment: update comment-related state >>
+        #@+node:ekr.20240420034216.1: *6* << do_comment: update comment-related state >>
         # Leo-specific code...
         if self.node_pat.match(val):
             # Clear per-node state.
@@ -1015,15 +995,17 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.in_doc_part = True
             if self.end_doc_pat.match(val):
                 self.in_doc_part = False
-        #
-        # General code: Generate the comment.
-        self.clean('blank')
-        entire_line = self.token.line.lstrip().startswith('#')
+        #@-<< do_comment: update comment-related state >>
+
+        # Generate the comment.
+        self.pending_lws = ''
+        self.pending_ws = ''
+        entire_line = self.input_token.line.lstrip().startswith('#')
+
         if entire_line:
-            self.clean('hard-blank')
-            self.clean('line-indent')
+            # The comment includes all ws.
             # #1496: No further munging needed.
-            val = self.token.line.rstrip()
+            val = self.input_token.line.rstrip()
             # #3056: Insure one space after '#' in non-sentinel comments.
             #        Do not change bang lines or '##' comments.
             if m := self.comment_pat.match(val):
@@ -1039,55 +1021,61 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Note: other methods use self.indent_level.
         self.indent_level -= 1
         self.lws = self.indent_level * self.tab_width * ' '
-        self.gen_line_indent()
+        self.pending_lws = self.lws
+        self.pending_ws = ''
+        self.prev_output_kind = 'dedent'
     #@+node:ekr.20240105145241.11: *5* tbo.do_encoding
     def do_encoding(self) -> None:
         """Handle the encoding token."""
     #@+node:ekr.20240105145241.12: *5* tbo.do_endmarker
     def do_endmarker(self) -> None:
         """Handle an endmarker token."""
-        # Ensure exactly one blank line at the end of the file.
-        while self.code_list[-1].kind in ('line-end', 'line-indent'):
-            self.code_list.pop()
-        self.gen_token('line-end', '\n')
+
+        # Ensure exactly one newline at the end of file.
+        if self.prev_output_kind not in (
+            'indent', 'dedent', 'line-indent', 'newline',
+        ):
+            self.output_list.append('\n')
+        self.pending_lws = ''  # Defensive.
+        self.pending_ws = ''  # Defensive.
     #@+node:ekr.20240105145241.14: *5* tbo.do_indent
     consider_message = 'consider using python/Tools/scripts/reindent.py'
 
     def do_indent(self) -> None:
         """Handle indent token."""
 
-        # Refuse to beautify mal-formed files.
-        if '\t' in self.token.value:  # pragma: no cover
-            raise IndentationError(self.user_error_message(
-                f"Leading tabs found: {self.consider_message}"))
-
-        if (len(self.token.value) % self.tab_width) != 0:  # pragma: no cover
-            raise IndentationError(self.user_error_message(
-                f"Indentation error! {self.consider_message}"))
+        # Only warn about indentation errors.
+        if (
+            '\t' in self.input_token.value or
+            (len(self.input_token.value) % self.tab_width) != 0
+        ):  # pragma: no cover
+            print(f"Leading tabs found: {self.consider_message}")
 
         # Handle the token!
-        new_indent = self.token.value
+        new_indent = self.input_token.value
         old_indent = self.indent_level * self.tab_width * ' '
         if new_indent > old_indent:
             self.indent_level += 1
         elif new_indent < old_indent:  # pragma: no cover (defensive)
             print(f"\n===== do_indent: can not happen {new_indent!r}, {old_indent!r}")
+
         self.lws = new_indent
-        self.gen_line_indent()
+        self.pending_lws = self.lws
+        self.pending_ws = ''
+        self.prev_output_kind = 'indent'
     #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators
+    #@+node:ekr.20240418050017.1: *6* tbo.do_name
     def do_name(self) -> None:
         """Handle a name token."""
-        name = self.token.value
+        name = self.input_token.value
         if name in self.operator_keywords:
             self.gen_word_op(name)
         else:
             self.gen_word(name)
-
-
     #@+node:ekr.20240105145241.40: *6* tbo.gen_word
     def gen_word(self, s: str) -> None:
         """Add a word request to the code list."""
-        assert s == self.token.value
+        assert s == self.input_token.value
         assert s and isinstance(s, str), repr(s)
         self.gen_blank()
         self.gen_token('word', s)
@@ -1095,12 +1083,13 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240107141830.1: *6* tbo.gen_word_op
     def gen_word_op(self, s: str) -> None:
         """Add a word-op request to the code list."""
-        assert s == self.token.value
+        assert s == self.input_token.value
         assert s and isinstance(s, str), repr(s)
         self.gen_blank()
         self.gen_token('word-op', s)
         self.gen_blank()
     #@+node:ekr.20240105145241.17: *5* tbo.do_newline, do_nl & generators
+    #@+node:ekr.20240418043826.1: *6* tbo.do_newline
     def do_newline(self) -> None:
         """
         do_newline: Handle a regular newline.
@@ -1109,17 +1098,13 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         NEWLINE tokens end *logical* lines of Python code.
         """
-        # Only do_newline and do_nl should call this method.
-        token = self.token
-        if token.kind not in ('newline', 'nl'):  # pragma: no cover
-            self.oops(f"Unexpected newline token: {token!r}")
 
-        # Create the 'line-end' output token.
-        self.gen_line_end()
-
-        # Add the indentation until the next indent/unindent token.
-        self.gen_line_indent()
-
+        self.output_list.append('\n')
+        self.pending_lws = ''  # Set only by 'dedent', 'indent' or 'ws' tokens.
+        self.pending_ws = ''
+        self.prev_output_kind = 'newline'
+        self.prev_output_value = '\n'
+    #@+node:ekr.20240418043827.1: *6* tbo.do_nl
     def do_nl(self) -> None:
         """
         do_nl: Handle a continuation line.
@@ -1130,37 +1115,20 @@ class TokenBasedOrange:  # Orange is the new Black.
         code spans multiple physical lines.
         """
         return self.do_newline()
-    #@+node:ekr.20240105145241.25: *6* tbo.gen_line_end
-    def gen_line_end(self) -> OutputToken:
-        """Add a line-end request to the code list."""
-
-        # This may be called from do_name as well as do_newline and do_nl.
-        token = self.token
-        if token.kind not in ('newline', 'nl'):
-            self.oops(f"Unexpected newline token: {token!r}")  # pragma: no cover
-
-        self.clean('blank')  # Important!
-        self.clean('line-indent')
-        t = self.gen_token('line-end', '\n')
-        return t
-    #@+node:ekr.20240105145241.33: *6* tbo.gen_line_indent
-    def gen_line_indent(self) -> None:
-        """Add a line-indent token."""
-        self.clean('line-indent')  # Defensive. Should never happen.
-        self.gen_token('line-indent', self.lws)
     #@+node:ekr.20240105145241.18: *5* tbo.do_number
     def do_number(self) -> None:
         """Handle a number token."""
         self.gen_blank()
-        self.gen_token('number', self.token.value)
+        self.gen_token('number', self.input_token.value)
     #@+node:ekr.20240105145241.19: *5* tbo.do_op & generators
+    #@+node:ekr.20240418045924.1: *6* tbo.do_op
     def do_op(self) -> None:
         """Handle an op token."""
-        val = self.token.value
+        val = self.input_token.value
+
         if val == '.':
             self.gen_dot_op()
         elif val == '@':
-            self.clean('blank')
             self.gen_token('op-no-blanks', val)
             self.push_state('decorator')
         elif val == ':':
@@ -1169,7 +1137,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         elif val in ',;':
             # Pep 8: Avoid extraneous whitespace immediately before
             # comma, semicolon, or colon.
-            self.clean('blank')
+            self.pending_ws = ''
             self.gen_token('op', val)
             self.gen_blank()
         elif val in '([{':
@@ -1199,15 +1167,12 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.31: *6* tbo.gen_colon & helper
     def gen_colon(self) -> None:
         """Handle a colon."""
-        val = self.token.value
-        context = self.token.context
-        prev_i = self.prev(self.index)
-        prev = None if prev_i is None else self.tokens[prev_i]
+        val = self.input_token.value
+        context = self.input_token.context
 
-        # Generate the proper code using the context supplied by the parser.
-        self.clean('blank')
+        self.pending_ws = ''
         if context == 'complex-slice':
-            if prev and prev.value not in '[:':
+            if self.prev_output_value not in '[:':
                 self.gen_blank()
             self.gen_token('op', val)
             self.gen_blank()
@@ -1219,42 +1184,70 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.gen_token('op', val)
             self.gen_blank()
-    #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op
+    #@+node:ekr.20240109035004.1: *6* tbo.gen_dot_op & _next
     def gen_dot_op(self) -> None:
         """Handle the '.' input token."""
-        context = self.token.context
+        context = self.input_token.context
 
-        # Remove previous 'blank' token *before* calculating prev.
-        self.clean('blank')
-
-        # Now calculate prev & next.
-        prev = self.code_list[-1]
-        next_i = self.next(self.index)
-        next = 'None' if next_i is None else self.tokens[next_i]
+        # Get the previous significant **input** token.
+        # This is the only call to next(i) anywhere!
+        next_i = self._next(self.index)
+        next = 'None' if next_i is None else self.input_tokens[next_i]
         import_is_next = next and next.kind == 'name' and next.value == 'import'
 
         if context == 'import':
-            if prev.kind == 'word' and prev.value in ('from', 'import'):
+            if (
+                self.prev_output_kind == 'word'
+                and self.prev_output_value in ('from', 'import')
+            ):
                 self.gen_blank()
-            if import_is_next:
+                op = 'op' if import_is_next else 'op-no-blanks'
+                self.gen_token(op, '.')
+            elif import_is_next:
                 self.gen_token('op', '.')
                 self.gen_blank()
             else:
+                self.pending_ws = ''
                 self.gen_token('op-no-blanks', '.')
         else:
+            self.pending_ws = ''
             self.gen_token('op-no-blanks', '.')
+    #@+node:ekr.20240105145241.43: *7* tbo._next
+    def _next(self, i: int) -> Optional[int]:
+        """
+        Return the next *significant* input token.
+
+        Ignore insignificant tokens: whitespace, indentation, comments, etc.
+
+        The **Global Token Ratio** is tbo.n_scanned_tokens / len(tbo.tokens),
+        where tbo.n_scanned_tokens is the total number of calls calls to
+        tbo.next or tbo.prev.
+
+        For Leo's sources, this ratio ranges between 0.48 and 1.51!
+
+        The orange_command function warns if this ratio is greater than 2.5.
+        Previous versions of this code suffered much higher ratios.
+        """
+        i += 1
+        while i < len(self.input_tokens):
+            token = self.input_tokens[i]
+            if token.kind not in self.insignificant_tokens:
+                # g.trace(f"token: {token!r}")
+                return i
+            i += 1
+        return None  # pragma: no cover
     #@+node:ekr.20240105145241.20: *6* tbo.gen_equal_op
     def gen_equal_op(self) -> None:
 
-        val = self.token.value
-        context = self.token.context
+        val = self.input_token.value
+        context = self.input_token.context
 
         if context == 'initializer':
             # Pep 8: Don't use spaces around the = sign when used to indicate
             #        a keyword argument or a default parameter value.
             #        However, when combining an argument annotation with a default value,
             #        *do* use spaces around the = sign.
-            self.clean('blank')
+            self.pending_ws = ''
             self.gen_token('op-no-blanks', val)
         else:
             self.gen_blank()
@@ -1263,40 +1256,45 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.35: *6* tbo.gen_lt
     def gen_lt(self) -> None:
         """Generate code for a left paren or curly/square bracket."""
-        val = self.token.value
+        val = self.input_token.value
         assert val in '([{', repr(val)
+
+        # Update state vars.
         if val == '(':
             self.paren_level += 1
         elif val == '[':
             self.square_brackets_stack.append(False)
         else:
             self.curly_brackets_level += 1
-        self.clean('blank')
-        prev = self.code_list[-1]
 
-        if self.token.context == 'import':
+        # Generate or suppress the leading blank.
+        # Update self.in_arg_list if necessary.
+        if self.input_token.context == 'import':
             self.gen_blank()
-            self.gen_token('lt', val)
-        elif prev.kind in ('op', 'word-op'):
+        elif self.prev_output_kind in ('op', 'word-op'):
             self.gen_blank()
-            self.gen_token('lt', val)
-        elif prev.kind == 'word':
+        elif self.prev_output_kind == 'word':
             # Only suppress blanks before '(' or '[' for non-keywords.
-            if val == '{' or prev.value in ('if', 'else', 'elif', 'return', 'for', 'while'):
+            if val == '{' or self.prev_output_value in (
+                'if', 'else', 'elif', 'return', 'for', 'while',
+            ):
                 self.gen_blank()
             elif val == '(':
                 self.in_arg_list += 1
-            self.gen_token('lt', val)
-        else:
-            self.clean('blank')
-            self.gen_token('op-no-blanks', val)
-    #@+node:ekr.20240105145241.37: *6* tbo.gen_possible_unary_op & helper (now simpler)
+                self.pending_ws = ''
+            else:
+                self.pending_ws = ''
+        elif self.prev_output_kind != 'line-indent':
+            self.pending_ws = ''
+
+        # Output the token!
+        self.gen_token('op-no-blanks', val)
+    #@+node:ekr.20240105145241.37: *6* tbo.gen_possible_unary_op & helper
     def gen_possible_unary_op(self) -> None:
         """Add a unary or binary op to the token list."""
-        val = self.token.value
-        self.clean('blank')
+        val = self.input_token.value
         if self.is_unary_op(self.index, val):
-            prev = self.code_list[-1]
+            prev = self.input_token
             if prev.kind == 'lt':
                 self.gen_token('op-no-blanks', val)
             else:
@@ -1307,18 +1305,21 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.gen_token('op', val)
             self.gen_blank()
 
-    #@+node:ekr.20240109082712.1: *7* tbo.is_unary_op
+    #@+node:ekr.20240109082712.1: *7* tbo.is_unary_op & _prev
     def is_unary_op(self, i: int, val: str) -> bool:
 
         if val == '~':
             return True
         if val not in '+-':  # pragma: no cover
             return False
-        # Get the previous significant token.
-        prev_i = self.prev(i)
-        prev_token = None if prev_i is None else self.tokens[prev_i]
+
+        # Get the previous significant **input** token.
+        # This is the only call to _prev(i) anywhere!
+        prev_i = self._prev(i)
+        prev_token = None if prev_i is None else self.input_tokens[prev_i]
         kind = prev_token.kind if prev_token else ''
         value = prev_token.value if prev_token else ''
+
         if kind in ('number', 'string'):
             return_val = False
         elif kind == 'op' and value in ')]':
@@ -1332,11 +1333,27 @@ class TokenBasedOrange:  # Orange is the new Black.
             # Any Python keyword indicates a unary operator.
             return_val = keyword.iskeyword(value) or keyword.issoftkeyword(value)
         return return_val
+    #@+node:ekr.20240115233050.1: *8* tbo._prev
+    def _prev(self, i: int) -> Optional[int]:
+        """
+        Return the previous *significant* input token.
+
+        Ignore insignificant tokens: whitespace, indentation, comments, etc.
+        """
+        i -= 1
+        while i >= 0:
+            token = self.input_tokens[i]
+            if token.kind not in self.insignificant_tokens:
+                return i
+            i -= 1
+        return None  # pragma: no cover
     #@+node:ekr.20240105145241.36: *6* tbo.gen_rt
     def gen_rt(self) -> None:
         """Generate code for a right paren or curly/square bracket."""
-        val = self.token.value
+        val = self.input_token.value
         assert val in ')]}', repr(val)
+
+        # Update state vars.
         if val == ')':
             self.paren_level -= 1
             self.in_arg_list = max(0, self.in_arg_list - 1)
@@ -1344,15 +1361,16 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.square_brackets_stack.pop()
         else:
             self.curly_brackets_level -= 1
-        self.clean('blank')
+
+        if self.prev_output_kind != 'line-indent':
+            self.pending_ws = ''
         self.gen_token('rt', val)
     #@+node:ekr.20240105145241.38: *6* tbo.gen_star_op
     def gen_star_op(self) -> None:
         """Put a '*' op, with special cases for *args."""
-        val = self.token.value
-        context = self.token.context
+        val = self.input_token.value
+        context = self.input_token.context
 
-        self.clean('blank')
         if context == 'arg':
             self.gen_blank()
             self.gen_token('op-no-blanks', val)
@@ -1363,10 +1381,9 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.39: *6* tbo.gen_star_star_op
     def gen_star_star_op(self) -> None:
         """Put a ** operator, with a special case for **kwargs."""
-        val = self.token.value
-        context = self.token.context
+        val = self.input_token.value
+        context = self.input_token.context
 
-        self.clean('blank')
         if context == 'arg':
             self.gen_blank()
             self.gen_token('op-no-blanks', val)
@@ -1387,7 +1404,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         The Tokenizer converts all f-string tokens to a single 'string' token.
         """
         # Careful: continued strings may contain '\r'
-        val = self.regularize_newlines(self.token.value)
+        val = self.regularize_newlines(self.input_token.value)
         self.gen_token('string', val)
         self.gen_blank()
     #@+node:ekr.20240105145241.22: *5* tbo.do_verbatim
@@ -1396,10 +1413,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         Handle one token in verbatim mode.
         End verbatim mode when the appropriate comment is seen.
         """
-        kind = self.token.kind
+        kind = self.input_token.kind
         #
         # Careful: tokens may contain '\r'
-        val = self.regularize_newlines(self.token.value)
+        val = self.regularize_newlines(self.input_token.value)
         if kind == 'comment':
             if self.beautify_pat.match(val):
                 self.verbatim = False
@@ -1420,45 +1437,59 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Put the whitespace only if if ends with backslash-newline.
         """
-        val = self.token.value
-        # Handle backslash-newline.
-        if '\\\n' in val:
-            self.clean('blank')
-            self.gen_token('op-no-blanks', val)
-            return
-        # Handle start-of-line whitespace.
-        prev = self.code_list[-1]
-        inner = self.paren_level or self.square_brackets_stack or self.curly_brackets_level
-        if prev.kind == 'line-indent' and inner:
-            # Retain the indent that won't be cleaned away.
-            self.clean('line-indent')
-            self.gen_token('hard-blank', val)
+        val = self.input_token.value
+        last_token = self.input_tokens[self.index - 1]
+
+        if last_token.kind in ('nl', 'newline'):
+            self.pending_lws = val
+            self.pending_ws = ''
+        elif '\\\n' in val:
+            self.pending_lws = ''
+            self.pending_ws = val
+        else:
+            self.pending_ws = val
     #@+node:ekr.20240105145241.27: *5* tbo.gen_blank
     def gen_blank(self) -> None:
-        """Add a blank request to the code list."""
-        prev = self.code_list[-1]
-        if prev.kind not in (
-            'blank',
-            # 'blank-lines',  # black only: Request for n blank lines.
+        """
+        Queue a *request* a blank.
+        Change *neither* prev_output_kind *nor* pending_lws.
+        """
+
+        prev_kind = self.prev_output_kind
+        if prev_kind == 'op-no-blanks':
+            # A demand that no blank follows this op.
+            self.pending_ws = ''
+        elif prev_kind == 'hard-blank':
+            # Eat any further blanks.
+            self.pending_ws = ''
+        elif prev_kind in (
+            'dedent',
             'file-start',
-            'hard-blank',
-            'line-end',
+            'indent',
             'line-indent',
-            'lt',  # A left paren or curly/square bracket.
-            'op-no-blanks',  # A demand that no blank follows this op.
-            'unary-op',
+            'newline',
         ):
-            self.gen_token('blank', ' ')
+            # Suppress the blank, but do *not* change the pending ws.
+            pass
+        elif self.pending_ws:
+            # Use the existing pending ws.
+            pass
+        else:
+            self.pending_ws = ' '
     #@+node:ekr.20240105145241.26: *5* tbo.gen_token
-    def gen_token(self, kind: str, value: Any) -> OutputToken:
+    def gen_token(self, kind: str, value: Any) -> None:
         """Add an output token to the code list."""
-        tok = OutputToken(kind, value, len(self.code_list))
-        self.code_list.append(tok)
-        return tok
-    #@+node:ekr.20240105140814.12: *5* tbo.regularize_newlines
-    def regularize_newlines(self, s: str) -> str:
-        """Regularize newlines within s."""
-        return s.replace('\r\n', '\n').replace('\r', '\n')
+
+        if self.pending_lws:
+            self.output_list.append(self.pending_lws)
+        elif self.pending_ws:
+            self.output_list.append(self.pending_ws)
+
+        self.output_list.append(value)
+        self.pending_lws = ''
+        self.pending_ws = ''
+        self.prev_output_value = value
+        self.prev_output_kind = kind
     #@+node:ekr.20240110205127.1: *4* tbo: Scanning
     # The parser calls scanner methods to move through the list of input tokens.
     #@+node:ekr.20240128114622.1: *5* tbo.pre_scan & helpers
@@ -1480,7 +1511,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         in_import = False
         scan_stack: list[ScanState] = []
         prev_token: Optional[InputToken] = None
-        for i, token in enumerate(self.tokens):
+        for i, token in enumerate(self.input_tokens):
             kind, value = token.kind, token.value
             if kind in 'newline':
                 #@+<< pre-scan 'newline' tokens >>
@@ -1571,7 +1602,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Compute the context for each *separate* '=' token.
         equal_context = 'initializer'
         for i in values:
-            token = self.tokens[i]
+            token = self.input_tokens[i]
             assert token.kind == 'op', repr(token)
             if token.value == ',':
                 equal_context = 'initializer'
@@ -1584,7 +1615,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Set the context of all outer-level ':', '*', and '**' tokens.
         prev: Optional[InputToken] = None
         for i in range(i1, end):
-            token = self.tokens[i]
+            token = self.input_tokens[i]
             if token.kind not in self.insignificant_kinds:
                 if token.kind == 'op':
                     if token.value in ('*', '**'):
@@ -1618,7 +1649,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         inter_colon_tokens = 0
         prev = token
         for i in range(i1 + 1, end - 1):
-            token = self.tokens[i]
+            token = self.input_tokens[i]
             kind, value = token.kind, token.value
             if kind not in self.insignificant_kinds:
                 if kind == 'op':
@@ -1710,56 +1741,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not token or token.kind != 'name':
             return False
         return keyword.iskeyword(token.value) or keyword.issoftkeyword(token.value)
-    #@+node:ekr.20240106093210.1: *5* tbo.is_significant_token
-    def is_significant_token(self, token: InputToken) -> bool:
-        """Return true if the given token is not whitespace."""
-        return token.kind not in (
-            'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
-        )
-    #@+node:ekr.20240105145241.43: *5* tbo.next
-    def next(self, i: int) -> Optional[int]:
-        """
-        Return the next *significant* token in the list of *input* tokens.
-
-        Ignore whitespace, indentation, comments, etc.
-
-        The **Global Token Ratio** is tbo.n_scanned_tokens / len(tbo.tokens),
-        where tbo.n_scanned_tokens is the total number of calls calls to
-        tbo.next or tbo.prev.
-
-        For Leo's sources, this ratio ranges between 0.48 and 1.51!
-
-        The orange_command function warns if this ratio is greater than 2.5.
-        Previous versions of this code suffered much higher ratios.
-        """
-        trace = False  # Do not remove
-        i += 1
-        while i < len(self.tokens):
-            token = self.tokens[i]
-            if self.is_significant_token(token):
-                if trace:  # pragma: no cover
-                    print(f"token: {token.brief_dump()}")
-                return i
-            i += 1
-        return None  # pragma: no cover
-    #@+node:ekr.20240115233050.1: *5* tbo.prev
-    def prev(self, i: int) -> Optional[int]:
-        """
-        Return the previous *significant* token in the list of *input* tokens.
-
-        Ignore whitespace, indentation, comments, etc.
-        """
-        i -= 1
-        while i >= 0:
-            token = self.tokens[i]
-            if self.is_significant_token(token):
-                return i
-            i -= 1
-        return None  # pragma: no cover
     #@+node:ekr.20240106170746.1: *5* tbo.set_context
     def set_context(self, i: int, context: str) -> None:
         """
-        Set self.tokens[i].context, but only if it does not already exist!
+        Set self.input_tokens[i].context, but only if it does not already exist!
 
         See the docstring for pre_scan for details.
         """
@@ -1773,7 +1758,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if context not in valid_contexts:
             self.oops(f"Unexpected context! {context!r}")  # pragma: no cover
 
-        token = self.tokens[i]
+        token = self.input_tokens[i]
 
         if trace:  # pragma: no cover
             token_s = f"<{token.kind}: {token.show_val(12)}>"

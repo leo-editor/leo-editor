@@ -9,6 +9,9 @@ Info item #3867 describes all of Leo's test scripts:
 https://github.com/leo-editor/leo-editor/issues/2867
 """
 
+# No longer used by Leo's official test scripts.
+# pylint is not part of requirements.txt.
+
 import os
 import subprocess
 import sys
