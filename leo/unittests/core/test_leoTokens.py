@@ -414,29 +414,23 @@ class TestTokenBasedOrange(BaseTest):
     def test_comment_indented(self):
 
         table = (
-    """
-    if 1:
-        pass
-            # An indented comment.
-    """,
+            """
+            if 1:
+                pass
+                    # An indented comment.
+            """,
 
-    """
-    table = (
-        # Regular comment.
-    )
-    """
+            """
+            table = (
+                # Regular comment.
+            )
+            """
         )
-
         fails = 0
         for contents in table:
             contents, tokens = self.make_data(contents)
             expected = contents
             results = self.beautify(contents, tokens)
-            # message = (
-                # f"\n"
-                # f"  contents: {contents!r}\n"
-                # f"  expected: {expected!r}\n"
-                # f"       got: {results!r}")
             if results != expected:  # pragma: no cover
                 fails += 1
                 print(f"Fail: {fails}")
@@ -628,24 +622,24 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20240420050005.1: *3* TestTBO.test_multi_line_statement
     def test_multi_line_statements(self):
 
-            # if 1:  # Simulate indent.
-                # def orange_command(
-                    # s: str,
-                # ) -> None:
-                    # pass
         contents = """
+            if 1:  # Simulate indent.
+                def orange_command(
+                    s: str,
+                ) -> None:
+                    pass
             if 1:  # The trailing ]) causes the problem.
                 return ''.join(
                     ['%s%s' % (sep, self.dump_ast(z, level + 1)) for z in node])
         """
 
-            # if 1:  # Simulate indent.
-                # def orange_command(
-                    # s: str,
-                # ) -> None:
-                    # pass
         expected = self.prep(
             """
+            if 1:  # Simulate indent.
+                def orange_command(
+                    s: str,
+                ) -> None:
+                    pass
             if 1:  # The trailing ]) causes the problem.
                 return ''.join(
                     ['%s%s' % (sep, self.dump_ast(z, level + 1)) for z in node])
