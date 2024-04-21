@@ -640,7 +640,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     After the pre-scan, *tbo.beautify* (the main loop) calls *visitors* for each separate type of *input* token.
 
-    Visitors call *code generators* to generate *output* tokens. Code generation *helpers* form a peephole optimizer that looks behind a bounded number of (output) tokens.
+    Visitors call *code generators* to generate strings in the output_list. The code generators and their helpers use *lazy evaluation* to generate whitespace.
     """
     #@-<< TokenBasedOrange: docstring >>
     #@+<< TokenBasedOrange: __slots__ >>
