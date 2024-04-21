@@ -401,9 +401,14 @@ class TestTokenBasedOrange(BaseTest):
         # Trailing comment 2.
         print('3')
     """
+
         contents, tokens = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens)
+        if results != expected:
+            g.printObj(tokens, tag='Tokens')
+            g.printObj(results, tag='Results')
+            g.printObj(expected, tag='Expected')
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.53: *3* TestTBO.test_comment_indented
     def test_comment_indented(self):

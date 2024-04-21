@@ -366,8 +366,9 @@ class InputToken:  # leoTokens.py.
     #@+node:ekr.20240105140814.58: *4* itoken.show_val
     def show_val(self, truncate_n: int = 8) -> str:  # pragma: no cover
         """Return the token.value field."""
-        if self.kind in ('ws', 'indent'):
-            val = str(len(self.value))
+        if self.kind in ('dedent', 'indent', 'newline', 'ws'):
+            # val = str(len(self.value))
+            val = repr(self.value)
         elif self.kind == 'string' or self.kind.startswith('fstring'):
             # repr would be confusing.
             val = g_truncate(self.value, truncate_n)
@@ -658,7 +659,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Token-related data for visitors.
         'index', 'input_token', 'line_number',
-        'pending_ws', 'prev_output_kind', 'prev_output_value',  # New.
+        'pending_lws', 'pending_ws', 'prev_output_kind', 'prev_output_value',  # New.
 
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part', 'state_stack', 'verbatim',
@@ -701,6 +702,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.input_token: InputToken = None
         self.input_tokens: list[InputToken] = []
         self.lws: str = ""  # Set only by Indent/Dedent tokens.
+        self.pending_lws: str = ""
         self.pending_ws: str = ""
 
         # Set by gen_token and all do_* methods that bypass gen_token.
@@ -838,9 +840,11 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.pre_scan()
 
             # Init ivars first.
-            self.prev_output_kind = None
-            self.pending_ws = ""
             self.input_token = None
+            self.pending_lws = ''
+            self.pending_ws = ''
+            self.prev_output_kind = None
+            self.prev_output_value = None
 
             # Init state.
             self.gen_token('file-start', '')
@@ -1002,6 +1006,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         entire_line = self.input_token.line.lstrip().startswith('#')
         
         if entire_line:
+            # The comment includes all ws.
+            self.pending_lws = ''
             self.pending_ws = ''
             # #1496: No further munging needed.
             val = self.input_token.line.rstrip()
@@ -1012,6 +1018,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                 val = val[:i] + '# ' + val[i + 1 :]
         else:
             # Exactly two spaces before trailing comments.
+            self.pending_lws = ''
+            self.pending_ws = ''
             val = '  ' + val.rstrip()
 
         ### g.trace(repr(self.pending_ws), repr(val))
@@ -1022,7 +1030,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Note: other methods use self.indent_level.
         self.indent_level -= 1
         self.lws = self.indent_level * self.tab_width * ' '
-        self.pending_ws = self.lws
+        
+        ### g.trace(repr(self.lws))  ###
+
+        self.pending_lws = self.lws
+        self.pending_ws = ''
         self.prev_output_kind = 'dedent'
     #@+node:ekr.20240105145241.11: *5* tbo.do_encoding
     def do_encoding(self) -> None:
@@ -1036,6 +1048,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             'indent', 'dedent', 'line-indent', 'newline',
         ):
             self.output_list.append('\n')
+        self.pending_lws = ''  # Defensive.
         self.pending_ws = ''  # Defensive.
     #@+node:ekr.20240105145241.14: *5* tbo.do_indent
     consider_message = 'consider using python/Tools/scripts/reindent.py'
@@ -1043,14 +1056,12 @@ class TokenBasedOrange:  # Orange is the new Black.
     def do_indent(self) -> None:
         """Handle indent token."""
 
-        # Refuse to beautify mal-formed files.
-        if '\t' in self.input_token.value:  # pragma: no cover
-            raise IndentationError(self.user_error_message(
-                f"Leading tabs found: {self.consider_message}"))
-
-        if (len(self.input_token.value) % self.tab_width) != 0:  # pragma: no cover
-            raise IndentationError(self.user_error_message(
-                f"Indentation error! {self.consider_message}"))
+        # Only warn about indentation errors.
+        if (
+            '\t' in self.input_token.value or 
+            (len(self.input_token.value) % self.tab_width) != 0
+        ):  # pragma: no cover
+            print(f"Leading tabs found: {self.consider_message}")
 
         # Handle the token!
         new_indent = self.input_token.value
@@ -1059,15 +1070,18 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.indent_level += 1
         elif new_indent < old_indent:  # pragma: no cover (defensive)
             print(f"\n===== do_indent: can not happen {new_indent!r}, {old_indent!r}")
+            
+        ### g.trace(repr(new_indent))  ###
+
         self.lws = new_indent
-        self.pending_ws = self.lws
+        self.pending_lws = self.lws
+        self.pending_ws = ''
         self.prev_output_kind = 'indent'
     #@+node:ekr.20240105145241.16: *5* tbo.do_name & generators
     #@+node:ekr.20240418050017.1: *6* tbo.do_name
     def do_name(self) -> None:
         """Handle a name token."""
         name = self.input_token.value
-        ### g.trace('pending:', repr(self.pending_ws), name)
         if name in self.operator_keywords:
             self.gen_word_op(name)
         else:
@@ -1099,16 +1113,17 @@ class TokenBasedOrange:  # Orange is the new Black.
         NEWLINE tokens end *logical* lines of Python code.
         """
 
-        ###
-            # Defensive check.
-            # token = self.input_token
-            # if token.kind not in ('newline', 'nl'):  # pragma: no cover
-                # self.oops(f"Unexpected newline token: {token!r}")
+        if 0:  ###
+            print('')
+            g.trace("value", repr(self.input_token.value), "lws:", repr(self.lws))
+            print('')
 
-        ### g.trace("lws:", repr(self.lws))
         self.output_list.append('\n')
-        self.pending_ws = self.lws
-        self.prev_output_kind = 'line-indent'
+        ### self.pending_lws = self.lws
+        self.pending_lws = ''  # Set only by 'dedent', 'indent' or 'ws' tokens.
+        self.pending_ws = ''
+        self.prev_output_kind = 'newline'
+        self.prev_output_value = '\n'
     #@+node:ekr.20240418043827.1: *6* tbo.do_nl
     def do_nl(self) -> None:
         """
@@ -1446,41 +1461,45 @@ class TokenBasedOrange:  # Orange is the new Black.
         Put the whitespace only if if ends with backslash-newline.
         """
         val = self.input_token.value
+        last_token = self.input_tokens[self.index - 1]
 
-        # Handle backslash-newline.
-        if '\\\n' in val:
-            self.pending_ws = None
-            self.gen_token('op-no-blanks', val)
+        ### g.trace(f"val:', {val!r:16}")  ### last_token: {last_token}")
+        
+        if last_token.kind in ('nl', 'newline'):
+            self.pending_lws = val
+            self.pending_ws = ''
+        elif '\\\n' in val:
+            self.pending_lws = ''
+            self.pending_ws = val
         else:
             self.pending_ws = val
-
-        ### Don't handle this special case here!
-            # # Handle start-of-line whitespace.
-            # inner = self.paren_level or self.square_brackets_stack or self.curly_brackets_level
-            # if self.prev_output_kind == 'line-indent' and inner:
-                # self.pending_ws = None
-                # ### Wrong.
-                # ### Retain the indent that won't be cleaned away.
-                # ### self.gen_token('hard-blank', val)
-       
     #@+node:ekr.20240105145241.27: *5* tbo.gen_blank
     def gen_blank(self) -> None:
         """
-        Queue a *request* for a blank.
-        Do *not* change prev_output_kind.
+        Queue a *request* a blank.
+        Change *neither* prev_output_kind *nor* pending_lws.
         """
         
-        ### g.trace('prev_output_kind', self.prev_output_kind, 'pending:', repr(self.pending_ws))  ###
-        
-        if self.prev_output_kind == 'op-no-blanks':
+        if 0:  ###
+            g.trace(
+                'pending_lws:', repr(self.pending_lws),
+                'pending_ws:', repr(self.pending_ws),
+                g.callers(1))
+                # 'prev_output_kind', self.prev_output_kind)
+                
+        prev_kind = self.prev_output_kind
+        if prev_kind == 'op-no-blanks':
             # A demand that no blank follows this op.
             self.pending_ws = ''
-        elif self.prev_output_kind in (
+        elif prev_kind == 'hard-blank':
+            # Eat any further blanks.
+            self.pending_ws = ''
+        elif prev_kind in (
             'dedent',
             'file-start',
             'indent',
-            'hard-blank',
             'line-indent',
+            'newline',
         ):  
             # Suppress the blank, but do *not* change the pending ws.
             pass
@@ -1492,12 +1511,21 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.26: *5* tbo.gen_token
     def gen_token(self, kind: str, value: Any) -> None:
         """Add an output token to the code list."""
-        ###
-            # if self.pending_ws == ' ' * 4:
-                # g.trace(kind, repr(value), 'pending:', repr(self.pending_ws))
-        if self.pending_ws:
+        if 0:  ### 
+            if self.pending_lws or self.pending_ws:  ###
+                g.trace(kind, repr(value),
+                    'pending_lws:', repr(self.pending_lws),
+                    'pending_ws:', repr(self.pending_ws))
+            else:
+                g.trace(kind, repr(value))
+                
+        if self.pending_lws:
+            self.output_list.append(self.pending_lws)
+        elif self.pending_ws:
             self.output_list.append(self.pending_ws)
+
         self.output_list.append(value)
+        self.pending_lws = ''
         self.pending_ws = ''
         self.prev_output_value = value
         self.prev_output_kind = kind
