@@ -43,8 +43,7 @@ from typing import Any, Generator, Optional, Union
 Settings = dict[str, Union[int, bool]]
 #@-<< leoTokens.py: imports & annotations >>
 
-### For testing only.
-from leo.core import leoGlobals as g  ###
+from leo.core import leoGlobals as g
 assert g
 
 #@+others
@@ -431,14 +430,11 @@ class Tokenizer:
             # Use the line and line number of the 'string-start' token.
             line = self.fstring_line or ''
             line_number = self.fstring_line_number or 0
-
             # Clear the saved values.
             self.fstring_line = None
             self.fstring_line_number = None
             self.fstring_values = None
-            # g.trace(kind, value, line_number, repr(line))
 
-        ### g.trace(kind, repr(value))  ###
         tok = InputToken(kind, value, self.token_index, line, line_number)
         self.token_index += 1
         self.token_list.append(tok)
@@ -551,7 +547,7 @@ class Tokenizer:
             print(f"make_input_tokens: exception {e!r}")
             return []
         tokens = self.create_input_tokens(contents, five_tuples)
-        if 0:  ###
+        if 1:
             # True: 2.9 sec. False: 2.8 sec.
             assert self.check_round_trip(contents, tokens)
         return tokens
