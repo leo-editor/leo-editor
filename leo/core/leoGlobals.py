@@ -2625,8 +2625,6 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
     v0 = p.v
     seen: set[VNode]
 
-    ### trace = p.h.startswith('pub fn entry')  ###
-
     # The same generator as in v.setAllAncestorAtFileNodesDirty.
     # Original idea by Виталије Милошевић (Vitalije Milosevic).
     # Modified by EKR.
