@@ -2625,6 +2625,8 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
     v0 = p.v
     seen: set[VNode]
 
+    ### trace = p.h.startswith('pub fn entry')  ###
+
     # The same generator as in v.setAllAncestorAtFileNodesDirty.
     # Original idea by Виталије Милошевић (Vitalije Milosevic).
     # Modified by EKR.
@@ -2643,17 +2645,32 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
         A helper for all searches.
         Phase one searches only @<file> nodes.
         """
+
+        def get_ext(v: VNode) -> Optional[str]:
+            # #3873: Return the extension for @<file> nodes.
+            if v.isAnyAtFileNode():
+                name = v.anyAtFileNodeName()
+                junk, ext = g.os_path_splitext(name)
+                return ext[1:]  # strip the leading period.
+            return None
+
         if phase == 1 and not v.isAnyAtFileNode():
             return None
+
+        # First, scan the body text.
         # #1693: Scan v.b for an *unambiguous* @language directive.
+        # #3873: But do *not* scan v.b for .txt files!
+        if phase == 1 and get_ext(v) == 'txt':
+            return None
+
         languages = g.findAllValidLanguageDirectives(v.b)
         if len(languages) == 1:  # An unambiguous language
             return languages[0]
+
+        # Second, scan the headline of @<file> nodes.
         if v.isAnyAtFileNode():
             # Use the file's extension.
-            name = v.anyAtFileNodeName()
-            junk, ext = g.os_path_splitext(name)
-            ext = ext[1:]  # strip the leading period.
+            ext = get_ext(v)
             language = g.app.extension_dict.get(ext)
             if g.isValidLanguage(language):
                 return language
@@ -2663,7 +2680,7 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
     language = g.findFirstValidAtLanguageDirective(p.b)
     if language:
         return language
-    #
+
     # Phase 1: search only @<file> nodes: #2308.
     # Phase 2: search all nodes.
     for phase in (1, 2):
