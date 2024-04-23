@@ -102,6 +102,8 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     restart_paths: list[str] = [
         c.fileName() for c in g.app.commanders() if c.fileName()
     ]
+    if g.isWindows:
+        restart_paths = [z.replace('/', os.sep) for z in restart_paths]
     # Close all unsaved outlines.
     for c in g.app.commanders():
         frame = c.frame
@@ -120,15 +122,19 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     sys.stdout.flush()
     sys.stderr.flush()
     # Create the command to restart Leo.
-    files_s = ' '.join(restart_paths)
-    if g.isWindows:
-        files_s = files_s.replace('/', os.sep)
-    python = 'py' if g.isWindows else 'python'
     leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
     launchLeo_s = fr"{leo_editor_dir}{os.sep}launchLeo.py"
-    command = fr'{python} {launchLeo_s} {files_s} --no-splash'
-    print(f"{'\n'}Restarting Leo with this command:\n\n{command}\n")
-    os.system(command)
+    if 1:  # Use os.execv.
+        args = ['leo', launchLeo_s] + restart_paths + ['--no-splash']
+        command = fr"{sys.executable} {' '.join(args)}"
+        print(f"{'\n'}Restarting Leo with this command:\n\n{command}")
+        os.execv(sys.executable, args)
+    else:  # Use os.system.
+        python = 'py' if g.isWindows else 'python'
+        files_s = ' '.join(restart_paths)
+        command = fr'{python} {launchLeo_s} {files_s} --no-splash'
+        print(f"{'\n'}Restarting Leo with this command:\n\n{command}\n")
+        os.system(command)
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
