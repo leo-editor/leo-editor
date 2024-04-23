@@ -3611,10 +3611,10 @@ class Commands:
                 mods.clear()
     #@+node:ekr.20080514131122.13: *5* c.recolor
     def recolor(self, p: Position = None) -> None:
-        # Support QScintillaColorizer.colorize.
         c = self
         colorizer = c.frame.body.colorizer
         if colorizer and hasattr(colorizer, 'colorize'):
+            # Both jEditColorizer and QScintillaColorizer have colorizer methods.
             colorizer.colorize(p or c.p)
 
     recolor_now = recolor

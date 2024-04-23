@@ -1237,7 +1237,7 @@ class JEditColorizer(BaseColorizer):
                     aList.insert(0, wiki_rule)
                     d[ch] = aList
         self.rulesDict = d
-    #@+node:ekr.20240423042341.1: *3* jedit.colorize (NEW)
+    #@+node:ekr.20240423042341.1: *3* jedit.colorize
     def colorize(self, p: Position) -> None:
         """jedit.Colorize: fully recolor p.b."""
         if not p:
