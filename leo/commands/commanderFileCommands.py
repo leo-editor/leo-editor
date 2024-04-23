@@ -118,18 +118,18 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
             g.app.forgetOpenFile(fn=c.fileName())
     # Complete the shutdown.
     g.app.finishQuit()
-    # Restart, restoring the original command line.
-    ###
-        # args = ['-c'] + lm.old_argv
-        # g.trace(repr(lm.old_argv))
-        #args = lm.old_argv
-        # if trace:
-            # g.trace('restarting with args', args)
     sys.stdout.flush()
     sys.stderr.flush()
-    # os.execv(sys.executable, args)
-    command = f"leo {' '.join(restart_paths)}"
-    g.trace(command)
+
+    # Create the command to restart Leo.
+    files_s = ' '.join(restart_paths)
+    if g.isWindows:
+        files_s = files_s.replace('/', os.sep)
+    python = 'py' if g.isWindows else 'python'
+    leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
+    launchLeo_s = fr"{leo_editor_dir}{os.sep}launchLeo.py"
+    command = fr'{python} {launchLeo_s} {files_s} --no-splash'
+    print(f"{'\n'}Restarting Leo with this command:\n\n{command}\n")
     os.system(command)
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
