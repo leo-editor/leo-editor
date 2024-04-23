@@ -1237,6 +1237,17 @@ class JEditColorizer(BaseColorizer):
                     aList.insert(0, wiki_rule)
                     d[ch] = aList
         self.rulesDict = d
+    #@+node:ekr.20240423042341.1: *3* jedit.colorize (NEW)
+    def colorize(self, p: Position) -> None:
+        """jedit.Colorize: fully recolor p.b."""
+        if not p:
+            return
+        self.updateSyntaxColorer(p)
+        # Similar to code in jedit.recolor.
+        self.init_all_state(p.v)
+        self.init()
+        # Force QSyntaxHighligher to do a full recolor.
+        self.highlighter.rehighlight()
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     last_v = None
     tot_time = 0.0
