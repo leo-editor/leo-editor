@@ -2652,7 +2652,7 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
         if len(languages) == 1:  # An unambiguous language
             return languages[0]
 
-    # Passes 3 & 4: Use file extension in @<file> nodes.
+    # Passes 3 & 4: Use the file extension in @<file> nodes.
 
     def get_language_from_headline(v: VNode) -> Optional[str]:
         """Return the extension for @<file> nodes."""
