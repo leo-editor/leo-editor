@@ -1246,7 +1246,7 @@ class JEditColorizer(BaseColorizer):
         # Similar to code in jedit.recolor.
         self.init_all_state(p.v)
         self.init()
-        # Force QSyntaxHighligher to do a full recolor.
+        # Force QSyntaxHighlighter to do a full recolor.
         self.highlighter.rehighlight()
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     last_v = None
