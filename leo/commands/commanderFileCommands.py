@@ -124,17 +124,10 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     # Create the command to restart Leo.
     leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
     launchLeo_s = fr"{leo_editor_dir}{os.sep}launchLeo.py"
-    if 1:  # Use os.execv.
-        args = ['leo', launchLeo_s] + restart_paths + ['--no-splash']
-        command = fr"{sys.executable} {' '.join(args)}"
-        print(f"{'\n'}Restarting Leo with this command:\n\n{command}")
-        os.execv(sys.executable, args)
-    else:  # Use os.system.
-        python = 'py' if g.isWindows else 'python'
-        files_s = ' '.join(restart_paths)
-        command = fr'{python} {launchLeo_s} {files_s} --no-splash'
-        print(f"{'\n'}Restarting Leo with this command:\n\n{command}\n")
-        os.system(command)
+    args = ['leo', launchLeo_s] + restart_paths + ['--no-splash']
+    command = fr"{sys.executable} {' '.join(args)}"
+    print(f"{'\n'}Restarting Leo with this command:\n\n{command}")
+    os.execv(sys.executable, args)
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
