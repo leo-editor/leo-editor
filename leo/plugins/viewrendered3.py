@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V4.02
+About Viewrendered3 V4.03
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,12 +57,17 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
+In @jupyter nodes, for the path to the jupyter file or url:
+    - path separators can be either backward or forward slashes.
+    - Quotation marks around paths are removed.
+    These changes let a path copied to the clipboard from the file manager work without user editing.
+
+Previous Recent Changes
+========================
 Bug fixes:
 - Quit early if no qt gui.
 - Fix messags with "VR4" to read "VR3".
 
-Previous Recent Changes
-========================
 #@@language plain is equivalent to @language text.
 VR3 can now open either in a pane in the splitter (up until now this is been the
 only location) or in a tab in the log frame.  Two new commands give access to
@@ -1032,24 +1037,16 @@ try:
 except ImportError:
     print('VR3: *** No numpy')
     np = None
+
 # nbformat (@jupyter) support, non-vital.
-jupyter_ok = nbformat_ok = nbconvert_ok = False
+jupyter_ok = False
 try:
     from nbconvert.exporters import HTMLExporter
-    nbconvert_ok = True
-except ImportError:
-    print('VR3: *** nbconvert module is needed by @jupyter nodes.\n'
-          '         if you want to use @jupyter nodes, then\n'
-          '         install nbconvert: python3 -m pip install nbconvert')
-try:
     import nbformat
-    nbformat_ok = True
-    # from traitlets.config import Config
+    jupyter_ok = True
 except ImportError:
-    print('VR3: *** nbformat module is needed by @jupyter nodes.\n'
-          '         if you want to use @jupyter nodes, then\n'
-          '         install nbformat: python3 -m pip install nbformat')
-jupyter_ok = nbformat_ok and nbconvert_ok
+    # Missing imports will be mentioned if VR3 tries to render @jupyter node
+    pass
 
 try:
     from pygments import cmdline
@@ -3536,6 +3533,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     url = c.p.b.split('\n')[0]
                 if not url:
                     return 'No url found'
+            url = url.replace('\\', '/').replace('"', '')
             try:
                 with urlopen(url) as u:
                     s = u.read().decode()
