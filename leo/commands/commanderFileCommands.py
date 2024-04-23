@@ -78,8 +78,8 @@ def reloadSettings(self: Self, event: LeoKeyEvent = None) -> None:
 @g.commander_command('restart-leo')
 def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     """Restart Leo, reloading all presently open outlines."""
-    c, lm = self, g.app.loadManager
-    trace = 'shutdown' in g.app.debug
+    ### c, lm = self, g.app.loadManager
+    c = self
     # Write .leoRecentFiles.txt.
     g.app.recentFilesManager.writeRecentFilesFile(c)
     # Abort the restart if the user veto's any close.
@@ -98,8 +98,12 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     g.app.restarting = True
     # Save session data.
     g.app.saveSession()
-    # Close all unsaved outlines.
     g.app.setLog(None)  # Kill the log.
+    # #3141: Remember all open outlines.
+    restart_paths: list[str] = [
+        c.fileName() for c in g.app.commanders() if c.fileName()
+    ]
+    # Close all unsaved outlines and remember them.
     for c in g.app.commanders():
         frame = c.frame
         # This is similar to g.app.closeLeoWindow.
@@ -115,12 +119,18 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     # Complete the shutdown.
     g.app.finishQuit()
     # Restart, restoring the original command line.
-    args = ['-c'] + lm.old_argv
-    if trace:
-        g.trace('restarting with args', args)
+    ###
+        # args = ['-c'] + lm.old_argv
+        # g.trace(repr(lm.old_argv))
+        #args = lm.old_argv
+        # if trace:
+            # g.trace('restarting with args', args)
     sys.stdout.flush()
     sys.stderr.flush()
-    os.execv(sys.executable, args)
+    # os.execv(sys.executable, args)
+    command = f"leo {' '.join(restart_paths)}"
+    g.trace(command)
+    os.system(command)
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
