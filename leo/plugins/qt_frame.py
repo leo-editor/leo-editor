@@ -3459,11 +3459,10 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         u.beforeChangeGroup(c.p, undoType)
         changed = False
         for z in urls:
-            url = str(QtCore.QUrl(z))
-            scheme = url.scheme()
+            url, scheme, path = z.toString(), z.scheme(), z.path()
             if scheme == 'file':
-                changed |= self.doFileUrl(p, url)
-            elif scheme in ('http',):  # 'ftp','mailto',
+                changed |= self.doFileUrl(p, path)
+            elif scheme in ('http', 'https'):  # 'ftp','mailto',
                 changed |= self.doHttpUrl(p, url)
         # Call this only once, at end.
         u.afterChangeGroup(c.p, undoType)
@@ -3475,11 +3474,12 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
 
     #@+node:ekr.20110605121601.18370: *6* LeoQTreeWidget.doFileUrl & helper
     def doFileUrl(self, p: Position, url: str) -> bool:
-        """Read the file given by the url and put it in the outline."""
-        # 2014/06/06: Work around a possible bug in QUrl.
-            # fn = str(url.path()) # Fails.
+        """Read the file given by the url and put it in the outline.
+
+        url -- the path to the file, without the "file://" scheme
+        """
         e = sys.getfilesystemencoding()
-        fn = g.toUnicode(url.path(), encoding=e)
+        fn = g.toUnicode(url, encoding=e)
         if sys.platform.lower().startswith('win') and fn.startswith('/'):
             fn = fn[1:]
         if os.path.isdir(fn):
@@ -3696,7 +3696,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c = self.c
         u = c.undoer
         undoType = 'Drag Url'
-        s = str(url.toString()).strip()
+        s = url.strip()
         if not s:
             return False
         undoData = u.beforeInsertNode(p, pasteAsClone=False, copiedBunchList=[])
