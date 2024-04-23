@@ -2615,13 +2615,7 @@ def get_directives_dict_list(p: Position) -> list[dict]:
     return result
 #@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
 def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
-    """
-    Return the language in effect at node p.
-
-    1. Use an unambiguous @language directive in p itself.
-    2. Search p's "extended parents" for an @<file> node.
-    3. Search p's "extended parents" for an unambiguous @language directive.
-    """
+    """Return the language in effect at node p."""
     v0 = p.v
     seen: set[VNode]
 
@@ -2638,62 +2632,55 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
             if parent_v not in seen:
                 yield from v_and_parents(parent_v)
 
-    def find_language(v: VNode, phase: int) -> Optional[str]:
-        """
-        A helper for all searches.
-        Phase one searches only @<file> nodes.
-        """
-
-        def get_ext(v: VNode) -> Optional[str]:
-            # #3873: Return the extension for @<file> nodes.
-            if v.isAnyAtFileNode():
-                name = v.anyAtFileNodeName()
-                junk, ext = g.os_path_splitext(name)
-                return ext[1:]  # strip the leading period.
-            return None
-
-        if phase == 1 and not v.isAnyAtFileNode():
-            return None
-
-        # First, scan the body text.
-        # #1693: Scan v.b for an *unambiguous* @language directive.
-        # #3873: But do *not* scan v.b for .txt files!
-        if phase == 1 and get_ext(v) == 'txt':
-            return None
-
-        languages = g.findAllValidLanguageDirectives(v.b)
-        if len(languages) == 1:  # An unambiguous language
-            return languages[0]
-
-        # Second, scan the headline of @<file> nodes.
-        if v.isAnyAtFileNode():
-            # Use the file's extension.
-            ext = get_ext(v)
-            language = g.app.extension_dict.get(ext)
-            if g.isValidLanguage(language):
-                return language
-        return None
-
     # First, see if p contains any @language directive.
     language = g.findFirstValidAtLanguageDirective(p.b)
     if language:
         return language
 
-    # Phase 1: search only @<file> nodes: #2308.
-    # Phase 2: search all nodes.
-    for phase in (1, 2):
-        # Search direct parents.
-        for p2 in p.self_and_parents(copy=False):
-            language = find_language(p2.v, phase)
-            if language:
+    # Passes 1 and 2: Search body text for unambiguous @language directives.
+
+    # Pass 1: Search body text in direct parents for unambiguous @language directives.
+    for p2 in p.self_and_parents(copy=False):
+        languages = g.findAllValidLanguageDirectives(p2.v.b)
+        if len(languages) == 1:  # An unambiguous language
+            return languages[0]
+
+    # Pass 2: Search body text in extended parents for unambiguous @language directives.
+    seen = set([v0.context.hiddenRootNode])
+    for v in v_and_parents(v0):
+        languages = g.findAllValidLanguageDirectives(v.b)
+        if len(languages) == 1:  # An unambiguous language
+            return languages[0]
+
+    # Passes 3 & 4: Use file extension in @<file> nodes.
+
+    def get_language_from_headline(v: VNode) -> Optional[str]:
+        """Return the extension for @<file> nodes."""
+        if v.isAnyAtFileNode():
+            name = v.anyAtFileNodeName()
+            junk, ext = g.os_path_splitext(name)
+            ext = ext[1:]  # strip the leading period.
+            language = g.app.extension_dict.get(ext)
+            if g.isValidLanguage(language):
                 return language
-        # Search all extended parents.
-        seen = set([v0.context.hiddenRootNode])
-        for v in v_and_parents(v0):
-            language = find_language(v, phase)
-            if language:
-                return language
-    return None
+        return None
+
+    # Pass 3: Use file extension in headline of @<file> in direct parents.
+    for p2 in p.self_and_parents(copy=False):
+        language = get_language_from_headline(p2.v)
+        if language:
+            return language
+
+    # Pass 4: Use file extension in headline of @<file> nodes in extended parents.
+    seen = set([v0.context.hiddenRootNode])
+    for v in v_and_parents(v0):
+        language = get_language_from_headline(v)
+        if language:
+            return language
+
+    # Return the default language for the commander.
+    c = p.v.context
+    return c.target_language or 'python'
 #@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition
 def getLanguageAtPosition(c: Cmdr, p: Position) -> str:
     """
