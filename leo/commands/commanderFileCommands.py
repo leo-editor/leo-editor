@@ -78,7 +78,6 @@ def reloadSettings(self: Self, event: LeoKeyEvent = None) -> None:
 @g.commander_command('restart-leo')
 def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     """Restart Leo, reloading all presently open outlines."""
-    ### c, lm = self, g.app.loadManager
     c = self
     # Write .leoRecentFiles.txt.
     g.app.recentFilesManager.writeRecentFilesFile(c)
@@ -103,7 +102,7 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     restart_paths: list[str] = [
         c.fileName() for c in g.app.commanders() if c.fileName()
     ]
-    # Close all unsaved outlines and remember them.
+    # Close all unsaved outlines.
     for c in g.app.commanders():
         frame = c.frame
         # This is similar to g.app.closeLeoWindow.
@@ -120,7 +119,6 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     g.app.finishQuit()
     sys.stdout.flush()
     sys.stderr.flush()
-
     # Create the command to restart Leo.
     files_s = ' '.join(restart_paths)
     if g.isWindows:
