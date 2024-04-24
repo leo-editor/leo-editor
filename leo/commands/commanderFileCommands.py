@@ -123,32 +123,18 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     g.app.finishQuit()
     sys.stdout.flush()
     sys.stderr.flush()
-    # Create the command to restart Leo.
-    executable_s = f'"{sys.executable}"'
-    leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
-
-    print('\nRestarting Leo with this command:\n')
-    return_message = '\n' + 'Note: You may have to hit <return> to continue!'
-
+    # Restart Leo with Popen.run.
     # Warning: Python 3.9 does not allow newlines within f-strings.
-    if 1:  # Use Popen.
-        launchLeo_s = fr'{leo_editor_dir}{os.sep}launchLeo.py'
-        popen_args = [sys.executable, launchLeo_s] + restart_paths + ['--no-splash']
-        popen_args_s = '\n  ' + '\n  '.join(popen_args)
-        popen_command_s = fr"  sys.executable {popen_args_s} --no-splash"
-        print(popen_command_s)
-        print(return_message)
-        subprocess.Popen(popen_args)
-        sys.exit()
-    else:
-        quoted_paths = [f'"{z}"' for z in restart_paths]
-        launchLeo_s = fr'"{leo_editor_dir}{os.sep}launchLeo.py"'
-        execv_args = ['unused-program-name', launchLeo_s] + quoted_paths + ['--no-splash']
-        execv_args_s = '\n  ' + '\n  '.join(execv_args)
-        execv_command_s = fr"  {executable_s}{execv_args_s}"
-        print(execv_command_s)
-        print(return_message)
-        os.execv(sys.executable, execv_args)
+    leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
+    launchLeo_s = fr'{leo_editor_dir}{os.sep}launchLeo.py'
+    popen_args = [sys.executable, launchLeo_s] + restart_paths + ['--no-splash']
+    popen_args_s = '\n  ' + '\n  '.join(popen_args)
+    print('')
+    print('Restarting Leo with this command:')
+    print(popen_args_s)
+    print('')
+    subprocess.run(popen_args)
+    sys.exit()
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
