@@ -2513,9 +2513,6 @@
 <v t="ekr.20240222121346.1"></v>
 <v t="ekr.20240222121215.1"></v>
 <v t="ekr.20131008041326.16092"></v>
-<v t="ekr.20100808060203.4273"></v>
-<v t="ekr.20240424062021.1"><vh>&lt;&lt; Leo Links &gt;&gt;</vh></v>
-<v t="ekr.20230123104719.1"><vh>&lt;&lt; sidebar links &gt;&gt;</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32086,38 +32083,6 @@ More Leo Links
     What's New          &lt;what-is-new&gt;
     Still more links    &lt;leoLinks&gt;
     </t>
-<t tx="ekr.20230123104719.1">&lt;a class="reference external"
-  href="https://leo-editor.github.io/leo-editor/getting-started.html"&gt;
-  Getting started&lt;/a&gt;&lt;br&gt;
-
-&lt;a class="reference external" href="http://groups.google.com/group/leo-editor"&gt;
-  Leo's forum&lt;/a&gt;&lt;br&gt;
-
-&lt;a class="reference external" href="https://github.com/leo-editor/leo-editor"&gt;
-  Leo's GitHub repository&lt;/a&gt;&lt;br&gt;
-
-&lt;a class="reference external" href="tutorial.html"&gt;
-  Leo's main tutorial&lt;/a&gt;&lt;br&gt;
-
-&lt;a class="reference external"
-  href="https://kaleguy.github.io/leovue/#/t/2/"&gt;
-  Joe Orr's &lt;em&gt;must see&lt;/em&gt; demo&lt;/a&gt;&lt;br&gt;
-
-&lt;a class="reference external" href="testimonials.html"&gt;
-  Quotes from Leonistas&lt;/a&gt;&lt;br&gt;
-
-&lt;a class="reference external" href="https://github.com/leo-editor/leo-editor/issues"&gt;
-  Report a bug&lt;/a&gt;&lt;br&gt;
-  
-&lt;a class="reference external" href="https://github.com/boltex/leointeg?tab=readme-ov-file#-leo-for-visual-studio-code"&gt;
-  LeoInteg&lt;/a&gt;&lt;br&gt;
-  
-&lt;a class="reference external" href="https://github.com/boltex/leojs?tab=readme-ov-file#web-based-development"&gt;
-  LeoJS&lt;/a&gt;&lt;br&gt;
-
-&lt;a class="reference external" href="leoLinks.html"&gt;
-  More links...&lt;/a&gt;&lt;br&gt;
-</t>
 <t tx="ekr.20230124061650.1">.. _`Black`: https://github.com/psf/black
 
 Leo's ``beautify`` command differs from `Black`_ as follows:
@@ -32916,35 +32881,6 @@ gnx: ekr.20240303070818.2
 unl: Using objtrees for caching
 gnx: ekr.20240303070818.3
 unl: The `Leo database` (c.db, g.app.db)
-</t>
-<t tx="ekr.20240424062021.1">&lt;p&gt;
-  &lt;a href="https://kaleguy.github.io/leovue/#/t/2/"&gt;
-    &lt;strong&gt;Joe Orr's must see demo&lt;/strong&gt;&lt;/a&gt;.
-  &lt;br&gt;
-  &lt;a href="preface.html"&gt;
-    &lt;strong&gt;A brief summary of Leo&lt;/strong&gt;&lt;/a&gt;.
-  &lt;br&gt;
-  &lt;a href="testimonials.html"&gt;
-    &lt;strong&gt;What people are saying about Leo&lt;/strong&gt;&lt;/a&gt;.
-  &lt;br&gt;
-  &lt;a href="tutorial.html"&gt;
-    &lt;strong&gt;Learn about Leo in 20 minutes&lt;/strong&gt;&lt;/a&gt;.
-&lt;/p&gt;
-&lt;p&gt;
-  &lt;a href="https://github.com/boltex/leointeg"&gt;
-    &lt;strong&gt;LeoInteg: Leo for vs-code&lt;/strong&gt;&lt;/a&gt;.
-  &lt;br&gt;
-  &lt;a href="https://github.com/boltex/leojs"&gt;
-    &lt;strong&gt;Coming soon: Zero install Leo (Leo for vscode.dev)&lt;/strong&gt;&lt;/a&gt;.
-&lt;/p&gt;
-&lt;p&gt;
-&lt;strong&gt;Ask us anything&lt;/strong&gt; at the
-&lt;a href="http://groups.google.com/group/leo-editor"&gt;&lt;strong&gt;leo-editor Google Group&lt;/strong&gt;&lt;/a&gt;.
-&lt;br&gt;
-&lt;a href="mailto:edreamleo@gmail.com?Subject=About%20Leo" target="_top"&gt;
-  &lt;strong&gt;Send us a postcard&lt;/strong&gt;&lt;/a&gt;, telling how you use Leo. Thanks!
-&lt;/p&gt;
-
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
