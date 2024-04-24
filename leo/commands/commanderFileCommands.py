@@ -104,6 +104,7 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     ]
     if g.isWindows:
         restart_paths = [z.replace('/', os.sep) for z in restart_paths]
+    g.printObj(restart_paths)
     # Close all unsaved outlines.
     for c in g.app.commanders():
         frame = c.frame
@@ -125,7 +126,8 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     # Create the command to restart Leo.
     leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
     launchLeo_s = fr"{leo_editor_dir}{os.sep}launchLeo.py"
-    args = ['unused-program-name', launchLeo_s] + restart_paths + ['--no-splash']
+    quoted_paths = [f'"{z}"' for z in restart_paths]
+    args = ['unused-program-name', launchLeo_s] + quoted_paths + ['--no-splash']
     command = fr"{sys.executable} {' '.join(args)}"
     print(f"{'\n'}Restarting Leo with this command:\n\n{command}")
     os.execv(sys.executable, args)
