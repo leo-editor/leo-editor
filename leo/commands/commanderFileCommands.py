@@ -104,7 +104,6 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     ]
     if g.isWindows:
         restart_paths = [z.replace('/', os.sep) for z in restart_paths]
-    g.printObj(restart_paths)
     # Close all unsaved outlines.
     for c in g.app.commanders():
         frame = c.frame
@@ -125,11 +124,13 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     sys.stderr.flush()
     # Create the command to restart Leo.
     leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
-    launchLeo_s = fr"{leo_editor_dir}{os.sep}launchLeo.py"
+    launchLeo_s = fr'"{leo_editor_dir}{os.sep}launchLeo.py"'
     quoted_paths = [f'"{z}"' for z in restart_paths]
     args = ['unused-program-name', launchLeo_s] + quoted_paths + ['--no-splash']
-    command = fr"{sys.executable} {' '.join(args)}"
-    print(f"{'\n'}Restarting Leo with this command:\n\n{command}")
+    executable_s = f'"{sys.executable}"'
+    command = fr"  {executable_s}{'\n'}  {'\n  '.join(args)}"
+    print(f"{'\n'}Restarting Leo with this command:\n\n{command}\n")
+    print('Note: You may have to hit <return> to continue!')
     os.execv(sys.executable, args)
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
