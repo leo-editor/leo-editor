@@ -41,7 +41,7 @@ def editOneSetting(self: Self, event: LeoKeyEvent = None) -> None:
     """
     c, p = self, self.p
     func = None
-    if p.h.startswith('@font'):
+    if p.h.startswith(('@font', '@string font-')):
         func = c.commandsDict.get('show-fonts')
     elif p.h.startswith('@color '):
         func = c.commandsDict.get('show-color-wheel')
