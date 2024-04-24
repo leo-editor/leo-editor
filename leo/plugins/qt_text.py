@@ -5,7 +5,7 @@
 #@+node:ekr.20220416085845.1: ** << qt_text imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Any, Optional, TypeAlias, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier
@@ -13,6 +13,7 @@ from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, WrapMode
 
 if TYPE_CHECKING:  # pragma: no cover
+    from typing import TypeAlias  # Requires Python 3.12+
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     Args = Any

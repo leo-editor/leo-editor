@@ -83,7 +83,7 @@ from collections.abc import Callable
 import fnmatch
 import itertools
 import re
-from typing import Any, Iterable, Iterator, TypeAlias, Union
+from typing import Any, Iterable, Iterator, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qt, QtCore, QtWidgets
@@ -97,6 +97,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+<< quicksearch annotations >>
 #@+node:ekr.20220828094201.1: ** << quicksearch annotations >>
 if TYPE_CHECKING:  # pragma: no cover
+    from typing import TypeAlias  # Requires Python 3.12+
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
     from leo.core.leoGui import LeoKeyEvent
