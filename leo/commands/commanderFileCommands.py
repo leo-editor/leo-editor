@@ -93,7 +93,7 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
             if veto:
                 g.es_print('Cancelling restart-leo command')
                 return
-    # Officially begin the restart process. A flag for efc.ask.
+    # Officially begin the restart process. A flag for efc.ask and efc.on_idle.
     g.app.restarting = True
     # Save session data.
     g.app.saveSession()
@@ -117,6 +117,7 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
         else:
             # #69.
             g.app.forgetOpenFile(fn=c.fileName())
+    g.app.windowList = []
     # Complete the shutdown.
     g.app.finishQuit()
     sys.stdout.flush()
