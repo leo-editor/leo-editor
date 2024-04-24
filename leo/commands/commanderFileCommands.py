@@ -128,8 +128,16 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     quoted_paths = [f'"{z}"' for z in restart_paths]
     args = ['unused-program-name', launchLeo_s] + quoted_paths + ['--no-splash']
     executable_s = f'"{sys.executable}"'
-    command = fr"  {executable_s}{'\n'}  {'\n  '.join(args)}"
-    print(f"{'\n'}Restarting Leo with this command:\n\n{command}\n")
+    args_s = '\n  ' + '\n  '.join(args)
+    command = fr"  {executable_s}{args_s}"
+    # Python 3.9 does not allow newlines within f-strings.
+    print(
+        '\n'
+        f"Restarting Leo with this command:"
+        '\n\n'
+        f"{command}"
+        '\n'
+    )
     print('Note: You may have to hit <return> to continue!')
     os.execv(sys.executable, args)
 #@+node:ekr.20031218072017.2820: ** c_file.top level
