@@ -1612,7 +1612,8 @@ def moveOutlineRight(self: Cmdr, event: LeoKeyEvent = None) -> None:
     c.setChanged()  # #2036.
     u.afterMoveNode(p, 'Move Right', undoData)
     c.redraw(p)
-    c.recolor()
+    c.recolor()  # Moving can change syntax coloring.
+
 #@+node:ekr.20031218072017.1772: *3* c_oc.moveOutlineUp
 @g.commander_command('move-outline-up')
 def moveOutlineUp(self: Cmdr, event: LeoKeyEvent = None) -> None:
@@ -1701,6 +1702,7 @@ def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
     c.setChanged()
     u.afterMoveNode(p, 'Move To First Child', undoData)
     c.redraw(p)
+    # c.recolor()  # Moving can *not* change syntax coloring.
 #@+node:ekr.20230902051833.1: *3* c_oc.moveOutlineToLastChild
 @g.commander_command('move-outline-to-last-child')
 def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
@@ -1726,6 +1728,7 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
     c.setChanged()
     u.afterMoveNode(p, 'Move To Last Child', undoData)
     c.redraw(p)
+    # c.recolor()  # Moving can *not* change syntax coloring.
 #@+node:ekr.20031218072017.1774: *3* c_oc.promote
 @g.commander_command('promote')
 def promote(self: Cmdr, event: LeoKeyEvent = None, undoFlag: bool = True) -> None:
