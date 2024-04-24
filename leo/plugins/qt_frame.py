@@ -3464,6 +3464,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 changed |= self.doFileUrl(p, path)
             elif scheme in ('http', 'https'):  # 'ftp','mailto',
                 changed |= self.doHttpUrl(p, url)
+
         # Call this only once, at end.
         u.afterChangeGroup(c.p, undoType)
         if changed:
@@ -3482,20 +3483,21 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         fn = g.toUnicode(url, encoding=e)
         if sys.platform.lower().startswith('win') and fn.startswith('/'):
             fn = fn[1:]
+        if not g.os_path_exists(fn):
+            return False
         if os.path.isdir(fn):
             # Just insert an @path directory.
             self.doPathUrlHelper(fn, p)
             return True
-        if g.os_path_exists(fn):
-            try:
-                f = open(fn, 'rb')  # 2012/03/09: use 'rb'
-            except IOError:
-                f = None
-            if f:
-                b = f.read()
-                s = g.toUnicode(b)
-                f.close()
-                return self.doFileUrlHelper(fn, p, s)
+        try:
+            f = open(fn, 'rb')  # 2012/03/09: use 'rb'
+        except IOError:
+            f = None
+        if f:
+            b = f.read()
+            s = g.toUnicode(b)
+            f.close()
+            return self.doFileUrlHelper(fn, p, s)
         nodeLink = p.get_UNL()
         g.es_print(f"not found: {fn}", nodeLink=nodeLink)
         return False

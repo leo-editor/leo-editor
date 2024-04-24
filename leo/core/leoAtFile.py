@@ -237,8 +237,7 @@ class AtFile:
                 at.error('can not call at.read from string for @shadow files')
                 return None, None
             at.initReadLine(fromString)
-            return None, None
-        #
+            return None, fromString  # #3876.    #
         # Not from a string. Carefully read the file.
         # Returns full path, including file name.
         fn = g.fullPath(c, at.root)
