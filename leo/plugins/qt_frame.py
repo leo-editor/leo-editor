@@ -2,7 +2,7 @@
 #@+node:ekr.20140907123524.18774: * @file ../plugins/qt_frame.py
 """Leo's qt frame classes."""
 #@+<< qt_frame imports >>
-#@+node:ekr.20110605121601.18003: **  << qt_frame imports >>
+#@+node:ekr.20110605121601.18003: ** << qt_frame imports >>
 from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Callable
@@ -12,7 +12,7 @@ import string
 import sys
 import time
 import urllib
-from typing import Any, Optional, TypeAlias, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
@@ -37,6 +37,7 @@ from leo.plugins.nested_splitter import NestedSplitter
 #@+<< qt_frame annotations >>
 #@+node:ekr.20220415080427.1: ** << qt_frame annotations >>
 if TYPE_CHECKING:  # pragma: no cover
+    from typing import TypeAlias  # Requires Python 3.12+
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoGui
     from leo.core.leoGui import LeoKeyEvent
