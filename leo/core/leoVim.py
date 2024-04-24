@@ -22,14 +22,16 @@ from __future__ import annotations
 from collections.abc import Callable
 import os
 import string
-from typing import Any, TypeAlias, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
+    from typing import TypeAlias  # Requires Python 3.12+
     from leo.core.leoGui import QtCore
     from leo.core.leoCommands import Commands as Cmdr
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     from leo.core.leoGui import LeoKeyEvent
+
     QEvent: TypeAlias = QtCore.QEvent
     Stroke = Any
     Widget = Any

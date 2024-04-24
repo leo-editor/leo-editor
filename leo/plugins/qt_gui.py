@@ -11,7 +11,7 @@ import re
 import sys
 import textwrap
 from time import sleep
-from typing import Any, Optional, Union, TypeAlias, TYPE_CHECKING
+from typing import Any, Optional, Union, TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
@@ -35,6 +35,7 @@ assert qt_commands
 #@+<< qt_gui annotations >>
 #@+node:ekr.20220415183421.1: ** << qt_gui annotations >>
 if TYPE_CHECKING:  # pragma: no cover
+    from typing import TypeAlias  # Requires Python 3.12+
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
