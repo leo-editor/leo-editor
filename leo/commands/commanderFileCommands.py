@@ -134,7 +134,6 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     print(popen_args_s)
     print('')
     subprocess.run(popen_args)
-    sys.exit()
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
