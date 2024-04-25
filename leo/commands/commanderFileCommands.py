@@ -123,7 +123,7 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     g.app.finishQuit()
     sys.stdout.flush()
     sys.stderr.flush()
-    # Restart Leo with Popen.run.
+    # Restart Leo with subprocess.run.
     # Warning: Python 3.9 does not allow newlines within f-strings.
     leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
     launchLeo_s = fr'{leo_editor_dir}{os.sep}launchLeo.py'
