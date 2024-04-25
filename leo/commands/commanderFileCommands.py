@@ -6,6 +6,7 @@
 from __future__ import annotations
 import os
 import sys
+import subprocess
 import time
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -78,8 +79,7 @@ def reloadSettings(self: Self, event: LeoKeyEvent = None) -> None:
 @g.commander_command('restart-leo')
 def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     """Restart Leo, reloading all presently open outlines."""
-    c, lm = self, g.app.loadManager
-    trace = 'shutdown' in g.app.debug
+    c = self
     # Write .leoRecentFiles.txt.
     g.app.recentFilesManager.writeRecentFilesFile(c)
     # Abort the restart if the user veto's any close.
@@ -94,12 +94,18 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
             if veto:
                 g.es_print('Cancelling restart-leo command')
                 return
-    # Officially begin the restart process. A flag for efc.ask.
+    # Officially begin the restart process. A flag for efc.ask and efc.on_idle.
     g.app.restarting = True
     # Save session data.
     g.app.saveSession()
-    # Close all unsaved outlines.
     g.app.setLog(None)  # Kill the log.
+    # #3141: Remember all open outlines.
+    restart_paths: list[str] = [
+        c.fileName() for c in g.app.commanders() if c.fileName()
+    ]
+    if g.isWindows:
+        restart_paths = [z.replace('/', os.sep) for z in restart_paths]
+    # Close all unsaved outlines.
     for c in g.app.commanders():
         frame = c.frame
         # This is similar to g.app.closeLeoWindow.
@@ -112,15 +118,23 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
         else:
             # #69.
             g.app.forgetOpenFile(fn=c.fileName())
+    g.app.windowList = []
     # Complete the shutdown.
     g.app.finishQuit()
-    # Restart, restoring the original command line.
-    args = ['-c'] + lm.old_argv
-    if trace:
-        g.trace('restarting with args', args)
     sys.stdout.flush()
     sys.stderr.flush()
-    os.execv(sys.executable, args)
+    # Restart Leo with Popen.run.
+    # Warning: Python 3.9 does not allow newlines within f-strings.
+    leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
+    launchLeo_s = fr'{leo_editor_dir}{os.sep}launchLeo.py'
+    popen_args = [sys.executable, launchLeo_s] + restart_paths + ['--no-splash']
+    popen_args_s = 'Popen.run([\n  ' + ',\n  '.join(popen_args) + '\n])'
+    print('')
+    print('Restarting Leo with:\n')
+    print(popen_args_s)
+    print('')
+    subprocess.run(popen_args)
+    sys.exit()
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
