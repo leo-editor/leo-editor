@@ -127,13 +127,13 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     # Warning: Python 3.9 does not allow newlines within f-strings.
     leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
     launchLeo_s = fr'{leo_editor_dir}{os.sep}launchLeo.py'
-    popen_args = [sys.executable, launchLeo_s] + restart_paths + ['--no-splash']
-    popen_args_s = 'Popen.run([\n  ' + ',\n  '.join(popen_args) + '\n])'
+    args = [sys.executable, launchLeo_s] + restart_paths + ['--no-splash']
+    args_s = 'subprocess.run([\n  ' + ',\n  '.join(args) + '\n])'
     print('')
     print('Restarting Leo with:\n')
-    print(popen_args_s)
+    print(args_s)
     print('')
-    subprocess.run(popen_args)
+    subprocess.run(args)
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
