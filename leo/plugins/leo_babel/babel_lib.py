@@ -682,6 +682,8 @@ def babelExec(event):
                 leoCmdrX: Leo Commander for posX
                 posX: Root position
         """
+        
+        posX = None  # EKR: to keep ruff happy.
 
         if getattr(babelCmdr, scrOrRes, None) is None:
             leoCmdrX = leoCmdrB
