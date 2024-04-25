@@ -499,7 +499,7 @@ class ExternalFilesController:
 
         Return one of ('yes', 'no', 'yes-all', 'no-all')
         """
-        if g.unitTesting:
+        if g.unitTesting or g.app.restarting:
             return ''
         if c not in g.app.commanders():
             return ''
