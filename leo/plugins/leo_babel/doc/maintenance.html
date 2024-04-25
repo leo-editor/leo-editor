@@ -1,53 +1,57 @@
-<p>Note: This node's body text is ignored when writing this file.</p>
-<p>The <span class="citation">@others</span> directive is not required.</p>
-<h1 id="why-there-is-no-echo-command-lines-to-stdout"><span class="header-section-number">1</span> Why there is no echo command lines to stdout</h1>
+<p>Note: This node’s body text is ignored when writing this file.</p>
+<p>The <span class="citation" data-cites="others">@others</span> directive is not required.</p>
+<h1 data-number="1" id="leo-babel-parameters"><span class="header-section-number">1</span> Leo-Babel Parameters</h1>
+<p>Beware: It is somewhat confusing that there is one parameter name used to set a parameter using the standard Leo-Editor parameter setting code and another parameter name for setting the same parameter in a Babel Script.</p>
+<p>Example: Settings node: <span class="citation" data-cites="color">@color</span> Leo-Babel-stdout = <span class="citation" data-cites="color">@color</span> Leo-Babel-stdout = #996633 Babel script: leo_babel_stdout = <span class="citation" data-cites="color">@color</span> Leo-Babel-stdout = #996633</p>
+<p>This is because the Leo-Editor standard for naming parameters requires the capitalization and the hyphens, but a Python variable name can’t contain hyphens and the usual convention is for a variable name to begin with a lower-case letter.</p>
+<h1 data-number="2" id="why-there-is-no-echo-command-lines-to-stdout"><span class="header-section-number">2</span> Why there is no echo command lines to stdout</h1>
 <p>Leo-Babel writes all the lines of the script to disk file, then Leo-Babel creates a subprocess in which the appropriate interpreter (Python or Bash) executes the entire script. Hence, Leo-Babel has no way to echo each line of the script just before it is executed.</p>
-<h1 id="why-isnt-python-2-supported"><span class="header-section-number">2</span> Why isn't Python 2 supported?</h1>
-<p>The function NamedTemporaryFile() in library module tempfile has keyword argument &quot;buffering&quot; only for Python 3, not Python 2. Leo-Babel uses the buffering parameter. Hence, Leo-Babel refuses to initialize when Python 2 interprets the Leo-Editor code.</p>
+<h1 data-number="3" id="why-isnt-python-2-supported"><span class="header-section-number">3</span> Why isn’t Python 2 supported?</h1>
+<p>The function NamedTemporaryFile() in library module tempfile has keyword argument “buffering” only for Python 3, not Python 2. Leo-Babel uses the buffering parameter. Hence, Leo-Babel refuses to initialize when Python 2 interprets the Leo-Editor code.</p>
 <p>The Python 2 ImportError exception does not report the name of the module causing the exception. Hence, if Python 2 interpreted the Leo-Editor and Leo-Babel code, then Leo-Babel could not report the failed dependency. But this would only be a minor incovenience. It would not prevent any major Leo-Babel service.</p>
-<h1 id="how-to-live-stream-stdout-and-stderr"><span class="header-section-number">3</span> How To Live-Stream Stdout and Stderr</h1>
-<h2 id="achieving-non-hanging-reads"><span class="header-section-number">3.1</span> Achieving Non-Hanging Reads</h2>
-<p>By default, reading stdout or stderr in Python hangs. In some cases it hangs till there is data to be read. In other cases it hangs till the subprocess terminates. Leo-Babel's scheme for achieving non-hanging reads of stdout and stderr while the script is still executing is taken from:</p>
+<h1 data-number="4" id="how-to-live-stream-stdout-and-stderr"><span class="header-section-number">4</span> How To Live-Stream Stdout and Stderr</h1>
+<h2 data-number="4.1" id="achieving-non-hanging-reads"><span class="header-section-number">4.1</span> Achieving Non-Hanging Reads</h2>
+<p>By default, reading stdout or stderr in Python hangs. In some cases it hangs till there is data to be read. In other cases it hangs till the subprocess terminates. Leo-Babel’s scheme for achieving non-hanging reads of stdout and stderr while the script is still executing is taken from:</p>
 <p>http://stackoverflow.com/questions/18421757/live-output-from-subprocess-command</p>
 <p>Essentially the scheme is to redirect both stdout and stderr to binary disk files. I was very surprised that such a simple scheme works. At least it works for Ubuntu 16.04. There are four or five other schemes suggested at various places on the Internet that do NOT work for Ubuntu 16.04.</p>
 <p>Several people also suggest using asyncio. This may well work, but the asyncio scheme is orders of magnitude more complex than using binary disk files; and asyncio is only available for Python 3; and asyncio is still being revised.</p>
-<h2 id="unbuffering-stdout-and-sterr"><span class="header-section-number">3.2</span> Unbuffering Stdout and Sterr</h2>
+<h2 data-number="4.2" id="unbuffering-stdout-and-sterr"><span class="header-section-number">4.2</span> Unbuffering Stdout and Sterr</h2>
 <p>The Bash interpreter never buffers stdout or stderr, so the Bash interpreter works with Leo-Babel by default.</p>
 <p>On the other hand, the Python interpreter by default buffers stdout. The Python interpreter command line option -u turns off buffering for stdout and/or stderr if they are binary streams. So Leo-Babel uses the -u option and consequently it can live-stream Python scripts that do NOT flush() after writing to stdout or stderr.</p>
-<p>But if you invoke Bash to execute a script that is a Python script, then Python buffers stdout, so the fact that Bash never buffers stdout doesn't help you. In this case, you need to put explicit flushes in your Python script in order to live stream stdout.</p>
-<h2 id="suggestions-that-dont-work"><span class="header-section-number">3.3</span> Suggestions that Don't Work</h2>
-<p>There is a Linux utility named unbuffer. When this utility is applied to the Python interpreter like &quot;unbuffer python script&quot;, then all writes by &quot;script&quot; to stdout or stderr are unbuffered --- but stderr is redirected to stdout. I consider this a bug.</p>
-<p>There is a Linux utility named stdbuf. Some people claim that &quot;stdbuf -i0 -o0 -e0 command&quot; makes stdin, stdout, and stderr all unbuffered for &quot;command&quot;. So far as I can tell, stdbuf has no effect on the Python interpreter.</p>
-<h1 id="log-pane-tab-for-real-time-streaming-output"><span class="header-section-number">4</span> Log Pane Tab for Real Time Streaming Output</h1>
+<p>But if you invoke Bash to execute a script that is a Python script, then Python buffers stdout, so the fact that Bash never buffers stdout doesn’t help you. In this case, you need to put explicit flushes in your Python script in order to live stream stdout.</p>
+<h2 data-number="4.3" id="suggestions-that-dont-work"><span class="header-section-number">4.3</span> Suggestions that Don’t Work</h2>
+<p>There is a Linux utility named unbuffer. When this utility is applied to the Python interpreter like “unbuffer python script”, then all writes by “script” to stdout or stderr are unbuffered — but stderr is redirected to stdout. I consider this a bug.</p>
+<p>There is a Linux utility named stdbuf. Some people claim that “stdbuf -i0 -o0 -e0 command” makes stdin, stdout, and stderr all unbuffered for “command”. So far as I can tell, stdbuf has no effect on the Python interpreter.</p>
+<h1 data-number="5" id="log-pane-tab-for-real-time-streaming-output"><span class="header-section-number">5</span> Log Pane Tab for Real Time Streaming Output</h1>
 <p>Since there may a great deal of script output, it may be desirable to stream it to a log pane tab dedicated to this purpose instead of to the general purpose Log tab. On the other hand, since Leo-Editor error messages are printed to the Log tab, I prefer to have the Log tab visible as much as possible. On the other hand, if a Leo-Editor error message switched to the Log tab and output to the Babel tab did NOT switch back to the Babel tab, then I would see nothing wrong in a separate Babel tab.</p>
-<h1 id="supported-oss"><span class="header-section-number">5</span> Supported OS's</h1>
+<h1 data-number="6" id="supported-oss"><span class="header-section-number">6</span> Supported OS’s</h1>
 <p>Currently Leo-Babel only works on Linux systems. Windows adding Window suport would be difficult. Some facilities may be impossible to implement under Windows.</p>
 <p>Since I never use Windows, I will not be the person making Leo-Babel work under Windows.</p>
-<h1 id="g.idletime"><span class="header-section-number">6</span> g.IdleTime()</h1>
+<h1 data-number="7" id="g.idletime"><span class="header-section-number">7</span> g.IdleTime()</h1>
 <p>Leo-Editor does NOT implement g.idleTime() for LeoBridge. So for testing purposes, Leo-Babel implements g.idleTime() as part of the Leo-Babel test code.</p>
 <p>The interface that Leo-Babel implements is:</p>
 <p>itObj = g.IdleTime(handler, delay=nnn, tag=None)</p>
 <p>itObj.start() itObj.stop()</p>
-<p>handler(itObj) -- The itObj is always the first argument passed to the handler.</p>
-<h1 id="automated-testing"><span class="header-section-number">7</span> Automated Testing</h1>
-<h2 id="tests-nodes"><span class="header-section-number">7.1</span> |Tests| nodes</h2>
-<p>Each test that is run automaticly has a Babel root node that is a child of a node whose headline ends with &quot; |Tests|&quot; (quote marks not included).</p>
-<h2 id="teststests.py"><span class="header-section-number">7.2</span> tests/tests.py</h2>
+<p>handler(itObj) – The itObj is always the first argument passed to the handler.</p>
+<h1 data-number="8" id="automated-testing"><span class="header-section-number">8</span> Automated Testing</h1>
+<h2 data-number="8.1" id="tests-nodes"><span class="header-section-number">8.1</span> |Tests| nodes</h2>
+<p>Each test that is run automaticly has a Babel root node that is a child of a node whose headline ends with " |Tests|" (quote marks not included).</p>
+<h2 data-number="8.2" id="teststests.py"><span class="header-section-number">8.2</span> tests/tests.py</h2>
 <p>Command line:</p>
 <p>tests.py &lt;example.leo&gt; &lt;results.txt&gt;</p>
 <ul>
 <li>&lt;example.leo&gt; Pathname of a Leo-Editor file containing tests to run.</li>
 <li>&lt;results.txt&gt; Pathname of a flat text file to contain the test results.
 <ul>
-<li>If this file doesn't exist, it is created.</li>
+<li>If this file doesn’t exist, it is created.</li>
 <li>If this file exists, its contents are overwritten.</li>
 </ul></li>
 </ul>
-<h2 id="tests.leo"><span class="header-section-number">7.3</span> tests.leo</h2>
-<p>Select the node with headline &quot;One example file, one results file&quot;, then hit Ctrl-B.</p>
+<h2 data-number="8.3" id="tests.leo"><span class="header-section-number">8.3</span> tests.leo</h2>
+<p>Select the node with headline “One example file, one results file”, then hit Ctrl-B.</p>
 <p>You are then prompted to select a Leo-Editor file containing tests and a flat text file to contain the test results.</p>
 <p>Then all the tests in the selected Leo-Editor file are executed.</p>
-<h2 id="evaluating-test-results"><span class="header-section-number">7.4</span> Evaluating test results</h2>
+<h2 data-number="8.4" id="evaluating-test-results"><span class="header-section-number">8.4</span> Evaluating test results</h2>
 <p>Use meld or xxdiff to compare various test runs.</p>
 <p>For example, the results of running the same tests using tests.py and using the GUI should be essentially the same.</p>
 <p>You should keep a copy of each test results that you are convinced are good. Then new test results that are essentially the same as a good test results are also good.</p>

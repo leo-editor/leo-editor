@@ -25,7 +25,7 @@ _ = leoG  # Keep pyflakes happy if leoG isn't used.
 #@+others
 #@+node:bob.20170910145203.1: ** Library Functions included in API
 unl2pos = babel_lib.unl2pos
-#@+node:bob.20170716142236.1: ** class BABEL_ERROR
+#@+node:bob.20170716142236.1: ** class BABEL_ERROR(Exception)
 class BABEL_ERROR(Exception):
     pass
 
@@ -46,7 +46,7 @@ class BABEL_UNL_NO_POS(BABEL_ERROR):
     """
     pass
 
-#@+node:bob.20170726143547.1: ** class BabelGlobals
+#@+node:bob.20170726143547.1: ** class BabelGlobals(object)
 class BabelGlobals(object):
     """ Globals used by leo-Babel
     """
@@ -68,12 +68,12 @@ class BabelGlobals(object):
         self.pathBabelKill = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'babel_kill.py')
         self.babel_api = sys.modules[__name__]
     #@-others
-#@+node:bob.20180318164514.1: ** class BabelCmdr
+#@+node:bob.20180318164514.1: ** class BabelCmdr(object)
 class BabelCmdr(object):
     """ Globals used by leo-Babel
     """
     #@+others
-    #@+node:bob.20180318164514.2: *3* __init__()
+    #@+node:bob.20180318164514.2: *3* __init__(self, cmdr)
     def __init__(self, cmdr):
         """ Initialize the Leo-Babel Parameters specific to this Leo-Editor file
 
@@ -86,7 +86,7 @@ class BabelCmdr(object):
         """
 
         #@+others
-        #@+node:bob.20180318164514.3: *4* _getColor()
+        #@+node:bob.20180318164514.3: *4* _getColor(cmdr, settingName, default=None)
         def _getColor(cmdr, settingName, default=None):
             """ Add a default option to c.config.getColor()
             """
@@ -96,7 +96,7 @@ class BabelCmdr(object):
                 return colorx
             else:
                 return default
-        #@+node:bob.20180318164514.4: *4* _getString()
+        #@+node:bob.20180318164514.4: *4* _getString(cmdr, settingName, default=None)
         def _getString(cmdr, settingName, default=None):
             """ Add a default option to c.config.getString()
             """
@@ -106,16 +106,37 @@ class BabelCmdr(object):
                 return strx
             else:
                 return default
+        #@+node:bob.20240102112512.1: *4* _getInt(cmdr, settingName, default=None)
+        def _getInt(cmdr, settingName, default=None):
+            """ Add a default option to c.config.getInt()
+            """
+
+            intX = cmdr.config.getInt(settingName)
+            if intX:
+                return intX
+            else:
+                return default
         #@-others
 
         self.cmdr = cmdr
-        self.colorStdout = _getColor(cmdr, 'Leo-Babel-stdout', default='#00ff00')
-        self.colorStderr = _getColor(cmdr, 'Leo-Babel-stderr', default='#A020F0')
-        self.colorCompletion = _getColor(cmdr, 'Leo-Babel-completion', default='#FFD700')
-        self.nodeCreationDefault = \
-            cmdr.config.getBool('Leo-Babel-Node-Creation-Default', default=True)
-        self.interpreterPython = _getString(cmdr, 'Leo-Babel-Python', default='python3')
-        self.interpreterShell = _getString(cmdr, 'Leo-Babel-Shell', default='bash')
+        self.babel_color_stdout = _getColor(cmdr, 'Leo-Babel-stdout', default='#000000')
+        self.babel_color_stderr = _getColor(cmdr, 'Leo-Babel-stderr', default='#ff3300')
+        self.babel_color_information = _getColor(cmdr, 'Leo-Babel-completion')
+        if self.babel_color_information is None:
+            self.babel_color_information = _getColor(cmdr, 'Leo-Babel-information', default='#3333ff')
+        self.babel_node_creation = \
+            cmdr.config.getBool('Leo-Babel-Node-Creation-Default', default=None)
+        if self.babel_node_creation is None:
+            self.babel_node_creation = \
+                cmdr.config.getBool('Leo-Babel-Node-Creation', default=True)
+        self.babel_interpreter_python = _getString(cmdr, 'Leo-Babel-Python', default='/usr/bin/python3')
+        self.babel_interpreter_shell = _getString(cmdr, 'Leo-Babel-Shell', default='/usr/bin/bash')
+        self.babel_sudo = cmdr.config.getBool('Leo-Babel-Sudo', default=False)
+        self.babel_prefix_information = _getString(cmdr, 'Leo-Babel-Prefix-Information',  default="- ")
+        self.babel_prefix_stdout = _getString(cmdr, 'Leo-Babel-Prefix-stdout', default="| ")
+        self.babel_prefix_stderr = _getString(cmdr, 'Leo-Babel-Prefix-stderr', default="* ")
+        self.babel_tab_babel = cmdr.config.getBool('Leo-Babel-Tab-Babel', default=True)
+        self.babel_polling_delay = _getInt(cmdr, "Leo-Babel-Polling-Delay", default=1)
 
         self.babelExecCnt = 0
         self.cmdDoneFlag = False
