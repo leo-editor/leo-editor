@@ -14,8 +14,8 @@ is node-locked - that is, it always shows a view of its original host node
 no matter how the user navigates within or between outlines.
 
 :By: T\. B\. Passin
-:Version: 2.01
-:Date: 6 Apr 2022
+:Version: 2.1
+:Date: 26 Apr 2024
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -657,6 +657,9 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.host_editor = w.widget
         self.switching = False
         self.closing = False
+        path = c.getNodePath(c.p)
+        self.url_base = QtCore.QUrl('file:///' + path + '/')
+
 
         self.reloadSettings()
 
@@ -953,7 +956,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
                 html = text
             else:
                 html = self.render_rst(text)
-            self.browser.setHtml(html)
+
+            self.browser.setHtml(html, self.url_base)
             if self.copy_html:
                 copy2clip(html)
 
