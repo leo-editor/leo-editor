@@ -931,11 +931,16 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         pc = self
         c = pc.c
         pc.w = w
-        layout = self.layout()
-        for i in range(layout.count()):
-            layout.removeItem(layout.itemAt(0))
-        self.layout().addWidget(w)
-        w.show()
+        g.trace('w', w)
+        if 1:  # #3892: Replace the body pane
+            g.trace('parent', c.frame.body.widget.parent())
+        if 1:
+            layout = self.layout()
+            for i in range(layout.count()):
+                layout.removeItem(layout.itemAt(0))
+            self.layout().addWidget(w)
+            w.show()
+
         # Special inits for text widgets...
         if w.__class__ == QtWidgets.QTextBrowser:
             text_name = 'body-text-renderer'
@@ -1686,6 +1691,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20110322031455.5763: *5* vr.must_change_widget
     def must_change_widget(self, widget_class: Widget) -> bool:
         pc = self
+        g.trace(widget_class)
         return not pc.w or pc.w.__class__ != widget_class
     #@+node:ekr.20110320120020.14485: *5* vr.remove_directives
     def remove_directives(self, s: str) -> str:

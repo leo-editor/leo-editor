@@ -403,9 +403,9 @@ class LeoBody:
         w = c.frame.body.widget
         self.updateInjectedIvars(w, p)
         self.selectLabel(w)
-    #@+node:ekr.20200415041750.1: *5* LeoBody.cycleEditorFocus (restored)
+    #@+node:ekr.20200415041750.1: *5* LeoBody.cycleEditorFocus
     @body_cmd('editor-cycle-focus')
-    @body_cmd('cycle-editor-focus')  # There is no LeoQtBody method
+    @body_cmd('cycle-editor-focus')
     def cycleEditorFocus(self, event: LeoKeyEvent = None) -> None:
         """Cycle keyboard focus between the body text editors."""
         c = self.c
