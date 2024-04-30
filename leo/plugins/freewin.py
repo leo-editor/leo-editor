@@ -657,28 +657,16 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.host_editor = w.widget
         self.switching = False
         self.closing = False
-        # self.url_base = QtCore.QUrl('file:///' + path + '/')
         self.reloadSettings()
 
-        # The rendering pane can be either a QWebEngineView or a QTextEdit
-        # depending on the features desired
-        if not QWebEngineView:  # Until Qt6 has a QWebEngineView, force QTextEdit
-            self.render_pane_type = NAV_VIEW
-        if self.render_pane_type == NAV_VIEW:
-            self.render_widget = QTextEdit
-        else:
-            self.render_widget = QWebEngineView()
-            self.render_pane_type = BROWSER_VIEW
-            QtWebEngineWidgets.QWebEngineView.__init__(self)
-            settings = self.render_widget.settings()
-            settings.localContentCanAccessRemoteUrls = True
-            # settings.localContentCanAccessFileUrls = True
+        browser = self.browser = QWebEngineView()
+        settings = browser.settings()
+        settings.localContentCanAccessRemoteUrls = True
+        self.render_pane_type = BROWSER_VIEW
 
         self.editor = QTextEdit()
         wrapper = qt_text.QTextEditWrapper(self.editor, name='zwin', c=c)
         c.k.completeAllBindingsForWidget(wrapper)
-
-        browser = self.browser = self.render_widget
 
 
         #@+<<set stylesheet paths>>
@@ -868,9 +856,9 @@ class ZEditorWin(QtWidgets.QMainWindow):
                 old_scroll = scrollbar.value()
                 self.current_text = doc.toPlainText()
                 self.editor.setPlainText(self.current_text)
-                self.set_and_render(False)
-                doc.setModified(False)
                 scrollbar.setValue(old_scroll)
+                doc.setModified(False)
+                self.set_and_render(False)
 
             self.doc.setModified(False)
 
@@ -952,18 +940,22 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.stacked_widget.setCurrentIndex(self.render_kind)
 
         if self.render_kind == BROWSER:
-            text = self.editor.document().toPlainText()
-            if text[0] == '<':
+            text = self.doc.toPlainText() or ''
+            non_blank = text.strip()
+            is_raw = False
+            if non_blank and text[0] == '<':
                 html = text
+                is_raw = True
             else:
                 html = self.render_rst(text)
 
             path = self.c.getNodePath(self.c.p)
-            # base_url = QtCore.QUrl.fromLocalFile(path)
             url_base = QtCore.QUrl('file:///' + path + '/')
-            # self.browser.setUrl(url_base)
-            self.browser.setHtml(html, url_base)
-            # self.browser.setContent(html.encode(ENCODING), "text/html;charset=UTF-8", url_base)
+            # self.browser.setHtml(html, url_base)   # This didn't work for @LewisNeal for some unknown reason
+            if is_raw:
+                self.browser.setContent(html.encode(ENCODING), "text/html;charset=UTF-8")
+            else:
+                self.browser.setContent(html.encode(ENCODING), "text/html;charset=UTF-8", url_base)
             if self.copy_html:
                 copy2clip(html)
 
