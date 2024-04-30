@@ -266,7 +266,7 @@ if not qt_imports_ok:
     print('Freewin plugin: Qt imports failed')
     raise ImportError('Qt Imports failed')
 
-QWebView = QtWebEngineWidgets.QWebEngineView
+QWebEngineView = QtWebEngineWidgets.QWebEngineView
 
 #@+<<import docutils>>
 #@+node:tom.20210529002833.1: *3* <<import docutils>>
@@ -657,28 +657,29 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.host_editor = w.widget
         self.switching = False
         self.closing = False
-        path = c.getNodePath(c.p)
-        self.url_base = QtCore.QUrl('file:///' + path + '/')
-
-
+        # self.url_base = QtCore.QUrl('file:///' + path + '/')
         self.reloadSettings()
 
-        # The rendering pane can be either a QWebView or a QTextEdit
+        # The rendering pane can be either a QWebEngineView or a QTextEdit
         # depending on the features desired
-        if not QWebView:  # Until Qt6 has a QWebEngineView, force QTextEdit
+        if not QWebEngineView:  # Until Qt6 has a QWebEngineView, force QTextEdit
             self.render_pane_type = NAV_VIEW
         if self.render_pane_type == NAV_VIEW:
             self.render_widget = QTextEdit
         else:
-            self.render_widget = QWebView
+            self.render_widget = QWebEngineView()
             self.render_pane_type = BROWSER_VIEW
             QtWebEngineWidgets.QWebEngineView.__init__(self)
+            settings = self.render_widget.settings()
+            settings.localContentCanAccessRemoteUrls = True
+            # settings.localContentCanAccessFileUrls = True
 
         self.editor = QTextEdit()
         wrapper = qt_text.QTextEditWrapper(self.editor, name='zwin', c=c)
         c.k.completeAllBindingsForWidget(wrapper)
 
-        browser = self.browser = self.render_widget()
+        browser = self.browser = self.render_widget
+
 
         #@+<<set stylesheet paths>>
         #@+node:tom.20210604170628.1: *4* <<set stylesheet paths>>
@@ -957,7 +958,12 @@ class ZEditorWin(QtWidgets.QMainWindow):
             else:
                 html = self.render_rst(text)
 
-            self.browser.setHtml(html, self.url_base)
+            path = self.c.getNodePath(self.c.p)
+            # base_url = QtCore.QUrl.fromLocalFile(path)
+            url_base = QtCore.QUrl('file:///' + path + '/')
+            # self.browser.setUrl(url_base)
+            self.browser.setHtml(html, url_base)
+            # self.browser.setContent(html.encode(ENCODING), "text/html;charset=UTF-8", url_base)
             if self.copy_html:
                 copy2clip(html)
 
