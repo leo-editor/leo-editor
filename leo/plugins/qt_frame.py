@@ -2428,7 +2428,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 assert hasattr(w, 'setWindowState'), w
             else:
                 w.setWindowState(WindowState.WindowMaximized)
-    #@+node:ekr.20110605121601.18309: *4* qtFrame.Help Menu...
     #@+node:ekr.20160424080647.1: *3* qtFrame.Properties
     # The ratio and secondary_ratio properties are read-only.
     #@+node:ekr.20160424080815.2: *4* qtFrame.ratio property
@@ -4298,6 +4297,11 @@ class QtStatusLineClass:
         self.lastFcol = 0
         self.lastRow = 0
         self.lastCol = 0
+        
+        # #3901:  A new ivar that toggles between representations of UNLs.
+        #         False: Use default, based on settings.
+        #         True: Use the alternate representation.
+        self.toggle_view = False
 
         # Create the text widgets.
         self.textWidget1 = w1 = QtWidgets.QLineEdit(self.statusBar)
@@ -4320,7 +4324,7 @@ class QtStatusLineClass:
         splitter.addWidget(w2)
         self.put('')
         self.update()
-    #@+node:ekr.20110605121601.18260: *3* QtStatusLineClass.clear, get & put/1
+    #@+node:ekr.20110605121601.18260: *3* QtStatusLineClass.clear, get & put/1 & helper
     def clear(self) -> None:
         self.put('')
 
@@ -4328,11 +4332,13 @@ class QtStatusLineClass:
         return self.textWidget2.text()
 
     def put(self, s: str, bg: str = None, fg: str = None) -> None:
+        """Put the UNL area."""
         self.put_helper(s, self.textWidget2, bg, fg)
 
     def put1(self, s: str, bg: str = None, fg: str = None) -> None:
+        """Put the status area"""
         self.put_helper(s, self.textWidget1, bg, fg)
-
+    #@+node:ekr.20240505051258.1: *4* QtStatusLineClass.put_helper
     # Keys are widgets, values are stylesheets.
     styleSheetCache: dict[Any, str] = {}
 
@@ -4368,6 +4374,30 @@ class QtStatusLineClass:
                 c.styleSheetManager.mng.add_sclass(w, status)
                 c.styleSheetManager.mng.update_view(w)  # force appearance update
         w.setText(s)
+    #@+node:ekr.20240505052656.1: *3* QtStatusLineClass.computeStatusLine
+    def computeStatusLine(self, p: Position) -> str:
+        """Compute the UNL part of the status line."""
+        c = self.c
+        kind = c.config.getString('unl-status-kind') or ''
+        legacy = kind.lower() == 'legacy'
+        if self.toggle_view:
+            # Show the UNL the opposite as indicated by settings.
+            method = p.get_UNL if legacy else p.get_legacy_UNL
+        else:
+            # Show the UNL per the settings.
+            method = p.get_legacy_UNL if legacy else p.get_UNL
+        s = method()
+        return s
+    #@+node:ekr.20240505050902.1: *3* QtStatsuLineClass.toggleUnlView
+    def toggleUnlView(self):
+        """Toggle view of UNLs."""
+        c = self.c
+        # Toggle the switch.
+        self.toggle_view = not self.toggle_view
+        # Redraw.
+        s = self.computeStatusLine(c.p)
+        self.put(s)
+        self.update()
     #@+node:chris.20180320072817.1: *3* QtStatusLineClass.update & helpers
     def update(self) -> None:
         if g.app.killed:
@@ -4804,6 +4834,13 @@ def toggleStatusBar(event: LeoKeyEvent) -> None:
             w.hide()
         else:
             w.show()
+#@+node:ekr.20240505045118.1: *3* 'toggle-unl-view'
+@g.command('toggle-unl-view')
+def toggleUnlView(event: LeoKeyEvent) -> None:
+    c = event.get('c')
+    if c and c.frame.statusLine:
+        # This is not a convenience method.
+        c.frame.statusLine.toggleUnlView()
 #@-others
 #@@language python
 #@@tabwidth -4
