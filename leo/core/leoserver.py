@@ -64,7 +64,7 @@ Socket = Any
 #@-<< leoserver annotations >>
 #@+<< leoserver version >>
 #@+node:ekr.20220820160619.1: ** << leoserver version >>
-version_tuple = (1, 0, 10)
+version_tuple = (1, 0, 11)
 # Version History
 # 1.0.1 Initial commit.
 # 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info.
@@ -76,6 +76,7 @@ version_tuple = (1, 0, 10)
 # 1.0.8 October 2023: Added history commands, Fixed leo document change detection, allowed more minibuffer commands.
 # 1.0.9 January 2024: Added support for UNL and specific commander targeting for any command.
 # 1.0.10 Febuary 2024: Added support getting UNL for a specific node (for status bar display, etc.)
+# 1.0.11 May 2024: Added current commander info in get_ui_states command
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -2575,6 +2576,7 @@ class LeoServer:
 
         try:
             states = {
+                "commanderId": c and id(c),
                 "changed": c and c.changed,
                 "canUndo": c and c.canUndo(),
                 "canRedo": c and c.canRedo(),
