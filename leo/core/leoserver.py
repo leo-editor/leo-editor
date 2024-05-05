@@ -2589,7 +2589,23 @@ class LeoServer:
             }
         except Exception as e:  # pragma: no cover
             raise ServerError(f"{tag}: Exception setting state: {e}")
-        return self._make_minimal_response({"states": states})
+
+        # #3898: Return the info for the current commander.
+        #        Use the same format as in get_all_open_commanders.
+        try:
+            commander = {
+                "id": id(c),
+                "changed": c.isChanged(),
+                "name": c.fileName(),
+                "selected": c == self.c,
+            }
+        except Exception as e:  # pragma: no cover
+            raise ServerError(f"{tag}: Exception setting commander: {e}")
+
+        return self._make_minimal_response({
+            "commander": commander,
+            "states": states,
+        })
     #@+node:felix.20211210213603.1: *5* server.get_undos
     def get_undos(self, param: Param) -> Response:
         """Return list of undo operations"""
