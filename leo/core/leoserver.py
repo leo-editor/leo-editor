@@ -2344,7 +2344,11 @@ class LeoServer:
         """
         Return the body content body specified via GNX.
         """
-        c = self._check_c(param)
+        try:
+            c = self._check_c(param)
+        except Exception:  # pragma: no cover
+            # If p or c was specified but is now invalid/deleted
+            return self._make_response()
         gnx = param.get("gnx")
         v = c.fileCommands.gnxDict.get(gnx)  # vitalije
         body = ""
@@ -2357,7 +2361,11 @@ class LeoServer:
         """
         Return p.b's length in bytes, where p is c.p if param["ap"] is missing.
         """
-        c = self._check_c(param)
+        try:
+            c = self._check_c(param)
+        except Exception:  # pragma: no cover
+            # If p or c was specified but is now invalid/deleted
+            return self._make_response()
         gnx = param.get("gnx")
         w_v = c.fileCommands.gnxDict.get(gnx)  # vitalije
         if w_v:
@@ -2371,8 +2379,13 @@ class LeoServer:
         The cursor positions are given as {"line": line, "col": col, "index": i}
         with line and col along with a redundant index for convenience and flexibility.
         """
-        c = self._check_c(param)
-        p = self._get_p(param)
+        try:
+            c = self._check_c(param)
+            p = self._get_p(param)
+        except Exception:  # pragma: no cover
+            # If p or c was specified but is now invalid/deleted
+            return self._make_response()
+
         wrapper = c.frame.body.wrapper
 
         def row_col_wrapper_dict(i: int) -> dict:
@@ -4636,6 +4649,7 @@ class LeoServer:
         if param:
             commanderId = param.get('commanderId')
             if commanderId:
+                c = None
                 commanders = g.app.commanders()
                 for commander in commanders:
                     if id(commander) == commanderId:
