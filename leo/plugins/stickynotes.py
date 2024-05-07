@@ -652,18 +652,18 @@ class Tabula(QtWidgets.QMainWindow):  # type:ignore
         self.tb.setObjectName("toolbar")
 
         def do_tile():
-            self.mdi.setViewMode(QMdiArea.SubWindowView)
+            self.mdi.setViewMode(QMdiArea.ViewMode.SubWindowView)
             self.mdi.tileSubWindows()
 
         def do_cascade():
-            self.mdi.setViewMode(QMdiArea.SubWindowView)
+            self.mdi.setViewMode(QMdiArea.ViewMode.SubWindowView)
             self.mdi.cascadeSubWindows()
 
         def do_un_tab():
-            if self.mdi.viewMode() == QMdiArea.SubWindowView:
-                self.mdi.setViewMode(QMdiArea.TabbedView)
+            if self.mdi.viewMode() == QMdiArea.ViewMode.SubWindowView:
+                self.mdi.setViewMode(QMdiArea.ViewMode.TabbedView)
             else:
-                self.mdi.setViewMode(QMdiArea.SubWindowView)
+                self.mdi.setViewMode(QMdiArea.ViewMode.SubWindowView)
 
         def do_close_all():
             for i in self.mdi.subWindowList():
