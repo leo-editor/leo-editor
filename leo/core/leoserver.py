@@ -1315,7 +1315,7 @@ class LeoServer:
         if commanderId:
             commanders = g.app.commanders()
             for commander in commanders:
-                if id(commander) == commanderId:
+                if str(id(commander)) == str(commanderId):
                     self.c = commander  #  Found commander by id!
                     self.c.selectPosition(self.c.p)
                     self._check_outline(self.c)
@@ -2589,7 +2589,7 @@ class LeoServer:
 
         try:
             states = {
-                "commanderId": c and id(c),
+                "commanderId": c and str(id(c)),
                 "changed": c and c.changed,
                 "canUndo": c and c.canUndo(),
                 "canRedo": c and c.canRedo(),
@@ -3074,7 +3074,11 @@ class LeoServer:
         (Only if new string is different from actual existing body string)
         """
         tag = 'set_body'
-        c = self._check_c(param)
+        try:
+            c = self._check_c(param)
+        except Exception:  # pragma: no cover
+            # If p or c was specified but is now invalid/deleted
+            return self._make_response()
         gnx = param.get('gnx')
         body = param.get('body')
         u, wrapper = c.undoer, c.frame.body.wrapper
@@ -4652,7 +4656,7 @@ class LeoServer:
                 c = None
                 commanders = g.app.commanders()
                 for commander in commanders:
-                    if id(commander) == commanderId:
+                    if str(id(commander)) == str(commanderId):
                         c = commander  #  Found commander by id!
                         break
         # Still not found?
@@ -5135,7 +5139,7 @@ class LeoServer:
             package["commander"] = {
                 "changed": c.isChanged(),
                 "fileName": c.fileName(),  # Can be None for new files.
-                "id": id(c),
+                "id": str(id(c)),
             }
             # Add all the node data, including:
             # - "node": self._p_to_ap(p) # Contains p.gnx, p.childIndex and p.stack.
