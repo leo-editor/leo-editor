@@ -800,18 +800,20 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.change_size(100)
 
     def change_size(self, delta: int) -> None:
-        if hasattr(self.c, 'free_layout'):
-            splitter = self.parent()
-            i = splitter.indexOf(self)
-            assert i > -1
-            sizes = splitter.sizes()
-            n = len(sizes)
-            for j, size in enumerate(sizes):
-                if j == i:
-                    sizes[j] = max(0, size + delta)
-                else:
-                    sizes[j] = max(0, size - int(delta / (n - 1)))
-            splitter.setSizes(sizes)
+        if not hasattr(self.c, 'free_layout'):
+            return
+        splitter = self.parent()
+        i = splitter.indexOf(self)
+        assert i > -1
+        sizes = splitter.sizes()
+        n = len(sizes)
+        for j, size in enumerate(sizes):
+            if j == i:
+                sizes[j] = max(0, size + delta)
+            else:
+                sizes[j] = max(0, size - int(delta / (n - 1)))
+        splitter.setSizes(sizes)
+        self.sizes = sizes
     #@+node:ekr.20110317080650.14382: *3* vr.deactivate
     def deactivate(self) -> None:
         """Deactivate the vr window."""
@@ -825,8 +827,17 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         """
         Replace the body pane with the VR pane & remember the previous visibility of the VR pane.
         """
-        ### pc = self
-       
+        if not hasattr(self.c, 'free_layout'):
+            return
+
+        # Save the existing sizes.
+        splitter = self.parent()  # A NestedSplitter
+        i = splitter.indexOf(self)
+        assert i > -1
+        self.sizes = splitter.sizes()
+
+        # Increase the size of the VR pane.
+        splitter.moveSplitter(0, i)
     #@+node:ekr.20110321072702.14508: *3* vr.lock/unlock
     def lock(self) -> None:
         """Lock the vr pane."""
@@ -840,8 +851,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20240507100402.1: *3* vr.restore_body
     def restore_body(self) -> None:
         """Restore the body pane restore the previous visibility of the VR pane."""
-        ### pc = self
-       
+        if not hasattr(self.c, 'free_layout'):
+            return
+
+        # Restore the previous sizes.
+        splitter = self.parent()  # A NestedSplitter
+        splitter.setSizes(self.sizes)
     #@+node:ekr.20160921071239.1: *3* vr.set_html
     def set_html(self, s: str, w: Wrapper) -> None:
         """Set text in w to s, preserving scroll position."""
@@ -968,15 +983,13 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         pc = self
         c = pc.c
         pc.w = w
-        g.trace('w', w)
-        if 1:  # #3892: Replace the body pane
-            g.trace('parent', c.frame.body.widget.parent())
-        if 1:
-            layout = self.layout()
-            for i in range(layout.count()):
-                layout.removeItem(layout.itemAt(0))
-            self.layout().addWidget(w)
-            w.show()
+
+        # #3892: Replace the body pane
+        layout = self.layout()
+        for i in range(layout.count()):
+            layout.removeItem(layout.itemAt(0))
+        self.layout().addWidget(w)
+        w.show()
 
         # Special inits for text widgets...
         if w.__class__ == QtWidgets.QTextBrowser:
@@ -1728,7 +1741,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20110322031455.5763: *5* vr.must_change_widget
     def must_change_widget(self, widget_class: Widget) -> bool:
         pc = self
-        g.trace(widget_class)
         return not pc.w or pc.w.__class__ != widget_class
     #@+node:ekr.20110320120020.14485: *5* vr.remove_directives
     def remove_directives(self, s: str) -> str:
