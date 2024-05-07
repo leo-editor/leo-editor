@@ -4297,7 +4297,7 @@ class QtStatusLineClass:
         self.lastFcol = 0
         self.lastRow = 0
         self.lastCol = 0
-        
+
         # #3901:  A new ivar that toggles between representations of UNLs.
         #         False: Use default, based on settings.
         #         True: Use the alternate representation.
