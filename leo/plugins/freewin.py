@@ -942,20 +942,15 @@ class ZEditorWin(QtWidgets.QMainWindow):
         if self.render_kind == BROWSER:
             text = self.doc.toPlainText() or ''
             non_blank = text.strip()
-            is_raw = False
             if non_blank and text[0] == '<':
                 html = text
-                is_raw = True
             else:
                 html = self.render_rst(text)
 
             path = self.c.getNodePath(self.c.p)
             url_base = QtCore.QUrl('file:///' + path + '/')
-            # self.browser.setHtml(html, url_base)   # This didn't work for @LewisNeal for some unknown reason
-            if is_raw:
-                self.browser.setContent(html.encode(ENCODING), "text/html;charset=UTF-8")
-            else:
-                self.browser.setContent(html.encode(ENCODING), "text/html;charset=UTF-8", url_base)
+            self.browser.setContent(html.encode(ENCODING), "text/html;charset=UTF-8", url_base)
+
             if self.copy_html:
                 copy2clip(html)
 
