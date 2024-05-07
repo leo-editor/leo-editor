@@ -453,6 +453,19 @@ def expand_rendering_pane(event: Event) -> None:
     if not vr:
         vr = viewrendered(event)
     vr.expand()
+#@+node:ekr.20240507095853.1: *3* g.command('vr-fully-expand')
+@g.command('vr-fully-expand')
+def fully_expand_rendering_pane(event: Event) -> None:
+    """Expand the rendering pane."""
+    if g.app.gui.guiName() != 'qt':
+        return
+    c = event.get('c')
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+    vr.fully_expand()
 #@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
 def hide_rendering_pane(event: Event) -> None:
@@ -520,6 +533,19 @@ def pause_play_movie(event: Event) -> None:
         return
     f = vp.pause if vp.isPlaying() else vp.play
     f()
+#@+node:ekr.20240507100013.1: *3* g.command('vr-restore-body')
+@g.command('vr-restore-body')
+def restore_body(event: Event) -> None:
+    """Expand the rendering pane."""
+    if g.app.gui.guiName() != 'qt':
+        return
+    c = event.get('c')
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+    vr.restore_body()
 #@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
 @g.command('vr-show')
 def show_rendering_pane(event: Event) -> None:
@@ -583,7 +609,7 @@ def update_rendering_pane(event: Event) -> None:
     if not vr:
         vr = viewrendered(event)
     vr.update(tag='view', keywords={'c': c, 'force': True})
-#@+node:vitalije.20170712195827.1: *3* @g.command('vr-zoom')
+#@+node:vitalije.20170712195827.1: *3* g.command('vr-zoom')
 @g.command('vr-zoom')
 def zoom_rendering_pane(event: Event) -> None:
 
@@ -697,7 +723,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Init.
         self.create_dispatch_dict()
         self.activate()
-        self.zoomed = False
     #@+node:ekr.20110320120020.14478: *4* vr.create_dispatch_dict
     def create_dispatch_dict(self) -> dict[str, Callable]:
         pc = self
@@ -795,6 +820,13 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         g.unregisterHandler('select2', pc.update)
         g.unregisterHandler('idle', pc.update)
         pc.active = False
+    #@+node:ekr.20240507100254.1: *3* vr.fully_expand
+    def fully_expand(self) -> None:
+        """
+        Replace the body pane with the VR pane & remember the previous visibility of the VR pane.
+        """
+        ### pc = self
+       
     #@+node:ekr.20110321072702.14508: *3* vr.lock/unlock
     def lock(self) -> None:
         """Lock the vr pane."""
@@ -805,6 +837,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         """Unlock the vr pane."""
         g.note('rendering pane unlocked')
         self.locked = False
+    #@+node:ekr.20240507100402.1: *3* vr.restore_body
+    def restore_body(self) -> None:
+        """Restore the body pane restore the previous visibility of the VR pane."""
+        ### pc = self
+       
     #@+node:ekr.20160921071239.1: *3* vr.set_html
     def set_html(self, s: str, w: Wrapper) -> None:
         """Set text in w to s, preserving scroll position."""
