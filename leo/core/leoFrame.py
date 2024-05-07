@@ -898,9 +898,9 @@ class LeoFrame:
         if self.statusLine:
             self.statusLine.clear()
 
-    def computeStatusLine(self, p: Position) -> str:
+    def computeStatusUnl(self, p: Position) -> str:
         if self.statusLine and p:
-            return self.statusLine.computeStatusLine(p)
+            return self.statusLine.computeStatusUnl(p)
         return ''
 
     def disableStatusLine(self, background: str = None) -> None:
@@ -1704,7 +1704,7 @@ class LeoTree:
         c.frame.updateStatusLine()
         c.frame.clearStatusLine()
         if p and p.v:
-            s = c.frame.computeStatusLine(p)
+            s = c.frame.computeStatusUnl(p)
             c.frame.putStatusLine(s)
     #@-others
 #@+node:ekr.20070317073627: ** class LeoTreeTab
@@ -2119,12 +2119,11 @@ class NullStatusLineClass:
         c.frame.statusText = self.textWidget
     #@+others
     #@+node:ekr.20070302171917: *3* NullStatusLineClass.methods
-    def computeStatusLine(self, p: Position) -> str:
+    def computeStatusUnl(self, p: Position) -> str:
         return ''
 
     def disable(self, background: str = None) -> None:
         self.enabled = False
-        # self.c.bodyWantsFocus()
 
     def enable(self, background: str = "white") -> None:
         self.c.widgetWantsFocus(self.textWidget)

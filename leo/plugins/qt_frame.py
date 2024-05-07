@@ -4301,7 +4301,7 @@ class QtStatusLineClass:
         # #3901:  A new ivar that toggles between representations of UNLs.
         #         False: Use default, based on settings.
         #         True: Use the alternate representation.
-        self.toggle_view = False
+        self.toggle_unl_view = False
 
         # Create the text widgets.
         self.textWidget1 = w1 = QtWidgets.QLineEdit(self.statusBar)
@@ -4374,13 +4374,13 @@ class QtStatusLineClass:
                 c.styleSheetManager.mng.add_sclass(w, status)
                 c.styleSheetManager.mng.update_view(w)  # force appearance update
         w.setText(s)
-    #@+node:ekr.20240505052656.1: *3* QtStatusLineClass.computeStatusLine
-    def computeStatusLine(self, p: Position) -> str:
+    #@+node:ekr.20240505052656.1: *3* QtStatusLineClass.computeStatusUnl
+    def computeStatusUnl(self, p: Position) -> str:
         """Compute the UNL part of the status line."""
         c = self.c
         kind = c.config.getString('unl-status-kind') or ''
         legacy = kind.lower() == 'legacy'
-        if self.toggle_view:
+        if self.toggle_unl_view:
             # Show the UNL the opposite as indicated by settings.
             method = p.get_UNL if legacy else p.get_legacy_UNL
         else:
@@ -4393,9 +4393,9 @@ class QtStatusLineClass:
         """Toggle view of UNLs."""
         c = self.c
         # Toggle the switch.
-        self.toggle_view = not self.toggle_view
+        self.toggle_unl_view = not self.toggle_unl_view
         # Redraw.
-        s = self.computeStatusLine(c.p)
+        s = self.computeStatusUnl(c.p)
         self.put(s)
         self.update()
     #@+node:chris.20180320072817.1: *3* QtStatusLineClass.update & helpers
