@@ -522,9 +522,10 @@ def show_rendering_pane(event: Event) -> None:
         vr = viewrendered(event)
     vr.show_pane()
 #@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle')
-@g.command('vr-toggle')
+@g.command('vr-toggle-visibility')
+@g.command('vr-toggle')  # Legacy
 def toggle_rendering_pane(event: Event) -> None:
-    """Toggle the rendering pane."""
+    """Toggle the visibility of the VR pane."""
     global controllers
     if g.app.gui.guiName() != 'qt':
         return
@@ -541,6 +542,23 @@ def toggle_rendering_pane(event: Event) -> None:
         show_rendering_pane(event)
     else:
         hide_rendering_pane(event)
+#@+node:ekr.20240508082844.1: *3* g.command('vr-toggle-keep-open')
+@g.command('vr-toggle-keep-open')
+def toggle_keep_open(event: Event) -> None:
+    """Toggle the visibility of the VR pane."""
+    global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
+    c = event.get('c')
+    if not c:
+        return
+    if g.app.gui.guiName() != 'qt':
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+        vr.hide()  # So the toggle below will work.
+    vr.keep_open = not vr.keep_open
 #@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
 def unlock_rendering_pane(event: Event) -> None:
@@ -664,6 +682,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
         self.gv: Widget = None  # For @graphics-script: a QGraphicsView
         self.inited = False
+        self.keep_open = False  # True: keep the VR pane open even when showing text.
         self.length = 0  # The length of previous p.b.
         self.locked = False
         self.scrollbar_pos_dict: dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
@@ -826,7 +845,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if self.locked:
             return
         if pc.must_update(keywords):
-            #
             # Suppress updates until we change nodes.
             pc.node_changed = pc.gnx != p.v.gnx
             pc.gnx = p.v.gnx
@@ -835,38 +853,33 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             # Remove Leo directives.
             s = keywords.get('s') if 's' in keywords else p.b
             s = pc.remove_directives(s)
-            #
-            # Use plain text if we are hidden.
-            # This avoids annoying messages with rst.
-            if pc.isHidden():
-                w = pc.ensure_text_widget()
-                w.setPlainText(s)
-                return
-            #
             # Dispatch based on the computed kind.
             kind = keywords.get('flags') if 'flags' in keywords else pc.get_kind(p)
-            if not kind:
+            ### g.trace('must update:', kind, pc.keep_open, p.h)
+            f: Callable = None
+            if kind or keywords.get('force'):
+                f = pc.dispatch_dict.get(kind)
+            else:
                 # Do *not* try to render plain text.
                 w = pc.ensure_text_widget()
                 w.setPlainText(s)
-                pc.show()  # Must be last.
-                return
-            f = pc.dispatch_dict.get(kind)
-            if not f:
-                g.trace('no handler for kind: %s' % kind)
-                f = pc.update_rst
-            f(s, keywords)
-        else:
+            if f:
+                f(s, keywords)
+                pc.show()
+            elif self.keep_open:
+                pc.show()
+            else:
+                pc.hide()
+        elif pc.isVisible():
             # Save the scroll position.
             w = pc.w
             if w.__class__ == QtWidgets.QTextBrowser:
-                # 2011/07/30: The widget may no longer exist.
+                # Careful: the widget may no longer exist.
                 try:
                     sb = w.verticalScrollBar()
                     pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
                 except Exception:
                     g.es_exception()
-                    pc.deactivate()
     #@+node:ekr.20190424083049.1: *4* vr.create_base_text_widget
     def create_base_text_widget(self) -> Wrapper:
         """Create a QWebView or a QTextBrowser."""
@@ -928,8 +941,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 pc.length = len(p.b)
                 return False  # Only update explicitly.
             return True
-        # This trace would be called at idle time.
-            # g.trace('no change')
         return False
     #@+node:ekr.20191004143229.1: *4* vr.update_asciidoc & helpers
     def update_asciidoc(self, s: str, keywords: Any) -> None:
