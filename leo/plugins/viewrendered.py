@@ -349,6 +349,8 @@ def onCreate(tag: str, keys: dict) -> None:
     g.registerHandler('select2', vr.update)
     g.registerHandler('idle', vr.update)
     vr.active = True
+    vr.is_visible = False
+    vr.hide()
 #@+node:vitalije.20170712174157.1: *3* vr function: onClose
 def onClose(tag: str, keys: dict) -> None:
     c = keys.get('c')
@@ -461,6 +463,7 @@ def hide_rendering_pane(event: Event) -> None:
     if not vr:
         vr = viewrendered(event)
     vr.hide()
+    vr.is_visible = False
     c.bodyWantsFocus()
 
 # Compatibility
@@ -526,8 +529,9 @@ def show_rendering_pane(event: Event) -> None:
     if not vr:
         vr = viewrendered(event)
     vr.show()
+    vr.is_visible = True
     c.bodyWantsFocusNow()
-#@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle')
+#@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle-visibility')
 @g.command('vr-toggle-visibility')
 @g.command('vr-toggle')  # Legacy
 def toggle_rendering_pane(event: Event) -> None:
@@ -543,11 +547,12 @@ def toggle_rendering_pane(event: Event) -> None:
     vr = controllers.get(c.hash())
     if not vr:
         vr = viewrendered(event)
-        vr.hide()  # So the toggle below will work.
-    if vr.isHidden():
-        show_rendering_pane(event)
+    vr.is_visible = not vr.is_visible
+    if vr.is_visible:
+       vr.show()
     else:
-        hide_rendering_pane(event)
+        vr.hide()
+    c.bodyWantsFocusNow()
 #@+node:ekr.20240508082844.1: *3* g.command('vr-toggle-keep-open')
 @g.command('vr-toggle-keep-open')
 def toggle_keep_open(event: Event) -> None:
@@ -685,10 +690,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.create_pane(parent)
         # Set the ivars.
         self.active = False
+        self.auto_create = False  # Set by reload settings.
         self.gnx: str = None
         self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
         self.gv: Widget = None  # For @graphics-script: a QGraphicsView
         self.keep_open = False  # True: keep the VR pane open even when showing text.
+        self.is_visible = False
         self.length = 0  # The length of previous p.b.
         self.locked = False
         self.scrollbar_pos_dict: dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
@@ -699,6 +706,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.node_changed = True
         # Init.
         self.create_dispatch_dict()
+        self.is_visible = self.auto_create
+        if self.auto_create:
+            self.show()
+        else:
+            self.hide()
     #@+node:ekr.20110320120020.14478: *4* vr.create_dispatch_dict
     def create_dispatch_dict(self) -> dict[str, Callable]:
         d = {
@@ -735,7 +747,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
     #@+node:ekr.20190614065659.1: *4* vr.create_pane
     def create_pane(self, parent: Position) -> None:
-        """Create the VR pane or dock."""
+        """Create the VR pane."""
         if g.unitTesting:
             return
         # Create the inner contents.
@@ -844,6 +856,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return
         if self.locked:
             return
+        if not self.is_visible:
+            return
         if not self.must_update(keywords):
             return
         # Suppress updates until we change nodes.
@@ -922,7 +936,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return False
         if self.gnx != p.v.gnx:
             return True
-        if len(p.b) != self.length:
+        if self.gnx != p.v.gnx:
             if self.get_kind(p) in ('html', 'pyplot'):
                 self.length = len(p.b)
                 return False  # Only update explicitly.
