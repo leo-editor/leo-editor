@@ -138,7 +138,7 @@ class SqlitePickleShare:
     def init_dbtables(self, conn: Any) -> None:
         sql = 'create table if not exists cachevalues(key text primary key, data blob);'
         conn.execute(sql)
-    #@+node:vitalije.20170716201700.3: *4*  __init__ (SqlitePickleShare)
+    #@+node:vitalije.20170716201700.3: *4*  SqlitePickleShare.__init__
     def __init__(self, root: str) -> None:
         """
         Init the SqlitePickleShare class.
@@ -177,11 +177,11 @@ class SqlitePickleShare:
         self.loader = loadz
         self.dumper = dumpz
         self.reset_protocol_in_values()
-    #@+node:vitalije.20170716201700.4: *4* __contains__(SqlitePickleShare)
+    #@+node:vitalije.20170716201700.4: *4* SqlitePickleShare.__contains__
     def __contains__(self, key: str) -> bool:
 
         return self.has_key(key)  # NOQA
-    #@+node:vitalije.20170716201700.5: *4* __delitem__
+    #@+node:vitalije.20170716201700.5: *4* SqlitePickleShare.__delitem__
     def __delitem__(self, key: str) -> None:
         """ del db["key"] """
         try:
@@ -190,7 +190,7 @@ class SqlitePickleShare:
                 where key=?''', (key,))
         except sqlite3.OperationalError:
             pass
-    #@+node:vitalije.20170716201700.6: *4* __getitem__
+    #@+node:vitalije.20170716201700.6: *4* SqlitePickleShare.__getitem__
     def __getitem__(self, key: str) -> None:
         """ db['key'] reading """
         try:
@@ -205,15 +205,23 @@ class SqlitePickleShare:
         except sqlite3.Error:
             raise KeyError(key)
         return obj
-    #@+node:vitalije.20170716201700.7: *4* __iter__
+    #@+node:vitalije.20170716201700.7: *4* SqlitePickleShare.__iter__
     def __iter__(self) -> Generator:
 
         for k in list(self.keys()):
             yield k
-    #@+node:vitalije.20170716201700.8: *4* __repr__
+    #@+node:vitalije.20170716201700.8: *4* SqlitePickleShare.__repr__
     def __repr__(self) -> str:
-        return f"SqlitePickleShare('{self.root}')"
-    #@+node:vitalije.20170716201700.9: *4* __setitem__
+        ### return f"SqlitePickleShare('{self.root}')"
+        result = [
+            '\n',
+            f"SqlitePickleShare('{self.root}')\n",
+        ]
+        for key_tuple in self.keys():
+            key = key_tuple[0]
+            result.append(f"{key} {self.get(key)}\n")
+        return ''.join(result)
+    #@+node:vitalije.20170716201700.9: *4* SqlitePickleShare.__setitem__
     def __setitem__(self, key: str, value: Any) -> None:
         """ db['key'] = 5 """
         try:

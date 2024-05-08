@@ -269,15 +269,20 @@ class FastRead:
             mf.showFullScreen()
         else:
             mf.show()
-    #@+node:ekr.20180708060437.1: *5* fast.getGlobalData
+    #@+node:ekr.20180708060437.1: *5* fast.getGlobalData (**trace)
     def getGlobalData(self) -> dict[str, Any]:
         """Return a dict containing all global data."""
         c = self.c
         try:
             window_pos = c.db.get('window_position')
+            ### breakpoint()  ###
             r1 = float(c.db.get('body_outline_ratio', '0.5'))
             r2 = float(c.db.get('body_secondary_ratio', '0.5'))
             top, left, height, width = window_pos
+            g.trace(r1, r2, c.fileName())  ###
+            ## g.trace(c.db.db, tag=c.fileName())
+            print(repr(c.db.db))  ###
+            r1 = 0.5  ###
             return {
                 'top': int(top),
                 'left': int(left),
@@ -1904,10 +1909,10 @@ class FileCommands:
     def putFindSettings(self) -> None:
         # New in 4.3:  These settings never get written to the .leo file.
         self.put("<find_panel_settings/>\n")
-    #@+node:ekr.20031218072017.3037: *5* fc.putGlobals (sets window_position)
+    #@+node:ekr.20031218072017.3037: *5* fc.putGlobals (sets window_position) (**trace)
     def putGlobals(self) -> None:
         """Put a vestigial <globals> element, and write global data to the cache."""
-        trace = 'cache' in g.app.debug
+        trace = True  ### 'cache' in g.app.debug
         c = self.c
         self.put("<globals/>\n")
         if not c.mFileName:
@@ -1917,8 +1922,10 @@ class FileCommands:
         w, h, left, t = c.frame.get_window_info()
         c.db['window_position'] = str(t), str(left), str(h), str(w)
         if trace:
-            g.trace(f"\nset c.db for {c.shortFileName()}")
+            print('')
+            g.trace(c.shortFileName(), g.callers())
             print('window_position:', c.db['window_position'])
+            print('body_outline_ratio:', c.db['body_outline_ratio'])
     #@+node:ekr.20031218072017.3041: *5* fc.putHeader
     def putHeader(self) -> None:
         self.put('<leo_header file_format="2"/>\n')
