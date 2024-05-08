@@ -798,9 +798,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         splitter = self.parent()  # A NestedSplitter
         if not splitter:
             return
+        self.show()
         i = splitter.indexOf(self)
         splitter.moveSplitter(0, i)
-        self.fully_expanded = True
     #@+node:ekr.20110321072702.14508: *3* vr.lock/unlock
     def lock(self) -> None:
         """Lock the vr pane."""
@@ -820,9 +820,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         splitter = self.parent()  # A NestedSplitter
         if not splitter:
             return
+        self.show()
         i = splitter.indexOf(self)
         splitter.moveSplitter(int(sum(splitter.sizes())/2), i)
-        self.fully_expanded = False
     #@+node:ekr.20160921071239.1: *3* vr.set_html
     def set_html(self, s: str, w: Wrapper) -> None:
         """Set text in w to s, preserving scroll position."""
