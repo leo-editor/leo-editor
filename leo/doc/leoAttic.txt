@@ -1754,6 +1754,12 @@ def setBackgroundColor(self, colorName: str, name: str, w: Wrapper) -> None:
         elif colorName not in pc.badColors:
             pc.badColors.append(colorName)
             g.warning('invalid body background color: %s' % (colorName))
+#@+node:ekr.20190614133401.1: *3* vr.show_pane
+def show_pane(self) -> None:
+    c = self.c
+    self.activate()
+    self.show()
+    c.bodyWantsFocusNow()
 #@+node:vitalije.20170712183618.1: *3* vr.store_layout
 def store_layout(self, which: str) -> None:
     global layouts

@@ -203,6 +203,7 @@ from collections.abc import Callable
 import os
 from pathlib import Path
 import shutil
+import sys
 import textwrap
 from typing import Any, Optional, TYPE_CHECKING
 from urllib.request import urlopen
@@ -524,7 +525,8 @@ def show_rendering_pane(event: Event) -> None:
     vr = controllers.get(c.hash())
     if not vr:
         vr = viewrendered(event)
-    vr.show_pane()
+    vr.show()
+    c.bodyWantsFocusNow()
 #@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle')
 @g.command('vr-toggle-visibility')
 @g.command('vr-toggle')  # Legacy
@@ -699,30 +701,29 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.create_dispatch_dict()
     #@+node:ekr.20110320120020.14478: *4* vr.create_dispatch_dict
     def create_dispatch_dict(self) -> dict[str, Callable]:
-        pc = self
         d = {
-            'asciidoc': pc.update_asciidoc,
-            'big': pc.update_rst,
-            'html': pc.update_html,
-            'graphics-script': pc.update_graphics_script,
-            'image': pc.update_image,
-            'jupyter': pc.update_jupyter,
-            'latex': pc.update_latex,
-            'markdown': pc.update_md,
-            'md': pc.update_md,
-            'movie': pc.update_movie,
-            'networkx': pc.update_networkx,
-            'pandoc': pc.update_pandoc,
-            'pyplot': pc.update_pyplot,
-            'rest': pc.update_rst,
-            'rst': pc.update_rst,
-            'svg': pc.update_svg,
-            'plantuml': pc.update_plantuml,
-            'jinja': pc.update_jinja,
-            # 'url': pc.update_url,
-            # 'xml': pc.update_xml,
+            'asciidoc': self.update_asciidoc,
+            'big': self.update_rst,
+            'html': self.update_html,
+            'graphics-script': self.update_graphics_script,
+            'image': self.update_image,
+            'jupyter': self.update_jupyter,
+            'latex': self.update_latex,
+            'markdown': self.update_md,
+            'md': self.update_md,
+            'movie': self.update_movie,
+            'networkx': self.update_networkx,
+            'pandoc': self.update_pandoc,
+            'pyplot': self.update_pyplot,
+            'rest': self.update_rst,
+            'rst': self.update_rst,
+            'svg': self.update_svg,
+            'plantuml': self.update_plantuml,
+            'jinja': self.update_jinja,
+            # 'url': self.update_url,
+            # 'xml': self.update_xml,
         }
-        pc.dispatch_dict = d
+        self.dispatch_dict = d
         return d
     #@+node:ekr.20171114150510.1: *4* vr.reloadSettings
     def reloadSettings(self) -> None:
@@ -785,12 +786,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         splitter.moveSplitter(0, i)
     #@+node:ekr.20110321072702.14508: *3* vr.lock/unlock
     def lock(self) -> None:
-        """Lock the vr pane."""
+        """Lock the VR pane."""
         g.note('rendering pane locked')
         self.locked = True
 
     def unlock(self) -> None:
-        """Unlock the vr pane."""
+        """Unlock the VR pane."""
         g.note('rendering pane unlocked')
         self.locked = False
     #@+node:ekr.20240507100402.1: *3* vr.restore_body
@@ -808,12 +809,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20160921071239.1: *3* vr.set_html
     def set_html(self, s: str, w: Wrapper) -> None:
         """Set text in w to s, preserving scroll position."""
-        pc = self
-        p = pc.c.p
+        p = self.c.p
         sb = w.verticalScrollBar()
         if sb:
-            d = pc.scrollbar_pos_dict
-            if pc.node_changed:
+            d = self.scrollbar_pos_dict
+            if self.node_changed:
                 # Set the scrollbar.
                 pos = d.get(p.v, sb.sliderPosition())
                 sb.setSliderPosition(pos)
@@ -826,57 +826,49 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             # Restore the scrollbars
             assert pos is not None
             sb.setSliderPosition(pos)
-    #@+node:ekr.20190614133401.1: *3* vr.show_pane
-    def show_pane(self) -> None:
-
-        c, vr = self.c, self
-        vr.activate()
-        vr.show()
-        c.bodyWantsFocusNow()
     #@+node:ekr.20101112195628.5426: *3* vr.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
 
     def update(self, tag: str, keywords: Any) -> None:  # type:ignore
-        """Update the vr pane. Called at idle time."""
-        pc = self
-        p = pc.c.p
-        if not pc.active:
+        """Update the VR pane. Called at idle time."""
+        p = self.c.p
+        if not self.active:
             try:
                 # Save the scroll position.
-                w = pc.w
+                w = self.w
                 if w and w.__class__ == QtWidgets.QTextBrowser:
                     sb = w.verticalScrollBar()
-                    pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
+                    self.scrollbar_pos_dict[p.v] = sb.sliderPosition()
             except Exception:
                 g.es_exception()
             return
         if self.locked:
             return
-        if not pc.must_update(keywords):
+        if not self.must_update(keywords):
             return
         # Suppress updates until we change nodes.
         f: Callable = None
-        pc.node_changed = pc.gnx != p.v.gnx
-        pc.gnx = p.v.gnx
-        pc.length = len(p.b)  # not s
+        self.node_changed = self.gnx != p.v.gnx
+        self.gnx = p.v.gnx
+        self.length = len(p.b)  # not s
         # Remove Leo directives.
         s = keywords.get('s') if 's' in keywords else p.b
-        s = pc.remove_directives(s)
+        s = self.remove_directives(s)
         # Dispatch based on the computed kind.
-        kind = keywords.get('flags') if 'flags' in keywords else pc.get_kind(p)
+        kind = keywords.get('flags') if 'flags' in keywords else self.get_kind(p)
         if kind or keywords.get('force'):
-            f = pc.dispatch_dict.get(kind)
+            f = self.dispatch_dict.get(kind)
         else:
             # Do *not* try to render plain text.
-            w = pc.ensure_text_widget()
+            w = self.ensure_text_widget()
             w.setPlainText(s)
         if f:
             f(s, keywords)
-            pc.show()
+            self.show()
         elif self.keep_open:
-            pc.show()
+            self.show()
         else:
-            pc.hide()
+            self.hide()
     #@+node:ekr.20190424083049.1: *4* vr.create_base_text_widget
     def create_base_text_widget(self) -> Wrapper:
         """Create a QWebView or a QTextBrowser."""
@@ -895,9 +887,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20110320120020.14486: *4* vr.embed_widget & helper
     def embed_widget(self, w: Wrapper, delete_callback: Callable = None) -> None:
         """Embed widget w in the free_layout splitter."""
-        pc = self
-        c = pc.c
-        pc.w = w
+        c = self.c
+        self.w = w
 
         # #3892: Replace the body pane
         layout = self.layout()
@@ -920,34 +911,32 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20110320120020.14476: *4* vr.must_update
     def must_update(self, keywords: Any) -> bool:
         """Return True if we must update the rendering pane."""
-        pc = self
-        c, p = pc.c, pc.c.p
+        c, p = self.c, self.c.p
         if g.unitTesting:
             return False
-        if c != keywords.get('c') or not pc.active:
+        if c != keywords.get('c') or not self.active:
             return False
         if keywords.get('force'):
             return True
-        if pc.locked:
+        if self.locked:
             return False
-        if pc.gnx != p.v.gnx:
+        if self.gnx != p.v.gnx:
             return True
-        if len(p.b) != pc.length:
-            if pc.get_kind(p) in ('html', 'pyplot'):
-                pc.length = len(p.b)
+        if len(p.b) != self.length:
+            if self.get_kind(p) in ('html', 'pyplot'):
+                self.length = len(p.b)
                 return False  # Only update explicitly.
             return True
         return False
     #@+node:ekr.20191004143229.1: *4* vr.update_asciidoc & helpers
     def update_asciidoc(self, s: str, keywords: Any) -> None:
-        """Update asciidoc in the vr pane."""
+        """Update asciidoc in the VR pane."""
         global asciidoctor_exec, asciidoc3_exec
-        pc = self
         # Do this regardless of whether we show the widget or not.
-        w = pc.ensure_text_widget()
-        assert pc.w
+        w = self.ensure_text_widget()
+        assert self.w
         if s:
-            pc.show()
+            self.show()
         if asciidoctor_exec or asciidoc3_exec:
             try:
                 s2 = self.convert_to_asciidoctor(s)
@@ -964,14 +953,13 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20191004143805.1: *5* vr.convert_to_asciidoctor
     def convert_to_asciidoctor(self, s: str) -> str:
         """Convert s to html using the asciidoctor or asciidoc processor."""
-        pc = self
-        c, p = pc.c, pc.c.p
+        c, p = self.c, self.c.p
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
         if os.path.isdir(path):
             os.chdir(path)
-        s = pc.run_asciidoctor(s)
+        s = self.run_asciidoctor(s)
         return g.toUnicode(s)
     #@+node:ekr.20191004144128.1: *5* vr.run_asciidoctor
     def run_asciidoctor(self, s: str) -> str:
@@ -998,62 +986,59 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return f.read()
     #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
     def update_graphics_script(self, s: str, keywords: Any) -> None:
-        """Update the graphics script in the vr pane."""
-        pc = self
-        c = pc.c
+        """Update the graphics script in the VR pane."""
+        c = self.c
         force = keywords.get('force')
-        if pc.gs and not force:
+        if self.gs and not force:
             return
-        if not pc.gs:
+        if not self.gs:
             splitter = c.free_layout.get_top_splitter()
             # Careful: we may be unit testing.
             if not splitter:
                 g.trace('no splitter')
                 return
             # Create the widgets.
-            pc.gs = QtWidgets.QGraphicsScene(splitter)
-            pc.gv = QtWidgets.QGraphicsView(pc.gs)
-            w = pc.gv.viewport()  # A QWidget
+            self.gs = QtWidgets.QGraphicsScene(splitter)
+            self.gv = QtWidgets.QGraphicsView(self.gs)
+            w = self.gv.viewport()  # A QWidget
             # Embed the widgets.
 
             def delete_callback() -> None:
-                for w in (pc.gs, pc.gv):
+                for w in (self.gs, self.gv):
                     w.deleteLater()
-                pc.gs = pc.gv = None
+                self.gs = self.gv = None
 
-            pc.embed_widget(w, delete_callback=delete_callback)
+            self.embed_widget(w, delete_callback=delete_callback)
 
         c.executeScript(
             script=s,
-            namespace={'gs': pc.gs, 'gv': pc.gv})
+            namespace={'gs': self.gs, 'gv': self.gv})
     #@+node:ekr.20110321005148.14534: *4* vr.update_html
     update_html_count = 0
 
     def update_html(self, s: str, keywords: Any) -> None:
-        """Update html in the vr pane."""
-        pc = self
-        c = pc.c
-        if pc.must_change_widget(BaseTextWidget):
+        """Update html in the VR pane."""
+        c = self.c
+        if self.must_change_widget(BaseTextWidget):
             w = self.create_base_text_widget()
-            pc.embed_widget(w)
-            assert w == pc.w
+            self.embed_widget(w)
+            assert w == self.w
         else:
-            w = pc.w
+            w = self.w
         w.setHtml(s)
         w.show()
         c.bodyWantsFocusNow()
     #@+node:ekr.20110320120020.14482: *4* vr.update_image
     def update_image(self, s: str, keywords: Any) -> None:
-        """Update an image in the vr pane."""
-        pc = self
+        """Update an image in the VR pane."""
         if not s.strip():
             return
         lines = g.splitLines(s) or []
         fn = lines and lines[0].strip()
         if not fn:
             return
-        w = pc.ensure_text_widget()
-        ok, path = pc.get_fn(fn, '@image')
+        w = self.ensure_text_widget()
+        ok, path = self.get_fn(fn, '@image')
         if not ok:
             w.setPlainText('@image: file not found: %s' % (path))
             return
@@ -1063,7 +1048,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Sensitive to leading blank lines.
         template = textwrap.dedent(template).strip()
         # template = g.toUnicode(template)
-        pc.show()
+        self.show()
         w.setReadOnly(False)
         w.setHtml(template)
         w.setReadOnly(True)
@@ -1071,15 +1056,14 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     update_jupyter_count = 0
 
     def update_jupyter(self, s: str, keywords: Any) -> None:
-        """Update @jupyter node in the vr pane."""
-        pc = self
-        c = pc.c
-        if pc.must_change_widget(BaseTextWidget):
+        """Update @jupyter node in the VR pane."""
+        c = self.c
+        if self.must_change_widget(BaseTextWidget):
             w = self.create_base_text_widget()
-            pc.embed_widget(w)
-            assert w == pc.w
+            self.embed_widget(w)
+            assert w == self.w
         else:
-            w = pc.w
+            w = self.w
 
         s = self.get_jupyter_source(c)
         w.hide()  # This forces a proper update.
@@ -1119,23 +1103,21 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         return s
     #@+node:ekr.20170324064811.1: *4* vr.update_latex & helper
     def update_latex(self, s: str, keywords: Any) -> None:
-        """Update latex in the vr pane."""
-        import sys
-        pc = self
-        c = pc.c
+        """Update latex in the VR pane."""
+        c = self.c
         if sys.platform.startswith('win'):
             g.es_print('latex rendering not ready for Python 3')
-            w = pc.ensure_text_widget()
-            pc.show()
+            w = self.ensure_text_widget()
+            self.show()
             w.setPlainText(s)
             c.bodyWantsFocusNow()
             return
-        if pc.must_change_widget(BaseTextWidget):
+        if self.must_change_widget(BaseTextWidget):
             w = self.create_base_text_widget()
-            pc.embed_widget(w)
-            assert w == pc.w
+            self.embed_widget(w)
+            assert w == self.w
         else:
-            w = pc.w
+            w = self.w
         w.hide()  # This forces a proper update.
         s = self.create_latex_html(s)
         w.setHtml(s)
@@ -1157,17 +1139,16 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         return template
     #@+node:peckj.20130207132858.3671: *4* vr.update_md & helper
     def update_md(self, s: str, keywords: Any) -> None:
-        """Update markdown text in the vr pane."""
-        pc = self
-        c = pc.c
+        """Update markdown text in the VR pane."""
+        c = self.c
         p = c.p
         s = s.strip().strip('"""').strip("'''").strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
         # Do this regardless of whether we show the widget or not.
-        w = pc.ensure_text_widget()
-        assert pc.w
+        w = self.ensure_text_widget()
+        assert self.w
         if s:
-            pc.show()
+            self.show()
         if got_markdown:
             force = keywords.get('force')
             colorizer = c.frame.body.colorizer
@@ -1179,11 +1160,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         else:
             # g.trace('markdown not available: using rst')
             self.update_rst(s, keywords)
-    #@+node:ekr.20160921134552.1: *5* convert_to_markdown
+    #@+node:ekr.20160921134552.1: *5* vr.convert_to_markdown
     def convert_to_markdown(self, s: str) -> str:
         """Convert s to html using the markdown processor."""
-        pc = self
-        c, p = pc.c, pc.c.p
+        c, p = self.c, self.c.p
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
@@ -1203,30 +1183,29 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     movie_warning = False
 
     def update_movie(self, s: str, keywords: Any) -> None:
-        """Update a movie in the vr pane."""
-        pc = self
-        ok, path = pc.get_fn(s, '@movie')
+        """Update a movie in the VR pane."""
+        ok, path = self.get_fn(s, '@movie')
         if not ok:
-            w = pc.ensure_text_widget()
+            w = self.ensure_text_widget()
             w.setPlainText('Not found: %s' % (path))
             return
         if not QtMultimedia:
             if not self.movie_warning:
                 self.movie_warning = True
                 g.es_print('No QtMultimedia module')
-            w = pc.ensure_text_widget()
+            w = self.ensure_text_widget()
             w.setPlainText('')
             return
-        if pc.vp:
-            vp = pc.vp
-            pc.vp.stop()
-            pc.vp.deleteLater()
+        if self.vp:
+            vp = self.vp
+            self.vp.stop()
+            self.vp.deleteLater()
 
         # Create a fresh player.
         g.es_print('playing', path)
         url = QtCore.QUrl.fromLocalFile(path)
         content = QtMultimedia.QMediaContent(url)
-        pc.vp = vp = QtMultimedia.QMediaPlayer()
+        self.vp = vp = QtMultimedia.QMediaPlayer()
         vp.setMedia(content)
         # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
         vp.play()
@@ -1234,25 +1213,23 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
     #@+node:ekr.20110320120020.14484: *4* vr.update_networkx
     def update_networkx(self, s: str, keywords: Any) -> None:
-        """Update a networkx graphic in the vr pane."""
-        pc = self
-        w = pc.ensure_text_widget()
+        """Update a networkx graphic in the VR pane."""
+        w = self.ensure_text_widget()
         w.setPlainText('')  # 'Networkx: len: %s' % (len(s)))
-        pc.show()
+        self.show()
     #@+node:ekr.20191006155748.1: *4* vr.update_pandoc & helpers
     def update_pandoc(self, s: str, keywords: Any) -> None:
         """
-        Update an @pandoc in the vr pane.
+        Update an @pandoc in the VR pane.
 
         There is no such thing as @language pandoc,
         so only @pandoc nodes trigger this code.
         """
         global pandoc_exec
-        pc = self
-        w = pc.ensure_text_widget()
-        assert pc.w
+        w = self.ensure_text_widget()
+        assert self.w
         if s:
-            pc.show()
+            self.show()
         if pandoc_exec:
             try:
                 s2 = self.convert_to_pandoc(s)
@@ -1264,14 +1241,13 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20191006155748.3: *5* vr.convert_to_pandoc
     def convert_to_pandoc(self, s: str) -> str:
         """Convert s to html using the asciidoctor or asciidoc processor."""
-        pc = self
-        c, p = pc.c, pc.c.p
+        c, p = self.c, self.c.p
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
         if os.path.isdir(path):
             os.chdir(path)
-        s = pc.run_pandoc(s)
+        s = self.run_pandoc(s)
         return g.toUnicode(s)
     #@+node:ekr.20191006155748.4: *5* vr.run_pandoc
     def run_pandoc(self, s: str) -> str:
@@ -1352,26 +1328,18 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         matplotlib.use('QtAgg')
     #@+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
     def update_rst(self, s: str, keywords: Any) -> None:
-        """Update rst in the vr pane."""
-        pc = self
+        """Update rst in the VR pane."""
         s = s.strip().strip('"""').strip("'''").strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
         # Do this regardless of whether we show the widget or not.
-        w = pc.ensure_text_widget()
-        assert pc.w
+        w = self.ensure_text_widget()
+        assert self.w
         if s:
-            pc.show()
+            self.show()
         if got_docutils:
-            # Fix #420: viewrendered does not render some nodes
-            # Users (rightly) complained, so don't be clever here:
-                # c, p = pc.c, pc.c.p
-                # force = keywords.get('force')
-                # colorizer = c.frame.body.colorizer
-                # language = colorizer.scanLanguageDirectives(p)
-                # force or language in ('rst', 'rest', 'markdown', 'md'):
             if not isHtml:
-                s = pc.convert_to_html(s)
-            pc.set_html(s, w)
+                s = self.convert_to_html(s)
+            self.set_html(s, w)
         else:
             w.setPlainText(s)
     #@+node:ekr.20160920221324.1: *5* vr.convert_to_html
@@ -1395,8 +1363,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         return s
 
     def update_plantuml(self, s: str, keywords: Any) -> None:
-        pc = self
-        w = pc.ensure_text_widget()
+        w = self.ensure_text_widget()
         path = self.c.p.h[9:].strip()
         print("Plantuml output file name: ", path)
         with open("temp.plantuml", "w") as f:
@@ -1405,13 +1372,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         os.system("cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path))
         template = image_template % (path)
         template = textwrap.dedent(template).strip()
-        pc.show()
+        self.show()
         w.setReadOnly(False)
         w.setHtml(template)
         w.setReadOnly(True)
 
     def update_jinja(self, s: str, keywords: Any) -> None:
-        pc = self
         h = self.c.p.h
         p = self.c.p
         c = self.c
@@ -1467,8 +1433,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         tmpl = Template(Path(template_path).read_text())
         out = tmpl.render(template_data)
-        w = pc.ensure_text_widget()
-        pc.show()
+        w = self.ensure_text_widget()
+        self.show()
         w.setPlainText(out)
         p.b = out
         c.redraw(p)
@@ -1482,7 +1448,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
     def update_svg(self, s: str, keywords: Any) -> None:
 
-        pc = self
         if hasattr(QtSvg, "QSvgWidget"):  # #2134
             QSvgWidget = QtSvg.QSvgWidget
         else:
@@ -1492,58 +1457,57 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             except Exception:
                 QSvgWidget = None
         if not QSvgWidget:
-            w = pc.ensure_text_widget()
+            w = self.ensure_text_widget()
             w.setPlainText(s)
             return
-        if pc.must_change_widget(QSvgWidget):
+        if self.must_change_widget(QSvgWidget):
             w = QSvgWidget()
-            pc.embed_widget(w)
-            assert w == pc.w
+            self.embed_widget(w)
+            assert w == self.w
         else:
-            w = pc.w
+            w = self.w
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
             # Sensitive to leading blank lines.
             s = textwrap.dedent(s).strip()
             s_bytes = g.toEncodedString(s)
-            pc.show()
+            self.show()
             w.load(QtCore.QByteArray(s_bytes))
             w.show()
         else:
             # Get a filename from the headline or body text.
-            ok, path = pc.get_fn(s, '@svg')
+            ok, path = self.get_fn(s, '@svg')
             if ok:
-                pc.show()
+                self.show()
                 w.load(path)
                 w.show()
     #@+node:ekr.20110321005148.14537: *4* vr.update_url
     def update_url(self, s: str, keywords: Any) -> None:
-        pc = self
         c, p = self.c, self.c.p
         colorizer = c.frame.body.colorizer
         language = colorizer.scanLanguageDirectives(p)
         if language == 'asciidoc':
             p.update_asciidoc(s, keywords)
         elif language in ('rest', 'rst'):
-            pc.update_rst(s, keywords)
+            self.update_rst(s, keywords)
         elif language in ('markdown', 'md'):
-            pc.update_md(s, keywords)
-        elif pc.default_kind in ('rest', 'rst'):
-            pc.update_rst(s, keywords)
-        elif pc.default_kind in ('markdown', 'md'):
-            pc.update_md(s, keywords)
+            self.update_md(s, keywords)
+        elif self.default_kind in ('rest', 'rst'):
+            self.update_rst(s, keywords)
+        elif self.default_kind in ('markdown', 'md'):
+            self.update_md(s, keywords)
         else:
             # Do nothing.
             g.trace('ignore', s)
-            w = pc.ensure_text_widget()
-            pc.show()
+            w = self.ensure_text_widget()
+            self.show()
             w.setPlainText('')
     #@+node:ekr.20110322031455.5765: *4* vr.utils for update helpers...
     #@+node:ekr.20110322031455.5764: *5* vr.ensure_text_widget
     def ensure_text_widget(self) -> Widget:
         """Swap a text widget into the rendering pane if necessary."""
-        c, pc = self.c, self
-        if pc.must_change_widget(QtWidgets.QTextBrowser):
+        c = self.c
+        if self.must_change_widget(QtWidgets.QTextBrowser):
             # Instantiate a new QTextBrowser.
             # Allow non-ctrl clicks to open url's.
             w = QtWidgets.QTextBrowser()
@@ -1565,9 +1529,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
             w.anchorClicked.connect(handleClick)
             w.setOpenLinks(False)
-            pc.embed_widget(w)  # Creates w.wrapper
-            assert w == pc.w
-        return pc.w
+            self.embed_widget(w)  # Creates w.wrapper
+            assert w == self.w
+        return self.w
     #@+node:ekr.20110320120020.14483: *5* vr.get_kind
     def get_kind(self, p: Position) -> Optional[str]:
         """Return the proper rendering kind for node p."""
@@ -1600,8 +1564,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         return None
     #@+node:ekr.20110320233639.5776: *5* vr.get_fn
     def get_fn(self, s: str, tag: str) -> tuple[bool, str]:
-        pc = self
-        c = pc.c
+        c = self.c
         fn = s or c.p.h[len(tag) :]
         fn = fn.strip()
         # Similar to code in g.computeFileUrl
@@ -1625,8 +1588,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         return url
     #@+node:ekr.20110322031455.5763: *5* vr.must_change_widget
     def must_change_widget(self, widget_class: Widget) -> bool:
-        pc = self
-        return not pc.w or pc.w.__class__ != widget_class
+        return not self.w or self.w.__class__ != widget_class
     #@+node:ekr.20110320120020.14485: *5* vr.remove_directives
     def remove_directives(self, s: str) -> str:
         lines = g.splitLines(s)
