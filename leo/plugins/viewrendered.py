@@ -200,7 +200,6 @@ Jacob Peck added markdown support to this plugin.
 #@+node:tbrown.20100318101414.5993: ** << vr imports >>
 from __future__ import annotations
 from collections.abc import Callable
-### import json
 import os
 from pathlib import Path
 import shutil
