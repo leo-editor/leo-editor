@@ -279,10 +279,9 @@ class FastRead:
             r1 = float(c.db.get('body_outline_ratio', '0.5'))
             r2 = float(c.db.get('body_secondary_ratio', '0.5'))
             top, left, height, width = window_pos
-            g.trace(r1, r2, c.fileName())  ###
-            ## g.trace(c.db.db, tag=c.fileName())
-            print(repr(c.db.db))  ###
-            r1 = 0.5  ###
+            ### g.trace(r1, r2, c.fileName())  ###
+            ### print(repr(c.db.db))  ###
+            ### r1 = 0.5  ###
             return {
                 'top': int(top),
                 'left': int(left),

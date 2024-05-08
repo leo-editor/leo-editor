@@ -212,7 +212,6 @@ class SqlitePickleShare:
             yield k
     #@+node:vitalije.20170716201700.8: *4* SqlitePickleShare.__repr__
     def __repr__(self) -> str:
-        ### return f"SqlitePickleShare('{self.root}')"
         result = [
             '\n',
             f"SqlitePickleShare('{self.root}')\n",
