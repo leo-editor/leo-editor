@@ -661,15 +661,13 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Set the ivars.
         self.active = False
         self.gnx: str = None
-        self.graphics_class = QtWidgets.QGraphicsWidget
         self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
         self.gv: Widget = None  # For @graphics-script: a QGraphicsView
         self.inited = False
         self.length = 0  # The length of previous p.b.
         self.locked = False
-        self.pyplot_active = False
         self.scrollbar_pos_dict: dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
-        self.vp: Widget = None  # The present video player.
+        self.vp: Widget = None  # A QtMultimedia.QMediaPlayer or None.
         self.w: Wrapper = None  # The present widget in the rendering pane.
         # User settings.
         self.reloadSettings()
@@ -1329,7 +1327,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Embedding already works without this!
             # self.embed_pyplot_widget()
         # pyplot will throw RuntimeError if we close the pane.
-        self.pyplot_active = True
         c.executeScript(
             event=None,
             args=None, p=None,
