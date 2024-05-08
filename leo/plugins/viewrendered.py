@@ -563,6 +563,7 @@ def toggle_keep_open(event: Event) -> None:
         vr = viewrendered(event)
         vr.hide()  # So the toggle below will work.
     vr.keep_open = not vr.keep_open
+    vr.update('keep-open', {'c': c, 'force': True})
 #@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
 def unlock_rendering_pane(event: Event) -> None:
@@ -839,35 +840,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         """Update the vr pane. Called at idle time."""
         pc = self
         p = pc.c.p
-        # #1256.
-        if self.locked:
-            return
-        if pc.must_update(keywords):
-            # Suppress updates until we change nodes.
-            pc.node_changed = pc.gnx != p.v.gnx
-            pc.gnx = p.v.gnx
-            pc.length = len(p.b)  # not s
-            #
-            # Remove Leo directives.
-            s = keywords.get('s') if 's' in keywords else p.b
-            s = pc.remove_directives(s)
-            # Dispatch based on the computed kind.
-            kind = keywords.get('flags') if 'flags' in keywords else pc.get_kind(p)
-            f: Callable = None
-            if kind or keywords.get('force'):
-                f = pc.dispatch_dict.get(kind)
-            else:
-                # Do *not* try to render plain text.
-                w = pc.ensure_text_widget()
-                w.setPlainText(s)
-            if f:
-                f(s, keywords)
-                pc.show()
-            elif self.keep_open:
-                pc.show()
-            else:
-                pc.hide()
-        elif pc.active:
+        if not pc.active:
             try:
                 # Save the scroll position.
                 w = pc.w
@@ -876,6 +849,34 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                     pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
             except Exception:
                 g.es_exception()
+            return
+        if self.locked:
+            return
+        if not pc.must_update(keywords):
+            return
+        # Suppress updates until we change nodes.
+        f: Callable = None
+        pc.node_changed = pc.gnx != p.v.gnx
+        pc.gnx = p.v.gnx
+        pc.length = len(p.b)  # not s
+        # Remove Leo directives.
+        s = keywords.get('s') if 's' in keywords else p.b
+        s = pc.remove_directives(s)
+        # Dispatch based on the computed kind.
+        kind = keywords.get('flags') if 'flags' in keywords else pc.get_kind(p)
+        if kind or keywords.get('force'):
+            f = pc.dispatch_dict.get(kind)
+        else:
+            # Do *not* try to render plain text.
+            w = pc.ensure_text_widget()
+            w.setPlainText(s)
+        if f:
+            f(s, keywords)
+            pc.show()
+        elif self.keep_open:
+            pc.show()
+        else:
+            pc.hide()
     #@+node:ekr.20190424083049.1: *4* vr.create_base_text_widget
     def create_base_text_widget(self) -> Wrapper:
         """Create a QWebView or a QTextBrowser."""
