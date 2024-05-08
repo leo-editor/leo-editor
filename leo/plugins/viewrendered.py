@@ -207,7 +207,7 @@ import textwrap
 from typing import Any, Optional, TYPE_CHECKING
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import QtMultimedia, QtSvg
 from leo.core.leoQt import ContextMenuPolicy, WrapMode
 from leo.plugins import qt_text
@@ -322,14 +322,7 @@ latex_template = '''\
 controllers: dict[str, Any] = {}  # Dict[c.hash(), PluginControllers (QWidget's)].
 layouts: dict[str, tuple] = {}  # Dict[c.hash(), tuple[layout_when_closed, layout_when_open]].
 #@+others
-#@+node:ekr.20110320120020.14491: ** vr.Top-level
-#@+node:tbrown.20100318101414.5994: *3* vr function: decorate_window
-def decorate_window(w: Wrapper) -> None:
-    # Do not override the style sheet!
-    # This interferes with themes
-        # w.setStyleSheet(stickynote_stylesheet)
-    g.app.gui.attachLeoIcon(w)
-    w.resize(600, 300)
+#@+node:ekr.20110320120020.14491: ** vr.Top-level functions
 #@+node:tbrown.20100318101414.5995: *3* vr function: init
 def init() -> bool:
     """Return True if the plugin has loaded successfully."""
@@ -344,9 +337,6 @@ def init() -> bool:
     g.registerHandler('close-frame', onClose)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
-#@+node:ekr.20180825025924.1: *3* vr function: isVisible
-def isVisible() -> bool:
-    """Return True if the VR pane is visible."""
 #@+node:ekr.20110317024548.14376: *3* vr function: onCreate
 def onCreate(tag: str, keys: dict) -> None:
     c = keys.get('c')
@@ -362,7 +352,7 @@ def onClose(tag: str, keys: dict) -> None:
     if vr:
         c.bodyWantsFocus()
         del controllers[h]
-        vr.deactivate()
+        vr.active = False
         vr.deleteLater()
 #@+node:tbrown.20110629132207.8984: *3* vr function: show_scrolled_message
 def show_scrolled_message(tag: str, kw: Any) -> bool:
@@ -385,12 +375,6 @@ def show_scrolled_message(tag: str, kw: Any) -> bool:
         keywords={'c': c, 'force': True, 's': s, 'flags': flags},
     )
     return True
-#@+node:vitalije.20170713082256.1: *3* vr function: split_last_sizes
-def split_last_sizes(sizes: list[int]) -> list[int]:
-    result = [2 * x for x in sizes[:-1]]
-    result.append(sizes[-1])
-    result.append(sizes[-1])
-    return result
 #@+node:ekr.20110320120020.14490: ** vr.Commands
 #@+node:ekr.20131213163822.16471: *3* g.command('preview')
 @g.command('preview')
@@ -412,9 +396,9 @@ def viewrendered(event: Event) -> Optional[Any]:
     if not vr:
         controllers[h] = vr = ViewRenderedController(c)
         # Add the pane to the splitter.
-        vr.splitter = c.free_layout.get_top_splitter()
-        if vr.splitter:
-            vr.splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
+        splitter = c.free_layout.get_top_splitter()
+        if splitter:
+            splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
     c.bodyWantsFocusNow()
     return vr
 #@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
@@ -676,11 +660,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.create_pane(parent)
         # Set the ivars.
         self.active = False
-        self.badColors: list[str] = []
-        self.delete_callback: Callable = None
         self.gnx: str = None
         self.graphics_class = QtWidgets.QGraphicsWidget
-        self.pyplot_canvas: Widget = None
         self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
         self.gv: Widget = None  # For @graphics-script: a QGraphicsView
         self.inited = False
@@ -688,9 +669,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.locked = False
         self.pyplot_active = False
         self.scrollbar_pos_dict: dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
-        self.splitter = None
-        self.splitter_index: int = None  # The index of the rendering pane in the splitter.
-        self.title: str = None
         self.vp: Widget = None  # The present video player.
         self.w: Wrapper = None  # The present widget in the rendering pane.
         # User settings.
@@ -753,10 +731,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         pc.active = True
         g.registerHandler('select2', pc.update)
         g.registerHandler('idle', pc.update)
-    #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
-    def closeEvent(self, event: Event) -> None:
-        """Close the vr window."""
-        self.deactivate()
     #@+node:ekr.20130413061407.10363: *3* vr.contract & expand
     def contract(self) -> None:
         self.change_size(-100)
@@ -780,14 +754,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             else:
                 sizes[j] = max(0, size - int(delta / (n - 1)))
         splitter.setSizes(sizes)
-    #@+node:ekr.20110317080650.14382: *3* vr.deactivate
-    def deactivate(self) -> None:
-        """Deactivate the vr window."""
-        pc = self
-        # Never disable the idle-time hook: other plugins may need it.
-        g.unregisterHandler('select2', pc.update)
-        g.unregisterHandler('idle', pc.update)
-        pc.active = False
     #@+node:ekr.20240507100254.1: *3* vr.fully_expand
     def fully_expand(self) -> None:
         """
@@ -851,13 +817,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         vr.activate()
         vr.show()
         c.bodyWantsFocusNow()
-    #@+node:ekr.20110319143920.14466: *3* vr.underline
-    def underline(self, s: str) -> str:
-        """Generate rST underlining for s."""
-        ch = '#'
-        n = max(4, len(g.toEncodedString(s, reportErrors=False)))
-        # return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
-        return '%s\n%s\n\n' % (s, ch * n)
     #@+node:ekr.20101112195628.5426: *3* vr.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
 
@@ -943,8 +902,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if w.__class__ == QtWidgets.QTextBrowser:
             text_name = 'body-text-renderer'
             w.setObjectName(text_name)
-            # Do not do this! It interferes with themes.
-                # pc.setBackgroundColor(pc.background_color, text_name, w)
             w.setReadOnly(True)
             # Create the standard Leo bindings.
             wrapper_name = 'rendering-pane-wrapper'
@@ -952,19 +909,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
             w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
-    #@+node:ekr.20110321072702.14510: *5* vr.setBackgroundColor
-    def setBackgroundColor(self, colorName: str, name: str, w: Wrapper) -> None:
-        """Set the background color of the vr pane."""
-        if 0:  # Do not do this! It interferes with themes.
-            pc = self
-            if not colorName:
-                return
-            styleSheet = 'QTextEdit#%s { background-color: %s; }' % (name, colorName)
-            if QtGui.QColor(colorName).isValid():
-                w.setStyleSheet(styleSheet)
-            elif colorName not in pc.badColors:
-                pc.badColors.append(colorName)
-                g.warning('invalid body background color: %s' % (colorName))
     #@+node:ekr.20110320120020.14476: *4* vr.must_update
     def must_update(self, keywords: Any) -> bool:
         """Return True if we must update the rendering pane."""
@@ -1007,7 +951,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             except Exception:
                 g.es_exception()
         self.update_rst(s, keywords)
-    #@+node:ekr.20191004144242.1: *5* vr.make_asciidoc_title
+    #@+node:ekr.20191004144242.1: *5* vr.make_asciidoc_title (not used)
     def make_asciidoc_title(self, s: str) -> str:
         """Generate an asciiidoc title for s."""
         line = '#' * (min(4, len(s)))
@@ -1022,9 +966,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             path = os.path.dirname(path)
         if os.path.isdir(path):
             os.chdir(path)
-        if pc.title:
-            s = pc.make_asciidoc_title(pc.title) + s
-            pc.title = None
         s = pc.run_asciidoctor(s)
         return g.toUnicode(s)
     #@+node:ekr.20191004144128.1: *5* vr.run_asciidoctor
@@ -1076,6 +1017,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 pc.gs = pc.gv = None
 
             pc.embed_widget(w, delete_callback=delete_callback)
+
         c.executeScript(
             script=s,
             namespace={'gs': pc.gs, 'gv': pc.gv})
@@ -1243,9 +1185,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if os.path.isdir(path):
             os.chdir(path)
         try:
-            if pc.title:
-                s = pc.underline(pc.title) + s
-                pc.title = None
             mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
             mdext_list = [x.strip() for x in mdext.split(',')]
             s = markdown(s, extensions=mdext_list)
@@ -1327,9 +1266,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             path = os.path.dirname(path)
         if os.path.isdir(path):
             os.chdir(path)
-        if pc.title:
-            s = pc.make_pandoc_title(pc.title) + s
-            pc.title = None
         s = pc.run_pandoc(s)
         return g.toUnicode(s)
     #@+node:ekr.20191006155748.4: *5* vr.run_pandoc
@@ -1445,9 +1381,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if os.path.isdir(path):
             os.chdir(path)
         try:
-            if self.title:
-                s = self.underline(self.title) + s
-                self.title = None
             # Call docutils to get the string.
             s = publish_string(s, writer_name='html')
             s = g.toUnicode(s)
