@@ -344,6 +344,10 @@ def onCreate(tag: str, keys: dict) -> None:
         return
     provider = ViewRenderedProvider(c)
     free_layout.register_provider(c, provider)
+    vr = viewrendered(keys)
+    g.registerHandler('select2', vr.update)
+    g.registerHandler('idle', vr.update)
+    vr.active = True
 #@+node:vitalije.20170712174157.1: *3* vr function: onClose
 def onClose(tag: str, keys: dict) -> None:
     c = keys.get('c')
@@ -681,7 +685,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.gnx: str = None
         self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
         self.gv: Widget = None  # For @graphics-script: a QGraphicsView
-        self.inited = False
         self.keep_open = False  # True: keep the VR pane open even when showing text.
         self.length = 0  # The length of previous p.b.
         self.locked = False
@@ -693,7 +696,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.node_changed = True
         # Init.
         self.create_dispatch_dict()
-        self.activate()
     #@+node:ekr.20110320120020.14478: *4* vr.create_dispatch_dict
     def create_dispatch_dict(self) -> dict[str, Callable]:
         pc = self
@@ -738,16 +740,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.setObjectName('viewrendered_pane')
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
-    #@+node:ekr.20110317080650.14381: *3* vr.activate
-    def activate(self) -> None:
-        """Activate the vr-window."""
-        pc = self
-        if pc.active:
-            return
-        pc.inited = True
-        pc.active = True
-        g.registerHandler('select2', pc.update)
-        g.registerHandler('idle', pc.update)
+    #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
+    def closeEvent(self, event: Event) -> None:
+        """Deactivate callbacks when an Outline closes."""
+        self.active = False
+        g.unregisterHandler('select2', self.update)
+        g.unregisterHandler('idle', self.update)
     #@+node:ekr.20130413061407.10363: *3* vr.contract & expand
     def contract(self) -> None:
         self.change_size(-100)
@@ -855,7 +853,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             s = pc.remove_directives(s)
             # Dispatch based on the computed kind.
             kind = keywords.get('flags') if 'flags' in keywords else pc.get_kind(p)
-            ### g.trace('must update:', kind, pc.keep_open, p.h)
             f: Callable = None
             if kind or keywords.get('force'):
                 f = pc.dispatch_dict.get(kind)
@@ -870,16 +867,15 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 pc.show()
             else:
                 pc.hide()
-        elif pc.isVisible():
-            # Save the scroll position.
-            w = pc.w
-            if w.__class__ == QtWidgets.QTextBrowser:
-                # Careful: the widget may no longer exist.
-                try:
+        elif pc.active:
+            try:
+                # Save the scroll position.
+                w = pc.w
+                if w and w.__class__ == QtWidgets.QTextBrowser:
                     sb = w.verticalScrollBar()
                     pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
-                except Exception:
-                    g.es_exception()
+            except Exception:
+                g.es_exception()
     #@+node:ekr.20190424083049.1: *4* vr.create_base_text_widget
     def create_base_text_widget(self) -> Wrapper:
         """Create a QWebView or a QTextBrowser."""
@@ -927,11 +923,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         c, p = pc.c, pc.c.p
         if g.unitTesting:
             return False
-        if keywords.get('force'):
-            pc.active = True
-            return True
         if c != keywords.get('c') or not pc.active:
             return False
+        if keywords.get('force'):
+            return True
         if pc.locked:
             return False
         if pc.gnx != p.v.gnx:
