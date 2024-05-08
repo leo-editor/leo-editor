@@ -768,6 +768,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if not hasattr(self.c, 'free_layout'):
             return
         splitter = self.parent()
+        if not splitter:
+            return
         i = splitter.indexOf(self)
         assert i > -1
         sizes = splitter.sizes()
@@ -794,6 +796,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if not hasattr(self.c, 'free_layout'):
             return
         splitter = self.parent()  # A NestedSplitter
+        if not splitter:
+            return
         i = splitter.indexOf(self)
         splitter.moveSplitter(0, i)
         self.fully_expanded = True
@@ -814,6 +818,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return
         # Restore the previous sizes.
         splitter = self.parent()  # A NestedSplitter
+        if not splitter:
+            return
         i = splitter.indexOf(self)
         splitter.moveSplitter(int(sum(splitter.sizes())/2), i)
         self.fully_expanded = False
