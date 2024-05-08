@@ -200,7 +200,7 @@ Jacob Peck added markdown support to this plugin.
 #@+node:tbrown.20100318101414.5993: ** << vr imports >>
 from __future__ import annotations
 from collections.abc import Callable
-import json
+### import json
 import os
 from pathlib import Path
 import shutil
@@ -210,7 +210,7 @@ from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QtMultimedia, QtSvg
-from leo.core.leoQt import ContextMenuPolicy, Orientation, WrapMode
+from leo.core.leoQt import ContextMenuPolicy, WrapMode
 from leo.plugins import qt_text
 from leo.plugins import free_layout
 
@@ -324,14 +324,14 @@ controllers: dict[str, Any] = {}  # Dict[c.hash(), PluginControllers (QWidget's)
 layouts: dict[str, tuple] = {}  # Dict[c.hash(), tuple[layout_when_closed, layout_when_open]].
 #@+others
 #@+node:ekr.20110320120020.14491: ** vr.Top-level
-#@+node:tbrown.20100318101414.5994: *3* vr.decorate_window
+#@+node:tbrown.20100318101414.5994: *3* vr function: decorate_window
 def decorate_window(w: Wrapper) -> None:
     # Do not override the style sheet!
     # This interferes with themes
         # w.setStyleSheet(stickynote_stylesheet)
     g.app.gui.attachLeoIcon(w)
     w.resize(600, 300)
-#@+node:tbrown.20100318101414.5995: *3* vr.init
+#@+node:tbrown.20100318101414.5995: *3* vr function: init
 def init() -> bool:
     """Return True if the plugin has loaded successfully."""
     global got_docutils
@@ -345,17 +345,17 @@ def init() -> bool:
     g.registerHandler('close-frame', onClose)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
-#@+node:ekr.20180825025924.1: *3* vr.isVisible
+#@+node:ekr.20180825025924.1: *3* vr function: isVisible
 def isVisible() -> bool:
     """Return True if the VR pane is visible."""
-#@+node:ekr.20110317024548.14376: *3* vr.onCreate
+#@+node:ekr.20110317024548.14376: *3* vr function: onCreate
 def onCreate(tag: str, keys: dict) -> None:
     c = keys.get('c')
     if not c:
         return
     provider = ViewRenderedProvider(c)
     free_layout.register_provider(c, provider)
-#@+node:vitalije.20170712174157.1: *3* vr.onClose
+#@+node:vitalije.20170712174157.1: *3* vr function: onClose
 def onClose(tag: str, keys: dict) -> None:
     c = keys.get('c')
     h = c.hash()
@@ -365,7 +365,7 @@ def onClose(tag: str, keys: dict) -> None:
         del controllers[h]
         vr.deactivate()
         vr.deleteLater()
-#@+node:tbrown.20110629132207.8984: *3* vr.show_scrolled_message
+#@+node:tbrown.20110629132207.8984: *3* vr function: show_scrolled_message
 def show_scrolled_message(tag: str, kw: Any) -> bool:
     if g.unitTesting:
         return None  # This just slows the unit tests.
@@ -386,7 +386,7 @@ def show_scrolled_message(tag: str, kw: Any) -> bool:
         keywords={'c': c, 'force': True, 's': s, 'flags': flags},
     )
     return True
-#@+node:vitalije.20170713082256.1: *3* vr.split_last_sizes
+#@+node:vitalije.20170713082256.1: *3* vr function: split_last_sizes
 def split_last_sizes(sizes: list[int]) -> list[int]:
     result = [2 * x for x in sizes[:-1]]
     result.append(sizes[-1])
@@ -412,19 +412,10 @@ def viewrendered(event: Event) -> Optional[Any]:
     vr = controllers.get(h)
     if not vr:
         controllers[h] = vr = ViewRenderedController(c)
-    # Add the pane to the splitter.
-    layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
-    vr._ns_id = '_leo_viewrendered'  # for free_layout load/save
-    vr.splitter = splitter = c.free_layout.get_top_splitter()
-    if splitter:
-        vr.store_layout('closed')
-        sizes = split_last_sizes(splitter.sizes())
-        ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
-        if not ok:
-            splitter.insert(0, vr)
-        elif splitter.orientation() == Orientation.Horizontal:
-            splitter.setSizes(sizes)
-        vr.adjust_layout('open')
+        # Add the pane to the splitter.
+        vr.splitter = c.free_layout.get_top_splitter()
+        if vr.splitter:
+            vr.splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
     c.bodyWantsFocusNow()
     return vr
 #@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
@@ -439,6 +430,7 @@ def contract_rendering_pane(event: Event) -> None:
     vr = controllers.get(c.hash())
     if not vr:
         vr = viewrendered(event)
+        vr.show()
     vr.contract()
 #@+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
 @g.command('vr-expand')
@@ -465,6 +457,7 @@ def fully_expand_rendering_pane(event: Event) -> None:
     vr = controllers.get(c.hash())
     if not vr:
         vr = viewrendered(event)
+        vr.show()
     vr.fully_expand()
 #@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
@@ -479,24 +472,9 @@ def hide_rendering_pane(event: Event) -> None:
     vr = controllers.get(c.hash())
     if not vr:
         vr = viewrendered(event)
-    if vr.pyplot_active:
-        g.es_print('can not close VR pane after using pyplot')
-        return
-    vr.store_layout('open')
-    vr.deactivate()
-    vr.deleteLater()
-
-    def at_idle(c: Cmdr = c, _vr: ViewRenderedController = vr) -> None:
-        _vr.adjust_layout('closed')
-        c.bodyWantsFocusNow()
-
-    QtCore.QTimer.singleShot(0, at_idle)
-    h = c.hash()
+    vr.hide()
     c.bodyWantsFocus()
-    if vr == controllers.get(h):
-        del controllers[h]
-    else:
-        g.trace('Can not happen: no controller for %s' % (c))
+
 # Compatibility
 
 close_rendering_pane = hide_rendering_pane
@@ -559,7 +537,7 @@ def show_rendering_pane(event: Event) -> None:
     vr = controllers.get(c.hash())
     if not vr:
         vr = viewrendered(event)
-    vr.show_dock_or_pane()
+    vr.show_pane()
 #@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle')
 @g.command('vr-toggle')
 def toggle_rendering_pane(event: Event) -> None:
@@ -711,7 +689,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.locked = False
         self.pyplot_active = False
         self.scrollbar_pos_dict: dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
-        self.sizes: list[int] = []  # Saved splitter sizes.
         self.splitter = None
         self.splitter_index: int = None  # The index of the rendering pane in the splitter.
         self.title: str = None
@@ -777,17 +754,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         pc.active = True
         g.registerHandler('select2', pc.update)
         g.registerHandler('idle', pc.update)
-    #@+node:vitalije.20170712183051.1: *3* vr.adjust_layout (legacy only)
-    def adjust_layout(self, which: str) -> None:
-        global layouts
-        c = self.c
-        splitter = self.splitter
-        deflo = c.db.get('viewrendered_default_layouts', (None, None))
-        loc, loo = layouts.get(c.hash(), deflo)
-        if which == 'closed' and loc and splitter:
-            splitter.load_layout(c, loc)
-        elif which == 'open' and loo and splitter:
-            splitter.load_layout(c, loo)
     #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
     def closeEvent(self, event: Event) -> None:
         """Close the vr window."""
@@ -813,7 +779,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             else:
                 sizes[j] = max(0, size - int(delta / (n - 1)))
         splitter.setSizes(sizes)
-        self.sizes = sizes
     #@+node:ekr.20110317080650.14382: *3* vr.deactivate
     def deactivate(self) -> None:
         """Deactivate the vr window."""
@@ -829,15 +794,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         """
         if not hasattr(self.c, 'free_layout'):
             return
-
-        # Save the existing sizes.
         splitter = self.parent()  # A NestedSplitter
         i = splitter.indexOf(self)
-        assert i > -1
-        self.sizes = splitter.sizes()
-
-        # Increase the size of the VR pane.
         splitter.moveSplitter(0, i)
+        self.fully_expanded = True
     #@+node:ekr.20110321072702.14508: *3* vr.lock/unlock
     def lock(self) -> None:
         """Lock the vr pane."""
@@ -850,13 +810,14 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.locked = False
     #@+node:ekr.20240507100402.1: *3* vr.restore_body
     def restore_body(self) -> None:
-        """Restore the body pane restore the previous visibility of the VR pane."""
+        """Restore the visibility of the body pane."""
         if not hasattr(self.c, 'free_layout'):
             return
-
         # Restore the previous sizes.
         splitter = self.parent()  # A NestedSplitter
-        splitter.setSizes(self.sizes)
+        i = splitter.indexOf(self)
+        splitter.moveSplitter(int(sum(splitter.sizes())/2), i)
+        self.fully_expanded = False
     #@+node:ekr.20160921071239.1: *3* vr.set_html
     def set_html(self, s: str, w: Wrapper) -> None:
         """Set text in w to s, preserving scroll position."""
@@ -878,31 +839,13 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             # Restore the scrollbars
             assert pos is not None
             sb.setSliderPosition(pos)
-    #@+node:ekr.20190614133401.1: *3* vr.show_dock_or_pane
-    def show_dock_or_pane(self) -> None:
+    #@+node:ekr.20190614133401.1: *3* vr.show_pane
+    def show_pane(self) -> None:
 
         c, vr = self.c, self
         vr.activate()
         vr.show()
-        vr.adjust_layout('open')
         c.bodyWantsFocusNow()
-    #@+node:vitalije.20170712183618.1: *3* vr.store_layout
-    def store_layout(self, which: str) -> None:
-        global layouts
-        c = self.c
-        h = c.hash()
-        splitter = self.splitter
-        deflo = c.db.get('viewrendered_default_layouts', (None, None))
-        (loc, loo) = layouts.get(c.hash(), deflo)
-        if which == 'closed' and splitter:
-            loc = splitter.get_saveable_layout()
-            loc = json.loads(json.dumps(loc))
-            layouts[h] = loc, loo
-        elif which == 'open' and splitter:
-            loo = splitter.get_saveable_layout()
-            loo = json.loads(json.dumps(loo))
-            layouts[h] = loc, loo
-        c.db['viewrendered_default_layouts'] = layouts[h]
     #@+node:ekr.20110319143920.14466: *3* vr.underline
     def underline(self, s: str) -> str:
         """Generate rST underlining for s."""
