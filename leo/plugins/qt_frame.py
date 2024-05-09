@@ -2434,16 +2434,19 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def __get_ratio(self) -> float:
         """Return splitter ratio of the main splitter."""
         c = self.c
-        free_layout = c.free_layout
-        if free_layout:
-            w = free_layout.get_main_splitter()
-            if w:
-                aList = w.sizes()
-                if len(aList) == 2:
-                    n1, n2 = aList
-                    # 2017/06/07: guard against division by zero.
-                    ratio = 0.5 if n1 + n2 == 0 else float(n1) / float(n1 + n2)
-                    return ratio
+        if 0:  # This is wrong in the current code base.
+            free_layout = c.free_layout
+            if free_layout:
+                w = free_layout.get_main_splitter()
+                if w:
+                    aList = w.sizes()
+                    if len(aList) == 2:
+                        n1, n2 = aList
+                        # 2017/06/07: guard against division by zero.
+                        ratio = 0.5 if n1 + n2 == 0 else float(n1) / float(n1 + n2)
+                        g.trace('***** (qtFrame.ratio property)', n1, n2, '==>', ratio, g.caller())
+                        # A hack.
+                        return ratio if ratio < 1.0 else 0.5
         return 0.5
 
     ratio = property(
