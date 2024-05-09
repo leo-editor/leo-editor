@@ -128,7 +128,7 @@ def stickynote_f(event):
     if 'tabula' in c.__dict__ and gnx in c.tabula.notes and not c.tabula.tb.isVisible():
         c.tabula.notes[gnx].parent().close()
         del c.tabula.notes[gnx]
-        g.es("This note was opened at tabula. Please try run the stickynote command again")
+        g.es("This note was opened at tabula. Please run the stickynote command again")
     mknote(c, c.p)
 #@+node:ville.20110304230157.6526: *3* g.command('stickynote-new')
 @g.command('stickynote-new')
