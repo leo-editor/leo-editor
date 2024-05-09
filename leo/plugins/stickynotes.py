@@ -124,6 +124,11 @@ def onCloseFrame(tag, kwargs):
 def stickynote_f(event):
     """ Launch editable 'sticky note' for c.p."""
     c = event['c']
+    gnx = c.p.gnx
+    if 'tabula' in c.__dict__ and gnx in c.tabula.notes and not c.tabula.tb.isVisible():
+        c.tabula.notes[gnx].parent().close()
+        del c.tabula.notes[gnx]
+        g.es("This note was opened at tabula. Please try run the stickynote command again")
     mknote(c, c.p)
 #@+node:ville.20110304230157.6526: *3* g.command('stickynote-new')
 @g.command('stickynote-new')
@@ -524,9 +529,6 @@ def mknote(c, p, parent=None, focusin=None, focusout=None):
     else:
         mknote_focusout = focusout
 
-    def closeevent():
-        pass
-
     # #2471: Create a new editor only if it doesn't already exist.
     d = outer_dict.get(c.hash(), {})
     nf = d.get(p.gnx)
@@ -540,7 +542,6 @@ def mknote(c, p, parent=None, focusin=None, focusout=None):
     nf = FocusingPlaintextEdit(
         focusin=mknote_focusin,
         focusout=mknote_focusout,
-        closed=closeevent,
         parent=parent)
     decorate_window(c, nf)
     nf.dirty = False
@@ -679,8 +680,6 @@ class Tabula(QtWidgets.QMainWindow):  # type:ignore
         def do_close_all():
             for i in self.mdi.subWindowList():
                 i.close()
-            for n in self.notes:
-                self.notes[n].close()
             self.notes = {}
 
         def do_go():
