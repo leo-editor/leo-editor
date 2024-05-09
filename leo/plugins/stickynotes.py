@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20100103093121.5329: * @file ../plugins/stickynotes.py
+#@+node:ekr.20100103093121.5329: * @file /home/user/bin/leo-editor/leo/plugins/stickynotes.py
 #@+<< docstring >>
 #@+node:vivainio2.20091008133028.5821: ** << docstring >>
 """ Adds simple "sticky notes" feature (popout editors) for Qt gui.
@@ -115,7 +115,8 @@ def onCloseFrame(tag, kwargs):
     d = outer_dict.get(c.hash(), {})
     for gnx in d:
         w = d.get(gnx)
-        w.close()
+        # w.close()
+        w.destroy()
     outer_dict[c.hash()] = {}
 #@+node:ekr.20160403065412.1: ** commands
 #@+node:vivainio2.20091008133028.5825: *3* g.command('stickynote')
@@ -262,7 +263,11 @@ if encOK:
 
     def get_AES():
         if hasattr(AES, 'MODE_EAX'):
+            # pylint: disable=no-member
+            # #1265: When in doubt, use MODE_EAX.
+            # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
             return AES.new(__ENCKEY[0], AES.MODE_EAX)
+        # pylint: disable=no-value-for-parameter
         return AES.new(__ENCKEY[0])
 
     def sn_decode(s):
@@ -323,14 +328,14 @@ class TextEditSearch(QtWidgets.QWidget):  # type:ignore
         super().__init__(*args, **kwargs)
         self.textedit = QtWidgets.QTextEdit(*args, **kwargs)
         # need to call focusin/out set on parent by FocusingPlaintextEdit / mknote
-        self.textedit.focusInEvent = self._call_old_first(  # type:ignore
+        self.textedit.focusInEvent = self._call_old_first(
             self.textedit.focusInEvent, self.focusin)
-        self.textedit.focusOutEvent = self._call_old_first(  # type:ignore
+        self.textedit.focusOutEvent = self._call_old_first(
             self.textedit.focusOutEvent, self.focusout)
         self.searchbox = QLineEdit()
-        self.searchbox.focusInEvent = self._call_old_first(  # type:ignore
+        self.searchbox.focusInEvent = self._call_old_first(
             self.searchbox.focusInEvent, self.focusin)
-        self.searchbox.focusOutEvent = self._call_old_first(  # type:ignore
+        self.searchbox.focusOutEvent = self._call_old_first(
             self.searchbox.focusOutEvent, self.focusout)
 
         # invoke find when return pressed
@@ -525,10 +530,13 @@ def mknote(c, p, parent=None, focusin=None, focusout=None):
     # #2471: Create a new editor only if it doesn't already exist.
     d = outer_dict.get(c.hash(), {})
     nf = d.get(p.gnx)
-    if nf:
-        nf.show()
-        nf.raise_()
-        return nf
+    try:
+        if nf:
+            nf.show()
+            nf.raise_()
+            return nf
+    except Exception:
+        pass
     nf = FocusingPlaintextEdit(
         focusin=mknote_focusin,
         focusout=mknote_focusout,
@@ -629,12 +637,15 @@ class Tabula(QtWidgets.QMainWindow):  # type:ignore
         gnx = p.gnx
         if gnx in self.notes:
             n = self.notes[gnx]
-            n.show()
-            return n
+            try:
+                n.show()
+                return n
+            except Exception:
+                pass
         n = mknote(self.c, p, parent=self.mdi)
         sw = self.mdi.addSubWindow(n)
         try:
-            sw.setAttribute(Qt.WA_DeleteOnClose, False)
+            sw.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
         except AttributeError:
             pass
         self.notes[gnx] = n
@@ -667,7 +678,9 @@ class Tabula(QtWidgets.QMainWindow):  # type:ignore
 
         def do_close_all():
             for i in self.mdi.subWindowList():
-                self.mdi.removeSubWindow(i)
+                i.close()
+            for n in self.notes:
+                self.notes[n].close()
             self.notes = {}
 
         def do_go():
