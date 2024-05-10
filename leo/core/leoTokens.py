@@ -1049,7 +1049,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             '\t' in self.input_token.value or
             (len(self.input_token.value) % self.tab_width) != 0
         ):  # pragma: no cover
-            print(f"Leading tabs found: {self.consider_message}")
+            print(f"Indentation error in {self.filename}")
+            print(self.consider_message)
 
         # Handle the token!
         new_indent = self.input_token.value
