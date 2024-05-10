@@ -819,7 +819,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return
         self.show()
         i = splitter.indexOf(self)
-        splitter.moveSplitter(int(sum(splitter.sizes())/2), i)
+        splitter.moveSplitter(int(sum(splitter.sizes()) / 2), i)
     #@+node:ekr.20160921071239.1: *3* vr.set_html
     def set_html(self, s: str, w: Wrapper) -> None:
         """Set text in w to s, preserving scroll position."""
