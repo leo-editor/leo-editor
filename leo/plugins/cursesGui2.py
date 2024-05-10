@@ -2160,8 +2160,7 @@ class CoreFrame(leoFrame.LeoFrame):
         self.log = CoreLog(c)
         g.app.gui.log = self.log
         self.title: str = title
-        # Standard ivars.
-        self.ratio = self.secondary_ratio = 0.5
+
         # Widgets
         self.top = TopFrame(c)  # type:ignore
         self.body = CoreBody(c)
@@ -4201,6 +4200,9 @@ class StatusLineWrapper(leoFrame.StringTextWrapper):
 
     #@+others
     #@+node:ekr.20171129204751.1: *4* StatusLineWrapper.do nothings
+    def computeStatusUnl(self, p: Position) -> str:
+        return ''
+
     def disable(self, *args: Any, **kwargs: Any) -> None:
         pass
 

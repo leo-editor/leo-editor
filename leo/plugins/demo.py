@@ -681,7 +681,7 @@ class Demo:
     def get_ratios(self):
         """Return the two pane ratios."""
         f = self.c.frame
-        return f.ratio, f.secondary_ratio
+        return f.compute_ratio(), f.compute_secondary_ratio()
 
     def set_ratios(self, ratio1, ratio2):
         """Set the two pane ratios."""

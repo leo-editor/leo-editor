@@ -331,7 +331,7 @@ class LeoBody:
 
     def updateSyntaxColorer(self, p: Position) -> None:
         if p:
-            return self.colorizer.updateSyntaxColorer(p.copy())
+            self.colorizer.updateSyntaxColorer(p.copy())
 
     def recolor(self, p: Position) -> None:
         self.c.recolor()
@@ -703,7 +703,7 @@ class LeoFrame:
     """The base class for all Leo windows."""
     instances = 0
     #@+others
-    #@+node:ekr.20031218072017.3679: *3* LeoFrame.__init__ & reloadSettings
+    #@+node:ekr.20031218072017.3679: *3* LeoFrame.__init__
     def __init__(self, c: Cmdr, gui: LeoGui) -> None:
         self.c = c
         self.gui = gui
@@ -764,6 +764,12 @@ class LeoFrame:
     def initCompleteHint(self) -> None:
         """A hook for Qt."""
         pass
+    #@+node:ekr.20240510091810.1: *4* LeoFrame.compute_ratio & compute_secondary_ratio
+    def compute_ratio(self) -> float:
+        return 0.5
+
+    def compute_secondary_ratio(self) -> float:
+        return 0.5
     #@+node:ekr.20061109125528.1: *3* LeoFrame.Must be defined in base class
     #@+node:ekr.20031218072017.3689: *4* LeoFrame.initialRatios
     def initialRatios(self) -> tuple[bool, float, float]:
@@ -1817,7 +1823,6 @@ class NullFrame(LeoFrame):
         self.iconBar = NullIconBarClass(self.c, self)
         self.initComplete = True
         self.isNullFrame = True
-        self.ratio = self.secondary_ratio = 0.5
         self.statusLineClass = NullStatusLineClass
         self.title = title
         # Create the component objects.
@@ -1836,6 +1841,12 @@ class NullFrame(LeoFrame):
 
     def cascade(self, event: LeoKeyEvent = None) -> None:
         pass
+
+    def compute_ratio(self) -> float:
+        return 0.5
+
+    def compute_secondary_ratio(self) -> float:
+        return 0.5
 
     def contractBodyPane(self, event: LeoKeyEvent = None) -> None:
         pass

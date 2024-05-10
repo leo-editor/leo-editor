@@ -133,7 +133,7 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     print('Restarting Leo with:\n')
     print(args_s)
     print('')
-    subprocess.run(args)
+    subprocess.run(args)  # pylint: disable=subprocess-run-check
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
@@ -286,8 +286,8 @@ def new(self: Self, event: LeoKeyEvent = None, gui: LeoGui = None) -> Cmdr:
     frame.lift()
 
     # Resize the _new_ frame.
-    frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
-    c.frame.createFirstTreeNode()
+    frame.resizePanesToRatio(frame.compute_ratio(), frame.compute_secondary_ratio())
+    frame.createFirstTreeNode()
 
     # Finish.
     lm.finishOpen(c)

@@ -2204,6 +2204,39 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # print('destroySelf: qtFrame: %s' % c,g.callers(4))
         top.close()
     #@+node:ekr.20110605121601.18274: *3* qtFrame.Configuration
+    #@+node:ekr.20240510092709.1: *4* qtFrame.compute_ratio & compute_secondary_ratio (new)
+    #@+node:ekr.20240510093119.1: *5* qtFrame.compute_ratio
+    def compute_ratio(self) -> float:
+        """
+        Return ratio of the main Qt splitter or 0.5.
+        """
+        c = self.c
+        if c.free_layout:
+            w = c.free_layout.get_main_splitter()
+            if w:
+                aList = w.sizes()
+                if len(aList) == 2:
+                    n1, n2 = aList
+                    # Don't divide by zero.
+                    ratio = 0.5 if n1 + n2 == 0 else float(n1) / float(n1 + n2)
+                    return ratio
+        return 0.5
+    #@+node:ekr.20240510093122.1: *5* qtFrame.compute_secondary_ratio
+    def compute_secondary_ratio(self) -> float:
+        """
+        Return the ratio of the Qt secondary splitter or 0.5.
+        """
+        c = self.c
+        free_layout = c.free_layout
+        if free_layout:
+            w = free_layout.get_secondary_splitter()
+            if w:
+                aList = w.sizes()
+                if len(aList) == 2:
+                    n1, n2 = aList
+                    ratio = float(n1) / float(n1 + n2)
+                    return ratio
+        return 0.5
     #@+node:ekr.20110605121601.18275: *4* qtFrame.configureBar
     def configureBar(self, bar: Wrapper, verticalFlag: bool) -> None:
         c = self.c
@@ -2388,7 +2421,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     @frame_cmd('equal-sized-panes')
     def equalSizedPanes(self, event: LeoKeyEvent = None) -> None:
         """Make the outline and body panes have the same size."""
-        self.resizePanesToRatio(0.5, self.secondary_ratio)
+        self.resizePanesToRatio(0.5, self.compute_secondary_ratio())
     #@+node:ekr.20110605121601.18305: *5* qtFrame.hideLogWindow
     def hideLogWindow(self, event: LeoKeyEvent = None) -> None:
         """Hide the log pane."""
@@ -2428,45 +2461,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 assert hasattr(w, 'setWindowState'), w
             else:
                 w.setWindowState(WindowState.WindowMaximized)
-    #@+node:ekr.20160424080647.1: *3* qtFrame.Properties
-    # The ratio and secondary_ratio properties are read-only.
-    #@+node:ekr.20160424080815.2: *4* qtFrame.ratio property
-    def __get_ratio(self) -> float:
-        """Return splitter ratio of the main splitter."""
-        c = self.c
-        free_layout = c.free_layout
-        if free_layout:
-            w = free_layout.get_main_splitter()
-            if w:
-                aList = w.sizes()
-                if len(aList) == 2:
-                    n1, n2 = aList
-                    # 2017/06/07: guard against division by zero.
-                    ratio = 0.5 if n1 + n2 == 0 else float(n1) / float(n1 + n2)
-                    return ratio
-        return 0.5
-
-    ratio = property(
-        __get_ratio,  # No setter.
-        doc="qtFrame.ratio property")
-    #@+node:ekr.20160424080815.3: *4* qtFrame.secondary_ratio property
-    def __get_secondary_ratio(self) -> float:
-        """Return the splitter ratio of the secondary splitter."""
-        c = self.c
-        free_layout = c.free_layout
-        if free_layout:
-            w = free_layout.get_secondary_splitter()
-            if w:
-                aList = w.sizes()
-                if len(aList) == 2:
-                    n1, n2 = aList
-                    ratio = float(n1) / float(n1 + n2)
-                    return ratio
-        return 0.5
-
-    secondary_ratio = property(
-        __get_secondary_ratio,  # no setter.
-        doc="qtFrame.secondary_ratio property")
     #@+node:ekr.20110605121601.18311: *3* qtFrame.Qt bindings...
     #@+node:ekr.20190611053431.1: *4* qtFrame.bringToFront
     def bringToFront(self) -> None:
@@ -4695,9 +4689,8 @@ def contractBodyPane(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if not c:
         return
-    f = c.frame
-    r = min(1.0, f.ratio + 0.1)
-    f.divideLeoSplitter1(r)
+    r = min(1.0, c.frame.compute_ratio() + 0.1)
+    c.frame.divideLeoSplitter1(r)
 
 expandOutlinePane = contractBodyPane
 #@+node:ekr.20200303084048.1: *3* 'contract-log-pane'
@@ -4708,7 +4701,7 @@ def contractLogPane(event: LeoKeyEvent) -> None:
     if not c:
         return
     f = c.frame
-    r = min(1.0, f.secondary_ratio + 0.1)
+    r = min(1.0, f.compute_secondary_ratio() + 0.1)
     f.divideLeoSplitter2(r)
 #@+node:ekr.20200303084225.1: *3* 'contract-outline-pane' & 'expand-body-pane'
 @g.command('contract-outline-pane')
@@ -4718,9 +4711,8 @@ def contractOutlinePane(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if not c:
         return
-    f = c.frame
-    r = max(0.0, f.ratio - 0.1)
-    f.divideLeoSplitter1(r)
+    r = max(0.0, c.frame.compute_ratio() - 0.1)
+    c.frame.divideLeoSplitter1(r)
 
 expandBodyPane = contractOutlinePane
 #@+node:ekr.20200303084226.1: *3* 'expand-log-pane'
@@ -4731,7 +4723,7 @@ def expandLogPane(event: LeoKeyEvent) -> None:
     if not c:
         return
     f = c.frame
-    r = max(0.0, f.secondary_ratio - 0.1)
+    r = max(0.0, f.compute_secondary_ratio() - 0.1)
     f.divideLeoSplitter2(r)
 #@+node:ekr.20200303084610.1: *3* 'hide-body-pane'
 @g.command('hide-body-pane')
