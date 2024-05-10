@@ -353,6 +353,11 @@ def onCreate(tag: str, keys: dict) -> None:
     vr.hide()
 #@+node:vitalije.20170712174157.1: *3* vr function: onClose
 def onClose(tag: str, keys: dict) -> None:
+    """
+    Handle a close event in the Leo *outline*, not the VR pane.
+    
+    Delete the per-commander data after idle time.
+    """
     c = keys.get('c')
     h = c.hash()
     vr = controllers.get(h)
@@ -647,7 +652,7 @@ class ViewRenderedProvider:
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
-    #@+node:tbrown.20110629084915.35151: *3* vr.ns_provide (remove layout)
+    #@+node:tbrown.20110629084915.35151: *3* vr.ns_provide
     def ns_provide(self, id_: str) -> Optional[Widget]:
         global controllers, layouts
         # #1678: duplicates in Open Window list
@@ -656,10 +661,6 @@ class ViewRenderedProvider:
             vr = controllers.get(c.hash()) or ViewRenderedController(c)
             h = c.hash()
             controllers[h] = vr
-            ###
-                # if not layouts.get(h):
-                    # layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
-            # return ViewRenderedController(self.c)
             return vr
         return None
     #@+node:ekr.20200917062806.1: *3* vr.ns_provider_id

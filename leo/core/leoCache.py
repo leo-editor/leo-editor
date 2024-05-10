@@ -330,12 +330,6 @@ class SqlitePickleShare:
         if self.get(PROTOCOLKEY, 3) == 2:
             return
         #@+others
-        #@+node:vitalije.20170818115606.1: *4* viewrendered special case
-        ###
-        # import json
-        # row = self.get('viewrendered_default_layouts') or (None, None)
-        # row = json.loads(json.dumps(row[0])), json.loads(json.dumps(row[1]))
-        # self['viewrendered_default_layouts'] = row
         #@+node:vitalije.20170818115617.1: *4* do_block
         def do_block(cur: Any) -> Any:
             itms = tuple((self.dumper(self.loader(v)), k) for k, v in cur)
