@@ -5861,7 +5861,7 @@ def createScratchCommander(fileName: str = None) -> None:
     frame.createFirstTreeNode()
     assert c.rootPosition()
     frame.setInitialWindowGeometry()
-    frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
+    frame.resizePanesToRatio(frame.compute_ratio(), frame.compute_secondary_ratio())
 #@+node:ekr.20031218072017.3126: *3* g.funcToMethod (Python Cookbook)
 def funcToMethod(f: Any, theClass: Any, name: str = None) -> None:
     """

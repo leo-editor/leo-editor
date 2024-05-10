@@ -563,7 +563,6 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         self.level = 0
         self.node = None
         self.nodeStack = []
-        self.ratio = 0.5  # body-outline ratio.
         self.rootNode = None
     #@+node:ekr.20060917185525: *4* define_disptatch_dict
     def define_dispatch_dict(self):
@@ -706,16 +705,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         self.doHeadAttributes(attrs)
     #@+node:ekr.20060922072852.1: *5* doHeadAttributes
     def doHeadAttributes(self, attrs):
-        ratio = 0.5
-        for bunch in self.attrsToList(attrs):
-            name = bunch.name
-            val = bunch.val
-            if name == 'leo:body_outline_ratio':
-                try:
-                    ratio = float(val)
-                except ValueError:
-                    pass
-        self.ratio = ratio
+        pass
     #@+node:ekr.20060917190349: *4* startOutline (leoOpml)
     def startOutline(self, attrs):
         if self.inElement('head'):
