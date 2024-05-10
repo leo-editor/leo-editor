@@ -286,8 +286,8 @@ def new(self: Self, event: LeoKeyEvent = None, gui: LeoGui = None) -> Cmdr:
     frame.lift()
 
     # Resize the _new_ frame.
-    frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
-    c.frame.createFirstTreeNode()
+    frame.resizePanesToRatio(frame.compute_ratio(), frame.compute_secondary_ratio())
+    frame.createFirstTreeNode()
 
     # Finish.
     lm.finishOpen(c)

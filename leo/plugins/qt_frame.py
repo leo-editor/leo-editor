@@ -2204,6 +2204,39 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # print('destroySelf: qtFrame: %s' % c,g.callers(4))
         top.close()
     #@+node:ekr.20110605121601.18274: *3* qtFrame.Configuration
+    #@+node:ekr.20240510092709.1: *4* qtFrame.compute_ratio & compute_secondary_ratio (new)
+    #@+node:ekr.20240510093119.1: *5* qtFrame.compute_ratio
+    def compute_ratio(self) -> float:
+        """
+        Return ratio of the main Qt splitter or 0.5.
+        """
+        c = self.c
+        if c.free_layout:
+            w = c.free_layout.get_main_splitter()
+            if w:
+                aList = w.sizes()
+                if len(aList) == 2:
+                    n1, n2 = aList
+                    # Don't divide by zero.
+                    ratio = 0.5 if n1 + n2 == 0 else float(n1) / float(n1 + n2)
+                    return ratio
+        return 0.5
+    #@+node:ekr.20240510093122.1: *5* qtFrame.compute_secondary_ratio
+    def compute_secondary_ratio(self) -> float:
+        """
+        Return the ratio of the Qt secondary splitter or 0.5.
+        """
+        c = self.c
+        free_layout = c.free_layout
+        if free_layout:
+            w = free_layout.get_secondary_splitter()
+            if w:
+                aList = w.sizes()
+                if len(aList) == 2:
+                    n1, n2 = aList
+                    ratio = float(n1) / float(n1 + n2)
+                    return ratio
+        return 0.5
     #@+node:ekr.20110605121601.18275: *4* qtFrame.configureBar
     def configureBar(self, bar: Wrapper, verticalFlag: bool) -> None:
         c = self.c
@@ -4717,9 +4750,8 @@ def contractBodyPane(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if not c:
         return
-    f = c.frame
-    r = min(1.0, f.ratio + 0.1)
-    f.divideLeoSplitter1(r)
+    r = min(1.0, c.frame.compute_ratio() + 0.1)
+    c.frame.divideLeoSplitter1(r)
 
 expandOutlinePane = contractBodyPane
 #@+node:ekr.20200303084048.1: *3* 'contract-log-pane'
@@ -4740,9 +4772,8 @@ def contractOutlinePane(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if not c:
         return
-    f = c.frame
-    r = max(0.0, f.ratio - 0.1)
-    f.divideLeoSplitter1(r)
+    r = max(0.0, c.frame.compute_ratio() - 0.1)
+    c.frame.divideLeoSplitter1(r)
 
 expandBodyPane = contractOutlinePane
 #@+node:ekr.20200303084226.1: *3* 'expand-log-pane'
