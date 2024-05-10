@@ -171,7 +171,6 @@ class TextFrame(leoFrame.LeoFrame):
         super().__init__(c, gui)
         assert self.c == c
         self.top = None
-        self.ratio = self.secondary_ratio = 0.5
     #@+node:ekr.20150107090324.23: *3* createFirstTreeNode (cursesGui.py)
     def createFirstTreeNode(self):
         c = self.c

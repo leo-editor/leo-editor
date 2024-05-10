@@ -2421,7 +2421,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     @frame_cmd('equal-sized-panes')
     def equalSizedPanes(self, event: LeoKeyEvent = None) -> None:
         """Make the outline and body panes have the same size."""
-        self.resizePanesToRatio(0.5, self.secondary_ratio)
+        self.resizePanesToRatio(0.5, self.compute_secondary_ratio())
     #@+node:ekr.20110605121601.18305: *5* qtFrame.hideLogWindow
     def hideLogWindow(self, event: LeoKeyEvent = None) -> None:
         """Hide the log pane."""
@@ -4762,7 +4762,7 @@ def contractLogPane(event: LeoKeyEvent) -> None:
     if not c:
         return
     f = c.frame
-    r = min(1.0, f.secondary_ratio + 0.1)
+    r = min(1.0, f.compute_secondary_ratio() + 0.1)
     f.divideLeoSplitter2(r)
 #@+node:ekr.20200303084225.1: *3* 'contract-outline-pane' & 'expand-body-pane'
 @g.command('contract-outline-pane')
@@ -4784,7 +4784,7 @@ def expandLogPane(event: LeoKeyEvent) -> None:
     if not c:
         return
     f = c.frame
-    r = max(0.0, f.secondary_ratio - 0.1)
+    r = max(0.0, f.compute_secondary_ratio() - 0.1)
     f.divideLeoSplitter2(r)
 #@+node:ekr.20200303084610.1: *3* 'hide-body-pane'
 @g.command('hide-body-pane')

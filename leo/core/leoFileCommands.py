@@ -604,7 +604,6 @@ class FileCommands:
         self.descendentMarksList: list[str] = []  # List of gnx's.
         self.descendentTnodeUaDictList: list[Any] = []
         self.descendentVnodeUaDictList: list[Any] = []
-        self.ratio = 0.5
         self.currentVnode: VNode = None
         # For writing...
         self.read_only = False

@@ -331,7 +331,7 @@ class LeoBody:
 
     def updateSyntaxColorer(self, p: Position) -> None:
         if p:
-            return self.colorizer.updateSyntaxColorer(p.copy())
+            self.colorizer.updateSyntaxColorer(p.copy())
 
     def recolor(self, p: Position) -> None:
         self.c.recolor()
