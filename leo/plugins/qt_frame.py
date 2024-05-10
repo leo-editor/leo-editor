@@ -2204,7 +2204,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # print('destroySelf: qtFrame: %s' % c,g.callers(4))
         top.close()
     #@+node:ekr.20110605121601.18274: *3* qtFrame.Configuration
-    #@+node:ekr.20240510092709.1: *4* qtFrame.compute_ratio & compute_secondary_ratio (new)
+    #@+node:ekr.20240510092709.1: *4* qtFrame.compute_ratio & compute_secondary_ratio
     #@+node:ekr.20240510093119.1: *5* qtFrame.compute_ratio
     def compute_ratio(self) -> float:
         """
