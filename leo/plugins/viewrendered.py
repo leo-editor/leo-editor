@@ -554,7 +554,7 @@ def toggle_rendering_pane(event: Event) -> None:
         vr = viewrendered(event)
     vr.is_visible = not vr.is_visible
     if vr.is_visible:
-       vr.show()
+        vr.show()
     else:
         vr.hide()
     c.bodyWantsFocusNow()
