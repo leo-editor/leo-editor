@@ -2431,10 +2431,23 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20160424080647.1: *3* qtFrame.Properties
     # The ratio and secondary_ratio properties are read-only.
     #@+node:ekr.20160424080815.2: *4* qtFrame.ratio property
+    ratio_message_given = False
+    ratio_message1 = '\nLeoQtFrame.ratio and secondary_ratio properties are deprecated'
+    ratio_message2 = 'Use the compute_ratio and compute_secondary_ratio methods instead\n'
+
     def __get_ratio(self) -> float:
-        """Return splitter ratio of the main splitter."""
+        """
+        Return splitter ratio of the main splitter.
+        Deprecated: Use the compute_ratio method instead.
+                    This method is not used in Leo's core.
+        """
         c = self.c
         free_layout = c.free_layout
+        # Give the deprecation method.
+        if not self.ratio_message_given:
+            self.ratio_message_given = True
+            print(self.ratio_message1)
+            print(self.ratio_message2)
         if free_layout:
             w = free_layout.get_main_splitter()
             if w:
@@ -2451,9 +2464,18 @@ class LeoQtFrame(leoFrame.LeoFrame):
         doc="qtFrame.ratio property")
     #@+node:ekr.20160424080815.3: *4* qtFrame.secondary_ratio property
     def __get_secondary_ratio(self) -> float:
-        """Return the splitter ratio of the secondary splitter."""
+        """
+        Return the splitter ratio of the secondary splitter.
+        Deprecated: Use the compute_secondary_ratio method instead.
+                    This method is not used in Leo's core.
+        """
         c = self.c
         free_layout = c.free_layout
+        # Give the deprecation method.
+        if not self.ratio_message_given:
+            self.ratio_message_given = True
+            print(self.ratio_message1)
+            print(self.ratio_message2)
         if free_layout:
             w = free_layout.get_secondary_splitter()
             if w:
