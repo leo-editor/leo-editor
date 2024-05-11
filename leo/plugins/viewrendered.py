@@ -451,6 +451,7 @@ def fully_expand_rendering_pane(event: Event) -> None:
         vr = viewrendered(event)
         vr.show()
     vr.fully_expand()
+    g.es('VR pane covers body pane', color='red')
 #@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
 def hide_rendering_pane(event: Event) -> None:
@@ -517,6 +518,8 @@ def restore_body(event: Event) -> None:
     if not vr:
         vr = viewrendered(event)
     vr.restore_body()
+    g.es('VR pane uncovers body pane', color='red')
+
 #@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
 @g.command('vr-show')
 def show_rendering_pane(event: Event) -> None:
@@ -551,10 +554,10 @@ def toggle_rendering_pane(event: Event) -> None:
         vr = viewrendered(event)
     vr.is_visible = not vr.is_visible
     if vr.is_visible:
-        g.es_print('VR pane on', color='red')
+        g.es('VR pane on', color='red')
         vr.show()
     else:
-        g.es_print('VR pane off', color='red')
+        g.es('VR pane off', color='red')
         vr.hide()
     c.bodyWantsFocusNow()
 #@+node:ekr.20240508082844.1: *3* g.command('vr-toggle-keep-open')
@@ -748,17 +751,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         splitter.setSizes(sizes)
     #@+node:ekr.20240507100254.1: *3* vr.fully_expand
     def fully_expand(self) -> None:
-        """
-        Replace the body pane with the VR pane & remember the previous visibility of the VR pane.
-        """
-        if not hasattr(self.c, 'free_layout'):
-            return
-        splitter = self.parent()  # A NestedSplitter
-        if not splitter:
-            return
+        """Cover the body pane with the VR pane."""
+        splitter = self.parent()
+        if splitter and isinstance(splitter, QtWidgets.QSplitter):
+            i = splitter.indexOf(self)
+            splitter.moveSplitter(0, i)
         self.show()
-        i = splitter.indexOf(self)
-        splitter.moveSplitter(0, i)
     #@+node:ekr.20110321072702.14508: *3* vr.lock/unlock
     def lock(self) -> None:
         """Lock the VR pane."""
@@ -772,15 +770,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20240507100402.1: *3* vr.restore_body
     def restore_body(self) -> None:
         """Restore the visibility of the body pane."""
-        if not hasattr(self.c, 'free_layout'):
-            return
-        # Restore the previous sizes.
         splitter = self.parent()  # A NestedSplitter
-        if not splitter:
-            return
+        if splitter and isinstance(splitter, QtWidgets.QSplitter):
+            i = splitter.indexOf(self)
+            splitter.moveSplitter(int(sum(splitter.sizes()) / 2), i)
         self.show()
-        i = splitter.indexOf(self)
-        splitter.moveSplitter(int(sum(splitter.sizes()) / 2), i)
     #@+node:ekr.20160921071239.1: *3* vr.set_html
     def set_html(self, s: str, w: Wrapper) -> None:
         """Set text in w to s, preserving scroll position."""
@@ -900,6 +894,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if self.gnx != p.v.gnx:
             return True
         if self.length != p.v.b:
+            ### g.trace(self.get_kind(p))
             self.length = len(p.b)  # Suppress updates until next change.
             if self.get_kind(p) in ('html', 'pyplot'):
                 return False  # Only update explicitly.
