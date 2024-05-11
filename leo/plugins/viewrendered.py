@@ -1510,7 +1510,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20110320120020.14483: *5* vr.get_kind
     def get_kind(self, p: Position) -> Optional[str]:
         """Return the proper rendering kind for node p."""
-        
+
         p0 = p  # Special case selected position.
 
         def get_language(p: Position) -> str:
@@ -1519,26 +1519,27 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             Headline directives over-ride normal Leo directives in body text.
             """
             h = p.h
-            # First, look for headline directives.
+            # Case 1: Look for headline directives.
             if h.startswith('@'):
                 i = g.skip_id(h, 1, chars='-')
                 word = h[1:i].lower().strip()
                 if word in self.dispatch_dict:
                     return word
 
-            # Second, look for @language directives.
-            # Careful: never use c.target_language as a default.
+            # Case 2: Look at body text in c.p.
+            #         We *must* assume the first @language directive is in effect.
             if p == p0:
-                # We *must* assume the first @language directive is in effect.
+                # Careful: never use c.target_language as a default.
                 return g.findFirstValidAtLanguageDirective(p.b)
-            else:
-                # Ignore nodes with ambiguous @language directives!
-                m_list = list(g.g_language_pat.finditer(p.b))
-                if len(m_list) == 1:
-                    m = m_list[0]
-                    language = m.group(1)
-                    if g.isValidLanguage(language):
-                        return language
+
+            # Case 3: Look at body text in ancestor nodes.
+            #         Ignore nodes with ambiguous @language directives!
+            m_list = list(g.g_language_pat.finditer(p.b))
+            if len(m_list) == 1:
+                m = m_list[0]
+                language = m.group(1)
+                if g.isValidLanguage(language):
+                    return language
             return None
 
         # #1287: Honor both kind of directives node by node.
