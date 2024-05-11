@@ -551,8 +551,10 @@ def toggle_rendering_pane(event: Event) -> None:
         vr = viewrendered(event)
     vr.is_visible = not vr.is_visible
     if vr.is_visible:
+        g.es_print('VR pane on', color='red')
         vr.show()
     else:
+        g.es_print('VR pane off', color='red')
         vr.hide()
     c.bodyWantsFocusNow()
 #@+node:ekr.20240508082844.1: *3* g.command('vr-toggle-keep-open')
@@ -897,9 +899,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return False
         if self.gnx != p.v.gnx:
             return True
-        if self.gnx != p.v.gnx:
+        if self.length != p.v.b:
+            self.length = len(p.b)  # Suppress updates until next change.
             if self.get_kind(p) in ('html', 'pyplot'):
-                self.length = len(p.b)
                 return False  # Only update explicitly.
             return True
         return False
@@ -1328,13 +1330,18 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if os.path.isdir(path):
             os.chdir(path)
         try:
+            # Suppress all error messages.
+            sys.stderr = open(os.devnull, "w")
             # Call docutils to get the string.
             s = publish_string(s, writer_name='html')
             s = g.toUnicode(s)
-        except SystemMessage as sm:
-            msg = sm.args[0]
-            if 'SEVERE' in msg or 'FATAL' in msg:
-                s = 'RST error:\n%s\n\n%s' % (msg, s)
+        except SystemMessage:
+            # msg = sm.args[0]
+            # if 'SEVERE' in msg or 'FATAL' in msg:
+                # s = 'RST error:\n%s\n\n%s' % (msg, s)
+            pass
+        finally:
+            sys.stderr = sys.__stderr__
         return s
 
     def update_plantuml(self, s: str, keywords: Any) -> None:
@@ -1417,7 +1424,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # focus back on entry node
         if oldp:
             c.redraw(oldp)
-
     #@+node:ekr.20110320120020.14479: *4* vr.update_svg
     # http://doc.trolltech.com/4.4/qtsvg.html
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
