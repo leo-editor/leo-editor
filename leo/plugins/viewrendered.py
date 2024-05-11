@@ -1546,10 +1546,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         for p1 in p.self_and_parents():
             language = get_language(p1)
             if language:
-                if got_markdown and language in ('md', 'markdown'):
-                    return language
-                if got_docutils and language in ('rest', 'rst'):
-                    return language
+                if language in ('md', 'markdown'):
+                    return language if got_markdown else None
+                if language in ('rest', 'rst'):
+                    return language if got_docutils else None
                 if language in self.dispatch_dict:
                     return language
         return None
