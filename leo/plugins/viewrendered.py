@@ -1511,6 +1511,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20110320120020.14483: *5* vr.get_kind
     def get_kind(self, p: Position) -> Optional[str]:
         """Return the proper rendering kind for node p."""
+        
+        p0 = p  # Special case selected position.
 
         def get_language(p: Position) -> str:
             """
@@ -1524,19 +1526,32 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 word = h[1:i].lower().strip()
                 if word in self.dispatch_dict:
                     return word
-            # Look for @language directives.
-            # Warning: (see #344): don't use c.target_language as a default.
-            return g.findFirstValidAtLanguageDirective(p.b)
-        #
-        #  #1287: Honor both kind of directives node by node.
+
+            # Second, look for @language directives.
+            # Careful: never use c.target_language as a default.
+            if p == p0:
+                # We *must* assume the first @language directive is in effect.
+                return g.findFirstValidAtLanguageDirective(p.b)
+            else:
+                # Ignore nodes with ambiguous @language directives!
+                m_list = list(g.g_language_pat.finditer(p.b))
+                if len(m_list) == 1:
+                    m = m_list[0]
+                    language = m.group(1)
+                    if g.isValidLanguage(language):
+                        return language
+            return None
+
+        # #1287: Honor both kind of directives node by node.
         for p1 in p.self_and_parents():
             language = get_language(p1)
-            if got_markdown and language in ('md', 'markdown'):
-                return language
-            if got_docutils and language in ('rest', 'rst'):
-                return language
-            if language and language in self.dispatch_dict:
-                return language
+            if language:
+                if got_markdown and language in ('md', 'markdown'):
+                    return language
+                if got_docutils and language in ('rest', 'rst'):
+                    return language
+                if language in self.dispatch_dict:
+                    return language
         return None
     #@+node:ekr.20110320233639.5776: *5* vr.get_fn
     def get_fn(self, s: str, tag: str) -> tuple[bool, str]:
