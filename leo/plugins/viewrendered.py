@@ -894,7 +894,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if self.gnx != p.v.gnx:
             return True
         if self.length != p.v.b:
-            ### g.trace(self.get_kind(p))
             self.length = len(p.b)  # Suppress updates until next change.
             if self.get_kind(p) in ('html', 'pyplot'):
                 return False  # Only update explicitly.
@@ -919,7 +918,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.update_rst(s, keywords)
     #@+node:ekr.20191004144242.1: *5* vr.make_asciidoc_title (not used)
     def make_asciidoc_title(self, s: str) -> str:
-        """Generate an asciiidoc title for s."""
+        """Generate an asciidoc title for s."""
         line = '#' * (min(4, len(s)))
         return f"{line}\n{s}\n{line}\n\n"
     #@+node:ekr.20191004143805.1: *5* vr.convert_to_asciidoctor
@@ -1047,7 +1046,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             pyperclip.copy(s)
     #@+node:ekr.20180311090852.1: *5* vr.get_jupyter_source
     def get_jupyter_source(self, c: Cmdr) -> str:
-        """Return the html for the @jupyer node."""
+        """Return the html for the @jupyter node."""
         body = c.p.b.lstrip()
         if body.startswith('<'):
             # Assume the body is html.
@@ -1060,7 +1059,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             if not url:
                 return ''
             if not nbformat:
-                return 'can not import nbformt to render url: %r' % url
+                return 'can not import nbformat to render url: %r' % url
             try:
                 s = urlopen(url).read().decode()
             except Exception:

@@ -1848,6 +1848,8 @@ def underline(self, s: str) -> str:
     return '%s\n%s\n\n' % (s, ch * n)
 #@+node:tbrown.20110629084915.35149: *3* class ViewRenderedProvider
 class ViewRenderedProvider:
+    """This class allows the free_layout plugin to insert VR panes anywhere."""
+    # EKR: Imo, this feature is unimportant.
     @others
 #@+node:tbrown.20110629084915.35154: *4* vr.__init__
 def __init__(self, c: Cmdr) -> None:
