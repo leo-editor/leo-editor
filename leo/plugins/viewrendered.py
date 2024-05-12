@@ -855,7 +855,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 # BaseTextWidget is a QTextBrowser.
                 pass
         return w
-    #@+node:ekr.20110320120020.14486: *4* vr.embed_widget & helper
+    #@+node:ekr.20110320120020.14486: *4* vr.embed_widget
     def embed_widget(self, w: Wrapper, delete_callback: Callable = None) -> None:
         """Embed widget w in the free_layout splitter."""
         c = self.c
