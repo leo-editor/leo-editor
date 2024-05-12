@@ -364,26 +364,30 @@ def onClose(tag: str, keys: dict) -> None:
         vr.active = False
         vr.deleteLater()
 #@+node:tbrown.20110629132207.8984: *3* vr function: show_scrolled_message
-def show_scrolled_message(tag: str, kw: Any) -> bool:
+def show_scrolled_message(tag: str, kw: Any) -> None:
     if g.unitTesting:
-        return None  # This just slows the unit tests.
+        return  # This just slows the unit tests.
     c = kw.get('c')
-    flags = kw.get('flags') or 'rst'
+    if not c:
+        return
+    p = c and c.p
+    s = kw.get('msg')
+    if not s.strip():
+        g.trace('No message', g.callers())
+        return
+    # Create the VR pane if necessary.
     vr = viewrendered(event=kw)
-    title = kw.get('short_title', '').strip()
-    vr.setWindowTitle(title)
-    s = '\n'.join([
-        title,
-        '=' * len(title),
-        '',
-        kw.get('msg')
-    ])
-    vr.show_dock_or_pane()  # #1332.
-    vr.update(
-        tag='show-scrolled-message',
-        keywords={'c': c, 'force': True, 's': s, 'flags': flags},
-    )
-    return True
+    # Make sure we will show the message.
+    vr.is_active = True
+    vr.is_visible = True
+    # A hack: suppress updates until the node changes. 
+    vr.gnx = p.v.gnx
+    vr.length = p.v.b
+    # Render!
+    f = vr.dispatch_dict.get('rest')
+    f(s, kw)
+    vr.show()
+    c.bodyWantsFocusNow()
 #@+node:ekr.20110320120020.14490: ** vr.Commands
 #@+node:ekr.20131213163822.16471: *3* g.command('preview')
 @g.command('preview')
@@ -536,6 +540,7 @@ def show_rendering_pane(event: Event) -> None:
     vr.show()
     vr.is_visible = True
     c.bodyWantsFocusNow()
+
 #@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle-visibility')
 @g.command('vr-toggle-visibility')
 @g.command('vr-toggle')  # Legacy
