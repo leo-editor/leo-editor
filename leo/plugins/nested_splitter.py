@@ -854,8 +854,8 @@ class NestedSplitter(QtWidgets.QSplitter):
             sizes: list = psp.sizes()
             [a, b] = self.sizes()
             s = sizes[i]
-            s1 = a * s / (a + b)
-            s2 = b * s / (a + b)
+            s1 = int(a * s / (a + b))
+            s2 = int(b * s / (a + b))
             sizes[i : i + 1] = [s1, s2]
             prev = self.widget(0)
             next = self.widget(1)
