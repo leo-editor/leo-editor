@@ -64,7 +64,7 @@ Socket = Any
 #@-<< leoserver annotations >>
 #@+<< leoserver version >>
 #@+node:ekr.20220820160619.1: ** << leoserver version >>
-version_tuple = (1, 0, 10)
+version_tuple = (1, 0, 11)
 # Version History
 # 1.0.1 Initial commit.
 # 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info.
@@ -76,6 +76,7 @@ version_tuple = (1, 0, 10)
 # 1.0.8 October 2023: Added history commands, Fixed leo document change detection, allowed more minibuffer commands.
 # 1.0.9 January 2024: Added support for UNL and specific commander targeting for any command.
 # 1.0.10 Febuary 2024: Added support getting UNL for a specific node (for status bar display, etc.)
+# 1.0.11 May 2024: Added current commander info in get_ui_states command
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -1314,7 +1315,7 @@ class LeoServer:
         if commanderId:
             commanders = g.app.commanders()
             for commander in commanders:
-                if id(commander) == commanderId:
+                if str(id(commander)) == str(commanderId):
                     self.c = commander  #  Found commander by id!
                     self.c.selectPosition(self.c.p)
                     self._check_outline(self.c)
@@ -2343,7 +2344,11 @@ class LeoServer:
         """
         Return the body content body specified via GNX.
         """
-        c = self._check_c(param)
+        try:
+            c = self._check_c(param)
+        except Exception:  # pragma: no cover
+            # If p or c was specified but is now invalid/deleted
+            return self._make_response()
         gnx = param.get("gnx")
         v = c.fileCommands.gnxDict.get(gnx)  # vitalije
         body = ""
@@ -2356,7 +2361,11 @@ class LeoServer:
         """
         Return p.b's length in bytes, where p is c.p if param["ap"] is missing.
         """
-        c = self._check_c(param)
+        try:
+            c = self._check_c(param)
+        except Exception:  # pragma: no cover
+            # If p or c was specified but is now invalid/deleted
+            return self._make_response()
         gnx = param.get("gnx")
         w_v = c.fileCommands.gnxDict.get(gnx)  # vitalije
         if w_v:
@@ -2370,8 +2379,13 @@ class LeoServer:
         The cursor positions are given as {"line": line, "col": col, "index": i}
         with line and col along with a redundant index for convenience and flexibility.
         """
-        c = self._check_c(param)
-        p = self._get_p(param)
+        try:
+            c = self._check_c(param)
+            p = self._get_p(param)
+        except Exception:  # pragma: no cover
+            # If p or c was specified but is now invalid/deleted
+            return self._make_response()
+
         wrapper = c.frame.body.wrapper
 
         def row_col_wrapper_dict(i: int) -> dict:
@@ -2575,6 +2589,7 @@ class LeoServer:
 
         try:
             states = {
+                "commanderId": c and str(id(c)),
                 "changed": c and c.changed,
                 "canUndo": c and c.canUndo(),
                 "canRedo": c and c.canRedo(),
@@ -3059,7 +3074,11 @@ class LeoServer:
         (Only if new string is different from actual existing body string)
         """
         tag = 'set_body'
-        c = self._check_c(param)
+        try:
+            c = self._check_c(param)
+        except Exception:  # pragma: no cover
+            # If p or c was specified but is now invalid/deleted
+            return self._make_response()
         gnx = param.get('gnx')
         body = param.get('body')
         u, wrapper = c.undoer, c.frame.body.wrapper
@@ -4634,9 +4653,10 @@ class LeoServer:
         if param:
             commanderId = param.get('commanderId')
             if commanderId:
+                c = None
                 commanders = g.app.commanders()
                 for commander in commanders:
-                    if id(commander) == commanderId:
+                    if str(id(commander)) == str(commanderId):
                         c = commander  #  Found commander by id!
                         break
         # Still not found?
@@ -5119,7 +5139,7 @@ class LeoServer:
             package["commander"] = {
                 "changed": c.isChanged(),
                 "fileName": c.fileName(),  # Can be None for new files.
-                "id": id(c),
+                "id": str(id(c)),
             }
             # Add all the node data, including:
             # - "node": self._p_to_ap(p) # Contains p.gnx, p.childIndex and p.stack.
