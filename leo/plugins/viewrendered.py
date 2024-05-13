@@ -658,7 +658,6 @@ class ViewRenderedProvider:
     #@+node:tbrown.20110629084915.35154: *3* vr.__init__
     def __init__(self, c: Cmdr) -> None:
         self.c = c
-        g.trace(c, g.callers())
         # Careful: we may be unit testing.
         if hasattr(c, 'free_layout'):
             splitter = c.free_layout.get_top_splitter()
@@ -667,7 +666,6 @@ class ViewRenderedProvider:
     #@+node:tbrown.20110629084915.35151: *3* vr.ns_provide
     def ns_provide(self, id_: str) -> Optional[Widget]:
         global controllers, layouts
-        g.trace(id_, g.callers())
         # #1678: duplicates in Open Window list
         if id_ == self.ns_provider_id():
             c = self.c
@@ -678,7 +676,6 @@ class ViewRenderedProvider:
         return None
     #@+node:ekr.20200917062806.1: *3* vr.ns_provider_id
     def ns_provider_id(self) -> str:
-        # return f"vr_id:{self.c.shortFileName()}"
         return '_leo_viewrendered'
     #@+node:tbrown.20110629084915.35150: *3* vr.ns_provides
     def ns_provides(self) -> list[tuple[str, str]]:
