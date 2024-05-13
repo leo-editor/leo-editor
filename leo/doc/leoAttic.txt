@@ -1846,47 +1846,6 @@ def underline(self, s: str) -> str:
     n = max(4, len(g.toEncodedString(s, reportErrors=False)))
     # return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
     return '%s\n%s\n\n' % (s, ch * n)
-#@+node:tbrown.20110629084915.35149: *3* class ViewRenderedProvider
-class ViewRenderedProvider:
-    """This class allows the free_layout plugin to insert VR panes anywhere."""
-    # EKR: Imo, this feature is unimportant.
-    @others
-#@+node:tbrown.20110629084915.35154: *4* vr.__init__
-def __init__(self, c: Cmdr) -> None:
-    self.c = c
-    g.trace(c, g.callers())
-    # Careful: we may be unit testing.
-    if hasattr(c, 'free_layout'):
-        splitter = c.free_layout.get_top_splitter()
-        if splitter:
-            splitter.register_provider(self)
-#@+node:tbrown.20110629084915.35151: *4* vr.ns_provide
-def ns_provide(self, id_: str) -> Optional[Widget]:
-    global controllers, layouts
-    g.trace(id_, g.callers())
-    # #1678: duplicates in Open Window list
-    if id_ == self.ns_provider_id():
-        c = self.c
-        vr = controllers.get(c.hash()) or ViewRenderedController(c)
-        h = c.hash()
-        controllers[h] = vr
-        return vr
-    return None
-#@+node:ekr.20200917062806.1: *4* vr.ns_provider_id
-def ns_provider_id(self) -> str:
-    # return f"vr_id:{self.c.shortFileName()}"
-    return '_leo_viewrendered'
-#@+node:tbrown.20110629084915.35150: *4* vr.ns_provides
-def ns_provides(self) -> list[tuple[str, str]]:
-    # #1671: Better Window names.
-    # #1678: duplicates in Open Window list
-    return [('Viewrendered', self.ns_provider_id())]
-#@+node:ekr.20200917063221.1: *4* vr.ns_title
-def ns_title(self, id_: str) -> Optional[str]:
-    if id_ != self.ns_provider_id():
-        return None
-    filename = self.c.shortFileName() or 'Unnamed file'
-    return f"Viewrendered: {filename}"
 #@-all
 #@@nosearch
 #@-leo
