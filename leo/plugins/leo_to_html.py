@@ -165,9 +165,9 @@ def onCreate(tag, keys):
 #@+node:bob.20080107154936.4: *3* createExportMenus
 def createExportMenus(tag, keywords):
 
-    """Create menu items in File -> Export menu.
+    """Create menu items in File -> Export Files menu.
 
-    Menu's will not be created if the following appears in an @setting tree::
+    Menus will not be created if the following appears in an @setting tree::
 
         @bool leo_to_html_no_menus = True
 
@@ -178,13 +178,14 @@ def createExportMenus(tag, keywords):
     c = keywords.get("c")
     if c.config.getBool('leo-to-html-no-menus'):
         return
+
     for item, cmd in (
         ('Show Node as HTML', 'show-html-node'),
         ('Show Outline as HTML', 'show-html'),
         ('Save Node as HTML', 'export-html-node'),
         ('Save Outline as HTML', 'export-html'),
     ):
-        c.frame.menu.insert('Export...', 3,
+        c.frame.menu.insert('Export Files', 3,
             label=item,
             command=lambda c=c, cmd=cmd: c.doCommandByName(cmd)
         )
@@ -326,18 +327,20 @@ class Leo_to_HTML:
         self.errorColor = 'red'
         self.fileColor = 'turquoise4'
         self.msgPrefix = 'leo_to_html: '
+        self.xhtml: list[str] = []
+        self.output: str = ''
 
     #@+node:bob.20080107154746.2: *3* do_xhtml
     def do_xhtml(self, node=False):
         """Convert the tree to xhtml.
 
-        Return the result as a string in self.xhtml.
+        Return the result as a string in self.output.
 
         Only the code to represent the tree is generated, not the
         wrapper code to turn it into a file.
         """
 
-        xhtml: list[str] = []
+        # xhtml: list[str] = []
 
         if node:
             root = self.c.p
@@ -345,7 +348,7 @@ class Leo_to_HTML:
             root = self.c.rootPosition()
 
         if self.bullet_type != 'head':
-            xhtml.append(self.openLevelString)
+            self.xhtml.append(self.openLevelString)
 
         if self.bullet_type == 'head':
             self.doItemHeadlineTags(root)
@@ -362,9 +365,9 @@ class Leo_to_HTML:
                     self.doItemBulletList(pp)
 
         if self.bullet_type != 'head':
-            xhtml.append(self.closeLevelString)
+            self.xhtml.append(self.closeLevelString)
 
-        self.xhtml = '\n'.join(xhtml)
+        self.output = '\n'.join(self.xhtml)
     #@+node:bob.20080107160008: *4* doItemHeadlineTags
     def doItemHeadlineTags(self, p, level=1):
         """" Recursively process an outline node into an xhtml list."""
@@ -449,6 +452,7 @@ class Leo_to_HTML:
             self.bullet_type = bullet
         self.setup()
         self.do_xhtml(node)
+        g.es(self.output)
         self.applyTemplate()
         if show:
             self.show()
@@ -573,12 +577,12 @@ class Leo_to_HTML:
 
         """
 
-        xhtml = self.xhtml
+        xhtml = self.output
 
         if template is None:
             template = self.template
 
-        self.xhtml = template % (
+        self.output = template % (
             self.title,
             xhtml
         )
@@ -598,7 +602,7 @@ class Leo_to_HTML:
             os.mkdir(tempdir)
         filename = g.sanitize_filename(self.myFileName)
         filepath = g.finalize_join(tempdir, filename + '.html')
-        self.write(filepath, self.xhtml, basedir='', path='')
+        self.write(filepath, self.output, basedir='', path='')
         url = "file://%s" % filepath
         msg = ''
         if self.browser_command:
@@ -618,7 +622,7 @@ class Leo_to_HTML:
     def writeall(self):
         """Write all the files"""
 
-        self.write(self.myFileName, self.xhtml)
+        self.write(self.myFileName, self.output)
     #@+node:bob.20080107154746.13: *3* write
     def write(self, name, data, basedir=None, path=None):
         """Write a single file.
