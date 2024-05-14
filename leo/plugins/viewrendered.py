@@ -939,7 +939,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return False
         if self.gnx != p.v.gnx:
             return True
-        if self.length != len(p.v.b):
+        if self.length != len(p.b):
             self.length = len(p.b)  # Suppress updates until next change.
             if self.get_kind(p) in ('html', 'pyplot'):
                 return False  # Only update explicitly.
