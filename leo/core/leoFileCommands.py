@@ -1893,7 +1893,6 @@ class FileCommands:
     #@+node:ekr.20031218072017.3037: *5* fc.putGlobals (sets window_position)
     def putGlobals(self) -> None:
         """Put a vestigial <globals> element, and write global data to the cache."""
-        trace = 'cache' in g.app.debug
         c = self.c
         self.put("<globals/>\n")
         if not c.mFileName:
@@ -1902,9 +1901,6 @@ class FileCommands:
         c.db['body_secondary_ratio'] = str(c.frame.compute_secondary_ratio())
         w, h, left, t = c.frame.get_window_info()
         c.db['window_position'] = str(t), str(left), str(h), str(w)
-        if trace:
-            g.trace(f"\nset c.db for {c.shortFileName()}")
-            print('window_position:', c.db['window_position'])
     #@+node:ekr.20031218072017.3041: *5* fc.putHeader
     def putHeader(self) -> None:
         self.put('<leo_header file_format="2"/>\n')

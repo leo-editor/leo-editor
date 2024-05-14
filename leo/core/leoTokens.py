@@ -1045,11 +1045,12 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Handle indent token."""
 
         # Only warn about indentation errors.
-        if (
-            '\t' in self.input_token.value or
-            (len(self.input_token.value) % self.tab_width) != 0
-        ):  # pragma: no cover
-            print(f"Leading tabs found: {self.consider_message}")
+        if '\t' in self.input_token.value:  # pragma: no cover
+            print(f"Found tab character in {self.filename}")
+            print(self.consider_message)
+        elif (len(self.input_token.value) % self.tab_width) != 0:  # pragma: no cover
+            print(f"Indentation error in {self.filename}")
+            print(self.consider_message)
 
         # Handle the token!
         new_indent = self.input_token.value

@@ -665,7 +665,7 @@ class NestedSplitter(QtWidgets.QSplitter):
             for i in range(self.count()):
                 if isinstance(self.widget(i), NestedSplitter):
                     self.widget(i).equalize_sizes(recurse=True)
-    #@+node:ekr.20110605121601.17975: *3* ns.insert (NestedSplitter)
+    #@+node:ekr.20110605121601.17975: *3* ns.insert
     def insert(self, index, w=None):
         """insert a pane with a widget or, when w==None, Action button"""
         if w is None:  # do NOT use 'not w', fails in PyQt 4.8
@@ -854,8 +854,8 @@ class NestedSplitter(QtWidgets.QSplitter):
             sizes: list = psp.sizes()
             [a, b] = self.sizes()
             s = sizes[i]
-            s1 = a * s / (a + b)
-            s2 = b * s / (a + b)
+            s1 = int(a * s / (a + b))
+            s2 = int(b * s / (a + b))
             sizes[i : i + 1] = [s1, s2]
             prev = self.widget(0)
             next = self.widget(1)
@@ -894,7 +894,7 @@ class NestedSplitter(QtWidgets.QSplitter):
                 for w in self.widget(i).self_and_descendants():
                     yield w
         yield self
-    #@+node:ekr.20110605121601.17985: *3* ns.split (NestedSplitter)
+    #@+node:ekr.20110605121601.17985: *3* ns.split
     def split(self, index, side, w=None, name=None):
         """replace the adjacent widget with a NestedSplitter containing
         the widget and an Action button"""
