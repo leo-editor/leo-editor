@@ -361,7 +361,7 @@ def onClose(tag: str, keys: dict) -> None:
     c = keys.get('c')
     h = c.hash()
     vr = controllers.get(h)
-    if vr:
+    if vr and vr.active:
         c.bodyWantsFocus()
         del controllers[h]
         vr.active = False
@@ -658,6 +658,7 @@ class ViewRenderedProvider:
     #@+node:tbrown.20110629084915.35154: *3* vr.__init__
     def __init__(self, c: Cmdr) -> None:
         self.c = c
+        self.created = False
         # Careful: we may be unit testing.
         if hasattr(c, 'free_layout'):
             splitter = c.free_layout.get_top_splitter()
@@ -667,11 +668,26 @@ class ViewRenderedProvider:
     def ns_provide(self, id_: str) -> Optional[Widget]:
         global controllers, layouts
         # #1678: duplicates in Open Window list
+        if self.created:
+            return None
         if id_ == self.ns_provider_id():
+            self.created = True  # Suppress duplicates!
             c = self.c
-            vr = controllers.get(c.hash()) or ViewRenderedController(c)
             h = c.hash()
-            controllers[h] = vr
+            vr = controllers.get(h)
+            if not vr:
+                # Never overwrite an existing controller.
+                vr = ViewRenderedController(c)
+                controllers [h] = vr
+            # Enable, keeping the VR pane open.
+            vr.active = True
+            vr.auto_create = True
+            vr.is_visible = True
+            vr.keep_open = True
+            vr.locked = False
+            # Force an update.
+            vr.gnx = None
+            vr.length = 0
             return vr
         return None
     #@+node:ekr.20200917062806.1: *3* vr.ns_provider_id
