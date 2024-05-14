@@ -383,7 +383,7 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
     # Make sure we will show the message.
     vr.is_active = True
     vr.is_visible = True
-    # A hack: suppress updates until the node changes. 
+    # A hack: suppress updates until the node changes.
     vr.gnx = p.v.gnx
     vr.length = p.v.b
     # Render!
@@ -678,7 +678,7 @@ class ViewRenderedProvider:
             if not vr:
                 # Never overwrite an existing controller.
                 vr = ViewRenderedController(c)
-                controllers [h] = vr
+                controllers[h] = vr
             # Enable, keeping the VR pane open.
             vr.active = True
             vr.auto_create = True
