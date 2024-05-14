@@ -888,7 +888,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             self.hide()
     #@+node:ekr.20190424083049.1: *4* vr.create_base_text_widget
     def create_base_text_widget(self) -> Wrapper:
-        """Create a QWebView or a QTextBrowser."""
+        """Create a QTextBrowser."""
         c = self.c
         w = BaseTextWidget()
         n = c.config.getInt('qweb-view-font-size')
@@ -939,7 +939,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return False
         if self.gnx != p.v.gnx:
             return True
-        if self.length != p.v.b:
+        if self.length != len(p.v.b):
             self.length = len(p.b)  # Suppress updates until next change.
             if self.get_kind(p) in ('html', 'pyplot'):
                 return False  # Only update explicitly.
