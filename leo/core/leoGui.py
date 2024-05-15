@@ -65,6 +65,9 @@ class LeoGui:
     def detach_widget(self, w: Widget) -> None:
         pass
 
+    def get_by_name(self, c: Cmdr, name: str) -> Optional[Widget]:
+        return None
+
     def get_top_splitter(self, c: Cmdr) -> Widget:
         return None
     #@+node:ekr.20051206103652: *3* LeoGui.widget_name

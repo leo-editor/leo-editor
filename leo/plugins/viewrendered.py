@@ -400,7 +400,7 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
 def preview(event: Event) -> None:
     """A synonym for the vr-toggle command."""
     toggle_rendering_pane(event)
-#@+node:tbrown.20100318101414.5998: *3* g.command('vr')
+#@+node:tbrown.20100318101414.5998: *3* g.command('vr') (to do)
 @g.command('vr')
 def viewrendered(event: Event) -> Optional[Any]:
     """Open render view for commander"""
@@ -415,10 +415,21 @@ def viewrendered(event: Event) -> Optional[Any]:
     if not vr:
         controllers[h] = vr = ViewRenderedController(c)
         # Add the pane to the splitter.
-        if c.free_layout:
-            splitter = c.free_layout.get_top_splitter()
-            if splitter:
-                splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
+        if g.allow_nested_splitter:
+            if c.free_layout:
+                splitter = c.free_layout.get_top_splitter()
+                if splitter:
+                    splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
+        else:
+            gui = g.app.gui
+            splitter = gui.get_top_splitter(c)
+            vr_frame = gui.get_by_name(c, 'bodyFrame')
+            g.trace(QtWidgets.QLayout)
+            layout = gui.get_ancestor_widget_by_class(vr_frame, QtWidgets.QLayout)
+            g.trace('To do: Move VR frame', vr_frame, 'to', layout)
+            ### Without adding to 
+            ### ns.add_adjacent(vr, 'bodyFrame', 'right-of')
+
     c.bodyWantsFocusNow()
     return vr
 #@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
@@ -661,7 +672,7 @@ def zoom_rendering_pane(event: Event) -> None:
 class ViewRenderedProvider:
     """This class allows the free_layout plugin to insert VR panes anywhere."""
     #@+others
-    #@+node:tbrown.20110629084915.35154: *3* vr.__init__ (test)
+    #@+node:tbrown.20110629084915.35154: *3* vr.__init__
     def __init__(self, c: Cmdr) -> None:
         self.c = c
         self.created = False
