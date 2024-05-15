@@ -28,6 +28,8 @@ def edit_pane_test_open(event):
     This is just for testing / demoing, and will be removed eventually.
     """
     c = event['c']
+    if not c.free_layout:
+        return
 
     if not hasattr(c, '__edit_pane_test'):
         c.__edit_pane_test = True
@@ -47,10 +49,13 @@ def edit_pane_test_open(event):
             def ns_provider_id(self):
                 return "__demo_provider_minimal"
 
-        c.free_layout.get_top_splitter().register_provider(MinimalDemoProvider())
+        splitter = c.free_layout.get_top_splitter()
+        if splitter:
+            splitter.register_provider(MinimalDemoProvider())
 
     s = c.free_layout.get_top_splitter()
-    s.open_window("__demo_provider_minimal_slider")
+    if s:
+        s.open_window("__demo_provider_minimal_slider")
 #@+node:tbrown.20180207103918.1: ** edit_pane_csv
 def edit_pane_csv(event):
     c = event['c']

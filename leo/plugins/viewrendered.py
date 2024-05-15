@@ -345,8 +345,9 @@ def onCreate(tag: str, keys: dict) -> None:
     c = keys.get('c')
     if not c:
         return
-    provider = ViewRenderedProvider(c)
-    free_layout.register_provider(c, provider)
+    if g.allow_nested_splitter:
+        provider = ViewRenderedProvider(c)
+        free_layout.register_provider(c, provider)
     vr = viewrendered(keys)
     g.registerHandler('select2', vr.update)
     g.registerHandler('idle', vr.update)
@@ -414,9 +415,10 @@ def viewrendered(event: Event) -> Optional[Any]:
     if not vr:
         controllers[h] = vr = ViewRenderedController(c)
         # Add the pane to the splitter.
-        splitter = c.free_layout.get_top_splitter()
-        if splitter:
-            splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
+        if c.free_layout:
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
     c.bodyWantsFocusNow()
     return vr
 #@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
@@ -659,15 +661,16 @@ def zoom_rendering_pane(event: Event) -> None:
 class ViewRenderedProvider:
     """This class allows the free_layout plugin to insert VR panes anywhere."""
     #@+others
-    #@+node:tbrown.20110629084915.35154: *3* vr.__init__
+    #@+node:tbrown.20110629084915.35154: *3* vr.__init__ (to do)
     def __init__(self, c: Cmdr) -> None:
         self.c = c
         self.created = False
-        # Careful: we may be unit testing.
-        if hasattr(c, 'free_layout'):
-            splitter = c.free_layout.get_top_splitter()
-            if splitter:
-                splitter.register_provider(self)
+        ### To do.
+        if not c.free_layout:
+            return
+        splitter = c.free_layout.get_top_splitter()
+        if splitter:
+            splitter.register_provider(self)
     #@+node:tbrown.20110629084915.35151: *3* vr.ns_provide
     def ns_provide(self, id_: str) -> Optional[Widget]:
         global controllers, layouts
@@ -800,8 +803,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.change_size(100)
 
     def change_size(self, delta: int) -> None:
-        if not hasattr(self.c, 'free_layout'):
-            return
+        ### Test.
+        # if not hasattr(self.c, 'free_layout'):
+            # return
         splitter = self.parent()
         if not splitter:
             return
@@ -921,7 +925,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 # BaseTextWidget is a QTextBrowser.
                 pass
         return w
-    #@+node:ekr.20110320120020.14486: *4* vr.embed_widget
+    #@+node:ekr.20110320120020.14486: *4* vr.embed_widget (test)
     def embed_widget(self, w: Wrapper, delete_callback: Callable = None) -> None:
         """Embed widget w in the free_layout splitter."""
         c = self.c
@@ -1021,7 +1025,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Read the output file and return it.
         with open(o_path, 'r') as f:
             return f.read()
-    #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
+    #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script (to do)
     def update_graphics_script(self, s: str, keywords: Any) -> None:
         """Update the graphics script in the VR pane."""
         c = self.c

@@ -269,16 +269,17 @@ def cmd_open_node(event):
         # No need to handle url hooks here.
         g.handleUrl(url, c=c, p=p)
 
-#@+node:tbrown.20110712100955.39215: ** bookmarks-show
+#@+node:tbrown.20110712100955.39215: ** bookmarks-show (to do)
 @g.command('bookmarks-show')
 def cmd_show(event):
 
     c = event.get('c')
     bmd = BookMarkDisplay(c)
-    # Careful: we could be unit testing.
-    splitter = bmd.c.free_layout.get_top_splitter()
-    if splitter:
-        splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
+    ### To do.
+    if c.free_layout:
+        splitter = c.free_layout.get_top_splitter()
+        if splitter:
+            splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
 #@+node:tbrown.20131226095537.26309: ** bookmarks-switch
 @g.command('bookmarks-switch')
 def cmd_switch(event):
@@ -459,7 +460,7 @@ def cmd_mark_as_target(event):
     g.es("Node noted - now use\nbookmarks-use-other-outline\nin the "
         "outline you want to\nstore bookmarks in this node")
 
-#@+node:ekr.20190619132530.1: ** bookmarks-use-other-outline
+#@+node:ekr.20190619132530.1: ** bookmarks-use-other-outline (to do)
 @g.command('bookmarks-use-other-outline')
 def cmd_use_other_outline(event):
     """Set bookmarks for this outline from a list (node) in
@@ -471,10 +472,11 @@ def cmd_use_other_outline(event):
         return
     c.db['_leo_bookmarks_show'] = g._bookmarks_target
     bmd = BookMarkDisplay(c, g._bookmarks_target_v)
-    splitter = c.free_layout.get_top_splitter()
-    if splitter:
-        splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
-
+    ### To do.
+    if c.free_layout:
+        splitter = c.free_layout.get_top_splitter()
+        if splitter:
+            splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
 #@+node:ekr.20140917180536.17896: ** class FlowLayout (QLayout)
 class FlowLayout(QtWidgets.QLayout):  # type:ignore
     """
@@ -1147,11 +1149,12 @@ class BookMarkDisplay:
 #@+node:tbrown.20110712121053.19746: ** class BookMarkDisplayProvider
 class BookMarkDisplayProvider:
     #@+others
-    #@+node:tbrown.20110712121053.19747: *3* __init__
+    #@+node:tbrown.20110712121053.19747: *3* __init__ (BookMarkDisplayProvider)
     def __init__(self, c):
         self.c = c
+        if not c.free_layout:
+            return
         splitter = c.free_layout.get_top_splitter()
-        # Careful: we could be unit testing.
         if splitter:
             splitter.register_provider(self)
 

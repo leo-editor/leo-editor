@@ -63,7 +63,7 @@ class LeoFigureManagerQT(FigureManager):
     """
 
     #@+others
-    #@+node:ekr.20160929050151.2: *4* __init__ (LeoFigureManagerQt)
+    #@+node:ekr.20160929050151.2: *4* __init__ (LeoFigureManagerQt) (to do)
     # Do NOT call the base class ctor. It creates a Qt MainWindow.
         # pylint: disable=super-init-not-called
         # pylint: disable=non-parent-init-called
@@ -76,7 +76,10 @@ class LeoFigureManagerQT(FigureManager):
 
         # New code for Leo: embed the canvas in the viewrendered area.
         self.vr_controller = vc = vr.controllers.get(c.hash())
-        self.splitter = c.free_layout.get_top_splitter()
+        if c.free_layout:
+            self.splitter = c.free_layout.get_top_splitter()
+        else:
+            self.splitter = None  ### To do
         self.frame = w = QtWidgets.QFrame()
         w.setLayout(QtWidgets.QVBoxLayout())
         w.layout().addWidget(self.canvas)

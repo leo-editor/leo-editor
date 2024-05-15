@@ -1444,13 +1444,14 @@ def init():
 def isVisible():
     """Return True if the VR3 pane is visible."""
     return
-#@+node:TomP.20191215195433.11: *3* vr3.onCreate
+#@+node:TomP.20191215195433.11: *3* vr3.onCreate (test)
 def onCreate(tag, keys):
     c = keys.get('c')
     if not c:
         return
-    provider = ViewRenderedProvider3(c)
-    free_layout.register_provider(c, provider)
+    if g.allow_nested_splitter:
+        provider = ViewRenderedProvider3(c)
+        free_layout.register_provider(c, provider)
 
 #@+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
@@ -1564,18 +1565,18 @@ def viewrendered(event):
 
     layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
     vr3._ns_id = VR3_NS_ID  # for free_layout load/save
-    vr3.splitter = splitter = c.free_layout.get_top_splitter()
-
-    if splitter:
-        vr3.store_layout('closed')
-        sizes = split_last_sizes(splitter.sizes())
-        ok = splitter.add_adjacent(vr3, '_leo_pane:bodyFrame', 'right-of')
-        if not ok:
-            splitter.insert(0, vr3)
-        elif splitter.orientation() == Orientation.Horizontal:
-            splitter.setSizes(sizes)
-        vr3.adjust_layout('open')
-        positions[c.hash()] = OPENED_IN_SPLITTER
+    if c.free_layout:
+        vr3.splitter = splitter = c.free_layout.get_top_splitter()
+        if splitter:
+            vr3.store_layout('closed')
+            sizes = split_last_sizes(splitter.sizes())
+            ok = splitter.add_adjacent(vr3, '_leo_pane:bodyFrame', 'right-of')
+            if not ok:
+                splitter.insert(0, vr3)
+            elif splitter.orientation() == Orientation.Horizontal:
+                splitter.setSizes(sizes)
+            vr3.adjust_layout('open')
+            positions[c.hash()] = OPENED_IN_SPLITTER
 
     c.bodyWantsFocusNow()
 
@@ -1802,7 +1803,7 @@ def lock_unlock_tree(event):
         vr3.unlock()
     else:
         vr3.lock()
-#@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout')
+#@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout') (to do)
 @g.command('vr3-use-default-layout')
 def open_with_layout(event):
     vr3 = getVr3(event)
@@ -1817,7 +1818,11 @@ def open_with_layout(event):
               'sizes': [200, 200, 200]
              }
 
-    vr3.splitter = c.free_layout.get_top_splitter()
+    if c.free_layout:
+        vr3.splitter = c.free_layout.get_top_splitter()
+    else:
+        vr3.splitter = None  ### To do.
+
     if vr3.splitter:
         # Make it work with old and new layout code
         try:
@@ -2065,12 +2070,11 @@ def vr3_render_html_from_clip(event):
 #@+node:ekr.20200918085543.1: ** class ViewRenderedProvider3
 class ViewRenderedProvider3:
     #@+others
-    #@+node:ekr.20200918085543.2: *3* vr3.__init__
+    #@+node:ekr.20200918085543.2: *3* vr3.__init__ (to do)
     def __init__(self, c):
         self.c = c
-        # Careful: we may be unit testing.
         self.vr3_instance = None
-        if hasattr(c, 'free_layout'):
+        if getattr(c, 'free_layout', None):
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
@@ -3038,7 +3042,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # except Exception:
                     # g.es_exception()
                     # pc.deactivate()
-    #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
+    #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper (test)
     def embed_widget(self, w, delete_callback=None):
         """Embed widget w in the free_layout splitter."""
         pc = self; c = pc.c  #X ; splitter = pc.splitter
@@ -3396,7 +3400,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             g.es(message)
             return message
 
-    #@+node:TomP.20191215195433.58: *4* vr3.update_graphics_script
+    #@+node:TomP.20191215195433.58: *4* vr3.update_graphics_script (to do)
     def update_graphics_script(self, s, keywords):
         """Update the graphics script in the vr3 pane."""
         pc = self; c = pc.c
@@ -3404,8 +3408,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if pc.gs and not force:
             return
         if not pc.gs:
-            splitter = c.free_layout.get_top_splitter()
-            # Careful: we may be unit testing.
+            if g.allow_nested_splitter:
+                splitter = c.free_layout.get_top_splitter()
+            else:
+                splitter = None  ### To do.
             if not splitter:
                 g.trace('no splitter')
                 return
@@ -4659,7 +4665,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         pc.active = True
         g.registerHandler('select2', pc.update)
         g.registerHandler('idle', pc.update)
-    #@+node:TomP.20200329230436.3: *5* vr3.contract & expand
+    #@+node:TomP.20200329230436.3: *5* vr3.contract & expand (to do)
     # Change zoom factor of rendering pane
     def contract(self):
         self.change_size(-100)
@@ -4668,7 +4674,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.change_size(100)
 
     def change_size(self, delta):
-        if hasattr(self.c, 'free_layout'):
+        if getattr(self.c, 'free_layout', None):
             splitter = self.parent()
             i = splitter.indexOf(self)
             assert i > -1

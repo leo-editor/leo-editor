@@ -12,7 +12,7 @@ import string
 import sys
 import time
 import urllib
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
@@ -355,10 +355,22 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """Create the layout for Leo's main window."""
         # c = self.leo_c
         vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
-        main_splitter = NestedSplitter(parent)
+        
+        # #3910: Deprecate NestedSplitter.
+        main_splitter: Union[NestedSplitter, QtWidgets.QSplitter]
+        secondary_splitter: Union[NestedSplitter, QtWidgets.QSplitter]
+
+        if g.allow_nested_splitter:
+            main_splitter = NestedSplitter(parent)
+        else:
+            main_splitter = QtWidgets.QSplitter(parent)
         main_splitter.setObjectName('main_splitter')
         main_splitter.setOrientation(Orientation.Vertical)
-        secondary_splitter = NestedSplitter(main_splitter)
+
+        if g.allow_nested_splitter:
+            secondary_splitter = NestedSplitter(main_splitter)
+        else:
+            secondary_splitter = QtWidgets.QSplitter(main_splitter)
         secondary_splitter.setObjectName('secondary_splitter')
         secondary_splitter.setOrientation(Orientation.Horizontal)
         # Official ivar:
@@ -2348,9 +2360,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """Resize splitter1 and splitter2 using the given ratios."""
         self.divideLeoSplitter1(ratio)
         self.divideLeoSplitter2(ratio2)
-    #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2 (*** to do)
+    #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2 (to do)
     def divideLeoSplitter1(self, frac: float) -> None:
         """Divide the main splitter."""
+        ### To do.
         layout = self.c and self.c.free_layout
         if not layout:
             return
@@ -2360,6 +2373,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     def divideLeoSplitter2(self, frac: float) -> None:
         """Divide the secondary splitter."""
+        ### To do.
         layout = self.c and self.c.free_layout
         if not layout:
             return
@@ -2444,14 +2458,16 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 assert hasattr(w, 'setWindowState'), w
             else:
                 w.setWindowState(WindowState.WindowMinimized)
-    #@+node:ekr.20110605121601.18307: *5* qtFrame.toggleSplitDirection
+    #@+node:ekr.20110605121601.18307: *5* qtFrame.toggleSplitDirection (to do)
     @frame_cmd('toggle-split-direction')
     def toggleSplitDirection(self, event: LeoKeyEvent = None) -> None:
         """Toggle the split direction in the present Leo window."""
         c = self.c
-        ### if hasattr(c, 'free_layout'):
+        ### To do.
         if getattr(c, 'free_layout', None):
-            c.free_layout.get_top_splitter().rotate()
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.rotate()
     #@+node:ekr.20110605121601.18308: *5* qtFrame.resizeToScreen
     @frame_cmd('resize-to-screen')
     def resizeToScreen(self, event: LeoKeyEvent = None) -> None:

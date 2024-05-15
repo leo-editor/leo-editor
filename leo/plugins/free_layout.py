@@ -485,8 +485,7 @@ def free_layout_zoom(event: LeoKeyEvent) -> None:
 #@+node:ekr.20160327060009.1: *3* free_layout:register_provider
 def register_provider(c: Cmdr, provider_instance: Any) -> None:
     """Register the provider instance with the top splitter."""
-    # Careful: c.free_layout may not exist during unit testing.
-    if c and hasattr(c, 'free_layout'):
+    if getattr(c, 'free_layout', None):
         splitter = c.free_layout.get_top_splitter()
         if splitter:
             splitter.register_provider(provider_instance)
