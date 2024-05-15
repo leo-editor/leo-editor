@@ -217,7 +217,6 @@ class FreeLayoutController:
     #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
     def get_top_splitter(self) -> Optional[Wrapper]:
         """Return the top splitter of c.frame.top."""
-        # Careful: we could be unit testing.
         f = self.c.frame
         if hasattr(f, 'top') and f.top:
             child = f.top.findChild(NestedSplitter)

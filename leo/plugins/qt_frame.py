@@ -2463,11 +2463,14 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def toggleSplitDirection(self, event: LeoKeyEvent = None) -> None:
         """Toggle the split direction in the present Leo window."""
         c = self.c
-        ### To do.
-        if getattr(c, 'free_layout', None):
-            splitter = c.free_layout.get_top_splitter()
-            if splitter:
-                splitter.rotate()
+        if g.allow_nested_splitter:
+            if getattr(c, 'free_layout', None):
+                splitter = c.free_layout.get_top_splitter()
+                if splitter:
+                    splitter.rotate()
+        else:
+            splitter = g.app.gui.get_top_splitter(c)
+            g.trace('to do: rotate splitter:', splitter)
     #@+node:ekr.20110605121601.18308: *5* qtFrame.resizeToScreen
     @frame_cmd('resize-to-screen')
     def resizeToScreen(self, event: LeoKeyEvent = None) -> None:

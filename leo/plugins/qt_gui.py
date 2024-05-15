@@ -11,7 +11,7 @@ import re
 import sys
 import textwrap
 from time import sleep
-from typing import Any, Optional, Union, TYPE_CHECKING
+from typing import Any, Generator, Optional, Union, TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
@@ -74,6 +74,19 @@ def init() -> bool:
     g.app.gui.finishCreate()
     g.plugin_signon(__name__)
     return True
+#@+node:ekr.20240515151459.1: ** gt_gui: top-level functions
+def qt_object_and_subtree(qt_obj: Any) -> Generator:
+    """Yield w and all of w's descendants."""
+    yield qt_obj
+    for child in qt_obj.children():
+        yield from qt_object_and_subtree(child)
+
+def find_by_name(qt_obj: Any, name: str) -> Optional[QWidget]:
+    """Return the widget in parent's tree with the given name."""
+    for w in qt_object_and_subtree(qt_obj):
+        if w.objectName() == name:
+            return w
+    return None
 #@+node:ekr.20140907085654.18700: ** class LeoQtGui(leoGui.LeoGui)
 class LeoQtGui(leoGui.LeoGui):
     """A class implementing Leo's Qt gui."""
@@ -1511,7 +1524,7 @@ class LeoQtGui(leoGui.LeoGui):
             gui.splashScreen.hide()
             # gui.splashScreen.deleteLater()
             gui.splashScreen = None
-    #@+node:ekr.20140825042850.18411: *3* qt_gui.Utils...
+    #@+node:ekr.20140825042850.18411: *3* qt_gui:Utils...
     #@+node:ekr.20110605121601.18522: *4* qt_gui.isTextWidget/Wrapper
     def isTextWidget(self, w: Wrapper) -> bool:
         """Return True if w is some kind of Qt text widget."""
@@ -1545,7 +1558,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     QSignalSpy = QtTest.QSignalSpy
     assert QSignalSpy
-    #@+node:ekr.20190819091957.1: *3* qt_gui.Widgets...
+    #@+node:ekr.20190819091957.1: *3* qt_gui:Widget constructors
     #@+node:ekr.20190819094016.1: *4* qt_gui.createButton
     def createButton(self, parent: QWidget, name: str, label: str) -> QPushButton:
         w = QtWidgets.QPushButton(parent)
@@ -1622,6 +1635,17 @@ class LeoQtGui(leoGui.LeoGui):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(widget.sizePolicy().hasHeightForWidth())
         widget.setSizePolicy(sizePolicy)
+    #@+node:ekr.20240515150157.1: *3* qt_gui:Widget utils
+    # The dummy LeoGui methods: unl:gnx://leoPy.leo#ekr.20240515145223.1
+
+    def attach_widget(self, w: QWidget, parent: QWidget) -> None:
+        pass  ### To do.
+
+    def detach_widget(self, w: QWidget) -> None:
+        pass  ### To do.
+
+    def get_top_splitter(self, c: Cmdr) -> QWidget:
+        return find_by_name(c.frame.top, 'main_splitter')
     #@-others
 #@+node:tbrown.20150724090431.1: ** class StyleClassManager
 class StyleClassManager:

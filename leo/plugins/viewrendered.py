@@ -661,16 +661,14 @@ def zoom_rendering_pane(event: Event) -> None:
 class ViewRenderedProvider:
     """This class allows the free_layout plugin to insert VR panes anywhere."""
     #@+others
-    #@+node:tbrown.20110629084915.35154: *3* vr.__init__ (to do)
+    #@+node:tbrown.20110629084915.35154: *3* vr.__init__ (test)
     def __init__(self, c: Cmdr) -> None:
         self.c = c
         self.created = False
-        ### To do.
-        if not c.free_layout:
-            return
-        splitter = c.free_layout.get_top_splitter()
-        if splitter:
-            splitter.register_provider(self)
+        if g.allow_nested_splitter and c.free_layout:
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.register_provider(self)
     #@+node:tbrown.20110629084915.35151: *3* vr.ns_provide
     def ns_provide(self, id_: str) -> Optional[Widget]:
         global controllers, layouts
