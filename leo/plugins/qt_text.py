@@ -1423,7 +1423,7 @@ class QScintillaWrapper(QTextMixin):
         if sort and i > j:
             i, j = j, i
         return i, j
-    #@+node:ekr.20140901062324.18599: *4* qsciw.getX/YScrollPosition (to do)
+    #@+node:ekr.20140901062324.18599: *4* qsciw.getX/YScrollPosition
     def getXScrollPosition(self) -> int:
         # w = self.widget
         return 0  # Not ready yet.
@@ -1515,7 +1515,7 @@ class QScintillaWrapper(QTextMixin):
             w.SendScintilla(w.SCI_SETSEL, i, j)
         else:
             w.SendScintilla(w.SCI_SETSEL, j, i)
-    #@+node:ekr.20140901062324.18609: *4* qsciw.setX/YScrollPosition (to do)
+    #@+node:ekr.20140901062324.18609: *4* qsciw.setX/YScrollPosition
     def setXScrollPosition(self, pos: int) -> None:
         """Set the position of the horizontal scrollbar."""
 
