@@ -53,10 +53,17 @@ def edit_pane_test_open(event):
     s.open_window("__demo_provider_minimal_slider")
 #@+node:tbrown.20180207103918.1: ** edit_pane_csv
 def edit_pane_csv(event):
-    from leo.plugins.nested_splitter import NestedSplitter
     c = event['c']
+    if not c:
+        return
     w = c.frame.body.widget
-    while not isinstance(w, NestedSplitter):
+    if not w:
+        return
+    if g.allow_nested_splitter:
+        from leo.plugins.nested_splitter import NestedSplitter
+        while not isinstance(w, NestedSplitter):
+            w = w.parent()
+    else:
         w = w.parent()
     w.insert(-1, LeoEditPane(c=c, show_control=False, lep_type='EDITOR-CSV'))
 #@+node:tbrown.20171028115438.4: ** class LeoEditPane

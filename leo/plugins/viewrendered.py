@@ -212,7 +212,9 @@ from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import QtMultimedia, QtSvg
 from leo.core.leoQt import ContextMenuPolicy, WrapMode
 from leo.plugins import qt_text
-from leo.plugins import free_layout
+
+if g.allow_nested_splitter:
+    from leo.plugins import free_layout
 
 BaseTextWidget = QtWidgets.QTextBrowser
 
@@ -629,6 +631,8 @@ def zoom_rendering_pane(event: Event) -> None:
     if not vr:
         vr = viewrendered(event)
     flc = c.free_layout
+    if not flc:
+        return
     if vr.zoomed:
         for ns in flc.get_top_splitter().top().self_and_descendants():
             if hasattr(ns, '_unzoom'):
@@ -1021,15 +1025,16 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def update_graphics_script(self, s: str, keywords: Any) -> None:
         """Update the graphics script in the VR pane."""
         c = self.c
+        if g.unitTesting:
+            return
         force = keywords.get('force')
         if self.gs and not force:
             return
         if not self.gs:
-            splitter = c.free_layout.get_top_splitter()
-            # Careful: we may be unit testing.
-            if not splitter:
-                g.trace('no splitter')
-                return
+            if g.allow_nested_splitter:
+                splitter = c.free_layout.get_top_splitter()
+            else:
+                splitter = None  ### To do.
             # Create the widgets.
             self.gs = QtWidgets.QGraphicsScene(splitter)
             self.gv = QtWidgets.QGraphicsView(self.gs)

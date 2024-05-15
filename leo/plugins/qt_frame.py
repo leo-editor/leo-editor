@@ -32,7 +32,10 @@ from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins.qt_tree import LeoQtTree
 from leo.plugins.mod_scripting import build_rclick_tree
-from leo.plugins.nested_splitter import NestedSplitter
+if g.allow_nested_splitter:
+    from leo.plugins.nested_splitter import NestedSplitter
+else:
+    NestedSpitter = QtWidgets.QSplitter
 #@-<< qt_frame imports >>
 #@+<< qt_frame annotations >>
 #@+node:ekr.20220415080427.1: ** << qt_frame annotations >>
@@ -2345,7 +2348,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """Resize splitter1 and splitter2 using the given ratios."""
         self.divideLeoSplitter1(ratio)
         self.divideLeoSplitter2(ratio2)
-    #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2
+    #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2 (*** to do)
     def divideLeoSplitter1(self, frac: float) -> None:
         """Divide the main splitter."""
         layout = self.c and self.c.free_layout
@@ -2445,8 +2448,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
     @frame_cmd('toggle-split-direction')
     def toggleSplitDirection(self, event: LeoKeyEvent = None) -> None:
         """Toggle the split direction in the present Leo window."""
-        if hasattr(self.c, 'free_layout'):
-            self.c.free_layout.get_top_splitter().rotate()
+        c = self.c
+        ### if hasattr(c, 'free_layout'):
+        if getattr(c, 'free_layout', None):
+            c.free_layout.get_top_splitter().rotate()
     #@+node:ekr.20110605121601.18308: *5* qtFrame.resizeToScreen
     @frame_cmd('resize-to-screen')
     def resizeToScreen(self, event: LeoKeyEvent = None) -> None:
