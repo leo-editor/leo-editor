@@ -494,7 +494,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         else:
             # fail - parent is not NestedSplitter and has no layout
             pass
-    #@+node:tbrown.20110621120042.22675: *3* ns.add_adjacent
+    #@+node:tbrown.20110621120042.22675: *3* ns.add_adjacent (finds layout)
     def add_adjacent(self, what, widget_id, side='right-of'):
         """add a widget relative to another already present widget"""
         horizontal, vertical = Orientation.Horizontal, Orientation.Vertical

@@ -52,6 +52,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QHBoxLayout = QtWidgets.QHBoxLayout
     QIcon = QtGui.QIcon
     QLabel = QtWidgets.QLabel
+    QLayout = QtWidgets.QLayout
     QMainWindow = QtWidgets.QMainWindow
     QPixmap = QtGui.QPixmap
     QPoint = QtCore.QPoint
@@ -75,30 +76,33 @@ def init() -> bool:
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20240515151459.1: ** gt_gui: top-level functions
-def qt_ancestors(qt_obj: Any) -> Generator:
-    """Yields all ancestors of qt_obj."""
+def _ancestors(qt_obj: Any) -> Generator:
+    """Yields all ancestors of qt_obj, a Qt object or widget."""
     parent = qt_obj.parent()
     while parent:
         yield parent
         parent = parent.parent()
 
-def qt_object_and_subtree(qt_obj: Any) -> Generator:
+def _object_and_subtree(qt_obj: Any) -> Generator:
     """Yield w and all of w's descendants."""
     yield qt_obj
     for child in qt_obj.children():
-        yield from qt_object_and_subtree(child)
+        yield from _object_and_subtree(child)
 
-def find_qt_ancestor_widget_by_class(qt_obj: Any, class_: Any):
-    """Return the widget in qt_obj's ancestors with the given class."""
-    for w in qt_ancestors(qt_obj):
-        g.trace(w)
-        if issubclass(w.__class__, class_):
-            return w
-    return None
+# def _find_ancestor_widget_by_class(qt_obj: Any, class_: Any):
+    # """Return the widget in qt_obj's ancestors with the given class."""
+    # for w in _ancestors(qt_obj):
+        # g.trace(w)
+        # if issubclass(w.__class__, class_):
+            # return w
+    # return None
+    
+def _find_layout_for_object(qt_obj: Any) -> Optional[Any]:
+    return None  ### To do.
 
-def find_qt_widget_by_name(qt_obj: Any, name: str) -> Optional[QWidget]:
+def _find_widget_by_name(qt_obj: Any, name: str) -> Optional[QWidget]:
     """Return the widget in parent's tree with the given name."""
-    for w in qt_object_and_subtree(qt_obj):
+    for w in _object_and_subtree(qt_obj):
         if w.objectName() == name:
             return w
     return None
@@ -1653,21 +1657,23 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20240515150157.1: *3* qt_gui:Widget utils
     # The dummy LeoGui methods: unl:gnx://leoPy.leo#ekr.20240515145223.1
 
-    def attach_widget(self, w: QWidget, parent: QWidget) -> None:
-        pass  ### To do.
+    # def attach_widget(self, w: QWidget, parent: QWidget) -> None:
+        # pass  ### To do.
 
-    def detach_widget(self, w: QWidget) -> None:
-        pass  ### To do.
+    # def detach_widget(self, w: QWidget) -> None:
+        # pass  ### To do.
         
-    def get_by_name(self, c: Cmdr, name: str) -> Optional[QWidget]:
-        return find_qt_widget_by_name(c.frame.top, name)
+    # def find_ancestor_widget_by_class(self, w: QWidget, class_: QWidget) -> Optional[QWidget]:
+        # return _find_qt_ancestor_widget_by_class(w, class_)
+        
+    def find_layout_for_object(self, obj: Any) -> Optional[QLayout]:
+        return _find_layout_for_object(obj)
+
+    def find_widget_by_name(self, c: Cmdr, name: str) -> Optional[QWidget]:
+        return _find_widget_by_name(c.frame.top, name)
 
     def get_top_splitter(self, c: Cmdr) -> QWidget:
-        return find_qt_widget_by_name(c.frame.top, 'main_splitter')
-        
-    def get_ancestor_widget_by_class(self, w: QWidget, class_: QWidget) -> Optional[QWidget]:
-        return find_qt_ancestor_widget_by_class(w, class_)
-
+        return _find_widget_by_name(c.frame.top, 'main_splitter')
     #@-others
 #@+node:tbrown.20150724090431.1: ** class StyleClassManager
 class StyleClassManager:

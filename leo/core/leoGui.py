@@ -56,20 +56,6 @@ class LeoGui:
         self.ignoreChars: list[str] = []  # Keys that should always be ignored.
         self.FKeys: list[str] = []  # The representation of F-keys.
         self.specialChars: list[str] = []  # A list of characters/keys to be handle specially.
-    #@+node:ekr.20240515145223.1: *3* LeoGui.widget utils (dummies)
-    # The corresponding Qt methods: unl:gnx://leoPy.leo#ekr.20240515150157.1
-
-    def attach_widget(self, w: Widget, parent: Widget) -> None:
-        pass
-
-    def detach_widget(self, w: Widget) -> None:
-        pass
-
-    def get_by_name(self, c: Cmdr, name: str) -> Optional[Widget]:
-        return None
-
-    def get_top_splitter(self, c: Cmdr) -> Widget:
-        return None
     #@+node:ekr.20051206103652: *3* LeoGui.widget_name
     def widget_name(self, w: Widget) -> str:
         # First try the widget's getName method.
