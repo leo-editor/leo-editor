@@ -1653,22 +1653,42 @@ class LeoQtGui(leoGui.LeoGui):
     # qt_gui utils: unl:gnx://leoPy.leo#ekr.20240515151459.1
 
     ### To do ###
-
     # def attach_widget(self, w: QWidget, parent: QWidget) -> None:
         # pass
 
-    # def detach_widget(self, w: QWidget) -> None:
-        # pass
-        
+    def detach_object(self, qt_obj: Any) -> None:
+        i, w = self.find_nearest_container(qt_obj)
+        if w:
+            g.trace('FOUND', i, w, qt_obj)
+            ### To do!
+        else:
+            g.trace('Not found:', qt_obj)
 
     def find_layout_for_object(self, qt_obj: Any) -> Optional[QLayout]:
         return qt_obj.layout()  ### To do.
         
+    _container_classes = (QtWidgets.QSplitter, QtWidgets.QStackedWidget, QtWidgets.QStackedWidget)
 
-    def find_nearest_containing_object(self, qt_obj: Any) -> Optional[Any]:
+    def _container_index(self, container: Any, target: Any) -> int:
+        """Return the index (within the container) of the child containing the target widget."""
+        g.trace('container:', id(container), container.__class__.__name__)
+        for i, child in enumerate(container.children()):
+            g.trace('child:', i, child.__class__.__name__)
+            for w2 in _self_and_subtree(child):
+                ### g.trace('  subtree:', w2.__class__.__name__)
+                if w2 == target:
+                    ### g.trace('   FOUND!', id(w2), w2.__class__.__name__)
+                    return i
+        return -1
+        
+    def find_nearest_container(self, qt_obj: Any) -> Optional[tuple[int, Any]]:
         for w in _parents(qt_obj):
-            pass  ### To do.
-        return None
+            ### g.trace('parent:', w.__class__.__name__)
+            if isinstance(w, self._container_classes ):
+                i = self._container_index(w, qt_obj)
+                if i > -1:
+                    return i, w            
+        return -1, None
         
     def find_nearest_object_with_stylesheet(self, qt_obj: Any) -> Optional[Any]:
         for w in _self_and_parents(qt_obj):
