@@ -423,10 +423,10 @@ def viewrendered(event: Event) -> Optional[Any]:
         else:
             gui = g.app.gui
             splitter = gui.get_top_splitter(c)
-            vr_frame = gui.get_by_name(c, 'bodyFrame')
+            vr_frame = gui.find_widget_by_name(c, 'bodyFrame')
             g.trace(QtWidgets.QLayout)
-            layout = gui.get_ancestor_widget_by_class(vr_frame, QtWidgets.QLayout)
-            g.trace('To do: Move VR frame', vr_frame, 'to', layout)
+            ### layout = gui.find_ancestor_widget_by_class(vr_frame, QtWidgets.QLayout)
+            g.trace('To do: Move VR frame', vr_frame)  ###, 'to', layout)
             ### Without adding to 
             ### ns.add_adjacent(vr, 'bodyFrame', 'right-of')
 
