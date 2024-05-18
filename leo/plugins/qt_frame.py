@@ -4850,6 +4850,51 @@ def toggleStatusBar(event: LeoKeyEvent) -> None:
             w.hide()
         else:
             w.show()
+#@+node:ekr.20240518150051.1: *3* 'show-qt-widgets'
+@g.command('print-qt-widgets')
+@g.command('show-qt-widgets')
+def showQtWidgets(event: LeoKeyEvent) -> None:
+    """Print the hierarchy of qt widgets."""
+    c = event.get('c')
+    total = 0
+    if not c:
+        return
+
+    def w_name(w):
+        name = w.objectName() or 'no name'
+        return f"{ w.__class__.__name__}({name})"
+
+    def dump(w, level=0):
+        nonlocal total
+        total += 1
+        ws = level * '.'
+        print(f"{total:3} {level:3}: {ws}{w_name(w)}")
+
+    def dump_children(w, level=0):
+        if 1:  # Specify wanted classes...
+            wanted = (
+                'DynamicWindow', 'Frame', 'Layout',
+                'Splitter', 'Stacked', 'Text', 'Widget',
+            )
+            children = [z for z in w.children()
+                if any(z2 in z.__class__.__name__ for z2 in wanted)]
+        else:  # Specifiy unwanted classes...
+            ignore = ('action', 'animation', 'menu')
+            children = [z for z in w.children()
+                if not any(z2 in z.__class__.__name__.lower() for z2 in ignore)]
+        if children:
+            for i, child in enumerate(children):
+                dump(child, level + 1)
+                dump_children(child, level + 1)
+
+    def full_dump(w, level=0):
+        print('')
+        print('Full dump of c.frame.top:\n')
+        print('  i   level')
+        dump(w)
+        dump_children(w)
+
+    full_dump(c.frame.top)
 #@+node:ekr.20240505045118.1: *3* 'toggle-unl-view'
 @g.command('toggle-unl-view')
 def toggleUnlView(event: LeoKeyEvent) -> None:
