@@ -626,11 +626,11 @@ class NestedSplitter(QtWidgets.QSplitter):
     def dump_inner_layout(self, content: dict, level: int) -> None:
         ws = level * 2 * ' '
         widget_seen = False
-        print(
-            f"{ws}contents level {level}...\n"
-            f"  {ws}orientation: {content.get('orientation')}\n"
+        print('\n'.join([  # Python 3.9 does not allow newlines within f-strings.
+            f"{ws}contents level {level}..."
+            f"  {ws}orientation: {content.get('orientation')}"
             f"  {ws}sizes: {content.get('sizes')}"
-        )
+        ]))
         inner_content = content.get('content')
         assert isinstance(inner_content, list)
         for i, inner in enumerate(inner_content):

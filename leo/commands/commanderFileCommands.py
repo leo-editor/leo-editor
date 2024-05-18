@@ -128,6 +128,9 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
     launchLeo_s = fr'{leo_editor_dir}{os.sep}launchLeo.py'
     args = [sys.executable, launchLeo_s] + restart_paths + ['--no-splash']
+    # Add any --trace args.
+    for z in g.app.debug:
+        args.append(f"--trace={z}")
     args_s = 'subprocess.run([\n  ' + ',\n  '.join(args) + '\n])'
     print('')
     print('Restarting Leo with:\n')
