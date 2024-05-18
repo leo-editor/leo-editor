@@ -4853,11 +4853,11 @@ def showQtWidgets(event: LeoKeyEvent) -> None:
                 'Splitter', 'Stacked', 'Text', 'Widget',
             )
             children = [z for z in w.children()
-                if any (z2 in z.__class__.__name__ for z2 in wanted)]
+                if any(z2 in z.__class__.__name__ for z2 in wanted)]
         else:  # Specifiy unwanted classes...
             ignore = ('action', 'animation', 'menu')
             children = [z for z in w.children()
-                if not any (z2 in z.__class__.__name__.lower() for z2 in ignore)]
+                if not any(z2 in z.__class__.__name__.lower() for z2 in ignore)]
         if children:
             for i, child in enumerate(children):
                 dump(child, level + 1)
