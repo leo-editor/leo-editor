@@ -2407,14 +2407,7 @@ class LeoServer:
         # Handle @killcolor and @nocolor-node when looking for language
         if c.frame.body.colorizer.useSyntaxColoring(p):
             # Get the language.
-            aList = g.get_directives_dict_list(p)
-            d = g.scanAtCommentAndAtLanguageDirectives(aList)
-            language = (
-                d and d.get('language')
-                or g.getLanguageFromAncestorAtFileNode(p)
-                or c.config.getLanguage('target-language')
-                or 'plain'
-            )
+            language = g.getLanguageFromAncestorAtFileNode(p) or c.config.getLanguage('target-language')
         else:
             # No coloring at all for this node.
             language = 'plain'
@@ -4961,6 +4954,12 @@ class LeoServer:
             p = self._ap_to_p(ap, c)  # Conversion
             if p:
                 if not c.positionExists(p):  # pragma: no cover
+                    # Try to get a gnx parameter as secondary fallback selection criteria
+                    gnx = param.get("gnx")
+                    if gnx:
+                        for p in c.all_unique_positions():
+                            if p.v.gnx == gnx:
+                                return p
                     raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
                 return p  # Return the position
         # Fallback to c.p
