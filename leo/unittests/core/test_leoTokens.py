@@ -61,7 +61,7 @@ class BaseTest(unittest.TestCase):
 
         orange = TokenBasedOrange()
         result_s = orange.beautify(contents, filename, tokens)
-        self.code_list = orange.code_list
+        self.output_list = orange.output_list
         return result_s
     #@+node:ekr.20240105153420.4: *3* BaseTest.check_roundtrip
     def check_roundtrip(self, contents, *, debug_list: list[str] = None):
@@ -170,9 +170,10 @@ class Optional_TestFiles(BaseTest):
 
         self.make_file_data('runLeo.py')
     #@-others
-#@+node:ekr.20240105153425.85: ** class TestTokens (BaseTest)
+#@+node:ekr.20240105153425.85: ** class TestTokens (BaseTest) (delete)
 class TestTokens(BaseTest):
     """Unit tests for tokenizing."""
+
     #@+others
     #@+node:ekr.20240105153425.93: *3* TT.show_example_dump
     def show_example_dump(self):  # pragma: no cover
@@ -345,6 +346,8 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         # expected = self.blacken(contents).rstrip() + '\n'
         results = self.beautify(contents, tokens)
+        # g.printObj(tokens, tag='Tokens')
+        # g.printObj(results, tag='Results')
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.48: *3* TestTBO.test_blank_lines_after_function
     def test_blank_lines_after_function(self):
@@ -364,6 +367,9 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens)
+        if results != expected:
+            g.printObj(results, tag='Results')
+            g.printObj(expected, tag='Expected')
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.49: *3* TestTBO.test_blank_lines_after_function_2
     def test_blank_lines_after_function_2(self):
@@ -397,40 +403,41 @@ class TestTokenBasedOrange(BaseTest):
         # Trailing comment 2.
         print('3')
     """
+
         contents, tokens = self.make_data(contents)
         expected = contents
         results = self.beautify(contents, tokens)
+        if results != expected:
+            g.printObj(tokens, tag='Tokens')
+            g.printObj(results, tag='Results')
+            g.printObj(expected, tag='Expected')
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.53: *3* TestTBO.test_comment_indented
     def test_comment_indented(self):
 
         table = (
-    """
-    if 1:
-        pass
-            # An indented comment.
-    """,
+            """
+            if 1:
+                pass
+                    # An indented comment.
+            """,
 
-    """
-    table = (
-        # Indented comment.
-    )
-    """
+            """
+            table = (
+                # Regular comment.
+            )
+            """
         )
-
         fails = 0
         for contents in table:
             contents, tokens = self.make_data(contents)
             expected = contents
             results = self.beautify(contents, tokens)
-            message = (
-                f"\n"
-                f"  contents: {contents!r}\n"
-                f"  expected: {expected!r}\n"
-                f"       got: {results!r}")
             if results != expected:  # pragma: no cover
                 fails += 1
-                print(f"Fail: {fails}\n{message}")
+                print(f"Fail: {fails}")
+                g.printObj(results, tag='Results')
+                g.printObj(expected, tag='Expected')
         assert not fails, fails
     #@+node:ekr.20240105153425.54: *3* TestTBO.test_comment_space_after_delim
     def test_comment_space_after_delim(self):
@@ -495,6 +502,8 @@ class TestTokenBasedOrange(BaseTest):
             results = self.beautify(contents, tokens)
             if results != expected:
                 g.trace('Fail:', i)  # pragma: no cover
+                g.printObj(contents, tag='Contents')
+                g.printObj(results, tag='Results')
             self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.56: *3* TestTBO.test_dont_delete_blank_lines
     def test_dont_delete_blank_lines(self):
@@ -559,6 +568,10 @@ class TestTokenBasedOrange(BaseTest):
 
         # The space between 'import' and '(' is correct.
         contents = """
+            from .module1 import (
+                w1,
+                w2,
+            )
             from .module1 import \\
                 w
             from .module1 import (
@@ -571,6 +584,10 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         expected = contents.strip() + '\n'
         results = self.beautify(contents, tokens)
+        if results != expected:
+            g.printObj(tokens, tag='Tokens')
+            g.printObj(results, tag='Results')
+            g.printObj(expected, tag='Expected')
         self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.68: *3* TestTBO.test_multi_line_pet_peeves
     def test_multi_line_pet_peeves(self):
@@ -604,6 +621,37 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
+    #@+node:ekr.20240420050005.1: *3* TestTBO.test_multi_line_statement
+    def test_multi_line_statements(self):
+
+        contents = """
+            if 1:  # Simulate indent.
+                def orange_command(
+                    s: str,
+                ) -> None:
+                    pass
+            if 1:  # The trailing ]) causes the problem.
+                return ''.join(
+                    ['%s%s' % (sep, self.dump_ast(z, level + 1)) for z in node])
+        """
+
+        expected = self.prep(
+            """
+            if 1:  # Simulate indent.
+                def orange_command(
+                    s: str,
+                ) -> None:
+                    pass
+            if 1:  # The trailing ]) causes the problem.
+                return ''.join(
+                    ['%s%s' % (sep, self.dump_ast(z, level + 1)) for z in node])
+            """)
+        contents, tokens = self.make_data(contents)
+        results = self.beautify(contents, tokens)
+        if results != expected:
+            g.printObj(results, tag='Results')
+            g.printObj(expected, tag='Expected')
+        self.assertEqual(results, expected)
     #@+node:ekr.20240105153425.69: *3* TestTBO.test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
 
@@ -616,6 +664,9 @@ class TestTokenBasedOrange(BaseTest):
 
         # Except where noted, all entries are expected values...
         table = (
+            ### Duplicate entry to fail first.
+            """f(a[1 + 2])""",
+        
             # Assignments...
             """a = b * c""",
             """a = b + c""",
@@ -704,9 +755,9 @@ class TestTokenBasedOrange(BaseTest):
             import leo.core.leoGlobals as g
         """)
         contents, tokens = self.make_data(contents)
-        # dump_tokens(tokens)
         results = self.beautify(contents, tokens)
         if results != expected:  # pragma: no cover
+            # g.printObj(tokens, tag='Tokens')
             g.printObj(results, tag='Results')
             g.printObj(expected, tag='Expected')
         self.assertEqual(expected, results)

@@ -604,7 +604,6 @@ class FileCommands:
         self.descendentMarksList: list[str] = []  # List of gnx's.
         self.descendentTnodeUaDictList: list[Any] = []
         self.descendentVnodeUaDictList: list[Any] = []
-        self.ratio = 0.5
         self.currentVnode: VNode = None
         # For writing...
         self.read_only = False
@@ -910,7 +909,7 @@ class FileCommands:
         else:
             v = fc._getLeoFileByName(path, readAtFileNodesFlag)
         if v:
-            c.frame.resizePanesToRatio(c.frame.ratio, c.frame.secondary_ratio)
+            c.frame.resizePanesToRatio(c.frame.compute_ratio(), c.frame.compute_secondary_ratio())
             if checkOpenFiles:
                 g.app.checkForOpenFile(c, path)
         return v
@@ -1479,7 +1478,8 @@ class FileCommands:
             ),
             c.frame.get_window_info() +
             (
-                c.frame.ratio, c.frame.secondary_ratio,
+                c.frame.compute_ratio(),
+                c.frame.compute_secondary_ratio(),
                 self.encodePosition(c.p)
             )
         )
@@ -1682,29 +1682,15 @@ class FileCommands:
             self.setCachedBits()
         return result
     #@+node:ekr.20210316092313.1: *6* fc.leojs_globals (sets window_position)
-    def leojs_globals(self) -> Optional[dict[str, Any]]:
+    def leojs_globals(self) -> None:
         """Put json representation of Leo's cached globals."""
         c = self.c
         width, height, left, top = c.frame.get_window_info()
-        if 1:  # Write to the cache, not the file.
-            d = None
-            c.db['body_outline_ratio'] = str(c.frame.ratio)
-            c.db['body_secondary_ratio'] = str(c.frame.secondary_ratio)
-            c.db['window_position'] = str(top), str(left), str(height), str(width)
-            if 'size' in g.app.debug:
-                g.trace('set window_position:', c.db['window_position'], c.shortFileName())
-        else:
-            d = {
-                'body_outline_ratio': c.frame.ratio,
-                'body_secondary_ratio': c.frame.secondary_ratio,
-                'globalWindowPosition': {
-                    'top': top,
-                    'left': left,
-                    'width': width,
-                    'height': height,
-                },
-            }
-        return d
+        c.db['body_outline_ratio'] = str(c.frame.compute_ratio())
+        c.db['body_secondary_ratio'] = str(c.frame.compute_secondary_ratio())
+        c.db['window_position'] = str(top), str(left), str(height), str(width)
+        if 'size' in g.app.debug:
+            g.trace('set window_position:', c.db['window_position'], c.shortFileName())
     #@+node:ekr.20210316085413.2: *6* fc.leojs_vnodes
     def leojs_vnode(self, p: Position, gnxSet: Any, isIgnore: bool = False) -> dict[str, Any]:
         """Return a jsonized vnode."""
@@ -1907,18 +1893,14 @@ class FileCommands:
     #@+node:ekr.20031218072017.3037: *5* fc.putGlobals (sets window_position)
     def putGlobals(self) -> None:
         """Put a vestigial <globals> element, and write global data to the cache."""
-        trace = 'cache' in g.app.debug
         c = self.c
         self.put("<globals/>\n")
         if not c.mFileName:
             return
-        c.db['body_outline_ratio'] = str(c.frame.ratio)
-        c.db['body_secondary_ratio'] = str(c.frame.secondary_ratio)
+        c.db['body_outline_ratio'] = str(c.frame.compute_ratio())
+        c.db['body_secondary_ratio'] = str(c.frame.compute_secondary_ratio())
         w, h, left, t = c.frame.get_window_info()
         c.db['window_position'] = str(t), str(left), str(h), str(w)
-        if trace:
-            g.trace(f"\nset c.db for {c.shortFileName()}")
-            print('window_position:', c.db['window_position'])
     #@+node:ekr.20031218072017.3041: *5* fc.putHeader
     def putHeader(self) -> None:
         self.put('<leo_header file_format="2"/>\n')

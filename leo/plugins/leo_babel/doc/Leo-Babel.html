@@ -1,25 +1,25 @@
-<h1 id="introduction"><span class="header-section-number">1</span> Introduction</h1>
+<h1 data-number="1" id="introduction"><span class="header-section-number">1</span> Introduction</h1>
 <p>Leo-Babel is very different from Ctrl-B (execute-script). Ctrl-B executes a script using the Leo-Editor process and it gives the script full access to the Leo-Editor code and data in RAM. Leo-Babel executes a script in a sub-process of the Leo-Editor process. Consequently, the script has no access to the Leo-Editor address space and hence no direct access to the Leo-Editor code or data in RAM. However, a Leo-Babel script can use Leo-Bridge to access and change any Leo-Editor file.</p>
 <p>Leo-Babel is modeled on Emacs-Babel. However, Leo-Babel currently supports only two script languages, while Emacs-Babel supports over 50 script languages.</p>
-<p>Emacs-Babel does <strong>NOT</strong> &quot;live stream&quot; the script's standard out or standard error while the script executes. Instead Emacs-Babel only displays the script's output after the script terminates. Leo-Babel does &quot;live stream&quot; the script's standard out and standard error while the script executes. This is Leo-Babel's only significant improvement over Emacs-Babel.</p>
+<p>Emacs-Babel does <strong>NOT</strong> “live stream” the script’s standard out or standard error while the script executes. Instead Emacs-Babel only displays the script’s output after the script terminates. Leo-Babel does “live stream” the script’s standard out and standard error while the script executes. This is Leo-Babel’s only significant improvement over Emacs-Babel.</p>
 <p>Emacs-Babel does <strong>NOT</strong> provide a convenient way to kill a script that misbehaves (perhaps by running much too long). Leo-Babel provides a convenient way to kill a script that misbehaves.</p>
 <p>Emacs-Babel allows a script to be treated as a function. Leo-Babel does <strong>not</strong> do this.</p>
-<p>Emacs-Babel allows &quot;interpreter sessions.&quot; One interpreter session can be used to execute a series of scripts. Leo-Babel does <strong>not</strong> implement sessions.</p>
-<h1 id="babel-root"><span class="header-section-number">2</span> Babel Root</h1>
-<p>When command babel-exec-p is executed, the currently selected node is the &quot;Babel Root.&quot; It's body is the &quot;Babel Parameters Script&quot; which can be empty.</p>
-<p>You can put comments in the &quot;Babel Root&quot; body just begin your comments with an ampersand &quot;@&quot; in column 1, this begins a Leo-Editor comment section.</p>
-<h1 id="unls"><span class="header-section-number">3</span> UNL's</h1>
-<p>The Leo-Editor core provides some Universal Node Locators (UNL's) support. The Leo-Babel plugin provides additional UNL support.</p>
-<h2 id="pound-sign-caution"><span class="header-section-number">3.1</span> Pound Sign (#) Caution</h2>
+<p>Emacs-Babel allows “interpreter sessions.” One interpreter session can be used to execute a series of scripts. Leo-Babel does <strong>not</strong> implement sessions.</p>
+<h1 data-number="2" id="babel-root"><span class="header-section-number">2</span> Babel Root</h1>
+<p>When command babel-exec-p is executed, the currently selected node is the “Babel Root.” It’s body is the “Babel Parameters Script” which can be empty.</p>
+<p>You can put comments in the “Babel Root” body just begin your comments with an ampersand “@” in column 1, this begins a Leo-Editor comment section.</p>
+<h1 data-number="3" id="unls"><span class="header-section-number">3</span> UNL’s</h1>
+<p>The Leo-Editor core provides some Universal Node Locators (UNL’s) support. The Leo-Babel plugin provides additional UNL support.</p>
+<h2 data-number="3.1" id="pound-sign-caution"><span class="header-section-number">3.1</span> Pound Sign (#) Caution</h2>
 <p>Using a pound sign (#) in a file name can screw up the UNL support provided by both Leo-Editor and Leo-Babel. It is a limitation of the current design that you should not use the pound sign (#) in any file name that appears in any UNL that you use.</p>
 <p>This limitation results from UNL support assuming that the first pound sign in a UNL begins the required node part.</p>
 <p>Hence, if there is a pound sign in a file name, then UNL support thinks the node part begins with this first pound sign.</p>
-<h2 id="leo-editor-unl-support"><span class="header-section-number">3.2</span> Leo-Editor UNL Support</h2>
-<h3 id="ctrl-left-click-command-open-url-under-cursor"><span class="header-section-number">3.2.1</span> Ctrl-left-click (command open-url-under-cursor)</h3>
+<h2 data-number="3.2" id="leo-editor-unl-support"><span class="header-section-number">3.2</span> Leo-Editor UNL Support</h2>
+<h3 data-number="3.2.1" id="ctrl-left-click-command-open-url-under-cursor"><span class="header-section-number">3.2.1</span> Ctrl-left-click (command open-url-under-cursor)</h3>
 <p>If you Ctrl-left-click (command open-url-under-cursor) on a UNL in a node body containing the protocol prefix, the Leo-Editor core changes focus to the specified node. If the specified node is in another Leo-Editor file, then if necessary, Leo-Editor opens this Leo-Editor file. This functionality has nothing to do with Leo-Babel.</p>
-<h3 id="open-url-command"><span class="header-section-number">3.2.2</span> open-url command</h3>
+<h3 data-number="3.2.2" id="open-url-command"><span class="header-section-number">3.2.2</span> open-url command</h3>
 <p>If you put a UNL with the protocol prefix in the first line of the body of a node, select that node, and execute the open-url command. This selects the node specified by the UNL. Again this support is in the Leo-Editor core and has nothing to do with Leo-Babel.</p>
-<h3 id="p.get_unl"><span class="header-section-number">3.2.3</span> p.get_UNL()</h3>
+<h3 data-number="3.2.3" id="p.get_unl"><span class="header-section-number">3.2.3</span> p.get_UNL()</h3>
 <pre><code>p - Leo-Editor node position
 g - Leo-Editor globals
 
@@ -46,25 +46,25 @@ unl:///tmp/unl.leo#Root:0--&gt;space%20&quot;%20&quot;%20tab%20&quot; &quot;%20s
 /tmp/unl.leo#Root:0--&gt;space &quot; &quot; tab &quot; &quot; single quote &quot;&#39;&quot;:0
 unl:///tmp/unl.leo#Root--&gt;space%20&quot;%20&quot;%20tab%20&quot; &quot;%20single%20quote%20&quot;&#39;&quot;
 unl:///tmp/unl.leo#Root:0--&gt;space%20&quot;%20&quot;%20tab%20&quot; &quot;%20single%20quote%20&quot;&#39;&quot;:0</code></pre>
-<p>Leo-Babel does <strong>NOT</strong> support UNL's produced by &quot;with_index=True&quot;.</p>
-<h2 id="leo-babel-unl-support"><span class="header-section-number">3.3</span> Leo-Babel UNL Support</h2>
-<h3 id="leo-babel-help-pop-up-menu"><span class="header-section-number">3.3.1</span> Leo-Babel Help Pop-Up Menu</h3>
-<p>The UNL on the status line does <strong>NOT</strong> contain the protocol, so after copying and pasting it into a node body you need to add the UNL protocol prefix: &quot;unl://&quot; and you need to &quot;UNL quote&quot; all spaces by replacing each with %20. Consequently, for convenience Leo-Babel provides the &quot;copy UNL to clipboard&quot; command which provides a &quot;UNL quoted&quot; UNL with the UNL protocol prefix.</p>
-<p>These UNL's provided by Leo-Babel always specify the Leo-Editor file containing the specified node. Hence, if you want you can put the Babel Root in File A, the Script Root in File B, and the Results Root in File C.</p>
-<p>I recommend always using UNL's that contain the protocol prefix and the file pathname. But if you prefer using UNL's with other formats, then you can obtain them from p.get_UNL() by specifying the appropriate function parameters. Caution: Leo-Babel does <strong>NOT</strong> support UNL's produced by &quot;with_index=True&quot;. That is, UNL's with child indices.</p>
-<h3 id="babel.un2pos"><span class="header-section-number">3.3.2</span> babel.un2pos()</h3>
+<p>Leo-Babel does <strong>NOT</strong> support UNL’s produced by “with_index=True”.</p>
+<h2 data-number="3.3" id="leo-babel-unl-support"><span class="header-section-number">3.3</span> Leo-Babel UNL Support</h2>
+<h3 data-number="3.3.1" id="leo-babel-help-pop-up-menu"><span class="header-section-number">3.3.1</span> Leo-Babel Help Pop-Up Menu</h3>
+<p>The UNL on the status line does <strong>NOT</strong> contain the protocol, so after copying and pasting it into a node body you need to add the UNL protocol prefix: “unl://” and you need to “UNL quote” all spaces by replacing each with %20. Consequently, for convenience Leo-Babel provides the “copy UNL to clipboard” command which provides a “UNL quoted” UNL with the UNL protocol prefix.</p>
+<p>These UNL’s provided by Leo-Babel always specify the Leo-Editor file containing the specified node. Hence, if you want you can put the Babel Root in File A, the Script Root in File B, and the Results Root in File C.</p>
+<p>I recommend always using UNL’s that contain the protocol prefix and the file pathname. But if you prefer using UNL’s with other formats, then you can obtain them from p.get_UNL() by specifying the appropriate function parameters. Caution: Leo-Babel does <strong>NOT</strong> support UNL’s produced by “with_index=True”. That is, UNL’s with child indices.</p>
+<h3 data-number="3.3.2" id="babel.un2pos"><span class="header-section-number">3.3.2</span> babel.un2pos()</h3>
 <p>Leo-Editor does not provide a convenient function for going from a UNL to (Leo-Editor commander, position list) pair, so for the convenience of Babel Parameter Scripts, Leo-Babel provides babel.unl2pos().</p>
-<h1 id="current-working-directory-for-a-node"><span class="header-section-number">4</span> Current working directory for a node</h1>
-<p>The current working directory for a Leo-Editor node is determined as follows. Set the current working directory to the directory containing the Leo-Editor file. Scan from the root down to the target node. Each time an <span class="citation">@path</span> directive is encountered, set the current working directory as specified. When the target node is reached, the current working directory is the node's current working directory.</p>
-<p>Note that multiple <span class="citation">@path</span> nodes allow relative paths to be used conveniently.</p>
-<p>An <span class="citation">@path</span> directive can be in either the headline or the body--but only the first <span class="citation">@path</span> in a body is honored. The rest are ignored.</p>
-<h1 id="babel-script"><span class="header-section-number">5</span> Babel Script</h1>
-<p>Leo-Editor &quot;sections&quot; and <span class="citation">@others</span> allow the script to be split into the whole subtree rooted by the Script Root node.</p>
+<h1 data-number="4" id="current-working-directory-for-a-node"><span class="header-section-number">4</span> Current working directory for a node</h1>
+<p>The current working directory for a Leo-Editor node is determined as follows. Set the current working directory to the directory containing the Leo-Editor file. Scan from the root down to the target node. Each time an <span class="citation" data-cites="path">@path</span> directive is encountered, set the current working directory as specified. When the target node is reached, the current working directory is the node’s current working directory.</p>
+<p>Note that multiple <span class="citation" data-cites="path">@path</span> nodes allow relative paths to be used conveniently.</p>
+<p>An <span class="citation" data-cites="path">@path</span> directive can be in either the headline or the body–but only the first <span class="citation" data-cites="path">@path</span> in a body is honored. The rest are ignored.</p>
+<h1 data-number="5" id="babel-script"><span class="header-section-number">5</span> Babel Script</h1>
+<p>Leo-Editor “sections” and <span class="citation" data-cites="others">@others</span> allow the script to be split into the whole subtree rooted by the Script Root node.</p>
 <p>All directive lines (lines beginning with @) and comments are filtered out before the script is executed.</p>
 <p>The script is written to a temporary file and the appropriate interpreter is invoked to execute the script file in a subprocess of the Leo-Editor process. The current working directory for the script is the current working directory for the currently selected node.</p>
 <p>Leo-Babel ignores all headlines.</p>
 <p>The script is written to the same file used by Ctrl-B. The default path is $HOME/.leo/scriptFile.py.</p>
-<p>You can specify the file to use with the following &quot;Debugging&quot; settings option:</p>
+<p>You can specify the file to use with the following standard Leo-Editor “Debugging” settings option:</p>
 <pre><code>@string script_file_path = &lt;pathname&gt;</code></pre>
 <p>Example:</p>
 <pre><code>@string script_file_path = /sec/tmp/leoScript.py</code></pre>
@@ -72,54 +72,54 @@ unl:///tmp/unl.leo#Root:0--&gt;space%20&quot;%20&quot;%20tab%20&quot; &quot;%20s
 <li><p>Use / to as the path delimiter, regardless of platform.</p></li>
 <li><p>The filename should end in .py.</p></li>
 <li><p>For Ctrl-B this setting has effect only if the write_script_file setting is True. Currently leoSettings.leo contains:</p>
-<p><span class="citation">@bool</span> write_script_file = True</p></li>
+<p><span class="citation" data-cites="bool">@bool</span> write_script_file = True</p></li>
 </ul>
 <p>So by default a script file is written.</p>
 <p>The current working directory for the script is the working directory for the Babel Script node.</p>
-<h1 id="results"><span class="header-section-number">6</span> Results</h1>
-<p>Both the headline and body of the results subtree root are ignored. For each execution of the script the results are: 1) A new &quot;Results Instance&quot; root is the first child of the &quot;results&quot; subtree root. The &quot;Results Instance&quot; headline is the elapsed time of the script execution and the time of script completion. 2) The first child of the Results Instance root has headline &quot;stdout&quot; and body equal to the standard output of the script. 3) The second child of the Results Instance root has headline &quot;stderr&quot; and body equal to the standard error output of the script.</p>
+<h1 data-number="6" id="results"><span class="header-section-number">6</span> Results</h1>
+<p>Both the headline and body of the results subtree root are ignored. For each execution of the script the results are: 1) A new “Results Instance” root is the first child of the “results” subtree root. The “Results Instance” headline is the elapsed time of the script execution and the time of script completion. 2) The first child of the Results Instance root has headline “stdout” and body equal to the standard output of the script. 3) The second child of the Results Instance root has headline “stderr” and body equal to the standard error output of the script.</p>
 <p>When the script terminates, the new Results Instance root is the selected node.</p>
-<h1 id="language"><span class="header-section-number">7</span> Language</h1>
-<p>The current language directive (<span class="citation">@language</span>) determines the script language.</p>
+<h1 data-number="7" id="language"><span class="header-section-number">7</span> Language</h1>
+<p>The current language directive (<span class="citation" data-cites="language">@language</span>) determines the script language.</p>
 <p>Currently the only languages allowed are:</p>
 <ul>
-<li><p><span class="citation">@language</span> python</p></li>
-<li><p><span class="citation">@language</span> shell</p></li>
+<li><p><span class="citation" data-cites="language">@language</span> python</p></li>
+<li><p><span class="citation" data-cites="language">@language</span> shell</p></li>
 </ul>
-<h1 id="babel-kill"><span class="header-section-number">8</span> Babel Kill</h1>
+<h1 data-number="8" id="babel-kill"><span class="header-section-number">8</span> Babel Kill</h1>
 <p>While Leo-Babel is executing a script, a pop-up window offers the option of killing the Leo-Babel subprocess. This pop-up window is produced by a Python script running in a second sub-process of the Leo-Editor process. When the kill option is selected by clicking the Yes button or by entering carriage return, the pop-up window disappears, it kills the script process (by sending it signal SIGHUP), and the kill process terminates. When the script process terminates normally, the kill window disappears and its process terminates.</p>
 <p>The kill window attempts to kill the script process by sending SIGHUP. This usually kills the script process, but the script may explicitly handle SIGHUP without terminating.</p>
-<h2 id="emacs-babel-limitation"><span class="header-section-number">8.1</span> Emacs-Babel Limitation</h2>
+<h2 data-number="8.1" id="emacs-babel-limitation"><span class="header-section-number">8.1</span> Emacs-Babel Limitation</h2>
 <p>Emacs-Babel provides no way to kill a script process.</p>
-<h1 id="live-streaming-stdout-and-stderr"><span class="header-section-number">9</span> Live Streaming Stdout and Stderr</h1>
-<p>While the script executes, the script's stdout and stderr outputs are printed to Leo-Editor's Log tab.</p>
-<p>When the script terminates, the script process's termination code, the script's wall clock elapsed time (hours:minutes:seconds) and termination time are printed to Leo-Editor's Log tab.</p>
+<h1 data-number="9" id="live-streaming-stdout-and-stderr"><span class="header-section-number">9</span> Live Streaming Stdout and Stderr</h1>
+<p>While the script executes, the script’s stdout and stderr outputs are printed to Leo-Editor’s Log tab.</p>
+<p>When the script terminates, the script process’s termination code, the script’s wall clock elapsed time (hours:minutes:seconds) and termination time are printed to Leo-Editor’s Log tab.</p>
 <p>Completion Example:</p>
 <pre><code>    0 Subprocess Termination Code
     00:00:01 Elapsed Time. 2017-07-05 15:18:37 End Time</code></pre>
-<h2 id="stdout-stderr-and-completion-default-colors"><span class="header-section-number">9.1</span> stdout, stderr, and completion Default colors</h2>
+<h2 data-number="9.1" id="stdout-stderr-and-completion-default-colors"><span class="header-section-number">9.1</span> stdout, stderr, and completion Default colors</h2>
 <ul>
-<li>stdout - green (#00ff00)</li>
+<li>stdout - brown (#996633)</li>
 <li>stderr - purple (#A020F0)</li>
 <li>completion - gold (#FFD700)</li>
 </ul>
-<h2 id="order-of-stdout-and-stderr-lines-in-the-log-pane"><span class="header-section-number">9.2</span> Order of stdout and stderr lines in the log pane</h2>
+<h2 data-number="9.2" id="order-of-stdout-and-stderr-lines-in-the-log-pane"><span class="header-section-number">9.2</span> Order of stdout and stderr lines in the log pane</h2>
 <p>The order of stdout and stderr lines in the log pane may not be time order. The log pane output is generated by polling once per second. If there is both stdout and stderr output between polls, then the order of the stdout and stderr lines in the log pane is determined by the order in which stdout and stderr are polled and the timing of the output relative to these polls.</p>
-<h2 id="customizing-colors"><span class="header-section-number">9.3</span> Customizing Colors</h2>
+<h2 data-number="9.3" id="customizing-colors"><span class="header-section-number">9.3</span> Customizing Colors</h2>
 <p>If you want to customize these colors then define Leo-Editor settings Leo-Babel-stdout, Leo-Babel-stderr, Leo-Babel-completion. See the Leo-Editor Settings section.</p>
-<h1 id="leo-babel-node-creation"><span class="header-section-number">10</span> Leo-Babel Node Creation</h1>
-<p>When the script terminates, Leo-Babel by default inserts three nodes into the Leo-Editor file. By default the second child of the Babel Root node is the root of the &quot;results&quot; subtree. Both the headline and body of the results subtree root are ignored.</p>
-<h2 id="first-node"><span class="header-section-number">10.1</span> First Node</h2>
-<p>A new &quot;Results Instance&quot; root is created as the first child of the &quot;results&quot; subtree root. The &quot;Results Instance Root&quot; headline is the elapsed time of the script execution and the time of script completion. Its body contains the script's process termination code. All this information was previously printed to the log pane.</p>
-<h2 id="second-node"><span class="header-section-number">10.2</span> Second Node</h2>
-<p>The second node created is the stdout node and it is inserted as the first child of the Results Instance Root. Its headline is &quot;stdout&quot; and its body contains all the stdout output by the script.</p>
-<h2 id="third-node"><span class="header-section-number">10.3</span> Third Node</h2>
-<p>The third node created is the stderr node and it is inserted as the second child of the Results Instance Root. Its headline is &quot;stderr&quot; and its body contains all the stderr output by the script.</p>
-<h2 id="emacs-babel-limitation-1"><span class="header-section-number">10.4</span> Emacs-Babel Limitation</h2>
+<h1 data-number="10" id="leo-babel-node-creation"><span class="header-section-number">10</span> Leo-Babel Node Creation</h1>
+<p>When the script terminates, Leo-Babel by default inserts three nodes into the Leo-Editor file. By default the second child of the Babel Root node is the root of the “results” subtree. Both the headline and body of the results subtree root are ignored.</p>
+<h2 data-number="10.1" id="first-node"><span class="header-section-number">10.1</span> First Node</h2>
+<p>A new “Results Instance” root is created as the first child of the “results” subtree root. The “Results Instance Root” headline is the elapsed time of the script execution and the time of script completion. Its body contains the script’s process termination code. All this information was previously printed to the log pane.</p>
+<h2 data-number="10.2" id="second-node"><span class="header-section-number">10.2</span> Second Node</h2>
+<p>The second node created is the stdout node and it is inserted as the first child of the Results Instance Root. Its headline is “stdout” and its body contains all the stdout output by the script.</p>
+<h2 data-number="10.3" id="third-node"><span class="header-section-number">10.3</span> Third Node</h2>
+<p>The third node created is the stderr node and it is inserted as the second child of the Results Instance Root. Its headline is “stderr” and its body contains all the stderr output by the script.</p>
+<h2 data-number="10.4" id="emacs-babel-limitation-1"><span class="header-section-number">10.4</span> Emacs-Babel Limitation</h2>
 <p>Emacs-Babel only captures stdout. For Emacs-Babel the only way to capture stderr for a script X is to have script X itself redirect stderr to stdout.</p>
-<h1 id="babel-parameters-script"><span class="header-section-number">11</span> Babel Parameters Script</h1>
-<p>The &quot;Babel Root&quot; body contains the &quot;Babel Parameters Script&quot; which can be empty. The Babel Parameters Script is executed with the following objects available:</p>
-<ol style="list-style-type: decimal">
+<h1 data-number="11" id="babel-parameters-script"><span class="header-section-number">11</span> Babel Parameters Script</h1>
+<p>The “Babel Root” body contains the “Babel Parameters Script” which can be empty. The Babel Parameters Script is executed with the following objects available:</p>
+<ol type="1">
 <li><p>babel - The Babel API object.</p></li>
 <li><p>b - The Babel API object.</p></li>
 <li><p>c - The Leo-Editor commander for the Leo-Editor file containing the Babel Root node.</p></li>
@@ -127,65 +127,77 @@ unl:///tmp/unl.leo#Root:0--&gt;space%20&quot;%20&quot;%20tab%20&quot; &quot;%20s
 <li><p>p - The position of the Babel Root node.</p></li>
 </ol>
 <p>The Babel Parameters Script can define the following parameters that affect Babel Script execution:</p>
-<ol style="list-style-type: decimal">
-<li><p>babel_script</p></li>
-<li><p>babel_results</p></li>
-<li><p>babel_node_creation</p></li>
-<li><p>babel_python</p></li>
-<li><p>babel_shell</p></li>
-<li><p>babel_redirect_stdout</p></li>
-<li><p>babel_script_args</p></li>
+<ol type="1">
+<li>babel_color_information</li>
+<li>babel_color_stderr</li>
+<li>babel_color_stdout</li>
+<li>babel_interpreter_python</li>
+<li>babel_interpreter_shell</li>
+<li>babel_node_creation</li>
+<li>babel_polling_delay</li>
+<li>babel_prefix_information</li>
+<li>babel_prefix_stderr</li>
+<li>babel_prefix_stdout</li>
+<li>babel_redirect_stdout</li>
+<li>babel_results</li>
+<li>babel_script</li>
+<li>babel_script_args</li>
+<li>babel_sudo</li>
+<li>babel_tab_babel</li>
 </ol>
-<p>The current working directory for the Babel Parameters Script is the working directory for the Babel Script node. See section &quot;Current working directory for a node&quot;.</p>
-<h2 id="babel_script"><span class="header-section-number">11.1</span> babel_script</h2>
+<p>The current working directory for the Babel Parameters Script is the working directory for the Babel Script node. See section “Current working directory for a node”.</p>
+<h2 data-number="11.1" id="babel_script"><span class="header-section-number">11.1</span> babel_script</h2>
 <p>If the script in the Babel Root body defines babel_script, then the specified node is used as the root of the script subtree; else, the first child of the Babel Root node is used as the root of the script subtree.</p>
-<h2 id="babel_results"><span class="header-section-number">11.2</span> babel_results</h2>
+<h2 data-number="11.2" id="babel_results"><span class="header-section-number">11.2</span> babel_results</h2>
 <p>If the script in the Babel Root body defines babel_results, then the specified node is used as the root of the results subtree; else, the second child of the Babel Root node is used as the root of the results subtree.</p>
-<h2 id="node-position-or-unl"><span class="header-section-number">11.3</span> Node Position or UNL</h2>
+<h2 data-number="11.3" id="node-position-or-unl"><span class="header-section-number">11.3</span> Node Position or UNL</h2>
 <p>babel_script and babel_results can be either a Leo-Editor (commander, node position) pair or a UNL.</p>
 <p>The commander, node position pair can be any iterable, for example a tuple or a list.</p>
 <p>If the UNL contains a file pathname part, it can refer to any Leo-Editor file. If the UNL does <strong>NOT</strong> contain a file pathname part, then it refers to the Leo-Editor file containing the UNL.</p>
-<h2 id="babel_node_creation"><span class="header-section-number">11.4</span> babel_node_creation</h2>
+<h2 data-number="11.4" id="babel_node_creation"><span class="header-section-number">11.4</span> babel_node_creation</h2>
 <p>If babel_node_creation is not defined, then the default for Babel node creation applies.</p>
 <p>If babel_node_creation is False, then Leo-Babel does not create its three results nodes for each script run. But it does still display all the resuls data in the log pane.</p>
 <p>If babel_node_creation is True, then Leo-Babel creates three results nodes for each script run.</p>
-<h2 id="python-interpreter"><span class="header-section-number">11.5</span> Python Interpreter</h2>
+<h2 data-number="11.5" id="python-interpreter"><span class="header-section-number">11.5</span> Python Interpreter</h2>
 <p>If babel_python is not defined, then the default program for interpreting Python language scripts is used.</p>
 <p>If babel_python is defined, then the specified program is used for interpreting Python language scripts.</p>
 <p>The program specified must exist somewhere on the path specified by the environment variable PATH or the absolute path to the program must be specified.</p>
 <p>Examples:</p>
-<p>babel_python = 'python2'</p>
+<p>babel_python = ‘python2’</p>
 <p>The Python 2 program is used to interpret a Python language script.</p>
-<p>babel_python = 'python3'</p>
+<p>babel_python = ‘python3’</p>
 <p>The Python 3 program is used to interpret a Python language script.</p>
-<h2 id="shell-interpreter"><span class="header-section-number">11.6</span> Shell Interpreter</h2>
-<p>If babel_shell is not defined, then the default program for interpreting &quot;shell&quot; language scripts is used.</p>
+<h2 data-number="11.6" id="shell-interpreter"><span class="header-section-number">11.6</span> Shell Interpreter</h2>
+<p>If babel_shell is not defined, then the default program for interpreting “shell” language scripts is used.</p>
 <p>If babel_shell is defined, then the specified program is used for interpreting shell language scripts.</p>
 <p>The program specified must exist somewhere on the path specified by the environment variable PATH or the absolute path to the program must be specified.</p>
 <p>Examples:</p>
-<p>babel_shell = 'bash'</p>
+<p>babel_shell = ‘bash’</p>
 <p>The Bourne shell.</p>
-<p>babel_shell = 'sh'</p>
+<p>babel_shell = ‘sh’</p>
 <p>The POSIX standard shell interpreter chosen by your Linux distribution.</p>
-<p>babel_shell = 'zsh'</p>
+<p>babel_shell = ‘zsh’</p>
 <p>The Z shell.</p>
-<h2 id="redirect-stdout-to-stderr"><span class="header-section-number">11.7</span> Redirect Stdout to Stderr</h2>
+<h2 data-number="11.7" id="running-the-scipt-with-sudo"><span class="header-section-number">11.7</span> Running the scipt with sudo</h2>
+<p>If babel_sudo is not defined, then the script is run with the current user’s priveleges.</p>
+<p>If and only if babel_sudo is defined and is True, then the script is run by sudo. That is, the script is run with root priveleges.</p>
+<h2 data-number="11.8" id="redirect-stdout-to-stderr"><span class="header-section-number">11.8</span> Redirect Stdout to Stderr</h2>
 <p>If the script in the Babel Root body defines babel_redirect_stdout, it specifies whether or not stdout is redirected to stderr. By default, stdout is <strong>NOT</strong> redirected to stderr.</p>
 <p>babel_redirect_stdout</p>
 <ul>
-<li>False --&gt; Do not redirect stdout. This is the default, if babel_redirect_stdout does not exist.</li>
-<li>True --&gt; Redirect stdout to stderr</li>
+<li>False –&gt; Do not redirect stdout. This is the default, if babel_redirect_stdout does not exist.</li>
+<li>True –&gt; Redirect stdout to stderr</li>
 </ul>
-<h2 id="babel-script-arguments"><span class="header-section-number">11.8</span> Babel Script arguments</h2>
+<h2 data-number="11.9" id="babel-script-arguments"><span class="header-section-number">11.9</span> Babel Script arguments</h2>
 <p>If the Babel Parameters Script defines babel_script_args, then these arguments are passed to the Babel Script as command line arguments. So if babel_script_args is defined, then it must be a list of strings.</p>
 <p>The first command line argument is always the file pathname of the script file. The babel_script_args begin with the second command line argument. For Python scripts the babel_script_args are sys.argv[1:]. For Bash scripts the babel_script_args are $@.</p>
-<h2 id="splitting-a-large-babel-parameters-script-into-several-nodes"><span class="header-section-number">11.9</span> Splitting a Large Babel Parameters Script into several nodes</h2>
+<h2 data-number="11.10" id="splitting-a-large-babel-parameters-script-into-several-nodes"><span class="header-section-number">11.10</span> Splitting a Large Babel Parameters Script into several nodes</h2>
 <p>A Babel Parameters Script can be split into a subtree of nodes using any one of several schemes.</p>
 <p>A section reference in the Babel Root node can refer to the third child of the Babel Root node. This third child can be the root of the script subtree.</p>
 <p>If babel_script and babel_results are used to place the script and results nodes outside the subtree rooted by the Babel Root node, then the Babel Parameters Script can occupy the subtree rooted by the Babel Root node.</p>
-<h2 id="babel---the-babel-api-object"><span class="header-section-number">11.10</span> babel - The Babel API object</h2>
-<p>When the Babel Parameters Script is executed, &quot;babel&quot; is defined in the global dictionary and it provides access to the Babel API.</p>
-<h3 id="babel.unl2pos"><span class="header-section-number">11.10.1</span> babel.unl2pos()</h3>
+<h2 data-number="11.11" id="babel---the-babel-api-object"><span class="header-section-number">11.11</span> babel - The Babel API object</h2>
+<p>When the Babel Parameters Script is executed, “babel” is defined in the global dictionary and it provides access to the Babel API.</p>
+<h3 data-number="11.11.1" id="babel.unl2pos"><span class="header-section-number">11.11.1</span> babel.unl2pos()</h3>
 <p>Univeral Node Locator to Leo-Editor Commander, Position List - babel.unl2pos()</p>
 <pre><code>Call:
     cmdrUnl, posList = babel.unl2pos(unl, cmdr=None)
@@ -212,67 +224,118 @@ Exceptions:
         then ValueError is raised because there is no specification
         of the target file.</code></pre>
 <p>A UNL consists of an optional protocol prefix, an optional file pathname part, and a required node path part.</p>
-<p>If the optional protocol prefix is present, then it must be &quot;unl://&quot;. If the optional protocol prefix is present, then the UNL must be &quot;UNL quoted&quot;. If the optional protocol prefix is <strong>NOT</strong> present, then the UNL must <strong>NOT</strong> be &quot;UNL quoted&quot;.</p>
+<p>If the optional protocol prefix is present, then it must be “unl://”. If the optional protocol prefix is present, then the UNL must be “UNL quoted”. If the optional protocol prefix is <strong>NOT</strong> present, then the UNL must <strong>NOT</strong> be “UNL quoted”.</p>
 <p>In order to resolve the specified UNL, babel.unl2pos() opens the specified Leo-Editor file if it is not already open, and it leaves it open. Hence, if in Leo-Editor file X you pass babel.unl2pos() a UNL for Leo-Editor file Y, this always leaves with files X and Y open in Leo-Editor.</p>
-<h2 id="unl-quoted"><span class="header-section-number">11.11</span> UNL Quoted</h2>
-<p>&quot;UNL Quoting&quot; a string replaces &quot; &quot; (space) with %20.</p>
-<p>Note carefully, &quot;UNL Quoting&quot; differs from &quot;URL Quoting&quot;. &quot;URL Quoting&quot; a string replaces &quot; &quot; (space) with %20, '\t' (tab) with %09, and &quot;'&quot; (single quote) with %27.</p>
-<h2 id="debugging-a-babel-parameter-script"><span class="header-section-number">11.12</span> Debugging a Babel Parameter Script</h2>
-<p>A Babel Parameter Script is executed without writing it to disk as a &quot;script&quot; file. To aid debugging when a Babel Parameter Script raises an exception, Leo-Babel writes the script with line numbers to the Leo-Editor Log pane. Then it re-raises the exception. The exception message almost always contains a line number which matches the line numbers Leo-Babel writes.</p>
-<h1 id="leo-editor-settings"><span class="header-section-number">12</span> Leo-Editor Settings</h1>
-<p>In an <span class="citation">@settings</span> subtree in leoMySettings.leo (applies to all your Leo-Editor files) or in a particular Leo-Editor file (applies to just this one Leo-Editor file), add one node per setting with the setting in the headline.</p>
-<h2 id="customizing-colors-1"><span class="header-section-number">12.1</span> Customizing Colors</h2>
+<h2 data-number="11.12" id="unl-quoted"><span class="header-section-number">11.12</span> UNL Quoted</h2>
+<p>“UNL Quoting” a string replaces " " (space) with %20.</p>
+<p>Note carefully, “UNL Quoting” differs from “URL Quoting”. “URL Quoting” a string replaces " " (space) with %20, ‘\t’ (tab) with %09, and “’” (single quote) with %27.</p>
+<h2 data-number="11.13" id="debugging-a-babel-parameter-script"><span class="header-section-number">11.13</span> Debugging a Babel Parameter Script</h2>
+<p>A Babel Parameter Script is executed without writing it to disk as a “script” file. To aid debugging when a Babel Parameter Script raises an exception, Leo-Babel writes the script with line numbers to the Leo-Editor Log pane. Then it re-raises the exception. The exception message almost always contains a line number which matches the line numbers Leo-Babel writes.</p>
+<h1 data-number="12" id="babel-parameters"><span class="header-section-number">12</span> Babel Parameters</h1>
+<p>The standard Leo-Editor parameter setting scheme allows the user to customize the setting of any Babel Parameter for all his Leo-Editor files or for any one Leo-Editor file. The Babel Parameters Script allows the user to set any Babel Parameter for just one Babel Script.</p>
+<p>This following precedence achieves this:</p>
+<ul>
+<li><p>A setting compiled into the Leo-Babel code has the lowest priority.</p></li>
+<li><p>A setting in your myLeoSettings.py has the new highest priority. That is, it overwrites the compiled default.</p></li>
+<li><p>A setting in a Leo-Editor file containing one or more Babel Scripts has the next highest priority. That is, overwrite the myLeoSetings.py setting.</p></li>
+<li><p>A setting in a Babel Parameters Script has the highest priority. That is, overwrites any lower priority setting.</p></li>
+</ul>
+<h2 data-number="12.1" id="leo-editor-settings"><span class="header-section-number">12.1</span> Leo-Editor Settings</h2>
+<p>In an <span class="citation" data-cites="settings">@settings</span> subtree in leoMySettings.leo (applies to all your Leo-Editor files) or in a particular Leo-Editor file (applies to just this one Leo-Editor file), add one node per setting with the setting in the headline.</p>
+<h2 data-number="12.2" id="customizing-colors-1"><span class="header-section-number">12.2</span> Customizing Colors</h2>
 <p>Examples of color settings:</p>
 <ul>
-<li><span class="citation">@color</span> Leo-Babel-stdout = #c8ffbe</li>
-<li><span class="citation">@color</span> Leo-Babel-stderr = #ffc0cc</li>
-<li><span class="citation">@color</span> Leo-Babel-completion = #ffee8b</li>
+<li><span class="citation" data-cites="color">@color</span> Leo-Babel-stdout = #c8ffbe</li>
+<li><span class="citation" data-cites="color">@color</span> Leo-Babel-stderr = #ffc0cc</li>
+<li><span class="citation" data-cites="color">@color</span> Leo-Babel-completion = #ffee8b <strong>Deprecated. Replaced by Leo-Babel-information</strong></li>
+<li><span class="citation" data-cites="color">@color</span> Leo-Babel-information = #ffee8b</li>
 </ul>
 <p>The default colors are:</p>
 <pre><code>* stdout 00ff00  green
 * stderr A020F0  purple
 * completion message FFD700  gold</code></pre>
-<h2 id="node-creation-default"><span class="header-section-number">12.2</span> Node Creation Default</h2>
-<p>Parameter name: Leo-Babel-Node-Creation-Default</p>
-<pre><code>* False --&gt; by default, no results nodes are added.
-* True --&gt; by default, results nodes are added.</code></pre>
+<p>The colors can be overridden for one Babel Script by setting the following variables in the scripts Babel Script:</p>
+<ul>
+<li>colorStdout</li>
+<li>colorStderr</li>
+<li>colorInformation</li>
+</ul>
+<h2 data-number="12.3" id="output-prefixes"><span class="header-section-number">12.3</span> Output Prefixes</h2>
+<p>Each line in the Babel tab of the Log pane has prefix identifying the type of line. The default values compiled into Leo-Babel are shown below:</p>
+<ul>
+<li>@string Leo-Babel-Prefix-Information = “-”</li>
+<li>@string Leo-Babel-Prefix-stdout = “|”</li>
+<li>@string Leo-Babel-Prefix-stderr = “*”</li>
+</ul>
+<p>The prefixes can be overridden for one Babel Script by setting the following variables in the scripts Babel Script:</p>
+<ul>
+<li>babel_prefix_information</li>
+<li>babel_prefix_stdout</li>
+<li>babel_prefix_stderr</li>
+</ul>
+<p>The output prefixes are not added to the lines shown in the Results subtree.</p>
+<h2 data-number="12.4" id="babel-tab"><span class="header-section-number">12.4</span> Babel Tab</h2>
+<p>Parameter Name: Leo-Babel-Tab-Babel</p>
+<pre><code>* False --&gt; All Babel Script output goes to the &quot;Log&quot; tab in the Log pane
+* True --&gt; All Babel Script output goes to the &quot;Babel&quot; tab in the Log pane</code></pre>
 <p>Example:</p>
-<p>@bool Leo-Babel-Node-Creation-Default = False</p>
-<p>If Leo-Babel-Node-Creation-Default is not defined, then Leo-Babel creates results nodes.</p>
-<p>This default can be overridden for an individual Babel script by setting babel_node_creation True/False in the Babel Parameters Script.</p>
-<h2 id="python-interpreter-default"><span class="header-section-number">12.3</span> Python Interpreter Default</h2>
+<p>@bool Leo-Babel-Tab-Babel = True</p>
+<p>The value of Leo-Babel-Tab-Babel compiled into Leo-Babel is True.</p>
+<p>This parameter’s setting can be overridden for an individual Babel Script by setting babel_tab_babel in the Babel Parameters Script.</p>
+<h2 data-number="12.5" id="node-creation"><span class="header-section-number">12.5</span> Node Creation</h2>
+<p>Parameter name: Leo-Babel-Node-Creation</p>
+<pre><code>* False --&gt; no results nodes are added.
+* True --&gt; results nodes are added.</code></pre>
+<p>Example:</p>
+<p>@bool Leo-Babel-Node-Creation = False</p>
+<p>The value of Leo-Babel-Node-Creation compiled into Leo-Babel is True.</p>
+<p>This parameter’s setting can be overridden for an individual Babel Script by setting babel_node_creation in the Babel Parameters Script.</p>
+<h2 data-number="12.6" id="sudo-executes-script"><span class="header-section-number">12.6</span> Sudo Executes Script</h2>
+<p>Parameter Name: Leo-Babel-Sudo</p>
+<pre><code>* False --&gt; the Babel Script is executed with the current user&#39;s priveleges
+* True --&gt; Sudo executes the Babel Script.  That is, the Babel Script is executed with root priveleges.</code></pre>
+<p>Example:</p>
+<p>@bool Leo-Babel-Sudo = True</p>
+<p>The value of Leo-Babel-Sudo compiled into Leo-Babel is False.</p>
+<p>This parameter’s setting can be overridden for an individual Babel Script by setting babel_sudo in the Babel Parameters Script.</p>
+<h2 data-number="12.7" id="output-polling-delay"><span class="header-section-number">12.7</span> Output Polling Delay</h2>
+<p>Parameter Name: Leo-Babel-Polling-Delay</p>
+<p>This is an integer specifying the minimum number of milliseconds between output polls.</p>
+<p>Example:</p>
+<p>@int Leo-Babel-Polling-Delay = 1</p>
+<p>The value of Leo-Babel-Polling-Delay compiled into Leo-Babel is 1.</p>
+<p>This parameter’s setting can be overridden for an individual Babel Script by setting babel_polling_delay in the Babel Parameters Script.</p>
+<h2 data-number="12.8" id="python-interpreter-1"><span class="header-section-number">12.8</span> Python Interpreter</h2>
 <p>Parameter Name: Leo-Babel-Python</p>
 <p>This parameter specifies the program used to interpret a Python language script. The program must exist on the path specified by the PATH environment variable, or the absolute path to the program must be specified.</p>
-<p>If Leo-Babel-Python is <strong>NOT</strong> specified, then the default Python interpreter is &quot;python3.&quot;</p>
+<p>If Leo-Babel-Python is <strong>NOT</strong> specified, then the default Python interpreter is “/usr/bin/python3.”</p>
 <p>Examples:</p>
-<p>@string Leo-Babel-Python = python2</p>
-<p>The Python 2 interpreter.</p>
-<p>@string Leo-Babel-Python = python3</p>
-<p>The Python 3 interpreter.</p>
-<p>This default can be overridden for an individual Babel script by setting babel_python in the Babel Parameters Script.</p>
-<h2 id="shell-interpreter-default"><span class="header-section-number">12.4</span> Shell Interpreter Default</h2>
+<p>@string Leo-Babel-Python = /usr/bin/python2</p>
+<p>@string Leo-Babel-Python = /usr/bin/python3</p>
+<p>This parameter can be overridden for an individual Babel script by setting babel_python in the Babel Parameters Script.</p>
+<h2 data-number="12.9" id="shell-interpreter-1"><span class="header-section-number">12.9</span> Shell Interpreter</h2>
 <p>Parameter Name: Leo-Babel-Shell</p>
 <p>This parameter specifies the default program used to interpret a shell language script. The program must exist on the path specified by the PATH environment variable, or the absolute path to the program must be specified.</p>
-<p>If Leo-Babel-Shell is <strong>NOT</strong> specified, then the default shell interpreter is &quot;bash.&quot; Examples:</p>
-<p>@string Leo-Babel-Shell = bash</p>
+<p>If Leo-Babel-Shell is <strong>NOT</strong> specified, then the default shell interpreter is “/usr/bin/bash.” Examples:</p>
+<p>@string Leo-Babel-Shell = usr/bin/bash</p>
 <p>The Bourne shell.</p>
 <p>@string Leo-Babel-Shell = sh</p>
 <p>The POSIX standard shell interpreter chosen by your Linux distribution.</p>
 <p>@string Leo-Babel-Shell = zsh</p>
 <p>The Z shell.</p>
-<p>This default can be overridden for an individual Babel script by setting babel_shell in the Babel Parameters Script.</p>
-<h1 id="supported-python-release"><span class="header-section-number">13</span> Supported Python Release</h1>
+<p>This parameter can be overridden for an individual Babel script by setting babel_shell in the Babel Parameters Script.</p>
+<h1 data-number="13" id="supported-python-release"><span class="header-section-number">13</span> Supported Python Release</h1>
 <p>Leo-Babel only works when Python 3 interprets the Leo-Editor code and Python 3 interprets babel_kill.py.</p>
-<h1 id="why-use-leo-babel"><span class="header-section-number">14</span> Why Use Leo-Babel</h1>
+<h1 data-number="14" id="why-use-leo-babel"><span class="header-section-number">14</span> Why Use Leo-Babel</h1>
 <p>I use Leo-Editor as my Personal Information Manager (PIM). Hence, for example, I have many Leo-Editor files containing many Bash scripts along with Descriptions of what they do. Whenever I want to use the command line to do something that I have done before, I search my appropriate Leo-Editor file, copy the commands to the clipboard, open a terminal, and paste the commands into the terminal. This works very well, and it has the advantage of maximum simplicity for the environment of the executing script.</p>
 <p>By making a script a Leo-Babel script, I gain some imposed structure and uniformity and automatic logging of every run of the script.</p>
-<h1 id="shortcut-advice"><span class="header-section-number">15</span> Shortcut Advice</h1>
+<h1 data-number="15" id="shortcut-advice"><span class="header-section-number">15</span> Shortcut Advice</h1>
 <p>A plugin should not bind any keys. That is, set any shortucts. So Leo-Babel limits itself to defining two commands:</p>
 <ul>
 <li><p>babel-exec-p</p></li>
 <li><p>babel-menu-p</p></li>
 </ul>
-<p>If you don't want to use UNL's, then there is no need to make using babel-menu more convenient by assigning it a key binding.</p>
+<p>If you don’t want to use UNL’s, then there is no need to make using babel-menu more convenient by assigning it a key binding.</p>
 <p>Your key binding(s) can be any sequence that you do not want to use for something else. You can see all the current key bindings by executing Alt-x, print-bindings. You should set your key bindings in the appropriate place in your leoMySettings.leo.</p>
 <p>Here is what I use:</p>
 <pre><code>Headline:
@@ -286,39 +349,40 @@ Headline:
 
 Body:
 c.k.simulateCommand(&#39;babel-menu-p&#39;)</code></pre>
-<h1 id="leo-babel-reports-failed-dependencies"><span class="header-section-number">16</span> Leo-Babel Reports Failed Dependencies</h1>
+<h1 data-number="16" id="leo-babel-reports-failed-dependencies"><span class="header-section-number">16</span> Leo-Babel Reports Failed Dependencies</h1>
 <p>Leo-Babel uses several Python libraries. If you have not installed a Python package that Leo-Babel needs, then the Leo-Babel plugin initialization fails and this error message is output to the Log Pane and to the console:</p>
 <pre><code>loadOnePlugin: can not load enabled plugin: leo.plugins.leo_babel.babel</code></pre>
 <p>This occurs when an import statement raises exception ImportError.</p>
 <p>Leo-Babel reports the name of each module whose attempted import raises an ImportError exception. These reports are sent to the console and in red to the Log Pane.</p>
-<h1 id="how-to-start-a-terminal-using-leo-babel"><span class="header-section-number">17</span> How to start a terminal using Leo-Babel</h1>
+<h1 data-number="17" id="how-to-start-a-terminal-using-leo-babel"><span class="header-section-number">17</span> How to start a terminal using Leo-Babel</h1>
 <p>The command line required depends on the terminal emulator that you use. Here is an example command line for terminal emulator xfce4-terminal:</p>
 <pre><code>xfce4-terminal -x ledger -f &#39;/pri/git/Ledger4/data/journal.txt&#39;</code></pre>
 <p>Since the terminal emulator immediately changes its parent process, the Leo-Babel script execution immediately finishes.</p>
-<h1 id="sudo-works-fine-except-when-several-are-pasted-from-the-clipboard"><span class="header-section-number">18</span> sudo works fine, except when several are pasted from the clipboard</h1>
+<h1 data-number="18" id="sudo-works-fine-except-when-several-are-pasted-from-the-clipboard"><span class="header-section-number">18</span> sudo works fine, except when several are pasted from the clipboard</h1>
 <p>When you need to do a series of root-priveleged commands using Leo-Babel, and you want to launch them all at once, the straightforward strategy works:</p>
 <pre><code>    sudo command1
     sudo command2
     sudo command3</code></pre>
 <p>Only the first sudo pops up a window asking for a password and it waits for the operator to enter the password.</p>
 <p>If you put a series of command lines starting with sudo into a Bash script, this also works fine.</p>
-<p>But if you copy a series of command lines to the clipboard and paste them into a terminal, this does <strong>NOT</strong> work because the first sudo consumes the next line as the user's password. But the following does work when these lines are copied to the clipboard and then pasted into a terminal:</p>
+<p>But if you copy a series of command lines to the clipboard and paste them into a terminal, this does <strong>NOT</strong> work because the first sudo consumes the next line as the user’s password. But the following does work when these lines are copied to the clipboard and then pasted into a terminal:</p>
 <pre><code>    gksudo command1
     sudo command2
     sudo command3</code></pre>
-<p>gksudo pops up a window that lets you enter your password. The sudo's see that the process is already root-priveleged, so they don't request your password.</p>
+<p>gksudo pops up a window that lets you enter your password. The sudo’s see that the process is already root-priveleged, so they don’t request your password.</p>
 <p>Alternatively, you can put your commands in a loop, this forces bash to wait for the first command to terminate before executing the second command:</p>
 <pre><code>for xx in 1
 do
     sudo beep
     sudo beep
 done</code></pre>
-<h1 id="sudo-no-tty-present-and-no-askpass-program-specified"><span class="header-section-number">19</span> sudo: no tty present and no askpass program specified</h1>
+<h1 data-number="19" id="sudo-no-tty-present-and-no-askpass-program-specified"><span class="header-section-number">19</span> sudo: no tty present and no askpass program specified</h1>
 <p>If you try to use sudo in a Leo-Babel script, you may get this error message printed to stderr:</p>
 <pre><code>sudo: no tty present and no askpass program specified</code></pre>
 <p>On Ubuntu 16.04, I eliminated this error as follows:</p>
-<ol style="list-style-type: decimal">
-<li><p>I created /etc/sudo.conf containing:</p>
+<ol type="1">
+<li>I created /etc/sudo.conf containing:</li>
+</ol>
 <pre><code> # Sudo askpass:
  #
  # An askpass helper program may be specified to provide a graphical
@@ -329,10 +393,11 @@ done</code></pre>
  #Path askpass /usr/X11R6/bin/ssh-askpass
  #
  # Use the Gnome OpenSSH askpass
- Path askpass /usr/bin/ssh-askpass</code></pre></li>
-<li><p>I installed ssh-askpass. You can install any one of the three packages that contain ssh-askpass.</p></li>
+ Path askpass /usr/bin/ssh-askpass</code></pre>
+<ol type="1">
+<li>I installed ssh-askpass. You can install any one of the three packages that contain ssh-askpass.</li>
 </ol>
-<h1 id="leo-babel.pdf"><span class="header-section-number">20</span> Leo-Babel.pdf</h1>
-<p>You may find Leo-Babel.pdf helpful. Its table of contents allows jumping directly to any section listed in the table of contents. The contents are otherwise the same as the help displayed by Alt-P and then clicking &quot;babel&quot;. You can find Leo-Babel.pdf in the doc subdirectory of the directory in which Leo-Babel is installed on your system.</p>
-<h1 id="examples-of-leo-babel-use"><span class="header-section-number">21</span> Examples of Leo-Babel Use</h1>
+<h1 data-number="20" id="leo-babel.pdf"><span class="header-section-number">20</span> Leo-Babel.pdf</h1>
+<p>You may find Leo-Babel.pdf helpful. Its table of contents allows jumping directly to any section listed in the table of contents. The contents are otherwise the same as the help displayed by Alt-P and then clicking “babel”. You can find Leo-Babel.pdf in the doc subdirectory of the directory in which Leo-Babel is installed on your system.</p>
+<h1 data-number="21" id="examples-of-leo-babel-use"><span class="header-section-number">21</span> Examples of Leo-Babel Use</h1>
 <p>For examples of Leo-Babel use look in the examples subdirectory of the directory in which Leo-Babel is installed on your system.</p>

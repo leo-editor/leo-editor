@@ -19800,7 +19800,7 @@ One Leo user gives this advice:
 
 For anyone with similar problem the homebrew instruction for adding PyQT to the import path are wrong. Instead edit ~/.bash_profile and add this line::
 
-    export PATH="/usr/local/lib/python2.7/site-packages:${PATH}"
+    export PATH="/usr/local/lib/python3.9/site-packages:${PATH}"
 
 After this leo editor will open with using the default python installation provided by MacOS.</t>
 <t tx="ekr.20160410044518.1">.. index::
@@ -21081,7 +21081,7 @@ Here is my installation write-up:
 
       export PATH=/usr/local/bin:$PATH
       # This is for SIP (and PyQt) as suggested by Homebrew
-      export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
+      export PYTHONPATH=/usr/local/lib/python3.9/site-packages:$PYTHONPATH
 
 - Install PyQt::
 

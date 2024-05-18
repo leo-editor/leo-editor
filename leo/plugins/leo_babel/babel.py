@@ -39,7 +39,7 @@ def init():
     leoG.registerHandler('after-create-leo-frame', onCreate)
     leoG.plugin_signon(__name__)
     return True
-#@+node:bob.20170720150504.1: ** onCreate()
+#@+node:bob.20170720150504.1: ** onCreate(tag, keys)
 def onCreate(tag, keys):
 
     cmdr = keys.get('c')

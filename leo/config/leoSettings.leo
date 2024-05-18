@@ -11041,7 +11041,7 @@ See https://jedi.readthedocs.io/en/latest/index.html
 <t tx="ekr.20181018105650.1"></t>
 <t tx="ekr.20181018105704.1"></t>
 <t tx="ekr.20181018105748.1"></t>
-<t tx="ekr.20181018105800.1"></t>
+<t tx="ekr.20181018105800.1">True: open the VR pane automatically.</t>
 <t tx="ekr.20181018105904.1"></t>
 <t tx="ekr.20181018105945.1"></t>
 <t tx="ekr.20181018110022.1"></t>

@@ -23,7 +23,10 @@ beautifulsoup4  # For link testing.
 black           # For unit tests.
 docutils        # For Sphinx and rST plugins.
 flexx           # leoflexx.py plugin.
+markdown        # VR3 plugin.
+matplotlib      # VR3 plugin.
 meta            # livecode.py plugin.
+numpy           # VR3 plugin.
 pyenchant       # The spell tab.
 pyflakes
 # pylint        # Use ruff instead.

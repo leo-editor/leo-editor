@@ -42,6 +42,7 @@ rust_main_keywords_dict = {
     'as': 'keyword1',
     'async': 'keyword1',
     'become': 'keyword1',
+    'bool': 'keyword2',
     'box': 'keyword1',
     'break': 'keyword1',
     'const': 'keyword1',

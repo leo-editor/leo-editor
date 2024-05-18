@@ -2,7 +2,7 @@
 #@+node:ekr.20140907123524.18774: * @file ../plugins/qt_frame.py
 """Leo's qt frame classes."""
 #@+<< qt_frame imports >>
-#@+node:ekr.20110605121601.18003: **  << qt_frame imports >>
+#@+node:ekr.20110605121601.18003: ** << qt_frame imports >>
 from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Callable
@@ -12,7 +12,7 @@ import string
 import sys
 import time
 import urllib
-from typing import Any, Optional, TypeAlias, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
@@ -37,6 +37,7 @@ from leo.plugins.nested_splitter import NestedSplitter
 #@+<< qt_frame annotations >>
 #@+node:ekr.20220415080427.1: ** << qt_frame annotations >>
 if TYPE_CHECKING:  # pragma: no cover
+    from typing import TypeAlias  # Requires Python 3.12+
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoGui
     from leo.core.leoGui import LeoKeyEvent
@@ -2203,6 +2204,39 @@ class LeoQtFrame(leoFrame.LeoFrame):
         # print('destroySelf: qtFrame: %s' % c,g.callers(4))
         top.close()
     #@+node:ekr.20110605121601.18274: *3* qtFrame.Configuration
+    #@+node:ekr.20240510092709.1: *4* qtFrame.compute_ratio & compute_secondary_ratio
+    #@+node:ekr.20240510093119.1: *5* qtFrame.compute_ratio
+    def compute_ratio(self) -> float:
+        """
+        Return ratio of the main Qt splitter or 0.5.
+        """
+        c = self.c
+        if c.free_layout:
+            w = c.free_layout.get_main_splitter()
+            if w:
+                aList = w.sizes()
+                if len(aList) == 2:
+                    n1, n2 = aList
+                    # Don't divide by zero.
+                    ratio = 0.5 if n1 + n2 == 0 else float(n1) / float(n1 + n2)
+                    return ratio
+        return 0.5
+    #@+node:ekr.20240510093122.1: *5* qtFrame.compute_secondary_ratio
+    def compute_secondary_ratio(self) -> float:
+        """
+        Return the ratio of the Qt secondary splitter or 0.5.
+        """
+        c = self.c
+        free_layout = c.free_layout
+        if free_layout:
+            w = free_layout.get_secondary_splitter()
+            if w:
+                aList = w.sizes()
+                if len(aList) == 2:
+                    n1, n2 = aList
+                    ratio = float(n1) / float(n1 + n2)
+                    return ratio
+        return 0.5
     #@+node:ekr.20110605121601.18275: *4* qtFrame.configureBar
     def configureBar(self, bar: Wrapper, verticalFlag: bool) -> None:
         c = self.c
@@ -2387,7 +2421,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     @frame_cmd('equal-sized-panes')
     def equalSizedPanes(self, event: LeoKeyEvent = None) -> None:
         """Make the outline and body panes have the same size."""
-        self.resizePanesToRatio(0.5, self.secondary_ratio)
+        self.resizePanesToRatio(0.5, self.compute_secondary_ratio())
     #@+node:ekr.20110605121601.18305: *5* qtFrame.hideLogWindow
     def hideLogWindow(self, event: LeoKeyEvent = None) -> None:
         """Hide the log pane."""
@@ -2427,46 +2461,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 assert hasattr(w, 'setWindowState'), w
             else:
                 w.setWindowState(WindowState.WindowMaximized)
-    #@+node:ekr.20110605121601.18309: *4* qtFrame.Help Menu...
-    #@+node:ekr.20160424080647.1: *3* qtFrame.Properties
-    # The ratio and secondary_ratio properties are read-only.
-    #@+node:ekr.20160424080815.2: *4* qtFrame.ratio property
-    def __get_ratio(self) -> float:
-        """Return splitter ratio of the main splitter."""
-        c = self.c
-        free_layout = c.free_layout
-        if free_layout:
-            w = free_layout.get_main_splitter()
-            if w:
-                aList = w.sizes()
-                if len(aList) == 2:
-                    n1, n2 = aList
-                    # 2017/06/07: guard against division by zero.
-                    ratio = 0.5 if n1 + n2 == 0 else float(n1) / float(n1 + n2)
-                    return ratio
-        return 0.5
-
-    ratio = property(
-        __get_ratio,  # No setter.
-        doc="qtFrame.ratio property")
-    #@+node:ekr.20160424080815.3: *4* qtFrame.secondary_ratio property
-    def __get_secondary_ratio(self) -> float:
-        """Return the splitter ratio of the secondary splitter."""
-        c = self.c
-        free_layout = c.free_layout
-        if free_layout:
-            w = free_layout.get_secondary_splitter()
-            if w:
-                aList = w.sizes()
-                if len(aList) == 2:
-                    n1, n2 = aList
-                    ratio = float(n1) / float(n1 + n2)
-                    return ratio
-        return 0.5
-
-    secondary_ratio = property(
-        __get_secondary_ratio,  # no setter.
-        doc="qtFrame.secondary_ratio property")
     #@+node:ekr.20110605121601.18311: *3* qtFrame.Qt bindings...
     #@+node:ekr.20190611053431.1: *4* qtFrame.bringToFront
     def bringToFront(self) -> None:
@@ -4298,6 +4292,11 @@ class QtStatusLineClass:
         self.lastRow = 0
         self.lastCol = 0
 
+        # #3901:  A new ivar that toggles between representations of UNLs.
+        #         False: Use default, based on settings.
+        #         True: Use the alternate representation.
+        self.toggle_unl_view = False
+
         # Create the text widgets.
         self.textWidget1 = w1 = QtWidgets.QLineEdit(self.statusBar)
         self.textWidget2 = w2 = QtWidgets.QLineEdit(self.statusBar)
@@ -4319,7 +4318,7 @@ class QtStatusLineClass:
         splitter.addWidget(w2)
         self.put('')
         self.update()
-    #@+node:ekr.20110605121601.18260: *3* QtStatusLineClass.clear, get & put/1
+    #@+node:ekr.20110605121601.18260: *3* QtStatusLineClass.clear, get & put/1 & helper
     def clear(self) -> None:
         self.put('')
 
@@ -4327,11 +4326,13 @@ class QtStatusLineClass:
         return self.textWidget2.text()
 
     def put(self, s: str, bg: str = None, fg: str = None) -> None:
+        """Put the UNL area."""
         self.put_helper(s, self.textWidget2, bg, fg)
 
     def put1(self, s: str, bg: str = None, fg: str = None) -> None:
+        """Put the status area"""
         self.put_helper(s, self.textWidget1, bg, fg)
-
+    #@+node:ekr.20240505051258.1: *4* QtStatusLineClass.put_helper
     # Keys are widgets, values are stylesheets.
     styleSheetCache: dict[Any, str] = {}
 
@@ -4367,6 +4368,30 @@ class QtStatusLineClass:
                 c.styleSheetManager.mng.add_sclass(w, status)
                 c.styleSheetManager.mng.update_view(w)  # force appearance update
         w.setText(s)
+    #@+node:ekr.20240505052656.1: *3* QtStatusLineClass.computeStatusUnl
+    def computeStatusUnl(self, p: Position) -> str:
+        """Compute the UNL part of the status line."""
+        c = self.c
+        kind = c.config.getString('unl-status-kind') or ''
+        legacy = kind.lower() == 'legacy'
+        if self.toggle_unl_view:
+            # Show the UNL the opposite as indicated by settings.
+            method = p.get_UNL if legacy else p.get_legacy_UNL
+        else:
+            # Show the UNL per the settings.
+            method = p.get_legacy_UNL if legacy else p.get_UNL
+        s = method()
+        return s
+    #@+node:ekr.20240505050902.1: *3* QtStatsuLineClass.toggleUnlView
+    def toggleUnlView(self):
+        """Toggle view of UNLs."""
+        c = self.c
+        # Toggle the switch.
+        self.toggle_unl_view = not self.toggle_unl_view
+        # Redraw.
+        s = self.computeStatusUnl(c.p)
+        self.put(s)
+        self.update()
     #@+node:chris.20180320072817.1: *3* QtStatusLineClass.update & helpers
     def update(self) -> None:
         if g.app.killed:
@@ -4664,9 +4689,8 @@ def contractBodyPane(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if not c:
         return
-    f = c.frame
-    r = min(1.0, f.ratio + 0.1)
-    f.divideLeoSplitter1(r)
+    r = min(1.0, c.frame.compute_ratio() + 0.1)
+    c.frame.divideLeoSplitter1(r)
 
 expandOutlinePane = contractBodyPane
 #@+node:ekr.20200303084048.1: *3* 'contract-log-pane'
@@ -4677,7 +4701,7 @@ def contractLogPane(event: LeoKeyEvent) -> None:
     if not c:
         return
     f = c.frame
-    r = min(1.0, f.secondary_ratio + 0.1)
+    r = min(1.0, f.compute_secondary_ratio() + 0.1)
     f.divideLeoSplitter2(r)
 #@+node:ekr.20200303084225.1: *3* 'contract-outline-pane' & 'expand-body-pane'
 @g.command('contract-outline-pane')
@@ -4687,9 +4711,8 @@ def contractOutlinePane(event: LeoKeyEvent) -> None:
     c = event.get('c')
     if not c:
         return
-    f = c.frame
-    r = max(0.0, f.ratio - 0.1)
-    f.divideLeoSplitter1(r)
+    r = max(0.0, c.frame.compute_ratio() - 0.1)
+    c.frame.divideLeoSplitter1(r)
 
 expandBodyPane = contractOutlinePane
 #@+node:ekr.20200303084226.1: *3* 'expand-log-pane'
@@ -4700,7 +4723,7 @@ def expandLogPane(event: LeoKeyEvent) -> None:
     if not c:
         return
     f = c.frame
-    r = max(0.0, f.secondary_ratio - 0.1)
+    r = max(0.0, f.compute_secondary_ratio() - 0.1)
     f.divideLeoSplitter2(r)
 #@+node:ekr.20200303084610.1: *3* 'hide-body-pane'
 @g.command('hide-body-pane')
@@ -4803,6 +4826,13 @@ def toggleStatusBar(event: LeoKeyEvent) -> None:
             w.hide()
         else:
             w.show()
+#@+node:ekr.20240505045118.1: *3* 'toggle-unl-view'
+@g.command('toggle-unl-view')
+def toggleUnlView(event: LeoKeyEvent) -> None:
+    c = event.get('c')
+    if c and c.frame.statusLine:
+        # This is not a convenience method.
+        c.frame.statusLine.toggleUnlView()
 #@-others
 #@@language python
 #@@tabwidth -4

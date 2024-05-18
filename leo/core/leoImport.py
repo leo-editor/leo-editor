@@ -743,7 +743,7 @@ class LeoImportCommands:
         current.expand()
         c.setChanged()
         if command:
-            u.afterChangeGroup(p, command)
+            u.afterChangeGroup(c.p, command)
         c.redraw(current)
         return p
     #@+node:ekr.20031218072017.3212: *4* ic.importFilesCommand

@@ -330,7 +330,8 @@ class LeoBody:
         return self.colorizer
 
     def updateSyntaxColorer(self, p: Position) -> None:
-        return self.colorizer.updateSyntaxColorer(p.copy())
+        if p:
+            self.colorizer.updateSyntaxColorer(p.copy())
 
     def recolor(self, p: Position) -> None:
         self.c.recolor()
@@ -402,9 +403,9 @@ class LeoBody:
         w = c.frame.body.widget
         self.updateInjectedIvars(w, p)
         self.selectLabel(w)
-    #@+node:ekr.20200415041750.1: *5* LeoBody.cycleEditorFocus (restored)
+    #@+node:ekr.20200415041750.1: *5* LeoBody.cycleEditorFocus
     @body_cmd('editor-cycle-focus')
-    @body_cmd('cycle-editor-focus')  # There is no LeoQtBody method
+    @body_cmd('cycle-editor-focus')
     def cycleEditorFocus(self, event: LeoKeyEvent = None) -> None:
         """Cycle keyboard focus between the body text editors."""
         c = self.c
@@ -702,7 +703,7 @@ class LeoFrame:
     """The base class for all Leo windows."""
     instances = 0
     #@+others
-    #@+node:ekr.20031218072017.3679: *3* LeoFrame.__init__ & reloadSettings
+    #@+node:ekr.20031218072017.3679: *3* LeoFrame.__init__
     def __init__(self, c: Cmdr, gui: LeoGui) -> None:
         self.c = c
         self.gui = gui
@@ -763,6 +764,12 @@ class LeoFrame:
     def initCompleteHint(self) -> None:
         """A hook for Qt."""
         pass
+    #@+node:ekr.20240510091810.1: *4* LeoFrame.compute_ratio & compute_secondary_ratio
+    def compute_ratio(self) -> float:
+        return 0.5
+
+    def compute_secondary_ratio(self) -> float:
+        return 0.5
     #@+node:ekr.20061109125528.1: *3* LeoFrame.Must be defined in base class
     #@+node:ekr.20031218072017.3689: *4* LeoFrame.initialRatios
     def initialRatios(self) -> tuple[bool, float, float]:
@@ -896,6 +903,11 @@ class LeoFrame:
     def clearStatusLine(self) -> None:
         if self.statusLine:
             self.statusLine.clear()
+
+    def computeStatusUnl(self, p: Position) -> str:
+        if self.statusLine and p:
+            return self.statusLine.computeStatusUnl(p)
+        return ''
 
     def disableStatusLine(self, background: str = None) -> None:
         if self.statusLine:
@@ -1698,9 +1710,8 @@ class LeoTree:
         c.frame.updateStatusLine()
         c.frame.clearStatusLine()
         if p and p.v:
-            kind = c.config.getString('unl-status-kind') or ''
-            method = p.get_legacy_UNL if kind.lower() == 'legacy' else p.get_UNL
-            c.frame.putStatusLine(method())
+            s = c.frame.computeStatusUnl(p)
+            c.frame.putStatusLine(s)
     #@-others
 #@+node:ekr.20070317073627: ** class LeoTreeTab
 class LeoTreeTab:
@@ -1812,7 +1823,6 @@ class NullFrame(LeoFrame):
         self.iconBar = NullIconBarClass(self.c, self)
         self.initComplete = True
         self.isNullFrame = True
-        self.ratio = self.secondary_ratio = 0.5
         self.statusLineClass = NullStatusLineClass
         self.title = title
         # Create the component objects.
@@ -1831,6 +1841,12 @@ class NullFrame(LeoFrame):
 
     def cascade(self, event: LeoKeyEvent = None) -> None:
         pass
+
+    def compute_ratio(self) -> float:
+        return 0.5
+
+    def compute_secondary_ratio(self) -> float:
+        return 0.5
 
     def contractBodyPane(self, event: LeoKeyEvent = None) -> None:
         pass
@@ -2114,9 +2130,11 @@ class NullStatusLineClass:
         c.frame.statusText = self.textWidget
     #@+others
     #@+node:ekr.20070302171917: *3* NullStatusLineClass.methods
+    def computeStatusUnl(self, p: Position) -> str:
+        return ''
+
     def disable(self, background: str = None) -> None:
         self.enabled = False
-        # self.c.bodyWantsFocus()
 
     def enable(self, background: str = "white") -> None:
         self.c.widgetWantsFocus(self.textWidget)

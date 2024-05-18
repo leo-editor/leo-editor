@@ -192,36 +192,23 @@ class FreeLayoutController:
     #@+node:ekr.20160424035257.1: *3* flc.get_main_splitter
     def get_main_splitter(self, w: Wrapper = None) -> Optional[Wrapper]:
         """
-        Return the splitter the main splitter, or None. The main splitter is a
-        NestedSplitter that contains the body pane.
-
-        Yes, the user could delete the secondary splitter but if so, there is
-        not much we can do here.
+        Return the main splitter.
+        
+        We tacitly assume that this splitter contains the body pane.
         """
         top = self.get_top_splitter()
-        if top:
-            w = top.find_child(QtWidgets.QWidget, "bodyFrame")
-            while w:
-                if isinstance(w, NestedSplitter):
-                    return w
-                w = w.parent()
-        return None
+        return top if top.objectName() == 'main_splitter' else None
     #@+node:ekr.20160424035254.1: *3* flc.get_secondary_splitter
     def get_secondary_splitter(self) -> Optional[Wrapper]:
         """
-        Return the secondary splitter, if it exists. The secondary splitter
-        contains the outline pane.
-
-        Yes, the user could delete the outline pane, but if so, there is not
-        much we can do here.
+        Return the secondary splitter, that is, the splitter containing the outline pane.
         """
         top = self.get_top_splitter()
-        if top:
-            w = top.find_child(QtWidgets.QWidget, 'outlineFrame')
-            while w:
-                if isinstance(w, NestedSplitter):
-                    return w
-                w = w.parent()
+        w = top and top.find_child(QtWidgets.QWidget, 'outlineFrame')
+        while w:
+            w = w.parent()
+            if isinstance(w, NestedSplitter):
+                return w
         return None
     #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
     def get_top_splitter(self) -> Optional[Wrapper]:
