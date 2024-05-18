@@ -1169,7 +1169,9 @@ MD_MATH_FENCE = '```math'
 ASCDOC_CODE_LANG_MARKER = '[source,'
 ASCDOC_FENCE_MARKER = '----'
 
+RST_FIGURE_DIRECTIVE = '.. figure::'
 RST_INDENT = '    '
+RST_IMAGE_DIRECTIVE = '.. image::'
 SKIPBLOCKS = ('.. toctree::', '.. index::')
 ASCDOC_PYGMENTS_ATTRIBUTE = ':source-highlighter: pygments'
 
@@ -2144,6 +2146,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.w = None  # The present widget in the rendering pane.
 
         # For viewrendered3
+        self.base_path = ''  # A node's base path including @path directive
         self.code_only = False
         self.code_only = False
         self.current_tree_root = None
@@ -3018,6 +3021,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     return
             if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT) and _tree and self.show_whole_tree:
                 _tree.extend(rootcopy.subtree())
+            self.base_url = self.get_node_path(self.c, p)
             f = pc.dispatch_dict.get(kind)
             if not f:
                 g.trace(f'no handler for kind: {kind}')
@@ -4209,12 +4213,24 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # as a list of the words.
 
             if not _in_code_block:
+                rst_directive = ''
+                if line.startswith(RST_IMAGE_DIRECTIVE):
+                    rst_directive = RST_IMAGE_DIRECTIVE
+                elif line.startswith(RST_FIGURE_DIRECTIVE):
+                    rst_directive = RST_FIGURE_DIRECTIVE
                 if line.startswith('@image'):
                     # insert RsT code for image
                     fields = line.split(' ', 1)
                     if len(fields) > 1:
                         url = fields[1]
-                        line = f'\n.. image:: {url}\n      :width: 100%\n\n'
+                        base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
+                        line = f'\n.. image:: {base}{url}\n      :width: 100%\n\n'
+                elif rst_directive:
+                    fields = line.split(rst_directive)
+                    if len(fields) > 1:
+                        url = fields[1].strip()
+                        base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
+                        line = f'{rst_directive} {base}{url}\n'
                     else:
                         # No url for an image: ignore and skip to next line
                         continue
@@ -4569,6 +4585,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         url = s or p.h[len(tag) :]
         url = url.strip()
         return url
+    #@+node:tom.20240518142345.1: *5* vr3.get_node_path
+    def get_node_path(self, c, p) -> str:
+        return c.getNodePath(p)
     #@+node:TomP.20191215195433.84: *5* vr3.must_change_widget
     def must_change_widget(self, widget_class):
         pc = self
