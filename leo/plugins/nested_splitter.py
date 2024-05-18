@@ -620,15 +620,15 @@ class NestedSplitter(QtWidgets.QSplitter):
     #@+node:ekr.20240518111804.1: *3* ns.dump_layout (new)
     def dump_layout(self, layout: dict) -> None:
         print('')
-        print(f"Dump of ns layout for NestedSplitter at {id(self)}")
+        print(f"Dump of ns layout for {self.__class__.__name__}({self.objectName()})") 
         self.dump_inner_layout(layout, level=0)
         
     def dump_inner_layout(self, content: dict, level: int) -> None:
         ws = level * 2 * ' '
         widget_seen = False
         print('\n'.join([  # Python 3.9 does not allow newlines within f-strings.
-            f"{ws}contents level {level}..."
-            f"  {ws}orientation: {content.get('orientation')}"
+            f"{ws}contents level {level}...",
+            f"  {ws}orientation: {content.get('orientation')}",
             f"  {ws}sizes: {content.get('sizes')}"
         ]))
         inner_content = content.get('content')
@@ -640,7 +640,7 @@ class NestedSplitter(QtWidgets.QSplitter):
             if not widget_seen:
                 widget_seen = True
                 print(f"  {ws}widgets level {level}...")
-            print(f"    {ws}widget {i} {id(inner)}: {inner.__class__.__name__}")
+            print(f"    {ws}widget {i} {inner.__class__.__name__}({inner.objectName()})")
     #@+node:tbrown.20120418121002.25439: *3* ns.find_child
     def find_child(self, child_class, child_name=None):
         """Like QObject.findChild, except search self.top()
