@@ -69,7 +69,11 @@ if TYPE_CHECKING:  # pragma: no cover
 #@-<< leoGlobals: annotations >>
 #@+<< leoGlobals: global constants >>
 #@+node:ekr.20240515093718.1: ** << leoGlobals: global constants >>
-allow_nested_splitter = False
+allow_nested_splitter = True
+if 1:
+    print('')
+    print('g.allow_nested_splitter', allow_nested_splitter)
+    print('')
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.9'

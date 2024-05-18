@@ -210,7 +210,7 @@ from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import QtMultimedia, QtSvg
-from leo.core.leoQt import ContextMenuPolicy, WrapMode
+from leo.core.leoQt import ContextMenuPolicy, Orientation, WrapMode
 from leo.plugins import qt_text
 
 if g.allow_nested_splitter:
@@ -423,10 +423,25 @@ def viewrendered(event: Event) -> Optional[Any]:
         else:
             gui = g.app.gui
             splitter = gui.get_top_splitter(c)
+            vr_splitter = QtWidgets.QSplitter(
+                orientation=Orientation.Horizontal,
+                parent = splitter,
+            )
+            vr_splitter.setObjectName('vr-splitter')
+            splitter.addWidget(vr_splitter)
+            vr_splitter.setParent(splitter)
             vr_frame = gui.find_widget_by_name(c, 'bodyFrame')
-            g.trace(QtWidgets.QLayout)
+            vr_splitter.addWidget(vr_frame)
+            vr_frame.setParent(vr_splitter)
+            assert vr_frame
+            # Similar to vr.ns_provide.
+            vr.active = True
+            vr.auto_create = True
+            vr.keep_open = True
+            vr.is_visible = True
+            ### g.trace(QtWidgets.QLayout)
             ### layout = gui.find_ancestor_widget_by_class(vr_frame, QtWidgets.QLayout)
-            g.trace('To do: Move VR frame', vr_frame)  ###, 'to', layout)
+            ### g.trace('To do: Move VR frame', vr_frame)  ###, 'to', layout)
             ### Without adding to 
             ### ns.add_adjacent(vr, 'bodyFrame', 'right-of')
 

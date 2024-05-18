@@ -1655,12 +1655,19 @@ class LeoQtGui(leoGui.LeoGui):
     ### To do ###
     # def attach_widget(self, w: QWidget, parent: QWidget) -> None:
         # pass
+        
+    detached_widgets: list[Any] = []
 
     def detach_object(self, qt_obj: Any) -> None:
         i, w = self.find_nearest_container(qt_obj)
         if w:
             g.trace('FOUND', i, w, qt_obj)
-            ### To do!
+            qt_obj.setParent(None)
+            self.detached_widgets.append(qt_obj)
+            stylesheet_obj = self.find_nearest_object_with_stylesheet(qt_obj)
+            if stylesheet_obj:
+                g.trace(len(stylesheet_obj.styleSheet()))
+                w.setStyleSheet(stylesheet_obj.styleSheet())
         else:
             g.trace('Not found:', qt_obj)
 
