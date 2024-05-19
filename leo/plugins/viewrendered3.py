@@ -4918,12 +4918,18 @@ class Action:
         if len(fields) > 1:
             url = fields[1] or ''
             if url:
+                base = sm.vr3.base_url
+                if os.path.isabs(base):
+                    base = base + '/'
+                else:
+                    base = ''
+
                 if sm.structure == MD:
                     # image syntax: ![label](url)
-                    line = f'![]({url})'
+                    line = f'![]({base}{url})'
                 elif sm.structure == ASCIIDOC:
                     # image syntax: image:<target>[<attributes>] (must include "{}" even if no attributes
-                    line = f'image:{url}[]'
+                    line = f'image:{base}{url}[]'
                 sm.current_chunk.add_line(line)
             # If no url parameter, do nothing
 
