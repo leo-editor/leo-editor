@@ -75,32 +75,6 @@ def init() -> bool:
     g.app.gui.finishCreate()
     g.plugin_signon(__name__)
     return True
-#@+node:ekr.20240515151459.1: ** gt_gui: top-level generators
-def _parents(qt_obj: Any) -> Generator:
-    """Yields all ancestors of qt_obj, a Qt object or widget."""
-    parent = qt_obj.parent()
-    while parent:
-        yield parent
-        parent = parent.parent()
-
-def _self_and_parents(qt_obj: Any) -> Generator:
-    """Yields all ancestors of qt_obj, a Qt object or widget."""
-    w = qt_obj
-    while w:
-        yield w
-        w = w.parent()
-
-def _self_and_subtree(qt_obj: Any) -> Generator:
-    """Yield w and all of w's descendants."""
-    yield qt_obj
-    for child in qt_obj.children():
-        yield from _self_and_subtree(child)
-
-# Not used.
-# def _subtree(qt_obj: Any) -> Generator:
-    # """Yield w and all of w's descendants."""
-    # for child in qt_obj.children():
-        # yield from _self_and_subtree(child)
 #@+node:ekr.20140907085654.18700: ** class LeoQtGui(leoGui.LeoGui)
 class LeoQtGui(leoGui.LeoGui):
     """A class implementing Leo's Qt gui."""
@@ -1539,6 +1513,21 @@ class LeoQtGui(leoGui.LeoGui):
             # gui.splashScreen.deleteLater()
             gui.splashScreen = None
     #@+node:ekr.20140825042850.18411: *3* qt_gui:Utils...
+    #@+node:ekr.20240519114809.1: *4* qt_gui._self_and_subtree
+    def _self_and_subtree(self, qt_obj: Any) -> Generator:
+        """Yield w and all of w's descendants."""
+        yield qt_obj
+        for child in qt_obj.children():
+            yield from self._self_and_subtree(child)
+    #@+node:ekr.20240519115301.1: *4* qt_gui.find_widget_by_name
+    def find_widget_by_name(self, c: Cmdr, name: str) -> Optional[QWidget]:
+        for w in self._self_and_subtree(c.frame.top):
+            if w.objectName() == name:
+                return w
+        return None
+    #@+node:ekr.20240519115157.1: *4* qt_gui.get_top_splitter
+    def get_top_splitter(self, c: Cmdr) -> QWidget:
+        return self.find_widget_by_name(c, 'main_splitter')
     #@+node:ekr.20110605121601.18522: *4* qt_gui.isTextWidget/Wrapper
     def isTextWidget(self, w: Wrapper) -> bool:
         """Return True if w is some kind of Qt text widget."""
@@ -1649,76 +1638,6 @@ class LeoQtGui(leoGui.LeoGui):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(widget.sizePolicy().hasHeightForWidth())
         widget.setSizePolicy(sizePolicy)
-    #@+node:ekr.20240515150157.1: *3* qt_gui:Widget utils
-    # qt_gui utils: unl:gnx://leoPy.leo#ekr.20240515151459.1
-
-    ### To do ###
-    # def attach_widget(self, w: QWidget, parent: QWidget) -> None:
-        # pass
-
-    detached_widgets: list[Any] = []
-
-    def detach_object(self, qt_obj: Any) -> None:
-        i, w = self.find_nearest_container(qt_obj)
-        if w:
-            g.trace('FOUND', i, w, qt_obj)
-            qt_obj.setParent(None)
-            self.detached_widgets.append(qt_obj)
-            stylesheet_obj = self.find_nearest_object_with_stylesheet(qt_obj)
-            if stylesheet_obj:
-                g.trace(len(stylesheet_obj.styleSheet()))
-                w.setStyleSheet(stylesheet_obj.styleSheet())
-        else:
-            g.trace('Not found:', qt_obj)
-
-    def find_layout_for_object(self, qt_obj: Any) -> Optional[QLayout]:
-        return qt_obj.layout()  ### To do.
-
-    _container_classes = (QtWidgets.QSplitter, QtWidgets.QStackedWidget, QtWidgets.QStackedWidget)
-
-    def _container_index(self, container: Any, target: Any) -> int:
-        """Return the index (within the container) of the child containing the target widget."""
-        g.trace('container:', id(container), container.__class__.__name__)
-        for i, child in enumerate(container.children()):
-            g.trace('child:', i, child.__class__.__name__)
-            for w2 in _self_and_subtree(child):
-                ### g.trace('  subtree:', w2.__class__.__name__)
-                if w2 == target:
-                    ### g.trace('   FOUND!', id(w2), w2.__class__.__name__)
-                    return i
-        return -1
-
-    def find_nearest_container(self, qt_obj: Any) -> Optional[tuple[int, Any]]:
-        for w in _parents(qt_obj):
-            ### g.trace('parent:', w.__class__.__name__)
-            if isinstance(w, self._container_classes):
-                i = self._container_index(w, qt_obj)
-                if i > -1:
-                    return i, w
-        return -1, None
-
-    def find_nearest_object_with_stylesheet(self, qt_obj: Any) -> Optional[Any]:
-        for w in _self_and_parents(qt_obj):
-            if w.styleSheet():
-                return w
-        return None
-
-    def find_widget_by_name(self, c: Cmdr, name: str) -> Optional[QWidget]:
-        for w in _self_and_subtree(c.frame.top):
-            if w.objectName() == name:
-                return w
-        return None
-
-    # Not used.
-    # def _find_ancestor_widget_by_class(self, qt_obj: Any, class_: Any):
-        # """Return the widget in qt_obj's ancestors with the given class."""
-        # for w in _ancestors(qt_obj):
-            # if issubclass(w.__class__, class_):
-                # return w
-        # return None
-
-    def get_top_splitter(self, c: Cmdr) -> QWidget:
-        return self.find_widget_by_name(c, 'main_splitter')
     #@-others
 #@+node:tbrown.20150724090431.1: ** class StyleClassManager
 class StyleClassManager:

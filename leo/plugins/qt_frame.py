@@ -2458,10 +2458,12 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 assert hasattr(w, 'setWindowState'), w
             else:
                 w.setWindowState(WindowState.WindowMinimized)
-    #@+node:ekr.20110605121601.18307: *5* qtFrame.toggleSplitDirection (to do)
+    #@+node:ekr.20110605121601.18307: *5* qtFrame.toggleSplitDirection
     @frame_cmd('toggle-split-direction')
     def toggleSplitDirection(self, event: LeoKeyEvent = None) -> None:
-        """Toggle the split direction in the present Leo window."""
+        """
+        Toggle the split direction in the present Leo window.
+        """
         c = self.c
         if g.allow_nested_splitter:
             if getattr(c, 'free_layout', None):
@@ -2469,8 +2471,15 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 if splitter:
                     splitter.rotate()
         else:
-            splitter = g.app.gui.get_top_splitter(c)
-            g.trace('to do: rotate splitter:', splitter)
+            # Toggle the split direction of the primary and secondary splitters.
+            gui = g.app.gui
+            splitter = gui.find_widget_by_name(c, 'main_splitter')
+            splitter2 = gui.find_widget_by_name(c, 'secondary_splitter')
+            for w in (splitter, splitter2):
+                if w.orientation() == Orientation.Vertical:
+                    w.setOrientation(Orientation.Horizontal)
+                else:
+                    w.setOrientation(Orientation.Vertical)
     #@+node:ekr.20110605121601.18308: *5* qtFrame.resizeToScreen
     @frame_cmd('resize-to-screen')
     def resizeToScreen(self, event: LeoKeyEvent = None) -> None:

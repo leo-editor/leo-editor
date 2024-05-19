@@ -400,7 +400,7 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
 def preview(event: Event) -> None:
     """A synonym for the vr-toggle command."""
     toggle_rendering_pane(event)
-#@+node:tbrown.20100318101414.5998: *3* g.command('vr') (to do)
+#@+node:tbrown.20100318101414.5998: *3* g.command('vr') (test)
 @g.command('vr')
 def viewrendered(event: Event) -> Optional[Any]:
     """Open render view for commander"""
