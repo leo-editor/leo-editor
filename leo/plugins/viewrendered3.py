@@ -3400,7 +3400,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             g.es(message)
             return message
 
-    #@+node:TomP.20191215195433.58: *4* vr3.update_graphics_script (to do)
+    #@+node:TomP.20191215195433.58: *4* vr3.update_graphics_script (test)
     def update_graphics_script(self, s, keywords):
         """Update the graphics script in the vr3 pane."""
         pc = self; c = pc.c
@@ -3411,7 +3411,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if g.allow_nested_splitter:
                 splitter = c.free_layout.get_top_splitter()
             else:
-                splitter = None  ### To do.
+                splitter = g.app.gui.get_top_splitter()
             if not splitter:
                 g.trace('no splitter')
                 return

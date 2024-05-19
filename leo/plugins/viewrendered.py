@@ -1046,7 +1046,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Read the output file and return it.
         with open(o_path, 'r') as f:
             return f.read()
-    #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script (to do)
+    #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script (test)
     def update_graphics_script(self, s: str, keywords: Any) -> None:
         """Update the graphics script in the VR pane."""
         c = self.c
@@ -1059,7 +1059,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             if g.allow_nested_splitter:
                 splitter = c.free_layout.get_top_splitter()
             else:
-                splitter = None  ### To do.
+                splitter = g.app.gui.get_top_splitter()
             # Create the widgets.
             self.gs = QtWidgets.QGraphicsScene(splitter)
             self.gv = QtWidgets.QGraphicsView(self.gs)
