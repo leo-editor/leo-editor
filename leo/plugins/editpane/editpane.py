@@ -64,7 +64,8 @@ def edit_pane_csv(event):
     w = c.frame.body.widget
     if not w:
         return
-    if g.allow_nested_splitter:
+    ### if g.allow_nested_splitter:
+    if getattr(c, 'free_layout', None):
         from leo.plugins.nested_splitter import NestedSplitter
         while not isinstance(w, NestedSplitter):
             w = w.parent()

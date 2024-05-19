@@ -213,8 +213,9 @@ from leo.core.leoQt import QtMultimedia, QtSvg
 from leo.core.leoQt import ContextMenuPolicy, Orientation, WrapMode
 from leo.plugins import qt_text
 
-if g.allow_nested_splitter:
-    from leo.plugins import free_layout
+###
+    # if g.allow_nested_splitter:
+        # from leo.plugins import free_layout
 
 BaseTextWidget = QtWidgets.QTextBrowser
 
@@ -345,9 +346,11 @@ def onCreate(tag: str, keys: dict) -> None:
     c = keys.get('c')
     if not c:
         return
-    if g.allow_nested_splitter:
+    ### if g.allow_nested_splitter:
+    if getattr(c, 'free_layout', None):
+        g.trace('*** Using free_layout ***')
         provider = ViewRenderedProvider(c)
-        free_layout.register_provider(c, provider)
+        c.free_layout.register_provider(c, provider)
     vr = viewrendered(keys)
     g.registerHandler('select2', vr.update)
     g.registerHandler('idle', vr.update)
@@ -685,7 +688,8 @@ class ViewRenderedProvider:
     def __init__(self, c: Cmdr) -> None:
         self.c = c
         self.created = False
-        if g.allow_nested_splitter and c.free_layout:
+        ### if g.allow_nested_splitter and c.free_layout:
+        if getattr(c, 'free_layout', None):
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
@@ -1046,7 +1050,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Read the output file and return it.
         with open(o_path, 'r') as f:
             return f.read()
-    #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script (test)
+    #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
     def update_graphics_script(self, s: str, keywords: Any) -> None:
         """Update the graphics script in the VR pane."""
         c = self.c
@@ -1056,7 +1060,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if self.gs and not force:
             return
         if not self.gs:
-            if g.allow_nested_splitter:
+            ### if g.allow_nested_splitter:
+            if getattr(c, 'free_layout', None):
                 splitter = c.free_layout.get_top_splitter()
             else:
                 splitter = g.app.gui.get_top_splitter()

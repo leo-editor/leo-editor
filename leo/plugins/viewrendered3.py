@@ -954,7 +954,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+node:tom.20210517102737.1: *3* << Qt Imports >> (VR3)
 try:
     from leo.plugins import qt_text
-    from leo.plugins import free_layout
+    ### from leo.plugins import free_layout
     from leo.core.leoQt import QtCore, QtWidgets
     from leo.core.leoQt import QtMultimedia, QtSvg
     from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
@@ -1444,14 +1444,15 @@ def init():
 def isVisible():
     """Return True if the VR3 pane is visible."""
     return
-#@+node:TomP.20191215195433.11: *3* vr3.onCreate (test)
+#@+node:TomP.20191215195433.11: *3* vr3.onCreate
 def onCreate(tag, keys):
     c = keys.get('c')
     if not c:
         return
-    if g.allow_nested_splitter:
+    ### if g.allow_nested_splitter:
+    if getattr(c, 'free_layout', None):
         provider = ViewRenderedProvider3(c)
-        free_layout.register_provider(c, provider)
+        c.free_layout.register_provider(c, provider)
 
 #@+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
@@ -3408,7 +3409,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if pc.gs and not force:
             return
         if not pc.gs:
-            if g.allow_nested_splitter:
+            ### if g.allow_nested_splitter:
+            if getattr(c, 'free_layout', None):
                 splitter = c.free_layout.get_top_splitter()
             else:
                 splitter = g.app.gui.get_top_splitter()

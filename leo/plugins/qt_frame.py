@@ -32,10 +32,12 @@ from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins.qt_tree import LeoQtTree
 from leo.plugins.mod_scripting import build_rclick_tree
-if g.allow_nested_splitter:
-    from leo.plugins.nested_splitter import NestedSplitter
-else:
-    NestedSpitter = QtWidgets.QSplitter
+
+### Test getattr(c, 'free_layout', None):
+    # if g.allow_nested_splitter:
+        # from leo.plugins.nested_splitter import NestedSplitter
+    # else:
+        # NestedSplitter = QtWidgets.QSplitter
 #@-<< qt_frame imports >>
 #@+<< qt_frame annotations >>
 #@+node:ekr.20220415080427.1: ** << qt_frame annotations >>
@@ -350,29 +352,33 @@ class DynamicWindow(QtWidgets.QMainWindow):
         assert self.findTab
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
-    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
+    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout (changed)
     def createMainLayout(self, parent: QWidget) -> tuple[QWidget, QWidget]:
         """Create the layout for Leo's main window."""
-        # c = self.leo_c
+        c = self.leo_c
         vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
 
         # #3910: Deprecate NestedSplitter.
         main_splitter: Union[NestedSplitter, QtWidgets.QSplitter]
         secondary_splitter: Union[NestedSplitter, QtWidgets.QSplitter]
-
-        if g.allow_nested_splitter:
+        
+        ###if g.allow_nested_splitter:
+        if getattr(c, 'free_layout', None):
+            from leo.plugins.nested_splitter import NestedSplitter
             main_splitter = NestedSplitter(parent)
         else:
             main_splitter = QtWidgets.QSplitter(parent)
         main_splitter.setObjectName('main_splitter')
         main_splitter.setOrientation(Orientation.Vertical)
 
-        if g.allow_nested_splitter:
+        ### if g.allow_nested_splitter:
+        if getattr(c, 'free_layout', None):
             secondary_splitter = NestedSplitter(main_splitter)
         else:
             secondary_splitter = QtWidgets.QSplitter(main_splitter)
         secondary_splitter.setObjectName('secondary_splitter')
         secondary_splitter.setOrientation(Orientation.Horizontal)
+
         # Official ivar:
         self.verticalLayout = vLayout
         self.set_widget_size_policy(secondary_splitter)
@@ -2465,11 +2471,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         Toggle the split direction in the present Leo window.
         """
         c = self.c
-        if g.allow_nested_splitter:
-            if getattr(c, 'free_layout', None):
-                splitter = c.free_layout.get_top_splitter()
-                if splitter:
-                    splitter.rotate()
+        if getattr(c, 'free_layout', None):
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.rotate()
         else:
             # Toggle the split direction of the primary and secondary splitters.
             gui = g.app.gui
