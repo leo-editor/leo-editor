@@ -173,6 +173,7 @@ class LeoApp:
         self.atFileNames: set[str] = set()  # The set of all built-in @<file> spellings.
         self.globalKillBuffer: list[str] = []  # The global kill buffer.
         self.globalRegisters: dict[str, str] = {}  # The global register list.
+        self.initial_cwd: str = os.getcwd()  # For restart-leo.
         self.leoID: str = None  # The id part of gnx's.
         self.lossage: list[LossageData] = []  # List of last 100 keystrokes.
         self.paste_c: Cmdr = None  # The commander that pasted the last outline.

@@ -118,6 +118,10 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     sys.stdout.flush()
     sys.stderr.flush()
     # Restart Leo with subprocess.run.
+    print('')
+    print('Restarting Leo...')
+    print(f"os.chdir({g.app.initial_cwd})")
+    os.chdir(g.app.initial_cwd)
     if 1:  # #3916.
         if g.isWindows:
             sys_args = [z.replace('/', os.sep) for z in sys.argv]
@@ -136,8 +140,6 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
         launchLeo_s = fr'{leo_editor_dir}{os.sep}launchLeo.py'
         args = [sys.executable, launchLeo_s] + restart_paths + ['--no-splash']
     args_s = 'subprocess.run([\n  ' + ',\n  '.join(args) + '\n])'
-    print('')
-    print('Restarting Leo with:\n')
     print(args_s)
     print('')
     subprocess.run(args)  # pylint: disable=subprocess-run-check
