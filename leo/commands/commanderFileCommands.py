@@ -99,12 +99,6 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     # Save session data.
     g.app.saveSession()
     g.app.setLog(None)  # Kill the log.
-    # #3141: Remember all open outlines.
-    restart_paths: list[str] = [
-        c.fileName() for c in g.app.commanders() if c.fileName()
-    ]
-    if g.isWindows:
-        restart_paths = [z.replace('/', os.sep) for z in restart_paths]
     # Close all unsaved outlines.
     for c in g.app.commanders():
         frame = c.frame
@@ -124,10 +118,19 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     sys.stdout.flush()
     sys.stderr.flush()
     # Restart Leo with subprocess.run.
-    if 1:
-        # #3916: retain all the command-line args.
-        args = [sys.executable] + sys.argv[:]
+    if 1:  # #3916.
+        if g.isWindows:
+            sys_args = [z.replace('/', os.sep) for z in sys.argv]
+        else:
+            sys_args = sys.argv[:]
+        args = [sys.executable] + sys_args
     else:
+        # #3141: Remember all open outlines.
+        restart_paths: list[str] = [
+            c.fileName() for c in g.app.commanders() if c.fileName()
+        ]
+        if g.isWindows:
+            restart_paths = [z.replace('/', os.sep) for z in restart_paths]
         # Warning: Python 3.9 does not allow newlines within f-strings.
         leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         launchLeo_s = fr'{leo_editor_dir}{os.sep}launchLeo.py'
