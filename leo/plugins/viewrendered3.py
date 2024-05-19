@@ -1175,6 +1175,18 @@ RST_IMAGE_DIRECTIVE = '.. image::'
 SKIPBLOCKS = ('.. toctree::', '.. index::')
 ASCDOC_PYGMENTS_ATTRIBUTE = ':source-highlighter: pygments'
 
+#@+<< Other Line Markers >>
+#@+node:tom.20240518221853.1: *3* << Other Line Markers >>
+# MD
+MD_LABELre = r'^!\[(?P<label>.*)\]'
+MD_URLre = r'\((?P<url>.+)\)'
+MD_IMGre = MD_LABELre + MD_URLre
+MD_IMAGE_MARKER_RE = re.compile(MD_IMGre)
+
+ASCIIDOC_IMGre = r'image::(?P<url>.+)\[.*\]'
+ASCIIDOC_IMG = re.compile(ASCIIDOC_IMGre)
+#@-<< Other Line Markers >>
+
 _in_code_block = False
 
 VR3_DIR = 'vr3'
@@ -4223,7 +4235,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     fields = line.split(' ', 1)
                     if len(fields) > 1:
                         url = fields[1]
-                        base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
+                        if url.startswith('data:'):
+                            base = ''
+                        else:
+                            base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
                         line = f'\n.. image:: {base}{url}\n      :width: 100%\n\n'
                 elif rst_directive:
                     fields = line.split(rst_directive)
@@ -4909,6 +4924,8 @@ class Action:
     def add_line(sm, line, tag=None, language=TEXT):
         sm.current_chunk.add_line(line)
 
+    #@+others
+    #@+node:tom.20240518234139.1: *4* Add at-Image
     @staticmethod
     def add_image(sm, line, tag=None, language=None):
         # Used for @image lines
@@ -4918,11 +4935,12 @@ class Action:
         if len(fields) > 1:
             url = fields[1] or ''
             if url:
-                base = sm.vr3.base_url
-                if os.path.isabs(base):
-                    base = base + '/'
-                else:
+                if url.startswith('data:'):
                     base = ''
+                else:
+                    base = sm.vr3.base_url
+                if base and os.path.isabs(base):
+                    base = base + '/'
 
                 if sm.structure == MD:
                     # image syntax: ![label](url)
@@ -4932,6 +4950,29 @@ class Action:
                     line = f'image:{base}{url}[]'
                 sm.current_chunk.add_line(line)
             # If no url parameter, do nothing
+    #@+node:tom.20240518234321.1: *4* Image Path to Absolute
+    @staticmethod
+    def image_url2abs(sm, line, tag=None, language=None):
+        """Convert MD or Asciidoc image directive's image path to an absolute one"""
+        is_image = False
+        if language == MD:
+            is_image = MD_IMAGE_MARKER_RE.match(line)
+        elif language == ASCIIDOC:
+            is_image = ASCIIDOC_IMG.match(line)
+        if is_image:
+            url = is_image['url'].strip()
+            g.es(url)
+            if url.startswith('data:'):
+                sm.current_chunk.add_line(line)
+            else:
+                base_url = sm.vr3.base_url
+                base = base_url + '/' if os.path.isabs(base_url) else ''
+                abs_url = base + url
+                line = line.replace(url, abs_url)
+                sm.current_chunk.add_line(line)
+        else:
+            sm.current_chunk.add_line(line)
+    #@-others
 
     @staticmethod
     def no_action(sm, line, tag=None, language=TEXT):
@@ -4956,10 +4997,14 @@ class Marker(Enum):
     MD_FENCE_LANG_MARKER = auto()  # fence token with language; e.g. ```python
     MD_FENCE_MATH_MARKER = auto()  # math fence: ```math
     MD_FENCE_MARKER = auto()  # fence token with no language
+
+    IMAGE_MARKER = auto()  # an @image directive
+    MD_IMAGE_MARKER = auto()
+    ASCIIDOC_IMAGE_MARKER = auto()
+
     MARKER_NONE = auto()  # Not a special line.
     START_SKIP = auto()
     END_SKIP = auto()
-    IMAGE_MARKER = auto()
 
     ASCDOC_CODE_MARKER = auto()
     ASCDOC_CODE_LANG_MARKER = auto()  # a line like "[source, python]" before a line "---"
@@ -5217,6 +5262,22 @@ class StateMachine:
                     tag = CODE
                     break
 
+        elif line.startswith('![') and self.structure == MD:
+            is_image = MD_IMAGE_MARKER_RE.match(line)
+            if is_image:
+                marker = Marker.MD_IMAGE_MARKER
+                lang = self.structure
+            else:
+                marker = Marker.MARKER_NONE
+
+        elif line.startswith('image::') and self.structure == ASCIIDOC:
+            is_image = ASCIIDOC_IMG.match(line)
+            if is_image:
+                marker = Marker.ASCIIDOC_IMAGE_MARKER
+                lang = self.structure
+            else:
+                marker = Marker.MARKER_NONE
+
         elif line.startswith("@image"):
             marker = Marker.IMAGE_MARKER
             lang = self.structure
@@ -5237,8 +5298,8 @@ class StateMachine:
 
         return (marker, tag, lang)
     #@-<< get_marker >>
-    #@+<< State Table >>
-    #@+node:TomP.20200213171040.1: *4* << State Table >>
+    #@+<< State_table >>
+    #@+node:TomP.20200213171040.1: *4* << State_table >>
     State_table = {  # (state, marker): (action, next_state)
 
         (State.BASE, Marker.AT_LANGUAGE_MARKER): (Action.new_chunk, State.AT_LANG_CODE),
@@ -5252,6 +5313,8 @@ class StateMachine:
                     (Action.new_chunk, State.TO_BE_COMPUTED),
 
         (State.BASE, Marker.IMAGE_MARKER): (Action.add_image, State.BASE),
+        (State.BASE, Marker.MD_IMAGE_MARKER): (Action.image_url2abs, State.BASE),
+        (State.BASE, Marker.ASCIIDOC_IMAGE_MARKER): (Action.image_url2abs, State.BASE),
 
         # ========= Markdown-specific states ==================
         (State.BASE, Marker.MD_FENCE_LANG_MARKER): (Action.new_chunk, State.FENCED_CODE),
@@ -5275,7 +5338,7 @@ class StateMachine:
                     # End fenced code chunk
                     (Action.new_chunk, State.BASE)
     }
-    #@-<< State Table >>
+    #@-<< State_table >>
 
 #@-others
 
