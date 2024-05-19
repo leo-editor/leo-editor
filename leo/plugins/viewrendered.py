@@ -419,31 +419,26 @@ def viewrendered(event: Event) -> Optional[Any]:
             if c.free_layout:
                 splitter = c.free_layout.get_top_splitter()
                 if splitter:
-                    splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
+                    splitter.add_adjacent(vr, 'bodyFrame', 'right-of', name='nested-vr-splitter')
         else:
             gui = g.app.gui
-            splitter = gui.get_top_splitter(c)
-            vr_splitter = QtWidgets.QSplitter(
-                orientation=Orientation.Horizontal,
-                parent = splitter,
-            )
+            # Create vr_splitter.
+            top_splitter = gui.get_top_splitter(c)
+            vr_splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
             vr_splitter.setObjectName('vr-splitter')
-            splitter.addWidget(vr_splitter)
-            vr_splitter.setParent(splitter)
-            vr_frame = gui.find_widget_by_name(c, 'bodyFrame')
-            vr_splitter.addWidget(vr_frame)
-            vr_frame.setParent(vr_splitter)
-            assert vr_frame
-            # Similar to vr.ns_provide.
+            top_splitter.addWidget(vr_splitter)
+            # First, add the body frame.
+            body_frame = gui.find_widget_by_name(c, 'bodyFrame')
+            vr_splitter.addWidget(body_frame)
+            # Second, add the vr pane.
+            vr_splitter.addWidget(vr)
+            # Give equal width to both panes.
+            vr_splitter.setSizes([1, 1])
+            # Set the flags.
             vr.active = True
             vr.auto_create = True
-            vr.keep_open = True
+            vr.keep_open = False
             vr.is_visible = True
-            ### g.trace(QtWidgets.QLayout)
-            ### layout = gui.find_ancestor_widget_by_class(vr_frame, QtWidgets.QLayout)
-            ### g.trace('To do: Move VR frame', vr_frame)  ###, 'to', layout)
-            ### Without adding to 
-            ### ns.add_adjacent(vr, 'bodyFrame', 'right-of')
 
     c.bodyWantsFocusNow()
     return vr

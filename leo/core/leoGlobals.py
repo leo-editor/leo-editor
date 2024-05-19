@@ -69,7 +69,7 @@ if TYPE_CHECKING:  # pragma: no cover
 #@-<< leoGlobals: annotations >>
 #@+<< leoGlobals: global constants >>
 #@+node:ekr.20240515093718.1: ** << leoGlobals: global constants >>
-allow_nested_splitter = True
+allow_nested_splitter = False
 if 1:
     print('')
     print('g.allow_nested_splitter', allow_nested_splitter)

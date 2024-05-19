@@ -495,7 +495,7 @@ class NestedSplitter(QtWidgets.QSplitter):
             # fail - parent is not NestedSplitter and has no layout
             pass
     #@+node:tbrown.20110621120042.22675: *3* ns.add_adjacent (finds layout)
-    def add_adjacent(self, what, widget_id, side='right-of'):
+    def add_adjacent(self, what, widget_id, side='right-of', name=None):
         """add a widget relative to another already present widget"""
         horizontal, vertical = Orientation.Horizontal, Orientation.Vertical
         layout = self.top().get_layout()
@@ -541,6 +541,9 @@ class NestedSplitter(QtWidgets.QSplitter):
                 ns = NestedSplitter(orientation=horizontal, root=self.root)
             else:
                 ns = NestedSplitter(orientation=vertical, root=self.root)
+            if name:
+                g.trace(name, ns)
+                ns.setObjectName(name)
             old = layout['content'][pos]
             if not isinstance(old, QtWidgets.QWidget):  # see get_layout()
                 old = layout['splitter']
