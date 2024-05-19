@@ -400,46 +400,45 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
 def preview(event: Event) -> None:
     """A synonym for the vr-toggle command."""
     toggle_rendering_pane(event)
-#@+node:tbrown.20100318101414.5998: *3* g.command('vr') (test)
+#@+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
 def viewrendered(event: Event) -> Optional[Any]:
     """Open render view for commander"""
     global controllers, layouts
-    if g.app.gui.guiName() != 'qt':
+    gui = g.app.gui
+    if gui.guiName() != 'qt':
         return None
     c = event.get('c')
     if not c:
         return None
     h = c.hash()
     vr = controllers.get(h)
-    if not vr:
-        controllers[h] = vr = ViewRenderedController(c)
-        # Add the pane to the splitter.
-        if g.allow_nested_splitter:
-            if c.free_layout:
-                splitter = c.free_layout.get_top_splitter()
-                if splitter:
-                    splitter.add_adjacent(vr, 'bodyFrame', 'right-of', name='nested-vr-splitter')
-        else:
-            gui = g.app.gui
-            # Create vr_splitter.
-            top_splitter = gui.get_top_splitter(c)
-            vr_splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
-            vr_splitter.setObjectName('vr-splitter')
-            top_splitter.addWidget(vr_splitter)
-            # First, add the body frame.
-            body_frame = gui.find_widget_by_name(c, 'bodyFrame')
-            vr_splitter.addWidget(body_frame)
-            # Second, add the vr pane.
-            vr_splitter.addWidget(vr)
-            # Give equal width to both panes.
-            vr_splitter.setSizes([1, 1])
-            # Set the flags.
-            vr.active = True
-            vr.auto_create = True
-            vr.keep_open = False
-            vr.is_visible = True
-
+    if vr:
+        c.bodyWantsFocusNow()
+        return vr
+    # Create the VR frame
+    controllers[h] = vr = ViewRenderedController(c)
+    # Use different layouts depending on the main splitter's *initial* orientation.
+    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+    if main_splitter.orientation() == Orientation.Vertical:
+        # Create a new splitter.
+        vr_splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
+        vr_splitter.setObjectName('vr-splitter')
+        main_splitter.addWidget(vr_splitter)
+        # First, add the body frame.
+        body_frame = gui.find_widget_by_name(c, 'bodyFrame')
+        vr_splitter.addWidget(body_frame)
+        # Second, add the vr pane.
+        vr_splitter.addWidget(vr)
+        # Give equal width to all splitter panes.
+        vr_splitter.setSizes([1, 1])
+        main_splitter.setSizes([1, 1])
+    else:
+        secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
+        # Add the VR pane to the secondary splitter.
+        secondary_splitter.addWidget(vr)
+        # Give equal width to the panes in the secondary splitter.
+        secondary_splitter.setSizes([1, 1, 1])
     c.bodyWantsFocusNow()
     return vr
 #@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
@@ -742,9 +741,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Create the widget.
         super().__init__(parent)
         self.create_pane(parent)
+        # Ivars set by reloadSettings.
+        self.auto_create: bool = None
+        self.keep_open: bool = None
         # Set the ivars.
-        self.active = False
-        self.auto_create = False  # Set by reload settings.
+        self.active = True
         self.gnx: str = None
         self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
         self.gv: Widget = None  # For @graphics-script: a QGraphicsView
@@ -796,6 +797,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         c = self.c
         c.registerReloadSettings(self)
         self.auto_create = c.config.getBool('view-rendered-auto-create', False)
+        self.keep_open = c.config.getBool('view-rendered-keep-open', True)
         self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
 
