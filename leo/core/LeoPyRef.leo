@@ -3435,6 +3435,9 @@ include *.TXT
 prune leo/unittests/htmlcov
 prune leo/doc/html
 include leo/doc/html/conf.py
+
+# #3853.
+include leo/doc/_static
 </t>
 <t tx="ekr.20240321122614.1"># These are Leo's test scripts.
 
