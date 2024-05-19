@@ -499,7 +499,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         """add a widget relative to another already present widget"""
         horizontal, vertical = Orientation.Horizontal, Orientation.Vertical
         layout = self.top().get_layout()
-        
+
         trace = 'splitters' in g.app.debug
 
         def hunter(layout, id_):
@@ -623,9 +623,9 @@ class NestedSplitter(QtWidgets.QSplitter):
     #@+node:ekr.20240518111804.1: *3* ns.dump_layout (new)
     def dump_layout(self, layout: dict) -> None:
         print('')
-        print(f"Dump of ns layout for {self.__class__.__name__}({self.objectName()})") 
+        print(f"Dump of ns layout for {self.__class__.__name__}({self.objectName()})")
         self.dump_inner_layout(layout, level=0)
-        
+
     def dump_inner_layout(self, content: dict, level: int) -> None:
         ws = level * 2 * ' '
         widget_seen = False

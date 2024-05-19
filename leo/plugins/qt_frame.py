@@ -355,7 +355,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """Create the layout for Leo's main window."""
         # c = self.leo_c
         vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
-        
+
         # #3910: Deprecate NestedSplitter.
         main_splitter: Union[NestedSplitter, QtWidgets.QSplitter]
         secondary_splitter: Union[NestedSplitter, QtWidgets.QSplitter]

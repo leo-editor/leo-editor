@@ -82,7 +82,7 @@ def _parents(qt_obj: Any) -> Generator:
     while parent:
         yield parent
         parent = parent.parent()
-        
+
 def _self_and_parents(qt_obj: Any) -> Generator:
     """Yields all ancestors of qt_obj, a Qt object or widget."""
     w = qt_obj
@@ -95,7 +95,7 @@ def _self_and_subtree(qt_obj: Any) -> Generator:
     yield qt_obj
     for child in qt_obj.children():
         yield from _self_and_subtree(child)
-        
+
 # Not used.
 # def _subtree(qt_obj: Any) -> Generator:
     # """Yield w and all of w's descendants."""
@@ -1655,7 +1655,7 @@ class LeoQtGui(leoGui.LeoGui):
     ### To do ###
     # def attach_widget(self, w: QWidget, parent: QWidget) -> None:
         # pass
-        
+
     detached_widgets: list[Any] = []
 
     def detach_object(self, qt_obj: Any) -> None:
@@ -1673,7 +1673,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     def find_layout_for_object(self, qt_obj: Any) -> Optional[QLayout]:
         return qt_obj.layout()  ### To do.
-        
+
     _container_classes = (QtWidgets.QSplitter, QtWidgets.QStackedWidget, QtWidgets.QStackedWidget)
 
     def _container_index(self, container: Any, target: Any) -> int:
@@ -1687,16 +1687,16 @@ class LeoQtGui(leoGui.LeoGui):
                     ### g.trace('   FOUND!', id(w2), w2.__class__.__name__)
                     return i
         return -1
-        
+
     def find_nearest_container(self, qt_obj: Any) -> Optional[tuple[int, Any]]:
         for w in _parents(qt_obj):
             ### g.trace('parent:', w.__class__.__name__)
-            if isinstance(w, self._container_classes ):
+            if isinstance(w, self._container_classes):
                 i = self._container_index(w, qt_obj)
                 if i > -1:
-                    return i, w            
+                    return i, w
         return -1, None
-        
+
     def find_nearest_object_with_stylesheet(self, qt_obj: Any) -> Optional[Any]:
         for w in _self_and_parents(qt_obj):
             if w.styleSheet():
@@ -1708,7 +1708,7 @@ class LeoQtGui(leoGui.LeoGui):
             if w.objectName() == name:
                 return w
         return None
-                
+
     # Not used.
     # def _find_ancestor_widget_by_class(self, qt_obj: Any, class_: Any):
         # """Return the widget in qt_obj's ancestors with the given class."""
