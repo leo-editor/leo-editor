@@ -928,7 +928,6 @@ import html
 from inspect import cleandoc
 from io import StringIO, open as ioOpen
 
-import json
 import os
 import os.path
 from pathlib import PurePath
@@ -1225,7 +1224,7 @@ latex_template = f'''\
 # keys for all three below: c.hash()
 controllers = {}  # values: VR3 widets
 positions = {}  # values: OPENED_IN_TAB or OPENED_IN_SPLITTER
-layouts = {}  # values: tuples (layout_when_closed, layout_when_open)
+### layouts = {}  # values: tuples (layout_when_closed, layout_when_open)
 
 
 #@+others
@@ -1560,6 +1559,7 @@ def viewrendered(event):
         return vr3
     # Create the VR frame
     controllers[h] = vr3 = ViewRenderedController3(c)
+    # vr3.splitter = gui.get_top_splitter(c)
 
     # A prototype for supporint  arbitrarily many layouts.
     layout_kind = c.config.getString('vr3-initial-orientation') or 'in_secondary'
@@ -1815,37 +1815,8 @@ def lock_unlock_tree(event):
 #@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout') (rewrite)
 @g.command('vr3-use-default-layout')
 def open_with_layout(event):
-    gui = g.app.gui
     vr3 = getVr3(event)
     c = vr3.c
-    
-    ###
-    # layout = {'orientation': 1,
-              # 'content': [{'orientation': 2,
-                              # 'content': ['_leo_pane:outlineFrame', '_leo_pane:logFrame'],
-                              # 'sizes': [200, 200]
-                              # },
-                           # '_leo_pane:bodyFrame', VR3_NS_ID
-                         # ],
-              # 'sizes': [200, 200, 200]
-             # }
-
-    # if c.free_layout:
-        # vr3.splitter = c.free_layout.get_top_splitter()
-    # else:
-        # vr3.splitter = None  ### To do.
-        
-    vr3.splitter = gui.get_top_splitter()
-
-    # if vr3.splitter:
-        # # Make it work with old and new layout code
-        # try:
-            # vr3.splitter.load_layout(layout)
-        # except TypeError:
-            # vr3.splitter.load_layout(c, layout)
-    # else:
-        # g.es('=== No splitter')
-        
     c.doCommandByName('vr3-update')
     c.bodyWantsFocusNow()
 
@@ -2117,7 +2088,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.pyplot_active = False
         self.scrollbar_pos_dict = {}  # Keys are vnodes, values are positions.
         self.sizes = []  # Saved splitter sizes.
-        self.splitter = None
         self.splitter_index = None  # The index of the rendering pane in the splitter.
         self.title = None
 
@@ -3023,7 +2993,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper (test)
     def embed_widget(self, w, delete_callback=None):
         """Embed widget w in the free_layout splitter."""
-        pc = self; c = pc.c  #X ; splitter = pc.splitter
+        pc = self; c = pc.c
         pc.w = w
         layout = self.layout()
         for i in range(layout.count()):
@@ -4700,8 +4670,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c, vr3 = self.c, self
         vr3.activate()
         # vr3.show()
-        if positions.get(c.hash()) == OPENED_IN_SPLITTER:
-            vr3.adjust_layout('open')
         c.bodyWantsFocusNow()
     #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
     #@+node:TomP.20200329230436.9: *6* vr3.get_toolbar_label
@@ -4729,25 +4697,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             return
 
 
-    #@+node:TomP.20200329230436.7: *5* vr3.adjust_layout (legacy only)
-    def adjust_layout(self, which):
-
-        global layouts
-        c = self.c
-        splitter = self.splitter
-        deflo = c.db.get(VR3_DEF_LAYOUT, (None, None))
-        loc, loo = layouts.get(c.hash(), deflo)
-        if which == 'closed' and loc and splitter:
-            # Make it work with old and new layout code
-            try:
-                splitter.load_layout(loc)
-            except TypeError:
-                splitter.load_layout(c, loc)
-        elif which == 'open' and loo and splitter:
-            try:
-                splitter.load_layout(loo)
-            except TypeError:
-                splitter.load_layout(c, loo)
     #@+node:TomP.20200329230436.12: *5* vr3: zoom helpers...
     #@+node:TomP.20200329230436.13: *6* vr3.shrinkView
     def shrinkView(self):
@@ -4806,24 +4755,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         ch = '#'
         n = max(4, len(g.toEncodedString(s, reportErrors=False)))
         return f'{s}\n{ch * n}\n\n'
-    #@+node:TomP.20200329230503.4: *5* vr3.store_layout
-    def store_layout(self, which):
-
-        global layouts
-        c = self.c
-        h = c.hash()
-        splitter = self.splitter
-        deflo = c.db.get(VR3_DEF_LAYOUT, (None, None))
-        (loc, loo) = layouts.get(c.hash(), deflo)
-        if which == 'closed' and splitter:
-            loc = splitter.get_saveable_layout()
-            loc = json.loads(json.dumps(loc))
-            layouts[h] = loc, loo
-        elif which == 'open' and splitter:
-            loo = splitter.get_saveable_layout()
-            loo = json.loads(json.dumps(loo))
-            layouts[h] = loc, loo
-        c.db[VR3_DEF_LAYOUT] = layouts[h]
     #@-others
 #@+node:TomP.20200827172759.1: ** State Machine Components
 #@+node:TomP.20200213170204.1: *3* class State
