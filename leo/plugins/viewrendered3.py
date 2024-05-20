@@ -1812,7 +1812,7 @@ def lock_unlock_tree(event):
         vr3.unlock()
     else:
         vr3.lock()
-#@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout') (rewrite)
+#@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout')
 @g.command('vr3-use-default-layout')
 def open_with_layout(event):
     vr3 = getVr3(event)
