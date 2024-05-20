@@ -48,7 +48,7 @@ def onCreate(tag, keys):
     c = keys.get('c')
 
     LiveCodeDisplayProvider(c)
-#@+node:tbrown.20140806084727.31749: ** livecode-show (to do)
+#@+node:tbrown.20140806084727.31749: ** livecode-show (rewrite)
 @g.command('livecode-show')
 def cmd_show(event):
     c = event.get('c')

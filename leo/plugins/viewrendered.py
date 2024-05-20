@@ -635,7 +635,7 @@ def update_rendering_pane(event: Event) -> None:
     if not vr:
         vr = viewrendered(event)
     vr.update(tag='view', keywords={'c': c, 'force': True})
-#@+node:vitalije.20170712195827.1: *3* g.command('vr-zoom')
+#@+node:vitalije.20170712195827.1: *3* g.command('vr-zoom') (rewrite)
 @g.command('vr-zoom')
 def zoom_rendering_pane(event: Event) -> None:
 
@@ -673,55 +673,6 @@ def zoom_rendering_pane(event: Event) -> None:
                     ns.setSizes(sizes)
                     break
     vr.zoomed = not vr.zoomed
-#@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider
-class ViewRenderedProvider:
-    """This class allows the free_layout plugin to insert VR panes anywhere."""
-    #@+others
-    #@+node:tbrown.20110629084915.35154: *3* vr.__init__
-    def __init__(self, c: Cmdr) -> None:
-        self.c = c
-        self.created = False
-    #@+node:tbrown.20110629084915.35151: *3* vr.ns_provide
-    def ns_provide(self, id_: str) -> Optional[Widget]:
-        global controllers, layouts
-        # #1678: duplicates in Open Window list
-        if self.created:
-            return None
-        if id_ == self.ns_provider_id():
-            self.created = True  # Suppress duplicates!
-            c = self.c
-            h = c.hash()
-            vr = controllers.get(h)
-            if not vr:
-                # Never overwrite an existing controller.
-                vr = ViewRenderedController(c)
-                controllers[h] = vr
-            # Enable, keeping the VR pane open.
-            vr.active = True
-            vr.auto_create = True
-            vr.is_visible = True
-            vr.keep_open = True
-            vr.locked = False
-            # Force an update.
-            vr.gnx = None
-            vr.length = 0
-            return vr
-        return None
-    #@+node:ekr.20200917062806.1: *3* vr.ns_provider_id
-    def ns_provider_id(self) -> str:
-        return '_leo_viewrendered'
-    #@+node:tbrown.20110629084915.35150: *3* vr.ns_provides
-    def ns_provides(self) -> list[tuple[str, str]]:
-        # #1671: Better Window names.
-        # #1678: duplicates in Open Window list
-        return [('Viewrendered', self.ns_provider_id())]
-    #@+node:ekr.20200917063221.1: *3* vr.ns_title
-    def ns_title(self, id_: str) -> Optional[str]:
-        if id_ != self.ns_provider_id():
-            return None
-        filename = self.c.shortFileName() or 'Unnamed file'
-        return f"Viewrendered: {filename}"
-    #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
 class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     """A class to control rendering in a rendering pane."""

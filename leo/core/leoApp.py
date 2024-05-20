@@ -1012,8 +1012,7 @@ class LeoApp:
         except Exception:
             return  # Other methods will report startup problems.
         try:
-            from leo.plugins.editpane.editpane import edit_pane_test_open, edit_pane_csv
-            g.command('edit-pane-test-open')(edit_pane_test_open)
+            from leo.plugins.editpane.editpane import edit_pane_csv
             g.command('edit-pane-csv')(edit_pane_csv)
         except ImportError:
             print('Failed to import editpane')

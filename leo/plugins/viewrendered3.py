@@ -1542,38 +1542,56 @@ def getVr3(event):
         controllers[h] = vr3 = viewrendered(event)
     return vr3
 #@+node:TomP.20191215195433.16: ** vr3.Commands
-#@+node:TomP.20191215195433.18: *3* g.command('vr3')
+#@+node:TomP.20191215195433.18: *3* g.command('vr3') (rewrite)
 @g.command('vr3')
 def viewrendered(event):
     """Open render view for commander"""
     global controllers, layouts
-    if g.app.gui.guiName() != 'qt':
+    gui = g.app.gui
+    if gui.guiName() != 'qt':
         return None
     c = event.get('c')
     if not c:
         return None
     h = c.hash()
     vr3 = controllers.get(h)
-    if not vr3:
-        controllers[h] = vr3 = ViewRenderedController3(c)
-
-    layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
-    vr3._ns_id = VR3_NS_ID  # for free_layout load/save
-    if c.free_layout:
-        vr3.splitter = splitter = c.free_layout.get_top_splitter()
-        if splitter:
-            vr3.store_layout('closed')
-            sizes = split_last_sizes(splitter.sizes())
-            ok = splitter.add_adjacent(vr3, '_leo_pane:bodyFrame', 'right-of')
-            if not ok:
-                splitter.insert(0, vr3)
-            elif splitter.orientation() == Orientation.Horizontal:
-                splitter.setSizes(sizes)
-            vr3.adjust_layout('open')
-            positions[c.hash()] = OPENED_IN_SPLITTER
+    if vr3:
+        c.bodyWantsFocusNow()
+        return vr3
+     # Create the VR frame
+    controllers[h] = vr3 = ViewRenderedController3(c)
+    layout_kind = c.config.getString('vr3-initial-orientation') or 'in_secondary'
+    # Use different layouts depending on the main splitter's *initial* orientation.
+    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+    secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
+    g.trace(layout_kind, main_splitter.orientation())  ###
+    if layout_kind == 'in_body':
+        # Share the VR pane with the body pane.
+        # Create a new splitter.
+        splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
+        splitter.setObjectName('vr3-horizonal-splitter')
+        main_splitter.addWidget(splitter)
+        # Add frames.
+        body_frame = gui.find_widget_by_name(c, 'bodyFrame')
+        splitter.addWidget(body_frame)
+        splitter.addWidget(vr3)
+        # Equalize splitters.
+        # splitter.setSizes([1, 1])
+        # main_splitter.setSizes([1, 1])
+        # secondary_splitter.setSizes([1, 1])
+    elif main_splitter.orientation() == Orientation.Vertical:
+        # Put the VR pane in in the main_splitter.
+        main_splitter.insertWidget(1, vr3)
+        # Equalize splitters.
+        ### main_splitter.setSizes([1, 1, 1])
+    else:
+        # Put the VR pane in the secondary splitter.
+        secondary_splitter.addWidget(vr3)
+        # Equalize splitters.
+        ### secondary_splitter.setSizes([1, 1, 1])
+        ### main_splitter.setSizes([1, 1])
 
     c.bodyWantsFocusNow()
-
     return vr3
 #@+node:tom.20230403141635.1: *3* g.command('vr3-tab')
 @g.command('vr3-tab')
@@ -1797,34 +1815,40 @@ def lock_unlock_tree(event):
         vr3.unlock()
     else:
         vr3.lock()
-#@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout') (to do)
+#@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout') (rewrite)
 @g.command('vr3-use-default-layout')
 def open_with_layout(event):
+    gui = g.app.gui
     vr3 = getVr3(event)
     c = vr3.c
-    layout = {'orientation': 1,
-              'content': [{'orientation': 2,
-                              'content': ['_leo_pane:outlineFrame', '_leo_pane:logFrame'],
-                              'sizes': [200, 200]
-                              },
-                           '_leo_pane:bodyFrame', VR3_NS_ID
-                         ],
-              'sizes': [200, 200, 200]
-             }
+    
+    ###
+    # layout = {'orientation': 1,
+              # 'content': [{'orientation': 2,
+                              # 'content': ['_leo_pane:outlineFrame', '_leo_pane:logFrame'],
+                              # 'sizes': [200, 200]
+                              # },
+                           # '_leo_pane:bodyFrame', VR3_NS_ID
+                         # ],
+              # 'sizes': [200, 200, 200]
+             # }
 
-    if c.free_layout:
-        vr3.splitter = c.free_layout.get_top_splitter()
-    else:
-        vr3.splitter = None  ### To do.
+    # if c.free_layout:
+        # vr3.splitter = c.free_layout.get_top_splitter()
+    # else:
+        # vr3.splitter = None  ### To do.
+        
+    vr3.splitter = gui.get_top_splitter()
 
-    if vr3.splitter:
-        # Make it work with old and new layout code
-        try:
-            vr3.splitter.load_layout(layout)
-        except TypeError:
-            vr3.splitter.load_layout(c, layout)
-    else:
-        g.es('=== No splitter')
+    # if vr3.splitter:
+        # # Make it work with old and new layout code
+        # try:
+            # vr3.splitter.load_layout(layout)
+        # except TypeError:
+            # vr3.splitter.load_layout(c, layout)
+    # else:
+        # g.es('=== No splitter')
+        
     c.doCommandByName('vr3-update')
     c.bodyWantsFocusNow()
 
@@ -2064,14 +2088,10 @@ def vr3_render_html_from_clip(event):
 #@+node:ekr.20200918085543.1: ** class ViewRenderedProvider3
 class ViewRenderedProvider3:
     #@+others
-    #@+node:ekr.20200918085543.2: *3* vr3.__init__ (to do)
+    #@+node:ekr.20200918085543.2: *3* vr3.__init__
     def __init__(self, c):
         self.c = c
         self.vr3_instance = None
-        if getattr(c, 'free_layout', None):
-            splitter = c.free_layout.get_top_splitter()
-            if splitter:
-                splitter.register_provider(self)
     #@+node:ekr.20200918085543.3: *3* vr3.ns_provide
     def ns_provide(self, id_):
         global controllers, layouts
@@ -2110,10 +2130,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         global _in_code_block
         self.c = c
         # Create the widget.
-        QtWidgets.QWidget.__init__(self)  # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
-        # super().__init__(parent)
-
+        super().__init__(parent)
+            ###
+                # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
+                # QtWidgets.QWidget.__init__(self)
         self.create_pane(parent)
+
         # Set the ivars.
         self.active = False
         self.badColors = []
@@ -4716,7 +4738,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c, vr3 = self.c, self
         vr3.activate()
         # vr3.show()
-        if positions[c.hash()] == OPENED_IN_SPLITTER:
+        if positions.get(c.hash()) == OPENED_IN_SPLITTER:
             vr3.adjust_layout('open')
         c.bodyWantsFocusNow()
     #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
