@@ -4610,27 +4610,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         pc.active = True
         g.registerHandler('select2', pc.update)
         g.registerHandler('idle', pc.update)
-    #@+node:TomP.20200329230436.3: *5* vr3.contract & expand (to do)
-    # Change zoom factor of rendering pane
-    def contract(self):
-        self.change_size(-100)
-
-    def expand(self):
-        self.change_size(100)
-
-    def change_size(self, delta):
-        if getattr(self.c, 'free_layout', None):
-            splitter = self.parent()
-            i = splitter.indexOf(self)
-            assert i > -1
-            sizes = splitter.sizes()
-            n = len(sizes)
-            for j, size in enumerate(sizes):
-                if j == i:
-                    sizes[j] = max(0, size + delta)
-                else:
-                    sizes[j] = max(0, size - int(delta / (n - 1)))
-            splitter.setSizes(sizes)
     #@+node:TomP.20200329230436.4: *5* vr3.deactivate
     def deactivate(self):
         """Deactivate the vr3 window."""
