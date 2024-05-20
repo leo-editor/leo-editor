@@ -1446,13 +1446,7 @@ def isVisible():
     return
 #@+node:TomP.20191215195433.11: *3* vr3.onCreate
 def onCreate(tag, keys):
-    c = keys.get('c')
-    if not c:
-        return
-    if getattr(c, 'free_layout', None):
-        provider = ViewRenderedProvider3(c)
-        c.free_layout.register_provider(c, provider)
-
+    pass
 #@+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
     c = keys.get('c')
@@ -3400,7 +3394,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             g.es(message)
             return message
 
-    #@+node:TomP.20191215195433.58: *4* vr3.update_graphics_script (test)
+    #@+node:TomP.20191215195433.58: *4* vr3.update_graphics_script
     def update_graphics_script(self, s, keywords):
         """Update the graphics script in the vr3 pane."""
         pc = self; c = pc.c
@@ -3408,10 +3402,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if pc.gs and not force:
             return
         if not pc.gs:
-            if getattr(c, 'free_layout', None):
-                splitter = c.free_layout.get_top_splitter()
-            else:
-                splitter = g.app.gui.get_top_splitter()
+            splitter = g.app.gui.get_top_splitter()
             if not splitter:
                 g.trace('no splitter')
                 return

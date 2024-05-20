@@ -21,41 +21,6 @@ def DBG(text):
     :param str text: text to print
     """
     print(f"LEP: {text}")
-#@+node:tbrown.20171028115438.3: ** edit_pane_test_open
-def edit_pane_test_open(event):
-    """Make a command for opening the editpane in free_layout.
-
-    This is just for testing / demoing, and will be removed eventually.
-    """
-    c = event['c']
-    if not c.free_layout:
-        return
-
-    if not hasattr(c, '__edit_pane_test'):
-        c.__edit_pane_test = True
-
-
-        class MinimalDemoProvider:
-
-            def ns_provides(self):
-                return [("Demo editor", "__demo_provider_minimal_slider")]
-
-            def ns_provide(self, id_):
-                if id_ == "__demo_provider_minimal_slider":
-                    w = LeoEditPane(c=c, mode='split')
-                    return w
-                return None
-
-            def ns_provider_id(self):
-                return "__demo_provider_minimal"
-
-        splitter = c.free_layout.get_top_splitter()
-        if splitter:
-            splitter.register_provider(MinimalDemoProvider())
-
-    s = c.free_layout.get_top_splitter()
-    if s:
-        s.open_window("__demo_provider_minimal_slider")
 #@+node:tbrown.20180207103918.1: ** edit_pane_csv
 def edit_pane_csv(event):
     c = event['c']
@@ -64,13 +29,9 @@ def edit_pane_csv(event):
     w = c.frame.body.widget
     if not w:
         return
-    ### if g.allow_nested_splitter:
-    if getattr(c, 'free_layout', None):
-        from leo.plugins.nested_splitter import NestedSplitter
-        while not isinstance(w, NestedSplitter):
-            w = w.parent()
-    else:
-        w = w.parent()
+    w = w.parent()
+    if not w:
+        return
     w.insert(-1, LeoEditPane(c=c, show_control=False, lep_type='EDITOR-CSV'))
 #@+node:tbrown.20171028115438.4: ** class LeoEditPane
 class LeoEditPane(QtWidgets.QWidget):

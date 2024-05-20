@@ -346,7 +346,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         assert self.findTab
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
-    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout (changed)
+    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
     def createMainLayout(self, parent: QWidget) -> tuple[QWidget, QWidget]:
         """Create the layout for Leo's main window."""
         # c = self.leo_c
@@ -2211,15 +2211,16 @@ class LeoQtFrame(leoFrame.LeoFrame):
         Return ratio of the main Qt splitter or 0.5.
         """
         c = self.c
-        if c.free_layout:
-            w = c.free_layout.get_main_splitter()
-            if w:
-                aList = w.sizes()
-                if len(aList) == 2:
-                    n1, n2 = aList
-                    # Don't divide by zero.
-                    ratio = 0.5 if n1 + n2 == 0 else float(n1) / float(n1 + n2)
-                    return ratio
+        gui = g.app.gui
+        w = gui.find_widget_by_name(c, 'main_splitter')
+        if not w:
+            return 0.5
+        aList = w.sizes()
+        if len(aList) == 2:
+            n1, n2 = aList
+            # Don't divide by zero.
+            ratio = 0.5 if n1 + n2 == 0 else float(n1) / float(n1 + n2)
+            return ratio
         return 0.5
     #@+node:ekr.20240510093122.1: *5* qtFrame.compute_secondary_ratio
     def compute_secondary_ratio(self) -> float:
@@ -2227,15 +2228,15 @@ class LeoQtFrame(leoFrame.LeoFrame):
         Return the ratio of the Qt secondary splitter or 0.5.
         """
         c = self.c
-        free_layout = c.free_layout
-        if free_layout:
-            w = free_layout.get_secondary_splitter()
-            if w:
-                aList = w.sizes()
-                if len(aList) == 2:
-                    n1, n2 = aList
-                    ratio = float(n1) / float(n1 + n2)
-                    return ratio
+        gui = g.app.gui
+        w = gui.find_widget_by_name(c, 'secondary_splitter')
+        if not w:
+            return 0.5
+        aList = w.sizes()
+        if len(aList) == 2:
+            n1, n2 = aList
+            ratio = float(n1) / float(n1 + n2)
+            return ratio
         return 0.5
     #@+node:ekr.20110605121601.18275: *4* qtFrame.configureBar
     def configureBar(self, bar: Wrapper, verticalFlag: bool) -> None:
@@ -2348,21 +2349,17 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18283: *4* qtFrame.divideLeoSplitter1/2 (to do)
     def divideLeoSplitter1(self, frac: float) -> None:
         """Divide the main splitter."""
-        ### To do.
-        layout = self.c and self.c.free_layout
-        if not layout:
-            return
-        w = layout.get_main_splitter()
+        gui = g.app.gui
+        c = self.c
+        w = gui.find_widget_by_name(c, 'main_splitter')
         if w:
             self.divideAnySplitter(frac, w)
 
     def divideLeoSplitter2(self, frac: float) -> None:
         """Divide the secondary splitter."""
-        ### To do.
-        layout = self.c and self.c.free_layout
-        if not layout:
-            return
-        w = layout.get_secondary_splitter()
+        gui = g.app.gui
+        c = self.c
+        w = gui.find_widget_by_name(c, 'secondary_splitter')
         if w:
             self.divideAnySplitter(frac, w)
     #@+node:ekr.20110605121601.18284: *4* qtFrame.divideAnySplitter
@@ -2450,20 +2447,14 @@ class LeoQtFrame(leoFrame.LeoFrame):
         Toggle the split direction in the present Leo window.
         """
         c = self.c
-        if getattr(c, 'free_layout', None):
-            splitter = c.free_layout.get_top_splitter()
-            if splitter:
-                splitter.rotate()
-        else:
-            # Toggle the split direction of the primary and secondary splitters.
-            gui = g.app.gui
-            splitter = gui.find_widget_by_name(c, 'main_splitter')
-            splitter2 = gui.find_widget_by_name(c, 'secondary_splitter')
-            for w in (splitter, splitter2):
-                if w.orientation() == Orientation.Vertical:
-                    w.setOrientation(Orientation.Horizontal)
-                else:
-                    w.setOrientation(Orientation.Vertical)
+        gui = g.app.gui
+        splitter = gui.find_widget_by_name(c, 'main_splitter')
+        splitter2 = gui.find_widget_by_name(c, 'secondary_splitter')
+        for w in (splitter, splitter2):
+            if w.orientation() == Orientation.Vertical:
+                w.setOrientation(Orientation.Horizontal)
+            else:
+                w.setOrientation(Orientation.Vertical)
     #@+node:ekr.20110605121601.18308: *5* qtFrame.resizeToScreen
     @frame_cmd('resize-to-screen')
     def resizeToScreen(self, event: LeoKeyEvent = None) -> None:

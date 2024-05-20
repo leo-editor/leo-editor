@@ -342,10 +342,6 @@ def onCreate(tag: str, keys: dict) -> None:
     c = keys.get('c')
     if not c:
         return
-    if getattr(c, 'free_layout', None):
-        g.trace('*** Using free_layout ***')
-        provider = ViewRenderedProvider(c)
-        c.free_layout.register_provider(c, provider)
     vr = viewrendered(keys)
     g.registerHandler('select2', vr.update)
     g.registerHandler('idle', vr.update)
@@ -685,10 +681,6 @@ class ViewRenderedProvider:
     def __init__(self, c: Cmdr) -> None:
         self.c = c
         self.created = False
-        if getattr(c, 'free_layout', None):
-            splitter = c.free_layout.get_top_splitter()
-            if splitter:
-                splitter.register_provider(self)
     #@+node:tbrown.20110629084915.35151: *3* vr.ns_provide
     def ns_provide(self, id_: str) -> Optional[Widget]:
         global controllers, layouts
@@ -1056,10 +1048,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if self.gs and not force:
             return
         if not self.gs:
-            if getattr(c, 'free_layout', None):
-                splitter = c.free_layout.get_top_splitter()
-            else:
-                splitter = g.app.gui.get_top_splitter()
+            splitter = g.app.gui.get_top_splitter()
             # Create the widgets.
             self.gs = QtWidgets.QGraphicsScene(splitter)
             self.gv = QtWidgets.QGraphicsView(self.gs)

@@ -390,7 +390,7 @@ class Commands:
         # A list of other classes that have a reloadSettings method
         c.configurables = c.subCommanders[:]
         c.db = CommanderWrapper(c)
-        c.free_layout = None
+        c.free_layout = None  # Compatibility. Always None.
             
         if hasattr(g.app.gui, 'styleSheetManagerClass'):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
