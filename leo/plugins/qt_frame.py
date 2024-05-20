@@ -12,7 +12,7 @@ import string
 import sys
 import time
 import urllib
-from typing import Any, Optional, Union, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
@@ -32,12 +32,6 @@ from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins.qt_tree import LeoQtTree
 from leo.plugins.mod_scripting import build_rclick_tree
-
-### Test getattr(c, 'free_layout', None):
-    # if g.allow_nested_splitter:
-        # from leo.plugins.nested_splitter import NestedSplitter
-    # else:
-        # NestedSplitter = QtWidgets.QSplitter
 #@-<< qt_frame imports >>
 #@+<< qt_frame annotations >>
 #@+node:ekr.20220415080427.1: ** << qt_frame annotations >>
@@ -355,32 +349,17 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout (changed)
     def createMainLayout(self, parent: QWidget) -> tuple[QWidget, QWidget]:
         """Create the layout for Leo's main window."""
-        c = self.leo_c
-        vLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
+        # c = self.leo_c
 
-        # #3910: Deprecate NestedSplitter.
-        main_splitter: Union[NestedSplitter, QtWidgets.QSplitter]
-        secondary_splitter: Union[NestedSplitter, QtWidgets.QSplitter]
-        
-        ###if g.allow_nested_splitter:
-        if getattr(c, 'free_layout', None):
-            from leo.plugins.nested_splitter import NestedSplitter
-            main_splitter = NestedSplitter(parent)
-        else:
-            main_splitter = QtWidgets.QSplitter(parent)
+        main_splitter = QtWidgets.QSplitter(parent)
         main_splitter.setObjectName('main_splitter')
         main_splitter.setOrientation(Orientation.Vertical)
 
-        ### if g.allow_nested_splitter:
-        if getattr(c, 'free_layout', None):
-            secondary_splitter = NestedSplitter(main_splitter)
-        else:
-            secondary_splitter = QtWidgets.QSplitter(main_splitter)
+        secondary_splitter = QtWidgets.QSplitter(main_splitter)
         secondary_splitter.setObjectName('secondary_splitter')
         secondary_splitter.setOrientation(Orientation.Horizontal)
 
-        # Official ivar:
-        self.verticalLayout = vLayout
+        self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
         self.set_widget_size_policy(secondary_splitter)
         self.verticalLayout.addWidget(main_splitter)
         return main_splitter, secondary_splitter

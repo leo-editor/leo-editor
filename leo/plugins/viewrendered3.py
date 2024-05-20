@@ -1449,7 +1449,6 @@ def onCreate(tag, keys):
     c = keys.get('c')
     if not c:
         return
-    ### if g.allow_nested_splitter:
     if getattr(c, 'free_layout', None):
         provider = ViewRenderedProvider3(c)
         c.free_layout.register_provider(c, provider)
@@ -3409,7 +3408,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if pc.gs and not force:
             return
         if not pc.gs:
-            ### if g.allow_nested_splitter:
             if getattr(c, 'free_layout', None):
                 splitter = c.free_layout.get_top_splitter()
             else:

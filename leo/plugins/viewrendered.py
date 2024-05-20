@@ -213,10 +213,6 @@ from leo.core.leoQt import QtMultimedia, QtSvg
 from leo.core.leoQt import ContextMenuPolicy, Orientation, WrapMode
 from leo.plugins import qt_text
 
-###
-    # if g.allow_nested_splitter:
-        # from leo.plugins import free_layout
-
 BaseTextWidget = QtWidgets.QTextBrowser
 
 # Optional third-party imports...
@@ -346,7 +342,6 @@ def onCreate(tag: str, keys: dict) -> None:
     c = keys.get('c')
     if not c:
         return
-    ### if g.allow_nested_splitter:
     if getattr(c, 'free_layout', None):
         g.trace('*** Using free_layout ***')
         provider = ViewRenderedProvider(c)
@@ -424,6 +419,7 @@ def viewrendered(event: Event) -> Optional[Any]:
     # Use different layouts depending on the main splitter's *initial* orientation.
     main_splitter = gui.find_widget_by_name(c, 'main_splitter')
     if main_splitter.orientation() == Orientation.Vertical:
+        # Share the VR pane with the body pane.
         # Create a new splitter.
         vr_splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
         vr_splitter.setObjectName('vr-splitter')
@@ -437,6 +433,7 @@ def viewrendered(event: Event) -> Optional[Any]:
         vr_splitter.setSizes([1, 1])
         main_splitter.setSizes([1, 1])
     else:
+        # Put the VR pane in the secondary splitter.
         secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
         # Add the VR pane to the secondary splitter.
         secondary_splitter.addWidget(vr)
@@ -688,7 +685,6 @@ class ViewRenderedProvider:
     def __init__(self, c: Cmdr) -> None:
         self.c = c
         self.created = False
-        ### if g.allow_nested_splitter and c.free_layout:
         if getattr(c, 'free_layout', None):
             splitter = c.free_layout.get_top_splitter()
             if splitter:
@@ -1060,7 +1056,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if self.gs and not force:
             return
         if not self.gs:
-            ### if g.allow_nested_splitter:
             if getattr(c, 'free_layout', None):
                 splitter = c.free_layout.get_top_splitter()
             else:

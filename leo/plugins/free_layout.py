@@ -60,7 +60,7 @@ Wrapper = Any
 #@+node:tbrown.20110203111907.5521: ** free_layout:init
 def init() -> bool:
     """Return True if the free_layout plugin can be loaded."""
-    g.trace(g.callers())  ##
+    print('free_layout.init', g.callers())
     return bool(g.app.gui.guiName() == "qt" and NestedSplitter)
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:

@@ -391,19 +391,6 @@ class Commands:
         c.configurables = c.subCommanders[:]
         c.db = CommanderWrapper(c)
         c.free_layout = None
-        
-        ### Test later: getattr(c, 'free_layout', None):
-            # if g.allow_nested_splitter:  # #3910.
-                # # #2485: Load the free_layout plugin in the proper context.
-                # #        g.app.pluginsController.loadOnePlugin won't work here.
-                # try:
-                    # g.app.pluginsController.loadingModuleNameStack.append('leo.plugins.free_layout')
-                    # from leo.plugins import free_layout
-                    # c.free_layout = free_layout.FreeLayoutController(c)
-                # finally:
-                    # g.app.pluginsController.loadingModuleNameStack.pop()
-            # else:
-                # c.free_layout = None
             
         if hasattr(g.app.gui, 'styleSheetManagerClass'):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
