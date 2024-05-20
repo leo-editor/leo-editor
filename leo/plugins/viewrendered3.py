@@ -1560,10 +1560,10 @@ def viewrendered(event):
         return vr3
     # Create the VR frame
     controllers[h] = vr3 = ViewRenderedController3(c)
-    
+
     # A prototype for supporint  arbitrarily many layouts.
     layout_kind = c.config.getString('vr3-initial-orientation') or 'in_secondary'
-    
+
     # Use different layouts depending on the main splitter's *initial* orientation.
     main_splitter = gui.find_widget_by_name(c, 'main_splitter')
     secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
