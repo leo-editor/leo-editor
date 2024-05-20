@@ -1567,7 +1567,6 @@ def viewrendered(event):
     # Use different layouts depending on the main splitter's *initial* orientation.
     main_splitter = gui.find_widget_by_name(c, 'main_splitter')
     secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
-    
     big = 100000
     if layout_kind == 'in_body':
         # Share the VR pane with the body pane.
