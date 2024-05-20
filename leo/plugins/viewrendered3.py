@@ -1542,7 +1542,7 @@ def getVr3(event):
         controllers[h] = vr3 = viewrendered(event)
     return vr3
 #@+node:TomP.20191215195433.16: ** vr3.Commands
-#@+node:TomP.20191215195433.18: *3* g.command('vr3') (rewrite)
+#@+node:TomP.20191215195433.18: *3* g.command('vr3')
 @g.command('vr3')
 def viewrendered(event):
     """Open render view for commander"""
@@ -1558,39 +1558,37 @@ def viewrendered(event):
     if vr3:
         c.bodyWantsFocusNow()
         return vr3
-     # Create the VR frame
+    # Create the VR frame
     controllers[h] = vr3 = ViewRenderedController3(c)
+    
+    # A prototype for supporint  arbitrarily many layouts.
     layout_kind = c.config.getString('vr3-initial-orientation') or 'in_secondary'
+    
     # Use different layouts depending on the main splitter's *initial* orientation.
     main_splitter = gui.find_widget_by_name(c, 'main_splitter')
     secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
-    g.trace(layout_kind, main_splitter.orientation())  ###
+    
+    big = 100000
     if layout_kind == 'in_body':
         # Share the VR pane with the body pane.
         # Create a new splitter.
         splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
+        splitter.setOpaqueResize(False)
         splitter.setObjectName('vr3-horizonal-splitter')
         main_splitter.addWidget(splitter)
         # Add frames.
         body_frame = gui.find_widget_by_name(c, 'bodyFrame')
         splitter.addWidget(body_frame)
         splitter.addWidget(vr3)
-        # Equalize splitters.
-        # splitter.setSizes([1, 1])
-        # main_splitter.setSizes([1, 1])
-        # secondary_splitter.setSizes([1, 1])
+        splitter.setSizes([big, big])
     elif main_splitter.orientation() == Orientation.Vertical:
         # Put the VR pane in in the main_splitter.
         main_splitter.insertWidget(1, vr3)
-        # Equalize splitters.
-        ### main_splitter.setSizes([1, 1, 1])
+        main_splitter.setSizes([big, big, big])
     else:
         # Put the VR pane in the secondary splitter.
         secondary_splitter.addWidget(vr3)
-        # Equalize splitters.
-        ### secondary_splitter.setSizes([1, 1, 1])
-        ### main_splitter.setSizes([1, 1])
-
+        secondary_splitter.setSizes([big, big, big])
     c.bodyWantsFocusNow()
     return vr3
 #@+node:tom.20230403141635.1: *3* g.command('vr3-tab')
@@ -2085,41 +2083,6 @@ def vr3_render_html_from_clip(event):
     vr3.update_html(clip_str, {})
 
 
-#@+node:ekr.20200918085543.1: ** class ViewRenderedProvider3
-class ViewRenderedProvider3:
-    #@+others
-    #@+node:ekr.20200918085543.2: *3* vr3.__init__
-    def __init__(self, c):
-        self.c = c
-        self.vr3_instance = None
-    #@+node:ekr.20200918085543.3: *3* vr3.ns_provide
-    def ns_provide(self, id_):
-        global controllers, layouts
-        # #1678: duplicates in Open Window list
-        if id_ == self.ns_provider_id():
-            c = self.c
-            h = c.hash()
-            vr3 = controllers.get(h) or ViewRenderedController3(c)
-            controllers[h] = vr3
-            if not layouts.get(h):
-                layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
-            return vr3
-        return None
-    #@+node:ekr.20200918085543.4: *3* vr3.ns_provider_id
-    def ns_provider_id(self):
-        return VR3_NS_ID
-    #@+node:ekr.20200918085543.5: *3* vr3.ns_provides
-    def ns_provides(self):
-        # #1671: Better Window names.
-        # #1678: duplicates in Open Window list
-        return [('Viewrendered 3', self.ns_provider_id())]
-    #@+node:ekr.20200918085543.6: *3* vr3.ns_title
-    def ns_title(self, id_):
-        if id_ != self.ns_provider_id():
-            return None
-        filename = self.c.shortFileName() or 'Unnamed file'
-        return f"Viewrendered 3: {filename}"
-    #@-others
 #@+node:TomP.20191215195433.36: ** class ViewRenderedController3 (QWidget)
 class ViewRenderedController3(QtWidgets.QWidget):
     """A class to control rendering in a rendering pane."""
