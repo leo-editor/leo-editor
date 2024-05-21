@@ -1558,7 +1558,7 @@ def getVr3(event):
         controllers[h] = vr3 = viewrendered(event)
     return vr3
 #@+node:TomP.20191215195433.16: ** vr3.Commands
-#@+node:TomP.20191215195433.18: *3* g.command('vr3')
+#@+node:TomP.20191215195433.18: *3* g.command('vr3') (**weird**)
 @g.command('vr3')
 def viewrendered(event):
     """Open render view for commander"""
@@ -1598,7 +1598,7 @@ def viewrendered(event):
         splitter.setSizes([big] * len(splitter.sizes()))
     elif main_splitter.orientation() == Orientation.Vertical:
         # Put the VR pane in in the main_splitter.
-        main_splitter.insertWidget(1, vr3)
+        main_splitter.insertWidget(1, vr3)  ### The weird effect happens here.
         main_splitter.setSizes([big] * len(main_splitter.sizes()))
     else:
         # Put the VR pane in the secondary splitter.
@@ -2138,8 +2138,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.asciidoc3_internal_ok = True
         self.asciidoc_internal_ok = True
         self.using_ext_proc_msg_shown = False
-
-
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):
         pc = self
