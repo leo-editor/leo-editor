@@ -500,8 +500,6 @@ class NestedSplitter(QtWidgets.QSplitter):
         horizontal, vertical = Orientation.Horizontal, Orientation.Vertical
         layout = self.top().get_layout()
 
-        trace = 'splitters' in g.app.debug
-
         def hunter(layout, id_):
             """Recursively look for this widget"""
             for n, i in enumerate(layout['content']):
@@ -524,8 +522,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         if l is None:
             return False
         layout, pos = l
-        if trace:
-            self.dump_layout(layout)
+        # self.dump_layout(layout)
         orient = layout['orientation']
         if (orient == horizontal and side in ('right-of', 'left-of') or
             orient == vertical and side in ('above', 'below')

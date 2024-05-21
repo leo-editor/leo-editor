@@ -2674,7 +2674,7 @@ class LoadManager:
                 A comma-separated list. Valid values are:
                 abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx,
                 importers, ipython, keys, layouts, plugins, save, select, sections,
-                shutdown, size, speed, splitters, startup, themes, undo, verbose, zoom.
+                shutdown, size, speed, startup, themes, undo, verbose, zoom.
 
           --trace-binding=KEY   trace commands bound to a key
           --trace-setting=NAME  trace where named setting is set
@@ -2810,7 +2810,7 @@ class LoadManager:
                 'abbrev', 'beauty', 'cache', 'coloring', 'drawing', 'events',
                 'focus', 'git', 'gnx', 'importers', 'ipython', 'keys',
                 'layouts', 'plugins', 'save', 'select', 'sections', 'shutdown',
-                'size', 'speed', 'splitters', 'startup', 'themes', 'undo', 'verbose', 'zoom',
+                'size', 'speed', 'startup', 'themes', 'undo', 'verbose', 'zoom',
             ]
             m = utils.find_complex_option(r'--trace=([\w\,]+)')
             if not m:
