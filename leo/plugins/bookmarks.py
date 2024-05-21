@@ -269,7 +269,7 @@ def cmd_open_node(event):
         # No need to handle url hooks here.
         g.handleUrl(url, c=c, p=p)
 
-#@+node:tbrown.20110712100955.39215: ** bookmarks-show 
+#@+node:tbrown.20110712100955.39215: ** bookmarks-show
 @g.command('bookmarks-show')
 def cmd_show(event):
     gui = g.app.gui
