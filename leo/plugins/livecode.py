@@ -209,14 +209,9 @@ class LiveCodeDisplay:
 #@+node:tbrown.20140806084727.30203: ** class LiveCodeDisplayProvider
 class LiveCodeDisplayProvider:
     #@+others
-    #@+node:tbrown.20140806084727.30204: *3* __init__ (livecode.py) (to do)
+    #@+node:tbrown.20140806084727.30204: *3* __init__ (livecode.py)
     def __init__(self, c):
         self.c = c
-        if not c.free_layout:
-            return  ### To do
-        splitter = c.free_layout.get_top_splitter()
-        if splitter:
-            splitter.register_provider(self)
     #@+node:tbrown.20140806084727.30205: *3* ns_provides
     def ns_provides(self):
         return [('Live Code', '_leo_livecode_show')]
