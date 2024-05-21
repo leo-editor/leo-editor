@@ -412,6 +412,7 @@ def viewrendered(event: Event) -> Optional[Any]:
         return vr
     # Create the VR frame
     controllers[h] = vr = ViewRenderedController(c)
+
     # Use different layouts depending on the main splitter's *initial* orientation.
     main_splitter = gui.find_widget_by_name(c, 'main_splitter')
     if main_splitter.orientation() == Orientation.Vertical:
@@ -426,15 +427,15 @@ def viewrendered(event: Event) -> Optional[Any]:
         # Second, add the vr pane.
         vr_splitter.addWidget(vr)
         # Give equal width to all splitter panes.
-        vr_splitter.setSizes([1, 1])
-        main_splitter.setSizes([1, 1])
+        vr_splitter.setSizes([100000] * len(vr_splitter.sizes()))
+        main_splitter.setSizes([100000] * len(main_splitter.sizes()))
     else:
         # Put the VR pane in the secondary splitter.
         secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
         # Add the VR pane to the secondary splitter.
         secondary_splitter.addWidget(vr)
         # Give equal width to the panes in the secondary splitter.
-        secondary_splitter.setSizes([1, 1, 1])
+        secondary_splitter.setSizes([100000] * len(secondary_splitter.sizes()))
     c.bodyWantsFocusNow()
     return vr
 #@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')

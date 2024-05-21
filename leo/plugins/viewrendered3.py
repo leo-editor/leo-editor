@@ -1567,7 +1567,6 @@ def viewrendered(event):
     # Use different layouts depending on the main splitter's *initial* orientation.
     main_splitter = gui.find_widget_by_name(c, 'main_splitter')
     secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
-    big = 100000
     if layout_kind == 'in_body':
         # Share the VR pane with the body pane.
         # Create a new splitter.
@@ -1579,15 +1578,15 @@ def viewrendered(event):
         body_frame = gui.find_widget_by_name(c, 'bodyFrame')
         splitter.addWidget(body_frame)
         splitter.addWidget(vr3)
-        splitter.setSizes([big, big])
+        splitter.setSizes([100000] * len(splitter.sizes()))
     elif main_splitter.orientation() == Orientation.Vertical:
         # Put the VR pane in in the main_splitter.
         main_splitter.insertWidget(1, vr3)
-        main_splitter.setSizes([big, big, big])
+        main_splitter.setSizes([100000] * len(main_splitter.sizes()))
     else:
         # Put the VR pane in the secondary splitter.
         secondary_splitter.addWidget(vr3)
-        secondary_splitter.setSizes([big, big, big])
+        secondary_splitter.setSizes([100000] * len(secondary_splitter.sizes()))
     c.bodyWantsFocusNow()
     return vr3
 #@+node:tom.20230403141635.1: *3* g.command('vr3-tab')

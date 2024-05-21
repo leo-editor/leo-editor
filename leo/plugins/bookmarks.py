@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20070322113635: * @file ../plugins/bookmarks.py
-#@+<< docstring >>
-#@+node:tbrown.20070322113635.1: ** << docstring >>
+#@+<< docstring: bookmarks.py >>
+#@+node:tbrown.20070322113635.1: ** << docstring: bookmarks.py >>
 """ Manage bookmarks in a list, and show bookmarks in a pane.
 
 This plugin has two bookmark related functions.  It manages nodes that
@@ -208,10 +208,10 @@ it to edit the bookmark node itself, and delete the body text (UNL) there.
 
 """
 
-#@-<< docstring >>
+#@-<< docstring: bookmarks.py >>
 # Written by Terry Brown.
-#@+<< imports >>
-#@+node:tbrown.20070322113635.3: ** << imports >>
+#@+<< imports: bookmarks.py >>
+#@+node:tbrown.20070322113635.3: ** << imports: bookmarks.py >>
 from collections import namedtuple
 import hashlib
 from leo.core import leoGlobals as g
@@ -220,7 +220,7 @@ from leo.core.leoQt import ControlType, KeyboardModifier, MouseButton, Orientati
 
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#@-<< imports >>
+#@-<< imports: bookmarks.py >>
 #@+others
 #@+node:ekr.20100128073941.5371: ** init (bookmarks.py)
 def init():
@@ -269,17 +269,19 @@ def cmd_open_node(event):
         # No need to handle url hooks here.
         g.handleUrl(url, c=c, p=p)
 
-#@+node:tbrown.20110712100955.39215: ** bookmarks-show (to do)
+#@+node:tbrown.20110712100955.39215: ** bookmarks-show 
 @g.command('bookmarks-show')
 def cmd_show(event):
-
+    gui = g.app.gui
     c = event.get('c')
     bmd = BookMarkDisplay(c)
-    ### To do.
-    if c.free_layout:
-        splitter = c.free_layout.get_top_splitter()
-        if splitter:
-            splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
+
+    # Put the bmd pane in the main splitter.
+    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+    # Add the VR pane to the secondary splitter.
+    main_splitter.insertWidget(1, bmd.w)
+    # Give equal width to the panes in the secondary splitter.
+    main_splitter.setSizes([100000] * len(main_splitter.sizes()))
 #@+node:tbrown.20131226095537.26309: ** bookmarks-switch
 @g.command('bookmarks-switch')
 def cmd_switch(event):
@@ -460,23 +462,26 @@ def cmd_mark_as_target(event):
     g.es("Node noted - now use\nbookmarks-use-other-outline\nin the "
         "outline you want to\nstore bookmarks in this node")
 
-#@+node:ekr.20190619132530.1: ** bookmarks-use-other-outline (to do)
+#@+node:ekr.20190619132530.1: ** bookmarks-use-other-outline
 @g.command('bookmarks-use-other-outline')
 def cmd_use_other_outline(event):
     """Set bookmarks for this outline from a list (node) in
     a different outline
     """
+    gui = g.app.gui
     c = event.get('c')
     if not hasattr(g, '_bookmarks_target') or not g._bookmarks_target:
         g.es("Use bookmarks-mark-as-target first")
         return
     c.db['_leo_bookmarks_show'] = g._bookmarks_target
     bmd = BookMarkDisplay(c, g._bookmarks_target_v)
-    ### To do.
-    if c.free_layout:
-        splitter = c.free_layout.get_top_splitter()
-        if splitter:
-            splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
+
+    # Put the bmd pane in the main splitter.
+    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+    # Add the VR pane to the secondary splitter.
+    main_splitter.insertWidget(1, bmd.w)
+    # Give equal width to the panes in the secondary splitter.
+    main_splitter.setSizes([100000] * len(main_splitter.sizes()))
 #@+node:ekr.20140917180536.17896: ** class FlowLayout (QLayout)
 class FlowLayout(QtWidgets.QLayout):  # type:ignore
     """
@@ -1152,12 +1157,6 @@ class BookMarkDisplayProvider:
     #@+node:tbrown.20110712121053.19747: *3* __init__ (BookMarkDisplayProvider)
     def __init__(self, c):
         self.c = c
-        if not c.free_layout:
-            return
-        splitter = c.free_layout.get_top_splitter()
-        if splitter:
-            splitter.register_provider(self)
-
     #@+node:tbrown.20110712121053.19748: *3* ns_provides
     def ns_provides(self):
         return [('Bookmarks', '_leo_bookmarks_show')]

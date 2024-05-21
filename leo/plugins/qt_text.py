@@ -32,7 +32,7 @@ QFontMetrics = QtGui.QFontMetrics
 
 #@+others
 #@+node:ekr.20191001084541.1: **  zoom commands
-#@+node:tbrown.20130411145310.18857: *3* @g.command("zoom-in")
+#@+node:tbrown.20130411145310.18857: *3* @g.command('zoom-in')
 @g.command("zoom-in")
 def zoom_in(event: LeoKeyEvent = None, delta: int = 1) -> None:
     """increase body font size by one
@@ -40,7 +40,7 @@ def zoom_in(event: LeoKeyEvent = None, delta: int = 1) -> None:
     @font-size-body must be present in the stylesheet
     """
     zoom_helper(event, delta=1)
-#@+node:ekr.20191001084646.1: *3* @g.command("zoom-out")
+#@+node:ekr.20191001084646.1: *3* @g.command('zoom-out')
 @g.command("zoom-out")
 def zoom_out(event: LeoKeyEvent = None) -> None:
     """decrease body font size by one

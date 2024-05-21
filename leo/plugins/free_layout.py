@@ -60,9 +60,8 @@ Wrapper = Any
 #@+node:tbrown.20110203111907.5521: ** free_layout:init
 def init() -> bool:
     """Return True if the free_layout plugin can be loaded."""
-    # #3910: Leo no longer supports the free_layout and nested_splitter plugins.
-    return False
-    # return bool(g.app.gui.guiName() == "qt" and NestedSplitter)
+    # #3910: The free_layout and nested_splitter plugins are deprecated.
+    return bool(g.app.gui.guiName() == "qt" and NestedSplitter)
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
 
