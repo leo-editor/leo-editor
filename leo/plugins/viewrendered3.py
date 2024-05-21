@@ -11,8 +11,8 @@ Creates a window for live rendering of reSTructuredText,
 Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
-#@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V4.03
+#@+node:tom.20240521004125.1: *3* About
+About Viewrendered3 V5.0
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,13 +57,19 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
+ASCIIDOC, MD, and RsT images display correctly when the exported file is
+viewed in the browser (relative paths are converted to absolute file system
+paths).
+
+The display code has been adapted to Leo's new splitter/layout infrastructure.
+
+Previous Recent Changes
+========================
 In @jupyter nodes, for the path to the jupyter file or url:
     - path separators can be either backward or forward slashes.
     - Quotation marks around paths are removed.
     These changes let a path copied to the clipboard from the file manager work without user editing.
 
-Previous Recent Changes
-========================
 Bug fixes:
 - Quit early if no qt gui.
 - Fix messags with "VR4" to read "VR3".
@@ -1053,7 +1059,7 @@ except ImportError:
     print('VR3: *** no pygments')
 #@-<< imports >>
 #@+<< declarations >>
-#@+node:TomP.20191231111412.1: ** << declarations >>
+#@+node:tom.20240520232254.1: ** << declarations >>
 # pylint: disable=invalid-name
 C = 'c'
 VR3_NS_ID = '_leo_viewrendered3'
@@ -1087,7 +1093,7 @@ MATHJAX_POLYFILL_URL = 'https://polyfill.io/v3/polyfill.min.js?features=es5'
 MATHJAX_URL = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js'
 
 #@+<< RsT Error styles>>
-#@+node:tom.20210621192144.1: *3* << RsT Error styles>>
+#@+node:tom.20240520232254.2: *3* << RsT Error styles>>
 RST_ERROR_BODY_STYLE = ('color:#606060;'
                         'background: aliceblue;'
                         'padding-left:1em;'
@@ -1113,7 +1119,7 @@ XML = 'xml'
 ZOOM_FACTOR = 1.1
 
 #@+<< MD stylesheets >>
-#@+node:tom.20211117122509.1: *3* << MD stylesheets >>
+#@+node:tom.20240520232254.3: *3* << MD stylesheets >>
 MD_BASE_STYLESHEET_NAME = 'md_styles.css'
 MD_STYLESHEET_DARK = 'md_styles_solarized_dark.css'
 MD_STYLESHEET_LIGHT = 'md_styles_solarized_light.css'
@@ -1167,9 +1173,23 @@ MD_MATH_FENCE = '```math'
 ASCDOC_CODE_LANG_MARKER = '[source,'
 ASCDOC_FENCE_MARKER = '----'
 
+RST_FIGURE_DIRECTIVE = '.. figure::'
 RST_INDENT = '    '
+RST_IMAGE_DIRECTIVE = '.. image::'
 SKIPBLOCKS = ('.. toctree::', '.. index::')
 ASCDOC_PYGMENTS_ATTRIBUTE = ':source-highlighter: pygments'
+
+#@+<< Other Line Markers >>
+#@+node:tom.20240520232254.4: *3* << Other Line Markers >>
+# MD
+MD_LABELre = r'^!\[(?P<label>.*)\]'
+MD_URLre = r'\((?P<url>.+)\)'
+MD_IMGre = MD_LABELre + MD_URLre
+MD_IMAGE_MARKER_RE = re.compile(MD_IMGre)
+
+ASCIIDOC_IMGre = r'image::(?P<url>.+)\[.*\]'
+ASCIIDOC_IMG = re.compile(ASCIIDOC_IMGre)
+#@-<< Other Line Markers >>
 
 _in_code_block = False
 
@@ -1180,7 +1200,7 @@ LEO_PLUGINS_DIR = os.path.dirname(__file__)
 NO_SVG_WIDGET_MSG = 'QSvgWidget not available'
 
 #@+<< Misc Globals >>
-#@+node:tom.20211126230402.1: *3* << Misc Globals >>
+#@+node:tom.20240520232254.5: *3* << Misc Globals >>
 ad3_file = ''
 asciidoc = None
 asciidoctor = None
@@ -1639,7 +1659,9 @@ def hide_rendering_pane(event):
         g.es_print('can not close vr3 pane after using pyplot')
         return
 
-    pos = positions[c.hash()]
+    pos = positions.get(c.hash())
+    if not pos:
+        pos = OPENED_IN_TAB
     if pos == OPENED_IN_SPLITTER:
         vr3.store_layout('open')
     elif pos == OPENED_IN_TAB:
@@ -1647,7 +1669,7 @@ def hide_rendering_pane(event):
 
     def at_idle(c=c, _vr3=vr3):
         c = event.get('c')
-        _vr3.adjust_layout('closed')
+        # _vr3.adjust_layout('closed')
         c.bodyWantsFocusNow()
 
     vr3.deactivate()
@@ -2094,6 +2116,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.w = None  # The present widget in the rendering pane.
 
         # For viewrendered3
+        self.base_path = ''  # A node's base path including @path directive
         self.code_only = False
         self.code_only = False
         self.current_tree_root = None
@@ -2104,6 +2127,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.qwev = self.create_base_text_widget()
         self.rst_html = ''
         self.show_whole_tree = False
+        self.base_url = ''
 
         # User settings.
         self.reloadSettings()
@@ -2968,6 +2992,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     return
             if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT) and _tree and self.show_whole_tree:
                 _tree.extend(rootcopy.subtree())
+            self.base_url = self.get_node_path(self.c, p)
             f = pc.dispatch_dict.get(kind)
             if not f:
                 g.trace(f'no handler for kind: {kind}')
@@ -4158,12 +4183,28 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # as a list of the words.
 
             if not _in_code_block:
+                rst_directive = ''
+                if line.startswith(RST_IMAGE_DIRECTIVE):
+                    rst_directive = RST_IMAGE_DIRECTIVE
+                elif line.startswith(RST_FIGURE_DIRECTIVE):
+                    rst_directive = RST_FIGURE_DIRECTIVE
+
                 if line.startswith('@image'):
                     # insert RsT code for image
                     fields = line.split(' ', 1)
                     if len(fields) > 1:
                         url = fields[1]
-                        line = f'\n.. image:: {url}\n      :width: 100%\n\n'
+                        if url.startswith('data:'):
+                            base = ''
+                        else:
+                            base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
+                        line = f'\n.. image:: {base}{url}\n      :width: 100%\n\n'
+                elif rst_directive:
+                    fields = line.split(rst_directive)
+                    if len(fields) > 1:
+                        url = fields[1].strip()
+                        base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
+                        line = f'{rst_directive} {base}{url}\n'
                     else:
                         # No url for an image: ignore and skip to next line
                         continue
@@ -4518,6 +4559,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         url = s or p.h[len(tag) :]
         url = url.strip()
         return url
+    #@+node:tom.20240521000648.1: *5* vr3.get_node_path
+    def get_node_path(self, c, p) -> str:
+        return c.getNodePath(p)
     #@+node:TomP.20191215195433.84: *5* vr3.must_change_widget
     def must_change_widget(self, widget_class):
         pc = self
@@ -4733,8 +4777,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         n = max(4, len(g.toEncodedString(s, reportErrors=False)))
         return f'{s}\n{ch * n}\n\n'
     #@-others
-#@+node:TomP.20200827172759.1: ** State Machine Components
-#@+node:TomP.20200213170204.1: *3* class State
+#@+node:tom.20240520234642.1: ** State Machine Components
+#@+node:tom.20240520234642.2: *3* class State
 class State(Enum):
     BASE = auto()
     AT_LANG_CODE = auto()
@@ -4748,7 +4792,7 @@ class State(Enum):
     STARTING_ASCDOC_CODE_BLOCK = auto()
     ASCDOC_READY_FOR_FENCE = auto()
 
-#@+node:TomP.20200213170314.1: *3* class Action
+#@+node:tom.20240520234642.3: *3* class Action
 class Action:
     @staticmethod
     def new_chunk(sm, line, tag, language, addline_at_new_start=False):
@@ -4779,6 +4823,8 @@ class Action:
     def add_line(sm, line, tag=None, language=TEXT):
         sm.current_chunk.add_line(line)
 
+    #@+others
+    #@+node:tom.20240521002159.1: *4* Add at-Image
     @staticmethod
     def add_image(sm, line, tag=None, language=None):
         # Used for @image lines
@@ -4788,14 +4834,44 @@ class Action:
         if len(fields) > 1:
             url = fields[1] or ''
             if url:
+                if url.startswith('data:'):
+                    base = ''
+                else:
+                    base = sm.vr3.base_url
+                if base and os.path.isabs(base):
+                    base = base + '/'
+
                 if sm.structure == MD:
                     # image syntax: ![label](url)
-                    line = f'![]({url})'
+                    line = f'![]({base}{url})'
                 elif sm.structure == ASCIIDOC:
                     # image syntax: image:<target>[<attributes>] (must include "{}" even if no attributes
-                    line = f'image:{url}[]'
+                    line = f'image:{base}{url}[]'
                 sm.current_chunk.add_line(line)
             # If no url parameter, do nothing
+    #@+node:tom.20240521002223.1: *4* Image Path to Absolute
+    @staticmethod
+    def image_url2abs(sm, line, tag=None, language=None):
+        """Convert MD or Asciidoc image directive's image path to an absolute one"""
+        is_image = False
+        if language == MD:
+            is_image = MD_IMAGE_MARKER_RE.match(line)
+        elif language == ASCIIDOC:
+            is_image = ASCIIDOC_IMG.match(line)
+        if is_image:
+            url = is_image['url'].strip()
+            g.es(url)
+            if url.startswith('data:'):
+                sm.current_chunk.add_line(line)
+            else:
+                base_url = sm.vr3.base_url
+                base = base_url + '/' if os.path.isabs(base_url) else ''
+                abs_url = base + url
+                line = line.replace(url, abs_url)
+                sm.current_chunk.add_line(line)
+        else:
+            sm.current_chunk.add_line(line)
+    #@-others
 
     @staticmethod
     def no_action(sm, line, tag=None, language=TEXT):
@@ -4810,7 +4886,7 @@ class Action:
     def add_math_block_end(sm, line, tag=None, language=None):
         line = r'\]'
         sm.current_chunk.add_line(line)
-#@+node:TomP.20200213170250.1: *3* class Marker
+#@+node:tom.20240520234642.4: *3* class Marker
 class Marker(Enum):
     """
     For indicating markers in a text line that characterize their purpose, like "@language".
@@ -4825,10 +4901,12 @@ class Marker(Enum):
     END_SKIP = auto()
     IMAGE_MARKER = auto()
 
+    MD_IMAGE_MARKER = auto()
+    ASCIIDOC_IMAGE_MARKER = auto()
     ASCDOC_CODE_MARKER = auto()
     ASCDOC_CODE_LANG_MARKER = auto()  # a line like "[source, python]" before a line "---"
 
-#@+node:TomP.20191231172446.1: *3* class Chunk
+#@+node:tom.20240520234642.5: *3* class Chunk
 #@@language python
 class Chunk:
     """Holds a block of text, with various metadata about it."""
@@ -4877,7 +4955,7 @@ class Chunk:
                 _formatted.extend(self.text_lines)
                 _formatted.append(ASCDOC_FENCE_MARKER)
                 self.formatted = '\n'.join(_formatted)
-#@+node:TomP.20200211142437.1: *3* class StateMachine
+#@+node:tom.20240520234642.6: *3* class StateMachine
 #@@language python
 
 class StateMachine:
@@ -4909,7 +4987,7 @@ class StateMachine:
         self.codelang = ''
 
     #@+<< runMachine >>
-    #@+node:TomP.20200215180012.1: *4* << runMachine >>
+    #@+node:tom.20240520234642.7: *4* << runMachine >>
     def runMachine(self, lines):
         """Process a list of text lines and return final text and a list of lines of code.
 
@@ -4941,7 +5019,7 @@ class StateMachine:
         return final_text, codelines
     #@-<< runMachine >>
     #@+<< do_state >>
-    #@+node:TomP.20200213170532.1: *4* << do_state >>
+    #@+node:tom.20240520234642.8: *4* << do_state >>
     #@@language python
     def do_state(self, state, line):
         marker, tag, language = self.get_marker(line)
@@ -4976,7 +5054,7 @@ class StateMachine:
         self.state = next
     #@-<< do_state >>
     #@+<< get_marker_md >>
-    #@+node:TomP.20200901214058.1: *4* << get_marker_md >>
+    #@+node:tom.20240520234642.9: *4* << get_marker_md >>
     def get_marker_md(self, line, tag, _lang, marker):
         # If _lang == a code language, we are starting a code block.
         if _lang:
@@ -5003,7 +5081,7 @@ class StateMachine:
         return (marker, tag, lang)
     #@-<< get_marker_md >>
     #@+<< get_marker_asciidoc >>
-    #@+node:TomP.20200901211601.1: *4* << get_marker_asciidoc >>
+    #@+node:tom.20240520234642.10: *4* << get_marker_asciidoc >>
     def get_marker_asciidoc(self, line, tag, lang, marker):
 
         if line.startswith(ASCDOC_CODE_LANG_MARKER):
@@ -5040,7 +5118,7 @@ class StateMachine:
         return (marker, tag, lang)
     #@-<< get_marker_asciidoc >>
     #@+<< get_marker >>
-    #@+node:TomP.20200212085651.1: *4* << get_marker >>
+    #@+node:tom.20240520234642.11: *4* << get_marker >>
     #@@language python
     def get_marker(self, line):
         """Return classification information about a line.
@@ -5081,6 +5159,22 @@ class StateMachine:
                     tag = CODE
                     break
 
+        elif line.startswith('![') and self.structure == MD:
+            is_image = MD_IMAGE_MARKER_RE.match(line)
+            if is_image:
+                marker = Marker.MD_IMAGE_MARKER
+                lang = self.structure
+            else:
+                marker = Marker.MARKER_NONE
+
+        elif line.startswith('image::') and self.structure == ASCIIDOC:
+            is_image = ASCIIDOC_IMG.match(line)
+            if is_image:
+                marker = Marker.ASCIIDOC_IMAGE_MARKER
+                lang = self.structure
+            else:
+                marker = Marker.MARKER_NONE
+
         elif line.startswith("@image"):
             marker = Marker.IMAGE_MARKER
             lang = self.structure
@@ -5102,7 +5196,7 @@ class StateMachine:
         return (marker, tag, lang)
     #@-<< get_marker >>
     #@+<< State Table >>
-    #@+node:TomP.20200213171040.1: *4* << State Table >>
+    #@+node:tom.20240520234642.12: *4* << State Table >>
     State_table = {  # (state, marker): (action, next_state)
 
         (State.BASE, Marker.AT_LANGUAGE_MARKER): (Action.new_chunk, State.AT_LANG_CODE),
@@ -5116,6 +5210,8 @@ class StateMachine:
                     (Action.new_chunk, State.TO_BE_COMPUTED),
 
         (State.BASE, Marker.IMAGE_MARKER): (Action.add_image, State.BASE),
+        (State.BASE, Marker.MD_IMAGE_MARKER): (Action.image_url2abs, State.BASE),
+        (State.BASE, Marker.ASCIIDOC_IMAGE_MARKER): (Action.image_url2abs, State.BASE),
 
         # ========= Markdown-specific states ==================
         (State.BASE, Marker.MD_FENCE_LANG_MARKER): (Action.new_chunk, State.FENCED_CODE),
