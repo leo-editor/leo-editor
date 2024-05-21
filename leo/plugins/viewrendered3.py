@@ -2062,9 +2062,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.c = c
         # Create the widget.
         super().__init__(parent)
-            ###
-                # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
-                # QtWidgets.QWidget.__init__(self)
+            # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
+            # QtWidgets.QWidget.__init__(self)
         self.create_pane(parent)
 
         # Set the ivars.
