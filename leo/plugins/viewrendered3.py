@@ -1210,6 +1210,12 @@ asciidoc_dirs = {'asciidoc': {}, 'asciidoc3': {}}
 asciidoc_processors = []
 asciidoc_has_diagram = False
 #@-<< Misc Globals >>
+#@+<< Layout Specifier Strings >>
+#@+node:tom.20240521171407.1: *3* << Layout Specifier Strings >>
+IN_BODY = 'in_body'
+TOGGLE_WITH_BODY = 'toggle_with_body'
+IN_SECONDARY = 'in_secondary'
+#@-<< Layout Specifier Strings >>
 #@-<< declarations >>
 
 trace = False  # This global trace is convenient.
@@ -1578,14 +1584,19 @@ def viewrendered(event):
     controllers[h] = vr3 = ViewRenderedController3(c)
 
     # A prototype for supporint  arbitrarily many layouts.
-    layout_kind = c.config.getString('vr3-initial-orientation') or 'in_secondary'
+    if vr3.layout_kind:
+        layout_kind = vr3.layout_kind
+    else:
+        layout_kind = c.config.getString('vr3-initial-orientation') or 'in_secondary'
 
     # Use different layouts depending on the main splitter's *initial* orientation.
     big = 100000
     main_splitter = gui.find_widget_by_name(c, 'main_splitter')
     secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
-    if layout_kind == 'in_body':
-        # Share the VR pane with the body pane.
+    #@+<< insert vr3 by layout kind >>
+    #@+node:tom.20240521170202.1: *4* << insert vr3 by layout kind >>
+    if layout_kind == IN_BODY:
+        # Share the VR3 pane with the body pane.
         # Create a new splitter.
         splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
         splitter.setOpaqueResize(False)
@@ -1596,6 +1607,23 @@ def viewrendered(event):
         splitter.addWidget(body_frame)
         splitter.addWidget(vr3)
         splitter.setSizes([big] * len(splitter.sizes()))
+    elif layout_kind == TOGGLE_WITH_BODY:
+        # Put vr3 into stacked layout with body editor.
+        gui = g.app.gui
+        body_stacked_widget = gui.find_widget_by_name(c, 'bodyStackedWidget')
+        stacked_layout = body_stacked_widget.children()[0]
+        h = c.hash()
+        if stacked_layout.count() == 1:
+            stacked_layout.addWidget(vr3)
+
+        if stacked_layout.currentIndex() == 0:
+            vr3 = stacked_layout.widget(1)
+            stacked_layout.setCurrentIndex(1)
+            vr3.set_unfreeze()
+        else:
+            vr3 = stacked_layout.widget(1)
+            vr3.set_freeze()
+
     elif main_splitter.orientation() == Orientation.Vertical:
         # Put the VR pane in in the main_splitter.
         main_splitter.insertWidget(1, vr3)  ### The weird effect happens here.
@@ -1604,6 +1632,7 @@ def viewrendered(event):
         # Put the VR pane in the secondary splitter.
         secondary_splitter.addWidget(vr3)
         secondary_splitter.setSizes([big] * len(secondary_splitter.sizes()))
+    #@-<< insert vr3 by layout kind >>
     c.bodyWantsFocusNow()
     return vr3
 #@+node:tom.20230403141635.1: *3* g.command('vr3-tab')
@@ -2396,6 +2425,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
         self.use_dark_theme = c.config.getBool('vr3-rst-use-dark-theme', RST_USE_DARK)
+        self.layout_kind = ''
 
         self.math_output = c.config.getBool('vr3-math-output', default=False)
         self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
