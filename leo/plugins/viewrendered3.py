@@ -1581,29 +1581,28 @@ def viewrendered(event):
     layout_kind = c.config.getString('vr3-initial-orientation') or 'in_secondary'
 
     # Use different layouts depending on the main splitter's *initial* orientation.
-    big = 100000
     main_splitter = gui.find_widget_by_name(c, 'main_splitter')
     secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
     if layout_kind == 'in_body':
         # Share the VR pane with the body pane.
         # Create a new splitter.
         splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
-        splitter.setOpaqueResize(False)
         splitter.setObjectName('vr3-horizonal-splitter')
         main_splitter.addWidget(splitter)
         # Add frames.
         body_frame = gui.find_widget_by_name(c, 'bodyFrame')
         splitter.addWidget(body_frame)
         splitter.addWidget(vr3)
-        splitter.setSizes([big] * len(splitter.sizes()))
+        gui.equalize_splitter(splitter)
+        gui.equalize_splitter(main_splitter)
     elif main_splitter.orientation() == Orientation.Vertical:
         # Put the VR pane in in the main_splitter.
         main_splitter.insertWidget(1, vr3)  ### The weird effect happens here.
-        main_splitter.setSizes([big] * len(main_splitter.sizes()))
+        gui.equalize_splitter(main_splitter)
     else:
         # Put the VR pane in the secondary splitter.
         secondary_splitter.addWidget(vr3)
-        secondary_splitter.setSizes([big] * len(secondary_splitter.sizes()))
+        gui.equalize_splitter(secondary_splitter)
     c.bodyWantsFocusNow()
     return vr3
 #@+node:tom.20230403141635.1: *3* g.command('vr3-tab')

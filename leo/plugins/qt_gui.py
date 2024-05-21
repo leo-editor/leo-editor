@@ -1561,6 +1561,12 @@ class LeoQtGui(leoGui.LeoGui):
 
     QSignalSpy = QtTest.QSignalSpy
     assert QSignalSpy
+    #@+node:ekr.20240521171848.1: *4* qt_gui.equalize_splitter
+    def equalize_splitter(self, splitter):
+        """Equalize all the splitter's contents."""
+        if not isinstance(splitter, QtWidgets.QSplitter):
+            g.trace(f"Not a QSplitter: {splitter.__class__.__name__}")
+        splitter.setSizes([100000] * len(splitter.sizes()))
     #@+node:ekr.20190819091957.1: *3* qt_gui:Widget constructors
     #@+node:ekr.20190819094016.1: *4* qt_gui.createButton
     def createButton(self, parent: QWidget, name: str, label: str) -> QPushButton:
