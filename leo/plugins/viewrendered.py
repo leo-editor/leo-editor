@@ -185,12 +185,9 @@ Settings
 Acknowledgments
 ================
 
-Terry Brown created this initial version of this plugin, and the
-free_layout and NestedSplitter plugins used by viewrendered.
+Terry Brown created this initial version of this plugin.
 
-Edward K. Ream generalized this plugin and added communication and
-coordination between the free_layout, NestedSplitter and viewrendered
-plugins.
+Edward K. Ream generalized this plugin.
 
 Jacob Peck added markdown support to this plugin.
 
@@ -730,9 +727,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.change_size(100)
 
     def change_size(self, delta: int) -> None:
-        ### Test.
-        # if not hasattr(self.c, 'free_layout'):
-            # return
         splitter = self.parent()
         if not splitter:
             return
@@ -852,9 +846,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 # BaseTextWidget is a QTextBrowser.
                 pass
         return w
-    #@+node:ekr.20110320120020.14486: *4* vr.embed_widget (test)
+    #@+node:ekr.20110320120020.14486: *4* vr.embed_widget
     def embed_widget(self, w: Wrapper, delete_callback: Callable = None) -> None:
-        """Embed widget w in the free_layout splitter."""
+        """Embed widget w in the appropriate widget."""
         c = self.c
         self.w = w
 

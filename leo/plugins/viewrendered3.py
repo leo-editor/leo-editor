@@ -953,7 +953,6 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+node:tom.20210517102737.1: *3* << Qt Imports >> (VR3)
 try:
     from leo.plugins import qt_text
-    ### from leo.plugins import free_layout
     from leo.core.leoQt import QtCore, QtWidgets
     from leo.core.leoQt import QtMultimedia, QtSvg
     from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
@@ -2989,9 +2988,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # except Exception:
                     # g.es_exception()
                     # pc.deactivate()
-    #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper (test)
+    #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
-        """Embed widget w in the free_layout splitter."""
+        """Embed widget w in the appropriate splitter."""
         pc = self; c = pc.c
         pc.w = w
         layout = self.layout()
