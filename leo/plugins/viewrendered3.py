@@ -1240,11 +1240,9 @@ latex_template = f'''\
 '''
 #@-<< define html templates >>
 
-# keys for all three below: c.hash()
+# keys are c.hash().
 controllers = {}  # values: VR3 widets
 positions = {}  # values: OPENED_IN_TAB or OPENED_IN_SPLITTER
-### layouts = {}  # values: tuples (layout_when_closed, layout_when_open)
-
 
 #@+others
 #@+node:TomP.20200508124457.1: ** find_exe()
@@ -1564,7 +1562,7 @@ def getVr3(event):
 @g.command('vr3')
 def viewrendered(event):
     """Open render view for commander"""
-    global controllers, layouts
+    global controllers
     gui = g.app.gui
     if gui.guiName() != 'qt':
         return None
@@ -1578,12 +1576,12 @@ def viewrendered(event):
         return vr3
     # Create the VR frame
     controllers[h] = vr3 = ViewRenderedController3(c)
-    # vr3.splitter = gui.get_top_splitter(c)
 
     # A prototype for supporint  arbitrarily many layouts.
     layout_kind = c.config.getString('vr3-initial-orientation') or 'in_secondary'
 
     # Use different layouts depending on the main splitter's *initial* orientation.
+    big = 100000
     main_splitter = gui.find_widget_by_name(c, 'main_splitter')
     secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
     if layout_kind == 'in_body':
@@ -1597,15 +1595,15 @@ def viewrendered(event):
         body_frame = gui.find_widget_by_name(c, 'bodyFrame')
         splitter.addWidget(body_frame)
         splitter.addWidget(vr3)
-        splitter.setSizes([100000] * len(splitter.sizes()))
+        splitter.setSizes([big] * len(splitter.sizes()))
     elif main_splitter.orientation() == Orientation.Vertical:
         # Put the VR pane in in the main_splitter.
         main_splitter.insertWidget(1, vr3)
-        main_splitter.setSizes([100000] * len(main_splitter.sizes()))
+        main_splitter.setSizes([big] * len(main_splitter.sizes()))
     else:
         # Put the VR pane in the secondary splitter.
         secondary_splitter.addWidget(vr3)
-        secondary_splitter.setSizes([100000] * len(secondary_splitter.sizes()))
+        secondary_splitter.setSizes([big] * len(secondary_splitter.sizes()))
     c.bodyWantsFocusNow()
     return vr3
 #@+node:tom.20230403141635.1: *3* g.command('vr3-tab')
@@ -1644,7 +1642,7 @@ def unfreeze_rendering_pane(event):
 @g.command('vr3-hide')
 def hide_rendering_pane(event):
     """Close the rendering pane."""
-    global controllers, layouts
+    global controllers
     if g.app.gui.guiName() != 'qt':
         return
 
