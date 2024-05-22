@@ -1631,7 +1631,7 @@ def hide_rendering_pane(event):
         g.es_print('can not close vr3 pane after using pyplot')
         return
 
-    pos = positions[c.hash()]
+    pos = positions.get(c.hash())
     if pos == OPENED_IN_SPLITTER:
         vr3.store_layout('open')
     elif pos == OPENED_IN_TAB:
