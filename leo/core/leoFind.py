@@ -2647,10 +2647,6 @@ class LeoFind:
             c.outerUpdate()  # Set the focus immediately.
             if c.vim_mode and c.vimCommands:  # pragma: no cover
                 c.vimCommands.update_selection_after_search()
-        # #3915: Support for Leo's server.
-        if not g.unitTesting and g.leoServer:
-            g.leoServer._show_find_success(c, self.in_headline, insert, p)
-            return w
         # Support for the console gui.
         if hasattr(g.app.gui, 'show_find_success'):  # pragma: no cover
             g.app.gui.show_find_success(c, self.in_headline, insert, p)

@@ -865,17 +865,17 @@ class LeoServer:
 
         global g
         t1 = time.process_time()
-
+        #
         # Init ivars first.
         self.c: Cmdr = None  # Currently Selected Commander.
         self.dummy_c: Cmdr = None  # Set below, after we set g.
         self.action: str = None
         self.bad_commands_list: list[str] = []  # Set below.
-
+        #
         # Debug utilities
         self.current_id = 0  # Id of action being processed.
         self.log_flag = False  # set by "log" key
-
+        #
         # Start the bridge.
         self.bridge = leoBridge.controller(
             gui='nullGui',
@@ -888,47 +888,36 @@ class LeoServer:
         g.in_leo_server = True  # #2098.
         g.leoServer = self  # Set server singleton global reference
         self.leoServerConfig: Param = None
-
+        #
         # * Intercept Log Pane output: Sends to client's log pane
         g.es = self._es  # pointer - not a function call
         g.es_print = self._es  # Also like es, because es_print would double strings in client
-
+        #
         # Set in _init_connection
         self.web_socket = None  # Main Control Client
         self.loop: Loop = None
-
+        #
         # To inspect commands
         self.dummy_c = g.app.newCommander(fileName=None)
         self.bad_commands_list = self._bad_commands(self.dummy_c)
-
+        #
         # * Replacement instances to Leo's codebase : getScript, IdleTime and externalFilesController
         g.getScript = self._getScript
         g.IdleTime = self._idleTime
-
+        #
         # * hook open2 for commander creation completion and inclusion in windowList
+        #
         g.registerHandler('open2', self._open2Hook)
-
-        # #3915. It is no longer possible to monkey-patch LeoApp.selectLeoWindow.
-        #        Instead, LeoApp.selectLeoWindow tests g.leoServer.
-
-        # #3915. It is no longer possible to monkey-patch g.app.gui methods.
-        #        Instead, three nullGui methods test g.leoServer.
-        #        See the node: unl:gnx://leoPy.leo#ekr.20031218072017.3744
-
-            # # override for "revert to file" operation
-            # g.app.gui.runAskOkDialog = self._runAskOkDialog
-            # g.app.gui.runAskYesNoDialog = self._runAskYesNoDialog
-            # g.app.gui.runAskYesNoCancelDialog = self._runAskYesNoCancelDialog
-
-        # #3915. LeoFind.show_find_success now tests g.leoServer,
-        #        so there is no need to monkey-patch it.
-        #        See the node: unl:gnx://leoPy.leo#ekr.20031218072017.3091
-
-            # g.app.gui.show_find_success = self._show_find_success
-
-        # Define a dummy headline widget.
+        # override for selectLeoWindow
+        g.app.selectLeoWindow = self._selectLeoWindow
+        #
+        # override for "revert to file" operation
+        g.app.gui.runAskOkDialog = self._runAskOkDialog
+        g.app.gui.runAskYesNoDialog = self._runAskYesNoDialog
+        g.app.gui.runAskYesNoCancelDialog = self._runAskYesNoCancelDialog
+        g.app.gui.show_find_success = self._show_find_success
         self.headlineWidget = g.bunch(_name='tree')
-
+        #
         # Complete the initialization, as in LeoApp.initApp.
         g.app.idleTimeManager = leoApp.IdleTimeManager()
         g.app.externalFilesController = ServerExternalFilesController()  # Replace
