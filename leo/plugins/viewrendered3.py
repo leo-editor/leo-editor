@@ -1657,8 +1657,6 @@ def hide_rendering_pane(event):
         return
 
     pos = positions.get(c.hash())
-    if not pos:
-        pos = OPENED_IN_TAB
     if pos == OPENED_IN_SPLITTER:
         vr3.store_layout('open')
     elif pos == OPENED_IN_TAB:
