@@ -920,7 +920,7 @@ class LeoServer:
             # g.app.gui.runAskYesNoDialog = self._runAskYesNoDialog
             # g.app.gui.runAskYesNoCancelDialog = self._runAskYesNoCancelDialog
 
-        # #3915. LeoFind.show_find_success no tests g.leoServer,
+        # #3915. LeoFind.show_find_success now tests g.leoServer,
         #        so there is no need to monkey-patch it.
         #        See the node: unl:gnx://leoPy.leo#ekr.20031218072017.3091
 
