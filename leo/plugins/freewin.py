@@ -266,7 +266,7 @@ if not qt_imports_ok:
     print('Freewin plugin: Qt imports failed')
     raise ImportError('Qt Imports failed')
 
-QWebView = QtWebEngineWidgets.QWebEngineView
+QWebEngineView = QtWebEngineWidgets.QWebEngineView
 
 #@+<<import docutils>>
 #@+node:tom.20210529002833.1: *3* <<import docutils>>
@@ -657,28 +657,17 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.host_editor = w.widget
         self.switching = False
         self.closing = False
-        path = c.getNodePath(c.p)
-        self.url_base = QtCore.QUrl('file:///' + path + '/')
-
-
         self.reloadSettings()
 
-        # The rendering pane can be either a QWebView or a QTextEdit
-        # depending on the features desired
-        if not QWebView:  # Until Qt6 has a QWebEngineView, force QTextEdit
-            self.render_pane_type = NAV_VIEW
-        if self.render_pane_type == NAV_VIEW:
-            self.render_widget = QTextEdit
-        else:
-            self.render_widget = QWebView
-            self.render_pane_type = BROWSER_VIEW
-            QtWebEngineWidgets.QWebEngineView.__init__(self)
+        browser = self.browser = QWebEngineView()
+        settings = browser.settings()
+        settings.localContentCanAccessRemoteUrls = True
+        self.render_pane_type = BROWSER_VIEW
 
         self.editor = QTextEdit()
         wrapper = qt_text.QTextEditWrapper(self.editor, name='zwin', c=c)
         c.k.completeAllBindingsForWidget(wrapper)
 
-        browser = self.browser = self.render_widget()
 
         #@+<<set stylesheet paths>>
         #@+node:tom.20210604170628.1: *4* <<set stylesheet paths>>
@@ -867,9 +856,9 @@ class ZEditorWin(QtWidgets.QMainWindow):
                 old_scroll = scrollbar.value()
                 self.current_text = doc.toPlainText()
                 self.editor.setPlainText(self.current_text)
-                self.set_and_render(False)
-                doc.setModified(False)
                 scrollbar.setValue(old_scroll)
+                doc.setModified(False)
+                self.set_and_render(False)
 
             self.doc.setModified(False)
 
@@ -951,13 +940,17 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.stacked_widget.setCurrentIndex(self.render_kind)
 
         if self.render_kind == BROWSER:
-            text = self.editor.document().toPlainText()
-            if text[0] == '<':
+            text = self.doc.toPlainText() or ''
+            non_blank = text.strip()
+            if non_blank and text[0] == '<':
                 html = text
             else:
                 html = self.render_rst(text)
 
-            self.browser.setHtml(html, self.url_base)
+            path = self.c.getNodePath(self.c.p)
+            url_base = QtCore.QUrl('file:///' + path + '/')
+            self.browser.setContent(html.encode(ENCODING), "text/html;charset=UTF-8", url_base)
+
             if self.copy_html:
                 copy2clip(html)
 
