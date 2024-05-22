@@ -267,6 +267,9 @@ class Commands:
         'pluginsMenu',
         'theScriptingController',
         'theTagController',
+
+        # The __dict__ slot would allow any code to inject ivars into this class.
+        # It's debatable whether this is a good idea.
         #@-<< class Commands: slots >>
     )
     #@+others
