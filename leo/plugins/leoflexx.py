@@ -274,7 +274,7 @@ class LeoBrowserApp(flx.PyComponent):
             print('app.create_all_data: %5.3f sec. %s entries' % (
                 (time.process_time() - t1), len(list(self.gnx_to_vnode.keys()))))
         self.test_round_trip_positions()
-    #@+node:ekr.20181124133513.1: *5* app.finish_create
+    #@+node:ekr.20181124133513.1: *5* app.finish_create (leoflexx.py) (patches c.request_focus)
     @flx.action
     def finish_create(self):
         """
