@@ -89,6 +89,7 @@ class Commands:
     The @g..commander_command decorator injects methods into this class.
     """
     #@-<< docstring: Commands class >>
+
     #@+others
     #@+node:ekr.20031218072017.2811: *3*  c.Birth & death
     #@+node:ekr.20031218072017.2812: *4* c.__init__ & helpers
