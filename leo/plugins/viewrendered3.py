@@ -1613,15 +1613,15 @@ def viewrendered(event):
         body_stacked_widget = gui.find_widget_by_name(c, 'bodyStackedWidget')
         stacked_layout = body_stacked_widget.children()[0]
         h = c.hash()
-        if stacked_layout.count() == 1:
-            stacked_layout.addWidget(vr3)
+        vr3_index = stacked_layout.indexOf(vr3)
+        if vr3_index == -1:
+            vr3_index = stacked_layout.addWidget(vr3)
 
-        if stacked_layout.currentIndex() == 0:
-            vr3 = stacked_layout.widget(1)
-            stacked_layout.setCurrentIndex(1)
+        if stacked_layout.currentIndex() != vr3_index:
+            stacked_layout.setCurrentIndex(vr3_index)
             vr3.set_unfreeze()
         else:
-            vr3 = stacked_layout.widget(1)
+            stacked_layout.setCurrentIndex(0)  # Body editor should always be here
             vr3.set_freeze()
 
     elif main_splitter.orientation() == Orientation.Vertical:
