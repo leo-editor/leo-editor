@@ -2619,7 +2619,7 @@ class LeoFind:
             start=start,
         )
         return data
-    #@+node:ekr.20031218072017.3091: *4* find.show_success
+    #@+node:ekr.20031218072017.3091: *4* LeoFind.find.show_success
     def show_success(self, p: Position, pos: int, newpos: int, showState: bool = True) -> Wrapper:
         """Display the result of a successful find operation."""
         c = self.c

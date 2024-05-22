@@ -25,6 +25,7 @@ class TestLeoServer(LeoUnitTest):
         g_leoserver = leoserver
         g_server = leoserver.LeoServer(testing=True)
         g = g_server.g
+        g.leoServer = g_server
         assert g
 
     @classmethod
