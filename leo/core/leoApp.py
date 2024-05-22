@@ -3514,6 +3514,15 @@ class PreviousSettings:
 class RecentFilesManager:
     """A class to manipulate leoRecentFiles.txt."""
 
+    __slots__ = (
+        'edit_headline',
+        'groupedMenus',
+        'recentFiles',
+        'recentFilesMenuName',
+        'recentFileMessageWritten',
+        'write_recent_files_as_needed',
+    )
+
     def __init__(self) -> None:
 
         self.edit_headline = 'Recent files. Do not change this headline!'
