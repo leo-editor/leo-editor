@@ -55,9 +55,12 @@ class IdleTimeManager:
     the callback to be called at idle time forever.
     """
 
+    __slots__ = ('callback_list', 'on_idle_count', 'timer')
+
     def __init__(self) -> None:
         """Ctor for IdleTimeManager class."""
         self.callback_list: list[Callable] = []
+        self.on_idle_count = 0
         self.timer: IdleTime = None
     #@+others
     #@+node:ekr.20161026125611.1: *3* itm.add_callback
@@ -65,8 +68,6 @@ class IdleTimeManager:
         """Add a callback to be called at every idle time."""
         self.callback_list.append(callback)
     #@+node:ekr.20161026124810.1: *3* itm.on_idle
-    on_idle_count = 0
-
     def on_idle(self, timer: Callable) -> None:
         """IdleTimeManager: Run all idle-time callbacks."""
         if not g.app:
@@ -100,9 +101,179 @@ class IdleTimeManager:
     #@-others
 #@+node:ekr.20120209051836.10241: ** class LeoApp
 class LeoApp:
-    """A class representing the Leo application itself.
+    """
+    A class representing the Leo application itself.
 
-    Ivars of this class are Leo's global variables."""
+    Ivars of this class are Leo's global variables.
+    """
+
+    __slots__ = (
+        #@+<< LeoApp: slots >>
+        #@+node:ekr.20240522022112.1: *3* << LeoApp: slots >>
+        # Command-line arguments.
+        'always_write_session_data',
+        'batchMode',
+        'debug',
+        'diff',
+        'enablePlugins',
+        'failFast',
+        'gui',
+        'guiArgName',
+        'ipython_inited',
+        'isTheme',
+        'listen_to_log_flag',
+        'loaded_session',
+        'silentMode',
+        'start_fullscreen',
+        'start_maximized',
+        'start_minimized',
+        'trace_binding',
+        'trace_setting',
+        'translateToUpperCase',
+        'useIpython',
+        'use_splash_screen',
+        'write_black_sentinels',
+
+        # Debugging and statistics.
+        'debug_dict',
+        'disable_redraw',
+        'disableSave',
+        'idle_timers',
+        'log_listener',
+        'positions',
+        'scanErrors',
+        'statsDict',
+        'statsLockout',
+        'validate_outline',
+
+        # Error messages.
+        'menuWarningsGiven',
+        'unicodeErrorGiven',
+
+        # Global directories.
+        'extensionsDir',
+        'globalConfigDir',
+        'globalOpenDir',
+        'homeDir',
+        'homeLeoDir',
+        'leoEditorDir',
+        'loadDir',
+        'machineDir',
+        'theme_directory',
+
+        # Global data.
+        'atAutoNames',
+        'atFileNames',
+        'globalKillBuffer',
+        'globalRegisters',
+        'initial_cwd',
+        'leoID',
+        'lossage',
+        'paste_c',
+        'spellDict',
+        'numberOfUntitledWindows',
+        'windowList',
+        'realMenuNameDict',
+
+        # Global controller/manager objects.
+        'backgroundProcessManager',
+        'commandInterruptFlag',
+        'commandName',
+        'config',
+        'db',
+        'externalFilesController',
+        'global_cacher',
+        'idleTimeManager',
+        'ipk',
+        'loadManager',
+        'nodeIndices',
+        'pluginsController',
+        'sessionManager',
+
+        # Reader/writer data...
+        'allow_undefined_refs',
+        'atAutoDict',
+        'atAutoWritersDict',
+        'classDispatchDict',
+        'force_at_auto_sentinels',
+        'writersDispatchDict',
+
+        # Global status vars.
+        'already_open_files',
+        'dragging',
+        'inBridge',
+        'inScript',
+        'initing',
+        'initComplete',
+        'initStyleFlag',
+        'killed',
+        'preReadFlag',
+        'quitting',
+        'quit_after_load',
+        'restarting',
+        'reverting',
+        'syntax_error_files',
+
+        # The global log.
+        'log',
+        'logInited',
+        'logIsLocked',
+        'logWaiting',
+        'printWaiting',
+        'signon',
+        'signon1',
+        'signon2',
+
+        # Global types.
+        'nullGui',
+        'nullLog',
+
+        # Plugins and event handlers.
+        'hookError',
+        'hookFunction',
+        'idle_time_hooks_enabled',
+
+        # Scripting ivars.
+        'scriptDict',
+        'scriptResult',
+        'permanentScriptDict',
+
+        # Defined in define_* methods...
+        'atAutoNames',
+        'atFileNames',
+        'delegate_language_dict',
+        'extension_dict',
+        'extra_extension_dict',
+        'language_delims_dict',
+        'language_extension_dict',
+        'prolog_namespace_string',
+        'prolog_postfix_string',
+        'prolog_prefix_string',
+
+        # Defined in LM.computeStandardDirectories.
+        'extensionsDir',
+        'globalConfigDir',
+        'homeDir',
+        'homeLeoDir',
+        'leoDir',
+        'leoEditorDir',
+        'loadDir',
+        'testDir',
+
+        # Defined in LM.initApp.
+        'backgroundProcessManager',
+        'config',
+        'externalFilesController',
+        'idleTimeManager',
+        'nodeIndices',
+        'recentFilesManager',
+        'sessionManager',
+
+        # Defined in LeoMenu.createOpenWithMenuFromTable.
+        'openWithTable',
+        #@-<< LeoApp: slots >>
+    )
+
     #@+others
     #@+node:ekr.20150509193643.1: *3* app.Birth & startup
     #@+node:ekr.20031218072017.1416: *4* app.__init__ (helpers contain language dicts)
