@@ -3496,6 +3496,8 @@ class PreviousSettings:
     files and passed to the second pass.
     """
 
+    __slots__ = ('settingsDict', 'shortcutsDict')
+
     def __init__(self, settingsDict: g.SettingsDict, shortcutsDict: g.SettingsDict) -> None:
         if not shortcutsDict or not settingsDict:  # #1766: unit tests.
             lm = g.app.loadManager
