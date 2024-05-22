@@ -6,6 +6,8 @@
 Leo's internet server.
 
 Written by Félix Malboeuf and Edward K. Ream.
+
+To run externally, do `python -m leo.core.leoserver`.
 """
 #@+<< leoserver imports >>
 #@+node:felix.20210621233316.2: ** << leoserver imports >>
@@ -894,7 +896,7 @@ class LeoServer:
         # Set in _init_connection
         self.web_socket = None  # Main Control Client
         self.loop: Loop = None
-        #
+
         # To inspect commands
         self.dummy_c = g.app.newCommander(fileName=None)
         self.bad_commands_list = self._bad_commands(self.dummy_c)
@@ -906,16 +908,27 @@ class LeoServer:
         # * hook open2 for commander creation completion and inclusion in windowList
         g.registerHandler('open2', self._open2Hook)
 
-        # #3915. It is not possible to monkey-patch g.app.selectLeoWindow.
-        #        Instead, the method contains special-case code.
+        # #3915. It is no longer possible to monkey-patch LeoApp.selectLeoWindow.
+        #        Instead, LeoApp.selectLeoWindow tests g.leoServer.
 
-        # override for "revert to file" operation
-        g.app.gui.runAskOkDialog = self._runAskOkDialog
-        g.app.gui.runAskYesNoDialog = self._runAskYesNoDialog
-        g.app.gui.runAskYesNoCancelDialog = self._runAskYesNoCancelDialog
-        g.app.gui.show_find_success = self._show_find_success
+        # #3915. It is no longer possible to monkey-patch g.app.gui methods.
+        #        Instead, three nullGui methods test g.leoServer.
+        #        See the node: unl:gnx://leoPy.leo#ekr.20031218072017.3744
+
+            # # override for "revert to file" operation
+            # g.app.gui.runAskOkDialog = self._runAskOkDialog
+            # g.app.gui.runAskYesNoDialog = self._runAskYesNoDialog
+            # g.app.gui.runAskYesNoCancelDialog = self._runAskYesNoCancelDialog
+
+        # #3915. LeoFind.show_find_success no tests g.leoServer,
+        #        so there is no need to monkey-patch it.
+        #        See the node: unl:gnx://leoPy.leo#ekr.20031218072017.3091
+
+            # g.app.gui.show_find_success = self._show_find_success
+
+        # Define a dummy headline widget.
         self.headlineWidget = g.bunch(_name='tree')
-        #
+
         # Complete the initialization, as in LeoApp.initApp.
         g.app.idleTimeManager = leoApp.IdleTimeManager()
         g.app.externalFilesController = ServerExternalFilesController()  # Replace

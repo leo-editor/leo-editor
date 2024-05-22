@@ -381,6 +381,8 @@ class NullGui(LeoGui):
         return None
 
     def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> str:
+        if g.leoServer:  # #3915.
+            g.leoServer._runAskOkDialog(c, title, message, text)
         return 'Ok'
 
     def runAskOkCancelNumberDialog(
@@ -444,6 +446,8 @@ class NullGui(LeoGui):
         yes_all: bool = False,
         no_all: bool = False,
     ) -> str:
+        if g.leoServer:  # #3915.
+            g.leoServer._runAskYesNoDialog(c, title, message, yes_all, no_all)
         return 'no'
 
     def runAskYesNoCancelDialog(
@@ -457,6 +461,9 @@ class NullGui(LeoGui):
         defaultButton: str = "Yes",
         cancelMessage: str = None,
     ) -> str:
+        if g.leoServer:  # #3915.
+            g.leoServer._runAskYesNoCancelDialog(
+                c, title, message, yesMessage, noMessage, yesToAllMessage, defaultButton, cancelMessage)
         return 'cancel'
     #@+node:ekr.20170613101737.1: *3* NullGui.clipboard & focus
     def get_focus(self, *args: str, **kwargs: str) -> Widget:
