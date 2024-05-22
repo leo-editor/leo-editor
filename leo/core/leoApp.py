@@ -1719,7 +1719,24 @@ class LeoApp:
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager:
     """A class to manage loading .leo files, including configuration files."""
+
+    __slots__ = (
+        'files',
+        'globalBindingsDict',
+        'globalSettingsDict',
+        'leo_settings_c',
+        'leo_settings_path',
+        'more_cmdline_files',
+        'my_settings_c',
+        'my_settings_path',
+        'old_argv',
+        'options',
+        'theme_c',
+        'theme_path',
+    )
+
     LM_NOTHEME_FLAG = 'lm_theme_use_none'
+
     #@+others
     #@+node:ekr.20120214060149.15851: *3*  LM.ctor
     def __init__(self) -> None:
