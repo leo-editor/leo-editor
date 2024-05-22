@@ -1694,6 +1694,11 @@ class LeoApp:
         return c
     #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
     def selectLeoWindow(self, c: Cmdr) -> None:
+
+        # Use Leo's server's alternate method if the server is running.
+        if g.leoServer:
+            g.leoServer._selectLeoWindow(c)
+            return
         frame = c.frame
         frame.deiconify()
         frame.lift()
