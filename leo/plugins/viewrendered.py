@@ -405,6 +405,9 @@ def viewrendered(event: Event) -> Optional[Any]:
     h = c.hash()
     vr = controllers.get(h)
     if vr:
+        vr.show()
+        vr.is_visible = True
+        g.es('VR pane on', color='red')
         c.bodyWantsFocusNow()
         return vr
     # Create the VR frame
