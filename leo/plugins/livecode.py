@@ -48,14 +48,6 @@ def onCreate(tag, keys):
     c = keys.get('c')
 
     LiveCodeDisplayProvider(c)
-#@+node:tbrown.20140806084727.31749: ** livecode-show
-@g.command('livecode-show')
-def cmd_show(event):
-    c = event.get('c')
-    splitter = c.free_layout.get_top_splitter()
-    if splitter:
-        w = splitter.get_provided('_leo_livecode_show')
-        splitter.add_adjacent(w, 'bodyFrame')
 #@+node:tbrown.20140806084727.30187: ** class LiveCodeDisplay
 class LiveCodeDisplay:
     """Manage a pane showing livecode"""
@@ -217,13 +209,9 @@ class LiveCodeDisplay:
 #@+node:tbrown.20140806084727.30203: ** class LiveCodeDisplayProvider
 class LiveCodeDisplayProvider:
     #@+others
-    #@+node:tbrown.20140806084727.30204: *3* __init__
+    #@+node:tbrown.20140806084727.30204: *3* __init__ (livecode.py)
     def __init__(self, c):
         self.c = c
-
-        splitter = c.free_layout.get_top_splitter()
-        if splitter:
-            splitter.register_provider(self)
     #@+node:tbrown.20140806084727.30205: *3* ns_provides
     def ns_provides(self):
         return [('Live Code', '_leo_livecode_show')]

@@ -60,7 +60,8 @@ Wrapper = Any
 #@+node:tbrown.20110203111907.5521: ** free_layout:init
 def init() -> bool:
     """Return True if the free_layout plugin can be loaded."""
-    return bool(NestedSplitter and g.app.gui.guiName() == "qt")
+    # #3910: The free_layout and nested_splitter plugins are deprecated.
+    return bool(g.app.gui.guiName() == "qt" and NestedSplitter)
 #@+node:ekr.20110318080425.14389: ** class FreeLayoutController
 class FreeLayoutController:
 
@@ -213,7 +214,6 @@ class FreeLayoutController:
     #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
     def get_top_splitter(self) -> Optional[Wrapper]:
         """Return the top splitter of c.frame.top."""
-        # Careful: we could be unit testing.
         f = self.c.frame
         if hasattr(f, 'top') and f.top:
             child = f.top.findChild(NestedSplitter)
@@ -481,8 +481,7 @@ def free_layout_zoom(event: LeoKeyEvent) -> None:
 #@+node:ekr.20160327060009.1: *3* free_layout:register_provider
 def register_provider(c: Cmdr, provider_instance: Any) -> None:
     """Register the provider instance with the top splitter."""
-    # Careful: c.free_layout may not exist during unit testing.
-    if c and hasattr(c, 'free_layout'):
+    if getattr(c, 'free_layout', None):
         splitter = c.free_layout.get_top_splitter()
         if splitter:
             splitter.register_provider(provider_instance)

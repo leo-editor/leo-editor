@@ -182,7 +182,7 @@ Settings
 Acknowledgments
 ================
 
-Terry Brown created this initial version of this plugin, and the free_layout and NestedSplitter plugins used by viewrendered.
+Terry Brown created this initial version of this plugin.
 
 EKR generalized this plugin and added communication and coordination between the free_layout, NestedSplitter and viewrendered plugins.
 

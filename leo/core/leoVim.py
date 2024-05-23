@@ -842,7 +842,7 @@ class VimCommands:
             self.done()
         else:
             self.quit()
-    #@+node:ekr.20140220134748.16619: *5* vc.vim_c (to do)
+    #@+node:ekr.20140220134748.16619: *5* vc.vim_c
     def vim_c(self) -> None:
         """
         N   cc        change N lines
@@ -1282,7 +1282,7 @@ class VimCommands:
             self.done()
         else:
             self.quit()
-    #@+node:ekr.20131111171616.16497: *5* vc.vim_m (to do)
+    #@+node:ekr.20131111171616.16497: *5* vc.vim_m
     def vim_m(self) -> None:
         """m<a-zA-Z> mark current position with mark."""
         self.not_ready()
@@ -1421,7 +1421,7 @@ class VimCommands:
             self.done(add_to_dot=False, set_dot=False)
         else:
             self.quit()
-    #@+node:ekr.20140220134748.16624: *5* vc.vim_r (to do)
+    #@+node:ekr.20140220134748.16624: *5* vc.vim_r
     def vim_r(self) -> None:
         """Replace next N characters with <char>"""
         self.not_ready()
@@ -1430,11 +1430,11 @@ class VimCommands:
     def vim_r2(self) -> None:
         g.trace(self.n, self.stroke)
         self.done()
-    #@+node:ekr.20140222064735.16625: *5* vc.vim_redo (to do)
+    #@+node:ekr.20140222064735.16625: *5* vc.vim_redo
     def vim_redo(self) -> None:
         """N Ctrl-R redo last N changes"""
         self.not_ready()
-    #@+node:ekr.20140222064735.16626: *5* vc.vim_s (to do)
+    #@+node:ekr.20140222064735.16626: *5* vc.vim_s
     def vim_s(self) -> None:
         """Change N characters"""
         self.not_ready()
@@ -1718,7 +1718,7 @@ class VimCommands:
     def vim_Y(self) -> None:
         """Yank a Leo outline."""
         self.not_ready()
-    #@+node:ekr.20140220134748.16631: *5* vc.vim_z (to do)
+    #@+node:ekr.20140220134748.16631: *5* vc.vim_z
     def vim_z(self) -> None:
         """
         zb redraw current line at bottom of window
@@ -1832,7 +1832,7 @@ class VimCommands:
         self.state = 'normal'
         self.not_ready()
         # self.done(set_dot=True)
-    #@+node:ekr.20140222064735.16656: *5* vis_c (to do)
+    #@+node:ekr.20140222064735.16656: *5* vis_c
     def vis_c(self) -> None:
         """Change the highlighted text."""
         self.state = 'normal'

@@ -1732,35 +1732,6 @@ secondary_ratio = property(
     __get_secondary_ratio,  # no setter.
     doc="qtFrame.secondary_ratio property")
 #@+node:ekr.20240510161454.31: ** retired from VR plugin
-#@+node:ekr.20240510161454.32: *3* from g.command('vr')
-@g.command('vr')
-def viewrendered(event: Event) -> Optional[Any]:
-    """Open render view for commander"""
-    global controllers, layouts
-    if g.app.gui.guiName() != 'qt':
-        return None
-    c = event.get('c')
-    if not c:
-        return None
-    h = c.hash()
-    vr = controllers.get(h)
-    if not vr:
-        controllers[h] = vr = ViewRenderedController(c)
-    layouts[h] = c.db.get('viewrendered_default_layouts', (None, None))
-    vr._ns_id = '_leo_viewrendered'  # for free_layout load/save
-    vr.splitter = splitter = c.free_layout.get_top_splitter()
-    if splitter:
-        vr.store_layout('closed')
-        sizes = split_last_sizes(splitter.sizes())
-        ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
-        g.trace(ok)
-        if not ok:
-            splitter.insert(0, vr)
-        elif splitter.orientation() == Orientation.Horizontal:
-            splitter.setSizes(sizes)
-        vr.adjust_layout('open')
-    c.bodyWantsFocusNow()
-    return vr
 #@+node:ekr.20240510161454.33: *3* vr function: decorate_window
 def decorate_window(w: Wrapper) -> None:
     # Do not override the style sheet!
