@@ -52,6 +52,8 @@ class BaseSpellWrapper:
     def create(self, fn: str) -> None:
         """Create the given file with empty contents."""
         # Make the directories as needed.
+        if not fn:
+            return
         theDir = g.os_path_dirname(fn)
         if theDir:
             ok = g.makeAllNonExistentDirectories(theDir)
