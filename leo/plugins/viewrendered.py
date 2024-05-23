@@ -185,12 +185,9 @@ Settings
 Acknowledgments
 ================
 
-Terry Brown created this initial version of this plugin, and the
-free_layout and NestedSplitter plugins used by viewrendered.
+Terry Brown created this initial version of this plugin.
 
-Edward K. Ream generalized this plugin and added communication and
-coordination between the free_layout, NestedSplitter and viewrendered
-plugins.
+Edward K. Ream generalized this plugin.
 
 Jacob Peck added markdown support to this plugin.
 
@@ -210,9 +207,8 @@ from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import QtMultimedia, QtSvg
-from leo.core.leoQt import ContextMenuPolicy, WrapMode
+from leo.core.leoQt import ContextMenuPolicy, Orientation, WrapMode
 from leo.plugins import qt_text
-from leo.plugins import free_layout
 
 BaseTextWidget = QtWidgets.QTextBrowser
 
@@ -343,8 +339,6 @@ def onCreate(tag: str, keys: dict) -> None:
     c = keys.get('c')
     if not c:
         return
-    provider = ViewRenderedProvider(c)
-    free_layout.register_provider(c, provider)
     vr = viewrendered(keys)
     g.registerHandler('select2', vr.update)
     g.registerHandler('idle', vr.update)
@@ -402,19 +396,46 @@ def preview(event: Event) -> None:
 def viewrendered(event: Event) -> Optional[Any]:
     """Open render view for commander"""
     global controllers, layouts
-    if g.app.gui.guiName() != 'qt':
+    gui = g.app.gui
+    if gui.guiName() != 'qt':
         return None
     c = event.get('c')
     if not c:
         return None
     h = c.hash()
     vr = controllers.get(h)
-    if not vr:
-        controllers[h] = vr = ViewRenderedController(c)
-        # Add the pane to the splitter.
-        splitter = c.free_layout.get_top_splitter()
-        if splitter:
-            splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
+    if vr:
+        vr.show()
+        vr.is_visible = True
+        g.es('VR pane on', color='red')
+        c.bodyWantsFocusNow()
+        return vr
+    # Create the VR frame
+    controllers[h] = vr = ViewRenderedController(c)
+
+    # Use different layouts depending on the main splitter's *initial* orientation.
+    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+    if main_splitter.orientation() == Orientation.Vertical:
+        # Share the VR pane with the body pane.
+        # Create a new splitter.
+        vr_splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
+        vr_splitter.setObjectName('vr-splitter')
+        main_splitter.addWidget(vr_splitter)
+        # First, add the body frame.
+        body_frame = gui.find_widget_by_name(c, 'bodyFrame')
+        vr_splitter.addWidget(body_frame)
+        # Second, add the vr pane.
+        vr_splitter.addWidget(vr)
+        # Give equal width to all splitter panes.
+        vr_splitter.setSizes([100000] * len(vr_splitter.sizes()))
+        main_splitter.setSizes([100000] * len(main_splitter.sizes()))
+    else:
+        # Put the VR pane in the secondary splitter.
+        secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
+        # Add the VR pane to the secondary splitter.
+        secondary_splitter.addWidget(vr)
+        # Give equal width to the panes in the secondary splitter.
+        secondary_splitter.setSizes([100000] * len(secondary_splitter.sizes()))
     c.bodyWantsFocusNow()
     return vr
 #@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
@@ -615,96 +636,6 @@ def update_rendering_pane(event: Event) -> None:
     if not vr:
         vr = viewrendered(event)
     vr.update(tag='view', keywords={'c': c, 'force': True})
-#@+node:vitalije.20170712195827.1: *3* g.command('vr-zoom')
-@g.command('vr-zoom')
-def zoom_rendering_pane(event: Event) -> None:
-
-    global controllers
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-    vr = controllers.get(c.hash())
-    if not vr:
-        vr = viewrendered(event)
-    flc = c.free_layout
-    if vr.zoomed:
-        for ns in flc.get_top_splitter().top().self_and_descendants():
-            if hasattr(ns, '_unzoom'):
-                # this splitter could have been added since
-                ns.setSizes(ns._unzoom)
-    else:
-        parents = []
-        parent = vr
-        while parent:
-            parents.append(parent)
-            parent = parent.parent()
-        for ns in flc.get_top_splitter().top().self_and_descendants():
-            # FIXME - shouldn't be doing this across windows
-            ns._unzoom = ns.sizes()
-            for i in range(ns.count()):
-                w = ns.widget(i)
-                if w in parents:
-                    sizes = [0] * len(ns._unzoom)
-                    sizes[i] = sum(ns._unzoom)
-                    ns.setSizes(sizes)
-                    break
-    vr.zoomed = not vr.zoomed
-#@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider
-class ViewRenderedProvider:
-    """This class allows the free_layout plugin to insert VR panes anywhere."""
-    #@+others
-    #@+node:tbrown.20110629084915.35154: *3* vr.__init__
-    def __init__(self, c: Cmdr) -> None:
-        self.c = c
-        self.created = False
-        # Careful: we may be unit testing.
-        if hasattr(c, 'free_layout'):
-            splitter = c.free_layout.get_top_splitter()
-            if splitter:
-                splitter.register_provider(self)
-    #@+node:tbrown.20110629084915.35151: *3* vr.ns_provide
-    def ns_provide(self, id_: str) -> Optional[Widget]:
-        global controllers, layouts
-        # #1678: duplicates in Open Window list
-        if self.created:
-            return None
-        if id_ == self.ns_provider_id():
-            self.created = True  # Suppress duplicates!
-            c = self.c
-            h = c.hash()
-            vr = controllers.get(h)
-            if not vr:
-                # Never overwrite an existing controller.
-                vr = ViewRenderedController(c)
-                controllers[h] = vr
-            # Enable, keeping the VR pane open.
-            vr.active = True
-            vr.auto_create = True
-            vr.is_visible = True
-            vr.keep_open = True
-            vr.locked = False
-            # Force an update.
-            vr.gnx = None
-            vr.length = 0
-            return vr
-        return None
-    #@+node:ekr.20200917062806.1: *3* vr.ns_provider_id
-    def ns_provider_id(self) -> str:
-        return '_leo_viewrendered'
-    #@+node:tbrown.20110629084915.35150: *3* vr.ns_provides
-    def ns_provides(self) -> list[tuple[str, str]]:
-        # #1671: Better Window names.
-        # #1678: duplicates in Open Window list
-        return [('Viewrendered', self.ns_provider_id())]
-    #@+node:ekr.20200917063221.1: *3* vr.ns_title
-    def ns_title(self, id_: str) -> Optional[str]:
-        if id_ != self.ns_provider_id():
-            return None
-        filename = self.c.shortFileName() or 'Unnamed file'
-        return f"Viewrendered: {filename}"
-    #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
 class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     """A class to control rendering in a rendering pane."""
@@ -716,9 +647,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Create the widget.
         super().__init__(parent)
         self.create_pane(parent)
+        # Ivars set by reloadSettings.
+        self.auto_create: bool = None
+        self.keep_open: bool = None
         # Set the ivars.
-        self.active = False
-        self.auto_create = False  # Set by reload settings.
+        self.active = True
         self.gnx: str = None
         self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
         self.gv: Widget = None  # For @graphics-script: a QGraphicsView
@@ -770,6 +703,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         c = self.c
         c.registerReloadSettings(self)
         self.auto_create = c.config.getBool('view-rendered-auto-create', False)
+        self.keep_open = c.config.getBool('view-rendered-keep-open', True)
         self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
 
@@ -796,8 +730,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.change_size(100)
 
     def change_size(self, delta: int) -> None:
-        if not hasattr(self.c, 'free_layout'):
-            return
         splitter = self.parent()
         if not splitter:
             return
@@ -919,7 +851,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         return w
     #@+node:ekr.20110320120020.14486: *4* vr.embed_widget
     def embed_widget(self, w: Wrapper, delete_callback: Callable = None) -> None:
-        """Embed widget w in the free_layout splitter."""
+        """Embed widget w in the appropriate widget."""
         c = self.c
         self.w = w
 
@@ -1021,15 +953,13 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def update_graphics_script(self, s: str, keywords: Any) -> None:
         """Update the graphics script in the VR pane."""
         c = self.c
+        if g.unitTesting:
+            return
         force = keywords.get('force')
         if self.gs and not force:
             return
         if not self.gs:
-            splitter = c.free_layout.get_top_splitter()
-            # Careful: we may be unit testing.
-            if not splitter:
-                g.trace('no splitter')
-                return
+            splitter = g.app.gui.get_top_splitter()
             # Create the widgets.
             self.gs = QtWidgets.QGraphicsScene(splitter)
             self.gv = QtWidgets.QGraphicsView(self.gs)

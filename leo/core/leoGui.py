@@ -56,40 +56,32 @@ class LeoGui:
         self.ignoreChars: list[str] = []  # Keys that should always be ignored.
         self.FKeys: list[str] = []  # The representation of F-keys.
         self.specialChars: list[str] = []  # A list of characters/keys to be handle specially.
-    #@+node:ekr.20061109212618.1: *3* LeoGui: Must be defined only in base class
-    #@+node:ekr.20110605121601.18847: *4* LeoGui.create_key_event (LeoGui)
-    def create_key_event(
-        self,
-        c: Cmdr,
-        binding: str = None,
-        char: str = None,
-        event: LeoKeyEvent = None,
-        w: Wrapper = None,
-        x: int = None,
-        x_root: int = None,
-        y: int = None,
-        y_root: int = None,
-    ) -> LeoKeyEvent:
-        # Do not call strokeFromSetting here!
-        # For example, this would wrongly convert Ctrl-C to Ctrl-c,
-        # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
-        return LeoKeyEvent(c, char, event, binding, w, x, y, x_root, y_root)
-    #@+node:ekr.20031218072017.3740: *4* LeoGui.guiName
-    def guiName(self) -> str:
-        try:
-            return self.mGuiName
-        except Exception:
-            return "invalid gui name"
-    #@+node:ekr.20031218072017.2231: *4* LeoGui.setScript
-    def setScript(self, script: str = None, scriptFileName: str = None) -> None:
-        self.script = script
-        self.scriptFileName = scriptFileName
-    #@+node:ekr.20110605121601.18845: *4* LeoGui.event_generate (LeoGui)
-    def event_generate(self, c: Cmdr, char: str, shortcut: str, w: Wrapper) -> None:
-        event = self.create_key_event(c, binding=shortcut, char=char, w=w)
-        c.k.masterKeyHandler(event)
-        c.outerUpdate()
-    #@+node:ekr.20061109212618: *3* LeoGu: Must be defined in subclasses
+    #@+node:ekr.20051206103652: *3* LeoGui.widget_name
+    def widget_name(self, w: Widget) -> str:
+        # First try the widget's getName method.
+        if not w:
+            return '<no widget>'
+        if hasattr(w, 'getName'):
+            return w.getName()
+        if hasattr(w, '_name'):
+            return w._name
+        return repr(w)
+    #@+node:ekr.20070228154059: *3* LeoGui: May be defined in subclasses
+    def dismiss_splash_screen(self) -> None:
+        pass
+
+    def ensure_commander_visible(self, c: Cmdr) -> None:
+        """Make sure c's tab is visible"""
+
+    def finishCreate(self) -> None:
+        pass
+
+    def postPopupMenu(self, *args: str, **keys: str) -> None:
+        pass
+
+    def put_help(self, c: Cmdr, s: str, short_title: str) -> None:
+        pass
+    #@+node:ekr.20061109212618: *3* LeoGui: Must be defined in subclasses
     #@+node:ekr.20031218072017.3725: *4* LeoGui.destroySelf
     def destroySelf(self) -> None:
         raise NotImplementedError
@@ -272,36 +264,39 @@ class LeoGui:
         silent: bool = False,
     ) -> None:
         raise NotImplementedError
-    #@+node:ekr.20070228154059: *3* LeoGui: May be defined in subclasses
-    #@+node:ekr.20110613103140.16423: *4* LeoGui.dismiss_spash_screen
-    def dismiss_splash_screen(self) -> None:
-        pass  # May be overridden in subclasses.
-    #@+node:tbrown.20110618095626.22068: *4* LeoGui.ensure_commander_visible
-    def ensure_commander_visible(self, c: Cmdr) -> None:
-        """E.g. if commanders are in tabs, make sure c's tab is visible"""
-        pass
-    #@+node:ekr.20070219084912: *4* LeoGui.finishCreate
-    def finishCreate(self) -> None:
-        # This may be overridden in subclasses.
-        pass
-    #@+node:ekr.20101028131948.5861: *4* LeoGui.killPopupMenu & postPopupMenu
-    # These definitions keep pylint happy.
-
-    def postPopupMenu(self, *args: str, **keys: str) -> None:
-        pass
-    #@+node:ekr.20170612065049.1: *4* LeoGui.put_help
-    def put_help(self, c: Cmdr, s: str, short_title: str) -> None:
-        pass
-    #@+node:ekr.20051206103652: *4* LeoGui.widget_name (LeoGui)
-    def widget_name(self, w: Widget) -> str:
-        # First try the widget's getName method.
-        if not w:
-            return '<no widget>'
-        if hasattr(w, 'getName'):
-            return w.getName()
-        if hasattr(w, '_name'):
-            return w._name
-        return repr(w)
+    #@+node:ekr.20061109212618.1: *3* LeoGui: Must be defined only in base class
+    #@+node:ekr.20110605121601.18847: *4* LeoGui.create_key_event (LeoGui)
+    def create_key_event(
+        self,
+        c: Cmdr,
+        binding: str = None,
+        char: str = None,
+        event: LeoKeyEvent = None,
+        w: Wrapper = None,
+        x: int = None,
+        x_root: int = None,
+        y: int = None,
+        y_root: int = None,
+    ) -> LeoKeyEvent:
+        # Do not call strokeFromSetting here!
+        # For example, this would wrongly convert Ctrl-C to Ctrl-c,
+        # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
+        return LeoKeyEvent(c, char, event, binding, w, x, y, x_root, y_root)
+    #@+node:ekr.20031218072017.3740: *4* LeoGui.guiName
+    def guiName(self) -> str:
+        try:
+            return self.mGuiName
+        except Exception:
+            return "invalid gui name"
+    #@+node:ekr.20031218072017.2231: *4* LeoGui.setScript
+    def setScript(self, script: str = None, scriptFileName: str = None) -> None:
+        self.script = script
+        self.scriptFileName = scriptFileName
+    #@+node:ekr.20110605121601.18845: *4* LeoGui.event_generate (LeoGui)
+    def event_generate(self, c: Cmdr, char: str, shortcut: str, w: Wrapper) -> None:
+        event = self.create_key_event(c, binding=shortcut, char=char, w=w)
+        c.k.masterKeyHandler(event)
+        c.outerUpdate()
     #@-others
 #@+node:ekr.20070228160107: ** class LeoKeyEvent
 class LeoKeyEvent:
