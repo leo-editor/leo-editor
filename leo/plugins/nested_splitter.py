@@ -494,8 +494,8 @@ class NestedSplitter(QtWidgets.QSplitter):
         else:
             # fail - parent is not NestedSplitter and has no layout
             pass
-    #@+node:tbrown.20110621120042.22675: *3* ns.add_adjacent
-    def add_adjacent(self, what, widget_id, side='right-of'):
+    #@+node:tbrown.20110621120042.22675: *3* ns.add_adjacent (finds layout)
+    def add_adjacent(self, what, widget_id, side='right-of', name=None):
         """add a widget relative to another already present widget"""
         horizontal, vertical = Orientation.Horizontal, Orientation.Vertical
         layout = self.top().get_layout()
@@ -522,6 +522,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         if l is None:
             return False
         layout, pos = l
+        # self.dump_layout(layout)
         orient = layout['orientation']
         if (orient == horizontal and side in ('right-of', 'left-of') or
             orient == vertical and side in ('above', 'below')
@@ -537,6 +538,9 @@ class NestedSplitter(QtWidgets.QSplitter):
                 ns = NestedSplitter(orientation=horizontal, root=self.root)
             else:
                 ns = NestedSplitter(orientation=vertical, root=self.root)
+            if name:
+                g.trace(name, ns)
+                ns.setObjectName(name)
             old = layout['content'][pos]
             if not isinstance(old, QtWidgets.QWidget):  # see get_layout()
                 old = layout['splitter']
@@ -613,6 +617,30 @@ class NestedSplitter(QtWidgets.QSplitter):
                 if self.widget(i).contains(widget):
                     return True
         return False
+    #@+node:ekr.20240518111804.1: *3* ns.dump_layout (new)
+    def dump_layout(self, layout: dict) -> None:
+        print('')
+        print(f"Dump of ns layout for {self.__class__.__name__}({self.objectName()})")
+        self.dump_inner_layout(layout, level=0)
+
+    def dump_inner_layout(self, content: dict, level: int) -> None:
+        ws = level * 2 * ' '
+        widget_seen = False
+        print('\n'.join([  # Python 3.9 does not allow newlines within f-strings.
+            f"{ws}contents level {level}...",
+            f"  {ws}orientation: {content.get('orientation')}",
+            f"  {ws}sizes: {content.get('sizes')}"
+        ]))
+        inner_content = content.get('content')
+        assert isinstance(inner_content, list)
+        for i, inner in enumerate(inner_content):
+            if isinstance(inner, dict):
+                self.dump_inner_layout(inner, level + 1)
+                continue
+            if not widget_seen:
+                widget_seen = True
+                print(f"  {ws}widgets level {level}...")
+            print(f"    {ws}widget {i} {inner.__class__.__name__}({inner.objectName()})")
     #@+node:tbrown.20120418121002.25439: *3* ns.find_child
     def find_child(self, child_class, child_name=None):
         """Like QObject.findChild, except search self.top()

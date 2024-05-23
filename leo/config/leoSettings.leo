@@ -1989,6 +1989,7 @@
 </v>
 <v t="ekr.20181018105748.1"><vh>viewrendered plugin</vh>
 <v t="ekr.20181018105800.1"><vh>@bool view-rendered-auto-create = False</vh></v>
+<v t="ekr.20240519122612.1"><vh>@bool view-rendered-keep-open = True</vh></v>
 <v t="ekr.20181018113446.1"><vh>@string view-rendered-default-kind = rst</vh></v>
 <v t="ekr.20181018113502.1"><vh>@string view-rendered-md-extensions = extra</vh></v>
 </v>
@@ -11643,6 +11644,7 @@ False:          Display only the .leo file's name in the status area.
 True:  (Recommended) Search backwards from the end of the outline.
 False: (Legacy)      Search forwards from the start of the outline.
 </t>
+<t tx="ekr.20240519122612.1">True: keep the VR pane open regardless of the body pane's content.</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>

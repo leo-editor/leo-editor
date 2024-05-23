@@ -5,8 +5,8 @@ Global constants, variables and utility functions used throughout Leo.
 
 Important: This module imports no other Leo module.
 """
-#@+<< leoGlobals imports >>
-#@+node:ekr.20050208101229: ** << leoGlobals imports >>
+#@+<< leoGlobals: imports >>
+#@+node:ekr.20050208101229: ** << leoGlobals: imports >>
 from __future__ import annotations
 import binascii
 from collections.abc import Callable
@@ -51,9 +51,9 @@ except Exception:
 #
 # Abbreviations...
 StringIO = io.StringIO
-#@-<< leoGlobals imports >>
-#@+<< leoGlobals annotations >>
-#@+node:ekr.20220824084642.1: ** << leoGlobals annotations >>
+#@-<< leoGlobals: imports >>
+#@+<< leoGlobals: annotations >>
+#@+node:ekr.20220824084642.1: ** << leoGlobals: annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from types import Module
     from leo.core import LeoGlobals
@@ -66,7 +66,9 @@ if TYPE_CHECKING:  # pragma: no cover
     # Mypy could do better with *args and **kwargs.
     Args = Any  # Good enough.
     KWargs = Any  # Good enough.
-#@-<< leoGlobals annotations >>
+#@-<< leoGlobals: annotations >>
+#@+<< leoGlobals: global constants >>
+#@+node:ekr.20240515093718.1: ** << leoGlobals: global constants >>
 in_bridge = False  # True: leoApp object loads a null Gui.
 in_vs_code = False  # #2098.
 minimum_python_version = '3.9'
@@ -77,6 +79,7 @@ isPython3 = python_version_tuple >= (3, 0, 0)
 isValidPython = python_version_tuple >= minimum_python_version_tuple
 isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
+#@-<< leoGlobals: global constants >>
 #@+<< define g.globalDirectiveList >>
 #@+node:EKR.20040610094819: ** << define g.globalDirectiveList >>
 # Visible externally so plugins may add to the list of directives.
