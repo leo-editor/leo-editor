@@ -3132,7 +3132,6 @@ class FastAtRead:
         indent = 0  # The current indentation.
         level_stack: list[tuple[VNode, VNode]] = []
         n_last_lines = 0  # The number of @@last directives seen.
-        ### root_gnx_adjusted = False  # True: suppress final checks.
 
         # #1065 so reads will not create spurious child nodes.
         root_seen = False  # False: The next +@node sentinel denotes the root, regardless of gnx.
@@ -3147,7 +3146,6 @@ class FastAtRead:
         verbatim = False  # True: the next line must be added without change.
 
         # Init the parent vnode.
-        ### root_gnx = gnx = self.root.gnx
         gnx = self.root.gnx
         context = self.c
         parent_v = self.root.v
@@ -3268,18 +3266,13 @@ class FastAtRead:
                 # m.group(3) is the level number, m.group(4) is the number of stars.
                 level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
                 v = gnx2vnode.get(gnx)
-                #
+
                 # Case 1: The root @file node. Don't change the headline.
-                ### Experimental
-                    # if not root_seen and not v and not g.unitTesting:
-                        # # Don't warn about a gnx mismatch in the root.
-                        # root_gnx_adjusted = True  # pragma: no cover
                 if not root_seen:
                     # #1064: The node represents the root, regardless of the gnx!
                     # #3931: The gnx in the external file overrides p.v.gnx.
                     root_seen = True
                     clone_v = None
-
                     if not v:
                         # Special case for unit tests and git-diff.
                         v = root_v
@@ -3291,20 +3284,15 @@ class FastAtRead:
                     else:
                         # refresh-from-disk
                         # #3931: Prefer the gnx in the external file.
-                        # g.trace(gnx, 'root_v', root_v, v)  # outline's v, external v.
-                        # g.trace(gnx, 'gnx2vnode.get(gnx)', repr(gnx2vnode.get(gnx)))
-                        # g.trace(gnx, 'gnx2body.get(gnx)', repr(gnx2body.get(gnx)))
-                        # Re-init gnx2body and gnx2vnode.
                         gnx = v.gnx
                         gnx2body[gnx] = gnx2body[root_v.gnx]  ### Experimental.
                         gnx2vnode[gnx] = v
                         root_v.fileIndex = gnx
-
-                    ### Experimental.  Always use the gnx in the file's root node.
+                    # Always use the gnx in the file's root node.
                     self.root.gnx == gnx
                     v.children = []
-                    continue
-                #
+                    continue  # End of case 1.
+
                 # Case 2: We are scanning the descendants of a clone.
                 parent_v, clone_v = level_stack[level - 2]
                 if v and clone_v:
@@ -3317,8 +3305,8 @@ class FastAtRead:
                     # Always clear the children!
                     v.children = []
                     parent_v.children.append(v)
-                    continue
-                #
+                    continue  # End of case 2.
+
                 # Case 3: we are not already scanning the descendants of a clone.
                 if v:
                     # The *start* of a clone tree. Reset the children.
@@ -3327,16 +3315,13 @@ class FastAtRead:
                 else:
                     # Make a new vnode.
                     v = leoNodes.VNode(context=context, gnx=gnx)
-                #
                 # The last version of the body and headline wins.
                 gnx2vnode[gnx] = v
                 gnx2body[gnx] = body = []
                 v._headString = head
-                #
                 # Update the stack.
                 level_stack = level_stack[: level - 1]
                 level_stack.append((v, clone_v))
-                #
                 # Update the links.
                 assert v != root_v
                 parent_v.children.append(v)
@@ -3575,21 +3560,10 @@ class FastAtRead:
         #@+<< final checks >>
         #@+node:ekr.20211104054823.1: *4* << final checks >>
         if g.unitTesting:
-            ### assert not root_gnx_adjusted
             assert not stack, stack
-            # Allow gnx mismatch.
-        ###
-            # elif root_gnx_adjusted:  # pragma: no cover
-                # pass  # Don't check!
         elif stack:  # pragma: no cover
             g.error('scan_lines: Stack should be empty')
             g.printObj(stack, tag='stack')
-
-        ###
-            # if root_gnx != gnx:  # pragma: no cover
-                # # #3931: alter root_gnx to match the incoming gnx.
-                # g.error('scan_lines: gnx error')
-                # g.es_print(f"root_gnx: {root_gnx} != gnx: {gnx}")
         #@-<< final checks >>
         #@+<< insert @last lines >>
         #@+node:ekr.20211103101453.1: *4* << insert @last lines >>

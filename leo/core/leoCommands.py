@@ -1913,10 +1913,6 @@ class Commands:
         Return the number of errors found.
         """
         c = self
-        ### id_d: dict[int, set[VNode] = {}
-        # Keys are gnx's; values are sets of vnodes with that gnx.
-        ### vnode_d: dict[str, set[VNode]] = {}
-
         # Keys are gnx's; values are lists of (id(v), v).
         vnode_d: dict[str, list[tuple[int, VNode]]] = {}
         ni = g.app.nodeIndices
@@ -1932,9 +1928,6 @@ class Commands:
             v = p.v
             gnx = v.fileIndex
             if gnx:  # gnx must be a string.
-                ### aSet: set[VNode] = vnode_d.get(gnx, set())
-                ### aSet.add(v)
-                ### vnode_d[gnx] = aSet
                 aList = vnode_d.get(gnx, [])
                 aList.append((id(v), v))
             else:
@@ -1943,7 +1936,6 @@ class Commands:
                 g.es_print(f"empty v.fileIndex: {v} new: {p.v.gnx!r}", color='red')
         for gnx in sorted(vnode_d.keys()):
             aList = list(vnode_d.get(gnx))
-            ### if len(aList) != 1:
             ids = [id_ for (id_, v) in aList]
             if len(ids) > 1:
                 print('\nc.checkGnxs...')
