@@ -538,10 +538,16 @@ class LeoFind:
         c.setChanged()
         c.redraw(found)
         return True
-    #@+node:ekr.20150629084204.1: *4* find.find-def, do_find_def & helpers
+    #@+node:ekr.20150629084204.1: *4* find.find-def/var & helpers
     @cmd('find-def')
-    def find_def(self, event: LeoKeyEvent = None) -> tuple[Position, int, int]:  # pragma: no cover (cmd)
-        """Find the class, def or assignment to var of the word under the cursor."""
+    @cmd('find-var')
+    def find_def(self, event: LeoKeyEvent = None) -> None:
+        """
+        Find the class, def or assignment to var of the word under the cursor.
+        
+        If there is exactly one match, go to it.
+        Otherwise, present the results as in the find-all command.
+        """
 
         # Note: This method is *also* part of the ctrl-click logic:
         #
@@ -549,76 +555,36 @@ class LeoFind:
         # g.openUrlOnClick calls g.openUrlHelper.
         # g.openUrlHelper calls this method.
 
-        # re searches are more accurate, but not enough to be worth changing the user's settings.
-        ftm, p = self.ftm, self.c.p
-        # Check.
         word = self._compute_find_def_word(event)
-        if not word:
-            return None, None, None
-        # Settings...
-        self._save_before_find_def(p)  # Save previous settings.
-        assert self.find_def_data
-        # #3124. Try all possibilities, regardless of case.
-        alt_word = self._switch_style(word)
-        #@+<< compute the search table >>
-        #@+node:ekr.20230203092333.1: *5* << compute the search table >>
-        table: tuple
-        if alt_word:
-            table = (
-                (f"class {word}", self.do_find_def),
-                # (fr"^\s*class {alt_word}\b", self.do_find_def),
-                (f"def {word}", self.do_find_def),
-                (f"def {alt_word}", self.do_find_def),
-                (f"{word} =", self.do_find_var),
-                (f"{alt_word} =", self.do_find_var),
-            )
-        else:
-            table = (
-                (f"class {word}", self.do_find_def),
-                (f"def {word}", self.do_find_def),
-                (f"{word} =", self.do_find_var),
-            )
-        #@-<< compute the search table >>
-        for find_pattern, method in table:
-            ftm.set_find_text(find_pattern)
-            self.init_vim_search(find_pattern)
-            self.update_change_list(self.change_text)  # Optional. An edge case.
-            # Do the command!
-            settings = self._compute_find_def_settings(find_pattern)
-            result = method(settings)
-            if result[0]:
-                # Keep the settings that found the match.
-                ftm.set_widgets_from_dict(settings)
-                return result
-        # Restore the previous find settings!
-        self._restore_after_find_def()
-        return None, None, None
+        self.do_find_def(word)
 
-    def do_find_def(self, settings: Settings) -> tuple[Position, int, int]:
-        """A standalone helper for unit tests."""
-        return self._fd_helper(settings)
-    #@+node:ekr.20210114202757.1: *5* find._compute_find_def_settings
-    def _compute_find_def_settings(self, find_pattern: str) -> Settings:
+    def do_find_def(self, word: str) -> Optional[list[tuple[int, Position, str]]]:
+        """
+        A helper for find_def's.
+        It's a standalone method for unit tests.
+        """
+        c = self.c
+        patterns = self._make_patterns(word)
+        matches = self._find_all_matches(patterns)
+        if g.unitTesting:
+            return matches
+        if not matches:
+            return None
+        w = c.frame.body.wrapper
+        if not w:
+            return None
+        if len(matches) == 1:
+            i, p, s = matches[0]
+            c.selectPosition(p)
+            w.setSelectionRange(i, i + len(s), insert=i)
+            c.redraw()
+            return None
+        ### To do: Present the results as in find-all.
+        return None
 
-        settings = self.default_settings()
-        table = (
-            ('change_text', ''),
-            ('find_text', find_pattern),
-            ('ignore_case', True),
-            ('pattern_match', False),
-            ('reverse', False),
-            ('search_body', True),
-            ('search_headline', False),
-            ('whole_word', True),
-        )
-        for attr, val in table:
-            # Guard against renamings & misspellings.
-            assert hasattr(self, attr), attr
-            assert attr in settings.__dict__, attr
-            # Set the values.
-            setattr(self, attr, val)
-            settings[attr] = val
-        return settings
+    # Compatibility.
+    find_var = find_def
+    do_find_var = do_find_def
     #@+node:ekr.20150629084611.1: *5* find._compute_find_def_word
     def _compute_find_def_word(self, event: LeoKeyEvent) -> Optional[str]:  # pragma: no cover (cmd)
         """Init the find-def command. Return the word to find or None."""
@@ -639,87 +605,25 @@ class LeoFind:
             if found:
                 return word[len(tag) :].strip()
         return word
-    #@+node:ekr.20150629125733.1: *5* find._fd_helper
-    def _fd_helper(self, settings: Settings) -> tuple[Position, int, int]:
-        """
-        Find the definition of the class, def or var under the cursor.
+    #@+node:ekr.20240525172445.1: *5* find._make_patterns
+    def _make_patterns(self, word: str) -> list[str]:
 
-        return p, pos, newpos for unit tests.
-        """
-        c = self.c
-        self.find_text = settings.find_text
-        # Just search body text.
-        self.search_headline = False
-        self.search_body = True
-        w = c.frame.body.wrapper
-        # Check.
-        if not w:  # pragma: no cover
-            return None, None, None
-        save_sel = w.getSelectionRange()
-        ins = w.getInsertPoint()
-        old_p = c.p
-        if self.reverse_find_defs:
-            # #2161: start at the last position.
-            p = c.lastPosition()
-        else:
-            # Start in the root position.
-            p = c.rootPosition()
-        # Required.
-        c.selectPosition(p)
-        c.redraw()
-        c.bodyWantsFocusNow()
-        # #1592.  Ignore hits under control of @nosearch
-        old_reverse = self.reverse
-        try:
-            # #2161:
-            self.reverse = self.reverse_find_defs
-            # # 2288:
-            self.work_s = p.b
-            if self.reverse_find_defs:
-                self.work_sel = (len(p.b), len(p.b), len(p.b))
-            else:
-                self.work_sel = (0, 0, 0)
-            while True:
-                p, pos, newpos = self.find_next_match(p)
-                found = pos is not None
-                if found or not g.inAtNosearch(p):  # do *not* use c.p.
-                    break
-        finally:
-            self.reverse = old_reverse
-        if found:
-            # Keep the find settings used to find the match.
-            c.redraw(p)
-            w.setSelectionRange(pos, newpos, insert=newpos)
-            c.bodyWantsFocusNow()
-            return p, pos, newpos
-        # find_def now calls _restore_after_find_def
-        i, j = save_sel
-        c.redraw(old_p)
-        w.setSelectionRange(i, j, insert=ins)
-        c.bodyWantsFocusNow()
-        return None, None, None
-    #@+node:ekr.20150629095511.1: *5* find._restore_after_find_def
-    def _restore_after_find_def(self) -> None:
-        """Restore find settings in effect before a find-def command."""
-        b = self.find_def_data  # A g.Bunch
-        if b:
-            self.ignore_case = b.ignore_case
-            self.pattern_match = b.pattern_match
-            self.search_body = b.search_body
-            self.search_headline = b.search_headline
-            self.whole_word = b.whole_word
-            self.find_def_data = None
-    #@+node:ekr.20150629095633.1: *5* find._save_before_find_def
-    def _save_before_find_def(self, p: Position) -> None:
-        """Save the find settings in effect before a find-def command."""
-        self.find_def_data = g.Bunch(
-            ignore_case=self.ignore_case,
-            p=p.copy(),
-            pattern_match=self.pattern_match,
-            search_body=self.search_body,
-            search_headline=self.search_headline,
-            whole_word=self.whole_word,
-        )
+        patterns = [
+            fr"^\s*class\s+{word}\b",
+            fr"^\s*def\s+{word}\b",
+            fr"\b{word}\s*=",
+        ]
+        alt_word = self._switch_style(word)
+        if alt_word:
+            patterns.extend([
+                fr"^\s*class\s+{alt_word}\b",
+                fr"^\s*def\s+{alt_word}\b",
+                fr"\b{alt_word}\s*=",
+            ])
+        return patterns
+    #@+node:ekr.20240525172335.1: *5* find._find_all_matches (to do)
+    def _find_all_matches(self, patterns: list[str]) -> list[tuple[int, Position, str]]:
+        return []  ###
     #@+node:ekr.20180511045458.1: *5* find._switch_style
     def _switch_style(self, word: str) -> Optional[str]:
         """
@@ -870,38 +774,6 @@ class LeoFind:
             g.app.gui.openFindDialog(c)
         else:
             c.frame.log.selectTab('Find')
-    #@+node:ekr.20210118003803.1: *4* find.find-var & do_find_var
-    @cmd('find-var')
-    def find_var(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
-        """Find the var under the cursor."""
-        ftm, p = self.ftm, self.c.p
-        # Check...
-        word = self._compute_find_def_word(event)
-        if not word:
-            return
-        # Settings...
-        find_pattern = word + ' ='
-        ftm.set_find_text(find_pattern)
-        self._save_before_find_def(p)  # Save previous settings.
-        self.init_vim_search(find_pattern)
-        self.update_change_list(self.change_text)  # Optional. An edge case.
-        settings = self._compute_find_def_settings(find_pattern)
-        # Do the command!
-        if 1:  # Restore all settings.
-            self.do_find_var(settings)
-            ftm.set_widgets_from_dict(settings)
-        else:  # Restore settings only if there is no match.
-            result = self.do_find_var(settings)
-            if result[0]:
-                # Keep the settings that found the match.
-                ftm.set_widgets_from_dict(settings)
-            else:
-                # Restore the previous find settings!
-                self._restore_after_find_def()
-
-    def do_find_var(self, settings: Settings) -> tuple[Position, int, int]:
-        """A standalone helper for unit tests."""
-        return self._fd_helper(settings)
     #@+node:ekr.20141113094129.6: *4* find.focus-to-find
     @cmd('focus-to-find')
     def focus_to_find(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
