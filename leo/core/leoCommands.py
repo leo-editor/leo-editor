@@ -1929,7 +1929,7 @@ class Commands:
             gnx = v.fileIndex
             if gnx:  # gnx must be a string.
                 aSet: set[VNode] = d.get(gnx, set())
-                aSet.add(v)
+                aSet.add(id(v))  # #3931: Check only the VNode's identity.
                 d[gnx] = aSet
             else:
                 gnx_errors += 1
