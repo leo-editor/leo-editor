@@ -577,11 +577,29 @@ class LeoFind:
         use_nav_pane = g.pluginIsLoaded('quicksearch.py')
         if use_nav_pane:
             self._load_quicksearch_entries(word, matches)
+        # Carefully select the most convenient clone of p.
         if len(matches) == 1:
-            # Select a unique node.
             i, p, s = matches[0]
-            if p != c.p:
-                c.redraw(p)
+            if p == c.p:
+                pass
+            elif self.reverse_find_defs:
+                search_p = c.lastPosition()
+                while search_p:
+                    if search_p.v == p.v:
+                        p = search_p
+                        break
+                    else:
+                        search_p.moveToThreadBack()
+            else:
+                # Start in the root position.
+                search_p = c.rootPosition()
+                while search_p:
+                    if search_p.v == p.v:
+                        p = search_p
+                        break
+                    else:
+                        search_p.moveToThreadNext()
+            c.selectPosition(p)
             w = c.frame.body.wrapper
             if w:
                 w.setSelectionRange(i, i + len(s), insert=i)
