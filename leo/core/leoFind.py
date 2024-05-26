@@ -598,12 +598,38 @@ class LeoFind:
                     break
                 i += len(s)
         return results
-    #@+node:ekr.20240526071521.1: *5* find._make_clones (to do)
-    def _make_clones(self, matches: list[tuple[int, Position, str]]) -> None:
+    #@+node:ekr.20240526071521.1: *5* find._make_clones
+    def _make_clones(self, word: str, matches: list[tuple[int, Position, str]]) -> None:
         """
-        Show the matches in a format similar to the clone-find commands.
+        Undoably create clones for all matches, similar to the clone-find commands.
         """
-        g.printObj(matches)
+        c = self.c
+        ftm = self.ftm
+        u = c.undoer
+        undoData = u.beforeInsertNode(c.p)
+
+        # Create the found node.
+        found = c.lastTopLevel().insertAfter()
+        found.h = f"Found:{word}"
+        found.b = f"@nosearch\n\n# found {len(matches)} nodes"
+        # Clone nodes as children of the found node.
+        clones = [p for i, p, s in matches]
+        for p in clones:
+            p2 = p.copy()
+            n = found.numberOfChildren()
+            p2._linkCopiedAsNthChild(found, n)
+        # Sort the clones in place, without undo.
+        found.v.children.sort(key=lambda v: v.h.lower())
+
+        # Set the search text. This is convenient and should not cause problems.
+        self.find_text = word
+        ftm.set_find_text(word)
+
+        # Set the undo data.
+        u.afterInsertNode(found, 'find-def', undoData)
+        c.setChanged()
+        found.expand()
+        c.redraw(found)
     #@+node:ekr.20240525172445.1: *5* find._make_patterns
     bad_regex_patterns: list[str] = []
 
@@ -686,7 +712,7 @@ class LeoFind:
             if w:
                 w.setSelectionRange(i, i + len(s), insert=i)
         else:
-            self._make_clones(matches)
+            self._make_clones(word, matches)
         return matches
 
     # Compatibility.
