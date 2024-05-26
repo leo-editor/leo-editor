@@ -45,6 +45,7 @@ class TestFind(LeoUnitTest):
             p2.b = (
                 f"def child{n}():\n"
                 f"    v{n} = 2\n"
+                f"    va{n}: int = 2\n"
                 f"    # node {n} line 1: blabla second blabla bla second ble blu\n"
                 f"    # node {n} line 2: blabla second blabla bla second ble blu"
             )
@@ -56,6 +57,7 @@ class TestFind(LeoUnitTest):
             p.b = (
                 f"def top{n}():\n:"
                 f"    v{n} = 3\n"
+                f"    va{n}: int = 3\n"
             )
             return p
 
@@ -380,12 +382,22 @@ class TestFind(LeoUnitTest):
     #@+node:ekr.20210110073117.66: *4* TestFind.test_find-var
     def test_find_var(self):
         x = self.x
+        # Unannotated.
         matches = x.do_find_var('v5')
         assert len(matches) == 1
         i, p, s = matches[0]
         assert p
         self.assertEqual(p.h, 'child 5')
         self.assertEqual(s, 'v5 =')
+        
+        # Annotated.
+        matches = x.do_find_var('va5')
+        assert len(matches) == 1
+        i, p, s = matches[0]
+        assert p
+        self.assertEqual(p.h, 'child 5')
+        self.assertEqual(s, 'va5:')
+
     #@+node:ekr.20210110073117.68: *4* TestFind.test_replace-then-find
     def test_replace_then_find(self):
         settings, w, x = self.settings, self.c.frame.body.wrapper, self.x
