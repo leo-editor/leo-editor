@@ -592,16 +592,21 @@ class LeoFind:
     def _load_quicksearch_entries(self, word: str, matches: list[tuple[int, Position, str]]) -> None:
         """Put all matches in the Nav pane."""
         c = self.c
-        unique_matches = list(set([s.strip() for (i, p, s) in matches if s.strip()]))
-        g.trace(unique_matches)
         x = c.quicksearch_controller
         w = c.frame.nav
-        e = w.ui.lineEdit
+        e = w.ui.lineEdit  # A QLineEdit.
+        # Filter out uniques matches.
+        unique_matches = list(set([s.strip() for (i, p, s) in matches if s.strip()]))
+        # The Nav pane can show only one match, so issue a warning.
+        if len(unique_matches) > 1:
+            g.es_print(f"Multiple matches for {word}", color='red')
+            for z in unique_matches[1:]:
+                g.es_print(z)
+        # Put the first match in the Nav pane's edit widget and update.
         x.clear()
         e.setText(unique_matches[0])
         c.frame.log.selectTab('Nav')
         w.returnPressed()
-
     #@+node:ekr.20150629084611.1: *6* find._compute_find_def_word
     def _compute_find_def_word(self, event: LeoKeyEvent) -> Optional[str]:  # pragma: no cover (cmd)
         """Init the find-def command. Return the word to find or None."""
