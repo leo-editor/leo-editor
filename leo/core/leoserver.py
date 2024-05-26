@@ -2283,6 +2283,20 @@ class LeoServer:
             raise ServerError(f"{tag}: Running remove_tags gave exception: {e}")
         return self._make_response()
     #@+node:felix.20210621233316.35: *4* server.getter commands
+    #@+node:felix.20240525174003.1: *5* server.is_valid
+    def is_valid(self, param: Param) -> Response:
+        """
+        Checks if gnx is valid in this commander
+        """
+        c = self._check_c(param)
+        if c:  # pragma: no cover
+            ap = param.get("ap")
+            if ap:
+                gnx = ap.get("gnx")
+            for p in c.all_unique_positions(copy=False):
+                if p.gnx == gnx:
+                    return self._make_minimal_response({'valid': True})
+        return self._make_minimal_response()
     #@+node:felix.20210621233316.36: *5* server.get_all_open_commanders
     def get_all_open_commanders(self, param: Param) -> Response:
         """Return array describing each commander in g.app.commanders()."""
@@ -4650,6 +4664,7 @@ class LeoServer:
                 commanders = g.app.commanders()
                 for commander in commanders:
                     if str(id(commander)) == str(commanderId):
+                        print("Found commander by id!")
                         c = commander  #  Found commander by id!
                         break
         # Still not found?
@@ -4942,7 +4957,7 @@ class LeoServer:
     #@+node:felix.20210621233316.90: *4* server._get_p
     def _get_p(self, param: dict) -> Position:
         """
-        Return _ap_to_p(param["ap"]) or c.p.
+        Return _ap_to_p(param["ap"]), try to fallback on first node with same gnx, or c.p.
         """
         tag = '_get_ap'
         c = self._check_c(param)
@@ -4950,19 +4965,33 @@ class LeoServer:
             raise ServerError(f"{tag}: no c")
 
         ap = param.get("ap")
+        gnx = param.get("gnx")  # optional
         if ap:
             p = self._ap_to_p(ap, c)  # Conversion
-            if p:
-                if not c.positionExists(p):  # pragma: no cover
-                    # Try to get a gnx parameter as secondary fallback selection criteria
-                    gnx = param.get("gnx")
-                    if gnx:
-                        for p in c.all_unique_positions():
-                            if p.v.gnx == gnx:
-                                return p
-                    raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
-                return p  # Return the position
+            if not p:
+                # Try to get a gnx parameter as secondary fallback selection criteria
+                gnx = ap.get('gnx')
+                if gnx:
+                    print('has ap-gnx!')
+                    for p in c.all_unique_positions():
+                        if p.v.gnx == gnx:
+                            print('Got P by ap-gnx!')
+                            return p
+                raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
+            return p  # Return the position
+        elif gnx:
+            print('no ap but has gnx!')
+            for p in c.all_unique_positions():
+                if p.v.gnx == gnx:
+                    stack = inspect.stack()
+                    for frame in stack[1:2]:
+                        print(f"Got P by gnx from: '{frame.function}' in {frame.filename}:{frame.lineno}")
+                    return p
         # Fallback to c.p
+        stack = inspect.stack()
+        for frame in stack[1:2]:
+            print(f" Fallback to c.p from: '{frame.function}' in {frame.filename}:{frame.lineno}")
+
         if not c.p:  # pragma: no cover
             raise ServerError(f"{tag}: no c.p")
         return c.p
@@ -5058,8 +5087,6 @@ class LeoServer:
 
         The 'package' kwarg, if present, must be a python dict describing a
         response. package may be an empty dict or None.
-
-        The 'p' kwarg, if present, must be a position.
 
         First, this method creates a response (a python dict) containing all
         the keys in the 'package' dict.
