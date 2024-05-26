@@ -78,7 +78,7 @@ version_tuple = (1, 0, 11)
 # 1.0.8 October 2023: Added history commands, Fixed leo document change detection, allowed more minibuffer commands.
 # 1.0.9 January 2024: Added support for UNL and specific commander targeting for any command.
 # 1.0.10 Febuary 2024: Added support getting UNL for a specific node (for status bar display, etc.)
-# 1.0.11 May 2024: Added current commander info in get_ui_states command
+# 1.0.11 May 2024: Added is_valid and current commander info in get_ui_states command for detached body support.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -4958,7 +4958,8 @@ class LeoServer:
     #@+node:felix.20210621233316.90: *4* server._get_p
     def _get_p(self, param: dict) -> Position:
         """
-        Return _ap_to_p(param["ap"]), try to fallback on first node with same gnx, or c.p.
+        If param["ap"] is present this will return _ap_to_p(param["ap"]), or fallback on first node with same gnx, or c.p.
+        If no param["ap"], will try to use param["gnx"] to return first position with this gnx.
         """
         tag = '_get_ap'
         c = self._check_c(param)
@@ -4973,26 +4974,17 @@ class LeoServer:
                 # Try to get a gnx parameter as secondary fallback selection criteria
                 gnx = ap.get('gnx')
                 if gnx:
-                    print('has ap-gnx!')
                     for p in c.all_unique_positions():
                         if p.v.gnx == gnx:
-                            print('Got P by ap-gnx!')
                             return p
                 raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
             return p  # Return the position
         elif gnx:
-            print('no ap but has gnx!')
+            # Had no 'ap', but a 'gnx' param was passed instead.
             for p in c.all_unique_positions():
                 if p.v.gnx == gnx:
-                    stack = inspect.stack()
-                    for frame in stack[1:2]:
-                        print(f"Got P by gnx from: '{frame.function}' in {frame.filename}:{frame.lineno}")
                     return p
         # Fallback to c.p
-        stack = inspect.stack()
-        for frame in stack[1:2]:
-            print(f" Fallback to c.p from: '{frame.function}' in {frame.filename}:{frame.lineno}")
-
         if not c.p:  # pragma: no cover
             raise ServerError(f"{tag}: no c.p")
         return c.p
