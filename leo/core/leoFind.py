@@ -565,6 +565,7 @@ class LeoFind:
         matches = self._find_all_matches(patterns)
         if g.unitTesting:
             return matches
+        # Look for alternate matches only if there are no exact matches.
         if not matches:
             alt_word = self._switch_style(word)
             patterns = self.make_patterns(alt_word)
@@ -579,12 +580,28 @@ class LeoFind:
             w = c.frame.body.wrapper
             if w:
                 w.setSelectionRange(i, i + len(s), insert=i)
+        elif g.pluginIsLoaded('quicksearch.py'):
+            self._load_quicksearch_entries(word, matches)
         else:
             self._make_clones(word, matches)
         return matches
 
     # Compatibility.
     do_find_var = do_find_def
+    #@+node:ekr.20240526125901.1: *6* find._load_quicksearch_entries
+    def _load_quicksearch_entries(self, word: str, matches: list[tuple[int, Position, str]]) -> None:
+        """Put all matches in the Nav pane."""
+        c = self.c
+        unique_matches = list(set([s.strip() for (i, p, s) in matches if s.strip()]))
+        g.trace(unique_matches)
+        x = c.quicksearch_controller
+        w = c.frame.nav
+        e = w.ui.lineEdit
+        x.clear()
+        e.setText(unique_matches[0])
+        c.frame.log.selectTab('Nav')
+        w.returnPressed()
+
     #@+node:ekr.20150629084611.1: *6* find._compute_find_def_word
     def _compute_find_def_word(self, event: LeoKeyEvent) -> Optional[str]:  # pragma: no cover (cmd)
         """Init the find-def command. Return the word to find or None."""
