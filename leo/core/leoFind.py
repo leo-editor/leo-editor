@@ -546,7 +546,7 @@ class LeoFind:
         Find the class, def or assignment to var of the word under the cursor.
         
         If there is exactly one match, go to it.
-        Otherwise, present the results as in the find-all command.
+        Otherwise, present the results as in the clone-find-all command.
         """
 
         # Note: This method is *also* part of the ctrl-click logic:
@@ -579,7 +579,7 @@ class LeoFind:
             w.setSelectionRange(i, i + len(s), insert=i)
             c.redraw()
             return None
-        ### To do: Present the results as in find-all.
+        ### To do: Present the results as in clone-find-all
         return None
 
     # Compatibility.
@@ -635,7 +635,7 @@ class LeoFind:
             ):
                 compile_pattern(pattern)
         return results
-    #@+node:ekr.20240525172335.1: *5* find._find_all_matches (to do)
+    #@+node:ekr.20240525172335.1: *5* find._find_all_matches (test)
     def _find_all_matches(self, patterns: list[re.Pattern]) -> list[tuple[int, Position, str]]:
         """
         Search all nodes (except nodes under control of @nosearch) for any of
