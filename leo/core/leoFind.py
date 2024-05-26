@@ -582,8 +582,17 @@ class LeoFind:
         Return a list of tuples (starting-index, p, matching-string) describing the matches.
         """
         c = self.c
+        p = c.rootPosition()
         results = []
-        for p in c.all_unique_positions():
+        seen = set()
+        while p:
+            if g.inAtNosearch(p):
+                p.moveToNodeAfterTree()
+                continue
+            if p.v in seen:
+                p.moveToThreadNext()
+                continue
+            seen.add(p.v)
             b = p.b
             i = 0  # The index within p.b of the start of s.
             found = False  # Only report the first match within p.b.
@@ -591,12 +600,13 @@ class LeoFind:
                 for pattern in patterns:
                     m = pattern.search(s)
                     if m:
-                        results.append((i + m.start(), p, m.group(0)))
+                        results.append((i + m.start(), p.copy(), m.group(0)))
                         found = True
                         break
                 if found:
                     break
                 i += len(s)
+            p.moveToThreadNext()
         return results
     #@+node:ekr.20240526071521.1: *5* find._make_clones
     def _make_clones(self, word: str, matches: list[tuple[int, Position, str]]) -> None:
@@ -610,7 +620,7 @@ class LeoFind:
 
         # Create the found node.
         found = c.lastTopLevel().insertAfter()
-        found.h = f"Found:{word}"
+        found.h = f"Found {len(matches)}: {word}"
         found.b = f"@nosearch\n\n# found {len(matches)} nodes"
         # Clone nodes as children of the found node.
         clones = [p for i, p, s in matches]
