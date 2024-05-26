@@ -623,6 +623,7 @@ class LeoFind:
             fr"^\s*class\s+{word}\b",
             fr"^\s*def\s+{word}\b",
             fr"\b{word}\s*=",
+            fr"\b{word}:",
         ):
             compile_pattern(pattern)
         alt_word = self._switch_style(word)
@@ -631,6 +632,7 @@ class LeoFind:
                 fr"^\s*class\s+{alt_word}\b",
                 fr"^\s*def\s+{alt_word}\b",
                 fr"\b{alt_word}\s*=",
+                fr"\b{alt_word}:",
             ):
                 compile_pattern(pattern)
         return results
@@ -671,11 +673,15 @@ class LeoFind:
         c = self.c
         patterns = self._make_patterns(word)
         matches = self._find_all_matches(patterns)
-        if g.unitTesting or not matches:
+        if g.unitTesting:
+            return matches
+        if not matches:
+            g.es(f"not found: {word!r}", color='red')
             return matches
         if len(matches) == 1:
             i, p, s = matches[0]
-            c.redraw(p)
+            if p != c.p:
+                c.redraw(p)
             w = c.frame.body.wrapper
             if w:
                 w.setSelectionRange(i, i + len(s), insert=i)
