@@ -669,16 +669,16 @@ class LeoFind:
         It's a standalone method for unit tests.
         """
         c = self.c
-        w = c.frame.body.wrapper
         patterns = self._make_patterns(word)
         matches = self._find_all_matches(patterns)
-        if g.unitTesting or not matches or not w:
+        if g.unitTesting or not matches:
             return matches
         if len(matches) == 1:
             i, p, s = matches[0]
-            c.selectPosition(p)
-            w.setSelectionRange(i, i + len(s), insert=i)
-            c.redraw()
+            c.redraw(p)
+            w = c.frame.body.wrapper
+            if w:
+                w.setSelectionRange(i, i + len(s), insert=i)
         else:
             self._make_clones(matches)
         return matches
