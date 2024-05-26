@@ -635,7 +635,7 @@ class LeoFind:
             ):
                 compile_pattern(pattern)
         return results
-    #@+node:ekr.20240525172335.1: *5* find._find_all_matches (test)
+    #@+node:ekr.20240525172335.1: *5* find._find_all_matches
     def _find_all_matches(self, patterns: list[re.Pattern]) -> list[tuple[int, Position, str]]:
         """
         Search all nodes (except nodes under control of @nosearch) for any of
@@ -657,9 +657,6 @@ class LeoFind:
                         break
             p.moveToThreadNext()
         return results
-
-
-
     #@+node:ekr.20180511045458.1: *5* find._switch_style
     def _switch_style(self, word: str) -> Optional[str]:
         """

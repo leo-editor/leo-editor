@@ -300,7 +300,7 @@ class TestFind(LeoUnitTest):
     #@+node:ekr.20210110073117.65: *4* TestFind.test_find-def (rewrite)
     def test_find_def(self):
         x = self.x
-        matches = x.do_find_def('def child5')
+        matches = x.do_find_def('child5')
         assert len(matches) == 1
         i, p, s = matches[0]
         assert p
