@@ -27,7 +27,8 @@
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20231107062256.1"><vh>@button check-leoPy.leo</vh></v>
 <v t="ekr.20230508145335.1"><vh>@command slow-tests</vh></v>
-<v t="ekr.20220306092217.1"><vh>@command test-one @key=F5</vh>
+<v t="ekr.20220306092217.1"><vh>@command test-one</vh>
+<v t="ekr.20240417150035.1"><vh>&lt;&lt; old commands &gt;&gt;</vh></v>
 <v t="ekr.20230511074046.1"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20201013034659.1"><vh>@ignore Unused buttons and commands</vh>
@@ -150,7 +151,7 @@
 <v t="ekr.20200222151754.1"><vh>script: yoton "other end"</vh></v>
 </v>
 </v>
-<v t="EKR.20040430162943"><vh>Notes</vh>
+<v t="EKR.20040430162943"><vh>The attic</vh>
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
@@ -646,6 +647,7 @@
 <v t="ekr.20240321123225.1"><vh>@file ../scripts/uninstall_leo.py</vh></v>
 <v t="ekr.20240321123225.4"><vh>@file ../scripts/upload_leo_to_pypi.py</vh></v>
 <v t="ekr.20240321123225.2"><vh>@file ../scripts/upload_leo_to_testpypi.py</vh></v>
+<v t="mhw.20190808083008.1"><vh>@file ../scripts/add-desktop-links.leox</vh></v>
 </v>
 <v t="ekr.20240321122614.1"><vh>--- test scripts</vh>
 <v t="ekr.20240323050520.1"><vh>@file ../scripts/beautify_all_leo.py</vh></v>
@@ -1901,9 +1903,9 @@ os.chdir(path)
 # See https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='master', # old branch/rev
-    branch2='ekr-3702-scan_lines-warnings', # new branch/rev
-    fn='leo/core/leoAtFile.py',  # Don't use back slashes.
+    branch1='97282792e', # old branch/rev
+    branch2='fd7537f5c', # new branch/rev
+    fn='leo/plugins/viewrendered.py',  # Don't use back slashes.
 )
 </t>
 <t tx="ekr.20180824065751.1">print(p.gnx)</t>
@@ -2797,38 +2799,38 @@ def do_sec(i, m, s):
 </t>
 <t tx="ekr.20220306092217.1">g.cls()
 if c.isChanged():
+    print('Saved!')
     c.save()
 &lt;&lt; prefixes &gt;&gt;
-if 1:
+&lt;&lt; old commands &gt;&gt;
+if 0:
+    # Can be run from the command line as follows:
+    # python -c "import leo.core.leoTokens" --all --report --write leo/core/leoAst.py
+    args = '--all --report --write'  # --beautified --diff --write'
     for command in (
-        'python c:/test/mypy_test.py',
-        'python -m mypy c:/test/mypy_test.py',
-        'python -m ruff check c:/test/mypy_test.py',
-        'python -m pyflakes c:/test/mypy_test.py',
+        # f'python -c "import leo.core.leoTokens" {args} leoAst.py',
+        f'python -c "import leo.core.leoTokens" {args} leo/core',
+        'echo done!',
     ):
         print(command)
         g.execute_shell_commands(command)
 elif 1:
-    # command = 'run'  # run Nim tests.
-    script = 'build-leo.py'
-    command = fr"python C:\Repos\leo-editor\leo\scripts\{script}"
-    g.execute_shell_commands(command)
-else:  # Leo unit test.
     commands = (
-        # All commands must start with .test_.
-        
-        f"{core}.test_leoGlobals.TestGlobals.test_g_openUNLFile",
-        # f"{core}.test_leoUndo",
-        # f"{core}.test_leoColorizer",  
-        
-        # f"{importers}.TestPython",
-        # f"{importers}.TestPython.test_almost_empty_defs",
-        # f"{importers}.TestPython.test_general_test_1",
-        # f"{importers}.TestPython.test_nested_defs",
+        # General tests.
+        f"{core}.test_leoAtFile",
+        # f"{core}.test_leoTokens.TestTokenBasedOrange",
+        # f"{core}.test_leoTokens.TestTokens",
+        # f"{core}.test_leoTokens.TestTokenBasedOrange.test_blank_lines_after_function",
+        # f"{core}.test_leoAtFile.TestAtFile.test_putBody_unterminated_at_doc_part",
     )
     verbose_flag = ''  # -v
     commands_s = f"python -m unittest {verbose_flag} {' '.join(commands)}"
     g.execute_shell_commands(commands_s)
+else:
+    # command = 'run'  # run Nim tests.
+    script = 'build-leo.py'
+    command = fr"python C:\Repos\leo-editor\leo\scripts\{script}"
+    g.execute_shell_commands(command)
 </t>
 <t tx="ekr.20220318085657.1">"""
 Find and mark all nodes containing underindented trailing comments in c's outline.
@@ -3435,13 +3437,17 @@ include *.TXT
 prune leo/unittests/htmlcov
 prune leo/doc/html
 include leo/doc/html/conf.py
+
+# #3853.
+include leo/doc/_static
 </t>
 <t tx="ekr.20240321122614.1"># These are Leo's test scripts.
 
 # Run these scripts from the leo-editor folder.
 
 # Info item #3867 describes these scripts:
-# https://github.com/leo-editor/leo-editor/issues/2867</t>
+# https://github.com/leo-editor/leo-editor/issues/2867
+</t>
 <t tx="ekr.20240321122705.1"># Here are Leo's distribution-related scripts.
 
 # Run these scripts from the leo-editor folder.
@@ -3524,6 +3530,11 @@ for i in range(20):
 print('Done!')
 
 @language python
+</t>
+<t tx="ekr.20240417150035.1"># 'python c:/test/mypy_test.py',
+# 'python -m mypy c:/test/mypy_test.py',
+# 'python -m ruff check c:/test/mypy_test.py',
+# 'python -m pyflakes c:/test/mypy_test.py',
 </t>
 </tnodes>
 </leo_file>

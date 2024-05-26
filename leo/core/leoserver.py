@@ -6,6 +6,8 @@
 Leo's internet server.
 
 Written by Félix Malboeuf and Edward K. Ream.
+
+To run externally, do `python -m leo.core.leoserver`.
 """
 #@+<< leoserver imports >>
 #@+node:felix.20210621233316.2: ** << leoserver imports >>

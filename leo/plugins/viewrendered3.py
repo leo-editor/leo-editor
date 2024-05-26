@@ -11,8 +11,8 @@ Creates a window for live rendering of reSTructuredText,
 Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 #@+others
-#@+node:TomP.20200308230224.1: *3* About
-About Viewrendered3 V4.03
+#@+node:tom.20240521004125.1: *3* About
+About Viewrendered3 V5.0
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,13 +57,19 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
+ASCIIDOC, MD, and RsT images display correctly when the exported file is
+viewed in the browser (relative paths are converted to absolute file system
+paths).
+
+The display code has been adapted to Leo's new splitter/layout infrastructure.
+
+Previous Recent Changes
+========================
 In @jupyter nodes, for the path to the jupyter file or url:
     - path separators can be either backward or forward slashes.
     - Quotation marks around paths are removed.
     These changes let a path copied to the clipboard from the file manager work without user editing.
 
-Previous Recent Changes
-========================
 Bug fixes:
 - Quit early if no qt gui.
 - Fix messags with "VR4" to read "VR3".
@@ -928,7 +934,6 @@ import html
 from inspect import cleandoc
 from io import StringIO, open as ioOpen
 
-import json
 import os
 import os.path
 from pathlib import PurePath
@@ -954,7 +959,6 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+node:tom.20210517102737.1: *3* << Qt Imports >> (VR3)
 try:
     from leo.plugins import qt_text
-    from leo.plugins import free_layout
     from leo.core.leoQt import QtCore, QtWidgets
     from leo.core.leoQt import QtMultimedia, QtSvg
     from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
@@ -1055,7 +1059,7 @@ except ImportError:
     print('VR3: *** no pygments')
 #@-<< imports >>
 #@+<< declarations >>
-#@+node:TomP.20191231111412.1: ** << declarations >>
+#@+node:tom.20240520232254.1: ** << declarations >>
 # pylint: disable=invalid-name
 C = 'c'
 VR3_NS_ID = '_leo_viewrendered3'
@@ -1089,7 +1093,7 @@ MATHJAX_POLYFILL_URL = 'https://polyfill.io/v3/polyfill.min.js?features=es5'
 MATHJAX_URL = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js'
 
 #@+<< RsT Error styles>>
-#@+node:tom.20210621192144.1: *3* << RsT Error styles>>
+#@+node:tom.20240520232254.2: *3* << RsT Error styles>>
 RST_ERROR_BODY_STYLE = ('color:#606060;'
                         'background: aliceblue;'
                         'padding-left:1em;'
@@ -1115,7 +1119,7 @@ XML = 'xml'
 ZOOM_FACTOR = 1.1
 
 #@+<< MD stylesheets >>
-#@+node:tom.20211117122509.1: *3* << MD stylesheets >>
+#@+node:tom.20240520232254.3: *3* << MD stylesheets >>
 MD_BASE_STYLESHEET_NAME = 'md_styles.css'
 MD_STYLESHEET_DARK = 'md_styles_solarized_dark.css'
 MD_STYLESHEET_LIGHT = 'md_styles_solarized_light.css'
@@ -1169,9 +1173,23 @@ MD_MATH_FENCE = '```math'
 ASCDOC_CODE_LANG_MARKER = '[source,'
 ASCDOC_FENCE_MARKER = '----'
 
+RST_FIGURE_DIRECTIVE = '.. figure::'
 RST_INDENT = '    '
+RST_IMAGE_DIRECTIVE = '.. image::'
 SKIPBLOCKS = ('.. toctree::', '.. index::')
 ASCDOC_PYGMENTS_ATTRIBUTE = ':source-highlighter: pygments'
+
+#@+<< Other Line Markers >>
+#@+node:tom.20240520232254.4: *3* << Other Line Markers >>
+# MD
+MD_LABELre = r'^!\[(?P<label>.*)\]'
+MD_URLre = r'\((?P<url>.+)\)'
+MD_IMGre = MD_LABELre + MD_URLre
+MD_IMAGE_MARKER_RE = re.compile(MD_IMGre)
+
+ASCIIDOC_IMGre = r'image::(?P<url>.+)\[.*\]'
+ASCIIDOC_IMG = re.compile(ASCIIDOC_IMGre)
+#@-<< Other Line Markers >>
 
 _in_code_block = False
 
@@ -1182,7 +1200,7 @@ LEO_PLUGINS_DIR = os.path.dirname(__file__)
 NO_SVG_WIDGET_MSG = 'QSvgWidget not available'
 
 #@+<< Misc Globals >>
-#@+node:tom.20211126230402.1: *3* << Misc Globals >>
+#@+node:tom.20240520232254.5: *3* << Misc Globals >>
 ad3_file = ''
 asciidoc = None
 asciidoctor = None
@@ -1222,11 +1240,9 @@ latex_template = f'''\
 '''
 #@-<< define html templates >>
 
-# keys for all three below: c.hash()
+# keys are c.hash().
 controllers = {}  # values: VR3 widets
 positions = {}  # values: OPENED_IN_TAB or OPENED_IN_SPLITTER
-layouts = {}  # values: tuples (layout_when_closed, layout_when_open)
-
 
 #@+others
 #@+node:TomP.20200508124457.1: ** find_exe()
@@ -1446,12 +1462,7 @@ def isVisible():
     return
 #@+node:TomP.20191215195433.11: *3* vr3.onCreate
 def onCreate(tag, keys):
-    c = keys.get('c')
-    if not c:
-        return
-    provider = ViewRenderedProvider3(c)
-    free_layout.register_provider(c, provider)
-
+    pass
 #@+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
     c = keys.get('c')
@@ -1547,38 +1558,52 @@ def getVr3(event):
         controllers[h] = vr3 = viewrendered(event)
     return vr3
 #@+node:TomP.20191215195433.16: ** vr3.Commands
-#@+node:TomP.20191215195433.18: *3* g.command('vr3')
+#@+node:TomP.20191215195433.18: *3* g.command('vr3') (**weird**)
 @g.command('vr3')
 def viewrendered(event):
     """Open render view for commander"""
-    global controllers, layouts
-    if g.app.gui.guiName() != 'qt':
+    global controllers
+    gui = g.app.gui
+    if gui.guiName() != 'qt':
         return None
     c = event.get('c')
     if not c:
         return None
     h = c.hash()
     vr3 = controllers.get(h)
-    if not vr3:
-        controllers[h] = vr3 = ViewRenderedController3(c)
+    if vr3:
+        c.bodyWantsFocusNow()
+        return vr3
+    # Create the VR frame
+    controllers[h] = vr3 = ViewRenderedController3(c)
 
-    layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
-    vr3._ns_id = VR3_NS_ID  # for free_layout load/save
-    vr3.splitter = splitter = c.free_layout.get_top_splitter()
+    # A prototype for supporint  arbitrarily many layouts.
+    layout_kind = c.config.getString('vr3-initial-orientation') or 'in_secondary'
 
-    if splitter:
-        vr3.store_layout('closed')
-        sizes = split_last_sizes(splitter.sizes())
-        ok = splitter.add_adjacent(vr3, '_leo_pane:bodyFrame', 'right-of')
-        if not ok:
-            splitter.insert(0, vr3)
-        elif splitter.orientation() == Orientation.Horizontal:
-            splitter.setSizes(sizes)
-        vr3.adjust_layout('open')
-        positions[c.hash()] = OPENED_IN_SPLITTER
-
+    # Use different layouts depending on the main splitter's *initial* orientation.
+    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+    secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
+    if layout_kind == 'in_body':
+        # Share the VR pane with the body pane.
+        # Create a new splitter.
+        splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
+        splitter.setObjectName('vr3-horizonal-splitter')
+        main_splitter.addWidget(splitter)
+        # Add frames.
+        body_frame = gui.find_widget_by_name(c, 'bodyFrame')
+        splitter.addWidget(body_frame)
+        splitter.addWidget(vr3)
+        gui.equalize_splitter(splitter)
+        gui.equalize_splitter(main_splitter)
+    elif main_splitter.orientation() == Orientation.Vertical:
+        # Put the VR pane in in the main_splitter.
+        main_splitter.insertWidget(1, vr3)  ### The weird effect happens here.
+        gui.equalize_splitter(main_splitter)
+    else:
+        # Put the VR pane in the secondary splitter.
+        secondary_splitter.addWidget(vr3)
+        gui.equalize_splitter(secondary_splitter)
     c.bodyWantsFocusNow()
-
     return vr3
 #@+node:tom.20230403141635.1: *3* g.command('vr3-tab')
 @g.command('vr3-tab')
@@ -1616,7 +1641,7 @@ def unfreeze_rendering_pane(event):
 @g.command('vr3-hide')
 def hide_rendering_pane(event):
     """Close the rendering pane."""
-    global controllers, layouts
+    global controllers
     if g.app.gui.guiName() != 'qt':
         return
 
@@ -1631,7 +1656,7 @@ def hide_rendering_pane(event):
         g.es_print('can not close vr3 pane after using pyplot')
         return
 
-    pos = positions[c.hash()]
+    pos = positions.get(c.hash())
     if pos == OPENED_IN_SPLITTER:
         vr3.store_layout('open')
     elif pos == OPENED_IN_TAB:
@@ -1639,7 +1664,7 @@ def hide_rendering_pane(event):
 
     def at_idle(c=c, _vr3=vr3):
         c = event.get('c')
-        _vr3.adjust_layout('closed')
+        # _vr3.adjust_layout('closed')
         c.bodyWantsFocusNow()
 
     vr3.deactivate()
@@ -1807,25 +1832,6 @@ def lock_unlock_tree(event):
 def open_with_layout(event):
     vr3 = getVr3(event)
     c = vr3.c
-    layout = {'orientation': 1,
-              'content': [{'orientation': 2,
-                              'content': ['_leo_pane:outlineFrame', '_leo_pane:logFrame'],
-                              'sizes': [200, 200]
-                              },
-                           '_leo_pane:bodyFrame', VR3_NS_ID
-                         ],
-              'sizes': [200, 200, 200]
-             }
-
-    vr3.splitter = c.free_layout.get_top_splitter()
-    if vr3.splitter:
-        # Make it work with old and new layout code
-        try:
-            vr3.splitter.load_layout(layout)
-        except TypeError:
-            vr3.splitter.load_layout(c, layout)
-    else:
-        g.es('=== No splitter')
     c.doCommandByName('vr3-update')
     c.bodyWantsFocusNow()
 
@@ -2062,46 +2068,6 @@ def vr3_render_html_from_clip(event):
     vr3.update_html(clip_str, {})
 
 
-#@+node:ekr.20200918085543.1: ** class ViewRenderedProvider3
-class ViewRenderedProvider3:
-    #@+others
-    #@+node:ekr.20200918085543.2: *3* vr3.__init__
-    def __init__(self, c):
-        self.c = c
-        # Careful: we may be unit testing.
-        self.vr3_instance = None
-        if hasattr(c, 'free_layout'):
-            splitter = c.free_layout.get_top_splitter()
-            if splitter:
-                splitter.register_provider(self)
-    #@+node:ekr.20200918085543.3: *3* vr3.ns_provide
-    def ns_provide(self, id_):
-        global controllers, layouts
-        # #1678: duplicates in Open Window list
-        if id_ == self.ns_provider_id():
-            c = self.c
-            h = c.hash()
-            vr3 = controllers.get(h) or ViewRenderedController3(c)
-            controllers[h] = vr3
-            if not layouts.get(h):
-                layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
-            return vr3
-        return None
-    #@+node:ekr.20200918085543.4: *3* vr3.ns_provider_id
-    def ns_provider_id(self):
-        return VR3_NS_ID
-    #@+node:ekr.20200918085543.5: *3* vr3.ns_provides
-    def ns_provides(self):
-        # #1671: Better Window names.
-        # #1678: duplicates in Open Window list
-        return [('Viewrendered 3', self.ns_provider_id())]
-    #@+node:ekr.20200918085543.6: *3* vr3.ns_title
-    def ns_title(self, id_):
-        if id_ != self.ns_provider_id():
-            return None
-        filename = self.c.shortFileName() or 'Unnamed file'
-        return f"Viewrendered 3: {filename}"
-    #@-others
 #@+node:TomP.20191215195433.36: ** class ViewRenderedController3 (QWidget)
 class ViewRenderedController3(QtWidgets.QWidget):
     """A class to control rendering in a rendering pane."""
@@ -2112,10 +2078,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         global _in_code_block
         self.c = c
         # Create the widget.
-        QtWidgets.QWidget.__init__(self)  # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
-        # super().__init__(parent)
-
+        super().__init__(parent)
+            # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
+            # QtWidgets.QWidget.__init__(self)
         self.create_pane(parent)
+
         # Set the ivars.
         self.active = False
         self.badColors = []
@@ -2135,7 +2102,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.pyplot_active = False
         self.scrollbar_pos_dict = {}  # Keys are vnodes, values are positions.
         self.sizes = []  # Saved splitter sizes.
-        self.splitter = None
         self.splitter_index = None  # The index of the rendering pane in the splitter.
         self.title = None
 
@@ -2144,6 +2110,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.w = None  # The present widget in the rendering pane.
 
         # For viewrendered3
+        self.base_path = ''  # A node's base path including @path directive
         self.code_only = False
         self.code_only = False
         self.current_tree_root = None
@@ -2154,6 +2121,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.qwev = self.create_base_text_widget()
         self.rst_html = ''
         self.show_whole_tree = False
+        self.base_url = ''
 
         # User settings.
         self.reloadSettings()
@@ -2167,8 +2135,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.asciidoc3_internal_ok = True
         self.asciidoc_internal_ok = True
         self.using_ext_proc_msg_shown = False
-
-
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):
         pc = self
@@ -3018,6 +2984,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     return
             if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT) and _tree and self.show_whole_tree:
                 _tree.extend(rootcopy.subtree())
+            self.base_url = self.get_node_path(self.c, p)
             f = pc.dispatch_dict.get(kind)
             if not f:
                 g.trace(f'no handler for kind: {kind}')
@@ -3040,8 +3007,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     # pc.deactivate()
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
-        """Embed widget w in the free_layout splitter."""
-        pc = self; c = pc.c  #X ; splitter = pc.splitter
+        """Embed widget w in the appropriate splitter."""
+        pc = self; c = pc.c
         pc.w = w
         layout = self.layout()
         for i in range(layout.count()):
@@ -3404,8 +3371,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if pc.gs and not force:
             return
         if not pc.gs:
-            splitter = c.free_layout.get_top_splitter()
-            # Careful: we may be unit testing.
+            splitter = g.app.gui.get_top_splitter()
             if not splitter:
                 g.trace('no splitter')
                 return
@@ -4209,12 +4175,28 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # as a list of the words.
 
             if not _in_code_block:
+                rst_directive = ''
+                if line.startswith(RST_IMAGE_DIRECTIVE):
+                    rst_directive = RST_IMAGE_DIRECTIVE
+                elif line.startswith(RST_FIGURE_DIRECTIVE):
+                    rst_directive = RST_FIGURE_DIRECTIVE
+
                 if line.startswith('@image'):
                     # insert RsT code for image
                     fields = line.split(' ', 1)
                     if len(fields) > 1:
                         url = fields[1]
-                        line = f'\n.. image:: {url}\n      :width: 100%\n\n'
+                        if url.startswith('data:'):
+                            base = ''
+                        else:
+                            base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
+                        line = f'\n.. image:: {base}{url}\n      :width: 100%\n\n'
+                elif rst_directive:
+                    fields = line.split(rst_directive)
+                    if len(fields) > 1:
+                        url = fields[1].strip()
+                        base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
+                        line = f'{rst_directive} {base}{url}\n'
                     else:
                         # No url for an image: ignore and skip to next line
                         continue
@@ -4569,6 +4551,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         url = s or p.h[len(tag) :]
         url = url.strip()
         return url
+    #@+node:tom.20240521000648.1: *5* vr3.get_node_path
+    def get_node_path(self, c, p) -> str:
+        return c.getNodePath(p)
     #@+node:TomP.20191215195433.84: *5* vr3.must_change_widget
     def must_change_widget(self, widget_class):
         pc = self
@@ -4659,27 +4644,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         pc.active = True
         g.registerHandler('select2', pc.update)
         g.registerHandler('idle', pc.update)
-    #@+node:TomP.20200329230436.3: *5* vr3.contract & expand
-    # Change zoom factor of rendering pane
-    def contract(self):
-        self.change_size(-100)
-
-    def expand(self):
-        self.change_size(100)
-
-    def change_size(self, delta):
-        if hasattr(self.c, 'free_layout'):
-            splitter = self.parent()
-            i = splitter.indexOf(self)
-            assert i > -1
-            sizes = splitter.sizes()
-            n = len(sizes)
-            for j, size in enumerate(sizes):
-                if j == i:
-                    sizes[j] = max(0, size + delta)
-                else:
-                    sizes[j] = max(0, size - int(delta / (n - 1)))
-            splitter.setSizes(sizes)
     #@+node:TomP.20200329230436.4: *5* vr3.deactivate
     def deactivate(self):
         """Deactivate the vr3 window."""
@@ -4719,8 +4683,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c, vr3 = self.c, self
         vr3.activate()
         # vr3.show()
-        if positions[c.hash()] == OPENED_IN_SPLITTER:
-            vr3.adjust_layout('open')
         c.bodyWantsFocusNow()
     #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
     #@+node:TomP.20200329230436.9: *6* vr3.get_toolbar_label
@@ -4748,25 +4710,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             return
 
 
-    #@+node:TomP.20200329230436.7: *5* vr3.adjust_layout (legacy only)
-    def adjust_layout(self, which):
-
-        global layouts
-        c = self.c
-        splitter = self.splitter
-        deflo = c.db.get(VR3_DEF_LAYOUT, (None, None))
-        loc, loo = layouts.get(c.hash(), deflo)
-        if which == 'closed' and loc and splitter:
-            # Make it work with old and new layout code
-            try:
-                splitter.load_layout(loc)
-            except TypeError:
-                splitter.load_layout(c, loc)
-        elif which == 'open' and loo and splitter:
-            try:
-                splitter.load_layout(loo)
-            except TypeError:
-                splitter.load_layout(c, loo)
     #@+node:TomP.20200329230436.12: *5* vr3: zoom helpers...
     #@+node:TomP.20200329230436.13: *6* vr3.shrinkView
     def shrinkView(self):
@@ -4825,27 +4768,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         ch = '#'
         n = max(4, len(g.toEncodedString(s, reportErrors=False)))
         return f'{s}\n{ch * n}\n\n'
-    #@+node:TomP.20200329230503.4: *5* vr3.store_layout
-    def store_layout(self, which):
-
-        global layouts
-        c = self.c
-        h = c.hash()
-        splitter = self.splitter
-        deflo = c.db.get(VR3_DEF_LAYOUT, (None, None))
-        (loc, loo) = layouts.get(c.hash(), deflo)
-        if which == 'closed' and splitter:
-            loc = splitter.get_saveable_layout()
-            loc = json.loads(json.dumps(loc))
-            layouts[h] = loc, loo
-        elif which == 'open' and splitter:
-            loo = splitter.get_saveable_layout()
-            loo = json.loads(json.dumps(loo))
-            layouts[h] = loc, loo
-        c.db[VR3_DEF_LAYOUT] = layouts[h]
     #@-others
-#@+node:TomP.20200827172759.1: ** State Machine Components
-#@+node:TomP.20200213170204.1: *3* class State
+#@+node:tom.20240520234642.1: ** State Machine Components
+#@+node:tom.20240520234642.2: *3* class State
 class State(Enum):
     BASE = auto()
     AT_LANG_CODE = auto()
@@ -4859,7 +4784,7 @@ class State(Enum):
     STARTING_ASCDOC_CODE_BLOCK = auto()
     ASCDOC_READY_FOR_FENCE = auto()
 
-#@+node:TomP.20200213170314.1: *3* class Action
+#@+node:tom.20240520234642.3: *3* class Action
 class Action:
     @staticmethod
     def new_chunk(sm, line, tag, language, addline_at_new_start=False):
@@ -4890,6 +4815,8 @@ class Action:
     def add_line(sm, line, tag=None, language=TEXT):
         sm.current_chunk.add_line(line)
 
+    #@+others
+    #@+node:tom.20240521002159.1: *4* Add at-Image
     @staticmethod
     def add_image(sm, line, tag=None, language=None):
         # Used for @image lines
@@ -4899,14 +4826,44 @@ class Action:
         if len(fields) > 1:
             url = fields[1] or ''
             if url:
+                if url.startswith('data:'):
+                    base = ''
+                else:
+                    base = sm.vr3.base_url
+                if base and os.path.isabs(base):
+                    base = base + '/'
+
                 if sm.structure == MD:
                     # image syntax: ![label](url)
-                    line = f'![]({url})'
+                    line = f'![]({base}{url})'
                 elif sm.structure == ASCIIDOC:
                     # image syntax: image:<target>[<attributes>] (must include "{}" even if no attributes
-                    line = f'image:{url}[]'
+                    line = f'image:{base}{url}[]'
                 sm.current_chunk.add_line(line)
             # If no url parameter, do nothing
+    #@+node:tom.20240521002223.1: *4* Image Path to Absolute
+    @staticmethod
+    def image_url2abs(sm, line, tag=None, language=None):
+        """Convert MD or Asciidoc image directive's image path to an absolute one"""
+        is_image = False
+        if language == MD:
+            is_image = MD_IMAGE_MARKER_RE.match(line)
+        elif language == ASCIIDOC:
+            is_image = ASCIIDOC_IMG.match(line)
+        if is_image:
+            url = is_image['url'].strip()
+            g.es(url)
+            if url.startswith('data:'):
+                sm.current_chunk.add_line(line)
+            else:
+                base_url = sm.vr3.base_url
+                base = base_url + '/' if os.path.isabs(base_url) else ''
+                abs_url = base + url
+                line = line.replace(url, abs_url)
+                sm.current_chunk.add_line(line)
+        else:
+            sm.current_chunk.add_line(line)
+    #@-others
 
     @staticmethod
     def no_action(sm, line, tag=None, language=TEXT):
@@ -4921,7 +4878,7 @@ class Action:
     def add_math_block_end(sm, line, tag=None, language=None):
         line = r'\]'
         sm.current_chunk.add_line(line)
-#@+node:TomP.20200213170250.1: *3* class Marker
+#@+node:tom.20240520234642.4: *3* class Marker
 class Marker(Enum):
     """
     For indicating markers in a text line that characterize their purpose, like "@language".
@@ -4936,10 +4893,12 @@ class Marker(Enum):
     END_SKIP = auto()
     IMAGE_MARKER = auto()
 
+    MD_IMAGE_MARKER = auto()
+    ASCIIDOC_IMAGE_MARKER = auto()
     ASCDOC_CODE_MARKER = auto()
     ASCDOC_CODE_LANG_MARKER = auto()  # a line like "[source, python]" before a line "---"
 
-#@+node:TomP.20191231172446.1: *3* class Chunk
+#@+node:tom.20240520234642.5: *3* class Chunk
 #@@language python
 class Chunk:
     """Holds a block of text, with various metadata about it."""
@@ -4988,7 +4947,7 @@ class Chunk:
                 _formatted.extend(self.text_lines)
                 _formatted.append(ASCDOC_FENCE_MARKER)
                 self.formatted = '\n'.join(_formatted)
-#@+node:TomP.20200211142437.1: *3* class StateMachine
+#@+node:tom.20240520234642.6: *3* class StateMachine
 #@@language python
 
 class StateMachine:
@@ -5020,7 +4979,7 @@ class StateMachine:
         self.codelang = ''
 
     #@+<< runMachine >>
-    #@+node:TomP.20200215180012.1: *4* << runMachine >>
+    #@+node:tom.20240520234642.7: *4* << runMachine >>
     def runMachine(self, lines):
         """Process a list of text lines and return final text and a list of lines of code.
 
@@ -5052,7 +5011,7 @@ class StateMachine:
         return final_text, codelines
     #@-<< runMachine >>
     #@+<< do_state >>
-    #@+node:TomP.20200213170532.1: *4* << do_state >>
+    #@+node:tom.20240520234642.8: *4* << do_state >>
     #@@language python
     def do_state(self, state, line):
         marker, tag, language = self.get_marker(line)
@@ -5087,7 +5046,7 @@ class StateMachine:
         self.state = next
     #@-<< do_state >>
     #@+<< get_marker_md >>
-    #@+node:TomP.20200901214058.1: *4* << get_marker_md >>
+    #@+node:tom.20240520234642.9: *4* << get_marker_md >>
     def get_marker_md(self, line, tag, _lang, marker):
         # If _lang == a code language, we are starting a code block.
         if _lang:
@@ -5114,7 +5073,7 @@ class StateMachine:
         return (marker, tag, lang)
     #@-<< get_marker_md >>
     #@+<< get_marker_asciidoc >>
-    #@+node:TomP.20200901211601.1: *4* << get_marker_asciidoc >>
+    #@+node:tom.20240520234642.10: *4* << get_marker_asciidoc >>
     def get_marker_asciidoc(self, line, tag, lang, marker):
 
         if line.startswith(ASCDOC_CODE_LANG_MARKER):
@@ -5151,7 +5110,7 @@ class StateMachine:
         return (marker, tag, lang)
     #@-<< get_marker_asciidoc >>
     #@+<< get_marker >>
-    #@+node:TomP.20200212085651.1: *4* << get_marker >>
+    #@+node:tom.20240520234642.11: *4* << get_marker >>
     #@@language python
     def get_marker(self, line):
         """Return classification information about a line.
@@ -5192,6 +5151,22 @@ class StateMachine:
                     tag = CODE
                     break
 
+        elif line.startswith('![') and self.structure == MD:
+            is_image = MD_IMAGE_MARKER_RE.match(line)
+            if is_image:
+                marker = Marker.MD_IMAGE_MARKER
+                lang = self.structure
+            else:
+                marker = Marker.MARKER_NONE
+
+        elif line.startswith('image::') and self.structure == ASCIIDOC:
+            is_image = ASCIIDOC_IMG.match(line)
+            if is_image:
+                marker = Marker.ASCIIDOC_IMAGE_MARKER
+                lang = self.structure
+            else:
+                marker = Marker.MARKER_NONE
+
         elif line.startswith("@image"):
             marker = Marker.IMAGE_MARKER
             lang = self.structure
@@ -5213,7 +5188,7 @@ class StateMachine:
         return (marker, tag, lang)
     #@-<< get_marker >>
     #@+<< State Table >>
-    #@+node:TomP.20200213171040.1: *4* << State Table >>
+    #@+node:tom.20240520234642.12: *4* << State Table >>
     State_table = {  # (state, marker): (action, next_state)
 
         (State.BASE, Marker.AT_LANGUAGE_MARKER): (Action.new_chunk, State.AT_LANG_CODE),
@@ -5227,6 +5202,8 @@ class StateMachine:
                     (Action.new_chunk, State.TO_BE_COMPUTED),
 
         (State.BASE, Marker.IMAGE_MARKER): (Action.add_image, State.BASE),
+        (State.BASE, Marker.MD_IMAGE_MARKER): (Action.image_url2abs, State.BASE),
+        (State.BASE, Marker.ASCIIDOC_IMAGE_MARKER): (Action.image_url2abs, State.BASE),
 
         # ========= Markdown-specific states ==================
         (State.BASE, Marker.MD_FENCE_LANG_MARKER): (Action.new_chunk, State.FENCED_CODE),

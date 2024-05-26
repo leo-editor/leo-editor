@@ -70,13 +70,14 @@ class LeoFigureManagerQT(FigureManager):
 
     def __init__(self, canvas, num):
         """Ctor for the LeoFigureManagerQt class."""
+        gui = g.app.gui
         self.c = c = g.app.log.c
         super().__init__(canvas, num)
         self.canvas = canvas
 
         # New code for Leo: embed the canvas in the viewrendered area.
         self.vr_controller = vc = vr.controllers.get(c.hash())
-        self.splitter = c.free_layout.get_top_splitter()
+        self.splitter = gui.find_widget_by_name(c, 'main_splitter')
         self.frame = w = QtWidgets.QFrame()
         w.setLayout(QtWidgets.QVBoxLayout())
         w.layout().addWidget(self.canvas)

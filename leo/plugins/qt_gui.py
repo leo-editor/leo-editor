@@ -11,7 +11,7 @@ import re
 import sys
 import textwrap
 from time import sleep
-from typing import Any, Optional, Union, TYPE_CHECKING
+from typing import Any, Generator, Optional, Union, TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
@@ -52,6 +52,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QHBoxLayout = QtWidgets.QHBoxLayout
     QIcon = QtGui.QIcon
     QLabel = QtWidgets.QLabel
+    QLayout = QtWidgets.QLayout
     QMainWindow = QtWidgets.QMainWindow
     QPixmap = QtGui.QPixmap
     QPoint = QtCore.QPoint
@@ -514,7 +515,7 @@ class LeoQtGui(leoGui.LeoGui):
         dialog.raise_()
         ok = dialog.exec()
         return str(dialog.textValue()) if ok else None
-    #@+node:ekr.20110605121601.18495: *4* qt_gui.runAskOkDialog (changed)
+    #@+node:ekr.20110605121601.18495: *4* qt_gui.runAskOkDialog
     def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> None:
         """Create and run a qt askOK dialog ."""
         if g.unitTesting:
@@ -1511,7 +1512,22 @@ class LeoQtGui(leoGui.LeoGui):
             gui.splashScreen.hide()
             # gui.splashScreen.deleteLater()
             gui.splashScreen = None
-    #@+node:ekr.20140825042850.18411: *3* qt_gui.Utils...
+    #@+node:ekr.20140825042850.18411: *3* qt_gui:Utils...
+    #@+node:ekr.20240519114809.1: *4* qt_gui._self_and_subtree
+    def _self_and_subtree(self, qt_obj: Any) -> Generator:
+        """Yield w and all of w's descendants."""
+        yield qt_obj
+        for child in qt_obj.children():
+            yield from self._self_and_subtree(child)
+    #@+node:ekr.20240519115301.1: *4* qt_gui.find_widget_by_name
+    def find_widget_by_name(self, c: Cmdr, name: str) -> Optional[QWidget]:
+        for w in self._self_and_subtree(c.frame.top):
+            if w.objectName() == name:
+                return w
+        return None
+    #@+node:ekr.20240519115157.1: *4* qt_gui.get_top_splitter
+    def get_top_splitter(self, c: Cmdr) -> QWidget:
+        return self.find_widget_by_name(c, 'main_splitter')
     #@+node:ekr.20110605121601.18522: *4* qt_gui.isTextWidget/Wrapper
     def isTextWidget(self, w: Wrapper) -> bool:
         """Return True if w is some kind of Qt text widget."""
@@ -1545,7 +1561,13 @@ class LeoQtGui(leoGui.LeoGui):
 
     QSignalSpy = QtTest.QSignalSpy
     assert QSignalSpy
-    #@+node:ekr.20190819091957.1: *3* qt_gui.Widgets...
+    #@+node:ekr.20240521171848.1: *4* qt_gui.equalize_splitter
+    def equalize_splitter(self, splitter):
+        """Equalize all the splitter's contents."""
+        if not isinstance(splitter, QtWidgets.QSplitter):
+            g.trace(f"Not a QSplitter: {splitter.__class__.__name__}")
+        splitter.setSizes([100000] * len(splitter.sizes()))
+    #@+node:ekr.20190819091957.1: *3* qt_gui:Widget constructors
     #@+node:ekr.20190819094016.1: *4* qt_gui.createButton
     def createButton(self, parent: QWidget, name: str, label: str) -> QPushButton:
         w = QtWidgets.QPushButton(parent)

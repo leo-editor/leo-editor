@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:mhw.20190808083008.1: * @file add-desktop-links.leox
+#@+node:mhw.20190808083008.1: * @file ../scripts/add-desktop-links.leox
 #@@language python
 #@@tabwidth -4
 #@+others
