@@ -4666,7 +4666,6 @@ class LeoServer:
                 commanders = g.app.commanders()
                 for commander in commanders:
                     if str(id(commander)) == str(commanderId):
-                        print("Found commander by id!")
                         c = commander  #  Found commander by id!
                         break
         # Still not found?
