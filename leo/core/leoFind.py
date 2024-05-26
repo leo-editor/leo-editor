@@ -638,13 +638,11 @@ class LeoFind:
     #@+node:ekr.20240525172335.1: *5* find._find_all_matches
     def _find_all_matches(self, patterns: list[re.Pattern]) -> list[tuple[int, Position, str]]:
         """
-        Search all nodes (except nodes under control of @nosearch) for any of
-        the given compiled regex patterns.
+        Search all nodes for any of the given compiled regex patterns.
         
-        Return a list of tuples (starting-index, p, matching-string).
+        Return a list of tuples (starting-index, p, matching-string) describing the matches.
         """
         c = self.c
-        p = c.rootPosition()
         results = []
         for p in c.all_unique_positions():
             b = p.b
