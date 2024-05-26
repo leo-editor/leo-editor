@@ -573,16 +573,20 @@ class LeoFind:
         if not matches:
             g.es(f"not found: {word!r}", color='red')
             return matches
+        # Always update the Nav pane if it is enabled.
+        use_nav_pane = g.pluginIsLoaded('quicksearch.py')
+        if use_nav_pane:
+            self._load_quicksearch_entries(word, matches)
         if len(matches) == 1:
+            # Select a unique node.
             i, p, s = matches[0]
             if p != c.p:
                 c.redraw(p)
             w = c.frame.body.wrapper
             if w:
                 w.setSelectionRange(i, i + len(s), insert=i)
-        elif g.pluginIsLoaded('quicksearch.py'):
-            self._load_quicksearch_entries(word, matches)
-        else:
+        elif not use_nav_pane:
+            # Show clones, but only if the Nav pane isn't available.
             self._make_clones(word, matches)
         return matches
 
