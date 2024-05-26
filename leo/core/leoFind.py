@@ -538,7 +538,7 @@ class LeoFind:
         c.setChanged()
         c.redraw(found)
         return True
-    #@+node:ekr.20150629084204.1: *4* find.find-def/var & helpers
+    #@+node:ekr.20150629084204.1: *4* find.find-def/var & helper
     @cmd('find-def')
     @cmd('find-var')
     def find_def(self, event: LeoKeyEvent = None) -> list[tuple[int, Position, str]]:
@@ -554,7 +554,38 @@ class LeoFind:
 
     # Compatibility.
     find_var = find_def
-    #@+node:ekr.20150629084611.1: *5* find._compute_find_def_word
+    #@+node:ekr.20240526075759.1: *5* find.do_find_def & helpers
+    def do_find_def(self, word: str) -> list[tuple[int, Position, str]]:
+        """
+        A helper for find_def's.
+        It's a standalone method for unit tests.
+        """
+        c = self.c
+        patterns = self._make_patterns(word)
+        matches = self._find_all_matches(patterns)
+        if g.unitTesting:
+            return matches
+        if not matches:
+            alt_word = self._switch_style(word)
+            patterns = self.make_patterns(alt_word)
+            matches = self._find_all_matches(patterns)
+        if not matches:
+            g.es(f"not found: {word!r}", color='red')
+            return matches
+        if len(matches) == 1:
+            i, p, s = matches[0]
+            if p != c.p:
+                c.redraw(p)
+            w = c.frame.body.wrapper
+            if w:
+                w.setSelectionRange(i, i + len(s), insert=i)
+        else:
+            self._make_clones(word, matches)
+        return matches
+
+    # Compatibility.
+    do_find_var = do_find_def
+    #@+node:ekr.20150629084611.1: *6* find._compute_find_def_word
     def _compute_find_def_word(self, event: LeoKeyEvent) -> Optional[str]:  # pragma: no cover (cmd)
         """Init the find-def command. Return the word to find or None."""
         c = self.c
@@ -574,7 +605,7 @@ class LeoFind:
             if found:
                 return word[len(tag) :].strip()
         return word
-    #@+node:ekr.20240525172335.1: *5* find._find_all_matches
+    #@+node:ekr.20240525172335.1: *6* find._find_all_matches
     def _find_all_matches(self, patterns: list[re.Pattern]) -> list[tuple[int, Position, str]]:
         """
         Search all nodes for any of the given compiled regex patterns.
@@ -608,7 +639,7 @@ class LeoFind:
                 i += len(s)
             p.moveToThreadNext()
         return results
-    #@+node:ekr.20240526071521.1: *5* find._make_clones
+    #@+node:ekr.20240526071521.1: *6* find._make_clones
     def _make_clones(self, word: str, matches: list[tuple[int, Position, str]]) -> None:
         """
         Undoably create clones for all matches, similar to the clone-find commands.
@@ -640,7 +671,7 @@ class LeoFind:
         c.setChanged()
         found.expand()
         c.redraw(found)
-    #@+node:ekr.20240525172445.1: *5* find._make_patterns
+    #@+node:ekr.20240525172445.1: *6* find._make_patterns
     bad_regex_patterns: list[str] = []
 
     def _make_patterns(self, word: str) -> list[re.Pattern]:
@@ -662,17 +693,8 @@ class LeoFind:
             fr"\b{word}:",
         ):
             compile_pattern(pattern)
-        alt_word = self._switch_style(word)
-        if alt_word:
-            for pattern in (
-                fr"^\s*class\s+{alt_word}\b",
-                fr"^\s*def\s+{alt_word}\b",
-                fr"\b{alt_word}\s*=",
-                fr"\b{alt_word}:",
-            ):
-                compile_pattern(pattern)
         return results
-    #@+node:ekr.20180511045458.1: *5* find._switch_style
+    #@+node:ekr.20180511045458.1: *6* find._switch_style
     def _switch_style(self, word: str) -> Optional[str]:
         """
         Switch between camelCase and underscore_style function definitions.
@@ -700,33 +722,6 @@ class LeoFind:
             result.append(ch.lower())
         s = ''.join(result)
         return None if s == word else s
-    #@+node:ekr.20240526075759.1: *5* find.do_find_def
-    def do_find_def(self, word: str) -> list[tuple[int, Position, str]]:
-        """
-        A helper for find_def's.
-        It's a standalone method for unit tests.
-        """
-        c = self.c
-        patterns = self._make_patterns(word)
-        matches = self._find_all_matches(patterns)
-        if g.unitTesting:
-            return matches
-        if not matches:
-            g.es(f"not found: {word!r}", color='red')
-            return matches
-        if len(matches) == 1:
-            i, p, s = matches[0]
-            if p != c.p:
-                c.redraw(p)
-            w = c.frame.body.wrapper
-            if w:
-                w.setSelectionRange(i, i + len(s), insert=i)
-        else:
-            self._make_clones(word, matches)
-        return matches
-
-    # Compatibility.
-    do_find_var = do_find_def
     #@+node:ekr.20031218072017.3063: *4* find.find-next, find-prev & do_find_*
     @cmd('find-next')
     def find_next(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
