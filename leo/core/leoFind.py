@@ -606,24 +606,60 @@ class LeoFind:
                 return word[len(tag) :].strip()
         return word
     #@+node:ekr.20240525172445.1: *5* find._make_patterns
-    def _make_patterns(self, word: str) -> list[str]:
+    bad_regex_patterns: list[str] = []
 
-        patterns = [
+    def _make_patterns(self, word: str) -> list[re.Pattern]:
+        """Return a list of compiled regex patterns."""
+        results: list[re.Pattern] = []
+
+        def compile_pattern(pattern: str) -> None:
+            try:
+                results.append(re.compile(pattern))
+            except Exception:
+                if pattern not in self.bad_regex_patterns:
+                    self.bad_regex_patterns.append(pattern)
+                    g.es_print(f"bad regex pattern: {pattern}")
+
+        for pattern in (
             fr"^\s*class\s+{word}\b",
             fr"^\s*def\s+{word}\b",
             fr"\b{word}\s*=",
-        ]
+        ):
+            compile_pattern(pattern)
         alt_word = self._switch_style(word)
         if alt_word:
-            patterns.extend([
+            for pattern in (
                 fr"^\s*class\s+{alt_word}\b",
                 fr"^\s*def\s+{alt_word}\b",
                 fr"\b{alt_word}\s*=",
-            ])
-        return patterns
+            ):
+                compile_pattern(pattern)
+        return results
     #@+node:ekr.20240525172335.1: *5* find._find_all_matches (to do)
-    def _find_all_matches(self, patterns: list[str]) -> list[tuple[int, Position, str]]:
-        return []  ###
+    def _find_all_matches(self, patterns: list[re.Pattern]) -> list[tuple[int, Position, str]]:
+        """
+        Search all nodes (except nodes under control of @nosearch) for any of
+        the given compiled regex patterns.
+        
+        Return a list of tuples (starting-index, p, matching-string).
+        """
+        c = self.c
+        p = c.rootPosition()
+        results = []
+        while p:
+            b = p.b
+            for pattern in patterns:
+                i = 0
+                for s in g.splitLines(b):
+                    m = pattern.search(s)
+                    if m:
+                        results.append((i + m.start(), p.copy(), m.group(0)))
+                        break
+            p.moveToThreadNext()
+        return results
+
+
+
     #@+node:ekr.20180511045458.1: *5* find._switch_style
     def _switch_style(self, word: str) -> Optional[str]:
         """
