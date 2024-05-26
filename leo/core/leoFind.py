@@ -646,16 +646,20 @@ class LeoFind:
         c = self.c
         p = c.rootPosition()
         results = []
-        while p:
+        for p in c.all_unique_positions():
             b = p.b
-            for pattern in patterns:
-                i = 0
-                for s in g.splitLines(b):
+            i = 0  # The index within p.b of the start of s.
+            found = False  # Only report the first match within p.b.
+            for s in g.splitLines(b):
+                for pattern in patterns:
                     m = pattern.search(s)
                     if m:
                         results.append((i + m.start(), p.copy(), m.group(0)))
+                        found = True
                         break
-            p.moveToThreadNext()
+                if found:
+                    break
+                i += len(s)
         return results
     #@+node:ekr.20180511045458.1: *5* find._switch_style
     def _switch_style(self, word: str) -> Optional[str]:
