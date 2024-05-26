@@ -541,50 +541,19 @@ class LeoFind:
     #@+node:ekr.20150629084204.1: *4* find.find-def/var & helpers
     @cmd('find-def')
     @cmd('find-var')
-    def find_def(self, event: LeoKeyEvent = None) -> None:
+    def find_def(self, event: LeoKeyEvent = None) -> list[tuple[int, Position, str]]:
         """
         Find the class, def or assignment to var of the word under the cursor.
-        
-        If there is exactly one match, go to it.
-        Otherwise, present the results as in the clone-find-all command.
         """
 
-        # Note: This method is *also* part of the ctrl-click logic:
-        #
-        # QTextEditWrapper.mouseReleaseEvent calls g.openUrlOnClick.
-        # g.openUrlOnClick calls g.openUrlHelper.
+        # This method is part of the ctrl-click logic:
         # g.openUrlHelper calls this method.
 
         word = self._compute_find_def_word(event)
-        self.do_find_def(word)
-
-    def do_find_def(self, word: str) -> Optional[list[tuple[int, Position, str]]]:
-        """
-        A helper for find_def's.
-        It's a standalone method for unit tests.
-        """
-        c = self.c
-        patterns = self._make_patterns(word)
-        matches = self._find_all_matches(patterns)
-        if g.unitTesting:
-            return matches
-        if not matches:
-            return None
-        w = c.frame.body.wrapper
-        if not w:
-            return None
-        if len(matches) == 1:
-            i, p, s = matches[0]
-            c.selectPosition(p)
-            w.setSelectionRange(i, i + len(s), insert=i)
-            c.redraw()
-            return None
-        ### To do: Present the results as in clone-find-all
-        return None
+        return self.do_find_def(word)
 
     # Compatibility.
     find_var = find_def
-    do_find_var = do_find_def
     #@+node:ekr.20150629084611.1: *5* find._compute_find_def_word
     def _compute_find_def_word(self, event: LeoKeyEvent) -> Optional[str]:  # pragma: no cover (cmd)
         """Init the find-def command. Return the word to find or None."""
@@ -605,6 +574,36 @@ class LeoFind:
             if found:
                 return word[len(tag) :].strip()
         return word
+    #@+node:ekr.20240525172335.1: *5* find._find_all_matches
+    def _find_all_matches(self, patterns: list[re.Pattern]) -> list[tuple[int, Position, str]]:
+        """
+        Search all nodes for any of the given compiled regex patterns.
+        
+        Return a list of tuples (starting-index, p, matching-string) describing the matches.
+        """
+        c = self.c
+        results = []
+        for p in c.all_unique_positions():
+            b = p.b
+            i = 0  # The index within p.b of the start of s.
+            found = False  # Only report the first match within p.b.
+            for s in g.splitLines(b):
+                for pattern in patterns:
+                    m = pattern.search(s)
+                    if m:
+                        results.append((i + m.start(), p, m.group(0)))
+                        found = True
+                        break
+                if found:
+                    break
+                i += len(s)
+        return results
+    #@+node:ekr.20240526071521.1: *5* find._make_clones (to do)
+    def _make_clones(self, matches: list[tuple[int, Position, str]]) -> None:
+        """
+        Show the matches in a format similar to the clone-find commands.
+        """
+        g.printObj(matches)
     #@+node:ekr.20240525172445.1: *5* find._make_patterns
     bad_regex_patterns: list[str] = []
 
@@ -635,30 +634,6 @@ class LeoFind:
             ):
                 compile_pattern(pattern)
         return results
-    #@+node:ekr.20240525172335.1: *5* find._find_all_matches
-    def _find_all_matches(self, patterns: list[re.Pattern]) -> list[tuple[int, Position, str]]:
-        """
-        Search all nodes for any of the given compiled regex patterns.
-        
-        Return a list of tuples (starting-index, p, matching-string) describing the matches.
-        """
-        c = self.c
-        results = []
-        for p in c.all_unique_positions():
-            b = p.b
-            i = 0  # The index within p.b of the start of s.
-            found = False  # Only report the first match within p.b.
-            for s in g.splitLines(b):
-                for pattern in patterns:
-                    m = pattern.search(s)
-                    if m:
-                        results.append((i + m.start(), p.copy(), m.group(0)))
-                        found = True
-                        break
-                if found:
-                    break
-                i += len(s)
-        return results
     #@+node:ekr.20180511045458.1: *5* find._switch_style
     def _switch_style(self, word: str) -> Optional[str]:
         """
@@ -687,6 +662,29 @@ class LeoFind:
             result.append(ch.lower())
         s = ''.join(result)
         return None if s == word else s
+    #@+node:ekr.20240526075759.1: *5* find.do_find_def
+    def do_find_def(self, word: str) -> list[tuple[int, Position, str]]:
+        """
+        A helper for find_def's.
+        It's a standalone method for unit tests.
+        """
+        c = self.c
+        w = c.frame.body.wrapper
+        patterns = self._make_patterns(word)
+        matches = self._find_all_matches(patterns)
+        if g.unitTesting or not matches or not w:
+            return matches
+        if len(matches) == 1:
+            i, p, s = matches[0]
+            c.selectPosition(p)
+            w.setSelectionRange(i, i + len(s), insert=i)
+            c.redraw()
+        else:
+            self._make_clones(matches)
+        return matches
+
+    # Compatibility.
+    do_find_var = do_find_def
     #@+node:ekr.20031218072017.3063: *4* find.find-next, find-prev & do_find_*
     @cmd('find-next')
     def find_next(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
