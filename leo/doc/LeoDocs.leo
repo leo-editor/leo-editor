@@ -32939,7 +32939,9 @@ See the `What's new in Leo 6.8.0` section for details.
 **Breaking changes to Leo's API**
 
 - `PR #3828`_: Leo now requires PyQt6.
+  Plugins that use earlier versions will break.
 - `PR #3911`_: Leo's core no longer uses the free_layout or nested_splitter plugins.
+  Scripts that rely on `c.free_layout` or the `NestedSplitter` class must be rewritten.
 - `PR #3872`_: Improve how Leo searches for definitions:
   - Add `@bool prefer-nav-pane` setting.
   - This PR changes the signatures of `LeoFind.find_def` and `LeoFind.find_var`.
