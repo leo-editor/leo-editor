@@ -32902,7 +32902,7 @@ See the `What's new in Leo 6.8.0` section for details.
 
 **New and improved**
 
-- PR #3832: leoTokens.py can be compiled with mypyc.
+- PR #3870: Leo's beautifier works faster.
 - PR #3841: Add `g.traceUnique` and `g.traceUniqueClass` functions.
 - PR #3893: Add `vr-fully-expand`, `vr-toggle-visibility` and `vr-keep-open` commands.
 - PR #3902: Add the `toggle-unl-view` command.
@@ -32931,7 +32931,6 @@ See the `What's new in Leo 6.8.0` section for details.
 .. _`PR #3832`: https://github.com/leo-editor/leo-editor/pull/3832
 .. _`PR #3841`: https://github.com/leo-editor/leo-editor/pull/3841
 .. _`PR #3872`: https://github.com/leo-editor/leo-editor/pull/3872
-..
 .. _`PR #3902`: https://github.com/leo-editor/leo-editor/pull/3902
 .. _`PR #3911`: https://github.com/leo-editor/leo-editor/pull/3911
 .. _`PR #3921`: https://github.com/leo-editor/leo-editor/pull/3921
@@ -32942,13 +32941,13 @@ See the `What's new in Leo 6.8.0` section for details.
 - `PR #3828`_: Leo now requires PyQt6.
 - `PR #3911`_: Leo's core no longer uses the free_layout or nested_splitter plugins.
 - `PR #3872`_: Improve how Leo searches for definitions:
-  - Add `@bool prefer-nav-pane`.
+  - Add `@bool prefer-nav-pane` setting.
   - This PR changes the signatures of `LeoFind.find_def` and `LeoFind.find_var`.
 
 **Other significant changes**
 
-- `PR #3832`_: leoTokens.py can be compiled with mypyc.
 - `PR #3841`_: Add `g.traceUnique` and `g.traceUniqueClass` functions.
+- `PR #3870`_: Leo's beautifier works faster.
 - `PR #3893`_: Add `vr-fully-expand`, `vr-toggle-visibility` and `vr-keep-open` commands.
 - `PR #3902`_: Add the `toggle-unl-view` command.
 - `PR #3921`_: Add the `show-qt-widgets` command.
