@@ -78,7 +78,7 @@ version_tuple = (1, 0, 11)
 # 1.0.8 October 2023: Added history commands, Fixed leo document change detection, allowed more minibuffer commands.
 # 1.0.9 January 2024: Added support for UNL and specific commander targeting for any command.
 # 1.0.10 Febuary 2024: Added support getting UNL for a specific node (for status bar display, etc.)
-# 1.0.11 May 2024: Added current commander info in get_ui_states command
+# 1.0.11 May 2024: Added get_is_valid and current commander info to get_ui_states for detached body support.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -2285,6 +2285,24 @@ class LeoServer:
             raise ServerError(f"{tag}: Running remove_tags gave exception: {e}")
         return self._make_response()
     #@+node:felix.20210621233316.35: *4* server.getter commands
+    #@+node:felix.20240525174003.1: *5* server.is_valid
+    def get_is_valid(self, param: Param) -> Response:
+        """
+        Checks if gnx is valid in this commander
+        """
+        try:
+            c = self._check_c(param)
+        except Exception:  # pragma: no cover
+            # c not found
+            return self._make_minimal_response()
+        if c:  # pragma: no cover
+            ap = param.get("ap")
+            if ap:
+                gnx = ap.get("gnx")
+            for p in c.all_unique_positions(copy=False):
+                if p.gnx == gnx:
+                    return self._make_minimal_response({'valid': True})
+        return self._make_minimal_response()
     #@+node:felix.20210621233316.36: *5* server.get_all_open_commanders
     def get_all_open_commanders(self, param: Param) -> Response:
         """Return array describing each commander in g.app.commanders()."""
@@ -2409,14 +2427,7 @@ class LeoServer:
         # Handle @killcolor and @nocolor-node when looking for language
         if c.frame.body.colorizer.useSyntaxColoring(p):
             # Get the language.
-            aList = g.get_directives_dict_list(p)
-            d = g.scanAtCommentAndAtLanguageDirectives(aList)
-            language = (
-                d and d.get('language')
-                or g.getLanguageFromAncestorAtFileNode(p)
-                or c.config.getLanguage('target-language')
-                or 'plain'
-            )
+            language = g.getLanguageFromAncestorAtFileNode(p) or c.config.getLanguage('target-language')
         else:
             # No coloring at all for this node.
             language = 'plain'
@@ -4951,7 +4962,8 @@ class LeoServer:
     #@+node:felix.20210621233316.90: *4* server._get_p
     def _get_p(self, param: dict) -> Position:
         """
-        Return _ap_to_p(param["ap"]) or c.p.
+        If param["ap"] is present this will return _ap_to_p(param["ap"]), or fallback on first node with same gnx, or c.p.
+        If no param["ap"], will try to use param["gnx"] to return first position with this gnx.
         """
         tag = '_get_ap'
         c = self._check_c(param)
@@ -4959,12 +4971,23 @@ class LeoServer:
             raise ServerError(f"{tag}: no c")
 
         ap = param.get("ap")
+        gnx = param.get("gnx")  # optional
         if ap:
             p = self._ap_to_p(ap, c)  # Conversion
-            if p:
-                if not c.positionExists(p):  # pragma: no cover
-                    raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
-                return p  # Return the position
+            if not p:
+                # Try to get a gnx parameter as secondary fallback selection criteria
+                gnx = ap.get('gnx')
+                if gnx:
+                    for p in c.all_unique_positions():
+                        if p.v.gnx == gnx:
+                            return p
+                raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
+            return p  # Return the position
+        elif gnx:
+            # Had no 'ap', but a 'gnx' param was passed instead.
+            for p in c.all_unique_positions():
+                if p.v.gnx == gnx:
+                    return p
         # Fallback to c.p
         if not c.p:  # pragma: no cover
             raise ServerError(f"{tag}: no c.p")
@@ -5061,8 +5084,6 @@ class LeoServer:
 
         The 'package' kwarg, if present, must be a python dict describing a
         response. package may be an empty dict or None.
-
-        The 'p' kwarg, if present, must be a position.
 
         First, this method creates a response (a python dict) containing all
         the keys in the 'package' dict.
