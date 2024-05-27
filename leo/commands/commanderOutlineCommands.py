@@ -1023,16 +1023,20 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent = None) -> None:
             last_spot = p2.copy()
     if not last_spot:
         last = c.lastTopLevel()
+        undoData = c.undoer.beforeInsertNode(p)
         last_spot = last.insertAfter()
         last_spot.h = '@spot'
-    undoData = c.undoer.beforeCloneNode(p)
+        # The second undo deletes the @spot node and selects p.
+        u.afterInsertNode(last_spot, 'Create @spot', undoData)
+    undoData2 = c.undoer.beforeCloneNode(last_spot)
     c.endEditing()  # Capture any changes to the headline.
     clone = p.copy()
     clone._linkAsNthChild(last_spot, n=last_spot.numberOfChildren())
     clone.setDirty()
     c.setChanged()
     if c.checkOutline() == 0:
-        u.afterCloneNode(clone, 'Clone Node', undoData)
+        # The first undo deletes the clone and selects the @spot node.
+        u.afterCloneNode(clone, 'Clone Node', undoData2)
         c.contractAllHeadlines()
         c.redraw(clone)
     else:
