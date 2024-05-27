@@ -670,6 +670,7 @@
 <v t="tbrown.20151010094807.1"><vh>@bool show-find-result-in-status = True</vh></v>
 <v t="ekr.20150710065036.1"><vh>@bool preload-find-pattern = False</vh></v>
 <v t="ekr.20210901110017.1"><vh>@bool reverse-find-defs = False</vh></v>
+<v t="ekr.20240527043355.1"><vh>@bool prefer-nav-pane = True</vh></v>
 <v t="ekr.20150618105435.1"><vh>@bool use-find-dialog = False</vh></v>
 <v t="ekr.20041119050105.1"><vh>@string change-text = None</vh></v>
 <v t="ekr.20041119050105.2"><vh>@string find-text = None</vh></v>
@@ -11645,6 +11646,12 @@ True:  (Recommended) Search backwards from the end of the outline.
 False: (Legacy)      Search forwards from the start of the outline.
 </t>
 <t tx="ekr.20240519122612.1">True: keep the VR pane open regardless of the body pane's content.</t>
+<t tx="ekr.20240527043355.1">This setting tells how to show *multiple* search results (find-def, control-clicks).
+Leo always shows a *single* search result by selecting the node and text.
+
+True: Show multiple search results in the Nav pane provided the quicksearch plugin is active.
+False: Always show multiple search results as the clone-find commands do.
+</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>

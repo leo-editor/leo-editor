@@ -45,6 +45,7 @@ class TestFind(LeoUnitTest):
             p2.b = (
                 f"def child{n}():\n"
                 f"    v{n} = 2\n"
+                f"    va{n}: int = 2\n"
                 f"    # node {n} line 1: blabla second blabla bla second ble blu\n"
                 f"    # node {n} line 2: blabla second blabla bla second ble blu"
             )
@@ -56,6 +57,7 @@ class TestFind(LeoUnitTest):
             p.b = (
                 f"def top{n}():\n:"
                 f"    v{n} = 3\n"
+                f"    va{n}: int = 3\n"
             )
             return p
 
@@ -300,24 +302,12 @@ class TestFind(LeoUnitTest):
     #@+node:ekr.20210110073117.65: *4* TestFind.test_find-def
     def test_find_def(self):
         x = self.x
-
-        # Test 1: Test methods called by x.find_def.
-        x._save_before_find_def(x.c.rootPosition())  # Also tests _restore_after_find_def.
-
-        # Test 2:
-        for reverse in (True, False):
-            # Successful search.
-            x.reverse_find_defs = reverse
-            settings = x._compute_find_def_settings('def child5')
-            p, pos, newpos = x.do_find_def(settings)
-            self.assertTrue(p)
-            self.assertEqual(p.h, 'child 5')
-            s = p.b[pos:newpos]
-            self.assertEqual(s, 'def child5')
-            # Unsuccessful search.
-            settings = x._compute_find_def_settings('def xyzzy')
-            p, pos, newpos = x.do_find_def(settings)
-            assert p is None, repr(p)
+        matches = x.do_find_def('child5')
+        assert len(matches) == 1
+        i, p, s = matches[0]
+        assert p
+        self.assertEqual(p.h, 'child 5')
+        self.assertEqual(s, 'def child5')
     #@+node:ekr.20210110073117.64: *4* TestFind.test_find-next
     def test_find_next(self):
         settings, x = self.settings, self.x
@@ -392,12 +382,22 @@ class TestFind(LeoUnitTest):
     #@+node:ekr.20210110073117.66: *4* TestFind.test_find-var
     def test_find_var(self):
         x = self.x
-        settings = x._compute_find_def_settings('v5 =')
-        p, pos, newpos = x.do_find_var(settings)
+        # Unannotated.
+        matches = x.do_find_var('v5')
+        assert len(matches) == 1
+        i, p, s = matches[0]
         assert p
         self.assertEqual(p.h, 'child 5')
-        s = p.b[pos:newpos]
         self.assertEqual(s, 'v5 =')
+        
+        # Annotated.
+        matches = x.do_find_var('va5')
+        assert len(matches) == 1
+        i, p, s = matches[0]
+        assert p
+        self.assertEqual(p.h, 'child 5')
+        self.assertEqual(s, 'va5:')
+
     #@+node:ekr.20210110073117.68: *4* TestFind.test_replace-then-find
     def test_replace_then_find(self):
         settings, w, x = self.settings, self.c.frame.body.wrapper, self.x
