@@ -7356,8 +7356,8 @@ def openUrlHelper(event: LeoKeyEvent, url: str = None) -> Optional[str]:
     word = w.getSelectedText().strip()
     if not word:
         return None
-    p, pos, newpos = c.findCommands.find_def(event)
-    if p:
+    matches = c.findCommands.find_def(event)
+    if matches:
         return None
     #@+<< look for filename or import>>
     #@+node:tom.20230130102836.1: *5* << look for filename or import >>
