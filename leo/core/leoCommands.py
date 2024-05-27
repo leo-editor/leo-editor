@@ -392,6 +392,7 @@ class Commands:
         c.configurables = c.subCommanders[:]
         c.db = CommanderWrapper(c)
         c.free_layout = None  # Compatibility. Always None.
+        c.quicksearch_controller = None  # Leo 6.8.0: Set by quicksearch plugin.
             
         if hasattr(g.app.gui, 'styleSheetManagerClass'):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)

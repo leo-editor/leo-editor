@@ -357,6 +357,7 @@ class QuickSearchController:
     #@+node:ekr.20111015194452.15685: *3* QuickSearchController.__init__
     def __init__(self, c: Cmdr, listWidget: QListWidget, ui: Any) -> None:
         self.c = c
+        c.quicksearch_controller = self  # Leo 6.8.0.
         self.lw: QListWidgetItem = listWidget
         w: QListWidgetItem = listWidget
         self.its: dict[int, Callable] = {}  # Keys are id(w),values are tuples (p,pos)
