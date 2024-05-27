@@ -148,6 +148,8 @@ class LeoFind:
         #
         # User settings.
         self.minibuffer_mode: bool = None
+        self.reverse_find_defs: bool = None
+        self.prefer_nav_pane: bool = None
         self.reload_settings()
     #@+node:ekr.20210110073117.6: *4* find.default_settings
     def default_settings(self) -> Settings:
@@ -220,8 +222,10 @@ class LeoFind:
     def reload_settings(self) -> None:
         """LeoFind.reload_settings."""
         c = self.c
-        self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
-        self.reverse_find_defs = c.config.getBool('reverse-find-defs', default=False)
+        getBool = c.config.getBool
+        self.minibuffer_mode = getBool('minibuffer-find-mode', default=False)
+        self.reverse_find_defs = getBool('reverse-find-defs', default=False)
+        self.prefer_nav_pane = getBool('prefer-nav-pane', default=True)
 
     reloadSettings = reload_settings  # Necessary alias.
     #@+node:ekr.20210108053422.1: *3* find.batch_change (script helper) & helpers
@@ -574,7 +578,8 @@ class LeoFind:
             g.es(f"not found: {word!r}", color='red')
             return matches
         # Always update the Nav pane if it is enabled.
-        use_nav_pane = g.pluginIsLoaded('quicksearch.py')
+        use_nav_pane = self.prefer_nav_pane and g.pluginIsLoaded('quicksearch.py')
+        g.trace(use_nav_pane)  ###
         if use_nav_pane:
             self._load_quicksearch_entries(word, matches)
         # Carefully select the most convenient clone of p.
