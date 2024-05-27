@@ -11647,10 +11647,10 @@ False: (Legacy)      Search forwards from the start of the outline.
 </t>
 <t tx="ekr.20240519122612.1">True: keep the VR pane open regardless of the body pane's content.</t>
 <t tx="ekr.20240527043355.1">This setting tells how to show *multiple* search results (find-def, control-clicks).
-Leo always shows a *single* search result by selecting selecting the node and text.
+Leo always shows a *single* search result by selecting the node and text.
 
 True: Show multiple search results in the Nav pane provided the quicksearch plugin is active.
-False: Always show multiple search results like the clone-find commands do.
+False: Always show multiple search results as the clone-find commands do.
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
