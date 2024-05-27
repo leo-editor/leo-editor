@@ -1636,6 +1636,8 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20240527101024.1"><vh>What's new in Leo 6.8.0</vh></v>
+<v t="ekr.20240527100956.1"><vh>What's new in Leo 6.7</vh>
 <v t="ekr.20240222121346.1"><vh>What's new in Leo 6.7.8</vh></v>
 <v t="ekr.20240118094134.1"><vh>What's new in Leo 6.7.7</vh></v>
 <v t="ekr.20231126120048.1"><vh>What's new in Leo 6.7.6</vh></v>
@@ -1645,6 +1647,7 @@
 <v t="ekr.20230111160833.1"><vh>What's new in Leo 6.7.2</vh></v>
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20220912154542.1"><vh>What's new in Leo 6.7.0</vh></v>
+</v>
 <v t="ekr.20221108064449.1"><vh>What's new in Leo 6.6 and earlier</vh>
 <v t="ekr.20220831093321.1"><vh>What's new in Leo 6.6.4</vh></v>
 <v t="ekr.20220719064316.1"><vh>What's new in Leo 6.6.3</vh></v>
@@ -2510,9 +2513,1185 @@
 </v>
 </v>
 </v>
-<v t="ekr.20240222121346.1"></v>
-<v t="ekr.20240222121215.1"></v>
-<v t="ekr.20131008041326.16092"></v>
+<v t="ekr.20240527101024.1"></v>
+<v t="ekr.20240527100702.1"><vh>Leo 6.8.0 release notes</vh></v>
+<v t="ekr.20240527100653.1"><vh>--- To document</vh>
+<v t="ekr.20240527100653.1871"><vh>=== PR #3872: ctrl-click</vh>
+<v t="ekr.20240527100653.1872"><vh>--- no longer used</vh>
+<v t="ekr.20240527100653.2057"><vh>find._compute_find_def_settings</vh></v>
+<v t="ekr.20240527100653.1937"><vh>find.find-var &amp; do_find_var</vh></v>
+<v t="ekr.20240527100653.2059"><vh>find._fd_helper</vh></v>
+<v t="ekr.20240527100653.2060"><vh>find._restore_after_find_def</vh></v>
+<v t="ekr.20240527100653.2061"><vh>find._save_before_find_def</vh></v>
+<v t="ekr.20240527100653.2056"><vh>&lt;&lt; compute the search table &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.1879"><vh>--- classes</vh>
+<v t="ekr.20240527100653.1880"><vh>class LeoQuickSearchWidget (QWidget)</vh>
+<v t="ekr.20240527100653.1881"><vh>quick_w.ctor</vh></v>
+<v t="ekr.20240527100653.1882"><vh>quick_w.returnPressed</vh></v>
+<v t="ekr.20240527100653.1883"><vh>quick_w.liveUpdate</vh></v>
+<v t="ekr.20240527100653.1884"><vh>quick_w.selectAndDismiss</vh></v>
+</v>
+<v t="ekr.20240527100653.1885"><vh>class QuickSearchController (quicksearch.py)</vh>
+<v t="ekr.20240527100653.2071"><vh>QuickSearchController.__init__</vh></v>
+<v t="ekr.20240527100653.1887"><vh>freeze</vh></v>
+<v t="ekr.20240527100653.1888"><vh>addItem</vh></v>
+<v t="ekr.20240527100653.1889"><vh>addBodyMatches</vh></v>
+<v t="ekr.20240527100653.1890"><vh>addParentMatches</vh></v>
+<v t="ekr.20240527100653.1891"><vh>addGeneric</vh></v>
+<v t="ekr.20240527100653.1892"><vh>addHeadlineMatches</vh></v>
+<v t="ekr.20240527100653.1893"><vh>clear</vh></v>
+<v t="ekr.20240527100653.1894"><vh>doNodeHistory</vh></v>
+<v t="ekr.20240527100653.1895"><vh>doSearchHistory</vh></v>
+<v t="ekr.20240527100653.1896"><vh>doTimeline</vh></v>
+<v t="ekr.20240527100653.1897"><vh>doChanged</vh></v>
+<v t="ekr.20240527100653.1898"><vh>doSearch</vh></v>
+<v t="ekr.20240527100653.1899"><vh>bgSearch</vh></v>
+<v t="ekr.20240527100653.1900"><vh>find_h</vh></v>
+<v t="ekr.20240527100653.1901"><vh>find_b</vh></v>
+<v t="ekr.20240527100653.1902"><vh>doShowMarked</vh></v>
+<v t="ekr.20240527100653.1903"><vh>Event handlers</vh>
+<v t="ekr.20240527100653.1904"><vh>onSelectItem (quicksearch.py)</vh></v>
+<v t="ekr.20240527100653.1905"><vh>onActivated</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1906"><vh>class LeoFind (LeoFind.py)</vh>
+<v t="ekr.20240527100653.1907"><vh>LeoFind.birth</vh>
+<v t="ekr.20240527100653.2044"><vh> find.__init__</vh></v>
+<v t="ekr.20240527100653.1909"><vh>find.default_settings</vh></v>
+<v t="ekr.20240527100653.1910"><vh>find.finishCreate</vh></v>
+<v t="ekr.20240527100653.1911"><vh>find.init_ivars_from_settings</vh></v>
+<v t="ekr.20240527100653.2063"><vh>find.reload_settings</vh></v>
+</v>
+<v t="ekr.20240527100653.1913"><vh>find.batch_change (script helper) &amp; helpers</vh>
+<v t="ekr.20240527100653.1914"><vh>&lt;&lt; docstring: find.batch_change &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1915"><vh>find._batch_change_helper</vh></v>
+<v t="ekr.20240527100653.1916"><vh>find._init_from_dict</vh></v>
+</v>
+<v t="ekr.20240527100653.1917"><vh>find.interactive_search_helper</vh>
+<v t="ekr.20240527100653.1918"><vh>&lt;&lt; docstring: find.interactive_search &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.1919"><vh>LeoFind.Commands (immediate execution)</vh>
+<v t="ekr.20240527100653.1920"><vh>find.change-then-find &amp; helper</vh>
+<v t="ekr.20240527100653.1921"><vh>find.do_change_then_find</vh></v>
+</v>
+<v t="ekr.20240527100653.1922"><vh>find.clone-find_marked &amp; helper</vh>
+<v t="ekr.20240527100653.1923"><vh>find.do_find_marked</vh></v>
+</v>
+<v t="ekr.20240527100653.1924"><vh>find.clone-find-parents</vh></v>
+<v t="ekr.20240527100653.2055"><vh>find.find-def, do_find_def &amp; helpers</vh>
+<v t="ekr.20240527100653.2056"></v>
+<v t="ekr.20240527100653.2057"></v>
+<v t="ekr.20240527100653.2058"><vh>find._compute_find_def_word</vh></v>
+<v t="ekr.20240527100653.2059"></v>
+<v t="ekr.20240527100653.2060"></v>
+<v t="ekr.20240527100653.2061"></v>
+<v t="ekr.20240527100653.2062"><vh>find._switch_style</vh></v>
+</v>
+<v t="ekr.20240527100653.1933"><vh>find.find-next, find-prev &amp; do_find_*</vh>
+<v t="ekr.20240527100653.1934"><vh>find.do_find_next &amp; do_find_prev</vh></v>
+</v>
+<v t="ekr.20240527100653.1935"><vh>find.find-tab-hide</vh></v>
+<v t="ekr.20240527100653.1936"><vh>find.find-tab-open</vh></v>
+<v t="ekr.20240527100653.1937"></v>
+<v t="ekr.20240527100653.1938"><vh>find.focus-to-find</vh></v>
+<v t="ekr.20240527100653.1939"><vh>find.replace (replace)</vh></v>
+<v t="ekr.20240527100653.1940"><vh>find.set-find-*</vh></v>
+<v t="ekr.20240527100653.1941"><vh>find.show-find-options</vh>
+<v t="ekr.20240527100653.1942"><vh>LeoFind.compute_find_options</vh></v>
+</v>
+<v t="ekr.20240527100653.1943"><vh>find.toggle-find-*</vh></v>
+</v>
+<v t="ekr.20240527100653.1944"><vh>LeoFind.Commands (interactive)</vh>
+<v t="ekr.20240527100653.1945"><vh>find.change-all &amp; helper</vh>
+<v t="ekr.20240527100653.1946"><vh>find.do_change_all &amp; helpers</vh>
+<v t="ekr.20240527100653.1947"><vh>find._change_all_helper</vh></v>
+<v t="ekr.20240527100653.1948"><vh>find._change_all_search_and_replace &amp; helpers</vh>
+<v t="ekr.20240527100653.1949"><vh>find._change_all_plain</vh></v>
+<v t="ekr.20240527100653.1950"><vh>find._change_all_regex</vh></v>
+<v t="ekr.20240527100653.1951"><vh>find._change_all_word</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20240527100653.1952"><vh>find.clone-find-all &amp; helper</vh>
+<v t="ekr.20240527100653.1953"><vh>find.do_clone_find_all</vh></v>
+</v>
+<v t="ekr.20240527100653.1954"><vh>find.clone-find-all-flattened &amp; helper</vh>
+<v t="ekr.20240527100653.1955"><vh>find.do_clone_find_all_flattened</vh></v>
+</v>
+<v t="ekr.20240527100653.1956"><vh>find.clone-find-tag &amp; helper</vh>
+<v t="ekr.20240527100653.1957"><vh>find.do_clone_find_tag &amp; helper</vh>
+<v t="ekr.20240527100653.1958"><vh>find._create_clone_tag_nodes</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1959"><vh>find.find-all &amp; helper</vh>
+<v t="ekr.20240527100653.1960"><vh>find.do_find_all &amp; helpers</vh>
+<v t="ekr.20240527100653.1961"><vh>find._find_all_helper &amp; helpers</vh>
+<v t="ekr.20240527100653.1962"><vh>find.create_find_all_node</vh></v>
+<v t="ekr.20240527100653.1963"><vh>find.index_to_line_info</vh></v>
+<v t="ekr.20240527100653.1964"><vh>find.make_result_from_matches</vh></v>
+<v t="ekr.20240527100653.1965"><vh>find.put_link</vh></v>
+<v t="ekr.20240527100653.1966"><vh>find.find_all_matches_in_string &amp; helpers</vh>
+<v t="ekr.20240527100653.1967"><vh>find.find_all_plain</vh></v>
+<v t="ekr.20240527100653.1968"><vh>find.find_all_regex</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20240527100653.1969"><vh>find.re-search</vh></v>
+<v t="ekr.20240527100653.1970"><vh>find.re-search-backward</vh></v>
+<v t="ekr.20240527100653.1971"><vh>find.search_backward</vh></v>
+<v t="ekr.20240527100653.1972"><vh>find.start-search (Ctrl-F) &amp; common states</vh>
+<v t="ekr.20240527100653.1973"><vh>find.start_search1</vh></v>
+<v t="ekr.20240527100653.1974"><vh>find._start_search_escape1</vh></v>
+<v t="ekr.20240527100653.1975"><vh>find._start_search_escape2</vh></v>
+</v>
+<v t="ekr.20240527100653.1976"><vh>find.summarize</vh></v>
+<v t="ekr.20240527100653.1977"><vh>find.tag-children &amp; helper</vh>
+<v t="ekr.20240527100653.1978"><vh>find.do_tag_children</vh></v>
+</v>
+<v t="ekr.20240527100653.1979"><vh>find.tag-node &amp; helper</vh>
+<v t="ekr.20240527100653.1980"><vh>find.do_tag_node</vh></v>
+</v>
+<v t="ekr.20240527100653.1981"><vh>find.word-search</vh></v>
+<v t="ekr.20240527100653.1982"><vh>find.word-search-backward</vh></v>
+</v>
+<v t="ekr.20240527100653.1983"><vh>LeoFind.Commands: helpers</vh>
+<v t="ekr.20240527100653.1984"><vh>find._cf_helper &amp; helpers</vh>
+<v t="ekr.20240527100653.1985"><vh>find._cfa_create_nodes</vh></v>
+<v t="ekr.20240527100653.1986"><vh>find._cfa_find_next_match (for unit tests)</vh></v>
+</v>
+<v t="ekr.20240527100653.1987"><vh>find.change_selection</vh></v>
+<v t="ekr.20240527100653.1988"><vh>find.check_args</vh></v>
+<v t="ekr.20240527100653.1989"><vh>find.compile_pattern</vh></v>
+<v t="ekr.20240527100653.1990"><vh>find.find_next_match &amp; helpers</vh>
+<v t="ekr.20240527100653.1991"><vh>find._fnm_next_after_fail &amp; helper</vh>
+<v t="ekr.20240527100653.1992"><vh>find._fail_outside_range</vh></v>
+</v>
+<v t="ekr.20240527100653.1993"><vh>find._fnm_first_search_pane</vh></v>
+<v t="ekr.20240527100653.1994"><vh>find._fnm_search</vh></v>
+<v t="ekr.20240527100653.1995"><vh>find._fnm_should_stay_in_node</vh></v>
+</v>
+<v t="ekr.20240527100653.1996"><vh>find.inner_search_helper &amp; helpers</vh>
+<v t="ekr.20240527100653.1997"><vh>find._inner_search_backward</vh></v>
+<v t="ekr.20240527100653.1998"><vh>find._inner_search_match_word</vh></v>
+<v t="ekr.20240527100653.1999"><vh>find._inner_search_plain</vh></v>
+<v t="ekr.20240527100653.2000"><vh>find._inner_search_regex</vh></v>
+</v>
+<v t="ekr.20240527100653.2001"><vh>find.make_regex_subs</vh></v>
+<v t="ekr.20240527100653.2002"><vh>find.replace_back_slashes</vh></v>
+</v>
+<v t="ekr.20240527100653.2003"><vh>LeoFind.Initing &amp; finalizing</vh>
+<v t="ekr.20240527100653.2004"><vh>find.init_in_headline &amp; helper</vh>
+<v t="ekr.20240527100653.2005"><vh>find.focus_in_tree</vh></v>
+</v>
+<v t="ekr.20240527100653.2006"><vh>find.restore</vh></v>
+<v t="ekr.20240527100653.2007"><vh>find.save</vh></v>
+<v t="ekr.20240527100653.2008"><vh>LeoFind.find.show_success</vh></v>
+</v>
+<v t="ekr.20240527100653.2009"><vh>LeoFind.ISearch</vh>
+<v t="ekr.20240527100653.2010"><vh>LeoFind.Isearch commands</vh>
+<v t="ekr.20240527100653.2011"><vh>find.isearch_forward</vh></v>
+<v t="ekr.20240527100653.2012"><vh>find.isearch_backward</vh></v>
+<v t="ekr.20240527100653.2013"><vh>find.isearch_forward_regexp</vh></v>
+<v t="ekr.20240527100653.2014"><vh>find.isearch_backward_regexp</vh></v>
+<v t="ekr.20240527100653.2015"><vh>find.isearch_with_present_options</vh></v>
+</v>
+<v t="ekr.20240527100653.2016"><vh>LeoFind.Isearch utils</vh>
+<v t="ekr.20240527100653.2017"><vh>find.abort_search (incremental)</vh></v>
+<v t="ekr.20240527100653.2018"><vh>find.end_search</vh></v>
+<v t="ekr.20240527100653.2019"><vh>find.iSearch_helper</vh></v>
+<v t="ekr.20240527100653.2020"><vh>find.isearch_state_handler</vh></v>
+<v t="ekr.20240527100653.2021"><vh>find.isearch_backspace</vh></v>
+<v t="ekr.20240527100653.2022"><vh>find.get_strokes</vh></v>
+<v t="ekr.20240527100653.2023"><vh>find.push &amp; pop</vh></v>
+<v t="ekr.20240527100653.2024"><vh>find.set_widget</vh></v>
+<v t="ekr.20240527100653.2025"><vh>find.start_incremental</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.2026"><vh>LeoFind.Utils</vh>
+<v t="ekr.20240527100653.2027"><vh>find.add_change_string_to_label</vh></v>
+<v t="ekr.20240527100653.2028"><vh>find.add_find_string_to_label</vh></v>
+<v t="ekr.20240527100653.2029"><vh>find.compute_result_status</vh></v>
+<v t="ekr.20240527100653.2030"><vh>find.help_for_find_commands</vh></v>
+<v t="ekr.20240527100653.2031"><vh>find.init_vim_search</vh></v>
+<v t="ekr.20240527100653.2032"><vh>find.preload_find_pattern</vh></v>
+<v t="ekr.20240527100653.2033"><vh>find.show_status</vh></v>
+<v t="ekr.20240527100653.2034"><vh>find.show_find_options_in_status_area &amp; helper</vh>
+<v t="ekr.20240527100653.2035"><vh>find.compute_find_options_in_status_area</vh></v>
+</v>
+<v t="ekr.20240527100653.2036"><vh>find.start_state_machine</vh></v>
+<v t="ekr.20240527100653.2037"><vh>find.updateChange/FindList</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20240527100653.2038"><vh>--- Testing</vh>
+<v t="ekr.20240527100653.2039"><vh>TestFind.test_find-var</vh></v>
+<v t="ekr.20240527100653.2040"><vh>TestFind.test_find-def</vh></v>
+<v t="ekr.20240527100653.2041"><vh>TestFind.make_test_tree</vh></v>
+</v>
+<v t="ekr.20240527100653.2042"><vh>--- changed &amp; new</vh>
+<v t="ekr.20240527100653.2043"><vh>--- LeoFind: changed</vh>
+<v t="ekr.20240527100653.2044"></v>
+<v t="ekr.20240527100653.2051"><vh>find._find_all_matches</vh></v>
+<v t="ekr.20240527100653.2049"><vh>find._load_quicksearch_entries</vh></v>
+<v t="ekr.20240527100653.2053"><vh>find._make_patterns</vh></v>
+<v t="ekr.20240527100653.2048"><vh>find.do_find_def &amp; helpers</vh>
+<v t="ekr.20240527100653.2049"></v>
+<v t="ekr.20240527100653.2058"></v>
+<v t="ekr.20240527100653.2051"></v>
+<v t="ekr.20240527100653.2052"><vh>find._make_clones</vh></v>
+<v t="ekr.20240527100653.2053"></v>
+<v t="ekr.20240527100653.2062"></v>
+</v>
+<v t="ekr.20240527100653.2055"></v>
+<v t="ekr.20240527100653.2063"></v>
+</v>
+<v t="ekr.20240527100653.2064"><vh>c.initObjects</vh></v>
+<v t="ekr.20240527100653.2065"><vh>g.openUrlHelper</vh>
+<v t="ekr.20240527100653.2066"><vh>&lt;&lt; look for section ref &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.2067"><vh>&lt;&lt; look for url  &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.2068"><vh>&lt;&lt; look for unl &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.2069"><vh>&lt;&lt; look for gnx &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.2070"><vh>&lt;&lt; look for filename or import &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.2071"></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1838"><vh>=== PR #3933: refresh-from-disk</vh>
+<v t="ekr.20240527100653.1839"><vh>fast_at.scan_lines</vh>
+<v t="ekr.20240527100653.1865"><vh>&lt;&lt; init scan_lines &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1841"><vh>&lt;&lt; trace patterns &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1842"><vh>&lt;&lt; handle afterref line &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1843"><vh>&lt;&lt; handle verbatim line &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1844"><vh>&lt;&lt; finalize line &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1845"><vh>&lt;&lt; handle @others &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1846"><vh>&lt;&lt; handle section refs &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1864"><vh>&lt;&lt; handle node_start &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1848"><vh>&lt;&lt; handle @c or @code &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1849"><vh>&lt;&lt; handle @ or @doc &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1850"><vh>&lt;&lt; handle @all &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1851"><vh>&lt;&lt; handle afterref &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1852"><vh>&lt;&lt; handle @first and @last &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1853"><vh>&lt;&lt; handle @comment &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1854"><vh>&lt;&lt; handle @delims &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1855"><vh>&lt;&lt; handle @section-delims &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1856"><vh>&lt;&lt; handle remaining @@ lines &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1857"><vh>&lt;&lt; handle remaining @doc lines &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1858"><vh>&lt;&lt; handle remaining @ lines &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1863"><vh>&lt;&lt; final checks &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1860"><vh>&lt;&lt; insert @last lines &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1861"><vh>&lt;&lt; post pass: set all body text&gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.1862"><vh>--- changed</vh>
+<v t="ekr.20240527100653.1863"></v>
+<v t="ekr.20240527100653.1864"></v>
+<v t="ekr.20240527100653.1865"></v>
+<v t="ekr.20240527100653.1866"><vh>c.checkGnxs</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1717"><vh>=== PR #3922: improved restart-leo command</vh>
+<v t="ekr.20240527100653.1718"><vh>&lt;&lt; LeoApp: global data &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1719"><vh>c_file.restartLeo</vh></v>
+<v t="ekr.20240527100653.1811"><vh>LM.scanOptions &amp; helpers</vh>
+<v t="ekr.20240527100653.1812"><vh>function: computeFilesList</vh></v>
+<v t="ekr.20240527100653.1813"><vh>function: defineUsage</vh></v>
+<v t="ekr.20240527100653.1814"><vh>function: doGuiOption</vh></v>
+<v t="ekr.20240527100653.1815"><vh>function: doScriptOption</vh></v>
+<v t="ekr.20240527100653.1816"><vh>function: doSelectOption</vh></v>
+<v t="ekr.20240527100653.1817"><vh>function: doSimpleOptions</vh>
+<v t="ekr.20240527100653.1818"><vh>&lt;&lt; define scanArgv helpers &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.1819"><vh>function: doThemeOption</vh></v>
+<v t="ekr.20240527100653.1820"><vh>function: doTraceOptions</vh></v>
+<v t="ekr.20240527100653.1821"><vh>function: doWindowSizeOption</vh></v>
+<v t="ekr.20240527100653.1822"><vh>function: doWindowSpotOption</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1715"><vh>=== PR #3921: show-qt-widgets command</vh>
+<v t="ekr.20240527100653.1716"><vh>'show-qt-widgets'</vh></v>
+</v>
+<v t="ekr.20240527100653.1048"><vh>=== PR #3911: deprecate fl &amp; ns plugins</vh>
+<v t="ekr.20240527100653.1049"><vh>--- traces</vh>
+<v t="ekr.20240527100653.1050"><vh>show-qt-widgets (ns, vr)</vh></v>
+<v t="ekr.20240527100653.1051"><vh>show-qt-widgets (no ns, vr)</vh></v>
+</v>
+<v t="ekr.20240527100653.1052"><vh>--- unused</vh>
+<v t="ekr.20240527100653.1053"><vh>--- unused: VR &amp; VR3</vh>
+<v t="ekr.20240527100653.1054"><vh>g.command('vr-zoom')</vh></v>
+<v t="ekr.20240527100653.1055"><vh>vr3.adjust_layout (legacy only)</vh></v>
+<v t="ekr.20240527100653.1056"><vh>vr3.contract &amp; expand</vh></v>
+<v t="ekr.20240527100653.1057"><vh>vr3.store_layout</vh></v>
+</v>
+<v t="ekr.20240527100653.1058"><vh>--- unused: Provider classes</vh>
+<v t="ekr.20240527100653.1059"><vh>class ViewRenderedProvider</vh>
+<v t="ekr.20240527100653.1060"><vh>vr.__init__</vh></v>
+<v t="ekr.20240527100653.1061"><vh>vr.ns_provide</vh></v>
+<v t="ekr.20240527100653.1062"><vh>vr.ns_provider_id</vh></v>
+<v t="ekr.20240527100653.1063"><vh>vr.ns_provides</vh></v>
+<v t="ekr.20240527100653.1064"><vh>vr.ns_title</vh></v>
+</v>
+<v t="ekr.20240527100653.1065"><vh>class ViewRenderedProvider3</vh>
+<v t="ekr.20240527100653.1066"><vh>vr3.__init__</vh></v>
+<v t="ekr.20240527100653.1067"><vh>vr3.ns_provide</vh></v>
+<v t="ekr.20240527100653.1068"><vh>vr3.ns_provider_id</vh></v>
+<v t="ekr.20240527100653.1069"><vh>vr3.ns_provides</vh></v>
+<v t="ekr.20240527100653.1070"><vh>vr3.ns_title</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1071"><vh>--- unused: plugins</vh>
+<v t="ekr.20240527100653.1072"><vh>edit_pane_test_open</vh></v>
+<v t="ekr.20240527100653.1073"><vh>livecode-show</vh></v>
+</v>
+<v t="ekr.20240527100653.1074"><vh>gt_gui: top-level generators (unused)</vh></v>
+<v t="ekr.20240527100653.1075"><vh>LeoGui.widget utils (unused, dummies)</vh></v>
+<v t="ekr.20240527100653.1076"><vh>qt_gui:Widget utils (unused)</vh></v>
+</v>
+<v t="ekr.20240527100653.1077"><vh>--- classes</vh>
+<v t="ekr.20240527100653.1078"><vh>-- ns classes</vh>
+<v t="ekr.20240527100653.1079"><vh>class NestedSplitter (QSplitter)</vh>
+<v t="ekr.20240527100653.1080"><vh>ns.__init__</vh></v>
+<v t="ekr.20240527100653.1081"><vh>ns.__repr__</vh></v>
+<v t="ekr.20240527100653.1082"><vh>ns.overrides of QSplitter methods</vh>
+<v t="ekr.20240527100653.1083"><vh>ns.createHandle</vh></v>
+<v t="ekr.20240527100653.1084"><vh>ns.childEvent</vh></v>
+</v>
+<v t="ekr.20240527100653.1085"><vh>ns.add</vh></v>
+<v t="ekr.20240527100653.1086"><vh>ns.add_adjacent (finds layout)</vh></v>
+<v t="ekr.20240527100653.1087"><vh>ns.choice_menu</vh></v>
+<v t="ekr.20240527100653.1088"><vh>ns.closing</vh></v>
+<v t="ekr.20240527100653.1089"><vh>ns.place_provided</vh></v>
+<v t="ekr.20240527100653.1090"><vh>ns.context_cb</vh></v>
+<v t="ekr.20240527100653.1091"><vh>ns.contains</vh></v>
+<v t="ekr.20240527100653.1660"><vh>ns.dump_layout (new)</vh></v>
+<v t="ekr.20240527100653.1093"><vh>ns.find_child</vh></v>
+<v t="ekr.20240527100653.1094"><vh>ns.handle_context</vh></v>
+<v t="ekr.20240527100653.1095"><vh>ns.equalize_sizes</vh></v>
+<v t="ekr.20240527100653.1096"><vh>ns.insert</vh></v>
+<v t="ekr.20240527100653.1097"><vh>ns.invalid_swap</vh></v>
+<v t="ekr.20240527100653.1098"><vh>ns.mark</vh></v>
+<v t="ekr.20240527100653.1099"><vh>ns.max_count</vh></v>
+<v t="ekr.20240527100653.1100"><vh>ns.open_window</vh></v>
+<v t="ekr.20240527100653.1101"><vh>ns.register_provider</vh></v>
+<v t="ekr.20240527100653.1102"><vh>ns.remove &amp; helper</vh>
+<v t="ekr.20240527100653.1103"><vh>ns.close_or_keep</vh></v>
+</v>
+<v t="ekr.20240527100653.1104"><vh>ns.replace_widget &amp; replace_widget_at_index</vh></v>
+<v t="ekr.20240527100653.1105"><vh>ns.rotate</vh></v>
+<v t="ekr.20240527100653.1106"><vh>ns.rotateOne</vh></v>
+<v t="ekr.20240527100653.1107"><vh>ns.self_and_descendants</vh></v>
+<v t="ekr.20240527100653.1108"><vh>ns.split</vh></v>
+<v t="ekr.20240527100653.1109"><vh>ns.swap</vh></v>
+<v t="ekr.20240527100653.1110"><vh>ns.swap_with_marked</vh></v>
+<v t="ekr.20240527100653.1111"><vh>ns.top</vh></v>
+<v t="ekr.20240527100653.1112"><vh>ns.get_layout</vh></v>
+<v t="ekr.20240527100653.1113"><vh>ns.get_saveable_layout</vh></v>
+<v t="ekr.20240527100653.1114"><vh>ns.get_splitter_by_name</vh></v>
+<v t="ekr.20240527100653.1115"><vh>ns.load_layout</vh></v>
+<v t="ekr.20240527100653.1116"><vh>ns.prune_empty</vh></v>
+<v t="ekr.20240527100653.1117"><vh>ns.get_provided</vh></v>
+<v t="ekr.20240527100653.1118"><vh>ns.get_title</vh></v>
+<v t="ekr.20240527100653.1119"><vh>ns.zoom_toggle</vh></v>
+<v t="ekr.20240527100653.1120"><vh>ns._splitter_clicked</vh></v>
+<v t="ekr.20240527100653.1121"><vh>splitterClicked_connect</vh></v>
+</v>
+<v t="ekr.20240527100653.1122"><vh>class NestedSplitterChoice (QWidget)</vh>
+<v t="ekr.20240527100653.1123"><vh>__init__ (NestedSplitterChoice)</vh></v>
+</v>
+<v t="ekr.20240527100653.1124"><vh>class NestedSplitterHandle (QSplitterHandle)</vh>
+<v t="ekr.20240527100653.1125"><vh>nsh.__init__</vh></v>
+<v t="ekr.20240527100653.1126"><vh>nsh.__repr__</vh></v>
+<v t="ekr.20240527100653.1127"><vh>nsh.add_item</vh></v>
+<v t="ekr.20240527100653.1128"><vh>nsh.show_tip</vh></v>
+<v t="ekr.20240527100653.1129"><vh>nsh.splitter_menu</vh></v>
+<v t="ekr.20240527100653.1130"><vh>nsh.mouseEvents</vh></v>
+</v>
+<v t="ekr.20240527100653.1131"><vh>class NestedSplitterTopLevel (QWidget)</vh>
+<v t="ekr.20240527100653.1132"><vh>__init__</vh></v>
+<v t="ekr.20240527100653.1133"><vh>closeEvent (NestedSplitterTopLevel)</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1134"><vh>class  DynamicWindow (QMainWindow)</vh>
+<v t="ekr.20240527100653.1135"><vh> dw.ctor &amp; reloadSettings</vh></v>
+<v t="ekr.20240527100653.1136"><vh>dw.do_leo_spell_btn_*</vh></v>
+<v t="ekr.20240527100653.1137"><vh>dw.closeEvent</vh></v>
+<v t="ekr.20240527100653.1138"><vh>dw.construct &amp; helpers</vh>
+<v t="ekr.20240527100653.1139"><vh>dw.set_icon_bar_orientation</vh></v>
+</v>
+<v t="ekr.20240527100653.1140"><vh>dw.createMainWindow &amp; helpers</vh>
+<v t="ekr.20240527100653.1141"><vh>dw.top-level</vh>
+<v t="ekr.20240527100653.1142"><vh>dw.addNewEditor</vh></v>
+<v t="ekr.20240527100653.1143"><vh>dw.createBodyPane</vh></v>
+<v t="ekr.20240527100653.1144"><vh>dw.createCentralWidget</vh></v>
+<v t="ekr.20240527100653.1145"><vh>dw.createLogPane &amp; helpers</vh>
+<v t="ekr.20240527100653.1146"><vh>dw.finishCreateLogPane</vh></v>
+</v>
+<v t="ekr.20240527100653.1642"><vh>dw.createMainLayout</vh></v>
+<v t="ekr.20240527100653.1148"><vh>dw.createMiniBuffer (class VisLineEdit)</vh></v>
+<v t="ekr.20240527100653.1149"><vh>dw.createMenuBar</vh></v>
+<v t="ekr.20240527100653.1150"><vh>dw.createOutlinePane</vh></v>
+<v t="ekr.20240527100653.1151"><vh>dw.createStatusBar</vh></v>
+<v t="ekr.20240527100653.1152"><vh>dw.packLabel</vh></v>
+<v t="ekr.20240527100653.1153"><vh>dw.setMainWindowOptions</vh></v>
+</v>
+<v t="ekr.20240527100653.1154"><vh>dw.widgets</vh>
+<v t="ekr.20240527100653.1155"><vh>dw.createButton</vh></v>
+<v t="ekr.20240527100653.1156"><vh>dw.createCheckBox</vh></v>
+<v t="ekr.20240527100653.1157"><vh>dw.createFrame</vh></v>
+<v t="ekr.20240527100653.1158"><vh>dw.createGrid</vh></v>
+<v t="ekr.20240527100653.1159"><vh>dw.createHLayout &amp; createVLayout</vh></v>
+<v t="ekr.20240527100653.1160"><vh>dw.createLabel</vh></v>
+<v t="ekr.20240527100653.1161"><vh>dw.createLineEdit</vh></v>
+<v t="ekr.20240527100653.1162"><vh>dw.createRadioButton</vh></v>
+<v t="ekr.20240527100653.1163"><vh>dw.createStackedWidget</vh></v>
+<v t="ekr.20240527100653.1164"><vh>dw.createTabWidget</vh></v>
+<v t="ekr.20240527100653.1165"><vh>dw.createText (creates QTextBrowser)</vh></v>
+<v t="ekr.20240527100653.1166"><vh>dw.createTreeWidget</vh></v>
+</v>
+<v t="ekr.20240527100653.1167"><vh>dw.log tabs</vh>
+<v t="ekr.20240527100653.1168"><vh>dw.createSpellTab</vh></v>
+<v t="ekr.20240527100653.1169"><vh>dw.createFindTab &amp; helpers</vh>
+<v t="ekr.20240527100653.1170"><vh>dw.create_find_grid</vh></v>
+<v t="ekr.20240527100653.1171"><vh>dw.create_find_header</vh></v>
+<v t="ekr.20240527100653.1172"><vh>dw.create_find_findbox</vh></v>
+<v t="ekr.20240527100653.1173"><vh>dw.create_find_replacebox</vh></v>
+<v t="ekr.20240527100653.1174"><vh>dw.create_find_checkboxes</vh></v>
+<v t="ekr.20240527100653.1175"><vh>dw.create_help_row</vh></v>
+<v t="ekr.20240527100653.1176"><vh>dw.create_find_buttons</vh></v>
+<v t="ekr.20240527100653.1177"><vh>dw.create_find_status</vh></v>
+<v t="ekr.20240527100653.1178"><vh>dw.override_events</vh>
+<v t="ekr.20240527100653.1179"><vh>class EventWrapper</vh>
+<v t="ekr.20240527100653.1180"><vh>EventWrapper.create_d</vh></v>
+<v t="ekr.20240527100653.1181"><vh>EventWrapper.wrapper</vh></v>
+<v t="ekr.20240527100653.1182"><vh>EventWrapper.keyPress</vh></v>
+<v t="ekr.20240527100653.1183"><vh>EventWrapper.keyRelease</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20240527100653.1184"><vh>dw.utils</vh>
+<v t="ekr.20240527100653.1185"><vh>dw.setName</vh></v>
+<v t="ekr.20240527100653.1186"><vh>dw.set_widget_size_policy</vh></v>
+<v t="ekr.20240527100653.1187"><vh>dw.tr (no longer used)</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1188"><vh>dw.select</vh></v>
+<v t="ekr.20240527100653.1189"><vh>dw.set_geometry</vh></v>
+<v t="ekr.20240527100653.1190"><vh>dw.setLeoWindowIcon</vh></v>
+<v t="ekr.20240527100653.1191"><vh>dw.setSplitDirection</vh></v>
+<v t="ekr.20240527100653.1192"><vh>dw.setWindowTitle</vh></v>
+</v>
+<v t="ekr.20240527100653.1193"><vh>class FreeLayoutController</vh>
+<v t="ekr.20240527100653.1194"><vh>&lt;&lt; FreeLayoutController docstring &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1195"><vh>&lt;&lt; define default_layout &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1196"><vh> flc.ctor</vh></v>
+<v t="ekr.20240527100653.1197"><vh> flc.init</vh></v>
+<v t="ekr.20240527100653.1198"><vh>flc.embed</vh></v>
+<v t="ekr.20240527100653.1199"><vh>flc.get_main_splitter</vh></v>
+<v t="ekr.20240527100653.1200"><vh>flc.get_secondary_splitter</vh></v>
+<v t="ekr.20240527100653.1201"><vh>flc.get_top_splitter</vh></v>
+<v t="ekr.20240527100653.1202"><vh>flc.loadLayouts (sets wrap=True)</vh></v>
+<v t="ekr.20240527100653.1203"><vh>flc.ns_context</vh></v>
+<v t="ekr.20240527100653.1204"><vh>flc.ns_do_context</vh></v>
+<v t="ekr.20240527100653.1205"><vh>flc.ns_provide</vh></v>
+<v t="ekr.20240527100653.1206"><vh>flc.ns_provides</vh></v>
+<v t="ekr.20240527100653.1207"><vh>flc.splitter_clicked</vh></v>
+</v>
+<v t="ekr.20240527100653.1208"><vh>class LeoEditPane</vh>
+<v t="ekr.20240527100653.1209"><vh>__init__</vh></v>
+<v t="ekr.20240527100653.1210"><vh>_add_checkbox</vh></v>
+<v t="ekr.20240527100653.1211"><vh>_add_frame</vh></v>
+<v t="ekr.20240527100653.1212"><vh>_after_body_key</vh></v>
+<v t="ekr.20240527100653.1213"><vh>_after_select</vh></v>
+<v t="ekr.20240527100653.1214"><vh>_before_select</vh></v>
+<v t="ekr.20240527100653.1215"><vh>_find_gnx_node</vh></v>
+<v t="ekr.20240527100653.1216"><vh>_register_handlers (editpane.py)</vh></v>
+<v t="ekr.20240527100653.1217"><vh>_build_layout</vh></v>
+<v t="ekr.20240527100653.1218"><vh>header_visible</vh></v>
+<v t="ekr.20240527100653.1219"><vh>header_visible</vh></v>
+<v t="ekr.20240527100653.1220"><vh>control_visible</vh></v>
+<v t="ekr.20240527100653.1221"><vh>control_visible</vh></v>
+<v t="ekr.20240527100653.1222"><vh>change_goto</vh></v>
+<v t="ekr.20240527100653.1223"><vh>change_recurse</vh></v>
+<v t="ekr.20240527100653.1224"><vh>change_track</vh></v>
+<v t="ekr.20240527100653.1225"><vh>change_update</vh></v>
+<v t="ekr.20240527100653.1226"><vh>close</vh></v>
+<v t="ekr.20240527100653.1227"><vh>edit_widget_focus</vh></v>
+<v t="ekr.20240527100653.1228"><vh>get_position</vh></v>
+<v t="ekr.20240527100653.1229"><vh>goto_node</vh></v>
+<v t="ekr.20240527100653.1230"><vh>load_modules</vh></v>
+<v t="ekr.20240527100653.1231"><vh>misc_menu</vh></v>
+<v t="ekr.20240527100653.1232"><vh>mode_menu</vh></v>
+<v t="ekr.20240527100653.1233"><vh>new_position</vh></v>
+<v t="ekr.20240527100653.1234"><vh>new_position_edit</vh></v>
+<v t="ekr.20240527100653.1235"><vh>new_position_view</vh></v>
+<v t="ekr.20240527100653.1236"><vh>text_changed</vh></v>
+<v t="ekr.20240527100653.1237"><vh>update_position</vh></v>
+<v t="ekr.20240527100653.1238"><vh>update_position_edit</vh></v>
+<v t="ekr.20240527100653.1239"><vh>update_position_view</vh></v>
+<v t="ekr.20240527100653.1240"><vh>render</vh></v>
+<v t="ekr.20240527100653.1241"><vh>set_widget</vh></v>
+<v t="ekr.20240527100653.1242"><vh>set_mode</vh></v>
+<v t="ekr.20240527100653.1243"><vh>state_changed</vh></v>
+</v>
+<v t="ekr.20240527100653.1244"><vh>class LeoGui</vh>
+<v t="ekr.20240527100653.1245"><vh>LeoGui.__init__</vh></v>
+<v t="ekr.20240527100653.1246"><vh>LeoGui.widget_name</vh></v>
+<v t="ekr.20240527100653.1247"><vh>LeoGui: May be defined in subclasses</vh></v>
+<v t="ekr.20240527100653.1248"><vh>LeoGui: Must be defined in subclasses</vh>
+<v t="ekr.20240527100653.1249"><vh>LeoGui.destroySelf</vh></v>
+<v t="ekr.20240527100653.1250"><vh>LeoGui.dialogs</vh></v>
+<v t="ekr.20240527100653.1251"><vh>LeoGui.file dialogs</vh></v>
+<v t="ekr.20240527100653.1252"><vh>LeoGui.panels</vh></v>
+<v t="ekr.20240527100653.1253"><vh>LeoGui.runMainLoop</vh></v>
+<v t="ekr.20240527100653.1254"><vh>LeoGui.utils</vh>
+<v t="ekr.20240527100653.1255"><vh>LeoGui.Clipboard</vh></v>
+<v t="ekr.20240527100653.1256"><vh>LeoGui.Dialog utils</vh></v>
+<v t="ekr.20240527100653.1257"><vh>LeoGui.Font</vh></v>
+<v t="ekr.20240527100653.1258"><vh>LeoGui.getFullVersion</vh></v>
+<v t="ekr.20240527100653.1259"><vh>LeoGui.makeScriptButton</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1260"><vh>LeoGui: Must be defined only in base class</vh>
+<v t="ekr.20240527100653.1261"><vh>LeoGui.create_key_event (LeoGui)</vh></v>
+<v t="ekr.20240527100653.1262"><vh>LeoGui.guiName</vh></v>
+<v t="ekr.20240527100653.1263"><vh>LeoGui.setScript</vh></v>
+<v t="ekr.20240527100653.1264"><vh>LeoGui.event_generate (LeoGui)</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1265"><vh>class LeoQtGui(leoGui.LeoGui)</vh>
+<v t="ekr.20240527100653.1266"><vh> qt_gui.__init__ (sets qtApp)</vh>
+<v t="ekr.20240527100653.1267"><vh>&lt;&lt; define FKeys &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1268"><vh>&lt;&lt; define ignoreChars &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1269"><vh>&lt;&lt; define specialChars &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.1270"><vh> qt_gui.destroySelf (calls qtApp.quit)</vh></v>
+<v t="ekr.20240527100653.1271"><vh>qt_gui.Clipboard</vh>
+<v t="ekr.20240527100653.1272"><vh>qt_gui.replaceClipboardWith</vh></v>
+<v t="ekr.20240527100653.1273"><vh>qt_gui.getTextFromClipboard</vh></v>
+<v t="ekr.20240527100653.1274"><vh>qt_gui.setClipboardSelection</vh></v>
+</v>
+<v t="ekr.20240527100653.1275"><vh>qt_gui.Dialogs &amp; panels</vh>
+<v t="ekr.20240527100653.1276"><vh>qt_gui._save/_restore_focus</vh></v>
+<v t="ekr.20240527100653.1277"><vh>qt_gui.alert</vh></v>
+<v t="ekr.20240527100653.1278"><vh>qt_gui.makeFilter</vh></v>
+<v t="ekr.20240527100653.1279"><vh>qt_gui.openFindDialog &amp; helper</vh>
+<v t="ekr.20240527100653.1280"><vh>qt_gui.createFindDialog</vh></v>
+</v>
+<v t="ekr.20240527100653.1281"><vh>qt_gui.panels</vh></v>
+<v t="ekr.20240527100653.1282"><vh>qt_gui.runAboutLeoDialog</vh></v>
+<v t="ekr.20240527100653.1283"><vh>qt_gui.runAskDateTimeDialog</vh>
+<v t="ekr.20240527100653.1284"><vh>&lt;&lt; define date/time classes &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.1285"><vh>qt_gui.runAskOkCancelNumberDialog (not used)</vh></v>
+<v t="ekr.20240527100653.1286"><vh>qt_gui.runAskOkCancelStringDialog</vh></v>
+<v t="ekr.20240527100653.1287"><vh>qt_gui.runAskOkDialog</vh></v>
+<v t="ekr.20240527100653.1288"><vh>qt_gui.runAskYesNoCancelDialog</vh></v>
+<v t="ekr.20240527100653.1289"><vh>qt_gui.runAskYesNoDialog</vh></v>
+<v t="ekr.20240527100653.1290"><vh>qt_gui.runOpenDirectoryDialog</vh></v>
+<v t="ekr.20240527100653.1291"><vh>qt_gui.runOpenFileDialog (changed)</vh></v>
+<v t="ekr.20240527100653.1292"><vh>qt_gui.runOpenFilesDialog (new)</vh></v>
+<v t="ekr.20240527100653.1293"><vh>qt_gui.runPropertiesDialog</vh></v>
+<v t="ekr.20240527100653.1294"><vh>qt_gui.runSaveFileDialog</vh></v>
+<v t="ekr.20240527100653.1295"><vh>qt_gui.runScrolledMessageDialog</vh>
+<v t="ekr.20240527100653.1296"><vh>&lt;&lt; no c error&gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1297"><vh>&lt;&lt; load viewrendered plugin &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1298"><vh>&lt;&lt; no dialog error &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1299"><vh>&lt;&lt; emergency fallback &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1300"><vh>qt_gui.Event handlers</vh>
+<v t="ekr.20240527100653.1301"><vh>qt_gui.close_event</vh></v>
+<v t="ekr.20240527100653.1302"><vh>qt_gui.onDeactiveEvent</vh></v>
+<v t="ekr.20240527100653.1303"><vh>qt_gui.onActivateEvent</vh></v>
+<v t="ekr.20240527100653.1304"><vh>qt_gui.setFilter</vh></v>
+</v>
+<v t="ekr.20240527100653.1305"><vh>qt_gui.Focus</vh>
+<v t="ekr.20240527100653.1306"><vh>qt_gui.ensure_commander_visible</vh></v>
+<v t="ekr.20240527100653.1307"><vh>qt_gui.get_focus (no longer used)</vh></v>
+<v t="ekr.20240527100653.1308"><vh>qt_gui.set_focus</vh></v>
+</v>
+<v t="ekr.20240527100653.1309"><vh>qt_gui.getFontFromParams</vh></v>
+<v t="ekr.20240527100653.1310"><vh>qt_gui.getFullVersion</vh></v>
+<v t="ekr.20240527100653.1311"><vh>qt_gui.Icons</vh>
+<v t="ekr.20240527100653.1312"><vh>qt_gui.attachLeoIcon</vh></v>
+<v t="ekr.20240527100653.1313"><vh>qt_gui.getIconImage</vh></v>
+<v t="ekr.20240527100653.1314"><vh>qt_gui.getImageImage</vh></v>
+<v t="ekr.20240527100653.1315"><vh>qt_gui.getImageFinder</vh></v>
+<v t="ekr.20240527100653.1316"><vh>qt_gui.getTreeImage</vh></v>
+</v>
+<v t="ekr.20240527100653.1317"><vh>qt_gui.insertKeyEvent</vh></v>
+<v t="ekr.20240527100653.1318"><vh>qt_gui.makeScriptButton</vh>
+<v t="ekr.20240527100653.1319"><vh>&lt;&lt; create the button b &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1320"><vh>&lt;&lt; define the callbacks for b &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1321"><vh>&lt;&lt; bind the shortcut to executeScriptCallback &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1322"><vh>&lt;&lt; create press-buttonText-button command &gt;&gt; qt_gui.makeScriptButton</vh></v>
+</v>
+<v t="ekr.20240527100653.1323"><vh>qt_gui.onContextMenu</vh></v>
+<v t="ekr.20240527100653.1324"><vh>qt_gui.put_help</vh></v>
+<v t="ekr.20240527100653.1325"><vh>qt_gui.runAtIdle</vh></v>
+<v t="ekr.20240527100653.1326"><vh>qt_gui.runMainLoop &amp; runWithIpythonKernel</vh>
+<v t="ekr.20240527100653.1327"><vh>qt_gui.runMainLoop</vh></v>
+<v t="ekr.20240527100653.1328"><vh>qt_gui.runWithIpythonKernel (commands)</vh></v>
+</v>
+<v t="ekr.20240527100653.1329"><vh>qt_gui.show_tips &amp; helpers</vh>
+<v t="ekr.20240527100653.1330"><vh>&lt;&lt; define DialogWithCheckBox &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1331"><vh>onButton (not used)</vh></v>
+<v t="ekr.20240527100653.1332"><vh>onClick</vh></v>
+<v t="ekr.20240527100653.1333"><vh>onNext (not used)</vh></v>
+</v>
+<v t="ekr.20240527100653.1334"><vh>qt_gui.Splash Screen</vh>
+<v t="ekr.20240527100653.1335"><vh>qt_gui.createSplashScreen</vh></v>
+<v t="ekr.20240527100653.1336"><vh>qt_gui.dismiss_splash_screen</vh></v>
+</v>
+<v t="ekr.20240527100653.1337"><vh>qt_gui:Utils...</vh>
+<v t="ekr.20240527100653.1643"><vh>qt_gui._self_and_subtree</vh></v>
+<v t="ekr.20240527100653.1646"><vh>qt_gui.find_widget_by_name</vh></v>
+<v t="ekr.20240527100653.1647"><vh>qt_gui.get_top_splitter</vh></v>
+<v t="ekr.20240527100653.1341"><vh>qt_gui.isTextWidget/Wrapper</vh></v>
+<v t="ekr.20240527100653.1342"><vh>qt_gui.widget_name</vh></v>
+<v t="ekr.20240527100653.1343"><vh>qt_gui.enableSignalDebugging</vh></v>
+<v t="ekr.20240527100653.1645"><vh>qt_gui.equalize_splitter</vh></v>
+</v>
+<v t="ekr.20240527100653.1345"><vh>qt_gui:Widget constructors</vh>
+<v t="ekr.20240527100653.1346"><vh>qt_gui.createButton</vh></v>
+<v t="ekr.20240527100653.1347"><vh>qt_gui.createFrame</vh></v>
+<v t="ekr.20240527100653.1348"><vh>qt_gui.createGrid</vh></v>
+<v t="ekr.20240527100653.1349"><vh>qt_gui.createHLayout &amp; createVLayout</vh></v>
+<v t="ekr.20240527100653.1350"><vh>qt_gui.createLabel</vh></v>
+<v t="ekr.20240527100653.1351"><vh>qt_gui.createTabWidget</vh></v>
+<v t="ekr.20240527100653.1352"><vh>qt_gui.setSizePolicy</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1353"><vh>class ViewRenderedController (QWidget)</vh>
+<v t="ekr.20240527100653.1354"><vh> vr.ctor &amp; helpers</vh>
+<v t="ekr.20240527100653.1355"><vh>vr.create_dispatch_dict</vh></v>
+<v t="ekr.20240527100653.1356"><vh>vr.reloadSettings</vh></v>
+<v t="ekr.20240527100653.1357"><vh>vr.create_pane</vh></v>
+</v>
+<v t="ekr.20240527100653.1358"><vh>vr.closeEvent</vh></v>
+<v t="ekr.20240527100653.1359"><vh>vr.contract &amp; expand</vh></v>
+<v t="ekr.20240527100653.1360"><vh>vr.fully_expand</vh></v>
+<v t="ekr.20240527100653.1361"><vh>vr.lock/unlock</vh></v>
+<v t="ekr.20240527100653.1362"><vh>vr.restore_body</vh></v>
+<v t="ekr.20240527100653.1363"><vh>vr.set_html</vh></v>
+<v t="ekr.20240527100653.1364"><vh>vr.update &amp; helpers</vh>
+<v t="ekr.20240527100653.1365"><vh>vr.create_base_text_widget</vh></v>
+<v t="ekr.20240527100653.1366"><vh>vr.embed_widget</vh></v>
+<v t="ekr.20240527100653.1367"><vh>vr.must_update</vh></v>
+<v t="ekr.20240527100653.1368"><vh>vr.update_asciidoc &amp; helpers</vh>
+<v t="ekr.20240527100653.1369"><vh>vr.make_asciidoc_title (not used)</vh></v>
+<v t="ekr.20240527100653.1370"><vh>vr.convert_to_asciidoctor</vh></v>
+<v t="ekr.20240527100653.1371"><vh>vr.run_asciidoctor</vh></v>
+</v>
+<v t="ekr.20240527100653.1679"><vh>vr.update_graphics_script</vh></v>
+<v t="ekr.20240527100653.1373"><vh>vr.update_html</vh></v>
+<v t="ekr.20240527100653.1374"><vh>vr.update_image</vh></v>
+<v t="ekr.20240527100653.1375"><vh>vr.update_jupyter &amp; helper</vh>
+<v t="ekr.20240527100653.1376"><vh>vr.get_jupyter_source</vh></v>
+</v>
+<v t="ekr.20240527100653.1377"><vh>vr.update_latex &amp; helper</vh>
+<v t="ekr.20240527100653.1378"><vh>vr.create_latex_html</vh></v>
+</v>
+<v t="ekr.20240527100653.1379"><vh>vr.update_md &amp; helper</vh>
+<v t="ekr.20240527100653.1380"><vh>vr.convert_to_markdown</vh></v>
+</v>
+<v t="ekr.20240527100653.1381"><vh>vr.update_movie</vh></v>
+<v t="ekr.20240527100653.1382"><vh>vr.update_networkx</vh></v>
+<v t="ekr.20240527100653.1383"><vh>vr.update_pandoc &amp; helpers</vh>
+<v t="ekr.20240527100653.1384"><vh>vr.convert_to_pandoc</vh></v>
+<v t="ekr.20240527100653.1385"><vh>vr.run_pandoc</vh></v>
+</v>
+<v t="ekr.20240527100653.1386"><vh>vr.update_pyplot</vh></v>
+<v t="ekr.20240527100653.1387"><vh>vr.update_rst &amp; helpers</vh>
+<v t="ekr.20240527100653.1388"><vh>vr.convert_to_html</vh></v>
+</v>
+<v t="ekr.20240527100653.1389"><vh>vr.update_svg</vh></v>
+<v t="ekr.20240527100653.1390"><vh>vr.update_url</vh></v>
+<v t="ekr.20240527100653.1391"><vh>vr.utils for update helpers...</vh>
+<v t="ekr.20240527100653.1392"><vh>vr.ensure_text_widget</vh></v>
+<v t="ekr.20240527100653.1393"><vh>vr.get_kind</vh></v>
+<v t="ekr.20240527100653.1394"><vh>vr.get_fn</vh></v>
+<v t="ekr.20240527100653.1395"><vh>vr.get_url</vh></v>
+<v t="ekr.20240527100653.1396"><vh>vr.must_change_widget</vh></v>
+<v t="ekr.20240527100653.1397"><vh>vr.remove_directives</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20240527100653.1519"><vh>class ViewRenderedController3 (QWidget)</vh>
+<v t="ekr.20240527100653.1680"><vh>vr3.ctor &amp; helpers</vh>
+<v t="ekr.20240527100653.1681"><vh>vr3.create_dispatch_dict</vh></v>
+<v t="ekr.20240527100653.1682"><vh>vr3.create_base_text_widget</vh></v>
+<v t="ekr.20240527100653.1683"><vh>vr3.create_md_header</vh></v>
+<v t="ekr.20240527100653.1684"><vh>vr3.create_pane</vh></v>
+<v t="ekr.20240527100653.1685"><vh>vr3.create_toolbar &amp; helper functions</vh>
+<v t="ekr.20240527100653.1686"><vh>function: vr3.set_action</vh></v>
+<v t="ekr.20240527100653.1687"><vh>function: vr3.set_default_kind</vh></v>
+<v t="ekr.20240527100653.1688"><vh>function: vr3.set_freeze</vh></v>
+<v t="ekr.20240527100653.1689"><vh>function: vr3.set_group_action</vh></v>
+<v t="ekr.20240527100653.1690"><vh>function: vr3.set_menu_var</vh></v>
+<v t="ekr.20240527100653.1691"><vh>function: vr3.set_tree_lock</vh></v>
+<v t="ekr.20240527100653.1692"><vh>&lt;&lt; vr3: create menus &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1693"><vh>&lt;&lt; vr3: finish toolbar &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.1694"><vh>vr3.reloadSettings</vh></v>
+<v t="ekr.20240527100653.1695"><vh>vr3.set_md_stylesheet</vh>
+<v t="ekr.20240527100653.1696"><vh>check_paths()</vh></v>
+<v t="ekr.20240527100653.1697"><vh>&lt;&lt; fix path separators &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1698"><vh>&lt;&lt; check existence &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.1699"><vh>vr3.set_rst_stylesheet</vh></v>
+<v t="ekr.20240527100653.1700"><vh>vr3.dbg_print</vh></v>
+<v t="ekr.20240527100653.1701"><vh>vr3.plot_2d</vh>
+<v t="ekr.20240527100653.1702"><vh>declarations</vh></v>
+<v t="ekr.20240527100653.1703"><vh>functions</vh>
+<v t="ekr.20240527100653.1704"><vh>has_config_section()</vh></v>
+<v t="ekr.20240527100653.1705"><vh>set custom_style()</vh></v>
+<v t="ekr.20240527100653.1706"><vh>plot_plain_data()</vh>
+<v t="ekr.20240527100653.1707"><vh>&lt;&lt; is_numeric &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1708"><vh>&lt;&lt; get_data &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.1709"><vh>set_user_style()</vh></v>
+</v>
+<v t="ekr.20240527100653.1710"><vh>&lt;&lt; set_data &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1711"><vh>&lt;&lt; configure labels &gt;&gt;</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1552"><vh>vr3.update &amp; helpers</vh>
+<v t="ekr.20240527100653.1553"><vh>vr3.embed_widget &amp; helper</vh>
+<v t="ekr.20240527100653.1554"><vh>vr3.setBackgroundColor</vh></v>
+</v>
+<v t="ekr.20240527100653.1555"><vh>vr3.must_update</vh></v>
+<v t="ekr.20240527100653.1556"><vh>vr3.update_asciidoc &amp; helpers</vh>
+<v t="ekr.20240527100653.1557"><vh>vr3.process_asciidoc_nodes</vh></v>
+<v t="ekr.20240527100653.1558"><vh>vr3.convert_to_asciidoc</vh>
+<v t="ekr.20240527100653.1559"><vh>&lt;&lt; convert asciidoc docstring &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1560"><vh>&lt;&lt; function proc_string &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1561"><vh>&lt;&lt; Find available processors &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1562"><vh>&lt;&lt; set processor priority &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1563"><vh>&lt;&lt; try all processors &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1564"><vh>&lt;&lt; show fail-succeed processors &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.1565"><vh>vr3.convert_to_asciidoc_external</vh>
+<v t="ekr.20240527100653.1566"><vh>vr3.run_asciidoctor_external</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1714"><vh>vr3.update_graphics_script</vh></v>
+<v t="ekr.20240527100653.1568"><vh>vr3.update_html</vh></v>
+<v t="ekr.20240527100653.1569"><vh>vr3.update_image</vh></v>
+<v t="ekr.20240527100653.1570"><vh>vr3.update_jupyter &amp; helper</vh>
+<v t="ekr.20240527100653.1571"><vh>vr3.get_jupyter_source</vh></v>
+</v>
+<v t="ekr.20240527100653.1572"><vh>vr3.update_latex &amp; helper</vh>
+<v t="ekr.20240527100653.1573"><vh>vr3.create_latex_html</vh></v>
+</v>
+<v t="ekr.20240527100653.1574"><vh>vr3.update_md &amp; helpers</vh>
+<v t="ekr.20240527100653.1575"><vh>convert_markdown_to_html</vh>
+<v t="ekr.20240527100653.1576"><vh>setup</vh></v>
+<v t="ekr.20240527100653.1577"><vh>process nodes</vh></v>
+<v t="ekr.20240527100653.1578"><vh>generate HTML</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1579"><vh>vr3.update_movie</vh></v>
+<v t="ekr.20240527100653.1580"><vh>vr3.update_networkx</vh></v>
+<v t="ekr.20240527100653.1581"><vh>vr3.update_pandoc &amp; helpers</vh>
+<v t="ekr.20240527100653.1582"><vh>vr3.convert_to_pandoc</vh></v>
+<v t="ekr.20240527100653.1583"><vh>vr3.run_pandoc</vh></v>
+</v>
+<v t="ekr.20240527100653.1584"><vh>vr3.update_pyplot</vh></v>
+<v t="ekr.20240527100653.1585"><vh>vr3.update_rst &amp; helpers</vh>
+<v t="ekr.20240527100653.1586"><vh>vr3.convert_to_html</vh>
+<v t="ekr.20240527100653.1587"><vh>vr3.setup</vh></v>
+<v t="ekr.20240527100653.1588"><vh>vr3.process nodes</vh></v>
+<v t="ekr.20240527100653.1589"><vh>vr3.execute code blocks</vh></v>
+<v t="ekr.20240527100653.1590"><vh>vr3.get html from docutils</vh></v>
+</v>
+<v t="ekr.20240527100653.1591"><vh>execution helpers</vh>
+<v t="ekr.20240527100653.1592"><vh>ext_execute_code</vh></v>
+</v>
+<v t="ekr.20240527100653.1593"><vh>process_rst_node</vh>
+<v t="ekr.20240527100653.1594"><vh>&lt;&lt; rst special line helpers &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1595"><vh>&lt;&lt; Loop Over Lines &gt;&gt;</vh>
+<v t="ekr.20240527100653.1596"><vh>&lt;&lt; omit at-others &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1597"><vh>&lt;&lt; handle toctree &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1598"><vh>&lt;&lt; handle quotes &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1599"><vh>&lt;&lt; handle_ats &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1600"><vh>&lt;&lt; handle at-image &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1601"><vh>&lt;&lt; identify_code_blocks &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.1602"><vh>&lt;&lt; fill_chunks &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.1603"><vh>&lt;&lt; Finalize Node &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.1604"><vh>vr3.make_title_from_headline</vh></v>
+<v t="ekr.20240527100653.1605"><vh>vr3.make_rst_headline</vh></v>
+</v>
+<v t="ekr.20240527100653.1606"><vh>vr3.update_svg</vh></v>
+<v t="ekr.20240527100653.1607"><vh>vr3.update_url</vh></v>
+<v t="ekr.20240527100653.1608"><vh>vr3.utils for update helpers...</vh>
+<v t="ekr.20240527100653.1609"><vh>vr3.ensure_text_widget</vh></v>
+<v t="ekr.20240527100653.1610"><vh>vr3.ensure_web_widget</vh></v>
+<v t="ekr.20240527100653.1611"><vh>vr3.get_kind</vh>
+<v t="ekr.20240527100653.1612"><vh>vr3.get_language</vh></v>
+</v>
+<v t="ekr.20240527100653.1613"><vh>vr3.get_fn</vh></v>
+<v t="ekr.20240527100653.1614"><vh>vr3.get_url</vh></v>
+<v t="ekr.20240527100653.1615"><vh>vr3.get_node_path</vh></v>
+<v t="ekr.20240527100653.1616"><vh>vr3.must_change_widget</vh></v>
+<v t="ekr.20240527100653.1617"><vh>vr3.remove_directives</vh></v>
+<v t="ekr.20240527100653.1618"><vh>vr3.execute_code</vh></v>
+</v>
+<v t="ekr.20240527100653.1619"><vh>vr3.update_text</vh></v>
+<v t="ekr.20240527100653.1620"><vh>vr3: command helpers...</vh>
+<v t="ekr.20240527100653.1621"><vh>vr3.activate</vh></v>
+<v t="ekr.20240527100653.1622"><vh>vr3.deactivate</vh></v>
+<v t="ekr.20240527100653.1623"><vh>vr3.freeze/unfreeze</vh></v>
+<v t="ekr.20240527100653.1624"><vh>vr3.lock/unlock</vh></v>
+<v t="ekr.20240527100653.1713"><vh>vr3.show_dock_or_pane</vh></v>
+<v t="ekr.20240527100653.1626"><vh>vr3: toolbar helpers...</vh>
+<v t="ekr.20240527100653.1627"><vh>vr3.get_toolbar_label</vh></v>
+<v t="ekr.20240527100653.1628"><vh>vr3.hide_toolbar</vh></v>
+<v t="ekr.20240527100653.1629"><vh>vr3.show_toolbar</vh></v>
+</v>
+<v t="ekr.20240527100653.1630"><vh>vr3: zoom helpers...</vh>
+<v t="ekr.20240527100653.1631"><vh>vr3.shrinkView</vh></v>
+<v t="ekr.20240527100653.1632"><vh>vr3.zoomView</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1633"><vh>vr3: events...</vh>
+<v t="ekr.20240527100653.1634"><vh>vr3.closeEvent</vh></v>
+<v t="ekr.20240527100653.1635"><vh>vr3.keyPressEvent</vh></v>
+</v>
+<v t="ekr.20240527100653.1636"><vh>vr3: utils</vh>
+<v t="ekr.20240527100653.1637"><vh>vr3.set_html</vh></v>
+<v t="ekr.20240527100653.1638"><vh>vr3.underline</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20240527100653.1518"><vh>--- investigate weird vr3 behavior</vh>
+<v t="ekr.20240527100653.1519"></v>
+<v t="ekr.20240527100653.1676"><vh>g.command('vr3') (**weird**)</vh></v>
+</v>
+<v t="ekr.20240527100653.1640"><vh>--- changed &amp; new</vh>
+<v t="ekr.20240527100653.1641"><vh>--- changed: qt_gui</vh>
+<v t="ekr.20240527100653.1642"></v>
+<v t="ekr.20240527100653.1643"></v>
+<v t="ekr.20240527100653.1645"></v>
+<v t="ekr.20240527100653.1645"></v>
+<v t="ekr.20240527100653.1646"></v>
+<v t="ekr.20240527100653.1647"></v>
+<v t="ekr.20240527100653.1648"><vh>qtFrame.compute_ratio</vh></v>
+<v t="ekr.20240527100653.1649"><vh>qtFrame.compute_secondary_ratio</vh></v>
+<v t="ekr.20240527100653.1650"><vh>qtFrame.divideLeoSplitter1/2 (to do)</vh></v>
+<v t="ekr.20240527100653.1651"><vh>qtFrame.toggleSplitDirection</vh></v>
+</v>
+<v t="ekr.20240527100653.1652"><vh>--- changed: plugins</vh>
+<v t="ekr.20240527100653.1653"><vh>__init__ (BookMarkDisplayProvider)</vh></v>
+<v t="ekr.20240527100653.1654"><vh>__init__ (LeoFigureManagerQt)</vh></v>
+<v t="ekr.20240527100653.1655"><vh>__init__ (livecode.py)</vh></v>
+<v t="ekr.20240527100653.1656"><vh>bookmarks-show</vh></v>
+<v t="ekr.20240527100653.1657"><vh>bookmarks-use-other-outline</vh></v>
+<v t="ekr.20240527100653.1658"><vh>edit_pane_csv</vh></v>
+<v t="ekr.20240527100653.1659"><vh>free_layout:init</vh></v>
+<v t="ekr.20240527100653.1660"></v>
+</v>
+<v t="ekr.20240527100653.2064"></v>
+<v t="ekr.20240527100653.1811"></v>
+</v>
+<v t="ekr.20240527100653.1674"><vh>--- changed: VR &amp; VR3</vh>
+<v t="ekr.20240527100653.1675"><vh>g.command('vr')</vh></v>
+<v t="ekr.20240527100653.1676"></v>
+<v t="ekr.20240527100653.1677"><vh>g.command('vr3-use-default-layout')</vh></v>
+<v t="ekr.20240527100653.1678"><vh>vr function: onCreate</vh></v>
+<v t="ekr.20240527100653.1679"></v>
+<v t="ekr.20240527100653.1680"></v>
+<v t="ekr.20240527100653.1712"><vh>vr3.onCreate</vh></v>
+<v t="ekr.20240527100653.1713"></v>
+<v t="ekr.20240527100653.1714"></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1038"><vh>=== PR #3902: toggle-unl-view command</vh>
+<v t="ekr.20240527100653.1039"><vh>--- changed &amp; new</vh>
+<v t="ekr.20240527100653.1040"><vh>'toggle-unl-view'</vh></v>
+<v t="ekr.20240527100653.1041"><vh>LeoFrame.Status line convenience methods</vh></v>
+<v t="ekr.20240527100653.1042"><vh>5. LeoTree.set_status_line</vh></v>
+<v t="ekr.20240527100653.1043"><vh>QtStatusLineClass.ctor</vh></v>
+<v t="ekr.20240527100653.1044"><vh>QtStatusLineClass.computeStatusUnl</vh></v>
+<v t="ekr.20240527100653.1045"><vh>QtStatsuLineClass.toggleUnlView</vh></v>
+<v t="ekr.20240527100653.1046"><vh>NullStatusLineClass.methods</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.732"><vh>=== PR #3893: commands to expand VR</vh>
+<v t="ekr.20240527100653.733"><vh>--- classes</vh>
+<v t="ekr.20240527100653.734"><vh>--- caching classes</vh>
+<v t="ekr.20240527100653.735"><vh>class CommanderWrapper (c.db)</vh></v>
+<v t="ekr.20240527100653.736"><vh>class SqlitePickleShare</vh>
+<v t="ekr.20240527100653.737"><vh> Birth &amp; special methods</vh>
+<v t="ekr.20240527100653.738"><vh> SqlitePickleShare.__init__</vh></v>
+<v t="ekr.20240527100653.739"><vh>SqlitePickleShare.__contains__</vh></v>
+<v t="ekr.20240527100653.740"><vh>SqlitePickleShare.__delitem__</vh></v>
+<v t="ekr.20240527100653.741"><vh>SqlitePickleShare.__getitem__</vh></v>
+<v t="ekr.20240527100653.742"><vh>SqlitePickleShare.__iter__</vh></v>
+<v t="ekr.20240527100653.976"><vh>SqlitePickleShare.__repr__</vh></v>
+<v t="ekr.20240527100653.744"><vh>SqlitePickleShare.__setitem__</vh></v>
+</v>
+<v t="ekr.20240527100653.745"><vh>_makedirs</vh></v>
+<v t="ekr.20240527100653.746"><vh>_openFile (SqlitePickleShare)</vh></v>
+<v t="ekr.20240527100653.747"><vh>_walkfiles &amp; helpers</vh>
+<v t="ekr.20240527100653.748"><vh>_listdir</vh></v>
+<v t="ekr.20240527100653.749"><vh>_fn_match</vh></v>
+</v>
+<v t="ekr.20240527100653.750"><vh>clear (SqlitePickleShare)</vh></v>
+<v t="ekr.20240527100653.751"><vh>get  (SqlitePickleShare)</vh></v>
+<v t="ekr.20240527100653.752"><vh>has_key (SqlitePickleShare)</vh></v>
+<v t="ekr.20240527100653.753"><vh>items</vh></v>
+<v t="ekr.20240527100653.754"><vh>keys</vh></v>
+<v t="ekr.20240527100653.755"><vh>reset_protocol_in_values</vh>
+<v t="ekr.20240527100653.756"><vh>do_block</vh></v>
+</v>
+<v t="ekr.20240527100653.757"><vh>uncache</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.758"><vh>--- Qt Body &amp; frame classes</vh>
+<v t="ekr.20240527100653.759"><vh>class LeoQtBody(leoFrame.LeoBody)</vh>
+<v t="ekr.20240527100653.760"><vh>LeoQtBody.Birth</vh>
+<v t="ekr.20240527100653.761"><vh>LeoQtBody.ctor</vh>
+<v t="ekr.20240527100653.762"><vh>LeoQtBody.get_name</vh></v>
+<v t="ekr.20240527100653.763"><vh>LeoQtBody.reloadSettings</vh></v>
+<v t="ekr.20240527100653.764"><vh>LeoQtBody.set_invisibles</vh></v>
+<v t="ekr.20240527100653.765"><vh>LeoQtBody.set_widget</vh></v>
+<v t="ekr.20240527100653.766"><vh>LeoQtBody.forceWrap and setWrap</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.767"><vh>LeoQtBody.Editors</vh>
+<v t="ekr.20240527100653.768"><vh>LeoQtBody.entries</vh>
+<v t="ekr.20240527100653.769"><vh>LeoQtBody.add_editor_command</vh></v>
+<v t="ekr.20240527100653.770"><vh>LeoQtBody.assignPositionToEditor</vh></v>
+<v t="ekr.20240527100653.771"><vh>LeoQtBody.cycleEditorFocus</vh></v>
+<v t="ekr.20240527100653.772"><vh>LeoQtBody.delete_editor_command</vh></v>
+<v t="ekr.20240527100653.773"><vh>LeoQtBody.findEditorForChapter</vh></v>
+<v t="ekr.20240527100653.774"><vh>LeoQtBody.select/unselectLabel</vh></v>
+<v t="ekr.20240527100653.775"><vh>LeoQtBody.selectEditor &amp; helpers</vh>
+<v t="ekr.20240527100653.776"><vh>LeoQtBody.selectEditorHelper</vh></v>
+</v>
+<v t="ekr.20240527100653.777"><vh>LeoQtBody.updateEditors</vh></v>
+</v>
+<v t="ekr.20240527100653.778"><vh>LeoQtBody.utils</vh>
+<v t="ekr.20240527100653.779"><vh>LeoQtBody.computeLabel</vh></v>
+<v t="ekr.20240527100653.780"><vh>LeoQtBody.createChapterIvar</vh></v>
+<v t="ekr.20240527100653.781"><vh>LeoQtBody.deactivateEditors</vh></v>
+<v t="ekr.20240527100653.782"><vh>LeoQtBody.ensurePositionExists</vh></v>
+<v t="ekr.20240527100653.783"><vh>LeoQtBody.injectIvars</vh></v>
+<v t="ekr.20240527100653.784"><vh>LeoQtBody.recolorWidget (QScintilla only)</vh></v>
+<v t="ekr.20240527100653.785"><vh>LeoQtBody.switchToChapter</vh></v>
+<v t="ekr.20240527100653.786"><vh>LeoQtBody.unpackWidget</vh></v>
+<v t="ekr.20240527100653.787"><vh>LeoQtBody.updateInjectedIvars</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.788"><vh>LeoQtBody.Event handlers</vh>
+<v t="ekr.20240527100653.789"><vh>LeoQtBody.onFocusIn</vh></v>
+<v t="ekr.20240527100653.790"><vh>LeoQtBody.onFocusOut</vh></v>
+<v t="ekr.20240527100653.791"><vh>LeoQtBody.qtBody.onFocusColorHelper (revised)</vh></v>
+</v>
+<v t="ekr.20240527100653.792"><vh>LeoQtBody.Renderer panes</vh>
+<v t="ekr.20240527100653.793"><vh>LeoQtBody.hideCanvasRenderer</vh></v>
+<v t="ekr.20240527100653.794"><vh>LeoQtBody.hideTextRenderer</vh></v>
+<v t="ekr.20240527100653.795"><vh>LeoQtBody.packRenderer</vh></v>
+<v t="ekr.20240527100653.796"><vh>LeoQtBody.showCanvasRenderer</vh></v>
+<v t="ekr.20240527100653.797"><vh>LeoQtBody.showTextRenderer</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.798"><vh>class LeoQtFrame (leoFrame)</vh>
+<v t="ekr.20240527100653.799"><vh> qtFrame.Birth &amp; Death</vh>
+<v t="ekr.20240527100653.800"><vh>qtFrame.__init__ &amp; reloadSettings</vh></v>
+<v t="ekr.20240527100653.801"><vh>qtFrame.__repr__</vh></v>
+<v t="ekr.20240527100653.802"><vh>qtFrame.finishCreate &amp; helpers</vh>
+<v t="ekr.20240527100653.803"><vh>qtFrame.createSplitterComponents</vh></v>
+<v t="ekr.20240527100653.804"><vh>qtFrame.setQtStyle</vh></v>
+</v>
+<v t="ekr.20240527100653.805"><vh>qtFrame.initCompleteHint</vh></v>
+<v t="ekr.20240527100653.806"><vh>Destroying the qtFrame</vh>
+<v t="ekr.20240527100653.807"><vh>qtFrame.destroyAllObjects (not used)</vh>
+<v t="ekr.20240527100653.808"><vh>&lt;&lt; clear all vnodes in the tree&gt;&gt; (qtFrame)</vh></v>
+</v>
+<v t="ekr.20240527100653.809"><vh>qtFrame.destroySelf</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.810"><vh>qtFrame.Configuration</vh>
+<v t="ekr.20240527100653.973"><vh>qtFrame.compute_ratio &amp; compute_secondary_ratio</vh>
+<v t="ekr.20240527100653.1648"></v>
+<v t="ekr.20240527100653.1649"></v>
+</v>
+<v t="ekr.20240527100653.814"><vh>qtFrame.configureBar</vh></v>
+<v t="ekr.20240527100653.815"><vh>qtFrame.configureBarsFromConfig</vh></v>
+<v t="ekr.20240527100653.816"><vh>qtFrame.reconfigureFromConfig</vh></v>
+<v t="ekr.20240527100653.817"><vh>qtFrame.setInitialWindowGeometry</vh></v>
+<v t="ekr.20240527100653.818"><vh>qtFrame.setTabWidth</vh></v>
+<v t="ekr.20240527100653.819"><vh>qtFrame.forceWrap &amp; setWrap</vh></v>
+<v t="ekr.20240527100653.820"><vh>qtFrame.reconfigurePanes</vh></v>
+<v t="ekr.20240527100653.821"><vh>qtFrame.resizePanesToRatio</vh></v>
+<v t="ekr.20240527100653.1650"></v>
+<v t="ekr.20240527100653.823"><vh>qtFrame.divideAnySplitter</vh></v>
+</v>
+<v t="ekr.20240527100653.824"><vh>qtFrame.Event handlers</vh>
+<v t="ekr.20240527100653.825"><vh>qtFrame.OnCloseLeoEvent</vh></v>
+<v t="ekr.20240527100653.826"><vh>qtFrame.OnControlKeyUp/Down</vh></v>
+<v t="ekr.20240527100653.827"><vh>qtFrame.OnActivateTree</vh></v>
+</v>
+<v t="ekr.20240527100653.828"><vh>qtFrame.Gui-dependent commands</vh>
+<v t="ekr.20240527100653.829"><vh>qtFrame.Window Menu...</vh>
+<v t="ekr.20240527100653.830"><vh>qtFrame.toggleActivePane</vh></v>
+<v t="ekr.20240527100653.831"><vh>qtFrame.equalSizedPanes</vh></v>
+<v t="ekr.20240527100653.832"><vh>qtFrame.hideLogWindow</vh></v>
+<v t="ekr.20240527100653.833"><vh>qtFrame.minimizeAll</vh></v>
+<v t="ekr.20240527100653.1651"></v>
+<v t="ekr.20240527100653.835"><vh>qtFrame.resizeToScreen</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.836"><vh>qtFrame.Qt bindings...</vh>
+<v t="ekr.20240527100653.837"><vh>qtFrame.bringToFront</vh></v>
+<v t="ekr.20240527100653.838"><vh>qtFrame.deiconify</vh></v>
+<v t="ekr.20240527100653.839"><vh>qtFrame.get_window_info</vh></v>
+<v t="ekr.20240527100653.840"><vh>qtFrame.getFocus</vh></v>
+<v t="ekr.20240527100653.841"><vh>qtFrame.getTitle</vh></v>
+<v t="ekr.20240527100653.842"><vh>qtFrame.iconify</vh></v>
+<v t="ekr.20240527100653.843"><vh>qtFrame.lift</vh></v>
+<v t="ekr.20240527100653.844"><vh>qtFrame.setTitle</vh></v>
+<v t="ekr.20240527100653.845"><vh>qtFrame.setTopGeometry</vh></v>
+<v t="ekr.20240527100653.846"><vh>qtFrame.update</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20240527100653.847"><vh>class TokenBasedOrange</vh>
+<v t="ekr.20240527100653.848"><vh>&lt;&lt; TokenBasedOrange: docstring &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.849"><vh>&lt;&lt; TokenBasedOrange: __slots__ &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.850"><vh>&lt;&lt; TokenBasedOrange: python-related constants &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.851"><vh>tbo.ctor</vh></v>
+<v t="ekr.20240527100653.852"><vh>tbo: Checking &amp; dumping</vh>
+<v t="ekr.20240527100653.853"><vh>tbo.dump_token_range</vh></v>
+<v t="ekr.20240527100653.854"><vh>tbo.internal_error_message</vh></v>
+<v t="ekr.20240527100653.855"><vh>tbo.user_error_message</vh></v>
+<v t="ekr.20240527100653.856"><vh>tbo.oops</vh></v>
+</v>
+<v t="ekr.20240527100653.857"><vh>tbo: Entries &amp; helpers</vh>
+<v t="ekr.20240527100653.858"><vh>tbo.beautify (main token loop)</vh>
+<v t="ekr.20240527100653.859"><vh>&lt;&lt; tbo.beautify: init ivars &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.860"><vh>tbo.beautify_file (entry) (stats &amp; diffs)</vh></v>
+<v t="ekr.20240527100653.861"><vh>tbo.init_tokens_from_file</vh></v>
+<v t="ekr.20240527100653.862"><vh>tbo.regularize_newlines</vh></v>
+<v t="ekr.20240527100653.863"><vh>tbo.write_file</vh></v>
+<v t="ekr.20240527100653.864"><vh>tbo.show_diffs</vh></v>
+</v>
+<v t="ekr.20240527100653.865"><vh>tbo: Visitors &amp; generators</vh>
+<v t="ekr.20240527100653.866"><vh>tbo.do_comment</vh>
+<v t="ekr.20240527100653.867"><vh>&lt;&lt; do_comment: update comment-related state &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20240527100653.868"><vh>tbo.do_dedent</vh></v>
+<v t="ekr.20240527100653.869"><vh>tbo.do_encoding</vh></v>
+<v t="ekr.20240527100653.870"><vh>tbo.do_endmarker</vh></v>
+<v t="ekr.20240527100653.977"><vh>tbo.do_indent</vh></v>
+<v t="ekr.20240527100653.872"><vh>tbo.do_name &amp; generators</vh>
+<v t="ekr.20240527100653.873"><vh>tbo.do_name</vh></v>
+<v t="ekr.20240527100653.874"><vh>tbo.gen_word</vh></v>
+<v t="ekr.20240527100653.875"><vh>tbo.gen_word_op</vh></v>
+</v>
+<v t="ekr.20240527100653.876"><vh>tbo.do_newline, do_nl &amp; generators</vh>
+<v t="ekr.20240527100653.877"><vh>tbo.do_newline</vh></v>
+<v t="ekr.20240527100653.878"><vh>tbo.do_nl</vh></v>
+</v>
+<v t="ekr.20240527100653.879"><vh>tbo.do_number</vh></v>
+<v t="ekr.20240527100653.880"><vh>tbo.do_op &amp; generators</vh>
+<v t="ekr.20240527100653.881"><vh>tbo.do_op</vh></v>
+<v t="ekr.20240527100653.882"><vh>tbo.gen_colon &amp; helper</vh></v>
+<v t="ekr.20240527100653.883"><vh>tbo.gen_dot_op &amp; _next</vh>
+<v t="ekr.20240527100653.884"><vh>tbo._next</vh></v>
+</v>
+<v t="ekr.20240527100653.885"><vh>tbo.gen_equal_op</vh></v>
+<v t="ekr.20240527100653.886"><vh>tbo.gen_lt</vh></v>
+<v t="ekr.20240527100653.887"><vh>tbo.gen_possible_unary_op &amp; helper</vh>
+<v t="ekr.20240527100653.888"><vh>tbo.is_unary_op &amp; _prev</vh>
+<v t="ekr.20240527100653.889"><vh>tbo._prev</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.890"><vh>tbo.gen_rt</vh></v>
+<v t="ekr.20240527100653.891"><vh>tbo.gen_star_op</vh></v>
+<v t="ekr.20240527100653.892"><vh>tbo.gen_star_star_op</vh></v>
+<v t="ekr.20240527100653.893"><vh>tbo.push_state</vh></v>
+</v>
+<v t="ekr.20240527100653.894"><vh>tbo.do_string</vh></v>
+<v t="ekr.20240527100653.895"><vh>tbo.do_verbatim</vh></v>
+<v t="ekr.20240527100653.896"><vh>tbo.do_ws</vh></v>
+<v t="ekr.20240527100653.897"><vh>tbo.gen_blank</vh></v>
+<v t="ekr.20240527100653.898"><vh>tbo.gen_token</vh></v>
+</v>
+<v t="ekr.20240527100653.899"><vh>tbo: Scanning</vh>
+<v t="ekr.20240527100653.900"><vh>tbo.pre_scan &amp; helpers</vh>
+<v t="ekr.20240527100653.901"><vh>&lt;&lt; pre-scan 'newline' tokens &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.902"><vh>&lt;&lt; pre-scan 'op' tokens &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.903"><vh>&lt;&lt; pre-scan 'name' tokens &gt;&gt;</vh></v>
+<v t="ekr.20240527100653.904"><vh>tbo.finish_arg</vh></v>
+<v t="ekr.20240527100653.905"><vh>tbo.finish_slice</vh></v>
+<v t="ekr.20240527100653.906"><vh>tbo.finish_dict</vh></v>
+</v>
+<v t="ekr.20240527100653.907"><vh>tbo.is_unary_op_with_prev</vh></v>
+<v t="ekr.20240527100653.908"><vh>tbo.is_python_keyword</vh></v>
+<v t="ekr.20240527100653.909"><vh>tbo.set_context</vh></v>
+</v>
+</v>
+<v t="ekr.20240527100653.1353"></v>
+</v>
+<v t="ekr.20240527100653.955"><vh>--- changed &amp; new</vh>
+<v t="ekr.20240527100653.956"><vh>--- changed &amp; new VR commands</vh>
+<v t="ekr.20240527100653.1675"></v>
+<v t="ekr.20240527100653.958"><vh>g.command('vr-fully-expand')</vh></v>
+<v t="ekr.20240527100653.959"><vh>g.command('vr-hide')</vh></v>
+<v t="ekr.20240527100653.960"><vh>g.command('vr-restore-body')</vh></v>
+<v t="ekr.20240527100653.961"><vh>g.command('vr-show')</vh></v>
+<v t="ekr.20240527100653.962"><vh>g.command('vr-toggle-keep-open')</vh></v>
+<v t="ekr.20240527100653.963"><vh>g.command('vr-toggle-visibility')</vh></v>
+</v>
+<v t="ekr.20240527100653.964"><vh>--- changed freelayout &amp; nested_splitter methods</vh>
+<v t="ekr.20240527100653.1199"></v>
+<v t="ekr.20240527100653.1200"></v>
+<v t="ekr.20240527100653.1106"></v>
+</v>
+<v t="ekr.20240527100653.968"><vh>--- changed read/write logic</vh>
+<v t="ekr.20240527100653.971"><vh>fast.getGlobalData</vh></v>
+<v t="ekr.20240527100653.970"><vh>fast.scanGlobals &amp; helper</vh>
+<v t="ekr.20240527100653.971"></v>
+</v>
+<v t="ekr.20240527100653.972"><vh>fc.putGlobals (sets window_position)</vh></v>
+</v>
+<v t="ekr.20240527100653.973"></v>
+<v t="ekr.20240527100653.976"></v>
+<v t="ekr.20240527100653.977"></v>
+<v t="ekr.20240527100653.978"><vh>vr function: show_scrolled_message</vh></v>
+</v>
+<v t="ekr.20240527100653.979"><vh>--- changed &amp; new VR methods</vh>
+<v t="ekr.20240527100653.1354"></v>
+<v t="ekr.20240527100653.1354"></v>
+<v t="ekr.20240527100653.989"><vh>vr function: onClose</vh></v>
+<v t="ekr.20240527100653.989"></v>
+<v t="ekr.20240527100653.1678"></v>
+<v t="ekr.20240527100653.1359"></v>
+<v t="ekr.20240527100653.1388"></v>
+<v t="ekr.20240527100653.1366"></v>
+<v t="ekr.20240527100653.1360"></v>
+<v t="ekr.20240527100653.1393"></v>
+<v t="ekr.20240527100653.1367"></v>
+<v t="ekr.20240527100653.1061"></v>
+<v t="ekr.20240527100653.1362"></v>
+<v t="ekr.20240527100653.1364"></v>
+<v t="ekr.20240527100653.1387"></v>
+</v>
+</v>
+<v t="ekr.20240527100653.292"><vh>=== PR #3841: ekr-g.trace_unique</vh>
+<v t="ekr.20240527100653.308"><vh>g.traceUnique &amp; traceUniqueClass</vh></v>
+<v t="ekr.20240527100653.294"><vh>c.doCommand</vh></v>
+</v>
+<v t="ekr.20240527100653.288"><vh>=== PR #3832: compile with mypyc</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32882,6 +34061,17190 @@ unl: Using objtrees for caching
 gnx: ekr.20240303070818.3
 unl: The `Leo database` (c.db, g.app.db)
 </t>
+<t tx="ekr.20240527100653.1"></t>
+<t tx="ekr.20240527100653.1038">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/3901
+PR: https://github.com/leo-editor/leo-editor/pull/3902
+
+@language python
+</t>
+<t tx="ekr.20240527100653.1039"></t>
+<t tx="ekr.20240527100653.1040">@g.command('toggle-unl-view')
+def toggleUnlView(event: LeoKeyEvent) -&gt; None:
+    c = event.get('c')
+    if c and c.frame.statusLine:
+        # This is not a convenience method.
+        c.frame.statusLine.toggleUnlView()
+</t>
+<t tx="ekr.20240527100653.1041">def createStatusLine(self) -&gt; Union[NullStatusLineClass, g.NullObject]:
+    if not self.statusLine:
+        self.statusLine = self.statusLineClass(self.c, None)
+    return self.statusLine
+
+def clearStatusLine(self) -&gt; None:
+    if self.statusLine:
+        self.statusLine.clear()
+
+def computeStatusUnl(self, p: Position) -&gt; str:
+    if self.statusLine and p:
+        return self.statusLine.computeStatusUnl(p)
+    return ''
+
+def disableStatusLine(self, background: str = None) -&gt; None:
+    if self.statusLine:
+        self.statusLine.disable(background)
+
+def enableStatusLine(self, background: str = "white") -&gt; None:
+    if self.statusLine:
+        self.statusLine.enable(background)
+
+def getStatusLine(self) -&gt; Union[NullStatusLineClass, g.NullObject]:
+    return self.statusLine
+
+getStatusObject = getStatusLine
+
+def putStatusLine(self, s: str, bg: str = None, fg: str = None) -&gt; None:
+    if self.statusLine:
+        self.statusLine.put(s, bg, fg)
+
+def setFocusStatusLine(self) -&gt; None:
+    if self.statusLine:
+        self.statusLine.setFocus()
+
+def statusLineIsEnabled(self) -&gt; bool:
+    if self.statusLine:
+        return self.statusLine.isEnabled()
+    return False
+
+def updateStatusLine(self) -&gt; None:
+    if self.statusLine:
+        self.statusLine.update()
+</t>
+<t tx="ekr.20240527100653.1042">def set_status_line(self, p: Position) -&gt; None:
+    """Update the status line."""
+    c = self.c
+    c.frame.body.assignPositionToEditor(p)
+    c.frame.updateStatusLine()
+    c.frame.clearStatusLine()
+    if p and p.v:
+        s = c.frame.computeStatusUnl(p)
+        c.frame.putStatusLine(s)
+</t>
+<t tx="ekr.20240527100653.1043">def __init__(self, c: Cmdr, parentFrame: LeoQtFrame) -&gt; None:
+    """Ctor for LeoQtFrame class."""
+    self.c = c
+    self.statusBar = c.frame.top.leo_statusBar
+    self.lastFcol = 0
+    self.lastRow = 0
+    self.lastCol = 0
+
+    # #3901:  A new ivar that toggles between representations of UNLs.
+    #         False: Use default, based on settings.
+    #         True: Use the alternate representation.
+    self.toggle_unl_view = False
+
+    # Create the text widgets.
+    self.textWidget1 = w1 = QtWidgets.QLineEdit(self.statusBar)
+    self.textWidget2 = w2 = QtWidgets.QLineEdit(self.statusBar)
+    w1.setObjectName('status1')
+    w2.setObjectName('status2')
+    w1.setReadOnly(True)
+    w2.setReadOnly(True)
+    splitter = QtWidgets.QSplitter()
+    self.statusBar.addWidget(splitter, True)
+    sizes = c.config.getString('status-line-split-sizes') or '1 2'
+    int_sizes = [int(i) for i in sizes.replace(',', ' ').split()]
+    for n, i in enumerate(int_sizes):
+        w = [w1, w2][n]
+        policy = w.sizePolicy()
+        policy.setHorizontalStretch(i)
+        policy.setHorizontalPolicy(Policy.Minimum)
+        w.setSizePolicy(policy)
+    splitter.addWidget(w1)
+    splitter.addWidget(w2)
+    self.put('')
+    self.update()
+</t>
+<t tx="ekr.20240527100653.1044">def computeStatusUnl(self, p: Position) -&gt; str:
+    """Compute the UNL part of the status line."""
+    c = self.c
+    kind = c.config.getString('unl-status-kind') or ''
+    legacy = kind.lower() == 'legacy'
+    if self.toggle_unl_view:
+        # Show the UNL the opposite as indicated by settings.
+        method = p.get_UNL if legacy else p.get_legacy_UNL
+    else:
+        # Show the UNL per the settings.
+        method = p.get_legacy_UNL if legacy else p.get_UNL
+    s = method()
+    return s
+</t>
+<t tx="ekr.20240527100653.1045">def toggleUnlView(self):
+    """Toggle view of UNLs."""
+    c = self.c
+    # Toggle the switch.
+    self.toggle_unl_view = not self.toggle_unl_view
+    # Redraw.
+    s = self.computeStatusUnl(c.p)
+    self.put(s)
+    self.update()
+</t>
+<t tx="ekr.20240527100653.1046">def computeStatusUnl(self, p: Position) -&gt; str:
+    return ''
+
+def disable(self, background: str = None) -&gt; None:
+    self.enabled = False
+
+def enable(self, background: str = "white") -&gt; None:
+    self.c.widgetWantsFocus(self.textWidget)
+    self.enabled = True
+
+def clear(self) -&gt; None:
+    w = self.textWidget
+    w.delete(0, w.getLastIndex())
+
+def get(self) -&gt; str:
+    return self.textWidget.getAllText()
+
+def isEnabled(self) -&gt; bool:
+    return self.enabled
+
+def put(self, s: str, bg: str = None, fg: str = None) -&gt; None:
+    w = self.textWidget
+    w.insert(w.getLastIndex(), s)
+
+def setFocus(self) -&gt; None:
+    pass
+
+def update(self) -&gt; None:
+    pass
+</t>
+<t tx="ekr.20240527100653.1048">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/3910
+PR: https://github.com/leo-editor/leo-editor/pull/3911
+
+- Update docstring of free_layout plugin.
+- Update FAQ with new workflow.
+- Add new info item.
+
+@language python
+@nosearch
+</t>
+<t tx="ekr.20240527100653.1049"></t>
+<t tx="ekr.20240527100653.1050">Full dump of c.frame.top:
+
+  1   0: DynamicWindow(MainWindow)
+  2   1: .QLayout(_layout)
+  3   1: .QWidget(centralwidget)
+  4   2: ..QVBoxLayout(mainVLayout)
+  
+  5   2: ..NestedSplitter(main_splitter)
+
+         # created at startup by c.free_layout.get_top_splitter().add_adjacent
+  6   3: ...NestedSplitter(nested-vr-splitter)
+
+  7   4: ....QFrame(bodyFrame)  # nested-vr-splitter:child 0
+  8   5: .....QFrame(innerBodyFrame)
+  9   6: ......QStackedWidget(bodyStackedWidget)
+ 10   7: .......QStackedLayout(no name)
+ 11   7: .......QWidget(bodyPage2)
+ 12   8: ........LeoQTextBrowser(richTextEdit)
+ 13   9: .........QWidget(qt_scrollarea_viewport)
+ 14   9: .........QWidget(qt_scrollarea_hcontainer)
+ 15  10: ..........QBoxLayout(no name)
+ 16   9: .........QWidget(qt_scrollarea_vcontainer)
+ 17  10: ..........QBoxLayout(no name)
+ 18   8: ........QVBoxLayout(bodyVLayout)
+ 19   6: ......QGridLayout(bodyInnerGrid)
+ 20   5: .....QGridLayout(bodyGrid)
+ 21   4: ....NestedSplitterHandle(qt_splithandle_viewrendered_pane)  # nested-vr-splitter:child 1
+ 22   4: ....NestedSplitterHandle(qt_splithandle_bodyFrame)  # nested-vr-splitter:child 2
+ 
+ 23   3: ...NestedSplitter(secondary_splitter)
+ 24   4: ....QFrame(logFrame)
+ 25   5: .....QFrame(logInnerFrame)
+ 26   6: ......QTabWidget(logTabWidget)
+ 27   7: .......QStackedWidget(qt_tabwidget_stackedwidget)
+ 28   8: ........QStackedLayout(no name)
+ 29   8: ........LeoQTextBrowser(no name)
+ 30   9: .........QWidget(qt_scrollarea_viewport)
+ 31   9: .........QWidget(qt_scrollarea_hcontainer)
+ 32  10: ..........QBoxLayout(no name)
+ 33   9: .........QWidget(qt_scrollarea_vcontainer)
+ 34  10: ..........QBoxLayout(no name)
+ 35   8: ........QWidget(spellTab)
+ 36   9: .........QVBoxLayout(spellVLayout)
+ 37   9: .........QFrame(spellFrame)
+ 38  10: ..........QVBoxLayout(spellVLayout)
+ 39  11: ...........QGridLayout(spellGrid)
+ 40  10: ..........QListWidget(leo_spell_listBox)
+ 41  11: ...........QWidget(qt_scrollarea_viewport)
+ 42  11: ...........QWidget(qt_scrollarea_hcontainer)
+ 43  12: ............QBoxLayout(no name)
+ 44  11: ...........QWidget(qt_scrollarea_vcontainer)
+ 45  12: ............QBoxLayout(no name)
+ 46   8: ........LeoQTextBrowser(log-widget)
+ 47   9: .........QWidget(qt_scrollarea_viewport)
+ 48   9: .........QWidget(qt_scrollarea_hcontainer)
+ 49  10: ..........QBoxLayout(no name)
+ 50   9: .........QWidget(qt_scrollarea_vcontainer)
+ 51  10: ..........QBoxLayout(no name)
+ 52   6: ......QGridLayout(logInnerGrid)
+ 53   5: .....QGridLayout(logGrid)
+ 54   4: ....QFrame(outlineFrame)
+ 55   5: .....QFrame(outlineInnerFrame)
+ 56   6: ......LeoQTreeWidget(treeWidget)
+ 57   7: .......QWidget(qt_scrollarea_viewport)
+ 58   7: .......QWidget(qt_scrollarea_hcontainer)
+ 59   8: ........QBoxLayout(no name)
+ 60   7: .......QWidget(qt_scrollarea_vcontainer)
+ 61   8: ........QBoxLayout(no name)
+ 62   6: ......QGridLayout(outlineInnerGrid)
+ 63   5: .....QGridLayout(outlineGrid)
+ 64   4: ....NestedSplitterHandle(qt_splithandle_)
+ 65   4: ....NestedSplitterHandle(qt_splithandle_)
+ 66   3: ...NestedSplitterHandle(qt_splithandle_)
+ 67   3: ...NestedSplitterHandle(qt_splithandle_nested-vr-splitter)
+ 68   2: ..QFrame(minibufferFrame)
+ 69   3: ...QHBoxLayout(minibufferHLayout)
+</t>
+<t tx="ekr.20240527100653.1051">Full dump of c.frame.top:
+
+  1   0: DynamicWindow(MainWindow)
+  2   1: .QLayout(_layout)
+  3   1: .QWidget(centralwidget)
+  4   2: ..QVBoxLayout(mainVLayout)
+
+  5   2: ..QSplitter(main_splitter)
+  
+         # Created w/o ns at startup.
+  6   3: ...QSplitter(vr-splitter)
+  
+  7   4: ....QFrame(bodyFrame)  # vr-splitter:child 0
+  8   5: .....QFrame(innerBodyFrame)
+  9   6: ......QStackedWidget(bodyStackedWidget)
+ 10   7: .......QStackedLayout(no name)
+ 11   7: .......QWidget(bodyPage2)
+ 12   8: ........LeoQTextBrowser(richTextEdit)
+ 13   9: .........QWidget(qt_scrollarea_viewport)
+ 14   9: .........QWidget(qt_scrollarea_hcontainer)
+ 15  10: ..........QBoxLayout(no name)
+ 16   9: .........QWidget(qt_scrollarea_vcontainer)
+ 17  10: ..........QBoxLayout(no name)
+ 18   8: ........QVBoxLayout(bodyVLayout)
+ 19   6: ......QGridLayout(bodyInnerGrid)
+ 20   5: .....QGridLayout(bodyGrid)
+      
+         # Missing: QSplitterHandle(qt_splithandle_viewrendered_pane)
+ 21   4: ....QSplitterHandle(qt_splithandle_bodyFrame)    # vr-splitter:child 1
+ 
+ 22   3: ...QSplitter(secondary_splitter)
+ 23   4: ....QFrame(logFrame)
+ 24   5: .....QFrame(logInnerFrame)
+ 25   6: ......QTabWidget(logTabWidget)
+ 26   7: .......QStackedWidget(qt_tabwidget_stackedwidget)
+ 27   8: ........LeoQuickSearchWidget(LeoQuickSearchWidget)
+ 28   9: .........QVBoxLayout(verticalLayout_2)
+ 29  10: ..........QGridLayout(verticalLayout)
+ 30   9: .........QListWidget(listWidget)
+ 31  10: ..........QWidget(qt_scrollarea_viewport)
+ 32  10: ..........QWidget(qt_scrollarea_hcontainer)
+ 33  11: ...........QBoxLayout(no name)
+ 34  10: ..........QWidget(qt_scrollarea_vcontainer)
+ 35  11: ...........QBoxLayout(no name)
+ 36   8: ........LeoTagWidget(LeoTagWidget)
+ 37   9: .........QVBoxLayout(nodetags-verticalLayout_2)
+ 38  10: ..........QVBoxLayout(nodetags-verticalLayout)
+ 39  11: ...........QHBoxLayout(nodetags-horizontalLayout)
+ 40  11: ...........QHBoxLayout(nodetags-horizontalLayout2)
+ 41   9: .........QListWidget(nodetags-listWidget)
+ 42  10: ..........QWidget(qt_scrollarea_viewport)
+ 43  10: ..........QWidget(qt_scrollarea_hcontainer)
+ 44  11: ...........QBoxLayout(no name)
+ 45  10: ..........QWidget(qt_scrollarea_vcontainer)
+ 46  11: ...........QBoxLayout(no name)
+ 47   8: ........QStackedLayout(no name)
+ 48   8: ........QWidget(spellTab)
+ 49   9: .........QVBoxLayout(spellVLayout)
+ 50   9: .........QFrame(spellFrame)
+ 51  10: ..........QVBoxLayout(spellVLayout)
+ 52  11: ...........QGridLayout(spellGrid)
+ 53  10: ..........QListWidget(leo_spell_listBox)
+ 54  11: ...........QWidget(qt_scrollarea_viewport)
+ 55  11: ...........QWidget(qt_scrollarea_hcontainer)
+ 56  12: ............QBoxLayout(no name)
+ 57  11: ...........QWidget(qt_scrollarea_vcontainer)
+ 58  12: ............QBoxLayout(no name)
+ 59   8: ........LeoQTextBrowser(no name)
+ 60   9: .........QWidget(qt_scrollarea_viewport)
+ 61   9: .........QWidget(qt_scrollarea_hcontainer)
+ 62  10: ..........QBoxLayout(no name)
+ 63   9: .........QWidget(qt_scrollarea_vcontainer)
+ 64  10: ..........QBoxLayout(no name)
+ 65   8: ........LeoQTextBrowser(log-widget)
+ 66   9: .........QWidget(qt_scrollarea_viewport)
+ 67   9: .........QWidget(qt_scrollarea_hcontainer)
+ 68  10: ..........QBoxLayout(no name)
+ 69   9: .........QWidget(qt_scrollarea_vcontainer)
+ 70  10: ..........QBoxLayout(no name)
+ 71   6: ......QGridLayout(logInnerGrid)
+ 72   5: .....QGridLayout(logGrid)
+ 73   4: ....QFrame(outlineFrame)
+ 74   5: .....QFrame(outlineInnerFrame)
+ 75   6: ......LeoQTreeWidget(treeWidget)
+ 76   7: .......QWidget(qt_scrollarea_viewport)
+ 77   7: .......QWidget(qt_scrollarea_hcontainer)
+ 78   8: ........QBoxLayout(no name)
+ 79   7: .......QWidget(qt_scrollarea_vcontainer)
+ 80   8: ........QBoxLayout(no name)
+ 81   6: ......QGridLayout(outlineInnerGrid)
+ 82   5: .....QGridLayout(outlineGrid)
+ 83   4: ....QSplitterHandle(qt_splithandle_)
+ 84   4: ....QSplitterHandle(qt_splithandle_)
+ 85   3: ...QSplitterHandle(qt_splithandle_)
+ 86   3: ...QSplitterHandle(qt_splithandle_)
+ 87   2: ..QFrame(minibufferFrame)
+ 88   3: ...QHBoxLayout(minibufferHLayout)
+</t>
+<t tx="ekr.20240527100653.1052">@nosearch</t>
+<t tx="ekr.20240527100653.1053"></t>
+<t tx="ekr.20240527100653.1054">@g.command('vr-zoom')
+def zoom_rendering_pane(event: Event) -&gt; None:
+
+    global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
+    c = event.get('c')
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+    flc = c.free_layout
+    if vr.zoomed:
+        for ns in flc.get_top_splitter().top().self_and_descendants():
+            if hasattr(ns, '_unzoom'):
+                # this splitter could have been added since
+                ns.setSizes(ns._unzoom)
+    else:
+        parents = []
+        parent = vr
+        while parent:
+            parents.append(parent)
+            parent = parent.parent()
+        for ns in flc.get_top_splitter().top().self_and_descendants():
+            # FIXME - shouldn't be doing this across windows
+            ns._unzoom = ns.sizes()
+            for i in range(ns.count()):
+                w = ns.widget(i)
+                if w in parents:
+                    sizes = [0] * len(ns._unzoom)
+                    sizes[i] = sum(ns._unzoom)
+                    ns.setSizes(sizes)
+                    break
+    vr.zoomed = not vr.zoomed
+</t>
+<t tx="ekr.20240527100653.1055">def adjust_layout(self, which):
+
+    global layouts
+    c = self.c
+    splitter = self.splitter
+    deflo = c.db.get(VR3_DEF_LAYOUT, (None, None))
+    loc, loo = layouts.get(c.hash(), deflo)
+    if which == 'closed' and loc and splitter:
+        # Make it work with old and new layout code
+        try:
+            splitter.load_layout(loc)
+        except TypeError:
+            splitter.load_layout(c, loc)
+    elif which == 'open' and loo and splitter:
+        try:
+            splitter.load_layout(loo)
+        except TypeError:
+            splitter.load_layout(c, loo)
+</t>
+<t tx="ekr.20240527100653.1056"># Change zoom factor of rendering pane
+def contract(self):
+    self.change_size(-100)
+
+def expand(self):
+    self.change_size(100)
+
+def change_size(self, delta):
+    if hasattr(self.c, 'free_layout'):
+        splitter = self.parent()
+        i = splitter.indexOf(self)
+        assert i &gt; -1
+        sizes = splitter.sizes()
+        n = len(sizes)
+        for j, size in enumerate(sizes):
+            if j == i:
+                sizes[j] = max(0, size + delta)
+            else:
+                sizes[j] = max(0, size - int(delta / (n - 1)))
+        splitter.setSizes(sizes)
+</t>
+<t tx="ekr.20240527100653.1057">def store_layout(self, which):
+
+    global layouts
+    c = self.c
+    h = c.hash()
+    splitter = self.splitter
+    deflo = c.db.get(VR3_DEF_LAYOUT, (None, None))
+    (loc, loo) = layouts.get(c.hash(), deflo)
+    if which == 'closed' and splitter:
+        loc = splitter.get_saveable_layout()
+        loc = json.loads(json.dumps(loc))
+        layouts[h] = loc, loo
+    elif which == 'open' and splitter:
+        loo = splitter.get_saveable_layout()
+        loo = json.loads(json.dumps(loo))
+        layouts[h] = loc, loo
+    c.db[VR3_DEF_LAYOUT] = layouts[h]
+</t>
+<t tx="ekr.20240527100653.1058"></t>
+<t tx="ekr.20240527100653.1059">class ViewRenderedProvider:
+    """This class allows the free_layout plugin to insert VR panes anywhere."""
+    @others
+</t>
+<t tx="ekr.20240527100653.1060">def __init__(self, c: Cmdr) -&gt; None:
+    self.c = c
+    self.created = False
+    # Careful: we may be unit testing.
+    if hasattr(c, 'free_layout'):
+        splitter = c.free_layout.get_top_splitter()
+        if splitter:
+            splitter.register_provider(self)
+</t>
+<t tx="ekr.20240527100653.1061">def ns_provide(self, id_: str) -&gt; Optional[Widget]:
+    global controllers, layouts
+    # #1678: duplicates in Open Window list
+    if self.created:
+        return None
+    if id_ == self.ns_provider_id():
+        self.created = True  # Suppress duplicates!
+        c = self.c
+        h = c.hash()
+        vr = controllers.get(h)
+        if not vr:
+            # Never overwrite an existing controller.
+            vr = ViewRenderedController(c)
+            controllers[h] = vr
+        # Enable, keeping the VR pane open.
+        vr.active = True
+        vr.auto_create = True
+        vr.is_visible = True
+        vr.keep_open = True
+        vr.locked = False
+        # Force an update.
+        vr.gnx = None
+        vr.length = 0
+        return vr
+    return None
+</t>
+<t tx="ekr.20240527100653.1062">def ns_provider_id(self) -&gt; str:
+    return '_leo_viewrendered'
+</t>
+<t tx="ekr.20240527100653.1063">def ns_provides(self) -&gt; list[tuple[str, str]]:
+    # #1671: Better Window names.
+    # #1678: duplicates in Open Window list
+    return [('Viewrendered', self.ns_provider_id())]
+</t>
+<t tx="ekr.20240527100653.1064">def ns_title(self, id_: str) -&gt; Optional[str]:
+    if id_ != self.ns_provider_id():
+        return None
+    filename = self.c.shortFileName() or 'Unnamed file'
+    return f"Viewrendered: {filename}"
+</t>
+<t tx="ekr.20240527100653.1065">class ViewRenderedProvider3:
+    @others
+</t>
+<t tx="ekr.20240527100653.1066">def __init__(self, c):
+    self.c = c
+    # Careful: we may be unit testing.
+    self.vr3_instance = None
+    if hasattr(c, 'free_layout'):
+        splitter = c.free_layout.get_top_splitter()
+        if splitter:
+            splitter.register_provider(self)
+</t>
+<t tx="ekr.20240527100653.1067">def ns_provide(self, id_):
+    global controllers, layouts
+    # #1678: duplicates in Open Window list
+    if id_ == self.ns_provider_id():
+        c = self.c
+        h = c.hash()
+        vr3 = controllers.get(h) or ViewRenderedController3(c)
+        controllers[h] = vr3
+        if not layouts.get(h):
+            layouts[h] = c.db.get(VR3_DEF_LAYOUT, (None, None))
+        return vr3
+    return None
+</t>
+<t tx="ekr.20240527100653.1068">def ns_provider_id(self):
+    return VR3_NS_ID
+</t>
+<t tx="ekr.20240527100653.1069">def ns_provides(self):
+    # #1671: Better Window names.
+    # #1678: duplicates in Open Window list
+    return [('Viewrendered 3', self.ns_provider_id())]
+</t>
+<t tx="ekr.20240527100653.1070">def ns_title(self, id_):
+    if id_ != self.ns_provider_id():
+        return None
+    filename = self.c.shortFileName() or 'Unnamed file'
+    return f"Viewrendered 3: {filename}"
+</t>
+<t tx="ekr.20240527100653.1071"></t>
+<t tx="ekr.20240527100653.1072">def edit_pane_test_open(event):
+    """Make a command for opening the editpane in free_layout.
+
+    This is just for testing / demoing, and will be removed eventually.
+    """
+    c = event['c']
+
+    if not hasattr(c, '__edit_pane_test'):
+        c.__edit_pane_test = True
+
+
+        class MinimalDemoProvider:
+
+            def ns_provides(self):
+                return [("Demo editor", "__demo_provider_minimal_slider")]
+
+            def ns_provide(self, id_):
+                if id_ == "__demo_provider_minimal_slider":
+                    w = LeoEditPane(c=c, mode='split')
+                    return w
+                return None
+
+            def ns_provider_id(self):
+                return "__demo_provider_minimal"
+
+        c.free_layout.get_top_splitter().register_provider(MinimalDemoProvider())
+
+    s = c.free_layout.get_top_splitter()
+    s.open_window("__demo_provider_minimal_slider")
+</t>
+<t tx="ekr.20240527100653.1073">@g.command('livecode-show')
+def cmd_show(event):
+    c = event.get('c')
+    splitter = c.free_layout.get_top_splitter()
+    if splitter:
+        w = splitter.get_provided('_leo_livecode_show')
+        splitter.add_adjacent(w, 'bodyFrame')
+</t>
+<t tx="ekr.20240527100653.1074">def _self_and_subtree(qt_obj: Any) -&gt; Generator:
+    """Yield w and all of w's descendants."""
+    yield qt_obj
+    for child in qt_obj.children():
+        yield from _self_and_subtree(child)
+
+if 0:  # Tested but not used.
+
+    def _parents(qt_obj: Any) -&gt; Generator:
+        """Yields all ancestors of qt_obj, a Qt object or widget."""
+        parent = qt_obj.parent()
+        while parent:
+            yield parent
+            parent = parent.parent()
+
+    def _self_and_parents(qt_obj: Any) -&gt; Generator:
+        """Yields all ancestors of qt_obj, a Qt object or widget."""
+        w = qt_obj
+        while w:
+            yield w
+            w = w.parent()
+
+    def _subtree(qt_obj: Any) -&gt; Generator:
+        """Yield w and all of w's descendants."""
+        for child in qt_obj.children():
+            yield from _self_and_subtree(child)
+</t>
+<t tx="ekr.20240527100653.1075"># The corresponding Qt methods: unl:gnx://leoPy.leo#ekr.20240515150157.1
+
+def attach_widget(self, w: Widget, parent: Widget) -&gt; None:
+    pass
+
+def detach_widget(self, w: Widget) -&gt; None:
+    pass
+
+def get_by_name(self, c: Cmdr, name: str) -&gt; Optional[Widget]:
+    return None
+
+def get_top_splitter(self, c: Cmdr) -&gt; Widget:
+    return None
+</t>
+<t tx="ekr.20240527100653.1076"># qt_gui utils: unl:gnx://leoPy.leo#ekr.20240515151459.1
+
+detached_widgets: list[Any] = []
+
+def detach_object(self, qt_obj: Any) -&gt; None:
+    i, w = self.find_nearest_container(qt_obj)
+    if w:
+        g.trace('FOUND', i, w, qt_obj)
+        qt_obj.setParent(None)
+        self.detached_widgets.append(qt_obj)
+        stylesheet_obj = self.find_nearest_object_with_stylesheet(qt_obj)
+        if stylesheet_obj:
+            g.trace(len(stylesheet_obj.styleSheet()))
+            w.setStyleSheet(stylesheet_obj.styleSheet())
+    else:
+        g.trace('Not found:', qt_obj)
+
+def find_layout_for_object(self, qt_obj: Any) -&gt; Optional[QLayout]:
+    return qt_obj.layout()  # To do.
+
+_container_classes = (QtWidgets.QSplitter, QtWidgets.QStackedWidget, QtWidgets.QStackedWidget)
+
+def _container_index(self, container: Any, target: Any) -&gt; int:
+    """Return the index (within the container) of the child containing the target widget."""
+    g.trace('container:', id(container), container.__class__.__name__)
+    for i, child in enumerate(container.children()):
+        g.trace('child:', i, child.__class__.__name__)
+        for w2 in _self_and_subtree(child):
+            if w2 == target:
+                return i
+    return -1
+
+def find_nearest_container(self, qt_obj: Any) -&gt; Optional[tuple[int, Any]]:
+    for w in _parents(qt_obj):
+        #g.trace('parent:', w.__class__.__name__)
+        if isinstance(w, self._container_classes):
+            i = self._container_index(w, qt_obj)
+            if i &gt; -1:
+                return i, w
+    return -1, None
+
+def find_nearest_object_with_stylesheet(self, qt_obj: Any) -&gt; Optional[Any]:
+    for w in _self_and_parents(qt_obj):
+        if w.styleSheet():
+            return w
+    return None
+
+# Not used.
+# def _find_ancestor_widget_by_class(self, qt_obj: Any, class_: Any):
+    # """Return the widget in qt_obj's ancestors with the given class."""
+    # for w in _ancestors(qt_obj):
+        # if issubclass(w.__class__, class_):
+            # return w
+    # return None
+
+</t>
+<t tx="ekr.20240527100653.1077"></t>
+<t tx="ekr.20240527100653.1078"></t>
+<t tx="ekr.20240527100653.1079">class NestedSplitter(QtWidgets.QSplitter):
+    # Allow special behavior to be turned of at import stage.
+    # useful if other code must run to set up callbacks, that other code can re-enable.
+    enabled = True
+    other_orientation = {
+        Orientation.Vertical: Orientation.Horizontal,
+        Orientation.Horizontal: Orientation.Vertical,
+    }
+    # a regular signal, but you can't use its .connect() directly,
+    # use splitterClicked_connect()
+    _splitterClickedSignal = QtCore.pyqtSignal(
+        QtWidgets.QSplitter,
+        QtWidgets.QSplitterHandle,
+        QtGui.QMouseEvent,
+        bool,
+        bool
+    )
+    @others
+</t>
+<t tx="ekr.20240527100653.1080">def __init__(self, parent=None, orientation=None, root=None):
+    """Ctor for NestedSplitter class."""
+    if orientation is None:
+        orientation = Orientation.Horizontal
+    # This creates a NestedSplitterHandle.
+    super().__init__(orientation, parent)
+    if root is None:
+        root = self.top(local=True)
+        if root == self:
+            root.marked = None  # Tuple: self,index,side-1,widget
+            root.providers = []
+            root.holders = {}
+            root.windows = []
+            root._main = self.parent()  # holder of the main splitter
+            # list of top level NestedSplitter windows opened from 'Open Window'
+            # splitter handle context menu
+            root.zoomed = False
+        #
+        # NestedSplitter is a kind of meta-widget, in that it manages
+        # panes across multiple actual splitters, even windows.
+        # So to create a signal for a click on splitter handle, we
+        # need to propagate the .connect() call across all the
+        # actual splitters, current and future
+        root._splitterClickedArgs = []  # save for future added splitters
+    for args in root._splitterClickedArgs:
+        # apply any .connect() calls that occurred earlier
+        self._splitterClickedSignal.connect(*args)
+
+    self.root = root
+</t>
+<t tx="ekr.20240527100653.1081">def __repr__(self):
+    # parent = self.parent()
+    # name = parent and parent.objectName() or '&lt;no parent&gt;'
+    name = self.objectName() or '&lt;no name&gt;'
+    return f"(NestedSplitter) {name} at {id(self)}"
+
+__str__ = __repr__
+</t>
+<t tx="ekr.20240527100653.1082"></t>
+<t tx="ekr.20240527100653.1083">def createHandle(self, *args, **kargs):
+    return NestedSplitterHandle(self)
+</t>
+<t tx="ekr.20240527100653.1084">def childEvent(self, event):
+    """If a panel client is closed not by us, there may be zero
+    splitter handles left, so add an Action button
+
+    unless it was the last panel in a separate window, in which
+    case close the window"""
+    QtWidgets.QSplitter.childEvent(self, event)
+    if not event.removed():
+        return
+    local_top = self.top(local=True)
+    # if only non-placeholder pane in a top level window deletes
+    # itself, delete the window
+    if (isinstance(local_top.parent(), NestedSplitterTopLevel) and
+        local_top.count() == 1 and  # one left, could be placeholder
+        isinstance(local_top.widget(0), NestedSplitterChoice)  # is placeholder
+       ):
+        local_top.parent().deleteLater()
+        return
+    # don't leave a one widget splitter
+    if self.count() == 1 and local_top != self:
+        self.parent().addWidget(self.widget(0))
+        self.deleteLater()
+    parent = self.parentWidget()
+    if parent:
+        layout = parent.layout()  # QLayout, not a NestedSplitter
+    else:
+        layout = None
+    if self.count() == 1 and self.top(local=True) == self:
+        if self.max_count() &lt;= 1 or not layout:
+            # maintain at least two items
+            self.insert(0)
+            # shrink the added button
+            self.setSizes([0] + self.sizes()[1:])
+        else:
+            # replace ourselves in out parent's layout with our child
+            pos = layout.indexOf(self)
+            child = self.widget(0)
+            layout.insertWidget(pos, child)
+            pos = layout.indexOf(self)
+            layout.takeAt(pos)
+            self.setParent(None)
+</t>
+<t tx="ekr.20240527100653.1085">def add(self, side, w=None):
+    """wrap a horizontal splitter in a vertical splitter, or
+    visa versa"""
+    orientation = self.other_orientation[self.orientation()]
+    layout = self.parent().layout()
+    if isinstance(self.parent(), NestedSplitter):
+        # don't add new splitter if not needed, i.e. we're the
+        # only child of a previously more populated splitter
+        if w is None:
+            w = NestedSplitterChoice(self.parent())
+        self.parent().insertWidget(self.parent().indexOf(self) + side, w)
+        # in this case, where the parent is a one child, no handle splitter,
+        # the (prior to this invisible) orientation may be wrong
+        # can't reproduce this now, but this guard is harmless
+        self.parent().setOrientation(orientation)
+    elif layout:
+        new = NestedSplitter(None, orientation=orientation, root=self.root)
+        # parent set by layout.insertWidget() below
+        old = self
+        pos = layout.indexOf(old)
+        new.addWidget(old)
+        if w is None:
+            w = NestedSplitterChoice(new)
+        new.insertWidget(side, w)
+        layout.insertWidget(pos, new)
+    else:
+        # fail - parent is not NestedSplitter and has no layout
+        pass
+</t>
+<t tx="ekr.20240527100653.1086">def add_adjacent(self, what, widget_id, side='right-of', name=None):
+    """add a widget relative to another already present widget"""
+    horizontal, vertical = Orientation.Horizontal, Orientation.Vertical
+    layout = self.top().get_layout()
+
+    def hunter(layout, id_):
+        """Recursively look for this widget"""
+        for n, i in enumerate(layout['content']):
+            if (i == id_ or
+                    (isinstance(i, QtWidgets.QWidget) and
+                    (i.objectName() == id_ or i.__class__.__name__ == id_)
+                )
+            ):
+                return layout, n
+            if not isinstance(i, QtWidgets.QWidget):
+                # then it must be a layout dict
+                x = hunter(i, id_)
+                if x:
+                    return x
+        return None
+
+    # find the layout containing widget_id
+
+    l = hunter(layout, widget_id)
+    if l is None:
+        return False
+    layout, pos = l
+    # self.dump_layout(layout)
+    orient = layout['orientation']
+    if (orient == horizontal and side in ('right-of', 'left-of') or
+        orient == vertical and side in ('above', 'below')
+    ):
+        # easy case, just insert the new thing, what,
+        # either side of old, in existing splitter
+        if side in ('right-of', 'below'):
+            pos += 1
+        layout['splitter'].insert(pos, what)
+    else:
+        # hard case, need to replace old with a new splitter
+        if side in ('right-of', 'left-of'):
+            ns = NestedSplitter(orientation=horizontal, root=self.root)
+        else:
+            ns = NestedSplitter(orientation=vertical, root=self.root)
+        if name:
+            g.trace(name, ns)
+            ns.setObjectName(name)
+        old = layout['content'][pos]
+        if not isinstance(old, QtWidgets.QWidget):  # see get_layout()
+            old = layout['splitter']
+        # put new thing, what, in new splitter, no impact on anything else
+        ns.insert(0, what)
+        # then swap the new splitter with the old content
+        layout['splitter'].replace_widget_at_index(pos, ns)
+        # now put the old content in the new splitter,
+        # doing this sooner would mess up the index (pos)
+        ns.insert(0 if side in ('right-of', 'below') else 1, old)
+    return True
+</t>
+<t tx="ekr.20240527100653.1087">def choice_menu(self, button, pos):
+    """build menu on Action button"""
+    menu = QtWidgets.QMenu(self.top())  # #1995
+    index = self.indexOf(button)
+    if (self.root.marked and
+        not self.invalid_swap(button, self.root.marked[3]) and
+        self.top().max_count() &gt; 2
+    ):
+        act = QAction("Move marked here", self)
+        act.triggered.connect(
+            lambda checked: self.replace_widget(button, self.root.marked[3]))
+        menu.addAction(act)
+    for provider in self.root.providers:
+        if hasattr(provider, 'ns_provides'):
+            for title, id_ in provider.ns_provides():
+
+                def cb(checked, id_=id_):
+                    self.place_provided(id_, index)
+
+                act = QAction(title, self)
+                act.triggered.connect(cb)
+                menu.addAction(act)
+    if menu.isEmpty():
+        act = QAction("Nothing marked, and no options", self)
+        menu.addAction(act)
+
+    point = button.pos()
+    global_point = button.mapToGlobal(point)
+    menu.exec(global_point)
+</t>
+<t tx="ekr.20240527100653.1088">def closing(self, window):
+    """forget a top-level additional layout which was closed"""
+    self.windows.remove(window)
+</t>
+<t tx="ekr.20240527100653.1089">def place_provided(self, id_, index):
+    """replace Action button with provided widget"""
+    provided = self.get_provided(id_)
+    if provided is None:
+        return
+    self.replace_widget_at_index(index, provided)
+    self.top().prune_empty()
+    # user can set up one widget pane plus one Action pane, then move the
+    # widget into the action pane, level 1 pane and no handles
+    if self.top().max_count() &lt; 2:
+        print('Adding Action widget to maintain at least one handle')
+        self.top().insert(0, NestedSplitterChoice(self.top()))
+</t>
+<t tx="ekr.20240527100653.1090">def context_cb(self, id_, index):
+    """find a provider to provide a context menu service, and do it"""
+    for provider in self.root.providers:
+        if hasattr(provider, 'ns_do_context'):
+            provided = provider.ns_do_context(id_, self, index)
+            if provided:
+                break
+</t>
+<t tx="ekr.20240527100653.1091">def contains(self, widget):
+    """check if widget is a descendant of self"""
+    for i in range(self.count()):
+        if widget == self.widget(i):
+            return True
+        if isinstance(self.widget(i), NestedSplitter):
+            if self.widget(i).contains(widget):
+                return True
+    return False
+</t>
+<t tx="ekr.20240527100653.1093">def find_child(self, child_class, child_name=None):
+    """Like QObject.findChild, except search self.top()
+    *AND* each window in self.root.windows
+    """
+    child = self.top().findChild(child_class, child_name)
+    if not child:
+        for window in self.root.windows:
+            child = window.findChild(child_class, child_name)
+            if child:
+                break
+    return child
+</t>
+<t tx="ekr.20240527100653.1094">def handle_context(self, index):
+    """for a handle, return (widget, neighbour, count)
+
+    This is the handle's context in the NestedSplitter, not the
+    handle's context menu.
+
+    widget
+      the pair of widgets either side of the handle
+    neighbour
+      the pair of NestedSplitters either side of the handle, or None
+      if the neighbours are not NestedSplitters, i.e.
+      [ns0, ns1] or [None, ns1] or [ns0, None] or [None, None]
+    count
+      the pair of nested counts of widgets / splitters around the handle
+    """
+    widget = [self.widget(index - 1), self.widget(index)]
+    neighbour = [(i if isinstance(i, NestedSplitter) else None) for i in widget]
+    count = []
+    for i in 0, 1:
+        if neighbour[i]:
+            l = [ii.count() for ii in neighbour[i].self_and_descendants()]
+            n = sum(l) - len(l) + 1  # count leaves, not splitters
+            count.append(n)
+        else:
+            count.append(1)
+    return widget, neighbour, count
+</t>
+<t tx="ekr.20240527100653.1095">def equalize_sizes(self, recurse=False):
+    """make all pane sizes equal"""
+    if not self.count():
+        return
+    for i in range(self.count()):
+        self.widget(i).setHidden(False)
+    size = sum(self.sizes()) / self.count()
+    self.setSizes([int(size)] * self.count())  # #2281
+    if recurse:
+        for i in range(self.count()):
+            if isinstance(self.widget(i), NestedSplitter):
+                self.widget(i).equalize_sizes(recurse=True)
+</t>
+<t tx="ekr.20240527100653.1096">def insert(self, index, w=None):
+    """insert a pane with a widget or, when w==None, Action button"""
+    if w is None:  # do NOT use 'not w', fails in PyQt 4.8
+        w = NestedSplitterChoice(self)
+        # A QWidget, with self as parent.
+        # This creates the menu.
+    self.insertWidget(index, w)
+    self.equalize_sizes()
+    return w
+</t>
+<t tx="ekr.20240527100653.1097">def invalid_swap(self, w0, w1):
+    """check for swap violating hierarchy"""
+    return (
+        w0 == w1 or
+        isinstance(w0, NestedSplitter) and w0.contains(w1) or
+        isinstance(w1, NestedSplitter) and w1.contains(w0))
+</t>
+<t tx="ekr.20240527100653.1098">def mark(self, index, side):
+    """mark a widget for later swapping"""
+    self.root.marked = (self, index, side - 1, self.widget(index + side - 1))
+</t>
+<t tx="ekr.20240527100653.1099">def max_count(self):
+    """find max widgets in this and child splitters"""
+    counts = []
+    count = 0
+    for i in range(self.count()):
+        count += 1
+        if isinstance(self.widget(i), NestedSplitter):
+            counts.append(self.widget(i).max_count())
+    counts.append(count)
+    return max(counts)
+</t>
+<t tx="ekr.20240527100653.1100">def open_window(self, action=None):
+    """open a top-level window, a TopLevelFreeLayout instance, to hold a
+    free-layout in addition to the one in the outline's main window"""
+    ns = NestedSplitter(root=self.root)
+    window = NestedSplitterTopLevel(
+        owner=self.root, window_title=ns.get_title(action))
+    hbox = QtWidgets.QHBoxLayout()
+    window.setLayout(hbox)
+    hbox.setContentsMargins(0, 0, 0, 0)
+    window.resize(400, 300)
+    hbox.addWidget(ns)
+    # NestedSplitters must have two widgets so the handle carrying
+    # the all important context menu exists
+    ns.addWidget(NestedSplitterChoice(ns))
+    button = NestedSplitterChoice(ns)
+    ns.addWidget(button)
+    if action == '_move_marked_there':
+        ns.replace_widget(button, ns.root.marked[3])
+    elif action is not None:
+        ns.place_provided(action, 1)
+    ns.setSizes([0, 1])  # but hide one initially
+    self.root.windows.append(window)
+    # copy the main main window's stylesheet to new window
+    w = self.root  # this is a Qt Widget, class NestedSplitter
+    sheets = []
+    while w:
+        s = w.styleSheet()
+        if s:
+            sheets.append(str(s))
+        w = w.parent()
+    sheets.reverse()
+    ns.setStyleSheet('\n'.join(sheets))
+    window.show()
+</t>
+<t tx="ekr.20240527100653.1101">def register_provider(self, provider):
+    """Register something which provides some of the ns_* methods.
+
+    NestedSplitter tests for the presence of the following methods on
+    the registered things, and calls them when needed if they exist.
+
+    ns_provides()
+      should return a list of ('Item name', '__item_id') strings,
+      'Item name' is displayed in the Action button menu, and
+      '__item_id' is used in ns_provide().
+    ns_provide(id_)
+      should return the widget to replace the Action button based on
+      id_, or None if the called thing is not the provider for this id_
+    ns_context()
+      should return a list of ('Item name', '__item_id') strings,
+      'Item name' is displayed in the splitter handle context-menu, and
+      '__item_id' is used in ns_do_context().  May also return a dict,
+      in which case each key is used as a sub-menu title, whose menu
+      items are the corresponding dict value, a list of tuples as above.
+      dicts and tuples may be interspersed in lists.
+    ns_do_context()
+      should do something based on id_ and return True, or return False
+      if the called thing is not the provider for this id_
+    ns_provider_id()
+      return a string identifying the provider (at class or instance level),
+      any providers with the same id will be removed before a new one is
+      added
+    """
+    # drop any providers with the same id
+    if hasattr(provider, 'ns_provider_id'):
+        id_ = provider.ns_provider_id()
+        cull = []
+        for i in self.root.providers:
+            if (hasattr(i, 'ns_provider_id') and
+                i.ns_provider_id() == id_
+            ):
+                cull.append(i)
+        for i in cull:
+            self.root.providers.remove(i)
+    self.root.providers.append(provider)
+</t>
+<t tx="ekr.20240527100653.1102">def remove(self, index, side):
+    widget = self.widget(index + side - 1)
+    # clear marked if it's going to be deleted
+    if (self.root.marked and (self.root.marked[3] == widget or
+        isinstance(self.root.marked[3], NestedSplitter) and
+        self.root.marked[3].contains(widget))
+    ):
+        self.root.marked = None
+    # send close signal to all children
+    if isinstance(widget, NestedSplitter):
+        count = widget.count()
+        all_ok = True
+        for splitter in widget.self_and_descendants():
+            for i in range(splitter.count() - 1, -1, -1):
+                all_ok &amp;= (self.close_or_keep(splitter.widget(i)) is not False)
+        if all_ok or count &lt;= 0:
+            widget.setParent(None)
+    else:
+        self.close_or_keep(widget)
+</t>
+<t tx="ekr.20240527100653.1103">def close_or_keep(self, widget, other_top=None):
+    """when called from a closing secondary window, self.top() would
+    be the top splitter in the closing window, and we need the client
+    to specify the top of the primary window for us, in other_top"""
+    if widget is None:
+        return True
+    for k in self.root.holders:
+        if hasattr(widget, k):
+            holder = self.root.holders[k]
+            if holder == 'TOP':
+                holder = other_top or self.top()
+            if hasattr(holder, "addTab"):
+                holder.addTab(widget, getattr(widget, k))
+            else:
+                holder.addWidget(widget)
+            return True
+    if widget.close():
+        widget.setParent(None)
+        return True
+    return False
+</t>
+<t tx="ekr.20240527100653.1104">def replace_widget(self, old, new):
+    "Swap the provided widgets in place" ""
+    sizes = self.sizes()
+    new.setParent(None)
+    self.insertWidget(self.indexOf(old), new)
+    self.close_or_keep(old)
+    new.show()
+    self.setSizes(sizes)
+
+def replace_widget_at_index(self, index, new):
+    """Replace the widget at index with w."""
+    sizes = self.sizes()
+    old = self.widget(index)
+    if old != new:
+        new.setParent(None)
+        self.insertWidget(index, new)
+        self.close_or_keep(old)
+        new.show()
+        self.setSizes(sizes)
+</t>
+<t tx="ekr.20240527100653.1105">def rotate(self, descending=False):
+    """Change orientation - current rotates entire hierarchy, doing less
+    is visually confusing because you end up with nested splitters with
+    the same orientation - avoiding that would mean doing rotation by
+    inserting out widgets into our ancestors, etc.
+    """
+    for i in self.top().self_and_descendants():
+        if i.orientation() == Orientation.Vertical:
+            i.setOrientation(Orientation.Horizontal)
+        else:
+            i.setOrientation(Orientation.Vertical)
+</t>
+<t tx="ekr.20240527100653.1106">def rotateOne(self, index):
+    """Change orientation - only of splitter handle at index."""
+    psp = self.parent()
+    if self.count() == 2 and isinstance(psp, NestedSplitter):
+        i = psp.indexOf(self)
+        sizes: list = psp.sizes()
+        [a, b] = self.sizes()
+        s = sizes[i]
+        s1 = int(a * s / (a + b))
+        s2 = int(b * s / (a + b))
+        sizes[i : i + 1] = [s1, s2]
+        prev = self.widget(0)
+        next = self.widget(1)
+        psp.insertWidget(i, prev)
+        psp.insertWidget(i + 1, next)
+        psp.setSizes(sizes)
+        assert psp.widget(i + 2) is self
+        psp.remove(i + 3, 0)
+        psp.setSizes(sizes)
+    elif self is self.root and self.count() == 2:
+        self.rotate()
+    elif self.count() == 2:
+        self.setOrientation(self.other_orientation[self.orientation()])
+    else:
+        orientation = self.other_orientation[self.orientation()]
+        prev = self.widget(index - 1)
+        next = self.widget(index)
+        if None in (prev, next):
+            return
+        sizes = self.sizes()
+        s1, s2 = sizes[index - 1 : index + 1]
+        sizes[index - 1 : index + 1] = [s1 + s2]
+        newsp = NestedSplitter(self, orientation=orientation, root=self.root)
+        newsp.addWidget(prev)
+        newsp.addWidget(next)
+        self.insertWidget(index - 1, newsp)
+        prev.setHidden(False)
+        next.setHidden(False)
+        newsp.setSizes([s1, s2])
+        self.setSizes(sizes)
+</t>
+<t tx="ekr.20240527100653.1107">def self_and_descendants(self):
+    """Yield self and all **NestedSplitter** descendants"""
+    for i in range(self.count()):
+        if isinstance(self.widget(i), NestedSplitter):
+            for w in self.widget(i).self_and_descendants():
+                yield w
+    yield self
+</t>
+<t tx="ekr.20240527100653.1108">def split(self, index, side, w=None, name=None):
+    """replace the adjacent widget with a NestedSplitter containing
+    the widget and an Action button"""
+    sizes = self.sizes()
+    old = self.widget(index + side - 1)
+    if w is None:
+        w = NestedSplitterChoice(self)
+    if isinstance(old, NestedSplitter):
+        old.addWidget(w)
+        old.equalize_sizes()
+    else:
+        orientation = self.other_orientation[self.orientation()]
+        new = NestedSplitter(self, orientation=orientation, root=self.root)
+        self.insertWidget(index + side - 1, new)
+        new.addWidget(old)
+        new.addWidget(w)
+        new.equalize_sizes()
+    self.setSizes(sizes)
+</t>
+<t tx="ekr.20240527100653.1109">def swap(self, index):
+    """swap widgets either side of a handle"""
+    self.insertWidget(index - 1, self.widget(index))
+</t>
+<t tx="ekr.20240527100653.1110">def swap_with_marked(self, index, side):
+    osplitter, oidx, oside, ow = self.root.marked
+    idx = index + side - 1
+    # convert from handle index to widget index
+    # 1 already subtracted from oside in mark()
+    w = self.widget(idx)
+    if self.invalid_swap(w, ow):
+        return
+    self.insertWidget(idx, ow)
+    osplitter.insertWidget(oidx, w)
+    self.root.marked = self, self.indexOf(ow), 0, ow
+    self.equalize_sizes()
+    osplitter.equalize_sizes()
+</t>
+<t tx="ekr.20240527100653.1111">def top(self, local=False) -&gt; Any:
+    """find top (outer) widget, which is not necessarily root"""
+    top: Any
+    if local:
+        top = self
+        while isinstance(top.parent(), NestedSplitter):
+            top = top.parent()
+    else:
+        top = self.root._main.findChild(NestedSplitter)
+    return top
+</t>
+<t tx="ekr.20240527100653.1112">def get_layout(self):
+    """
+    Return a dict describing the layout.
+
+    Usually you would call ns.top().get_layout()
+    """
+    ans = {
+        'content': [],
+        'orientation': self.orientation(),
+        'sizes': self.sizes(),
+        'splitter': self,
+    }
+    for i in range(self.count()):
+        w = self.widget(i)
+        if isinstance(w, NestedSplitter):
+            ans['content'].append(w.get_layout())
+        else:
+            ans['content'].append(w)
+    return ans
+</t>
+<t tx="ekr.20240527100653.1113">def get_saveable_layout(self):
+    """
+    Return the dict for saveable layouts.
+
+    The content entry for non-NestedSplitter items is the provider ID
+    string for the item, or 'UNKNOWN', and the splitter entry is omitted.
+    """
+    ans = {
+        'content': [],
+        'orientation': 1 if self.orientation() == Orientation.Horizontal else 2,
+        'sizes': self.sizes(),
+    }
+    for i in range(self.count()):
+        w = self.widget(i)
+        if isinstance(w, NestedSplitter):
+            ans['content'].append(w.get_saveable_layout())
+        else:
+            ans['content'].append(getattr(w, '_ns_id', 'UNKNOWN'))
+    return ans
+</t>
+<t tx="ekr.20240527100653.1114">def get_splitter_by_name(self, name):
+    """Return the splitter with the given objectName()."""
+    if self.objectName() == name:
+        return self
+    for i in range(self.count()):
+        w = self.widget(i)
+        # Recursively test w and its descendants.
+        if isinstance(w, NestedSplitter):
+            w2 = w.get_splitter_by_name(name)
+            if w2:
+                return w2
+    return None
+</t>
+<t tx="ekr.20240527100653.1115">def load_layout(self, c, layout, level=0):
+
+    trace = 'layouts' in g.app.debug
+    if trace:
+        g.trace('level', level)
+        tag = f"layout: {c.shortFileName()}"
+        g.printObj(layout, tag=tag)
+    if layout['orientation'] == 1:
+        self.setOrientation(Orientation.Horizontal)
+    else:
+        self.setOrientation(Orientation.Vertical)
+
+    found = 0
+    if level == 0:
+        for i in self.self_and_descendants():
+            for n in range(i.count()):
+                i.widget(n)._in_layout = False
+    for content_layout in layout['content']:
+        if isinstance(content_layout, dict):
+            new = NestedSplitter(root=self.root, parent=self)
+            new._in_layout = True
+            self.insert(found, new)
+            found += 1
+            new.load_layout(c, content_layout, level + 1)
+        else:
+            provided = self.get_provided(content_layout)
+            if provided:
+                self.insert(found, provided)
+                provided._in_layout = True
+                found += 1
+            else:
+                print(f"No provider for {content_layout}")
+    self.prune_empty()
+    if self.count() != len(layout['sizes']):
+        not_in_layout = set()
+        for i in self.self_and_descendants():
+            for n in range(i.count()):
+                c = i.widget(n)
+                if not (hasattr(c, '_in_layout') and c._in_layout):
+                    not_in_layout.add(c)
+        for i in not_in_layout:
+            self.close_or_keep(i)
+        self.prune_empty()
+    if self.count() == len(layout['sizes']):
+        self.setSizes(layout['sizes'])
+    else:
+        print(
+            f"Wrong pane count at level {level:d}, "
+            f"count:{self.count():d}, "
+            f"sizes:{len(layout['sizes']):d}")
+        self.equalize_sizes()
+</t>
+<t tx="ekr.20240527100653.1116">def prune_empty(self):
+    for i in range(self.count() - 1, -1, -1):
+        w = self.widget(i)
+        if isinstance(w, NestedSplitter):
+            if w.max_count() == 0:
+                w.setParent(None)
+                # w.deleteLater()
+</t>
+<t tx="ekr.20240527100653.1117">def find_by_id(self, id_):
+    for s in self.self_and_descendants():
+        for i in range(s.count()):
+            if getattr(s.widget(i), '_ns_id', None) == id_:
+                return s.widget(i)
+    return None
+
+def get_provided(self, id_):
+    """IMPORTANT: nested_splitter should set the _ns_id attribute *only*
+    if the provider doesn't do it itself.  That allows the provider to
+    encode state information in the id.
+
+    Also IMPORTANT: nested_splitter should call all providers for each id_, not
+    just providers which previously advertised the id_.  E.g. a provider which
+    advertises leo_bookmarks_show may also be the correct provider for
+    leo_bookmarks_show:4532.234 - let the providers decide in ns_provide().
+    """
+    for provider in self.root.providers:
+        if hasattr(provider, 'ns_provide'):
+            provided = provider.ns_provide(id_)
+            if provided:
+                if provided == 'USE_EXISTING':
+                    # provider claiming responsibility, and saying
+                    # we already have it, i.e. it's a singleton
+                    w = self.top().find_by_id(id_)
+                    if w:
+                        if not hasattr(w, '_ns_id'):
+                            # IMPORTANT: see docstring
+                            w._ns_id = id_
+                        return w
+                else:
+                    if not hasattr(provided, '_ns_id'):
+                        # IMPORTANT: see docstring
+                        provided._ns_id = id_
+                    return provided
+    return None
+
+</t>
+<t tx="ekr.20240527100653.1118">def get_title(self, id_):
+    """Like get_provided(), but just gets a title for a window
+    """
+    if id_ is None:
+        return "Leo widget window"
+    for provider in self.root.providers:
+        if hasattr(provider, 'ns_title'):
+            provided = provider.ns_title(id_)
+            if provided:
+                return provided
+    return "Leo unnamed window"
+</t>
+<t tx="ekr.20240527100653.1119">def zoom_toggle(self, local=False):
+    """zoom_toggle - (Un)zoom current pane to be only expanded pane
+
+    :param bool local: just zoom pane within its own splitter
+    """
+    if self.root.zoomed:
+        for ns in self.top().self_and_descendants():
+            if hasattr(ns, '_unzoom'):
+                # this splitter could have been added since
+                ns.setSizes(ns._unzoom)
+    else:
+        focused = g.app.gui.qtApp.focusWidget()
+        parents = []
+        parent = focused
+        while parent:
+            parents.append(parent)
+            parent = parent.parent()
+        if not focused:
+            g.es("Not zoomed, and no focus")
+        for ns in (self if local else self.top()).self_and_descendants():
+            # FIXME - shouldn't be doing this across windows
+            ns._unzoom = ns.sizes()
+            for i in range(ns.count()):
+                w = ns.widget(i)
+                if w in parents:
+                    sizes = [0] * len(ns._unzoom)
+                    sizes[i] = sum(ns._unzoom)
+                    ns.setSizes(sizes)
+                    break
+    self.root.zoomed = not self.root.zoomed
+</t>
+<t tx="ekr.20240527100653.1120">def _splitter_clicked(self, handle, event, release, double):
+    """_splitter_clicked - coordinate propagation of signals
+    for clicks on handles.  Turned out not to need any particular
+    coordination, handles could call self._splitterClickedSignal.emit
+    directly, but design wise this is a useful control point.
+
+    :param QSplitterHandle handle: handle that was clicked
+    :param QMouseEvent event: click event
+    :param bool release: was it a release event
+    :param bool double: was it a double click event
+    """
+    self._splitterClickedSignal.emit(self, handle, event, release, double)
+</t>
+<t tx="ekr.20240527100653.1121">def splitterClicked_connect(self, *args):
+    """Apply .connect() args to all actual splitters,
+    and store for application to future splitters.
+    """
+    self.root._splitterClickedArgs.append(args)
+    for splitter in self.top().self_and_descendants():
+        splitter._splitterClickedSignal.connect(*args)
+</t>
+<t tx="ekr.20240527100653.1122">class NestedSplitterChoice(QtWidgets.QWidget):
+    """When a new pane is opened in a nested splitter layout, this widget
+    presents a button, labeled 'Action', which provides a popup menu
+    for the user to select what to do in the new pane"""
+    @others
+</t>
+<t tx="ekr.20240527100653.1123">def __init__(self, parent=None):
+    """ctor for NestedSplitterChoice class."""
+    super().__init__(parent)
+    self.setLayout(QtWidgets.QVBoxLayout())
+    button = QtWidgets.QPushButton("Action", self)  # EKR: 2011/03/15
+    self.layout().addWidget(button)
+    button.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
+    button.customContextMenuRequested.connect(
+        lambda pnt: self.parent().choice_menu(self,
+            button.mapToParent(pnt)))
+    button.clicked.connect(lambda: self.parent().choice_menu(self, button.pos()))
+</t>
+<t tx="ekr.20240527100653.1124">class NestedSplitterHandle(QtWidgets.QSplitterHandle):
+    """Show the context menu on a NestedSplitter splitter-handle to access
+    NestedSplitter's special features"""
+    @others
+</t>
+<t tx="ekr.20240527100653.1125">def __init__(self, owner):
+    """Ctor for NestedSplitterHandle class."""
+    super().__init__(owner.orientation(), owner)
+    # Confusing!
+        # self.setStyleSheet("background-color: green;")
+    self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
+    self.customContextMenuRequested.connect(self.splitter_menu)
+</t>
+<t tx="ekr.20240527100653.1126">def __repr__(self):
+    return f"(NestedSplitterHandle) at: {id(self)}"
+
+__str__ = __repr__
+</t>
+<t tx="ekr.20240527100653.1127">def add_item(self, func, menu, name, tooltip=None):
+    """helper for splitter_menu menu building"""
+    act = QAction(name, self)
+    act.setObjectName(name.lower().replace(' ', '-'))
+    act.triggered.connect(lambda checked: func())
+    if tooltip:
+        act.setToolTip(tooltip)
+    menu.addAction(act)
+</t>
+<t tx="ekr.20240527100653.1128">def show_tip(self, action):
+    """show_tip - show a tooltip, calculate the box in which
+    the pointer must stay for the tip to remain visible
+
+    :Parameters:
+    - `self`: this handle
+    - `action`: action triggering event to display
+    """
+    if action.toolTip() == action.text():
+        tip = ""
+    else:
+        tip = action.toolTip()
+    pos = QtGui.QCursor.pos()
+    x = pos.x()
+    y = pos.y()
+    rect = QtCore.QRect(x - 5, y - 5, x + 5, y + 5)
+    if hasattr(action, 'parentWidget'):  # 2021/07/17.
+        parent = action.parentWidget()
+    else:
+        return
+    if not parent:
+        g.trace('===== no parent =====')
+        return
+    QtWidgets.QToolTip.showText(pos, tip, parent, rect)
+</t>
+<t tx="ekr.20240527100653.1129">def splitter_menu(self, pos):
+    """build the context menu for NestedSplitter"""
+    splitter = self.splitter()
+    if not splitter.enabled:
+        g.trace('splitter not enabled')
+        return
+    index = splitter.indexOf(self)
+    # get three pairs
+    widget, neighbour, count = splitter.handle_context(index)
+    lr = 'Left', 'Right'
+    ab = 'Above', 'Below'
+    split_dir = 'Vertically'
+    if self.orientation() == Orientation.Vertical:
+        lr, ab = ab, lr
+        split_dir = 'Horizontally'
+    # blue/orange - color-blind friendly
+    color = '#729fcf', '#f57900'
+    sheet = []
+    for i in 0, 1:
+        sheet.append(widget[i].styleSheet())
+        widget[i].setStyleSheet(sheet[-1] + f"\nborder: 2px solid {color[i]};")
+    menu = QtWidgets.QMenu()
+    menu.hovered.connect(self.show_tip)
+
+    def pl(n):
+        return 's' if n &gt; 1 else ''
+
+    def di(s):
+        return {
+            'Above': 'above',
+            'Below': 'below',
+            'Left': 'left of',
+            'Right': 'right of',
+        }[s]
+
+    # Insert.
+
+    def insert_callback(index=index):
+        splitter.insert(index)
+
+    self.add_item(insert_callback, menu, 'Insert',
+        "Insert an empty pane here")
+    # Remove, +0/-1 reversed, we need to test the one that remains
+    # First see if a parent has more than two splits
+    # (we could be a sole surviving child).
+    max_parent_splits = 0
+    up = splitter.parent()
+    while isinstance(up, NestedSplitter):
+        max_parent_splits = max(max_parent_splits, up.count())
+        up = up.parent()
+        if max_parent_splits &gt;= 2:
+            break  # two is enough
+    for i in 0, 1:
+        # keep = splitter.widget(index)
+        # cull = splitter.widget(index - 1)
+        if (max_parent_splits &gt;= 2 or  # more splits upstream
+            splitter.count() &gt; 2 or  # 3+ splits here, or 2+ downstream
+            neighbour[not i] and neighbour[not i].max_count() &gt;= 2
+        ):
+
+            def remove_callback(i=i, index=index):
+                splitter.remove(index, i)
+
+            self.add_item(remove_callback, menu,
+                f"Remove {count[i]:d} {lr[i]}",
+                f"Remove the {count[i]} pane{pl(count[i])} {di(lr[i])} here")
+    # Swap.
+
+    def swap_callback(index=index):
+        splitter.swap(index)
+
+    self.add_item(swap_callback, menu,
+        f"Swap {count[0]:d} {lr[0]} {count[1]:d} {lr[1]}",
+        f"Swap the {count[0]:d} pane{pl(count[0])} {di(lr[0])} here "
+        f"with the {count[1]:d} pane{pl(count[1])} {di(lr[1])} here"
+        )
+    # Split: only if not already split.
+    for i in 0, 1:
+        if not neighbour[i] or neighbour[i].count() == 1:
+
+            def split_callback(i=i, index=index, splitter=splitter):
+                splitter.split(index, i)
+
+            self.add_item(
+                split_callback, menu, f"Split {lr[i]} {split_dir}")
+    for i in 0, 1:
+
+        def mark_callback(i=i, index=index):
+            splitter.mark(index, i)
+
+        self.add_item(mark_callback, menu, f"Mark {count[i]:d} {lr[i]}")
+    # Swap With Marked.
+    if splitter.root.marked:
+        for i in 0, 1:
+            if not splitter.invalid_swap(widget[i], splitter.root.marked[2]):
+
+                def swap_mark_callback(i=i, index=index, splitter=splitter):
+                    splitter.swap_with_marked(index, i)
+
+                self.add_item(swap_mark_callback, menu,
+                    f"Swap {count[i]:d} {lr[i]} With Marked")
+    # Add.
+    for i in 0, 1:
+        if (
+            not isinstance(splitter.parent(), NestedSplitter) or
+            splitter.parent().indexOf(splitter) ==
+                [0, splitter.parent().count() - 1][i]
+        ):
+
+            def add_callback(i=i, splitter=splitter):
+                splitter.add(i)
+
+            self.add_item(add_callback, menu, f"Add {ab[i]}")
+    # Rotate All.
+    self.add_item(splitter.rotate, menu, 'Toggle split direction')
+
+    def rotate_only_this(index=index):
+        splitter.rotateOne(index)
+
+    self.add_item(rotate_only_this, menu, 'Toggle split/dir. just this')
+    # equalize panes
+
+    def eq(splitter=splitter.top()):
+        splitter.equalize_sizes(recurse=True)
+
+    self.add_item(eq, menu, 'Equalize all')
+    # (un)zoom pane
+
+    def zoom(splitter=splitter.top()):
+        splitter.zoom_toggle()
+
+    self.add_item(
+        zoom,
+        menu,
+        ('Un' if splitter.root.zoomed else '') + 'Zoom pane'
+    )
+    # open window
+    if splitter.top().parent().__class__ != NestedSplitterTopLevel:
+        # don't open windows from windows, only from main splitter
+        # so owner is not a window which might close.  Could instead
+        # set owner to main splitter explicitly.  Not sure how right now.
+        submenu = menu.addMenu('Open window')
+        if 1:
+            self.add_item(lambda: splitter.open_window(), submenu, "Empty")
+        # adapted from choice_menu()
+        if (splitter.root.marked and
+            splitter.top().max_count() &gt; 1
+        ):
+            self.add_item(
+                lambda: splitter.open_window(action="_move_marked_there"),
+                submenu, "Move marked there")
+        for provider in splitter.root.providers:
+            if hasattr(provider, 'ns_provides'):
+                for title, id_ in provider.ns_provides():
+
+                    def cb(id_=id_):
+                        splitter.open_window(action=id_)
+
+                    self.add_item(cb, submenu, title)
+    submenu = menu.addMenu('Debug')
+    act = QAction("Print splitter layout", self)
+
+    def print_layout_c(checked, splitter=splitter):
+        layout = splitter.top().get_layout()
+        g.printObj(layout)
+
+    act.triggered.connect(print_layout_c)
+    submenu.addAction(act)
+
+    def load_items(menu, items):
+        for i in items:
+            if isinstance(i, dict):
+                for k in i:
+                    load_items(menu.addMenu(k), i[k])
+            else:
+                title, id_ = i
+
+                def cb(checked, id_=id_):
+                    splitter.context_cb(id_, index)
+
+                act = QAction(title, self)
+                act.triggered.connect(cb)
+                menu.addAction(act)
+
+    for provider in splitter.root.providers:
+        if hasattr(provider, 'ns_context'):
+            load_items(menu, provider.ns_context())
+
+    point = pos
+    global_point = self.mapToGlobal(point)
+    menu.exec(global_point)
+
+    for i in 0, 1:
+        widget[i].setStyleSheet(sheet[i])
+</t>
+<t tx="ekr.20240527100653.1130">def mousePressEvent(self, event):
+    """mouse event - mouse pressed on splitter handle,
+    pass info. up to splitter
+
+    :param QMouseEvent event: mouse event
+    """
+    super().mousePressEvent(event)
+    self.splitter()._splitter_clicked(self, event, release=False, double=False)
+
+def mouseReleaseEvent(self, event):
+    """mouse event - mouse pressed on splitter handle,
+    pass info. up to splitter
+
+    :param QMouseEvent event: mouse event
+    """
+    super().mouseReleaseEvent(event)
+    self.splitter()._splitter_clicked(self, event, release=True, double=False)
+
+def mouseDoubleClickEvent(self, event):
+    """mouse event - mouse pressed on splitter handle,
+    pass info. up to splitter
+
+    :param QMouseEvent event: mouse event
+    """
+    super().mouseDoubleClickEvent(event)
+    self.splitter()._splitter_clicked(self, event, release=True, double=True)
+</t>
+<t tx="ekr.20240527100653.1131">class NestedSplitterTopLevel(QtWidgets.QWidget):
+    """A QWidget to wrap a NestedSplitter to allow it to live in a top
+    level window and handle close events properly.
+
+    These windows are opened by the splitter handle context-menu item
+    'Open Window'.
+
+    The NestedSplitter itself can't be the top-level widget/window,
+    because it assumes it can wrap itself in another NestedSplitter
+    when the user wants to "Add Above/Below/Left/Right".  I.e. wrap
+    a vertical nested splitter in a horizontal nested splitter, or
+    visa versa.  Parent-&gt;SplitterOne becomes Parent-&gt;SplitterTwo-&gt;SplitterOne,
+    where parent is either Leo's main window's QWidget 'centralwidget',
+    or one of these NestedSplitterTopLevel "window frames".
+    """
+    @others
+</t>
+<t tx="ekr.20240527100653.1132">def __init__(self, *args, **kargs):
+    """Init. taking note of the FreeLayoutController which owns this"""
+    self.owner = kargs['owner']
+    del kargs['owner']
+    window_title = kargs.get('window_title')
+    del kargs['window_title']
+    super().__init__(*args, **kargs)
+    if window_title:
+        self.setWindowTitle(window_title)
+</t>
+<t tx="ekr.20240527100653.1133">def closeEvent(self, event):
+    """A top-level NestedSplitter window has been closed, check all the
+    panes for widgets which must be preserved, and move any found
+    back into the main splitter."""
+    widget = self.findChild(NestedSplitter)
+    # top level NestedSplitter in window being closed
+    other_top = self.owner.top()
+    # top level NestedSplitter in main splitter
+    # adapted from NestedSplitter.remove()
+    count = widget.count()
+    all_ok = True
+    to_close = []
+    # get list of widgets to close so index based access isn't
+    # derailed by closing widgets in the same loop
+    for splitter in widget.self_and_descendants():
+        for i in range(splitter.count() - 1, -1, -1):
+            to_close.append(splitter.widget(i))
+    for w in to_close:
+        all_ok &amp;= (widget.close_or_keep(w, other_top=other_top) is not False)
+    # it should always be ok to close the window, because it should always
+    # be possible to move widgets which must be preserved back to the
+    # main splitter, but if not, keep this window open
+    if all_ok or count &lt;= 0:
+        self.owner.closing(self)
+    else:
+        event.ignore()
+</t>
+<t tx="ekr.20240527100653.1134">class DynamicWindow(QtWidgets.QMainWindow):
+    """
+    A class representing all parts of the main Qt window.
+
+    c.frame.top is a DynamicWindow.
+    c.frame.top.leo_master is a LeoTabbedTopLevel.
+    c.frame.top.parent() is a QStackedWidget()
+
+    All leoQtX classes use the ivars of this Window class to
+    support operations requested by Leo's core.
+    """
+    @others
+</t>
+<t tx="ekr.20240527100653.1135">def __init__(self, c: Cmdr, parent: QWidget = None) -&gt; None:
+    """Ctor for the DynamicWindow class.  The main window is c.frame.top"""
+        # Called from LeoQtFrame.finishCreate.
+        # parent is a LeoTabbedTopLevel.
+    super().__init__(parent)
+    self.leo_c = c
+    self.leo_master: LeoTabbedTopLevel = None  # Set in construct.
+    self.leo_menubar: QWidget = None  # Set in createMenuBar.
+    self.leo_statusBar: QtWidgets.QStatusBar = None
+    c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
+    self.reloadSettings()
+
+def reloadSettings(self) -&gt; None:
+    c = self.leo_c
+    c.registerReloadSettings(self)
+    self.bigTree = c.config.getBool('big-outline-pane')
+    self.show_iconbar = c.config.getBool('show-iconbar', default=True)
+    self.toolbar_orientation = c.config.getString('qt-toolbar-location') or ''
+    self.use_gutter = c.config.getBool('use-gutter', default=False)
+    if getattr(self, 'iconBar', None):
+        if self.show_iconbar:
+            self.iconBar.show()
+        else:
+            self.iconBar.hide()
+</t>
+<t tx="ekr.20240527100653.1136">def doSpellBtn(self, btn: Any) -&gt; None:
+    """Execute btn, a button handler."""
+    # Make *sure* this never crashes.
+    try:
+        tab = self.leo_c.spellCommands.handler.tab
+        button = getattr(tab, btn)
+        button()
+    except Exception:
+        g.es_exception()
+
+def do_leo_spell_btn_Add(self) -&gt; None:
+    self.doSpellBtn('onAddButton')
+
+def do_leo_spell_btn_Change(self) -&gt; None:
+    self.doSpellBtn('onChangeButton')
+
+def do_leo_spell_btn_Find(self) -&gt; None:
+    self.doSpellBtn('onFindButton')
+
+def do_leo_spell_btn_FindChange(self) -&gt; None:
+    self.doSpellBtn('onChangeThenFindButton')
+
+def do_leo_spell_btn_Hide(self) -&gt; None:
+    self.doSpellBtn('onHideButton')
+
+def do_leo_spell_btn_Ignore(self) -&gt; None:
+    self.doSpellBtn('onIgnoreButton')
+</t>
+<t tx="ekr.20240527100653.1137">def closeEvent(self, event: QEvent) -&gt; None:
+    """Handle a close event in the Leo window."""
+    c = self.leo_c
+    if not c.exists:
+        # Fixes double-prompt bug on Linux.
+        event.accept()
+        return
+    if c.inCommand:
+        c.requestCloseWindow = True
+        return
+    ok = g.app.closeLeoWindow(c.frame)
+    if ok:
+        event.accept()
+    else:
+        event.ignore()
+</t>
+<t tx="ekr.20240527100653.1138">def construct(self, master: LeoTabbedTopLevel = None) -&gt; None:
+    """ Factor 'heavy duty' code out from the DynamicWindow ctor """
+    c = self.leo_c
+    self.leo_master = master
+    self.useScintilla = c.config.getBool('qt-use-scintilla')
+    self.reloadSettings()
+    main_splitter, secondary_splitter = self.createMainWindow()
+    self.iconBar = self.addToolBar("IconBar")
+    self.iconBar.setObjectName('icon-bar')  # Required for QMainWindow.saveState().
+    self.set_icon_bar_orientation(c)
+    # #266 A setting to hide the icon bar.
+    # Calling reloadSettings again would also work.
+    if not self.show_iconbar:
+        self.iconBar.hide()
+    self.leo_menubar = self.menuBar()
+    self.leo_statusBar = QtWidgets.QStatusBar()
+    self.setStatusBar(self.leo_statusBar)
+    orientation_s = c.config.getString('initial-split-orientation')
+    self.setSplitDirection(main_splitter, secondary_splitter, orientation_s)
+    if hasattr(c, 'styleSheetManager'):
+        c.styleSheetManager.set_style_sheets(top=self, all=True)
+</t>
+<t tx="ekr.20240527100653.1139">def set_icon_bar_orientation(self, c: Cmdr) -&gt; None:
+    """Set the orientation of the icon bar based on settings."""
+    d = {
+        'bottom': ToolBarArea.BottomToolBarArea,
+        'left': ToolBarArea.LeftToolBarArea,
+        'right': ToolBarArea.RightToolBarArea,
+        'top': ToolBarArea.TopToolBarArea,
+    }
+    where_s = self.toolbar_orientation
+    if not where_s:
+        where_s = 'top'
+    where = d.get(where_s.lower())
+    if where:
+        self.addToolBar(where, self.iconBar)
+</t>
+<t tx="ekr.20240527100653.1140">def createMainWindow(self) -&gt; tuple[QWidget, QWidget]:
+    """
+    Create the component ivars of the main window.
+    Copied/adapted from qt_main.py.
+    Called instead of uic.loadUi(ui_description_file, self)
+    """
+    self.setMainWindowOptions()
+    # Legacy code: will not go away.
+    self.createCentralWidget()
+    # Create .verticalLayout
+    main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+    if self.bigTree:
+        # Top pane contains only outline.  Bottom pane contains body and log panes.
+        self.createBodyPane(secondary_splitter)
+        self.createLogPane(secondary_splitter)
+        treeFrame = self.createOutlinePane(main_splitter)
+        main_splitter.addWidget(treeFrame)
+        main_splitter.addWidget(secondary_splitter)
+    else:
+        # Top pane contains outline and log panes.
+        self.createOutlinePane(secondary_splitter)
+        self.createLogPane(secondary_splitter)
+        self.createBodyPane(main_splitter)
+    self.createMiniBuffer(self.centralwidget)
+    self.createMenuBar()
+    self.createStatusBar(self)
+    # Signals...
+    QtCore.QMetaObject.connectSlotsByName(self)
+    return main_splitter, secondary_splitter
+</t>
+<t tx="ekr.20240527100653.1141"></t>
+<t tx="ekr.20240527100653.1142">def addNewEditor(self, name: str) -&gt; tuple[QWidget, Wrapper]:
+    """Create a new body editor."""
+    c, p = self.leo_c, self.leo_c.p
+    body = c.frame.body
+    assert isinstance(body, LeoQtBody), repr(body)
+    # Step 1: create the editor.
+    parent_frame = c.frame.top.leo_body_inner_frame
+    widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
+    widget.setObjectName('richTextEdit')  # Will be changed later.
+    wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
+    self.packLabel(widget)
+    # Step 2: inject ivars, set bindings, etc.
+    inner_frame = c.frame.top.leo_body_inner_frame  # Inject ivars *here*.
+    body.injectIvars(inner_frame, name, p, wrapper)
+    body.updateInjectedIvars(widget, p)
+    wrapper.setAllText(p.b)
+    wrapper.see(0)
+    c.k.completeAllBindingsForWidget(wrapper)
+    if isinstance(widget, QtWidgets.QTextEdit):
+        colorizer = leoColorizer.make_colorizer(c, widget)
+        colorizer.highlighter.setDocument(widget.document())
+    else:
+        # Scintilla only.
+        body.recolorWidget(p, wrapper)
+    return parent_frame, wrapper
+</t>
+<t tx="ekr.20240527100653.1143">def createBodyPane(self, parent: QWidget) -&gt; QWidget:
+    """
+    Create the *pane* for the body, not the actual QTextBrowser.
+    """
+    c = self.leo_c
+    #
+    # Create widgets.
+    bodyFrame = self.createFrame(parent, 'bodyFrame')
+    innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
+    sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
+         hPolicy=Policy.Expanding, vPolicy=Policy.Expanding)
+    page2 = QtWidgets.QWidget()
+    self.setName(page2, 'bodyPage2')
+    body = self.createText(page2, 'richTextEdit')  # A LeoQTextBrowser
+    #
+    # Pack.
+    vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0)
+    grid = self.createGrid(bodyFrame, 'bodyGrid')
+    innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
+    if self.use_gutter:
+        lineWidget = qt_text.LeoLineTextWidget(c, body)
+        vLayout.addWidget(lineWidget)
+    else:
+        vLayout.addWidget(body)
+    sw.addWidget(page2)
+    innerGrid.addWidget(sw, 0, 0, 1, 1)
+    grid.addWidget(innerFrame, 0, 0, 1, 1)
+    self.verticalLayout.addWidget(parent)
+    #
+    # Official ivars
+    self.text_page = page2
+    self.stackedWidget = sw  # used by LeoQtBody
+    self.richTextEdit = body
+    self.leo_body_frame = bodyFrame
+    self.leo_body_inner_frame = innerFrame
+    return bodyFrame
+
+</t>
+<t tx="ekr.20240527100653.1144">def createCentralWidget(self) -&gt; QWidget:
+    """Create the central widget."""
+    dw = self
+    w = QtWidgets.QWidget(dw)
+    w.setObjectName("centralwidget")
+    dw.setCentralWidget(w)
+    # Official ivars.
+    self.centralwidget = w
+    return w
+</t>
+<t tx="ekr.20240527100653.1145">def createLogPane(self, parent: QWidget) -&gt; None:
+    """Create all parts of Leo's log pane."""
+    c = self.leo_c
+    #
+    # Create the log frame.
+    logFrame = self.createFrame(parent, 'logFrame', vPolicy=Policy.Minimum)
+    innerFrame = self.createFrame(logFrame, 'logInnerFrame',
+        hPolicy=Policy.Preferred, vPolicy=Policy.Expanding)
+    tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
+    #
+    # Pack.
+    innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
+    innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
+    outerGrid = self.createGrid(logFrame, 'logGrid')
+    outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
+    #
+    # Create the Find tab, embedded in a QScrollArea.
+    findScrollArea = QtWidgets.QScrollArea()
+    findScrollArea.setObjectName('findScrollArea')
+    # Find tab.
+    findTab = QtWidgets.QWidget()
+    findTab.setObjectName('findTab')
+    #
+    # #516 and #1507: Create a Find tab unless we are using a dialog.
+    #
+    # Careful: @bool minibuffer-ding-mode overrides @bool use-find-dialog.
+    use_minibuffer = c.config.getBool('minibuffer-find-mode', default=False)
+    use_dialog = c.config.getBool('use-find-dialog', default=False)
+    if use_minibuffer or not use_dialog:
+        tabWidget.addTab(findScrollArea, 'Find')
+    # Complete the Find tab in LeoFind.finishCreate.
+    self.findScrollArea = findScrollArea
+    self.findTab = findTab
+    #
+    # Spell tab.
+    spellTab = QtWidgets.QWidget()
+    spellTab.setObjectName('spellTab')
+    tabWidget.addTab(spellTab, 'Spell')
+    self.createSpellTab(spellTab)
+    tabWidget.setCurrentIndex(1)
+    #
+    # Official ivars
+    self.tabWidget = tabWidget  # Used by LeoQtLog.
+</t>
+<t tx="ekr.20240527100653.1146">def finishCreateLogPane(self) -&gt; None:
+    """It's useful to create this late, because c.config is now valid."""
+    assert self.findTab
+    self.createFindTab(self.findTab, self.findScrollArea)
+    self.findScrollArea.setWidget(self.findTab)
+</t>
+<t tx="ekr.20240527100653.1148">def createMiniBuffer(self, parent: QWidget) -&gt; QWidget:
+    """Create the widgets for Leo's minibuffer area."""
+    # Create widgets.
+    frame = self.createFrame(parent, 'minibufferFrame',
+        hPolicy=Policy.MinimumExpanding, vPolicy=Policy.Fixed)
+    frame.setMinimumSize(QtCore.QSize(100, 0))
+    label = self.createLabel(frame, 'minibufferLabel', 'Minibuffer:')
+
+
+    class VisLineEdit(QtWidgets.QLineEdit):
+        """In case user has hidden minibuffer with gui-minibuffer-hide"""
+
+        def focusInEvent(self, event: QFocusEvent) -&gt; None:
+            self.parent().show()
+            super().focusInEvent(event)  # Call the base class method.
+
+        def focusOutEvent(self, event: QFocusEvent) -&gt; None:
+            self.store_selection()
+            super().focusOutEvent(event)
+
+        def restore_selection(self) -&gt; None:
+            w = self
+            i, j, ins = self._sel_and_insert
+            if i == j:
+                w.setCursorPosition(i)
+            else:
+                length = j - i
+                # Set selection is a QLineEditMethod
+                if ins &lt; j:
+                    w.setSelection(j, -length)
+                else:
+                    w.setSelection(i, length)
+
+        def store_selection(self) -&gt; None:
+            w = self
+            ins = w.cursorPosition()
+            if w.hasSelectedText():
+                i = w.selectionStart()
+                s = w.selectedText()
+                j = i + len(s)
+            else:
+                i = j = ins
+            w._sel_and_insert = (i, j, ins)
+
+    lineEdit = VisLineEdit(frame)
+    lineEdit._sel_and_insert = (0, 0, 0)
+    lineEdit.setObjectName('lineEdit')  # name important.
+    # Pack.
+    hLayout = self.createHLayout(frame, 'minibufferHLayout', spacing=4)
+    hLayout.setContentsMargins(3, 2, 2, 0)
+    hLayout.addWidget(label)
+    hLayout.addWidget(lineEdit)
+    self.verticalLayout.addWidget(frame)
+    # Transfers focus request from label to lineEdit.
+    label.setBuddy(lineEdit)
+    #
+    # Official ivars.
+    self.lineEdit = lineEdit
+    self.leo_minibuffer_frame = frame
+    # self.leo_minibuffer_layout = layout
+    return frame
+</t>
+<t tx="ekr.20240527100653.1149">def createMenuBar(self) -&gt; None:
+    """Create Leo's menu bar."""
+    dw = self
+    w = QtWidgets.QMenuBar(dw)
+    w.setNativeMenuBar(platform.system() == 'Darwin')
+    w.setGeometry(QtCore.QRect(0, 0, 957, 22))
+    w.setObjectName("menubar")
+    dw.setMenuBar(w)
+    # Official ivars.
+    self.leo_menubar = w
+</t>
+<t tx="ekr.20240527100653.1150">def createOutlinePane(self, parent: QWidget) -&gt; QWidget:
+    """Create the widgets and ivars for Leo's outline."""
+    # Create widgets.
+    treeFrame = self.createFrame(parent, 'outlineFrame', vPolicy=Policy.Expanding)
+    innerFrame = self.createFrame(treeFrame, 'outlineInnerFrame', hPolicy=Policy.Preferred)
+    treeWidget = self.createTreeWidget(innerFrame, 'treeWidget')
+    grid = self.createGrid(treeFrame, 'outlineGrid')
+    grid.addWidget(innerFrame, 0, 0, 1, 1)
+    innerGrid = self.createGrid(innerFrame, 'outlineInnerGrid')
+    innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
+    # Official ivars...
+    self.treeWidget = treeWidget
+    return treeFrame
+</t>
+<t tx="ekr.20240527100653.1151">def createStatusBar(self, parent: QWidget) -&gt; None:
+    """Create the widgets and ivars for Leo's status area."""
+    w = QtWidgets.QStatusBar(parent)
+    w.setObjectName("statusbar")
+    parent.setStatusBar(w)
+    # Official ivars.
+    self.leo_statusBar = w
+</t>
+<t tx="ekr.20240527100653.1152">def packLabel(self, w: Wrapper, n: int = None) -&gt; None:
+    """
+    Pack w into the body frame's QVGridLayout.
+
+    The type of w does not affect the following code. In fact, w is a
+    QTextBrowser possibly packed inside a LeoLineTextWidget.
+    """
+    c = self.leo_c
+    #
+    # Reuse the grid layout in the body frame.
+    grid = self.leo_body_frame.layout()
+    # Pack the label and the text widget.
+    label = QtWidgets.QLineEdit(None)
+    label.setObjectName('editorLabel')
+    label.setText(c.p.h)
+    if n is None:
+        n = c.frame.body.numberOfEditors
+    n = max(0, n - 1)
+    # mypy error: grid is a QGridLayout, not a QLayout.
+    grid.addWidget(label, 0, n)  # type:ignore
+    grid.addWidget(w, 1, n)  # type:ignore
+    grid.setRowStretch(0, 0)  # Don't grow the label vertically.
+    grid.setRowStretch(1, 1)  # Give row 1 as much as vertical room as possible.
+    # Inject the ivar.
+    w.leo_label = label
+</t>
+<t tx="ekr.20240527100653.1153">def setMainWindowOptions(self) -&gt; None:
+    """Set default options for Leo's main window."""
+    dw = self
+    dw.setObjectName("MainWindow")
+    dw.resize(691, 635)
+</t>
+<t tx="ekr.20240527100653.1154"></t>
+<t tx="ekr.20240527100653.1155">def createButton(self, parent: QWidget, name: str, label: str) -&gt; QWidget:
+    w = QtWidgets.QPushButton(parent)
+    w.setObjectName(name)
+    w.setText(self.tr(label))
+    return w
+</t>
+<t tx="ekr.20240527100653.1156">def createCheckBox(self, parent: QWidget, name: str, label: str) -&gt; QWidget:
+    w = QtWidgets.QCheckBox(parent)
+    self.setName(w, name)
+    w.setText(self.tr(label))
+    return w
+</t>
+<t tx="ekr.20240527100653.1157">def createFrame(
+    self,
+    parent: QWidget,
+    name: str,
+    hPolicy: Policy = None,
+    vPolicy: Policy = None,
+    lineWidth: int = 1,
+    shadow: Shadow = None,
+    shape: Shape = None,
+) -&gt; QWidget:
+    """Create a Qt Frame."""
+    if shadow is None:
+        shadow = Shadow.Plain
+    if shape is None:
+        shape = Shape.NoFrame
+    #
+    w = QtWidgets.QFrame(parent)
+    self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
+    w.setFrameShape(shape)
+    w.setFrameShadow(shadow)
+    w.setLineWidth(lineWidth)
+    self.setName(w, name)
+    return w
+</t>
+<t tx="ekr.20240527100653.1158">def createGrid(self,
+    parent: QWidget, name: str, margin: int = 0, spacing: int = 0,
+) -&gt; QtWidgets.QGridLayout:
+    w = QtWidgets.QGridLayout(parent)
+    w.setContentsMargins(QtCore.QMargins(margin, margin, margin, margin))
+    w.setSpacing(spacing)
+    self.setName(w, name)
+    return w
+</t>
+<t tx="ekr.20240527100653.1159">def createHLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -&gt; Any:
+    hLayout = QtWidgets.QHBoxLayout(parent)
+    hLayout.setSpacing(spacing)
+    hLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+    self.setName(hLayout, name)
+    return hLayout
+
+def createVLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -&gt; Any:
+    vLayout = QtWidgets.QVBoxLayout(parent)
+    vLayout.setSpacing(spacing)
+    vLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+    self.setName(vLayout, name)
+    return vLayout
+</t>
+<t tx="ekr.20240527100653.1160">def createLabel(self, parent: QWidget, name: str, label: str) -&gt; QWidget:
+    w = QtWidgets.QLabel(parent)
+    self.setName(w, name)
+    w.setText(self.tr(label))
+    return w
+</t>
+<t tx="ekr.20240527100653.1161">def createLineEdit(self, parent: QWidget, name: str, disabled: bool = True) -&gt; QWidget:
+
+    w = QtWidgets.QLineEdit(parent)
+    w.setObjectName(name)
+    w.leo_disabled = disabled  # Inject the ivar.
+    return w
+</t>
+<t tx="ekr.20240527100653.1162">def createRadioButton(self, parent: QWidget, name: str, label: str) -&gt; QWidget:  # QtWidgets.QRadioButton:
+    w = QtWidgets.QRadioButton(parent)
+    self.setName(w, name)
+    w.setText(self.tr(label))
+    return w
+</t>
+<t tx="ekr.20240527100653.1163">def createStackedWidget(
+    self,
+    parent: QWidget,
+    name: str,
+    lineWidth: int = 1,
+    hPolicy: Policy = None,
+    vPolicy: Policy = None,
+) -&gt; QWidget:  # QtWidgets.QStackedWidget
+    w = QtWidgets.QStackedWidget(parent)
+    self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
+    w.setAcceptDrops(True)
+    w.setLineWidth(1)
+    self.setName(w, name)
+    return w
+</t>
+<t tx="ekr.20240527100653.1164">def createTabWidget(self,
+    parent: QWidget, name: str, hPolicy: Policy = None, vPolicy: Policy = None,
+) -&gt; QWidget:
+    w = QtWidgets.QTabWidget(parent)
+    # tb = w.tabBar()
+    # tb.setTabsClosable(True)
+    self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
+    self.setName(w, name)
+    return w
+</t>
+<t tx="ekr.20240527100653.1165">def createText(
+    self,
+    parent: QWidget,
+    name: str,
+    lineWidth: int = 0,
+    shadow: Shadow = None,
+    shape: Shape = None,
+) -&gt; QWidget:
+    # Create a text widget.
+    c = self.leo_c
+    w: Any
+    if name == 'richTextEdit' and self.useScintilla and Qsci:
+        # Do this in finishCreate, when c.frame.body exists.
+        w = Qsci.QsciScintilla(parent)
+        self.scintilla_widget = w
+    else:
+        if shadow is None:
+            shadow = Shadow.Plain
+        if shape is None:
+            shape = Shape.NoFrame
+        w = qt_text.LeoQTextBrowser(parent, c, None)
+        w.setFrameShape(shape)
+        w.setFrameShadow(shadow)
+        w.setLineWidth(lineWidth)
+        self.setName(w, name)
+    return w
+</t>
+<t tx="ekr.20240527100653.1166">def createTreeWidget(self, parent: QWidget, name: str) -&gt; QWidget:
+    c = self.leo_c
+    w = LeoQTreeWidget(c, parent)
+    self.set_widget_size_policy(w)
+    # 12/01/07: add new config setting.
+    multiple_selection = c.config.getBool('qt-tree-multiple-selection', default=True)
+    if multiple_selection:
+        w.setSelectionMode(SelectionMode.ExtendedSelection)
+        w.setSelectionBehavior(SelectionBehavior.SelectRows)
+    else:
+        w.setSelectionMode(SelectionMode.SingleSelection)
+        w.setSelectionBehavior(SelectionBehavior.SelectItems)
+    w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
+    w.setHeaderHidden(False)
+    self.setName(w, name)
+    return w
+</t>
+<t tx="ekr.20240527100653.1167"></t>
+<t tx="ekr.20240527100653.1168">def createSpellTab(self, parent: QWidget) -&gt; None:
+    # dw = self
+    vLayout = self.createVLayout(parent, 'spellVLayout', margin=2)
+    spellFrame = self.createFrame(parent, 'spellFrame')
+    vLayout2 = self.createVLayout(spellFrame, 'spellVLayout')
+    grid = self.createGrid(None, 'spellGrid', spacing=2)
+    table = (
+        ('Add', 'Add', 2, 1),
+        ('Find', 'Find', 2, 0),
+        ('Change', 'Change', 3, 0),
+        ('FindChange', 'Change,Find', 3, 1),
+        ('Ignore', 'Ignore', 4, 0),
+        ('Hide', 'Hide', 4, 1),
+    )
+    for (ivar, label, row, col) in table:
+        name = f"spell_{label}_button"
+        button = self.createButton(spellFrame, name, label)
+        grid.addWidget(button, row, col)
+        func = getattr(self, f"do_leo_spell_btn_{ivar}")
+        button.clicked.connect(func)
+        # This name is significant.
+        setattr(self, f"leo_spell_btn_{ivar}", button)
+    self.leo_spell_btn_Hide.setCheckable(False)
+    spacerItem = QtWidgets.QSpacerItem(20, 40, Policy.Minimum, Policy.Expanding)
+    grid.addItem(spacerItem, 5, 0, 1, 1)
+    listBox = QtWidgets.QListWidget(spellFrame)
+    self.set_widget_size_policy(listBox, kind1=Policy.MinimumExpanding, kind2=Policy.Expanding)
+    listBox.setMinimumSize(QtCore.QSize(0, 0))
+    listBox.setMaximumSize(QtCore.QSize(150, 150))
+    listBox.setObjectName("leo_spell_listBox")
+    grid.addWidget(listBox, 1, 0, 1, 2)
+    spacerItem1 = QtWidgets.QSpacerItem(40, 20, Policy.Expanding, Policy.Minimum)
+    grid.addItem(spacerItem1, 2, 2, 1, 1)
+    lab = self.createLabel(spellFrame, 'spellLabel', 'spellLabel')
+    grid.addWidget(lab, 0, 0, 1, 2)
+    vLayout2.addLayout(grid)
+    vLayout.addWidget(spellFrame)
+    listBox.itemDoubleClicked.connect(self.do_leo_spell_btn_FindChange)
+    # Official ivars.
+    self.spellFrame = spellFrame
+    self.spellGrid = grid
+    self.leo_spell_widget = parent  # 2013/09/20: To allow bindings to be set.
+    self.leo_spell_listBox = listBox  # Must exist
+    self.leo_spell_label = lab  # Must exist (!!)
+</t>
+<t tx="ekr.20240527100653.1169">def createFindTab(self, parent: QWidget, tab_widget: QWidget) -&gt; None:
+    """Create a Find Tab in the given parent."""
+    c, dw = self.leo_c, self
+    fc = c.findCommands
+    assert not fc.ftm
+    fc.ftm = ftm = FindTabManager(c)
+    grid = self.create_find_grid(parent)
+    row = 0  # The index for the present row.
+    row = dw.create_find_header(grid, parent, row)
+    row = dw.create_find_findbox(grid, parent, row)
+    row = dw.create_find_replacebox(grid, parent, row)
+    max_row2 = 1
+    max_row2 = dw.create_find_checkboxes(grid, parent, max_row2, row)
+    row = dw.create_find_buttons(grid, parent, max_row2, row)
+    row = dw.create_help_row(grid, parent, row)
+    dw.override_events()
+    # Last row: Widgets that take all additional vertical space.
+    w = QtWidgets.QWidget()
+    grid.addWidget(w, row, 0)
+    grid.addWidget(w, row, 1)
+    grid.addWidget(w, row, 2)
+    grid.setRowStretch(row, 100)
+    # Official ivars (in addition to checkbox ivars).
+    self.leo_find_widget = tab_widget  # A scrollArea.
+    ftm.init_widgets()
+</t>
+<t tx="ekr.20240527100653.1170">def create_find_grid(self, parent: QWidget) -&gt; Any:
+    grid = self.createGrid(parent, 'findGrid', margin=10, spacing=10)
+    grid.setColumnStretch(0, 100)
+    grid.setColumnStretch(1, 100)
+    grid.setColumnStretch(2, 10)
+    grid.setColumnMinimumWidth(1, 75)
+    grid.setColumnMinimumWidth(2, 175)
+    return grid
+</t>
+<t tx="ekr.20240527100653.1171">def create_find_header(self, grid: Any, parent: QWidget, row: int) -&gt; int:
+    if False:
+        dw = self
+        lab1 = dw.createLabel(parent, 'findHeading', 'Find/Change Settings...')
+        grid.addWidget(lab1, row, 0, 1, 2, AlignLeft)  # AlignHCenter
+        row += 1
+    return row
+</t>
+<t tx="ekr.20240527100653.1172">def create_find_findbox(self, grid: Any, parent: QWidget, row: int) -&gt; int:
+    """Create the Find: label and text area."""
+    c, dw = self.leo_c, self
+    fc = c.findCommands
+    ftm = fc.ftm
+    assert ftm.find_findbox is None
+    ftm.find_findbox = w = dw.createLineEdit(
+        parent, 'findPattern', disabled=fc.expert_mode)
+    lab2 = self.createLabel(parent, 'findLabel', 'Find:')
+    grid.addWidget(lab2, row, 0)
+    grid.addWidget(w, row, 1, 1, 2)
+    row += 1
+    return row
+</t>
+<t tx="ekr.20240527100653.1173">def create_find_replacebox(self, grid: Any, parent: QWidget, row: int) -&gt; int:
+    """Create the Replace: label and text area."""
+    c, dw = self.leo_c, self
+    fc = c.findCommands
+    ftm = fc.ftm
+    assert ftm.find_replacebox is None
+    ftm.find_replacebox = w = dw.createLineEdit(
+        parent, 'findChange', disabled=fc.expert_mode)
+    lab3 = dw.createLabel(parent, 'changeLabel', 'Replace:')
+    grid.addWidget(lab3, row, 0)
+    grid.addWidget(w, row, 1, 1, 2)
+    row += 1
+    return row
+</t>
+<t tx="ekr.20240527100653.1174">def create_find_checkboxes(self, grid: Any, parent: QWidget, max_row2: int, row: int) -&gt; int:
+    """Create check boxes and radio buttons."""
+    c, dw = self.leo_c, self
+    fc = c.findCommands
+    ftm = fc.ftm
+
+    def mungeName(kind: str, label: str) -&gt; str:
+        # The returned value is the name of an ivar.
+        kind = 'check_box_' if kind == 'box' else 'radio_button_'
+        name = label.replace(' ', '_').replace('&amp;', '').lower()
+        return f"{kind}{name}"
+
+    # Rows for check boxes, radio buttons &amp; execution buttons...
+
+    d = {
+        'box': dw.createCheckBox,
+        'rb': dw.createRadioButton,
+    }
+    table = (
+        # Note: the Ampersands create Alt bindings when the log pane is enable.
+        # The QShortcut class is the workaround.
+        # First row.
+        ('box', 'whole &amp;Word', 0, 0),
+        ('rb', '&amp;Entire outline', 0, 1),
+        # Second row.
+        ('box', '&amp;Ignore case', 1, 0),
+        ('rb', '&amp;Suboutline only', 1, 1),
+        # Third row.
+        ('box', 'rege&amp;Xp', 2, 0),
+        ('rb', '&amp;Node only', 2, 1),
+        # Fourth row.
+        ('box', 'mark &amp;Finds', 3, 0),
+        ('rb', 'fi&amp;Le only', 3, 1),
+        # Fifth row.
+        ('box', 'mark &amp;Changes', 4, 0),
+        ('box', 'search &amp;Headline', 4, 1),
+        # Sixth Row
+        ('box', 'search &amp;Body', 5, 1),
+
+        # ('box', 'rege&amp;Xp', 2, 0),
+        # ('rb', '&amp;Node only', 2, 1),
+        # # Fourth row.
+        # ('box', 'mark &amp;Finds', 3, 0),
+        # ('box', 'search &amp;Headline', 3, 1),
+        # # Fifth row.
+        # ('box', 'mark &amp;Changes', 4, 0),
+        # ('box', 'search &amp;Body', 4, 1),
+        # ('rb', 'File &amp;Only', 5, 1),
+
+        # Sixth row.
+        # ('box', 'wrap &amp;Around', 5, 0),
+        # a,b,c,e,f,h,i,n,rs,w
+    )
+    for kind, label, row2, col in table:
+        max_row2 = max(max_row2, row2)
+        name = mungeName(kind, label)
+        func = d.get(kind)
+        assert func
+        # Fix the greedy checkbox bug:
+        label = label.replace('&amp;', '')
+        w = func(parent, name, label)
+        grid.addWidget(w, row + row2, col)
+        # The the checkbox ivars in dw and ftm classes.
+        assert getattr(ftm, name) is None
+        setattr(ftm, name, w)
+    return max_row2
+</t>
+<t tx="ekr.20240527100653.1175">def create_help_row(self, grid: Any, parent: QWidget, row: int) -&gt; int:
+    # Help row.
+    if False:
+        w = self.createLabel(parent,
+            'findHelp', 'For help: &lt;alt-x&gt;help-for-find-commands&lt;return&gt;')
+        grid.addWidget(w, row, 0, 1, 3)
+        row += 1
+    return row
+</t>
+<t tx="ekr.20240527100653.1176">def create_find_buttons(self, grid: Any, parent: QWidget, max_row2: int, row: int) -&gt; int:
+    """
+    Per #1342, this method now creates labels, not real buttons.
+    """
+    dw, k = self, self.leo_c.k
+
+    # Create Buttons in column 2 (Leo 4.11.1.)
+    table = (
+        (0, 2, 'find-next'),  # 'findButton',
+        (1, 2, 'find-prev'),  # 'findPreviousButton',
+        (2, 2, 'find-all'),  # 'findAllButton',
+        (3, 2, 'replace'),  # 'changeButton',
+        (4, 2, 'replace-then-find'),  # 'changeThenFindButton',
+        (5, 2, 'replace-all'),  # 'changeAllButton',
+    )
+    for row2, col, cmd_name in table:
+        stroke = k.getStrokeForCommandName(cmd_name)
+        if stroke:
+            label = f"{cmd_name}:  {k.prettyPrintKey(stroke)}"
+        else:
+            label = cmd_name
+        # #1342: Create a label, not a button.
+        w = dw.createLabel(parent, cmd_name, label)
+        w.setObjectName('find-label')
+        grid.addWidget(w, row + row2, col)
+    row += max_row2
+    row += 2
+    return row
+</t>
+<t tx="ekr.20240527100653.1177">if 0:
+
+    def create_find_status(self, grid: Any, parent: QWidget, row: int) -&gt; None:
+        """Create the status line."""
+        dw = self
+        status_label = dw.createLabel(parent, 'status-label', 'Status')
+        status_line = dw.createLineEdit(parent, 'find-status', disabled=True)
+        grid.addWidget(status_label, row, 0)
+        grid.addWidget(status_line, row, 1, 1, 2)
+        # Official ivars.
+        dw.find_status_label = status_label
+        dw.find_status_edit = status_line
+</t>
+<t tx="ekr.20240527100653.1178">def override_events(self) -&gt; None:
+    # dw = self
+    c = self.leo_c
+    fc = c.findCommands
+    ftm = fc.ftm
+    # Define class EventWrapper.
+    @others
+    EventWrapper(c, w=ftm.find_findbox, next_w=ftm.find_replacebox, func=fc.find_next)
+    EventWrapper(c, w=ftm.find_replacebox, next_w=ftm.find_next_button, func=fc.find_next)
+    # Finally, checkBoxMarkChanges goes back to ftm.find_findBox.
+    EventWrapper(c, w=ftm.check_box_mark_changes, next_w=ftm.find_findbox, func=None)
+</t>
+<t tx="ekr.20240527100653.1179">class EventWrapper:
+
+    def __init__(self, c: Cmdr, w: QWidget, next_w: QWidget, func: Callable) -&gt; None:
+        self.c = c
+        self.d = self.create_d()  # Keys: stroke.s; values: command-names.
+        self.w = w
+        self.next_w = next_w
+        self.eventFilter = qt_events.LeoQtEventFilter(c, w, 'EventWrapper')
+        self.func = func
+        self.oldEvent: Any = w.event
+        w.event = self.wrapper  # type:ignore # cannot assign to a method.
+    @others
+</t>
+<t tx="ekr.20240527100653.1180">def create_d(self) -&gt; dict[str, str]:
+    """Create self.d dictionary."""
+    c = self.c
+    d = {}
+    table = (
+        'toggle-find-ignore-case-option',
+        'toggle-find-in-body-option',
+        'toggle-find-in-headline-option',
+        'toggle-find-mark-changes-option',
+        'toggle-find-mark-finds-option',
+        'toggle-find-regex-option',
+        'toggle-find-word-option',
+        'toggle-find-wrap-around-option',
+        # New in Leo 5.2: Support these in the Find Dialog.
+        'find-all',
+        'find-next',
+        'find-prev',
+        'hide-find-tab',
+        'replace',
+        'replace-all',
+        'replace-then-find',
+        'set-find-everywhere',
+        'set-find-node-only',
+        'set-find-suboutline-only',
+        # #2041 &amp; # 2094 (Leo 6.4): Support Alt-x.
+        'full-command',
+        'keyboard-quit',  # Might as well :-)
+    )
+    for cmd_name in table:
+        stroke = c.k.getStrokeForCommandName(cmd_name)
+        if stroke:
+            d[stroke.s] = cmd_name
+    return d
+</t>
+<t tx="ekr.20240527100653.1181">def wrapper(self, event: LeoKeyEvent) -&gt; Any:
+
+    type_ = event.type()
+    # Must intercept KeyPress for events that generate FocusOut!
+    if type_ == Type.KeyPress:
+        return self.keyPress(event)
+    if type_ == Type.KeyRelease:
+        return self.keyRelease(event)
+    return self.oldEvent(event)
+</t>
+<t tx="ekr.20240527100653.1182">def keyPress(self, event: LeoKeyEvent) -&gt; Any:
+
+    s = event.text()
+    out = s and s in '\t\r\n'
+    if out:
+        # Move focus to next widget.
+        if s == '\t':
+            if self.next_w:
+                self.next_w.setFocus(FocusReason.TabFocusReason)
+            else:
+                # Do the normal processing.
+                return self.oldEvent(event)
+        elif self.func:
+            self.func()
+        return True
+    binding, ch, lossage = self.eventFilter.toBinding(event)
+    # #2094: Use code similar to the end of LeoQtEventFilter.eventFilter.
+    #        The ctor converts &lt;Alt-X&gt; to &lt;Alt-x&gt; !!
+    #        That is, we must use the stroke, not the binding.
+    key_event = leoGui.LeoKeyEvent(
+        c=self.c, char=ch, event=event, binding=binding, w=self.w)
+    if key_event.stroke:
+        cmd_name = self.d.get(key_event.stroke)
+        if cmd_name:
+            self.c.doCommandByName(cmd_name)
+            return True
+    # Do the normal processing.
+    return self.oldEvent(event)
+</t>
+<t tx="ekr.20240527100653.1183">def keyRelease(self, event: QEvent) -&gt; Any:
+    return self.oldEvent(event)
+</t>
+<t tx="ekr.20240527100653.1184"></t>
+<t tx="ekr.20240527100653.1185">def setName(self, widget: Any, name: str) -&gt; None:
+    if name:
+        widget.setObjectName(name)
+</t>
+<t tx="ekr.20240527100653.1186">def set_widget_size_policy(self, widget: QWidget, kind1: Policy = None, kind2: Policy = None) -&gt; None:
+    if kind1 is None:
+        kind1 = Policy.Ignored
+    if kind2 is None:
+        kind2 = Policy.Ignored
+    sizePolicy = QtWidgets.QSizePolicy(kind1, kind2)
+    sizePolicy.setHorizontalStretch(0)
+    sizePolicy.setVerticalStretch(0)
+    sizePolicy.setHeightForWidth(widget.sizePolicy().hasHeightForWidth())
+    widget.setSizePolicy(sizePolicy)
+</t>
+<t tx="ekr.20240527100653.1187"># def tr(self, s: str) -&gt; str:
+    # return QtWidgets.QApplication.translate('MainWindow', s, None)
+
+</t>
+<t tx="ekr.20240527100653.1188">def select(self, c: Cmdr) -&gt; None:
+    """Select the window or tab for c."""
+    # Called from the save commands.
+    self.leo_master.select(c)
+</t>
+<t tx="ekr.20240527100653.1189"># Mypy complaint because this overrides QMainWindow.setGeometry.
+
+def setGeometry(self, rect: Any) -&gt; None:  # type:ignore
+    """Set the window geometry, but only once when using the qt gui."""
+    m = self.leo_master
+    assert self.leo_master
+    # Only set the geometry once, even for new files.
+    if not hasattr(m, 'leo_geom_inited'):
+        m.leo_geom_inited = True
+        self.leo_master.setGeometry(rect)
+        super().setGeometry(rect)
+</t>
+<t tx="ekr.20240527100653.1190">def setLeoWindowIcon(self) -&gt; None:
+    """ Set icon visible in title bar and task bar """
+    # self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+    g.app.gui.attachLeoIcon(self)
+</t>
+<t tx="ekr.20240527100653.1191">def setSplitDirection(self,
+    main_splitter: QWidget,
+    secondary_splitter: QWidget,
+    orientation: str,
+) -&gt; None:
+    """Set the orientations of the splitters in the Leo main window."""
+    # c = self.leo_c
+    vert = orientation and orientation.lower().startswith('v')
+    h, v = Orientation.Horizontal, Orientation.Vertical
+    orientation1 = v if vert else h
+    orientation2 = h if vert else v
+    main_splitter.setOrientation(orientation1)
+    secondary_splitter.setOrientation(orientation2)
+</t>
+<t tx="ekr.20240527100653.1192">if 0:  # Override for debugging only.
+
+    def setWindowTitle(self, s: str) -&gt; None:
+        g.trace('***(DynamicWindow)', s, self.parent())
+        # Call the base class method.
+        QtWidgets.QMainWindow.setWindowTitle(self, s)
+</t>
+<t tx="ekr.20240527100653.1193">class FreeLayoutController:
+
+    &lt;&lt; FreeLayoutController docstring &gt;&gt;
+    &lt;&lt; define default_layout &gt;&gt;
+
+    @others
+</t>
+<t tx="ekr.20240527100653.1194">"""Glue between Leo and the NestedSplitter gui widget.  All Leo aware
+code should be in here, none in NestedSplitter.
+
+*ALSO* implements the provider interface for NestedSplitter, in
+ns_provides, ns_provide, ns_context, ns_do_context, which
+NestedSplitter uses as callbacks to populate splitter-handle context-menu
+and the empty pane Action button menu:
+
+see nested_splitter.py--&gt;class%20NestedSplitter%20(QSplitter)--&gt;register_provider
+
+ns_provides
+  tell NestedSplitter which Action button items we can provide
+ns_provide
+  provide the advertised service when an Action button item we
+  advertised is selected
+ns_context
+  tell NestedSplitter which splitter-handle context-menu items
+  we can provide
+ns_do_context
+  provide the advertised service when a splitter-handle context-menu
+  item we advertised is selected
+"""
+</t>
+<t tx="ekr.20240527100653.1195">default_layout = {
+    'content': [
+        {
+            'content': [
+                '_leo_pane:outlineFrame',
+                '_leo_pane:logFrame',
+            ],
+            'orientation': 1,
+            'sizes': [509, 275],
+        },
+        '_leo_pane:bodyFrame',
+    ],
+    'orientation': 2,
+    'sizes': [216, 216],
+}
+</t>
+<t tx="ekr.20240527100653.1196">def __init__(self, c: Cmdr) -&gt; None:
+    """Ctor for FreeLayoutController class."""
+    self.c = c
+    g.registerHandler('after-create-leo-frame', self.init)
+    # Plugins must be loaded first to provide their widgets in panels etc.
+    g.registerHandler('after-create-leo-frame2', self.loadLayouts)
+</t>
+<t tx="ekr.20240527100653.1197">def init(self, tag: str, keys: dict) -&gt; None:
+    """Attach to an outline and
+
+    - add tags to widgets to indicate that they're essential
+      (tree, body, log-window-tabs) and
+
+    - tag the log-window-tabs widget as the place to put widgets
+      from free-layout panes which are closed
+
+    - register this FreeLayoutController as a provider of menu items
+      for NestedSplitter
+    """
+    c = self.c
+    if not NestedSplitter:
+        return
+    if c != keys.get('c'):
+        return
+    # Careful: we could be unit testing.
+    splitter = self.get_top_splitter()  # A NestedSplitter.
+    if not splitter:
+        return
+    # by default NestedSplitter's context menus are disabled, needed
+    # once to globally enable them
+    NestedSplitter.enabled = True
+    # when NestedSplitter disposes of children, it will either close
+    # them, or move them to another designated widget.  Here we set
+    # up two designated widgets
+    logTabWidget = splitter.findChild(QtWidgets.QWidget, "logTabWidget")
+    splitter.root.holders['_is_from_tab'] = logTabWidget
+    splitter.root.holders['_is_permanent'] = 'TOP'
+    # allow body and tree widgets to be "removed" to tabs on the log tab panel
+    bodyWidget = splitter.findChild(QtWidgets.QFrame, "bodyFrame")
+    bodyWidget._is_from_tab = "Body"
+    treeWidget = splitter.findChild(QtWidgets.QFrame, "outlineFrame")
+    treeWidget._is_from_tab = "Tree"
+    # also the other tabs will have _is_from_tab set on them by the
+    # offer_tabs menu callback above
+    # if the log tab panel is removed, move it back to the top splitter
+    logWidget = splitter.findChild(QtWidgets.QFrame, "logFrame")
+    logWidget._is_permanent = True
+    # tag core Leo components (see ns_provides)
+    splitter.findChild(
+        QtWidgets.QWidget, "outlineFrame")._ns_id = '_leo_pane:outlineFrame'
+    splitter.findChild(QtWidgets.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
+    splitter.findChild(QtWidgets.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
+    splitter.register_provider(self)
+    splitter.splitterClicked_connect(self.splitter_clicked)
+</t>
+<t tx="ekr.20240527100653.1198">def embed(self) -&gt; None:
+    """called from ns_do_context - embed layout in outline's
+    @settings, an alternative to the Load/Save named layout system
+    """
+    # Careful: we could be unit testing.
+    top_splitter = self.get_top_splitter()
+    if not top_splitter:
+        return
+    c = self.c
+    layout = top_splitter.get_saveable_layout()
+    nd = g.findNodeAnywhere(c, "@data free-layout-layout")
+    if not nd:
+        settings: Position
+        settings = g.findNodeAnywhere(c, "@settings")
+        if not settings:
+            settings = c.rootPosition().insertAfter()
+            settings.h = "@settings"
+        nd = settings.insertAsNthChild(0)
+    nd.h = "@data free-layout-layout"
+    nd.b = json.dumps(layout, indent=4)
+    nd = nd.parent()
+    if not nd or nd.h != "@settings":
+        g.es("WARNING: @data free-layout-layout node is not under an active @settings node")
+    c.redraw()
+</t>
+<t tx="ekr.20240527100653.1199">def get_main_splitter(self, w: Wrapper = None) -&gt; Optional[Wrapper]:
+    """
+    Return the main splitter.
+    
+    We tacitly assume that this splitter contains the body pane.
+    """
+    top = self.get_top_splitter()
+    return top if top.objectName() == 'main_splitter' else None
+</t>
+<t tx="ekr.20240527100653.1200">def get_secondary_splitter(self) -&gt; Optional[Wrapper]:
+    """
+    Return the secondary splitter, that is, the splitter containing the outline pane.
+    """
+    top = self.get_top_splitter()
+    w = top and top.find_child(QtWidgets.QWidget, 'outlineFrame')
+    while w:
+        w = w.parent()
+        if isinstance(w, NestedSplitter):
+            return w
+    return None
+</t>
+<t tx="ekr.20240527100653.1201">def get_top_splitter(self) -&gt; Optional[Wrapper]:
+    """Return the top splitter of c.frame.top."""
+    f = self.c.frame
+    if hasattr(f, 'top') and f.top:
+        child = f.top.findChild(NestedSplitter)
+        return child and child.top()
+    return None
+</t>
+<t tx="ekr.20240527100653.1202">def loadLayouts(self, tag: str, keys: dict, reloading: bool = False) -&gt; None:
+    """loadLayouts - Load the outline's layout
+
+    :Parameters:
+    - `tag`: from hook event
+    - `keys`: from hook event
+    - `reloading`: True if this is not the initial load, see below
+
+    When called from the `after-create-leo-frame2` hook this defaults
+    to False.  When called from the `restore-layout` command, this is set
+    True, and the layout the outline had *when first loaded* is restored.
+    Useful if you want to temporarily switch to a different layout and then
+    back, without having to remember the original layouts name.
+    """
+    trace = 'layouts' in g.app.debug
+    c = self.c
+    if not (g.app and g.app.db):
+        return  # Can happen when running from the Leo bridge.
+    if c != keys.get('c'):
+        return
+    d = g.app.db.get('ns_layouts') or {}
+    if trace:
+        g.trace(tag)
+        g.printObj(keys, tag="keys")
+    layout = c.config.getData("free-layout-layout")
+    if layout:
+        layout = json.loads('\n'.join(layout))
+    name = c.db.get('_ns_layout')
+    if name:
+        if reloading:
+            name = c.free_layout.original_layout
+            c.db['_ns_layout'] = name
+        else:
+            c.free_layout.original_layout = name
+        if layout:
+            g.es("NOTE: embedded layout in @settings/@data free-layout-layout "
+                 "overrides saved layout " + name)
+        else:
+            layout = d.get(name)
+    # EKR: Create commands that will load each layout.
+    if d:
+        for name in sorted(d.keys()):
+
+            def func(event: LeoKeyEvent) -&gt; None:
+                layout = d.get(name)
+                if layout:
+                    c.free_layout.get_top_splitter().load_layout(c, layout)
+                else:
+                    g.trace('no layout', name)
+
+            name_s = name.strip().lower().replace(' ', '-')
+            commandName = f"free-layout-load-{name_s}"
+            c.k.registerCommand(commandName, func)
+    # Careful: we could be unit testing or in the Leo bridge.
+    if layout:
+        splitter = c.free_layout.get_top_splitter()
+        if splitter:
+            splitter.load_layout(c, layout)
+</t>
+<t tx="ekr.20240527100653.1203">def ns_context(self) -&gt; list[tuple[str, str]]:
+    ans: list[Any] = [
+        ('Embed layout', '_fl_embed_layout'),
+        ('Save layout', '_fl_save_layout'),
+    ]
+    d = g.app.db.get('ns_layouts', {})
+    if d:
+        ans.append({'Load layout': [(k, '_fl_load_layout:' + k) for k in d]})
+        ans.append({'Delete layout': [(k, '_fl_delete_layout:' + k) for k in d]})
+        ans.append(('Forget layout', '_fl_forget_layout:'))
+        ans.append(('Restore initial layout', '_fl_restore_layout:'))
+    ans.append(('Restore default layout', '_fl_restore_default:'))
+    ans.append(('Help for this menu', '_fl_help:'))
+    return ans
+</t>
+<t tx="ekr.20240527100653.1204">def ns_do_context(self, id_: QWidget, splitter: QSplitter, index: int) -&gt; bool:
+
+    c = self.c
+    if id_.startswith('_fl_embed_layout'):
+        self.embed()
+        return True
+    if id_.startswith('_fl_restore_default'):
+        self.get_top_splitter().load_layout(c, layout=self.default_layout)
+    if id_.startswith('_fl_help'):
+        self.c.putHelpFor(__doc__)
+        # g.handleUrl("https://leo-editor.github.io/leo-editor/")
+        return True
+    if id_ == '_fl_save_layout':
+        if self.c.config.getData("free-layout-layout"):
+            g.es("WARNING: embedded layout in")
+            g.es("@settings/@data free-layout-layout")
+            g.es("will override saved layout")
+        layout = self.get_top_splitter().get_saveable_layout()
+        name = g.app.gui.runAskOkCancelStringDialog(self.c,
+            title="Save layout",
+            message="Name for layout?",
+        )
+        if name:
+            self.c.db['_ns_layout'] = name
+            d = g.app.db.get('ns_layouts', {})
+            d[name] = layout
+            # make sure g.app.db's __set_item__ is hit so it knows to save
+            g.app.db['ns_layouts'] = d
+        return True
+    if id_.startswith('_fl_load_layout:'):
+        if self.c.config.getData("free-layout-layout"):
+            g.es("WARNING: embedded layout in")
+            g.es("@settings/@data free-layout-layout")
+            g.es("will override saved layout")
+        name = id_.split(':', 1)[1]
+        self.c.db['_ns_layout'] = name
+        layout = g.app.db['ns_layouts'][name]
+        self.get_top_splitter().load_layout(c, layout)
+        return True
+    if id_.startswith('_fl_delete_layout:'):
+        name = id_.split(':', 1)[1]
+        if ('yes' == g.app.gui.runAskYesNoCancelDialog(c,
+            "Really delete Layout?",
+            f"Really permanently delete the layout '{name}'?")
+        ):
+            d = g.app.db.get('ns_layouts', {})
+            del d[name]
+            # make sure g.app.db's __set_item__ is hit so it knows to save
+            g.app.db['ns_layouts'] = d
+            if '_ns_layout' in self.c.db:
+                del self.c.db['_ns_layout']
+        return True
+    if id_.startswith('_fl_forget_layout:'):
+        if '_ns_layout' in self.c.db:
+            del self.c.db['_ns_layout']
+        return True
+    if id_.startswith('_fl_restore_layout:'):
+        self.loadLayouts("reload", {'c': self.c}, reloading=True)
+        return True
+    return False
+</t>
+<t tx="ekr.20240527100653.1205">def ns_provide(self, id_: str) -&gt; Union[str, Wrapper, None]:
+    if id_.startswith('_leo_tab:'):
+        id_ = id_.split(':', 1)[1]
+        top = self.get_top_splitter()
+        logTabWidget = top.find_child(QtWidgets.QWidget, "logTabWidget")
+        for n in range(logTabWidget.count()):
+            if logTabWidget.tabText(n) == id_:
+                w = logTabWidget.widget(n)
+                w.setHidden(False)
+                w._is_from_tab = logTabWidget.tabText(n)
+                w.setMinimumSize(20, 20)
+                return w
+        # didn't find it, maybe it's already in a splitter
+        return 'USE_EXISTING'
+    if id_.startswith('_leo_pane:'):
+        id_ = id_.split(':', 1)[1]
+        w = self.get_top_splitter().find_child(QtWidgets.QWidget, id_)
+        if w:
+            w.setHidden(False)  # may be from Tab holder
+            w.setMinimumSize(20, 20)
+        return w
+    return None
+</t>
+<t tx="ekr.20240527100653.1206">def ns_provides(self) -&gt; list[tuple[str, str]]:
+    ans: list[tuple[str, str]] = []
+    # list of things in tab widget
+    logTabWidget = self.get_top_splitter(
+        ).find_child(QtWidgets.QWidget, "logTabWidget")
+    for n in range(logTabWidget.count()):
+        text = str(logTabWidget.tabText(n))
+        if text in ('Body', 'Tree'):
+            continue  # handled below
+        if text == 'Log':
+            # if Leo can't find Log in tab pane, it creates another
+            continue
+        ans.append((text, '_leo_tab:' + text))
+    ans.append(('Tree', '_leo_pane:outlineFrame'))
+    ans.append(('Body', '_leo_pane:bodyFrame'))
+    ans.append(('Tab pane', '_leo_pane:logFrame'))
+    return ans
+</t>
+<t tx="ekr.20240527100653.1207">def splitter_clicked(self,
+    splitter: Wrapper,
+    handle: Wrapper,
+    event: LeoKeyEvent,
+    release: str,
+    double: bool,
+) -&gt; None:
+    """
+    splitter_clicked - middle click release will zoom adjacent
+    body / tree panes
+
+    :param NestedSplitter splitter: splitter containing clicked handle
+    :param NestedSplitterHandle handle: clicked handle
+    :param QMouseEvent event: mouse event for click
+    :param bool release: was it a Press or Release event
+    :param bool double: was it a double click event
+    """
+    if not release or event.button() != MouseButton.MiddleButton:
+        return
+    if splitter.root.zoomed:  # unzoom if *any* handle clicked
+        splitter.zoom_toggle()
+        return
+    before = splitter.widget(splitter.indexOf(handle) - 1)
+    after = splitter.widget(splitter.indexOf(handle))
+    for pane in before, after:
+        if pane.objectName() == 'bodyFrame':
+            pane.setFocus()
+            splitter.zoom_toggle()
+            return
+        if pane.objectName() == 'outlineFrame':
+            pane.setFocus()
+            splitter.zoom_toggle(local=True)
+            return
+</t>
+<t tx="ekr.20240527100653.1208">class LeoEditPane(QtWidgets.QWidget):
+    """
+    Leo node body editor / viewer
+    """
+    @others
+</t>
+<t tx="ekr.20240527100653.1209">def __init__(self,
+    c=None, p=None, mode='edit', show_head=True, show_control=True,
+    update=True, recurse=False, lep_type=None, *args, **kwargs):
+    """LeoEditPane.__init__ - bind to outline
+
+    :param outline c: outline to bind to
+    :param position p: initial position
+    :param str mode: 'edit' | 'view' | 'split'
+    :param bool show_head: show header
+    :param bool show_control: show controls
+    :param bool update: update view pane when text changes
+    :param bool recurse: render view pane recursively
+    :param str or [str] lep_type: 'EDITOR' or ['EDITOR', 'HTML']
+    :param list *args: pass through
+    :param dict **kwargs: pass through
+    """
+    super().__init__(*args, **kwargs)
+    self.setAttribute(WidgetAttribute.WA_DeleteOnClose)  # #2347.
+
+    lep_type = lep_type or ['EDITOR', 'TEXT']
+    if isinstance(lep_type, str):
+        lep_type = [lep_type]
+    if len(lep_type) &lt; 2:
+        lep_type.append('TEXT')
+
+    self.modules = []  # modules we collect widgets from
+    self.widget_classes = []  # collected widgets
+    self.widget_for = defaultdict(lambda: [])  # widget by class.lep_type
+
+    self.c = c
+    p = p or self.c.p
+    self.mode = mode
+
+    self.gnx = p.gnx
+
+    self.load_modules()
+
+    self._build_layout(
+        show_head=show_head,
+        show_control=show_control,
+        update=update,
+        recurse=recurse,
+    )
+
+    self.track = self.cb_track.isChecked()
+    self.update_flag = self.cb_update.isChecked()
+    self.recurse = self.cb_recurse.isChecked()
+    self.goto = self.cb_goto.isChecked()
+
+    for type_ in lep_type:
+        self.set_widget(lep_type=type_)
+
+    self.set_mode(self.mode)
+
+    self.handlers = [
+        ('select1', self._before_select),
+        ('select2', self._after_select),
+        # ('bodykey2', self._after_body_key),
+    ]
+    self._register_handlers()
+</t>
+<t tx="ekr.20240527100653.1210">def _add_checkbox(self, text, state_changed, tooltip, checked=True,
+    enabled=True, button_label=True):
+    """
+    _add_checkbox - helper to add a checkbox
+
+    :param str text: Text for label
+    :param function state_changed: callback for state_changed signal
+    :param bool checked: initially checked?
+    :param bool enabled: initially enabled?
+    :param bool button_label: label should be a button for single shot use
+    :return: QCheckBox
+    """
+    cbox = QtWidgets.QCheckBox('' if button_label else text, self)
+    self.control.layout().addWidget(cbox)
+    btn = None
+    if button_label:
+        btn = QtWidgets.QPushButton(text, self)
+        self.control.layout().addWidget(btn)
+
+        def cb(checked, cbox=cbox, state_changed=state_changed):
+            state_changed(cbox.isChecked(), one_shot=True)
+
+        btn.clicked.connect(cb)
+        btn.setToolTip(tooltip)
+    cbox.setChecked(checked)
+    cbox.setEnabled(enabled)
+    cbox.stateChanged.connect(state_changed)
+    cbox.setToolTip(tooltip)
+    self.control.layout().addItem(QtWidgets.QSpacerItem(20, 0))
+    return cbox
+</t>
+<t tx="ekr.20240527100653.1211">def _add_frame(self):
+    """_add_frame - add a widget with a layout as a hiding target.
+
+    i.e. a container we can hide / show easily"""
+    w = QtWidgets.QWidget(self)
+    self.layout().addWidget(w)
+    w.setSizePolicy(Policy.Expanding, Policy.Maximum)
+    w.setLayout(QtWidgets.QHBoxLayout())
+    w.layout().setContentsMargins(0, 0, 0, 0)
+    w.layout().setSpacing(0)
+    return w
+</t>
+<t tx="ekr.20240527100653.1212">def _after_body_key(self, v):
+    """_after_body_key - after Leo selects another node
+
+    FIXME: although class EditCommandsClass--&gt;insert &amp;
+    delete...--&gt;selfInsertCommand() implies that bodykey2 should fire
+    after all keys, it doesn't seem to fire after \n, backspace, delete
+    etc., so the viewer gets out of date for those keys. The simplest
+    fix would be a new bodychanged2 hook.
+
+    :param str tag: handler name ("bodykey2")
+    :param dict keywords: c, p, etc.
+    :return: None
+    """
+    p = self.c.vnode2position(v)
+    self.update_position(p)
+</t>
+<t tx="ekr.20240527100653.1213">def _after_select(self, tag, keywords):
+    """_after_select - after Leo selects another node
+
+    :param str tag: handler name ("select2")
+    :param dict keywords: c, new_p, old_p
+    :return: None
+    """
+    c = keywords['c']
+    if c != self.c:
+        return None
+    if self.track:
+        self.new_position(keywords['new_p'])
+    return None
+</t>
+<t tx="ekr.20240527100653.1214">def _before_select(self, tag, keywords):
+    """_before_select - before Leo selects another node
+
+    :param str tag: handler name ("select1")
+    :param dict keywords: c, new_p, old_p
+    :return: None
+    """
+
+    c = keywords['c']
+    if c != self.c:
+        return None
+
+    # currently nothing to do here, focusOut in widget takes care
+    # of any text updates
+
+    # BUT keyboard driven position change might need some action here
+    # BUT then again, textChanged in widget is probably sufficient
+    return None
+</t>
+<t tx="ekr.20240527100653.1215">def _find_gnx_node(self, gnx):
+    """Return the first position having the given gnx."""
+    if self.c.p.gnx == gnx:
+        return self.c.p
+    for p in self.c.all_unique_positions():
+        if p.v.gnx == gnx:
+            return p
+    g.es("Edit/View pane couldn't find node")
+    return None
+</t>
+<t tx="ekr.20240527100653.1216">def _register_handlers(self):
+    """_register_handlers - attach to Leo signals
+    """
+    for hook, handler in self.handlers:
+        g.registerHandler(hook, handler)
+
+    signal_manager.connect(self.c, 'body_changed', self._after_body_key)
+</t>
+<t tx="ekr.20240527100653.1217">def _build_layout(
+    self, show_head=True, show_control=True, update=True, recurse=False):
+    """build_layout - build layout
+    """
+    self.setLayout(QtWidgets.QVBoxLayout())
+    self.layout().setContentsMargins(0, 0, 0, 0)
+    self.layout().setSpacing(0)
+
+    # header
+    self.header = self._add_frame()
+    self.toggle_ctrl = QtWidgets.QPushButton("-", self)
+    self.header.layout().addWidget(self.toggle_ctrl)
+    self.line_edit = QtWidgets.QLineEdit(self)
+    self.header.layout().addWidget(self.line_edit)
+    self.header.layout().addStretch(1)
+    self.btn_close = QtWidgets.QPushButton("X", self)
+    self.btn_close.clicked.connect(lambda checked: self.close())
+    self.header.layout().addWidget(self.btn_close)
+
+    # controls
+    self.control = self._add_frame()
+    # checkboxes
+    txt = ",\ncheck to do this always"
+    self.cb_track = self._add_checkbox("Track", self.change_track,
+        "Track the node selected in the tree" + txt)
+    self.cb_goto = self._add_checkbox("Goto", self.change_goto,
+        "Make the tree go to this node" + txt)
+    self.cb_update = self._add_checkbox("Update", self.change_update,
+        "Update view to match changed node" + txt)
+    self.cb_recurse = self._add_checkbox("Recurse", self.change_recurse,
+        "Recursive view" + txt, checked=recurse)
+    # mode menu
+    btn = self.btn_mode = QtWidgets.QPushButton("Mode", self)
+    self.control.layout().addWidget(btn)
+    btn.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
+    btn.customContextMenuRequested.connect(  # right click
+        lambda pnt: self.mode_menu())
+    btn.clicked.connect(  # or left click
+        lambda checked: self.mode_menu())
+
+    # misc. menu
+    btn = self.control_menu_button = QtWidgets.QPushButton("More\u25BE", self)
+    self.control.layout().addWidget(btn)
+    btn.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
+    btn.customContextMenuRequested.connect(  # right click
+        lambda pnt: self.misc_menu())
+    btn.clicked.connect(  # or left click
+        lambda checked: self.misc_menu())
+
+    # padding
+    self.control.layout().addItem(QtWidgets.QSpacerItem(0, 0, hPolicy=Policy.Expanding))
+
+    # content
+    self.splitter = ClickySplitter(self)
+    self.splitter.setOrientation(Orientation.Vertical)
+    self.layout().addWidget(self.splitter)
+    self.edit_frame = self._add_frame()
+    self.splitter.addWidget(self.edit_frame)
+    self.view_frame = self._add_frame()
+    self.splitter.addWidget(self.view_frame)
+
+    self.control_visible = show_control
+    self.header_visible = show_head
+    self.show()
+
+    # debug
+    self.line_edit.setText("test")
+
+    # toggle control visibility
+    self.toggle_ctrl.clicked.connect(
+        lambda checked: self.control.setVisible(not self.control.isVisible()))
+</t>
+<t tx="ekr.20240527100653.1218">@property
+def header_visible(self):
+    return self.header.isVisible()
+</t>
+<t tx="ekr.20240527100653.1219">@header_visible.setter
+def header_visible(self, state):
+    self.header.setVisible(state)
+</t>
+<t tx="ekr.20240527100653.1220">@property
+def control_visible(self):
+    return self.control.isVisible()
+</t>
+<t tx="ekr.20240527100653.1221">@control_visible.setter
+def control_visible(self, state):
+    self.control.setVisible(state)
+</t>
+<t tx="ekr.20240527100653.1222">def change_goto(self, state, one_shot=False):
+    self.goto = one_shot or bool(state)
+    self.state_changed()
+    self.goto = bool(state)
+</t>
+<t tx="ekr.20240527100653.1223">def change_recurse(self, state, one_shot=False):
+    self.recurse = one_shot or bool(state)
+    self.state_changed()
+    self.recurse = bool(state)
+</t>
+<t tx="ekr.20240527100653.1224">def change_track(self, state, one_shot=False):
+    self.track = one_shot or bool(state)
+    if self.track:
+        p = self.c.p
+        self.new_position(p)
+    self.track = bool(state)
+</t>
+<t tx="ekr.20240527100653.1225">def change_update(self, state, one_shot=False):
+    self.update_flag = one_shot or bool(state)
+    if self.update_flag:
+        p = self.get_position()
+        if p is not None:
+            self.new_position(p)
+    self.update_flag = bool(state)
+</t>
+<t tx="ekr.20240527100653.1226">def close(self):
+    """close - clean up
+    """
+    do_close = QtWidgets.QWidget.close(self)
+    if do_close:
+        signal_manager.disconnect_all(self)
+        for hook, handler in self.handlers:
+            g.unregisterHandler(hook, handler)
+    return do_close
+</t>
+<t tx="ekr.20240527100653.1227">def edit_widget_focus(self):
+    """edit_widget_focus - edit widget got focus"""
+    if self.goto:
+        self.goto_node()
+    self.update_position(self.get_position())
+</t>
+<t tx="ekr.20240527100653.1228">def get_position(self):
+    """get_position - get current position"""
+    return self._find_gnx_node(self.gnx)
+</t>
+<t tx="ekr.20240527100653.1229">def goto_node(self):
+    """goto_node - goto node being edited / viewed"""
+    p = self.get_position()
+    if p and p != self.c.p:
+        self.c.selectPosition(p)
+</t>
+<t tx="ekr.20240527100653.1230">def load_modules(self):
+    """load_modules - load modules to find widgets
+    """
+    module_dir = os.path.dirname(__file__)
+    names = [os.path.splitext(i) for i in os.listdir(module_dir)
+             if os.path.isfile(os.path.join(module_dir, i))]
+    # FIXME: sort 'plain' to start of list for devel.
+    names.sort(key=lambda x: (not x[0].startswith('plain'), x[0]))
+    modules = []
+    for name in [i[0] for i in names if i[1].lower() == '.py']:
+        try:
+            modules.append(import_module('leo.plugins.editpane.' + name))
+        except ImportError as e:
+            g.trace(
+                f"{e.__class__.__name__}: "
+                f"Module not loaded (unmet dependencies?): {name}"
+            )
+    for module in modules:
+        for key in dir(module):
+            value = getattr(module, key)
+            if hasattr(value, 'lep_type') and value not in self.widget_classes:
+                if module not in self.modules:
+                    self.modules.append(module)
+                self.widget_classes.append(value)
+                self.widget_for[value.lep_type].append(value)
+</t>
+<t tx="ekr.20240527100653.1231">def misc_menu(self):
+    """build menu on Action button"""
+    # info needed to separate edit and view widgets in self.widget_classes
+    name_test_current = [
+        ("Editor", lambda x: x.lep_type == 'EDITOR', self.edit_widget.__class__),
+        ("Viewer", lambda x: x.lep_type != 'EDITOR', self.view_widget.__class__),
+    ]
+
+    menu = QtWidgets.QMenu()
+    for name, is_one, current in name_test_current:
+        # list Editor widgets, then Viewer widgets
+        for widget_class in [i for i in self.widget_classes if is_one(i)]:
+
+            def cb(checked, widget_class=widget_class):
+                self.set_widget(widget_class=widget_class)
+
+            act = QAction(f"{name}: {widget_class.lep_name}", self)
+            act.setCheckable(True)
+            act.setChecked(widget_class == current)
+            act.triggered.connect(cb)
+            menu.addAction(act)
+
+    button = self.control_menu_button
+    point = button.position().toPoint()  # Qt6 documentation is wrong.
+    global_point = button.mapToGlobal(point)
+    menu.exec(global_point)
+</t>
+<t tx="ekr.20240527100653.1232">def mode_menu(self):
+    """build menu on Action button"""
+    menu = QtWidgets.QMenu()
+    for mode in 'edit', 'view', 'split':
+        act = QAction(mode.title(), self)
+
+        def cb(checked, self=self, mode=mode):
+            self.set_mode(mode)
+
+        act.triggered.connect(cb)
+        act.setCheckable(True)
+        act.setChecked(mode == self.mode)
+        menu.addAction(act)
+
+    button = self.btn_mode
+    point = button.position().toPoint()  # Qt6 documentation is wrong.
+    global_point = button.mapToGlobal(point)
+    menu.exec(global_point)
+
+</t>
+<t tx="ekr.20240527100653.1233">def new_position(self, p):
+    """new_position - update editor and view for new Leo position
+
+    :param position p: the new position
+    """
+    if self.track:
+        self.gnx = p.gnx
+    else:
+        p = self.get_position()
+
+    self.new_position_edit(p)
+    self.new_position_view(p)
+</t>
+<t tx="ekr.20240527100653.1234">def new_position_edit(self, p):
+    """new_position_edit - update editor for new position
+
+    WARNING: unlike new_position() this uses p without regard
+             for self.track
+
+    :param position p: the new position
+    """
+    if self.mode != 'view':
+        self.edit_widget.new_text(p.b)
+</t>
+<t tx="ekr.20240527100653.1235">def new_position_view(self, p):
+    """new_position_view - update viewer for new position
+
+    WARNING: unlike new_position() this uses p without regard
+             for self.track
+
+    :param position p: the new position
+    """
+    if self.mode != 'edit':
+        if self.recurse:
+            text = g.getScript(self.c, p, useSelectedText=False, useSentinels=False)
+        else:
+            text = p.b
+        self.view_widget.new_text(text)
+</t>
+<t tx="ekr.20240527100653.1236">def text_changed(self, new_text):
+    """text_changed - node text changed by this LEP's editor"""
+
+    # Update p.b
+    p = self.get_position()
+    signal_manager.lock(self)
+    p.b = new_text  # triggers 'body_changed' signal from c
+    self.update_position_view(p)  # as we're ignoring signals
+    signal_manager.unlock(self)
+</t>
+<t tx="ekr.20240527100653.1237">def update_position(self, p):
+    """update_position - update editor and view for current Leo position
+
+    :param position p: the new position
+    """
+    if self.track:
+        our_p = self.c.p
+        assert self.gnx == our_p.gnx
+    else:
+        our_p = self.get_position()
+
+    if p.gnx == our_p.gnx:
+        self.update_position_edit(p)
+        if self.update_flag:
+            self.update_position_view(p)
+</t>
+<t tx="ekr.20240527100653.1238">def update_position_edit(self, p):
+    """update_position_edit - update editor for current position
+
+    WARNING: unlike update_position() this uses p without regard
+             for self.track
+
+    :param position p: the position to update to
+    """
+    if self.mode != 'view':
+        self.edit_widget.update_text(p.b)
+</t>
+<t tx="ekr.20240527100653.1239">def update_position_view(self, p):
+    """update_position_view - update viewer for current position
+
+    WARNING: unlike update_position() this uses p without regard
+             for self.track
+
+    :param position p: the position to update to
+    """
+    if self.update_flag and self.mode != 'edit':
+        if self.recurse:
+            text = g.getScript(self.c, p, useSelectedText=False, useSentinels=False)
+        else:
+            text = p.b
+        self.view_widget.update_text(text)
+</t>
+<t tx="ekr.20240527100653.1240">def render(self, checked):
+    pass
+</t>
+<t tx="ekr.20240527100653.1241">def set_widget(self, widget_class=None, lep_type='TEXT'):
+    """set_widget - set edit or view widget
+
+    :param QWidget widget: widget to use
+    """
+
+    if widget_class is None:
+        widget_class = [i for i in self.widget_classes if i.lep_type == lep_type][0]
+    if hasattr(
+        widget_class, 'lep_type') and widget_class.lep_type.startswith('EDITOR'):
+        frame = self.edit_frame
+        attr = 'edit_widget'
+        update = self.new_position_edit
+    else:
+        frame = self.view_frame
+        attr = 'view_widget'
+        update = self.new_position_view
+    widget = widget_class(c=self.c, lep=self)
+
+    setattr(self, attr, widget)
+    for i in reversed(range(frame.layout().count())):
+        frame.layout().itemAt(i).widget().setParent(None)
+    frame.layout().addWidget(widget)
+    update(self.get_position())
+</t>
+<t tx="ekr.20240527100653.1242">def set_mode(self, mode):
+    """set_mode - change mode edit / view / split
+
+    :param str mode: mode to change to
+
+    """
+    self.mode = mode
+    self.btn_mode.setText(f"{mode.title()}\u25BE")
+    self.state_changed()
+</t>
+<t tx="ekr.20240527100653.1243">def state_changed(self):
+    """state_changed - control state has changed
+    """
+    if self.goto and self.get_position() != self.c.p:
+        self.goto_node()
+
+    if self.mode == 'edit':
+        self.edit_frame.show()
+        self.view_frame.hide()
+    elif self.mode == 'view':
+        self.edit_frame.hide()
+        self.view_frame.show()
+    else:
+        self.edit_frame.show()
+        self.view_frame.show()
+
+    self.update_position(self.c.p)
+</t>
+<t tx="ekr.20240527100653.1244">class LeoGui:
+    """The base class of all gui classes.
+
+    Subclasses are expected to override all do-nothing methods of this class.
+    """
+    @others
+</t>
+<t tx="ekr.20240527100653.1245">def __init__(self, guiName: str) -&gt; None:
+    """Ctor for the LeoGui class."""
+    self.active = False  # Used only by qt_gui.
+    self.consoleOnly = True  # True if g.es goes to console.
+    self.globalFindTabManager: FindTabManager = None
+    self.globalFindTab: Widget = None
+    self.idleTimeClass: Any = None  # Hard to annotate.
+    self.isNullGui = False
+    self.lastFrame: Widget = None
+    self.leoIcon = None
+    self.mGuiName = guiName
+    self.mainLoop = None
+    self.plainTextWidget: Widget = None  # For SpellTabHandler class only.
+    self.root: Position = None
+    self.script: Optional[str] = None
+    self.splashScreen: Widget = None
+    self.utils = None
+    # To keep pylint happy.
+    self.ScriptingControllerClass = NullScriptingControllerClass
+    #
+    # Define special keys that may be overridden is subclasses.
+    self.ignoreChars: list[str] = []  # Keys that should always be ignored.
+    self.FKeys: list[str] = []  # The representation of F-keys.
+    self.specialChars: list[str] = []  # A list of characters/keys to be handle specially.
+</t>
+<t tx="ekr.20240527100653.1246">def widget_name(self, w: Widget) -&gt; str:
+    # First try the widget's getName method.
+    if not w:
+        return '&lt;no widget&gt;'
+    if hasattr(w, 'getName'):
+        return w.getName()
+    if hasattr(w, '_name'):
+        return w._name
+    return repr(w)
+</t>
+<t tx="ekr.20240527100653.1247">def dismiss_splash_screen(self) -&gt; None:
+    pass
+
+def ensure_commander_visible(self, c: Cmdr) -&gt; None:
+    """Make sure c's tab is visible"""
+
+def finishCreate(self) -&gt; None:
+    pass
+
+def postPopupMenu(self, *args: str, **keys: str) -&gt; None:
+    pass
+
+def put_help(self, c: Cmdr, s: str, short_title: str) -&gt; None:
+    pass
+</t>
+<t tx="ekr.20240527100653.1248"></t>
+<t tx="ekr.20240527100653.1249">def destroySelf(self) -&gt; None:
+    raise NotImplementedError
+</t>
+<t tx="ekr.20240527100653.1250">def runAboutLeoDialog(self,
+    c: Cmdr, version: str, theCopyright: str, url: str, email: str,
+) -&gt; Any:  # Must be any, for compatibility with testing subclass.
+    """Create and run Leo's About Leo dialog."""
+    raise NotImplementedError
+
+def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -&gt; Any:
+    """Create and run an askOK dialog ."""
+    raise NotImplementedError
+
+def runAskOkCancelNumberDialog(self,
+    c: Cmdr,
+    title: str,
+    message: str,
+    cancelButtonText: str = None,
+    okButtonText: str = None,
+) -&gt; Any:
+    """Create and run askOkCancelNumber dialog ."""
+    raise NotImplementedError
+
+def runAskOkCancelStringDialog(
+    self,
+    c: Cmdr,
+    title: str,
+    message: str,
+    cancelButtonText: str = None,
+    okButtonText: str = None,
+    default: str = "",
+    wide: bool = False,
+) -&gt; Any:
+    """Create and run askOkCancelString dialog ."""
+    raise NotImplementedError
+
+def runAskYesNoDialog(self,
+    c: Cmdr,
+    title: str,
+    message: str = None,
+    yes_all: bool = False,
+    no_all: bool = False,
+) -&gt; Any:
+    """Create and run an askYesNo dialog."""
+    raise NotImplementedError
+
+def runAskYesNoCancelDialog(
+    self,
+    c: Cmdr,
+    title: str,
+    message: str = None,
+    yesMessage: str = "Yes",
+    noMessage: str = "No",
+    yesToAllMessage: str = None,
+    defaultButton: str = "Yes",
+    cancelMessage: str = None,
+) -&gt; Any:
+    """Create and run an askYesNoCancel dialog ."""
+    raise NotImplementedError
+
+def runPropertiesDialog(self,
+    title: str = 'Properties',
+    data: Any = None,
+    callback: Callable = None,
+    buttons: list[str] = None,
+) -&gt; Any:
+    """Display a modal TkPropertiesDialog"""
+    raise NotImplementedError
+</t>
+<t tx="ekr.20240527100653.1251">def runOpenFileDialog(self,
+    c: Cmdr,
+    title: str,
+    *,
+    filetypes: list[tuple[str, str]],
+    defaultextension: str = '',
+    startpath: str = None,
+) -&gt; str:
+    """Create and run an open file dialog ."""
+    raise NotImplementedError
+
+def runOpenFilesDialog(self,
+    c: Cmdr,
+    title: str,
+    *,
+    filetypes: list[tuple[str, str]],
+    defaultextension: str = '',
+    startpath: str = None,
+) -&gt; list[str]:
+    """Create and run an open files dialog ."""
+    raise NotImplementedError
+
+def runSaveFileDialog(
+    self,
+    c: Cmdr,
+    title: str,
+    *,
+    filetypes: list[tuple[str, str]],
+    defaultextension: str,
+) -&gt; str:
+    """Create and run a save file dialog ."""
+    raise NotImplementedError
+</t>
+<t tx="ekr.20240527100653.1252">def createComparePanel(self, c: Cmdr) -&gt; None:
+    """Create Compare panel."""
+    raise NotImplementedError
+
+def createFindTab(self, c: Cmdr, parentFrame: Widget) -&gt; None:
+    """Create a find tab in the indicated frame."""
+    raise NotImplementedError
+
+def createFontPanel(self, c: Cmdr) -&gt; None:
+    """Create a hidden Font panel."""
+    raise NotImplementedError
+
+def createLeoFrame(self, c: Cmdr, title: str) -&gt; Widget:
+    """Create a new Leo frame."""
+    raise NotImplementedError
+</t>
+<t tx="ekr.20240527100653.1253">def runMainLoop(self) -&gt; None:
+    """Run the gui's main loop."""
+    raise NotImplementedError
+</t>
+<t tx="ekr.20240527100653.1254">@ Subclasses are expected to subclass all of the following methods.
+These are all do-nothing methods: callers are expected to check for
+None returns.
+The type of commander passed to methods depends on the type of frame
+or dialog being created. The commander may be a Commands instance or
+one of its subcommanders.
+</t>
+<t tx="ekr.20240527100653.1255">def replaceClipboardWith(self, s: str) -&gt; None:
+    raise NotImplementedError
+
+def getTextFromClipboard(self) -&gt; str:
+    raise NotImplementedError
+</t>
+<t tx="ekr.20240527100653.1256">def attachLeoIcon(self, window: Any) -&gt; None:
+    """Attach the Leo icon to a window."""
+    raise NotImplementedError
+
+def center_dialog(self, dialog: str) -&gt; None:
+    """Center a dialog."""
+    raise NotImplementedError
+
+def create_labeled_frame(self,
+    parent: str,
+    caption: str = None,
+    relief: str = "groove",
+    bd: int = 2,
+    padx: int = 0,
+    pady: int = 0,
+) -&gt; None:
+    """Create a labeled frame."""
+    raise NotImplementedError
+
+def get_window_info(self, window: str) -&gt; tuple[int, int, int, int]:
+    """Return the window information."""
+    raise NotImplementedError
+</t>
+<t tx="ekr.20240527100653.1257">def getFontFromParams(self,
+    family: str, size: str, slant: str, weight: str, defaultSize: int = 12, tag: str = '',
+) -&gt; Any:
+    raise NotImplementedError
+</t>
+<t tx="ekr.20240527100653.1258">def getFullVersion(self, c: Cmdr = None) -&gt; str:
+    return 'LeoGui: dummy version'
+</t>
+<t tx="ekr.20240527100653.1259">def makeScriptButton(
+    self,
+    c: Cmdr,
+    args: str = None,
+    p: Position = None,
+    script: str = None,
+    buttonText: str = None,
+    balloonText: str = 'Script Button',
+    shortcut: str = None,
+    bg: str = 'LightSteelBlue1',
+    define_g: bool = True,
+    define_name: str = '__main__',
+    silent: bool = False,
+) -&gt; None:
+    raise NotImplementedError
+</t>
+<t tx="ekr.20240527100653.1260"></t>
+<t tx="ekr.20240527100653.1261">def create_key_event(
+    self,
+    c: Cmdr,
+    binding: str = None,
+    char: str = None,
+    event: LeoKeyEvent = None,
+    w: Wrapper = None,
+    x: int = None,
+    x_root: int = None,
+    y: int = None,
+    y_root: int = None,
+) -&gt; LeoKeyEvent:
+    # Do not call strokeFromSetting here!
+    # For example, this would wrongly convert Ctrl-C to Ctrl-c,
+    # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
+    return LeoKeyEvent(c, char, event, binding, w, x, y, x_root, y_root)
+</t>
+<t tx="ekr.20240527100653.1262">def guiName(self) -&gt; str:
+    try:
+        return self.mGuiName
+    except Exception:
+        return "invalid gui name"
+</t>
+<t tx="ekr.20240527100653.1263">def setScript(self, script: str = None, scriptFileName: str = None) -&gt; None:
+    self.script = script
+    self.scriptFileName = scriptFileName
+</t>
+<t tx="ekr.20240527100653.1264">def event_generate(self, c: Cmdr, char: str, shortcut: str, w: Wrapper) -&gt; None:
+    event = self.create_key_event(c, binding=shortcut, char=char, w=w)
+    c.k.masterKeyHandler(event)
+    c.outerUpdate()
+</t>
+<t tx="ekr.20240527100653.1265">class LeoQtGui(leoGui.LeoGui):
+    """A class implementing Leo's Qt gui."""
+    @others
+</t>
+<t tx="ekr.20240527100653.1266">def __init__(self) -&gt; None:
+    """Ctor for LeoQtGui class."""
+    super().__init__('qt')  # Initialize the base class.
+    self.active = True
+    self.consoleOnly = False  # Console is separate from the log.
+    self.iconimages: dict[str, QIcon] = {}  # Keys are paths, values are Icons.
+    self.globalFindDialog: QDialog = None
+    self.idleTimeClass = qt_idle_time.IdleTime
+    self.insert_char_flag = False  # A flag for eventFilter.
+    self.mGuiName = 'qt'
+    self.plainTextWidget = qt_text.PlainTextWrapper
+    self.show_tips_flag = False  # #2390: Can't be inited in reload_settings.
+    self.styleSheetManagerClass = StyleSheetManager
+    # Be aware of the systems native colors, fonts, etc.
+    QtWidgets.QApplication.setDesktopSettingsAware(True)
+    # Create objects...
+    self.qtApp = QtWidgets.QApplication(sys.argv)
+    self.reloadSettings()
+    self.appIcon = self.getIconImage('leoapp32.png')
+
+    # Define various classes key stokes.
+    &lt;&lt; define FKeys &gt;&gt;
+    &lt;&lt; define ignoreChars &gt;&gt;
+    &lt;&lt; define specialChars &gt;&gt;
+    # Put up the splash screen()
+    if (g.app.use_splash_screen and
+        not g.app.batchMode and
+        not g.app.silentMode and
+        not g.unitTesting
+    ):
+        self.splashScreen = self.createSplashScreen()
+    # qtFrame.finishCreate does all the other work.
+    self.frameFactory = qt_frame.TabbedFrameFactory()
+
+def reloadSettings(self) -&gt; None:
+    pass  # Note: self.c does not exist.
+</t>
+<t tx="ekr.20240527100653.1267">self.FKeys = [
+    'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12']
+    # These do not generate keystrokes on MacOs.
+</t>
+<t tx="ekr.20240527100653.1268"># Always ignore these characters
+self.ignoreChars = [
+    # These are in ks.special characters.
+    # They should *not* be ignored.
+        # 'Left', 'Right', 'Up', 'Down',
+        # 'Next', 'Prior',
+        # 'Home', 'End',
+        # 'Delete', 'Escape',
+        # 'BackSpace', 'Linefeed', 'Return', 'Tab',
+    # F-Keys are also ok.
+        # 'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
+    'KP_0', 'KP_1', 'KP_2', 'KP_3', 'KP_4', 'KP_5', 'KP_6', 'KP_7', 'KP_8', 'KP_9',
+    'KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab',
+    'KP_F1', 'KP_F2', 'KP_F3', 'KP_F4',
+    # Keypad chars should be have been converted to other keys.
+    # Users should just bind to the corresponding normal keys.
+    'KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
+    'CapsLock', 'Caps_Lock',
+    'NumLock', 'Num_Lock',
+    'ScrollLock',
+    'Alt_L', 'Alt_R',
+    'Control_L', 'Control_R',
+    'Meta_L', 'Meta_R',
+    'Shift_L', 'Shift_R',
+    'Win_L', 'Win_R',  # Clearly, these should never be generated.
+    # These are real keys, but they don't mean anything.
+    'Break', 'Pause', 'Sys_Req',
+    'Begin', 'Clear',  # Don't know what these are.
+]
+</t>
+<t tx="ekr.20240527100653.1269"># Keys whose names must never be inserted into text.
+self.specialChars = [
+    # These are *not* special keys.
+        # 'BackSpace', 'Linefeed', 'Return', 'Tab',
+    'Left', 'Right', 'Up', 'Down',  # Arrow keys
+    'Next', 'Prior',  # Page up/down keys.
+    'Home', 'End',  # Home end keys.
+    'Delete', 'Escape',  # Others.
+    'Enter', 'Insert', 'Ins',  # These should only work if bound.
+    'Menu',  # #901.
+    'PgUp', 'PgDn',  # #868.
+]
+</t>
+<t tx="ekr.20240527100653.1270">def destroySelf(self) -&gt; None:
+
+    QtCore.pyqtRemoveInputHook()
+    if 'shutdown' in g.app.debug:
+        g.pr('LeoQtGui.destroySelf: calling qtApp.Quit')
+    self.qtApp.quit()
+</t>
+<t tx="ekr.20240527100653.1271"></t>
+<t tx="ekr.20240527100653.1272">def replaceClipboardWith(self, s: str) -&gt; None:
+    """Replace the clipboard with the string s."""
+    cb = self.qtApp.clipboard()
+    if cb:
+        # cb.clear()  # unnecessary, breaks on some Qt versions
+        s = g.toUnicode(s)
+        QtWidgets.QApplication.processEvents()
+        # Fix #241: QMimeData object error
+        cb.setText(s)
+        QtWidgets.QApplication.processEvents()
+    else:
+        g.trace('no clipboard!')
+</t>
+<t tx="ekr.20240527100653.1273">def getTextFromClipboard(self) -&gt; str:
+    """Get a unicode string from the clipboard."""
+    cb = self.qtApp.clipboard()
+    if cb:
+        QtWidgets.QApplication.processEvents()
+        return cb.text()
+    g.trace('no clipboard!')
+    return ''
+</t>
+<t tx="ekr.20240527100653.1274">def setClipboardSelection(self, s: str) -&gt; None:
+    """
+    Set the clipboard selection to s.
+    There are problems with PyQt5.
+    """
+    # Alas, returning s reopens #218.
+    return
+
+</t>
+<t tx="ekr.20240527100653.1275"></t>
+<t tx="ekr.20240527100653.1276">def _save_focus(self, c):
+    """
+    Save the data needed to restore focus to the body.
+
+    We have to guess: the user may have executed the save commands from the
+    minibuffer. There is no way to know what the "original" focus was!
+    """
+    c.p.saveCursorAndScroll()
+
+def _restore_focus(self, c):
+    """Restore focus to the body pane."""
+    # Fix #3601 by brute force.
+    c.bringToFront()
+    c.bodyWantsFocusNow()
+    c.p.restoreCursorAndScroll()
+</t>
+<t tx="ekr.20240527100653.1277">def alert(self, c: Cmdr, message: str) -&gt; None:
+    if g.unitTesting:
+        return
+    dialog = QtWidgets.QMessageBox(None)
+    dialog.setWindowTitle('Alert')
+    dialog.setText(message)
+    dialog.setIcon(Icon.Warning)
+    dialog.addButton('Ok', ButtonRole.YesRole)
+    try:
+        c.in_qt_dialog = True
+        dialog.raise_()
+        dialog.exec()
+    finally:
+        c.in_qt_dialog = False
+</t>
+<t tx="ekr.20240527100653.1278">def makeFilter(self, filetypes: list[tuple[str, str]]) -&gt; str:
+    """Return the Qt-style dialog filter from filetypes list."""
+    # Careful: the second %s is *not* replaced.
+    filters = ['%s (%s)' % (z) for z in filetypes]
+    return ';;'.join(filters)
+</t>
+<t tx="ekr.20240527100653.1279">def openFindDialog(self, c: Cmdr) -&gt; None:
+    if g.unitTesting:
+        return
+    dialog = self.globalFindDialog
+    if not dialog:
+        dialog = self.createFindDialog(c)
+        self.globalFindDialog = dialog
+        # Fix #516: Do the following only once...
+        if c:
+            # dialog.setStyleSheet(c.active_stylesheet)
+            # Set the commander's FindTabManager.
+            assert g.app.globalFindTabManager
+            c.ftm = g.app.globalFindTabManager
+            fn = c.shortFileName() or 'Untitled'
+        else:
+            fn = 'Untitled'
+        dialog.setWindowTitle(f"Find in {fn}")
+    if c:
+        c.inCommand = False
+    if dialog.isVisible():
+        # The order is important, and tricky.
+        dialog.focusWidget()
+        dialog.show()
+        dialog.raise_()
+        dialog.activateWindow()
+    else:
+        dialog.show()
+        dialog.exec()
+</t>
+<t tx="ekr.20240527100653.1280">def createFindDialog(self, c: Cmdr) -&gt; QDialog:
+    """Create and init a non-modal Find dialog."""
+    if c:
+        g.app.globalFindTabManager = c.findCommands.ftm
+    top: Optional[QWidget] = c.frame.top if c else None
+    w = top.findTab  # type:ignore
+    dialog = QtWidgets.QDialog()
+
+    # Fix #516: Hide the dialog. Never delete it.
+
+    def closeEvent(event: QEvent) -&gt; None:
+        event.ignore()
+        dialog.hide()
+
+    dialog.closeEvent = closeEvent  # type:ignore # cannot assign to method.
+    layout = QtWidgets.QVBoxLayout(dialog)
+    layout.addWidget(w)
+    self.attachLeoIcon(dialog)
+    dialog.setLayout(layout)
+    if c:
+        # c.styleSheetManager.set_style_sheets(w=dialog)
+        g.app.gui.setFilter(c, dialog, dialog, 'find-dialog')
+        # This makes most standard bindings available.
+    dialog.setModal(False)
+    return dialog
+</t>
+<t tx="ekr.20240527100653.1281">def createComparePanel(self, c: Cmdr) -&gt; None:
+    """Create a qt color picker panel."""
+    pass  # This window is optional.
+
+def createFindTab(self, c: Cmdr, parentFrame: QWidget) -&gt; None:
+    """Create a qt find tab in the indicated frame."""
+    pass  # Now done in dw.createFindTab.
+
+def createLeoFrame(self, c: Cmdr, title: str) -&gt; qt_frame.LeoQtFrame:
+    """Create a new Leo frame."""
+    return qt_frame.LeoQtFrame(c, title, gui=self)
+
+def createSpellTab(self, c: Cmdr, spellHandler: Callable, tabName: str) -&gt; qt_frame.LeoQtSpellTab:
+    if g.unitTesting:
+        return None
+    return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
+</t>
+<t tx="ekr.20240527100653.1282">def runAboutLeoDialog(self,
+    c: Cmdr, version: str, theCopyright: str, url: str, email: str,
+) -&gt; None:
+    """Create and run a qt About Leo dialog."""
+    if g.unitTesting:
+        return
+
+    # Create the dialog.
+    top_frame: Optional[QWidget] = c.frame.top if c else None
+    dialog = QtWidgets.QMessageBox(top_frame)
+    ssm = g.app.gui.styleSheetManagerClass(c)
+    w = ssm.get_master_widget()
+    sheet = w.styleSheet()
+    if sheet:
+        dialog.setStyleSheet(sheet)
+    dialog.setText(f"{version}\n{theCopyright}\n{url}\n{email}")
+    dialog.setIcon(Icon.Information)
+    yes = dialog.addButton('Ok', ButtonRole.YesRole)
+    dialog.setDefaultButton(yes)
+
+    # Run the dialog, saving and restoring focus.
+    try:
+        self._save_focus(c)
+        c.in_qt_dialog = True
+        dialog.raise_()
+        dialog.exec()
+    finally:
+        c.in_qt_dialog = False
+        self._restore_focus(c)
+</t>
+<t tx="ekr.20240527100653.1283">def runAskDateTimeDialog(
+    self,
+    c: Cmdr,
+    title: str,
+    message: str = 'Select Date/Time',
+    init: datetime.datetime = None,
+    step_min: dict = None,
+) -&gt; Optional[Any]:
+    """Create and run a qt date/time selection dialog.
+
+    init - a datetime, default now
+    step_min - a dict, keys are QtWidgets.QDateTimeEdit Sections, like
+      QtWidgets.QDateTimeEdit.MinuteSection, and values are integers,
+      the minimum amount that section of the date/time changes
+      when you roll the mouse wheel.
+
+    E.g. (5 minute increments in minute field):
+
+        g.app.gui.runAskDateTimeDialog(c, 'When?',
+            message="When is it?",
+            step_min={QtWidgets.QDateTimeEdit.MinuteSection: 5})
+
+    """
+    &lt;&lt; define date/time classes &gt;&gt;
+    if g.unitTesting:
+        return None
+    if step_min is None:
+        step_min = {}
+    if not init:
+        init = datetime.datetime.now()
+    top_frame: Optional[QWidget] = c.frame.top if c else None
+    dialog = Calendar(top_frame, message=message, init=init, step_min=step_min)
+    if c:
+        ssm = g.app.gui.styleSheetManagerClass(c)
+        w = ssm.get_master_widget()
+        sheet = w.styleSheet()
+        if sheet:
+            dialog.setStyleSheet(sheet)
+        dialog.setStyleSheet(c.active_stylesheet)
+        dialog.setWindowTitle(title)
+        try:
+            c.in_qt_dialog = True
+            dialog.raise_()
+            val = dialog.exec()
+        finally:
+            c.in_qt_dialog = False
+    else:
+        dialog.setWindowTitle(title)
+        dialog.raise_()
+        val = dialog.exec()
+    if val == DialogCode.Accepted:
+        return dialog.dt.dateTime().toPyDateTime()
+    return None
+</t>
+<t tx="ekr.20240527100653.1284">class DateTimeEditStepped(QtWidgets.QDateTimeEdit):
+    """
+    QDateTimeEdit which allows you to set minimum steps on fields, e.g.
+      DateTimeEditStepped(parent, {QtWidgets.QDateTimeEdit.MinuteSection: 5})
+    for a minimum 5 minute increment on the minute field.
+    """
+
+    def __init__(self, parent: QWidget = None, init: Any = None, step_min: dict = None) -&gt; None:
+        if step_min is None:
+            step_min = {}
+        self.step_min = step_min
+        if init:
+            super().__init__(init, parent)
+        else:
+            super().__init__(parent)
+
+    def stepBy(self, step: int) -&gt; None:
+        cs = self.currentSection()
+        if cs in self.step_min and abs(step) &lt; self.step_min[cs]:
+            step = self.step_min[cs] if step &gt; 0 else -self.step_min[cs]
+        QtWidgets.QDateTimeEdit.stepBy(self, step)
+
+
+class Calendar(QtWidgets.QDialog):
+
+    def __init__(
+        self,
+        parent: QWidget = None,
+        message: str = 'Select Date/Time',
+        init: Any = None,  # Hard to annotate.
+        step_min: dict = None,
+    ) -&gt; None:
+        if step_min is None:
+            step_min = {}
+        super().__init__(parent)
+        layout = QtWidgets.QVBoxLayout()
+        self.setLayout(layout)
+        layout.addWidget(QtWidgets.QLabel(message))
+        self.dt = DateTimeEditStepped(init=init, step_min=step_min)
+        self.dt.setCalendarPopup(True)
+        layout.addWidget(self.dt)
+        buttonBox = QtWidgets.QDialogButtonBox(StandardButton.Ok | StandardButton.Cancel)
+        layout.addWidget(buttonBox)
+        buttonBox.accepted.connect(self.accept)
+        buttonBox.rejected.connect(self.reject)
+
+</t>
+<t tx="ekr.20240527100653.1285">def runAskOkCancelNumberDialog(self,
+    c: Cmdr, title: str, message: str, cancelButtonText: str = None, okButtonText: str = None,
+) -&gt; Optional[int]:
+    """Create and run askOkCancelNumber dialog ."""
+    if g.unitTesting:
+        return None
+    # n,ok = QtWidgets.QInputDialog.getDouble(None,title,message)
+    dialog = QtWidgets.QInputDialog()
+    ssm = g.app.gui.styleSheetManagerClass(c)
+    w = ssm.get_master_widget()
+    sheet = w.styleSheet()
+    if sheet:
+        dialog.setStyleSheet(sheet)
+    dialog.setWindowTitle(title)
+    dialog.setLabelText(message)
+    if cancelButtonText:
+        dialog.setCancelButtonText(cancelButtonText)
+    if okButtonText:
+        dialog.setOkButtonText(okButtonText)
+    self.attachLeoIcon(dialog)
+    dialog.raise_()
+    ok = dialog.exec()
+    if not ok:
+        return None
+    n = dialog.textValue()
+    int_n: Optional[int]
+    try:
+        int_n = int(n)
+    except ValueError:
+        int_n = None
+    return int_n
+</t>
+<t tx="ekr.20240527100653.1286">def runAskOkCancelStringDialog(
+    self,
+    c: Cmdr,
+    title: str,
+    message: str,
+    cancelButtonText: str = None,
+    okButtonText: str = None,
+    default: str = "",
+    wide: bool = False,
+) -&gt; Optional[str]:
+    """Create and run askOkCancelString dialog.
+
+    wide - edit a long string
+    """
+    if g.unitTesting:
+        return None
+    dialog = QtWidgets.QInputDialog()
+    ssm = g.app.gui.styleSheetManagerClass(c)
+    w = ssm.get_master_widget()
+    sheet = w.styleSheet()
+    if sheet:
+        dialog.setStyleSheet(sheet)
+    dialog.setWindowTitle(title)
+    dialog.setLabelText(message)
+    dialog.setTextValue(default)
+    if wide:
+        dialog.resize(int(g.windows()[0].get_window_info()[0] * .9), 100)
+    if cancelButtonText:
+        dialog.setCancelButtonText(cancelButtonText)
+    if okButtonText:
+        dialog.setOkButtonText(okButtonText)
+    self.attachLeoIcon(dialog)
+    dialog.raise_()
+    ok = dialog.exec()
+    return str(dialog.textValue()) if ok else None
+</t>
+<t tx="ekr.20240527100653.1287">def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -&gt; None:
+    """Create and run a qt askOK dialog ."""
+    if g.unitTesting:
+        return
+
+    # Create the dialog.
+    top_frame: Optional[QWidget] = c.frame.top if c else None
+    dialog = QtWidgets.QMessageBox(top_frame)
+    dialog.setWindowTitle(title)
+    if message:
+        dialog.setText(message)
+    dialog.setIcon(Information.Information)
+    yes = dialog.addButton(text, ButtonRole.YesRole)
+    dialog.setDefaultButton(yes)  # 2023/10/10.
+
+    # Run the dialog.
+    try:
+        self._save_focus(c)
+        c.in_qt_dialog = True
+        dialog.raise_()
+        dialog.exec()
+    finally:
+        c.in_qt_dialog = False
+        self._restore_focus(c)
+</t>
+<t tx="ekr.20240527100653.1288">def runAskYesNoCancelDialog(
+    self,
+    c: Cmdr,
+    title: str,
+    message: str = None,
+    yesMessage: str = "&amp;Yes",
+    noMessage: str = "&amp;No",
+    yesToAllMessage: str = None,
+    defaultButton: str = "Yes",
+    cancelMessage: str = None,
+) -&gt; str:
+    """
+    Create and run an askYesNo dialog.
+
+    Return one of ('yes', 'no', 'cancel', 'yes-to-all').
+
+    """
+    if g.unitTesting:
+        return None
+
+    # Create the dialog.
+    top_frame: Optional[QWidget] = c.frame.top if c else None
+    dialog = QtWidgets.QMessageBox(top_frame)
+    if message:
+        dialog.setText(message)
+    dialog.setIcon(Information.Warning)
+    dialog.setWindowTitle(title)
+    # Creation order determines returned value.
+    yes = dialog.addButton(yesMessage, ButtonRole.YesRole)
+    no = dialog.addButton(noMessage, ButtonRole.NoRole)
+    cancel = dialog.addButton(cancelMessage or 'Cancel', ButtonRole.RejectRole)
+    if yesToAllMessage:
+        dialog.addButton(yesToAllMessage, ButtonRole.YesRole)
+    if defaultButton == "Yes":
+        dialog.setDefaultButton(yes)
+    elif defaultButton == "No":
+        dialog.setDefaultButton(no)
+    else:
+        dialog.setDefaultButton(cancel)
+
+    # Run the dialog, saving and restoring focus.
+    try:
+        self._save_focus(c)
+        c.in_qt_dialog = True
+        dialog.raise_()  # #2246.
+        val = dialog.exec()
+    finally:
+        c.in_qt_dialog = False
+        self._restore_focus(c)
+
+    # val is the same as the creation order.
+    # Tested with both Qt6 and Qt5.
+    return {
+        0: 'yes', 1: 'no', 2: 'cancel', 3: 'yes-to-all',
+    }.get(val, 'cancel')
+</t>
+<t tx="ekr.20240527100653.1289">def runAskYesNoDialog(self,
+    c: Cmdr, title: str, message: str = None, yes_all: bool = False, no_all: bool = False,
+) -&gt; str:
+    """
+    Create and run an askYesNo dialog.
+    Return one of ('yes','yes-all','no','no-all')
+
+    :Parameters:
+    - `c`: commander
+    - `title`: dialog title
+    - `message`: dialog message
+    - `yes_all`: bool - show YesToAll button
+    - `no_all`: bool - show NoToAll button
+    """
+    if g.unitTesting:
+        return None
+
+    # Create the dialog.
+    top_frame: Optional[QWidget] = c.frame.top if c else None
+    dialog = QtWidgets.QMessageBox(top_frame)
+    # Creation order determines returned value.
+    yes = dialog.addButton('Yes', ButtonRole.YesRole)
+    dialog.addButton('No', ButtonRole.NoRole)
+    # dialog.addButton('Cancel', ButtonRole.RejectRole)
+    if yes_all:
+        dialog.addButton('Yes To All', ButtonRole.YesRole)
+    if no_all:
+        dialog.addButton('No To All', ButtonRole.NoRole)
+    dialog.setWindowTitle(title)
+    if message:
+        dialog.setText(message)
+    dialog.setIcon(Information.Warning)
+    dialog.setDefaultButton(yes)
+
+    if c:
+        # Run the dialog, saving and restoring focus.
+        try:
+            self._save_focus(c)
+            c.in_qt_dialog = True
+            dialog.raise_()
+            val = dialog.exec()
+        finally:
+            c.in_qt_dialog = False
+            self._restore_focus(c)
+    else:
+        # There is no way to save/restore focus.
+        dialog.raise_()
+        val = dialog.exec()
+
+    # Create the return dictionary.
+    # val is the same as the creation order.
+    # Tested with both Qt6 and Qt5.
+    return_d = {0: 'yes', 1: 'no'}
+    if yes_all and no_all:
+        return_d[2] = 'yes-all'
+        return_d[3] = 'no-all'
+    elif yes_all:
+        return_d[2] = 'yes-all'
+    elif no_all:
+        return_d[2] = 'no-all'
+    return return_d.get(val, 'cancel')
+</t>
+<t tx="ekr.20240527100653.1290">def runOpenDirectoryDialog(self, title: str, startdir: str) -&gt; Optional[str]:
+    """Create and run an Qt open directory dialog ."""
+    if g.unitTesting:
+        return None
+    dialog = QtWidgets.QFileDialog()
+    self.attachLeoIcon(dialog)
+    return dialog.getExistingDirectory(None, title, startdir)
+</t>
+<t tx="ekr.20240527100653.1291">def runOpenFileDialog(
+    self,
+    c: Cmdr,
+    title: str,
+    *,
+    filetypes: list[tuple[str, str]],
+    defaultextension: str = '',
+    startpath: str = None,
+) -&gt; str:
+    """
+    Create and run an Qt open file dialog.
+    """
+    if g.unitTesting:
+        return ''
+
+    # 2018/03/14: Bug fixes:
+    # - Use init_dialog_folder only if a path is not given
+    # - *Never* Use os.curdir by default!
+    if not startpath:
+        # Returns c.last_dir or os.curdir
+        startpath = g.init_dialog_folder(c, c.p, use_at_path=True)
+    filter_ = self.makeFilter(filetypes)
+    dialog = QtWidgets.QFileDialog()
+    self.attachLeoIcon(dialog)
+    dialog_val: tuple[str, Any]
+    val: str
+    if c:
+        try:
+            c.in_qt_dialog = True
+            dialog_val = dialog.getOpenFileName(parent=None, caption=title, directory=startpath, filter=filter_)
+        finally:
+            c.in_qt_dialog = False
+    else:
+        dialog_val = dialog.getOpenFileName(parent=None, caption=title, directory=startpath, filter=filter_)
+    # This is a *PyQt* change, not a Qt change.
+    val, junk_selected_filter = dialog_val
+    s = g.os_path_normslashes(val)
+    if c and s:
+        c.last_dir = g.os_path_dirname(s)
+    return s
+</t>
+<t tx="ekr.20240527100653.1292">def runOpenFilesDialog(
+    self,
+    c: Cmdr,
+    title: str,
+    *,
+    filetypes: list[tuple[str, str]],
+    defaultextension: str = '',
+    startpath: str = None,
+) -&gt; list[str]:
+    """
+    Create and run an Qt open file dialog.
+    """
+    if g.unitTesting:
+        return []
+
+    # 2018/03/14: Bug fixes:
+    # - Use init_dialog_folder only if a path is not given
+    # - *Never* Use os.curdir by default!
+    if not startpath:
+        # Returns c.last_dir or os.curdir
+        startpath = g.init_dialog_folder(c, c.p, use_at_path=True)
+    filter_ = self.makeFilter(filetypes)
+    dialog = QtWidgets.QFileDialog()
+    self.attachLeoIcon(dialog)
+    dialog_val: tuple[list[str], Any]
+    val = list[str]
+    if c:
+        try:
+            c.in_qt_dialog = True
+            dialog_val = dialog.getOpenFileNames(parent=None, caption=title, directory=startpath, filter=filter_)
+        finally:
+            c.in_qt_dialog = False
+
+    else:
+        dialog_val = dialog.getOpenFileNames(parent=None, caption=title, directory=startpath, filter=filter_)
+    # This is a *PyQt* change, not a Qt change.
+    val, _ = dialog_val  # type:ignore
+    files = [g.os_path_normslashes(s) for s in val]
+    if c and files:
+        c.last_dir = g.os_path_dirname(files[-1])
+    return files
+</t>
+<t tx="ekr.20240527100653.1293">def runPropertiesDialog(
+    self,
+    title: str = 'Properties',
+    data: Any = None,
+    callback: Callable = None,
+    buttons: list[str] = None,
+) -&gt; tuple[str, dict]:
+    """Display a modal TkPropertiesDialog"""
+    if not g.unitTesting:
+        g.warning('Properties menu not supported for Qt gui')
+    return 'Cancel', {}
+</t>
+<t tx="ekr.20240527100653.1294">def runSaveFileDialog(self,
+    c: Cmdr,
+    title: str = 'Save',
+    filetypes: list[tuple[str, str]] = None,
+    defaultextension: str = '',
+) -&gt; str:
+    """Create and run an Qt save file dialog ."""
+    if g.unitTesting:
+        return ''
+    dialog = QtWidgets.QFileDialog()
+    if c:
+        # dialog.setStyleSheet(c.active_stylesheet)
+        self.attachLeoIcon(dialog)
+        try:
+            self._save_focus(c)
+            c.in_qt_dialog = True
+            obj = dialog.getSaveFileName(
+                None,  # parent
+                title,
+                # os.curdir,
+                g.init_dialog_folder(c, c.p, use_at_path=True),
+                self.makeFilter(filetypes or []),
+            )
+        finally:
+            c.in_qt_dialog = False
+            self._restore_focus(c)
+    else:
+        self.attachLeoIcon(dialog)
+        obj = dialog.getSaveFileName(
+            None,  # parent
+            title,
+            # os.curdir,
+            g.init_dialog_folder(None, None, use_at_path=True),
+            self.makeFilter(filetypes or []),
+        )
+    # Bizarre: PyQt5 version can return a tuple!
+    s = obj[0] if isinstance(obj, (list, tuple)) else obj
+    s = s or ''
+    if c and s:
+        c.last_dir = g.os_path_dirname(s)
+    return s
+</t>
+<t tx="ekr.20240527100653.1295">def runScrolledMessageDialog(
+    self,
+    short_title: str = '',
+    title: str = 'Message',
+    label: str = '',
+    msg: str = '',
+    c: Cmdr = None,
+    **keys: KWargs,
+) -&gt; None:
+    if g.unitTesting:
+        return None
+
+    def send() -&gt; Any:
+        return g.doHook('scrolledMessage',
+            short_title=short_title, title=title,
+            label=label, msg=msg, c=c, **keys)
+
+    if not c or not c.exists:
+        &lt;&lt; no c error&gt;&gt;
+    else:
+        retval = send()
+        if retval:
+            return retval
+        &lt;&lt; load viewrendered plugin &gt;&gt;
+        retval = send()
+        if retval:
+            return retval
+        &lt;&lt; no dialog error &gt;&gt;
+    &lt;&lt; emergency fallback &gt;&gt;
+</t>
+<t tx="ekr.20240527100653.1296">g.es_print_error('%s\n%s\n\t%s' % (
+    "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
+    "as a keyword argument",
+    g.callers()
+))
+</t>
+<t tx="ekr.20240527100653.1297">pc = g.app.pluginsController
+# Load viewrendered (and call vr.onCreate) *only* if not already loaded.
+if (
+    not pc.isLoaded('viewrendered.py')
+    and not pc.isLoaded('viewrendered3.py')
+):
+    vr = pc.loadOnePlugin('viewrendered.py')
+    if vr:
+        g.blue('viewrendered plugin loaded.')
+        vr.onCreate('tag', {'c': c})
+</t>
+<t tx="ekr.20240527100653.1298">g.es_print_error(
+    f'No handler for the "scrolledMessage" hook.\n\t{g.callers()}')
+</t>
+<t tx="ekr.20240527100653.1299">dialog = QtWidgets.QMessageBox(None)
+# That is, not a fixed size dialog.
+dialog.setWindowFlags(WindowType.Dialog)
+dialog.setWindowTitle(title)
+if msg:
+    dialog.setText(msg)
+dialog.setIcon(Icon.Information)
+dialog.addButton('Ok', ButtonRole.YesRole)
+try:
+    c.in_qt_dialog = True
+    dialog.exec()
+finally:
+    c.in_qt_dialog = False
+</t>
+<t tx="ekr.20240527100653.1300"></t>
+<t tx="ekr.20240527100653.1301">def close_event(self, event: QEvent) -&gt; None:
+
+    # Save session data.
+    g.app.saveSession()
+
+    # Attempt to close all windows.
+    for c in g.app.commanders():
+        allow = c.exists and g.app.closeLeoWindow(c.frame)
+        if not allow:
+            event.ignore()
+            return
+    event.accept()
+</t>
+<t tx="ekr.20240527100653.1302"># deactivated_name = ''
+
+deactivated_widget = None
+
+def onDeactivateEvent(self, event: QEvent, c: Cmdr, obj: Any, tag: str) -&gt; None:
+    """
+    Gracefully deactivate the Leo window.
+    Called several times for each window activation.
+    """
+    w = self.get_focus()
+    w_name = w and w.objectName()
+    if 'focus' in g.app.debug:
+        g.trace(repr(w_name))
+    self.active = False  # Used only by c.idle_focus_helper.
+    # Careful: never save headline widgets.
+    if w_name == 'headline':
+        self.deactivated_widget = c.frame.tree.treeWidget
+    else:
+        self.deactivated_widget = w if w_name else None
+    # Causes problems elsewhere...
+        # if c.exists and not self.deactivated_name:
+            # self.deactivated_name = self.widget_name(self.get_focus())
+            # self.active = False
+            # c.k.keyboardQuit(setFocus=False)
+    g.doHook('deactivate', c=c, p=c.p, v=c.p, event=event)
+</t>
+<t tx="ekr.20240527100653.1303"># Called from eventFilter
+
+def onActivateEvent(self, event: QEvent, c: Cmdr, obj: Any, tag: str) -&gt; None:
+    """
+    Restore the focus when the Leo window is activated.
+    Called several times for each window activation.
+    """
+    trace = 'focus' in g.app.debug
+    w = self.get_focus() or self.deactivated_widget
+    self.deactivated_widget = None
+    w_name = w and w.objectName()
+    # Fix #270: Vim keys don't always work after double Alt+Tab.
+    # Fix #359: Leo hangs in LeoQtEventFilter.eventFilter
+    # #1273: add test on c.vim_mode.
+    if c.exists and c.vim_mode and c.vimCommands and not self.active and not g.app.killed:
+        c.vimCommands.on_activate()
+    self.active = True  # Used only by c.idle_focus_helper.
+    if g.isMac:
+        pass  # Fix #757: MacOS: replace-then-find does not work in headlines.
+    else:
+        # Leo 5.6: Recover from missing focus.
+        # c.idle_focus_handler can't do this.
+        if w and w_name in ('log-widget', 'richTextEdit', 'treeWidget'):
+            # Restore focus **only** to body or tree
+            if trace:
+                g.trace('==&gt;', w_name)
+            c.widgetWantsFocusNow(w)
+        else:
+            if trace:
+                g.trace(repr(w_name), '==&gt; BODY')
+            c.bodyWantsFocusNow()
+    # Cause problems elsewhere.
+        # if c.exists and self.deactivated_name:
+            # self.active = True
+            # w_name = self.deactivated_name
+            # self.deactivated_name = None
+            # if c.p.v:
+                # c.p.v.restoreCursorAndScroll()
+            # if w_name.startswith('tree') or w_name.startswith('head'):
+                # c.treeWantsFocusNow()
+            # else:
+                # c.bodyWantsFocusNow()
+    g.doHook('activate', c=c, p=c.p, v=c.p, event=event)
+</t>
+<t tx="ekr.20240527100653.1304">def setFilter(self, c: Cmdr, obj: Any, w: Wrapper, tag: str) -&gt; None:
+    """
+    Create an event filter in obj.
+    w is a wrapper object, not necessarily a QWidget.
+    """
+    # w's type is in (DynamicWindow,QMinibufferWrapper,LeoQtLog,LeoQtTree,
+    # QTextEditWrapper,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
+    assert isinstance(obj, QtWidgets.QWidget), obj
+    theFilter = qt_events.LeoQtEventFilter(c, w=w, tag=tag)
+    obj.installEventFilter(theFilter)
+    w.ev_filter = theFilter  # Set the official ivar in w.
+</t>
+<t tx="ekr.20240527100653.1305"></t>
+<t tx="ekr.20240527100653.1306">def ensure_commander_visible(self, c1: Cmdr) -&gt; None:
+    """
+    Check to see if c.frame is in a tabbed ui, and if so, make sure
+    the tab is visible
+    """
+    if 'focus' in g.app.debug:
+        g.trace(c1)
+    if hasattr(g.app.gui, 'frameFactory'):
+        factory = g.app.gui.frameFactory
+        if factory and hasattr(factory, 'setTabForCommander'):
+            c = c1
+            factory.setTabForCommander(c)
+            c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20240527100653.1307">def get_focus(self, c: Cmdr = None, raw: bool = False, at_idle: bool = False) -&gt; QWidget:
+    """Returns the widget that has focus."""
+    trace = 'focus' in g.app.debug
+    trace_idle = False
+    trace = trace and (trace_idle or not at_idle)
+    app = QtWidgets.QApplication
+    w = app.focusWidget()
+    if w and not raw and isinstance(w, qt_text.LeoQTextBrowser):
+        has_w = getattr(w, 'leo_wrapper', None)
+        if has_w:
+            if trace:
+                g.trace(w)
+        elif c:
+            # Kludge: DynamicWindow creates the body pane
+            # with wrapper = None, so return the LeoQtBody.
+            w = c.frame.body
+    if trace:
+        name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+        g.trace('(LeoQtGui)', name)
+    return w
+</t>
+<t tx="ekr.20240527100653.1308">def set_focus(self, c: Cmdr, w: Wrapper) -&gt; None:
+    """Put the focus on the widget."""
+    if not w:
+        return
+    if getattr(w, 'widget', None):
+        if not isinstance(w, QtWidgets.QWidget):
+            # w should be a wrapper.
+            w = w.widget
+    if 'focus' in g.app.debug:
+        name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+        g.trace('(LeoQtGui)', name)
+    w.setFocus()
+</t>
+<t tx="ekr.20240527100653.1309">size_warnings: list[str] = []
+font_ids: list[int] = []  # id's of traced fonts.
+
+def getFontFromParams(self,
+    family: str, size: str, slant: str, weight: str, defaultSize: int = 12, tag='',
+) -&gt; Optional[QFont]:
+    """Required to handle syntax coloring."""
+    if isinstance(size, str):
+        if size.endswith('pt'):
+            size = size[:-2].strip()
+        elif size.endswith('px'):
+            if size not in self.size_warnings:
+                self.size_warnings.append(size)
+                g.es(f"px ignored in font setting: {size}")
+            size = size[:-2].strip()
+    try:
+        i_size = int(size)
+    except Exception:
+        i_size = 0
+    if i_size &lt; 1:
+        i_size = defaultSize
+    d = {
+        'black': Weight.Black,
+        'bold': Weight.Bold,
+        'demibold': Weight.DemiBold,
+        'light': Weight.Light,
+        'normal': Weight.Normal,
+    }
+    weight_val = d.get(weight.lower(), Weight.Normal)
+    italic = slant == 'italic'
+    if not family:
+        family = 'DejaVu Sans Mono'
+    try:
+        font = QtGui.QFont(family, i_size, weight_val, italic)
+        if sys.platform.startswith('linux'):
+            try:
+                font.setHintingPreference(font.PreferFullHinting)
+            except AttributeError:
+                pass
+        return font
+    except Exception:
+        g.es_print("exception setting font", g.callers(4))
+        g.es_print(
+            f"family: {family}\n"
+            f"  size: {i_size}\n"
+            f" slant: {slant}\n"
+            f"weight: {weight}")
+        # g.es_exception() # Confusing for most users.
+        return None
+</t>
+<t tx="ekr.20240527100653.1310">def getFullVersion(self, c: Cmdr = None) -&gt; str:
+    """Return the PyQt version (for signon)"""
+    try:
+        qtLevel = f"version {QtCore.qVersion()}"
+    except Exception:
+        # g.es_exception()
+        qtLevel = '&lt;qtLevel&gt;'
+    return f"PyQt {qtLevel}"
+</t>
+<t tx="ekr.20240527100653.1311"></t>
+<t tx="ekr.20240527100653.1312">def attachLeoIcon(self, window: Union[QMainWindow, QDialog]) -&gt; None:
+    """Attach a Leo icon to the window."""
+    if self.appIcon:
+        window.setWindowIcon(self.appIcon)
+</t>
+<t tx="ekr.20240527100653.1313">def getIconImage(self, name: str) -&gt; Optional[QIcon]:
+    """Load the icon and return it."""
+    # Return the image from the cache if possible.
+    if name in self.iconimages:
+        image = self.iconimages.get(name)
+        return image
+    try:
+        iconsDir = g.os_path_join(g.app.loadDir, "..", "Icons")
+        homeIconsDir = g.os_path_join(g.app.homeLeoDir, "Icons")
+        for theDir in (homeIconsDir, iconsDir):
+            fullname = g.finalize_join(theDir, name)
+            if g.os_path_exists(fullname):
+                if 0:  # Not needed: use QTreeWidget.setIconsize.
+                    pixmap = QtGui.QPixmap()
+                    pixmap.load(fullname)
+                    image = QtGui.QIcon(pixmap)
+                else:
+                    image = QtGui.QIcon(fullname)
+                self.iconimages[name] = image
+                return image
+        # No image found.
+        return None
+    except Exception:
+        g.es_print("exception loading:", fullname)
+        g.es_exception()
+        return None
+</t>
+<t tx="ekr.20240527100653.1314">@functools.lru_cache(maxsize=128)
+def getImageImage(self, name: str) -&gt; Optional[QPixmap]:
+    """Load the image in file named `name` and return it."""
+    fullname = self.getImageFinder(name)
+    try:
+        pixmap = QtGui.QPixmap()
+        pixmap.load(fullname)
+        return pixmap
+    except Exception:
+        g.es("exception loading:", name)
+        g.es_exception()
+        return None
+</t>
+<t tx="ekr.20240527100653.1315">dump_given = False
+@functools.lru_cache(maxsize=128)
+def getImageFinder(self, name: str) -&gt; Optional[str]:
+    """Theme aware image (icon) path searching."""
+    trace = 'themes' in g.app.debug
+    exists = g.os_path_exists
+    getString = g.app.config.getString
+
+    def dump(var: str, val: str) -&gt; None:
+        print(f"{var:20}: {val}")
+
+    join = g.os_path_join
+    #
+    # "Just works" for --theme and theme .leo files *provided* that
+    # theme .leo files actually contain these settings!
+    #
+    theme_name1 = getString('color-theme')
+    theme_name2 = getString('theme-name')
+    roots = [
+        g.os_path_join(g.computeHomeDir(), '.leo'),
+        g.computeLeoDir(),
+    ]
+    theme_subs = [
+        "themes/{theme}/Icons",
+        "themes/{theme}",
+        "Icons/{theme}",
+    ]
+    # "." for icons referred to as Icons/blah/blah.png
+    bare_subs = ["Icons", "."]
+    paths = []
+    for theme_name in (theme_name1, theme_name2):
+        for root in roots:
+            for sub in theme_subs:
+                paths.append(join(root, sub.format(theme=theme_name)))
+    for root in roots:
+        for sub in bare_subs:
+            paths.append(join(root, sub))
+    table = [z for z in paths if exists(z)]
+    for base_dir in table:
+        path = join(base_dir, name)
+        if exists(path):
+            if trace:
+                g.trace(f"Found {name} in {base_dir}")
+            return path
+        # if trace: g.trace(name, 'not in', base_dir)
+    if trace:
+        g.trace('not found:', name)
+    return None
+</t>
+<t tx="ekr.20240527100653.1316">@functools.lru_cache(maxsize=128)
+def getTreeImage(self, c: Cmdr, path: str) -&gt; tuple[QPixmap, int]:
+    image = QtGui.QPixmap(path)
+    if image.height() &gt; 0 and image.width() &gt; 0:
+        return image, image.height()
+    return None, None
+</t>
+<t tx="ekr.20240527100653.1317">def insertKeyEvent(self, event: QEvent, i: int) -&gt; None:
+    """Insert the key given by event in location i of widget event.w."""
+    assert isinstance(event, leoGui.LeoKeyEvent)
+    qevent = event.event
+    assert isinstance(qevent, QtGui.QKeyEvent)
+    qw = getattr(event.w, 'widget', None)
+    if qw and isinstance(qw, QtWidgets.QTextEdit):
+        if 1:
+            # Assume that qevent.text() *is* the desired text.
+            # This means we don't have to hack eventFilter.
+            qw.insertPlainText(qevent.text())
+        else:
+            # Make no such assumption.
+            # We would like to use qevent to insert the character,
+            # but this would invoke eventFilter again!
+            # So set this flag for eventFilter, which will
+            # return False, indicating that the widget must handle
+            # qevent, which *presumably* is the best that can be done.
+            g.app.gui.insert_char_flag = True
+</t>
+<t tx="ekr.20240527100653.1318">def makeScriptButton(
+    self,
+    c: Cmdr,
+    args: Any = None,
+    p: Position = None,  # A node containing the script.
+    script: str = None,  # The script itself.
+    buttonText: str = None,
+    balloonText: str = 'Script Button',
+    shortcut: str = None,
+    bg: str = 'LightSteelBlue1',
+    define_g: bool = True,
+    define_name: str = '__main__',
+    silent: bool = False,  # Passed on to c.executeScript.
+) -&gt; None:
+    """
+    Create a script button for the script in node p.
+    The button's text defaults to p.headString."""
+    # pylint: disable=line-too-long
+    k = c.k
+    if p and not buttonText:
+        buttonText = p.h.strip()
+    if not buttonText:
+        buttonText = 'Unnamed Script Button'
+    &lt;&lt; create the button b &gt;&gt;
+    &lt;&lt; define the callbacks for b &gt;&gt;
+
+    b.configure(command=executeScriptCallback)
+    if shortcut:
+        &lt;&lt; bind the shortcut to executeScriptCallback &gt;&gt;
+    &lt;&lt; create press-buttonText-button command &gt;&gt;
+</t>
+<t tx="ekr.20240527100653.1319">iconBar = c.frame.getIconBarObject()
+b = iconBar.add(text=buttonText)
+</t>
+<t tx="ekr.20240527100653.1320">def deleteButtonCallback(event: LeoKeyEvent = None, b: QPushButton = b, c: Cmdr = c) -&gt; None:
+    if b:
+        b.pack_forget()
+    c.bodyWantsFocus()
+
+def executeScriptCallback(
+    event: LeoKeyEvent = None,
+    b: QPushButton = b,
+    c: Cmdr = c,
+    buttonText: str = buttonText,
+    p: Position = p and p.copy(),
+    script: str = script
+) -&gt; None:
+    if c.disableCommandsMessage:
+        g.blue('', c.disableCommandsMessage)
+    else:
+        g.app.scriptDict = {'script_gnx': p.gnx}
+        c.executeScript(args=args, p=p, script=script,
+        define_g=define_g, define_name=define_name, silent=silent)
+        # Remove the button if the script asks to be removed.
+        if g.app.scriptDict.get('removeMe'):
+            g.es('removing', f"'{buttonText}'", 'button at its request')
+            b.pack_forget()
+    # Do not assume the script will want to remain in this commander.
+
+</t>
+<t tx="ekr.20240527100653.1321"># In qt_gui.makeScriptButton.
+func = executeScriptCallback
+if shortcut:
+    shortcut = g.KeyStroke(shortcut)  # type:ignore
+ok = k.bindKey('button', shortcut, func, buttonText)
+if ok:
+    g.blue('bound @button', buttonText, 'to', shortcut)
+</t>
+<t tx="ekr.20240527100653.1322"># #1121. Like sc.cleanButtonText
+buttonCommandName = f"press-{buttonText.replace(' ', '-').strip('-')}-button"
+#
+# This will use any shortcut defined in an @shortcuts node.
+k.registerCommand(buttonCommandName, executeScriptCallback, pane='button')
+</t>
+<t tx="ekr.20240527100653.1323">def onContextMenu(self, c: Cmdr, w: Wrapper, point: QPoint) -&gt; None:
+    """LeoQtGui: Common context menu handling."""
+    # #1286.
+    handlers = g.tree_popup_handlers
+    menu = QtWidgets.QMenu(c.frame.top)  # #1995.
+    menuPos = w.mapToGlobal(point)
+    if not handlers:
+        menu.addAction("No popup handlers")
+    p = c.p.copy()
+    done: set[Callable] = set()
+    for handler in handlers:
+        # every handler has to add it's QActions by itself
+        if handler in done:
+            # do not run the same handler twice
+            continue
+        try:
+            handler(c, p, menu)
+            done.add(handler)
+        except Exception:
+            g.es_print('Exception executing right-click handler')
+            g.es_exception()
+    menu.popup(menuPos)
+    self._contextmenu = menu
+</t>
+<t tx="ekr.20240527100653.1324">def put_help(self, c: Cmdr, s: str, short_title: str = '') -&gt; Any:
+    """Put the help command."""
+    s = textwrap.dedent(s.rstrip())
+    if s.startswith('&lt;') and not s.startswith('&lt;&lt;'):
+        pass  # how to do selective replace??
+    pc = g.app.pluginsController
+    table = (
+        'viewrendered3.py',
+        'viewrendered.py',
+    )
+    for name in table:
+        if pc.isLoaded(name):
+            vr = pc.loadOnePlugin(name)
+            break
+    else:
+        vr = pc.loadOnePlugin('viewrendered.py')
+    if vr:
+        kw = {
+            'c': c,
+            'flags': 'rst',
+            'kind': 'rst',
+            'label': '',
+            'msg': s,
+            'name': 'Apropos',
+            'short_title': short_title,
+            'title': ''}
+        vr.show_scrolled_message(tag='Apropos', kw=kw)
+        c.bodyWantsFocus()
+        if g.unitTesting:
+            vr.close_rendering_pane(event={'c': c})
+    elif g.unitTesting:
+        pass
+    else:
+        g.es(s)
+    return vr  # For unit tests
+</t>
+<t tx="ekr.20240527100653.1325">def runAtIdle(self, aFunc: Callable) -&gt; None:
+    """This can not be called in some contexts."""
+    QtCore.QTimer.singleShot(0, aFunc)
+</t>
+<t tx="ekr.20240527100653.1326"></t>
+<t tx="ekr.20240527100653.1327">def runMainLoop(self) -&gt; None:
+    """Start the Qt main loop."""
+    try:  # #2127: A crash here hard-crashes Leo: There is no main loop!
+        g.app.gui.dismiss_splash_screen()
+        c = g.app.log and g.app.log.c
+        if c and c.config.getBool('show-tips', default=False):
+            g.app.gui.show_tips(c)
+    except Exception:
+        g.es_exception()
+    if self.script:
+        log = g.app.log
+        if log:
+            g.pr('Start of batch script...\n')
+            log.c.executeScript(script=self.script)
+            g.pr('End of batch script')
+        else:
+            g.pr('no log, no commander for executeScript in LeoQtGui.runMainLoop')
+    elif g.app.useIpython and g.app.ipython_inited:
+        self.runWithIpythonKernel()
+    else:
+        # This can be alarming when using Python's -i option.
+        sys.exit(self.qtApp.exec())
+</t>
+<t tx="ekr.20240527100653.1328">def runWithIpythonKernel(self) -&gt; None:
+    """Init Leo to run in an IPython shell."""
+    try:
+        from leo.core import leoIPython
+        g.app.ipk = leoIPython.InternalIPKernel()
+        g.app.ipk.run()
+    except Exception:
+        g.es_exception()
+        print('can not init leo.core.leoIPython.py')
+        sys.exit(1)
+</t>
+<t tx="ekr.20240527100653.1329">@g.command('show-tips')
+def show_next_tip(self, event: LeoKeyEvent = None) -&gt; None:
+    c = g.app.log and g.app.log.c
+    if c:
+        g.app.gui.show_tips(c)
+
+&lt;&lt; define DialogWithCheckBox &gt;&gt;
+
+def show_tips(self, c: Cmdr) -&gt; None:
+    if g.unitTesting:
+        return
+    from leo.core import leoTips
+    tm = leoTips.TipManager()
+    self.show_tips_flag = c.config.getBool('show-tips', default=False)  # 2390.
+    while True:  # QMessageBox is always a modal dialog.
+        tip = tm.get_next_tip()
+        m = self.DialogWithCheckBox(controller=self, checked=self.show_tips_flag, tip=tip)
+        try:
+            c.in_qt_dialog = True
+            m.exec()
+        finally:
+            c.in_qt_dialog = False
+        b = m.clickedButton()
+        if b != m.next_tip_button:
+            break
+</t>
+<t tx="ekr.20240527100653.1330">class DialogWithCheckBox(QtWidgets.QMessageBox):
+
+    def __init__(self, controller: LeoQtGui, checked: bool, tip: UserTip) -&gt; None:
+        super().__init__()
+        c = g.app.log.c
+        self.leo_checked = True
+        self.setObjectName('TipMessageBox')
+        self.setIcon(Icon.Information)  # #2127.
+        # self.setMinimumSize(5000, 4000)
+            # Doesn't work.
+            # Prevent the dialog from jumping around when
+            # selecting multiple tips.
+        self.setWindowTitle('Leo Tips')
+        self.setText(repr(tip))
+        self.next_tip_button = self.addButton('Show Next Tip', ButtonRole.ActionRole)
+        self.addButton('Ok', ButtonRole.YesRole)
+        c.styleSheetManager.set_style_sheets(w=self)
+        # Workaround #693.
+        layout = self.layout()
+        cb = QtWidgets.QCheckBox()
+        cb.setObjectName('TipCheckbox')
+        cb.setText('Show Tip On Startup')
+        # #2383: State is a tri-state, so use the official constants.
+        state = Checked if checked else Unchecked
+        cb.setCheckState(state)  # #2127.
+        cb.stateChanged.connect(controller.onClick)
+        layout.addWidget(cb, 4, 0, -1, -1)  # type:ignore
+        if 0:  # Does not work well.
+            sizePolicy = QtWidgets.QSizePolicy
+            vSpacer = QtWidgets.QSpacerItem(
+                200, 200, sizePolicy.Minimum, sizePolicy.Expanding)
+            layout.addItem(vSpacer)
+</t>
+<t tx="ekr.20240527100653.1331">def onButton(self, m: QPushButton) -&gt; None:
+    m.hide()
+</t>
+<t tx="ekr.20240527100653.1332">def onClick(self, state: str) -&gt; None:
+    c = g.app.log.c
+    self.show_tips_flag = bool(state)
+    if c:  # #2390: The setting *has* changed.
+        c.config.setUserSetting('@bool show-tips', self.show_tips_flag)
+        c.redraw()  # #2390: Show the change immediately.
+</t>
+<t tx="ekr.20240527100653.1333">def onNext(self, *args: Args, **keys: KWargs) -&gt; bool:
+    g.trace(args, keys)
+    return True
+</t>
+<t tx="ekr.20240527100653.1334"></t>
+<t tx="ekr.20240527100653.1335">def createSplashScreen(self) -&gt; QWidget:
+    """Put up a splash screen with Leo's logo."""
+    try:
+        QApplication = QtWidgets.QApplication
+        QPixmap = QtGui.QPixmap
+        QSvgRenderer = QtSvg.QSvgRenderer
+        QPainter = QtGui.QPainter
+        QImage = QtGui.QImage
+        QScreen = QtGui.QScreen
+    except Exception:
+        return None
+
+    Format_RGB32 = 4  # a Qt enumeration value
+
+    splash = None
+    for fn in (
+        'SplashScreen.svg',  # Leo's licensed .svg logo.
+        'Leosplash.GIF',  # Leo's public domain bitmapped image.
+    ):
+        path = g.finalize_join(g.app.loadDir, '..', 'Icons', fn)
+        if g.os_path_exists(path):
+            if fn.endswith('svg'):
+                # Convert SVG to un-pixilated pixmap
+                renderer = QSvgRenderer(path)
+                size = renderer.defaultSize()
+                svg_height, svg_width = size.height(), size.width()
+
+                # Scale to fraction of screen height
+                geom = QScreen.availableGeometry(QApplication.primaryScreen())
+                screen_height = geom.height()
+                target_height_px = screen_height // 4
+                scaleby = target_height_px / svg_height
+                target_width_px = int(svg_width * scaleby)
+
+                image = QImage(target_width_px, target_height_px,
+                               QImage.Format(Format_RGB32))
+                image.fill(0xffffffff)  # MUST fill background
+                painter = QPainter(image)
+                renderer.render(painter)
+                painter.end()
+
+                pixmap = QPixmap.fromImage(image)
+            else:
+                pixmap = QtGui.QPixmap(path)
+            if not pixmap.isNull():
+                splash = QtWidgets.QSplashScreen(pixmap, WindowType.WindowStaysOnTopHint)
+                splash.show()
+                sleep(.2)
+                splash.repaint()
+                break  # Done.
+    return splash
+</t>
+<t tx="ekr.20240527100653.1336">def dismiss_splash_screen(self) -&gt; None:
+
+    gui = self
+    # Warning: closing the splash screen must be done in the main thread!
+    if g.unitTesting:
+        return
+    if gui.splashScreen:
+        gui.splashScreen.hide()
+        # gui.splashScreen.deleteLater()
+        gui.splashScreen = None
+</t>
+<t tx="ekr.20240527100653.1337"></t>
+<t tx="ekr.20240527100653.1341">def isTextWidget(self, w: Wrapper) -&gt; bool:
+    """Return True if w is some kind of Qt text widget."""
+    if Qsci:
+        return isinstance(w, (Qsci.QsciScintilla, QtWidgets.QTextEdit))
+    return isinstance(w, QtWidgets.QTextEdit)
+
+def isTextWrapper(self, w: Wrapper) -&gt; bool:
+    """Return True if w is a Text widget suitable for text-oriented commands."""
+    if w is None:
+        return False
+    if isinstance(w, (g.NullObject, g.TracingNullObject)):
+        return True
+    return bool(getattr(w, 'supportsHighLevelInterface', None))
+</t>
+<t tx="ekr.20240527100653.1342">def widget_name(self, w: Wrapper) -&gt; str:
+    # First try the widget's getName method.
+    if not w:
+        name = '&lt;no widget&gt;'
+    elif hasattr(w, 'getName'):
+        name = w.getName()
+    elif hasattr(w, 'objectName'):
+        name = str(w.objectName())
+    elif hasattr(w, '_name'):
+        name = w._name
+    else:
+        name = repr(w)
+    return name
+</t>
+<t tx="ekr.20240527100653.1343">import PyQt6.QtTest as QtTest
+
+QSignalSpy = QtTest.QSignalSpy
+assert QSignalSpy
+</t>
+<t tx="ekr.20240527100653.1345"></t>
+<t tx="ekr.20240527100653.1346">def createButton(self, parent: QWidget, name: str, label: str) -&gt; QPushButton:
+    w = QtWidgets.QPushButton(parent)
+    w.setObjectName(name)
+    w.setText(label)
+    return w
+</t>
+<t tx="ekr.20240527100653.1347">def createFrame(
+    self,
+    parent: QWidget,
+    name: str,
+    hPolicy: Policy = None,
+    vPolicy: Policy = None,
+    lineWidth: int = 1,
+    shadow: Shadow = None,
+    shape: Shape = None,
+) -&gt; QFrame:
+    """Create a Qt Frame."""
+    if shadow is None:
+        shadow = Shadow.Plain
+    if shape is None:
+        shape = Shape.NoFrame
+    #
+    w = QtWidgets.QFrame(parent)
+    self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
+    w.setFrameShape(shape)
+    w.setFrameShadow(shadow)
+    w.setLineWidth(lineWidth)
+    w.setObjectName(name)
+    return w
+</t>
+<t tx="ekr.20240527100653.1348">def createGrid(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -&gt; QGridLayout:
+    w = QtWidgets.QGridLayout(parent)
+    w.setContentsMargins(QtCore.QMargins(margin, margin, margin, margin))
+    w.setSpacing(spacing)
+    w.setObjectName(name)
+    return w
+</t>
+<t tx="ekr.20240527100653.1349">def createHLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -&gt; QHBoxLayout:
+    hLayout = QtWidgets.QHBoxLayout(parent)
+    hLayout.setObjectName(name)
+    hLayout.setSpacing(spacing)
+    hLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+    return hLayout
+
+def createVLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -&gt; QVBoxLayout:
+    vLayout = QtWidgets.QVBoxLayout(parent)
+    vLayout.setObjectName(name)
+    vLayout.setSpacing(spacing)
+    vLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+    return vLayout
+</t>
+<t tx="ekr.20240527100653.1350">def createLabel(self, parent: QWidget, name: str, label: str) -&gt; QLabel:
+    w = QtWidgets.QLabel(parent)
+    w.setObjectName(name)
+    w.setText(label)
+    return w
+</t>
+<t tx="ekr.20240527100653.1351">def createTabWidget(self,
+    parent: QWidget, name: str, hPolicy: Policy = None, vPolicy: Policy = None,
+) -&gt; QTabWidget:
+    w = QtWidgets.QTabWidget(parent)
+    self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
+    w.setObjectName(name)
+    return w
+</t>
+<t tx="ekr.20240527100653.1352">def setSizePolicy(self, widget: QWidget, kind1: Policy = None, kind2: Policy = None) -&gt; None:
+    if kind1 is None:
+        kind1 = Policy.Ignored
+    if kind2 is None:
+        kind2 = Policy.Ignored
+    sizePolicy = QtWidgets.QSizePolicy(kind1, kind2)
+    sizePolicy.setHorizontalStretch(0)
+    sizePolicy.setVerticalStretch(0)
+    sizePolicy.setHeightForWidth(widget.sizePolicy().hasHeightForWidth())
+    widget.setSizePolicy(sizePolicy)
+</t>
+<t tx="ekr.20240527100653.1353">class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
+    """A class to control rendering in a rendering pane."""
+    @others
+</t>
+<t tx="ekr.20240527100653.1354">def __init__(self, c: Cmdr, parent: Widget = None) -&gt; None:
+    """Ctor for ViewRenderedController class."""
+    self.c = c
+    # Create the widget.
+    super().__init__(parent)
+    self.create_pane(parent)
+    # Ivars set by reloadSettings.
+    self.auto_create: bool = None
+    self.keep_open: bool = None
+    # Set the ivars.
+    self.active = True
+    self.gnx: str = None
+    self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
+    self.gv: Widget = None  # For @graphics-script: a QGraphicsView
+    self.keep_open = False  # True: keep the VR pane open even when showing text.
+    self.is_visible = False
+    self.length = 0  # The length of previous p.b.
+    self.locked = False
+    self.scrollbar_pos_dict: dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
+    self.vp: Widget = None  # A QtMultimedia.QMediaPlayer or None.
+    self.w: Wrapper = None  # The present widget in the rendering pane.
+    # User settings.
+    self.reloadSettings()
+    self.node_changed = True
+    # Init.
+    self.create_dispatch_dict()
+    self.is_visible = self.auto_create
+    if self.auto_create:
+        self.show()
+    else:
+        self.hide()
+</t>
+<t tx="ekr.20240527100653.1355">def create_dispatch_dict(self) -&gt; dict[str, Callable]:
+    d = {
+        'asciidoc': self.update_asciidoc,
+        'big': self.update_rst,
+        'html': self.update_html,
+        'graphics-script': self.update_graphics_script,
+        'image': self.update_image,
+        'jupyter': self.update_jupyter,
+        'latex': self.update_latex,
+        'markdown': self.update_md,
+        'md': self.update_md,
+        'movie': self.update_movie,
+        'networkx': self.update_networkx,
+        'pandoc': self.update_pandoc,
+        'pyplot': self.update_pyplot,
+        'rest': self.update_rst,
+        'rst': self.update_rst,
+        'svg': self.update_svg,
+        'plantuml': self.update_plantuml,
+        'jinja': self.update_jinja,
+        # 'url': self.update_url,
+        # 'xml': self.update_xml,
+    }
+    self.dispatch_dict = d
+    return d
+</t>
+<t tx="ekr.20240527100653.1356">def reloadSettings(self) -&gt; None:
+    c = self.c
+    c.registerReloadSettings(self)
+    self.auto_create = c.config.getBool('view-rendered-auto-create', False)
+    self.keep_open = c.config.getBool('view-rendered-keep-open', True)
+    self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
+    self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
+
+</t>
+<t tx="ekr.20240527100653.1357">def create_pane(self, parent: Position) -&gt; None:
+    """Create the VR pane."""
+    if g.unitTesting:
+        return
+    # Create the inner contents.
+    self.setObjectName('viewrendered_pane')
+    self.setLayout(QtWidgets.QVBoxLayout())
+    self.layout().setContentsMargins(0, 0, 0, 0)
+</t>
+<t tx="ekr.20240527100653.1358">def closeEvent(self, event: Event) -&gt; None:
+    """Deactivate callbacks when an Outline closes."""
+    self.active = False
+    g.unregisterHandler('select2', self.update)
+    g.unregisterHandler('idle', self.update)
+</t>
+<t tx="ekr.20240527100653.1359">def contract(self) -&gt; None:
+    self.change_size(-100)
+
+def expand(self) -&gt; None:
+    self.change_size(100)
+
+def change_size(self, delta: int) -&gt; None:
+    splitter = self.parent()
+    if not splitter:
+        return
+    i = splitter.indexOf(self)
+    assert i &gt; -1
+    sizes = splitter.sizes()
+    n = len(sizes)
+    for j, size in enumerate(sizes):
+        if j == i:
+            sizes[j] = max(0, size + delta)
+        else:
+            sizes[j] = max(0, size - int(delta / (n - 1)))
+    splitter.setSizes(sizes)
+</t>
+<t tx="ekr.20240527100653.1360">def fully_expand(self) -&gt; None:
+    """Cover the body pane with the VR pane."""
+    splitter = self.parent()
+    if splitter and isinstance(splitter, QtWidgets.QSplitter):
+        i = splitter.indexOf(self)
+        splitter.moveSplitter(0, i)
+    self.show()
+</t>
+<t tx="ekr.20240527100653.1361">def lock(self) -&gt; None:
+    """Lock the VR pane."""
+    g.note('rendering pane locked')
+    self.locked = True
+
+def unlock(self) -&gt; None:
+    """Unlock the VR pane."""
+    g.note('rendering pane unlocked')
+    self.locked = False
+</t>
+<t tx="ekr.20240527100653.1362">def restore_body(self) -&gt; None:
+    """Restore the visibility of the body pane."""
+    splitter = self.parent()  # A NestedSplitter
+    if splitter and isinstance(splitter, QtWidgets.QSplitter):
+        i = splitter.indexOf(self)
+        splitter.moveSplitter(int(sum(splitter.sizes()) / 2), i)
+    self.show()
+</t>
+<t tx="ekr.20240527100653.1363">def set_html(self, s: str, w: Wrapper) -&gt; None:
+    """Set text in w to s, preserving scroll position."""
+    p = self.c.p
+    sb = w.verticalScrollBar()
+    if sb:
+        d = self.scrollbar_pos_dict
+        if self.node_changed:
+            # Set the scrollbar.
+            pos = d.get(p.v, sb.sliderPosition())
+            sb.setSliderPosition(pos)
+        else:
+            # Save the scrollbars
+            d[p.v] = pos = sb.sliderPosition()
+    # if trace: g.trace('\n'+s)
+    w.setHtml(s)
+    if sb:
+        # Restore the scrollbars
+        assert pos is not None
+        sb.setSliderPosition(pos)
+</t>
+<t tx="ekr.20240527100653.1364"># Must have this signature: called by leoPlugins.callTagHandler.
+
+def update(self, tag: str, keywords: Any) -&gt; None:  # type:ignore
+    """Update the VR pane. Called at idle time."""
+    p = self.c.p
+    if not self.active:
+        try:
+            # Save the scroll position.
+            w = self.w
+            if w and w.__class__ == QtWidgets.QTextBrowser:
+                sb = w.verticalScrollBar()
+                self.scrollbar_pos_dict[p.v] = sb.sliderPosition()
+        except Exception:
+            g.es_exception()
+        return
+    if self.locked:
+        return
+    if not self.is_visible:
+        return
+    if not self.must_update(keywords):
+        return
+    # Suppress updates until we change nodes.
+    f: Callable = None
+    self.node_changed = self.gnx != p.v.gnx
+    self.gnx = p.v.gnx
+    self.length = len(p.b)  # not s
+    # Remove Leo directives.
+    s = keywords.get('s') if 's' in keywords else p.b
+    s = self.remove_directives(s)
+    # Dispatch based on the computed kind.
+    kind = keywords.get('flags') if 'flags' in keywords else self.get_kind(p)
+    if kind or keywords.get('force'):
+        f = self.dispatch_dict.get(kind)
+    else:
+        # Do *not* try to render plain text.
+        w = self.ensure_text_widget()
+        w.setPlainText(s)
+    if f:
+        f(s, keywords)
+        self.show()
+    elif self.keep_open:
+        self.show()
+    else:
+        self.hide()
+</t>
+<t tx="ekr.20240527100653.1365">def create_base_text_widget(self) -&gt; Wrapper:
+    """Create a QTextBrowser."""
+    c = self.c
+    w = BaseTextWidget()
+    n = c.config.getInt('qweb-view-font-size')
+    if n:
+        try:
+            # BaseTextWidget is a QWebView.
+            settings = w.settings()
+            settings.setFontSize(settings.DefaultFontSize, n)
+        except AttributeError:
+            # BaseTextWidget is a QTextBrowser.
+            pass
+    return w
+</t>
+<t tx="ekr.20240527100653.1366">def embed_widget(self, w: Wrapper, delete_callback: Callable = None) -&gt; None:
+    """Embed widget w in the appropriate widget."""
+    c = self.c
+    self.w = w
+
+    # #3892: Replace the body pane
+    layout = self.layout()
+    for i in range(layout.count()):
+        layout.removeItem(layout.itemAt(0))
+    self.layout().addWidget(w)
+    w.show()
+
+    # Special inits for text widgets...
+    if w.__class__ == QtWidgets.QTextBrowser:
+        text_name = 'body-text-renderer'
+        w.setObjectName(text_name)
+        w.setReadOnly(True)
+        # Create the standard Leo bindings.
+        wrapper_name = 'rendering-pane-wrapper'
+        wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
+        w.leo_wrapper = wrapper
+        c.k.completeAllBindingsForWidget(wrapper)
+        w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
+</t>
+<t tx="ekr.20240527100653.1367">def must_update(self, keywords: Any) -&gt; bool:
+    """Return True if we must update the rendering pane."""
+    c, p = self.c, self.c.p
+    if g.unitTesting:
+        return False
+    if c != keywords.get('c') or not self.active:
+        return False
+    if keywords.get('force'):
+        return True
+    if self.locked:
+        return False
+    if self.gnx != p.v.gnx:
+        return True
+    if self.length != len(p.b):
+        self.length = len(p.b)  # Suppress updates until next change.
+        if self.get_kind(p) in ('html', 'pyplot'):
+            return False  # Only update explicitly.
+        return True
+    return False
+</t>
+<t tx="ekr.20240527100653.1368">def update_asciidoc(self, s: str, keywords: Any) -&gt; None:
+    """Update asciidoc in the VR pane."""
+    global asciidoctor_exec, asciidoc3_exec
+    # Do this regardless of whether we show the widget or not.
+    w = self.ensure_text_widget()
+    assert self.w
+    if s:
+        self.show()
+    if asciidoctor_exec or asciidoc3_exec:
+        try:
+            s2 = self.convert_to_asciidoctor(s)
+            self.set_html(s2, w)
+            return
+        except Exception:
+            g.es_exception()
+    self.update_rst(s, keywords)
+</t>
+<t tx="ekr.20240527100653.1369">def make_asciidoc_title(self, s: str) -&gt; str:
+    """Generate an asciidoc title for s."""
+    line = '#' * (min(4, len(s)))
+    return f"{line}\n{s}\n{line}\n\n"
+</t>
+<t tx="ekr.20240527100653.1370">def convert_to_asciidoctor(self, s: str) -&gt; str:
+    """Convert s to html using the asciidoctor or asciidoc processor."""
+    c, p = self.c, self.c.p
+    path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+    if not os.path.isdir(path):
+        path = os.path.dirname(path)
+    if os.path.isdir(path):
+        os.chdir(path)
+    s = self.run_asciidoctor(s)
+    return g.toUnicode(s)
+</t>
+<t tx="ekr.20240527100653.1371">def run_asciidoctor(self, s: str) -&gt; str:
+    """
+    Process s with asciidoctor or asciidoc3.
+    return the contents of the html file.
+    The caller handles all exceptions.
+    """
+    global asciidoctor_exec, asciidoc3_exec
+    assert asciidoctor_exec or asciidoc3_exec, g.callers()
+    home = g.os.path.expanduser('~')
+    i_path = g.finalize_join(home, 'vr_input.adoc')
+    o_path = g.finalize_join(home, 'vr_output.html')
+    # Write the input file.
+    with open(i_path, 'w') as f:
+        f.write(s)
+    # Call the external program to write the output file.
+    prog = 'asciidoctor' if asciidoctor_exec else 'asciidoc3'
+    # The -e option deletes css.
+    command = f"{prog} {i_path} -b html5 -o {o_path}"
+    g.execute_shell_commands(command)
+    # Read the output file and return it.
+    with open(o_path, 'r') as f:
+        return f.read()
+</t>
+<t tx="ekr.20240527100653.1373">update_html_count = 0
+
+def update_html(self, s: str, keywords: Any) -&gt; None:
+    """Update html in the VR pane."""
+    c = self.c
+    if self.must_change_widget(BaseTextWidget):
+        w = self.create_base_text_widget()
+        self.embed_widget(w)
+        assert w == self.w
+    else:
+        w = self.w
+    w.setHtml(s)
+    w.show()
+    c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20240527100653.1374">def update_image(self, s: str, keywords: Any) -&gt; None:
+    """Update an image in the VR pane."""
+    if not s.strip():
+        return
+    lines = g.splitLines(s) or []
+    fn = lines and lines[0].strip()
+    if not fn:
+        return
+    w = self.ensure_text_widget()
+    ok, path = self.get_fn(fn, '@image')
+    if not ok:
+        w.setPlainText('@image: file not found: %s' % (path))
+        return
+    path = path.replace('\\', '/')
+    template = image_template % (path)
+    # Only works in Python 3.x.
+    # Sensitive to leading blank lines.
+    template = textwrap.dedent(template).strip()
+    # template = g.toUnicode(template)
+    self.show()
+    w.setReadOnly(False)
+    w.setHtml(template)
+    w.setReadOnly(True)
+</t>
+<t tx="ekr.20240527100653.1375">update_jupyter_count = 0
+
+def update_jupyter(self, s: str, keywords: Any) -&gt; None:
+    """Update @jupyter node in the VR pane."""
+    c = self.c
+    if self.must_change_widget(BaseTextWidget):
+        w = self.create_base_text_widget()
+        self.embed_widget(w)
+        assert w == self.w
+    else:
+        w = self.w
+
+    s = self.get_jupyter_source(c)
+    w.hide()  # This forces a proper update.
+    w.setHtml(s)
+    w.show()
+    c.bodyWantsFocusNow()
+
+    if pyperclip:
+        pyperclip.copy(s)
+</t>
+<t tx="ekr.20240527100653.1376">def get_jupyter_source(self, c: Cmdr) -&gt; str:
+    """Return the html for the @jupyter node."""
+    body = c.p.b.lstrip()
+    if body.startswith('&lt;'):
+        # Assume the body is html.
+        return body
+    if body.startswith('{'):
+        # Leo 5.7.1: Allow raw JSON.
+        s = body
+    else:
+        url = c.p.h.split()[1]
+        if not url:
+            return ''
+        if not nbformat:
+            return 'can not import nbformat to render url: %r' % url
+        try:
+            s = urlopen(url).read().decode()
+        except Exception:
+            return 'url not found: %s' % url
+
+    try:
+        nb = nbformat.reads(s, as_version=4)
+        e = HTMLExporter()
+        (s, junk_resources) = e.from_notebook_node(nb)
+    except nbformat.reader.NotJSONError:
+        pass  # Assume the result is html.
+    return s
+</t>
+<t tx="ekr.20240527100653.1377">def update_latex(self, s: str, keywords: Any) -&gt; None:
+    """Update latex in the VR pane."""
+    c = self.c
+    if sys.platform.startswith('win'):
+        g.es_print('latex rendering not ready for Python 3')
+        w = self.ensure_text_widget()
+        self.show()
+        w.setPlainText(s)
+        c.bodyWantsFocusNow()
+        return
+    if self.must_change_widget(BaseTextWidget):
+        w = self.create_base_text_widget()
+        self.embed_widget(w)
+        assert w == self.w
+    else:
+        w = self.w
+    w.hide()  # This forces a proper update.
+    s = self.create_latex_html(s)
+    w.setHtml(s)
+    w.show()
+    c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20240527100653.1378">def create_latex_html(self, s: str) -&gt; str:
+    """Create an html page embedding the latex code s."""
+    # pylint: disable=deprecated-method
+    try:
+        import html
+        escape = html.escape
+    except AttributeError:
+        import cgi
+        escape = cgi.escape
+    html_s = escape(s)
+    template = latex_template % (html_s)
+    template = textwrap.dedent(template).strip()
+    return template
+</t>
+<t tx="ekr.20240527100653.1379">def update_md(self, s: str, keywords: Any) -&gt; None:
+    """Update markdown text in the VR pane."""
+    c = self.c
+    p = c.p
+    s = s.strip().strip('"""').strip("'''").strip()
+    isHtml = s.startswith('&lt;') and not s.startswith('&lt;&lt;')
+    # Do this regardless of whether we show the widget or not.
+    w = self.ensure_text_widget()
+    assert self.w
+    if s:
+        self.show()
+    if got_markdown:
+        force = keywords.get('force')
+        colorizer = c.frame.body.colorizer
+        language = colorizer.scanLanguageDirectives(p)
+        if force or language in ('rst', 'rest', 'markdown', 'md'):
+            if not isHtml:
+                s = self.convert_to_markdown(s)
+        self.set_html(s, w)
+    else:
+        # g.trace('markdown not available: using rst')
+        self.update_rst(s, keywords)
+</t>
+<t tx="ekr.20240527100653.1380">def convert_to_markdown(self, s: str) -&gt; str:
+    """Convert s to html using the markdown processor."""
+    c, p = self.c, self.c.p
+    path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+    if not os.path.isdir(path):
+        path = os.path.dirname(path)
+    if os.path.isdir(path):
+        os.chdir(path)
+    try:
+        mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
+        mdext_list = [x.strip() for x in mdext.split(',')]
+        s = markdown(s, extensions=mdext_list)
+        s = g.toUnicode(s)
+    except SystemMessage as sm:
+        msg = sm.args[0]
+        if 'SEVERE' in msg or 'FATAL' in msg:
+            s = 'MD error:\n%s\n\n%s' % (msg, s)
+    return s
+</t>
+<t tx="ekr.20240527100653.1381">movie_warning = False
+
+def update_movie(self, s: str, keywords: Any) -&gt; None:
+    """Update a movie in the VR pane."""
+    ok, path = self.get_fn(s, '@movie')
+    if not ok:
+        w = self.ensure_text_widget()
+        w.setPlainText('Not found: %s' % (path))
+        return
+    if not QtMultimedia:
+        if not self.movie_warning:
+            self.movie_warning = True
+            g.es_print('No QtMultimedia module')
+        w = self.ensure_text_widget()
+        w.setPlainText('')
+        return
+    if self.vp:
+        vp = self.vp
+        self.vp.stop()
+        self.vp.deleteLater()
+
+    # Create a fresh player.
+    g.es_print('playing', path)
+    url = QtCore.QUrl.fromLocalFile(path)
+    content = QtMultimedia.QMediaContent(url)
+    self.vp = vp = QtMultimedia.QMediaPlayer()
+    vp.setMedia(content)
+    # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
+    vp.play()
+
+
+</t>
+<t tx="ekr.20240527100653.1382">def update_networkx(self, s: str, keywords: Any) -&gt; None:
+    """Update a networkx graphic in the VR pane."""
+    w = self.ensure_text_widget()
+    w.setPlainText('')  # 'Networkx: len: %s' % (len(s)))
+    self.show()
+</t>
+<t tx="ekr.20240527100653.1383">def update_pandoc(self, s: str, keywords: Any) -&gt; None:
+    """
+    Update an @pandoc in the VR pane.
+
+    There is no such thing as @language pandoc,
+    so only @pandoc nodes trigger this code.
+    """
+    global pandoc_exec
+    w = self.ensure_text_widget()
+    assert self.w
+    if s:
+        self.show()
+    if pandoc_exec:
+        try:
+            s2 = self.convert_to_pandoc(s)
+            self.set_html(s2, w)
+        except Exception:
+            g.es_exception()
+        return
+    self.update_rst(s, keywords)
+</t>
+<t tx="ekr.20240527100653.1384">def convert_to_pandoc(self, s: str) -&gt; str:
+    """Convert s to html using the asciidoctor or asciidoc processor."""
+    c, p = self.c, self.c.p
+    path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+    if not os.path.isdir(path):
+        path = os.path.dirname(path)
+    if os.path.isdir(path):
+        os.chdir(path)
+    s = self.run_pandoc(s)
+    return g.toUnicode(s)
+</t>
+<t tx="ekr.20240527100653.1385">def run_pandoc(self, s: str) -&gt; str:
+    """
+    Process s with pandoc.
+    return the contents of the html file.
+    The caller handles all exceptions.
+    """
+    global pandoc_exec
+    assert pandoc_exec, g.callers()
+    home = g.os.path.expanduser('~')
+    i_path = g.finalize_join(home, 'vr_input.pandoc')
+    o_path = g.finalize_join(home, 'vr_output.html')
+    # Write the input file.
+    with open(i_path, 'w') as f:
+        f.write(s)
+    # Call pandoc to write the output file.
+    # --quiet does no harm.
+    command = f"pandoc {i_path} -t html5 -o {o_path}"
+    g.execute_shell_commands(command)
+    # Read the output file and return it.
+    with open(o_path, 'r') as f:
+        return f.read()
+</t>
+<t tx="ekr.20240527100653.1386">def update_pyplot(self, s: str, keywords: Any) -&gt; None:
+    """Get the pyplot script at c.p.b and show it."""
+    if not got_pyplot:
+        g.es(('==== Viewrendered: MISSING matplotlib.  Cannot process @pyplot node'))
+        return
+
+    c = self.c
+
+    if pyplot.get_backend() != 'module://leo.plugins.pyplot_backend':
+        backend = g.finalize_join(
+            g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
+        if g.os_path_exists(backend):
+            try:
+                # The order of these statements is important...
+                import matplotlib
+                matplotlib.use('module://leo.plugins.pyplot_backend')
+            except ImportError:
+                g.trace('===== FAIL: pyplot.backend')
+        else:
+            g.trace('===== MISSING: pyplot.backend')
+    try:
+        import matplotlib  # Make *sure* this is imported.
+        import matplotlib.pyplot as plt
+        import numpy as np
+        from matplotlib import animation
+        plt.ion()  # Automatically set interactive mode.
+        namespace = {
+            'animation': animation,
+            'matplotlib': matplotlib,
+            'numpy': np, 'np': np,
+            'pyplot': plt, 'plt': plt,
+        }
+    except Exception:
+        g.es_print('matplotlib imports failed')
+        namespace = {}
+    # Embedding already works without this!
+        # self.embed_pyplot_widget()
+    # pyplot will throw RuntimeError if we close the pane.
+    c.executeScript(
+        event=None,
+        args=None, p=None,
+        script=None,
+        useSelectedText=False,
+        define_g=True,
+        define_name='__main__',
+        silent=False,
+        namespace=namespace,
+        raiseFlag=False,
+        runPyflakes=False,  # Suppress warnings about pre-defined symbols.
+    )
+    c.bodyWantsFocusNow()
+
+    # Be courteous to other users - restore default pyplot drawing target
+    matplotlib.use('QtAgg')
+</t>
+<t tx="ekr.20240527100653.1387">def update_rst(self, s: str, keywords: Any) -&gt; None:
+    """Update rst in the VR pane."""
+    s = s.strip().strip('"""').strip("'''").strip()
+    isHtml = s.startswith('&lt;') and not s.startswith('&lt;&lt;')
+    # Do this regardless of whether we show the widget or not.
+    w = self.ensure_text_widget()
+    assert self.w
+    if s:
+        self.show()
+    if got_docutils:
+        if not isHtml:
+            s = self.convert_to_html(s)
+        self.set_html(s, w)
+    else:
+        w.setPlainText(s)
+</t>
+<t tx="ekr.20240527100653.1388">def convert_to_html(self, s: str) -&gt; str:
+    """Convert s to html using docutils."""
+    c, p = self.c, self.c.p
+    # Update the current path.
+    path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+    if not os.path.isdir(path):
+        path = os.path.dirname(path)
+    if os.path.isdir(path):
+        os.chdir(path)
+    try:
+        # Suppress all error messages.
+        sys.stderr = open(os.devnull, "w")
+        # Call docutils to get the string.
+        s = publish_string(s, writer_name='html')
+        s = g.toUnicode(s)
+    except SystemMessage:
+        # msg = sm.args[0]
+        # if 'SEVERE' in msg or 'FATAL' in msg:
+            # s = 'RST error:\n%s\n\n%s' % (msg, s)
+        pass
+    finally:
+        sys.stderr = sys.__stderr__
+    return s
+
+def update_plantuml(self, s: str, keywords: Any) -&gt; None:
+    w = self.ensure_text_widget()
+    path = self.c.p.h[9:].strip()
+    print("Plantuml output file name: ", path)
+    with open("temp.plantuml", "w") as f:
+        f.write(s)
+    pth_plantuml_jar = "~/.leo"
+    os.system("cat temp.plantuml | java -jar %s/plantuml.jar -pipe &gt; %s" % (pth_plantuml_jar, path))
+    template = image_template % (path)
+    template = textwrap.dedent(template).strip()
+    self.show()
+    w.setReadOnly(False)
+    w.setHtml(template)
+    w.setReadOnly(True)
+
+def update_jinja(self, s: str, keywords: Any) -&gt; None:
+    h = self.c.p.h
+    p = self.c.p
+    c = self.c
+    oldp = None
+
+    if not h.startswith('@jinja'):
+        return
+
+    def find_root(p: Position) -&gt; Optional[tuple[Position, Position]]:
+        for newp in p.parents():
+            if newp.h.strip() == '@jinja':
+                oldp, p = p, newp
+                return oldp, p
+        return None, None
+
+    def find_inputs(p: Position) -&gt; Optional[tuple[Position, Position]]:
+        for newp in p.parents():
+            if newp.h.strip() == '@jinja inputs':
+                oldp, p = p, newp
+                _, p = find_root(p)
+                return oldp, p
+        return None, None
+
+    # if on jinja node's children, find the parent
+    if h.strip() == '@jinja template' or h.strip() == '@jinja inputs':
+        # not at @jinja, find from parents
+        oldp, p = find_root(p)
+
+    elif h.startswith('@jinja variable'):
+        # not at @jinja, first find @jinja inputs, then @jinja
+        oldp, p = find_inputs(p)
+
+    def untangle(c: Cmdr, p: Position) -&gt; str:
+        return g.getScript(c, p,
+            useSelectedText=False,
+            useSentinels=False)
+
+    template_data = {}
+    for child in p.children():
+        if child.h == '@jinja template':
+            template_path = g.finalize_join(c.getNodePath(p), untangle(c, child).strip())
+        elif child.h == '@jinja inputs':
+            for template_var_node in child.children():
+                # pylint: disable=line-too-long
+                template_data[template_var_node.h.replace('@jinja variable', '').strip()] = untangle(c, template_var_node).strip()
+
+    if not template_path:
+        g.es(
+            "No template_path given. "
+            "Your @jinja node should contain a child node 'template' "
+            "with the path to the template (relative or absolute)")
+        return
+
+    tmpl = Template(Path(template_path).read_text())
+    out = tmpl.render(template_data)
+    w = self.ensure_text_widget()
+    self.show()
+    w.setPlainText(out)
+    p.b = out
+    c.redraw(p)
+
+    # focus back on entry node
+    if oldp:
+        c.redraw(oldp)
+</t>
+<t tx="ekr.20240527100653.1389"># http://doc.trolltech.com/4.4/qtsvg.html
+# http://doc.trolltech.com/4.4/painting-svgviewer.html
+def update_svg(self, s: str, keywords: Any) -&gt; None:
+
+    if hasattr(QtSvg, "QSvgWidget"):  # #2134
+        QSvgWidget = QtSvg.QSvgWidget
+    else:
+        try:
+            from PyQt6 import QtSvgWidgets
+            QSvgWidget = QtSvgWidgets.QSvgWidget
+        except Exception:
+            QSvgWidget = None
+    if not QSvgWidget:
+        w = self.ensure_text_widget()
+        w.setPlainText(s)
+        return
+    if self.must_change_widget(QSvgWidget):
+        w = QSvgWidget()
+        self.embed_widget(w)
+        assert w == self.w
+    else:
+        w = self.w
+    if s.strip().startswith('&lt;'):
+        # Assume it is the svg (xml) source.
+        # Sensitive to leading blank lines.
+        s = textwrap.dedent(s).strip()
+        s_bytes = g.toEncodedString(s)
+        self.show()
+        w.load(QtCore.QByteArray(s_bytes))
+        w.show()
+    else:
+        # Get a filename from the headline or body text.
+        ok, path = self.get_fn(s, '@svg')
+        if ok:
+            self.show()
+            w.load(path)
+            w.show()
+</t>
+<t tx="ekr.20240527100653.1390">def update_url(self, s: str, keywords: Any) -&gt; None:
+    c, p = self.c, self.c.p
+    colorizer = c.frame.body.colorizer
+    language = colorizer.scanLanguageDirectives(p)
+    if language == 'asciidoc':
+        p.update_asciidoc(s, keywords)
+    elif language in ('rest', 'rst'):
+        self.update_rst(s, keywords)
+    elif language in ('markdown', 'md'):
+        self.update_md(s, keywords)
+    elif self.default_kind in ('rest', 'rst'):
+        self.update_rst(s, keywords)
+    elif self.default_kind in ('markdown', 'md'):
+        self.update_md(s, keywords)
+    else:
+        # Do nothing.
+        g.trace('ignore', s)
+        w = self.ensure_text_widget()
+        self.show()
+        w.setPlainText('')
+</t>
+<t tx="ekr.20240527100653.1391"></t>
+<t tx="ekr.20240527100653.1392">def ensure_text_widget(self) -&gt; Widget:
+    """Swap a text widget into the rendering pane if necessary."""
+    c = self.c
+    if self.must_change_widget(QtWidgets.QTextBrowser):
+        # Instantiate a new QTextBrowser.
+        # Allow non-ctrl clicks to open url's.
+        w = QtWidgets.QTextBrowser()
+
+        def contextMenuCallback(point: Any) -&gt; None:
+            """LeoQtTree: Callback for customContextMenuRequested events."""
+            # #1286.
+            w = self  # Required.
+            g.app.gui.onContextMenu(c, w, point)
+
+        # #1286.
+        w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
+        w.customContextMenuRequested.connect(contextMenuCallback)
+
+        def handleClick(url: str, w: Widget = w) -&gt; None:
+            wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
+            event = g.Bunch(c=c, w=wrapper)
+            g.openUrlOnClick(event, url=url)
+
+        w.anchorClicked.connect(handleClick)
+        w.setOpenLinks(False)
+        self.embed_widget(w)  # Creates w.wrapper
+        assert w == self.w
+    return self.w
+</t>
+<t tx="ekr.20240527100653.1393">def get_kind(self, p: Position) -&gt; Optional[str]:
+    """Return the proper rendering kind for node p."""
+
+    p0 = p  # Special case selected position.
+
+    def get_language(p: Position) -&gt; str:
+        """
+        Return the language in effect at position p.
+        Headline directives over-ride normal Leo directives in body text.
+        """
+        h = p.h
+        # Case 1: Look for headline directives.
+        if h.startswith('@'):
+            i = g.skip_id(h, 1, chars='-')
+            word = h[1:i].lower().strip()
+            if word in self.dispatch_dict:
+                return word
+
+        # Case 2: Look at body text in c.p.
+        #         We *must* assume the first @language directive is in effect.
+        if p == p0:
+            # Careful: never use c.target_language as a default.
+            return g.findFirstValidAtLanguageDirective(p.b)
+
+        # Case 3: Look at body text in ancestor nodes.
+        #         Ignore nodes with ambiguous @language directives!
+        m_list = list(g.g_language_pat.finditer(p.b))
+        if len(m_list) == 1:
+            m = m_list[0]
+            language = m.group(1)
+            if g.isValidLanguage(language):
+                return language
+        return None
+
+    # #1287: Honor both kind of directives node by node.
+    for p1 in p.self_and_parents():
+        language = get_language(p1)
+        if language:
+            if language in ('md', 'markdown'):
+                return language if got_markdown else None
+            if language in ('rest', 'rst'):
+                return language if got_docutils else None
+            if language in self.dispatch_dict:
+                return language
+    return None
+</t>
+<t tx="ekr.20240527100653.1394">def get_fn(self, s: str, tag: str) -&gt; tuple[bool, str]:
+    c = self.c
+    fn = s or c.p.h[len(tag) :]
+    fn = fn.strip()
+    # Similar to code in g.computeFileUrl
+    if fn.startswith('~'):
+        fn = fn[1:]
+        fn = g.finalize(fn)
+    else:
+        # Handle ancestor @path directives.
+        if c and c.fileName():
+            base = c.getNodePath(c.p)
+            fn = g.finalize_join(g.os_path_dirname(c.fileName()), base, fn)
+        else:
+            fn = g.finalize(fn)
+    ok = g.os_path_exists(fn)
+    return ok, fn
+</t>
+<t tx="ekr.20240527100653.1395">def get_url(self, s: str, tag: str) -&gt; str:
+    p = self.c.p
+    url = s or p.h[len(tag) :]
+    url = url.strip()
+    return url
+</t>
+<t tx="ekr.20240527100653.1396">def must_change_widget(self, widget_class: Widget) -&gt; bool:
+    return not self.w or self.w.__class__ != widget_class
+</t>
+<t tx="ekr.20240527100653.1397">def remove_directives(self, s: str) -&gt; str:
+    lines = g.splitLines(s)
+    result = []
+    for s1 in lines:
+        if s1.startswith('@'):
+            i = g.skip_id(s1, 1)
+            word = s1[1:i]
+            if word in g.globalDirectiveList:
+                continue
+        result.append(s1)
+    return ''.join(result)
+</t>
+<t tx="ekr.20240527100653.1518"></t>
+<t tx="ekr.20240527100653.1519">class ViewRenderedController3(QtWidgets.QWidget):
+    """A class to control rendering in a rendering pane."""
+    @others
+</t>
+<t tx="ekr.20240527100653.1552"># Must have this signature: called by leoPlugins.callTagHandler.
+def update(self, tag, keywords):
+    """Update the vr3 pane. Called at idle time.
+
+    If the VR3 variable "freeze" is True, do not update.
+    """
+    pc = self
+    p = pc.c.p
+
+    if tag in ('show-scrolled-message',):
+        # If we are called as a "scrolled message" - usually for display of
+        # docstrings.  keywords will contain the RsT to be displayed.
+        _kind = keywords.get('flags', 'rst')
+        s = keywords.get('s', '')
+        f = pc.dispatch_dict.get(_kind)
+        f([s,], keywords)
+
+        # Prevent VR3 from showing the selected node at
+        # the next idle-time callback,
+        # Which would over-write the scrolled message.
+        pc.node_changed = False
+        pc.gnx = p.v.gnx
+        pc.length = len(p.b)  # not s
+        pc.last_text = p.b
+        return
+
+    if self.freeze: return
+    if pc.lock_to_tree:
+        _root = pc.current_tree_root or p
+    else:
+        _root = p
+
+    self.controlling_code_lang = None
+    self.params = []
+
+    _kind = pc.get_kind(p) or self.default_kind
+    if _kind in ('edit', 'file', 'clean', 'auto'):
+        _kind = RST
+    if _kind == RST and p.h.startswith('@jupyter'):
+        _kind = 'jupyter'
+    f = pc.dispatch_dict.get(_kind)
+    # if f in (pc.update_rst, pc.update_md, pc.update_text):
+        # self.show_toolbar()
+    # else:
+        # self.hide_toolbar()
+    if self.locked:
+        return
+
+    if pc.must_update(keywords):
+        # Suppress updates until we change nodes.
+        pc.node_changed = pc.gnx != p.v.gnx
+        pc.gnx = p.v.gnx
+        pc.length = len(p.b)  # not s
+
+        # Remove Leo directives.
+        s = keywords.get('s') if 's' in keywords else p.b
+        s = pc.remove_directives(s)
+
+        # For rst, md, asciidoc handler
+        self.rst_html = ''
+
+        # Dispatch based on the computed kind.
+        kind = keywords.get('flags') if 'flags' in keywords else _kind
+        if not kind:
+            h = f'&lt;pre&gt;{s}&lt;/pre&gt;'
+            w = pc.w
+            self.set_html(h, w)
+            self.rst_html = h
+            w.show()
+            return
+
+        _tree = []
+        if tag in ('show-scrolled-message',):
+            # This branch is for rendering docstrings, help-for-command messages,
+            # etc.  Called from qt_gui.py.
+            # In case Leo node elements get mixed into the message, remove them:
+            pc.node_changed = False
+            txt = keywords.get('s', '')
+            lines = txt.split('\n')
+            keywords['s'] = '\n'.join([l for l in lines if not l.startswith('#@')])
+        else:
+            # This branch is for rendering nodes and subtrees.
+            try:
+                rootcopy = _root.copy()
+                _tree = [rootcopy]
+            except UnboundLocalError as e:
+                g.trace('=======', tag, e)
+                return
+        if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT) and _tree and self.show_whole_tree:
+            _tree.extend(rootcopy.subtree())
+        self.base_url = self.get_node_path(self.c, p)
+        f = pc.dispatch_dict.get(kind)
+        if not f:
+            g.trace(f'no handler for kind: {kind}')
+            f = pc.update_rst
+        if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT):
+            f(_tree, keywords)
+        else:
+            f(s, keywords)
+    else:
+        pass
+        # Save the scroll position.
+        # w = pc.w
+        # if w.__class__ == QtWidgets.QTextBrowser:
+            # # 2011/07/30: The widget may no longer exist.
+            # try:
+                # sb = w.verticalScrollBar()
+                # pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
+            # except Exception:
+                # g.es_exception()
+                # pc.deactivate()
+</t>
+<t tx="ekr.20240527100653.1553">def embed_widget(self, w, delete_callback=None):
+    """Embed widget w in the appropriate splitter."""
+    pc = self; c = pc.c
+    pc.w = w
+    layout = self.layout()
+    for i in range(layout.count()):
+        layout.removeItem(layout.itemAt(0))
+    self.layout().addWidget(w)
+    # w.show()
+
+    # Special inits for text widgets...
+    if w.__class__ == QtWidgets.QTextBrowser:
+        text_name = 'body-text-renderer'
+        w.setObjectName(text_name)
+        # Do not do this! It interferes with themes.
+            # pc.setBackgroundColor(pc.background_color, text_name, w)
+        w.setReadOnly(True)
+        # Create the standard Leo bindings.
+        wrapper_name = 'rendering-pane-wrapper'
+        wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
+        w.leo_wrapper = wrapper
+        c.k.completeAllBindingsForWidget(wrapper)
+        w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
+</t>
+<t tx="ekr.20240527100653.1554">def setBackgroundColor(self, colorName, name, w):
+    """Set the background color of the vr3 pane."""
+
+    return
+    # Do not do this! It interferes with themes.
+    # pc = self
+    # if not colorName: return
+    # styleSheet = 'QTextEdit#%s { background-color: %s; }' % (name, colorName)
+    # if QtGui.QColor(colorName).isValid():
+        # w.setStyleSheet(styleSheet)
+    # elif colorName not in pc.badColors:
+        # pc.badColors.append(colorName)
+        # g.warning('invalid body background color: %s' % (colorName))
+</t>
+<t tx="ekr.20240527100653.1555">def must_update(self, keywords):
+    """Return True if we must update the rendering pane."""
+    _must_update = False
+    pc = self
+    c, p = pc.c, pc.c.p
+
+    if g.unitTesting:
+        _must_update = False
+    elif keywords.get('force'):
+        pc.active = True
+        _must_update = True
+    elif c != keywords.get('c') or not pc.active:
+        _must_update = False
+    elif pc.locked:
+        _must_update = False
+    elif pc.gnx != p.v.gnx:
+        _must_update = True
+    elif len(p.b) != pc.length or pc.last_text != p.b:
+        if pc.get_kind(p) in ('html', 'pyplot'):
+            _must_update = False  # Only update explicitly.
+        else:
+            _must_update = True
+        pc.length = len(p.b)
+        pc.last_text = p.b
+    else:
+        _must_update = False
+        # This trace would be called at idle time.
+        # g.trace('no change')
+
+    if _must_update and self.w:
+        # Hide the old widget so it won't keep us from seeing the new one.
+        self.w.hide()
+
+    return _must_update
+
+</t>
+<t tx="ekr.20240527100653.1556">def update_asciidoc(self, node_list, keywords):
+    """Update asciidoc in the vr3 pane."""
+
+    pc = self
+    # Do this regardless of whether we show the widget or not.
+    w = pc.ensure_web_widget()
+    assert pc.w
+    pc.show()
+    self.rst_html = ''
+
+    ascdoc = self.process_asciidoc_nodes(node_list)
+    self.last_markup = ascdoc
+    h = self.convert_to_asciidoc(ascdoc) or "No return from asciidoc processor"
+    h = g.toUnicode(h)  # EKR.
+    self.set_html(h, w)
+</t>
+<t tx="ekr.20240527100653.1557">def process_asciidoc_nodes(self, node_list, s=''):
+    """Convert content of Leo nodes, or a string, to Asciidoc.
+
+    If the input contains Python code and self.execute_flag is True,
+    execute the code and capture stdout and stderr output.
+    Return the Asciidoc output with any execution results
+    appended in a literal block.
+
+    This method uses a rudimentary state machine.
+
+    ARGUMENTS
+    node_list -- a list of Leo nodes to process.
+    s -- a string.  The node_list must be empty.
+
+    RETURNS
+    a string containing the Asciidoc and execution results.
+    """
+
+    result = ASCDOC_PYGMENTS_ATTRIBUTE + '\n'
+    codelist = []
+
+    sm = StateMachine(self, tag=TEXT, structure=ASCIIDOC, lang=ASCIIDOC)
+
+    if not node_list:
+        lines = s.split('\n')
+        # Process node's entire body text; handle @language directives
+        sproc, codelines = sm.runMachine(lines)
+        result += sproc
+        sm.reset()
+    else:
+        for node in node_list:
+            # Add node's text as a headline
+            s = node.b
+            s = self.remove_directives(s)
+            # Remove "@" directive from headline, if any
+            if self.use_node_headline:
+                header = node.h or ''
+                if header.startswith('@'):
+                    fields = header.split()
+                    headline = ' '.join(fields[1:]) if len(fields) &gt; 1 else header[1:]
+                else:
+                    headline = header
+                headline_str = '== ' + headline
+                s = headline_str + '\n' + s
+            lines = s.split('\n')
+
+            # Process node's entire body text; handle @language directives
+            sproc, codelines = sm.runMachine(lines)
+            result += sproc + '\n'
+            sm.reset(sm.tag, sm.lang)
+        if codelines:
+            codelist.extend(codelines)
+
+    # Execute code blocks; capture and insert execution results.
+    # This means anything written to stdout or stderr.
+    if self.execute_flag and codelist:
+        execution_result, err_result = None, None
+        code = '\n'.join(codelist)
+        c = self.c
+        environment = {'c': c, 'g': g, 'p': c.p}  # EKR: predefine c &amp; p.
+        execution_result, err_result = self.exec_code(code, environment)
+        execution_result, err_result = execution_result.strip(), err_result.strip()
+        self.execute_flag = False
+
+        if execution_result or err_result:
+            result += '\n----\n'
+            if execution_result:
+                result += f'\n{execution_result}\n'
+            if err_result:
+                result += f'{err_result}\n'
+            result += '----\n'
+
+    return result
+</t>
+<t tx="ekr.20240527100653.1558">def convert_to_asciidoc(self, s):
+    r"""
+    &lt;&lt; convert asciidoc docstring &gt;&gt;
+    """
+    global AsciiDocAPI, AsciiDoc3, API, ad3_file, asciidoc_processors
+    h = ''
+    if self.asciidoctor:
+        h = self.convert_to_asciidoc_external(s)
+        self.rst_html = h
+        return h
+
+    &lt;&lt; function proc_string &gt;&gt;
+
+    # Reuse cached processors if possible
+    if not asciidoc_processors:
+        asciidoc_processors = []
+        &lt;&lt; Find available processors &gt;&gt;
+        if not asciidoc_processors:
+            h = '&lt;h1&gt;VR3 -- Cannot find an asciidoc processor&lt;/h1&gt;'
+            self.rst_html = h
+            return h
+
+    &lt;&lt; set processor priority &gt;&gt;
+
+    infile = StringIO(s)
+    outfile = StringIO()
+    h = ''
+    succeeded = None
+    failed = []
+
+    # Path of directory for our own asciidoc config file
+    asciidoc_conf_file = os.path.join(LEO_PLUGINS_DIR, 'viewrendered3', ASCIIDOC_CONF_FILENAME)
+    if not os.path.exists(asciidoc_conf_file):
+        asciidoc_conf_file = ''
+
+    &lt;&lt; try all processors &gt;&gt;
+    self.rst_html = h
+    &lt;&lt; show fail-succeed processors &gt;&gt;
+
+    if succeeded:
+        infile.close()
+        outfile.close()
+    return h
+</t>
+<t tx="ekr.20240527100653.1559">Convert a string to html using an asciidoc processor.
+
+If the settings prefer an external asciidoctor (Ruby) processor,
+use that if it can be found.  Else try to use either asciidoc or
+asciidoc3, if either or both are installed; try asciidoc3 first if
+requested by a setting.
+
+Asciidoc3 can be a problem on Windows and might not work. If
+so, we fall back on asciidoc.
+
+If the "use math" setting is present, then tell the processors to
+include a MathJax script in the output.
+
+We use a customized .conf file with both asciidoc and asciidoc3
+to insert Mathjax scripts into the  output when math output is
+requested.
+
+Settings used::
+
+       Setting            Instance Variable
+    vr3-math-output        self.math_output
+    vr3-prefer-external    self.prefer_external
+    vr3-prefer-asciidoc3   self.prefer_asciidoc3
+    vr3-asciidoc-path      self.asciidoc_path
+
+ARGUMENT
+s -- the asciidoc string to convert.
+
+RETURNS
+the html returned by the processor, or an error message.
+</t>
+<t tx="ekr.20240527100653.1560">def proc_string(proc):
+    st = f'{type(proc)}'.lower()
+    name = 'asciidoc3' if 'doc3' in st else 'asciidoc'
+    return name
+</t>
+<t tx="ekr.20240527100653.1561">if asciidoc_ok:
+    asciidoc_processors.append(AsciiDocAPI())
+if asciidoc3_ok:
+    asciidoc_processors.append(AsciiDoc3API(ad3_file))
+if not asciidoc_processors:
+    h = '&lt;h1&gt;No asciidoc processors found&lt;/h1&gt;'
+    self.rst_html = h
+    return h
+
+</t>
+<t tx="ekr.20240527100653.1562">if self.prefer_asciidoc3:
+    if proc_string(asciidoc_processors[0]) != 'asciidoc3':
+        asciidoc_processors.reverse()
+elif proc_string(asciidoc_processors[0]) != 'asciidoc':
+    asciidoc_processors.reverse()
+</t>
+<t tx="ekr.20240527100653.1563">for processor in asciidoc_processors:
+    proc_name = proc_string(processor)
+
+    user_dir = PurePath(LEO_PLUGINS_DIR) / 'viewrendered3' / proc_name
+    conf_file = str(user_dir / ASCIIDOC_CONF_FILENAME)
+    stylesdir = asciidoc_dirs[proc_name]['stylesheets']
+    scriptsdir = asciidoc_dirs[proc_name]['javascripts']
+
+    processor.attributes['stylesdir'] = stylesdir
+    processor.attributes['scriptsdir'] = scriptsdir
+
+    if conf_file not in processor.options.values:
+        processor.options.append('--conf-file', conf_file)
+    if self.math_output:
+        processor.attributes['mathjax'] = True  # Can be anything
+    else:
+        processor.attributes.pop('mathjax', None)
+
+    h = ''
+    bkend = os.path.splitext(conf_file)[0]
+    try:
+        processor.execute(infile, outfile, backend=bkend)
+        h = outfile.getvalue()
+        succeeded = proc_name
+        break
+    except Exception as e:
+        failed.append(proc_name)
+        h += f'{proc_name} Failed: {e}\n'
+</t>
+<t tx="ekr.20240527100653.1564">if self.asciidoc_show_proc_fail_msgs:
+    if failed:
+        failed_procs = ','.join([f'{fail}' for fail in failed])
+        g.es(f'VR3 -- Asciidoc processing failed trying {failed_procs}')
+    if succeeded:
+        g.es(f'VR3 -- Asciidoc succeeded using {succeeded}')
+    # Reset to True on reload of settings:
+    self.asciidoc_show_proc_fail_msgs = False
+</t>
+<t tx="ekr.20240527100653.1565">def convert_to_asciidoc_external(self, s):
+    """Convert s to html using the Ruby asciidoctor3 processor."""
+    s = self.run_asciidoctor_external(s)
+    return g.toUnicode(s)
+</t>
+<t tx="ekr.20240527100653.1566">def run_asciidoctor_external(self, s):
+    """
+    Process s with an asciidoctor3 external processor.
+    Return the contents of the html file. The caller handles most exceptions.
+    """
+    c = self.c
+    # Find path relative to this file.  Needed as the base of relative
+    # URLs, e.g., image or included files.
+    path = c.getNodePath(c.p)
+    i_path = g.finalize_join(path, 'vr3_adoc.adoc')
+    o_path = g.finalize_join(path, 'vr3_adoc.html')
+
+    # Write the input file.
+    with open(i_path, 'w', encoding='utf-8') as f:
+        f.write(s)
+
+    # Set up special command-line asciidoctor attributes
+    attrs = []
+    if self.math_output:
+        attrs.append('stem')
+    if self.asciidoctor_suppress_footer:
+        attrs.append('nofooter')
+    if self.asciidoctor_icons:  # not ""
+        attrs.append(f'icons={self.asciidoctor_icons}')
+    if self.asciidoctor_imagesdir:
+        attrs.append(f'imagesdir={self.asciidoctor_imagesdir}')
+    att_str = ''
+    for att in attrs:
+        # pylint: disable = consider-using-join
+        att_str += f'-a {att} '
+
+    # Call the external program to write the output file.
+    command = (f'{self.asciidoctor} -b html5 {att_str} {i_path}')
+
+    # If find asciidoctor-diagram converter config, then use it.
+    if self.asciidoctor_diagram:
+        command += ' -r asciidoctor-diagram'
+
+    g.execute_shell_commands(command)
+    # Read the output file and return it.
+    try:
+        with open(o_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    except Exception as e:
+        message = f'asciidoctor output file not found:\n {e}'
+        g.es(message)
+        return message
+
+</t>
+<t tx="ekr.20240527100653.1568">update_html_count = 0
+
+def update_html(self, s, keywords):
+    """Update html in the vr3 pane."""
+    pc = self
+    c = pc.c
+    if pc.must_change_widget(has_webengineview):
+        w = self.create_base_text_widget()
+        pc.embed_widget(w)
+        assert w == pc.w
+    else:
+        w = pc.w
+    w.hide()  # This forces a proper update.
+    w.setHtml(s)
+    w.show()
+    c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20240527100653.1569">def update_image(self, s, keywords):
+    """Update an image in the vr3 pane.
+
+    The path to the file can be an absolute or relative file path,
+    or an http: URL.  It must be the first line in the body.
+    File URLs must not start with "file:".
+    """
+
+    pc = self
+    if not s.strip():
+        return
+    lines = g.splitLines(s) or []
+    fn = lines and lines[0].strip()
+    if not fn:
+        return
+
+    is_url = False
+    if fn.startswith('http'):
+        ok = True
+        path = fn
+        is_url = True
+    else:  #file URL
+        ok, path = pc.get_fn(fn, '@image')
+
+    if not ok:
+        w = pc.ensure_text_widget()
+        w.setPlainText(f'@image: file not found: {path}')
+        return
+
+    if not is_url:
+        path, fname = os.path.split(path)
+        path = path.replace('\\', '/') + '/'
+    else:
+        fname = path
+        path = ''
+
+    template = image_template % (fname)
+    # Only works in Python 3.x.
+    # Sensitive to leading blank lines.
+    template = textwrap.dedent(template).strip()
+
+    w = pc.ensure_web_widget()
+    pc.set_html(template, w)
+    w.show()
+</t>
+<t tx="ekr.20240527100653.1570">update_jupyter_count = 0
+
+def update_jupyter(self, s, keywords):
+    """Update @jupyter node in the vr3 pane."""
+    pc = self
+    c = pc.c
+    if pc.must_change_widget(has_webengineview):
+        w = self.create_base_text_widget()
+        pc.embed_widget(w)
+        assert w == pc.w
+    else:
+        w = pc.w
+    s = self.get_jupyter_source(c)
+    self.rst_html = s
+    w.hide()  # This forces a proper update.
+    w.setHtml(s)
+    w.show()
+    c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20240527100653.1571">def get_jupyter_source(self, c):
+    """Return the html for the @jupyter node."""
+    body = c.p.b.lstrip()
+    if body.startswith('&lt;'):
+        # Assume the body is html.
+        return body
+
+    if not jupyter_ok:
+        return 'can not render @jupyter nodes: need missing nbformat or nbconvert package'
+
+    if body.startswith('{'):
+        # Leo 5.7.1: Allow raw JSON.
+        s = body
+    else:
+        url = ''
+        fields = c.p.h.split()
+        if len(fields) &gt; 1:
+            for f in fields:
+                if '://' in f:
+                    url = f
+                    break
+        if not url:
+            if c.p.b:
+                # Try first line of body
+                url = c.p.b.split('\n')[0]
+            if not url:
+                return 'No url found'
+        url = url.replace('\\', '/').replace('"', '')
+        try:
+            with urlopen(url) as u:
+                s = u.read().decode()
+        except Exception:
+            return f'url not found: {url}'
+    try:
+        nb = nbformat.reads(s, as_version=4)
+        e = HTMLExporter()
+        (s, junk_resources) = e.from_notebook_node(nb)
+    except nbformat.reader.NotJSONError:
+        pass  # Assume the result is html.
+    return s
+</t>
+<t tx="ekr.20240527100653.1572">def update_latex(self, s, keywords):
+    """Update latex in the vr3 pane."""
+    pc = self
+    c = pc.c
+    if sys.platform.startswith('win'):
+        g.es_print('latex rendering not ready for Python 3')
+        w = pc.ensure_text_widget()
+        pc.show()
+        w.setPlainText(s)
+        c.bodyWantsFocusNow()
+        return
+    if pc.must_change_widget(has_webengineview):
+        w = self.create_base_text_widget()
+        pc.embed_widget(w)
+        assert w == pc.w
+    else:
+        w = pc.w
+    w.hide()  # This forces a proper update.
+    s = self.create_latex_html(s)
+    w.setHtml(s)
+    w.show()
+    c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20240527100653.1573">def create_latex_html(self, s):
+    """Create an html page embedding the latex code s."""
+    html_s = html.escape(s)
+    template = latex_template % (html_s)
+    template = textwrap.dedent(template).strip()
+    return template
+</t>
+<t tx="ekr.20240527100653.1574">def update_md(self, node_list, keywords):
+    """Update markdown text in the vr3 pane.
+
+        ARGUMENTS
+        node_list -- a list of outline nodes to be processed.
+        keywords -- a dictionary of keywords
+
+        RETURNS
+        nothing
+    """
+    # Do this regardless of whether we show the widget or not.
+    self.ensure_web_widget()
+    assert self.w
+    w = self.w
+
+    if node_list:
+        self.show()
+
+    if got_markdown:
+        if not node_list:
+            return
+        if node_list:
+            s = node_list[0].b
+        else:
+            s = keywords.get('s', '')
+        s = self.remove_directives(s)
+        isHtml = s and s[0] == '&lt;'
+        if s.startswith('&lt;svg'):
+            g.es(NO_SVG_WIDGET_MSG, color='red')
+            return
+        self.rst_html = ''
+        if s and isHtml:
+            h = s
+        else:
+            h = self.convert_markdown_to_html(node_list)
+        if h:
+            h = g.toUnicode(h)  # EKR.
+            self.set_html(h, w)
+            self.rst_html = h
+    else:
+        # s = node_list[0].b
+        w.setHtml('')  # EKR.
+
+</t>
+<t tx="ekr.20240527100653.1575">def convert_markdown_to_html(self, node_list, s=''):
+    """Convert node_list to html using the markdown processor.
+
+    If node_list == [], render the string s.
+
+    RETURNS
+    the HTML returned by markdown.
+    """
+
+    @others
+</t>
+<t tx="ekr.20240527100653.1576">pc = self
+c, p = pc.c, pc.c.p
+if g.app.gui.guiName() != 'qt':
+    return ''  # EKR
+
+vr3 = controllers.get(c.hash())
+if not vr3:
+    vr3 = ViewRenderedController3(c)
+
+# Update the current path.
+path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+if not os.path.isdir(path):
+    path = os.path.dirname(path)
+if os.path.isdir(path):
+    os.chdir(path)
+
+</t>
+<t tx="ekr.20240527100653.1577">result = ''
+codelist = []
+sm = StateMachine(self, TEXT, MD, MD)
+
+if not node_list:
+    lines = s.split('\n')
+    # Process node's entire body text; handle @language directives
+    sproc, codelines = sm.runMachine(lines)
+    result += sproc
+    sm.reset()
+else:
+    for node in node_list:
+        s = node.b
+        s = self.remove_directives(s)
+        if self.use_node_headline:
+            # Add node's text as a headline
+            # Remove "@" directive from headline, if any
+            header = node.h or ''
+            if header.startswith('@'):
+                fields = header.split()
+                headline = ' '.join(fields[1:]) if len(fields) &gt; 1 else header[1:]
+            else:
+                headline = header
+            headline_str = '## ' + headline.lstrip()
+            s = headline_str + '\n' + s
+        lines = s.split('\n')
+
+        # Process node's entire body text; handle @language directives
+        sproc, codelines = sm.runMachine(lines)
+        result += sproc
+        if codelines:
+            codelist.extend(codelines)
+        sm.reset()
+
+# Execute code blocks; capture and insert execution results.
+# This means anything written to stdout or stderr.
+if self.execute_flag and codelist:
+    execution_result, err_result = None, None
+    code = '\n'.join(codelist)
+    c = self.c
+    environment = {'c': c, 'g': g, 'p': c.p}  # EKR: predefine c &amp; p.
+    execution_result, err_result = self.exec_code(code, environment)
+    execution_result, err_result = execution_result.strip(), err_result.strip()
+    self.execute_flag = False
+
+    if execution_result or err_result:
+        result += '\n```text\n'
+        if execution_result:
+            result += f'\n{execution_result}\n'
+        if err_result:
+            result += f'{err_result}\n'
+        result += '```\n'
+
+</t>
+<t tx="ekr.20240527100653.1578">
+try:
+    _html = self.Markdown.reset().convert(result)
+    self.last_markup = result
+
+except SystemMessage as sm:
+    msg = sm.args[0]
+    if 'SEVERE' in msg or 'FATAL' in msg:
+        _html = f'MD error:\n{msg}\n\n{s}'
+
+_html = self.md_header + '\n&lt;body&gt;\n' + _html + '\n&lt;/body&gt;\n&lt;/html&gt;'
+return _html
+</t>
+<t tx="ekr.20240527100653.1579">movie_warning = False
+
+def update_movie(self, s, keywords):
+    """Update a movie in the vr3 pane."""
+    pc = self
+    ok, path = pc.get_fn(s, '@movie')
+    if not ok:
+        w = pc.ensure_text_widget()
+        w.setPlainText(f'Not found: {path}')
+        return
+    if not QtMultimedia:
+        if not self.movie_warning:
+            self.movie_warning = True
+            g.es_print('No QtMultimedia module')
+        w = pc.ensure_text_widget()
+        w.setPlainText('')
+        return
+    if pc.vp:
+        vp = pc.vp
+        pc.vp.stop()
+        pc.vp.deleteLater()
+    # Create a fresh player.
+    g.es_print('playing', path)
+    vw = vp.videoWidget()
+    vw.setObjectName('video-renderer')
+    # Embed the widgets
+
+    def delete_callback():
+        if pc.vp:
+            pc.vp.stop()
+            pc.vp.deleteLater()
+            pc.vp = None
+
+    pc.embed_widget(vp, delete_callback=delete_callback)
+    pc.show()
+    vp = pc.vp
+    vp.play()
+</t>
+<t tx="ekr.20240527100653.1580">def update_networkx(self, s, keywords):
+    """Update a networkx graphic in the vr3 pane."""
+    pc = self
+    w = pc.ensure_text_widget()
+    w.setPlainText('')  # 'Networkx: len: %s' % (len(s)))
+    pc.show()
+</t>
+<t tx="ekr.20240527100653.1581">def update_pandoc(self, s, keywords):
+    """
+    Update an @pandoc in the vr3 pane.
+
+    There is no such thing as @language pandoc,
+    so only @pandoc nodes trigger this code.
+    """
+    global pandoc_exec
+    pc = self
+    w = pc.ensure_text_widget()
+    assert pc.w
+    if s:
+        pc.show()
+    if pandoc_exec:
+        try:
+            self.last_markup = s
+            s2 = self.convert_to_pandoc(s)
+            self.set_html(s2, w)
+        except Exception:
+            g.es_exception()
+        return
+    self.update_rst(s, keywords)
+</t>
+<t tx="ekr.20240527100653.1582">def convert_to_pandoc(self, s):
+    """Convert s to html using the asciidoctor or asciidoc processor."""
+    pc = self
+    c, p = pc.c, pc.c.p
+    path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+    if not os.path.isdir(path):
+        path = os.path.dirname(path)
+    if os.path.isdir(path):
+        os.chdir(path)
+    if pc.title:
+        s = pc.make_pandoc_title(pc.title) + s
+        pc.title = None
+    s = pc.run_pandoc(s)
+    return g.toUnicode(s)
+</t>
+<t tx="ekr.20240527100653.1583">def run_pandoc(self, s):
+    """
+    Process s with pandoc.
+    return the contents of the html file.
+    The caller handles all exceptions.
+    """
+    global pandoc_exec
+    assert pandoc_exec, g.callers()
+    home = g.os.path.expanduser('~')
+    i_path = g.finalize_join(home, 'vr3_input.pandoc')
+    o_path = g.finalize_join(home, 'vr3_output.html')
+    # Write the input file.
+    with open(i_path, 'w', encoding=ENCODING) as f:
+        f.write(s)
+    # Call pandoc to write the output file.
+    # --quiet does no harm.
+    command = f"pandoc {i_path} -t html5 -o {o_path}"
+    g.execute_shell_commands(command)
+    # Read the output file and return it.
+    with open(o_path, 'r', encoding=ENCODING) as f:
+        return f.read()
+</t>
+<t tx="ekr.20240527100653.1584">def update_pyplot(self, s, keywords):
+    """Get the pyplot script at c.p.b and show it."""
+    g.es('@pyplot nodes not implemented', color='gray')
+
+    if 0:  # Keep old code here for possible resurrection
+        c = self.c
+        if not self.pyplot_imported:
+            self.pyplot_imported = True
+            backend = g.finalize_join(
+                g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
+            if g.os_path_exists(backend):
+                if matplotlib:
+                    try:
+                        matplotlib.use('module://leo.plugins.pyplot_backend')
+                    except ImportError:
+                        g.trace('===== FAIL: pyplot.backend')
+            else:
+                g.trace('===== MISSING: pyplot.backend')
+        try:
+            plt.ion()  # Automatically set interactive mode.
+            namespace = {
+                'animation': animation,
+                'matplotlib': matplotlib,
+                'numpy': np, 'np': np,
+                'pyplot': plt, 'plt': plt,
+            }
+        except Exception:
+            g.es_print('matplotlib imports failed')
+            namespace = {}
+        # Embedding already works without this!
+            # self.embed_pyplot_widget()
+        self.pyplot_imported = True
+        # pyplot will throw RuntimeError if we close the pane.
+        self.pyplot_active = True
+        c.executeScript(
+            event=None,
+            args=None, p=None,
+            script=c.p.b,  #None,
+            useSelectedText=False,
+            define_g=True,
+            define_name='__main__',
+            silent=False,
+            namespace=namespace,
+            raiseFlag=False,
+            runPyflakes=False,  # Suppress warnings about pre-defined symbols.
+        )
+        c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20240527100653.1585">@language python
+def update_rst(self, node_list, keywords=None):
+    """Update rst in the vr3 pane.
+
+        ARGUMENTS
+        node_list -- a list of outline nodes to be processed.
+        keywords -- a dictionary of keywords
+
+        RETURNS
+        nothing
+    """
+    if not keywords:  # EKR
+        keywords = {}
+    # Do this regardless of whether we show the widget or not.
+    self.ensure_web_widget()
+    assert self.w
+    w = self.w
+    self.show()
+
+    if got_docutils:
+        if not node_list or isinstance(node_list[0], str):  # EKR.
+            # We were called as a "scrolled message"
+            s = node_list[0]
+            node_list = None
+        else:
+            s = node_list[0].b
+            s = self.remove_directives(s)
+        isHtml = s and s[0] == '&lt;'
+@
+        # In case we bring back QtSvg again)
+        if s.startswith('&lt;svg'):
+            if QtSvg is None:
+                g.es(NO_SVG_WIDGET_MSG, color = 'red')
+                return
+            else:
+                self.update_svg(s, keywords)
+@c
+        self.rst_html = ''
+        if s and isHtml:
+            _code = [n.b for n in node_list]
+            h = '\n'.join(_code)
+        else:
+            h = self.convert_to_html(node_list, s)
+        if h:
+            self.set_html(h, w)
+            self.rst_html = h
+    else:
+        _text_list = [n.b for n in node_list]
+        s = '&lt;pre&gt;' + '\n'.join(_text_list) + r'\&lt;/pre&gt;'
+        self.set_html(s, w)
+</t>
+<t tx="ekr.20240527100653.1586">@language python
+def convert_to_html(self, node_list, s=''):
+    """Convert node_list to html using docutils.
+
+    PARAMETERS
+    node_list -- a list of Leo nodes to be rendered.  May be empty ([]).
+    s -- a string to be rendered if node_list is empty.
+
+    RETURNS
+    the html returned by docutils.
+    """
+
+    @others
+
+
+</t>
+<t tx="ekr.20240527100653.1587">@language python
+c, p = self.c, self.c.p
+if g.app.gui.guiName() != 'qt':
+    return ''  # EKR
+
+vr3 = controllers.get(c.hash())
+if not vr3:
+    vr3 = ViewRenderedController3(c)
+
+# Update the current path.
+path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+if not os.path.isdir(path):
+    path = os.path.dirname(path)
+if os.path.isdir(path):
+    os.chdir(path)
+</t>
+<t tx="ekr.20240527100653.1588">@language python
+result = ''
+codelist = []
+if not node_list:
+    result, codelines = self.process_rst_node(s)
+else:
+    for node in node_list:
+        # Add node's text as a headline
+        s = node.b
+        s = self.remove_directives(s)
+        if self.use_node_headline:
+            s = self.make_rst_headline(node, s)
+
+        # Process node's entire body text to handle @language directives
+        sproc, codelines = self.process_rst_node(s)
+        result += sproc
+        if codelines:
+            codelist.extend(codelines)
+</t>
+<t tx="ekr.20240527100653.1589">@language python
+# Execute code blocks; capture and insert execution results.
+# This means anything written to stdout or stderr.
+# The paths to known executables are in the exepaths dictionary, which
+# was loaded at startup from data in the VR3_CONFIG_FILE.
+if self.execute_flag and codelist:
+    code = '\n'.join(codelist)
+    c = self.c
+    environment = {'c': c, 'g': g, 'p': c.p}  # EKR: predefine c &amp; p.
+
+    execution_result = err_result = ''
+
+    if self.controlling_code_lang == PYTHON:
+        execution_result, err_result = self.exec_code(code, environment)
+    # Otherwise check VR3_CONFIG_FILE to see if we know how to run this language
+    elif self.controlling_code_lang in exepaths:
+        execution_result, err_result = self.ext_execute_code(self.controlling_code_lang, code)
+    else:
+        err_result = f"Can't execute {self.controlling_code_lang} today."
+
+    # Format execution result
+    ex = execution_result.split('\n') if execution_result.strip() else []
+    err = err_result.split('\n') if err_result.strip() else []
+    ex_indented_lines = [RST_INDENT + li for li in ex]
+    err_indented_lines = [RST_INDENT + li for li in err]
+    indented_execution_result = '\n'.join(ex_indented_lines)
+    indented_err_result = '\n'.join(err_indented_lines)
+    self.execute_flag = False
+
+    if indented_execution_result.strip():
+        result += f'\n::\n\n{indented_execution_result}\n'
+    if indented_err_result.strip():
+        result += f'\n::\n\n{indented_err_result}\n'
+</t>
+<t tx="ekr.20240527100653.1590">@language python
+args = {'output_encoding': 'utf-8'}
+if self.rst_stylesheet and os.path.exists(self.rst_stylesheet):
+    args['stylesheet_path'] = f'{self.rst_stylesheet}'
+    args['embed_stylesheet'] = True
+    args['report_level'] = RST_NO_WARNINGS
+
+# Suppress RsT warnings
+# args['report_level'] = 5
+
+if self.math_output:
+    if self.mathjax_url:
+        args['math_output'] = self.rst_math_output
+    else:
+        g.es('VR3 - missing URL for MathJax')
+
+# Call docutils to get the html rendering.
+_html = ''.encode(ENCODING)
+if result.strip():
+    try:
+        self.last_markup = result
+        _html = publish_string(result, writer_name='html',
+                               settings_overrides=args)
+    except SystemMessage as sm:
+        msg = sm.args[0]
+        if 'SEVERE' in msg or 'FATAL' in msg:
+            output = f'&lt;pre style="{RST_ERROR_MSG_STYLE}"&gt;RST error: {msg}\n&lt;/pre&gt;&lt;b&gt;&lt;b&gt;'
+            output += f'&lt;pre style="{RST_ERROR_BODY_STYLE}"&gt;{result}&lt;/pre&gt;'
+            _html = output.encode(ENCODING)
+
+self.rst_html = _html
+return _html
+</t>
+<t tx="ekr.20240527100653.1591"># Helper functions to execute non-python languages.
+@others
+</t>
+<t tx="ekr.20240527100653.1592">def ext_execute_code(self, lang, code):
+    """Execute code using an external processor.
+
+    The path to the processor will have been stored in
+    the exepath dictionary.
+
+    ARGUMENTS
+    lang -- a string representing the code language; e.g. 'javascript'.
+    code -- a string containing the code to be run.
+
+    RETURNS
+    a tuple (result.stdout, result.stderr) with any console output from
+    the external processor.
+    """
+    exepath = exepaths[lang]
+    progfile = '_##temp_execute.txt'
+
+    with open(progfile, 'w', encoding=ENCODING) as f:
+        f.write(code)
+
+    cmd = [exepath]
+    cmd.extend(self.params)
+    cmd.append(progfile)
+
+    # We are not checking the return code here, so:
+    # pylint: disable=subprocess-run-check
+    result = subprocess.run(cmd, shell=False, capture_output=True, text=True, encoding='utf-8')
+    return result.stdout, result.stderr
+</t>
+<t tx="ekr.20240527100653.1593">@language python
+def process_rst_node(self, s):
+    """Process the string of a rst node, honoring "@language" code blocks
+
+       Any sections delineated by "@language xxx" /"@language yyy" directives
+       are marked as code blocks in RST, where "xxx" is a code name
+       (e.g., "python"), and "yyy" is a non-code name (e.g., "rst").
+       There can be several changes from code to non-code and back
+       within the node.
+
+       Lines that contain only "@" cause all succeeding lines
+       to be skipped until the next line that contains only "@c".
+
+       ARGUMENT
+       s -- the node's contents as a string
+
+       RETURNS
+       a string having the code parts formatted as rst code blocks.
+    """
+    &lt;&lt; rst special line helpers &gt;&gt;
+    &lt;&lt; Loop Over Lines &gt;&gt;
+    &lt;&lt; Finalize Node &gt;&gt;
+</t>
+<t tx="ekr.20240527100653.1594">def get_rst_code_language(line):
+    """Return the language and tag for a line beginning with ".. code::"."""
+    global _in_code_block
+    _fields = line.split('.. code::')
+    if len(_fields) &gt; 1:
+        _lang = _fields[1].strip()
+    else:
+        _lang = PYTHON  # Standard RsT default.
+    _tag = CODE if _lang in LANGUAGES else TEXT
+    _in_code_block = _tag == CODE
+    if _tag == CODE and not self.controlling_code_lang:
+        self.controlling_code_lang = _lang
+
+    return _lang, _tag
+
+def indented(line):
+    return line[0] in string.whitespace
+
+def empty_line(line):
+    return not line.strip()
+</t>
+<t tx="ekr.20240527100653.1595">
+lines = s.split('\n')
+# Break up text into chunks
+results = None
+chunks = []
+_structure = RST
+_lang = RST
+_tag = TEXT
+
+_at_skip_in_effect = False
+_got_language = False
+_in_rst_block = False
+_in_code_block = False
+_in_quotes = False
+_quotes_type = None
+_in_skipblock = False
+
+# c = self.c
+# environment = {'c': c, 'g': g, 'p': c.p} # EKR: predefine c &amp; p.
+
+for i, line in enumerate(lines):
+    &lt;&lt; omit at-others &gt;&gt;
+    &lt;&lt; handle toctree &gt;&gt;
+    &lt;&lt; handle quotes &gt;&gt;
+    &lt;&lt; handle_ats &gt;&gt;
+    &lt;&lt; handle at-image &gt;&gt;
+    &lt;&lt; identify_code_blocks &gt;&gt;
+    &lt;&lt; fill_chunks &gt;&gt;
+</t>
+<t tx="ekr.20240527100653.1596"># Omit lines starting with [blank]*line = @others
+left = line.lstrip()
+if left.startswith('@others'):
+    continue
+</t>
+<t tx="ekr.20240527100653.1597"># Skip all lines in an indented block started by a string in SKIPBLOCKS
+# such as ".. toctree::" or ".. index::"
+# We need to skip all lines in the block until there is a non-blank
+# line that is not indented, or we have reached the last line.
+if not _in_code_block and not _in_skipblock:
+    _in_skipblock = any(line.startswith(d) for d in SKIPBLOCKS)
+    if _in_skipblock:
+        continue
+
+if _in_skipblock:
+    if empty_line(line):
+        try:
+            next_line = lines[i + 1]
+        except IndexError:  # no more lines
+            continue
+        if not empty_line(next_line) and not indented(next_line):
+            _in_skipblock = False
+            continue
+    elif indented(line):
+        continue
+</t>
+<t tx="ekr.20240527100653.1598"># Detect if we are starting or ending a multi-line
+# string in a code block.  We need to know
+# to prevent directives within a string from
+# being acted upon.
+# Inside an RsT code block (one that started with .. code::),
+# all lines are indented and therefore cannot
+# contain a directive.
+
+if _in_code_block and not _in_rst_block:
+    _quotes_type = TRIPLEQUOTES if line.find(TRIPLEQUOTES) &gt;= 0 else None
+    if not _quotes_type:
+        _quotes_type = TRIPLEAPOS if line.find(TRIPLEAPOS) &gt;= 0 else None
+    if _quotes_type:
+        if not _in_quotes:
+            # We are in a quoted section unless we found two quote markers
+            # in the line.
+            _in_quotes = line.count(_quotes_type) == 1
+        else:
+            _in_quotes = False
+</t>
+<t tx="ekr.20240527100653.1599"># Honor "@", "@c": skip all lines after "@" until next "@c".
+if line.rstrip() == '@':
+    _at_skip_in_effect = True
+elif line.rstrip() == '@c':
+    _at_skip_in_effect = False
+    continue  # Needed to avoid displaying the "@c"
+
+if _at_skip_in_effect:
+    continue
+</t>
+<t tx="ekr.20240527100653.1600"># Handle @image and @param directives.
+# param format: space separated words, stored in self.params
+# as a list of the words.
+
+if not _in_code_block:
+    rst_directive = ''
+    if line.startswith(RST_IMAGE_DIRECTIVE):
+        rst_directive = RST_IMAGE_DIRECTIVE
+    elif line.startswith(RST_FIGURE_DIRECTIVE):
+        rst_directive = RST_FIGURE_DIRECTIVE
+
+    if line.startswith('@image'):
+        # insert RsT code for image
+        fields = line.split(' ', 1)
+        if len(fields) &gt; 1:
+            url = fields[1]
+            if url.startswith('data:'):
+                base = ''
+            else:
+                base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
+            line = f'\n.. image:: {base}{url}\n      :width: 100%\n\n'
+    elif rst_directive:
+        fields = line.split(rst_directive)
+        if len(fields) &gt; 1:
+            url = fields[1].strip()
+            base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
+            line = f'{rst_directive} {base}{url}\n'
+        else:
+            # No url for an image: ignore and skip to next line
+            continue
+else:
+    if line.startswith('@param'):
+        # Will add nothing if no params on the line.
+        params = line.split()
+        if len(params) &gt; 1:
+            params = params[1:]
+            self.params.extend(params)
+        continue
+</t>
+<t tx="ekr.20240527100653.1601"># Identify code blocks
+# Can start with "@language" or ".. code::"
+_got_language_by_rst_block = line.startswith(RST_CODE_INTRO) and not _in_quotes
+
+# Somewhat gnarly code here - have to find end of the code block.
+if _got_language_by_rst_block:
+    _got_language = True
+    _in_rst_block = True
+    _in_code_block = True
+    _tag, _lang = get_rst_code_language(line)
+
+    # If this is an RsT-delineated code block, then we need to
+    # find the end of the block.  These blocks will be indented,
+    # and we have to use the initial indentation to un-indent,
+    # and to detect the end of the block.  We need to un-indent
+    # because CODE chunks assume the lines are not indented.
+    _numlines = len(lines)
+    if _numlines &lt; i + 2: continue  # Reached the end of the node.
+
+    # Skip mandatory first blank line before indent
+    _first_code_line_num = i + 2
+    _first_code_line = lines[_first_code_line_num]
+
+    # Figure out the indentation
+    _indentation = ''
+    for ch in _first_code_line:
+        if ch not in (' ', '\t'): break
+        _indentation += ch
+
+    # Last line of code block must be followed by at least one blank line and
+    # then a non-blank, non-indented line, unless we reached the end of the node.
+    _last_code_line_num = _first_code_line_num
+    if not _last_code_line_num == _numlines - 1:
+        for j in range(_first_code_line_num, _numlines):
+            if lines[j].startswith(_indentation): continue
+            if j == _numlines - 1:
+                _last_code_line_num = j
+            elif lines[j + 1] and lines[j + 1][0] not in (' ', '\t'):
+                _last_code_line_num = j
+                break
+elif line.find('@language') == 0 and not _in_quotes:
+    _got_language = True
+    # Check if there really is a language named after the '@language' directive
+    stripped_line = line.strip()  # #1934.
+    _language = line.split()[1] if ' ' in stripped_line else TEXT
+    _in_rst_block = False
+    _in_code_block = _language in LANGUAGES
+    if _in_code_block and not self.controlling_code_lang:
+        self.controlling_code_lang = _language if _in_code_block else None
+</t>
+<t tx="ekr.20240527100653.1602">
+_cleanline = line.strip()
+_starts_with_at = (
+    not _got_language
+    and line
+    and line[0] == '@'
+    and not _cleanline == '@'
+    and not _cleanline == '@c'
+)
+
+if i == 0 and not _got_language:
+    # Set up the first chunk (unless the first line changes the language)
+    _chunk = Chunk(_tag, _structure, _lang)
+    _chunk.add_line(line)
+elif _starts_with_at:
+    # Keep Python decorators in code blocks
+    if _chunk.tag == CODE:
+        _chunk.add_line(line)
+elif _got_language:
+    if not _got_language_by_rst_block:
+        # We are starting a code block started by @language
+        if i &gt; 0:
+            chunks.append(_chunk)
+        fields = line.split()
+        _lang = fields[1] if len(fields) &gt; 1 else RST
+        _tag = CODE if _lang in LANGUAGES else TEXT
+        _chunk = Chunk(_tag, _structure, _lang)
+    else:
+        # We are starting a code block started by ".. code::"
+        if i &gt; 0:
+            chunks.append(_chunk)
+        _lang = TEXT
+        for lan_t in LANGUAGES:
+            if lan_t in line:
+                _lang = lan_t
+                break
+
+        _tag = CODE if _lang in LANGUAGES else TEXT
+        _chunk = Chunk(_tag, _structure, _lang)
+    _got_language = False
+else:
+    if _in_rst_block:
+        # We are in an indented code block started by ".. code::"
+        if not line.strip():
+            _chunk.add_line('')
+        elif _indentation:
+            fields = line.split(_indentation, 1)
+            if len(fields) &gt; 1:
+                _chunk.add_line(fields[1])
+
+        if i == _last_code_line_num:
+            _in_rst_block = False
+            _tag = TEXT
+            _lang = RST
+            chunks.append(_chunk)
+            _chunk = Chunk(_tag, _structure, _lang)
+    else:
+        _chunk.add_line(line)
+</t>
+<t tx="ekr.20240527100653.1603"># Make sure chunk ends with a blank line
+_chunk.add_line('\n')
+
+chunks.append(_chunk)
+
+for ch in chunks:
+    ch.format_code()
+if self.code_only:
+    results = [ch.formatted for ch in chunks if ch.tag == CODE]
+else:
+    results = [ch.formatted for ch in chunks]
+
+final_text = '\n'.join(results)
+codelines = []
+if self.execute_flag:
+    codelines = ['\n'.join(ch.text_lines) for ch in chunks if ch.tag == CODE]
+
+return final_text, codelines
+</t>
+<t tx="ekr.20240527100653.1604">def make_title_from_headline(self, p, h):
+    """From node title, return title with over- and underline- strings.
+
+       Symbol is chosen based on the indent level of the node.
+       Note that might differe from p.h because of, e.g.,
+       directive removal.
+
+       ARGUMENTS
+       p -- the node position whose indent level is to be used.
+       h -- the headline string to be processed.
+
+       RETURNS
+       a string
+    """
+    level = min(p.level(), 4) - 1
+    heading_str = RST_HEADING_CHARS[level] * (len(h) + 1)
+    return f'{heading_str}\n{h}\n{heading_str}'
+</t>
+<t tx="ekr.20240527100653.1605">@language python
+def make_rst_headline(self, p, s):
+    """Turn node's title into a headline and add to front of text.
+
+    If the headline text (without directives and leading whitespace)
+    equals the first line of the body text, don't insert a title.
+
+    ARGUMENTS
+    p -- the node being processed.
+    s -- a string
+
+    RETURNS
+    a string s1 where s1 = (modified headline) + s.
+    """
+
+    _headline_str = ''
+    if p.h:
+        if p.h.startswith('@'):
+            fields = p.h.split()
+            if len(fields) &gt; 1:
+                _headline = fields[1:]
+                _headline_str = ' '.join(_headline)
+        else:
+            _headline_str = p.h
+
+        _headline_str = _headline_str.strip()  # Docutils raises error for leading space
+        _headline_str = _headline_str.replace('\\', '\\\\')
+
+
+    # Don't duplicate node heading if the body already has it
+    # Assumes that 1st two lines are a heading if
+    # node headline == body's first line.
+    body_lines = p.b.split('\n', 1)
+    first_line = body_lines[0].strip()
+
+    if not first_line or _headline_str != first_line:
+        headline_str = self.make_title_from_headline(p, _headline_str)
+        s = f'{headline_str}\n\n{s}'
+
+    return s
+</t>
+<t tx="ekr.20240527100653.1606"># http://doc.trolltech.com/4.4/qtsvg.html
+# http://doc.trolltech.com/4.4/painting-svgviewer.html
+
+def update_svg(self, s, keywords):
+    if not QtSvg:
+        g.es(NO_SVG_WIDGET_MSG, color='red')
+        return
+    pc = self
+
+    if pc.must_change_widget(QSvgWidget):
+        w = QSvgWidget()
+        pc.embed_widget(w)
+        assert w == pc.w
+    else:
+        w = pc.w
+    if s.strip().startswith('&lt;'):
+        # Assume it is the svg (xml) source.
+        # Sensitive to leading blank lines.
+        s = textwrap.dedent(s).strip()
+        bytes = g.toEncodedString(s)
+        pc.show()
+        w.load(QtCore.QByteArray(bytes))
+        w.show()
+    else:
+        # Get a filename from the headline or body text.
+        ok, path = pc.get_fn(s, '@svg')
+        if ok:
+            pc.show()
+            w.load(path)
+            w.show()
+</t>
+<t tx="ekr.20240527100653.1607">def update_url(self, s, keywords):
+    pc = self
+    c, p = self.c, self.c.p
+    colorizer = c.frame.body.colorizer
+    language = colorizer.scanLanguageDirectives(p)
+    if language == 'asciidoc':
+        p.update_asciidoc(s, keywords)
+    elif language in ('rest', 'rst'):
+        pc.update_rst(s, keywords)
+    elif language in ('markdown', 'md'):
+        pc.update_md(s, keywords)
+    elif pc.default_kind in ('rest', 'rst'):
+        pc.update_rst(s, keywords)
+    elif pc.default_kind in ('markdown', 'md'):
+        pc.update_md(s, keywords)
+    else:
+        # Do nothing.
+        g.trace('ignore', s)
+        w = pc.ensure_text_widget()
+        pc.show()
+        w.setPlainText('')
+</t>
+<t tx="ekr.20240527100653.1608"></t>
+<t tx="ekr.20240527100653.1609">def ensure_text_widget(self):
+    """Swap a text widget into the rendering pane if necessary."""
+    c, pc = self.c, self
+    if pc.must_change_widget(QtWidgets.QTextBrowser):
+        # Instantiate a new QTextBrowser.
+        w = QtWidgets.QTextBrowser()
+
+        def handleClick(url, w=w):
+            wrapper = qt_text.QTextEditWrapper(w, name='vr3-body', c=c)
+            event = g.Bunch(c=c, w=wrapper)
+            g.openUrlOnClick(event, url=url)
+
+        if self.w and hasattr(self.w, 'anchorClicked'):
+            try:
+                self.w.anchorClicked.disconnect()
+            except Exception:
+                g.es_exception()
+
+        w.anchorClicked.connect(handleClick)
+        w.setOpenLinks(False)
+
+        pc.embed_widget(w)  # Creates w.wrapper
+        assert w == pc.w
+    return pc.w
+</t>
+<t tx="ekr.20240527100653.1610">def ensure_web_widget(self):
+    """Swap a webengineview widget into the rendering pane if necessary."""
+    pc = self
+    w = self.qwev
+    if pc.must_change_widget(has_webengineview):
+        pc.embed_widget(w)  # Creates w.wrapper
+        assert w == pc.w
+    return pc.w
+</t>
+<t tx="ekr.20240527100653.1611">def get_kind(self, p):
+    """Return the proper rendering kind for node p."""
+
+    #  #1287: Honor both kind of directives node by node.
+    for p1 in p.self_and_parents(p):
+        language = self.get_language(p1)
+        if got_markdown and language in ('md', 'markdown'):
+            return language
+        if got_docutils and language in ('rest', 'rst'):
+            return language
+        if language and language in self.dispatch_dict:
+            return language
+    return None
+</t>
+<t tx="ekr.20240527100653.1612">def get_language(self, p):
+    """Return the language in effect at position p.
+
+    Headline directives over-ride normal Leo directives in body text.
+    """
+
+    c = self.c
+    h = p.h
+    # First, look for headline directives.
+    if h.startswith('@'):
+        i = g.skip_id(h, 1, chars='-')
+        word = h[1:i].lower().strip()
+        if word in self.dispatch_dict:
+            return word
+    # Look for @language directives.
+    # Warning: (see #344): don't use c.target_language as a default.
+    colorizer = getattr(c.frame.body.colorizer, 'findFirstValidAtLanguageDirective', g)
+    return colorizer.findFirstValidAtLanguageDirective(p.b)
+</t>
+<t tx="ekr.20240527100653.1613">def get_fn(self, s, tag):
+    pc = self
+    c = pc.c
+    fn = s or c.p.h[len(tag) :]
+    fn = fn.strip()
+    # Similar to code in g.computeFileUrl
+    if fn.startswith('~'):
+        fn = fn[1:]
+        fn = g.finalize(fn)
+    else:
+        # Handle ancestor @path directives.
+        if c and c.fileName():
+            base = c.getNodePath(c.p)
+            fn = g.finalize_join(g.os_path_dirname(c.fileName()), base, fn)
+        else:
+            fn = g.finalize(fn)
+
+    ok = g.os_path_exists(fn)
+    return ok, fn
+
+</t>
+<t tx="ekr.20240527100653.1614">def get_url(self, s, tag):
+    p = self.c.p
+    url = s or p.h[len(tag) :]
+    url = url.strip()
+    return url
+</t>
+<t tx="ekr.20240527100653.1615">def get_node_path(self, c, p) -&gt; str:
+    return c.getNodePath(p)
+</t>
+<t tx="ekr.20240527100653.1616">def must_change_widget(self, widget_class):
+    pc = self
+    return not pc.w or pc.w.__class__ != widget_class  # EKR.
+</t>
+<t tx="ekr.20240527100653.1617">def remove_directives(self, s):
+    """Remove all Leo directives from a string except "@language"."""
+
+    _directives = g.globalDirectiveList[:]
+    _directives.remove('language')
+    _directives.remove('c')
+    lines = g.splitLines(s)
+    result = []
+    for li in lines:
+        if li.startswith('@'):
+            i = g.skip_id(li, 1)
+            word = li[1:i]
+            if word in _directives:
+                continue
+        result.append(li)
+    return ''.join(result)
+</t>
+<t tx="ekr.20240527100653.1618"># Modified from VR2
+def exec_code(self, code, environment):
+    """Execute the code, capturing the output in stdout and stderr."""
+    saveout = sys.stdout  # save stdout
+    saveerr = sys.stderr
+    sys.stdout = bufferout = StringIO()
+    sys.stderr = buffererr = StringIO()
+    except_err = ''
+
+    try:
+        exec(code, environment)
+    except Exception as e:
+        # g.es('Viewrendered3 exception:')
+        # g.es('    ', e)
+        print('Viewrendered3 exception:')
+        print('    ', e)
+        g.es_exception()
+        except_err = f'{type(e).__name__}: {str(e)}\n'
+    # Restore stdout, stderr
+    finally:
+        sys.stdout = saveout  # was sys.__stdout__
+        sys.stderr = saveerr  # restore stderr
+
+    return bufferout.getvalue(), buffererr.getvalue() + except_err
+</t>
+<t tx="ekr.20240527100653.1619">def update_text(self, node_list, keywords=None):
+    """Update as text-only in the vr3 pane.
+
+        ARGUMENTS
+        node_list -- a list of outline nodes to be processed.
+        keywords -- a dictionary of keywords
+
+        RETURNS
+        nothing
+    """
+    # Do this regardless of whether we show the widget or not.
+    self.ensure_web_widget()
+    assert self.w
+    w = self.w
+    lines = []
+    for node in node_list:
+        body = node.b
+        if body.startswith('@language'):
+            i = body.find('\n')
+            if i &gt; -1:
+                body = body[i + 1 :]
+        lines.append(body)
+    s = '\n'.join(lines)
+    self.last_markup = s
+
+    s = html.escape(s, quote=True)
+    s = f'{TEXT_HTML_HEADER}&lt;pre&gt;{s}&lt;/pre&gt;&lt;/html&gt;'
+    h = s.encode('utf-8')
+    self.set_html(h, w)
+    self.rst_html = h
+
+    w.show()
+</t>
+<t tx="ekr.20240527100653.1620"></t>
+<t tx="ekr.20240527100653.1621">def activate(self):
+    """Activate the vr3-window."""
+    pc = self
+    if pc.active:
+        return
+    pc.inited = True
+    pc.active = True
+    g.registerHandler('select2', pc.update)
+    g.registerHandler('idle', pc.update)
+</t>
+<t tx="ekr.20240527100653.1622">def deactivate(self):
+    """Deactivate the vr3 window."""
+    pc = self
+    # Never disable the idle-time hook: other plugins may need it.
+    g.unregisterHandler('select2', pc.update)
+    g.unregisterHandler('idle', pc.update)
+    pc.active = False
+</t>
+<t tx="ekr.20240527100653.1623">def set_freeze(self):
+    """Freeze the vr3 pane to prevent updates ."""
+    action = self.action_freeze
+    action.setChecked(True)
+    self.freeze = True
+
+def set_unfreeze(self):
+    """Freeze the vr3 pane to prevent updates ."""
+    action = self.action_freeze
+    action.setChecked(False)
+    self.freeze = False
+</t>
+<t tx="ekr.20240527100653.1624">def lock(self):
+    """Lock the vr3 pane to the current node ."""
+    action = self.action_lock_to_tree
+    action.setChecked(True)
+    self.lock_to_tree = True
+    self.current_tree_root = self.c.p
+
+def unlock(self):
+    """Unlock the vr3 pane."""
+    action = self.action_lock_to_tree
+    action.setChecked(False)
+    self.lock_to_tree = False
+    self.current_tree_root = None
+</t>
+<t tx="ekr.20240527100653.1626"></t>
+<t tx="ekr.20240527100653.1627">@
+def get_toolbar_label(self):
+    """Return the toolbar label object."""
+
+    return self.findChild(QtWidgets.QLabel, VR3_TOOLBAR_NAME)
+</t>
+<t tx="ekr.20240527100653.1628">def hide_toolbar(self):
+    try:
+        _toolbar = self.vr3_toolbar
+        _toolbar.setVisible(False)
+    except RuntimeError as e:
+        g.es(f'show_toolbar(): no toolbar; {type(e)}: {e}')
+        return
+
+</t>
+<t tx="ekr.20240527100653.1629">def show_toolbar(self):
+    try:
+        _toolbar = self.vr3_toolbar
+        _toolbar.setVisible(True)
+    except RuntimeError as e:
+        g.es(f'show_toolbar(): no toolbar; {type(e)}: {e}')
+        return
+
+
+</t>
+<t tx="ekr.20240527100653.1630"></t>
+<t tx="ekr.20240527100653.1631">def shrinkView(self):
+    w = self.qwev
+    _zf = w.zoomFactor()
+    w.setZoomFactor(_zf / ZOOM_FACTOR)
+</t>
+<t tx="ekr.20240527100653.1632">def zoomView(self):
+    w = self.qwev
+    _zf = w.zoomFactor()
+    w.setZoomFactor(_zf * ZOOM_FACTOR)
+</t>
+<t tx="ekr.20240527100653.1633"></t>
+<t tx="ekr.20240527100653.1634">def closeEvent(self, event):
+    """Close the vr3 window."""
+    self.deactivate()
+</t>
+<t tx="ekr.20240527100653.1635">def keyPressEvent(self, event):
+    """Take actions on keypresses when the VR3 render pane has focus and a
+       key is pressed.
+
+    A method of this name receives keystrokes for most or all
+    QObject-descended objects. Currently, check only for &lt;CNTRL-=&gt; and
+    &lt;CONTROL-MINUS&gt; events for zooming or unzooming the VR3 browser pane.
+    """
+    mod = ''
+    modifiers = event.modifiers()
+    bare_key = event.text()
+    if modifiers and modifiers == KeyboardModifier.ControlModifier:
+        mod = 'cntrl'
+    if bare_key == '=' and mod == 'cntrl':
+        self.zoomView()
+    elif bare_key == '-' and mod == 'cntrl':
+        self.shrinkView()
+</t>
+<t tx="ekr.20240527100653.1636"></t>
+<t tx="ekr.20240527100653.1637">def set_html(self, s, w):
+    """Set text in w to s."""
+    c = self.c
+    # Find path relative to this file.  Needed as the base of relative
+    # URLs, e.g., image or included files.
+    path = c.getNodePath(c.p)
+    s = g.toUnicode(s)
+    try:
+        url_base = QtCore.QUrl('file:///' + path + '/')
+        w.setHtml(s, url_base)
+    except Exception as e:
+        # Oops, don't have a QWebEngineView
+        g.es(e)
+        w.setHtml(s)
+
+    w.show()
+</t>
+<t tx="ekr.20240527100653.1638">def underline(self, s):
+    """Generate rST underlining for s."""
+    ch = '#'
+    n = max(4, len(g.toEncodedString(s, reportErrors=False)))
+    return f'{s}\n{ch * n}\n\n'
+</t>
+<t tx="ekr.20240527100653.1640"></t>
+<t tx="ekr.20240527100653.1641"></t>
+<t tx="ekr.20240527100653.1642">def createMainLayout(self, parent: QWidget) -&gt; tuple[QWidget, QWidget]:
+    """Create the layout for Leo's main window."""
+    # c = self.leo_c
+
+    main_splitter = QtWidgets.QSplitter(parent)
+    main_splitter.setObjectName('main_splitter')
+    main_splitter.setOrientation(Orientation.Vertical)
+
+    secondary_splitter = QtWidgets.QSplitter(main_splitter)
+    secondary_splitter.setObjectName('secondary_splitter')
+    secondary_splitter.setOrientation(Orientation.Horizontal)
+
+    self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
+    self.set_widget_size_policy(secondary_splitter)
+    self.verticalLayout.addWidget(main_splitter)
+    return main_splitter, secondary_splitter
+</t>
+<t tx="ekr.20240527100653.1643">def _self_and_subtree(self, qt_obj: Any) -&gt; Generator:
+    """Yield w and all of w's descendants."""
+    yield qt_obj
+    for child in qt_obj.children():
+        yield from self._self_and_subtree(child)
+</t>
+<t tx="ekr.20240527100653.1645">def equalize_splitter(self, splitter):
+    """Equalize all the splitter's contents."""
+    if not isinstance(splitter, QtWidgets.QSplitter):
+        g.trace(f"Not a QSplitter: {splitter.__class__.__name__}")
+    splitter.setSizes([100000] * len(splitter.sizes()))
+</t>
+<t tx="ekr.20240527100653.1646">def find_widget_by_name(self, c: Cmdr, name: str) -&gt; Optional[QWidget]:
+    for w in self._self_and_subtree(c.frame.top):
+        if w.objectName() == name:
+            return w
+    return None
+</t>
+<t tx="ekr.20240527100653.1647">def get_top_splitter(self, c: Cmdr) -&gt; QWidget:
+    return self.find_widget_by_name(c, 'main_splitter')
+</t>
+<t tx="ekr.20240527100653.1648">def compute_ratio(self) -&gt; float:
+    """
+    Return ratio of the main Qt splitter or 0.5.
+    """
+    c = self.c
+    gui = g.app.gui
+    w = gui.find_widget_by_name(c, 'main_splitter')
+    if not w:
+        return 0.5
+    aList = w.sizes()
+    if len(aList) == 2:
+        n1, n2 = aList
+        # Don't divide by zero.
+        ratio = 0.5 if n1 + n2 == 0 else float(n1) / float(n1 + n2)
+        return ratio
+    return 0.5
+</t>
+<t tx="ekr.20240527100653.1649">def compute_secondary_ratio(self) -&gt; float:
+    """
+    Return the ratio of the Qt secondary splitter or 0.5.
+    """
+    c = self.c
+    gui = g.app.gui
+    w = gui.find_widget_by_name(c, 'secondary_splitter')
+    if not w:
+        return 0.5
+    aList = w.sizes()
+    if len(aList) == 2:
+        n1, n2 = aList
+        ratio = float(n1) / float(n1 + n2)
+        return ratio
+    return 0.5
+</t>
+<t tx="ekr.20240527100653.1650">def divideLeoSplitter1(self, frac: float) -&gt; None:
+    """Divide the main splitter."""
+    gui = g.app.gui
+    c = self.c
+    w = gui.find_widget_by_name(c, 'main_splitter')
+    if w:
+        self.divideAnySplitter(frac, w)
+
+def divideLeoSplitter2(self, frac: float) -&gt; None:
+    """Divide the secondary splitter."""
+    gui = g.app.gui
+    c = self.c
+    w = gui.find_widget_by_name(c, 'secondary_splitter')
+    if w:
+        self.divideAnySplitter(frac, w)
+</t>
+<t tx="ekr.20240527100653.1651">@frame_cmd('toggle-split-direction')
+def toggleSplitDirection(self, event: LeoKeyEvent = None) -&gt; None:
+    """
+    Toggle the split direction in the present Leo window.
+    """
+    c = self.c
+    gui = g.app.gui
+    splitter = gui.find_widget_by_name(c, 'main_splitter')
+    splitter2 = gui.find_widget_by_name(c, 'secondary_splitter')
+    for w in (splitter, splitter2):
+        if w.orientation() == Orientation.Vertical:
+            w.setOrientation(Orientation.Horizontal)
+        else:
+            w.setOrientation(Orientation.Vertical)
+</t>
+<t tx="ekr.20240527100653.1652"></t>
+<t tx="ekr.20240527100653.1653">def __init__(self, c):
+    self.c = c
+</t>
+<t tx="ekr.20240527100653.1654"># Do NOT call the base class ctor. It creates a Qt MainWindow.
+    # pylint: disable=super-init-not-called
+    # pylint: disable=non-parent-init-called
+
+def __init__(self, canvas, num):
+    """Ctor for the LeoFigureManagerQt class."""
+    gui = g.app.gui
+    self.c = c = g.app.log.c
+    super().__init__(canvas, num)
+    self.canvas = canvas
+
+    # New code for Leo: embed the canvas in the viewrendered area.
+    self.vr_controller = vc = vr.controllers.get(c.hash())
+    self.splitter = gui.find_widget_by_name(c, 'main_splitter')
+    self.frame = w = QtWidgets.QFrame()
+    w.setLayout(QtWidgets.QVBoxLayout())
+    w.layout().addWidget(self.canvas)
+    if vc:
+        vc.embed_widget(w)
+
+    class DummyWindow:
+
+        def __init__(self, c):
+            self.c = c
+            self._destroying = None
+
+        def windowTitle(self):
+            return self.c.p.h
+
+        def show(self):
+            pass
+
+    self.window = None  #DummyWindow(c)
+
+    # See comments in the base class ctor, in backend_qt5.py.
+    self.canvas.setFocusPolicy(FocusPolicy.StrongFocus)
+    self.canvas.setFocus()
+    self.canvas._destroying = False
+
+    self.toolbar = self._get_toolbar(self.canvas, self.frame)
+    if self.toolbar is not None:
+        # The toolbar is a matplotlib.backends.backend_qt.NavigationToolbar2QT.
+        layout = self.frame.layout()
+        layout.addWidget(self.toolbar)
+        # add text label to status bar
+        self.statusbar_label = QtWidgets.QLabel()
+        layout.addWidget(self.statusbar_label)
+
+    self.canvas.draw_idle()
+
+    def notify_axes_change(fig):
+        # This will be called whenever the current axes is changed
+        if self.toolbar is not None:
+            self.toolbar.update()
+
+    self.canvas.figure.add_axobserver(notify_axes_change)
+
+    # Close the figure so that we don't create too many figure instances
+    plt.close(canvas.figure)
+</t>
+<t tx="ekr.20240527100653.1655">def __init__(self, c):
+    self.c = c
+</t>
+<t tx="ekr.20240527100653.1656">@g.command('bookmarks-show')
+def cmd_show(event):
+    gui = g.app.gui
+    c = event.get('c')
+    bmd = BookMarkDisplay(c)
+
+    # Put the bmd pane in the main splitter.
+    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+    # Add the VR pane to the secondary splitter.
+    main_splitter.insertWidget(1, bmd.w)
+    # Give equal width to the panes in the secondary splitter.
+    main_splitter.setSizes([100000] * len(main_splitter.sizes()))
+</t>
+<t tx="ekr.20240527100653.1657">@g.command('bookmarks-use-other-outline')
+def cmd_use_other_outline(event):
+    """Set bookmarks for this outline from a list (node) in
+    a different outline
+    """
+    gui = g.app.gui
+    c = event.get('c')
+    if not hasattr(g, '_bookmarks_target') or not g._bookmarks_target:
+        g.es("Use bookmarks-mark-as-target first")
+        return
+    c.db['_leo_bookmarks_show'] = g._bookmarks_target
+    bmd = BookMarkDisplay(c, g._bookmarks_target_v)
+
+    # Put the bmd pane in the main splitter.
+    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+    # Add the VR pane to the secondary splitter.
+    main_splitter.insertWidget(1, bmd.w)
+    # Give equal width to the panes in the secondary splitter.
+    main_splitter.setSizes([100000] * len(main_splitter.sizes()))
+</t>
+<t tx="ekr.20240527100653.1658">def edit_pane_csv(event):
+    c = event['c']
+    if not c:
+        return
+    w = c.frame.body.widget
+    while not isinstance(w, QtWidgets.QSplitter):
+        w = w.parent()
+    if not w:
+        return
+    w.insert(-1, LeoEditPane(c=c, show_control=False, lep_type='EDITOR-CSV'))
+</t>
+<t tx="ekr.20240527100653.1659">def init() -&gt; bool:
+    """Return True if the free_layout plugin can be loaded."""
+    # #3910: The free_layout and nested_splitter plugins are deprecated.
+    return bool(g.app.gui.guiName() == "qt" and NestedSplitter)
+</t>
+<t tx="ekr.20240527100653.1660">def dump_layout(self, layout: dict) -&gt; None:
+    print('')
+    print(f"Dump of ns layout for {self.__class__.__name__}({self.objectName()})")
+    self.dump_inner_layout(layout, level=0)
+
+def dump_inner_layout(self, content: dict, level: int) -&gt; None:
+    ws = level * 2 * ' '
+    widget_seen = False
+    print('\n'.join([  # Python 3.9 does not allow newlines within f-strings.
+        f"{ws}contents level {level}...",
+        f"  {ws}orientation: {content.get('orientation')}",
+        f"  {ws}sizes: {content.get('sizes')}"
+    ]))
+    inner_content = content.get('content')
+    assert isinstance(inner_content, list)
+    for i, inner in enumerate(inner_content):
+        if isinstance(inner, dict):
+            self.dump_inner_layout(inner, level + 1)
+            continue
+        if not widget_seen:
+            widget_seen = True
+            print(f"  {ws}widgets level {level}...")
+        print(f"    {ws}widget {i} {inner.__class__.__name__}({inner.objectName()})")
+</t>
+<t tx="ekr.20240527100653.1674"></t>
+<t tx="ekr.20240527100653.1675">@g.command('vr')
+def viewrendered(event: Event) -&gt; Optional[Any]:
+    """Open render view for commander"""
+    global controllers, layouts
+    gui = g.app.gui
+    if gui.guiName() != 'qt':
+        return None
+    c = event.get('c')
+    if not c:
+        return None
+    h = c.hash()
+    vr = controllers.get(h)
+    if vr:
+        vr.show()
+        vr.is_visible = True
+        g.es('VR pane on', color='red')
+        c.bodyWantsFocusNow()
+        return vr
+    # Create the VR frame
+    controllers[h] = vr = ViewRenderedController(c)
+
+    # Use different layouts depending on the main splitter's *initial* orientation.
+    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+    if main_splitter.orientation() == Orientation.Vertical:
+        # Share the VR pane with the body pane.
+        # Create a new splitter.
+        vr_splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
+        vr_splitter.setObjectName('vr-splitter')
+        main_splitter.addWidget(vr_splitter)
+        # First, add the body frame.
+        body_frame = gui.find_widget_by_name(c, 'bodyFrame')
+        vr_splitter.addWidget(body_frame)
+        # Second, add the vr pane.
+        vr_splitter.addWidget(vr)
+        # Give equal width to all splitter panes.
+        vr_splitter.setSizes([100000] * len(vr_splitter.sizes()))
+        main_splitter.setSizes([100000] * len(main_splitter.sizes()))
+    else:
+        # Put the VR pane in the secondary splitter.
+        secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
+        # Add the VR pane to the secondary splitter.
+        secondary_splitter.addWidget(vr)
+        # Give equal width to the panes in the secondary splitter.
+        secondary_splitter.setSizes([100000] * len(secondary_splitter.sizes()))
+    c.bodyWantsFocusNow()
+    return vr
+</t>
+<t tx="ekr.20240527100653.1676">@g.command('vr3')
+def viewrendered(event):
+    """Open render view for commander"""
+    global controllers
+    gui = g.app.gui
+    if gui.guiName() != 'qt':
+        return None
+    c = event.get('c')
+    if not c:
+        return None
+    h = c.hash()
+    vr3 = controllers.get(h)
+    if vr3:
+        c.bodyWantsFocusNow()
+        return vr3
+    # Create the VR frame
+    controllers[h] = vr3 = ViewRenderedController3(c)
+
+    # A prototype for supporint  arbitrarily many layouts.
+    layout_kind = c.config.getString('vr3-initial-orientation') or 'in_secondary'
+
+    # Use different layouts depending on the main splitter's *initial* orientation.
+    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+    secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
+    if layout_kind == 'in_body':
+        # Share the VR pane with the body pane.
+        # Create a new splitter.
+        splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
+        splitter.setObjectName('vr3-horizonal-splitter')
+        main_splitter.addWidget(splitter)
+        # Add frames.
+        body_frame = gui.find_widget_by_name(c, 'bodyFrame')
+        splitter.addWidget(body_frame)
+        splitter.addWidget(vr3)
+        gui.equalize_splitter(splitter)
+        gui.equalize_splitter(main_splitter)
+    elif main_splitter.orientation() == Orientation.Vertical:
+        # Put the VR pane in in the main_splitter.
+        main_splitter.insertWidget(1, vr3)  ### The weird effect happens here.
+        gui.equalize_splitter(main_splitter)
+    else:
+        # Put the VR pane in the secondary splitter.
+        secondary_splitter.addWidget(vr3)
+        gui.equalize_splitter(secondary_splitter)
+    c.bodyWantsFocusNow()
+    return vr3
+</t>
+<t tx="ekr.20240527100653.1677">@g.command('vr3-use-default-layout')
+def open_with_layout(event):
+    vr3 = getVr3(event)
+    c = vr3.c
+    c.doCommandByName('vr3-update')
+    c.bodyWantsFocusNow()
+
+</t>
+<t tx="ekr.20240527100653.1678">def onCreate(tag: str, keys: dict) -&gt; None:
+    c = keys.get('c')
+    if not c:
+        return
+    vr = viewrendered(keys)
+    g.registerHandler('select2', vr.update)
+    g.registerHandler('idle', vr.update)
+    vr.active = True
+    vr.is_visible = False
+    vr.hide()
+</t>
+<t tx="ekr.20240527100653.1679">def update_graphics_script(self, s: str, keywords: Any) -&gt; None:
+    """Update the graphics script in the VR pane."""
+    c = self.c
+    if g.unitTesting:
+        return
+    force = keywords.get('force')
+    if self.gs and not force:
+        return
+    if not self.gs:
+        splitter = g.app.gui.get_top_splitter()
+        # Create the widgets.
+        self.gs = QtWidgets.QGraphicsScene(splitter)
+        self.gv = QtWidgets.QGraphicsView(self.gs)
+        w = self.gv.viewport()  # A QWidget
+        # Embed the widgets.
+
+        def delete_callback() -&gt; None:
+            for w in (self.gs, self.gv):
+                w.deleteLater()
+            self.gs = self.gv = None
+
+        self.embed_widget(w, delete_callback=delete_callback)
+
+    c.executeScript(
+        script=s,
+        namespace={'gs': self.gs, 'gv': self.gv})
+</t>
+<t tx="ekr.20240527100653.1680">def __init__(self, c, parent=None):
+    """Ctor for ViewRenderedController class."""
+    global _in_code_block
+    self.c = c
+    # Create the widget.
+    super().__init__(parent)
+        # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
+        # QtWidgets.QWidget.__init__(self)
+    self.create_pane(parent)
+
+    # Set the ivars.
+    self.active = False
+    self.badColors = []
+    self.delete_callback = None
+    self.gnx = None
+    self.graphics_class = QtWidgets.QGraphicsWidget
+    self.pyplot_canvas = None
+
+    self.pyplot_imported = False
+    self.gs = None  # For @graphics-script: a QGraphicsScene
+    self.gv = None  # For @graphics-script: a QGraphicsView
+    self.inited = False
+    self.length = 0  # The length of previous p.b.
+    self.last_text = ''
+    self.locked = False
+
+    self.pyplot_active = False
+    self.scrollbar_pos_dict = {}  # Keys are vnodes, values are positions.
+    self.sizes = []  # Saved splitter sizes.
+    self.splitter_index = None  # The index of the rendering pane in the splitter.
+    self.title = None
+
+    self.Markdown = None  # MD processor instance
+    self.vp = None  # The present video player.
+    self.w = None  # The present widget in the rendering pane.
+
+    # For viewrendered3
+    self.base_path = ''  # A node's base path including @path directive
+    self.code_only = False
+    self.code_only = False
+    self.current_tree_root = None
+    self.execute_flag = False
+    self.freeze = False
+    self.last_markup = ''
+    self.lock_to_tree = False
+    self.qwev = self.create_base_text_widget()
+    self.rst_html = ''
+    self.show_whole_tree = False
+    self.base_url = ''
+
+    # User settings.
+    self.reloadSettings()
+    self.node_changed = True
+
+    # Init.
+    self.create_dispatch_dict()
+    self.activate()
+    self.zoomed = False
+
+    self.asciidoc3_internal_ok = True
+    self.asciidoc_internal_ok = True
+    self.using_ext_proc_msg_shown = False
+</t>
+<t tx="ekr.20240527100653.1681">def create_dispatch_dict(self):
+    pc = self
+    pc.dispatch_dict = {
+        'asciidoc': pc.update_asciidoc,
+        'big': pc.update_rst,
+        'html': pc.update_html,
+        'graphics-script': pc.update_graphics_script,
+        'image': pc.update_image,
+        'jupyter': pc.update_jupyter,
+        'md': pc.update_md,
+        'movie': pc.update_movie,
+        'networkx': pc.update_networkx,
+        'plain': pc.update_text,
+        'pyplot': pc.update_pyplot,
+        'rst': pc.update_rst,
+        'svg': pc.update_svg,
+        'text': pc.update_text,
+        # 'url': pc.update_url,
+    }
+
+    pc.dispatch_dict['rest'] = pc.dispatch_dict['rst']
+    pc.dispatch_dict['markdown'] = pc.dispatch_dict['md']
+</t>
+<t tx="ekr.20240527100653.1682">def create_base_text_widget(self):
+    """
+    Create a QWebEngineView.
+    """
+    c = self.c
+    w = qwv()
+    n = c.config.getInt('qweb-view-font-size')
+    if hasattr(w, 'settings'):
+        settings = w.settings()
+        if n is not None:
+            try:
+                settings.setFontSize(settings.DefaultFontSize, n)
+            except Exception:
+                pass
+        wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
+        settings.setAttribute(wa, True)
+    return w
+</t>
+<t tx="ekr.20240527100653.1683">def create_md_header(self):
+    """Create a header for the md HTML output.
+
+    Check whether or not MathJax output is wanted (self.md_math_output).
+    If it is, make sure that the MathJax url or file location is known.
+
+    Then construct an HTML header to be prepended to the MarkDown
+    output.
+
+    VARIABLES USED  See reloadSettings() for the settings' names.
+    self.md_math_output -- True if MaxJax math display is wanted.
+    self.md_stylesheet -- The URL to the stylesheet.  Must include
+                           the "file:///" if it is a local file.
+    self.md_mathjax_url -- The URL to the MathJax code package.  Must include
+                           the "file:///" if it is a local file. The URL
+                           should be to a MathJax V3 site.  A typical URL
+                           is https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+                           If the MathJax package has been downloaded to the
+                           local computer, a typical (Windows) URL would be
+                           file:///D:/utility/mathjax/es5/tex-chtml.js
+    self.md_header -- where the header string gets stored.
+    """
+
+    script_str = ''
+    if self.md_math_output and self.mathjax_url:
+        script_str = fr'&lt;script defer type="text/javascript" src="{self.mathjax_url}"&gt;&lt;/script&gt;'
+    self.md_header = fr'''
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html;charset=utf-8"&gt;
+&lt;link rel="stylesheet" type="text/css" href="{self.md_stylesheet}"&gt;
+{script_str}
+&lt;/head&gt;
+'''
+</t>
+<t tx="ekr.20240527100653.1684">def create_pane(self, parent):
+    """Create the vr3 pane."""
+
+    if g.unitTesting:
+        return
+    # Create the inner contents.
+    self.setObjectName('viewrendered3_pane')
+    self.setLayout(QtWidgets.QVBoxLayout())
+    self.layout().setContentsMargins(0, 0, 0, 0)
+    self.create_toolbar()
+</t>
+<t tx="ekr.20240527100653.1685">def create_toolbar(self):
+    """Create toolbar and attach to the VR3 widget.
+
+    Child widgets can be found using the findChild() method with the
+    name of the child widget.  E.g.,
+
+    label = self.findChild(QtWidgets.QLabel, 'vr3-toolbar-label')
+
+    Note that "self" refers to the enclosing viewrendered3 instance.
+
+    NAMES CREATED
+    'vr3-toolbar-label' -- the toolbar label.
+    """
+    # Ref: https://forum.qt.io/topic/52022/solved-how-can-i-add-a-toolbar-for-a-qwidget-not-qmainwindow
+    # Ref: https://stackoverflow.com/questions/51459331/pyqt5-how-to-add-actions-menu-in-a-toolbar
+
+    c = self.c
+    _toolbar = QtWidgets.QToolBar('Menus')
+    _options_button = QtWidgets.QPushButton("View Options")
+    _options_button.setDefault(True)
+    _toolbar.addWidget(_options_button)
+
+    _default_type_button = QtWidgets.QPushButton("Default Kind")
+    _toolbar.addWidget(_default_type_button)
+
+    _other_actions_button = QtWidgets.QPushButton("Other Actions")
+
+    @others  # functions.
+    &lt;&lt; vr3: create menus &gt;&gt;
+    &lt;&lt; vr3: finish toolbar &gt;&gt;
+</t>
+<t tx="ekr.20240527100653.1686">def set_action(label, menu_var_name):
+    """Add a QAction to a QT menu.
+
+    ARGUMENTS
+    label -- a string containing the display label for the action.
+    menu_var_name -- the name of the instance variable that holds this action's
+                     isChecked() value.  For example, if the menu_var_name
+                     is 'code_only', then a variable self.code_only will be
+                     created, and updated if the action's isChecked status
+                     is changed.
+
+                     Note that "self" refers to the enclosing viewrendered3 instance.
+
+    RETURNS
+    nothing
+    """
+
+    setattr(self, menu_var_name, False)
+    _action = QAction(label, self, checkable=True)
+    _action.triggered.connect(lambda: set_menu_var(menu_var_name, _action))
+    menu.addAction(_action)
+</t>
+<t tx="ekr.20240527100653.1687">def set_default_kind(kind):
+    self.default_kind = kind
+    self.c.doCommandByName('vr3-update')
+</t>
+<t tx="ekr.20240527100653.1688">def set_freeze(checked):
+    action = self.action_freeze
+    self.freeze = checked
+    action.setChecked(checked)
+</t>
+<t tx="ekr.20240527100653.1689">def set_group_action(label, kind):
+    """Coordinates the menu's checked state.
+
+    The triggered function sets the value of the self.default_kind variable.
+
+    ARGUMENTS
+    label -- a string containing the display label for the action.
+    kind -- the kind of structure to be used by default (e.g., 'rst',
+            'md', 'text')
+
+    RETURNS
+    nothing.
+    """
+
+    _action = QAction(label, self, checkable=True)
+    _action.triggered.connect(lambda: set_default_kind(kind))
+    group.addAction(_action)
+    menu.addAction(_action)
+</t>
+<t tx="ekr.20240527100653.1690">def set_menu_var(menu_var_name, action):
+    """Update an QAction's linked variable's value.
+
+    ARGUMENTS
+    menu_var_name -- the name of the instance variable that holds this action's
+                     isChecked() value.
+    action -- the QAction.
+
+    RETURNS
+    nothing
+    """
+
+    setattr(self, menu_var_name, action.isChecked())
+    self.c.doCommandByName('vr3-update')
+</t>
+<t tx="ekr.20240527100653.1691">def set_tree_lock(checked):
+    action = self.action_lock_to_tree
+    action.setChecked(checked)
+    self.lock_to_tree = checked
+    self.current_tree_root = self.c.p if checked else None
+</t>
+<t tx="ekr.20240527100653.1692">menu = QtWidgets.QMenu()
+set_action("Entire Tree", 'show_whole_tree')
+_action = QAction('Lock to Tree Root', self, checkable=True)
+_action.triggered.connect(lambda checked: set_tree_lock(checked))
+menu.addAction(_action)
+self.action_lock_to_tree = _action
+
+_action = QAction('Freeze', self, checkable=True)
+_action.triggered.connect(lambda checked: set_freeze(checked))
+menu.addAction(_action)
+self.action_freeze = _action
+
+set_action("Code Only", 'code_only')
+_options_button.setMenu(menu)
+
+menu = QtWidgets.QMenu()
+group = QActionGroup(self)
+set_group_action('RsT', RST)
+set_group_action('MD', MD)
+set_group_action('Text', TEXT)
+set_group_action('Asciidoc', ASCIIDOC)
+_default_type_button.setMenu(menu)
+
+menu = QtWidgets.QMenu()
+_action = QAction('Plot 2D', self, checkable=False)
+_action.triggered.connect(lambda: c.doCommandByName('vr3-plot-2d'))
+menu.addAction(_action)
+
+_action = QAction('Help For Plot 2D', self, checkable=False)
+_action.triggered.connect(lambda: c.doCommandByName('vr3-help-plot-2d'))
+menu.addAction(_action)
+
+_action = QAction('Reload', self, checkable=False)
+_action.triggered.connect(lambda: c.doCommandByName('vr3-update'))
+menu.addAction(_action)
+
+_other_actions_button.setMenu(menu)
+</t>
+<t tx="ekr.20240527100653.1693">_export_button = QtWidgets.QPushButton("Export")
+_export_button.setDefault(True)
+_export_button.clicked.connect(lambda: c.doCommandByName('vr3-export-rst-html'))
+_toolbar.addWidget(_export_button)
+
+# _reload_button = QtWidgets.QPushButton("Reload")
+# _reload_button.setDefault(True)
+# _reload_button.clicked.connect(lambda: c.doCommandByName('vr3-update'))
+# _toolbar.addWidget(_reload_button)
+
+_execute_button = QtWidgets.QPushButton('Execute')
+_execute_button.setDefault(True)
+_execute_button.clicked.connect(lambda: c.doCommandByName('vr3-execute'))
+_toolbar.addWidget(_execute_button)
+
+_toolbar.addWidget(_other_actions_button)
+
+self.layout().setMenuBar(_toolbar)
+self.vr3_toolbar = _toolbar
+
+</t>
+<t tx="ekr.20240527100653.1694">def reloadSettings(self):
+    c = self.c
+    c.registerReloadSettings(self)
+    self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
+    self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
+    self.use_dark_theme = c.config.getBool('vr3-rst-use-dark-theme', RST_USE_DARK)
+
+    self.math_output = c.config.getBool('vr3-math-output', default=False)
+    self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
+    self.rst_math_output = 'mathjax ' + self.mathjax_url
+
+    self.use_node_headline = c.config.getBool('vr3-insert-headline-from-node', default=True)
+
+    self.md_math_output = c.config.getBool('vr3-md-math-output', default=False)
+    self.md_stylesheet = c.config.getString('vr3-md-stylesheet') or ''
+    self.md_style_switch_auto = c.config.getBool('vr3-md-style-auto', default=True)
+
+    self.set_md_stylesheet()
+    self.set_rst_stylesheet()
+    self.create_md_header()
+
+    if got_markdown:
+        ext = ['fenced_code', 'codehilite', 'def_list', 'tables']
+        if self.md_math_output:
+            ext.append('leo.extensions.mdx_math_gi')
+        self.Markdown = markdown.Markdown(extensions=ext)
+
+    self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
+    self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', default=False)
+    self.prefer_external = c.config.getString('vr3-prefer-external') or ''
+    if self.prefer_external:
+        self.asciidoctor = find_exe(self.prefer_external) or None
+
+    self.asciidoc_show_proc_fail_msgs = True
+    self.asciidoctor_suppress_footer = c.config.getBool('vr3-asciidoctor-nofooter', default=False)
+    self.asciidoctor_icons = c.config.getString('vr3-asciidoctor-icons') or ''
+    self.asciidoctor_imagesdir = c.config.getString('vr3-asciidoctor-imagesdir') or ''
+    self.asciidoctor_diagram = (
+        asciidoc_has_diagram and
+        c.config.getBool('vr3-asciidoctor-diagram', default=False)
+    )
+    self.external_editor = c.config.getString('vr3-ext-editor') or ''
+    self.DEBUG = bool(os.environ.get("VR3_DEBUG", None))
+</t>
+<t tx="ekr.20240527100653.1695">def set_md_stylesheet(self):
+    """Set or create css stylesheet for Markdown node.
+
+    Stylesheet files are looked for first in ~/.leo/vr3,
+    then in the default location of leo/plugins/viewrendered3,
+    if their full path is not given.
+
+    If a stylesheet file is specified by the setting "vr3-md-stylesheet",
+    then use this stylesheet if it is found.
+
+    Otherwise, if the setting "vr3-md-style-auto" is True, then attempt to
+    use a dark-vs-light theme according to whether the Leo theme
+    is marked dark or not.
+
+    Otherwise use the default stylesheet at leo/plugins/viewrendered3.
+    If not present, create a default stylesheet and write it to a
+    file at that place.
+
+
+    VARIABLES USED
+    self.md_stylesheet -- The URL to the stylesheet.  Need not include
+                          the "file:///", and must be an absolute path
+                          if it is a local file.
+
+                          Set by @string vr3-md-stylesheet.
+
+    self.md_style_switch_auto -- If True, try to use a dark-vs-light
+                                 stylesheet according to the Leo theme
+                                 in use.
+    """
+
+    @others
+
+    # Style file locations
+    default_style_dir = os.path.join(g.app.leoDir, 'plugins', 'viewrendered3')
+    home_style_dir = os.path.join(g.app.homeDir, '.leo', 'vr3')
+    if g.isWindows:
+        default_style_dir = default_style_dir.replace('/', '\\')
+        home_style_dir = home_style_dir.replace('/', '\\')
+    style_dirs = (home_style_dir, default_style_dir)
+
+    style_path = ''
+
+    # If user has specified a stylesheet file, try to use it.
+    # Can be absolute path or file name. Can use either path separator.
+    if self.md_stylesheet:
+        &lt;&lt; fix path separators &gt;&gt;
+        &lt;&lt; check existence &gt;&gt;
+        if style_path:
+            self.md_stylesheet = 'file:///' + style_path
+            g.es('VR3 Markdown stylesheet:', self.md_stylesheet)
+            return
+
+    # See if we should try to use stylesheet for Leo theme's light/dark character
+    if self.md_style_switch_auto:
+        dict_ = g.app.loadManager.globalSettingsDict
+        is_dark = dict_.get_setting('color-theme-is-dark')
+        stylefile = MD_STYLESHEET_DARK if is_dark else MD_STYLESHEET_LIGHT
+        style_path = check_paths(stylefile, style_dirs)
+        if style_path:
+            self.md_stylesheet = 'file:///' + style_path
+            g.es('VR3 Markdown stylesheet:', self.md_stylesheet)
+            return
+        g.es("Can't find light/dark style file")
+
+    # If no custom stylesheet specified, use standard one.
+    if not self.md_stylesheet:
+        # Look for the standard one
+        style_path = check_paths(MD_BASE_STYLESHEET_NAME, style_dirs)
+        if style_path:
+            self.md_stylesheet = 'file:///' + style_path
+            g.es('VR3 Markdown stylesheet:', self.md_stylesheet)
+            return
+
+        # If there is no stylesheet at the standard location, have Pygments
+        # generate a default stylesheet there.
+        # Note: "cmdline" is a function imported from pygments
+        args = [cmdline.__name__, '-S', 'default', '-f', 'html']
+        # pygments cmdline() writes to stdout; we have to redirect it to a file
+        g.es('VR3-- creating new MD style sheet')
+        style_path = os.path.join(default_style_dir, MD_BASE_STYLESHEET_NAME)
+        with ioOpen(style_path, 'w') as out:
+            with redirect_stdout(out):
+                cmdline.main(args)
+        # Add some fine-tuning css
+        with ioOpen(style_path, 'a') as out:
+            out.write(MD_STYLESHEET_APPEND)
+        self.md_stylesheet = 'file:///' + style_path
+
+    g.es('VR3 Markdown stylesheet:', self.md_stylesheet)
+
+
+</t>
+<t tx="ekr.20240527100653.1696">def check_paths(filename, dir_list):
+    """Given a file name, check for its existence in one of
+    a sequence of directories.  Return the first full path where
+    the file is found, or None.
+    """
+
+    for direc in dir_list:
+        abs_file = os.path.join(direc, filename)
+        if os.path.exists(abs_file):
+            return abs_file
+    return None
+</t>
+<t tx="ekr.20240527100653.1697"># Fix up path
+# Defensive programming; only the first form should be needed
+# but check the others just in case:
+expr = ('file:///', 'file://', 'file:/', 'file:')
+stylefile = self.md_stylesheet
+for ex_ in expr:
+    if self.md_stylesheet.startswith(ex_):
+        stylefile = self.md_stylesheet.replace(ex_, '')
+        break
+
+# Make all separators consistent and correct for the OS
+stylefile = str(PurePath(stylefile))
+</t>
+<t tx="ekr.20240527100653.1698"># Check for style file's existence
+style_path = None
+if os.path.isabs(stylefile):
+    style_path = stylefile
+else:
+    style_path = check_paths(stylefile, style_dirs)
+</t>
+<t tx="ekr.20240527100653.1699">@language python
+def set_rst_stylesheet(self):
+    """Set rst stylesheet to default if none specified.
+
+    A file location must start with 'file:///';. If
+    a file does not exist for the path, use the default
+    stylesheet.
+
+    The default location is in leo/plugins/viewrendered3.
+
+    VARIABLES USED
+    self.rst_stylesheet -- The URL to the stylesheet.  Need not include
+                           the "file:///" if it is a local file.  If
+                           a local file and the path is relative, then
+                           the default stylesheet folder will be used.
+                           Set by @string vr3-rst-stylesheet.
+    leodir -- user's .leo directory
+    """
+
+    # Default location
+    # NOTE - for the stylesheet url we need to use forward slashes no matter
+    # what OS is being used.  Apparently, the g.os_path methods do this.
+    vr_style_dir = g.os_path_join(LEO_PLUGINS_DIR, 'viewrendered3')
+
+    # Stylesheet may already be specified by @setting vr3-rst-stylesheet.
+    # If so, check if it exists.
+    use_default = not self.rst_stylesheet
+    if not use_default:
+        if self.rst_stylesheet.startswith('file:///'):
+            # Note that docutils must *not* have a leading 'file:///'
+            pth = self.rst_stylesheet.split('file:///')[1]
+        else:
+            pth = self.rst_stylesheet
+        is_abs = PurePath.is_absolute(PurePath(pth))
+
+        if is_abs:
+            # This method changes '\' to '/' in the path if needed.
+            self.rst_stylesheet = g.finalize_join(pth)
+        else:
+            self.rst_stylesheet = g.os_path_join(leodir, VR3_DIR, self.rst_stylesheet)
+            self.rst_stylesheet = g.finalize_join(self.rst_stylesheet)
+
+        if not os.path.exists(self.rst_stylesheet):
+            use_default = True
+            g.es(f'Specified VR3 stylesheet not found at {self.rst_stylesheet}')
+            g.es('using default')
+
+    if use_default:
+        leo_theme_path = g.app.loadManager.computeThemeFilePath()
+        leo_theme_name = g.os_path_basename(leo_theme_path)
+        use_dark_theme = (
+            self.use_dark_theme
+            or 'dark' in leo_theme_name
+            or leo_theme_name == LEO_THEME_NAME
+        )
+        if use_dark_theme:
+            stylesheet = RST_DEFAULT_DARK_STYLESHEET
+        else:
+            stylesheet = RST_DEFAULT_STYLESHEET_NAME
+        self.rst_stylesheet = g.os_path_join(vr_style_dir, stylesheet)
+    g.es('VR3 RsT stylesheet:', self.rst_stylesheet)
+</t>
+<t tx="ekr.20240527100653.1700">def dbg_print(self, *args):
+    if self.DEBUG:
+        g.es(*args)
+</t>
+<t tx="ekr.20240527100653.1701">def plot_2d(self):
+    if not matplotlib:
+        g.es('VR3 -- Matplotlib is needed to plot 2D data')
+        return
+
+    page = self.c.p.b
+    page_lines = page.split('\n')
+    data_lines = []
+
+    @others
+
+    config_sections = has_config_section(page_lines)
+    source_start = config_sections.get('source', -1)
+    if source_start &gt; 0:
+        &lt;&lt; set_data &gt;&gt;
+    else:
+        data_lines = page_lines
+
+    if not data_lines:
+        return
+
+    style_start = config_sections.get('style', -1)
+    if style_start &gt;= 0:
+        if not set_user_style(page_lines[style_start:]):
+            set_custom_style()
+    else:
+        set_custom_style()
+
+    plt.ion()
+    fig, ax = plt.subplots()
+    fig.clear()
+
+    label_start = config_sections.get('labels', -1)
+    if label_start &gt;= 0:
+        &lt;&lt; configure labels &gt;&gt;
+
+    plot_plain_data(data_lines)
+    plt.rcdefaults()
+</t>
+<t tx="ekr.20240527100653.1702">ENCODING = 'utf-8'
+STYLEFILE = 'local_mplstyle'  # Must be in site.getuserbase()
+SECTION_RE = re.compile(r'^\[([a-zA-Z0-9]+)\]')
+</t>
+<t tx="ekr.20240527100653.1703"></t>
+<t tx="ekr.20240527100653.1704">def has_config_section(pagelines):
+    """Find config-like sections in the data page.
+
+    Sections are defined by:
+        1. A left-justified term in [brackets].
+        2. A blank line or the end of the list of lines.
+
+    ARGUMENT
+    pagelines -- a list of text lines.
+
+    RETURNS
+    a dictionary keyed by section label: {label: line_num, ...}
+    """
+    sections = {}
+    for i, line in enumerate(pagelines):
+        if m := SECTION_RE.match(line):
+            sections[m[1]] = i
+    return sections
+</t>
+<t tx="ekr.20240527100653.1705">@pagewidth 65
+def set_custom_style():
+    r"""Apply custom matplotlib styles from a file.
+
+    The style file has the name given by STYLEFILE. The .leo
+    directory (usually ~/.leo) will be checked first for the
+    style file.
+
+    If not found, the site.getuserbase() directory will be
+    checked for the style file. On Windows, this is usually the
+    %APPDATA%\Python directory. On Linux, this is usually at
+    /home/tom/.local.
+
+    """
+    found_styles = False
+    lm = g.app.loadManager
+    style_dir = lm.computeHomeLeoDir()
+    if g.isWindows:
+        style_dir = style_dir.replace('/', '\\')
+    style_file = os.path.join(style_dir, STYLEFILE)
+    if os.path.exists(style_file):
+        plt.style.use(style_file)
+        found_styles = True
+    else:
+        style_dir = site.getuserbase()
+        style_file = os.path.join(style_dir, STYLEFILE)
+        if os.path.exists(style_file):
+            plt.style.use(style_file)
+            found_styles = True
+
+    if not found_styles:
+        g.es(f'Pyplot style file "{style_file}" not found, using default styles')
+</t>
+<t tx="ekr.20240527100653.1706">def plot_plain_data(pagelines):
+    """Plot 1- or 2- column data.  Ignore all non-numeric lines."""
+
+
+    # from leo.plugins import viewrendered3 as vr3
+    # from leo.plugins import viewrendered as vr
+
+    # Helper functions
+    &lt;&lt; is_numeric &gt;&gt;
+    &lt;&lt; get_data &gt;&gt;
+
+    x, y = get_data(pagelines)
+    if not x:
+        g.es('VR3 -- cannot find data')
+        return
+
+    plt.plot(x, y)
+    plt.show()
+
+
+    # try:
+        # plot2d(page)
+    # except Exception as e:
+        # g.es('VR3:', e)
+</t>
+<t tx="ekr.20240527100653.1707">def is_numeric(line):
+    """Test if first or 1st and 2nd cols are numeric"""
+    fields = line.split()
+    numfields = len(fields)
+    fields = line.split()
+    numfields = len(fields)
+
+    numeric = False
+    try:
+        _ = float(fields[0])
+        if numfields &gt; 1:
+            _ = float(fields[1])
+        numeric = True
+    except ValueError:
+        pass
+
+    return numeric
+</t>
+<t tx="ekr.20240527100653.1708">def get_data(pagelines):
+    num_cols = 0
+
+    # Skip lines starting with """ or '''
+    lines = [line.replace('"""', '') for line in pagelines]
+    lines = [line.replace("'''", '') for line in lines]
+
+    # Skip blank lines
+    lines = [line for line in lines if line.strip()]
+
+    # skip non-data lines (first or 2nd col is not a number)
+    t = []
+    for line in lines:
+        line = line.replace(',', '')  # remove formatting commas
+        if is_numeric(line):
+            t.append(line.strip())
+            # Check if first all-numeric row has one or more fields
+            if not num_cols:
+                num_cols = min(len(t[0].split()), 2)
+    if not t:
+        return None, None
+
+    # Extract x, y values into separate lists; ignore columns after col. 2
+    if num_cols == 1:
+        x = range(len(t))
+        y = [float(b.strip()) for b in t]
+    else:
+        xy = [line.split()[:2] for line in t]
+        xs, ys = zip(*xy)
+        x = [float(a) for a in xs]
+        y = [float(b) for b in ys]
+
+    return x, y
+</t>
+<t tx="ekr.20240527100653.1709">@pagewidth 65
+def set_user_style(style_config_lines):
+    """Set special plot styles.
+
+    If the data node has a section [style], then if there is a
+    key "stylename", apply that named style; otherwise if there
+    is a key "stylefile", look for a file of that name ins the
+    user's Leo home directory (usually ~/.leo) and use those
+    styles.
+
+    The stylename must be one of the built-in style names, such
+    as "ggplot". "xkcd" also works even though it is not actually
+    one of the style names.
+
+    ARGUMENT style_config_lines -- a sequence of lines starting
+    at the [style] section of the data node.
+
+    RETURNS
+    True if a style was set.
+    """
+    set_style = False
+    for line in style_config_lines:
+        if not line.strip:
+            break
+        fields = line.split('=')
+        if len(fields) &lt; 2:
+            continue
+        kind, val = fields[0].strip(), fields[1].strip()
+        if kind == 'stylename':
+            if val == 'xkcd':
+                plt.xkcd()
+            else:
+                plt.style.use(val)
+            set_style = True
+            break
+    if not set_style:
+        for line in style_config_lines:
+            if not line.strip:
+                break
+            fields = line.split('=')
+            if len(fields) &lt; 2:
+                continue
+            kind, val = fields[0].strip(), fields[1].strip()
+
+            if kind == 'stylefile':
+                lm = g.app.loadManager
+                style_dir = lm.computeHomeLeoDir()
+                if g.isWindows:
+                    style_dir = style_dir.replace('/', '\\')
+                style_file = os.path.join(style_dir, val)
+                if os.path.exists(style_file):
+                    plt.style.use(style_file)
+                    set_style = True
+                break
+
+    return set_style
+</t>
+<t tx="ekr.20240527100653.1710">for line in page_lines[source_start:]:
+    if not line.strip:
+        break
+    fields = line.split('=')
+    if len(fields) &lt; 2:
+        continue
+    kind, val = fields[0].strip(), fields[1].strip()
+    if kind == 'file':
+        _, filename = fields[0].strip(), fields[1].strip()
+        g.es(filename)
+        if os.path.exists(filename):
+            with open(filename, encoding=ENCODING) as f:
+                data_lines = f.readlines()
+            if not data_lines:
+                g.es(f'VR3 -- no data in file {filename}')
+        else:
+            g.es(f'VR3 -- cannot open data file {filename}')
+</t>
+<t tx="ekr.20240527100653.1711"># Get lines for the labels section
+for line in page_lines[label_start:]:
+    if not line.strip:
+        break
+    fields = line.split('=')
+    if len(fields) &lt; 2:
+        continue
+    kind, val = fields[0].strip(), fields[1].strip()
+    if kind == 'title':
+        plt.title(val)
+    elif kind == 'xaxis':
+        plt.xlabel(val)
+    elif kind == 'yaxis':
+        plt.ylabel(val)
+
+</t>
+<t tx="ekr.20240527100653.1712">def onCreate(tag, keys):
+    pass
+</t>
+<t tx="ekr.20240527100653.1713">def show_dock_or_pane(self):
+    c, vr3 = self.c, self
+    vr3.activate()
+    # vr3.show()
+    c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20240527100653.1714">def update_graphics_script(self, s, keywords):
+    """Update the graphics script in the vr3 pane."""
+    pc = self; c = pc.c
+    force = keywords.get('force')
+    if pc.gs and not force:
+        return
+    if not pc.gs:
+        splitter = g.app.gui.get_top_splitter()
+        if not splitter:
+            g.trace('no splitter')
+            return
+        # Create the widgets.
+        pc.gs = QtWidgets.QGraphicsScene(splitter)
+        pc.gv = QtWidgets.QGraphicsView(pc.gs)
+        w = pc.gv.viewport()  # A QWidget
+        # Embed the widgets.
+
+        def delete_callback():
+            for w in (pc.gs, pc.gv):
+                w.deleteLater()
+            pc.gs = pc.gv = None
+
+        pc.embed_widget(w, delete_callback=delete_callback)
+    c.executeScript(
+        script=s,
+        namespace={'gs': pc.gs, 'gv': pc.gv})
+</t>
+<t tx="ekr.20240527100653.1715">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/3920
+PR: https://github.com/leo-editor/leo-editor/pull/3921
+
+@language python
+</t>
+<t tx="ekr.20240527100653.1716">@g.command('print-qt-widgets')
+@g.command('show-qt-widgets')
+def showQtWidgets(event: LeoKeyEvent) -&gt; None:
+    """Print the hierarchy of qt widgets."""
+    c = event.get('c')
+    total = 0
+    if not c:
+        return
+
+    def w_name(w):
+        name = w.objectName() or 'no name'
+        return f"{ w.__class__.__name__}({name})"
+
+    def dump(w, level=0):
+        nonlocal total
+        total += 1
+        ws = level * '.'
+        print(f"{total:3} {level:3}: {ws}{w_name(w)}")
+
+    def dump_children(w, level=0):
+        if 1:  # Specify wanted classes...
+            wanted = (
+                'DynamicWindow', 'Frame', 'Layout',
+                'Splitter', 'Stacked', 'Text', 'Widget',
+            )
+            children = [z for z in w.children()
+                if any(z2 in z.__class__.__name__ for z2 in wanted)]
+        else:  # Specifiy unwanted classes...
+            ignore = ('action', 'animation', 'menu')
+            children = [z for z in w.children()
+                if not any(z2 in z.__class__.__name__.lower() for z2 in ignore)]
+        if children:
+            for i, child in enumerate(children):
+                dump(child, level + 1)
+                dump_children(child, level + 1)
+
+    def full_dump(w, level=0):
+        print('')
+        print('Full dump of c.frame.top:\n')
+        print('  i   level')
+        dump(w)
+        dump_children(w)
+
+    full_dump(c.frame.top)
+</t>
+<t tx="ekr.20240527100653.1717">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/3916
+PR: https://github.com/leo-editor/leo-editor/pull/3922
+
+@language python
+</t>
+<t tx="ekr.20240527100653.1718">self.atAutoNames: set[str] = set()  # The set of all @auto spellings.
+self.atFileNames: set[str] = set()  # The set of all built-in @&lt;file&gt; spellings.
+self.globalKillBuffer: list[str] = []  # The global kill buffer.
+self.globalRegisters: dict[str, str] = {}  # The global register list.
+self.initial_cwd: str = os.getcwd()  # For restart-leo.
+self.leoID: str = None  # The id part of gnx's.
+self.lossage: list[LossageData] = []  # List of last 100 keystrokes.
+self.paste_c: Cmdr = None  # The commander that pasted the last outline.
+self.spellDict: Any = None  # A pyenchant dict or a DefaultDict.
+self.numberOfUntitledWindows = 0  # Number of opened untitled windows.
+self.windowList: list[LeoFrame] = []  # Global list of all frames.
+self.realMenuNameDict: dict[str, str] = {}  # Translations of menu names.
+</t>
+<t tx="ekr.20240527100653.1719">@g.commander_command('restart-leo')
+def restartLeo(self: Self, event: LeoKeyEvent = None) -&gt; None:
+    """Restart Leo, reloading all presently open outlines."""
+    c = self
+    # Write .leoRecentFiles.txt.
+    g.app.recentFilesManager.writeRecentFilesFile(c)
+    # Abort the restart if the user veto's any close.
+    for c in g.app.commanders():
+        if c.changed:
+            veto = False
+            try:
+                c.promptingForClose = True
+                veto = c.frame.promptForSave()
+            finally:
+                c.promptingForClose = False
+            if veto:
+                g.es_print('Cancelling restart-leo command')
+                return
+    # Officially begin the restart process. A flag for efc.ask and efc.on_idle.
+    g.app.restarting = True
+    # Save session data.
+    g.app.saveSession()
+    g.app.setLog(None)  # Kill the log.
+    # Close all unsaved outlines.
+    for c in g.app.commanders():
+        frame = c.frame
+        # This is similar to g.app.closeLeoWindow.
+        g.doHook("close-frame", c=c)
+        # Save the window state
+        # This may remove frame from the window list.
+        if frame in g.app.windowList:
+            g.app.destroyWindow(frame)
+            g.app.windowList.remove(frame)
+        else:
+            # #69.
+            g.app.forgetOpenFile(fn=c.fileName())
+    g.app.windowList = []
+    # Complete the shutdown.
+    g.app.finishQuit()
+    sys.stdout.flush()
+    sys.stderr.flush()
+    # Restart Leo with subprocess.run.
+    print('')
+    print('Restarting Leo...')
+    print(f"os.chdir({g.app.initial_cwd})")
+    os.chdir(g.app.initial_cwd)
+    if 1:  # #3916.
+        if g.isWindows:
+            sys_args = [z.replace('/', os.sep) for z in sys.argv]
+        else:
+            sys_args = sys.argv[:]
+        args = [sys.executable] + sys_args
+    else:
+        # #3141: Remember all open outlines.
+        restart_paths: list[str] = [
+            c.fileName() for c in g.app.commanders() if c.fileName()
+        ]
+        if g.isWindows:
+            restart_paths = [z.replace('/', os.sep) for z in restart_paths]
+        # Warning: Python 3.9 does not allow newlines within f-strings.
+        leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
+        launchLeo_s = fr'{leo_editor_dir}{os.sep}launchLeo.py'
+        args = [sys.executable, launchLeo_s] + restart_paths + ['--no-splash']
+    args_s = 'subprocess.run([\n  ' + ',\n  '.join(args) + '\n])'
+    print(args_s)
+    print('')
+    subprocess.run(args)  # pylint: disable=subprocess-run-check
+</t>
+<t tx="ekr.20240527100653.1811">def scanOptions(self, fileName: str, pymacs: bool) -&gt; dict[str, Any]:
+    """Handle all options, remove them from sys.argv and set lm.options."""
+    # Define helper functions.
+    @others
+
+    obsolete_options = [
+        '--dock', '--global-docks', '--init-docks', '--no-dock', '--use-docks',
+        '--load-type', '--load-type=@edit', '--load-type=@file',
+        '--no-cache',
+        '--session-restore', '--session-save',
+    ]
+    usage = defineUsage()
+    utils = g.OptionsUtils(usage, obsolete_options)
+    # Handle help args.
+    if any(z in sys.argv for z in ('-h', '-?', '--help')):
+        print(usage)
+        sys.exit()
+    doSimpleOptions()
+    doTraceOptions()
+    # Set the LoadManager.files ivar.
+    self.files = computeFilesList(fileName)
+    # Return a dictionary of complex options.
+    script = None if pymacs else doScriptOption()  # Used twice below.
+    return {
+        'gui': doGuiOption(),
+        'script': script,
+        'select': doSelectOption(),
+        'theme_path': doThemeOption(),
+        'version': any(z in sys.argv for z in ('-v', '--version')),
+        'windowFlag': script and '--script-window' in sys.argv,
+        'windowSize': doWindowSizeOption(),
+        'windowSpot': doWindowSpotOption(),
+    }
+</t>
+<t tx="ekr.20240527100653.1812">def computeFilesList(fileName: str) -&gt; list[str]:
+    """Return the list of files on the command line."""
+    lm = self
+    files = []
+    if fileName:
+        files.append(fileName)
+    for arg in sys.argv[1:]:
+        if arg and not arg.startswith('-'):
+            files.append(arg)
+    result = []
+    for z in files:
+        aList = g.glob_glob(lm.completeFileName(z))
+        if aList:
+            result.extend(aList)
+        else:
+            result.append(z)
+    return [g.os_path_normslashes(z) for z in result]
+</t>
+<t tx="ekr.20240527100653.1813">def defineUsage() -&gt; str:
+    """
+    Return Leo's usage message.
+
+    The g.OptionsUtils class uses this message to compute the list of valid options!
+    """
+    # Abbreviations (-whatever) must appear before full options (--whatever).
+    return textwrap.dedent("""
+usage: launchLeo.py [options] file1, file2, ...
+
+options:
+  -h, --help            show this help message and exit
+  -b, --black-sentinels write black-compatible sentinel comments
+  --diff                use Leo as an external git diff
+  --fail-fast           stop unit tests after the first failure
+  --fullscreen          start fullscreen
+  --ipython             enable ipython support
+  --gui=GUI             specify gui: browser,console,curses,qt,text,null
+  --listen-to-log       start log_listener.py on startup
+  --maximized           start maximized
+  --minimized           start minimized
+  --no-plugins          disable all plugins
+  --no-splash           disable the splash screen
+  --quit                quit immediately after loading
+  --save-session        always save session data when Leo closes
+  --script=PATH         execute a script and then exit
+  --script-window       execute script using default gui
+  --select=ID           headline or gnx of node to select
+  --silent              disable all log messages
+  --theme=NAME          use the named theme file
+  --trace=LIST          add one or more strings to g.app.debug
+
+        A comma-separated list. Valid values are:
+        abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx,
+        importers, ipython, keys, layouts, plugins, save, select, sections,
+        shutdown, size, speed, startup, themes, undo, verbose, zoom.
+
+  --trace-binding=KEY   trace commands bound to a key
+  --trace-setting=NAME  trace where named setting is set
+  --window-size=SIZE    initial window size: (height x width)
+  --window-spot=SPOT    initial window position: (top x left)
+  -v, --version         print version number and exit
+""")
+</t>
+<t tx="ekr.20240527100653.1814">def doGuiOption() -&gt; str:
+    """Handle --gui option. Default to 'qt'"""
+    m = utils.find_complex_option(r'--gui=(\w+)')
+    valid = ('console', 'curses', 'null', 'qt', 'text')
+    if not m:
+        g.app.guiArgName = 'qt'
+        return 'qt'
+    # Validate the gui.
+    gui = m.group(1).lower()
+    if gui == 'qttabs':
+        gui = 'qt'  # Allow legacy qttabs gui.
+    elif not gui.startswith('browser') and gui not in valid:
+        arg = m.group(0)
+        valid_s = ', '.join(valid)
+        utils.option_error(arg, f"Expected one of {valid_s}")
+    g.app.guiArgName = gui
+    return gui
+
+</t>
+<t tx="ekr.20240527100653.1815">def doScriptOption() -&gt; Optional[str]:
+    """Handle --script=path"""
+    m = utils.find_complex_option(r'--script=(.+)')
+    if not m:
+        return None
+    fn = m.group(1).replace('"', '')
+    # #1090: use cwd, not g.app.loadDir, to find scripts.
+    path = g.finalize_join(os.getcwd(), fn)
+    script, e = g.readFileIntoString(path, kind='script:', verbose=False)
+    if not script:
+        arg = m.group(0)
+        utils.option_error(arg, f"Script not found: {m.group(1)!r}")
+    return script
+</t>
+<t tx="ekr.20240527100653.1816">def doSelectOption() -&gt; Optional[str]:
+    """Handle --select=headline"""
+    m = utils.find_complex_option(r'--select=(.+)')
+    return m.group(1) if m else None
+</t>
+<t tx="ekr.20240527100653.1817">def doSimpleOptions() -&gt; None:
+    """Handle options without arguments."""
+    &lt;&lt; define scanArgv helpers &gt;&gt;
+
+    options_dict: dict[str, Callable] = {
+        '-b': _black,
+        '--black-sentinels': _black,
+        '--diff': _diff,
+        '--fail-fast': _fail_fast,
+        '--fullscreen': _full_screen,
+        '--listen-to-log': _listen_to_log,
+        '--ipython': _ipython,
+        '--maximized': _maximized,
+        '--minimized': _minimized,
+        '--no-plugins': _no_plugins,
+        '--no-splash': _no_splash,
+        '--quit': _quit,
+        '--save-session': _save_session,
+        '--silent': _silent,
+    }
+    for option, helper in options_dict.items():
+        if option in sys.argv:
+            helper()
+</t>
+<t tx="ekr.20240527100653.1818">def _black() -&gt; None:
+    g.app.write_black_sentinels = True
+
+def _diff() -&gt; None:
+    g.app.diff = True
+
+def _fail_fast() -&gt; None:
+    g.app.failFast = True
+
+def _full_screen() -&gt; None:
+    g.app.start_fullscreen = True
+
+def _listen_to_log() -&gt; None:
+    g.app.listen_to_log_flag = True
+
+def _ipython() -&gt; None:
+    g.app.useIpython = True
+
+def _maximized() -&gt; None:
+    g.app.start_maximized = True
+
+def _minimized() -&gt; None:
+    g.app.start_minimized = True
+    g.app.use_splash_screen = False
+
+def _no_plugins() -&gt; None:
+    g.app.enablePlugins = False
+
+def _no_splash() -&gt; None:
+    g.app.use_splash_screen = False
+
+def _quit() -&gt; None:
+    g.app.quit_after_load = True
+
+def _save_session() -&gt; None:
+    g.app.always_write_session_data = True
+
+def _silent() -&gt; None:
+    g.app.silentMode = True
+</t>
+<t tx="ekr.20240527100653.1819">def doThemeOption() -&gt; Optional[str]:
+    """Handle --theme=path"""
+    m = utils.find_complex_option(r'--theme=(.+)')
+    return m.group(1).replace('"', '') if m else None
+</t>
+<t tx="ekr.20240527100653.1820">def doTraceOptions() -&gt; None:
+    """Handle --trace-binding, --trace-setting and --trace"""
+
+    # --trace-binding
+    if m := utils.find_complex_option(r'--trace-binding=([\w\-\+]+)'):
+        g.app.trace_binding = m.group(1)
+        print(f"Enabling --trace-binding={m.group(1)}")
+
+    # --trace-setting=setting
+    if m := utils.find_complex_option(r'--trace-setting=([\w]+)'):
+        # g.app.config does not exist yet.
+        g.app.trace_setting = m.group(1)
+        print(f"Enabling --trace-setting={m.group(1)}")
+
+    # --trace=option.
+    valid = [
+        'abbrev', 'beauty', 'cache', 'coloring', 'drawing', 'events',
+        'focus', 'git', 'gnx', 'importers', 'ipython', 'keys',
+        'layouts', 'plugins', 'save', 'select', 'sections', 'shutdown',
+        'size', 'speed', 'startup', 'themes', 'undo', 'verbose', 'zoom',
+    ]
+    m = utils.find_complex_option(r'--trace=([\w\,]+)')
+    if not m:
+        return
+    values = m.group(1).split(',')
+    error = False
+    for value in values:
+        if value in valid:
+            g.app.debug.append(value)
+        else:
+            error = True
+    if error:
+        arg = m.group(0)
+        valid_s = '\n   '.join(valid)
+        print(f"Valid --trace values are:\n   {valid_s}")
+        utils.option_error(arg, 'Invalid value')
+    print(f"\nEnabling --trace={', '.join(g.app.debug)}\n")
+</t>
+<t tx="ekr.20240527100653.1821">def doWindowSizeOption() -&gt; Optional[tuple[int, int]]:
+    """Handle --window-size"""
+    m = utils.find_complex_option(r'--window-size=(\d+)x(\d+)')
+    if not m:
+        return None
+    try:
+        h, w = int(m.group(1)), int(m.group(2))
+    except ValueError:
+        arg = m.group(0)
+        utils.option_error(arg, 'Invalid value: expected int x int')
+    return h, w
+</t>
+<t tx="ekr.20240527100653.1822">def doWindowSpotOption() -&gt; Optional[tuple[int, int]]:
+    """Handle --window-spot"""
+    m = utils.find_complex_option(r'--window-spot=(\d+)x(\d+)')
+    if not m:
+        return None
+    try:
+        top, left = int(m.group(1)), int(m.group(2))
+    except ValueError:
+        arg = m.group(0)
+        utils.option_error(arg, 'Invalid value: expected int x int')
+    return top, left
+</t>
+<t tx="ekr.20240527100653.1838">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/3931
+PR: https://github.com/leo-editor/leo-editor/pull/3933
+
+The correct gnx for the top-level node of richtext.py is:
+tbrown.20130813134319.11942
+
+@language python
+</t>
+<t tx="ekr.20240527100653.1839">def scan_lines(self,
+    comment_delims: tuple,
+    first_lines: list[str],
+    lines: list[str],
+    path: str,
+    start: int,
+) -&gt; None:
+    """Scan all lines of the file, creating vnodes."""
+    &lt;&lt; init scan_lines &gt;&gt;
+    i = 0  # To keep pylint happy.
+    for i, line in enumerate(lines[start:]):
+        &lt;&lt; trace patterns &gt;&gt;
+        # Strip the line only once.
+        strip_line = line.strip()
+        if afterref:
+            &lt;&lt; handle afterref line&gt;&gt;
+            continue
+        if verbatim:
+            &lt;&lt; handle verbatim line &gt;&gt;
+            continue
+        if strip_line == verbatim_line:
+            verbatim = True
+            continue
+        &lt;&lt; finalize line &gt;&gt;
+        # Faster than a regex!
+        if not in_doc and not strip_line.startswith(sentinel):
+            body.append(line)
+            continue
+        # These three sections might clear in_doc.
+        &lt;&lt; handle @others &gt;&gt;
+        &lt;&lt; handle section refs &gt;&gt;
+        &lt;&lt; handle node_start &gt;&gt;
+        if in_doc:
+            &lt;&lt; handle @c or @code &gt;&gt;
+        else:
+            &lt;&lt; handle @ or @doc &gt;&gt;
+        if line.startswith(comment_delim1 + '@-leo'):  # Faster than a regex!
+            # The @-leo sentinel adds *nothing* to the text.
+            i += 1
+            break
+        # Order doesn't matter.
+        &lt;&lt; handle @all &gt;&gt;
+        &lt;&lt; handle afterref &gt;&gt;
+        &lt;&lt; handle @first and @last &gt;&gt;
+        &lt;&lt; handle @comment &gt;&gt;
+        &lt;&lt; handle @delims &gt;&gt;
+        &lt;&lt; handle @section-delims &gt;&gt;
+        # These sections must be last, in this order.
+        &lt;&lt; handle remaining @@ lines &gt;&gt;
+        if in_doc:
+            &lt;&lt; handle remaining @doc lines &gt;&gt;
+        &lt;&lt; handle remaining @ lines &gt;&gt;
+    else:
+        # No @-leo sentinel!
+        return  # pragma: no cover
+    &lt;&lt; final checks &gt;&gt;
+    &lt;&lt; insert @last lines &gt;&gt;
+    &lt;&lt; post pass: set all body text&gt;&gt;
+</t>
+<t tx="ekr.20240527100653.1841"># Keep this excellent trace, but comment it out for production code.
+# if g.unitTesting:
+    # for ivar in self.pattern_ivars:
+        # pattern = getattr(self, ivar)
+        # assert isinstance(pattern, re.Pattern)
+        # m = pattern.match(line)
+        # if m:
+            # print(f"{i:2} {ivar:15} {line!r}")
+            # break
+    # else:
+        # print(f"{i:2} {' ':15} {line!r}")
+</t>
+<t tx="ekr.20240527100653.1842">if body:  # a list of lines.
+    body[-1] = body[-1].rstrip() + line
+else:
+    body = [line]  # pragma: no cover
+afterref = False
+</t>
+<t tx="ekr.20240527100653.1843"># Previous line was verbatim *sentinel*. Append this line as it is.
+
+# 2022/12/02: Bug fix: adjust indentation.
+if indent and line[:indent].isspace() and len(line) &gt; indent:
+    line = line[indent:]  # pragma: no cover (defensive?)
+
+body.append(line)
+verbatim = False
+</t>
+<t tx="ekr.20240527100653.1844"># Undo the cweb hack.
+if is_cweb and line.startswith(sentinel):
+    line = line[: len(sentinel)] + line[len(sentinel) :].replace('@@', '@')
+# Adjust indentation.
+if indent and line[:indent].isspace() and len(line) &gt; indent:
+    line = line[indent:]
+</t>
+<t tx="ekr.20240527100653.1845">if m := self.others_pat.match(line):
+    in_doc = False
+    if m.group(2) == '+':  # opening sentinel
+        body.append(f"{m.group(1)}@others{m.group(3) or ''}\n")
+        stack.append((gnx, indent, body))
+        indent += m.end(1)  # adjust current indentation
+    else:  # closing sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        try:
+            gnx, indent, body = stack.pop()
+        except IndexError:  # pragma: no cover
+            # #2624: This can happen during git-diff.
+            pass
+    continue
+</t>
+<t tx="ekr.20240527100653.1846"># Note: scan_header sets *comment* delims, not *section* delims.
+# This section coordinates with the section that handles @section-delims.
+if m := self.ref_pat.match(line):
+    in_doc = False
+    if m.group(2) == '+':
+        # Any later @section-delims directive is a serious error.
+        # This kind of error should have been caught by Leo's atFile write logic.
+        section_reference_seen = True
+        # open sentinel.
+        body.append(m.group(1) + section_delim1 + m.group(3) + section_delim2 + '\n')
+        stack.append((gnx, indent, body))
+        indent += m.end(1)
+    elif stack:
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()  # #1232: Only if the stack exists.
+    continue  # 2021/10/29: *always* continue.
+</t>
+<t tx="ekr.20240527100653.1848"># When delim_end exists the doc block:
+# - begins with the opening delim, alone on its own line
+# - ends with the closing delim, alone on its own line.
+# Both of these lines should be skipped.
+#
+# #1496: Retire the @doc convention.
+#        An empty line is no longer a sentinel.
+
+assert in_doc, repr(line)
+
+if comment_delim2 and line in doc_skip:
+    # skip start/end comment delim!
+    continue
+#
+# Check for @c or @code.
+if m := self.code_pat.match(line):
+    in_doc = False
+    body.append('@code\n' if m.group(1) else '@c\n')
+    continue
+</t>
+<t tx="ekr.20240527100653.1849">assert not in_doc, repr(line)
+
+if m := self.doc_pat.match(line):
+    # @+at or @+doc?
+    doc = '@doc' if m.group(1) == 'doc' else '@'
+    doc2 = m.group(2) or ''  # Trailing text.
+    if doc2:
+        body.append(f"{doc}{doc2}\n")
+    else:
+        body.append(doc + '\n')
+    # Enter @doc mode.
+    in_doc = True
+    continue
+</t>
+<t tx="ekr.20240527100653.1850">if m := self.all_pat.match(line):
+    # @all tells Leo's *write* code not to check for undefined sections.
+    # Here, in the read code, we merely need to add it to the body.
+    # Pushing and popping the stack may not be necessary, but it can't hurt.
+    if m.group(2) == '+':  # opening sentinel
+        body.append(f"{m.group(1)}@all{m.group(3) or ''}\n")
+        stack.append((gnx, indent, body))
+    else:  # closing sentinel.
+        # m.group(2) is '-' because the pattern matched.
+        gnx, indent, body = stack.pop()
+        gnx2body[gnx] = body
+    continue
+</t>
+<t tx="ekr.20240527100653.1851">if m := self.after_pat.match(line):
+    afterref = True
+    continue
+</t>
+<t tx="ekr.20240527100653.1852">if m := self.first_pat.match(line):
+    # pylint: disable=no-else-continue
+    if 0 &lt;= first_i &lt; len(first_lines):
+        body.append('@first ' + first_lines[first_i])
+        first_i += 1
+        continue
+    else:  # pragma: no cover
+        g.trace(f"\ntoo many @first lines: {path}")
+        print('@first is valid only at the start of @&lt;file&gt; nodes\n')
+        g.printObj(first_lines, tag='first_lines')
+        g.printObj(lines[start : i + 2], tag='lines[start:i+2]')
+        continue
+if m := self.last_pat.match(line):
+    # Just increment the count of the expected last lines.
+    # We'll fill in the @last line directives after we see the @-leo directive.
+    n_last_lines += 1
+    continue
+</t>
+<t tx="ekr.20240527100653.1853"># https://leo-editor.github.io/leo-editor/directives.html#part-4-dangerous-directives
+if m := self.comment_pat.match(line):
+    # &lt;1, 2 or 3 comment delims&gt;
+    delims = m.group(1).strip()
+
+    # Whatever happens, retain the @delims line.
+    body.append(f"@comment {delims}\n")
+    delim1, delim2, delim3 = g.set_delims_from_string(delims)
+
+    # delim1 is always the single-line delimiter.
+    if delim1:
+        comment_delim1, comment_delim2 = delim1, ''
+    else:
+        comment_delim1, comment_delim2 = delim2, delim3  # pragma: no cover (unimportant)
+
+    # Within these delimiters:
+    # - double underscores represent a newline.
+    # - underscores represent a significant space,
+    comment_delim1 = comment_delim1.replace('__', '\n').replace('_', ' ')
+    comment_delim2 = comment_delim2.replace('__', '\n').replace('_', ' ')
+    # Recalculate all delim-related values
+    doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
+    is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@&gt;'
+    sentinel = comment_delim1 + '@'
+
+    # Recalculate the patterns.
+    comment_delims = comment_delim1, comment_delim2
+    self.get_patterns(comment_delims)
+    continue
+</t>
+<t tx="ekr.20240527100653.1854">if m := self.delims_pat.match(line):
+    # Get 1 or 2 comment delims
+    # Whatever happens, retain the original @delims line.
+    delims = m.group(1).strip()
+    body.append(f"@delims {delims}\n")
+    #
+    # Parse the delims.
+    self.delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
+    m2 = self.delims_pat.match(delims)
+    if not m2:  # pragma: no cover
+        g.trace(f"Ignoring invalid @delims: {line!r}")
+        continue
+    comment_delim1 = m2.group(1)
+    comment_delim2 = m2.group(2) or ''
+
+    # Within these delimiters:
+    # - double underscores represent a newline.
+    # - underscores represent a significant space,
+    comment_delim1 = comment_delim1.replace('__', '\n').replace('_', ' ')
+    comment_delim2 = comment_delim2.replace('__', '\n').replace('_', ' ')
+
+    # Recalculate all delim-related values
+    doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')
+    is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@&gt;'
+    sentinel = comment_delim1 + '@'
+
+    # Recalculate the patterns
+    comment_delims = comment_delim1, comment_delim2
+    self.get_patterns(comment_delims)
+    continue
+</t>
+<t tx="ekr.20240527100653.1855">if m := self.section_delims_pat.match(line):
+    if section_reference_seen:  # pragma: no cover
+        # This is a serious error.
+        # This kind of error should have been caught by Leo's atFile write logic.
+        g.es_print('section-delims seen after a section reference', color='red')
+    else:
+        # Carefully update the section reference pattern!
+        section_delim1 = d1 = re.escape(m.group(1))
+        section_delim2 = d2 = re.escape(m.group(2) or '')
+        self.ref_pat = re.compile(fr'^(\s*){comment_delim1}@(\+|-){d1}(.*){d2}\s*{comment_delim2}$')
+    body.append(f"@section-delims {m.group(1)} {m.group(2)}\n")
+    continue
+</t>
+<t tx="ekr.20240527100653.1856"># @first, @last, @delims and @comment generate @@ sentinels,
+# So this must follow all of those.
+if line.startswith(comment_delim1 + '@@'):
+    ii = len(comment_delim1) + 1  # on second '@'
+    jj = line.rfind(comment_delim2) if comment_delim2 else -1
+    body.append(line[ii:jj] + '\n')
+    continue
+</t>
+<t tx="ekr.20240527100653.1857">assert in_doc, repr(line)
+
+if comment_delim2:
+    # Inner doc lines have no comment delims.
+    body.append(line)
+    continue
+
+# Legacy:
+#    with --black-sentinels: comment_delim1 ends with a blank.
+# without --black-sentinels: comment_delim1 does *not* end with a blank.
+
+# Leo 6.7.6:
+#   comment_delim never ends with a blank.
+
+tail = line.lstrip()[len(comment_delim1.rstrip()) + 1 :]
+if tail.strip():
+    body.append(tail)
+else:
+    body.append('\n')
+continue
+</t>
+<t tx="ekr.20240527100653.1858"># Handle an apparent sentinel line.
+# This *can* happen after the git-diff or refresh-from-disk commands.
+#
+if 1:  # pragma: no cover (defensive)
+
+    # This assert verifies the short-circuit test.
+    assert strip_line.startswith(sentinel), repr(line)
+
+    # Defensive: make *sure* we ignore verbatim lines.
+    if strip_line == verbatim_line:
+        g.trace('Ignore bad @verbatim sentinel', repr(line))
+    else:
+        # A useful trace.
+        g.trace(
+            f"{g.shortFileName(self.path)}: "
+            f"warning: inserting unexpected line: {line.rstrip()!r}"
+        )
+        # #2213: *Do* insert the line, with a warning.
+        body.append(line)
+</t>
+<t tx="ekr.20240527100653.1860">tail_lines = lines[start + i :]
+if tail_lines:
+    # Convert the trailing lines to @last directives.
+    last_lines = [f"@last {z.rstrip()}\n" for z in tail_lines]
+    # Add the lines to the dictionary of lines.
+    gnx2body[gnx] = gnx2body[gnx] + last_lines
+    # Warn if there is an unexpected number of last lines.
+    if n_last_lines != len(last_lines):  # pragma: no cover
+        n1 = n_last_lines
+        n2 = len(last_lines)
+        g.trace(f"Expected {n1} trailing line{g.plural(n1)}, got {n2}")
+</t>
+<t tx="ekr.20240527100653.1861"># Set the body text.
+assert root_v.gnx in gnx2vnode, root_v
+assert root_v.gnx in gnx2body, root_v
+for key in gnx2body:
+    body = gnx2body.get(key)
+    v = gnx2vnode.get(key)
+    assert v, (key, v)
+    v._bodyString = g.toUnicode(''.join(body))
+</t>
+<t tx="ekr.20240527100653.1862"></t>
+<t tx="ekr.20240527100653.1863">if g.unitTesting:
+    assert not stack, stack
+elif stack:  # pragma: no cover
+    g.error('scan_lines: Stack should be empty')
+    g.printObj(stack, tag='stack')
+</t>
+<t tx="ekr.20240527100653.1864">if m := self.node_start_pat.match(line):
+    in_doc = False
+    gnx, head = m.group(2), m.group(5)
+    # m.group(3) is the level number, m.group(4) is the number of stars.
+    level = int(m.group(3)) if m.group(3) else 1 + len(m.group(4))
+    v = gnx2vnode.get(gnx)
+
+    # Case 1: The root @file node. Don't change the headline.
+    if not root_seen:
+        # #1064: The node represents the root, regardless of the gnx!
+        # #3931: The gnx in the external file overrides p.v.gnx.
+        root_seen = True
+        clone_v = None
+        if not v:
+            # Special case for unit tests and git-diff.
+            v = root_v
+            gnx = v.gnx
+            gnx2vnode[gnx] = v
+            gnx2body[gnx] = gnx2body[v.gnx]
+        elif root_v.gnx == v.gnx:
+            gnx2body[gnx] = body = []
+        else:
+            # refresh-from-disk
+            # #3931: Prefer the gnx in the external file.
+            gnx = v.gnx
+            gnx2body[gnx] = gnx2body[root_v.gnx]  ### Experimental.
+            gnx2vnode[gnx] = v
+            root_v.fileIndex = gnx
+        # Always use the gnx in the file's root node.
+        self.root.gnx == gnx
+        v.children = []
+        continue  # End of case 1.
+
+    # Case 2: We are scanning the descendants of a clone.
+    parent_v, clone_v = level_stack[level - 2]
+    if v and clone_v:
+        # The last version of the body and headline wins..
+        gnx2body[gnx] = body = []
+        v._headString = head
+        # Update the level_stack.
+        level_stack = level_stack[: level - 1]
+        level_stack.append((v, clone_v))
+        # Always clear the children!
+        v.children = []
+        parent_v.children.append(v)
+        continue  # End of case 2.
+
+    # Case 3: we are not already scanning the descendants of a clone.
+    if v:
+        # The *start* of a clone tree. Reset the children.
+        clone_v = v
+        v.children = []
+    else:
+        # Make a new vnode.
+        v = leoNodes.VNode(context=context, gnx=gnx)
+    # The last version of the body and headline wins.
+    gnx2vnode[gnx] = v
+    gnx2body[gnx] = body = []
+    v._headString = head
+    # Update the stack.
+    level_stack = level_stack[: level - 1]
+    level_stack.append((v, clone_v))
+    # Update the links.
+    assert v != root_v
+    parent_v.children.append(v)
+    v.parents.append(parent_v)
+    continue
+</t>
+<t tx="ekr.20240527100653.1865">#
+# Simple vars...
+afterref = False  # True: the next line follows @afterref.
+clone_v: VNode = None  # The root of the clone tree.
+# The start/end *comment* delims.
+# Important: scan_header ends comment_delim1 with a blank when using black sentinels.
+comment_delim1, comment_delim2 = comment_delims
+doc_skip = (comment_delim1 + '\n', comment_delim2 + '\n')  # To handle doc parts.
+first_i = 0  # Index into first array.
+in_doc = False  # True: in @doc parts.
+is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@&gt;'  # True: cweb hack in effect.
+indent = 0  # The current indentation.
+level_stack: list[tuple[VNode, VNode]] = []
+n_last_lines = 0  # The number of @@last directives seen.
+
+# #1065 so reads will not create spurious child nodes.
+root_seen = False  # False: The next +@node sentinel denotes the root, regardless of gnx.
+section_delim1 = '&lt;&lt;'
+section_delim2 = '&gt;&gt;'
+section_reference_seen = False
+sentinel = comment_delim1 + '@'
+
+# at+others, at+&lt;section&gt;, and at+all update the stack.
+stack: list[tuple[str, int, list[str]]] = []  # Entries are (gnx, indent, body)
+verbatim_line = comment_delim1 + '@verbatim' + comment_delim2
+verbatim = False  # True: the next line must be added without change.
+
+# Init the parent vnode.
+gnx = self.root.gnx
+context = self.c
+parent_v = self.root.v
+root_v = parent_v  # Does not change.
+level_stack.append((root_v, None))
+
+# Init the gnx dict last.
+gnx2vnode = self.gnx2vnode  # Keys are gnx's, values are vnodes.
+gnx2body: dict[str, list[str]] = {}  # Keys are gnxs, values are list of body lines.
+gnx2vnode[gnx] = parent_v  # Add gnx to the keys
+
+# Add gnx to the keys.
+# Body is the list of lines presently being accumulated.
+gnx2body[gnx] = body = first_lines
+
+# Set the patterns
+self.get_patterns(comment_delims)
+</t>
+<t tx="ekr.20240527100653.1866">def checkGnxs(self) -&gt; int:
+    """
+    Check the consistency of all gnx's.
+    Reallocate gnx's for duplicates or empty gnx's.
+    Return the number of errors found.
+    """
+    c = self
+    # Keys are gnx's; values are lists of (id(v), v).
+    vnode_d: dict[str, list[tuple[int, VNode]]] = {}
+    ni = g.app.nodeIndices
+    t1 = time.time()
+
+    def new_gnx(v: VNode) -&gt; None:
+        """Set v.fileIndex."""
+        v.fileIndex = ni.getNewIndex(v)
+
+    count, gnx_errors = 0, 0
+    for p in c.all_positions(copy=False):
+        count += 1
+        v = p.v
+        gnx = v.fileIndex
+        if gnx:  # gnx must be a string.
+            aList = vnode_d.get(gnx, [])
+            aList.append((id(v), v))
+        else:
+            gnx_errors += 1
+            new_gnx(v)
+            g.es_print(f"empty v.fileIndex: {v} new: {p.v.gnx!r}", color='red')
+    for gnx in sorted(vnode_d.keys()):
+        aList = list(vnode_d.get(gnx))
+        ids = [id_ for (id_, v) in aList]
+        if len(ids) &gt; 1:
+            print('\nc.checkGnxs...')
+            g.es_print(f"multiple vnodes with gnx: {gnx!r}", color='red')
+            for (id_, v) in aList:
+                gnx_errors += 1
+                g.es_print(f"id(v): {id(v)} gnx: {v.fileIndex} {v.h}", color='red')
+                new_gnx(v)
+    ok = not gnx_errors
+    t2 = time.time()
+    if not ok:
+        g.es_print(
+            f"check-outline ERROR! {c.shortFileName()} "
+            f"{count} nodes, {gnx_errors} gnx errors, ",
+            color='red'
+        )
+    elif c.verbose_check_outline and not g.unitTesting:
+        print(
+            f"check-outline OK: {t2 - t1:4.2f} sec. "
+            f"{c.shortFileName()} {count} nodes")
+    return gnx_errors
+</t>
+<t tx="ekr.20240527100653.1871">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/3871
+PR: https://github.com/leo-editor/leo-editor/pull/3872
+
+@language python
+</t>
+<t tx="ekr.20240527100653.1872"></t>
+<t tx="ekr.20240527100653.1879"></t>
+<t tx="ekr.20240527100653.1880">class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
+
+    """ 'Find in files'/grep style search widget """
+
+    @others
+</t>
+<t tx="ekr.20240527100653.1881">def __init__(self, c: Cmdr, mode: str = "nav", parent: QWidget = None) -&gt; None:
+
+    super().__init__(parent)
+    self.ui: Any = qt_quicksearch.Ui_LeoQuickSearchWidget()
+    self.ui.setupUi(self)
+    self.frozen = False  # True: disable live updates.
+    w: QListWidget = self.ui.listWidget
+    u = self.ui
+    cc = QuickSearchController(c, w, u)
+    self.scon = cc
+    if mode == "popout":
+        self.setWindowTitle("Go anywhere")
+        self.ui.lineEdit.returnPressed.connect(self.selectAndDismiss)
+        threadutil.later(self.ui.lineEdit.setFocus)
+    else:
+        self.ui.lineEdit.returnPressed.connect(self.returnPressed)
+    self.ui.lineEdit.textChanged.connect(self.liveUpdate)
+    self.ev_filter = QuickSearchEventFilter(c, w, self.ui.lineEdit)
+    self.ui.lineEdit.installEventFilter(self.ev_filter)
+    self.c = c
+</t>
+<t tx="ekr.20240527100653.1882">def returnPressed(self) -&gt; None:
+    w = self.ui.listWidget
+    self.scon.freeze()
+    t = self.ui.lineEdit.text()
+    if not t.strip():
+        return
+    # Handle Easter eggs.
+    if t == 'm':
+        self.scon.doShowMarked()
+    elif t == 'h':
+        self.scon.doSearchHistory()
+    else:
+        self.scon.doSearch(t)
+    if self.scon.its:
+        w.blockSignals(True)  # don't jump to first hit
+        w.setFocus()
+        w.blockSignals(False)  # ok, respond if user moves
+</t>
+<t tx="ekr.20240527100653.1883">def liveUpdate(self) -&gt; None:
+
+    t = self.ui.lineEdit.text()
+    if not t.strip():
+        if self.scon.frozen:
+            self.scon.freeze(False)
+            self.scon.clear()
+        return
+    if self.scon.frozen:
+        return
+    if t == 'm':
+        self.scon.doShowMarked()
+        return
+    if len(t) &lt; 3:  # #2466.
+        return
+    self.scon.worker.set_input(t)
+</t>
+<t tx="ekr.20240527100653.1884">def selectAndDismiss(self) -&gt; None:
+    self.hide()
+</t>
+<t tx="ekr.20240527100653.1885">class QuickSearchController:
+
+    @others
+</t>
+<t tx="ekr.20240527100653.1887">def freeze(self, val: bool = True) -&gt; None:
+    self.frozen = val
+
+</t>
+<t tx="ekr.20240527100653.1888">def addItem(self, it: Any, val: Any) -&gt; bool:
+    self.its[id(it)] = val
+    return len(self.its) &gt; 300
+</t>
+<t tx="ekr.20240527100653.1889">def addBodyMatches(self, positions: Match_List) -&gt; int:
+    lineMatchHits = 0
+    it: QListWidgetItem
+    for p in positions:
+        it = QtWidgets.QListWidgetItem(p[0].h, self.lw)
+        f = it.font()
+        f.setBold(True)
+        it.setFont(f)
+        if self.addItem(it, (p[0], None)):
+            return lineMatchHits
+
+        ms = matchlines(p[0].b, p[1])
+        for ml, pos in ms:
+            lineMatchHits += 1
+            it = QtWidgets.QListWidgetItem("    " + ml, self.lw)
+            if self.addItem(it, (p[0], pos)):
+                return lineMatchHits
+    return lineMatchHits
+</t>
+<t tx="ekr.20240527100653.1890">def addParentMatches(self, parent_list: dict[str, Match_List]) -&gt; int:
+    lineMatchHits = 0
+    it: QListWidgetItem
+    for parent_key, parent_value in parent_list.items():
+        if isinstance(parent_key, str):
+            v = self.c.fileCommands.gnxDict.get(parent_key)
+            h = v.h if v else parent_key
+            it = QtWidgets.QListWidgetItem(h, self.lw)
+        else:
+            it = QtWidgets.QListWidgetItem(parent_key[0].h, self.lw)
+        f = it.font()
+        f.setItalic(True)
+        it.setFont(f)
+        if self.addItem(it, (parent_key, None)):
+            return lineMatchHits
+        for p in parent_value:
+            it = QtWidgets.QListWidgetItem("    " + p[0].h, self.lw)
+            f = it.font()
+            f.setBold(True)
+            it.setFont(f)
+            if self.addItem(it, (p[0], None)):
+                return lineMatchHits
+            if p[1] is not None:  #p might not have body matches
+                ms = matchlines(p[0].b, p[1])
+                for ml, pos in ms:
+                    lineMatchHits += 1
+                    it = QtWidgets.QListWidgetItem("    " + "    " + ml, self.lw)
+                    if self.addItem(it, (p[0], pos)):
+                        return lineMatchHits
+    return lineMatchHits
+
+</t>
+<t tx="ekr.20240527100653.1891">def addGeneric(self, text: Any, f: Any) -&gt; QListWidgetItem:
+    """ Add generic callback """
+    it: QListWidgetItem = QtWidgets.QListWidgetItem(text, self.lw)
+    self.its[id(it)] = f
+    return it
+</t>
+<t tx="ekr.20240527100653.1892">def addHeadlineMatches(self, poslist: Match_List) -&gt; None:
+
+    it: QListWidgetItem
+    for p in poslist:
+        it = QtWidgets.QListWidgetItem(p[0].h, self.lw)
+        f = it.font()
+        f.setBold(True)
+        it.setFont(f)
+        if self.addItem(it, (p[0], None)):
+            return
+</t>
+<t tx="ekr.20240527100653.1893">def clear(self) -&gt; None:
+
+    self.its = {}
+    self.lw.clear()
+
+</t>
+<t tx="ekr.20240527100653.1894">def doNodeHistory(self) -&gt; None:
+
+    c = self.c
+    nh: Match_List = [(z[0].copy(), None) for z in c.nodeHistory.beadList]
+    nh.reverse()
+    self.clear()
+    self.addHeadlineMatches(nh)
+</t>
+<t tx="ekr.20240527100653.1895">def doSearchHistory(self) -&gt; None:
+    self.clear()
+
+    def sHistSelect(pat: str) -&gt; Callable:
+        def _f() -&gt; None:
+            self.widgetUI.lineEdit.setText(pat)
+            self.doSearch(pat)
+        return _f
+
+    for pat in self._search_patterns:
+        self.addGeneric(pat, sHistSelect(pat))
+
+def pushSearchHistory(self, pat: Any) -&gt; None:
+    if pat in self._search_patterns:
+        return
+    self._search_patterns = ([pat] + self._search_patterns)[:30]
+</t>
+<t tx="ekr.20240527100653.1896">def doTimeline(self) -&gt; None:
+
+    c = self.c
+    timeline: Match_List = [
+        (p.copy(), None) for p in c.all_unique_positions()
+    ]
+    timeline.sort(key=lambda x: x[0].gnx, reverse=True)
+    self.clear()
+    self.addHeadlineMatches(timeline)
+</t>
+<t tx="ekr.20240527100653.1897">def doChanged(self) -&gt; None:
+
+    c = self.c
+    changed: Match_List = [
+        (p.copy(), None) for p in c.all_unique_positions() if p.isDirty()
+    ]
+    self.clear()
+    self.addHeadlineMatches(changed)
+</t>
+<t tx="ekr.20240527100653.1898">def doSearch(self, pat: str) -&gt; None:
+
+    hitBase = False
+    self.clear()
+    self.pushSearchHistory(pat)
+    if not pat.startswith('r:'):
+        hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
+        bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)", "")
+        bpat = bpat.replace(r'\Z', '')
+        flags = re.IGNORECASE
+    else:
+        hpat = pat[2:]
+        bpat = pat[2:]
+        flags = 0  # type:ignore
+    combo = self.widgetUI.comboBox.currentText()
+    bNodes: Iterable[Position]
+    hNodes: Iterable[Position]
+    if combo == "All":
+        hNodes = self.c.all_positions()
+        bNodes = self.c.all_positions()
+    elif combo == "Subtree":
+        hNodes = self.c.p.self_and_subtree()
+        bNodes = self.c.p.self_and_subtree()
+    elif combo == "File":
+        found = False
+        node = self.c.p
+        while not found and not hitBase:
+            h = node.h
+            if h:
+                h = h.split()[0]
+            if h in self.fileDirectives:
+                found = True
+            else:
+                if node.level() == 0:
+                    hitBase = True
+                else:
+                    node = node.parent()
+        hNodes = node.self_and_subtree()
+        bNodes = node.self_and_subtree()
+    elif combo == "Chapter":
+        found = False
+        node = self.c.p
+        while not found and not hitBase:
+            h = node.h
+            if h:
+                h = h.split()[0]
+            if h == "@chapter":
+                found = True
+            else:
+                if node.level() == 0:
+                    hitBase = True
+                else:
+                    node = node.parent()
+        if hitBase:
+            # If I hit the base then revert to all positions
+            # this is basically the "main" chapter
+            hitBase = False  #reset
+            hNodes = self.c.all_positions()
+            bNodes = self.c.all_positions()
+        else:
+            hNodes = node.self_and_subtree()
+            bNodes = node.self_and_subtree()
+
+    else:
+        hNodes = [self.c.p]
+        bNodes = [self.c.p]
+
+    if not hitBase:
+        hm = self.find_h(hpat, hNodes, flags)
+        bm = self.find_b(bpat, bNodes, flags)
+        bm_keys = [match[0].key() for match in bm]
+        numOfHm = len(hm)  #do this before trim to get accurate count
+        hm = [match for match in hm if match[0].key() not in bm_keys]
+        if self.widgetUI.showParents.isChecked():
+            parents: dict[str, Match_List] = {}
+            for nodeList in [hm, bm]:
+                for node in nodeList:
+                    key = 'Root' if node[0].level() == 0 else node[0].parent().gnx
+                    aList: Match_List = parents.get(key, [])
+                    aList.append(node)
+                    parents[key] = aList
+            lineMatchHits = self.addParentMatches(parents)
+        else:
+            self.addHeadlineMatches(hm)
+            lineMatchHits = self.addBodyMatches(bm)
+
+        hits = numOfHm + lineMatchHits
+        self.lw.insertItem(0, "{} hits".format(hits))
+
+    else:
+        if combo == "File":
+            self.lw.insertItem(0, "External file directive not found " +
+                                  "during search")
+</t>
+<t tx="ekr.20240527100653.1899">def bgSearch(self, pat: str) -&gt; tuple[Match_List, Match_List]:
+
+    if self.frozen:
+        return None
+    if not pat.startswith('r:'):
+        hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
+        flags = re.IGNORECASE
+    else:
+        hpat = pat[2:]
+        flags = 0  # type:ignore
+    combo = self.widgetUI.comboBox.currentText()
+    hNodes: Iterable
+    if combo == "All":
+        hNodes = self.c.all_positions()
+    elif combo == "Subtree":
+        hNodes = self.c.p.self_and_subtree()
+    else:
+        hNodes = [self.c.p]
+    hm = self.find_h(hpat, hNodes, flags)
+    # self.addHeadlineMatches(hm)
+    # bm = self.c.find_b(bpat, flags)
+    # self.addBodyMatches(bm)
+    return hm, []
+    # self.lw.insertItem(0, "%d hits"%self.lw.count())
+</t>
+<t tx="ekr.20240527100653.1900">def find_h(self,
+    regex: str,
+    positions: Iterable[Position],
+    flags: RegexFlag = re.IGNORECASE,
+) -&gt; Match_List:
+    """
+    Return the list of all tuple (Position, matchiter/None) whose headline matches the given pattern.
+    """
+    try:
+        pat = re.compile(regex, flags)
+    except Exception:
+        return []
+    return [(p.copy(), None) for p in positions if re.match(pat, p.h)]
+</t>
+<t tx="ekr.20240527100653.1901">def find_b(self,
+    regex: str,
+    positions: Iterable[Position],
+    flags: RegexFlag = re.IGNORECASE | re.MULTILINE,
+) -&gt; Match_List:
+    """
+    Return list of all tuple (Position, matchiter/None) whose body matches regex one or more times.
+    """
+    try:
+        pat = re.compile(regex, flags)
+    except Exception:
+        return []
+
+    aList: Match_List = []
+    for p in positions:
+        m = re.finditer(pat, p.b)
+        t1, t2 = itertools.tee(m, 2)
+        try:
+            t1.__next__()
+        except StopIteration:
+            continue
+        pc = p.copy()
+        aList.append((pc, t2))
+    return aList
+
+</t>
+<t tx="ekr.20240527100653.1902">def doShowMarked(self) -&gt; None:
+
+    self.clear()
+    c = self.c
+    self.addHeadlineMatches([
+        (p.copy(), None) for p in c.all_positions() if p.isMarked()
+    ])
+</t>
+<t tx="ekr.20240527100653.1903"></t>
+<t tx="ekr.20240527100653.1904">def onSelectItem(self, it: Iterable, it_prev: Iterable = None) -&gt; None:
+
+    c = self.c
+    if not it:
+        return
+
+    # tgt = self.its.get(it and id(it))
+
+    tgt: Callable = self.its.get(id(it))
+    if not tgt:
+        return
+    # if Ctrl key is down, delete item and
+    # children (based on indent) and return
+    modifiers = QtWidgets.QApplication.keyboardModifiers()
+    if modifiers == KeyboardModifier.ControlModifier:
+        row = self.lw.row(it)
+        init_indent = len(it.text()) - len(str(it.text()).lstrip())
+        self.lw.blockSignals(True)
+        while row &lt; self.lw.count():
+            self.lw.item(row).setHidden(True)
+            row += 1
+            cur = self.lw.item(row)
+            # #1751.
+            if not cur:
+                break
+            s = cur.text() or ''
+            indent = len(s) - len(str(s).lstrip())
+            if indent &lt;= init_indent:
+                break
+        self.lw.setCurrentRow(row)
+        self.lw.blockSignals(False)
+        return
+    # generic callable
+    if callable(tgt):
+        tgt()
+    elif len(tgt) == 2:
+        p, pos = tgt
+        if hasattr(p, 'v'):  #p might be "Root"
+            if not c.positionExists(p):
+                g.es("Node moved or deleted.\nMaybe re-do search.",
+                    color='red')
+                return
+            c.selectPosition(p)
+            if pos is not None:
+                st, en = pos
+                w = c.frame.body.wrapper
+                w.setSelectionRange(st, en)
+                w.seeInsertPoint()
+            self.lw.setFocus()
+</t>
+<t tx="ekr.20240527100653.1905">def onActivated(self, event: QEvent) -&gt; None:
+
+    c = self.c
+    c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20240527100653.1906">class LeoFind:
+    """The base class for Leo's Find commands."""
+    @others
+</t>
+<t tx="ekr.20240527100653.1907"></t>
+<t tx="ekr.20240527100653.1909">def default_settings(self) -&gt; Settings:
+    """Return a dict representing all default settings."""
+    c = self.c
+    return g.Bunch(
+        # State...
+        in_headline=False,
+        p=c.rootPosition(),
+        # Find/change strings...
+        find_text='',
+        change_text='',
+        # Find options...
+        file_only=False,
+        ignore_case=False,
+        mark_changes=False,
+        mark_finds=False,
+        node_only=False,
+        pattern_match=False,
+        reverse=False,
+        search_body=True,
+        search_headline=True,
+        suboutline_only=False,
+        whole_word=False,
+        wrapping=False,
+    )
+</t>
+<t tx="ekr.20240527100653.1910">def finishCreate(self) -&gt; None:  # pragma: no cover
+    # New in 4.11.1.
+    # Must be called when config settings are valid.
+    c = self.c
+    self.reload_settings()
+    # now that configuration settings are valid,
+    # we can finish creating the Find pane.
+    dw = c.frame.top
+    if dw:
+        dw.finishCreateLogPane()
+</t>
+<t tx="ekr.20240527100653.1911">def init_ivars_from_settings(self, settings: Settings) -&gt; None:
+    """
+    Initialize all ivars from settings, including required defaults.
+
+    This should be called from the do_ methods as follows:
+
+        self.init_ivars_from_settings(settings)
+        if not self.check_args('find-next'):
+            return &lt;appropriate error indication&gt;
+    """
+    #
+    # Init required defaults.
+    self.reverse = False
+    #
+    # Init find/change strings.
+    self.change_text = settings.change_text
+    self.find_text = settings.find_text
+    #
+    # Init find options.
+    self.file_only = settings.file_only
+    self.ignore_case = settings.ignore_case
+    self.mark_changes = settings.mark_changes
+    self.mark_finds = settings.mark_finds
+    self.node_only = settings.node_only
+    self.pattern_match = settings.pattern_match
+    self.search_body = settings.search_body
+    self.search_headline = settings.search_headline
+    self.suboutline_only = settings.suboutline_only
+    self.whole_word = settings.whole_word
+    # self.wrapping = settings.wrapping
+</t>
+<t tx="ekr.20240527100653.1913">def batch_change(self,
+    root: Position,
+    replacements: list[tuple[str, str]],
+    settings: Settings = None,
+) -&gt; int:
+    &lt;&lt; docstring: find.batch_change &gt;&gt;
+    try:
+        # self._init_from_dict(settings or {})
+        self._init_from_dict(settings or g.Bunch())
+        count = 0
+        for find, change in replacements:
+            count += self._batch_change_helper(root, find, change)
+        return count
+    except Exception:  # pragma: no cover
+        g.es_exception()
+        return 0
+</t>
+<t tx="ekr.20240527100653.1914">"""
+Support batch change scripts.
+
+replacement: a list of tuples (find_string, change_string).
+settings: a dict or g.Bunch containing find/change settings.
+          See find._init_from_dict for a list of valid settings.
+
+Example:
+
+    h = '@file src/ekr/coreFind.py'
+    root = g.findNodeAnywhere(c, h)
+    assert root
+    replacements = (
+        ('clone_find_all', 'do_clone_find_all'),
+        ('clone_find_all_flattened', 'do_clone_find_all_flattened'),
+    )
+    settings = dict(suboutline_only=True)
+    count = c.findCommands.batch_change(root, replacements, settings)
+    if count:
+        c.save()
+"""
+</t>
+<t tx="ekr.20240527100653.1915">def _batch_change_helper(self, p: Position, find_text: str, change_text: str) -&gt; int:
+
+    c, p1, u = self.c, p.copy(), self.c.undoer
+    undoType = 'Batch Change All'
+    # Check...
+    if not find_text:  # pragma: no cover
+        return 0
+    if not self.search_headline and not self.search_body:
+        return 0  # pragma: no cover
+    if self.pattern_match:
+        ok = self.compile_pattern()
+        if not ok:  # pragma: no cover
+            return 0
+    # Init...
+    self.find_text = find_text
+    self.change_text = self.replace_back_slashes(change_text)
+    positions: Union[list, Generator]
+    if self.node_only:
+        positions = [p1]
+    elif self.suboutline_only:
+        positions = p1.self_and_subtree()
+    else:
+        positions = c.all_unique_positions()
+    # Init the work widget.
+    s = p.h if self.in_headline else p.b
+    self.work_s = s
+    self.work_sel = (0, 0, 0)
+    # The main loop.
+    u.beforeChangeGroup(p1, undoType)
+    count = 0
+    for p in positions:
+        count_h, count_b = 0, 0
+        undoData = u.beforeChangeNodeContents(p)
+        if self.search_headline:
+            count_h, new_h = self._change_all_search_and_replace(p.h)
+            if count_h:
+                count += count_h
+                p.h = new_h
+        if self.search_body:
+            count_b, new_b = self._change_all_search_and_replace(p.b)
+            if count_b:
+                count += count_b
+                p.b = new_b
+        if count_h or count_b:
+            u.afterChangeNodeContents(p1, 'Replace All', undoData)
+    u.afterChangeGroup(p1, undoType)
+    if not g.unitTesting:  # pragma: no cover
+        print(f"{count:3}: {find_text:&gt;30} =&gt; {change_text}")
+    return count
+</t>
+<t tx="ekr.20240527100653.1916">def _init_from_dict(self, settings: Settings) -&gt; None:
+    """Initialize ivars from settings (a dict or g.Bunch)."""
+    # The valid ivars and reasonable defaults.
+    valid = dict(
+        ignore_case=False,
+        node_only=False,
+        pattern_match=False,
+        search_body=True,
+        search_headline=True,
+        suboutline_only=False,  # Seems safest.  # Was True !!!
+        whole_word=True,
+    )
+    # Set ivars to reasonable defaults.
+    for ivar in valid:
+        setattr(self, ivar, valid.get(ivar))
+    # Override ivars from settings.
+    errors = 0
+    for ivar in settings.keys():
+        if ivar in valid:
+            val = settings.get(ivar)
+            if val in (True, False):
+                setattr(self, ivar, val)
+            else:  # pragma: no cover
+                g.trace("bad value: {ivar!r} = {val!r}")
+                errors += 1
+        else:  # pragma: no cover
+            g.trace(f"ignoring {ivar!r} setting")
+            errors += 1
+    if errors:  # pragma: no cover
+        g.printObj(sorted(valid.keys()), tag='valid keys')
+</t>
+<t tx="ekr.20240527100653.1917">def interactive_search_helper(self,
+    root: Position = None,
+    settings: Settings = None,
+) -&gt; None:  # pragma: no cover
+    &lt;&lt; docstring: find.interactive_search &gt;&gt;
+    # Merge settings into default settings.
+    c = self.c
+    d = self.default_settings()  # A g.bunch
+    if settings:
+        # Settings can be a dict or a g.Bunch.
+        # g.Bunch has no update method.
+        for key in settings.keys():
+            d[key] = settings[key]
+    self.ftm.set_widgets_from_dict(d)  # So the *next* find-next will work.
+    self.show_find_options_in_status_area()
+    if not self.check_args('find-next'):
+        return
+    if root:
+        c.selectPosition(root)
+    self.do_find_next(d)
+</t>
+<t tx="ekr.20240527100653.1918">"""
+Support interactive find.
+
+c.findCommands.interactive_search_helper starts an interactive search with
+the given settings. The settings argument may be either a g.Bunch or a
+dict.
+
+Example 1, settings is a g.Bunch:
+
+    c.findCommands.interactive_search_helper(
+        root = c.p,
+        settings = g.Bunch(
+            find_text = '^(def )',
+            change_text = '\1',
+            pattern_match=True,
+            search_headline=False,
+            whole_word=False,
+        )
+    )
+
+Example 2, settings is a python dict:
+
+    c.findCommands.interactive_search_helper(
+        root = c.p,
+        settings = {
+            'find_text': '^(def )',
+            'change_text': '\1',
+            'pattern_match': True,
+            'search_headline': False,
+            'whole_word': False,
+        }
+    )
+"""
+</t>
+<t tx="ekr.20240527100653.1919"></t>
+<t tx="ekr.20240527100653.1920">@cmd('replace-then-find')
+@cmd('change-then-find')
+def change_then_find(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (cmd)
+    """Handle the replace-then-find command."""
+    # Settings...
+    self.init_in_headline()
+    settings = self.ftm.get_settings()
+    self.do_change_then_find(settings)
+</t>
+<t tx="ekr.20240527100653.1921"># A stand-alone method for unit testing.
+def do_change_then_find(self, settings: Settings) -&gt; bool:
+    """
+    Do the change-then-find command from settings.
+
+    This is a stand-alone method for unit testing.
+    """
+    p = self.c.p
+    self.init_ivars_from_settings(settings)
+    if not self.check_args('change-then-find'):
+        return False
+    if self.change_selection(p):
+        return bool(self.do_find_next(settings))
+    return False
+
+</t>
+<t tx="ekr.20240527100653.1922">@cmd('clone-find-all-marked')
+@cmd('cfam')
+def cloneFindAllMarked(self, event: LeoKeyEvent = None) -&gt; None:
+    """
+    clone-find-all-marked, aka cfam.
+
+    Create an organizer node whose descendants contain clones of all marked
+    nodes. The list is *not* flattened: clones appear only once in the
+    descendants of the organizer node.
+    """
+    self.do_find_marked(flatten=False)
+
+@cmd('clone-find-all-flattened-marked')
+@cmd('cffm')
+def cloneFindAllFlattenedMarked(self, event: LeoKeyEvent = None) -&gt; None:
+    """
+    clone-find-all-flattened-marked, aka cffm.
+
+    Create an organizer node whose direct children are clones of all marked
+    nodes. The list is flattened: every cloned node appears as a direct
+    child of the organizer node, even if the clone also is a descendant of
+    another cloned node.
+    """
+    self.do_find_marked(flatten=True)
+</t>
+<t tx="ekr.20240527100653.1923">def do_find_marked(self, flatten: bool) -&gt; bool:
+    """
+    Helper for clone-find-marked commands.
+
+    This is a stand-alone method for unit testing.
+    """
+    c, u = self.c, self.c.undoer
+    undoType = 'clone-find-marked'
+    failMsg = 'No marked nodes'
+
+    count = 0
+    for p in c.all_unique_positions():
+        if p.isMarked():
+            count += 1
+    if count == 0:
+        g.es(failMsg, color='red')  # prevent even creating an undo bead.
+        return False
+
+    def isMarked(p: Position) -&gt; bool:
+        return p.isMarked()
+
+    u.beforeChangeGroup(c.p.copy(), undoType, False)  # will create a bead.
+
+    root = c.cloneFindByPredicate(
+        generator=c.all_unique_positions,
+        predicate=isMarked,
+        failMsg=failMsg,
+        flatten=flatten,
+        undoType=undoType,
+    )
+    if root:
+        # Unmarking all nodes is convenient.
+        for p in c.all_unique_positions():
+            if p.isMarked():
+                bunch = u.beforeMark(p, 'Unmark')
+                c.clearMarked(p)
+                u.afterMark(p, 'Unmark', bunch)
+        n = root.numberOfChildren()
+        root.b = f"# Found {n} marked node{g.plural(n)}"
+        c.selectPosition(root)
+        c.redraw(root)
+    u.afterChangeGroup(c.p.copy(), undoType)
+    return bool(root)
+</t>
+<t tx="ekr.20240527100653.1924">@cmd('clone-find-parents')
+def cloneFindParents(self, event: LeoKeyEvent = None) -&gt; bool:
+    """
+    Create an organizer node whose direct children are clones of all
+    parents of the selected node, which must be a clone.
+    """
+    c, u = self.c, self.c.undoer
+    p = c.p
+    if not p:  # pragma: no cover
+        return False
+    if not p.isCloned():  # pragma: no cover
+        g.es(f"not a clone: {p.h}")
+        return False
+    p0 = p.copy()
+    undoType = 'Find Clone Parents'
+    aList = c.vnode2allPositions(p.v)
+    if not aList:  # pragma: no cover
+        g.trace('can not happen: no parents')
+        return False
+    # Create the node as the last top-level node.
+    # All existing positions remain valid.
+    u.beforeChangeGroup(p, undoType)
+    b = u.beforeInsertNode(p)
+    found = c.lastTopLevel().insertAfter()
+    found.h = f"Found: parents of {p.h}"
+    u.afterInsertNode(found, 'insert', b)
+    seen = []
+    for p2 in aList:
+        parent = p2.parent()
+        if parent and parent.v not in seen:
+            seen.append(parent.v)
+            b = u.beforeCloneNode(parent)
+            # Bug fix 2021/06/15: Create the clone directly as a child of found.
+            clone = parent.copy()
+            n = found.numberOfChildren()
+            clone._linkCopiedAsNthChild(found, n)
+            u.afterCloneNode(clone, 'clone', b)
+    u.afterChangeGroup(p0, undoType)
+    c.setChanged()
+    c.redraw(found)
+    return True
+</t>
+<t tx="ekr.20240527100653.1933">@cmd('find-next')
+def find_next(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (cmd)
+    """The find-next command."""
+    # Settings...
+    self.reverse = False
+    self.init_in_headline()  # Do this *before* creating the settings.
+    settings = self.ftm.get_settings()
+    # Do the command!
+    self.do_find_next(settings)
+
+@cmd('find-prev')
+def find_prev(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (cmd)
+    """Handle F2 (find-previous)"""
+    # Settings...
+    self.init_in_headline()  # Do this *before* creating the settings.
+    settings = self.ftm.get_settings()
+    # Do the command!
+    self.do_find_prev(settings)
+</t>
+<t tx="ekr.20240527100653.1934">def do_find_prev(self, settings: Settings) -&gt; tuple[Position, int, int]:
+    """Find the previous instance of self.find_text."""
+    self.request_reverse = True
+    return self.do_find_next(settings)
+
+def do_find_next(self, settings: Settings) -&gt; tuple[Position, int, int]:
+    """
+    Find the next instance of self.find_text.
+
+    Return True (for vim-mode) if a match was found.
+
+    """
+    c, p = self.c, self.c.p
+    #
+    # The gui widget may not exist for headlines.
+    gui_w = c.edit_widget(p) if self.in_headline else c.frame.body.wrapper
+    #
+    # Init the work widget, so we don't get stuck.
+    s = p.h if self.in_headline else p.b
+    ins = gui_w.getInsertPoint() if gui_w else 0
+    self.work_s = s
+    self.work_sel = (ins, ins, ins)
+    #
+    # Set the settings *after* initing the search.
+    self.init_ivars_from_settings(settings)
+    #
+    # Honor delayed requests.
+    for ivar in ('reverse', 'pattern_match', 'whole_word'):
+        request = 'request_' + ivar
+        val = getattr(self, request)
+        if val:  # Only *set* the ivar!
+            setattr(self, ivar, val)  # Set the ivar.
+            setattr(self, request, False)  # Clear the request!
+    #
+    # Leo 6.4: set/clear self.root
+    if self.root:  # pragma: no cover
+        if p != self.root and not self.root.isAncestorOf(p):
+            # p is outside of self.root's tree.
+            # Clear suboutline-only.
+            self.root = None
+            self.suboutline_only = False
+            self.set_find_scope_every_where()  # Update find-tab &amp; status area.
+    elif self.suboutline_only:
+        # Start the range and set suboutline-only.
+        self.root = c.p
+        self.set_find_scope_suboutline_only()  # Update find-tab &amp; status area.
+
+    elif self.file_only:
+        # Start the range and set file-only.
+        self.root = c.p
+        p = c.p
+        node = self.c.p
+        hitBase = found = False
+        while not found and not hitBase:
+            h = node.h
+            if h:
+                h = h.split()[0]
+            if h in ("@clean", "@file", "@asis", "@thin", "@edit",
+                     "@auto", "@auto-md", "@auto-org",
+                     "@auto-otl", "@auto-rst"):
+                found = True
+            else:  # pragma: no cover
+                if node.level() == 0:
+                    hitBase = True
+                else:
+                    node = node.parent()
+        self.root = node
+        self.set_find_scope_file_only()  # Update find-tab &amp; status area.
+        p = node
+    #
+    # Now check the args.
+    tag = 'find-prev' if self.reverse else 'find-next'
+    if not self.check_args(tag):  # Issues error message.
+        return None, None, None
+    data = self.save()
+    p, pos, newpos = self.find_next_match(p)
+    found = pos is not None
+    if found:
+        self.show_success(p, pos, newpos)
+    else:
+        # Restore previous position.
+        self.restore(data)
+    self.show_status(found)
+    return p, pos, newpos
+</t>
+<t tx="ekr.20240527100653.1935">@cmd('find-tab-hide')
+def hide_find_tab(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (cmd)
+    """Hide the Find tab."""
+    c = self.c
+    if self.minibuffer_mode:
+        c.k.keyboardQuit()
+    else:
+        self.c.frame.log.selectTab('Log')
+</t>
+<t tx="ekr.20240527100653.1936">@cmd('find-tab-open')
+def open_find_tab(self, event: LeoKeyEvent = None, show: bool = True) -&gt; None:  # pragma: no cover (cmd)
+    """Open the Find tab in the log pane."""
+    c = self.c
+    if c.config.getBool('use-find-dialog', default=True):
+        g.app.gui.openFindDialog(c)
+    else:
+        c.frame.log.selectTab('Find')
+</t>
+<t tx="ekr.20240527100653.1937">@cmd('find-var')
+def find_var(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (cmd)
+    """Find the var under the cursor."""
+    ftm, p = self.ftm, self.c.p
+    # Check...
+    word = self._compute_find_def_word(event)
+    if not word:
+        return
+    # Settings...
+    find_pattern = word + ' ='
+    ftm.set_find_text(find_pattern)
+    self._save_before_find_def(p)  # Save previous settings.
+    self.init_vim_search(find_pattern)
+    self.update_change_list(self.change_text)  # Optional. An edge case.
+    settings = self._compute_find_def_settings(find_pattern)
+    # Do the command!
+    result = self.do_find_var(settings)
+    if result[0]:
+        # Keep the settings that found the match.
+        ftm.set_widgets_from_dict(settings)
+    else:
+        # Restore the previous find settings!
+        self._restore_after_find_def()
+
+def do_find_var(self, settings: Settings) -&gt; tuple[Position, int, int]:
+    """A standalone helper for unit tests."""
+    return self._fd_helper(settings)
+</t>
+<t tx="ekr.20240527100653.1938">@cmd('focus-to-find')
+def focus_to_find(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (cmd)
+    c = self.c
+    if c.config.getBool('use-find-dialog', default=True):
+        g.app.gui.openFindDialog(c)
+    else:
+        c.frame.log.selectTab('Find')
+</t>
+<t tx="ekr.20240527100653.1939">@cmd('replace')
+@cmd('change')
+def change(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (cmd)
+    """Replace the selected text with the replacement text."""
+    p = self.c.p
+    settings = self.ftm.get_settings()
+    self.init_ivars_from_settings(settings)
+    if self.check_args('replace'):
+        self.init_in_headline()
+        self.change_selection(p)
+
+replace = change
+</t>
+<t tx="ekr.20240527100653.1940">@cmd('set-find-everywhere')
+def set_find_scope_every_where(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (cmd)
+    """Set the 'Entire Outline' radio button in the Find tab."""
+    self.set_find_scope('entire-outline')
+
+@cmd('set-find-node-only')
+def set_find_scope_node_only(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (cmd)
+    """Set the 'Node Only' radio button in the Find tab."""
+    self.set_find_scope('node-only')
+
+@cmd('set-find-file-only')
+def set_find_scope_file_only(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (cmd)
+    """Set the 'File Only' radio button in the Find tab."""
+    self.set_find_scope('file-only')
+
+@cmd('set-find-suboutline-only')
+def set_find_scope_suboutline_only(self, event: LeoKeyEvent = None) -&gt; None:
+    """Set the 'Suboutline Only' radio button in the Find tab."""
+    self.set_find_scope('suboutline-only')
+
+def set_find_scope(self, where: str) -&gt; None:
+    """Set the radio buttons to the given scope"""
+    c, fc = self.c, self.c.findCommands
+    self.ftm.set_radio_button(where)
+    options = fc.compute_find_options_in_status_area()
+    c.frame.statusLine.put(options)
+</t>
+<t tx="ekr.20240527100653.1941">@cmd('show-find-options')
+def show_find_options(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (cmd)
+    """
+    Show the present find options in the status line.
+    This is useful for commands like search-forward that do not show the Find Panel.
+    """
+    frame = self.c.frame
+    frame.clearStatusLine()
+    part1, part2 = self.compute_find_options()
+    frame.putStatusLine(part1, bg='blue')
+    frame.putStatusLine(part2)
+</t>
+<t tx="ekr.20240527100653.1942">def compute_find_options(self) -&gt; tuple[str, str]:  # pragma: no cover (cmd)
+    """Return the status line as two strings."""
+    z = []
+    # Set the scope field.
+    if self.suboutline_only:
+        scope = 'tree'
+    elif self.node_only:
+        scope = 'node'
+    else:
+        scope = 'all'
+    # scope = self.getOption('radio-search-scope')
+    # d = {'entire-outline':'all','suboutline-only':'tree','node-only':'node'}
+    # scope = d.get(scope) or ''
+    head = 'head' if self.search_headline else ''
+    body = 'body' if self.search_body else ''
+    sep = '+' if head and body else ''
+    part1 = f"{head}{sep}{body} {scope}  "
+    # Set the type field.
+    regex = self.pattern_match
+    if regex:
+        z.append('regex')
+    table = (
+        ('reverse', 'reverse'),
+        ('ignore_case', 'noCase'),
+        ('whole_word', 'word'),
+        # ('wrap', 'wrap'),
+        ('mark_changes', 'markChg'),
+        ('mark_finds', 'markFnd'),
+    )
+    for ivar, s in table:
+        val = getattr(self, ivar)
+        if val:
+            z.append(s)
+    part2 = ' '.join(z)
+    return part1, part2
+</t>
+<t tx="ekr.20240527100653.1943">@cmd('toggle-find-collapses-nodes')
+def toggle_find_collapses_nodes(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """Toggle the 'Collapse Nodes' checkbox in the find tab."""
+    c = self.c
+    c.sparse_find = not c.sparse_find
+    if not g.unitTesting:
+        g.es('sparse_find', c.sparse_find)
+
+@cmd('toggle-find-ignore-case-option')
+def toggle_ignore_case_option(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """Toggle the 'Ignore Case' checkbox in the Find tab."""
+    self.toggle_option('ignore_case')
+
+@cmd('toggle-find-mark-changes-option')
+def toggle_mark_changes_option(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """Toggle the 'Mark Changes' checkbox in the Find tab."""
+    self.toggle_option('mark_changes')
+
+@cmd('toggle-find-mark-finds-option')
+def toggle_mark_finds_option(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """Toggle the 'Mark Finds' checkbox in the Find tab."""
+    self.toggle_option('mark_finds')
+
+@cmd('toggle-find-regex-option')
+def toggle_regex_option(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """Toggle the 'Regexp' checkbox in the Find tab."""
+    self.toggle_option('pattern_match')
+
+@cmd('toggle-find-in-body-option')
+def toggle_search_body_option(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """Set the 'Search Body' checkbox in the Find tab."""
+    self.toggle_option('search_body')
+
+@cmd('toggle-find-in-headline-option')
+def toggle_search_headline_option(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """Toggle the 'Search Headline' checkbox in the Find tab."""
+    self.toggle_option('search_headline')
+
+@cmd('toggle-find-word-option')
+def toggle_whole_word_option(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """Toggle the 'Whole Word' checkbox in the Find tab."""
+    self.toggle_option('whole_word')
+
+# @cmd('toggle-find-wrap-around-option')
+# def toggleWrapSearchOption(self, event):
+    # """Toggle the 'Wrap Around' checkbox in the Find tab."""
+    # return self.toggle_option('wrap')
+
+def toggle_option(self, checkbox_name: str) -&gt; None:  # pragma: no cover (cmd)
+    c, fc = self.c, self.c.findCommands
+    self.ftm.toggle_checkbox(checkbox_name)
+    options = fc.compute_find_options_in_status_area()
+    c.frame.statusLine.put(options)
+</t>
+<t tx="ekr.20240527100653.1944"></t>
+<t tx="ekr.20240527100653.1945">@cmd('change-all')
+@cmd('replace-all')
+def interactive_change_all(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (interactive)
+    """Replace all instances of the search string with the replacement string."""
+    self.ftm.clear_focus()
+    self.ftm.set_entry_focus()
+    prompt = 'Replace Regex: ' if self.pattern_match else 'Replace: '
+    self.start_state_machine(event, prompt,
+        handler=self.interactive_replace_all1,
+        # Allow either '\t' or '\n' to switch to the change text.
+        escape_handler=self.interactive_replace_all1,
+    )
+
+def interactive_replace_all1(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (interactive)
+    k = self.k
+    find_pattern = k.arg
+    self._sString = k.arg
+    self.update_find_list(k.arg)
+    regex = ' Regex' if self.pattern_match else ''
+    prompt = f"Replace{regex}: {find_pattern} With: "
+    k.setLabelBlue(prompt)
+    self.add_change_string_to_label()
+    k.getNextArg(self.interactive_replace_all2)
+
+def interactive_replace_all2(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (interactive)
+    c, k, w = self.c, self.k, self.c.frame.body.wrapper
+
+    # Update settings data.
+    find_pattern = self._sString
+    change_pattern = k.arg
+    self.init_vim_search(find_pattern)
+    self.update_change_list(change_pattern)
+    # Compute settings...
+    self.ftm.set_find_text(find_pattern)
+    self.ftm.set_change_text(change_pattern)
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    c.widgetWantsFocusNow(w)
+    # Do the command!
+    self.do_change_all(settings)
+</t>
+<t tx="ekr.20240527100653.1946">def do_change_all(self, settings: Settings) -&gt; int:
+    c = self.c
+    # Settings...
+    self.init_ivars_from_settings(settings)
+    if not self.check_args('change-all'):
+        return 0
+    n = self._change_all_helper(settings)
+    # #947, #880 and #722: Set ancestor @&lt;file&gt; nodes by brute force.
+    for p in c.all_positions():  # pragma: no cover
+        if (
+            p.anyAtFileNodeName()
+            and not p.v.isDirty()
+            and any(p2.v.isDirty() for p2 in p.subtree())
+        ):
+            p.setDirty()
+    c.redraw()
+    return n
+</t>
+<t tx="ekr.20240527100653.1947">def _change_all_helper(self, settings: Settings) -&gt; int:
+    """Do the change-all command. Return the number of changes, or 0 for error."""
+    # Caller has checked settings.
+    c, current, u = self.c, self.c.p, self.c.undoer
+    undoType = 'Replace All'
+    t1 = time.process_time()
+
+    saveData = self.save()
+    u.beforeChangeGroup(current, undoType)
+    # Fix bug 338172: ReplaceAll will not replace newlines
+    # indicated as \n in target string.
+    if not self.find_text:  # pragma: no cover
+        return 0
+    if not self.search_headline and not self.search_body:  # pragma: no cover
+        return 0
+    self.change_text = self.replace_back_slashes(self.change_text)
+    if self.pattern_match:
+        ok = self.compile_pattern()
+        if not ok:
+            return 0
+    # #1428: Honor limiters in replace-all.
+    if self.node_only:
+        positions = [c.p]
+    elif self.suboutline_only:
+        positions = list(c.p.self_and_subtree())
+    else:
+        positions = list(c.all_unique_positions())
+    count = 0
+    for p in positions:
+        count_h, count_b = 0, 0
+        undoData = u.beforeChangeNodeContents(p)
+        if self.search_headline:
+            count_h, new_h = self._change_all_search_and_replace(p.h)
+            if count_h:
+                count += count_h
+                p.h = new_h
+        if self.search_body:
+            count_b, new_b = self._change_all_search_and_replace(p.b)
+            if count_b:
+                count += count_b
+                p.b = new_b
+        # Check if there was at least one change with either body or headline
+        if count_h or count_b:
+            u.afterChangeNodeContents(p, 'Replace All', undoData)
+            # Also check to honor 'Mark Changes' option
+            if self.mark_changes and not p.isMarked():  # pragma: no cover
+                markUndoType = 'Mark Changes'
+                bunch = u.beforeMark(p, markUndoType)
+                p.setMarked()
+                p.setDirty()
+                u.afterMark(p, markUndoType, bunch)
+
+    # suboutline-only is a one-shot for batch commands.
+    self.ftm.set_radio_button('entire-outline')
+    self.root = None
+    self.node_only = self.suboutline_only = False
+    p = c.p
+    u.afterChangeGroup(p, undoType)
+    t2 = time.process_time()
+    if not g.unitTesting:  # pragma: no cover
+        g.es_print(
+            f"changed {count} instances{g.plural(count)} "
+            f"in {t2 - t1:4.2f} sec.")
+    c.recolor()
+    c.redraw(p)
+    self.restore(saveData)
+    return count
+</t>
+<t tx="ekr.20240527100653.1948">def _change_all_search_and_replace(self, s: str) -&gt; tuple[int, str]:
+    """
+    Search s for self.find_text and replace with self.change_text.
+
+    Return (found, new text)
+    """
+    # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
+    if sys.platform.lower().startswith('win'):
+        # Ignore '\r' characters, which may appear in @edit nodes.
+        # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+        s = s.replace('\r', '')
+    if not s:
+        return False, None
+    # Order matters: regex matches ignore whole-word.
+    if self.pattern_match:
+        return self._change_all_regex(s)
+    if self.whole_word:
+        return self._change_all_word(s)
+    return self._change_all_plain(s)
+</t>
+<t tx="ekr.20240527100653.1949">def _change_all_plain(self, s: str) -&gt; tuple[int, str]:
+    """
+    Perform all plain find/replace on s.
+    return (count, new_s)
+    """
+    find, change = self.find_text, self.change_text
+    # #1166: s0 and find0 aren't affected by ignore-case.
+    s0 = s
+    find0 = self.replace_back_slashes(find)
+    if self.ignore_case:
+        s = s0.lower()
+        find = find0.lower()
+    count, prev_i, result = 0, 0, []
+    while True:
+        progress = prev_i
+        # #1166: Scan using s and find.
+        i = s.find(find, prev_i)
+        if i == -1:
+            break
+        # #1166: Replace using s0 &amp; change.
+        count += 1
+        result.append(s0[prev_i:i])
+        result.append(change)
+        prev_i = max(prev_i + 1, i + len(find))  # 2021/01/08 (!)
+        assert prev_i &gt; progress, prev_i
+    # #1166: Complete the result using s0.
+    result.append(s0[prev_i:])
+    return count, ''.join(result)
+</t>
+<t tx="ekr.20240527100653.1950">def _change_all_regex(self, s: str) -&gt; tuple[int, str]:
+    """
+    Perform all regex find/replace on s.
+    return (count, new_s)
+    """
+    count, prev_i, result = 0, 0, []
+
+    flags = re.MULTILINE
+    if self.ignore_case:
+        flags |= re.IGNORECASE
+    for m in re.finditer(self.find_text, s, flags):
+        count += 1
+        i = m.start()
+        result.append(s[prev_i:i])
+        # #1748.
+        groups = m.groups()
+        if groups:
+            change_text = self.make_regex_subs(self.change_text, groups)
+        else:
+            change_text = self.change_text
+        result.append(change_text)
+        prev_i = m.end()
+    # Compute the result.
+    result.append(s[prev_i:])
+    s = ''.join(result)
+    return count, s
+</t>
+<t tx="ekr.20240527100653.1951">def _change_all_word(self, s: str) -&gt; tuple[int, str]:
+    """
+    Perform all whole word find/replace on s.
+    return (count, new_s)
+    """
+    find, change = self.find_text, self.change_text
+    # #1166: s0 and find0 aren't affected by ignore-case.
+    s0 = s
+    find0 = self.replace_back_slashes(find)
+    if self.ignore_case:
+        s = s0.lower()
+        find = find0.lower()
+    count, prev_i, result = 0, 0, []
+    while True:
+        # #1166: Scan using s and find.
+        i = s.find(find, prev_i)
+        if i == -1:
+            break
+        # #1166: Replace using s0, change &amp; find0.
+        result.append(s0[prev_i:i])
+        if g.match_word(s, i, find):
+            count += 1
+            result.append(change)
+        else:
+            result.append(find0)
+        prev_i = i + len(find)
+    # #1166: Complete the result using s0.
+    result.append(s0[prev_i:])
+    return count, ''.join(result)
+</t>
+<t tx="ekr.20240527100653.1952">@cmd('clone-find-all')
+@cmd('find-clone-all')
+@cmd('cfa')
+def interactive_clone_find_all(self,
+    event: LeoKeyEvent = None,
+    preloaded: bool = False,
+) -&gt; None:  # pragma: no cover (interactive)
+    """
+    clone-find-all ( aka find-clone-all and cfa).
+
+    Create an organizer node whose descendants contain clones of all nodes
+    matching the search string, except @nosearch trees.
+
+    The list is *not* flattened: clones appear only once in the
+    descendants of the organizer node.
+    """
+    w = self.c.frame.body.wrapper
+    if not w:
+        return
+    if not preloaded:
+        self.preload_find_pattern(w)
+    self.start_state_machine(event,
+        prefix='Clone Find All: ',
+        handler=self.interactive_clone_find_all1)
+
+def interactive_clone_find_all1(self, event: LeoKeyEvent) -&gt; int:  # pragma: no cover (interactive)
+    c, k, w = self.c, self.k, self.c.frame.body.wrapper
+    # Settings...
+    pattern = k.arg
+    self.ftm.set_find_text(pattern)
+    self.init_vim_search(pattern)
+    self.init_in_headline()
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    c.widgetWantsFocusNow(w)
+    count = self.do_clone_find_all(settings)
+    if count:
+        c.redraw()
+        c.treeWantsFocus()
+    return count
+</t>
+<t tx="ekr.20240527100653.1953"># A stand-alone method for unit testing.
+def do_clone_find_all(self, settings: Settings) -&gt; int:
+    """
+    Do the clone-all-find commands from settings.
+
+    Return the count of found nodes.
+
+    This is a stand-alone method for unit testing.
+    """
+    self.init_ivars_from_settings(settings)
+    if not self.check_args('clone-find-all'):
+        return 0
+    return self._cf_helper(settings, flatten=False)
+</t>
+<t tx="ekr.20240527100653.1954">@cmd('clone-find-all-flattened')
+@cmd('find-clone-all-flattened')
+@cmd('cff')
+def interactive_cff(self, event: LeoKeyEvent = None, preloaded: bool = False) -&gt; None:  # pragma: no cover (interactive)
+    """
+    clone-find-all-flattened (aka find-clone-all-flattened and cff).
+
+    Create an organizer node whose direct children are clones of all nodes
+    matching the search string, except @nosearch trees.
+
+    The list is flattened: every cloned node appears as a direct child
+    of the organizer node, even if the clone also is a descendant of
+    another cloned node.
+    """
+    w = self.c.frame.body.wrapper
+    if not w:
+        return
+    if not preloaded:
+        self.preload_find_pattern(w)
+    self.start_state_machine(event,
+        prefix='Clone Find All Flattened: ',
+        handler=self.interactive_cff1)
+
+def interactive_cff1(self, event: LeoKeyEvent) -&gt; int:  # pragma: no cover (interactive)
+    c, k, w = self.c, self.k, self.c.frame.body.wrapper
+    # Settings...
+    pattern = k.arg
+    self.ftm.set_find_text(pattern)
+    self.init_vim_search(pattern)
+    self.init_in_headline()
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    c.widgetWantsFocusNow(w)
+    count = self.do_clone_find_all_flattened(settings)
+    if count:
+        c.redraw()
+        c.treeWantsFocus()
+    return count
+</t>
+<t tx="ekr.20240527100653.1955"># A stand-alone method for unit testing.
+def do_clone_find_all_flattened(self, settings: Settings) -&gt; int:
+    """
+    Do the clone-find-all-flattened command from the settings.
+
+    Return the count of found nodes.
+
+    This is a stand-alone method for unit testing.
+    """
+    self.init_ivars_from_settings(settings)
+    if self.check_args('clone-find-all-flattened'):
+        return self._cf_helper(settings, flatten=True)
+    return 0
+</t>
+<t tx="ekr.20240527100653.1956">@cmd('clone-find-tag')
+@cmd('find-clone-tag')
+@cmd('cft')
+def interactive_clone_find_tag(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (interactive)
+    """
+    clone-find-tag (aka find-clone-tag and cft).
+
+    Create an organizer node whose descendants contain clones of all
+    nodes matching the given tag, except @nosearch trees.
+
+    The list is *always* flattened: every cloned node appears as a
+    direct child of the organizer node, even if the clone also is a
+    descendant of another cloned node.
+    """
+    w = self.c.frame.body.wrapper
+    if w:
+        self.start_state_machine(event,
+            prefix='Clone Find Tag: ',
+            handler=self.interactive_clone_find_tag1)
+
+def interactive_clone_find_tag1(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (interactive)
+    c, k = self.c, self.k
+    # Settings...
+    self.find_text = tag = k.arg
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    self.do_clone_find_tag(tag)
+    c.treeWantsFocus()
+</t>
+<t tx="ekr.20240527100653.1957"># A stand-alone method for unit tests.
+def do_clone_find_tag(self, tag: str) -&gt; tuple[int, Position]:
+    """
+    Do the clone-all-find commands from settings.
+    Return (len(clones), found) for unit tests.
+    """
+    c, u = self.c, self.c.undoer
+    tc = getattr(c, 'theTagController', None)
+    if not tc:
+        if not g.unitTesting:  # pragma: no cover (skip)
+            g.es_print('nodetags not active')
+        return 0, c.p
+    clones = tc.get_tagged_nodes(tag)
+    if not clones:
+        if not g.unitTesting:  # pragma: no cover (skip)
+            g.es_print(f"tag not found: {tag}")
+        tc.show_all_tags()
+        return 0, c.p
+    undoData = u.beforeInsertNode(c.p)
+    found = self._create_clone_tag_nodes(clones)
+    u.afterInsertNode(found, 'Clone Find Tag', undoData)
+    assert c.positionExists(found, trace=True), found
+    c.setChanged()
+    c.selectPosition(found)
+    c.redraw()
+    return len(clones), found
+</t>
+<t tx="ekr.20240527100653.1958">def _create_clone_tag_nodes(self, clones: list[Position]) -&gt; Position:
+    """
+    Create a "Found Tag" node as the last node of the outline.
+    Clone all positions in the clones set as children of found.
+    """
+    c, p = self.c, self.c.p
+    # Create the found node.
+    assert c.positionExists(c.lastTopLevel()), c.lastTopLevel()
+    found = c.lastTopLevel().insertAfter()
+    assert found
+    assert c.positionExists(found), found
+    found.h = f"Found Tag: {self.find_text}"
+    # Clone nodes as children of the found node.
+    for p in clones:
+        # Create the clone directly as a child of found.
+        p2 = p.copy()
+        n = found.numberOfChildren()
+        p2._linkCopiedAsNthChild(found, n)
+    return found
+</t>
+<t tx="ekr.20240527100653.1959">@cmd('find-all')
+def interactive_find_all(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (interactive)
+    """
+    Create a summary node containing descriptions of all matches of the
+    search string.
+
+    Typing tab converts this to the change-all command.
+    """
+    self.ftm.clear_focus()
+    self.ftm.set_entry_focus()
+    self.start_state_machine(event, 'Search: ',
+        handler=self.interactive_find_all1,
+        escape_handler=self.find_all_escape_handler,
+    )
+
+def interactive_find_all1(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (interactive)
+    k = self.k
+    # Settings.
+    find_pattern = k.arg
+    self.ftm.set_find_text(find_pattern)
+    settings = self.ftm.get_settings()
+    self.find_text = find_pattern
+    self.change_text = self.ftm.get_change_text()
+    self.update_find_list(find_pattern)
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    self.do_find_all(settings)
+
+def find_all_escape_handler(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (interactive)
+    k = self.k
+    prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
+    find_pattern = k.arg
+    self._sString = k.arg
+    self.update_find_list(k.arg)
+    s = f"{prompt}: {find_pattern} With: "
+    k.setLabelBlue(s)
+    self.add_change_string_to_label()
+    k.getNextArg(self.find_all_escape_handler2)
+
+def find_all_escape_handler2(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (interactive)
+    c, k, w = self.c, self.k, self.c.frame.body.wrapper
+    find_pattern = self._sString
+    change_pattern = k.arg
+    self.update_change_list(change_pattern)
+    self.ftm.set_find_text(find_pattern)
+    self.ftm.set_change_text(change_pattern)
+    self.init_vim_search(find_pattern)
+    self.init_in_headline()
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    c.widgetWantsFocusNow(w)
+    self.do_change_all(settings)  # Correct: convert to change-all.
+</t>
+<t tx="ekr.20240527100653.1960">def do_find_all(self, settings: Settings) -&gt; dict[str, Any]:
+    """
+    Top-level helper for find-all command.
+
+    Returns a dict of the form:
+        {
+            'distinct_body_lines': distinct_body_lines,
+            'match_dict': matches_dict,
+            'result_string': result_string,
+            'total_matches': total_matches,
+            'total_nodes': total_nodes,
+        }
+    where the matches_dict has the form:
+        {
+            'body': body,  # List of indices into v.b
+            'head': head,  # List of indices into v.h
+            'v': v,        # The vnode containing the matches.
+        }
+    """
+    self.init_ivars_from_settings(settings)
+    if not self.check_args('find-all'):  # pragma: no cover
+        return {}
+    result_dict = self._find_all_helper(settings)
+    # Suboutline-only is a one-shot for batch commands.
+    self.ftm.set_radio_button('entire-outline')
+    self.root = None
+    self.node_only = self.suboutline_only = False
+    return result_dict
+</t>
+<t tx="ekr.20240527100653.1961">def _find_all_helper(self, settings: Settings) -&gt; dict[str, Any]:
+    """
+    Handle the find-all command from p to after.
+
+    Return the list of Dicts describing each match.
+    """
+    c, u = self.c, self.c.undoer
+    undoType = 'Find All'
+    saveData = self.save()
+    if self.pattern_match:
+        ok = self.compile_pattern()
+        if not ok:
+            return {}
+    # Create a list of vnodes, honoring limiters.
+    vnodes: list[VNode]
+    if self.node_only:
+        vnodes = [c.p.v]
+    elif self.suboutline_only:
+        vnodes = list(set(z.v for z in c.p.self_and_subtree()))
+    else:
+        vnodes = list(c.all_unique_nodes())
+    matches_dict: list[dict] = []
+    distinct_body_lines, total_matches, total_nodes = 0, 0, 0
+    for v in vnodes:
+        body, head = [], []
+        # Ignore @nosearch nodes.
+        if any(z.startswith('@nosearch') for z in g.splitLines(v.b)):
+            continue
+        if self.search_body:
+            body = self.find_all_matches_in_string(v.b)
+            total_matches += len(body)
+            # Update the distinct line numbers in this body.
+            line_number_set = set()
+            for index in body:
+                line_number, _unused = self.index_to_line_info(index, v.b)
+                line_number_set.add(line_number)
+            distinct_body_lines += len(list(line_number_set))
+        if self.search_headline:
+            head = self.find_all_matches_in_string(v.h)
+            total_matches += len(head)
+        if body or head:
+            total_nodes += 1
+            matches_dict.append({'body': body, 'head': head, 'v': v})
+    if not matches_dict:
+        # Not even one match found!
+        self.restore(saveData)
+        return {}
+    # Check first if need to make a 'group' undo bead
+    if self.mark_finds:
+        # Start an undo-group instead of a single 'InsertNode' undo
+        u.beforeChangeGroup(c.p, undoType)
+
+    # Create the result dict.
+    result_string = self.make_result_from_matches(matches_dict)
+    # Create the summary node.
+    undoData = u.beforeInsertNode(c.p)
+    found_p = self.create_find_all_node(result_string)
+    u.afterInsertNode(found_p, undoType, undoData)
+    c.selectPosition(found_p)
+
+    if self.mark_finds:
+        for match in matches_dict:
+            p = c.vnode2position(match['v'])
+            if not p.isMarked():
+                markUndoType = 'Mark Finds'
+                bunch = u.beforeMark(p, markUndoType)
+                p.setMarked()
+                p.setDirty()
+                u.afterMark(p, markUndoType, bunch)
+        # Finish undo group only if mark_finds is true
+        u.afterChangeGroup(found_p, undoType)
+
+    c.setChanged()
+    c.redraw()
+    # Return a dict containing the actual results and statistics.
+    return {
+        'distinct_body_lines': distinct_body_lines,
+        'match_dict': matches_dict,
+        'result_string': result_string,
+        'total_matches': total_matches,
+        'total_nodes': total_nodes,
+    }
+</t>
+<t tx="ekr.20240527100653.1962">def create_find_all_node(self, result: str) -&gt; Position:
+    """
+    Create a "Found All" node as the last node of the outline.
+    """
+    c = self.c
+    found = c.lastTopLevel().insertAfter()
+    assert found
+    found.h = f"find-all:{self.find_text}"
+    status = self.compute_result_status(find_all_flag=True)
+    status = status.strip().lstrip('(').rstrip(')').strip()
+    found.b = f"@nosearch\n# {status}\n{result}"
+    return found
+</t>
+<t tx="ekr.20240527100653.1963">def index_to_line_info(self, index: int, s: str) -&gt; tuple[int, str]:
+    i, j = g.getLine(s, index)
+    line = s[i:j]
+    row, col = g.convertPythonIndexToRowCol(s, i)
+    return row + 1, line
+</t>
+<t tx="ekr.20240527100653.1964">def make_result_from_matches(self, matches: list[dict]) -&gt; str:
+
+    results: list[str] = ['\n']
+    # Report settings.
+    results.append(
+        f"  ignore-case: {self.ignore_case}\n"
+        f"        regex: {self.pattern_match}\n"
+        f"   whole-word: {self.whole_word}\n"
+        f"search string: {self.find_text}\n"
+    )
+    for d in matches:
+        body, head, v = d['body'], d['head'], d['v']
+        if head or body:
+            results.append(f"\nnode: {v.h}...\n")
+        if head:
+            results.append(f"head: matches: {len(head)}\n")
+        if body:
+            results.append(f"body: matches: {len(body)}\n")
+            seen = set()
+            for i in body:
+                n, line = self.index_to_line_info(i, v.b)
+                if (n, line) not in seen:
+                    seen.add((n, line))
+                    line_col_s = f"line {n:2}, col {i:2}"
+                    results.append(f"{line_col_s:&gt;20}: {line.rstrip()}\n")
+                    self.put_link(line, n, v)
+    return ''.join(results)
+</t>
+<t tx="ekr.20240527100653.1965">total_links = 0
+
+def put_link(self, line: str, line_number: int, v: VNode) -&gt; None:  # pragma: no cover  # #2023
+    """Put a link to the given line at the given line_number in v.h."""
+    c = self.c
+    log = c.frame.log
+    self.total_links += 1
+    if self.total_links &gt; 100:
+        return
+    # Find the first position with the given vnode.
+    for p in c.all_unique_positions():
+        if p.v == v:
+            break
+    else:
+        g.trace(f"Can not happen: no position for {v}")
+        return
+    unl = p.get_UNL()
+    log.put(line.strip() + '\n', nodeLink=f"{unl}::{line_number - 1}")  # Local line.
+</t>
+<t tx="ekr.20240527100653.1966">def find_all_matches_in_string(self, s: str) -&gt; list[int]:
+    """
+    Find all matches in string s.
+
+    Return a list of indices into s.
+    """
+    # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
+    if sys.platform.lower().startswith('win'):
+        # Ignore '\r' characters, which may appear in @edit nodes.
+        # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+        s = s.replace('\r', '')
+    if not s.strip():
+        return []
+    find_s = self.replace_back_slashes(self.find_text)
+    f = self.find_all_regex if self.pattern_match else self.find_all_plain
+    return f(find_s, s)
+</t>
+<t tx="ekr.20240527100653.1967">def find_all_plain(self, find_s: str, s: str) -&gt; list[int]:
+    """
+    Perform all plain finds s, including whole-word finds.
+    return a list indices into s.
+    """
+    if self.ignore_case:
+        find_s = find_s.lower()
+        s = s.lower()
+    i, result = 0, []
+    # A line may contain more than one match.
+    i = 0
+    while i &lt; len(s):
+        i = s.find(find_s, i)
+        if i == -1:
+            break
+        if not self.whole_word or self.whole_word and g.match_word(s, i, find_s):
+            result.append(i)
+        i += len(find_s)
+    return result
+</t>
+<t tx="ekr.20240527100653.1968">def find_all_regex(self, find_s: str, s: str) -&gt; list[int]:
+    """
+    Perform all regex find/replace on s.
+    return a list of matching indices.
+    """
+    flags = re.MULTILINE
+    if self.ignore_case:
+        flags |= re.IGNORECASE
+    return [m.start() for m in re.finditer(find_s, s, flags)]
+</t>
+<t tx="ekr.20240527100653.1969">@cmd('re-search')
+@cmd('re-search-forward')
+def interactive_re_search_forward(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (interactive)
+    """Same as start-find, with regex."""
+    # Set flag for show_find_options.
+    self.pattern_match = True
+    self.show_find_options()
+    # Set flag for do_find_next().
+    self.request_pattern_match = True
+    # Go.
+    self.start_state_machine(event,
+        prefix='Regexp Search: ',
+        handler=self.start_search1,  # See start-search
+        escape_handler=self.start_search_escape1,  # See start-search
+    )
+</t>
+<t tx="ekr.20240527100653.1970">@cmd('re-search-backward')
+def interactive_re_search_backward(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (interactive)
+    """Same as start-find, but with regex and in reverse."""
+    # Set flags for show_find_options.
+    self.reverse = True
+    self.pattern_match = True
+    self.show_find_options()
+    # Set flags for do_find_next().
+    self.request_reverse = True
+    self.request_pattern_match = True
+    # Go.
+    self.start_state_machine(event,
+        prefix='Regexp Search Backward:',
+        handler=self.start_search1,  # See start-search
+        escape_handler=self.start_search_escape1,  # See start-search
+    )
+
+</t>
+<t tx="ekr.20240527100653.1971">@cmd('search-backward')
+def interactive_search_backward(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (interactive)
+    """Same as start-find, but in reverse."""
+    # Set flag for show_find_options.
+    self.reverse = True
+    self.show_find_options()
+    # Set flag for do_find_next().
+    self.request_reverse = True
+    # Go.
+    self.start_state_machine(event,
+        prefix='Search Backward: ',
+        handler=self.start_search1,  # See start-search
+        escape_handler=self.start_search_escape1,  # See start-search
+    )
+</t>
+<t tx="ekr.20240527100653.1972">@cmd('start-search')
+@cmd('search-forward')  # Compatibility.
+def start_search(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (interactive)
+    """
+    The default binding of Ctrl-F.
+
+    Also contains default state-machine entries for find/change commands.
+    """
+    w = self.c.frame.body.wrapper
+    if not w:
+        return
+    self.preload_find_pattern(w)
+    # #1840: headline-only one-shot
+    #        Do this first, so the user can override.
+    self.ftm.set_body_and_headline_checkbox()
+    if self.minibuffer_mode:
+        # Set up the state machine.
+        self.ftm.clear_focus()
+        self.changeAllFlag = False
+        self.ftm.set_entry_focus()
+        self.start_state_machine(event,
+            prefix='Search: ',
+            handler=self.start_search1,
+            escape_handler=self.start_search_escape1,
+        )
+    else:
+        self.open_find_tab(event)
+        self.ftm.init_focus()
+        return
+
+startSearch = start_search  # Compatibility. Do not delete.
+</t>
+<t tx="ekr.20240527100653.1973">def start_search1(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover
+    """Common handler for use by vim commands and other find commands."""
+    c, k, w = self.c, self.k, self.c.frame.body.wrapper
+    # Settings...
+    find_pattern = k.arg
+    self.ftm.set_find_text(find_pattern)
+    self.update_find_list(find_pattern)
+    self.init_vim_search(find_pattern)
+    self.init_in_headline()  # Required.
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    c.widgetWantsFocusNow(w)
+    # Do the command!
+    self.do_find_next(settings)  # Handles reverse.
+</t>
+<t tx="ekr.20240527100653.1974">def start_search_escape1(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover
+    """
+    Common escape handler for use by find commands.
+
+    Prompt for a change pattern.
+    """
+    k = self.k
+    self._sString = find_pattern = k.arg
+    # Settings.
+    k.getArgEscapeFlag = False
+    self.ftm.set_find_text(find_pattern)
+    self.update_find_list(find_pattern)
+    self.find_text = find_pattern
+    self.change_text = self.ftm.get_change_text()
+    # Gui...
+    regex = ' Regex' if self.pattern_match else ''
+    backward = ' Backward' if self.reverse else ''
+    prompt = f"Replace{regex}{backward}: {find_pattern} With: "
+    k.setLabelBlue(prompt)
+    self.add_change_string_to_label()
+    k.getNextArg(self._start_search_escape2)
+
+</t>
+<t tx="ekr.20240527100653.1975">def _start_search_escape2(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover
+    c, k, w = self.c, self.k, self.c.frame.body.wrapper
+    # Compute settings...
+    find_pattern = self._sString
+    change_pattern = k.arg
+    self.ftm.set_find_text(find_pattern)
+    self.ftm.set_change_text(change_pattern)
+    self.update_change_list(change_pattern)
+    self.init_vim_search(find_pattern)
+    self.init_in_headline()  # Required
+    settings = self.ftm.get_settings()
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    c.widgetWantsFocusNow(w)
+    self.do_find_next(settings)
+</t>
+<t tx="ekr.20240527100653.1976">@cmd('summarize')
+def summarize_command(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (interactive)
+    """
+    The summarize command. Prompt for a regex and list all matches in a new
+    top-level node.
+
+    This command shows *only* m.group(0).
+    Append `.*` to the pattern to see the remainder of the line.
+    """
+
+    c = self.c
+
+    def summarize_callback(**kwargs: KWargs) -&gt; None:
+
+        # Get and check pattern.
+        pattern_s = kwargs['args'][0]
+        if not pattern_s.strip():
+            g.es_print('no pattern')
+            return
+        try:
+            re_pattern = re.compile(pattern_s)
+        except Exception:
+            g.es(f"invalid regex: {pattern_s!r}")
+            return
+
+        # Find all unique instances of pattern.
+        results_set = set()
+        for v in c.all_unique_nodes():
+            for m in re.finditer(re_pattern, v.b):
+                results_set.add(m.group(0))
+        results = list(sorted(results_set))
+
+        if results:
+            # Create a top-level summary node.
+            last = c.lastTopLevel()
+            p = last.insertAfter()
+            p.h = f"summarize: found {len(results)}: {pattern_s}"
+            results_s = '\n'.join(results)
+            p.b = f"// summarize: {pattern_s}\n\n{results_s}\n"
+            c.redraw()
+        else:
+            # Report failure.
+            g.es(f"summarize: not found: {pattern_s}")
+
+    c.interactive1(summarize_callback, event=None, prompts=('Summarize regex: ',))
+</t>
+<t tx="ekr.20240527100653.1977">@cmd('tag-children')
+def interactive_tag_children(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (interactive)
+    """Prompt for a tag and add it to all children of c.p."""
+    w = self.c.frame.body.wrapper
+    if not w:
+        return
+    self.start_state_machine(event,
+        prefix='Tag Children: ',
+        handler=self.interactive_tag_children1)
+
+def interactive_tag_children1(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (interactive)
+    c, k, p = self.c, self.k, self.c.p
+    # Settings...
+    tag = k.arg
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    self.do_tag_children(p, tag)
+    c.treeWantsFocus()
+</t>
+<t tx="ekr.20240527100653.1978">def do_tag_children(self, p: Position, tag: str) -&gt; None:
+    """Handle the tag-children command."""
+    c = self.c
+    tc = getattr(c, 'theTagController', None)
+    if not tc:
+        if not g.unitTesting:  # pragma: no cover (skip)
+            g.es_print('nodetags not active')
+        return
+    n = p.numberOfChildren()
+    for p in p.children():
+        tc.add_tag(p, tag)
+    if not g.unitTesting:  # pragma: no cover (skip)
+        g.es_print(f"Added {tag} tag to {n} node{g.plural(n)}")
+</t>
+<t tx="ekr.20240527100653.1979">@cmd('tag-node')
+def interactive_tag_node(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (interactive)
+    """Prompt for a tag and add it to c.p."""
+    w = self.c.frame.body.wrapper
+    if not w:
+        return
+    self.start_state_machine(event,
+        prefix='Tag Node: ',
+        handler=self.interactive_tag_node1)
+
+def interactive_tag_node1(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (interactive)
+    c, k, p = self.c, self.k, self.c.p
+    # Settings...
+    tag = k.arg
+    # Gui...
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+    self.do_tag_node(p, tag)
+    c.treeWantsFocus()
+</t>
+<t tx="ekr.20240527100653.1980">def do_tag_node(self, p: Position, tag: str) -&gt; None:
+    """Handle the tag-node command."""
+    c = self.c
+    tc = getattr(c, 'theTagController', None)
+    if not tc:
+        if not g.unitTesting:  # pragma: no cover (skip)
+            g.es_print('nodetags not active')
+        return
+    tc.add_tag(p, tag)
+    if not g.unitTesting:  # pragma: no cover (skip)
+        g.es_print(f"Added {tag} tag to {p.h}")
+</t>
+<t tx="ekr.20240527100653.1981">@cmd('word-search')
+@cmd('word-search-forward')
+def word_search_forward(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (interactive)
+    """Same as start-search, with whole_word setting."""
+    # Set flag for show_find_options.
+    self.whole_word = True
+    self.show_find_options()
+    # Set flag for do_find_next().
+    self.request_whole_word = True
+    # Go.
+    self.start_state_machine(event,
+        prefix='Word Search: ',
+        handler=self.start_search1,  # See start-search
+        escape_handler=self.start_search_escape1,  # See start-search
+    )
+</t>
+<t tx="ekr.20240527100653.1982">@cmd('word-search-backward')
+def word_search_backward(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (interactive)
+    """Same as word-search, but in reverse."""
+    # Set flags for show_find_options.
+    self.reverse = True
+    self.whole_world = True
+    self.show_find_options()
+    # Set flags for do_find_next().
+    self.request_reverse = True
+    self.request_whole_word = True
+    # Go
+    self.start_state_machine(event,
+        prefix='Word Search Backward: ',
+        handler=self.start_search1,  # See start-search
+        escape_handler=self.start_search_escape1,  # See start-search
+    )
+</t>
+<t tx="ekr.20240527100653.1983"></t>
+<t tx="ekr.20240527100653.1984">def _cf_helper(self, settings: Settings, flatten: bool) -&gt; int:  # Caller has  checked the settings.
+    """
+    The common part of the clone-find commands.
+
+    Return the number of found nodes.
+    """
+    c, u = self.c, self.c.undoer
+    if self.pattern_match:
+        ok = self.compile_pattern()
+        if not ok:
+            return 0
+    if self.suboutline_only:
+        p = c.p
+        after = p.nodeAfterTree()
+    else:
+        p = c.rootPosition()
+        after = None
+    count, found = 0, None
+    clones, skip = [], set()
+    while p and p != after:
+        progress = p.copy()
+        if g.inAtNosearch(p):
+            p.moveToNodeAfterTree()
+        elif p.v in skip:  # pragma: no cover (minor)
+            p.moveToThreadNext()
+        elif self._cfa_find_next_match(p):
+            count += 1
+            if flatten:
+                skip.add(p.v)
+                clones.append(p.copy())
+                p.moveToThreadNext()
+            else:
+                if p not in clones:
+                    clones.append(p.copy())
+                # Don't look at the node or it's descendants.
+                for p2 in p.self_and_subtree(copy=False):
+                    skip.add(p2.v)
+                p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+        assert p != progress
+    if clones:
+        undoData = u.beforeInsertNode(c.p)
+        found = self._cfa_create_nodes(clones, flattened=False)
+        u.afterInsertNode(found, 'Clone Find All', undoData)
+        assert c.positionExists(found, trace=True), found
+        c.setChanged()
+        c.selectPosition(found)
+        # Put the count in found.h.
+        found.h = found.h.replace('Found:', f"Found {count}:")
+    # Reset data after calculating results.
+    self.ftm.set_radio_button('entire-outline')
+    # suboutline-only is a one-shot for batch commands.
+    self.node_only = self.suboutline_only = False
+    self.root = None
+    g.es("found", count, "matches for", self.find_text)
+    return count  # Might be useful for the gui update.
+</t>
+<t tx="ekr.20240527100653.1985">def _cfa_create_nodes(self, clones: list[Position], flattened: bool) -&gt; Position:
+    """
+    Create a "Found" node as the last node of the outline.
+    Clone all positions in the clones set a children of found.
+    """
+    c = self.c
+    # Create the found node.
+    assert c.positionExists(c.lastTopLevel()), c.lastTopLevel()
+    found = c.lastTopLevel().insertAfter()
+    assert found
+    assert c.positionExists(found), found
+    found.h = f"Found:{self.find_text}"
+    status = self.compute_result_status(find_all_flag=True)
+    status = status.strip().lstrip('(').rstrip(')').strip()
+    flat = 'flattened, ' if flattened else ''
+    root = f"\n\n# root: {c.p.h}" if self.suboutline_only else ''
+    found.b = f"@nosearch\n\n# {flat}{status}{root}\n\n# found {len(clones)} nodes"
+    # Clone nodes as children of the found node.
+    for p in clones:
+        # Create the clone directly as a child of found.
+        p2 = p.copy()
+        n = found.numberOfChildren()
+        p2._linkCopiedAsNthChild(found, n)
+    # Sort the clones in place, without undo.
+    found.v.children.sort(key=lambda v: v.h.lower())
+    return found
+</t>
+<t tx="ekr.20240527100653.1986">def _cfa_find_next_match(self, p: Position) -&gt; bool:
+    """
+    Find the next batch match at p.
+    """
+    # Called only from unit tests.
+    table = []
+    if self.search_headline:
+        table.append(p.h)
+    if self.search_body:
+        table.append(p.b)
+    for s in table:
+        self.reverse = False
+        pos, newpos = self.inner_search_helper(s, 0, len(s), self.find_text)
+        if pos != -1:
+            return True
+    return False
+</t>
+<t tx="ekr.20240527100653.1987">def change_selection(self, p: Position) -&gt; bool:
+    """Replace selection with self.change_text."""
+    c, u = self.c, self.c.undoer
+    wrapper = c.frame.body and c.frame.body.wrapper
+    gui_w = c.edit_widget(p) if self.in_headline else wrapper
+    if not gui_w:  # pragma: no cover
+        self.in_headline = False
+        gui_w = wrapper
+    if not gui_w:  # pragma: no cover
+        return False
+    oldSel = sel = gui_w.getSelectionRange()
+    start, end = sel
+    if start &gt; end:  # pragma: no cover
+        start, end = end, start
+    if start == end:  # pragma: no cover
+        g.es("no text selected")
+        return False
+    bunch = u.beforeChangeBody(p)
+    start, end = oldSel
+    change_text = self.change_text
+    # Perform regex substitutions of \1, \2, ...\9 in the change text.
+    if self.pattern_match and self.match_obj:
+        groups = self.match_obj.groups()
+        if groups:
+            change_text = self.make_regex_subs(change_text, groups)
+    change_text = self.replace_back_slashes(change_text)
+    # Update both the gui widget and the work "widget"
+    new_ins = start if self.reverse else start + len(change_text)
+    if start != end:
+        gui_w.delete(start, end)
+    gui_w.insert(start, change_text)
+    gui_w.setInsertPoint(new_ins)
+    self.work_s = gui_w.getAllText()  # #2220.
+    self.work_sel = (new_ins, new_ins, new_ins)
+    # Update the selection for the next match.
+    gui_w.setSelectionRange(start, start + len(change_text))
+    c.widgetWantsFocus(gui_w)
+    # No redraws here: they would destroy the headline selection.
+    if self.in_headline:
+        # #2220: Let onHeadChanged handle undo, etc.
+        c.frame.tree.onHeadChanged(p, undoType='Change Headline')
+        # gui_w will change after a redraw.
+        gui_w = c.edit_widget(p)
+        if gui_w:
+            # find-next and find-prev work regardless of insert point.
+            gui_w.setSelectionRange(start, start + len(change_text))
+    else:
+        p.v.b = gui_w.getAllText()
+        u.afterChangeBody(p, 'Change Body', bunch)
+
+    if self.mark_changes and not p.isMarked():  # pragma: no cover
+        undoType = 'Mark Changes'
+        bunch = u.beforeMark(p, undoType)
+        p.setMarked()
+        p.setDirty()
+        u.afterMark(p, undoType, bunch)
+    return True
+</t>
+<t tx="ekr.20240527100653.1988">def check_args(self, tag: str) -&gt; bool:
+    """Check the user arguments to a command."""
+    if not self.search_headline and not self.search_body:
+        if not g.unitTesting:
+            g.es_print("not searching headline or body")  # pragma: no cover (skip)
+        return False
+    if not self.find_text:
+        if not g.unitTesting:
+            g.es_print(f"{tag}: empty find pattern")  # pragma: no cover (skip)
+        return False
+    return True
+</t>
+<t tx="ekr.20240527100653.1989">def compile_pattern(self) -&gt; bool:
+    """Precompile the regexp pattern if necessary."""
+    try:  # Precompile the regexp.
+        flags = re.MULTILINE
+        if self.ignore_case:
+            flags |= re.IGNORECASE  # pragma: no cover
+        # Escape the search text.
+        # Ignore the whole_word option.
+        s = self.find_text
+        # A bad idea: insert \b automatically.
+            # b, s = '\\b', self.find_text
+            # if self.whole_word:
+                # if not s.startswith(b): s = b + s
+                # if not s.endswith(b): s = s + b
+        self.re_obj = re.compile(s, flags)
+        return True
+    except Exception:
+        if not g.unitTesting:  # pragma: no cover (skip)
+            g.warning('invalid regular expression:', self.find_text)
+        return False
+</t>
+<t tx="ekr.20240527100653.1990">def find_next_match(self, p: Position) -&gt; tuple[Position, int, int]:
+    """
+    Resume the search where it left off.
+
+    Return (p, pos, newpos).
+    """
+    if not self.search_headline and not self.search_body:  # pragma: no cover
+        return None, None, None
+    if not self.find_text:  # pragma: no cover
+        return None, None, None
+    attempts = 0
+    u = self.c.undoer
+    if self.pattern_match:
+        ok = self.compile_pattern()
+        if not ok:
+            return None, None, None
+    while p:
+        pos, newpos = self._fnm_search(p)
+        if pos is not None:
+            # Success.
+            if self.mark_finds and not p.isMarked():  # pragma: no cover
+                undoType = 'Mark Finds'
+                bunch = u.beforeMark(p, undoType)
+                p.setMarked()
+                p.setDirty()
+                u.afterMark(p, undoType, bunch)
+            return p, pos, newpos
+        # Searching the pane failed: switch to another pane or node.
+        if self._fnm_should_stay_in_node(p):
+            # Switching panes is possible.  Do so.
+            self.in_headline = not self.in_headline
+            s = p.h if self.in_headline else p.b
+            ins = len(s) if self.reverse else 0
+            self.work_s = s
+            self.work_sel = (ins, ins, ins)
+        else:
+            # Switch to the next/prev node, if possible.
+            attempts += 1
+            p = self._fnm_next_after_fail(p)
+            if p:  # Found another node: select the proper pane.
+                self.in_headline = self._fnm_first_search_pane()
+                s = p.h if self.in_headline else p.b
+                ins = len(s) if self.reverse else 0
+                self.work_s = s
+                self.work_sel = (ins, ins, ins)
+    return None, None, None
+</t>
+<t tx="ekr.20240527100653.1991">def _fnm_next_after_fail(self, p: Position) -&gt; Optional[Position]:
+    """Return the next node after a failed search or None."""
+    # Move to the next position.
+    p = p.threadBack() if self.reverse else p.threadNext()
+    # Check it.
+    if p and self._fail_outside_range(p):  # pragma: no cover
+        return None
+    if not p:  # pragma: no cover
+        return None
+    return p
+</t>
+<t tx="ekr.20240527100653.1992">def _fail_outside_range(self, p: Position) -&gt; bool:  # pragma: no cover
+    """
+    Return True if the search is about to go outside its range, assuming
+    both the headline and body text of the present node have been searched.
+    """
+    c = self.c
+    if not p:
+        return True
+    if self.node_only:
+        return True
+    if self.suboutline_only or self.file_only:
+        if self.root and p != self.root and not self.root.isAncestorOf(p):
+            return True
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        if not bunch.p.isAncestorOf(p):
+            g.trace('outside hoist', p.h)
+            g.warning('found match outside of hoisted outline')
+            return True
+    return False  # Within range.
+</t>
+<t tx="ekr.20240527100653.1993">def _fnm_first_search_pane(self) -&gt; bool:
+    """
+    Set return the value of self.in_headline
+    indicating which pane to search first.
+    """
+    if self.search_headline and self.search_body:
+        # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
+        if self.reverse:
+            return False  # Search the body pane first.
+        return True  # Search the headline pane first.
+    if self.search_headline or self.search_body:
+        # Search the only enabled pane.
+        return self.search_headline
+    g.trace('can not happen: no search enabled')  # pragma: no cover
+    return False  # pragma: no cover
+</t>
+<t tx="ekr.20240527100653.1994">def _fnm_search(self, p: Position) -&gt; tuple[int, int]:
+    """
+    Search self.work_s for self.find_text with present options.
+    Returns (pos, newpos) or (None, dNone).
+    """
+    index = self.work_sel[2]
+    s = self.work_s
+    # This hack would be dangerous on MacOs: it uses '\r' instead of '\n' (!)
+    if sys.platform.lower().startswith('win'):
+        # Ignore '\r' characters, which may appear in @edit nodes.
+        # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
+        s = s.replace('\r', '')
+    if not s:  # pragma: no cover
+        return None, None
+    stopindex = 0 if self.reverse else len(s)
+    pos, newpos = self.inner_search_helper(s, index, stopindex, self.find_text)
+    if self.in_headline and not self.search_headline:  # pragma: no cover
+        return None, None
+    if not self.in_headline and not self.search_body:  # pragma: no cover
+        return None, None
+    if pos == -1:  # pragma: no cover
+        return None, None
+    ins = min(pos, newpos) if self.reverse else max(pos, newpos)
+    self.work_sel = (pos, newpos, ins)
+    return pos, newpos
+</t>
+<t tx="ekr.20240527100653.1995">def _fnm_should_stay_in_node(self, p: Position) -&gt; bool:
+    """Return True if the find should simply switch panes."""
+    # Errors here cause the find command to fail badly.
+    # Switch only if:
+    #   a) searching both panes and,
+    #   b) this is the first pane of the pair.
+    # There is *no way* this can ever change.
+    # So simple in retrospect, so difficult to see.
+    return (
+        self.search_headline and self.search_body and (
+        (self.reverse and not self.in_headline) or
+        (not self.reverse and self.in_headline)))
+</t>
+<t tx="ekr.20240527100653.1996">def inner_search_helper(self, s: str, i: int, j: int, pattern: str) -&gt; tuple[int, int]:
+    """
+    Dispatch the proper search method based on settings.
+    """
+    backwards = self.reverse
+    nocase = self.ignore_case
+    regexp = self.pattern_match
+    word = self.whole_word
+    if backwards:
+        i, j = j, i
+    if not s[i:j] or not pattern:
+        return -1, -1
+    if regexp:
+        pos, newpos = self._inner_search_regex(s, i, j, pattern, backwards, nocase)
+    elif backwards:
+        pos, newpos = self._inner_search_backward(s, i, j, pattern, nocase, word)
+    else:
+        pos, newpos = self._inner_search_plain(s, i, j, pattern, nocase, word)
+    return pos, newpos
+</t>
+<t tx="ekr.20240527100653.1997">def _inner_search_backward(self,
+    s: str,
+    i: int,
+    j: int,
+    pattern: str,
+    nocase: bool,
+    word: bool,
+) -&gt; tuple[int, int]:
+    """
+    rfind(sub [,start [,end]])
+
+    Return the highest index in the string where substring sub is found,
+    such that sub is contained within s[start,end].
+
+    Optional arguments start and end are interpreted as in slice notation.
+
+    Return (-1, -1) on failure.
+    """
+    if nocase:
+        s = s.lower()
+        pattern = pattern.lower()
+    pattern = self.replace_back_slashes(pattern)
+    n = len(pattern)
+    # Put the indices in range.  Indices can get out of range
+    # because the search code strips '\r' characters when searching @edit nodes.
+    i = max(0, i)
+    j = min(len(s), j)
+    # short circuit the search: helps debugging.
+    if s.find(pattern) == -1:
+        return -1, -1
+    if word:
+        while 1:
+            k = s.rfind(pattern, i, j)
+            if k == -1:
+                break
+            if self._inner_search_match_word(s, k, pattern):
+                return k, k + n
+            j = max(0, k - 1)
+        return -1, -1
+    k = s.rfind(pattern, i, j)
+    if k == -1:
+        return -1, -1
+    return k, k + n
+</t>
+<t tx="ekr.20240527100653.1998">def _inner_search_match_word(self, s: str, i: int, pattern: str) -&gt; bool:
+    """Do a whole-word search."""
+    pattern = self.replace_back_slashes(pattern)
+    return bool(
+        s and pattern
+        and g.match_word(s, i, pattern, ignore_case=self.ignore_case)
+    )
+</t>
+<t tx="ekr.20240527100653.1999">def _inner_search_plain(self,
+    s: str,
+    i: int,
+    j: int,
+    pattern: str,
+    nocase: bool,
+    word: bool,
+) -&gt; tuple[int, int]:
+    """Do a plain search."""
+    if nocase:
+        s = s.lower()
+        pattern = pattern.lower()
+    pattern = self.replace_back_slashes(pattern)
+    n = len(pattern)
+    if word:
+        while 1:
+            k = s.find(pattern, i, j)
+            if k == -1:
+                break
+            if self._inner_search_match_word(s, k, pattern):
+                return k, k + n
+            i = k + n
+        return -1, -1
+    k = s.find(pattern, i, j)
+    if k == -1:
+        return -1, -1
+    return k, k + n
+</t>
+<t tx="ekr.20240527100653.2000">def _inner_search_regex(self,
+    s: str,
+    i: int,
+    j: int,
+    pattern: str,
+    backwards: bool,
+    nocase: bool,
+) -&gt; tuple[int, int]:
+    """Called from inner_search_helper"""
+    re_obj = self.re_obj  # Use the pre-compiled object
+    if not re_obj:
+        if not g.unitTesting:  # pragma: no cover (skip)
+            g.trace('can not happen: no re_obj')
+        return -1, -1
+    if backwards:
+        # Scan to the last match using search here.
+        i, last_mo = 0, None
+        while i &lt; len(s):
+            mo = re_obj.search(s, i, j)
+            if not mo:
+                break
+            i += 1
+            last_mo = mo
+        mo = last_mo
+    else:
+        mo = re_obj.search(s, i, j)
+    if mo:
+        self.match_obj = mo
+        return mo.start(), mo.end()
+    self.match_obj = None
+    return -1, -1
+</t>
+<t tx="ekr.20240527100653.2001">def make_regex_subs(self, change_text: str, groups: MatchGroups) -&gt; str:
+    """
+    Substitute group[i-1] for \\i strings in change_text.
+
+    Groups is a tuple of strings, one for every matched group.
+    """
+
+    # g.printObj(list(groups), tag=f"groups in {change_text!r}")
+
+    def repl(match_object: re.Match) -&gt; str:
+        """re.sub calls this function once per group."""
+        # # 1494...
+        n = int(match_object.group(1)) - 1
+        if 0 &lt;= n &lt; len(groups):
+            # Executed only if the change text contains groups that match.
+            return (
+                groups[n].
+                    replace(r'\b', r'\\b').
+                    replace(r'\f', r'\\f').
+                    replace(r'\n', r'\\n').
+                    replace(r'\r', r'\\r').
+                    replace(r'\t', r'\\t').
+                    replace(r'\v', r'\\v'))
+        # No replacement.
+        return match_object.group(0)
+
+    result = re.sub(r'\\([0-9])', repl, change_text)
+    return result
+</t>
+<t tx="ekr.20240527100653.2002">def replace_back_slashes(self, s: str) -&gt; str:
+    """Replace backslash-n with a newline and backslash-t with a tab."""
+    return s.replace('\\n', '\n').replace('\\t', '\t')
+</t>
+<t tx="ekr.20240527100653.2003"></t>
+<t tx="ekr.20240527100653.2004">def init_in_headline(self) -&gt; None:
+    """
+    Select the first pane to search for incremental searches and changes.
+    This is called only at the start of each search.
+    This must not alter the current insertion point or selection range.
+    """
+    # #1228458: Inconsistency between Find-forward and Find-backward.
+    if self.search_headline and self.search_body:
+        # We have no choice: we *must* search the present widget!
+        self.in_headline = self.focus_in_tree()
+    else:
+        self.in_headline = self.search_headline
+</t>
+<t tx="ekr.20240527100653.2005">def focus_in_tree(self) -&gt; bool:
+    """
+    Return True is the focus widget w is anywhere in the tree pane.
+
+    Note: the focus may be in the find pane.
+    """
+    c = self.c
+    ftm = self.ftm
+    w = ftm and ftm.entry_focus or g.app.gui.get_focus(raw=True)  # pylint: disable=simplify-boolean-expression
+    if ftm:
+        ftm.entry_focus = None  # Only use this focus widget once!
+    w_name = c.widget_name(w)
+    if w == c.frame.body.wrapper:
+        val = False
+    elif w == c.frame.tree.treeWidget:  # pragma: no cover
+        val = True
+    else:
+        val = w_name.startswith('head')  # pragma: no cover
+    return val
+</t>
+<t tx="ekr.20240527100653.2006">def restore(self, data: UndoData) -&gt; None:
+    """
+    Restore Leo's gui and settings from data, a g.Bunch.
+    """
+    c, p = self.c, data.p
+    c.frame.bringToFront()  # Needed on the Mac
+    if not p or not c.positionExists(p):  # pragma: no cover
+        # Better than selecting the root!
+        return
+    c.selectPosition(p)
+    # Fix bug 1258373: https://bugs.launchpad.net/leo-editor/+bug/1258373
+    if self.in_headline:
+        c.treeWantsFocus()
+    else:
+        # Looks good and provides clear indication of failure or termination.
+        w = c.frame.body.wrapper
+        w.setSelectionRange(data.start, data.end, insert=data.insert)
+        w.seeInsertPoint()
+        c.widgetWantsFocus(w)
+</t>
+<t tx="ekr.20240527100653.2007">def save(self) -&gt; UndoData:
+    """Save everything needed to restore after a search fails."""
+    c = self.c
+    if self.in_headline:  # pragma: no cover
+        # Fix bug 1258373: https://bugs.launchpad.net/leo-editor/+bug/1258373
+        # Don't try to re-edit the headline.
+        insert, start, end = None, None, None
+    else:
+        w = c.frame.body.wrapper
+        insert = w.getInsertPoint()
+        start, end = w.getSelectionRange()
+    data = g.Bunch(
+        end=end,
+        in_headline=self.in_headline,
+        insert=insert,
+        p=c.p.copy(),
+        start=start,
+    )
+    return data
+</t>
+<t tx="ekr.20240527100653.2008">def show_success(self, p: Position, pos: int, newpos: int, showState: bool = True) -&gt; Wrapper:
+    """Display the result of a successful find operation."""
+    c = self.c
+    # Set state vars.
+    # Ensure progress in backwards searches.
+    insert = min(pos, newpos) if self.reverse else max(pos, newpos)
+    if c.sparse_find:  # pragma: no cover
+        c.expandOnlyAncestorsOfNode(p=p)
+    if self.in_headline:
+        c.endEditing()
+        c.redraw(p)
+        c.frame.tree.editLabel(p)
+        w = c.edit_widget(p)  # #2220
+        if w:
+            w.setSelectionRange(pos, newpos, insert)  # #2220
+    else:
+        # Tricky code.  Do not change without careful thought.
+        w = c.frame.body.wrapper
+        # *Always* do the full selection logic.
+        # This ensures that the body text is inited and recolored.
+        c.selectPosition(p)
+        c.bodyWantsFocus()
+        if showState:
+            c.k.showStateAndMode(w)
+        c.bodyWantsFocusNow()
+        w.setSelectionRange(pos, newpos, insert=insert)
+        k = g.see_more_lines(w.getAllText(), insert, 4)
+        w.see(k)  # #78: find-next match not always scrolled into view.
+        c.outerUpdate()  # Set the focus immediately.
+        if c.vim_mode and c.vimCommands:  # pragma: no cover
+            c.vimCommands.update_selection_after_search()
+    # Support for the console gui.
+    if hasattr(g.app.gui, 'show_find_success'):  # pragma: no cover
+        g.app.gui.show_find_success(c, self.in_headline, insert, p)
+    c.frame.bringToFront()
+    return w  # Support for isearch.
+</t>
+<t tx="ekr.20240527100653.2009"></t>
+<t tx="ekr.20240527100653.2010"></t>
+<t tx="ekr.20240527100653.2011">@cmd('isearch-forward')
+def isearch_forward(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """
+    Begin a forward incremental search.
+
+    - Plain characters extend the search.
+    - !&lt;isearch-forward&gt;! repeats the search.
+    - Esc or any non-plain key ends the search.
+    - Backspace reverses the search.
+    - Backspacing to an empty search pattern
+      completely undoes the effect of the search.
+    """
+    self.start_incremental(event, 'isearch-forward',
+        forward=True, ignoreCase=False, regexp=False)
+</t>
+<t tx="ekr.20240527100653.2012">@cmd('isearch-backward')
+def isearch_backward(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """
+    Begin a backward incremental search.
+
+    - Plain characters extend the search backward.
+    - !&lt;isearch-forward&gt;! repeats the search.
+    - Esc or any non-plain key ends the search.
+    - Backspace reverses the search.
+    - Backspacing to an empty search pattern
+      completely undoes the effect of the search.
+    """
+    self.start_incremental(event, 'isearch-backward',
+        forward=False, ignoreCase=False, regexp=False)
+</t>
+<t tx="ekr.20240527100653.2013">@cmd('isearch-forward-regexp')
+def isearch_forward_regexp(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """
+    Begin a forward incremental regexp search.
+
+    - Plain characters extend the search.
+    - !&lt;isearch-forward-regexp&gt;! repeats the search.
+    - Esc or any non-plain key ends the search.
+    - Backspace reverses the search.
+    - Backspacing to an empty search pattern
+      completely undoes the effect of the search.
+    """
+    self.start_incremental(event, 'isearch-forward-regexp',
+        forward=True, ignoreCase=False, regexp=True)
+</t>
+<t tx="ekr.20240527100653.2014">@cmd('isearch-backward-regexp')
+def isearch_backward_regexp(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """
+    Begin a backward incremental regexp search.
+
+    - Plain characters extend the search.
+    - !&lt;isearch-forward-regexp&gt;! repeats the search.
+    - Esc or any non-plain key ends the search.
+    - Backspace reverses the search.
+    - Backspacing to an empty search pattern
+      completely undoes the effect of the search.
+    """
+    self.start_incremental(event, 'isearch-backward-regexp',
+        forward=False, ignoreCase=False, regexp=True)
+</t>
+<t tx="ekr.20240527100653.2015">@cmd('isearch-with-present-options')
+def isearch_with_present_options(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """
+    Begin an incremental search using find panel options.
+
+    - Plain characters extend the search.
+    - !&lt;isearch-forward-regexp&gt;! repeats the search.
+    - Esc or any non-plain key ends the search.
+    - Backspace reverses the search.
+    - Backspacing to an empty search pattern
+      completely undoes the effect of the search.
+    """
+    self.start_incremental(event, 'isearch-with-present-options',
+        forward=None, ignoreCase=None, regexp=None)
+</t>
+<t tx="ekr.20240527100653.2016"></t>
+<t tx="ekr.20240527100653.2017">def abort_search(self) -&gt; None:  # pragma: no cover (cmd)
+    """Restore the original position and selection."""
+    c, k = self.c, self.k
+    w = c.frame.body.wrapper
+    k.clearState()
+    k.resetLabel()
+    p, i, j, in_headline = self.stack[0]
+    self.in_headline = in_headline
+    c.selectPosition(p)
+    c.redraw_after_select(p)
+    c.bodyWantsFocus()
+    w.setSelectionRange(i, j)
+</t>
+<t tx="ekr.20240527100653.2018">def end_search(self) -&gt; None:  # pragma: no cover (cmd)
+    c, k = self.c, self.k
+    k.clearState()
+    k.resetLabel()
+    c.bodyWantsFocus()
+</t>
+<t tx="ekr.20240527100653.2019">def iSearch_helper(self, again: bool = False) -&gt; None:  # pragma: no cover (cmd)
+    """Handle the actual incremental search."""
+    c, k, p = self.c, self.k, self.c.p
+    reverse = not self.isearch_forward_flag
+    pattern = k.getLabel(ignorePrompt=True)
+    if not pattern:
+        self.abort_search()
+        return
+    # Settings...
+    self.find_text = self.ftm.get_find_text()
+    self.change_text = self.ftm.get_change_text()
+    # Save
+    oldPattern = self.find_text
+    oldRegexp = self.pattern_match
+    oldWord = self.whole_word
+    # Override
+    self.pattern_match = self.isearch_regexp
+    self.reverse = reverse
+    self.find_text = pattern
+    self.whole_word = False  # Word option can't be used!
+    # Prepare the search.
+    if len(self.stack) &lt;= 1:
+        self.in_headline = False
+    # Init the work widget from the gui widget.
+    gui_w = self.set_widget()
+    s = gui_w.getAllText()
+    i, j = gui_w.getSelectionRange()
+    if again:
+        ins = i if reverse else j + len(pattern)
+    else:
+        ins = j + len(pattern) if reverse else i
+    self.work_s = s
+    self.work_sel = (ins, ins, ins)
+    # Do the search!
+    p, pos, newpos = self.find_next_match(p)
+    # Restore.
+    self.find_text = oldPattern
+    self.pattern_match = oldRegexp
+    self.reverse = False
+    self.whole_word = oldWord
+    # Handle the results of the search.
+    if pos is not None:  # success.
+        w = self.show_success(p, pos, newpos, showState=False)
+        if w:
+            i, j = w.getSelectionRange(sort=False)
+        if not again:
+            self.push(c.p, i, j, self.in_headline)
+    else:
+        g.es(f"not found: {pattern}")
+        if not again:
+            event = g.app.gui.create_key_event(
+                c, binding='BackSpace', char='\b', w=None)
+            k.updateLabel(event)
+</t>
+<t tx="ekr.20240527100653.2020">def isearch_state_handler(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """The state manager when the state is 'isearch"""
+    # c = self.c
+    k = self.k
+    stroke = event.stroke if event else None
+    s = stroke.s if stroke else ''
+    # No need to recognize ctrl-z.
+    if s in ('Escape', '\n', 'Return'):
+        self.end_search()
+    elif stroke in self.iSearchStrokes:
+        self.iSearch_helper(again=True)
+    elif s in ('\b', 'BackSpace'):
+        k.updateLabel(event)
+        self.isearch_backspace()
+    elif (
+        s.startswith('Ctrl+') or
+        s.startswith('Alt+') or
+        k.isFKey(s)  # 2011/06/13.
+    ):
+        # End the search.
+        self.end_search()
+        k.masterKeyHandler(event)
+    # Fix bug 1267921: isearch-forward accepts non-alphanumeric keys as input.
+    elif k.isPlainKey(stroke):
+        k.updateLabel(event)
+        self.iSearch_helper()
+</t>
+<t tx="ekr.20240527100653.2021">def isearch_backspace(self) -&gt; None:  # pragma: no cover (cmd)
+
+    c = self.c
+    if len(self.stack) &lt;= 1:
+        self.abort_search()
+        return
+    # Reduce the stack by net 1.
+    self.pop()
+    p, i, j, in_headline = self.pop()
+    self.push(p, i, j, in_headline)
+    if in_headline:
+        # Like self.show_success.
+        selection = i, j, i
+        c.redrawAndEdit(p, selectAll=False,
+            selection=selection,
+            keepMinibuffer=True)
+    else:
+        c.selectPosition(p)
+        w = c.frame.body.wrapper
+        c.bodyWantsFocus()
+        if i &gt; j:
+            i, j = j, i
+        w.setSelectionRange(i, j)
+    if len(self.stack) &lt;= 1:
+        self.abort_search()
+</t>
+<t tx="ekr.20240527100653.2022">def get_strokes(self, commandName: str) -&gt; list[Stroke]:  # pragma: no cover (cmd)
+    aList = self.inverseBindingDict.get(commandName, [])
+    return [key for pane, key in aList]
+</t>
+<t tx="ekr.20240527100653.2023">def push(self, p: Position, i: int, j: int, in_headline: bool) -&gt; None:  # pragma: no cover (cmd)
+    data = p.copy(), i, j, in_headline
+    self.stack.append(data)
+
+def pop(self) -&gt; tuple[Position, int, int, bool]:  # pragma: no cover (cmd)
+    data = self.stack.pop()
+    p, i, j, in_headline = data
+    return p, i, j, in_headline
+</t>
+<t tx="ekr.20240527100653.2024">def set_widget(self) -&gt; Wrapper:  # pragma: no cover (cmd)
+    c, p = self.c, self.c.p
+    wrapper = c.frame.body.wrapper
+    if self.in_headline:
+        w = c.edit_widget(p)
+        if not w:
+            # Selecting the minibuffer can kill the edit widget.
+            selection = 0, 0, 0
+            c.redrawAndEdit(p, selectAll=False,
+                selection=selection, keepMinibuffer=True)
+            w = c.edit_widget(p)
+        if not w:  # Should never happen.
+            g.trace('**** no edit widget!')
+            self.in_headline = False
+            w = wrapper
+    else:
+        w = wrapper
+    if w == wrapper:
+        c.bodyWantsFocus()
+    return w
+</t>
+<t tx="ekr.20240527100653.2025">def start_incremental(self,
+    event: LeoKeyEvent,
+    commandName: str,
+    forward: bool,
+    ignoreCase: bool,
+    regexp: bool,
+) -&gt; None:  # pragma: no cover (cmd)
+    c, k = self.c, self.k
+    # None is a signal to get the option from the find tab.
+    self.event = event
+    self.isearch_forward_flag = not self.reverse if forward is None else forward
+    self.isearch_ignore_case = self.ignore_case if ignoreCase is None else ignoreCase
+    self.isearch_regexp = self.pattern_match if regexp is None else regexp
+    # Note: the word option can't be used with isearches!
+    w = c.frame.body.wrapper
+    self.p1 = c.p
+    self.sel1 = w.getSelectionRange(sort=False)
+    i, j = self.sel1
+    self.push(c.p, i, j, self.in_headline)
+    self.inverseBindingDict = k.computeInverseBindingDict()
+    self.iSearchStrokes = self.get_strokes(commandName)
+    k.setLabelBlue(
+        "Isearch"
+        f"{' Backward' if not self.isearch_forward_flag else ''}"
+        f"{' Regexp' if self.isearch_regexp else ''}"
+        f"{' NoCase' if self.isearch_ignore_case else ''}"
+        ": "
+    )
+    k.setState('isearch', 1, handler=self.isearch_state_handler)
+    c.minibufferWantsFocus()
+</t>
+<t tx="ekr.20240527100653.2026"></t>
+<t tx="ekr.20240527100653.2027">def add_change_string_to_label(self) -&gt; None:  # pragma: no cover (cmd)
+    """Add an unprotected change string to the minibuffer label."""
+    c = self.c
+    s = self.ftm.get_change_text()
+    c.minibufferWantsFocus()
+    while s.endswith('\n') or s.endswith('\r'):
+        s = s[:-1]
+    c.k.extendLabel(s, select=True, protect=False)
+</t>
+<t tx="ekr.20240527100653.2028">def add_find_string_to_label(self, protect: bool = True) -&gt; None:  # pragma: no cover (cmd)
+    c, k = self.c, self.c.k
+    ftm = c.findCommands.ftm
+    s = ftm.get_find_text()
+    c.minibufferWantsFocus()
+    while s.endswith('\n') or s.endswith('\r'):
+        s = s[:-1]
+    k.extendLabel(s, select=True, protect=protect)
+</t>
+<t tx="ekr.20240527100653.2029">def compute_result_status(self, find_all_flag: bool = False) -&gt; str:  # pragma: no cover (cmd)
+    """Return the status to be shown in the status line after a find command completes."""
+    # Too similar to another method...
+    status = []
+    table = (
+        ('whole_word', 'Word'),
+        ('ignore_case', 'Ignore Case'),
+        ('pattern_match', 'Regex'),
+        ('suboutline_only', '[Outline Only]'),
+        ('node_only', '[Node Only]'),
+        ('search_headline', 'Head'),
+        ('search_body', 'Body'),
+    )
+    for ivar, val in table:
+        if getattr(self, ivar):
+            status.append(val)
+    return f" ({', '.join(status)})" if status else ''
+</t>
+<t tx="ekr.20240527100653.2030">def help_for_find_commands(self, event: LeoKeyEvent = None) -&gt; None:  # pragma: no cover (cmd)
+    """Called from Find panel.  Redirect."""
+    self.c.helpCommands.help_for_find_commands(event)
+</t>
+<t tx="ekr.20240527100653.2031">def init_vim_search(self, pattern: str) -&gt; None:  # pragma: no cover (cmd)
+    """Initialize searches in vim mode."""
+    c = self.c
+    if c.vim_mode and c.vimCommands:
+        c.vimCommands.update_dot_before_search(
+            find_pattern=pattern,
+            change_pattern=None)  # A flag.
+</t>
+<t tx="ekr.20240527100653.2032">def preload_find_pattern(self, w: Wrapper) -&gt; None:  # pragma: no cover (cmd)
+    """Preload the find pattern from the selected text of widget w."""
+    c, ftm = self.c, self.ftm
+    if not c.config.getBool('preload-find-pattern', default=False):
+        # Make *sure* we don't preload the find pattern if it is not wanted.
+        return
+    if not w:
+        return
+    #
+    # #1436: Don't create a selection if there isn't one.
+    #        Leave the search pattern alone!
+    #
+        # if not w.hasSelection():
+        #     c.editCommands.extendToWord(event=None, select=True, w=w)
+    #
+    # #177:  Use selected text as the find string.
+    # #1436: Make make sure there is a significant search pattern.
+    s = w.getSelectedText()
+    if s.strip():
+        ftm.set_find_text(s)
+        ftm.init_focus()
+</t>
+<t tx="ekr.20240527100653.2033">def show_status(self, found: bool) -&gt; None:
+    """Show the find status the Find dialog, if present, and the status line."""
+    c = self.c
+    status = 'found' if found else 'not found'
+    options = self.compute_result_status()
+    s = f"{status}:{options} {self.find_text}"
+    # Set colors.
+    found_bg = c.config.getColor('find-found-bg') or 'blue'
+    not_found_bg = c.config.getColor('find-not-found-bg') or 'red'
+    found_fg = c.config.getColor('find-found-fg') or 'white'
+    not_found_fg = c.config.getColor('find-not-found-fg') or 'white'
+    bg = found_bg if found else not_found_bg
+    fg = found_fg if found else not_found_fg
+    if c.config.getBool("show-find-result-in-status") is not False:
+        c.frame.putStatusLine(s, bg=bg, fg=fg)
+</t>
+<t tx="ekr.20240527100653.2034">def show_find_options_in_status_area(self) -&gt; None:  # pragma: no cover (cmd)
+    """Show find options in the status area."""
+    c = self.c
+    s = self.compute_find_options_in_status_area()
+    c.frame.putStatusLine(s)
+</t>
+<t tx="ekr.20240527100653.2035">def compute_find_options_in_status_area(self) -&gt; str:
+    c = self.c
+    ftm = c.findCommands.ftm
+    table = (
+        ('Word', ftm.check_box_whole_word),
+        ('Ig-case', ftm.check_box_ignore_case),
+        ('regeXp', ftm.check_box_regexp),
+        ('Body', ftm.check_box_search_body),
+        ('Head', ftm.check_box_search_headline),
+        # ('wrap-Around', ftm.check_box_wrap_around),
+        ('mark-Changes', ftm.check_box_mark_changes),
+        ('mark-Finds', ftm.check_box_mark_finds),
+    )
+    result = [option for option, ivar in table if ivar.isChecked()]
+    table2 = (
+        ('Suboutline', ftm.radio_button_suboutline_only),
+        ('Node', ftm.radio_button_node_only),
+        ('File', ftm.radio_button_file_only),
+    )
+    for option, ivar in table2:
+        if ivar.isChecked():
+            result.append(f"[{option}]")
+            break
+    return f"Find: {' '.join(result)}"
+</t>
+<t tx="ekr.20240527100653.2036">def start_state_machine(self,
+    event: LeoKeyEvent,
+    prefix: str,
+    handler: Callable,
+    escape_handler: Callable = None,
+) -&gt; None:  # pragma: no cover (cmd)
+    """
+    Initialize and start the state machine used to get user arguments.
+    """
+    c, k = self.c, self.k
+    w = c.frame.body.wrapper
+    if not w:
+        return
+    # Gui...
+    k.setLabelBlue(prefix)
+    # New in Leo 5.2: minibuffer modes shows options in status area.
+    if self.minibuffer_mode:
+        self.show_find_options_in_status_area()
+    elif c.config.getBool('use-find-dialog', default=True):
+        g.app.gui.openFindDialog(c)
+    else:
+        c.frame.log.selectTab('Find')
+    self.add_find_string_to_label(protect=False)
+    k.getArgEscapes = ['\t'] if escape_handler else []
+    self.handler = handler
+    self.escape_handler = escape_handler
+    self.total_links = 0  # Limit the total number of clickable links.
+    # Start the state matching!
+    k.get1Arg(event, handler=self.state0, tabList=self.findTextList, completion=True)
+
+def state0(self, event: LeoKeyEvent) -&gt; None:  # pragma: no cover (cmd)
+    """Dispatch the next handler."""
+    k = self.k
+    if k.getArgEscapeFlag:
+        k.getArgEscapeFlag = False
+        self.escape_handler(event)
+    else:
+        self.handler(event)
+</t>
+<t tx="ekr.20240527100653.2037">def update_change_list(self, s: str) -&gt; None:  # pragma: no cover (cmd)
+    if s not in self.changeTextList:
+        self.changeTextList.append(s)
+
+def update_find_list(self, s: str) -&gt; None:  # pragma: no cover (cmd)
+    if s not in self.findTextList:
+        self.findTextList.append(s)
+</t>
+<t tx="ekr.20240527100653.2038">getAllText
+
+_load_quicksearch_entries
+
+</t>
+<t tx="ekr.20240527100653.2039">def test_find_var(self):
+    x = self.x
+    settings = x._compute_find_def_settings('v5 =')
+    p, pos, newpos = x.do_find_var(settings)
+    assert p
+    self.assertEqual(p.h, 'child 5')
+    s = p.b[pos:newpos]
+    self.assertEqual(s, 'v5 =')
+</t>
+<t tx="ekr.20240527100653.2040">def test_find_def(self):
+    x = self.x
+
+    # Test 1: Test methods called by x.find_def.
+    x._save_before_find_def(x.c.rootPosition())  # Also tests _restore_after_find_def.
+
+    # Test 2:
+    for reverse in (True, False):
+        # Successful search.
+        x.reverse_find_defs = reverse
+        settings = x._compute_find_def_settings('def child5')
+        p, pos, newpos = x.do_find_def(settings)
+        self.assertTrue(p)
+        self.assertEqual(p.h, 'child 5')
+        s = p.b[pos:newpos]
+        self.assertEqual(s, 'def child5')
+        # Unsuccessful search.
+        settings = x._compute_find_def_settings('def xyzzy')
+        p, pos, newpos = x.do_find_def(settings)
+        assert p is None, repr(p)
+</t>
+<t tx="ekr.20240527100653.2041">def make_test_tree(self):
+    """Make a test tree for other tests"""
+    c = self.c
+
+    # 2023/01/24: Remove any previous tree.
+    root = c.rootPosition()
+    while root.hasChildren():
+        root.firstChild().doDelete()
+    while root.hasNext():
+        root.next().doDelete()
+
+    root = c.rootPosition()
+    root.h = '@file test.py'
+    root.b = "def root():\n    pass\n"
+    last = root
+
+    def make_child(n, p):
+        p2 = p.insertAsLastChild()
+        p2.h = f"child {n}"
+        p2.b = (
+            f"def child{n}():\n"
+            f"    v{n} = 2\n"
+            f"    # node {n} line 1: blabla second blabla bla second ble blu\n"
+            f"    # node {n} line 2: blabla second blabla bla second ble blu"
+        )
+        return p2
+
+    def make_top(n, sib):
+        p = sib.insertAfter()
+        p.h = f"Node {n}"
+        p.b = (
+            f"def top{n}():\n:"
+            f"    v{n} = 3\n"
+        )
+        return p
+
+    for n in range(0, 4, 3):
+        last = make_top(n + 1, last)
+        child = make_child(n + 2, last)
+        make_child(n + 3, child)
+
+    for p in c.all_positions():
+        p.v.clearDirty()
+        p.v.clearVisited()
+
+    # Always start with the root selected.
+    c.selectPosition(c.rootPosition())
+</t>
+<t tx="ekr.20240527100653.2042"></t>
+<t tx="ekr.20240527100653.2043"></t>
+<t tx="ekr.20240527100653.2044">def __init__(self, c: Cmdr) -&gt; None:
+    """Ctor for LeoFind class."""
+    self.c = c
+    self.expert_mode = False  # Set in finishCreate.
+    # Created by dw.createFindTab.
+    self.ftm: FindTabManager = None  # A Union. Hard to annotate.
+    self.k: KeyHandler = c.k
+    self.re_obj: re.Pattern = None
+    #
+    # The work "widget".
+    self.work_s = ''  # p.b or p.c.
+    self.work_sel: tuple[int, int, int] = None  # pos, newpos, insert.
+    #
+    # Options ivars: set by FindTabManager.init.
+    # These *must* be initially None, not False.
+    self.ignore_case: bool = None
+    self.node_only: bool = None
+    self.file_only: bool = None
+    self.pattern_match: bool = None
+    self.search_headline: bool = None
+    self.search_body: bool = None
+    self.suboutline_only: bool = None
+    self.mark_changes: bool = None
+    self.mark_finds: bool = None
+    self.whole_word: bool = None
+    #
+    # For isearch commands...
+    self.stack: list[tuple[Position, int, int, bool]] = []
+    self.inverseBindingDict: dict[str, list[tuple[str, Stroke]]] = {}
+    self.isearch_ignore_case: bool = False
+    self.isearch_forward_flag: bool = False
+    self.isearch_regexp: bool = False
+    self.iSearchStrokes: list[Stroke] = []
+    self.findTextList: list = []
+    self.changeTextList: list = []
+    #
+    # For find/change...
+    self.find_text = ""
+    self.change_text = ""
+    #
+    # State machine...
+    self.escape_handler: Callable = None
+    self.handler: Callable = None
+    # "Delayed" requests for do_find_next.
+    self.request_reverse = False
+    self.request_pattern_match = False
+    self.request_whole_word = False
+    # Internal state...
+    self.changeAllFlag = False
+    self.find_def_data: g.Bunch = None
+    self.in_headline = False
+    self.match_obj: re.Match = None
+    self.reverse = False
+    self.root: Position = None  # The start of the search, especially for suboutline-only.
+    #
+    # User settings.
+    self.minibuffer_mode: bool = None
+    self.reload_settings()
+</t>
+<t tx="ekr.20240527100653.2048">def do_find_def(self, word: str) -&gt; list[tuple[int, Position, str]]:
+    """
+    A helper for find_def's.
+    It's a standalone method for unit tests.
+    """
+    c = self.c
+    patterns = self._make_patterns(word)
+    matches = self._find_all_matches(patterns)
+    if g.unitTesting:
+        return matches
+    # Look for alternate matches only if there are no exact matches.
+    if not matches:
+        alt_word = self._switch_style(word)
+        patterns = self.make_patterns(alt_word)
+        matches = self._find_all_matches(patterns)
+    if not matches:
+        g.es(f"not found: {word!r}", color='red')
+        return matches
+    # Always update the Nav pane if it is enabled.
+    use_nav_pane = self.prefer_nav_pane and g.pluginIsLoaded('quicksearch.py')
+    g.trace(use_nav_pane)  ###
+    if use_nav_pane:
+        self._load_quicksearch_entries(word, matches)
+    # Carefully select the most convenient clone of p.
+    if len(matches) == 1:
+        i, p, s = matches[0]
+        if p == c.p:
+            pass
+        elif self.reverse_find_defs:
+            search_p = c.lastPosition()
+            while search_p:
+                if search_p.v == p.v:
+                    p = search_p
+                    break
+                else:
+                    search_p.moveToThreadBack()
+        else:
+            # Start in the root position.
+            search_p = c.rootPosition()
+            while search_p:
+                if search_p.v == p.v:
+                    p = search_p
+                    break
+                else:
+                    search_p.moveToThreadNext()
+        c.selectPosition(p)
+        w = c.frame.body.wrapper
+        if w:
+            w.setSelectionRange(i, i + len(s), insert=i)
+    elif not use_nav_pane:
+        # Show clones, but only if the Nav pane isn't available.
+        self._make_clones(word, matches)
+    return matches
+
+# Compatibility.
+do_find_var = do_find_def
+</t>
+<t tx="ekr.20240527100653.2049">def _load_quicksearch_entries(self, word: str, matches: list[tuple[int, Position, str]]) -&gt; None:
+    """Put all matches in the Nav pane."""
+    c = self.c
+    x = c.quicksearch_controller
+    w = c.frame.nav
+    e = w.ui.lineEdit  # A QLineEdit.
+    # Filter out uniques matches.
+    unique_matches = list(set([s.strip() for (i, p, s) in matches if s.strip()]))
+    # The Nav pane can show only one match, so issue a warning.
+    if len(unique_matches) &gt; 1:
+        g.es_print(f"Multiple matches for {word}", color='red')
+        for z in unique_matches[1:]:
+            g.es_print(z)
+    # Put the first match in the Nav pane's edit widget and update.
+    x.clear()
+    e.setText(unique_matches[0])
+    c.frame.log.selectTab('Nav')
+    w.returnPressed()
+</t>
+<t tx="ekr.20240527100653.2051">def _find_all_matches(self, patterns: list[re.Pattern]) -&gt; list[tuple[int, Position, str]]:
+    """
+    Search all nodes for any of the given compiled regex patterns.
+    
+    Return a list of tuples (starting-index, p, matching-string) describing the matches.
+    """
+    c = self.c
+    p = c.rootPosition()
+    results = []
+    seen = set()
+    while p:
+        if g.inAtNosearch(p):
+            p.moveToNodeAfterTree()
+            continue
+        if p.v in seen:
+            p.moveToThreadNext()
+            continue
+        seen.add(p.v)
+        b = p.b
+        i = 0  # The index within p.b of the start of s.
+        found = False  # Only report the first match within p.b.
+        for s in g.splitLines(b):
+            for pattern in patterns:
+                m = pattern.search(s)
+                if m:
+                    results.append((i + m.start(), p.copy(), m.group(0)))
+                    found = True
+                    break
+            if found:
+                break
+            i += len(s)
+        p.moveToThreadNext()
+    return results
+</t>
+<t tx="ekr.20240527100653.2052">def _make_clones(self, word: str, matches: list[tuple[int, Position, str]]) -&gt; None:
+    """
+    Undoably create clones for all matches, similar to the clone-find commands.
+    """
+    c = self.c
+    ftm = self.ftm
+    u = c.undoer
+    undoData = u.beforeInsertNode(c.p)
+
+    # Create the found node.
+    found = c.lastTopLevel().insertAfter()
+    found.h = f"Found {len(matches)}: {word}"
+    found.b = f"@nosearch\n\n# found {len(matches)} nodes"
+    # Clone nodes as children of the found node.
+    clones = [p for i, p, s in matches]
+    for p in clones:
+        p2 = p.copy()
+        n = found.numberOfChildren()
+        p2._linkCopiedAsNthChild(found, n)
+    # Sort the clones in place, without undo.
+    found.v.children.sort(key=lambda v: v.h.lower())
+
+    # Set the search text. This is convenient and should not cause problems.
+    self.find_text = word
+    ftm.set_find_text(word)
+
+    # Set the undo data.
+    u.afterInsertNode(found, 'find-def', undoData)
+    c.setChanged()
+    found.expand()
+    c.redraw(found)
+</t>
+<t tx="ekr.20240527100653.2053">bad_regex_patterns: list[str] = []
+
+def _make_patterns(self, word: str) -&gt; list[re.Pattern]:
+    """Return a list of compiled regex patterns."""
+    results: list[re.Pattern] = []
+
+    def compile_pattern(pattern: str) -&gt; None:
+        try:
+            results.append(re.compile(pattern))
+        except Exception:
+            if pattern not in self.bad_regex_patterns:
+                self.bad_regex_patterns.append(pattern)
+                g.es_print(f"bad regex pattern: {pattern}")
+
+    for pattern in (
+        fr"^\s*class\s+{word}\b",
+        fr"^\s*def\s+{word}\b",
+        fr"\b{word}\s*=",
+        fr"\b{word}:",
+    ):
+        compile_pattern(pattern)
+    return results
+</t>
+<t tx="ekr.20240527100653.2055">@cmd('find-def')
+def find_def(self, event: LeoKeyEvent = None) -&gt; tuple[Position, int, int]:  # pragma: no cover (cmd)
+    """Find the class, def or assignment to var of the word under the cursor."""
+
+    # Note: This method is *also* part of the ctrl-click logic:
+    #
+    # QTextEditWrapper.mouseReleaseEvent calls g.openUrlOnClick.
+    # g.openUrlOnClick calls g.openUrlHelper.
+    # g.openUrlHelper calls this method.
+
+    # re searches are more accurate, but not enough to be worth changing the user's settings.
+    ftm, p = self.ftm, self.c.p
+    # Check.
+    word = self._compute_find_def_word(event)
+    if not word:
+        return None, None, None
+    # Settings...
+    self._save_before_find_def(p)  # Save previous settings.
+    assert self.find_def_data
+    # #3124. Try all possibilities, regardless of case.
+    alt_word = self._switch_style(word)
+    &lt;&lt; compute the search table &gt;&gt;
+    for find_pattern, method in table:
+        ftm.set_find_text(find_pattern)
+        self.init_vim_search(find_pattern)
+        self.update_change_list(self.change_text)  # Optional. An edge case.
+        # Do the command!
+        settings = self._compute_find_def_settings(find_pattern)
+        result = method(settings)
+        if result[0]:
+            # Keep the settings that found the match.
+            ftm.set_widgets_from_dict(settings)
+            return result
+    # Restore the previous find settings!
+    self._restore_after_find_def()
+    return None, None, None
+
+def do_find_def(self, settings: Settings) -&gt; tuple[Position, int, int]:
+    """A standalone helper for unit tests."""
+    return self._fd_helper(settings)
+</t>
+<t tx="ekr.20240527100653.2056">table: tuple
+if alt_word:
+    table = (
+        (f"class {word}", self.do_find_def),
+        # (fr"^\s*class {alt_word}\b", self.do_find_def),
+        (f"def {word}", self.do_find_def),
+        (f"def {alt_word}", self.do_find_def),
+        (f"{word} =", self.do_find_var),
+        (f"{alt_word} =", self.do_find_var),
+    )
+else:
+    table = (
+        (f"class {word}", self.do_find_def),
+        (f"def {word}", self.do_find_def),
+        (f"{word} =", self.do_find_var),
+    )
+</t>
+<t tx="ekr.20240527100653.2057">def _compute_find_def_settings(self, find_pattern: str) -&gt; Settings:
+
+    settings = self.default_settings()
+    table = (
+        ('change_text', ''),
+        ('find_text', find_pattern),
+        ('ignore_case', True),
+        ('pattern_match', False),
+        ('reverse', False),
+        ('search_body', True),
+        ('search_headline', False),
+        ('whole_word', True),
+    )
+    for attr, val in table:
+        # Guard against renamings &amp; misspellings.
+        assert hasattr(self, attr), attr
+        assert attr in settings.__dict__, attr
+        # Set the values.
+        setattr(self, attr, val)
+        settings[attr] = val
+    return settings
+</t>
+<t tx="ekr.20240527100653.2058">def _compute_find_def_word(self, event: LeoKeyEvent) -&gt; Optional[str]:  # pragma: no cover (cmd)
+    """Init the find-def command. Return the word to find or None."""
+    c = self.c
+    w = c.frame.body.wrapper
+    # First get the word.
+    c.bodyWantsFocusNow()
+    if not w.hasSelection():
+        c.editCommands.extendToWord(event, select=True)
+    word = w.getSelectedText().strip()
+    if not word:
+        return None
+    if keyword.iskeyword(word):
+        return None
+    # Return word, stripped of preceding class or def.
+    for tag in ('class ', 'def '):
+        found = word.startswith(tag) and len(word) &gt; len(tag)
+        if found:
+            return word[len(tag) :].strip()
+    return word
+</t>
+<t tx="ekr.20240527100653.2059">def _fd_helper(self, settings: Settings) -&gt; tuple[Position, int, int]:
+    """
+    Find the definition of the class, def or var under the cursor.
+
+    return p, pos, newpos for unit tests.
+    """
+    c = self.c
+    self.find_text = settings.find_text
+    # Just search body text.
+    self.search_headline = False
+    self.search_body = True
+    w = c.frame.body.wrapper
+    # Check.
+    if not w:  # pragma: no cover
+        return None, None, None
+    save_sel = w.getSelectionRange()
+    ins = w.getInsertPoint()
+    old_p = c.p
+    if self.reverse_find_defs:
+        # #2161: start at the last position.
+        p = c.lastPosition()
+    else:
+        # Start in the root position.
+        p = c.rootPosition()
+    # Required.
+    c.selectPosition(p)
+    c.redraw()
+    c.bodyWantsFocusNow()
+    # #1592.  Ignore hits under control of @nosearch
+    old_reverse = self.reverse
+    try:
+        # #2161:
+        self.reverse = self.reverse_find_defs
+        # # 2288:
+        self.work_s = p.b
+        if self.reverse_find_defs:
+            self.work_sel = (len(p.b), len(p.b), len(p.b))
+        else:
+            self.work_sel = (0, 0, 0)
+        while True:
+            p, pos, newpos = self.find_next_match(p)
+            found = pos is not None
+            if found or not g.inAtNosearch(p):  # do *not* use c.p.
+                break
+    finally:
+        self.reverse = old_reverse
+    if found:
+        # Keep the find settings used to find the match.
+        c.redraw(p)
+        w.setSelectionRange(pos, newpos, insert=newpos)
+        c.bodyWantsFocusNow()
+        return p, pos, newpos
+    # find_def now calls _restore_after_find_def
+    i, j = save_sel
+    c.redraw(old_p)
+    w.setSelectionRange(i, j, insert=ins)
+    c.bodyWantsFocusNow()
+    return None, None, None
+</t>
+<t tx="ekr.20240527100653.2060">def _restore_after_find_def(self) -&gt; None:
+    """Restore find settings in effect before a find-def command."""
+    b = self.find_def_data  # A g.Bunch
+    if b:
+        self.ignore_case = b.ignore_case
+        self.pattern_match = b.pattern_match
+        self.search_body = b.search_body
+        self.search_headline = b.search_headline
+        self.whole_word = b.whole_word
+        self.find_def_data = None
+</t>
+<t tx="ekr.20240527100653.2061">def _save_before_find_def(self, p: Position) -&gt; None:
+    """Save the find settings in effect before a find-def command."""
+    self.find_def_data = g.Bunch(
+        ignore_case=self.ignore_case,
+        p=p.copy(),
+        pattern_match=self.pattern_match,
+        search_body=self.search_body,
+        search_headline=self.search_headline,
+        whole_word=self.whole_word,
+    )
+</t>
+<t tx="ekr.20240527100653.2062">def _switch_style(self, word: str) -&gt; Optional[str]:
+    """
+    Switch between camelCase and underscore_style function definitions.
+    Return None if there would be no change.
+    """
+    s = word
+    if not s:
+        return None
+    if s[0].isupper():
+        return None  # Don't convert class names.
+    if s.find('_') &gt; -1:
+        # Convert to CamelCase
+        s = s.lower()
+        while s:
+            i = s.find('_')
+            if i == -1:
+                break
+            s = s[:i] + s[i + 1 :].capitalize()
+        return s
+    # Convert to underscore_style.
+    result = []
+    for i, ch in enumerate(s):
+        if i &gt; 0 and ch.isupper():
+            result.append('_')
+        result.append(ch.lower())
+    s = ''.join(result)
+    return None if s == word else s
+</t>
+<t tx="ekr.20240527100653.2063">def reload_settings(self) -&gt; None:
+    """LeoFind.reload_settings."""
+    c = self.c
+    self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
+    self.reverse_find_defs = c.config.getBool('reverse-find-defs', default=False)
+
+reloadSettings = reload_settings  # Necessary alias.
+</t>
+<t tx="ekr.20240527100653.2064">@nobeautify
+
+def initObjects(self, gui: LeoGui) -&gt; None:
+
+    c = self
+    self.hiddenRootNode = leoNodes.VNode(context=c, gnx='hidden-root-vnode-gnx')
+    self.hiddenRootNode.h = '&lt;hidden root vnode&gt;'
+    # Create the gui frame.
+    title = c.computeTabTitle()
+    if not g.app.initing:
+        g.doHook("before-create-leo-frame", c=c)
+    self.frame = gui.createLeoFrame(c, title)
+    assert self.frame
+    assert self.frame.c == c
+    from leo.core import leoHistory
+    self.nodeHistory = leoHistory.NodeHistory(c)
+    self.initConfigSettings()
+    c.setWindowPosition() # Do this after initing settings.
+
+    # Break circular import dependencies by doing imports here.
+    # All these imports take almost 3/4 sec in the leoBridge.
+
+    from leo.core import leoAtFile
+    from leo.core import leoBeautify  # So decorators are executed.
+    assert leoBeautify  # for pyflakes.
+    from leo.core.leoCache import CommanderWrapper
+    from leo.core import leoChapters
+    # User commands...
+    from leo.commands import abbrevCommands
+    from leo.commands import bufferCommands
+    from leo.commands import checkerCommands  # The import *is* required to define commands.
+    assert checkerCommands  # To suppress a pyflakes warning.
+    from leo.commands import controlCommands
+    from leo.commands import convertCommands
+    from leo.commands import debugCommands
+    from leo.commands import editCommands
+    from leo.commands import editFileCommands
+    from leo.commands import gotoCommands
+    from leo.commands import helpCommands
+    from leo.commands import keyCommands
+    from leo.commands import killBufferCommands
+    from leo.commands import rectangleCommands
+    from leo.commands import spellCommands
+    # Import files to execute @g.commander_command decorators
+    from leo.core import leoCompare
+    assert leoCompare
+    from leo.core import leoDebugger
+    assert leoDebugger
+    from leo.commands import commanderEditCommands
+    assert commanderEditCommands
+    from leo.commands import commanderFileCommands
+    assert commanderFileCommands
+    from leo.commands import commanderHelpCommands
+    assert commanderHelpCommands
+    from leo.commands import commanderOutlineCommands
+    assert commanderOutlineCommands
+    # Other subcommanders.
+    from leo.core import leoFind  # Leo 4.11.1
+    from leo.core import leoKeys
+    from leo.core import leoFileCommands
+    from leo.core import leoImport
+    from leo.core import leoMarkup
+    from leo.core import leoPersistence
+    from leo.core import leoPrinting
+    from leo.core import leoRst
+    from leo.core import leoShadow
+    from leo.core import leoUndo
+    from leo.core import leoVim
+    # Define 11 subcommanders.
+    self.keyHandler = self.k    = leoKeys.KeyHandlerClass(c)
+    self.chapterController      = leoChapters.ChapterController(c)
+    self.shadowController       = leoShadow.ShadowController(c)
+    self.fileCommands           = leoFileCommands.FileCommands(c)
+    self.findCommands           = leoFind.LeoFind(c)
+    self.atFileCommands         = leoAtFile.AtFile(c)
+    self.importCommands         = leoImport.LeoImportCommands(c)
+    self.markupCommands         = leoMarkup.MarkupCommands(c)
+    self.persistenceController  = leoPersistence.PersistenceDataController(c)
+    self.printingController     = leoPrinting.PrintingController(c)
+    self.undoer                 = leoUndo.Undoer(c)
+    # 15 command handlers...
+    self.abbrevCommands     = abbrevCommands.AbbrevCommandsClass(c)
+    self.bufferCommands     = bufferCommands.BufferCommandsClass(c)
+    self.controlCommands    = controlCommands.ControlCommandsClass(c)
+    self.convertCommands    = convertCommands.ConvertCommandsClass(c)
+    self.debugCommands      = debugCommands.DebugCommandsClass(c)
+    self.editCommands       = editCommands.EditCommandsClass(c)
+    self.editFileCommands   = editFileCommands.EditFileCommandsClass(c)
+    self.gotoCommands       = gotoCommands.GoToCommands(c)
+    self.helpCommands       = helpCommands.HelpCommandsClass(c)
+    self.keyHandlerCommands = keyCommands.KeyHandlerCommandsClass(c)
+    self.killBufferCommands = killBufferCommands.KillBufferCommandsClass(c)
+    self.rectangleCommands  = rectangleCommands.RectangleCommandsClass(c)
+    self.rstCommands        = leoRst.RstCommands(c)
+    self.spellCommands      = spellCommands.SpellCommandsClass(c)
+    self.vimCommands        = leoVim.VimCommands(c)
+    # Create the list of subcommanders.
+    self.subCommanders = [
+        self.abbrevCommands,
+        self.atFileCommands,
+        self.bufferCommands,
+        self.chapterController,
+        self.controlCommands,
+        self.convertCommands,
+        self.debugCommands,
+        self.editCommands,
+        self.editFileCommands,
+        self.fileCommands,
+        self.findCommands,
+        self.gotoCommands,
+        self.helpCommands,
+        self.importCommands,
+        self.keyHandler,
+        self.keyHandlerCommands,
+        self.killBufferCommands,
+        self.persistenceController,
+        self.printingController,
+        self.rectangleCommands,
+        self.rstCommands,
+        self.shadowController,
+        self.spellCommands,
+        self.vimCommands,
+        self.undoer,
+    ]
+
+    # Other objects
+    # A list of other classes that have a reloadSettings method
+    c.configurables = c.subCommanders[:]
+    c.db = CommanderWrapper(c)
+    c.free_layout = None  # Compatibility. Always None.
+        
+    if hasattr(g.app.gui, 'styleSheetManagerClass'):
+        self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
+        self.subCommanders.append(self.styleSheetManager)
+    else:
+        self.styleSheetManager = None
+</t>
+<t tx="ekr.20240527100653.2065">def openUrlHelper(event: LeoKeyEvent, url: str = None) -&gt; Optional[str]:
+    """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
+    c = getattr(event, 'c', None)
+    if not c:
+        return None
+    w = getattr(event, 'w', c.frame.body.wrapper)
+    if not g.app.gui.isTextWrapper(w):
+        g.internalError('must be a text wrapper', w)
+        return None
+    if event:
+        event.widget = w
+    # Part 1: get the url.
+    if url is None:
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i, j = w.getSelectionRange()
+        if i != j:
+            return None  # So find doesn't open the url.
+        row, col = g.convertPythonIndexToRowCol(s, ins)
+        i, j = g.getLine(s, ins)
+        line = s[i:j]
+        # Order is important.
+        &lt;&lt; look for section ref &gt;&gt;
+        url = unl = None
+        &lt;&lt; look for url &gt;&gt;
+        if not url:
+            &lt;&lt; look for unl &gt;&gt;
+            if not unl:
+                &lt;&lt; look for gnx &gt;&gt;
+    elif not isinstance(url, str):
+        url = url.toString()
+        url = g.toUnicode(url)  # #571
+    if url and g.isValidUrl(url):
+        # Part 2: handle the url
+        p = c.p
+        if not g.doHook("@url1", c=c, p=p, url=url):
+            g.handleUrl(url, c=c, p=p)
+        g.doHook("@url2", c=c, p=p)
+        return url
+    # Part 3: call find-def.
+    if not w.hasSelection():
+        c.editCommands.extendToWord(event, select=True)
+    word = w.getSelectedText().strip()
+    if not word:
+        return None
+    p, pos, newpos = c.findCommands.find_def(event)
+    if p:
+        return None
+    &lt;&lt; look for filename or import&gt;&gt;
+    return None
+</t>
+<t tx="ekr.20240527100653.2066"># Navigate to section reference if one was clicked.
+l_ = line.strip()
+if l_.endswith('&gt;&gt;') and l_.startswith('&lt;&lt;'):
+    p = c.p
+    px = None
+    for p1 in p.subtree():
+        if p1.h.strip() == l_:
+            px = p1
+            break
+    if px:
+        c.selectPosition(px)
+        c.redraw()
+    return None
+</t>
+<t tx="ekr.20240527100653.2067"># Find the url on the line.
+for match in g.url_regex.finditer(line):
+    # Don't open if we click after the url.
+    if match.start() &lt;= col &lt; match.end():
+        url = match.group(0)
+        if g.isValidUrl(url):
+            break
+</t>
+<t tx="ekr.20240527100653.2068">for match in g.unl_regex.finditer(line):
+    # Don't open if we click after the unl.
+    if match.start() &lt;= col &lt; match.end():
+        unl = match.group()
+        g.handleUnl(unl, c)
+        return None
+</t>
+<t tx="ekr.20240527100653.2069">target = None
+for match in gnx_regex.finditer(line):
+    # Don't open if we click after the gnx.
+    if match.start() &lt;= col &lt; match.end():
+        target = match.group(0)[4:]  # Strip the leading 'gnx:'
+        break
+
+if target:
+    if c.p.gnx == target:
+        return target
+    for p in c.all_unique_positions():
+        if p.v.gnx == target:
+            c.selectPosition(p)
+            c.redraw()
+            return target
+    return None
+</t>
+<t tx="ekr.20240527100653.2070"># Part 4: #2546: look for a file name.
+s = w.getAllText()
+i, j = w.getSelectionRange()
+m = re.match(r'(\w+)\.(\w){1,4}\b', s[i:])
+filename, filename_w = '', ''
+if m:
+    filename = m.group(0)
+# Part 5: #3112: look for import statement
+else:
+    FROMre = r'^from [\./\\]*([^\s/\\].+)\s+import'
+    IMPORTre = r'^import\s+[\./\\]*([^\s/\\].+)'
+    IMPORTSre = FROMre + '|' + IMPORTre
+
+    m = re.match(IMPORTSre, s[i:], re.MULTILINE)
+    module = m and (m[2] or m[1])
+    if module:
+        filename = module + '.py'
+        filename_w = module + '.pyw'
+
+if filename:
+    # Navigate to the first node whose headline ends with the filename.
+    effective_filename = ''
+    for p in c.all_unique_positions():
+        headline = p.h.strip()
+        if headline.endswith(filename):
+            effective_filename = filename
+        elif filename_w and headline.endswith(filename_w):
+            effective_filename = filename_w
+        if effective_filename:
+            # Set the find text.
+            c.findCommands.ftm.set_find_text(effective_filename)
+            # Select.
+            c.redraw(p)
+            break
+</t>
+<t tx="ekr.20240527100653.2071">def __init__(self, c: Cmdr, listWidget: QListWidget, ui: Any) -&gt; None:
+    self.c = c
+    self.lw: QListWidgetItem = listWidget
+    w: QListWidgetItem = listWidget
+    self.its: dict[int, Callable] = {}  # Keys are id(w),values are tuples (p,pos)
+    self.worker = threadutil.UnitWorker()
+    self.widgetUI = ui
+    self.fileDirectives = ["@clean", "@file", "@asis", "@edit",
+                           "@auto", "@auto-md", "@auto-org",
+                           "@auto-otl", "@auto-rst"]
+
+    self.frozen = False
+    self._search_patterns: list[str] = []
+
+    def searcher(inp: str) -&gt; tuple[Match_List, Match_List]:
+        if self.frozen:
+            return None
+        exp = inp.replace(" ", "*")
+        res = self.bgSearch(exp)
+        return res
+
+    def dumper() -&gt; None:
+        # always run on ui thread
+        if self.frozen:
+            return
+        out = self.worker.output
+        self.throttler.add(out)
+
+    def throttledDump(lst: list[tuple[Match_List, Match_List]]) -&gt; None:
+        """ dumps the last output """
+        # we do get called with empty list on occasion
+        if not lst:
+            return
+        if self.frozen:
+            return
+        hm, bm = lst[-1]
+        self.clear()
+        self.addHeadlineMatches(hm)
+        self.addBodyMatches(bm)
+
+    self.throttler = threadutil.NowOrLater(throttledDump)
+    self.worker.set_worker(searcher)
+    self.worker.resultReady.connect(dumper)
+    self.worker.start()
+    # we want both single-clicks and activations (press enter)
+    w.itemActivated.connect(self.onActivated)
+    w.itemPressed.connect(self.onSelectItem)
+    w.currentItemChanged.connect(self.onSelectItem)
+</t>
+<t tx="ekr.20240527100653.288">@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/pull/3832
+
+@language python
+</t>
+<t tx="ekr.20240527100653.292">https://github.com/leo-editor/leo-editor/pull/3841
+</t>
+<t tx="ekr.20240527100653.294">def doCommand(self, command_func: Callable, command_name: str, event: LeoKeyEvent) -&gt; Any:
+    """
+    Execute the given command function, invoking hooks and catching exceptions.
+
+    The code assumes that the "command1" hook has completely handled the
+    command func if g.doHook("command1") returns False. This provides a
+    simple mechanism for overriding commands.
+    """
+    c, p = self, self.p
+    c.setLog()
+    self.command_count += 1
+    # New in Leo 6.2. Set command_function and command_name ivars.
+    self.command_function = command_func
+    self.command_name = command_name
+    # The presence of this message disables all commands.
+    if c.disableCommandsMessage:
+        g.blue(c.disableCommandsMessage)
+        return None
+    if c.exists and c.inCommand and not g.unitTesting:
+        g.app.commandInterruptFlag = True  # For sc.make_slide_show_command.
+        # 1912: This message is annoying and unhelpful.
+        # g.error('ignoring command: already executing a command.')
+        return None
+    g.app.commandInterruptFlag = False
+    # #2256: Update the list of recent commands.
+    if len(c.recent_commands_list) &gt; 99:
+        c.recent_commands_list.pop()
+    c.recent_commands_list.insert(0, command_name)
+    if not g.doHook("command1", c=c, p=p, label=command_name):
+        try:
+            c.inCommand = True
+            try:
+                return_value = command_func(event)
+            except Exception:
+                g.es_exception()
+                return_value = None
+            if c and c.exists:  # Be careful: the command could destroy c.
+                c.inCommand = False
+        except Exception:
+            c.inCommand = False
+            if g.unitTesting:
+                raise
+            g.es_print("exception executing command")
+            g.es_exception()
+        if c and c.exists:
+            if c.requestCloseWindow:
+                c.requestCloseWindow = False
+                g.app.closeLeoWindow(c.frame)
+            else:
+                c.outerUpdate()
+    # Be careful: the command could destroy c.
+    if c and c.exists:
+        p = c.p
+        g.doHook("command2", c=c, p=p, label=command_name)
+    return return_value
+</t>
+<t tx="ekr.20240527100653.308"># Keys are strings: g.callers. Values are lists of str(value).
+trace_unique_dict: dict[str, list[str]] = {}
+
+def traceUnique(value: Any, *, n: int = 2, pad: int = 30) -&gt; None:
+    """Print unique values associated with g.callers(n)."""
+    if pad is None:
+        pad = 30
+    key = g.callers(n)
+    value_s = str(value)
+    values: list[str] = trace_unique_dict.get(key, [])
+    if value_s not in values:
+        pad_s = ' ' * max(0, pad - len(key))
+        key_s = pad_s + key  # right justify.
+        print(f"{key_s} {value_s}")
+        values.append(value_s)
+        trace_unique_dict[key] = values
+
+trace_unique = traceUnique
+
+# Keys are strings: g.callers. Values are lists of obj.__class__.__name__.
+trace_unique_class_dict: dict[str, list[str]] = {}
+
+def traceUniqueClass(obj: Any, *, n: int = 2, pad: int = 30) -&gt; None:
+    """Print unique class names associated with g.callers(n)."""
+    key = g.callers(n)
+    value_s = obj.__class__.__name__
+    values: list[str] = trace_unique_class_dict.get(key, [])
+    if value_s not in values:
+        pad_s = ' ' * max(0, pad - len(key))
+        key_s = pad_s + key  # Right justify.
+        print(f"{key_s} {value_s}")
+        values.append(value_s)
+        trace_unique_class_dict[key] = values
+
+trace_unique_class = traceUniqueClass
+</t>
+<t tx="ekr.20240527100653.732">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/3892
+PR: https://github.com/leo-editor/leo-editor/pull/3893
+
+@language python
+</t>
+<t tx="ekr.20240527100653.733"></t>
+<t tx="ekr.20240527100653.734"></t>
+<t tx="ekr.20240527100653.735">class CommanderWrapper:
+    """
+    A class that creates distinct keys for all commanders, allowing
+    commanders to share g.app.db without collisions.
+
+    Instances of this class are c.db.
+    """
+
+    def __init__(self, c: Cmdr) -&gt; None:
+        self.c = c  # Key is c.mFilemane to fix #3822
+        self.db = g.app.db
+        self.user_keys: set[str] = set()
+
+    def get(self, key: str, default: Any = None) -&gt; Any:
+        value = self.db.get(f"{self.c.mFileName}:::{key}")
+        return default if value is None else value
+
+    def keys(self) -&gt; list[str]:
+        return sorted(list(self.user_keys))
+
+    def __contains__(self, key: Any) -&gt; bool:
+        return f"{self.c.mFileName}:::{key}" in self.db
+
+    def __delitem__(self, key: Any) -&gt; None:
+        if key in self.user_keys:
+            self.user_keys.remove(key)
+        del self.db[f"{self.c.mFileName}:::{key}"]
+
+    def __getitem__(self, key: str) -&gt; Any:
+        return self.db[f"{self.c.mFileName}:::{key}"]  # May (properly) raise KeyError
+
+    def __setitem__(self, key: str, value: Any) -&gt; None:
+        self.user_keys.add(key)
+        self.db[f"{self.c.mFileName}:::{key}"] = value
+</t>
+<t tx="ekr.20240527100653.736">_sentinel = object()
+
+
+class SqlitePickleShare:
+    """
+    The main 'connection' object for SqlitePickleShare database.
+
+    Opening this DB may fail. If so the GlobalCacher class uses a plain
+    Python dict instead.
+    """
+    @others
+</t>
+<t tx="ekr.20240527100653.737">def init_dbtables(self, conn: Any) -&gt; None:
+    sql = 'create table if not exists cachevalues(key text primary key, data blob);'
+    conn.execute(sql)
+</t>
+<t tx="ekr.20240527100653.738">def __init__(self, root: str) -&gt; None:
+    """
+    Init the SqlitePickleShare class.
+    root: The directory that contains the data. Created if it doesn't exist.
+    """
+    self.root: str = abspath(expanduser(root))
+    if not isdir(self.root) and not g.unitTesting:
+        self._makedirs(self.root)
+    dbfile = ':memory:' if g.unitTesting else join(root, 'cache.sqlite')
+    self.conn = sqlite3.connect(dbfile, isolation_level=None)
+    self.init_dbtables(self.conn)
+    # Keys are normalized file names.
+    # Values are tuples (obj, orig_mod_time)
+    self.cache: dict[str, Any] = {}
+
+    def loadz(data: Any) -&gt; Optional[Any]:
+        if data:
+            # Retain this code for maximum compatibility.
+            try:
+                val = pickle.loads(zlib.decompress(data))
+            except(ValueError, TypeError):
+                g.es("Unpickling error - Python 3 data accessed from Python 2?")
+                return None
+            return val
+        return None
+
+    def dumpz(val: Any) -&gt; Any:
+        try:
+            # Use Python 2's highest protocol, 2, if possible
+            data = pickle.dumps(val, protocol=2)
+        except Exception:
+            # Use best available if that doesn't work (unlikely)
+            data = pickle.dumps(val, pickle.HIGHEST_PROTOCOL)
+        return sqlite3.Binary(zlib.compress(data))
+
+    self.loader = loadz
+    self.dumper = dumpz
+    self.reset_protocol_in_values()
+</t>
+<t tx="ekr.20240527100653.739">def __contains__(self, key: str) -&gt; bool:
+
+    return self.has_key(key)  # NOQA
+</t>
+<t tx="ekr.20240527100653.740">def __delitem__(self, key: str) -&gt; None:
+    """ del db["key"] """
+    try:
+        self.conn.execute(
+            '''delete from cachevalues
+            where key=?''', (key,))
+    except sqlite3.OperationalError:
+        pass
+</t>
+<t tx="ekr.20240527100653.741">def __getitem__(self, key: str) -&gt; None:
+    """ db['key'] reading """
+    try:
+        obj = None
+        for row in self.conn.execute(
+            '''select data from cachevalues
+            where key=?''', (key,)):
+            obj = self.loader(row[0])
+            break
+        else:
+            raise KeyError(key)
+    except sqlite3.Error:
+        raise KeyError(key)
+    return obj
+</t>
+<t tx="ekr.20240527100653.742">def __iter__(self) -&gt; Generator:
+
+    for k in list(self.keys()):
+        yield k
+</t>
+<t tx="ekr.20240527100653.744">def __setitem__(self, key: str, value: Any) -&gt; None:
+    """ db['key'] = 5 """
+    try:
+        data = self.dumper(value)
+        self.conn.execute(
+            '''replace into cachevalues(key, data) values(?,?);''',
+            (key, data))
+    except sqlite3.OperationalError:
+        g.es_exception()
+</t>
+<t tx="ekr.20240527100653.745">def _makedirs(self, fn: str, mode: int = 0o777) -&gt; None:
+
+    os.makedirs(fn, mode)
+</t>
+<t tx="ekr.20240527100653.746">def _openFile(self, fn: str, mode: str = 'r') -&gt; Optional[Any]:
+    """ Open this file.  Return a file object.
+
+    Do not print an error message.
+    It is not an error for this to fail.
+    """
+    try:
+        return open(fn, mode)
+    except Exception:
+        return None
+</t>
+<t tx="ekr.20240527100653.747">def _walkfiles(self, s: str, pattern: str = None) -&gt; None:
+    """ D.walkfiles() -&gt; iterator over files in D, recursively.
+
+    The optional argument, pattern, limits the results to files
+    with names that match the pattern.  For example,
+    mydir.walkfiles('*.tmp') yields only files with the .tmp
+    extension.
+    """
+</t>
+<t tx="ekr.20240527100653.748">def _listdir(self, s: str, pattern: str = None) -&gt; list[str]:
+    """ D.listdir() -&gt; List of items in this directory.
+
+    Use D.files() or D.dirs() instead if you want a listing
+    of just files or just subdirectories.
+
+    The elements of the list are path objects.
+
+    With the optional 'pattern' argument, this only lists
+    items whose names match the given pattern.
+    """
+    names = os.listdir(s)
+    if pattern is not None:
+        names = fnmatch.filter(names, pattern)
+    return [join(s, child) for child in names]
+</t>
+<t tx="ekr.20240527100653.749">def _fn_match(self, s: str, pattern: Any) -&gt; bool:
+    """ Return True if self.name matches the given pattern.
+
+    pattern - A filename pattern with wildcards, for example '*.py'.
+    """
+    return fnmatch.fnmatch(basename(s), pattern)
+</t>
+<t tx="ekr.20240527100653.750">def clear(self) -&gt; None:
+    """
+    Deletes all files in the fcache subdirectory.
+
+    It would be more thorough to delete everything
+    below the root directory, but it's not necessary.
+    """
+    self.conn.execute('delete from cachevalues;')
+</t>
+<t tx="ekr.20240527100653.751">def get(self, key: str, default: Any = None) -&gt; Any:
+
+    if not self.has_key(key):  # noqa
+        return default
+    try:
+        val = self[key]
+        return val
+    except Exception:  # #1444: Was KeyError.
+        return default
+</t>
+<t tx="ekr.20240527100653.752">def has_key(self, key: str) -&gt; bool:
+    sql = 'select 1 from cachevalues where key=?;'
+    try:
+        for _row in self.conn.execute(sql, (key,)):
+            return True
+    except Exception:
+        pass
+    return False
+</t>
+<t tx="ekr.20240527100653.753">def items(self) -&gt; Generator:
+    sql = 'select key,data from cachevalues;'
+    for key, data in self.conn.execute(sql):
+        yield key, data
+</t>
+<t tx="ekr.20240527100653.754"># Called by clear, and during unit testing.
+
+def keys(self, globpat: str = None) -&gt; Generator:
+    """Return all keys in DB, or all keys matching a glob"""
+    if globpat is None:
+        sql = 'select key from cachevalues;'
+        args: Sequence[Any] = tuple()
+    else:
+        sql = "select key from cachevalues where key glob ?;"
+        # pylint: disable=trailing-comma-tuple
+        args = globpat,
+    for key in self.conn.execute(sql, args):
+        yield key
+</t>
+<t tx="ekr.20240527100653.755">def reset_protocol_in_values(self) -&gt; None:
+    PROTOCOLKEY = '__cache_pickle_protocol__'
+    if self.get(PROTOCOLKEY, 3) == 2:
+        return
+    @others
+    self.conn.isolation_level = 'DEFERRED'
+
+    sql0 = '''select key, data from cachevalues order by key limit 50'''
+    sql1 = '''select key, data from cachevalues where key &gt; ? order by key limit 50'''
+
+
+    block = self.conn.execute(sql0)
+    lk = do_block(block)
+    while lk:
+        lk = do_block(self.conn.execute(sql1, (lk,)))
+    self[PROTOCOLKEY] = 2
+    self.conn.commit()
+
+    self.conn.isolation_level = None
+</t>
+<t tx="ekr.20240527100653.756">def do_block(cur: Any) -&gt; Any:
+    itms = tuple((self.dumper(self.loader(v)), k) for k, v in cur)
+    if itms:
+        self.conn.executemany('update cachevalues set data=? where key=?', itms)
+        self.conn.commit()
+        return itms[-1][1]
+    return None
+</t>
+<t tx="ekr.20240527100653.757">def uncache(self, *items: Any) -&gt; None:
+    """not used in SqlitePickleShare"""
+    pass
+</t>
+<t tx="ekr.20240527100653.758"></t>
+<t tx="ekr.20240527100653.759">class LeoQtBody(leoFrame.LeoBody):
+    """A class that represents the body pane of a Qt window."""
+    @others
+</t>
+<t tx="ekr.20240527100653.760"></t>
+<t tx="ekr.20240527100653.761">def __init__(self, frame: LeoQtFrame, parentFrame: QWidget) -&gt; None:
+    """Ctor for LeoQtBody class."""
+    # Call the base class constructor.
+    super().__init__(frame, parentFrame)
+    c = self.c
+    assert c.frame == frame and frame.c == c
+    self.colorizer: Any = None  # A Union
+    self.wrapper: Wrapper = None
+    self.widget: QWidget = None
+    self.reloadSettings()
+    self.set_widget()  # Sets self.widget and self.wrapper.
+    self.setWrap(c.p)
+    # For multiple body editors.
+    self.editor_name = None
+    self.editor_v = None
+    self.numberOfEditors = 1
+    self.totalNumberOfEditors = 1
+    # For renderer panes.
+    self.canvasRenderer: QtWidgets.QGraphicsView = None
+    self.canvasRendererLabel: QtWidgets.QLineEdit = None
+    self.canvasRendererVisible = False
+    self.textRenderer: QtWidgets.QFrame = None
+    self.textRendererLabel: QtWidgets.QLineEdit = None
+    self.textRendererVisible = False
+    self.textRendererWrapper: Wrapper = None
+</t>
+<t tx="ekr.20240527100653.762">def getName(self) -&gt; str:
+    return 'body-widget'
+</t>
+<t tx="ekr.20240527100653.763">def reloadSettings(self) -&gt; None:
+    c = self.c
+    self.useScintilla = c.config.getBool('qt-use-scintilla')
+    self.use_chapters = c.config.getBool('use-chapters')
+    self.use_gutter = c.config.getBool('use-gutter', default=False)
+</t>
+<t tx="ekr.20240527100653.764">def set_invisibles(self, c: Cmdr) -&gt; None:
+    """Set the show-invisibles bit in the document."""
+    d = c.frame.body.wrapper.widget.document()
+    option = QtGui.QTextOption()
+    if c.frame.body.colorizer.showInvisibles:
+        option.setFlags(option.Flag.ShowTabsAndSpaces)
+    d.setDefaultTextOption(option)
+</t>
+<t tx="ekr.20240527100653.765">def set_widget(self) -&gt; None:
+    """Set the actual gui widget."""
+    c = self.c
+    top = c.frame.top
+    sw = getattr(top, 'stackedWidget', None)
+    if sw:
+        sw.setCurrentIndex(1)
+    if self.useScintilla and not Qsci:
+        g.trace('Can not import Qsci: ignoring @bool qt-use-scintilla')
+    if self.useScintilla and Qsci:
+        # A Qsci.QsciSintilla object.
+        # dw.createText sets self.scintilla_widget
+        self.widget = c.frame.top.scintilla_widget
+        self.wrapper = qt_text.QScintillaWrapper(self.widget, name='body', c=c)
+        self.colorizer = leoColorizer.QScintillaColorizer(c, self.widget)
+    else:
+        self.widget = top.richTextEdit  # A LeoQTextBrowser
+        self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
+        self.widget.setAcceptRichText(False)
+        self.colorizer = leoColorizer.make_colorizer(c, self.widget)
+</t>
+<t tx="ekr.20240527100653.766">def forceWrap(self, p: Position) -&gt; None:
+    """Set **only** the wrap bits in the body."""
+    if not p or self.useScintilla:
+        return
+    c = self.c
+    w = c.frame.body.wrapper.widget
+    wrap = WrapMode.WrapAtWordBoundaryOrAnywhere
+    w.setWordWrapMode(wrap)
+
+def setWrap(self, p: Position) -&gt; None:
+    """Set **only** the wrap bits in the body."""
+    if not p or self.useScintilla:
+        return
+    c = self.c
+    w = c.frame.body.wrapper.widget
+    wrap = g.scanAllAtWrapDirectives(c, p)
+    policy = ScrollBarPolicy.ScrollBarAlwaysOff if wrap else ScrollBarPolicy.ScrollBarAsNeeded
+    w.setHorizontalScrollBarPolicy(policy)
+    wrap_setting = WrapMode.WrapAtWordBoundaryOrAnywhere if wrap else WrapMode.NoWrap
+    w.setWordWrapMode(wrap_setting)
+</t>
+<t tx="ekr.20240527100653.767"></t>
+<t tx="ekr.20240527100653.768"></t>
+<t tx="ekr.20240527100653.769"># An override of leoFrame.addEditor.
+
+@body_cmd('editor-add')
+@body_cmd('add-editor')
+def add_editor_command(self, event: LeoKeyEvent = None) -&gt; None:
+    """Add another editor to the body pane."""
+    c, p = self.c, self.c.p
+    d = self.editorWrappers
+    dw = c.frame.top
+    wrapper = c.frame.body.wrapper  # A QTextEditWrapper
+    widget = wrapper.widget
+    self.totalNumberOfEditors += 1
+    self.numberOfEditors += 1
+    if self.totalNumberOfEditors == 2:
+        d['1'] = wrapper
+        # Pack the original body editor.
+        # Fix #1021: Pack differently depending on whether the gutter exists.
+        if self.use_gutter:
+            dw.packLabel(widget.parent(), n=1)
+            widget.leo_label = widget.parent().leo_label
+        else:
+            dw.packLabel(widget, n=1)
+    name = f"{self.totalNumberOfEditors}"
+    f, wrapper = dw.addNewEditor(name)
+    assert g.isTextWrapper(wrapper), wrapper
+    assert g.isTextWidget(widget), widget
+    assert isinstance(f, QtWidgets.QFrame), f
+    d[name] = wrapper
+    if self.numberOfEditors == 2:
+        # Inject the ivars into the first editor.
+        # The name of the last editor need not be '1'
+        keys = list(d.keys())
+        old_name = keys[0]
+        old_wrapper = d.get(old_name)
+        old_w = old_wrapper.widget
+        self.injectIvars(f, old_name, p, old_wrapper)
+        self.updateInjectedIvars(old_w, p)
+        # Immediately create the label in the old editor.
+        self.selectLabel(old_wrapper)
+    # Switch editors.
+    c.frame.body.wrapper = wrapper
+    self.selectLabel(wrapper)
+    self.selectEditor(wrapper)
+    self.updateEditors()
+    c.bodyWantsFocus()
+</t>
+<t tx="ekr.20240527100653.770">def assignPositionToEditor(self, p: Position) -&gt; None:
+    """Called *only* from tree.select to select the present body editor."""
+    c = self.c
+    wrapper = c.frame.body.wrapper
+    w = wrapper and wrapper.widget
+    if w:  # Careful: w may not exist during unit testing.
+        self.updateInjectedIvars(w, p)
+        self.selectLabel(wrapper)
+</t>
+<t tx="ekr.20240527100653.771"># Use the base class method.
+</t>
+<t tx="ekr.20240527100653.772">@body_cmd('delete-editor')
+@body_cmd('editor-delete')
+def delete_editor_command(self, event: LeoKeyEvent = None) -&gt; None:
+    """Delete the presently selected body text editor."""
+    c, d = self.c, self.editorWrappers
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    assert g.isTextWrapper(wrapper), wrapper
+    assert g.isTextWidget(w), w
+    # Fix bug 228: make *sure* the old text is saved.
+    c.p.b = wrapper.getAllText()
+    name = getattr(w, 'leo_name', None)
+    if len(list(d.keys())) &lt;= 1 or name == '1':
+        g.warning('can not delete main editor')
+        return
+    #
+    # Actually delete the widget.
+    del d[name]
+    f = c.frame.top.leo_body_frame
+    layout = f.layout()
+    for z in (w, w.leo_label):
+        if z:
+            self.unpackWidget(layout, z)
+    #
+    # Select another editor.
+    new_wrapper = list(d.values())[0]
+    self.numberOfEditors -= 1
+    if self.numberOfEditors == 1:
+        w = new_wrapper.widget
+        label = getattr(w, 'leo_label', None)
+        if label:
+            self.unpackWidget(layout, label)
+    w.leo_label = None
+    self.selectEditor(new_wrapper)
+</t>
+<t tx="ekr.20240527100653.773">def findEditorForChapter(self, chapter: Any, p: Position) -&gt; None:
+    """Return an editor to be assigned to chapter."""
+    c, d = self.c, self.editorWrappers
+    values = list(d.values())
+    # First, try to match both the chapter and position.
+    if p:
+        for w in values:
+            if (
+                hasattr(w, 'leo_chapter') and w.leo_chapter == chapter and
+                hasattr(w, 'leo_p') and w.leo_p and w.leo_p == p
+            ):
+                return w
+    # Next, try to match just the chapter.
+    for w in values:
+        if hasattr(w, 'leo_chapter') and w.leo_chapter == chapter:
+            return w
+    # As a last resort, return the present editor widget.
+    return c.frame.body.wrapper
+</t>
+<t tx="ekr.20240527100653.774">def unselectLabel(self, wrapper: Wrapper) -&gt; None:
+    pass
+
+def selectLabel(self, wrapper: Wrapper) -&gt; None:
+    c = self.c
+    w = wrapper.widget
+    label = getattr(w, 'leo_label', None)
+    if label:
+        label.setEnabled(True)
+        label.setText(c.p.h)
+        label.setEnabled(False)
+</t>
+<t tx="ekr.20240527100653.775">selectEditorLockout = False
+
+def selectEditor(self, wrapper: Wrapper) -&gt; None:
+    """Select editor w and node w.leo_p."""
+    trace = 'select' in g.app.debug and not g.unitTesting
+    tag = 'qt_body.selectEditor'
+    c = self.c
+    if not wrapper:
+        return
+    if self.selectEditorLockout:
+        return
+    w = wrapper.widget
+    assert g.isTextWrapper(wrapper), wrapper
+    assert g.isTextWidget(w), w
+    if trace:
+        print(f"{tag:&gt;30}: {wrapper} {c.p.h}")
+    if wrapper and wrapper == c.frame.body.wrapper:
+        self.deactivateEditors(wrapper)
+        if hasattr(w, 'leo_p') and w.leo_p and w.leo_p != c.p:
+            c.selectPosition(w.leo_p)
+            c.bodyWantsFocus()
+        return
+    try:
+        self.selectEditorLockout = True
+        self.selectEditorHelper(wrapper)
+    finally:
+        self.selectEditorLockout = False
+</t>
+<t tx="ekr.20240527100653.776">def selectEditorHelper(self, wrapper: Wrapper) -&gt; None:
+    c = self.c
+    w = wrapper.widget
+    assert g.isTextWrapper(wrapper), wrapper
+    assert g.isTextWidget(w), w
+    if not w.leo_p:
+        g.trace('no w.leo_p')
+        return
+    # The actual switch.
+    self.deactivateEditors(wrapper)
+    self.recolorWidget(w.leo_p, wrapper)  # switches colorizers.
+    c.frame.body.wrapper = wrapper
+    # 2014/09/04: Must set both wrapper.widget and body.widget.
+    c.frame.body.wrapper.widget = w
+    c.frame.body.widget = w
+    w.leo_active = True
+    self.switchToChapter(wrapper)
+    self.selectLabel(wrapper)
+    if not self.ensurePositionExists(w):
+        g.trace('***** no position editor!')
+        return
+    if not (hasattr(w, 'leo_p') and w.leo_p):
+        g.trace('***** no w.leo_p', w)
+        return
+    p = w.leo_p
+    assert p, p
+    c.expandAllAncestors(p)
+    # Calls assignPositionToEditor.
+    # Calls p.v.restoreCursorAndScroll.
+    c.selectPosition(p)
+    c.redraw()
+    c.recolor()
+    c.bodyWantsFocus()
+</t>
+<t tx="ekr.20240527100653.777"># Called from addEditor and assignPositionToEditor
+
+def updateEditors(self) -&gt; None:
+    c, p = self.c, self.c.p
+    body = p.b
+    d = self.editorWrappers
+    if len(list(d.keys())) &lt; 2:
+        return  # There is only the main widget
+    w0 = c.frame.body.wrapper
+    i, j = w0.getSelectionRange()
+    ins = w0.getInsertPoint()
+    sb0 = w0.widget.verticalScrollBar()
+    pos0 = sb0.sliderPosition()
+    for key in d:
+        wrapper = d.get(key)
+        w = wrapper.widget
+        v = hasattr(w, 'leo_p') and w.leo_p.v
+        if v and v == p.v and w != w0:
+            sb = w.verticalScrollBar()
+            pos = sb.sliderPosition()
+            wrapper.setAllText(body)
+            self.recolorWidget(p, wrapper)
+            sb.setSliderPosition(pos)
+    c.bodyWantsFocus()
+    w0.setSelectionRange(i, j, insert=ins)
+    sb0.setSliderPosition(pos0)
+</t>
+<t tx="ekr.20240527100653.778"></t>
+<t tx="ekr.20240527100653.779">def computeLabel(self, w: Wrapper) -&gt; str:
+    if hasattr(w, 'leo_label') and w.leo_label:  # 2011/11/12
+        s = w.leo_label.text()
+    else:
+        s = ''
+    if hasattr(w, 'leo_chapter') and w.leo_chapter:
+        s = f"{w.leo_chapter}: {s}"
+    return s
+</t>
+<t tx="ekr.20240527100653.780">def createChapterIvar(self, w: Wrapper) -&gt; None:
+    c = self.c
+    cc = c.chapterController
+    if hasattr(w, 'leo_chapter') and w.leo_chapter:
+        pass
+    elif cc and self.use_chapters:
+        w.leo_chapter = cc.getSelectedChapter()
+    else:
+        w.leo_chapter = None
+</t>
+<t tx="ekr.20240527100653.781">def deactivateEditors(self, wrapper: Wrapper) -&gt; None:
+    """Deactivate all editors except wrapper's editor."""
+    d = self.editorWrappers
+    # Don't capture ivars here! assignPositionToEditor keeps them up-to-date. (??)
+    for key in d:
+        wrapper2 = d.get(key)
+        w2 = wrapper2.widget
+        if hasattr(w2, 'leo_active'):
+            active = w2.leo_active
+        else:
+            active = True
+        if wrapper2 != wrapper and active:
+            w2.leo_active = False
+            self.unselectLabel(wrapper2)
+            self.onFocusOut(w2)
+</t>
+<t tx="ekr.20240527100653.782">def ensurePositionExists(self, w: Wrapper) -&gt; bool:
+    """Return True if w.leo_p exists or can be reconstituted."""
+    c = self.c
+    if c.positionExists(w.leo_p):
+        return True
+    for p2 in c.all_unique_positions():
+        if p2.v and p2.v == w.leo_p.v:
+            w.leo_p = p2.copy()
+            return True
+    # This *can* happen when selecting a deleted node.
+    w.leo_p = c.p.copy()
+    return False
+</t>
+<t tx="ekr.20240527100653.783">def injectIvars(self, parentFrame: QWidget, name: str, p: Position, wrapper: Wrapper) -&gt; None:
+
+    trace = g.app.debug == 'select' and not g.unitTesting
+    tag = 'qt_body.injectIvars'
+    w = wrapper.widget
+    assert g.isTextWrapper(wrapper), wrapper
+    assert g.isTextWidget(w), w
+    if trace:
+        print(f"{tag:&gt;30}: {wrapper!r} {g.callers(1)}")
+    # Inject ivars
+    if name == '1':
+        w.leo_p = None  # Will be set when the second editor is created.
+    else:
+        w.leo_p = p and p.copy()
+    w.leo_active = True
+    w.leo_bodyBar = None
+    w.leo_bodyXBar = None
+    w.leo_chapter = None
+    # w.leo_colorizer injected by JEditColorizer ctor.
+    # w.leo_label injected by packLabel.
+    w.leo_frame = parentFrame
+    w.leo_name = name
+    w.leo_wrapper = wrapper
+</t>
+<t tx="ekr.20240527100653.784">def recolorWidget(self, p: Position, wrapper: Wrapper) -&gt; None:
+    """Support QScintillaColorizer.colorize."""
+    c = self.c
+    colorizer = c.frame.body.colorizer
+    if p and colorizer and hasattr(colorizer, 'colorize'):
+        g.trace('=====', hasattr(colorizer, 'colorize'), p.h, g.callers())
+        old_wrapper = c.frame.body.wrapper
+        c.frame.body.wrapper = wrapper
+        try:
+            colorizer.colorize(p)
+        finally:
+            # Restore.
+            c.frame.body.wrapper = old_wrapper
+</t>
+<t tx="ekr.20240527100653.785">def switchToChapter(self, w: Wrapper) -&gt; None:
+    """select w.leo_chapter."""
+    c = self.c
+    cc = c.chapterController
+    if hasattr(w, 'leo_chapter') and w.leo_chapter:
+        chapter = w.leo_chapter
+        name = chapter and chapter.name
+        oldChapter = cc.getSelectedChapter()
+        if chapter != oldChapter:
+            cc.selectChapterByName(name)
+            c.bodyWantsFocus()
+</t>
+<t tx="ekr.20240527100653.786">def unpackWidget(self, layout: QLayout, w: Wrapper) -&gt; None:
+
+    index = layout.indexOf(w)
+    if index == -1:
+        return
+    item = layout.itemAt(index)
+    if item:
+        item.setGeometry(QtCore.QRect(0, 0, 0, 0))
+        layout.removeItem(item)
+</t>
+<t tx="ekr.20240527100653.787">def updateInjectedIvars(self, w: Any, p: Position) -&gt; None:
+
+    c = self.c
+    cc = c.chapterController
+    assert g.isTextWidget(w), w
+    if cc and self.use_chapters:
+        w.leo_chapter = cc.getSelectedChapter()
+    else:
+        w.leo_chapter = None
+    w.leo_p = p.copy()
+</t>
+<t tx="ekr.20240527100653.788"></t>
+<t tx="ekr.20240527100653.789">def onFocusIn(self, obj: Any) -&gt; None:
+    """Handle a focus-in event in the body pane."""
+    trace = 'select' in g.app.debug and not g.unitTesting
+    tag = 'qt_body.onFocusIn'
+    if obj.objectName() == 'richTextEdit':
+        wrapper = getattr(obj, 'leo_wrapper', None)
+        if trace:
+            print(f"{tag:&gt;30}: {wrapper}")
+        if wrapper and wrapper != self.wrapper:
+            self.selectEditor(wrapper)
+        self.onFocusColorHelper('focus-in', obj)
+        if hasattr(obj, 'leo_copy_button') and obj.leo_copy_button:
+            obj.setReadOnly(True)
+        else:
+            obj.setReadOnly(False)
+        obj.setFocus()  # Weird, but apparently necessary.
+</t>
+<t tx="ekr.20240527100653.790">def onFocusOut(self, obj: Any) -&gt; None:
+    """Handle a focus-out event in the body pane."""
+    # Apparently benign.
+    if obj.objectName() == 'richTextEdit':
+        self.onFocusColorHelper('focus-out', obj)
+        if hasattr(obj, 'setReadOnly'):
+            obj.setReadOnly(True)
+</t>
+<t tx="ekr.20240527100653.791">def onFocusColorHelper(self, kind: str, obj: Any) -&gt; None:
+    """Handle changes of style when focus changes."""
+    c, vc = self.c, self.c.vimCommands
+    if vc and c.vim_mode:
+        try:
+            assert kind in ('focus-in', 'focus-out')
+            w = c.frame.body.wrapper.widget
+            vc.set_border(w=w, activeFlag=kind == 'focus-in')
+        except Exception:
+            # g.es_exception()
+            pass
+</t>
+<t tx="ekr.20240527100653.792"></t>
+<t tx="ekr.20240527100653.793">def hideCanvasRenderer(self, event: LeoKeyEvent = None) -&gt; None:
+    """Hide canvas pane."""
+    c, d = self.c, self.editorWrappers
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    name = w.leo_name
+    assert name
+    assert wrapper == d.get(name), 'wrong wrapper'
+    assert g.isTextWrapper(wrapper), wrapper
+    assert g.isTextWidget(w), w
+    if len(list(d.keys())) &lt;= 1:
+        return
+    #
+    # At present, can not delete the first column.
+    if name == '1':
+        g.warning('can not delete leftmost editor')
+        return
+    #
+    # Actually delete the widget.
+    del d[name]
+    f = c.frame.top.leo_body_inner_frame
+    layout = f.layout()
+    for z in (w, w.leo_label):
+        if z:
+            self.unpackWidget(layout, z)
+    #
+    # Select another editor.
+    w.leo_label = None
+    new_wrapper = list(d.values())[0]
+    self.numberOfEditors -= 1
+    if self.numberOfEditors == 1:
+        w = new_wrapper.widget
+        if w.leo_label:  # 2011/11/12
+            self.unpackWidget(layout, w.leo_label)
+            w.leo_label = None  # 2011/11/12
+    self.selectEditor(new_wrapper)
+</t>
+<t tx="ekr.20240527100653.794">def hideCanvas(self, event: LeoKeyEvent = None) -&gt; None:
+    """Hide canvas pane."""
+    c, d = self.c, self.editorWrappers
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    name = w.leo_name
+    assert name
+    assert wrapper == d.get(name), 'wrong wrapper'
+    assert g.isTextWrapper(wrapper), wrapper
+    assert g.isTextWidget(w), w
+    if len(list(d.keys())) &lt;= 1:
+        return
+    # At present, can not delete the first column.
+    if name == '1':
+        g.warning('can not delete leftmost editor')
+        return
+    #
+    # Actually delete the widget.
+    del d[name]
+    f = c.frame.top.leo_body_inner_frame
+    layout = f.layout()
+    for z in (w, w.leo_label):
+        if z:
+            self.unpackWidget(layout, z)
+    #
+    # Select another editor.
+    w.leo_label = None
+    new_wrapper = list(d.values())[0]
+    self.numberOfEditors -= 1
+    if self.numberOfEditors == 1:
+        w = new_wrapper.widget
+        if w.leo_label:
+            self.unpackWidget(layout, w.leo_label)
+            w.leo_label = None
+    self.selectEditor(new_wrapper)
+</t>
+<t tx="ekr.20240527100653.795">def packRenderer(self, f: QWidget, name: str, w: QtWidgets.QFrame) -&gt; QtWidgets.QLineEdit:
+    n = max(1, self.numberOfEditors)
+    assert isinstance(f, QtWidgets.QFrame), f
+    layout = f.layout()
+    f.setObjectName(f"{name} Frame")
+    # Create the text: to do: use stylesheet to set font, height.
+    lab = QtWidgets.QLineEdit(f)
+    lab.setObjectName(f"{name} Label")
+    lab.setText(name)
+    # Pack the label and the widget.
+    layout.addWidget(lab, 0, max(0, n - 1), AlignmentFlag.AlignVCenter)  # type:ignore
+    layout.addWidget(w, 1, max(0, n - 1))  # type:ignore
+    layout.setRowStretch(0, 0)
+    layout.setRowStretch(1, 1)  # Give row 1 as much as possible.
+    return lab
+</t>
+<t tx="ekr.20240527100653.796"># An override of leoFrame.addEditor.
+
+def showCanvasRenderer(self, event: LeoKeyEvent = None) -&gt; None:
+    """Show the canvas area in the body pane, creating it if necessary."""
+    c = self.c
+    f = c.frame.top.leo_body_inner_frame
+    assert isinstance(f, QtWidgets.QFrame), f
+    if not self.canvasRenderer:
+        name = 'Graphics Renderer'
+        self.canvasRenderer = w = QtWidgets.QGraphicsView(f)
+        w.setObjectName(name)
+    if not self.canvasRendererVisible:
+        self.canvasRendererLabel = self.packRenderer(f, name, w)
+        self.canvasRendererVisible = True
+</t>
+<t tx="ekr.20240527100653.797"># An override of leoFrame.addEditor.
+
+def showTextRenderer(self, event: LeoKeyEvent = None) -&gt; None:
+    """Show the canvas area in the body pane, creating it if necessary."""
+    c = self.c
+    f = c.frame.top.leo_body_inner_frame
+    name = 'Text Renderer'
+    w = self.textRenderer
+    assert isinstance(f, QtWidgets.QFrame), f
+    if w:
+        self.textRenderer = qt_text.LeoQTextBrowser(f, c, self)
+        w = self.textRenderer
+        w.setObjectName(name)
+        self.textRendererWrapper = qt_text.QTextEditWrapper(w, name='text-renderer', c=c)
+    if not self.textRendererVisible:
+        self.textRendererLabel = self.packRenderer(f, name, w)
+        self.textRendererVisible = True
+</t>
+<t tx="ekr.20240527100653.798">class LeoQtFrame(leoFrame.LeoFrame):
+    """A class that represents a Leo window rendered in qt."""
+    @others
+</t>
+<t tx="ekr.20240527100653.799"></t>
+<t tx="ekr.20240527100653.800">def __init__(self, c: Cmdr, title: str, gui: LeoGui) -&gt; None:
+    super().__init__(c, gui)
+    assert self.c == c
+    leoFrame.LeoFrame.instances += 1  # Increment the class var.
+
+    # Official ivars for objects.
+    self.bar1: LeoQtFrame = None
+    self.bar2: LeoQtFrame = None
+    self.body: LeoQtBody = None
+    self.iconBar: QtIconBarClass = None
+    self.iconBarClass: Any = QtIconBarClass
+    self.iconFrame: QtIconBarClass = None
+    self.log: LeoQtLog = None
+    self.statusLineClass: Any = QtStatusLineClass  # A Union. 'Any' can't easily be removed.
+    self.statusFrame: LeoQtFrame = None
+    self.tree: LeoQtTree = None
+    self.top: DynamicWindow = None
+
+    # Status ivars...
+    self.title = title
+    self.initComplete = False  # Set by initCompleteHint().
+    self.minibufferVisible = True
+    self.controlKeyIsDown = False  # For control-drags
+    self.redrawCount = 0
+
+    # Init settings.
+    self.reloadSettings()
+
+def reloadSettings(self) -&gt; None:
+    c = self.c
+    self.cursorStay = c.config.getBool("cursor-stay-on-paste", default=True)
+    self.use_chapters = c.config.getBool('use-chapters')
+    self.use_chapter_tabs = c.config.getBool('use-chapter-tabs')
+</t>
+<t tx="ekr.20240527100653.801">def __repr__(self) -&gt; str:
+    return f"&lt;LeoQtFrame: {self.title}&gt;"
+</t>
+<t tx="ekr.20240527100653.802">def finishCreate(self) -&gt; None:
+    """Finish creating the outline's frame."""
+    # Called from app.newCommander, Commands.__init__
+    t1 = time.process_time()
+    c = self.c
+    assert c
+    frameFactory = g.app.gui.frameFactory
+    if not frameFactory.masterFrame:
+        frameFactory.createMaster()
+    self.top = frameFactory.createFrame(leoFrame=self)
+    self.createIconBar()  # A base class method.
+    self.createSplitterComponents()
+    self.createStatusLine()  # A base class method.
+    self.createFirstTreeNode()  # Call the base-class method.
+    self.menu = LeoQtMenu(c, self, label='top-level-menu')
+    g.app.windowList.append(self)
+    t2 = time.process_time()
+    self.setQtStyle()  # Slow, but only the first time it is called.
+    t3 = time.process_time()
+    self.miniBufferWidget = qt_text.QMinibufferWrapper(c)
+    c.bodyWantsFocus()
+    t4 = time.process_time()
+    if 'speed' in g.app.debug:
+        print('qtFrame.finishCreate')
+        print(
+            f"    1: {t2-t1:5.2f}\n"  # 0.20 sec: before.
+            f"    2: {t3-t2:5.2f}\n"  # 0.19 sec: setQtStyle (only once)
+            f"    3: {t4-t3:5.2f}\n"  # 0.00 sec: after.
+            f"total: {t4-t1:5.2f}"
+        )
+</t>
+<t tx="ekr.20240527100653.803">def createSplitterComponents(self) -&gt; None:
+
+    c = self.c
+    self.tree = LeoQtTree(c, self)
+    self.log = LeoQtLog(self, None)
+    self.body = LeoQtBody(self, None)
+    self.splitVerticalFlag, ratio, secondary_ratio = self.initialRatios()
+    self.resizePanesToRatio(ratio, secondary_ratio)
+</t>
+<t tx="ekr.20240527100653.804">def setQtStyle(self) -&gt; None:
+    """
+    Set the default Qt style.  Based on pyzo code.
+
+    Copyright (C) 2013-2018, the Pyzo development team
+
+    Pyzo is distributed under the terms of the (new) BSD License.
+    The full license can be found in 'license.txt'.
+    """
+    # Fix #1936: very slow new command. Only do this once!
+    if g.app.initStyleFlag:
+        return
+    g.app.initStyleFlag = True
+    c = self.c
+    trace = 'themes' in g.app.debug
+    # Get the requested style name.
+    stylename = c.config.getString('qt-style-name') or ''
+    if trace:
+        g.trace(repr(stylename))
+    if not stylename:
+        return
+    # Return if the style does not exist.
+    styles = [z.lower() for z in QtWidgets.QStyleFactory.keys()]
+    if stylename.lower() not in styles:
+        g.es_print(f"ignoring unknown Qt style name: {stylename!r}")
+        g.printObj(styles)
+        return
+    # Change the style and palette.
+    app = g.app.gui.qtApp
+    qstyle = app.setStyle(stylename)
+    if not qstyle:
+        g.es_print(f"failed to set Qt style name: {stylename!r}")
+
+</t>
+<t tx="ekr.20240527100653.805">def initCompleteHint(self) -&gt; None:
+    """A kludge: called to enable text changed events."""
+    self.initComplete = True
+</t>
+<t tx="ekr.20240527100653.806"></t>
+<t tx="ekr.20240527100653.807">def destroyAllObjects(self) -&gt; None:
+    """Clear all links to objects in a Leo window."""
+    c = self.c
+    # g.printGcAll()
+    # Do this first.
+    &lt;&lt; clear all vnodes in the tree &gt;&gt;
+    # Destroy all ivars in subcommanders.
+    g.clearAllIvars(c.atFileCommands)
+    if c.chapterController:  # New in Leo 4.4.3 b1.
+        g.clearAllIvars(c.chapterController)
+    g.clearAllIvars(c.fileCommands)
+    g.clearAllIvars(c.keyHandler)  # New in Leo 4.4.3 b1.
+    g.clearAllIvars(c.importCommands)
+    g.clearAllIvars(c.tangleCommands)
+    g.clearAllIvars(c.undoer)
+    g.clearAllIvars(c)
+
+</t>
+<t tx="ekr.20240527100653.808">vList = [z for z in c.all_unique_nodes()]
+for v in vList:
+    g.clearAllIvars(v)
+vList = []  # Remove these references immediately.
+</t>
+<t tx="ekr.20240527100653.809">def destroySelf(self) -&gt; None:
+    # Remember these: we are about to destroy all of our ivars!
+    c, top = self.c, self.top
+    if hasattr(g.app.gui, 'frameFactory'):
+        g.app.gui.frameFactory.deleteFrame(top)
+    # Indicate that the commander is no longer valid.
+    c.exists = False
+    if 0:  # We can't do this unless we unhook the event filter.
+        # Destroys all the objects of the commander.
+        self.destroyAllObjects()
+    c.exists = False  # Make sure this one ivar has not been destroyed.
+    # print('destroySelf: qtFrame: %s' % c,g.callers(4))
+    top.close()
+</t>
+<t tx="ekr.20240527100653.810"></t>
+<t tx="ekr.20240527100653.814">def configureBar(self, bar: Wrapper, verticalFlag: bool) -&gt; None:
+    c = self.c
+    # Get configuration settings.
+    w = c.config.getInt("split-bar-width")
+    if not w or w &lt; 1:
+        w = 7
+    relief = c.config.get("split_bar_relief", "relief")
+    if not relief:
+        relief = "flat"
+    color = c.config.getColor("split-bar-color")
+    if not color:
+        color = "LightSteelBlue2"
+    try:
+        if verticalFlag:
+            # Panes arranged vertically; horizontal splitter bar
+            bar.configure(
+                relief=relief, height=w, bg=color, cursor="sb_v_double_arrow")
+        else:
+            # Panes arranged horizontally; vertical splitter bar
+            bar.configure(
+                relief=relief, width=w, bg=color, cursor="sb_h_double_arrow")
+    except Exception:
+        # Could be a user error. Use all defaults
+        g.es("exception in user configuration for splitbar")
+        g.es_exception()
+        if verticalFlag:
+            # Panes arranged vertically; horizontal splitter bar
+            bar.configure(height=7, cursor="sb_v_double_arrow")
+        else:
+            # Panes arranged horizontally; vertical splitter bar
+            bar.configure(width=7, cursor="sb_h_double_arrow")
+</t>
+<t tx="ekr.20240527100653.815">def configureBarsFromConfig(self) -&gt; None:
+    c = self.c
+    w = c.config.getInt("split-bar-width")
+    if not w or w &lt; 1:
+        w = 7
+    relief = c.config.get("split_bar_relief", "relief")
+    if not relief or relief == "":
+        relief = "flat"
+    color = c.config.getColor("split-bar-color")
+    if not color or color == "":
+        color = "LightSteelBlue2"
+    if self.splitVerticalFlag:
+        bar1, bar2 = self.bar1, self.bar2
+    else:
+        bar1, bar2 = self.bar2, self.bar1
+    try:
+        bar1.configure(relief=relief, height=w, bg=color)
+        bar2.configure(relief=relief, width=w, bg=color)
+    except Exception:
+        # Could be a user error.
+        g.es("exception in user configuration for splitbar")
+        g.es_exception()
+</t>
+<t tx="ekr.20240527100653.816">def reconfigureFromConfig(self) -&gt; None:
+    """Init the configuration of the Qt frame from settings."""
+    c, frame = self.c, self
+    frame.configureBarsFromConfig()
+    frame.setTabWidth(c.tab_width)
+    c.redraw()
+</t>
+<t tx="ekr.20240527100653.817">def setInitialWindowGeometry(self) -&gt; None:
+    """Set the position and size of the frame to config params."""
+    c = self.c
+    h = c.config.getInt("initial-window-height") or 500
+    w = c.config.getInt("initial-window-width") or 600
+    x = c.config.getInt("initial-window-left") or 50  # #1190: was 10
+    y = c.config.getInt("initial-window-top") or 50  # #1190: was 10
+    if h and w and x and y:
+        if 'size' in g.app.debug:
+            g.trace(w, h, x, y)
+        self.setTopGeometry(w, h, x, y)
+</t>
+<t tx="ekr.20240527100653.818">def setTabWidth(self, w: int) -&gt; None:
+    # A do-nothing because tab width is set automatically.
+    # It *is* called from Leo's core.
+    pass
+</t>
+<t tx="ekr.20240527100653.819">def forceWrap(self, p: Position = None) -&gt; None:
+    self.c.frame.body.forceWrap(p)
+
+def setWrap(self, p: Position = None) -&gt; None:
+    self.c.frame.body.setWrap(p)
+</t>
+<t tx="ekr.20240527100653.820">def reconfigurePanes(self) -&gt; None:
+    c, f = self.c, self
+    if f.splitVerticalFlag:
+        r = c.config.getRatio("initial-vertical-ratio")
+        if r is None or r &lt; 0.0 or r &gt; 1.0:
+            r = 0.5
+        r2 = c.config.getRatio("initial-vertical-secondary-ratio")
+        if r2 is None or r2 &lt; 0.0 or r2 &gt; 1.0:
+            r2 = 0.8
+    else:
+        r = c.config.getRatio("initial-horizontal-ratio")
+        if r is None or r &lt; 0.0 or r &gt; 1.0:
+            r = 0.3
+        r2 = c.config.getRatio("initial-horizontal-secondary-ratio")
+        if r2 is None or r2 &lt; 0.0 or r2 &gt; 1.0:
+            r2 = 0.8
+    f.resizePanesToRatio(r, r2)
+</t>
+<t tx="ekr.20240527100653.821">def resizePanesToRatio(self, ratio: float, ratio2: float) -&gt; None:
+    """Resize splitter1 and splitter2 using the given ratios."""
+    self.divideLeoSplitter1(ratio)
+    self.divideLeoSplitter2(ratio2)
+</t>
+<t tx="ekr.20240527100653.823"># This is the general-purpose placer for splitters.
+# It is the only general-purpose splitter code in Leo.
+
+def divideAnySplitter(self, frac: float, splitter: Wrapper) -&gt; None:
+    """Set the splitter sizes."""
+    sizes = splitter.sizes()
+    if len(sizes) != 2:
+        # This is not an error: QSplitters may contain more than 2 widgets.
+        return
+    if frac &gt; 1 or frac &lt; 0:
+        # g.trace(f"split ratio [{frac}] out of range 0 &lt;= frac &lt;= 1")
+        frac = 0.5
+    s1, s2 = sizes
+    s = s1 + s2
+    s1 = int(s * frac + 0.5)
+    s2 = s - s1
+    splitter.setSizes([s1, s2])
+</t>
+<t tx="ekr.20240527100653.824"></t>
+<t tx="ekr.20240527100653.825"># Called from quit logic and when user closes the window.
+# Returns True if the close happened.
+
+def OnCloseLeoEvent(self) -&gt; None:
+    f = self
+    c = f.c
+    if c.inCommand:
+        c.requestCloseWindow = True
+    else:
+        g.app.closeLeoWindow(self)
+</t>
+<t tx="ekr.20240527100653.826">def OnControlKeyDown(self, event: QEvent = None) -&gt; None:
+    self.controlKeyIsDown = True
+
+def OnControlKeyUp(self, event: QEvent = None) -&gt; None:
+    self.controlKeyIsDown = False
+</t>
+<t tx="ekr.20240527100653.827">def OnActivateTree(self, event: QEvent = None) -&gt; None:
+    pass
+</t>
+<t tx="ekr.20240527100653.828"></t>
+<t tx="ekr.20240527100653.829"></t>
+<t tx="ekr.20240527100653.830">@frame_cmd('toggle-active-pane')
+def toggleActivePane(self, event: LeoKeyEvent = None) -&gt; None:
+    """Toggle the focus between the outline and body panes."""
+    frame = self
+    c = frame.c
+    w = c.get_focus()
+    w_name = g.app.gui.widget_name(w)
+    if w_name in ('canvas', 'tree', 'treeWidget'):
+        c.endEditing()
+        c.bodyWantsFocus()
+    else:
+        c.treeWantsFocus()
+</t>
+<t tx="ekr.20240527100653.831">@frame_cmd('equal-sized-panes')
+def equalSizedPanes(self, event: LeoKeyEvent = None) -&gt; None:
+    """Make the outline and body panes have the same size."""
+    self.resizePanesToRatio(0.5, self.compute_secondary_ratio())
+</t>
+<t tx="ekr.20240527100653.832">def hideLogWindow(self, event: LeoKeyEvent = None) -&gt; None:
+    """Hide the log pane."""
+    self.divideLeoSplitter2(0.99)
+</t>
+<t tx="ekr.20240527100653.833">@frame_cmd('minimize-all')
+def minimizeAll(self, event: LeoKeyEvent = None) -&gt; None:
+    """Minimize all Leo's windows."""
+    for frame in g.app.windowList:
+        self.minimize(frame)
+
+def minimize(self, frame: LeoQtFrame) -&gt; None:
+    # This unit test will fail when run externally.
+    if frame and frame.top:
+        w = frame.top.leo_master or frame.top
+        if g.unitTesting:
+            assert hasattr(w, 'setWindowState'), w
+        else:
+            w.setWindowState(WindowState.WindowMinimized)
+</t>
+<t tx="ekr.20240527100653.835">@frame_cmd('resize-to-screen')
+def resizeToScreen(self, event: LeoKeyEvent = None) -&gt; None:
+    """Resize the Leo window so it fill the entire screen."""
+    frame = self
+    # This unit test will fail when run externally.
+    if frame and frame.top:
+        # frame.top.leo_master is a LeoTabbedTopLevel.
+        # frame.top is a DynamicWindow.
+        w = frame.top.leo_master or frame.top
+        if g.unitTesting:
+            assert hasattr(w, 'setWindowState'), w
+        else:
+            w.setWindowState(WindowState.WindowMaximized)
+</t>
+<t tx="ekr.20240527100653.836"></t>
+<t tx="ekr.20240527100653.837">def bringToFront(self) -&gt; None:
+    if 'size' in g.app.debug:
+        g.trace()
+    self.lift()
+</t>
+<t tx="ekr.20240527100653.838">def deiconify(self) -&gt; None:
+    """Undo --minimized"""
+    if 'size' in g.app.debug:
+        g.trace(
+            'top:', bool(self.top),
+            'isMinimized:', self.top and self.top.isMinimized())
+    if self.top and self.top.isMinimized():  # Bug fix: 400739.
+        self.lift()
+</t>
+<t tx="ekr.20240527100653.839">def get_window_info(self) -&gt; tuple[int, int, int, int]:
+    """Return the geometry of the top window."""
+    f: QWidget
+    if getattr(self.top, 'leo_master', None):
+        f = self.top.leo_master
+    else:
+        f = self.top
+    rect = f.geometry()
+    topLeft = rect.topLeft()
+    x, y = topLeft.x(), topLeft.y()
+    w, h = rect.width(), rect.height()
+    if 'size' in g.app.debug:
+        g.trace('\n', w, h, x, y)
+    return w, h, x, y
+</t>
+<t tx="ekr.20240527100653.840">def getFocus(self) -&gt; None:
+    return g.app.gui.get_focus(self.c)  # Bug fix: 2009/6/30.
+</t>
+<t tx="ekr.20240527100653.841">def getTitle(self) -&gt; str:
+    # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
+    # For qt, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
+    w = self.top.leo_master
+    return w.windowTitle()
+</t>
+<t tx="ekr.20240527100653.842">def iconify(self) -&gt; None:
+    if 'size' in g.app.debug:
+        g.trace(bool(self.top))
+    if self.top:
+        self.top.showMinimized()
+</t>
+<t tx="ekr.20240527100653.843">def lift(self) -&gt; None:
+    if 'size' in g.app.debug:
+        g.trace(bool(self.top), self.top and self.top.isMinimized())
+    if not self.top:
+        return
+    if self.top.isMinimized():  # Bug 379141
+        self.top.showNormal()
+    self.top.activateWindow()
+    self.top.raise_()
+</t>
+<t tx="ekr.20240527100653.844">def setTitle(self, s: str) -&gt; None:
+    if self.top:
+        # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
+        # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
+        w = self.top.leo_master
+        w.setWindowTitle(s)
+</t>
+<t tx="ekr.20240527100653.845">def setTopGeometry(self, w: int, h: int, x: int, y: int) -&gt; None:
+    # self.top is a DynamicWindow.
+    if self.top:
+        if 'size' in g.app.debug:
+            g.trace(w, h, x, y, self.c.shortFileName(), g.callers())
+        self.top.setGeometry(QtCore.QRect(x, y, w, h))
+</t>
+<t tx="ekr.20240527100653.846">def update(self, *args: Args, **keys: KWargs) -&gt; None:
+    if 'size' in g.app.debug:
+        g.trace(bool(self.top))
+    self.top.update()
+</t>
+<t tx="ekr.20240527100653.847">class TokenBasedOrange:  # Orange is the new Black.
+
+    &lt;&lt; TokenBasedOrange: docstring &gt;&gt;
+    &lt;&lt; TokenBasedOrange: __slots__ &gt;&gt;
+    &lt;&lt; TokenBasedOrange: python-related constants &gt;&gt;
+
+    @others
+</t>
+<t tx="ekr.20240527100653.848">@language rest
+@wrap
+
+"""
+Leo's token-based beautifier, three times faster than the beautifier in leoAst.py.
+
+**Design**
+
+The *pre_scan* method is the heart of the algorithm. It sets context for the `:`, `=`, `**` and `.` tokens *without* using the parse tree. *pre_scan* calls three *finishers*.
+
+Each finisher uses a list of *relevant earlier tokens* to set the context for one kind of (input) token. Finishers look behind (in the stream of input tokens) with essentially no cost.
+
+After the pre-scan, *tbo.beautify* (the main loop) calls *visitors* for each separate type of *input* token.
+
+Visitors call *code generators* to generate strings in the output_list. The code generators and their helpers use *lazy evaluation* to generate whitespace.
+"""
+</t>
+<t tx="ekr.20240527100653.849">__slots__ = [
+    # Command-line arguments.
+    'all', 'beautified', 'diff', 'report', 'write',
+
+    # Global data.
+    'contents', 'filename', 'input_tokens', 'output_list', 'tab_width',
+    'insignificant_tokens',  # New.
+
+    # Token-related data for visitors.
+    'index', 'input_token', 'line_number',
+    'pending_lws', 'pending_ws', 'prev_output_kind', 'prev_output_value',  # New.
+
+    # Parsing state for visitors.
+    'decorator_seen', 'in_arg_list', 'in_doc_part', 'state_stack', 'verbatim',
+
+    # Whitespace state. Don't even *think* about changing these!
+    'curly_brackets_level', 'indent_level', 'lws', 'paren_level', 'square_brackets_stack',
+
+    # Regular expressions.
+    'at_others_pat', 'beautify_pat', 'comment_pat', 'end_doc_pat',
+    'nobeautify_pat', 'node_pat', 'start_doc_pat',
+]
+</t>
+<t tx="ekr.20240527100653.850">insignificant_kinds = (
+    'comment', 'dedent', 'encoding', 'endmarker', 'indent', 'newline', 'nl', 'ws',
+)
+
+# 'name' tokens that may appear in expressions.
+operator_keywords = (
+    'await',  # Debatable.
+    'and', 'in', 'not', 'not in', 'or',  # Operators.
+    'True', 'False', 'None',  # Values.
+)
+</t>
+<t tx="ekr.20240527100653.851">def __init__(self, settings: Optional[Settings] = None):
+    """Ctor for Orange class."""
+
+    # Set default settings.
+    if settings is None:
+        settings = {}
+
+    # Hard-code 4-space tabs.
+    self.tab_width = 4
+
+    # Define tokens even for empty files.
+    self.input_token: InputToken = None
+    self.input_tokens: list[InputToken] = []
+    self.lws: str = ""  # Set only by Indent/Dedent tokens.
+    self.pending_lws: str = ""
+    self.pending_ws: str = ""
+
+    # Set by gen_token and all do_* methods that bypass gen_token.
+    self.prev_output_kind: str = None
+    self.prev_output_value: str = None
+
+    # Set ivars from the settings dict *without* using setattr.
+    self.all = settings.get('all', False)
+    self.beautified = settings.get('beautified', False)
+    self.diff = settings.get('diff', False)
+    self.report = settings.get('report', False)
+    self.write = settings.get('write', False)
+
+    # The list of tokens that tbo._next/_prev skip.
+    self.insignificant_tokens = (
+        'comment', 'dedent', 'indent', 'newline', 'nl', 'ws',
+    )
+
+    # General patterns.
+    self.beautify_pat = re.compile(
+        r'#\s*pragma:\s*beautify\b|#\s*@@beautify|#\s*@\+node|#\s*@[+-]others|#\s*@[+-]&lt;&lt;')
+    self.comment_pat = re.compile(r'^(\s*)#[^@!# \n]')
+    self.nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
+
+    # Patterns from FastAtRead class, specialized for python delims.
+    self.node_pat = re.compile(r'^(\s*)#@\+node:([^:]+): \*(\d+)?(\*?) (.*)$')  # @node
+    self.start_doc_pat = re.compile(r'^\s*#@\+(at|doc)?(\s.*?)?$')  # @doc or @
+    self.at_others_pat = re.compile(r'^(\s*)#@(\+|-)others\b(.*)$')  # @others
+
+    # Doc parts end with @c or a node sentinel. Specialized for python.
+    self.end_doc_pat = re.compile(r"^\s*#@(@(c(ode)?)|([+]node\b.*))$")
+</t>
+<t tx="ekr.20240527100653.852"></t>
+<t tx="ekr.20240527100653.853">def dump_token_range(self, i1: int, i2: int, tag: Optional[str] = None) -&gt; None:  # pragma: no cover
+    """Dump the given range of input tokens."""
+    if tag:
+        print(tag)
+    for token in self.input_tokens[i1 : i2 + 1]:
+        print(token.dump())
+</t>
+<t tx="ekr.20240527100653.854">def internal_error_message(self, message: str) -&gt; str:  # pragma: no cover
+    """Print a message about an error in the beautifier itself."""
+    # Compute lines_s.
+    line_number = self.input_token.line_number
+    lines = g_split_lines(self.contents)
+    n1 = max(0, line_number - 5)
+    n2 = min(line_number + 5, len(lines))
+    prev_lines = ['\n']
+    for i in range(n1, n2):
+        marker_s = '***' if i + 1 == line_number else '   '
+        prev_lines.append(f"Line {i+1:5}:{marker_s}{lines[i]!r}\n")
+    context_s = ''.join(prev_lines) + '\n'
+
+    # Return the full error message.
+    return (
+        # '\n\n'
+        'Error in token-based beautifier!\n'
+        f"{message.strip()}\n"
+        '\n'
+        f"At token {self.index}, line: {line_number} file: {self.filename}\n"
+        f"{context_s}"
+        "Please report this message to Leo's developers"
+    )
+</t>
+<t tx="ekr.20240527100653.855">def user_error_message(self, message: str) -&gt; str:  # pragma: no cover
+    """Print a message about a user error."""
+    # Compute lines_s.
+    line_number = self.input_token.line_number
+    lines = g_split_lines(self.contents)
+    n1 = max(0, line_number - 5)
+    n2 = min(line_number + 5, len(lines))
+    prev_lines = ['\n']
+    for i in range(n1, n2):
+        marker_s = '***' if i + 1 == line_number else '   '
+        prev_lines.append(f"Line {i+1:5}:{marker_s}{lines[i]!r}\n")
+    context_s = ''.join(prev_lines) + '\n'
+
+    # Return the full error message.
+    return (
+        f"{message.strip()}\n"
+        '\n'
+        f"At token {self.index}, line: {line_number} file: {self.filename}\n"
+        f"{context_s}"
+    )
+</t>
+<t tx="ekr.20240527100653.856">def oops(self, message: str) -&gt; None:  # pragma: no cover
+    """Raise InternalBeautifierError."""
+    raise InternalBeautifierError(self.internal_error_message(message))
+</t>
+<t tx="ekr.20240527100653.857"></t>
+<t tx="ekr.20240527100653.858">def no_visitor(self) -&gt; None:  # pragma: no cover
+    self.oops(f"Unknown kind: {self.input_token.kind!r}")
+
+def beautify(self,
+    contents: str, filename: str, input_tokens: list[InputToken],
+) -&gt; str:
+    """
+    The main line. Create output tokens and return the result as a string.
+
+    beautify_file and beautify_file_def call this method.
+    """
+    &lt;&lt; tbo.beautify: init ivars &gt;&gt;
+
+    try:
+        # Pre-scan the token list, setting context.s
+        self.pre_scan()
+
+        # Init ivars first.
+        self.input_token = None
+        self.pending_lws = ''
+        self.pending_ws = ''
+        self.prev_output_kind = None
+        self.prev_output_value = None
+
+        # Init state.
+        self.gen_token('file-start', '')
+        self.push_state('file-start')
+
+        # The main loop:
+        prev_line_number: int = 0
+        for self.index, self.input_token in enumerate(input_tokens):
+            # Set global for visitors.
+            if prev_line_number != self.input_token.line_number:
+                prev_line_number = self.input_token.line_number
+            # Call the proper visitor.
+            if self.verbatim:
+                self.do_verbatim()
+            else:
+                func = getattr(self, f"do_{self.input_token.kind}", self.no_visitor)
+                func()
+
+        # Return the result.
+        result = ''.join(self.output_list)
+        return result
+
+    # Make no change if there is any error.
+    except InternalBeautifierError as e:  # pragma: no cover
+        # oops calls self.internal_error_message to creates e.
+        print(repr(e))
+    except AssertionError as e:  # pragma: no cover
+        print(self.internal_error_message(repr(e)))
+    return contents
+</t>
+<t tx="ekr.20240527100653.859"># Debugging vars...
+self.contents = contents
+self.filename = filename
+self.line_number: Optional[int] = None
+
+# The input and output lists...
+self.output_list: list[str] = []
+self.input_tokens = input_tokens  # The list of input tokens.
+
+# State vars for whitespace.
+self.curly_brackets_level = 0  # Number of unmatched '{' tokens.
+self.paren_level = 0  # Number of unmatched '(' tokens.
+self.square_brackets_stack: list[bool] = []  # A stack of bools, for self.gen_word().
+self.indent_level = 0  # Set only by do_indent and do_dedent.
+
+# Parse state.
+self.decorator_seen = False  # Set by do_name for do_op.
+self.in_arg_list = 0  # &gt; 0 if in an arg list of a def.
+self.in_doc_part = False
+self.state_stack: list[ParseState] = []  # Stack of ParseState objects.
+
+# Leo-related state.
+self.verbatim = False  # True: don't beautify.
+
+# Ivars describing the present input token...
+self.index = 0  # The index within the tokens array of the token being scanned.
+self.lws = ''  # Leading whitespace. Required!
+</t>
+<t tx="ekr.20240527100653.860">def beautify_file(self, filename: str, was_dirty: bool) -&gt; bool:  # pragma: no cover
+    """
+    TokenBasedOrange: Beautify the the given external file.
+
+    Return True if the file was beautified.
+    """
+    if 0:
+        print(
+            f"all: {int(self.all)} "
+            f"beautified: {int(self.beautified)} "
+            f"diff: {int(self.diff)} "
+            f"report: {int(self.report)} "
+            f"write: {int(self.write)} "
+            f"{g_short_file_name(filename)}"
+        )
+    self.filename = filename
+    contents, tokens = self.init_tokens_from_file(filename)
+    if not (contents and tokens):
+        return False  # Not an error.
+    if not isinstance(tokens[0], InputToken):
+        self.oops(f"Not an InputToken: {tokens[0]!r}")
+
+    # Beautify the contents, returning the original contents on any error.
+    results = self.beautify(contents, filename, tokens)
+
+    # Ignore changes only to newlines.
+    if self.regularize_newlines(contents) == self.regularize_newlines(results):
+        return False
+
+    # Print reports.
+    if self.beautified:  # --beautified.
+        print(f"tbo: beautified: {g_short_file_name(filename)}")
+    if self.diff:  # --diff.
+        print(f"Diffs: {filename}")
+        self.show_diffs(contents, results)
+
+    # Write the (changed) file .
+    if self.write:  # --write.
+        self.write_file(filename, results)
+    return True
+</t>
+<t tx="ekr.20240527100653.861">def init_tokens_from_file(self, filename: str) -&gt; tuple[
+    str, list[InputToken]
+]:  # pragma: no cover
+    """
+    Create the list of tokens for the given file.
+    Return (contents, encoding, tokens).
+    """
+    self.indent_level = 0
+    self.filename = filename
+    contents = g_read_file(filename)
+    if not contents:
+        self.input_tokens = []
+        return '', []
+    self.input_tokens = input_tokens = Tokenizer().make_input_tokens(contents)
+    return contents, input_tokens
+</t>
+<t tx="ekr.20240527100653.862">def regularize_newlines(self, s: str) -&gt; str:
+    """Regularize newlines within s."""
+    return s.replace('\r\n', '\n').replace('\r', '\n')
+</t>
+<t tx="ekr.20240527100653.863">def write_file(self, filename: str, s: str) -&gt; None:  # pragma: no cover
+    """
+    Write the string s to the file whose name is given.
+
+    Handle all exceptions.
+
+    Before calling this function, the caller should ensure
+    that the file actually has been changed.
+    """
+    try:
+        s2 = g_to_encoded_string(s)  # May raise exception.
+        with open(filename, 'wb') as f:
+            f.write(s2)
+    except Exception as e:  # pragma: no cover
+        print(f"Error {e!r}: {filename!r}")
+</t>
+<t tx="ekr.20240527100653.864">def show_diffs(self, s1: str, s2: str) -&gt; None:  # pragma: no cover
+    """Print diffs between strings s1 and s2."""
+    filename = self.filename
+    lines = list(difflib.unified_diff(
+        g_split_lines(s1),
+        g_split_lines(s2),
+        fromfile=f"Old {filename}",
+        tofile=f"New {filename}",
+    ))
+    print('')
+    print(f"Diffs for {filename}")
+    for line in lines:
+        print(line)
+</t>
+<t tx="ekr.20240527100653.865"># Visitors (tbo.do_* methods) handle input tokens.
+# Generators (tbo.gen_* methods) create zero or more output tokens.
+</t>
+<t tx="ekr.20240527100653.866">def do_comment(self) -&gt; None:
+    """Handle a comment token."""
+    val = self.input_token.value
+    &lt;&lt; do_comment: update comment-related state &gt;&gt;
+
+    # Generate the comment.
+    self.pending_lws = ''
+    self.pending_ws = ''
+    entire_line = self.input_token.line.lstrip().startswith('#')
+
+    if entire_line:
+        # The comment includes all ws.
+        # #1496: No further munging needed.
+        val = self.input_token.line.rstrip()
+        # #3056: Insure one space after '#' in non-sentinel comments.
+        #        Do not change bang lines or '##' comments.
+        if m := self.comment_pat.match(val):
+            i = len(m.group(1))
+            val = val[:i] + '# ' + val[i + 1 :]
+    else:
+        # Exactly two spaces before trailing comments.
+        val = '  ' + val.rstrip()
+    self.gen_token('comment', val)
+</t>
+<t tx="ekr.20240527100653.867"># Leo-specific code...
+if self.node_pat.match(val):
+    # Clear per-node state.
+    self.in_doc_part = False
+    self.verbatim = False
+    self.decorator_seen = False
+    # Do *not* clear other state, which may persist across @others.
+        # self.curly_brackets_level = 0
+        # self.in_arg_list = 0
+        # self.indent_level = 0
+        # self.lws = ''
+        # self.paren_level = 0
+        # self.square_brackets_stack = []
+        # self.state_stack = []
+else:
+    # Keep track of verbatim mode.
+    if self.beautify_pat.match(val):
+        self.verbatim = False
+    elif self.nobeautify_pat.match(val):
+        self.verbatim = True
+    # Keep trace of @doc parts, to honor the convention for splitting lines.
+    if self.start_doc_pat.match(val):
+        self.in_doc_part = True
+    if self.end_doc_pat.match(val):
+        self.in_doc_part = False
+</t>
+<t tx="ekr.20240527100653.868">def do_dedent(self) -&gt; None:
+    """Handle dedent token."""
+    # Note: other methods use self.indent_level.
+    self.indent_level -= 1
+    self.lws = self.indent_level * self.tab_width * ' '
+    self.pending_lws = self.lws
+    self.pending_ws = ''
+    self.prev_output_kind = 'dedent'
+</t>
+<t tx="ekr.20240527100653.869">def do_encoding(self) -&gt; None:
+    """Handle the encoding token."""
+</t>
+<t tx="ekr.20240527100653.870">def do_endmarker(self) -&gt; None:
+    """Handle an endmarker token."""
+
+    # Ensure exactly one newline at the end of file.
+    if self.prev_output_kind not in (
+        'indent', 'dedent', 'line-indent', 'newline',
+    ):
+        self.output_list.append('\n')
+    self.pending_lws = ''  # Defensive.
+    self.pending_ws = ''  # Defensive.
+</t>
+<t tx="ekr.20240527100653.872"></t>
+<t tx="ekr.20240527100653.873">def do_name(self) -&gt; None:
+    """Handle a name token."""
+    name = self.input_token.value
+    if name in self.operator_keywords:
+        self.gen_word_op(name)
+    else:
+        self.gen_word(name)
+</t>
+<t tx="ekr.20240527100653.874">def gen_word(self, s: str) -&gt; None:
+    """Add a word request to the code list."""
+    assert s == self.input_token.value
+    assert s and isinstance(s, str), repr(s)
+    self.gen_blank()
+    self.gen_token('word', s)
+    self.gen_blank()
+</t>
+<t tx="ekr.20240527100653.875">def gen_word_op(self, s: str) -&gt; None:
+    """Add a word-op request to the code list."""
+    assert s == self.input_token.value
+    assert s and isinstance(s, str), repr(s)
+    self.gen_blank()
+    self.gen_token('word-op', s)
+    self.gen_blank()
+</t>
+<t tx="ekr.20240527100653.876"></t>
+<t tx="ekr.20240527100653.877">def do_newline(self) -&gt; None:
+    """
+    do_newline: Handle a regular newline.
+
+    From https://docs.python.org/3/library/token.html
+
+    NEWLINE tokens end *logical* lines of Python code.
+    """
+
+    self.output_list.append('\n')
+    self.pending_lws = ''  # Set only by 'dedent', 'indent' or 'ws' tokens.
+    self.pending_ws = ''
+    self.prev_output_kind = 'newline'
+    self.prev_output_value = '\n'
+</t>
+<t tx="ekr.20240527100653.878">def do_nl(self) -&gt; None:
+    """
+    do_nl: Handle a continuation line.
+
+    From https://docs.python.org/3/library/token.html
+
+    NL tokens end *physical* lines. They appear when when a logical line of
+    code spans multiple physical lines.
+    """
+    return self.do_newline()
+</t>
+<t tx="ekr.20240527100653.879">def do_number(self) -&gt; None:
+    """Handle a number token."""
+    self.gen_blank()
+    self.gen_token('number', self.input_token.value)
+</t>
+<t tx="ekr.20240527100653.880"></t>
+<t tx="ekr.20240527100653.881">def do_op(self) -&gt; None:
+    """Handle an op token."""
+    val = self.input_token.value
+
+    if val == '.':
+        self.gen_dot_op()
+    elif val == '@':
+        self.gen_token('op-no-blanks', val)
+        self.push_state('decorator')
+    elif val == ':':
+        # Treat slices differently.
+        self.gen_colon()
+    elif val in ',;':
+        # Pep 8: Avoid extraneous whitespace immediately before
+        # comma, semicolon, or colon.
+        self.pending_ws = ''
+        self.gen_token('op', val)
+        self.gen_blank()
+    elif val in '([{':
+        # Pep 8: Avoid extraneous whitespace immediately inside
+        # parentheses, brackets or braces.
+        self.gen_lt()
+    elif val in ')]}':
+        # Ditto.
+        self.gen_rt()
+    elif val == '=':
+        self.gen_equal_op()
+    elif val in '~+-':
+        self.gen_possible_unary_op()
+    elif val == '*':
+        self.gen_star_op()
+    elif val == '**':
+        self.gen_star_star_op()
+    else:
+        # Pep 8: always surround binary operators with a single space.
+        # '==','+=','-=','*=','**=','/=','//=','%=','!=','&lt;=','&gt;=','&lt;','&gt;',
+        # '^','~','*','**','&amp;','|','/','//',
+        # Pep 8: If operators with different priorities are used, consider
+        # adding whitespace around the operators with the lowest priorities.
+        self.gen_blank()
+        self.gen_token('op', val)
+        self.gen_blank()
+</t>
+<t tx="ekr.20240527100653.882">def gen_colon(self) -&gt; None:
+    """Handle a colon."""
+    val = self.input_token.value
+    context = self.input_token.context
+
+    self.pending_ws = ''
+    if context == 'complex-slice':
+        if self.prev_output_value not in '[:':
+            self.gen_blank()
+        self.gen_token('op', val)
+        self.gen_blank()
+    elif context == 'simple-slice':
+        self.gen_token('op-no-blanks', val)
+    elif context == 'dict':
+        self.gen_token('op', val)
+        self.gen_blank()
+    else:
+        self.gen_token('op', val)
+        self.gen_blank()
+</t>
+<t tx="ekr.20240527100653.883">def gen_dot_op(self) -&gt; None:
+    """Handle the '.' input token."""
+    context = self.input_token.context
+
+    # Get the previous significant **input** token.
+    # This is the only call to next(i) anywhere!
+    next_i = self._next(self.index)
+    next = 'None' if next_i is None else self.input_tokens[next_i]
+    import_is_next = next and next.kind == 'name' and next.value == 'import'
+
+    if context == 'import':
+        if (
+            self.prev_output_kind == 'word'
+            and self.prev_output_value in ('from', 'import')
+        ):
+            self.gen_blank()
+            op = 'op' if import_is_next else 'op-no-blanks'
+            self.gen_token(op, '.')
+        elif import_is_next:
+            self.gen_token('op', '.')
+            self.gen_blank()
+        else:
+            self.pending_ws = ''
+            self.gen_token('op-no-blanks', '.')
+    else:
+        self.pending_ws = ''
+        self.gen_token('op-no-blanks', '.')
+</t>
+<t tx="ekr.20240527100653.884">def _next(self, i: int) -&gt; Optional[int]:
+    """
+    Return the next *significant* input token.
+
+    Ignore insignificant tokens: whitespace, indentation, comments, etc.
+
+    The **Global Token Ratio** is tbo.n_scanned_tokens / len(tbo.tokens),
+    where tbo.n_scanned_tokens is the total number of calls calls to
+    tbo.next or tbo.prev.
+
+    For Leo's sources, this ratio ranges between 0.48 and 1.51!
+
+    The orange_command function warns if this ratio is greater than 2.5.
+    Previous versions of this code suffered much higher ratios.
+    """
+    i += 1
+    while i &lt; len(self.input_tokens):
+        token = self.input_tokens[i]
+        if token.kind not in self.insignificant_tokens:
+            # g.trace(f"token: {token!r}")
+            return i
+        i += 1
+    return None  # pragma: no cover
+</t>
+<t tx="ekr.20240527100653.885">def gen_equal_op(self) -&gt; None:
+
+    val = self.input_token.value
+    context = self.input_token.context
+
+    if context == 'initializer':
+        # Pep 8: Don't use spaces around the = sign when used to indicate
+        #        a keyword argument or a default parameter value.
+        #        However, when combining an argument annotation with a default value,
+        #        *do* use spaces around the = sign.
+        self.pending_ws = ''
+        self.gen_token('op-no-blanks', val)
+    else:
+        self.gen_blank()
+        self.gen_token('op', val)
+        self.gen_blank()
+</t>
+<t tx="ekr.20240527100653.886">def gen_lt(self) -&gt; None:
+    """Generate code for a left paren or curly/square bracket."""
+    val = self.input_token.value
+    assert val in '([{', repr(val)
+
+    # Update state vars.
+    if val == '(':
+        self.paren_level += 1
+    elif val == '[':
+        self.square_brackets_stack.append(False)
+    else:
+        self.curly_brackets_level += 1
+
+    # Generate or suppress the leading blank.
+    # Update self.in_arg_list if necessary.
+    if self.input_token.context == 'import':
+        self.gen_blank()
+    elif self.prev_output_kind in ('op', 'word-op'):
+        self.gen_blank()
+    elif self.prev_output_kind == 'word':
+        # Only suppress blanks before '(' or '[' for non-keywords.
+        if val == '{' or self.prev_output_value in (
+            'if', 'else', 'elif', 'return', 'for', 'while',
+        ):
+            self.gen_blank()
+        elif val == '(':
+            self.in_arg_list += 1
+            self.pending_ws = ''
+        else:
+            self.pending_ws = ''
+    elif self.prev_output_kind != 'line-indent':
+        self.pending_ws = ''
+
+    # Output the token!
+    self.gen_token('op-no-blanks', val)
+</t>
+<t tx="ekr.20240527100653.887">def gen_possible_unary_op(self) -&gt; None:
+    """Add a unary or binary op to the token list."""
+    val = self.input_token.value
+    if self.is_unary_op(self.index, val):
+        prev = self.input_token
+        if prev.kind == 'lt':
+            self.gen_token('op-no-blanks', val)
+        else:
+            self.gen_blank()
+            self.gen_token('op-no-blanks', val)
+    else:
+        self.gen_blank()
+        self.gen_token('op', val)
+        self.gen_blank()
+
+</t>
+<t tx="ekr.20240527100653.888">def is_unary_op(self, i: int, val: str) -&gt; bool:
+
+    if val == '~':
+        return True
+    if val not in '+-':  # pragma: no cover
+        return False
+
+    # Get the previous significant **input** token.
+    # This is the only call to _prev(i) anywhere!
+    prev_i = self._prev(i)
+    prev_token = None if prev_i is None else self.input_tokens[prev_i]
+    kind = prev_token.kind if prev_token else ''
+    value = prev_token.value if prev_token else ''
+
+    if kind in ('number', 'string'):
+        return_val = False
+    elif kind == 'op' and value in ')]':
+        return_val = False
+    elif kind == 'op' and value in '{([:':
+        return_val = True
+    elif kind != 'name':
+        return_val = True
+    else:
+        # The hard case: prev_token is a 'name' token.
+        # Any Python keyword indicates a unary operator.
+        return_val = keyword.iskeyword(value) or keyword.issoftkeyword(value)
+    return return_val
+</t>
+<t tx="ekr.20240527100653.889">def _prev(self, i: int) -&gt; Optional[int]:
+    """
+    Return the previous *significant* input token.
+
+    Ignore insignificant tokens: whitespace, indentation, comments, etc.
+    """
+    i -= 1
+    while i &gt;= 0:
+        token = self.input_tokens[i]
+        if token.kind not in self.insignificant_tokens:
+            return i
+        i -= 1
+    return None  # pragma: no cover
+</t>
+<t tx="ekr.20240527100653.890">def gen_rt(self) -&gt; None:
+    """Generate code for a right paren or curly/square bracket."""
+    val = self.input_token.value
+    assert val in ')]}', repr(val)
+
+    # Update state vars.
+    if val == ')':
+        self.paren_level -= 1
+        self.in_arg_list = max(0, self.in_arg_list - 1)
+    elif val == ']':
+        self.square_brackets_stack.pop()
+    else:
+        self.curly_brackets_level -= 1
+
+    if self.prev_output_kind != 'line-indent':
+        self.pending_ws = ''
+    self.gen_token('rt', val)
+</t>
+<t tx="ekr.20240527100653.891">def gen_star_op(self) -&gt; None:
+    """Put a '*' op, with special cases for *args."""
+    val = self.input_token.value
+    context = self.input_token.context
+
+    if context == 'arg':
+        self.gen_blank()
+        self.gen_token('op-no-blanks', val)
+    else:
+        self.gen_blank()
+        self.gen_token('op', val)
+        self.gen_blank()
+</t>
+<t tx="ekr.20240527100653.892">def gen_star_star_op(self) -&gt; None:
+    """Put a ** operator, with a special case for **kwargs."""
+    val = self.input_token.value
+    context = self.input_token.context
+
+    if context == 'arg':
+        self.gen_blank()
+        self.gen_token('op-no-blanks', val)
+    else:
+        self.gen_blank()
+        self.gen_token('op', val)
+        self.gen_blank()
+</t>
+<t tx="ekr.20240527100653.893">def push_state(self, kind: str, value: Union[int, str, None] = None) -&gt; None:
+    """Append a state to the state stack."""
+    state = ParseState(kind, value)
+    self.state_stack.append(state)
+</t>
+<t tx="ekr.20240527100653.894">def do_string(self) -&gt; None:
+    """
+    Handle a 'string' token.
+
+    The Tokenizer converts all f-string tokens to a single 'string' token.
+    """
+    # Careful: continued strings may contain '\r'
+    val = self.regularize_newlines(self.input_token.value)
+    self.gen_token('string', val)
+    self.gen_blank()
+</t>
+<t tx="ekr.20240527100653.895">def do_verbatim(self) -&gt; None:
+    """
+    Handle one token in verbatim mode.
+    End verbatim mode when the appropriate comment is seen.
+    """
+    kind = self.input_token.kind
+    #
+    # Careful: tokens may contain '\r'
+    val = self.regularize_newlines(self.input_token.value)
+    if kind == 'comment':
+        if self.beautify_pat.match(val):
+            self.verbatim = False
+        val = val.rstrip()
+        self.gen_token('comment', val)
+        return
+    if kind == 'indent':
+        self.indent_level += 1
+        self.lws = self.indent_level * self.tab_width * ' '
+    if kind == 'dedent':
+        self.indent_level -= 1
+        self.lws = self.indent_level * self.tab_width * ' '
+    self.gen_token('verbatim', val)
+</t>
+<t tx="ekr.20240527100653.896">def do_ws(self) -&gt; None:
+    """
+    Handle the "ws" pseudo-token.  See Tokenizer.itok.do_token (the gem).
+
+    Put the whitespace only if if ends with backslash-newline.
+    """
+    val = self.input_token.value
+    last_token = self.input_tokens[self.index - 1]
+
+    if last_token.kind in ('nl', 'newline'):
+        self.pending_lws = val
+        self.pending_ws = ''
+    elif '\\\n' in val:
+        self.pending_lws = ''
+        self.pending_ws = val
+    else:
+        self.pending_ws = val
+</t>
+<t tx="ekr.20240527100653.897">def gen_blank(self) -&gt; None:
+    """
+    Queue a *request* a blank.
+    Change *neither* prev_output_kind *nor* pending_lws.
+    """
+
+    prev_kind = self.prev_output_kind
+    if prev_kind == 'op-no-blanks':
+        # A demand that no blank follows this op.
+        self.pending_ws = ''
+    elif prev_kind == 'hard-blank':
+        # Eat any further blanks.
+        self.pending_ws = ''
+    elif prev_kind in (
+        'dedent',
+        'file-start',
+        'indent',
+        'line-indent',
+        'newline',
+    ):
+        # Suppress the blank, but do *not* change the pending ws.
+        pass
+    elif self.pending_ws:
+        # Use the existing pending ws.
+        pass
+    else:
+        self.pending_ws = ' '
+</t>
+<t tx="ekr.20240527100653.898">def gen_token(self, kind: str, value: Any) -&gt; None:
+    """Add an output token to the code list."""
+
+    if self.pending_lws:
+        self.output_list.append(self.pending_lws)
+    elif self.pending_ws:
+        self.output_list.append(self.pending_ws)
+
+    self.output_list.append(value)
+    self.pending_lws = ''
+    self.pending_ws = ''
+    self.prev_output_value = value
+    self.prev_output_kind = kind
+</t>
+<t tx="ekr.20240527100653.899"># The parser calls scanner methods to move through the list of input tokens.
+</t>
+<t tx="ekr.20240527100653.900">def pre_scan(self) -&gt; None:
+    """
+    Scan the entire file in one iterative pass, adding context to a few
+    kinds of tokens as follows:
+
+    Token   Possible Contexts (or None)
+    =====   ===========================
+    ':'     'annotation', 'dict', 'complex-slice', 'simple-slice'
+    '='     'annotation', 'initializer'
+    '*'     'arg'
+    '**'    'arg'
+    '.'     'import'
+    """
+
+    # The main loop.
+    in_import = False
+    scan_stack: list[ScanState] = []
+    prev_token: Optional[InputToken] = None
+    for i, token in enumerate(self.input_tokens):
+        kind, value = token.kind, token.value
+        if kind in 'newline':
+            &lt;&lt; pre-scan 'newline' tokens &gt;&gt;
+        elif kind == 'op':
+            &lt;&lt; pre-scan 'op' tokens &gt;&gt;
+        elif kind == 'name':
+            &lt;&lt; pre-scan 'name' tokens &gt;&gt;
+        # Remember the previous significant token.
+        if kind not in self.insignificant_kinds:
+            prev_token = token
+    # Sanity check.
+    if scan_stack:  # pragma: no cover
+        print('pre_scan: non-empty scan_stack')
+        print(scan_stack)
+</t>
+<t tx="ekr.20240527100653.901"># 'import' and 'from x import' statements may span lines.
+# 'ws' tokens represent continued lines like this:   ws: ' \\\n    '
+if in_import and not scan_stack:
+    in_import = False
+</t>
+<t tx="ekr.20240527100653.902">top_state: Optional[ScanState] = scan_stack[-1] if scan_stack else None
+
+# Handle '[' and ']'.
+if value == '[':
+    scan_stack.append(ScanState('slice', token))
+elif value == ']':
+    assert top_state and top_state.kind == 'slice'
+    self.finish_slice(i, top_state)
+    scan_stack.pop()
+
+# Handle '{' and '}'.
+if value == '{':
+    scan_stack.append(ScanState('dict', token))
+elif value == '}':
+    assert top_state and top_state.kind == 'dict'
+    self.finish_dict(i, top_state)
+    scan_stack.pop()
+
+# Handle '(' and ')'
+elif value == '(':
+    if self.is_python_keyword(prev_token) or prev_token and prev_token.kind != 'name':
+        state_kind = '('
+    else:
+        state_kind = 'arg'
+    scan_stack.append(ScanState(state_kind, token))
+elif value == ')':
+    assert top_state and top_state.kind in ('(', 'arg'), repr(top_state)
+    if top_state.kind == 'arg':
+        self.finish_arg(i, top_state)
+    scan_stack.pop()
+
+# Handle interior tokens in 'arg' and 'slice' states.
+if top_state:
+    if top_state.kind in ('dict', 'slice') and value == ':':
+        top_state.value.append(i)
+    if top_state.kind == 'arg' and value in '**=:,':
+        top_state.value.append(i)
+
+# Handle '.' and '(' tokens inside 'import' and 'from' statements.
+if in_import and value in '(.':
+    self.set_context(i, 'import')
+</t>
+<t tx="ekr.20240527100653.903">prev_is_yield = prev_token and prev_token.kind == 'name' and prev_token.value == 'yield'
+if value in ('from', 'import') and not prev_is_yield:
+    # 'import' and 'from x import' statements should be at the outer level.
+    assert not scan_stack, scan_stack
+    in_import = True
+</t>
+<t tx="ekr.20240527100653.904">def finish_arg(self, end: int, state: Optional[ScanState]) -&gt; None:
+    """Set context for all ':' when scanning from '(' to ')'."""
+
+    # Sanity checks.
+    if not state:
+        return
+    assert state.kind == 'arg', repr(state)
+    token = state.token
+    assert token.value == '(', repr(token)
+    values = state.value
+    assert isinstance(values, list), repr(values)
+    i1 = token.index
+    assert i1 &lt; end, (i1, end)
+    if not values:
+        return
+
+    # Compute the context for each *separate* '=' token.
+    equal_context = 'initializer'
+    for i in values:
+        token = self.input_tokens[i]
+        assert token.kind == 'op', repr(token)
+        if token.value == ',':
+            equal_context = 'initializer'
+        elif token.value == ':':
+            equal_context = 'annotation'
+        elif token.value == '=':
+            self.set_context(i, equal_context)
+            equal_context = 'initializer'
+
+    # Set the context of all outer-level ':', '*', and '**' tokens.
+    prev: Optional[InputToken] = None
+    for i in range(i1, end):
+        token = self.input_tokens[i]
+        if token.kind not in self.insignificant_kinds:
+            if token.kind == 'op':
+                if token.value in ('*', '**'):
+                    if self.is_unary_op_with_prev(prev, token):
+                        self.set_context(i, 'arg')
+                elif token.value == '=':
+                    # The code above has set the context.
+                    assert token.context in ('initializer', 'annotation'), (i, repr(token.context))
+                elif token.value == ':':
+                    self.set_context(i, 'annotation')
+            prev = token
+</t>
+<t tx="ekr.20240527100653.905">def finish_slice(self, end: int, state: ScanState) -&gt; None:
+    """Set context for all ':' when scanning from '[' to ']'."""
+
+    # Sanity checks.
+    assert state.kind == 'slice', repr(state)
+    token = state.token
+    assert token.value == '[', repr(token)
+    colons = state.value
+    assert isinstance(colons, list), repr(colons)
+    i1 = token.index
+    assert i1 &lt; end, (i1, end)
+
+    # Do nothing if there are no ':' tokens in the slice.
+    if not colons:
+        return
+
+    # Compute final context by scanning the tokens.
+    final_context = 'simple-slice'
+    inter_colon_tokens = 0
+    prev = token
+    for i in range(i1 + 1, end - 1):
+        token = self.input_tokens[i]
+        kind, value = token.kind, token.value
+        if kind not in self.insignificant_kinds:
+            if kind == 'op':
+                if value == '.':
+                    # Ignore '.' tokens and any preceding 'name' token.
+                    if prev and prev.kind == 'name':  # pragma: no cover
+                        inter_colon_tokens -= 1
+                elif value == ':':
+                    inter_colon_tokens = 0
+                elif value in '-+':
+                    # Ignore unary '-' or '+' tokens.
+                    if not self.is_unary_op_with_prev(prev, token):
+                        inter_colon_tokens += 1
+                        if inter_colon_tokens &gt; 1:
+                            final_context = 'complex-slice'
+                            break
+                elif value == '~':
+                    # '~' is always a unary op.
+                    pass
+                else:
+                    # All other ops contribute.
+                    inter_colon_tokens += 1
+                    if inter_colon_tokens &gt; 1:
+                        final_context = 'complex-slice'
+                        break
+            else:
+                inter_colon_tokens += 1
+                if inter_colon_tokens &gt; 1:
+                    final_context = 'complex-slice'
+                    break
+            prev = token
+
+    # Set the context of all outer-level ':' tokens.
+    for i in colons:
+        self.set_context(i, final_context)
+</t>
+<t tx="ekr.20240527100653.906">def finish_dict(self, end: int, state: Optional[ScanState]) -&gt; None:
+    """
+    Set context for all ':' when scanning from '{' to '}'
+
+    Strictly speaking, setting this context is unnecessary because
+    tbo.gen_colon generates the same code regardless of this context.
+
+    In other words, this method can be a do-nothing!
+    """
+
+    # Sanity checks.
+    if not state:
+        return
+    assert state.kind == 'dict', repr(state)
+    token = state.token
+    assert token.value == '{', repr(token)
+    colons = state.value
+    assert isinstance(colons, list), repr(colons)
+    i1 = token.index
+    assert i1 &lt; end, (i1, end)
+
+    # Set the context for all ':' tokens.
+    for i in colons:
+        self.set_context(i, 'dict')
+</t>
+<t tx="ekr.20240527100653.907">def is_unary_op_with_prev(self, prev: Optional[InputToken], token: InputToken) -&gt; bool:
+    """
+    Return True if token is a unary op in the context of prev, the previous
+    significant token.
+    """
+    if token.value == '~':  # pragma: no cover
+        return True
+    if prev is None:
+        return True  # pragma: no cover
+    assert token.value in '**-+', repr(token.value)
+    if prev.kind in ('number', 'string'):
+        return_val = False
+    elif prev.kind == 'op' and prev.value in ')]':
+         # An unnecessary test?
+        return_val = False  # pragma: no cover
+    elif prev.kind == 'op' and prev.value in '{([:,':
+        return_val = True
+    elif prev.kind != 'name':
+        # An unnecessary test?
+        return_val = True  # pragma: no cover
+    else:
+        # prev is a'name' token.
+        return self.is_python_keyword(token)
+    return return_val
+</t>
+<t tx="ekr.20240527100653.908">def is_python_keyword(self, token: Optional[InputToken]) -&gt; bool:
+    """Return True if token is a 'name' token referring to a Python keyword."""
+    if not token or token.kind != 'name':
+        return False
+    return keyword.iskeyword(token.value) or keyword.issoftkeyword(token.value)
+</t>
+<t tx="ekr.20240527100653.909">def set_context(self, i: int, context: str) -&gt; None:
+    """
+    Set self.input_tokens[i].context, but only if it does not already exist!
+
+    See the docstring for pre_scan for details.
+    """
+
+    trace = False  # Do not delete the trace below.
+
+    valid_contexts = (
+        'annotation', 'arg', 'complex-slice', 'simple-slice',
+        'dict', 'import', 'initializer',
+    )
+    if context not in valid_contexts:
+        self.oops(f"Unexpected context! {context!r}")  # pragma: no cover
+
+    token = self.input_tokens[i]
+
+    if trace:  # pragma: no cover
+        token_s = f"&lt;{token.kind}: {token.show_val(12)}&gt;"
+        ignore_s = 'Ignore' if token.context else ' ' * 6
+        print(f"{i:3} {ignore_s} token: {token_s} context: {context}")
+
+    if not token.context:
+        token.context = context
+</t>
+<t tx="ekr.20240527100653.955"></t>
+<t tx="ekr.20240527100653.956"></t>
+<t tx="ekr.20240527100653.958">@g.command('vr-fully-expand')
+def fully_expand_rendering_pane(event: Event) -&gt; None:
+    """Expand the rendering pane."""
+    if g.app.gui.guiName() != 'qt':
+        return
+    c = event.get('c')
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+        vr.show()
+    vr.fully_expand()
+    g.es('VR pane covers body pane', color='red')
+</t>
+<t tx="ekr.20240527100653.959">@g.command('vr-hide')
+def hide_rendering_pane(event: Event) -&gt; None:
+    """Close the rendering pane."""
+    global controllers, layouts
+    if g.app.gui.guiName() != 'qt':
+        return
+    c = event.get('c')
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+    vr.hide()
+    vr.is_visible = False
+    c.bodyWantsFocus()
+
+# Compatibility
+
+close_rendering_pane = hide_rendering_pane
+</t>
+<t tx="ekr.20240527100653.960">@g.command('vr-restore-body')
+def restore_body(event: Event) -&gt; None:
+    """Expand the rendering pane."""
+    if g.app.gui.guiName() != 'qt':
+        return
+    c = event.get('c')
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+    vr.restore_body()
+    g.es('VR pane uncovers body pane', color='red')
+
+</t>
+<t tx="ekr.20240527100653.961">@g.command('vr-show')
+def show_rendering_pane(event: Event) -&gt; None:
+    """Show the rendering pane."""
+    global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
+    c = event.get('c')
+    if not c:
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+    vr.show()
+    vr.is_visible = True
+    c.bodyWantsFocusNow()
+
+</t>
+<t tx="ekr.20240527100653.962">@g.command('vr-toggle-keep-open')
+def toggle_keep_open(event: Event) -&gt; None:
+    """Toggle the visibility of the VR pane."""
+    global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
+    c = event.get('c')
+    if not c:
+        return
+    if g.app.gui.guiName() != 'qt':
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+        vr.hide()  # So the toggle below will work.
+    vr.keep_open = not vr.keep_open
+    vr.update('keep-open', {'c': c, 'force': True})
+</t>
+<t tx="ekr.20240527100653.963">@g.command('vr-toggle-visibility')
+@g.command('vr-toggle')  # Legacy
+def toggle_rendering_pane(event: Event) -&gt; None:
+    """Toggle the visibility of the VR pane."""
+    global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
+    c = event.get('c')
+    if not c:
+        return
+    if g.app.gui.guiName() != 'qt':
+        return
+    vr = controllers.get(c.hash())
+    if not vr:
+        vr = viewrendered(event)
+    vr.is_visible = not vr.is_visible
+    if vr.is_visible:
+        g.es('VR pane on', color='red')
+        vr.show()
+    else:
+        g.es('VR pane off', color='red')
+        vr.hide()
+    c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20240527100653.964"></t>
+<t tx="ekr.20240527100653.968"></t>
+<t tx="ekr.20240527100653.970">def scanGlobals(self) -&gt; None:
+    """Get global data from the cache, with reasonable defaults."""
+    c = self.c
+    d = self.getGlobalData()
+    windowSize = g.app.loadManager.options.get('windowSize')
+    windowSpot = g.app.loadManager.options.get('windowSpot')
+    if windowSize is not None:
+        h, w = windowSize  # checked in LM.scanOption.
+    else:
+        w, h = d.get('width'), d.get('height')
+    if windowSpot is None:
+        x, y = d.get('left'), d.get('top')
+    else:
+        y, x = windowSpot  # #1263: (top, left)
+    if 'size' in g.app.debug:
+        g.trace(w, h, x, y, c.shortFileName())
+    # c.frame may be a NullFrame.
+    c.frame.setTopGeometry(w, h, x, y)
+    r1, r2 = d.get('r1'), d.get('r2')
+    c.frame.resizePanesToRatio(r1, r2)
+    frameFactory = getattr(g.app.gui, 'frameFactory', None)
+    if not frameFactory:
+        return
+    assert frameFactory is not None
+    mf = frameFactory.masterFrame
+    if g.app.start_minimized:
+        mf.showMinimized()
+    elif g.app.start_maximized:
+        # #1189: fast.scanGlobals calls showMaximized later.
+        mf.showMaximized()
+    elif g.app.start_fullscreen:
+        mf.showFullScreen()
+    else:
+        mf.show()
+</t>
+<t tx="ekr.20240527100653.971">def getGlobalData(self) -&gt; dict[str, Any]:
+    """Return a dict containing all global data."""
+    c = self.c
+    try:
+        window_pos = c.db.get('window_position')
+        r1 = float(c.db.get('body_outline_ratio', '0.5'))
+        r2 = float(c.db.get('body_secondary_ratio', '0.5'))
+        top, left, height, width = window_pos
+        return {
+            'top': int(top),
+            'left': int(left),
+            'height': int(height),
+            'width': int(width),
+            'r1': r1,
+            'r2': r2,
+        }
+    except Exception:
+        pass
+    # Use reasonable defaults.
+    return {
+        'top': 50, 'left': 50,
+        'height': 500, 'width': 800,
+        'r1': 0.5, 'r2': 0.5,
+    }
+</t>
+<t tx="ekr.20240527100653.972">def putGlobals(self) -&gt; None:
+    """Put a vestigial &lt;globals&gt; element, and write global data to the cache."""
+    c = self.c
+    self.put("&lt;globals/&gt;\n")
+    if not c.mFileName:
+        return
+    c.db['body_outline_ratio'] = str(c.frame.compute_ratio())
+    c.db['body_secondary_ratio'] = str(c.frame.compute_secondary_ratio())
+    w, h, left, t = c.frame.get_window_info()
+    c.db['window_position'] = str(t), str(left), str(h), str(w)
+</t>
+<t tx="ekr.20240527100653.973"></t>
+<t tx="ekr.20240527100653.976">def __repr__(self) -&gt; str:
+    result = [
+        '\n',
+        f"SqlitePickleShare('{self.root}')\n",
+    ]
+    for key_tuple in self.keys():
+        key = key_tuple[0]
+        result.append(f"{key} {self.get(key)}\n")
+    return ''.join(result)
+</t>
+<t tx="ekr.20240527100653.977">consider_message = 'consider using python/Tools/scripts/reindent.py'
+
+def do_indent(self) -&gt; None:
+    """Handle indent token."""
+
+    # Only warn about indentation errors.
+    if '\t' in self.input_token.value:  # pragma: no cover
+        print(f"Found tab character in {self.filename}")
+        print(self.consider_message)
+    elif (len(self.input_token.value) % self.tab_width) != 0:  # pragma: no cover
+        print(f"Indentation error in {self.filename}")
+        print(self.consider_message)
+
+    # Handle the token!
+    new_indent = self.input_token.value
+    old_indent = self.indent_level * self.tab_width * ' '
+    if new_indent &gt; old_indent:
+        self.indent_level += 1
+    elif new_indent &lt; old_indent:  # pragma: no cover (defensive)
+        print(f"\n===== do_indent: can not happen {new_indent!r}, {old_indent!r}")
+
+    self.lws = new_indent
+    self.pending_lws = self.lws
+    self.pending_ws = ''
+    self.prev_output_kind = 'indent'
+</t>
+<t tx="ekr.20240527100653.978">def show_scrolled_message(tag: str, kw: Any) -&gt; None:
+    if g.unitTesting:
+        return  # This just slows the unit tests.
+    c = kw.get('c')
+    if not c:
+        return
+    p = c and c.p
+    s = kw.get('msg')
+    if not s.strip():
+        g.trace('No message', g.callers())
+        return
+    # Create the VR pane if necessary.
+    vr = viewrendered(event=kw)
+    # Make sure we will show the message.
+    vr.is_active = True
+    vr.is_visible = True
+    # A hack: suppress updates until the node changes.
+    vr.gnx = p.v.gnx
+    vr.length = p.v.b
+    # Render!
+    f = vr.dispatch_dict.get('rest')
+    f(s, kw)
+    vr.show()
+    c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20240527100653.979"></t>
+<t tx="ekr.20240527100653.989">def onClose(tag: str, keys: dict) -&gt; None:
+    """
+    Handle a close event in the Leo *outline*, not the VR pane.
+    
+    Delete the per-commander data after idle time.
+    """
+    c = keys.get('c')
+    h = c.hash()
+    vr = controllers.get(h)
+    if vr and vr.active:
+        c.bodyWantsFocus()
+        del controllers[h]
+        vr.active = False
+        vr.deleteLater()
+</t>
+<t tx="ekr.20240527100702.1">Leo https://leo-editor.github.io/leo-editor/ 6.8.9 beta 1 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.8.0**
+
+- PR #3828: Leo now requires PyQt6 or above.
+
+
+- PR #xxx:
+- The usual minor improvements and bug fixes.
+
+**Links**
+
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.8.0 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.0+)
+- [6.8.0 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.0)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
+<t tx="ekr.20240527100956.1"></t>
+<t tx="ekr.20240527101024.1">.. Use the link-pr abbreviation to create these links.
+
+.. _`PR #3828`:  https://github.com/leo-editor/leo-editor/pull/3828
+
+**Major changes**
+
+- `PR #3728`_: Leo now requires PyQt6.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
