@@ -13,6 +13,7 @@ import re
 import string
 import time
 from typing import Any, Generator, Sequence, Optional, Union, TYPE_CHECKING
+import warnings
 #
 # Third-part tools.
 try:
@@ -2143,7 +2144,10 @@ class JEditColorizer(BaseColorizer):
                 flags = re.MULTILINE
                 if self.ignore_case:
                     flags |= re.IGNORECASE
-                re_obj = re.compile(pattern, flags)
+                # Suppress a FutureWarning: possible nested set.
+                with warnings.catch_warnings():
+                    warnings.filterwarnings("ignore", category=FutureWarning)
+                    re_obj = re.compile(pattern, flags)
             except Exception:
                 # Do not call g.es here!
                 g.trace(f"Invalid regular expression: {pattern}")
