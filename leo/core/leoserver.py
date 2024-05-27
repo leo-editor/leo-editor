@@ -2292,16 +2292,17 @@ class LeoServer:
         """
         try:
             c = self._check_c(param)
+            assert c
         except Exception:  # pragma: no cover
-            # c not found
+            # c not found.
             return self._make_minimal_response()
-        if c:  # pragma: no cover
-            ap = param.get("ap")
-            if ap:
-                gnx = ap.get("gnx")
-            for p in c.all_unique_positions(copy=False):
-                if p.gnx == gnx:
-                    return self._make_minimal_response({'valid': True})
+        ap = param.get("ap")
+        if ap:
+            gnx = ap.get("gnx")
+            if gnx:
+                for p in c.all_unique_positions(copy=False):
+                    if p.gnx == gnx:
+                        return self._make_minimal_response({'valid': True})
         return self._make_minimal_response()
     #@+node:felix.20210621233316.36: *5* server.get_all_open_commanders
     def get_all_open_commanders(self, param: Param) -> Response:
@@ -4983,7 +4984,7 @@ class LeoServer:
                             return p
                 raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
             return p  # Return the position
-        elif gnx:
+        if gnx:
             # Had no 'ap', but a 'gnx' param was passed instead.
             for p in c.all_unique_positions():
                 if p.v.gnx == gnx:
