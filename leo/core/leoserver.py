@@ -2286,11 +2286,15 @@ class LeoServer:
         return self._make_response()
     #@+node:felix.20210621233316.35: *4* server.getter commands
     #@+node:felix.20240525174003.1: *5* server.is_valid
-    def is_valid(self, param: Param) -> Response:
+    def get_is_valid(self, param: Param) -> Response:
         """
         Checks if gnx is valid in this commander
         """
-        c = self._check_c(param)
+        try:
+            c = self._check_c(param)
+        except Exception:  # pragma: no cover
+            # c not found
+            return self._make_minimal_response()
         if c:  # pragma: no cover
             ap = param.get("ap")
             if ap:
