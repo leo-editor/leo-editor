@@ -74,20 +74,9 @@ else:
         from PyQt6 import uic
     except Exception:
         uic = None
-
-    # Give a hint if any optional module does not exist.
-    if (
-        not Qsci or not QtDesigner or not QtMultimedia or not QtNetwork
-        or not QtOpenGL or not printsupport or not QtWebEngineCore
-        or not QtWebEngineWidgets or not QtSvg or not uic
-    ):
-        print('')
-        print('leoQt.py: one or more optional Qt modules do not exist.')
-        print('Please run `pip install -r requirements.txt`')
-        print('')
     #@-<< import optional Qt modules >>
-#@+<< PyQt6 enumerations >>
-#@+node:ekr.20240303142509.3: ** << PyQt6 enumerations >>
+#@+<< define PyQt6 enumerations >>
+#@+node:ekr.20240303142509.3: ** << define PyQt6 enumerations >>
 AlignmentFlag = Qt.AlignmentFlag
 AlignLeft = Qt.AlignmentFlag.AlignLeft
 AlignRight = Qt.AlignmentFlag.AlignRight
@@ -136,7 +125,7 @@ WidgetAttribute = Qt.WidgetAttribute
 WindowState = Qt.WindowState
 WindowType = Qt.WindowType
 WrapMode = QtGui.QTextOption.WrapMode
-#@-<< PyQt6 enumerations >>
+#@-<< define PyQt6 enumerations >>
 #@+<< asserts for pyflakes >>
 #@+node:ekr.20240528045757.1: ** << asserts for pyflakes >>
 
@@ -160,8 +149,8 @@ assert QUrl
 # assert QtWidgets
 # assert uic
 #@-<< asserts for pyflakes >>
-
-# Standard abbreviations.
+#@+<< define standard abbreviations >>
+#@+node:ekr.20240528050716.1: ** << define standard abbreviations >>
 qt_version = QtCore.QT_VERSION_STR
 try:
     QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
@@ -169,4 +158,19 @@ try:
 except Exception:
     QWebEngineSettings = None
     WebEngineAttribute = None
+#@-<< define standard abbreviations >>
+#@+<< print a hint if an optional module does not exist >>
+#@+node:ekr.20240528050657.1: ** << print a hint if an optional module does not exist >>
+if (
+    not Qsci or not QtDesigner or not QtMultimedia or not QtNetwork
+    or not QtOpenGL or not printsupport or not QtWebEngineCore
+    or not QtWebEngineWidgets or not QWebEngineSettings or not WebEngineAttribute
+    or not QtSvg or not uic
+):
+    print('')
+    print('leoQt.py: one or more optional Qt modules do not exist.')
+    print('Please run `pip install -r requirements.txt`')
+    print('')
+#@-<< print a hint if an optional module does not exist >>
+
 #@-leo
