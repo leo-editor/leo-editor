@@ -6,6 +6,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt, QUrl
 from PyQt6.QtGui import QAction, QActionGroup, QCloseEvent
 
+# A public list of missing Qt modules. Good for debugging.
 _missing_modules: list[str] = []
 
 if 0:
@@ -85,6 +86,7 @@ else:
         from PyQt6 import uic
     except Exception:
         uic = None
+        # On Linux, uic may be a standalone program.
         _missing_modules.append('uic')
     #@-<< import optional Qt modules >>
 
@@ -187,5 +189,4 @@ if 0:  # Quickly becomes annoying.
         print('')
     #@-<< print a hint if an optional module does not exist >>
 
-del _missing_modules
 #@-leo
