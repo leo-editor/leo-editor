@@ -9,7 +9,8 @@ import os
 import sys
 import traceback
 
-# Override sys.excepthook
+# Override sys.excepthook.
+
 def leo_excepthook(typ, val, tb):
     # Like g.es_exception.
     lines = traceback.format_exception(typ, val, tb)
@@ -31,20 +32,24 @@ if sys.executable.endswith("pythonw.exe"):
         os.path.join(os.getenv("TEMP", default=""),  # #1557.
         "stderr-" + os.path.basename(sys.argv[0])),
         "w")
+
+# Make sure the leo directory is on sys.path.
 path = os.getcwd()
 if path not in sys.path:
     sys.path.append(path)
+
+# Do the initial imports. Leo can't continue if these fail.
 try:
     # #1472: bind to g immediately.
     from leo.core import leoGlobals as g
     from leo.core import leoApp
     g.app = leoApp.LeoApp()
-
 except Exception:
     message = (
-        '*** Leo could not be started ***\n'
+        'Error starting Leo!\n'
         "Please verify you've installed the required dependencies:\n"
-        'https://leo-editor.github.io/leo-editor/installing.html'
+        'https://leo-editor.github.io/leo-editor/installing.html\n'
+        'Please ask for help at https://groups.google.com/g/leo-editor'
     )
     # The full traceback is too important to omit!
     print(message)
