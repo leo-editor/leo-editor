@@ -572,7 +572,7 @@ class LeoFind:
         # Look for alternate matches only if there are no exact matches.
         if not matches:
             alt_word = self._switch_style(word)
-            patterns = self.make_patterns(alt_word)
+            patterns = self._make_patterns(alt_word)
             matches = self._find_all_matches(patterns)
         if not matches:
             g.es(f"not found: {word!r}", color='red')
