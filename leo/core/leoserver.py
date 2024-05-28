@@ -2128,18 +2128,6 @@ class LeoServer:
             raise ServerError(f"{tag}: Running clone find operation gave exception: {e}")
         focus = self._get_focus()
         return self._make_response({"found": result, "focus": focus})
-    #@+node:felix.20210621233316.30: *5* server.find_var
-    def find_var(self, param: Param) -> Response:
-        """Run Leo's find-var command and return results."""
-        tag = 'find_var'
-        c = self._check_c(param)
-        fc = c.findCommands
-        try:
-            fc.find_var()
-        except Exception as e:
-            raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
-        focus = self._get_focus()
-        return self._make_response({"found": True, "focus": focus})
     #@+node:felix.20210722010004.1: *5* server.clone_find_all_flattened_marked
     def clone_find_all_flattened_marked(self, param: Param) -> Response:
         """Run Leo's clone-find-all-flattened-marked command."""
@@ -2166,16 +2154,69 @@ class LeoServer:
         return self._make_response({"found": True, "focus": focus})
     #@+node:felix.20210621233316.31: *5* server.find_def
     def find_def(self, param: Param) -> Response:
-        """Run Leo's find-def command and return results."""
+        """
+        Equivalent to do_find_def from leoFind.py.
+        """
         tag = 'find_def'
         c = self._check_c(param)
         fc = c.findCommands
         try:
-            fc.find_def()
+            word = fc._compute_find_def_word(None)
+            patterns = fc._make_patterns(word)
+            matches = fc._find_all_matches(patterns)
+            # Look for alternate matches only if there are no exact matches.
+            if not matches:
+                alt_word = fc._switch_style(word)
+                patterns = fc.make_patterns(alt_word)
+                matches = fc._find_all_matches(patterns)
+            if not matches:
+                g.es(f"not found: {word!r}", color='red')
+                focus = self._get_focus()
+                return self._make_response({"found": False, "focus": focus})
+            # Update the Nav pane.
+            unique_matches = list(set([s.strip() for (i, p, s) in matches if s.strip()]))
+            # The Nav pane can show only one match, so issue a warning.
+            if len(unique_matches) > 1:
+                g.es_print(f"Multiple matches for {word}", color='red')
+                for z in unique_matches[1:]:
+                    g.es_print(z)
+            scon: QuickSearchController = c.patched_quicksearch_controller
+            scon.qsc_search(unique_matches[0])
+            # Carefully select the most convenient clone of p.
+            if len(matches) == 1:
+                i, p, s = matches[0]
+                if p == c.p:
+                    pass
+                elif fc.reverse_find_defs:
+                    search_p = c.lastPosition()
+                    while search_p:
+                        if search_p.v == p.v:
+                            p = search_p
+                            break
+                        else:
+                            search_p.moveToThreadBack()
+                else:
+                    # Start in the root position.
+                    search_p = c.rootPosition()
+                    while search_p:
+                        if search_p.v == p.v:
+                            p = search_p
+                            break
+                        else:
+                            search_p.moveToThreadNext()
+                c.selectPosition(p)
+                w = c.frame.body.wrapper
+                if w:
+                    w.setSelectionRange(i, i + len(s), insert=i)
+        # Put the first match in the Nav pane's edit widget and update.
         except Exception as e:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
         focus = self._get_focus()
         return self._make_response({"found": True, "focus": focus})
+    
+    # Compatibility.
+    find_var = find_def
+    
     #@+node:felix.20210621233316.32: *5* server.goto_global_line
     def goto_global_line(self, param: Param) -> Response:
         """Run Leo's goto-global-line command and return results."""
