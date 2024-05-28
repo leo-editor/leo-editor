@@ -1516,13 +1516,15 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20240519114809.1: *4* qt_gui._self_and_subtree
     def _self_and_subtree(self, qt_obj: Any) -> Generator:
         """Yield w and all of w's descendants."""
+        if not qt_obj:
+            return
         yield qt_obj
         for child in qt_obj.children():
             yield from self._self_and_subtree(child)
     #@+node:ekr.20240519115301.1: *4* qt_gui.find_widget_by_name
     def find_widget_by_name(self, c: Cmdr, name: str) -> Optional[QWidget]:
         for w in self._self_and_subtree(c.frame.top):
-            if w.objectName() == name:
+            if w and w.objectName() == name:
                 return w
         return None
     #@+node:ekr.20240519115157.1: *4* qt_gui.get_top_splitter
