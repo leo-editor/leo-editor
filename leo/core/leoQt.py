@@ -173,17 +173,19 @@ except Exception:
     WebEngineAttribute = None
     _missing_modules.append('QtWebEngineCore.QWebEngineSettings')
 #@-<< define standard abbreviations >>
-#@+<< print a hint if an optional module does not exist >>
-#@+node:ekr.20240528050657.1: ** << print a hint if an optional module does not exist >>
-if _missing_modules:
-    print('')
-    print('leoQt.py: the following optional Qt modules do not exist:')
-    for z in sorted(_missing_modules):
-        print(f"  {z}")
-    print('')
-    print('Please run `pip install -r requirements.txt`')
-    print('')
-#@-<< print a hint if an optional module does not exist >>
+
+if 0:  # Quickly becomes annoying.
+    #@+<< print a hint if an optional module does not exist >>
+    #@+node:ekr.20240528050657.1: ** << print a hint if an optional module does not exist >>
+    if _missing_modules:
+        print('')
+        print('leoQt.py: the following optional Qt modules do not exist:')
+        for z in sorted(_missing_modules):
+            print(f"  {z}")
+        print('')
+        print('Please run `pip install -r requirements.txt`')
+        print('')
+    #@-<< print a hint if an optional module does not exist >>
 
 del _missing_modules
 #@-leo
