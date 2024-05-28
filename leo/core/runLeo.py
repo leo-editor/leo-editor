@@ -46,12 +46,10 @@ except Exception:
         "Please verify you've installed the required dependencies:\n"
         'https://leo-editor.github.io/leo-editor/installing.html'
     )
+    # The full traceback is too important to omit!
     print(message)
-    if 1:
-        # For debugging.
-        # The full traceback would alarm users!
-        print('')
-        traceback.print_exc()
+    print('')
+    traceback.print_exc()
     sys.exit(1)
 #@-<< imports and inits >>
 #@+others
