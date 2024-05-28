@@ -107,7 +107,7 @@ def init() -> bool:
         warning_given = True
         print('todo.py plugin not loaded because uic can not be imported')
         return False
-        
+
     g.registerHandler('after-create-leo-frame', onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
