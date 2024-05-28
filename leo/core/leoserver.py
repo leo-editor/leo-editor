@@ -2167,7 +2167,7 @@ class LeoServer:
             # Look for alternate matches only if there are no exact matches.
             if not matches:
                 alt_word = fc._switch_style(word)
-                patterns = fc.make_patterns(alt_word)
+                patterns = fc._make_patterns(alt_word)
                 matches = fc._find_all_matches(patterns)
             if not matches:
                 g.es(f"not found: {word!r}", color='red')
@@ -2213,10 +2213,10 @@ class LeoServer:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
         focus = self._get_focus()
         return self._make_response({"found": True, "focus": focus})
-    
+
     # Compatibility.
     find_var = find_def
-    
+
     #@+node:felix.20210621233316.32: *5* server.goto_global_line
     def goto_global_line(self, param: Param) -> Response:
         """Run Leo's goto-global-line command and return results."""
