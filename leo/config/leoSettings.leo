@@ -1435,11 +1435,11 @@
 <v t="ekr.20131213135427.22061"><vh>@item &amp;add-editor</vh></v>
 <v t="ekr.20131213135427.22063"><vh>@item &amp;delete-editor</vh></v>
 </v>
-<v t="ekr.20170509104949.1"><vh>@menu &amp;Window Layout</vh>
-<v t="tbrown.20160130095933.1"><vh>@item free-layout-context-menu</vh></v>
-<v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
-<v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
-<v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
+<v t="ekr.20170509104949.1"><vh>@@@menu &amp;Window Layout</vh>
+<v t="tbrown.20160130095933.1"><vh>@@@item free-layout-context-menu</vh></v>
+<v t="tbrown.20160130095933.2"><vh>@@@item free-layout-load</vh></v>
+<v t="tbrown.20160130095933.3"><vh>@@@item free-layout-restore</vh></v>
+<v t="tbrown.20160130095933.4"><vh>@@@item free-layout-zoom</vh></v>
 </v>
 <v t="ekr.20131213135427.22236"><vh>@menu &amp;Scroll Text Areas</vh>
 <v t="ekr.20131213135427.22237"><vh>@item scroll-outline-down-&amp;line</vh></v>
