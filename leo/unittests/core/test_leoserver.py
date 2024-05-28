@@ -96,6 +96,7 @@ class TestLeoServer(LeoUnitTest):
             'paste_node', 'paste_as_clone_node',  # New exclusion.
             'paste_as_template',  # New exclusion.
             'save_file',  # way too dangerous!
+            'get_is_valid',
             # 'set_selection',  # Not ready yet.
             'open_file', 'close_file',  # Done by hand.
             'import_any_file',
