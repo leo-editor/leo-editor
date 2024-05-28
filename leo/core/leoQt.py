@@ -1,30 +1,91 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140810053602.18074: * @file leoQt.py
 """Leo's Qt import wrapper, specialized for Qt6."""
-
+from typing import Any
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt, QUrl
 from PyQt6.QtGui import QAction, QActionGroup, QCloseEvent
 
-# Previously optional imports...
+if 0:
+    #@+<< testing: set all optional Qt modules to None >>
+    #@+node:ekr.20240528043206.1: ** << testing: set all optional Qt modules to None >>
+    Qsci: Any = None
+    QtDesigner = None
+    QtMultimedia = None
+    QtNetwork = None
+    QtOpenGL = None
+    printsupport = None
+    QtWebEngineCore = None
+    QtWebEngineWidgets = None
+    QtSvg = None
+    uic = None
+    #@-<< testing: set all optional Qt modules to None >>
+else:
+    #@+<< import optional Qt modules >>
+    #@+node:ekr.20240528041831.1: ** << import optional Qt modules >>
+    # Leo 6.8.0: do *not* assume these exist.
+    try:
+        from PyQt6 import Qsci
+        assert Qsci
+    except Exception:
+        Qsci = None
 
-import PyQt6.QtSvg as QtSvg
-from PyQt6 import QtDesigner
-from PyQt6 import QtMultimedia
-from PyQt6 import QtNetwork
-from PyQt6 import QtOpenGL
-from PyQt6 import QtPrintSupport as printsupport
-from PyQt6 import QtWebEngineCore  # included with PyQt6-WebEngine
-from PyQt6 import QtWebEngineWidgets
-from PyQt6 import uic
+    try:
+        from PyQt6 import QtDesigner
+    except Exception:
+        QtDesigner = None
 
-# requirements.txt now contains PyQt6-QScintilla, so this should usually succeed.
-# But for now (until Leo 6.7.9), let's be careful.
-try:
-    from PyQt6 import Qsci  # Now required.
-    assert Qsci
-except Exception:
-    Qsci = None
+    try:
+        from PyQt6 import QtMultimedia
+    except Exception:
+        QtMultimedia = None
+
+    try:
+        from PyQt6 import QtNetwork
+    except Exception:
+        QtNetwork = None
+
+    try:
+        from PyQt6 import QtOpenGL
+    except Exception:
+        QtOpenGL = None
+
+    try:
+        from PyQt6 import QtPrintSupport as printsupport
+    except Exception:
+        printsupport = None
+
+    try:
+        from PyQt6 import QtWebEngineCore  # included with PyQt6-WebEngine
+    except Exception:
+        QtWebEngineCore = None
+
+    try:
+        from PyQt6 import QtWebEngineWidgets
+    except Exception:
+        QtWebEngineWidgets = None
+
+    try:
+        import PyQt6.QtSvg as QtSvg
+    except Exception:
+        QtSvg = None
+
+    try:
+        from PyQt6 import uic
+    except Exception:
+        uic = None
+
+    # Give a hint if any optional module does not exist.
+    if (
+        not Qsci or not QtDesigner or not QtMultimedia or not QtNetwork
+        or not QtOpenGL or not printsupport or not QtWebEngineCore
+        or not QtWebEngineWidgets or not QtSvg or not uic
+    ):
+        print('')
+        print('leoQt.py: one or more optional Qt modules do not exist.')
+        print('Please run `pip install -r requirements.txt`')
+        print('')
+    #@-<< import optional Qt modules >>
 
 #@+<< PyQt6 enumerations >>
 #@+node:ekr.20240303142509.3: ** << PyQt6 enumerations >>
