@@ -6,6 +6,8 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import Qt, QUrl
 from PyQt6.QtGui import QAction, QActionGroup, QCloseEvent
 
+_missing_modules: list[str] = []
+
 if 0:
     #@+<< testing: set all optional Qt modules to None >>
     #@+node:ekr.20240528043206.1: ** << testing: set all optional Qt modules to None >>
@@ -29,52 +31,63 @@ else:
         assert Qsci
     except Exception:
         Qsci = None
+        _missing_modules.append('Qsci')
 
     try:
         from PyQt6 import QtDesigner
     except Exception:
         QtDesigner = None
+        _missing_modules.append('PyQt6.QtDesigner')
 
     try:
         from PyQt6 import QtMultimedia
     except Exception:
         QtMultimedia = None
+        _missing_modules.append('PyQt6.QtMultimedia')
 
     try:
         from PyQt6 import QtNetwork
     except Exception:
         QtNetwork = None
+        _missing_modules.append('PyQt6.QtNetwork')
 
     try:
         from PyQt6 import QtOpenGL
     except Exception:
         QtOpenGL = None
+        _missing_modules.append('PyQt6.QtOpenGL')
 
     try:
         from PyQt6 import QtPrintSupport as printsupport
     except Exception:
         printsupport = None
+        _missing_modules.append('PyQt6.QtPrintSupport')
 
     try:
         from PyQt6 import QtWebEngineCore  # included with PyQt6-WebEngine
     except Exception:
         QtWebEngineCore = None
+        _missing_modules.append('PyQt6.QtWebEngineCore')
 
     try:
         from PyQt6 import QtWebEngineWidgets
     except Exception:
         QtWebEngineWidgets = None
+        _missing_modules.append('PyQt6.QtWebEngineWidgets')
 
     try:
         import PyQt6.QtSvg as QtSvg
     except Exception:
         QtSvg = None
+        _missing_modules.append('PyQt6.QtSvg')
 
     try:
         from PyQt6 import uic
     except Exception:
         uic = None
+        _missing_modules.append('uic')
     #@-<< import optional Qt modules >>
+
 #@+<< define PyQt6 enumerations >>
 #@+node:ekr.20240303142509.3: ** << define PyQt6 enumerations >>
 AlignmentFlag = Qt.AlignmentFlag
@@ -158,19 +171,19 @@ try:
 except Exception:
     QWebEngineSettings = None
     WebEngineAttribute = None
+    _missing_modules.append('QtWebEngineCore.QWebEngineSettings')
 #@-<< define standard abbreviations >>
 #@+<< print a hint if an optional module does not exist >>
 #@+node:ekr.20240528050657.1: ** << print a hint if an optional module does not exist >>
-if (
-    not Qsci or not QtDesigner or not QtMultimedia or not QtNetwork
-    or not QtOpenGL or not printsupport or not QtWebEngineCore
-    or not QtWebEngineWidgets or not QWebEngineSettings or not WebEngineAttribute
-    or not QtSvg or not uic
-):
+if _missing_modules:
     print('')
-    print('leoQt.py: one or more optional Qt modules do not exist.')
+    print('leoQt.py: the following optional Qt modules do not exist:')
+    for z in sorted(_missing_modules):
+        print(f"  {z}")
+    print('')
     print('Please run `pip install -r requirements.txt`')
     print('')
 #@-<< print a hint if an optional module does not exist >>
 
+del _missing_modules
 #@-leo

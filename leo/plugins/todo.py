@@ -90,13 +90,24 @@ NO_TIME = datetime.date(3000, 1, 1)
 
 #@+others
 #@+node:tbrown.20090119215428.6: ** init (todo.py)
+warning_given = False
+
 def init() -> bool:
     """Return True if the plugin has loaded successfully."""
+    global warning_given
+    if warning_given:
+        return False
     name = g.app.gui.guiName()
     if name != "qt":
+        warning_given = True
         if name not in ('browser', 'curses', 'nullGui'):
-            print('todo.py plugin not loading because gui is not Qt')
+            print('todo.py plugin not loaded because gui is not Qt')
         return False
+    if not uic:
+        warning_given = True
+        print('todo.py plugin not loaded because uic can not be imported')
+        return False
+        
     g.registerHandler('after-create-leo-frame', onCreate)
     # can't use before-create-leo-frame because Qt dock's not ready
     g.plugin_signon(__name__)
