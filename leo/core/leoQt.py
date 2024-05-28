@@ -86,7 +86,6 @@ else:
         print('Please run `pip install -r requirements.txt`')
         print('')
     #@-<< import optional Qt modules >>
-
 #@+<< PyQt6 enumerations >>
 #@+node:ekr.20240303142509.3: ** << PyQt6 enumerations >>
 AlignmentFlag = Qt.AlignmentFlag
@@ -138,29 +137,36 @@ WindowState = Qt.WindowState
 WindowType = Qt.WindowType
 WrapMode = QtGui.QTextOption.WrapMode
 #@-<< PyQt6 enumerations >>
+#@+<< asserts for pyflakes >>
+#@+node:ekr.20240528045757.1: ** << asserts for pyflakes >>
 
 # For pyflakes so it doesn't complain about unused imports.
 assert QAction
 assert QActionGroup
 assert QCloseEvent
 assert QUrl
+
+# assert QtCore
 # assert Qsci
-assert QtCore
-assert QtDesigner
-assert QtGui
-assert QtMultimedia
-assert QtNetwork
-assert QtOpenGL
-assert QtSvg
-assert printsupport
-assert QtWebEngineCore
-assert QtWebEngineWidgets
-assert QtWidgets
-assert uic
+# assert QtDesigner
+# assert QtGui
+# assert QtMultimedia
+# assert QtNetwork
+# assert QtOpenGL
+# assert QtSvg
+# assert printsupport
+# assert QtWebEngineCore
+# assert QtWebEngineWidgets
+# assert QtWidgets
+# assert uic
+#@-<< asserts for pyflakes >>
 
 # Standard abbreviations.
 qt_version = QtCore.QT_VERSION_STR
-
-QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
-WebEngineAttribute = QWebEngineSettings.WebAttribute
+try:
+    QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
+    WebEngineAttribute = QWebEngineSettings.WebAttribute
+except Exception:
+    QWebEngineSettings = None
+    WebEngineAttribute = None
 #@-leo
