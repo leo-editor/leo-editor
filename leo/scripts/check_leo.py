@@ -34,6 +34,33 @@ class CheckLeo:
         self.d: dict[str, dict] = {}
 
     #@+others
+    #@+node:ekr.20240529135047.1: *3* CheckLeo.check_file
+    def check_file(self, path: str, tree: Node) -> None:
+        """
+        Check that all called methods exist.
+        """
+        print(f"{g.shortFileName(path)}...")
+        d = self.d.get(path)
+        classes_dict = d.get('classes')
+        if classes_dict:
+            trees_dict = d.get('class_trees')
+            for class_name in classes_dict:
+                attrs: set[str] = set()
+                class_tree = trees_dict.get(class_name)
+                assert isinstance(class_tree, ast.ClassDef), repr(class_tree)
+                for node in class_tree.body:
+                    for node2 in ast.walk(node):
+                        if (
+                            isinstance(node2, ast.Call)
+                            and isinstance(node2.func, ast.Attribute)
+                            and isinstance(node2.func.value, ast.Name)
+                            and node2.func.value.id == 'self'
+                        ):
+                            attrs.add(node2.func.attr)
+                if attrs:
+                    print(f"  class {class_name} method calls...")
+                    for attr in sorted(list(attrs)):
+                        print(f"    self.{attr}")
     #@+node:ekr.20240529063012.1: *3* CheckLeo.check_leo
     def check_leo(self) -> None:
         """Check all files returned by get_leo_paths()."""
@@ -41,10 +68,10 @@ class CheckLeo:
         for path in self.get_leo_paths():
             s = self.read(path)
             tree = self.parse_ast(s)
-            # print(AstDumper().dump_ast(tree))
             self.scan_file(path, tree)
+            self.check_file(path, tree)
         t2 = time.process_time()
-        if 1:
+        if 0:
             self.dump_dict()
         print('')
         g.trace(f"done {(t2-t1):4.2} sec.")
@@ -122,11 +149,19 @@ class CheckLeo:
             return ''
     #@+node:ekr.20240529060232.5: *3* CheckLeo.scan_file
     def scan_file(self, path: str, tree: Node) -> dict:
-        # Find all classes and their methods.
+        """
+        Scan the tree for all classes and their methods.
+        
+        Set self.d[path] to an inner dict describing all classes in path.
+        """
+        # Keys are class names; values are lists of methods.
         classes: dict[str, list[str]] = {}
+        # Keys are class_names; values are ClassDef nodes.
+        class_trees: dict[str, Node] = {}
         for node in ast.walk(tree):
             if isinstance(node, ast.ClassDef):
                 class_name = node.name
+                class_trees[class_name] = node
                 methods = []
                 for node2 in ast.walk(node):
                     # This finds inner defs as well as methods.
@@ -138,8 +173,10 @@ class CheckLeo:
                             methods.append(f"{node2.name} ({args_s})")
                 classes[class_name] = list(sorted(methods))
         assert path not in self.d, path
-        self.d[path] = {'classes': classes}
-        ### return classes
+        self.d[path] = {
+            'classes': classes,
+            'class_trees': class_trees,
+        }
     #@-others
 #@-others
 
