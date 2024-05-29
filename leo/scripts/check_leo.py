@@ -43,19 +43,17 @@ class CheckLeo:
         self.dump_dict()
     #@+node:ekr.20240529061932.1: *3* CheckLeo.dump_dict
     def dump_dict(self) -> None:
-        
-        # g.trace('paths', list(sorted(self.d.keys())))
+
         for path in self.d:
-            d = self.d.get(path)
             short_file_name = g.shortFileName(path)
-            for key in d:
-                if key == 'classes':
-                    inner_dict = d.get(key)
-                    for class_name in inner_dict:
-                        methods = inner_dict.get(class_name)
-                        n = len(methods)
-                        tag_s = f"{short_file_name}.{class_name:}"
-                        print(f"{tag_s:>30}: {n} method{g.plural(n)}")
+            d = self.d.get(path)
+            # Dump the classes inner dict.
+            classes_dict = d.get('classes')
+            for class_name in classes_dict:
+                methods = classes_dict.get(class_name)
+                n = len(methods)
+                tag_s = f"{short_file_name}.{class_name:}"
+                print(f"{tag_s:>30}: {n} method{g.plural(n)}")
     #@+node:ekr.20240529094941.1: *3* CheckLeo.get_leo_paths
     def get_leo_paths(self) -> list[str]:
         """Return a list of full paths to Leo paths to be checked."""
