@@ -13,9 +13,9 @@ import sys
 leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 if leo_editor_dir not in sys.path:
     sys.path.insert(0, leo_editor_dir)
-    
+
 leo_dir = os.path.abspath(os.path.join(leo_editor_dir, 'leo'))
-    
+
 # No need to change
 if 0:
     os.chdir(leo_dir)
@@ -38,7 +38,7 @@ class CheckLeo:
     #@+others
     #@+node:ekr.20240529063012.1: *3* CheckLeo.check_leo
     def check_leo(self) -> None:
-        
+
         path = os.path.abspath(os.path.join(leo_dir, 'core', 'leoCommands.py'))
         assert os.path.exists(path)
         s = self.read(path)
@@ -50,10 +50,10 @@ class CheckLeo:
             self.dump_dict(d)
     #@+node:ekr.20240529061932.1: *3* CheckLeo.dump_dict
     def dump_dict(self, d: dict) -> None:
-        
+
         for class_name in d:
             # g.printObj(d [class_name], tag=class_name)
-            methods = d [class_name]
+            methods = d[class_name]
             n = len(methods)
             print(f"{class_name:>20}: {n} method{g.plural(n)}")
     #@+node:ekr.20240529060232.3: *3* CheckLeo.read
@@ -108,11 +108,11 @@ class CheckLeo:
                         if is_method:
                             args_s = ', '.join(z.arg for z in args)
                             methods.append(f"{node2.name} ({args_s})")
-                classes [class_name] = list(sorted(methods))
+                classes[class_name] = list(sorted(methods))
         return classes
     #@-others
 #@-others
-    
+
 CheckLeo().check_leo()
 
 print('check_leo.py: done!')
