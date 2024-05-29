@@ -1636,6 +1636,8 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20240527101024.1"><vh>What's new in Leo 6.8.0</vh></v>
+<v t="ekr.20240527100956.1"><vh>What's new in Leo 6.7</vh>
 <v t="ekr.20240222121346.1"><vh>What's new in Leo 6.7.8</vh></v>
 <v t="ekr.20240118094134.1"><vh>What's new in Leo 6.7.7</vh></v>
 <v t="ekr.20231126120048.1"><vh>What's new in Leo 6.7.6</vh></v>
@@ -1645,6 +1647,7 @@
 <v t="ekr.20230111160833.1"><vh>What's new in Leo 6.7.2</vh></v>
 <v t="ekr.20221018092915.1"><vh>What's new in Leo 6.7.1</vh></v>
 <v t="ekr.20220912154542.1"><vh>What's new in Leo 6.7.0</vh></v>
+</v>
 <v t="ekr.20221108064449.1"><vh>What's new in Leo 6.6 and earlier</vh>
 <v t="ekr.20220831093321.1"><vh>What's new in Leo 6.6.4</vh></v>
 <v t="ekr.20220719064316.1"><vh>What's new in Leo 6.6.3</vh></v>
@@ -2510,9 +2513,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20240222121346.1"></v>
-<v t="ekr.20240222121215.1"></v>
-<v t="ekr.20131008041326.16092"></v>
+<v t="ekr.20240527101024.1"></v>
+<v t="ekr.20240527100702.1"><vh>Leo 6.8.0 release notes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32881,6 +32883,79 @@ gnx: ekr.20240303070818.2
 unl: Using objtrees for caching
 gnx: ekr.20240303070818.3
 unl: The `Leo database` (c.db, g.app.db)
+</t>
+<t tx="ekr.20240527100702.1">Leo https://leo-editor.github.io/leo-editor/ 6.8.0 beta 1 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.8.0**
+
+This release contains several **breaking changes** to Leo's API.
+See the `What's new in Leo 6.8.0` section for details.
+  
+**Significant changes**
+
+- PR #3828: Leo now requires PyQt6.
+- PR #3911: Leo's core no longer uses the free_layout or nested_splitter plugins.
+- PR #3872: Improve how Leo searches for definitions. Add `@bool prefer-nav-pane`.
+- PR #3922: Improved the `restart-leo` command.
+
+**New and improved**
+
+- PR #3870: Leo's beautifier works faster.
+- PR #3841: Add `g.traceUnique` and `g.traceUniqueClass` functions.
+- PR #3893: Add `vr-fully-expand`, `vr-toggle-visibility` and `vr-keep-open` commands.
+- PR #3902: Add the `toggle-unl-view` command.
+- PR #3921: Add the `show-qt-widgets` command.
+
+- The usual minor improvements and bug fixes.
+
+**Links**
+
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.8.0 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.0+)
+- [6.8.0 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.0)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
+<t tx="ekr.20240527100956.1"></t>
+<t tx="ekr.20240527101024.1">.. Use the link-pr abbreviation to create these links.
+
+.. _`PR #3828`: https://github.com/leo-editor/leo-editor/pull/3828
+.. _`PR #3832`: https://github.com/leo-editor/leo-editor/pull/3832
+.. _`PR #3841`: https://github.com/leo-editor/leo-editor/pull/3841
+.. _`PR #3870`: https://github.com/leo-editor/leo-editor/pull/3870
+.. _`PR #3872`: https://github.com/leo-editor/leo-editor/pull/3872
+.. _`PR #3893`: https://github.com/leo-editor/leo-editor/pull/3893
+.. _`PR #3902`: https://github.com/leo-editor/leo-editor/pull/3902
+.. _`PR #3911`: https://github.com/leo-editor/leo-editor/pull/3911
+.. _`PR #3921`: https://github.com/leo-editor/leo-editor/pull/3921
+.. _`PR #3922`: https://github.com/leo-editor/leo-editor/pull/3922
+
+**Breaking changes to Leo's API**
+
+- `PR #3828`_: Leo now requires PyQt6.
+  Plugins that use earlier versions will break.
+- `PR #3911`_: Leo's core no longer uses the free_layout or nested_splitter plugins.
+  Scripts that rely on `c.free_layout` or the `NestedSplitter` class must be rewritten.
+- `PR #3872`_: Improve how Leo searches for definitions:
+  - Add `@bool prefer-nav-pane` setting.
+  - This PR changes the signatures of `LeoFind.find_def` and `LeoFind.find_var`.
+
+**Other significant changes**
+
+- `PR #3841`_: Add `g.traceUnique` and `g.traceUniqueClass` functions.
+- `PR #3870`_: Leo's beautifier works faster.
+- `PR #3893`_: Add `vr-fully-expand`, `vr-toggle-visibility` and `vr-keep-open` commands.
+- `PR #3902`_: Add the `toggle-unl-view` command.
+- `PR #3921`_: Add the `show-qt-widgets` command.
+- `PR #3922`_: Improved the `restart-leo` command.
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py

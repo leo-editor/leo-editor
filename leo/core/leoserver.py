@@ -6,6 +6,8 @@
 Leo's internet server.
 
 Written by Félix Malboeuf and Edward K. Ream.
+
+To run externally, do `python -m leo.core.leoserver`.
 """
 #@+<< leoserver imports >>
 #@+node:felix.20210621233316.2: ** << leoserver imports >>
@@ -76,7 +78,7 @@ version_tuple = (1, 0, 11)
 # 1.0.8 October 2023: Added history commands, Fixed leo document change detection, allowed more minibuffer commands.
 # 1.0.9 January 2024: Added support for UNL and specific commander targeting for any command.
 # 1.0.10 Febuary 2024: Added support getting UNL for a specific node (for status bar display, etc.)
-# 1.0.11 May 2024: Added current commander info in get_ui_states command
+# 1.0.11 May 2024: Added get_is_valid and current commander info to get_ui_states for detached body support.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -2126,18 +2128,6 @@ class LeoServer:
             raise ServerError(f"{tag}: Running clone find operation gave exception: {e}")
         focus = self._get_focus()
         return self._make_response({"found": result, "focus": focus})
-    #@+node:felix.20210621233316.30: *5* server.find_var
-    def find_var(self, param: Param) -> Response:
-        """Run Leo's find-var command and return results."""
-        tag = 'find_var'
-        c = self._check_c(param)
-        fc = c.findCommands
-        try:
-            fc.find_var()
-        except Exception as e:
-            raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
-        focus = self._get_focus()
-        return self._make_response({"found": True, "focus": focus})
     #@+node:felix.20210722010004.1: *5* server.clone_find_all_flattened_marked
     def clone_find_all_flattened_marked(self, param: Param) -> Response:
         """Run Leo's clone-find-all-flattened-marked command."""
@@ -2164,16 +2154,69 @@ class LeoServer:
         return self._make_response({"found": True, "focus": focus})
     #@+node:felix.20210621233316.31: *5* server.find_def
     def find_def(self, param: Param) -> Response:
-        """Run Leo's find-def command and return results."""
+        """
+        Equivalent to do_find_def from leoFind.py.
+        """
         tag = 'find_def'
         c = self._check_c(param)
         fc = c.findCommands
         try:
-            fc.find_def()
+            word = fc._compute_find_def_word(None)
+            patterns = fc._make_patterns(word)
+            matches = fc._find_all_matches(patterns)
+            # Look for alternate matches only if there are no exact matches.
+            if not matches:
+                alt_word = fc._switch_style(word)
+                patterns = fc._make_patterns(alt_word)
+                matches = fc._find_all_matches(patterns)
+            if not matches:
+                g.es(f"not found: {word!r}", color='red')
+                focus = self._get_focus()
+                return self._make_response({"found": False, "focus": focus})
+            # Update the Nav pane.
+            unique_matches = list(set([s.strip() for (i, p, s) in matches if s.strip()]))
+            # The Nav pane can show only one match, so issue a warning.
+            if len(unique_matches) > 1:
+                g.es_print(f"Multiple matches for {word}", color='red')
+                for z in unique_matches[1:]:
+                    g.es_print(z)
+            scon: QuickSearchController = c.patched_quicksearch_controller
+            scon.qsc_search(unique_matches[0])
+            # Carefully select the most convenient clone of p.
+            if len(matches) == 1:
+                i, p, s = matches[0]
+                if p == c.p:
+                    pass
+                elif fc.reverse_find_defs:
+                    search_p = c.lastPosition()
+                    while search_p:
+                        if search_p.v == p.v:
+                            p = search_p
+                            break
+                        else:
+                            search_p.moveToThreadBack()
+                else:
+                    # Start in the root position.
+                    search_p = c.rootPosition()
+                    while search_p:
+                        if search_p.v == p.v:
+                            p = search_p
+                            break
+                        else:
+                            search_p.moveToThreadNext()
+                c.selectPosition(p)
+                w = c.frame.body.wrapper
+                if w:
+                    w.setSelectionRange(i, i + len(s), insert=i)
+        # Put the first match in the Nav pane's edit widget and update.
         except Exception as e:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
         focus = self._get_focus()
         return self._make_response({"found": True, "focus": focus})
+
+    # Compatibility.
+    find_var = find_def
+
     #@+node:felix.20210621233316.32: *5* server.goto_global_line
     def goto_global_line(self, param: Param) -> Response:
         """Run Leo's goto-global-line command and return results."""
@@ -2283,6 +2326,23 @@ class LeoServer:
             raise ServerError(f"{tag}: Running remove_tags gave exception: {e}")
         return self._make_response()
     #@+node:felix.20210621233316.35: *4* server.getter commands
+    #@+node:felix.20240525174003.1: *5* server.is_valid
+    def get_is_valid(self, param: Param) -> Response:
+        """
+        Checks if gnx is valid in this commander
+        """
+        try:
+            c = self._check_c(param)
+            assert c
+            ap = param.get("ap")
+            gnx = ap.get("gnx")
+            if gnx:
+                for p in c.all_unique_positions(copy=False):
+                    if p.gnx == gnx:
+                        return self._make_minimal_response({'valid': True})
+        except Exception:  # pragma: no cover
+            pass
+        return self._make_minimal_response()
     #@+node:felix.20210621233316.36: *5* server.get_all_open_commanders
     def get_all_open_commanders(self, param: Param) -> Response:
         """Return array describing each commander in g.app.commanders()."""
@@ -2407,14 +2467,7 @@ class LeoServer:
         # Handle @killcolor and @nocolor-node when looking for language
         if c.frame.body.colorizer.useSyntaxColoring(p):
             # Get the language.
-            aList = g.get_directives_dict_list(p)
-            d = g.scanAtCommentAndAtLanguageDirectives(aList)
-            language = (
-                d and d.get('language')
-                or g.getLanguageFromAncestorAtFileNode(p)
-                or c.config.getLanguage('target-language')
-                or 'plain'
-            )
+            language = g.getLanguageFromAncestorAtFileNode(p) or c.config.getLanguage('target-language')
         else:
             # No coloring at all for this node.
             language = 'plain'
@@ -4949,7 +5002,8 @@ class LeoServer:
     #@+node:felix.20210621233316.90: *4* server._get_p
     def _get_p(self, param: dict) -> Position:
         """
-        Return _ap_to_p(param["ap"]) or c.p.
+        If param["ap"] is present this will return _ap_to_p(param["ap"]), or fallback on first node with same gnx, or c.p.
+        If no param["ap"], will try to use param["gnx"] to return first position with this gnx.
         """
         tag = '_get_ap'
         c = self._check_c(param)
@@ -4957,12 +5011,23 @@ class LeoServer:
             raise ServerError(f"{tag}: no c")
 
         ap = param.get("ap")
+        gnx = param.get("gnx")  # optional
         if ap:
             p = self._ap_to_p(ap, c)  # Conversion
-            if p:
-                if not c.positionExists(p):  # pragma: no cover
-                    raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
-                return p  # Return the position
+            if not p:
+                # Try to get a gnx parameter as secondary fallback selection criteria
+                gnx = ap.get('gnx')
+                if gnx:
+                    for p in c.all_unique_positions():
+                        if p.v.gnx == gnx:
+                            return p
+                raise ServerError(f"{tag}: position does not exist. ap: {ap!r}")
+            return p  # Return the position
+        if gnx:
+            # Had no 'ap', but a 'gnx' param was passed instead.
+            for p in c.all_unique_positions():
+                if p.v.gnx == gnx:
+                    return p
         # Fallback to c.p
         if not c.p:  # pragma: no cover
             raise ServerError(f"{tag}: no c.p")
@@ -5059,8 +5124,6 @@ class LeoServer:
 
         The 'package' kwarg, if present, must be a python dict describing a
         response. package may be an empty dict or None.
-
-        The 'p' kwarg, if present, must be a position.
 
         First, this method creates a response (a python dict) containing all
         the keys in the 'package' dict.

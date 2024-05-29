@@ -405,6 +405,9 @@ def viewrendered(event: Event) -> Optional[Any]:
     h = c.hash()
     vr = controllers.get(h)
     if vr:
+        vr.show()
+        vr.is_visible = True
+        g.es('VR pane on', color='red')
         c.bodyWantsFocusNow()
         return vr
     # Create the VR frame
@@ -412,6 +415,8 @@ def viewrendered(event: Event) -> Optional[Any]:
 
     # Use different layouts depending on the main splitter's *initial* orientation.
     main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+    if not main_splitter:
+        return vr
     if main_splitter.orientation() == Orientation.Vertical:
         # Share the VR pane with the body pane.
         # Create a new splitter.

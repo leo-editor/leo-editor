@@ -86,13 +86,13 @@ except Exception:
     QtGui = QtWidgets = None
 #@+others
 #@+node:ekr.20140920145803.17995: ** top-level
-#@+node:ekr.20090616105756.3940: *3* init
+#@+node:ekr.20090616105756.3940: *3* init (backlink.py)
 warning_given = False
 
 def init():
     """Return True if the plugin has loaded successfully."""
     global warning_given
-    ok = QtGui and g.app.gui.guiName() == 'qt'  # #2197.
+    ok = QtGui and uic and g.app.gui.guiName() == 'qt'  # #2197.
     if not ok:
         return False
     g.registerHandler('after-create-leo-frame', onCreate)

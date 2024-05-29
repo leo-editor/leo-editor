@@ -515,7 +515,7 @@ class LeoQtGui(leoGui.LeoGui):
         dialog.raise_()
         ok = dialog.exec()
         return str(dialog.textValue()) if ok else None
-    #@+node:ekr.20110605121601.18495: *4* qt_gui.runAskOkDialog (changed)
+    #@+node:ekr.20110605121601.18495: *4* qt_gui.runAskOkDialog
     def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> None:
         """Create and run a qt askOK dialog ."""
         if g.unitTesting:
@@ -1516,13 +1516,15 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20240519114809.1: *4* qt_gui._self_and_subtree
     def _self_and_subtree(self, qt_obj: Any) -> Generator:
         """Yield w and all of w's descendants."""
+        if not qt_obj:
+            return
         yield qt_obj
         for child in qt_obj.children():
             yield from self._self_and_subtree(child)
     #@+node:ekr.20240519115301.1: *4* qt_gui.find_widget_by_name
     def find_widget_by_name(self, c: Cmdr, name: str) -> Optional[QWidget]:
         for w in self._self_and_subtree(c.frame.top):
-            if w.objectName() == name:
+            if w and w.objectName() == name:
                 return w
         return None
     #@+node:ekr.20240519115157.1: *4* qt_gui.get_top_splitter
@@ -1561,6 +1563,12 @@ class LeoQtGui(leoGui.LeoGui):
 
     QSignalSpy = QtTest.QSignalSpy
     assert QSignalSpy
+    #@+node:ekr.20240521171848.1: *4* qt_gui.equalize_splitter
+    def equalize_splitter(self, splitter):
+        """Equalize all the splitter's contents."""
+        if not isinstance(splitter, QtWidgets.QSplitter):
+            g.trace(f"Not a QSplitter: {splitter.__class__.__name__}")
+        splitter.setSizes([100000] * len(splitter.sizes()))
     #@+node:ekr.20190819091957.1: *3* qt_gui:Widget constructors
     #@+node:ekr.20190819094016.1: *4* qt_gui.createButton
     def createButton(self, parent: QWidget, name: str, label: str) -> QPushButton:

@@ -1011,33 +1011,48 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent = None) -> None:
     of the outline. Create the @spot node if necessary.
     """
     c, p, u = self, self.p, self.undoer
+    tag = 'clone-to-at-spot'
     if not p:
         return
     # 2015/12/27: fix bug 220: do not allow clone-to-at-spot on @spot node.
     if p.h.startswith('@spot'):
         g.es("can not clone @spot node", color='red')
         return
+
+    # Start the undo Group.
+    c.endEditing()  # Capture any changes to the headline.
+    u.beforeChangeGroup(c.p, command=tag)
+
+    # Create the @spot node if necessary.
+    created_last_spot = False
     last_spot = None
     for p2 in c.all_positions():
         if g.match_word(p2.h, 0, '@spot'):
             last_spot = p2.copy()
     if not last_spot:
+        created_last_spot = True
         last = c.lastTopLevel()
+        undoData = c.undoer.beforeInsertNode(p)
         last_spot = last.insertAfter()
         last_spot.h = '@spot'
-    undoData = c.undoer.beforeCloneNode(p)
-    c.endEditing()  # Capture any changes to the headline.
+        u.afterInsertNode(last_spot, 'Create @spot', undoData)
+
+    # Create the clone as the last child of the @spot node.
+    undoData2 = c.undoer.beforeCloneNode(c.p)
     clone = p.copy()
     clone._linkAsNthChild(last_spot, n=last_spot.numberOfChildren())
     clone.setDirty()
     c.setChanged()
+    u.afterCloneNode(clone, 'Clone Node', undoData2)
     if c.checkOutline() == 0:
-        u.afterCloneNode(clone, 'Clone Node', undoData)
         c.contractAllHeadlines()
         c.redraw(clone)
+        u.afterChangeGroup(c.p, undoType=tag)
     else:
         clone.doDelete()
-        c.setCurrentPosition(p)
+        if created_last_spot:
+            last_spot.doDelete()
+        c.setCurrentPosition(p)  # This method does not change p.
 #@+node:ekr.20141023154408.5: *3* c_oc.cloneToLastNode
 @g.commander_command('clone-node-to-last-node')
 def cloneToLastNode(self: Cmdr, event: LeoKeyEvent = None) -> None:

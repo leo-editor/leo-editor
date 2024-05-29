@@ -148,6 +148,8 @@ class LeoFind:
         #
         # User settings.
         self.minibuffer_mode: bool = None
+        self.reverse_find_defs: bool = None
+        self.prefer_nav_pane: bool = None
         self.reload_settings()
     #@+node:ekr.20210110073117.6: *4* find.default_settings
     def default_settings(self) -> Settings:
@@ -220,8 +222,10 @@ class LeoFind:
     def reload_settings(self) -> None:
         """LeoFind.reload_settings."""
         c = self.c
-        self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
-        self.reverse_find_defs = c.config.getBool('reverse-find-defs', default=False)
+        getBool = c.config.getBool
+        self.minibuffer_mode = getBool('minibuffer-find-mode', default=False)
+        self.reverse_find_defs = getBool('reverse-find-defs', default=False)
+        self.prefer_nav_pane = getBool('prefer-nav-pane', default=True)
 
     reloadSettings = reload_settings  # Necessary alias.
     #@+node:ekr.20210108053422.1: *3* find.batch_change (script helper) & helpers
@@ -538,88 +542,99 @@ class LeoFind:
         c.setChanged()
         c.redraw(found)
         return True
-    #@+node:ekr.20150629084204.1: *4* find.find-def, do_find_def & helpers
+    #@+node:ekr.20150629084204.1: *4* find.find-def/var & helper
     @cmd('find-def')
-    def find_def(self, event: LeoKeyEvent = None) -> tuple[Position, int, int]:  # pragma: no cover (cmd)
-        """Find the class, def or assignment to var of the word under the cursor."""
+    @cmd('find-var')
+    def find_def(self, event: LeoKeyEvent = None) -> list[tuple[int, Position, str]]:
+        """
+        Find the class, def or assignment to var of the word under the cursor.
+        """
 
-        # Note: This method is *also* part of the ctrl-click logic:
-        #
-        # QTextEditWrapper.mouseReleaseEvent calls g.openUrlOnClick.
-        # g.openUrlOnClick calls g.openUrlHelper.
+        # This method is part of the ctrl-click logic:
         # g.openUrlHelper calls this method.
 
-        # re searches are more accurate, but not enough to be worth changing the user's settings.
-        ftm, p = self.ftm, self.c.p
-        # Check.
         word = self._compute_find_def_word(event)
-        if not word:
-            return None, None, None
-        # Settings...
-        self._save_before_find_def(p)  # Save previous settings.
-        assert self.find_def_data
-        # #3124. Try all possibilities, regardless of case.
-        alt_word = self._switch_style(word)
-        #@+<< compute the search table >>
-        #@+node:ekr.20230203092333.1: *5* << compute the search table >>
-        table: tuple
-        if alt_word:
-            table = (
-                (f"class {word}", self.do_find_def),
-                # (fr"^\s*class {alt_word}\b", self.do_find_def),
-                (f"def {word}", self.do_find_def),
-                (f"def {alt_word}", self.do_find_def),
-                (f"{word} =", self.do_find_var),
-                (f"{alt_word} =", self.do_find_var),
-            )
-        else:
-            table = (
-                (f"class {word}", self.do_find_def),
-                (f"def {word}", self.do_find_def),
-                (f"{word} =", self.do_find_var),
-            )
-        #@-<< compute the search table >>
-        for find_pattern, method in table:
-            ftm.set_find_text(find_pattern)
-            self.init_vim_search(find_pattern)
-            self.update_change_list(self.change_text)  # Optional. An edge case.
-            # Do the command!
-            settings = self._compute_find_def_settings(find_pattern)
-            result = method(settings)
-            if result[0]:
-                # Keep the settings that found the match.
-                ftm.set_widgets_from_dict(settings)
-                return result
-        # Restore the previous find settings!
-        self._restore_after_find_def()
-        return None, None, None
+        return self.do_find_def(word)
 
-    def do_find_def(self, settings: Settings) -> tuple[Position, int, int]:
-        """A standalone helper for unit tests."""
-        return self._fd_helper(settings)
-    #@+node:ekr.20210114202757.1: *5* find._compute_find_def_settings
-    def _compute_find_def_settings(self, find_pattern: str) -> Settings:
+    # Compatibility.
+    find_var = find_def
+    #@+node:ekr.20240526075759.1: *5* find.do_find_def & helpers
+    def do_find_def(self, word: str) -> list[tuple[int, Position, str]]:
+        """
+        A helper for find_def's.
+        It's a standalone method for unit tests.
+        """
+        c = self.c
+        patterns = self._make_patterns(word)
+        matches = self._find_all_matches(patterns)
+        if g.unitTesting:
+            return matches
+        # Look for alternate matches only if there are no exact matches.
+        if not matches:
+            alt_word = self._switch_style(word)
+            patterns = self._make_patterns(alt_word)
+            matches = self._find_all_matches(patterns)
+        if not matches:
+            g.es(f"not found: {word!r}", color='red')
+            return matches
+        # Always update the Nav pane if it is enabled.
+        use_nav_pane = self.prefer_nav_pane and g.pluginIsLoaded('quicksearch.py')
+        g.trace(use_nav_pane)  ###
+        if use_nav_pane:
+            self._load_quicksearch_entries(word, matches)
+        # Carefully select the most convenient clone of p.
+        if len(matches) == 1:
+            i, p, s = matches[0]
+            if p == c.p:
+                pass
+            elif self.reverse_find_defs:
+                search_p = c.lastPosition()
+                while search_p:
+                    if search_p.v == p.v:
+                        p = search_p
+                        break
+                    else:
+                        search_p.moveToThreadBack()
+            else:
+                # Start in the root position.
+                search_p = c.rootPosition()
+                while search_p:
+                    if search_p.v == p.v:
+                        p = search_p
+                        break
+                    else:
+                        search_p.moveToThreadNext()
+            c.selectPosition(p)
+            w = c.frame.body.wrapper
+            if w:
+                w.setSelectionRange(i, i + len(s), insert=i)
+        elif not use_nav_pane:
+            # Show clones, but only if the Nav pane isn't available.
+            self._make_clones(word, matches)
+        return matches
 
-        settings = self.default_settings()
-        table = (
-            ('change_text', ''),
-            ('find_text', find_pattern),
-            ('ignore_case', True),
-            ('pattern_match', False),
-            ('reverse', False),
-            ('search_body', True),
-            ('search_headline', False),
-            ('whole_word', True),
-        )
-        for attr, val in table:
-            # Guard against renamings & misspellings.
-            assert hasattr(self, attr), attr
-            assert attr in settings.__dict__, attr
-            # Set the values.
-            setattr(self, attr, val)
-            settings[attr] = val
-        return settings
-    #@+node:ekr.20150629084611.1: *5* find._compute_find_def_word
+    # Compatibility.
+    do_find_var = do_find_def
+    #@+node:ekr.20240526125901.1: *6* find._load_quicksearch_entries
+    def _load_quicksearch_entries(self, word: str, matches: list[tuple[int, Position, str]]) -> None:
+        """Put all matches in the Nav pane."""
+        c = self.c
+        x = c.quicksearch_controller
+        w = c.frame.nav
+        e = w.ui.lineEdit  # A QLineEdit.
+        # Filter out uniques matches.
+        unique_matches = list(set([s.strip() for (i, p, s) in matches if s.strip()]))
+        # The Nav pane can show only one match, so issue a warning.
+        if len(unique_matches) > 1:
+            g.es_print(f"Multiple matches for {word}", color='red')
+            for z in unique_matches[1:]:
+                g.es_print(z)
+        # Put the first match in the Nav pane's edit widget and update.
+        x.clear()
+        e.setText(unique_matches[0])
+        c.frame.log.selectTab('Nav')
+        w.returnPressed()
+    #@+node:ekr.20150629084611.1: *6* find._compute_find_def_word
     def _compute_find_def_word(self, event: LeoKeyEvent) -> Optional[str]:  # pragma: no cover (cmd)
         """Init the find-def command. Return the word to find or None."""
         c = self.c
@@ -639,88 +654,96 @@ class LeoFind:
             if found:
                 return word[len(tag) :].strip()
         return word
-    #@+node:ekr.20150629125733.1: *5* find._fd_helper
-    def _fd_helper(self, settings: Settings) -> tuple[Position, int, int]:
+    #@+node:ekr.20240525172335.1: *6* find._find_all_matches
+    def _find_all_matches(self, patterns: list[re.Pattern]) -> list[tuple[int, Position, str]]:
         """
-        Find the definition of the class, def or var under the cursor.
-
-        return p, pos, newpos for unit tests.
+        Search all nodes for any of the given compiled regex patterns.
+        
+        Return a list of tuples (starting-index, p, matching-string) describing the matches.
         """
         c = self.c
-        self.find_text = settings.find_text
-        # Just search body text.
-        self.search_headline = False
-        self.search_body = True
-        w = c.frame.body.wrapper
-        # Check.
-        if not w:  # pragma: no cover
-            return None, None, None
-        save_sel = w.getSelectionRange()
-        ins = w.getInsertPoint()
-        old_p = c.p
-        if self.reverse_find_defs:
-            # #2161: start at the last position.
-            p = c.lastPosition()
-        else:
-            # Start in the root position.
-            p = c.rootPosition()
-        # Required.
-        c.selectPosition(p)
-        c.redraw()
-        c.bodyWantsFocusNow()
-        # #1592.  Ignore hits under control of @nosearch
-        old_reverse = self.reverse
-        try:
-            # #2161:
-            self.reverse = self.reverse_find_defs
-            # # 2288:
-            self.work_s = p.b
-            if self.reverse_find_defs:
-                self.work_sel = (len(p.b), len(p.b), len(p.b))
-            else:
-                self.work_sel = (0, 0, 0)
-            while True:
-                p, pos, newpos = self.find_next_match(p)
-                found = pos is not None
-                if found or not g.inAtNosearch(p):  # do *not* use c.p.
+        p = c.rootPosition()
+        results = []
+        seen = set()
+        while p:
+            if g.inAtNosearch(p):
+                p.moveToNodeAfterTree()
+                continue
+            if p.v in seen:
+                p.moveToThreadNext()
+                continue
+            seen.add(p.v)
+            b = p.b
+            i = 0  # The index within p.b of the start of s.
+            found = False  # Only report the first match within p.b.
+            for s in g.splitLines(b):
+                for pattern in patterns:
+                    m = pattern.search(s)
+                    if m:
+                        results.append((i + m.start(), p.copy(), m.group(0)))
+                        found = True
+                        break
+                if found:
                     break
-        finally:
-            self.reverse = old_reverse
-        if found:
-            # Keep the find settings used to find the match.
-            c.redraw(p)
-            w.setSelectionRange(pos, newpos, insert=newpos)
-            c.bodyWantsFocusNow()
-            return p, pos, newpos
-        # find_def now calls _restore_after_find_def
-        i, j = save_sel
-        c.redraw(old_p)
-        w.setSelectionRange(i, j, insert=ins)
-        c.bodyWantsFocusNow()
-        return None, None, None
-    #@+node:ekr.20150629095511.1: *5* find._restore_after_find_def
-    def _restore_after_find_def(self) -> None:
-        """Restore find settings in effect before a find-def command."""
-        b = self.find_def_data  # A g.Bunch
-        if b:
-            self.ignore_case = b.ignore_case
-            self.pattern_match = b.pattern_match
-            self.search_body = b.search_body
-            self.search_headline = b.search_headline
-            self.whole_word = b.whole_word
-            self.find_def_data = None
-    #@+node:ekr.20150629095633.1: *5* find._save_before_find_def
-    def _save_before_find_def(self, p: Position) -> None:
-        """Save the find settings in effect before a find-def command."""
-        self.find_def_data = g.Bunch(
-            ignore_case=self.ignore_case,
-            p=p.copy(),
-            pattern_match=self.pattern_match,
-            search_body=self.search_body,
-            search_headline=self.search_headline,
-            whole_word=self.whole_word,
-        )
-    #@+node:ekr.20180511045458.1: *5* find._switch_style
+                i += len(s)
+            p.moveToThreadNext()
+        return results
+    #@+node:ekr.20240526071521.1: *6* find._make_clones
+    def _make_clones(self, word: str, matches: list[tuple[int, Position, str]]) -> None:
+        """
+        Undoably create clones for all matches, similar to the clone-find commands.
+        """
+        c = self.c
+        ftm = self.ftm
+        u = c.undoer
+        undoData = u.beforeInsertNode(c.p)
+
+        # Create the found node.
+        found = c.lastTopLevel().insertAfter()
+        found.h = f"Found {len(matches)}: {word}"
+        found.b = f"@nosearch\n\n# found {len(matches)} nodes"
+        # Clone nodes as children of the found node.
+        clones = [p for i, p, s in matches]
+        for p in clones:
+            p2 = p.copy()
+            n = found.numberOfChildren()
+            p2._linkCopiedAsNthChild(found, n)
+        # Sort the clones in place, without undo.
+        found.v.children.sort(key=lambda v: v.h.lower())
+
+        # Set the search text. This is convenient and should not cause problems.
+        self.find_text = word
+        ftm.set_find_text(word)
+
+        # Set the undo data.
+        u.afterInsertNode(found, 'find-def', undoData)
+        c.setChanged()
+        found.expand()
+        c.redraw(found)
+    #@+node:ekr.20240525172445.1: *6* find._make_patterns
+    bad_regex_patterns: list[str] = []
+
+    def _make_patterns(self, word: str) -> list[re.Pattern]:
+        """Return a list of compiled regex patterns."""
+        results: list[re.Pattern] = []
+
+        def compile_pattern(pattern: str) -> None:
+            try:
+                results.append(re.compile(pattern))
+            except Exception:
+                if pattern not in self.bad_regex_patterns:
+                    self.bad_regex_patterns.append(pattern)
+                    g.es_print(f"bad regex pattern: {pattern}")
+
+        for pattern in (
+            fr"^\s*class\s+{word}\b",
+            fr"^\s*def\s+{word}\b",
+            fr"\b{word}\s*=",
+            fr"\b{word}:",
+        ):
+            compile_pattern(pattern)
+        return results
+    #@+node:ekr.20180511045458.1: *6* find._switch_style
     def _switch_style(self, word: str) -> Optional[str]:
         """
         Switch between camelCase and underscore_style function definitions.
@@ -870,34 +893,6 @@ class LeoFind:
             g.app.gui.openFindDialog(c)
         else:
             c.frame.log.selectTab('Find')
-    #@+node:ekr.20210118003803.1: *4* find.find-var & do_find_var
-    @cmd('find-var')
-    def find_var(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
-        """Find the var under the cursor."""
-        ftm, p = self.ftm, self.c.p
-        # Check...
-        word = self._compute_find_def_word(event)
-        if not word:
-            return
-        # Settings...
-        find_pattern = word + ' ='
-        ftm.set_find_text(find_pattern)
-        self._save_before_find_def(p)  # Save previous settings.
-        self.init_vim_search(find_pattern)
-        self.update_change_list(self.change_text)  # Optional. An edge case.
-        settings = self._compute_find_def_settings(find_pattern)
-        # Do the command!
-        result = self.do_find_var(settings)
-        if result[0]:
-            # Keep the settings that found the match.
-            ftm.set_widgets_from_dict(settings)
-        else:
-            # Restore the previous find settings!
-            self._restore_after_find_def()
-
-    def do_find_var(self, settings: Settings) -> tuple[Position, int, int]:
-        """A standalone helper for unit tests."""
-        return self._fd_helper(settings)
     #@+node:ekr.20141113094129.6: *4* find.focus-to-find
     @cmd('focus-to-find')
     def focus_to_find(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
@@ -2615,7 +2610,7 @@ class LeoFind:
             start=start,
         )
         return data
-    #@+node:ekr.20031218072017.3091: *4* find.show_success
+    #@+node:ekr.20031218072017.3091: *4* LeoFind.find.show_success
     def show_success(self, p: Position, pos: int, newpos: int, showState: bool = True) -> Wrapper:
         """Display the result of a successful find operation."""
         c = self.c

@@ -53,10 +53,10 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>
 c_db_key = '_graph_canvas_gnx'
 #@+others
-#@+node:bob.20110119123023.7393: ** init
+#@+node:bob.20110119123023.7393: ** init (graphcanvas.py)
 def init():
     """Return True if the plugin has loaded successfully."""
-    if g.app.gui.guiName() != "qt":
+    if not uic or g.app.gui.guiName() != "qt":
         return False
     g.visit_tree_item.add(colorize_headlines_visitor)
     g.registerHandler('after-create-leo-frame', onCreate)

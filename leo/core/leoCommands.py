@@ -89,6 +89,7 @@ class Commands:
     The @g..commander_command decorator injects methods into this class.
     """
     #@-<< docstring: Commands class >>
+
     #@+others
     #@+node:ekr.20031218072017.2811: *3*  c.Birth & death
     #@+node:ekr.20031218072017.2812: *4* c.__init__ & helpers
@@ -391,6 +392,7 @@ class Commands:
         c.configurables = c.subCommanders[:]
         c.db = CommanderWrapper(c)
         c.free_layout = None  # Compatibility. Always None.
+        c.quicksearch_controller = None  # Leo 6.8.0: Set by quicksearch plugin.
             
         if hasattr(g.app.gui, 'styleSheetManagerClass'):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
@@ -1912,8 +1914,8 @@ class Commands:
         Return the number of errors found.
         """
         c = self
-        # Keys are gnx's; values are sets of vnodes with that gnx.
-        d: dict[str, set[VNode]] = {}
+        # Keys are gnx's; values are lists of (id(v), v).
+        vnode_d: dict[str, list[tuple[int, VNode]]] = {}
         ni = g.app.nodeIndices
         t1 = time.time()
 
@@ -1927,19 +1929,19 @@ class Commands:
             v = p.v
             gnx = v.fileIndex
             if gnx:  # gnx must be a string.
-                aSet: set[VNode] = d.get(gnx, set())
-                aSet.add(v)
-                d[gnx] = aSet
+                aList = vnode_d.get(gnx, [])
+                aList.append((id(v), v))
             else:
                 gnx_errors += 1
                 new_gnx(v)
                 g.es_print(f"empty v.fileIndex: {v} new: {p.v.gnx!r}", color='red')
-        for gnx in sorted(d.keys()):
-            aList = list(d.get(gnx))
-            if len(aList) != 1:
+        for gnx in sorted(vnode_d.keys()):
+            aList = list(vnode_d.get(gnx))
+            ids = [id_ for (id_, v) in aList]
+            if len(ids) > 1:
                 print('\nc.checkGnxs...')
                 g.es_print(f"multiple vnodes with gnx: {gnx!r}", color='red')
-                for v in aList:
+                for (id_, v) in aList:
                     gnx_errors += 1
                     g.es_print(f"id(v): {id(v)} gnx: {v.fileIndex} {v.h}", color='red')
                     new_gnx(v)

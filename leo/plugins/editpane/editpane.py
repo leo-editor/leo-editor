@@ -14,22 +14,14 @@ from leo.core import signal_manager
 from leo.plugins.editpane.clicky_splitter import ClickySplitter
 #@-<<editpane imports>>
 #@+others
-#@+node:tbrown.20171028115438.2: ** DBG
-def DBG(text):
-    """DBG - temporary debugging function
-
-    :param str text: text to print
-    """
-    print(f"LEP: {text}")
 #@+node:tbrown.20180207103918.1: ** edit_pane_csv
 def edit_pane_csv(event):
     c = event['c']
     if not c:
         return
     w = c.frame.body.widget
-    if not w:
-        return
-    w = w.parent()
+    while not isinstance(w, QtWidgets.QSplitter):
+        w = w.parent()
     if not w:
         return
     w.insert(-1, LeoEditPane(c=c, show_control=False, lep_type='EDITOR-CSV'))
@@ -56,7 +48,6 @@ class LeoEditPane(QtWidgets.QWidget):
         :param list *args: pass through
         :param dict **kwargs: pass through
         """
-        DBG("__init__ LEP")
         super().__init__(*args, **kwargs)
         self.setAttribute(WidgetAttribute.WA_DeleteOnClose)  # #2347.
 
@@ -159,7 +150,6 @@ class LeoEditPane(QtWidgets.QWidget):
         :return: None
         """
         p = self.c.vnode2position(v)
-        DBG("after body key")
         self.update_position(p)
     #@+node:tbrown.20171028115438.9: *3* _after_select
     def _after_select(self, tag, keywords):
@@ -172,9 +162,6 @@ class LeoEditPane(QtWidgets.QWidget):
         c = keywords['c']
         if c != self.c:
             return None
-
-        DBG("after select")
-
         if self.track:
             self.new_position(keywords['new_p'])
         return None
@@ -196,9 +183,6 @@ class LeoEditPane(QtWidgets.QWidget):
 
         # BUT keyboard driven position change might need some action here
         # BUT then again, textChanged in widget is probably sufficient
-
-        DBG("before select")
-
         return None
     #@+node:tbrown.20171028115438.11: *3* _find_gnx_node
     def _find_gnx_node(self, gnx):
@@ -214,7 +198,6 @@ class LeoEditPane(QtWidgets.QWidget):
     def _register_handlers(self):
         """_register_handlers - attach to Leo signals
         """
-        DBG("\nregister handlers")
         for hook, handler in self.handlers:
             g.registerHandler(hook, handler)
 
@@ -224,7 +207,6 @@ class LeoEditPane(QtWidgets.QWidget):
         self, show_head=True, show_control=True, update=True, recurse=False):
         """build_layout - build layout
         """
-        DBG("build layout")
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().setSpacing(0)
@@ -340,7 +322,6 @@ class LeoEditPane(QtWidgets.QWidget):
         do_close = QtWidgets.QWidget.close(self)
         if do_close:
             signal_manager.disconnect_all(self)
-            DBG("unregister handlers\n")
             for hook, handler in self.handlers:
                 g.unregisterHandler(hook, handler)
         return do_close
@@ -373,11 +354,11 @@ class LeoEditPane(QtWidgets.QWidget):
         for name in [i[0] for i in names if i[1].lower() == '.py']:
             try:
                 modules.append(import_module('leo.plugins.editpane.' + name))
-                DBG(f"Loaded module: {name}")
             except ImportError as e:
-                DBG(
+                g.trace(
                     f"{e.__class__.__name__}: "
-                    f"Module not loaded (unmet dependencies?): {name}")
+                    f"Module not loaded (unmet dependencies?): {name}"
+                )
         for module in modules:
             for key in dir(module):
                 value = getattr(module, key)
@@ -455,8 +436,6 @@ class LeoEditPane(QtWidgets.QWidget):
 
         :param position p: the new position
         """
-
-        DBG("new edit position")
         if self.mode != 'view':
             self.edit_widget.new_text(p.b)
     #@+node:tbrown.20171028115438.31: *3* new_position_view
@@ -468,7 +447,6 @@ class LeoEditPane(QtWidgets.QWidget):
 
         :param position p: the new position
         """
-        DBG("new view position")
         if self.mode != 'edit':
             if self.recurse:
                 text = g.getScript(self.c, p, useSelectedText=False, useSentinels=False)
@@ -510,8 +488,6 @@ class LeoEditPane(QtWidgets.QWidget):
 
         :param position p: the position to update to
         """
-
-        DBG("update edit position")
         if self.mode != 'view':
             self.edit_widget.update_text(p.b)
     #@+node:tbrown.20171028115438.35: *3* update_position_view
@@ -523,8 +499,6 @@ class LeoEditPane(QtWidgets.QWidget):
 
         :param position p: the position to update to
         """
-
-        DBG("update view position")
         if self.update_flag and self.mode != 'edit':
             if self.recurse:
                 text = g.getScript(self.c, p, useSelectedText=False, useSentinels=False)
