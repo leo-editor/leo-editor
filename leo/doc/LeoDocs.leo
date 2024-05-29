@@ -32884,7 +32884,7 @@ unl: Using objtrees for caching
 gnx: ekr.20240303070818.3
 unl: The `Leo database` (c.db, g.app.db)
 </t>
-<t tx="ekr.20240527100702.1">Leo https://leo-editor.github.io/leo-editor/ 6.8.9 beta 1 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="ekr.20240527100702.1">Leo https://leo-editor.github.io/leo-editor/ 6.8.0 beta 1 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
