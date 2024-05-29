@@ -70,18 +70,20 @@ class CheckLeo:
         def join(*args) -> str:
             return os.path.abspath(os.path.join(*args))
 
+        # Compute the directories.
         leo_dir = join(leo_editor_dir, 'leo')
         command_dir = join(leo_dir, 'commands')
         core_dir = join(leo_dir, 'core')
         plugins_dir = join(leo_dir, 'plugins')
         for z in (leo_dir, command_dir, core_dir, plugins_dir):
             assert os.path.exists(z), z
-        core_files = glob.glob(f"{core_dir}{os.sep}leo*.py")
-        command_files = glob.glob(f"{command_dir}{os.sep}leo*.py")
-        plugins_files = glob.glob(f"{plugins_dir}{os.sep}qt_*.py")
-        return core_files + command_files + plugins_files
-        # path = os.path.abspath(os.path.join(core_dir, 'leoCommands.py'))
-        # return [path]
+
+        # Return the list of files.
+        return (
+             glob.glob(f"{core_dir}{os.sep}leo*.py") +
+             glob.glob(f"{command_dir}{os.sep}leo*.py") +
+             glob.glob(f"{plugins_dir}{os.sep}qt_*.py")
+        )
     #@+node:ekr.20240529060232.4: *3* CheckLeo.parse_ast
     def parse_ast(self, s: str) -> Node:
         """
