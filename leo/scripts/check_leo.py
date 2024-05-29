@@ -25,7 +25,7 @@ Node = ast.AST
 #@+others
 #@+node:ekr.20240529063157.1: ** Class CheckLeo
 class CheckLeo:
-    
+
     def __init__(self):
         # Keys are full path names to Leo files.
         # Values are dicts describing all the files classes.
@@ -47,7 +47,7 @@ class CheckLeo:
         for path in self.d:
             short_file_name = g.shortFileName(path)
             d = self.d.get(path)
-            # Dump the classes inner dict.
+            # Dump the classes dict.
             classes_dict = d.get('classes')
             for class_name in classes_dict:
                 methods = classes_dict.get(class_name)
@@ -118,7 +118,7 @@ class CheckLeo:
                             methods.append(f"{node2.name} ({args_s})")
                 classes[class_name] = list(sorted(methods))
         assert path not in self.d, path
-        self.d [path] = {'classes': classes}
+        self.d[path] = {'classes': classes}
         ### return classes
     #@-others
 #@-others
