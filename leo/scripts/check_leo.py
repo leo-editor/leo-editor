@@ -58,9 +58,13 @@ class CheckLeo:
                         ):
                             attrs.add(node2.func.attr)
                 if attrs:
-                    print(f"  class {class_name} method calls...")
+                    methods = classes_dict.get(class_name)
+                    # g.printObj(methods, tag=class_name)
+                    if any(z not in methods for z in list(attrs)):
+                        print(f"  class {class_name} missing method calls...")
                     for attr in sorted(list(attrs)):
-                        print(f"    self.{attr}")
+                        if attr not in methods:
+                            print(f"    self.{attr}")
     #@+node:ekr.20240529063012.1: *3* CheckLeo.check_leo
     def check_leo(self) -> None:
         """Check all files returned by get_leo_paths()."""
@@ -169,8 +173,9 @@ class CheckLeo:
                         args = node2.args.args
                         is_method = args and args[0].arg == 'self'
                         if is_method:
-                            args_s = ', '.join(z.arg for z in args)
-                            methods.append(f"{node2.name} ({args_s})")
+                            ### args_s = ', '.join(z.arg for z in args)
+                            ### methods.append(f"{node2.name} ({args_s})")
+                            methods.append(node2.name)
                 classes[class_name] = list(sorted(methods))
         assert path not in self.d, path
         self.d[path] = {
