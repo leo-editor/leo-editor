@@ -14,20 +14,10 @@ leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 if leo_editor_dir not in sys.path:
     sys.path.insert(0, leo_editor_dir)
 
-leo_dir = os.path.abspath(os.path.join(leo_editor_dir, 'leo'))
-
-# No need to change
-if 0:
-    os.chdir(leo_dir)
-    print('cwd:', os.getcwd())
-
 from leo.core import leoGlobals as g
 # from leo.core.leoAst import AstDumper
-# assert AstDumper
-
 assert g
 assert os.path.exists(leo_editor_dir), leo_editor_dir
-assert os.path.exists(leo_dir), leo_dir
 
 Node = ast.AST
 #@-<< check_leo.py: imports & annotations >>
@@ -35,38 +25,47 @@ Node = ast.AST
 #@+others
 #@+node:ekr.20240529063157.1: ** Class CheckLeo
 class CheckLeo:
+    
+    def __init__(self):
+        # Keys are full path names to Leo files.
+        # Values are dicts describing all the files classes.
+        self.d: dict[str, dict] = {}
+
     #@+others
     #@+node:ekr.20240529063012.1: *3* CheckLeo.check_leo
     def check_leo(self) -> None:
-
-        path = os.path.abspath(os.path.join(leo_dir, 'core', 'leoCommands.py'))
-        assert os.path.exists(path)
-        s = self.read(path)
-        if s:
+        """Check all files returned by get_leo_paths()."""
+        for path in self.get_leo_paths():
+            s = self.read(path)
             tree = self.parse_ast(s)
-            # print(path, 'len(s)', len(s), 'tree', tree.__class__.__name__)
             # print(AstDumper().dump_ast(tree))
-            d = self.walk(tree)
-            self.dump_dict(d)
+            self.scan_file(path, tree)
+        self.dump_dict()
     #@+node:ekr.20240529061932.1: *3* CheckLeo.dump_dict
-    def dump_dict(self, d: dict) -> None:
-
-        for class_name in d:
-            # g.printObj(d [class_name], tag=class_name)
-            methods = d[class_name]
-            n = len(methods)
-            print(f"{class_name:>20}: {n} method{g.plural(n)}")
-    #@+node:ekr.20240529060232.3: *3* CheckLeo.read
-    def read(self, file_name: str) -> str:
-        try:
-            with open(file_name, 'r') as f:
-                contents = f.read()
-                return contents
-        except IOError:
-            return ''
-        except Exception:
-            g.es_exception()
-            return ''
+    def dump_dict(self) -> None:
+        
+        # g.trace('paths', list(sorted(self.d.keys())))
+        for path in self.d:
+            d = self.d.get(path)
+            short_file_name = g.shortFileName(path)
+            for key in d:
+                if key == 'classes':
+                    inner_dict = d.get(key)
+                    for class_name in inner_dict:
+                        methods = inner_dict.get(class_name)
+                        n = len(methods)
+                        tag_s = f"{short_file_name}.{class_name:}"
+                        print(f"{tag_s:>30}: {n} method{g.plural(n)}")
+    #@+node:ekr.20240529094941.1: *3* CheckLeo.get_leo_paths
+    def get_leo_paths(self) -> list[str]:
+        """Return a list of full paths to Leo paths to be checked."""
+        leo_dir = os.path.abspath(os.path.join(leo_editor_dir, 'leo'))
+        assert os.path.exists(leo_dir), leo_dir
+        core_dir = os.path.abspath(os.path.join(leo_dir, 'core'))
+        assert os.path.exists(core_dir), core_dir
+        path = os.path.abspath(os.path.join(core_dir, 'leoCommands.py'))
+        assert os.path.exists(path)
+        return [path]
     #@+node:ekr.20240529060232.4: *3* CheckLeo.parse_ast
     def parse_ast(self, s: str) -> Node:
         """
@@ -92,11 +91,22 @@ class CheckLeo:
             oops('Unexpected Exception')
             g.es_exception()
         return None
-    #@+node:ekr.20240529060232.5: *3* CheckLeo.walk
-    def walk(self, root: Node) -> dict:
+    #@+node:ekr.20240529060232.3: *3* CheckLeo.read
+    def read(self, file_name: str) -> str:
+        try:
+            with open(file_name, 'r') as f:
+                contents = f.read()
+                return contents
+        except IOError:
+            return ''
+        except Exception:
+            g.es_exception()
+            return ''
+    #@+node:ekr.20240529060232.5: *3* CheckLeo.scan_file
+    def scan_file(self, path: str, tree: Node) -> dict:
         # Find all classes and their methods.
         classes: dict[str, list[str]] = {}
-        for node in ast.walk(root):
+        for node in ast.walk(tree):
             if isinstance(node, ast.ClassDef):
                 class_name = node.name
                 methods = []
@@ -109,7 +119,9 @@ class CheckLeo:
                             args_s = ', '.join(z.arg for z in args)
                             methods.append(f"{node2.name} ({args_s})")
                 classes[class_name] = list(sorted(methods))
-        return classes
+        assert path not in self.d, path
+        self.d [path] = {'classes': classes}
+        ### return classes
     #@-others
 #@-others
 
