@@ -32931,6 +32931,7 @@ See the `What's new in Leo 6.8.0` section for details.
 .. _`PR #3832`: https://github.com/leo-editor/leo-editor/pull/3832
 .. _`PR #3841`: https://github.com/leo-editor/leo-editor/pull/3841
 .. _`PR #3870`: https://github.com/leo-editor/leo-editor/pull/3870
+.. _`PR #3872`: https://github.com/leo-editor/leo-editor/pull/3872
 .. _`PR #3893`: https://github.com/leo-editor/leo-editor/pull/3893
 .. _`PR #3902`: https://github.com/leo-editor/leo-editor/pull/3902
 .. _`PR #3911`: https://github.com/leo-editor/leo-editor/pull/3911
