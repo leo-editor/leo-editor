@@ -58,11 +58,11 @@ class CheckLeo:
             classes_dict = d.get('classes')
             if classes_dict:
                 print('')
-                print(f"file: {short_file_name:<20} class: methods")
-                # print(f"{'class':>24}: methods")
-            for class_name in classes_dict:
-                methods = classes_dict.get(class_name)
-                print(f"  {class_name:>30}: {len(methods)}")
+                print(f"{short_file_name}...")
+                print(f"{'class':>25}: methods")
+                for class_name in classes_dict:
+                    methods = classes_dict.get(class_name)
+                    print(f"{class_name:>25}: {len(methods)}")
     #@+node:ekr.20240529094941.1: *3* CheckLeo.get_leo_paths
     def get_leo_paths(self) -> list[str]:
         """Return a list of full paths to Leo paths to be checked."""
