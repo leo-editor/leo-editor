@@ -6,7 +6,9 @@ check_leo.py: Experimental script that checks for undefined methods.
 #@+<< check_leo.py: imports & annotations >>
 #@+node:ekr.20240529055116.1: ** << check_leo.py: imports & annotations >>
 import ast
+import glob
 import os
+import time
 import sys
 
 # Add the leo/editor folder to sys.path.
@@ -35,12 +37,17 @@ class CheckLeo:
     #@+node:ekr.20240529063012.1: *3* CheckLeo.check_leo
     def check_leo(self) -> None:
         """Check all files returned by get_leo_paths()."""
+        t1 = time.process_time()
         for path in self.get_leo_paths():
             s = self.read(path)
             tree = self.parse_ast(s)
             # print(AstDumper().dump_ast(tree))
             self.scan_file(path, tree)
-        self.dump_dict()
+        t2 = time.process_time()
+        if 1:
+            self.dump_dict()
+        print('')
+        g.trace(f"done {(t2-t1):4.2} sec.")
     #@+node:ekr.20240529061932.1: *3* CheckLeo.dump_dict
     def dump_dict(self) -> None:
 
@@ -49,21 +56,32 @@ class CheckLeo:
             d = self.d.get(path)
             # Dump the classes dict.
             classes_dict = d.get('classes')
+            if classes_dict:
+                print('')
+                print(f"file: {short_file_name:<20} class: methods")
+                # print(f"{'class':>24}: methods")
             for class_name in classes_dict:
                 methods = classes_dict.get(class_name)
-                n = len(methods)
-                tag_s = f"{short_file_name}.{class_name:}"
-                print(f"{tag_s:>30}: {n} method{g.plural(n)}")
+                print(f"  {class_name:>30}: {len(methods)}")
     #@+node:ekr.20240529094941.1: *3* CheckLeo.get_leo_paths
     def get_leo_paths(self) -> list[str]:
         """Return a list of full paths to Leo paths to be checked."""
-        leo_dir = os.path.abspath(os.path.join(leo_editor_dir, 'leo'))
-        assert os.path.exists(leo_dir), leo_dir
-        core_dir = os.path.abspath(os.path.join(leo_dir, 'core'))
-        assert os.path.exists(core_dir), core_dir
-        path = os.path.abspath(os.path.join(core_dir, 'leoCommands.py'))
-        assert os.path.exists(path)
-        return [path]
+
+        def join(*args) -> str:
+            return os.path.abspath(os.path.join(*args))
+
+        leo_dir = join(leo_editor_dir, 'leo')
+        command_dir = join(leo_dir, 'commands')
+        core_dir = join(leo_dir, 'core')
+        plugins_dir = join(leo_dir, 'plugins')
+        for z in (leo_dir, command_dir, core_dir, plugins_dir):
+            assert os.path.exists(z), z
+        core_files = glob.glob(f"{core_dir}{os.sep}leo*.py")
+        command_files = glob.glob(f"{command_dir}{os.sep}leo*.py")
+        plugins_files = glob.glob(f"{plugins_dir}{os.sep}qt_*.py")
+        return core_files + command_files + plugins_files
+        # path = os.path.abspath(os.path.join(core_dir, 'leoCommands.py'))
+        # return [path]
     #@+node:ekr.20240529060232.4: *3* CheckLeo.parse_ast
     def parse_ast(self, s: str) -> Node:
         """
@@ -124,6 +142,4 @@ class CheckLeo:
 #@-others
 
 CheckLeo().check_leo()
-
-print('check_leo.py: done!')
 #@-leo
