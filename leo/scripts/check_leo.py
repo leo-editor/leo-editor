@@ -31,81 +31,89 @@ assert os.path.exists(leo_dir), leo_dir
 
 Node = ast.AST
 #@-<< check_leo.py: imports & annotations >>
+
 #@+others
-#@+node:ekr.20240529061932.1: ** funciont: dump_dict
-def dump_dict(d: dict) -> None:
-    
-    for class_name in d:
-        # g.printObj(d [class_name], tag=class_name)
-        methods = d [class_name]
-        n = len(methods)
-        print(f"{class_name:>20}: {n} method{g.plural(n)}")
-#@+node:ekr.20240529060232.3: ** function: read
-def read(file_name: str) -> str:
-    try:
-        with open(file_name, 'r') as f:
-            contents = f.read()
-            return contents
-    except IOError:
-        return ''
-    except Exception:
-        g.es_exception()
-        return ''
-#@+node:ekr.20240529060232.4: ** function: parse_ast
-def parse_ast(s: str) -> Node:
-    """
-    Parse string s, catching & reporting all exceptions.
-    Return the ast node, or None.
-    """
+#@+node:ekr.20240529063157.1: ** Class CheckLeo
+class CheckLeo:
+    #@+others
+    #@+node:ekr.20240529063012.1: *3* CheckLeo.check_leo
+    def check_leo(self) -> None:
+        
+        path = os.path.abspath(os.path.join(leo_dir, 'core', 'leoCommands.py'))
+        assert os.path.exists(path)
+        s = self.read(path)
+        if s:
+            tree = self.parse_ast(s)
+            # print(path, 'len(s)', len(s), 'tree', tree.__class__.__name__)
+            # print(AstDumper().dump_ast(tree))
+            d = self.walk(tree)
+            self.dump_dict(d)
+    #@+node:ekr.20240529061932.1: *3* CheckLeo.dump_dict
+    def dump_dict(self, d: dict) -> None:
+        
+        for class_name in d:
+            # g.printObj(d [class_name], tag=class_name)
+            methods = d [class_name]
+            n = len(methods)
+            print(f"{class_name:>20}: {n} method{g.plural(n)}")
+    #@+node:ekr.20240529060232.3: *3* CheckLeo.read
+    def read(self, file_name: str) -> str:
+        try:
+            with open(file_name, 'r') as f:
+                contents = f.read()
+                return contents
+        except IOError:
+            return ''
+        except Exception:
+            g.es_exception()
+            return ''
+    #@+node:ekr.20240529060232.4: *3* CheckLeo.parse_ast
+    def parse_ast(self, s: str) -> Node:
+        """
+        Parse string s, catching & reporting all exceptions.
+        Return the ast node, or None.
+        """
 
-    def oops(message: str) -> None:
-        print('')
-        print(f"parse_ast: {message}")
-        g.printObj(s)
-        print('')
+        def oops(message: str) -> None:
+            print('')
+            print(f"parse_ast: {message}")
+            g.printObj(s)
+            print('')
 
-    try:
-        s1 = g.toEncodedString(s)
-        tree = ast.parse(s1, filename='before', mode='exec')
-        return tree
-    except IndentationError:
-        oops('Indentation Error')
-    except SyntaxError:
-        oops('Syntax Error')
-    except Exception:
-        oops('Unexpected Exception')
-        g.es_exception()
-    return None
-#@+node:ekr.20240529060232.5: ** function: walk
-def walk(root: Node) -> dict:
-    # Find all classes and their methods.
-    classes: dict[str, list[str]] = {}
-    for node in ast.walk(root):
-        if isinstance(node, ast.ClassDef):
-            class_name = node.name
-            methods = []
-            for node2 in ast.walk(node):
-                # This finds inner defs as well as methods.
-                if isinstance(node2, ast.FunctionDef):
-                    args = node2.args.args
-                    is_method = args and args[0].arg == 'self'
-                    if is_method:
-                        args_s = ', '.join(z.arg for z in args)
-                        methods.append(f"{node2.name} ({args_s})")
-            classes [class_name] = list(sorted(methods))
-    return classes
+        try:
+            s1 = g.toEncodedString(s)
+            tree = ast.parse(s1, filename='before', mode='exec')
+            return tree
+        except IndentationError:
+            oops('Indentation Error')
+        except SyntaxError:
+            oops('Syntax Error')
+        except Exception:
+            oops('Unexpected Exception')
+            g.es_exception()
+        return None
+    #@+node:ekr.20240529060232.5: *3* CheckLeo.walk
+    def walk(self, root: Node) -> dict:
+        # Find all classes and their methods.
+        classes: dict[str, list[str]] = {}
+        for node in ast.walk(root):
+            if isinstance(node, ast.ClassDef):
+                class_name = node.name
+                methods = []
+                for node2 in ast.walk(node):
+                    # This finds inner defs as well as methods.
+                    if isinstance(node2, ast.FunctionDef):
+                        args = node2.args.args
+                        is_method = args and args[0].arg == 'self'
+                        if is_method:
+                            args_s = ', '.join(z.arg for z in args)
+                            methods.append(f"{node2.name} ({args_s})")
+                classes [class_name] = list(sorted(methods))
+        return classes
+    #@-others
 #@-others
-
-path = os.path.abspath(os.path.join(leo_dir, 'core', 'leoCommands.py'))
-print(path)
-assert os.path.exists(path)
-s = read(path)
-if s:
-    tree = parse_ast(s)
-    # print(path, 'len(s)', len(s), 'tree', tree.__class__.__name__)
-    # print(AstDumper().dump_ast(tree))
-    d = walk(tree)
-    dump_dict(d)
+    
+CheckLeo().check_leo()
 
 print('check_leo.py: done!')
 #@-leo
