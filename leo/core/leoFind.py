@@ -550,8 +550,7 @@ class LeoFind:
         Find the class, def or assignment to var of the word under the cursor.
         """
 
-        # This method is part of the ctrl-click logic:
-        # g.openUrlHelper calls this method.
+        # g.openUrlHelper calls this method as part of the ctrl-click logic.
 
         word = self._compute_find_def_word(event)
         return self.do_find_def(word)
@@ -565,6 +564,8 @@ class LeoFind:
         It's a standalone method for unit tests.
         """
         c = self.c
+        if not word.strip():
+            return []
         patterns = self._make_patterns(word)
         matches = self._find_all_matches(patterns)
         if g.unitTesting:
