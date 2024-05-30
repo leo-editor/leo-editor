@@ -5,6 +5,7 @@ check_leo.py: Experimental script that checks for undefined methods.
 """
 #@+<< check_leo.py: imports & annotations >>
 #@+node:ekr.20240529055116.1: ** << check_leo.py: imports & annotations >>
+import argparse
 import ast
 import glob
 import os
@@ -25,10 +26,39 @@ Node = ast.AST
 #@-<< check_leo.py: imports & annotations >>
 
 #@+others
+#@+node:ekr.20240530073251.1: ** function: scan_args (check_leo.py)
+def scan_args() -> dict[str, bool]:  # pragma: no cover
+    """Scan command-line arguments for check_leo.py"""
+    parser = argparse.ArgumentParser(
+        description= 'check_leo.py: check all leo files',
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
+    add = parser.add_argument
+
+    # Arguments.
+    add('--all', dest='all', action='store_true',
+        help='check all files, even unchanged files')
+    add('--report', dest='report', action='store_true',
+        help='show summary report')
+
+    # Create the return values.
+    parser.set_defaults(all=False, report=False)
+    args = parser.parse_args()
+
+    # Return a dict describing the settings.
+    return {
+        'all': bool(args.all),
+        'report': bool(args.report),
+    }
 #@+node:ekr.20240529063157.1: ** Class CheckLeo
 class CheckLeo:
 
     def __init__(self):
+
+        # Settings. Set later:
+        self.all: bool = None
+        self.report: bool = None
+
         # Keys are full path names to Leo files.
         # Values are dicts describing all the files classes.
         self.d: dict[str, dict] = {}
@@ -39,7 +69,7 @@ class CheckLeo:
         """
         Check that all called methods exist.
         """
-        print(f"{g.shortFileName(path)}...")
+        header_printed = False
         d = self.d.get(path)
         classes_dict = d.get('classes')
         if classes_dict:
@@ -59,9 +89,10 @@ class CheckLeo:
                             attrs.add(node2.func.attr)
                 if attrs:
                     methods = classes_dict.get(class_name)
-                    # g.printObj(methods, tag=class_name)
                     if any(z not in methods for z in list(attrs)):
-                        print(f"  class {class_name} missing method calls...")
+                        if not header_printed:
+                            header_printed = True
+                            print(f"{g.shortFileName(path)}: missing methods...")
                     for attr in sorted(list(attrs)):
                         if attr not in methods:
                             print(f"    self.{attr}")
@@ -69,13 +100,17 @@ class CheckLeo:
     def check_leo(self) -> None:
         """Check all files returned by get_leo_paths()."""
         t1 = time.process_time()
+        settings_d = scan_args()
+        self.all = settings_d['all']
+        self.report = settings_d['report']
+        g.trace(settings_d)
         for path in self.get_leo_paths():
             s = self.read(path)
             tree = self.parse_ast(s)
             self.scan_file(path, tree)
             self.check_file(path, tree)
         t2 = time.process_time()
-        if 0:
+        if self.report:
             self.dump_dict()
         print('')
         g.trace(f"done {(t2-t1):4.2} sec.")
@@ -173,8 +208,6 @@ class CheckLeo:
                         args = node2.args.args
                         is_method = args and args[0].arg == 'self'
                         if is_method:
-                            ### args_s = ', '.join(z.arg for z in args)
-                            ### methods.append(f"{node2.name} ({args_s})")
                             methods.append(node2.name)
                 classes[class_name] = list(sorted(methods))
         assert path not in self.d, path
