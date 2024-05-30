@@ -16,15 +16,16 @@ import os
 import subprocess
 import sys
 
-print(os.path.basename(__file__))
-
 # cd to leo-editor
 os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
 
-args = ' '.join(sys.argv[1:])
+# Print a signon.
+args_s = ' '.join(sys.argv[1:])
+print(os.path.basename(__file__), args_s)
+
 isWindows = sys.platform.startswith('win')
 python = 'py' if isWindows else 'python'
 
-command = fr'{python} -m pylint leo --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets'
+command = fr'{python} -m pylint leo {args_s} --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets'
 subprocess.Popen(command, shell=True).communicate()
 #@-leo
