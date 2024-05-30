@@ -3289,7 +3289,6 @@ class FastAtRead:
                         gnx2vnode[gnx] = v
                         # Always use the gnx in the file's root node.
                         root_v.fileIndex = gnx
-                    ###### self.root.v.fileIndex = gnx
                     v.children = []
                     continue  # End of case 1.
 
