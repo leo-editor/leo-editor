@@ -57,7 +57,10 @@ def scan_args() -> dict[str, bool]:  # pragma: no cover
 #@+node:ekr.20240529063157.1: ** Class CheckLeo
 class CheckLeo:
 
-    __slots__ = ('all', 'debug', 'report')
+    __slots__ = (
+        'all', 'debug', 'report',  # command-line arguments.
+        'class_name_printed', 'header_printed',  # ivars.
+    )
 
     #@+others
     #@+node:ekr.20240529063012.1: *3* CheckLeo.check_leo & helpers
@@ -79,7 +82,9 @@ class CheckLeo:
             s = self.read(path)
             tree = self.parse_ast(s)
             self.scan_file(files_dict, path, tree)
-            #### self.check_file(files_dict, path, tree)
+            g.trace(files_dict.keys())
+            self.check_file(files_dict, path, tree)
+            break  ###
         t2 = time.process_time()
 
         if self.report:
@@ -94,7 +99,7 @@ class CheckLeo:
         Set file_dict [path] to an inner dict describing all classes in path.
         """
         # Keys are class names; values are lists of methods.
-        classes: dict[str, list[str]] = {}
+        classes_dict: dict[str, list[str]] = {}
         # Keys are class_names; values are ClassDef nodes.
         class_trees: dict[str, Node] = {}
         for node in ast.walk(tree):
@@ -109,12 +114,91 @@ class CheckLeo:
                         is_method = args and args[0].arg == 'self'
                         if is_method:
                             methods.append(node2.name)
-                classes[class_name] = list(sorted(methods))
+                classes_dict[class_name] = list(sorted(methods))
         assert path not in files_dict, path
         files_dict[path] = {
-            'classes': classes,
+            'classes': classes_dict,
             'class_trees': class_trees,
         }
+    #@+node:ekr.20240529135047.1: *4* CheckLeo.check_file & helpers
+    def check_file(self, files_dict: dict[str, dict], path: str, tree: Optional[Node]) -> None:
+        """
+        Check that all called methods exist.
+        """
+        self.class_name_printed: bool = False
+        self.header_printed: bool = False
+        inner_dict = files_dict.get(path, {})
+
+        # Keys are class names.
+        classes_dict: dict[str, list[str]] = inner_dict.get('classes', {})
+        trees_dict: dict[str, Node] = inner_dict.get('class_trees', {})
+        ### g.trace('classes_dict.keys', classes_dict.keys())  ###
+        chains = set()
+        if classes_dict:
+            for class_name in classes_dict:
+                self.class_name_printed = False
+                class_node = trees_dict.get(class_name)
+                ### g.trace(class_node)
+                attrs = self.do_function_body(chains, class_node, path)
+                if attrs:
+                    self.check_attrs(attrs, classes_dict, class_name, class_node, path)
+        if self.report and chains:
+            print('')
+            g.printObj(list(sorted(chains)), tag=f"chains: {g.shortFileName(path)}")
+
+    #@+node:ekr.20240531090243.1: *5* CheckLeo.check_attrs
+    def check_attrs(self,
+        attrs: list[str],
+        classes_dict: dict[str, list[str]],
+        class_name: str,
+        class_node: ast.ClassDef,
+        path: str,
+    ) -> None:
+        methods: list[str] = classes_dict.get(class_name, [])
+        if any(z not in methods for z in attrs):
+            # Print the file header.
+            if not self.header_printed:
+                self.header_printed = True
+                print(f"{g.shortFileName(path)}: missing 'self' methods...")
+            # Print the class header.
+            if not self.class_name_printed:
+                self.class_name_printed = True
+                bases = ast.unparse(class_node.bases)  # type:ignore
+                bases_s = f" [{bases}]" if bases else ''
+                print(f"  class {class_name}{bases_s}:")
+            # Print the unknown methods.
+            for attr in sorted(list(attrs)):
+                if attr not in methods:
+                    print(f"    self.{attr}")
+
+    #@+node:ekr.20240531085654.1: *5* CheckLeo.do_function_body
+    def do_function_body(self, chains: list[str], class_node: ast.ClassDef, path: str) -> list[str]:
+        """Update attrs."""
+        assert isinstance(class_node, ast.ClassDef), repr(class_node)
+        attrs: set[str] = set()
+        for node in class_node.body:
+            for node2 in ast.walk(node):
+                if (
+                    isinstance(node2, ast.Call)
+                    and isinstance(node2.func, ast.Attribute)
+                    and isinstance(node2.func.value, ast.Name)
+                ):
+                    if node2.func.value.id == 'self':
+                        attrs.add(node2.func.attr)
+                    else:
+                        s = ast.unparse(node2.func.value)
+                        if s.startswith('self'):
+                            # print('    ', ast.unparse(node2.func.value))
+                            print('****', ast.unparse(node2))
+                        else:
+                            # print('****', ast.unparse(node2))
+                            # print('....', ast.unparse(node2.func))
+                            if 0:  # Dump the entire call chain.
+                                chains.add(ast.unparse(node2.func))
+                            else:  # Dump only the prefix.
+                                prefix = ast.unparse(node2.func).split('.')[:-1]
+                                chains.add('.'.join(prefix))
+        return list(sorted(attrs))
     #@+node:ekr.20240531104205.1: *3* CheckLeo: utils
     #@+node:ekr.20240529061932.1: *4* CheckLeo.dump_dict
     def dump_dict(self, files_dict: dict[str, dict[str, dict]]) -> None:
