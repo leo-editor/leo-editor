@@ -9,8 +9,9 @@ import argparse
 import ast
 import glob
 import os
-import time
 import sys
+import time
+from typing import Optional
 
 # Add the leo/editor folder to sys.path.
 leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
@@ -65,60 +66,75 @@ class CheckLeo:
 
     #@+others
     #@+node:ekr.20240529135047.1: *3* CheckLeo.check_file
-    def check_file(self, path: str, tree: Node) -> None:
+    def check_file(self, path: str, tree: Optional[Node]) -> None:
         """
         Check that all called methods exist.
         """
+        class_name_printed: bool
         header_printed = False
-        d = self.d.get(path)
-        classes_dict = d.get('classes')
+        d = self.d.get(path, {})
+        classes_dict: dict[str, dict] = d.get('classes', {})
         chains = set()
+        #@+others  # define helper functions.
+        #@+node:ekr.20240531090243.1: *4* function: check_attrs
+        def check_attrs(attrs: list[str], class_name: str, class_node: ast.ClassDef) -> None:
+            nonlocal class_name_printed, header_printed
+            methods: list[str] = classes_dict.get(class_name, [])
+            if any(z not in methods for z in attrs):
+                # Print the file header.
+                if not header_printed:
+                    header_printed = True
+                    print(f"{g.shortFileName(path)}: missing 'self' methods...")
+                # Print the class header.
+                if not class_name_printed:
+                    class_name_printed = True
+                    bases = ast.unparse(class_node.bases)  # type:ignore
+                    bases_s = f" [{bases}]" if bases else ''
+                    print(f"  class {class_name}{bases_s}:")
+                # Print the unknown methods.
+                for attr in sorted(list(attrs)):
+                    if attr not in methods:
+                        print(f"    self.{attr}")
+
+        #@+node:ekr.20240531085654.1: *4* function: do_function_body
+        def do_function_body(class_node: Node) -> list[str]:
+            """Update attrs."""
+            assert isinstance(class_node, ast.ClassDef), repr(class_node)
+            attrs: set[str] = set()
+            for node in class_node.body:
+                for node2 in ast.walk(node):
+                    if (
+                        isinstance(node2, ast.Call)
+                        and isinstance(node2.func, ast.Attribute)
+                        and isinstance(node2.func.value, ast.Name)
+                    ):
+                        if node2.func.value.id == 'self':
+                            attrs.add(node2.func.attr)
+                        else:
+                            s = ast.unparse(node2.func.value)
+                            if s.startswith('self'):
+                                # print('    ', ast.unparse(node2.func.value))
+                                print('****', ast.unparse(node2))
+                            else:
+                                # print('****', ast.unparse(node2))
+                                # print('....', ast.unparse(node2.func))
+                                if 0:  # Dump the entire call chain.
+                                    chains.add(ast.unparse(node2.func))
+                                else:  # Dump only the prefix.
+                                    prefix = ast.unparse(node2.func).split('.')[:-1]
+                                    chains.add('.'.join(prefix))
+            return list(sorted(attrs))
+        #@-others
         if classes_dict:
-            trees_dict = d.get('class_trees')
+            trees_dict: dict[str, dict] = d.get('class_trees', {})
             for class_name in classes_dict:
                 class_name_printed = False
-                attrs: set[str] = set()
-                class_tree = trees_dict.get(class_name)
-                assert isinstance(class_tree, ast.ClassDef), repr(class_tree)
-                for node in class_tree.body:
-                    for node2 in ast.walk(node):
-                        if (
-                            isinstance(node2, ast.Call)
-                            and isinstance(node2.func, ast.Attribute)
-                            and isinstance(node2.func.value, ast.Name)
-                        ):
-                            if node2.func.value.id == 'self':
-                                attrs.add(node2.func.attr)
-                            else:
-                                s = ast.unparse(node2.func.value)
-                                if s.startswith('self'):
-                                    # print('    ', ast.unparse(node2.func.value))
-                                    print('****', ast.unparse(node2))
-                                else:
-                                    # print('****', ast.unparse(node2))
-                                    # print('....', ast.unparse(node2.func))
-                                    if 0:  # Dump the entire call chain.
-                                        chains.add(ast.unparse(node2.func))
-                                    else:  # Dump only the prefix.
-                                        prefix = ast.unparse(node2.func).split('.')[:-1]
-                                        chains.add('.'.join(prefix))
+                class_node = trees_dict.get(class_name)
+                attrs = do_function_body(class_node)
                 if attrs:
-                    methods = classes_dict.get(class_name)
-                    if any(z not in methods for z in list(attrs)):
-                        if not header_printed:
-                            header_printed = True
-                            print(f"{g.shortFileName(path)}: missing 'self' methods...")
-                        if not class_name_printed:
-                            class_name_printed = True
-                            bases: list[str] = ast.unparse(class_tree.bases)
-                            bases_s = f" [{bases}]" if bases else ''
-                            print(f"  class {class_name}{bases_s}:")
-                        for attr in sorted(list(attrs)):
-                            if attr not in methods:
-                                print(f"    self.{attr}")
-        if False and chains:
+                    check_attrs(attrs, class_name, class_node)
+        if self.report and chains:
             print('')
-            # print(f"chains: {(list(sorted(chains)))}")
             g.printObj(list(sorted(chains)), tag=f"chains: {g.shortFileName(path)}")
 
     #@+node:ekr.20240529063012.1: *3* CheckLeo.check_leo
@@ -144,16 +160,16 @@ class CheckLeo:
 
         for path in self.d:
             short_file_name = g.shortFileName(path)
-            d = self.d.get(path)
+            d = self.d.get(path, {})
             # Dump the classes dict.
-            classes_dict = d.get('classes')
+            classes_dict: dict[str, list] = d.get('classes', {})
             if classes_dict:
                 print('')
                 print(f"{short_file_name}...")
                 print(f"{'class':>25}: methods")
                 for class_name in classes_dict:
                     methods = classes_dict.get(class_name)
-                    print(f"{class_name:>25}: {len(methods)}")
+                    print(f"{class_name:>25}: {len(methods)}")  # type:ignore
     #@+node:ekr.20240529094941.1: *3* CheckLeo.get_leo_paths
     def get_leo_paths(self) -> list[str]:
         """Return a list of full paths to Leo paths to be checked."""
@@ -176,7 +192,7 @@ class CheckLeo:
              glob.glob(f"{plugins_dir}{os.sep}qt_*.py")
         )
     #@+node:ekr.20240529060232.4: *3* CheckLeo.parse_ast
-    def parse_ast(self, s: str) -> Node:
+    def parse_ast(self, s: str) -> Optional[Node]:
         """
         Parse string s, catching & reporting all exceptions.
         Return the ast node, or None.
@@ -212,7 +228,7 @@ class CheckLeo:
             g.es_exception()
             return ''
     #@+node:ekr.20240529060232.5: *3* CheckLeo.scan_file
-    def scan_file(self, path: str, tree: Node) -> dict:
+    def scan_file(self, path: str, tree: Node) -> None:
         """
         Scan the tree for all classes and their methods.
         
