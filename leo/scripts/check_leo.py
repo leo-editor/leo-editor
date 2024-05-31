@@ -80,11 +80,9 @@ class CheckLeo:
         # Scan and check all files, updating the files_dict.
         for path in self.get_leo_paths():
             s = self.read(path)
-            tree = self.parse_ast(s)
+            tree: Node = self.parse_ast(s)  # type:ignore
             self.scan_file(files_dict, path, tree)
-            g.trace(files_dict.keys())
             self.check_file(files_dict, path, tree)
-            break  ###
         t2 = time.process_time()
 
         if self.report:
@@ -121,7 +119,7 @@ class CheckLeo:
             'class_trees': class_trees,
         }
     #@+node:ekr.20240529135047.1: *4* CheckLeo.check_file & helpers
-    def check_file(self, files_dict: dict[str, dict], path: str, tree: Optional[Node]) -> None:
+    def check_file(self, files_dict: dict[str, dict], path: str, tree: Node) -> None:
         """
         Check that all called methods exist.
         """
@@ -131,14 +129,12 @@ class CheckLeo:
 
         # Keys are class names.
         classes_dict: dict[str, list[str]] = inner_dict.get('classes', {})
-        trees_dict: dict[str, Node] = inner_dict.get('class_trees', {})
-        ### g.trace('classes_dict.keys', classes_dict.keys())  ###
-        chains = set()
+        trees_dict: dict[str, ast.ClassDef] = inner_dict.get('class_trees', {})
+        chains: set[str] = set()
         if classes_dict:
             for class_name in classes_dict:
                 self.class_name_printed = False
-                class_node = trees_dict.get(class_name)
-                ### g.trace(class_node)
+                class_node: ast.ClassDef = trees_dict.get(class_name)  # type:ignore
                 attrs = self.do_function_body(chains, class_node, path)
                 if attrs:
                     self.check_attrs(attrs, classes_dict, class_name, class_node, path)
@@ -172,7 +168,7 @@ class CheckLeo:
                     print(f"    self.{attr}")
 
     #@+node:ekr.20240531085654.1: *5* CheckLeo.do_function_body
-    def do_function_body(self, chains: list[str], class_node: ast.ClassDef, path: str) -> list[str]:
+    def do_function_body(self, chains: set[str], class_node: ast.ClassDef, path: str) -> list[str]:
         """Update attrs."""
         assert isinstance(class_node, ast.ClassDef), repr(class_node)
         attrs: set[str] = set()
