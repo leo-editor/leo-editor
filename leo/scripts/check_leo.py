@@ -72,9 +72,11 @@ class CheckLeo:
         header_printed = False
         d = self.d.get(path)
         classes_dict = d.get('classes')
+        chains = set()
         if classes_dict:
             trees_dict = d.get('class_trees')
             for class_name in classes_dict:
+                class_name_printed = False
                 attrs: set[str] = set()
                 class_tree = trees_dict.get(class_name)
                 assert isinstance(class_tree, ast.ClassDef), repr(class_tree)
@@ -84,18 +86,41 @@ class CheckLeo:
                             isinstance(node2, ast.Call)
                             and isinstance(node2.func, ast.Attribute)
                             and isinstance(node2.func.value, ast.Name)
-                            and node2.func.value.id == 'self'
                         ):
-                            attrs.add(node2.func.attr)
+                            if node2.func.value.id == 'self':
+                                attrs.add(node2.func.attr)
+                            else:
+                                s = ast.unparse(node2.func.value)
+                                if s.startswith('self'):
+                                    # print('    ', ast.unparse(node2.func.value))
+                                    print('****', ast.unparse(node2))
+                                else:
+                                    # print('****', ast.unparse(node2))
+                                    # print('....', ast.unparse(node2.func))
+                                    if 0:  # Dump the entire call chain.
+                                        chains.add(ast.unparse(node2.func))
+                                    else:  # Dump only the prefix.
+                                        prefix = ast.unparse(node2.func).split('.')[:-1]
+                                        chains.add('.'.join(prefix))
                 if attrs:
                     methods = classes_dict.get(class_name)
                     if any(z not in methods for z in list(attrs)):
                         if not header_printed:
                             header_printed = True
-                            print(f"{g.shortFileName(path)}: missing methods...")
-                    for attr in sorted(list(attrs)):
-                        if attr not in methods:
-                            print(f"    self.{attr}")
+                            print(f"{g.shortFileName(path)}: missing 'self' methods...")
+                        if not class_name_printed:
+                            class_name_printed = True
+                            bases: list[str] = ast.unparse(class_tree.bases)
+                            bases_s = f" [{bases}]" if bases else ''
+                            print(f"  class {class_name}{bases_s}:")
+                        for attr in sorted(list(attrs)):
+                            if attr not in methods:
+                                print(f"    self.{attr}")
+        if False and chains:
+            print('')
+            # print(f"chains: {(list(sorted(chains)))}")
+            g.printObj(list(sorted(chains)), tag=f"chains: {g.shortFileName(path)}")
+
     #@+node:ekr.20240529063012.1: *3* CheckLeo.check_leo
     def check_leo(self) -> None:
         """Check all files returned by get_leo_paths()."""
