@@ -27,7 +27,7 @@ Node = ast.AST
 #@-<< check_leo.py: imports & annotations >>
 
 #@+others
-#@+node:ekr.20240530073251.1: ** function: scan_args (check_leo.py)
+#@+node:ekr.20240530073251.1: **  function: scan_args (check_leo.py)
 def scan_args() -> dict[str, bool]:  # pragma: no cover
     """Scan command-line arguments for check_leo.py"""
     parser = argparse.ArgumentParser(
@@ -54,12 +54,32 @@ def scan_args() -> dict[str, bool]:  # pragma: no cover
         'debug': bool(args.debug),
         'report': bool(args.report),
     }
-#@+node:ekr.20240529063157.1: ** Class CheckLeo
+#@+node:ekr.20240531142811.1: ** class ClassInfo
+class ClassInfo:
+
+    def __init__(self, class_name: str, class_node: ast.ClassDef, path: str) -> None:
+        self.class_name = class_name
+        self.class_node = class_node
+        self.path = path
+
+    def class_id(self):
+        return f"ClassInfo<{self.path}::{self.class_name}>"
+#@+node:ekr.20240531143136.1: ** class FileInfo
+class FileInfo:
+
+    def __init__(self, file_node: ast.Module, path: str) -> None:
+        self.file_node = file_node
+        self.path = path
+
+    def class_id(self):
+        return f"FileInfo<{g.shortFileName(self.path)}>"
+#@+node:ekr.20240529063157.1: ** class CheckLeo
 class CheckLeo:
 
     __slots__ = (
         'all', 'debug', 'report',  # command-line arguments.
-        'class_name_printed', 'header_printed',  # ivars.
+        'class_name_printed', 'header_printed',  # status ivars.
+        'classes_info_dict', 'files_info_dict',  # global summary data.
     )
 
     #@+others
@@ -73,6 +93,10 @@ class CheckLeo:
         self.all: bool = settings_d['all']
         self.debug: bool = settings_d['debug']
         self.report: bool = settings_d['report']
+
+        # Init global data.
+        self.classes_info_dict: dict[str, ClassInfo] = {}
+        self.files_info_dict: dict[str, FileInfo] = {}
 
         # Keys are paths, values are a dict of dicts containing other data.
         files_dict: dict[str, dict[str, dict]] = {}
