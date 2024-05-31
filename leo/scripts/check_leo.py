@@ -11,7 +11,7 @@ import glob
 import os
 import sys
 import time
-from typing import Optional
+from typing import Any, Optional
 
 # Add the leo/editor folder to sys.path.
 leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
@@ -39,6 +39,8 @@ def scan_args() -> dict[str, bool]:  # pragma: no cover
     # Arguments.
     add('--all', dest='all', action='store_true',
         help='check all files, even unchanged files')
+    add('--debug', dest='debug', action='store_true',
+        help='enable debugging')
     add('--report', dest='report', action='store_true',
         help='show summary report')
 
@@ -49,35 +51,54 @@ def scan_args() -> dict[str, bool]:  # pragma: no cover
     # Return a dict describing the settings.
     return {
         'all': bool(args.all),
+        'debug': bool(args.debug),
         'report': bool(args.report),
     }
 #@+node:ekr.20240529063157.1: ** Class CheckLeo
 class CheckLeo:
 
-    def __init__(self):
-
-        # Settings. Set later:
-        self.all: bool = None
-        self.report: bool = None
-
-        # Keys are full path names to Leo files.
-        # Values are dicts describing all the files classes.
-        self.d: dict[str, dict] = {}
+    __slots__ = ('all', 'debug', 'report')
 
     #@+others
-    #@+node:ekr.20240529135047.1: *3* CheckLeo.check_file
-    def check_file(self, path: str, tree: Optional[Node]) -> None:
+    #@+node:ekr.20240529063012.1: *3* CheckLeo.check_leo & helpers
+    def check_leo(self) -> None:
+        """Check all files returned by get_leo_paths()."""
+        t1 = time.process_time()
+        settings_d = scan_args()
+        # Init the switches.
+        g.trace(settings_d)
+        self.all: bool = settings_d['all']
+        self.debug: bool = settings_d['debug']
+        self.report: bool = settings_d['report']
+
+        # Keys are paths, values are a dict of dicts containing other data.
+        files_dict: dict[str, dict[str, dict]] = {}
+
+        # Scan and check all files, updating the files_dict.
+        for path in self.get_leo_paths():
+            s = self.read(path)
+            tree = self.parse_ast(s)
+            self.scan_file(files_dict, path, tree)
+            #### self.check_file(files_dict, path, tree)
+        t2 = time.process_time()
+
+        if self.report:
+            self.dump_dict(files_dict)
+        print('')
+        g.trace(f"done {(t2-t1):4.2} sec.")
+    #@+node:ekr.20240529135047.1: *4* CheckLeo.check_file & helpers
+    def check_file(self, files_dict: dict[str, dict], path: str, tree: Optional[Node]) -> None:
         """
         Check that all called methods exist.
         """
         class_name_printed: bool
         header_printed = False
         d = self.d.get(path, {})
-        classes_dict: dict[str, dict] = d.get('classes', {})
+        classes_dict: dict[str, Any] = files_dict.get('classes', {})
         chains = set()
         #@+others  # define helper functions.
-        #@+node:ekr.20240531090243.1: *4* function: check_attrs
-        def check_attrs(attrs: list[str], class_name: str, class_node: ast.ClassDef) -> None:
+        #@+node:ekr.20240531090243.1: *5* CheckLeo.check_attrs
+        def check_attrs(self, attrs: list[str], class_name: str, class_node: ast.ClassDef) -> None:
             nonlocal class_name_printed, header_printed
             methods: list[str] = classes_dict.get(class_name, [])
             if any(z not in methods for z in attrs):
@@ -96,8 +117,8 @@ class CheckLeo:
                     if attr not in methods:
                         print(f"    self.{attr}")
 
-        #@+node:ekr.20240531085654.1: *4* function: do_function_body
-        def do_function_body(class_node: Node) -> list[str]:
+        #@+node:ekr.20240531085654.1: *5* CheckLeo.do_function_body
+        def do_function_body(self, class_node: ast.ClassDef) -> list[str]:
             """Update attrs."""
             assert isinstance(class_node, ast.ClassDef), repr(class_node)
             attrs: set[str] = set()
@@ -137,32 +158,44 @@ class CheckLeo:
             print('')
             g.printObj(list(sorted(chains)), tag=f"chains: {g.shortFileName(path)}")
 
-    #@+node:ekr.20240529063012.1: *3* CheckLeo.check_leo
-    def check_leo(self) -> None:
-        """Check all files returned by get_leo_paths()."""
-        t1 = time.process_time()
-        settings_d = scan_args()
-        self.all = settings_d['all']
-        self.report = settings_d['report']
-        g.trace(settings_d)
-        for path in self.get_leo_paths():
-            s = self.read(path)
-            tree = self.parse_ast(s)
-            self.scan_file(path, tree)
-            self.check_file(path, tree)
-        t2 = time.process_time()
-        if self.report:
-            self.dump_dict()
-        print('')
-        g.trace(f"done {(t2-t1):4.2} sec.")
-    #@+node:ekr.20240529061932.1: *3* CheckLeo.dump_dict
-    def dump_dict(self) -> None:
+    #@+node:ekr.20240529060232.5: *4* CheckLeo.scan_file
+    def scan_file(self, files_dict: dict[str, dict], path: str, tree: Node) -> None:
+        """
+        Scan the tree for all classes and their methods.
+        
+        Set file_dict [path] to an inner dict describing all classes in path.
+        """
+        # Keys are class names; values are lists of methods.
+        classes: dict[str, list[str]] = {}
+        # Keys are class_names; values are ClassDef nodes.
+        class_trees: dict[str, Node] = {}
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ClassDef):
+                class_name = node.name
+                class_trees[class_name] = node
+                methods = []
+                for node2 in ast.walk(node):
+                    # This finds inner defs as well as methods.
+                    if isinstance(node2, ast.FunctionDef):
+                        args = node2.args.args
+                        is_method = args and args[0].arg == 'self'
+                        if is_method:
+                            methods.append(node2.name)
+                classes[class_name] = list(sorted(methods))
+        assert path not in files_dict, path
+        files_dict[path] = {
+            'classes': classes,
+            'class_trees': class_trees,
+        }
+    #@+node:ekr.20240531104205.1: *3* CheckLeo: utils
+    #@+node:ekr.20240529061932.1: *4* CheckLeo.dump_dict
+    def dump_dict(self, files_dict: dict[str, dict[str, dict]]) -> None:
 
-        for path in self.d:
+        for path in files_dict:
             short_file_name = g.shortFileName(path)
-            d = self.d.get(path, {})
+            inner_dict = files_dict.get(path, {})
             # Dump the classes dict.
-            classes_dict: dict[str, list] = d.get('classes', {})
+            classes_dict: dict[str, list[str]] = inner_dict.get('classes', {})
             if classes_dict:
                 print('')
                 print(f"{short_file_name}...")
@@ -170,7 +203,7 @@ class CheckLeo:
                 for class_name in classes_dict:
                     methods = classes_dict.get(class_name)
                     print(f"{class_name:>25}: {len(methods)}")  # type:ignore
-    #@+node:ekr.20240529094941.1: *3* CheckLeo.get_leo_paths
+    #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths
     def get_leo_paths(self) -> list[str]:
         """Return a list of full paths to Leo paths to be checked."""
 
@@ -191,7 +224,7 @@ class CheckLeo:
              glob.glob(f"{command_dir}{os.sep}leo*.py") +
              glob.glob(f"{plugins_dir}{os.sep}qt_*.py")
         )
-    #@+node:ekr.20240529060232.4: *3* CheckLeo.parse_ast
+    #@+node:ekr.20240529060232.4: *4* CheckLeo.parse_ast
     def parse_ast(self, s: str) -> Optional[Node]:
         """
         Parse string s, catching & reporting all exceptions.
@@ -216,7 +249,7 @@ class CheckLeo:
             oops('Unexpected Exception')
             g.es_exception()
         return None
-    #@+node:ekr.20240529060232.3: *3* CheckLeo.read
+    #@+node:ekr.20240529060232.3: *4* CheckLeo.read
     def read(self, file_name: str) -> str:
         try:
             with open(file_name, 'r') as f:
@@ -227,35 +260,6 @@ class CheckLeo:
         except Exception:
             g.es_exception()
             return ''
-    #@+node:ekr.20240529060232.5: *3* CheckLeo.scan_file
-    def scan_file(self, path: str, tree: Node) -> None:
-        """
-        Scan the tree for all classes and their methods.
-        
-        Set self.d[path] to an inner dict describing all classes in path.
-        """
-        # Keys are class names; values are lists of methods.
-        classes: dict[str, list[str]] = {}
-        # Keys are class_names; values are ClassDef nodes.
-        class_trees: dict[str, Node] = {}
-        for node in ast.walk(tree):
-            if isinstance(node, ast.ClassDef):
-                class_name = node.name
-                class_trees[class_name] = node
-                methods = []
-                for node2 in ast.walk(node):
-                    # This finds inner defs as well as methods.
-                    if isinstance(node2, ast.FunctionDef):
-                        args = node2.args.args
-                        is_method = args and args[0].arg == 'self'
-                        if is_method:
-                            methods.append(node2.name)
-                classes[class_name] = list(sorted(methods))
-        assert path not in self.d, path
-        self.d[path] = {
-            'classes': classes,
-            'class_trees': class_trees,
-        }
     #@-others
 #@-others
 

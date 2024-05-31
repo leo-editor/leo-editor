@@ -579,7 +579,6 @@ class LeoFind:
             return matches
         # Always update the Nav pane if it is enabled.
         use_nav_pane = self.prefer_nav_pane and g.pluginIsLoaded('quicksearch.py')
-        g.trace(use_nav_pane)  ###
         if use_nav_pane:
             self._load_quicksearch_entries(word, matches)
         # Carefully select the most convenient clone of p.
