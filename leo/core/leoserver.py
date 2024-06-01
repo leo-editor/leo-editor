@@ -2173,15 +2173,18 @@ class LeoServer:
                 g.es(f"not found: {word!r}", color='red')
                 focus = self._get_focus()
                 return self._make_response({"found": False, "focus": focus})
-            # Update the Nav pane.
-            unique_matches = list(set([s.strip() for (i, p, s) in matches if s.strip()]))
-            # The Nav pane can show only one match, so issue a warning.
-            if len(unique_matches) > 1:
-                g.es_print(f"Multiple matches for {word}", color='red')
-                for z in unique_matches[1:]:
-                    g.es_print(z)
-            scon: QuickSearchController = c.patched_quicksearch_controller
-            scon.qsc_search(unique_matches[0])
+            use_nav_pane = fc.prefer_nav_pane
+            if use_nav_pane:
+                # Update the Nav pane.
+                unique_matches = list(set([s.strip() for (i, p, s) in matches if s.strip()]))
+                # The Nav pane can show only one match, so issue a warning.
+                if len(unique_matches) > 1:
+                    g.es_print(f"Multiple matches for {word}", color='red')
+                    for z in unique_matches[1:]:
+                        g.es_print(z)
+                scon: QuickSearchController = c.patched_quicksearch_controller
+                scon.navText = unique_matches[0]
+                scon.qsc_search(unique_matches[0])
             # Carefully select the most convenient clone of p.
             if len(matches) == 1:
                 i, p, s = matches[0]
@@ -2208,11 +2211,14 @@ class LeoServer:
                 w = c.frame.body.wrapper
                 if w:
                     w.setSelectionRange(i, i + len(s), insert=i)
+            elif not use_nav_pane:
+                # Show clones, but only if the Nav pane isn't available.
+                fc._make_clones(word, matches)
         # Put the first match in the Nav pane's edit widget and update.
         except Exception as e:
             raise ServerError(f"{tag}: Running find symbol definition gave exception: {e}")
         focus = self._get_focus()
-        return self._make_response({"found": True, "focus": focus})
+        return self._make_response({"found": True, "focus": focus, "use_nav_pane": use_nav_pane})
 
     # Compatibility.
     find_var = find_def
