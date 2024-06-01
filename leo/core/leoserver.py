@@ -2183,6 +2183,7 @@ class LeoServer:
                     for z in unique_matches[1:]:
                         g.es_print(z)
                 scon: QuickSearchController = c.patched_quicksearch_controller
+                scon.navText = unique_matches[0]
                 scon.qsc_search(unique_matches[0])
             # Carefully select the most convenient clone of p.
             if len(matches) == 1:
