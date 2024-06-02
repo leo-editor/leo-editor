@@ -1460,6 +1460,9 @@ class LeoTree:
         # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
         c.redraw_after_head_changed()
         g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
+    #@+node:ekr.20031218072017.2312: *4* LeoTree.OnIconDoubleClick (do nothing)
+    def OnIconDoubleClick(self, p: Position) -> None:
+        pass
     #@+node:ekr.20031218072017.3705: *3* LeoTree.__init__
     def __init__(self, frame: Widget) -> None:
         """Ctor for the LeoTree class."""
@@ -1501,9 +1504,6 @@ class LeoTree:
     #@+node:ekr.20120314064059.9739: *4* LeoTree.OnIconCtrlClick (@url)
     def OnIconCtrlClick(self, p: Position) -> None:
         g.openUrl(p)
-    #@+node:ekr.20031218072017.2312: *4* LeoTree.OnIconDoubleClick (do nothing)
-    def OnIconDoubleClick(self, p: Position) -> None:
-        pass
     #@+node:ekr.20051026083544.2: *4* LeoTree.updateHead
     def updateHead(self, event: LeoKeyEvent, w: Wrapper) -> None:
         """
