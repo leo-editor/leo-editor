@@ -82,9 +82,9 @@ class CheckLeo:
         # status ivars.
         'class_name_printed', 'header_printed',
         # global summary data.
-        ### 'classes_dict',  # Keys are paths; values are ClassDef nodes.
-        # 'files_dict',  # Keys are paths; values are ast (ast.Module) nodes.
-        'base_class_dict', 'live_objects_dict',
+        'live_objects_dict',
+        # Reporting list.
+        'report_list',
     )
 
     #@+others
@@ -100,12 +100,17 @@ class CheckLeo:
         # Keys: class names. Values: instances of that class.
         t1 = time.process_time()
         self.live_objects_dict: dict[str, list[str]] = self.init_live_objects_dict()
+        self.report_list: list[str] = []
         # Check each file separately.
         for path in self.get_leo_paths():
             self.check_file(path)
         t2 = time.process_time()
+        # Print all failures.
         print('')
+        for z in self.report_list:
+            print(z)
         g.trace(f"done {(t2-t1):4.2} sec.")
+
     #@+node:ekr.20240602162342.1: *3* 2: CheckLeo.check_file
     def check_file(self, path):
         """Check the file whose full path is given."""
@@ -191,7 +196,8 @@ class CheckLeo:
         # Print the file header.
         if not self.header_printed:
             self.header_printed = True
-            print(f"{g.shortFileName(path)}: missing 'self' methods...")
+            self.report_list.append(
+                f"{g.shortFileName(path)}: missing 'self' methods...")
         # Print the class header.
         if not self.class_name_printed:
             self.class_name_printed = True
@@ -201,10 +207,10 @@ class CheckLeo:
                 bases_list = f"({bases_s})"
             else:
                 bases_list = ''
-            print(f"  class {class_name}{bases_list}:")
+            self.report_list.append(f"  class {class_name}{bases_list}:")
         # Print the unknown called name.
-        print(f"    self.{called_name}")
-    #@+node:ekr.20240602105914.1: *4* CheckLeo.has_called_method (FIX)
+        self.report_list.append(f"    self.{called_name}")
+    #@+node:ekr.20240602105914.1: *4* CheckLeo.has_called_method
     def has_called_method(self,
         called_name: str,
         class_node: ast.ClassDef,
