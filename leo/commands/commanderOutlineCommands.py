@@ -131,12 +131,11 @@ def pasteOutlineRetainingClones(
     if errors > 0:
         return None
     # Handle the "before" data for undo.
-    if True:  ### undoFlag:
-        vnodeInfoDict = computeVnodeInfoDict(c)
-        undoData = c.undoer.beforeInsertNode(c.p,
-            pasteAsClone=True,
-            copiedBunchList=computeCopiedBunchList(c, pasted, vnodeInfoDict),
-        )
+    vnodeInfoDict = computeVnodeInfoDict(c)
+    undoData = c.undoer.beforeInsertNode(c.p,
+        pasteAsClone=True,
+        copiedBunchList=computeCopiedBunchList(c, pasted, vnodeInfoDict),
+    )
     # Paste the node into the outline.
     c.selectPosition(pasted)
     pasted.setDirty()
@@ -149,8 +148,7 @@ def pasteOutlineRetainingClones(
     for p in pasted.self_and_subtree():
         p.setAllAncestorAtFileNodesDirty()
     # Finish the command.
-    if True:  ### undoFlag:
-        c.undoer.afterInsertNode(pasted, 'Paste As Clone', undoData)
+    c.undoer.afterInsertNode(pasted, 'Paste As Clone', undoData)
     c.redraw(pasted)
     c.recolor()
     return pasted
