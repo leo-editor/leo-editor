@@ -90,11 +90,11 @@ class CheckLeo:
     def check_leo(self) -> None:
         """Check all files returned by get_leo_paths()."""
         t1 = time.process_time()
-        settings_d = scan_args()
-        g.trace(settings_d)
         #@+<< check_leo: init ivars >>
         #@+node:ekr.20240602103712.1: *4* << check_leo: init ivars >>
         # Settings...
+        settings_d = scan_args()
+        g.trace(settings_d)
         self.all: bool = settings_d['all']
         self.debug: bool = settings_d['debug']
         self.report: bool = settings_d['report']
@@ -108,8 +108,6 @@ class CheckLeo:
         # Keys: class names. Values: instances of that class.
         self.live_objects_dict: dict[str, list[str]] = self.init_live_objects_dict()
         #@-<< check_leo: init ivars >>
-
-
         for path in self.get_leo_paths():
             s = self.read(path)
             tree: Node = self.parse_ast(s)  # type:ignore
@@ -280,16 +278,10 @@ class CheckLeo:
         class_node: ast.ClassDef,
         path: str,
     ) -> None:
+
+        ### if any(is_missing(z) for z in attrs):
         methods: list[str] = classes_dict.get(class_name, [])
-
-        extra_methods: list[str] = self.base_class_dict.get(class_name, [])
-        if False and extra_methods:  ###
-            g.printObj(extra_methods, tag=class_name)
-
-        def is_missing(method) -> bool:
-            return method not in (methods + extra_methods)
-
-        if any(is_missing(z) for z in attrs):
+        if any(self.is_missing_method(class_name, methods, z) for z in attrs):
             # Print the file header.
             if not self.header_printed:
                 self.header_printed = True
@@ -302,7 +294,7 @@ class CheckLeo:
                 print(f"  class {class_name}{bases_s}:")
             # Print the unknown methods.
             for attr in sorted(list(attrs)):
-                if is_missing(attr):
+                if self.is_missing_method(class_name, methods, attr):
                     print(f"    self.{attr}")
     #@+node:ekr.20240531085654.1: *5* CheckLeo.do_function_body
     def do_function_body(self, chains: set[str], class_node: ast.ClassDef, path: str) -> list[str]:
@@ -332,6 +324,16 @@ class CheckLeo:
                                 prefix = ast.unparse(node2.func).split('.')[:-1]
                                 chains.add('.'.join(prefix))
         return list(sorted(attrs))
+    #@+node:ekr.20240602105914.1: *5* CehckLeo.is_missing_method
+    def is_missing_method(self,
+        class_name: str,
+        methods: list[str],
+        method_name: str,
+    ) -> bool:
+
+        if method_name in methods:
+            return False
+        return True
     #@+node:ekr.20240531104205.1: *3* CheckLeo: utils
     #@+node:ekr.20240529061932.1: *4* CheckLeo.dump_dict
     def dump_dict(self, files_dict: dict[str, dict[str, dict]]) -> None:
