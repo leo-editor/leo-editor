@@ -178,7 +178,7 @@ class CheckLeo:
                                 chains.add('.'.join(prefix))
         ### g.printObj(list(sorted(attrs)), tag=f"do_class_body: {class_node.name}")
         return list(sorted(attrs))
-    #@+node:ekr.20240531090243.1: *3* 4: CheckLeo.check_call_name & helper
+    #@+node:ekr.20240531090243.1: *3* 4: CheckLeo.check_called_name & helper
     def check_called_name(self,
         called_name: str,
         class_node: ast.ClassDef,
@@ -195,9 +195,13 @@ class CheckLeo:
         # Print the class header.
         if not self.class_name_printed:
             self.class_name_printed = True
-            bases = ast.unparse(class_node.bases)  # type:ignore
-            bases_s = f" [{bases}]" if bases else ''
-            print(f"  class {class_name}{bases_s}:")
+            bases = class_node.bases
+            if bases:
+                bases_s = ','.join([ast.unparse(z) for z in bases])
+                bases_list = f"({bases_s})"
+            else:
+                bases_list = ''
+            print(f"  class {class_name}{bases_list}:")
         # Print the unknown called name.
         print(f"    self.{called_name}")
     #@+node:ekr.20240602105914.1: *4* CheckLeo.has_called_method (FIX)
@@ -206,6 +210,7 @@ class CheckLeo:
         class_node: ast.ClassDef,
         methods: list[str],
     ) -> bool:
+        trace = False  ###
         if called_name in methods:
             return True
         # Return if there are no base classes.
@@ -223,7 +228,8 @@ class CheckLeo:
             # g.trace('=== live_object!', live_object)
             method_names = list(dir(live_object))
             if called_name in method_names:
-                g.trace('=== Found', called_name, 'in', live_object.__class__.__name__)
+                if trace:
+                    g.trace(f"=== {called_name} found in {live_object.__class__.__name__}")
                 return True
             return False
     #@+node:ekr.20240602103522.1: *3* CheckLeo.init_live_objects_dict
