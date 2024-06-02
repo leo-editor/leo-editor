@@ -129,13 +129,44 @@ class CheckLeo:
         """
         return {
             'LeoQtTree': [
-                # LeoTree methods
-                'OnIconDoubleClick',
-                'select',
+                # LeoTree methods.
+                'OnIconDoubleClick', 'select',
                 'sizeTreeEditor',  # Static method.
                 # Alias ivars.
                 'headlineWrapper',  # Alias for qt_text.QHeadlineWrapper
             ],
+            'SqlitePickleShare': [
+                'dumper', 'loader',  # Alias ivars.
+            ],
+            'LeoLineTextWidget': [  # QtWidgets.QFrame
+                'setFrameStyle',
+            ],
+            'LeoQListWidget': [  # QListWidget.
+                'activateWindow', 'addItems',
+                'clear', 'currentItem',
+                'deleteLater', 'geometry',
+                'setCurrentRow', 'setFocus', 'setGeometry', 'setWindowFlags',
+                'viewport', 'windowFlags',
+            ],
+            'LeoQTextBrowser': [  # QtWidgets.QTextBrowser
+                'LeoQListWidget',  # Private class.
+                'calc_hl',  # Static methods.
+                # Methods of base class.
+                'activateWindow', 'addItems',
+                'clear', 'currentItem', 'deleteLater', 'geometry',
+                'setContextMenuPolicy', 'setCurrentRow', 'setCursorWidth',
+                'setFocus', 'setGeometry', 'setWindowFlags',
+                'verticalScrollBar', 'viewport', 'windowFlags',
+            ],
+            'NumberBar': [  # QtWidgets.QFrame
+                'fontMetrics',
+                'setFixedWidth',
+                'setObjectName',
+                'width',
+            ],
+            'QTextEditWrapper': [  # QTextMixin
+                'rememberSelectionAndScroll',
+            ]
         }
     #@+node:ekr.20240529060232.5: *4* CheckLeo.scan_file
     def scan_file(self, files_dict: dict[str, dict], path: str, tree: Node) -> None:
@@ -144,8 +175,6 @@ class CheckLeo:
         
         Set file_dict [path] to an inner dict describing all classes in path.
         """
-        # Keys are class names; values are lists of base classes.
-        base_classes_dict: dict[str, list[str]] = {}
         # Keys are class names; values are lists of methods.
         classes_dict: dict[str, list[str]] = {}
         # Keys are class_names; values are ClassDef nodes.
@@ -163,11 +192,9 @@ class CheckLeo:
                         is_method = args and args[0].arg == 'self'
                         if is_method:
                             methods.append(node2.name)
-                base_classes_dict[class_name] = list(sorted(node.bases))
                 classes_dict[class_name] = list(sorted(methods))
         assert path not in files_dict, path
         files_dict[path] = {
-            'base_classes': base_classes_dict,
             'classes': classes_dict,
             'class_trees': class_trees,
         }
@@ -206,7 +233,8 @@ class CheckLeo:
         methods: list[str] = classes_dict.get(class_name, [])
 
         extra_methods: list[str] = self.base_class_dict.get(class_name, [])
-        g.printObj(extra_methods)
+        if False and extra_methods:  ###
+            g.printObj(extra_methods, tag=class_name)
 
         def is_missing(method) -> bool:
             return method not in (methods + extra_methods)
@@ -270,11 +298,11 @@ class CheckLeo:
                 for class_name in classes_dict:
                     methods = classes_dict.get(class_name)
                     print(f"{class_name:>25}: {len(methods)}")  # type:ignore
-    #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths
+    #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths (test_one_file switch)
     def get_leo_paths(self) -> list[str]:
         """Return a list of full paths to Leo paths to be checked."""
 
-        test_one_file = True
+        test_one_file = False
 
         def join(*args) -> str:
             return os.path.abspath(os.path.join(*args))
