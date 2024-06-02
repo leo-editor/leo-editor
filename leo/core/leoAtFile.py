@@ -3285,7 +3285,7 @@ class FastAtRead:
                         # refresh-from-disk
                         # #3931: Prefer the gnx in the external file.
                         gnx = v.gnx
-                        gnx2body[gnx] = gnx2body[root_v.gnx]  ### Experimental.
+                        gnx2body[gnx] = gnx2body[root_v.gnx]
                         gnx2vnode[gnx] = v
                         # Always use the gnx in the file's root node.
                         root_v.fileIndex = gnx
