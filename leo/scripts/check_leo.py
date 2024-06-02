@@ -150,41 +150,17 @@ class CheckLeo:
         """
         Set self.trees_dict [path] to a list of all ClassDef nodes in the path.
         """
-        classes_list: list[ast.ClassDef] = []
-        for node in ast.walk(tree):
-            if isinstance(node, ast.ClassDef):
-                classes_list.append(node)
-        self.classes_dict[path] = classes_list
-
-        # Keys are class names; values are lists of methods.
-        ### classes_dict: dict[str, list[str]] = {}
-
-        ###
-            # # Keys are class_names; values are ClassDef nodes.
-            # class_trees: dict[str, Node] = {}
-
-                ### methods = []
-
-                ### Put this in a separate method.
-                    # for node2 in ast.walk(node):
-                        # # This finds inner defs as well as methods.
-                        # if isinstance(node2, ast.FunctionDef):
-                            # args = node2.args.args
-                            # is_method = args and args[0].arg == 'self'
-                            # if is_method:
-                                # methods.append(node2.name)
-                    # classes_dict[class_name] = list(sorted(methods))
-        # assert path not in self.files_dict, path
-        # if 1:
-            # g.printObj(class_trees, tag=f"scan_file: class_trees:{g.shortFileName(path)}")
-            # print('')
-
-        # self.trees_dict: dict[str, list[Node]
-
-        # self.files_dict[path] = {
-            # 'classes': classes_dict,
-            # 'class_trees': class_trees,
-        # }
+        if 1:
+            self.classes_dict[path] = [
+                node for node in ast.walk(tree)
+                    if isinstance(node, ast.ClassDef)
+            ]
+        else:
+            classes_list: list[ast.ClassDef] = []
+            for node in ast.walk(tree):
+                if isinstance(node, ast.ClassDef):
+                    classes_list.append(node)
+            self.classes_dict[path] = classes_list
     #@+node:ekr.20240602122109.1: *4* CheckLeo.scan_methods
     def scan_methods(self, class_node: ast.ClassDef) -> tuple[ast.FunctionDef]:
         """
@@ -203,73 +179,45 @@ class CheckLeo:
         """
         Check that all called methods exist.
         """
-        self.class_name_printed: bool = False
+        self.class_name_printed: bool
         self.header_printed: bool = False
         chains: set[str] = set()  # All chains in the file.
         for class_node in self.classes_dict.get(path):
-            attrs = self.do_class_body(chains, class_node, path)
+            g.trace(class_node.name)
+            self.class_name_printed = False
+            attrs = self.do_class_body(chains, class_node)
             if attrs:
                 self.check_attrs(attrs, class_node, path)
         if self.report and chains:
             print('')
             g.printObj(list(sorted(chains)), tag=f"chains: {g.shortFileName(path)}")
-
-
-        ### OLD
-            # inner_dict = self.files_dict.get(path, {})
-
-            # # Keys are class names.
-            # classes_dict: dict[str, list[str]] = inner_dict.get('classes', {})
-            # trees_dict: dict[str, ast.ClassDef] = inner_dict.get('class_trees', {})
-            # chains: set[str] = set()
-            # if classes_dict:
-                # for class_name in classes_dict:
-                    # self.class_name_printed = False
-                    # class_node: ast.ClassDef = trees_dict.get(class_name)  # type:ignore
-                    # attrs = self.do_function_body(chains, class_node, path)
-                    # if attrs:
-                        # self.check_attrs(attrs, classes_dict, class_name, class_node, path)
-            # if self.report and chains:
-                # print('')
-                # g.printObj(list(sorted(chains)), tag=f"chains: {g.shortFileName(path)}")
-
-
-
     #@+node:ekr.20240531090243.1: *5* CheckLeo.check_attrs
     def check_attrs(self,
         attrs: list[str],
-        ### classes_dict: dict[str, list[str]],
-        ### class_name: str,
         class_node: ast.ClassDef,
         path: str,
     ) -> None:
-        ###  methods: list[str] = classes_dict.get(class_name, [])
+        class_name = class_node.name
         methods: list[str] = self.scan_methods(class_node)
-        if 0:
-            method_names = [z.__class__.__name__ for z in methods]
-            g.printObj(method_names, tag=g.shortFileName(path))
-
-        ###
-        # if any(self.is_missing_method(class_name, methods, z) for z in attrs):
-            # # Print the file header.
-            # if not self.header_printed:
-                # self.header_printed = True
-                # print(f"{g.shortFileName(path)}: missing 'self' methods...")
-            # # Print the class header.
-            # if not self.class_name_printed:
-                # self.class_name_printed = True
-                # bases = ast.unparse(class_node.bases)  # type:ignore
-                # bases_s = f" [{bases}]" if bases else ''
-                # print(f"  class {class_name}{bases_s}:")
-            # # Print the unknown methods.
-            # for attr in sorted(list(attrs)):
-                # if self.is_missing_method(class_name, methods, attr):
-                    # print(f"    self.{attr}")
+        if any(self.is_missing_method(class_node, methods, z) for z in attrs):
+            # Print the file header.
+            if not self.header_printed:
+                self.header_printed = True
+                print(f"{g.shortFileName(path)}: missing 'self' methods...")
+            # Print the class header.
+            if not self.class_name_printed:
+                self.class_name_printed = True
+                bases = ast.unparse(class_node.bases)  # type:ignore
+                bases_s = f" [{bases}]" if bases else ''
+                print(f"  class {class_name}{bases_s}:")
+            # Print the unknown methods.
+            for attr in sorted(list(attrs)):
+                if self.is_missing_method(class_node, methods, attr):
+                    print(f"    self.{attr}")
     #@+node:ekr.20240531085654.1: *5* CheckLeo.do_class_body
     def do_class_body(self,
         chains: set[str],
         class_node: ast.ClassDef,
-        path: str,
     ) -> list[str]:
         """Return the attrs and chains for all calls in the class."""
         assert isinstance(class_node, ast.ClassDef), repr(class_node)
@@ -295,39 +243,33 @@ class CheckLeo:
                             else:  # Dump only the prefix.
                                 prefix = ast.unparse(node2.func).split('.')[:-1]
                                 chains.add('.'.join(prefix))
-        g.printObj(list(sorted(attrs)), tag=f"do_class_body: {class_node.name}")
+        ### g.printObj(list(sorted(attrs)), tag=f"do_class_body: {class_node.name}")
         return list(sorted(attrs))
     #@+node:ekr.20240602105914.1: *5* CehckLeo.is_missing_method
     def is_missing_method(self,
-        class_name: str,
+        class_node: ast.ClassDef,
         methods: list[str],
         method_name: str,
     ) -> bool:
         if method_name in methods:
             return False
-        return True  #### To do.
-        ###
-            # # Return if there are no base classes.
-            # trees: dict[str, dict] = self.files_dict.get('class_trees', {})
-            # g.trace(class_name, 'trees', trees)
-            # if not trees:
-                # return True
-            # tree: Optional[Node] = trees.get(class_name)
-            # if not tree:
-                # return True
-            # assert isinstance(tree, ast.ClassDef), repr(tree)
-            # bases = [z.__class__.__name__ for z in tree.bases]
-            # print('')
-            # g.trace(f"==== {class_name}.{method_name} bases: {bases}")
-            # print('')
-            # live_object = self.live_objects_dict.get(class_name)
-            # if live_object:
-                # method_names = list(dir(live_object))
-                # if method_name in method_names:
-                    # g.trace('===== Found', method_name, 'in', live_object.__class__.__name__)
-                    # return False
-                # g.trace('===== Not found', method_name, 'in', live_object.__class__.__name__)
-            # return True
+        # Return if there are no base classes.
+        class_name = class_node.name
+        bases = [z.__class__.__name__ for z in class_node.bases]
+        if 0:
+            print('')
+            g.trace(f"==== {class_name}.{method_name} bases: {bases}")
+            print('')
+        live_object = self.live_objects_dict.get(class_name)
+        if live_object:
+            method_names = list(dir(live_object))
+            if method_name in method_names:
+                g.trace('===== Found', method_name, 'in', live_object.__class__.__name__)
+                return False
+            g.trace('===== Not found', method_name, 'in', live_object.__class__.__name__)
+        elif 0:
+            g.trace('===== No live object', class_name)
+        return True
     #@+node:ekr.20240531104205.1: *3* CheckLeo: utils
     #@+node:ekr.20240529061932.1: *4* CheckLeo.dump_dict
     def dump_dict(self, files_dict: dict[str, dict[str, dict]]) -> None:
