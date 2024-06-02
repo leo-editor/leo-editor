@@ -127,7 +127,7 @@ class CheckLeo:
         Return a dict: keys are *unqualified* class mames.
         Values are list of methods defined in that class, including base classes.
         """
-        ### self.(\w+)
+        ### self.(\w+)  ==> '\1',
         return {
             'Calendar': [  # QtWidgets.QDialog.
                 'setLayout',
