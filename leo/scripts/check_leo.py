@@ -211,24 +211,21 @@ class CheckLeo:
         # Return if there are no base classes.
         class_name = class_node.name
         bases = class_node.bases
-        if bases:
+        if not bases:
+            return False
+        if 1:
             bases_s = ','.join([ast.unparse(z) for z in bases])
-            g.trace(f"==== class {class_name} ({bases_s})")
-        if 0:
-            print('')
-            g.trace(f"==== {class_name}.{called_name} bases: {bases}")
-            print('')
-        live_object = self.live_objects_dict.get(class_name)
-        if live_object:
-            g.trace('===== live_object', live_object)
+            g.trace(f"=== call {class_name}.{called_name} ({bases_s})")
+        for base in bases:
+            live_object = self.live_objects_dict.get(ast.unparse(base))
+            if not live_object:
+                continue
+            g.trace('=== live_object!', live_object)
             method_names = list(dir(live_object))
             if called_name in method_names:
-                g.trace('===== Found', called_name, 'in', live_object.__class__.__name__)
+                g.trace('=== Found', called_name, 'in', live_object.__class__.__name__)
                 return True
-            g.trace('===== Not found', called_name, 'in', live_object.__class__.__name__)
-        elif 0:
-            g.trace('===== No live object', class_name)
-        return False
+            return False
     #@+node:ekr.20240602103522.1: *3* CheckLeo.init_live_objects_dict
     def init_live_objects_dict(self):
 
@@ -248,7 +245,8 @@ class CheckLeo:
         d = {}
         for widget_class in qt_widget_classes:
             w = widget_class()
-            d[w.__class__.__name__] = w
+            full_class_name = f"QtWidgets.{w.__class__.__name__}"
+            d[full_class_name] = w
         return d
     #@+node:ekr.20240531104205.1: *3* CheckLeo: utils
     #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths (test_one_file switch)
