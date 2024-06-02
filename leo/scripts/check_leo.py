@@ -209,18 +209,18 @@ class CheckLeo:
         if called_name in methods:
             return True
         # Return if there are no base classes.
-        class_name = class_node.name
         bases = class_node.bases
         if not bases:
             return False
-        if 1:
+        if 0:
+            class_name = class_node.name
             bases_s = ','.join([ast.unparse(z) for z in bases])
             g.trace(f"=== call {class_name}.{called_name} ({bases_s})")
         for base in bases:
             live_object = self.live_objects_dict.get(ast.unparse(base))
             if not live_object:
                 continue
-            g.trace('=== live_object!', live_object)
+            # g.trace('=== live_object!', live_object)
             method_names = list(dir(live_object))
             if called_name in method_names:
                 g.trace('=== Found', called_name, 'in', live_object.__class__.__name__)
