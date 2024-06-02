@@ -186,27 +186,18 @@ class CheckLeo:
             # 'class_trees': class_trees,
         # }
     #@+node:ekr.20240602122109.1: *4* CheckLeo.scan_methods
-    def scan_methods(self, class_node: ast.ClassDef) -> list[ast.FunctionDef]:
+    def scan_methods(self, class_node: ast.ClassDef) -> tuple[ast.FunctionDef]:
         """
-        Return a list of ast.FunctionDef nodes in 
+        Return a list of ast.FunctionDef nodes in the given class node.
         """
-        if 1:
-            return [
-                node for node in ast.walk(class_node)
+        return (
+            ### To do: static methods ???
+            node for node in ast.walk(class_node)
                 if (
                     isinstance(node, ast.FunctionDef)
                     and node.args.args
                     and node.args.args[0].arg == 'self'
-                )]
-        else:
-            methods_list: list[ast.FunctionDef] = []
-            for node in ast.walk(class_node):
-                # This finds inner defs as well as methods.
-                if isinstance(node, ast.FunctionDef):
-                    args = node.args.args
-                    if args and args[0].arg == 'self':
-                        methods_list.append(node)
-            return methods_list
+                ))
     #@+node:ekr.20240529135047.1: *4* CheckLeo.check_file & helpers
     def check_file(self, path: str, tree: Node) -> None:
         """
@@ -282,7 +273,6 @@ class CheckLeo:
     ) -> list[str]:
         """Return the attrs and chains for all calls in the class."""
         assert isinstance(class_node, ast.ClassDef), repr(class_node)
-        g.trace(class_node.name)
         attrs: set[str] = set()
         chains: set[str] = set()
         for node in class_node.body:
@@ -305,6 +295,7 @@ class CheckLeo:
                             else:  # Dump only the prefix.
                                 prefix = ast.unparse(node2.func).split('.')[:-1]
                                 chains.add('.'.join(prefix))
+        g.printObj(list(sorted(attrs)), tag=f"do_class_body: {class_node.name}")
         return list(sorted(attrs))
     #@+node:ekr.20240602105914.1: *5* CehckLeo.is_missing_method
     def is_missing_method(self,
