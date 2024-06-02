@@ -127,7 +127,30 @@ class CheckLeo:
         Return a dict: keys are *unqualified* class mames.
         Values are list of methods defined in that class, including base classes.
         """
+        ### self.(\w+)
         return {
+            'Calendar': [  # QtWidgets.QDialog.
+                'setLayout',
+            ],
+            'DateTimeEditStepped': [  # QtWidgets.QDateTimeEdit
+                'currentSection',
+            ],
+            'DialogWithCheckBox': [  #QtWidgets.QMessageBox
+                'addButton', 'layout',
+                'setIcon', 'setObjectName',
+                'setText', 'setWindowTitle',
+            ],
+            'IdleTime': [
+                'handler',  # An ivar set to an executable.
+            ],
+            'LeoQtGui': [  # leoGui.LeoGui
+                'DialogWithCheckBox',  # Inner class.
+                # These are QtWidgets.QMessageBox methods called from the inner class.
+                ### This is a buglet.
+                'addButton', 'currentSection', 'layout',
+                'setIcon', 'setLayout', 'setObjectName',
+                'setText', 'setWindowTitle',
+            ],
             'LeoQtTree': [
                 # LeoTree methods.
                 'OnIconDoubleClick', 'select',
@@ -166,7 +189,13 @@ class CheckLeo:
             ],
             'QTextEditWrapper': [  # QTextMixin
                 'rememberSelectionAndScroll',
-            ]
+            ],
+            'QTextMixin': [
+                # These are defined in other classes!
+                ### Is this a bug?
+                'getAllText', 'getInsertPoint', 'getSelectionRange',
+                'see', 'setAllText', 'setInsertPoint', 'setSelectionRange',
+            ],
         }
     #@+node:ekr.20240529060232.5: *4* CheckLeo.scan_file
     def scan_file(self, files_dict: dict[str, dict], path: str, tree: Node) -> None:
