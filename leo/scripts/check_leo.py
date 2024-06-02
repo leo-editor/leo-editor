@@ -19,7 +19,7 @@ if leo_editor_dir not in sys.path:
     sys.path.insert(0, leo_editor_dir)
 
 from leo.core import leoGlobals as g
-# from leo.core.leoAst import AstDumper
+from leo.core.leoQt import QtWidgets
 assert g
 assert os.path.exists(leo_editor_dir), leo_editor_dir
 
@@ -77,10 +77,12 @@ class FileInfo:
 class CheckLeo:
 
     __slots__ = (
-        'all', 'debug', 'report',  # command-line arguments.
-        'class_name_printed', 'header_printed',  # status ivars.
-        'base_class_dict',
-        # 'classes_info_dict', 'files_info_dict',  # global summary data.
+        # command-line arguments.
+        'all', 'debug', 'report',
+        # status ivars.
+        'class_name_printed', 'header_printed',
+        # global summary data.
+        'base_class_dict', 'files_dict', 'live_objects_dict',
     )
 
     #@+others
@@ -89,34 +91,34 @@ class CheckLeo:
         """Check all files returned by get_leo_paths()."""
         t1 = time.process_time()
         settings_d = scan_args()
-        # Init the switches.
         g.trace(settings_d)
+        #@+<< check_leo: init ivars >>
+        #@+node:ekr.20240602103712.1: *4* << check_leo: init ivars >>
+        # Settings...
         self.all: bool = settings_d['all']
         self.debug: bool = settings_d['debug']
         self.report: bool = settings_d['report']
 
-        # Init global data...
-
-        # Keys are fully-qualified base class mames.
-        # Values are list of methods defined in that class, including base classes.
+        # Keys: class mames. Values: all methods of that class, including base classes.
         self.base_class_dict: dict[str, list[str]] = self.init_base_class_dict()
 
-        # self.classes_info_dict: dict[str, ClassInfo] = {}
-        # self.files_info_dict: dict[str, FileInfo] = {}
-
         # Keys are paths, values are a dict of dicts containing other data.
-        files_dict: dict[str, dict[str, dict]] = {}
+        self.files_dict: dict[str, dict[str, dict]] = {}
 
-        # Scan and check all files, updating the files_dict.
+        # Keys: class names. Values: instances of that class.
+        self.live_objects_dict: dict[str, list[str]] = self.init_live_objects_dict()
+        #@-<< check_leo: init ivars >>
+
+
         for path in self.get_leo_paths():
             s = self.read(path)
             tree: Node = self.parse_ast(s)  # type:ignore
-            self.scan_file(files_dict, path, tree)
-            self.check_file(files_dict, path, tree)
+            self.scan_file(path, tree)
+            self.check_file(path, tree)
         t2 = time.process_time()
 
         if self.report:
-            self.dump_dict(files_dict)
+            self.dump_dict(self.files_dict)
         print('')
         g.trace(f"done {(t2-t1):4.2} sec.")
     #@+node:ekr.20240602051423.1: *4* CheckLeo.init_base_class_dict
@@ -197,8 +199,27 @@ class CheckLeo:
                 'see', 'setAllText', 'setInsertPoint', 'setSelectionRange',
             ],
         }
+    #@+node:ekr.20240602103522.1: *4* CheckLeo.init_live_objects_dict
+    def init_live_objects_dict(self):
+
+        # Create the app first.
+        app = QtWidgets.QApplication([])
+        assert app
+        qt_widget_classes = [
+            QtWidgets.QComboBox,
+            QtWidgets.QLineEdit,
+            QtWidgets.QMainWindow,
+            QtWidgets.QTabBar,
+            QtWidgets.QTabWidget,
+            QtWidgets.QTreeWidget,
+        ]
+        d = {}
+        for widget_class in qt_widget_classes:
+            w = widget_class()
+            d[w.__class__.__name__] = w
+        return d
     #@+node:ekr.20240529060232.5: *4* CheckLeo.scan_file
-    def scan_file(self, files_dict: dict[str, dict], path: str, tree: Node) -> None:
+    def scan_file(self, path: str, tree: Node) -> None:
         """
         Scan the tree for all classes and their methods.
         
@@ -222,19 +243,19 @@ class CheckLeo:
                         if is_method:
                             methods.append(node2.name)
                 classes_dict[class_name] = list(sorted(methods))
-        assert path not in files_dict, path
-        files_dict[path] = {
+        assert path not in self.files_dict, path
+        self.files_dict[path] = {
             'classes': classes_dict,
             'class_trees': class_trees,
         }
     #@+node:ekr.20240529135047.1: *4* CheckLeo.check_file & helpers
-    def check_file(self, files_dict: dict[str, dict], path: str, tree: Node) -> None:
+    def check_file(self, path: str, tree: Node) -> None:
         """
         Check that all called methods exist.
         """
         self.class_name_printed: bool = False
         self.header_printed: bool = False
-        inner_dict = files_dict.get(path, {})
+        inner_dict = self.files_dict.get(path, {})
 
         # Keys are class names.
         classes_dict: dict[str, list[str]] = inner_dict.get('classes', {})
