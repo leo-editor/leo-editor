@@ -373,7 +373,8 @@ def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
         g.es_print(f"Unknown @<file> node: {p.h!r}")
         return
     if p.v.gnx != old_gnx and not g.unitTesting:
-        print(f"refresh-from-disk: gnx for `{p.h}` changed from: `{old_gnx}` to: `{p.v.gnx}`")
+        g.es_print(f"refresh-from-disk changed the gnx for `{p.h}`")
+        g.es_print(f"from `{old_gnx}` to: `{p.v.gnx}`")
     c.selectPosition(p)
     # Create the 'Recovered Nodes' tree.
     c.fileCommands.handleNodeConflicts()
