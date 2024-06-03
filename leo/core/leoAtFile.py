@@ -3274,7 +3274,7 @@ class FastAtRead:
                     clone_v = None
                     v = root_v
                     if root_v.gnx != gnx:
-                        # Delete all traces of the root_v.gnx.
+                        # Delete all traces of root_v.gnx.
                         if root_v.gnx in gnx2body:
                             del gnx2body[root_v.gnx]
                         if root_v.gnx in gnx2vnode:
