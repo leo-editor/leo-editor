@@ -692,7 +692,7 @@ class FileCommands:
                         if os.path.exists(fn):
                             n += 1
                             f.write(fn)
-            print(f"Wrote {archive_name} containing {n} file{g.plural(n)}")
+            g.es_print(f"Wrote {archive_name} containing {n} file{g.plural(n)}")
         except Exception:
             g.es_print(f"Error writing {archive_name}")
             g.es_exception()
