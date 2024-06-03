@@ -88,6 +88,36 @@ class CheckLeo:
     )
 
     #@+others
+    #@+node:ekr.20240529094941.1: *3* 0: CheckLeo.get_leo_paths (test_one_file switch)
+    def get_leo_paths(self) -> list[str]:
+        """Return a list of full paths to Leo paths to be checked."""
+
+        test_one_file = False
+
+        def join(*args) -> str:
+            return os.path.abspath(os.path.join(*args))
+
+        # Compute the directories.
+        leo_dir = join(leo_editor_dir, 'leo')
+        command_dir = join(leo_dir, 'commands')
+        core_dir = join(leo_dir, 'core')
+        plugins_dir = join(leo_dir, 'plugins')
+        for z in (leo_dir, command_dir, core_dir, plugins_dir):
+            assert os.path.exists(z), z
+
+        if test_one_file:
+            # file_name = f"{plugins_dir}{os.sep}qt_frame.py"
+            file_name = f"{core_dir}{os.sep}leoBackground.py"
+            print('')
+            print('Testing one file', g.shortFileName(file_name))
+            return [file_name]
+
+        # Return the list of files.
+        return (
+               glob.glob(f"{core_dir}{os.sep}leo*.py")
+             + glob.glob(f"{command_dir}{os.sep}leo*.py")
+             + glob.glob(f"{plugins_dir}{os.sep}qt_*.py")
+        )
     #@+node:ekr.20240529063012.1: *3* 1: CheckLeo.check_leo
     def check_leo(self) -> None:
         """Check all files returned by get_leo_paths()."""
@@ -116,10 +146,12 @@ class CheckLeo:
     def check_file(self, path):
         """Check the file whose full path is given."""
         s = self.read(path)
+        if not s:
+            g.trace(f"file not found: {path}")
+            return
         self.header_printed: bool = False
         chains: set[str] = set()  # All chains in the file.
         file_node = self.parse_ast(s)
-        ### g.trace('=====', path, file_node)
         class_nodes = [
             z for z in ast.walk(file_node)
                 if isinstance(z, ast.ClassDef)]
@@ -135,21 +167,33 @@ class CheckLeo:
     def check_class(self, chains: set[str], class_node: ast.ClassDef, path: str) -> None:
         """Check that all called methods exist."""
         self.class_name_printed = False
-        methods = self.find_methods(class_node)
+        methods: list[ast.FunctionDef] = self.find_methods(class_node)
+        method_names = [z.name for z in methods]
         called_names = self.find_calls(chains, class_node)
         for called_name in called_names:
-            self.check_called_name(called_name, class_node, methods, path)
+            self.check_called_name(called_name, class_node, method_names, path)
     #@+node:ekr.20240602165136.1: *4* CheckLeo.find_methods
-    def find_methods(self, class_node: ast.ClassDef) -> list[ast.ClassDef]:
+    def find_methods(self, class_node: ast.ClassDef) -> list[ast.FunctionDef]:
         """Return a list of all methods in the give class."""
+
+        def has_self(func_node: ast.FunctionDef) -> bool:
+            """Return True if the given FunctionDef node has 'self' as its first argument."""
+            # arguments = (arg* args, ...)
+            # arg = (identifier arg, ...)
+            args = func_node.args
+            if not args:
+                return False
+            first_arg = args.args[0] if args.args else None
+            return first_arg and first_arg.arg == 'self'
+            ###
+                # for i, z in enumerate(args.args or []):
+                    # if 'self' in z.arg:
+                        # # g.trace(f"{func_node.name} arg {i}: {z.arg=}")
+                        # return True
+                # return False
         return [
             z for z in ast.walk(class_node)
-            if (
-                isinstance(z, ast.FunctionDef)
-                and z.args.args
-                and z.args.args[0].arg == 'self'
-            )
-        ]
+                if isinstance(z, ast.FunctionDef) and has_self(z)]
     #@+node:ekr.20240531085654.1: *4* CheckLeo.find_calls
     def find_calls(self,
         chains: set[str],
@@ -182,18 +226,16 @@ class CheckLeo:
                             else:  # Dump only the prefix.
                                 prefix = ast.unparse(node2.func).split('.')[:-1]
                                 chains.add('.'.join(prefix))
-        ### g.printObj(list(sorted(attrs)), tag=f"do_class_body: {class_node.name}")
         return list(sorted(attrs))
     #@+node:ekr.20240531090243.1: *3* 4: CheckLeo.check_called_name & helper
     def check_called_name(self,
         called_name: str,
         class_node: ast.ClassDef,
-        methods: list[ast.FunctionDef],  # All methods of this class.
+        method_names: list[str],  # List of all method names in this class.
         path: str,
     ) -> None:
-        ### g.trace(class_node, class_node.bases)
         class_name = class_node.name
-        if self.has_called_method(called_name, class_node, methods):
+        if self.has_called_method(called_name, class_node, method_names):
             return
         # Print the file header.
         if not self.header_printed:
@@ -205,8 +247,7 @@ class CheckLeo:
             self.class_name_printed = True
             bases = class_node.bases
             if bases:
-                ### bases_s = ','.join([ast.unparse(z) for z in bases])
-                bases_s = ','.join([repr(z) for z in bases])
+                bases_s = ','.join([ast.unparse(z) for z in bases])
                 bases_list = f"({bases_s})"
             else:
                 bases_list = ''
@@ -217,10 +258,10 @@ class CheckLeo:
     def has_called_method(self,
         called_name: str,
         class_node: ast.ClassDef,
-        methods: list[str],
+        method_names: list[str],
     ) -> bool:
         trace = False  ###
-        if called_name in methods:
+        if called_name in method_names:
             return True
         # Return if there are no base classes.
         bases = class_node.bases
@@ -235,43 +276,13 @@ class CheckLeo:
             if not live_object:
                 continue
             # g.trace('=== live_object!', live_object)
-            method_names = list(dir(live_object))
-            if called_name in method_names:
+            lib_object_method_names = list(dir(live_object))
+            if called_name in lib_object_method_names:
                 if trace:
                     g.trace(f"=== {called_name} found in {live_object.__class__.__name__}")
                 return True
             return False
     #@+node:ekr.20240531104205.1: *3* CheckLeo: utils
-    #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths (test_one_file switch)
-    def get_leo_paths(self) -> list[str]:
-        """Return a list of full paths to Leo paths to be checked."""
-
-        test_one_file = False
-
-        def join(*args) -> str:
-            return os.path.abspath(os.path.join(*args))
-
-        # Compute the directories.
-        leo_dir = join(leo_editor_dir, 'leo')
-        command_dir = join(leo_dir, 'commands')
-        core_dir = join(leo_dir, 'core')
-        plugins_dir = join(leo_dir, 'plugins')
-        for z in (leo_dir, command_dir, core_dir, plugins_dir):
-            assert os.path.exists(z), z
-
-        if test_one_file:
-            file_name = f"{plugins_dir}{os.sep}qt_frame.py"
-            print('')
-            print('Testing one file', g.shortFileName(file_name))
-            print('')
-            return [file_name]
-
-        # Return the list of files.
-        return (
-               glob.glob(f"{core_dir}{os.sep}leo*.py")
-             + glob.glob(f"{command_dir}{os.sep}leo*.py")
-             + glob.glob(f"{plugins_dir}{os.sep}qt_*.py")
-        )
     #@+node:ekr.20240602103522.1: *4* CheckLeo.init_live_objects_dict
     def init_live_objects_dict(self):
 
