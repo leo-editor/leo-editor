@@ -3279,7 +3279,7 @@ class FastAtRead:
                             del gnx2body[root_v.gnx]
                         if root_v.gnx in gnx2vnode:
                             del gnx2vnode[root_v.gnx]
-                        # Only Leo's refresh-from-disk command does issue this messages.
+                        # `refresh-from-disk` issues this messages, but 'git-diff' should not.
                         # g.trace(f"Changing gnx! old: {root_v.gnx} new: {gnx} in {head}")
                         root_v.fileIndex = gnx
                     gnx2vnode[gnx] = root_v
