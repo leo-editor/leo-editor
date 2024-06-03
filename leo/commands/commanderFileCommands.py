@@ -352,6 +352,7 @@ def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
     at = c.atFileCommands
     c.nodeConflictList = []
     c.recreateGnxDict()
+    old_gnx = p.v.gnx
     if p.isAtAutoNode() or p.isAtAutoRstNode():
         p.v._deleteAllChildren()
         p = at.readOneAtAutoNode(p)  # Changes p!
@@ -371,6 +372,8 @@ def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
     else:
         g.es_print(f"Unknown @<file> node: {p.h!r}")
         return
+    if p.v.gnx != old_gnx and not g.unitTesting:
+        g.trace(f"Changing gnx! old: {old_gnx} new: {p.v.gnx} in {p.h}")
     c.selectPosition(p)
     # Create the 'Recovered Nodes' tree.
     c.fileCommands.handleNodeConflicts()
