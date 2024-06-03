@@ -82,9 +82,9 @@ class CheckLeo:
         # status ivars.
         'class_name_printed', 'header_printed',
         # global summary data.
-        'live_objects_dict',
-        # Reporting list.
-        'report_list',
+        'live_objects_dict', 'report_list',
+        # references to live objects.
+        'live_objects',
     )
 
     #@+others
@@ -99,6 +99,7 @@ class CheckLeo:
         self.report: bool = settings_d['report']
         # Keys: class names. Values: instances of that class.
         t1 = time.process_time()
+        self.live_objects: list = []
         self.live_objects_dict: dict[str, list[str]] = self.init_live_objects_dict()
         self.report_list: list[str] = []
         # Check each file separately.
@@ -118,6 +119,7 @@ class CheckLeo:
         self.header_printed: bool = False
         chains: set[str] = set()  # All chains in the file.
         file_node = self.parse_ast(s)
+        ### g.trace('=====', path, file_node)
         class_nodes = [
             z for z in ast.walk(file_node)
                 if isinstance(z, ast.ClassDef)]
@@ -132,7 +134,6 @@ class CheckLeo:
     #@+node:ekr.20240602161721.1: *3* 3: CheckLeo.check_class & helper
     def check_class(self, chains: set[str], class_node: ast.ClassDef, path: str) -> None:
         """Check that all called methods exist."""
-        g.trace(class_node.name)
         self.class_name_printed = False
         methods = self.find_methods(class_node)
         called_names = self.find_calls(chains, class_node)
@@ -190,6 +191,7 @@ class CheckLeo:
         methods: list[ast.FunctionDef],  # All methods of this class.
         path: str,
     ) -> None:
+        ### g.trace(class_node, class_node.bases)
         class_name = class_node.name
         if self.has_called_method(called_name, class_node, methods):
             return
@@ -203,7 +205,8 @@ class CheckLeo:
             self.class_name_printed = True
             bases = class_node.bases
             if bases:
-                bases_s = ','.join([ast.unparse(z) for z in bases])
+                ### bases_s = ','.join([ast.unparse(z) for z in bases])
+                bases_s = ','.join([repr(z) for z in bases])
                 bases_list = f"({bases_s})"
             else:
                 bases_list = ''
@@ -238,34 +241,12 @@ class CheckLeo:
                     g.trace(f"=== {called_name} found in {live_object.__class__.__name__}")
                 return True
             return False
-    #@+node:ekr.20240602103522.1: *3* CheckLeo.init_live_objects_dict
-    def init_live_objects_dict(self):
-
-        # Create the app first.
-        app = QtWidgets.QApplication([])
-        assert app
-        qt_widget_classes = [
-            QtWidgets.QComboBox,
-            QtWidgets.QDateTimeEdit,
-            QtWidgets.QLineEdit,
-            QtWidgets.QMainWindow,
-            QtWidgets.QMessageBox,
-            QtWidgets.QTabBar,
-            QtWidgets.QTabWidget,
-            QtWidgets.QTreeWidget,
-        ]
-        d = {}
-        for widget_class in qt_widget_classes:
-            w = widget_class()
-            full_class_name = f"QtWidgets.{w.__class__.__name__}"
-            d[full_class_name] = w
-        return d
     #@+node:ekr.20240531104205.1: *3* CheckLeo: utils
     #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths (test_one_file switch)
     def get_leo_paths(self) -> list[str]:
         """Return a list of full paths to Leo paths to be checked."""
 
-        test_one_file = True
+        test_one_file = False
 
         def join(*args) -> str:
             return os.path.abspath(os.path.join(*args))
@@ -279,7 +260,7 @@ class CheckLeo:
             assert os.path.exists(z), z
 
         if test_one_file:
-            file_name = f"{plugins_dir}{os.sep}qt_gui.py"
+            file_name = f"{plugins_dir}{os.sep}qt_frame.py"
             print('')
             print('Testing one file', g.shortFileName(file_name))
             print('')
@@ -287,10 +268,33 @@ class CheckLeo:
 
         # Return the list of files.
         return (
-             glob.glob(f"{core_dir}{os.sep}leo*.py") +
-             glob.glob(f"{command_dir}{os.sep}leo*.py") +
-             glob.glob(f"{plugins_dir}{os.sep}qt_*.py")
+               glob.glob(f"{core_dir}{os.sep}leo*.py")
+             + glob.glob(f"{command_dir}{os.sep}leo*.py")
+             + glob.glob(f"{plugins_dir}{os.sep}qt_*.py")
         )
+    #@+node:ekr.20240602103522.1: *4* CheckLeo.init_live_objects_dict
+    def init_live_objects_dict(self):
+
+        # Create the app first.
+        app = QtWidgets.QApplication([])
+        self.live_objects.append(app)  # Otherwise all widgets will go away.
+        qt_widget_classes = [
+            QtWidgets.QComboBox,
+            QtWidgets.QDateTimeEdit,
+            QtWidgets.QLineEdit,
+            QtWidgets.QMainWindow,
+            QtWidgets.QMessageBox,
+            QtWidgets.QTabBar,
+            QtWidgets.QTabWidget,
+            QtWidgets.QTreeWidget,
+        ]
+        # Make sure live objects don't get deallocated.
+        d = {}
+        for widget_class in qt_widget_classes:
+            w = widget_class()
+            full_class_name = f"QtWidgets.{w.__class__.__name__}"
+            d[full_class_name] = w
+        return d
     #@+node:ekr.20240529060232.4: *4* CheckLeo.parse_ast
     def parse_ast(self, s: str) -> Optional[Node]:
         """
