@@ -88,7 +88,31 @@ class CheckLeo:
     )
 
     #@+others
-    #@+node:ekr.20240529094941.1: *3* 0: CheckLeo.get_leo_paths (test_one_file switch)
+    #@+node:ekr.20240529063012.1: *3* 1: CheckLeo.check_leo & helper
+    def check_leo(self) -> None:
+        """Check all files returned by get_leo_paths()."""
+        # Settings ivars...
+        settings_d = scan_args()
+        g.trace(settings_d)
+        self.all: bool = settings_d['all']
+        self.debug: bool = settings_d['debug']
+        self.report: bool = settings_d['report']
+        # Keys: class names. Values: instances of that class.
+        t1 = time.process_time()
+        self.live_objects: list = []
+        self.live_objects_dict: dict[str, list[str]] = self.init_live_objects_dict()
+        self.report_list: list[str] = []
+        # Check each file separately.
+        for path in self.get_leo_paths():
+            self.check_file(path)
+        t2 = time.process_time()
+        # Print all failures.
+        print('')
+        for z in self.report_list:
+            print(z)
+        g.trace(f"done {(t2-t1):4.2} sec.")
+
+    #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths (test_one_file switch)
     def get_leo_paths(self) -> list[str]:
         """Return a list of full paths to Leo paths to be checked."""
 
@@ -118,31 +142,30 @@ class CheckLeo:
              + glob.glob(f"{command_dir}{os.sep}leo*.py")
              + glob.glob(f"{plugins_dir}{os.sep}qt_*.py")
         )
-    #@+node:ekr.20240529063012.1: *3* 1: CheckLeo.check_leo
-    def check_leo(self) -> None:
-        """Check all files returned by get_leo_paths()."""
-        # Settings ivars...
-        settings_d = scan_args()
-        g.trace(settings_d)
-        self.all: bool = settings_d['all']
-        self.debug: bool = settings_d['debug']
-        self.report: bool = settings_d['report']
-        # Keys: class names. Values: instances of that class.
-        t1 = time.process_time()
-        self.live_objects: list = []
-        self.live_objects_dict: dict[str, list[str]] = self.init_live_objects_dict()
-        self.report_list: list[str] = []
-        # Check each file separately.
-        for path in self.get_leo_paths():
-            self.check_file(path)
-        t2 = time.process_time()
-        # Print all failures.
-        print('')
-        for z in self.report_list:
-            print(z)
-        g.trace(f"done {(t2-t1):4.2} sec.")
+    #@+node:ekr.20240602103522.1: *4* CheckLeo.init_live_objects_dict
+    def init_live_objects_dict(self):
 
-    #@+node:ekr.20240602162342.1: *3* 2: CheckLeo.check_file
+        # Create the app first.
+        app = QtWidgets.QApplication([])
+        self.live_objects.append(app)  # Otherwise all widgets will go away.
+        qt_widget_classes = [
+            QtWidgets.QComboBox,
+            QtWidgets.QDateTimeEdit,
+            QtWidgets.QLineEdit,
+            QtWidgets.QMainWindow,
+            QtWidgets.QMessageBox,
+            QtWidgets.QTabBar,
+            QtWidgets.QTabWidget,
+            QtWidgets.QTreeWidget,
+        ]
+        # Make sure live objects don't get deallocated.
+        d = {}
+        for widget_class in qt_widget_classes:
+            w = widget_class()
+            full_class_name = f"QtWidgets.{w.__class__.__name__}"
+            d[full_class_name] = w
+        return d
+    #@+node:ekr.20240602162342.1: *3* 2: CheckLeo.check_file & helpers
     def check_file(self, path):
         """Check the file whose full path is given."""
         s = self.read(path)
@@ -163,6 +186,42 @@ class CheckLeo:
                 list(sorted(chains)),
                 tag=f"chains: {g.shortFileName(path)}")
 
+    #@+node:ekr.20240529060232.4: *4* CheckLeo.parse_ast
+    def parse_ast(self, s: str) -> Optional[Node]:
+        """
+        Parse string s, catching & reporting all exceptions.
+        Return the ast node, or None.
+        """
+
+        def oops(message: str) -> None:
+            print('')
+            print(f"parse_ast: {message}")
+            g.printObj(s)
+            print('')
+
+        try:
+            s1 = g.toEncodedString(s)
+            tree = ast.parse(s1, filename='before', mode='exec')
+            return tree
+        except IndentationError:
+            oops('Indentation Error')
+        except SyntaxError:
+            oops('Syntax Error')
+        except Exception:
+            oops('Unexpected Exception')
+            g.es_exception()
+        return None
+    #@+node:ekr.20240529060232.3: *4* CheckLeo.read
+    def read(self, file_name: str) -> str:
+        try:
+            with open(file_name, 'r') as f:
+                contents = f.read()
+                return contents
+        except IOError:
+            return ''
+        except Exception:
+            g.es_exception()
+            return ''
     #@+node:ekr.20240602161721.1: *3* 3: CheckLeo.check_class & helper
     def check_class(self, chains: set[str], class_node: ast.ClassDef, path: str) -> None:
         """Check that all called methods exist."""
@@ -282,66 +341,6 @@ class CheckLeo:
                     g.trace(f"=== {called_name} found in {live_object.__class__.__name__}")
                 return True
             return False
-    #@+node:ekr.20240531104205.1: *3* CheckLeo: utils
-    #@+node:ekr.20240602103522.1: *4* CheckLeo.init_live_objects_dict
-    def init_live_objects_dict(self):
-
-        # Create the app first.
-        app = QtWidgets.QApplication([])
-        self.live_objects.append(app)  # Otherwise all widgets will go away.
-        qt_widget_classes = [
-            QtWidgets.QComboBox,
-            QtWidgets.QDateTimeEdit,
-            QtWidgets.QLineEdit,
-            QtWidgets.QMainWindow,
-            QtWidgets.QMessageBox,
-            QtWidgets.QTabBar,
-            QtWidgets.QTabWidget,
-            QtWidgets.QTreeWidget,
-        ]
-        # Make sure live objects don't get deallocated.
-        d = {}
-        for widget_class in qt_widget_classes:
-            w = widget_class()
-            full_class_name = f"QtWidgets.{w.__class__.__name__}"
-            d[full_class_name] = w
-        return d
-    #@+node:ekr.20240529060232.4: *4* CheckLeo.parse_ast
-    def parse_ast(self, s: str) -> Optional[Node]:
-        """
-        Parse string s, catching & reporting all exceptions.
-        Return the ast node, or None.
-        """
-
-        def oops(message: str) -> None:
-            print('')
-            print(f"parse_ast: {message}")
-            g.printObj(s)
-            print('')
-
-        try:
-            s1 = g.toEncodedString(s)
-            tree = ast.parse(s1, filename='before', mode='exec')
-            return tree
-        except IndentationError:
-            oops('Indentation Error')
-        except SyntaxError:
-            oops('Syntax Error')
-        except Exception:
-            oops('Unexpected Exception')
-            g.es_exception()
-        return None
-    #@+node:ekr.20240529060232.3: *4* CheckLeo.read
-    def read(self, file_name: str) -> str:
-        try:
-            with open(file_name, 'r') as f:
-                contents = f.read()
-                return contents
-        except IOError:
-            return ''
-        except Exception:
-            g.es_exception()
-            return ''
     #@-others
 #@-others
 
