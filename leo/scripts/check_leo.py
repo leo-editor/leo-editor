@@ -54,25 +54,6 @@ def scan_args() -> dict[str, bool]:  # pragma: no cover
         'debug': bool(args.debug),
         'report': bool(args.report),
     }
-#@+node:ekr.20240531142811.1: ** class ClassInfo
-class ClassInfo:
-
-    def __init__(self, class_name: str, class_node: ast.ClassDef, path: str) -> None:
-        self.class_name = class_name
-        self.class_node = class_node
-        self.path = path
-
-    def class_id(self):
-        return f"ClassInfo<{self.path}::{self.class_name}>"
-#@+node:ekr.20240531143136.1: ** class FileInfo
-class FileInfo:
-
-    def __init__(self, file_node: ast.Module, path: str) -> None:
-        self.file_node = file_node
-        self.path = path
-
-    def class_id(self):
-        return f"FileInfo<{g.shortFileName(self.path)}>"
 #@+node:ekr.20240529063157.1: ** class CheckLeo
 class CheckLeo:
 
