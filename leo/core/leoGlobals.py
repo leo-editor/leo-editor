@@ -4365,6 +4365,29 @@ def getGitVersion(directory: str = None) -> tuple[str, str, str]:
         return ''
 
     return find('Author'), find('commit')[:10], find('Date')
+#@+node:ekr.20240603193736.1: *3* g.getModifiedFiles
+def getModifiedFiles(repo_path: str) -> list[str]:  # pragma: no cover
+    """Return the modified files in the given repo."""
+    if not repo_path:
+        return []
+    old_cwd = os.getcwd()
+    os.chdir(repo_path)
+    try:
+        # We are not checking the return code here, so:
+        # pylint: disable=subprocess-run-check
+        result = subprocess.run(
+            ["git", "status", "--porcelain"],
+            capture_output=True, text=True)
+        if result.returncode != 0:
+            print("Error running git command")
+            return []
+        modified_files = []
+        for line in result.stdout.split('\n'):
+            if line.startswith((' M', 'M ', 'A ', ' A')):
+                modified_files.append(line[3:])
+        return [os.path.abspath(z) for z in modified_files]
+    finally:
+        os.chdir(old_cwd)
 #@+node:ekr.20170414034616.2: *3* g.gitBranchName
 def gitBranchName(path: str = None) -> str:
     """
@@ -4383,19 +4406,6 @@ def gitCommitNumber(path: str = None) -> str:
     """
     branch, commit = g.gitInfo(path)
     return commit
-#@+node:ekr.20200724132432.1: *3* g.gitInfoForFile
-def gitInfoForFile(filename: str) -> tuple[str, str]:
-    """
-    Return the git (branch, commit) info associated for the given file.
-    """
-    # g.gitInfo and g.gitHeadPath now do all the work.
-    return g.gitInfo(filename)
-#@+node:ekr.20200724133754.1: *3* g.gitInfoForOutline
-def gitInfoForOutline(c: Cmdr) -> tuple[str, str]:
-    """
-    Return the git (branch, commit) info associated for commander c.
-    """
-    return g.gitInfoForFile(c.fileName())
 #@+node:maphew.20171112205129.1: *3* g.gitDescribe
 def gitDescribe(path: str = None) -> tuple[str, str, str]:
     """
@@ -4478,6 +4488,19 @@ def gitInfo(path: str = None) -> tuple[str, str]:
         except IOError:
             pass
     return branch, commit
+#@+node:ekr.20200724132432.1: *3* g.gitInfoForFile
+def gitInfoForFile(filename: str) -> tuple[str, str]:
+    """
+    Return the git (branch, commit) info associated for the given file.
+    """
+    # g.gitInfo and g.gitHeadPath now do all the work.
+    return g.gitInfo(filename)
+#@+node:ekr.20200724133754.1: *3* g.gitInfoForOutline
+def gitInfoForOutline(c: Cmdr) -> tuple[str, str]:
+    """
+    Return the git (branch, commit) info associated for commander c.
+    """
+    return g.gitInfoForFile(c.fileName())
 #@+node:ekr.20031218072017.3139: ** g.Hooks & Plugins
 #@+node:ekr.20101028131948.5860: *3* g.act_on_node
 def dummy_act_on_node(c: Cmdr, p: Position, event: QEvent) -> None:

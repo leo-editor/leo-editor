@@ -27,7 +27,7 @@ Node = ast.AST
 #@-<< check_leo.py: imports & annotations >>
 
 #@+others
-#@+node:ekr.20240530073251.1: **  function: scan_args (check_leo.py)
+#@+node:ekr.20240530073251.1: ** function: scan_args (check_leo.py)
 def scan_args() -> dict[str, bool]:  # pragma: no cover
     """Scan command-line arguments for check_leo.py"""
     parser = argparse.ArgumentParser(
@@ -72,17 +72,23 @@ class CheckLeo:
     #@+node:ekr.20240529063012.1: *3* 1: CheckLeo.check_leo & helper
     def check_leo(self) -> None:
         """Check all files returned by get_leo_paths()."""
+        t1 = time.process_time()
+        #@+<< check_leo: define all ivars >>
+        #@+node:ekr.20240603192905.1: *4* << check_leo: define all ivars >>
         # Settings ivars...
         settings_d = scan_args()
         g.trace(settings_d)
         self.all: bool = settings_d['all']
         self.debug: bool = settings_d['debug']
         self.report: bool = settings_d['report']
+
         # Keys: class names. Values: instances of that class.
-        t1 = time.process_time()
+
         self.live_objects: list = []
         self.live_objects_dict: dict[str, list[str]] = self.init_live_objects_dict()
         self.report_list: list[str] = []
+        #@-<< check_leo: define all ivars >>
+
         # Check each file separately.
         for path in self.get_leo_paths():
             self.check_file(path)
@@ -93,11 +99,9 @@ class CheckLeo:
             print(z)
         g.trace(f"done {(t2-t1):4.2} sec.")
 
-    #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths (test_one_file switch)
+    #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths (--all --debug)
     def get_leo_paths(self) -> list[str]:
         """Return a list of full paths to Leo paths to be checked."""
-
-        test_one_file = False
 
         def join(*args) -> str:
             return os.path.abspath(os.path.join(*args))
@@ -110,19 +114,29 @@ class CheckLeo:
         for z in (leo_dir, command_dir, core_dir, plugins_dir):
             assert os.path.exists(z), z
 
-        if test_one_file:
-            # file_name = f"{plugins_dir}{os.sep}qt_frame.py"
+        if self.debug:
             file_name = f"{core_dir}{os.sep}leoBackground.py"
             print('')
             print('Testing one file', g.shortFileName(file_name))
             return [file_name]
 
-        # Return the list of files.
-        return (
+        # Compute all candidate files.
+        all_leo_files = (
                glob.glob(f"{core_dir}{os.sep}leo*.py")
              + glob.glob(f"{command_dir}{os.sep}leo*.py")
              + glob.glob(f"{plugins_dir}{os.sep}qt_*.py")
         )
+
+        if self.all:  # Check all files.
+            return all_leo_files
+
+        # Return only changed files.
+        modified_files = (
+              g.getModifiedFiles(leo_dir)
+            + g.getModifiedFiles(command_dir)
+            + g.getModifiedFiles(plugins_dir)
+        )
+        return [z for z in all_leo_files if z in modified_files]
     #@+node:ekr.20240602103522.1: *4* CheckLeo.init_live_objects_dict
     def init_live_objects_dict(self):
 
