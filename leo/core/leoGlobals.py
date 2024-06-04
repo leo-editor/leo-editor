@@ -4365,6 +4365,27 @@ def getGitVersion(directory: str = None) -> tuple[str, str, str]:
         return ''
 
     return find('Author'), find('commit')[:10], find('Date')
+#@+node:ekr.20240604111327.1: *3* g.getModifiedFiles
+def getModifiedFiles(repo_path: str) -> list[str]:
+    """Return the modified files in the given repo."""
+    if not repo_path:
+        return []
+    old_cwd = os.getcwd()
+    os.chdir(repo_path)
+    try:
+        # We are not checking the return code here, so:
+        # pylint: disable=subprocess-run-check
+        result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+        if result.returncode != 0:
+            print("Error running git command")
+            return []
+        modified_files = []
+        for line in result.stdout.split('\n'):
+            if line.startswith((' M', 'M ', 'A ', ' A')):
+                modified_files.append(line[3:])
+        return [os.path.abspath(z) for z in modified_files]
+    finally:
+        os.chdir(old_cwd)
 #@+node:ekr.20170414034616.2: *3* g.gitBranchName
 def gitBranchName(path: str = None) -> str:
     """
