@@ -3268,27 +3268,22 @@ class FastAtRead:
                 v = gnx2vnode.get(gnx)
 
                 # Case 1: The root @file node. Don't change the headline.
+                #         #3931: Always use root_v, but use the gnx from external file!
                 if not root_seen:
-                    # #1064: The node represents the root, regardless of the gnx!
-                    # #3931: The gnx in the external file overrides p.v.gnx.
                     root_seen = True
                     clone_v = None
-                    if not v:
-                        # Special case for unit tests and git-diff.
-                        v = root_v
-                        gnx = v.gnx
-                        gnx2vnode[gnx] = v
-                        gnx2body[gnx] = gnx2body[v.gnx]
-                    elif root_v.gnx == v.gnx:
-                        gnx2body[gnx] = body = []
-                    else:
-                        # refresh-from-disk
-                        # #3931: Prefer the gnx in the external file.
-                        gnx = v.gnx
-                        gnx2body[gnx] = gnx2body[root_v.gnx]
-                        gnx2vnode[gnx] = v
-                        # Always use the gnx in the file's root node.
+                    v = root_v
+                    if root_v.gnx != gnx:
+                        # Delete all traces of root_v.gnx.
+                        if root_v.gnx in gnx2body:
+                            del gnx2body[root_v.gnx]
+                        if root_v.gnx in gnx2vnode:
+                            del gnx2vnode[root_v.gnx]
+                        # `refresh-from-disk` issues this messages, but 'git-diff' should not.
+                        # g.trace(f"Changing gnx! old: {root_v.gnx} new: {gnx} in {head}")
                         root_v.fileIndex = gnx
+                    gnx2vnode[gnx] = root_v
+                    gnx2body[gnx] = body = []
                     v.children = []
                     continue  # End of case 1.
 
