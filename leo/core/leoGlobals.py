@@ -3239,7 +3239,7 @@ def openWithFileName(fileName: str, old_c: Cmdr = None, gui: LeoGui = None) -> C
     Return the commander of the newly-opened file, which may be old_c or another commander.
     """
     return g.app.loadManager.openWithFileName(fileName, gui, old_c)
-#@+node:ekr.20240604112037.1: *3* g.readFile (new)
+#@+node:ekr.20240604112037.1: *3* g.readFile
 def readFile(file_name: str) -> str:
     """Return the contents of the file whose full path is given."""
     tag = 'readFile'
