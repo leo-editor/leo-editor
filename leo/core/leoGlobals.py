@@ -3239,6 +3239,23 @@ def openWithFileName(fileName: str, old_c: Cmdr = None, gui: LeoGui = None) -> C
     Return the commander of the newly-opened file, which may be old_c or another commander.
     """
     return g.app.loadManager.openWithFileName(fileName, gui, old_c)
+#@+node:ekr.20240604112037.1: *3* g.readFile (new)
+def readFile(file_name: str) -> str:
+    """Return the contents of the file whose full path is given."""
+    tag = 'readFile'
+    if not file_name:
+        print(f"{tag}: no file_name")
+        return ''
+    if not os.path.exists(file_name):
+        print(f"{tag}: file not found: {file_name}")
+        return ''
+    if os.path.isdir(file_name):
+        print(f"{tag}: not a file: {file_name}")
+        return ''
+    with open(file_name, 'rb') as f:
+        byte_string = f.read()
+    assert isinstance(byte_string, bytes), byte_string.__class__.__name__
+    return toUnicode(byte_string)
 #@+node:ekr.20150306035851.7: *3* g.readFileIntoEncodedString
 def readFileIntoEncodedString(fn: str, silent: bool = False) -> bytes:
     """Return the raw contents of the file whose full path is fn."""
@@ -4404,19 +4421,6 @@ def gitCommitNumber(path: str = None) -> str:
     """
     branch, commit = g.gitInfo(path)
     return commit
-#@+node:ekr.20200724132432.1: *3* g.gitInfoForFile
-def gitInfoForFile(filename: str) -> tuple[str, str]:
-    """
-    Return the git (branch, commit) info associated for the given file.
-    """
-    # g.gitInfo and g.gitHeadPath now do all the work.
-    return g.gitInfo(filename)
-#@+node:ekr.20200724133754.1: *3* g.gitInfoForOutline
-def gitInfoForOutline(c: Cmdr) -> tuple[str, str]:
-    """
-    Return the git (branch, commit) info associated for commander c.
-    """
-    return g.gitInfoForFile(c.fileName())
 #@+node:maphew.20171112205129.1: *3* g.gitDescribe
 def gitDescribe(path: str = None) -> tuple[str, str, str]:
     """
@@ -4499,6 +4503,19 @@ def gitInfo(path: str = None) -> tuple[str, str]:
         except IOError:
             pass
     return branch, commit
+#@+node:ekr.20200724132432.1: *3* g.gitInfoForFile
+def gitInfoForFile(filename: str) -> tuple[str, str]:
+    """
+    Return the git (branch, commit) info associated for the given file.
+    """
+    # g.gitInfo and g.gitHeadPath now do all the work.
+    return g.gitInfo(filename)
+#@+node:ekr.20200724133754.1: *3* g.gitInfoForOutline
+def gitInfoForOutline(c: Cmdr) -> tuple[str, str]:
+    """
+    Return the git (branch, commit) info associated for commander c.
+    """
+    return g.gitInfoForFile(c.fileName())
 #@+node:ekr.20031218072017.3139: ** g.Hooks & Plugins
 #@+node:ekr.20101028131948.5860: *3* g.act_on_node
 def dummy_act_on_node(c: Cmdr, p: Position, event: QEvent) -> None:

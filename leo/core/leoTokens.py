@@ -32,7 +32,6 @@ import keyword
 import io
 import os
 import re
-import subprocess
 import textwrap
 import time
 import tokenize
@@ -85,23 +84,6 @@ def dump_tokens(tokens: list[InputToken], tag: str = 'Tokens') -> None:  # pragm
     for z in tokens:
         print(z.dump())
     print('')
-#@+node:ekr.20240313044116.1: *3* function: g_read_file
-def g_read_file(file_name: str) -> str:
-    """Return the contents of the file whose full path is given."""
-    tag = 'readFileIntoString'
-    if not file_name:
-        print(f"{tag}: no file_name")
-        return ''
-    if not os.path.exists(file_name):
-        print(f"{tag}: file not found: {file_name}")
-        return ''
-    if os.path.isdir(file_name):
-        print(f"{tag}: not a file: {file_name}")
-        return ''
-    with open(file_name, 'rb') as f:
-        byte_string = f.read()
-    assert isinstance(byte_string, bytes), byte_string.__class__.__name__
-    return to_unicode(byte_string)
 #@+node:ekr.20240313045222.1: *3* function: g_short_file_name
 def g_short_file_name(fileName: str) -> str:
     """Return the base name of a path."""
@@ -122,20 +104,6 @@ def g_to_encoded_string(s: str) -> bytes:
     except UnicodeError as e:
         print(f"g_to_encoded_string: Error {e!r}\n{s}")
         return s.encode('utf-8', "replace")
-#@+node:ekr.20240313051124.1: *3* function: g.to_unicode
-def to_unicode(s: bytes) -> str:
-    """Convert bytes to unicode."""
-    encoding = 'utf-8'
-    tag = 'leoTokens:toUnicode'
-    try:
-        return s.decode(encoding, 'strict')
-    except(UnicodeDecodeError, UnicodeError):  # noqa
-        print(f"{tag}: unicode error:\n{s!r}")
-        try:
-            return s.decode(encoding, 'replace')
-        except Exception as e:
-            print(f"{tag}: unexpected error: {e!r}\n{s!r}")
-            return ''
 #@+node:ekr.20240313045422.1: *3* function: g_truncate
 def g_truncate(s: str, n: int) -> str:
     """Return s truncated to n characters."""
@@ -145,29 +113,6 @@ def g_truncate(s: str, n: int) -> str:
     if s.endswith('\n'):
         return s2 + '\n'
     return s2
-#@+node:ekr.20240105140814.9: *3* function: get_modified_files
-def get_modified_files(repo_path: str) -> list[str]:  # pragma: no cover
-    """Return the modified files in the given repo."""
-    if not repo_path:
-        return []
-    old_cwd = os.getcwd()
-    os.chdir(repo_path)
-    try:
-        # We are not checking the return code here, so:
-        # pylint: disable=subprocess-run-check
-        result = subprocess.run(
-            ["git", "status", "--porcelain"],
-            capture_output=True, text=True)
-        if result.returncode != 0:
-            print("Error running git command")
-            return []
-        modified_files = []
-        for line in result.stdout.split('\n'):
-            if line.startswith((' M', 'M ', 'A ', ' A')):
-                modified_files.append(line[3:])
-        return [os.path.abspath(z) for z in modified_files]
-    finally:
-        os.chdir(old_cwd)
 #@+node:ekr.20240105140814.27: *3* function: input_tokens_to_string
 def input_tokens_to_string(tokens: list[InputToken]) -> str:  # pragma: no cover
     """Return the string represented by the list of tokens."""
@@ -199,7 +144,7 @@ def main() -> None:  # pragma: no cover
         return
 
     # Calculate the actual list of files.
-    modified_files = get_modified_files(cwd)
+    modified_files = g.getModifiedFiles(cwd)
 
     def is_dirty(path: str) -> bool:
         return os.path.abspath(path) in modified_files
@@ -921,7 +866,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         self.indent_level = 0
         self.filename = filename
-        contents = g_read_file(filename)
+        contents = g.readFile(filename)
         if not contents:
             self.input_tokens = []
             return '', []
