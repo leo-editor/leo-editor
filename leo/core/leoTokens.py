@@ -51,7 +51,7 @@ assert g
 def dump_contents(contents: str, tag: str = 'Contents') -> None:  # pragma: no cover
     print('')
     print(f"{tag}...\n")
-    for i, z in enumerate(g_split_lines(contents)):
+    for i, z in enumerate(g.splitLines(contents)):
         print(f"{i+1:<3} ", z.rstrip())
     print('')
 #@+node:ekr.20240105140814.42: *3* function: dump_lines
@@ -84,35 +84,6 @@ def dump_tokens(tokens: list[InputToken], tag: str = 'Tokens') -> None:  # pragm
     for z in tokens:
         print(z.dump())
     print('')
-#@+node:ekr.20240313045222.1: *3* function: g_short_file_name
-def g_short_file_name(fileName: str) -> str:
-    """Return the base name of a path."""
-    return os.path.basename(fileName) if fileName else ''
-#@+node:ekr.20240313043444.1: *3* function: g_split_lines
-def g_split_lines(s: str) -> list[str]:
-    """
-    Split s into lines, preserving the number of lines and
-    the endings of all lines, including the last line.
-    """
-    # The guard protects only against s == None.
-    return s.splitlines(True) if s else []  # This is a Python string function!
-#@+node:ekr.20240313043705.1: *3* function: g_to_encoded_string
-def g_to_encoded_string(s: str) -> bytes:
-    """Convert unicode string to an encoded string."""
-    try:
-        return s.encode('utf-8', "strict")
-    except UnicodeError as e:
-        print(f"g_to_encoded_string: Error {e!r}\n{s}")
-        return s.encode('utf-8', "replace")
-#@+node:ekr.20240313045422.1: *3* function: g_truncate
-def g_truncate(s: str, n: int) -> str:
-    """Return s truncated to n characters."""
-    if len(s) <= n:
-        return s
-    s2 = s[: n - 3] + f"...({len(s)})"
-    if s.endswith('\n'):
-        return s2 + '\n'
-    return s2
 #@+node:ekr.20240105140814.27: *3* function: input_tokens_to_string
 def input_tokens_to_string(tokens: list[InputToken]) -> str:  # pragma: no cover
     """Return the string represented by the list of tokens."""
@@ -315,9 +286,9 @@ class InputToken:  # leoTokens.py.
             val = repr(self.value)
         elif self.kind == 'string' or self.kind.startswith('fstring'):
             # repr would be confusing.
-            val = g_truncate(self.value, truncate_n)
+            val = g.truncate(self.value, truncate_n)
         else:
-            val = g_truncate(repr(self.value), truncate_n)
+            val = g.truncate(repr(self.value), truncate_n)
         return val
     #@-others
 #@+node:ekr.20240105143307.1: *3* class Tokenizer
@@ -388,7 +359,7 @@ class Tokenizer:
 
         # Split the results into lines.
         result = ''.join([z.to_string() for z in self.token_list])
-        result_lines = g_split_lines(result)
+        result_lines = g.splitLines(result)
         # Check.
         ok = result == contents and result_lines == self.lines
         assert ok, (
@@ -688,7 +659,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Print a message about an error in the beautifier itself."""
         # Compute lines_s.
         line_number = self.input_token.line_number
-        lines = g_split_lines(self.contents)
+        lines = g.splitLines(self.contents)
         n1 = max(0, line_number - 5)
         n2 = min(line_number + 5, len(lines))
         prev_lines = ['\n']
@@ -712,7 +683,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Print a message about a user error."""
         # Compute lines_s.
         line_number = self.input_token.line_number
-        lines = g_split_lines(self.contents)
+        lines = g.splitLines(self.contents)
         n1 = max(0, line_number - 5)
         n2 = min(line_number + 5, len(lines))
         prev_lines = ['\n']
@@ -829,7 +800,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 f"diff: {int(self.diff)} "
                 f"report: {int(self.report)} "
                 f"write: {int(self.write)} "
-                f"{g_short_file_name(filename)}"
+                f"{g.shortFileName(filename)}"
             )
         self.filename = filename
         contents, tokens = self.init_tokens_from_file(filename)
@@ -847,7 +818,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Print reports.
         if self.beautified:  # --beautified.
-            print(f"tbo: beautified: {g_short_file_name(filename)}")
+            print(f"tbo: beautified: {g.shortFileName(filename)}")
         if self.diff:  # --diff.
             print(f"Diffs: {filename}")
             self.show_diffs(contents, results)
@@ -887,7 +858,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         that the file actually has been changed.
         """
         try:
-            s2 = g_to_encoded_string(s)  # May raise exception.
+            s2 = g.toEncodedString(s)  # May raise exception.
             with open(filename, 'wb') as f:
                 f.write(s2)
         except Exception as e:  # pragma: no cover
@@ -897,8 +868,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Print diffs between strings s1 and s2."""
         filename = self.filename
         lines = list(difflib.unified_diff(
-            g_split_lines(s1),
-            g_split_lines(s2),
+            g.splitLines(s1),
+            g.splitLines(s2),
             fromfile=f"Old {filename}",
             tofile=f"New {filename}",
         ))
