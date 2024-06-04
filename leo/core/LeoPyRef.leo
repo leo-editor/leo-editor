@@ -233,7 +233,7 @@
 <v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
 <v t="ekr.20240319094534.1"><vh>@edit ../../PKG-INFO.TXT</vh></v>
-<v t="ekr.20240206153029.1"><vh>@edit ../../readme.md</vh></v>
+<v t="ekr.20240206153029.1"><vh>@edit ../../README.md</vh></v>
 <v t="ekr.20240206161713.1"><vh>@edit ../../setup.cfg </vh></v>
 <v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
 <v t="ekr.20240227064614.1"><vh>@file ../../pyproject.toml</vh></v>
