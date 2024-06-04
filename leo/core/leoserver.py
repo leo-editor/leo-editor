@@ -1031,7 +1031,9 @@ class LeoServer:
         return "yes"
     #@+node:felix.20210622235209.1: *4* LeoServer._es
     def _es(self, *args: Any, **keys: Any) -> None:  # pragma: no cover (tested in client).
-        """Output to the Log Pane"""
+        """
+        Output to the Log Pane, or print to terminal if server loop is not ready.
+        """
         d = {
             'color': None,
             'commas': False,
@@ -1047,7 +1049,10 @@ class LeoServer:
         package = {"async": "log", "log": s}
         if color:
             package["color"] = color
-        self._send_async_output(package, True)
+        if self.loop:
+            self._send_async_output(package, True)
+        else:
+            print(s)
     #@+node:felix.20210626002856.1: *4* LeoServer._getScript
     def _getScript(
         self,
@@ -2250,7 +2255,7 @@ class LeoServer:
             g.printObj(settings, tag=f"{tag}: settings for {c.shortFileName()}")
         n, p = fc.do_clone_find_tag(tag_param)
         if self.log_flag:  # pragma: no cover
-            g.trace("tag: {tag_param} n: {n} p: {p and p.h!r}")
+            g.trace(f"tag: {tag_param} n: {n} p: {p and p.h!r}")
             print('', flush=True)
         return self._make_response({"n": n})
     #@+node:felix.20210621233316.34: *5* server.tag_children
