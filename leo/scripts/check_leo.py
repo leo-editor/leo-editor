@@ -110,7 +110,7 @@ class CheckLeo:
         # Check each file separately.
         for path in self.get_leo_paths():
             self.scan_file(path)
-        
+
         t2 = time.process_time()
         # Print all failures.
         print('')
