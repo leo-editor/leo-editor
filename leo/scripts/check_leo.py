@@ -413,7 +413,7 @@ class CheckLeo:
         class_node: ast.ClassDef,
         method_names: list[str],
     ) -> bool:
-        trace = False  ###
+        trace = True
 
         # Check the obvious names.
         if called_name in method_names:
@@ -422,11 +422,13 @@ class CheckLeo:
         # Check the list of exceptions:
         class_name = class_node.name
 
-        # Check live objects.
+        # Check base classes.
         bases = class_node.bases
+        bases_list = [ast.unparse(z) for z in bases]
+        bases_s = ','.join(bases_list)
         if bases:
+            # First, check the live objects.
             if 0:
-                bases_s = ','.join([ast.unparse(z) for z in bases])
                 g.trace(f"=== call {class_name}.{called_name} ({bases_s})")
             for base in bases:
                 live_object = self.live_objects_dict.get(ast.unparse(base))
@@ -439,12 +441,17 @@ class CheckLeo:
                         g.trace(f"=== {called_name} found in {live_object.__class__.__name__}")
                     return True
 
-        ### To do: check methods of all base classes.
+            # Second, check the static classes, if they exist.
+
+            ###
+                # for base in bases:
+                    # base_name = ast.unparse(base)
+                    # g.trace('To do: check methods of', base_name)
 
         # Finally, check special cases.
         extra_methods = self.base_class_dict.get(class_name, [])
-        if called_name not in extra_methods:
-            g.trace(f"{called_name:>20} not in extra methods for {class_name}")
+        if trace and called_name not in extra_methods:
+            g.trace(f"{called_name:>20} not in extra methods for {class_name}({bases_s})")
         return called_name in extra_methods
     #@-others
 #@-others
