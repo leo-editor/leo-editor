@@ -1673,6 +1673,7 @@ class LocalConfigManager:
     #@+node:ekr.20120215072959.12527: *5* c.config.getData
     def getData(self,
         setting: str,
+        *,
         strip_comments: bool = True,
         strip_data: bool = True,
     ) -> list[str]:
