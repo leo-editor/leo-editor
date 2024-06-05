@@ -3239,6 +3239,23 @@ def openWithFileName(fileName: str, old_c: Cmdr = None, gui: LeoGui = None) -> C
     Return the commander of the newly-opened file, which may be old_c or another commander.
     """
     return g.app.loadManager.openWithFileName(fileName, gui, old_c)
+#@+node:ekr.20240604112037.1: *3* g.readFile
+def readFile(file_name: str) -> str:
+    """Return the contents of the file whose full path is given."""
+    tag = 'readFile'
+    if not file_name:
+        print(f"{tag}: no file_name")
+        return ''
+    if not os.path.exists(file_name):
+        print(f"{tag}: file not found: {file_name}")
+        return ''
+    if os.path.isdir(file_name):
+        print(f"{tag}: not a file: {file_name}")
+        return ''
+    with open(file_name, 'rb') as f:
+        byte_string = f.read()
+    assert isinstance(byte_string, bytes), byte_string.__class__.__name__
+    return toUnicode(byte_string)
 #@+node:ekr.20150306035851.7: *3* g.readFileIntoEncodedString
 def readFileIntoEncodedString(fn: str, silent: bool = False) -> bytes:
     """Return the raw contents of the file whose full path is fn."""
@@ -4365,8 +4382,8 @@ def getGitVersion(directory: str = None) -> tuple[str, str, str]:
         return ''
 
     return find('Author'), find('commit')[:10], find('Date')
-#@+node:ekr.20240603193736.1: *3* g.getModifiedFiles
-def getModifiedFiles(repo_path: str) -> list[str]:  # pragma: no cover
+#@+node:ekr.20240604111327.1: *3* g.getModifiedFiles
+def getModifiedFiles(repo_path: str) -> list[str]:
     """Return the modified files in the given repo."""
     if not repo_path:
         return []
@@ -4375,9 +4392,7 @@ def getModifiedFiles(repo_path: str) -> list[str]:  # pragma: no cover
     try:
         # We are not checking the return code here, so:
         # pylint: disable=subprocess-run-check
-        result = subprocess.run(
-            ["git", "status", "--porcelain"],
-            capture_output=True, text=True)
+        result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
         if result.returncode != 0:
             print("Error running git command")
             return []

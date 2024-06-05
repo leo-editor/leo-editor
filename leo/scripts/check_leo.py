@@ -1,8 +1,18 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20240529053756.1: * @file ../scripts/check_leo.py
+#@+<< check_leo.py: docstring >>
+#@+node:ekr.20240604203402.1: ** << check_leo.py: docstring >>
 """
-check_leo.py: Experimental script that checks for undefined methods.
+check_leo.py: A script that checks for undefined methods in Leo's core code.
+
+This script demonstrates that mypy, pylint and ruff *might* provide stronger checks.
+
+This script is pragmatic:
+    
+- It uses Leo-specic knowledge to simplify the code.
+- It uses ast.walk rather than using somewhat faster visitors.
 """
+#@-<< check_leo.py: docstring >>
 #@+<< check_leo.py: imports & annotations >>
 #@+node:ekr.20240529055116.1: ** << check_leo.py: imports & annotations >>
 import argparse

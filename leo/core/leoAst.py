@@ -21,6 +21,8 @@ Python's tokenize module.
 
 This commands in this file require Python 3.9 or above.
 
+Please help combat the dreaded software rot by reporting any problems to
+https://groups.google.com/g/leo-editor
 
 **Stand-alone operation**
 
@@ -167,7 +169,6 @@ import io
 import os
 import re
 import sys
-import subprocess
 import textwrap
 import time
 import tokenize
@@ -265,27 +266,6 @@ if 1:  # pragma: no cover
             print('This statement failed: `from leo.core import leoGlobals as g`')
             print('Please adjust your Python path accordingly')
         return bool(g)
-    #@+node:ekr.20231114133501.1: *3* function: get_modified_files
-    def get_modified_files(repo_path: str) -> list[str]:
-        """Return the modified files in the given repo."""
-        if not repo_path:
-            return []
-        old_cwd = os.getcwd()
-        os.chdir(repo_path)
-        try:
-            # We are not checking the return code here, so:
-            # pylint: disable=subprocess-run-check
-            result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
-            if result.returncode != 0:
-                print("Error running git command")
-                return []
-            modified_files = []
-            for line in result.stdout.split('\n'):
-                if line.startswith((' M', 'M ', 'A ', ' A')):
-                    modified_files.append(line[3:])
-            return [os.path.abspath(z) for z in modified_files]
-        finally:
-            os.chdir(old_cwd)
     #@+node:ekr.20200218071822.1: *3* function: regularize_nls
     def regularize_nls(s: str) -> str:
         """Regularize newlines within s."""
@@ -4350,7 +4330,7 @@ def main() -> None:  # pragma: no cover
         files = requested_files
     else:
         # Handle only modified files.
-        modified_files = get_modified_files(cwd)
+        modified_files = g.getModifiedFiles(cwd)
         files = [z for z in requested_files if os.path.abspath(z) in modified_files]
     if not files:
         return
