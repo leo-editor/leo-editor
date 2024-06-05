@@ -75,7 +75,7 @@ class CheckLeo:
         # status ivars.
         'class_name_printed', 'header_printed',
         # global summary data.
-        'live_objects_dict', 'report_list',
+        'base_class_dict', 'live_objects_dict', 'report_list',
         # references to live objects.
         'live_objects',
     )
@@ -95,10 +95,14 @@ class CheckLeo:
         self.report: bool = settings_d['report']
         self.files = settings_d['files']
 
-        # Keys: class names. Values: instances of that class.
+        # Keys: class names. Values: list of extra methods of that class.
+        self.base_class_dict: dict[str, list[str]] = self.init_base_class_dict()
 
+        # Keys: class names. Values: instances of that class.
         self.live_objects: list = []
         self.live_objects_dict: dict[str, list[str]] = self.init_live_objects_dict()
+
+        # A list of queued strings to be printed later.
         self.report_list: list[str] = []
         #@-<< check_leo: define all ivars >>
 
@@ -154,6 +158,84 @@ class CheckLeo:
             + g.getModifiedFiles(plugins_dir)
         )
         return [z for z in all_leo_files if z in modified_files]
+    #@+node:ekr.20240602051423.1: *4* CheckLeo.init_base_class_dict
+    def init_base_class_dict(self) -> dict[str, list[str]]:
+        """
+        Init the Leo-specific data for base classes.
+        
+        Return a dict: keys are *unqualified* class mames.
+        Values are list of methods defined in that class, including base classes.
+        """
+        ### self.(\w+)  ==> '\1',
+        return {
+            'Calendar': [  # QtWidgets.QDialog.
+                'setLayout',
+            ],
+            'DateTimeEditStepped': [  # QtWidgets.QDateTimeEdit
+                'currentSection',
+            ],
+            'DialogWithCheckBox': [  #QtWidgets.QMessageBox
+                'addButton', 'layout',
+                'setIcon', 'setObjectName',
+                'setText', 'setWindowTitle',
+            ],
+            'IdleTime': [
+                'handler',  # An ivar set to an executable.
+            ],
+            'LeoQtGui': [  # leoGui.LeoGui
+                'DialogWithCheckBox',  # Inner class.
+                # These are QtWidgets.QMessageBox methods called from the inner class.
+                ### This is a buglet.
+                'addButton', 'currentSection', 'layout',
+                'setIcon', 'setLayout', 'setObjectName',
+                'setText', 'setWindowTitle',
+            ],
+            'LeoQtTree': [
+                # LeoTree methods.
+                'OnIconDoubleClick', 'select',
+                'sizeTreeEditor',  # Static method.
+                # Alias ivars.
+                'headlineWrapper',  # Alias for qt_text.QHeadlineWrapper
+            ],
+            'SqlitePickleShare': [
+                'dumper', 'loader',  # Alias ivars.
+            ],
+            'LeoLineTextWidget': [  # QtWidgets.QFrame
+                'setFrameStyle',
+            ],
+            'LeoQListWidget': [  # QListWidget.
+                'activateWindow', 'addItems',
+                'clear', 'currentItem',
+                'deleteLater', 'geometry',
+                'setCurrentRow', 'setFocus', 'setGeometry', 'setWindowFlags',
+                'viewport', 'windowFlags',
+            ],
+            'LeoQTextBrowser': [  # QtWidgets.QTextBrowser
+                'LeoQListWidget',  # Private class.
+                'calc_hl',  # Static methods.
+                # Methods of base class.
+                'activateWindow', 'addItems',
+                'clear', 'currentItem', 'deleteLater', 'geometry',
+                'setContextMenuPolicy', 'setCurrentRow', 'setCursorWidth',
+                'setFocus', 'setGeometry', 'setWindowFlags',
+                'verticalScrollBar', 'viewport', 'windowFlags',
+            ],
+            'NumberBar': [  # QtWidgets.QFrame
+                'fontMetrics',
+                'setFixedWidth',
+                'setObjectName',
+                'width',
+            ],
+            'QTextEditWrapper': [  # QTextMixin
+                'rememberSelectionAndScroll',
+            ],
+            'QTextMixin': [
+                # These are defined in other classes!
+                ### Is this a bug?
+                'getAllText', 'getInsertPoint', 'getSelectionRange',
+                'see', 'setAllText', 'setInsertPoint', 'setSelectionRange',
+            ],
+        }
     #@+node:ekr.20240602103522.1: *4* CheckLeo.init_live_objects_dict
     def init_live_objects_dict(self):
 
@@ -332,14 +414,24 @@ class CheckLeo:
         method_names: list[str],
     ) -> bool:
         trace = False  ###
+
+        # Check the obvious names.
         if called_name in method_names:
             return True
+
+        # Check the list of exceptions:
+        class_name = class_node.name
+        extra_methods = self.base_class_dict.get(class_name, [])
+        ### g.trace(class_name, repr(extra_methods))
+        if called_name in extra_methods:
+            return True
+
         # Return if there are no base classes.
         bases = class_node.bases
         if not bases:
             return False
+
         if 0:
-            class_name = class_node.name
             bases_s = ','.join([ast.unparse(z) for z in bases])
             g.trace(f"=== call {class_name}.{called_name} ({bases_s})")
         for base in bases:
