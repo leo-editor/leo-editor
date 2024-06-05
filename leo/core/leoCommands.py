@@ -811,35 +811,41 @@ class Commands:
             """
             #@-<< get_external_maps: docstring >>
 
-            data: list[str] = c.config.getData(MAP_SETTING_NODE)
+            data: list[str] = c.config.getData(MAP_SETTING_NODE)  # Strip comment lines.
             if not data:
                 return None, None, ''
-            processor_map: dict[str, str] = {}
-            extension_map: dict[str, str] = {}
-            active_map = None
-            terminal: str = ''
-            found_term = False
-            TERM = 'TERMINAL'
-            for line in data:
-                if not line:
-                    continue
-                line = line.split('#', 1)[0]  # Allow in-line trailing comments
-                if 'EXTENSIONS' in line:
-                    active_map = extension_map
-                elif 'PROCESSORS' in line:
-                    active_map = processor_map
-                elif TERM in line:
-                    active_map = None
-                    found_term = True
-                elif found_term:
+
+            # Allow trailing comments:
+            lines = [z.split('#', 1)[0] for z in data]
+
+            def scan_map(kind: str) -> dict[str, str]:
+                d = {}
+                other_kind = 'PROCESSORS' if kind == 'EXTENSIONS' else 'EXTENSIONS'
+                assert other_kind in ('PROCESSORS', 'EXTENSIONS')
+                scanning = False
+                for line in lines:
+                    if kind in line:
+                        scanning = True
+                    elif other_kind in line:
+                        scanning = False
+                    elif scanning:
+                        # Line format: a: b
+                        keyval = line.split(':', 1)
+                        key = keyval[0].strip()
+                        val = keyval[1].strip()
+                        d[key] = val
+                return d
+
+             # Set terminal flag.
+            terminal = ''
+            for line in lines:
+                if 'Terminal' in line:
                     terminal = line
-                    break  # Don't process any lines after this
-                else:
-                    # Line format: a: b
-                    keyval = line.split(':', 1)
-                    key = keyval[0].strip()
-                    val = keyval[1].strip()
-                    active_map[key] = val
+                    break
+
+            # Set the maps.
+            processor_map = scan_map('PROCESSORS')
+            extension_map = scan_map('EXTENSIONS')
             return processor_map, extension_map, terminal
         #@+node:tom.20230308193758.7: *4* getExeKind
         def getExeKind(pos: Position, ext: str) -> str:
