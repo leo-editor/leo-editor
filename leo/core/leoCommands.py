@@ -781,6 +781,8 @@ class Commands:
         }
         #@+node:tom.20230308193758.6: *4* get_external_maps
         def get_external_maps() -> tuple[dict, dict, str]:
+            #@+<< get_external_maps: docstring >>
+            #@+node:ekr.20240605053105.1: *5* << get_external_maps: docstring >>
             r"""Return processor, extension maps for @data node.
 
             The data in the @data node body must have a PROCESSORS and an
@@ -807,11 +809,11 @@ class Commands:
             RETURNS
             a tuple (processor_map, extension_map, terminal)
             """
+            #@-<< get_external_maps: docstring >>
 
-            data: list[str] = c.config.getData(MAP_SETTING_NODE, None)
+            data: list[str] = c.config.getData(MAP_SETTING_NODE)
             if not data:
                 return None, None, ''
-
             processor_map: dict[str, str] = {}
             extension_map: dict[str, str] = {}
             active_map = None
@@ -819,7 +821,7 @@ class Commands:
             found_term = False
             TERM = 'TERMINAL'
             for line in data:
-                if not line or line.startswith('#'):
+                if not line:
                     continue
                 line = line.split('#', 1)[0]  # Allow in-line trailing comments
                 if 'EXTENSIONS' in line:
