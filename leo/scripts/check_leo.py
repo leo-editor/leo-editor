@@ -108,7 +108,8 @@ class CheckLeo:
 
         # Check each file separately.
         for path in self.get_leo_paths():
-            self.check_file(path)
+            self.scan_file(path)
+        
         t2 = time.process_time()
         # Print all failures.
         print('')
@@ -259,9 +260,9 @@ class CheckLeo:
             full_class_name = f"QtWidgets.{w.__class__.__name__}"
             d[full_class_name] = w
         return d
-    #@+node:ekr.20240602162342.1: *3* 2: CheckLeo.check_file & helpers
-    def check_file(self, path):
-        """Check the file whose full path is given."""
+    #@+node:ekr.20240602162342.1: *3* 2: CheckLeo.scan_file & helpers
+    def scan_file(self, path):
+        """Scan the file and update global data."""
         s = self.read(path)
         if not s:
             g.trace(f"file not found: {path}")
@@ -273,7 +274,7 @@ class CheckLeo:
             z for z in ast.walk(file_node)
                 if isinstance(z, ast.ClassDef)]
         for class_node in class_nodes:
-            self.check_class(chains, class_node, path)
+            self.scan_class(chains, class_node, path)
         if self.report and chains:
             print('')
             g.printObj(
@@ -316,8 +317,8 @@ class CheckLeo:
         except Exception:
             g.es_exception()
             return ''
-    #@+node:ekr.20240602161721.1: *3* 3: CheckLeo.check_class & helper
-    def check_class(self, chains: set[str], class_node: ast.ClassDef, path: str) -> None:
+    #@+node:ekr.20240602161721.1: *3* 3: CheckLeo.scan_class & helper (rewrite)
+    def scan_class(self, chains: set[str], class_node: ast.ClassDef, path: str) -> None:
         """Check that all called methods exist."""
         self.class_name_printed = False
         methods: list[ast.FunctionDef] = self.find_methods(class_node)
@@ -338,12 +339,7 @@ class CheckLeo:
                 return False
             first_arg = args.args[0] if args.args else None
             return first_arg and first_arg.arg == 'self'
-            ###
-                # for i, z in enumerate(args.args or []):
-                    # if 'self' in z.arg:
-                        # # g.trace(f"{func_node.name} arg {i}: {z.arg=}")
-                        # return True
-                # return False
+
         return [
             z for z in ast.walk(class_node)
                 if isinstance(z, ast.FunctionDef) and has_self(z)]
@@ -380,7 +376,7 @@ class CheckLeo:
                                 prefix = ast.unparse(node2.func).split('.')[:-1]
                                 chains.add('.'.join(prefix))
         return list(sorted(attrs))
-    #@+node:ekr.20240531090243.1: *3* 4: CheckLeo.check_called_name & helper
+    #@+node:ekr.20240531090243.1: *3* 4: CheckLeo.check_called_name & helper (rewrite)
     def check_called_name(self,
         called_name: str,
         class_node: ast.ClassDef,
