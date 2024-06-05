@@ -836,7 +836,7 @@ class Commands:
                         d[key] = val
                 return d
 
-             # Set terminal flag.
+             # Set terminal value.
             terminal = ''
             for line in lines:
                 if 'Terminal' in line:
