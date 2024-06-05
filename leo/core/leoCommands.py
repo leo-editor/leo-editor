@@ -848,25 +848,17 @@ class Commands:
             extension_map = scan_map('EXTENSIONS')
             return processor_map, extension_map, terminal
         #@+node:tom.20230308193758.7: *4* getExeKind
-        def getExeKind(pos: Position, ext: str) -> str:
-            """Return the executable kind of the external file.
+        def getExeKind(ext: str) -> str:
+            """
+            Return the executable kind (a language) of the external file.
 
             If there is a language directive in effect, return it,
             otherwise use the file extension.
-
-            Returns a language.
             """
-            language = g.getLanguageFromAncestorAtFileNode(c.p) or ''
-            # words = root.h.split(None, 1)  # Splits only on first run of spaces
-            # path = words[1] if len(words) > 1 else ""
-            # if not path:
-                # return None, None, None
-
-            # _, ext = os.path.splitext(path)
-            if not language:
-                language = LANGUAGE_EXTENSION_MAP.get(ext, None)
-
-            return language
+            return (
+                g.getLanguageFromAncestorAtFileNode(c.p)
+                or LANGUAGE_EXTENSION_MAP.get(ext, None)
+            )
 
         #@+node:tom.20230308193758.8: *4* getProcessor
         def getProcessor(language: str, path: str, extension: str) -> str:
@@ -1091,7 +1083,7 @@ class Commands:
                     g.es('Trying an alternative')
 
             path = c.fullPath(root)
-            language = getExeKind(root, ext)
+            language = getExeKind(ext)
             processor = getProcessor(language, path, ext)
             runfile(path, processor, terminal)
         else:
