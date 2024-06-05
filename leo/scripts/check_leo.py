@@ -11,6 +11,7 @@ This script is pragmatic:
     
 - It uses Leo-specic knowledge to simplify the code.
 - It uses ast.walk rather than using somewhat faster visitors.
+- It assumes that all base class names are globally unique.
 """
 #@-<< check_leo.py: docstring >>
 #@+<< check_leo.py: imports & annotations >>
