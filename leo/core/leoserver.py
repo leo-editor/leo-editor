@@ -1051,7 +1051,7 @@ class LeoServer:
             package["color"] = color
         if self.loop:
             self._send_async_output(package, True)
-        else:
+        elif not g.unitTesting:
             print(s)
     #@+node:felix.20210626002856.1: *4* LeoServer._getScript
     def _getScript(
