@@ -21,6 +21,8 @@ Python's tokenize module.
 
 This commands in this file require Python 3.9 or above.
 
+Please help combat the dreaded software rot by reporting any problems to
+https://groups.google.com/g/leo-editor
 
 **Stand-alone operation**
 
