@@ -41,16 +41,17 @@ Node = ast.AST
 def scan_args() -> dict[str, bool]:  # pragma: no cover
     """Scan command-line arguments for check_leo.py"""
     parser = argparse.ArgumentParser(
-        description= 'check_leo.py: check all leo files',
+        description= 'check_leo.py: check all leo files or a given list of files',
         formatter_class=argparse.RawTextHelpFormatter,
     )
     add = parser.add_argument
 
     # Arguments.
+    add('PATHS', nargs='*', help='list of files, relative to the leo directory')
     add('--all', dest='all', action='store_true',
         help='check all files, even unchanged files')
-    add('--debug', dest='debug', action='store_true',
-        help='enable debugging')
+    # add('--debug', dest='debug', action='store_true',
+    #    help='enable debugging')
     add('--report', dest='report', action='store_true',
         help='show summary report')
 
@@ -61,7 +62,8 @@ def scan_args() -> dict[str, bool]:  # pragma: no cover
     # Return a dict describing the settings.
     return {
         'all': bool(args.all),
-        'debug': bool(args.debug),
+        # 'debug': bool(args.debug),
+        'files': args.PATHS,
         'report': bool(args.report),
     }
 #@+node:ekr.20240529063157.1: ** class CheckLeo
@@ -69,7 +71,7 @@ class CheckLeo:
 
     __slots__ = (
         # command-line arguments.
-        'all', 'debug', 'report',
+        'all', 'files', 'report',  # 'debug'
         # status ivars.
         'class_name_printed', 'header_printed',
         # global summary data.
@@ -79,7 +81,7 @@ class CheckLeo:
     )
 
     #@+others
-    #@+node:ekr.20240529063012.1: *3* 1: CheckLeo.check_leo & helper
+    #@+node:ekr.20240529063012.1: *3* 1: CheckLeo.check_leo & helpers
     def check_leo(self) -> None:
         """Check all files returned by get_leo_paths()."""
         t1 = time.process_time()
@@ -89,8 +91,9 @@ class CheckLeo:
         settings_d = scan_args()
         g.trace(settings_d)
         self.all: bool = settings_d['all']
-        self.debug: bool = settings_d['debug']
+        # self.debug: bool = settings_d['debug']
         self.report: bool = settings_d['report']
+        self.files = settings_d['files']
 
         # Keys: class names. Values: instances of that class.
 
@@ -109,7 +112,7 @@ class CheckLeo:
             print(z)
         g.trace(f"done {(t2-t1):4.2} sec.")
 
-    #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths (--all --debug)
+    #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths
     def get_leo_paths(self) -> list[str]:
         """Return a list of full paths to Leo paths to be checked."""
 
@@ -124,11 +127,15 @@ class CheckLeo:
         for z in (leo_dir, command_dir, core_dir, plugins_dir):
             assert os.path.exists(z), z
 
-        if self.debug:
-            file_name = f"{core_dir}{os.sep}leoBackground.py"
-            print('')
-            print('Testing one file', g.shortFileName(file_name))
-            return [file_name]
+        if self.files:  # Check only the given files.
+            paths = []
+            for z in self.files:
+                path = join(leo_dir, z)
+                if os.path.exists(path):
+                    paths.append(path)
+                else:
+                    g.trace('not found:', path)
+            return paths
 
         # Compute all candidate files.
         all_leo_files = (
