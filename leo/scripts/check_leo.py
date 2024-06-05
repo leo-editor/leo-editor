@@ -421,30 +421,31 @@ class CheckLeo:
 
         # Check the list of exceptions:
         class_name = class_node.name
-        extra_methods = self.base_class_dict.get(class_name, [])
-        ### g.trace(class_name, repr(extra_methods))
-        if called_name in extra_methods:
-            return True
 
-        # Return if there are no base classes.
+        # Check live objects.
         bases = class_node.bases
-        if not bases:
-            return False
+        if bases:
+            if 0:
+                bases_s = ','.join([ast.unparse(z) for z in bases])
+                g.trace(f"=== call {class_name}.{called_name} ({bases_s})")
+            for base in bases:
+                live_object = self.live_objects_dict.get(ast.unparse(base))
+                if not live_object:
+                    continue
+                # g.trace('=== live_object!', live_object)
+                lib_object_method_names = list(dir(live_object))
+                if called_name in lib_object_method_names:
+                    if trace:
+                        g.trace(f"=== {called_name} found in {live_object.__class__.__name__}")
+                    return True
 
-        if 0:
-            bases_s = ','.join([ast.unparse(z) for z in bases])
-            g.trace(f"=== call {class_name}.{called_name} ({bases_s})")
-        for base in bases:
-            live_object = self.live_objects_dict.get(ast.unparse(base))
-            if not live_object:
-                continue
-            # g.trace('=== live_object!', live_object)
-            lib_object_method_names = list(dir(live_object))
-            if called_name in lib_object_method_names:
-                if trace:
-                    g.trace(f"=== {called_name} found in {live_object.__class__.__name__}")
-                return True
-            return False
+        ### To do: check methods of all base classes.
+
+        # Finally, check special cases.
+        extra_methods = self.base_class_dict.get(class_name, [])
+        if called_name not in extra_methods:
+            g.trace(f"{called_name:>20} not in extra methods for {class_name}")
+        return called_name in extra_methods
     #@-others
 #@-others
 
