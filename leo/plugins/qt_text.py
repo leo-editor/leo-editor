@@ -817,7 +817,7 @@ if QtWidgets:
             c = self.leo_c
             params = self.hiliter_params
             editor = c.frame.body.wrapper.widget
-            
+
             # #3948: The following code applies only to Qt.
             if not isinstance(editor, QtWidgets.QTextBrowser):
                 return
