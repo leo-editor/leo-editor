@@ -74,9 +74,12 @@ class CheckLeo:
         # command-line arguments.
         'all', 'files', 'report',  # 'debug'
         # status ivars.
-        'class_name_printed', 'header_printed',
+        'class_name_printed',
+        'header_printed',
         # global summary data.
-        'base_class_dict', 'live_objects_dict', 'report_list',
+        'extra_methods_dict',
+        'live_objects_dict',
+        'report_list',
         # references to live objects.
         'live_objects',
     )
@@ -97,7 +100,7 @@ class CheckLeo:
         self.files = settings_d['files']
 
         # Keys: class names. Values: list of extra methods of that class.
-        self.base_class_dict: dict[str, list[str]] = self.init_base_class_dict()
+        self.extra_methods_dict: dict[str, list[str]] = self.init_extra_methods_dict()
 
         # Keys: class names. Values: instances of that class.
         self.live_objects: list = []
@@ -160,8 +163,8 @@ class CheckLeo:
             + g.getModifiedFiles(plugins_dir)
         )
         return [z for z in all_leo_files if z in modified_files]
-    #@+node:ekr.20240602051423.1: *4* CheckLeo.init_base_class_dict
-    def init_base_class_dict(self) -> dict[str, list[str]]:
+    #@+node:ekr.20240602051423.1: *4* CheckLeo.init_extra_methods_dict
+    def init_extra_methods_dict(self) -> dict[str, list[str]]:
         """
         Init the Leo-specific data for base classes.
         
@@ -446,7 +449,7 @@ class CheckLeo:
                     # g.trace('To do: check methods of', base_name)
 
         # Finally, check special cases.
-        extra_methods = self.base_class_dict.get(class_name, [])
+        extra_methods = self.extra_methods_dict.get(class_name, [])
         if trace and called_name not in extra_methods:
             g.trace(f"{called_name:>20} not in extra methods for {class_name}({bases_s})")
         return called_name in extra_methods
