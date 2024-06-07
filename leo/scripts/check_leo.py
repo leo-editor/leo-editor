@@ -11,7 +11,10 @@ This script is pragmatic:
     
 - It uses Leo-specic knowledge to simplify the code.
 - It uses ast.walk rather than using somewhat faster visitors.
-- It assumes that all base class names are globally unique.
+- It assumes:
+  1. That within a file all class names are unique.
+  2. That no two *base* classes have the same name.
+  Both assumptions are true for Leo, but are not true in general.
 """
 #@-<< check_leo.py: docstring >>
 #@+<< check_leo.py: imports & annotations >>
