@@ -130,8 +130,9 @@ class CheckLeo:
         for path in self.get_leo_paths():
             self.scan_file(path)
         t2 = time.process_time()
-        g.trace(f"{self.n_missing} missing method{g.plural(self.n_missing)}")
-        g.trace(f"done {(t2-t1):4.2} sec.")
+        n = self.n_missing
+        g.trace(f"{n} missing method{g.plural(n)}")
+        g.trace(f"done: {(t2-t1):3.2} sec.")
 
     #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths
     def get_leo_paths(self) -> list[str]:
@@ -351,7 +352,7 @@ class CheckLeo:
     def find_methods(self, class_node: ast.ClassDef) -> list[ast.FunctionDef]:
         """Return a list of all methods in the give class."""
 
-        def has_self(func_node: ast.FunctionDef) -> bool:
+        def has_self(func_node: Node) -> bool:
             """Return True if the given FunctionDef node has 'self' as its first argument."""
             # arguments = (arg* args, ...)
             # arg = (identifier arg, ...)
@@ -363,7 +364,7 @@ class CheckLeo:
 
         return [
             z for z in ast.walk(class_node)
-                if isinstance(z, ast.FunctionDef) and has_self(z)]
+                if isinstance(z, (ast.AsyncFunctionDef, ast.FunctionDef)) and has_self(z)]
     #@+node:ekr.20240606205913.1: *3* 4: CheckLeo.check_class & helpers
     def check_class(self, class_node: ast.ClassDef, path: str) -> None:
         """Check the class for calls to undefined methods."""
