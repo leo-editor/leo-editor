@@ -38,6 +38,7 @@ from leo.core import leoGlobals as g
 # Imports for live objects.
 from leo.core.leoQt import QtWidgets
 import leo.core.leoColorizer as leoColorizer
+import leo.core.leoGui as leoGui
 assert g
 assert os.path.exists(leo_editor_dir), leo_editor_dir
 
@@ -202,72 +203,49 @@ class CheckLeo:
         """
         # self.(\w+)  ==> '\1',
         return {
-            'Calendar': [  # QtWidgets.QDialog.
-                'setLayout',
-            ],
-            'DateTimeEditStepped': [  # QtWidgets.QDateTimeEdit
-                'currentSection',
-            ],
-            'DialogWithCheckBox': [  #QtWidgets.QMessageBox
-                'addButton', 'layout',
-                'setIcon', 'setObjectName',
-                'setText', 'setWindowTitle',
+            'EventWrapper': [
+                'func', 'oldEvent',
             ],
             'IdleTime': [
-                'handler',  # An ivar set to an executable.
+                'handler',
             ],
-            'LeoQtGui': [  # leoGui.LeoGui
-                'DialogWithCheckBox',  # Inner class.
-                # These are QtWidgets.QMessageBox methods called from the inner class.
-                ### This is a buglet.
-                'addButton', 'currentSection', 'layout',
-                'setIcon', 'setLayout', 'setObjectName',
-                'setText', 'setWindowTitle',
+            'LeoFind': [
+                'escape_handler', 'handler',
+            ],
+            'LeoFrame': [
+                'iconBarClass', 'statusLineClass',
             ],
             'LeoQtTree': [
-                # LeoTree methods.
-                'OnIconDoubleClick', 'select',
-                'sizeTreeEditor',  # Static method.
-                # Alias ivars.
-                'headlineWrapper',  # Alias for qt_text.QHeadlineWrapper
+                'headlineWrapper', 'sizeTreeEditor',
             ],
-            'SqlitePickleShare': [
-                'dumper', 'loader',  # Alias ivars.
+            'LeoTree': [
+                'setItemForCurrentPosition',  # Might exist in subclasses.
+                'unselectItem',
             ],
-            'LeoLineTextWidget': [  # QtWidgets.QFrame
-                'setFrameStyle',
+            'LeoQtTreeTab': [
+                'setSizeAdjustPolicy',  ### A method of the inner LeoQComboBox class
             ],
-            'LeoQListWidget': [  # QListWidget.
-                'activateWindow', 'addItems',
-                'clear', 'currentItem',
-                'deleteLater', 'geometry',
-                'setCurrentRow', 'setFocus', 'setGeometry', 'setWindowFlags',
-                'viewport', 'windowFlags',
-            ],
-            'LeoQTextBrowser': [  # QtWidgets.QTextBrowser
-                'LeoQListWidget',  # Private class.
-                'calc_hl',  # Static methods.
-                # Methods of base class.
-                'activateWindow', 'addItems',
-                'clear', 'currentItem', 'deleteLater', 'geometry',
-                'setContextMenuPolicy', 'setCurrentRow', 'setCursorWidth',
-                'setFocus', 'setGeometry', 'setWindowFlags',
-                'verticalScrollBar', 'viewport', 'windowFlags',
-            ],
-            'NumberBar': [  # QtWidgets.QFrame
-                'fontMetrics',
-                'setFixedWidth',
-                'setObjectName',
-                'width',
-            ],
-            'QTextEditWrapper': [  # QTextMixin
-                'rememberSelectionAndScroll',
+            'PygmentsColorizer': [
+                # Bad style? Could use regular methods.
+                'getFormat', 'getDefaultFormat', 'setFormat',
             ],
             'QTextMixin': [
                 # These are defined in other classes!
-                ### Is this a bug?
                 'getAllText', 'getInsertPoint', 'getSelectionRange',
                 'see', 'setAllText', 'setInsertPoint', 'setSelectionRange',
+            ],
+            'RstCommands': [
+                'user_filter_b', 'user_filter_h',
+            ],
+            'SqlitePickleShare': [
+                'dumper', 'loader',
+            ],
+            'VimCommands': [
+                'LoadFileAtCursor', 'Substitution', 'Tabnew',  # ctors for inner classes.
+                'handler', 'motion_func',
+            ],
+            'Xdb': [
+                'QueueStdin', 'QueueStdout',  # ctors for inner classes.
             ],
         }
     #@+node:ekr.20240602103522.1: *4* CheckLeo.init_live_objects_dict
@@ -308,6 +286,7 @@ class CheckLeo:
 
         # 3. Add Leo base classes.
         result['BaseColorizer'] = leoColorizer.BaseColorizer(c=None)
+        result['LeoGui'] = leoGui.LeoGui(guiName='NullGui')
         result['PygmentsColorizer'] = leoColorizer.PygmentsColorizer(c=None, widget=None)
 
         # g.printObj(list(sorted(result.keys())), tag='live_objects_dict')
@@ -474,8 +453,6 @@ class CheckLeo:
         
         Both assumptions are true for Leo, but are not true in general.
         """
-        trace = True
-
         # Check the obvious names.
         if called_name in method_names:
             return True
@@ -514,11 +491,10 @@ class CheckLeo:
 
         # Finally, check special cases.
         bases_signature_s = f"({bases_s})" if bases_s else ''
-        if 0:
-            extra_methods = self.extra_methods_dict.get(class_name, [])
-            if trace and called_name not in extra_methods:
-                g.trace(f"{called_name:>20} not in {class_name}{bases_signature_s}")
-            return called_name in extra_methods
+        extra_methods = self.extra_methods_dict.get(class_name, [])
+        if called_name in extra_methods:
+            # g.trace(f"{called_name:>20} in extra methods for {class_name}{bases_signature_s}")
+            return True
         if 1:
             g.trace(f"{called_name:>20} not in {class_name}{bases_signature_s}")
         return False
