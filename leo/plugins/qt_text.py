@@ -508,7 +508,7 @@ if QtWidgets:
 
             # Connect event handlers...
             if 0:  # Not a good idea: it will complicate delayed loading of body text.
-            # #1286
+                   # #1286
                 self.textChanged.connect(self.onTextChanged)
             self.cursorPositionChanged.connect(self.highlightCurrentLine)
             self.textChanged.connect(self.highlightCurrentLine)
@@ -818,6 +818,10 @@ if QtWidgets:
             params = self.hiliter_params
             editor = c.frame.body.wrapper.widget
 
+            # #3948: The following code applies only to Qt.
+            if not isinstance(editor, QtWidgets.QTextBrowser):
+                return
+
             if not c.config.getBool('highlight-body-line', True):
                 editor.setExtraSelections([])
                 return
@@ -826,8 +830,8 @@ if QtWidgets:
             blocknum = curs.blockNumber()
 
             # Some cursor movements don't change the line: ignore them
-        #    if blocknum == params['lastblock'] and blocknum > 0:
-        #        return
+                #    if blocknum == params['lastblock'] and blocknum > 0:
+                #        return
 
             if blocknum == 0:  # invalid position
                 blocknum = 1
@@ -878,7 +882,7 @@ if QtWidgets:
             # https://doc.qt.io/qt-5/qtwidgets-widgets-codeeditor-example.html
 
             selection = editor.ExtraSelection()
-            selection.format.setBackground(hl_color)
+            selection.format.setBackground(hl_color)  # type:ignore
             selection.format.setProperty(FullWidthSelection, True)
             selection.cursor = curs
             selection.cursor.clearSelection()
@@ -1323,10 +1327,7 @@ class QScintillaWrapper(QTextMixin):
         if n not in (None, 1, 0):
             w.zoomIn(n)
         w.setUtf8(True)  # Important.
-        if 1:
-            w.setBraceMatching(2)  # Sloppy
-        else:
-            w.setBraceMatching(0)  # wrapper.flashCharacter creates big problems.
+        w.setBraceMatching(w.BraceMatch.SloppyBraceMatch)
         if 0:
             w.setMarginWidth(1, 40)
             w.setMarginLineNumbers(1, True)
