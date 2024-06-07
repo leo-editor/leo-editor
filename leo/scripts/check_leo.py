@@ -38,7 +38,18 @@ Node = ast.AST
 #@-<< check_leo.py: imports & annotations >>
 
 #@+others
-#@+node:ekr.20240530073251.1: ** function: scan_args (check_leo.py)
+#@+node:ekr.20240606204736.1: ** top-level functions: check_leo.py
+#@+node:ekr.20240606203244.1: *3* function: bare_class_name (check_leo.py)
+def bare_name(class_name):
+    """
+    Return the last part of a potentially qualified class name.
+    
+    For example, `QFrame` is bare class name of `QtWidgets.QFrame` or `QFrame`.
+    
+    This script assumes that the bare names of all classes are distinct.
+    """
+    return class_name.split('.')[-1]
+#@+node:ekr.20240530073251.1: *3* function: scan_args (check_leo.py)
 def scan_args() -> dict[str, bool]:  # pragma: no cover
     """Scan command-line arguments for check_leo.py"""
     parser = argparse.ArgumentParser(
@@ -72,16 +83,18 @@ class CheckLeo:
 
     __slots__ = (
         # command-line arguments.
-        'all', 'files', 'report',  # 'debug'
+        'all', 'files', 'report',
         # status ivars.
         'class_name_printed',
         'header_printed',
-        # global summary data.
+        # global data.
+        'all_classes_dict',
+        'class_methods_dict',
+        ### 'class_tree_dict',
         'extra_methods_dict',
+        'live_objects',
         'live_objects_dict',
         'report_list',
-        # references to live objects.
-        'live_objects',
     )
 
     #@+others
@@ -95,14 +108,19 @@ class CheckLeo:
         settings_d = scan_args()
         g.trace(settings_d)
         self.all: bool = settings_d['all']
-        # self.debug: bool = settings_d['debug']
         self.report: bool = settings_d['report']
         self.files = settings_d['files']
 
-        # Keys: class names. Values: list of extra methods of that class.
+        # Keys: bare class names.  Values: list of method names.
+        self.class_methods_dict: dict[str, list[str]] = {}
+
+        # Keys: bare class names.  Values: ast.ClassDef nodes.
+        ### class_tree_dict: dict[str, ast.ClassDef] = {}
+
+        # Keys: bare class names. Values: list of extra methods of that class.
         self.extra_methods_dict: dict[str, list[str]] = self.init_extra_methods_dict()
 
-        # Keys: class names. Values: instances of that class.
+        # Keys: class names, excluding qualifiers. Values: instances of that class.
         self.live_objects: list = []
         self.live_objects_dict: dict[str, list[str]] = self.init_live_objects_dict()
 
@@ -113,7 +131,6 @@ class CheckLeo:
         # Check each file separately.
         for path in self.get_leo_paths():
             self.scan_file(path)
-
         t2 = time.process_time()
         # Print all failures.
         print('')
@@ -272,18 +289,24 @@ class CheckLeo:
             g.trace(f"file not found: {path}")
             return
         self.header_printed: bool = False
-        chains: set[str] = set()  # All chains in the file.
+        ### chains: set[str] = set()  # All chains in the file.
         file_node = self.parse_ast(s)
         class_nodes = [
             z for z in ast.walk(file_node)
                 if isinstance(z, ast.ClassDef)]
+        # Pass 1: create the class_methods_dict.
         for class_node in class_nodes:
-            self.scan_class(chains, class_node, path)
-        if self.report and chains:
-            print('')
-            g.printObj(
-                list(sorted(chains)),
-                tag=f"chains: {g.shortFileName(path)}")
+            ### self.scan_class(chains, class_node, path)
+            self.scan_class(class_node, path)
+        # Pass 2: check all classes.
+        for class_node in class_nodes:
+            self.check_class(class_node, path)
+        ###
+            # if self.report and chains:
+                # print('')
+                # g.printObj(
+                    # list(sorted(chains)),
+                    # tag=f"chains: {g.shortFileName(path)}")
 
     #@+node:ekr.20240529060232.4: *4* CheckLeo.parse_ast
     def parse_ast(self, s: str) -> Optional[Node]:
@@ -321,15 +344,15 @@ class CheckLeo:
         except Exception:
             g.es_exception()
             return ''
-    #@+node:ekr.20240602161721.1: *3* 3: CheckLeo.scan_class & helper (rewrite)
-    def scan_class(self, chains: set[str], class_node: ast.ClassDef, path: str) -> None:
+    #@+node:ekr.20240602161721.1: *3* 3: CheckLeo.scan_class & helper
+    def scan_class(self, class_node: ast.ClassDef, path: str) -> None:
         """Check that all called methods exist."""
         self.class_name_printed = False
+        class_name = bare_name(class_node.name)
         methods: list[ast.FunctionDef] = self.find_methods(class_node)
         method_names = [z.name for z in methods]
-        called_names = self.find_calls(chains, class_node)
-        for called_name in called_names:
-            self.check_called_name(called_name, class_node, method_names, path)
+        self.class_methods_dict[class_name] = method_names
+
     #@+node:ekr.20240602165136.1: *4* CheckLeo.find_methods
     def find_methods(self, class_node: ast.ClassDef) -> list[ast.FunctionDef]:
         """Return a list of all methods in the give class."""
@@ -347,40 +370,15 @@ class CheckLeo:
         return [
             z for z in ast.walk(class_node)
                 if isinstance(z, ast.FunctionDef) and has_self(z)]
-    #@+node:ekr.20240531085654.1: *4* CheckLeo.find_calls
-    def find_calls(self,
-        chains: set[str],
-        class_node: ast.ClassDef,
-    ) -> list[str]:
-        """
-        Return all the method *names* of the class.
-        
-        Side effect: update all the chains.
-        """
-        assert isinstance(class_node, ast.ClassDef), repr(class_node)
-        attrs: set[str] = set()
-        for node in class_node.body:
-            for node2 in ast.walk(node):
-                if (
-                    isinstance(node2, ast.Call)
-                    and isinstance(node2.func, ast.Attribute)
-                    and isinstance(node2.func.value, ast.Name)
-                ):
-                    if node2.func.value.id == 'self':
-                        attrs.add(node2.func.attr)
-                    else:
-                        s = ast.unparse(node2.func.value)
-                        if s.startswith('self'):
-                            # print('    ', ast.unparse(node2.func.value))
-                            print('****', ast.unparse(node2))
-                        else:
-                            if 0:  # Dump the entire call chain.
-                                chains.add(ast.unparse(node2.func))
-                            else:  # Dump only the prefix.
-                                prefix = ast.unparse(node2.func).split('.')[:-1]
-                                chains.add('.'.join(prefix))
-        return list(sorted(attrs))
-    #@+node:ekr.20240531090243.1: *3* 4: CheckLeo.check_called_name & helper (rewrite)
+    #@+node:ekr.20240606205913.1: *3* 4: CheckLeo.check_class & helpers
+    def check_class(self, class_node: ast.ClassDef, path: str) -> None:
+        """Check the class for calls to undefined methods."""
+        class_name = bare_name(class_node.name)
+        called_names = self.find_calls(class_node)
+        method_names = self.class_methods_dict[class_name]
+        for called_name in called_names:
+            self.check_called_name(called_name, class_node, method_names, path)
+    #@+node:ekr.20240531090243.1: *4* CheckLeo.check_called_name
     def check_called_name(self,
         called_name: str,
         class_node: ast.ClassDef,
@@ -407,6 +405,33 @@ class CheckLeo:
             self.report_list.append(f"  class {class_name}{bases_list}:")
         # Print the unknown called name.
         self.report_list.append(f"    self.{called_name}")
+    #@+node:ekr.20240531085654.1: *4* CheckLeo.find_calls
+    def find_calls(self, class_node: ast.ClassDef) -> list[str]:  ### chains: set[str],
+        """Return all the method *names* of the class."""
+        assert isinstance(class_node, ast.ClassDef), repr(class_node)
+        attrs: set[str] = set()
+        for node in class_node.body:
+            for node2 in ast.walk(node):
+                if (
+                    isinstance(node2, ast.Call)
+                    and isinstance(node2.func, ast.Attribute)
+                    and isinstance(node2.func.value, ast.Name)
+                ):
+                    if node2.func.value.id == 'self':
+                        attrs.add(node2.func.attr)
+                    else:
+                        s = ast.unparse(node2.func.value)
+                        if s.startswith('self'):
+                            # print('    ', ast.unparse(node2.func.value))
+                            print('****', ast.unparse(node2))
+                        ###
+                            # else:
+                                # if 0:  # Dump the entire call chain.
+                                    # chains.add(ast.unparse(node2.func))
+                                # else:  # Dump only the prefix.
+                                    # prefix = ast.unparse(node2.func).split('.')[:-1]
+                                    # chains.add('.'.join(prefix))
+        return list(sorted(attrs))
     #@+node:ekr.20240602105914.1: *4* CheckLeo.has_called_method
     def has_called_method(self,
         called_name: str,
@@ -419,34 +444,31 @@ class CheckLeo:
         if called_name in method_names:
             return True
 
-        # Check the list of exceptions:
-        class_name = class_node.name
+        class_name = bare_name(class_node.name)
 
         # Check base classes.
         bases = class_node.bases
         bases_list = [ast.unparse(z) for z in bases]
         bases_s = ','.join(bases_list)
         if bases:
-            # First, check the live objects.
             if 0:
                 g.trace(f"=== call {class_name}.{called_name} ({bases_s})")
             for base in bases:
-                live_object = self.live_objects_dict.get(ast.unparse(base))
+                # First, check the live objects.
+                bare_base_class_name = bare_name(ast.unparse(base))
+                live_object = self.live_objects_dict.get(bare_base_class_name)
                 if not live_object:
                     continue
-                # g.trace('=== live_object!', live_object)
+                g.trace('=== live_object!', live_object)
                 lib_object_method_names = list(dir(live_object))
                 if called_name in lib_object_method_names:
                     if trace:
                         g.trace(f"=== {called_name} found in {live_object.__class__.__name__}")
                     return True
 
-            # Second, check the static classes, if they exist.
+                ### Second, check the static classes, if they exist.
 
-            ###
-                # for base in bases:
-                    # base_name = ast.unparse(base)
-                    # g.trace('To do: check methods of', base_name)
+
 
         # Finally, check special cases.
         extra_methods = self.extra_methods_dict.get(class_name, [])
