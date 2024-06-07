@@ -230,7 +230,7 @@ class CheckLeo:
                 'getFormat', 'getDefaultFormat', 'setFormat',
             ],
             'QTextMixin': [
-                # These are defined in other classes!
+                # Bad style: These are defined in other classes!
                 'getAllText', 'getInsertPoint', 'getSelectionRange',
                 'see', 'setAllText', 'setInsertPoint', 'setSelectionRange',
             ],
@@ -287,6 +287,7 @@ class CheckLeo:
         # 3. Add Leo base classes.
         result['BaseColorizer'] = leoColorizer.BaseColorizer(c=None)
         result['LeoGui'] = leoGui.LeoGui(guiName='NullGui')
+        result['LeoQtGui'] = leoGui.LeoGui(guiName='NullGui')  # Do *not* instantiate the real class.
         result['PygmentsColorizer'] = leoColorizer.PygmentsColorizer(c=None, widget=None)
 
         # g.printObj(list(sorted(result.keys())), tag='live_objects_dict')
@@ -458,6 +459,13 @@ class CheckLeo:
             return True
 
         class_name = bare_name(class_node.name)
+
+        # Check the live classes.
+        live_object = self.live_objects_dict.get(class_name)
+        if live_object:
+            lib_object_method_names = list(dir(live_object))
+            if called_name in lib_object_method_names:
+                return True
 
         # Check base classes.
         bases = class_node.bases
