@@ -356,15 +356,7 @@ class CheckLeo:
         called_names = self.find_calls(class_node)
         method_names = self.class_methods_dict[class_name]
         for called_name in called_names:
-            self.check_called_name(called_name, class_node, method_names, path)
-    #@+node:ekr.20240531090243.1: *4* CheckLeo.check_called_name
-    def check_called_name(self,
-        called_name: str,
-        class_node: ast.ClassDef,
-        method_names: list[str],  # List of all method names in this class.
-        path: str,
-    ) -> None:
-        self.has_called_method(called_name, class_node, method_names, path)
+            self.has_called_method(called_name, class_node, method_names, path)
     #@+node:ekr.20240531085654.1: *4* CheckLeo.find_calls
     def find_calls(self, class_node: ast.ClassDef) -> list[str]:
         """Return all the method *names* of the class."""
