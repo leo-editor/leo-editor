@@ -93,6 +93,7 @@ class CheckLeo:
         'extra_methods_dict',
         'live_objects',
         'live_objects_dict',
+        'missing_base_classes',
         'report_list',
     )
 
@@ -120,6 +121,8 @@ class CheckLeo:
         self.live_objects: list = []
         self.live_objects_dict: dict[str, list[str]] = self.init_live_objects_dict()
 
+        self.missing_base_classes: set[str] = set()  # Names of all missing base classes.
+
         # A list of queued strings to be printed later.
         self.report_list: list[str] = []
         #@-<< check_leo: define all ivars >>
@@ -128,6 +131,10 @@ class CheckLeo:
         for path in self.get_leo_paths():
             self.scan_file(path)
         t2 = time.process_time()
+
+        # Dump all known classes.
+        if 1:
+            g.printObj(list(sorted(self.class_methods_dict.keys())), tag='Known classes')
         # Print all failures.
         print('')
         for z in self.report_list:
@@ -339,8 +346,17 @@ class CheckLeo:
         class_name = bare_name(class_node.name)
         methods: list[ast.FunctionDef] = self.find_methods(class_node)
         method_names = [z.name for z in methods]
-        self.class_methods_dict[class_name] = method_names
 
+        # All class names are unique with the following exceptions:
+        if class_name not in (
+            'InputToken', 'ParseState', 'Tokenizer',
+            'Ui_LeoQuickSearchWidget',
+        ):
+            # A crucial simplifying assumption.
+            assert class_name not in self.class_methods_dict, (class_name, g.shortFilename(path))
+
+        # Update the class dict.
+        self.class_methods_dict[class_name] = method_names
     #@+node:ekr.20240602165136.1: *4* CheckLeo.find_methods
     def find_methods(self, class_node: ast.ClassDef) -> list[ast.FunctionDef]:
         """Return a list of all methods in the give class."""
@@ -413,7 +429,7 @@ class CheckLeo:
                             # print('    ', ast.unparse(node2.func.value))
                             print('****', ast.unparse(node2))
         return list(sorted(attrs))
-    #@+node:ekr.20240602105914.1: *4* CheckLeo.has_called_method (finish)
+    #@+node:ekr.20240602105914.1: *4* CheckLeo.has_called_method
     def has_called_method(self,
         called_name: str,
         class_node: ast.ClassDef,
@@ -432,29 +448,35 @@ class CheckLeo:
         bases_list = [ast.unparse(z) for z in bases]
         bases_s = ','.join(bases_list)
         if bases:
-            if 0:
-                g.trace(f"=== call {class_name}.{called_name} ({bases_s})")
             for base in bases:
-                # First, check the live objects.
                 bare_base_class_name = bare_name(ast.unparse(base))
-                live_object = self.live_objects_dict.get(bare_base_class_name)
-                if not live_object:
-                    continue
-                g.trace('=== live_object!', live_object)
-                lib_object_method_names = list(dir(live_object))
-                if called_name in lib_object_method_names:
-                    if trace:
-                        g.trace(f"=== {called_name} found in {live_object.__class__.__name__}")
+                # First check the static base class if it exists.
+                base_class_methods = self.class_methods_dict.get(bare_base_class_name, [])
+                if called_name in base_class_methods:
                     return True
+                if bare_base_class_name not in self.class_methods_dict:
+                    if bare_base_class_name  not in self.missing_base_classes:
+                        self.missing_base_classes.add(bare_base_class_name)
+                        if trace:
+                            g.trace('===== Missing base class:', repr(bare_base_class_name))
+                elif trace:
+                    g.trace(f"=== {called_name} not in base class: {bare_base_class_name}")
 
-                ### Second, check the static classes, if they exist.
-
-
+                # Next, check the live objects.
+                live_object = self.live_objects_dict.get(bare_base_class_name)
+                if live_object:
+                    if trace:
+                        g.trace('=== live_object!', live_object)
+                    lib_object_method_names = list(dir(live_object))
+                    if called_name in lib_object_method_names:
+                        if trace:
+                            g.trace(f"=== {called_name} found in {live_object.__class__.__name__}")
+                        return True
 
         # Finally, check special cases.
         extra_methods = self.extra_methods_dict.get(class_name, [])
         if trace and called_name not in extra_methods:
-            g.trace(f"{called_name:>20} not in extra methods for {class_name}({bases_s})")
+            g.trace(f"Not found: {called_name:>20} in {class_name}({bases_s})")
         return called_name in extra_methods
     #@-others
 #@-others
