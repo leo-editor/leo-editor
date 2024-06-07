@@ -26,7 +26,6 @@ import os
 import pdb  # For live objects.
 import sys
 import time
-import threading
 from typing import Any, Optional
 
 # Add the leo/editor folder to sys.path.
@@ -70,10 +69,6 @@ def scan_args() -> dict[str, bool]:  # pragma: no cover
     add('PATHS', nargs='*', help='list of files, relative to the leo directory')
     add('--all', dest='all', action='store_true',
         help='check all files, even unchanged files')
-    # add('--debug', dest='debug', action='store_true',
-    #    help='enable debugging')
-    add('--report', dest='report', action='store_true',
-        help='show summary report')
 
     # Create the return values.
     parser.set_defaults(all=False, report=False)
@@ -82,19 +77,14 @@ def scan_args() -> dict[str, bool]:  # pragma: no cover
     # Return a dict describing the settings.
     return {
         'all': bool(args.all),
-        # 'debug': bool(args.debug),
         'files': args.PATHS,
-        'report': bool(args.report),
     }
 #@+node:ekr.20240529063157.1: ** class CheckLeo
 class CheckLeo:
 
     __slots__ = (
         # command-line arguments.
-        'all', 'files', 'report',
-        # status ivars.
-        'class_name_printed',
-        'header_printed',
+        'all', 'files',
         # global data.
         'all_classes_dict',
         'class_methods_dict',
@@ -102,7 +92,7 @@ class CheckLeo:
         'live_objects',
         'live_objects_dict',
         'missing_base_classes',
-        'report_list',
+        'n_missing',
     )
 
     #@+others
@@ -116,7 +106,6 @@ class CheckLeo:
         settings_d = scan_args()
         g.trace(settings_d)
         self.all: bool = settings_d['all']
-        self.report: bool = settings_d['report']
         self.files = settings_d['files']
 
         # Keys: bare class names.  Values: list of method names.
@@ -129,26 +118,19 @@ class CheckLeo:
 
         # Keys: bare class names. Values: instances of that class.
         self.live_objects_dict: dict[str, Any] = self.init_live_objects_dict()
-
         self.missing_base_classes: set[str] = set()  # Names of all missing base classes.
 
-        # A list of queued strings to be printed later.
-        self.report_list: list[str] = []
+        # Add 'Thread to missing_base_classes. It's too risky to instanciate it.
+        self.missing_base_classes.add('Thread')
+
+        self.n_missing = 0  # The number of missing methods.
         #@-<< check_leo: define all ivars >>
 
         # Check each file separately.
         for path in self.get_leo_paths():
             self.scan_file(path)
         t2 = time.process_time()
-
-        # Dump all known classes.
-        if 0:  ###
-            g.printObj(list(sorted(self.class_methods_dict.keys())), tag='Known classes')
-        # Print all failures.
-        if self.report:
-            print('')
-            for z in self.report_list:
-                print(z)
+        g.trace(f"{self.n_missing} missing method{g.plural(self.n_missing)}")
         g.trace(f"done {(t2-t1):4.2} sec.")
 
     #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths
@@ -203,21 +185,12 @@ class CheckLeo:
         """
         # self.(\w+)  ==> '\1',
         return {
-            'EventWrapper': [
-                'func', 'oldEvent',
-            ],
-            'IdleTime': [
-                'handler',
-            ],
-            'LeoFind': [
-                'escape_handler', 'handler',
-            ],
-            'LeoFrame': [
-                'iconBarClass', 'statusLineClass',
-            ],
-            'LeoQtTree': [
-                'headlineWrapper', 'sizeTreeEditor',
-            ],
+            'DynamicWindow': ['func', 'oldEvent'],
+            'EventWrapper': ['func', 'oldEvent'],
+            'IdleTime': ['handler'],
+            'LeoFind': ['escape_handler', 'handler'],
+            'LeoFrame': ['iconBarClass', 'statusLineClass'],
+            'LeoQtTree': ['headlineWrapper', 'sizeTreeEditor'],
             'LeoTree': [
                 'setItemForCurrentPosition',  # Might exist in subclasses.
                 'unselectItem',
@@ -234,12 +207,8 @@ class CheckLeo:
                 'getAllText', 'getInsertPoint', 'getSelectionRange',
                 'see', 'setAllText', 'setInsertPoint', 'setSelectionRange',
             ],
-            'RstCommands': [
-                'user_filter_b', 'user_filter_h',
-            ],
-            'SqlitePickleShare': [
-                'dumper', 'loader',
-            ],
+            'RstCommands': ['user_filter_b', 'user_filter_h'],
+            'SqlitePickleShare': ['dumper', 'loader'],
             'VimCommands': [
                 'LoadFileAtCursor', 'Substitution', 'Tabnew',  # ctors for inner classes.
                 'handler', 'motion_func',
@@ -282,7 +251,7 @@ class CheckLeo:
         # 2. Add various other live objects:
         result['dict'] = {}
         result['Pdb'] = pdb.Pdb()
-        result['Thread'] = threading.Thread()
+        ### result['Thread'] = threading.Thread()
 
         # 3. Add Leo base classes.
         result['BaseColorizer'] = leoColorizer.BaseColorizer(c=None)
@@ -299,7 +268,6 @@ class CheckLeo:
         if not s:
             g.trace(f"file not found: {path}")
             return
-        self.header_printed: bool = False
         file_node = self.parse_ast(s)
         class_nodes = [
             z for z in ast.walk(file_node)
@@ -350,7 +318,6 @@ class CheckLeo:
     #@+node:ekr.20240602161721.1: *3* 3: CheckLeo.scan_class & helper
     def scan_class(self, class_node: ast.ClassDef, path: str) -> None:
         """Check that all called methods exist."""
-        self.class_name_printed = False
         class_name = bare_name(class_node.name)
         methods: list[ast.FunctionDef] = self.find_methods(class_node)
         method_names = [z.name for z in methods]
@@ -397,26 +364,7 @@ class CheckLeo:
         method_names: list[str],  # List of all method names in this class.
         path: str,
     ) -> None:
-        class_name = class_node.name
-        if self.has_called_method(called_name, class_node, method_names, path):
-            return
-        # Print the file header.
-        if not self.header_printed:
-            self.header_printed = True
-            self.report_list.append(
-                f"{g.shortFileName(path)}: missing 'self' methods...")
-        # Print the class header.
-        if not self.class_name_printed:
-            self.class_name_printed = True
-            bases = class_node.bases
-            if bases:
-                bases_s = ','.join([ast.unparse(z) for z in bases])
-                bases_list = f"({bases_s})"
-            else:
-                bases_list = ''
-            self.report_list.append(f"  class {class_name}{bases_list}:")
-        # Print the unknown called name.
-        self.report_list.append(f"    self.{called_name}")
+        self.has_called_method(called_name, class_node, method_names, path)
     #@+node:ekr.20240531085654.1: *4* CheckLeo.find_calls
     def find_calls(self, class_node: ast.ClassDef) -> list[str]:
         """Return all the method *names* of the class."""
@@ -492,7 +440,7 @@ class CheckLeo:
 
                 # Next, check the live objects.
                 live_object = self.live_objects_dict.get(bare_base_class_name)
-                if live_object:
+                if live_object is not None:
                     lib_object_method_names = list(dir(live_object))
                     if called_name in lib_object_method_names:
                         return True
@@ -501,10 +449,13 @@ class CheckLeo:
         bases_signature_s = f"({bases_s})" if bases_s else ''
         extra_methods = self.extra_methods_dict.get(class_name, [])
         if called_name in extra_methods:
-            # g.trace(f"{called_name:>20} in extra methods for {class_name}{bases_signature_s}")
             return True
-        if 1:
-            g.trace(f"{called_name:>20} not in {class_name}{bases_signature_s}")
+
+        # Report the failure.
+        self.n_missing += 1
+        g.trace(
+            f"{g.shortFileName(path):>15} {called_name:>20} "
+            f"not in {class_name}{bases_signature_s}")
         return False
     #@-others
 #@-others
