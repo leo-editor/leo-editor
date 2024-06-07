@@ -224,6 +224,7 @@ class CheckLeo:
         Keys are bare class names; values are live objects.
         """
         result: dict[str, Any] = {}
+
         # Create the app first.
         app = QtWidgets.QApplication([])
         self.live_objects.append(app)  # Otherwise all widgets will go away.
@@ -248,18 +249,16 @@ class CheckLeo:
             w = widget_class()
             result[w.__class__.__name__] = w  # Use the bare class name.
 
-        # 2. Add various other live objects:
+        # 2. Add various other live objects.
+        #    The 'Thread' module is handled as a special case.
         result['dict'] = {}
         result['Pdb'] = pdb.Pdb()
-        ### result['Thread'] = threading.Thread()
 
         # 3. Add Leo base classes.
         result['BaseColorizer'] = leoColorizer.BaseColorizer(c=None)
         result['LeoGui'] = leoGui.LeoGui(guiName='NullGui')
         result['LeoQtGui'] = leoGui.LeoGui(guiName='NullGui')  # Do *not* instantiate the real class.
         result['PygmentsColorizer'] = leoColorizer.PygmentsColorizer(c=None, widget=None)
-
-        # g.printObj(list(sorted(result.keys())), tag='live_objects_dict')
         return result
     #@+node:ekr.20240602162342.1: *3* 2: CheckLeo.scan_file & helpers
     def scan_file(self, path):
