@@ -23,7 +23,7 @@ import argparse
 import ast
 import glob
 import os
-import pdb
+import pdb  # For live objects.
 import sys
 import time
 import threading
@@ -35,7 +35,9 @@ if leo_editor_dir not in sys.path:
     sys.path.insert(0, leo_editor_dir)
 
 from leo.core import leoGlobals as g
+# Imports for live objects.
 from leo.core.leoQt import QtWidgets
+import leo.core.leoColorizer as leoColorizer
 assert g
 assert os.path.exists(leo_editor_dir), leo_editor_dir
 
@@ -99,7 +101,6 @@ class CheckLeo:
         'live_objects',
         'live_objects_dict',
         'missing_base_classes',
-        'missing_methods_dict',
         'report_list',
     )
 
@@ -130,9 +131,6 @@ class CheckLeo:
 
         self.missing_base_classes: set[str] = set()  # Names of all missing base classes.
 
-        # Keys: bare class names. Values: set of missing methods of that class.
-        self.missing_methods_dict: dict[str, set] = {}
-
         # A list of queued strings to be printed later.
         self.report_list: list[str] = []
         #@-<< check_leo: define all ivars >>
@@ -143,7 +141,7 @@ class CheckLeo:
         t2 = time.process_time()
 
         # Dump all known classes.
-        if 1:
+        if 0:  ###
             g.printObj(list(sorted(self.class_methods_dict.keys())), tag='Known classes')
         # Print all failures.
         if self.report:
@@ -287,12 +285,16 @@ class CheckLeo:
         qt_widget_classes = [
             QtWidgets.QComboBox,
             QtWidgets.QDateTimeEdit,
+            QtWidgets.QDialog,
+            QtWidgets.QFrame,
             QtWidgets.QLineEdit,
+            QtWidgets.QListWidget,
             QtWidgets.QMainWindow,
             QtWidgets.QMenu,
             QtWidgets.QMessageBox,
             QtWidgets.QTabBar,
             QtWidgets.QTabWidget,
+            QtWidgets.QTextBrowser,
             QtWidgets.QTreeWidget,
         ]
         for widget_class in qt_widget_classes:
@@ -303,6 +305,11 @@ class CheckLeo:
         result['dict'] = {}
         result['Pdb'] = pdb.Pdb()
         result['Thread'] = threading.Thread()
+
+        # 3. Add Leo base classes.
+        result['BaseColorizer'] = leoColorizer.BaseColorizer(c=None)
+        result['PygmentsColorizer'] = leoColorizer.PygmentsColorizer(c=None, widget=None)
+
         # g.printObj(list(sorted(result.keys())), tag='live_objects_dict')
         return result
     #@+node:ekr.20240602162342.1: *3* 2: CheckLeo.scan_file & helpers
@@ -497,12 +504,6 @@ class CheckLeo:
                         g.trace(
                             f"==== Missing base class: {bare_base_class_name!r} "
                             f"in {g.shortFileName(path)}")
-                elif trace:
-                    missing_methods = self.missing_methods_dict.get(bare_base_class_name, set())
-                    if called_name not in missing_methods:
-                        missing_methods.add(called_name)
-                        self.missing_methods_dict[bare_base_class_name] = missing_methods
-                        g.trace(f"{called_name:>20} not in base class: {bare_base_class_name}")
 
                 # Next, check the live objects.
                 live_object = self.live_objects_dict.get(bare_base_class_name)
@@ -512,10 +513,15 @@ class CheckLeo:
                         return True
 
         # Finally, check special cases.
-        extra_methods = self.extra_methods_dict.get(class_name, [])
-        if trace and called_name not in extra_methods:
-            g.trace(f"{called_name:>20} not in {class_name}({bases_s})")
-        return called_name in extra_methods
+        bases_signature_s = f"({bases_s})" if bases_s else ''
+        if 0:
+            extra_methods = self.extra_methods_dict.get(class_name, [])
+            if trace and called_name not in extra_methods:
+                g.trace(f"{called_name:>20} not in {class_name}{bases_signature_s}")
+            return called_name in extra_methods
+        if 1:
+            g.trace(f"{called_name:>20} not in {class_name}{bases_signature_s}")
+        return False
     #@-others
 #@-others
 

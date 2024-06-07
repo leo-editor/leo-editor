@@ -3050,6 +3050,9 @@ class PygmentsColorizer(BaseColorizer):
     #@+node:ekr.20190324051704.1: *3* pyg_c.reloadSettings
     def reloadSettings(self) -> None:
         """Reload the base settings, plus pygments settings."""
+        if not self.c:
+            return
+
         # Do basic inits.
         super().reloadSettings()
         # Bind methods.
