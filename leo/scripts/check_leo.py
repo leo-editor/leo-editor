@@ -187,17 +187,33 @@ class CheckLeo:
         return {
             'DynamicWindow': ['func', 'oldEvent'],
             'EventWrapper': ['func', 'oldEvent'],
+            'FileNameChooser': ['callback'],
+            'GlobalConfigManager': ['munge'],
+            'LegacyExternalFileImporter': ['Node'],
             'IdleTime': ['handler'],
             'LeoFind': ['escape_handler', 'handler'],
             'LeoFrame': ['iconBarClass', 'statusLineClass'],
+            'LeoQtGui': [
+                'DialogWithCheckBox',
+                ### All the following are mysterious.
+                'addButton', 'currentSection', 'layout', 'setIcon', 'setLayout',
+                'setObjectName', 'setText', 'setWindowTitle',
+            ],
             'LeoQtTree': ['headlineWrapper', 'sizeTreeEditor'],
-            'LeoTree': [
-                'setItemForCurrentPosition',  # Might exist in subclasses.
-                'unselectItem',
+            'LeoQTextBrowser': [
+                'LeoQListWidget',  # inner class.
+                'addItems', 'currentItem', 'setCurrentRow',  ### Check.
+                'calc_hl',  # ivar.  ### Iterable?
             ],
             'LeoQtTreeTab': [
                 'setSizeAdjustPolicy',  ### A method of the inner LeoQComboBox class
             ],
+            'LeoTabbedTopLevel': ['setMovable', 'setTabBar'],  ### Check.
+            'LeoTree': [
+                'setItemForCurrentPosition',  # Might exist in subclasses.
+                'unselectItem',
+            ],
+            'NodeIndices': ['setTimeStamp'],  # A permanent alias.
             'PygmentsColorizer': [
                 # Bad style? Could use regular methods.
                 'getFormat', 'getDefaultFormat', 'setFormat',

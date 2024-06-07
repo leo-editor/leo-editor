@@ -336,9 +336,6 @@ class AutoCompleterClass:
         bunch = u.beforeChangeBody(p)
         p.v.b = newText  # p.b would cause a redraw.
         u.afterChangeBody(p, 'auto-completer', bunch)
-
-    finish = exit
-    abort = exit
     #@+node:ekr.20061031131434.18: *4* ac.append/begin/popTabName
     def appendTabName(self, word: str) -> None:
         self.setTabName(self.tabName + '.' + word)
@@ -452,7 +449,7 @@ class AutoCompleterClass:
                 g.warning('No completions')
                 self.exit()
         else:
-            self.abort()
+            self.exit()
             return 'do-standard-keys'
         return None
     #@+node:ekr.20061031131434.20: *4* ac.calltip & helpers
