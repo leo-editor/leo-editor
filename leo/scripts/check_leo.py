@@ -157,7 +157,7 @@ class CheckLeo:
                     g.trace('not found:', path)
             return paths
 
-        # Compute all candidate files.
+        # Check all of Leo's important files.
         return (
                glob.glob(f"{core_dir}{os.sep}leo*.py")
              + glob.glob(f"{command_dir}{os.sep}leo*.py")
