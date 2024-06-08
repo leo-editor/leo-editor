@@ -380,74 +380,30 @@ class CheckLeo:
         """
         assert isinstance(class_node, ast.ClassDef), repr(class_node)
         names: set[str] = set()
-        n_visited = 0
         n_calls = 0
-        parents: list[Node] = [class_node.name]
 
-        # This is a time-critical function!
-        # Do not call ast.walk here!
-        def visit(node):
-            nonlocal n_calls, n_visited
-            n_visited += 1
-            if isinstance(node, ast.ClassDef):
-                pass  # Don't look at inner classes.
-            elif isinstance(node, ast.Call):
+
+        class FindCallsVisitor(ast.NodeVisitor):
+
+            def visit_ClassDef(self, node: Node) -> None:
+                pass  # Do not visit nested classes.
+
+            def visit_Call(self, node: Node) -> None:
                 if (isinstance(node.func, ast.Attribute)
                     and isinstance(node.func.value, ast.Name)
                     and node.func.value.id == 'self'
                 ):
+                    nonlocal n_calls, names
                     n_calls += 1
                     names.add(node.func.attr)
-                for z in (node.func, node.args, node.keywords):
-                    if z:
-                        visit(z)
-            elif isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef)):
-                for z in node.body:
-                    parents.append(node.name)
-                    if not isinstance(z, (ast.AsyncFunctionDef, ast.ClassDef, ast.FunctionDef)):
-                        visit(z)
-                    parents.pop()
-            elif isinstance(node, ast.For):
-                visit(node.target)
-                visit(node.iter)
-                for z in node.body:
-                    visit(z)
-                for z in node.orelse or []:
-                    visit(z)
-            elif isinstance(node, ast.If):
-                visit(node.test)
-                for z in node.body:
-                    visit(z)
-                for z in node.orelse:
-                    visit(z)
-            elif isinstance(node, ast.With):
-                for z in node.body:
-                    visit(z)
-            elif isinstance(node, ast.While):
-                for z in node.body:
-                    visit(z)
-                for z in node.orelse:
-                    visit(z)
-            elif isinstance(node, (
-                ast.AnnAssign, ast.AugAssign, ast.Assign, ast.Expr, ast.Return,
-            )):
-                visit(node.value)
-            elif isinstance(node, (list, tuple)):
-                for z in node:
-                    if z:
-                        visit(z)
-            elif node:
-                self.all_visited_nodes.add(node.__class__.__name__)
-                # This call to ast.walk is expensive.
-                for z in ast.walk(node):
-                    if z and z != node:
-                        visit(z)
+                self.generic_visit(node)
 
         # Start the traversal.
+        x = FindCallsVisitor()
         for node in class_node.body:
-            visit(node)
+            x.visit(node)
 
-        # g.trace(f"visited: {n_visited:4} calls: {n_calls:3} {class_node.name} ")
+        # g.trace(f"{class_node.name:>30} calls: {n_calls:3} names: {len(names):2}")
         # g.printObj(list(sorted(names)), tag=class_node.name)
         return list(sorted(names))
     #@+node:ekr.20240602105914.1: *4* CheckLeo.has_called_method
