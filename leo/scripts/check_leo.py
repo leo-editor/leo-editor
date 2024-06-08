@@ -57,8 +57,12 @@ def bare_name(class_name):
     """
     return class_name.split('.')[-1]
 #@+node:ekr.20240530073251.1: *3* function: scan_args (check_leo.py)
-def scan_args() -> dict[str, bool]:  # pragma: no cover
-    """Scan command-line arguments for check_leo.py"""
+def scan_args() -> list[str]:  # pragma: no cover
+    """
+    Scan command-line arguments for check_leo.py.
+    
+    Return a list of files to scan. An empty list means scan all Leo files.
+    """
     parser = argparse.ArgumentParser(
         description= 'check_leo.py: check all leo files or a given list of files',
         formatter_class=argparse.RawTextHelpFormatter,
@@ -67,24 +71,18 @@ def scan_args() -> dict[str, bool]:  # pragma: no cover
 
     # Arguments.
     add('PATHS', nargs='*', help='list of files, relative to the leo directory')
-    add('--all', dest='all', action='store_true',
-        help='check all files, even unchanged files')
 
     # Create the return values.
     parser.set_defaults(all=False, report=False)
     args = parser.parse_args()
-
-    # Return a dict describing the settings.
-    return {
-        'all': bool(args.all),
-        'files': args.PATHS,
-    }
+    return args.PATHS
 #@+node:ekr.20240529063157.1: ** class CheckLeo
 class CheckLeo:
 
     __slots__ = (
         # command-line arguments.
-        'all', 'files',
+        ### 'all',
+        'files',
         # global data.
         'all_classes_dict',
         'class_methods_dict',
@@ -103,10 +101,10 @@ class CheckLeo:
         #@+<< check_leo: define all ivars >>
         #@+node:ekr.20240603192905.1: *4* << check_leo: define all ivars >>
         # Settings ivars...
-        settings_d = scan_args()
-        g.trace(settings_d)
-        self.all: bool = settings_d['all']
-        self.files = settings_d['files']
+        self.files = scan_args()
+        g.trace(self.files)
+        # g.trace(settings_d)
+        # self.files = settings_d['files']
 
         # Keys: bare class names.  Values: list of method names.
         self.class_methods_dict: dict[str, list[str]] = {}
@@ -160,22 +158,11 @@ class CheckLeo:
             return paths
 
         # Compute all candidate files.
-        all_leo_files = (
+        return (
                glob.glob(f"{core_dir}{os.sep}leo*.py")
              + glob.glob(f"{command_dir}{os.sep}leo*.py")
              + glob.glob(f"{plugins_dir}{os.sep}qt_*.py")
         )
-
-        if self.all:  # Check all files.
-            return all_leo_files
-
-        # Return only changed files.
-        modified_files = (
-              g.getModifiedFiles(leo_dir)
-            + g.getModifiedFiles(command_dir)
-            + g.getModifiedFiles(plugins_dir)
-        )
-        return [z for z in all_leo_files if z in modified_files]
     #@+node:ekr.20240602051423.1: *4* CheckLeo.init_extra_methods_dict
     def init_extra_methods_dict(self) -> dict[str, list[str]]:
         """
@@ -202,8 +189,7 @@ class CheckLeo:
             ],
             'LeoQtTree': ['headlineWrapper', 'sizeTreeEditor'],
             'LeoQTextBrowser': [
-                'LeoQListWidget',  # ctor for inner class.
-                'addItems', 'currentItem', 'setCurrentRow',  ### Check.
+                # 'LeoQListWidget',  # ctor for inner class.
                 'calc_hl',  # ivar.  ### Iterable?
             ],
             'LeoQtTreeTab': [
@@ -399,9 +385,9 @@ class CheckLeo:
                     isinstance(node, ast.Call)
                     and isinstance(node.func, ast.Attribute)
                     and isinstance(node.func.value, ast.Name)
+                    and node.func.value.id == 'self'
                 ):
-                    if node.func.value.id == 'self':
-                        attrs.add(node.func.attr)
+                    attrs.add(node.func.attr)
         return list(sorted(attrs))
     #@+node:ekr.20240602105914.1: *4* CheckLeo.has_called_method
     def has_called_method(self,
