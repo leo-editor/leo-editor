@@ -376,8 +376,6 @@ class CheckLeo:
         Do *not* return method names of any inner class!
         """
         assert isinstance(class_node, ast.ClassDef), repr(class_node)
-        pending: list[Node] = []
-        seen: set[Node] = []
         names: set[str] = set()
         n_visited = 0
         n_calls = 0
@@ -385,38 +383,28 @@ class CheckLeo:
         # This is a time-critical function!
         # Do not call ast.walk here!
         def visit(node):
-            nonlocal n_calls
-            if isinstance(node, ast.ClassDef):
-                pass  # Don't visit inner classes.
-            elif isinstance(node, ast.Call):
+            nonlocal n_calls, n_visited
+            n_visited += 1
+            if isinstance(node, ast.Call):
                 if (
                     isinstance(node.func, ast.Attribute)
                     and isinstance(node.func.value, ast.Name)
                     and node.func.value.id == 'self'
                 ):
-                    # g.trace(ast.unparse(node))
-                    names.add(node.func.attr)
                     n_calls += 1
+                    names.add(node.func.attr)
                 for z in (node.func, node.args, node.keywords):
-                    if z and z not in seen and z not in pending:
-                        pending.append(z)
+                    if z:
+                        visit(z)
             elif isinstance(node, ast.FunctionDef):
                 for z in node.body:
-                    if z not in seen and z not in pending:
-                        pending.append(z)
+                    visit(z)
             elif isinstance(node, ast.Expr):
-                z = node.value
-                if z not in seen and z not in pending:
-                        pending.append(z)
+                visit(node.value)
 
         # Start the traversal.
-        pending = class_node.body
-        while pending:
-            node = pending.pop(0)
-            if node not in seen:
-                seen.append(node)
-                visit(node)
-                n_visited += 1
+        for node in class_node.body:
+            visit(node)
 
         # g.trace(f"visited: {n_visited:4} calls: {n_calls:3} {class_node.name} ")
         # g.printObj(list(sorted(names)), tag=class_node.name)
