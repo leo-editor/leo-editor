@@ -129,7 +129,7 @@ class CheckLeo:
         t2 = time.process_time()
         n = self.n_missing
         g.trace(f"{n} missing method{g.plural(n)}")
-        g.trace(f"done: {(t2-t1):3.2} sec.")
+        g.trace(f"done: {(t2-t1):6.3} sec.")
 
     #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths
     def get_leo_paths(self) -> list[str]:
@@ -196,18 +196,6 @@ class CheckLeo:
             #@-<< Harmless suppressions >>
             #@+<< Suppressions to be removed >>
             #@+node:ekr.20240608043256.1: *5* << Suppressions to be removed >>
-            'LeoQtGui': [
-
-                ### 'setLayout',  # Call within inner Calendar class.
-
-                # Calls to methods of inner class: DateTimeEditStepped.
-                # Defined within a function, not a class.
-                'currentSection',
-                ### 'setObjectName', 'setText', 'setWindowTitle',
-
-                # Others...
-                'layout',  # layout = QtWidgets.QVBoxLayout(dialog)
-            ],
             'LeoQtTreeTab': [
                 'setSizeAdjustPolicy',  ### A method of the inner LeoQComboBox class
             ],
@@ -294,7 +282,7 @@ class CheckLeo:
         """
         assert isinstance(file_node, ast.Module), repr(file_node)
         result = [z for z in ast.walk(file_node) if isinstance(z, ast.ClassDef)]
-        g.printObj([z.name for z in result], tag='find_class_node')
+        # g.printObj([z.name for z in result], tag='find_class_node')
         return result
     #@+node:ekr.20240529060232.4: *4* CheckLeo.parse_ast
     def parse_ast(self, s: str) -> Optional[Node]:
@@ -387,42 +375,53 @@ class CheckLeo:
         method_names = self.class_methods_dict[class_name]
         for called_name in called_names:
             self.has_called_method(called_name, class_node, method_names, path)
-    #@+node:ekr.20240531085654.1: *4* CheckLeo.find_calls (pass 4) ** returns too much
+    #@+node:ekr.20240531085654.1: *4* CheckLeo.find_calls (pass 4)
     def find_calls(self, class_node: ast.ClassDef) -> list[str]:
-        """Return the names of all calls to methods class."""
-        # Do *not* return method names of any inner class!!!
-        # Especially classes defined inside defs.
-
+        """
+        Return the names of all calls to methods class.
+        
+        Do *not* return method names of any inner class!!!
+        """
         assert isinstance(class_node, ast.ClassDef), repr(class_node)
+        pending: list[Node] = []
+        seen: set[Node] = []
         names: set[str] = set()
+        n_visited = 0
 
-        def is_call(node):
-            """True if the node is a function call."""
-            return (
-                isinstance(node, ast.Call)
-                and isinstance(node.func, ast.Attribute)
-                and isinstance(node.func.value, ast.Name)
-                and node.func.value.id == 'self'
-            )
-
-        def method_walk(node):
-            if isinstance(node, ast.FunctionDef):
-                for z in node.body:
-                    if is_call(z):
-                        names.add(z.func.attr)
-                ### return
+        def visit(node):
+            nonlocal n_visited
+            n_visited += 1
             if isinstance(node, ast.ClassDef):
-                # Ignore inner classes.
-                g.trace(f"{class_node.name:>32} Inner class: {node.name}")
-                return
-            for node in ast.walk(node):
-                if is_call(node):
+                pass  # Don't visit inner classes.
+            elif isinstance(node, ast.Call):
+                if (
+                    isinstance(node.func, ast.Attribute)
+                    and isinstance(node.func.value, ast.Name)
+                    and node.func.value.id == 'self'
+                ):
                     names.add(node.func.attr)
+            elif isinstance(node, ast.FunctionDef):
+                if node not in pending:
+                    for z in node.body:
+                        if z not in seen and z not in pending:
+                            pending.append(z)
+            elif isinstance(node, ast.Expr):
+                for z in ast.walk(node):
+                    if z != node and z not in seen and z not in pending:
+                        pending.append(z)
 
-        for body_node in class_node.body:
-            method_walk(body_node)
+        # Start the traversal.
+        pending = class_node.body  ### [z for z in class_node.body]
+        # g.printObj(pending)
+        # g.trace(f"pending: {len(pending):2}: {class_node.name}")
+        while pending:
+            node = pending.pop(0)
+            if node not in seen:
+                seen.append(node)
+                visit(node)
 
-        ### g.printObj(list(sorted(names)), tag=f"find_calls: {class_node.name}")
+        # g.printObj(list(sorted(names)), tag=f"find_calls: {class_node.name}")
+        # g.trace(f"visited: {n_visited:4} {class_node.name}")
         return list(sorted(names))
     #@+node:ekr.20240602105914.1: *4* CheckLeo.has_called_method
     def has_called_method(self,
