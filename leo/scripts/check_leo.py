@@ -198,7 +198,7 @@ class CheckLeo:
             #@+node:ekr.20240608043256.1: *5* << Suppressions to be removed >>
             'LeoQtGui': [
 
-                'setLayout',  # Call within inner Calendar class.
+                ### 'setLayout',  # Call within inner Calendar class.
 
                 # Calls to methods of inner class: DateTimeEditStepped.
                 # Defined within a function, not a class.
@@ -293,19 +293,9 @@ class CheckLeo:
         Find all class definitions within a file.
         """
         assert isinstance(file_node, ast.Module), repr(file_node)
-        return [z for z in ast.walk(file_node) if isinstance(z, ast.ClassDef)]
-
-        ###
-        # Exclude class definitions within function definitions.
-        # result: list[ast.ClassDef] = []
-
-        # def class_walk(node):
-            # if isinstance(node, ast.ClassDef):
-                # result.append(node)
-
-        # for node in file_node.body:
-            # class_walk(node)
-        # return result
+        result = [z for z in ast.walk(file_node) if isinstance(z, ast.ClassDef)]
+        g.printObj([z.name for z in result], tag='find_class_node')
+        return result
     #@+node:ekr.20240529060232.4: *4* CheckLeo.parse_ast
     def parse_ast(self, s: str) -> Optional[Node]:
         """
@@ -397,31 +387,43 @@ class CheckLeo:
         method_names = self.class_methods_dict[class_name]
         for called_name in called_names:
             self.has_called_method(called_name, class_node, method_names, path)
-    #@+node:ekr.20240531085654.1: *4* CheckLeo.find_calls (pass 4)
+    #@+node:ekr.20240531085654.1: *4* CheckLeo.find_calls (pass 4) ** returns too much
     def find_calls(self, class_node: ast.ClassDef) -> list[str]:
-        """Return all the method *names* of the class."""
-        assert isinstance(class_node, ast.ClassDef), repr(class_node)
-        attrs: set[str] = set()
+        """Return the names of all calls to methods class."""
+        # Do *not* return method names of any inner class!!!
+        # Especially classes defined inside defs.
 
-        def method_walk(body_node):
-            if isinstance(body_node, ast.ClassDef):
+        assert isinstance(class_node, ast.ClassDef), repr(class_node)
+        names: set[str] = set()
+
+        def is_call(node):
+            """True if the node is a function call."""
+            return (
+                isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and isinstance(node.func.value, ast.Name)
+                and node.func.value.id == 'self'
+            )
+
+        def method_walk(node):
+            if isinstance(node, ast.FunctionDef):
+                for z in node.body:
+                    if is_call(z):
+                        names.add(z.func.attr)
+                ### return
+            if isinstance(node, ast.ClassDef):
                 # Ignore inner classes.
-                # g.trace(f"{class_node.name:>32} Inner class: {body_node.name}")
+                g.trace(f"{class_node.name:>32} Inner class: {node.name}")
                 return
-            for node in ast.walk(body_node):
-                if (
-                    isinstance(node, ast.Call)
-                    and isinstance(node.func, ast.Attribute)
-                    and isinstance(node.func.value, ast.Name)
-                    and node.func.value.id == 'self'
-                ):
-                    attrs.add(node.func.attr)
+            for node in ast.walk(node):
+                if is_call(node):
+                    names.add(node.func.attr)
 
         for body_node in class_node.body:
             method_walk(body_node)
 
-        ### g.printObj(list(sorted(attrs)), tag=class_node.name)
-        return list(sorted(attrs))
+        ### g.printObj(list(sorted(names)), tag=f"find_calls: {class_node.name}")
+        return list(sorted(names))
     #@+node:ekr.20240602105914.1: *4* CheckLeo.has_called_method
     def has_called_method(self,
         called_name: str,
@@ -439,6 +441,8 @@ class CheckLeo:
         
         Both assumptions are true for Leo, but are not true in general.
         """
+        ### g.trace(called_name, class_node.name)
+
         # Check the obvious names.
         if called_name in method_names:
             return True
