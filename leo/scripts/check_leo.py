@@ -386,8 +386,7 @@ class CheckLeo:
             nonlocal n_calls, n_visited
             n_visited += 1
             if isinstance(node, ast.Call):
-                if (
-                    isinstance(node.func, ast.Attribute)
+                if (isinstance(node.func, ast.Attribute)
                     and isinstance(node.func.value, ast.Name)
                     and node.func.value.id == 'self'
                 ):
