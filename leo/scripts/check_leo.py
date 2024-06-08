@@ -389,8 +389,6 @@ class CheckLeo:
         n_visited = 0
 
         def visit(node):
-            nonlocal n_visited
-            n_visited += 1
             if isinstance(node, ast.ClassDef):
                 pass  # Don't visit inner classes.
             elif isinstance(node, ast.Call):
@@ -400,6 +398,9 @@ class CheckLeo:
                     and node.func.value.id == 'self'
                 ):
                     names.add(node.func.attr)
+                for z in ast.walk(node):
+                    if z != node and z not in seen and z not in pending:
+                        pending.append(z)
             elif isinstance(node, ast.FunctionDef):
                 if node not in pending:
                     for z in node.body:
@@ -411,17 +412,15 @@ class CheckLeo:
                         pending.append(z)
 
         # Start the traversal.
-        pending = class_node.body  ### [z for z in class_node.body]
-        # g.printObj(pending)
-        # g.trace(f"pending: {len(pending):2}: {class_node.name}")
+        pending = class_node.body
         while pending:
             node = pending.pop(0)
             if node not in seen:
                 seen.append(node)
                 visit(node)
+                n_visited += 1
 
-        # g.printObj(list(sorted(names)), tag=f"find_calls: {class_node.name}")
-        # g.trace(f"visited: {n_visited:4} {class_node.name}")
+        # g.trace(f"visited: {n_visited:<4} {class_node.name}")
         return list(sorted(names))
     #@+node:ekr.20240602105914.1: *4* CheckLeo.has_called_method
     def has_called_method(self,
