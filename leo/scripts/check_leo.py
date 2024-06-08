@@ -81,10 +81,9 @@ class CheckLeo:
 
     __slots__ = (
         # command-line arguments.
-        ### 'all',
         'files',
         # global data.
-        'all_classes_dict',
+        'class_nodes',
         'class_methods_dict',
         'extra_methods_dict',
         'live_objects',
@@ -173,24 +172,32 @@ class CheckLeo:
         """
         # self.(\w+)  ==> '\1',
         return {
+            # Part 1: Harmless suppressions.
+            # These could be removed by looking at annotations.
+
+            # Ivars that contain a Callable...
             'DynamicWindow': ['func', 'oldEvent'],
             'EventWrapper': ['func', 'oldEvent'],
             'FileNameChooser': ['callback'],
-            'GlobalConfigManager': ['munge'],
-            'LegacyExternalFileImporter': ['Node'],
             'IdleTime': ['handler'],
             'LeoFind': ['escape_handler', 'handler'],
+            'LeoQTextBrowser': ['calc_hl'],
+            'PygmentsColorizer': ['getFormat', 'getDefaultFormat', 'setFormat'],
+            # Ivars that contain class Names.
             'LeoFrame': ['iconBarClass', 'statusLineClass'],
-            'LeoQtGui': [
-                'DialogWithCheckBox',
-                ### All the following are mysterious.
+            # Permanent aliases.
+            'GlobalConfigManager': ['munge'],
+            'NodeIndices': ['setTimeStamp'],
+
+            # Part 2: Suppressions to be removed...
+
+            'LeoQtGui': [  ### All the following are mysterious.
                 'addButton', 'currentSection', 'layout', 'setIcon', 'setLayout',
                 'setObjectName', 'setText', 'setWindowTitle',
             ],
-            'LeoQtTree': ['headlineWrapper', 'sizeTreeEditor'],
-            'LeoQTextBrowser': [
-                # 'LeoQListWidget',  # ctor for inner class.
-                'calc_hl',  # ivar.  ### Iterable?
+            'LeoQtTree': [
+                'headlineWrapper',
+                # 'sizeTreeEditor',  ### static method.
             ],
             'LeoQtTreeTab': [
                 'setSizeAdjustPolicy',  ### A method of the inner LeoQComboBox class
@@ -200,11 +207,6 @@ class CheckLeo:
                 'setItemForCurrentPosition',  # Might exist in subclasses.
                 'unselectItem',
             ],
-            'NodeIndices': ['setTimeStamp'],  # A permanent alias.
-            'PygmentsColorizer': [
-                # Bad style? Could use regular methods.
-                'getFormat', 'getDefaultFormat', 'setFormat',
-            ],
             'QTextMixin': [
                 # Bad style: These are defined in other classes!
                 'getAllText', 'getInsertPoint', 'getSelectionRange',
@@ -212,13 +214,7 @@ class CheckLeo:
             ],
             'RstCommands': ['user_filter_b', 'user_filter_h'],
             'SqlitePickleShare': ['dumper', 'loader'],
-            'VimCommands': [
-                'LoadFileAtCursor', 'Substitution', 'Tabnew',  # ctors for inner classes.
-                'handler', 'motion_func',
-            ],
-            'Xdb': [
-                'QueueStdin', 'QueueStdout',  # ctors for inner classes.
-            ],
+            'VimCommands': ['handler', 'motion_func'],
         }
     #@+node:ekr.20240602103522.1: *4* CheckLeo.init_live_objects_dict
     def init_live_objects_dict(self) -> dict[str, Any]:
@@ -273,16 +269,16 @@ class CheckLeo:
         file_node = self.parse_ast(s)
 
         # Pass 0: find all class nodes.
-        class_nodes = [
+        self.class_nodes = [
             z for z in ast.walk(file_node)
                 if isinstance(z, ast.ClassDef)]
 
         # Pass 1: create the class_methods_dict.
-        for class_node in class_nodes:
+        for class_node in self.class_nodes:
             self.scan_class(class_node, path)
 
         # Pass 2: check all classes.
-        for class_node in class_nodes:
+        for class_node in self.class_nodes:
             self.check_class(class_node, path)
     #@+node:ekr.20240529060232.4: *4* CheckLeo.parse_ast
     def parse_ast(self, s: str) -> Optional[Node]:
@@ -354,7 +350,7 @@ class CheckLeo:
         result: list[Node] = []
         for body_node in class_node.body:
             if isinstance(body_node, ast.ClassDef):
-                g.trace(f"{class_node.name:>30} Inner class: {body_node.name}")
+                # g.trace(f"{class_node.name:>30} Inner class: {body_node.name}")
                 continue  # Skip the class node and its body.
             for node in ast.walk(body_node):
                 if (
@@ -418,6 +414,11 @@ class CheckLeo:
             lib_object_method_names = list(dir(live_object))
             if called_name in lib_object_method_names:
                 return True
+
+        # Check for a call to any ctor.
+        all_class_names = [z.name for z in self.class_nodes]
+        if called_name in all_class_names:
+            return True
 
         # Check base classes.
         bases = class_node.bases
