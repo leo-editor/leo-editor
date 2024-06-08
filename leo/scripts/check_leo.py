@@ -202,7 +202,7 @@ class CheckLeo:
             ],
             'LeoQtTree': ['headlineWrapper', 'sizeTreeEditor'],
             'LeoQTextBrowser': [
-                'LeoQListWidget',  # inner class.
+                'LeoQListWidget',  # ctor for inner class.
                 'addItems', 'currentItem', 'setCurrentRow',  ### Check.
                 'calc_hl',  # ivar.  ### Iterable?
             ],
@@ -285,9 +285,12 @@ class CheckLeo:
             g.trace(f"file not found: {path}")
             return
         file_node = self.parse_ast(s)
+
+        # Pass 0: find all class nodes.
         class_nodes = [
             z for z in ast.walk(file_node)
                 if isinstance(z, ast.ClassDef)]
+
         # Pass 1: create the class_methods_dict.
         for class_node in class_nodes:
             self.scan_class(class_node, path)
@@ -348,9 +351,9 @@ class CheckLeo:
 
         # Update the class dict.
         self.class_methods_dict[class_name] = method_names
-    #@+node:ekr.20240602165136.1: *4* CheckLeo.find_methods
-    def find_methods(self, class_node: ast.ClassDef) -> list[ast.FunctionDef]:
-        """Return a list of all methods in the give class."""
+    #@+node:ekr.20240602165136.1: *4* CheckLeo.find_methods (pass 3)
+    def find_methods(self, class_node: ast.ClassDef) -> list[Node]:
+        """Return a list of all methods in the given class."""
 
         def has_self(func_node: Node) -> bool:
             """Return True if the given FunctionDef node has 'self' as its first argument."""
@@ -362,9 +365,18 @@ class CheckLeo:
             first_arg = args.args[0] if args.args else None
             return first_arg and first_arg.arg == 'self'
 
-        return [
-            z for z in ast.walk(class_node)
-                if isinstance(z, (ast.AsyncFunctionDef, ast.FunctionDef)) and has_self(z)]
+        result: list[Node] = []
+        for body_node in class_node.body:
+            if isinstance(body_node, ast.ClassDef):
+                g.trace(f"{class_node.name:>30} Inner class: {body_node.name}")
+                continue  # Skip the class node and its body.
+            for node in ast.walk(body_node):
+                if (
+                    isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef))
+                    and has_self(node)
+                ):
+                    result.append(node)
+        return result
     #@+node:ekr.20240606205913.1: *3* 4: CheckLeo.check_class & helpers
     def check_class(self, class_node: ast.ClassDef, path: str) -> None:
         """Check the class for calls to undefined methods."""
@@ -373,25 +385,23 @@ class CheckLeo:
         method_names = self.class_methods_dict[class_name]
         for called_name in called_names:
             self.has_called_method(called_name, class_node, method_names, path)
-    #@+node:ekr.20240531085654.1: *4* CheckLeo.find_calls
+    #@+node:ekr.20240531085654.1: *4* CheckLeo.find_calls (pass 4)
     def find_calls(self, class_node: ast.ClassDef) -> list[str]:
         """Return all the method *names* of the class."""
         assert isinstance(class_node, ast.ClassDef), repr(class_node)
         attrs: set[str] = set()
-        for node in class_node.body:
-            for node2 in ast.walk(node):
+        for body_node in class_node.body:
+            if isinstance(body_node, ast.ClassDef):
+                # g.trace(f"{class_node.name:>32} Inner class: {body_node.name}")
+                continue  # Skip the class node and its body.
+            for node in ast.walk(body_node):
                 if (
-                    isinstance(node2, ast.Call)
-                    and isinstance(node2.func, ast.Attribute)
-                    and isinstance(node2.func.value, ast.Name)
+                    isinstance(node, ast.Call)
+                    and isinstance(node.func, ast.Attribute)
+                    and isinstance(node.func.value, ast.Name)
                 ):
-                    if node2.func.value.id == 'self':
-                        attrs.add(node2.func.attr)
-                    else:
-                        s = ast.unparse(node2.func.value)
-                        if s.startswith('self'):
-                            # print('    ', ast.unparse(node2.func.value))
-                            print('****', ast.unparse(node2))
+                    if node.func.value.id == 'self':
+                        attrs.add(node.func.attr)
         return list(sorted(attrs))
     #@+node:ekr.20240602105914.1: *4* CheckLeo.has_called_method
     def has_called_method(self,
