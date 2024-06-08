@@ -373,15 +373,19 @@ class CheckLeo:
         """
         Return the names of all calls to methods class.
         
-        Do *not* return method names of any inner class!!!
+        Do *not* return method names of any inner class!
         """
         assert isinstance(class_node, ast.ClassDef), repr(class_node)
         pending: list[Node] = []
         seen: set[Node] = []
         names: set[str] = set()
         n_visited = 0
+        n_calls = 0
 
+        # This is a time-critical function!
+        # Do not call ast.walk here!
         def visit(node):
+            nonlocal n_calls
             if isinstance(node, ast.ClassDef):
                 pass  # Don't visit inner classes.
             elif isinstance(node, ast.Call):
@@ -390,18 +394,19 @@ class CheckLeo:
                     and isinstance(node.func.value, ast.Name)
                     and node.func.value.id == 'self'
                 ):
+                    # g.trace(ast.unparse(node))
                     names.add(node.func.attr)
-                for z in ast.walk(node):
-                    if z != node and z not in seen and z not in pending:
+                    n_calls += 1
+                for z in (node.func, node.args, node.keywords):
+                    if z and z not in seen and z not in pending:
                         pending.append(z)
             elif isinstance(node, ast.FunctionDef):
-                if node not in pending:
-                    for z in node.body:
-                        if z not in seen and z not in pending:
-                            pending.append(z)
+                for z in node.body:
+                    if z not in seen and z not in pending:
+                        pending.append(z)
             elif isinstance(node, ast.Expr):
-                for z in ast.walk(node):
-                    if z != node and z not in seen and z not in pending:
+                z = node.value
+                if z not in seen and z not in pending:
                         pending.append(z)
 
         # Start the traversal.
@@ -413,7 +418,8 @@ class CheckLeo:
                 visit(node)
                 n_visited += 1
 
-        # g.trace(f"visited: {n_visited:<4} {class_node.name}")
+        # g.trace(f"visited: {n_visited:4} calls: {n_calls:3} {class_node.name} ")
+        # g.printObj(list(sorted(names)), tag=class_node.name)
         return list(sorted(names))
     #@+node:ekr.20240602105914.1: *4* CheckLeo.has_called_method
     def has_called_method(self,
