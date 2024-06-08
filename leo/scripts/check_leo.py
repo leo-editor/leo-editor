@@ -183,6 +183,9 @@ class CheckLeo:
             'LeoFind': ['escape_handler', 'handler'],
             'LeoQtTree': ['headlineWrapper'],
             'PygmentsColorizer': ['getFormat', 'getDefaultFormat', 'setFormat'],
+            'RstCommands': ['user_filter_b', 'user_filter_h'],
+            'SqlitePickleShare': ['dumper', 'loader'],
+            'VimCommands': ['handler', 'motion_func'],
 
             # Ivars that contain class Names.
             'LeoFrame': ['iconBarClass', 'statusLineClass'],
@@ -193,10 +196,18 @@ class CheckLeo:
             #@-<< Harmless suppressions >>
             #@+<< Suppressions to be removed >>
             #@+node:ekr.20240608043256.1: *5* << Suppressions to be removed >>
+            'LeoQtGui': [
+                # Oops: Calls to dialog.x
+                'addButton',
+                'setIcon',
+                'setLayout',
 
-            'LeoQtGui': [  ### All the following are mysterious.
-                'addButton', 'currentSection', 'layout', 'setIcon', 'setLayout',
-                'setObjectName', 'setText', 'setWindowTitle',
+                # Calls to methods of inner class: DateTimeEditStepped.
+                # Defined with a function, not a class.
+                'currentSection', 'setObjectName', 'setText', 'setWindowTitle',
+
+                # Others...
+                'layout',  # layout = QtWidgets.QVBoxLayout(dialog)
             ],
             'LeoQtTreeTab': [
                 'setSizeAdjustPolicy',  ### A method of the inner LeoQComboBox class
@@ -206,15 +217,14 @@ class CheckLeo:
                 'setItemForCurrentPosition',  # Might exist in subclasses.
                 'unselectItem',
             ],
+            #@-<< Suppressions to be removed >>
+
+            # Bad style: These are defined in other classes!
+            # However, I'm not going to change the code.
             'QTextMixin': [
-                # Bad style: These are defined in other classes!
                 'getAllText', 'getInsertPoint', 'getSelectionRange',
                 'see', 'setAllText', 'setInsertPoint', 'setSelectionRange',
             ],
-            'RstCommands': ['user_filter_b', 'user_filter_h'],
-            'SqlitePickleShare': ['dumper', 'loader'],
-            'VimCommands': ['handler', 'motion_func'],
-            #@-<< Suppressions to be removed >>
         }
     #@+node:ekr.20240602103522.1: *4* CheckLeo.init_live_objects_dict
     def init_live_objects_dict(self) -> dict[str, Any]:
