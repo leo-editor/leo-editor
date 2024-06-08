@@ -181,7 +181,7 @@ class CheckLeo:
             'FileNameChooser': ['callback'],
             'IdleTime': ['handler'],
             'LeoFind': ['escape_handler', 'handler'],
-            'LeoQTextBrowser': ['calc_hl'],
+            'LeoQtTree': ['headlineWrapper'],
             'PygmentsColorizer': ['getFormat', 'getDefaultFormat', 'setFormat'],
             # Ivars that contain class Names.
             'LeoFrame': ['iconBarClass', 'statusLineClass'],
@@ -194,10 +194,6 @@ class CheckLeo:
             'LeoQtGui': [  ### All the following are mysterious.
                 'addButton', 'currentSection', 'layout', 'setIcon', 'setLayout',
                 'setObjectName', 'setText', 'setWindowTitle',
-            ],
-            'LeoQtTree': [
-                'headlineWrapper',
-                # 'sizeTreeEditor',  ### static method.
             ],
             'LeoQtTreeTab': [
                 'setSizeAdjustPolicy',  ### A method of the inner LeoQComboBox class
@@ -345,6 +341,10 @@ class CheckLeo:
             if not args:
                 return False
             first_arg = args.args[0] if args.args else None
+            if func_node.decorator_list:
+                if 'staticmethod' in ast.unparse(func_node.decorator_list):
+                    # g.trace(func_node.name, ast.unparse(func_node.decorator_list))
+                    return True
             return first_arg and first_arg.arg == 'self'
 
         result: list[Node] = []
