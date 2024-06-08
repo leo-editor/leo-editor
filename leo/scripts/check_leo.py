@@ -198,13 +198,12 @@ class CheckLeo:
             #@+node:ekr.20240608043256.1: *5* << Suppressions to be removed >>
             'LeoQtGui': [
                 # Oops: Calls to dialog.x
-                'addButton',
-                'setIcon',
-                'setLayout',
+                'addButton', 'setIcon', 'setLayout',
 
                 # Calls to methods of inner class: DateTimeEditStepped.
-                # Defined with a function, not a class.
-                'currentSection', 'setObjectName', 'setText', 'setWindowTitle',
+                # Defined within a function, not a class.
+                'currentSection',
+                ### 'setObjectName', 'setText', 'setWindowTitle',
 
                 # Others...
                 'layout',  # layout = QtWidgets.QVBoxLayout(dialog)
@@ -290,6 +289,28 @@ class CheckLeo:
         # Pass 2: check all classes.
         for class_node in self.class_nodes:
             self.check_class(class_node, path)
+    #@+node:ekr.20240608045736.1: *4* CheckLeo.find_class_nodes
+    def find_class_nodes(self, file_node: Node) -> list[ast.ClassDef]:
+        """
+        Find all class definitions within a file.
+        
+        Exclude class definitions within function definitions.
+        """
+        assert isinstance(file_node, ast.Module), repr(file_node)
+        result: list[ast.ClassDef] = []
+
+        def class_walk(node):
+            if isinstance(node.ClassDef):
+                result.append(node)
+            elif isinstance(node.FunctionDef):
+                pass
+            else:
+                for node in ast.walk(node):
+                    class_walk(node)
+
+        for node in file_node.body:
+            class_walk(node)
+        return result
     #@+node:ekr.20240529060232.4: *4* CheckLeo.parse_ast
     def parse_ast(self, s: str) -> Optional[Node]:
         """
@@ -386,10 +407,12 @@ class CheckLeo:
         """Return all the method *names* of the class."""
         assert isinstance(class_node, ast.ClassDef), repr(class_node)
         attrs: set[str] = set()
-        for body_node in class_node.body:
+
+        def method_walk(body_node):
             if isinstance(body_node, ast.ClassDef):
-                # g.trace(f"{class_node.name:>32} Inner class: {body_node.name}")
-                continue  # Skip the class node and its body.
+                # Ignore inner classes.
+                g.trace(f"{class_node.name:>32} Inner class: {body_node.name}")
+                return
             for node in ast.walk(body_node):
                 if (
                     isinstance(node, ast.Call)
@@ -398,6 +421,11 @@ class CheckLeo:
                     and node.func.value.id == 'self'
                 ):
                     attrs.add(node.func.attr)
+
+        for body_node in class_node.body:
+            method_walk(body_node)
+
+        ### g.printObj(list(sorted(attrs)), tag=class_node.name)
         return list(sorted(attrs))
     #@+node:ekr.20240602105914.1: *4* CheckLeo.has_called_method
     def has_called_method(self,
