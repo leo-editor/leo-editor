@@ -80,18 +80,18 @@ def scan_args() -> list[str]:  # pragma: no cover
 #@+node:ekr.20240529063157.1: ** class CheckLeo
 class CheckLeo:
 
-    __slots__ = (
-        # command-line arguments.
-        'files',
-        # global data.
-        'class_nodes',
-        'class_methods_dict',
-        'extra_methods_dict',
-        'live_objects',
-        'live_objects_dict',
-        'missing_base_classes',
-        'n_missing',
-    )
+    # __slots__ = (
+        # # command-line arguments.
+        # 'files',
+        # # global data.
+        # 'class_nodes',
+        # 'class_methods_dict',
+        # 'extra_methods_dict',
+        # 'live_objects',
+        # 'live_objects_dict',
+        # 'missing_base_classes',
+        # 'n_missing',
+    # )
 
     #@+others
     #@+node:ekr.20240529063012.1: *3* 1: CheckLeo.check_leo & helpers
@@ -103,6 +103,8 @@ class CheckLeo:
         # Settings ivars...
         self.files = scan_args()
         g.trace('command-line files:', self.files)
+
+        self.all_visited_nodes: set[str] = set()
 
         # Keys: bare class names.  Values: list of method names.
         self.class_methods_dict: dict[str, list[str]] = {}
@@ -127,6 +129,7 @@ class CheckLeo:
             self.scan_file(path)
         t2 = time.process_time()
         n = self.n_missing
+        g.printObj(list(sorted(self.all_visited_nodes)))
         g.trace(f"{n} missing method{g.plural(n)}")
         g.trace(f"done: {(t2-t1):6.3} sec.")
 
@@ -379,13 +382,16 @@ class CheckLeo:
         names: set[str] = set()
         n_visited = 0
         n_calls = 0
+        parents: list[Node] = [class_node.name]
 
         # This is a time-critical function!
         # Do not call ast.walk here!
         def visit(node):
             nonlocal n_calls, n_visited
             n_visited += 1
-            if isinstance(node, ast.Call):
+            if isinstance(node, ast.ClassDef):
+                pass  # Don't look at inner classes.
+            elif isinstance(node, ast.Call):
                 if (isinstance(node.func, ast.Attribute)
                     and isinstance(node.func.value, ast.Name)
                     and node.func.value.id == 'self'
@@ -395,11 +401,47 @@ class CheckLeo:
                 for z in (node.func, node.args, node.keywords):
                     if z:
                         visit(z)
-            elif isinstance(node, ast.FunctionDef):
+            elif isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef)):
+                for z in node.body:
+                    parents.append(node.name)
+                    if not isinstance(z, (ast.AsyncFunctionDef, ast.ClassDef, ast.FunctionDef)):
+                        visit(z)
+                    parents.pop()
+            elif isinstance(node, ast.For):
+                visit(node.target)
+                visit(node.iter)
                 for z in node.body:
                     visit(z)
-            elif isinstance(node, ast.Expr):
+                for z in node.orelse or []:
+                    visit(z)
+            elif isinstance(node, ast.If):
+                visit(node.test)
+                for z in node.body:
+                    visit(z)
+                for z in node.orelse:
+                    visit(z)
+            elif isinstance(node, ast.With):
+                for z in node.body:
+                    visit(z)
+            elif isinstance(node, ast.While):
+                for z in node.body:
+                    visit(z)
+                for z in node.orelse:
+                    visit(z)
+            elif isinstance(node, (
+                ast.AnnAssign, ast.AugAssign, ast.Assign, ast.Expr, ast.Return,
+            )):
                 visit(node.value)
+            elif isinstance(node, (list, tuple)):
+                for z in node:
+                    if z:
+                        visit(z)
+            elif node:
+                self.all_visited_nodes.add(node.__class__.__name__)
+                # This call to ast.walk is expensive.
+                for z in ast.walk(node):
+                    if z and z != node:
+                        visit(z)
 
         # Start the traversal.
         for node in class_node.body:
