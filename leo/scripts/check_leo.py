@@ -38,6 +38,7 @@ from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
 import leo.core.leoColorizer as leoColorizer
 import leo.core.leoGui as leoGui
+from leo.plugins.qt_frame import LeoBaseTabWidget
 assert g
 assert os.path.exists(leo_editor_dir), leo_editor_dir
 
@@ -101,9 +102,7 @@ class CheckLeo:
         #@+node:ekr.20240603192905.1: *4* << check_leo: define all ivars >>
         # Settings ivars...
         self.files = scan_args()
-        g.trace(self.files)
-        # g.trace(settings_d)
-        # self.files = settings_d['files']
+        g.trace('command-line files:', self.files)
 
         # Keys: bare class names.  Values: list of method names.
         self.class_methods_dict: dict[str, list[str]] = {}
@@ -170,7 +169,6 @@ class CheckLeo:
         Return a dict: keys are *unqualified* class mames.
         Values are list of methods defined in that class, including base classes.
         """
-        # self.(\w+)  ==> '\1',
         return {
             #@+<< Harmless suppressions >>
             #@+node:ekr.20240608043115.1: *5* << Harmless suppressions >>
@@ -193,18 +191,13 @@ class CheckLeo:
             # Permanent aliases.
             'GlobalConfigManager': ['munge'],
             'NodeIndices': ['setTimeStamp'],
-            #@-<< Harmless suppressions >>
-            #@+<< Suppressions to be removed >>
-            #@+node:ekr.20240608043256.1: *5* << Suppressions to be removed >>
-            'LeoQtTreeTab': [
-                'setSizeAdjustPolicy',  ### A method of the inner LeoQComboBox class
-            ],
-            'LeoTabbedTopLevel': ['setMovable', 'setTabBar'],  ### Check.
+
+            # Ivars that do not always exist.
             'LeoTree': [
                 'setItemForCurrentPosition',  # Might exist in subclasses.
                 'unselectItem',
             ],
-            #@-<< Suppressions to be removed >>
+            #@-<< Harmless suppressions >>
 
             # Bad style: These are defined in other classes!
             # However, I'm not going to change the code.
@@ -252,6 +245,7 @@ class CheckLeo:
 
         # 3. Add Leo base classes.
         result['BaseColorizer'] = leoColorizer.BaseColorizer(c=None)
+        result['LeoBaseTabWidget'] = LeoBaseTabWidget()
         result['LeoGui'] = leoGui.LeoGui(guiName='NullGui')
         result['LeoQtGui'] = leoGui.LeoGui(guiName='NullGui')  # Do *not* instantiate the real class.
         result['PygmentsColorizer'] = leoColorizer.PygmentsColorizer(c=None, widget=None)
@@ -282,7 +276,6 @@ class CheckLeo:
         """
         assert isinstance(file_node, ast.Module), repr(file_node)
         result = [z for z in ast.walk(file_node) if isinstance(z, ast.ClassDef)]
-        # g.printObj([z.name for z in result], tag='find_class_node')
         return result
     #@+node:ekr.20240529060232.4: *4* CheckLeo.parse_ast
     def parse_ast(self, s: str) -> Optional[Node]:
@@ -439,7 +432,6 @@ class CheckLeo:
         
         Both assumptions are true for Leo, but are not true in general.
         """
-        ### g.trace(called_name, class_node.name)
 
         # Check the obvious names.
         if called_name in method_names:
