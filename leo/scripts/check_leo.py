@@ -172,10 +172,10 @@ class CheckLeo:
         """
         # self.(\w+)  ==> '\1',
         return {
-            # Part 1: Harmless suppressions.
-            # These could be removed by looking at annotations.
-
+            #@+<< Harmless suppressions >>
+            #@+node:ekr.20240608043115.1: *5* << Harmless suppressions >>
             # Ivars that contain a Callable...
+            # These could be removed by looking at annotations.
             'DynamicWindow': ['func', 'oldEvent'],
             'EventWrapper': ['func', 'oldEvent'],
             'FileNameChooser': ['callback'],
@@ -183,13 +183,16 @@ class CheckLeo:
             'LeoFind': ['escape_handler', 'handler'],
             'LeoQtTree': ['headlineWrapper'],
             'PygmentsColorizer': ['getFormat', 'getDefaultFormat', 'setFormat'],
+
             # Ivars that contain class Names.
             'LeoFrame': ['iconBarClass', 'statusLineClass'],
+
             # Permanent aliases.
             'GlobalConfigManager': ['munge'],
             'NodeIndices': ['setTimeStamp'],
-
-            # Part 2: Suppressions to be removed...
+            #@-<< Harmless suppressions >>
+            #@+<< Suppressions to be removed >>
+            #@+node:ekr.20240608043256.1: *5* << Suppressions to be removed >>
 
             'LeoQtGui': [  ### All the following are mysterious.
                 'addButton', 'currentSection', 'layout', 'setIcon', 'setLayout',
@@ -211,6 +214,7 @@ class CheckLeo:
             'RstCommands': ['user_filter_b', 'user_filter_h'],
             'SqlitePickleShare': ['dumper', 'loader'],
             'VimCommands': ['handler', 'motion_func'],
+            #@-<< Suppressions to be removed >>
         }
     #@+node:ekr.20240602103522.1: *4* CheckLeo.init_live_objects_dict
     def init_live_objects_dict(self) -> dict[str, Any]:
