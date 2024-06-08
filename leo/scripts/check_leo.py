@@ -197,8 +197,8 @@ class CheckLeo:
             #@+<< Suppressions to be removed >>
             #@+node:ekr.20240608043256.1: *5* << Suppressions to be removed >>
             'LeoQtGui': [
-                # Oops: Calls to dialog.x
-                'addButton', 'setIcon', 'setLayout',
+
+                'setLayout',  # Call within inner Calendar class.
 
                 # Calls to methods of inner class: DateTimeEditStepped.
                 # Defined within a function, not a class.
@@ -278,9 +278,7 @@ class CheckLeo:
         file_node = self.parse_ast(s)
 
         # Pass 0: find all class nodes.
-        self.class_nodes = [
-            z for z in ast.walk(file_node)
-                if isinstance(z, ast.ClassDef)]
+        self.class_nodes = self.find_class_nodes(file_node)
 
         # Pass 1: create the class_methods_dict.
         for class_node in self.class_nodes:
@@ -293,24 +291,21 @@ class CheckLeo:
     def find_class_nodes(self, file_node: Node) -> list[ast.ClassDef]:
         """
         Find all class definitions within a file.
-        
-        Exclude class definitions within function definitions.
         """
         assert isinstance(file_node, ast.Module), repr(file_node)
-        result: list[ast.ClassDef] = []
+        return [z for z in ast.walk(file_node) if isinstance(z, ast.ClassDef)]
 
-        def class_walk(node):
-            if isinstance(node.ClassDef):
-                result.append(node)
-            elif isinstance(node.FunctionDef):
-                pass
-            else:
-                for node in ast.walk(node):
-                    class_walk(node)
+        ###
+        # Exclude class definitions within function definitions.
+        # result: list[ast.ClassDef] = []
 
-        for node in file_node.body:
-            class_walk(node)
-        return result
+        # def class_walk(node):
+            # if isinstance(node, ast.ClassDef):
+                # result.append(node)
+
+        # for node in file_node.body:
+            # class_walk(node)
+        # return result
     #@+node:ekr.20240529060232.4: *4* CheckLeo.parse_ast
     def parse_ast(self, s: str) -> Optional[Node]:
         """
@@ -411,7 +406,7 @@ class CheckLeo:
         def method_walk(body_node):
             if isinstance(body_node, ast.ClassDef):
                 # Ignore inner classes.
-                g.trace(f"{class_node.name:>32} Inner class: {body_node.name}")
+                # g.trace(f"{class_node.name:>32} Inner class: {body_node.name}")
                 return
             for node in ast.walk(body_node):
                 if (
