@@ -28,6 +28,7 @@ import pdb  # For live objects.
 import sys
 import time
 from typing import Any, Optional
+import unittest
 
 # Add the leo/editor folder to sys.path.
 leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
@@ -83,7 +84,7 @@ def main():
     """The main function for check_leo.py."""
     files = scan_args()
     print('check_leo.py:', files)
-    CheckLeo().check_leo(files)
+    CheckLeo().check_leo(files=files)
 #@+node:ekr.20240529063157.1: ** class CheckLeo
 class CheckLeo:
 
@@ -99,10 +100,10 @@ class CheckLeo:
 
     #@+others
     #@+node:ekr.20240529063012.1: *3* 1: CheckLeo.check_leo & helpers
-    def check_leo(self, files: list[str]) -> None:
+    def check_leo(self, *, files: list[str] = None) -> None:
         """Check all files returned by get_leo_paths()."""
         t1 = time.process_time()
-        self.files = files
+        self.files = files or []
         #@+<< check_leo: define all ivars >>
         #@+node:ekr.20240603192905.1: *4* << check_leo: define all ivars >>
         # Keys: bare class names.  Values: list of method names.
@@ -247,7 +248,11 @@ class CheckLeo:
         result['dict'] = {}
         result['Pdb'] = pdb.Pdb()
 
-        # 3. Add Leo base classes.
+        # 3. Add live objects for unit tests.
+        result['NodeVisitor'] = ast.NodeVisitor()
+        result['TestCase'] = unittest.TestCase()
+
+        # 4. Add Leo base classes.
         result['BaseColorizer'] = leoColorizer.BaseColorizer(c=None)
         result['LeoBaseTabWidget'] = LeoBaseTabWidget()
         result['LeoGui'] = leoGui.LeoGui(guiName='NullGui')
@@ -255,13 +260,14 @@ class CheckLeo:
         result['PygmentsColorizer'] = leoColorizer.PygmentsColorizer(c=None, widget=None)
         return result
     #@+node:ekr.20240602162342.1: *3* 2: CheckLeo.scan_file & helpers
-    def scan_file(self, path):
+    def scan_file(self, path: str, *, contents=None) -> None:
         """Scan the file and update global data."""
-        s = self.read(path)
-        if not s:
-            g.trace(f"file not found: {path}")
-            return
-        file_node = self.parse_ast(s)
+        if not contents:
+            contents = self.read(path)
+            if not contents:
+                g.trace(f"file not found: {path}")
+                return
+        file_node = self.parse_ast(contents)
 
         # Pass 0: find all class nodes.
         self.class_nodes = self.find_class_nodes(file_node, path)
@@ -506,6 +512,27 @@ class CheckLeo:
         if not g.unitTesting:
             g.trace(message)
         return False
+    #@-others
+#@+node:ekr.20240609044535.1: ** class TestCheckLeo
+class TestCheckLeo(unittest.TestCase):
+    """Unit tests for check_leo.py"""
+
+    def setUp(self):
+        super().setUp()
+        g.unitTesting = True
+        self.path = path = os.path.join(__file__, '..', '..', 'scripts', 'check_leo.py')
+        assert os.path.exists(path), path
+        with open(path, 'r') as f:
+            self.file_contents = f.read()
+            assert self.file_contents
+    #@+others
+    #@+node:ekr.20240609045427.1: *3* check_leo.test_find_class_nodes
+    def test_check_leo(self):
+
+        x = CheckLeo()
+        x.check_leo(files=[self.path])
+        if x.errors:
+            self.fail('\n\n' + '\n'.join(x.errors))
     #@-others
 #@-others
 
