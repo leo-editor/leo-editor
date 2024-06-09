@@ -10,11 +10,12 @@ This script demonstrates that mypy, pylint and ruff *might* provide stronger che
 This script is pragmatic:
     
 - It uses Leo-specic knowledge to simplify the code.
-- It uses ast.walk rather than using somewhat faster visitors.
+
 - It assumes:
   1. That within a file all class names are unique.
   2. That no two *base* classes have the same name.
-  Both assumptions are true for Leo, but are not true in general.
+  
+Both assumptions are true for Leo, but are not true in general.
 """
 #@-<< check_leo.py: docstring >>
 #@+<< check_leo.py: imports & annotations >>
@@ -127,7 +128,7 @@ class CheckLeo:
         t2 = time.process_time()
         n = self.n_missing
         g.trace(f"{n} missing method{g.plural(n)}")
-        g.trace(f"done: {(t2-t1):6.3} sec.")
+        g.trace(f"done: {(t2-t1):3.2} sec.")
 
     #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths
     def get_leo_paths(self) -> list[str]:
@@ -274,7 +275,17 @@ class CheckLeo:
         Find all class definitions within a file.
         """
         assert isinstance(file_node, ast.Module), repr(file_node)
-        result = [z for z in ast.walk(file_node) if isinstance(z, ast.ClassDef)]
+
+        # Slow.
+        # result = [z for z in ast.walk(file_node) if isinstance(z, ast.ClassDef)]
+
+        # Much faster!
+        result: list[ast.ClassDef] = []
+
+        class ClassFinder(ast.NodeVisitor):
+            def visit_ClassDef(self, node: Node) -> None:
+                result.append(node)
+
         return result
     #@+node:ekr.20240529060232.4: *4* CheckLeo.parse_ast
     def parse_ast(self, s: str) -> Optional[Node]:
