@@ -31,11 +31,16 @@ class TestCheckLeo(unittest.TestCase):
     #@+node:ekr.20240609045427.1: *3* CheckLeo.test_check_leo
     def test_check_leo(self):
 
-        g.trace('====')
-        x = CheckLeo()
-        x.check_leo(files=[self.path])
+        x = CheckLeo(files=[self.path])
+        x.check_leo()
         if x.errors:
             self.fail('\n\n' + '\n'.join(x.errors))
+    #@+node:ekr.20240609100305.1: *3* CheckLeo.test_scan_class (to do)
+    def test_scan_class(self):
+
+        x = CheckLeo(files=[self.path])
+        assert x  ###
+        # x.scan_class()
     #@-others
 #@-others
 #@-leo

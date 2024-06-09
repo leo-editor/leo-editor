@@ -84,26 +84,18 @@ def main():
     """The main function for check_leo.py."""
     files = scan_args()
     print('check_leo.py:', files)
-    CheckLeo().check_leo(files=files)
+    CheckLeo(files=files).check_leo()
 #@+node:ekr.20240529063157.1: ** class CheckLeo
 class CheckLeo:
 
-    # __slots__ = (
-        # # command-line arguments...
-        # 'files',
-        # # global data...
-        # 'class_nodes', 'class_methods_dict', 'extra_methods_dict',
-        # 'errors',
-        # 'live_objects', 'live_objects_dict',
-        # 'missing_base_classes', 'n_missing',
-    # )
+    def __init__(self, files: list[str] = None) -> None:
+        self.files = files
 
     #@+others
     #@+node:ekr.20240529063012.1: *3* 1: CheckLeo.check_leo & helpers
-    def check_leo(self, *, files: list[str] = None) -> None:
+    def check_leo(self) -> None:
         """Check all files returned by get_leo_paths()."""
         t1 = time.process_time()
-        self.files = files or []
         #@+<< check_leo: define all ivars >>
         #@+node:ekr.20240603192905.1: *4* << check_leo: define all ivars >>
         # Keys: bare class names.  Values: list of method names.
