@@ -77,35 +77,32 @@ def scan_args() -> list[str]:  # pragma: no cover
     parser.set_defaults(all=False, report=False)
     args = parser.parse_args()
     return args.PATHS
+#@+node:ekr.20240609035415.1: *3* function: main (check_leo.py)
+def main():
+    """The main function for check_leo.py."""
+    files = scan_args()
+    print('check_leo.py:', files)
+    CheckLeo().check_leo(files)
 #@+node:ekr.20240529063157.1: ** class CheckLeo
 class CheckLeo:
 
     # __slots__ = (
-        # # command-line arguments.
+        # # command-line arguments...
         # 'files',
-        # # global data.
-        # 'class_nodes',
-        # 'class_methods_dict',
-        # 'extra_methods_dict',
-        # 'live_objects',
-        # 'live_objects_dict',
-        # 'missing_base_classes',
-        # 'n_missing',
+        # # global data...
+        # 'class_nodes', 'class_methods_dict', 'extra_methods_dict',
+        # 'live_objects', 'live_objects_dict',
+        # 'missing_base_classes', 'n_missing',
     # )
 
     #@+others
     #@+node:ekr.20240529063012.1: *3* 1: CheckLeo.check_leo & helpers
-    def check_leo(self) -> None:
+    def check_leo(self, files: list[str]) -> None:
         """Check all files returned by get_leo_paths()."""
         t1 = time.process_time()
+        self.files = files
         #@+<< check_leo: define all ivars >>
         #@+node:ekr.20240603192905.1: *4* << check_leo: define all ivars >>
-        # Settings ivars...
-        self.files = scan_args()
-        g.trace('command-line files:', self.files)
-
-        self.all_visited_nodes: set[str] = set()
-
         # Keys: bare class names.  Values: list of method names.
         self.class_methods_dict: dict[str, list[str]] = {}
 
@@ -129,7 +126,6 @@ class CheckLeo:
             self.scan_file(path)
         t2 = time.process_time()
         n = self.n_missing
-        g.printObj(list(sorted(self.all_visited_nodes)))
         g.trace(f"{n} missing method{g.plural(n)}")
         g.trace(f"done: {(t2-t1):6.3} sec.")
 
@@ -487,5 +483,6 @@ class CheckLeo:
     #@-others
 #@-others
 
-CheckLeo().check_leo()
+if __name__ == '__main__':
+    main()
 #@-leo
