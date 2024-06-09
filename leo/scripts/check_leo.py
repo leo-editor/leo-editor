@@ -92,6 +92,7 @@ class CheckLeo:
         # 'files',
         # # global data...
         # 'class_nodes', 'class_methods_dict', 'extra_methods_dict',
+        # 'errors',
         # 'live_objects', 'live_objects_dict',
         # 'missing_base_classes', 'n_missing',
     # )
@@ -106,6 +107,8 @@ class CheckLeo:
         #@+node:ekr.20240603192905.1: *4* << check_leo: define all ivars >>
         # Keys: bare class names.  Values: list of method names.
         self.class_methods_dict: dict[str, list[str]] = {}
+
+        self.errors: list[str] = []  # Errors for unit testing.
 
         # Keys: bare class names. Values: list of extra methods of that class.
         self.extra_methods_dict: dict[str, list[str]] = self.init_extra_methods_dict()
@@ -127,8 +130,9 @@ class CheckLeo:
             self.scan_file(path)
         t2 = time.process_time()
         n = self.n_missing
-        g.trace(f"{n} missing method{g.plural(n)}")
-        g.trace(f"done: {(t2-t1):3.2} sec.")
+        if not g.unitTesting:
+            g.trace(f"{n} missing method{g.plural(n)}")
+            g.trace(f"done: {(t2-t1):3.2} sec.")
 
     #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths
     def get_leo_paths(self) -> list[str]:
@@ -471,10 +475,14 @@ class CheckLeo:
                 ):
                     if bare_base_class_name  not in self.missing_base_classes:
                         self.missing_base_classes.add(bare_base_class_name)
-                        print('')
-                        g.trace(
+                        message = (
                             f"==== Missing base class: {bare_base_class_name!r} "
-                            f"in {g.shortFileName(path)}")
+                            f"in {g.shortFileName(path)}"
+                        )
+                        if not g.unitTesting:
+                            print('')
+                            g.trace(message)
+
 
                 # Next, check the live objects.
                 live_object = self.live_objects_dict.get(bare_base_class_name)
@@ -491,9 +499,12 @@ class CheckLeo:
 
         # Report the failure.
         self.n_missing += 1
-        g.trace(
+        self.errors.append(message)
+        message = (
             f"{g.shortFileName(path):>15} {called_name:>20} "
             f"not in {class_name}{bases_signature_s}")
+        if not g.unitTesting:
+            g.trace(message)
         return False
     #@-others
 #@-others
