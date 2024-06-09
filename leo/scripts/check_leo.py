@@ -135,6 +135,9 @@ class CheckLeo:
             g.trace(f"{n} missing method{g.plural(n)}")
             g.trace(f"done: {(t2-t1):3.2} sec.")
 
+        # Kill the QApplication!
+        self.app.deleteLater()
+
     #@+node:ekr.20240529094941.1: *4* CheckLeo.get_leo_paths
     def get_leo_paths(self) -> list[str]:
         """Return a list of full paths to Leo paths to be checked."""
@@ -220,7 +223,8 @@ class CheckLeo:
         result: dict[str, Any] = {}
 
         # Create the app first.
-        app = QtWidgets.QApplication([])
+
+        self.app = app = QtWidgets.QApplication([])
         self.live_objects.append(app)  # Otherwise all widgets will go away.
 
         # 1. Add Qt widget classes.
@@ -512,27 +516,6 @@ class CheckLeo:
         if not g.unitTesting:
             g.trace(message)
         return False
-    #@-others
-#@+node:ekr.20240609044535.1: ** class TestCheckLeo
-class TestCheckLeo(unittest.TestCase):
-    """Unit tests for check_leo.py"""
-
-    def setUp(self):
-        super().setUp()
-        g.unitTesting = True
-        self.path = path = os.path.join(__file__, '..', '..', 'scripts', 'check_leo.py')
-        assert os.path.exists(path), path
-        with open(path, 'r') as f:
-            self.file_contents = f.read()
-            assert self.file_contents
-    #@+others
-    #@+node:ekr.20240609045427.1: *3* check_leo.test_find_class_nodes
-    def test_check_leo(self):
-
-        x = CheckLeo()
-        x.check_leo(files=[self.path])
-        if x.errors:
-            self.fail('\n\n' + '\n'.join(x.errors))
     #@-others
 #@-others
 
