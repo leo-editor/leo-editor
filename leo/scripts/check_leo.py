@@ -260,7 +260,7 @@ class CheckLeo:
         file_node = self.parse_ast(s)
 
         # Pass 0: find all class nodes.
-        self.class_nodes = self.find_class_nodes(file_node)
+        self.class_nodes = self.find_class_nodes(file_node, path)
 
         # Pass 1: create the class_methods_dict.
         for class_node in self.class_nodes:
@@ -270,23 +270,15 @@ class CheckLeo:
         for class_node in self.class_nodes:
             self.check_class(class_node, path)
     #@+node:ekr.20240608045736.1: *4* CheckLeo.find_class_nodes
-    def find_class_nodes(self, file_node: Node) -> list[ast.ClassDef]:
+    def find_class_nodes(self, file_node: Node, path: str) -> list[ast.ClassDef]:
         """
         Find all class definitions within a file.
         """
         assert isinstance(file_node, ast.Module), repr(file_node)
 
-        # Slow.
-        # result = [z for z in ast.walk(file_node) if isinstance(z, ast.ClassDef)]
+        # This is as fast as using a bespoke ast.NodeVisitor class.
+        return [z for z in ast.walk(file_node) if isinstance(z, ast.ClassDef)]
 
-        # Much faster!
-        result: list[ast.ClassDef] = []
-
-        class ClassFinder(ast.NodeVisitor):
-            def visit_ClassDef(self, node: Node) -> None:
-                result.append(node)
-
-        return result
     #@+node:ekr.20240529060232.4: *4* CheckLeo.parse_ast
     def parse_ast(self, s: str) -> Optional[Node]:
         """
@@ -359,16 +351,27 @@ class CheckLeo:
             return first_arg and first_arg.arg == 'self'
 
         result: list[Node] = []
-        for body_node in class_node.body:
-            if isinstance(body_node, ast.ClassDef):
-                # g.trace(f"{class_node.name:>30} Inner class: {body_node.name}")
-                continue  # Skip the class node and its body.
-            for node in ast.walk(body_node):
-                if (
-                    isinstance(node, (ast.AsyncFunctionDef, ast.FunctionDef))
-                    and has_self(node)
-                ):
+
+
+        class MethodFinder(ast.NodeVisitor):
+
+            def visit_ClassDef(self, node: Node) -> None:
+                pass  # Ignore the class.
+
+            def visit_FunctionDef(self, node: Node) -> None:
+                if has_self(node):
                     result.append(node)
+                # Ignore inner defs.
+                # self.generic_visit(node)
+
+            visit_AsyncFunctionDef = visit_FunctionDef
+
+
+        x = MethodFinder()
+        for z in class_node.body:
+            x.visit(z)
+
+        # g.trace(f"{len(result):3} {class_node.name}")
         return result
     #@+node:ekr.20240606205913.1: *3* 4: CheckLeo.check_class & helpers
     def check_class(self, class_node: ast.ClassDef, path: str) -> None:
@@ -404,6 +407,7 @@ class CheckLeo:
                     n_calls += 1
                     names.add(node.func.attr)
                 self.generic_visit(node)
+
 
         # Start the traversal.
         x = FindCallsVisitor()
