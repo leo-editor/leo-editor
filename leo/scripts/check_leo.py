@@ -663,28 +663,27 @@ class CheckLeo:
 
         # Check that all filtered chains match start with the expected prefixes.
         expected_prefixes = (
-            'c.commandsDict', 'c.config',
-            'c.fileCommands', 'c.findCommands',
-            'c.frame',
-            # 'c.frame.body', 'c.frame.iconBar', 'c.frame.log',
-            # 'c.frame.menu', 'c.frame.statusLine',
-            # 'c.frame.top', 'c.frame.tree',
-            'c.k',
-            'c.leoImport',
-            'c.p',
-            'c.rootPosition',
-            'c.styleSheetManager',
-            'c.widget_name',
-            'g.app',
-            'g.leoServer',
-            'g.os.path',
-            'p.b', 'p.h', 'p.v',
-            'v.b', 'v.context', 'v.h',
+            'c.commandsDict.', 'c.config.',
+            'c.fileCommands.', 'c.findCommands.',
+            'c.frame.',
+            # 'c.frame.body.', 'c.frame.iconBar.', 'c.frame.log.',
+            # 'c.frame.menu.', 'c.frame.statusLine.',
+            # 'c.frame.top.', 'c.frame.tree.',
+            'c.k.',
+            'c.leoImport.',
+            'c.p.',
+            'c.rootPosition.',
+            'c.styleSheetManager.',
+            'c.widget_name.',
+            'g.app.',  # Don't check additional prefixes. There are many.
+            'g.leoServer.',
+            'g.os.',
+            'p.b.', 'p.h.', 'p.v.',
+            'v.b.', 'v.context.', 'v.h.',
         )
-        if 1:
-            for z in prefixes:
-                if z.startswith(('c.', 'g.', 'p.', 'v.')):
-                    assert z.startswith(expected_prefixes), z
+        for z in prefixes:
+            if z.startswith(('c.', 'g.', 'p.', 'v.')):
+                assert z.startswith(expected_prefixes), z
         if 0:
             g.printObj(chains_list, tag='all chains...')
 
