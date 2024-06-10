@@ -25,6 +25,7 @@ import ast
 import glob
 import os
 import pdb  # For live objects.
+import re
 import sys
 import time
 from typing import Any, Optional
@@ -59,6 +60,12 @@ def bare_name(class_name):
     This script assumes that the bare names of all classes are distinct.
     """
     return class_name.split('.')[-1]
+#@+node:ekr.20240609035415.1: *3* function: main (check_leo.py)
+def main():
+    """The main function for check_leo.py."""
+    files = scan_args()
+    print('check_leo.py:', files)
+    CheckLeo(files=files).check_leo()
 #@+node:ekr.20240530073251.1: *3* function: scan_args (check_leo.py)
 def scan_args() -> list[str]:  # pragma: no cover
     """
@@ -79,12 +86,6 @@ def scan_args() -> list[str]:  # pragma: no cover
     parser.set_defaults(all=False, report=False)
     args = parser.parse_args()
     return args.PATHS
-#@+node:ekr.20240609035415.1: *3* function: main (check_leo.py)
-def main():
-    """The main function for check_leo.py."""
-    files = scan_args()
-    print('check_leo.py:', files)
-    CheckLeo(files=files).check_leo()
 #@+node:ekr.20240529063157.1: ** class CheckLeo
 class CheckLeo:
 
@@ -116,6 +117,9 @@ class CheckLeo:
         self.missing_base_classes.add('Thread')
 
         self.n_missing = 0  # The number of missing methods.
+
+        # Keys: paths. Values: top-level ast.Nodes (ast.Module)
+        self.tree_dict: dict[str, Node] = {}
         #@-<< check_leo: define all ivars >>
 
         # Check each file separately.
@@ -263,7 +267,7 @@ class CheckLeo:
             if not contents:
                 g.trace(f"file not found: {path}")
                 return
-        file_node = self.parse_ast(contents)
+        self.tree_dict[path] = file_node = self.parse_ast(contents)
 
         # Pass 0: find all class nodes.
         self.class_nodes = self.find_class_nodes(file_node, path)
@@ -478,7 +482,7 @@ class CheckLeo:
                     if bare_base_class_name  not in self.missing_base_classes:
                         self.missing_base_classes.add(bare_base_class_name)
                         message = (
-                            f"==== Missing base class: {bare_base_class_name!r} "
+                            f"Missing base class: '{bare_base_class_name!r}' "
                             f"in {g.shortFileName(path)}"
                         )
                         if not g.unitTesting:
@@ -501,13 +505,161 @@ class CheckLeo:
 
         # Report the failure.
         self.n_missing += 1
-        self.errors.append(message)
         message = (
-            f"{g.shortFileName(path):>15} {called_name:>20} "
+            f"{g.shortFileName(path)} '{called_name}' "
             f"not in {class_name}{bases_signature_s}")
+        self.errors.append(message)
         if not g.unitTesting:
             g.trace(message)
         return False
+    #@+node:ekr.20240610045841.14: *3* 5a: CheckLeo.check_annotations
+    def check_annotations(self) -> None:
+        """Test that annotations of c, g, p, s, v are as expected."""
+
+        annotations_set = set()
+        annotation_table = (
+            (re.compile(r'\b(c[0-9]?|[\w_]+_c)\b'), 'Cmdr'),
+            (re.compile(r'\b(p[0-9]?|[\w_]+_p)\b'), 'Position'),
+            (re.compile(r'\b(s[0-9]?|[\w_]+_s)\b'), 'str'),
+            (re.compile(r'\b(v[0-9]?|[\w_]+_v)\b'), 'VNode'),
+        )
+
+        class CheckAnnotations(ast.NodeVisitor):
+            """A class to check all annotations in a given ast tree."""
+            #@+others
+            #@+node:ekr.20240610045841.9: *4* AV.check_annotation
+            def check_annotation(self, node: ast.AST, identifier: str, annotation: ast.Expr) -> None:
+                """Test the annotation of identifier."""
+                exceptions = (
+                    # Problem annotating Cmdr in leoCommands.py...
+                    'add_commandCallback', 'bringToFront', 'universalCallback',
+                    #
+                    'find_language',  # p_or_v is a false match.
+                    # These methods should always be annotated Any.
+                    '__eq__', '__ne__',
+                    'resolveArchivedPosition',
+                    'setBodyString', 'setHeadString',
+                    'to_encoded_string', 'to_unicode', 'toUnicode',
+                )
+                for pattern, expected_annotation in annotation_table:
+                    m = pattern.match(identifier)
+                    if not m:
+                        continue
+                    node_s = g.splitLines(ast.unparse(node))[0].strip()
+                    if any(node_s.startswith(f"def {z}") for z in exceptions):
+                        continue
+                    annotation_s = ast.unparse(annotation)
+                    self.annotations_set.add(f"{identifier:>20}: {annotation_s}")
+                    expected = (
+                        expected_annotation,
+                        f"'{expected_annotation}'",
+                        f"Optional[{expected_annotation}]",
+                        f"Optional['{expected_annotation}']")
+                    msg = (
+                        'test_annotation\n'
+                        f"    path: {self.tester.path}\n"
+                        f"    node: {node_s}\n"
+                        f"expected: {expected_annotation}\n"
+                        f"     got: {annotation_s}")
+                    if 0:  # Production.
+                        self.tester.assertTrue(annotation_s in expected, msg=msg)
+                    else:  # Allow multiple failures.
+                        if annotation_s not in expected:
+                            print(msg)
+            #@+node:ekr.20240610045841.10: *4* AV.visit_AnnAssign
+            def visit_AnnAssign(self, node):
+                # AnnAssign(expr target, expr annotation, expr? value, int simple)
+                if isinstance(node.target, ast.Name):
+                    if node.annotation:
+                        id_s = node.target.id
+                        self.check_annotation(node, id_s, node.annotation)
+            #@+node:ekr.20240610045841.11: *4* AV.visit_FunctionDef
+            def visit_FunctionDef(self, node):
+                arguments = node.args
+                for arg in arguments.args:
+                    # arg = (identifier arg, expr? annotation, string? type_comment)
+                    assert isinstance(arg, ast.arg)
+                    annotation = getattr(arg, 'annotation', None)
+                    if annotation:
+                        id_s = arg.arg
+                        self.check_annotation(node, id_s, annotation)
+                self.generic_visit(node)  # Visit all children.
+            #@-others
+
+        for path, tree in self.tree_dict.values():
+            x = CheckAnnotations()
+            x.visit(tree)
+        if 0:
+            for s in sorted(list(annotations_set)):
+                print(s)
+    #@+node:ekr.20240610051317.1: *3* 5b: CheckLeo.check_chains & helpers
+    def check_chains(self) -> None:
+
+        #@+<< define patterns >>
+        #@+node:ekr.20240610052327.1: *4* << define patterns >>
+        array_pat = re.compile(r'(\[).*?(\])')
+        call_pat = re.compile(r'(\().*?(\))')
+        string_pat1 = re.compile(r"(\').*?(\')")
+        string_pat2 = re.compile(r'(\").*?(\")')
+        patterns = (array_pat, call_pat, string_pat1, string_pat2)
+        #@-<< define patterns >>
+        chains_set = set()
+
+        #@+others  # Define helper functions.
+        #@+node:ekr.20240610045841.16: *4* function: dump_chains
+        def dump_chains(chains_list, long_chains_list):
+
+            c_pat = re.compile(r'\b(c[0-9]?|[\w_]+_c)\b')
+            p_pat = re.compile(r'\b(p[0-9]?|[\w_]+_p)\b')
+            # s_pat = re.compile(r'\b(s[0-9]?|[\w_]+_s)\b')
+            v_pat = re.compile(r'\b(v[0-9]?|[\w_]+_v)\b')
+            pats = (c_pat, p_pat, v_pat)
+
+            print(g.callers(1))
+            for s in long_chains_list:
+                if any(pat.match(s) for pat in pats):
+                    print(s)
+        #@+node:ekr.20240610045841.5: *4* function: filter_chain
+
+
+        def filter_chain(s: str) -> str:
+
+            def repl(m):
+                return m.group(1) + m.group(2)
+
+            for pattern in patterns:
+                s = re.sub(pattern, repl, s)
+            return s
+        #@-others
+
+        class ChainsVisitor(ast.NodeVisitor):
+
+            def visit_Attribute(self, node):
+                """Add only top-level Attribute chains to chains_set."""
+                chain = ast.unparse(node)
+                self.chains_set.add(chain)
+                # self.generic_visit()
+
+        x = ChainsVisitor()
+        for path, tree in self.tree_dict.values():
+            x.visit(tree)
+
+        chains_list = [filter_chain(z) for z in sorted(list(chains_set))]
+        long_chains_list = [z for z in chains_list if z.count('.') > 2]
+        if 0:  # Print prefixes.
+            prefixes = ['.'.join(z.split('.')[0:2]) for z in long_chains_list]
+            for z in sorted(list(set(prefixes))):
+                if z.startswith(('c.', 'p.', 'v.')):
+                    print(z)
+        if 0:
+            print(f"{len(chains_list)} chains:")
+            print(f"{len(long_chains_list)} long chains:")
+        if 0:
+            for z in long_chains_list:
+                print(z)
+        if 0:
+            dump_chains(chains_list, long_chains_list)
+        self.assertTrue(len(long_chains_list) > 400)
     #@-others
 #@-others
 

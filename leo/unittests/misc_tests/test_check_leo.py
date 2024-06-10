@@ -34,7 +34,7 @@ class TestCheckLeo(unittest.TestCase):
         x = CheckLeo(files=[self.path])
         x.check_leo()
         if x.errors:
-            self.fail('\n\n' + '\n'.join(x.errors))
+            self.assertEqual(x.errors, [])
     #@+node:ekr.20240609100305.1: *3* CheckLeo.test_scan_class (to do)
     def test_scan_class(self):
 
