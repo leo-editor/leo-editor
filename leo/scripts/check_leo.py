@@ -586,7 +586,7 @@ class CheckLeo:
                 self.generic_visit(node)  # Visit all children.
             #@-others
 
-        for path, tree in self.tree_dict.values():
+        for path, tree in self.tree_dict.items():
             x = CheckAnnotations()
             x.visit(tree)
         if 0:
@@ -641,7 +641,7 @@ class CheckLeo:
                 # self.generic_visit()
 
         x = ChainsVisitor()
-        for path, tree in self.tree_dict.values():
+        for path, tree in self.tree_dict.items():
             x.visit(tree)
 
         chains_list = [filter_chain(z) for z in sorted(list(chains_set))]
