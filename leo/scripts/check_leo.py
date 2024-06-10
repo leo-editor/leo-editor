@@ -125,6 +125,12 @@ class CheckLeo:
         # Check each file separately.
         for path in self.get_leo_paths():
             self.scan_file(path)
+
+        # Post-checks.
+        self.check_annotations()
+        self.check_chains()
+
+        # Report.
         t2 = time.process_time()
         n = self.n_missing
         if not g.unitTesting:
@@ -527,6 +533,9 @@ class CheckLeo:
         class CheckAnnotations(ast.NodeVisitor):
             """A class to check all annotations in a given ast tree."""
             #@+others
+            #@+node:ekr.20240610060346.1: *4* AV.__init__
+            def __init__(self, path):
+                self.path = path
             #@+node:ekr.20240610045841.9: *4* AV.check_annotation
             def check_annotation(self, node: ast.AST, identifier: str, annotation: ast.Expr) -> None:
                 """Test the annotation of identifier."""
@@ -549,7 +558,7 @@ class CheckLeo:
                     if any(node_s.startswith(f"def {z}") for z in exceptions):
                         continue
                     annotation_s = ast.unparse(annotation)
-                    self.annotations_set.add(f"{identifier:>20}: {annotation_s}")
+                    annotations_set.add(f"{identifier:>20}: {annotation_s}")
                     expected = (
                         expected_annotation,
                         f"'{expected_annotation}'",
@@ -557,7 +566,7 @@ class CheckLeo:
                         f"Optional['{expected_annotation}']")
                     msg = (
                         'test_annotation\n'
-                        f"    path: {self.tester.path}\n"
+                        f"    path: {self.path}\n"
                         f"    node: {node_s}\n"
                         f"expected: {expected_annotation}\n"
                         f"     got: {annotation_s}")
@@ -587,7 +596,7 @@ class CheckLeo:
             #@-others
 
         for path, tree in self.tree_dict.items():
-            x = CheckAnnotations()
+            x = CheckAnnotations(path)
             x.visit(tree)
         if 0:
             for s in sorted(list(annotations_set)):
@@ -620,16 +629,15 @@ class CheckLeo:
                 if any(pat.match(s) for pat in pats):
                     print(s)
         #@+node:ekr.20240610045841.5: *4* function: filter_chain
-
-
         def filter_chain(s: str) -> str:
+            """Return only the chains that match one of the patters."""
 
             def repl(m):
                 return m.group(1) + m.group(2)
 
             for pattern in patterns:
                 s = re.sub(pattern, repl, s)
-            return s
+            return s.replace('()', '').replace('[]', '')
         #@-others
 
         class ChainsVisitor(ast.NodeVisitor):
@@ -637,29 +645,49 @@ class CheckLeo:
             def visit_Attribute(self, node):
                 """Add only top-level Attribute chains to chains_set."""
                 chain = ast.unparse(node)
-                self.chains_set.add(chain)
+                chains_set.add(chain)
                 # self.generic_visit()
 
         x = ChainsVisitor()
         for path, tree in self.tree_dict.items():
             x.visit(tree)
 
-        chains_list = [filter_chain(z) for z in sorted(list(chains_set))]
+        chains_list = list(sorted(set(filter_chain(z) for z in chains_set)))
         long_chains_list = [z for z in chains_list if z.count('.') > 2]
+        prefixes = list(sorted(set(['.'.join(z.split('.')[:-1]) for z in long_chains_list])))
+
         if 0:  # Print prefixes.
-            prefixes = ['.'.join(z.split('.')[0:2]) for z in long_chains_list]
-            for z in sorted(list(set(prefixes))):
-                if z.startswith(('c.', 'p.', 'v.')):
+            for z in prefixes:
+                if z.startswith(('c.', 'g.', 'p.', 'v.')):
                     print(z)
+
+        # Check that all filtered chains match start with the expected prefixes.
+        expected_prefixes = (
+            'c.commandsDict', 'c.config',
+            'c.fileCommands', 'c.findCommands',
+            'c.frame',
+            # 'c.frame.body', 'c.frame.iconBar', 'c.frame.log',
+            # 'c.frame.menu', 'c.frame.statusLine',
+            # 'c.frame.top', 'c.frame.tree',
+            'c.k',
+            'c.leoImport',
+            'c.p',
+            'c.rootPosition',
+            'c.styleSheetManager',
+            'c.widget_name',
+            'g.app',
+            'g.leoServer',
+            'g.os.path',
+            'p.b', 'p.h', 'p.v',
+            'v.b', 'v.context', 'v.h',
+        )
+        if 1:
+            for z in prefixes:
+                if z.startswith(('c.', 'g.', 'p.', 'v.')):
+                    assert z.startswith(expected_prefixes), z
         if 0:
-            print(f"{len(chains_list)} chains:")
-            print(f"{len(long_chains_list)} long chains:")
-        if 0:
-            for z in long_chains_list:
-                print(z)
-        if 0:
-            dump_chains(chains_list, long_chains_list)
-        assert len(long_chains_list) > 400
+            g.printObj(chains_list, tag='all chains...')
+
     #@-others
 #@-others
 
