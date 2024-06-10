@@ -3096,7 +3096,7 @@ def get_files_in_directory(directory: str, kinds: list = None, recursive: bool =
     """
     files: list[str] = []
     sep = os.path.sep
-    if not g.os.path.exists(directory):
+    if not os.path.exists(directory):
         g.es_print('does not exist', directory)
         return files
     try:

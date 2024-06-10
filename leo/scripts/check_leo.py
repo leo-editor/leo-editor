@@ -677,7 +677,6 @@ class CheckLeo:
             'c.widget_name.',
             'g.app.',  # Don't check additional prefixes. There are many.
             'g.leoServer.',
-            'g.os.',
             'p.b.', 'p.h.', 'p.v.',
             'v.b.', 'v.context.', 'v.h.',
         )
