@@ -659,7 +659,7 @@ class CheckLeo:
                 print(z)
         if 0:
             dump_chains(chains_list, long_chains_list)
-        self.assertTrue(len(long_chains_list) > 400)
+        assert len(long_chains_list) > 400
     #@-others
 #@-others
 
