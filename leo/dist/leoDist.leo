@@ -122,7 +122,7 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 <v t="mhw-nc.20190126223741.1"><vh>Pip</vh>
-<v t="maphew.20180224170853.1"><vh>@file ../../setup.py</vh></v>
+<v t="maphew.20180224170853.1"><vh>@@@file ../../setup.py</vh></v>
 <v t="maphew.20190208135916.1"><vh>@clean ../../setup.cfg</vh></v>
 <v t="maphew.20190206032329.1"><vh>@clean ../../pyproject.toml</vh></v>
 </v>
@@ -1508,6 +1508,9 @@ include *.TXT
 prune leo/unittests/htmlcov
 prune leo/doc/html
 include leo/doc/html/conf.py
+
+# #3853.
+include leo/doc/_static
 </t>
 <t tx="ekr.20210815103531.1">**build**
 
@@ -1746,6 +1749,7 @@ That said, here's my recipe for packaging a new release for Test PyPi:
 Remove broken releases (still can't re-use identical version numbers and file names though):
 https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 </t>
+<t tx="maphew.20180224170853.1"></t>
 <t tx="maphew.20190206032329.1">#@+leo-ver=5-thin
 #@+node:ekr.20240227064614.1: * @file ../../pyproject.toml
 #@@language toml
