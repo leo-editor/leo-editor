@@ -101,7 +101,8 @@ class CheckLeo:
         #@+<< check_leo: define all ivars >>
         #@+node:ekr.20240603192905.1: *4* << check_leo: define all ivars >>
         # Keys: bare class names.  Values: list of method names.
-        self.class_methods_dict: dict[str, list[str]] = {}
+        ### self.class_methods_dict: dict[str, list[str]] = {}
+        self.class_methods_dict: dict[str, list[ClassInfo]] = {}
 
         self.errors: list[str] = []  # Errors for unit testing.
 
@@ -339,16 +340,22 @@ class CheckLeo:
         methods: list[ast.FunctionDef] = self.find_methods(class_node)
         method_names = [z.name for z in methods]
 
-        # All class names are unique with the following exceptions:
-        if class_name not in (
-            'InputToken', 'ParseState', 'Tokenizer',
-            'Ui_LeoQuickSearchWidget',
-        ):
-            # A crucial simplifying assumption.
-            assert class_name not in self.class_methods_dict, (class_name, g.shortFilename(path))
+        if 0:  ### No longer needed.
+            # All class names are unique with the following exceptions:
+            if class_name not in (
+                'InputToken', 'ParseState', 'Tokenizer',
+                'Ui_LeoQuickSearchWidget',
+            ):
+                # A crucial simplifying assumption.
+                assert class_name not in self.class_methods_dict, (class_name, g.shortFilename(path))
 
         # Update the class dict.
-        self.class_methods_dict[class_name] = method_names
+        ### self.class_methods_dict[class_name] = method_names
+        info_list = self.class_methods_dict.get(class_name, [])
+        info_list.append(ClassInfo(class_node, method_names, path))
+        self.class_methods_dict[class_name] = info_list
+        ### g.trace(len(method_names))
+        ### g.printObj(self.class_methods_dict)
     #@+node:ekr.20240602165136.1: *4* CheckLeo.find_methods (pass 3)
     def find_methods(self, class_node: ast.ClassDef) -> list[Node]:
         """Return a list of all methods in the given class."""
@@ -395,7 +402,18 @@ class CheckLeo:
         """Check the class for calls to undefined methods."""
         class_name = bare_name(class_node.name)
         called_names = self.find_calls(class_node)
-        method_names = self.class_methods_dict[class_name]
+        ### method_names = self.class_methods_dict[class_name]
+        class_info_list: list[ClassInfo] = self.class_methods_dict[class_name]
+        for z in class_info_list:
+            if z.path == path:
+                method_names = z.methods
+                break
+        else:
+            message = f"Can not happen: no match for {class_name} in {path}"
+            self.errors.append(message)
+            if not g.unitTesting:
+                g.trace(message)
+            return
         for called_name in called_names:
             self.has_called_method(called_name, class_node, method_names, path)
     #@+node:ekr.20240531085654.1: *4* CheckLeo.find_calls (pass 4)
@@ -479,7 +497,23 @@ class CheckLeo:
                 bare_base_class_name = bare_name(ast.unparse(base))
 
                 # First check the static base class if it exists.
-                base_class_methods = self.class_methods_dict.get(bare_base_class_name, [])
+                ### base_class_methods = self.class_methods_dict.get(bare_base_class_name, [])
+                info_list = self.class_methods_dict.get(bare_base_class_name, [])
+
+                # Prefer the base class defined in *this* file.
+                this_files_info = [z for z in info_list if z.path == path]
+                other_files_info = [z for z in info_list if z.path != path]
+
+                # A simplifying assumption. True for Leo, but not generally true.
+                assert len(this_files_info) in (0, 1), (bare_base_class_name)
+                assert len(other_files_info) in (0, 1), (bare_base_class_name)
+                if this_files_info:
+                    base_class_methods = this_files_info[0].methods
+                elif other_files_info:
+                    base_class_methods = other_files_info[0].methods
+                else:
+                    base_class_methods = []
+
                 if called_name in base_class_methods:
                     return True
                 if (
@@ -688,6 +722,22 @@ class CheckLeo:
             g.printObj(chains_list, tag='all chains...')
 
     #@-others
+#@+node:ekr.20240611163832.1: ** class ClassInfo
+class ClassInfo:
+    """
+    A class representing a specifif class and the list of it's methods.
+    
+    In Leo all class names within a file are unique, so the combination
+    of class name and path suffices to uniquely idetify the class.
+    """
+
+    def __init__(self, class_node: ast.ClassDef, methods: list[str], path: str) -> None:
+        self.class_node = class_node
+        self.path = path
+        self.methods: list[str] = methods
+
+    def __repr__(self):
+        return f"<{g.shortFilename(self.path)}:{self.class_node.name} {len(self.methods)}>"
 #@-others
 
 if __name__ == '__main__':
