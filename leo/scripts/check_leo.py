@@ -3,6 +3,8 @@
 #@+<< check_leo.py: docstring >>
 #@+node:ekr.20240604203402.1: ** << check_leo.py: docstring >>
 """
+#@@language rest
+
 check_leo.py: A script that checks for undefined methods in Leo's core code.
 
 This script demonstrates that mypy, pylint and ruff *might* provide stronger checks.
@@ -10,11 +12,10 @@ This script demonstrates that mypy, pylint and ruff *might* provide stronger che
 This script is pragmatic:
     
 - It uses Leo-specic knowledge to simplify the code.
+- It assumes that for each file:
+  - All class names are unique.
+  - All names of base classes refer to a local class by default.
 
-- It assumes:
-  1. That within a file all class names are unique.
-  2. That no two *base* classes have the same name.
-  
 Both assumptions are true for Leo, but are not true in general.
 """
 #@-<< check_leo.py: docstring >>
