@@ -11,15 +11,22 @@ https://github.com/leo-editor/leo-editor/issues/3837
 
 import os
 import subprocess
+import sys
 
-print(os.path.basename(__file__))
+file_name = os.path.basename(__file__)
 
 # Do *not* install from leo-editor!
 home_dir = os.path.expanduser("~")
 os.chdir(home_dir)
 
-# Run.
-command = 'python -m leo.core.runLeo'
-print(command)
-subprocess.Popen(command, shell=True).communicate()
+if any('leo-editor' in z for z in sys.path):
+    print(f"{file_name}: remove leo-editor from sys.path!")
+    print('Hint: do *not* run this script from the leo-editor directory!')
+else:
+    # Run.
+    print(file_name)
+    command = 'python -m leo.core.runLeo'
+    print(command)
+    print('')
+    subprocess.Popen(command, shell=True).communicate()
 #@-leo
