@@ -41,7 +41,7 @@ urllib3
 
 # Gui packages...
 
-PyQt6 >= 6.6
+PyQt6>= 6.6
 PyQt6-QScintilla
 PyQt6-WebEngine
 Send2Trash; platform_system=="Windows"  # picture_viewer plugin.

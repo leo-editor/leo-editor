@@ -23,15 +23,19 @@ if any('leo-editor' in z for z in sys.path):
     print('Hint: do *not* run this script from the leo-editor directory!')
 else:
     print(file_name)
+    
     # Do *not* install from leo-editor!
-    home_dir = os.path.expanduser("~")
-    os.chdir(home_dir)
-    # Install.
+    leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
+    parent_dir = os.path.abspath(os.path.join(leo_editor_dir, '..'))
+    assert os.path.exists(parent_dir), repr(parent_dir)
+    assert os.path.isdir(parent_dir), repr(parent_dir)
+    os.chdir(parent_dir)
+   
+    # Install Leo using `pip install leo`
     dist_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..', 'dist'))
     assert os.path.exists(dist_dir), dist_dir
     wheel_file = 'leo-6.8.0b1-py3-none-any.whl'
-    #  --force-reinstall
-    command = fr"python -m pip install {dist_dir}{os.sep}{wheel_file}"
+    command = fr"python -m pip install {dist_dir}{os.sep}{wheel_file} --no-cache-dir"  #  --force-reinstall
     print(command)
     subprocess.Popen(command, shell=True).communicate()
 
@@ -42,5 +46,5 @@ else:
     print('package_dir:', package_dir)
     print('site-packages/leo*...')
     for z in glob.glob(f"{package_dir}{os.sep}leo*"):
-        print(z)
+        print(' ', z)
 #@-leo

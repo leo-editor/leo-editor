@@ -8,11 +8,7 @@ Don't use this script unless you know what you are doing!
 Info item #3837 describes all distribution-related scripts.
 https://github.com/leo-editor/leo-editor/issues/3837
 """
-
-# Don't use this script unless you know what you are doing!
-
 import os
-import shutil
 import subprocess
 import sys
 
@@ -24,11 +20,6 @@ os.chdir(leo_editor_dir)
 
 isWindows = sys.platform.startswith('win')
 python = 'py' if isWindows else 'python'
-
-# A hack: delete leo/leo.egg-info
-egg_dir = os.path.abspath(os.path.join(leo_editor_dir, 'leo', 'leo.egg-info'))
-if os.path.exists(egg_dir):
-    shutil.rmtree(egg_dir)
 
 for command in [
     f"{python} -m pip freeze > temp_requirements.txt",
@@ -42,5 +33,9 @@ for command in [
     subprocess.Popen(command, shell=True).communicate()
 
 if os.path.exists('temp_requirements.txt'):
+    print('remove temp_requirements.txt')
     os.remove('temp_requirements.txt')
+
+# cd to the leo-editor directory.
+os.chdir(leo_editor_dir)
 #@-leo
