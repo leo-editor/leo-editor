@@ -20,7 +20,7 @@ file_name = os.path.basename(__file__)
 
 if any('leo-editor' in z for z in sys.path):
     print(f"{file_name}: remove leo-editor from sys.path!")
-    print('Note: do *not* run this script from the leo-editor directory!')
+    print('Hint: do *not* run this script from the leo-editor directory!')
 else:
     print(file_name)
     # Do *not* install from leo-editor!
