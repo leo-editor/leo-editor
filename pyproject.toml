@@ -231,7 +231,7 @@ packages = [
 
 [project]
 requires-python = ">= 3.9"
-version = "6.8.0 b1"
+version = "6.8.0b1"  # No space.
 name = "leo"
 
 #@+<< developer info >>
@@ -272,7 +272,7 @@ keywords = ["PIM", "IDE", "Outliner"]
 license = {text = "MIT License"}
 readme = "README.md"
 #@-<< description >>
-# < < dependencies > >
+# < < dependencies > >  # Don't duplicate requirements.txt.
 
 [project.scripts]
 leo = "leo.core.runLeo:run"
