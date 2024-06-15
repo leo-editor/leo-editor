@@ -33,6 +33,7 @@ for command in [
     subprocess.Popen(command, shell=True).communicate()
 
 if os.path.exists('temp_requirements.txt'):
+    print('')
     print('remove temp_requirements.txt')
     os.remove('temp_requirements.txt')
 
