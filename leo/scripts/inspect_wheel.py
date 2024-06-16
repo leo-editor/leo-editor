@@ -18,7 +18,6 @@ import subprocess
 print(os.path.basename(__file__))
 
 # cd to leo-editor
-### os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
 leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 assert leo_editor_dir.endswith('leo-editor'), repr(leo_editor_dir)
 assert os.path.exists(leo_editor_dir), repr(leo_editor_dir)
