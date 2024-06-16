@@ -6,9 +6,7 @@
 inspect_wheel.py: Inspect the metadata of wheel files.
                   Output goes to inspect_wheel.txt.
 
-pip install wheel-inspect
-
-Info item #3837 describes all distribution-related scripts.
+See info item #3837 for full documentation.
 https://github.com/leo-editor/leo-editor/issues/3837
 """
 

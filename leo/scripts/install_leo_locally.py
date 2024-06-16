@@ -2,13 +2,14 @@
 #@+node:ekr.20240321123214.1: * @file ../scripts/install_leo_locally.py
 #@@language python
 """
-install_leo_locally.py: Install leo from a wheel file in the `leo/dist` folder.
+install_leo_locally.py: Install Leo from a wheel file in the `leo-editor/leo/dist` directory.
 
-Executes `python -m pip install leo-editor/dist/leo-6.8.0b1-py3-none-any.whl`
+Run `python -m pip install leo-editor/dist/leo-6.8.0b1-py3-none-any.whl`
+from the *parent* directory of the `leo-editor` directory.
 
-*Note*: The leo-editor folder must *not* be in sys.path!
+*Note*: sys.path *must not* contain the `leo-editor` directory!
 
-Info item #3837 describes all distribution-related scripts.
+See info item #3837 for full documentation.
 https://github.com/leo-editor/leo-editor/issues/3837
 """
 import glob
@@ -24,11 +25,12 @@ if any('leo-editor' in z for z in sys.path):
 else:
     print(file_name)
     
-    # Do *not* install from leo-editor!
+    # Install from the *parent* of the `leo-editor` directory.
     leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
     parent_dir = os.path.abspath(os.path.join(leo_editor_dir, '..'))
     assert os.path.exists(parent_dir), repr(parent_dir)
     assert os.path.isdir(parent_dir), repr(parent_dir)
+    assert not parent_dir.endswith('leo-editor'), repr(parent_dir)
     os.chdir(parent_dir)
    
     # Install Leo using `pip install leo`

@@ -3,11 +3,11 @@
 #@@language python
 
 """
-uninstall_leo.py: Run `pip uninstall leo`.
+uninstall_leo.py: Run `pip uninstall leo` from the *parent* directory of the `leo-editor` directory.
 
-*Note*: The leo-editor folder must *not* be in sys.path!
+*Note*: sys.path *must not* contain the `leo-editor` directory!
 
-Info item #3837 describes all distribution-related scripts.
+See info item #3837 for full documentation.
 https://github.com/leo-editor/leo-editor/issues/3837
 """
 import os
@@ -23,14 +23,15 @@ if any('leo-editor' in z for z in sys.path):
 else:
     print(os.path.basename(__file__))
     
-    # Do *not* uninstall from the leo-editor directory.
+    # Uninstall from the *parent* of the `leo-editor` directory.
     leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
     parent_dir = os.path.abspath(os.path.join(leo_editor_dir, '..'))
     assert os.path.exists(parent_dir), repr(parent_dir)
     assert os.path.isdir(parent_dir), repr(parent_dir)
+    assert not parent_dir.endswith('leo-editor'), repr(parent_dir)
     os.chdir(parent_dir)
 
-    # Uninstall Leo from Python's site-packages directory.
+    # Remove Leo from Python's site-packages directory.
     # --yes: Don’t ask for confirmation of uninstall deletions.
     command = 'python -m pip uninstall leo'
     print(command)

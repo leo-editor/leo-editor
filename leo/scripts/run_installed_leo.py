@@ -3,9 +3,9 @@
 #@@language python
 
 """
-run_installed_leo.py: Run leo from Python's `site-packages` folder.
+run_installed_leo.py: Run leo from Python's `site-packages` directory.
 
-Info item #3837 describes all distribution-related scripts.
+See info item #3837 for full documentation.
 https://github.com/leo-editor/leo-editor/issues/3837
 """
 
@@ -15,7 +15,7 @@ import sys
 
 file_name = os.path.basename(__file__)
 
-# Do *not* install from leo-editor!
+# cd to the home directory.
 home_dir = os.path.expanduser("~")
 os.chdir(home_dir)
 

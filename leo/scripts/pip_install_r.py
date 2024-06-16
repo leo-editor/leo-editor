@@ -3,7 +3,9 @@
 """
 pip_install_r.py: Install all of Leo's requirements from requirements.txt.
 
-Info item #3837 describes all distribution-related scripts.
+This script does *not* install Leo itself.
+
+See info item #3837 for full documentation.
 https://github.com/leo-editor/leo-editor/issues/3837
 """
 
@@ -13,7 +15,7 @@ import sys
 
 print(os.path.basename(__file__))
 
-# cd to leo-editor
+# cd to `leo-editor`.
 os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
 
 isWindows = sys.platform.startswith('win')
