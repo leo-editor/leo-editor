@@ -16,6 +16,9 @@ print(os.path.basename(__file__))
 
 # cd to `leo-editor`.
 leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
+assert leo_editor_dir.endswith('leo-editor'), repr(leo_editor_dir)
+assert os.path.exists(leo_editor_dir), repr(leo_editor_dir)
+assert os.path.isdir(leo_editor_dir), repr(leo_editor_dir)
 os.chdir(leo_editor_dir)
 
 isWindows = sys.platform.startswith('win')
