@@ -35,7 +35,8 @@ else:
    
     # Install Leo using `pip install leo`
     dist_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..', 'dist'))
-    assert os.path.exists(dist_dir), dist_dir
+    assert os.path.exists(dist_dir), repr(dist_dir)
+    assert os.path.isdir(dist_dir), repr(dist_dir)
     wheel_file = 'leo-6.8.0b1-py3-none-any.whl'
     command = fr"python -m pip install {dist_dir}{os.sep}{wheel_file} --no-cache-dir"  #  --force-reinstall
     print(command)
