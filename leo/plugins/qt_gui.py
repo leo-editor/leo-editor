@@ -568,12 +568,13 @@ class LeoQtGui(leoGui.LeoGui):
             dialog.setText(message)
         dialog.setIcon(Information.Warning)
         dialog.setWindowTitle(title)
-        # Creation order determines returned value.
         yes = dialog.addButton(yesMessage, ButtonRole.YesRole)
         no = dialog.addButton(noMessage, ButtonRole.NoRole)
         cancel = dialog.addButton(cancelMessage or 'Cancel', ButtonRole.RejectRole)
         if yesToAllMessage:
-            dialog.addButton(yesToAllMessage, ButtonRole.YesRole)
+            yes_to_all = dialog.addButton(yesToAllMessage, ButtonRole.YesRole)
+        else:
+            yes_to_all = None
         if defaultButton == "Yes":
             dialog.setDefaultButton(yes)
         elif defaultButton == "No":
@@ -586,16 +587,19 @@ class LeoQtGui(leoGui.LeoGui):
             self._save_focus(c)
             c.in_qt_dialog = True
             dialog.raise_()  # #2246.
-            val = dialog.exec()
+            dialog.exec()
+            val = dialog.clickedButton()  # #3972.
         finally:
             c.in_qt_dialog = False
             self._restore_focus(c)
 
-        # val is the same as the creation order.
-        # Tested with both Qt6 and Qt5.
-        return {
-            0: 'yes', 1: 'no', 2: 'cancel', 3: 'yes-to-all',
-        }.get(val, 'cancel')
+        # Return the result.
+        for button, result in (
+            (cancel, 'cancel'), (no, 'no'), (yes, 'yes'), (yes_to_all, 'yes-to-all')
+        ):
+            if val == button:
+                return result
+        return 'yes'  # Defensive.
     #@+node:ekr.20110605121601.18498: *4* qt_gui.runAskYesNoDialog
     def runAskYesNoDialog(self,
         c: Cmdr, title: str, message: str = None, yes_all: bool = False, no_all: bool = False,
