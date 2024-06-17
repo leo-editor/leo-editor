@@ -311,7 +311,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
                 self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.425: *3* yank & yankPop
     @cmd('yank')
-    @cmd('yank')
     def yank(self, event: LeoKeyEvent = None) -> None:
         """Insert the next entry of the kill ring."""
         self.yankHelper(event, pop=False)
