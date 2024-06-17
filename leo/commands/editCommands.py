@@ -407,7 +407,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.moveSpot = None  # For retaining preferred column when moving up or down.
         self.moveCol = None  # For retaining preferred column when moving up or down.
         self.sampleWidget = None  # Created later.
-        self._useRegex = False  # For replace-string
         self.w = None  # For use by state handlers.
         # Settings...
         cf = c.config
@@ -946,15 +945,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         i, j = w.getSelectionRange()
         self.fillPrefix = s[i:j]
-    #@+node:ekr.20150514063305.219: *4* ec._addPrefix
-    def _addPrefix(self, ntxt: str) -> str:
-        # ntxt = ntxt.split('.')
-        # ntxt = map(lambda a: self.fillPrefix + a, ntxt)
-        # ntxt = '.'.join(ntxt)
-        # return ntxt
-        ntxt1 = ntxt.split('.')
-        ntxt_list = map(lambda a: self.fillPrefix + a, ntxt1)
-        return '.'.join(ntxt_list)
     #@+node:ekr.20150514063305.220: *3* ec: find quick support
     #@+node:ekr.20150514063305.221: *4* ec.backward/findCharacter & helper
     @cmd('backward-find-character')
