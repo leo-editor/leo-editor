@@ -1124,11 +1124,12 @@ def showInvisiblesHelper(c: Cmdr, val: Any) -> None:
 @g.commander_command('toggle-angle-brackets')
 def toggleAngleBrackets(self: Self, event: LeoKeyEvent = None) -> None:
     """Add or remove double angle brackets from the headline of the selected node."""
-    c, p = self, self.p
+    c, p, u = self, self.p, self.undoer
     if g.app.batchMode:
         c.notValidInBatchMode("Toggle Angle Brackets")
         return
     c.endEditing()
+    data = u.beforeChangeHeadline(p)
     s = p.h.strip()
     # 2019/09/12: Guard against black.
     lt = "<<"
@@ -1142,6 +1143,7 @@ def toggleAngleBrackets(self: Self, event: LeoKeyEvent = None) -> None:
     else:
         s = g.angleBrackets(' ' + s + ' ')
     p.setHeadString(s)
+    u.afterChangeHeadline(p, 'toggle-angle-brackets', data)
     p.setDirty()  # #1449.
     c.setChanged()  # #1449.
     c.redrawAndEdit(p, selectAll=True)
