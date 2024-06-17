@@ -104,7 +104,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     @cmd('clear-kill-ring')
     def clearKillRing(self, event: LeoKeyEvent = None) -> None:
         """Clear the kill ring."""
-        g.app.globalKillbuffer = []
+        g.app.globalKillBuffer = []
     #@+node:ekr.20150514063305.415: *3* getClipboard
     def getClipboard(self) -> Optional[str]:
         """Return the contents of the clipboard."""
