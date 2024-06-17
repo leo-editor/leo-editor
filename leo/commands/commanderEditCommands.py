@@ -1050,12 +1050,12 @@ def startsParagraph(s: str) -> bool:
     return val
 #@+node:ekr.20201124191844.1: ** c_ec.reformatSelection
 @g.commander_command('reformat-selection')
-def reformatSelection(self: Self, event: LeoKeyEvent = None, undoType: str = 'Reformat Paragraph') -> None:
+def reformatSelection(self: Self, event: LeoKeyEvent = None, undoType: str = 'Reformat Selection') -> None:
     """
     Reformat the selected text, as in reformat-paragraph, but without
     expanding the selection past the selected lines.
     """
-    c, undoType = self, 'reformat-selection'
+    c = self
     p, u, w = c.p, c.undoer, c.frame.body.wrapper
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
