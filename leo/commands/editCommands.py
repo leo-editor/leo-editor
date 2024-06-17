@@ -3728,107 +3728,44 @@ class EditCommandsClass(BaseEditCommandsClass):
         elif hasattr(tree.canvas, 'xview_scroll'):
             tree.canvas.xview_scroll(-1, "unit")
     #@+node:ekr.20150514063305.339: *3* ec: sort
-    #@@language rest
-    #@+at
-    # XEmacs provides several commands for sorting text in a buffer.  All
-    # operate on the contents of the region (the text between point and the
-    # mark).  They divide the text of the region into many "sort records",
-    # identify a "sort key" for each record, and then reorder the records
-    # using the order determined by the sort keys.  The records are ordered so
-    # that their keys are in alphabetical order, or, for numerical sorting, in
-    # numerical order.  In alphabetical sorting, all upper-case letters `A'
-    # through `Z' come before lower-case `a', in accordance with the ASCII
-    # character sequence.
-    #
-    #    The sort commands differ in how they divide the text into sort
-    # records and in which part of each record they use as the sort key.
-    # Most of the commands make each line a separate sort record, but some
-    # commands use paragraphs or pages as sort records.  Most of the sort
-    # commands use each entire sort record as its own sort key, but some use
-    # only a portion of the record as the sort key.
-    #
-    # `M-x sort-lines'
-    #      Divide the region into lines and sort by comparing the entire text
-    #      of a line.  A prefix argument means sort in descending order.
-    #
-    # `M-x sort-paragraphs'
-    #      Divide the region into paragraphs and sort by comparing the entire
-    #      text of a paragraph (except for leading blank lines).  A prefix
-    #      argument means sort in descending order.
-    #
-    # `M-x sort-pages'
-    #      Divide the region into pages and sort by comparing the entire text
-    #      of a page (except for leading blank lines).  A prefix argument
-    #      means sort in descending order.
-    #
-    # `M-x sort-fields'
-    #      Divide the region into lines and sort by comparing the contents of
-    #      one field in each line.  Fields are defined as separated by
-    #      whitespace, so the first run of consecutive non-whitespace
-    #      characters in a line constitutes field 1, the second such run
-    #      constitutes field 2, etc.
-    #
-    #      You specify which field to sort by with a numeric argument: 1 to
-    #      sort by field 1, etc.  A negative argument means sort in descending
-    #      order.  Thus, minus 2 means sort by field 2 in reverse-alphabetical
-    #      order.
-    #
-    # `M-x sort-numeric-fields'
-    #      Like `M-x sort-fields', except the specified field is converted to
-    #      a number for each line and the numbers are compared.  `10' comes
-    #      before `2' when considered as text, but after it when considered
-    #      as a number.
-    #
-    # `M-x sort-columns'
-    #      Like `M-x sort-fields', except that the text within each line used
-    #      for comparison comes from a fixed range of columns.  An explanation
-    #      is given below.
-    #
-    #    For example, if the buffer contains:
-    #
-    #      On systems where clash detection (locking of files being edited) is
-    #      implemented, XEmacs also checks the first time you modify a buffer
-    #      whether the file has changed on disk since it was last visited or
-    #      saved.  If it has, you are asked to confirm that you want to change
-    #      the buffer.
-    #
-    # then if you apply `M-x sort-lines' to the entire buffer you get:
-    #
-    #      On systems where clash detection (locking of files being edited) is
-    #      implemented, XEmacs also checks the first time you modify a buffer
-    #      saved.  If it has, you are asked to confirm that you want to change
-    #      the buffer.
-    #      whether the file has changed on disk since it was last visited or
-    #
-    # where the upper case `O' comes before all lower case letters.  If you
-    # apply instead `C-u 2 M-x sort-fields' you get:
-    #
-    #      saved.  If it has, you are asked to confirm that you want to change
-    #      implemented, XEmacs also checks the first time you modify a buffer
-    #      the buffer.
-    #      On systems where clash detection (locking of files being edited) is
-    #      whether the file has changed on disk since it was last visited or
-    #
-    # where the sort keys were `If', `XEmacs', `buffer', `systems', and `the'.
-    #
-    #    `M-x sort-columns' requires more explanation.  You specify the
-    # columns by putting point at one of the columns and the mark at the other
-    # column.  Because this means you cannot put point or the mark at the
-    # beginning of the first line to sort, this command uses an unusual
-    # definition of `region': all of the line point is in is considered part
-    # of the region, and so is all of the line the mark is in.
-    #
-    #    For example, to sort a table by information found in columns 10 to
-    # 15, you could put the mark on column 10 in the first line of the table,
-    # and point on column 15 in the last line of the table, and then use this
-    # command.  Or you could put the mark on column 15 in the first line and
-    # point on column 10 in the last line.
-    #
-    #    This can be thought of as sorting the rectangle specified by point
-    # and the mark, except that the text on each line to the left or right of
-    # the rectangle moves along with the text inside the rectangle.  *Note
-    # Rectangles::.
-    #@@language python
+    #@+node:ekr.20150514063305.341: *4* ec.sortColumns
+    @cmd('sort-columns')
+    def sortColumns(self, event: LeoKeyEvent) -> None:
+        """
+        Sort lines of selected text using the selected columns to do the
+        comparison.
+        """
+        w = self.editWidget(event)
+        if not self._chckSel(event):
+            return  # pragma: no cover (defensive)
+        s = w.getAllText()
+
+        def toInt(index: str) -> int:
+            return g.toPythonIndex(s, index)
+
+        self.beginCommand(w, undoType='sort-columns')
+        try:
+            sel_1, sel_2 = w.getSelectionRange()
+            sint1, sint2 = g.convertPythonIndexToRowCol(s, sel_1)
+            sint3, sint4 = g.convertPythonIndexToRowCol(s, sel_2)
+            sint1 += 1
+            sint3 += 1
+            i, junk = g.getLine(s, sel_1)
+            junk, j = g.getLine(s, sel_2)
+            txt = s[i:j]
+            columns = [
+                w.get(toInt(f"{z}.{sint2}"), toInt(f"{z}.{sint4}"))
+                    for z in range(sint1, sint3 + 1)
+            ]
+            aList = g.splitLines(txt)
+            zlist = list(zip(columns, aList))
+            zlist.sort()
+            s = ''.join([z[1] for z in zlist])
+            w.delete(i, j)
+            w.insert(i, s)
+            w.setSelectionRange(sel_1, sel_1 + len(s), insert=sel_1 + len(s))
+        finally:
+            self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.340: *4* ec.sortLines commands
     @cmd('reverse-sort-lines-ignoring-case')
     def reverseSortLinesIgnoringCase(self, event: LeoKeyEvent) -> None:
@@ -3876,90 +3813,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.setSelectionRange(sel1, sel2, insert=ins)
         finally:
             self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20150514063305.341: *4* ec.sortColumns
-    @cmd('sort-columns')
-    def sortColumns(self, event: LeoKeyEvent) -> None:
-        """
-        Sort lines of selected text using only lines in the given columns to do
-        the comparison.
-        """
-        w = self.editWidget(event)
-        if not self._chckSel(event):
-            return  # pragma: no cover (defensive)
-        s = w.getAllText()
-
-        def toInt(index: str) -> int:
-            return g.toPythonIndex(s, index)
-
-        self.beginCommand(w, undoType='sort-columns')
-        try:
-            sel_1, sel_2 = w.getSelectionRange()
-            sint1, sint2 = g.convertPythonIndexToRowCol(s, sel_1)
-            sint3, sint4 = g.convertPythonIndexToRowCol(s, sel_2)
-            sint1 += 1
-            sint3 += 1
-            i, junk = g.getLine(s, sel_1)
-            junk, j = g.getLine(s, sel_2)
-            txt = s[i:j]
-            columns = [
-                w.get(toInt(f"{z}.{sint2}"), toInt(f"{z}.{sint4}"))
-                    for z in range(sint1, sint3 + 1)
-            ]
-            aList = g.splitLines(txt)
-            zlist = list(zip(columns, aList))
-            zlist.sort()
-            s = ''.join([z[1] for z in zlist])
-            w.delete(i, j)
-            w.insert(i, s)
-            w.setSelectionRange(sel_1, sel_1 + len(s), insert=sel_1 + len(s))
-        finally:
-            self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20150514063305.342: *4* ec.sortFields
-    @cmd('sort-fields')
-    def sortFields(self, event: LeoKeyEvent, which: str = None) -> None:
-        """
-        Divide the selected text into lines and sort by comparing the contents
-        of one field in each line. Fields are defined as separated by
-        whitespace, so the first run of consecutive non-whitespace characters
-        in a line constitutes field 1, the second such run constitutes field 2,
-        etc.
-
-        You specify which field to sort by with a numeric argument: 1 to sort
-        by field 1, etc. A negative argument means sort in descending order.
-        Thus, minus 2 means sort by field 2 in reverse-alphabetical order.
-         """
-        w = self.editWidget(event)
-        if not w or not self._chckSel(event):
-            return
-        self.beginCommand(w, undoType='sort-fields')
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        r1, r2, r3, r4 = self.getRectanglePoints(w)
-        i, junk = g.getLine(s, r1)
-        junk, j = g.getLine(s, r4)
-        txt = s[i:j]  # bug reported by pychecker.
-        txt = txt.split('\n')
-        fields = []
-        fn = r'\w+'
-        frx = re.compile(fn)
-        for line in txt:
-            f = frx.findall(line)
-            if not which:
-                fields.append(f[0])
-            else:
-                i = int(which)
-                if len(f) < i:
-                    return
-                i = i - 1
-                fields.append(f[i])
-        nz = sorted(zip(fields, txt))
-        w.delete(i, j)
-        int1 = i
-        for z in nz:
-            w.insert(f"{int1}.0", f"{z[1]}\n")
-            int1 = int1 + 1
-        w.setInsertPoint(ins)
-        self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.343: *3* ec: swap/transpose
     #@+node:ekr.20150514063305.344: *4* ec.transposeLines
     @cmd('transpose-lines')
