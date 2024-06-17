@@ -1713,7 +1713,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                         lines.append('\n')
                 s2 = ''.join(lines)
                 if s2 != p.b:
-                    print(p.h)
                     bunch = u.beforeChangeNodeContents(p)
                     p.b = s2
                     p.setDirty()
