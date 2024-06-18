@@ -30,10 +30,10 @@ for command in [
     f'{python} -c "import leo.core.leoTokens" {args} leo/core',
     f'{python} -c "import leo.core.leoTokens" {args} leo/scripts',
     f'{python} -c "import leo.core.leoTokens" {args} leo/plugins',
-    # f'{python} -c "import leo.core.leoTokens" {args} leo/modes',
-    # f'{python} -c "import leo.core.leoTokens" {args} leo/unittests/commands',
-    # f'{python} -c "import leo.core.leoTokens" {args} leo/unittests/plugins',
-    # f'{python} -c "import leo.core.leoTokens" {args} leo/unittests/misc_tests',
+    f'{python} -c "import leo.core.leoTokens" {args} leo/modes',
+    f'{python} -c "import leo.core.leoTokens" {args} leo/unittests/commands',
+    f'{python} -c "import leo.core.leoTokens" {args} leo/unittests/plugins',
+    f'{python} -c "import leo.core.leoTokens" {args} leo/unittests/misc_tests',
 ]:
     subprocess.Popen(command, shell=True).communicate()
 #@-leo
