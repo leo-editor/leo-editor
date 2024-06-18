@@ -28,6 +28,7 @@
 <v t="ekr.20231107062256.1"><vh>@button check-leoPy.leo</vh></v>
 <v t="ekr.20230508145335.1"><vh>@command slow-tests</vh></v>
 <v t="ekr.20220306092217.1"><vh>@command test-one</vh>
+<v t="ekr.20240528034319.1"><vh>&lt;&lt; test the beautifier &gt;&gt;</vh></v>
 <v t="ekr.20240417150035.1"><vh>&lt;&lt; old commands &gt;&gt;</vh></v>
 <v t="ekr.20230511074046.1"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
 </v>
@@ -420,6 +421,7 @@
 <v t="ekr.20040205071616"><vh>@file ../plugins/mnplugins.py</vh></v>
 <v t="ekr.20101110094759.5843"><vh>@file ../plugins/mod_speedups.py</vh></v>
 <v t="tbrown.20070117104409"><vh>@file ../plugins/quickMove.py</vh></v>
+<v t="tbrown.20130813134319.11942"><vh>@file ../plugins/richtext.py</vh></v>
 <v t="ekr.20040910070811.1"><vh>@file ../plugins/run_nodes.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@file ../plugins/stickynotes_plus.py</vh></v>
 <v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
@@ -2804,20 +2806,12 @@ if c.isChanged():
 &lt;&lt; prefixes &gt;&gt;
 &lt;&lt; old commands &gt;&gt;
 if 0:
-    # Can be run from the command line as follows:
-    # python -c "import leo.core.leoTokens" --all --report --write leo/core/leoAst.py
-    args = '--all --report --write'  # --beautified --diff --write'
-    for command in (
-        # f'python -c "import leo.core.leoTokens" {args} leoAst.py',
-        f'python -c "import leo.core.leoTokens" {args} leo/core',
-        'echo done!',
-    ):
-        print(command)
-        g.execute_shell_commands(command)
+    &lt;&lt; test the beautifier &gt;&gt;
 elif 1:
     commands = (
         # General tests.
-        f"{core}.test_leoAtFile",
+        f"{core}.test_leoserver.TestLeoServer.test_find_commands",
+        # f"{core}.test_leoFind.TestFind.test_find_var",
         # f"{core}.test_leoTokens.TestTokenBasedOrange",
         # f"{core}.test_leoTokens.TestTokens",
         # f"{core}.test_leoTokens.TestTokenBasedOrange.test_blank_lines_after_function",
@@ -3294,9 +3288,9 @@ viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 
 # Disabled standard menus...
 
+# quicksearch.py      # Nav pane.
 # mod_autosave.py   # Creates .bak files.
 # nodetags.py       # Supports tags via uA's.
-# quicksearch.py      # Nav pane.
 # todo.py             # Task pane.
 </t>
 <t tx="ekr.20221129012213.1"># See flake8 settings in setup.cfg.</t>
@@ -3535,6 +3529,17 @@ print('Done!')
 # 'python -m mypy c:/test/mypy_test.py',
 # 'python -m ruff check c:/test/mypy_test.py',
 # 'python -m pyflakes c:/test/mypy_test.py',
+</t>
+<t tx="ekr.20240528034319.1"># Can be run from the command line as follows:
+# python -c "import leo.core.leoTokens" --all --report --write leo/core/leoAst.py
+args = '--all --report --write'  # --beautified --diff --write'
+for command in (
+    # f'python -c "import leo.core.leoTokens" {args} leoAst.py',
+    f'python -c "import leo.core.leoTokens" {args} leo/core',
+    'echo done!',
+):
+    print(command)
+    g.execute_shell_commands(command)
 </t>
 </tnodes>
 </leo_file>
