@@ -5,7 +5,7 @@
 """
 install_leo_from_testpypi.py: Install leo from https://test.pypi.org/project/leo/.
 
-Info item #3837 describes all distribution-related scripts.
+See info item #3837 for full documentation.
 https://github.com/leo-editor/leo-editor/issues/3837
 """
 
@@ -14,7 +14,7 @@ import subprocess
 
 print(os.path.basename(__file__))
 
-# Do *not* install from leo-editor!
+# cd to the home directory.
 home_dir = os.path.expanduser("~")
 os.chdir(home_dir)
 
