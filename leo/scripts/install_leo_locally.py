@@ -24,7 +24,7 @@ if any('leo-editor' in z for z in sys.path):
     print('Hint: do *not* run this script from the leo-editor directory!')
 else:
     print(file_name)
-    
+
     # Install from the *parent* of the `leo-editor` directory.
     leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
     parent_dir = os.path.abspath(os.path.join(leo_editor_dir, '..'))
@@ -32,7 +32,7 @@ else:
     assert os.path.isdir(parent_dir), repr(parent_dir)
     assert not parent_dir.endswith('leo-editor'), repr(parent_dir)
     os.chdir(parent_dir)
-   
+
     # Install Leo using `pip install leo`
     dist_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..', 'dist'))
     assert os.path.exists(dist_dir), repr(dist_dir)
