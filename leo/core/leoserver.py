@@ -4165,7 +4165,7 @@ class LeoServer:
             'select-to-matching-bracket',
 
             'sort-columns',
-            'sort-fields',
+            # 'sort-fields',
             'sort-lines',
             'sort-lines-ignoring-case',
 
