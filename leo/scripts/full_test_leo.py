@@ -27,9 +27,8 @@ args = ' '.join(sys.argv[1:])
 isWindows = sys.platform.startswith('win')
 python = 'py' if isWindows else 'python'
 
-# Run beautify_all_leo.py to beautify everything.
 for command in [
-    fr'{python} -m "leo.scripts.beautify_leo',
+    fr'{python} -m "leo.scripts.beautify_all_leo',
     fr'{python} -m "leo.scripts.run_test_leo',
     fr'{python} -m "leo.scripts.mypy_leo',
     fr'{python} -m "leo.scripts.ruff_leo',

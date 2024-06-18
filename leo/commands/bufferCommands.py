@@ -166,27 +166,6 @@ class BufferCommandsClass(BaseEditCommandsClass):
             w.seeInsertPoint()
             self.endCommand()
             c.recolor()
-    #@+node:ekr.20150514045829.12: *4* renameBuffer (not ready)
-    def renameBuffer(self, event: LeoKeyEvent) -> None:
-        """Rename a buffer, i.e., change a node's headline."""
-        g.es('rename-buffer not ready yet')
-        if 0:
-            self.c.k.setLabelBlue('Rename buffer from: ')
-            self.getBufferName(event, self.renameBufferFinisher1)
-
-    def renameBufferFinisher1(self, name: str) -> None:
-        self.fromName = name
-        self.c.k.setLabelBlue(f"Rename buffer from: {name} to: ")
-        event = None
-        self.getBufferName(event, self.renameBufferFinisher2)
-
-    def renameBufferFinisher2(self, name: str) -> None:
-        c = self.c
-        p = self.findBuffer(self.fromName)
-        if p:
-            c.endEditing()
-            p.h = name
-            c.redraw(p)
     #@+node:ekr.20150514045829.13: *4* switchToBuffer
     @cmd('buffer-switch-to')
     def switchToBuffer(self, event: LeoKeyEvent) -> None:

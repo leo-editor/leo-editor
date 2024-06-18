@@ -1583,7 +1583,7 @@ class LeoCursesGui(leoGui.LeoGui):
             self.curses_app.run()  # run calls CApp.main(), which calls CGui.run().
         finally:
             curses.nocbreak()
-            stdscr.keypad(0)
+            stdscr.keypad(True)  # Must be True!
             curses.echo()
             curses.endwin()
             if 'shutdown' in g.app.debug:
