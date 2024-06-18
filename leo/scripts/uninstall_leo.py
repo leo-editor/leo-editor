@@ -22,7 +22,7 @@ if any('leo-editor' in z for z in sys.path):
     print('Hint: do *not* run this script from the leo-editor directory!')
 else:
     print(os.path.basename(__file__))
-    
+
     # Uninstall from the *parent* of the `leo-editor` directory.
     leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
     parent_dir = os.path.abspath(os.path.join(leo_editor_dir, '..'))
@@ -36,7 +36,7 @@ else:
     command = 'python -m pip uninstall leo'
     print(command)
     subprocess.Popen(command, shell=True).communicate()
-    
+
     if 0:  # This hack should no longer be necessary.
         # Delete the leo/leo.egg-info directory.
         egg_dir = os.path.abspath(os.path.join(leo_editor_dir, 'leo.egg-info'))
