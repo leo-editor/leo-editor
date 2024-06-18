@@ -3,6 +3,9 @@
 #@@language python
 #@@nosearch
 
+# For build devs.
+build>=1.2.1
+
 # For mypy and ruff.
 
 mypy
@@ -38,7 +41,7 @@ urllib3
 
 # Gui packages...
 
-PyQt6 >= 6.6
+PyQt6>= 6.6
 PyQt6-QScintilla
 PyQt6-WebEngine
 Send2Trash; platform_system=="Windows"  # picture_viewer plugin.

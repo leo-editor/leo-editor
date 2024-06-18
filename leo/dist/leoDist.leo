@@ -122,7 +122,6 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 <v t="mhw-nc.20190126223741.1"><vh>Pip</vh>
-<v t="maphew.20180224170853.1"><vh>@@@file ../../setup.py</vh></v>
 <v t="maphew.20190208135916.1"><vh>@clean ../../setup.cfg</vh></v>
 <v t="maphew.20190206032329.1"><vh>@clean ../../pyproject.toml</vh></v>
 </v>
@@ -199,7 +198,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.7.9.a1
+Version: 6.8.0 b1
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -217,41 +216,47 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.7.8 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.8.0 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.7.8**
+**The highlights of Leo 6.8.0**
 
-This release simplifies Leo's install process.
-See https://leo-editor.github.io/leo-editor/getting-started.html
+This release contains several **breaking changes** to Leo's API.
+See the `What's new in Leo 6.8.0` section for details.
+  
+**Significant changes**
 
-- PR #3757: (leoTokens.py) Make Leo's beautifier 3x faster.
-- PR #3771: Revert colorizing of f-strings.
-- PR #3786: Support Nim.
-- PR #3790: Add "get-unl" command to Leo's server.
-- PR #3805: Fix problems with auto-completion and calltips.
-- PR #3806: Fix problems with Leo's `go-back` and `go-forward` commands.
-- PR #3807: Improve Leo's Python importer.
-- PR #3817: Allow relative paths in gnx-based UNLs.
+- PR #3828: Leo now requires PyQt6.
+- PR #3911: Leo's core no longer uses the free_layout or nested_splitter plugins.
+- PR #3872: Improve how Leo searches for definitions. Add `@bool prefer-nav-pane`.
+- PR #3922: Improved the `restart-leo` command.
+
+**New and improved**
+
+- PR #3870: Leo's beautifier works faster.
+- PR #3841: Add `g.traceUnique` and `g.traceUniqueClass` functions.
+- PR #3893: Add `vr-fully-expand`, `vr-toggle-visibility` and `vr-keep-open` commands.
+- PR #3902: Add the `toggle-unl-view` command.
+- PR #3921: Add the `show-qt-widgets` command.
+
 - The usual minor improvements and bug fixes.
 
 **Links**
 
-- [Download Leo](https://leo-editor.github.io/leo-editor/download.html)
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.7.8 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.7.8+)
-- [6.7.8 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.7.8)
+- [6.8.0 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.0+)
+- [6.8.0 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.0)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
 - [Forum](http://groups.google.com/group/leo-editor)
-- [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
 - [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
-- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
+</t>
 <t tx="EKR.20040519091259.2"></t>
 <t tx="EKR.20040519091259.3">I like Leo more the more I use it...It's an unexpected pleasure to
 see my (linearly written) code outlined in Leo. I can't wait to use
@@ -1406,7 +1411,7 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create the **release branch**: 6.7.9.
+Create the **release branch**: 6.8.0.
 Change version in this checklist to match.
 
 It's ok to merge devel into release branch
@@ -1426,7 +1431,7 @@ It's ok to merge devel into release branch
 
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
-- git merge 6.7.9
+- git merge 6.8.0
 - Run the `make-sphinx` from LeoDocs.leo
   This script copies files from leo/doc/html/_build/html to leo-editor/docs
 - Commit the changes and push.
@@ -1445,7 +1450,7 @@ It's ok to merge devel into release branch
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
-git tag -a v6.7.9 -m "Added v6.7.9 tag"
+git tag -a v6.8.0 -m "Added v6.8.0 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
@@ -1454,15 +1459,15 @@ git push --follow-tags
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout devel
-- git merge 6.7.9
+- git merge 6.8.0
 - update version in leoVersion.py.
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.7.9 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.8.0 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.7.9</t>
+- git merge 6.8.0</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -1553,7 +1558,7 @@ python -m pip uninstall leo
 <t tx="ekr.20230301070404.1">LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for 6.7.
-  The final version in PKG-INFO.TXT must be called 6.7.9, not 6.7.9-final.
+  The final version in PKG-INFO.TXT must be called 6.8.0, not 6.8.0-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Update version in 'PKG-INFO.TXT'
@@ -1569,7 +1574,7 @@ python -m pip uninstall leo
 - Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
 - Open LeoPyRef.leo. Verify the diff after saving.
 </t>
-<t tx="ekr.20230301084201.1">- Change 6.7.9 (the old version) to 6.7.10.
+<t tx="ekr.20230301084201.1">- Change 6.8.0 (the old version) to 6.8.1.
   Be careful about the new version in this node!
 </t>
 <t tx="ekr.20240206185544.1"></t>
@@ -1749,7 +1754,6 @@ That said, here's my recipe for packaging a new release for Test PyPi:
 Remove broken releases (still can't re-use identical version numbers and file names though):
 https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 </t>
-<t tx="maphew.20180224170853.1"></t>
 <t tx="maphew.20190206032329.1">#@+leo-ver=5-thin
 #@+node:ekr.20240227064614.1: * @file ../../pyproject.toml
 #@@language toml
@@ -1983,7 +1987,7 @@ packages = [
 
 [project]
 requires-python = "&gt;= 3.9"
-version = "6.7.9.a1"
+version = "6.8.0 a1
 name = "leo"
 
 #@+&lt;&lt; developer info &gt;&gt;

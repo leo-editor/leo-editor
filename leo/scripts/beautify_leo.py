@@ -3,8 +3,7 @@
 #@@language python
 
 """
-beautify_leo.py: Beautify only *changed* files in leo/core, 
-leo/commands and leo/scripts.
+beautify_leo.py: Beautify only *changed* files.
 
 Works regardless of whether mypyc has compiled leoTokens.py!
 
@@ -30,11 +29,11 @@ for command in [
     f'{python} -c "import leo.core.leoTokens" {args} leo/commands',
     f'{python} -c "import leo.core.leoTokens" {args} leo/core',
     f'{python} -c "import leo.core.leoTokens" {args} leo/scripts',
-    # f'{python} -c "import leo.core.leoTokens" {args} leo/plugins',
-    # f'{python} -c "import leo.core.leoTokens" {args} leo/modes',
-    # f'{python} -c "import leo.core.leoTokens" {args} leo/unittests/commands',
-    # f'{python} -c "import leo.core.leoTokens" {args} leo/unittests/plugins',
-    # f'{python} -c "import leo.core.leoTokens" {args} leo/unittests/misc_tests',
+    f'{python} -c "import leo.core.leoTokens" {args} leo/plugins',
+    f'{python} -c "import leo.core.leoTokens" {args} leo/modes',
+    f'{python} -c "import leo.core.leoTokens" {args} leo/unittests/commands',
+    f'{python} -c "import leo.core.leoTokens" {args} leo/unittests/plugins',
+    f'{python} -c "import leo.core.leoTokens" {args} leo/unittests/misc_tests',
 ]:
     subprocess.Popen(command, shell=True).communicate()
 #@-leo

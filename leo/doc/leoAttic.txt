@@ -6,10 +6,11 @@
 #@@language python
 #@@killbeautify
 #@+all
-#@+node:ekr.20230913144248.1: ** retire g.SherlockTracer
+#@+node:ekr.20240617085704.1: ** Permanent attic
+#@+node:ekr.20230913144248.1: *3* retire g.SherlockTracer
 # I am going to leave this class in the attic indefinitely.
 # It might be useful as the base for other classes.
-#@+node:ekr.20121128031949.12605: *3* class g.SherlockTracer
+#@+node:ekr.20121128031949.12605: *4* class g.SherlockTracer
 class SherlockTracer:
     """
     A stand-alone tracer class with many of Sherlock's features.
@@ -46,7 +47,7 @@ class SherlockTracer:
     g.SherlockTracer(patterns).run()
     """
     @others
-#@+node:ekr.20121128031949.12602: *4* sherlock.__init__
+#@+node:ekr.20121128031949.12602: *5* sherlock.__init__
 def __init__(
     self,
     patterns: list[Any],
@@ -75,17 +76,17 @@ def __init__(
             QtCore.pyqtRemoveInputHook()
     except Exception:
         pass
-#@+node:ekr.20140326100337.16844: *4* sherlock.__call__
+#@+node:ekr.20140326100337.16844: *5* sherlock.__call__
 def __call__(self, frame: Any, event: Any, arg: Any) -> Any:
     """Exists so that self.dispatch can return self."""
     return self.dispatch(frame, event, arg)
-#@+node:ekr.20140326100337.16846: *4* sherlock.bad_pattern
+#@+node:ekr.20140326100337.16846: *5* sherlock.bad_pattern
 def bad_pattern(self, pattern: Any) -> None:
     """Report a bad Sherlock pattern."""
     if pattern not in self.bad_patterns:
         self.bad_patterns.append(pattern)
         print(f"\nignoring bad pattern: {pattern}\n")
-#@+node:ekr.20140326100337.16847: *4* sherlock.check_pattern
+#@+node:ekr.20140326100337.16847: *5* sherlock.check_pattern
 def check_pattern(self, pattern: str) -> bool:
     """Give an error and return False for an invalid pattern."""
     try:
@@ -98,7 +99,7 @@ def check_pattern(self, pattern: str) -> bool:
     except Exception:
         self.bad_pattern(pattern)
         return False
-#@+node:ekr.20121128031949.12609: *4* sherlock.dispatch
+#@+node:ekr.20121128031949.12609: *5* sherlock.dispatch
 def dispatch(self, frame: Any, event: Any, arg: Any) -> Any:
     """The dispatch method."""
     if event == 'call':
@@ -109,7 +110,7 @@ def dispatch(self, frame: Any, event: Any, arg: Any) -> Any:
         self.do_line(frame, arg)
     # Queue the SherlockTracer instance again.
     return self
-#@+node:ekr.20121128031949.12603: *4* sherlock.do_call & helper
+#@+node:ekr.20121128031949.12603: *5* sherlock.do_call & helper
 def do_call(self, frame: Any, unused_arg: Any) -> None:
     """Trace through a function call."""
     frame1 = frame
@@ -146,7 +147,7 @@ def do_call(self, frame: Any, unused_arg: Any) -> None:
     d = self.stats.get(file_name, {})
     d[full_name] = 1 + d.get(full_name, 0)
     self.stats[file_name] = d
-#@+node:ekr.20130111185820.10194: *5* sherlock.get_args
+#@+node:ekr.20130111185820.10194: *6* sherlock.get_args
 def get_args(self, frame: Any) -> list[str]:
     """Return a list of string "name=val" for each arg in the function call."""
     code = frame.f_code
@@ -173,7 +174,7 @@ def get_args(self, frame: Any) -> list[str]:
                 if val:
                     result.append(f"{name}={val}")
     return result
-#@+node:ekr.20140402060647.16845: *4* sherlock.do_line (not used)
+#@+node:ekr.20140402060647.16845: *5* sherlock.do_line (not used)
 bad_fns: list[str] = []
 
 def do_line(self, frame: Any, arg: Any) -> None:
@@ -207,7 +208,7 @@ def do_line(self, frame: Any, arg: Any) -> None:
         print(f"{name:3} {line}")
     else:
         print(f"{g.shortFileName(file_name)} {n} {full_name} {line}")
-#@+node:ekr.20130109154743.10172: *4* sherlock.do_return & helper
+#@+node:ekr.20130109154743.10172: *5* sherlock.do_return & helper
 def do_return(self, frame: Any, arg: Any) -> None:  # Arg *is* used below.
     """Trace a return statement."""
     code = frame.f_code
@@ -230,7 +231,7 @@ def do_return(self, frame: Any, arg: Any) -> None:  # Arg *is* used below.
             self.put_ret(f"<{ret1.__class__.__name__}>", n, path)
     else:
         self.put_ret(arg, n, path)
-#@+node:ekr.20220605141445.1: *5* sherlock.put_ret
+#@+node:ekr.20220605141445.1: *6* sherlock.put_ret
 def put_ret(self, arg: Any, n: int, path: str) -> None:
     """Print arg, the value returned by a "return" statement."""
     indent = ' ' * max(0, n - self.n + 1) if self.indent else ''
@@ -261,7 +262,7 @@ def put_ret(self, arg: Any, n: int, path: str) -> None:
             f"{path}:{indent}-{self.full_name} -> "
             f"{exctype.__name__}, {value} {arg_s}"
         )
-#@+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled
+#@+node:ekr.20121128111829.12185: *5* sherlock.fn_is_enabled
 def fn_is_enabled(self, func: Any, patterns: list[str]) -> bool:
     """Return True if tracing for the given function is enabled."""
     if func in self.ignored_functions:
@@ -308,7 +309,7 @@ def fn_is_enabled(self, func: Any, patterns: list[str]) -> bool:
     except Exception:
         self.bad_pattern(pattern)
         return False
-#@+node:ekr.20130112093655.10195: *4* sherlock.get_full_name
+#@+node:ekr.20130112093655.10195: *5* sherlock.get_full_name
 def get_full_name(self, locals_: Any, name: str) -> str:
     """Return class_name::name if possible."""
     full_name = name
@@ -319,7 +320,7 @@ def get_full_name(self, locals_: Any, name: str) -> str:
     except Exception:
         pass
     return full_name
-#@+node:ekr.20121128111829.12183: *4* sherlock.is_enabled
+#@+node:ekr.20121128111829.12183: *5* sherlock.is_enabled
 ignored_files: list[str] = []  # List of files.
 ignored_functions: list[str] = []  # List of files.
 
@@ -397,7 +398,7 @@ def is_enabled(
         except Exception:
             self.bad_pattern(pattern)
     return enabled
-#@+node:ekr.20121128111829.12182: *4* sherlock.print_stats
+#@+node:ekr.20121128111829.12182: *5* sherlock.print_stats
 def print_stats(self, patterns: list[str] = None) -> None:
     """Print all accumulated statisitics."""
     print('\nSherlock statistics...')
@@ -417,7 +418,7 @@ def print_stats(self, patterns: list[str] = None) -> None:
             print('/'.join(parts[-2:]))
             for key in result:
                 print(f"{d.get(key):4} {key}")
-#@+node:ekr.20121128031949.12614: *4* sherlock.run
+#@+node:ekr.20121128031949.12614: *5* sherlock.run
 # Modified from pdb.Pdb.set_trace.
 
 def run(self, frame: Any = None) -> None:
@@ -432,7 +433,7 @@ def run(self, frame: Any = None) -> None:
         self.n += 1
     # Pass self to sys.settrace to give easy access to all methods.
     sys.settrace(self)
-#@+node:ekr.20140322090829.16834: *4* sherlock.push & pop
+#@+node:ekr.20140322090829.16834: *5* sherlock.push & pop
 def push(self, patterns: list[str]) -> None:
     """Push the old patterns and set the new."""
     self.pattern_stack.append(self.patterns)  # type:ignore
@@ -446,11 +447,11 @@ def pop(self) -> None:
         print(f"SherlockTracer.pop: {self.patterns}")
     else:
         print('SherlockTracer.pop: pattern stack underflow')
-#@+node:ekr.20140326100337.16845: *4* sherlock.set_patterns
+#@+node:ekr.20140326100337.16845: *5* sherlock.set_patterns
 def set_patterns(self, patterns: list[str]) -> None:
     """Set the patterns in effect."""
     self.patterns = [z for z in patterns if self.check_pattern(z)]
-#@+node:ekr.20140322090829.16831: *4* sherlock.show
+#@+node:ekr.20140322090829.16831: *5* sherlock.show
 def show(self, item: Any) -> str:
     """return the best representation of item."""
     if not item:
@@ -467,12 +468,161 @@ def show(self, item: Any) -> str:
     if s.startswith("<object object"):
         s = "_dummy"
     return s
-#@+node:ekr.20121128093229.12616: *4* sherlock.stop
+#@+node:ekr.20121128093229.12616: *5* sherlock.stop
 def stop(self) -> None:
     """Stop all tracing."""
     sys.settrace(None)
-#@+node:ekr.20240322064529.1: ** retire .cmd scripts
-#@+node:ekr.20240322064529.2: *3* beautify-leo.cmd
+#@+node:ekr.20240617085410.1: *3* retire two sort commands
+@language rest
+@
+XEmacs provides several commands for sorting text in a buffer.  All
+operate on the contents of the region (the text between point and the
+mark).  They divide the text of the region into many "sort records",
+identify a "sort key" for each record, and then reorder the records
+using the order determined by the sort keys.  The records are ordered so
+that their keys are in alphabetical order, or, for numerical sorting, in
+numerical order.  In alphabetical sorting, all upper-case letters `A'
+through `Z' come before lower-case `a', in accordance with the ASCII
+character sequence.
+
+   The sort commands differ in how they divide the text into sort
+records and in which part of each record they use as the sort key.
+Most of the commands make each line a separate sort record, but some
+commands use paragraphs or pages as sort records.  Most of the sort
+commands use each entire sort record as its own sort key, but some use
+only a portion of the record as the sort key.
+
+`M-x sort-lines'
+     Divide the region into lines and sort by comparing the entire text
+     of a line.  A prefix argument means sort in descending order.
+
+`M-x sort-paragraphs'
+     Divide the region into paragraphs and sort by comparing the entire
+     text of a paragraph (except for leading blank lines).  A prefix
+     argument means sort in descending order.
+
+`M-x sort-pages'
+     Divide the region into pages and sort by comparing the entire text
+     of a page (except for leading blank lines).  A prefix argument
+     means sort in descending order.
+
+`M-x sort-fields'
+     Divide the region into lines and sort by comparing the contents of
+     one field in each line.  Fields are defined as separated by
+     whitespace, so the first run of consecutive non-whitespace
+     characters in a line constitutes field 1, the second such run
+     constitutes field 2, etc.
+
+     You specify which field to sort by with a numeric argument: 1 to
+     sort by field 1, etc.  A negative argument means sort in descending
+     order.  Thus, minus 2 means sort by field 2 in reverse-alphabetical
+     order.
+
+`M-x sort-numeric-fields'
+     Like `M-x sort-fields', except the specified field is converted to
+     a number for each line and the numbers are compared.  `10' comes
+     before `2' when considered as text, but after it when considered
+     as a number.
+
+`M-x sort-columns'
+     Like `M-x sort-fields', except that the text within each line used
+     for comparison comes from a fixed range of columns.  An explanation
+     is given below.
+
+   For example, if the buffer contains:
+
+     On systems where clash detection (locking of files being edited) is
+     implemented, XEmacs also checks the first time you modify a buffer
+     whether the file has changed on disk since it was last visited or
+     saved.  If it has, you are asked to confirm that you want to change
+     the buffer.
+
+then if you apply `M-x sort-lines' to the entire buffer you get:
+
+     On systems where clash detection (locking of files being edited) is
+     implemented, XEmacs also checks the first time you modify a buffer
+     saved.  If it has, you are asked to confirm that you want to change
+     the buffer.
+     whether the file has changed on disk since it was last visited or
+
+where the upper case `O' comes before all lower case letters.  If you
+apply instead `C-u 2 M-x sort-fields' you get:
+
+     saved.  If it has, you are asked to confirm that you want to change
+     implemented, XEmacs also checks the first time you modify a buffer
+     the buffer.
+     On systems where clash detection (locking of files being edited) is
+     whether the file has changed on disk since it was last visited or
+
+where the sort keys were `If', `XEmacs', `buffer', `systems', and `the'.
+
+   `M-x sort-columns' requires more explanation.  You specify the
+columns by putting point at one of the columns and the mark at the other
+column.  Because this means you cannot put point or the mark at the
+beginning of the first line to sort, this command uses an unusual
+definition of `region': all of the line point is in is considered part
+of the region, and so is all of the line the mark is in.
+
+   For example, to sort a table by information found in columns 10 to
+15, you could put the mark on column 10 in the first line of the table,
+and point on column 15 in the last line of the table, and then use this
+command.  Or you could put the mark on column 15 in the first line and
+point on column 10 in the last line.
+
+   This can be thought of as sorting the rectangle specified by point
+and the mark, except that the text on each line to the left or right of
+the rectangle moves along with the text inside the rectangle.  *Note
+Rectangles::.
+@language python
+#@+node:ekr.20150514063305.342: *4* ec.sortFields
+@cmd('sort-fields')
+def sortFields(self, event: LeoKeyEvent, which: str = None) -> None:
+    """
+    Divide the selected text into lines and sort by comparing the contents
+    of one field in each line. Fields are defined as separated by
+    whitespace, so the first run of consecutive non-whitespace characters
+    in a line constitutes field 1, the second such run constitutes field 2,
+    etc.
+
+    You specify which field to sort by with a numeric argument: 1 to sort
+    by field 1, etc. A negative argument means sort in descending order.
+    Thus, minus 2 means sort by field 2 in reverse-alphabetical order.
+     """
+    w = self.editWidget(event)
+    if not w or not self._chckSel(event):
+        return
+    self.beginCommand(w, undoType='sort-fields')
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    r1, r2, r3, r4 = self.getRectanglePoints(w)
+    i, junk = g.getLine(s, r1)
+    junk, j = g.getLine(s, r4)
+    txt = s[i:j]  # bug reported by pychecker.
+    txt = txt.split('\n')
+    fields = []
+    fn = r'\w+'
+    frx = re.compile(fn)
+    for line in txt:
+        f = frx.findall(line)
+        if not which:
+            fields.append(f[0])
+        else:
+            i = int(which)
+            if len(f) < i:
+                return
+            i = i - 1
+            fields.append(f[i])
+    nz = sorted(zip(fields, txt))
+    w.delete(i, j)
+    int1 = i
+    for z in nz:
+        w.insert(f"{int1}.0", f"{z[1]}\n")
+        int1 = int1 + 1
+    w.setInsertPoint(ins)
+    self.endCommand(changed=True, setLabel=True)
+#@+node:ekr.20240617085731.1: ** To be cleared in Leo 6.8.1
+#@+node:ekr.20240322064529.1: *3* retire .cmd scripts
+#@+node:ekr.20240322064529.2: *4* beautify-leo.cmd
 @language batch
 @echo off
 cd %~dp0..\..
@@ -483,7 +633,7 @@ call py -m leo.core.leoAst --orange --verbose leo\core
 call py -m leo.core.leoAst --orange --verbose leo\commands
 call py -m leo.core.leoAst --orange --verbose leo\plugins
 call py -m leo.core.leoAst --orange --verbose leo\modes
-#@+node:ekr.20240322064529.3: *3* beautify-leo-force.cmd
+#@+node:ekr.20240322064529.3: *4* beautify-leo-force.cmd
 @language batch
 @echo off
 cd %~dp0..\..
@@ -500,7 +650,7 @@ call py -m leo.core.leoAst --orange --verbose leo\modes
 
 rem call py -m leo.core.leoAst --orange --force --verbose leo\plugins\importers
 rem call py -m leo.core.leoAst --orange --force --verbose leo\plugins\writers
-#@+node:ekr.20240322064529.4: *3* blacken-leo.cmd
+#@+node:ekr.20240322064529.4: *4* blacken-leo.cmd
 @language batch
 @echo off
 cd %~dp0..\..
@@ -508,7 +658,7 @@ cd %~dp0..\..
 rem not recommended!
 echo black leo.core
 call py -m black --skip-string-normalization leo\core
-#@+node:ekr.20240322064529.5: *3* flake8-leo.cmd
+#@+node:ekr.20240322064529.5: *4* flake8-leo.cmd
 @language batch
 @echo off
 cd %~dp0..\..
@@ -517,7 +667,7 @@ rem: See leo-editor/setup.cfg for defaults.
 
 echo flake8-leo
 py -m flake8 %*
-#@+node:ekr.20240322064529.6: *3* full-test-leo.cmd
+#@+node:ekr.20240322064529.6: *4* full-test-leo.cmd
 @language batch
 @echo off
 cls
@@ -530,7 +680,7 @@ call python312 -m unittest
 call ruff-leo.cmd
 call mypy-leo.cmd
 echo Done!
-#@+node:ekr.20240322064529.7: *3* make-leo.cmd
+#@+node:ekr.20240322064529.7: *4* make-leo.cmd
 @language batch
 @echo off
 cls
@@ -542,7 +692,7 @@ echo.
 echo sphinx-build -a (make clean)
 echo.
 sphinx-build -M html . _build -a
-#@+node:ekr.20240322064529.8: *3* mypy-leo.cmd
+#@+node:ekr.20240322064529.8: *4* mypy-leo.cmd
 @language batch
 @echo off
 cd %~dp0..\..
@@ -552,7 +702,7 @@ rem Always use the fast (official) version of mypy.
 
 echo mypy-leo
 py -m mypy --debug-cache leo %*
-#@+node:ekr.20240322064529.9: *3* pylint-leo.cmd
+#@+node:ekr.20240322064529.9: *4* pylint-leo.cmd
 @language batch
 @echo off
 cd %~dp0..\..
@@ -561,7 +711,7 @@ echo pylint-leo
 time /T
 call py -m pylint leo --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets %*
 time /T
-#@+node:ekr.20240322064529.10: *3* reindent-leo.cmd
+#@+node:ekr.20240322064529.10: *4* reindent-leo.cmd
 @language batch
 @echo off
 cd %~dp0..\..
@@ -604,7 +754,7 @@ goto done
 echo Cannot find reindent.py, skipping reindentation
 
 :done
-#@+node:ekr.20240322064529.11: *3* test-leo.cmd
+#@+node:ekr.20240322064529.11: *4* test-leo.cmd
 @language batch
 @echo off
 cd %~dp0..\..
@@ -613,7 +763,7 @@ call reindent-leo.cmd
 
 echo test-leo
 py -m unittest %*
-#@+node:ekr.20240322064529.12: *3* test-one-leo.cmd
+#@+node:ekr.20240322064529.12: *4* test-one-leo.cmd
 @language batch
 @echo off
 cls
@@ -621,7 +771,7 @@ cd %~dp0..\..
 
 echo test-one-leo
 call py -m unittest leo.unittests.core.test_leoGlobals.TestGlobals.test_g_handleScriptException
-#@+node:ekr.20240322064529.13: *3* tbo.cmd
+#@+node:ekr.20240322064529.13: *4* tbo.cmd
 @language batch
 
 @echo off
@@ -652,13 +802,13 @@ goto done
 call python312 -m leo.core.leoTokens  --help
 
 :done:
-#@+node:ekr.20240324061253.1: ** retire Qt5 plugins & files
-#@+node:tbrown.20171028115144.3: *3* @@@file ../plugins/editpane/pandownview.py
+#@+node:ekr.20240324061253.1: *3* retire Qt5 plugins & files
+#@+node:tbrown.20171028115144.3: *4* @@@file ../plugins/editpane/pandownview.py
 << pandownview imports >>
 @others
 @language python
 @tabwidth -4
-#@+node:tbrown.20171028115505.1: *4* << pandownview imports >>
+#@+node:tbrown.20171028115505.1: *5* << pandownview imports >>
 """Markdown view using Pandoc.
 
 There could also be a more generic Pandoc view that handles more input
@@ -680,7 +830,7 @@ except ImportError:
 
 from leo.plugins.editpane.plaintextview import LEP_PlainTextView as TextView
 
-#@+node:tbrown.20171028115505.2: *4* to_html
+#@+node:tbrown.20171028115505.2: *5* to_html
 def to_html(text, from_='markdown'):
     """to_html - convert to HTML
 
@@ -703,7 +853,7 @@ try:
     to_html("test")
 except:  # pylint: disable=raise-missing-from
     raise ImportError
-#@+node:tbrown.20171028115505.3: *4* class LEP_PanDownView
+#@+node:tbrown.20171028115505.3: *5* class LEP_PanDownView
 class LEP_PanDownView(HtmlView):
     """LEP_MarkdownView -
     """
@@ -711,13 +861,13 @@ class LEP_PanDownView(HtmlView):
     lep_name = "PanDoc Markdown View"
     from_fmt = 'markdown'
     @others
-#@+node:tbrown.20171028115505.4: *5* __init__
+#@+node:tbrown.20171028115505.4: *6* __init__
 def __init__(self, c=None, lep=None, *args, **kwargs):
     """set up"""
     super().__init__(c=c, lep=lep, *args, **kwargs)
     self.c = c
     self.lep = lep
-#@+node:tbrown.20171028115505.5: *5* new_text
+#@+node:tbrown.20171028115505.5: *6* new_text
 def new_text(self, text):
     """new_text - update for new text
 
@@ -725,7 +875,7 @@ def new_text(self, text):
         text (str): new text
     """
     self.setHtml(to_html(text, from_=self.from_fmt))
-#@+node:tbrown.20171028115505.6: *5* update_text
+#@+node:tbrown.20171028115505.6: *6* update_text
 def update_text(self, text):
     """update_text - update for current text
 
@@ -737,7 +887,7 @@ def update_text(self, text):
     self.new_text(text)
     # self.horizontalScrollBar().setValue(h)
     # self.verticalScrollBar().setValue(v)
-#@+node:tbrown.20171028115505.7: *4* class LEP_PanDownHtmlView
+#@+node:tbrown.20171028115505.7: *5* class LEP_PanDownHtmlView
 class LEP_PanDownHtmlView(TextView):
     """LEP_PanDownHtmlView - view the HTML for markdown from PanDoc
     """
@@ -745,13 +895,13 @@ class LEP_PanDownHtmlView(TextView):
     lep_name = "PanDoc Markdown Html View"
     from_fmt = 'markdown'
     @others
-#@+node:tbrown.20171028115505.8: *5* __init__
+#@+node:tbrown.20171028115505.8: *6* __init__
 def __init__(self, c=None, lep=None, *args, **kwargs):
     """set up"""
     super().__init__(c=c, lep=lep, *args, **kwargs)
     self.c = c
     self.lep = lep
-#@+node:tbrown.20171028115505.9: *5* new_text
+#@+node:tbrown.20171028115505.9: *6* new_text
 def new_text(self, text):
     """new_text - update for new text
 
@@ -759,28 +909,28 @@ def new_text(self, text):
         text (str): new text
     """
     self.setPlainText(to_html(text, from_=self.from_fmt))
-#@+node:tbrown.20171128074654.1: *4* class LEP_PanRstView
+#@+node:tbrown.20171128074654.1: *5* class LEP_PanRstView
 class LEP_PanRstView(LEP_PanDownView):
     """LEP_PanDownView -
     """
     lep_type = "RST"
     lep_name = "PanDoc rst View"
     from_fmt = 'rst'
-#@+node:tbrown.20171128074707.1: *4* class LEP_PanRstHtmlView
+#@+node:tbrown.20171128074707.1: *5* class LEP_PanRstHtmlView
 class LEP_PanRstHtmlView(LEP_PanDownHtmlView):
     """LEP_PanDownHtmlView -
     """
     lep_type = "RST-HTML"
     lep_name = "PanDoc rst Html View"
     from_fmt = 'rst'
-#@+node:tbrown.20171028115143.2: *3* @@@file ../plugins/editpane/webengineview.py
+#@+node:tbrown.20171028115143.2: *4* @@@file ../plugins/editpane/webengineview.py
 @nosearch
 
 << webengineview imports >>
 @others
 @language python
 @tabwidth -4
-#@+node:tbrown.20171028115459.1: *4* << webengineview imports >>
+#@+node:tbrown.20171028115459.1: *5* << webengineview imports >>
 # EKR: Use QtWebKitWidgets instead of QtWebEngineWidgets
 # TNB: No, there are two HTML viewers, this one must be QtWebEngineWidgets
 #      it's ok if it fails to load
@@ -790,20 +940,20 @@ class LEP_PanRstHtmlView(LEP_PanDownHtmlView):
 ### from leo.core.leoQt import QtWebKitWidgets
 from leo.core import leoGlobals as g
 assert g
-#@+node:tbrown.20171028115459.2: *4* class LEP_WebEngineView
+#@+node:tbrown.20171028115459.2: *5* class LEP_WebEngineView
 class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
     """LEP_PlainTextView - simplest possible LeoEditorPane viewer
     """
     lep_type = "HTML"
     lep_name = "Web Engine View"
     @others
-#@+node:tbrown.20171028115459.3: *5* __init__
+#@+node:tbrown.20171028115459.3: *6* __init__
 def __init__(self, c=None, lep=None, *args, **kwargs):
     """set up"""
     super().__init__(*args, **kwargs)
     self.c = c
     self.lep = lep
-#@+node:tbrown.20171028115459.4: *5* new_text
+#@+node:tbrown.20171028115459.4: *6* new_text
 def new_text(self, text):
     """new_text - update for new text
 
@@ -814,7 +964,7 @@ def new_text(self, text):
     self.setEnabled(False)
     self.setHtml(text)
     self.setEnabled(True)
-#@+node:tbrown.20171028115459.5: *5* update_text
+#@+node:tbrown.20171028115459.5: *6* update_text
 def update_text(self, text):
     """update_text - update for current text
 
@@ -825,12 +975,12 @@ def update_text(self, text):
     self.new_text(text)
     # self.horizontalScrollBar().setValue(h)
     # self.verticalScrollBar().setValue(v)
-#@+node:tbrown.20171028115143.1: *3* @@@file ../plugins/editpane/webkitview.py
+#@+node:tbrown.20171028115143.1: *4* @@@file ../plugins/editpane/webkitview.py
 << webkitview imports >>
 @others
 @language python
 @tabwidth -4
-#@+node:tbrown.20171028115457.1: *4* << webkitview imports >> (webkitview.py)
+#@+node:tbrown.20171028115457.1: *5* << webkitview imports >> (webkitview.py)
 import os
 from leo.core import leoGlobals as g
 assert g
@@ -839,7 +989,7 @@ if not QtWebKitWidgets or 'engine' in g.os_path_basename(
     QtWebKitWidgets.__file__).lower():
     # not loading webkit view, webengine masquerading as webkit
     raise ImportError
-#@+node:tbrown.20171028115457.2: *4* _path_from_pos
+#@+node:tbrown.20171028115457.2: *5* _path_from_pos
 def _path_from_pos(c, p):
     """_path_from_pos - get folder for position
 
@@ -874,14 +1024,14 @@ def _path_from_pos(c, p):
         p.moveToParent()
 
     return path
-#@+node:tbrown.20171028115457.3: *4* class LEP_WebKitView
+#@+node:tbrown.20171028115457.3: *5* class LEP_WebKitView
 class LEP_WebKitView(QtWebKitWidgets.QWebView):
     """LEP_WebKitView - Web Kit View
     """
     lep_type = "HTML"
     lep_name = "Web Kit View"
     @others
-#@+node:tbrown.20171028115457.4: *5* __init__
+#@+node:tbrown.20171028115457.4: *6* __init__
 def __init__(self, c=None, lep=None, *args, **kwargs):
     """set up"""
     super().__init__(*args, **kwargs)
@@ -896,7 +1046,7 @@ def __init__(self, c=None, lep=None, *args, **kwargs):
         # leoQt substitutes QtWebEngine for QtWebKit
         # if QtWebKit isn't available, causing this to fail
         pass
-#@+node:tbrown.20171028115457.5: *5* new_text
+#@+node:tbrown.20171028115457.5: *6* new_text
 def new_text(self, text):
     """new_text - update for new text
 
@@ -910,7 +1060,7 @@ def new_text(self, text):
     g.es(path)
     self.setHtml(text)
     os.chdir(owd)
-#@+node:tbrown.20171028115457.6: *5* update_text
+#@+node:tbrown.20171028115457.6: *6* update_text
 def update_text(self, text):
     """update_text - update for current text
 
@@ -918,7 +1068,7 @@ def update_text(self, text):
         text (str): current text
     """
     self.new_text(text)
-#@+node:ville.20120604212857.4215: *3* @@@file ../plugins/notebook.py
+#@+node:ville.20120604212857.4215: *4* @@@file ../plugins/notebook.py
 """ QML Notebook
 
 Edit several nodes at once, in a pannable "notebook" view.
@@ -935,7 +1085,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 controllers: dict[str, Any] = {}  # keys are c.hash(), values are NavControllers
 
 @others
-#@+node:ville.20120604212857.4219: *4* init
+#@+node:ville.20120604212857.4219: *5* init
 def init():
     """Return True if the plugin has loaded successfully."""
     ok = g.app.gui.guiName() == "qt"
@@ -943,7 +1093,7 @@ def init():
         g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     return ok
-#@+node:ville.20120604212857.4231: *4* onCreate
+#@+node:ville.20120604212857.4231: *5* onCreate
 def onCreate(tag, keys):
     """notebook.py onCreate"""
     global controllers
@@ -953,10 +1103,10 @@ def onCreate(tag, keys):
         nb = controllers.get(h)
         if not nb:
             controllers[h] = NbController(c)
-#@+node:ville.20120604212857.4227: *4* class ModelWrapper
+#@+node:ville.20120604212857.4227: *5* class ModelWrapper
 class ModelWrapper:
     @others
-#@+node:ville.20120604212857.4228: *5* __init__
+#@+node:ville.20120604212857.4228: *6* __init__
 def __init__(self, fieldlist):
     """Ctor for ModelWrapper class."""
     self.rolenames = rn = {}
@@ -970,7 +1120,7 @@ def __init__(self, fieldlist):
         mo.setRoleNames(rn)
     except AttributeError:
         pass
-#@+node:ville.20120604212857.4229: *5* mkitem
+#@+node:ville.20120604212857.4229: *6* mkitem
 def mkitem(self, d):
     """ dict with field->value """
     si = QtGui.QStandardItem()
@@ -978,10 +1128,10 @@ def mkitem(self, d):
         rid = self.roleids[k]
         si.setData(v, rid)
     return si
-#@+node:ville.20120604212857.4237: *4* class NbController
+#@+node:ville.20120604212857.4237: *5* class NbController
 class NbController:
     @others
-#@+node:ville.20120604212857.4241: *5* __init__ (NBController, notebook.py)
+#@+node:ville.20120604212857.4241: *6* __init__ (NBController, notebook.py)
 def __init__(self, c):
     """Ctor for NbController class."""
     self.c = c
@@ -1015,18 +1165,18 @@ def __init__(self, c):
     view.hide()
     view.setGeometry(100, 100, 800, 600)
     c.dummy = view
-#@+node:ville.20120604212857.4239: *5* add_all_nodes
+#@+node:ville.20120604212857.4239: *6* add_all_nodes
 def add_all_nodes(self):
     self.mw.model.clear()
     for p in self.c.all_positions():
         self.addNode(p)
-#@+node:ville.20120604212857.4240: *5* add_subtree
+#@+node:ville.20120604212857.4240: *6* add_subtree
 def add_subtree(self, pos):
     self.mw.model.clear()
     for p in pos.self_and_subtree():
         self.addNode(p)
 
-#@+node:ville.20120604212857.4238: *5* addNode
+#@+node:ville.20120604212857.4238: *6* addNode
 def addNode(self, p, styling=None):
     if styling is None:
         styling = {}
@@ -1041,7 +1191,7 @@ def addNode(self, p, styling=None):
     self.gnxcache[v.gnx] = v
     si = self.mw.mkitem(d)
     self.mw.model.appendRow(si)
-#@+node:ekr.20210407010914.1: *3* @@@file leoQt5.py
+#@+node:ekr.20210407010914.1: *4* @@@file leoQt5.py
 @nosearch
 
 """Import wrapper for pyQt5"""
@@ -1172,7 +1322,7 @@ WindowType = QtCore.Qt
 WindowState = QtCore.Qt
 WidgetAttribute = QtCore.Qt  # #2347
 WrapMode = QtGui.QTextOption
-#@+node:ekr.20210407011013.1: *3* @@@file leoQt6.py
+#@+node:ekr.20210407011013.1: *4* @@@file leoQt6.py
 @nosearch
 
 """
@@ -1325,10 +1475,10 @@ else:
 
 Weight = QtGui.QFont.Weight
 WrapMode = QtGui.QTextOption.WrapMode
-#@+node:ekr.20240510154418.1: ** retire frame.ratio, secondary_ratio, etc.
-#@+node:ekr.20160424080647.1: *3* qtFrame.Properties
+#@+node:ekr.20240510154418.1: *3* retire frame.ratio, secondary_ratio, etc.
+#@+node:ekr.20160424080647.1: *4* qtFrame.Properties
 # The ratio and secondary_ratio properties are read-only.
-#@+node:ekr.20160424080815.2: *4* qtFrame.ratio property
+#@+node:ekr.20160424080815.2: *5* qtFrame.ratio property
 ratio_message_given = False
 ratio_message1 = '\nLeoQtFrame.ratio and secondary_ratio properties are deprecated'
 ratio_message2 = 'Use the compute_ratio and compute_secondary_ratio methods instead\n'
@@ -1360,7 +1510,7 @@ def __get_ratio(self) -> float:
 ratio = property(
     __get_ratio,  # No setter.
     doc="qtFrame.ratio property")
-#@+node:ekr.20160424080815.3: *4* qtFrame.secondary_ratio property
+#@+node:ekr.20160424080815.3: *5* qtFrame.secondary_ratio property
 def __get_secondary_ratio(self) -> float:
     """
     Return the splitter ratio of the secondary splitter.
@@ -1387,21 +1537,21 @@ def __get_secondary_ratio(self) -> float:
 secondary_ratio = property(
     __get_secondary_ratio,  # no setter.
     doc="qtFrame.secondary_ratio property")
-#@+node:ekr.20240510161454.31: ** retired from VR plugin
-#@+node:ekr.20240510161454.33: *3* vr function: decorate_window
+#@+node:ekr.20240510161454.31: *3* retired from VR plugin
+#@+node:ekr.20240510161454.33: *4* vr function: decorate_window
 def decorate_window(w: Wrapper) -> None:
     # Do not override the style sheet!
     # This interferes with themes
         # w.setStyleSheet(stickynote_stylesheet)
     g.app.gui.attachLeoIcon(w)
     w.resize(600, 300)
-#@+node:ekr.20240510161454.34: *3* vr function: split_last_sizes
+#@+node:ekr.20240510161454.34: *4* vr function: split_last_sizes
 def split_last_sizes(sizes: list[int]) -> list[int]:
     result = [2 * x for x in sizes[:-1]]
     result.append(sizes[-1])
     result.append(sizes[-1])
     return result
-#@+node:ekr.20240510161454.35: *3* vr.activate
+#@+node:ekr.20240510161454.35: *4* vr.activate
 def activate(self) -> None:
     """Activate the vr-window."""
     pc = self
@@ -1411,7 +1561,7 @@ def activate(self) -> None:
     pc.active = True
     g.registerHandler('select2', pc.update)
     g.registerHandler('idle', pc.update)
-#@+node:ekr.20240510161454.36: *3* vr.adjust_layout
+#@+node:ekr.20240510161454.36: *4* vr.adjust_layout
 def adjust_layout(self, which: str) -> None:
     global layouts
     c = self.c
@@ -1422,7 +1572,7 @@ def adjust_layout(self, which: str) -> None:
         splitter.load_layout(c, loc)
     elif which == 'open' and loo and splitter:
         splitter.load_layout(c, loo)
-#@+node:ekr.20240510161454.37: *3* vr.deactivate
+#@+node:ekr.20240510161454.37: *4* vr.deactivate
 def deactivate(self) -> None:
     """Deactivate the vr window."""
     pc = self
@@ -1430,7 +1580,7 @@ def deactivate(self) -> None:
     g.unregisterHandler('select2', pc.update)
     g.unregisterHandler('idle', pc.update)
     pc.active = False
-#@+node:ekr.20240510161454.38: *3* vr.setBackgroundColor
+#@+node:ekr.20240510161454.38: *4* vr.setBackgroundColor
 def setBackgroundColor(self, colorName: str, name: str, w: Wrapper) -> None:
     """Set the background color of the vr pane."""
     if 0:  # Do not do this! It interferes with themes.
@@ -1443,13 +1593,13 @@ def setBackgroundColor(self, colorName: str, name: str, w: Wrapper) -> None:
         elif colorName not in pc.badColors:
             pc.badColors.append(colorName)
             g.warning('invalid body background color: %s' % (colorName))
-#@+node:ekr.20240510161454.39: *3* vr.show_pane
+#@+node:ekr.20240510161454.39: *4* vr.show_pane
 def show_pane(self) -> None:
     c = self.c
     self.activate()
     self.show()
     c.bodyWantsFocusNow()
-#@+node:ekr.20240510161454.40: *3* vr.store_layout
+#@+node:ekr.20240510161454.40: *4* vr.store_layout
 def store_layout(self, which: str) -> None:
     global layouts
     c = self.c
@@ -1466,7 +1616,7 @@ def store_layout(self, which: str) -> None:
         loo = json.loads(json.dumps(loo))
         layouts[h] = loc, loo
     c.db['viewrendered_default_layouts'] = layouts[h]
-#@+node:ekr.20240510161454.41: *3* vr.underline
+#@+node:ekr.20240510161454.41: *4* vr.underline
 def underline(self, s: str) -> str:
     """Generate rST underlining for s."""
     ch = '#'
