@@ -1674,7 +1674,6 @@ class KeyHandlerClass:
         self.replace_meta_with_alt = False  # True: (Mac only) swap Meta and Alt keys.
         self.w = None  # Will be None for NullGui.
         # Generalize...
-        ### self.x_hasNumeric = ['sort-lines']  ### , 'sort-fields']
         self.altX_prompt = 'full-command: '
         # Access to data types defined in leoKeys.py
         self.KeyStroke = g.KeyStroke
