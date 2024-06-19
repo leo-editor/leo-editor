@@ -125,7 +125,6 @@ def init() -> bool:
         g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     return ok
-
 #@+node:tbrown.20111011152601.48462: *3* install_qt_quicksearch_tab (Creates commands)
 def install_qt_quicksearch_tab(c: Cmdr) -> None:
 
@@ -218,7 +217,7 @@ def onCreate(tag: str, keys: Any) -> None:
     c = keys.get('c')
     if not c:
         return
-
+    g.trace('quicksearch.py', repr(c.shortFileName()))
     install_qt_quicksearch_tab(c)
 
 #@+node:tbrown.20111011152601.48461: *3* show_unittest_failures
