@@ -116,7 +116,8 @@ leo/doc/Using Leo's minibuffer-*
 leo/doc/What is Leo-*
 leo/doc/Whetting Your Appetite-*
 
-leo/doc/_build
+# #3853: Create an *empty* leo/doc/_build folder.
+# leo/doc/_build
 leo/doc/_build/*
 leo/doc/_static
 leo/doc/_templates
