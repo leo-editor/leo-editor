@@ -202,6 +202,7 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
     if wdg and wdg.parent():
         tab_widget = wdg.parent().parent()
         tab_widget.currentChanged.connect(activate_input)
+        c.k.completeAllBindingsForWidget(wdg)  ###
 #@+node:ekr.20111014074810.15659: *3* matchLines
 def matchlines(b: str, miter: Iterator[Match[str]]) -> list:
 
@@ -254,6 +255,7 @@ class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
     def __init__(self, c: Cmdr, w: QListWidget, lineedit: Any) -> None:
 
         super().__init__()
+        g.trace(lineedit, c.shortFileName())
         self.c = c
         self.listWidget = w
         self.lineEdit = lineedit
@@ -262,6 +264,7 @@ class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
 
         eventType = event.type()
         ev = QtCore.QEvent
+        g.trace(eventType)
         # QLineEdit generates ev.KeyRelease only on Windows, Ubuntu
         if not hasattr(ev, 'KeyRelease'):  # 2021/07/18.
             return False
@@ -309,12 +312,14 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
         self.ui.lineEdit.textChanged.connect(self.liveUpdate)
         self.ev_filter = QuickSearchEventFilter(c, w, self.ui.lineEdit)
         self.ui.lineEdit.installEventFilter(self.ev_filter)
+        g.trace(c.shortFileName(), self.ev_filter.__class__.__name__)
         self.c = c
     #@+node:ekr.20111015194452.15696: *3* quick_w.returnPressed
     def returnPressed(self) -> None:
         w = self.ui.listWidget
         self.scon.freeze()
         t = self.ui.lineEdit.text()
+        g.trace(repr(t))
         if not t.strip():
             return
         # Handle Easter eggs.
