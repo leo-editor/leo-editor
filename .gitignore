@@ -119,7 +119,8 @@ leo/doc/Whetting Your Appetite-*
 # #3853: Create an *empty* leo/doc/_build folder.
 # leo/doc/_build
 leo/doc/_build/*
-leo/doc/_static
+# leo/doc/_static now contains an "almost empty" .gitignore file
+# leo/doc/_static
 leo/doc/_templates
 leo/doc/html/*.html
 leo/doc/html/*.html.txt
