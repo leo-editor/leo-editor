@@ -1196,7 +1196,6 @@
 </v>
 <v t="ekr.20180403104643.1"><vh>@menu &amp;Sort Text</vh>
 <v t="ekr.20131213135427.22285"><vh>@item sort-&amp;columns</vh></v>
-<v t="ekr.20131213135427.22286"><vh>@item sort-&amp;fields</vh></v>
 <v t="ekr.20131213135427.22287"><vh>@item sort-&amp;lines</vh></v>
 </v>
 <v t="ekr.20131213135427.22306"><vh>@menu &amp;Yank/Kill Text</vh>
@@ -5694,7 +5693,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22282"></t>
 <t tx="ekr.20131213135427.22283"></t>
 <t tx="ekr.20131213135427.22285"></t>
-<t tx="ekr.20131213135427.22286"></t>
 <t tx="ekr.20131213135427.22287"></t>
 <t tx="ekr.20131213135427.22289"></t>
 <t tx="ekr.20131213135427.22290"></t>
@@ -6025,7 +6023,7 @@ show-fonts                      = None
 show-invisibles                 = None  # Alt-V conflicts with scroll-up-page .
 sort-children                   = None
 sort-columns                    = None
-sort-fields                     = None
+# sort-fields                   = None
 sort-lines                      = None
 sort-siblings                   = Shift-Alt-A  # Alt-A conflicts with back-sentence.
 spell-change                    = None
@@ -6486,7 +6484,7 @@ show-invisibles                     = None
 # simulate-end-drag                 = None
 sort-children                       = None
 sort-columns                        = None
-sort-fields                         = None
+# sort-fields                       = None
 sort-lines                          = None
 sort-lines-ignoring-case            = None
 sort-recent-files                   = None
