@@ -165,11 +165,6 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
     c.k.registerCommand('find-quick-selected', find_selected,
         allowBinding=True, shortcut='Control-Shift-f')
 
-    ### Doesn't work.
-        # # A hack. Bind Alt-X.
-        # c.k.registerCommand('full-command', c.k.fullCommand,
-            # allowBinding=True, shortcut='Alt-x')
-
     c.k.registerCommand('find-quick', focus_quicksearch_entry)
     c.k.registerCommand('focus-to-nav', focus_to_nav)
     c.k.registerCommand('find-quick-test-failures', show_unittest_failures)
@@ -205,8 +200,6 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
         ):
             wdg.ui.lineEdit.selectAll()
             wdg.ui.lineEdit.setFocus()
-
-    ### g.trace(g.callers())  ###
 
     # Careful: we may be unit testing.
     if wdg and wdg.parent():
@@ -266,7 +259,6 @@ class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
     def __init__(self, c: Cmdr, w: QListWidget, lineedit: Any) -> None:
 
         super().__init__()
-        ### print('QuickSearchEventFilter.__init__', lineedit, c.shortFileName())  ###
         self.c = c
         self.listWidget = w
         self.lineEdit = lineedit
@@ -275,7 +267,6 @@ class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
 
         eventType = event.type()
         ev = QtCore.QEvent
-        print('***QuickSearchEventFilter.eventFilter', eventType)  ###
 
         # QLineEdit generates ev.KeyRelease only on Windows, Ubuntu
         if not hasattr(ev, 'KeyRelease'):  # 2021/07/18.
@@ -324,10 +315,8 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
             self.ui.lineEdit.returnPressed.connect(self.returnPressed)
 
         self.ui.lineEdit.textChanged.connect(self.liveUpdate)
-        ### To be removed ???
         self.ev_filter = QuickSearchEventFilter(c, w, self.ui.lineEdit)
         self.ui.lineEdit.installEventFilter(self.ev_filter)
-        print('QuickSearchWidget.__init__', c.shortFileName())  ###, self.ev_filter.__class__.__name__)  ###
         self.c = c
     #@+node:ekr.20111015194452.15696: *3* quick_w.returnPressed
     def returnPressed(self) -> None:
