@@ -206,8 +206,9 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
         tab_widget = wdg.parent().parent()
         tab_widget.currentChanged.connect(activate_input)
 
-        # #3976: Add default bindings
-        c.k.completeAllBindingsForWidget(wdg.ui.lineEdit)
+        # #3976: Add default bindings.
+        #        This does not work. Maybe later.
+        # c.k.completeAllBindingsForWidget(wdg.ui.lineEdit)
 #@+node:ekr.20111014074810.15659: *3* matchLines
 def matchlines(b: str, miter: Iterator[Match[str]]) -> list:
 
