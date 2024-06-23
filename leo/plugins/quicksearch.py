@@ -341,7 +341,6 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
     def liveUpdate(self) -> None:
 
         t = self.ui.lineEdit.text()
-        g.trace(repr(t))
         if not t.strip():
             if self.scon.frozen:
                 self.scon.freeze(False)
