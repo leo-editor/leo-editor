@@ -589,7 +589,7 @@ def save_as_leojs(self: Self, event: LeoKeyEvent = None) -> None:
 #@+node:ekr.20070413045221: *3* c_file.save-as-zipped
 @g.commander_command('file-save-as-db')
 @g.commander_command('save-file-as-db')
-def save_as_zipped(self: Self, event: LeoKeyEvent = None) -> None:
+def save_as_db(self: Self, event: LeoKeyEvent = None) -> None:
     """
     Save a copy of the Leo outline as a SQLite (.db) file with a new file name.
     Leave the file name of the Leo outline unchanged.
