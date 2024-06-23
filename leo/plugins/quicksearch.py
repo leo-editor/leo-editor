@@ -324,7 +324,6 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
         w = self.ui.listWidget
         self.scon.freeze()
         t = self.ui.lineEdit.text()
-        g.trace(repr(t))
         if not t.strip():
             return
         # Handle Easter eggs.
