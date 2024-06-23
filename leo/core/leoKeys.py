@@ -3484,7 +3484,7 @@ class KeyHandlerClass:
         #
         # No binding exists.
         if trace:
-            g.trace(f"{event.stroke!s} {bi.commandName}: no binding")
+            g.trace(f"{event.stroke!s}: no binding")
         return False
     #@+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
     def getPaneBinding(self, event: LeoKeyEvent) -> Any:

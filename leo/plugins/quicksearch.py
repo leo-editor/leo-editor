@@ -125,7 +125,6 @@ def init() -> bool:
         g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     return ok
-
 #@+node:tbrown.20111011152601.48462: *3* install_qt_quicksearch_tab (Creates commands)
 def install_qt_quicksearch_tab(c: Cmdr) -> None:
 
@@ -162,8 +161,11 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
         c.frame.log.selectTab('Nav')
         wdg.scon.doTimeline()
 
+    # #3976. Hard-code the binding to find-quick-selected.
+    c.k.registerCommand('find-quick-selected', find_selected,
+        allowBinding=True, shortcut='Control-Shift-f')
+
     c.k.registerCommand('find-quick', focus_quicksearch_entry)
-    c.k.registerCommand('find-quick-selected', find_selected)
     c.k.registerCommand('focus-to-nav', focus_to_nav)
     c.k.registerCommand('find-quick-test-failures', show_unittest_failures)
     c.k.registerCommand('find-quick-timeline', timeline)
@@ -203,6 +205,10 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
     if wdg and wdg.parent():
         tab_widget = wdg.parent().parent()
         tab_widget.currentChanged.connect(activate_input)
+
+        # #3976: Add default bindings.
+        #        This does not work. Maybe later.
+        # c.k.completeAllBindingsForWidget(wdg.ui.lineEdit)
 #@+node:ekr.20111014074810.15659: *3* matchLines
 def matchlines(b: str, miter: Iterator[Match[str]]) -> list:
 
@@ -218,7 +224,6 @@ def onCreate(tag: str, keys: Any) -> None:
     c = keys.get('c')
     if not c:
         return
-
     install_qt_quicksearch_tab(c)
 
 #@+node:tbrown.20111011152601.48461: *3* show_unittest_failures
@@ -263,6 +268,7 @@ class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
 
         eventType = event.type()
         ev = QtCore.QEvent
+
         # QLineEdit generates ev.KeyRelease only on Windows, Ubuntu
         if not hasattr(ev, 'KeyRelease'):  # 2021/07/18.
             return False
@@ -282,6 +288,7 @@ class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
             if moved:
                 self.lineEdit.setFocus(True)
                 self.lineEdit.deselect()
+
         return False
     #@-others
 #@+node:ville.20090314215508.2: ** class LeoQuickSearchWidget (QWidget)
@@ -307,6 +314,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
             threadutil.later(self.ui.lineEdit.setFocus)
         else:
             self.ui.lineEdit.returnPressed.connect(self.returnPressed)
+
         self.ui.lineEdit.textChanged.connect(self.liveUpdate)
         self.ev_filter = QuickSearchEventFilter(c, w, self.ui.lineEdit)
         self.ui.lineEdit.installEventFilter(self.ev_filter)
