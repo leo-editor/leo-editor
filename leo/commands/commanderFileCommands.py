@@ -596,7 +596,7 @@ def save_as_db(self: Self, event: LeoKeyEvent = None) -> None:
     """
     c = self
     fileName = g.app.gui.runSaveFileDialog(c,
-        title="Save As Zipped",
+        title="Save As DB",
         filetypes=[("Leo files", "*.db")],
         defaultextension='.db')
     if not fileName:
