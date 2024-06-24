@@ -1544,9 +1544,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     def viewRecentCommands(self, event: LeoKeyEvent) -> None:
         """Print recently-executed commands."""
         c = self.c
-        print('Recently-executed commands...')
+        g.es_print('Recently-executed commands...')
         for i, command in enumerate(reversed(c.recent_commands_list)):
-            print(f"{i:>2} {command}")
+            g.es_print(f"{i:>2} {command}")
     #@+node:ekr.20150514063305.249: *4* ec.whatLine
     @cmd('what-line')
     def whatLine(self, event: LeoKeyEvent) -> None:
