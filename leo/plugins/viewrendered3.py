@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:tom.20240521004125.1: *3* About
-About Viewrendered3 V5.0
+About Viewrendered3 V5.01
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,14 +57,14 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
-ASCIIDOC, MD, and RsT images display correctly when the exported file is
-viewed in the browser (relative paths are converted to absolute file system
-paths).
-
-The display code has been adapted to Leo's new splitter/layout infrastructure.
+Corrected errors introduced in a complicated merge: ASCIIDOC, MD, and RsT images
+display correctly when the exported file is viewed in the browser (relative
+paths are converted to absolute file system paths).
 
 Previous Recent Changes
 ========================
+The display code has been adapted to Leo's new splitter/layout infrastructure.
+
 In @jupyter nodes, for the path to the jupyter file or url:
     - path separators can be either backward or forward slashes.
     - Quotation marks around paths are removed.
