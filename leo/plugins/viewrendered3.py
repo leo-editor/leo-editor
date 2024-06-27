@@ -936,7 +936,7 @@ from io import StringIO, open as ioOpen
 
 import os
 import os.path
-from pathlib import PurePath
+from pathlib import Path
 import re
 import shutil
 import site
@@ -1068,6 +1068,7 @@ VR3_DEF_LAYOUT = 'viewrendered3_default_layouts'
 TABNAME = 'VR3'
 OPENED_IN_TAB = 'tab'
 OPENED_IN_SPLITTER = 'splitter'
+OPENED_SHARING_BODY = 'opened-shared-body'
 
 ASCIIDOC = 'asciidoc'
 CODE = 'code'
@@ -1242,7 +1243,7 @@ latex_template = f'''\
 
 # keys are c.hash().
 controllers = {}  # values: VR3 widets
-positions = {}  # values: OPENED_IN_TAB or OPENED_IN_SPLITTER
+positions = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
 
 #@+others
 #@+node:TomP.20200508124457.1: ** find_exe()
@@ -1457,7 +1458,7 @@ def init():
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
 #@+node:TomP.20191215195433.10: *3* vr3.isVisible
-def isVisible():
+def xisVisible():
     """Return True if the VR3 pane is visible."""
     return
 #@+node:TomP.20191215195433.11: *3* vr3.onCreate
@@ -1506,6 +1507,9 @@ def show_scrolled_message(tag, kw):
         tag='show-scrolled-message',
         keywords={'c': c, 'force': True, 's': s, 'flags': flags},
     )
+
+    if not vr3.isVisible:
+        vr3.show()
     return True
 #@+node:TomP.20191215195433.14: *3* vr3.split_last_sizes
 def split_last_sizes(sizes):
@@ -2122,6 +2126,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.rst_html = ''
         self.show_whole_tree = False
         self.base_url = ''
+        self.positions = {}
 
         # User settings.
         self.reloadSettings()
@@ -2503,7 +2508,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     break
 
             # Make all separators consistent and correct for the OS
-            stylefile = str(PurePath(stylefile))
+            stylefile = str(Path(stylefile))
             #@-<< fix path separators >>
             #@+<< check existence >>
             #@+node:tom.20211117161734.1: *5* << check existence >>
@@ -2592,7 +2597,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 pth = self.rst_stylesheet.split('file:///')[1]
             else:
                 pth = self.rst_stylesheet
-            is_abs = PurePath.is_absolute(PurePath(pth))
+            is_abs = Path.is_absolute(Path(pth))
 
             if is_abs:
                 # This method changes '\' to '/' in the path if needed.
@@ -3266,7 +3271,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         for processor in asciidoc_processors:
             proc_name = proc_string(processor)
 
-            user_dir = PurePath(LEO_PLUGINS_DIR) / 'viewrendered3' / proc_name
+            user_dir = Path(LEO_PLUGINS_DIR) / 'viewrendered3' / proc_name
             conf_file = str(user_dir / ASCIIDOC_CONF_FILENAME)
             stylesdir = asciidoc_dirs[proc_name]['stylesheets']
             scriptsdir = asciidoc_dirs[proc_name]['javascripts']
@@ -3988,7 +3993,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # Call docutils to get the html rendering.
         _html = ''.encode(ENCODING)
+
         if result.strip():
+            g.app.gui.replaceClipboardWith(result)
             try:
                 self.last_markup = result
                 _html = publish_string(result, writer_name='html',
@@ -4185,18 +4192,31 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     # insert RsT code for image
                     fields = line.split(' ', 1)
                     if len(fields) > 1:
-                        url = fields[1]
+                        url = fields[1].strip()
                         if url.startswith('data:'):
                             base = ''
                         else:
-                            base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
-                        line = f'\n.. image:: {base}{url}\n      :width: 100%\n\n'
+                            is_absolute = Path(url).is_absolute()
+                            if is_absolute:
+                                url = g.finalize(url)
+                                line = f'\n.. image:: {url}\n'
+                            else:
+                                base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
+                                url = g.finalize(base + url)
+                                line = f'\n.. image:: {url}\n'
                 elif rst_directive:
                     fields = line.split(rst_directive)
                     if len(fields) > 1:
                         url = fields[1].strip()
-                        base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
-                        line = f'{rst_directive} {base}{url}\n'
+                        if url.startswith('data:'):
+                            base = ''
+                        else:
+                            is_absolute = Path(url).is_absolute()
+                            if not is_absolute:
+                                base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
+                                url = Path(f'{base}{url}').resolve()
+                                url = g.finalize(url)
+                                line = f'\n{rst_directive} {url}'
                     else:
                         # No url for an image: ignore and skip to next line
                         continue
@@ -4525,22 +4545,25 @@ class ViewRenderedController3(QtWidgets.QWidget):
         colorizer = getattr(c.frame.body.colorizer, 'findFirstValidAtLanguageDirective', g)
         return colorizer.findFirstValidAtLanguageDirective(p.b)
     #@+node:TomP.20191215195433.82: *5* vr3.get_fn
-    def get_fn(self, s, tag):
+    def get_fn(self, s, tag=None):
+        """Return an absolute file path, with ~, .., and symbolic links resolved."""
         pc = self
         c = pc.c
         fn = s or c.p.h[len(tag) :]
         fn = fn.strip()
-        # Similar to code in g.computeFileUrl
-        if fn.startswith('~'):
-            fn = fn[1:]
-            fn = g.finalize(fn)
-        else:
-            # Handle ancestor @path directives.
-            if c and c.fileName():
-                base = c.getNodePath(c.p)
-                fn = g.finalize_join(g.os_path_dirname(c.fileName()), base, fn)
-            else:
+        is_absolute = Path(fn).is_absolute()
+        if not is_absolute:
+            # Similar to code in g.computeFileUrl
+            if fn.startswith('~'):
+                fn = fn[1:]
                 fn = g.finalize(fn)
+            else:
+                # Handle ancestor @path directives.
+                if c and c.fileName():
+                    base = c.getNodePath(c.p)
+                    fn = g.finalize_join(g.os_path_dirname(c.fileName()), base, fn)
+                else:
+                    fn = g.finalize(fn)
 
         ok = g.os_path_exists(fn)
         return ok, fn
@@ -4680,10 +4703,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.current_tree_root = None
     #@+node:TomP.20200329230436.6: *5* vr3.show_dock_or_pane
     def show_dock_or_pane(self):
-        c, vr3 = self.c, self
+        vr3 = self.c, self
         vr3.activate()
-        # vr3.show()
-        c.bodyWantsFocusNow()
+        vr3.show()
+        # c.bodyWantsFocusNow()
     #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
     #@+node:TomP.20200329230436.9: *6* vr3.get_toolbar_label
     #@+at
@@ -4820,6 +4843,7 @@ class Action:
     @staticmethod
     def add_image(sm, line, tag=None, language=None):
         # Used for @image lines
+        # Relative paths must be changed to be absolute
         marker, tag, _lang = StateMachine.get_marker(sm, line)
         # Get image url
         fields = line.split(' ', 1)
@@ -4827,18 +4851,19 @@ class Action:
             url = fields[1] or ''
             if url:
                 if url.startswith('data:'):
-                    base = ''
+                    abs_url = url
                 else:
-                    base = sm.vr3.base_url
-                if base and os.path.isabs(base):
-                    base = base + '/'
-
+                    abs_url = sm.vr3.get_fn(url)
+                    if abs_url[0]:
+                        abs_url = g.finalize(abs_url[1])
+                    else:
+                        return
                 if sm.structure == MD:
                     # image syntax: ![label](url)
-                    line = f'![]({base}{url})'
+                    line = f'![]({abs_url})'
                 elif sm.structure == ASCIIDOC:
                     # image syntax: image:<target>[<attributes>] (must include "{}" even if no attributes
-                    line = f'image:{base}{url}[]'
+                    line = f'image:{abs_url}[]'
                 sm.current_chunk.add_line(line)
             # If no url parameter, do nothing
     #@+node:tom.20240521002223.1: *4* Image Path to Absolute
@@ -4852,14 +4877,21 @@ class Action:
             is_image = ASCIIDOC_IMG.match(line)
         if is_image:
             url = is_image['url'].strip()
-            g.es(url)
             if url.startswith('data:'):
                 sm.current_chunk.add_line(line)
             else:
-                base_url = sm.vr3.base_url
-                base = base_url + '/' if os.path.isabs(base_url) else ''
-                abs_url = base + url
-                line = line.replace(url, abs_url)
+                abs_url = sm.vr3.get_fn(url)
+                if abs_url[0]:
+                    abs_url = g.finalize(abs_url[1])
+                else:
+                    return
+                if sm.structure == MD:
+                    # image syntax: ![label](url)
+                    line = f'![]({abs_url})'
+                elif sm.structure == ASCIIDOC:
+                    # image syntax: image:<target>[<attributes>] (must include "{}" even if no attributes
+                    line = f'image:{abs_url}[]'
+
                 sm.current_chunk.add_line(line)
         else:
             sm.current_chunk.add_line(line)
