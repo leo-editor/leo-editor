@@ -39,8 +39,10 @@ if 1:
         sys.path.insert(1, ekr_pyflakes_dir)
         import pyflakes
         from pyflakes import api, reporter
-        print('*** Using ekr-fork-pyflakes')
-        print('')
+        from leo.core import leoGlobals as leo_g
+        if not leo_g.unitTesting:
+            print('*** Using ekr-fork-pyflakes')
+            print('')
     except Exception:
         try:
             import pyflakes
