@@ -11,31 +11,55 @@ import sys
 import tempfile
 import time
 from typing import Optional, TYPE_CHECKING
-#
+
 # Third-party imports.
-try:
-    from mypy import api as mypy_api
-except Exception:
-    mypy_api = None
 try:
     import flake8
     # #2248: Import only flake8.
 except ImportError:
     flake8 = None  # type:ignore
+
+try:
+    from mypy import api as mypy_api
+except Exception:
+    mypy_api = None
+
 try:
     import mypy
 except Exception:
     mypy = None  # type:ignore
-try:
-    import pyflakes
-    from pyflakes import api, reporter
-except Exception:
-    pyflakes = None  # type:ignore
+
+#@+<< import pyflakes >>
+#@+node:ekr.20240702083525.1: *3* << import pyflakes >>
+if 1:
+    # Hack: try to import the local pyflakes on EKR's machine.
+    try:
+        # Caution: path[0] is reserved for script path (or '' in REPL)
+        ekr_pyflakes_dir = r'C:\Repos\ekr-fork-pyflakes'
+        sys.path.insert(1, ekr_pyflakes_dir)
+        import pyflakes
+        from pyflakes import api, reporter
+        print('*** Using ekr-fork-pyflakes')
+        print('')
+    except Exception:
+        try:
+            import pyflakes
+            from pyflakes import api, reporter
+        except Exception:
+            pyflakes = None
+else:
+    try:
+        import pyflakes
+        from pyflakes import api, reporter
+    except Exception:
+        pyflakes = None  # type:ignore
+#@-<< import pyflakes >>
+
 try:
     from pylint import lint
 except Exception:
     lint = None  # type:ignore
-#
+
 # Leo imports.
 from leo.core import leoGlobals as g
 #@-<< checkerCommands imports >>
@@ -532,6 +556,8 @@ class PyflakesCommand:
         """Run pyflakes on all files in paths."""
         c = self.c
         total_errors = 0
+        g.trace([z.h for z in roots])  ###
+        assert 'ekr-fork-pyflakes' in repr(api)
         for i, root in enumerate(roots):
             fn = os.path.normpath(c.fullPath(root))
             sfn = g.shortFileName(fn)
@@ -576,7 +602,8 @@ class PyflakesCommand:
         # Make sure the parent of the leo directory is on sys.path.
         path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
-            sys.path.insert(0, path)
+            # Caution: path[0] is reserved for script path (or '' in REPL)
+            sys.path.insert(1, path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
         if not roots:
             return True
