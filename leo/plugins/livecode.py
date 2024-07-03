@@ -118,7 +118,7 @@ class LiveCodeDisplay:
         self.active = not self.active
         self.status.setText("ACTIVE" if self.active else "(paused)")
         self.activate.setText("STOP" if self.active else "START")
-    #@+node:tbrown.20140806084727.31743: *3* update
+    #@+node:tbrown.20140806084727.31743: *3* update (livecode.py)
     def update(self, tag, kwargs):
         """update - Return
         """

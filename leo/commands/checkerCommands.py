@@ -558,7 +558,6 @@ class PyflakesCommand:
         """Run pyflakes on all files in paths."""
         c = self.c
         total_errors = 0
-        g.trace([z.h for z in roots])  ###
         assert 'ekr-fork-pyflakes' in repr(api)
         for i, root in enumerate(roots):
             fn = os.path.normpath(c.fullPath(root))
