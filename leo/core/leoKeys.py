@@ -3862,7 +3862,7 @@ class KeyHandlerClass:
                 func(event)
             else:
                 self.endMode()
-                # New in 4.4.1 b1: pass an event describing the original widget.
+                # New in 4.4.1: pass an event describing the original widget.
                 if event:
                     event.w = event.widget = k.modeWidget
                 else:

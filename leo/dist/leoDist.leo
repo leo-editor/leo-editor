@@ -198,7 +198,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.8.0 b1
+Version: 6.8.0
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -1987,7 +1987,7 @@ packages = [
 
 [project]
 requires-python = "&gt;= 3.9"
-version = "6.8.0 a1
+version = "6.8.0b1"  # No space.
 name = "leo"
 
 #@+&lt;&lt; developer info &gt;&gt;
@@ -2028,58 +2028,7 @@ keywords = ["PIM", "IDE", "Outliner"]
 license = {text = "MIT License"}
 readme = "README.md"
 #@-&lt;&lt; description &gt;&gt;
-#@+&lt;&lt; dependencies &gt;&gt;
-#@+node:ekr.20240229082807.1: ** &lt;&lt; dependencies &gt;&gt; (pyproject.toml)
-dependencies = [
-    # For mypy...
-    "mypy",
-    "mypy-extensions",
-    "typing_extensions",
-    "types-docutils", 
-    "types-Markdown",
-    "types-paramiko",
-    "types-PyYAML",
-    "types-requests",
-    "types-six",
-
-    # General packages, including various plugins and commands...
-    "asttokens",        # For unit tests.
-    "beautifulsoup4",   # For link testing.
-    "black",            # For unit tests.
-    "docutils",         # various plugins and commands.
-    "flexx",            # leoflexx.py plugin.
-    "meta",             # livecode.py plugin.
-    "pyenchant",        # The spell tab.
-    "pytest",           # For coverage testing.
-    "pytest-cov",       # For coverage testing.
-    "pyflakes",         # pyflakes command.
-    "pylint",           # pylint command.
-    "sphinx",           # various plugins and commands.
-    "pyshortcuts",      # #1243: desktop integration.
-    "tk",               # tkinter: for emergency dialogs
-    "urllib3",
-
-    # Platform-specific packages...
-    "windows-curses; os_name == 'nt'",  # cursesGui2 plugin on Windows.
-    "Send2Trash; os_name == 'nt'",  # picture_viewer plugin on Windows.
-
-    # Gui packages...
-
-    # Use PyQt6 only on Windows.
-        # "PyQt5&gt;= 5.15; os_name != 'nt'",
-        # "PyQtWebEngine; os_name != 'nt'",
-
-        # # Use PyQt6 on Windows.
-        # "PyQt6&gt;= 6.6; os_name == 'nt'",
-        # "PyQt6-WebEngine; os_name == 'nt'",
-        
-    # Use PyQt6 on all platforms.
-    "PyQt6&gt;= 6.6",
-    "PyQt6-WebEngine",
-]
-
-# [project.optional-dependencies]
-#@-&lt;&lt; dependencies &gt;&gt;
+# &lt; &lt; dependencies &gt; &gt;  # Don't duplicate requirements.txt.
 
 [project.scripts]
 leo = "leo.core.runLeo:run"

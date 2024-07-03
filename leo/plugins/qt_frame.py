@@ -2180,10 +2180,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         #@-<< clear all vnodes in the tree >>
         # Destroy all ivars in subcommanders.
         g.clearAllIvars(c.atFileCommands)
-        if c.chapterController:  # New in Leo 4.4.3 b1.
+        if c.chapterController:  # New in Leo 4.4.3.
             g.clearAllIvars(c.chapterController)
         g.clearAllIvars(c.fileCommands)
-        g.clearAllIvars(c.keyHandler)  # New in Leo 4.4.3 b1.
+        g.clearAllIvars(c.keyHandler)  # New in Leo 4.4.3.
         g.clearAllIvars(c.importCommands)
         g.clearAllIvars(c.tangleCommands)
         g.clearAllIvars(c.undoer)
