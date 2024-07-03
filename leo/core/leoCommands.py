@@ -1108,7 +1108,6 @@ class Commands:
                 self.execute_single_pytest(p)
         except ImportError:
             g.es('pytest needs to be installed')
-            return
 
     def execute_single_pytest(self, p: Position) -> None:
         c = self
