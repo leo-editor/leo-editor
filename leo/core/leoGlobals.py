@@ -3558,7 +3558,7 @@ def findRootsWithPredicate(c: Cmdr, root: Position, predicate: Callable = None) 
 
 def scanError(s: str) -> None:
     """Bump the error count in the tangle command."""
-    # New in Leo 4.4b1: just set this global.
+    # New in Leo 4.4: just set this global.
     g.app.scanErrors += 1
     g.es('', s)
 #@+node:ekr.20031218072017.3157: *3* g.scanf

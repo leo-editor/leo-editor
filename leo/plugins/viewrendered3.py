@@ -4698,8 +4698,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _toolbar.setVisible(False)
         except RuntimeError as e:
             g.es(f'show_toolbar(): no toolbar; {type(e)}: {e}')
-            return
-
     #@+node:TomP.20200329230436.11: *6* vr3.show_toolbar
     def show_toolbar(self):
         try:
@@ -4707,9 +4705,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _toolbar.setVisible(True)
         except RuntimeError as e:
             g.es(f'show_toolbar(): no toolbar; {type(e)}: {e}')
-            return
-
-
     #@+node:TomP.20200329230436.12: *5* vr3: zoom helpers...
     #@+node:TomP.20200329230436.13: *6* vr3.shrinkView
     def shrinkView(self):

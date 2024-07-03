@@ -4,7 +4,7 @@
 """
 install_leo_locally.py: Install Leo from a wheel file in the `leo-editor/leo/dist` directory.
 
-Run `python -m pip install leo-editor/dist/leo-6.8.0b1-py3-none-any.whl`
+Run `python -m pip install leo-editor/dist/leo-6.8.0-py3-none-any.whl`
 from the *parent* directory of the `leo-editor` directory.
 
 *Note*: sys.path *must not* contain the `leo-editor` directory!
@@ -37,7 +37,7 @@ else:
     dist_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..', 'dist'))
     assert os.path.exists(dist_dir), repr(dist_dir)
     assert os.path.isdir(dist_dir), repr(dist_dir)
-    wheel_file = 'leo-6.8.0b1-py3-none-any.whl'
+    wheel_file = 'leo-6.8.0-py3-none-any.whl'
     command = fr"python -m pip install {dist_dir}{os.sep}{wheel_file} --no-cache-dir"  #  --force-reinstall
     print(command)
     subprocess.Popen(command, shell=True).communicate()

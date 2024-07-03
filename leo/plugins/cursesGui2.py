@@ -2420,10 +2420,11 @@ class CoreLog(leoFrame.LeoLog):
     #@+node:ekr.20170419143731.16: *4* CLog.putnl
     def putnl(self, tabName: str = 'Log') -> None:
         """Put a newline to the Qt log."""
-        # This is not called normally.
-        # print('CLog.put: %s' % g.callers())
         if g.app.quitting:
             return
+        if 0:
+            # This is not called normally.
+            print('CLog.put: %s' % g.callers())
     #@-others
 #@+node:ekr.20170419111515.1: *3* class CoreMenu (leoMenu.LeoMenu)
 class CoreMenu(leoMenu.LeoMenu):

@@ -982,7 +982,7 @@
 <v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
 <v t="ekr.20131213135427.21837"><vh>@item save-file-as-leojs</vh></v>
 <v t="ekr.20131213135427.21836"><vh>@item save-file-as-xml</vh></v>
-<v t="ekr.20210324162150.1"><vh>@item save-file-as-zipped</vh></v>
+<v t="ekr.20210324162150.1"><vh>@item save-file-as-db</vh></v>
 <v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
 <v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
 <v t="ekr.20180403105112.1"><vh>@menu &amp;Compare/Diff Files</vh>

@@ -198,7 +198,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.8.0 b1
+Version: 6.8.0
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -1411,7 +1411,7 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create the **release branch**: 6.8.0.
+Create the **release branch**: 6.8.1.
 Change version in this checklist to match.
 
 It's ok to merge devel into release branch
@@ -1431,7 +1431,7 @@ It's ok to merge devel into release branch
 
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
-- git merge 6.8.0
+- git merge 6.8.1
 - Run the `make-sphinx` from LeoDocs.leo
   This script copies files from leo/doc/html/_build/html to leo-editor/docs
 - Commit the changes and push.
@@ -1450,7 +1450,7 @@ It's ok to merge devel into release branch
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
-git tag -a v6.8.0 -m "Added v6.8.0 tag"
+git tag -a v6.8.1 -m "Added v6.8.1 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
@@ -1459,15 +1459,15 @@ git push --follow-tags
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout devel
-- git merge 6.8.0
+- git merge 6.8.1
 - update version in leoVersion.py.
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.8.0 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.8.1 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.8.0</t>
+- git merge 6.8.1</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -1558,7 +1558,7 @@ python -m pip uninstall leo
 <t tx="ekr.20230301070404.1">LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for 6.7.
-  The final version in PKG-INFO.TXT must be called 6.8.0, not 6.8.0-final.
+  The final version in PKG-INFO.TXT must be called 6.8.1, not 6.8.1-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Update version in 'PKG-INFO.TXT'
@@ -1574,7 +1574,7 @@ python -m pip uninstall leo
 - Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
 - Open LeoPyRef.leo. Verify the diff after saving.
 </t>
-<t tx="ekr.20230301084201.1">- Change 6.8.0 (the old version) to 6.8.1.
+<t tx="ekr.20230301084201.1">- Change 6.8.1 (the old version) to 6.8.2.
   Be careful about the new version in this node!
 </t>
 <t tx="ekr.20240206185544.1"></t>
@@ -1987,7 +1987,7 @@ packages = [
 
 [project]
 requires-python = "&gt;= 3.9"
-version = "6.8.0 a1
+version = "6.8.0"  # No space.
 name = "leo"
 
 #@+&lt;&lt; developer info &gt;&gt;
@@ -2028,58 +2028,7 @@ keywords = ["PIM", "IDE", "Outliner"]
 license = {text = "MIT License"}
 readme = "README.md"
 #@-&lt;&lt; description &gt;&gt;
-#@+&lt;&lt; dependencies &gt;&gt;
-#@+node:ekr.20240229082807.1: ** &lt;&lt; dependencies &gt;&gt; (pyproject.toml)
-dependencies = [
-    # For mypy...
-    "mypy",
-    "mypy-extensions",
-    "typing_extensions",
-    "types-docutils", 
-    "types-Markdown",
-    "types-paramiko",
-    "types-PyYAML",
-    "types-requests",
-    "types-six",
-
-    # General packages, including various plugins and commands...
-    "asttokens",        # For unit tests.
-    "beautifulsoup4",   # For link testing.
-    "black",            # For unit tests.
-    "docutils",         # various plugins and commands.
-    "flexx",            # leoflexx.py plugin.
-    "meta",             # livecode.py plugin.
-    "pyenchant",        # The spell tab.
-    "pytest",           # For coverage testing.
-    "pytest-cov",       # For coverage testing.
-    "pyflakes",         # pyflakes command.
-    "pylint",           # pylint command.
-    "sphinx",           # various plugins and commands.
-    "pyshortcuts",      # #1243: desktop integration.
-    "tk",               # tkinter: for emergency dialogs
-    "urllib3",
-
-    # Platform-specific packages...
-    "windows-curses; os_name == 'nt'",  # cursesGui2 plugin on Windows.
-    "Send2Trash; os_name == 'nt'",  # picture_viewer plugin on Windows.
-
-    # Gui packages...
-
-    # Use PyQt6 only on Windows.
-        # "PyQt5&gt;= 5.15; os_name != 'nt'",
-        # "PyQtWebEngine; os_name != 'nt'",
-
-        # # Use PyQt6 on Windows.
-        # "PyQt6&gt;= 6.6; os_name == 'nt'",
-        # "PyQt6-WebEngine; os_name == 'nt'",
-        
-    # Use PyQt6 on all platforms.
-    "PyQt6&gt;= 6.6",
-    "PyQt6-WebEngine",
-]
-
-# [project.optional-dependencies]
-#@-&lt;&lt; dependencies &gt;&gt;
+# &lt; &lt; dependencies &gt; &gt;  # Don't duplicate requirements.txt.
 
 [project.scripts]
 leo = "leo.core.runLeo:run"

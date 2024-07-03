@@ -810,7 +810,7 @@ class ParserBaseClass:
         name = val = nextMode = None
         nextMode = 'none'
         i = g.skip_ws(s, 0)
-        if g.match(s, i, '-->'):  # New in 4.4.1 b1: allow mode-entry commands.
+        if g.match(s, i, '-->'):  # New in 4.4.1: allow mode-entry commands.
             j = g.skip_ws(s, i + 3)
             i = g.skip_id(s, j, '-')
             entryCommandName = s[j:i]
