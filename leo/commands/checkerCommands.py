@@ -31,7 +31,7 @@ except Exception:
 
 #@+<< import pyflakes >>
 #@+node:ekr.20240702083525.1: *3* << import pyflakes >>
-if 1:
+if 0:  # Only use this hack when unit testsing!
     # Hack: try to import the local pyflakes on EKR's machine.
     try:
         # Caution: path[0] is reserved for script path (or '' in REPL)
