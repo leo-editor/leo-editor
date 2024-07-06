@@ -29,33 +29,13 @@ try:
 except Exception:
     mypy = None  # type:ignore
 
-#@+<< import pyflakes >>
-#@+node:ekr.20240702083525.1: *3* << import pyflakes >>
-if 0:  # Only use this hack when unit testsing!
-    # Hack: try to import the local pyflakes on EKR's machine.
-    try:
-        # Caution: path[0] is reserved for script path (or '' in REPL)
-        ekr_pyflakes_dir = r'C:\Repos\ekr-fork-pyflakes'
-        sys.path.insert(1, ekr_pyflakes_dir)
-        import pyflakes
-        from pyflakes import api, reporter
-        from leo.core import leoGlobals as leo_g
-        if not leo_g.unitTesting:
-            print('*** Using ekr-fork-pyflakes')
-            print('')
-    except Exception:
-        try:
-            import pyflakes
-            from pyflakes import api, reporter
-        except Exception:
-            pyflakes = None
 else:
     try:
         import pyflakes
         from pyflakes import api, reporter
+        assert 'ekr-fork' not in repr(pyflakes), repr(pyflakes)  ###
     except Exception:
         pyflakes = None  # type:ignore
-#@-<< import pyflakes >>
 
 try:
     from pylint import lint
@@ -558,7 +538,7 @@ class PyflakesCommand:
         """Run pyflakes on all files in paths."""
         c = self.c
         total_errors = 0
-        assert 'ekr-fork-pyflakes' in repr(api)
+        ### assert 'ekr-fork-pyflakes' in repr(api)
         for i, root in enumerate(roots):
             fn = os.path.normpath(c.fullPath(root))
             sfn = g.shortFileName(fn)
