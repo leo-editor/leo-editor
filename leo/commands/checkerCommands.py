@@ -33,7 +33,7 @@ else:
     try:
         import pyflakes
         from pyflakes import api, reporter
-        assert 'ekr-fork' not in repr(pyflakes), repr(pyflakes)  ###
+        assert 'ekr-fork' not in repr(pyflakes), repr(pyflakes)
     except Exception:
         pyflakes = None  # type:ignore
 
