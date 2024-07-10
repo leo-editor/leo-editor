@@ -224,7 +224,7 @@ class Undoer:
             print(f"u.pushBead: {len(u.beads):3} {bunch.undoType}")
     #@+node:ekr.20031218072017.3613: *4* u.redoMenuName, undoMenuName
     def redoMenuName(self, name: str) -> str:
-        if name == "Can't Redo":
+        if name.startswith("Can't Redo"):
             return name
         return "Redo " + name
 
