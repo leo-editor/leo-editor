@@ -49,6 +49,14 @@ if TYPE_CHECKING:  # pragma: no cover
 #@-<< checkerCommands annotations >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
+#@+node:ekr.20240711061155.1: *3* check-leo-attributes
+@g.command('check-leo-attributes')
+def check_leo_attributes(event: LeoKeyEvent) -> None:
+    """A prototype command that checks attributes of all Leo files."""
+    c = event and event.get('c')
+    if not c:
+        return
+    CheckLeoAttributes(c).check_leo_attributes()
 #@+node:ekr.20230104132446.1: *3* check-nodes
 @g.command('check-nodes')
 def check_nodes(event: LeoKeyEvent) -> None:
@@ -317,6 +325,11 @@ def pylint_command(event: LeoKeyEvent) -> None:
         if data:
             path, p = data
             last_pylint_path = path
+#@+node:ekr.20240711061420.1: ** class CheckLeoAttributes
+class CheckLeoAttributes:
+    """
+    A prototype class that check attribute chains within Leo.
+    """
 #@+node:ekr.20230221105941.1: ** class CheckNodes
 class CheckNodes:
 
