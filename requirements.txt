@@ -34,7 +34,7 @@ meta            # livecode.py plugin.
 numpy           # VR3 plugin.
 pyenchant       # The spell tab.
 pyflakes
-pylint          # Use ruff instead.
+pylint
 pytest          # For coverage testing.
 pytest-cov      # For coverage testing.
 ruff
