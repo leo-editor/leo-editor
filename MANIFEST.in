@@ -14,7 +14,7 @@ include *.TXT
 
 # Required: Do not omit!
 # obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
-include pyproject.toml
+### include pyproject.toml
 
 # Tweaks
 

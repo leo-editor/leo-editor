@@ -40,7 +40,9 @@ else:
     assert os.path.exists(dist_dir), repr(dist_dir)
     assert os.path.isdir(dist_dir), repr(dist_dir)
     wheel_file = f"leo-{version}-py3-none-any.whl"
-    command = fr"python -m pip install {dist_dir}{os.sep}{wheel_file} --no-cache-dir"  #  --force-reinstall
+    #  --no-cache-dir  # slow
+    #  --force-reinstall
+    command = fr"python -m pip install {dist_dir}{os.sep}{wheel_file}"
     print(command)
     subprocess.Popen(command, shell=True).communicate()
 
