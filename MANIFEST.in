@@ -1,9 +1,6 @@
 
 # Order matters!
 
-# obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
-include pyproject.toml
-
 # Include *everything* in the leo folder.
 graft leo
 
@@ -14,6 +11,10 @@ global-exclude *.mypy_cache, *.mypy_stubs, *.gitattributes, *.htmlcov
 
 include *.py
 include *.TXT
+
+# Required: Do not omit!
+# obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
+include pyproject.toml
 
 # Tweaks
 
