@@ -4,7 +4,7 @@
 """
 install_leo_locally.py: Install Leo from a wheel file in the `leo-editor/leo/dist` directory.
 
-Run `python -m pip install leo-editor/dist/leo-6.8.0.post1-py3-none-any.whl`
+Run f"python -m pip install leo-editor/dist/leo-{version}-py3-none-any.whl"
 from the *parent* directory of the `leo-editor` directory.
 
 *Note*: sys.path *must not* contain the `leo-editor` directory!
