@@ -1,6 +1,9 @@
 
 # Order matters!
 
+# obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
+include pyproject.toml
+
 # Include *everything* in the leo folder.
 graft leo
 
