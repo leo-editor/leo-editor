@@ -12,9 +12,9 @@ global-exclude *.mypy_cache, *.mypy_stubs, *.gitattributes, *.htmlcov
 include *.py
 include *.TXT
 
-# Required: Do not omit!
+# No longer required.
 # obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
-### include pyproject.toml
+#include pyproject.toml
 
 # Tweaks
 
