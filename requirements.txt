@@ -3,15 +3,16 @@
 #@@language python
 #@@nosearch
 
+# Warning: these dependencies should match those in pyproject.toml.
+
 # For build devs.
 build>=1.2.1
 twine>=5.1.0
 
-# For mypy and ruff.
+# For mypy.
 
 mypy
 mypy-extensions
-ruff
 typing_extensions
 types-docutils
 types-Markdown
@@ -33,9 +34,10 @@ meta            # livecode.py plugin.
 numpy           # VR3 plugin.
 pyenchant       # The spell tab.
 pyflakes
-# pylint        # Use ruff instead.
+pylint
 pytest          # For coverage testing.
 pytest-cov      # For coverage testing.
+ruff
 sphinx
 tk              # tkinter, for emergency dialogs.
 urllib3
