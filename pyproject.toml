@@ -278,52 +278,54 @@ readme = "README.md"
 #@+node:ekr.20240713074535.1: ** << pyproject.toml: dependencies >>
 dependencies = [
 
-    # For build devs.
-    "build>=1.2.1",
-    "twine>=5.1.0",
+  # Warning: these dependencies should match those in pyproject.toml.
 
-    # For mypy...
-    "mypy",
-    "mypy-extensions",
-    "typing_extensions",
-    "types-docutils", 
-    "types-Markdown",
-    "types-paramiko",
-    "types-PyYAML",
-    "types-requests",
-    "types-six",
+  # For build devs.
+  "build>=1.2.1",
+  "twine>=5.1.0",
 
-    # General packages, including various plugins and commands...
-    "asttokens",        # For unit tests.
-    "beautifulsoup4",   # For link testing.
-    "black",            # For unit tests.
-    "docutils",         # various plugins and commands.
-    "flexx",            # leoflexx.py plugin.
-    "meta",             # livecode.py plugin.
-    "pyenchant",        # The spell tab.
-    "pytest",           # For coverage testing.
-    "pytest-cov",       # For coverage testing.
-    "pyflakes",         # pyflakes command.
-    "pylint",           # pylint command.
-    "ruff",             # For testing.
-    "sphinx",           # various plugins and commands.
-    "pyshortcuts",      # #1243: desktop integration.
-    "tk",               # tkinter: for emergency dialogs
-    "urllib3",
+  # For mypy.
 
-    # Platform-specific packages...
-    "windows-curses; os_name == 'nt'",  # cursesGui2 plugin on Windows.
-    "Send2Trash; os_name == 'nt'",  # picture_viewer plugin on Windows.
+  "mypy",
+  "mypy-extensions",
+  "typing_extensions",
+  "types-docutils",
+  "types-Markdown",
+  "types-paramiko",
+  "types-PyYAML",
+  "types-requests",
+  "types-six",
 
-    # Gui packages...
-        
-    # Use PyQt6 on all platforms.
-    "PyQt6>= 6.6",
-    "PyQt6-WebEngine",
-    "PyQt6-QScintilla",
-    "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
-    "windows-curses; platform_system == 'Windows'",  # cursesGui2 plugin.
+  # General packages, including various plugins and commands...
+
+  "asttokens",       # For unit tests.
+  "beautifulsoup4",  # For link testing.
+  "black",           # For unit tests.
+  "docutils",        # For Sphinx and rST plugins.
+  "flexx",           # leoflexx.py plugin.
+  "markdown",        # VR3 plugin.
+  "matplotlib",      # VR3 plugin.
+  "meta",            # livecode.py plugin.
+  "numpy",           # VR3 plugin.
+  "pyenchant",       # The spell tab.
+  "pyflakes",
+  "pylint",
+  "pytest",          # For coverage testing.
+  "pytest-cov",      # For coverage testing.
+  "ruff",
+  "sphinx",
+  "tk",              # tkinter, for emergency dialogs.
+  "urllib3",
+
+  # Gui packages...
+
+  "PyQt6>= 6.6",
+  "PyQt6-QScintilla",
+  "PyQt6-WebEngine",
+  "Send2Trash; platform_system == 'Windows'",      # picture_viewer plugin.
+  "windows-curses; platform_system == 'Windows'",  # cursesGui2 plugin.
 ]
+
 #@-<< pyproject.toml: dependencies >>
 
 [project.scripts]
