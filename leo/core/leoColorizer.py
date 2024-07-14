@@ -18,6 +18,7 @@ import warnings
 # Third-part tools.
 try:
     import pygments  # type:ignore
+    from pygments.lexer import DelegatingLexer
 except ImportError:
     pygments = None  # type:ignore
 #
@@ -3145,6 +3146,7 @@ class PygmentsColorizer(BaseColorizer):
         """Colorize the name only if the language has a lexer."""
         from pygments.token import Name
         language = match.group(2)
+        g.trace('match', repr(match))
         # #2484:  The language is known if there is a lexer for it.
         if self.pygments_isValidLanguage(language):
             self.language = language
@@ -3175,9 +3177,10 @@ class PygmentsColorizer(BaseColorizer):
 
         from pygments.token import Comment  # type:ignore
         from pygments.lexer import inherit  # type:ignore
+        
+        g.trace('language', language, lexer.__class__.__name__)
 
-
-        class PatchedLexer(lexer.__class__):  # type:ignore
+        class PatchedLexer(DelegatingLexer, lexer.__class__):  # type:ignore
 
             leo_sec_ref_pat = r'(?-m:\<\<(.*?)\>\>)'
             tokens = {
