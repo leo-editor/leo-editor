@@ -147,6 +147,7 @@
 <v t="ekr.20230301084201.1"><vh>Update this checklist</vh></v>
 <v t="ekr.20190618104704.1"><vh>Announcements</vh></v>
 </v>
+<v t="ekr.20240321104936.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -1508,6 +1509,10 @@ global-exclude *.mypy_cache, *.mypy_stubs, *.gitattributes, *.htmlcov
 include *.py
 include *.TXT
 
+# No longer required.
+# obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
+#include pyproject.toml
+
 # Tweaks
 
 prune leo/unittests/htmlcov
@@ -1587,11 +1592,11 @@ This checklist may seem daunting. In most cases errors are harmless, so don't de
 
 Step 1: Create and test the distribution files in leo/dist:
 
-- Update `PKG-INFO.TXT` with the proper version. 
-  Use `.postN` (not `-N`) suffixes if necessary to create distinct versions.
+- Do *not* change `PKG-INFO.TXT` if there are problems with file name in later steps!
 - Run the `build_leo` script to create `.whl` and `.tar.gz` files in the leo/dist directory.
   - Ignore warnings like `no previously-included files matching...`.
   - Make sure the filenames are as expected!
+- Delete the `leo/leo.egg-info` directory!
 - (Optional) Run the `inspect_wheel` script to inspect the metadata in the `.whl` file.
 
 Step 2: Install locally and test:
@@ -1606,28 +1611,38 @@ Everything, including filenames, must be perfect before uploading to testpypi or
 - Run the `uninstall_leo` script to uninstall Leo. It should report:
   - Two deleted folders from `Python3.x/Lib/site-packages`.
   - Three deleted scripts `Python3.x/scripts`.
+- Optional(test that `pip install leo` installs all dependencies.
+  - Run the `pip_uninstall_all` script to uninstall all packages.
+  - Re-run the `install_leo_locally` script.
+  - Re-run the `run_installed_leo` script.
+  - Re-run the `uninstall_leo` script.
 
 When all is well, go to step 3:
 
 Step 3: Upload to testpypi and test:
 
-Any glitch will require a new version number, a new `PKG-INFO.TXT`, and a new filename!
-
 - Run the `upload_leo_to_testpypi` script.
-  The upload will fail if testpypi has *ever* contained a file with the same contents or filename.
-  If the upload fails you must go back to step 1 and add a unique `.postN` prefix.
+  Fix the name of the `.whl` file (see below) if the upload fails.
 - Run the `install_leo_from_testpypi` script.
 - Test and uninstall as in step 2 above.
 
-Step 3: Upload to pypi and test:
+Step 4: Upload to pypi and test:
 
 Make *sure* all is well before uploading to pypi.
 
 - Run the `upload_leo_to_pypi` script.
-  If the upload fails, go back to step 1 and add a unique `.postN` prefix.
+  Fix the name of the `.whl` file (see below) if the upload fails.
 - Run the `install_leo_from_pypi` script.
 - Test and uninstall as in step 2 above.
 
+*How to handle errors in steps 3 and 4*
+
+Any glitch will require new filename *only* for the `.whl` file:
+- Use *build number* (-1, -2) for the new filename:
+  for example, leo-6.8.0-1-py3-none-any.whl.
+- Do *not*use `.post1`: it won't work!
+- Do *not* change the filename of `.tar.gz` file.
+- Do *not* change `PKG-INFO.TXT` or Leo's version number!
 </t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
@@ -2028,7 +2043,59 @@ keywords = ["PIM", "IDE", "Outliner"]
 license = {text = "MIT License"}
 readme = "README.md"
 #@-&lt;&lt; description &gt;&gt;
-# &lt; &lt; dependencies &gt; &gt;  # Don't duplicate requirements.txt.
+# Yes, we must duplicate requirements.txt.
+# Warning: these dependencies should match those in requirements.txt.
+#@+&lt;&lt; pyproject.toml: dependencies &gt;&gt;
+#@+node:ekr.20240713074535.1: ** &lt;&lt; pyproject.toml: dependencies &gt;&gt;
+dependencies = [
+
+    # For build devs.
+    "build&gt;=1.2.1",
+    "twine&gt;=5.1.0",
+
+    # For mypy...
+    "mypy",
+    "mypy-extensions",
+    "typing_extensions",
+    "types-docutils", 
+    "types-Markdown",
+    "types-paramiko",
+    "types-PyYAML",
+    "types-requests",
+    "types-six",
+
+    # General packages, including various plugins and commands...
+    "asttokens",        # For unit tests.
+    "beautifulsoup4",   # For link testing.
+    "black",            # For unit tests.
+    "docutils",         # various plugins and commands.
+    "flexx",            # leoflexx.py plugin.
+    "meta",             # livecode.py plugin.
+    "pyenchant",        # The spell tab.
+    "pytest",           # For coverage testing.
+    "pytest-cov",       # For coverage testing.
+    "pyflakes",         # pyflakes command.
+    "pylint",           # pylint command.
+    "ruff",             # For testing.
+    "sphinx",           # various plugins and commands.
+    "pyshortcuts",      # #1243: desktop integration.
+    "tk",               # tkinter: for emergency dialogs
+    "urllib3",
+
+    # Platform-specific packages...
+    "windows-curses; os_name == 'nt'",  # cursesGui2 plugin on Windows.
+    "Send2Trash; os_name == 'nt'",  # picture_viewer plugin on Windows.
+
+    # Gui packages...
+        
+    # Use PyQt6 on all platforms.
+    "PyQt6&gt;= 6.6",
+    "PyQt6-WebEngine",
+    "PyQt6-QScintilla",
+    "Send2Trash; platform_system == 'Windows'",  # picture_viewer plugin.
+    "windows-curses; platform_system == 'Windows'",  # cursesGui2 plugin.
+]
+#@-&lt;&lt; pyproject.toml: dependencies &gt;&gt;
 
 [project.scripts]
 leo = "leo.core.runLeo:run"
