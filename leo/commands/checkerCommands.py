@@ -45,7 +45,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
-
 #@-<< checkerCommands annotations >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
@@ -330,6 +329,12 @@ class CheckLeoAttributes:
     """
     A prototype class that check attribute chains within Leo.
     """
+
+    def __init__(self, c: Cmdr) -> None:
+        self.c = c
+
+    #@+others
+    #@-others
 #@+node:ekr.20230221105941.1: ** class CheckNodes
 class CheckNodes:
 
