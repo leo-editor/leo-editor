@@ -5529,7 +5529,7 @@ def get_ctor_name(self: Any, file_name: str, width: int = 25) -> str:
 #@+node:ekr.20040731204831: *3* g.getLastTracebackFileAndLineNumber
 def getLastTracebackFileAndLineNumber() -> tuple[str, int]:
     typ, val, tb = sys.exc_info()
-    if typ == SyntaxError:
+    if typ is SyntaxError:
         # IndentationError is a subclass of SyntaxError.
         return val.filename, val.lineno
     #
