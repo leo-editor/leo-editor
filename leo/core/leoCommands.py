@@ -2264,13 +2264,11 @@ class Commands:
             g.es_exception()
             if dump:
                 # Write the invalid ouitline to the corresponding leo.txt file.
-                # filename = c.fileName() + '.txt'
                 filename = os.path.normpath(os.path.expanduser(f"~/BAD-{c.shortFileName()}.txt"))
                 try:
-                    with open(filename, 'w') as f:
-                        # for s in g.splitLines(xml_contents):
-                            # f.write(g.toUnicode(s))
-                        f.write('Test')
+                    with open(filename, 'rw') as f:
+                        for s in g.splitLines(xml_contents):
+                            f.write(g.toEncodedString(s, reportErrors=True))
                     g.es_print(f"Wrote {filename}")
                 except Exception:
                     g.es_print(f"Exception writing {filename}")
