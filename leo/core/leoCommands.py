@@ -15,6 +15,8 @@ import tempfile
 import time
 import tokenize
 from typing import Any, Generator, Iterable, Optional, Sequence, Union, TYPE_CHECKING
+import xml.etree.ElementTree as ElementTree
+
 from leo.core import leoGlobals as g
 # The leoCommands ctor now does most leo.core.leo* imports,
 # thereby breaking circular dependencies.
@@ -2244,6 +2246,36 @@ class Commands:
         return c.checkOutline() == 0
 
 
+    #@+node:ekr.20240715040734.1: *4* c.checkOutlineXML
+    def checkOutlineXML(self, dump: bool = True) -> bool:
+        """Validate outline's xml."""
+        c = self
+        # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
+        translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
+        xml_contents = c.fileCommands.outline_to_xml_string()
+        table = xml_contents.maketrans(translate_dict)
+        translated_contents = xml_contents.translate(table)
+        try:
+            xroot = ElementTree.fromstring(translated_contents)
+            assert xroot
+            return True
+        except Exception:
+            g.es_print('The outline is invalid!', color='red')
+            g.es_exception()
+            if dump:
+                # Write the invalid ouitline to the corresponding leo.txt file.
+                filename = os.path.normpath(os.path.expanduser(f"~/.leo/BAD-{c.shortFileName()}.txt"))
+                try:
+                    with open(filename, 'bw') as f:
+                        for s in g.splitLines(translated_contents):
+                            f.write(g.toEncodedString(s, reportErrors=True))
+                    g.es_print('')
+                    g.es_print(f"Wrote {filename}")
+                    g.es_print('')
+                except Exception:
+                    g.es_print(f"Exception writing {filename}")
+                    g.es_exception()
+            return False
     #@+node:ekr.20040723094220: *3* c.Check Python code
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
