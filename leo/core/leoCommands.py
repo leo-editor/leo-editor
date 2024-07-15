@@ -2246,8 +2246,8 @@ class Commands:
         return c.checkOutline() == 0
 
 
-    #@+node:ekr.20240715040734.1: *4* c.validateOutlineXML
-    def validateOutlineXML(self, dump: bool = True) -> bool:
+    #@+node:ekr.20240715040734.1: *4* c.checkOutlineXML
+    def checkOutlineXML(self, dump: bool = True) -> bool:
         """Validate outline's xml."""
         c = self
         # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
