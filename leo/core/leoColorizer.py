@@ -745,7 +745,7 @@ class BaseColorizer:
         self.n_setTag += 1
         if i == j:
             return
-        if not tag.strip():
+        if not tag or not tag.strip():
             return
         tag = tag.lower().strip()
         # A hack to allow continuation dots on any tag.
@@ -3177,7 +3177,7 @@ class PygmentsColorizer(BaseColorizer):
 
         from pygments.token import Comment  # type:ignore
         from pygments.lexer import inherit  # type:ignore
-        
+
         g.trace('language', language, lexer.__class__.__name__)
 
         class PatchedLexer(DelegatingLexer, lexer.__class__):  # type:ignore
