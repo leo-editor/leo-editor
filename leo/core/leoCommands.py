@@ -2264,7 +2264,7 @@ class Commands:
             g.es_exception()
             if dump:
                 # Write the invalid ouitline to the corresponding leo.txt file.
-                filename = os.path.normpath(os.path.expanduser(f"~/BAD-{c.shortFileName()}.txt"))
+                filename = os.path.normpath(os.path.expanduser(f"~/.leo/BAD-{c.shortFileName()}.txt"))
                 try:
                     with open(filename, 'bw') as f:
                         for s in g.splitLines(translated_contents):
