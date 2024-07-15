@@ -1344,9 +1344,10 @@ class GitDiffController:
             z.strip() for z in g.execGitCommand(command, directory)
                 # #3994: binary files can corrupt the outline.
                 if not z.strip().endswith((
-                    '.bmp', '.db', '.exe', '.gz',
+                    '.bmp', '.db', '.exe', '.gif', '.gz',
                     '.inv',  # Sphinx inventory file.
-                    '.pdf', '.png', '.tar', '.whl', '.zip',
+                    '.jpg', '.mov', '.mp4', '.pdf', '.png',
+                    '.tar', '.tif',  '.tar', '.whl', '.zip',
                 ))
         ]
     #@+node:ekr.20170821052348.1: *4* gdc.get_revno
