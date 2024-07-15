@@ -2232,8 +2232,6 @@ class Commands:
         c, errors = self, 0
         for f in (c.checkVnodeLinks, c.checkGnxs):
             errors += f()
-        if not c.validateOutlineXML():
-            errors += 1
         return errors
     #@+node:ekr.20031218072017.1765: *4* c.validateOutline (compatibility only)
     # Makes sure all nodes are valid.
