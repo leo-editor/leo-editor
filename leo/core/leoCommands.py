@@ -2267,7 +2267,8 @@ class Commands:
                 filename = c.fileName() + '.txt'
                 try:
                     with open(filename, 'w') as f:
-                        f.write(xml_contents)
+                        for s in g.splitLines(translated_contents):
+                            f.write(g.toUnicode(s))
                     g.es_print(f"Wrote {filename}")
                 except Exception:
                     g.es_print(f"Exception writing {filename}")
