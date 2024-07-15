@@ -15,6 +15,8 @@ import tempfile
 import time
 import tokenize
 from typing import Any, Generator, Iterable, Optional, Sequence, Union, TYPE_CHECKING
+import xml.etree.ElementTree as ElementTree
+
 from leo.core import leoGlobals as g
 # The leoCommands ctor now does most leo.core.leo* imports,
 # thereby breaking circular dependencies.
@@ -2230,6 +2232,8 @@ class Commands:
         c, errors = self, 0
         for f in (c.checkVnodeLinks, c.checkGnxs):
             errors += f()
+        if not c.validateOutlineXML():
+            errors += 1
         return errors
     #@+node:ekr.20031218072017.1765: *4* c.validateOutline (compatibility only)
     # Makes sure all nodes are valid.
@@ -2244,6 +2248,23 @@ class Commands:
         return c.checkOutline() == 0
 
 
+    #@+node:ekr.20240715040734.1: *4* c.validateOutlineXML
+    def validateOutlineXML(self) -> bool:
+        """Validate outline's xml."""
+        c = self
+        # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
+        translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
+        contents = c.fileCommands.outline_to_xml_string()
+        table = contents.maketrans(translate_dict)  # type:ignore #1510.
+        contents = contents.translate(table)
+        try:
+            xroot = ElementTree.fromstring(contents)
+            assert xroot
+            return True
+        except Exception:
+            print('Failed!')
+            g.es_exception()
+            return False
     #@+node:ekr.20040723094220: *3* c.Check Python code
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
