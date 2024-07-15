@@ -2262,7 +2262,7 @@ class Commands:
             assert xroot
             return True
         except Exception:
-            print('Failed!')
+            g.es_print('The outline is invalid!', color='red')
             g.es_exception()
             return False
     #@+node:ekr.20040723094220: *3* c.Check Python code

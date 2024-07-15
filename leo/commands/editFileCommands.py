@@ -1246,9 +1246,22 @@ class GitDiffController:
     def finish(self) -> None:
         """Finish execution of this command."""
         c = self.c
-        c.selectPosition(self.root)
-        self.root.expand()
-        c.redraw(self.root)
+        if c.validateOutlineXML():
+            # All is well.
+            c.selectPosition(self.root)
+            self.root.expand()
+            c.redraw(self.root)
+        else:
+            # Writing the outline would create an invalid outline.
+            g.es_print('Deleting the diff. It would create an invalid outline!', color='red')
+            c.selectPosition(self.root)
+            c.deleteOutline()
+            last = c.lastTopLevel()
+            c.redraw(last)
+            # Re-validate.
+            if not c.validateOutlineXML():
+                g.es_print('The outline is *still* invalid!', color='red')
+                g.es_print('Do not save the outline!', color='red')
         c.treeWantsFocusNow()
     #@+node:ekr.20210819080657.1: *4* gdc.get_parent_of_git_directory
     def get_parent_of_git_directory(self) -> Optional[str]:
