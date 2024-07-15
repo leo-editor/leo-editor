@@ -1342,7 +1342,8 @@ class GitDiffController:
         # #1781: Allow diffs of .leo files.
         return [
             z.strip() for z in g.execGitCommand(command, directory)
-                if not z.strip().endswith(('.db', '.zip'))
+                # #3994: '.inv' and '.pdf' files can corrupt the outline.
+                if not z.strip().endswith(('.db', '.inv', '.pdf', '.zip'))
         ]
     #@+node:ekr.20170821052348.1: *4* gdc.get_revno
     def get_revno(self, revspec: str, abbreviated: bool = True) -> str:
