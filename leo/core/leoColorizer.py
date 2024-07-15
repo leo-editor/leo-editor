@@ -827,7 +827,7 @@ class BaseColorizer:
     def useSyntaxColoring(self, p: Position) -> bool:
         """True if syntax coloring is enabgled in p."""
         #@verbatim
-        # @nocolor-node only applies the p.
+        # @nocolor-node only applies to p.
         d = self.findColorDirectives(p)
         if 'nocolor-node' in d:
             return False
