@@ -2267,7 +2267,7 @@ class Commands:
                 filename = os.path.normpath(os.path.expanduser(f"~/BAD-{c.shortFileName()}.txt"))
                 try:
                     with open(filename, 'bw') as f:
-                        for s in g.splitLines(xml_contents):
+                        for s in g.splitLines(translated_contents):
                             f.write(g.toEncodedString(s, reportErrors=True))
                     g.es_print('')
                     g.es_print(f"Wrote {filename}")
