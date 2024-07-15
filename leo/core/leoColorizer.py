@@ -813,6 +813,7 @@ class BaseColorizer:
             try:
                 self.enabled = self.useSyntaxColoring(p)
                 self.language = self.scanLanguageDirectives(p)
+                ### g.trace('enabled:', int(self.enabled), p.h)  ###
             except Exception:
                 g.es_print('unexpected exception in updateSyntaxColorer')
                 g.es_exception()
@@ -824,19 +825,18 @@ class BaseColorizer:
         return language or c.target_language
     #@+node:ekr.20170127142001.7: *4* BaseColorizer.useSyntaxColoring & helper
     def useSyntaxColoring(self, p: Position) -> bool:
-        """True if p's parents enable coloring in p."""
-        # Special cases for the selected node.
+        """True if syntax coloring is enabgled in p."""
+        #@verbatim
+        # @nocolor-node only applies the p.
         d = self.findColorDirectives(p)
-        if 'killcolor' in d:
-            return False
         if 'nocolor-node' in d:
             return False
-        # Now look at the parents.
-        for p in p.parents():
+        # Bug fix 2024/07/15: Examine p, then its parents.
+        for p in p.self_and_parents():
             d = self.findColorDirectives(p)
-            #@verbatim
-            # @killcolor anywhere disables coloring.
             if 'killcolor' in d:
+                #@verbatim
+                # @killcolor anywhere disables coloring.
                 return False
             # unambiguous @color enables coloring.
             if 'color' in d and 'nocolor' not in d:
@@ -3137,6 +3137,7 @@ class PygmentsColorizer(BaseColorizer):
         from pygments.token import Name, Text  # type: ignore
         kind = match.group(0)
         self.color_enabled = kind == '@color'
+        g.trace('color_enabled:', self.color_enabled)  ###
         if self.color_enabled:
             yield match.start(), Name.Decorator, kind
         else:
@@ -3146,7 +3147,10 @@ class PygmentsColorizer(BaseColorizer):
         """Colorize the name only if the language has a lexer."""
         from pygments.token import Name
         language = match.group(2)
-        g.trace('match', repr(match))
+        if 1:  ###
+            print('')
+            g.trace('match', repr(match))
+            print('')
         # #2484:  The language is known if there is a lexer for it.
         if self.pygments_isValidLanguage(language):
             self.language = language
@@ -3177,7 +3181,7 @@ class PygmentsColorizer(BaseColorizer):
 
         from pygments.token import Comment  # type:ignore
         from pygments.lexer import inherit  # type:ignore
-
+        
         g.trace('language', language, lexer.__class__.__name__)
 
         class PatchedLexer(DelegatingLexer, lexer.__class__):  # type:ignore
