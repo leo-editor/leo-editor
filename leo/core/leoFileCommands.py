@@ -168,6 +168,7 @@ class FastRead:
             if path:
                 self.bad_path_dict[path] = True
                 message = f"bad .leo file: {g.shortFileName(path)}"
+                g.es_exception()
             else:
                 message = 'The clipboard is not a valid .leo file'
             print('')

@@ -1246,9 +1246,22 @@ class GitDiffController:
     def finish(self) -> None:
         """Finish execution of this command."""
         c = self.c
-        c.selectPosition(self.root)
-        self.root.expand()
-        c.redraw(self.root)
+        if c.checkOutlineXML(dump=True):
+            # All is well.
+            c.selectPosition(self.root)
+            self.root.expand()
+            c.redraw(self.root)
+        else:
+            # Writing the outline would create an invalid outline.
+            g.es_print('Deleting the diff. It would create an invalid outline!', color='red')
+            c.selectPosition(self.root)
+            c.deleteOutline()
+            last = c.lastTopLevel()
+            c.redraw(last)
+            # Re-validate.
+            if not c.checkOutlineXML(dump=False):
+                g.es_print('The outline is *still* invalid!', color='red')
+                g.es_print('Do not save the outline!', color='red')
         c.treeWantsFocusNow()
     #@+node:ekr.20210819080657.1: *4* gdc.get_parent_of_git_directory
     def get_parent_of_git_directory(self) -> Optional[str]:
@@ -1329,7 +1342,8 @@ class GitDiffController:
         # #1781: Allow diffs of .leo files.
         return [
             z.strip() for z in g.execGitCommand(command, directory)
-                if not z.strip().endswith(('.db', '.zip'))
+                # #3994: '.inv' and '.pdf' files can corrupt the outline.
+                if not z.strip().endswith(('.db', '.inv', '.pdf', '.zip'))
         ]
     #@+node:ekr.20170821052348.1: *4* gdc.get_revno
     def get_revno(self, revspec: str, abbreviated: bool = True) -> str:
