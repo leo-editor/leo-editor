@@ -2247,26 +2247,31 @@ class Commands:
 
 
     #@+node:ekr.20240715040734.1: *4* c.validateOutlineXML
-    def validateOutlineXML(self) -> bool:
+    def validateOutlineXML(self, dump: bool = True) -> bool:
         """Validate outline's xml."""
         c = self
         # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
         translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
-        contents = c.fileCommands.outline_to_xml_string()
-        table = contents.maketrans(translate_dict)  # type:ignore #1510.
-        contents = contents.translate(table)
+        xml_contents = c.fileCommands.outline_to_xml_string()
+        table = xml_contents.maketrans(translate_dict)
+        translated_contents = xml_contents.translate(table)
         try:
-            xroot = ElementTree.fromstring(contents)
+            xroot = ElementTree.fromstring(translated_contents)
             assert xroot
             return True
         except Exception:
             g.es_print('The outline is invalid!', color='red')
             g.es_exception()
-            # Write the invalid ouitline to the corresponding leo.txt file.
-            filename = c.fileName() + '.txt'
-            g.es_print(f"Writing {filename}")
-            with open(filename, 'w') as f:
-                f.write(contents)
+            if dump:
+                # Write the invalid ouitline to the corresponding leo.txt file.
+                filename = c.fileName() + '.txt'
+                try:
+                    with open(filename, 'w') as f:
+                        f.write(xml_contents)
+                    g.es_print(f"Wrote {filename}")
+                except Exception:
+                    g.es_print(f"Exception writing {filename}")
+                    g.es_exception()
             return False
     #@+node:ekr.20040723094220: *3* c.Check Python code
     # This code is no longer used by any Leo command,

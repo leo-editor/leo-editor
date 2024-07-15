@@ -1246,7 +1246,7 @@ class GitDiffController:
     def finish(self) -> None:
         """Finish execution of this command."""
         c = self.c
-        if c.validateOutlineXML():
+        if c.validateOutlineXML(dump=True):
             # All is well.
             c.selectPosition(self.root)
             self.root.expand()
@@ -1259,7 +1259,7 @@ class GitDiffController:
             last = c.lastTopLevel()
             c.redraw(last)
             # Re-validate.
-            if not c.validateOutlineXML():
+            if not c.validateOutlineXML(dump=False):
                 g.es_print('The outline is *still* invalid!', color='red')
                 g.es_print('Do not save the outline!', color='red')
         c.treeWantsFocusNow()
