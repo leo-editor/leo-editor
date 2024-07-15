@@ -2262,6 +2262,11 @@ class Commands:
         except Exception:
             g.es_print('The outline is invalid!', color='red')
             g.es_exception()
+            # Write the invalid ouitline to the corresponding leo.txt file.
+            filename = c.fileName() + '.txt'
+            g.es_print(f"Writing {filename}")
+            with open(filename, 'w') as f:
+                f.write(contents)
             return False
     #@+node:ekr.20040723094220: *3* c.Check Python code
     # This code is no longer used by any Leo command,
