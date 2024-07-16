@@ -3037,6 +3037,17 @@ class PygmentsColorizer(BaseColorizer):
     def setPygmentsFormat(self, index: int, length: Any, format: Any, s: str) -> None:
         """Call the base setTag to set the Qt format."""
         self.highlighter.setFormat(index, length, format)
+    #@+node:ekr.20240716051511.1: *3* pyg_c.force_recolor
+    def force_recolor(self) -> None:
+        """
+        Force a complete recolor. A hook for the 'recolor' command.
+        """
+        c = self.c
+        p = c.p
+        self.updateSyntaxColorer(p)
+        self.color_enabled = self.enabled
+        self.old_v = p.v  # Fix a major performance bug.
+        self.init()
     #@+node:ekr.20220316200022.1: *3* pyg_c.pygments_isValidLanguage
     def pygments_isValidLanguage(self, language: str) -> bool:
         """
