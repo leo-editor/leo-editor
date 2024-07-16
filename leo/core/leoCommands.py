@@ -1289,8 +1289,12 @@ class Commands:
     def recolorCommand(self, event: LeoKeyEvent = None) -> None:
         """Force a full recolor."""
         c = self
-        wrapper = c.frame.body.wrapper
+        # Call colorer.force_recolor for pygments.
+        colorer = c.frame.body.colorizer
+        if hasattr(colorer, 'force_recolor'):
+            colorer.force_recolor()
         # Setting all text appears to be the only way.
+        wrapper = c.frame.body.wrapper
         i, j = wrapper.getSelectionRange()
         ins = wrapper.getInsertPoint()
         wrapper.setAllText(c.p.b)
