@@ -16,23 +16,33 @@ class TestColorizer(LeoUnitTest):
     #@+others
     #@+node:ekr.20210905161336.1: *3* TestColorizer.color
     def color(self, language_name, text):
-        """Run the test by colorizing a node with the given text."""
+        """
+        Run the test by colorizing a node with the given text.
+        
+        Colorize using the jEdit and pygments colorizers.
+        """
         c = self.c
         p = c.p
         text = text.replace('> >', '>>').replace('< <', '<<')
         p.b = f"@language {language_name}\n{text}"
 
-        # Instatiate the colorizer and init it.
+        # Test 1: test the jEdit colorizer.
         x = leoColorizer.JEditColorizer(c, None)
         x.language = language_name
         x.enabled = True
         x.init()
         x.init_all_state(p.v)
         n = x.initBlock0()
-
-        # Colorize all the lines!
         for s in g.splitLines(text):
             x.mainLoop(n, s)
+            
+        # Test 2: test the pygments colorizer.
+        x = leoColorizer.PygmentsColorizer(c, None)
+        x.language = language_name
+        x.enabled = True
+        x.init()
+        for s in g.splitLines(text):
+            x.mainLoop(s)
     #@+node:ekr.20210905170507.2: *3* TestColorizer.test__comment_after_language_plain
     def test__comment_after_language_plain(self):
         text = self.prep(

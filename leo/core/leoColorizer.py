@@ -15,9 +15,10 @@ import time
 from typing import Any, Generator, Sequence, Optional, Union, TYPE_CHECKING
 import warnings
 #
-# Third-part tools.
+# Third-party tools.
 try:
     import pygments  # type:ignore
+    from pygments.lexer import DelegatingLexer
 except ImportError:
     pygments = None  # type:ignore
 #
@@ -56,7 +57,11 @@ def make_colorizer(c: Cmdr, widget: Widget) -> Any:
     return JEditColorizer(c, widget)
 #@+node:ekr.20170127141855.1: ** class BaseColorizer
 class BaseColorizer:
-    """The base class for all Leo colorizers."""
+    """
+    The base class for all Leo colorizers.
+    
+    c.frame.body.colorizer is the actual colorizer.
+    """
     #@+others
     #@+node:ekr.20220317050513.1: *3*  BaseColorizer: birth
     #@+node:ekr.20190324044744.1: *4* BaseColorizer.__init__
@@ -744,7 +749,7 @@ class BaseColorizer:
         self.n_setTag += 1
         if i == j:
             return
-        if not tag.strip():
+        if not tag or not tag.strip():
             return
         tag = tag.lower().strip()
         # A hack to allow continuation dots on any tag.
@@ -823,19 +828,18 @@ class BaseColorizer:
         return language or c.target_language
     #@+node:ekr.20170127142001.7: *4* BaseColorizer.useSyntaxColoring & helper
     def useSyntaxColoring(self, p: Position) -> bool:
-        """True if p's parents enable coloring in p."""
-        # Special cases for the selected node.
+        """True if syntax coloring is enabled in p."""
+        #@verbatim
+        # @nocolor-node only applies to p.
         d = self.findColorDirectives(p)
-        if 'killcolor' in d:
-            return False
         if 'nocolor-node' in d:
             return False
-        # Now look at the parents.
-        for p in p.parents():
+        # Bug fix 2024/07/15: Examine p, then its parents.
+        for p in p.self_and_parents():
             d = self.findColorDirectives(p)
-            #@verbatim
-            # @killcolor anywhere disables coloring.
             if 'killcolor' in d:
+                #@verbatim
+                # @killcolor anywhere disables coloring.
                 return False
             # unambiguous @color enables coloring.
             if 'color' in d and 'nocolor' not in d:
@@ -3032,6 +3036,17 @@ class PygmentsColorizer(BaseColorizer):
     def setPygmentsFormat(self, index: int, length: Any, format: Any, s: str) -> None:
         """Call the base setTag to set the Qt format."""
         self.highlighter.setFormat(index, length, format)
+    #@+node:ekr.20240716051511.1: *3* pyg_c.force_recolor
+    def force_recolor(self) -> None:
+        """
+        Force a complete recolor. A hook for the 'recolor' command.
+        """
+        c = self.c
+        p = c.p
+        self.updateSyntaxColorer(p)
+        self.color_enabled = self.enabled
+        self.old_v = p.v  # Fix a major performance bug.
+        self.init()
     #@+node:ekr.20220316200022.1: *3* pyg_c.pygments_isValidLanguage
     def pygments_isValidLanguage(self, language: str) -> bool:
         """
@@ -3176,8 +3191,7 @@ class PygmentsColorizer(BaseColorizer):
         from pygments.token import Comment  # type:ignore
         from pygments.lexer import inherit  # type:ignore
 
-
-        class PatchedLexer(lexer.__class__):  # type:ignore
+        class PatchedLexer(DelegatingLexer, lexer.__class__):  # type:ignore
 
             leo_sec_ref_pat = r'(?-m:\<\<(.*?)\>\>)'
             tokens = {
@@ -3191,6 +3205,9 @@ class PygmentsColorizer(BaseColorizer):
                    inherit,
                 ],
             }
+
+            def __init__(self, **options: Any) -> None:
+                super().__init__(PatchedLexer, lexer.__class__, **options)
 
         try:
             return PatchedLexer()
