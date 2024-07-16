@@ -57,7 +57,11 @@ def make_colorizer(c: Cmdr, widget: Widget) -> Any:
     return JEditColorizer(c, widget)
 #@+node:ekr.20170127141855.1: ** class BaseColorizer
 class BaseColorizer:
-    """The base class for all Leo colorizers."""
+    """
+    The base class for all Leo colorizers.
+    
+    c.frame.body.colorizer is the actual colorizer.
+    """
     #@+others
     #@+node:ekr.20220317050513.1: *3*  BaseColorizer: birth
     #@+node:ekr.20190324044744.1: *4* BaseColorizer.__init__
@@ -3181,8 +3185,8 @@ class PygmentsColorizer(BaseColorizer):
 
         from pygments.token import Comment  # type:ignore
         from pygments.lexer import inherit  # type:ignore
-        
-        g.trace('language', language, lexer.__class__.__name__)
+
+        g.trace('language', language, repr(lexer))  ###
 
         class PatchedLexer(DelegatingLexer, lexer.__class__):  # type:ignore
 
