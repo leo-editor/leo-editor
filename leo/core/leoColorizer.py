@@ -15,7 +15,7 @@ import time
 from typing import Any, Generator, Sequence, Optional, Union, TYPE_CHECKING
 import warnings
 #
-# Third-part tools.
+# Third-party tools.
 try:
     import pygments  # type:ignore
     from pygments.lexer import DelegatingLexer
@@ -828,7 +828,7 @@ class BaseColorizer:
         return language or c.target_language
     #@+node:ekr.20170127142001.7: *4* BaseColorizer.useSyntaxColoring & helper
     def useSyntaxColoring(self, p: Position) -> bool:
-        """True if syntax coloring is enabgled in p."""
+        """True if syntax coloring is enabled in p."""
         #@verbatim
         # @nocolor-node only applies to p.
         d = self.findColorDirectives(p)
