@@ -3199,6 +3199,9 @@ class PygmentsColorizer(BaseColorizer):
                 ],
             }
 
+            def __init__(self, **options: Any) -> None:
+                super().__init__(PatchedLexer, lexer.__class__, **options)
+
         try:
             return PatchedLexer()
         except Exception:
