@@ -3966,6 +3966,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         d = p.v.u
         bunch = u.beforeChangeUA(p)
         d[self.uaName] = val
+        p.setDirty()
+        c.setChanged()
         u.afterChangeUA(p, 'set-ua', bunch)
         self.showNodeUas()
         k.clearState()
