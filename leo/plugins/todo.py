@@ -364,7 +364,7 @@ class todoController:
     #@-<< todoController data >>
 
     #@+others
-    #@+node:tbrown.20090119215428.11: *3* todoController.__init__ & helpers (todoController)
+    #@+node:tbrown.20090119215428.11: *3* todoController.__init__ & helpers
     def __init__(self, c: Cmdr) -> None:
         """ctor for todoController class."""
         self.c = c
@@ -393,7 +393,7 @@ class todoController:
         self.ui.UI.spinTime.setSuffix(" " + self.time_name)
         # #1591: patch labels if necessary.
         self.patch_1591()
-    #@+node:tbrown.20090119215428.12: *4* todoController.reloadSettings (todoController)
+    #@+node:tbrown.20090119215428.12: *4* todoController.reloadSettings
     def reloadSettings(self) -> None:
         c = self.c
         c.registerReloadSettings(self)
