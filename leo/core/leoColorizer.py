@@ -817,7 +817,6 @@ class BaseColorizer:
             try:
                 self.enabled = self.useSyntaxColoring(p)
                 self.language = self.scanLanguageDirectives(p)
-                ### g.trace('enabled:', int(self.enabled), p.h)  ###
             except Exception:
                 g.es_print('unexpected exception in updateSyntaxColorer')
                 g.es_exception()
@@ -3152,7 +3151,6 @@ class PygmentsColorizer(BaseColorizer):
         from pygments.token import Name, Text  # type: ignore
         kind = match.group(0)
         self.color_enabled = kind == '@color'
-        g.trace('color_enabled:', self.color_enabled)  ###
         if self.color_enabled:
             yield match.start(), Name.Decorator, kind
         else:
@@ -3162,10 +3160,6 @@ class PygmentsColorizer(BaseColorizer):
         """Colorize the name only if the language has a lexer."""
         from pygments.token import Name
         language = match.group(2)
-        if 1:  ###
-            print('')
-            g.trace('match', repr(match))
-            print('')
         # #2484:  The language is known if there is a lexer for it.
         if self.pygments_isValidLanguage(language):
             self.language = language
@@ -3196,8 +3190,6 @@ class PygmentsColorizer(BaseColorizer):
 
         from pygments.token import Comment  # type:ignore
         from pygments.lexer import inherit  # type:ignore
-
-        g.trace('language', language, repr(lexer))  ###
 
         class PatchedLexer(DelegatingLexer, lexer.__class__):  # type:ignore
 
