@@ -102,6 +102,7 @@
 <v t="ekr.20180405093127.32"><vh>reStructureText text example</vh></v>
 </v>
 <v t="ekr.20230716045242.1"><vh>Clickable links</vh></v>
+<v t="ekr.20180405105451.1"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20131019184243.16683">This Cheat Sheet contains a summary of many of Leo's important features.
@@ -1022,8 +1023,8 @@ This is a comment</t>
 <t tx="ekr.20180405093127.14">#!/usr/bin/env python
 # a bar plot with errorbars
 
-# import numpy as np
-# import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.pyplot as plt
 
 N = 5
 menMeans = (20, 35, 30, 35, 27)
@@ -1045,9 +1046,7 @@ ax.set_ylabel('Scores')
 ax.set_title('Scores by group and gender')
 ax.set_xticks(ind + width)
 ax.set_xticklabels(('G1', 'G2', 'G3', 'G4', 'G5'))
-
 ax.legend((rects1[0], rects2[0]), ('Men', 'Women'))
-
 
 def autolabel(rects):
     # attach some text labels
@@ -1060,15 +1059,15 @@ def autolabel(rects):
 autolabel(rects1)
 autolabel(rects2)
 
+# sets interactive mode. Prevents this message:
+# QCoreApplication::exec: The event loop is already running
 plt.ion()
-    # sets interactive mode. Prevents this message:
-    # QCoreApplication::exec: The event loop is already running
 plt.show()</t>
 <t tx="ekr.20180405093127.16"># https://matplotlib.org/1.5.1/examples/animation/basic_example.html
 
-# import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib.animation as animation
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 def update_line(num, data, line):
     line.set_data(data[..., :num])
@@ -1085,10 +1084,14 @@ line_ani = animation.FuncAnimation(fig1, update_line, 25,
     fargs=(data, l),
     interval=50,
     blit=True)
-</t>
-<t tx="ekr.20180405093127.17"># import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib.animation as animation
+
+# sets interactive mode. Prevents this message:
+# QCoreApplication::exec: The event loop is already running
+plt.ion()
+plt.show()</t>
+<t tx="ekr.20180405093127.17">import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 fig2 = plt.figure()
 
@@ -1106,13 +1109,16 @@ try:
 except TypeError:
     # Suppress "TypeError: 'PolyQuadMesh' object is not iterable"
     pass
-
+    
+# sets interactive mode. Prevents this message:
+# QCoreApplication::exec: The event loop is already running
+plt.ion()
 plt.show()</t>
 <t tx="ekr.20180405093127.18"># http://matplotlib.org/1.5.1/examples/animation/animate_decay.html
 
-# import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib.animation as animation
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 @others
 
@@ -1121,15 +1127,19 @@ fig, ax = plt.subplots()
 line, = ax.plot([], [], lw=2)
 ax.grid()
 xdata, ydata = [], []
+
+# This call seems flakey. You may have to run this several times.
 ani = animation.FuncAnimation(
     fig, run, data_gen, blit=False, interval=10,
-    repeat=False, init_func=init)
-    # cache_frame_data=False)
+    repeat=False, init_func=init,
+    cache_frame_data=False,
+)
 
+# sets interactive mode. Prevents this message:
+# QCoreApplication::exec: The event loop is already running
 plt.ion()
-    # sets interactive mode. Prevents this message:
-    # QCoreApplication::exec: The event loop is already running
-plt.show()</t>
+plt.show()
+</t>
 <t tx="ekr.20180405093127.19">def data_gen(t=0):
     cnt = 0
     while cnt &lt; 1000:
@@ -1485,14 +1495,14 @@ Here is the main page.  It contains links to individual lessons.
 https://github.com/leo-editor/leo-editor/issues/816
 </t>
 <t tx="ekr.20180405105451.1">@language python
-
 @doc
 
 These will work only if numpy, matplotlib and pyplot are installed.
 
-The viewrendered.py plugin must also be enabled.
+If you use the viewrendered or viewrendered3 plugins nodes need use the imports shown.
 
-Within an @pyplot node you do not need to add the standard imports!
+*Note*: It's also possible to run these examples using Leo's execute-script command.
+Doing so shows the plots in separate windows.
 </t>
 <t tx="ekr.20180405105738.1"></t>
 <t tx="ekr.20180503073939.1"></t>
