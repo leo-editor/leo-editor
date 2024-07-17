@@ -84,9 +84,7 @@
 <v t="ekr.20131102044158.16563"><vh>~/myDocument.html.txt</vh></v>
 </v>
 <v t="ekr.20180405093127.1"><vh>Rendering examples</vh>
-<v t="ekr.20180405093127.9"><vh>@html display Leo tree using css</vh></v>
 <v t="ekr.20180405093127.11"><vh>@image LeoSplash</vh></v>
-<v t="ekr.20180405093127.12"><vh>@image splash screen</vh></v>
 <v t="ekr.20180405093127.22"><vh>@svg bubbles from sources</vh></v>
 <v t="ekr.20180405093127.23"><vh>@svg bubbles.svg from a link</vh></v>
 <v t="ekr.20180405093127.31"><vh>Markdown example</vh></v>
@@ -106,6 +104,9 @@
 <v t="ekr.20180405093127.32"><vh>reStructureText text example</vh></v>
 </v>
 <v t="ekr.20230716045242.1"><vh>Clickable links</vh></v>
+<v t="ekr.20240716202324.1"><vh>--- fix</vh>
+<v t="ekr.20180405105451.1"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20131019184243.16683">This Cheat Sheet contains a summary of many of Leo's important features.
@@ -176,7 +177,7 @@ Regardless of focus::
 Adding the Shift key modifier to any of the keys above
 moves the cursor and extends the selected text.
 </t>
-<t tx="ekr.20131019184243.16689">For much more information, see Leo's Commands Reference: http://leoeditor.com/commands.html
+<t tx="ekr.20131019184243.16689">For much more information, see Leo's Commands Reference: https://leo-editor.github.io/leo-editor/commands.html
 
 Copy/Paste (text)::
 
@@ -243,7 +244,7 @@ Undo::
 </t>
 <t tx="ekr.20131019184243.16690">Directives starting with '@ in the leftmost column
     
-For full details, see Leo's Directives reference: http://leoeditor.com/directives.html
+For full details, see Leo's Directives reference: https://leo-editor.github.io/leo-editor/directives.html
 
     @                       # starts doc part
     @c                      # ends doc part
@@ -352,7 +353,7 @@ By default, the file's extension determines the importer:
     @auto-rst           reStructuredText
     
 For full details, see Leo's Directives reference:
-http://leoeditor.com/directives.html
+https://leo-editor.github.io/leo-editor/directives.html
     </t>
 <t tx="ekr.20131019184243.16694">This section lists the ivars, properties, functions and methods most
 commonly used in Leo scripts.
@@ -460,7 +461,7 @@ Use autocompletion to explore these objects!
     
 v.u (uA's or unknownAttributes or userAttributes) allow plugins or scripts
 to associate persistent data with vnodes. For details see:
-http://leoeditor.com/customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
+https://leo-editor.github.io/leo-editor/customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
 
 *Important*: Generally speaking, vnode properties are fast, while the
 corresponding position properties are much slower. Nevertheless, scripts
@@ -618,7 +619,7 @@ Valid values are (case is ignored):
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 <t tx="ekr.20131030071311.18723">Here is an expanded version of the example from
-http://leoeditor.com/tutorial-rst3.html
+https://leo-editor.github.io/leo-editor/tutorial-rst3.html
 
 Control-click the URL above to open the page in your browser.
 
@@ -1023,9 +1024,6 @@ To see these examples:
 <t tx="ekr.20180405093127.11">../Icons/Leosplash.GIF
 
 This is a comment</t>
-<t tx="ekr.20180405093127.12">c:\leo.repo\leo-editor\leo\Icons\SplashScreen.ico
-
-</t>
 <t tx="ekr.20180405093127.14">#!/usr/bin/env python
 # a bar plot with errorbars
 import numpy as np
@@ -1443,7 +1441,7 @@ This is **bold** and *italics*.
 Control-clicks follow url's in body text.&lt;br&gt;
 Plain clicks follow url's in the VR pane.
 
-Here is [Leo's home page](&lt;http://leoeditor.com/).
+Here is [Leo's home page](&lt;https://leo-editor.github.io/leo-editor/).
 
 ### Section
 
@@ -1468,7 +1466,7 @@ Control-clicks follow url's in body text.
 
 Plain clicks follow url's in the VR pane.
 
-More info at `Leo's home page &lt;http://leoeditor.com/&gt;`_.
+More info at Leo's home page: https://leo-editor.github.io/leo-editor.
 
 Section
 =======
@@ -1482,111 +1480,6 @@ Here is some python code::
     def spam():
         '''This is a docstring.'''
         pass</t>
-<t tx="ekr.20180405093127.9">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-&lt;style&gt;
-ul.leo-tree-example  {
-    background-color: #ffffec;
-    zoom: 75%; # blurs icons a bit.
-}
-ul.leo-tree-example li {
-    background-repeat: no-repeat;
-    background-position: 0px 5px;
-    padding-left: 27px;
-}
-li {
-    background-image:
-url('https://raw.github.com/vivainio/leo/master/leo/Icons/box00.GIF');
-    background-repeat: no-repeat;
-    background-position: 0px 5px;
-    padding-left: 27px;
-}
-li.selected {
-    background-color: lightgrey;
-}
-li.leaf {
-    list-style-type: none;
-}
-li.plus {
-  list-style-image: url('http://leoeditor.com/plusnode.gif')
-}
-li.minus {
-  list-style-image: url('http://leoeditor.com/minusnode.gif')
-}
-li.leaf {
-  background-image: url('http://leoeditor.com/box00.GIF')
-}
-li.body {
-  background-image: url('http://leoeditor.com/box01.GIF')
-}
-li.mark {
-  background-image: url('http://leoeditor.com/box02.GIF')
-}
-li.mark-body {
-  background-image: url('http://leoeditor.com/box03.GIF')
-}
-li.clone {
-  background-image: url('http://leoeditor.com/box04.GIF')
-}
-li.clone-body {
-  background-image: url('http://leoeditor.com/box05.GIF')
-}
-li.clone-mark {
-  background-image: url('http://leoeditor.com/box06.GIF')
-}
-li.clone-mark-body {
-  background-image: url('http://leoeditor.com/box07.GIF')
-}
-li.dirty {
-  background-image: url('http://leoeditor.com/box08.GIF')
-}
-li.dirty-body {
-  background-image: url('http://leoeditor.com/box09.GIF')
-}
-li.dirty-mark {
-  background-image: url('http://leoeditor.com/box10.GIF')
-}
-li.dirty-mark-body {
-  background-image: url('http://leoeditor.com/box11.GIF')
-}
-li.dirty-clone {
-  background-image: url('http://leoeditor.com/box12.GIF')
-}
-li.dirty-clone-body {
-  background-image: url('http://leoeditor.com/box13.GIF')
-}
-li.dirty-clone-mark {
-  background-image: url('http://leoeditor.com/box14.GIF')
-}
-&lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;ul class="leo-tree-example"&gt;
-&lt;li class='plus clone-mark'&gt;
-test
-&lt;/li&gt;
-&lt;ul&gt;
-  &lt;li class='plus clone-body'&gt;
-  child
-  &lt;/li&gt;
-  &lt;ul&gt;
-    &lt;li class='leaf body'&gt;
-    grandchild
-    &lt;/li&gt;
-  &lt;/ul&gt;
-  &lt;li class='plus clone-body'&gt;
-  child
-  &lt;/li&gt;
-  &lt;ul&gt;
-    &lt;li class='leaf body'&gt;
-    grandchild
-    &lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/ul&gt;
-&lt;/ul&gt;
-&lt;/body&gt;
-&lt;/html&gt;</t>
 <t tx="ekr.20180405093138.1">Leo University is a project devoted to help people become Leo developers.
 
 Here is the main page.  It contains links to individual lessons.
@@ -1766,5 +1659,6 @@ The "6.7.4 release notes" node in LeoDocs.leo.
 unl:gnx://LeoDocs.leo#ekr.20230703101804.1
 </t>
 <t tx="ekr.20230904052052.1">c.doCommandByName(command_name) executes the command with the given name.</t>
+<t tx="ekr.20240716202324.1"></t>
 </tnodes>
 </leo_file>
