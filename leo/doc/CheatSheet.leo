@@ -90,10 +90,8 @@
 <v t="ekr.20180405093127.31"><vh>Markdown example</vh></v>
 <v t="ekr.20180405105451.1"><vh>pyplot examples</vh>
 <v t="ekr.20180405093127.14"><vh>@pyplot barchar_demo</vh></v>
-<v t="ekr.20180405093127.15"><vh>@pyplot basic_example</vh>
-<v t="ekr.20180405093127.16"><vh>Figure 1</vh></v>
-<v t="ekr.20180405093127.17"><vh>Figure 2</vh></v>
-</v>
+<v t="ekr.20180405093127.16"><vh>@pyplot basic example: Figure 1</vh></v>
+<v t="ekr.20180405093127.17"><vh>@pyplot basic example: Figure 2</vh></v>
 <v t="ekr.20180405093127.18"><vh>@pyplot matplotlib animate_decay</vh>
 <v t="ekr.20180405093127.19"><vh>data_gen</vh></v>
 <v t="ekr.20180405093127.20"><vh>init</vh></v>
@@ -104,9 +102,6 @@
 <v t="ekr.20180405093127.32"><vh>reStructureText text example</vh></v>
 </v>
 <v t="ekr.20230716045242.1"><vh>Clickable links</vh></v>
-<v t="ekr.20240716202324.1"><vh>--- fix</vh>
-<v t="ekr.20180405105451.1"></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20131019184243.16683">This Cheat Sheet contains a summary of many of Leo's important features.
@@ -1026,8 +1021,9 @@ To see these examples:
 This is a comment</t>
 <t tx="ekr.20180405093127.14">#!/usr/bin/env python
 # a bar plot with errorbars
-import numpy as np
-import matplotlib.pyplot as plt
+
+# import numpy as np
+# import matplotlib.pyplot as plt
 
 N = 5
 menMeans = (20, 35, 30, 35, 27)
@@ -1068,53 +1064,55 @@ plt.ion()
     # sets interactive mode. Prevents this message:
     # QCoreApplication::exec: The event loop is already running
 plt.show()</t>
-<t tx="ekr.20180405093127.15"># http://matplotlib.org/1.5.1/examples/animation/basic_example.html
-if 0:
-    import numpy as np
-    import matplotlib.pyplot as plt
-    import matplotlib.animation as animation
+<t tx="ekr.20180405093127.16"># https://matplotlib.org/1.5.1/examples/animation/basic_example.html
 
-@others
+# import numpy as np
+# import matplotlib.pyplot as plt
+# import matplotlib.animation as animation
 
-if 0:
-    plt.ion()
-    # sets interactive mode. Prevents this message:
-    # QCoreApplication::exec: The event loop is already running
-plt.show()</t>
-<t tx="ekr.20180405093127.16">if 1:
-    
-    def update_line(num, data, line):
-        line.set_data(data[..., :num])
-        return line, # a tuple.
+def update_line(num, data, line):
+    line.set_data(data[..., :num])
+    return line, # a tuple.
 
-    fig1 = plt.figure()
-    data = np.random.rand(2, 25)
-    l, = plt.plot([], [], 'r-')
-    plt.xlim(0, 1)
-    plt.ylim(0, 1)
-    plt.xlabel('x')
-    plt.title('test')
-    line_ani = animation.FuncAnimation(fig1, update_line, 25,
-        fargs=(data, l),
-        interval=50,
-        blit=True)
+fig1 = plt.figure()
+data = np.random.rand(2, 25)
+l, = plt.plot([], [], 'r-')
+plt.xlim(0, 1)
+plt.ylim(0, 1)
+plt.xlabel('x')
+plt.title('test')
+line_ani = animation.FuncAnimation(fig1, update_line, 25,
+    fargs=(data, l),
+    interval=50,
+    blit=True)
 </t>
-<t tx="ekr.20180405093127.17">fig2 = plt.figure()
+<t tx="ekr.20180405093127.17"># import numpy as np
+# import matplotlib.pyplot as plt
+# import matplotlib.animation as animation
+
+fig2 = plt.figure()
+
 x = np.arange(-9, 10)
 y = np.arange(-9, 10).reshape(-1, 1)
 base = np.hypot(x, y)
 ims = []
 for add in np.arange(15):
-    ims.append((plt.pcolor(x, y, base + add, norm=plt.Normalize(0, 30)),))
-animation.ArtistAnimation(fig2, ims,
-    interval=50,
-    repeat_delay=3000,
-    blit=True)
-#im_ani.save('im.mp4', metadata={'artist':'Guido'})</t>
+    ims.append((plt.pcolor(
+        x, y, base + add, norm=plt.Normalize(0, 30))))
+
+try:
+    im_ani = animation.ArtistAnimation(
+        fig2, ims, interval=50, repeat_delay=3000, blit=True)
+except TypeError:
+    # Suppress "TypeError: 'PolyQuadMesh' object is not iterable"
+    pass
+
+plt.show()</t>
 <t tx="ekr.20180405093127.18"># http://matplotlib.org/1.5.1/examples/animation/animate_decay.html
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
+
+# import numpy as np
+# import matplotlib.pyplot as plt
+# import matplotlib.animation as animation
 
 @others
 
@@ -1126,6 +1124,7 @@ xdata, ydata = [], []
 ani = animation.FuncAnimation(
     fig, run, data_gen, blit=False, interval=10,
     repeat=False, init_func=init)
+    # cache_frame_data=False)
 
 plt.ion()
     # sets interactive mode. Prevents this message:
@@ -1144,8 +1143,7 @@ plt.show()</t>
     del xdata[:]
     del ydata[:]
     line.set_data(xdata, ydata)
-    return line,
-</t>
+    return line,</t>
 <t tx="ekr.20180405093127.21">def run(data):
     # update the data
     t, y = data
@@ -1156,7 +1154,8 @@ plt.show()</t>
         ax.set_xlim(xmin, 2*xmax)
         ax.figure.canvas.draw()
     line.set_data(xdata, ydata)
-    return line,</t>
+    return line,
+</t>
 <t tx="ekr.20180405093127.22">@nocolor-node
 &lt;?xml version="1.0" standalone="no"?&gt;
 &lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd"&gt;
@@ -1485,9 +1484,16 @@ Here is some python code::
 Here is the main page.  It contains links to individual lessons.
 https://github.com/leo-editor/leo-editor/issues/816
 </t>
-<t tx="ekr.20180405105451.1">These will work only if numpy, matplotlib and pyplot are installed.
+<t tx="ekr.20180405105451.1">@language python
 
-The viewrendered.py plugin must also be enabled.</t>
+@doc
+
+These will work only if numpy, matplotlib and pyplot are installed.
+
+The viewrendered.py plugin must also be enabled.
+
+Within an @pyplot node you do not need to add the standard imports!
+</t>
 <t tx="ekr.20180405105738.1"></t>
 <t tx="ekr.20180503073939.1"></t>
 <t tx="ekr.20180503073954.1">@language python
@@ -1661,6 +1667,5 @@ The "6.7.4 release notes" node in LeoDocs.leo.
 unl:gnx://LeoDocs.leo#ekr.20230703101804.1
 </t>
 <t tx="ekr.20230904052052.1">c.doCommandByName(command_name) executes the command with the given name.</t>
-<t tx="ekr.20240716202324.1"></t>
 </tnodes>
 </leo_file>
