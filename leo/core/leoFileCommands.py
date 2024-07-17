@@ -2052,7 +2052,7 @@ class FileCommands:
         if forceWrite or self.usingClipboard:
             v.setWriteBit()  # 4.2: Indicate we wrote the body text.
 
-        attrs = fc.compute_attribute_bits(forceWrite, p)
+        attrs = fc.compute_attribute_bits(p)
         # Write the node.
         v_head = f'<v t="{gnx}"{attrs}>'
         if gnx in fc.vnodesDict:
@@ -2077,11 +2077,12 @@ class FileCommands:
             else:
                 fc.put(f"{v_head}</v>\n")  # Call put only once.
     #@+node:ekr.20031218072017.1865: *6* fc.compute_attribute_bits
-    def compute_attribute_bits(self, forceWrite: bool, p: Position) -> str:
+    def compute_attribute_bits(self, p: Position) -> str:
         """Return the initial values of v's attributes."""
         attrs = []
-        if p.hasChildren() and not forceWrite and not self.usingClipboard:
-            # Fix #526: do this for @auto nodes as well.
+        if not self.usingClipboard:
+            # #526: do this for @auto nodes.
+            # #3990: do this for @edit nodes.
             attrs.append(self.putDescendentVnodeUas(p))
         return ''.join(attrs)
     #@+node:ekr.20031218072017.1579: *5* fc.put_v_elements & helper
