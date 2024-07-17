@@ -263,7 +263,8 @@ got_pyplot = False
 try:
     from matplotlib import pyplot
     got_pyplot = True
-except ImportError:
+    assert pyplot  ###
+except Exception:
     pass
 
 # Fail fast, right after all imports.
@@ -1245,9 +1246,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         c = self.c
 
-        if pyplot.get_backend() != 'module://leo.plugins.pyplot_backend':
-            backend = g.finalize_join(
-                g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
+        backend = pyplot.get_backend()  # Returns 'qtagg' initially.
+        if backend != 'module://leo.plugins.pyplot_backend':
+            backend = g.finalize_join(g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
             if g.os_path_exists(backend):
                 try:
                     # The order of these statements is important...
