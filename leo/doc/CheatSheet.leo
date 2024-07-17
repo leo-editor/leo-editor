@@ -1485,7 +1485,9 @@ Here is some python code::
 Here is the main page.  It contains links to individual lessons.
 https://github.com/leo-editor/leo-editor/issues/816
 </t>
-<t tx="ekr.20180405105451.1">These will work only if numpy and pyplot are installed.</t>
+<t tx="ekr.20180405105451.1">These will work only if numpy, matplotlib and pyplot are installed.
+
+The viewrendered.py plugin must also be enabled.</t>
 <t tx="ekr.20180405105738.1"></t>
 <t tx="ekr.20180503073939.1"></t>
 <t tx="ekr.20180503073954.1">@language python
