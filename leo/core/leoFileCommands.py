@@ -583,7 +583,6 @@ class FileCommands:
         """Ctor for FileCommands class."""
         self.c = c
         self.frame = c.frame
-        self.nativeTnodeAttributes = ('tx',)
         self.initIvars()
     #@+node:ekr.20090218115025.5: *4* fc.initIvars
     def initIvars(self) -> None:
