@@ -2,15 +2,7 @@
 #@+node:ville.20110115234843.8742: * @file ../plugins/dragdropgoodies.py
 #@+<< docstring >>
 #@+node:ville.20110115234843.8743: ** << docstring >>
-"""Adds "Back" and "Forward" buttons (Qt only).
-
-Creates "back" and "forward" buttons on button bar. These navigate
-the node history.
-
-This plugin does not need specific setup. If the plugin is loaded, the buttons
-will be available. The buttons use the icon specified in the active Qt style
-
-"""
+"""A plugin containing utils relating to drag and drop."""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:ville.20110115234843.8745: ** << imports >>

@@ -84,12 +84,13 @@ class BadLeoFile(Exception):
 #@+node:ekr.20180602062323.1: ** class FastRead
 class FastRead:
 
+    # Used to exclude attributes from being unpickeld as UAs with resolveUa.
     nativeVnodeAttributes = (
         'a',
         'descendentTnodeUnknownAttributes',
         'descendentVnodeUnknownAttributes',
         'expanded', 'marks', 't',
-        # 'tnodeList',  # Removed in Leo 4.7.
+        'tnodeList',  # Removed in Leo 4.7.
     )
 
     def __init__(self, c: Cmdr, gnx2vnode: dict[str, VNode]) -> None:
@@ -582,14 +583,6 @@ class FileCommands:
         """Ctor for FileCommands class."""
         self.c = c
         self.frame = c.frame
-        self.nativeTnodeAttributes = ('tx',)
-        self.nativeVnodeAttributes = (
-            'a',
-            'descendentTnodeUnknownAttributes',
-            'descendentVnodeUnknownAttributes',  # New in Leo 4.5.
-            'expanded', 'marks', 't',
-            # 'tnodeList',  # Removed in Leo 4.7.
-        )
         self.initIvars()
     #@+node:ekr.20090218115025.5: *4* fc.initIvars
     def initIvars(self) -> None:
