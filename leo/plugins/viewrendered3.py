@@ -1469,10 +1469,10 @@ def onClose(tag, keys):
     h = c.hash()
     vr3 = controllers.get(h)
     if vr3:
+        g.trace(f"VR3: delete {vr3}")  ###
         c.bodyWantsFocus()
         del controllers[h]
         vr3.deactivate()
-        vr3.deleteLater()
 #@+node:TomP.20191215195433.13: *3* vr3.show_scrolled_message
 def show_scrolled_message(tag, kw):
     """Show "scrolled message" in VR3.
