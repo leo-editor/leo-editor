@@ -360,7 +360,6 @@ def onClose(tag: str, keys: dict) -> None:
         c.bodyWantsFocus()
         del controllers[h]
         vr.active = False
-        vr.deleteLater()
 #@+node:tbrown.20110629132207.8984: *3* vr function: show_scrolled_message
 def show_scrolled_message(tag: str, kw: Any) -> None:
     if g.unitTesting:
