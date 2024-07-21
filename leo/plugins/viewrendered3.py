@@ -1558,7 +1558,7 @@ def getVr3(event):
         controllers[h] = vr3 = viewrendered(event)
     return vr3
 #@+node:TomP.20191215195433.16: ** vr3.Commands
-#@+node:TomP.20191215195433.18: *3* g.command('vr3') (**weird**)
+#@+node:TomP.20191215195433.18: *3* g.command('vr3') (**weird effect**)
 @g.command('vr3')
 def viewrendered(event):
     """Open render view for commander"""

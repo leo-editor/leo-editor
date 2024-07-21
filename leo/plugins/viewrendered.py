@@ -411,7 +411,7 @@ def viewrendered(event: Event) -> Optional[Any]:
         g.es('VR pane on', color='red')
         c.bodyWantsFocusNow()
         return vr
-    # Create the VR frame
+    # Create the VR frame, a QWidget
     controllers[h] = vr = ViewRenderedController(c)
 
     # Use different layouts depending on the main splitter's *initial* orientation.
