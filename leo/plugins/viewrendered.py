@@ -357,10 +357,10 @@ def onClose(tag: str, keys: dict) -> None:
     h = c.hash()
     vr = controllers.get(h)
     if vr and vr.active:
+        # g.trace(f"VR: delete {vr}")
         c.bodyWantsFocus()
         del controllers[h]
         vr.active = False
-        vr.deleteLater()
 #@+node:tbrown.20110629132207.8984: *3* vr function: show_scrolled_message
 def show_scrolled_message(tag: str, kw: Any) -> None:
     if g.unitTesting:
@@ -411,7 +411,7 @@ def viewrendered(event: Event) -> Optional[Any]:
         g.es('VR pane on', color='red')
         c.bodyWantsFocusNow()
         return vr
-    # Create the VR frame
+    # Create the VR frame, a QWidget
     controllers[h] = vr = ViewRenderedController(c)
 
     # Use different layouts depending on the main splitter's *initial* orientation.
