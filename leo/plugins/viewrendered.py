@@ -357,7 +357,7 @@ def onClose(tag: str, keys: dict) -> None:
     h = c.hash()
     vr = controllers.get(h)
     if vr and vr.active:
-        g.trace(f"VR: delete {vr}")  ###
+        # g.trace(f"VR: delete {vr}")
         c.bodyWantsFocus()
         del controllers[h]
         vr.active = False

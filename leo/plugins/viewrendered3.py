@@ -1469,7 +1469,7 @@ def onClose(tag, keys):
     h = c.hash()
     vr3 = controllers.get(h)
     if vr3:
-        g.trace(f"VR3: delete {vr3}")  ###
+        # g.trace(f"VR3: delete {vr3}")
         c.bodyWantsFocus()
         del controllers[h]
         vr3.deactivate()
