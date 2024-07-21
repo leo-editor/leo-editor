@@ -961,7 +961,7 @@ try:
     from leo.plugins import qt_text
     from leo.core.leoQt import QtCore, QtWidgets
     from leo.core.leoQt import QtMultimedia, QtSvg
-    from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
+    from leo.core.leoQt import KeyboardModifier, WrapMode  ### Orientation
     from leo.core.leoQt import QAction, QActionGroup
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
@@ -1240,10 +1240,12 @@ latex_template = f'''\
 </html>
 '''
 #@-<< define html templates >>
-
+#@+<< vr3: global data >>
+#@+node:ekr.20240721090655.1: ** << vr3: global data >>
 # keys are c.hash().
-controllers = {}  # values: VR3 widets
+### controllers = {}  # values: VR3 widets
 positions = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
+#@-<< vr3: global data >>
 
 #@+others
 #@+node:TomP.20200508124457.1: ** find_exe()
@@ -1466,33 +1468,42 @@ def onCreate(tag, keys):
     pass
 #@+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
-    c = keys.get('c')
-    h = c.hash()
-    vr3 = controllers.get(h)
-    if vr3:
-        # g.trace(f"VR3: delete {vr3}")
-        c.bodyWantsFocus()
-        del controllers[h]
-        vr3.deactivate()
+    pass
+    # c = keys.get('c')
+    # h = c.hash()
+    # vr3 = controllers.get(h)
+    # if vr3:
+        # # g.trace(f"VR3: delete {vr3}")
+        # c.bodyWantsFocus()
+        # del controllers[h]
+        # vr3.deactivate()
 #@+node:TomP.20191215195433.13: *3* vr3.show_scrolled_message
-def show_scrolled_message(tag, kw):
+def show_scrolled_message(tag, kw) -> bool:
     """Show "scrolled message" in VR3.
     
     If not already open, open in last opened position,
     or in splitter if none.
     """
     if g.unitTesting:
-        return None  # This just slows the unit tests.
-
+        return False  # This just slows the unit tests.
     c = kw.get('c')
+    if not c:
+        return False
     flags = kw.get('flags') or 'rst'
-    h = c.hash()
-    vr3 = controllers.get(h, None)
+    ###
+        # h = c.hash()
+        # vr3 = controllers.get(h, None)
+
+    ### Don't worry about format!
+        # vr3 = getattr(c, 'vr3', None)
+        # if not vr3:
+            # if positions.get(h, None) == None or OPENED_IN_SPLITTER:
+                # c.vr3 = vr3 = viewrendered(event=kw)
+            # else:
+                # c.vr3 = vr3 = viewrendered_tab(event=kw)
+    vr3 = getVr3(c=c)
     if not vr3:
-        if positions.get(h, None) == None or OPENED_IN_SPLITTER:
-            vr3 = viewrendered(event=kw)
-        else:
-            vr3 = viewrendered_tab(event=kw)
+        return False
 
     title = kw.get('short_title', '').strip()
     vr3.setWindowTitle(title)
@@ -1537,7 +1548,7 @@ def close_tab(c, vr3):
     positions[h] = OPENED_IN_TAB
 
 #@+node:TomP.20191215195433.15: *3* vr3.getVr3
-def getVr3(event):
+def getVr3(*, c=None, event=None):
     """Return the VR3 ViewRenderedController3
 
     If the controller is not found, a new one
@@ -1550,65 +1561,90 @@ def getVr3(event):
     RETURNS
     The active ViewRenderedController3 or None.
     """
-    global controllers
+    ### global controllers
     if g.app.gui.guiName() != 'qt':
         return None
-    c = event.get('c')
-    if not c:
+
+    # First, get c.
+    if c:
+        pass
+    elif event:
+        c = event.get('c')
+        if not c:
+            return None
+    else:
+        g.trace('"c" or "event" kwarg required', g.callers())
         return None
-    h = c.hash()
-    vr3 = controllers.get(h) if h else None
+    ###
+        # h = c.hash()
+        # vr3 = controllers.get(h) if h else None
+    vr3 = getattr(c, 'vr3', None)
     if not vr3:
-        controllers[h] = vr3 = viewrendered(event)
+        ### controllers[h] = vr3 = viewrendered(event)
+        c.vr3 = vr3 = viewrendered(event)
     return vr3
 #@+node:TomP.20191215195433.16: ** vr3.Commands
-#@+node:TomP.20191215195433.18: *3* g.command('vr3') (**weird effect**)
+#@+node:TomP.20191215195433.18: *3* g.command('vr3') (**simplified**)
 @g.command('vr3')
 def viewrendered(event):
     """Open render view for commander"""
-    global controllers
+    ###global controllers
     gui = g.app.gui
     if gui.guiName() != 'qt':
         return None
-    c = event.get('c')
-    if not c:
-        return None
-    h = c.hash()
-    vr3 = controllers.get(h)
+    ###
+        # c = event.get('c')
+        # if not c:
+            # return None
+    ###
+        # h = c.hash()
+        # vr3 = controllers.get(h)
+    ### vr3 = getattr(c, 'vr3', None)
+    vr3 = getVr3(event=event)
     if vr3:
+        c = vr3.c
         c.bodyWantsFocusNow()
-        return vr3
-    # Create the VR frame
-    controllers[h] = vr3 = ViewRenderedController3(c)
-
-    # A prototype for supporint  arbitrarily many layouts.
-    layout_kind = c.config.getString('vr3-initial-orientation') or 'in_secondary'
-
-    # Use different layouts depending on the main splitter's *initial* orientation.
-    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
-    secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
-    if layout_kind == 'in_body':
-        # Share the VR pane with the body pane.
-        # Create a new splitter.
-        splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
-        splitter.setObjectName('vr3-horizonal-splitter')
-        main_splitter.addWidget(splitter)
-        # Add frames.
-        body_frame = gui.find_widget_by_name(c, 'bodyFrame')
-        splitter.addWidget(body_frame)
-        splitter.addWidget(vr3)
-        gui.equalize_splitter(splitter)
-        gui.equalize_splitter(main_splitter)
-    elif main_splitter.orientation() == Orientation.Vertical:
-        # Put the VR pane in in the main_splitter.
-        main_splitter.insertWidget(1, vr3)  ### The weird effect happens here.
-        gui.equalize_splitter(main_splitter)
-    else:
-        # Put the VR pane in the secondary splitter.
-        secondary_splitter.addWidget(vr3)
-        gui.equalize_splitter(secondary_splitter)
-    c.bodyWantsFocusNow()
     return vr3
+
+    ### Old code
+
+    # if vr3:
+        # c.bodyWantsFocusNow()
+        # return vr3
+    # Create the VR frame
+    # controllers[h] = vr3 = ViewRenderedController3(c)
+    # c.vr3 = vr3 = ViewRenderedController3(c)
+
+    # c = vr3.c
+
+    # # A prototype for supporting arbitrarily many layouts.
+    # layout_kind = c.config.getString('vr3-initial-orientation') or 'in_secondary'
+
+    # # Use different layouts depending on the main splitter's *initial* orientation.
+    # main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+    # secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
+    # if layout_kind == 'in_body':
+        # # Share the VR pane with the body pane.
+        # # Create a new splitter.
+        # splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
+        # splitter.setObjectName('vr3-horizonal-splitter')
+        # main_splitter.addWidget(splitter)
+        # # Add frames.
+        # body_frame = gui.find_widget_by_name(c, 'bodyFrame')
+        # splitter.addWidget(body_frame)
+        # splitter.addWidget(vr3)
+        # gui.equalize_splitter(splitter)
+        # gui.equalize_splitter(main_splitter)
+    # elif main_splitter.orientation() == Orientation.Vertical:
+        # # Put the VR pane in in the main_splitter.
+        # main_splitter.insertWidget(1, vr3)  ### The weird effect happens here.
+        # gui.equalize_splitter(main_splitter)
+    # else:
+        # # Put the VR pane in the secondary splitter.
+        # secondary_splitter.addWidget(vr3)
+        # gui.equalize_splitter(secondary_splitter)
+    # c.bodyWantsFocusNow()
+    # return vr3
 #@+node:tom.20230403141635.1: *3* g.command('vr3-tab')
 @g.command('vr3-tab')
 def viewrendered_tab(event):
@@ -1619,10 +1655,13 @@ def viewrendered_tab(event):
     c = event.get('c')
     if not c:
         return None
-    h = c.hash()
-    vr3 = controllers.get(h)
+    ###
+        # h = c.hash()
+        # vr3 = controllers.get(h)
+    vr3 = getattr(c, 'vr3', None)
     if not vr3:
-        controllers[h] = vr3 = ViewRenderedController3(c)
+        ### controllers[h] = vr3 = ViewRenderedController3(c)
+        c.vr3 = vr3 = ViewRenderedController3(c)
 
     open_in_tab(c, vr3)
     return vr3
@@ -1631,35 +1670,35 @@ def viewrendered_tab(event):
 def freeze_rendering_pane(event):
     """Freeze the rendering pane so it does not update."""
     vr3 = getVr3(event)
-    if not vr3: return
-    vr3.set_freeze()
+    if vr3:
+        vr3.set_freeze()
 #@+node:tom.20220824142721.1: *3* g.command('vr3-unfreeze')
 @g.command('vr3-unfreeze')
 def unfreeze_rendering_pane(event):
     """Allow the rendering pane to update."""
     vr3 = getVr3(event)
-    if not vr3: return
-
-    vr3.set_unfreeze()
+    if vr3:
+        vr3.set_unfreeze()
 #@+node:TomP.20191215195433.21: *3* g.command('vr3-hide')
 @g.command('vr3-hide')
 def hide_rendering_pane(event):
     """Close the rendering pane."""
-    global controllers
+    ### global controllers
     if g.app.gui.guiName() != 'qt':
         return
-
-    c = event.get('c')
-    if not c:
+    ###
+        # c = event.get('c')
+        # if not c:
+            # return
+    vr3 = getVr3(event=event)
+    if not vr3:
         return
-
-    vr3 = getVr3(event)
-    if not vr3: return
 
     if vr3.pyplot_active:
         g.es_print('can not close vr3 pane after using pyplot')
         return
 
+    c = vr3.c
     pos = positions.get(c.hash())
     if pos == OPENED_IN_SPLITTER:
         vr3.store_layout('open')
@@ -1685,30 +1724,28 @@ close_rendering_pane = hide_rendering_pane
 def lock_rendering_pane(event):
     """Lock the rendering pane to the current node."""
     vr3 = getVr3(event)
-    if not vr3: return
-
-    vr3.lock()
+    if vr3:
+        vr3.lock()
 #@+node:TomP.20191215195433.23: *3* g.command('vr3-pause-play')
 @g.command('vr3-pause-play-movie')
 def pause_play_movie(event):
     """Pause or play a movie in the rendering pane."""
-    vr3 = getVr3(event)
-    if not vr3: return
+    vr3 = getVr3(event=event)
+    if not vr3:
+        return
     vp = vr3.vp
     if not vp:
         return
     _state = vp.state()
     f = vp.pause if _state == 1 else vp.play
     f()
-
 #@+node:TomP.20191215195433.24: *3* g.command('vr3-show')
 @g.command('vr3-show')
 def show_rendering_pane(event):
     """Show the rendering pane."""
-    vr3 = getVr3(event)
-    if not vr3: return
-
-    vr3.show_dock_or_pane()
+    vr3 = getVr3(event=event)
+    if vr3:
+        vr3.show_dock_or_pane()
 #@+node:TomP.20191215195433.25: *3* g.command('vr3-toggle')
 @g.command('vr3-toggle')
 def toggle_rendering_pane(event):
@@ -1770,17 +1807,18 @@ def toggle_rendering_pane_tab(event):
 def unlock_rendering_pane(event):
     """Allow rendering pane to witch to current node."""
     vr3 = getVr3(event)
-    if not vr3: return
-
-    vr3.unlock()
+    if vr3:
+        vr3.unlock()
 #@+node:TomP.20191215195433.27: *3* g.command('vr3-update')
 @g.command('vr3-update')
 def update_rendering_pane(event):
     """Update the rendering pane"""
-    vr3 = getVr3(event)
-    if not vr3: return
+    vr3 = getVr3(event=event)
+    if not vr3:
+        return
 
-    c = event.get('c')
+    ### c = event.get('c')
+    c = vr3.c
     _freeze = vr3.freeze
     if vr3.freeze:
         vr3.freeze = False
@@ -1791,17 +1829,19 @@ def update_rendering_pane(event):
 @g.command('vr3-execute')
 def execute_code(event):
     """Execute code in a RsT or MD node or subtree."""
-    vr3 = getVr3(event)
-    if not vr3: return
-
-    c = event.get('c')
-    vr3.execute_flag = True
-    vr3.update(tag='view', keywords={'c': c, 'force': True})
+    ###
+        # vr3 = getVr3(event)
+        # if not vr3: return
+    vr3 = getVr3(event=event)
+    if vr3:
+        c = vr3.c
+        vr3.execute_flag = True
+        vr3.update(tag='view', keywords={'c': c, 'force': True})
 #@+node:TomP.20191215195433.29: *3* g.command('vr3-export-rst-html')
 @g.command('vr3-export-rst-html')
 def export_rst_html(event):
     """Export rendering to system browser."""
-    vr3 = getVr3(event)
+    vr3 = getVr3(event=event)
     if not vr3:
         return
     try:
@@ -1824,8 +1864,9 @@ def export_rst_html(event):
 @g.command('vr3-lock-unlock-tree')
 def lock_unlock_tree(event):
     """Toggle between lock(), unlock()."""
-    vr3 = getVr3(event)
-    if not vr3: return
+    vr3 = getVr3(event=event)
+    if not vr3:
+        return
 
     if vr3.lock_to_tree:
         vr3.unlock()
@@ -1834,7 +1875,10 @@ def lock_unlock_tree(event):
 #@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout')
 @g.command('vr3-use-default-layout')
 def open_with_layout(event):
-    vr3 = getVr3(event)
+    vr3 = getVr3(event=event)
+    if not vr3:
+        return
+
     c = vr3.c
     c.doCommandByName('vr3-update')
     c.bodyWantsFocusNow()
@@ -1842,13 +1886,15 @@ def open_with_layout(event):
 #@+node:TomP.20201003182436.1: *3* g.command('vr3-zoom-view')
 @g.command('vr3-zoom-view')
 def zoom_view(event):
-    vr3 = getVr3(event)
-    vr3.zoomView()
+    vr3 = getVr3(event=event)
+    if vr3:
+        vr3.zoomView()
 #@+node:TomP.20201003182453.1: *3* g.command('vr3-shrink-view')
 @g.command('vr3-shrink-view')
 def shrink_view(event):
     vr3 = getVr3(event)
-    vr3.shrinkView()
+    if vr3:
+        vr3.shrinkView()
 #@+node:tom.20210620170624.1: *3* g.command('vr3-open-markup-in-editor')
 @g.command('vr3-open-markup-in-editor')
 def markup_to_editor(event):
@@ -1858,7 +1904,10 @@ def markup_to_editor(event):
     isn't what was expected.  There is currently no way to
     write the text back from the editor into VR3.
     """
-    vr3 = getVr3(event)
+    vr3 = getVr3(event=event)
+    if not vr3:
+        return
+
     editor_from_settings = vr3.external_editor
     if editor_from_settings.lower() == 'none':  # weird but has happened
         editor_from_settings = ''
@@ -2015,14 +2064,17 @@ def vr3_plot_2d(event):
     find one.
     """
     #@-<< vr3-plot-2d docstring >>
-    vr3 = getVr3(event)
-    vr3.plot_2d()
+    vr3 = getVr3(event=event)
+    if vr3:
+        vr3.plot_2d()
 #@+node:tom.20211103161929.1: *3* g.command('vr3-help-plot-2d')
 @g.command('vr3-help-plot-2d')
 def vr3_help_for_plot_2d(event):
     vr3 = getVr3(event)
-    c = vr3.c
+    if not vr3:
+        return
 
+    c = vr3.c
     doc_ = vr3.plot_2d.__doc__
     doclines = doc_.split('\n')
     doclines = [line for line in doclines
@@ -2061,7 +2113,10 @@ def vr3_render_html_from_clip(event):
     The html is available for export until the current selected
     node is reloaded.
     """
-    vr3 = getVr3(event)
+    vr3 = getVr3(event=event)
+    if not vr3:
+        return
+
     clip_str = g.app.gui.getTextFromClipboard()
     vr3.rst_html = clip_str  # So we can be exported to system browser.
 
