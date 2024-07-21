@@ -618,50 +618,50 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return None
 
+        ButtonRole = QtWidgets.QMessageBox.ButtonRole
+
         # Create the dialog.
         top_frame: Optional[QWidget] = c.frame.top if c else None
         dialog = QtWidgets.QMessageBox(top_frame)
-        # Creation order determines returned value.
+        yes = no = yesall = noall = None
         yes = dialog.addButton('Yes', ButtonRole.YesRole)
-        dialog.addButton('No', ButtonRole.NoRole)
-        # dialog.addButton('Cancel', ButtonRole.RejectRole)
+        no = dialog.addButton('No', ButtonRole.NoRole)
         if yes_all:
-            dialog.addButton('Yes To All', ButtonRole.YesRole)
+            yesall = dialog.addButton('Yes To All', ButtonRole.AcceptRole)
         if no_all:
-            dialog.addButton('No To All', ButtonRole.NoRole)
+            noall = dialog.addButton('No To All', ButtonRole.RejectRole)
         dialog.setWindowTitle(title)
         if message:
             dialog.setText(message)
         dialog.setIcon(Information.Warning)
         dialog.setDefaultButton(yes)
 
+        clicked_button = None
         if c:
             # Run the dialog, saving and restoring focus.
             try:
                 self._save_focus(c)
                 c.in_qt_dialog = True
                 dialog.raise_()
-                val = dialog.exec()
+                dialog.exec()
+                clicked_button = dialog.clickedButton()
             finally:
                 c.in_qt_dialog = False
                 self._restore_focus(c)
         else:
             # There is no way to save/restore focus.
             dialog.raise_()
-            val = dialog.exec()
+            dialog.exec()
+            clicked_button = dialog.clickedButton()
 
-        # Create the return dictionary.
-        # val is the same as the creation order.
-        # Tested with both Qt6 and Qt5.
-        return_d = {0: 'yes', 1: 'no'}
-        if yes_all and no_all:
-            return_d[2] = 'yes-all'
-            return_d[3] = 'no-all'
-        elif yes_all:
-            return_d[2] = 'yes-all'
-        elif no_all:
-            return_d[2] = 'no-all'
-        return return_d.get(val, 'cancel')
+        return_dict = {
+            yes: 'yes',
+            no: 'cancel',
+            yesall: 'yes-all',
+            noall: 'no-all'
+        }
+
+        return return_dict.get(clicked_button, 'cancel')
     #@+node:ekr.20110605121601.18499: *4* qt_gui.runOpenDirectoryDialog
     def runOpenDirectoryDialog(self, title: str, startdir: str) -> Optional[str]:
         """Create and run an Qt open directory dialog ."""
