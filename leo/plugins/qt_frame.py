@@ -3460,13 +3460,13 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             return
         u.beforeChangeGroup(c.p, undoType)
         changed = False
-        for z in urls:
-            url = str(QtCore.QUrl(z))
+        for url in urls:
             scheme = url.scheme()
+            path = url.path()
             if scheme == 'file':
-                changed |= self.doFileUrl(p, url)
+                changed |= self.doFileUrl(p, path)
             elif scheme in ('http',):  # 'ftp','mailto',
-                changed |= self.doHttpUrl(p, url)
+                changed |= self.doHttpUrl(p, path)
         # Call this only once, at end.
         u.afterChangeGroup(c.p, undoType)
         if changed:
@@ -3476,12 +3476,10 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             g.es("Command did not find any affected Urls")
 
     #@+node:ekr.20110605121601.18370: *6* LeoQTreeWidget.doFileUrl & helper
-    def doFileUrl(self, p: Position, url: str) -> bool:
-        """Read the file given by the url and put it in the outline."""
-        # 2014/06/06: Work around a possible bug in QUrl.
-            # fn = str(url.path()) # Fails.
+    def doFileUrl(self, p: Position, path: str) -> bool:
+        """Read the file with the given path and put it in the outline."""
         e = sys.getfilesystemencoding()
-        fn = g.toUnicode(url.path(), encoding=e)
+        fn = g.toUnicode(path, encoding=e)
         if sys.platform.lower().startswith('win') and fn.startswith('/'):
             fn = fn[1:]
         if os.path.isdir(fn):
@@ -3490,7 +3488,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             return True
         if g.os_path_exists(fn):
             try:
-                f = open(fn, 'rb')  # 2012/03/09: use 'rb'
+                f = open(fn, 'rb')
             except IOError:
                 f = None
             if f:
@@ -3693,12 +3691,12 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         u.afterInsertNode(p2, undoType, undoData)
         c.selectPosition(p2)
     #@+node:ekr.20110605121601.18380: *6* LeoQTreeWidget.doHttpUrl
-    def doHttpUrl(self, p: Position, url: str) -> bool:
-        """Insert the url in an @url node after p."""
+    def doHttpUrl(self, p: Position, path: str) -> bool:
+        """Insert the path in an @url node after p."""
         c = self.c
         u = c.undoer
         undoType = 'Drag Url'
-        s = str(url.toString()).strip()
+        s = path.strip()
         if not s:
             return False
         undoData = u.beforeInsertNode(p, pasteAsClone=False, copiedBunchList=[])
