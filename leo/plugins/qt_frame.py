@@ -3465,7 +3465,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             path = url.path()
             if scheme == 'file':
                 changed |= self.doFileUrl(p, path)
-            elif scheme in ('http',):  # 'ftp','mailto',
+            elif scheme in ('http', 'https'):  # 'ftp','mailto',
                 changed |= self.doHttpUrl(p, path)
         # Call this only once, at end.
         u.afterChangeGroup(c.p, undoType)
