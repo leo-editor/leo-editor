@@ -566,21 +566,28 @@ class LeoQtGui(leoGui.LeoGui):
         dialog = QtWidgets.QMessageBox(top_frame)
         if message:
             dialog.setText(message)
+
         dialog.setIcon(Information.Warning)
         dialog.setWindowTitle(title)
+
         yes = dialog.addButton(yesMessage, ButtonRole.YesRole)
+        yes.setObjectName('yes')
+
         no = dialog.addButton(noMessage, ButtonRole.NoRole)
+        no.setObjectName('no')
+
         cancel = dialog.addButton(cancelMessage or 'Cancel', ButtonRole.RejectRole)
+        cancel.setObjectName('cancel')
+
         if yesToAllMessage:
             yes_to_all = dialog.addButton(yesToAllMessage, ButtonRole.YesRole)
-        else:
-            yes_to_all = None
-        if defaultButton == "Yes":
-            dialog.setDefaultButton(yes)
-        elif defaultButton == "No":
-            dialog.setDefaultButton(no)
-        else:
-            dialog.setDefaultButton(cancel)
+            yes_to_all.setObjectName('yes-to-all')
+
+        dialog.setDefaultButton(
+            yes if defaultButton == 'Yes'
+            else no if defaultButton == 'No'
+            else cancel
+        )
 
         # Run the dialog, saving and restoring focus.
         try:
@@ -588,18 +595,14 @@ class LeoQtGui(leoGui.LeoGui):
             c.in_qt_dialog = True
             dialog.raise_()  # #2246.
             dialog.exec()
-            val = dialog.clickedButton()  # #3972.
+            dialog.clickedButton()  # #3972.
         finally:
             c.in_qt_dialog = False
             self._restore_focus(c)
 
-        # Return the result.
-        for button, result in (
-            (cancel, 'cancel'), (no, 'no'), (yes, 'yes'), (yes_to_all, 'yes-to-all')
-        ):
-            if val == button:
-                return result
-        return 'yes'  # Defensive.
+        # #4012: use clickedButton() to determine which button was clicked.
+        button = dialog.clickedButton()
+        return button.objectName() or 'yes'
     #@+node:ekr.20110605121601.18498: *4* qt_gui.runAskYesNoDialog
     def runAskYesNoDialog(self,
         c: Cmdr, title: str, message: str = None, yes_all: bool = False, no_all: bool = False,
