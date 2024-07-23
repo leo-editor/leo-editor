@@ -595,14 +595,13 @@ class LeoQtGui(leoGui.LeoGui):
             c.in_qt_dialog = True
             dialog.raise_()  # #2246.
             dialog.exec()
-            dialog.clickedButton()  # #3972.
         finally:
             c.in_qt_dialog = False
             self._restore_focus(c)
 
         # #4012: use clickedButton() to determine which button was clicked.
         button = dialog.clickedButton()
-        return button.objectName() or 'yes'
+        return button.objectName() if button else 'yes'
     #@+node:ekr.20110605121601.18498: *4* qt_gui.runAskYesNoDialog
     def runAskYesNoDialog(self,
         c: Cmdr, title: str, message: str = None, yes_all: bool = False, no_all: bool = False,
