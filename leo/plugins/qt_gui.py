@@ -566,21 +566,28 @@ class LeoQtGui(leoGui.LeoGui):
         dialog = QtWidgets.QMessageBox(top_frame)
         if message:
             dialog.setText(message)
+
         dialog.setIcon(Information.Warning)
         dialog.setWindowTitle(title)
+
         yes = dialog.addButton(yesMessage, ButtonRole.YesRole)
+        yes.setObjectName('yes')
+
         no = dialog.addButton(noMessage, ButtonRole.NoRole)
+        no.setObjectName('no')
+
         cancel = dialog.addButton(cancelMessage or 'Cancel', ButtonRole.RejectRole)
+        cancel.setObjectName('cancel')
+
         if yesToAllMessage:
             yes_to_all = dialog.addButton(yesToAllMessage, ButtonRole.YesRole)
-        else:
-            yes_to_all = None
-        if defaultButton == "Yes":
-            dialog.setDefaultButton(yes)
-        elif defaultButton == "No":
-            dialog.setDefaultButton(no)
-        else:
-            dialog.setDefaultButton(cancel)
+            yes_to_all.setObjectName('yes-to-all')
+
+        dialog.setDefaultButton(
+            yes if defaultButton == 'Yes'
+            else no if defaultButton == 'No'
+            else cancel
+        )
 
         # Run the dialog, saving and restoring focus.
         try:
@@ -588,18 +595,13 @@ class LeoQtGui(leoGui.LeoGui):
             c.in_qt_dialog = True
             dialog.raise_()  # #2246.
             dialog.exec()
-            val = dialog.clickedButton()  # #3972.
         finally:
             c.in_qt_dialog = False
             self._restore_focus(c)
 
-        # Return the result.
-        for button, result in (
-            (cancel, 'cancel'), (no, 'no'), (yes, 'yes'), (yes_to_all, 'yes-to-all')
-        ):
-            if val == button:
-                return result
-        return 'yes'  # Defensive.
+        # #4012: use clickedButton() to determine which button was clicked.
+        button = dialog.clickedButton()
+        return button.objectName() if button else 'yes'
     #@+node:ekr.20110605121601.18498: *4* qt_gui.runAskYesNoDialog
     def runAskYesNoDialog(self,
         c: Cmdr, title: str, message: str = None, yes_all: bool = False, no_all: bool = False,
@@ -621,14 +623,25 @@ class LeoQtGui(leoGui.LeoGui):
         # Create the dialog.
         top_frame: Optional[QWidget] = c.frame.top if c else None
         dialog = QtWidgets.QMessageBox(top_frame)
-        # Creation order determines returned value.
+
+        # #4012: set the button's name to the desired return value!
+        cancel = dialog.addButton('Cancel', ButtonRole.RejectRole)
+        cancel.setObjectName('cancel')
+
+        no = dialog.addButton('No', ButtonRole.NoRole)
+        no.setObjectName('no')
+
         yes = dialog.addButton('Yes', ButtonRole.YesRole)
-        dialog.addButton('No', ButtonRole.NoRole)
-        # dialog.addButton('Cancel', ButtonRole.RejectRole)
-        if yes_all:
-            dialog.addButton('Yes To All', ButtonRole.YesRole)
+        yes.setObjectName('yes')
+
         if no_all:
-            dialog.addButton('No To All', ButtonRole.NoRole)
+            no_all_button = dialog.addButton('No To All', ButtonRole.NoRole)
+            no_all_button.setObjectName('no-all')
+
+        if yes_all:
+            yes_all_button = dialog.addButton('Yes To All', ButtonRole.YesRole)
+            yes_all_button.setObjectName('yes-all')
+
         dialog.setWindowTitle(title)
         if message:
             dialog.setText(message)
@@ -641,27 +654,18 @@ class LeoQtGui(leoGui.LeoGui):
                 self._save_focus(c)
                 c.in_qt_dialog = True
                 dialog.raise_()
-                val = dialog.exec()
+                dialog.exec()
             finally:
                 c.in_qt_dialog = False
                 self._restore_focus(c)
         else:
             # There is no way to save/restore focus.
             dialog.raise_()
-            val = dialog.exec()
+            dialog.exec()
 
-        # Create the return dictionary.
-        # val is the same as the creation order.
-        # Tested with both Qt6 and Qt5.
-        return_d = {0: 'yes', 1: 'no'}
-        if yes_all and no_all:
-            return_d[2] = 'yes-all'
-            return_d[3] = 'no-all'
-        elif yes_all:
-            return_d[2] = 'yes-all'
-        elif no_all:
-            return_d[2] = 'no-all'
-        return return_d.get(val, 'cancel')
+        # #4012: use clickedButton() to determine which button was clicked.
+        button = dialog.clickedButton()
+        return button.objectName() or 'cancel'
     #@+node:ekr.20110605121601.18499: *4* qt_gui.runOpenDirectoryDialog
     def runOpenDirectoryDialog(self, title: str, startdir: str) -> Optional[str]:
         """Create and run an Qt open directory dialog ."""
@@ -801,7 +805,7 @@ class LeoQtGui(leoGui.LeoGui):
                 g.init_dialog_folder(None, None, use_at_path=True),
                 self.makeFilter(filetypes or []),
             )
-        # Bizarre: PyQt5 version can return a tuple!
+        # PyQt may return a tuple.
         s = obj[0] if isinstance(obj, (list, tuple)) else obj
         s = s or ''
         if c and s:
