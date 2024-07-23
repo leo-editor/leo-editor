@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:tom.20240521004125.1: *3* About
-About Viewrendered3 V5.01
+About Viewrendered3 V5.02
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,12 +57,14 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
+Removed diagnostic line that change the clipboard contents.
+
+Previous Recent Changes
+========================
 Corrected errors introduced in a complicated merge: ASCIIDOC, MD, and RsT images
 display correctly when the exported file is viewed in the browser (relative
 paths are converted to absolute file system paths).
 
-Previous Recent Changes
-========================
 The display code has been adapted to Leo's new splitter/layout infrastructure.
 
 In @jupyter nodes, for the path to the jupyter file or url:
@@ -4048,7 +4050,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _html = ''.encode(ENCODING)
 
         if result.strip():
-            g.app.gui.replaceClipboardWith(result)
             try:
                 self.last_markup = result
                 _html = publish_string(result, writer_name='html',
