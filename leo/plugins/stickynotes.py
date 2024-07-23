@@ -1,5 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100103093121.5329: * @file ../plugins/stickynotes.py
+# type:ignore
 #@+<< docstring >>
 #@+node:vivainio2.20091008133028.5821: ** << docstring >>
 """ Adds simple "sticky notes" feature (popout editors) for Qt gui.
