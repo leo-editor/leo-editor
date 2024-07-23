@@ -1,5 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100103093121.5329: * @file ../plugins/stickynotes.py
+# type:ignore
 #@+<< docstring >>
 #@+node:vivainio2.20091008133028.5821: ** << docstring >>
 """ Adds simple "sticky notes" feature (popout editors) for Qt gui.
@@ -115,7 +116,8 @@ def onCloseFrame(tag, kwargs):
     d = outer_dict.get(c.hash(), {})
     for gnx in d:
         w = d.get(gnx)
-        w.close()
+        # w.close()
+        w.destroy()
     outer_dict[c.hash()] = {}
 #@+node:ekr.20160403065412.1: ** commands
 #@+node:vivainio2.20091008133028.5825: *3* g.command('stickynote')
@@ -123,6 +125,11 @@ def onCloseFrame(tag, kwargs):
 def stickynote_f(event):
     """ Launch editable 'sticky note' for c.p."""
     c = event['c']
+    gnx = c.p.gnx
+    if 'tabula' in c.__dict__ and gnx in c.tabula.notes and not c.tabula.tb.isVisible():
+        c.tabula.notes[gnx].parent().close()
+        del c.tabula.notes[gnx]
+        g.es("This note was opened at tabula. Please run the stickynote command again")
     mknote(c, c.p)
 #@+node:ville.20110304230157.6526: *3* g.command('stickynote-new')
 @g.command('stickynote-new')
@@ -262,7 +269,11 @@ if encOK:
 
     def get_AES():
         if hasattr(AES, 'MODE_EAX'):
+            # pylint: disable=no-member
+            # #1265: When in doubt, use MODE_EAX.
+            # https://pycryptodome.readthedocs.io/en/latest/src/cipher/aes.html
             return AES.new(__ENCKEY[0], AES.MODE_EAX)
+        # pylint: disable=no-value-for-parameter
         return AES.new(__ENCKEY[0])
 
     def sn_decode(s):
@@ -323,14 +334,14 @@ class TextEditSearch(QtWidgets.QWidget):  # type:ignore
         super().__init__(*args, **kwargs)
         self.textedit = QtWidgets.QTextEdit(*args, **kwargs)
         # need to call focusin/out set on parent by FocusingPlaintextEdit / mknote
-        self.textedit.focusInEvent = self._call_old_first(  # type:ignore
+        self.textedit.focusInEvent = self._call_old_first(
             self.textedit.focusInEvent, self.focusin)
-        self.textedit.focusOutEvent = self._call_old_first(  # type:ignore
+        self.textedit.focusOutEvent = self._call_old_first(
             self.textedit.focusOutEvent, self.focusout)
         self.searchbox = QLineEdit()
-        self.searchbox.focusInEvent = self._call_old_first(  # type:ignore
+        self.searchbox.focusInEvent = self._call_old_first(
             self.searchbox.focusInEvent, self.focusin)
-        self.searchbox.focusOutEvent = self._call_old_first(  # type:ignore
+        self.searchbox.focusOutEvent = self._call_old_first(
             self.searchbox.focusOutEvent, self.focusout)
 
         # invoke find when return pressed
@@ -519,20 +530,19 @@ def mknote(c, p, parent=None, focusin=None, focusout=None):
     else:
         mknote_focusout = focusout
 
-    def closeevent():
-        pass
-
     # #2471: Create a new editor only if it doesn't already exist.
     d = outer_dict.get(c.hash(), {})
     nf = d.get(p.gnx)
-    if nf:
-        nf.show()
-        nf.raise_()
-        return nf
+    try:
+        if nf:
+            nf.show()
+            nf.raise_()
+            return nf
+    except Exception:
+        pass
     nf = FocusingPlaintextEdit(
         focusin=mknote_focusin,
         focusout=mknote_focusout,
-        closed=closeevent,
         parent=parent)
     decorate_window(c, nf)
     nf.dirty = False
@@ -629,12 +639,15 @@ class Tabula(QtWidgets.QMainWindow):  # type:ignore
         gnx = p.gnx
         if gnx in self.notes:
             n = self.notes[gnx]
-            n.show()
-            return n
+            try:
+                n.show()
+                return n
+            except Exception:
+                pass
         n = mknote(self.c, p, parent=self.mdi)
         sw = self.mdi.addSubWindow(n)
         try:
-            sw.setAttribute(Qt.WA_DeleteOnClose, False)
+            sw.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, True)
         except AttributeError:
             pass
         self.notes[gnx] = n
@@ -652,22 +665,22 @@ class Tabula(QtWidgets.QMainWindow):  # type:ignore
         self.tb.setObjectName("toolbar")
 
         def do_tile():
-            self.mdi.setViewMode(QMdiArea.SubWindowView)
+            self.mdi.setViewMode(QMdiArea.ViewMode.SubWindowView)
             self.mdi.tileSubWindows()
 
         def do_cascade():
-            self.mdi.setViewMode(QMdiArea.SubWindowView)
+            self.mdi.setViewMode(QMdiArea.ViewMode.SubWindowView)
             self.mdi.cascadeSubWindows()
 
         def do_un_tab():
-            if self.mdi.viewMode() == QMdiArea.SubWindowView:
-                self.mdi.setViewMode(QMdiArea.TabbedView)
+            if self.mdi.viewMode() == QMdiArea.ViewMode.SubWindowView:
+                self.mdi.setViewMode(QMdiArea.ViewMode.TabbedView)
             else:
-                self.mdi.setViewMode(QMdiArea.SubWindowView)
+                self.mdi.setViewMode(QMdiArea.ViewMode.SubWindowView)
 
         def do_close_all():
             for i in self.mdi.subWindowList():
-                self.mdi.removeSubWindow(i)
+                i.close()
             self.notes = {}
 
         def do_go():

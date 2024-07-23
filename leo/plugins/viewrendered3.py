@@ -1090,7 +1090,6 @@ REST = 'rest'
 RST = 'rst'
 
 ASCIIDOC_CONF_FILENAME = 'html5.conf'
-MATHJAX_POLYFILL_URL = 'https://polyfill.io/v3/polyfill.min.js?features=es5'
 MATHJAX_URL = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js'
 
 #@+<< RsT Error styles>>
@@ -1231,7 +1230,6 @@ latex_template = f'''\
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <script src="{MATHJAX_POLYFILL_URL}"></script>
     <script src='{MATHJAX_URL}'></script>
 </head>
 <body bgcolor="#fffbdc">
