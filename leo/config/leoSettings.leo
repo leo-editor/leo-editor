@@ -2277,8 +2277,6 @@
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20051101160257"></v>
 <v t="ekr.20051007200824.1"></v>
-<v t="ekr.20180124050114.1"></v>
-<v t="tbrown.20100524101550.4704"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
