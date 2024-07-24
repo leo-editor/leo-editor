@@ -4111,9 +4111,7 @@ class Commands:
         return False
     #@+node:ekr.20031218072017.2287: *6* c.canExtract, canExtractSection & canExtractSectionNames
     def canExtract(self) -> bool:
-        c = self
-        w = c.frame.body.wrapper
-        return w and w.hasSelection()
+        return True  # #4015.
 
     canExtractSectionNames = canExtract
 
