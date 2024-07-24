@@ -43,6 +43,7 @@
 </v>
 </v>
 <v t="ekr.20240528222642.1"><vh>Leo 6.8.x</vh>
+<v t="ekr.20240724062756.1"><vh>Leo 6.8.1: Sync to LeoJS 1.0</vh></v>
 <v t="ekr.20240528222655.1"><vh>Leo 6.8.0: PyQt6, no free_layout </vh></v>
 </v>
 <v t="ekr.20230717044724.1"><vh>Leo 6.7.x</vh>
@@ -1200,9 +1201,9 @@
 </v>
 </v>
 </v>
-<v t="ekr.20160311184117.1"><vh>Leo 4.x</vh>
-<v t="ekr.20150313054219.1769"><vh>4.11 Better abbreviations, many bug fixes</vh>
-<v t="ekr.20150313054219.1770"><vh>4.11 final</vh>
+<v t="ekr.20160311184117.1" descendentVnodeUnknownAttributes="7d7100285807000000302e302e302e3771017d710258090000007374725f6174696d657103580c000000313337363431323238302e307104735809000000302e302e302e372e3371057d71066803580c000000313337363431323238382e307107735809000000302e382e302e302e3571087d71096803580c000000313337363431323838382e30710a73752e"><vh>Leo 4.x</vh>
+<v t="ekr.20150313054219.1769" descendentVnodeUnknownAttributes="7d7100285805000000302e302e3771017d710258090000007374725f6174696d657103580c000000313337363431323238302e307104735807000000302e302e372e3371057d71066803580c000000313337363431323238382e30710773752e"><vh>4.11 Better abbreviations, many bug fixes</vh>
+<v t="ekr.20150313054219.1770" descendentVnodeUnknownAttributes="7d7100285803000000302e3771017d710258090000007374725f6174696d657103580c000000313337363431323238302e307104735805000000302e372e3371057d71066803580c000000313337363431323238382e30710773752e"><vh>4.11 final</vh>
 <v t="ekr.20150313054219.1771"><vh>Bugs</vh>
 <v t="ekr.20150313054219.1772"><vh>Added ubuntu only menu kludge</vh></v>
 <v t="ekr.20150313054219.1773"><vh>Alt-0 (vr-toggle) now puts focus in the body pane</vh></v>
@@ -1384,11 +1385,11 @@
 <v t="ekr.20150313054219.1942"><vh>Added importer for vimoutliner imports and @auto-otl</vh></v>
 <v t="ekr.20150313054219.1943"><vh>Added support for clojure syntax coloring</vh></v>
 </v>
-<v t="ekr.20150313054219.1944"><vh>Plugins</vh>
+<v t="ekr.20150313054219.1944" descendentVnodeUnknownAttributes="7d71002858010000003071017d710258090000007374725f6174696d657103580c000000313337363431323238302e307104735803000000302e3371057d71066803580c000000313337363431323238382e30710773752e"><vh>Plugins</vh>
 <v t="ekr.20150313054219.1945"><vh>bookmarks.py</vh></v>
 <v t="ekr.20150313054219.1946"><vh>ipython.py</vh></v>
 <v t="ekr.20150313054219.1947"><vh>leomylyn.py</vh></v>
-<v t="ekr.20150313054219.1948"><vh>printing.py</vh></v>
+<v t="ekr.20150313054219.1948" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000007374725f6174696d657103580c000000313337363431323238382e30710473732e"><vh>printing.py</vh></v>
 <v t="ekr.20150313054219.1949"><vh>screen_capture.py</vh></v>
 <v t="ekr.20150313054219.1950"><vh>screencast.py</vh></v>
 <v t="ekr.20150313054219.1951"><vh>timestamp.py</vh></v>
@@ -2904,15 +2905,15 @@
 </v>
 </v>
 </v>
-<v t="ekr.20150313054219.255"><vh>4.3 @settings, Plugins manager</vh>
-<v t="ekr.20150313054219.256"><vh>4.3.3 final</vh>
-<v t="ekr.20150313054219.257"><vh>Bugs fixed</vh>
+<v t="ekr.20150313054219.255" descendentVnodeUnknownAttributes="7d71005807000000302e302e302e3571017d710258090000007374725f6174696d657103580c000000313337363431323838382e30710473732e"><vh>4.3 @settings, Plugins manager</vh>
+<v t="ekr.20150313054219.256" descendentVnodeUnknownAttributes="7d71005805000000302e302e3571017d710258090000007374725f6174696d657103580c000000313337363431323838382e30710473732e"><vh>4.3.3 final</vh>
+<v t="ekr.20150313054219.257" descendentVnodeUnknownAttributes="7d71005803000000302e3571017d710258090000007374725f6174696d657103580c000000313337363431323838382e30710473732e"><vh>Bugs fixed</vh>
 <v t="ekr.20150313054219.258"><vh>Added test files to distribution list and cvs</vh></v>
 <v t="ekr.20150313054219.259"><vh>Fixed bugs relating to recent files</vh></v>
 <v t="ekr.20150313054219.260"><vh>Fixed minor crasher in colorizer</vh></v>
 <v t="ekr.20150313054219.261"><vh>Fixed Open With crasher</vh></v>
 <v t="ekr.20150313054219.262"><vh>Fixed various unicode bugs</vh></v>
-<v t="ekr.20150313054219.263"><vh>Protected several methods used by plugin manager</vh></v>
+<v t="ekr.20150313054219.263" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000007374725f6174696d657103580c000000313337363431323838382e30710473732e"><vh>Protected several methods used by plugin manager</vh></v>
 </v>
 <v t="ekr.20150313054219.264"><vh>Features</vh>
 <v t="ekr.20150313054219.265"><vh>Added g.es_print, g.es_trace function</vh></v>
@@ -27068,6 +27069,31 @@ See the `What's new in Leo 6.8.0` section for details.
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
 - [6.8.0 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.0+)
 - [6.8.0 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.0)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
+<t tx="ekr.20240724062756.1">Leo https://leo-editor.github.io/leo-editor/ 6.8.1 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+
+Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+
+**The highlights of Leo 6.8.1**
+
+This release:
+
+- Synchronizes Leo with LeoJS 1.0.
+- Consists solely of minor bug fixes.
+
+**Links**
+
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.8.1 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.1+)
+- [6.8.1 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.1)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
