@@ -2914,70 +2914,60 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if self.freeze or self.locked:
             return
 
-        _root = (self.current_tree_root or p) if self.lock_to_tree else p
-
         self.controlling_code_lang = None
         self.params = []
 
         if self.must_update(keywords):
-            # Suppress updates until we change nodes.
-            self.node_changed = self.gnx != p.v.gnx
-            self.gnx = p.v.gnx
-            self.length = len(p.b)  # not s
-
-            # Remove Leo directives.
-            s = keywords.get('s') if 's' in keywords else p.b
-            s = self.remove_directives(s)
-
-            # For rst, md, asciidoc handler
-            self.rst_html = ''
+            self.prep_for_dispatch(p, keywords)
 
             # Dispatch based on the computed kind.
             kind = self.compute_kind(p, keywords)
-            if not kind:
-                self.show_literal(s)
-                return
-
-            _tree = []
-            if tag in ('show-scrolled-message',):
-                # This branch is for rendering docstrings, help-for-command messages,
-                # etc.  Called from qt_gui.py.
-                # In case Leo node elements get mixed into the message, remove them:
-                self.node_changed = False
-                txt = keywords.get('s', '')
-                lines = txt.split('\n')
-                keywords['s'] = '\n'.join([l for l in lines if not l.startswith('#@')])
-            else:
-                # This branch is for rendering nodes and subtrees.
-                try:
-                    rootcopy = _root.copy()
-                    _tree = [rootcopy]
-                except UnboundLocalError as e:
-                    g.trace('=======', tag, e)
-                    return
-            if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT) and _tree and self.show_whole_tree:
-                _tree.extend(rootcopy.subtree())
             self.base_url = self.get_node_path(self.c, p)
             f = self.dispatch_dict.get(kind)
             if not f:
                 g.trace(f'no handler for kind: {kind}')
                 f = self.update_rst
+
+            node_tree = self.create_node_tree(p, kind)
             if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT):
-                f(_tree, keywords)
-            else:
+                f(node_tree, keywords)
+            elif kind:
+                # Remove Leo directives.
+                s = keywords.get('s') if 's' in keywords else p.b
+                s = self.remove_directives(s)
                 f(s, keywords)
-        else:
-            pass
-            # Save the scroll position.
-            # w = self.w
-            # if w.__class__ == QtWidgets.QTextBrowser:
-                # # 2011/07/30: The widget may no longer exist.
-                # try:
-                    # sb = w.verticalScrollBar()
-                    # self.scrollbar_pos_dict[p.v] = sb.sliderPosition()
-                # except Exception:
-                    # g.es_exception()
+            else:
+                self.show_literal(s)
+
+        # Saved following code for future reference
+        # Save the scroll position.
+        # w = self.w
+        # if w.__class__ == QtWidgets.QTextBrowser:
+            # # 2011/07/30: The widget may no longer exist.
+            # try:
+                # sb = w.verticalScrollBar()
+                # self.scrollbar_pos_dict[p.v] = sb.sliderPosition()
+            # except Exception:
+                # g.es_exception()
                     # self.deactivate()
+    #@+node:tom.20240724103143.1: *4* vr3.create_node_tree
+    def create_node_tree(self, p, kind):
+        _root = (self.current_tree_root or p) if self.lock_to_tree else p
+        rootcopy = _root.copy()
+        node_tree = [rootcopy]
+        if (kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT) 
+            and node_tree and self.show_whole_tree):
+            node_tree.extend(rootcopy.subtree())
+        return node_tree
+    #@+node:tom.20240724102606.1: *4* vr3.prep_for_dispatch
+    def prep_for_dispatch(self, p, keywords):
+        # Suppress updates until we change nodes.
+        self.node_changed = self.gnx != p.v.gnx
+        self.gnx = p.v.gnx
+        self.length = len(p.b)  # not s
+
+        # For rst, md, asciidoc handler
+        self.rst_html = ''
     #@+node:tom.20240724084623.1: *4* vr3.show_literal
     def show_literal(self, s):
         h = f'<pre>{s}</pre>'
@@ -2988,6 +2978,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:tom.20240724083001.1: *4* vr3.compute_kind
     def compute_kind(self, p, keywords):
         """Return processing function for the kind of node."""
+        node_kind = None
         if 'flags' in keywords:
             node_kind = keywords.get('flags')
         else:
@@ -3001,12 +2992,19 @@ class ViewRenderedController3(QtWidgets.QWidget):
         return node_kind
     #@+node:tom.20240724081410.1: *4* vr3.handle_scrolled_msg
     def handle_scrolled_msg(self, keywords):
-        # If we are called as a "scrolled message" - usually for display of
-        # docstrings.  keywords will contain the RsT to be displayed.
+        """Display a "scrolled" message - usually for display of
+        docstrings, help-for-command messages, etc.  Called from qt_gui.py.
+        keyword[s] will contain the text to be displayed.
+        """
         p = self.c.p
-        _kind = keywords.get('flags', 'rst')
+        node_kind = keywords.get('flags', 'rst')
         s = keywords.get('s', '')
-        f = self.dispatch_dict.get(_kind)
+
+        txt = keywords.get('s', '')
+        lines = txt.split('\n')
+        s = keywords['s'] = '\n'.join([l for l in lines if not l.startswith('#@')])
+
+        f = self.dispatch_dict.get(node_kind)
         f([s,], keywords)
 
         # Prevent VR3 from showing the selected node at
@@ -4522,14 +4520,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         #  #1287: Honor both kind of directives node by node.
         for p1 in p.self_and_parents(p):
+            kind = None
             language = self.get_language(p1)
-            if got_markdown and language in ('md', 'markdown'):
-                return language
-            if got_docutils and language in ('rest', 'rst'):
-                return language
-            if language and language in self.dispatch_dict:
-                return language
-        return None
+            if (got_markdown and language in ('md', 'markdown')
+                or got_docutils and language in ('rest', 'rst')
+                or language and language in self.dispatch_dict):
+                kind = language
+
+        return kind
     #@+node:TomP.20200109132851.1: *6* vr3.get_language
     def get_language(self, p):
         """Return the language in effect at position p.
