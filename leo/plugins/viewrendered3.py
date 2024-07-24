@@ -2905,69 +2905,37 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         If the VR3 variable "freeze" is True, do not update.
         """
-        pc = self
-        p = pc.c.p
+        p = self.c.p
 
         if tag in ('show-scrolled-message',):
-            # If we are called as a "scrolled message" - usually for display of
-            # docstrings.  keywords will contain the RsT to be displayed.
-            _kind = keywords.get('flags', 'rst')
-            s = keywords.get('s', '')
-            f = pc.dispatch_dict.get(_kind)
-            f([s,], keywords)
-
-            # Prevent VR3 from showing the selected node at
-            # the next idle-time callback,
-            # Which would over-write the scrolled message.
-            pc.node_changed = False
-            pc.gnx = p.v.gnx
-            pc.length = len(p.b)  # not s
-            pc.last_text = p.b
+            self.handle_scrolled_msg(keywords)
             return
 
-        if self.freeze: return
-        if pc.lock_to_tree:
-            _root = pc.current_tree_root or p
-        else:
-            _root = p
+        if self.freeze or self.locked:
+            return
+
+        _root = (self.current_tree_root or p) if self.lock_to_tree else p
 
         self.controlling_code_lang = None
         self.params = []
 
-        _kind = pc.get_kind(p) or self.default_kind
-        if _kind in ('edit', 'file', 'clean', 'auto'):
-            _kind = RST
-        if _kind == RST and p.h.startswith('@jupyter'):
-            _kind = 'jupyter'
-        f = pc.dispatch_dict.get(_kind)
-        # if f in (pc.update_rst, pc.update_md, pc.update_text):
-            # self.show_toolbar()
-        # else:
-            # self.hide_toolbar()
-        if self.locked:
-            return
-
-        if pc.must_update(keywords):
+        if self.must_update(keywords):
             # Suppress updates until we change nodes.
-            pc.node_changed = pc.gnx != p.v.gnx
-            pc.gnx = p.v.gnx
-            pc.length = len(p.b)  # not s
+            self.node_changed = self.gnx != p.v.gnx
+            self.gnx = p.v.gnx
+            self.length = len(p.b)  # not s
 
             # Remove Leo directives.
             s = keywords.get('s') if 's' in keywords else p.b
-            s = pc.remove_directives(s)
+            s = self.remove_directives(s)
 
             # For rst, md, asciidoc handler
             self.rst_html = ''
 
             # Dispatch based on the computed kind.
-            kind = keywords.get('flags') if 'flags' in keywords else _kind
+            kind = self.compute_kind(p, keywords)
             if not kind:
-                h = f'<pre>{s}</pre>'
-                w = pc.w
-                self.set_html(h, w)
-                self.rst_html = h
-                w.show()
+                self.show_literal(s)
                 return
 
             _tree = []
@@ -2975,7 +2943,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # This branch is for rendering docstrings, help-for-command messages,
                 # etc.  Called from qt_gui.py.
                 # In case Leo node elements get mixed into the message, remove them:
-                pc.node_changed = False
+                self.node_changed = False
                 txt = keywords.get('s', '')
                 lines = txt.split('\n')
                 keywords['s'] = '\n'.join([l for l in lines if not l.startswith('#@')])
@@ -2990,10 +2958,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT) and _tree and self.show_whole_tree:
                 _tree.extend(rootcopy.subtree())
             self.base_url = self.get_node_path(self.c, p)
-            f = pc.dispatch_dict.get(kind)
+            f = self.dispatch_dict.get(kind)
             if not f:
                 g.trace(f'no handler for kind: {kind}')
-                f = pc.update_rst
+                f = self.update_rst
             if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT):
                 f(_tree, keywords)
             else:
@@ -3001,15 +2969,53 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             pass
             # Save the scroll position.
-            # w = pc.w
+            # w = self.w
             # if w.__class__ == QtWidgets.QTextBrowser:
                 # # 2011/07/30: The widget may no longer exist.
                 # try:
                     # sb = w.verticalScrollBar()
-                    # pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
+                    # self.scrollbar_pos_dict[p.v] = sb.sliderPosition()
                 # except Exception:
                     # g.es_exception()
-                    # pc.deactivate()
+                    # self.deactivate()
+    #@+node:tom.20240724084623.1: *4* vr3.show_literal
+    def show_literal(self, s):
+        h = f'<pre>{s}</pre>'
+        w = self.w
+        self.set_html(h, w)
+        self.rst_html = h
+        w.show()
+    #@+node:tom.20240724083001.1: *4* vr3.compute_kind
+    def compute_kind(self, p, keywords):
+        """Return processing function for the kind of node."""
+        if 'flags' in keywords:
+            node_kind = keywords.get('flags')
+        else:
+            node_kind = self.get_kind(p) or self.default_kind
+            if node_kind in ('edit', 'file', 'clean', 'auto'):
+                node_kind = RST
+
+            if node_kind == RST and p.h.startswith('@jupyter'):
+                node_kind = 'jupyter'
+
+        return node_kind
+    #@+node:tom.20240724081410.1: *4* vr3.handle_scrolled_msg
+    def handle_scrolled_msg(self, keywords):
+        # If we are called as a "scrolled message" - usually for display of
+        # docstrings.  keywords will contain the RsT to be displayed.
+        p = self.c.p
+        _kind = keywords.get('flags', 'rst')
+        s = keywords.get('s', '')
+        f = self.dispatch_dict.get(_kind)
+        f([s,], keywords)
+
+        # Prevent VR3 from showing the selected node at
+        # the next idle-time callback,
+        # Which would over-write the scrolled message.
+        self.node_changed = False
+        self.gnx = p.v.gnx
+        self.length = len(p.b)  # not s
+        self.last_text = p.b
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
         """Embed widget w in the appropriate splitter."""
