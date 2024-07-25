@@ -3063,31 +3063,26 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _must_update = False
         c, p = self.c, self.c.p
 
-        if g.unitTesting:
-            _must_update = False
-        elif keywords.get('force'):
-            self.active = True
-            _must_update = True
-        elif c != keywords.get('c') or not self.active:
-            _must_update = False
-        elif self.locked:
-            _must_update = False
-        elif self.gnx != p.v.gnx:
-            _must_update = True
-        elif len(p.b) != self.length or self.last_text != p.b:
-            if self.get_kind(p) in ('html', 'pyplot'):
-                _must_update = False  # Only update explicitly.
-            else:
+        if not (g.unitTesting 
+                or c != keywords.get('c')
+                or not self.active
+                or self.locked):
+            if keywords.get('force'):
+                self.active = True
                 _must_update = True
+            elif self.gnx != p.v.gnx:
+                _must_update = True
+            elif len(p.b) != self.length or self.last_text != p.b:
+                if self.get_kind(p) in ('html', 'pyplot'):
+                    _must_update = False  # Only update explicitly.
+                else:
+                    _must_update = True
+            if _must_update:
                 self.length = len(p.b)
                 self.last_text = p.b
-        else:
-            _must_update = False
-            # This trace would be called at idle time.
-            # g.trace('no change')
+                self.gnx = p.v.gnx
 
         return _must_update
-
     #@+node:TomP.20191215195433.54: *4* vr3.update_asciidoc & helpers
     def update_asciidoc(self, node_list, keywords):
         """Update asciidoc in the vr3 pane."""
@@ -4518,9 +4513,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         for p1 in p.self_and_parents(p):
             kind = None
             language = self.get_language(p1)
-            if (got_markdown and language in ('md', 'markdown')
-                or got_docutils and language in ('rest', 'rst')
-                or language and language in self.dispatch_dict):
+            if ((got_markdown and language in ('md', 'markdown'))
+                or (got_docutils and language in ('rest', 'rst'))
+                or (language and language in self.dispatch_dict)):
                 kind = language
 
         return kind
