@@ -3075,12 +3075,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _must_update = True
             elif (len(p.b) != self.length
                   or self.last_text != p.b
-                  or self.last_headline != p.h):
+                  or self.last_headline != p.h
+                  ):
                 if self.get_kind(p) in ('html', 'pyplot'):
                     _must_update = False  # Only update explicitly.
                 else:
                     _must_update = True
 
+        if _must_update:
             self.length = len(p.b)
             self.last_text = p.b
             self.gnx = p.v.gnx
