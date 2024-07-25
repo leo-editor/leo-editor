@@ -1672,7 +1672,7 @@ def hide_rendering_pane(event):
         c.bodyWantsFocusNow()
 
     vr3.deactivate()
-    vr3.deleteLater()
+    # vr3.deleteLater()
     del controllers[c.hash()]
 
     QtCore.QTimer.singleShot(0, at_idle)
@@ -1781,12 +1781,12 @@ def update_rendering_pane(event):
     if not vr3: return
 
     c = event.get('c')
-    _freeze = vr3.freeze
+    old_freeze = vr3.freeze
     if vr3.freeze:
         vr3.freeze = False
     vr3.update(tag='view', keywords={'c': c, 'force': True})
-    if _freeze:
-        vr3.freeze = _freeze
+    if old_freeze:
+        vr3.freeze = old_freeze
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
 @g.command('vr3-execute')
 def execute_code(event):
@@ -2079,7 +2079,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329223820.1: *3* vr3.ctor & helpers
     def __init__(self, c, parent=None):
         """Ctor for ViewRenderedController class."""
-        global _in_code_block
         self.c = c
         # Create the widget.
         super().__init__(parent)
@@ -2127,6 +2126,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.show_whole_tree = False
         self.base_url = ''
         self.positions = {}
+        self.last_update_was_node_change = False
 
         # User settings.
         self.reloadSettings()
@@ -2173,7 +2173,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         n = c.config.getInt('qweb-view-font-size')
         if hasattr(w, 'settings'):
             settings = w.settings()
-            if n is not None:
+            if n is not None and n > 0:
                 try:
                     settings.setFontSize(settings.DefaultFontSize, n)
                 except Exception:
@@ -2905,19 +2905,22 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         If the VR3 variable "freeze" is True, do not update.
         """
-        p = self.c.p
 
         if tag in ('show-scrolled-message',):
             self.handle_scrolled_msg(keywords)
             return
 
-        if self.freeze or self.locked:
+        if self.freeze:
             return
 
         self.controlling_code_lang = None
         self.params = []
+        p = self.c.p
 
         if self.must_update(keywords):
+            if self.w:
+                # Hide the old widget so it won't keep us from seeing the new one.
+                self.w.hide()
             self.prep_for_dispatch(p, keywords)
 
             # Dispatch based on the computed kind.
@@ -3056,35 +3059,30 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def must_update(self, keywords):
         """Return True if we must update the rendering pane."""
         _must_update = False
-        pc = self
-        c, p = pc.c, pc.c.p
+        c, p = self.c, self.c.p
 
         if g.unitTesting:
             _must_update = False
         elif keywords.get('force'):
-            pc.active = True
+            self.active = True
             _must_update = True
-        elif c != keywords.get('c') or not pc.active:
+        elif c != keywords.get('c') or not self.active:
             _must_update = False
-        elif pc.locked:
+        elif self.locked:
             _must_update = False
-        elif pc.gnx != p.v.gnx:
+        elif self.gnx != p.v.gnx:
             _must_update = True
-        elif len(p.b) != pc.length or pc.last_text != p.b:
-            if pc.get_kind(p) in ('html', 'pyplot'):
+        elif len(p.b) != self.length or self.last_text != p.b:
+            if self.get_kind(p) in ('html', 'pyplot'):
                 _must_update = False  # Only update explicitly.
             else:
                 _must_update = True
-            pc.length = len(p.b)
-            pc.last_text = p.b
+                self.length = len(p.b)
+                self.last_text = p.b
         else:
             _must_update = False
             # This trace would be called at idle time.
             # g.trace('no change')
-
-        if _must_update and self.w:
-            # Hide the old widget so it won't keep us from seeing the new one.
-            self.w.hide()
 
         return _must_update
 
@@ -4582,8 +4580,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         return c.getNodePath(p)
     #@+node:TomP.20191215195433.84: *5* vr3.must_change_widget
     def must_change_widget(self, widget_class):
-        pc = self
-        return not pc.w or pc.w.__class__ != widget_class  # EKR.
+        return not self.w or self.w.__class__ != widget_class  # EKR.
     #@+node:TomP.20191215195433.85: *5* vr3.remove_directives
     def remove_directives(self, s):
         """Remove all Leo directives from a string except "@language"."""
@@ -4663,21 +4660,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329230436.2: *5* vr3.activate
     def activate(self):
         """Activate the vr3-window."""
-        pc = self
-        if pc.active:
-            return
-        pc.inited = True
-        pc.active = True
-        g.registerHandler('select2', pc.update)
-        g.registerHandler('idle', pc.update)
+        if not self.active:
+            self.inited = self.active = True
+            g.registerHandler('select2', self.update)
+            g.registerHandler('idle', self.update)
     #@+node:TomP.20200329230436.4: *5* vr3.deactivate
     def deactivate(self):
         """Deactivate the vr3 window."""
-        pc = self
         # Never disable the idle-time hook: other plugins may need it.
-        g.unregisterHandler('select2', pc.update)
-        g.unregisterHandler('idle', pc.update)
-        pc.active = False
+        g.unregisterHandler('select2', self.update)
+        g.unregisterHandler('idle', self.update)
+        self.active = False
     #@+node:tom.20220824142257.1: *5* vr3.freeze/unfreeze
     def set_freeze(self):
         """Freeze the vr3 pane to prevent updates ."""
