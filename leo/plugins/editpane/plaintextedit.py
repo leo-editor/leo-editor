@@ -16,7 +16,7 @@ def DBG(text):
     Args:
         text (str): text to print
     """
-    print(f"LEP: {text}")
+    # print(f"LEP: {text}")
 #@+node:tbrown.20171028115504.3: ** class LEP_PlainTextEdit
 class LEP_PlainTextEdit(QtWidgets.QTextEdit):
     """LEP_PlainTextEdit - simple LeoEditorPane editor
