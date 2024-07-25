@@ -10755,9 +10755,10 @@ arg:    "%ProgramFiles%/Windows NT/Accessories/wordpad.exe"
 <t tx="ekr.20180124050114.1">For each @button node, Leo adds right-click menu items for:
 
 - @rclick nodes directly *following* the @button.
-
-- @rclick nodes that are *children* of the @button node, provided that the
-  @button node has no ``@others`` directive.
+- @rclick nodes that are *children* of the @button node, provided that:
+  - The child @rclick nodes have no body text.
+  - The @button node has no ``@others`` directive.
+- See the build_rclick_tree function in mod_scripting.py for details.
 
 **Standard rclick items**: Leo adds two standard right-click menu items for
 each @button node: ``Remove Button`` and ``Goto Script``. Leo adds the
@@ -11806,8 +11807,10 @@ Unicode chars like ▼ ▾ and … are typical choices for this text.
 For each @button node, Leo adds right-click menu items for:
 
 - @rclick nodes directly *following* the @button.
-
-- @rclick nodes that are *children* of the @button node, provided that the @button node has no ``@others`` directive.
+- @rclick nodes that are *children* of the @button node, provided that:
+  - The child @rclick nodes have no body text.
+  - The @button node has no ``@others`` directive.
+- See the build_rclick_tree function in mod_scripting.py for details.
 
 **Important**: Leo adds two standard right-click menu items for each @button node: ``Remove Button`` and ``Goto Script``. Leo adds the indicator text **only** to buttons that contain right-click menu items in addition to these two standard right-click menu items.</t>
 <t tx="tbrown.20110212091818.20118">Set to False, dragging nodes between different outlines
