@@ -24,7 +24,7 @@ def edit_pane_csv(event):
         w = w.parent()
     if not w:
         return
-    w.insert(-1, LeoEditPane(c=c, show_control=False, lep_type='EDITOR-CSV'))
+    w.addWidget(LeoEditPane(c=c, show_control=False, lep_type='EDITOR-CSV'))
 #@+node:tbrown.20171028115438.4: ** class LeoEditPane
 class LeoEditPane(QtWidgets.QWidget):
     """
