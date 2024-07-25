@@ -3077,10 +3077,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     _must_update = False  # Only update explicitly.
                 else:
                     _must_update = True
-            if _must_update:
-                self.length = len(p.b)
-                self.last_text = p.b
-                self.gnx = p.v.gnx
+
+            self.length = len(p.b)
+            self.last_text = p.b
+            self.gnx = p.v.gnx
 
         return _must_update
     #@+node:TomP.20191215195433.54: *4* vr3.update_asciidoc & helpers
