@@ -996,6 +996,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
     # def tr(self, s: str) -> str:
         # return QtWidgets.QApplication.translate('MainWindow', s, None)
 
+    #@+node:ekr.20240725073848.1: *3* dw.insert/hide_vr3_frame (new)
+    def hide_vr3_frame(self, frame: QtWidgets.QFrame) -> None:
+        g.trace(frame, g.callers())  ###
+
+    def insert_vr3_frame(self, frame: QtWidgets.QFrame) -> None:
+        g.trace(frame, g.callers())  ###
     #@+node:ekr.20110605121601.18173: *3* dw.select
     def select(self, c: Cmdr) -> None:
         """Select the window or tab for c."""

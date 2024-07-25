@@ -1466,7 +1466,7 @@ def xisVisible():
 #@+node:TomP.20191215195433.11: *3* vr3.onCreate
 def onCreate(tag, keys):
     pass
-#@+node:TomP.20191215195433.12: *3* vr3.onClose
+#@+node:TomP.20191215195433.12: *3* vr3.onClose (does nothing)
 def onClose(tag, keys):
     pass
     # c = keys.get('c')
@@ -1477,7 +1477,7 @@ def onClose(tag, keys):
         # c.bodyWantsFocus()
         # del controllers[h]
         # vr3.deactivate()
-#@+node:TomP.20191215195433.13: *3* vr3.show_scrolled_message
+#@+node:TomP.20191215195433.13: *3* vr3.show_scrolled_message (changed)
 def show_scrolled_message(tag, kw) -> bool:
     """Show "scrolled message" in VR3.
     
@@ -1489,7 +1489,7 @@ def show_scrolled_message(tag, kw) -> bool:
     c = kw.get('c')
     if not c:
         return False
-    flags = kw.get('flags') or 'rst'
+
     ###
         # h = c.hash()
         # vr3 = controllers.get(h, None)
@@ -1498,13 +1498,14 @@ def show_scrolled_message(tag, kw) -> bool:
         # vr3 = getattr(c, 'vr3', None)
         # if not vr3:
             # if positions.get(h, None) == None or OPENED_IN_SPLITTER:
-                # c.vr3 = vr3 = viewrendered(event=kw)
+                # c.vr3 = vr3 = viewrendered3(event=kw)
             # else:
-                # c.vr3 = vr3 = viewrendered_tab(event=kw)
+                # c.vr3 = vr3 = viewrendered3_tab(event=kw)
     vr3 = getVr3(c=c)
     if not vr3:
         return False
 
+    flags = kw.get('flags') or 'rst'
     title = kw.get('short_title', '').strip()
     vr3.setWindowTitle(title)
     s = '\n'.join([
@@ -1547,7 +1548,7 @@ def close_tab(c, vr3):
     h = c.hash()
     positions[h] = OPENED_IN_TAB
 
-#@+node:TomP.20191215195433.15: *3* vr3.getVr3
+#@+node:TomP.20191215195433.15: *3* vr3.getVr3 (changed) (calls dw.insert_vr3_pane)
 def getVr3(*, c=None, event=None):
     """Return the VR3 ViewRenderedController3
 
@@ -1580,13 +1581,16 @@ def getVr3(*, c=None, event=None):
         # vr3 = controllers.get(h) if h else None
     vr3 = getattr(c, 'vr3', None)
     if not vr3:
-        ### controllers[h] = vr3 = viewrendered(event)
-        c.vr3 = vr3 = viewrendered(event)
+        ### controllers[h] = vr3 = viewrendered3(event)
+        vr3 = ViewRenderedController3(c)
+        c.vr3 = vr3 
+        dw = c.frame.top
+        dw.insert_vr3_frame(vr3)  ###
     return vr3
 #@+node:TomP.20191215195433.16: ** vr3.Commands
-#@+node:TomP.20191215195433.18: *3* g.command('vr3') (**simplified**)
+#@+node:TomP.20191215195433.18: *3* g.command('vr3') (changed)
 @g.command('vr3')
-def viewrendered(event):
+def viewrendered3(event):
     """Open render view for commander"""
     ###global controllers
     gui = g.app.gui
@@ -1645,9 +1649,9 @@ def viewrendered(event):
         # gui.equalize_splitter(secondary_splitter)
     # c.bodyWantsFocusNow()
     # return vr3
-#@+node:tom.20230403141635.1: *3* g.command('vr3-tab')
+#@+node:tom.20230403141635.1: *3* g.command('vr3-tab') (changed)
 @g.command('vr3-tab')
-def viewrendered_tab(event):
+def viewrendered3_tab(event):
     """Open render view for commander"""
     # global controllers
     if g.app.gui.guiName() != 'qt':
@@ -1679,7 +1683,7 @@ def unfreeze_rendering_pane(event):
     vr3 = getVr3(event)
     if vr3:
         vr3.set_unfreeze()
-#@+node:TomP.20191215195433.21: *3* g.command('vr3-hide')
+#@+node:TomP.20191215195433.21: *3* g.command('vr3-hide') (changed)
 @g.command('vr3-hide')
 def hide_rendering_pane(event):
     """Close the rendering pane."""
@@ -1699,23 +1703,27 @@ def hide_rendering_pane(event):
         return
 
     c = vr3.c
-    pos = positions.get(c.hash())
-    if pos == OPENED_IN_SPLITTER:
-        vr3.store_layout('open')
-    elif pos == OPENED_IN_TAB:
-        close_tab(c, vr3)
+    dw = c.frame.top
+    dw.hide_vr3_pane(vr3)  ###
 
-    def at_idle(c=c, _vr3=vr3):
-        c = event.get('c')
-        # _vr3.adjust_layout('closed')
-        c.bodyWantsFocusNow()
+    ###
+        # pos = positions.get(c.hash())
+        # if pos == OPENED_IN_SPLITTER:
+            # vr3.store_layout('open')
+        # elif pos == OPENED_IN_TAB:
+            # close_tab(c, vr3)
 
-    vr3.deactivate()
-    vr3.deleteLater()
-    del controllers[c.hash()]
+        # def at_idle(c=c, _vr3=vr3):
+            # c = event.get('c')
+            # # _vr3.adjust_layout('closed')
+            # c.bodyWantsFocusNow()
 
-    QtCore.QTimer.singleShot(0, at_idle)
-    c.bodyWantsFocus()
+        # vr3.deactivate()
+        # vr3.deleteLater()
+        # ### del controllers[c.hash()]
+
+        # QtCore.QTimer.singleShot(0, at_idle)
+        # c.bodyWantsFocus()
 # Compatibility
 
 close_rendering_pane = hide_rendering_pane
@@ -1746,7 +1754,7 @@ def show_rendering_pane(event):
     vr3 = getVr3(event=event)
     if vr3:
         vr3.show_dock_or_pane()
-#@+node:TomP.20191215195433.25: *3* g.command('vr3-toggle')
+#@+node:TomP.20191215195433.25: *3* g.command('vr3-toggle') (changed, todo)
 @g.command('vr3-toggle')
 def toggle_rendering_pane(event):
     """Toggle the rendering pane.
@@ -1762,46 +1770,51 @@ def toggle_rendering_pane(event):
     if not c:
         return
 
-    h = c.hash()
-    vr3 = controllers.get(h, None)
+    ### h = c.hash()
+    ### vr3 = controllers.get(h, None)
+    vr3 = getVr3(event=event)
+    g.trace('not ready yet', vr3)
 
-    if not vr3:
-        if positions.get(h, None) == None or OPENED_IN_SPLITTER:
-            vr3 = viewrendered(event)
-        else:
-            vr3 = viewrendered_tab(event)
-    else:
-        # c.doCommandByName('vr3-hide')  # Doesn't work
-        # This timer is *required* or vr3 won't open on next toggle
-        QtCore.QTimer.singleShot(0, lambda: c.doCommandByName('vr3-hide'))
-#@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab')
-@g.command('vr3-toggle-tab')
-def toggle_rendering_pane_tab(event):
-    """Toggle the rendering pane.
-    
-    If a VR3 instance exists for this controller, remove it.
-    Otherwise, create it in a tab in the log pane, or in
-    the last position it had when previously open.
-    """
-    global controllers
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
+    # if not vr3:
+        # ###
+        # # if positions.get(h, None) == None or OPENED_IN_SPLITTER:
+            # # vr3 = viewrendered3(event)
+        # # else:
+            # # vr3 = viewrendered3_tab(event)
+    # else:
+        # # c.doCommandByName('vr3-hide')  # Doesn't work
+        # # This timer is *required* or vr3 won't open on next toggle
+        # QtCore.QTimer.singleShot(0, lambda: c.doCommandByName('vr3-hide'))
 
-    h = c.hash()
-    vr3 = controllers.get(h, None)
+#@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab') (no longer used)
+#@verbatim
+# @g.command('vr3-toggle-tab')
+# def toggle_rendering_pane_tab(event):
+    # """Toggle the rendering pane.
 
-    if not vr3:
-        if positions.get(h, None) == None or OPENED_IN_TAB:
-            vr3 = viewrendered_tab(event)
-        else:
-            vr3 = viewrendered(event)
-    else:
-        # c.doCommandByName('vr3-hide')  # Doesn't work
-        # This timer is *required* or vr3 won't open on next toggle
-        QtCore.QTimer.singleShot(0, lambda: c.doCommandByName('vr3-hide'))
+    # If a VR3 instance exists for this controller, remove it.
+    # Otherwise, create it in a tab in the log pane, or in
+    # the last position it had when previously open.
+    # """
+    # global controllers
+    # if g.app.gui.guiName() != 'qt':
+        # return
+    # c = event.get('c')
+    # if not c:
+        # return
+
+    # h = c.hash()
+    # vr3 = controllers.get(h, None)
+
+    # if not vr3:
+        # if positions.get(h, None) == None or OPENED_IN_TAB:
+            # vr3 = viewrendered3_tab(event)
+        # else:
+            # vr3 = viewrendered3(event)
+    # else:
+        # # c.doCommandByName('vr3-hide')  # Doesn't work
+        # # This timer is *required* or vr3 won't open on next toggle
+        # QtCore.QTimer.singleShot(0, lambda: c.doCommandByName('vr3-hide'))
 #@+node:TomP.20191215195433.26: *3* g.command('vr3-unlock')
 @g.command('vr3-unlock')
 def unlock_rendering_pane(event):
@@ -2756,7 +2769,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         def plot_plain_data(pagelines):
             """Plot 1- or 2- column data.  Ignore all non-numeric lines."""
 
-
+            ###
             # from leo.plugins import viewrendered3 as vr3
             # from leo.plugins import viewrendered as vr
 
@@ -3657,15 +3670,18 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         #@+others
-        #@+node:TomP.20200208211132.1: *6* setup
+        #@+node:TomP.20200208211132.1: *6* setup (changed)
         pc = self
         c, p = pc.c, pc.c.p
         if g.app.gui.guiName() != 'qt':
             return ''  # EKR
 
-        vr3 = controllers.get(c.hash())
-        if not vr3:
-            vr3 = ViewRenderedController3(c)
+        ###
+            # vr3 = controllers.get(c.hash())
+            # if not vr3:
+                # vr3 = ViewRenderedController3(c)
+
+        getVr3(c=c)
 
         # Update the current path.
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -3673,7 +3689,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             path = os.path.dirname(path)
         if os.path.isdir(path):
             os.chdir(path)
-
         #@+node:TomP.20200208211347.1: *6* process nodes
         result = ''
         codelist = []
@@ -3960,15 +3975,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         #@+others
-        #@+node:TomP.20200105214716.1: *6* vr3.setup
+        #@+node:TomP.20200105214716.1: *6* vr3.setup (changed)
         #@@language python
         c, p = self.c, self.c.p
         if g.app.gui.guiName() != 'qt':
             return ''  # EKR
 
-        vr3 = controllers.get(c.hash())
-        if not vr3:
-            vr3 = ViewRenderedController3(c)
+        ###
+            # vr3 = controllers.get(c.hash())
+            # if not vr3:
+                # vr3 = ViewRenderedController3(c)
+        getVr3(c=c)
 
         # Update the current path.
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
