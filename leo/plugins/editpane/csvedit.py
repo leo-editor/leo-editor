@@ -57,7 +57,7 @@ def DBG(text):
 
     :param str text: text to print
     """
-    print("LEP: %s" % text)
+    # print("LEP: %s" % text)
 
 #@+node:ekr.20211210174103.2: ** class ListTable
 class ListTable(QtCore.QAbstractTableModel):
