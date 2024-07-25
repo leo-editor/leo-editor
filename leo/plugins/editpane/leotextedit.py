@@ -17,7 +17,7 @@ def DBG(text):
     Args:
         text (str): text to print
     """
-    print(f"LEP: {text}")
+    # print(f"LEP: {text}")
 #@+node:tbrown.20171028115508.3: ** class LEP_LeoTextEdit
 class LEP_LeoTextEdit(QtWidgets.QTextEdit):
     """LEP_LeoTextEdit - Leo LeoEditorPane editor
