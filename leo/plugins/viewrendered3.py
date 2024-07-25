@@ -2100,6 +2100,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.inited = False
         self.length = 0  # The length of previous p.b.
         self.last_text = ''
+        self.last_headline = ''
         self.locked = False
 
         self.pyplot_active = False
@@ -3072,7 +3073,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _must_update = True
             elif self.gnx != p.v.gnx:
                 _must_update = True
-            elif len(p.b) != self.length or self.last_text != p.b:
+            elif (len(p.b) != self.length
+                  or self.last_text != p.b
+                  or self.last_headline != p.h):
                 if self.get_kind(p) in ('html', 'pyplot'):
                     _must_update = False  # Only update explicitly.
                 else:
@@ -3081,6 +3084,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.length = len(p.b)
             self.last_text = p.b
             self.gnx = p.v.gnx
+            self.last_headline = p.v.h
 
         return _must_update
     #@+node:TomP.20191215195433.54: *4* vr3.update_asciidoc & helpers
