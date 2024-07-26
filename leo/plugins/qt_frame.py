@@ -199,28 +199,58 @@ class DynamicWindow(QtWidgets.QMainWindow):
         Called instead of uic.loadUi(ui_description_file, self)
         """
         self.setMainWindowOptions()
-        # Legacy code: will not go away.
         self.createCentralWidget()
-        # Create .verticalLayout
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-        if self.bigTree:
-            # Top pane contains only outline.  Bottom pane contains body and log panes.
-            self.createBodyPane(secondary_splitter)
-            self.createLogPane(secondary_splitter)
-            treeFrame = self.createOutlinePane(main_splitter)
-            main_splitter.addWidget(treeFrame)
-            main_splitter.addWidget(secondary_splitter)
+
+        if 1:  #4017: create the layout indicated by
+            # Set new official ivars.
+            self.main_splitter, self.secondary_splitter = main_splitter, secondary_splitter
+            self.create_layout()
         else:
-            # Top pane contains outline and log panes.
-            self.createOutlinePane(secondary_splitter)
-            self.createLogPane(secondary_splitter)
-            self.createBodyPane(main_splitter)
+            if self.bigTree:
+                # Top pane contains only outline.  Bottom pane contains body and log panes.
+                self.createBodyPane(secondary_splitter)
+                self.createLogPane(secondary_splitter)
+                treeFrame = self.createOutlinePane(main_splitter)
+                main_splitter.addWidget(treeFrame)
+                main_splitter.addWidget(secondary_splitter)
+            else:
+                # Top pane contains outline and log panes.
+                main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+                self.createOutlinePane(secondary_splitter)
+                self.createLogPane(secondary_splitter)
+                self.createBodyPane(main_splitter)
         self.createMiniBuffer(self.centralwidget)
         self.createMenuBar()
         self.createStatusBar(self)
         # Signals...
         QtCore.QMetaObject.connectSlotsByName(self)
         return main_splitter, secondary_splitter
+    #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers
+    def create_layout(self):
+        """Create the layout given by @string qt_layout_name."""
+        c = self.leo_c
+        # Keys are layout names, converted to canonical format.
+        layout_dict = {
+            'legacy-layout': self.create_legacy_layout
+        }
+        layout_name = c.config.getString('qt-layout-name')
+        ### g.trace(layout_name, layout_dict.get(layout_name))
+        f = layout_dict.get(layout_name) or self.create_legacy_layout
+        f()
+
+
+    #@+node:ekr.20240726063727.1: *5* dw.create_legacy_layout
+    def create_legacy_layout(self):
+        """
+        Create Leo's legacy layout.
+        
+        The top pane contains outline and log panes.
+        """
+        main_splitter, secondary_splitter = self.main_splitter, self.secondary_splitter
+        self.createOutlinePane(secondary_splitter)
+        self.createLogPane(secondary_splitter)
+        self.createBodyPane(main_splitter)
     #@+node:ekr.20110605121601.18142: *4* dw.top-level
     #@+node:ekr.20190118150859.10: *5* dw.addNewEditor
     def addNewEditor(self, name: str) -> tuple[QWidget, Wrapper]:
