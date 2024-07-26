@@ -105,6 +105,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.show_iconbar = c.config.getBool('show-iconbar', default=True)
         self.toolbar_orientation = c.config.getString('qt-toolbar-location') or ''
         self.use_gutter = c.config.getBool('use-gutter', default=False)
+        self.recreateMainWindow()
         if getattr(self, 'iconBar', None):
             if self.show_iconbar:
                 self.iconBar.show()
@@ -198,6 +199,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         Copied/adapted from qt_main.py.
         Called instead of uic.loadUi(ui_description_file, self)
         """
+        g.trace(g.callers())
         self.setMainWindowOptions()
         self.createCentralWidget()
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
@@ -1038,6 +1040,18 @@ class DynamicWindow(QtWidgets.QMainWindow):
     # def tr(self, s: str) -> str:
         # return QtWidgets.QApplication.translate('MainWindow', s, None)
 
+    #@+node:ekr.20240726074809.1: *3* dw.recreateMainWindow (new)
+    def recreateMainWindow(self):
+        """
+        Destroy the main Window before recreating it.
+        """
+        central_widget = getattr(self, 'centralwidget', None)
+        if central_widget:
+            # Destroy the previous layout.
+            g.trace('Recreate', central_widget)
+            # self.centralwidget = None
+            # central_widget.deleteLater()
+            # self.createMainWindow()
     #@+node:ekr.20240725073848.1: *3* dw.insert/hide_vr3_frame (new)
     def hide_vr3_frame(self, frame: QtWidgets.QFrame) -> None:
         g.trace(frame, g.callers())  ###
