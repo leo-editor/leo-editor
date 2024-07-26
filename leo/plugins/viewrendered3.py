@@ -1212,12 +1212,8 @@ asciidoc_dirs = {'asciidoc': {}, 'asciidoc3': {}}
 asciidoc_processors = []
 asciidoc_has_diagram = False
 #@-<< Misc Globals >>
-#@-<< declarations >>
-
-trace = False  # This global trace is convenient.
-
 #@+<< define html templates >>
-#@+node:TomP.20191215195433.6: ** << define html templates >> (vr3)
+#@+node:TomP.20191215195433.6: *3* << define html templates >> (vr3)
 image_template = '''\
 <html>
 <body bgcolor="#fffbdc">
@@ -1240,6 +1236,11 @@ latex_template = f'''\
 </html>
 '''
 #@-<< define html templates >>
+
+#@-<< declarations >>
+
+trace = False  # This global trace is convenient.
+
 
 # keys are c.hash().
 controllers = {}  # values: VR3 widets
@@ -1672,7 +1673,7 @@ def hide_rendering_pane(event):
         c.bodyWantsFocusNow()
 
     vr3.deactivate()
-    # vr3.deleteLater()
+    vr3.setParent(None) 
     del controllers[c.hash()]
 
     QtCore.QTimer.singleShot(0, at_idle)
