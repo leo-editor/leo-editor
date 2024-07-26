@@ -1243,7 +1243,7 @@ latex_template = f'''\
 #@+<< vr3: global data >>
 #@+node:ekr.20240721090655.1: ** << vr3: global data >>
 # keys are c.hash().
-### controllers = {}  # values: VR3 widets
+
 positions = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
 #@-<< vr3: global data >>
 
@@ -1583,7 +1583,7 @@ def getVr3(*, c=None, event=None):
     if not vr3:
         ### controllers[h] = vr3 = viewrendered3(event)
         vr3 = ViewRenderedController3(c)
-        c.vr3 = vr3 
+        c.vr3 = vr3
         dw = c.frame.top
         dw.insert_vr3_frame(vr3)  ###
     return vr3

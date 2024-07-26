@@ -95,15 +95,23 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_master: LeoTabbedTopLevel = None  # Set in construct.
         self.leo_menubar: QWidget = None  # Set in createMenuBar.
         self.leo_statusBar: QtWidgets.QStatusBar = None
+        self.layout_name: str = None
+        self.old_layout_name: str = None
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
         self.reloadSettings()
 
     def reloadSettings(self) -> None:
         c = self.leo_c
         c.registerReloadSettings(self)
-        self.bigTree = c.config.getBool('big-outline-pane')
+
+        self.big_tree = c.config.getBool('big-outline-pane')
+
+        self.old_layout_name = self.layout_name
+        self.layout_name = c.config.getString('qt-layout-name')
+
         self.show_iconbar = c.config.getBool('show-iconbar', default=True)
         self.toolbar_orientation = c.config.getString('qt-toolbar-location') or ''
+        self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.use_gutter = c.config.getBool('use-gutter', default=False)
         self.recreateMainWindow()
         if getattr(self, 'iconBar', None):
@@ -160,8 +168,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         c = self.leo_c
         self.leo_master = master
-        self.useScintilla = c.config.getBool('qt-use-scintilla')
-        self.reloadSettings()
         main_splitter, secondary_splitter = self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")
         self.iconBar.setObjectName('icon-bar')  # Required for QMainWindow.saveState().
@@ -199,7 +205,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         Copied/adapted from qt_main.py.
         Called instead of uic.loadUi(ui_description_file, self)
         """
-        g.trace(g.callers())
         self.setMainWindowOptions()
         self.createCentralWidget()
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
@@ -209,7 +214,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.main_splitter, self.secondary_splitter = main_splitter, secondary_splitter
             self.create_layout()
         else:
-            if self.bigTree:
+            if self.big_tree:
                 # Top pane contains only outline.  Bottom pane contains body and log panes.
                 self.createBodyPane(secondary_splitter)
                 self.createLogPane(secondary_splitter)
@@ -231,15 +236,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers
     def create_layout(self):
         """Create the layout given by @string qt_layout_name."""
-        c = self.leo_c
+        layout_name = self.layout_name
+
         # Keys are layout names, converted to canonical format.
         layout_dict = {
             'legacy': self.create_legacy_layout,
             'big-tree': self.create_big_tree_layout,
         }
-        layout_name = c.config.getString('qt-layout-name')
         f = layout_dict.get(layout_name) or self.create_legacy_layout
-        g.trace(layout_name)  ###
         f()
 
 
@@ -1045,13 +1049,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """
         Destroy the main Window before recreating it.
         """
-        central_widget = getattr(self, 'centralwidget', None)
-        if central_widget:
-            # Destroy the previous layout.
-            g.trace('Recreate', central_widget)
-            # self.centralwidget = None
-            # central_widget.deleteLater()
-            # self.createMainWindow()
+        w = getattr(self, 'centralwidget', None)
+        if w and self.layout_name != self.old_layout_name:
+            g.es_print('@string qt-layout-name has changed: restarting Leo', color='red')
+            c = self.leo_c
+            c.doCommandByName('restart-leo')
     #@+node:ekr.20240725073848.1: *3* dw.insert/hide_vr3_frame (new)
     def hide_vr3_frame(self, frame: QtWidgets.QFrame) -> None:
         g.trace(frame, g.callers())  ###
