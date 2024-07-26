@@ -1711,8 +1711,9 @@ def hide_rendering_pane(event):
 
     positions[h] = None
     vr3.deactivate()
-    vr3.setParent(None)
     vr3.hide()
+    vr3.setParent(None)
+    vr3.deleteLater()
     del controllers[h]
 
     c.bodyWantsFocus()
@@ -4689,9 +4690,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.current_tree_root = None
     #@+node:TomP.20200329230436.6: *5* vr3.show_dock_or_pane
     def show_dock_or_pane(self):
-        vr3 = self.c, self
-        vr3.activate()
-        vr3.show()
+        self.show()
         # c.bodyWantsFocusNow()
     #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
     #@+node:TomP.20200329230436.9: *6* vr3.get_toolbar_label
