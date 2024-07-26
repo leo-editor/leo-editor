@@ -1966,6 +1966,8 @@ def viewrendered_tab(event):
     log = c.frame.log
     if not log.findTabIndex(TABNAME):
         open_in_tab(c, vr3)
+        vr3.set_unfreeze()
+
 #@+node:TomP.20191215195433.25: *3* g.command('vr3-toggle')
 @g.command('vr3-toggle')
 def toggle_rendering_pane(event):
@@ -1997,6 +1999,7 @@ def toggle_rendering_pane(event):
         ms.addWidget(vr3)
         ms.setSizes([100_000] * len(ms.sizes()))
         vr3.show()
+        vr3.set_unfreeze()
         positions[h] = OPENED_IN_SPLITTER
 #@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab')
 @g.command('vr3-toggle-tab')
@@ -2021,6 +2024,7 @@ def toggle_rendering_pane_tab(event):
         positions[h] = None
     else:
         open_in_tab(c, vr3)
+        vr3.set_unfreeze()
 
 #@+node:tom.20220824142721.1: *3* g.command('vr3-unfreeze')
 @g.command('vr3-unfreeze')
@@ -4691,6 +4695,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329230436.6: *5* vr3.show_dock_or_pane
     def show_dock_or_pane(self):
         self.show()
+        self.set_unfreeze()
         # c.bodyWantsFocusNow()
     #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
     #@+node:TomP.20200329230436.9: *6* vr3.get_toolbar_label
