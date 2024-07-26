@@ -209,7 +209,7 @@
 <v t="ekr.20190422173857.1"><vh>@string qt-style-name = None</vh></v>
 <v t="ekr.20210914081311.1"><vh>@bool highlight-body-line = False</vh></v>
 <v t="ekr.20210914081428.1"><vh>@string line-highlight-color = None</vh></v>
-<v t="ekr.20240726065425.1"><vh>@string qt-layout-name = legacy-layout</vh></v>
+<v t="ekr.20240726065425.1"><vh>@string qt-layout-name = legacy</vh></v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
@@ -11653,7 +11653,8 @@ Leo always shows a *single* search result by selecting the node and text.
 True: Show multiple search results in the Nav pane provided the quicksearch plugin is active.
 False: Always show multiple search results as the clone-find commands do.
 </t>
-<t tx="ekr.20240726065425.1"></t>
+<t tx="ekr.20240726065425.1"># legacy: Leo's legacy layout
+# big-tree: replaces @bool big-outline-pane</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>

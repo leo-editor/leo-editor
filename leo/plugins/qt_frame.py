@@ -232,11 +232,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         c = self.leo_c
         # Keys are layout names, converted to canonical format.
         layout_dict = {
-            'legacy-layout': self.create_legacy_layout
+            'legacy': self.create_legacy_layout,
+            'big-tree': self.create_big_tree_layout,
         }
         layout_name = c.config.getString('qt-layout-name')
-        ### g.trace(layout_name, layout_dict.get(layout_name))
         f = layout_dict.get(layout_name) or self.create_legacy_layout
+        g.trace(layout_name)  ###
         f()
 
 
@@ -251,6 +252,17 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.createOutlinePane(secondary_splitter)
         self.createLogPane(secondary_splitter)
         self.createBodyPane(main_splitter)
+    #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
+    def create_big_tree_layout(self):
+        """
+        Create the layout previously specified by  @bool big-outline-pane.
+        """
+        main_splitter, secondary_splitter = self.main_splitter, self.secondary_splitter
+        self.createBodyPane(secondary_splitter)
+        self.createLogPane(secondary_splitter)
+        treeFrame = self.createOutlinePane(main_splitter)
+        main_splitter.addWidget(treeFrame)
+        main_splitter.addWidget(secondary_splitter)
     #@+node:ekr.20110605121601.18142: *4* dw.top-level
     #@+node:ekr.20190118150859.10: *5* dw.addNewEditor
     def addNewEditor(self, name: str) -> tuple[QWidget, Wrapper]:
