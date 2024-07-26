@@ -1554,13 +1554,15 @@ def getVr3(event):
     global controllers
     if g.app.gui.guiName() != 'qt':
         return None
-    c = event.get('c')
-    if not c:
+    if (c := event.get('c')):
+        h = c.hash()
+    else:
         return None
-    h = c.hash()
-    vr3 = controllers.get(h) if h else None
-    if not vr3:
+
+    if not (vr3 := controllers.get(h)):
         controllers[h] = vr3 = viewrendered(event)
+        positions[h] = None
+
     return vr3
 #@+node:TomP.20191215195433.16: ** vr3.Commands
 #@+node:TomP.20191215195433.18: *3* g.command('vr3') (**weird effect**)
@@ -1610,184 +1612,6 @@ def viewrendered(event):
         gui.equalize_splitter(secondary_splitter)
     c.bodyWantsFocusNow()
     return vr3
-#@+node:tom.20230403141635.1: *3* g.command('vr3-tab')
-@g.command('vr3-tab')
-def viewrendered_tab(event):
-    """Open render view for commander"""
-    # global controllers
-    if g.app.gui.guiName() != 'qt':
-        return None
-    c = event.get('c')
-    if not c:
-        return None
-    h = c.hash()
-    vr3 = controllers.get(h)
-    if not vr3:
-        controllers[h] = vr3 = ViewRenderedController3(c)
-
-    open_in_tab(c, vr3)
-    return vr3
-#@+node:tom.20220824141850.1: *3* g.command('vr3-freeze')
-@g.command('vr3-freeze')
-def freeze_rendering_pane(event):
-    """Freeze the rendering pane so it does not update."""
-    vr3 = getVr3(event)
-    if not vr3: return
-    vr3.set_freeze()
-#@+node:tom.20220824142721.1: *3* g.command('vr3-unfreeze')
-@g.command('vr3-unfreeze')
-def unfreeze_rendering_pane(event):
-    """Allow the rendering pane to update."""
-    vr3 = getVr3(event)
-    if not vr3: return
-
-    vr3.set_unfreeze()
-#@+node:TomP.20191215195433.21: *3* g.command('vr3-hide')
-@g.command('vr3-hide')
-def hide_rendering_pane(event):
-    """Close the rendering pane."""
-    global controllers
-    if g.app.gui.guiName() != 'qt':
-        return
-
-    c = event.get('c')
-    if not c:
-        return
-
-    vr3 = getVr3(event)
-    if not vr3: return
-
-    if vr3.pyplot_active:
-        g.es_print('can not close vr3 pane after using pyplot')
-        return
-
-    pos = positions.get(c.hash())
-    if pos == OPENED_IN_SPLITTER:
-        vr3.store_layout('open')
-    elif pos == OPENED_IN_TAB:
-        close_tab(c, vr3)
-
-    def at_idle(c=c, _vr3=vr3):
-        c = event.get('c')
-        # _vr3.adjust_layout('closed')
-        c.bodyWantsFocusNow()
-
-    vr3.deactivate()
-    vr3.setParent(None) 
-    del controllers[c.hash()]
-
-    QtCore.QTimer.singleShot(0, at_idle)
-    c.bodyWantsFocus()
-# Compatibility
-
-close_rendering_pane = hide_rendering_pane
-#@+node:TomP.20191215195433.22: *3* g.command('vr3-lock')
-@g.command('vr3-lock')
-def lock_rendering_pane(event):
-    """Lock the rendering pane to the current node."""
-    vr3 = getVr3(event)
-    if not vr3: return
-
-    vr3.lock()
-#@+node:TomP.20191215195433.23: *3* g.command('vr3-pause-play')
-@g.command('vr3-pause-play-movie')
-def pause_play_movie(event):
-    """Pause or play a movie in the rendering pane."""
-    vr3 = getVr3(event)
-    if not vr3: return
-    vp = vr3.vp
-    if not vp:
-        return
-    _state = vp.state()
-    f = vp.pause if _state == 1 else vp.play
-    f()
-
-#@+node:TomP.20191215195433.24: *3* g.command('vr3-show')
-@g.command('vr3-show')
-def show_rendering_pane(event):
-    """Show the rendering pane."""
-    vr3 = getVr3(event)
-    if not vr3: return
-
-    vr3.show_dock_or_pane()
-#@+node:TomP.20191215195433.25: *3* g.command('vr3-toggle')
-@g.command('vr3-toggle')
-def toggle_rendering_pane(event):
-    """Toggle the rendering pane.
-    
-    If a VR3 instance exists for this controller, remove it.
-    Otherwise, create it, respecting its position if any from
-    the last time it was open.
-    """
-    # global controllers
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-
-    h = c.hash()
-    vr3 = controllers.get(h, None)
-
-    if not vr3:
-        if positions.get(h, None) == None or OPENED_IN_SPLITTER:
-            vr3 = viewrendered(event)
-        else:
-            vr3 = viewrendered_tab(event)
-    else:
-        # c.doCommandByName('vr3-hide')  # Doesn't work
-        # This timer is *required* or vr3 won't open on next toggle
-        QtCore.QTimer.singleShot(0, lambda: c.doCommandByName('vr3-hide'))
-#@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab')
-@g.command('vr3-toggle-tab')
-def toggle_rendering_pane_tab(event):
-    """Toggle the rendering pane.
-    
-    If a VR3 instance exists for this controller, remove it.
-    Otherwise, create it in a tab in the log pane, or in
-    the last position it had when previously open.
-    """
-    global controllers
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-
-    h = c.hash()
-    vr3 = controllers.get(h, None)
-
-    if not vr3:
-        if positions.get(h, None) == None or OPENED_IN_TAB:
-            vr3 = viewrendered_tab(event)
-        else:
-            vr3 = viewrendered(event)
-    else:
-        # c.doCommandByName('vr3-hide')  # Doesn't work
-        # This timer is *required* or vr3 won't open on next toggle
-        QtCore.QTimer.singleShot(0, lambda: c.doCommandByName('vr3-hide'))
-#@+node:TomP.20191215195433.26: *3* g.command('vr3-unlock')
-@g.command('vr3-unlock')
-def unlock_rendering_pane(event):
-    """Allow rendering pane to witch to current node."""
-    vr3 = getVr3(event)
-    if not vr3: return
-
-    vr3.unlock()
-#@+node:TomP.20191215195433.27: *3* g.command('vr3-update')
-@g.command('vr3-update')
-def update_rendering_pane(event):
-    """Update the rendering pane"""
-    vr3 = getVr3(event)
-    if not vr3: return
-
-    c = event.get('c')
-    old_freeze = vr3.freeze
-    if vr3.freeze:
-        vr3.freeze = False
-    vr3.update(tag='view', keywords={'c': c, 'force': True})
-    if old_freeze:
-        vr3.freeze = old_freeze
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
 @g.command('vr3-execute')
 def execute_code(event):
@@ -1821,6 +1645,88 @@ def export_rst_html(event):
     with ioOpen(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
     webbrowser.open_new_tab(pathname)
+#@+node:tom.20220824141850.1: *3* g.command('vr3-freeze')
+@g.command('vr3-freeze')
+def freeze_rendering_pane(event):
+    """Freeze the rendering pane so it does not update."""
+    vr3 = getVr3(event)
+    if not vr3: return
+    vr3.set_freeze()
+#@+node:tom.20211103161929.1: *3* g.command('vr3-help-plot-2d')
+@g.command('vr3-help-plot-2d')
+def vr3_help_for_plot_2d(event):
+    vr3 = getVr3(event)
+    c = vr3.c
+
+    doc_ = vr3.plot_2d.__doc__
+    doclines = doc_.split('\n')
+    doclines = [line for line in doclines
+                if not line.lstrip().startswith('#@')]
+    doc = '\n'.join(doclines)
+    docstr = cleandoc(doc)
+    docstr = ('Help For VR3 Plot 2D\n'
+              '=====================\n'
+              + docstr)
+
+    args = {'output_encoding': 'utf-8'}
+    if vr3.rst_stylesheet and os.path.exists(vr3.rst_stylesheet):
+        args['stylesheet_path'] = f'{vr3.rst_stylesheet}'
+        args['embed_stylesheet'] = True
+        args['report_level'] = RST_NO_WARNINGS
+
+    try:
+        _html = publish_string(docstr, writer_name='html', settings_overrides=args)
+        _html = _html.decode(ENCODING)
+    except SystemMessage as sm:
+        msg = sm.args[0]
+        if 'SEVERE' in msg or 'FATAL' in msg:
+            output = f'<pre style="{RST_ERROR_MSG_STYLE}">RST error: {msg}\n</pre><b><b>'
+            output += f'<pre style="{RST_ERROR_BODY_STYLE}">{docstr}</pre>'
+
+    path = c.getNodePath(c.rootPosition())
+    pathname = g.finalize_join(path, VR3_TEMP_FILE)
+    with ioOpen(pathname, 'w', encoding='utf-8') as f:
+        f.write(_html)
+    webbrowser.open_new_tab(pathname)
+#@+node:TomP.20191215195433.21: *3* g.command('vr3-hide')
+@g.command('vr3-hide')
+@g.command('vr3-close')
+def hide_rendering_pane(event):
+    """Close the rendering pane and delete the VR3 instance."""
+    global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
+
+    if (c := event.get('c')):
+        h = c.hash()
+    else:
+        return
+
+    vr3 = getVr3(event)
+    if not vr3: return
+
+    if vr3.pyplot_active:
+        g.es_print('can not close vr3 pane after using pyplot')
+        return
+
+    positions[h] = None
+    vr3.deactivate()
+    vr3.setParent(None)
+    vr3.hide()
+    del controllers[h]
+
+    c.bodyWantsFocus()
+# Compatibility
+
+close_rendering_pane = hide_rendering_pane
+#@+node:TomP.20191215195433.22: *3* g.command('vr3-lock')
+@g.command('vr3-lock')
+def lock_rendering_pane(event):
+    """Lock the rendering pane to the current node."""
+    vr3 = getVr3(event)
+    if not vr3: return
+
+    vr3.lock()
 #@+node:TomP.20200113230428.1: *3* g.command('vr3-lock-unlock-tree')
 @g.command('vr3-lock-unlock-tree')
 def lock_unlock_tree(event):
@@ -1832,24 +1738,6 @@ def lock_unlock_tree(event):
         vr3.unlock()
     else:
         vr3.lock()
-#@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout')
-@g.command('vr3-use-default-layout')
-def open_with_layout(event):
-    vr3 = getVr3(event)
-    c = vr3.c
-    c.doCommandByName('vr3-update')
-    c.bodyWantsFocusNow()
-
-#@+node:TomP.20201003182436.1: *3* g.command('vr3-zoom-view')
-@g.command('vr3-zoom-view')
-def zoom_view(event):
-    vr3 = getVr3(event)
-    vr3.zoomView()
-#@+node:TomP.20201003182453.1: *3* g.command('vr3-shrink-view')
-@g.command('vr3-shrink-view')
-def shrink_view(event):
-    vr3 = getVr3(event)
-    vr3.shrinkView()
 #@+node:tom.20210620170624.1: *3* g.command('vr3-open-markup-in-editor')
 @g.command('vr3-open-markup-in-editor')
 def markup_to_editor(event):
@@ -1874,6 +1762,19 @@ def markup_to_editor(event):
 
     cmd = [editor, 'vr3_last_markup.txt']
     subprocess.Popen(cmd)
+
+#@+node:TomP.20191215195433.23: *3* g.command('vr3-pause-play')
+@g.command('vr3-pause-play-movie')
+def pause_play_movie(event):
+    """Pause or play a movie in the rendering pane."""
+    vr3 = getVr3(event)
+    if not vr3: return
+    vp = vr3.vp
+    if not vp:
+        return
+    _state = vp.state()
+    f = vp.pause if _state == 1 else vp.play
+    f()
 
 #@+node:tom.20211103011049.1: *3* g.command('vr3-plot-2d')
 @g.command('vr3-plot-2d')
@@ -2018,42 +1919,6 @@ def vr3_plot_2d(event):
     #@-<< vr3-plot-2d docstring >>
     vr3 = getVr3(event)
     vr3.plot_2d()
-#@+node:tom.20211103161929.1: *3* g.command('vr3-help-plot-2d')
-@g.command('vr3-help-plot-2d')
-def vr3_help_for_plot_2d(event):
-    vr3 = getVr3(event)
-    c = vr3.c
-
-    doc_ = vr3.plot_2d.__doc__
-    doclines = doc_.split('\n')
-    doclines = [line for line in doclines
-                if not line.lstrip().startswith('#@')]
-    doc = '\n'.join(doclines)
-    docstr = cleandoc(doc)
-    docstr = ('Help For VR3 Plot 2D\n'
-              '=====================\n'
-              + docstr)
-
-    args = {'output_encoding': 'utf-8'}
-    if vr3.rst_stylesheet and os.path.exists(vr3.rst_stylesheet):
-        args['stylesheet_path'] = f'{vr3.rst_stylesheet}'
-        args['embed_stylesheet'] = True
-        args['report_level'] = RST_NO_WARNINGS
-
-    try:
-        _html = publish_string(docstr, writer_name='html', settings_overrides=args)
-        _html = _html.decode(ENCODING)
-    except SystemMessage as sm:
-        msg = sm.args[0]
-        if 'SEVERE' in msg or 'FATAL' in msg:
-            output = f'<pre style="{RST_ERROR_MSG_STYLE}">RST error: {msg}\n</pre><b><b>'
-            output += f'<pre style="{RST_ERROR_BODY_STYLE}">{docstr}</pre>'
-
-    path = c.getNodePath(c.rootPosition())
-    pathname = g.finalize_join(path, VR3_TEMP_FILE)
-    with ioOpen(pathname, 'w', encoding='utf-8') as f:
-        f.write(_html)
-    webbrowser.open_new_tab(pathname)
 #@+node:tom.20220225110149.1: *3* g.command('vr3-render-html-from-clip')
 @g.command('vr3-render-html-from-clip')
 def vr3_render_html_from_clip(event):
@@ -2073,6 +1938,132 @@ def vr3_render_html_from_clip(event):
     vr3.update_html(clip_str, {})
 
 
+#@+node:TomP.20191215195433.24: *3* g.command('vr3-show')
+@g.command('vr3-show')
+def show_rendering_pane(event):
+    """Show the rendering pane."""
+    vr3 = getVr3(event)
+    if not vr3: return
+
+    vr3.show_dock_or_pane()
+#@+node:TomP.20201003182453.1: *3* g.command('vr3-shrink-view')
+@g.command('vr3-shrink-view')
+def shrink_view(event):
+    vr3 = getVr3(event)
+    vr3.shrinkView()
+#@+node:tom.20230403141635.1: *3* g.command('vr3-tab')
+@g.command('vr3-tab')
+def viewrendered_tab(event):
+    """Open VR3 in a tab in commander's log framer"""
+    # global controllers
+    if g.app.gui.guiName() != 'qt':
+        return None
+    if not (c := event.get('c')):
+        return None
+
+    vr3 = getVr3({'c': c})
+    log = c.frame.log
+    if not log.findTabIndex(TABNAME):
+        open_in_tab(c, vr3)
+#@+node:TomP.20191215195433.25: *3* g.command('vr3-toggle')
+@g.command('vr3-toggle')
+def toggle_rendering_pane(event):
+    """Toggle the rendering pane.
+    
+    If a VR3 instance exists for this controller, remove it.
+    Otherwise, create it, respecting its position if any from
+    the last time it was open.
+    """
+    # global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
+    if not (c := event.get('c')):
+        return
+
+    h = c.hash()
+    vr3 = controllers.get(h)
+    if vr3:
+        had_vr3 = True
+    else:
+        vr3 = getVr3({'c':c})
+        had_vr3 = False
+
+    if had_vr3:
+        vr3.setParent(None)
+        vr3.hide()
+    else:
+        ms = g.app.gui.find_widget_by_name(c, 'main_splitter')
+        ms.addWidget(vr3)
+        ms.setSizes([100_000] * len(ms.sizes()))
+        vr3.show()
+        positions[h] = OPENED_IN_SPLITTER
+#@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab')
+@g.command('vr3-toggle-tab')
+def toggle_rendering_pane_tab(event):
+    """Toggle the rendering pane.
+    
+    If a VR3 instance exists for this controller, remove it.
+    Otherwise, create it in a tab in the log pane.
+    """
+    global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
+    if not (c := event.get('c')):
+        return
+
+    h = c.hash()
+    vr3 = getVr3({'c': c})
+    log = c.frame.log
+
+    if log.findTabIndex(TABNAME):
+        log.deleteTab(TABNAME)
+        positions[h] = None
+    else:
+        open_in_tab(c, vr3)
+
+#@+node:tom.20220824142721.1: *3* g.command('vr3-unfreeze')
+@g.command('vr3-unfreeze')
+def unfreeze_rendering_pane(event):
+    """Allow the rendering pane to update."""
+    vr3 = getVr3(event)
+    if not vr3: return
+
+    vr3.set_unfreeze()
+#@+node:TomP.20191215195433.26: *3* g.command('vr3-unlock')
+@g.command('vr3-unlock')
+def unlock_rendering_pane(event):
+    """Allow rendering pane to witch to current node."""
+    vr3 = getVr3(event)
+    if not vr3: return
+
+    vr3.unlock()
+#@+node:TomP.20191215195433.27: *3* g.command('vr3-update')
+@g.command('vr3-update')
+def update_rendering_pane(event):
+    """Update the rendering pane"""
+    vr3 = getVr3(event)
+    if not vr3: return
+
+    c = event.get('c')
+    old_freeze = vr3.freeze
+    if vr3.freeze:
+        vr3.freeze = False
+    vr3.update(tag='view', keywords={'c': c, 'force': True})
+    if old_freeze:
+        vr3.freeze = old_freeze
+#@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout')
+@g.command('vr3-use-default-layout')
+def open_with_layout(event):
+    vr3 = getVr3(event)
+    c = vr3.c
+    c.doCommandByName('vr3-update')
+    c.bodyWantsFocusNow()
+
+#@+node:TomP.20201003182436.1: *3* g.command('vr3-zoom-view')
+@g.command('vr3-zoom-view')
+def zoom_view(event):
+    vr3 = getVr3(event)
+    vr3.zoomView()
 #@+node:TomP.20191215195433.36: ** class ViewRenderedController3 (QWidget)
 class ViewRenderedController3(QtWidgets.QWidget):
     """A class to control rendering in a rendering pane."""
