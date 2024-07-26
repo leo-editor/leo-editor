@@ -1047,7 +1047,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20240726074809.1: *3* dw.recreateMainWindow (new)
     def recreateMainWindow(self):
         """
-        Destroy the main Window before recreating it.
+        Recreate the main window by restarting Leo, with an explanatory message.
+        
+        There seems to be no reasonable way of changing Leo's layout without a restart.
         """
         w = getattr(self, 'centralwidget', None)
         if w and self.layout_name != self.old_layout_name:
