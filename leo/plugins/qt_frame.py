@@ -1051,8 +1051,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """
         w = getattr(self, 'centralwidget', None)
         if w and self.layout_name != self.old_layout_name:
-            g.es_print('@string qt-layout-name has changed: restarting Leo', color='red')
             c = self.leo_c
+            print('')
+            print('@string qt-layout-name has changed: restarting Leo')
             c.doCommandByName('restart-leo')
     #@+node:ekr.20240725073848.1: *3* dw.insert/hide_vr3_frame (new)
     def hide_vr3_frame(self, frame: QtWidgets.QFrame) -> None:
