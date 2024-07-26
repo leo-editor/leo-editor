@@ -346,6 +346,7 @@ def onCreate(tag: str, keys: dict) -> None:
     vr.active = True
     vr.is_visible = False
     vr.hide()
+
 #@+node:vitalije.20170712174157.1: *3* vr function: onClose
 def onClose(tag: str, keys: dict) -> None:
     """

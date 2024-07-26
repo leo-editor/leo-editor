@@ -208,25 +208,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setMainWindowOptions()
         self.createCentralWidget()
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-
-        if 1:  #4017: create the layout indicated by
-            # Set new official ivars.
-            self.main_splitter, self.secondary_splitter = main_splitter, secondary_splitter
-            self.create_layout()
-        else:
-            if self.big_tree:
-                # Top pane contains only outline.  Bottom pane contains body and log panes.
-                self.createBodyPane(secondary_splitter)
-                self.createLogPane(secondary_splitter)
-                treeFrame = self.createOutlinePane(main_splitter)
-                main_splitter.addWidget(treeFrame)
-                main_splitter.addWidget(secondary_splitter)
-            else:
-                # Top pane contains outline and log panes.
-                main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-                self.createOutlinePane(secondary_splitter)
-                self.createLogPane(secondary_splitter)
-                self.createBodyPane(main_splitter)
+        # 4017: create the layout indicated by `@bool qt-layout-name`.
+        # Set new official ivars.
+        self.main_splitter, self.secondary_splitter = main_splitter, secondary_splitter
+        self.create_layout()
         self.createMiniBuffer(self.centralwidget)
         self.createMenuBar()
         self.createStatusBar(self)
@@ -257,7 +242,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         main_splitter, secondary_splitter = self.main_splitter, self.secondary_splitter
         self.createOutlinePane(secondary_splitter)
         self.createLogPane(secondary_splitter)
-        self.createBodyPane(main_splitter)
+        body_frame = self.createBodyPane(main_splitter)
+        assert body_frame  ###
+        # Create the VR/VR3 frames if necessary.
     #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
     def create_big_tree_layout(self):
         """
@@ -302,7 +289,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         Create the *pane* for the body, not the actual QTextBrowser.
         """
         c = self.leo_c
-        #
         # Create widgets.
         bodyFrame = self.createFrame(parent, 'bodyFrame')
         innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
@@ -311,7 +297,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         page2 = QtWidgets.QWidget()
         self.setName(page2, 'bodyPage2')
         body = self.createText(page2, 'richTextEdit')  # A LeoQTextBrowser
-        #
         # Pack.
         vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0)
         grid = self.createGrid(bodyFrame, 'bodyGrid')
@@ -325,7 +310,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         innerGrid.addWidget(sw, 0, 0, 1, 1)
         grid.addWidget(innerFrame, 0, 0, 1, 1)
         self.verticalLayout.addWidget(parent)
-        #
         # Official ivars
         self.text_page = page2
         self.stackedWidget = sw  # used by LeoQtBody
@@ -333,7 +317,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_body_frame = bodyFrame
         self.leo_body_inner_frame = innerFrame
         return bodyFrame
-
     #@+node:ekr.20110605121601.18144: *5* dw.createCentralWidget
     def createCentralWidget(self) -> QWidget:
         """Create the central widget."""
@@ -506,6 +489,19 @@ class DynamicWindow(QtWidgets.QMainWindow):
         parent.setStatusBar(w)
         # Official ivars.
         self.leo_statusBar = w
+    #@+node:ekr.20240726174902.1: *5* dw.createVRPanes (new)
+    def createVRPanes(self) -> list[QtWidgets.QFrame]:
+        """
+        Create the VR and/or the VR3 panes if either plugin is enabled.
+        
+        Return a list containing the panes.
+        
+        The caller is responsible for placing the panes in the properly place.
+        """
+        panes: list[QtWidgets.QFrame] = []
+
+        return panes
+
     #@+node:ekr.20110605121601.18212: *5* dw.packLabel
     def packLabel(self, w: Wrapper, n: int = None) -> None:
         """
