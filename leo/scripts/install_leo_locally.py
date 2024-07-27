@@ -17,7 +17,7 @@ import os
 import sys
 import subprocess
 
-version = '6.8.0.post1'
+version = '6.8.1'
 
 file_name = os.path.basename(__file__)
 
