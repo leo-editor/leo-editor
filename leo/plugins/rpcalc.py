@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:tom.20230424140347.1: * @file ../plugins/rpcalc.py
 #@@language python
+# type: ignore
 """An RPN calculator plugin in a log tab panel.
 
 Adapted from rpcalc.
