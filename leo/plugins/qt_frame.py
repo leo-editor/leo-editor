@@ -92,11 +92,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # parent is a LeoTabbedTopLevel.
         super().__init__(parent)
         self.leo_c = c
+        self.leo_body_frame: QWidget = None
         self.leo_master: LeoTabbedTopLevel = None  # Set in construct.
         self.leo_menubar: QWidget = None  # Set in createMenuBar.
         self.leo_statusBar: QtWidgets.QStatusBar = None
         self.layout_name: str = None
         self.old_layout_name: str = None
+        self.vr_parent_frame: QWidget = None
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
         self.reloadSettings()
 
@@ -239,24 +241,28 @@ class DynamicWindow(QtWidgets.QMainWindow):
         
         The top pane contains outline and log panes.
         """
+        if not g.unitTesting:
+            g.trace('-----')  ###
         main_splitter, secondary_splitter = self.main_splitter, self.secondary_splitter
         self.createOutlinePane(secondary_splitter)
         self.createLogPane(secondary_splitter)
-        body_frame = self.createBodyPane(main_splitter)
-        assert body_frame  ###
+        body_frame: QWidget = self.createBodyPane(main_splitter)
+        assert self.leo_body_frame == body_frame  ###
         # Create the VR/VR3 frames if necessary.
+        self.vr_parent_frame = self.createVRFrame(parent=body_frame)
     #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
     def create_big_tree_layout(self):
         """
         Create the layout previously specified by  @bool big-outline-pane.
         """
+        g.trace('-----')
         main_splitter, secondary_splitter = self.main_splitter, self.secondary_splitter
         self.createBodyPane(secondary_splitter)
         self.createLogPane(secondary_splitter)
         treeFrame = self.createOutlinePane(main_splitter)
         main_splitter.addWidget(treeFrame)
         main_splitter.addWidget(secondary_splitter)
-    #@+node:ekr.20110605121601.18142: *4* dw.top-level
+    #@+node:ekr.20110605121601.18142: *4* dw: top-level methods
     #@+node:ekr.20190118150859.10: *5* dw.addNewEditor
     def addNewEditor(self, name: str) -> tuple[QWidget, Wrapper]:
         """Create a new body editor."""
@@ -534,7 +540,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         dw = self
         dw.setObjectName("MainWindow")
         dw.resize(691, 635)
-    #@+node:ekr.20110605121601.18152: *4* dw.widgets
+    #@+node:ekr.20110605121601.18152: *4* dw: create widgets
     #@+node:ekr.20110605121601.18153: *5* dw.createButton
     def createButton(self, parent: QWidget, name: str, label: str) -> QWidget:
         w = QtWidgets.QPushButton(parent)
@@ -682,7 +688,18 @@ class DynamicWindow(QtWidgets.QMainWindow):
         w.setHeaderHidden(False)
         self.setName(w, name)
         return w
-    #@+node:ekr.20110605121601.18165: *4* dw.log tabs
+    #@+node:ekr.20240727105913.1: *5* dw.createVRFrame (new)
+    def createVRFrame(self, parent: QWidget) -> QWidget:
+        """Create a Qt Frame."""
+        w = QtWidgets.QFrame(parent)
+        ###
+            # self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
+            # w.setFrameShape(Shape.NoFrame)
+            # w.setFrameShadow(Shadow.Plain)
+            # w.setLineWidth(1)
+        self.setName(w, 'vr-parent-frame')
+        return w
+    #@+node:ekr.20110605121601.18165: *4* dw: create log tabs
     #@+node:ekr.20110605121601.18167: *5* dw.createSpellTab
     def createSpellTab(self, parent: QWidget) -> None:
         # dw = self
@@ -1020,7 +1037,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         EventWrapper(c, w=ftm.find_replacebox, next_w=ftm.find_next_button, func=fc.find_next)
         # Finally, checkBoxMarkChanges goes back to ftm.find_findBox.
         EventWrapper(c, w=ftm.check_box_mark_changes, next_w=ftm.find_findbox, func=None)
-    #@+node:ekr.20110605121601.18168: *4* dw.utils
+    #@+node:ekr.20110605121601.18168: *4* dw: utils
     #@+node:ekr.20110605121601.18169: *5* dw.setName
     def setName(self, widget: Any, name: str) -> None:
         if name:
@@ -1053,12 +1070,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
             print('')
             print('@string qt-layout-name has changed: restarting Leo')
             c.doCommandByName('restart-leo')
-    #@+node:ekr.20240725073848.1: *3* dw.insert/hide_vr3_frame (new)
-    def hide_vr3_frame(self, frame: QtWidgets.QFrame) -> None:
-        g.trace(frame, g.callers())  ###
+    #@+node:ekr.20240725073848.1: *3* dw.insert/hide_vr_frame (new)
+    def hide_vr_frame(self, frame: QtWidgets.QFrame) -> None:
+        g.trace(frame.__class__.__name__)  ###
 
-    def insert_vr3_frame(self, frame: QtWidgets.QFrame) -> None:
-        g.trace(frame, g.callers())  ###
+    def insert_vr_frame(self, frame: QtWidgets.QFrame) -> None:
+        g.trace(frame.__class__.__name__, self.vr_parent_frame.__class__.__name__)  ###
+
     #@+node:ekr.20110605121601.18173: *3* dw.select
     def select(self, c: Cmdr) -> None:
         """Select the window or tab for c."""

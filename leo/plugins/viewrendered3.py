@@ -1535,7 +1535,7 @@ def close_tab(c, vr3):
     h = c.hash()
     positions[h] = OPENED_IN_TAB
 
-#@+node:TomP.20191215195433.15: *3* vr3.getVr3 (changed) (calls dw.insert_vr3_pane)
+#@+node:TomP.20191215195433.15: *3* vr3.getVr3 (changed)
 def getVr3(*, c=None, event=None):
     """Return the VR3 ViewRenderedController3
 
@@ -1547,7 +1547,7 @@ def getVr3(*, c=None, event=None):
              is dispatched.
 
     RETURNS
-    The active ViewRenderedController3 or None.
+    The active ViewRenderedController3 instance or None.
     """
     if g.app.gui.guiName() != 'qt':
         return None
@@ -1567,16 +1567,13 @@ def getVr3(*, c=None, event=None):
         vr3 = ViewRenderedController3(c)
         c.vr3 = vr3
         dw = c.frame.top
-        dw.insert_vr3_frame(vr3)  ###
+        dw.insert_vr_frame(vr3)
     return vr3
-#@+node:TomP.20191215195433.16: ** vr3.Commands
+#@+node:TomP.20191215195433.16: ** vr3.Commands (All changed)
 #@+node:TomP.20191215195433.18: *3* g.command('vr3') (changed)
 @g.command('vr3')
 def viewrendered3(event):
     """Open render view for commander"""
-    gui = g.app.gui
-    if gui.guiName() != 'qt':
-        return None
     vr3 = getVr3(event=event)
     if vr3:
         c = vr3.c
@@ -1609,28 +1606,19 @@ def freeze_rendering_pane(event):
 @g.command('vr3-unfreeze')
 def unfreeze_rendering_pane(event):
     """Allow the rendering pane to update."""
-    vr3 = getVr3(event)
+    vr3 = getVr3(event=event)
     if vr3:
         vr3.set_unfreeze()
 #@+node:TomP.20191215195433.21: *3* g.command('vr3-hide') (changed)
 @g.command('vr3-hide')
 def hide_rendering_pane(event):
     """Close the rendering pane."""
-    ### global controllers
-    if g.app.gui.guiName() != 'qt':
-        return
-    ###
-        # c = event.get('c')
-        # if not c:
-            # return
     vr3 = getVr3(event=event)
     if not vr3:
         return
-
     if vr3.pyplot_active:
         g.es_print('can not close vr3 pane after using pyplot')
         return
-
     c = vr3.c
     dw = c.frame.top
     dw.hide_vr3_pane(vr3)  ###
@@ -1698,7 +1686,6 @@ def toggle_rendering_pane(event):
     c = event.get('c')
     if not c:
         return
-
     vr3 = getVr3(event=event)
     g.trace('not ready yet', vr3)
 #@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab') (no longer used)
@@ -1734,7 +1721,7 @@ def toggle_rendering_pane(event):
 @g.command('vr3-unlock')
 def unlock_rendering_pane(event):
     """Allow rendering pane to witch to current node."""
-    vr3 = getVr3(event)
+    vr3 = getVr3(event=event)
     if vr3:
         vr3.unlock()
 #@+node:TomP.20191215195433.27: *3* g.command('vr3-update')
@@ -1757,9 +1744,6 @@ def update_rendering_pane(event):
 @g.command('vr3-execute')
 def execute_code(event):
     """Execute code in a RsT or MD node or subtree."""
-    ###
-        # vr3 = getVr3(event)
-        # if not vr3: return
     vr3 = getVr3(event=event)
     if vr3:
         c = vr3.c
@@ -1793,13 +1777,11 @@ def export_rst_html(event):
 def lock_unlock_tree(event):
     """Toggle between lock(), unlock()."""
     vr3 = getVr3(event=event)
-    if not vr3:
-        return
-
-    if vr3.lock_to_tree:
-        vr3.unlock()
-    else:
-        vr3.lock()
+    if vr3:
+        if vr3.lock_to_tree:
+            vr3.unlock()
+        else:
+            vr3.lock()
 #@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout')
 @g.command('vr3-use-default-layout')
 def open_with_layout(event):
@@ -1820,7 +1802,7 @@ def zoom_view(event):
 #@+node:TomP.20201003182453.1: *3* g.command('vr3-shrink-view')
 @g.command('vr3-shrink-view')
 def shrink_view(event):
-    vr3 = getVr3(event)
+    vr3 = getVr3(event=event)
     if vr3:
         vr3.shrinkView()
 #@+node:tom.20210620170624.1: *3* g.command('vr3-open-markup-in-editor')
@@ -1835,7 +1817,6 @@ def markup_to_editor(event):
     vr3 = getVr3(event=event)
     if not vr3:
         return
-
     editor_from_settings = vr3.external_editor
     if editor_from_settings.lower() == 'none':  # weird but has happened
         editor_from_settings = ''
@@ -2001,7 +1982,6 @@ def vr3_help_for_plot_2d(event):
     vr3 = getVr3(event)
     if not vr3:
         return
-
     c = vr3.c
     doc_ = vr3.plot_2d.__doc__
     doclines = doc_.split('\n')
@@ -2044,7 +2024,6 @@ def vr3_render_html_from_clip(event):
     vr3 = getVr3(event=event)
     if not vr3:
         return
-
     clip_str = g.app.gui.getTextFromClipboard()
     vr3.rst_html = clip_str  # So we can be exported to system browser.
 
@@ -3581,7 +3560,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         #@+others
-        #@+node:TomP.20200208211132.1: *6* setup (changed)
+        #@+node:TomP.20200208211132.1: *6* convert_markdown_to_html.function: setup (changed)
         pc = self
         c, p = pc.c, pc.c.p
         if g.app.gui.guiName() != 'qt':
