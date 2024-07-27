@@ -241,25 +241,20 @@ class DynamicWindow(QtWidgets.QMainWindow):
         
         The top pane contains outline and log panes.
         """
-        if not g.unitTesting:
-            g.trace('-----', g.callers())  ###
         main_splitter, secondary_splitter = self.main_splitter, self.secondary_splitter
         self.createOutlinePane(secondary_splitter)
         self.createLogPane(secondary_splitter)
         self.createBodyPane(main_splitter)
         if main_splitter.orientation() == Orientation.Vertical:
-            # Share the VR pane with the body pane.
-            # Create a new splitter.
-            ### vr_splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
-            ### vr_splitter = QtWidgets.QSplitter(orientation=Orientation.Vertical)
-            vr_splitter = QtWidgets.QSplitter()
+            # Share the VR pane with the body pane in a new splitter.
+            self.vr_parent_frame = vr_splitter = QtWidgets.QSplitter()
             vr_splitter.setObjectName('vr-splitter')
             main_splitter.addWidget(vr_splitter)
-            # The new splitter will be the parent of the vr frame.
-            self.vr_parent_frame = vr_splitter
+            vr_splitter.setOrientation(Orientation.Horizontal)
         else:
             # Put the VR pane in the secondary splitter.
             self.vr_parent_frame = secondary_splitter
+        g.trace('vr_parent_frame:', self.vr_parent_frame.objectName())  ###
     #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
     def create_big_tree_layout(self):
         """
@@ -1075,18 +1070,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     def insert_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
         dw = self
-        main_splitter, secondary_splitter = dw.main_splitter, dw.secondary_splitter
         parent = dw.vr_parent_frame
-        ### g.trace(vr_frame.__class__.__name__, parent.__class__.__name__)  ###
-        ### g.trace(parent.__class__.__name__, parent.orientation())
-        g.trace('parent:', parent.objectName())
+        g.trace('parent:', parent.objectName(), parent.orientation())
         if isinstance(parent, QtWidgets.QSplitter):
-            # vr_frame.setParent(parent)
-            if 1:  ### Debugging.
-                vr_frame.setStyleSheet('* { background-color: orange; }')
+            vr_frame.setStyleSheet('* { background-color: orange; }')  ###
             parent.addWidget(vr_frame)
-            main_splitter.setSizes([100000] * len(main_splitter.sizes()))
-            secondary_splitter.setSizes([100000] * len(secondary_splitter.sizes()))
+            dw.main_splitter.setSizes([100000] * len(dw.main_splitter.sizes()))
+            dw.secondary_splitter.setSizes([100000] * len(dw.secondary_splitter.sizes()))
             parent.setSizes([100000] * len(parent.sizes()))
         else:
             g.trace('Can not happen')
