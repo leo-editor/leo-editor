@@ -1718,8 +1718,9 @@ def hide_rendering_pane(event):
     del controllers[h]
 
     c.bodyWantsFocus()
-# Compatibility
 
+teardown = hide_rendering_pane
+# Compatibility
 close_rendering_pane = hide_rendering_pane
 #@+node:TomP.20191215195433.22: *3* g.command('vr3-lock')
 @g.command('vr3-lock')
