@@ -330,7 +330,7 @@ def init() -> bool:
     # Always enable this plugin, even if imports fail.
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
-    g.registerHandler('close-frame', onClose)
+    ### g.registerHandler('close-frame', onClose)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
 #@+node:ekr.20240727091022.1: *3* vr function: getVR (new)
@@ -361,15 +361,12 @@ def onCreate(tag: str, keys: dict) -> None:
     c = keys.get('c')
     if not c:
         return
-    dw = c.frame.top
-    vr = viewrendered(keys)
-    dw.insert_vr_frame(vr)
+    vr = getVr(c=c)
     g.registerHandler('select2', vr.update)
     g.registerHandler('idle', vr.update)
     vr.active = True
     vr.is_visible = False
     vr.hide()
-
 #@+node:vitalije.20170712174157.1: *3* vr function: onClose (does nothing)
 def onClose(tag: str, keys: dict) -> None:
     """
@@ -415,7 +412,7 @@ def viewrendered(event: Event) -> Optional[Any]:
     vr = getVr(event=event)
     if vr:
         c = vr.c
-        vr.show()  ###
+        vr.show()
         vr.is_visible = True
         c.bodyWantsFocusNow()
         return vr
@@ -597,7 +594,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
 
-    #@+node:ekr.20190614065659.1: *4* vr.create_pane
+    #@+node:ekr.20190614065659.1: *4* vr.create_pane ***
     def create_pane(self, parent: Position) -> None:
         """Create the VR pane."""
         if g.unitTesting:

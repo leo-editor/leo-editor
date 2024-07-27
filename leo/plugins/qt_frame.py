@@ -254,7 +254,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
             # Put the VR pane in the secondary splitter.
             self.vr_parent_frame = secondary_splitter
-        g.trace('vr_parent_frame:', self.vr_parent_frame.objectName())  ###
+        ### g.trace('vr_parent_frame:', self.vr_parent_frame.objectName())  ###
     #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
     def create_big_tree_layout(self):
         """
@@ -1071,7 +1071,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def insert_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
         dw = self
         parent = dw.vr_parent_frame
-        g.trace('parent:', parent.objectName(), parent.orientation())
+        if 1:
+            c = dw.leo_c
+            g.trace(c.shortFileName(), 'parent:', parent.objectName(), parent.orientation())
+            g.trace(g.callers())
         if isinstance(parent, QtWidgets.QSplitter):
             vr_frame.setStyleSheet('* { background-color: orange; }')  ###
             parent.addWidget(vr_frame)
