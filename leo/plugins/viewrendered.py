@@ -415,6 +415,8 @@ def viewrendered(event: Event) -> Optional[Any]:
     vr = getVr(event=event)
     if vr:
         c = vr.c
+        vr.show()  ###
+        vr.is_visible = True
         c.bodyWantsFocusNow()
         return vr
     return None
@@ -604,8 +606,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.setObjectName('viewrendered_pane')
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
-        if 1:  ### Debugging.
-            self.setStyleSheet('* { background-color: yellow; }')
     #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
     def closeEvent(self, event: Event) -> None:
         """Deactivate callbacks when an Outline closes."""

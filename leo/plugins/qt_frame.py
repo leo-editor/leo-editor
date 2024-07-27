@@ -242,14 +242,24 @@ class DynamicWindow(QtWidgets.QMainWindow):
         The top pane contains outline and log panes.
         """
         if not g.unitTesting:
-            g.trace('-----')  ###
+            g.trace('-----', g.callers())  ###
         main_splitter, secondary_splitter = self.main_splitter, self.secondary_splitter
         self.createOutlinePane(secondary_splitter)
         self.createLogPane(secondary_splitter)
-        body_frame: QWidget = self.createBodyPane(main_splitter)
-        assert self.leo_body_frame == body_frame  ###
-        # Create the VR/VR3 frames if necessary.
-        self.vr_parent_frame = self.createVRFrame(parent=body_frame)
+        self.createBodyPane(main_splitter)
+        if main_splitter.orientation() == Orientation.Vertical:
+            # Share the VR pane with the body pane.
+            # Create a new splitter.
+            ### vr_splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
+            ### vr_splitter = QtWidgets.QSplitter(orientation=Orientation.Vertical)
+            vr_splitter = QtWidgets.QSplitter()
+            vr_splitter.setObjectName('vr-splitter')
+            main_splitter.addWidget(vr_splitter)
+            # The new splitter will be the parent of the vr frame.
+            self.vr_parent_frame = vr_splitter
+        else:
+            # Put the VR pane in the secondary splitter.
+            self.vr_parent_frame = secondary_splitter
     #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
     def create_big_tree_layout(self):
         """
@@ -688,17 +698,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         w.setHeaderHidden(False)
         self.setName(w, name)
         return w
-    #@+node:ekr.20240727105913.1: *5* dw.createVRFrame (new)
-    def createVRFrame(self, parent: QWidget) -> QWidget:
-        """Create a Qt Frame."""
-        w = QtWidgets.QFrame(parent)
-        ###
-            # self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
-            # w.setFrameShape(Shape.NoFrame)
-            # w.setFrameShadow(Shadow.Plain)
-            # w.setLineWidth(1)
-        self.setName(w, 'vr-parent-frame')
-        return w
     #@+node:ekr.20110605121601.18165: *4* dw: create log tabs
     #@+node:ekr.20110605121601.18167: *5* dw.createSpellTab
     def createSpellTab(self, parent: QWidget) -> None:
@@ -1071,12 +1070,27 @@ class DynamicWindow(QtWidgets.QMainWindow):
             print('@string qt-layout-name has changed: restarting Leo')
             c.doCommandByName('restart-leo')
     #@+node:ekr.20240725073848.1: *3* dw.insert/hide_vr_frame (new)
-    def hide_vr_frame(self, frame: QtWidgets.QFrame) -> None:
-        g.trace(frame.__class__.__name__)  ###
+    def hide_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
+        g.trace(vr_frame.__class__.__name__)  ###
 
-    def insert_vr_frame(self, frame: QtWidgets.QFrame) -> None:
-        g.trace(frame.__class__.__name__, self.vr_parent_frame.__class__.__name__)  ###
-
+    def insert_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
+        dw = self
+        main_splitter, secondary_splitter = dw.main_splitter, dw.secondary_splitter
+        parent = dw.vr_parent_frame
+        ### g.trace(vr_frame.__class__.__name__, parent.__class__.__name__)  ###
+        ### g.trace(parent.__class__.__name__, parent.orientation())
+        g.trace('parent:', parent.objectName())
+        if isinstance(parent, QtWidgets.QSplitter):
+            # vr_frame.setParent(parent)
+            if 1:  ### Debugging.
+                vr_frame.setStyleSheet('* { background-color: orange; }')
+            parent.addWidget(vr_frame)
+            main_splitter.setSizes([100000] * len(main_splitter.sizes()))
+            secondary_splitter.setSizes([100000] * len(secondary_splitter.sizes()))
+            parent.setSizes([100000] * len(parent.sizes()))
+        else:
+            g.trace('Can not happen')
+            breakpoint()  ###
     #@+node:ekr.20110605121601.18173: *3* dw.select
     def select(self, c: Cmdr) -> None:
         """Select the window or tab for c."""
