@@ -1393,7 +1393,7 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create the **release branch**: 6.8.1.
+Create the **release branch**: 6.8.2.
 Change version in this checklist to match.
 
 It's ok to merge devel into release branch
@@ -1413,7 +1413,7 @@ It's ok to merge devel into release branch
 
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
-- git merge 6.8.1
+- git merge 6.8.2
 - Run the `make-sphinx` from LeoDocs.leo
   This script copies files from leo/doc/html/_build/html to leo-editor/docs
 - Commit the changes and push.
@@ -1432,7 +1432,7 @@ It's ok to merge devel into release branch
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
-git tag -a v6.8.1 -m "Added v6.8.1 tag"
+git tag -a v6.8.2 -m "Added v6.8.2 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
@@ -1441,15 +1441,15 @@ git push --follow-tags
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout devel
-- git merge 6.8.1
+- git merge 6.8.2
 - update version in leoVersion.py.
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.8.1 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.8.2 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.8.1</t>
+- git merge 6.8.2</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -1544,7 +1544,7 @@ python -m pip uninstall leo
 <t tx="ekr.20230301070404.1">LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for 6.7.
-  The final version in PKG-INFO.TXT must be called 6.8.1, not 6.8.1-final.
+  The final version in PKG-INFO.TXT must be called 6.8.2, not 6.8.2-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Update version in 'PKG-INFO.TXT'
@@ -1560,7 +1560,7 @@ python -m pip uninstall leo
 - Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
 - Open LeoPyRef.leo. Verify the diff after saving.
 </t>
-<t tx="ekr.20230301084201.1">- Change 6.8.1 (the old version) to 6.8.2.
+<t tx="ekr.20230301084201.1">- Change 6.8.2 (the old version) to 6.8.3.
   Be careful about the new version in this node!
 </t>
 <t tx="ekr.20240206185544.1"></t>
@@ -1620,7 +1620,7 @@ Make *sure* all is well before uploading to pypi.
 
 Any glitch will require new filename *only* for the `.whl` file:
 - Use *build number* (-1, -2) for the new filename:
-  for example, leo-6.8.1-1-py3-none-any.whl.
+  for example, leo-6.8.2-1-py3-none-any.whl.
 - Do *not*use `.post1`: it won't work!
 - Do *not* change the filename of `.tar.gz` file.
 - Do *not* change `PKG-INFO.TXT` or Leo's version number!
