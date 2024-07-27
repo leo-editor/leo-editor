@@ -1426,12 +1426,9 @@ class Fstringify:
         # Replace the node.
         new_node: ast.AST
         if g.python_version_tuple < (3, 12, 0):
-            # pylint: disable=deprecated-class
-            new_node = ast.Str()
-            new_node.s = s
+            new_node = ast.Str(value=s)
         else:
-            new_node = ast.Constant()
-            new_node.value = s
+            new_node = ast.Constant(value=s)
         replace_node(new_node, node)
         # Update the token.
         token = self.tokens[i1]
