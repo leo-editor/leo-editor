@@ -14,7 +14,7 @@
 <v t="ekr.20210530065000.3"><vh>@data exec-script-patterns</vh></v>
 <v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
 <v t="ekr.20240107154430.1"><vh>@int max-find-long-lines-length = 90</vh></v>
-<v t="ekr.20220904210247.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20220904210247.1"><vh>@@@enabled-plugins</vh></v>
 <v t="ekr.20140916101314.19538"><vh>@string target_language = python</vh></v>
 <v t="ekr.20200212095937.1"><vh>Beautify command settings</vh>
 <v t="ekr.20200212095937.2"><vh>@bool beautify-allow-joined-strings = False</vh></v>
@@ -27,7 +27,9 @@
 <v t="ekr.20170811173924.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20231107062256.1"><vh>@button check-leoPy.leo</vh></v>
 <v t="ekr.20230508145335.1"><vh>@command slow-tests</vh></v>
+<v t="ekr.20240714075119.1"><vh>@command sync-reqs</vh></v>
 <v t="ekr.20220306092217.1"><vh>@command test-one</vh>
+<v t="ekr.20240608035218.1"><vh>&lt;&lt; test-one: test kind &gt;&gt;</vh></v>
 <v t="ekr.20240528034319.1"><vh>&lt;&lt; test the beautifier &gt;&gt;</vh></v>
 <v t="ekr.20240417150035.1"><vh>&lt;&lt; old commands &gt;&gt;</vh></v>
 <v t="ekr.20230511074046.1"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
@@ -109,7 +111,6 @@
 </v>
 </v>
 <v t="ekr.20170427114412.1"><vh>scripts</vh>
-<v t="ekr.20170427112302.1"><vh>check leoPy.leo</vh></v>
 <v t="ekr.20170428084123.1"><vh>Recursive import script</vh></v>
 <v t="ekr.20240403111007.1"><vh>script: add toolbar buttons</vh></v>
 <v t="ekr.20201222095250.1"><vh>script: check for duplicate settings in theme files</vh></v>
@@ -120,6 +121,10 @@
 <v t="ekr.20210118013807.1"><vh>main</vh></v>
 <v t="ekr.20210118020530.1"><vh>new_name</vh></v>
 <v t="ekr.20210118021337.1"><vh>exists</vh></v>
+</v>
+<v t="ekr.20240707233742.1"><vh>script: cvt-ast-names</vh>
+<v t="ekr.20240708062242.1"><vh>&lt;&lt; define table &gt;&gt;</vh></v>
+<v t="ekr.20240708072327.1"><vh>&lt;&lt; check table &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20210829132319.1"><vh>script: cvt-tests</vh></v>
 <v t="ekr.20190402091335.1"><vh>script: diff-branches/revs (all files)</vh></v>
@@ -165,6 +170,7 @@
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
 <v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
+<v t="ekr.20161026193447.1"><vh>@file leoBackground.py</vh></v>
 <v t="ekr.20150521115018.1"><vh>@file leoBeautify.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
@@ -704,9 +710,9 @@
 <v t="ekr.20210910072917.1"><vh>@file ../unittests/core/test_leoVim.py</vh></v>
 </v>
 <v t="ekr.20240204082420.1"><vh>in unittests/misc_tests</vh>
-<v t="ekr.20230506095312.1"><vh>@file ../unittests/misc_tests/test_design.py</vh></v>
 <v t="ekr.20210926044012.1"><vh>@file ../unittests/misc_tests/test_doctests.py</vh></v>
 <v t="ekr.20210901140718.1"><vh>@file ../unittests/misc_tests/test_syntax.py</vh></v>
+<v t="ekr.20240609044830.1"><vh>@@@file ../unittests/misc_tests/test_check_leo.py</vh></v>
 </v>
 <v t="ekr.20240204082924.1"><vh>in unittests/plugins</vh>
 <v t="ekr.20220812224747.1"><vh>@file ../unittests/plugins/test_writers.py</vh></v>
@@ -1220,10 +1226,17 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 @tabwidth -4
 @language python
 </t>
-<t tx="ekr.20150425145248.1">test-one
-ctrl-click-at-cursor
+<t tx="ekr.20150425145248.1">restart-leo
+test-one
 execute-script
 
+# pyflakes
+# test1-pyflakes
+# test-pyflakes
+# cover-pyflakes
+# proto-pyflakes
+
+# ctrl-click-at-cursor
 # python-to-rust
 # goto-prev-history-node
 # goto-next-history-node
@@ -1564,29 +1577,6 @@ prefix_lines:
 
 [General Patterns]
 </t>
-<t tx="ekr.20170427112302.1">g.cls()
-import glob
-files = glob.glob(g.os_path_join(g.app.loadDir, '*.py'))
-files = [z for z in files if g.os_path_basename(z).startswith('leo')]
-if 0:
-    g.printList(files)
-found = set()
-for p in c.all_unique_positions():
-    name = p.isAnyAtFileNode()
-    if name and name.startswith('leo'):
-        path = g.os_path_join(g.app.loadDir, name)
-        found.add(path)
-if 0:
-    print('found')
-    g.printList(list(found))
-else:
-    missing = set(files) - found
-    if missing:
-        print('not found...')
-        g.printList(list(sorted(missing)))
-    else:
-        print('done')
-        </t>
 <t tx="ekr.20170427114412.1"></t>
 <t tx="ekr.20170428084123.1">@language python
 """Recursively import all python files in a directory and clean the result."""
@@ -1905,9 +1895,9 @@ os.chdir(path)
 # See https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='97282792e', # old branch/rev
-    branch2='fd7537f5c', # new branch/rev
-    fn='leo/plugins/viewrendered.py',  # Don't use back slashes.
+    branch1='6.7.8', # old branch/rev
+    branch2='6.8.1', # new branch/rev
+    fn='MANIFEST.in',  # Don't use back slashes.
 )
 </t>
 <t tx="ekr.20180824065751.1">print(p.gnx)</t>
@@ -1915,8 +1905,8 @@ efc.GitDiffController(c).diff_two_branches(
 <t tx="ekr.20190402091335.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='ekr-3744-pr3-token-based-orange',  # Old
-    rev2='tbo-test',   # New
+    rev1='6.8.0-post1',  # Old
+    rev2='devel',   # New
 )
 </t>
 <t tx="ekr.20190406154306.1">g.openWithFileName(r'C:\apps\pyzo\pyzo.leo')</t>
@@ -2803,14 +2793,25 @@ def do_sec(i, m, s):
 if c.isChanged():
     print('Saved!')
     c.save()
+&lt;&lt; test-one: test kind &gt;&gt;
 &lt;&lt; prefixes &gt;&gt;
 &lt;&lt; old commands &gt;&gt;
-if 0:
+assert kind in ('check-all', 'check-one', 'beautify', 'test'), repr(kind)
+if kind == 'check-all':  # Check all files.
+    command = 'python -m leo.scripts.check_leo'
+    g.execute_shell_commands(command)
+elif kind == 'check-one':
+    # path = 'plugins/qt_gui.py'
+    path = 'core/leoApp.py'
+    command = f"python -m leo.scripts.check_leo {path}"
+    g.execute_shell_commands(command)
+elif kind == 'beautify':
     &lt;&lt; test the beautifier &gt;&gt;
-elif 1:
+elif kind == 'test':
     commands = (
-        # General tests.
-        f"{core}.test_leoserver.TestLeoServer.test_find_commands",
+        ### "leo.scripts.check_leo.TestCheckLeo",
+        f"{misc}.test_check_leo.TestCheckLeo",
+        # f"{core}.test_leoserver.TestLeoServer.test_find_commands",
         # f"{core}.test_leoFind.TestFind.test_find_var",
         # f"{core}.test_leoTokens.TestTokenBasedOrange",
         # f"{core}.test_leoTokens.TestTokens",
@@ -3284,11 +3285,11 @@ plugins_menu.py     # Adds 'Plugins' menu.
 mod_scripting.py
 contextmenu.py      # Required by the vim.py and xemacs.py plugins.
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
+quicksearch.py      # Nav pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 
 # Disabled standard menus...
 
-# quicksearch.py      # Nav pane.
 # mod_autosave.py   # Creates .bak files.
 # nodetags.py       # Supports tags via uA's.
 # todo.py             # Task pane.
@@ -3426,6 +3427,10 @@ global-exclude *.mypy_cache, *.mypy_stubs, *.gitattributes, *.htmlcov
 include *.py
 include *.TXT
 
+# No longer required.
+# obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
+#include pyproject.toml
+
 # Tweaks
 
 prune leo/unittests/htmlcov
@@ -3444,9 +3449,7 @@ include leo/doc/_static
 </t>
 <t tx="ekr.20240321122705.1"># Here are Leo's distribution-related scripts.
 
-# Run these scripts from the leo-editor folder.
-
-# Info item #3837 describes these scripts:
+# Info item #3837 contains full documentation for all these scripts.
 # https://github.com/leo-editor/leo-editor/issues/3837</t>
 <t tx="ekr.20240403090451.1">"""
 Expand button bar.
@@ -3541,5 +3544,233 @@ for command in (
     print(command)
     g.execute_shell_commands(command)
 </t>
+<t tx="ekr.20240608035218.1"># Last one wins.
+kind = 'beautify'
+kind = 'test'  # Run unit test.
+kind = 'check-one'  # Run check_leo.py on one file
+kind = 'check-all'  # Run check_leo.py on all files
+</t>
+<t tx="ekr.20240609044830.1"></t>
+<t tx="ekr.20240707233742.1">"""
+Convert the names of Ast visitors from all caps to the names of the corresponding Ast node.
+Saved in PR #4: https://github.com/edreamleo/ekr-fork-pyflakes/pull/4
+"""
+g.cls()
+c.save()
+import ast
+# import re
+h = 'class Checker'
+root = g.findNodeAnywhere(c, h)
+# pattern = re.compile(r'([A-Z]{3,})')
+&lt;&lt; define table &gt;&gt;
+&lt;&lt; check table &gt;&gt;
+suppress = ('_MAGIC', 'PYFLAKES', 'FOR_TYPES', '.STRING')
+for p in root.self_and_subtree():
+    changed, results = False, []
+    for s in g.splitLines(p.b):
+        if s.strip().startswith(('#', '"""')):
+            results.append(s)
+            continue
+        if any(z in s for z in suppress):
+            results.append(s)
+            continue
+        found = []
+        for data in table:
+            s1, s2 = data
+            if s1 in s and s1 not in suppress:
+                if s1.lower() not in found:
+                    # if 'name' in s1.lower():
+                        # print(s1)
+                        # print(s.rstrip())
+                    s = s.replace(s1, s2)
+                    changed = True
+                    found.append(s1.lower())
+        if found:
+            print(s.rstrip())
+        results.append(s)
+    if changed:
+        if 1:
+            p.b = ''.join(results)
+        # g.printObj(results) #, tag=p.h)
+        
+if 1:
+    print('')
+    print('Remember to update handleNode')
+
+c.save()
+print('Done')
+    </t>
+<t tx="ekr.20240708062242.1">
+# Longest prefixes first.
+table = (
+
+    ('ANNASSIGN', 'AnnAssign'),
+    ('ARGUMENTS', 'arguments'),  # all lower.
+    ('ASSERT', 'Assert'),
+    ('ASYNCFOR', 'AsyncFor'),
+    ('ASYNCFUNCTIONDEF', 'AsyncFunctionDef'),
+    ('ASYNCWITH', 'AsyncWith'),
+    ('ATTRIBUTE', 'Attribute'),
+    ('AUGASSIGN', 'AugAssign'),
+    ('AUGLOAD', 'AugLoad'),
+    ('AUGSTORE', 'AugStore'),
+    ('AWAIT', 'Await'),
+    ('BINOP', 'BinOp'),
+    ('BITAND', 'BitAnd'),
+    ('BITOR', 'BitOr'),
+    ('BITXOR', 'BitXor'),
+    ('BOOLOP', 'BoolOp'),
+    ('BREAK', 'Break'),
+    ('CALL', 'Call'),
+    ('CLASSDEF', 'ClassDef'),
+    ('COMPARE', 'Compare'),
+    ('COMPREHENSION', 'comprehension'),
+    ('CONTINUE', 'Continue'),
+    ('DELETE', 'Delete'),
+    ('DICTCOMP', 'DictComp'),    
+    ('EXCEPTHANDLER', 'ExceptHandler'),
+    ('EXTSLICE', 'ExtSlice'),
+    ('FLOORDIV', 'FloorDiv'),
+    ('FORMATTEDVALUE', 'FormattedValue'),
+    ('FUNCTIONDEF', 'FunctionDef'),
+    ('GENERATOREXP', 'GeneratorExp'),
+    ('GLOBAL', 'Global'),
+    ('IFEXP', 'IfExp'),
+    ('IMPORTFROM', 'ImportFrom'),
+    ('INDEX', 'Index'),
+    ('INVERT', 'Invert'),
+    ('ISNOT', 'IsNot'),
+    ('JOINEDSTR', 'JoinedStr'),
+    ('KEYWORD', 'keyword'),
+    ('LAMBDA', 'Lambda'),
+    ('LISTCOMP', 'ListComp'),
+    ('LOAD', 'Load'),
+    ('LSHIFT', 'LShift'),
+    ('MATCHAS', 'MatchAs'),
+    ('MATCHCLASS', 'MatchClass'),
+    ('MATCHMAPPING', 'MatchMapping'),
+    ('MATCHOR', 'MatchOr'),
+    ('MATCHSEQUENCE', 'MatchSequence'),
+    ('MATCHSINGLETON', 'MatchSingleton'),
+    ('MATCHSTAR', 'MatchStar'),
+    ('MATCHVALUE', 'MatchValue'),
+    ('MATCH_CASE', 'match_case'),
+    ('MATMULT', 'MatMult'),
+    ('MODULE', 'Module'),
+    ('MULT', 'Mult'),
+    ('NONLOCAL', 'Nonlocal'),
+    ('NOTEQ', 'NotEq'),
+    ('NOTIN', 'NotIn'),
+    ('PARAMSPEC', 'ParamSpec'),
+    ('PARAM', 'Param'),
+    ('PASS', 'Pass'),
+    ('RAISE', 'Raise'),
+    ('RETURN', 'Return'),
+    ('RSHIFT', 'RShift'),
+    ('SETCOMP', 'SetComp'),
+    ('SLICE', 'Slice'),
+    ('STARRED', 'Starred'),
+    ('STORE', 'Store'),
+    ('SUBSCRIPT', 'Subscript'),
+    ('TRYSTAR', 'TryStar'),
+    ('TUPLE', 'Tuple'),
+    ('TYPEALIAS', 'TypeAlias'),
+    ('TYPEVARTUPLE', 'TypeVarTuple'),
+    ('TYPEVAR', 'TypeVar'),
+    ('UADD', 'UAdd'),
+    ('UNARYOP', 'UnaryOp'),
+    ('USUB', 'USub'),
+    ('WHILE', 'While'),
+    ('WITHITEM', 'withitem'),
+    ('YIELDFROM', 'YieldFrom'),
+    
+    # Prefixes last, by length.
+    ('NAMECONSTANT', 'NameConstant'),
+    ('NAMEDEXPR', 'NamedExpr'),
+    ('CONSTANT', 'Constant'),
+    ('ASSIGN', 'Assign'),
+    ('IMPORT', 'Import'),
+    ('MATCH', 'Match'),
+    ('YIELD', 'Yield'),
+
+    ('DICT', 'Dict'),
+    ('EXPR', 'Expr'),
+    ('LIST', 'List'),
+    ('NAME', 'Name'),
+    ('WITH', 'With'),
+
+    ('ARG', 'arg'),
+    ('ADD', 'Add'),
+    ('AND', 'And'),
+    ('DEL', 'Del'),
+    ('DIV', 'Div'),
+    ('FOR', 'For'),
+    ('GTE', 'GtE'),
+    ('LTE', 'LtE'),
+    ('MOD', 'Mod'),
+    ('NOT', 'Not'),
+    ('POW', 'Pow'),
+    ('SET', 'Set'),
+    ('SUB', 'Sub'),
+    ('TRY', 'Try'),
+
+    ('EQ', 'Eq'),
+    ('IF', 'If'),
+    ('IN', 'In'),
+    ('IS', 'Is'),
+    ('GT', 'Gt'),
+    ('LT', 'Lt'),
+    ('OR', 'Or'),
+)
+</t>
+<t tx="ekr.20240708072327.1">for data in table:
+    s1, s2 = data
+    visitor = getattr(ast, s2, None)
+    if not visitor:
+        print('Missing', s2)
+</t>
+<t tx="ekr.20240714075119.1">"""Update the section `pyproject.toml: dependencies` from requirements.txt."""
+g.cls()
+req_h = '@file ../../requirements.txt'
+req_p = g.findNodeAnywhere(c, req_h)
+assert req_p, req_h
+proj_h = g.angleBrackets(' pyproject.toml: dependencies ')
+proj_p = g.findNodeAnywhere(c, proj_h)
+assert proj_p, proj_h
+
+# Indent all non-blank lines with 2-blanks.
+results = ['dependencies = [']
+for s in g.splitLines(req_p.b):
+    ss = s.strip()
+    if not ss:
+        results.append('')
+    elif ss.startswith('@'):
+        continue  # Don't change directives.
+    elif ss.startswith('#'):
+        results.append(f"  {ss}")
+    else:
+        i = ss.find('#')
+        if i &gt; -1:
+            s2 = ss[:i].strip().replace('"', "'")
+            # Ensure spaces around '=='.
+            if '==' in s2 and ' == ' not in s2:
+                s2 = s2.replace('==', ' == ')
+                s3 = f'  {ss[len(s2):]}'
+            else:
+                s3 = ss[len(s2):]
+            results.append(f'  "{s2}",{s3}')
+        else:
+            results.append(f'  "{ss}",')
+results.append(']\n\n')
+# Print the changes.
+for s in results:
+    print(s)
+# Make the changes!
+new_b = '\n'.join(results)
+if new_b != proj_p.b:
+    print('Saving:', proj_p.h)
+    proj_p.b = new_b
+    c.redraw()
+    c.save()</t>
 </tnodes>
 </leo_file>
