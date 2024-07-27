@@ -1524,6 +1524,7 @@ def open_in_tab(c, vr3):
     log = c.frame.log
     log.createTab(TABNAME, widget=vr3, createText=False)
     log.selectTab(TABNAME)
+    vr3.set_unfreeze()
     positions[c.hash()] = OPENED_IN_TAB
 #@+node:tom.20230403143106.1: *3* vr3.close_tab
 def close_tab(c, vr3):
@@ -1560,7 +1561,7 @@ def getVr3(event):
         return None
 
     if not (vr3 := controllers.get(h)):
-        controllers[h] = vr3 = viewrendered(event)
+        controllers[h] = vr3 = ViewRenderedController3(c)  # viewrendered(event)
         positions[h] = None
 
     return vr3
@@ -2021,6 +2022,7 @@ def toggle_rendering_pane_tab(event):
 
     if log.findTabIndex(TABNAME):
         log.deleteTab(TABNAME)
+        vr3.set_freeze()
         positions[h] = None
     else:
         open_in_tab(c, vr3)
