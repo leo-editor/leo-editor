@@ -126,7 +126,7 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20180405171433.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3371067d710768037d7108580700000069735f6475706571094930300a73735803000000302e35710a7d710b68037d710c580700000069735f64757065710d4930300a73735803000000302e37710e7d710f68037d7110580700000069735f6475706571114930300a73735803000000302e3871127d711368037d7114580700000069735f6475706571154930300a73735803000000302e3971167d711768037d7118580700000069735f6475706571194930300a73735804000000302e3130711a7d711b68037d711c580700000069735f64757065711d4930300a73735804000000302e3131711e7d711f68037d7120580700000069735f6475706571214930300a73735804000000302e313271227d712368037d7124580700000069735f6475706571254930300a73735804000000302e313471267d712768037d7128580700000069735f6475706571294930300a7373752e"><vh>Distribution checklist</vh>
+<v t="ekr.20180405171433.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3371067d7107580b0000005f5f626f6f6b6d61726b7371087d7109580700000069735f64757065710a4930300a73735803000000302e35710b7d710c580b0000005f5f626f6f6b6d61726b73710d7d710e580700000069735f64757065710f4930300a73735803000000302e3771107d7111580b0000005f5f626f6f6b6d61726b7371127d7113580700000069735f6475706571144930300a73735803000000302e3871157d7116580b0000005f5f626f6f6b6d61726b7371177d7118580700000069735f6475706571194930300a73735803000000302e39711a7d711b580b0000005f5f626f6f6b6d61726b73711c7d711d580700000069735f64757065711e4930300a73735804000000302e3130711f7d7120580b0000005f5f626f6f6b6d61726b7371217d7122580700000069735f6475706571234930300a73735804000000302e313171247d7125580b0000005f5f626f6f6b6d61726b7371267d7127580700000069735f6475706571284930300a73735804000000302e313271297d712a580b0000005f5f626f6f6b6d61726b73712b7d712c580700000069735f64757065712d4930300a73735804000000302e3134712e7d712f580b0000005f5f626f6f6b6d61726b7371307d7131580700000069735f6475706571324930300a7373752e"><vh>Distribution checklist</vh>
 <v t="ekr.20180405171433.4" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Pre-testing (in release branch)</vh></v>
 <v t="ekr.20230301070738.1"><vh>LeoSettings.leo</vh></v>
 <v t="ekr.20230301070807.1"><vh>LeoPyRef.leo</vh></v>
@@ -1393,7 +1393,7 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create the **release branch**: 6.8.1.
+Create the **release branch**: 6.8.2.
 Change version in this checklist to match.
 
 It's ok to merge devel into release branch
@@ -1413,7 +1413,7 @@ It's ok to merge devel into release branch
 
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
-- git merge 6.8.1
+- git merge 6.8.2
 - Run the `make-sphinx` from LeoDocs.leo
   This script copies files from leo/doc/html/_build/html to leo-editor/docs
 - Commit the changes and push.
@@ -1432,7 +1432,7 @@ It's ok to merge devel into release branch
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
-git tag -a v6.8.1 -m "Added v6.8.1 tag"
+git tag -a v6.8.2 -m "Added v6.8.2 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
@@ -1441,15 +1441,15 @@ git push --follow-tags
 - Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout devel
-- git merge 6.8.1
+- git merge 6.8.2
 - update version in leoVersion.py.
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.8.1 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.8.2 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.8.1</t>
+- git merge 6.8.2</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -1544,7 +1544,7 @@ python -m pip uninstall leo
 <t tx="ekr.20230301070404.1">LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for 6.7.
-  The final version in PKG-INFO.TXT must be called 6.8.1, not 6.8.1-final.
+  The final version in PKG-INFO.TXT must be called 6.8.2, not 6.8.2-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Update version in 'PKG-INFO.TXT'
@@ -1560,7 +1560,7 @@ python -m pip uninstall leo
 - Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
 - Open LeoPyRef.leo. Verify the diff after saving.
 </t>
-<t tx="ekr.20230301084201.1">- Change 6.8.1 (the old version) to 6.8.2.
+<t tx="ekr.20230301084201.1">- Change 6.8.2 (the old version) to 6.8.3.
   Be careful about the new version in this node!
 </t>
 <t tx="ekr.20240206185544.1"></t>
@@ -1620,7 +1620,7 @@ Make *sure* all is well before uploading to pypi.
 
 Any glitch will require new filename *only* for the `.whl` file:
 - Use *build number* (-1, -2) for the new filename:
-  for example, leo-6.8.0-1-py3-none-any.whl.
+  for example, leo-6.8.2-1-py3-none-any.whl.
 - Do *not*use `.post1`: it won't work!
 - Do *not* change the filename of `.tar.gz` file.
 - Do *not* change `PKG-INFO.TXT` or Leo's version number!

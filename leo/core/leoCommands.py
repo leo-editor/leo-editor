@@ -2645,7 +2645,7 @@ class Commands:
         )
         # Set d by scanning all directives.
         aList = g.get_directives_dict_list(p)
-        d = {}
+        d: dict[str, Any] = {}
         for key, default, func in table:
             val = func(aList)  # type:ignore
             d[key] = default if val is None else val

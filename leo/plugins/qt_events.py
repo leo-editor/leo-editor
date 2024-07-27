@@ -535,6 +535,7 @@ class LeoQtEventFilter(QtCore.QObject):
         e = QtCore.QEvent
         assert isinstance(event, QtCore.QEvent)
         et = event.type()
+        t: Any
         # http://qt-project.org/doc/qt-4.8/qevent.html#properties
         ignore_d = {
             e.Type.ChildAdded: 'child-added',  # 68
