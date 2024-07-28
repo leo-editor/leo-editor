@@ -237,9 +237,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20240726063727.1: *5* dw.create_legacy_layout
     def create_legacy_layout(self):
         """
-        Create Leo's legacy layout.
+        Create Leo's legacy layout:
         
-        The top pane contains outline and log panes.
+        - The top pane contains outline and log panes.
+        - The bottom pane contains the body and VR panes.
+        
         """
         main_splitter, secondary_splitter = self.main_splitter, self.secondary_splitter
         self.createOutlinePane(secondary_splitter)
@@ -247,10 +249,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if main_splitter.orientation() == Orientation.Vertical:
             # Share the VR pane with the body pane in a new splitter.
             self.vr_parent_frame = vr_splitter = QtWidgets.QSplitter()
-            self.createBodyPane(vr_splitter)
             vr_splitter.setObjectName('vr-splitter')
+            self.createBodyPane(vr_splitter)
             main_splitter.addWidget(vr_splitter)
-            vr_splitter.setOrientation(Orientation.Horizontal)
         else:
             self.createBodyPane(main_splitter)
             # Put the VR pane in the secondary splitter.
@@ -259,8 +260,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def create_big_tree_layout(self):
         """
         Create the layout previously specified by  @bool big-outline-pane.
+        
+        The lower pane contains 
         """
-        g.trace('-----')
         main_splitter, secondary_splitter = self.main_splitter, self.secondary_splitter
         self.createBodyPane(secondary_splitter)
         self.createLogPane(secondary_splitter)
@@ -388,7 +390,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         assert self.findTab
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
-    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
+    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout (generalize?)
     def createMainLayout(self, parent: QWidget) -> tuple[QWidget, QWidget]:
         """Create the layout for Leo's main window."""
         # c = self.leo_c
@@ -1064,26 +1066,23 @@ class DynamicWindow(QtWidgets.QMainWindow):
             print('')
             print('@string qt-layout-name has changed: restarting Leo')
             c.doCommandByName('restart-leo')
-    #@+node:ekr.20240725073848.1: *3* dw.insert/hide_vr_frame (new)
-    def hide_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
-        g.trace(vr_frame.__class__.__name__)  ###
-
+    #@+node:ekr.20240725073848.1: *3* dw.insert_vr_frame (new)
     def insert_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
         dw = self
         parent = dw.vr_parent_frame
-        if 1:
+        if 0:  ###
             c = dw.leo_c
             g.trace(c.shortFileName(), 'parent:', parent.objectName(), parent.orientation())
             g.trace(g.callers())
         if isinstance(parent, QtWidgets.QSplitter):
+            ### Debugging and development.
             vr_frame.setStyleSheet('* { background-color: orange; }')  ###
             parent.addWidget(vr_frame)
             dw.main_splitter.setSizes([100000] * len(dw.main_splitter.sizes()))
             dw.secondary_splitter.setSizes([100000] * len(dw.secondary_splitter.sizes()))
             parent.setSizes([100000] * len(parent.sizes()))
         else:
-            g.trace('Can not happen')
-            breakpoint()  ###
+            g.trace('dw.vr_parent_frame must be a QSplitter!')
     #@+node:ekr.20110605121601.18173: *3* dw.select
     def select(self, c: Cmdr) -> None:
         """Select the window or tab for c."""
