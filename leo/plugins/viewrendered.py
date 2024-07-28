@@ -594,7 +594,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
 
-    #@+node:ekr.20190614065659.1: *4* vr.create_pane ***
+    #@+node:ekr.20190614065659.1: *4* vr.create_pane
     def create_pane(self, parent: Position) -> None:
         """Create the VR pane."""
         if g.unitTesting:

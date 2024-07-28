@@ -244,17 +244,17 @@ class DynamicWindow(QtWidgets.QMainWindow):
         main_splitter, secondary_splitter = self.main_splitter, self.secondary_splitter
         self.createOutlinePane(secondary_splitter)
         self.createLogPane(secondary_splitter)
-        self.createBodyPane(main_splitter)
         if main_splitter.orientation() == Orientation.Vertical:
             # Share the VR pane with the body pane in a new splitter.
             self.vr_parent_frame = vr_splitter = QtWidgets.QSplitter()
+            self.createBodyPane(vr_splitter)
             vr_splitter.setObjectName('vr-splitter')
             main_splitter.addWidget(vr_splitter)
             vr_splitter.setOrientation(Orientation.Horizontal)
         else:
+            self.createBodyPane(main_splitter)
             # Put the VR pane in the secondary splitter.
             self.vr_parent_frame = secondary_splitter
-        ### g.trace('vr_parent_frame:', self.vr_parent_frame.objectName())  ###
     #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
     def create_big_tree_layout(self):
         """
