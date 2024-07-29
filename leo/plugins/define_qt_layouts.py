@@ -7,6 +7,8 @@ define_qt_layouts.py: define several qt layouts.
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
 
+g.assertUi('qt')
+
 def init():
     """Return True if the plugin has loaded successfully."""
     if g.unitTesting:
@@ -65,7 +67,7 @@ def update_layout(tags, event):
         dw.main_splitter = main_splitter = dw.createMainSplitter(parent)
         dw.verticalLayout = dw.createVLayout(parent, 'mainVLayout', margin=3)
         dw.verticalLayout.addWidget(main_splitter)
-        
+
         # dw.secondary_splitter = secondary_splitter = dw.createSecondarySplitter(main_splitter)
         ### self.set_widget_size_policy(secondary_splitter)
 
@@ -77,7 +79,7 @@ def update_layout(tags, event):
         dw.createLogPane(main_splitter)
         dw.createBodyPane(main_splitter)
         dw.vr_parent_frame = render_splitter
-        
+
         return main_splitter, None
     #@-<< create render-focused layout >>
     #@+<< create vertical-thirds layout >>

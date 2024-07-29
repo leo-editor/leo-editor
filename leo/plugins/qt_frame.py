@@ -97,9 +97,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_menubar: QWidget = None  # Set in createMenuBar.
         self.leo_statusBar: QtWidgets.QStatusBar = None
         self.layout_name: str = None
-        self.main_splitter: QtWidgets.QSplitter = None
+        self.main_splitter: Any = None
         self.old_layout_name: str = None
-        self.secondary_splitter: QtWidgets.QSplitter = None
+        self.secondary_splitter: Any = None
         self.vr_parent_frame: QWidget = None
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
         self.reloadSettings()
