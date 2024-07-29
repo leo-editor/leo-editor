@@ -97,7 +97,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_menubar: QWidget = None  # Set in createMenuBar.
         self.leo_statusBar: QtWidgets.QStatusBar = None
         self.layout_name: str = None
+        self.main_splitter: QtWidgets.QSplitter = None
         self.old_layout_name: str = None
+        self.secondary_splitter: QtWidgets.QSplitter = None
         self.vr_parent_frame: QWidget = None
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
         self.reloadSettings()
@@ -243,8 +245,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
             if not g.unitTesting:
                 print('')
                 g.es_print('Using layout:', layout_name)
-            f = layout_dict.get(layout_name)
-            return f()
+            try:
+                f = layout_dict.get(layout_name)
+                return f()
+            except Exception:
+                g.es_print(f"Exception executing {f.__name__}", color='red')
+                g.es_exception()
+                g.es_print('Using legacy layout')
+                return self.create_legacy_layout()
         else:
             g.es_print('Unknown layout name:', layout_name)
             return self.create_legacy_layout()
