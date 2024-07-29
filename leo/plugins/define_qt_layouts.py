@@ -5,7 +5,7 @@ define_qt_layouts.py: define several qt layouts.
 """
 
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtWidgets
+from leo.core.leoQt import Orientation  ### QtWidgets
 
 g.assertUi('qt')
 
@@ -60,27 +60,25 @@ def update_layout(tags, event):
         
         https://gist.github.com/gatesphere/82c9f67ca7b65d09e85208e0b2f7eca1#file-render-focused
         """
-        # g.trace('not ready: using legacy layout')
-        # dw.create_legacy_layout()
-
         parent = dw.centralwidget
-        dw.main_splitter = main_splitter = dw.createMainSplitter(parent)
+        #### main_splitter, secondary_splitter = dw.createMainLayout(dw.centralwidget)
+        
+        main_splitter = dw.createMainSplitter(parent)
+        secondary_splitter = dw.createSecondarySplitter(main_splitter)
+
         dw.verticalLayout = dw.createVLayout(parent, 'mainVLayout', margin=3)
+        dw.set_widget_size_policy(secondary_splitter)
         dw.verticalLayout.addWidget(main_splitter)
 
-        # dw.secondary_splitter = secondary_splitter = dw.createSecondarySplitter(main_splitter)
-        ### self.set_widget_size_policy(secondary_splitter)
-
-        render_splitter = QtWidgets.QSplitter(main_splitter)
-        render_splitter.setObjectName('render-splitter')
-        ### render_splitter.addWidget(main_splitter)
-
+        dw.main_splitter, dw.secondary_splitter = main_splitter, secondary_splitter
+        main_splitter.setOrientation(Orientation.Horizontal)
+        secondary_splitter.setOrientation(Orientation.Vertical)
         dw.createOutlinePane(main_splitter)
         dw.createLogPane(main_splitter)
         dw.createBodyPane(main_splitter)
-        dw.vr_parent_frame = render_splitter
+        dw.vr_parent_frame = secondary_splitter
 
-        return main_splitter, None
+        return main_splitter, secondary_splitter
     #@-<< create render-focused layout >>
     #@+<< create vertical-thirds layout >>
     #@+node:ekr.20240729042637.1: ** << create vertical-thirds layout >>

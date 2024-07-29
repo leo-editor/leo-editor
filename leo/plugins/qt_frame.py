@@ -100,6 +100,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.main_splitter: Any = None
         self.old_layout_name: str = None
         self.secondary_splitter: Any = None
+        self.verticalLayout: Any = None
         self.vr_parent_frame: QWidget = None
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
         self.reloadSettings()
@@ -349,7 +350,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
         sw.addWidget(page2)
         innerGrid.addWidget(sw, 0, 0, 1, 1)
         grid.addWidget(innerFrame, 0, 0, 1, 1)
-        self.verticalLayout.addWidget(parent)
+        if self.verticalLayout:  ###
+            self.verticalLayout.addWidget(parent)
+        else:
+            g.trace('*****', parent.objectName())
+
         # Official ivars
         self.text_page = page2
         self.stackedWidget = sw  # used by LeoQtBody
@@ -424,9 +429,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
         main_splitter = self.createMainSplitter(parent)
         secondary_splitter = self.createSecondarySplitter(main_splitter)
 
-        self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
-        self.set_widget_size_policy(secondary_splitter)
-        self.verticalLayout.addWidget(main_splitter)
+        if 1:  ###  Somehow this is crucial.
+            self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
+            self.set_widget_size_policy(secondary_splitter)
+            self.verticalLayout.addWidget(main_splitter)
+
         return main_splitter, secondary_splitter
     #@+node:ekr.20240729064156.1: *5* dw.createMainSplitter (new)
     def createMainSplitter(self, parent: QWidget) -> QtWidgets.QSplitter:
@@ -495,7 +502,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         hLayout.setContentsMargins(3, 2, 2, 0)
         hLayout.addWidget(label)
         hLayout.addWidget(lineEdit)
-        self.verticalLayout.addWidget(frame)
+        if self.verticalLayout:  ###
+            self.verticalLayout.addWidget(frame)
         # Transfers focus request from label to lineEdit.
         label.setBuddy(lineEdit)
         #
@@ -1108,6 +1116,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if isinstance(parent, QtWidgets.QSplitter):
             ### Debugging and development.
             vr_frame.setStyleSheet('* { background-color: orange; }')  ###
+            vr_frame.show()  ###
             parent.addWidget(vr_frame)
             dw.main_splitter.setSizes([100000] * len(dw.main_splitter.sizes()))
             if dw.secondary_splitter:
@@ -2350,13 +2359,12 @@ class LeoQtFrame(leoFrame.LeoFrame):
         c = self.c
         gui = g.app.gui
         w = gui.find_widget_by_name(c, 'secondary_splitter')
-        if not w:
+        if w is None:
             return 0.5
         aList = w.sizes()
         if len(aList) == 2:
             n1, n2 = aList
-            ratio = float(n1) / float(n1 + n2)
-            return ratio
+            return float(n1) / float(n1 + n2) if n2 > 0 else 0.5
         return 0.5
     #@+node:ekr.20110605121601.18275: *4* qtFrame.configureBar
     def configureBar(self, bar: Wrapper, verticalFlag: bool) -> None:
