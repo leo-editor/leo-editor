@@ -1489,6 +1489,7 @@ def show_scrolled_message(tag, kw) -> bool:
     c = kw.get('c')
     if not c:
         return False
+    p = c.p
     vr3 = getVr3(c=c)
     if not vr3:
         return False
@@ -1506,7 +1507,9 @@ def show_scrolled_message(tag, kw) -> bool:
         tag='show-scrolled-message',
         keywords={'c': c, 'force': True, 's': s, 'flags': flags},
     )
-
+    # A hack: suppress updates until the node changes.
+    vr3.gnx = p.v.gnx
+    vr3.length = len(p.v.b)
     if not vr3.isVisible:
         vr3.show()
     return True

@@ -394,7 +394,7 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
     vr.show()
     # A hack: suppress updates until the node changes.
     vr.gnx = p.v.gnx
-    vr.length = p.v.b
+    vr.length = len(p.v.b)
     # Render!
     f = vr.dispatch_dict.get('rest')
     f(s, kw)

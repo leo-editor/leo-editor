@@ -209,12 +209,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """
         self.setMainWindowOptions()
         self.createCentralWidget()
-
-        ###  create_layout creates all splitters
-            ### main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-            # 4017: create the layout indicated by `@bool qt-layout-name`.
-            # Set new official ivars.
-            ### self.main_splitter, self.secondary_splitter = main_splitter, secondary_splitter
         main_splitter, secondary_splitter = self.create_layout()
         self.createMiniBuffer(self.centralwidget)
         self.createMenuBar()
@@ -222,7 +216,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Signals...
         QtCore.QMetaObject.connectSlotsByName(self)
         return main_splitter, secondary_splitter
-    #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers
+    #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers (new)
     def create_layout(self) -> tuple[QWidget, QWidget]:
         """
         Create the layout given by @string qt_layout_name.
@@ -415,23 +409,31 @@ class DynamicWindow(QtWidgets.QMainWindow):
         assert self.findTab
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
-    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout (not always used!)
+    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout (changed)
     def createMainLayout(self, parent: QWidget) -> tuple[QWidget, QWidget]:
         """Create the layout for Leo's main window."""
         # c = self.leo_c
-
-        main_splitter = QtWidgets.QSplitter(parent)
-        main_splitter.setObjectName('main_splitter')
-        main_splitter.setOrientation(Orientation.Vertical)
-
-        secondary_splitter = QtWidgets.QSplitter(main_splitter)
-        secondary_splitter.setObjectName('secondary_splitter')
-        secondary_splitter.setOrientation(Orientation.Horizontal)
+        main_splitter = self.createMainSplitter(parent)
+        secondary_splitter = self.createSecondarySplitter(main_splitter)
 
         self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
         self.set_widget_size_policy(secondary_splitter)
         self.verticalLayout.addWidget(main_splitter)
         return main_splitter, secondary_splitter
+    #@+node:ekr.20240729064156.1: *5* dw.createMainSplitter (new)
+    def createMainSplitter(self, parent: QWidget) -> QtWidgets.QSplitter:
+
+        main_splitter = QtWidgets.QSplitter(parent)
+        main_splitter.setObjectName('main_splitter')
+        main_splitter.setOrientation(Orientation.Vertical)
+        return main_splitter
+    #@+node:ekr.20240729064421.1: *5* dw.createSecondarySplitter (new)
+    def createSecondarySplitter(self, parent: QWidget) -> QtWidgets.QSplitter:
+
+        secondary_splitter = QtWidgets.QSplitter(parent)
+        secondary_splitter.setObjectName('secondary_splitter')
+        ### secondary_splitter.setOrientation(Orientation.Horizontal)
+        return secondary_splitter
     #@+node:ekr.20110605121601.18148: *5* dw.createMiniBuffer (class VisLineEdit)
     def createMiniBuffer(self, parent: QWidget) -> QWidget:
         """Create the widgets for Leo's minibuffer area."""
@@ -1095,16 +1097,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def insert_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
         dw = self
         parent = dw.vr_parent_frame
-        if 0:  ###
-            c = dw.leo_c
-            g.trace(c.shortFileName(), 'parent:', parent.objectName(), parent.orientation())
-            g.trace(g.callers())
         if isinstance(parent, QtWidgets.QSplitter):
             ### Debugging and development.
             vr_frame.setStyleSheet('* { background-color: orange; }')  ###
             parent.addWidget(vr_frame)
             dw.main_splitter.setSizes([100000] * len(dw.main_splitter.sizes()))
-            dw.secondary_splitter.setSizes([100000] * len(dw.secondary_splitter.sizes()))
+            if dw.secondary_splitter:
+                dw.secondary_splitter.setSizes([100000] * len(dw.secondary_splitter.sizes()))
             parent.setSizes([100000] * len(parent.sizes()))
         else:
             g.trace('dw.vr_parent_frame must be a QSplitter!')

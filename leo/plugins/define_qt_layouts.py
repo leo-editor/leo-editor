@@ -1,5 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20240729034257.1: * @file ../plugins/define_qt_layouts.py
+"""
+define_qt_layouts.py: define several qt layouts.
+"""
+
 from leo.core import leoGlobals as g
 
 def init():
