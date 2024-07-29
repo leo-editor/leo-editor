@@ -9,7 +9,7 @@ def init():
     g.registerHandler('after-create-layout-dict', update_layout)
     return True
 
-def update_layout(self, event):
+def update_layout(tags, event):
     """Update dw.layout_dict with a new layout."""
     # Note: c.frame.top does not exist yet.
     c = event.get('c')
@@ -30,12 +30,13 @@ def update_layout(self, event):
             └───────────────────────────────┘
         https://gist.github.com/gatesphere/82c9f67ca7b65d09e85208e0b2f7eca1#file-horizontal-thirds
         """
-        main_splitter = dw.main_splitter
-        secondary_splitter = dw.secondary_splitter
+        main_splitter, secondary_splitter = dw.createMainLayout(dw.centralwidget)
+        dw.main_splitter, dw.secondary_splitter = main_splitter, secondary_splitter
         dw.createOutlinePane(secondary_splitter)
         dw.createLogPane(secondary_splitter)
         dw.createBodyPane(main_splitter)
         dw.vr_parent_frame = main_splitter
+        return main_splitter, secondary_splitter
     #@-<< create horizontal-thirds layout >>
     #@+<< create render-focused layout >>
     #@+node:ekr.20240729045515.1: ** << create render-focused layout >>
