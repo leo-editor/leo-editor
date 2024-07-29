@@ -223,8 +223,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(self)
         return main_splitter, secondary_splitter
     #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers
-    def create_layout(self):
-        """Create the layout given by @string qt_layout_name."""
+    def create_layout(self) -> tuple[QWidget, QWidget]:
+        """
+        Create the layout given by @string qt_layout_name.
+        
+        Return the tuple (main_splitter, Optional[secondary_splitter])
+        """
         c = self.leo_c
         layout_name = self.layout_name
 
@@ -250,9 +254,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
             g.es_print('Unknown layout name:', layout_name)
             return self.create_legacy_layout()
-
-
-
     #@+node:ekr.20240726063727.1: *5* dw.create_legacy_layout
     def create_legacy_layout(self) -> tuple[QWidget, QWidget]:
         """
