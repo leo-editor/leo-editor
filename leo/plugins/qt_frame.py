@@ -231,21 +231,21 @@ class DynamicWindow(QtWidgets.QMainWindow):
             'legacy': self.create_legacy_layout,
             'big-tree': self.create_big_tree_layout,
         }
-        
+
         # Allow plugins to define layouts.
         g.doHook("after-create-layout-dict", c=c, dw=self, layout_dict=layout_dict)
 
         if 0:  ###
             for key, val in layout_dict.items():
                 print(f"{key:20} {val.__name__}")
-                
+
         if layout_name in layout_dict:
-            print('')
-            g.es_print('Using layout:', layout_name)
+            if not g.unitTesting:
+                print('')
+                g.es_print('Using layout:', layout_name)
             f = layout_dict.get(layout_name)
             f()
         else:
-            print('')
             g.es_print('Unknown layout name:', layout_name)
             self.create_legacy_layout()
 
