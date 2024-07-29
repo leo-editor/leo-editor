@@ -209,11 +209,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """
         self.setMainWindowOptions()
         self.createCentralWidget()
-        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-        # 4017: create the layout indicated by `@bool qt-layout-name`.
-        # Set new official ivars.
-        self.main_splitter, self.secondary_splitter = main_splitter, secondary_splitter
-        self.create_layout()
+
+        ###  create_layout creates all splitters
+            ### main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+            # 4017: create the layout indicated by `@bool qt-layout-name`.
+            # Set new official ivars.
+            ### self.main_splitter, self.secondary_splitter = main_splitter, secondary_splitter
+        main_splitter, secondary_splitter = self.create_layout()
         self.createMiniBuffer(self.centralwidget)
         self.createMenuBar()
         self.createStatusBar(self)
@@ -244,15 +246,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 print('')
                 g.es_print('Using layout:', layout_name)
             f = layout_dict.get(layout_name)
-            f()
+            return f()
         else:
             g.es_print('Unknown layout name:', layout_name)
-            self.create_legacy_layout()
+            return self.create_legacy_layout()
 
 
 
     #@+node:ekr.20240726063727.1: *5* dw.create_legacy_layout
-    def create_legacy_layout(self):
+    def create_legacy_layout(self) -> tuple[QWidget, QWidget]:
         """
         Create Leo's legacy layout:
         
@@ -260,7 +262,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         - The bottom pane contains the body and VR panes.
         
         """
-        main_splitter, secondary_splitter = self.main_splitter, self.secondary_splitter
+        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        self.main_splitter, self.secondary_splitter = main_splitter, secondary_splitter
         self.createOutlinePane(secondary_splitter)
         self.createLogPane(secondary_splitter)
         if main_splitter.orientation() == Orientation.Vertical:
@@ -273,19 +276,23 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.createBodyPane(main_splitter)
             # Put the VR pane in the secondary splitter.
             self.vr_parent_frame = secondary_splitter
+        return main_splitter, secondary_splitter
     #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
-    def create_big_tree_layout(self):
+    def create_big_tree_layout(self) -> tuple[QWidget, QWidget]:
         """
         Create the layout previously specified by  @bool big-outline-pane.
         
         The lower pane contains 
         """
-        main_splitter, secondary_splitter = self.main_splitter, self.secondary_splitter
+        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        self.main_splitter, self.secondary_splitter = main_splitter, secondary_splitter
         self.createBodyPane(secondary_splitter)
         self.createLogPane(secondary_splitter)
         treeFrame = self.createOutlinePane(main_splitter)
         main_splitter.addWidget(treeFrame)
         main_splitter.addWidget(secondary_splitter)
+        self.vr_parent_frame = main_splitter  ###
+        return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18142: *4* dw: top-level methods
     #@+node:ekr.20190118150859.10: *5* dw.addNewEditor
     def addNewEditor(self, name: str) -> tuple[QWidget, Wrapper]:
@@ -407,7 +414,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         assert self.findTab
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
-    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout (generalize?)
+    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout (not always used!)
     def createMainLayout(self, parent: QWidget) -> tuple[QWidget, QWidget]:
         """Create the layout for Leo's main window."""
         # c = self.leo_c
@@ -1135,7 +1142,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         orientation1 = v if vert else h
         orientation2 = h if vert else v
         main_splitter.setOrientation(orientation1)
-        secondary_splitter.setOrientation(orientation2)
+        if secondary_splitter:
+            secondary_splitter.setOrientation(orientation2)
     #@+node:ekr.20130804061744.12425: *3* dw.setWindowTitle
     if 0:  # Override for debugging only.
 
