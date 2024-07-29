@@ -223,6 +223,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers
     def create_layout(self):
         """Create the layout given by @string qt_layout_name."""
+        c = self.leo_c
         layout_name = self.layout_name
 
         # Keys are layout names, converted to canonical format.
@@ -230,8 +231,24 @@ class DynamicWindow(QtWidgets.QMainWindow):
             'legacy': self.create_legacy_layout,
             'big-tree': self.create_big_tree_layout,
         }
-        f = layout_dict.get(layout_name) or self.create_legacy_layout
-        f()
+        
+        # Allow plugins to define layouts.
+        g.doHook("after-create-layout-dict", c=c, dw=self, layout_dict=layout_dict)
+
+        if 0:  ###
+            for key, val in layout_dict.items():
+                print(f"{key:20} {val.__name__}")
+                
+        if layout_name in layout_dict:
+            print('')
+            g.es_print('Using layout:', layout_name)
+            f = layout_dict.get(layout_name)
+            f()
+        else:
+            print('')
+            g.es_print('Unknown layout name:', layout_name)
+            self.create_legacy_layout()
+
 
 
     #@+node:ekr.20240726063727.1: *5* dw.create_legacy_layout
