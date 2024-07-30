@@ -20,7 +20,7 @@ from leo.core import leoFrame
 from leo.core import leoGui
 from leo.core import leoMenu
 from leo.commands import gotoCommands
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets, uic
 from leo.core.leoQt import QAction, Qsci
 from leo.core.leoQt import AlignmentFlag, AlignLeft
 from leo.core.leoQt import ContextMenuPolicy, DropAction, FocusReason, KeyboardModifier
@@ -195,10 +195,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
             try:
                 f = layout_dict.get(layout_name)
                 return f()
-            except Exception:
+            except Exception as e:
                 g.es_print(f"Exception executing {f.__name__}", color='red')
+                g.es_print(e)
                 g.es_exception()
                 g.es_print('Using legacy layout')
+                # c.doCommandByName('show-qt-widgets')
+                # c.frame.showQtWidgets(event={'c': c})
+                ### from leo.plugins.qt_frame import showQtWidgets
+                ### showQtWidgets(event={'c': c})
                 return self.create_legacy_layout()
         else:
             g.es_print('Unknown layout name:', layout_name)
@@ -248,22 +253,48 @@ class DynamicWindow(QtWidgets.QMainWindow):
         
         The lower pane contains 
         """
-        uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'qt_main.ui')  # 'qt_main_2.ui'
-        assert os.path.exists(uiPath), uiPath
-        return None, None
-        # form_class, base_class = uic.loadUiType(uiPath)
-        ### data = uic.loadUiType(uiPath)
-        ### g.printObj(data)
+        c = self.leo_c
+        assert c  ###
+        gui = g.app.gui
+        path = g.os_path_join(g.app.leoDir, 'plugins', 'legacy.ui')
+        form_class, base_class = uic.loadUiType(path)
+       
+        form = form_class()
+        form.setupUi(self.centralwidget)
+        g.trace('form', form)
 
-        ###
-            # main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-            # self.createBodyPane(secondary_splitter)
-            # self.createLogPane(secondary_splitter)
-            # treeFrame = self.createOutlinePane(main_splitter)
-            # main_splitter.addWidget(treeFrame)
-            # main_splitter.addWidget(secondary_splitter)
-        # self.vr_parent_frame = main_splitter  ###
-        # return main_splitter, secondary_splitter
+        def find_widget(name):
+            for w in gui._self_and_subtree(self.centralwidget):
+                if w.objectName() == name:
+                    return w
+            return None
+        
+        if 1:
+            print('')
+            g.trace('centralwidget...')
+            for w in gui._self_and_subtree(self.centralwidget):
+                if w is not None:
+                    print(repr(w.objectName()))
+            print('')
+
+        # main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+        # secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
+        
+        main_splitter = find_widget('main_splitter')
+        secondary_splitter = find_widget('secondary_splitter')
+
+        g.trace('main_splitter', main_splitter)
+        g.trace('secondary_splitter', secondary_splitter)
+        
+        assert secondary_splitter  ###
+
+        self.createBodyPane(secondary_splitter)
+        self.createLogPane(secondary_splitter)
+        treeFrame = self.createOutlinePane(main_splitter)
+        main_splitter.addWidget(treeFrame)
+        main_splitter.addWidget(secondary_splitter)
+        self.vr_parent_frame = main_splitter  ###
+        return main_splitter, secondary_splitter
     #@+node:ekr.20240725073848.1: *4* dw.insert_vr_frame (new)
     def insert_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
         """Insert the given frame into the vr_parent_frame."""
@@ -882,7 +913,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if self.verticalLayout:  ###
             self.verticalLayout.addWidget(parent)
         else:
-            g.trace('*****', parent.objectName())
+            g.trace('*****', parent.objectName() if parent else 'No parent')
 
         # Official ivars
         self.text_page = page2
