@@ -143,30 +143,29 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         c = self.leo_c
         self.leo_master = master
-        main_splitter, secondary_splitter = self.createMainWindow()
-        if 1:  ### Experimental
-            self.createMenuBar()
-            self.createStatusBar(self)
-            # Signals...
-            ### QtCore.QMetaObject.connectSlotsByName(self)
-        self.iconBar = self.addToolBar("IconBar")
-        self.iconBar.setObjectName('icon-bar')  # Required for QMainWindow.saveState().
-        self.set_icon_bar_orientation(c)
-        # #266 A setting to hide the icon bar.
-        # Calling reloadSettings again would also work.
-        if not self.show_iconbar:
-            self.iconBar.hide()
+        # Create all widgets.
+        self.setMainWindowOptions()
+        self.createCentralWidget()
+        main_splitter, secondary_splitter = self.create_layout()
+        self.createMiniBuffer(self.centralwidget)
+        self.createMenuBar()
+        self.createStatusBar(self)
+        self.createIconBar()
+        # Set official ivars...
         self.leo_menubar = self.menuBar()
         self.leo_statusBar = QtWidgets.QStatusBar()
         self.setStatusBar(self.leo_statusBar)
-        ### Do this in createMainWindow ???
-        orientation_s = c.config.getString('initial-split-orientation')
-        self.setSplitDirection(main_splitter, secondary_splitter, orientation_s)
+        # Final inits...
+        if not self.show_iconbar:
+            # #266 A setting to hide the icon bar.
+            self.iconBar.hide()
+        if main_splitter:
+            orientation_s = c.config.getString('initial-split-orientation')
+            self.setSplitDirection(main_splitter, secondary_splitter, orientation_s)
         if hasattr(c, 'styleSheetManager'):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
-        if 1:  ### Experimental: do this last.
-            # Signals...
-            QtCore.QMetaObject.connectSlotsByName(self)
+        # Connect signals last.
+        QtCore.QMetaObject.connectSlotsByName(self)
     #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers (new)
     def create_layout(self) -> tuple[QWidget, QWidget]:
         """
@@ -270,26 +269,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # main_splitter.addWidget(secondary_splitter)
         # self.vr_parent_frame = main_splitter  ###
         # return main_splitter, secondary_splitter
-    #@+node:ekr.20110605121601.18141: *4* dw.createMainWindow
-    def createMainWindow(self) -> tuple[QWidget, QWidget]:
-        """
-        Create the component ivars of the main window.
-        Copied/adapted from qt_main.py.
-        Called instead of uic.loadUi(ui_description_file, self)
-        """
-        ### Do all this in create_layout???
-        self.setMainWindowOptions()
-        self.createCentralWidget()
-        main_splitter, secondary_splitter = self.create_layout()
-        self.createMiniBuffer(self.centralwidget)
-
-        ### Do this in construct???
-        if 0:
-            self.createMenuBar()
-            self.createStatusBar(self)
-            # Signals...
-            QtCore.QMetaObject.connectSlotsByName(self)
-        return main_splitter, secondary_splitter
     #@+node:ekr.20240725073848.1: *4* dw.insert_vr_frame (new)
     def insert_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
         dw = self
@@ -305,21 +284,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             parent.setSizes([100000] * len(parent.sizes()))
         else:
             g.trace('dw.vr_parent_frame must be a QSplitter!')
-    #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
-    def set_icon_bar_orientation(self, c: Cmdr) -> None:
-        """Set the orientation of the icon bar based on settings."""
-        d = {
-            'bottom': ToolBarArea.BottomToolBarArea,
-            'left': ToolBarArea.LeftToolBarArea,
-            'right': ToolBarArea.RightToolBarArea,
-            'top': ToolBarArea.TopToolBarArea,
-        }
-        where_s = self.toolbar_orientation
-        if not where_s:
-            where_s = 'top'
-        where = d.get(where_s.lower())
-        if where:
-            self.addToolBar(where, self.iconBar)
     #@+node:ekr.20110605121601.18165: *3* dw: create log tabs
     #@+node:ekr.20110605121601.18167: *4* dw.createSpellTab
     def createSpellTab(self, parent: QWidget) -> None:
@@ -931,6 +895,29 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Official ivars.
         self.centralwidget = w
         return w
+    #@+node:ekr.20240730054632.1: *4* dw.createIconBar & helper
+    def createIconBar(self) -> None:
+        """Create the icon bar."""
+        c = self.leo_c
+        self.iconBar: QtWidgets.QToolBar = self.addToolBar("IconBar")
+        self.iconBar.setObjectName('icon-bar')  # Required for QMainWindow.saveState().
+        self.set_icon_bar_orientation(c)
+
+    #@+node:ekr.20140915062551.19519: *5* dw.set_icon_bar_orientation
+    def set_icon_bar_orientation(self, c: Cmdr) -> None:
+        """Set the orientation of the icon bar based on settings."""
+        d = {
+            'bottom': ToolBarArea.BottomToolBarArea,
+            'left': ToolBarArea.LeftToolBarArea,
+            'right': ToolBarArea.RightToolBarArea,
+            'top': ToolBarArea.TopToolBarArea,
+        }
+        where_s = self.toolbar_orientation
+        if not where_s:
+            where_s = 'top'
+        where = d.get(where_s.lower())
+        if where:
+            self.addToolBar(where, self.iconBar)
     #@+node:ekr.20110605121601.18145: *4* dw.createLogPane & helpers
     def createLogPane(self, parent: QWidget) -> None:
         """Create all parts of Leo's log pane."""
