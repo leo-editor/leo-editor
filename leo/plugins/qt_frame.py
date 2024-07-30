@@ -258,7 +258,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         gui = g.app.gui
         path = g.os_path_join(g.app.leoDir, 'plugins', 'legacy.ui')
         form_class, base_class = uic.loadUiType(path)
-       
+
         form = form_class()
         form.setupUi(self.centralwidget)
         g.trace('form', form)
@@ -268,7 +268,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 if w.objectName() == name:
                     return w
             return None
-        
+
         if 1:
             print('')
             g.trace('centralwidget...')
@@ -279,13 +279,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
         # main_splitter = gui.find_widget_by_name(c, 'main_splitter')
         # secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
-        
+
         main_splitter = find_widget('main_splitter')
         secondary_splitter = find_widget('secondary_splitter')
 
         g.trace('main_splitter', main_splitter)
         g.trace('secondary_splitter', secondary_splitter)
-        
+
         assert secondary_splitter  ###
 
         self.createBodyPane(secondary_splitter)
