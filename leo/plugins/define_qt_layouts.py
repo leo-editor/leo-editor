@@ -38,7 +38,6 @@ def update_layout(tags, event):
         https://gist.github.com/gatesphere/82c9f67ca7b65d09e85208e0b2f7eca1#file-horizontal-thirds
         """
         main_splitter, secondary_splitter = dw.createMainLayout(dw.centralwidget)
-        dw.main_splitter, dw.secondary_splitter = main_splitter, secondary_splitter
         dw.createOutlinePane(secondary_splitter)
         dw.createLogPane(secondary_splitter)
         dw.createBodyPane(main_splitter)
@@ -61,8 +60,6 @@ def update_layout(tags, event):
         https://gist.github.com/gatesphere/82c9f67ca7b65d09e85208e0b2f7eca1#file-render-focused
         """
         parent = dw.centralwidget
-        #### main_splitter, secondary_splitter = dw.createMainLayout(dw.centralwidget)
-        
         main_splitter = dw.createMainSplitter(parent)
         secondary_splitter = dw.createSecondarySplitter(main_splitter)
 
@@ -70,7 +67,6 @@ def update_layout(tags, event):
         dw.set_widget_size_policy(secondary_splitter)
         dw.verticalLayout.addWidget(main_splitter)
 
-        dw.main_splitter, dw.secondary_splitter = main_splitter, secondary_splitter
         main_splitter.setOrientation(Orientation.Horizontal)
         secondary_splitter.setOrientation(Orientation.Vertical)
         dw.createOutlinePane(main_splitter)
@@ -100,14 +96,6 @@ def update_layout(tags, event):
         """
         g.trace('not ready: using legacy layout')
         return dw.create_legacy_layout()
-
-        # main_splitter = dw.main_splitter
-        # secondary_splitter = dw.secondary_splitter
-
-        # dw.createOutlinePane(main_splitter)
-        # dw.createLogPane(main_splitter)
-        # dw.createBodyPane(secondary_splitter)
-        # dw.vr_parent_frame = secondary_splitter
     #@-<< create vertical-thirds layout >>
     table = (
         ('horizontal-thirds', create_horizontal_thirds_layout),

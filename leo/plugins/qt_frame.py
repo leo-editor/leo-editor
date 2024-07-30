@@ -98,9 +98,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_menubar: QWidget = None  # Set in createMenuBar.
         self.leo_statusBar: QtWidgets.QStatusBar = None
         self.layout_name: str = None
-        self.main_splitter: Any = None
         self.old_layout_name: str = None
-        self.secondary_splitter: Any = None
         self.verticalLayout: Any = None
         self.vr_parent_frame: QWidget = None
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
@@ -215,7 +213,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         
         """
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-        self.main_splitter, self.secondary_splitter = main_splitter, secondary_splitter
         self.createOutlinePane(secondary_splitter)
         self.createLogPane(secondary_splitter)
         if main_splitter.orientation() == Orientation.Vertical:
@@ -237,13 +234,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         The lower pane contains 
         """
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-        self.main_splitter, self.secondary_splitter = main_splitter, secondary_splitter
         self.createBodyPane(secondary_splitter)
         self.createLogPane(secondary_splitter)
         treeFrame = self.createOutlinePane(main_splitter)
         main_splitter.addWidget(treeFrame)
         main_splitter.addWidget(secondary_splitter)
-        self.vr_parent_frame = main_splitter  ###
+        self.vr_parent_frame = main_splitter
         return main_splitter, secondary_splitter
     #@+node:ekr.20240729175958.1: *5* dw.create_main_layout
     def create_main_layout(self) -> tuple[QWidget, QWidget]:
@@ -261,7 +257,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
         ###
             # main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-            # self.main_splitter, self.secondary_splitter = main_splitter, secondary_splitter
             # self.createBodyPane(secondary_splitter)
             # self.createLogPane(secondary_splitter)
             # treeFrame = self.createOutlinePane(main_splitter)
