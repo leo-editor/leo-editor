@@ -174,6 +174,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
         c = self.leo_c
         self.leo_master = master
         main_splitter, secondary_splitter = self.createMainWindow()
+        if 1:  ### Experimental
+            self.createMenuBar()
+            self.createStatusBar(self)
+            # Signals...
+            ### QtCore.QMetaObject.connectSlotsByName(self)
         self.iconBar = self.addToolBar("IconBar")
         self.iconBar.setObjectName('icon-bar')  # Required for QMainWindow.saveState().
         self.set_icon_bar_orientation(c)
@@ -184,10 +189,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_menubar = self.menuBar()
         self.leo_statusBar = QtWidgets.QStatusBar()
         self.setStatusBar(self.leo_statusBar)
+        ### Do this in createMainWindow ???
         orientation_s = c.config.getString('initial-split-orientation')
         self.setSplitDirection(main_splitter, secondary_splitter, orientation_s)
         if hasattr(c, 'styleSheetManager'):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
+        if 1:  ### Experimental: do this last.
+            # Signals...
+            QtCore.QMetaObject.connectSlotsByName(self)
     #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
     def set_icon_bar_orientation(self, c: Cmdr) -> None:
         """Set the orientation of the icon bar based on settings."""
@@ -210,14 +219,18 @@ class DynamicWindow(QtWidgets.QMainWindow):
         Copied/adapted from qt_main.py.
         Called instead of uic.loadUi(ui_description_file, self)
         """
+        ### Do all this in create_layout???
         self.setMainWindowOptions()
         self.createCentralWidget()
         main_splitter, secondary_splitter = self.create_layout()
         self.createMiniBuffer(self.centralwidget)
-        self.createMenuBar()
-        self.createStatusBar(self)
-        # Signals...
-        QtCore.QMetaObject.connectSlotsByName(self)
+
+        ### Do this in construct???
+        if 0:
+            self.createMenuBar()
+            self.createStatusBar(self)
+            # Signals...
+            QtCore.QMetaObject.connectSlotsByName(self)
         return main_splitter, secondary_splitter
     #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers (new)
     def create_layout(self) -> tuple[QWidget, QWidget]:
@@ -233,6 +246,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         layout_dict = {
             'legacy': self.create_legacy_layout,
             'big-tree': self.create_big_tree_layout,
+            'main': self.create_main_layout,
         }
 
         # Allow plugins to define layouts.
@@ -297,6 +311,30 @@ class DynamicWindow(QtWidgets.QMainWindow):
         main_splitter.addWidget(secondary_splitter)
         self.vr_parent_frame = main_splitter  ###
         return main_splitter, secondary_splitter
+    #@+node:ekr.20240729175958.1: *5* dw.create_main_layout
+    def create_main_layout(self) -> tuple[QWidget, QWidget]:
+        """
+        Create the layout previously specified by  @bool big-outline-pane.
+        
+        The lower pane contains 
+        """
+        uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'qt_main.ui')  # 'qt_main_2.ui'
+        assert os.path.exists(uiPath), uiPath
+        return None, None
+        # form_class, base_class = uic.loadUiType(uiPath)
+        ### data = uic.loadUiType(uiPath)
+        ### g.printObj(data)
+
+        ###
+            # main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+            # self.main_splitter, self.secondary_splitter = main_splitter, secondary_splitter
+            # self.createBodyPane(secondary_splitter)
+            # self.createLogPane(secondary_splitter)
+            # treeFrame = self.createOutlinePane(main_splitter)
+            # main_splitter.addWidget(treeFrame)
+            # main_splitter.addWidget(secondary_splitter)
+        # self.vr_parent_frame = main_splitter  ###
+        # return main_splitter, secondary_splitter
     #@+node:ekr.20110605121601.18142: *4* dw: top-level methods
     #@+node:ekr.20190118150859.10: *5* dw.addNewEditor
     def addNewEditor(self, name: str) -> tuple[QWidget, Wrapper]:
@@ -429,10 +467,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         main_splitter = self.createMainSplitter(parent)
         secondary_splitter = self.createSecondarySplitter(main_splitter)
 
-        if 1:  ###  Somehow this is crucial.
-            self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
-            self.set_widget_size_policy(secondary_splitter)
-            self.verticalLayout.addWidget(main_splitter)
+        #  Somehow this is crucial.
+        self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
+        self.set_widget_size_policy(secondary_splitter)
+        self.verticalLayout.addWidget(main_splitter)
 
         return main_splitter, secondary_splitter
     #@+node:ekr.20240729064156.1: *5* dw.createMainSplitter (new)
