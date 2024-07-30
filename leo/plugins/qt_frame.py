@@ -271,19 +271,30 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # return main_splitter, secondary_splitter
     #@+node:ekr.20240725073848.1: *4* dw.insert_vr_frame (new)
     def insert_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
+        """Insert the given frame into the vr_parent_frame."""
+        c = self.leo_c
         dw = self
+        gui = g.app.gui
         parent = dw.vr_parent_frame
-        if isinstance(parent, QtWidgets.QSplitter):
-            ### Debugging and development.
-            vr_frame.setStyleSheet('* { background-color: orange; }')  ###
-            vr_frame.show()  ###
-            parent.addWidget(vr_frame)
-            dw.main_splitter.setSizes([100000] * len(dw.main_splitter.sizes()))
-            if dw.secondary_splitter:
-                dw.secondary_splitter.setSizes([100000] * len(dw.secondary_splitter.sizes()))
-            parent.setSizes([100000] * len(parent.sizes()))
-        else:
+        if not isinstance(parent, QtWidgets.QSplitter):
             g.trace('dw.vr_parent_frame must be a QSplitter!')
+            return
+
+        if 1:  ### Debugging and development.
+            vr_frame.setStyleSheet('* { background-color: orange; }')  ###
+
+        # Add the vr frame.
+        vr_frame.show()  ###
+        parent.addWidget(vr_frame)
+
+        # Resize splitters if they exist.
+        main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+        secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
+        if main_splitter:
+            main_splitter.setSizes([100000] * len(main_splitter.sizes()))
+        if secondary_splitter:
+            secondary_splitter.setSizes([100000] * len(secondary_splitter.sizes()))
+        parent.setSizes([100000] * len(parent.sizes()))
     #@+node:ekr.20110605121601.18165: *3* dw: create log tabs
     #@+node:ekr.20110605121601.18167: *4* dw.createSpellTab
     def createSpellTab(self, parent: QWidget) -> None:
