@@ -5,7 +5,7 @@ define_qt_layouts.py: define several qt layouts.
 """
 
 from leo.core import leoGlobals as g
-from leo.core.leoQt import Orientation  ### QtWidgets
+from leo.core.leoQt import Orientation, QtWidgets
 
 g.assertUi('qt')
 
@@ -60,19 +60,33 @@ def update_layout(tags, event):
         https://gist.github.com/gatesphere/82c9f67ca7b65d09e85208e0b2f7eca1#file-render-focused
         """
         parent = dw.centralwidget
-        main_splitter = dw.createMainSplitter(parent)
-        secondary_splitter = dw.createSecondarySplitter(main_splitter)
 
-        dw.verticalLayout = dw.createVLayout(parent, 'mainVLayout', margin=3)
-        dw.set_widget_size_policy(secondary_splitter)
-        dw.verticalLayout.addWidget(main_splitter)
+        outer_frame = QtWidgets.QFrame(parent)
+        outer_frame.setStyleSheet('* { background-color: red; }')
 
+        h_layout = QtWidgets.QHBoxLayout()
+        h_layout.addWidget(outer_frame)
+
+        main_splitter = dw.createMainSplitter(parent=outer_frame)
         main_splitter.setOrientation(Orientation.Horizontal)
+
+        secondary_splitter = dw.createSecondarySplitter(main_splitter)
         secondary_splitter.setOrientation(Orientation.Vertical)
-        dw.createOutlinePane(main_splitter)
-        dw.createLogPane(main_splitter)
-        dw.createBodyPane(main_splitter)
-        dw.vr_parent_frame = secondary_splitter
+
+        # Required, for now at least.  Using a horizontal layout fails.
+        dw.verticalLayout = dw.createVLayout(parent, 'mainVLayout', margin=3)
+        ### Removing this helps.
+        ### dw.set_widget_size_policy(secondary_splitter)
+
+        dw.verticalLayout.addWidget(outer_frame)
+        
+        ### To do: generalize createBodyPane.
+
+        dw.createOutlinePane(secondary_splitter)
+        dw.createLogPane(secondary_splitter)
+        dw.createBodyPane(secondary_splitter)
+
+        dw.vr_parent_frame = main_splitter
 
         return main_splitter, secondary_splitter
     #@-<< create render-focused layout >>
