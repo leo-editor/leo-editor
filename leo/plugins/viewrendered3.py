@@ -1694,7 +1694,7 @@ def vr3_help_for_plot_2d(event):
 @g.command('vr3-close')
 def hide_rendering_pane(event):
     """Close the rendering pane and delete the VR3 instance."""
-    global controllers
+    # global controllers
     if g.app.gui.guiName() != 'qt':
         return
 
@@ -1715,7 +1715,7 @@ def hide_rendering_pane(event):
     vr3.hide()
     vr3.setParent(None)
     vr3.deleteLater()
-    del controllers[h]
+    del vr3.controllers[h]
 
     c.bodyWantsFocus()
 
@@ -2011,7 +2011,6 @@ def toggle_rendering_pane_tab(event):
     If a VR3 instance exists for this controller, remove it.
     Otherwise, create it in a tab in the log pane.
     """
-    global controllers
     if g.app.gui.guiName() != 'qt':
         return
     if not (c := event.get('c')):
@@ -2024,7 +2023,7 @@ def toggle_rendering_pane_tab(event):
     if log.findTabIndex(TABNAME):
         log.deleteTab(TABNAME)
         vr3.set_freeze()
-        positions[h] = None
+        vr3.positions[h] = None
     else:
         open_in_tab(c, vr3)
         vr3.set_unfreeze()
@@ -2089,9 +2088,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Set the ivars.
         self.active = False
         self.badColors = []
+        self.controllers = controllers
         self.delete_callback = None
         self.gnx = None
         self.graphics_class = QtWidgets.QGraphicsWidget
+        self.positions = positions
         self.pyplot_canvas = None
 
         self.pyplot_imported = False
