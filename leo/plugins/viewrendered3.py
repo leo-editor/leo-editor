@@ -937,7 +937,6 @@ from inspect import cleandoc
 from io import StringIO, open as ioOpen
 
 import os
-import os.path
 from pathlib import Path
 import re
 import shutil
@@ -963,7 +962,7 @@ try:
     from leo.plugins import qt_text
     from leo.core.leoQt import QtCore, QtWidgets
     from leo.core.leoQt import QtMultimedia, QtSvg
-    from leo.core.leoQt import KeyboardModifier, WrapMode  ### Orientation
+    from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
     from leo.core.leoQt import QAction, QActionGroup
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
@@ -1004,8 +1003,8 @@ if QtSvg:
     else:
         QtSvg = None
 #@-<< Qt Imports >>
-
-# Optional imports...
+#@+<< Optional imports >>
+#@+node:tom.20240725071327.1: *3* << Optional imports >> (VR3)
 try:
     import docutils
     import docutils.core
@@ -1059,6 +1058,7 @@ try:
 except ImportError:
     pygments = None
     print('VR3: *** no pygments')
+#@-<< Optional imports >>
 #@-<< imports >>
 #@+<< declarations >>
 #@+node:tom.20240520232254.1: ** << declarations >>
@@ -1212,12 +1212,8 @@ asciidoc_dirs = {'asciidoc': {}, 'asciidoc3': {}}
 asciidoc_processors = []
 asciidoc_has_diagram = False
 #@-<< Misc Globals >>
-#@-<< declarations >>
-
-trace = False  # This global trace is convenient.
-
 #@+<< define html templates >>
-#@+node:TomP.20191215195433.6: ** << define html templates >> (vr3)
+#@+node:TomP.20191215195433.6: *3* << define html templates >> (vr3)
 image_template = '''\
 <html>
 <body bgcolor="#fffbdc">
@@ -1240,12 +1236,15 @@ latex_template = f'''\
 </html>
 '''
 #@-<< define html templates >>
-#@+<< vr3: global data >>
-#@+node:ekr.20240721090655.1: ** << vr3: global data >>
-# keys are c.hash().
 
+#@-<< declarations >>
+
+trace = False  # This global trace is convenient.
+
+
+# keys are c.hash().
+controllers = {}  # values: VR3 widets
 positions = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
-#@-<< vr3: global data >>
 
 #@+others
 #@+node:TomP.20200508124457.1: ** find_exe()
@@ -1286,7 +1285,7 @@ def find_dir(name, path):
     """Given a starting directory, return the full path to the named directory.
 
     RETURNS
-    A full directory, or None if the named directory is not found.
+    A full directory path, or None if the named directory is not found.
     """
     for root, dirs, files in os.walk(path):
         if name in dirs:
@@ -1466,34 +1465,36 @@ def xisVisible():
 #@+node:TomP.20191215195433.11: *3* vr3.onCreate
 def onCreate(tag, keys):
     pass
-#@+node:TomP.20191215195433.12: *3* vr3.onClose (does nothing)
+#@+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
-    pass
-    # c = keys.get('c')
-    # h = c.hash()
-    # vr3 = controllers.get(h)
-    # if vr3:
-        # # g.trace(f"VR3: delete {vr3}")
-        # c.bodyWantsFocus()
-        # del controllers[h]
-        # vr3.deactivate()
-#@+node:TomP.20191215195433.13: *3* vr3.show_scrolled_message (changed)
-def show_scrolled_message(tag, kw) -> bool:
+    c = keys.get('c')
+    h = c.hash()
+    vr3 = controllers.get(h)
+    if vr3:
+        # g.trace(f"VR3: delete {vr3}")
+        c.bodyWantsFocus()
+        del controllers[h]
+        vr3.deactivate()
+#@+node:TomP.20191215195433.13: *3* vr3.show_scrolled_message
+def show_scrolled_message(tag, kw):
     """Show "scrolled message" in VR3.
     
     If not already open, open in last opened position,
     or in splitter if none.
     """
     if g.unitTesting:
-        return False  # This just slows the unit tests.
+        return None  # This just slows the unit tests.
+
     c = kw.get('c')
-    if not c:
-        return False
-    p = c.p
-    vr3 = getVr3(c=c)
-    if not vr3:
-        return False
     flags = kw.get('flags') or 'rst'
+    h = c.hash()
+    vr3 = controllers.get(h, None)
+    if not vr3:
+        if positions.get(h, None) == None or OPENED_IN_SPLITTER:
+            vr3 = viewrendered(event=kw)
+        else:
+            vr3 = viewrendered_tab(event=kw)
+
     title = kw.get('short_title', '').strip()
     vr3.setWindowTitle(title)
     s = '\n'.join([
@@ -1507,9 +1508,7 @@ def show_scrolled_message(tag, kw) -> bool:
         tag='show-scrolled-message',
         keywords={'c': c, 'force': True, 's': s, 'flags': flags},
     )
-    # A hack: suppress updates until the node changes.
-    vr3.gnx = p.v.gnx
-    vr3.length = len(p.v.b)
+
     if not vr3.isVisible:
         vr3.show()
     return True
@@ -1525,6 +1524,7 @@ def open_in_tab(c, vr3):
     log = c.frame.log
     log.createTab(TABNAME, widget=vr3, createText=False)
     log.selectTab(TABNAME)
+    vr3.set_unfreeze()
     positions[c.hash()] = OPENED_IN_TAB
 #@+node:tom.20230403143106.1: *3* vr3.close_tab
 def close_tab(c, vr3):
@@ -1538,8 +1538,8 @@ def close_tab(c, vr3):
     h = c.hash()
     positions[h] = OPENED_IN_TAB
 
-#@+node:TomP.20191215195433.15: *3* vr3.getVr3 (changed)
-def getVr3(*, c=None, event=None):
+#@+node:TomP.20191215195433.15: *3* vr3.getVr3
+def getVr3(event):
     """Return the VR3 ViewRenderedController3
 
     If the controller is not found, a new one
@@ -1550,213 +1550,84 @@ def getVr3(*, c=None, event=None):
              is dispatched.
 
     RETURNS
-    The active ViewRenderedController3 instance or None.
+    The active ViewRenderedController3 or None.
     """
+    global controllers
     if g.app.gui.guiName() != 'qt':
         return None
-
-    # First, get c.
-    if c:
-        pass
-    elif event:
-        c = event.get('c')
-        if not c:
-            return None
+    if (c := event.get('c')):
+        h = c.hash()
     else:
-        g.trace('"c" or "event" kwarg required', g.callers())
         return None
-    vr3 = getattr(c, 'vr3', None)
-    if not vr3:
-        vr3 = ViewRenderedController3(c)
-        c.vr3 = vr3
-        dw = c.frame.top
-        dw.insert_vr_frame(vr3)
+
+    if not (vr3 := controllers.get(h)):
+        controllers[h] = vr3 = ViewRenderedController3(c)  # viewrendered(event)
+        positions[h] = None
+
     return vr3
-#@+node:TomP.20191215195433.16: ** vr3.Commands (All changed)
-#@+node:TomP.20191215195433.18: *3* g.command('vr3') (changed)
+#@+node:TomP.20191215195433.16: ** vr3.Commands
+#@+node:TomP.20191215195433.18: *3* g.command('vr3') (**weird effect**)
 @g.command('vr3')
-def viewrendered3(event):
+def viewrendered(event):
     """Open render view for commander"""
-    vr3 = getVr3(event=event)
+    global controllers
+    gui = g.app.gui
+    if gui.guiName() != 'qt':
+        return None
+    c = event.get('c')
+    if not c:
+        return None
+    h = c.hash()
+    vr3 = controllers.get(h)
     if vr3:
-        c = vr3.c
         c.bodyWantsFocusNow()
+        return vr3
+    # Create the VR frame
+    controllers[h] = vr3 = ViewRenderedController3(c)
+
+    # A prototype for supporint  arbitrarily many layouts.
+    layout_kind = c.config.getString('vr3-initial-orientation') or 'in_secondary'
+
+    # Use different layouts depending on the main splitter's *initial* orientation.
+    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+    secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
+    if layout_kind == 'in_body':
+        # Share the VR pane with the body pane.
+        # Create a new splitter.
+        splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
+        splitter.setObjectName('vr3-horizonal-splitter')
+        main_splitter.addWidget(splitter)
+        # Add frames.
+        body_frame = gui.find_widget_by_name(c, 'bodyFrame')
+        splitter.addWidget(body_frame)
+        splitter.addWidget(vr3)
+        gui.equalize_splitter(splitter)
+        gui.equalize_splitter(main_splitter)
+    elif main_splitter.orientation() == Orientation.Vertical:
+        # Put the VR pane in in the main_splitter.
+        main_splitter.insertWidget(1, vr3)  ### The weird effect happens here.
+        gui.equalize_splitter(main_splitter)
+    else:
+        # Put the VR pane in the secondary splitter.
+        secondary_splitter.addWidget(vr3)
+        gui.equalize_splitter(secondary_splitter)
+    c.bodyWantsFocusNow()
     return vr3
-#@+node:tom.20230403141635.1: *3* g.command('vr3-tab') (changed, **remove??)
-@g.command('vr3-tab')
-def viewrendered3_tab(event):
-    """Open render view for commander"""
-    # global controllers
-    if g.app.gui.guiName() != 'qt':
-        return None
-    c = event.get('c')
-    if not c:
-        return None
-    vr3 = getattr(c, 'vr3', None)
-    if not vr3:
-        c.vr3 = vr3 = ViewRenderedController3(c)
-
-    open_in_tab(c, vr3)
-    return vr3
-#@+node:tom.20220824141850.1: *3* g.command('vr3-freeze')
-@g.command('vr3-freeze')
-def freeze_rendering_pane(event):
-    """Freeze the rendering pane so it does not update."""
-    vr3 = getVr3(event)
-    if vr3:
-        vr3.set_freeze()
-#@+node:tom.20220824142721.1: *3* g.command('vr3-unfreeze')
-@g.command('vr3-unfreeze')
-def unfreeze_rendering_pane(event):
-    """Allow the rendering pane to update."""
-    vr3 = getVr3(event=event)
-    if vr3:
-        vr3.set_unfreeze()
-#@+node:TomP.20191215195433.21: *3* g.command('vr3-hide') (changed)
-@g.command('vr3-hide')
-def hide_rendering_pane(event):
-    """Close the rendering pane."""
-    vr3 = getVr3(event=event)
-    if not vr3:
-        return
-    if vr3.pyplot_active:
-        g.es_print('can not close vr3 pane after using pyplot')
-        return
-    c = vr3.c
-    dw = c.frame.top
-    dw.hide_vr3_pane(vr3)  ###
-
-    ###
-        # pos = positions.get(c.hash())
-        # if pos == OPENED_IN_SPLITTER:
-            # vr3.store_layout('open')
-        # elif pos == OPENED_IN_TAB:
-            # close_tab(c, vr3)
-
-        # def at_idle(c=c, _vr3=vr3):
-            # c = event.get('c')
-            # # _vr3.adjust_layout('closed')
-            # c.bodyWantsFocusNow()
-
-        # vr3.deactivate()
-        # vr3.deleteLater()
-        # ### del controllers[c.hash()]
-
-        # QtCore.QTimer.singleShot(0, at_idle)
-        # c.bodyWantsFocus()
-# Compatibility
-
-close_rendering_pane = hide_rendering_pane
-#@+node:TomP.20191215195433.22: *3* g.command('vr3-lock')
-@g.command('vr3-lock')
-def lock_rendering_pane(event):
-    """Lock the rendering pane to the current node."""
-    vr3 = getVr3(event)
-    if vr3:
-        vr3.lock()
-#@+node:TomP.20191215195433.23: *3* g.command('vr3-pause-play')
-@g.command('vr3-pause-play-movie')
-def pause_play_movie(event):
-    """Pause or play a movie in the rendering pane."""
-    vr3 = getVr3(event=event)
-    if not vr3:
-        return
-    vp = vr3.vp
-    if not vp:
-        return
-    _state = vp.state()
-    f = vp.pause if _state == 1 else vp.play
-    f()
-#@+node:TomP.20191215195433.24: *3* g.command('vr3-show')
-@g.command('vr3-show')
-def show_rendering_pane(event):
-    """Show the rendering pane."""
-    vr3 = getVr3(event=event)
-    if vr3:
-        vr3.show_dock_or_pane()
-#@+node:TomP.20191215195433.25: *3* g.command('vr3-toggle') (changed, todo)
-@g.command('vr3-toggle')
-def toggle_rendering_pane(event):
-    """Toggle the rendering pane.
-    
-    If a VR3 instance exists for this controller, remove it.
-    Otherwise, create it, respecting its position if any from
-    the last time it was open.
-    """
-    # global controllers
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-    vr3 = getVr3(event=event)
-    g.trace('not ready yet', vr3)
-#@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab') (no longer used)
-#@verbatim
-# @g.command('vr3-toggle-tab')
-# def toggle_rendering_pane_tab(event):
-    # """Toggle the rendering pane.
-
-    # If a VR3 instance exists for this controller, remove it.
-    # Otherwise, create it in a tab in the log pane, or in
-    # the last position it had when previously open.
-    # """
-    # global controllers
-    # if g.app.gui.guiName() != 'qt':
-        # return
-    # c = event.get('c')
-    # if not c:
-        # return
-
-    # h = c.hash()
-    # vr3 = controllers.get(h, None)
-
-    # if not vr3:
-        # if positions.get(h, None) == None or OPENED_IN_TAB:
-            # vr3 = viewrendered3_tab(event)
-        # else:
-            # vr3 = viewrendered3(event)
-    # else:
-        # # c.doCommandByName('vr3-hide')  # Doesn't work
-        # # This timer is *required* or vr3 won't open on next toggle
-        # QtCore.QTimer.singleShot(0, lambda: c.doCommandByName('vr3-hide'))
-#@+node:TomP.20191215195433.26: *3* g.command('vr3-unlock')
-@g.command('vr3-unlock')
-def unlock_rendering_pane(event):
-    """Allow rendering pane to witch to current node."""
-    vr3 = getVr3(event=event)
-    if vr3:
-        vr3.unlock()
-#@+node:TomP.20191215195433.27: *3* g.command('vr3-update')
-@g.command('vr3-update')
-def update_rendering_pane(event):
-    """Update the rendering pane"""
-    vr3 = getVr3(event=event)
-    if not vr3:
-        return
-
-    ### c = event.get('c')
-    c = vr3.c
-    _freeze = vr3.freeze
-    if vr3.freeze:
-        vr3.freeze = False
-    vr3.update(tag='view', keywords={'c': c, 'force': True})
-    if _freeze:
-        vr3.freeze = _freeze
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
 @g.command('vr3-execute')
 def execute_code(event):
     """Execute code in a RsT or MD node or subtree."""
-    vr3 = getVr3(event=event)
-    if vr3:
-        c = vr3.c
-        vr3.execute_flag = True
-        vr3.update(tag='view', keywords={'c': c, 'force': True})
+    vr3 = getVr3(event)
+    if not vr3: return
+
+    c = event.get('c')
+    vr3.execute_flag = True
+    vr3.update(tag='view', keywords={'c': c, 'force': True})
 #@+node:TomP.20191215195433.29: *3* g.command('vr3-export-rst-html')
 @g.command('vr3-export-rst-html')
 def export_rst_html(event):
     """Export rendering to system browser."""
-    vr3 = getVr3(event=event)
+    vr3 = getVr3(event)
     if not vr3:
         return
     try:
@@ -1775,39 +1646,101 @@ def export_rst_html(event):
     with ioOpen(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
     webbrowser.open_new_tab(pathname)
+#@+node:tom.20220824141850.1: *3* g.command('vr3-freeze')
+@g.command('vr3-freeze')
+def freeze_rendering_pane(event):
+    """Freeze the rendering pane so it does not update."""
+    vr3 = getVr3(event)
+    if not vr3: return
+    vr3.set_freeze()
+#@+node:tom.20211103161929.1: *3* g.command('vr3-help-plot-2d')
+@g.command('vr3-help-plot-2d')
+def vr3_help_for_plot_2d(event):
+    vr3 = getVr3(event)
+    c = vr3.c
+
+    doc_ = vr3.plot_2d.__doc__
+    doclines = doc_.split('\n')
+    doclines = [line for line in doclines
+                if not line.lstrip().startswith('#@')]
+    doc = '\n'.join(doclines)
+    docstr = cleandoc(doc)
+    docstr = ('Help For VR3 Plot 2D\n'
+              '=====================\n'
+              + docstr)
+
+    args = {'output_encoding': 'utf-8'}
+    if vr3.rst_stylesheet and os.path.exists(vr3.rst_stylesheet):
+        args['stylesheet_path'] = f'{vr3.rst_stylesheet}'
+        args['embed_stylesheet'] = True
+        args['report_level'] = RST_NO_WARNINGS
+
+    try:
+        _html = publish_string(docstr, writer_name='html', settings_overrides=args)
+        _html = _html.decode(ENCODING)
+    except SystemMessage as sm:
+        msg = sm.args[0]
+        if 'SEVERE' in msg or 'FATAL' in msg:
+            output = f'<pre style="{RST_ERROR_MSG_STYLE}">RST error: {msg}\n</pre><b><b>'
+            output += f'<pre style="{RST_ERROR_BODY_STYLE}">{docstr}</pre>'
+
+    path = c.getNodePath(c.rootPosition())
+    pathname = g.finalize_join(path, VR3_TEMP_FILE)
+    with ioOpen(pathname, 'w', encoding='utf-8') as f:
+        f.write(_html)
+    webbrowser.open_new_tab(pathname)
+#@+node:TomP.20191215195433.21: *3* g.command('vr3-hide')
+@g.command('vr3-hide')
+@g.command('vr3-close')
+def hide_rendering_pane(event):
+    """Close the rendering pane and delete the VR3 instance."""
+    # global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
+
+    if (c := event.get('c')):
+        h = c.hash()
+    else:
+        return
+
+    vr3 = getVr3(event)
+    if not vr3: return
+
+    if vr3.pyplot_active:
+        g.es_print('can not close vr3 pane after using pyplot')
+        return
+
+    positions[h] = None
+    vr3.deactivate()
+    vr3.hide()
+    vr3.setParent(None)
+    vr3.deleteLater()
+    del vr3.controllers[h]
+
+    c.bodyWantsFocus()
+
+teardown = hide_rendering_pane
+# Compatibility
+close_rendering_pane = hide_rendering_pane
+#@+node:TomP.20191215195433.22: *3* g.command('vr3-lock')
+@g.command('vr3-lock')
+def lock_rendering_pane(event):
+    """Lock the rendering pane to the current node."""
+    vr3 = getVr3(event)
+    if not vr3: return
+
+    vr3.lock()
 #@+node:TomP.20200113230428.1: *3* g.command('vr3-lock-unlock-tree')
 @g.command('vr3-lock-unlock-tree')
 def lock_unlock_tree(event):
     """Toggle between lock(), unlock()."""
-    vr3 = getVr3(event=event)
-    if vr3:
-        if vr3.lock_to_tree:
-            vr3.unlock()
-        else:
-            vr3.lock()
-#@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout')
-@g.command('vr3-use-default-layout')
-def open_with_layout(event):
-    vr3 = getVr3(event=event)
-    if not vr3:
-        return
+    vr3 = getVr3(event)
+    if not vr3: return
 
-    c = vr3.c
-    c.doCommandByName('vr3-update')
-    c.bodyWantsFocusNow()
-
-#@+node:TomP.20201003182436.1: *3* g.command('vr3-zoom-view')
-@g.command('vr3-zoom-view')
-def zoom_view(event):
-    vr3 = getVr3(event=event)
-    if vr3:
-        vr3.zoomView()
-#@+node:TomP.20201003182453.1: *3* g.command('vr3-shrink-view')
-@g.command('vr3-shrink-view')
-def shrink_view(event):
-    vr3 = getVr3(event=event)
-    if vr3:
-        vr3.shrinkView()
+    if vr3.lock_to_tree:
+        vr3.unlock()
+    else:
+        vr3.lock()
 #@+node:tom.20210620170624.1: *3* g.command('vr3-open-markup-in-editor')
 @g.command('vr3-open-markup-in-editor')
 def markup_to_editor(event):
@@ -1817,9 +1750,7 @@ def markup_to_editor(event):
     isn't what was expected.  There is currently no way to
     write the text back from the editor into VR3.
     """
-    vr3 = getVr3(event=event)
-    if not vr3:
-        return
+    vr3 = getVr3(event)
     editor_from_settings = vr3.external_editor
     if editor_from_settings.lower() == 'none':  # weird but has happened
         editor_from_settings = ''
@@ -1834,6 +1765,19 @@ def markup_to_editor(event):
 
     cmd = [editor, 'vr3_last_markup.txt']
     subprocess.Popen(cmd)
+
+#@+node:TomP.20191215195433.23: *3* g.command('vr3-pause-play')
+@g.command('vr3-pause-play-movie')
+def pause_play_movie(event):
+    """Pause or play a movie in the rendering pane."""
+    vr3 = getVr3(event)
+    if not vr3: return
+    vp = vr3.vp
+    if not vp:
+        return
+    _state = vp.state()
+    f = vp.pause if _state == 1 else vp.play
+    f()
 
 #@+node:tom.20211103011049.1: *3* g.command('vr3-plot-2d')
 @g.command('vr3-plot-2d')
@@ -1976,46 +1920,8 @@ def vr3_plot_2d(event):
     find one.
     """
     #@-<< vr3-plot-2d docstring >>
-    vr3 = getVr3(event=event)
-    if vr3:
-        vr3.plot_2d()
-#@+node:tom.20211103161929.1: *3* g.command('vr3-help-plot-2d')
-@g.command('vr3-help-plot-2d')
-def vr3_help_for_plot_2d(event):
     vr3 = getVr3(event)
-    if not vr3:
-        return
-    c = vr3.c
-    doc_ = vr3.plot_2d.__doc__
-    doclines = doc_.split('\n')
-    doclines = [line for line in doclines
-                if not line.lstrip().startswith('#@')]
-    doc = '\n'.join(doclines)
-    docstr = cleandoc(doc)
-    docstr = ('Help For VR3 Plot 2D\n'
-              '=====================\n'
-              + docstr)
-
-    args = {'output_encoding': 'utf-8'}
-    if vr3.rst_stylesheet and os.path.exists(vr3.rst_stylesheet):
-        args['stylesheet_path'] = f'{vr3.rst_stylesheet}'
-        args['embed_stylesheet'] = True
-        args['report_level'] = RST_NO_WARNINGS
-
-    try:
-        _html = publish_string(docstr, writer_name='html', settings_overrides=args)
-        _html = _html.decode(ENCODING)
-    except SystemMessage as sm:
-        msg = sm.args[0]
-        if 'SEVERE' in msg or 'FATAL' in msg:
-            output = f'<pre style="{RST_ERROR_MSG_STYLE}">RST error: {msg}\n</pre><b><b>'
-            output += f'<pre style="{RST_ERROR_BODY_STYLE}">{docstr}</pre>'
-
-    path = c.getNodePath(c.rootPosition())
-    pathname = g.finalize_join(path, VR3_TEMP_FILE)
-    with ioOpen(pathname, 'w', encoding='utf-8') as f:
-        f.write(_html)
-    webbrowser.open_new_tab(pathname)
+    vr3.plot_2d()
 #@+node:tom.20220225110149.1: *3* g.command('vr3-render-html-from-clip')
 @g.command('vr3-render-html-from-clip')
 def vr3_render_html_from_clip(event):
@@ -2024,9 +1930,7 @@ def vr3_render_html_from_clip(event):
     The html is available for export until the current selected
     node is reloaded.
     """
-    vr3 = getVr3(event=event)
-    if not vr3:
-        return
+    vr3 = getVr3(event)
     clip_str = g.app.gui.getTextFromClipboard()
     vr3.rst_html = clip_str  # So we can be exported to system browser.
 
@@ -2037,6 +1941,136 @@ def vr3_render_html_from_clip(event):
     vr3.update_html(clip_str, {})
 
 
+#@+node:TomP.20191215195433.24: *3* g.command('vr3-show')
+@g.command('vr3-show')
+def show_rendering_pane(event):
+    """Show the rendering pane."""
+    vr3 = getVr3(event)
+    if not vr3: return
+
+    vr3.show_dock_or_pane()
+#@+node:TomP.20201003182453.1: *3* g.command('vr3-shrink-view')
+@g.command('vr3-shrink-view')
+def shrink_view(event):
+    vr3 = getVr3(event)
+    vr3.shrinkView()
+#@+node:tom.20230403141635.1: *3* g.command('vr3-tab')
+@g.command('vr3-tab')
+def viewrendered_tab(event):
+    """Open VR3 in a tab in commander's log framer"""
+    # global controllers
+    if g.app.gui.guiName() != 'qt':
+        return None
+    if not (c := event.get('c')):
+        return None
+
+    vr3 = getVr3({'c': c})
+    log = c.frame.log
+    if not log.findTabIndex(TABNAME):
+        open_in_tab(c, vr3)
+        vr3.set_unfreeze()
+
+#@+node:TomP.20191215195433.25: *3* g.command('vr3-toggle')
+@g.command('vr3-toggle')
+def toggle_rendering_pane(event):
+    """Toggle the rendering pane.
+    
+    If a VR3 instance exists for this controller, remove it.
+    Otherwise, create it, respecting its position if any from
+    the last time it was open.
+    """
+    # global controllers
+    if g.app.gui.guiName() != 'qt':
+        return
+    if not (c := event.get('c')):
+        return
+
+    h = c.hash()
+    vr3 = controllers.get(h)
+    if vr3:
+        had_vr3 = True
+    else:
+        vr3 = getVr3({'c': c})
+        had_vr3 = False
+
+    if had_vr3:
+        vr3.setParent(None)
+        vr3.hide()
+    else:
+        ms = g.app.gui.find_widget_by_name(c, 'main_splitter')
+        ms.addWidget(vr3)
+        ms.setSizes([100_000] * len(ms.sizes()))
+        vr3.show()
+        vr3.set_unfreeze()
+        positions[h] = OPENED_IN_SPLITTER
+#@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab')
+@g.command('vr3-toggle-tab')
+def toggle_rendering_pane_tab(event):
+    """Toggle the rendering pane.
+    
+    If a VR3 instance exists for this controller, remove it.
+    Otherwise, create it in a tab in the log pane.
+    """
+    if g.app.gui.guiName() != 'qt':
+        return
+    if not (c := event.get('c')):
+        return
+
+    h = c.hash()
+    vr3 = getVr3({'c': c})
+    log = c.frame.log
+
+    if log.findTabIndex(TABNAME):
+        log.deleteTab(TABNAME)
+        vr3.set_freeze()
+        vr3.positions[h] = None
+    else:
+        open_in_tab(c, vr3)
+        vr3.set_unfreeze()
+
+#@+node:tom.20220824142721.1: *3* g.command('vr3-unfreeze')
+@g.command('vr3-unfreeze')
+def unfreeze_rendering_pane(event):
+    """Allow the rendering pane to update."""
+    vr3 = getVr3(event)
+    if not vr3: return
+
+    vr3.set_unfreeze()
+#@+node:TomP.20191215195433.26: *3* g.command('vr3-unlock')
+@g.command('vr3-unlock')
+def unlock_rendering_pane(event):
+    """Allow rendering pane to witch to current node."""
+    vr3 = getVr3(event)
+    if not vr3: return
+
+    vr3.unlock()
+#@+node:TomP.20191215195433.27: *3* g.command('vr3-update')
+@g.command('vr3-update')
+def update_rendering_pane(event):
+    """Update the rendering pane"""
+    vr3 = getVr3(event)
+    if not vr3: return
+
+    c = event.get('c')
+    old_freeze = vr3.freeze
+    if vr3.freeze:
+        vr3.freeze = False
+    vr3.update(tag='view', keywords={'c': c, 'force': True})
+    if old_freeze:
+        vr3.freeze = old_freeze
+#@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout')
+@g.command('vr3-use-default-layout')
+def open_with_layout(event):
+    vr3 = getVr3(event)
+    c = vr3.c
+    c.doCommandByName('vr3-update')
+    c.bodyWantsFocusNow()
+
+#@+node:TomP.20201003182436.1: *3* g.command('vr3-zoom-view')
+@g.command('vr3-zoom-view')
+def zoom_view(event):
+    vr3 = getVr3(event)
+    vr3.zoomView()
 #@+node:TomP.20191215195433.36: ** class ViewRenderedController3 (QWidget)
 class ViewRenderedController3(QtWidgets.QWidget):
     """A class to control rendering in a rendering pane."""
@@ -2044,7 +2078,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329223820.1: *3* vr3.ctor & helpers
     def __init__(self, c, parent=None):
         """Ctor for ViewRenderedController class."""
-        global _in_code_block
         self.c = c
         # Create the widget.
         super().__init__(parent)
@@ -2055,9 +2088,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Set the ivars.
         self.active = False
         self.badColors = []
+        self.controllers = controllers
         self.delete_callback = None
         self.gnx = None
         self.graphics_class = QtWidgets.QGraphicsWidget
+        self.positions = positions
         self.pyplot_canvas = None
 
         self.pyplot_imported = False
@@ -2066,6 +2101,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.inited = False
         self.length = 0  # The length of previous p.b.
         self.last_text = ''
+        self.last_headline = ''
         self.locked = False
 
         self.pyplot_active = False
@@ -2087,11 +2123,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.freeze = False
         self.last_markup = ''
         self.lock_to_tree = False
-        self.qwev = self.create_base_text_widget()
+        self.qwev = self.create_web_engineview()
         self.rst_html = ''
         self.show_whole_tree = False
         self.base_url = ''
         self.positions = {}
+        self.last_update_was_node_change = False
 
         # User settings.
         self.reloadSettings()
@@ -2107,38 +2144,35 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.using_ext_proc_msg_shown = False
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):
-        pc = self
-        pc.dispatch_dict = {
-            'asciidoc': pc.update_asciidoc,
-            'big': pc.update_rst,
-            'html': pc.update_html,
-            'graphics-script': pc.update_graphics_script,
-            'image': pc.update_image,
-            'jupyter': pc.update_jupyter,
-            'md': pc.update_md,
-            'movie': pc.update_movie,
-            'networkx': pc.update_networkx,
-            'plain': pc.update_text,
-            'pyplot': pc.update_pyplot,
-            'rst': pc.update_rst,
-            'svg': pc.update_svg,
-            'text': pc.update_text,
-            # 'url': pc.update_url,
+        self.dispatch_dict = {
+            'asciidoc': self.update_asciidoc,
+            'big': self.update_rst,
+            'html': self.update_html,
+            'graphics-script': self.update_graphics_script,
+            'image': self.update_image,
+            'jupyter': self.update_jupyter,
+            'md': self.update_md,
+            'movie': self.update_movie,
+            'networkx': self.update_networkx,
+            'plain': self.update_text,
+            'pyplot': self.update_pyplot,
+            'rst': self.update_rst,
+            'svg': self.update_svg,
+            'text': self.update_text,
+            # 'url': self.update_url,
         }
 
-        pc.dispatch_dict['rest'] = pc.dispatch_dict['rst']
-        pc.dispatch_dict['markdown'] = pc.dispatch_dict['md']
-    #@+node:TomP.20200329223820.2: *4* vr3.create_base_text_widget
-    def create_base_text_widget(self):
-        """
-        Create a QWebEngineView.
-        """
+        self.dispatch_dict['rest'] = self.dispatch_dict['rst']
+        self.dispatch_dict['markdown'] = self.dispatch_dict['md']
+    #@+node:TomP.20200329223820.2: *4* vr3.create_web_engineview
+    def create_web_engineview(self):
+        """Return a QWebEngineView instance."""
         c = self.c
         w = qwv()
         n = c.config.getInt('qweb-view-font-size')
         if hasattr(w, 'settings'):
             settings = w.settings()
-            if n is not None:
+            if n is not None and n > 0:
                 try:
                     settings.setFontSize(settings.DefaultFontSize, n)
                 except Exception:
@@ -2146,6 +2180,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
             settings.setAttribute(wa, True)
         return w
+
     #@+node:TomP.20200329223820.4: *4* vr3.create_md_header
     def create_md_header(self):
         """Create a header for the md HTML output.
@@ -2666,6 +2701,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         def plot_plain_data(pagelines):
             """Plot 1- or 2- column data.  Ignore all non-numeric lines."""
 
+
+            # from leo.plugins import viewrendered3 as vr3
+            # from leo.plugins import viewrendered as vr
+
             # Helper functions
             #@+<< is_numeric >>
             #@+node:tom.20211104105903.13: *7* << is_numeric >>
@@ -2866,116 +2905,127 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         If the VR3 variable "freeze" is True, do not update.
         """
-        pc = self
-        p = pc.c.p
 
         if tag in ('show-scrolled-message',):
-            # If we are called as a "scrolled message" - usually for display of
-            # docstrings.  keywords will contain the RsT to be displayed.
-            _kind = keywords.get('flags', 'rst')
-            s = keywords.get('s', '')
-            f = pc.dispatch_dict.get(_kind)
-            f([s,], keywords)
-
-            # Prevent VR3 from showing the selected node at
-            # the next idle-time callback,
-            # Which would over-write the scrolled message.
-            pc.node_changed = False
-            pc.gnx = p.v.gnx
-            pc.length = len(p.b)  # not s
-            pc.last_text = p.b
+            self.handle_scrolled_msg(keywords)
             return
 
-        if self.freeze: return
-        if pc.lock_to_tree:
-            _root = pc.current_tree_root or p
-        else:
-            _root = p
+        if self.freeze:
+            return
 
         self.controlling_code_lang = None
         self.params = []
+        p = self.c.p
 
-        _kind = pc.get_kind(p) or self.default_kind
-        if _kind in ('edit', 'file', 'clean', 'auto'):
-            _kind = RST
-        if _kind == RST and p.h.startswith('@jupyter'):
-            _kind = 'jupyter'
-        f = pc.dispatch_dict.get(_kind)
-        # if f in (pc.update_rst, pc.update_md, pc.update_text):
-            # self.show_toolbar()
-        # else:
-            # self.hide_toolbar()
-        if self.locked:
-            return
-
-        if pc.must_update(keywords):
-            # Suppress updates until we change nodes.
-            pc.node_changed = pc.gnx != p.v.gnx
-            pc.gnx = p.v.gnx
-            pc.length = len(p.b)  # not s
-
-            # Remove Leo directives.
-            s = keywords.get('s') if 's' in keywords else p.b
-            s = pc.remove_directives(s)
-
-            # For rst, md, asciidoc handler
-            self.rst_html = ''
+        if self.must_update(keywords):
+            if self.w:
+                # Hide the old widget so it won't keep us from seeing the new one.
+                self.w.hide()
+            self.prep_for_dispatch(p, keywords)
 
             # Dispatch based on the computed kind.
-            kind = keywords.get('flags') if 'flags' in keywords else _kind
-            if not kind:
-                h = f'<pre>{s}</pre>'
-                w = pc.w
-                self.set_html(h, w)
-                self.rst_html = h
-                w.show()
-                return
-
-            _tree = []
-            if tag in ('show-scrolled-message',):
-                # This branch is for rendering docstrings, help-for-command messages,
-                # etc.  Called from qt_gui.py.
-                # In case Leo node elements get mixed into the message, remove them:
-                pc.node_changed = False
-                txt = keywords.get('s', '')
-                lines = txt.split('\n')
-                keywords['s'] = '\n'.join([l for l in lines if not l.startswith('#@')])
-            else:
-                # This branch is for rendering nodes and subtrees.
-                try:
-                    rootcopy = _root.copy()
-                    _tree = [rootcopy]
-                except UnboundLocalError as e:
-                    g.trace('=======', tag, e)
-                    return
-            if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT) and _tree and self.show_whole_tree:
-                _tree.extend(rootcopy.subtree())
+            kind = self.compute_kind(p, keywords)
             self.base_url = self.get_node_path(self.c, p)
-            f = pc.dispatch_dict.get(kind)
+            f = self.dispatch_dict.get(kind)
             if not f:
                 g.trace(f'no handler for kind: {kind}')
-                f = pc.update_rst
-            if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT):
-                f(_tree, keywords)
-            else:
-                f(s, keywords)
+                f = self.update_rst
+
+            node_tree = self.create_node_tree(p, kind)
+            self.update_rendering(f, node_tree, p, keywords, kind)
+
+        # Saved following code for future reference
+        # Save the scroll position.
+        # w = self.w
+        # if w.__class__ == QtWidgets.QTextBrowser:
+            # # 2011/07/30: The widget may no longer exist.
+            # try:
+                # sb = w.verticalScrollBar()
+                # self.scrollbar_pos_dict[p.v] = sb.sliderPosition()
+            # except Exception:
+                # g.es_exception()
+                    # self.deactivate()
+    #@+node:tom.20240725074751.1: *4* vr3.update_rendering
+    def update_rendering(self, f, node_tree, p, keywords, kind):
+        """Render the node tree in the VR3 pane according to its kind."""
+        if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT):
+            f(node_tree, keywords)
+        elif kind:
+            # Remove Leo directives.
+            s = keywords.get('s') if 's' in keywords else p.b
+            s = self.remove_directives(s)
+            f(s, keywords)
         else:
-            pass
-            # Save the scroll position.
-            # w = pc.w
-            # if w.__class__ == QtWidgets.QTextBrowser:
-                # # 2011/07/30: The widget may no longer exist.
-                # try:
-                    # sb = w.verticalScrollBar()
-                    # pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
-                # except Exception:
-                    # g.es_exception()
-                    # pc.deactivate()
+            self.show_literal(s)
+    #@+node:tom.20240724103143.1: *4* vr3.create_node_tree
+    def create_node_tree(self, p, kind):
+        _root = (self.current_tree_root or p) if self.lock_to_tree else p
+        rootcopy = _root.copy()
+        node_tree = [rootcopy]
+        if (kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT)
+            and node_tree and self.show_whole_tree):
+            node_tree.extend(rootcopy.subtree())
+        return node_tree
+    #@+node:tom.20240724102606.1: *4* vr3.prep_for_dispatch
+    def prep_for_dispatch(self, p, keywords):
+        # Suppress updates until we change nodes.
+        self.node_changed = self.gnx != p.v.gnx
+        self.gnx = p.v.gnx
+        self.length = len(p.b)  # not s
+
+        # For rst, md, asciidoc handler
+        self.rst_html = ''
+    #@+node:tom.20240724084623.1: *4* vr3.show_literal
+    def show_literal(self, s):
+        h = f'<pre>{s}</pre>'
+        w = self.w
+        self.set_html(h, w)
+        self.rst_html = h
+        w.show()
+    #@+node:tom.20240724083001.1: *4* vr3.compute_kind
+    def compute_kind(self, p, keywords):
+        """Return processing function for the kind of node."""
+        node_kind = None
+        if 'flags' in keywords:
+            node_kind = keywords.get('flags')
+        else:
+            node_kind = self.get_kind(p) or self.default_kind
+            if node_kind in ('edit', 'file', 'clean', 'auto'):
+                node_kind = RST
+
+            if node_kind == RST and p.h.startswith('@jupyter'):
+                node_kind = 'jupyter'
+
+        return node_kind
+    #@+node:tom.20240724081410.1: *4* vr3.handle_scrolled_msg
+    def handle_scrolled_msg(self, keywords):
+        """Display a "scrolled" message - usually for display of
+        docstrings, help-for-command messages, etc.  Called from qt_gui.py.
+        keyword[s] will contain the text to be displayed.
+        """
+        p = self.c.p
+        node_kind = keywords.get('flags', 'rst')
+        s = keywords.get('s', '')
+
+        txt = keywords.get('s', '')
+        lines = txt.split('\n')
+        s = keywords['s'] = '\n'.join([l for l in lines if not l.startswith('#@')])
+
+        f = self.dispatch_dict.get(node_kind)
+        f([s,], keywords)
+
+        # Prevent VR3 from showing the selected node at
+        # the next idle-time callback,
+        # Which would over-write the scrolled message.
+        self.node_changed = False
+        self.gnx = p.v.gnx
+        self.length = len(p.b)  # not s
+        self.last_text = p.b
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
         """Embed widget w in the appropriate splitter."""
-        pc = self; c = pc.c
-        pc.w = w
+        c = self.c
+        self.w = w
         layout = self.layout()
         for i in range(layout.count()):
             layout.removeItem(layout.itemAt(0))
@@ -2987,7 +3037,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             text_name = 'body-text-renderer'
             w.setObjectName(text_name)
             # Do not do this! It interferes with themes.
-                # pc.setBackgroundColor(pc.background_color, text_name, w)
+                # self.setBackgroundColor(self.background_color, text_name, w)
             w.setReadOnly(True)
             # Create the standard Leo bindings.
             wrapper_name = 'rendering-pane-wrapper'
@@ -3006,54 +3056,47 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # styleSheet = 'QTextEdit#%s { background-color: %s; }' % (name, colorName)
         # if QtGui.QColor(colorName).isValid():
             # w.setStyleSheet(styleSheet)
-        # elif colorName not in pc.badColors:
-            # pc.badColors.append(colorName)
+        # elif colorName not in self.badColors:
+            # self.badColors.append(colorName)
             # g.warning('invalid body background color: %s' % (colorName))
     #@+node:TomP.20191215195433.53: *4* vr3.must_update
     def must_update(self, keywords):
         """Return True if we must update the rendering pane."""
         _must_update = False
-        pc = self
-        c, p = pc.c, pc.c.p
+        c, p = self.c, self.c.p
 
-        if g.unitTesting:
-            _must_update = False
-        elif keywords.get('force'):
-            pc.active = True
-            _must_update = True
-        elif c != keywords.get('c') or not pc.active:
-            _must_update = False
-        elif pc.locked:
-            _must_update = False
-        elif pc.gnx != p.v.gnx:
-            _must_update = True
-        elif len(p.b) != pc.length or pc.last_text != p.b:
-            if pc.get_kind(p) in ('html', 'pyplot'):
-                _must_update = False  # Only update explicitly.
-            else:
+        if not (g.unitTesting
+                or c != keywords.get('c')
+                or not self.active
+                or self.locked):
+            if keywords.get('force'):
+                self.active = True
                 _must_update = True
-            pc.length = len(p.b)
-            pc.last_text = p.b
-        else:
-            _must_update = False
-            # This trace would be called at idle time.
-            # g.trace('no change')
+            elif self.gnx != p.v.gnx:
+                _must_update = True
+            elif (len(p.b) != self.length
+                  or self.last_text != p.b
+                  or self.last_headline != p.h
+                  ):
+                if self.get_kind(p) in ('html', 'pyplot'):
+                    _must_update = False  # Only update explicitly.
+                else:
+                    _must_update = True
 
-        if _must_update and self.w:
-            # Hide the old widget so it won't keep us from seeing the new one.
-            self.w.hide()
+        if _must_update:
+            self.length = len(p.b)
+            self.last_text = p.b
+            self.gnx = p.v.gnx
+            self.last_headline = p.v.h
 
         return _must_update
-
     #@+node:TomP.20191215195433.54: *4* vr3.update_asciidoc & helpers
     def update_asciidoc(self, node_list, keywords):
         """Update asciidoc in the vr3 pane."""
 
-        pc = self
         # Do this regardless of whether we show the widget or not.
-        w = pc.ensure_web_widget()
-        assert pc.w
-        pc.show()
+        w = self.ensure_web_widget()
+        assert self.w
         self.rst_html = ''
 
         ascdoc = self.process_asciidoc_nodes(node_list)
@@ -3061,6 +3104,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         h = self.convert_to_asciidoc(ascdoc) or "No return from asciidoc processor"
         h = g.toUnicode(h)  # EKR.
         self.set_html(h, w)
+        # self.show()
     #@+node:TomP.20200825083904.1: *5* vr3.process_asciidoc_nodes
     def process_asciidoc_nodes(self, node_list, s=''):
         """Convert content of Leo nodes, or a string, to Asciidoc.
@@ -3332,43 +3376,42 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.58: *4* vr3.update_graphics_script
     def update_graphics_script(self, s, keywords):
         """Update the graphics script in the vr3 pane."""
-        pc = self; c = pc.c
+        c = self.c
         force = keywords.get('force')
-        if pc.gs and not force:
+        if self.gs and not force:
             return
-        if not pc.gs:
+        if not self.gs:
             splitter = g.app.gui.get_top_splitter()
             if not splitter:
                 g.trace('no splitter')
                 return
             # Create the widgets.
-            pc.gs = QtWidgets.QGraphicsScene(splitter)
-            pc.gv = QtWidgets.QGraphicsView(pc.gs)
-            w = pc.gv.viewport()  # A QWidget
+            self.gs = QtWidgets.QGraphicsScene(splitter)
+            self.gv = QtWidgets.QGraphicsView(self.gs)
+            w = self.gv.viewport()  # A QWidget
             # Embed the widgets.
 
             def delete_callback():
-                for w in (pc.gs, pc.gv):
+                for w in (self.gs, self.gv):
                     w.deleteLater()
-                pc.gs = pc.gv = None
+                self.gs = self.gv = None
 
-            pc.embed_widget(w, delete_callback=delete_callback)
+            self.embed_widget(w, delete_callback=delete_callback)
         c.executeScript(
             script=s,
-            namespace={'gs': pc.gs, 'gv': pc.gv})
+            namespace={'gs': self.gs, 'gv': self.gv})
     #@+node:TomP.20191215195433.59: *4* vr3.update_html
     update_html_count = 0
 
     def update_html(self, s, keywords):
         """Update html in the vr3 pane."""
-        pc = self
-        c = pc.c
-        if pc.must_change_widget(has_webengineview):
-            w = self.create_base_text_widget()
-            pc.embed_widget(w)
-            assert w == pc.w
+        c = self.c
+        if self.must_change_widget(has_webengineview):
+            w = self.create_web_engineview()
+            self.embed_widget(w)
+            assert w == self.w
         else:
-            w = pc.w
+            w = self.w
         w.hide()  # This forces a proper update.
         w.setHtml(s)
         w.show()
@@ -3382,7 +3425,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         File URLs must not start with "file:".
         """
 
-        pc = self
         if not s.strip():
             return
         lines = g.splitLines(s) or []
@@ -3396,10 +3438,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
             path = fn
             is_url = True
         else:  #file URL
-            ok, path = pc.get_fn(fn, '@image')
+            ok, path = self.get_fn(fn, '@image')
 
         if not ok:
-            w = pc.ensure_text_widget()
+            w = self.ensure_text_widget()
             w.setPlainText(f'@image: file not found: {path}')
             return
 
@@ -3415,22 +3457,21 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Sensitive to leading blank lines.
         template = textwrap.dedent(template).strip()
 
-        w = pc.ensure_web_widget()
-        pc.set_html(template, w)
+        w = self.ensure_web_widget()
+        self.set_html(template, w)
         w.show()
     #@+node:TomP.20191215195433.61: *4* vr3.update_jupyter & helper
     update_jupyter_count = 0
 
     def update_jupyter(self, s, keywords):
         """Update @jupyter node in the vr3 pane."""
-        pc = self
-        c = pc.c
-        if pc.must_change_widget(has_webengineview):
-            w = self.create_base_text_widget()
-            pc.embed_widget(w)
-            assert w == pc.w
+        c = self.c
+        if self.must_change_widget(has_webengineview):
+            w = self.create_web_engineview()
+            self.embed_widget(w)
+            assert w == self.w
         else:
-            w = pc.w
+            w = self.w
         s = self.get_jupyter_source(c)
         self.rst_html = s
         w.hide()  # This forces a proper update.
@@ -3481,21 +3522,20 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.63: *4* vr3.update_latex & helper
     def update_latex(self, s, keywords):
         """Update latex in the vr3 pane."""
-        pc = self
-        c = pc.c
+        c = self.c
         if sys.platform.startswith('win'):
             g.es_print('latex rendering not ready for Python 3')
-            w = pc.ensure_text_widget()
-            pc.show()
+            w = self.ensure_text_widget()
+            self.show()
             w.setPlainText(s)
             c.bodyWantsFocusNow()
             return
-        if pc.must_change_widget(has_webengineview):
-            w = self.create_base_text_widget()
-            pc.embed_widget(w)
-            assert w == pc.w
+        if self.must_change_widget(has_webengineview):
+            w = self.create_web_engineview()
+            self.embed_widget(w)
+            assert w == self.w
         else:
-            w = pc.w
+            w = self.w
         w.hide()  # This forces a proper update.
         s = self.create_latex_html(s)
         w.setHtml(s)
@@ -3563,13 +3603,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         #@+others
-        #@+node:TomP.20200208211132.1: *6* convert_markdown_to_html.function: setup (changed)
-        pc = self
-        c, p = pc.c, pc.c.p
+        #@+node:TomP.20200208211132.1: *6* setup
+        c, p = self.c, self.c.p
         if g.app.gui.guiName() != 'qt':
             return ''  # EKR
 
-        getVr3(c=c)
+        vr3 = controllers.get(c.hash())
+        if not vr3:
+            vr3 = ViewRenderedController3(c)
 
         # Update the current path.
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -3577,6 +3618,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             path = os.path.dirname(path)
         if os.path.isdir(path):
             os.chdir(path)
+
         #@+node:TomP.20200208211347.1: *6* process nodes
         result = ''
         codelist = []
@@ -3650,23 +3692,22 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
     def update_movie(self, s, keywords):
         """Update a movie in the vr3 pane."""
-        pc = self
-        ok, path = pc.get_fn(s, '@movie')
+        ok, path = self.get_fn(s, '@movie')
         if not ok:
-            w = pc.ensure_text_widget()
+            w = self.ensure_text_widget()
             w.setPlainText(f'Not found: {path}')
             return
         if not QtMultimedia:
             if not self.movie_warning:
                 self.movie_warning = True
                 g.es_print('No QtMultimedia module')
-            w = pc.ensure_text_widget()
+            w = self.ensure_text_widget()
             w.setPlainText('')
             return
-        if pc.vp:
-            vp = pc.vp
-            pc.vp.stop()
-            pc.vp.deleteLater()
+        if self.vp:
+            vp = self.vp
+            self.vp.stop()
+            self.vp.deleteLater()
         # Create a fresh player.
         g.es_print('playing', path)
         vw = vp.videoWidget()
@@ -3674,22 +3715,21 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Embed the widgets
 
         def delete_callback():
-            if pc.vp:
-                pc.vp.stop()
-                pc.vp.deleteLater()
-                pc.vp = None
+            if self.vp:
+                self.vp.stop()
+                self.vp.deleteLater()
+                self.vp = None
 
-        pc.embed_widget(vp, delete_callback=delete_callback)
-        pc.show()
-        vp = pc.vp
+        self.embed_widget(vp, delete_callback=delete_callback)
+        self.show()
+        vp = self.vp
         vp.play()
     #@+node:TomP.20191215195433.68: *4* vr3.update_networkx
     def update_networkx(self, s, keywords):
         """Update a networkx graphic in the vr3 pane."""
-        pc = self
-        w = pc.ensure_text_widget()
+        w = self.ensure_text_widget()
         w.setPlainText('')  # 'Networkx: len: %s' % (len(s)))
-        pc.show()
+        self.show()
     #@+node:TomP.20191215195433.69: *4* vr3.update_pandoc & helpers
     def update_pandoc(self, s, keywords):
         """
@@ -3699,11 +3739,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         so only @pandoc nodes trigger this code.
         """
         global pandoc_exec
-        pc = self
-        w = pc.ensure_text_widget()
-        assert pc.w
+        w = self.ensure_text_widget()
+        assert self.w
         if s:
-            pc.show()
+            self.show()
         if pandoc_exec:
             try:
                 self.last_markup = s
@@ -3716,17 +3755,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.70: *5* vr3.convert_to_pandoc
     def convert_to_pandoc(self, s):
         """Convert s to html using the asciidoctor or asciidoc processor."""
-        pc = self
-        c, p = pc.c, pc.c.p
+        c, p = self.c, self.c.p
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
         if os.path.isdir(path):
             os.chdir(path)
-        if pc.title:
-            s = pc.make_pandoc_title(pc.title) + s
-            pc.title = None
-        s = pc.run_pandoc(s)
+        if self.title:
+            s = self.make_pandoc_title(self.title) + s
+            self.title = None
+        s = self.run_pandoc(s)
         return g.toUnicode(s)
     #@+node:TomP.20191215195433.71: *5* vr3.run_pandoc
     def run_pandoc(self, s):
@@ -3816,7 +3854,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.ensure_web_widget()
         assert self.w
         w = self.w
-        self.show()
 
         if got_docutils:
             if not node_list or isinstance(node_list[0], str):  # EKR.
@@ -3849,6 +3886,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
             _text_list = [n.b for n in node_list]
             s = '<pre>' + '\n'.join(_text_list) + r'\</pre>'
             self.set_html(s, w)
+
+        # self.show()
+
+
+
+
+
+
+
+
     #@+node:TomP.20191215195433.74: *5* vr3.convert_to_html
     #@@language python
     def convert_to_html(self, node_list, s=''):
@@ -3863,13 +3910,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         #@+others
-        #@+node:TomP.20200105214716.1: *6* vr3.setup (changed)
+        #@+node:TomP.20200105214716.1: *6* vr3.setup
         #@@language python
         c, p = self.c, self.c.p
         if g.app.gui.guiName() != 'qt':
             return ''  # EKR
 
-        getVr3(c=c)
+        vr3 = controllers.get(c.hash())
+        if not vr3:
+            vr3 = ViewRenderedController3(c)
 
         # Update the current path.
         path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
@@ -4386,57 +4435,55 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if not QtSvg:
             g.es(NO_SVG_WIDGET_MSG, color='red')
             return
-        pc = self
 
-        if pc.must_change_widget(QSvgWidget):
+        if self.must_change_widget(QSvgWidget):
             w = QSvgWidget()
-            pc.embed_widget(w)
-            assert w == pc.w
+            self.embed_widget(w)
+            assert w == self.w
         else:
-            w = pc.w
+            w = self.w
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
             # Sensitive to leading blank lines.
             s = textwrap.dedent(s).strip()
             bytes = g.toEncodedString(s)
-            pc.show()
+            self.show()
             w.load(QtCore.QByteArray(bytes))
             w.show()
         else:
             # Get a filename from the headline or body text.
-            ok, path = pc.get_fn(s, '@svg')
+            ok, path = self.get_fn(s, '@svg')
             if ok:
-                pc.show()
+                self.show()
                 w.load(path)
                 w.show()
     #@+node:TomP.20191215195433.78: *4* vr3.update_url
     def update_url(self, s, keywords):
-        pc = self
         c, p = self.c, self.c.p
         colorizer = c.frame.body.colorizer
         language = colorizer.scanLanguageDirectives(p)
         if language == 'asciidoc':
             p.update_asciidoc(s, keywords)
         elif language in ('rest', 'rst'):
-            pc.update_rst(s, keywords)
+            self.update_rst(s, keywords)
         elif language in ('markdown', 'md'):
-            pc.update_md(s, keywords)
-        elif pc.default_kind in ('rest', 'rst'):
-            pc.update_rst(s, keywords)
-        elif pc.default_kind in ('markdown', 'md'):
-            pc.update_md(s, keywords)
+            self.update_md(s, keywords)
+        elif self.default_kind in ('rest', 'rst'):
+            self.update_rst(s, keywords)
+        elif self.default_kind in ('markdown', 'md'):
+            self.update_md(s, keywords)
         else:
             # Do nothing.
             g.trace('ignore', s)
-            w = pc.ensure_text_widget()
-            pc.show()
+            w = self.ensure_text_widget()
+            self.show()
             w.setPlainText('')
     #@+node:TomP.20191215195433.79: *4* vr3.utils for update helpers...
     #@+node:TomP.20191215195433.80: *5* vr3.ensure_text_widget
     def ensure_text_widget(self):
         """Swap a text widget into the rendering pane if necessary."""
-        c, pc = self.c, self
-        if pc.must_change_widget(QtWidgets.QTextBrowser):
+        c = self.c
+        if self.must_change_widget(QtWidgets.QTextBrowser):
             # Instantiate a new QTextBrowser.
             w = QtWidgets.QTextBrowser()
 
@@ -4454,32 +4501,31 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w.anchorClicked.connect(handleClick)
             w.setOpenLinks(False)
 
-            pc.embed_widget(w)  # Creates w.wrapper
-            assert w == pc.w
-        return pc.w
+            self.embed_widget(w)  # Creates w.wrapper
+            assert w == self.w
+        return self.w
     #@+node:TomP.20191227101625.1: *5* vr3.ensure_web_widget
     def ensure_web_widget(self):
         """Swap a webengineview widget into the rendering pane if necessary."""
-        pc = self
         w = self.qwev
-        if pc.must_change_widget(has_webengineview):
-            pc.embed_widget(w)  # Creates w.wrapper
-            assert w == pc.w
-        return pc.w
+        if self.must_change_widget(w.__class__):
+            self.embed_widget(w)  # Creates w.wrapper
+            assert w == self.w
+        return self.w
     #@+node:TomP.20191215195433.81: *5* vr3.get_kind
     def get_kind(self, p):
         """Return the proper rendering kind for node p."""
 
         #  #1287: Honor both kind of directives node by node.
         for p1 in p.self_and_parents(p):
+            kind = None
             language = self.get_language(p1)
-            if got_markdown and language in ('md', 'markdown'):
-                return language
-            if got_docutils and language in ('rest', 'rst'):
-                return language
-            if language and language in self.dispatch_dict:
-                return language
-        return None
+            if ((got_markdown and language in ('md', 'markdown'))
+                or (got_docutils and language in ('rest', 'rst'))
+                or (language and language in self.dispatch_dict)):
+                kind = language
+
+        return kind
     #@+node:TomP.20200109132851.1: *6* vr3.get_language
     def get_language(self, p):
         """Return the language in effect at position p.
@@ -4502,8 +4548,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20191215195433.82: *5* vr3.get_fn
     def get_fn(self, s, tag=None):
         """Return an absolute file path, with ~, .., and symbolic links resolved."""
-        pc = self
-        c = pc.c
+        c = self.c
         fn = s or c.p.h[len(tag) :]
         fn = fn.strip()
         is_absolute = Path(fn).is_absolute()
@@ -4534,8 +4579,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         return c.getNodePath(p)
     #@+node:TomP.20191215195433.84: *5* vr3.must_change_widget
     def must_change_widget(self, widget_class):
-        pc = self
-        return not pc.w or pc.w.__class__ != widget_class  # EKR.
+        return not self.w or self.w.__class__ != widget_class  # EKR.
     #@+node:TomP.20191215195433.85: *5* vr3.remove_directives
     def remove_directives(self, s):
         """Remove all Leo directives from a string except "@language"."""
@@ -4615,21 +4659,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329230436.2: *5* vr3.activate
     def activate(self):
         """Activate the vr3-window."""
-        pc = self
-        if pc.active:
-            return
-        pc.inited = True
-        pc.active = True
-        g.registerHandler('select2', pc.update)
-        g.registerHandler('idle', pc.update)
+        if not self.active:
+            self.inited = self.active = True
+            g.registerHandler('select2', self.update)
+            g.registerHandler('idle', self.update)
     #@+node:TomP.20200329230436.4: *5* vr3.deactivate
     def deactivate(self):
         """Deactivate the vr3 window."""
-        pc = self
         # Never disable the idle-time hook: other plugins may need it.
-        g.unregisterHandler('select2', pc.update)
-        g.unregisterHandler('idle', pc.update)
-        pc.active = False
+        g.unregisterHandler('select2', self.update)
+        g.unregisterHandler('idle', self.update)
+        self.active = False
     #@+node:tom.20220824142257.1: *5* vr3.freeze/unfreeze
     def set_freeze(self):
         """Freeze the vr3 pane to prevent updates ."""
@@ -4658,9 +4698,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.current_tree_root = None
     #@+node:TomP.20200329230436.6: *5* vr3.show_dock_or_pane
     def show_dock_or_pane(self):
-        vr3 = self.c, self
-        vr3.activate()
-        vr3.show()
+        self.show()
+        self.set_unfreeze()
         # c.bodyWantsFocusNow()
     #@+node:TomP.20200329230436.8: *5* vr3: toolbar helpers...
     #@+node:TomP.20200329230436.9: *6* vr3.get_toolbar_label
