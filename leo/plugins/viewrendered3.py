@@ -1990,7 +1990,7 @@ def toggle_rendering_pane(event):
     if vr3:
         had_vr3 = True
     else:
-        vr3 = getVr3({'c':c})
+        vr3 = getVr3({'c': c})
         had_vr3 = False
 
     if had_vr3:
@@ -2962,7 +2962,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _root = (self.current_tree_root or p) if self.lock_to_tree else p
         rootcopy = _root.copy()
         node_tree = [rootcopy]
-        if (kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT) 
+        if (kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT)
             and node_tree and self.show_whole_tree):
             node_tree.extend(rootcopy.subtree())
         return node_tree
@@ -3065,7 +3065,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         _must_update = False
         c, p = self.c, self.c.p
 
-        if not (g.unitTesting 
+        if not (g.unitTesting
                 or c != keywords.get('c')
                 or not self.active
                 or self.locked):
