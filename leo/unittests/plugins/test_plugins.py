@@ -17,9 +17,10 @@ class TestPlugins(LeoUnitTest):
     #@+others
     #@+node:ekr.20210909165100.1: *3*  TestPlugin.check_syntax
     def check_syntax(self, filename):  # pylint: disable=inconsistent-return-statements
-        with open(filename, 'r') as f:
-            s = f.read()
+        with open(filename, 'rb') as f:
+            contents = f.read()
         try:
+            s = g.toUnicode(contents)
             s = s.replace('\r', '')
             tree = compile(s + '\n', filename, 'exec')
             del tree  # #1454: Suppress -Wd ResourceWarning.
@@ -71,8 +72,9 @@ class TestPlugins(LeoUnitTest):
         # Ensure all plugins have top-level init method *without* importing them.
         files = self.get_plugins()
         for fn in files:
-            with open(fn, 'r') as f:
-                s = f.read()
+            with open(fn, 'rb') as f:
+                contents = f.read()
+            s = g.toUnicode(contents)
             assert 'def init()' in s, repr(fn)
     #@+node:ekr.20210907081455.3: *3* TestPlugins.test_all_qt_plugins_call_g_assertUi_qt_
     def test_all_qt_plugins_call_g_assertUi_qt_(self):
@@ -88,8 +90,9 @@ class TestPlugins(LeoUnitTest):
         for fn in files:
             if g.shortFileName(fn) in excludes:
                 continue
-            with open(fn, 'r') as f:
-                s = f.read()
+            with open(fn, 'rb') as f:
+                contents = f.read()
+            s = g.toUnicode(contents)
             if not re.search(pattern, s):
                 continue
             self.assertTrue(re.search(r"g\.assertUi\(['\"]qt['\"]\)", s), msg=fn)
