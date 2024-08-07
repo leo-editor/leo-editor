@@ -128,7 +128,7 @@ if g.app.gui.guiName() == "qt":
 
     class todoQtUI(QtWidgets.QWidget):  # type:ignore
         #@+others
-        #@+node:ekr.20111118104929.10204: *3* ctor (todo.py)
+        #@+node:ekr.20111118104929.10204: *3* ctor (todoQtUI(QWidget))
         def __init__(self, owner: Any, logTab: bool = True) -> None:
 
             self.owner = owner
