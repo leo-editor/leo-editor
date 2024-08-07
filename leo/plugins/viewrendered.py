@@ -207,7 +207,7 @@ from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import QtMultimedia, QtSvg
-from leo.core.leoQt import ContextMenuPolicy, Orientation, WrapMode
+from leo.core.leoQt import ContextMenuPolicy, WrapMode  ### Orientation
 from leo.plugins import qt_text
 
 BaseTextWidget = QtWidgets.QTextBrowser
@@ -317,8 +317,6 @@ latex_template = '''\
 </html>
 '''
 #@-<< vr define html templates >>
-controllers: dict[str, Any] = {}  # Dict[c.hash(), PluginControllers (QWidget's)].
-layouts: dict[str, tuple] = {}  # Dict[c.hash(), tuple[layout_when_closed, layout_when_open]].
 #@+others
 #@+node:ekr.20110320120020.14491: ** vr.Top-level functions
 #@+node:tbrown.20100318101414.5995: *3* vr function: init
@@ -332,35 +330,48 @@ def init() -> bool:
     # Always enable this plugin, even if imports fail.
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
-    g.registerHandler('close-frame', onClose)
+    ### g.registerHandler('close-frame', onClose)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
+#@+node:ekr.20240727091022.1: *3* vr function: getVR (new)
+def getVr(*, c: Any = None, event: Any = None) -> Optional[QtWidgets.QWidget]:
+    """Return the ViewRenderedController instance or None."""
+    if g.app.gui.guiName() != 'qt':
+        return None
+
+    # First, get c.
+    if c:
+        pass
+    elif event:
+        c = event.get('c')
+        if not c:
+            return None
+    else:
+        g.trace('"c" or "event" kwarg required', g.callers())
+        return None
+    vr = getattr(c, 'vr', None)
+    if not vr:
+        vr = ViewRenderedController(c)
+        c.vr = vr
+        dw = c.frame.top
+        dw.insert_vr_frame(vr)
+    return vr
 #@+node:ekr.20110317024548.14376: *3* vr function: onCreate
 def onCreate(tag: str, keys: dict) -> None:
     c = keys.get('c')
     if not c:
         return
-    vr = viewrendered(keys)
+    vr = getVr(c=c)
     g.registerHandler('select2', vr.update)
     g.registerHandler('idle', vr.update)
     vr.active = True
     vr.is_visible = False
     vr.hide()
-#@+node:vitalije.20170712174157.1: *3* vr function: onClose
+#@+node:vitalije.20170712174157.1: *3* vr function: onClose (does nothing)
 def onClose(tag: str, keys: dict) -> None:
     """
     Handle a close event in the Leo *outline*, not the VR pane.
-    
-    Delete the per-commander data after idle time.
     """
-    c = keys.get('c')
-    h = c.hash()
-    vr = controllers.get(h)
-    if vr and vr.active:
-        # g.trace(f"VR: delete {vr}")
-        c.bodyWantsFocus()
-        del controllers[h]
-        vr.active = False
 #@+node:tbrown.20110629132207.8984: *3* vr function: show_scrolled_message
 def show_scrolled_message(tag: str, kw: Any) -> None:
     if g.unitTesting:
@@ -374,131 +385,70 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
         g.trace('No message', g.callers())
         return
     # Create the VR pane if necessary.
-    vr = viewrendered(event=kw)
+    vr = getVr(c=c)
+    if not vr:
+        return
     # Make sure we will show the message.
     vr.is_active = True
     vr.is_visible = True
+    vr.show()
     # A hack: suppress updates until the node changes.
     vr.gnx = p.v.gnx
-    vr.length = p.v.b
+    vr.length = len(p.v.b)
     # Render!
     f = vr.dispatch_dict.get('rest')
     f(s, kw)
-    vr.show()
     c.bodyWantsFocusNow()
-#@+node:ekr.20110320120020.14490: ** vr.Commands
+#@+node:ekr.20110320120020.14490: ** vr.Commands (all changed)
 #@+node:ekr.20131213163822.16471: *3* g.command('preview')
 @g.command('preview')
 def preview(event: Event) -> None:
     """A synonym for the vr-toggle command."""
     toggle_rendering_pane(event)
-#@+node:tbrown.20100318101414.5998: *3* g.command('vr')
+#@+node:tbrown.20100318101414.5998: *3* g.command('vr') (changed)
 @g.command('vr')
 def viewrendered(event: Event) -> Optional[Any]:
     """Open render view for commander"""
-    global controllers, layouts
-    gui = g.app.gui
-    if gui.guiName() != 'qt':
-        return None
-    c = event.get('c')
-    if not c:
-        return None
-    h = c.hash()
-    vr = controllers.get(h)
+    vr = getVr(event=event)
     if vr:
+        c = vr.c
         vr.show()
         vr.is_visible = True
-        g.es('VR pane on', color='red')
         c.bodyWantsFocusNow()
         return vr
-    # Create the VR frame, a QWidget
-    controllers[h] = vr = ViewRenderedController(c)
-
-    # Use different layouts depending on the main splitter's *initial* orientation.
-    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
-    if not main_splitter:
-        return vr
-    if main_splitter.orientation() == Orientation.Vertical:
-        # Share the VR pane with the body pane.
-        # Create a new splitter.
-        vr_splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
-        vr_splitter.setObjectName('vr-splitter')
-        main_splitter.addWidget(vr_splitter)
-        # First, add the body frame.
-        body_frame = gui.find_widget_by_name(c, 'bodyFrame')
-        vr_splitter.addWidget(body_frame)
-        # Second, add the vr pane.
-        vr_splitter.addWidget(vr)
-        # Give equal width to all splitter panes.
-        vr_splitter.setSizes([100000] * len(vr_splitter.sizes()))
-        main_splitter.setSizes([100000] * len(main_splitter.sizes()))
-    else:
-        # Put the VR pane in the secondary splitter.
-        secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
-        # Add the VR pane to the secondary splitter.
-        secondary_splitter.addWidget(vr)
-        # Give equal width to the panes in the secondary splitter.
-        secondary_splitter.setSizes([100000] * len(secondary_splitter.sizes()))
-    c.bodyWantsFocusNow()
-    return vr
-#@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
+    return None
+#@+node:ekr.20130413061407.10362: *3* g.command('vr-contract') (changed)
 @g.command('vr-contract')
 def contract_rendering_pane(event: Event) -> None:
     """Contract the rendering pane."""
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-    vr = controllers.get(c.hash())
-    if not vr:
-        vr = viewrendered(event)
+    vr = getVr(event=event)
+    if vr:
         vr.show()
-    vr.contract()
+        vr.contract()
 #@+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
 @g.command('vr-expand')
 def expand_rendering_pane(event: Event) -> None:
     """Expand the rendering pane."""
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-    vr = controllers.get(c.hash())
-    if not vr:
-        vr = viewrendered(event)
-    vr.expand()
+    vr = getVr(event=event)
+    if vr:
+        vr.show()
+        vr.expand()
 #@+node:ekr.20240507095853.1: *3* g.command('vr-fully-expand')
 @g.command('vr-fully-expand')
 def fully_expand_rendering_pane(event: Event) -> None:
     """Expand the rendering pane."""
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-    vr = controllers.get(c.hash())
-    if not vr:
-        vr = viewrendered(event)
+    vr = getVr(event=event)
+    if vr:
         vr.show()
-    vr.fully_expand()
-    g.es('VR pane covers body pane', color='red')
+        vr.fully_expand()
 #@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
 def hide_rendering_pane(event: Event) -> None:
     """Close the rendering pane."""
-    global controllers, layouts
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-    vr = controllers.get(c.hash())
-    if not vr:
-        vr = viewrendered(event)
-    vr.hide()
-    vr.is_visible = False
-    c.bodyWantsFocus()
+    vr = getVr(event=event)
+    if vr:
+        vr.hide()
+        vr.is_visible = False
 
 # Compatibility
 
@@ -507,83 +457,39 @@ close_rendering_pane = hide_rendering_pane
 @g.command('vr-lock')
 def lock_rendering_pane(event: Event) -> None:
     """Lock the rendering pane."""
-    global controllers
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-    vr = controllers.get(c.hash())
-    if not vr:
-        vr = viewrendered(event)
-    if not vr.locked:
+    vr = getVr(event=event)
+    if vr and not vr.locked:
         vr.lock()
 #@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
 @g.command('vr-pause-play-movie')
 def pause_play_movie(event: Event) -> None:
     """Pause or play a movie in the rendering pane."""
-    global controllers
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-    vr = controllers.get(c.hash())
-    if not vr:
-        vr = viewrendered(event)
-    vp = vr.vp
-    if not vp:
-        return
-    f = vp.pause if vp.isPlaying() else vp.play
-    f()
-#@+node:ekr.20240507100013.1: *3* g.command('vr-restore-body')
-@g.command('vr-restore-body')
-def restore_body(event: Event) -> None:
-    """Expand the rendering pane."""
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-    vr = controllers.get(c.hash())
-    if not vr:
-        vr = viewrendered(event)
-    vr.restore_body()
-    g.es('VR pane uncovers body pane', color='red')
-
+    vr = getVr(event=event)
+    if vr:
+        vp = vr.vp
+        if not vp:
+            return
+        f = vp.pause if vp.isPlaying() else vp.play
+        f()
 #@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
 @g.command('vr-show')
 def show_rendering_pane(event: Event) -> None:
     """Show the rendering pane."""
-    global controllers
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-    vr = controllers.get(c.hash())
-    if not vr:
-        vr = viewrendered(event)
-    vr.show()
-    vr.is_visible = True
-    c.bodyWantsFocusNow()
-
+    vr = getVr(event=event)
+    if vr:
+        c = vr.c
+        vr.show()
+        vr.is_visible = True
+        c.bodyWantsFocusNow()
 #@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle-visibility')
 @g.command('vr-toggle-visibility')
 @g.command('vr-toggle')  # Legacy
 def toggle_rendering_pane(event: Event) -> None:
     """Toggle the visibility of the VR pane."""
-    global controllers
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-    if g.app.gui.guiName() != 'qt':
-        return
-    vr = controllers.get(c.hash())
+    vr = getVr(event=event)
     if not vr:
-        vr = viewrendered(event)
+        return
+    c = vr.c
     vr.is_visible = not vr.is_visible
     if vr.is_visible:
         g.es('VR pane on', color='red')
@@ -596,49 +502,27 @@ def toggle_rendering_pane(event: Event) -> None:
 @g.command('vr-toggle-keep-open')
 def toggle_keep_open(event: Event) -> None:
     """Toggle the visibility of the VR pane."""
-    global controllers
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-    if g.app.gui.guiName() != 'qt':
-        return
-    vr = controllers.get(c.hash())
-    if not vr:
-        vr = viewrendered(event)
+    vr = getVr(event=event)
+    if vr:
+        c = vr.c
         vr.hide()  # So the toggle below will work.
-    vr.keep_open = not vr.keep_open
-    vr.update('keep-open', {'c': c, 'force': True})
+        vr.keep_open = not vr.keep_open
+        vr.update('keep-open', {'c': c, 'force': True})  # type:ignore
 #@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
 def unlock_rendering_pane(event: Event) -> None:
     """Pause or play a movie in the rendering pane."""
-    global controllers
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-    vr = controllers.get(c.hash())
-    if not vr:
-        vr = viewrendered(event)
-    if vr.locked:
+    vr = getVr(event=event)
+    if vr and vr.locked:
         vr.unlock()
 #@+node:ekr.20110321151523.14464: *3* g.command('vr-update')
 @g.command('vr-update')
 def update_rendering_pane(event: Event) -> None:
     """Update the rendering pane"""
-    global controllers
-    if g.app.gui.guiName() != 'qt':
-        return
-    c = event.get('c')
-    if not c:
-        return
-    vr = controllers.get(c.hash())
-    if not vr:
-        vr = viewrendered(event)
-    vr.update(tag='view', keywords={'c': c, 'force': True})
+    vr = getVr(event=event)
+    if vr:
+        c = vr.c
+        vr.update(tag='view', keywords={'c': c, 'force': True})  # type:ignore
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
 class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     """A class to control rendering in a rendering pane."""

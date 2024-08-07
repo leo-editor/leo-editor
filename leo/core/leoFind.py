@@ -564,7 +564,7 @@ class LeoFind:
         It's a standalone method for unit tests.
         """
         c = self.c
-        if not word.strip():
+        if not (word and word.strip()):
             return []
         patterns = self._make_patterns(word)
         matches = self._find_all_matches(patterns)
