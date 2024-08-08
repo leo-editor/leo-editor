@@ -148,8 +148,6 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
 def reloadOutline(self: Self, event: LeoKeyEvent = None) -> None:
     """Close the outline and reload it."""
     c = self
-    gui_name = g.app.gui.guiName()
-    is_qt = gui_name == 'qt'
 
     # Commit any open edits.
     c.endEditing()
@@ -161,7 +159,7 @@ def reloadOutline(self: Self, event: LeoKeyEvent = None) -> None:
         g.es_print('Please name the outline', color='red')
         return
 
-    # Abort the reload if the user veto's closing this outline.
+    # Abort the reload if the user vetos closing this outline.
     if c.changed:
         veto = False
         try:
@@ -176,13 +174,6 @@ def reloadOutline(self: Self, event: LeoKeyEvent = None) -> None:
         c.save()
         g.app.recentFilesManager.writeRecentFilesFile(c)
 
-    # Remember old_index, the outline's position in the QTabbledWidget.
-    if is_qt:
-        dw = c.frame.top
-        tabbed_widget = dw.parent()
-        old_index = tabbed_widget.indexOf(dw)
-    else:
-        old_index = -1
 
     # Completely close the outline.
     g.doHook("close-frame", c=c)
@@ -194,21 +185,7 @@ def reloadOutline(self: Self, event: LeoKeyEvent = None) -> None:
         g.app.forgetOpenFile(fn=c.fileName())  # #69.
 
     # Open the new outline.
-    c = g.openWithFileName(fileName=c.fileName())
-
-    ### This doesn't work.
-    if 0:
-        # Restore the outline's postion in the QTabbedWidget.
-        if is_qt:
-            dw = c.frame.top
-            tabbed_widget = dw.parent()
-            new_index = tabbed_widget.indexOf(dw)
-            g.trace(new_index, old_index)
-            if new_index != old_index:
-                # Doesn't work!
-                tabbed_widget.removeWidget(dw)
-                tabbed_widget.insertWidget(old_index, dw)
-                dw.show()
+    g.openWithFileName(fileName=c.fileName())
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
