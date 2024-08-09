@@ -4503,7 +4503,7 @@ class TabbedFrameFactory:
     with multiple tabs for documents
     """
     #@+others
-    #@+node:ekr.20110605121601.18465: *3* TabbedFrameFactory.__init__  & __repr__
+    #@+node:ekr.20110605121601.18465: *3* TabbedFrameFactory.__init__
     def __init__(self) -> None:
         # Will be created when first frame appears.
         # Workaround a problem setting the window title when tabs are shown.
