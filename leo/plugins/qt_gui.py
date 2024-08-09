@@ -79,7 +79,7 @@ def init() -> bool:
 class LeoQtGui(leoGui.LeoGui):
     """A class implementing Leo's Qt gui."""
     #@+others
-    #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ (sets qtApp)
+    #@+node:ekr.20110605121601.18477: *3*  LeoQtGui.__init__ (sets qtApp)
     def __init__(self) -> None:
         """Ctor for LeoQtGui class."""
         super().__init__('qt')  # Initialize the base class.
@@ -166,15 +166,15 @@ class LeoQtGui(leoGui.LeoGui):
 
     def reloadSettings(self) -> None:
         pass  # Note: self.c does not exist.
-    #@+node:ekr.20110605121601.18484: *3*  qt_gui.destroySelf (calls qtApp.quit)
+    #@+node:ekr.20110605121601.18484: *3*  LeoQtGui.destroySelf (calls qtApp.quit)
     def destroySelf(self) -> None:
 
         QtCore.pyqtRemoveInputHook()
         if 'shutdown' in g.app.debug:
             g.pr('LeoQtGui.destroySelf: calling qtApp.Quit')
         self.qtApp.quit()
-    #@+node:ekr.20110605121601.18485: *3* qt_gui.Clipboard
-    #@+node:ekr.20160917125946.1: *4* qt_gui.replaceClipboardWith
+    #@+node:ekr.20110605121601.18485: *3* LeoQtGui.Clipboard
+    #@+node:ekr.20160917125946.1: *4* LeoQtGui.replaceClipboardWith
     def replaceClipboardWith(self, s: str) -> None:
         """Replace the clipboard with the string s."""
         cb = self.qtApp.clipboard()
@@ -187,7 +187,7 @@ class LeoQtGui(leoGui.LeoGui):
             QtWidgets.QApplication.processEvents()
         else:
             g.trace('no clipboard!')
-    #@+node:ekr.20160917125948.1: *4* qt_gui.getTextFromClipboard
+    #@+node:ekr.20160917125948.1: *4* LeoQtGui.getTextFromClipboard
     def getTextFromClipboard(self) -> str:
         """Get a unicode string from the clipboard."""
         cb = self.qtApp.clipboard()
@@ -196,7 +196,7 @@ class LeoQtGui(leoGui.LeoGui):
             return cb.text()
         g.trace('no clipboard!')
         return ''
-    #@+node:ekr.20160917130023.1: *4* qt_gui.setClipboardSelection
+    #@+node:ekr.20160917130023.1: *4* LeoQtGui.setClipboardSelection
     def setClipboardSelection(self, s: str) -> None:
         """
         Set the clipboard selection to s.
@@ -205,8 +205,8 @@ class LeoQtGui(leoGui.LeoGui):
         # Alas, returning s reopens #218.
         return
 
-    #@+node:ekr.20110605121601.18487: *3* qt_gui.Dialogs & panels
-    #@+node:ekr.20231010004932.1: *4* qt_gui._save/_restore_focus
+    #@+node:ekr.20110605121601.18487: *3* LeoQtGui.Dialogs & panels
+    #@+node:ekr.20231010004932.1: *4* LeoQtGui._save/_restore_focus
     def _save_focus(self, c):
         """
         Save the data needed to restore focus to the body.
@@ -222,7 +222,7 @@ class LeoQtGui(leoGui.LeoGui):
         c.bringToFront()
         c.bodyWantsFocusNow()
         c.p.restoreCursorAndScroll()
-    #@+node:ekr.20110605121601.18488: *4* qt_gui.alert
+    #@+node:ekr.20110605121601.18488: *4* LeoQtGui.alert
     def alert(self, c: Cmdr, message: str) -> None:
         if g.unitTesting:
             return
@@ -237,13 +237,13 @@ class LeoQtGui(leoGui.LeoGui):
             dialog.exec()
         finally:
             c.in_qt_dialog = False
-    #@+node:ekr.20110605121601.18489: *4* qt_gui.makeFilter
+    #@+node:ekr.20110605121601.18489: *4* LeoQtGui.makeFilter
     def makeFilter(self, filetypes: list[tuple[str, str]]) -> str:
         """Return the Qt-style dialog filter from filetypes list."""
         # Careful: the second %s is *not* replaced.
         filters = ['%s (%s)' % (z) for z in filetypes]
         return ';;'.join(filters)
-    #@+node:ekr.20150615211522.1: *4* qt_gui.openFindDialog & helper
+    #@+node:ekr.20150615211522.1: *4* LeoQtGui.openFindDialog & helper
     def openFindDialog(self, c: Cmdr) -> None:
         if g.unitTesting:
             return
@@ -272,7 +272,7 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             dialog.show()
             dialog.exec()
-    #@+node:ekr.20150619053138.1: *5* qt_gui.createFindDialog
+    #@+node:ekr.20150619053138.1: *5* LeoQtGui.createFindDialog
     def createFindDialog(self, c: Cmdr) -> QDialog:
         """Create and init a non-modal Find dialog."""
         if c:
@@ -298,7 +298,7 @@ class LeoQtGui(leoGui.LeoGui):
             # This makes most standard bindings available.
         dialog.setModal(False)
         return dialog
-    #@+node:ekr.20110605121601.18492: *4* qt_gui.panels
+    #@+node:ekr.20110605121601.18492: *4* LeoQtGui.panels
     def createComparePanel(self, c: Cmdr) -> None:
         """Create a qt color picker panel."""
         pass  # This window is optional.
@@ -315,7 +315,7 @@ class LeoQtGui(leoGui.LeoGui):
         if g.unitTesting:
             return None
         return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
-    #@+node:ekr.20110605121601.18493: *4* qt_gui.runAboutLeoDialog
+    #@+node:ekr.20110605121601.18493: *4* LeoQtGui.runAboutLeoDialog
     def runAboutLeoDialog(self,
         c: Cmdr, version: str, theCopyright: str, url: str, email: str,
     ) -> None:
@@ -345,7 +345,7 @@ class LeoQtGui(leoGui.LeoGui):
         finally:
             c.in_qt_dialog = False
             self._restore_focus(c)
-    #@+node:ekr.20110605121601.18496: *4* qt_gui.runAskDateTimeDialog
+    #@+node:ekr.20110605121601.18496: *4* LeoQtGui.runAskDateTimeDialog
     def runAskDateTimeDialog(
         self,
         c: Cmdr,
@@ -447,7 +447,7 @@ class LeoQtGui(leoGui.LeoGui):
         if val == DialogCode.Accepted:
             return dialog.dt.dateTime().toPyDateTime()
         return None
-    #@+node:ekr.20110605121601.18491: *4* qt_gui.runAskOkCancelNumberDialog (not used)
+    #@+node:ekr.20110605121601.18491: *4* LeoQtGui.runAskOkCancelNumberDialog (not used)
     def runAskOkCancelNumberDialog(self,
         c: Cmdr, title: str, message: str, cancelButtonText: str = None, okButtonText: str = None,
     ) -> Optional[int]:
@@ -479,7 +479,7 @@ class LeoQtGui(leoGui.LeoGui):
         except ValueError:
             int_n = None
         return int_n
-    #@+node:ekr.20110605121601.18490: *4* qt_gui.runAskOkCancelStringDialog
+    #@+node:ekr.20110605121601.18490: *4* LeoQtGui.runAskOkCancelStringDialog
     def runAskOkCancelStringDialog(
         self,
         c: Cmdr,
@@ -515,7 +515,7 @@ class LeoQtGui(leoGui.LeoGui):
         dialog.raise_()
         ok = dialog.exec()
         return str(dialog.textValue()) if ok else None
-    #@+node:ekr.20110605121601.18495: *4* qt_gui.runAskOkDialog
+    #@+node:ekr.20110605121601.18495: *4* LeoQtGui.runAskOkDialog
     def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> None:
         """Create and run a qt askOK dialog ."""
         if g.unitTesting:
@@ -540,7 +540,7 @@ class LeoQtGui(leoGui.LeoGui):
         finally:
             c.in_qt_dialog = False
             self._restore_focus(c)
-    #@+node:ekr.20110605121601.18497: *4* qt_gui.runAskYesNoCancelDialog
+    #@+node:ekr.20110605121601.18497: *4* LeoQtGui.runAskYesNoCancelDialog
     def runAskYesNoCancelDialog(
         self,
         c: Cmdr,
@@ -602,7 +602,7 @@ class LeoQtGui(leoGui.LeoGui):
         # #4012: use clickedButton() to determine which button was clicked.
         button = dialog.clickedButton()
         return button.objectName() if button else 'yes'
-    #@+node:ekr.20110605121601.18498: *4* qt_gui.runAskYesNoDialog
+    #@+node:ekr.20110605121601.18498: *4* LeoQtGui.runAskYesNoDialog
     def runAskYesNoDialog(self,
         c: Cmdr, title: str, message: str = None, yes_all: bool = False, no_all: bool = False,
     ) -> str:
@@ -666,7 +666,7 @@ class LeoQtGui(leoGui.LeoGui):
         # #4012: use clickedButton() to determine which button was clicked.
         button = dialog.clickedButton()
         return button.objectName() or 'cancel'
-    #@+node:ekr.20110605121601.18499: *4* qt_gui.runOpenDirectoryDialog
+    #@+node:ekr.20110605121601.18499: *4* LeoQtGui.runOpenDirectoryDialog
     def runOpenDirectoryDialog(self, title: str, startdir: str) -> Optional[str]:
         """Create and run an Qt open directory dialog ."""
         if g.unitTesting:
@@ -674,7 +674,7 @@ class LeoQtGui(leoGui.LeoGui):
         dialog = QtWidgets.QFileDialog()
         self.attachLeoIcon(dialog)
         return dialog.getExistingDirectory(None, title, startdir)
-    #@+node:ekr.20110605121601.18500: *4* qt_gui.runOpenFileDialog (changed)
+    #@+node:ekr.20110605121601.18500: *4* LeoQtGui.runOpenFileDialog (changed)
     def runOpenFileDialog(
         self,
         c: Cmdr,
@@ -715,7 +715,7 @@ class LeoQtGui(leoGui.LeoGui):
         if c and s:
             c.last_dir = g.os_path_dirname(s)
         return s
-    #@+node:ekr.20240409063707.1: *4* qt_gui.runOpenFilesDialog (new)
+    #@+node:ekr.20240409063707.1: *4* LeoQtGui.runOpenFilesDialog (new)
     def runOpenFilesDialog(
         self,
         c: Cmdr,
@@ -757,7 +757,7 @@ class LeoQtGui(leoGui.LeoGui):
         if c and files:
             c.last_dir = g.os_path_dirname(files[-1])
         return files
-    #@+node:ekr.20110605121601.18501: *4* qt_gui.runPropertiesDialog
+    #@+node:ekr.20110605121601.18501: *4* LeoQtGui.runPropertiesDialog
     def runPropertiesDialog(
         self,
         title: str = 'Properties',
@@ -769,7 +769,7 @@ class LeoQtGui(leoGui.LeoGui):
         if not g.unitTesting:
             g.warning('Properties menu not supported for Qt gui')
         return 'Cancel', {}
-    #@+node:ekr.20110605121601.18502: *4* qt_gui.runSaveFileDialog
+    #@+node:ekr.20110605121601.18502: *4* LeoQtGui.runSaveFileDialog
     def runSaveFileDialog(self,
         c: Cmdr,
         title: str = 'Save',
@@ -811,7 +811,7 @@ class LeoQtGui(leoGui.LeoGui):
         if c and s:
             c.last_dir = g.os_path_dirname(s)
         return s
-    #@+node:ekr.20110605121601.18503: *4* qt_gui.runScrolledMessageDialog
+    #@+node:ekr.20110605121601.18503: *4* LeoQtGui.runScrolledMessageDialog
     def runScrolledMessageDialog(
         self,
         short_title: str = '',
@@ -879,8 +879,8 @@ class LeoQtGui(leoGui.LeoGui):
         finally:
             c.in_qt_dialog = False
         #@-<< emergency fallback >>
-    #@+node:ekr.20110607182447.16456: *3* qt_gui.Event handlers
-    #@+node:ekr.20190824094650.1: *4* qt_gui.close_event
+    #@+node:ekr.20110607182447.16456: *3* LeoQtGui.Event handlers
+    #@+node:ekr.20190824094650.1: *4* LeoQtGui.close_event
     def close_event(self, event: QEvent) -> None:
 
         # Save session data.
@@ -893,7 +893,7 @@ class LeoQtGui(leoGui.LeoGui):
                 event.ignore()
                 return
         event.accept()
-    #@+node:ekr.20110605121601.18481: *4* qt_gui.onDeactiveEvent
+    #@+node:ekr.20110605121601.18481: *4* LeoQtGui.onDeactiveEvent
     # deactivated_name = ''
 
     deactivated_widget = None
@@ -919,7 +919,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # self.active = False
                 # c.k.keyboardQuit(setFocus=False)
         g.doHook('deactivate', c=c, p=c.p, v=c.p, event=event)
-    #@+node:ekr.20110605121601.18480: *4* qt_gui.onActivateEvent
+    #@+node:ekr.20110605121601.18480: *4* LeoQtGui.onActivateEvent
     # Called from eventFilter
 
     def onActivateEvent(self, event: QEvent, c: Cmdr, obj: Any, tag: str) -> None:
@@ -963,7 +963,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # else:
                     # c.bodyWantsFocusNow()
         g.doHook('activate', c=c, p=c.p, v=c.p, event=event)
-    #@+node:ekr.20130921043420.21175: *4* qt_gui.setFilter
+    #@+node:ekr.20130921043420.21175: *4* LeoQtGui.setFilter
     def setFilter(self, c: Cmdr, obj: Any, w: Wrapper, tag: str) -> None:
         """
         Create an event filter in obj.
@@ -975,8 +975,8 @@ class LeoQtGui(leoGui.LeoGui):
         theFilter = qt_events.LeoQtEventFilter(c, w=w, tag=tag)
         obj.installEventFilter(theFilter)
         w.ev_filter = theFilter  # Set the official ivar in w.
-    #@+node:ekr.20110605121601.18508: *3* qt_gui.Focus
-    #@+node:ekr.20190601055031.1: *4* qt_gui.ensure_commander_visible
+    #@+node:ekr.20110605121601.18508: *3* LeoQtGui.Focus
+    #@+node:ekr.20190601055031.1: *4* LeoQtGui.ensure_commander_visible
     def ensure_commander_visible(self, c1: Cmdr) -> None:
         """
         Check to see if c.frame is in a tabbed ui, and if so, make sure
@@ -990,7 +990,7 @@ class LeoQtGui(leoGui.LeoGui):
                 c = c1
                 factory.setTabForCommander(c)
                 c.bodyWantsFocusNow()
-    #@+node:ekr.20190601054958.1: *4* qt_gui.get_focus (no longer used)
+    #@+node:ekr.20190601054958.1: *4* LeoQtGui.get_focus (no longer used)
     def get_focus(self, c: Cmdr = None, raw: bool = False, at_idle: bool = False) -> QWidget:
         """Returns the widget that has focus."""
         trace = 'focus' in g.app.debug
@@ -1011,7 +1011,7 @@ class LeoQtGui(leoGui.LeoGui):
             name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
             g.trace('(LeoQtGui)', name)
         return w
-    #@+node:ekr.20190601054959.1: *4* qt_gui.set_focus
+    #@+node:ekr.20190601054959.1: *4* LeoQtGui.set_focus
     def set_focus(self, c: Cmdr, w: Wrapper) -> None:
         """Put the focus on the widget."""
         if not w:
@@ -1024,7 +1024,7 @@ class LeoQtGui(leoGui.LeoGui):
             name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
             g.trace('(LeoQtGui)', name)
         w.setFocus()
-    #@+node:ekr.20110605121601.18510: *3* qt_gui.getFontFromParams
+    #@+node:ekr.20110605121601.18510: *3* LeoQtGui.getFontFromParams
     size_warnings: list[str] = []
     font_ids: list[int] = []  # id's of traced fonts.
 
@@ -1074,7 +1074,7 @@ class LeoQtGui(leoGui.LeoGui):
                 f"weight: {weight}")
             # g.es_exception() # Confusing for most users.
             return None
-    #@+node:ekr.20110605121601.18511: *3* qt_gui.getFullVersion
+    #@+node:ekr.20110605121601.18511: *3* LeoQtGui.getFullVersion
     def getFullVersion(self, c: Cmdr = None) -> str:
         """Return the PyQt version (for signon)"""
         try:
@@ -1083,13 +1083,13 @@ class LeoQtGui(leoGui.LeoGui):
             # g.es_exception()
             qtLevel = '<qtLevel>'
         return f"PyQt {qtLevel}"
-    #@+node:ekr.20110605121601.18514: *3* qt_gui.Icons
-    #@+node:ekr.20110605121601.18515: *4* qt_gui.attachLeoIcon
+    #@+node:ekr.20110605121601.18514: *3* LeoQtGui.Icons
+    #@+node:ekr.20110605121601.18515: *4* LeoQtGui.attachLeoIcon
     def attachLeoIcon(self, window: Union[QMainWindow, QDialog]) -> None:
         """Attach a Leo icon to the window."""
         if self.appIcon:
             window.setWindowIcon(self.appIcon)
-    #@+node:ekr.20110605121601.18516: *4* qt_gui.getIconImage
+    #@+node:ekr.20110605121601.18516: *4* LeoQtGui.getIconImage
     def getIconImage(self, name: str) -> Optional[QIcon]:
         """Load the icon and return it."""
         # Return the image from the cache if possible.
@@ -1116,7 +1116,7 @@ class LeoQtGui(leoGui.LeoGui):
             g.es_print("exception loading:", fullname)
             g.es_exception()
             return None
-    #@+node:ekr.20110605121601.18517: *4* qt_gui.getImageImage
+    #@+node:ekr.20110605121601.18517: *4* LeoQtGui.getImageImage
     @functools.lru_cache(maxsize=128)
     def getImageImage(self, name: str) -> Optional[QPixmap]:
         """Load the image in file named `name` and return it."""
@@ -1129,7 +1129,7 @@ class LeoQtGui(leoGui.LeoGui):
             g.es("exception loading:", name)
             g.es_exception()
             return None
-    #@+node:tbrown.20130316075512.28478: *4* qt_gui.getImageFinder
+    #@+node:tbrown.20130316075512.28478: *4* LeoQtGui.getImageFinder
     dump_given = False
     @functools.lru_cache(maxsize=128)
     def getImageFinder(self, name: str) -> Optional[str]:
@@ -1178,14 +1178,14 @@ class LeoQtGui(leoGui.LeoGui):
         if trace:
             g.trace('not found:', name)
         return None
-    #@+node:ekr.20110605121601.18518: *4* qt_gui.getTreeImage
+    #@+node:ekr.20110605121601.18518: *4* LeoQtGui.getTreeImage
     @functools.lru_cache(maxsize=128)
     def getTreeImage(self, c: Cmdr, path: str) -> tuple[QPixmap, int]:
         image = QtGui.QPixmap(path)
         if image.height() > 0 and image.width() > 0:
             return image, image.height()
         return None, None
-    #@+node:ekr.20131007055150.17608: *3* qt_gui.insertKeyEvent
+    #@+node:ekr.20131007055150.17608: *3* LeoQtGui.insertKeyEvent
     def insertKeyEvent(self, event: QEvent, i: int) -> None:
         """Insert the key given by event in location i of widget event.w."""
         assert isinstance(event, leoGui.LeoKeyEvent)
@@ -1205,7 +1205,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # return False, indicating that the widget must handle
                 # qevent, which *presumably* is the best that can be done.
                 g.app.gui.insert_char_flag = True
-    #@+node:ekr.20110605121601.18528: *3* qt_gui.makeScriptButton
+    #@+node:ekr.20110605121601.18528: *3* LeoQtGui.makeScriptButton
     def makeScriptButton(
         self,
         c: Cmdr,
@@ -1267,7 +1267,7 @@ class LeoQtGui(leoGui.LeoGui):
         if shortcut:
             #@+<< bind the shortcut to executeScriptCallback >>
             #@+node:ekr.20110605121601.18531: *4* << bind the shortcut to executeScriptCallback >>
-            # In qt_gui.makeScriptButton.
+            # In LeoQtGui.makeScriptButton.
             func = executeScriptCallback
             if shortcut:
                 shortcut = g.KeyStroke(shortcut)  # type:ignore
@@ -1276,14 +1276,14 @@ class LeoQtGui(leoGui.LeoGui):
                 g.blue('bound @button', buttonText, 'to', shortcut)
             #@-<< bind the shortcut to executeScriptCallback >>
         #@+<< create press-buttonText-button command >>
-        #@+node:ekr.20110605121601.18532: *4* << create press-buttonText-button command >> qt_gui.makeScriptButton
+        #@+node:ekr.20110605121601.18532: *4* << create press-buttonText-button command >> LeoQtGui.makeScriptButton
         # #1121. Like sc.cleanButtonText
         buttonCommandName = f"press-{buttonText.replace(' ', '-').strip('-')}-button"
         #
         # This will use any shortcut defined in an @shortcuts node.
         k.registerCommand(buttonCommandName, executeScriptCallback, pane='button')
         #@-<< create press-buttonText-button command >>
-    #@+node:ekr.20200304125716.1: *3* qt_gui.onContextMenu
+    #@+node:ekr.20200304125716.1: *3* LeoQtGui.onContextMenu
     def onContextMenu(self, c: Cmdr, w: Wrapper, point: QPoint) -> None:
         """LeoQtGui: Common context menu handling."""
         # #1286.
@@ -1307,7 +1307,7 @@ class LeoQtGui(leoGui.LeoGui):
                 g.es_exception()
         menu.popup(menuPos)
         self._contextmenu = menu
-    #@+node:ekr.20170612065255.1: *3* qt_gui.put_help
+    #@+node:ekr.20170612065255.1: *3* LeoQtGui.put_help
     def put_help(self, c: Cmdr, s: str, short_title: str = '') -> Any:
         """Put the help command."""
         s = textwrap.dedent(s.rstrip())
@@ -1343,12 +1343,12 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             g.es(s)
         return vr  # For unit tests
-    #@+node:ekr.20110605121601.18521: *3* qt_gui.runAtIdle
+    #@+node:ekr.20110605121601.18521: *3* LeoQtGui.runAtIdle
     def runAtIdle(self, aFunc: Callable) -> None:
         """This can not be called in some contexts."""
         QtCore.QTimer.singleShot(0, aFunc)
-    #@+node:ekr.20110605121601.18483: *3* qt_gui.runMainLoop & runWithIpythonKernel
-    #@+node:ekr.20130930062914.16000: *4* qt_gui.runMainLoop
+    #@+node:ekr.20110605121601.18483: *3* LeoQtGui.runMainLoop & runWithIpythonKernel
+    #@+node:ekr.20130930062914.16000: *4* LeoQtGui.runMainLoop
     def runMainLoop(self) -> None:
         """Start the Qt main loop."""
         try:  # #2127: A crash here hard-crashes Leo: There is no main loop!
@@ -1371,7 +1371,7 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             # This can be alarming when using Python's -i option.
             sys.exit(self.qtApp.exec())
-    #@+node:ekr.20130930062914.16001: *4* qt_gui.runWithIpythonKernel (commands)
+    #@+node:ekr.20130930062914.16001: *4* LeoQtGui.runWithIpythonKernel (commands)
     def runWithIpythonKernel(self) -> None:
         """Init Leo to run in an IPython shell."""
         try:
@@ -1382,7 +1382,7 @@ class LeoQtGui(leoGui.LeoGui):
             g.es_exception()
             print('can not init leo.core.leoIPython.py')
             sys.exit(1)
-    #@+node:ekr.20180117053546.1: *3* qt_gui.show_tips & helpers
+    #@+node:ekr.20180117053546.1: *3* LeoQtGui.show_tips & helpers
     @g.command('show-tips')
     def show_next_tip(self, event: LeoKeyEvent = None) -> None:
         c = g.app.log and g.app.log.c
@@ -1456,8 +1456,8 @@ class LeoQtGui(leoGui.LeoGui):
     def onNext(self, *args: Args, **keys: KWargs) -> bool:
         g.trace(args, keys)
         return True
-    #@+node:ekr.20111215193352.10220: *3* qt_gui.Splash Screen
-    #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
+    #@+node:ekr.20111215193352.10220: *3* LeoQtGui.Splash Screen
+    #@+node:ekr.20110605121601.18479: *4* LeoQtGui.createSplashScreen
     def createSplashScreen(self) -> QWidget:
         """Put up a splash screen with Leo's logo."""
         try:
@@ -1509,7 +1509,7 @@ class LeoQtGui(leoGui.LeoGui):
                     splash.repaint()
                     break  # Done.
         return splash
-    #@+node:ekr.20110613103140.16424: *4* qt_gui.dismiss_splash_screen
+    #@+node:ekr.20110613103140.16424: *4* LeoQtGui.dismiss_splash_screen
     def dismiss_splash_screen(self) -> None:
 
         gui = self
@@ -1520,8 +1520,8 @@ class LeoQtGui(leoGui.LeoGui):
             gui.splashScreen.hide()
             # gui.splashScreen.deleteLater()
             gui.splashScreen = None
-    #@+node:ekr.20140825042850.18411: *3* qt_gui:Utils...
-    #@+node:ekr.20240519114809.1: *4* qt_gui._self_and_subtree
+    #@+node:ekr.20140825042850.18411: *3* LeoQtGui:Utils...
+    #@+node:ekr.20240519114809.1: *4* LeoQtGui._self_and_subtree
     def _self_and_subtree(self, qt_obj: Any) -> Generator:
         """Yield w and all of w's descendants."""
         if not qt_obj:
@@ -1529,16 +1529,16 @@ class LeoQtGui(leoGui.LeoGui):
         yield qt_obj
         for child in qt_obj.children():
             yield from self._self_and_subtree(child)
-    #@+node:ekr.20240519115301.1: *4* qt_gui.find_widget_by_name
+    #@+node:ekr.20240519115301.1: *4* LeoQtGui.find_widget_by_name
     def find_widget_by_name(self, c: Cmdr, name: str) -> Optional[QWidget]:
         for w in self._self_and_subtree(c.frame.top):
             if w and w.objectName() == name:
                 return w
         return None
-    #@+node:ekr.20240519115157.1: *4* qt_gui.get_top_splitter
+    #@+node:ekr.20240519115157.1: *4* LeoQtGui.get_top_splitter
     def get_top_splitter(self, c: Cmdr) -> QWidget:
         return self.find_widget_by_name(c, 'main_splitter')
-    #@+node:ekr.20110605121601.18522: *4* qt_gui.isTextWidget/Wrapper
+    #@+node:ekr.20110605121601.18522: *4* LeoQtGui.isTextWidget/Wrapper
     def isTextWidget(self, w: Wrapper) -> bool:
         """Return True if w is some kind of Qt text widget."""
         if Qsci:
@@ -1552,7 +1552,7 @@ class LeoQtGui(leoGui.LeoGui):
         if isinstance(w, (g.NullObject, g.TracingNullObject)):
             return True
         return bool(getattr(w, 'supportsHighLevelInterface', None))
-    #@+node:ekr.20110605121601.18527: *4* qt_gui.widget_name
+    #@+node:ekr.20110605121601.18527: *4* LeoQtGui.widget_name
     def widget_name(self, w: Wrapper) -> str:
         # First try the widget's getName method.
         if not w:
@@ -1566,25 +1566,25 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             name = repr(w)
         return name
-    #@+node:ekr.20111027083744.16532: *4* qt_gui.enableSignalDebugging
+    #@+node:ekr.20111027083744.16532: *4* LeoQtGui.enableSignalDebugging
     import PyQt6.QtTest as QtTest
 
     QSignalSpy = QtTest.QSignalSpy
     assert QSignalSpy
-    #@+node:ekr.20240521171848.1: *4* qt_gui.equalize_splitter
+    #@+node:ekr.20240521171848.1: *4* LeoQtGui.equalize_splitter
     def equalize_splitter(self, splitter):
         """Equalize all the splitter's contents."""
         if not isinstance(splitter, QtWidgets.QSplitter):
             g.trace(f"Not a QSplitter: {splitter.__class__.__name__}")
         splitter.setSizes([100000] * len(splitter.sizes()))
-    #@+node:ekr.20190819091957.1: *3* qt_gui:Widget constructors
-    #@+node:ekr.20190819094016.1: *4* qt_gui.createButton
+    #@+node:ekr.20190819091957.1: *3* LeoQtGui:Widget constructors
+    #@+node:ekr.20190819094016.1: *4* LeoQtGui.createButton
     def createButton(self, parent: QWidget, name: str, label: str) -> QPushButton:
         w = QtWidgets.QPushButton(parent)
         w.setObjectName(name)
         w.setText(label)
         return w
-    #@+node:ekr.20190819091122.1: *4* qt_gui.createFrame
+    #@+node:ekr.20190819091122.1: *4* LeoQtGui.createFrame
     def createFrame(
         self,
         parent: QWidget,
@@ -1608,14 +1608,14 @@ class LeoQtGui(leoGui.LeoGui):
         w.setLineWidth(lineWidth)
         w.setObjectName(name)
         return w
-    #@+node:ekr.20190819091851.1: *4* qt_gui.createGrid
+    #@+node:ekr.20190819091851.1: *4* LeoQtGui.createGrid
     def createGrid(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -> QGridLayout:
         w = QtWidgets.QGridLayout(parent)
         w.setContentsMargins(QtCore.QMargins(margin, margin, margin, margin))
         w.setSpacing(spacing)
         w.setObjectName(name)
         return w
-    #@+node:ekr.20190819093830.1: *4* qt_gui.createHLayout & createVLayout
+    #@+node:ekr.20190819093830.1: *4* LeoQtGui.createHLayout & createVLayout
     def createHLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -> QHBoxLayout:
         hLayout = QtWidgets.QHBoxLayout(parent)
         hLayout.setObjectName(name)
@@ -1629,13 +1629,13 @@ class LeoQtGui(leoGui.LeoGui):
         vLayout.setSpacing(spacing)
         vLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
         return vLayout
-    #@+node:ekr.20190819094302.1: *4* qt_gui.createLabel
+    #@+node:ekr.20190819094302.1: *4* LeoQtGui.createLabel
     def createLabel(self, parent: QWidget, name: str, label: str) -> QLabel:
         w = QtWidgets.QLabel(parent)
         w.setObjectName(name)
         w.setText(label)
         return w
-    #@+node:ekr.20190819092523.1: *4* qt_gui.createTabWidget
+    #@+node:ekr.20190819092523.1: *4* LeoQtGui.createTabWidget
     def createTabWidget(self,
         parent: QWidget, name: str, hPolicy: Policy = None, vPolicy: Policy = None,
     ) -> QTabWidget:
@@ -1643,7 +1643,7 @@ class LeoQtGui(leoGui.LeoGui):
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
         w.setObjectName(name)
         return w
-    #@+node:ekr.20190819091214.1: *4* qt_gui.setSizePolicy
+    #@+node:ekr.20190819091214.1: *4* LeoQtGui.setSizePolicy
     def setSizePolicy(self, widget: QWidget, kind1: Policy = None, kind2: Policy = None) -> None:
         if kind1 is None:
             kind1 = Policy.Ignored
