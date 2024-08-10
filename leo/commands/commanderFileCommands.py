@@ -223,7 +223,7 @@ def reloadOutline(self: Self, event: LeoKeyEvent = None) -> None:
     for i, name in enumerate(tab_names):
         tab_widget.setTabText(i, name)
 
-    # Select the dw's tab.
+    # Select the proper tab.
     tab_widget.setCurrentIndex(old_index)
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
