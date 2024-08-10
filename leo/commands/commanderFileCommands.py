@@ -180,24 +180,23 @@ def reloadOutline(self: Self, event: LeoKeyEvent = None) -> None:
 
     if not is_qt:
         return
+
     from leo.core.leoQt import QtWidgets
     dw = c.frame.top
     stacked_widget = dw.parent()
     tab_widget = dw.leo_master
-
-    ### g.trace(' tab_widget', id(tab_widget), tab_widget.__class__.__name__)
-    ### g.trace('stacked_widget', id(stacked_widget), stacked_widget.__class__.__name__)
     stacked_layout = None
     for w in stacked_widget.children():
         if isinstance(w, QtWidgets.QStackedLayout):
             stacked_layout = w
             break
-    ### g.trace('stacked_layout', id(stacked_layout), stacked_layout.__class__.__name__)
-    old_index = stacked_layout.indexOf(dw)
+    else:
+        g.trace('Can not happen: no QStackedLayout')
+        return
 
-    # Remember the tab names.
+    # Remember the old values.
+    old_index = stacked_layout.indexOf(dw)
     tab_names = [tab_widget.tabText(i) for i in range(tab_widget.count())]
-    ### g.trace('tab_names', tab_names)
 
     # Completely close the outline.
     g.doHook("close-frame", c=c)
@@ -211,19 +210,9 @@ def reloadOutline(self: Self, event: LeoKeyEvent = None) -> None:
     # Open the new outline.
     g.openWithFileName(fileName=c.fileName())
 
-
-    ###
-    # if stacked_layout is None:
-        # g.trace('Can not happen: no QStackedLayout')
-        # return
-    # if old_index == -1:
-        # g.trace('Can not happen: old_index == -1')
-        # return
-
-    # Restore the outline's postion in the QTabbedWidget.
+    # Do nothing more if the index has not changed.
     new_index = stacked_layout.indexOf(dw)
-    g.trace(old_index, new_index)  ###
-    if new_index == old_index:  ###
+    if new_index == old_index:
         return
 
     # Put dw in the proper place.
@@ -235,8 +224,7 @@ def reloadOutline(self: Self, event: LeoKeyEvent = None) -> None:
         tab_widget.setTabText(i, name)
 
     # Select the dw's tab.
-    ### stacked_layout.setCurrentIndex(old_index)
-
+    tab_widget.setCurrentIndex(old_index)
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
