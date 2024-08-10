@@ -143,48 +143,6 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     print(args_s)
     print('')
     subprocess.run(args)  # pylint: disable=subprocess-run-check
-#@+node:ekr.20240808090229.1: ** c_file.reloadOutline
-@g.commander_command('reload-outline')
-def reloadOutline(self: Self, event: LeoKeyEvent = None) -> None:
-    """
-    reload-outline: Close the outline and reload it.
-    
-    This command only works for Qt.
-    """
-    c = self
-    if not g.app.gui.guiName() == 'qt':
-        return
-
-    # Part 1: Gui-independent checks.
-
-    # Commit any open edits.
-    c.endEditing()
-
-    # Make sure the file has a name.
-    if not c.fileName():
-        c.save()
-    if not c.fileName():
-        g.es_print('Please name the outline', color='red')
-        return
-
-    # Abort the reload if the user vetos closing this outline.
-    if c.changed:
-        veto = False
-        try:
-            c.promptingForClose = True
-            veto = c.frame.promptForSave()
-        finally:
-            c.promptingForClose = False
-        if veto:
-            g.es_print('Cancelling reload-outline command')
-            return
-        # Save the file.
-        c.save()
-        g.app.recentFilesManager.writeRecentFilesFile(c)
-
-    # Part 2: The Qt-specific part of this command.
-    from leo.plugins.qt_frame import reload_outline
-    reload_outline(c)
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
