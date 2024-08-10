@@ -4884,6 +4884,54 @@ def toggleUnlView(event: LeoKeyEvent) -> None:
     if c and c.frame.statusLine:
         # This is not a convenience method.
         c.frame.statusLine.toggleUnlView()
+#@+node:ekr.20240810080628.1: *3* reload_outline (qt_frame.py)
+def reload_outline(c: Cmdr) -> None:
+    """The Qt-specific part of the reload-outline command."""
+
+    # Remember old_index, the outline's position in the QTabbledWidget.
+    dw = c.frame.top
+    stacked_widget = dw.parent()
+    tab_widget = dw.leo_master
+    stacked_layout = None
+    for w in stacked_widget.children():
+        if isinstance(w, QtWidgets.QStackedLayout):
+            stacked_layout = w
+            break
+    else:
+        g.trace('Can not happen: no QStackedLayout')
+        return
+
+    # Remember the old values.
+    old_index = stacked_layout.indexOf(dw)
+    tab_names = [tab_widget.tabText(i) for i in range(tab_widget.count())]
+
+    # Completely close the outline.
+    g.doHook("close-frame", c=c)
+    frame = c.frame
+    if frame in g.app.windowList:
+        g.app.destroyWindow(frame)
+        g.app.windowList.remove(frame)
+    else:
+        g.app.forgetOpenFile(fn=c.fileName())  # #69.
+
+    # Open the new outline.
+    g.openWithFileName(fileName=c.fileName())
+
+    # Do nothing more if the index has not changed.
+    new_index = stacked_layout.indexOf(dw)
+    if new_index == old_index:
+        return
+
+    # Put dw in the proper place.
+    stacked_layout.removeWidget(dw)
+    stacked_layout.insertWidget(old_index, dw)
+
+    # Fix all tab names.
+    for i, name in enumerate(tab_names):
+        tab_widget.setTabText(i, name)
+
+    # Select the proper tab.
+    tab_widget.setCurrentIndex(old_index)
 #@-others
 #@@language python
 #@@tabwidth -4

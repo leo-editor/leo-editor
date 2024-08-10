@@ -146,9 +146,16 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
 #@+node:ekr.20240808090229.1: ** c_file.reloadOutline
 @g.commander_command('reload-outline')
 def reloadOutline(self: Self, event: LeoKeyEvent = None) -> None:
-    """Close the outline and reload it."""
+    """
+    reload-outline: Close the outline and reload it.
+    
+    This command only works for Qt.
+    """
     c = self
-    is_qt = g.app.gui.guiName() == 'qt'
+    if not g.app.gui.guiName() == 'qt':
+        return
+
+    # Part 1: Gui-independent checks.
 
     # Commit any open edits.
     c.endEditing()
@@ -175,56 +182,9 @@ def reloadOutline(self: Self, event: LeoKeyEvent = None) -> None:
         c.save()
         g.app.recentFilesManager.writeRecentFilesFile(c)
 
-    # Remember old_index, the outline's position in the QTabbledWidget.
-    tab_names: list[str] = []
-
-    if not is_qt:
-        return
-
-    from leo.core.leoQt import QtWidgets
-    dw = c.frame.top
-    stacked_widget = dw.parent()
-    tab_widget = dw.leo_master
-    stacked_layout = None
-    for w in stacked_widget.children():
-        if isinstance(w, QtWidgets.QStackedLayout):
-            stacked_layout = w
-            break
-    else:
-        g.trace('Can not happen: no QStackedLayout')
-        return
-
-    # Remember the old values.
-    old_index = stacked_layout.indexOf(dw)
-    tab_names = [tab_widget.tabText(i) for i in range(tab_widget.count())]
-
-    # Completely close the outline.
-    g.doHook("close-frame", c=c)
-    frame = c.frame
-    if frame in g.app.windowList:
-        g.app.destroyWindow(frame)
-        g.app.windowList.remove(frame)
-    else:
-        g.app.forgetOpenFile(fn=c.fileName())  # #69.
-
-    # Open the new outline.
-    g.openWithFileName(fileName=c.fileName())
-
-    # Do nothing more if the index has not changed.
-    new_index = stacked_layout.indexOf(dw)
-    if new_index == old_index:
-        return
-
-    # Put dw in the proper place.
-    stacked_layout.removeWidget(dw)
-    stacked_layout.insertWidget(old_index, dw)
-
-    # Fix all tab names.
-    for i, name in enumerate(tab_names):
-        tab_widget.setTabText(i, name)
-
-    # Select the proper tab.
-    tab_widget.setCurrentIndex(old_index)
+    # Part 2: The Qt-specific part of this command.
+    from leo.plugins.qt_frame import reload_outline
+    reload_outline(c)
 #@+node:ekr.20031218072017.2820: ** c_file.top level
 #@+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
