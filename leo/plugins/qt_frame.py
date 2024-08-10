@@ -4516,7 +4516,6 @@ class TabbedFrameFactory:
 
         c = leoFrame.c
         tabw = self.masterFrame
-        ### print('TabbedFrameFactory.createFrame. masterFrame:', tabw.__class__.__name__)  ###
         dw = DynamicWindow(c, tabw)
         self.leoFrames[dw] = leoFrame
         # Shorten the title.
