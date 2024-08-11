@@ -334,11 +334,8 @@ FG_COLOR_LIGHT: str = '#6B5B53'
 BG_COLOR_LIGHT: str = '#ededed'
 BG_COLOR_DARK: str = '#202020'
 FG_COLOR_DARK: str = '#cbdedc'
-FONT_FAMILY: str = 'Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
+FONT_FAMILY: str = '"Intel One Mono", Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
 
-EDITOR_FONT_SIZE: str = '11pt'
-EDITOR_STYLESHEET_LIGHT_FILE: str = 'freewin_editor_light.css'
-EDITOR_STYLESHEET_DARK_FILE: str = 'freewin_editor_dark.css'
 ENCODING: str = 'utf-8'
 BROWSER: int = 1
 EDITOR: int = 0
@@ -365,11 +362,6 @@ GNX1re: str = r'.*[([\s](\w+\.\d+\.\d+)'  # For gnx not at start of line
 GNX: re.Pattern = re.compile(GNXre)
 GNX1: re.Pattern = re.compile(GNX1re)
 
-fs: str = EDITOR_FONT_SIZE.split('pt', 1)[0]
-qf: QtGui.QFont = QFont(FONT_FAMILY[0], int(fs))
-qfont: QtGui.QFontInfo = QFontInfo(qf)  # Uses actual font if different
-FM: QtGui.QFontMetrics = QFontMetrics(qf)
-
 TABWIDTH: int = 36  # Best guess but may not always be right.
 TAB2SPACES: int = 4  # Tab replacement when writing back to host node
 #@-others
@@ -377,28 +369,13 @@ TAB2SPACES: int = 4  # Tab replacement when writing back to host node
 #@-<< declarations >>
 #@+<< Stylesheets >>
 #@+node:tom.20210614172857.1: ** << Stylesheets >>
-
-EDITOR_STYLESHEET_LIGHT: str = f'''QTextEdit {{
-    color: {FG_COLOR_LIGHT};
-    background: {BG_COLOR_LIGHT};
-    font-family: {FONT_FAMILY};
-    font-size: {EDITOR_FONT_SIZE};
-    }}'''
-
-EDITOR_STYLESHEET_DARK: str = f'''QTextEdit {{
-    color: {FG_COLOR_DARK};
-    background: {BG_COLOR_DARK};
-    font-family: {FONT_FAMILY};
-    font-size: {EDITOR_FONT_SIZE};
-    }}'''
-
 RENDER_BTN_STYLESHEET_LIGHT: str = f'''color: {FG_COLOR_LIGHT};
     background: {BG_COLOR_LIGHT};
-    font-size: {EDITOR_FONT_SIZE};'''
+    font-size: 11pt;'''
 
 RENDER_BTN_STYLESHEET_DARK: str = f'''color: {FG_COLOR_DARK};
     background: {BG_COLOR_DARK};
-    font-size: {EDITOR_FONT_SIZE};'''
+    font-size: 11pt;'''
 
 #@+others
 #@+node:tom.20210625145324.1: *3* RsT Stylesheet Dark
@@ -686,29 +663,20 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         is_dark = is_body_dark(self.c)
         if is_dark:
-            self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_DARK_FILE)
             self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_DARK_FILE)
         else:
-            self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_LIGHT_FILE)
             self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_LIGHT_FILE)
 
         if g.isWindows:
-            self.editor_csspath = self.editor_csspath.replace('/', '\\')
             self.rst_csspath = self.rst_csspath.replace('/', '\\')
         else:
-            self.editor_csspath = self.editor_csspath.replace('\\', '/')
             self.rst_csspath = self.rst_csspath.replace('\\', '/')
 
         #@-<<set stylesheet paths>>
         #@+<<set stylesheets>>
         #@+node:tom.20210615101103.1: *4* <<set stylesheets>>
-        # Check if editor stylesheet file exists. If so,
-        # we cache its contents.
-        if exists(self.editor_csspath):
-            with open(self.editor_csspath, encoding=ENCODING) as f:
-                self.editor_style = f.read()
-        else:
-            self.editor_style = EDITOR_STYLESHEET_DARK if is_dark else EDITOR_STYLESHEET_LIGHT
+        editor_sheet = get_body_css(self.c)
+        editor_sheet += self.get_color_font_css()
 
         # If a stylesheet exists for RsT, we cache its contents.
         self.rst_stylesheet = None
@@ -723,10 +691,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.doc = self.editor.document()
         self.editor.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
 
-        sheet = get_body_css(self.c)
-        sheet += self.get_color_font_css()
-        self.editor_style = sheet
-        self.editor.setStyleSheet(sheet)
+        self.editor_style = editor_sheet
+        self.editor.setStyleSheet(editor_sheet)
 
         colorizer = leoColorizer.make_colorizer(c, self.editor)
         colorizer.highlighter.setDocument(self.doc)
@@ -810,14 +776,14 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
     #@+node:tom.20240811000132.1: *3* get_color_font_css
     def get_color_font_css(self):
-        """Return a CSS string using the body editor's actual colors and font."""
+        """Return a CSS string declaring the body editor's actual colors and font."""
         fg, bg = get_body_colors(self.c)
         font = self.host_editor.font()
         color_font_style = f"""QTextEdit {{
             color: {fg};
             background: {bg};
-            font-family: {font.family()};
-            font-size: {font.pointSize()}pt;
+            font-family: "{font.family()}";
+            font-size: {font.pointSizeF()}pt;
         }}
         """
 
