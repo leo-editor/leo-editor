@@ -14,8 +14,8 @@ is node-locked - that is, it always shows a view of its original host node
 no matter how the user navigates within or between outlines.
 
 :By: T\. B\. Passin
-:Version: 2.1
-:Date: 26 Apr 2024
+:Version: 2.2
+:Date: 11 Aug 2024
 
 #@+others
 #@+node:tom.20210604174603.1: *3* Opening a Window
@@ -146,9 +146,9 @@ able to display all the features that a full rendered view can.
 Stylesheets and Dark-themed Appearance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The appearance of the editing and rendering view is determined
-by stylesheets. Simple default stylesheets are built into the
-plugin for the editing view.
+The appearance of the rendering view is determined
+by stylesheets. The editing view styles aare taken from the host
+node's body editor.
 
 For styling the Restructured Text rendering view (When the default "View 1"
 is in use) and for customized editing view stylesheets, the plugin looks in
@@ -370,7 +370,7 @@ qf: QtGui.QFont = QFont(FONT_FAMILY[0], int(fs))
 qfont: QtGui.QFontInfo = QFontInfo(qf)  # Uses actual font if different
 FM: QtGui.QFontMetrics = QFontMetrics(qf)
 
-TABWIDTH: int = 36  # Best guess but may not alays be right.
+TABWIDTH: int = 36  # Best guess but may not always be right.
 TAB2SPACES: int = 4  # Tab replacement when writing back to host node
 #@-others
 
@@ -616,6 +616,13 @@ def change_css_prop(css: str, prop: str, newval: str) -> str:
 
     return css.replace(val, newval, 1)
 
+#@+node:tom.20240810173532.1: ** get_body_css
+def get_body_css(c):
+    """Return the text of Leo's top-level CSS stylesheet."""
+    ssm = g.app.gui.styleSheetManagerClass(c)
+    w = ssm.get_master_widget()
+    sheet = w.styleSheet()
+    return sheet
 #@+node:tom.20220329150105.1: ** get_body_colors
 # Get current colors from the body editor widget
 def get_body_colors(c: Cmdr) -> tuple[str, str]:
@@ -716,12 +723,10 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.doc = self.editor.document()
         self.editor.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
 
-        # Adjust editor stylesheet color to match body fg, bg
-        fg, bg = get_body_colors(self.c)
-        css = change_css_prop(self.editor_style, 'color', fg)
-        css = change_css_prop(css, 'background', bg)
-        self.editor_style = css
-        self.editor.setStyleSheet(css)
+        sheet = get_body_css(self.c)
+        sheet += self.get_color_font_css()
+        self.editor_style = sheet
+        self.editor.setStyleSheet(sheet)
 
         colorizer = leoColorizer.make_colorizer(c, self.editor)
         colorizer.highlighter.setDocument(self.doc)
@@ -803,6 +808,20 @@ class ZEditorWin(QtWidgets.QMainWindow):
         QApplication.processEvents()
         self.show()
 
+    #@+node:tom.20240811000132.1: *3* get_color_font_css
+    def get_color_font_css(self):
+        """Return a CSS string using the body editor's actual colors and font."""
+        fg, bg = get_body_colors(self.c)
+        font = self.host_editor.font()
+        color_font_style = f"""QTextEdit {{
+            color: {fg};
+            background: {bg};
+            font-family: {font.family()};
+            font-size: {font.pointSize()}pt;
+        }}
+        """
+
+        return color_font_style
     #@+node:tom.20210625205847.1: *3* reload settings
     def reloadSettings(self):
         c = self.c
