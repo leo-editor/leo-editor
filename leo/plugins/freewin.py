@@ -4,6 +4,8 @@
 r"""
 #@+<< docstring >>
 #@+node:tom.20210603022210.1: ** << docstring >> (freewin.py)
+#@+others
+#@+node:tom.20240811231825.1: *3* About
 Freewin - a plugin with a basic editor pane that tracks an
 outline node.
 
@@ -16,8 +18,14 @@ no matter how the user navigates within or between outlines.
 :By: T\. B\. Passin
 :Version: 2.2
 :Date: 11 Aug 2024
+#@+node:tom.20240811231850.1: *3* New With This Version
+New With This Version
+======================
+1. The editor view now uses the same colors as the underlying host node's editor. The CSS style sheet previously used is no longer used.
+2. The currently selected line in the editor view is highlighted using the same algorithm as the standard Leo body editor.
 
-#@+others
+There are no settings that affect these new features.
+
 #@+node:tom.20210604174603.1: *3* Opening a Window
 Opening a Window
 ~~~~~~~~~~~~~~~~~
