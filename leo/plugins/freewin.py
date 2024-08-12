@@ -305,6 +305,7 @@ QTextEdit = QtWidgets.QTextEdit
 QVBoxLayout = QtWidgets.QVBoxLayout
 QWidget = QtWidgets.QWidget
 QColor = QtGui.QColor
+QPalette = QtGui.QPalette
 
 WrapMode = QtGui.QTextOption.WrapMode
 
@@ -345,6 +346,8 @@ NAV_VIEW: str = 'nav-view'
 RST_NO_WARNINGS: int = 5
 RST_CUSTOM_STYLESHEET_LIGHT_FILE: str = 'freewin_rst_light.css'
 RST_CUSTOM_STYLESHEET_DARK_FILE: str = 'freewin_rst_dark.css'
+
+FullWidthSelection = 0x06000
 
 instances: dict[str, ZEditorWin] = {}
 
@@ -641,6 +644,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.host_editor = w.widget
         self.switching = False
         self.closing = False
+        self.hilite_color = self.calcHiliteColor(self.host_editor)
         self.reloadSettings()
 
         browser = self.browser = QWebEngineView()
@@ -651,6 +655,10 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.editor = QTextEdit()
         wrapper = qt_text.QTextEditWrapper(self.editor, name='zwin', c=c)
         c.k.completeAllBindingsForWidget(wrapper)
+
+        self.editor.cursorPositionChanged.connect(self.highlightCurrentLine)
+        self.editor.textChanged.connect(self.highlightCurrentLine)
+
 
 
         #@+<<set stylesheet paths>>
@@ -795,6 +803,62 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.render_pane_type = c.config.getString('fw-render-pane') or ''  # type: ignore [attr-defined]
         self.copy_html = c.config.getBool('fw-copy-html', default=False)  # type: ignore [attr-defined]
 
+    #@+node:tom.20240811185426.1: *3* fw.calcHiliteColor
+    #@@language python
+    def calcHiliteColor(self, editor) -> QColor:
+        """Return the line highlight color based on an existing editor widget.
+
+        ARGUMENT
+        editor -- the body editor that is the host node's editor.
+
+        RETURNS
+        a QColor object for the highlight color
+        """
+        w = self.host_editor
+        palette = w.viewport().palette()
+
+        fg = palette.text().color()
+        bg = palette.window().color()
+        hsv_fg = fg.getHsv()
+        hsv_bg = bg.getHsv()
+        v_fg = hsv_fg[2]
+        v_bg = hsv_bg[2]
+        is_dark_on_light = v_fg < v_bg
+        if is_dark_on_light:
+            hl = bg.darker(110)
+        else:
+            if v_bg < 20:
+                hl = QColor(bg)
+                hl.setHsv(360, 0, 30, hsv_bg[3])
+            else:
+                hl = bg.lighter(140)
+        return hl
+    #@+node:tom.20240811185449.1: *3* fw.highlightCurrentLine
+    #@@language python
+    def highlightCurrentLine(self) -> None:
+        """Highlight cursor line."""
+        curs = self.editor.textCursor()
+        blocknum = curs.blockNumber()
+
+        # Some cursor movements don't change the line: ignore them
+            #    if blocknum == params['lastblock'] and blocknum > 0:
+            #        return
+
+        if blocknum == 0:  # invalid position
+            blocknum = 1
+
+        hl_color = self.hilite_color
+
+        # Based on code from
+        # https://doc.qt.io/qt-5/qtwidgets-widgets-codeeditor-example.html
+
+        selection = self.editor.ExtraSelection()
+        selection.format.setBackground(hl_color)  # type:ignore
+        selection.format.setProperty(FullWidthSelection, True)
+        selection.cursor = curs
+        selection.cursor.clearSelection()
+
+        self.editor.setExtraSelections([selection])
     #@+node:tom.20210528090313.1: *3* update
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag: str, keywords: Any) -> None:
