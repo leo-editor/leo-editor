@@ -659,8 +659,6 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.editor.cursorPositionChanged.connect(self.highlightCurrentLine)
         self.editor.textChanged.connect(self.highlightCurrentLine)
 
-
-
         #@+<<set stylesheet paths>>
         #@+node:tom.20210604170628.1: *4* <<set stylesheet paths>>
         self.editor_csspath = ''
@@ -809,7 +807,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         """Return the line highlight color based on an existing editor widget.
 
         ARGUMENT
-        editor -- the body editor that is the host node's editor.
+        editor -- the body editor widget that is the host node's editor.
 
         RETURNS
         a QColor object for the highlight color
