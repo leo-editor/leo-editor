@@ -1652,6 +1652,7 @@ def freeze_rendering_pane(event):
 #@+node:tom.20211103161929.1: *3* g.command('vr3-help-plot-2d')
 @g.command('vr3-help-plot-2d')
 def vr3_help_for_plot_2d(event):
+
     vr3 = getVr3(event)
     c = vr3.c
 
@@ -2627,6 +2628,21 @@ class ViewRenderedController3(QtWidgets.QWidget):
             g.es(*args)
     #@+node:tom.20211104105903.1: *4* vr3.plot_2d
     def plot_2d(self):
+        """Plot 2-column data in node.
+        
+        If the selected node contains data in one or two columns, VR3 can
+        plot the data as an X-Y graph. The labeling and appearance of the
+        plot can optionally and easily adjusted. The graph is produced
+        when the toolbar menu labeled *Other Actions* is pressed and
+        *Plot 2D* is clicked.
+
+        If the selected node has an optional section *[source]* containing the key 
+        *file*, the value of the key will be used as the path to
+        the data, instead of using the selected node itself as the data source.
+
+        Help for the plotting capability is displayed in the system
+        browser when *Other Actions/Help For Plot 2D* is clicked.
+        """
         if not matplotlib:
             g.es('VR3 -- Matplotlib is needed to plot 2D data')
             return
@@ -2672,7 +2688,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             If not found, the site.getuserbase() directory will be
             checked for the style file. On Windows, this is usually the
             %APPDATA%\Python directory. On Linux, this is usually at
-            /home/tom/.local.
+            ~/.local.
 
             """
             found_styles = False
@@ -2766,12 +2782,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
             plt.plot(x, y)
             plt.show()
-
-
-            # try:
-                # plot2d(page)
-            # except Exception as e:
-                # g.es('VR3:', e)
         #@+node:tom.20211104155447.1: *6* set_user_style()
         #@@pagewidth 65
         def set_user_style(style_config_lines):
