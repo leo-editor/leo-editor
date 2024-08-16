@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:tom.20240521004125.1: *3* About
-About Viewrendered3 V5.02
+About Viewrendered3 V5.03
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,10 +57,18 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
-Removed diagnostic line that change the clipboard contents.
+The "vr3" command and the default opening positions have been changed:
+
+The default value of the setting *@string vr3-initial-orientation* is now _"in-body".  This will open VR3 next to the body editor (or below if Leo's layout orientation has been changed to "vertical". 
+
+For any other value of the setting VR3 will open:
+
+- Next to the body editor if Leo's orientation is "horizontal";
+- In the Log frame if the orientation is "vertical".
 
 Previous Recent Changes
 ========================
+Removed diagnostic line that change the clipboard contents.
 Corrected errors introduced in a complicated merge: ASCIIDOC, MD, and RsT images
 display correctly when the exported file is viewed in the browser (relative
 paths are converted to absolute file system paths).
