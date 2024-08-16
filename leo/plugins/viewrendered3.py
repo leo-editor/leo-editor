@@ -1587,11 +1587,12 @@ def viewrendered(event):
         return None
     h = c.hash()
     vr3 = controllers.get(h)
-    if vr3:
+    if vr3 and vr3.parent() is not None:
         c.bodyWantsFocusNow()
         return vr3
     # Create the VR3 frame
-    controllers[h] = vr3 = ViewRenderedController3(c)
+    if not vr3:
+        controllers[h] = vr3 = ViewRenderedController3(c)
 
     layout_kind = c.config.getString('vr3-initial-orientation') or 'in_body'
     # Use different layouts depending on the main splitter's current orientation.
@@ -1607,6 +1608,7 @@ def viewrendered(event):
         # Put the VR3 pane next to the body pane.
         main_splitter.insertWidget(2, vr3)
         gui.equalize_splitter(main_splitter)
+    vr3.show()
     c.bodyWantsFocusNow()
     return vr3
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
