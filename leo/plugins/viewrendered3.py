@@ -2818,25 +2818,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
                         plt.style.use(val)
                     set_style = True
                     break
-            if not set_style:
-                for line in style_config_lines:
-                    if not line.strip:
-                        break
-                    fields = line.split('=')
-                    if len(fields) < 2:
-                        continue
-                    kind, val = fields[0].strip(), fields[1].strip()
-
-                    if kind == 'stylefile':
-                        lm = g.app.loadManager
-                        style_dir = lm.computeHomeLeoDir()
-                        if g.isWindows:
-                            style_dir = style_dir.replace('/', '\\')
-                        style_file = os.path.join(style_dir, val)
-                        if os.path.exists(style_file):
-                            plt.style.use(style_file)
-                            set_style = True
-                        break
+                elif kind == 'stylefile':
+                    lm = g.app.loadManager
+                    style_dir = lm.computeHomeLeoDir()
+                    if g.isWindows:
+                        style_dir = style_dir.replace('/', '\\')
+                    style_file = os.path.join(style_dir, val)
+                    if os.path.exists(style_file):
+                        plt.style.use(style_file)
+                        set_style = True
+                    break
 
             return set_style
         #@-others
