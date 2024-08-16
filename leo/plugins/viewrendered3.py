@@ -1566,7 +1566,7 @@ def getVr3(event):
 
     return vr3
 #@+node:TomP.20191215195433.16: ** vr3.Commands
-#@+node:TomP.20191215195433.18: *3* g.command('vr3') (**weird effect**)
+#@+node:TomP.20191215195433.18: *3* g.command('vr3')
 @g.command('vr3')
 def viewrendered(event):
     """Open VR3 in this commander"""
