@@ -2628,7 +2628,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def dbg_print(self, *args):
         if self.DEBUG:
             g.es(*args)
-    #@+node:tom.20211104105903.1: *4* vr3.plot_2d
+    #@+node:tom.20211104105903.1: *3* vr3.plot_2d
     def plot_2d(self):
         """Plot 2-column data in node.
         
@@ -2654,12 +2654,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         data_lines = []
 
         #@+others
-        #@+node:tom.20211104105903.5: *5* declarations
+        #@+node:tom.20211104105903.5: *4* declarations
         ENCODING = 'utf-8'
         STYLEFILE = 'local_mplstyle'  # Must be in site.getuserbase()
         SECTION_RE = re.compile(r'^\[([a-zA-Z0-9]+)\]')
-        #@+node:tom.20211104105903.6: *5* functions
-        #@+node:tom.20211104105903.7: *6* has_config_section()
+        #@+node:tom.20211104105903.6: *4* functions
+        #@+node:tom.20211104105903.7: *5* has_config_section()
         def has_config_section(pagelines):
             """Find config-like sections in the data page.
 
@@ -2678,7 +2678,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 if m := SECTION_RE.match(line):
                     sections[m[1]] = i
             return sections
-        #@+node:tom.20211104105903.8: *6* set custom_style()
+        #@+node:tom.20211104105903.8: *5* set custom_style()
         #@@pagewidth 65
         def set_custom_style():
             r"""Apply custom matplotlib styles from a file.
@@ -2711,7 +2711,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
             if not found_styles:
                 g.es(f'Pyplot style file "{style_file}" not found, using default styles')
-        #@+node:tom.20211104105903.12: *6* plot_plain_data()
+        #@+node:tom.20211104105903.12: *5* plot_plain_data()
         def plot_plain_data(pagelines):
             """Plot 1- or 2- column data.  Ignore all non-numeric lines."""
 
@@ -2721,7 +2721,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
             # Helper functions
             #@+<< is_numeric >>
-            #@+node:tom.20211104105903.13: *7* << is_numeric >>
+            #@+node:tom.20211104105903.13: *6* << is_numeric >>
             def is_numeric(line):
                 """Test if first or 1st and 2nd cols are numeric"""
                 fields = line.split()
@@ -2741,7 +2741,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 return numeric
             #@-<< is_numeric >>
             #@+<< get_data >>
-            #@+node:tom.20211104105903.14: *7* << get_data >>
+            #@+node:tom.20211104105903.14: *6* << get_data >>
             def get_data(pagelines):
                 num_cols = 0
 
@@ -2784,7 +2784,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
             plt.plot(x, y)
             plt.show()
-        #@+node:tom.20211104155447.1: *6* set_user_style()
+        #@+node:tom.20211104155447.1: *5* set_user_style()
         #@@pagewidth 65
         def set_user_style(style_config_lines):
             """Set special plot styles.
@@ -2838,7 +2838,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         source_start = config_sections.get('source', -1)
         if source_start > 0:
             #@+<< set_data >>
-            #@+node:tom.20211106174814.1: *5* << set_data >>
+            #@+node:tom.20211106174814.1: *4* << set_data >>
             for line in page_lines[source_start:]:
                 if not line.strip:
                     break
@@ -2877,7 +2877,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         label_start = config_sections.get('labels', -1)
         if label_start >= 0:
             #@+<< configure labels >>
-            #@+node:tom.20211104105903.11: *5* << configure labels >>
+            #@+node:tom.20211104105903.11: *4* << configure labels >>
             # Get lines for the labels section
             for line in page_lines[label_start:]:
                 if not line.strip:
