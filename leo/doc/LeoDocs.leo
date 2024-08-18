@@ -800,6 +800,7 @@
 <v t="ekr.20090130144433.1"><vh>How do I get help?</vh></v>
 <v t="ekr.20160123060917.1"><vh>How do I make Ctrl-Shift-0 work on Windows 8 or 10?</vh></v>
 <v t="ekr.20090130144433.2"><vh>How do I report bugs?</vh></v>
+<v t="ekr.20240818070101.1"><vh>How to I install PyQt6-WebEngine on linux?</vh></v>
 <v t="ekr.20160318142213.1"><vh>I am having trouble installing Leo on MacOS. What should I do?</vh></v>
 <v t="ekr.20070816092449"><vh>I can't run the LeoBridge module outside of leo/core.  What should I do?</vh></v>
 <v t="ekr.20050830115714.17"><vh>I can't write Imported files.  What's going on?</vh></v>
@@ -2517,6 +2518,7 @@
 </v>
 </v>
 <v t="ekr.20240723070707.1"><vh>Leo 6.8.1 release notes</vh></v>
+<v t="ekr.20240818070101.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32989,6 +32991,13 @@ This release:
 - [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
 <t tx="ekr.20240724062137.1"></t>
+<t tx="ekr.20240818070101.1">`pip install leo` does not install PyQt6-WebEngine on some Linux distributions.
+
+The solution: use pip's `--break-system-packages` option.  Like this:
+
+`python3 -m pip install --break-system-packages -r requirements.txt`.
+
+For a full discussion see: https://groups.google.com/g/leo-editor/c/PQWlN7hvmx0</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
