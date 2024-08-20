@@ -79,7 +79,7 @@ def update_layout(tags, event):
         ### dw.set_widget_size_policy(secondary_splitter)
 
         dw.verticalLayout.addWidget(outer_frame)
-        
+
         ### To do: generalize createBodyPane.
 
         dw.createOutlinePane(secondary_splitter)
