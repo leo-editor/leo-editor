@@ -741,7 +741,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         #@-<<set up render button>>
 
         #@+<<build central widget>>
-        #@+node:tom.20210528235126.1: *4* <<build central widget>>
+        #@+node:tom.20210528235126.1: *4* <<build central widget>> (freewin.py)
         self.stacked_widget = QStackedWidget()
         self.stacked_widget.insertWidget(EDITOR, self.editor)
         self.stacked_widget.insertWidget(BROWSER, self.browser)
