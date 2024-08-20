@@ -4,6 +4,8 @@
 r"""
 #@+<< docstring >>
 #@+node:tom.20210603022210.1: ** << docstring >> (freewin.py)
+#@+others
+#@+node:tom.20240811231825.1: *3* About
 Freewin - a plugin with a basic editor pane that tracks an
 outline node.
 
@@ -14,10 +16,16 @@ is node-locked - that is, it always shows a view of its original host node
 no matter how the user navigates within or between outlines.
 
 :By: T\. B\. Passin
-:Version: 2.1
-:Date: 26 Apr 2024
+:Version: 2.2
+:Date: 11 Aug 2024
+#@+node:tom.20240811231850.1: *3* New With This Version
+New With This Version
+======================
+1. The editor view now uses the same colors as the underlying host node's editor. The CSS style sheet previously used is no longer used.
+2. The currently selected line in the editor view is highlighted using the same algorithm as the standard Leo body editor.
 
-#@+others
+There are no settings that affect these new features.
+
 #@+node:tom.20210604174603.1: *3* Opening a Window
 Opening a Window
 ~~~~~~~~~~~~~~~~~
@@ -146,9 +154,9 @@ able to display all the features that a full rendered view can.
 Stylesheets and Dark-themed Appearance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The appearance of the editing and rendering view is determined
-by stylesheets. Simple default stylesheets are built into the
-plugin for the editing view.
+The appearance of the rendering view is determined
+by stylesheets. The editing view styles aare taken from the host
+node's body editor.
 
 For styling the Restructured Text rendering view (When the default "View 1"
 is in use) and for customized editing view stylesheets, the plugin looks in
@@ -305,6 +313,7 @@ QTextEdit = QtWidgets.QTextEdit
 QVBoxLayout = QtWidgets.QVBoxLayout
 QWidget = QtWidgets.QWidget
 QColor = QtGui.QColor
+QPalette = QtGui.QPalette
 
 WrapMode = QtGui.QTextOption.WrapMode
 
@@ -334,11 +343,8 @@ FG_COLOR_LIGHT: str = '#6B5B53'
 BG_COLOR_LIGHT: str = '#ededed'
 BG_COLOR_DARK: str = '#202020'
 FG_COLOR_DARK: str = '#cbdedc'
-FONT_FAMILY: str = 'Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
+FONT_FAMILY: str = '"Intel One Mono", Cousine, Consolas, Droid Sans Mono, DejaVu Sans Mono'
 
-EDITOR_FONT_SIZE: str = '11pt'
-EDITOR_STYLESHEET_LIGHT_FILE: str = 'freewin_editor_light.css'
-EDITOR_STYLESHEET_DARK_FILE: str = 'freewin_editor_dark.css'
 ENCODING: str = 'utf-8'
 BROWSER: int = 1
 EDITOR: int = 0
@@ -348,6 +354,8 @@ NAV_VIEW: str = 'nav-view'
 RST_NO_WARNINGS: int = 5
 RST_CUSTOM_STYLESHEET_LIGHT_FILE: str = 'freewin_rst_light.css'
 RST_CUSTOM_STYLESHEET_DARK_FILE: str = 'freewin_rst_dark.css'
+
+FullWidthSelection = 0x06000
 
 instances: dict[str, ZEditorWin] = {}
 
@@ -365,40 +373,20 @@ GNX1re: str = r'.*[([\s](\w+\.\d+\.\d+)'  # For gnx not at start of line
 GNX: re.Pattern = re.compile(GNXre)
 GNX1: re.Pattern = re.compile(GNX1re)
 
-fs: str = EDITOR_FONT_SIZE.split('pt', 1)[0]
-qf: QtGui.QFont = QFont(FONT_FAMILY[0], int(fs))
-qfont: QtGui.QFontInfo = QFontInfo(qf)  # Uses actual font if different
-FM: QtGui.QFontMetrics = QFontMetrics(qf)
-
-TABWIDTH: int = 36  # Best guess but may not alays be right.
+TABWIDTH: int = 36  # Best guess but may not always be right.
 TAB2SPACES: int = 4  # Tab replacement when writing back to host node
 #@-others
 
 #@-<< declarations >>
 #@+<< Stylesheets >>
 #@+node:tom.20210614172857.1: ** << Stylesheets >>
-
-EDITOR_STYLESHEET_LIGHT: str = f'''QTextEdit {{
-    color: {FG_COLOR_LIGHT};
-    background: {BG_COLOR_LIGHT};
-    font-family: {FONT_FAMILY};
-    font-size: {EDITOR_FONT_SIZE};
-    }}'''
-
-EDITOR_STYLESHEET_DARK: str = f'''QTextEdit {{
-    color: {FG_COLOR_DARK};
-    background: {BG_COLOR_DARK};
-    font-family: {FONT_FAMILY};
-    font-size: {EDITOR_FONT_SIZE};
-    }}'''
-
 RENDER_BTN_STYLESHEET_LIGHT: str = f'''color: {FG_COLOR_LIGHT};
     background: {BG_COLOR_LIGHT};
-    font-size: {EDITOR_FONT_SIZE};'''
+    font-size: 11pt;'''
 
 RENDER_BTN_STYLESHEET_DARK: str = f'''color: {FG_COLOR_DARK};
     background: {BG_COLOR_DARK};
-    font-size: {EDITOR_FONT_SIZE};'''
+    font-size: 11pt;'''
 
 #@+others
 #@+node:tom.20210625145324.1: *3* RsT Stylesheet Dark
@@ -616,6 +604,13 @@ def change_css_prop(css: str, prop: str, newval: str) -> str:
 
     return css.replace(val, newval, 1)
 
+#@+node:tom.20240810173532.1: ** get_body_css
+def get_body_css(c):
+    """Return the text of Leo's top-level CSS stylesheet."""
+    ssm = g.app.gui.styleSheetManagerClass(c)
+    w = ssm.get_master_widget()
+    sheet = w.styleSheet()
+    return sheet
 #@+node:tom.20220329150105.1: ** get_body_colors
 # Get current colors from the body editor widget
 def get_body_colors(c: Cmdr) -> tuple[str, str]:
@@ -657,6 +652,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.host_editor = w.widget
         self.switching = False
         self.closing = False
+        self.hilite_color = self.calcHiliteColor(self.host_editor)
         self.reloadSettings()
 
         browser = self.browser = QWebEngineView()
@@ -668,6 +664,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
         wrapper = qt_text.QTextEditWrapper(self.editor, name='zwin', c=c)
         c.k.completeAllBindingsForWidget(wrapper)
 
+        self.editor.cursorPositionChanged.connect(self.highlightCurrentLine)
+        self.editor.textChanged.connect(self.highlightCurrentLine)
 
         #@+<<set stylesheet paths>>
         #@+node:tom.20210604170628.1: *4* <<set stylesheet paths>>
@@ -679,29 +677,20 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         is_dark = is_body_dark(self.c)
         if is_dark:
-            self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_DARK_FILE)
             self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_DARK_FILE)
         else:
-            self.editor_csspath = osp_join(cssdir, EDITOR_STYLESHEET_LIGHT_FILE)
             self.rst_csspath = osp_join(cssdir, RST_CUSTOM_STYLESHEET_LIGHT_FILE)
 
         if g.isWindows:
-            self.editor_csspath = self.editor_csspath.replace('/', '\\')
             self.rst_csspath = self.rst_csspath.replace('/', '\\')
         else:
-            self.editor_csspath = self.editor_csspath.replace('\\', '/')
             self.rst_csspath = self.rst_csspath.replace('\\', '/')
 
         #@-<<set stylesheet paths>>
         #@+<<set stylesheets>>
         #@+node:tom.20210615101103.1: *4* <<set stylesheets>>
-        # Check if editor stylesheet file exists. If so,
-        # we cache its contents.
-        if exists(self.editor_csspath):
-            with open(self.editor_csspath, encoding=ENCODING) as f:
-                self.editor_style = f.read()
-        else:
-            self.editor_style = EDITOR_STYLESHEET_DARK if is_dark else EDITOR_STYLESHEET_LIGHT
+        editor_sheet = get_body_css(self.c)
+        editor_sheet += self.get_color_font_css()
 
         # If a stylesheet exists for RsT, we cache its contents.
         self.rst_stylesheet = None
@@ -716,12 +705,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.doc = self.editor.document()
         self.editor.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
 
-        # Adjust editor stylesheet color to match body fg, bg
-        fg, bg = get_body_colors(self.c)
-        css = change_css_prop(self.editor_style, 'color', fg)
-        css = change_css_prop(css, 'background', bg)
-        self.editor_style = css
-        self.editor.setStyleSheet(css)
+        self.editor_style = editor_sheet
+        self.editor.setStyleSheet(editor_sheet)
 
         colorizer = leoColorizer.make_colorizer(c, self.editor)
         colorizer.highlighter.setDocument(self.doc)
@@ -756,7 +741,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
         #@-<<set up render button>>
 
         #@+<<build central widget>>
-        #@+node:tom.20210528235126.1: *4* <<build central widget>>
+        #@+node:tom.20210528235126.1: *4* <<build central widget>> (freewin.py)
         self.stacked_widget = QStackedWidget()
         self.stacked_widget.insertWidget(EDITOR, self.editor)
         self.stacked_widget.insertWidget(BROWSER, self.browser)
@@ -803,6 +788,20 @@ class ZEditorWin(QtWidgets.QMainWindow):
         QApplication.processEvents()
         self.show()
 
+    #@+node:tom.20240811000132.1: *3* get_color_font_css
+    def get_color_font_css(self):
+        """Return a CSS string declaring the body editor's actual colors and font."""
+        fg, bg = get_body_colors(self.c)
+        font = self.host_editor.font()
+        color_font_style = f"""QTextEdit {{
+            color: {fg};
+            background: {bg};
+            font-family: "{font.family()}";
+            font-size: {font.pointSizeF()}pt;
+        }}
+        """
+
+        return color_font_style
     #@+node:tom.20210625205847.1: *3* reload settings
     def reloadSettings(self):
         c = self.c
@@ -810,6 +809,62 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.render_pane_type = c.config.getString('fw-render-pane') or ''  # type: ignore [attr-defined]
         self.copy_html = c.config.getBool('fw-copy-html', default=False)  # type: ignore [attr-defined]
 
+    #@+node:tom.20240811185426.1: *3* fw.calcHiliteColor
+    #@@language python
+    def calcHiliteColor(self, editor) -> QColor:
+        """Return the line highlight color based on an existing editor widget.
+
+        ARGUMENT
+        editor -- the body editor widget that is the host node's editor.
+
+        RETURNS
+        a QColor object for the highlight color
+        """
+        w = self.host_editor
+        palette = w.viewport().palette()
+
+        fg = palette.text().color()
+        bg = palette.window().color()
+        hsv_fg = fg.getHsv()
+        hsv_bg = bg.getHsv()
+        v_fg = hsv_fg[2]
+        v_bg = hsv_bg[2]
+        is_dark_on_light = v_fg < v_bg
+        if is_dark_on_light:
+            hl = bg.darker(110)
+        else:
+            if v_bg < 20:
+                hl = QColor(bg)
+                hl.setHsv(360, 0, 30, hsv_bg[3])
+            else:
+                hl = bg.lighter(140)
+        return hl
+    #@+node:tom.20240811185449.1: *3* fw.highlightCurrentLine
+    #@@language python
+    def highlightCurrentLine(self) -> None:
+        """Highlight cursor line."""
+        curs = self.editor.textCursor()
+        blocknum = curs.blockNumber()
+
+        # Some cursor movements don't change the line: ignore them
+            #    if blocknum == params['lastblock'] and blocknum > 0:
+            #        return
+
+        if blocknum == 0:  # invalid position
+            blocknum = 1
+
+        hl_color = self.hilite_color
+
+        # Based on code from
+        # https://doc.qt.io/qt-5/qtwidgets-widgets-codeeditor-example.html
+
+        selection = self.editor.ExtraSelection()
+        selection.format.setBackground(hl_color)  # type:ignore
+        selection.format.setProperty(FullWidthSelection, True)
+        selection.cursor = curs
+        selection.cursor.clearSelection()
+
+        self.editor.setExtraSelections([selection])
     #@+node:tom.20210528090313.1: *3* update
     # Must have this signature: called by leoPlugins.callTagHandler.
     def update(self, tag: str, keywords: Any) -> None:
