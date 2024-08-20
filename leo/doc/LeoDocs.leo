@@ -32993,9 +32993,9 @@ This release:
 <t tx="ekr.20240724062137.1"></t>
 <t tx="ekr.20240818070101.1">`pip install leo` does not install PyQt6-WebEngine on some Linux distributions.
 
-The solution: use pip's `--break-system-packages` option.  Like this:
+The solution: use pip's `--user` and `--break-system-packages` options:
 
-`python3 -m pip install --break-system-packages -r requirements.txt`.
+`python3 -m pip install --user --break-system-packages -r requirements.txt`.
 
 For a full discussion see: https://groups.google.com/g/leo-editor/c/PQWlN7hvmx0</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
