@@ -2165,30 +2165,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """A kludge: called to enable text changed events."""
         self.initComplete = True
     #@+node:ekr.20110605121601.18253: *4* Destroying the LeoQtFrame
-    #@+node:ekr.20110605121601.18254: *5* LeoQtFrame.destroyAllObjects (not used)
-    def destroyAllObjects(self) -> None:
-        """Clear all links to objects in a Leo window."""
-        c = self.c
-        # g.printGcAll()
-        # Do this first.
-        #@+<< clear all vnodes in the tree >>
-        #@+node:ekr.20110605121601.18255: *6* << clear all vnodes in the tree>> (LeoQtFrame)
-        vList = [z for z in c.all_unique_nodes()]
-        for v in vList:
-            g.clearAllIvars(v)
-        vList = []  # Remove these references immediately.
-        #@-<< clear all vnodes in the tree >>
-        # Destroy all ivars in subcommanders.
-        g.clearAllIvars(c.atFileCommands)
-        if c.chapterController:  # New in Leo 4.4.3.
-            g.clearAllIvars(c.chapterController)
-        g.clearAllIvars(c.fileCommands)
-        g.clearAllIvars(c.keyHandler)  # New in Leo 4.4.3.
-        g.clearAllIvars(c.importCommands)
-        g.clearAllIvars(c.tangleCommands)
-        g.clearAllIvars(c.undoer)
-        g.clearAllIvars(c)
-
     #@+node:ekr.20110605121601.18256: *5* LeoQtFrame.destroySelf
     def destroySelf(self) -> None:
         # Remember these: we are about to destroy all of our ivars!
@@ -2197,11 +2173,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
             g.app.gui.frameFactory.deleteFrame(top)
         # Indicate that the commander is no longer valid.
         c.exists = False
-        if 0:  # We can't do this unless we unhook the event filter.
-            # Destroys all the objects of the commander.
-            self.destroyAllObjects()
-        c.exists = False  # Make sure this one ivar has not been destroyed.
-        # print('destroySelf: qtFrame: %s' % c,g.callers(4))
         top.close()
     #@+node:ekr.20110605121601.18274: *3* LeoQtFrame.Configuration
     #@+node:ekr.20240510092709.1: *4* LeoQtFrame.compute_ratio & compute_secondary_ratio
