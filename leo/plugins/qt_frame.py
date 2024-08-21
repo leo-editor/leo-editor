@@ -134,8 +134,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if w and self.layout_name != self.old_layout_name:
             c = self.leo_c
             print('')
-            print('@string qt-layout-name has changed: restarting Leo')
-            c.doCommandByName('restart-leo')
+            print('@string qt-layout-name has changed: reloading the outline')
+            c.doCommandByName('reload-outline')
     #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers
     def construct(self, master: LeoTabbedTopLevel = None) -> None:
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
