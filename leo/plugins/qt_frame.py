@@ -86,6 +86,23 @@ class DynamicWindow(QtWidgets.QMainWindow):
     """
     #@+others
     #@+node:ekr.20240730052903.1: *3*  dw: Birth
+    #@+node:ekr.20240821135031.1: *4* dw.change_layout (new)
+    def change_layout(self, layout_name: str) -> None:
+        """
+        Find and change the @string qt-layout-name setting,
+        then execute the reload-outline command.
+        """
+        c = self.leo_c
+        h = '@string qt-layout-name'
+        p = g.findNodeAnywhere(c, h, exact=False)
+        if not p:
+            g.es_print(f"Please create an `{h}` node.")
+        elif p.h.endswith(f" {layout_name}"):
+            g.es_print('no change')
+        else:
+            p.h = f"{h} = {layout_name}"
+            c.save()
+            c.doCommandByName('reload-outline')
     #@+node:ekr.20110605121601.18138: *4* dw.ctor & reloadSettings
     def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
         """Ctor for the DynamicWindow class.  The main window is c.frame.top"""
@@ -103,6 +120,19 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.vr_parent_frame: QWidget = None
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
         self.reloadSettings()
+    #@+node:ekr.20240726074809.1: *4* dw.recreateMainWindow (new)
+    def recreateMainWindow(self):
+        """
+        Recreate the main window by restarting Leo, with an explanatory message.
+        
+        There seems to be no reasonable way of changing Leo's layout without a restart.
+        """
+        w = getattr(self, 'centralwidget', None)
+        if w and self.layout_name != self.old_layout_name:
+            c = self.leo_c
+            print('')
+            print('@string qt-layout-name has changed: reloading the outline')
+            c.doCommandByName('reload-outline')
     #@+node:ekr.20240730052919.1: *4* dw.reloadSettings
     def reloadSettings(self) -> None:
         c = self.leo_c
@@ -123,19 +153,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 self.iconBar.show()
             else:
                 self.iconBar.hide()
-    #@+node:ekr.20240726074809.1: *4* dw.recreateMainWindow (new)
-    def recreateMainWindow(self):
-        """
-        Recreate the main window by restarting Leo, with an explanatory message.
-        
-        There seems to be no reasonable way of changing Leo's layout without a restart.
-        """
-        w = getattr(self, 'centralwidget', None)
-        if w and self.layout_name != self.old_layout_name:
-            c = self.leo_c
-            print('')
-            print('@string qt-layout-name has changed: reloading the outline')
-            c.doCommandByName('reload-outline')
     #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers
     def construct(self, master: LeoTabbedTopLevel = None) -> None:
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
