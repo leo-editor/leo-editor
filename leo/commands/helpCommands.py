@@ -782,6 +782,111 @@ class HelpCommandsClass(BaseEditCommandsClass):
             k.showStateAndMode()
             c.frame.putStatusLine(s, bg='blue', fg='white')
             c.bodyWantsFocus()
+    #@+node:ekr.20240822071015.1: *3* helpForLayouts
+    @cmd('help-for-layouts')
+    def helpForLayouts(self, event: LeoKeyEvent = None) -> None:
+        """Print a messages telling you how to get started with Leo."""
+        # A bug in Leo: triple quotes puts indentation before each line.
+        c = self.c
+        #@+<< define s >>
+        #@+node:ekr.20240822071105.1: *4* << define s >>
+        #@@language rest
+        #@@nowrap
+
+        s = '''\
+
+        About layouts
+        =============
+
+        The following commands create the layouts shown:
+
+        use-legacy-layout
+        -----------------
+
+        ::
+
+            ┌───────────────┬───────────┐
+            │               │           │
+            │   outline     │   log     │
+            │               │           │
+            ├───────────────┼───────────┤
+            │               │           │
+            │   body        │   vr      │
+            │               │           │
+            └───────────────┴───────────┘
+
+        use-horizontal-thirds-layout
+        ----------------------------
+
+        ::
+
+            ┌─────────────┬─────────────┐
+            │             │             │
+            │   outline   │   log       │
+            │             │             │
+            ├─────────────┴─────────────┤
+            │                           │
+            │   body                    │
+            │                           │
+            ├───────────────────────────┤
+            │                           │
+            │   vr                      │
+            │                           │
+            └───────────────────────────┘
+
+        use-render-focused-layout
+        -------------------------
+
+        ::
+
+            ┌────────────────┬──────────┐
+            │                │          │
+            │    outline     │          │
+            │                │          │
+            ├────────────────┤          │
+            │                │          │
+            │     body       │    vr    │
+            │                │          │
+            ├────────────────┤          │
+            │                │          │
+            │     log        │          │
+            │                │          │
+            └────────────────┴──────────┘
+
+        use-vertical-thirds-layout
+        --------------------------
+
+        ::
+
+            ┌────────────┬─────────┬──────────┐
+            │            │         │          │
+            │   outline  │         │          │
+            │            │         │          │
+            ├────────────┤   body  │    VR    │
+            │            │         │          │
+            │   log      │         │          │
+            │            │         │          │
+            └────────────┴─────────┴──────────┘
+
+
+        use-vertical-thirds2-layout
+        ---------------------------
+
+        ::
+
+            ┌───────────┬──────────┬──────────┐
+            │           │          │          │
+            │           │   log    │          │
+            │           │          │          │
+            │  outline  ├──────────┤    VR    │
+            │           │          │          │
+            │           │   body   │          │
+            │           │          │          │
+            └───────────┴──────────┴──────────┘
+
+        '''
+        #@-<< define s >>
+        c.putHelpFor(s)
     #@+node:ekr.20150514063305.396: *3* helpForMinibuffer
     @cmd('help-for-minibuffer')
     def helpForMinibuffer(self, event: LeoKeyEvent = None) -> None:
