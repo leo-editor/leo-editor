@@ -1577,18 +1577,6 @@ class LeoQtGui(leoGui.LeoGui):
         if not isinstance(splitter, QtWidgets.QSplitter):
             g.trace(f"Not a QSplitter: {splitter.__class__.__name__}")
         splitter.setSizes([100000] * len(splitter.sizes()))
-    #@+node:ekr.20240820064704.1: *4* LeoQtGui.delete_unknown_splitters (new)
-    def delete_unknown_splitters(self, c: Cmdr, known_splitter_names: list[str] = None) -> None:
-        """Delete all unknown splitters, one at a time."""
-        if not known_splitter_names:
-            known_splitter_names = ['main_splitter', 'secondary_splitter']
-        for w in self._self_and_subtree(c.frame.top):
-            if isinstance(w, QtWidgets.QSplitter):
-                name = w.objectName()
-                if name not in known_splitter_names:
-                    g.trace(w, name)
-                    w.destroy()
-        g.trace('done!')
     #@+node:ekr.20190819091957.1: *3* LeoQtGui:Widget constructors
     #@+node:ekr.20190819094016.1: *4* LeoQtGui.createButton
     def createButton(self, parent: QWidget, name: str, label: str) -> QPushButton:
