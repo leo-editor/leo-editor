@@ -5142,6 +5142,7 @@ def toggleUnlView(event: LeoKeyEvent) -> None:
 #@+node:ekr.20240822063951.1: *3* 'use-big-tree-layout'
 @g.command('use-big-tree-layout')
 def use_big_tree_layout(event: LeoKeyEvent) -> None:
+    """Switch to the big-tree layout"""
     c = event.get('c')
     try:
         c.frame.top.change_layout('big-tree')
@@ -5152,6 +5153,7 @@ def use_big_tree_layout(event: LeoKeyEvent) -> None:
 #@+node:ekr.20240822063619.1: *3* 'use-legacy-layout'
 @g.command('use-legacy-layout')
 def use_legacy_layout(event: LeoKeyEvent) -> None:
+    """Switch to the legacy layout"""
     c = event.get('c')
     try:
         c.frame.top.change_layout('legacy')
