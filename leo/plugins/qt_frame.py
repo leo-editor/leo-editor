@@ -102,7 +102,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
             p.h = f"{h} = {layout_name}"
             c.save()
-            c.doCommandByName('reload-outline')
+            # print(f"Switching to {layout_name}")
+            c.frame.reloadOutline()
     #@+node:ekr.20110605121601.18138: *4* dw.ctor & reloadSettings
     def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
         """Ctor for the DynamicWindow class.  The main window is c.frame.top"""
@@ -285,7 +286,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # Put the VR pane in the secondary splitter.
             self.vr_parent_frame = secondary_splitter
         return main_splitter, secondary_splitter
-    #@+node:ekr.20240822103027.1: *5* dw.create_horizontal_thirds_layout
+    #@+node:ekr.20240822103027.1: *5* dw.create_horizontal_thirds_layout (todo)
     def create_horizontal_thirds_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's horizonatl-thirds layout::
             ┌───────────────┬───────────┐
@@ -303,7 +304,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             └───────────────────────────┘
         """
         ### To do.
-    #@+node:ekr.20240822103044.1: *5* dw.create_render_focused_layout
+    #@+node:ekr.20240822103044.1: *5* dw.create_render_focused_layout (test)
     def create_render_focused_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's render-focused layout::
             
@@ -322,8 +323,39 @@ class DynamicWindow(QtWidgets.QMainWindow):
             └────────────────┴──────────┘
 
         """
-        ### To do.
-    #@+node:ekr.20240822103044.2: *5* dw.create_vertical_thirds_layout
+        c = self.leo_c
+        dw = c.frame.top
+        parent = dw.centralwidget
+
+        outer_frame = QtWidgets.QFrame(parent)
+        outer_frame.setStyleSheet('* { background-color: red; }')
+
+        h_layout = QtWidgets.QHBoxLayout()
+        h_layout.addWidget(outer_frame)
+
+        main_splitter = dw.createMainSplitter(parent=outer_frame)
+        main_splitter.setOrientation(Orientation.Horizontal)
+
+        secondary_splitter = dw.createSecondarySplitter(main_splitter)
+        secondary_splitter.setOrientation(Orientation.Vertical)
+
+        # Required, for now at least.  Using a horizontal layout fails.
+        dw.verticalLayout = dw.createVLayout(parent, 'mainVLayout', margin=3)
+        ### Removing this helps.
+        ### dw.set_widget_size_policy(secondary_splitter)
+
+        dw.verticalLayout.addWidget(outer_frame)
+
+        ### To do: generalize createBodyPane.
+
+        dw.createOutlinePane(secondary_splitter)
+        dw.createLogPane(secondary_splitter)
+        dw.createBodyPane(secondary_splitter)
+
+        dw.vr_parent_frame = main_splitter
+
+        return main_splitter, secondary_splitter
+    #@+node:ekr.20240822103044.2: *5* dw.create_vertical_thirds_layout (todo)
     def create_vertical_thirds_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's vertical-thirds layout::
 
@@ -340,7 +372,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """
         ### To do.
 
-    #@+node:ekr.20240822103045.1: *5* dw.create_vertical_thirds2_layout
+    #@+node:ekr.20240822103045.1: *5* dw.create_vertical_thirds2_layout (todo)
     def create_vertical_thirds2_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's vertical-thirds2 layout::
             
@@ -5182,7 +5214,8 @@ def toggleUnlView(event: LeoKeyEvent) -> None:
     if c and c.frame.statusLine:
         # This is not a convenience method.
         c.frame.statusLine.toggleUnlView()
-#@+node:ekr.20240822063951.1: *3* 'use-big-tree-layout'
+#@+node:ekr.20240822104556.1: *3* 'use-*-layout'
+#@+node:ekr.20240822063951.1: *4* 'use-big-tree-layout'
 @g.command('use-big-tree-layout')
 def use_big_tree_layout(event: LeoKeyEvent) -> None:
     """
@@ -5208,7 +5241,7 @@ def use_big_tree_layout(event: LeoKeyEvent) -> None:
         c.frame.top.change_layout('big-tree')
     except AttributeError:
         pass
-#@+node:ekr.20240822100439.1: *3* 'use-horizontal-thirds-layout'
+#@+node:ekr.20240822100439.1: *4* 'use-horizontal-thirds-layout'
 @g.command('use-horizontal-thirds-layout')
 def use_horizontal_thirds_layout(event: LeoKeyEvent) -> None:
     """Switch to the horizontal-thirds layout::
@@ -5233,7 +5266,7 @@ def use_horizontal_thirds_layout(event: LeoKeyEvent) -> None:
         c.frame.top.change_layout('horizontal-thirds')
     except AttributeError:
         pass
-#@+node:ekr.20240822063619.1: *3* 'use-legacy-layout'
+#@+node:ekr.20240822063619.1: *4* 'use-legacy-layout'
 @g.command('use-legacy-layout')
 def use_legacy_layout(event: LeoKeyEvent) -> None:
     """
@@ -5255,7 +5288,7 @@ def use_legacy_layout(event: LeoKeyEvent) -> None:
         c.frame.top.change_layout('legacy')
     except AttributeError:
         pass
-#@+node:ekr.20240822101814.1: *3* 'use-render-focused-layout'
+#@+node:ekr.20240822101814.1: *4* 'use-render-focused-layout'
 @g.command('use-render-focused-layout')
 def use_render_focused_layout(event: LeoKeyEvent) -> None:
     """Switch to the rendered-focused layout::
@@ -5280,7 +5313,7 @@ def use_render_focused_layout(event: LeoKeyEvent) -> None:
         c.frame.top.change_layout('render-focused')
     except AttributeError:
         pass
-#@+node:ekr.20240822100454.1: *3* 'use-vertical-thirds-layout'
+#@+node:ekr.20240822100454.1: *4* 'use-vertical-thirds-layout'
 @g.command('use-vertical-thirds-layout')
 def use_vertical_thirds_layout(event: LeoKeyEvent) -> None:
     """Switch to the rendered-focused layout::
@@ -5301,7 +5334,7 @@ def use_vertical_thirds_layout(event: LeoKeyEvent) -> None:
         c.frame.top.change_layout('vertical-thirds')
     except AttributeError:
         pass
-#@+node:ekr.20240822101753.1: *3* 'use-vertical-thirds2-layout'
+#@+node:ekr.20240822101753.1: *4* 'use-vertical-thirds2-layout'
 @g.command('use-vertical-thirds2-layout')
 def use_vertical_thirds2_layout(event: LeoKeyEvent) -> None:
     """Switch to the rendered-focused layout::
