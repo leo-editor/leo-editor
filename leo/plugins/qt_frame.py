@@ -20,7 +20,7 @@ from leo.core import leoFrame
 from leo.core import leoGui
 from leo.core import leoMenu
 from leo.commands import gotoCommands
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, uic
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction, Qsci
 from leo.core.leoQt import AlignmentFlag, AlignLeft
 from leo.core.leoQt import ContextMenuPolicy, DropAction, FocusReason, KeyboardModifier
@@ -181,7 +181,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
         # Connect signals last.
         QtCore.QMetaObject.connectSlotsByName(self)
-    #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers (new)
+    #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers (new, TODO)
     def create_layout(self) -> tuple[QWidget, QWidget]:
         """
         Create the layout given by @string qt_layout_name.
@@ -193,9 +193,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
         # Keys are layout names, converted to canonical format.
         layout_dict = {
-            'legacy': self.create_legacy_layout,
             'big-tree': self.create_big_tree_layout,
-            'main': self.create_main_layout,
+            'horizontal-thirds': self.create_horizontal_thirds_layout,
+            'legacy': self.create_legacy_layout,
+            'render-focused': self.create_render_focused_layout,
+            'vertical_thirds': self.create_vertical_thirds_layout,
+            'vertical_thirds2': self.create_vertical_thirds2_layout,
         }
 
         # Allow plugins to define layouts.
@@ -225,14 +228,48 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
             g.es_print('Unknown layout name:', layout_name)
             return self.create_legacy_layout()
+    #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
+    def create_big_tree_layout(self) -> tuple[QWidget, QWidget]:
+        """
+        Create the layout previously specified by  @bool big-outline-pane::
+
+            ┌───────────────────────────┐
+            │                           │
+            │   outline                 │
+            │                           │
+            ├───────────────┬───────────┤
+            │               │           │
+            │   body        │   log     │
+            │               │           │
+            ├───────────────┴───────────┤
+            │                           │
+            │   vr                      │
+            │                           │
+            └───────────────────────────┘
+        """
+        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        self.createBodyPane(secondary_splitter)
+        self.createLogPane(secondary_splitter)
+        treeFrame = self.createOutlinePane(main_splitter)
+        main_splitter.addWidget(treeFrame)
+        main_splitter.addWidget(secondary_splitter)
+        self.vr_parent_frame = main_splitter
+        return main_splitter, secondary_splitter
     #@+node:ekr.20240726063727.1: *5* dw.create_legacy_layout
     def create_legacy_layout(self) -> tuple[QWidget, QWidget]:
         """
-        Create Leo's legacy layout:
-        
-        - The top pane contains outline and log panes.
-        - The bottom pane contains the body and VR panes.
-        
+        Create Leo's legacy layout::
+            
+            ┌───────────────┬───────────┐
+            │               │           │
+            │   outline     │   log     │
+            │               │           │
+            ├───────────────┼───────────┤
+            │               │           │
+            │   body        │   vr      │
+            │               │           │
+            └───────────────┴───────────┘
+       
         """
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
         self.createOutlinePane(secondary_splitter)
@@ -248,70 +285,76 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # Put the VR pane in the secondary splitter.
             self.vr_parent_frame = secondary_splitter
         return main_splitter, secondary_splitter
-    #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
-    def create_big_tree_layout(self) -> tuple[QWidget, QWidget]:
+    #@+node:ekr.20240822103027.1: *5* dw.create_horizontal_thirds_layout
+    def create_horizontal_thirds_layout(self) -> tuple[QWidget, QWidget]:
+        """Create Leo's horizonatl-thirds layout::
+            ┌───────────────┬───────────┐
+            │               │           │
+            │   outline     │   log     │
+            │               │           │
+            ├───────────────┴───────────┤
+            │                           │
+            │   body                    │
+            │                           │
+            ├───────────────────────────┤
+            │                           │
+            │   vr                      │
+            │                           │
+            └───────────────────────────┘
         """
-        Create the layout previously specified by  @bool big-outline-pane.
-        
-        The lower pane contains 
+        ### To do.
+    #@+node:ekr.20240822103044.1: *5* dw.create_render_focused_layout
+    def create_render_focused_layout(self) -> tuple[QWidget, QWidget]:
+        """Create Leo's render-focused layout::
+            
+            ┌────────────────┬──────────┐
+            │                │          │
+            │    outline     │          │
+            │                │          │
+            ├────────────────┤          │
+            │                │          │
+            │     body       │    vr    │
+            │                │          │
+            ├────────────────┤          │
+            │                │          │
+            │     log        │          │
+            │                │          │
+            └────────────────┴──────────┘
+
         """
-        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-        self.createBodyPane(secondary_splitter)
-        self.createLogPane(secondary_splitter)
-        treeFrame = self.createOutlinePane(main_splitter)
-        main_splitter.addWidget(treeFrame)
-        main_splitter.addWidget(secondary_splitter)
-        self.vr_parent_frame = main_splitter
-        return main_splitter, secondary_splitter
-    #@+node:ekr.20240729175958.1: *5* dw.create_main_layout
-    def create_main_layout(self) -> tuple[QWidget, QWidget]:
+        ### To do.
+    #@+node:ekr.20240822103044.2: *5* dw.create_vertical_thirds_layout
+    def create_vertical_thirds_layout(self) -> tuple[QWidget, QWidget]:
+        """Create Leo's vertical-thirds layout::
+
+            ┌────────────┬─────────┬──────────┐
+            │            │         │          │
+            │   outline  │         │          │
+            │            │         │          │
+            ├────────────┤   body  │    VR    │
+            │            │         │          │
+            │   log      │         │          │
+            │            │         │          │
+            └────────────┴─────────┴──────────┘
+
         """
-        Create the layout previously specified by  @bool big-outline-pane.
-        
-        The lower pane contains 
+        ### To do.
+
+    #@+node:ekr.20240822103045.1: *5* dw.create_vertical_thirds2_layout
+    def create_vertical_thirds2_layout(self) -> tuple[QWidget, QWidget]:
+        """Create Leo's vertical-thirds2 layout::
+            
+            ┌───────────┬──────────┬──────────┐
+            │           │          │          │
+            │           │   log    │          │
+            │           │          │          │
+            │  outline  ├──────────┤    VR    │
+            │           │          │          │
+            │           │   body   │          │
+            │           │          │          │
+            └───────────┴──────────┴──────────┘
         """
-        c = self.leo_c
-        assert c  ###
-        gui = g.app.gui
-        path = g.os_path_join(g.app.leoDir, 'plugins', 'legacy.ui')
-        form_class, base_class = uic.loadUiType(path)
-
-        form = form_class()
-        form.setupUi(self.centralwidget)
-        g.trace('form', form)
-
-        def find_widget(name):
-            for w in gui._self_and_subtree(self.centralwidget):
-                if w.objectName() == name:
-                    return w
-            return None
-
-        if 1:
-            print('')
-            g.trace('centralwidget...')
-            for w in gui._self_and_subtree(self.centralwidget):
-                if w is not None:
-                    print(repr(w.objectName()))
-            print('')
-
-        # main_splitter = gui.find_widget_by_name(c, 'main_splitter')
-        # secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
-
-        main_splitter = find_widget('main_splitter')
-        secondary_splitter = find_widget('secondary_splitter')
-
-        g.trace('main_splitter', main_splitter)
-        g.trace('secondary_splitter', secondary_splitter)
-
-        assert secondary_splitter  ###
-
-        self.createBodyPane(secondary_splitter)
-        self.createLogPane(secondary_splitter)
-        treeFrame = self.createOutlinePane(main_splitter)
-        main_splitter.addWidget(treeFrame)
-        main_splitter.addWidget(secondary_splitter)
-        self.vr_parent_frame = main_splitter  ###
-        return main_splitter, secondary_splitter
+        ### To do.
     #@+node:ekr.20240725073848.1: *4* dw.insert_vr_frame (new)
     def insert_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
         """Insert the given frame into the vr_parent_frame."""
@@ -5142,25 +5185,143 @@ def toggleUnlView(event: LeoKeyEvent) -> None:
 #@+node:ekr.20240822063951.1: *3* 'use-big-tree-layout'
 @g.command('use-big-tree-layout')
 def use_big_tree_layout(event: LeoKeyEvent) -> None:
-    """Switch to the big-tree layout"""
+    """
+    Switch to the big-tree layout::
+        
+        ┌───────────────────────────┐
+        │                           │
+        │   outline                 │
+        │                           │
+        ├───────────────┬───────────┤
+        │               │           │
+        │   body        │   log     │
+        │               │           │
+        ├───────────────┴───────────┤
+        │                           │
+        │   vr                      │
+        │                           │
+        └───────────────────────────┘
+        
+    """
     c = event.get('c')
     try:
         c.frame.top.change_layout('big-tree')
     except AttributeError:
         pass
+#@+node:ekr.20240822100439.1: *3* 'use-horizontal-thirds-layout'
+@g.command('use-horizontal-thirds-layout')
+def use_horizontal_thirds_layout(event: LeoKeyEvent) -> None:
+    """Switch to the horizontal-thirds layout::
+
+        ┌───────────────┬───────────┐
+        │               │           │
+        │   outline     │   log     │
+        │               │           │
+        ├───────────────┴───────────┤
+        │                           │
+        │   body                    │
+        │                           │
+        ├───────────────────────────┤
+        │                           │
+        │   vr                      │
+        │                           │
+        └───────────────────────────┘
         
-    
+    """
+    c = event.get('c')
+    try:
+        c.frame.top.change_layout('horizontal-thirds')
+    except AttributeError:
+        pass
 #@+node:ekr.20240822063619.1: *3* 'use-legacy-layout'
 @g.command('use-legacy-layout')
 def use_legacy_layout(event: LeoKeyEvent) -> None:
-    """Switch to the legacy layout"""
+    """
+    Switch to the legacy layout::
+
+        ┌───────────────┬───────────┐
+        │               │           │
+        │   outline     │   log     │
+        │               │           │
+        ├───────────────┼───────────┤
+        │               │           │
+        │   body        │   vr      │
+        │               │           │
+        └───────────────┴───────────┘
+        
+    """
     c = event.get('c')
     try:
         c.frame.top.change_layout('legacy')
     except AttributeError:
         pass
+#@+node:ekr.20240822101814.1: *3* 'use-render-focused-layout'
+@g.command('use-render-focused-layout')
+def use_render_focused_layout(event: LeoKeyEvent) -> None:
+    """Switch to the rendered-focused layout::
+
+        ┌────────────────┬──────────┐
+        │                │          │
+        │    outline     │          │
+        │                │          │
+        ├────────────────┤          │
+        │                │          │
+        │     body       │    vr    │
+        │                │          │
+        ├────────────────┤          │
+        │                │          │
+        │     log        │          │
+        │                │          │
+        └────────────────┴──────────┘
         
-    
+    """
+    c = event.get('c')
+    try:
+        c.frame.top.change_layout('render-focused')
+    except AttributeError:
+        pass
+#@+node:ekr.20240822100454.1: *3* 'use-vertical-thirds-layout'
+@g.command('use-vertical-thirds-layout')
+def use_vertical_thirds_layout(event: LeoKeyEvent) -> None:
+    """Switch to the rendered-focused layout::
+        
+        ┌────────────┬─────────┬──────────┐
+        │            │         │          │
+        │   outline  │         │          │
+        │            │         │          │
+        ├────────────┤   body  │    VR    │
+        │            │         │          │
+        │   log      │         │          │
+        │            │         │          │
+        └────────────┴─────────┴──────────┘
+        
+    """
+    c = event.get('c')
+    try:
+        c.frame.top.change_layout('vertical-thirds')
+    except AttributeError:
+        pass
+#@+node:ekr.20240822101753.1: *3* 'use-vertical-thirds2-layout'
+@g.command('use-vertical-thirds2-layout')
+def use_vertical_thirds2_layout(event: LeoKeyEvent) -> None:
+    """Switch to the rendered-focused layout::
+        
+        ┌───────────┬──────────┬──────────┐
+        │           │          │          │
+        │           │   log    │          │
+        │           │          │          │
+        │  outline  ├──────────┤    VR    │
+        │           │          │          │
+        │           │   body   │          │
+        │           │          │          │
+        └───────────┴──────────┴──────────┘
+
+    """
+    c = event.get('c')
+    try:
+        c.frame.top.change_layout('vertical-thirds2')
+    except AttributeError:
+        pass
 #@-others
 #@@language python
 #@@tabwidth -4
