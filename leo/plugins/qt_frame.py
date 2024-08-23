@@ -257,17 +257,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def create_legacy_layout(self) -> tuple[QWidget, QWidget]:
         """
         Create Leo's legacy layout::
-            
-            ┌───────────────┬───────────┐
-            │               │           │
-            │   outline     │   log     │
-            │               │           │
-            ├───────────────┼───────────┤
-            │               │           │
-            │   body        │   vr      │
-            │               │           │
-            └───────────────┴───────────┘
-       
+            ┌───────────┬───────┐
+            │  outline  │  log  │
+            ├───────────┼───────┤
+            │  body     │  VR   │
+            └───────────┴───────┘
         """
         c = self.leo_c
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
@@ -5196,21 +5190,13 @@ def toggleUnlView(event: LeoKeyEvent) -> None:
 def use_big_tree_layout(event: LeoKeyEvent) -> None:
     """
     Switch to the big-tree layout::
-        
-        ┌───────────────────────────┐
-        │                           │
-        │   outline                 │
-        │                           │
-        ├───────────────┬───────────┤
-        │               │           │
-        │   body        │   log     │
-        │               │           │
-        ├───────────────┴───────────┤
-        │                           │
-        │   vr                      │
-        │                           │
-        └───────────────────────────┘
-        
+        ┌───────────────────┐
+        │  outline          │
+        ├──────────┬────────┤
+        │  body    │  log   │
+        ├──────────┴────────┤
+        │  VR               │
+        └───────────────────┘
     """
     c = event.get('c')
     try:
@@ -5221,21 +5207,13 @@ def use_big_tree_layout(event: LeoKeyEvent) -> None:
 @g.command('use-horizontal-thirds-layout')
 def use_horizontal_thirds_layout(event: LeoKeyEvent) -> None:
     """Switch to the horizontal-thirds layout::
-
-        ┌───────────────┬───────────┐
-        │               │           │
-        │   outline     │   log     │
-        │               │           │
-        ├───────────────┴───────────┤
-        │                           │
-        │   body                    │
-        │                           │
-        ├───────────────────────────┤
-        │                           │
-        │   vr                      │
-        │                           │
-        └───────────────────────────┘
-        
+        ┌───────────┬───────┐
+        │  outline  │  log  │
+        ├───────────┴───────┤
+        │   body            │
+        ├───────────────────┤
+        │   VR              │
+        └───────────────────┘
     """
     c = event.get('c')
     try:
@@ -5247,17 +5225,11 @@ def use_horizontal_thirds_layout(event: LeoKeyEvent) -> None:
 def use_legacy_layout(event: LeoKeyEvent) -> None:
     """
     Switch to the legacy layout::
-
-        ┌───────────────┬───────────┐
-        │               │           │
-        │   outline     │   log     │
-        │               │           │
-        ├───────────────┼───────────┤
-        │               │           │
-        │   body        │   vr      │
-        │               │           │
-        └───────────────┴───────────┘
-        
+        ┌───────────┬───────┐
+        │  outline  │  log  │
+        ├───────────┼───────┤
+        │   body    │  VR   │
+        └───────────┴───────┘
     """
     c = event.get('c')
     try:
@@ -5268,21 +5240,13 @@ def use_legacy_layout(event: LeoKeyEvent) -> None:
 @g.command('use-render-focused-layout')
 def use_render_focused_layout(event: LeoKeyEvent) -> None:
     """Switch to the rendered-focused layout::
-
-        ┌────────────────┬──────────┐
-        │                │          │
-        │    outline     │          │
-        │                │          │
-        ├────────────────┤          │
-        │                │          │
-        │     body       │    vr    │
-        │                │          │
-        ├────────────────┤          │
-        │                │          │
-        │     log        │          │
-        │                │          │
-        └────────────────┴──────────┘
-        
+        ┌───────────┬───────┐
+        │  outline  │       │
+        ├───────────┤       │
+        │  body     │  VR   │
+        ├───────────┤       │
+        │  log      │       │
+        └───────────┴───────┘
     """
     c = event.get('c')
     try:
@@ -5293,17 +5257,11 @@ def use_render_focused_layout(event: LeoKeyEvent) -> None:
 @g.command('use-vertical-thirds-layout')
 def use_vertical_thirds_layout(event: LeoKeyEvent) -> None:
     """Switch to the rendered-focused layout::
-        
-        ┌────────────┬─────────┬──────────┐
-        │            │         │          │
-        │   outline  │         │          │
-        │            │         │          │
-        ├────────────┤   body  │    VR    │
-        │            │         │          │
-        │   log      │         │          │
-        │            │         │          │
-        └────────────┴─────────┴──────────┘
-        
+        ┌───────────┬────────┬──────┐
+        │  outline  │        │      │
+        ├───────────┤  body  │  VR  │
+        │  log      │        │      │
+        └───────────┴────────┴──────┘
     """
     c = event.get('c')
     try:
@@ -5313,18 +5271,12 @@ def use_vertical_thirds_layout(event: LeoKeyEvent) -> None:
 #@+node:ekr.20240822101753.1: *4* 'use-vertical-thirds2-layout'
 @g.command('use-vertical-thirds2-layout')
 def use_vertical_thirds2_layout(event: LeoKeyEvent) -> None:
-    """Switch to the rendered-focused layout::
-        
-        ┌───────────┬──────────┬──────────┐
-        │           │          │          │
-        │           │   log    │          │
-        │           │          │          │
-        │  outline  ├──────────┤    VR    │
-        │           │          │          │
-        │           │   body   │          │
-        │           │          │          │
-        └───────────┴──────────┴──────────┘
-
+    """Switch to the vertical-thirds2 layout::
+        ┌───────────┬───────┬───────┐
+        │           │  log  │       │
+        │  outline  ├───────┤  VR   │
+        │           │  body │       │
+        └───────────┴───────┴───────┘
     """
     c = event.get('c')
     try:
