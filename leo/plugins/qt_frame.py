@@ -195,36 +195,29 @@ class DynamicWindow(QtWidgets.QMainWindow):
             'horizontal-thirds': self.create_horizontal_thirds_layout,
             'legacy': self.create_legacy_layout,
             'render-focused': self.create_render_focused_layout,
-            # 'vertical_thirds': self.create_vertical_thirds_layout,
-            # 'vertical_thirds2': self.create_vertical_thirds2_layout,
+            'vertical-thirds': self.create_vertical_thirds_layout,
+            'vertical-thirds2': self.create_vertical_thirds2_layout,
         }
 
         # Allow plugins to define layouts.
         g.doHook("after-create-layout-dict", c=c, dw=self, layout_dict=layout_dict)
 
-        if 0:  ###
-            for key, val in layout_dict.items():
-                print(f"{key:20} {val.__name__}")
-
-        if layout_name in layout_dict:
-            if not g.unitTesting:
-                print('')
-                g.es_print('Using layout:', layout_name)
-            try:
-                f = layout_dict.get(layout_name)
-                return f()
-            except Exception as e:
-                g.es_print(f"Exception executing {f.__name__}", color='red')
-                g.es_print(e)
-                g.es_exception()
-                g.es_print('Using legacy layout')
-                # c.doCommandByName('show-qt-widgets')
-                # c.frame.showQtWidgets(event={'c': c})
-                ### from leo.plugins.qt_frame import showQtWidgets
-                ### showQtWidgets(event={'c': c})
-                return self.create_legacy_layout()
-        else:
+        if layout_name not in layout_dict:
             g.es_print('Unknown layout name:', layout_name)
+            g.es_print(f"Valid names: {list(layout_dict.keys())}")
+            return self.create_legacy_layout()
+
+        if not g.unitTesting:
+            print('')
+            g.es_print('Using layout:', layout_name)
+        try:
+            f = layout_dict.get(layout_name)
+            return f()
+        except Exception as e:
+            g.es_print(f"Exception executing {f.__name__}", color='red')
+            g.es_print(e)
+            g.es_exception()
+            g.es_print('Using legacy layout')
             return self.create_legacy_layout()
     #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
     def create_big_tree_layout(self) -> tuple[QWidget, QWidget]:
@@ -274,7 +267,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # Put the VR pane in the secondary splitter.
             self.vr_parent_frame = secondary_splitter
         return main_splitter, secondary_splitter
-    #@+node:ekr.20240822103027.1: *5* dw.create_horizontal_thirds_layout (todo)
+    #@+node:ekr.20240822103027.1: *5* dw.create_horizontal_thirds_layout
     def create_horizontal_thirds_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's horizonatl-thirds layout::
             ┌───────────┬───────┐
@@ -313,7 +306,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.createLogPane(secondary_splitter)
         self.vr_parent_frame = main_splitter
         return main_splitter, secondary_splitter
-    #@+node:ekr.20240822103044.2: *5* dw.create_vertical_thirds_layout (todo)
+    #@+node:ekr.20240822103044.2: *5* dw.create_vertical_thirds_layout (test)
     def create_vertical_thirds_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's vertical-thirds layout::
             ┌───────────┬────────┬──────┐
@@ -322,9 +315,28 @@ class DynamicWindow(QtWidgets.QMainWindow):
             │  log      │        │      │
             └───────────┴────────┴──────┘
         """
-        ### To do.
+        parent = self.centralwidget
+        ### main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        main_splitter = self.createMainSplitter(parent)
+        main_splitter.setOrientation(Orientation.Horizontal)
+        
+        #  Somehow this is crucial.
+        self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
+        ### self.set_widget_size_policy(secondary_splitter)
+        self.verticalLayout.addWidget(main_splitter)
 
-    #@+node:ekr.20240822103045.1: *5* dw.create_vertical_thirds2_layout (todo)
+        secondary_splitter = self.createSecondarySplitter(main_splitter)
+        secondary_splitter.setOrientation(Orientation.Vertical)
+
+        self.createOutlinePane(secondary_splitter)
+        self.createLogPane(secondary_splitter)
+        self.createBodyPane(main_splitter)
+        self.vr_parent_frame = main_splitter
+        return main_splitter, secondary_splitter
+
+
+
+    #@+node:ekr.20240822103045.1: *5* dw.create_vertical_thirds2_layout (test)
     def create_vertical_thirds2_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's vertical-thirds2 layout::
             ┌───────────┬───────┬───────┐
@@ -333,7 +345,27 @@ class DynamicWindow(QtWidgets.QMainWindow):
             │           │  body │       │
             └───────────┴───────┴───────┘
         """
-        ### To do.
+        parent = self.centralwidget
+        ### main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        main_splitter = self.createMainSplitter(parent)
+        main_splitter.setOrientation(Orientation.Horizontal)
+        
+        #  Somehow this is crucial.
+        self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
+        ### self.set_widget_size_policy(secondary_splitter)
+        self.verticalLayout.addWidget(main_splitter)
+
+
+        self.createOutlinePane(main_splitter)
+
+        # Add secondary splitter *second*
+        secondary_splitter = self.createSecondarySplitter(main_splitter)
+        secondary_splitter.setOrientation(Orientation.Vertical)
+
+        self.createLogPane(secondary_splitter)
+        self.createBodyPane(secondary_splitter)
+        self.vr_parent_frame = main_splitter
+        return main_splitter, secondary_splitter
     #@+node:ekr.20240725073848.1: *4* dw.insert_vr_frame (new)
     def insert_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
         """Insert the given frame into the vr_parent_frame."""
