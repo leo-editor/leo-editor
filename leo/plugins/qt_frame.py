@@ -86,7 +86,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     """
     #@+others
     #@+node:ekr.20240730052903.1: *3*  dw: Birth
-    #@+node:ekr.20240821135031.1: *4* dw.change_layout (new)
+    #@+node:ekr.20240821135031.1: *4* dw.change_layout
     def change_layout(self, layout_name: str) -> None:
         """
         Find and change the @string qt-layout-name setting,
@@ -121,7 +121,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.vr_parent_frame: QWidget = None
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
         self.reloadSettings()
-    #@+node:ekr.20240726074809.1: *4* dw.recreateMainWindow (new)
+    #@+node:ekr.20240726074809.1: *4* dw.recreateMainWindow
     def recreateMainWindow(self):
         """
         Recreate the main window by restarting Leo, with an explanatory message.
@@ -179,7 +179,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
         # Connect signals last.
         QtCore.QMetaObject.connectSlotsByName(self)
-    #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers (new)
+    #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers
     def create_layout(self) -> tuple[QWidget, QWidget]:
         """
         Create the layout given by @string qt_layout_name.
@@ -306,7 +306,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.createLogPane(secondary_splitter)
         self.vr_parent_frame = main_splitter
         return main_splitter, secondary_splitter
-    #@+node:ekr.20240822103044.2: *5* dw.create_vertical_thirds_layout (test)
+    #@+node:ekr.20240822103044.2: *5* dw.create_vertical_thirds_layout
     def create_vertical_thirds_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's vertical-thirds layout::
             ┌───────────┬────────┬──────┐
@@ -323,8 +323,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.createBodyPane(main_splitter)
         self.vr_parent_frame = main_splitter
         return main_splitter, secondary_splitter
-
-    #@+node:ekr.20240822103045.1: *5* dw.create_vertical_thirds2_layout (test)
+    #@+node:ekr.20240822103045.1: *5* dw.create_vertical_thirds2_layout
     def create_vertical_thirds2_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's vertical-thirds2 layout::
             ┌───────────┬───────┬───────┐
@@ -350,7 +349,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Add the VR pane to the main splitter.
         self.vr_parent_frame = main_splitter
         return main_splitter, secondary_splitter
-    #@+node:ekr.20240725073848.1: *4* dw.insert_vr_frame (new)
+    #@+node:ekr.20240725073848.1: *4* dw.insert_vr_frame
     def insert_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
         """Insert the given frame into the vr_parent_frame."""
         c = self.leo_c
@@ -1058,7 +1057,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         assert self.findTab
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
-    #@+node:ekr.20110605121601.18146: *4* dw.createMainLayout (changed)
+    #@+node:ekr.20110605121601.18146: *4* dw.createMainLayout
     def createMainLayout(self, parent: QWidget) -> tuple[QWidget, QWidget]:
         """Create the layout for Leo's main window."""
         # c = self.leo_c
@@ -1071,14 +1070,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.verticalLayout.addWidget(main_splitter)
 
         return main_splitter, secondary_splitter
-    #@+node:ekr.20240729064156.1: *4* dw.createMainSplitter (new)
+    #@+node:ekr.20240729064156.1: *4* dw.createMainSplitter
     def createMainSplitter(self, parent: QWidget) -> QtWidgets.QSplitter:
 
         main_splitter = QtWidgets.QSplitter(parent)
         main_splitter.setObjectName('main_splitter')
         main_splitter.setOrientation(Orientation.Vertical)
         return main_splitter
-    #@+node:ekr.20240729064421.1: *4* dw.createSecondarySplitter (new)
+    #@+node:ekr.20240729064421.1: *4* dw.createSecondarySplitter
     def createSecondarySplitter(self, parent: QWidget) -> QtWidgets.QSplitter:
 
         secondary_splitter = QtWidgets.QSplitter(parent)

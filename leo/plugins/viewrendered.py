@@ -333,7 +333,7 @@ def init() -> bool:
     ### g.registerHandler('close-frame', onClose)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
-#@+node:ekr.20240727091022.1: *3* vr function: getVR (new)
+#@+node:ekr.20240727091022.1: *3* vr function: getVR
 def getVr(*, c: Any = None, event: Any = None) -> Optional[QtWidgets.QWidget]:
     """Return the ViewRenderedController instance or None."""
     if g.app.gui.guiName() != 'qt':
@@ -405,7 +405,7 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
 def preview(event: Event) -> None:
     """A synonym for the vr-toggle command."""
     toggle_rendering_pane(event)
-#@+node:tbrown.20100318101414.5998: *3* g.command('vr') (changed)
+#@+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
 def viewrendered(event: Event) -> Optional[Any]:
     """Open render view for commander"""
@@ -417,7 +417,7 @@ def viewrendered(event: Event) -> Optional[Any]:
         c.bodyWantsFocusNow()
         return vr
     return None
-#@+node:ekr.20130413061407.10362: *3* g.command('vr-contract') (changed)
+#@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
 @g.command('vr-contract')
 def contract_rendering_pane(event: Event) -> None:
     """Contract the rendering pane."""
