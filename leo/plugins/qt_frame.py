@@ -175,9 +175,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if not self.show_iconbar:
             # #266 A setting to hide the icon bar.
             self.iconBar.hide()
-        if main_splitter:
-            orientation_s = c.config.getString('initial-split-orientation')
-            self.setSplitDirection(main_splitter, secondary_splitter, orientation_s)
         if hasattr(c, 'styleSheetManager'):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
         # Connect signals last.
@@ -272,9 +269,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
             └───────────────┴───────────┘
        
         """
+        c = self.leo_c
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
         self.createOutlinePane(secondary_splitter)
         self.createLogPane(secondary_splitter)
+
+        # Honor the orientation setting *only* for the legacy layout.
+        orientation_s = c.config.getString('initial-split-orientation')
+        self.setSplitDirection(main_splitter, secondary_splitter, orientation_s)
         if main_splitter.orientation() == Orientation.Vertical:
             # Share the VR pane with the body pane in a new splitter.
             self.vr_parent_frame = vr_splitter = QtWidgets.QSplitter()
@@ -285,6 +287,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.createBodyPane(main_splitter)
             # Put the VR pane in the secondary splitter.
             self.vr_parent_frame = secondary_splitter
+
         return main_splitter, secondary_splitter
     #@+node:ekr.20240822103027.1: *5* dw.create_horizontal_thirds_layout (todo)
     def create_horizontal_thirds_layout(self) -> tuple[QWidget, QWidget]:
@@ -304,7 +307,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             └───────────────────────────┘
         """
         ### To do.
-    #@+node:ekr.20240822103044.1: *5* dw.create_render_focused_layout (test)
+    #@+node:ekr.20240822103044.1: *5* dw.create_render_focused_layout
     def create_render_focused_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's render-focused layout::
             ┌───────────┬─────┐
@@ -315,15 +318,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             │ log       │     │
             └───────────┴─────┘
         """
-
-        # Can't do this: the secondary splitter must be added to the
-        # main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-        ### main_splitter = self.createMainSplitter(parent)
-        ### secondary_splitter = self.createSecondarySplitter(main_splitter)
-
-        g.trace(self.centralwidget.__class__.__name__, g.callers())
-
-        ### self.createMainLayout
         parent = self.centralwidget
         main_splitter = QtWidgets.QSplitter(parent)
         main_splitter.setObjectName('main_splitter')
@@ -333,17 +327,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
         self.verticalLayout.addWidget(main_splitter)
 
-        if 0:
-            secondary_splitter = None
-        else:
-            secondary_splitter = QtWidgets.QSplitter(main_splitter)
-            secondary_splitter.setObjectName('secondary_splitter')
-            secondary_splitter.setOrientation(Orientation.Vertical)
-
-        if 0:
-            red_pane = QtWidgets.QFrame()
-            red_pane.setStyleSheet('* { background-color: red; }')  ###
-            main_splitter.addWidget(red_pane)
+        secondary_splitter = QtWidgets.QSplitter(main_splitter)
+        secondary_splitter.setObjectName('secondary_splitter')
+        secondary_splitter.setOrientation(Orientation.Vertical)
 
         # The main splitter *must* contain the VR pane.
         if 1:
@@ -352,12 +338,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.createBodyPane(secondary_splitter)
             self.createLogPane(secondary_splitter)
             self.vr_parent_frame = main_splitter  # At top.
-            # self.vr_parent_frame = secondary_splitter  # At bottom.
-        else:
-            self.createOutlinePane(main_splitter)
-            self.createBodyPane(main_splitter)
-            self.createLogPane(main_splitter)
-            self.vr_parent_frame = secondary_splitter  # At top.
+
         return main_splitter, secondary_splitter
     #@+node:ekr.20240822103044.2: *5* dw.create_vertical_thirds_layout (todo)
     def create_vertical_thirds_layout(self) -> tuple[QWidget, QWidget]:
@@ -1306,14 +1287,18 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def setName(self, widget: Any, name: str) -> None:
         if name:
             widget.setObjectName(name)
-    #@+node:ekr.20110605121601.18174: *4* dw.setSplitDirection (disabled)
+    #@+node:ekr.20110605121601.18174: *4* dw.setSplitDirection
     def setSplitDirection(self,
         main_splitter: QWidget,
         secondary_splitter: QWidget,
         orientation: str,
     ) -> None:
-        """Set the orientations of the splitters in the Leo main window."""
-        return  ### Disabled!
+        """
+        Set the orientations of the splitters in the Leo main window.
+        
+        Only the legacy layout should use this method!
+        
+        """
         # c = self.leo_c
         vert = orientation and orientation.lower().startswith('v')
         h, v = Orientation.Horizontal, Orientation.Vertical
