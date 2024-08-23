@@ -315,26 +315,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
             │  log      │        │      │
             └───────────┴────────┴──────┘
         """
-        parent = self.centralwidget
-        ### main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-        main_splitter = self.createMainSplitter(parent)
+        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
         main_splitter.setOrientation(Orientation.Horizontal)
-        
-        #  Somehow this is crucial.
-        self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
-        ### self.set_widget_size_policy(secondary_splitter)
-        self.verticalLayout.addWidget(main_splitter)
-
-        secondary_splitter = self.createSecondarySplitter(main_splitter)
         secondary_splitter.setOrientation(Orientation.Vertical)
-
         self.createOutlinePane(secondary_splitter)
         self.createLogPane(secondary_splitter)
         self.createBodyPane(main_splitter)
         self.vr_parent_frame = main_splitter
         return main_splitter, secondary_splitter
-
-
 
     #@+node:ekr.20240822103045.1: *5* dw.create_vertical_thirds2_layout (test)
     def create_vertical_thirds2_layout(self) -> tuple[QWidget, QWidget]:
@@ -346,24 +334,20 @@ class DynamicWindow(QtWidgets.QMainWindow):
             └───────────┴───────┴───────┘
         """
         parent = self.centralwidget
-        ### main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        # Create the main splitter.
         main_splitter = self.createMainSplitter(parent)
         main_splitter.setOrientation(Orientation.Horizontal)
-        
-        #  Somehow this is crucial.
         self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
-        ### self.set_widget_size_policy(secondary_splitter)
         self.verticalLayout.addWidget(main_splitter)
-
-
+        # Add outline pane.
         self.createOutlinePane(main_splitter)
-
-        # Add secondary splitter *second*
+        # Add secondary splitte.
         secondary_splitter = self.createSecondarySplitter(main_splitter)
         secondary_splitter.setOrientation(Orientation.Vertical)
-
+        # Add the log and body panes to the secondary splitter.
         self.createLogPane(secondary_splitter)
         self.createBodyPane(secondary_splitter)
+        # Add the VR pane to the main splitter.
         self.vr_parent_frame = main_splitter
         return main_splitter, secondary_splitter
     #@+node:ekr.20240725073848.1: *4* dw.insert_vr_frame (new)
