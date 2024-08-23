@@ -229,21 +229,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
     def create_big_tree_layout(self) -> tuple[QWidget, QWidget]:
         """
-        Create the layout previously specified by  @bool big-outline-pane::
-
-            ┌───────────────────────────┐
-            │                           │
-            │   outline                 │
-            │                           │
-            ├───────────────┬───────────┤
-            │               │           │
-            │   body        │   log     │
-            │               │           │
-            ├───────────────┴───────────┤
-            │                           │
-            │   vr                      │
-            │                           │
-            └───────────────────────────┘
+        Create the layout previously specified by  @bool big-outline-pane:
+            ┌───────────────────┐
+            │  outline          │
+            ├──────────┬────────┤
+            │  body    │  log   │
+            ├──────────┴────────┤
+            │  VR               │
+            └───────────────────┘
         """
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
         self.createBodyPane(secondary_splitter)
@@ -307,7 +300,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             ┌───────────┬─────┐
             │ outline   │     │
             ├───────────┤     │
-            │ body      │ vr  │
+            │ body      │ VR  │
             ├───────────┤     │
             │ log       │     │
             └───────────┴─────┘
@@ -325,33 +318,22 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20240822103044.2: *5* dw.create_vertical_thirds_layout (todo)
     def create_vertical_thirds_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's vertical-thirds layout::
-
-            ┌────────────┬─────────┬──────────┐
-            │            │         │          │
-            │   outline  │         │          │
-            │            │         │          │
-            ├────────────┤   body  │    VR    │
-            │            │         │          │
-            │   log      │         │          │
-            │            │         │          │
-            └────────────┴─────────┴──────────┘
-
+            ┌───────────┬────────┬──────┐
+            │  outline  │        │      │
+            ├───────────┤  body  │  VR  │
+            │  log      │        │      │
+            └───────────┴────────┴──────┘
         """
         ### To do.
 
     #@+node:ekr.20240822103045.1: *5* dw.create_vertical_thirds2_layout (todo)
     def create_vertical_thirds2_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's vertical-thirds2 layout::
-            
-            ┌───────────┬──────────┬──────────┐
-            │           │          │          │
-            │           │   log    │          │
-            │           │          │          │
-            │  outline  ├──────────┤    VR    │
-            │           │          │          │
-            │           │   body   │          │
-            │           │          │          │
-            └───────────┴──────────┴──────────┘
+            ┌───────────┬───────┬───────┐
+            │           │  log  │       │
+            │  outline  ├───────┤  VR   │
+            │           │  body │       │
+            └───────────┴───────┴───────┘
         """
         ### To do.
     #@+node:ekr.20240725073848.1: *4* dw.insert_vr_frame (new)
@@ -5228,7 +5210,7 @@ def use_legacy_layout(event: LeoKeyEvent) -> None:
         ┌───────────┬───────┐
         │  outline  │  log  │
         ├───────────┼───────┤
-        │   body    │  VR   │
+        │  body     │  VR   │
         └───────────┴───────┘
     """
     c = event.get('c')
