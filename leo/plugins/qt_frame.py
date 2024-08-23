@@ -318,27 +318,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
             │ log       │     │
             └───────────┴─────┘
         """
-        parent = self.centralwidget
-        main_splitter = QtWidgets.QSplitter(parent)
-        main_splitter.setObjectName('main_splitter')
+        # The main splitter contains the secondary splitter and the VR pane.
+        # The secondary splitter contains all the other panes.
+        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
         main_splitter.setOrientation(Orientation.Horizontal)
-
-        # Add the main splitter to the overall layout.
-        self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
-        self.verticalLayout.addWidget(main_splitter)
-
-        secondary_splitter = QtWidgets.QSplitter(main_splitter)
-        secondary_splitter.setObjectName('secondary_splitter')
         secondary_splitter.setOrientation(Orientation.Vertical)
-
-        # The main splitter *must* contain the VR pane.
-        if 1:
-            ###
-            self.createOutlinePane(secondary_splitter)
-            self.createBodyPane(secondary_splitter)
-            self.createLogPane(secondary_splitter)
-            self.vr_parent_frame = main_splitter  # At top.
-
+        self.createOutlinePane(secondary_splitter)
+        self.createBodyPane(secondary_splitter)
+        self.createLogPane(secondary_splitter)
+        self.vr_parent_frame = main_splitter
         return main_splitter, secondary_splitter
     #@+node:ekr.20240822103044.2: *5* dw.create_vertical_thirds_layout (todo)
     def create_vertical_thirds_layout(self) -> tuple[QWidget, QWidget]:
