@@ -192,7 +192,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Keys are layout names, converted to canonical format.
         layout_dict = {
             'big-tree': self.create_big_tree_layout,
-            # 'horizontal-thirds': self.create_horizontal_thirds_layout,
+            'horizontal-thirds': self.create_horizontal_thirds_layout,
             'legacy': self.create_legacy_layout,
             'render-focused': self.create_render_focused_layout,
             # 'vertical_thirds': self.create_vertical_thirds_layout,
@@ -260,7 +260,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
         self.createOutlinePane(secondary_splitter)
         self.createLogPane(secondary_splitter)
-
         # Honor the orientation setting *only* for the legacy layout.
         orientation_s = c.config.getString('initial-split-orientation')
         self.setSplitDirection(main_splitter, secondary_splitter, orientation_s)
@@ -274,26 +273,25 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.createBodyPane(main_splitter)
             # Put the VR pane in the secondary splitter.
             self.vr_parent_frame = secondary_splitter
-
         return main_splitter, secondary_splitter
     #@+node:ekr.20240822103027.1: *5* dw.create_horizontal_thirds_layout (todo)
     def create_horizontal_thirds_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's horizonatl-thirds layout::
-            ┌───────────────┬───────────┐
-            │               │           │
-            │   outline     │   log     │
-            │               │           │
-            ├───────────────┴───────────┤
-            │                           │
-            │   body                    │
-            │                           │
-            ├───────────────────────────┤
-            │                           │
-            │   vr                      │
-            │                           │
-            └───────────────────────────┘
+            ┌───────────┬───────┐
+            │  outline  │  log  │
+            ├───────────┴───────┤
+            │  body             │
+            ├───────────────────┤
+            │  VR               │
+            └───────────────────┘
         """
-        ### To do.
+        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        self.createOutlinePane(secondary_splitter)
+        self.createLogPane(secondary_splitter)
+        self.createBodyPane(main_splitter)
+        self.vr_parent_frame = main_splitter
+        return main_splitter, secondary_splitter
+
     #@+node:ekr.20240822103044.1: *5* dw.create_render_focused_layout
     def create_render_focused_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's render-focused layout::
