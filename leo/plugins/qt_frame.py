@@ -182,7 +182,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
         # Connect signals last.
         QtCore.QMetaObject.connectSlotsByName(self)
-    #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers (new, TODO)
+    #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers (new)
     def create_layout(self) -> tuple[QWidget, QWidget]:
         """
         Create the layout given by @string qt_layout_name.
@@ -195,11 +195,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Keys are layout names, converted to canonical format.
         layout_dict = {
             'big-tree': self.create_big_tree_layout,
-            'horizontal-thirds': self.create_horizontal_thirds_layout,
+            # 'horizontal-thirds': self.create_horizontal_thirds_layout,
             'legacy': self.create_legacy_layout,
             'render-focused': self.create_render_focused_layout,
-            'vertical_thirds': self.create_vertical_thirds_layout,
-            'vertical_thirds2': self.create_vertical_thirds2_layout,
+            # 'vertical_thirds': self.create_vertical_thirds_layout,
+            # 'vertical_thirds2': self.create_vertical_thirds2_layout,
         }
 
         # Allow plugins to define layouts.
@@ -307,53 +307,57 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20240822103044.1: *5* dw.create_render_focused_layout (test)
     def create_render_focused_layout(self) -> tuple[QWidget, QWidget]:
         """Create Leo's render-focused layout::
-            
-            ┌────────────────┬──────────┐
-            │                │          │
-            │    outline     │          │
-            │                │          │
-            ├────────────────┤          │
-            │                │          │
-            │     body       │    vr    │
-            │                │          │
-            ├────────────────┤          │
-            │                │          │
-            │     log        │          │
-            │                │          │
-            └────────────────┴──────────┘
-
+            ┌───────────┬─────┐
+            │ outline   │     │
+            ├───────────┤     │
+            │ body      │ vr  │
+            ├───────────┤     │
+            │ log       │     │
+            └───────────┴─────┘
         """
-        c = self.leo_c
-        dw = c.frame.top
-        parent = dw.centralwidget
 
-        outer_frame = QtWidgets.QFrame(parent)
-        outer_frame.setStyleSheet('* { background-color: red; }')
+        # Can't do this: the secondary splitter must be added to the
+        # main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        ### main_splitter = self.createMainSplitter(parent)
+        ### secondary_splitter = self.createSecondarySplitter(main_splitter)
 
-        h_layout = QtWidgets.QHBoxLayout()
-        h_layout.addWidget(outer_frame)
+        g.trace(self.centralwidget.__class__.__name__, g.callers())
 
-        main_splitter = dw.createMainSplitter(parent=outer_frame)
+        ### self.createMainLayout
+        parent = self.centralwidget
+        main_splitter = QtWidgets.QSplitter(parent)
+        main_splitter.setObjectName('main_splitter')
         main_splitter.setOrientation(Orientation.Horizontal)
 
-        secondary_splitter = dw.createSecondarySplitter(main_splitter)
-        secondary_splitter.setOrientation(Orientation.Vertical)
+        # Add the main splitter to the overall layout.
+        self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
+        self.verticalLayout.addWidget(main_splitter)
 
-        # Required, for now at least.  Using a horizontal layout fails.
-        dw.verticalLayout = dw.createVLayout(parent, 'mainVLayout', margin=3)
-        ### Removing this helps.
-        ### dw.set_widget_size_policy(secondary_splitter)
+        if 0:
+            secondary_splitter = None
+        else:
+            secondary_splitter = QtWidgets.QSplitter(main_splitter)
+            secondary_splitter.setObjectName('secondary_splitter')
+            secondary_splitter.setOrientation(Orientation.Vertical)
 
-        dw.verticalLayout.addWidget(outer_frame)
+        if 0:
+            red_pane = QtWidgets.QFrame()
+            red_pane.setStyleSheet('* { background-color: red; }')  ###
+            main_splitter.addWidget(red_pane)
 
-        ### To do: generalize createBodyPane.
-
-        dw.createOutlinePane(secondary_splitter)
-        dw.createLogPane(secondary_splitter)
-        dw.createBodyPane(secondary_splitter)
-
-        dw.vr_parent_frame = main_splitter
-
+        # The main splitter *must* contain the VR pane.
+        if 1:
+            ###
+            self.createOutlinePane(secondary_splitter)
+            self.createBodyPane(secondary_splitter)
+            self.createLogPane(secondary_splitter)
+            self.vr_parent_frame = main_splitter  # At top.
+            # self.vr_parent_frame = secondary_splitter  # At bottom.
+        else:
+            self.createOutlinePane(main_splitter)
+            self.createBodyPane(main_splitter)
+            self.createLogPane(main_splitter)
+            self.vr_parent_frame = secondary_splitter  # At top.
         return main_splitter, secondary_splitter
     #@+node:ekr.20240822103044.2: *5* dw.create_vertical_thirds_layout (todo)
     def create_vertical_thirds_layout(self) -> tuple[QWidget, QWidget]:
@@ -400,6 +404,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
         if 1:  ### Debugging and development.
             vr_frame.setStyleSheet('* { background-color: orange; }')  ###
+
+        g.trace('parent:', parent.objectName(), g.callers())
+
+        ### breakpoint()  ###
 
         # Add the vr frame.
         vr_frame.show()  ###
@@ -1002,10 +1010,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         sw.addWidget(page2)
         innerGrid.addWidget(sw, 0, 0, 1, 1)
         grid.addWidget(innerFrame, 0, 0, 1, 1)
-        if self.verticalLayout:  ###
+        if False:  ### self.verticalLayout:  ###
             self.verticalLayout.addWidget(parent)
-        else:
-            g.trace('*****', parent.objectName() if parent else 'No parent')
+        # # # else:
+            # # # g.trace('*****', parent.objectName() if parent else 'No parent')
 
         # Official ivars
         self.text_page = page2
@@ -1298,13 +1306,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def setName(self, widget: Any, name: str) -> None:
         if name:
             widget.setObjectName(name)
-    #@+node:ekr.20110605121601.18174: *4* dw.setSplitDirection
+    #@+node:ekr.20110605121601.18174: *4* dw.setSplitDirection (disabled)
     def setSplitDirection(self,
         main_splitter: QWidget,
         secondary_splitter: QWidget,
         orientation: str,
     ) -> None:
         """Set the orientations of the splitters in the Leo main window."""
+        return  ### Disabled!
         # c = self.leo_c
         vert = orientation and orientation.lower().startswith('v')
         h, v = Orientation.Horizontal, Orientation.Vertical
