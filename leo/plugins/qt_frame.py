@@ -386,22 +386,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if 1:  ### Debugging and development.
             vr_frame.setStyleSheet('* { background-color: orange; }')  ###
 
-        g.trace('parent:', parent.objectName(), g.callers())
-
-        ### breakpoint()  ###
-
         # Add the vr frame.
-        vr_frame.show()  ###
+        vr_frame.show()
         parent.addWidget(vr_frame)
 
         # Resize splitters if they exist.
         main_splitter = gui.find_widget_by_name(c, 'main_splitter')
         secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
-        if main_splitter:
-            main_splitter.setSizes([100000] * len(main_splitter.sizes()))
-        if secondary_splitter:
-            secondary_splitter.setSizes([100000] * len(secondary_splitter.sizes()))
-        parent.setSizes([100000] * len(parent.sizes()))
+        gui.equalize_splitter(main_splitter)
+        gui.equalize_splitter(secondary_splitter)
+        gui.equalize_splitter(parent)
     #@+node:ekr.20110605121601.18165: *3* dw: create log tabs
     #@+node:ekr.20110605121601.18167: *4* dw.createSpellTab
     def createSpellTab(self, parent: QWidget) -> None:
