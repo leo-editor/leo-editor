@@ -1435,12 +1435,6 @@
 <v t="ekr.20131213135427.22061"><vh>@item &amp;add-editor</vh></v>
 <v t="ekr.20131213135427.22063"><vh>@item &amp;delete-editor</vh></v>
 </v>
-<v t="ekr.20170509104949.1"><vh>@@@menu &amp;Window Layout</vh>
-<v t="tbrown.20160130095933.1"><vh>@@@item free-layout-context-menu</vh></v>
-<v t="tbrown.20160130095933.2"><vh>@@@item free-layout-load</vh></v>
-<v t="tbrown.20160130095933.3"><vh>@@@item free-layout-restore</vh></v>
-<v t="tbrown.20160130095933.4"><vh>@@@item free-layout-zoom</vh></v>
-</v>
 <v t="ekr.20131213135427.22236"><vh>@menu &amp;Scroll Text Areas</vh>
 <v t="ekr.20131213135427.22237"><vh>@item scroll-outline-down-&amp;line</vh></v>
 <v t="ekr.20131213135427.22238"><vh>@item scroll-outline-down-&amp;page</vh></v>
@@ -1465,6 +1459,14 @@
 <v t="ekr.20131213135427.22159"><vh>@item focus-to-&amp;minibuffer</vh></v>
 <v t="ekr.20141112072219.2"><vh>@item focus-to-&amp;spell-tab</vh></v>
 <v t="ekr.20131213135427.22160"><vh>@item focus-to-&amp;tree</vh></v>
+</v>
+<v t="ekr.20170509104949.1"><vh>@menu &amp;Window Layout</vh>
+<v t="tbrown.20160130095933.1"><vh>@item use-legacy-layout</vh></v>
+<v t="tbrown.20160130095933.2"><vh>@item use-big-tree-layout</vh></v>
+<v t="tbrown.20160130095933.3"><vh>@item use-horizontal-thirds-layout</vh></v>
+<v t="tbrown.20160130095933.4"><vh>@item use-render-focused-layout</vh></v>
+<v t="ekr.20240824062822.1"><vh>@item use-vertical-thirds-layout</vh></v>
+<v t="ekr.20240824062823.1"><vh>@item use-vertical-thirds2-layout</vh></v>
 </v>
 </v>
 <v t="ekr.20131213135427.22343"><vh>@menu &amp;Help</vh>
@@ -2279,6 +2281,7 @@
 <v t="ekr.20051101160257"></v>
 <v t="ekr.20051007200824.1"></v>
 <v t="ekr.20240726065425.1"></v>
+<v t="ekr.20170509104949.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11655,6 +11658,24 @@ False: Always show multiple search results as the clone-find commands do.
 </t>
 <t tx="ekr.20240726065425.1"># legacy: Leo's legacy layout
 # big-tree: replaces @bool big-outline-pane</t>
+<t tx="ekr.20240824062822.1">vertical-thirds
+
+::
+
+    ┌───────────┬────────┬──────┐
+    │  outline  │        │      │
+    ├───────────┤  body  │  VR  │
+    │  log      │        │      │
+    └───────────┴────────┴──────┘</t>
+<t tx="ekr.20240824062823.1">vertical-thirds2
+
+::
+
+    ┌───────────┬───────┬───────┐
+    │           │  log  │       │
+    │  outline  ├───────┤  VR   │
+    │           │  body │       │
+    └───────────┴───────┴───────┘</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
@@ -12253,10 +12274,47 @@ absence of this setting.</t>
 <t tx="tbrown.20151114110207.1">"Abbreviation" to trigger the selection of the next placeholder,
 i.e. typing ,, will select the next &lt;|placeholder|&gt; text, after
 removing the &lt;| and |&gt;</t>
-<t tx="tbrown.20160130095933.1"></t>
-<t tx="tbrown.20160130095933.2"></t>
-<t tx="tbrown.20160130095933.3"></t>
-<t tx="tbrown.20160130095933.4"></t>
+<t tx="tbrown.20160130095933.1">legacy
+::
+
+    ┌───────────┬───────┐
+    │  outline  │  log  │
+    ├───────────┼───────┤
+    │  body     │  VR   │
+    └───────────┴───────┘</t>
+<t tx="tbrown.20160130095933.2">big-tree
+
+::
+
+    ┌───────────────────┐
+    │  outline          │
+    ├──────────┬────────┤
+    │  body    │  log   │
+    ├──────────┴────────┤
+    │  VR               │
+    └───────────────────┘</t>
+<t tx="tbrown.20160130095933.3">horizontal-thirds
+
+::
+
+    ┌───────────┬───────┐
+    │  outline  │  log  │
+    ├───────────┴───────┤
+    │  body             │
+    ├───────────────────┤
+    │  VR               │
+    └───────────────────┘</t>
+<t tx="tbrown.20160130095933.4">render-focused
+
+::
+
+    ┌───────────┬─────┐
+    │ outline   │     │
+    ├───────────┤     │
+    │ body      │ VR  │
+    ├───────────┤     │
+    │ log       │     │
+    └───────────┴─────┘</t>
 <t tx="tbrown.20170710093248.1">If true, tailing whitespace (spaces and tabs) will be underlined
 with small dots in `trailing_whitespace_color` (default red).</t>
 <t tx="tbrown.20171128211219.1"># These control the effects of modifiers (Shift, Control, Alt) on left
