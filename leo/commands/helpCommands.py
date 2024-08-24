@@ -842,13 +842,13 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
         ::
 
-                ┌───────────┬─────┐
-                │ outline   │     │
-                ├───────────┤     │
-                │ body      │ VR  │
-                ├───────────┤     │
-                │ log       │     │
-                └───────────┴─────┘
+            ┌───────────┬─────┐
+            │ outline   │     │
+            ├───────────┤     │
+            │ body      │ VR  │
+            ├───────────┤     │
+            │ log       │     │
+            └───────────┴─────┘
 
         use-vertical-thirds-layout
         --------------------------
