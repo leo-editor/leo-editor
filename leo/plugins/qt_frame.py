@@ -207,6 +207,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             g.es_print(f"Valid names: {list(layout_dict.keys())}")
             return self.create_legacy_layout()
 
+        ###
         if not g.unitTesting:
             print('')
             g.es_print('Using layout:', layout_name)
@@ -359,14 +360,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if not isinstance(parent, QtWidgets.QSplitter):
             g.trace('dw.vr_parent_frame must be a QSplitter!')
             return
-
-        if 1:  ### Debugging and development.
-            vr_frame.setStyleSheet('* { background-color: orange; }')  ###
-
         # Add the vr frame.
         vr_frame.show()
         parent.addWidget(vr_frame)
-
         # Resize splitters if they exist.
         main_splitter = gui.find_widget_by_name(c, 'main_splitter')
         secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
@@ -962,11 +958,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         sw.addWidget(page2)
         innerGrid.addWidget(sw, 0, 0, 1, 1)
         grid.addWidget(innerFrame, 0, 0, 1, 1)
-        if False:  ### self.verticalLayout:  ###
-            self.verticalLayout.addWidget(parent)
-        # # # else:
-            # # # g.trace('*****', parent.objectName() if parent else 'No parent')
-
         # Official ivars
         self.text_page = page2
         self.stackedWidget = sw  # used by LeoQtBody
@@ -1082,7 +1073,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
         secondary_splitter = QtWidgets.QSplitter(parent)
         secondary_splitter.setObjectName('secondary_splitter')
-        ### secondary_splitter.setOrientation(Orientation.Horizontal)
         return secondary_splitter
     #@+node:ekr.20110605121601.18148: *4* dw.createMiniBuffer (class VisLineEdit)
     def createMiniBuffer(self, parent: QWidget) -> QWidget:
@@ -1137,8 +1127,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         hLayout.setContentsMargins(3, 2, 2, 0)
         hLayout.addWidget(label)
         hLayout.addWidget(lineEdit)
-        if self.verticalLayout:  ###
-            self.verticalLayout.addWidget(frame)
+        self.verticalLayout.addWidget(frame)
         # Transfers focus request from label to lineEdit.
         label.setBuddy(lineEdit)
         #
