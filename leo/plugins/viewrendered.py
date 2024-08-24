@@ -207,7 +207,7 @@ from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import QtMultimedia, QtSvg
-from leo.core.leoQt import ContextMenuPolicy, WrapMode  ### Orientation
+from leo.core.leoQt import ContextMenuPolicy, WrapMode
 from leo.plugins import qt_text
 
 BaseTextWidget = QtWidgets.QTextBrowser
@@ -263,7 +263,7 @@ got_pyplot = False
 try:
     from matplotlib import pyplot
     got_pyplot = True
-    assert pyplot  ###
+    assert pyplot
 except Exception:
     pass
 
@@ -330,7 +330,6 @@ def init() -> bool:
     # Always enable this plugin, even if imports fail.
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
-    ### g.registerHandler('close-frame', onClose)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
 #@+node:ekr.20240727091022.1: *3* vr function: getVR
