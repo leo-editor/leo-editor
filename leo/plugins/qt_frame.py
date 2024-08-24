@@ -124,9 +124,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20240726074809.1: *4* dw.recreateMainWindow
     def recreateMainWindow(self):
         """
-        Recreate the main window by restarting Leo, with an explanatory message.
-        
-        There seems to be no reasonable way of changing Leo's layout without a restart.
+        Recreate the main window by reloading the outline.
         """
         w = getattr(self, 'centralwidget', None)
         if w and self.layout_name != self.old_layout_name:
@@ -144,7 +142,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.toolbar_orientation = c.config.getString('qt-toolbar-location') or ''
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.use_gutter = c.config.getBool('use-gutter', default=False)
-        self.recreateMainWindow()
+        self.recreateMainWindow()  # Executes the reload-outline command.
         if getattr(self, 'iconBar', None):
             if self.show_iconbar:
                 self.iconBar.show()
