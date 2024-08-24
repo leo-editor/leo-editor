@@ -1044,7 +1044,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         main_splitter = self.createMainSplitter(parent)
         secondary_splitter = self.createSecondarySplitter(main_splitter)
 
-        #  Somehow this is crucial.
+        #  Add the main splitter to the vertical layout!
         self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
         self.set_widget_size_policy(secondary_splitter)
         self.verticalLayout.addWidget(main_splitter)

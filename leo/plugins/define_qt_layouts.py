@@ -16,13 +16,11 @@ def init():
     g.registerHandler('after-create-layout-dict', update_layout)
     return True
 
-def update_layout(tags, event):
+def update_layout(tag, args):
     """Update dw.layout_dict with a new layout."""
     # Note: c.frame.top does not exist yet.
-    c = event.get('c')
-    dw = event.get('dw')
-    layout_dict = event.get('layout_dict')
-    assert c and dw and layout_dict
+    dw = args.get('dw')
+    layout_dict = args.get('layout_dict')
     #@+others  # Define layouts.
     #@+node:ekr.20240729040239.1: ** function: create_all_vertical_layout
     def create_all_vertical_layout(dw=dw):
