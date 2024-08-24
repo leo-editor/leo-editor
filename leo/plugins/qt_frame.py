@@ -138,12 +138,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def reloadSettings(self) -> None:
         c = self.leo_c
         c.registerReloadSettings(self)
-
-        self.big_tree = c.config.getBool('big-outline-pane')
-
         self.old_layout_name = self.layout_name
         self.layout_name = c.config.getString('qt-layout-name')
-
         self.show_iconbar = c.config.getBool('show-iconbar', default=True)
         self.toolbar_orientation = c.config.getString('qt-toolbar-location') or ''
         self.useScintilla = c.config.getBool('qt-use-scintilla')
@@ -206,11 +202,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             g.es_print('Unknown layout name:', layout_name)
             g.es_print(f"Valid names: {list(layout_dict.keys())}")
             return self.create_legacy_layout()
-
-        ###
-        if not g.unitTesting:
-            print('')
-            g.es_print('Using layout:', layout_name)
         try:
             f = layout_dict.get(layout_name)
             return f()
