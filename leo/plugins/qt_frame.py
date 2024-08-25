@@ -22,7 +22,7 @@ from leo.core import leoMenu
 from leo.commands import gotoCommands
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction, Qsci
-from leo.core.leoQt import AlignmentFlag, AlignLeft
+from leo.core.leoQt import AlignLeft
 from leo.core.leoQt import ContextMenuPolicy, DropAction, FocusReason, KeyboardModifier
 from leo.core.leoQt import MoveOperation, Orientation, MouseButton
 from leo.core.leoQt import Policy, ScrollBarPolicy, SelectionBehavior, SelectionMode, SizeAdjustPolicy
@@ -1561,129 +1561,6 @@ class LeoQtBody(leoFrame.LeoBody):
             except Exception:
                 # g.es_exception()
                 pass
-    #@+node:ekr.20110605121601.18217: *3* LeoQtBody.Renderer panes
-    #@+node:ekr.20110605121601.18218: *4* LeoQtBody.hideCanvasRenderer
-    def hideCanvasRenderer(self, event: LeoKeyEvent = None) -> None:
-        """Hide canvas pane."""
-        c, d = self.c, self.editorWrappers
-        wrapper = c.frame.body.wrapper
-        w = wrapper.widget
-        name = w.leo_name
-        assert name
-        assert wrapper == d.get(name), 'wrong wrapper'
-        assert g.isTextWrapper(wrapper), wrapper
-        assert g.isTextWidget(w), w
-        if len(list(d.keys())) <= 1:
-            return
-        #
-        # At present, can not delete the first column.
-        if name == '1':
-            g.warning('can not delete leftmost editor')
-            return
-        #
-        # Actually delete the widget.
-        del d[name]
-        f = c.frame.top.leo_body_inner_frame
-        layout = f.layout()
-        for z in (w, w.leo_label):
-            if z:
-                self.unpackWidget(layout, z)
-        #
-        # Select another editor.
-        w.leo_label = None
-        new_wrapper = list(d.values())[0]
-        self.numberOfEditors -= 1
-        if self.numberOfEditors == 1:
-            w = new_wrapper.widget
-            if w.leo_label:  # 2011/11/12
-                self.unpackWidget(layout, w.leo_label)
-                w.leo_label = None  # 2011/11/12
-        self.selectEditor(new_wrapper)
-    #@+node:ekr.20110605121601.18219: *4* LeoQtBody.hideTextRenderer
-    def hideCanvas(self, event: LeoKeyEvent = None) -> None:
-        """Hide canvas pane."""
-        c, d = self.c, self.editorWrappers
-        wrapper = c.frame.body.wrapper
-        w = wrapper.widget
-        name = w.leo_name
-        assert name
-        assert wrapper == d.get(name), 'wrong wrapper'
-        assert g.isTextWrapper(wrapper), wrapper
-        assert g.isTextWidget(w), w
-        if len(list(d.keys())) <= 1:
-            return
-        # At present, can not delete the first column.
-        if name == '1':
-            g.warning('can not delete leftmost editor')
-            return
-        #
-        # Actually delete the widget.
-        del d[name]
-        f = c.frame.top.leo_body_inner_frame
-        layout = f.layout()
-        for z in (w, w.leo_label):
-            if z:
-                self.unpackWidget(layout, z)
-        #
-        # Select another editor.
-        w.leo_label = None
-        new_wrapper = list(d.values())[0]
-        self.numberOfEditors -= 1
-        if self.numberOfEditors == 1:
-            w = new_wrapper.widget
-            if w.leo_label:
-                self.unpackWidget(layout, w.leo_label)
-                w.leo_label = None
-        self.selectEditor(new_wrapper)
-    #@+node:ekr.20110605121601.18220: *4* LeoQtBody.packRenderer
-    def packRenderer(self, f: QWidget, name: str, w: QtWidgets.QFrame) -> QtWidgets.QLineEdit:
-        n = max(1, self.numberOfEditors)
-        assert isinstance(f, QtWidgets.QFrame), f
-        layout = f.layout()
-        f.setObjectName(f"{name} Frame")
-        # Create the text: to do: use stylesheet to set font, height.
-        lab = QtWidgets.QLineEdit(f)
-        lab.setObjectName(f"{name} Label")
-        lab.setText(name)
-        # Pack the label and the widget.
-        layout.addWidget(lab, 0, max(0, n - 1), AlignmentFlag.AlignVCenter)  # type:ignore
-        layout.addWidget(w, 1, max(0, n - 1))  # type:ignore
-        layout.setRowStretch(0, 0)
-        layout.setRowStretch(1, 1)  # Give row 1 as much as possible.
-        return lab
-    #@+node:ekr.20110605121601.18221: *4* LeoQtBody.showCanvasRenderer
-    # An override of leoFrame.addEditor.
-
-    def showCanvasRenderer(self, event: LeoKeyEvent = None) -> None:
-        """Show the canvas area in the body pane, creating it if necessary."""
-        c = self.c
-        f = c.frame.top.leo_body_inner_frame
-        assert isinstance(f, QtWidgets.QFrame), f
-        if not self.canvasRenderer:
-            name = 'Graphics Renderer'
-            self.canvasRenderer = w = QtWidgets.QGraphicsView(f)
-            w.setObjectName(name)
-        if not self.canvasRendererVisible:
-            self.canvasRendererLabel = self.packRenderer(f, name, w)
-            self.canvasRendererVisible = True
-    #@+node:ekr.20110605121601.18222: *4* LeoQtBody.showTextRenderer
-    # An override of leoFrame.addEditor.
-
-    def showTextRenderer(self, event: LeoKeyEvent = None) -> None:
-        """Show the canvas area in the body pane, creating it if necessary."""
-        c = self.c
-        f = c.frame.top.leo_body_inner_frame
-        name = 'Text Renderer'
-        w = self.textRenderer
-        assert isinstance(f, QtWidgets.QFrame), f
-        if w:
-            self.textRenderer = qt_text.LeoQTextBrowser(f, c, self)
-            w = self.textRenderer
-            w.setObjectName(name)
-            self.textRendererWrapper = qt_text.QTextEditWrapper(w, name='text-renderer', c=c)
-        if not self.textRendererVisible:
-            self.textRendererLabel = self.packRenderer(f, name, w)
-            self.textRendererVisible = True
     #@-others
 #@+node:ekr.20110605121601.18245: ** class LeoQtFrame (LeoFrame)
 class LeoQtFrame(leoFrame.LeoFrame):
