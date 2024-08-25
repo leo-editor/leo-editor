@@ -1527,15 +1527,8 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110930174206.15472: *4* LeoQtBody.onFocusIn
     def onFocusIn(self, obj: Any) -> None:
         """Handle a focus-in event in the body pane."""
-        trace = 'select' in g.app.debug and not g.unitTesting
-        tag = 'qt_body.onFocusIn'
         if obj.objectName() == 'richTextEdit':
-            wrapper = getattr(obj, 'leo_wrapper', None)
-            if trace:
-                print(f"{tag:>30}: {wrapper}")
-            ###
-                # if wrapper and wrapper != self.wrapper:
-                    # self.selectEditor(wrapper)
+            ### wrapper = getattr(obj, 'leo_wrapper', None)
             self.onFocusColorHelper('focus-in', obj)
             if hasattr(obj, 'leo_copy_button') and obj.leo_copy_button:
                 obj.setReadOnly(True)

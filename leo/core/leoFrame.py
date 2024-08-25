@@ -309,15 +309,13 @@ class LeoBody:
         c = frame.c
         frame.body = self
         self.c = c
-        ### self.editorWrappers: dict[str, Widget] = {}  # keys are pane names, values are text widgets
         self.frame = frame
         self.parentFrame: Widget = parentFrame  # New in Leo 4.6.
-        self.totalNumberOfEditors = 0  ### To be deleted.
+        ### self.totalNumberOfEditors = 0  ### To be deleted.
         # May be overridden in subclasses...
         self.widget: Widget = None  # set in LeoQtBody.set_widget.
         self.wrapper: Wrapper = None  # set in LeoQtBody.set_widget.
-        self.numberOfEditors = 1  ### To be deleted.
-        ### self.pb = None  # paned body widget.
+        ### self.numberOfEditors = 1  ### To be deleted.
         # Must be overridden in subclasses...
         self.colorizer = None
         # Init user settings.
@@ -354,44 +352,6 @@ class LeoBody:
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     # This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
     #@+node:ekr.20240825052457.1: *4* LeoBody.entries (simplified)
-    #@+node:ekr.20060530210057: *5* LeoBody.select/unselectLabel
-    def unselectLabel(self, w: Wrapper) -> None:
-        self.createChapterIvar(w)
-        ### experimental
-            # self.packEditorLabelWidget(w)
-            # s = self.computeLabel(w)
-            # if hasattr(w, 'leo_label') and w.leo_label:
-                # w.leo_label.configure(text=s, bg='LightSteelBlue1')
-
-    def selectLabel(self, w: Wrapper) -> None:
-        pass
-        ### Experimental
-        # if self.numberOfEditors > 1:
-            # self.createChapterIvar(w)
-            # self.packEditorLabelWidget(w)
-            # s = self.computeLabel(w)
-            # if hasattr(w, 'leo_label') and w.leo_label:
-                # w.leo_label.configure(text=s, bg='white')
-        # elif hasattr(w, 'leo_label') and w.leo_label:
-            # w.leo_label.pack_forget()
-            # w.leo_label = None
-    #@+node:ekr.20060528131618: *5* LeoBody.updateEditors
-    # Called from addEditor and assignPositionToEditor
-
-    def updateEditors(self) -> None:
-        c, p = self.c, self.c.p
-        d = self.editorWrappers
-        if len(list(d.keys())) < 2:
-            return  # There is only the main widget.
-        for key in d:
-            wrapper = d.get(key)
-            v = wrapper.leo_v
-            if v and v == p.v and wrapper != c.frame.body.wrapper:
-                wrapper.delete(0, len(wrapper.getAllText()))
-                wrapper.insert(0, p.b)
-                wrapper.setInsertPoint(len(p.b))
-                self.recolorWidget(p, wrapper)
-        c.bodyWantsFocus()
     #@+node:ekr.20070424053629.1: *4* LeoBody.utils
     #@+node:ekr.20070422093128: *5* LeoBody.computeLabel
     def computeLabel(self, w: Wrapper) -> str:
@@ -446,24 +406,6 @@ class LeoBody:
             if chapter != oldChapter:
                 cc.selectChapterByName(name)
                 c.bodyWantsFocus()
-    #@+node:ekr.20070424092855: *5* LeoBody.updateInjectedIvars
-    # Called from addEditor and assignPositionToEditor.
-
-    def updateInjectedIvars(self, w: Wrapper, p: Position) -> None:
-        """Inject updated ivars in w, a gui widget."""
-        if not w:
-            return
-        c = self.c
-        cc = c.chapterController
-        # Was in ctor.
-        use_chapters = c.config.getBool('use-chapters')
-        if cc and use_chapters:
-            w.leo_chapter = cc.getSelectedChapter()
-        else:
-            w.leo_chapter = None
-        w.leo_p = p.copy()
-        w.leo_v = w.leo_p.v
-        w.leo_label_s = p.h
     #@+node:ekr.20031218072017.4018: *3* LeoBody.Text
     #@+node:ekr.20031218072017.4030: *4* LeoBody.getInsertLines
     def getInsertLines(self) -> tuple[str, str, str]:
@@ -1551,7 +1493,6 @@ class LeoTree:
     def set_status_line(self, p: Position) -> None:
         """Update the status line."""
         c = self.c
-        ### c.frame.body.assignPositionToEditor(p)
         c.frame.updateStatusLine()
         c.frame.clearStatusLine()
         if p and p.v:
@@ -1597,55 +1538,20 @@ class NullBody(LeoBody):
         self.s = ""  # The body text
         self.widget: Widget = None
         self.wrapper: Any = StringTextWrapper(c=self.c, name='body')  # Hard to annotate.
-        ### self.editorWrappers['1'] = self.wrapper
         self.colorizer: Any = NullColorizer(self.c)  # A Union.
     #@+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface
     # Birth, death...
-
     def createControl(self, parentFrame: Widget, p: Position) -> Wrapper:
         pass
-        
-    ###
-        # # Editors...
 
-        # def addEditor(self, event: LeoKeyEvent = None) -> None:
-            # pass
-
-        # def assignPositionToEditor(self, p: Position) -> None:
-            # pass
-
-        # def createEditorFrame(self, w: Widget) -> Widget:
-            # return None
-
-        # def cycleEditorFocus(self, event: LeoKeyEvent = None) -> None:
-            # pass
-
-        # def deleteEditor(self, event: LeoKeyEvent = None) -> None:
-            # pass
-
-        # def selectEditor(self, w: Widget) -> None:
-            # pass
-
-        # def selectLabel(self, w: Widget) -> None:
-            # pass
-
-        # def setEditorColors(self, bg: str, fg: str) -> None:
-            # pass
-
-        # def unselectLabel(self, w: Widget) -> None:
-            # pass
-
-        # def updateEditors(self) -> None:
-            # pass
     # Events...
-
     def forceFullRecolor(self) -> None:
         pass
 
     def scheduleIdleTimeRoutine(self, function: str, *args: str, **keys: str) -> None:
         pass
-    # Low-level gui...
 
+    # Low-level gui...
     def setFocus(self) -> None:
         pass
     #@-others
