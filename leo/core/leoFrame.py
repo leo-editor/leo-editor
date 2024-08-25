@@ -312,12 +312,12 @@ class LeoBody:
         self.editorWrappers: dict[str, Widget] = {}  # keys are pane names, values are text widgets
         self.frame = frame
         self.parentFrame: Widget = parentFrame  # New in Leo 4.6.
-        self.totalNumberOfEditors = 0
+        self.totalNumberOfEditors = 0  ### To be deleted.
         # May be overridden in subclasses...
         self.widget: Widget = None  # set in LeoQtBody.set_widget.
         self.wrapper: Wrapper = None  # set in LeoQtBody.set_widget.
-        self.numberOfEditors = 1
-        self.pb = None  # paned body widget.
+        self.numberOfEditors = 1  ### To be deleted.
+        ### self.pb = None  # paned body widget.
         # Must be overridden in subclasses...
         self.colorizer = None
         # Init user settings.
@@ -353,95 +353,17 @@ class LeoBody:
         pass
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     # This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
-    #@+node:ekr.20070424053629: *4* LeoBody.entries
-    #@+node:ekr.20060528100747.1: *5* LeoBody.addEditor
-    def addEditor(self, event: LeoKeyEvent = None) -> None:
-        """Add another editor to the body pane."""
-        c, p = self.c, self.c.p
-        self.totalNumberOfEditors += 1
-        self.numberOfEditors += 1
-        if self.numberOfEditors == 2:
-            # Inject the ivars into the first editor.
-            # Bug fix: Leo 4.4.8 rc1: The name of the last editor need not be '1'
-            d = self.editorWrappers
-            keys = list(d.keys())
-            if len(keys) == 1:
-                # Immediately create the label in the old editor.
-                w_old = d.get(keys[0])
-                self.updateInjectedIvars(w_old, p)
-                self.selectLabel(w_old)
-            else:
-                g.trace('can not happen: unexpected editorWrappers', d)
-        name = f"{self.totalNumberOfEditors}"
-        pane = self.pb.add(name)
-        panes = self.pb.panes()
-        minSize = float(1.0 / float(len(panes)))
-        # Create the text wrapper.
-        f = self.createEditorFrame(pane)
-        wrapper = self.createTextWidget(f, name=name, p=p)
-        wrapper.delete(0, len(wrapper.getAllText()))
-        wrapper.insert(0, p.b)
-        wrapper.setInsertPoint(len(p.b))
-        wrapper.see(0)
-        c.k.completeAllBindingsForWidget(wrapper)
-        self.recolorWidget(p, wrapper)
-        self.editorWrappers[name] = wrapper
-        for pane in panes:
-            self.pb.configurepane(pane, size=minSize)
-        self.pb.updatelayout()
-        c.frame.body.wrapper = wrapper
-        # Finish...
-        self.updateInjectedIvars(wrapper, p)
-        self.selectLabel(wrapper)
-        self.selectEditor(wrapper)
-        self.updateEditors()
-        c.bodyWantsFocus()
+    #@+node:ekr.20240825052457.1: *4* LeoBody.entries (simplified)
     #@+node:ekr.20060528132829: *5* LeoBody.assignPositionToEditor
     def assignPositionToEditor(self, p: Position) -> None:
         """Called *only* from tree.select to select the present body editor."""
+        return  ###
         c = self.c
         w = c.frame.body.widget
         self.updateInjectedIvars(w, p)
         self.selectLabel(w)
-    #@+node:ekr.20200415041750.1: *5* LeoBody.cycleEditorFocus
-    @body_cmd('editor-cycle-focus')
-    @body_cmd('cycle-editor-focus')
-    def cycleEditorFocus(self, event: LeoKeyEvent = None) -> None:
-        """Cycle keyboard focus between the body text editors."""
-        c = self.c
-        d = self.editorWrappers
-        w = c.frame.body.wrapper
-        values = list(d.values())
-        if len(values) > 1:
-            i = values.index(w) + 1
-            if i == len(values):
-                i = 0
-            w2 = values[i]
-            assert w != w2
-            self.selectEditor(w2)
-            c.frame.body.wrapper = w2
-    #@+node:ekr.20060528113806: *5* LeoBody.deleteEditor (overridden)
-    def deleteEditor(self, event: LeoKeyEvent = None) -> None:
-        """Delete the presently selected body text editor."""
-        c = self.c
-        w = c.frame.body.wrapper
-        d = self.editorWrappers
-        if len(list(d.keys())) == 1:
-            return
-        name = w.leo_name
-        del d[name]
-        self.pb.delete(name)
-        panes = self.pb.panes()
-        minSize = float(1.0 / float(len(panes)))
-        for pane in panes:
-            self.pb.configurepane(pane, size=minSize)
-        # Select another editor.
-        w = list(d.values())[0]
-        # c.frame.body.wrapper = w # Don't do this now?
-        self.numberOfEditors -= 1
-        self.selectEditor(w)
     #@+node:ekr.20070425180705: *5* LeoBody.findEditorForChapter
-    def findEditorForChapter(self, chapter: str, p: Position) -> None:
+    def findEditorForChapter(self, chapter: str, p: Position) -> Any:
         """Return an editor to be assigned to chapter."""
         c = self.c
         d = self.editorWrappers
@@ -463,12 +385,14 @@ class LeoBody:
     #@+node:ekr.20060530210057: *5* LeoBody.select/unselectLabel
     def unselectLabel(self, w: Wrapper) -> None:
         self.createChapterIvar(w)
-        self.packEditorLabelWidget(w)
-        s = self.computeLabel(w)
-        if hasattr(w, 'leo_label') and w.leo_label:
-            w.leo_label.configure(text=s, bg='LightSteelBlue1')
+        if 0:  ### experimental
+            self.packEditorLabelWidget(w)
+            s = self.computeLabel(w)
+            if hasattr(w, 'leo_label') and w.leo_label:
+                w.leo_label.configure(text=s, bg='LightSteelBlue1')
 
     def selectLabel(self, w: Wrapper) -> None:
+        return  ### Experimental
         if self.numberOfEditors > 1:
             self.createChapterIvar(w)
             self.packEditorLabelWidget(w)
@@ -478,49 +402,11 @@ class LeoBody:
         elif hasattr(w, 'leo_label') and w.leo_label:
             w.leo_label.pack_forget()
             w.leo_label = None
-    #@+node:ekr.20061017083312: *5* LeoBody.selectEditor & helpers
-    selectEditorLockout = False
-
-    def selectEditor(self, w: Wrapper) -> None:
-        """Select the editor given by w and node w.leo_p."""
-        #  Called whenever wrapper must be selected.
-        c = self.c
-        if self.selectEditorLockout:
-            return
-        if w and w == self.c.frame.body.widget:
-            if w.leo_p and w.leo_p != c.p:
-                c.selectPosition(w.leo_p)
-                c.bodyWantsFocus()
-            return
-        try:
-            self.selectEditorLockout = True
-            self.selectEditorHelper(w)
-        finally:
-            self.selectEditorLockout = False
-    #@+node:ekr.20070423102603: *6* LeoBody.selectEditorHelper
-    def selectEditorHelper(self, wrapper: Wrapper) -> None:
-        """Select the editor whose widget is given."""
-        c = self.c
-        if not (hasattr(wrapper, 'leo_p') and wrapper.leo_p):
-            g.trace('no wrapper.leo_p')
-            return
-        self.deactivateActiveEditor(wrapper)
-        # The actual switch.
-        c.frame.body.wrapper = wrapper
-        wrapper.leo_active = True
-        self.switchToChapter(wrapper)
-        self.selectLabel(wrapper)
-        if not self.ensurePositionExists(wrapper):
-            g.trace('***** no position editor!')
-            return
-        p = wrapper.leo_p
-        c.redraw(p)
-        c.recolor()
-        c.bodyWantsFocus()
     #@+node:ekr.20060528131618: *5* LeoBody.updateEditors
     # Called from addEditor and assignPositionToEditor
 
     def updateEditors(self) -> None:
+        return  ###
         c, p = self.c, self.c.p
         d = self.editorWrappers
         if len(list(d.keys())) < 2:
@@ -534,6 +420,128 @@ class LeoBody:
                 wrapper.setInsertPoint(len(p.b))
                 self.recolorWidget(p, wrapper)
         c.bodyWantsFocus()
+    #@+node:ekr.20070424053629: *4* LeoBody.entries (all deleted)
+    if 0:  ### Experimental
+        #@+others
+        #@+node:ekr.20060528100747.1: *5* LeoBody.addEditor
+        def addEditor(self, event: LeoKeyEvent = None) -> None:
+            """Add another editor to the body pane."""
+            c, p = self.c, self.c.p
+            self.totalNumberOfEditors += 1
+            self.numberOfEditors += 1
+            if self.numberOfEditors == 2:
+                # Inject the ivars into the first editor.
+                # Bug fix: Leo 4.4.8 rc1: The name of the last editor need not be '1'
+                d = self.editorWrappers
+                keys = list(d.keys())
+                if len(keys) == 1:
+                    # Immediately create the label in the old editor.
+                    w_old = d.get(keys[0])
+                    self.updateInjectedIvars(w_old, p)
+                    self.selectLabel(w_old)
+                else:
+                    g.trace('can not happen: unexpected editorWrappers', d)
+            name = f"{self.totalNumberOfEditors}"
+            pane = self.pb.add(name)
+            panes = self.pb.panes()
+            minSize = float(1.0 / float(len(panes)))
+            # Create the text wrapper.
+            f = self.createEditorFrame(pane)
+            wrapper = self.createTextWidget(f, name=name, p=p)
+            wrapper.delete(0, len(wrapper.getAllText()))
+            wrapper.insert(0, p.b)
+            wrapper.setInsertPoint(len(p.b))
+            wrapper.see(0)
+            c.k.completeAllBindingsForWidget(wrapper)
+            self.recolorWidget(p, wrapper)
+            self.editorWrappers[name] = wrapper
+            for pane in panes:
+                self.pb.configurepane(pane, size=minSize)
+            self.pb.updatelayout()
+            c.frame.body.wrapper = wrapper
+            # Finish...
+            self.updateInjectedIvars(wrapper, p)
+            self.selectLabel(wrapper)
+            self.selectEditor(wrapper)
+            self.updateEditors()
+            c.bodyWantsFocus()
+        #@+node:ekr.20200415041750.1: *5* LeoBody.cycleEditorFocus
+        @body_cmd('editor-cycle-focus')
+        @body_cmd('cycle-editor-focus')
+        def cycleEditorFocus(self, event: LeoKeyEvent = None) -> None:
+            """Cycle keyboard focus between the body text editors."""
+            c = self.c
+            d = self.editorWrappers
+            w = c.frame.body.wrapper
+            values = list(d.values())
+            if len(values) > 1:
+                i = values.index(w) + 1
+                if i == len(values):
+                    i = 0
+                w2 = values[i]
+                assert w != w2
+                self.selectEditor(w2)
+                c.frame.body.wrapper = w2
+        #@+node:ekr.20060528113806: *5* LeoBody.deleteEditor (overridden)
+        def deleteEditor(self, event: LeoKeyEvent = None) -> None:
+            """Delete the presently selected body text editor."""
+            c = self.c
+            w = c.frame.body.wrapper
+            d = self.editorWrappers
+            if len(list(d.keys())) == 1:
+                return
+            name = w.leo_name
+            del d[name]
+            self.pb.delete(name)
+            panes = self.pb.panes()
+            minSize = float(1.0 / float(len(panes)))
+            for pane in panes:
+                self.pb.configurepane(pane, size=minSize)
+            # Select another editor.
+            w = list(d.values())[0]
+            # c.frame.body.wrapper = w # Don't do this now?
+            self.numberOfEditors -= 1
+            self.selectEditor(w)
+        #@+node:ekr.20061017083312: *5* LeoBody.selectEditor & helpers
+        selectEditorLockout = False
+
+        def selectEditor(self, w: Wrapper) -> None:
+            """Select the editor given by w and node w.leo_p."""
+            #  Called whenever wrapper must be selected.
+            c = self.c
+            if self.selectEditorLockout:
+                return
+            if w and w == self.c.frame.body.widget:
+                if w.leo_p and w.leo_p != c.p:
+                    c.selectPosition(w.leo_p)
+                    c.bodyWantsFocus()
+                return
+            try:
+                self.selectEditorLockout = True
+                self.selectEditorHelper(w)
+            finally:
+                self.selectEditorLockout = False
+        #@+node:ekr.20070423102603: *6* LeoBody.selectEditorHelper
+        def selectEditorHelper(self, wrapper: Wrapper) -> None:
+            """Select the editor whose widget is given."""
+            c = self.c
+            if not (hasattr(wrapper, 'leo_p') and wrapper.leo_p):
+                g.trace('no wrapper.leo_p')
+                return
+            self.deactivateActiveEditor(wrapper)
+            # The actual switch.
+            c.frame.body.wrapper = wrapper
+            wrapper.leo_active = True
+            self.switchToChapter(wrapper)
+            self.selectLabel(wrapper)
+            if not self.ensurePositionExists(wrapper):
+                g.trace('***** no position editor!')
+                return
+            p = wrapper.leo_p
+            c.redraw(p)
+            c.recolor()
+            c.bodyWantsFocus()
+        #@-others
     #@+node:ekr.20070424053629.1: *4* LeoBody.utils
     #@+node:ekr.20070422093128: *5* LeoBody.computeLabel
     def computeLabel(self, w: Wrapper) -> str:

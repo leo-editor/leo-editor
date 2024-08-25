@@ -2184,7 +2184,7 @@ class Undoer:
         c, u = self.c, self
         w = c.frame.body.wrapper
         # Redraw and recolor.
-        c.frame.body.updateEditors()  # New in Leo 4.4.8.
+        ### c.frame.body.updateEditors()  # New in Leo 4.4.8.
         #
         # Set the new position.
         if 0:  # Don't do this: it interferes with selection ranges.
