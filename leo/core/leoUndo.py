@@ -798,7 +798,6 @@ class Undoer:
         w = self.c.frame.body.wrapper
         bunch = self.createCommonBunch(p)  # Sets u.oldMarked, u.oldSel, u.p
 
-        ###
         bunch.oldPastedTree = c.fileCommands.outline_to_clipboard_string(c.p)
         bunch.oldBody = p.b
         bunch.oldHead = p.h
@@ -1296,9 +1295,6 @@ class Undoer:
         if not c.isChanged():
             c.setChanged()
 
-        # Update editors.
-        ### c.frame.body.updateEditors()
-
         # Update icons.
         val = p.computeIcon()
         if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
@@ -1349,7 +1345,7 @@ class Undoer:
         new_v = hidden_v.children[0]
         new_v.parents = old_parents  # restore v.parents.
         assert v.gnx == new_v.gnx
-        v = new_v  ### Experimental.
+        v = new_v
 
         # All pasted nodes should have unique gnx's.
         ni = g.app.nodeIndices
@@ -1444,10 +1440,6 @@ class Undoer:
         # selectPosition causes recoloring, so don't do this unless needed.
         if c.p != u.p:
             c.selectPosition(u.p)
-        ### s = u.newPastedTree
-
-
-
         u.p.setDirty()
         u.p.b = u.newBody
         u.p.h = u.newHead
