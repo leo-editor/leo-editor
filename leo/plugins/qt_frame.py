@@ -1533,8 +1533,9 @@ class LeoQtBody(leoFrame.LeoBody):
             wrapper = getattr(obj, 'leo_wrapper', None)
             if trace:
                 print(f"{tag:>30}: {wrapper}")
-            if wrapper and wrapper != self.wrapper:
-                self.selectEditor(wrapper)
+            ###
+                # if wrapper and wrapper != self.wrapper:
+                    # self.selectEditor(wrapper)
             self.onFocusColorHelper('focus-in', obj)
             if hasattr(obj, 'leo_copy_button') and obj.leo_copy_button:
                 obj.setReadOnly(True)

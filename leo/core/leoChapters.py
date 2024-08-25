@@ -416,7 +416,7 @@ class Chapter:
             self.p = p = self.findPositionInChapter(self.p) or root.copy()
             # Careful: c.selectPosition would pop the hoist stack.
             w = self.findEditorInChapter(p)
-            c.frame.body.selectEditor(w)  # Switches text.
+            ### c.frame.body.selectEditor(w)  # Switches text.
             self.p = p  # 2016/04/20: Apparently essential.
         if g.match_word(p.h, 0, '@chapter'):
             if p.hasChildren():
