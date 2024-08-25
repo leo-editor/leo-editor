@@ -364,7 +364,7 @@ class LeoBody:
         c = self.c
         if c.positionExists(w.leo_p):
             return True
-        g.trace('***** does not exist', w.leo_name)
+        g.trace('***** does not exist', w.leo_p)
         for p2 in c.all_unique_positions():
             if p2.v and p2.v == w.leo_v:
                 w.leo_p = p2.copy()

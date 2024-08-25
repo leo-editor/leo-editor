@@ -432,32 +432,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         parent.setStatusBar(w)
         # Official ivars.
         self.leo_statusBar = w
-    #@+node:ekr.20110605121601.18212: *5* dw.packLabel
-    def packLabel(self, w: Wrapper, n: int = None) -> None:
-        """
-        Pack w into the body frame's QVGridLayout.
-
-        The type of w does not affect the following code. In fact, w is a
-        QTextBrowser possibly packed inside a LeoLineTextWidget.
-        """
-        c = self.leo_c
-        #
-        # Reuse the grid layout in the body frame.
-        grid = self.leo_body_frame.layout()
-        # Pack the label and the text widget.
-        label = QtWidgets.QLineEdit(None)
-        label.setObjectName('editorLabel')
-        label.setText(c.p.h)
-        if n is None:
-            n = c.frame.body.numberOfEditors
-        n = max(0, n - 1)
-        # mypy error: grid is a QGridLayout, not a QLayout.
-        grid.addWidget(label, 0, n)  # type:ignore
-        grid.addWidget(w, 1, n)  # type:ignore
-        grid.setRowStretch(0, 0)  # Don't grow the label vertically.
-        grid.setRowStretch(1, 1)  # Give row 1 as much as vertical room as possible.
-        # Inject the ivar.
-        w.leo_label = label
     #@+node:ekr.20110605121601.18151: *5* dw.setMainWindowOptions
     def setMainWindowOptions(self) -> None:
         """Set default options for Leo's main window."""
@@ -1515,7 +1489,6 @@ class LeoQtBody(leoFrame.LeoBody):
     def onFocusIn(self, obj: Any) -> None:
         """Handle a focus-in event in the body pane."""
         if obj.objectName() == 'richTextEdit':
-            ### wrapper = getattr(obj, 'leo_wrapper', None)
             self.onFocusColorHelper('focus-in', obj)
             if hasattr(obj, 'leo_copy_button') and obj.leo_copy_button:
                 obj.setReadOnly(True)
@@ -2659,7 +2632,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         """Wrapper for the Tkinter insert_cascade menu method."""
         menu.setTitle(label)
         label.replace('&', '').lower()
-        menu.leo_menu_label = label  # was leo_label
+        menu.leo_menu_label = label
         if parent:
             parent.addMenu(menu)
         else:
