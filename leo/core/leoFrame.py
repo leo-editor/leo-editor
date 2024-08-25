@@ -354,34 +354,27 @@ class LeoBody:
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     # This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
     #@+node:ekr.20240825052457.1: *4* LeoBody.entries (simplified)
-    #@+node:ekr.20060528132829: *5* LeoBody.assignPositionToEditor (to be deleted)
-    def assignPositionToEditor(self, p: Position) -> None:
-        """Called *only* from tree.select to select the present body editor."""
-        return  ###
-        c = self.c
-        w = c.frame.body.widget
-        self.updateInjectedIvars(w, p)
-        self.selectLabel(w)
     #@+node:ekr.20060530210057: *5* LeoBody.select/unselectLabel
     def unselectLabel(self, w: Wrapper) -> None:
         self.createChapterIvar(w)
-        if 0:  ### experimental
-            self.packEditorLabelWidget(w)
-            s = self.computeLabel(w)
-            if hasattr(w, 'leo_label') and w.leo_label:
-                w.leo_label.configure(text=s, bg='LightSteelBlue1')
+        ### experimental
+            # self.packEditorLabelWidget(w)
+            # s = self.computeLabel(w)
+            # if hasattr(w, 'leo_label') and w.leo_label:
+                # w.leo_label.configure(text=s, bg='LightSteelBlue1')
 
     def selectLabel(self, w: Wrapper) -> None:
-        return  ### Experimental
-        if self.numberOfEditors > 1:
-            self.createChapterIvar(w)
-            self.packEditorLabelWidget(w)
-            s = self.computeLabel(w)
-            if hasattr(w, 'leo_label') and w.leo_label:
-                w.leo_label.configure(text=s, bg='white')
-        elif hasattr(w, 'leo_label') and w.leo_label:
-            w.leo_label.pack_forget()
-            w.leo_label = None
+        pass
+        ### Experimental
+        # if self.numberOfEditors > 1:
+            # self.createChapterIvar(w)
+            # self.packEditorLabelWidget(w)
+            # s = self.computeLabel(w)
+            # if hasattr(w, 'leo_label') and w.leo_label:
+                # w.leo_label.configure(text=s, bg='white')
+        # elif hasattr(w, 'leo_label') and w.leo_label:
+            # w.leo_label.pack_forget()
+            # w.leo_label = None
     #@+node:ekr.20060528131618: *5* LeoBody.updateEditors
     # Called from addEditor and assignPositionToEditor
 
@@ -1558,7 +1551,7 @@ class LeoTree:
     def set_status_line(self, p: Position) -> None:
         """Update the status line."""
         c = self.c
-        c.frame.body.assignPositionToEditor(p)
+        ### c.frame.body.assignPositionToEditor(p)
         c.frame.updateStatusLine()
         c.frame.clearStatusLine()
         if p and p.v:
@@ -1611,36 +1604,37 @@ class NullBody(LeoBody):
 
     def createControl(self, parentFrame: Widget, p: Position) -> Wrapper:
         pass
-    # Editors...
-
-    def addEditor(self, event: LeoKeyEvent = None) -> None:
-        pass
-
-    def assignPositionToEditor(self, p: Position) -> None:
-        pass
-
-    def createEditorFrame(self, w: Widget) -> Widget:
-        return None
-
-    def cycleEditorFocus(self, event: LeoKeyEvent = None) -> None:
-        pass
-
-    def deleteEditor(self, event: LeoKeyEvent = None) -> None:
-        pass
-
-    def selectEditor(self, w: Widget) -> None:
-        pass
-
-    def selectLabel(self, w: Widget) -> None:
-        pass
-
-    def setEditorColors(self, bg: str, fg: str) -> None:
-        pass
-
-    def unselectLabel(self, w: Widget) -> None:
-        pass
-
+        
     ###
+        # # Editors...
+
+        # def addEditor(self, event: LeoKeyEvent = None) -> None:
+            # pass
+
+        # def assignPositionToEditor(self, p: Position) -> None:
+            # pass
+
+        # def createEditorFrame(self, w: Widget) -> Widget:
+            # return None
+
+        # def cycleEditorFocus(self, event: LeoKeyEvent = None) -> None:
+            # pass
+
+        # def deleteEditor(self, event: LeoKeyEvent = None) -> None:
+            # pass
+
+        # def selectEditor(self, w: Widget) -> None:
+            # pass
+
+        # def selectLabel(self, w: Widget) -> None:
+            # pass
+
+        # def setEditorColors(self, bg: str, fg: str) -> None:
+            # pass
+
+        # def unselectLabel(self, w: Widget) -> None:
+            # pass
+
         # def updateEditors(self) -> None:
             # pass
     # Events...
