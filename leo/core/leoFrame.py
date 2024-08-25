@@ -367,24 +367,6 @@ class LeoBody:
         """Return an editor to be assigned to chapter."""
         c = self.c
         return c.frame.body.wrapper  ### Experimental.
-
-        ###
-            # d = self.editorWrappers
-            # values = list(d.values())
-            # # First, try to match both the chapter and position.
-            # if p:
-                # for w in values:
-                    # if (
-                        # hasattr(w, 'leo_chapter') and w.leo_chapter == chapter and
-                        # hasattr(w, 'leo_p') and w.leo_p and w.leo_p == p
-                    # ):
-                        # return w
-            # # Next, try to match just the chapter.
-            # for w in values:
-                # if hasattr(w, 'leo_chapter') and w.leo_chapter == chapter:
-                    # return w
-            # # As a last resort, return the present editor widget.
-            # return c.frame.body.wrapper
     #@+node:ekr.20060530210057: *5* LeoBody.select/unselectLabel
     def unselectLabel(self, w: Wrapper) -> None:
         self.createChapterIvar(w)
