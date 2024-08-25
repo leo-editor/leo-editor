@@ -1431,10 +1431,6 @@
 <v t="ekr.20131213135427.22323"><vh>@item toggle-&amp;split-direction</vh></v>
 <v t="ekr.20240810082711.1"><vh>@item reload-&amp;outline</vh></v>
 <v t="ekr.20180403154533.1"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22060"><vh>@menu &amp;Add/Delete Body Editors</vh>
-<v t="ekr.20131213135427.22061"><vh>@item &amp;add-editor</vh></v>
-<v t="ekr.20131213135427.22063"><vh>@item &amp;delete-editor</vh></v>
-</v>
 <v t="ekr.20170509104949.1"><vh>@@@menu &amp;Window Layout</vh>
 <v t="tbrown.20160130095933.1"><vh>@@@item free-layout-context-menu</vh></v>
 <v t="tbrown.20160130095933.2"><vh>@@@item free-layout-load</vh></v>
@@ -5560,9 +5556,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22050"></t>
 <t tx="ekr.20131213135427.22053"></t>
 <t tx="ekr.20131213135427.22059"></t>
-<t tx="ekr.20131213135427.22060"></t>
-<t tx="ekr.20131213135427.22061"></t>
-<t tx="ekr.20131213135427.22063"></t>
 <t tx="ekr.20131213135427.22072"></t>
 <t tx="ekr.20131213135427.22078"></t>
 <t tx="ekr.20131213135427.22079"></t>
@@ -6107,7 +6100,7 @@ activate-outline-menu               = None
 activate-plugins-menu               = None
 activate-window-menu                = None
 add-comments                        = None
-add-editor                          = None
+# add-editor                          = None
 add-space-to-lines                  = None
 add-tab-to-lines                    = None
 always-indent-region                = None
@@ -6185,7 +6178,7 @@ debug                               = None
 de-hoist                            = None
 delete-char                         = None
 delete-comments                     = None
-delete-editor                       = None
+# delete-editor                         = None
 delete-first-icon                   = None
 delete-indentation                  = None
 delete-last-icon                    = None
@@ -8605,16 +8598,16 @@ enter-body-unindent-to-end-of-buffer-mode = Shift-g
 <t tx="ekr.20140721165014.19312">#Window commands
 #Bind: Ctrl-w
 
-add-editor           = s   #Open another view to current node
-add-editor           = n   #Open another view to current node
+# add-editor           = s   #Open another view to current node
+# add-editor           = n   #Open another view to current node
 
 cycle-editor-focus   = w   #Vim goes to next below-right window (wraps)
 cycle-editor-focus   = p   #Vim goes to previous window with focus
 cycle-editor-focus   = k   #Vim goes to window above current window
 cycle-editor-focus   = j   #Vim goes to window below current window
 
-delete-editor        = c   #Close current window (if more than one)
-delete-editor        = q   #Close current window (if more than one)
+# delete-editor        = c   #Close current window (if more than one)
+# delete-editor        = q   #Close current window (if more than one)
 </t>
 <t tx="ekr.20140721165014.19313">This node and its descendants contains settings that make Leo work somewhat
 like vim.

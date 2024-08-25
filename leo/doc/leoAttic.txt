@@ -622,6 +622,13 @@ def sortFields(self, event: LeoKeyEvent, which: str = None) -> None:
     self.endCommand(changed=True, setLabel=True)
 #@+node:ekr.20240825054616.1: *3* retire add-editor
 @nosearch
+#@+node:ekr.20240825123857.1: *4* Multiple body editors
+``add-editor``
+    Adds a new editor in the body pane and gives it the body editor focus.
+``delete-editor``
+    Deletes the editor with body editor focus.
+``cycle-editor-focus``
+    Cycles body editor focus between editors in the body text. The editor that has focus shows the content of the selected outline node; the other body editors continue to show the node contents they last had when they had the body editor focus.
 #@+node:ekr.20240825065226.1: *4* dw: deleted
 #@+node:ekr.20190118150859.10: *5* dw.addNewEditor
 def addNewEditor(self, name: str) -> tuple[QWidget, Wrapper]:
