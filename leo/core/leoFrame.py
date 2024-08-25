@@ -362,11 +362,6 @@ class LeoBody:
         w = c.frame.body.widget
         self.updateInjectedIvars(w, p)
         self.selectLabel(w)
-    #@+node:ekr.20070425180705: *5* LeoBody.findEditorForChapter
-    def findEditorForChapter(self, chapter: str, p: Position) -> Any:
-        """Return an editor to be assigned to chapter."""
-        c = self.c
-        return c.frame.body.wrapper  ### Experimental.
     #@+node:ekr.20060530210057: *5* LeoBody.select/unselectLabel
     def unselectLabel(self, w: Wrapper) -> None:
         self.createChapterIvar(w)

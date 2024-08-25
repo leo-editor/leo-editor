@@ -459,7 +459,7 @@ class Chapter:
     def findEditorInChapter(self, p: Position) -> Wrapper:
         """return w, an editor displaying position p."""
         chapter, c = self, self.c
-        w = c.frame.body.findEditorForChapter(chapter, p)
+        w = c.frame.body.wrapper
         if w:
             w.leo_chapter = chapter
             w.leo_p = p and p.copy()
