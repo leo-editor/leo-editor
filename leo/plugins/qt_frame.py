@@ -1450,20 +1450,7 @@ class LeoQtBody(leoFrame.LeoBody):
         self.reloadSettings()
         self.set_widget()  # Sets self.widget and self.wrapper.
         self.setWrap(c.p)
-        # For multiple body editors.
-        if 0:  ###
-            self.editor_name = None
-            self.editor_v = None
-            self.numberOfEditors = 1
-            self.totalNumberOfEditors = 1
-        # For renderer panes.
-        self.canvasRenderer: QtWidgets.QGraphicsView = None
-        self.canvasRendererLabel: QtWidgets.QLineEdit = None
-        self.canvasRendererVisible = False
-        self.textRenderer: QtWidgets.QFrame = None
-        self.textRendererLabel: QtWidgets.QLineEdit = None
-        self.textRendererVisible = False
-        self.textRendererWrapper: Wrapper = None
+
     #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
     def getName(self) -> str:
         return 'body-widget'

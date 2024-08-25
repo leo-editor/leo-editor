@@ -310,12 +310,10 @@ class LeoBody:
         frame.body = self
         self.c = c
         self.frame = frame
-        self.parentFrame: Widget = parentFrame  # New in Leo 4.6.
-        ### self.totalNumberOfEditors = 0  ### To be deleted.
+        self.parentFrame: Widget = parentFrame
         # May be overridden in subclasses...
         self.widget: Widget = None  # set in LeoQtBody.set_widget.
         self.wrapper: Wrapper = None  # set in LeoQtBody.set_widget.
-        ### self.numberOfEditors = 1  ### To be deleted.
         # Must be overridden in subclasses...
         self.colorizer = None
         # Init user settings.
@@ -350,15 +348,7 @@ class LeoBody:
     def onFocusOut(self, obj: Any) -> None:
         pass
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
-    # This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
-    #@+node:ekr.20240825052457.1: *4* LeoBody.entries (simplified)
     #@+node:ekr.20070424053629.1: *4* LeoBody.utils
-    #@+node:ekr.20070422093128: *5* LeoBody.computeLabel
-    def computeLabel(self, w: Wrapper) -> str:
-        s = w.leo_label_s
-        if hasattr(w, 'leo_chapter') and w.leo_chapter:
-            s = f"{w.leo_chapter.name}: {s}"
-        return s
     #@+node:ekr.20070422094710: *5* LeoBody.createChapterIvar
     def createChapterIvar(self, w: Wrapper) -> None:
         c = self.c

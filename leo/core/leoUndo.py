@@ -2185,16 +2185,14 @@ class Undoer:
         """
         c, u = self.c, self
         w = c.frame.body.wrapper
-        # Redraw and recolor.
-        ### c.frame.body.updateEditors()  # New in Leo 4.4.8.
-        #
+
         # Set the new position.
         if 0:  # Don't do this: it interferes with selection ranges.
             # This strange code forces a recomputation of the root position.
             c.selectPosition(c.p)
         else:
             c.setCurrentPosition(c.p)
-        #
+
         # # 1451. *Always* set the changed bit.
         # Redrawing *must* be done here before setting u.undoing to False.
         i, j = w.getSelectionRange()

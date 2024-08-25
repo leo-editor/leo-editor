@@ -158,8 +158,8 @@ class QTextMixin:
         w.leo_bodyXBar = None
         w.leo_chapter = None
         w.leo_frame = None
-        w.leo_name = '1'
-        w.leo_label = None
+        ### w.leo_name = '1'
+        ### w.leo_label = None
         return w
     #@+node:ekr.20140901062324.18825: *3* qtm.getName
     def getName(self) -> str:

@@ -3999,8 +3999,8 @@ class TextMixin:
         self.leo_bodyXBar = None
         self.leo_chapter = None
         self.leo_frame = None
-        self.leo_name = '1'
-        self.leo_label = None
+        ### self.leo_name = '1'
+        ### self.leo_label = None
         return self
     #@+node:ekr.20170511053143.4: *4* tm.getName
     def getName(self) -> str:
@@ -4133,8 +4133,9 @@ class BodyWrapper(leoFrame.StringTextWrapper):
         self.leo_bodyXBar = None
         self.leo_chapter = None
         self.leo_frame = None
-        self.leo_name = '1'
-        self.leo_label = None
+        ###
+            # self.leo_name = '1'
+            # self.leo_label = None
     #@+node:ekr.20170504034655.6: *4* bw.onCursorPositionChanged
     def onCursorPositionChanged(self, event: Event = None) -> None:
         if 0:
