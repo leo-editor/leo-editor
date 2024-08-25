@@ -1295,8 +1295,10 @@ class Undoer:
             p.setDirty()
         if not c.isChanged():
             c.setChanged()
+
         # Update editors.
-        c.frame.body.updateEditors()
+        ### c.frame.body.updateEditors()
+
         # Update icons.
         val = p.computeIcon()
         if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
