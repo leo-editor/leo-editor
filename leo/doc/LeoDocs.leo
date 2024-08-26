@@ -32993,11 +32993,16 @@ This release:
 <t tx="ekr.20240724062137.1"></t>
 <t tx="ekr.20240818070101.1">`pip install leo` does not install PyQt6-WebEngine on some Linux distributions.
 
-The solution: use pip's `--user` and `--break-system-packages` options:
+The real problems are missing system libraries (*.so files). This missing files aren't exactly a Python/PyQt issue but have to be solved if a distro doesn't have them installed.
+
+Follow the suggestion in the error message if the message tells how to install the missing libraries.
+
+If these suggestions don't work try using  pip's `--user` and `--break-system-packages` options:
 
 `python3 -m pip install --user --break-system-packages -r requirements.txt`.
 
-For a full discussion see: https://groups.google.com/g/leo-editor/c/PQWlN7hvmx0</t>
+The same will apply to any packages installed by pip, even pip install leo. --user is not needed unless you have admin privileges because pip in Linux goes to --user if installing to the primary locations fails. But if you include --user you don't get an error message about it, and if you have admin authority (e.g., you ransudo python -m pip) your packages won't go into --user where you want them.
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
