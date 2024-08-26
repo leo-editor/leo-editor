@@ -1553,8 +1553,10 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18195: *5* LeoQtBody.add_editor_command
     # An override of leoFrame.addEditor.
 
-    @body_cmd('editor-add')
-    @body_cmd('add-editor')
+    #@verbatim
+    # @body_cmd('editor-add')
+    #@verbatim
+    # @body_cmd('add-editor')
     def add_editor_command(self, event: LeoKeyEvent = None) -> None:
         """Add another editor to the body pane."""
         c, p = self.c, self.c.p
