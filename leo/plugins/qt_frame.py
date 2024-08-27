@@ -341,7 +341,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         return main_splitter, secondary_splitter
     #@+node:ekr.20240725073848.1: *4* dw.insert_vr_frame
     def insert_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
-        """Insert the given frame into the vr_parent_frame."""
+        """Insert the given frame into the dw.vr_parent_frame."""
         c = self.leo_c
         dw = self
         gui = g.app.gui

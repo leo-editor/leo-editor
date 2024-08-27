@@ -962,7 +962,7 @@ try:
     from leo.plugins import qt_text
     from leo.core.leoQt import QtCore, QtWidgets
     from leo.core.leoQt import QtMultimedia, QtSvg
-    from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
+    from leo.core.leoQt import KeyboardModifier, WrapMode
     from leo.core.leoQt import QAction, QActionGroup
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
@@ -1561,12 +1561,12 @@ def getVr3(event):
         return None
 
     if not (vr3 := controllers.get(h)):
-        controllers[h] = vr3 = ViewRenderedController3(c)  # viewrendered(event)
+        controllers[h] = vr3 = ViewRenderedController3(c)
         positions[h] = None
 
     return vr3
 #@+node:TomP.20191215195433.16: ** vr3.Commands
-#@+node:TomP.20191215195433.18: *3* g.command('vr3') (**weird effect**)
+#@+node:TomP.20191215195433.18: *3* g.command('vr3')
 @g.command('vr3')
 def viewrendered(event):
     """Open render view for commander"""
@@ -1582,36 +1582,11 @@ def viewrendered(event):
     if vr3:
         c.bodyWantsFocusNow()
         return vr3
-    # Create the VR frame
+    # Create the VR3 frame
     controllers[h] = vr3 = ViewRenderedController3(c)
-
-    # A prototype for supporint  arbitrarily many layouts.
-    layout_kind = c.config.getString('vr3-initial-orientation') or 'in_secondary'
-
-    # Use different layouts depending on the main splitter's *initial* orientation.
-    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
-    secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
-    if layout_kind == 'in_body':
-        # Share the VR pane with the body pane.
-        # Create a new splitter.
-        splitter = QtWidgets.QSplitter(orientation=Orientation.Horizontal)
-        splitter.setObjectName('vr3-horizonal-splitter')
-        main_splitter.addWidget(splitter)
-        # Add frames.
-        body_frame = gui.find_widget_by_name(c, 'bodyFrame')
-        splitter.addWidget(body_frame)
-        splitter.addWidget(vr3)
-        gui.equalize_splitter(splitter)
-        gui.equalize_splitter(main_splitter)
-    elif main_splitter.orientation() == Orientation.Vertical:
-        # Put the VR pane in in the main_splitter.
-        main_splitter.insertWidget(1, vr3)  ### The weird effect happens here.
-        gui.equalize_splitter(main_splitter)
-    else:
-        # Put the VR pane in the secondary splitter.
-        secondary_splitter.addWidget(vr3)
-        gui.equalize_splitter(secondary_splitter)
-    c.bodyWantsFocusNow()
+    # Insert the VR3 pane into the layout.
+    dw = c.frame.top
+    dw.insert_vr_frame(vr3)
     return vr3
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
 @g.command('vr3-execute')
