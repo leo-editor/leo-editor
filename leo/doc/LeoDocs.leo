@@ -800,7 +800,7 @@
 <v t="ekr.20090130144433.1"><vh>How do I get help?</vh></v>
 <v t="ekr.20160123060917.1"><vh>How do I make Ctrl-Shift-0 work on Windows 8 or 10?</vh></v>
 <v t="ekr.20090130144433.2"><vh>How do I report bugs?</vh></v>
-<v t="ekr.20240818070101.1"><vh>How to I install PyQt6-WebEngine on linux?</vh></v>
+<v t="ekr.20240818070101.1"><vh>How do I install PyQt6-WebEngine on linux?</vh></v>
 <v t="ekr.20160318142213.1"><vh>I am having trouble installing Leo on MacOS. What should I do?</vh></v>
 <v t="ekr.20070816092449"><vh>I can't run the LeoBridge module outside of leo/core.  What should I do?</vh></v>
 <v t="ekr.20050830115714.17"><vh>I can't write Imported files.  What's going on?</vh></v>
@@ -15762,7 +15762,7 @@ Leo is a fundamentally different way of using and organizing data, programs and 
 
 - A fully-featured IDE, with many features inspired by `Emacs`_.
 - An outliner. Everything in Leo is an outline.
-- A data manager, data manager and personal information manager.
+- A data manager and personal information manager.
 - A powerful scripting environment.
 - A tool for organizing and studying computer code.
 - Extensible via a simple plugin architecture.
