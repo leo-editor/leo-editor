@@ -1095,7 +1095,8 @@ def updateEditors(self) -> None:
     c.bodyWantsFocus()
     w0.setSelectionRange(i, j, insert=ins)
     sb0.setSliderPosition(pos0)
-#@+node:ekr.20110605121601.18218: *5* LeoQtBody.hideCanvasRenderer
+#@+node:ekr.20110605121601.18217: *5* LeoQtBody.Renderer panes
+#@+node:ekr.20110605121601.18218: *6* LeoQtBody.hideCanvasRenderer
 def hideCanvasRenderer(self, event: LeoKeyEvent = None) -> None:
     """Hide canvas pane."""
     c, d = self.c, self.editorWrappers
@@ -1132,7 +1133,7 @@ def hideCanvasRenderer(self, event: LeoKeyEvent = None) -> None:
             self.unpackWidget(layout, w.leo_label)
             w.leo_label = None  # 2011/11/12
     self.selectEditor(new_wrapper)
-#@+node:ekr.20110605121601.18219: *5* LeoQtBody.hideTextRenderer
+#@+node:ekr.20110605121601.18219: *6* LeoQtBody.hideTextRenderer
 def hideCanvas(self, event: LeoKeyEvent = None) -> None:
     """Hide canvas pane."""
     c, d = self.c, self.editorWrappers
@@ -1168,7 +1169,6 @@ def hideCanvas(self, event: LeoKeyEvent = None) -> None:
             self.unpackWidget(layout, w.leo_label)
             w.leo_label = None
     self.selectEditor(new_wrapper)
-#@+node:ekr.20110605121601.18217: *5* LeoQtBody.Renderer panes
 #@+node:ekr.20110605121601.18220: *6* LeoQtBody.packRenderer
 def packRenderer(self, f: QWidget, name: str, w: QtWidgets.QFrame) -> QtWidgets.QLineEdit:
     n = max(1, self.numberOfEditors)
