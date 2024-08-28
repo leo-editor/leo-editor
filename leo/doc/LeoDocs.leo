@@ -800,6 +800,7 @@
 <v t="ekr.20090130144433.1"><vh>How do I get help?</vh></v>
 <v t="ekr.20160123060917.1"><vh>How do I make Ctrl-Shift-0 work on Windows 8 or 10?</vh></v>
 <v t="ekr.20090130144433.2"><vh>How do I report bugs?</vh></v>
+<v t="ekr.20240818070101.1"><vh>How do I install PyQt6-WebEngine on linux?</vh></v>
 <v t="ekr.20160318142213.1"><vh>I am having trouble installing Leo on MacOS. What should I do?</vh></v>
 <v t="ekr.20070816092449"><vh>I can't run the LeoBridge module outside of leo/core.  What should I do?</vh></v>
 <v t="ekr.20050830115714.17"><vh>I can't write Imported files.  What's going on?</vh></v>
@@ -1150,7 +1151,6 @@
 <v t="ekr.20150318110552.24"><vh>Text formatting commands</vh></v>
 <v t="ekr.20150318110552.25"><vh>Creating nodes from body text</vh></v>
 <v t="ekr.20150318110552.26"><vh>Executing Python scripts in body text</vh></v>
-<v t="ekr.20150318110552.27"><vh>Multiple body editors</vh></v>
 <v t="ekr.20150318110552.20"><vh>Undoing changes</vh></v>
 </v>
 <v t="ekr.20150323185514.1"><vh>Emacs-like commands</vh>
@@ -5573,9 +5573,6 @@ The rest of this chapters discusses topics related specifically to plugins.
 </t>
 <t tx="ekr.20060620130636">::
 
-    add-editor
-    delete-editor
-    cycle-editor-focus
     cycle-focus
     debug
     find-character
@@ -15764,7 +15761,7 @@ Leo is a fundamentally different way of using and organizing data, programs and 
 
 - A fully-featured IDE, with many features inspired by `Emacs`_.
 - An outliner. Everything in Leo is an outline.
-- A data manager, data manager and personal information manager.
+- A data manager and personal information manager.
 - A powerful scripting environment.
 - A tool for organizing and studying computer code.
 - Extensible via a simple plugin architecture.
@@ -18077,13 +18074,6 @@ The command operates on the paragraph containing the insert cursor. If the inser
 **Important**: Body text may contain Leo directives and section references. You can use all of Leo's features to organize scripts that you execute interactively. Section definitions must appear in the node containing the script or in descendant nodes.
 
 Leo preprocesses all scripts by simulating the writing of a external file to a string. The ``execute-script`` command sets app.scriptDict["script1"] to the value of the script before preprocessing, and sets app.scriptDict["script2"] to the value of the script after preprocessing. Scripts may examine and change app.scriptDict as they please.
-</t>
-<t tx="ekr.20150318110552.27">``add-editor``
-    Adds a new editor in the body pane and gives it the body editor focus.
-``delete-editor``
-    Deletes the editor with body editor focus.
-``cycle-editor-focus``
-    Cycles body editor focus between editors in the body text. The editor that has focus shows the content of the selected outline node; the other body editors continue to show the node contents they last had when they had the body editor focus.
 </t>
 <t tx="ekr.20150318110552.29">.. contents:: Contents
     :depth: 2
@@ -22166,7 +22156,7 @@ A child node must define the &lt;&lt; imports &gt;&gt; node. Other children will
 
 When writing this file, Leo writes the first two lines::
 
-    @first # -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
     '''whatever.py'''
 
 followed by the *body text* of the &lt;&lt; imports&gt;&gt; node, followed by the body text of all *other* nodes, in outline order, followed by the comment # That's all, folks.
@@ -29730,7 +29720,7 @@ A child node must define the ``&lt;&lt; imports &gt;&gt;`` node. Other children 
 
 When writing this file, Leo writes the first two lines::
 
-    @first # -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
     '''whatever.py'''
 
 followed by the *body text* of the ``&lt;&lt; imports &gt;&gt;`` node, followed by the body text of all *other* nodes, in outline order, followed by the comment ``# That's all, folks``.
@@ -32989,6 +32979,18 @@ This release:
 - [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
 <t tx="ekr.20240724062137.1"></t>
+<t tx="ekr.20240818070101.1">`pip install leo` does not install PyQt6-WebEngine on some Linux distributions.
+
+The real problems are missing system libraries (*.so files). This missing files aren't exactly a Python/PyQt issue but have to be solved if a distro doesn't have them installed.
+
+Follow the suggestion in the error message if the message tells how to install the missing libraries.
+
+If these suggestions don't work try using  pip's `--user` and `--break-system-packages` options:
+
+`python3 -m pip install --user --break-system-packages -r requirements.txt`.
+
+The same will apply to any packages installed by pip, even pip install leo. --user is not needed unless you have admin privileges because pip in Linux goes to --user if installing to the primary locations fails. But if you include --user you don't get an error message about it, and if you have admin authority (e.g., you ransudo python -m pip) your packages won't go into --user where you want them.
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

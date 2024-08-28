@@ -970,7 +970,7 @@ try:
     from leo.plugins import qt_text
     from leo.core.leoQt import QtCore, QtWidgets
     from leo.core.leoQt import QtMultimedia, QtSvg
-    from leo.core.leoQt import KeyboardModifier, Orientation, WrapMode
+    from leo.core.leoQt import KeyboardModifier, WrapMode
     from leo.core.leoQt import QAction, QActionGroup
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
@@ -1569,7 +1569,7 @@ def getVr3(event):
         return None
 
     if not (vr3 := controllers.get(h)):
-        controllers[h] = vr3 = ViewRenderedController3(c)  # viewrendered(event)
+        controllers[h] = vr3 = ViewRenderedController3(c)
         positions[h] = None
 
     return vr3
@@ -1591,25 +1591,10 @@ def viewrendered(event):
         c.bodyWantsFocusNow()
         return vr3
     # Create the VR3 frame
-    if not vr3:
-        controllers[h] = vr3 = ViewRenderedController3(c)
-
-    layout_kind = c.config.getString('vr3-initial-orientation') or 'in_body'
-    # Use different layouts depending on the main splitter's current orientation.
-    main_splitter = gui.find_widget_by_name(c, 'main_splitter')
-    g.es(main_splitter.orientation())
-    if layout_kind == 'in_body':
-        # Put the VR3 pane next to the body pane.
-        main_splitter.insertWidget(2, vr3)
-        gui.equalize_splitter(main_splitter)
-    elif main_splitter.orientation() == Orientation.Vertical:
-        open_in_tab(c, vr3)
-    else:
-        # Put the VR3 pane next to the body pane.
-        main_splitter.insertWidget(2, vr3)
-        gui.equalize_splitter(main_splitter)
-    vr3.show()
-    c.bodyWantsFocusNow()
+    controllers[h] = vr3 = ViewRenderedController3(c)
+    # Insert the VR3 pane into the layout.
+    dw = c.frame.top
+    dw.insert_vr_frame(vr3)
     return vr3
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
 @g.command('vr3-execute')
@@ -1959,9 +1944,9 @@ def viewrendered_tab(event):
     """Open VR3 in a tab in commander's log framer"""
     # global controllers
     if g.app.gui.guiName() != 'qt':
-        return None
+        return
     if not (c := event.get('c')):
-        return None
+        return
 
     vr3 = getVr3({'c': c})
     log = c.frame.log

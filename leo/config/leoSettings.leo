@@ -91,7 +91,13 @@
 <v t="ekr.20211209060458.1"><vh>@@bool put-class-in-imported-headlines = True</vh></v>
 <v t="ekr.20200620060909.1"><vh>@@bool put-cython-decorators-in-imported-headlines = False</vh></v>
 </v>
-<v t="ekr.20071110153046"><vh>@bool at-auto-warns-about-leading-whitespace = True</vh></v>
+<v t="ekr.20071110153046"><vh>@@@bool at-auto-warns-about-leading-whitespace = True</vh></v>
+<v t="ekr.20170509104949.1"><vh>@@@menu &amp;Window Layout</vh>
+<v t="tbrown.20160130095933.1"><vh>@@@item free-layout-context-menu</vh></v>
+<v t="tbrown.20160130095933.2"><vh>@@@item free-layout-load</vh></v>
+<v t="tbrown.20160130095933.3"><vh>@@@item free-layout-restore</vh></v>
+<v t="tbrown.20160130095933.4"><vh>@@@item free-layout-zoom</vh></v>
+</v>
 </v>
 <v t="ekr.20200226104131.1"><vh>Future settings</vh>
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
@@ -209,6 +215,7 @@
 <v t="ekr.20190422173857.1"><vh>@string qt-style-name = None</vh></v>
 <v t="ekr.20210914081311.1"><vh>@bool highlight-body-line = False</vh></v>
 <v t="ekr.20210914081428.1"><vh>@string line-highlight-color = None</vh></v>
+<v t="ekr.20240726065425.1"><vh>@string qt-layout-name = legacy</vh></v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
@@ -1430,16 +1437,6 @@
 <v t="ekr.20131213135427.22340"><vh>@item &amp;resize-to-screen</vh></v>
 <v t="ekr.20131213135427.22323"><vh>@item toggle-&amp;split-direction</vh></v>
 <v t="ekr.20180403154533.1"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22060"><vh>@menu &amp;Add/Delete Body Editors</vh>
-<v t="ekr.20131213135427.22061"><vh>@item &amp;add-editor</vh></v>
-<v t="ekr.20131213135427.22063"><vh>@item &amp;delete-editor</vh></v>
-</v>
-<v t="ekr.20170509104949.1"><vh>@@@menu &amp;Window Layout</vh>
-<v t="tbrown.20160130095933.1"><vh>@@@item free-layout-context-menu</vh></v>
-<v t="tbrown.20160130095933.2"><vh>@@@item free-layout-load</vh></v>
-<v t="tbrown.20160130095933.3"><vh>@@@item free-layout-restore</vh></v>
-<v t="tbrown.20160130095933.4"><vh>@@@item free-layout-zoom</vh></v>
-</v>
 <v t="ekr.20131213135427.22236"><vh>@menu &amp;Scroll Text Areas</vh>
 <v t="ekr.20131213135427.22237"><vh>@item scroll-outline-down-&amp;line</vh></v>
 <v t="ekr.20131213135427.22238"><vh>@item scroll-outline-down-&amp;page</vh></v>
@@ -1465,6 +1462,7 @@
 <v t="ekr.20141112072219.2"><vh>@item focus-to-&amp;spell-tab</vh></v>
 <v t="ekr.20131213135427.22160"><vh>@item focus-to-&amp;tree</vh></v>
 </v>
+<v t="ekr.20170509104949.1"></v>
 </v>
 <v t="ekr.20131213135427.22343"><vh>@menu &amp;Help</vh>
 <v t="ekr.20131213135427.22344"><vh>@item &amp;about-leo</vh></v>
@@ -2277,6 +2275,8 @@
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20051101160257"></v>
 <v t="ekr.20051007200824.1"></v>
+<v t="ekr.20240726065425.1"></v>
+<v t="ekr.20240828054659.1"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5559,9 +5559,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22050"></t>
 <t tx="ekr.20131213135427.22053"></t>
 <t tx="ekr.20131213135427.22059"></t>
-<t tx="ekr.20131213135427.22060"></t>
-<t tx="ekr.20131213135427.22061"></t>
-<t tx="ekr.20131213135427.22063"></t>
 <t tx="ekr.20131213135427.22072"></t>
 <t tx="ekr.20131213135427.22078"></t>
 <t tx="ekr.20131213135427.22079"></t>
@@ -6106,7 +6103,7 @@ activate-outline-menu               = None
 activate-plugins-menu               = None
 activate-window-menu                = None
 add-comments                        = None
-add-editor                          = None
+# add-editor                          = None
 add-space-to-lines                  = None
 add-tab-to-lines                    = None
 always-indent-region                = None
@@ -6184,7 +6181,7 @@ debug                               = None
 de-hoist                            = None
 delete-char                         = None
 delete-comments                     = None
-delete-editor                       = None
+# delete-editor                         = None
 delete-first-icon                   = None
 delete-indentation                  = None
 delete-last-icon                    = None
@@ -8604,16 +8601,16 @@ enter-body-unindent-to-end-of-buffer-mode = Shift-g
 <t tx="ekr.20140721165014.19312">#Window commands
 #Bind: Ctrl-w
 
-add-editor           = s   #Open another view to current node
-add-editor           = n   #Open another view to current node
+# add-editor           = s   #Open another view to current node
+# add-editor           = n   #Open another view to current node
 
 cycle-editor-focus   = w   #Vim goes to next below-right window (wraps)
 cycle-editor-focus   = p   #Vim goes to previous window with focus
 cycle-editor-focus   = k   #Vim goes to window above current window
 cycle-editor-focus   = j   #Vim goes to window below current window
 
-delete-editor        = c   #Close current window (if more than one)
-delete-editor        = q   #Close current window (if more than one)
+# delete-editor        = c   #Close current window (if more than one)
+# delete-editor        = q   #Close current window (if more than one)
 </t>
 <t tx="ekr.20140721165014.19313">This node and its descendants contains settings that make Leo work somewhat
 like vim.
@@ -11651,6 +11648,167 @@ Leo always shows a *single* search result by selecting the node and text.
 True: Show multiple search results in the Nav pane provided the quicksearch plugin is active.
 False: Always show multiple search results as the clone-find commands do.
 </t>
+<t tx="ekr.20240726065425.1">The name of the layout of Leo's main window: one of:
+
+legacy, big-tree, horizontal-thirds, vertical-thirds, vertical-thirds2.
+
+legacy
+------
+
+::
+
+    ┌───────────┬───────┐
+    │  outline  │  log  │
+    ├───────────┼───────┤
+    │  body     │  VR   │
+    └───────────┴───────┘
+    
+big-tree
+--------
+
+::
+
+    ┌───────────────────┐
+    │  outline          │
+    ├──────────┬────────┤
+    │  body    │  log   │
+    ├──────────┴────────┤
+    │  VR               │
+    └───────────────────┘
+
+horizontal-thirds
+-----------------
+
+::
+
+    ┌───────────┬───────┐
+    │  outline  │  log  │
+    ├───────────┴───────┤
+    │  body             │
+    ├───────────────────┤
+    │  VR               │
+    └───────────────────┘
+
+render-focused
+--------------
+
+::
+
+    ┌───────────┬─────┐
+    │ outline   │     │
+    ├───────────┤     │
+    │ body      │ VR  │
+    ├───────────┤     │
+    │ log       │     │
+    └───────────┴─────┘
+
+vertical-thirds
+---------------
+
+::
+
+    ┌───────────┬────────┬──────┐
+    │  outline  │        │      │
+    ├───────────┤  body  │  VR  │
+    │  log      │        │      │
+    └───────────┴────────┴──────┘
+
+
+vertical-thirds2
+----------------
+
+::
+
+    ┌───────────┬───────┬───────┐
+    │           │  log  │       │
+    │  outline  ├───────┤  VR   │
+    │           │  body │       │
+    └───────────┴───────┴───────┘
+</t>
+<t tx="ekr.20240828054659.1">@language rest
+@nowrap
+
+s = '''\
+
+About layouts
+=============
+
+The following commands create the layouts shown:
+
+use-legacy-layout
+-----------------
+
+::
+
+    ┌───────────┬───────┐
+    │  outline  │  log  │
+    ├───────────┼───────┤
+    │  body     │  VR   │
+    └───────────┴───────┘
+    
+use-big-tree-layout
+-------------------
+
+::
+
+    ┌───────────────────┐
+    │  outline          │
+    ├──────────┬────────┤
+    │  body    │  log   │
+    ├──────────┴────────┤
+    │  VR               │
+    └───────────────────┘
+
+use-horizontal-thirds-layout
+----------------------------
+
+::
+
+    ┌───────────┬───────┐
+    │  outline  │  log  │
+    ├───────────┴───────┤
+    │  body             │
+    ├───────────────────┤
+    │  VR               │
+    └───────────────────┘
+
+use-render-focused-layout
+-------------------------
+
+::
+
+    ┌───────────┬─────┐
+    │ outline   │     │
+    ├───────────┤     │
+    │ body      │ VR  │
+    ├───────────┤     │
+    │ log       │     │
+    └───────────┴─────┘
+
+use-vertical-thirds-layout
+--------------------------
+
+::
+
+    ┌───────────┬────────┬──────┐
+    │  outline  │        │      │
+    ├───────────┤  body  │  VR  │
+    │  log      │        │      │
+    └───────────┴────────┴──────┘
+
+
+use-vertical-thirds2-layout
+---------------------------
+
+::
+
+    ┌───────────┬───────┬───────┐
+    │           │  log  │       │
+    │  outline  ├───────┤  VR   │
+    │           │  body │       │
+    └───────────┴───────┴───────┘
+'''
+</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
@@ -12249,10 +12407,47 @@ absence of this setting.</t>
 <t tx="tbrown.20151114110207.1">"Abbreviation" to trigger the selection of the next placeholder,
 i.e. typing ,, will select the next &lt;|placeholder|&gt; text, after
 removing the &lt;| and |&gt;</t>
-<t tx="tbrown.20160130095933.1"></t>
-<t tx="tbrown.20160130095933.2"></t>
-<t tx="tbrown.20160130095933.3"></t>
-<t tx="tbrown.20160130095933.4"></t>
+<t tx="tbrown.20160130095933.1">legacy
+::
+
+    ┌───────────┬───────┐
+    │  outline  │  log  │
+    ├───────────┼───────┤
+    │  body     │  VR   │
+    └───────────┴───────┘</t>
+<t tx="tbrown.20160130095933.2">big-tree
+
+::
+
+    ┌───────────────────┐
+    │  outline          │
+    ├──────────┬────────┤
+    │  body    │  log   │
+    ├──────────┴────────┤
+    │  VR               │
+    └───────────────────┘</t>
+<t tx="tbrown.20160130095933.3">horizontal-thirds
+
+::
+
+    ┌───────────┬───────┐
+    │  outline  │  log  │
+    ├───────────┴───────┤
+    │  body             │
+    ├───────────────────┤
+    │  VR               │
+    └───────────────────┘</t>
+<t tx="tbrown.20160130095933.4">render-focused
+
+::
+
+    ┌───────────┬─────┐
+    │ outline   │     │
+    ├───────────┤     │
+    │ body      │ VR  │
+    ├───────────┤     │
+    │ log       │     │
+    └───────────┴─────┘</t>
 <t tx="tbrown.20170710093248.1">If true, tailing whitespace (spaces and tabs) will be underlined
 with small dots in `trailing_whitespace_color` (default red).</t>
 <t tx="tbrown.20171128211219.1"># These control the effects of modifiers (Shift, Control, Alt) on left
