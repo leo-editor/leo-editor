@@ -32977,6 +32977,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - PR #4038: Add reload-outline command.
 - PR #4047: Delete add-editor command and all related code.
 - PR #4033: Add four new layouts and related code and commands.
+- The usual assortment of small bug fixes and code cleanups.
 
 **Links**
 
