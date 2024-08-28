@@ -1151,7 +1151,6 @@
 <v t="ekr.20150318110552.24"><vh>Text formatting commands</vh></v>
 <v t="ekr.20150318110552.25"><vh>Creating nodes from body text</vh></v>
 <v t="ekr.20150318110552.26"><vh>Executing Python scripts in body text</vh></v>
-<v t="ekr.20150318110552.27"><vh>Multiple body editors</vh></v>
 <v t="ekr.20150318110552.20"><vh>Undoing changes</vh></v>
 </v>
 <v t="ekr.20150323185514.1"><vh>Emacs-like commands</vh>
@@ -5575,9 +5574,6 @@ The rest of this chapters discusses topics related specifically to plugins.
 </t>
 <t tx="ekr.20060620130636">::
 
-    add-editor
-    delete-editor
-    cycle-editor-focus
     cycle-focus
     debug
     find-character
@@ -18079,13 +18075,6 @@ The command operates on the paragraph containing the insert cursor. If the inser
 **Important**: Body text may contain Leo directives and section references. You can use all of Leo's features to organize scripts that you execute interactively. Section definitions must appear in the node containing the script or in descendant nodes.
 
 Leo preprocesses all scripts by simulating the writing of a external file to a string. The ``execute-script`` command sets app.scriptDict["script1"] to the value of the script before preprocessing, and sets app.scriptDict["script2"] to the value of the script after preprocessing. Scripts may examine and change app.scriptDict as they please.
-</t>
-<t tx="ekr.20150318110552.27">``add-editor``
-    Adds a new editor in the body pane and gives it the body editor focus.
-``delete-editor``
-    Deletes the editor with body editor focus.
-``cycle-editor-focus``
-    Cycles body editor focus between editors in the body text. The editor that has focus shows the content of the selected outline node; the other body editors continue to show the node contents they last had when they had the body editor focus.
 </t>
 <t tx="ekr.20150318110552.29">.. contents:: Contents
     :depth: 2

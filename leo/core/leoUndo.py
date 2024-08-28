@@ -798,7 +798,6 @@ class Undoer:
         w = self.c.frame.body.wrapper
         bunch = self.createCommonBunch(p)  # Sets u.oldMarked, u.oldSel, u.p
 
-        ###
         bunch.oldPastedTree = c.fileCommands.outline_to_clipboard_string(c.p)
         bunch.oldBody = p.b
         bunch.oldHead = p.h
@@ -1295,8 +1294,7 @@ class Undoer:
             p.setDirty()
         if not c.isChanged():
             c.setChanged()
-        # Update editors.
-        c.frame.body.updateEditors()
+
         # Update icons.
         val = p.computeIcon()
         if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
@@ -1347,7 +1345,7 @@ class Undoer:
         new_v = hidden_v.children[0]
         new_v.parents = old_parents  # restore v.parents.
         assert v.gnx == new_v.gnx
-        v = new_v  ### Experimental.
+        v = new_v
 
         # All pasted nodes should have unique gnx's.
         ni = g.app.nodeIndices
@@ -1442,10 +1440,6 @@ class Undoer:
         # selectPosition causes recoloring, so don't do this unless needed.
         if c.p != u.p:
             c.selectPosition(u.p)
-        ### s = u.newPastedTree
-
-
-
         u.p.setDirty()
         u.p.b = u.newBody
         u.p.h = u.newHead
@@ -2183,16 +2177,14 @@ class Undoer:
         """
         c, u = self.c, self
         w = c.frame.body.wrapper
-        # Redraw and recolor.
-        c.frame.body.updateEditors()  # New in Leo 4.4.8.
-        #
+
         # Set the new position.
         if 0:  # Don't do this: it interferes with selection ranges.
             # This strange code forces a recomputation of the root position.
             c.selectPosition(c.p)
         else:
             c.setCurrentPosition(c.p)
-        #
+
         # # 1451. *Always* set the changed bit.
         # Redrawing *must* be done here before setting u.undoing to False.
         i, j = w.getSelectionRange()
