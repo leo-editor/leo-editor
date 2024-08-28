@@ -1935,9 +1935,9 @@ def viewrendered_tab(event):
     """Open VR3 in a tab in commander's log framer"""
     # global controllers
     if g.app.gui.guiName() != 'qt':
-        return None
+        return
     if not (c := event.get('c')):
-        return None
+        return
 
     vr3 = getVr3({'c': c})
     log = c.frame.log
