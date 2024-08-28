@@ -85,509 +85,281 @@ class DynamicWindow(QtWidgets.QMainWindow):
     support operations requested by Leo's core.
     """
     #@+others
-    #@+node:ekr.20110605121601.18138: *3*  dw.ctor & reloadSettings
+    #@+node:ekr.20240730052903.1: *3*  dw: Birth
+    #@+node:ekr.20240821135031.1: *4* dw.change_layout
+    def change_layout(self, layout_name: str) -> None:
+        """
+        Find and change the @string qt-layout-name setting,
+        then execute the reload-outline command.
+        """
+        c = self.leo_c
+        h = '@string qt-layout-name'
+        p = g.findNodeAnywhere(c, h, exact=False)
+        if not p:
+            g.es_print(f"Please create an `{h}` node.")
+        elif p.h.endswith(f" {layout_name}"):
+            g.es_print('no change')
+        else:
+            p.h = f"{h} = {layout_name}"
+            c.save()
+            # print(f"Switching to {layout_name}")
+            c.frame.reloadOutline()
+    #@+node:ekr.20110605121601.18138: *4* dw.ctor & reloadSettings
     def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
         """Ctor for the DynamicWindow class.  The main window is c.frame.top"""
             # Called from LeoQtFrame.finishCreate.
             # parent is a LeoTabbedTopLevel.
         super().__init__(parent)
         self.leo_c = c
+        self.leo_body_frame: QWidget = None
         self.leo_master: LeoTabbedTopLevel = None  # Set in construct.
         self.leo_menubar: QWidget = None  # Set in createMenuBar.
         self.leo_statusBar: QtWidgets.QStatusBar = None
+        self.layout_name: str = None
+        self.old_layout_name: str = None
+        self.verticalLayout: Any = None
+        self.vr_parent_frame: QWidget = None
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
         self.reloadSettings()
-
+    #@+node:ekr.20240726074809.1: *4* dw.recreateMainWindow
+    def recreateMainWindow(self):
+        """
+        Recreate the main window by reloading the outline.
+        """
+        w = getattr(self, 'centralwidget', None)
+        if w and self.layout_name != self.old_layout_name:
+            c = self.leo_c
+            print('')
+            print('@string qt-layout-name has changed: reloading the outline')
+            c.doCommandByName('reload-outline')
+    #@+node:ekr.20240730052919.1: *4* dw.reloadSettings
     def reloadSettings(self) -> None:
         c = self.leo_c
         c.registerReloadSettings(self)
-        self.bigTree = c.config.getBool('big-outline-pane')
+        self.old_layout_name = self.layout_name
+        self.layout_name = c.config.getString('qt-layout-name')
         self.show_iconbar = c.config.getBool('show-iconbar', default=True)
         self.toolbar_orientation = c.config.getString('qt-toolbar-location') or ''
+        self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.use_gutter = c.config.getBool('use-gutter', default=False)
+        self.recreateMainWindow()  # Executes the reload-outline command.
         if getattr(self, 'iconBar', None):
             if self.show_iconbar:
                 self.iconBar.show()
             else:
                 self.iconBar.hide()
-    #@+node:ekr.20110605121601.18172: *3* dw.do_leo_spell_btn_*
-    def doSpellBtn(self, btn: Any) -> None:
-        """Execute btn, a button handler."""
-        # Make *sure* this never crashes.
-        try:
-            tab = self.leo_c.spellCommands.handler.tab
-            button = getattr(tab, btn)
-            button()
-        except Exception:
-            g.es_exception()
-
-    def do_leo_spell_btn_Add(self) -> None:
-        self.doSpellBtn('onAddButton')
-
-    def do_leo_spell_btn_Change(self) -> None:
-        self.doSpellBtn('onChangeButton')
-
-    def do_leo_spell_btn_Find(self) -> None:
-        self.doSpellBtn('onFindButton')
-
-    def do_leo_spell_btn_FindChange(self) -> None:
-        self.doSpellBtn('onChangeThenFindButton')
-
-    def do_leo_spell_btn_Hide(self) -> None:
-        self.doSpellBtn('onHideButton')
-
-    def do_leo_spell_btn_Ignore(self) -> None:
-        self.doSpellBtn('onIgnoreButton')
-    #@+node:ekr.20110605121601.18140: *3* dw.closeEvent
-    def closeEvent(self, event: QEvent) -> None:
-        """Handle a close event in the Leo window."""
-        c = self.leo_c
-        if not c.exists:
-            # Fixes double-prompt bug on Linux.
-            event.accept()
-            return
-        if c.inCommand:
-            c.requestCloseWindow = True
-            return
-        ok = g.app.closeLeoWindow(c.frame)
-        if ok:
-            event.accept()
-        else:
-            event.ignore()
     #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers
     def construct(self, master: LeoTabbedTopLevel = None) -> None:
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         c = self.leo_c
         self.leo_master = master
-        self.useScintilla = c.config.getBool('qt-use-scintilla')
-        self.reloadSettings()
-        main_splitter, secondary_splitter = self.createMainWindow()
-        self.iconBar = self.addToolBar("IconBar")
-        self.iconBar.setObjectName('icon-bar')  # Required for QMainWindow.saveState().
-        self.set_icon_bar_orientation(c)
-        # #266 A setting to hide the icon bar.
-        # Calling reloadSettings again would also work.
-        if not self.show_iconbar:
-            self.iconBar.hide()
-        self.leo_menubar = self.menuBar()
-        self.leo_statusBar = QtWidgets.QStatusBar()
-        self.setStatusBar(self.leo_statusBar)
-        orientation_s = c.config.getString('initial-split-orientation')
-        self.setSplitDirection(main_splitter, secondary_splitter, orientation_s)
-        if hasattr(c, 'styleSheetManager'):
-            c.styleSheetManager.set_style_sheets(top=self, all=True)
-    #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
-    def set_icon_bar_orientation(self, c: Cmdr) -> None:
-        """Set the orientation of the icon bar based on settings."""
-        d = {
-            'bottom': ToolBarArea.BottomToolBarArea,
-            'left': ToolBarArea.LeftToolBarArea,
-            'right': ToolBarArea.RightToolBarArea,
-            'top': ToolBarArea.TopToolBarArea,
-        }
-        where_s = self.toolbar_orientation
-        if not where_s:
-            where_s = 'top'
-        where = d.get(where_s.lower())
-        if where:
-            self.addToolBar(where, self.iconBar)
-    #@+node:ekr.20110605121601.18141: *3* dw.createMainWindow & helpers
-    def createMainWindow(self) -> tuple[QWidget, QWidget]:
-        """
-        Create the component ivars of the main window.
-        Copied/adapted from qt_main.py.
-        Called instead of uic.loadUi(ui_description_file, self)
-        """
+        # Create all widgets.
         self.setMainWindowOptions()
-        # Legacy code: will not go away.
         self.createCentralWidget()
-        # Create .verticalLayout
-        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-        if self.bigTree:
-            # Top pane contains only outline.  Bottom pane contains body and log panes.
-            self.createBodyPane(secondary_splitter)
-            self.createLogPane(secondary_splitter)
-            treeFrame = self.createOutlinePane(main_splitter)
-            main_splitter.addWidget(treeFrame)
-            main_splitter.addWidget(secondary_splitter)
-        else:
-            # Top pane contains outline and log panes.
-            self.createOutlinePane(secondary_splitter)
-            self.createLogPane(secondary_splitter)
-            self.createBodyPane(main_splitter)
+        main_splitter, secondary_splitter = self.create_layout()
         self.createMiniBuffer(self.centralwidget)
         self.createMenuBar()
         self.createStatusBar(self)
-        # Signals...
+        self.createIconBar()
+        # Set official ivars...
+        self.leo_menubar = self.menuBar()
+        self.leo_statusBar = QtWidgets.QStatusBar()
+        self.setStatusBar(self.leo_statusBar)
+        # Final inits...
+        if not self.show_iconbar:
+            # #266 A setting to hide the icon bar.
+            self.iconBar.hide()
+        if hasattr(c, 'styleSheetManager'):
+            c.styleSheetManager.set_style_sheets(top=self, all=True)
+        # Connect signals last.
         QtCore.QMetaObject.connectSlotsByName(self)
+    #@+node:ekr.20240726062809.1: *4* dw.create_layout & helpers
+    def create_layout(self) -> tuple[QWidget, QWidget]:
+        """
+        Create the layout given by @string qt_layout_name.
+        
+        Return the tuple (main_splitter, Optional[secondary_splitter])
+        """
+        c = self.leo_c
+        layout_name = self.layout_name
+
+        # Keys are layout names, converted to canonical format.
+        layout_dict = {
+            'big-tree': self.create_big_tree_layout,
+            'horizontal-thirds': self.create_horizontal_thirds_layout,
+            'legacy': self.create_legacy_layout,
+            'render-focused': self.create_render_focused_layout,
+            'vertical-thirds': self.create_vertical_thirds_layout,
+            'vertical-thirds2': self.create_vertical_thirds2_layout,
+        }
+
+        # Allow plugins to define layouts.
+        g.doHook("after-create-layout-dict", c=c, dw=self, layout_dict=layout_dict)
+
+        if layout_name not in layout_dict:
+            g.es_print('Unknown layout name:', layout_name)
+            g.es_print(f"Valid names: {list(layout_dict.keys())}")
+            return self.create_legacy_layout()
+        try:
+            f = layout_dict.get(layout_name)
+            return f()
+        except Exception as e:
+            g.es_print(f"Exception executing {f.__name__}", color='red')
+            g.es_print(e)
+            g.es_exception()
+            g.es_print('Using legacy layout')
+            return self.create_legacy_layout()
+    #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
+    def create_big_tree_layout(self) -> tuple[QWidget, QWidget]:
+        """
+        Create the layout previously specified by  @bool big-outline-pane:
+            ┌───────────────────┐
+            │  outline          │
+            ├──────────┬────────┤
+            │  body    │  log   │
+            ├──────────┴────────┤
+            │  VR               │
+            └───────────────────┘
+        """
+        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        self.createBodyPane(secondary_splitter)
+        self.createLogPane(secondary_splitter)
+        treeFrame = self.createOutlinePane(main_splitter)
+        main_splitter.addWidget(treeFrame)
+        main_splitter.addWidget(secondary_splitter)
+        self.vr_parent_frame = main_splitter
         return main_splitter, secondary_splitter
-    #@+node:ekr.20110605121601.18142: *4* dw.top-level
-    #@+node:ekr.20110605121601.18143: *5* dw.createBodyPane
-    def createBodyPane(self, parent: QWidget) -> QWidget:
+    #@+node:ekr.20240726063727.1: *5* dw.create_legacy_layout
+    def create_legacy_layout(self) -> tuple[QWidget, QWidget]:
         """
-        Create the *pane* for the body, not the actual QTextBrowser.
+        Create Leo's legacy layout::
+            ┌───────────┬───────┐
+            │  outline  │  log  │
+            ├───────────┼───────┤
+            │  body     │  VR   │
+            └───────────┴───────┘
         """
         c = self.leo_c
-        #
-        # Create widgets.
-        bodyFrame = self.createFrame(parent, 'bodyFrame')
-        innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
-        sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
-             hPolicy=Policy.Expanding, vPolicy=Policy.Expanding)
-        page2 = QtWidgets.QWidget()
-        self.setName(page2, 'bodyPage2')
-        body = self.createText(page2, 'richTextEdit')  # A LeoQTextBrowser
-        #
-        # Pack.
-        vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0)
-        grid = self.createGrid(bodyFrame, 'bodyGrid')
-        innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
-        if self.use_gutter:
-            lineWidget = qt_text.LeoLineTextWidget(c, body)
-            vLayout.addWidget(lineWidget)
+        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        self.createOutlinePane(secondary_splitter)
+        self.createLogPane(secondary_splitter)
+        # Honor the orientation setting *only* for the legacy layout.
+        orientation_s = c.config.getString('initial-split-orientation')
+        self.setSplitDirection(main_splitter, secondary_splitter, orientation_s)
+        if main_splitter.orientation() == Orientation.Vertical:
+            # Share the VR pane with the body pane in a new splitter.
+            self.vr_parent_frame = vr_splitter = QtWidgets.QSplitter()
+            vr_splitter.setObjectName('vr-splitter')
+            self.createBodyPane(vr_splitter)
+            main_splitter.addWidget(vr_splitter)
         else:
-            vLayout.addWidget(body)
-        sw.addWidget(page2)
-        innerGrid.addWidget(sw, 0, 0, 1, 1)
-        grid.addWidget(innerFrame, 0, 0, 1, 1)
-        self.verticalLayout.addWidget(parent)
-        #
-        # Official ivars
-        self.text_page = page2
-        self.stackedWidget = sw  # used by LeoQtBody
-        self.richTextEdit = body
-        self.leo_body_frame = bodyFrame
-        self.leo_body_inner_frame = innerFrame
-        return bodyFrame
+            self.createBodyPane(main_splitter)
+            # Put the VR pane in the secondary splitter.
+            self.vr_parent_frame = secondary_splitter
+        return main_splitter, secondary_splitter
+    #@+node:ekr.20240822103027.1: *5* dw.create_horizontal_thirds_layout
+    def create_horizontal_thirds_layout(self) -> tuple[QWidget, QWidget]:
+        """Create Leo's horizonatl-thirds layout::
+            ┌───────────┬───────┐
+            │  outline  │  log  │
+            ├───────────┴───────┤
+            │  body             │
+            ├───────────────────┤
+            │  VR               │
+            └───────────────────┘
+        """
+        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        self.createOutlinePane(secondary_splitter)
+        self.createLogPane(secondary_splitter)
+        self.createBodyPane(main_splitter)
+        self.vr_parent_frame = main_splitter
+        return main_splitter, secondary_splitter
 
-    #@+node:ekr.20110605121601.18144: *5* dw.createCentralWidget
-    def createCentralWidget(self) -> QWidget:
-        """Create the central widget."""
-        dw = self
-        w = QtWidgets.QWidget(dw)
-        w.setObjectName("centralwidget")
-        dw.setCentralWidget(w)
-        # Official ivars.
-        self.centralwidget = w
-        return w
-    #@+node:ekr.20110605121601.18145: *5* dw.createLogPane & helpers
-    def createLogPane(self, parent: QWidget) -> None:
-        """Create all parts of Leo's log pane."""
-        c = self.leo_c
-        #
-        # Create the log frame.
-        logFrame = self.createFrame(parent, 'logFrame', vPolicy=Policy.Minimum)
-        innerFrame = self.createFrame(logFrame, 'logInnerFrame',
-            hPolicy=Policy.Preferred, vPolicy=Policy.Expanding)
-        tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
-        #
-        # Pack.
-        innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
-        innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
-        outerGrid = self.createGrid(logFrame, 'logGrid')
-        outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
-        #
-        # Create the Find tab, embedded in a QScrollArea.
-        findScrollArea = QtWidgets.QScrollArea()
-        findScrollArea.setObjectName('findScrollArea')
-        # Find tab.
-        findTab = QtWidgets.QWidget()
-        findTab.setObjectName('findTab')
-        #
-        # #516 and #1507: Create a Find tab unless we are using a dialog.
-        #
-        # Careful: @bool minibuffer-ding-mode overrides @bool use-find-dialog.
-        use_minibuffer = c.config.getBool('minibuffer-find-mode', default=False)
-        use_dialog = c.config.getBool('use-find-dialog', default=False)
-        if use_minibuffer or not use_dialog:
-            tabWidget.addTab(findScrollArea, 'Find')
-        # Complete the Find tab in LeoFind.finishCreate.
-        self.findScrollArea = findScrollArea
-        self.findTab = findTab
-        #
-        # Spell tab.
-        spellTab = QtWidgets.QWidget()
-        spellTab.setObjectName('spellTab')
-        tabWidget.addTab(spellTab, 'Spell')
-        self.createSpellTab(spellTab)
-        tabWidget.setCurrentIndex(1)
-        #
-        # Official ivars
-        self.tabWidget = tabWidget  # Used by LeoQtLog.
-    #@+node:ekr.20131118172620.16858: *6* dw.finishCreateLogPane
-    def finishCreateLogPane(self) -> None:
-        """It's useful to create this late, because c.config is now valid."""
-        assert self.findTab
-        self.createFindTab(self.findTab, self.findScrollArea)
-        self.findScrollArea.setWidget(self.findTab)
-    #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
-    def createMainLayout(self, parent: QWidget) -> tuple[QWidget, QWidget]:
-        """Create the layout for Leo's main window."""
-        # c = self.leo_c
-
-        main_splitter = QtWidgets.QSplitter(parent)
-        main_splitter.setObjectName('main_splitter')
-        main_splitter.setOrientation(Orientation.Vertical)
-
-        secondary_splitter = QtWidgets.QSplitter(main_splitter)
-        secondary_splitter.setObjectName('secondary_splitter')
-        secondary_splitter.setOrientation(Orientation.Horizontal)
-
+    #@+node:ekr.20240822103044.1: *5* dw.create_render_focused_layout
+    def create_render_focused_layout(self) -> tuple[QWidget, QWidget]:
+        """Create Leo's render-focused layout::
+            ┌───────────┬─────┐
+            │ outline   │     │
+            ├───────────┤     │
+            │ body      │ VR  │
+            ├───────────┤     │
+            │ log       │     │
+            └───────────┴─────┘
+        """
+        # The main splitter contains the secondary splitter and the VR pane.
+        # The secondary splitter contains all the other panes.
+        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        main_splitter.setOrientation(Orientation.Horizontal)
+        secondary_splitter.setOrientation(Orientation.Vertical)
+        self.createOutlinePane(secondary_splitter)
+        self.createBodyPane(secondary_splitter)
+        self.createLogPane(secondary_splitter)
+        self.vr_parent_frame = main_splitter
+        return main_splitter, secondary_splitter
+    #@+node:ekr.20240822103044.2: *5* dw.create_vertical_thirds_layout
+    def create_vertical_thirds_layout(self) -> tuple[QWidget, QWidget]:
+        """Create Leo's vertical-thirds layout::
+            ┌───────────┬────────┬──────┐
+            │  outline  │        │      │
+            ├───────────┤  body  │  VR  │
+            │  log      │        │      │
+            └───────────┴────────┴──────┘
+        """
+        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
+        main_splitter.setOrientation(Orientation.Horizontal)
+        secondary_splitter.setOrientation(Orientation.Vertical)
+        self.createOutlinePane(secondary_splitter)
+        self.createLogPane(secondary_splitter)
+        self.createBodyPane(main_splitter)
+        self.vr_parent_frame = main_splitter
+        return main_splitter, secondary_splitter
+    #@+node:ekr.20240822103045.1: *5* dw.create_vertical_thirds2_layout
+    def create_vertical_thirds2_layout(self) -> tuple[QWidget, QWidget]:
+        """Create Leo's vertical-thirds2 layout::
+            ┌───────────┬───────┬───────┐
+            │           │  log  │       │
+            │  outline  ├───────┤  VR   │
+            │           │  body │       │
+            └───────────┴───────┴───────┘
+        """
+        parent = self.centralwidget
+        # Create the main splitter.
+        main_splitter = self.createMainSplitter(parent)
+        main_splitter.setOrientation(Orientation.Horizontal)
         self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
-        self.set_widget_size_policy(secondary_splitter)
         self.verticalLayout.addWidget(main_splitter)
+        # Add outline pane.
+        self.createOutlinePane(main_splitter)
+        # Add secondary splitte.
+        secondary_splitter = self.createSecondarySplitter(main_splitter)
+        secondary_splitter.setOrientation(Orientation.Vertical)
+        # Add the log and body panes to the secondary splitter.
+        self.createLogPane(secondary_splitter)
+        self.createBodyPane(secondary_splitter)
+        # Add the VR pane to the main splitter.
+        self.vr_parent_frame = main_splitter
         return main_splitter, secondary_splitter
-    #@+node:ekr.20110605121601.18148: *5* dw.createMiniBuffer (class VisLineEdit)
-    def createMiniBuffer(self, parent: QWidget) -> QWidget:
-        """Create the widgets for Leo's minibuffer area."""
-        # Create widgets.
-        frame = self.createFrame(parent, 'minibufferFrame',
-            hPolicy=Policy.MinimumExpanding, vPolicy=Policy.Fixed)
-        frame.setMinimumSize(QtCore.QSize(100, 0))
-        label = self.createLabel(frame, 'minibufferLabel', 'Minibuffer:')
-
-
-        class VisLineEdit(QtWidgets.QLineEdit):
-            """In case user has hidden minibuffer with gui-minibuffer-hide"""
-
-            def focusInEvent(self, event: QFocusEvent) -> None:
-                self.parent().show()
-                super().focusInEvent(event)  # Call the base class method.
-
-            def focusOutEvent(self, event: QFocusEvent) -> None:
-                self.store_selection()
-                super().focusOutEvent(event)
-
-            def restore_selection(self) -> None:
-                w = self
-                i, j, ins = self._sel_and_insert
-                if i == j:
-                    w.setCursorPosition(i)
-                else:
-                    length = j - i
-                    # Set selection is a QLineEditMethod
-                    if ins < j:
-                        w.setSelection(j, -length)
-                    else:
-                        w.setSelection(i, length)
-
-            def store_selection(self) -> None:
-                w = self
-                ins = w.cursorPosition()
-                if w.hasSelectedText():
-                    i = w.selectionStart()
-                    s = w.selectedText()
-                    j = i + len(s)
-                else:
-                    i = j = ins
-                w._sel_and_insert = (i, j, ins)
-
-        lineEdit = VisLineEdit(frame)
-        lineEdit._sel_and_insert = (0, 0, 0)
-        lineEdit.setObjectName('lineEdit')  # name important.
-        # Pack.
-        hLayout = self.createHLayout(frame, 'minibufferHLayout', spacing=4)
-        hLayout.setContentsMargins(3, 2, 2, 0)
-        hLayout.addWidget(label)
-        hLayout.addWidget(lineEdit)
-        self.verticalLayout.addWidget(frame)
-        # Transfers focus request from label to lineEdit.
-        label.setBuddy(lineEdit)
-        #
-        # Official ivars.
-        self.lineEdit = lineEdit
-        self.leo_minibuffer_frame = frame
-        # self.leo_minibuffer_layout = layout
-        return frame
-    #@+node:ekr.20110605121601.18147: *5* dw.createMenuBar
-    def createMenuBar(self) -> None:
-        """Create Leo's menu bar."""
-        dw = self
-        w = QtWidgets.QMenuBar(dw)
-        w.setNativeMenuBar(platform.system() == 'Darwin')
-        w.setGeometry(QtCore.QRect(0, 0, 957, 22))
-        w.setObjectName("menubar")
-        dw.setMenuBar(w)
-        # Official ivars.
-        self.leo_menubar = w
-    #@+node:ekr.20110605121601.18149: *5* dw.createOutlinePane
-    def createOutlinePane(self, parent: QWidget) -> QWidget:
-        """Create the widgets and ivars for Leo's outline."""
-        # Create widgets.
-        treeFrame = self.createFrame(parent, 'outlineFrame', vPolicy=Policy.Expanding)
-        innerFrame = self.createFrame(treeFrame, 'outlineInnerFrame', hPolicy=Policy.Preferred)
-        treeWidget = self.createTreeWidget(innerFrame, 'treeWidget')
-        grid = self.createGrid(treeFrame, 'outlineGrid')
-        grid.addWidget(innerFrame, 0, 0, 1, 1)
-        innerGrid = self.createGrid(innerFrame, 'outlineInnerGrid')
-        innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
-        # Official ivars...
-        self.treeWidget = treeWidget
-        return treeFrame
-    #@+node:ekr.20110605121601.18150: *5* dw.createStatusBar
-    def createStatusBar(self, parent: QWidget) -> None:
-        """Create the widgets and ivars for Leo's status area."""
-        w = QtWidgets.QStatusBar(parent)
-        w.setObjectName("statusbar")
-        parent.setStatusBar(w)
-        # Official ivars.
-        self.leo_statusBar = w
-    #@+node:ekr.20110605121601.18151: *5* dw.setMainWindowOptions
-    def setMainWindowOptions(self) -> None:
-        """Set default options for Leo's main window."""
-        dw = self
-        dw.setObjectName("MainWindow")
-        dw.resize(691, 635)
-    #@+node:ekr.20110605121601.18152: *4* dw.widgets
-    #@+node:ekr.20110605121601.18153: *5* dw.createButton
-    def createButton(self, parent: QWidget, name: str, label: str) -> QWidget:
-        w = QtWidgets.QPushButton(parent)
-        w.setObjectName(name)
-        w.setText(self.tr(label))
-        return w
-    #@+node:ekr.20110605121601.18154: *5* dw.createCheckBox
-    def createCheckBox(self, parent: QWidget, name: str, label: str) -> QWidget:
-        w = QtWidgets.QCheckBox(parent)
-        self.setName(w, name)
-        w.setText(self.tr(label))
-        return w
-    #@+node:ekr.20110605121601.18155: *5* dw.createFrame
-    def createFrame(
-        self,
-        parent: QWidget,
-        name: str,
-        hPolicy: Policy = None,
-        vPolicy: Policy = None,
-        lineWidth: int = 1,
-        shadow: Shadow = None,
-        shape: Shape = None,
-    ) -> QWidget:
-        """Create a Qt Frame."""
-        if shadow is None:
-            shadow = Shadow.Plain
-        if shape is None:
-            shape = Shape.NoFrame
-        #
-        w = QtWidgets.QFrame(parent)
-        self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
-        w.setFrameShape(shape)
-        w.setFrameShadow(shadow)
-        w.setLineWidth(lineWidth)
-        self.setName(w, name)
-        return w
-    #@+node:ekr.20110605121601.18156: *5* dw.createGrid
-    def createGrid(self,
-        parent: QWidget, name: str, margin: int = 0, spacing: int = 0,
-    ) -> QtWidgets.QGridLayout:
-        w = QtWidgets.QGridLayout(parent)
-        w.setContentsMargins(QtCore.QMargins(margin, margin, margin, margin))
-        w.setSpacing(spacing)
-        self.setName(w, name)
-        return w
-    #@+node:ekr.20110605121601.18157: *5* dw.createHLayout & createVLayout
-    def createHLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -> Any:
-        hLayout = QtWidgets.QHBoxLayout(parent)
-        hLayout.setSpacing(spacing)
-        hLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
-        self.setName(hLayout, name)
-        return hLayout
-
-    def createVLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -> Any:
-        vLayout = QtWidgets.QVBoxLayout(parent)
-        vLayout.setSpacing(spacing)
-        vLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
-        self.setName(vLayout, name)
-        return vLayout
-    #@+node:ekr.20110605121601.18158: *5* dw.createLabel
-    def createLabel(self, parent: QWidget, name: str, label: str) -> QWidget:
-        w = QtWidgets.QLabel(parent)
-        self.setName(w, name)
-        w.setText(self.tr(label))
-        return w
-    #@+node:ekr.20110605121601.18159: *5* dw.createLineEdit
-    def createLineEdit(self, parent: QWidget, name: str, disabled: bool = True) -> QWidget:
-
-        w = QtWidgets.QLineEdit(parent)
-        w.setObjectName(name)
-        w.leo_disabled = disabled  # Inject the ivar.
-        return w
-    #@+node:ekr.20110605121601.18160: *5* dw.createRadioButton
-    def createRadioButton(self, parent: QWidget, name: str, label: str) -> QWidget:  # QtWidgets.QRadioButton:
-        w = QtWidgets.QRadioButton(parent)
-        self.setName(w, name)
-        w.setText(self.tr(label))
-        return w
-    #@+node:ekr.20110605121601.18161: *5* dw.createStackedWidget
-    def createStackedWidget(
-        self,
-        parent: QWidget,
-        name: str,
-        lineWidth: int = 1,
-        hPolicy: Policy = None,
-        vPolicy: Policy = None,
-    ) -> QWidget:  # QtWidgets.QStackedWidget
-        w = QtWidgets.QStackedWidget(parent)
-        self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
-        w.setAcceptDrops(True)
-        w.setLineWidth(1)
-        self.setName(w, name)
-        return w
-    #@+node:ekr.20110605121601.18162: *5* dw.createTabWidget
-    def createTabWidget(self,
-        parent: QWidget, name: str, hPolicy: Policy = None, vPolicy: Policy = None,
-    ) -> QWidget:
-        w = QtWidgets.QTabWidget(parent)
-        # tb = w.tabBar()
-        # tb.setTabsClosable(True)
-        self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
-        self.setName(w, name)
-        return w
-    #@+node:ekr.20110605121601.18163: *5* dw.createText (creates QTextBrowser)
-    def createText(
-        self,
-        parent: QWidget,
-        name: str,
-        lineWidth: int = 0,
-        shadow: Shadow = None,
-        shape: Shape = None,
-    ) -> QWidget:
-        # Create a text widget.
+    #@+node:ekr.20240725073848.1: *4* dw.insert_vr_frame
+    def insert_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
+        """Insert the given frame into the dw.vr_parent_frame."""
         c = self.leo_c
-        w: Any
-        if name == 'richTextEdit' and self.useScintilla and Qsci:
-            # Do this in finishCreate, when c.frame.body exists.
-            w = Qsci.QsciScintilla(parent)
-            self.scintilla_widget = w
-        else:
-            if shadow is None:
-                shadow = Shadow.Plain
-            if shape is None:
-                shape = Shape.NoFrame
-            w = qt_text.LeoQTextBrowser(parent, c, None)
-            w.setFrameShape(shape)
-            w.setFrameShadow(shadow)
-            w.setLineWidth(lineWidth)
-            self.setName(w, name)
-        return w
-    #@+node:ekr.20110605121601.18164: *5* dw.createTreeWidget
-    def createTreeWidget(self, parent: QWidget, name: str) -> QWidget:
-        c = self.leo_c
-        w = LeoQTreeWidget(c, parent)
-        self.set_widget_size_policy(w)
-        # 12/01/07: add new config setting.
-        multiple_selection = c.config.getBool('qt-tree-multiple-selection', default=True)
-        if multiple_selection:
-            w.setSelectionMode(SelectionMode.ExtendedSelection)
-            w.setSelectionBehavior(SelectionBehavior.SelectRows)
-        else:
-            w.setSelectionMode(SelectionMode.SingleSelection)
-            w.setSelectionBehavior(SelectionBehavior.SelectItems)
-        w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
-        w.setHeaderHidden(False)
-        self.setName(w, name)
-        return w
-    #@+node:ekr.20110605121601.18165: *4* dw.log tabs
-    #@+node:ekr.20110605121601.18167: *5* dw.createSpellTab
+        dw = self
+        gui = g.app.gui
+        parent = dw.vr_parent_frame
+        if not isinstance(parent, QtWidgets.QSplitter):
+            g.trace('dw.vr_parent_frame must be a QSplitter!')
+            return
+        # Add the vr frame.
+        vr_frame.show()
+        parent.addWidget(vr_frame)
+        # Resize splitters if they exist.
+        main_splitter = gui.find_widget_by_name(c, 'main_splitter')
+        secondary_splitter = gui.find_widget_by_name(c, 'secondary_splitter')
+        gui.equalize_splitter(main_splitter)
+        gui.equalize_splitter(secondary_splitter)
+        gui.equalize_splitter(parent)
+    #@+node:ekr.20110605121601.18165: *3* dw: create log tabs
+    #@+node:ekr.20110605121601.18167: *4* dw.createSpellTab
     def createSpellTab(self, parent: QWidget) -> None:
         # dw = self
         vLayout = self.createVLayout(parent, 'spellVLayout', margin=2)
@@ -632,7 +404,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_spell_widget = parent  # 2013/09/20: To allow bindings to be set.
         self.leo_spell_listBox = listBox  # Must exist
         self.leo_spell_label = lab  # Must exist (!!)
-    #@+node:ekr.20110605121601.18166: *5* dw.createFindTab & helpers
+    #@+node:ekr.20110605121601.18166: *4* dw.createFindTab & helpers
     def createFindTab(self, parent: QWidget, tab_widget: QWidget) -> None:
         """Create a Find Tab in the given parent."""
         c, dw = self.leo_c, self
@@ -658,7 +430,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Official ivars (in addition to checkbox ivars).
         self.leo_find_widget = tab_widget  # A scrollArea.
         ftm.init_widgets()
-    #@+node:ekr.20131118152731.16847: *6* dw.create_find_grid
+    #@+node:ekr.20131118152731.16847: *5* dw.create_find_grid
     def create_find_grid(self, parent: QWidget) -> Any:
         grid = self.createGrid(parent, 'findGrid', margin=10, spacing=10)
         grid.setColumnStretch(0, 100)
@@ -667,7 +439,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         grid.setColumnMinimumWidth(1, 75)
         grid.setColumnMinimumWidth(2, 175)
         return grid
-    #@+node:ekr.20131118152731.16849: *6* dw.create_find_header
+    #@+node:ekr.20131118152731.16849: *5* dw.create_find_header
     def create_find_header(self, grid: Any, parent: QWidget, row: int) -> int:
         if False:
             dw = self
@@ -675,7 +447,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             grid.addWidget(lab1, row, 0, 1, 2, AlignLeft)  # AlignHCenter
             row += 1
         return row
-    #@+node:ekr.20131118152731.16848: *6* dw.create_find_findbox
+    #@+node:ekr.20131118152731.16848: *5* dw.create_find_findbox
     def create_find_findbox(self, grid: Any, parent: QWidget, row: int) -> int:
         """Create the Find: label and text area."""
         c, dw = self.leo_c, self
@@ -689,7 +461,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         grid.addWidget(w, row, 1, 1, 2)
         row += 1
         return row
-    #@+node:ekr.20131118152731.16850: *6* dw.create_find_replacebox
+    #@+node:ekr.20131118152731.16850: *5* dw.create_find_replacebox
     def create_find_replacebox(self, grid: Any, parent: QWidget, row: int) -> int:
         """Create the Replace: label and text area."""
         c, dw = self.leo_c, self
@@ -703,7 +475,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         grid.addWidget(w, row, 1, 1, 2)
         row += 1
         return row
-    #@+node:ekr.20131118152731.16851: *6* dw.create_find_checkboxes
+    #@+node:ekr.20131118152731.16851: *5* dw.create_find_checkboxes
     def create_find_checkboxes(self, grid: Any, parent: QWidget, max_row2: int, row: int) -> int:
         """Create check boxes and radio buttons."""
         c, dw = self.leo_c, self
@@ -770,7 +542,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             assert getattr(ftm, name) is None
             setattr(ftm, name, w)
         return max_row2
-    #@+node:ekr.20131118152731.16853: *6* dw.create_help_row
+    #@+node:ekr.20131118152731.16853: *5* dw.create_help_row
     def create_help_row(self, grid: Any, parent: QWidget, row: int) -> int:
         # Help row.
         if False:
@@ -779,7 +551,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             grid.addWidget(w, row, 0, 1, 3)
             row += 1
         return row
-    #@+node:ekr.20131118152731.16852: *6* dw.create_find_buttons
+    #@+node:ekr.20131118152731.16852: *5* dw.create_find_buttons
     def create_find_buttons(self, grid: Any, parent: QWidget, max_row2: int, row: int) -> int:
         """
         Per #1342, this method now creates labels, not real buttons.
@@ -808,7 +580,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         row += max_row2
         row += 2
         return row
-    #@+node:ekr.20150618072619.1: *6* dw.create_find_status
+    #@+node:ekr.20150618072619.1: *5* dw.create_find_status
     if 0:
 
         def create_find_status(self, grid: Any, parent: QWidget, row: int) -> None:
@@ -821,7 +593,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # Official ivars.
             dw.find_status_label = status_label
             dw.find_status_edit = status_line
-    #@+node:ekr.20131118172620.16891: *6* dw.override_events
+    #@+node:ekr.20131118172620.16891: *5* dw.override_events
     def override_events(self) -> None:
         # dw = self
         c = self.leo_c
@@ -829,7 +601,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         ftm = fc.ftm
         # Define class EventWrapper.
         #@+others
-        #@+node:ekr.20131118172620.16892: *7* class EventWrapper
+        #@+node:ekr.20131118172620.16892: *6* class EventWrapper
         class EventWrapper:
 
             def __init__(self, c: Cmdr, w: QWidget, next_w: QWidget, func: Callable) -> None:
@@ -842,7 +614,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 self.oldEvent: Any = w.event
                 w.event = self.wrapper  # type:ignore # cannot assign to a method.
             #@+others
-            #@+node:ekr.20131120054058.16281: *8* EventWrapper.create_d
+            #@+node:ekr.20131120054058.16281: *7* EventWrapper.create_d
             def create_d(self) -> dict[str, str]:
                 """Create self.d dictionary."""
                 c = self.c
@@ -876,7 +648,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     if stroke:
                         d[stroke.s] = cmd_name
                 return d
-            #@+node:ekr.20131118172620.16893: *8* EventWrapper.wrapper
+            #@+node:ekr.20131118172620.16893: *7* EventWrapper.wrapper
             def wrapper(self, event: LeoKeyEvent) -> Any:
 
                 type_ = event.type()
@@ -886,7 +658,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 if type_ == Type.KeyRelease:
                     return self.keyRelease(event)
                 return self.oldEvent(event)
-            #@+node:ekr.20131118172620.16894: *8* EventWrapper.keyPress
+            #@+node:ekr.20131118172620.16894: *7* EventWrapper.keyPress
             def keyPress(self, event: LeoKeyEvent) -> Any:
 
                 s = event.text()
@@ -915,7 +687,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                         return True
                 # Do the normal processing.
                 return self.oldEvent(event)
-            #@+node:ekr.20131118172620.16895: *8* EventWrapper.keyRelease
+            #@+node:ekr.20131118172620.16895: *7* EventWrapper.keyRelease
             def keyRelease(self, event: QEvent) -> Any:
                 return self.oldEvent(event)
             #@-others
@@ -924,32 +696,515 @@ class DynamicWindow(QtWidgets.QMainWindow):
         EventWrapper(c, w=ftm.find_replacebox, next_w=ftm.find_next_button, func=fc.find_next)
         # Finally, checkBoxMarkChanges goes back to ftm.find_findBox.
         EventWrapper(c, w=ftm.check_box_mark_changes, next_w=ftm.find_findbox, func=None)
-    #@+node:ekr.20110605121601.18168: *4* dw.utils
-    #@+node:ekr.20110605121601.18169: *5* dw.setName
-    def setName(self, widget: Any, name: str) -> None:
-        if name:
-            widget.setObjectName(name)
-    #@+node:ekr.20110605121601.18170: *5* dw.set_widget_size_policy
-    def set_widget_size_policy(self, widget: QWidget, kind1: Policy = None, kind2: Policy = None) -> None:
-        if kind1 is None:
-            kind1 = Policy.Ignored
-        if kind2 is None:
-            kind2 = Policy.Ignored
-        sizePolicy = QtWidgets.QSizePolicy(kind1, kind2)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(widget.sizePolicy().hasHeightForWidth())
-        widget.setSizePolicy(sizePolicy)
-    #@+node:ekr.20110605121601.18171: *5* dw.tr (no longer used)
-    # def tr(self, s: str) -> str:
-        # return QtWidgets.QApplication.translate('MainWindow', s, None)
+    #@+node:ekr.20110605121601.18152: *3* dw: create widgets
+    #@+node:ekr.20110605121601.18153: *4* dw.createButton
+    def createButton(self, parent: QWidget, name: str, label: str) -> QWidget:
+        w = QtWidgets.QPushButton(parent)
+        w.setObjectName(name)
+        w.setText(self.tr(label))
+        return w
+    #@+node:ekr.20110605121601.18154: *4* dw.createCheckBox
+    def createCheckBox(self, parent: QWidget, name: str, label: str) -> QWidget:
+        w = QtWidgets.QCheckBox(parent)
+        self.setName(w, name)
+        w.setText(self.tr(label))
+        return w
+    #@+node:ekr.20110605121601.18155: *4* dw.createFrame
+    def createFrame(
+        self,
+        parent: QWidget,
+        name: str,
+        hPolicy: Policy = None,
+        vPolicy: Policy = None,
+        lineWidth: int = 1,
+        shadow: Shadow = None,
+        shape: Shape = None,
+    ) -> QWidget:
+        """Create a Qt Frame."""
+        if shadow is None:
+            shadow = Shadow.Plain
+        if shape is None:
+            shape = Shape.NoFrame
+        #
+        w = QtWidgets.QFrame(parent)
+        self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
+        w.setFrameShape(shape)
+        w.setFrameShadow(shadow)
+        w.setLineWidth(lineWidth)
+        self.setName(w, name)
+        return w
+    #@+node:ekr.20110605121601.18156: *4* dw.createGrid
+    def createGrid(self,
+        parent: QWidget, name: str, margin: int = 0, spacing: int = 0,
+    ) -> QtWidgets.QGridLayout:
+        w = QtWidgets.QGridLayout(parent)
+        w.setContentsMargins(QtCore.QMargins(margin, margin, margin, margin))
+        w.setSpacing(spacing)
+        self.setName(w, name)
+        return w
+    #@+node:ekr.20110605121601.18157: *4* dw.createHLayout & createVLayout
+    def createHLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -> Any:
+        hLayout = QtWidgets.QHBoxLayout(parent)
+        hLayout.setSpacing(spacing)
+        hLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        self.setName(hLayout, name)
+        return hLayout
 
-    #@+node:ekr.20110605121601.18173: *3* dw.select
+    def createVLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -> Any:
+        vLayout = QtWidgets.QVBoxLayout(parent)
+        vLayout.setSpacing(spacing)
+        vLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
+        self.setName(vLayout, name)
+        return vLayout
+    #@+node:ekr.20110605121601.18158: *4* dw.createLabel
+    def createLabel(self, parent: QWidget, name: str, label: str) -> QWidget:
+        w = QtWidgets.QLabel(parent)
+        self.setName(w, name)
+        w.setText(self.tr(label))
+        return w
+    #@+node:ekr.20110605121601.18159: *4* dw.createLineEdit
+    def createLineEdit(self, parent: QWidget, name: str, disabled: bool = True) -> QWidget:
+
+        w = QtWidgets.QLineEdit(parent)
+        w.setObjectName(name)
+        w.leo_disabled = disabled  # Inject the ivar.
+        return w
+    #@+node:ekr.20110605121601.18160: *4* dw.createRadioButton
+    def createRadioButton(self, parent: QWidget, name: str, label: str) -> QWidget:  # QtWidgets.QRadioButton:
+        w = QtWidgets.QRadioButton(parent)
+        self.setName(w, name)
+        w.setText(self.tr(label))
+        return w
+    #@+node:ekr.20110605121601.18161: *4* dw.createStackedWidget
+    def createStackedWidget(
+        self,
+        parent: QWidget,
+        name: str,
+        lineWidth: int = 1,
+        hPolicy: Policy = None,
+        vPolicy: Policy = None,
+    ) -> QWidget:  # QtWidgets.QStackedWidget
+        w = QtWidgets.QStackedWidget(parent)
+        self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
+        w.setAcceptDrops(True)
+        w.setLineWidth(1)
+        self.setName(w, name)
+        return w
+    #@+node:ekr.20110605121601.18162: *4* dw.createTabWidget
+    def createTabWidget(self,
+        parent: QWidget, name: str, hPolicy: Policy = None, vPolicy: Policy = None,
+    ) -> QWidget:
+        w = QtWidgets.QTabWidget(parent)
+        # tb = w.tabBar()
+        # tb.setTabsClosable(True)
+        self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
+        self.setName(w, name)
+        return w
+    #@+node:ekr.20110605121601.18163: *4* dw.createText (creates QTextBrowser)
+    def createText(
+        self,
+        parent: QWidget,
+        name: str,
+        lineWidth: int = 0,
+        shadow: Shadow = None,
+        shape: Shape = None,
+    ) -> QWidget:
+        # Create a text widget.
+        c = self.leo_c
+        w: Any
+        if name == 'richTextEdit' and self.useScintilla and Qsci:
+            # Do this in finishCreate, when c.frame.body exists.
+            w = Qsci.QsciScintilla(parent)
+            self.scintilla_widget = w
+        else:
+            if shadow is None:
+                shadow = Shadow.Plain
+            if shape is None:
+                shape = Shape.NoFrame
+            w = qt_text.LeoQTextBrowser(parent, c, None)
+            w.setFrameShape(shape)
+            w.setFrameShadow(shadow)
+            w.setLineWidth(lineWidth)
+            self.setName(w, name)
+        return w
+    #@+node:ekr.20110605121601.18164: *4* dw.createTreeWidget
+    def createTreeWidget(self, parent: QWidget, name: str) -> QWidget:
+        c = self.leo_c
+        w = LeoQTreeWidget(c, parent)
+        self.set_widget_size_policy(w)
+        # 12/01/07: add new config setting.
+        multiple_selection = c.config.getBool('qt-tree-multiple-selection', default=True)
+        if multiple_selection:
+            w.setSelectionMode(SelectionMode.ExtendedSelection)
+            w.setSelectionBehavior(SelectionBehavior.SelectRows)
+        else:
+            w.setSelectionMode(SelectionMode.SingleSelection)
+            w.setSelectionBehavior(SelectionBehavior.SelectItems)
+        w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
+        w.setHeaderHidden(False)
+        self.setName(w, name)
+        return w
+    #@+node:ekr.20240730053128.1: *3* dw: events
+    #@+node:ekr.20110605121601.18140: *4* dw.closeEvent
+    def closeEvent(self, event: QEvent) -> None:
+        """Handle a close event in the Leo window."""
+        c = self.leo_c
+        if not c.exists:
+            # Fixes double-prompt bug on Linux.
+            event.accept()
+            return
+        if c.inCommand:
+            c.requestCloseWindow = True
+            return
+        ok = g.app.closeLeoWindow(c.frame)
+        if ok:
+            event.accept()
+        else:
+            event.ignore()
+    #@+node:ekr.20110605121601.18172: *4* dw.do_leo_spell_btn_*
+    def doSpellBtn(self, btn: Any) -> None:
+        """Execute btn, a button handler."""
+        # Make *sure* this never crashes.
+        try:
+            tab = self.leo_c.spellCommands.handler.tab
+            button = getattr(tab, btn)
+            button()
+        except Exception:
+            g.es_exception()
+
+    def do_leo_spell_btn_Add(self) -> None:
+        self.doSpellBtn('onAddButton')
+
+    def do_leo_spell_btn_Change(self) -> None:
+        self.doSpellBtn('onChangeButton')
+
+    def do_leo_spell_btn_Find(self) -> None:
+        self.doSpellBtn('onFindButton')
+
+    def do_leo_spell_btn_FindChange(self) -> None:
+        self.doSpellBtn('onChangeThenFindButton')
+
+    def do_leo_spell_btn_Hide(self) -> None:
+        self.doSpellBtn('onHideButton')
+
+    def do_leo_spell_btn_Ignore(self) -> None:
+        self.doSpellBtn('onIgnoreButton')
+    #@+node:ekr.20110605121601.18173: *4* dw.select
     def select(self, c: Cmdr) -> None:
         """Select the window or tab for c."""
         # Called from the save commands.
         self.leo_master.select(c)
-    #@+node:ekr.20110605121601.18178: *3* dw.set_geometry
+    #@+node:ekr.20110605121601.18142: *3* dw: top-level methods
+    #@+node:ekr.20190118150859.10: *4* dw.addNewEditor
+    def addNewEditor(self, name: str) -> tuple[QWidget, Wrapper]:
+        """Create a new body editor."""
+        c, p = self.leo_c, self.leo_c.p
+        body = c.frame.body
+        assert isinstance(body, LeoQtBody), repr(body)
+        # Step 1: create the editor.
+        parent_frame = c.frame.top.leo_body_inner_frame
+        widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
+        widget.setObjectName('richTextEdit')  # Will be changed later.
+        wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
+        self.packLabel(widget)
+        # Step 2: inject ivars, set bindings, etc.
+        inner_frame = c.frame.top.leo_body_inner_frame  # Inject ivars *here*.
+        body.injectIvars(inner_frame, name, p, wrapper)
+        body.updateInjectedIvars(widget, p)
+        wrapper.setAllText(p.b)
+        wrapper.see(0)
+        c.k.completeAllBindingsForWidget(wrapper)
+        if isinstance(widget, QtWidgets.QTextEdit):
+            colorizer = leoColorizer.make_colorizer(c, widget)
+            colorizer.highlighter.setDocument(widget.document())
+        else:
+            # Scintilla only.
+            body.recolorWidget(p, wrapper)
+        return parent_frame, wrapper
+    #@+node:ekr.20110605121601.18143: *4* dw.createBodyPane
+    def createBodyPane(self, parent: QWidget) -> QWidget:
+        """
+        Create the *pane* for the body, not the actual QTextBrowser.
+        """
+        c = self.leo_c
+        # Create widgets.
+        bodyFrame = self.createFrame(parent, 'bodyFrame')
+        innerFrame = self.createFrame(bodyFrame, 'innerBodyFrame')
+        sw = self.createStackedWidget(innerFrame, 'bodyStackedWidget',
+             hPolicy=Policy.Expanding, vPolicy=Policy.Expanding)
+        page2 = QtWidgets.QWidget()
+        self.setName(page2, 'bodyPage2')
+        body = self.createText(page2, 'richTextEdit')  # A LeoQTextBrowser
+        # Pack.
+        vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0)
+        grid = self.createGrid(bodyFrame, 'bodyGrid')
+        innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
+        if self.use_gutter:
+            lineWidget = qt_text.LeoLineTextWidget(c, body)
+            vLayout.addWidget(lineWidget)
+        else:
+            vLayout.addWidget(body)
+        sw.addWidget(page2)
+        innerGrid.addWidget(sw, 0, 0, 1, 1)
+        grid.addWidget(innerFrame, 0, 0, 1, 1)
+        # Official ivars
+        self.text_page = page2
+        self.stackedWidget = sw  # used by LeoQtBody
+        self.richTextEdit = body
+        self.leo_body_frame = bodyFrame
+        self.leo_body_inner_frame = innerFrame
+        return bodyFrame
+    #@+node:ekr.20110605121601.18144: *4* dw.createCentralWidget
+    def createCentralWidget(self) -> QWidget:
+        """Create the central widget."""
+        dw = self
+        w = QtWidgets.QWidget(dw)
+        w.setObjectName("centralwidget")
+        dw.setCentralWidget(w)
+        # Official ivars.
+        self.centralwidget = w
+        return w
+    #@+node:ekr.20240730054632.1: *4* dw.createIconBar & helper
+    def createIconBar(self) -> None:
+        """Create the icon bar."""
+        c = self.leo_c
+        self.iconBar: QtWidgets.QToolBar = self.addToolBar("IconBar")
+        self.iconBar.setObjectName('icon-bar')  # Required for QMainWindow.saveState().
+        self.set_icon_bar_orientation(c)
+
+    #@+node:ekr.20140915062551.19519: *5* dw.set_icon_bar_orientation
+    def set_icon_bar_orientation(self, c: Cmdr) -> None:
+        """Set the orientation of the icon bar based on settings."""
+        d = {
+            'bottom': ToolBarArea.BottomToolBarArea,
+            'left': ToolBarArea.LeftToolBarArea,
+            'right': ToolBarArea.RightToolBarArea,
+            'top': ToolBarArea.TopToolBarArea,
+        }
+        where_s = self.toolbar_orientation
+        if not where_s:
+            where_s = 'top'
+        where = d.get(where_s.lower())
+        if where:
+            self.addToolBar(where, self.iconBar)
+    #@+node:ekr.20110605121601.18145: *4* dw.createLogPane & helpers
+    def createLogPane(self, parent: QWidget) -> None:
+        """Create all parts of Leo's log pane."""
+        c = self.leo_c
+        #
+        # Create the log frame.
+        logFrame = self.createFrame(parent, 'logFrame', vPolicy=Policy.Minimum)
+        innerFrame = self.createFrame(logFrame, 'logInnerFrame',
+            hPolicy=Policy.Preferred, vPolicy=Policy.Expanding)
+        tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
+        #
+        # Pack.
+        innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
+        innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
+        outerGrid = self.createGrid(logFrame, 'logGrid')
+        outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
+        #
+        # Create the Find tab, embedded in a QScrollArea.
+        findScrollArea = QtWidgets.QScrollArea()
+        findScrollArea.setObjectName('findScrollArea')
+        # Find tab.
+        findTab = QtWidgets.QWidget()
+        findTab.setObjectName('findTab')
+        #
+        # #516 and #1507: Create a Find tab unless we are using a dialog.
+        #
+        # Careful: @bool minibuffer-ding-mode overrides @bool use-find-dialog.
+        use_minibuffer = c.config.getBool('minibuffer-find-mode', default=False)
+        use_dialog = c.config.getBool('use-find-dialog', default=False)
+        if use_minibuffer or not use_dialog:
+            tabWidget.addTab(findScrollArea, 'Find')
+        # Complete the Find tab in LeoFind.finishCreate.
+        self.findScrollArea = findScrollArea
+        self.findTab = findTab
+        #
+        # Spell tab.
+        spellTab = QtWidgets.QWidget()
+        spellTab.setObjectName('spellTab')
+        tabWidget.addTab(spellTab, 'Spell')
+        self.createSpellTab(spellTab)
+        tabWidget.setCurrentIndex(1)
+        #
+        # Official ivars
+        self.tabWidget = tabWidget  # Used by LeoQtLog.
+    #@+node:ekr.20131118172620.16858: *5* dw.finishCreateLogPane
+    def finishCreateLogPane(self) -> None:
+        """It's useful to create this late, because c.config is now valid."""
+        assert self.findTab
+        self.createFindTab(self.findTab, self.findScrollArea)
+        self.findScrollArea.setWidget(self.findTab)
+    #@+node:ekr.20110605121601.18146: *4* dw.createMainLayout
+    def createMainLayout(self, parent: QWidget) -> tuple[QWidget, QWidget]:
+        """Create the layout for Leo's main window."""
+        # c = self.leo_c
+        main_splitter = self.createMainSplitter(parent)
+        secondary_splitter = self.createSecondarySplitter(main_splitter)
+
+        #  Add the main splitter to the vertical layout!
+        self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
+        self.set_widget_size_policy(secondary_splitter)
+        self.verticalLayout.addWidget(main_splitter)
+
+        return main_splitter, secondary_splitter
+    #@+node:ekr.20240729064156.1: *4* dw.createMainSplitter
+    def createMainSplitter(self, parent: QWidget) -> QtWidgets.QSplitter:
+
+        main_splitter = QtWidgets.QSplitter(parent)
+        main_splitter.setObjectName('main_splitter')
+        main_splitter.setOrientation(Orientation.Vertical)
+        return main_splitter
+    #@+node:ekr.20240729064421.1: *4* dw.createSecondarySplitter
+    def createSecondarySplitter(self, parent: QWidget) -> QtWidgets.QSplitter:
+
+        secondary_splitter = QtWidgets.QSplitter(parent)
+        secondary_splitter.setObjectName('secondary_splitter')
+        return secondary_splitter
+    #@+node:ekr.20110605121601.18148: *4* dw.createMiniBuffer (class VisLineEdit)
+    def createMiniBuffer(self, parent: QWidget) -> QWidget:
+        """Create the widgets for Leo's minibuffer area."""
+        # Create widgets.
+        frame = self.createFrame(parent, 'minibufferFrame',
+            hPolicy=Policy.MinimumExpanding, vPolicy=Policy.Fixed)
+        frame.setMinimumSize(QtCore.QSize(100, 0))
+        label = self.createLabel(frame, 'minibufferLabel', 'Minibuffer:')
+
+
+        class VisLineEdit(QtWidgets.QLineEdit):
+            """In case user has hidden minibuffer with gui-minibuffer-hide"""
+
+            def focusInEvent(self, event: QFocusEvent) -> None:
+                self.parent().show()
+                super().focusInEvent(event)  # Call the base class method.
+
+            def focusOutEvent(self, event: QFocusEvent) -> None:
+                self.store_selection()
+                super().focusOutEvent(event)
+
+            def restore_selection(self) -> None:
+                w = self
+                i, j, ins = self._sel_and_insert
+                if i == j:
+                    w.setCursorPosition(i)
+                else:
+                    length = j - i
+                    # Set selection is a QLineEditMethod
+                    if ins < j:
+                        w.setSelection(j, -length)
+                    else:
+                        w.setSelection(i, length)
+
+            def store_selection(self) -> None:
+                w = self
+                ins = w.cursorPosition()
+                if w.hasSelectedText():
+                    i = w.selectionStart()
+                    s = w.selectedText()
+                    j = i + len(s)
+                else:
+                    i = j = ins
+                w._sel_and_insert = (i, j, ins)
+
+        lineEdit = VisLineEdit(frame)
+        lineEdit._sel_and_insert = (0, 0, 0)
+        lineEdit.setObjectName('lineEdit')  # name important.
+        # Pack.
+        hLayout = self.createHLayout(frame, 'minibufferHLayout', spacing=4)
+        hLayout.setContentsMargins(3, 2, 2, 0)
+        hLayout.addWidget(label)
+        hLayout.addWidget(lineEdit)
+        self.verticalLayout.addWidget(frame)
+        # Transfers focus request from label to lineEdit.
+        label.setBuddy(lineEdit)
+        #
+        # Official ivars.
+        self.lineEdit = lineEdit
+        self.leo_minibuffer_frame = frame
+        # self.leo_minibuffer_layout = layout
+        return frame
+    #@+node:ekr.20110605121601.18147: *4* dw.createMenuBar
+    def createMenuBar(self) -> None:
+        """Create Leo's menu bar."""
+        dw = self
+        w = QtWidgets.QMenuBar(dw)
+        w.setNativeMenuBar(platform.system() == 'Darwin')
+        w.setGeometry(QtCore.QRect(0, 0, 957, 22))
+        w.setObjectName("menubar")
+        dw.setMenuBar(w)
+        # Official ivars.
+        self.leo_menubar = w
+    #@+node:ekr.20110605121601.18149: *4* dw.createOutlinePane
+    def createOutlinePane(self, parent: QWidget) -> QWidget:
+        """Create the widgets and ivars for Leo's outline."""
+        # Create widgets.
+        treeFrame = self.createFrame(parent, 'outlineFrame', vPolicy=Policy.Expanding)
+        innerFrame = self.createFrame(treeFrame, 'outlineInnerFrame', hPolicy=Policy.Preferred)
+        treeWidget = self.createTreeWidget(innerFrame, 'treeWidget')
+        grid = self.createGrid(treeFrame, 'outlineGrid')
+        grid.addWidget(innerFrame, 0, 0, 1, 1)
+        innerGrid = self.createGrid(innerFrame, 'outlineInnerGrid')
+        innerGrid.addWidget(treeWidget, 0, 0, 1, 1)
+        # Official ivars...
+        self.treeWidget = treeWidget
+        return treeFrame
+    #@+node:ekr.20110605121601.18150: *4* dw.createStatusBar
+    def createStatusBar(self, parent: QWidget) -> None:
+        """Create the widgets and ivars for Leo's status area."""
+        w = QtWidgets.QStatusBar(parent)
+        w.setObjectName("statusbar")
+        parent.setStatusBar(w)
+        # Official ivars.
+        self.leo_statusBar = w
+    #@+node:ekr.20240726174902.1: *4* dw.createVRPanes (new)
+    def createVRPanes(self) -> list[QtWidgets.QFrame]:
+        """
+        Create the VR and/or the VR3 panes if either plugin is enabled.
+        
+        Return a list containing the panes.
+        
+        The caller is responsible for placing the panes in the properly place.
+        """
+        panes: list[QtWidgets.QFrame] = []
+
+        return panes
+
+    #@+node:ekr.20110605121601.18212: *4* dw.packLabel
+    def packLabel(self, w: Wrapper, n: int = None) -> None:
+        """
+        Pack w into the body frame's QVGridLayout.
+
+        The type of w does not affect the following code. In fact, w is a
+        QTextBrowser possibly packed inside a LeoLineTextWidget.
+        """
+        c = self.leo_c
+        #
+        # Reuse the grid layout in the body frame.
+        grid = self.leo_body_frame.layout()
+        # Pack the label and the text widget.
+        label = QtWidgets.QLineEdit(None)
+        label.setObjectName('editorLabel')
+        label.setText(c.p.h)
+        if n is None:
+            n = c.frame.body.numberOfEditors
+        n = max(0, n - 1)
+        # mypy error: grid is a QGridLayout, not a QLayout.
+        grid.addWidget(label, 0, n)  # type:ignore
+        grid.addWidget(w, 1, n)  # type:ignore
+        grid.setRowStretch(0, 0)  # Don't grow the label vertically.
+        grid.setRowStretch(1, 1)  # Give row 1 as much as vertical room as possible.
+        # Inject the ivar.
+        w.leo_label = label
+    #@+node:ekr.20110605121601.18151: *4* dw.setMainWindowOptions
+    def setMainWindowOptions(self) -> None:
+        """Set default options for Leo's main window."""
+        dw = self
+        dw.setObjectName("MainWindow")
+        dw.resize(691, 635)
+    #@+node:ekr.20110605121601.18168: *3* dw: utils
+    #@+node:ekr.20110605121601.18178: *4* dw.set_geometry
     # Mypy complaint because this overrides QMainWindow.setGeometry.
 
     def setGeometry(self, rect: Any) -> None:  # type:ignore
@@ -961,32 +1216,57 @@ class DynamicWindow(QtWidgets.QMainWindow):
             m.leo_geom_inited = True
             self.leo_master.setGeometry(rect)
             super().setGeometry(rect)
-    #@+node:ekr.20110605121601.18177: *3* dw.setLeoWindowIcon
+    #@+node:ekr.20110605121601.18170: *4* dw.set_widget_size_policy
+    def set_widget_size_policy(self, widget: QWidget, kind1: Policy = None, kind2: Policy = None) -> None:
+        if kind1 is None:
+            kind1 = Policy.Ignored
+        if kind2 is None:
+            kind2 = Policy.Ignored
+        sizePolicy = QtWidgets.QSizePolicy(kind1, kind2)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(widget.sizePolicy().hasHeightForWidth())
+        widget.setSizePolicy(sizePolicy)
+    #@+node:ekr.20110605121601.18177: *4* dw.setLeoWindowIcon
     def setLeoWindowIcon(self) -> None:
         """ Set icon visible in title bar and task bar """
         # self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
         g.app.gui.attachLeoIcon(self)
-    #@+node:ekr.20110605121601.18174: *3* dw.setSplitDirection
+    #@+node:ekr.20110605121601.18169: *4* dw.setName
+    def setName(self, widget: Any, name: str) -> None:
+        if name:
+            widget.setObjectName(name)
+    #@+node:ekr.20110605121601.18174: *4* dw.setSplitDirection
     def setSplitDirection(self,
         main_splitter: QWidget,
         secondary_splitter: QWidget,
         orientation: str,
     ) -> None:
-        """Set the orientations of the splitters in the Leo main window."""
+        """
+        Set the orientations of the splitters in the Leo main window.
+        
+        Only the legacy layout should use this method!
+        
+        """
         # c = self.leo_c
         vert = orientation and orientation.lower().startswith('v')
         h, v = Orientation.Horizontal, Orientation.Vertical
         orientation1 = v if vert else h
         orientation2 = h if vert else v
         main_splitter.setOrientation(orientation1)
-        secondary_splitter.setOrientation(orientation2)
-    #@+node:ekr.20130804061744.12425: *3* dw.setWindowTitle
+        if secondary_splitter:
+            secondary_splitter.setOrientation(orientation2)
+    #@+node:ekr.20130804061744.12425: *4* dw.setWindowTitle
     if 0:  # Override for debugging only.
 
         def setWindowTitle(self, s: str) -> None:
             g.trace('***(DynamicWindow)', s, self.parent())
             # Call the base class method.
             QtWidgets.QMainWindow.setWindowTitle(self, s)
+    #@+node:ekr.20110605121601.18171: *4* dw.tr (no longer used)
+    # def tr(self, s: str) -> str:
+        # return QtWidgets.QApplication.translate('MainWindow', s, None)
+
     #@-others
 #@+node:ekr.20131117054619.16698: ** class FindTabManager (qt_frame.py)
 class FindTabManager:
@@ -1423,7 +1703,6 @@ class LeoQtBody(leoFrame.LeoBody):
         self.reloadSettings()
         self.set_widget()  # Sets self.widget and self.wrapper.
         self.setWrap(c.p)
-
     #@+node:ekr.20110605121601.18185: *4* LeoQtBody.get_name
     def getName(self) -> str:
         return 'body-widget'
@@ -1672,13 +1951,12 @@ class LeoQtFrame(leoFrame.LeoFrame):
         c = self.c
         gui = g.app.gui
         w = gui.find_widget_by_name(c, 'secondary_splitter')
-        if not w:
+        if w is None:
             return 0.5
         aList = w.sizes()
         if len(aList) == 2:
             n1, n2 = aList
-            ratio = float(n1) / float(n1 + n2)
-            return ratio
+            return float(n1) / float(n1 + n2) if n2 > 0 else 0.5
         return 0.5
     #@+node:ekr.20110605121601.18275: *4* LeoQtFrame.configureBar
     def configureBar(self, bar: Wrapper, verticalFlag: bool) -> None:
@@ -4401,6 +4679,105 @@ def toggleUnlView(event: LeoKeyEvent) -> None:
     if c and c.frame.statusLine:
         # This is not a convenience method.
         c.frame.statusLine.toggleUnlView()
+#@+node:ekr.20240822104556.1: *3* 'use-*-layout'
+#@+node:ekr.20240822063951.1: *4* 'use-big-tree-layout'
+@g.command('use-big-tree-layout')
+def use_big_tree_layout(event: LeoKeyEvent) -> None:
+    """
+    Switch to the big-tree layout::
+        ┌───────────────────┐
+        │  outline          │
+        ├──────────┬────────┤
+        │  body    │  log   │
+        ├──────────┴────────┤
+        │  VR               │
+        └───────────────────┘
+    """
+    c = event.get('c')
+    try:
+        c.frame.top.change_layout('big-tree')
+    except AttributeError:
+        pass
+#@+node:ekr.20240822100439.1: *4* 'use-horizontal-thirds-layout'
+@g.command('use-horizontal-thirds-layout')
+def use_horizontal_thirds_layout(event: LeoKeyEvent) -> None:
+    """Switch to the horizontal-thirds layout::
+        ┌───────────┬───────┐
+        │  outline  │  log  │
+        ├───────────┴───────┤
+        │   body            │
+        ├───────────────────┤
+        │   VR              │
+        └───────────────────┘
+    """
+    c = event.get('c')
+    try:
+        c.frame.top.change_layout('horizontal-thirds')
+    except AttributeError:
+        pass
+#@+node:ekr.20240822063619.1: *4* 'use-legacy-layout'
+@g.command('use-legacy-layout')
+def use_legacy_layout(event: LeoKeyEvent) -> None:
+    """
+    Switch to the legacy layout::
+        ┌───────────┬───────┐
+        │  outline  │  log  │
+        ├───────────┼───────┤
+        │  body     │  VR   │
+        └───────────┴───────┘
+    """
+    c = event.get('c')
+    try:
+        c.frame.top.change_layout('legacy')
+    except AttributeError:
+        pass
+#@+node:ekr.20240822101814.1: *4* 'use-render-focused-layout'
+@g.command('use-render-focused-layout')
+def use_render_focused_layout(event: LeoKeyEvent) -> None:
+    """Switch to the rendered-focused layout::
+        ┌───────────┬───────┐
+        │  outline  │       │
+        ├───────────┤       │
+        │  body     │  VR   │
+        ├───────────┤       │
+        │  log      │       │
+        └───────────┴───────┘
+    """
+    c = event.get('c')
+    try:
+        c.frame.top.change_layout('render-focused')
+    except AttributeError:
+        pass
+#@+node:ekr.20240822100454.1: *4* 'use-vertical-thirds-layout'
+@g.command('use-vertical-thirds-layout')
+def use_vertical_thirds_layout(event: LeoKeyEvent) -> None:
+    """Switch to the rendered-focused layout::
+        ┌───────────┬────────┬──────┐
+        │  outline  │        │      │
+        ├───────────┤  body  │  VR  │
+        │  log      │        │      │
+        └───────────┴────────┴──────┘
+    """
+    c = event.get('c')
+    try:
+        c.frame.top.change_layout('vertical-thirds')
+    except AttributeError:
+        pass
+#@+node:ekr.20240822101753.1: *4* 'use-vertical-thirds2-layout'
+@g.command('use-vertical-thirds2-layout')
+def use_vertical_thirds2_layout(event: LeoKeyEvent) -> None:
+    """Switch to the vertical-thirds2 layout::
+        ┌───────────┬───────┬───────┐
+        │           │  log  │       │
+        │  outline  ├───────┤  VR   │
+        │           │  body │       │
+        └───────────┴───────┴───────┘
+    """
+    c = event.get('c')
+    try:
+        c.frame.top.change_layout('vertical-thirds2')
+    except AttributeError:
+        pass
 #@-others
 #@@language python
 #@@tabwidth -4
