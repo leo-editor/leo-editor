@@ -1703,19 +1703,6 @@ class LeoQtBody(leoFrame.LeoBody):
         self.reloadSettings()
         self.set_widget()  # Sets self.widget and self.wrapper.
         self.setWrap(c.p)
-        # For multiple body editors.
-        self.editor_name = None
-        self.editor_v = None
-        self.numberOfEditors = 1
-        self.totalNumberOfEditors = 1
-        # For renderer panes.
-        self.canvasRenderer: QtWidgets.QGraphicsView = None
-        self.canvasRendererLabel: QtWidgets.QLineEdit = None
-        self.canvasRendererVisible = False
-        self.textRenderer: QtWidgets.QFrame = None
-        self.textRendererLabel: QtWidgets.QLineEdit = None
-        self.textRendererVisible = False
-        self.textRendererWrapper: Wrapper = None
     #@+node:ekr.20110605121601.18185: *4* LeoQtBody.get_name
     def getName(self) -> str:
         return 'body-widget'
@@ -1779,14 +1766,7 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110930174206.15472: *4* LeoQtBody.onFocusIn
     def onFocusIn(self, obj: Any) -> None:
         """Handle a focus-in event in the body pane."""
-        trace = 'select' in g.app.debug and not g.unitTesting
-        tag = 'qt_body.onFocusIn'
         if obj.objectName() == 'richTextEdit':
-            wrapper = getattr(obj, 'leo_wrapper', None)
-            if trace:
-                print(f"{tag:>30}: {wrapper}")
-            if wrapper and wrapper != self.wrapper:
-                self.selectEditor(wrapper)
             self.onFocusColorHelper('focus-in', obj)
             if hasattr(obj, 'leo_copy_button') and obj.leo_copy_button:
                 obj.setReadOnly(True)
@@ -2929,7 +2909,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         """Wrapper for the Tkinter insert_cascade menu method."""
         menu.setTitle(label)
         label.replace('&', '').lower()
-        menu.leo_menu_label = label  # was leo_label
+        menu.leo_menu_label = label 
         if parent:
             parent.addMenu(menu)
         else:
