@@ -2909,7 +2909,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         """Wrapper for the Tkinter insert_cascade menu method."""
         menu.setTitle(label)
         label.replace('&', '').lower()
-        menu.leo_menu_label = label 
+        menu.leo_menu_label = label
         if parent:
             parent.addMenu(menu)
         else:
