@@ -583,9 +583,10 @@ class LeoPluginsController:
             return module
         assert g.app.loadDir
         moduleName = g.toUnicode(moduleName)
-        #
+
         # Try to load the plugin.
         try:
+            result = None
             self.loadingModuleNameStack.append(moduleName)
             result = loadOnePluginHelper(moduleName)
         finally:
@@ -594,7 +595,7 @@ class LeoPluginsController:
             if trace:
                 reportFailedImport()
             return None
-        #
+
         # Last-minute checks.
         try:
             self.loadingModuleNameStack.append(moduleName)
