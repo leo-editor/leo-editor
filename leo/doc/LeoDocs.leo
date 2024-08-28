@@ -29720,7 +29720,7 @@ A child node must define the ``&lt;&lt; imports &gt;&gt;`` node. Other children 
 
 When writing this file, Leo writes the first two lines::
 
-    @first # -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
     '''whatever.py'''
 
 followed by the *body text* of the ``&lt;&lt; imports &gt;&gt;`` node, followed by the body text of all *other* nodes, in outline order, followed by the comment ``# That's all, folks``.
