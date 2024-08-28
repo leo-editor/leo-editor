@@ -2517,7 +2517,6 @@
 </v>
 </v>
 <v t="ekr.20240723070707.1"><vh>Leo 6.8.1 release notes</vh></v>
-<v t="ekr.20240818070101.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -22157,7 +22156,7 @@ A child node must define the &lt;&lt; imports &gt;&gt; node. Other children will
 
 When writing this file, Leo writes the first two lines::
 
-    @first # -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
     '''whatever.py'''
 
 followed by the *body text* of the &lt;&lt; imports&gt;&gt; node, followed by the body text of all *other* nodes, in outline order, followed by the comment # That's all, folks.
