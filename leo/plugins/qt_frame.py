@@ -1410,7 +1410,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
 class LeoQtBody(leoFrame.LeoBody):
     """A class that represents the body pane of a Qt window."""
     #@+others
-    #@+node:ekr.20110605121601.18182: *3* LeoQtBody.ctor
+    #@+node:ekr.20110605121601.18182: *3* LeoQtBody.ctor & helpers
     def __init__(self, frame: LeoQtFrame, parentFrame: QWidget) -> None:
         """Ctor for LeoQtBody class."""
         # Call the base class constructor.
