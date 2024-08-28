@@ -4,7 +4,7 @@
 # Leo's copyright notice is based on the MIT license:
 # https://leo-editor.github.io/leo-editor/license.html
 
-# Don't pollute cff searches with matches from this file!
+# Don't pollute searches with matches from this file!
 #@@nosearch
 
 #@+<< leoAst docstring >>
