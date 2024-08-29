@@ -94,15 +94,27 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """
         c = self.leo_c
         h = '@string qt-layout-name'
-        p = g.findNodeAnywhere(c, h, exact=False)
+        root = c.config.settingsRoot()
+        if not root:
+            top = c.lastTopLevel()
+            root = top.insertAfter()
+            root.h = '@settings'
+            print('Adding @settings node')
+            c.redraw()
+        p = g.findNodeInTree(c, root, h, exact=False)
         if not p:
-            g.es_print(f"Please create an `{h}` node.")
+            p = root.insertAsLastChild()
+            p.h = f"{h} = {layout_name}"
+            print(f"Adding {p.h}")
+            print(f"Switching to {layout_name}")
+            c.save()
+            c.frame.reloadOutline()
         elif p.h.endswith(f" {layout_name}"):
-            g.es_print('no change')
+            g.es_print(f"Already using {layout_name}")
         else:
             p.h = f"{h} = {layout_name}"
             c.save()
-            # print(f"Switching to {layout_name}")
+            print(f"Switching to {layout_name}")
             c.frame.reloadOutline()
     #@+node:ekr.20110605121601.18138: *4* dw.ctor & reloadSettings
     def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
