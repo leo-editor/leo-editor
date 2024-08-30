@@ -12,7 +12,7 @@ Markdown and Asciidoc text, images, movies, sounds, rst, html, jupyter notebooks
 
 #@+others
 #@+node:tom.20240521004125.1: *3* About
-About Viewrendered3 V5.02
+About Viewrendered3 V5.03
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured Text (RsT),
@@ -57,10 +57,18 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
-Removed diagnostic line that change the clipboard contents.
+The "vr3" command and the default opening positions have been changed:
+
+The default value of the setting *@string vr3-initial-orientation* is now _"in-body".  This will open VR3 next to the body editor (or below if Leo's layout orientation has been changed to "vertical". 
+
+For any other value of the setting VR3 will open:
+
+- Next to the body editor if Leo's orientation is "horizontal";
+- In the Log frame if the orientation is "vertical".
 
 Previous Recent Changes
 ========================
+Removed diagnostic line that change the clipboard contents.
 Corrected errors introduced in a complicated merge: ASCIIDOC, MD, and RsT images
 display correctly when the exported file is viewed in the browser (relative
 paths are converted to absolute file system paths).
@@ -1569,7 +1577,7 @@ def getVr3(event):
 #@+node:TomP.20191215195433.18: *3* g.command('vr3')
 @g.command('vr3')
 def viewrendered(event):
-    """Open render view for commander"""
+    """Open VR3 in this commander"""
     global controllers
     gui = g.app.gui
     if gui.guiName() != 'qt':
@@ -1579,7 +1587,7 @@ def viewrendered(event):
         return None
     h = c.hash()
     vr3 = controllers.get(h)
-    if vr3:
+    if vr3 and vr3.parent() is not None:
         c.bodyWantsFocusNow()
         return vr3
     # Create the VR3 frame
@@ -1631,6 +1639,7 @@ def freeze_rendering_pane(event):
 #@+node:tom.20211103161929.1: *3* g.command('vr3-help-plot-2d')
 @g.command('vr3-help-plot-2d')
 def vr3_help_for_plot_2d(event):
+
     vr3 = getVr3(event)
     c = vr3.c
 
@@ -2604,8 +2613,23 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def dbg_print(self, *args):
         if self.DEBUG:
             g.es(*args)
-    #@+node:tom.20211104105903.1: *4* vr3.plot_2d
+    #@+node:tom.20211104105903.1: *3* vr3.plot_2d
     def plot_2d(self):
+        """Plot 2-column data in node.
+        
+        If the selected node contains data in one or two columns, VR3 can
+        plot the data as an X-Y graph. The labeling and appearance of the
+        plot can optionally and easily adjusted. The graph is produced
+        when the toolbar menu labeled *Other Actions* is pressed and
+        *Plot 2D* is clicked.
+
+        If the selected node has an optional section *[source]* containing the key 
+        *file*, the value of the key will be used as the path to
+        the data, instead of using the selected node itself as the data source.
+
+        Help for the plotting capability is displayed in the system
+        browser when *Other Actions/Help For Plot 2D* is clicked.
+        """
         if not matplotlib:
             g.es('VR3 -- Matplotlib is needed to plot 2D data')
             return
@@ -2615,12 +2639,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         data_lines = []
 
         #@+others
-        #@+node:tom.20211104105903.5: *5* declarations
+        #@+node:tom.20211104105903.5: *4* declarations
         ENCODING = 'utf-8'
         STYLEFILE = 'local_mplstyle'  # Must be in site.getuserbase()
         SECTION_RE = re.compile(r'^\[([a-zA-Z0-9]+)\]')
-        #@+node:tom.20211104105903.6: *5* functions
-        #@+node:tom.20211104105903.7: *6* has_config_section()
+        #@+node:tom.20211104105903.6: *4* functions
+        #@+node:tom.20211104105903.7: *5* has_config_section()
         def has_config_section(pagelines):
             """Find config-like sections in the data page.
 
@@ -2639,7 +2663,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 if m := SECTION_RE.match(line):
                     sections[m[1]] = i
             return sections
-        #@+node:tom.20211104105903.8: *6* set custom_style()
+        #@+node:tom.20211104105903.8: *5* set custom_style()
         #@@pagewidth 65
         def set_custom_style():
             r"""Apply custom matplotlib styles from a file.
@@ -2651,7 +2675,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             If not found, the site.getuserbase() directory will be
             checked for the style file. On Windows, this is usually the
             %APPDATA%\Python directory. On Linux, this is usually at
-            /home/tom/.local.
+            ~/.local.
 
             """
             found_styles = False
@@ -2672,7 +2696,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
             if not found_styles:
                 g.es(f'Pyplot style file "{style_file}" not found, using default styles')
-        #@+node:tom.20211104105903.12: *6* plot_plain_data()
+        #@+node:tom.20211104105903.12: *5* plot_plain_data()
         def plot_plain_data(pagelines):
             """Plot 1- or 2- column data.  Ignore all non-numeric lines."""
 
@@ -2682,7 +2706,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
             # Helper functions
             #@+<< is_numeric >>
-            #@+node:tom.20211104105903.13: *7* << is_numeric >>
+            #@+node:tom.20211104105903.13: *6* << is_numeric >>
             def is_numeric(line):
                 """Test if first or 1st and 2nd cols are numeric"""
                 fields = line.split()
@@ -2702,7 +2726,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 return numeric
             #@-<< is_numeric >>
             #@+<< get_data >>
-            #@+node:tom.20211104105903.14: *7* << get_data >>
+            #@+node:tom.20211104105903.14: *6* << get_data >>
             def get_data(pagelines):
                 num_cols = 0
 
@@ -2745,13 +2769,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
             plt.plot(x, y)
             plt.show()
-
-
-            # try:
-                # plot2d(page)
-            # except Exception as e:
-                # g.es('VR3:', e)
-        #@+node:tom.20211104155447.1: *6* set_user_style()
+        #@+node:tom.20211104155447.1: *5* set_user_style()
         #@@pagewidth 65
         def set_user_style(style_config_lines):
             """Set special plot styles.
@@ -2787,25 +2805,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
                         plt.style.use(val)
                     set_style = True
                     break
-            if not set_style:
-                for line in style_config_lines:
-                    if not line.strip:
-                        break
-                    fields = line.split('=')
-                    if len(fields) < 2:
-                        continue
-                    kind, val = fields[0].strip(), fields[1].strip()
-
-                    if kind == 'stylefile':
-                        lm = g.app.loadManager
-                        style_dir = lm.computeHomeLeoDir()
-                        if g.isWindows:
-                            style_dir = style_dir.replace('/', '\\')
-                        style_file = os.path.join(style_dir, val)
-                        if os.path.exists(style_file):
-                            plt.style.use(style_file)
-                            set_style = True
-                        break
+                elif kind == 'stylefile':
+                    lm = g.app.loadManager
+                    style_dir = lm.computeHomeLeoDir()
+                    if g.isWindows:
+                        style_dir = style_dir.replace('/', '\\')
+                    style_file = os.path.join(style_dir, val)
+                    if os.path.exists(style_file):
+                        plt.style.use(style_file)
+                        set_style = True
+                    break
 
             return set_style
         #@-others
@@ -2814,7 +2823,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         source_start = config_sections.get('source', -1)
         if source_start > 0:
             #@+<< set_data >>
-            #@+node:tom.20211106174814.1: *5* << set_data >>
+            #@+node:tom.20211106174814.1: *4* << set_data >>
             for line in page_lines[source_start:]:
                 if not line.strip:
                     break
@@ -2853,7 +2862,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         label_start = config_sections.get('labels', -1)
         if label_start >= 0:
             #@+<< configure labels >>
-            #@+node:tom.20211104105903.11: *5* << configure labels >>
+            #@+node:tom.20211104105903.11: *4* << configure labels >>
             # Get lines for the labels section
             for line in page_lines[label_start:]:
                 if not line.strip:
