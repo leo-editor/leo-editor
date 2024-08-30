@@ -90,7 +90,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def change_layout(self, layout_name: str) -> None:
         """
         Find and change the @string qt-layout-name setting,
-        then execute the reload-outline command.
+        then execute the restart-leo command.
         """
         c = self.leo_c
         h = '@string qt-layout-name'
@@ -108,14 +108,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
             print(f"Adding {p.h}")
             print(f"Switching to {layout_name}")
             c.save()
-            c.frame.reloadOutline()
+            # c.frame.reloadOutline()
+            c.restartLeo()
         elif p.h.endswith(f" {layout_name}"):
             g.es_print(f"Already using {layout_name}")
         else:
             p.h = f"{h} = {layout_name}"
             c.save()
             print(f"Switching to {layout_name}")
-            c.frame.reloadOutline()
+            # c.frame.reloadOutline()
+            c.restartLeo()
     #@+node:ekr.20110605121601.18138: *4* dw.ctor & reloadSettings
     def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
         """Ctor for the DynamicWindow class.  The main window is c.frame.top"""
@@ -142,8 +144,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if w and self.layout_name != self.old_layout_name:
             c = self.leo_c
             print('')
-            print('@string qt-layout-name has changed: reloading the outline')
-            c.doCommandByName('reload-outline')
+            print('@string qt-layout-name has changed: restarting Leo')
+            c.restartLeo()
+
     #@+node:ekr.20240730052919.1: *4* dw.reloadSettings
     def reloadSettings(self) -> None:
         c = self.leo_c
@@ -154,7 +157,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.toolbar_orientation = c.config.getString('qt-toolbar-location') or ''
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.use_gutter = c.config.getBool('use-gutter', default=False)
-        self.recreateMainWindow()  # Executes the reload-outline command.
+        self.recreateMainWindow()
         if getattr(self, 'iconBar', None):
             if self.show_iconbar:
                 self.iconBar.show()
@@ -2201,81 +2204,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 assert hasattr(w, 'setWindowState'), w
             else:
                 w.setWindowState(WindowState.WindowMaximized)
-    #@+node:ekr.20240810080628.1: *5* LeoQtFrame.reloadOutline
-    @frame_cmd('reload-outline')
-    def reloadOutline(self, event: LeoKeyEvent = None) -> None:
-        """reload-outline: Close the outline and reload it."""
-        c = self.c
-
-        # Commit any open edits.
-        c.endEditing()
-
-        # Make sure the file has a name.
-        if not c.fileName():
-            c.save()
-        if not c.fileName():
-            g.es_print('Please name the outline', color='red')
-            return
-
-        # Abort the reload if the user vetos closing this outline.
-        if c.changed:
-            veto = False
-            try:
-                c.promptingForClose = True
-                veto = c.frame.promptForSave()
-            finally:
-                c.promptingForClose = False
-            if veto:
-                g.es_print('Cancelling reload-outline command')
-                return
-            # Save the file.
-            c.save()
-            g.app.recentFilesManager.writeRecentFilesFile(c)
-
-        # Remember old_index, the outline's position in the QTabbledWidget.
-        dw = c.frame.top
-        stacked_widget = dw.parent()
-        tab_widget = dw.leo_master
-        stacked_layout = None
-        for w in stacked_widget.children():
-            if isinstance(w, QtWidgets.QStackedLayout):
-                stacked_layout = w
-                break
-        else:
-            g.trace('Can not happen: no QStackedLayout')
-            return
-
-        # Remember the old values.
-        old_index = stacked_layout.indexOf(dw)
-        tab_names = [tab_widget.tabText(i) for i in range(tab_widget.count())]
-
-        # Completely close the outline.
-        g.doHook("close-frame", c=c)
-        frame = c.frame
-        if frame in g.app.windowList:
-            g.app.destroyWindow(frame)
-            g.app.windowList.remove(frame)
-        else:
-            g.app.forgetOpenFile(fn=c.fileName())  # #69.
-
-        # Open the new outline.
-        g.openWithFileName(fileName=c.fileName())
-
-        # Do nothing more if the index has not changed.
-        new_index = stacked_layout.indexOf(dw)
-        if new_index == old_index:
-            return
-
-        # Put dw in the proper place.
-        stacked_layout.removeWidget(dw)
-        stacked_layout.insertWidget(old_index, dw)
-
-        # Fix all tab names.
-        for i, name in enumerate(tab_names):
-            tab_widget.setTabText(i, name)
-
-        # Select the proper tab.
-        tab_widget.setCurrentIndex(old_index)
     #@+node:ekr.20110605121601.18311: *3* LeoQtFrame.Qt bindings...
     #@+node:ekr.20190611053431.1: *4* LeoQtFrame.bringToFront
     def bringToFront(self) -> None:
