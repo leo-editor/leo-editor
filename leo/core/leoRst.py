@@ -242,8 +242,6 @@ class RstCommands:
                     g.trace(f"ignoring nested @rst node: {p.h}")
                 else:
                     h = p.h.strip()
-                    if p.h != h:
-                        p.h = h
                     fn = h[4:].strip()
                     if fn:
                         source = self.write_rst_tree(p, fn)
