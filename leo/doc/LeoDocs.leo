@@ -6701,17 +6701,37 @@ Leo 4.4.8 (April 6, 2008): Host Leo's forum on Google Groups.
 
 You can use several other kinds of nodes to cause Leo to ignore parts of an ``@settings`` tree:
 
-- ``@if &lt;expression&gt;``
+- ``@ifenv &lt;list of environments&gt;``
 
-  A node whose headline starts with ``@if`` *expression* acts like an organizer node if the expression evaluates to True, otherwise acts like an ``@ignore`` node. If the expression is empty the body text should contain a script that will be evaluated (in an empty context).
+True if sys.env matches any of the list of environments.
 
-- ``@ifplatform &lt;platform-name&gt;``
+- ``@ifplatform &lt;platform&gt;``
 
-  Same as ``@if sys.platform == "platform-name"`` except that it isn't necessary to import sys.
+True if sys.platform matches ``platform``.
 
-- ``@ifhostname *hostA,!hostB*``
+- ``@ifhostname &lt;host&gt;``
 
-  Evaluates to True if and only if: ``h=g.computeMachineName(); h==hostA and h!=hostB``. The ``!`` version allows matching to every machine name except the given one to allow differing settings on only a few machines.
+True if os.getenv('HOSTNAME') or os.getenv('COMPUTERNAME') matches the given host.
+
+- ``@ifhostname &lt;host&gt;``
+
+True if os.getenv('HOSTNAME') or os.getenv('COMPUTERNAME') matches the given host.
+
+- ``@ifhostname !&lt;host&gt;``
+
+True if ``@ifhostname &lt;host&gt;`` *doesn't* match.
+
+
+
+
+@ifhostname bob
+        Enable descendant settings if h == 'bob'
+    @ifhostname !harry
+        Enable descendant settings if h != 'harry'
+
+  Evaluates to True if and only if
+  
+  : ``h=g.computeMachineName(); h==hostA and h!=hostB``. The ``!`` version allows matching to every machine name except the given one to allow differing settings on only a few machines.
 </t>
 <t tx="ekr.20080412124815.1"></t>
 <t tx="ekr.20080527063511.1">I had a need to figure out why a part of some python code I had written was taking too long. I pulled the code into Leo and the relevant part of the outline looked something like this::
