@@ -2519,6 +2519,7 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
+<v t="EKR.20040524104904.140" descendentVnodeUnknownAttributes="7d71005805000000302e362e3471017d710258090000007374725f6174696d657103580c000000313337363431323835332e30710473732e"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -2534,7 +2535,7 @@ There are four kinds of settings files:
 
 2. **Personal settings files**, named **myLeoSettings.leo**. They provide a way of ensuring that your customized settings are not altered when updating Leo from git or while installing a new version of Leo. The ``myLeoSettings.leo`` file acts much like Python's ``site-customize.py`` file. ``myLeoSettings.leo`` will never be part of any Leo distribution, and it will never exist in Leo's cvs repository. This solution is *much* better than trying to update ``leoSettings.leo`` with scripts.
 
-3. **Machine settings files**, named **LeoSettings.leo** (note the capital 'L'), and appearing in a unique directory.
+3. **Machine settings files**, named **&lt;prefix&gt;myLeoSettings.leo**, where **prefix** comes from os.getenv('HOSTNAME')or os.getenv('COMPUTERNAME').
 
 4. **Theme files**. These are .leo files containing stylesheets and other appearance-related settings.
 
@@ -7746,7 +7747,7 @@ Code part
 .. index::
     pair: Contract; Glossary
 
-Contract:
+Contract
 
     To hide all descendants of a node.
 </t>
@@ -18101,14 +18102,6 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
 ``save-file-as``
     Saves a copy of the Leo outline, changing outline's file name.
 ``save-file-to``
-    Saves a copy of the Leo outline, without changing the outline's file name
-``save-file-as-zipped``
-    Same as ``save-file-as``, compressing the .leo file with Python's zipfile module.
-``save-file-as-unzipped``
-    Same as ``save-as``, suppressing compression.
-
-
-**About compression**: The ``save-file``, ``save-file-as`` and ``save-file-to`` commands compress the file if it was originally compressed. Leo always uses the .leo extension, regardless of whether the file is zipped. Zipped .leo files contain a single archive, whose name is the same as the .leo file itself. Outside of Leo you can change the extension to .leo.zip and use stuffit or other program to expand the .leo file contained within.
 
 **Opening specific files**:
 
