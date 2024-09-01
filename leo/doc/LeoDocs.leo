@@ -6703,15 +6703,11 @@ You can use several other kinds of nodes to cause Leo to ignore parts of an ``@s
 
 - ``@ifenv &lt;list of environments&gt;``
 
-True if sys.env matches any of the list of environments.
+True if sys.env matches any of given list of environments.
 
 - ``@ifplatform &lt;platform&gt;``
 
-True if sys.platform matches ``platform``.
-
-- ``@ifhostname &lt;host&gt;``
-
-True if os.getenv('HOSTNAME') or os.getenv('COMPUTERNAME') matches the given host.
+True if sys.platform matches the give platform name.
 
 - ``@ifhostname &lt;host&gt;``
 
@@ -6720,18 +6716,6 @@ True if os.getenv('HOSTNAME') or os.getenv('COMPUTERNAME') matches the given hos
 - ``@ifhostname !&lt;host&gt;``
 
 True if ``@ifhostname &lt;host&gt;`` *doesn't* match.
-
-
-
-
-@ifhostname bob
-        Enable descendant settings if h == 'bob'
-    @ifhostname !harry
-        Enable descendant settings if h != 'harry'
-
-  Evaluates to True if and only if
-  
-  : ``h=g.computeMachineName(); h==hostA and h!=hostB``. The ``!`` version allows matching to every machine name except the given one to allow differing settings on only a few machines.
 </t>
 <t tx="ekr.20080412124815.1"></t>
 <t tx="ekr.20080527063511.1">I had a need to figure out why a part of some python code I had written was taking too long. I pulled the code into Leo and the relevant part of the outline looked something like this::
