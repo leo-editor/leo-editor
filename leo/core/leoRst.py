@@ -241,8 +241,8 @@ class RstCommands:
                 if self.in_rst_tree(p):
                     g.trace(f"ignoring nested @rst node: {p.h}")
                 else:
-                    p.h = p.h.strip()
-                    fn = p.h[4:].strip()
+                    h = p.h.strip()
+                    fn = h[4:].strip()
                     if fn:
                         source = self.write_rst_tree(p, fn)
                         self.write_docutils_files(fn, p, source)
