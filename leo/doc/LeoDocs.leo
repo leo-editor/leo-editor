@@ -487,6 +487,7 @@
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20240919055407.1"><vh>set-reference-file</vh></v>
 <v t="ekr.20180130094948.1"><vh>Operations on reference .leo files</vh></v>
+<v t="ekr.20150415111549.1"><vh>How can I customize the clone-find-all commands?</vh></v>
 </v>
 </v>
 <v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
@@ -705,7 +706,6 @@
 <v t="ekr.20170228104217.1"><vh>What are some useful abbreviations?</vh></v>
 </v>
 <v t="ekr.20180529064355.1"><vh>Clones</vh>
-<v t="ekr.20150415111549.1"><vh>How can I customize the clone-find-all commands?</vh></v>
 <v t="ekr.20150415110715.1"><vh>How can I eliminate clone wars?</vh></v>
 <v t="ekr.20150415111217.1"><vh>How can I use clones to reorganize an outline?</vh></v>
 <v t="ekr.20141108064630.8"><vh>How does EKR use clones?</vh></v>
@@ -1339,7 +1339,7 @@
 </v>
 <v t="ekr.20060612102055" descendentVnodeUnknownAttributes="7d71002858010000003071017d710258090000007374725f6174696d657103580c000000313337363431343136312e307104735803000000302e3071057d710658090000007374725f6174696d657107580c000000313337363431343136332e307108735805000000302e302e3171097d710a58090000007374725f6174696d65710b580c000000313337363431323033382e30710c735805000000302e302e32710d7d710e2858090000007374725f6174696d65710f580c000000313337363431343136342e30711058090000007374725f6374696d657111580c000000313337363431323033392e30711258090000007374725f6d74696d657113580c000000313337363431323033392e307114755805000000302e302e3571157d711658090000007374725f6174696d657117580c000000313337363431313938372e30711873752e"><vh>Writing Plugins</vh>
 <v t="ekr.20060612103240" descendentVnodeUnknownAttributes="7d71002858010000003071017d710258090000007374725f6174696d657103580c000000313337363431343136332e307104735803000000302e3171057d710658090000007374725f6174696d657107580c000000313337363431323033382e307108735803000000302e3271097d710a2858090000007374725f6174696d65710b580c000000313337363431343136342e30710c58090000007374725f6374696d65710d580c000000313337363431323033392e30710e58090000007374725f6d74696d65710f580c000000313337363431323033392e307110755803000000302e3571117d711258090000007374725f6174696d657113580c000000313337363431313938372e30711473752e"><vh>@rst html\writingPlugins.html</vh>
-<v t="ekr.20131008041326.16053"><vh>Writing Plugins</vh></v>
+<v t="ekr.20131008041326.16053"><vh>About Plugins</vh></v>
 <v t="EKR.20040524104904.224" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000007374725f6174696d657103580c000000313337363431323033382e30710473732e"><vh>Important security warnings</vh></v>
 <v t="peckj.20130813123907.6841" descendentVnodeUnknownAttributes="7d710058010000003071017d71022858090000007374725f6174696d657103580c000000313337363431343136342e30710458090000007374725f6374696d657105580c000000313337363431323033392e30710658090000007374725f6d74696d657107580c000000313337363431323033392e30710875732e"><vh>Documenting plugins</vh></v>
 <v t="ekr.20131012191145.16789"><vh>c ivars &amp; properties</vh></v>
@@ -2756,7 +2756,7 @@ Here are the XML elements that may appear in Leo files:
         It initializes the position of the splitter separating the outline pane from the body pane.
 
     -   The global_window_position and global_log_window_position elements
-        specify the position of the Leo window and Log window in global coordinates:
+        specify the position of the Leo window and Log window in global coordinates.
 
 &lt;preferences&gt;
     This element is vestigial.
@@ -2809,8 +2809,10 @@ Here are the XML elements that may appear in Leo files:
     -   &lt;v&gt; elements corresponding to @file nodes now contain tnodeList attributes.
         The tnodeList attribute allows Leo to recreate the order in which nodes should 
         appear in the outline.
-        The tnodeList attribute is a list of gnx's: global node indices.
-        See Format of external files (4.x) for the format of gnx's.
+
+..  The tnode list existed from Leo 4.0 until Leo 4.7.  Leo 4.7 removed the tnode list.
+..      The tnodeList attribute is a list of gnx's: global node indices.
+..      See Format of external files (4.x) for the format of gnx's.
 
     -   Plugins and scripts may add attributes to &lt;v&gt; and &lt;t&gt; elements.
         See `Writing plugins`_ for details.
@@ -4702,12 +4704,29 @@ the 'Stop?' column.
 - The `v`, `old_v` and `new_v` keys below are *deprecated*. They contain *positions*, not vnodes.
 - The `new_c` key is also *deprecated*. Use the `c` key instead.
 
+@nowrap
+.. No longer used events...
+.. 'after-redraw-outline'                  end of tree.redraw       c (note 6)
+.. 'redraw-entire-outline'         yes     start of tree.redraw     c (note 6)
+.. 'scan-directives'                       in scanDirectives        c,p,v,s,old_dict,dict,pluginsList (note 10)
+
+.. No longer used notes...
+..   6.  These hooks are useful for testing.
+..  10. g.scanDirectives calls 'scan-directives' hook.
+..      g.scanDirectives returns a dictionary, say d.
+..      d.get('pluginsList') is an a list of tuples (d,v,s,k) where:
+..      - d is the spelling of the @directive, without the leading @.
+..      - v is the vnode containing the directive, _not_ the original vnode.
+..      - s[k:] is a string containing whatever follows the @directive.
+..  k has already been moved past any whitespace that follows the @directive.
+..  See the add_directives plugins directive for a complete example of how to use this hook.
+
+
 ============================== ======== =================================== =============================
 Event name (tag argument)      Stop?    When called                         Keys in keywords dict
 ============================== ======== =================================== =============================
 'after-auto'                            after each @auto file loaded        c,p (note 13)
 'after-create-leo-frame'                after creating any frame            c
-'after-redraw-outline'                  end of tree.redraw                  c (note 6)
 'after-reading-external-file'           after reading each external file    c,p
 'after-reload-settings'                 after 'reload-settings' command     c
 'before-create-leo-frame'               before frame.finishCreate           c
@@ -4724,7 +4743,7 @@ Event name (tag argument)      Stop?    When called                         Keys
 'boxclick2'                             after  click in +- box              c,p,v,event
 'clear-all-marks'                       after clear-all-marks command       c,p,v
 'clear-mark'                            when mark is set                    c,p,v
-'close-frame'                           in app.closeLeoWindow               c
+'close-frame'                           in app.closeLeoWindow               c (note 11)
 'color-optional-markup'         yes *   (note 7)                            colorer,p,v,s,i,j,colortag (note 7)
 'command1'                      yes     before each command                 c,p,v,label (note 2)
 'command2'                              after  each command                 c,p,v,label (note 2)
@@ -4767,10 +4786,8 @@ Event name (tag argument)      Stop?    When called                         Keys
 'openwith2'                             after  Open With command            c,p,v,(note 14)
 'recentfiles1'                  yes     before Recent Files command         c,p,v,fileName
 'recentfiles2'                          after  Recent Files command         c,p,v,fileName
-'redraw-entire-outline'         yes     start of tree.redraw                c (note 6)
 'save1'                         yes     before any Save command             c,p,v,fileName
 'save2'                                 after  any Save command             c,p,v,fileName
-'scan-directives'                       in scanDirectives                   c,p,v,s,old_dict,dict,pluginsList (note 10)
 'select1'                       yes     before selecting a position         c,new_p,old_p,new_v,old_v
 'select2'                               after  selecting a position         c,new_p,old_p,new_v,old_v
 'select3'                               after  selecting a position         c,new_p,old_p,new_v,old_v
@@ -4779,7 +4796,7 @@ Event name (tag argument)      Stop?    When called                         Keys
 'start1'                                after app.finishCreate()            None
 'start2'                                after opening first Leo window      c,p,v,fileName
 'unselect1'                     yes     before unselecting a vnode          c,new_p,old_p,new_v,old_v
-'unselect2'                             after  unselecting a vnode          c,new_p,old_p,old_v,old_v
+'unselect2'                             after  unselecting a vnode          c,new_p,old_p,new_v, old_v
 '\@url1'                        yes     before double-click @url node       c,p,v,url (note 5)
 '\@url2'                                after  double-click @url node       c,p,v(note 5)
 ============================== ======== =================================== =============================
@@ -4816,7 +4833,7 @@ Event name (tag argument)      Stop?    When called                         Keys
 
 5.  '@url1' and '@url2' hooks are only executed if the 'icondclick1' hook returns None.
 
-6.  These hooks are useful for testing.
+6.  Obsolete note.
 
 7.  These hooks allow plugins to parse and handle markup within doc parts,
     comments and Python ''' strings. Note that these hooks are *not* called in
@@ -4831,17 +4848,7 @@ Event name (tag argument)      Stop?    When called                         Keys
 9.  The New command calls 'new'.
     The 'new_c' key is deprecated.  Use the 'c' key instead.
 
-10. g.scanDirectives calls 'scan-directives' hook.
-    g.scanDirectives returns a dictionary, say d.
-    d.get('pluginsList') is an a list of tuples (d,v,s,k) where:
-
-    - d is the spelling of the @directive, without the leading @.
-    - v is the vnode containing the directive, _not_ the original vnode.
-    - s[k:] is a string containing whatever follows the @directive.
-      k has already been moved past any whitespace that follows the @directive.
-
-    See the add_directives plugins directive for a complete example of how to use
-    the 'scan-directives' hook.
+10. Obsolete note.
 
 11. g.app.closeLeoWindow calls the 'close-frame' hook just before
     removing the window from g.app.windowList. The hook code may remove the window
@@ -7961,11 +7968,10 @@ Promote
 
 Reference .leo file
 
-`leoeditor/leo/core` contains a **reference .leo file**: **LeoPyRef.leo**.
-This file should change only when adding new external files to Leo.
-Developers should use a local copy of LeoPyRef.leo (conventionally called
-**leoPy.leo**) for their own work.
-
+    `leoeditor/leo/core` contains a **reference .leo file**:
+    **LeoPyRef.leo**. This file should change only when adding new
+    external files to Leo. Developers should use a local copy of
+    LeoPyRef.leo (usually called **leoPy.leo**) for their own work.
 
 .. index::
     pair: reStructuredText; Glossary
@@ -8039,7 +8045,7 @@ Sentinel
 .. index::
     pair: Setting; Glossary
 
-Settings:
+Settings
 
     Plugins and other parts of Leo can get options from @settings trees,
     outlines whose headline is @settings. When opening a .leo file, Leo looks
@@ -24600,7 +24606,10 @@ The following hangs Leo until the command completes::
 
 **Note**: 'cd directory' does not seem to work when run using subprocess.popen on Windows 10.
 </t>
-<t tx="ekr.20180226155010.1">Use g.execute_shell_commands is a thin wrapper around subprocess.popen.  It calls subprocess.popen once for every command in a list.  This function waits for commands that start with '&amp;'. Here it is::
+<t tx="ekr.20180226155010.1">Use g.execute_shell_commands is a thin wrapper around subprocess.popen.  It calls subprocess.popen once for every command in a list.  
+
+This function waits for each command to complete, except those commands starting with '&amp;'.
+::
 
     def execute_shell_commands(commands, trace=False):
         if g.isString(commands): commands = [commands]
@@ -28037,7 +28046,11 @@ https://github.com/leo-editor/leo-editor/issues/977
 <t tx="ekr.20190123075859.1">https://github.com/leo-editor/leo-editor/issues/1065
 </t>
 <t tx="ekr.20190123122138.1"></t>
-<t tx="ekr.20190307093145.1">g.execute_shell_command tales a single argument, which may be either a string or a list of strings. Each string represents one command. g.execute_shell_command executes each command in order.  Commands starting with '&amp;' are executed without waiting. Commands that do not start with '&amp;' finish before running later commands. Examples::
+<t tx="ekr.20190307093145.1">g.execute_shell_command takes a single argument, which may be either a string or a list of strings. Each string represents one command.
+
+g.execute_shell_command executes each command in order, waiting for each command to complete, except those commands starting with '&amp;'.
+
+Examples::
 
     # Run the qml app in a separate process:
     g.execute_shell_commands('qmlscene /test/qml_test.qml')
@@ -28053,7 +28066,10 @@ https://github.com/leo-editor/leo-editor/issues/977
 
 g.execute_shell_commands_with_options inits an environment and then calls g.execute_shell_commands.  See Leo's source code for details.
 </t>
-<t tx="ekr.20190307095247.1">g.execute_shell_commands executes one or more commands in a separate process using subprocess.popen. Commands *not* preceded by '&amp;' run to completion before the next command is run.
+<t tx="ekr.20190307095247.1">g.execute_shell_commands executes one or more commands in a separate process using subprocess.popen.
+
+Wait for each command to complete, except those commands starting with '&amp;'.
+
 See the scripting miscellany for more details.
 </t>
 <t tx="ekr.20190325062650.1">Leo now optionally supports syntax coloring with pygments.
