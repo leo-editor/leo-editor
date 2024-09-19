@@ -118,7 +118,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             print(f"Switching to {layout_name}")
             # c.frame.reloadOutline()
             c.restartLeo()
-    #@+node:ekr.20110605121601.18138: *4* dw.ctor & reloadSettings
+    #@+node:ekr.20110605121601.18138: *4* dw.ctor
     def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
         """Ctor for the DynamicWindow class.  The main window is c.frame.top"""
             # Called from LeoQtFrame.finishCreate.
