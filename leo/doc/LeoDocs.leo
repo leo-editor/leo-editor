@@ -2519,6 +2519,8 @@
 </v>
 <v t="ekr.20240723070707.1"><vh>Leo 6.8.1 release notes</vh></v>
 <v t="ekr.20150323102036.1"></v>
+<v t="ekr.20050902105852.9"></v>
+<v t="ekr.20060529053407"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -5499,15 +5501,19 @@ The path to the file to be written by the execute-script command. Notes:
 @string debugger_path = None
 
 </t>
-<t tx="ekr.20060529053407">@ignore can only be used in the root node of @file trees.  It tells Leo to ignore the tree.
+<t tx="ekr.20060529053407">``@ignore`` can only be used in the root node of @file trees. It tells Leo
+to ignore the tree.
 
-The @ignore directive can not be used elsewhere in @file trees because of the way Leo recreates outlines from external files. This is an absolutely crucial restriction and will never go away. For a few more details, see `Leo 4.0: Eliminating error 'recovery'`_ in `History of Leo`_.
+The ``@ignore`` directive can not be used elsewhere in @file trees because
+of the way Leo recreates outlines from external files. This is an
+absolutely crucial restriction and will never go away. For details, see the
+entry for 2003 in the `History of Leo`_.
 
 There are several workaround, as shown in LeoPy.leo:
 
 - keep notes in the outline outside of any external file.
-
-- Use @all to gather notes in a external file, as in done in @file leoProjects.txt.
+- Use ``@all`` to gather notes in a external file, as in done in @file
+  leoProjects.txt.
 </t>
 <t tx="ekr.20060612102055" str_atime="1376414161.0">.. Most of this has nothing to do with *writing* plugins.</t>
 <t tx="ekr.20060612103240" str_atime="1376414163.0">###############
