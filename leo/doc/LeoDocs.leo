@@ -2521,6 +2521,7 @@
 <v t="ekr.20150323102036.1"></v>
 <v t="ekr.20050902105852.9"></v>
 <v t="ekr.20060529053407"></v>
+<v t="ekr.20200909171301.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -29751,7 +29752,7 @@ Leo's markup applies to scripts as well as external files. Leo's ``execute-scrip
     Controller(c).run # c *is* defined.
 
 **Important**: Leo recognizes section references *everywhere*, even inside strings or comments.
-See `this FAQ entry &lt;FAQ.html#what-about-code-that-looks-like-a-section-reference&gt;`_.</t>
+</t>
 <t tx="ekr.20201014052236.1">Leo 6.3, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
