@@ -63,7 +63,7 @@ Previous Recent Changes
 ========================
 The "vr3" command and the default opening positions have been changed:
 
-The default value of the setting *@string vr3-initial-orientation* is now _"in-body".  This will open VR3 next to the body editor (or below if Leo's layout orientation has been changed to "vertical". 
+The default value of the setting *@string vr3-initial-orientation* is now _"in-body".  This will open VR3 next to the body editor (or below if Leo's layout orientation has been changed to "vertical".
 
 For any other value of the setting VR3 will open:
 
@@ -432,7 +432,7 @@ rarely a reason to invoke any of them, except these:
     log panel, respectively.  If one of these commands is issued while VR3
     is already open, it will stay open but move from splitter to tab or
     vice-versa depending on which command was issued.
-    
+
     .. Note:: ``vr3-use-default-layout`` opens VR3 in a splitter pane with three full-height panes.
 
     3.``vr3-open-markup-in-editor`` exports the generated markup
@@ -1488,7 +1488,7 @@ def onClose(tag, keys):
 #@+node:tom.20240918232752.1: *3* vr3.show_scrolled_message
 def show_scrolled_message(tag, kw):
     """Show "scrolled message" in VR3.
-    
+
     If not already open, open in last opened position,
     or in splitter if none.
     """
@@ -1546,7 +1546,7 @@ def open_in_tab(c, vr3):
 #@+node:tom.20230403143106.1: *3* vr3.close_tab
 def close_tab(c, vr3):
     """Close the VR3 tab if it is open.
-    
+
     Does not delete or deactivate the vr3 instance.
     """
     log = c.frame.log
@@ -1967,7 +1967,7 @@ def viewrendered_tab(event):
 @g.command('vr3-toggle')
 def toggle_rendering_pane(event):
     """Toggle the rendering pane.
-    
+
     If a VR3 instance exists for this controller, remove it.
     Otherwise, create it, respecting its position if any from
     the last time it was open.
@@ -1987,8 +1987,16 @@ def toggle_rendering_pane(event):
         had_vr3 = False
 
     if had_vr3:
-        vr3.setParent(None)
-        vr3.hide()
+        if vr3.isVisible():
+            # vr3.setParent(None)
+            vr3.hide()
+            vr3.set_freeze()
+        elif vr3.parent() is None or vr3.parent().objectName() == 'leo-layout-cache':
+            c.doCommandByName('vr3-toggle-tab')
+        else:
+            vr3.setVisible(True)
+            vr3.show()
+            vr3.set_unfreeze()
     else:
         ms = g.app.gui.find_widget_by_name(c, 'main_splitter')
         ms.addWidget(vr3)
@@ -2000,7 +2008,7 @@ def toggle_rendering_pane(event):
 @g.command('vr3-toggle-tab')
 def toggle_rendering_pane_tab(event):
     """Toggle the rendering pane.
-    
+
     If a VR3 instance exists for this controller, remove it.
     Otherwise, create it in a tab in the log pane.
     """
@@ -2078,7 +2086,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # QtWidgets.QWidget.__init__(self)
         self.create_pane(parent)
 
-        # Set the ivars.
+        #@+<< Set ivars >>
+        #@+node:tom.20240919181141.1: *4* << Set ivars >>
         self.active = False
         self.badColors = []
         self.controllers = controllers
@@ -2106,8 +2115,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.Markdown = None  # MD processor instance
         self.vp = None  # The present video player.
         self.w = None  # The present widget in the rendering pane.
-
-        # For viewrendered3
+        #@-<< Set ivars >>
+        #@+<< initialize configuration ivars >>
+        #@+node:tom.20240919181318.1: *4* << initialize configuration ivars >>
         self.base_path = ''  # A node's base path including @path directive
         self.code_only = False
         self.code_only = False
@@ -2122,6 +2132,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.base_url = ''
         self.positions = {}
         self.last_update_was_node_change = False
+        #@-<< initialize configuration ivars >>
+        #@+<< asciidoc-specific >>
+        #@+node:tom.20240919181508.1: *4* << asciidoc-specific >>
+        self.asciidoc3_internal_ok = True
+        self.asciidoc_internal_ok = True
+        self.using_ext_proc_msg_shown = False
+        #@-<< asciidoc-specific >>
 
         # User settings.
         self.reloadSettings()
@@ -2131,10 +2148,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.create_dispatch_dict()
         self.activate()
         self.zoomed = False
-
-        self.asciidoc3_internal_ok = True
-        self.asciidoc_internal_ok = True
-        self.using_ext_proc_msg_shown = False
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):
         self.dispatch_dict = {
@@ -2389,14 +2402,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c = self.c
         c.registerReloadSettings(self)
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
-        self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
-        self.use_dark_theme = c.config.getBool('vr3-rst-use-dark-theme', RST_USE_DARK)
-
         self.math_output = c.config.getBool('vr3-math-output', default=False)
         self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
         self.rst_math_output = 'mathjax ' + self.mathjax_url
 
         self.use_node_headline = c.config.getBool('vr3-insert-headline-from-node', default=True)
+
+        #@+<< load stylesheet settings >>
+        #@+node:tom.20240919182502.1: *5* << load stylesheet settings >>
+        self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
+        self.use_dark_theme = c.config.getBool('vr3-rst-use-dark-theme', RST_USE_DARK)
 
         self.md_math_output = c.config.getBool('vr3-md-math-output', default=False)
         self.md_stylesheet = c.config.getString('vr3-md-stylesheet') or ''
@@ -2406,12 +2421,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.set_rst_stylesheet()
         self.create_md_header()
 
+        #@-<< load stylesheet settings >>
+        #@+<< configure markdown >>
+        #@+node:tom.20240919182545.1: *5* << configure markdown >>
         if got_markdown:
             ext = ['fenced_code', 'codehilite', 'def_list', 'tables']
             if self.md_math_output:
                 ext.append('leo.extensions.mdx_math_gi')
             self.Markdown = markdown.Markdown(extensions=ext)
-
+        #@-<< configure markdown >>
+        #@+<< configure asciidoc >>
+        #@+node:tom.20240919182710.1: *5* << configure asciidoc >>
         self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
         self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', default=False)
         self.prefer_external = c.config.getString('vr3-prefer-external') or ''
@@ -2426,6 +2446,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             asciidoc_has_diagram and
             c.config.getBool('vr3-asciidoctor-diagram', default=False)
         )
+        #@-<< configure asciidoc >>
+
         self.external_editor = c.config.getString('vr3-ext-editor') or ''
         self.DEBUG = bool(os.environ.get("VR3_DEBUG", None))
     #@+node:TomP.20200329223820.16: *4* vr3.set_md_stylesheet
@@ -2625,14 +2647,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:tom.20211104105903.1: *3* vr3.plot_2d
     def plot_2d(self):
         """Plot 2-column data in node.
-        
+
         If the selected node contains data in one or two columns, VR3 can
         plot the data as an X-Y graph. The labeling and appearance of the
         plot can optionally and easily adjusted. The graph is produced
         when the toolbar menu labeled *Other Actions* is pressed and
         *Plot 2D* is clicked.
 
-        If the selected node has an optional section *[source]* containing the key 
+        If the selected node has an optional section *[source]* containing the key
         *file*, the value of the key will be used as the path to
         the data, instead of using the selected node itself as the data source.
 
