@@ -1483,7 +1483,7 @@ def onClose(tag, keys):
         c.bodyWantsFocus()
         del controllers[h]
         vr3.deactivate()
-#@+node:TomP.20191215195433.13: *3* vr3.show_scrolled_message
+#@+node:tom.20240918232752.1: *3* vr3.show_scrolled_message
 def show_scrolled_message(tag, kw):
     """Show "scrolled message" in VR3.
     
@@ -1497,11 +1497,13 @@ def show_scrolled_message(tag, kw):
     flags = kw.get('flags') or 'rst'
     h = c.hash()
     vr3 = controllers.get(h, None)
+    started_vr3 = False
     if not vr3:
         if positions.get(h, None) == None or OPENED_IN_SPLITTER:
             vr3 = viewrendered(event=kw)
         else:
             vr3 = viewrendered_tab(event=kw)
+        started_vr3 = True
 
     title = kw.get('short_title', '').strip()
     vr3.setWindowTitle(title)
@@ -1512,13 +1514,18 @@ def show_scrolled_message(tag, kw):
         kw.get('msg')
     ])
 
-    vr3.update(
-        tag='show-scrolled-message',
-        keywords={'c': c, 'force': True, 's': s, 'flags': flags},
-    )
+    delay = 500 if started_vr3 else 0
 
-    if not vr3.isVisible:
-        vr3.show()
+    def do_scrolled_msg(vr3, s, flags):
+        vr3.update(
+            tag='show-scrolled-message',
+            keywords={'c': c, 'force': True, 's': s, 'flags': flags},
+        )
+
+        if not vr3.isVisible:
+            vr3.show()
+
+    QtCore.QTimer.singleShot(delay, lambda: do_scrolled_msg(vr3, s, flags))
     return True
 #@+node:TomP.20191215195433.14: *3* vr3.split_last_sizes
 def split_last_sizes(sizes):
