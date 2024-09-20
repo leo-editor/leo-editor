@@ -1938,10 +1938,26 @@ def vr3_render_html_from_clip(event):
 @g.command('vr3-show')
 def show_rendering_pane(event):
     """Show the rendering pane."""
-    vr3 = getVr3(event)
-    if not vr3: return
+    c = event.get('c')
+    if not c:
+        return
 
-    vr3.show_dock_or_pane()
+    h = c.hash()
+    vr3 = controllers.get(h)
+    if not vr3:
+        c.doCommandByName('vr3')
+    elif vr3.parent().objectName() in (None, 'leo-layout-cache'):
+        # VR3 object is in limbo, insert it into the default layout's splitter
+        dw = c.frame.top
+        target = dw.vr_parent_frame
+        target.addWidget(vr3)
+        g.app.gui.equalize_splitter(target)
+        vr3.show()
+        vr3.set_unfreeze()
+    else:
+        vr3.show()
+        vr3.set_unfreeze()
+
 #@+node:TomP.20201003182453.1: *3* g.command('vr3-shrink-view')
 @g.command('vr3-shrink-view')
 def shrink_view(event):
@@ -1968,11 +1984,10 @@ def viewrendered_tab(event):
 def toggle_rendering_pane(event):
     """Toggle the rendering pane.
 
-    If a VR3 instance exists for this controller, remove it.
+    If a VR3 instance exists for this controller, hide it.
     Otherwise, create it, respecting its position if any from
     the last time it was open.
     """
-    # global controllers
     if g.app.gui.guiName() != 'qt':
         return
     if not (c := event.get('c')):
@@ -1988,7 +2003,6 @@ def toggle_rendering_pane(event):
 
     if had_vr3:
         if vr3.isVisible():
-            # vr3.setParent(None)
             vr3.hide()
             vr3.set_freeze()
         elif vr3.parent() is None or vr3.parent().objectName() == 'leo-layout-cache':
@@ -2078,13 +2092,18 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+others
     #@+node:TomP.20200329223820.1: *3* vr3.ctor & helpers
     def __init__(self, c, parent=None):
-        """Ctor for ViewRenderedController class."""
+        """Ctor for ViewRenderedController class.
+        
+        ARGUMENTS
+        c -- the controller for this outline
+        parent -- the widget that will contain this VR3 widget.
+        """
         self.c = c
         # Create the widget.
         super().__init__(parent)
             # per http://enki-editor.org/2014/08/23/Pyqt_mem_mgmt.html
             # QtWidgets.QWidget.__init__(self)
-        self.create_pane(parent)
+        self.create_pane()
 
         #@+<< Set ivars >>
         #@+node:tom.20240919181141.1: *4* << Set ivars >>
@@ -2223,7 +2242,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     </head>
     '''
     #@+node:TomP.20200329223820.5: *4* vr3.create_pane
-    def create_pane(self, parent):
+    def create_pane(self):
         """Create the vr3 pane."""
 
         if g.unitTesting:
@@ -2359,6 +2378,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         set_group_action('Asciidoc', ASCIIDOC)
         _default_type_button.setMenu(menu)
 
+        # "Other Actions"
         menu = QtWidgets.QMenu()
         _action = QAction('Plot 2D', self, checkable=False)
         _action.triggered.connect(lambda: c.doCommandByName('vr3-plot-2d'))
@@ -2402,6 +2422,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c = self.c
         c.registerReloadSettings(self)
         self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
+
         self.math_output = c.config.getBool('vr3-math-output', default=False)
         self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
         self.rst_math_output = 'mathjax ' + self.mathjax_url
