@@ -22,7 +22,7 @@ def trace_tags(tag, keywords):
         'bodykey1', 'bodykey2', 'dragging1', 'dragging2',
         'headkey1', 'headkey2',
         'idle',
-        'after-redraw-outline', 'redraw-entire-outline',
+        # 'after-redraw-outline', 'redraw-entire-outline',
         'draw-outline-text-box', 'draw-outline-icon',
         'draw-outline-node', 'draw-outline-box', 'draw-sub-outline',
     ):
