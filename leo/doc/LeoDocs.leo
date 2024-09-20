@@ -485,6 +485,9 @@
 </v>
 <v t="ekr.20141105052052.4"><vh>Dependencies</vh></v>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
+<v t="ekr.20240919055407.1"><vh>set-reference-file</vh></v>
+<v t="ekr.20180130094948.1"><vh>Operations on reference .leo files</vh></v>
+<v t="ekr.20150415111549.1"><vh>How can I customize the clone-find-all commands?</vh></v>
 </v>
 </v>
 <v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
@@ -703,7 +706,6 @@
 <v t="ekr.20170228104217.1"><vh>What are some useful abbreviations?</vh></v>
 </v>
 <v t="ekr.20180529064355.1"><vh>Clones</vh>
-<v t="ekr.20150415111549.1"><vh>How can I customize the clone-find-all commands?</vh></v>
 <v t="ekr.20150415110715.1"><vh>How can I eliminate clone wars?</vh></v>
 <v t="ekr.20150415111217.1"><vh>How can I use clones to reorganize an outline?</vh></v>
 <v t="ekr.20141108064630.8"><vh>How does EKR use clones?</vh></v>
@@ -1134,7 +1136,6 @@
 <v t="ekr.20230105123159.1"><vh>Syncing @clean files</vh></v>
 <v t="ekr.20131001100335.15947"><vh>Help commands</vh></v>
 <v t="ekr.20190414191837.1"><vh>Debugger commands</vh></v>
-<v t="ekr.20180130094948.1"><vh>Operations on reference .leo files</vh></v>
 </v>
 <v t="ekr.20170215103337.1"><vh>All other commands</vh>
 <v t="ekr.20160428110816.1"><vh>Clone-find commands</vh></v>
@@ -1338,7 +1339,7 @@
 </v>
 <v t="ekr.20060612102055" descendentVnodeUnknownAttributes="7d71002858010000003071017d710258090000007374725f6174696d657103580c000000313337363431343136312e307104735803000000302e3071057d710658090000007374725f6174696d657107580c000000313337363431343136332e307108735805000000302e302e3171097d710a58090000007374725f6174696d65710b580c000000313337363431323033382e30710c735805000000302e302e32710d7d710e2858090000007374725f6174696d65710f580c000000313337363431343136342e30711058090000007374725f6374696d657111580c000000313337363431323033392e30711258090000007374725f6d74696d657113580c000000313337363431323033392e307114755805000000302e302e3571157d711658090000007374725f6174696d657117580c000000313337363431313938372e30711873752e"><vh>Writing Plugins</vh>
 <v t="ekr.20060612103240" descendentVnodeUnknownAttributes="7d71002858010000003071017d710258090000007374725f6174696d657103580c000000313337363431343136332e307104735803000000302e3171057d710658090000007374725f6174696d657107580c000000313337363431323033382e307108735803000000302e3271097d710a2858090000007374725f6174696d65710b580c000000313337363431343136342e30710c58090000007374725f6374696d65710d580c000000313337363431323033392e30710e58090000007374725f6d74696d65710f580c000000313337363431323033392e307110755803000000302e3571117d711258090000007374725f6174696d657113580c000000313337363431313938372e30711473752e"><vh>@rst html\writingPlugins.html</vh>
-<v t="ekr.20131008041326.16053"><vh>Writing Plugins</vh></v>
+<v t="ekr.20131008041326.16053"><vh>About Plugins</vh></v>
 <v t="EKR.20040524104904.224" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000007374725f6174696d657103580c000000313337363431323033382e30710473732e"><vh>Important security warnings</vh></v>
 <v t="peckj.20130813123907.6841" descendentVnodeUnknownAttributes="7d710058010000003071017d71022858090000007374725f6174696d657103580c000000313337363431343136342e30710458090000007374725f6374696d657105580c000000313337363431323033392e30710658090000007374725f6d74696d657107580c000000313337363431323033392e30710875732e"><vh>Documenting plugins</vh></v>
 <v t="ekr.20131012191145.16789"><vh>c ivars &amp; properties</vh></v>
@@ -2755,7 +2756,7 @@ Here are the XML elements that may appear in Leo files:
         It initializes the position of the splitter separating the outline pane from the body pane.
 
     -   The global_window_position and global_log_window_position elements
-        specify the position of the Leo window and Log window in global coordinates:
+        specify the position of the Leo window and Log window in global coordinates.
 
 &lt;preferences&gt;
     This element is vestigial.
@@ -2808,8 +2809,10 @@ Here are the XML elements that may appear in Leo files:
     -   &lt;v&gt; elements corresponding to @file nodes now contain tnodeList attributes.
         The tnodeList attribute allows Leo to recreate the order in which nodes should 
         appear in the outline.
-        The tnodeList attribute is a list of gnx's: global node indices.
-        See Format of external files (4.x) for the format of gnx's.
+
+..  The tnode list existed from Leo 4.0 until Leo 4.7.  Leo 4.7 removed the tnode list.
+..      The tnodeList attribute is a list of gnx's: global node indices.
+..      See Format of external files (4.x) for the format of gnx's.
 
     -   Plugins and scripts may add attributes to &lt;v&gt; and &lt;t&gt; elements.
         See `Writing plugins`_ for details.
@@ -3663,7 +3666,6 @@ Scripts can get the following ivars of the Commands class::
 
     ivars = (
         'output_doc_flag',
-        'page_width',
         'page_width',
         'tab_width',
         'target_language',
@@ -4702,12 +4704,29 @@ the 'Stop?' column.
 - The `v`, `old_v` and `new_v` keys below are *deprecated*. They contain *positions*, not vnodes.
 - The `new_c` key is also *deprecated*. Use the `c` key instead.
 
+@nowrap
+.. No longer used events...
+.. 'after-redraw-outline'                  end of tree.redraw       c (note 6)
+.. 'redraw-entire-outline'         yes     start of tree.redraw     c (note 6)
+.. 'scan-directives'                       in scanDirectives        c,p,v,s,old_dict,dict,pluginsList (note 10)
+
+.. No longer used notes...
+..   6.  These hooks are useful for testing.
+..  10. g.scanDirectives calls 'scan-directives' hook.
+..      g.scanDirectives returns a dictionary, say d.
+..      d.get('pluginsList') is an a list of tuples (d,v,s,k) where:
+..      - d is the spelling of the @directive, without the leading @.
+..      - v is the vnode containing the directive, _not_ the original vnode.
+..      - s[k:] is a string containing whatever follows the @directive.
+..  k has already been moved past any whitespace that follows the @directive.
+..  See the add_directives plugins directive for a complete example of how to use this hook.
+
+
 ============================== ======== =================================== =============================
 Event name (tag argument)      Stop?    When called                         Keys in keywords dict
 ============================== ======== =================================== =============================
 'after-auto'                            after each @auto file loaded        c,p (note 13)
 'after-create-leo-frame'                after creating any frame            c
-'after-redraw-outline'                  end of tree.redraw                  c (note 6)
 'after-reading-external-file'           after reading each external file    c,p
 'after-reload-settings'                 after 'reload-settings' command     c
 'before-create-leo-frame'               before frame.finishCreate           c
@@ -4724,7 +4743,7 @@ Event name (tag argument)      Stop?    When called                         Keys
 'boxclick2'                             after  click in +- box              c,p,v,event
 'clear-all-marks'                       after clear-all-marks command       c,p,v
 'clear-mark'                            when mark is set                    c,p,v
-'close-frame'                           in app.closeLeoWindow               c
+'close-frame'                           in app.closeLeoWindow               c (note 11)
 'color-optional-markup'         yes *   (note 7)                            colorer,p,v,s,i,j,colortag (note 7)
 'command1'                      yes     before each command                 c,p,v,label (note 2)
 'command2'                              after  each command                 c,p,v,label (note 2)
@@ -4767,10 +4786,8 @@ Event name (tag argument)      Stop?    When called                         Keys
 'openwith2'                             after  Open With command            c,p,v,(note 14)
 'recentfiles1'                  yes     before Recent Files command         c,p,v,fileName
 'recentfiles2'                          after  Recent Files command         c,p,v,fileName
-'redraw-entire-outline'         yes     start of tree.redraw                c (note 6)
 'save1'                         yes     before any Save command             c,p,v,fileName
 'save2'                                 after  any Save command             c,p,v,fileName
-'scan-directives'                       in scanDirectives                   c,p,v,s,old_dict,dict,pluginsList (note 10)
 'select1'                       yes     before selecting a position         c,new_p,old_p,new_v,old_v
 'select2'                               after  selecting a position         c,new_p,old_p,new_v,old_v
 'select3'                               after  selecting a position         c,new_p,old_p,new_v,old_v
@@ -4779,7 +4796,7 @@ Event name (tag argument)      Stop?    When called                         Keys
 'start1'                                after app.finishCreate()            None
 'start2'                                after opening first Leo window      c,p,v,fileName
 'unselect1'                     yes     before unselecting a vnode          c,new_p,old_p,new_v,old_v
-'unselect2'                             after  unselecting a vnode          c,new_p,old_p,old_v,old_v
+'unselect2'                             after  unselecting a vnode          c,new_p,old_p,new_v, old_v
 '\@url1'                        yes     before double-click @url node       c,p,v,url (note 5)
 '\@url2'                                after  double-click @url node       c,p,v(note 5)
 ============================== ======== =================================== =============================
@@ -4816,7 +4833,7 @@ Event name (tag argument)      Stop?    When called                         Keys
 
 5.  '@url1' and '@url2' hooks are only executed if the 'icondclick1' hook returns None.
 
-6.  These hooks are useful for testing.
+6.  Obsolete note.
 
 7.  These hooks allow plugins to parse and handle markup within doc parts,
     comments and Python ''' strings. Note that these hooks are *not* called in
@@ -4831,17 +4848,7 @@ Event name (tag argument)      Stop?    When called                         Keys
 9.  The New command calls 'new'.
     The 'new_c' key is deprecated.  Use the 'c' key instead.
 
-10. g.scanDirectives calls 'scan-directives' hook.
-    g.scanDirectives returns a dictionary, say d.
-    d.get('pluginsList') is an a list of tuples (d,v,s,k) where:
-
-    - d is the spelling of the @directive, without the leading @.
-    - v is the vnode containing the directive, _not_ the original vnode.
-    - s[k:] is a string containing whatever follows the @directive.
-      k has already been moved past any whitespace that follows the @directive.
-
-    See the add_directives plugins directive for a complete example of how to use
-    the 'scan-directives' hook.
+10. Obsolete note.
 
 11. g.app.closeLeoWindow calls the 'close-frame' hook just before
     removing the window from g.app.windowList. The hook code may remove the window
@@ -5498,15 +5505,19 @@ The path to the file to be written by the execute-script command. Notes:
 @string debugger_path = None
 
 </t>
-<t tx="ekr.20060529053407">@ignore can only be used in the root node of @file trees.  It tells Leo to ignore the tree.
+<t tx="ekr.20060529053407">``@ignore`` can only be used in the root node of @file trees. It tells Leo
+to ignore the tree.
 
-The @ignore directive can not be used elsewhere in @file trees because of the way Leo recreates outlines from external files. This is an absolutely crucial restriction and will never go away. For a few more details, see `Leo 4.0: Eliminating error 'recovery'`_ in `History of Leo`_.
+The ``@ignore`` directive can not be used elsewhere in @file trees because
+of the way Leo recreates outlines from external files. This is an
+absolutely crucial restriction and will never go away. For details, see the
+entry for 2003 in the `History of Leo`_.
 
 There are several workaround, as shown in LeoPy.leo:
 
 - keep notes in the outline outside of any external file.
-
-- Use @all to gather notes in a external file, as in done in @file leoProjects.txt.
+- Use ``@all`` to gather notes in a external file, as in done in @file
+  leoProjects.txt.
 </t>
 <t tx="ekr.20060612102055" str_atime="1376414161.0">.. Most of this has nothing to do with *writing* plugins.</t>
 <t tx="ekr.20060612103240" str_atime="1376414163.0">###############
@@ -6562,10 +6573,11 @@ The values returned are in ('ok','yes','no','cancel'), as indicated by the metho
 
 Scripts can run File Open and Save dialogs with these methods::
 
-    g.app.gui.runOpenFileDialog(title,filetypes,defaultextension,multiple=False)
+    g.app.gui.runOpenFileDialog(title,filetypes,defaultextension)
+    g.app.gui.runOpenFilesDialog(title,filetypes,defaultextension)
     g.app.gui.runSaveFileDialog(initialfile,title,filetypes,defaultextension)
 
-For details about how to use these file dialogs, look for examples in Leo's own source code. The runOpenFileDialog returns a list of file names.
+For details about how to use these file dialogs, look for examples in Leo's own source code. The runOpenFilesDialog returns a list of file names.
 </t>
 <t tx="ekr.20071116062917"></t>
 <t tx="ekr.20071116062917.18">::
@@ -7119,13 +7131,9 @@ Portions of Leo's pyzo interface uses code from pyzo:
     The full license can be found in 'license.txt'.
 
 Leo's `Tribal Lion`_ Logo is Copyright (c) by `dreamstime.com`_ and is used by permission.</t>
-<t tx="ekr.20090223065025.3">**Important**: The changes you make below **will not persist** unless your script calls c.frame.body.onBodyChanged after making those changes. This method has the following signature::
+<t tx="ekr.20090223065025.3">Let::
 
-    def onBodyChanged (self,undoType,oldSel=None,oldText=None,oldYview=None):
-
-Let::
-
-    w = c.frame.body.wrapper # Leo's body pane.
+    w = c.frame.body.wrapper  # Leo's body pane.
 
 Scripts can get or change the context of the body as follows::
 
@@ -7960,11 +7968,10 @@ Promote
 
 Reference .leo file
 
-`leoeditor/leo/core` contains a **reference .leo file**: **LeoPyRef.leo**.
-This file should change only when adding new external files to Leo.
-Developers should use a local copy of LeoPyRef.leo (conventionally called
-**leoPy.leo**) for their own work.
-
+    `leoeditor/leo/core` contains a **reference .leo file**:
+    **LeoPyRef.leo**. This file should change only when adding new
+    external files to Leo. Developers should use a local copy of
+    LeoPyRef.leo (usually called **leoPy.leo**) for their own work.
 
 .. index::
     pair: reStructuredText; Glossary
@@ -8038,7 +8045,7 @@ Sentinel
 .. index::
     pair: Setting; Glossary
 
-Settings:
+Settings
 
     Plugins and other parts of Leo can get options from @settings trees,
     outlines whose headline is @settings. When opening a .leo file, Leo looks
@@ -8301,11 +8308,26 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 
 ``@persistence``
 
-With ``@clean`` and ``@file``, Leo can store **persistent data** in nodes. This information consists of the node's **gnx** (Global Node Index) and the node's **uA**, (User Attributes). The gnx gives each node a unique, immutable identity. Gnx's make clones possible. The uA allows scripts and plugins to associate arbitrarily much additional data with each node.
+    With ``@clean`` and ``@file``, Leo can store **persistent data**
+    in nodes. This information consists of the node's **gnx** (Global
+    Node Index) and the node's **uA**, (User Attributes). The gnx
+    gives each node a unique, immutable identity. Gnx's make clones
+    possible. The uA allows scripts and plugins to associate
+    arbitrarily much additional data with each node.
 
-By default, Leo's importers preserve neither gnx's nor uA's. This makes imported ``@auto`` trees second class citizens. To remedy this, if an outline contains an ``@persistence`` node, Leo will save data in the ``@persistence`` tree that allows Leo to recover gnx's and uA's when re-reading ``@auto`` files later. This allows clone links and uA's to persist.
+    By default, Leo's importers preserve neither gnx's nor uA's. This
+    makes imported ``@auto`` trees second class citizens. To remedy
+    this, if an outline contains an ``@persistence`` node, Leo will
+    save data in the ``@persistence`` tree that allows Leo to recover
+    gnx's and uA's when re-reading ``@auto`` files later. This allows
+    clone links and uA's to persist.
 
-@persistence is an optional feature. The stored data is akin to bookmarks. The data can "break" (become inaccessible) if the structure (including class/method/function names) changes. However, the data will typically break infrequently. To disable this feature, just delete an existing ``@persistence`` node or change ``@persistence`` to ``@@persistence``.
+    @persistence is an optional feature. The stored data is akin to
+    bookmarks. The data can "break" (become inaccessible) if the
+    structure (including class/method/function names) changes.
+    However, the data will typically break infrequently. To disable
+    this feature, just delete an existing ``@persistence`` node or
+    change ``@persistence`` to ``@@persistence``.
 
 .. index::
     pair: @tabwidth; Reference
@@ -8554,7 +8576,7 @@ The ``@clean &lt;filename&gt;`` creates an external file without sentinel lines.
 accessing external files for most people.
 
 When writing an ``@clean`` tree, Leo expands section references, ``@all`` and
-@others directives, but Leo writes no sentinels to the external file.
+``@others`` directives, but Leo writes no sentinels to the external file.
 
 When reading an ``@clean`` tree, Leo propagates changes from the external file
 to the ``@clean`` tree using the `Mulder/Ream update algorithm`_.
@@ -14098,8 +14120,8 @@ When in the minibuffer, the following keys are treated in special ways:
 
 These commands clarify which settings are in effect, and where they came from::
 
-    print-bindings
-    print-settings
+    show-bindings
+    show-settings
 
 These commands discuss special topics::
 
@@ -14198,9 +14220,9 @@ Regardless of focus, ``Alt-arrow`` select outline nodes:
 ``Ctrl-M (mark)``
     Toggles the mark on a node. Marked nodes have a vertical red bar in their icon area.
 ``Ctrl-} (demote)``
-    Makes all following siblings of a node children of the node. Use ``demote`` to "gather" nodes so they can all be moved with their parent.
+    Makes all following siblings of a node children of the node.
 ``Ctrl-{ (promote)``
-    Makes all the children of a node siblings of the node. Use ``demote`` to "scatter" the nodes after moving their parent.
+    Makes all the children of a node siblings of the node.
 </t>
 <t tx="ekr.20131002055813.19837">Leo has unlimited undo--Leo remembers *all* changes you make to outline structure or the contents of any node since you restarted Leo.
 
@@ -17130,7 +17152,6 @@ c is the Commander object for the present outline. Commander objects define **su
     c.printingController
     c.rstCommands
     c.shadowController
-    c.tangleCommands
     c.testManager
     c.vimCommands
 
@@ -19039,84 +19060,82 @@ The following commands work much like the `Emacs cursor commands`_::
     :wq
     :xa
 </t>
-<t tx="ekr.20150323102036.1">Scripts and plugins can call g.app.idleTimeManager.add_callback(callback) to cause
+<t tx="ekr.20150323102036.1">@language rest
+
+Scripts and plugins can call g.app.idleTimeManager.add_callback(callback) to cause
 the callback to be called at idle time forever. This should suffice for most purposes::
+
+@language python
 
     def print_hi():
         print('hi')
 
     g.app.idleTimeManager.add_callback(print_hi)
-
+    
+@language rest
 For greater control, g.IdleTime is a thin wrapper for the Leo's IdleTime class. The IdleTime class executes a handler with a given delay at idle time. The handler takes a single argument, the IdleTime instance::
 
+@language python
     def handler(it):
         """IdleTime handler.  it is an IdleTime instance."""
-        delta_t = it.time-it.starting_time
-        g.trace(it.count,it.c.shortFileName(),'%2.4f' % (delta_t))
+        delta_t = it.time - it.starting_time
+        g.trace(f"{it.count} {c.shortFileName()} {delta_t:2.2}")
         if it.count &gt;= 5:
             g.trace('done')
             it.stop()
 
     # Execute handler every 500 msec. at idle time.
-    it = g.IdleTime(handler,delay=500)
-    if it: it.start()
+    it = g.IdleTime(handler, delay=500)
+    if it:
+        it.start()
+@language rest
 
 The code creates an instance of the IdleTime class that calls the given handler at idle time, and no more than once every 500 msec.  Here is the output::
 
-    handler 1 ekr.leo 0.5100
-    handler 2 ekr.leo 1.0300
-    handler 3 ekr.leo 1.5400
-    handler 4 ekr.leo 2.0500
-    handler 5 ekr.leo 2.5610
-    handler done
+    handler 1 LeoDocs.leo 0.5
+    handler 2 LeoDocs.leo 1.0
+    handler 3 LeoDocs.leo 1.5
+    handler 4 LeoDocs.leo 2.0
+    handler 5 LeoDocs.leo 2.5
 
 Timer instances are completely independent::
+@language python
 
     def handler1(it):
         delta_t = it.time-it.starting_time
-        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
-        if it.count &gt;= 5:
+        g.trace(f"{it.count} {c.shortFileName()} {delta_t:2.2}")
+        if it.count &gt;= 4:
             g.trace('done')
             it.stop()
 
     def handler2(it):
         delta_t = it.time-it.starting_time
-        g.trace('%2s %s %2.4f' % (it.count,it.c.shortFileName(),delta_t))
-        if it.count &gt;= 10:
+        g.trace(f"{it.count} {c.shortFileName()} {delta_t:2.2}")
+        if it.count &gt;= 6:
             g.trace('done')
             it.stop()
 
-    it1 = g.IdleTime(handler1,delay=500)
-    it2 = g.IdleTime(handler2,delay=1000)
+    it1 = g.IdleTime(handler1, delay=500)
+    it2 = g.IdleTime(handler2, delay=1000)
     if it1 and it2:
         it1.start()
         it2.start()
 
+@language rest
 Here is the output::
 
-    handler1  1 ekr.leo 0.5200
-    handler2  1 ekr.leo 1.0100
-    handler1  2 ekr.leo 1.0300
-    handler1  3 ekr.leo 1.5400
-    handler2  2 ekr.leo 2.0300
-    handler1  4 ekr.leo 2.0600
-    handler1  5 ekr.leo 2.5600
+    handler1 1 LeoDocs.leo 0.5
+    handler1 2 LeoDocs.leo 1.0
+    handler2 1 LeoDocs.leo 1.0
+    handler1 3 LeoDocs.leo 1.5
+    handler1 4 LeoDocs.leo 2.0
     handler1 done
-    handler2  3 ekr.leo 3.0400
-    handler2  4 ekr.leo 4.0600
-    handler2  5 ekr.leo 5.0700
-    handler2  6 ekr.leo 6.0800
-    handler2  7 ekr.leo 7.1000
-    handler2  8 ekr.leo 8.1100
-    handler2  9 ekr.leo 9.1300
-    handler2 10 ekr.leo 10.1400
+    handler2 2 LeoDocs.leo 2.0
+    handler2 3 LeoDocs.leo 3.1
+    handler2 4 LeoDocs.leo 4.1
+    handler2 5 LeoDocs.leo 5.1
+    handler2 6 LeoDocs.leo 6.1
     handler2 done
-
-**Recycling timers**
-
-The g.app.idle_timers list retrains references to all timers so they *won't* be recycled after being stopped.  This allows timers to be restarted safely.
-
-There is seldom a need to recycle a timer, but if you must, you can call its destroySelf method. This removes the reference to the timer in g.app.idle_timers. **Warning**: Accessing a timer after calling its destroySelf method can lead to a hard crash.
 </t>
 <t tx="ekr.20150323102918.1">.. Aliases.
 find-clone-all
@@ -20152,13 +20171,13 @@ Idle time::
 </t>
 <t tx="ekr.20161020064706.1">The following print information to Leo's log pane::
 
-    print-bindings
-    print-commands
-    print-focus
-    print-plugin-handlers
-    print-plugins-info
-    print-settings
-    print-style-sheet
+    show--bindings
+    show--commands
+    show--focus
+    show--plugin-handlers
+    show--plugins-info
+    show--settings
+    show--style-sheet
     show-colors
     show-find-options</t>
 <t tx="ekr.20161026122804.1">class IdleTimeManager(object):
@@ -21497,6 +21516,7 @@ Now, just type &lt;Return&gt; to execute the command.  Typing completion quickly
     leo-        open .leo files
     open-       open files or url's
     print-      print commands
+    show-       show commands
     sort-       sort commands
     toggle-     toggle settings commands
 
@@ -22048,9 +22068,9 @@ I realize this is a "why" and not a "how" and that this doesn't help anyone get 
 
 You could type the full command name in the minibuffer, followed by the ``&lt;Return&gt;`` key to invoke the command, but that would be *way* too much work. Instead, you can avoid most typing using **tab completion**. With tab completion, *there is no need to remember the exact names of Leo’s commands*.
 
-For example, suppose you want to print out the list of Leo’s commands. You might remember only that there are several related commands and that they all start with "print". Just type ``&lt;Alt-X&gt;pri&lt;Tab&gt;``
+For example, suppose you want to show the list of Leo’s commands. You might remember only that there are several related commands and that they all start with "print". Just type ``&lt;Alt-X&gt;showTab&gt;``
 
-You will see ``print-`` in the minibuffer. This is the longest common prefix of all the command names that start with ``pri``. The Completion tab in the log pane shows all the commands that start with ``print-``.
+You will see ``show-`` in the minibuffer. This is the longest common prefix of all the command names that start with ``show``. The Completion tab in the log pane shows all the commands that start with ``show-``.
 
 Now just type ``c&lt;Tab&gt;`` You will see the ``print-commands`` command in the minibuffer.
 
@@ -24586,7 +24606,10 @@ The following hangs Leo until the command completes::
 
 **Note**: 'cd directory' does not seem to work when run using subprocess.popen on Windows 10.
 </t>
-<t tx="ekr.20180226155010.1">Use g.execute_shell_commands is a thin wrapper around subprocess.popen.  It calls subprocess.popen once for every command in a list.  This function waits for commands that start with '&amp;'. Here it is::
+<t tx="ekr.20180226155010.1">Use g.execute_shell_commands is a thin wrapper around subprocess.popen.  It calls subprocess.popen once for every command in a list.  
+
+This function waits for each command to complete, except those commands starting with '&amp;'.
+::
 
     def execute_shell_commands(commands, trace=False):
         if g.isString(commands): commands = [commands]
@@ -28023,7 +28046,11 @@ https://github.com/leo-editor/leo-editor/issues/977
 <t tx="ekr.20190123075859.1">https://github.com/leo-editor/leo-editor/issues/1065
 </t>
 <t tx="ekr.20190123122138.1"></t>
-<t tx="ekr.20190307093145.1">g.execute_shell_command tales a single argument, which may be either a string or a list of strings. Each string represents one command. g.execute_shell_command executes each command in order.  Commands starting with '&amp;' are executed without waiting. Commands that do not start with '&amp;' finish before running later commands. Examples::
+<t tx="ekr.20190307093145.1">g.execute_shell_command takes a single argument, which may be either a string or a list of strings. Each string represents one command.
+
+g.execute_shell_command executes each command in order, waiting for each command to complete, except those commands starting with '&amp;'.
+
+Examples::
 
     # Run the qml app in a separate process:
     g.execute_shell_commands('qmlscene /test/qml_test.qml')
@@ -28039,7 +28066,10 @@ https://github.com/leo-editor/leo-editor/issues/977
 
 g.execute_shell_commands_with_options inits an environment and then calls g.execute_shell_commands.  See Leo's source code for details.
 </t>
-<t tx="ekr.20190307095247.1">g.execute_shell_commands executes one or more commands in a separate process using subprocess.popen. Commands *not* preceded by '&amp;' run to completion before the next command is run.
+<t tx="ekr.20190307095247.1">g.execute_shell_commands executes one or more commands in a separate process using subprocess.popen.
+
+Wait for each command to complete, except those commands starting with '&amp;'.
+
 See the scripting miscellany for more details.
 </t>
 <t tx="ekr.20190325062650.1">Leo now optionally supports syntax coloring with pygments.
@@ -28509,8 +28539,7 @@ Attached to this message is a Leo file that I have extracted from one of my proj
 
 In the outline you can find build server implemented in Coffeescript. You have to use npm or yarn to install necessary modules for this server to work. Once installed you start server by executing
 `coffee tools/build-server.coffee` and it will start listening on port 8011. The script bound to Ctrl-s will search outline for nodes with the headlines like: @vendor, @pug, @coffee, @bulma and for each found node, it checks if the content of this node and its subtree has changed since last time and if it is, this content is sent to build server which transforms the source and returns result that script writes to output file. 
-
-There is one more thing I use for sharing outlines. There are three commands `set-reference-file`, `update-ref-file` and `read-ref-file`. The first lets you choose a reference file for this outline, i.e. public shared outline. It adds a top level headline `---begin-private-area---` to the outline. In the body of this node is the path to the public Leo file. Everything below this node is private, and above is public. The public file should be added to version control (git, fossil,...) and the private file should be added to ignored files for version control tool. And then in the script bound to Ctrl-s you can add `c.fileCommands.save_ref()`, so every time you save your private Leo file, at the same time is updated the public Leo file. That way they never get out of sync.</t>
+</t>
 <t tx="ekr.20190802082825.1"></t>
 <t tx="ekr.20191002072123.1">1. The directory leo-editor/leo/themes contains various theme files. You can load these files from the File:Open Outline menu.
 
@@ -29735,7 +29764,7 @@ Leo's markup applies to scripts as well as external files. Leo's ``execute-scrip
     Controller(c).run # c *is* defined.
 
 **Important**: Leo recognizes section references *everywhere*, even inside strings or comments.
-See `this FAQ entry &lt;FAQ.html#what-about-code-that-looks-like-a-section-reference&gt;`_.</t>
+</t>
 <t tx="ekr.20201014052236.1">Leo 6.3, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -32991,6 +33020,7 @@ If these suggestions don't work try using  pip's `--user` and `--break-system-pa
 
 The same will apply to any packages installed by pip, even pip install leo. --user is not needed unless you have admin privileges because pip in Linux goes to --user if installing to the primary locations fails. But if you include --user you don't get an error message about it, and if you have admin authority (e.g., you ransudo python -m pip) your packages won't go into --user where you want them.
 </t>
+<t tx="ekr.20240919055407.1">There is one more thing I use for sharing outlines. There are three commands `set-reference-file`, `update-ref-file` and `read-ref-file`. The first lets you choose a reference file for this outline, i.e. public shared outline. It adds a top level headline `---begin-private-area---` to the outline. In the body of this node is the path to the public Leo file. Everything below this node is private, and above is public. The public file should be added to version control (git, fossil,...) and the private file should be added to ignored files for version control tool. And then in the script bound to Ctrl-s you can add `c.fileCommands.save_ref()`, so every time you save your private Leo file, at the same time is updated the public Leo file. That way they never get out of sync.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
