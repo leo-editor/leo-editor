@@ -934,7 +934,7 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
 #@-<< vr3 docstring >>
 """
-
+# pylint: disable=invalid-name,multiple-statements,undefined-variable,used-before-assignment
 #@+<< imports >>
 #@+node:TomP.20191215195433.4: ** << imports >>
 #
