@@ -25,6 +25,9 @@ args = ' '.join(sys.argv[1:])
 isWindows = sys.platform.startswith('win')
 python = 'py' if isWindows else 'python'
 
-command = fr'{python} -m pylint leo --rcfile C:\Users\Dev\.leo\.pylintrc --extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets'
+rc_file = r'--rcfile C:\Users\Dev\.leo\.pylintrc'
+extension_pkg = '--extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets'
+command = fr"{python} -m pylint leo {rc_file} {extension_pkg}"
+
 subprocess.Popen(command, shell=True).communicate()
 #@-leo
