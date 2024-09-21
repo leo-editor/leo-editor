@@ -145,8 +145,8 @@ class LeoUnitTest(unittest.TestCase):
         """
         Call c.config.set with the given args, suppressing stdout.
         """
+        old_stdout = sys.stdout
         try:
-            old_stdout = sys.stdout
             sys.stdout = open(os.devnull, 'w')
             c.config.set(p=None, kind=kind, name=name, val=val)
         finally:
