@@ -18745,21 +18745,22 @@ Searches creating clones:
     Toggle wrapping in spell-as-you-type mode.
 
 The following commands refer to the Spell Tab:
-
-``focus-to-spell-tab``
-    Put focus in the Spell tab.
-``spell-change``
-    Same as clicking the "Change" button in the Spell Tab.
-``spell-change-then-find``
-    Same as clicking the "Change, Find" button in the Spell Tab.
-``spell-find``
-    Same as clicking the "Find" button in the Spell Tab.
-``spell-ignore``
-    Same as clicking the "Ignore" button in the Spell Tab.
-``spell-tab-hide``
-    Hide the Spell tab.
 ``spell-tab-open``
     Show the Spell tab.
+
+.. Retired...
+..  ``focus-to-spell-tab``
+..      Put focus in the Spell tab.
+..  ``spell-change``
+..      Same as clicking the "Change" button in the Spell Tab.
+..  ``spell-change-then-find``
+..      Same as clicking the "Change, Find" button in the Spell Tab.
+..  ``spell-find``
+..      Same as clicking the "Find" button in the Spell Tab.
+..  ``spell-ignore``
+..      Same as clicking the "Ignore" button in the Spell Tab.
+..  ``spell-tab-hide``
+..      Hide the Spell tab.
 </t>
 <t tx="ekr.20150318110552.65">``open-local-settings``
     Select the ``@settings`` node in the present file, if any.
