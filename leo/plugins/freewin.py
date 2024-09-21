@@ -249,6 +249,7 @@ Leo themes.
 
 #@-<< docstring >>
 """
+# pylint: disable=invalid-name
 #@+<< imports >>
 #@+node:tom.20210527153415.1: ** << imports >> (freewin.py)
 from __future__ import annotations
