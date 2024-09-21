@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:EKR.20040517080250.1: * @file ../plugins/mod_http.py
-# pylint: disable=line-too-long
+# pylint: disable=no-member
 # mypy: ignore-errors
 #@+<< docstring >>
 #@+node:ekr.20050111111238: ** << docstring >>
