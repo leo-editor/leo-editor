@@ -1586,9 +1586,9 @@ class AtFile:
     def atAsisToString(self, root: Position) -> str:  # pragma: no cover
         """Write the @asis node to a string."""
         at, c = self, self.c
+        c.endEditing()
+        fileName = at.initWriteIvars(root)
         try:
-            c.endEditing()
-            fileName = at.initWriteIvars(root)
             at.outputList = []
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
@@ -1616,9 +1616,9 @@ class AtFile:
     def atCleanToString(self, root: Position) -> str:  # pragma: no cover
         """Write one @clean node to a string."""
         at, c = self, self.c
+        c.endEditing()
+        fileName = at.initWriteIvars(root)
         try:
-            c.endEditing()
-            fileName = at.initWriteIvars(root)
             at.sentinels = False
             at.outputList = []
             at.putFile(root, sentinels=False)
