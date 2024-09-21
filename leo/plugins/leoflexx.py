@@ -117,8 +117,8 @@ def make_editor_function(name, node):
     Making this a top-level function avoids the need to create a common
     base class that only defines this as a method.
     """
-    global window
-    ace = window.ace.edit(node, 'editor')
+    global window  # pylint doesn't know about the window global.
+    ace = window.ace.edit(node, 'editor')  # pylint: disable=undefined-variable
     ace.navigateFileEnd()  # otherwise all lines highlighted
     ace.setTheme("ace/theme/solarized_dark")
     if name == 'body':

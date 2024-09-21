@@ -1924,7 +1924,7 @@ class LeoCursesGui(leoGui.LeoGui):
 
             def switch_focus_callback(form: Wrapper = form, i: int = i, w: Wrapper = w) -> None:
                 g.trace(i, w.__class__.__name__)
-                g.trace(g.callers(verbose=True))
+                g.trace(g.callers())
                 w.display()
                 form.display()
 
