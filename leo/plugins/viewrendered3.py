@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:TomP.20191215195433.1: * @file ../plugins/viewrendered3.py
 #@@tabwidth -4
+#@@pagewidth 120
 #@@language python
 r"""
 #@+<< vr3 docstring >>
@@ -57,13 +58,16 @@ section `Special Renderings`_.
 
 New With This Version
 ======================
+
 Showing a plugin's docstring using the Plugin menu now works right the first time.
 
 Previous Recent Changes
 ========================
+
 The "vr3" command and the default opening positions have been changed:
 
-The default value of the setting *@string vr3-initial-orientation* is now _"in-body".  This will open VR3 next to the body editor (or below if Leo's layout orientation has been changed to "vertical". 
+The default value of the setting *@string vr3-initial-orientation* is now _"in-body". This will open VR3 next to the
+body editor (or below if Leo's layout orientation has been changed to "vertical".
 
 For any other value of the setting VR3 will open:
 
@@ -94,7 +98,6 @@ the tab: *vr3-tab* and *vr3-toggle-tab*.
 *@*/*@c* now work correctly for ReStructuredText for multiline strings.  This
 fix makes them work the same way for all three structured languages: *rest*,
 *md*, and *asciidoc*.
-
 
 For both plain and text, an @language directive at the top of a node is removed.
 
@@ -353,11 +356,13 @@ include a ``?config`` specifer.  The one shown in the example above works well.
 External Processors For Other Languages
 =======================================
 
-VR3 can make use of external processors for executing code blocks in programming languages other than Python.  Examples are Javascript and Julia.  Parameters can be passed to the processor as well.  The command line must have the format::
+VR3 can make use of external processors for executing code blocks in programming languages other than Python. Examples
+are Javascript and Julia. Parameters can be passed to the processor as well. The command line must have the format::
 
     <processor> [optional parameters] filename
 
-External language processors must be specified in the file `vr3_config.ini`.  This file is located in the `vr3` directory under Leo's Home directory.  The must be entered in the `[executables]` section. Here is an example::
+External language processors must be specified in the file `vr3_config.ini`. This file is located in the `vr3` directory
+under Leo's Home directory. The must be entered in the `[executables]` section. Here is an example::
 
     [executables]
     javascript = D:\usr\graalvm-ce-java11-20.0.0\languages\js\bin\js.exe
@@ -367,11 +372,15 @@ Note that
 
 1. The name of the language (e.g., `julia`) **must** agree with the name of the language used in `@language` directives;
 
-2. The full path to the processing executable **must** be included.  VR3 will not use the system path, and the processor need not be on the system path.
+2. The full path to the processing executable **must** be included. VR3 will not use the system path, and the processor
+   need not be on the system path.
 
 This directory and .ini file must be created by the user.  VR3 will not create them.
 
-A language that is specified here will not automatically be executed: only languages known by VR3 will be executed.  Code in known languages will be colorized provided that Leo has a colorizing mode file for that language.  This should normally be the case.  For example, colorizer mode files for both julia and javascript are included in the version of Leo that includes this version of VR3.
+A language that is specified here will not automatically be executed: only languages known by VR3 will be executed. Code
+in known languages will be colorized provided that Leo has a colorizing mode file for that language. This should
+normally be the case. For example, colorizer mode files for both julia and javascript are included in the version of Leo
+that includes this version of VR3.
 
 VR3 can only successfully execute code if all code blocks in a node or subtree use the same language.
 
@@ -577,15 +586,20 @@ the language instead::
 
 Mathematics
 ------------
-Mathematics symbols and equations can be rendered with MathJax.  When enabled by the *vr3-md-math-output* setting, inline formulas and separate equation blocks can be specifed.  Equations are written in a Latex dialect.
+
+Mathematics symbols and equations can be rendered with MathJax. When enabled by the *vr3-md-math-output* setting, inline
+formulas and separate equation blocks can be specifed. Equations are written in a Latex dialect.
 
 Inline Formulas
 ________________
+
 Inline formulas are enclosed with the symbol pairs *\\(* and *\\)*.
 
 Equation Blocks
 ________________
-There are several ways to enclose equation blocks.  The Markdown (semi-)standard way is to use a math fence, similar to a literal or code block::
+
+There are several ways to enclose equation blocks. The Markdown (semi-)standard way is to use a math fence, similar to a
+literal or code block::
 
     ```math
     \begin{align*}
@@ -619,8 +633,9 @@ or *\\[*, *\\]* pairs::
 
 Tables
 -------
-Tables may be created using the `PHP Markdown Extra` syntax: https://python-markdown.github.io/extensions/tables/.  Here is an example from the Markdown package documentation::
 
+Tables may be created using the `PHP Markdown Extra` syntax: https://python-markdown.github.io/extensions/tables/. Here
+is an example from the Markdown package documentation::
 
     First Header  | Second Header
     ------------- | -------------
@@ -681,7 +696,8 @@ There is more information at https://docs.asciidoctor.org/asciidoctor/latest/ins
 VR3 will attempt to find the program when it starts up.  The program should
 be on your PATH.
 
-If the ``asciidoctor-diagram`` gem is installed, the asciidoctor processor will be able to render nodes that contain a plantuml diagram.  To install the gem, run the following command in a terminal or console::
+If the ``asciidoctor-diagram`` gem is installed, the asciidoctor processor will be able to render nodes that contain a
+plantuml diagram. To install the gem, run the following command in a terminal or console::
 
     gem install asciidoctor-diagram
 
@@ -689,7 +705,8 @@ To declare a plantuml diagram, use this header::
 
     [plantuml, target=diagram-classes, format=png, !pragma layout smetana]
 
-If the ``asciidoctor-diagram`` extension is not present, VR3 will only render the text in the node as ordinary asciidoc, not as a diagram.  No error message will be given.
+If the ``asciidoctor-diagram`` extension is not present, VR3 will only render the text in the node as ordinary asciidoc,
+not as a diagram. No error message will be given.
 
 A diagram must follow this example::
 
@@ -716,6 +733,7 @@ unzipped directory, e.g.::
 
 asciidoc3
 ----------
+
 asciidoc3 is a Python package that can be installed with pip.  On Windows,
 a post-install program must be run.  Sometimes, and with some versions,
 asciidoc3 will malfunction on Windows.  If that happens, a message will
@@ -733,12 +751,14 @@ present.
 
 Rendering Equations and Formulas
 ---------------------------------
-When the setting *@bool vr3-math-output* is set to *True*, then a MathJax script
-will be included in the HTML output. Mathjax interprets a subset of Latex to
-render mathematics.  The Latex expressions must be enclosed by delimiters. The following seem to work with all three processors, although  you may need to experiment if
-math renderings do not look right.
 
-1. Inline math: enclose the latex with ``\( ....\ \)`` characters, where where ``....`` represents the Latex math expression.  Example::
+When the setting *@bool vr3-math-output* is set to *True*, then a MathJax script will be included in the HTML output.
+Mathjax interprets a subset of Latex to render mathematics. The Latex expressions must be enclosed by delimiters. The
+following seem to work with all three processors, although you may need to experiment if math renderings do not look
+right.
+
+1. Inline math: enclose the latex with ``\( ....\ \)`` characters, where where ``....`` represents the Latex math
+   expression. Example::
 
     \(a = \sqrt{b}\ \)
 
@@ -905,7 +925,8 @@ help is also invoked by the minibuffer command
 Rendering HTML From Clipboard
 ==============================
 
-The VR3 command *vr3-render-html-from-clip* renders the clipboard string contents with the assumption that it is HTML.  The rendering can be exported to the system web browser using the VR3 *Export* button.
+The VR3 command *vr3-render-html-from-clip* renders the clipboard string contents with the assumption that it is HTML.
+The rendering can be exported to the system web browser using the VR3 *Export* button.
 
 Pressing the *Reload* button restores the view to the current node.
 
