@@ -3151,7 +3151,7 @@ class LoadManager:
             p = c.rootPosition()
             p.h = f"@auto {fn}" if func else f"@edit {fn}"
             c.selectPosition(p)
-            c.refreshFromDisk()  # Calls c.redraw()
+            c.refreshFromDisk()  # Calls c.redraw() # pylint: disable=no-member
 
         c.mFileName = None  # #3546: Do *not* automatically save the .leo file.
         c.frame.title = c.computeTabTitle()
