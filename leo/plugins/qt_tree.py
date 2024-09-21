@@ -234,8 +234,7 @@ class LeoQtTree(leoFrame.LeoTree):
                     s = pattern.sub(arg, text)
                 except re.error as e:
                     g.log(
-                        f'Error in declutter REPLACE "{e!s}"\n'
-                        f'  RULE:{pattern.pattern!r}\n'
+                        f'Error in declutter: {e!r}"\n'
                         f'  REPLACE:{arg!r}\n  HEADLINE:{text!r}',
                         color='error'
                     )

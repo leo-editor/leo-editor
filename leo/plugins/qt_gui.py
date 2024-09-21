@@ -506,7 +506,8 @@ class LeoQtGui(leoGui.LeoGui):
         dialog.setLabelText(message)
         dialog.setTextValue(default)
         if wide:
-            dialog.resize(int(g.windows()[0].get_window_info()[0] * .9), 100)
+            # pylint: disable=unsubscriptable-object
+            dialog.resize(int(g.windows()[0].get_window_info()[0] * .9), 100)  # g.windows is a list.
         if cancelButtonText:
             dialog.setCancelButtonText(cancelButtonText)
         if okButtonText:
@@ -773,6 +774,7 @@ class LeoQtGui(leoGui.LeoGui):
     def runSaveFileDialog(self,
         c: Cmdr,
         title: str = 'Save',
+        *,
         filetypes: list[tuple[str, str]] = None,
         defaultextension: str = '',
     ) -> str:
