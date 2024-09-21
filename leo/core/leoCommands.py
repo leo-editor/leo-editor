@@ -3207,7 +3207,7 @@ class Commands:
         else:
             path = fn
         if path:
-            c.saveTo(fileName=path, silent=silent)  # Issues saved message.
+            c.saveTo(fileName=path, silent=silent)  # Issues saved message.  # pylint: disable=no-member
             # g.es('in', theDir)
         return path
     #@+node:ekr.20180210092235.1: *4* c.backup_helper
@@ -4749,7 +4749,7 @@ class Commands:
             )
             if func:
                 try:
-                    func()
+                    func()  # pylint: disable=not-callable
                     g.doHook("after-reload-settings", c=c)
                 except Exception:
                     g.es_exception()
