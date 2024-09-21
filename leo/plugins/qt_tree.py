@@ -220,7 +220,7 @@ class LeoQtTree(leoFrame.LeoTree):
             a.extend(x['file'] for x in icons if x['where'] == 'beforeHeadline')
             return a
         #@+node:ekr.20171122064635.1: *7* declutter_replace
-        def declutter_replace(arg: str, cmd: Callable) -> tuple[Callable, str]:
+        def declutter_replace(arg: str, cmd: Callable, pattern: str) -> tuple[Callable, str]:
             """
             Executes cmd if cmd is any replace command and returns
             pair (commander, s), where 'commander' corresponds
@@ -337,14 +337,14 @@ class LeoQtTree(leoFrame.LeoTree):
                 modifier(item, param)
             return modifier, param
         #@+node:vitalije.20200327163522.1: *7* apply_declutter_rules
-        def apply_declutter_rules(cmds: list[tuple[Callable, str]]) -> list[Any]:
+        def apply_declutter_rules(cmds: list[tuple[Callable, str]], pattern: str) -> list[Any]:
             """
             Applies all commands for the matched rule. Returns the list
             of the applied operations paired with their single parameter.
             """
             modifiers = []
             for cmd, arg in cmds:
-                modifier, param = declutter_replace(arg, cmd)
+                modifier, param = declutter_replace(arg, cmd, pattern)
                 if not modifier:
                     modifier, param = declutter_style(arg, cmd)
                 if modifier:
@@ -368,7 +368,7 @@ class LeoQtTree(leoFrame.LeoTree):
             modifiers_and_args = []
             for pattern, cmds in self.get_declutter_patterns():
                 if m := pattern.match(text) or pattern.search(text):
-                    modifiers_and_args.extend(apply_declutter_rules(cmds))
+                    modifiers_and_args.extend(apply_declutter_rules(cmds, pattern))
             # Save the lists of the icons and the adjusting operations.
             dd[(v.h, iconVal)] = new_icons, modifiers_and_args
             new_icons = sorted_icons(v) + new_icons

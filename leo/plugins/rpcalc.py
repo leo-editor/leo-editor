@@ -1591,14 +1591,14 @@ class CalcStack(list):
 #@+node:tom.20230424130102.93: **  extradisplay
 
 #@+others
-#@+node:tom.20230424130102.94: *3* class ExtraViewWidget
+#@+node:tom.20230424130102.94: *3* class ExtraViewWidget(QTreeWidget)
 class ExtraViewWidget(QTreeWidget):  # type: ignore
     """Base class of list views for ExtraDisplay.
     """
     #@+others
     #@+node:tom.20230424130102.95: *4* __init__
     def __init__(self, calcRef, parent=None):
-        QListView.__init__(self, parent)  # type:ignore
+        QListView.__init__(self, parent)  # type:ignore  # pylint: disable=non-parent-init-called
         self.calcRef = calcRef
         self.setRootIsDecorated(False)
 
