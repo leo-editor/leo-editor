@@ -103,8 +103,11 @@ class IdleTime:
         while True:
             if not cls.list_active:
                 break
-            # os *does* have a sched_yield method.
-            os.sched_yield()  # pylint: disable=no-member
+            # Only some flavors of *nix have a sched_yield method.
+            try:
+                os.sched_yield()
+            except Exception:
+                pass
             timeCur = time.process_time()
             idleTimeObj = cls.list_active.pop(0)
             # leoG.trace('Popped {0} leaving {1}'.format(id(idleTimeObj), [id(ent) for ent in cls.list_active]))
