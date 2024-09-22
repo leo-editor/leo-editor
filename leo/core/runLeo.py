@@ -70,12 +70,10 @@ def profile_leo():
     # Work around a Python distro bug: can fail on Ubuntu.
     try:
         import pstats
-        from leo.core import leoGlobals as g
     except ImportError:
-        g.es_print('can not import pstats: this is a Python distro bug')
-        g.es_print(
-            'https://bugs.launchpad.net/ubuntu/+source/python-defaults/+bug/123755')
-        g.es_print('try installing pstats yourself')
+        print('can not import pstats: this is a Python distro bug')
+        print('https://bugs.launchpad.net/ubuntu/+source/python-defaults/+bug/123755')
+        print('try installing pstats yourself')
         return
     import cProfile as profile
     from leo.core import leoGlobals as g

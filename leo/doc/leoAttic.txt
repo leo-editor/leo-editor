@@ -1414,6 +1414,82 @@ def reloadOutline(self, event: LeoKeyEvent = None) -> None:
 
     # Select the proper tab.
     tab_widget.setCurrentIndex(old_index)
+#@+node:ekr.20240921134306.1: *3* retire minibuffer-based spell commands
+# These have probably never worked.
+#@+node:ekr.20150514063305.485: *4* commands...(SpellCommandsClass)
+#@+node:ekr.20171205043931.1: *5* add
+@cmd('spell-add')
+def add(self, event: LeoKeyEvent = None) -> None:
+    """
+    Simulate pressing the 'add' button in the Spell tab.
+
+    Just open the Spell tab if it has never been opened.
+    For minibuffer commands, we must also force the Spell tab to be visible.
+    """
+    # self.handler is a SpellTabHandler object (inited by openSpellTab)
+    if self.handler:
+        self.openSpellTab()
+        self.handler.add()
+    else:
+        self.openSpellTab()
+#@+node:ekr.20150514063305.486: *5* spell-find
+@cmd('spell-find')
+def find(self, event: LeoKeyEvent = None) -> None:
+    """
+    Simulate pressing the 'Find' button in the Spell tab.
+
+    Just open the Spell tab if it has never been opened.
+    For minibuffer commands, we must also force the Spell tab to be visible.
+    """
+    # self.handler is a SpellTabHandler object (inited by openSpellTab)
+    if self.handler:
+        self.openSpellTab()
+        self.handler.find()
+    else:
+        self.openSpellTab()
+#@+node:ekr.20150514063305.487: *5* change
+@cmd('spell-change')
+def change(self, event: LeoKeyEvent = None) -> None:
+    """Simulate pressing the 'Change' button in the Spell tab."""
+    if self.handler:
+        self.openSpellTab()
+        self.handler.change()
+    else:
+        self.openSpellTab()
+#@+node:ekr.20150514063305.488: *5* changeThenFind
+@cmd('spell-change-then-find')
+def changeThenFind(self, event: LeoKeyEvent = None) -> None:
+    """Simulate pressing the 'Change, Find' button in the Spell tab."""
+    if self.handler:
+        self.openSpellTab()
+        f = self.handler.changeThenFind
+        f()
+    else:
+        self.openSpellTab()
+#@+node:ekr.20150514063305.489: *5* hide
+@cmd('spell-tab-hide')
+def hide(self, event: LeoKeyEvent = None) -> None:
+    """Hide the Spell tab."""
+    if self.handler:
+        self.c.frame.log.selectTab('Log')
+        self.c.bodyWantsFocus()
+#@+node:ekr.20150514063305.490: *5* ignore
+@cmd('spell-ignore')
+def ignore(self, event: LeoKeyEvent = None) -> None:
+    """Simulate pressing the 'Ignore' button in the Spell tab."""
+    if self.handler:
+        self.openSpellTab()
+        self.handler.ignore()
+    else:
+        self.openSpellTab()
+#@+node:ekr.20150514063305.491: *5* focusToSpell
+@cmd('focus-to-spell-tab')
+def focusToSpell(self, event: LeoKeyEvent = None) -> None:
+    """Put focus in the spell tab."""
+    self.openSpellTab()  # Makes Spell tab visible.
+    # This is not a great idea. There is no indication of focus.
+        # if self.handler and self.handler.tab:
+            # self.handler.tab.setFocus()
 #@+node:ekr.20240820045246.1: ** To be cleared later
 # Clear after 6.8.2.
 #@+node:ekr.20110605121601.18254: *3* LeoQtFrame.destroyAllObjects (not used)

@@ -2,6 +2,7 @@
 #@+node:tom.20230424140347.1: * @file ../plugins/rpcalc.py
 #@@language python
 # type: ignore
+# pylint: disable=singleton-comparison
 """An RPN calculator plugin in a log tab panel.
 
 Adapted from rpcalc.
@@ -515,6 +516,7 @@ class CalcCore:
     def saveStack(self):
         """Store stack to option file.
         """
+        # pylint: disable=expression-not-assigned
         if self.option.boolData('SaveStacks'):
             [self.option.changeData('Stack' + repr(x), repr(self.stack[x]), 1)
              for x in range(4)]
@@ -831,7 +833,7 @@ class CalcCore:
                 orig = self.option.boolData('ForceSciNotation')
                 new = orig and 'no' or 'yes'
                 self.option.changeData('ForceSciNotation', new, 1)
-                self.option.writeChanges
+                self.option.writeChanges()
             elif cmdStr == 'DEG':  # change deg/rad setting
                 orig = self.option.strData('AngleUnit')
                 new = orig == 'deg' and 'rad' or 'deg'
@@ -1589,14 +1591,14 @@ class CalcStack(list):
 #@+node:tom.20230424130102.93: **  extradisplay
 
 #@+others
-#@+node:tom.20230424130102.94: *3* class ExtraViewWidget
+#@+node:tom.20230424130102.94: *3* class ExtraViewWidget(QTreeWidget)
 class ExtraViewWidget(QTreeWidget):  # type: ignore
     """Base class of list views for ExtraDisplay.
     """
     #@+others
     #@+node:tom.20230424130102.95: *4* __init__
     def __init__(self, calcRef, parent=None):
-        QListView.__init__(self, parent)  # type:ignore
+        QListView.__init__(self, parent)  # type:ignore  # pylint: disable=non-parent-init-called
         self.calcRef = calcRef
         self.setRootIsDecorated(False)
 
@@ -1995,7 +1997,7 @@ class IconDict(dict):
         self.pathList = [iconPath]
 
     #@+node:tom.20230424130102.136: *3* addIconPath
-    def addIconPath(self, potentialPaths=[]):
+    def addIconPath(self, potentialPaths=None):
         pass
     #@+node:tom.20230424130102.137: *3* __getitem__
     def __getitem__(self, name):

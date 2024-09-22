@@ -3,7 +3,7 @@
 #@@language python
 #@@tabwidth -4
 #@@language python
-
+# pylint: disable=no-member
 #@+<< imports >>
 #@+node:ekr.20211210174132.1: ** << imports >>
 import csv

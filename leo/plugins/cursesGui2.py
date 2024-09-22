@@ -1007,7 +1007,9 @@ class StringFindTabManager:
                 setattr(find, setting_name, val)
                 w.toggle()
 
-            def radio_button_callback(n: int, ivar: str = ivar, setting_name: str = setting_name, w: Wrapper = w) -> None:
+            def radio_button_callback(
+                n: int, ivar: str = ivar, setting_name: str = setting_name, w: Wrapper = w,
+            ) -> None:
                 val = w.isChecked()
                 if ivar:
                     assert hasattr(find, ivar), ivar
@@ -1924,7 +1926,7 @@ class LeoCursesGui(leoGui.LeoGui):
 
             def switch_focus_callback(form: Wrapper = form, i: int = i, w: Wrapper = w) -> None:
                 g.trace(i, w.__class__.__name__)
-                g.trace(g.callers(verbose=True))
+                g.trace(g.callers())
                 w.display()
                 form.display()
 

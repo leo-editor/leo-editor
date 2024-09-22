@@ -1974,7 +1974,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             return float(n1) / float(n1 + n2) if n2 > 0 else 0.5
         return 0.5
     #@+node:ekr.20110605121601.18275: *4* LeoQtFrame.configureBar
-    def configureBar(self, bar: Wrapper, verticalFlag: bool) -> None:
+    def configureBar(self, bar: Wrapper, verticalFlag: bool) -> None:  # pylint: disable=disallowed-name
         c = self.c
         # Get configuration settings.
         w = c.config.getInt("split-bar-width")

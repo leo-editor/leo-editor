@@ -315,7 +315,7 @@ def pylint_command(event: LeoKeyEvent) -> None:
             c.save()
         data = PylintCommand(c).run(last_path=last_pylint_path)
         if data:
-            path, p = data
+            path, p = data  # pylint: disable=unpacking-non-sequence
             last_pylint_path = path
 #@+node:ekr.20230221105941.1: ** class CheckNodes
 class CheckNodes:

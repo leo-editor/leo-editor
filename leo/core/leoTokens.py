@@ -38,12 +38,11 @@ import tokenize
 from typing import Any, Generator, Optional, Union
 
 # Leo Imports.
+from leo.core import leoGlobals as g
+assert g
 
 Settings = dict[str, Union[int, bool]]
 #@-<< leoTokens.py: imports & annotations >>
-
-from leo.core import leoGlobals as g
-assert g
 
 #@+others
 #@+node:ekr.20240214065940.1: ** top-level functions (leoTokens.py)
@@ -550,13 +549,20 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     **Design**
 
-    The *pre_scan* method is the heart of the algorithm. It sets context for the `:`, `=`, `**` and `.` tokens *without* using the parse tree. *pre_scan* calls three *finishers*.
+    The *pre_scan* method is the heart of the algorithm. It sets context
+    for the `:`, `=`, `**` and `.` tokens *without* using the parse tree.
+    *pre_scan* calls three *finishers*.
 
-    Each finisher uses a list of *relevant earlier tokens* to set the context for one kind of (input) token. Finishers look behind (in the stream of input tokens) with essentially no cost.
+    Each finisher uses a list of *relevant earlier tokens* to set the
+    context for one kind of (input) token. Finishers look behind (in the
+    stream of input tokens) with essentially no cost.
 
-    After the pre-scan, *tbo.beautify* (the main loop) calls *visitors* for each separate type of *input* token.
+    After the pre-scan, *tbo.beautify* (the main loop) calls *visitors*
+    for each separate type of *input* token.
 
-    Visitors call *code generators* to generate strings in the output_list. The code generators and their helpers use *lazy evaluation* to generate whitespace.
+    Visitors call *code generators* to generate strings in the
+    output_list. The code generators and their helpers use *lazy
+    evaluation* to generate whitespace.
     """
     #@-<< TokenBasedOrange: docstring >>
     #@+<< TokenBasedOrange: __slots__ >>

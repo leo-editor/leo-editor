@@ -635,7 +635,7 @@ class GeneralSetting:
         return (
             f"GS: path: {g.shortFileName(self.path or '')} "
             f"source: {self.source or ''} "
-            f"kind: {self.kind:} val: {val}")
+            f"kind: {self.kind} val: {val}")
 
     dump = __repr__
     __str__ = __repr__
@@ -1971,7 +1971,7 @@ class TestLeoGlobals(unittest.TestCase):
     #@+node:ekr.20200219071958.1: *4* TestLeoGlobals.test_comment_delims_from_extension
     def test_comment_delims_from_extension(self) -> None:
 
-        from leo.core import leoGlobals as leo_g
+        from leo.core import leoGlobals as leo_g  # pylint: disable=import-self
         from leo.core import leoApp
         leo_g.app = leoApp.LeoApp()
         assert leo_g.comment_delims_from_extension(".py") == ('#', '', '')
@@ -1980,7 +1980,7 @@ class TestLeoGlobals(unittest.TestCase):
     #@+node:ekr.20200219072957.1: *4* TestLeoGlobals.test_is_sentinel
     def test_is_sentinel(self) -> None:
 
-        from leo.core import leoGlobals as leo_g
+        from leo.core import leoGlobals as leo_g  # pylint: disable=import-self
         # Python. Test regular and blackened sentinels.
         py_delims = leo_g.comment_delims_from_extension('.py')
         assert leo_g.is_sentinel("#@+node", py_delims)
@@ -6280,8 +6280,8 @@ def os_startfile(fname: str) -> None:
         except ImportError:
             os.system(f"open {quoted_fname}")
     else:
+        ree = None
         try:
-            ree = None
             wre = tempfile.NamedTemporaryFile()
             ree = io.open(wre.name, 'rb', buffering=0)
         except IOError:
