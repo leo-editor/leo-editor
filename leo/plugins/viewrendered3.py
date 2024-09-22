@@ -1,7 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:TomP.20191215195433.1: * @file ../plugins/viewrendered3.py
 #@@tabwidth -4
-#@@pagewidth 120
 #@@language python
 r"""
 #@+<< vr3 docstring >>
@@ -261,7 +260,8 @@ All settings are of type @string unless shown as ``@bool``.
     @string vr3-md-math-output = True
     @int qweb-view-font-size = 16
 
-**Note** The font size setting, *qweb-view-font-size*, will probably not be needed.  Useful values will generally be from 8 - 20.
+**Note** The font size setting, *qweb-view-font-size*, will probably not be
+needed. Useful values will generally be from 8 - 20.
 
 Hot Key
 =======
@@ -356,13 +356,17 @@ include a ``?config`` specifer.  The one shown in the example above works well.
 External Processors For Other Languages
 =======================================
 
-VR3 can make use of external processors for executing code blocks in programming languages other than Python. Examples
-are Javascript and Julia. Parameters can be passed to the processor as well. The command line must have the format::
+VR3 can make use of external processors for executing code blocks in
+programming languages other than Python. Examples are Javascript and Julia.
+Parameters can be passed to the processor as well. The command line must
+have the format::
 
     <processor> [optional parameters] filename
 
-External language processors must be specified in the file `vr3_config.ini`. This file is located in the `vr3` directory
-under Leo's Home directory. The must be entered in the `[executables]` section. Here is an example::
+External language processors must be specified in the file
+`vr3_config.ini`. This file is located in the `vr3` directory under Leo's
+Home directory. The must be entered in the `[executables]` section. Here is
+an example::
 
     [executables]
     javascript = D:\usr\graalvm-ce-java11-20.0.0\languages\js\bin\js.exe
@@ -370,19 +374,25 @@ under Leo's Home directory. The must be entered in the `[executables]` section. 
 
 Note that
 
-1. The name of the language (e.g., `julia`) **must** agree with the name of the language used in `@language` directives;
+1. The name of the language (e.g., `julia`) **must** agree with the name of
+   the language used in `@language` directives;
 
-2. The full path to the processing executable **must** be included. VR3 will not use the system path, and the processor
-   need not be on the system path.
+2. The full path to the processing executable **must** be included. VR3
+   will not use the system path, and the processor need not be on the
+   system path.
 
-This directory and .ini file must be created by the user.  VR3 will not create them.
+This directory and .ini file must be created by the user. VR3 will not
+create them.
 
-A language that is specified here will not automatically be executed: only languages known by VR3 will be executed. Code
-in known languages will be colorized provided that Leo has a colorizing mode file for that language. This should
-normally be the case. For example, colorizer mode files for both julia and javascript are included in the version of Leo
-that includes this version of VR3.
+A language that is specified here will not automatically be executed: only
+languages known by VR3 will be executed. Code in known languages will be
+colorized provided that Leo has a colorizing mode file for that language.
+This should normally be the case. For example, colorizer mode files for
+both julia and javascript are included in the version of Leo that includes
+this version of VR3.
 
-VR3 can only successfully execute code if all code blocks in a node or subtree use the same language.
+VR3 can only successfully execute code if all code blocks in a node or
+subtree use the same language.
 
 #@+node:TomP.20210423000029.1: *5* @param Optional Parameters
 Optional Parameters
@@ -404,11 +414,13 @@ then the julia processor will be invoked with the command line::
 
     <path-to-julia> -q <progfile>
 
-Any number of parameters may be included on one @param line, and
-multiple @param directives are allowed.  Parameters can include redirection symbols (e.g., "<", ">").
+Any number of parameters may be included on one @param line, and multiple
+@param directives are allowed. Parameters can include redirection symbols
+(e.g., "<", ">").
 
-Only @param directives that occur inside a code block are recognized.  Thus the following @param directive is not recognized because it is
-outside a code block::
+Only @param directives that occur inside a code block are recognized. Thus
+the following @param directive is not recognized because it is outside a
+code block::
 
     @language rest
     @param -q
@@ -421,9 +433,11 @@ outside a code block::
 Limitations
 ============
 
-1. The ability to launch an external processor currently works only for ReStructuredText markup language nodes or trees.
+1. The ability to launch an external processor currently works only for
+   ReStructuredText markup language nodes or trees.
 
-2. The supported command line format is fairly simple, so a language that needs separate compile and run stages will be difficult to use.
+2. The supported command line format is fairly simple, so a language that
+   needs separate compile and run stages will be difficult to use.
 
 #@+node:TomP.20200115200324.1: *3* Commands
 Commands
@@ -762,7 +776,8 @@ right.
 
     \(a = \sqrt{b}\ \)
 
-.. Note:: There must be a backslash following the last character of the inline math, with no space bfore that added backslash.
+.. Note:: There must be a backslash following the last character of the
+.. inline math, with no space bfore that added backslash.
 
 2. Blocks, such as aligned equations: enclose the latex block with ``$$ .... $$``,
 where ``....`` represents the Latex expressions.
@@ -797,21 +812,20 @@ be executed if they are all for the same code language.
 Command line parameters can be specified using one or more `@param`
 directives (see above at Structured Languages/Special Directives).
 
-Python code will be executed within a Leo environment that includes
-the standard Leo variables g, c, and c.p.  Thus, Leo-specific
-commands like g.es() can be invoked.
+Python code will be executed within a Leo environment that includes the
+standard Leo variables g, c, and c.p. Thus, Leo-specific commands like
+g.es() can be invoked.
 
-If View Options/Entire Tree is checked on the VR3 toolbar, then
-all code blocks in the current node and all its child nodes
-(to any nesting depth) will be executed.  Otherwise only the current
-node will be executed.
+If View Options/Entire Tree is checked on the VR3 toolbar, then all code
+blocks in the current node and all its child nodes (to any nesting depth)
+will be executed. Otherwise only the current node will be executed.
 
-If only the current node is to be executed, note that if imports occur or variables are declared in a parent node, then execution of the node
-will fail because the current node being executed will not know
-about them.
+If only the current node is to be executed, note that if imports occur or
+variables are declared in a parent node, then execution of the node will
+fail because the current node being executed will not know about them.
 
-Processor output for stdout (i.e., print() statements, etc. and
-stderr are captured and displayed inline below the code.
+Processor output for stdout (i.e., print() statements, etc. and stderr are
+captured and displayed inline below the code.
 
 Non-Python code can be executed if
 
@@ -907,19 +921,18 @@ relative to Leo's load directory.
 Easy Plotting Of X-Y Data
 --------------------------
 
-If the selected node contains data in one or two columns, VR3 can
-plot the data as an X-Y graph. The labeling and appearance of the
-plot can optionally and easily adjusted. The graph is produced
-when the toolbar menu labeled *Other Actions* is pressed and
-*Plot 2D* is clicked.
+If the selected node contains data in one or two columns, VR3 can plot the
+data as an X-Y graph. The labeling and appearance of the plot can
+optionally and easily adjusted. The graph is produced when the toolbar menu
+labeled *Other Actions* is pressed and *Plot 2D* is clicked.
 
-If the selected node has an optional section *[source]* containing the key *file*, the value of the key will be used as the path to
-the data, instead of using the selected node itself as the data source.
+If the selected node has an optional section *[source]* containing the key
+*file*, the value of the key will be used as the path to the data, instead
+of using the selected node itself as the data source.
 
-Help for the plotting capability is displayed in the system
-browser when *Other Actions/Help For Plot 2D* is clicked. This
-help is also invoked by the minibuffer command
-*vr3-help-plot-2d*.
+Help for the plotting capability is displayed in the system browser when
+*Other Actions/Help For Plot 2D* is clicked. This help is also invoked by
+the minibuffer command *vr3-help-plot-2d*.
 
 #@+node:tom.20220225114320.1: *3* Rendering HTML From Clipboard
 Rendering HTML From Clipboard
@@ -5168,7 +5181,9 @@ class StateMachine:
 
         # For debugging
         if line.startswith('#%%%%'):
-            g.es(f'==== state: {self.state}, lang: {self.lang}, chunk_lang: {self.current_chunk.language}, tag: {self.current_chunk.tag}')
+            g.es(
+                f'==== state: {self.state}, lang: {self.lang}, '
+                f'chunk_lang: {self.current_chunk.language}, tag: {self.current_chunk.tag}')
             return (None, None, None)
 
         # Omit lines between @ and @c
