@@ -161,7 +161,9 @@ max-nested-blocks=10  # Apparently, this can't be suppressed!
 
 [FORMAT]
 
-max-line-length=150  # 9/21/2024
+# Note: the line-too-long suppression must appear before docstrings.
+
+max-line-length=120  # 9/21/2024
 
 [IMPORTS]
 
