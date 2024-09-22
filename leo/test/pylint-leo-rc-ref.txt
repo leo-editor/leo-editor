@@ -34,13 +34,13 @@ enable=
     basic,
     classes,
     format,
+    imports,
     typecheck,
     variables
 
 # Disable the message, report, category or checker with the given id(s).
 disable=
     design,  # Make work.
-    imports,  # Creates import graph.  Expensive?
     similarities,  # Expensive.
     
     # Leo: Standard suppressions.
