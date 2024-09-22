@@ -41,7 +41,7 @@ enable=
 # Disable the message, report, category or checker with the given id(s).
 disable=
     design,  # Make work.
-    similarities,  # Expensive.
+    similarities,  # Expensive and unhelpful.
     
     # Leo: Standard suppressions.
         abstract-method,  # 9/21/2024
