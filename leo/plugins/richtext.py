@@ -57,6 +57,8 @@ To make a button to toggle the editor on and off, use::
 
 """
 #@-<< docstring >>
+# This complaint is probably valid.
+# pylint: disable=no-name-in-module
 #@+<< imports >>
 #@+node:tbrown.20130813134319.14335: ** << imports >> (richtext.py)
 import time

@@ -1343,7 +1343,9 @@ class LeoFind:
     @cmd('clone-find-all-flattened')
     @cmd('find-clone-all-flattened')
     @cmd('cff')
-    def interactive_cff(self, event: LeoKeyEvent = None, preloaded: bool = False) -> None:  # pragma: no cover (interactive)
+    def interactive_cff(
+        self, event: LeoKeyEvent = None, preloaded: bool = False,
+    ) -> None:  # pragma: no cover (interactive)
         """
         clone-find-all-flattened (aka find-clone-all-flattened and cff).
 

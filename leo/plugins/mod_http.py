@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:EKR.20040517080250.1: * @file ../plugins/mod_http.py
-# pylint: disable=line-too-long
+# pylint: disable=no-member
 # mypy: ignore-errors
 #@+<< docstring >>
 #@+node:ekr.20050111111238: ** << docstring >>
@@ -90,7 +90,15 @@ Saving bookmarks from browser to Leo
 
 To do this, add a bookmark to the browser with the following URL / Location::
 
-    javascript:w=window; d=w.document; ln=[];if(w.location.href.indexOf('one-tab')>-1){el=d.querySelectorAll('a');for (i in el){ln.push({url:el[i].href,txt:el[i].innerHTML});};};w.open('http://localhost:8130/_/add/bkmk/?&name=' + escape(d.title) + '&selection=' + escape(window.getSelection()) + '&ln=' + escape(JSON.stringify(ln)) + '&url=' + escape(w.location.href),"_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no, width=800, height=300, status=no");void(0); # NOQA
+    javascript:w=window; d=w.document;
+    ln=[];if(w.location.href.indexOf('one-tab')>-1){el=d.querySelectorAll('a');
+    for(i in el){ln.push({url:el[i].href,txt:el[i].innerHTML});};};
+    w.open('http://localhost:8130/_/add/bkmk/?&name='
+    + escape(d.title) + '&selection=' + escape(window.getSelection()) + '&ln=' +
+    escape(JSON.stringify(ln)) + '&url=' +
+    escape(w.location.href),"_blank","toolbar=no, location=no, directories=no,
+    status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no,
+    width=800, height=300, status=no");void(0); # NOQA
 
 and edit the port (8130 in the example above) to match the port you're using for
 mod_http.

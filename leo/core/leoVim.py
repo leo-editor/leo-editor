@@ -24,13 +24,13 @@ import os
 import string
 from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
+from leo.core.leoGui import LeoKeyEvent
 
 if TYPE_CHECKING:  # pragma: no cover
     from typing import TypeAlias  # Requires Python 3.12+
     from leo.core.leoGui import QtCore
     from leo.core.leoCommands import Commands as Cmdr
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    from leo.core.leoGui import LeoKeyEvent
 
     QEvent: TypeAlias = QtCore.QEvent
     Stroke = Any
@@ -2036,12 +2036,12 @@ class VimCommands:
                     g.es('curdir not changed', color='red')
             elif fn:
                 c2 = g.openWithFileName(fn, old_c=c)
+                try:
+                    g.app.gui.runAtIdle(c2.treeWantsFocusNow)
+                except Exception:
+                    pass
             else:
                 c.new()
-            try:
-                g.app.gui.runAtIdle(c2.treeWantsFocusNow)
-            except Exception:
-                pass
         #@+node:ekr.20140820034724.18314: *5* :tabnew.tab_callback
         def tab_callback(self) -> None:
             """Called when the user types :tabnew<tab>"""

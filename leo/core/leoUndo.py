@@ -3,6 +3,7 @@
 # Suppress all mypy errors (mypy doesn't like g.Bunch).
 # type: ignore
 """Leo's undo/redo manager."""
+# pylint: disable=not-an-iterable,unsubscriptable-object
 #@+<< How Leo implements unlimited undo >>
 #@+node:ekr.20031218072017.2413: ** << How Leo implements unlimited undo >>
 #@@language rest

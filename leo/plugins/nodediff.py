@@ -312,14 +312,15 @@ class NodeDiffController:
                 'show',
                 'HEAD:%s' % g.os_path_join(*(relative_path + [filename])),
             ]
-
-        if mode == 'bzr':
+        elif mode == 'bzr':
             cmd = [
                 'bzr', 'cat',
                 '--revision=revno:-1',
                 c.fileName(),  # path,
                 # g.os_path_join( *(relative_path + [filename]) ),
             ]
+        else:
+            return
 
         cmd = subprocess.Popen(
             cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
