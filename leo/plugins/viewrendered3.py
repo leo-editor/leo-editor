@@ -1602,7 +1602,7 @@ def show_scrolled_message(tag, kw):
     vr3 = controllers.get(h, None)
     started_vr3 = False
     if not vr3:
-        if positions.get(h, None) == None or OPENED_IN_SPLITTER:
+        if positions.get(h, None) is None or OPENED_IN_SPLITTER:
             vr3 = viewrendered(event=kw)
         else:
             vr3 = viewrendered_tab(event=kw)
@@ -3451,7 +3451,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             att_str += f'-a {att} '
 
         # Call the external program to write the output file.
-        command = (f'{self.asciidoctor} -b html5 {att_str} {i_path}')
+        command = f'{self.asciidoctor} -b html5 {att_str} {i_path}'
 
         # If find asciidoctor-diagram converter config, then use it.
         if self.asciidoctor_diagram:
@@ -4387,8 +4387,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 not _got_language
                 and line
                 and line[0] == '@'
-                and not _cleanline == '@'
-                and not _cleanline == '@c'
+                and _cleanline != '@'
+                and _cleanline != '@c'
             )
 
             if i == 0 and not _got_language:
