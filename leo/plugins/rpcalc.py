@@ -1997,7 +1997,7 @@ class IconDict(dict):
         self.pathList = [iconPath]
 
     #@+node:tom.20230424130102.136: *3* addIconPath
-    def addIconPath(self, potentialPaths=[]):  # pylint: disable=dangerous-default-value
+    def addIconPath(self, potentialPaths=None):
         pass
     #@+node:tom.20230424130102.137: *3* __getitem__
     def __getitem__(self, name):
