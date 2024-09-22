@@ -38,12 +38,11 @@ import tokenize
 from typing import Any, Generator, Optional, Union
 
 # Leo Imports.
+from leo.core import leoGlobals as g
+assert g
 
 Settings = dict[str, Union[int, bool]]
 #@-<< leoTokens.py: imports & annotations >>
-
-from leo.core import leoGlobals as g
-assert g
 
 #@+others
 #@+node:ekr.20240214065940.1: ** top-level functions (leoTokens.py)

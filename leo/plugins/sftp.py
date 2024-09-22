@@ -96,6 +96,7 @@ sftp-cache-credentials = True`.
 #@+<< imports >>
 #@+node:peckj.20140218144401.6038: ** << imports >>
 from leo.core import leoGlobals as g
+from leo.core.leoQt import QtWidgets
 
 try:
     import paramiko
@@ -104,8 +105,6 @@ except ImportError:
     if not g.unitTesting:
         print('sftp.py: can not import paramiko')
 
-from leo.core.leoQt import QtWidgets
-#
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< imports >>

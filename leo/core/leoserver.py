@@ -9,7 +9,7 @@ Written by Félix Malboeuf and Edward K. Ream.
 
 To run externally, do `python -m leo.core.leoserver`.
 """
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,wrong-import-position
 #@+<< leoserver imports >>
 #@+node:felix.20210621233316.2: ** << leoserver imports >>
 # pylint: disable=raise-missing-from

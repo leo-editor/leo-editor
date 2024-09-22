@@ -14,19 +14,18 @@ import string
 import time
 from typing import Any, Generator, Sequence, Optional, Union, TYPE_CHECKING
 import warnings
-#
+
 # Third-party tools.
 try:
     import pygments  # type:ignore
-    from pygments.lexer import DelegatingLexer
+    from pygments.lexer import DelegatingLexer, RegexLexer, _TokenType, Text, Error
 except ImportError:
     pygments = None  # type:ignore
-#
+
 # Leo imports...
 from leo.core import leoGlobals as g
-
 from leo.core.leoColor import leo_color_database
-#
+
 # Qt imports. May fail from the bridge.
 try:  # #1973
     from leo.core.leoQt import Qsci, QtGui, QtWidgets
@@ -3421,8 +3420,6 @@ if pygments:
     #@+node:ekr.20190320062624.2: *3* RegexLexer.get_tokens_unprocessed
     # Copyright (c) Jupyter Development Team.
     # Distributed under the terms of the Modified BSD License.
-
-    from pygments.lexer import RegexLexer, _TokenType, Text, Error
 
     def get_tokens_unprocessed(self: Any, text: str, stack: Sequence[str] = ('root',)) -> Generator:
         """

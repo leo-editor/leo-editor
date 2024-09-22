@@ -6,6 +6,8 @@
 
 #@@language python
 #@@tabwidth -4
+# pylint: disable=logging-not-lazy,unused-private-member,wrong-import-position
+
 #@+<< leoflexx: docstring >>
 #@+node:ekr.20181122215342.1: ** << leoflexx: docstring >>
 #@@language md
@@ -71,8 +73,6 @@ flx.assets.associate_asset(__name__, base_url + 'ace.js')
 flx.assets.associate_asset(__name__, base_url + 'mode-python.js')
 flx.assets.associate_asset(__name__, base_url + 'theme-solarized_dark.js')
 #@-<< leoflexx: assets >>
-#
-# pylint: disable=logging-not-lazy,unused-private-member
 
 # flexx can't handle generators, so we *must* use comprehensions instead.
 # pylint: disable=use-a-generator
