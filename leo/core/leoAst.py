@@ -1454,7 +1454,7 @@ class InputToken:
         self.node: Optional[Node] = None
 
     def __repr__(self) -> str:  # pragma: no cover
-        s = f"{self.index:<3} {self.kind:}"
+        s = f"{self.index:<3} {self.kind}"
         return f"Token {s}: {self.show_val(20)}"
 
     __str__ = __repr__
@@ -2623,7 +2623,7 @@ class Token:
         self.node: Optional[Node] = None
 
     def __repr__(self) -> str:  # pragma: no cover
-        s = f"{self.index:<3} {self.kind:}"
+        s = f"{self.index:<3} {self.kind}"
         return f"Token {s}: {self.show_val(20)}"
 
     __str__ = __repr__

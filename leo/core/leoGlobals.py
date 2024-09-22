@@ -635,7 +635,7 @@ class GeneralSetting:
         return (
             f"GS: path: {g.shortFileName(self.path or '')} "
             f"source: {self.source or ''} "
-            f"kind: {self.kind:} val: {val}")
+            f"kind: {self.kind} val: {val}")
 
     dump = __repr__
     __str__ = __repr__
