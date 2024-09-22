@@ -2,6 +2,8 @@
 #@+node:TomP.20191215195433.1: * @file ../plugins/viewrendered3.py
 #@@tabwidth -4
 #@@language python
+# The line-too-long suppression must appear before the docstring.
+# pylint: disable=invalid-name,line-too-long,multiple-statements,undefined-variable,used-before-assignment
 r"""
 #@+<< vr3 docstring >>
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>
@@ -968,7 +970,6 @@ Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
 #@-<< vr3 docstring >>
 """
-# pylint: disable=invalid-name,multiple-statements,undefined-variable,used-before-assignment
 #@+<< imports >>
 #@+node:TomP.20191215195433.4: ** << imports >>
 #

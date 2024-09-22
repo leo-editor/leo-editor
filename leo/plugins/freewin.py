@@ -21,8 +21,11 @@ no matter how the user navigates within or between outlines.
 #@+node:tom.20240811231850.1: *3* New With This Version
 New With This Version
 ======================
-1. The editor view now uses the same colors as the underlying host node's editor. The CSS style sheet previously used is no longer used.
-2. The currently selected line in the editor view is highlighted using the same algorithm as the standard Leo body editor.
+
+1. The editor view now uses the same colors as the underlying host node's
+   editor. The CSS style sheet previously used is no longer used.
+2. The currently selected line in the editor view is highlighted using the same
+   algorithm as the standard Leo body editor.
 
 There are no settings that affect these new features.
 
