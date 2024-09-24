@@ -2274,7 +2274,7 @@ class AtFile:
             from leo.commands import checkerCommands
             if checkerCommands.lint:
                 x = checkerCommands.PylintCommand(self.c)
-                ok = x.run(root)
+                ok = bool(x.run(root))
                 return ok
             return True  # Suppress error if pylint can not be imported.
         except Exception:
