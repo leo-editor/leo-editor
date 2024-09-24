@@ -313,7 +313,7 @@ def pylint_command(event: LeoKeyEvent) -> None:
     if c:
         if c.isChanged():
             c.save()
-        data = PylintCommand(c).run(last_path=last_pylint_path)
+        data = PylintCommand(c).run(c.p, last_path=last_pylint_path)
         if data:
             path, p = data  # pylint: disable=unpacking-non-sequence
             last_pylint_path = path
@@ -595,9 +595,9 @@ class PylintCommand:
         self.rc_fn: str = None  # Name of the rc file.
     #@+others
     #@+node:ekr.20150514125218.11: *3* 1. pylint.run
-    def run(self, last_path: str = None) -> Optional[tuple[str, Position]]:
-        """Run Pylint on all Python @<file> nodes in c.p's tree."""
-        c, root = self.c, self.c.p
+    def run(self, root: Position, *, last_path: str = None) -> Optional[tuple[str, Position]]:
+        """Run Pylint on all Python @<file> nodes in root's tree."""
+        c = self.c
         if not lint:
             g.es_print('pylint is not installed')
             return None
@@ -699,7 +699,7 @@ class PylintCommand:
             f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"')
         if not is_win:
             command = shlex.split(command)  # type:ignore
-        #
+
         # Run the command using the BPM.
         bpm = g.app.backgroundProcessManager
         bpm.start_process(c, command, fn=fn, kind='pylint')
