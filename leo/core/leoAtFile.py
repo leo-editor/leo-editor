@@ -71,6 +71,7 @@ class AtFile:
         self.checkPythonCodeOnWrite = False
         self.runFlake8OnWrite = False
         self.runPyFlakesOnWrite = False
+        self.runPylintOnWrite = False
         self.reloadSettings()
     #@+node:ekr.20171113152939.1: *5* at.reloadSettings
     def reloadSettings(self) -> None:
@@ -82,6 +83,9 @@ class AtFile:
             'run-flake8-on-write', default=False)
         self.runPyFlakesOnWrite = c.config.getBool(
             'run-pyflakes-on-write', default=False)
+        self.runPylintOnWrite = c.config.getBool(
+            'run-pylint-on-write', default=False)
+
     #@+node:ekr.20041005105605.10: *4* at.initCommonIvars
     def initCommonIvars(self) -> None:
         """
@@ -1073,7 +1077,8 @@ class AtFile:
             return
         if files:
             n = at.unchangedFiles
-            g.es(f"finished: {n} unchanged file{g.plural(n)}")
+            if n > 1:
+                g.es(f"finished: {n} unchanged file{g.plural(n)}")
         elif all:
             g.warning("no @<file> nodes in the selected tree")
         elif dirty:
@@ -1586,9 +1591,9 @@ class AtFile:
     def atAsisToString(self, root: Position) -> str:  # pragma: no cover
         """Write the @asis node to a string."""
         at, c = self, self.c
+        c.endEditing()
+        fileName = at.initWriteIvars(root)
         try:
-            c.endEditing()
-            fileName = at.initWriteIvars(root)
             at.outputList = []
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
@@ -1616,9 +1621,9 @@ class AtFile:
     def atCleanToString(self, root: Position) -> str:  # pragma: no cover
         """Write one @clean node to a string."""
         at, c = self, self.c
+        c.endEditing()
+        fileName = at.initWriteIvars(root)
         try:
-            c.endEditing()
-            fileName = at.initWriteIvars(root)
             at.sentinels = False
             at.outputList = []
             at.putFile(root, sentinels=False)
@@ -2161,7 +2166,7 @@ class AtFile:
     #@+node:ekr.20220120210617.1: *5* at.checkUnchangedFiles
     def checkUnchangedFiles(self, contents: str, fileName: str, root: Position) -> None:  # pragma: no cover
         at = self
-        ok1 = ok2 = True
+        ok1 = ok2 = ok3 = True
         if g.unitTesting:
             return
         is_python = fileName and fileName.endswith(('py', 'pyw'))
@@ -2172,7 +2177,9 @@ class AtFile:
             ok1 = self.runFlake8(root)
         if at.runPyFlakesOnWrite:
             ok2 = self.runPyflakes(root)
-        if not ok1 or not ok2:
+        if at.runPylintOnWrite:
+            ok3 = self.runPylint(root)
+        if not ok1 or not ok2 or not ok3:
             g.app.syntax_error_files.append(g.shortFileName(fileName))
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
     def checkPythonCode(self, contents: str, fileName: str, root: Position) -> None:  # pragma: no cover
@@ -2191,6 +2198,8 @@ class AtFile:
             ok = self.runPyflakes(root)
         if ok and at.runFlake8OnWrite:  # Does *not* create clickable links.
             ok = self.runFlake8(root)
+        if ok and at.runPylintOnWrite:
+            ok = self.runPylint(root)
         if not ok:
             g.app.syntax_error_files.append(g.shortFileName(fileName))
     #@+node:ekr.20090514111518.5663: *6* at.checkPythonSyntax
@@ -2255,6 +2264,19 @@ class AtFile:
                 ok = x.run(root)
                 return ok
             return True  # Suppress error if pyflakes can not be imported.
+        except Exception:
+            g.es_exception()
+            return True  # Pretend all is well
+    #@+node:ekr.20240924054208.1: *6* at.runPylint
+    def runPylint(self, root: Position) -> bool:  # pragma: no cover
+        """Run pylint on the selected node."""
+        try:
+            from leo.commands import checkerCommands
+            if checkerCommands.lint:
+                x = checkerCommands.PylintCommand(self.c)
+                ok = bool(x.run(root))
+                return ok
+            return True  # Suppress error if pylint can not be imported.
         except Exception:
             g.es_exception()
             return True  # Pretend all is well

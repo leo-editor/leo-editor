@@ -197,6 +197,7 @@ Jacob Peck added markdown support to this plugin.
 #@+node:tbrown.20100318101414.5993: ** << vr imports >>
 from __future__ import annotations
 from collections.abc import Callable
+import html
 import os
 from pathlib import Path
 import shutil
@@ -975,14 +976,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20170324085132.1: *5* vr.create_latex_html
     def create_latex_html(self, s: str) -> str:
         """Create an html page embedding the latex code s."""
-        # pylint: disable=deprecated-method
-        try:
-            import html
-            escape = html.escape
-        except AttributeError:
-            import cgi
-            escape = cgi.escape
-        html_s = escape(s)
+        html_s = html.escape(s)
         template = latex_template % (html_s)
         template = textwrap.dedent(template).strip()
         return template

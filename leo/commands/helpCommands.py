@@ -1139,7 +1139,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             p.moveToLastNode()
             p.moveToNext()
             p.moveToNodeAfterTree(p2)
-            p.moveToNthChild(n))
+            p.moveToNthChild(n)
             p.moveToParent()
             p.moveToThreadBack()
             p.moveToThreadNext()
