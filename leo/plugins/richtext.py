@@ -1,5 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20130813134319.11942: * @file ../plugins/richtext.py
+# This plugin is obsolete. There are no plans to make it work with Qt6.
 #@+<< docstring >>
 #@+node:tbrown.20130813134319.14333: ** << docstring >> (richtext.py)
 """
