@@ -4729,6 +4729,7 @@ Event name (tag argument)      Stop?    When called                         Keys
 ============================== ======== =================================== =============================
 'after-auto'                            after each @auto file loaded        c,p (note 13)
 'after-create-leo-frame'                after creating any frame            c
+'after-edit'                            after each @edit file loaded        c
 'after-reading-external-file'           after reading each external file    c,p
 'after-reload-settings'                 after 'reload-settings' command     c
 'before-create-leo-frame'               before frame.finishCreate           c
@@ -4750,6 +4751,7 @@ Event name (tag argument)      Stop?    When called                         Keys
 'command1'                      yes     before each command                 c,p,v,label (note 2)
 'command2'                              after  each command                 c,p,v,label (note 2)
 'create-optional-menus'                 (note 8)                            c (note 8)
+'create-node'                           after inserting a node              c,p
 'create-popup-menu-items'               in tree.OnPopup                     c,p,v,event (new)
 'draw-outline-box'              yes     when drawing +- box                 tree,p,v,x,y
 'draw-outline-icon'             yes     when drawing icon                   tree,p,v,x,y
