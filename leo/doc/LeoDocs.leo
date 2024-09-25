@@ -33003,6 +33003,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - PR #4038: Add reload-outline command.
 - PR #4047: Delete add-editor command and all related code.
 - PR #4033: Add four new layouts and related code and commands.
+- PR #4067: Optionally run pylint when saving changed files.
 - The usual assortment of small bug fixes and code cleanups.
 
 **Links**
@@ -33024,10 +33025,12 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #4033`: https://github.com/leo-editor/leo-editor/pull/4033
 .. _`PR #4038`: https://github.com/leo-editor/leo-editor/pull/4038
 .. _`PR #4047`: https://github.com/leo-editor/leo-editor/pull/4047
+.. _`PR #4068`: https://github.com/leo-editor/leo-editor/pull/4068
 
 - `PR #4033`_: Add four new layouts and related code and commands.
 - `PR #4038`_: Add reload-outline command.
 - `PR #4047`_: Delete add-editor command and all related code.
+- `PR #4068`_: Optionally run pylint when saving changed files.
 </t>
 <t tx="ekr.20240919055407.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
