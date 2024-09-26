@@ -93,6 +93,20 @@ def input_tokens_to_string(tokens: list[InputToken]) -> str:  # pragma: no cover
         print('')
         return ''
     return ''.join([z.to_string() for z in tokens])
+#@+node:ekr.20240926050431.1: *3* function: beautify_file (leoTokens.py) (new)
+def beautify_file(filename: str) -> bool:
+    """
+    Beautify the given file, writing it if has changed.
+    """
+    settings: dict[str, Any] = {
+        'all': False,  # Don't beautify all files.
+        'beautified': True,  # Report changed files.
+        'diff': False,  # Don't show diffs.
+        'report': True,  # Report changed files.
+        'write': True,  # Write changed files.
+    }
+    tbo = TokenBasedOrange(settings)
+    return tbo.beautify_file(filename)
 #@+node:ekr.20240105140814.121: *3* function: main (leoTokens.py)
 def main() -> None:  # pragma: no cover
     """Run commands specified by sys.argv."""
@@ -149,9 +163,8 @@ def orange_command(
         settings = {}
     for filename in to_be_checked_files:
         if os.path.exists(filename):
-            was_dirty = filename in dirty_files
             tbo = TokenBasedOrange(settings)
-            beautified = tbo.beautify_file(filename, was_dirty)
+            beautified = tbo.beautify_file(filename)
             if beautified:
                 n_beautified += 1
             # n_tokens += len(tbo.input_tokens)
@@ -794,7 +807,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(self.internal_error_message(repr(e)))
         return contents
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry) (stats & diffs)
-    def beautify_file(self, filename: str, was_dirty: bool) -> bool:  # pragma: no cover
+    def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
         TokenBasedOrange: Beautify the the given external file.
 
