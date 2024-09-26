@@ -512,15 +512,17 @@ class ParseState:
 #@+node:ekr.20240128114842.1: *3* class ScanState
 class ScanState:  # leoTokens.py.
     """
-    A class representing t.bo pre_scan's scanning state.
+    A class representing tbo.pre_scan's scanning state.
 
-    Valid kind:value pairs:
+    Valid (kind, value) pairs:
 
-      'args': None
-      'from': None
-    'import': None
-     'slice': list of colon indices
-      'dict': list of colon indices
+       kind  Value
+       ====  =====
+      'args' None
+      'from' None
+    'import' None
+     'slice' list of colon indices
+      'dict' list of colon indices
 
     """
 
@@ -560,9 +562,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     After the pre-scan, *tbo.beautify* (the main loop) calls *visitors*
     for each separate type of *input* token.
 
-    Visitors call *code generators* to generate strings in the
-    output_list. The code generators and their helpers use *lazy
-    evaluation* to generate whitespace.
+    Visitors call *code generators* to generate strings in the output
+    list, using *lazy evaluation* to generate whitespace.
     """
     #@-<< TokenBasedOrange: docstring >>
     #@+<< TokenBasedOrange: __slots__ >>
