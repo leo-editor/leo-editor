@@ -8,7 +8,6 @@ import os
 import re
 import shlex
 import sys
-import tempfile
 import time
 from typing import Optional, TYPE_CHECKING
 #
@@ -627,21 +626,14 @@ class PylintCommand:
         else:
             last_path = None
         if not data:
-            if last_path:
-                # Default to the last path.
-                fn = last_path
-                for p in c.all_positions():
-                    if p.isAnyAtFileNode() and c.fullPath(p) == fn:
-                        data = [(fn, p.copy())]
-                        break
-            else:
-                g.trace('pylint: not an external file, using temp file')
-                script = g.getScript(c, c.p, False, False)
-                fd, fn = tempfile.mkstemp(suffix='.py', prefix="")
-                with os.fdopen(fd, 'w') as f:
-                    f.write(script)
-                data = [(fn, c.p.copy())]
-
+            if not last_path:
+                return None
+            # Default to the last path.
+            fn = last_path
+            for p in c.all_positions():
+                if p.isAnyAtFileNode() and c.fullPath(p) == fn:
+                    data = [(fn, p.copy())]
+                    break
         for fn, p in data:
             self.run_pylint(fn, p)
         # #1808: return the last data file.
@@ -667,7 +659,6 @@ class PylintCommand:
         for fn in table:
             fn = g.os_path_abspath(fn)
             if g.os_path_exists(fn):
-                print(f"pylint: {fn}")
                 return fn
         table_s = '\n'.join(table)
         g.es_print(f"no pylint configuration file found in\n{table_s}")
