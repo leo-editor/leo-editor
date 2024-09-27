@@ -2166,25 +2166,6 @@ class AtFile:
         # Fix #1050:
         root.setOrphan()
         c.orphan_at_file_nodes.append(root.h)
-    #@+node:ekr.20220120210617.1: *5* at.checkUnchangedFiles
-    def checkUnchangedFiles(self, contents: str, fileName: str, root: Position) -> None:  # pragma: no cover
-        ok = True
-        if g.unitTesting:
-            return
-        is_python = fileName and fileName.endswith(('py', 'pyw'))
-        if not contents or not is_python:
-            return
-        # Changed 4.
-        if ok and self.runPyFlakesOnWrite:  # First.
-            ok = self.runPyflakes(root)
-        if ok and self.beautifyOnWrite:  # Second.
-            ok = self.runTokenBasedBeautifier(root, fileName)
-        if ok and self.runFlake8OnWrite:
-            ok = ok and self.runFlake8(root)
-        if ok and self.runPylintOnWrite:
-            ok = ok and self.runPylint(root)
-        if not ok:
-            g.app.syntax_error_files.append(g.shortFileName(fileName))
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
     def checkPythonCode(self, contents: str, fileName: str, root: Position) -> None:  # pragma: no cover
         """Perform python-related checks on root."""
@@ -2668,7 +2649,7 @@ class AtFile:
                 'report-unchanged-files', default=True):
                 g.es(f"{timestamp}unchanged: {sfn}")  # pragma: no cover
             # Check unchanged files.
-            at.checkUnchangedFiles(contents, fileName, root)
+            at.checkPythonCode(contents, fileName, root)
             return False  # No change to original file.
         #
         # Warn if we are only adjusting the line endings.
