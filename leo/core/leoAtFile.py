@@ -2253,6 +2253,7 @@ class AtFile:
         if not os.path.exists(filename):
             return False
         try:
+            old_sys_argv = sys.argv[:]
             sys.argv = ['tbo']  # A hack: don't run leo.core.leoTokens.main.
             from leo.core.leoTokens import beautify_file
             changed = beautify_file(filename)
@@ -2269,6 +2270,8 @@ class AtFile:
         except Exception:
             g.es_exception()
             return False
+        finally:
+            sys.arg_v = old_sys_argv
     #@+node:ekr.20221128123139.1: *6* at.runFlake8
     def runFlake8(self, root: Position) -> bool:  # pragma: no cover
         """Run flake8 on the selected node."""
