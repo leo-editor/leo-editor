@@ -642,6 +642,7 @@
 <v t="ekr.20170718054951.1"><vh>@string log-timestamp-format = %H:%M:%S</vh></v>
 <v t="ekr.20181018113813.1"><vh>@string script-file-path = None</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
+<v t="ekr.20240926065158.1"><vh>@bool beautify-python-code-on-write = False</vh></v>
 <v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
 <v t="ekr.20090514111518.8379"><vh>@bool check-python-code-on-write = True</vh></v>
 <v t="ekr.20221128115636.1"><vh>@bool run-flake8-on-write = False</vh></v>
@@ -11811,6 +11812,7 @@ use-vertical-thirds2-layout
 '''
 </t>
 <t tx="ekr.20240924055407.1">True: run Pylint on each saved file, but only if it has been changed.</t>
+<t tx="ekr.20240926065158.1">True: beautify all @&lt;file&gt; nodes in the outline using Leo's token-based beautifier.</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
