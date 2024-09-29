@@ -32,6 +32,8 @@ from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins.qt_tree import LeoQtTree
 from leo.plugins.mod_scripting import build_rclick_tree
+
+from leo.plugins.qt_layout import LayoutCacheWidget
 #@-<< qt_frame imports >>
 #@+<< qt_frame annotations >>
 #@+node:ekr.20220415080427.1: ** << qt_frame annotations >>
@@ -134,6 +136,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.verticalLayout: Any = None
         self.vr_parent_frame: QWidget = None
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
+        self.layout_cache = LayoutCacheWidget(c, self)
         self.reloadSettings()
     #@+node:ekr.20240726074809.1: *4* dw.recreateMainWindow
     def recreateMainWindow(self):

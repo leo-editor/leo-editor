@@ -7,11 +7,9 @@ from __future__ import annotations
 from collections import OrderedDict
 from typing import Any, TYPE_CHECKING
 
-from leo.core.leoQt import QtWidgets, Orientation
+from leo.core.leoQt import QtWidgets, Orientation, QtCore
 # from leo.core.leoCommands import Commands as Cmdr
 from leo.core import leoGlobals as g
-
-import leo.plugins.viewrendered as v
 
 QWidget = QtWidgets.QWidget
 if TYPE_CHECKING:  # pragma: no cover
@@ -23,6 +21,12 @@ if TYPE_CHECKING:  # pragma: no cover
 #@-<< imports >>
 
 CACHENAME = 'leo-layout-cache'
+
+def show_vr_pane(c, w):
+    w.setUpdatesEnabled(True)
+    c.doCommandByName('vr-show')
+
+
 #@+<< FALLBACK_LAYOUT >>
 #@+node:tom.20240923194438.3: ** << FALLBACK_LAYOUT >>
 FALLBACK_LAYOUT = {
@@ -66,7 +70,7 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
 
     vr = cache.find_widget('viewrendered_pane')
     if vr is None:
-        # import leo.plugins.viewrendered as v
+        import leo.plugins.viewrendered as v
         vr = v.getVr()
 
     ms.setOrientation(Orientation.Vertical)
@@ -78,10 +82,13 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
     ms.addWidget(bf)
     ms.addWidget(vr)
 
+    # c.doCommandByName('vr-show')
     g.app.gui.equalize_splitter(ss)
     g.app.gui.equalize_splitter(ms)
 
-    c.doCommandByName('vr-show')
+    # Avoid flash each time VR pane is re-opened.
+    QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
+
 #@+node:tom.20240928171510.1: *3* big-tree
 @g.command ('layout-big-tree')
 def big_tree(event: LeoKeyEvent) -> None:
@@ -107,6 +114,7 @@ def big_tree(event: LeoKeyEvent) -> None:
     # Find or create VR widget
     vr = cache.find_widget('viewrendered_pane')
     if not vr:
+        import leo.plugins.viewrendered as v
         vr = v.getVr()
 #@+at
 #     # For VR3 instead
@@ -140,6 +148,9 @@ def big_tree(event: LeoKeyEvent) -> None:
     ms.setSizes([100_000] * len(ms.sizes()))
     ss.setSizes([100_000] * len(ss.sizes()))
 
+    # Avoid flash each time VR pane is re-opened.
+    QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
+
 #@+node:tom.20240928195823.1: *3* legacy
 # Recreate the layout called "legacy" in the Dynamic Widnow code.
 LEGACY_LAYOUT = {
@@ -169,7 +180,7 @@ def layout_legacy(event: LeoKeyEvent) -> None:
     # Find or create VR widget
     vr = cache.find_widget('viewrendered_pane')
     if not vr:
-        # import leo.plugins.viewrendered as v
+        import leo.plugins.viewrendered as v
         vr = v.getVr()
 
     bvs = cache.find_widget('body-vr-splitter')
