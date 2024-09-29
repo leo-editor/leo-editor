@@ -53,6 +53,41 @@ def fallback_layout(event: LeoKeyEvent) -> None:
 #@+node:tom.20240928165801.1: ** << Built-in Layouts >>
 # Define commands to create some standard layouts
 #@+others
+#@+node:tom.20240928195823.1: *3* legacy
+# Recreate the layout called "legacy" in the Dynamic Window code.
+LEGACY_LAYOUT = {
+    'SPLITTERS':OrderedDict(
+            (('outlineFrame', 'secondary_splitter'),
+            ('logFrame', 'secondary_splitter'),
+            ('bodyFrame', 'body-vr-splitter'),
+            ('viewrendered_pane', 'body-vr-splitter'),
+            ('secondary_splitter', 'main_splitter'),
+            ('body-vr-splitter', 'main_splitter'))
+        ),
+    'ORIENTATIONS':{
+        'body-vr-splitter':Orientation.Horizontal,
+        'secondary_splitter':Orientation.Horizontal,
+        'main_splitter':Orientation.Vertical
+    }
+}
+
+@g.command('layout-legacy')
+def layout_legacy(event: LeoKeyEvent) -> None:
+    """Create Leo's legacy layout."""
+    c = event.get('c')
+    dw = c.frame.top
+    cache = dw.layout_cache
+    cache.restoreFromLayout(LEGACY_LAYOUT)
+
+    # Find or create VR widget
+    vr = cache.find_widget('viewrendered_pane')
+    if not vr:
+        import leo.plugins.viewrendered as v
+        vr = v.getVr()
+
+    bvs = cache.find_widget('body-vr-splitter')
+    bvs.addWidget(vr)
+    c.doCommandByName('vr-show')
 #@+node:tom.20240928170706.1: *3* horizontal-thirds
 @g.command('layout-horizontal-thirds')
 def horizontal_thirds(event: LeoKeyEvent) -> None:
@@ -151,31 +186,38 @@ def big_tree(event: LeoKeyEvent) -> None:
     # Avoid flash each time VR pane is re-opened.
     QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
 
-#@+node:tom.20240928195823.1: *3* legacy
-# Recreate the layout called "legacy" in the Dynamic Widnow code.
-LEGACY_LAYOUT = {
+#@+node:tom.20240929101820.1: *3* render-focused
+RENDERED_FOCUSED_LAYOUT = {
     'SPLITTERS':OrderedDict(
             (('outlineFrame', 'secondary_splitter'),
+            ('bodyFrame', 'secondary_splitter'),
             ('logFrame', 'secondary_splitter'),
-            ('bodyFrame', 'body-vr-splitter'),
             ('viewrendered_pane', 'body-vr-splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('body-vr-splitter', 'main_splitter'))
         ),
     'ORIENTATIONS':{
         'body-vr-splitter':Orientation.Horizontal,
-        'secondary_splitter':Orientation.Horizontal,
-        'main_splitter':Orientation.Vertical
+        'secondary_splitter':Orientation.Vertical,
+        'main_splitter':Orientation.Horizontal
     }
 }
 
-@g.command('layout-legacy')
-def layout_legacy(event: LeoKeyEvent) -> None:
-    """Create Leo's legacy layout."""
+@g.command('layout-render-focused')
+def render_focused(event: LeoKeyEvent) -> None:
+    """Create Leo's render-focused layout::
+        ┌───────────┬─────┐
+        │ outline   │     │
+        ├───────────┤     │
+        │ body      │ VR  │
+        ├───────────┤     │
+        │ log       │     │
+        └───────────┴─────┘
+    """
     c = event.get('c')
     dw = c.frame.top
     cache = dw.layout_cache
-    cache.restoreFromLayout(LEGACY_LAYOUT)
+    cache.restoreFromLayout(RENDERED_FOCUSED_LAYOUT)
 
     # Find or create VR widget
     vr = cache.find_widget('viewrendered_pane')
@@ -185,20 +227,90 @@ def layout_legacy(event: LeoKeyEvent) -> None:
 
     bvs = cache.find_widget('body-vr-splitter')
     bvs.addWidget(vr)
-    c.doCommandByName('vr-show')
-    g.app.gui.equalize_splitter(bvs)
-#@-others
 
-#@+at
-# From DW:
-#     layout_dict = {
-#         'big-tree': self.create_big_tree_layout,
-#         'horizontal-thirds': self.create_horizontal_thirds_layout,
-#         'legacy': self.create_legacy_layout,
-#         'render-focused': self.create_render_focused_layout,
-#         'vertical-thirds': self.create_vertical_thirds_layout,
-#         'vertical-thirds2': self.create_vertical_thirds2_layout,
-#     }
+    QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
+#@+node:tom.20240929104728.1: *3* vertical-thirds
+VERTICAL_THIRDS_LAYOUT = {
+    'SPLITTERS':OrderedDict(
+            (('outlineFrame', 'secondary_splitter'),
+            ('logFrame', 'secondary_splitter'),
+            ('secondary_splitter', 'main_splitter'),
+            ('bodyFrame', 'main_splitter'),
+            ('viewrendered_pane', 'main_splitter'))
+        ),
+    'ORIENTATIONS':{
+        'secondary_splitter':Orientation.Vertical,
+        'main_splitter':Orientation.Horizontal
+    }
+}
+
+
+@g.command('layout-vertical-thirds')
+def vertical_thirds(event: LeoKeyEvent) -> None:
+    """Create Leo's vertical-thirds layout::
+        ┌───────────┬────────┬──────┐
+        │  outline  │        │      │
+        ├───────────┤  body  │  VR  │
+        │  log      │        │      │
+        └───────────┴────────┴──────┘
+    """
+    c = event.get('c')
+    dw = c.frame.top
+    cache = dw.layout_cache
+    cache.restoreFromLayout(VERTICAL_THIRDS_LAYOUT)
+
+    # Find or create VR widget
+    vr = cache.find_widget('viewrendered_pane')
+    if not vr:
+        import leo.plugins.viewrendered as v
+        vr = v.getVr()
+
+    ms = cache.find_widget('main_splitter')
+    ms.addWidget(vr)
+    QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
+#@+node:tom.20240929115043.1: *3* vertical-thirds2
+VERTICAL_THIRDS2_LAYOUT = {
+    'SPLITTERS':OrderedDict(
+            (('logFrame', 'secondary_splitter'),
+            ('bodyFrame', 'secondary_splitter'),
+            ('outlineFrame', 'main_splitter'),
+            ('viewrendered_pane', 'vr-splitter'),
+            ('secondary_splitter', 'main_splitter'),
+            ('vr-splitter', 'main_splitter')
+            )
+        ),
+    'ORIENTATIONS':{
+        'vr-splitter':Orientation.Vertical,
+        'secondary_splitter':Orientation.Vertical,
+        'main_splitter':Orientation.Horizontal
+    }
+}
+
+
+@g.command('layout-vertical-thirds2')
+def vertical_thirds2(event: LeoKeyEvent) -> None:
+    """Create Leo's vertical-thirds2 layout::
+        ┌───────────┬───────┬───────┐
+        │           │  log  │       │
+        │  outline  ├───────┤  VR   │
+        │           │  body │       │
+        └───────────┴───────┴───────┘
+    """
+    c = event.get('c')
+    dw = c.frame.top
+    cache = dw.layout_cache
+    cache.restoreFromLayout(VERTICAL_THIRDS2_LAYOUT)
+
+    # Find or create VR widget
+    vr = cache.find_widget('viewrendered_pane')
+    if not vr:
+        import leo.plugins.viewrendered as v
+        vr = v.getVr()
+
+    ms = cache.find_widget('vr-splitter')
+    ms.addWidget(vr)
+    QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
+#@-others
 #@-<< Built-in Layouts >>
 
 class LayoutCacheWidget(QWidget):
