@@ -8,7 +8,6 @@ from collections import OrderedDict
 from typing import Any, TYPE_CHECKING
 
 from leo.core.leoQt import QtWidgets, Orientation, QtCore
-# from leo.core.leoCommands import Commands as Cmdr
 from leo.core import leoGlobals as g
 
 QWidget = QtWidgets.QWidget
@@ -89,8 +88,41 @@ def layout_legacy(event: LeoKeyEvent) -> None:
     bvs.addWidget(vr)
     c.doCommandByName('vr-show')
 #@+node:tom.20240928170706.1: *3* horizontal-thirds
+HORIZONTAL_THIRDS_LAYOUT = {
+    'SPLITTERS':OrderedDict(
+            (('outlineFrame', 'secondary_splitter'),
+            ('logFrame', 'secondary_splitter'),
+            ('secondary_splitter', 'main_splitter'),
+            ('bodyFrame', 'main_splitter'),
+            ('viewrendered3_pane', 'main_splitter'))
+        ),
+    'ORIENTATIONS':{
+        'secondary_splitter':Orientation.Horizontal,
+        'main_splitter':Orientation.Vertical
+    }
+}
+
+
 @g.command('layout-horizontal-thirds')
 def horizontal_thirds(event: LeoKeyEvent) -> None:
+    """Create Leo's horizontal-thirds layout::
+        ┌───────────┬───────┐
+        │  outline  │  log  │
+        ├───────────┴───────┤
+        │  body             │
+        ├───────────────────┤
+        │  VR               │
+        └───────────────────┘
+    """
+    c = event.get('c')
+    dw = c.frame.top
+    cache = dw.layout_cache
+    import leo.plugins.viewrendered3 as v3
+    v3.getVr3({'c':c})
+    cache.restoreFromLayout(HORIZONTAL_THIRDS_LAYOUT)
+#@+node:tom.20240929125857.1: *3* xhorizontal-thirds
+@g.command('xlayout-horizontal-thirds')
+def xhorizontal_thirds(event: LeoKeyEvent) -> None:
     """Restore Leo's horizontal-thirds layout"""
 
     c = event.get('c')
@@ -219,16 +251,16 @@ def render_focused(event: LeoKeyEvent) -> None:
     cache = dw.layout_cache
     cache.restoreFromLayout(RENDERED_FOCUSED_LAYOUT)
 
-    # Find or create VR widget
-    vr = cache.find_widget('viewrendered_pane')
-    if not vr:
-        import leo.plugins.viewrendered as v
-        vr = v.getVr()
+    # # Find or create VR widget
+    # vr = cache.find_widget('viewrendered_pane')
+    # if not vr:
+        # import leo.plugins.viewrendered as v
+        # vr = v.getVr()
 
-    bvs = cache.find_widget('body-vr-splitter')
-    bvs.addWidget(vr)
+    # bvs = cache.find_widget('body-vr-splitter')
+    # bvs.addWidget(vr)
 
-    QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
+    # QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
 #@+node:tom.20240929104728.1: *3* vertical-thirds
 VERTICAL_THIRDS_LAYOUT = {
     'SPLITTERS':OrderedDict(
@@ -259,15 +291,15 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
     cache = dw.layout_cache
     cache.restoreFromLayout(VERTICAL_THIRDS_LAYOUT)
 
-    # Find or create VR widget
-    vr = cache.find_widget('viewrendered_pane')
-    if not vr:
-        import leo.plugins.viewrendered as v
-        vr = v.getVr()
+    # # Find or create VR widget
+    # vr = cache.find_widget('viewrendered_pane')
+    # if not vr:
+        # import leo.plugins.viewrendered as v
+        # vr = v.getVr()
 
-    ms = cache.find_widget('main_splitter')
-    ms.addWidget(vr)
-    QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
+    # ms = cache.find_widget('main_splitter')
+    # ms.addWidget(vr)
+    # QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
 #@+node:tom.20240929115043.1: *3* vertical-thirds2
 VERTICAL_THIRDS2_LAYOUT = {
     'SPLITTERS':OrderedDict(
@@ -301,15 +333,15 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
     cache = dw.layout_cache
     cache.restoreFromLayout(VERTICAL_THIRDS2_LAYOUT)
 
-    # Find or create VR widget
-    vr = cache.find_widget('viewrendered_pane')
-    if not vr:
-        import leo.plugins.viewrendered as v
-        vr = v.getVr()
+    # # Find or create VR widget
+    # vr = cache.find_widget('viewrendered_pane')
+    # if not vr:
+        # import leo.plugins.viewrendered as v
+        # vr = v.getVr()
 
-    ms = cache.find_widget('vr-splitter')
-    ms.addWidget(vr)
-    QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
+    # ms = cache.find_widget('vr-splitter')
+    # ms.addWidget(vr)
+    # QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
 #@-others
 #@-<< Built-in Layouts >>
 
@@ -411,7 +443,8 @@ class LayoutCacheWidget(QWidget):
             splitter = self.find_splitter_by_name(name)
             if splitter is None:
                 splitter = self.created_splitter_dict[name]
-            SPLITTER_DICT[name] = splitter
+            if not SPLITTER_DICT.get(name):
+                 SPLITTER_DICT[name] = splitter
         #@-<< initialize data structures >>
         #@+<< rehome body editor >>
         #@+node:tom.20240923194438.8: *3* << rehome body editor >>
@@ -467,9 +500,11 @@ class LayoutCacheWidget(QWidget):
         for i, (name, target) in enumerate(SPLITTERS.items()):
             widget = self.find_widget(name)
             if not widget:
+                g.es('===', name)
                 widget = self.created_splitter_dict[name]
-            dest = SPLITTER_DICT[target]
-            dest.insertWidget(i, widget)
+            dest = SPLITTER_DICT.get(target)
+            if dest:
+                dest.insertWidget(i, widget)
         #@-<< move widgets to targets >>
         #@+<< set default orientations >>
         #@+node:tom.20240923194438.11: *3* << set default orientations >>
