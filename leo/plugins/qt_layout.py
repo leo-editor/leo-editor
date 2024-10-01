@@ -391,7 +391,7 @@ class LayoutCacheWidget(QWidget):
                 w = kid
         return w
 
-    def find_widget(self, name):
+    def xfind_widget(self, name):
         w = None
         # Weird - g.app.gui.find_widget_by_name() may not find object in ourself
         w = self.created_splitter_dict.get(name)
@@ -405,6 +405,8 @@ class LayoutCacheWidget(QWidget):
             w = w2
         return w
 
+    def find_widget(self, name):
+        return g.app.gui.find_widget_by_name(self.c, name)
     #@+node:tom.20240923194438.5: *3* find_splitter_by_name()
     def find_splitter_by_name(self, name):
         foundit = False
@@ -518,7 +520,6 @@ class LayoutCacheWidget(QWidget):
         #@+<< resize splitters >>
         #@+node:tom.20240923194438.12: *4* << resize splitters >>
         for splt in SPLITTER_DICT.values():
-            g.es('Resizing', splt.objectName())
             g.app.gui.equalize_splitter(splt)
 
         #@-<< resize splitters >>
