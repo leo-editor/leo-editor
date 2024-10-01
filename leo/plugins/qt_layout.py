@@ -2,8 +2,9 @@
 #@+node:tom.20240923194438.1: * @file ../plugins/qt_layout.py
 """The basic machinery to support applying layouts of the main Leo panels."""
 from __future__ import annotations
-#@+<< imports >>
-#@+node:tom.20240923194438.2: ** << imports >>
+
+#@+others
+#@+node:tom.20240923194438.2: ** imports
 from collections import OrderedDict
 from typing import Any, TYPE_CHECKING
 
@@ -17,17 +18,14 @@ if TYPE_CHECKING:  # pragma: no cover
     # from typing import TypeAlias  # Requires Python 3.12+
     Args = Any
     KWargs = Any
-#@-<< imports >>
-
+#@+node:tom.20240930101302.1: ** Declarations
 CACHENAME = 'leo-layout-cache'
+FALLBACK_LAYOUT_NAME = 'layout-fallback-layout'
 
 def show_vr_pane(c, w):
     w.setUpdatesEnabled(True)
     c.doCommandByName('vr-show')
-
-
-#@+<< FALLBACK_LAYOUT >>
-#@+node:tom.20240923194438.3: ** << FALLBACK_LAYOUT >>
+#@+node:tom.20240923194438.3: ** FALLBACK_LAYOUT
 FALLBACK_LAYOUT = {
     'SPLITTERS':OrderedDict(
                     (('outlineFrame', 'secondary_splitter'),
@@ -40,16 +38,44 @@ FALLBACK_LAYOUT = {
     'secondary_splitter':Orientation.Vertical}
     }
 
-@g.command('layout-fallback-layout')
+@g.command(FALLBACK_LAYOUT_NAME)
 def fallback_layout(event: LeoKeyEvent) -> None:
     """Apply a workable layout in case the layout setting is invalid."""
     c = event.get('c')
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(FALLBACK_LAYOUT)
-#@-<< FALLBACK_LAYOUT >>
-#@+<< Built-in Layouts >>
-#@+node:tom.20240928165801.1: ** << Built-in Layouts >>
+#@+node:tom.20240930101515.1: ** restoreDefaultLayout
+@g.command('layout-restore-default')
+def restoreDefaultLayout(event: LeoKeyEvent) -> None:
+    """Restore the default layout specified in @settings, if known."""
+    c = event.get('c')
+    if not c:
+        return
+    event = g.app.gui.create_key_event(c)
+
+    found_layout = False
+    layout = default_layout = c.config.getString('qt-layout-name')
+    if not layout:
+        layout = FALLBACK_LAYOUT_NAME
+    elif default_layout.startswith('layout-'):
+        if default_layout in c.commandsDict:
+            found_layout = True
+    else:
+        layout = 'layout-' + default_layout
+        if layout in c.commandsDict:
+            found_layout =True
+        elif default_layout in c.commandsDict:
+            layout = default_layout
+            found_layout = True
+        else:
+            g.es(f'Cannot find command {layout} or {default_layout}')
+
+    if found_layout:
+        g.es(f'Restoring {layout} layout')
+        c.commandsDict[layout](event)
+
+#@+node:tom.20240928165801.1: ** Built-in Layouts
 # Define commands to create some standard layouts
 #@+others
 #@+node:tom.20240928195823.1: *3* legacy
@@ -120,42 +146,6 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
     import leo.plugins.viewrendered3 as v3
     v3.getVr3({'c':c})
     cache.restoreFromLayout(HORIZONTAL_THIRDS_LAYOUT)
-#@+node:tom.20240929125857.1: *3* xhorizontal-thirds
-@g.command('xlayout-horizontal-thirds')
-def xhorizontal_thirds(event: LeoKeyEvent) -> None:
-    """Restore Leo's horizontal-thirds layout"""
-
-    c = event.get('c')
-    cache = c.frame.top.layout_cache
-    cache.restoreFromLayout()
-
-    ms = cache.find_widget('main_splitter')
-    ss = cache.find_widget('secondary_splitter')
-    lf = cache.find_widget('logFrame')
-    bf = cache.find_widget('bodyFrame')
-    of = cache.find_widget('outlineFrame')
-
-    vr = cache.find_widget('viewrendered_pane')
-    if vr is None:
-        import leo.plugins.viewrendered as v
-        vr = v.getVr()
-
-    ms.setOrientation(Orientation.Vertical)
-    ss.setOrientation(Orientation.Horizontal)
-
-    ss.addWidget(of)
-    ss.addWidget(lf)
-    ms.addWidget(ss)
-    ms.addWidget(bf)
-    ms.addWidget(vr)
-
-    # c.doCommandByName('vr-show')
-    g.app.gui.equalize_splitter(ss)
-    g.app.gui.equalize_splitter(ms)
-
-    # Avoid flash each time VR pane is re-opened.
-    QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
-
 #@+node:tom.20240928171510.1: *3* big-tree
 @g.command ('layout-big-tree')
 def big_tree(event: LeoKeyEvent) -> None:
@@ -343,8 +333,47 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
     # ms.addWidget(vr)
     # QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
 #@-others
-#@-<< Built-in Layouts >>
+#@+node:tom.20240930164141.1: ** Other Layouts
+#@+node:tom.20240930164155.1: *3* Quadrant
+"""
+──────────────────────────┬───────────────────────────┐
+│                                                     |
+│       outline            │      log                 │
+|                                                     |
+├──────────────────────────┼──────────────────────────┤
+│                          │                          │
+│      body                │     vr                   │
+│                          │                          │
+└──────────────────────────┴──────────────────────────┘
+"""
+QUADRANT_LAYOUT = {
+    'SPLITTERS':OrderedDict(
+        (
+            ('bodyFrame', 'secondary_splitter'),
+            ('viewrendered_pane', 'secondary_splitter'),
+            ('outlineFrame', 'outline-log-splitter'),
+            ('logFrame', 'outline-log-splitter'),
+            ('outline-log-splitter', 'main_splitter'),
+            ('secondary_splitter', 'main_splitter'),
+        )
+    ),
+    'ORIENTATIONS':{
+        'outline-log-splitter':Orientation.Horizontal,
+        'secondary_splitter':Orientation.Horizontal,
+        'main_splitter':Orientation.Vertical,
+    }
+}
 
+@g.command('layout-quadrant')
+def quadrants(event: LeoKeyEvent) -> None:
+    """Create a "quadrant layout::
+
+    """
+    c = event.get('c')
+    dw = c.frame.top
+    cache = dw.layout_cache
+    cache.restoreFromLayout(QUADRANT_LAYOUT)
+#@+node:tom.20240930095459.1: ** class LayoutCacheWidget
 class LayoutCacheWidget(QWidget):
 
     def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
@@ -353,62 +382,39 @@ class LayoutCacheWidget(QWidget):
         self.setObjectName(CACHENAME)
         self.created_splitter_dict = {}
 
-    #@+<< find_widget() >>
-    #@+node:tom.20240923194438.4: ** << find_widget() >>
-    def find_widget_in_children(self, name, debug=False):
-        log = [f'==== find_widget_in_children for: {name}']
+    #@+others
+    #@+node:tom.20240923194438.4: *3* find_widget()
+    def find_widget_in_children(self, name):
         w = None
         for kid in self.children():
             if kid.objectName() == name:
-                log.append(f'======== found it: {kid}')
                 w = kid
-        if debug:
-            g.es('\n'.join(log))
         return w
 
-    def find_widget(self, name, debug=False):
-        log = ['\n']
-        log.append('Running find_widget()')
+    def find_widget(self, name):
         w = None
         # Weird - g.app.gui.find_widget_by_name() may not find object in ourself
         w = self.created_splitter_dict.get(name)
-        log.append(f'---- self.created_splitter_dict.get(name) returned: {w}')
 
-        w1 = self.find_widget_in_children(name, debug)
-        log.append(f'---- self.find_widget_in_children(name) returned: {w1}')
+        w1 = self.find_widget_in_children(name)
         if w1 is not None and w is not None:
             w = w1
 
         w2 = g.app.gui.find_widget_by_name(self.c, name)
-        log.append(f'----g.app.gui.find_widget_by_name(self.c, name) returned: {w2}')
-        if (w1 is not None and w2 is not None) and w1 != w2:
-            log.append(f'---- Inconsistent splitter objects: w1 != w2: {w1}, {w2}')
-        elif w2 is not None and w is None:
+        if w2 is not None and w is None:
             w = w2
-
-
-        # if (w := self.created_splitter_dict.get(name)) is not None:
-            # log.append(f'---- self.created_splitter_dict.get(name) returned: {w}')
-        # elif (w := self.find_widget_in_children(name, debug)) is not None:
-            # log.append(f'---- self.find_widget_in_children(name) returned: {w}')
-        # elif (w := g.app.gui.find_widget_by_name(self.c, name)) is not None:
-            # log.append(f'     g.app.gui.find_widget_by_name(self.c, name) returned: {w}')
-        if debug:
-            print('\n'.join(log))
         return w
 
-    #@-<< find_widget() >>
-    #@+<< find_splitter_by_name() >>
-    #@+node:tom.20240923194438.5: ** << find_splitter_by_name() >>
+    #@+node:tom.20240923194438.5: *3* find_splitter_by_name()
     def find_splitter_by_name(self, name):
         foundit = False
         splitter = None
         splitter = self.find_widget(name)
-        if splitter:
+        if splitter is not None:
             foundit = True
         if not foundit:
             splitter = self.created_splitter_dict.get(name)
-            if splitter:
+            if splitter is not None:
                 foundit = True
         if not foundit:
             for kid in self.children():
@@ -417,26 +423,20 @@ class LayoutCacheWidget(QWidget):
                     splitter = kid
                     break
         return splitter
-    #@-<< find_splitter_by_name() >>
-
+    #@+node:tom.20240923194438.6: *3* restoreFromLayout
     def restoreFromLayout(self, layout=FALLBACK_LAYOUT):
-        #@+<< restoreFromLayout >>
-        #@+node:tom.20240923194438.6: ** << restoreFromLayout >>
         #@+<< initialize data structures >>
-        #@+node:tom.20240923194438.7: *3* << initialize data structures >>
+        #@+node:tom.20240923194438.7: *4* << initialize data structures >>
         SPLITTERS = layout['SPLITTERS']
         ORIENTATIONS = layout['ORIENTATIONS']
 
         # Make unknown splitters
         for _, name in SPLITTERS.items():
             splitter = self.find_splitter_by_name(name)
-            # g.es(f'self.find_splitter_by_name({name}) returned {splitter}')
-            # g.es('    splitter is None:', splitter is None)
             if splitter is None:
                 splitter = QtWidgets.QSplitter(self)
                 splitter.setObjectName(name)
                 self.created_splitter_dict[name] = splitter
-                # g.es(f'Created splitter {splitter.objectName()=}  {splitter=}  {splitter.parent().objectName()=}')
 
         SPLITTER_DICT = OrderedDict()
         for name in ORIENTATIONS:
@@ -447,7 +447,7 @@ class LayoutCacheWidget(QWidget):
                  SPLITTER_DICT[name] = splitter
         #@-<< initialize data structures >>
         #@+<< rehome body editor >>
-        #@+node:tom.20240923194438.8: *3* << rehome body editor >>
+        #@+node:tom.20240923194438.8: *4* << rehome body editor >>
         # In case the editor has been moved to e.g. a QTabWidget,
         # Move it back to its standard place.
 
@@ -458,7 +458,7 @@ class LayoutCacheWidget(QWidget):
         bsw.setCurrentIndex(0)
         #@-<< rehome body editor >>
         #@+<< clean up splitters >>
-        #@+node:tom.20240923194438.9: *3* << clean up splitters >>
+        #@+node:tom.20240923194438.9: *4* << clean up splitters >>
         # Remove extra (no longer wanted) widgets to the cache.
         # Then insert the required widgets into their home splitters
 
@@ -483,31 +483,14 @@ class LayoutCacheWidget(QWidget):
         for widget in cache_list:
             if widget not in self.children():
                 widget.setParent(self)
-            # if widget.objectName() == 'layout_quad_splitter':
-                # g.es('.... reparented from cache_list:', widget.objectName(), widget)
 
         for splitter in self.created_splitter_dict.values():
             if splitter not in self.children():
                 splitter.setParent(self)
-                # g.es('.... reparented from created_splitter_dict.values():',splitter.objectName(), splitter) 
 
         #@-<< clean up splitters >>
-        #@+<< move widgets to targets >>
-        #@+node:tom.20240923194438.10: *3* << move widgets to targets >>
-        # Move all desired widgets into their home splitters
-        # SPLITTERS is an OrderedDict so the widgets will
-        # be inserted in the right order.
-        for i, (name, target) in enumerate(SPLITTERS.items()):
-            widget = self.find_widget(name)
-            if not widget:
-                g.es('===', name)
-                widget = self.created_splitter_dict[name]
-            dest = SPLITTER_DICT.get(target)
-            if dest:
-                dest.insertWidget(i, widget)
-        #@-<< move widgets to targets >>
         #@+<< set default orientations >>
-        #@+node:tom.20240923194438.11: *3* << set default orientations >>
+        #@+node:tom.20240923194438.11: *4* << set default orientations >>
         # SPLITTER_DICT: {'main_splitter':ms, ...}
         # DEFAULT_ORIENTATIONS:
         # {'main_splitter':Orientation.Horizontal...}
@@ -516,13 +499,32 @@ class LayoutCacheWidget(QWidget):
             orientation = ORIENTATIONS[splitter_name]
             splitter.setOrientation(orientation)
         #@-<< set default orientations >>
+        #@+<< move widgets to targets >>
+        #@+node:tom.20240923194438.10: *4* << move widgets to targets >>
+        # Move all desired widgets into their home splitters
+        # SPLITTERS is an OrderedDict so the widgets will
+        # be inserted in the right order.
+
+        splitter_index = {}
+        for name, target in SPLITTERS.items():
+            widget = self.find_widget(name)
+            if widget is None:
+                widget = self.created_splitter_dict[name]
+            dest = SPLITTER_DICT.get(target)
+            i = splitter_index[dest] = splitter_index.get(dest, -1) + 1
+            if dest is not None:
+                dest.insertWidget(i, widget)
+        #@-<< move widgets to targets >>
         #@+<< resize splitters >>
-        #@+node:tom.20240923194438.12: *3* << resize splitters >>
+        #@+node:tom.20240923194438.12: *4* << resize splitters >>
         for splt in SPLITTER_DICT.values():
+            g.es('Resizing', splt.objectName())
             g.app.gui.equalize_splitter(splt)
+
         #@-<< resize splitters >>
         editor.show()
-        #@-<< restoreFromLayout >>
+    #@-others
 
+#@-others
 
 #@-leo
