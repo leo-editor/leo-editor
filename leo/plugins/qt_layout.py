@@ -72,7 +72,6 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
             g.es(f'Cannot find command {layout} or {default_layout}')
 
     if found_layout:
-        g.es(f'Restoring {layout} layout')
         c.commandsDict[layout](event)
 
 #@+node:tom.20240928165801.1: ** Built-in Layouts
