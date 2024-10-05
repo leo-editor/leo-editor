@@ -1079,6 +1079,10 @@ try:
     from leo.core.leoQt import QtMultimedia, QtSvg
     from leo.core.leoQt import KeyboardModifier, WrapMode
     from leo.core.leoQt import QAction, QActionGroup
+    from leo.core.leoQt import QtGui
+    QColor = QtGui.QColor
+
+
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
@@ -1415,6 +1419,46 @@ def check_gems(gem: str, encoding: str = 'utf-8') -> bool:
     installed = gem in proc.stdout.decode(encoding)
     return installed
 
+#@+node:tom.20241005133916.1: ** is_theme_dark()
+def is_theme_dark(c):
+    """Return True if editor background is darker than foreground."""
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    pallete = w.viewport().palette()
+    fg = pallete.text().color()
+    bg = pallete.window().color()
+    return fg.value() > bg.value()
+#@+node:tom.20241005134508.1: ** tinker with colors()
+def tinker_with_colors(c):
+    """Use Editor's fore- and back-ground colors.
+    
+    ARGUMENT
+    html -- The HTML to be re-colored.  Must be a string, not a byte array.
+    
+    Note that this will not change any other colors, such as the
+    literal box colors. So some of the output colors may not be as well
+    coordinated as before the fg/bg colors were changed.
+    """
+    # Get fg, bg colors
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    pallete = w.viewport().palette()
+    fg_hex = pallete.text().color().rgb() & 0x00ffffff
+    bg_hex = pallete.window().color().rgb() & 0x00ffffff
+    fg = f'#{fg_hex:06x}'
+    bg = f'#{bg_hex:06x}'
+
+    css_fragment = f"""
+<style type='text/css'>
+    body {{
+        color: {fg};
+        background: {bg};
+    }}
+</style>
+    """
+
+    # Graft the colors after any previous stylesheet so they have priority.
+    return css_fragment
 #@+node:tom.20211125003406.1: ** configure_asciidoc
 def configure_asciidoc():
     r"""
@@ -2676,8 +2720,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # See if we should try to use stylesheet for Leo theme's light/dark character
         if self.md_style_switch_auto:
-            dict_ = g.app.loadManager.globalSettingsDict
-            is_dark = dict_.get_setting('color-theme-is-dark')
+            is_dark = is_theme_dark(self.c)
             stylefile = MD_STYLESHEET_DARK if is_dark else MD_STYLESHEET_LIGHT
             style_path = check_paths(stylefile, style_dirs)
             if style_path:
@@ -2706,8 +2749,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 with redirect_stdout(out):
                     cmdline.main(args)
             # Add some fine-tuning css
+            css_fragment = tinker_with_colors(self.c)
             with ioOpen(style_path, 'a') as out:
-                out.write(MD_STYLESHEET_APPEND)
+                out.write(MD_STYLESHEET_APPEND + css_fragment)
             self.md_stylesheet = 'file:///' + style_path
 
         g.es('VR3 Markdown stylesheet:', self.md_stylesheet)
@@ -4161,6 +4205,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     output += f'<pre style="{RST_ERROR_BODY_STYLE}">{result}</pre>'
                     _html = output.encode(ENCODING)
 
+        css_fragment = tinker_with_colors(self.c)
+        _html = _html.decode(ENCODING)
+        _html = _html.replace('</head>', f'{css_fragment}</head>')
+        _html = _html.encode(ENCODING)
         self.rst_html = _html
         return _html
         #@-others
