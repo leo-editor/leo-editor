@@ -372,6 +372,43 @@ def quadrants(event: LeoKeyEvent) -> None:
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(QUADRANT_LAYOUT)
+#@+node:tom.20241005163724.1: *3* Swap Log Pane Location
+@g.command('layout-swap-log-panel')
+def swapLogPanel(event: LeoKeyEvent) -> None:
+    """Move Log frame between main and secondary splitters.
+
+       If the Log frame is contained in a different splitter,
+       possibly with some other widget, the entire splitter
+       will be swapped between the main and secondary splitters.
+    """
+    c = event.get('c')
+    if not c:
+        return
+    gui = g.app.gui
+
+    ms = gui.find_widget_by_name(c, 'main_splitter')
+    ss = gui.find_widget_by_name(c, 'secondary_splitter')
+    lf = gui.find_widget_by_name(c, 'logFrame')
+
+    lf_parent = lf.parent()
+    lf_parent_container = lf_parent.parent()
+    widget = None
+
+    if lf_parent in (ss, ms):
+        # Move just the lf
+        target = ms if lf_parent is ss else ss
+        widget = lf
+    elif lf_parent_container in (ms, ss):
+        # Move lf's entire container
+        target = ms if lf_parent_container is ss else ss
+        widget = lf_parent
+    else:
+        g.es("Don't know what widget or container to swap")
+
+    if widget is not None:
+        target.addWidget(widget)
+        g.app.gui.equalize_splitter(target)
+
 #@+node:tom.20240930095459.1: ** class LayoutCacheWidget
 class LayoutCacheWidget(QWidget):
 
