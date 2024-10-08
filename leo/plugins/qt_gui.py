@@ -1534,7 +1534,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20240519115301.1: *4* LeoQtGui.find_widget_by_name
     def find_widget_by_name(self, c: Cmdr, name: str) -> Optional[QWidget]:
         for w in self._self_and_subtree(c.frame.top):
-            if w and w.objectName() == name:
+            if w is not None and w.objectName() == name:
                 return w
         return None
     #@+node:ekr.20240519115157.1: *4* LeoQtGui.get_top_splitter

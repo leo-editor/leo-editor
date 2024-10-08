@@ -635,6 +635,7 @@
 <v t="ekr.20140907123524.18774"><vh>@file ../plugins/qt_frame.py</vh></v>
 <v t="ekr.20140907085654.18699"><vh>@file ../plugins/qt_gui.py</vh></v>
 <v t="ekr.20140907103315.18777"><vh>@file ../plugins/qt_idle_time.py</vh></v>
+<v t="tom.20240923194438.1"><vh>@file ../plugins/qt_layout.py</vh></v>
 <v t="ekr.20140907123524.18777"><vh>@file ../plugins/qt_quickheadlines.py</vh></v>
 <v t="ekr.20140831085423.18598"><vh>@file ../plugins/qt_text.py</vh></v>
 <v t="ekr.20140907131341.18707"><vh>@file ../plugins/qt_tree.py</vh></v>
