@@ -857,11 +857,19 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         self.indent_level = 0
         self.filename = filename
+        t1 = time.perf_counter_ns()
         contents = g.readFile(filename)
+        t2 = time.perf_counter_ns()
         if not contents:
             self.input_tokens = []
             return '', []
+        t3 = time.perf_counter_ns()
         self.input_tokens = input_tokens = Tokenizer().make_input_tokens(contents)
+        t4 = time.perf_counter_ns()
+        if 0:
+            print(f"       read: {(t2-t1)/1000000:6.2f} ms")
+            print(f"make_tokens: {(t4-t3)/1000000:6.2f} ms")
+            print(f"      total: {(t4-t1)/1000000:6.2f} ms")
         return contents, input_tokens
     #@+node:ekr.20240105140814.12: *5* tbo.regularize_newlines
     def regularize_newlines(self, s: str) -> str:
