@@ -1061,7 +1061,7 @@ import string
 import subprocess
 import sys
 import textwrap
-from typing import Any
+from typing import Any, Dict
 import webbrowser
 from urllib.request import urlopen
 
@@ -1356,7 +1356,6 @@ latex_template = f'''\
 #@-<< declarations >>
 
 trace = False  # This global trace is convenient.
-
 
 # keys are c.hash().
 controllers = {}  # values: VR3 widgets
@@ -1783,7 +1782,7 @@ def vr3_help_for_plot_2d(event):
               '=====================\n'
               + docstr)
 
-    args = {'output_encoding': 'utf-8'}
+    args: Dict[str, Any] = {'output_encoding': 'utf-8'}
     if vr3.rst_stylesheet and os.path.exists(vr3.rst_stylesheet):
         args['stylesheet_path'] = f'{vr3.rst_stylesheet}'
         args['embed_stylesheet'] = True
@@ -2260,13 +2259,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.last_markup = ''
         self.lock_to_tree = False
         self.qwev = self.create_web_engineview()
-        self.rst_html = ''
+        self.rst_html: Any = ''  # bytes or str.
         self.show_whole_tree = False
         self.base_url = ''
         self.positions = {}
         self.last_update_was_node_change = False
         self.setObjectName('viewrendered3_pane')
-
         #@-<< initialize configuration ivars >>
         #@+<< asciidoc-specific >>
         #@+node:tom.20240919181508.1: *4* << asciidoc-specific >>
@@ -4133,7 +4131,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 result += f'\n::\n\n{indented_err_result}\n'
         #@+node:TomP.20200105214743.1: *6* vr3.get html from docutils
         #@@language python
-        args = {'output_encoding': 'utf-8'}
+        args: Dict[str, Any] = {'output_encoding': 'utf-8'}
         if self.rst_stylesheet and os.path.exists(self.rst_stylesheet):
             args['stylesheet_path'] = f'{self.rst_stylesheet}'
             args['embed_stylesheet'] = True
@@ -5012,7 +5010,7 @@ class Action:
     @staticmethod
     def image_url2abs(sm, line, tag=None, language=None):
         """Convert MD or Asciidoc image directive's image path to an absolute one"""
-        is_image = False
+        is_image: Any = None
         if language == MD:
             is_image = MD_IMAGE_MARKER_RE.match(line)
         elif language == ASCIIDOC:
@@ -5216,7 +5214,7 @@ class StateMachine:
                 next = State.BASE
                 # _lang = self.base_lang
 
-        action(self, line, tag, language)
+        action(self, line, tag, language)  # type:ignore
         self.state = next
     #@-<< do_state >>
     #@+<< get_marker_md >>
@@ -5404,5 +5402,4 @@ class StateMachine:
     #@-<< State Table >>
 
 #@-others
-
 #@-leo
