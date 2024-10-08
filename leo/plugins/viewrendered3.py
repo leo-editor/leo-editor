@@ -3100,13 +3100,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:tom.20240725074751.1: *4* vr3.update_rendering
     def update_rendering(self, f, node_tree, p, keywords, kind):
         """Render the node tree in the VR3 pane according to its kind."""
+        s = keywords.get('s') if 's' in keywords else p.b
         if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT):
             f(node_tree, keywords)
         elif kind:
             # Remove Leo directives.
-            s = keywords.get('s') if 's' in keywords else p.b
-            s = self.remove_directives(s)
-            f(s, keywords)
+            s2 = self.remove_directives(s)
+            f(s2, keywords)
         else:
             self.show_literal(s)
     #@+node:tom.20240724103143.1: *4* vr3.create_node_tree
