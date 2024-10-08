@@ -494,7 +494,7 @@ class LayoutCacheWidget(QWidget):
                 splitter.setObjectName(name)
                 self.created_splitter_dict[name] = splitter
 
-        SPLITTER_DICT = OrderedDict()
+        SPLITTER_DICT: Dict[str, Any] = OrderedDict()
         for name in ORIENTATIONS:
             splitter = self.find_splitter_by_name(name)
             # Redundant, already checked in self.find_splitter_by_name()
@@ -562,7 +562,7 @@ class LayoutCacheWidget(QWidget):
         # SPLITTERS is an OrderedDict so the widgets will
         # be inserted in the right order.
 
-        splitter_index = {}
+        splitter_index: Dict = {}
         for name, target in SPLITTERS.items():
             widget = self.find_widget(name)
             if widget is None:
