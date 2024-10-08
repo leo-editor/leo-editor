@@ -1061,7 +1061,7 @@ import string
 import subprocess
 import sys
 import textwrap
-from typing import Any, Dict
+from typing import Any, Dict, List, Tuple
 import webbrowser
 from urllib.request import urlopen
 
@@ -1324,8 +1324,8 @@ asciidoc = None
 asciidoctor = None
 asciidoc_ok = False
 asciidoc3_ok = False
-asciidoc_dirs = {'asciidoc': {}, 'asciidoc3': {}}
-asciidoc_processors = []
+asciidoc_dirs: Dict[str, Dict] = {'asciidoc': {}, 'asciidoc3': {}}
+asciidoc_processors: List[Any] = []
 asciidoc_has_diagram = False
 #@-<< Misc Globals >>
 #@+<< define html templates >>
@@ -1358,8 +1358,8 @@ latex_template = f'''\
 trace = False  # This global trace is convenient.
 
 # keys are c.hash().
-controllers = {}  # values: VR3 widgets
-positions = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
+controllers: Dict[str, Any] = {}  # values: VR3 widgets
+positions: Dict[int, Any] = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
 
 #@+others
 #@+node:TomP.20200508124457.1: ** find_exe()
@@ -1482,7 +1482,7 @@ def configure_asciidoc():
         if dopatch:
             print('.... Patching asciidoc')
             from asciidoc.api import Options
-            AsciiDocAPI.__init__ = new_init
+            AsciiDocAPI.__init__ = new_init  # type:ignore
 
         asciidoc_ok = True
 
@@ -1503,7 +1503,7 @@ def configure_asciidoc():
     try:
         from asciidoc3.asciidoc3api import AsciiDoc3API
         from asciidoc3 import asciidoc3 as ad3
-        ad3_file = ad3.__file__
+        ad3_file = ad3.__file__  # type:ignore
         asciidoc3_ok = True
     except ImportError:
         asciidoc3_ok = False
@@ -2893,7 +2893,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             #@-<< is_numeric >>
             #@+<< get_data >>
             #@+node:tom.20211104105903.14: *6* << get_data >>
-            def get_data(pagelines):
+            def get_data(pagelines) -> Tuple[Any, Any]:
                 num_cols = 0
 
                 # Skip lines starting with """ or '''
@@ -2916,6 +2916,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     return None, None
 
                 # Extract x, y values into separate lists; ignore columns after col. 2
+                x: Any  # Dubious
                 if num_cols == 1:
                     x = range(len(t))
                     y = [float(b.strip()) for b in t]
@@ -3162,7 +3163,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         s = keywords['s'] = '\n'.join([l for l in lines if not l.startswith('#@')])
 
         f = self.dispatch_dict.get(node_kind)
-        f([s,], keywords)
+        f([s,], keywords)  # type:ignore
 
         # Prevent VR3 from showing the selected node at
         # the next idle-time callback,
@@ -3387,9 +3388,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
             #@+<< Find available processors >>
             #@+node:tom.20211122104636.1: *6* << Find available processors >>
             if asciidoc_ok:
-                asciidoc_processors.append(AsciiDocAPI())
+                asciidoc_processors.append(AsciiDocAPI())  # type:ignore
             if asciidoc3_ok:
-                asciidoc_processors.append(AsciiDoc3API(ad3_file))
+                asciidoc_processors.append(AsciiDoc3API(ad3_file))  # type:ignore
             if not asciidoc_processors:
                 h = '<h1>No asciidoc processors found</h1>'
                 self.rst_html = h
