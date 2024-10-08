@@ -866,8 +866,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         t3 = time.perf_counter_ns()
         self.input_tokens = input_tokens = Tokenizer().make_input_tokens(contents)
         t4 = time.perf_counter_ns()
-        if 1:
-            print(f"       read: {(t2-t1)/1000000:6.2f} ms")  # μ
+        if 0:
+            print(f"       read: {(t2-t1)/1000000:6.2f} ms")
             print(f"make_tokens: {(t4-t3)/1000000:6.2f} ms")
             print(f"      total: {(t4-t1)/1000000:6.2f} ms")
         return contents, input_tokens
