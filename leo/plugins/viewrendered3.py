@@ -1617,7 +1617,7 @@ def show_scrolled_message(tag, kw):
     dw = c.frame.top
     cache = dw.layout_cache
 
-    vr3 = getVr3({'c':c})
+    vr3 = getVr3({'c': c})
     if vr3.parent() == cache:
         # Not already in another layout
         ms = cache.find_widget('main_splitter')
@@ -1633,7 +1633,7 @@ def show_scrolled_message(tag, kw):
         kw.get('msg')
     ])
 
-    delay = 500# if started_vr3 else 0
+    delay = 500  # if started_vr3 else 0
 
     def do_scrolled_msg(vr3, s, flags):
         vr3.update(
@@ -1723,7 +1723,7 @@ def viewrendered(event):
     if not c:
         return None
 
-    vr3 = getVr3({'c':c})
+    vr3 = getVr3({'c': c})
     return vr3
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
 @g.command('vr3-execute')
@@ -2086,7 +2086,7 @@ def shrink_view(event):
 #@+node:tom.20230403141635.1: *3* g.command('vr3-tab')
 @g.command('vr3-tab')
 def viewrendered_tab(event):
-    """Open VR3 in a tab in commander's log framer""
+    """Open VR3 in a tab in commander's log framer"""
     # global controllers
     if g.app.gui.guiName() != 'qt':
         return

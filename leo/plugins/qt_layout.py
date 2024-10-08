@@ -6,7 +6,7 @@ from __future__ import annotations
 #@+others
 #@+node:tom.20240923194438.2: ** imports
 from collections import OrderedDict
-from typing import Any, TYPE_CHECKING
+from typing import Any, Dict, TYPE_CHECKING
 
 from leo.core.leoQt import QtWidgets, Orientation, QtCore
 from leo.core import leoGlobals as g
@@ -27,16 +27,17 @@ def show_vr_pane(c, w):
     c.doCommandByName('vr-show')
 #@+node:tom.20240923194438.3: ** FALLBACK_LAYOUT
 FALLBACK_LAYOUT = {
-    'SPLITTERS':OrderedDict(
-                    (('outlineFrame', 'secondary_splitter'),
-                    ('logFrame', 'secondary_splitter'),
-                    ('secondary_splitter', 'main_splitter'),
-                    ('bodyFrame', 'main_splitter'))
-                ),
-    'ORIENTATIONS':{
-    'main_splitter':Orientation.Horizontal,
-    'secondary_splitter':Orientation.Vertical}
+    'SPLITTERS': OrderedDict(
+        (('outlineFrame', 'secondary_splitter'),
+        ('logFrame', 'secondary_splitter'),
+        ('secondary_splitter', 'main_splitter'),
+        ('bodyFrame', 'main_splitter'))
+    ),
+    'ORIENTATIONS': {
+        'main_splitter': Orientation.Horizontal,
+        'secondary_splitter': Orientation.Vertical,
     }
+}
 
 @g.command(FALLBACK_LAYOUT_NAME)
 def fallback_layout(event: LeoKeyEvent) -> None:
@@ -64,7 +65,7 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
     else:
         layout = 'layout-' + default_layout
         if layout in c.commandsDict:
-            found_layout =True
+            found_layout = True
         elif default_layout in c.commandsDict:
             layout = default_layout
             found_layout = True
@@ -80,7 +81,7 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
 #@+node:tom.20240928195823.1: *3* legacy
 # Recreate the layout called "legacy" in the Dynamic Window code.
 LEGACY_LAYOUT = {
-    'SPLITTERS':OrderedDict(
+    'SPLITTERS': OrderedDict(
             (('outlineFrame', 'secondary_splitter'),
             ('logFrame', 'secondary_splitter'),
             ('bodyFrame', 'body-vr-splitter'),
@@ -88,10 +89,10 @@ LEGACY_LAYOUT = {
             ('secondary_splitter', 'main_splitter'),
             ('body-vr-splitter', 'main_splitter'))
         ),
-    'ORIENTATIONS':{
-        'body-vr-splitter':Orientation.Horizontal,
-        'secondary_splitter':Orientation.Horizontal,
-        'main_splitter':Orientation.Vertical
+    'ORIENTATIONS': {
+        'body-vr-splitter': Orientation.Horizontal,
+        'secondary_splitter': Orientation.Horizontal,
+        'main_splitter': Orientation.Vertical
     }
 }
 
@@ -114,23 +115,23 @@ def layout_legacy(event: LeoKeyEvent) -> None:
     c.doCommandByName('vr-show')
 #@+node:tom.20240928170706.1: *3* horizontal-thirds
 HORIZONTAL_THIRDS_LAYOUT = {
-    'SPLITTERS':OrderedDict(
+    'SPLITTERS': OrderedDict(
             (('outlineFrame', 'secondary_splitter'),
             ('logFrame', 'secondary_splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('bodyFrame', 'main_splitter'),
             ('viewrendered3_pane', 'main_splitter'))
         ),
-    'ORIENTATIONS':{
-        'secondary_splitter':Orientation.Horizontal,
-        'main_splitter':Orientation.Vertical
+    'ORIENTATIONS': {
+        'secondary_splitter': Orientation.Horizontal,
+        'main_splitter': Orientation.Vertical
     }
 }
 
 
 @g.command('layout-horizontal-thirds')
 def horizontal_thirds(event: LeoKeyEvent) -> None:
-    """Create Leo's horizontal-thirds layout::
+    """Create Leo's horizontal-thirds layout:
         ┌───────────┬───────┐
         │  outline  │  log  │
         ├───────────┴───────┤
@@ -143,10 +144,10 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
     dw = c.frame.top
     cache = dw.layout_cache
     import leo.plugins.viewrendered3 as v3
-    v3.getVr3({'c':c})
+    v3.getVr3({'c': c})
     cache.restoreFromLayout(HORIZONTAL_THIRDS_LAYOUT)
 #@+node:tom.20240928171510.1: *3* big-tree
-@g.command ('layout-big-tree')
+@g.command('layout-big-tree')
 def big_tree(event: LeoKeyEvent) -> None:
     """Apply the "big-tree" layout.
 
@@ -215,7 +216,7 @@ def big_tree(event: LeoKeyEvent) -> None:
 
 #@+node:tom.20240929101820.1: *3* render-focused
 RENDERED_FOCUSED_LAYOUT = {
-    'SPLITTERS':OrderedDict(
+    'SPLITTERS': OrderedDict(
             (('outlineFrame', 'secondary_splitter'),
             ('bodyFrame', 'secondary_splitter'),
             ('logFrame', 'secondary_splitter'),
@@ -223,16 +224,16 @@ RENDERED_FOCUSED_LAYOUT = {
             ('secondary_splitter', 'main_splitter'),
             ('body-vr-splitter', 'main_splitter'))
         ),
-    'ORIENTATIONS':{
-        'body-vr-splitter':Orientation.Horizontal,
-        'secondary_splitter':Orientation.Vertical,
-        'main_splitter':Orientation.Horizontal
+    'ORIENTATIONS': {
+        'body-vr-splitter': Orientation.Horizontal,
+        'secondary_splitter': Orientation.Vertical,
+        'main_splitter': Orientation.Horizontal
     }
 }
 
 @g.command('layout-render-focused')
 def render_focused(event: LeoKeyEvent) -> None:
-    """Create Leo's render-focused layout::
+    """Create Leo's render-focused layout:
         ┌───────────┬─────┐
         │ outline   │     │
         ├───────────┤     │
@@ -258,23 +259,22 @@ def render_focused(event: LeoKeyEvent) -> None:
     # QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
 #@+node:tom.20240929104728.1: *3* vertical-thirds
 VERTICAL_THIRDS_LAYOUT = {
-    'SPLITTERS':OrderedDict(
+    'SPLITTERS': OrderedDict(
             (('outlineFrame', 'secondary_splitter'),
             ('logFrame', 'secondary_splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('bodyFrame', 'main_splitter'),
             ('viewrendered_pane', 'main_splitter'))
         ),
-    'ORIENTATIONS':{
-        'secondary_splitter':Orientation.Vertical,
-        'main_splitter':Orientation.Horizontal
+    'ORIENTATIONS': {
+        'secondary_splitter': Orientation.Vertical,
+        'main_splitter': Orientation.Horizontal
     }
 }
 
-
 @g.command('layout-vertical-thirds')
 def vertical_thirds(event: LeoKeyEvent) -> None:
-    """Create Leo's vertical-thirds layout::
+    """Create Leo's vertical-thirds layout:
         ┌───────────┬────────┬──────┐
         │  outline  │        │      │
         ├───────────┤  body  │  VR  │
@@ -297,26 +297,25 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
     # QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
 #@+node:tom.20240929115043.1: *3* vertical-thirds2
 VERTICAL_THIRDS2_LAYOUT = {
-    'SPLITTERS':OrderedDict(
-            (('logFrame', 'secondary_splitter'),
-            ('bodyFrame', 'secondary_splitter'),
-            ('outlineFrame', 'main_splitter'),
-            ('viewrendered_pane', 'vr-splitter'),
-            ('secondary_splitter', 'main_splitter'),
-            ('vr-splitter', 'main_splitter')
-            )
-        ),
-    'ORIENTATIONS':{
-        'vr-splitter':Orientation.Vertical,
-        'secondary_splitter':Orientation.Vertical,
-        'main_splitter':Orientation.Horizontal
+    'SPLITTERS': OrderedDict(
+        (('logFrame', 'secondary_splitter'),
+        ('bodyFrame', 'secondary_splitter'),
+        ('outlineFrame', 'main_splitter'),
+        ('viewrendered_pane', 'vr-splitter'),
+        ('secondary_splitter', 'main_splitter'),
+        ('vr-splitter', 'main_splitter')
+        )
+    ),
+    'ORIENTATIONS': {
+        'vr-splitter': Orientation.Vertical,
+        'secondary_splitter': Orientation.Vertical,
+        'main_splitter': Orientation.Horizontal
     }
 }
 
-
 @g.command('layout-vertical-thirds2')
 def vertical_thirds2(event: LeoKeyEvent) -> None:
-    """Create Leo's vertical-thirds2 layout::
+    """Create Leo's vertical-thirds2 layout:
         ┌───────────┬───────┬───────┐
         │           │  log  │       │
         │  outline  ├───────┤  VR   │
@@ -340,19 +339,8 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
 #@-others
 #@+node:tom.20240930164141.1: ** Other Layouts
 #@+node:tom.20240930164155.1: *3* Quadrant
-"""
-──────────────────────────┬───────────────────────────┐
-│                                                     |
-│       outline            │      log                 │
-|                                                     |
-├──────────────────────────┼──────────────────────────┤
-│                          │                          │
-│      body                │     vr                   │
-│                          │                          │
-└──────────────────────────┴──────────────────────────┘
-"""
 QUADRANT_LAYOUT = {
-    'SPLITTERS':OrderedDict(
+    'SPLITTERS': OrderedDict(
         (
             ('bodyFrame', 'secondary_splitter'),
             ('viewrendered_pane', 'secondary_splitter'),
@@ -362,17 +350,21 @@ QUADRANT_LAYOUT = {
             ('secondary_splitter', 'main_splitter'),
         )
     ),
-    'ORIENTATIONS':{
-        'outline-log-splitter':Orientation.Horizontal,
-        'secondary_splitter':Orientation.Horizontal,
-        'main_splitter':Orientation.Vertical,
+    'ORIENTATIONS': {
+        'outline-log-splitter': Orientation.Horizontal,
+        'secondary_splitter': Orientation.Horizontal,
+        'main_splitter': Orientation.Vertical,
     }
 }
 
 @g.command('layout-quadrant')
 def quadrants(event: LeoKeyEvent) -> None:
-    """Create a "quadrant layout::
-
+    """Create a "quadrant layout:
+        ┌───────────────┬───────────┐
+        │   outline     │   log     │
+        ├───────────────┼───────────┤
+        │   body        │     vr    │
+        └───────────────┴───────────┘
     """
     c = event.get('c')
     dw = c.frame.top
@@ -417,12 +409,28 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
 
 #@+node:tom.20240930095459.1: ** class LayoutCacheWidget
 class LayoutCacheWidget(QWidget):
+    """
+    Manage layout such as the following:
+        
+        FALLBACK_LAYOUT = {
+            'SPLITTERS':OrderedDict(
+                            (('outlineFrame', 'secondary_splitter'),
+                            ('logFrame', 'secondary_splitter'),
+                            ('secondary_splitter', 'main_splitter'),
+                            ('bodyFrame', 'main_splitter'))
+                        ),
+            'ORIENTATIONS':{
+            'main_splitter':Orientation.Horizontal,
+            'secondary_splitter':Orientation.Vertical}
+        }
+    """
 
     def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
         super().__init__(parent)
         self.c = c
         self.setObjectName(CACHENAME)
-        self.created_splitter_dict = {}
+        # maps splitter objectNames to their splitter object.
+        self.created_splitter_dict: Dict[str, Any] = {}
 
     #@+others
     #@+node:tom.20240923194438.4: *3* find_widget()
@@ -468,33 +476,17 @@ class LayoutCacheWidget(QWidget):
                     break
         return splitter
     #@+node:tom.20240923194438.6: *3* restoreFromLayout
-    def restoreFromLayout(self, layout=FALLBACK_LAYOUT):
+    def restoreFromLayout(self, layout=None):
+        if layout is None:
+            layout = FALLBACK_LAYOUT
         #@+<< initialize data structures >>
         #@+node:tom.20240923194438.7: *4* << initialize data structures >>
-        """Example layout structure:
-                
-            FALLBACK_LAYOUT = {
-                'SPLITTERS':OrderedDict(
-                                (('outlineFrame', 'secondary_splitter'),
-                                ('logFrame', 'secondary_splitter'),
-                                ('secondary_splitter', 'main_splitter'),
-                                ('bodyFrame', 'main_splitter'))
-                            ),
-                'ORIENTATIONS':{
-                'main_splitter':Orientation.Horizontal,
-                'secondary_splitter':Orientation.Vertical}
-                }
-
-        If a splitter name is not known or does not exist, create one
-        and add it to self.created_splitter_dict.
-
-        SPLITTER_DICT maps splitter objectNames to their splitter object.
-        """
-
         SPLITTERS = layout['SPLITTERS']
         ORIENTATIONS = layout['ORIENTATIONS']
 
-        # Make unknown splitters
+        # Make unknown splitters.
+        # If a splitter name is not known or does not exist, create one
+        # and add it to self.created_splitter_dict.
         for _, name in SPLITTERS.items():
             splitter = self.find_splitter_by_name(name)
             if splitter is None:
@@ -509,7 +501,7 @@ class LayoutCacheWidget(QWidget):
             # if splitter is None:
                 # splitter = self.created_splitter_dict[name]
             if splitter is not None and SPLITTER_DICT.get(name, None) is None:
-                 SPLITTER_DICT[name] = splitter
+                SPLITTER_DICT[name] = splitter
         #@-<< initialize data structures >>
         #@+<< rehome body editor >>
         #@+node:tom.20240923194438.8: *4* << rehome body editor >>
