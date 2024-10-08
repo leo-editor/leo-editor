@@ -1,10 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:tom.20240923194438.1: * @file ../plugins/qt_layout.py
 """The basic machinery to support applying layouts of the main Leo panels."""
+
+#@+<< qt_layout: imports >>
+#@+node:tom.20240923194438.2: ** << qt_layout: imports >>
 from __future__ import annotations
 
-#@+others
-#@+node:tom.20240923194438.2: ** imports
 from collections import OrderedDict
 from typing import Any, Dict, TYPE_CHECKING
 
@@ -18,10 +19,17 @@ if TYPE_CHECKING:  # pragma: no cover
     # from typing import TypeAlias  # Requires Python 3.12+
     Args = Any
     KWargs = Any
-#@+node:tom.20240930101302.1: ** Declarations
+#@-<< qt_layout: imports >>
+
 CACHENAME = 'leo-layout-cache'
 FALLBACK_LAYOUT_NAME = 'layout-fallback-layout'
 
+#@+others
+#@+node:ekr.20241008141246.1: ** function: init
+def init() -> bool:
+    """Return True if this plugin should be enabled."""
+    return True
+#@+node:ekr.20241008141353.1: ** function: show_vr_pane
 def show_vr_pane(c, w):
     w.setUpdatesEnabled(True)
     c.doCommandByName('vr-show')
