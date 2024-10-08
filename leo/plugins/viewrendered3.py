@@ -1061,6 +1061,7 @@ import string
 import subprocess
 import sys
 import textwrap
+from typing import Any
 import webbrowser
 from urllib.request import urlopen
 
@@ -2414,7 +2415,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             """
 
             setattr(self, menu_var_name, False)
-            _action = QAction(label, self, checkable=True)
+            _action = QAction(label, self, checkable=True)  # type:ignore
             _action.triggered.connect(lambda: set_menu_var(menu_var_name, _action))
             menu.addAction(_action)
         #@+node:TomP.20200329223820.8: *5* function: vr3.set_default_kind
@@ -2441,7 +2442,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             nothing.
             """
 
-            _action = QAction(label, self, checkable=True)
+            _action = QAction(label, self, checkable=True)  # type:ignore
             _action.triggered.connect(lambda: set_default_kind(kind))
             group.addAction(_action)
             menu.addAction(_action)
@@ -2471,12 +2472,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+node:TomP.20200329223820.13: *5* << vr3: create menus >>
         menu = QtWidgets.QMenu()
         set_action("Entire Tree", 'show_whole_tree')
-        _action = QAction('Lock to Tree Root', self, checkable=True)
+
+        _action = QAction('Lock to Tree Root', self, checkable=True)  # type:ignore
         _action.triggered.connect(lambda checked: set_tree_lock(checked))
         menu.addAction(_action)
         self.action_lock_to_tree = _action
 
-        _action = QAction('Freeze', self, checkable=True)
+        _action = QAction('Freeze', self, checkable=True)  # type:ignore
         _action.triggered.connect(lambda checked: set_freeze(checked))
         menu.addAction(_action)
         self.action_freeze = _action
@@ -2494,15 +2496,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # "Other Actions"
         menu = QtWidgets.QMenu()
-        _action = QAction('Plot 2D', self, checkable=False)
+        _action = QAction('Plot 2D', self, checkable=False)  # type:ignore
         _action.triggered.connect(lambda: c.doCommandByName('vr3-plot-2d'))
         menu.addAction(_action)
 
-        _action = QAction('Help For Plot 2D', self, checkable=False)
+        _action = QAction('Help For Plot 2D', self, checkable=False)  # type:ignore
         _action.triggered.connect(lambda: c.doCommandByName('vr3-help-plot-2d'))
         menu.addAction(_action)
 
-        _action = QAction('Reload', self, checkable=False)
+        _action = QAction('Reload', self, checkable=False)  # type:ignore
         _action.triggered.connect(lambda: c.doCommandByName('vr3-update'))
         menu.addAction(_action)
 
@@ -3050,7 +3052,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         plt.rcdefaults()
     #@+node:TomP.20191215195433.49: *3* vr3.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
-    def update(self, tag, keywords):
+    def update(self, tag, keywords):  # type:ignore
         """Update the vr3 pane. Called at idle time.
 
         If the VR3 variable "freeze" is True, do not update.
