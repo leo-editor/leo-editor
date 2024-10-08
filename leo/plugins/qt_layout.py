@@ -107,7 +107,7 @@ def layout_legacy(event: LeoKeyEvent) -> None:
     vr = cache.find_widget('viewrendered_pane')
     if not vr:
         import leo.plugins.viewrendered as v
-        vr = v.getVr()
+        vr = v.getVr(c=c)
 
     bvs = cache.find_widget('body-vr-splitter')
     bvs.addWidget(vr)
@@ -169,7 +169,7 @@ def big_tree(event: LeoKeyEvent) -> None:
 
     # Find or create VR widget
     vr = cache.find_widget('viewrendered_pane')
-    if not vr:
+    if vr is None:
         import leo.plugins.viewrendered as v
         vr = v.getVr()
 #@+at
@@ -182,12 +182,14 @@ def big_tree(event: LeoKeyEvent) -> None:
 #@@c
     # Clear out splitters so we can add widgets back in the right order
     for widget in (ss, of, lf, bf, vr):  # Don't remove ms!
-        widget.setParent(None)
+        if widget is not None:
+            widget.setParent(None)
 
     # Move widgets to target splitters
     of.setParent(ms)
     ss.setParent(ms)
-    vr.setParent(ms)
+    if vr is not None:
+        vr.setParent(ms)
     bf.setParent(ss)
     lf.setParent(ss)
 
@@ -196,9 +198,13 @@ def big_tree(event: LeoKeyEvent) -> None:
     ss.setOrientation(Orientation.Horizontal)
 
     # Re-parenting a widget to None hides it, so show it now
-    for widget in (ss, of, lf, bf, vr):
+    widgets = [ss, of, lf, bf]
+    if vr is not None:
+        widgets.append(vr)
+    for widget in widgets:
         widget.show()
-    c.doCommandByName('vr-show')
+    if vr is not None:
+        c.doCommandByName('vr-show')
 
     # Set splitter sizes
     ms.setSizes([100_000] * len(ms.sizes()))
@@ -244,7 +250,7 @@ def render_focused(event: LeoKeyEvent) -> None:
     # vr = cache.find_widget('viewrendered_pane')
     # if not vr:
         # import leo.plugins.viewrendered as v
-        # vr = v.getVr()
+        # vr = v.getVr(c=c)
 
     # bvs = cache.find_widget('body-vr-splitter')
     # bvs.addWidget(vr)
@@ -284,7 +290,7 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
     # vr = cache.find_widget('viewrendered_pane')
     # if not vr:
         # import leo.plugins.viewrendered as v
-        # vr = v.getVr()
+        # vr = v.getVr(c=c)
 
     # ms = cache.find_widget('main_splitter')
     # ms.addWidget(vr)
@@ -326,7 +332,7 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
     # vr = cache.find_widget('viewrendered_pane')
     # if not vr:
         # import leo.plugins.viewrendered as v
-        # vr = v.getVr()
+        # vr = v.getVr(c=c)
 
     # ms = cache.find_widget('vr-splitter')
     # ms.addWidget(vr)
@@ -451,7 +457,7 @@ class LayoutCacheWidget(QWidget):
         if splitter is not None:
             foundit = True
         if not foundit:
-            splitter = self.created_splitter_dict.get(name)
+            splitter = self.created_splitter_dict.get(name, None)
             if splitter is not None:
                 foundit = True
         if not foundit:
@@ -465,6 +471,26 @@ class LayoutCacheWidget(QWidget):
     def restoreFromLayout(self, layout=FALLBACK_LAYOUT):
         #@+<< initialize data structures >>
         #@+node:tom.20240923194438.7: *4* << initialize data structures >>
+        """Example layout structure:
+                
+            FALLBACK_LAYOUT = {
+                'SPLITTERS':OrderedDict(
+                                (('outlineFrame', 'secondary_splitter'),
+                                ('logFrame', 'secondary_splitter'),
+                                ('secondary_splitter', 'main_splitter'),
+                                ('bodyFrame', 'main_splitter'))
+                            ),
+                'ORIENTATIONS':{
+                'main_splitter':Orientation.Horizontal,
+                'secondary_splitter':Orientation.Vertical}
+                }
+
+        If a splitter name is not known or does not exist, create one
+        and add it to self.created_splitter_dict.
+
+        SPLITTER_DICT maps splitter objectNames to their splitter object.
+        """
+
         SPLITTERS = layout['SPLITTERS']
         ORIENTATIONS = layout['ORIENTATIONS']
 
@@ -479,9 +505,10 @@ class LayoutCacheWidget(QWidget):
         SPLITTER_DICT = OrderedDict()
         for name in ORIENTATIONS:
             splitter = self.find_splitter_by_name(name)
-            if splitter is None:
-                splitter = self.created_splitter_dict[name]
-            if not SPLITTER_DICT.get(name):
+            # Redundant, already checked in self.find_splitter_by_name()
+            # if splitter is None:
+                # splitter = self.created_splitter_dict[name]
+            if splitter is not None and SPLITTER_DICT.get(name, None) is None:
                  SPLITTER_DICT[name] = splitter
         #@-<< initialize data structures >>
         #@+<< rehome body editor >>
@@ -547,11 +574,12 @@ class LayoutCacheWidget(QWidget):
         for name, target in SPLITTERS.items():
             widget = self.find_widget(name)
             if widget is None:
-                widget = self.created_splitter_dict[name]
-            dest = SPLITTER_DICT.get(target)
-            i = splitter_index[dest] = splitter_index.get(dest, -1) + 1
-            if dest is not None:
-                dest.insertWidget(i, widget)
+                widget = self.created_splitter_dict.get(name, None)
+            dest = SPLITTER_DICT.get(target, None)
+            if widget is not None and dest is not None:
+                i = splitter_index[dest] = splitter_index.get(dest, -1) + 1
+                if dest is not None:
+                    dest.insertWidget(i, widget)
         #@-<< move widgets to targets >>
         #@+<< resize splitters >>
         #@+node:tom.20240923194438.12: *4* << resize splitters >>

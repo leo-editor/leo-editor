@@ -2086,7 +2086,7 @@ def shrink_view(event):
 #@+node:tom.20230403141635.1: *3* g.command('vr3-tab')
 @g.command('vr3-tab')
 def viewrendered_tab(event):
-    """Open VR3 in a tab in commander's log framer"""
+    """Open VR3 in a tab in commander's log framer""
     # global controllers
     if g.app.gui.guiName() != 'qt':
         return
