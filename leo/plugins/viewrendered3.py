@@ -1547,12 +1547,11 @@ def decorate_window(w):
     g.app.gui.attachLeoIcon(w)
     w.resize(600, 300)
 #@+node:TomP.20191215195433.9: *3* vr3.init
-def init():
+def init() -> bool:
     """Return True if the plugin has loaded successfully."""
     # global got_docutils
-    if g.app.gui.guiName() != 'qt':
-        return False  # #1248.
-    # if g.app.gui.guiName()
+    if not g.app.gui.guiName().startswith('qt'):
+        return False
     if not QtWidgets or not g.app.gui.guiName().startswith('qt'):
         if (
             not g.unitTesting
@@ -1562,8 +1561,8 @@ def init():
             g.es_print('viewrendered3 requires Qt')
         return False
     if not has_webengineview:
-        g.es_print('viewrendered3.py requires PyQtWebEngine')
-        g.es_print('pip install PyQtWebEngine')
+        g.es_print('viewrendered3.py requires PyQt6-WebEngine')
+        g.es_print('pip install PyQt6-WebEngine')
         return False
     if not got_docutils:
         g.es_print('Warning: viewrendered3.py running without docutils.')
@@ -1572,6 +1571,7 @@ def init():
     g.registerHandler('after-create-leo-frame', onCreate)
     g.registerHandler('close-frame', onClose)
     g.registerHandler('scrolledMessage', show_scrolled_message)
+
     return True
 #@+node:TomP.20191215195433.10: *3* vr3.isVisible
 def xisVisible():
@@ -1580,6 +1580,18 @@ def xisVisible():
 #@+node:TomP.20191215195433.11: *3* vr3.onCreate
 def onCreate(tag, keys):
     pass
+
+#@+at
+# def onCreate(tag: str, keys: dict) -> None:
+#     c = keys.get('c')
+#     if not c:
+#         return
+#     vr = getVr(c=c)
+#     g.registerHandler('select2', vr.update)
+#     g.registerHandler('idle', vr.update)
+#     vr.active = True
+#     vr.is_visible = False
+#     vr.hide()
 #@+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
     c = keys.get('c')
@@ -1594,23 +1606,23 @@ def onClose(tag, keys):
 def show_scrolled_message(tag, kw):
     """Show "scrolled message" in VR3.
 
-    If not already open, open in last opened position,
-    or in splitter if none.
+    If not already open, open in last opened splitter,
+    or in main splitter if none.
     """
     if g.unitTesting:
         return None  # This just slows the unit tests.
 
     c = kw.get('c')
     flags = kw.get('flags') or 'rst'
-    h = c.hash()
-    vr3 = controllers.get(h, None)
-    started_vr3 = False
-    if not vr3:
-        if positions.get(h, None) is None or OPENED_IN_SPLITTER:
-            vr3 = viewrendered(event=kw)
-        else:
-            vr3 = viewrendered_tab(event=kw)
-        started_vr3 = True
+    dw = c.frame.top
+    cache = dw.layout_cache
+
+    vr3 = getVr3({'c':c})
+    if vr3.parent() == cache:
+        # Not already in another layout
+        ms = cache.find_widget('main_splitter')
+        ms.addWidget(vr3)
+        g.app.gui.equalize_splitter(ms)
 
     title = kw.get('short_title', '').strip()
     vr3.setWindowTitle(title)
@@ -1621,16 +1633,18 @@ def show_scrolled_message(tag, kw):
         kw.get('msg')
     ])
 
-    delay = 500 if started_vr3 else 0
+    delay = 500# if started_vr3 else 0
 
     def do_scrolled_msg(vr3, s, flags):
         vr3.update(
             tag='show-scrolled-message',
             keywords={'c': c, 'force': True, 's': s, 'flags': flags},
         )
+        vr3.setVisible(True)
+        vr3.show()
 
-        if not vr3.isVisible:
-            vr3.show()
+        # if not vr3.isVisible:
+            # vr3.show()
 
     QtCore.QTimer.singleShot(delay, lambda: do_scrolled_msg(vr3, s, flags))
     return True
@@ -1684,14 +1698,23 @@ def getVr3(event):
 
     if not (vr3 := controllers.get(h)):
         controllers[h] = vr3 = ViewRenderedController3(c)
-        positions[h] = None
+        dw = c.frame.top
+        vr3.setParent(dw.layout_cache)
 
     return vr3
 #@+node:TomP.20191215195433.16: ** vr3.Commands
 #@+node:TomP.20191215195433.18: *3* g.command('vr3')
 @g.command('vr3')
 def viewrendered(event):
-    """Open VR3 in this commander"""
+    """Create VR3 in this commander in not already created.
+    
+    The VR3 instance will be created as a child of the widget cache splitter
+    of the Dynamic Window that represents the Entire window of this outline.
+
+    The VR3 instance will not be visible until the 
+    vr3-show or vr3-toggle commands are executed, or until vr3.show() is
+    called.
+    """
     global controllers
     gui = g.app.gui
     if gui.guiName() != 'qt':
@@ -1699,16 +1722,8 @@ def viewrendered(event):
     c = event.get('c')
     if not c:
         return None
-    h = c.hash()
-    vr3 = controllers.get(h)
-    if vr3 and vr3.parent() is not None:
-        c.bodyWantsFocusNow()
-        return vr3
-    # Create the VR3 frame
-    controllers[h] = vr3 = ViewRenderedController3(c)
-    # Insert the VR3 pane into the layout.
-    dw = c.frame.top
-    dw.insert_vr_frame(vr3)
+
+    vr3 = getVr3({'c':c})
     return vr3
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
 @g.command('vr3-execute')
@@ -2071,7 +2086,7 @@ def shrink_view(event):
 #@+node:tom.20230403141635.1: *3* g.command('vr3-tab')
 @g.command('vr3-tab')
 def viewrendered_tab(event):
-    """Open VR3 in a tab in commander's log framer"""
+    """Open VR3 in a tab in commander's log framer""
     # global controllers
     if g.app.gui.guiName() != 'qt':
         return
@@ -2100,29 +2115,22 @@ def toggle_rendering_pane(event):
 
     h = c.hash()
     vr3 = controllers.get(h)
-    if vr3:
-        had_vr3 = True
-    else:
+    if not vr3:
         vr3 = getVr3({'c': c})
-        had_vr3 = False
 
-    if had_vr3:
-        if vr3.isVisible():
-            vr3.hide()
-            vr3.set_freeze()
-        elif vr3.parent() is None or vr3.parent().objectName() == 'leo-layout-cache':
-            c.doCommandByName('vr3-toggle-tab')
-        else:
-            vr3.setVisible(True)
-            vr3.show()
-            vr3.set_unfreeze()
-    else:
+    if vr3.isVisible():
+        vr3.hide()
+        vr3.set_freeze()
+    elif vr3.parent() is None or vr3.parent().objectName() == 'leo-layout-cache':
         ms = g.app.gui.find_widget_by_name(c, 'main_splitter')
         ms.addWidget(vr3)
         ms.setSizes([100_000] * len(ms.sizes()))
         vr3.show()
         vr3.set_unfreeze()
-        positions[h] = OPENED_IN_SPLITTER
+    else:
+        vr3.setVisible(True)
+        vr3.show()
+        vr3.set_unfreeze()
 #@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab')
 @g.command('vr3-toggle-tab')
 def toggle_rendering_pane_tab(event):
@@ -2256,6 +2264,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.base_url = ''
         self.positions = {}
         self.last_update_was_node_change = False
+        self.setObjectName('viewrendered3_pane')
+
         #@-<< initialize configuration ivars >>
         #@+<< asciidoc-specific >>
         #@+node:tom.20240919181508.1: *4* << asciidoc-specific >>
@@ -2353,7 +2363,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if g.unitTesting:
             return
         # Create the inner contents.
-        self.setObjectName('viewrendered3_pane')
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.create_toolbar()
@@ -4804,6 +4813,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.inited = self.active = True
             g.registerHandler('select2', self.update)
             g.registerHandler('idle', self.update)
+            self.hide()
     #@+node:TomP.20200329230436.4: *5* vr3.deactivate
     def deactivate(self):
         """Deactivate the vr3 window."""
