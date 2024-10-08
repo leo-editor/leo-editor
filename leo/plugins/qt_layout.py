@@ -21,9 +21,6 @@ if TYPE_CHECKING:  # pragma: no cover
     KWargs = Any
 #@-<< qt_layout: imports >>
 
-CACHENAME = 'leo-layout-cache'
-### FALLBACK_LAYOUT_NAME = 'layout-fallback-layout'
-
 #@+others
 #@+node:ekr.20241008174359.1: ** Top-level functions
 #@+node:ekr.20241008141246.1: *3* function: init
@@ -440,7 +437,7 @@ class LayoutCacheWidget(QWidget):
     def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
         super().__init__(parent)
         self.c = c
-        self.setObjectName(CACHENAME)
+        self.setObjectName('leo-layout-cache')
         # maps splitter objectNames to their splitter object.
         self.created_splitter_dict: Dict[str, Any] = {}
 
