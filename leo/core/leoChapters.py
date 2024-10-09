@@ -6,7 +6,6 @@
 from __future__ import annotations
 from collections.abc import Callable
 import re
-import string
 from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
