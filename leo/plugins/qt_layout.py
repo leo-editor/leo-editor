@@ -48,9 +48,9 @@ def is_module_loaded(module_name):
 #@+node:tom.20240928171510.1: *3* command: 'layout-big-tree'
 @g.command('layout-big-tree')
 def big_tree(event: LeoKeyEvent) -> None:
-    """Apply the "big-tree" layout.
+    """Apply the "big-tree" layout. Use VR3 if enabled, else VR.
 
-    Main splitter: tree, secondary_splitter, VR
+    Main splitter: tree, secondary_splitter, VR/VR3
     Secondary splitter: body, log.
 
     Orientations:
@@ -61,24 +61,19 @@ def big_tree(event: LeoKeyEvent) -> None:
     cache = c.frame.top.layout_cache
     cache.restoreFromLayout()
 
+    has_vr3 = is_module_loaded(VR3_MODULE_NAME)
+
+
     ms = cache.find_widget('main_splitter')
     ss = cache.find_widget('secondary_splitter')
     of = cache.find_widget('outlineFrame')
     lf = cache.find_widget('logFrame')
     bf = cache.find_widget('bodyFrame')
 
-    # Find or create VR widget
-    vr = cache.find_widget('viewrendered_pane')
-    if vr is None:
-        import leo.plugins.viewrendered as v
-        vr = v.getVr()
-
-    # For VR3 instead
-    # vr = cache.find_widget('viewrendered3_pane')
-    # if not vr:
-        # import leo.plugins.viewrendered3 as v
-        # try:
-        # vr = v.getVr3({'c':c})
+    if has_vr3:
+        vr = cache.find_widget('viewrendered3_pane')
+    else:
+        vr = cache.find_widget('viewrendered_pane')
 
     # Clear out splitters so we can add widgets back in the right order
     for widget in (ss, of, lf, bf, vr):  # Don't remove ms!
