@@ -22,6 +22,13 @@ if TYPE_CHECKING:  # pragma: no cover
 #@-<< qt_layout: imports >>
 
 #@+others
+#@+node:tom.20241009141008.1: ** Declarations
+VR3_OBJ_NAME = 'viewrendered3_pane'
+VR_OBJ_NAME = 'viewrendered_pane'
+VRX_PLACEHOLDER_NAME = 'viewrenderedx_pane'
+
+VR_MODULE_NAME = 'viewrendered.py'
+VR3_MODULE_NAME = 'viewrendered3.py'
 #@+node:ekr.20241008174359.1: ** Top-level functions
 #@+node:ekr.20241008141246.1: *3* function: init
 def init() -> bool:
@@ -31,6 +38,12 @@ def init() -> bool:
 def show_vr_pane(c, w):
     w.setUpdatesEnabled(True)
     c.doCommandByName('vr-show')
+#@+node:tom.20241009141223.1: *3* function: is_module_loaded
+def is_module_loaded(module_name):
+    """Return True if the plugins controller has loaded the module.
+    """
+    controller = g.app.pluginsController
+    return controller.isLoaded(module_name)
 #@+node:ekr.20241008174351.1: ** Commands
 #@+node:tom.20240928171510.1: *3* command: 'layout-big-tree'
 @g.command('layout-big-tree')
@@ -326,7 +339,7 @@ HORIZONTAL_THIRDS_LAYOUT = {
             ('logFrame', 'secondary_splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('bodyFrame', 'main_splitter'),
-            ('viewrendered3_pane', 'main_splitter'))
+            ('viewrenderedx_pane', 'main_splitter'))
         ),
     'ORIENTATIONS': {
         'secondary_splitter': Orientation.Horizontal,
@@ -340,7 +353,7 @@ LEGACY_LAYOUT = {
             (('outlineFrame', 'secondary_splitter'),
             ('logFrame', 'secondary_splitter'),
             ('bodyFrame', 'body-vr-splitter'),
-            ('viewrendered_pane', 'body-vr-splitter'),
+            ('viewrenderedx_pane', 'body-vr-splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('body-vr-splitter', 'main_splitter'))
         ),
@@ -355,7 +368,7 @@ QUADRANT_LAYOUT = {
     'SPLITTERS': OrderedDict(
         (
             ('bodyFrame', 'secondary_splitter'),
-            ('viewrendered_pane', 'secondary_splitter'),
+            ('viewrenderedx_pane', 'secondary_splitter'),
             ('outlineFrame', 'outline-log-splitter'),
             ('logFrame', 'outline-log-splitter'),
             ('outline-log-splitter', 'main_splitter'),
@@ -374,7 +387,7 @@ RENDERED_FOCUSED_LAYOUT = {
             (('outlineFrame', 'secondary_splitter'),
             ('bodyFrame', 'secondary_splitter'),
             ('logFrame', 'secondary_splitter'),
-            ('viewrendered_pane', 'body-vr-splitter'),
+            ('viewrenderedx_pane', 'body-vr-splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('body-vr-splitter', 'main_splitter'))
         ),
@@ -391,7 +404,7 @@ VERTICAL_THIRDS2_LAYOUT = {
         (('logFrame', 'secondary_splitter'),
         ('bodyFrame', 'secondary_splitter'),
         ('outlineFrame', 'main_splitter'),
-        ('viewrendered_pane', 'vr-splitter'),
+        ('viewrenderedx_pane', 'vr-splitter'),
         ('secondary_splitter', 'main_splitter'),
         ('vr-splitter', 'main_splitter')
         )
@@ -409,7 +422,7 @@ VERTICAL_THIRDS_LAYOUT = {
             ('logFrame', 'secondary_splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('bodyFrame', 'main_splitter'),
-            ('viewrendered_pane', 'main_splitter'))
+            ('viewrenderedx_pane', 'main_splitter'))
         ),
     'ORIENTATIONS': {
         'secondary_splitter': Orientation.Vertical,
@@ -477,8 +490,19 @@ class LayoutCacheWidget(QWidget):
             layout = FALLBACK_LAYOUT
         #@+<< initialize data structures >>
         #@+node:tom.20240923194438.7: *4* << initialize data structures >>
-        SPLITTERS = layout['SPLITTERS']
+        # SPLITTERS = layout['SPLITTERS']
         ORIENTATIONS = layout['ORIENTATIONS']
+
+        has_vr3 = is_module_loaded(VR3_MODULE_NAME)
+        # A layout might want to use VR3 if itis present, else VR.
+        # This is indicated by using the name VRX_PLACEHOLDER_NAME in the layout.
+        # In building the SPLITTER dict we replace the placeholder
+        # by VR3_OBJ_NAME if it exists, otherwise VR_OBJ_NAME.
+        SPLITTERS = dict()
+        for k, v in layout['SPLITTERS'].items():
+            if k == VRX_PLACEHOLDER_NAME:
+                k = VR3_OBJ_NAME if has_vr3 else VR_OBJ_NAME
+            SPLITTERS[k] = v
 
         # Make unknown splitters.
         # If a splitter name is not known or does not exist, create one
