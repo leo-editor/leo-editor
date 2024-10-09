@@ -598,22 +598,6 @@ class LayoutCacheWidget(QWidget):
             g.app.gui.equalize_splitter(splt)
         #@-<< resize splitters >>
         editor.show()
-    #@+node:ekr.20241008180819.1: *3* LayoutCacheWidget.xfind_widget
-    # Not used in qt_layout.py.
-
-    def xfind_widget(self, name):
-        w = None
-        # Weird - g.app.gui.find_widget_by_name() may not find object in ourself.
-        w = self.created_splitter_dict.get(name)
-
-        w1 = self.find_widget_in_children(name)
-        if w1 is not None and w is not None:
-            w = w1
-
-        w2 = g.app.gui.find_widget_by_name(self.c, name)
-        if w2 is not None and w is None:
-            w = w2
-        return w
     #@-others
 
 #@-others
