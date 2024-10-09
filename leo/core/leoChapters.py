@@ -277,14 +277,10 @@ class ChapterController:
     #@+node:ekr.20160414183716.1: *4* cc.sanitize
     def sanitize(self, s: str) -> str:
         """Convert s to a safe chapter name."""
-        # Similar to g.sanitize_filename, but simpler.
         result = []
         for ch in s.strip():
-            # pylint: disable=superfluous-parens
-            if ch in (string.ascii_letters + string.digits):
-                result.append(ch)
-            elif ch in ' \t':
-                result.append('-')
+            # #4066: convert *only* blanks and tabs to '-'.
+            result.append('-' if ch in ' \t' else ch)
         s = ''.join(result)
         s = s.replace('--', '-')
         return s[:128]
