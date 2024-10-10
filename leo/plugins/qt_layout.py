@@ -48,7 +48,9 @@ def is_module_loaded(module_name):
 #@+node:tom.20240928171510.1: *3* command: 'layout-big-tree'
 @g.command('layout-big-tree')
 def big_tree(event: LeoKeyEvent) -> None:
-    """  
+    """
+    Apply the "big-tree" layout.
+
     This command puts the outline in a separate area. The effect of this
     command depends on the existing layout. For example, if the legacy
     layout is in effect, this command changes the layout
