@@ -44,18 +44,28 @@ def is_module_loaded(module_name):
     """
     controller = g.app.pluginsController
     return controller.isLoaded(module_name)
-#@+node:ekr.20241008174351.1: ** Commands
+#@+node:ekr.20241008174351.1: ** Layout commands
 #@+node:tom.20240928171510.1: *3* command: 'layout-big-tree'
 @g.command('layout-big-tree')
 def big_tree(event: LeoKeyEvent) -> None:
-    """Apply the "big-tree" layout. Use VR3 if enabled, else VR.
-
-    Main splitter: tree, secondary_splitter, VR/VR3
-    Secondary splitter: body, log.
-
-    Orientations:
-        main splitter: vertical
-        secondary splitter: horizontal
+    """  
+    This command puts the outline in a separate area. The effect of this
+    command depends on the existing layout. For example, if the legacy
+    layout is in effect, this command changes the layout
+    from:
+        ┌───────────┬──────┐
+        │ outline   │ log  │
+        ├───────────┼──────┤
+        │ body      │ VR   │
+        └───────────┴──────┘
+    to:
+        ┌──────────────────┐
+        │  outline         │
+        ├──────────┬───────┤
+        │  body    │  log  │
+        ├──────────┴───────┤
+        │  VR              │
+        └──────────────────┘
     """
     c = event.get('c')
     cache = c.frame.top.layout_cache
@@ -233,9 +243,27 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
 def swapLogPanel(event: LeoKeyEvent) -> None:
     """Move Log frame between main and secondary splitters.
 
-       If the Log frame is contained in a different splitter,
-       possibly with some other widget, the entire splitter
-       will be swapped between the main and secondary splitters.
+    If the Log frame is contained in a different splitter, possibly with
+    some other widget, the entire splitter will be swapped between the main
+    and secondary splitters.
+   
+    The effect of this command depends on the existing layout. For example,
+    if the legacy layout is in effect, this command changes the layout
+    from:
+        ┌───────────┬──────┐
+        │ outline   │ log  │
+        ├───────────┼──────┤
+        │ body      │ VR   │
+        └───────────┴──────┘
+    to:
+        ┌───────────────────┐
+        │  outline          │
+        ├───────────┬───────┤
+        │  body     │  VR   │
+        ├───────────┴───────┤
+        │  Log              │
+        └───────────────────┘
+       
     """
     c = event.get('c')
     if not c:
@@ -264,7 +292,6 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
     if widget is not None:
         target.addWidget(widget)
         g.app.gui.equalize_splitter(target)
-
 #@+node:ekr.20241008175137.1: *3* command: 'layout-vertical-thirds'
 @g.command('layout-vertical-thirds')
 def vertical_thirds(event: LeoKeyEvent) -> None:
