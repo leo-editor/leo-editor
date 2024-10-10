@@ -34,13 +34,10 @@ VR3_MODULE_NAME = 'viewrendered3.py'
 def init() -> bool:
     """Return True if this plugin should be enabled."""
     return True
-#@+node:ekr.20241008141353.1: *3* function: show_vr_pane
-def show_vr_pane(c, w):
-    try:
-        w.setUpdatesEnabled(True)
-    except Exception:
-        pass
-    c.doCommandByName('vr-show')
+#@+node:ekr.20241008141353.1: *3* function: show_vr3_pane
+def show_vr3_pane(c, w):
+    w.setUpdatesEnabled(True)
+    c.doCommandByName('vr3-show')
 #@+node:tom.20241009141223.1: *3* function: is_module_loaded
 def is_module_loaded(module_name):
     """Return True if the plugins controller has loaded the module.
@@ -101,16 +98,17 @@ def big_tree(event: LeoKeyEvent) -> None:
         widgets.append(vr)
     for widget in widgets:
         widget.show()
-    if vr is not None:
-        c.doCommandByName('vr-show')
 
     # Set splitter sizes
     ms.setSizes([100_000] * len(ms.sizes()))
     ss.setSizes([100_000] * len(ss.sizes()))
 
-    # Avoid flash each time VR pane is re-opened.
-    QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
-
+    if vr is not None:
+        if has_vr3:
+            # Avoid flash each time VR pane is re-opened.
+            QtCore.QTimer.singleShot(60, lambda: show_vr3_pane(c, vr))
+        else:
+            c.doCommandByName('vr-show')
 #@+node:ekr.20241008174424.1: *3* command: 'layout-fallback-layout'
 @g.command('layout-fallback-layout')
 def fallback_layout(event: LeoKeyEvent) -> None:
@@ -191,17 +189,6 @@ def render_focused(event: LeoKeyEvent) -> None:
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(RENDERED_FOCUSED_LAYOUT)
-
-    # # Find or create VR widget
-    # vr = cache.find_widget('viewrendered_pane')
-    # if not vr:
-        # import leo.plugins.viewrendered as v
-        # vr = v.getVr(c=c)
-
-    # bvs = cache.find_widget('body-vr-splitter')
-    # bvs.addWidget(vr)
-
-    # QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
 #@+node:tom.20240930101515.1: *3* command: 'layout-restore-default'
 @g.command('layout-restore-default')
 def restoreDefaultLayout(event: LeoKeyEvent) -> None:
@@ -299,15 +286,6 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
     cache = dw.layout_cache
     cache.restoreFromLayout(VERTICAL_THIRDS_LAYOUT)
 
-    # # Find or create VR widget
-    # vr = cache.find_widget('viewrendered_pane')
-    # if not vr:
-        # import leo.plugins.viewrendered as v
-        # vr = v.getVr(c=c)
-
-    # ms = cache.find_widget('main_splitter')
-    # ms.addWidget(vr)
-    # QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
 #@+node:ekr.20241008175303.1: *3* command: 'layout-vertical-thirds2'
 @g.command('layout-vertical-thirds2')
 def vertical_thirds2(event: LeoKeyEvent) -> None:
@@ -322,16 +300,6 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(VERTICAL_THIRDS2_LAYOUT)
-
-    # # Find or create VR widget
-    # vr = cache.find_widget('viewrendered_pane')
-    # if not vr:
-        # import leo.plugins.viewrendered as v
-        # vr = v.getVr(c=c)
-
-    # ms = cache.find_widget('vr-splitter')
-    # ms.addWidget(vr)
-    # QtCore.QTimer.singleShot(60, lambda: show_vr_pane(c, vr))
 #@+node:ekr.20241008174638.1: ** Layouts
 #@+node:tom.20240923194438.3: *3* FALLBACK_LAYOUT
 FALLBACK_LAYOUT = {
