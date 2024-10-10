@@ -36,7 +36,10 @@ def init() -> bool:
     return True
 #@+node:ekr.20241008141353.1: *3* function: show_vr_pane
 def show_vr_pane(c, w):
-    w.setUpdatesEnabled(True)
+    try:
+        w.setUpdatesEnabled(True)
+    except Exception:
+        pass
     c.doCommandByName('vr-show')
 #@+node:tom.20241009141223.1: *3* function: is_module_loaded
 def is_module_loaded(module_name):
@@ -48,19 +51,7 @@ def is_module_loaded(module_name):
 #@+node:tom.20240928171510.1: *3* command: 'layout-big-tree'
 @g.command('layout-big-tree')
 def big_tree(event: LeoKeyEvent) -> None:
-    """
-    Apply the "big-tree" layout.
-
-    This command puts the outline in a separate area. The effect of this
-    command depends on the existing layout. For example, if the legacy
-    layout is in effect, this command changes the layout
-    from:
-        ┌───────────┬──────┐
-        │ outline   │ log  │
-        ├───────────┼──────┤
-        │ body      │ VR   │
-        └───────────┴──────┘
-    to:
+    """Create Leo's big-tree layout:
         ┌──────────────────┐
         │  outline         │
         ├──────────┬───────┤
@@ -173,7 +164,7 @@ def layout_legacy(event: LeoKeyEvent) -> None:
 #@+node:ekr.20241008180407.1: *3* command: 'layout-quadrant'
 @g.command('layout-quadrant')
 def quadrants(event: LeoKeyEvent) -> None:
-    """Create a "quadrant layout:
+    """Create Leo's quadrant layout:
         ┌───────────────┬───────────┐
         │   outline     │   log     │
         ├───────────────┼───────────┤
