@@ -172,10 +172,9 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
         c.frame.log.selectTab('Nav')
         wdg.scon.doTimeline()
 
-    # #3976. Hard-code the binding to find-quick-selected.
-    c.k.registerCommand('find-quick-selected', find_selected,
-        allowBinding=True, shortcut='Control-Shift-f')
-
+    # #3976: Hard-code the binding to find-quick-selected.
+    # #4087: k.registerCommand no longer supports the 'shortcut' kwarg.
+    c.k.registerCommand('find-quick-selected', find_selected)
     c.k.registerCommand('find-quick', focus_quicksearch_entry)
     c.k.registerCommand('focus-to-nav', focus_to_nav)
     c.k.registerCommand('find-quick-test-failures', show_unittest_failures)

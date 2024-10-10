@@ -105,8 +105,10 @@ class ChapterController:
             select_chapter_callback.__doc__ = "Select the main chapter"
         else:
             select_chapter_callback.__doc__ = "Select chapter \"" + chapterName + "\"."
+
+        # 4087: k.registerCommand no longer supports the 'shortcut' kwarg.
         for shortcut in bindings:
-            c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
+            c.k.registerCommand(commandName, select_chapter_callback)
     #@+node:ekr.20070604165126: *3* cc: chapter-select
     @cmd('chapter-select')
     def selectChapter(self, event: LeoKeyEvent = None) -> None:
