@@ -9931,7 +9931,7 @@ code {
 </t>
 <t tx="ekr.20161014152921.1"># You can define keyboard shortcuts here of the form:
 #
-#    some-command Shift-F5
+#    some-command = Shift-F5
 
 # Now that we know what commands are single-line editing commands,
 # Only &lt;return&gt; and arrow keys need per-pane bindings.

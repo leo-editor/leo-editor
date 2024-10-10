@@ -2,24 +2,48 @@
 #@+node:ville.20090314215508.4: * @file ../plugins/quicksearch.py
 #@+<< quicksearch docstring >>
 #@+node:ville.20090314215508.5: ** << quicksearch docstring >>
+#@@pagewidth 65
 """
-Adds a fast-to-use search widget, like the "Find in files" feature of many editors.
+Adds a fast-to-use search widget, like the "Find in files"
+feature of many editors.
 
-Quicksearch searches node headlines only, *not* body text
+Quicksearch searches node headlines as you type into the input
+box. If you press the <ENTER> key, body text will also be
+searched. Headline hits are boldfaced so it is easy to tell them
+apart from body hits. Clicking on any of the hits navigates the
+focus to the node and line where it occurs.
 
-Just load the plugin, activate "Nav" tab, enter search text and press enter.
+To use, enable the plugin in myLeoSettings.leo, activate "Nav"
+tab, and enter search text.
 
 Usage
 =====
 
-The pattern to search for is, by default, a case *insensitive* fnmatch pattern
-(e.g. foo*bar), because they are typically easier to type than regexps. If you
-want to search for a regexp, use 'r:' prefix, e.g. r:foo.*bar.
+Spaces in search string are replaced with * wild card. So if you
+search for, say "file txt", it will search for "file*txt",
+matching e.g. @file readme.txt. Nav bar does live search on
+headline. Press enter to force search of bodies.
 
-Regexp matching is case sensitive; if you want to do a case-insensitive regular
-expression search (or any kind of case-sensitive search in the first place), do it
-by searching for "r:(?i)Foo". (?i) is a standard feature of Python regular expression
-syntax, as documented in
+Once the hits are shown, you can navigate them by pressing
+up/down while focus is still in line editor & you can keep on
+typing.
+
+**Special features**: spaces in search string are replaced with *
+wild card. So if you search for, say "file txt", it will search
+for "file*txt", matching e.g. @file readme.txt.
+
+The pattern to search for is, by default, a case *insensitive*
+match pattern (e.g. foo*bar), because they are typically easier
+to type than regexps. If you want to search for a regexp, use
+'r:' prefix, e.g. r:foo.*bar.
+
+Regexp matching is case sensitive; if you want to do a
+case-insensitive regular expression search (or any kind of
+case-sensitive search in the first place), do it by searching for
+"r:(?i)Foo". (?i) is a standard feature of Python regular
+expression syntax, as documented in
+
+http://docs.python.org/library/re.html#regular-expression-syntax
 
 The search can be confined to several options:
 
@@ -28,8 +52,6 @@ The search can be confined to several options:
 - File: only search under a node with an @<file> directive
 - Chapter: only search under a node with an @chapter directer
 - Node: only search currently selected node
-
-http://docs.python.org/library/re.html#regular-expression-syntax
 
 Commands
 ========
@@ -48,24 +70,13 @@ This plugin defines the following commands that can be bound to keys:
 - find-quick-test-failures:
   Lists nodes in c.db.get('unittest/cur/fail')
 
-- find-quick-timeline:
-  Lists all nodes in reversed gnx order, basically newest to oldest, creation wise,
-  not modification wise.
+- find-quick-timeline:   
+  Lists all nodes in reversed gnx order, basically newest to
+  oldest, creation wise, not modification wise.
 
-- find-quick-changed:
-  Lists all nodes that are changed (aka "dirty") since last save.  Handy when
-  you want to see why a file's marked as changed.
-
-- go-anywhere
-  Nav bar does live search on headline. Press enter to force search of bodies.
-
-  Once the hits are shown, you can navigate them by pressing up/down while
-  focus is still in line editor & you can keep on typing (sort of like
-  sublime text).
-
-  **Clever**: spaces in search string are replaced with * wild card. So if
-  you search for, say "file txt", it will search for "file*txt", matching
-  e.g. @file readme.txt.
+- find-quick-changed:  
+  Lists all nodes that are changed (aka "dirty") since last save.
+  Handy when you want to see why a file's marked as changed.
 
 - history:
   Lists nodes from c.nodeHistory.
@@ -161,10 +172,9 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
         c.frame.log.selectTab('Nav')
         wdg.scon.doTimeline()
 
-    # #3976. Hard-code the binding to find-quick-selected.
-    c.k.registerCommand('find-quick-selected', find_selected,
-        allowBinding=True, shortcut='Control-Shift-f')
-
+    # #3976: Hard-code the binding to find-quick-selected.
+    # #4087: k.registerCommand no longer supports the 'shortcut' kwarg.
+    c.k.registerCommand('find-quick-selected', find_selected)
     c.k.registerCommand('find-quick', focus_quicksearch_entry)
     c.k.registerCommand('focus-to-nav', focus_to_nav)
     c.k.registerCommand('find-quick-test-failures', show_unittest_failures)
@@ -176,17 +186,6 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
     def showmarks(event: LeoKeyEvent) -> None:
         """ List marked nodes in nav tab """
         wdg.scon.doShowMarked()
-
-    @g.command('go-anywhere')
-    def find_popout_f(event: LeoKeyEvent) -> None:
-        c = event['c']
-        w = LeoQuickSearchWidget(c, mode="popout", parent=c.frame.top)
-        topgeo = c.frame.top.geometry()
-        wid = topgeo.width()
-        w.setGeometry(wid / 2, 0, wid / 2, 500)
-        w.show()
-        w.setFocus(Qt.OtherFocusReason)
-        c._popout = w
 
     c.frame.nav = wdg
 

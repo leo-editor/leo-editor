@@ -1061,6 +1061,7 @@ import string
 import subprocess
 import sys
 import textwrap
+from typing import Any, Dict, List, Tuple
 import webbrowser
 from urllib.request import urlopen
 
@@ -1327,8 +1328,8 @@ asciidoc = None
 asciidoctor = None
 asciidoc_ok = False
 asciidoc3_ok = False
-asciidoc_dirs = {'asciidoc': {}, 'asciidoc3': {}}
-asciidoc_processors = []
+asciidoc_dirs: Dict[str, Dict] = {'asciidoc': {}, 'asciidoc3': {}}
+asciidoc_processors: List[Any] = []
 asciidoc_has_diagram = False
 #@-<< Misc Globals >>
 #@+<< define html templates >>
@@ -1360,10 +1361,9 @@ latex_template = f'''\
 
 trace = False  # This global trace is convenient.
 
-
 # keys are c.hash().
-controllers = {}  # values: VR3 widgets
-positions = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
+controllers: Dict[str, Any] = {}  # values: VR3 widgets
+positions: Dict[int, Any] = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
 
 #@+others
 #@+node:TomP.20200508124457.1: ** find_exe()
@@ -1526,7 +1526,7 @@ def configure_asciidoc():
         if dopatch:
             print('.... Patching asciidoc')
             from asciidoc.api import Options
-            AsciiDocAPI.__init__ = new_init
+            AsciiDocAPI.__init__ = new_init  # type:ignore
 
         asciidoc_ok = True
 
@@ -1547,7 +1547,7 @@ def configure_asciidoc():
     try:
         from asciidoc3.asciidoc3api import AsciiDoc3API
         from asciidoc3 import asciidoc3 as ad3
-        ad3_file = ad3.__file__
+        ad3_file = ad3.__file__  # type:ignore
         asciidoc3_ok = True
     except ImportError:
         asciidoc3_ok = False
@@ -1661,7 +1661,7 @@ def show_scrolled_message(tag, kw):
     dw = c.frame.top
     cache = dw.layout_cache
 
-    vr3 = getVr3({'c':c})
+    vr3 = getVr3({'c': c})
     if vr3.parent() == cache:
         # Not already in another layout
         ms = cache.find_widget('main_splitter')
@@ -1677,7 +1677,7 @@ def show_scrolled_message(tag, kw):
         kw.get('msg')
     ])
 
-    delay = 500# if started_vr3 else 0
+    delay = 500  # if started_vr3 else 0
 
     def do_scrolled_msg(vr3, s, flags):
         vr3.update(
@@ -1767,7 +1767,7 @@ def viewrendered(event):
     if not c:
         return None
 
-    vr3 = getVr3({'c':c})
+    vr3 = getVr3({'c': c})
     return vr3
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
 @g.command('vr3-execute')
@@ -1826,7 +1826,7 @@ def vr3_help_for_plot_2d(event):
               '=====================\n'
               + docstr)
 
-    args = {'output_encoding': 'utf-8'}
+    args: Dict[str, Any] = {'output_encoding': 'utf-8'}
     if vr3.rst_stylesheet and os.path.exists(vr3.rst_stylesheet):
         args['stylesheet_path'] = f'{vr3.rst_stylesheet}'
         args['embed_stylesheet'] = True
@@ -2303,13 +2303,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.last_markup = ''
         self.lock_to_tree = False
         self.qwev = self.create_web_engineview()
-        self.rst_html = ''
+        self.rst_html: Any = ''  # bytes or str.
         self.show_whole_tree = False
         self.base_url = ''
         self.positions = {}
         self.last_update_was_node_change = False
         self.setObjectName('viewrendered3_pane')
-
         #@-<< initialize configuration ivars >>
         #@+<< asciidoc-specific >>
         #@+node:tom.20240919181508.1: *4* << asciidoc-specific >>
@@ -2458,7 +2457,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             """
 
             setattr(self, menu_var_name, False)
-            _action = QAction(label, self, checkable=True)
+            _action = QAction(label, self, checkable=True)  # type:ignore
             _action.triggered.connect(lambda: set_menu_var(menu_var_name, _action))
             menu.addAction(_action)
         #@+node:TomP.20200329223820.8: *5* function: vr3.set_default_kind
@@ -2485,7 +2484,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             nothing.
             """
 
-            _action = QAction(label, self, checkable=True)
+            _action = QAction(label, self, checkable=True)  # type:ignore
             _action.triggered.connect(lambda: set_default_kind(kind))
             group.addAction(_action)
             menu.addAction(_action)
@@ -2515,12 +2514,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         #@+node:TomP.20200329223820.13: *5* << vr3: create menus >>
         menu = QtWidgets.QMenu()
         set_action("Entire Tree", 'show_whole_tree')
-        _action = QAction('Lock to Tree Root', self, checkable=True)
+
+        _action = QAction('Lock to Tree Root', self, checkable=True)  # type:ignore
         _action.triggered.connect(lambda checked: set_tree_lock(checked))
         menu.addAction(_action)
         self.action_lock_to_tree = _action
 
-        _action = QAction('Freeze', self, checkable=True)
+        _action = QAction('Freeze', self, checkable=True)  # type:ignore
         _action.triggered.connect(lambda checked: set_freeze(checked))
         menu.addAction(_action)
         self.action_freeze = _action
@@ -2538,15 +2538,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # "Other Actions"
         menu = QtWidgets.QMenu()
-        _action = QAction('Plot 2D', self, checkable=False)
+        _action = QAction('Plot 2D', self, checkable=False)  # type:ignore
         _action.triggered.connect(lambda: c.doCommandByName('vr3-plot-2d'))
         menu.addAction(_action)
 
-        _action = QAction('Help For Plot 2D', self, checkable=False)
+        _action = QAction('Help For Plot 2D', self, checkable=False)  # type:ignore
         _action.triggered.connect(lambda: c.doCommandByName('vr3-help-plot-2d'))
         menu.addAction(_action)
 
-        _action = QAction('Reload', self, checkable=False)
+        _action = QAction('Reload', self, checkable=False)  # type:ignore
         _action.triggered.connect(lambda: c.doCommandByName('vr3-update'))
         menu.addAction(_action)
 
@@ -2937,7 +2937,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             #@-<< is_numeric >>
             #@+<< get_data >>
             #@+node:tom.20211104105903.14: *6* << get_data >>
-            def get_data(pagelines):
+            def get_data(pagelines) -> Tuple[Any, Any]:
                 num_cols = 0
 
                 # Skip lines starting with """ or '''
@@ -2960,6 +2960,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     return None, None
 
                 # Extract x, y values into separate lists; ignore columns after col. 2
+                x: Any  # Dubious
                 if num_cols == 1:
                     x = range(len(t))
                     y = [float(b.strip()) for b in t]
@@ -3094,7 +3095,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         plt.rcdefaults()
     #@+node:TomP.20191215195433.49: *3* vr3.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
-    def update(self, tag, keywords):
+    def update(self, tag, keywords):  # type:ignore
         """Update the vr3 pane. Called at idle time.
 
         If the VR3 variable "freeze" is True, do not update.
@@ -3142,13 +3143,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:tom.20240725074751.1: *4* vr3.update_rendering
     def update_rendering(self, f, node_tree, p, keywords, kind):
         """Render the node tree in the VR3 pane according to its kind."""
+        s = keywords.get('s') if 's' in keywords else p.b
         if kind in (ASCIIDOC, MD, PLAIN, RST, REST, TEXT):
             f(node_tree, keywords)
         elif kind:
             # Remove Leo directives.
-            s = keywords.get('s') if 's' in keywords else p.b
-            s = self.remove_directives(s)
-            f(s, keywords)
+            s2 = self.remove_directives(s)
+            f(s2, keywords)
         else:
             self.show_literal(s)
     #@+node:tom.20240724103143.1: *4* vr3.create_node_tree
@@ -3206,7 +3207,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         s = keywords['s'] = '\n'.join([l for l in lines if not l.startswith('#@')])
 
         f = self.dispatch_dict.get(node_kind)
-        f([s,], keywords)
+        f([s,], keywords)  # type:ignore
 
         # Prevent VR3 from showing the selected node at
         # the next idle-time callback,
@@ -3431,9 +3432,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
             #@+<< Find available processors >>
             #@+node:tom.20211122104636.1: *6* << Find available processors >>
             if asciidoc_ok:
-                asciidoc_processors.append(AsciiDocAPI())
+                asciidoc_processors.append(AsciiDocAPI())  # type:ignore
             if asciidoc3_ok:
-                asciidoc_processors.append(AsciiDoc3API(ad3_file))
+                asciidoc_processors.append(AsciiDoc3API(ad3_file))  # type:ignore
             if not asciidoc_processors:
                 h = '<h1>No asciidoc processors found</h1>'
                 self.rst_html = h
@@ -4175,7 +4176,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 result += f'\n::\n\n{indented_err_result}\n'
         #@+node:TomP.20200105214743.1: *6* vr3.get html from docutils
         #@@language python
-        args = {'output_encoding': 'utf-8'}
+        args: Dict[str, Any] = {'output_encoding': 'utf-8'}
         if self.rst_stylesheet and os.path.exists(self.rst_stylesheet):
             args['stylesheet_path'] = f'{self.rst_stylesheet}'
             args['embed_stylesheet'] = True
@@ -5058,7 +5059,7 @@ class Action:
     @staticmethod
     def image_url2abs(sm, line, tag=None, language=None):
         """Convert MD or Asciidoc image directive's image path to an absolute one"""
-        is_image = False
+        is_image: Any = None
         if language == MD:
             is_image = MD_IMAGE_MARKER_RE.match(line)
         elif language == ASCIIDOC:
@@ -5262,7 +5263,7 @@ class StateMachine:
                 next = State.BASE
                 # _lang = self.base_lang
 
-        action(self, line, tag, language)
+        action(self, line, tag, language)  # type:ignore
         self.state = next
     #@-<< do_state >>
     #@+<< get_marker_md >>
@@ -5450,5 +5451,4 @@ class StateMachine:
     #@-<< State Table >>
 
 #@-others
-
 #@-leo
