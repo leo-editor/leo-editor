@@ -4010,7 +4010,8 @@ class KeyHandlerClass:
         assert isinstance(stroke, str) or g.isStroke(stroke)
         s = stroke.s if g.isStroke(stroke) else stroke
         s = s.lower()
-        return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
+        # 4093.
+        return s.startswith(('f', 'F')) and len(s) <= 3 and s[1:].isdigit()
     #@+node:ekr.20061031131434.182: *4* k.isPlainKey
     def isPlainKey(self, stroke: Stroke) -> bool:
         """Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key."""
