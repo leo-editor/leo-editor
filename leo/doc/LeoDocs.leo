@@ -32994,7 +32994,7 @@ If these suggestions don't work try using  pip's `--user` and `--break-system-pa
 
 `python3 -m pip install --user --break-system-packages -r requirements.txt`.
 
-The same will apply to any packages installed by pip, even pip install leo. --user is not needed unless you have admin privileges because pip in Linux goes to --user if installing to the primary locations fails. But if you include --user you don't get an error message about it, and if you have admin authority (e.g., you ransudo python -m pip) your packages won't go into --user where you want them.
+The same will apply to any packages installed by pip, even pip install leo. --user is not needed unless you have admin privileges because pip in Linux goes to --user if installing to the primary locations fails. But if you include --user you don't get an error message about it, and if you have admin authority (e.g., you ran `sudo python -m pip`) your packages won't go into --user where you want them.
 </t>
 <t tx="ekr.20240828094953.1">Leo https://leo-editor.github.io/leo-editor/ 6.8.2 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
@@ -33005,7 +33005,8 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - PR #4038: Add reload-outline command.
 - PR #4047: Delete add-editor command and all related code.
 - PR #4033: Add four new layouts and related code and commands.
-- PR #4067: Optionally run pylint when saving changed files.
+- PR #4068: Optionally run pylint when saving changed files.
+- PR #4071: Optionally run Leo's beautifier when saving changed files.
 - The usual assortment of small bug fixes and code cleanups.
 
 **Links**
@@ -33028,11 +33029,13 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #4038`: https://github.com/leo-editor/leo-editor/pull/4038
 .. _`PR #4047`: https://github.com/leo-editor/leo-editor/pull/4047
 .. _`PR #4068`: https://github.com/leo-editor/leo-editor/pull/4068
+.. _`PR #4071`: https://github.com/leo-editor/leo-editor/pull/4071
 
 - `PR #4033`_: Add four new layouts and related code and commands.
 - `PR #4038`_: Add reload-outline command.
 - `PR #4047`_: Delete add-editor command and all related code.
 - `PR #4068`_: Optionally run pylint when saving changed files.
+- `PR #4071`_: Optionally run Leo's beautifier when saving changed files.
 </t>
 <t tx="ekr.20240919055407.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
