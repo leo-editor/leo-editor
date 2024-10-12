@@ -1179,7 +1179,6 @@ class GitDiffController:
                 p2.b = v1.b
                 # Node 3: New node
                 assert v1.fileIndex == v2.fileIndex
-                ### p_in_c = self.find_gnx(self.c, v1.fileIndex)
                 if p_in_c:  # Make a clone, if possible.
                     p3 = p_in_c.clone()
                     p3.moveToLastChildOf(organizer)
