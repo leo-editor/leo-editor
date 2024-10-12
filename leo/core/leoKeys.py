@@ -2130,13 +2130,13 @@ class KeyHandlerClass:
             return c.openWith(d=d)
 
         # Use k.registerCommand to set the shortcuts in the various binding dicts.
-        # 4087: k.registerCommand no longer supports the 'shortcut' kwarg.
-
         commandName = f"open-with-{name.lower()}"
         k.registerCommand(
+            allowBinding=True,
             commandName=commandName,
             func=openWithCallback,
             pane='all',
+            shortcut=shortcut,
         )
     #@+node:ekr.20061031131434.95: *4* k.checkBindings
     def checkBindings(self) -> None:

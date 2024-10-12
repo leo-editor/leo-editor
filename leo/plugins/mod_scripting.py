@@ -597,7 +597,6 @@ class ScriptingController:
             self.deleteButton(b, event=event)
 
         # Register the delete-x-button command.
-        # #4087: k.registerCommand no longer supports the 'shortcut' kwarg.
         deleteCommandName = 'delete-%s-button' % commandName
         c.k.registerCommand(
             commandName=deleteCommandName,
@@ -1062,11 +1061,12 @@ class ScriptingController:
         if trace and not g.isascii(commandName):
             g.trace(commandName)
         # Register the original function.
-        # #4087: k.registerCommand no longer supports the 'shortcut' kwarg.
         k.registerCommand(
+            allowBinding=True,
             commandName=commandName,
             func=func,
             pane=pane,
+            shortcut=shortcut,
         )
 
         # 2013/11/13 Jake Peck:
@@ -1088,11 +1088,12 @@ class ScriptingController:
                     if trace:
                         g.trace('Already in commandsDict: %r' % commandName2)
                 else:
-                    # #4087: k.registerCommand no longer supports the 'shortcut' kwarg.
                     k.registerCommand(
+                        allowBinding=True,
                         commandName=commandName2,
                         func=registerAllCommandsCallback,
                         pane=pane,
+                        shortcut=shortcut,
                     )
     #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
     def setButtonColor(self, b: Wrapper, bg: str) -> None:
