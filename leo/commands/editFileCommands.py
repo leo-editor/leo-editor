@@ -673,14 +673,14 @@ class GitDiffController:
 
     def __init__(self, c: Cmdr) -> None:
         self.c = c
-        self.diff_leo_files = False
+        self.diff_leo_files = True
         self.file_node: Position = None
         self.root: Position = None
         self.reloadSettings()
 
     def reloadSettings(self) -> None:
         config = self.c.config
-        self.diff_leo_files = config.getBool('diff-leo-files', default=False)
+        self.diff_leo_files = config.getBool('diff-leo-files', default=True)
 
     #@+others
     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
