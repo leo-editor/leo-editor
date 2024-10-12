@@ -518,6 +518,7 @@
 </v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
 <v t="ekr.20210506073820.1"><vh>@bool allow-text-zoom = True</vh></v>
+<v t="ekr.20241012050620.1"><vh>@bool diff-leo-files = True</vh></v>
 <v t="ekr.20131112150804.18737"><vh>@bool force-execute-entire-body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent-added-comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
@@ -2275,10 +2276,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20051101160257"></v>
-<v t="ekr.20051007200824.1"></v>
-<v t="ekr.20240726065425.1"></v>
-<v t="ekr.20240828054659.1"><vh>&lt;&lt; define s &gt;&gt;</vh></v>
+<v t="ekr.20241012050620.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11727,92 +11725,9 @@ vertical-thirds2
     │           │  body │       │
     └───────────┴───────┴───────┘
 </t>
-<t tx="ekr.20240828054659.1">@language rest
-@nowrap
-
-s = '''\
-
-About layouts
-=============
-
-The following commands create the layouts shown:
-
-use-legacy-layout
------------------
-
-::
-
-    ┌───────────┬───────┐
-    │  outline  │  log  │
-    ├───────────┼───────┤
-    │  body     │  VR   │
-    └───────────┴───────┘
-    
-use-big-tree-layout
--------------------
-
-::
-
-    ┌───────────────────┐
-    │  outline          │
-    ├──────────┬────────┤
-    │  body    │  log   │
-    ├──────────┴────────┤
-    │  VR               │
-    └───────────────────┘
-
-use-horizontal-thirds-layout
-----------------------------
-
-::
-
-    ┌───────────┬───────┐
-    │  outline  │  log  │
-    ├───────────┴───────┤
-    │  body             │
-    ├───────────────────┤
-    │  VR               │
-    └───────────────────┘
-
-use-render-focused-layout
--------------------------
-
-::
-
-    ┌───────────┬─────┐
-    │ outline   │     │
-    ├───────────┤     │
-    │ body      │ VR  │
-    ├───────────┤     │
-    │ log       │     │
-    └───────────┴─────┘
-
-use-vertical-thirds-layout
---------------------------
-
-::
-
-    ┌───────────┬────────┬──────┐
-    │  outline  │        │      │
-    ├───────────┤  body  │  VR  │
-    │  log      │        │      │
-    └───────────┴────────┴──────┘
-
-
-use-vertical-thirds2-layout
----------------------------
-
-::
-
-    ┌───────────┬───────┬───────┐
-    │           │  log  │       │
-    │  outline  ├───────┤  VR   │
-    │           │  body │       │
-    └───────────┴───────┴───────┘
-'''
-</t>
 <t tx="ekr.20240924055407.1">True: run Pylint on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20240926065158.1">True: beautify all @&lt;file&gt; nodes in the outline using Leo's token-based beautifier.</t>
+<t tx="ekr.20241012050620.1">True: Leo's git-diff command will diff .leo and .leojs files.</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
