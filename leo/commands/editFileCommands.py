@@ -673,8 +673,15 @@ class GitDiffController:
 
     def __init__(self, c: Cmdr) -> None:
         self.c = c
+        self.diff_leo_files = False
         self.file_node: Position = None
         self.root: Position = None
+        self.reloadSettings()
+
+    def reloadSettings(self) -> None:
+        config = self.c.config
+        self.diff_leo_files = config.getBool('diff-leo-files', default=False)
+
     #@+others
     #@+node:ekr.20180510095544.1: *3* gdc.Entries...
     #@+node:ekr.20170806094320.6: *4* gdc.diff_file
@@ -685,6 +692,9 @@ class GitDiffController:
         c = self.c
         directory = self.get_parent_of_git_directory()
         if not directory:
+            return
+        # #4095: honor @bool diff-leo-files.
+        if fn.endswith(('.leo', '.leojs')) and not self.diff_leo_files:
             return
         s1 = self.get_file_from_rev(rev1, fn)
         s2 = self.get_file_from_rev(rev2, fn)
@@ -1149,6 +1159,7 @@ class GitDiffController:
                 # Organizer node: contains diff
                 organizer = parent.insertAsLastChild()
                 organizer.h = f"diff: {v2.h}"
+                p_in_c = self.find_gnx(self.c, v1.fileIndex)
                 body = list(difflib.unified_diff(
                     g.splitLines(v1.b),
                     g.splitLines(v2.b),
@@ -1157,7 +1168,8 @@ class GitDiffController:
                 ))
                 if ''.join(body).strip():
                     body.insert(0, '@ignore\n@nosearch\n@language patch\n')
-                    body.append(f"@language {c2.target_language}\n")
+                    language = self.find_language(c2, p_in_c)  # #4095.
+                    body.append(f"@language {language}\n")
                 else:
                     body = ['Only headline has changed']
                 organizer.b = ''.join(body)
@@ -1167,7 +1179,7 @@ class GitDiffController:
                 p2.b = v1.b
                 # Node 3: New node
                 assert v1.fileIndex == v2.fileIndex
-                p_in_c = self.find_gnx(self.c, v1.fileIndex)
+                ### p_in_c = self.find_gnx(self.c, v1.fileIndex)
                 if p_in_c:  # Make a clone, if possible.
                     p3 = p_in_c.clone()
                     p3.moveToLastChildOf(organizer)
@@ -1242,6 +1254,12 @@ class GitDiffController:
             if p.v.fileIndex == gnx:
                 return p
         return None
+    #@+node:ekr.20241012044745.1: *4* gdc.find_language
+    def find_language(self, c: Cmdr, p: Position) -> str:
+        """Return the @language directive in effect at p."""
+        if not p:
+            return c.target_language
+        return g.getLanguageFromAncestorAtFileNode(p) or c.target_language
     #@+node:ekr.20170806094321.5: *4* gdc.finish
     def finish(self) -> None:
         """Finish execution of this command."""
