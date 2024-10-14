@@ -872,7 +872,6 @@ class Commands:
             return processor_map, extension_map, terminal
 
         maps = get_external_maps()
-        g.es(maps)
         #@+node:tom.20241014154415.9: *4* getExeKind
         def getExeKind(ext: str) -> str:
             """
