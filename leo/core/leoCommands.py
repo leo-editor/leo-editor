@@ -996,6 +996,9 @@ class Commands:
             HELP_CMDS = ('-h', '--help', '--help-all')
             EXECUTESTR = 'execute'
 
+            if terminal in EXECUTE_ARGS:
+                return EXECUTE_ARGS[terminal]
+
             #@+others
             #@+node:tom.20241014154415.17: *5* get_help_message
             def get_help_message(terminal: str, help_cmd: str) -> str:
@@ -1034,7 +1037,7 @@ class Commands:
                         arg += ' '
                     break
             else:
-                arg = '-e ' if 'xterm' in terminal else '-x '
+                arg = '-x '  # We can only hope
             return arg
         #@+node:tom.20241014154415.19: *4* checkShebang
         def checkShebang(path: str) -> bool:
