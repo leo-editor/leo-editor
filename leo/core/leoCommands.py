@@ -795,6 +795,8 @@ class Commands:
         'shellscript': 'bash',
         }
         #@+node:tom.20241014154415.7: *4* get_external_maps
+        MAP_SETTING_NODE = "run-external-processor-map"
+
         def get_external_maps() -> tuple[dict, dict, str]:
             #@+<< get_external_maps: docstring >>
             #@+node:tom.20241014154415.8: *5* << get_external_maps: docstring >>
@@ -836,9 +838,10 @@ class Commands:
             def scan_map(kind: str) -> dict[str, str]:
                 d = {}
                 other_kind = 'PROCESSORS' if kind == 'EXTENSIONS' else 'EXTENSIONS'
-                assert other_kind in ('PROCESSORS', 'EXTENSIONS')
                 scanning = False
                 for line in lines:
+                    if not line.strip():
+                        continue
                     if kind in line:
                         scanning = True
                     elif other_kind in line:
@@ -846,9 +849,10 @@ class Commands:
                     elif scanning:
                         # Line format: a: b
                         keyval = line.split(':', 1)
-                        key = keyval[0].strip()
-                        val = keyval[1].strip()
-                        d[key] = val
+                        if len(keyval) > 1:
+                            key = keyval[0].strip()
+                            val = keyval[1].strip()
+                            d[key] = val
                 return d
 
             # Get terminal value.
@@ -866,6 +870,9 @@ class Commands:
             processor_map = scan_map('PROCESSORS')
             extension_map = scan_map('EXTENSIONS')
             return processor_map, extension_map, terminal
+
+        maps = get_external_maps()
+        g.es(maps)
         #@+node:tom.20241014154415.9: *4* getExeKind
         def getExeKind(ext: str) -> str:
             """
