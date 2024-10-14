@@ -990,8 +990,9 @@ class Commands:
         def getTermExecuteCmd(terminal: str) -> str:
             """Given a terminal's name, find the command line arg to launch a program.
 
-            First, try "--help".  If that fails, see try "--help-all".  If neither
-            has an argument or switch for "Execute", give up and assume the arg is "-x".
+            If the terminal's arg is known, use that. Otherwise, try "--help".
+            If that fails, see try "--help-all".  If neither has an argument
+            or switch for "Execute", give up and assume the arg is "-x".
             """
             HELP_CMDS = ('-h', '--help', '--help-all')
             EXECUTESTR = 'execute'
