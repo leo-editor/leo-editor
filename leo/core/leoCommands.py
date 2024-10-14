@@ -851,12 +851,16 @@ class Commands:
                         d[key] = val
                 return d
 
-             # Set terminal value.
+            # Get terminal value.
             terminal = ''
+            found_terminal = False
             for line in lines:
-                if 'Terminal' in line:
-                    terminal = line
-                    break
+                if found_terminal:
+                    terminal = line.strip()
+                    if terminal:
+                        break
+                elif 'TERMINAL' in line:
+                    found_terminal = True
 
             # Set the maps.
             processor_map = scan_map('PROCESSORS')
