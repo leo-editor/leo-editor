@@ -679,13 +679,13 @@ class Commands:
             directory = None
         c.general_script_helper(command, ext, language,
             directory=directory, regex=regex, root=p)
-    #@+node:tom.20230308193758.1: *3* @cmd c.execute-external-file
+    #@+node:tom.20241014154415.1: *3* @cmd c.execute-external-file
     #@@language python
     @cmd('execute-external-file')
     def execute_external_file(self, event: LeoKeyEvent = None) -> None:
         r"""
         #@+<< docstring >>
-        #@+node:tom.20230308193758.2: *4* << docstring >>
+        #@+node:tom.20241014154415.2: *4* << docstring >>
         Run external files.
 
         If there is an @language directive in the top node of the file,
@@ -736,10 +736,23 @@ class Commands:
         c = self
         MAP_SETTING_NODE = 'run-external-processor-map'
         #@+others
-        #@+node:tom.20230313002434.1: *4* Declarations
-        PREFERRED_TERMINALS = ('konsole', 'xfce4-terminal', 'mate-terminal',
-                               'gnome-terminal', 'xterm')
-        #@+node:tom.20230308193758.3: *4* SETTINGS_HELP
+        #@+node:tom.20241014154415.3: *4* Declarations
+        EXECUTE_ARGS = {
+            'konsole': '--noclose -e ',
+            'gnome-terminal': '-- ',
+            'xfce4-terminal': '-- ',
+            'mate-terminal': '-- ',
+            'tillix': '-- ',
+            'lxterminal': '-- ',
+            'alacritty': '-e',
+            'kitty': '-e',
+            'urvxt': '-e',
+            'terminator': '-e',
+            'xterm': '-e '
+        }
+
+        PREFERRED_TERMINALS = EXECUTE_ARGS.keys()
+        #@+node:tom.20241014154415.4: *4* SETTINGS_HELP
         SETTINGS_HELP = r'''The data in the @data node body must have a
         PROCESSORS and an EXTENSIONS section, plus an optional TERMINAL
         section, looking like this example:
@@ -761,7 +774,7 @@ class Commands:
 
         Blank lines and lines starting with a "#" are ignored.
         '''
-        #@+node:tom.20230308193758.4: *4* extension map
+        #@+node:tom.20241014154415.5: *4* extension map
         LANGUAGE_EXTENSION_MAP = {
         '.cmd': 'batch',
         '.bat': 'batch',  # We'll get confused if a Linux program uses a .bat extension
@@ -772,7 +785,7 @@ class Commands:
         '.pyw': 'python',
         'rb': 'ruby',
         }
-        #@+node:tom.20230308193758.5: *4* processor map
+        #@+node:tom.20241014154415.6: *4* processor map
         PROCESSORS = {
         'batch': 'cmd.exe',
         'julia': 'julia',
@@ -781,10 +794,12 @@ class Commands:
         'ruby': 'ruby',
         'shellscript': 'bash',
         }
-        #@+node:tom.20230308193758.6: *4* get_external_maps
+        #@+node:tom.20241014154415.7: *4* get_external_maps
+        MAP_SETTING_NODE = "run-external-processor-map"
+
         def get_external_maps() -> tuple[dict, dict, str]:
             #@+<< get_external_maps: docstring >>
-            #@+node:ekr.20240605053105.1: *5* << get_external_maps: docstring >>
+            #@+node:tom.20241014154415.8: *5* << get_external_maps: docstring >>
             r"""Return processor, extension maps for @data node.
 
             The data in the @data node body must have a PROCESSORS and an
@@ -823,9 +838,10 @@ class Commands:
             def scan_map(kind: str) -> dict[str, str]:
                 d = {}
                 other_kind = 'PROCESSORS' if kind == 'EXTENSIONS' else 'EXTENSIONS'
-                assert other_kind in ('PROCESSORS', 'EXTENSIONS')
                 scanning = False
                 for line in lines:
+                    if not line.strip():
+                        continue
                     if kind in line:
                         scanning = True
                     elif other_kind in line:
@@ -833,23 +849,30 @@ class Commands:
                     elif scanning:
                         # Line format: a: b
                         keyval = line.split(':', 1)
-                        key = keyval[0].strip()
-                        val = keyval[1].strip()
-                        d[key] = val
+                        if len(keyval) > 1:
+                            key = keyval[0].strip()
+                            val = keyval[1].strip()
+                            d[key] = val
                 return d
 
-             # Set terminal value.
+            # Get terminal value.
             terminal = ''
+            found_terminal = False
             for line in lines:
-                if 'Terminal' in line:
-                    terminal = line
-                    break
+                if found_terminal:
+                    terminal = line.strip()
+                    if terminal:
+                        break
+                elif 'TERMINAL' in line:
+                    found_terminal = True
 
             # Set the maps.
             processor_map = scan_map('PROCESSORS')
             extension_map = scan_map('EXTENSIONS')
             return processor_map, extension_map, terminal
-        #@+node:tom.20230308193758.7: *4* getExeKind
+
+        maps = get_external_maps()
+        #@+node:tom.20241014154415.9: *4* getExeKind
         def getExeKind(ext: str) -> str:
             """
             Return the executable kind (a language) of the external file.
@@ -862,7 +885,7 @@ class Commands:
                 or LANGUAGE_EXTENSION_MAP.get(ext, None)
             )
 
-        #@+node:tom.20230308193758.8: *4* getProcessor
+        #@+node:tom.20241014154415.10: *4* getProcessor
         def getProcessor(language: str, path: str, extension: str) -> str:
             """Return the name or path of a program able to run our external program."""
             processor = ''
@@ -882,7 +905,7 @@ class Commands:
                 if not proc:
                     processor = ''
             return processor
-        #@+node:tom.20230308193758.9: *4* Get Windows File Associations
+        #@+node:tom.20241014154415.11: *4* Get Windows File Associations
         def get_win_assoc(extension: str) -> str:
             """Return Windows association for given file extension, or ''.
 
@@ -917,7 +940,7 @@ class Commands:
                 return ''
             prog_str = ftype_str.split('=')[1]
             return prog_str.split('"')[1]
-        #@+node:tom.20230308193758.10: *4* getShell
+        #@+node:tom.20241014154415.12: *4* getShell
         def getShell() -> str:
             # Prefer bash unless it is not present - we know its options' names
             shell = 'bash'
@@ -926,9 +949,9 @@ class Commands:
                 # Need bare shell name, not whole path
                 shell = os.environ['SHELL'].split('/')[-1]
             return shell
-        #@+node:tom.20230308193758.11: *4* getTerminal
+        #@+node:tom.20241014154415.13: *4* getTerminal
         #@+others
-        #@+node:tom.20230308193758.12: *5* getTerminalFromDirectory
+        #@+node:tom.20241014154415.14: *5* getTerminalFromDirectory
         def getTerminalFromDirectory(dir: str) -> str:
             BAD_NAMES = ('xdg-terminal', 'setterm', 'ppmtoterm',
                          'koi8rxterm', 'rofi-sensible-terminal',
@@ -944,7 +967,7 @@ class Commands:
                     if bare_term not in BAD_NAMES:
                         return t
             return ''
-        #@+node:tom.20230308193758.13: *5* getCommonTerminal
+        #@+node:tom.20241014154415.15: *5* getCommonTerminal
         def getCommonTerminal(names: Union[str, list, tuple]) -> str:
             """Return a terminal name given candidate names.
 
@@ -966,22 +989,29 @@ class Commands:
         #@-others
 
         def getTerminal() -> str:
+            if (term := os.environ.get('TERMINAL', '')):
+                return term
             return (getCommonTerminal(PREFERRED_TERMINALS)
                     or getTerminalFromDirectory('/usr/bin')
+                    or getTerminalFromDirectory('/usr/local/bin')
                     or getTerminalFromDirectory('/bin')
                     )
-        #@+node:tom.20230308193758.14: *4* getTermExecuteCmd
+        #@+node:tom.20241014154415.16: *4* getTermExecuteCmd
         def getTermExecuteCmd(terminal: str) -> str:
             """Given a terminal's name, find the command line arg to launch a program.
 
-            First, try "--help".  If that fails, see try "--help-all".  If neither
-            has an argument or switch for "Execute", give up and assume the arg is "-x".
+            If the terminal's arg is known, use that. Otherwise, try "--help".
+            If that fails, see try "--help-all".  If neither has an argument
+            or switch for "Execute", give up and assume the arg is "-x".
             """
             HELP_CMDS = ('-h', '--help', '--help-all')
             EXECUTESTR = 'execute'
 
+            if terminal in EXECUTE_ARGS:
+                return EXECUTE_ARGS[terminal]
+
             #@+others
-            #@+node:tom.20230308193758.15: *5* get_help_message
+            #@+node:tom.20241014154415.17: *5* get_help_message
             def get_help_message(terminal: str, help_cmd: str) -> str:
                 cmd = f'{terminal} {help_cmd}'
                 # pylint: disable=subprocess-run-check
@@ -991,7 +1021,7 @@ class Commands:
                     # g.es('error:', proc.stderr.decode('utf-8'))
                     return ''
                 return msg
-            #@+node:tom.20230308193758.16: *5* find_ex_arg
+            #@+node:tom.20241014154415.18: *5* find_ex_arg
             def find_ex_arg(help_msg: str) -> str:
                 for line in help_msg.splitlines():
                     if '--command' in line:
@@ -1018,16 +1048,16 @@ class Commands:
                         arg += ' '
                     break
             else:
-                arg = '-e ' if 'xterm' in terminal else '-x '
+                arg = '-x '  # We can only hope
             return arg
-        #@+node:tom.20230308193758.17: *4* checkShebang
+        #@+node:tom.20241014154415.19: *4* checkShebang
         def checkShebang(path: str) -> bool:
             """Return True if file begins with a shebang line, else False."""
             path = g.finalize(path)
             with open(path, encoding='utf-8') as f:
                 first_line = f.readline()
             return first_line.startswith('#!')
-        #@+node:tom.20230308193758.18: *4* runFile
+        #@+node:tom.20241014154415.20: *4* runFile
         def runfile(fullpath: str, processor: str, terminal: str) -> None:
             direc: str = os.path.expanduser(os.path.dirname(fullpath))
             if g.isWindows:
@@ -1083,6 +1113,8 @@ class Commands:
                 if not terminal:
                     g.es(f'Cannot find terminal specified in setting: {setting_terminal}')
                     g.es('Trying an alternative')
+                    terminal = getTerminal()
+                    g.es('using', terminal)
 
             path = c.fullPath(root)
             language = getExeKind(ext)
