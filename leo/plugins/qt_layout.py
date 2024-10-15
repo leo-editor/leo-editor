@@ -175,6 +175,7 @@ def layout_legacy(event: LeoKeyEvent) -> None:
     c.doCommandByName('vr-show')
 #@+node:ekr.20241008180407.1: *3* command: 'layout-quadrant'
 @g.command('layout-quadrant')
+@register_layout('layout-quadrant')
 def quadrants(event: LeoKeyEvent) -> None:
     """Create Leo's quadrant layout:
         ┌───────────────┬───────────┐
@@ -189,6 +190,7 @@ def quadrants(event: LeoKeyEvent) -> None:
     cache.restoreFromLayout(QUADRANT_LAYOUT)
 #@+node:ekr.20241008174427.2: *3* command: 'layout-render-focused'
 @g.command('layout-render-focused')
+@register_layout('layout-render-focused')
 def render_focused(event: LeoKeyEvent) -> None:
     """Create Leo's render-focused layout:
         ┌───────────┬─────┐
@@ -205,6 +207,7 @@ def render_focused(event: LeoKeyEvent) -> None:
     cache.restoreFromLayout(RENDERED_FOCUSED_LAYOUT)
 #@+node:tom.20240930101515.1: *3* command: 'layout-restore-default'
 @g.command('layout-restore-default')
+@register_layout('layout-restore-default')
 def restoreDefaultLayout(event: LeoKeyEvent) -> None:
     """Restore the default layout specified in @settings, if known."""
     c = event.get('c')
@@ -234,6 +237,7 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
 
 #@+node:tom.20241005163724.1: *3* command: 'layout-swap-log-panel'
 @g.command('layout-swap-log-panel')
+@register_layout('layout-swap-log-panel')
 def swapLogPanel(event: LeoKeyEvent) -> None:
     """Move Log frame between main and secondary splitters.
 
@@ -287,6 +291,7 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
         g.app.gui.equalize_splitter(target)
 #@+node:ekr.20241008175137.1: *3* command: 'layout-vertical-thirds'
 @g.command('layout-vertical-thirds')
+@register_layout('layout-vertical-thirds')
 def vertical_thirds(event: LeoKeyEvent) -> None:
     """Create Leo's vertical-thirds layout:
         ┌───────────┬────────┬──────┐
@@ -302,6 +307,7 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
 
 #@+node:ekr.20241008175303.1: *3* command: 'layout-vertical-thirds2'
 @g.command('layout-vertical-thirds2')
+@register_layout('layout-vertical-thirds2')
 def vertical_thirds2(event: LeoKeyEvent) -> None:
     """Create Leo's vertical-thirds2 layout:
         ┌───────────┬───────┬───────┐
