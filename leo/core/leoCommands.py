@@ -751,7 +751,7 @@ class Commands:
             'xterm': '-e '
         }
 
-        PREFERRED_TERMINALS = list(EXECUTE_ARGS.keys())
+        PREFERRED_TERMINALS = EXECUTE_ARGS.keys()
         #@+node:tom.20241014154415.4: *4* SETTINGS_HELP
         SETTINGS_HELP = r'''The data in the @data node body must have a
         PROCESSORS and an EXTENSIONS section, plus an optional TERMINAL
@@ -968,7 +968,7 @@ class Commands:
                         return t
             return ''
         #@+node:tom.20241014154415.15: *5* getCommonTerminal
-        def getCommonTerminal(names: Union[str, list, tuple]) -> str:
+        def getCommonTerminal(names: Union[str, Iterable[str]]) -> str:
             """Return a terminal name given candidate names.
 
             ARGUMENT
