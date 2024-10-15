@@ -1298,6 +1298,7 @@
 <v t="tbrown.20140814090009.57475"><vh>@menu &amp;Show Settings</vh>
 <v t="ekr.20131213135427.21957"><vh>@item show-&amp;bindings</vh></v>
 <v t="ekr.20131213135427.21958"><vh>@item show-&amp;commands</vh></v>
+<v t="ekr.20241015062230.1"><vh>@item show-&amp;layouts</vh></v>
 <v t="ekr.20131213135427.21960"><vh>@item show-&amp;settings</vh></v>
 <v t="ekr.20131213135427.21959"><vh>@item show-&amp;plugins-info</vh></v>
 </v>
@@ -11728,6 +11729,7 @@ vertical-thirds2
 <t tx="ekr.20240924055407.1">True: run Pylint on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20240926065158.1">True: beautify all @&lt;file&gt; nodes in the outline using Leo's token-based beautifier.</t>
 <t tx="ekr.20241012050620.1">True: Leo's git-diff command will diff .leo and .leojs files.</t>
+<t tx="ekr.20241015062230.1"></t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>

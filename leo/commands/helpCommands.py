@@ -783,109 +783,108 @@ class HelpCommandsClass(BaseEditCommandsClass):
             c.frame.putStatusLine(s, bg='blue', fg='white')
             c.bodyWantsFocus()
     #@+node:ekr.20240822071015.1: *3* helpForLayouts
+    #@+<< define help-for-layouts string >>
+    #@+node:ekr.20240822071105.1: *4* << define help-for-layouts string >>
+    #@@language rest
+    #@@nowrap
+
+    help_for_layouts_string = textwrap.dedent('''
+
+    About layouts
+    =============
+
+    The following commands create the layouts shown:
+
+    use-legacy-layout
+    -----------------
+
+    ::
+
+        ┌───────────┬───────┐
+        │  outline  │  log  │
+        ├───────────┼───────┤
+        │  body     │  VR   │
+        └───────────┴───────┘
+        
+    use-big-tree-layout
+    -------------------
+
+    ::
+
+        ┌───────────────────┐
+        │  outline          │
+        ├──────────┬────────┤
+        │  body    │  log   │
+        ├──────────┴────────┤
+        │  VR               │
+        └───────────────────┘
+
+    use-horizontal-thirds-layout
+    ----------------------------
+
+    ::
+
+        ┌───────────┬───────┐
+        │  outline  │  log  │
+        ├───────────┴───────┤
+        │  body             │
+        ├───────────────────┤
+        │  VR               │
+        └───────────────────┘
+
+    use-render-focused-layout
+    -------------------------
+
+    ::
+
+        ┌───────────┬─────┐
+        │ outline   │     │
+        ├───────────┤     │
+        │ body      │ VR  │
+        ├───────────┤     │
+        │ log       │     │
+        └───────────┴─────┘
+
+    use-vertical-thirds-layout
+    --------------------------
+
+    ::
+
+        ┌───────────┬────────┬──────┐
+        │  outline  │        │      │
+        ├───────────┤  body  │  VR  │
+        │  log      │        │      │
+        └───────────┴────────┴──────┘
+
+
+    use-vertical-thirds2-layout
+    ---------------------------
+
+    ::
+
+        ┌───────────┬───────┬───────┐
+        │           │  log  │       │
+        │  outline  ├───────┤  VR   │
+        │           │  body │       │
+        └───────────┴───────┴───────┘
+    ''').strip()
+    #@-<< define help-for-layouts string >>
+
     @cmd('help-for-layouts')
     def helpForLayouts(self, event: LeoKeyEvent = None) -> None:
         """Print a messages telling you how to get started with Leo."""
-        # A bug in Leo: triple quotes puts indentation before each line.
         c = self.c
-        #@+<< define s >>
-        #@+node:ekr.20240822071105.1: *4* << define s >>
-        #@@language rest
-        #@@nowrap
-
-        s = '''\
-
-        About layouts
-        =============
-
-        The following commands create the layouts shown:
-
-        use-legacy-layout
-        -----------------
-
-        ::
-
-            ┌───────────┬───────┐
-            │  outline  │  log  │
-            ├───────────┼───────┤
-            │  body     │  VR   │
-            └───────────┴───────┘
-            
-        use-big-tree-layout
-        -------------------
-
-        ::
-
-            ┌───────────────────┐
-            │  outline          │
-            ├──────────┬────────┤
-            │  body    │  log   │
-            ├──────────┴────────┤
-            │  VR               │
-            └───────────────────┘
-
-        use-horizontal-thirds-layout
-        ----------------------------
-
-        ::
-
-            ┌───────────┬───────┐
-            │  outline  │  log  │
-            ├───────────┴───────┤
-            │  body             │
-            ├───────────────────┤
-            │  VR               │
-            └───────────────────┘
-
-        use-render-focused-layout
-        -------------------------
-
-        ::
-
-            ┌───────────┬─────┐
-            │ outline   │     │
-            ├───────────┤     │
-            │ body      │ VR  │
-            ├───────────┤     │
-            │ log       │     │
-            └───────────┴─────┘
-
-        use-vertical-thirds-layout
-        --------------------------
-
-        ::
-
-            ┌───────────┬────────┬──────┐
-            │  outline  │        │      │
-            ├───────────┤  body  │  VR  │
-            │  log      │        │      │
-            └───────────┴────────┴──────┘
-
-
-        use-vertical-thirds2-layout
-        ---------------------------
-
-        ::
-
-            ┌───────────┬───────┬───────┐
-            │           │  log  │       │
-            │  outline  ├───────┤  VR   │
-            │           │  body │       │
-            └───────────┴───────┴───────┘
-        '''
-        #@-<< define s >>
-        c.putHelpFor(s)
+        c.putHelpFor(self.help_for_layouts_string)
     #@+node:ekr.20150514063305.396: *3* helpForMinibuffer
     @cmd('help-for-minibuffer')
     def helpForMinibuffer(self, event: LeoKeyEvent = None) -> None:
         """Print a messages telling you how to get started with Leo."""
-        # A bug in Leo: triple quotes puts indentation before each line.
         c = self.c
         #@+<< define s >>
         #@+node:ekr.20150514063305.397: *4* << define s >> (helpForMinibuffer)
         #@@language rest
 
-        s = '''\
+        s = textwrap.dedent('''\
 
         About the Minibuffer
         --------------------
@@ -909,7 +908,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         the focus in the body pane.
 
         Use the help-for-command command to see documentation for a particular command.
-        '''
+        ''').strip()
         #@-<< define s >>
         c.putHelpFor(s)
     #@+node:ekr.20150514063305.398: *3* helpForRegularExpressions
@@ -1260,6 +1259,15 @@ class HelpCommandsClass(BaseEditCommandsClass):
         - [T] theme .leo file.
         """
         self.c.config.printFontSettings()
+    #@+node:ekr.20241015062315.1: *3* help.showLayouts (new)
+    @cmd('show-layouts')
+    def showLayouts(self, event: LeoKeyEvent = None) -> None:
+        """
+        Show description of all layouts in Leo's console and log pane.
+        """
+        print('')
+        g.es_print(self.help_for_layouts_string, tabName='Layouts')
+        print('')
     #@+node:ekr.20150514063305.402: *3* help.showSettings
     @cmd('show-settings')
     def showSettings(self, event: LeoKeyEvent = None) -> None:
