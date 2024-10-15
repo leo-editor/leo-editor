@@ -751,7 +751,7 @@ class Commands:
             'xterm': '-e '
         }
 
-        PREFERRED_TERMINALS = EXECUTE_ARGS.keys()
+        PREFERRED_TERMINALS = list(EXECUTE_ARGS.keys())
         #@+node:tom.20241014154415.4: *4* SETTINGS_HELP
         SETTINGS_HELP = r'''The data in the @data node body must have a
         PROCESSORS and an EXTENSIONS section, plus an optional TERMINAL
