@@ -968,7 +968,7 @@ class Commands:
                         return t
             return ''
         #@+node:tom.20241014154415.15: *5* getCommonTerminal
-        def getCommonTerminal(names: Union[str, list, tuple]) -> str:
+        def getCommonTerminal(names: Union[str, Iterable[str]]) -> str:
             """Return a terminal name given candidate names.
 
             ARGUMENT
