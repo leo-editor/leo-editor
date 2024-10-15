@@ -128,7 +128,7 @@ if g.app.gui.guiName() == "qt":
 
     class todoQtUI(QtWidgets.QWidget):  # type:ignore
         #@+others
-        #@+node:ekr.20111118104929.10204: *3* ctor (todo.py)
+        #@+node:ekr.20111118104929.10204: *3* ctor (todoQtUI(QWidget))
         def __init__(self, owner: Any, logTab: bool = True) -> None:
 
             self.owner = owner
@@ -540,7 +540,7 @@ class todoController:
             self.redrawLevels += 1
             try:
                 self.c.endEditing()  # #3932.
-                ans = fn(self, *args, **kargs)
+                ans = fn(self, *args, **kargs)  # pylint: disable=not-callable
             finally:
                 self.redrawLevels -= 1
                 if self.redrawLevels == 0:
@@ -555,7 +555,7 @@ class todoController:
 
         # pylint: disable=no-self-argument
         def project_changer_callback(self, *args: Any, **kargs: Any) -> Any:  # type:ignore
-            ans = fn(self, *args, **kargs)
+            ans = fn(self, *args, **kargs)  # pylint: disable=not-callable
             self.update_project()
             return ans
 

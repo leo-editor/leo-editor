@@ -232,8 +232,9 @@ class BaseLeoPlugin:
         self.commandName = commandName
         self.shortcut = shortcut
         self.handler = handler
+        # #4087: k.registerCommand no longer supports the 'shortcut' kwarg.
         self.c.k.registerCommand(commandName, handler,
-            pane=pane, shortcut=shortcut, verbose=verbose)
+            pane=pane, verbose=verbose)
     #@+node:ekr.20100908125007.6014: *3* setMenuItem
     def setMenuItem(self, menu: Wrapper, commandName: str = None, handler: Callable = None) -> None:
         """Create a menu item in 'menu' using text 'commandName' calling handler 'handler'
@@ -583,9 +584,10 @@ class LeoPluginsController:
             return module
         assert g.app.loadDir
         moduleName = g.toUnicode(moduleName)
-        #
+
         # Try to load the plugin.
         try:
+            result = None
             self.loadingModuleNameStack.append(moduleName)
             result = loadOnePluginHelper(moduleName)
         finally:
@@ -594,7 +596,7 @@ class LeoPluginsController:
             if trace:
                 reportFailedImport()
             return None
-        #
+
         # Last-minute checks.
         try:
             self.loadingModuleNameStack.append(moduleName)

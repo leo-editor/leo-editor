@@ -169,7 +169,7 @@ class LeoCloudIOBase:
 
         :returns: vnode build from lc_id
         """
-        return self.c._leo_cloud.from_dict(self.get_data(lc_id))
+        return self.c._leo_cloud.from_dict(self.get_data(lc_id))  # pylint: disable=no-member
 
     #@+node:ekr.20201012111338.11: *3* LeoCloudIOBase.put_subtree
     def put_subtree(self, lc_id, v):
@@ -179,7 +179,7 @@ class LeoCloudIOBase:
             lc_id (str(?)): place to put it
             v (vnode): subtree to put
         """
-        self.put_data(lc_id, LeoCloud.to_dict(v))
+        self.put_data(lc_id, LeoCloud.to_dict(v))  # pylint: disable=no-member
 
 
     #@-others

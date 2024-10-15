@@ -68,20 +68,27 @@ class AtFile:
         self.cancelFlag = False
         self.yesToAll = False
         # User options: set in reloadSettings.
+        self.beautifyOnWrite = False
         self.checkPythonCodeOnWrite = False
         self.runFlake8OnWrite = False
         self.runPyFlakesOnWrite = False
+        self.runPylintOnWrite = False
         self.reloadSettings()
     #@+node:ekr.20171113152939.1: *5* at.reloadSettings
     def reloadSettings(self) -> None:
         """AtFile.reloadSettings"""
         c = self.c
+        self.beautifyOnWrite = c.config.getBool(
+            'beautify-python-code-on-write', default=False)
         self.checkPythonCodeOnWrite = c.config.getBool(
             'check-python-code-on-write', default=True)
         self.runFlake8OnWrite = c.config.getBool(
             'run-flake8-on-write', default=False)
         self.runPyFlakesOnWrite = c.config.getBool(
             'run-pyflakes-on-write', default=False)
+        self.runPylintOnWrite = c.config.getBool(
+            'run-pylint-on-write', default=False)
+
     #@+node:ekr.20041005105605.10: *4* at.initCommonIvars
     def initCommonIvars(self) -> None:
         """
@@ -1073,7 +1080,8 @@ class AtFile:
             return
         if files:
             n = at.unchangedFiles
-            g.es(f"finished: {n} unchanged file{g.plural(n)}")
+            if n > 1:
+                g.es(f"finished: {n} unchanged file{g.plural(n)}")
         elif all:
             g.warning("no @<file> nodes in the selected tree")
         elif dirty:
@@ -1586,9 +1594,9 @@ class AtFile:
     def atAsisToString(self, root: Position) -> str:  # pragma: no cover
         """Write the @asis node to a string."""
         at, c = self, self.c
+        c.endEditing()
+        fileName = at.initWriteIvars(root)
         try:
-            c.endEditing()
-            fileName = at.initWriteIvars(root)
             at.outputList = []
             for p in root.self_and_subtree(copy=False):
                 at.writeAsisNode(p)
@@ -1616,9 +1624,9 @@ class AtFile:
     def atCleanToString(self, root: Position) -> str:  # pragma: no cover
         """Write one @clean node to a string."""
         at, c = self, self.c
+        c.endEditing()
+        fileName = at.initWriteIvars(root)
         try:
-            c.endEditing()
-            fileName = at.initWriteIvars(root)
             at.sentinels = False
             at.outputList = []
             at.putFile(root, sentinels=False)
@@ -2158,44 +2166,30 @@ class AtFile:
         # Fix #1050:
         root.setOrphan()
         c.orphan_at_file_nodes.append(root.h)
-    #@+node:ekr.20220120210617.1: *5* at.checkUnchangedFiles
-    def checkUnchangedFiles(self, contents: str, fileName: str, root: Position) -> None:  # pragma: no cover
-        at = self
-        ok1 = ok2 = True
-        if g.unitTesting:
-            return
-        is_python = fileName and fileName.endswith(('py', 'pyw'))
-        if not contents or not is_python:
-            return
-
-        if at.runFlake8OnWrite:
-            ok1 = self.runFlake8(root)
-        if at.runPyFlakesOnWrite:
-            ok2 = self.runPyflakes(root)
-        if not ok1 or not ok2:
-            g.app.syntax_error_files.append(g.shortFileName(fileName))
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
     def checkPythonCode(self, contents: str, fileName: str, root: Position) -> None:  # pragma: no cover
         """Perform python-related checks on root."""
         if not g.app.log:
             return  # We are auto-saving.
-        at = self
         is_python = fileName and fileName.endswith(('py', 'pyw'))
-
         if g.unitTesting or not contents or not is_python:
             return
         ok = True
-        if at.checkPythonCodeOnWrite:
-            ok = at.checkPythonSyntax(root, contents)
-        if ok and at.runPyFlakesOnWrite:  # Creates clickable links.
+        if self.checkPythonCodeOnWrite:  # First
+            ok = self.checkPythonSyntax(root, contents)
+        if ok and self.beautifyOnWrite:  # Second.
+            ok = self.runTokenBasedBeautifier(root, fileName)
+        if ok and self.runPyFlakesOnWrite:  # Creates clickable links.
             ok = self.runPyflakes(root)
-        if ok and at.runFlake8OnWrite:  # Does *not* create clickable links.
+        if ok and self.runFlake8OnWrite:  # Does *not* create clickable links.
             ok = self.runFlake8(root)
+        if ok and self.runPylintOnWrite:
+            ok = self.runPylint(root)
         if not ok:
             g.app.syntax_error_files.append(g.shortFileName(fileName))
     #@+node:ekr.20090514111518.5663: *6* at.checkPythonSyntax
     def checkPythonSyntax(self, p: Position, body: str) -> bool:
-        at = self
+        """Check the syntax of the given node."""
         try:
             body = body.replace('\r', '')
             fn = f"<node: {p.h}>"
@@ -2203,7 +2197,7 @@ class AtFile:
             return True
         except SyntaxError:  # pragma: no cover
             if not g.unitTesting:
-                at.syntaxError(p, body)
+                self.syntaxError(p, body)
         except Exception:  # pragma: no cover
             g.trace("unexpected exception")
             g.es_exception()
@@ -2232,6 +2226,33 @@ class AtFile:
                 g.es_print(' ' * (7 + offset) + '^')
             else:
                 g.es_print(f"{j+1:5}: {line}")
+    #@+node:ekr.20240926044644.1: *6* at.runTokenBasedBeautifier
+    def runTokenBasedBeautifier(self, root: Position, filename: str) -> bool:
+        """Run Leo's token-based beautifier on the selecte position."""
+        c = self.c
+        p = c.p
+        if not os.path.exists(filename):
+            return False
+        try:
+            old_sys_argv = sys.argv[:]
+            sys.argv = ['tbo']  # A hack: don't run leo.core.leoTokens.main.
+            from leo.core.leoTokens import beautify_file
+            changed = beautify_file(filename)
+            if changed:
+                g.es(f"beautified: {g.shortFileName(filename)}")
+                # Suppress the reload prompt.
+                efc = g.app.externalFilesController
+                efc.set_time(filename)
+                # Reload the file immediately.
+                c.selectPosition(root)
+                c.refreshFromDisk()
+                c.redraw(p)
+            return True
+        except Exception:
+            g.es_exception()
+            return False
+        finally:
+            sys.arg_v = old_sys_argv
     #@+node:ekr.20221128123139.1: *6* at.runFlake8
     def runFlake8(self, root: Position) -> bool:  # pragma: no cover
         """Run flake8 on the selected node."""
@@ -2255,6 +2276,19 @@ class AtFile:
                 ok = x.run(root)
                 return ok
             return True  # Suppress error if pyflakes can not be imported.
+        except Exception:
+            g.es_exception()
+            return True  # Pretend all is well
+    #@+node:ekr.20240924054208.1: *6* at.runPylint
+    def runPylint(self, root: Position) -> bool:  # pragma: no cover
+        """Run pylint on the selected node."""
+        try:
+            from leo.commands import checkerCommands
+            if checkerCommands.lint:
+                x = checkerCommands.PylintCommand(self.c)
+                ok = bool(x.run(root))
+                return ok
+            return True  # Suppress error if pylint can not be imported.
         except Exception:
             g.es_exception()
             return True  # Pretend all is well
@@ -2615,7 +2649,7 @@ class AtFile:
                 'report-unchanged-files', default=True):
                 g.es(f"{timestamp}unchanged: {sfn}")  # pragma: no cover
             # Check unchanged files.
-            at.checkUnchangedFiles(contents, fileName, root)
+            at.checkPythonCode(contents, fileName, root)
             return False  # No change to original file.
         #
         # Warn if we are only adjusting the line endings.

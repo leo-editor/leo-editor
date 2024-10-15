@@ -3,6 +3,7 @@
 #@+node:ekr.20220823195753.1: * @file ../external/stringlist.py
 #@@first
 # Used by valuespace plugin.
+# type:ignore
 import re
 import subprocess
 #@+others

@@ -8,7 +8,6 @@ import os
 import re
 import shlex
 import sys
-import tempfile
 import time
 from typing import Optional, TYPE_CHECKING
 #
@@ -313,9 +312,9 @@ def pylint_command(event: LeoKeyEvent) -> None:
     if c:
         if c.isChanged():
             c.save()
-        data = PylintCommand(c).run(last_path=last_pylint_path)
+        data = PylintCommand(c).run(c.p, last_path=last_pylint_path)
         if data:
-            path, p = data
+            path, p = data  # pylint: disable=unpacking-non-sequence
             last_pylint_path = path
 #@+node:ekr.20230221105941.1: ** class CheckNodes
 class CheckNodes:
@@ -595,9 +594,9 @@ class PylintCommand:
         self.rc_fn: str = None  # Name of the rc file.
     #@+others
     #@+node:ekr.20150514125218.11: *3* 1. pylint.run
-    def run(self, last_path: str = None) -> Optional[tuple[str, Position]]:
-        """Run Pylint on all Python @<file> nodes in c.p's tree."""
-        c, root = self.c, self.c.p
+    def run(self, root: Position, *, last_path: str = None) -> Optional[tuple[str, Position]]:
+        """Run Pylint on all Python @<file> nodes in root's tree."""
+        c = self.c
         if not lint:
             g.es_print('pylint is not installed')
             return None
@@ -627,21 +626,14 @@ class PylintCommand:
         else:
             last_path = None
         if not data:
-            if last_path:
-                # Default to the last path.
-                fn = last_path
-                for p in c.all_positions():
-                    if p.isAnyAtFileNode() and c.fullPath(p) == fn:
-                        data = [(fn, p.copy())]
-                        break
-            else:
-                g.trace('pylint: not an external file, using temp file')
-                script = g.getScript(c, c.p, False, False)
-                fd, fn = tempfile.mkstemp(suffix='.py', prefix="")
-                with os.fdopen(fd, 'w') as f:
-                    f.write(script)
-                data = [(fn, c.p.copy())]
-
+            if not last_path:
+                return None
+            # Default to the last path.
+            fn = last_path
+            for p in c.all_positions():
+                if p.isAnyAtFileNode() and c.fullPath(p) == fn:
+                    data = [(fn, p.copy())]
+                    break
         for fn, p in data:
             self.run_pylint(fn, p)
         # #1808: return the last data file.
@@ -667,7 +659,6 @@ class PylintCommand:
         for fn in table:
             fn = g.os_path_abspath(fn)
             if g.os_path_exists(fn):
-                print(f"pylint: {fn}")
                 return fn
         table_s = '\n'.join(table)
         g.es_print(f"no pylint configuration file found in\n{table_s}")
@@ -699,7 +690,7 @@ class PylintCommand:
             f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"')
         if not is_win:
             command = shlex.split(command)  # type:ignore
-        #
+
         # Run the command using the BPM.
         bpm = g.app.backgroundProcessManager
         bpm.start_process(c, command, fn=fn, kind='pylint')

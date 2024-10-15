@@ -1,5 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20130813134319.11942: * @file ../plugins/richtext.py
+# This plugin is obsolete. There are no plans to make it work with Qt6.
 #@+<< docstring >>
 #@+node:tbrown.20130813134319.14333: ** << docstring >> (richtext.py)
 """
@@ -57,6 +58,8 @@ To make a button to toggle the editor on and off, use::
 
 """
 #@-<< docstring >>
+# This complaint is probably valid.
+# pylint: disable=no-name-in-module
 #@+<< imports >>
 #@+node:tbrown.20130813134319.14335: ** << imports >> (richtext.py)
 import time
