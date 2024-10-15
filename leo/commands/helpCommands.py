@@ -1259,7 +1259,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         - [T] theme .leo file.
         """
         self.c.config.printFontSettings()
-    #@+node:ekr.20241015062315.1: *3* help.showLayouts (new)
+    #@+node:ekr.20241015062315.1: *3* help.showLayouts
     @cmd('show-layouts')
     def showLayouts(self, event: LeoKeyEvent = None) -> None:
         """
