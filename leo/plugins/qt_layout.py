@@ -29,6 +29,9 @@ VRX_PLACEHOLDER_NAME = 'viewrenderedx_pane'
 
 VR_MODULE_NAME = 'viewrendered.py'
 VR3_MODULE_NAME = 'viewrendered3.py'
+
+# Will contain {layout_name: layout_docstring}
+LAYOUT_REGISTRY = {}
 #@+node:ekr.20241008174359.1: ** Top-level functions
 #@+node:ekr.20241008141246.1: *3* function: init
 def init() -> bool:
@@ -44,9 +47,17 @@ def is_module_loaded(module_name):
     """
     controller = g.app.pluginsController
     return controller.isLoaded(module_name)
+#@+node:tom.20241015161609.1: *3* decorator:  register_layout
+def register_layout(name):
+    def decorator(func):
+        # Register the function's name and docstring in the dictionary
+        LAYOUT_REGISTRY[name] = func.__doc__
+        return func  # Ensure the original function is returned
+    return decorator
 #@+node:ekr.20241008174351.1: ** Layout commands
 #@+node:tom.20240928171510.1: *3* command: 'layout-big-tree'
 @g.command('layout-big-tree')
+@register_layout('layout-big-tree')
 def big_tree(event: LeoKeyEvent) -> None:
     """Create Leo's big-tree layout:
         ┌──────────────────┐
@@ -111,6 +122,7 @@ def big_tree(event: LeoKeyEvent) -> None:
             c.doCommandByName('vr-show')
 #@+node:ekr.20241008174424.1: *3* command: 'layout-fallback-layout'
 @g.command('layout-fallback-layout')
+@register_layout('layout-fallback-layout')
 def fallback_layout(event: LeoKeyEvent) -> None:
     """Apply a workable layout in case the layout setting is invalid."""
     c = event.get('c')
@@ -119,6 +131,7 @@ def fallback_layout(event: LeoKeyEvent) -> None:
     cache.restoreFromLayout(FALLBACK_LAYOUT)
 #@+node:ekr.20241008174427.1: *3* command: 'layout-horizontal-thirds'
 @g.command('layout-horizontal-thirds')
+@register_layout('layout-horizontal-thirds')
 def horizontal_thirds(event: LeoKeyEvent) -> None:
     """Create Leo's horizontal-thirds layout:
         ┌───────────┬───────┐
@@ -137,6 +150,7 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
     cache.restoreFromLayout(HORIZONTAL_THIRDS_LAYOUT)
 #@+node:ekr.20241008175234.1: *3* command: 'layout-legacy'
 @g.command('layout-legacy')
+@register_layout('layout-legacy')
 def layout_legacy(event: LeoKeyEvent) -> None:
     """Create Leo's legacy layout:
         ┌───────────┬──────┐
@@ -435,6 +449,7 @@ class LayoutCacheWidget(QWidget):
         self.setObjectName('leo-layout-cache')
         # maps splitter objectNames to their splitter object.
         self.created_splitter_dict: Dict[str, Any] = {}
+        self.layout_registry = LAYOUT_REGISTRY
 
     #@+others
     #@+node:tom.20240923194438.5: *3* LayoutCacheWidget.find_splitter_by_name
