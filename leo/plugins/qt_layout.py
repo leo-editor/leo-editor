@@ -65,7 +65,7 @@ def big_tree(event: LeoKeyEvent) -> None:
         ├──────────┬───────┤
         │  body    │  log  │
         ├──────────┴───────┤
-        │  VR              │
+        │  VR/VR3          │
         └──────────────────┘
     """
     c = event.get('c')
@@ -139,7 +139,7 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
         ├───────────┴───────┤
         │  body             │
         ├───────────────────┤
-        │  VR               │
+        │  VR/VR3           │
         └───────────────────┘
     """
     c = event.get('c')
@@ -153,11 +153,11 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
 @register_layout('layout-legacy')
 def layout_legacy(event: LeoKeyEvent) -> None:
     """Create Leo's legacy layout:
-        ┌───────────┬──────┐
-        │ outline   │ log  │
-        ├───────────┼──────┤
-        │ body      │ VR   │
-        └───────────┴──────┘
+        ┌───────────┬───────┐
+        │ outline   │ log   │
+        ├───────────┼───────┤
+        │ body      │ VR/VR3│
+        └───────────┴───────┘
     """
     c = event.get('c')
     dw = c.frame.top
@@ -181,7 +181,7 @@ def quadrants(event: LeoKeyEvent) -> None:
         ┌───────────────┬───────────┐
         │   outline     │   log     │
         ├───────────────┼───────────┤
-        │   body        │     vr    │
+        │   body        │  VR/VR3   │
         └───────────────┴───────────┘
     """
     c = event.get('c')
@@ -196,8 +196,8 @@ def render_focused(event: LeoKeyEvent) -> None:
         ┌───────────┬─────┐
         │ outline   │     │
         ├───────────┤     │
-        │ body      │ VR  │
-        ├───────────┤     │
+        │ body      │ VR/ │
+        ├───────────┤ VR3 │
         │ log       │     │
         └───────────┴─────┘
     """
@@ -251,15 +251,15 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
         ┌───────────┬──────┐
         │ outline   │ log  │
         ├───────────┼──────┤
-        │ body      │ VR   │
+        │ body      │VR/VR3│
         └───────────┴──────┘
     to:
         ┌──────────────────┐
         │  outline         │
         ├──────────┬───────┤
-        │  body    │  VR   │
+        │  body    │ VR/VR3│
         ├──────────┴───────┤
-        │  Log             │
+        │  log             │
         └──────────────────┘
     """
     c = event.get('c')
