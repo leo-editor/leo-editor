@@ -7,18 +7,24 @@
 from __future__ import annotations
 
 from collections import OrderedDict
-from typing import Any, Dict, TYPE_CHECKING
+from typing import Any, Dict, TYPE_CHECKING, TypeVar, Optional
+from typing import Generic
 
 from leo.core.leoQt import QtWidgets, Orientation, QtCore
 from leo.core import leoGlobals as g
 
+QW = TypeVar('QW', bound=QtWidgets.QWidget)
+OD = TypeVar('OD', bound=OrderedDict)
+
 QWidget = QtWidgets.QWidget
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     # from typing import TypeAlias  # Requires Python 3.12+
     Args = Any
     KWargs = Any
+
 #@-<< qt_layout: imports >>
 
 #@+others
@@ -48,8 +54,8 @@ def is_module_loaded(module_name):
     controller = g.app.pluginsController
     return controller.isLoaded(module_name)
 #@+node:tom.20241015161609.1: *3* decorator:  register_layout
-def register_layout(name:str) -> None:
-    def decorator(func):
+def register_layout(name:str): # type: ignore
+    def decorator(func): 
         # Register the function's name and docstring in the dictionary
         LAYOUT_REGISTRY[name] = func.__doc__
         return func  # Ensure the original function is returned
@@ -281,9 +287,9 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
         return
     gui = g.app.gui
 
-    ms = gui.find_widget_by_name(c, 'main_splitter')
-    ss = gui.find_widget_by_name(c, 'secondary_splitter')
-    lf = gui.find_widget_by_name(c, 'logFrame')
+    ms = gui.find_widget_by_name(c, 'main_splitter')  # type: ignore
+    ss = gui.find_widget_by_name(c, 'secondary_splitter')  # type: ignore
+    lf = gui.find_widget_by_name(c, 'logFrame')  # type: ignore
 
     lf_parent = lf.parent()
     lf_parent_container = lf_parent.parent()
@@ -302,7 +308,7 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
 
     if widget is not None:
         target.addWidget(widget)
-        g.app.gui.equalize_splitter(target)
+        gui.equalize_splitter(target)  # type: ignore
 #@+node:ekr.20241008175137.1: *3* command: 'layout-vertical-thirds'
 @g.command('layout-vertical-thirds')
 @register_layout('layout-vertical-thirds')
@@ -446,9 +452,10 @@ VERTICAL_THIRDS_LAYOUT = {
     }
 }
 #@+node:tom.20240930095459.1: ** class LayoutCacheWidget
-class LayoutCacheWidget(QWidget):
+class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
     """
-    Manage layout such as the following:
+    Manage layouts, which may be defined by methods or by
+    a layout data structure such as the following:
         
         FALLBACK_LAYOUT = {
             'SPLITTERS':OrderedDict(
@@ -463,19 +470,27 @@ class LayoutCacheWidget(QWidget):
         }
     """
 
-    def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
+    def __init__(self, c: Cmdr, parent: Optional[QW]) -> None:
         super().__init__(parent)
         self.c = c
         self.setObjectName('leo-layout-cache')
+
         # maps splitter objectNames to their splitter object.
         self.created_splitter_dict: Dict[str, Any] = {}
         self.layout_registry = LAYOUT_REGISTRY
 
     #@+others
     #@+node:tom.20240923194438.5: *3* LayoutCacheWidget.find_splitter_by_name
-    def find_splitter_by_name(self, name):
+    def find_splitter_by_name(self, name:str, _: Optional[QW] = None) -> QW:
+        """Return a splitter instance given its objectName.
+        
+        This method could return other types of widgets but is intended
+        for finding known splitters.
+        
+        The "_" argument is needed to satisfy mypy.  It is never used.
+        """
         foundit = False
-        splitter = None
+        splitter: QW = None
         splitter = self.find_widget(name)
         if splitter is not None:
             foundit = True
@@ -491,18 +506,28 @@ class LayoutCacheWidget(QWidget):
                     break
         return splitter
     #@+node:ekr.20241008180818.1: *3* LayoutCacheWidget.find_widget
-    def find_widget(self, name):
-        return g.app.gui.find_widget_by_name(self.c, name)
+    def find_widget(self, name: str, _: Optional[QW] = None) -> QW:
+        """Return a widget given it objectName.
+        
+        The "_" argument is needed to satisfy mypy.  It is never used.
+        """
+        widget:QW = g.app.gui.find_widget_by_name(self.c, name) # type: ignore[attr-defined]
+        return widget
+
     #@+node:tom.20240923194438.4: *3* LayoutCacheWidget.find_widget_in_children
-    def find_widget_in_children(self, name):
-        w = None
+    def find_widget_in_children(self, name:str, _: Optional[QW] = None) -> QW:
+        """Return a child widget if its objectName matches "name".
+        
+        The "_" argument is needed to satisfy mypy.  It is never used.
+        """
+        w: QW = None
         for kid in self.children():
             if kid.objectName() == name:
                 w = kid
         return w
 
     #@+node:tom.20240923194438.6: *3* LayoutCacheWidget.restoreFromLayout
-    def restoreFromLayout(self, layout=None):
+    def restoreFromLayout(self, layout:Dict=None) -> None:
         if layout is None:
             layout = FALLBACK_LAYOUT
         #@+<< initialize data structures >>
@@ -525,7 +550,7 @@ class LayoutCacheWidget(QWidget):
         # If a splitter name is not known or does not exist, create one
         # and add it to self.created_splitter_dict.
         for _, name in SPLITTERS.items():
-            splitter = self.find_splitter_by_name(name)
+            splitter:QW = self.find_splitter_by_name(name)
             if splitter is None:
                 splitter = QtWidgets.QSplitter(self)
                 splitter.setObjectName(name)
@@ -612,7 +637,7 @@ class LayoutCacheWidget(QWidget):
         #@+<< resize splitters >>
         #@+node:tom.20240923194438.12: *4* << resize splitters >>
         for splt in SPLITTER_DICT.values():
-            g.app.gui.equalize_splitter(splt)
+            g.app.gui.equalize_splitter(splt)  # type: ignore[attr-defined]
         #@-<< resize splitters >>
         editor.show()
     #@-others
