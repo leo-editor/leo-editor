@@ -476,7 +476,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         self.setObjectName('leo-layout-cache')
 
         # maps splitter objectNames to their splitter object.
-        self.created_splitter_dict: Dict[str, Any] = {}
+        self.created_splitter_dict: Dict[str, QW] = {}
         self.layout_registry = LAYOUT_REGISTRY
 
     #@+others
