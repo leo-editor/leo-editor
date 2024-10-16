@@ -48,7 +48,7 @@ def is_module_loaded(module_name):
     controller = g.app.pluginsController
     return controller.isLoaded(module_name)
 #@+node:tom.20241015161609.1: *3* decorator:  register_layout
-def register_layout(name):
+def register_layout(name:str) -> None:
     def decorator(func):
         # Register the function's name and docstring in the dictionary
         LAYOUT_REGISTRY[name] = func.__doc__
@@ -209,7 +209,18 @@ def render_focused(event: LeoKeyEvent) -> None:
 @g.command('layout-restore-default')
 @register_layout('layout-restore-default')
 def restoreDefaultLayout(event: LeoKeyEvent) -> None:
-    """Restore the default layout specified in @settings, if known."""
+    """Restore the default layout specified in @settings, if known.
+    
+    If the layout name:
+        
+        - starts with 'layout-', it is used as the name of the 
+          layout command;
+        - does not start with 'layout-', then that prefix is added
+          and the result is used as the name of the layout command.
+
+    If the resulting command is not known, then the FALLBACK_LAYOUT
+    is applied.
+    """
     c = event.get('c')
     if not c:
         return
@@ -240,6 +251,9 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
 @register_layout('layout-swap-log-panel')
 def swapLogPanel(event: LeoKeyEvent) -> None:
     """Move Log frame between main and secondary splitters.
+
+    This command does not actually create a layout of its own.  It
+    should not be used as the default layout.
 
     If the Log frame is contained in a different splitter, possibly with
     some other widget, the entire splitter will be swapped between the main
