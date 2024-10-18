@@ -303,6 +303,8 @@ dependencies = [
   "black",           # For unit tests.
   "docutils",        # For Sphinx and rST plugins.
   "flexx",           # leoflexx.py plugin.
+  "ipython",         # For IPython bridge.
+  "ipykernel",       # For IPython bridge.
   "jedi",            # For autocompletion.
   "markdown",        # VR3 plugin.
   "matplotlib",      # VR3 plugin.
