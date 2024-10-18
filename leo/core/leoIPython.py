@@ -36,6 +36,7 @@ try:
 except ImportError:
     connect_qtconsole = None
     import_fail('connect_qtconsole')
+    print('pip install ipykernel')
 try:
     from ipykernel.kernelapp import IPKernelApp
 except ImportError:
