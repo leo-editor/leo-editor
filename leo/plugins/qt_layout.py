@@ -135,8 +135,6 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
     c = event.get('c')
     dw = c.frame.top
     cache = dw.layout_cache
-    import leo.plugins.viewrendered3 as v3
-    v3.getVr3({'c': c})
     cache.restoreFromLayout(HORIZONTAL_THIRDS_LAYOUT)
 #@+node:ekr.20241008175234.1: *3* command: 'layout-legacy'
 @g.command('layout-legacy')
@@ -152,16 +150,6 @@ def layout_legacy(event: LeoKeyEvent) -> None:
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(LEGACY_LAYOUT)
-
-    # Find or create VR widget
-    vr = cache.find_widget('viewrendered_pane')
-    if not vr:
-        import leo.plugins.viewrendered as v
-        vr = v.getVr(c=c)
-
-    bvs = cache.find_widget('body-vr-splitter')
-    bvs.addWidget(vr)
-    c.doCommandByName('vr-show')
 #@+node:ekr.20241008180407.1: *3* command: 'layout-quadrant'
 @g.command('layout-quadrant')
 def quadrants(event: LeoKeyEvent) -> None:
@@ -475,13 +463,12 @@ class LayoutCacheWidget(QWidget):
             layout = FALLBACK_LAYOUT
         #@+<< initialize data structures >>
         #@+node:tom.20240923194438.7: *4* << initialize data structures >>
-        # SPLITTERS = layout['SPLITTERS']
         ORIENTATIONS = layout['ORIENTATIONS']
 
         has_vr3 = is_module_loaded(VR3_MODULE_NAME)
         if (vr3 := self.find_widget('viewrendered3_pane')) is None:
-                import leo.plugins.viewrendered3 as vr3_mod
-                vr3 = vr3_mod.getVr3({'c': self.c})
+            import leo.plugins.viewrendered3 as vr3_mod
+            vr3 = vr3_mod.getVr3({'c': self.c})
         vr3.setParent(self)
 
         # A layout might want to use VR3 if itis present, else VR.
