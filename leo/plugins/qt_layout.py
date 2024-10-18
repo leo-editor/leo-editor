@@ -63,7 +63,6 @@ def big_tree(event: LeoKeyEvent) -> None:
 
     has_vr3 = is_module_loaded(VR3_MODULE_NAME)
 
-
     ms = cache.find_widget('main_splitter')
     ss = cache.find_widget('secondary_splitter')
     of = cache.find_widget('outlineFrame')
@@ -72,6 +71,10 @@ def big_tree(event: LeoKeyEvent) -> None:
 
     if has_vr3:
         vr = cache.find_widget('viewrendered3_pane')
+        if vr is None:
+            import leo.plugins.viewrendered3 as vr3_mod
+            h = c.hash()
+            vr3_mod.controllers[h] = vr = vr3_mod.ViewRenderedController3(c)
     else:
         vr = cache.find_widget('viewrendered_pane')
 
@@ -191,6 +194,7 @@ def render_focused(event: LeoKeyEvent) -> None:
     cache.restoreFromLayout(RENDERED_FOCUSED_LAYOUT)
 #@+node:tom.20240930101515.1: *3* command: 'layout-restore-default'
 @g.command('layout-restore-default')
+@g.command('layout-restore-to-setting')
 def restoreDefaultLayout(event: LeoKeyEvent) -> None:
     """Restore the default layout specified in @settings, if known."""
     c = event.get('c')
@@ -214,7 +218,6 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
             found_layout = True
         else:
             g.es(f'Cannot find command {layout} or {default_layout}')
-
     if found_layout:
         c.commandsDict[layout](event)
 
@@ -226,7 +229,7 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
     If the Log frame is contained in a different splitter, possibly with
     some other widget, the entire splitter will be swapped between the main
     and secondary splitters.
-   
+
     The effect of this command depends on the existing layout. For example,
     if the legacy layout is in effect, this command changes the layout
     from:
@@ -415,7 +418,7 @@ VERTICAL_THIRDS_LAYOUT = {
 class LayoutCacheWidget(QWidget):
     """
     Manage layout such as the following:
-        
+
         FALLBACK_LAYOUT = {
             'SPLITTERS':OrderedDict(
                 (('outlineFrame', 'secondary_splitter'),
@@ -476,6 +479,11 @@ class LayoutCacheWidget(QWidget):
         ORIENTATIONS = layout['ORIENTATIONS']
 
         has_vr3 = is_module_loaded(VR3_MODULE_NAME)
+        if (vr3 := self.find_widget('viewrendered3_pane')) is None:
+                import leo.plugins.viewrendered3 as vr3_mod
+                vr3 = vr3_mod.getVr3({'c': self.c})
+        vr3.setParent(self)
+
         # A layout might want to use VR3 if itis present, else VR.
         # This is indicated by using the name VRX_PLACEHOLDER_NAME in the layout.
         # In building the SPLITTER dict we replace the placeholder
@@ -499,11 +507,9 @@ class LayoutCacheWidget(QWidget):
         SPLITTER_DICT: Dict[str, Any] = OrderedDict()
         for name in ORIENTATIONS:
             splitter = self.find_splitter_by_name(name)
-            # Redundant, already checked in self.find_splitter_by_name()
-            # if splitter is None:
-                # splitter = self.created_splitter_dict[name]
             if splitter is not None and SPLITTER_DICT.get(name, None) is None:
                 SPLITTER_DICT[name] = splitter
+
         #@-<< initialize data structures >>
         #@+<< rehome body editor >>
         #@+node:tom.20240923194438.8: *4* << rehome body editor >>

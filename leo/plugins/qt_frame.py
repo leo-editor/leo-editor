@@ -35,6 +35,7 @@ from leo.plugins.mod_scripting import build_rclick_tree
 
 from leo.plugins.qt_layout import LayoutCacheWidget
 
+from leo.core.leoQt import QtCore
 #@-<< qt_frame imports >>
 #@+<< qt_frame annotations >>
 #@+node:ekr.20220415080427.1: ** << qt_frame annotations >>
@@ -139,6 +140,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
         self.layout_cache = LayoutCacheWidget(c, self)
         self.reloadSettings()
+
+        # Delay until DW initialization has ended and c.commandsDict
+        # has been populated
+        def run_layout():
+            c.doCommandByName('layout-restore-to-setting')
+        QtCore.QTimer.singleShot(300, run_layout )
     #@+node:ekr.20240726074809.1: *4* dw.recreateMainWindow
     def recreateMainWindow(self):
         """
@@ -201,33 +208,48 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """
         c = self.leo_c
         layout_name = self.layout_name
-
-        # Keys are layout names, converted to canonical format.
-        layout_dict = {
-            'big-tree': self.create_big_tree_layout,
-            'horizontal-thirds': self.create_horizontal_thirds_layout,
-            'legacy': self.create_legacy_layout,
-            'render-focused': self.create_render_focused_layout,
-            'vertical-thirds': self.create_vertical_thirds_layout,
-            'vertical-thirds2': self.create_vertical_thirds2_layout,
-        }
-
-        # Allow plugins to define layouts.
-        g.doHook("after-create-layout-dict", c=c, dw=self, layout_dict=layout_dict)
-
-        if layout_name not in layout_dict:
-            g.es_print('Unknown layout name:', layout_name)
-            g.es_print(f"Valid names: {list(layout_dict.keys())}")
-            return self.create_legacy_layout()
-        try:
-            f = layout_dict.get(layout_name)
-            return f()
-        except Exception as e:
-            g.es_print(f"Exception executing {f.__name__}", color='red')
-            g.es_print(e)
-            g.es_exception()
-            g.es_print('Using legacy layout')
-            return self.create_legacy_layout()
+    #@+at
+    #     # Keys are layout names, converted to canonical format.
+    #     layout_dict = {
+    #         'big-tree': self.create_big_tree_layout,
+    #         'horizontal-thirds': self.create_horizontal_thirds_layout,
+    #         'legacy': self.create_legacy_layout,
+    #         'render-focused': self.create_render_focused_layout,
+    #         'vertical-thirds': self.create_vertical_thirds_layout,
+    #         'vertical-thirds2': self.create_vertical_thirds2_layout,
+    #     }
+    #
+    #     # Allow plugins to define layouts.
+    #     g.doHook("after-create-layout-dict", c=c, dw=self, layout_dict=layout_dict)
+    #
+    #     if layout_name not in layout_dict:
+    #         g.es_print('Unknown layout name:', layout_name)
+    #         g.es_print(f"Valid names: {list(layout_dict.keys())}")
+    #         return self.create_legacy_layout()
+    #     try:
+    #         f = layout_dict.get(layout_name)
+    #         return f()
+    #     except Exception as e:
+    #         g.es_print(f"Exception executing {f.__name__}", color='red')
+    #         g.es_print(e)
+    #         g.es_exception()
+    #         g.es_print('Using legacy layout')
+    #         return self.create_legacy_layout()
+    #@@c
+        import leo.plugins.viewrendered as vrm
+        cache = self.layout_cache
+        ms, ss = self.createMainLayout(self.centralwidget)
+        self.createBodyPane(cache)
+        self.createOutlinePane(ss)
+        self.createLogPane(ss)
+        # self.vr_parent_frame = ms
+        vr = vrm.getVr(c=c, parent=ms)
+        # cmd = g.global_commands_dict.get('layout-restore-default')
+        # for cmd in g.global_commands_dict:
+            # if cmd.startswith('layout-'):
+                # c.commandsDict[cmd] = g.global_commands_dict[cmd]
+        # c.doCommandByName('layout-restore-default')
+        return ms, ss
     #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
     def create_big_tree_layout(self) -> tuple[QWidget, QWidget]:
         """
