@@ -306,23 +306,6 @@ HORIZONTAL_THIRDS_LAYOUT = {
         'main_splitter': Orientation.Vertical
     }
 }
-#@+node:tom.20240928195823.1: *3* LEGACY_LAYOUT
-# Recreate the layout called "legacy" in the Dynamic Window code.
-LEGACY_LAYOUT = {
-    'SPLITTERS': OrderedDict(
-            (('outlineFrame', 'secondary_splitter'),
-            ('logFrame', 'secondary_splitter'),
-            ('bodyFrame', 'body-vr-splitter'),
-            ('viewrenderedx_pane', 'body-vr-splitter'),
-            ('secondary_splitter', 'main_splitter'),
-            ('body-vr-splitter', 'main_splitter'))
-        ),
-    'ORIENTATIONS': {
-        'body-vr-splitter': Orientation.Horizontal,
-        'secondary_splitter': Orientation.Horizontal,
-        'main_splitter': Orientation.Vertical
-    }
-}
 #@+node:tom.20240930164155.1: *3* QUADRANT_LAYOUT
 QUADRANT_LAYOUT = {
     'SPLITTERS': OrderedDict(
