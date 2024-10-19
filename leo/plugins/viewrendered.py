@@ -334,7 +334,7 @@ def init() -> bool:
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
 #@+node:ekr.20240727091022.1: *3* vr function: getVR
-def getVr(*, c: Any = None, event: Any = None) -> Optional[QtWidgets.QWidget]:
+def getVr(*, c: Any = None, event: Any = None, parent: QtWidgets.QWidget = None) -> Optional[QtWidgets.QWidget]:
     """Return the ViewRenderedController instance or None."""
     if g.app.gui.guiName() != 'qt':
         return None
@@ -353,8 +353,11 @@ def getVr(*, c: Any = None, event: Any = None) -> Optional[QtWidgets.QWidget]:
     if not vr:
         vr = ViewRenderedController(c)
         c.vr = vr
-        dw = c.frame.top
-        dw.insert_vr_frame(vr)
+        if parent:
+            vr.setParent(parent)
+        else:
+            dw = c.frame.top
+            dw.insert_vr_frame(vr)
     return vr
 #@+node:ekr.20110317024548.14376: *3* vr function: onCreate
 def onCreate(tag: str, keys: dict) -> None:
