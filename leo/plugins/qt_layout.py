@@ -441,7 +441,7 @@ class LayoutCacheWidget(QWidget):
             vr3 = vr3_mod.getVr3({'c': self.c})
         vr3.setParent(self)
 
-        # A layout might want to use VR3 if itis present, else VR.
+        # A layout might want to use VR3 if it is present, else VR.
         # This is indicated by using the name VRX_PLACEHOLDER_NAME in the layout.
         # In building the SPLITTER dict we replace the placeholder
         # by VR3_OBJ_NAME if it exists, otherwise VR_OBJ_NAME.
