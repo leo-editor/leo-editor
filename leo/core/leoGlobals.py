@@ -2238,7 +2238,7 @@ def pause(s: str) -> None:
 #@+node:ekr.20041105091148: *4* g.pdb
 def pdb(message: str = '') -> None:
     """Fall into pdb."""
-    if app and not app.useIpython:
+    if g.app:
         try:
             from leo.core.leoQt import QtCore
             QtCore.pyqtRemoveInputHook()

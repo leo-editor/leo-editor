@@ -32,7 +32,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoConfig import GlobalConfigManager
     from leo.core.leoExternalFiles import ExternalFilesController
     from leo.core.leoGui import LeoKeyEvent, LeoFrame, LeoGui
-    from leo.core.leoIPython import InternalIPKernel
     from leo.core.leoNodes import NodeIndices, Position
     from leo.core.leoPlugins import LeoPluginsController
     from leo.core.leoSessions import SessionManager
@@ -137,7 +136,6 @@ class LeoApp:
         self.trace_binding: Optional[str] = None  # The name of a binding to trace, or None.
         self.trace_setting: Optional[str] = None  # The name of a setting to trace, or None.
         self.translateToUpperCase = False  # Never set to True.
-        self.useIpython = False  # True: add support for IPython.
         self.use_splash_screen = True  # True: put up a splash screen.
         self.write_black_sentinels = False  # True: write a space before '@' in sentinel lines.
         #@-<< LeoApp: command-line arguments >>
@@ -195,7 +193,6 @@ class LeoApp:
         self.externalFilesController: ExternalFilesController = None
         self.global_cacher: Union[dict, GlobalCacher] = None
         self.idleTimeManager: IdleTimeManager = None
-        self.ipk: InternalIPKernel = None  # A python kernel.
         self.loadManager: LoadManager = None
         self.nodeIndices: NodeIndices = None
         self.pluginsController: LeoPluginsController = None
@@ -1316,8 +1313,6 @@ class LeoApp:
             if g.app.global_cacher:  # #1766.
                 if isinstance(g.app.global_cacher, GlobalCacher):
                     g.app.global_cacher.commit_and_close()
-        if g.app.ipk:
-            g.app.ipk.cleanup_consoles()
         g.app.destroyAllOpenWithFiles()
 
         # Disable all further hooks and events.
@@ -2617,12 +2612,7 @@ class LoadManager:
         from leo.core import leoNodes
         from leo.core import leoPlugins
         from leo.core import leoSessions
-        # Import leoIPython only if requested.  The import is quite slow.
         self.setStdStreams()
-        if g.app.useIpython:
-            # This launches the IPython Qt Console.  It *is* required.
-            from leo.core import leoIPython
-            assert leoIPython  # suppress pyflakes/flake8 warning.
         # Make sure we call the new leoPlugins.init top-level function.
         leoPlugins.init()
         # Force the user to set g.app.leoID.
@@ -2677,7 +2667,6 @@ class LoadManager:
           --diff                use Leo as an external git diff
           --fail-fast           stop unit tests after the first failure
           --fullscreen          start fullscreen
-          --ipython             enable ipython support
           --gui=GUI             specify gui: browser,console,curses,qt,text,null
           --listen-to-log       start log_listener.py on startup
           --maximized           start maximized
@@ -2762,9 +2751,6 @@ class LoadManager:
             def _listen_to_log() -> None:
                 g.app.listen_to_log_flag = True
 
-            def _ipython() -> None:
-                g.app.useIpython = True
-
             def _maximized() -> None:
                 g.app.start_maximized = True
 
@@ -2795,7 +2781,6 @@ class LoadManager:
                 '--fail-fast': _fail_fast,
                 '--fullscreen': _full_screen,
                 '--listen-to-log': _listen_to_log,
-                '--ipython': _ipython,
                 '--maximized': _maximized,
                 '--minimized': _minimized,
                 '--no-plugins': _no_plugins,
@@ -2880,6 +2865,7 @@ class LoadManager:
             '--dock', '--global-docks', '--init-docks', '--no-dock', '--use-docks',
             '--load-type', '--load-type=@edit', '--load-type=@file',
             '--no-cache',
+            '--ipython',
             '--session-restore', '--session-save',
         ]
         usage = defineUsage()

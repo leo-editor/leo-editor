@@ -488,6 +488,17 @@
 <v t="ekr.20240919055407.1"><vh>set-reference-file</vh></v>
 <v t="ekr.20180130094948.1"><vh>Operations on reference .leo files</vh></v>
 <v t="ekr.20150415111549.1"><vh>How can I customize the clone-find-all commands?</vh></v>
+<v t="ekr.20080203101507"><vh>ILeo - the IPython bridge</vh>
+<v t="ekr.20080203101507.1"><vh>@@@rst html\IPythonBridge.html</vh>
+<v t="vivainio.20080302174639.1"><vh>Overview</vh></v>
+<v t="vivainio.20080302174639.2"><vh>Starting ILeo</vh></v>
+<v t="ekr.20131001045038.18981"><vh>Running Leo scripts from IPython</vh></v>
+<v t="ekr.20131001045038.18980"><vh>Running IPython scripts from Leo</vh></v>
+<v t="ekr.20131001045038.18979"><vh>ILeo as an IPython notebook</vh></v>
+<v t="ekr.20131001100236.15927"><vh>ILeo and the valuespace plugin</vh></v>
+<v t="ekr.20131001045038.17448"><vh>Acknowledgements and history</vh></v>
+</v>
+</v>
 </v>
 </v>
 <v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
@@ -1270,17 +1281,6 @@
 <v t="TL.20080804095315.8"><vh>Commands not supported</vh></v>
 <v t="TL.20080804095315.9"><vh>Avoiding changes to 'tag' files</vh></v>
 </v>
-</v>
-</v>
-<v t="ekr.20080203101507"><vh>ILeo - the IPython bridge</vh>
-<v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
-<v t="vivainio.20080302174639.1"><vh>Overview</vh></v>
-<v t="vivainio.20080302174639.2"><vh>Starting ILeo</vh></v>
-<v t="ekr.20131001045038.18981"><vh>Running Leo scripts from IPython</vh></v>
-<v t="ekr.20131001045038.18980"><vh>Running IPython scripts from Leo</vh></v>
-<v t="ekr.20131001045038.18979"><vh>ILeo as an IPython notebook</vh></v>
-<v t="ekr.20131001100236.15927"><vh>ILeo and the valuespace plugin</vh></v>
-<v t="ekr.20131001045038.17448"><vh>Acknowledgements and history</vh></v>
 </v>
 </v>
 <v t="ekr.20070317033759"><vh>Embedding Leo with the leoBridge module</vh>
@@ -14589,9 +14589,7 @@ Leo and Other Programs
    emacs
    vimBindings
    leoBridge
-   IPythonBridge
    leoserver
-
 </t>
 <t tx="ekr.20131008041326.16140">###########
 Running Leo
@@ -33007,6 +33005,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - PR #4033: Add four new layouts and related code and commands.
 - PR #4068: Optionally run pylint when saving changed files.
 - PR #4071: Optionally run Leo's beautifier when saving changed files.
+- PR #4113: Retire Leo's IPython. It hasn't worked in years.
 - The usual assortment of small bug fixes and code cleanups.
 
 **Links**
@@ -33030,12 +33029,14 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #4047`: https://github.com/leo-editor/leo-editor/pull/4047
 .. _`PR #4068`: https://github.com/leo-editor/leo-editor/pull/4068
 .. _`PR #4071`: https://github.com/leo-editor/leo-editor/pull/4071
+.. _`PR #4113`: https://github.com/leo-editor/leo-editor/pull/4113
 
 - `PR #4033`_: Add four new layouts and related code and commands.
 - `PR #4038`_: Add reload-outline command.
 - `PR #4047`_: Delete add-editor command and all related code.
 - `PR #4068`_: Optionally run pylint when saving changed files.
 - `PR #4071`_: Optionally run Leo's beautifier when saving changed files.
+- `PR #4113`_: Retire Leo's IPython. It hasn't worked in years.
 </t>
 <t tx="ekr.20240919055407.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
