@@ -187,7 +187,6 @@
 <v t="ekr.20031218072017.3093"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
-<v t="ekr.20120401063816.10072"><vh>@file leoIPython.py</vh></v>
 <v t="ekr.20190515070742.1"><vh>@file leoMarkup.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
 <v t="ekr.20140821055201.18331"><vh>@file leoPersistence.py</vh></v>
@@ -615,18 +614,8 @@
 </v>
 </v>
 <v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
-<v t="ekr.20171031111403.1"><vh>Leo Edit Pane</vh>
-<v t="tbrown.20171028115144.8"><vh>@file ../plugins/editpane/__init__.py</vh></v>
-<v t="tbrown.20171029210211.1"><vh>@file ../plugins/editpane/clicky_splitter.py</vh></v>
-<v t="ekr.20211210102459.1"><vh>@file ../plugins/editpane/csvedit.py</vh></v>
-<v t="tbrown.20171028115144.6"><vh>@file ../plugins/editpane/editpane.py</vh></v>
-<v t="tbrown.20171028115144.5"><vh>@file ../plugins/editpane/leotextedit.py</vh></v>
-<v t="tbrown.20171028115144.4"><vh>@file ../plugins/editpane/markdownview.py</vh></v>
-<v t="tbrown.20171028115144.2"><vh>@file ../plugins/editpane/plaintextedit.py</vh></v>
-<v t="tbrown.20171028115144.1"><vh>@file ../plugins/editpane/plaintextview.py</vh></v>
-<v t="tbrown.20171028115143.3"><vh>@file ../plugins/editpane/vanillascintilla.py</vh></v>
-<v t="tbrown.20171028115541.1"><vh>@file signal_manager.py</vh></v>
-</v>
+<v t="ekr.20161223152017.1"><vh>@edit ../plugins/qt_quicksearch.py</vh></v>
+<v t="ekr.20161223152353.1"><vh>@edit ../plugins/qt_quicksearch_sub.py</vh></v>
 <v t="ekr.20120419093256.10048"><vh>@file ../plugins/free_layout.py</vh></v>
 <v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
 <v t="ekr.20221019064053.1"><vh>@file ../plugins/pane_commands.py</vh></v>
@@ -640,8 +629,18 @@
 <v t="ekr.20140831085423.18598"><vh>@file ../plugins/qt_text.py</vh></v>
 <v t="ekr.20140907131341.18707"><vh>@file ../plugins/qt_tree.py</vh></v>
 <v t="ekr.20110605121601.18002"><vh>@file ../plugins/qtGui.py</vh></v>
-<v t="ekr.20161223152017.1"><vh>@edit ../plugins/qt_quicksearch.py</vh></v>
-<v t="ekr.20161223152353.1"><vh>@edit ../plugins/qt_quicksearch_sub.py</vh></v>
+<v t="ekr.20171031111403.1"><vh>Leo Edit Pane</vh>
+<v t="tbrown.20171028115144.8"><vh>@file ../plugins/editpane/__init__.py</vh></v>
+<v t="tbrown.20171029210211.1"><vh>@file ../plugins/editpane/clicky_splitter.py</vh></v>
+<v t="ekr.20211210102459.1"><vh>@file ../plugins/editpane/csvedit.py</vh></v>
+<v t="tbrown.20171028115144.6"><vh>@file ../plugins/editpane/editpane.py</vh></v>
+<v t="tbrown.20171028115144.5"><vh>@file ../plugins/editpane/leotextedit.py</vh></v>
+<v t="tbrown.20171028115144.4"><vh>@file ../plugins/editpane/markdownview.py</vh></v>
+<v t="tbrown.20171028115144.2"><vh>@file ../plugins/editpane/plaintextedit.py</vh></v>
+<v t="tbrown.20171028115144.1"><vh>@file ../plugins/editpane/plaintextview.py</vh></v>
+<v t="tbrown.20171028115143.3"><vh>@file ../plugins/editpane/vanillascintilla.py</vh></v>
+<v t="tbrown.20171028115541.1"><vh>@file signal_manager.py</vh></v>
+</v>
 </v>
 <v t="ekr.20221204070905.1"><vh>Script files</vh>
 <v t="ekr.20240321122705.1"><vh>--- build scripts</vh>
@@ -3548,8 +3547,6 @@ for command in (
 <t tx="ekr.20240608035218.1"># Last one wins.
 kind = 'beautify'
 kind = 'test'  # Run unit test.
-kind = 'check-one'  # Run check_leo.py on one file
-kind = 'check-all'  # Run check_leo.py on all files
 </t>
 <t tx="ekr.20240609044830.1"></t>
 <t tx="ekr.20240707233742.1">"""
