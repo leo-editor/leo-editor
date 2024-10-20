@@ -180,14 +180,6 @@ def onCreate(tag, key):
 #@+node:ville.20110403115003.10355: ** Commands
 #@+node:ville.20130127115643.3695: *3* get_vs
 def get_vs(c):
-    """deal with singleton "ipython" controller"""
-    if g.app.ipk:
-        vsc = controllers.get('ipython')
-        if not vsc:
-            controllers['ipython'] = vsc = ValueSpaceController(c=None,
-                ns=g.app.ipk.namespace)
-        vsc.set_c(c)
-        return vsc
     return controllers[c.hash()]
 #@+node:ekr.20180328055151.1: *3* Ville's original commands
 #@+node:ville.20110407210441.5691: *4* vs-create-tree
@@ -275,14 +267,9 @@ class ValueSpaceController:
         c.bodyWantsFocus()
     #@+node:ekr.20110408065137.14225: *3* reset
     def reset(self):
-
         """The vs-reset command."""
-
-        # do not allow resetting the dict if using ipython
-        if not g.app.ipk:
-            self.d = {}
-            self.c.vs = self.d
-
+        self.d = {}
+        self.c.vs = self.d
         self.init_ns(self.d)
 
     #@+node:ville.20110409221110.5755: *3* init_ns

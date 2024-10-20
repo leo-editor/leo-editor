@@ -35,7 +35,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoFileCommands import FileCommands
     from leo.core.leoFind import LeoFind
     from leo.core.leoImport import LeoImportCommands
-    from leo.core.leoIPython import InternalIPKernel
     from leo.core.leoKeys import KeyHandlerClass
     from leo.core.leoHistory import NodeHistory
     from leo.core.leoPersistence import PersistenceDataController
@@ -116,7 +115,6 @@ class Commands:
         self.config: LocalConfigManager = None
         self.idle_focus_count = 0
         self.last_unusual_focus = 0
-        self.ipythonController: InternalIPKernel = None  # Set only by the ipython plugin.
         # Declare subcommanders (and one alias) (created later).
         self.atFileCommands: AtFile = None
         self.chapterController: ChapterController = None

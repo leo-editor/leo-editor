@@ -32,7 +32,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoConfig import GlobalConfigManager
     from leo.core.leoExternalFiles import ExternalFilesController
     from leo.core.leoGui import LeoKeyEvent, LeoFrame, LeoGui
-    from leo.core.leoIPython import InternalIPKernel
     from leo.core.leoNodes import NodeIndices, Position
     from leo.core.leoPlugins import LeoPluginsController
     from leo.core.leoSessions import SessionManager
@@ -194,7 +193,6 @@ class LeoApp:
         self.externalFilesController: ExternalFilesController = None
         self.global_cacher: Union[dict, GlobalCacher] = None
         self.idleTimeManager: IdleTimeManager = None
-        self.ipk: InternalIPKernel = None  # A python kernel.
         self.loadManager: LoadManager = None
         self.nodeIndices: NodeIndices = None
         self.pluginsController: LeoPluginsController = None
@@ -1315,8 +1313,6 @@ class LeoApp:
             if g.app.global_cacher:  # #1766.
                 if isinstance(g.app.global_cacher, GlobalCacher):
                     g.app.global_cacher.commit_and_close()
-        if g.app.ipk:
-            g.app.ipk.cleanup_consoles()
         g.app.destroyAllOpenWithFiles()
 
         # Disable all further hooks and events.
@@ -2616,7 +2612,6 @@ class LoadManager:
         from leo.core import leoNodes
         from leo.core import leoPlugins
         from leo.core import leoSessions
-        # Import leoIPython only if requested.  The import is quite slow.
         self.setStdStreams()
         # Make sure we call the new leoPlugins.init top-level function.
         leoPlugins.init()
