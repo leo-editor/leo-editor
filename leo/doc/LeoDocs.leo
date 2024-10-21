@@ -1032,7 +1032,6 @@
 <v t="ekr.20101113063552.9438"><vh>trace_tags.py</vh></v>
 </v>
 <v t="ekr.20101113063552.9439"><vh>External programs</vh>
-<v t="ekr.20101113063552.9440"><vh>ipython.py</vh></v>
 <v t="ekr.20101113063552.9442"><vh>open_shell.py</vh></v>
 <v t="ekr.20101113063552.9443"><vh>tomboy_import.py</vh></v>
 <v t="ekr.20101113063552.9444"><vh>vim.py</vh></v>
@@ -9766,14 +9765,6 @@ Pudb is a full-screen Python debugger: http://pypi.python.org/pypi/pudb
 
 </t>
 <t tx="ekr.20101113063552.9439"></t>
-<t tx="ekr.20101113063552.9440">Creates a two-way communication (bridge) between Leo scripts and IPython running in the console from which Leo was launched.
-
-Using this bridge, scripts running in Leo can affect IPython, and vice versa. In particular, scripts running in IPython can alter Leo outlines!
-
-.. _`IPython Bridge Guide`: IPythonBridge.html
-
-For full details, see the `IPython Bridge Guide`.
-</t>
 <t tx="ekr.20101113063552.9442">Creates an 'Extensions' menu containing two commands: Open Console Window and Open Explorer.
 
 The Open Console Window command opens xterm on Linux. The Open Explorer command Opens a Windows explorer window.
@@ -14685,7 +14676,7 @@ or::
 
 You will get something like the following::
 
-    usage: launchLeo.py [-h] [-b] [--diff] [--fail-fast] [--fullscreen] [--ipython] [--gui GUI] [--listen-to-log]
+    usage: launchLeo.py [-h] [-b] [--diff] [--fail-fast] [--fullscreen] [--gui GUI] [--listen-to-log]
                         [--load-type TYPE] [--maximized] [--minimized] [--no-plugins] [--no-splash] [--quit]
                         [--screen-shot PATH] [--script PATH] [--script-window] [--select ID] [--silent] [--theme NAME]
                         [--trace TRACE-KEY] [--trace-binding KEY] [--trace-setting NAME] [--window-size SIZE]
@@ -14704,7 +14695,6 @@ You will get something like the following::
       --diff                use Leo as an external git diff
       --fail-fast           stop unit tests after the first failure
       --fullscreen          start fullscreen
-      --ipython             enable ipython support
       --gui GUI             gui to use (qt/console/null)
       --listen-to-log       start log_listener.py on startup
       --load-type TYPE      @&lt;file&gt; type for non-outlines
@@ -14713,6 +14703,7 @@ You will get something like the following::
       --no-plugins          disable all plugins
       --no-splash           disable the splash screen
       --quit                quit immediately after loading
+      --save-session        always save session data when Leo closes
       --screen-shot PATH    take a screen shot and then exit
       --script PATH         execute a script and then exit
       --script-window       execute script using default gui
@@ -14723,10 +14714,10 @@ You will get something like the following::
                             abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
                             importers, ipython, keys, layouts, plugins, save, select, sections,
                             shutdown, size, speed, startup, themes, undo, verbose, zoom
-      --trace-binding KEY   trace commands bound to a key
-      --trace-setting NAME  trace where named setting is set
-      --window-size SIZE    initial window size (height x width)
-      --window-spot SPOT    initial window position (top x left)
+      --trace-binding=KEY   trace commands bound to a key
+      --trace-setting=NAME  trace where named setting is set
+      --window-size=SIZE    initial window size (height x width)
+      --window-spot=SPOT    initial window position (top x left)
       -v, --version         print version number and exit
 
 **Important**
@@ -15782,8 +15773,8 @@ Leo is a fundamentally different way of using and organizing data, programs and 
 - A powerful scripting environment.
 - A tool for organizing and studying computer code.
 - Extensible via a simple plugin architecture.
-- A tool that plays well with  IPython, Vim and Emacs.
-- Written in 100% pure Python
+- A tool that plays well with Vim and Emacs.
+- Written in 100% pure Python.
 
 **Leo's unique features**
 
@@ -16306,31 +16297,34 @@ myDocument.html.txt is the **input** file for sphinx.
 
     Options:
       -h, --help            show this help message and exit
-      --debug               enable debug mode
       --diff                use Leo as an external git diff
-      --fullscreen          start fullscreen
-      --ipython             enable ipython support
       --fail-fast           stop unit tests after the first failure
+      --fullscreen          start fullscreen
       --gui=GUI             gui to use (qt/qttabs)
-      --load-type=LOAD_TYPE
-                            @&lt;file&gt; type for loading non-outlines from command
-                            line
+      --listen-to-log       start log_listener.py on startup
       --maximized           start maximized
       --minimized           start minimized
-      --no-cache            disable reading of cached files
       --no-plugins          disable all plugins
       --no-splash           disable the splash screen
-      --screen-shot=SCREENSHOT_FN
-                            take a screen shot and then exit
-      --script=SCRIPT       execute a script and then exit
-      --script-window=SCRIPT_WINDOW
-                            open a window for scripts
-      --select=SELECT       headline or gnx of node to select
+      --quit                quit immediately after loading
+      --save-session        always save session data when Leo closes
+      --script=PATH         execute a script and then exit
+      --script-window       execute script using default gui
+      --select=ID           headline or gnx of node to select
       --silent              disable all log messages
-      --trace-plugins       trace imports of plugins
+      --theme=NAME          use the named theme file
+      --trace=LIST          add one or more strings to g.app.debug
+
+            A comma-separated list. Valid values are:
+            abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx,
+            importers, keys, layouts, plugins, save, select, sections,
+            shutdown, size, speed, startup, themes, undo, verbose, zoom.
+
+      --trace-binding=KEY   trace commands bound to a key
+      --trace-setting=NAME  trace where named setting is set
+      --window-size=SIZE    initial window size (height x width)
+      --window-spot=SPOT    initial window position: (top x left)
       -v, --version         print version number and exit
-      --window-size=WINDOW_SIZE
-                            initial window size (height x width)
 </t>
 <t tx="ekr.20131028213522.17150"></t>
 <t tx="ekr.20131030082936.17514">s = p.b
@@ -19656,7 +19650,7 @@ Acknowledgements: Working with Leo's community of Leo's developers and users has
 
 A successful software tool is one that was used to do something undreamed of by its author.' -- Stephen Johnson
 
-Leo is a wild success on this score. I foresaw none of these developments 20 years ago:  Leo's minibuffer, @button, @auto, @clean, Leo's plugin architecture, the rst3 command, the Leo bridge and the IPython bridge.  Surely many other features and uses could be added. None of these would have happened without Leo's community of brilliant people. These features create the Leonine world.  Who knows what will be the result...
+Leo is a wild success on this score. I foresaw none of these developments 20 years ago:  Leo's minibuffer, @button, @auto, @clean, Leo's plugin architecture, the rst3 command and the Leo bridge.  Surely many other features and uses could be added. None of these would have happened without Leo's community of brilliant people. These features create the Leonine world. Who knows what will be the result...
 
 Edward K. Ream
 </t>
@@ -33182,12 +33176,12 @@ If you run into difficulties see https://asciidoc3.org/pypi.html#_asciidoc3_pip_
 
 - Document any new commands with a proper docstring. This allows the minibuffer command `help-for-command` to provide help for the command.
 
-- In ``leo/doc/sphinx-docs/sphinxDocs.leo``, to the node ``@file leo.plugins.rst``, add the following snippet (preferably in alphabetical order), with the name of the plugin modified to the name of your plugin (here `ipython`). This allows the API docs to be automatically updated::
+- In ``leo/doc/sphinx-docs/sphinxDocs.leo``, to the node ``@file leo.plugins.rst``, add the following snippet (preferably in alphabetical order), with the name of the plugin modified to the name of your plugin (here `xxx`). This allows the API docs to be automatically updated::
 
-    :mod:`ipython` Module
+    :mod:`xxx` Module
     ---------------------
 
-    .. automodule:: leo.plugins.ipython
+    .. automodule:: leo.plugins.xxx
         :members:
         :undoc-members:
         :show-inheritance:
