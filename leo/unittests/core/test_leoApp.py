@@ -88,7 +88,7 @@ class TestApp(LeoUnitTest):
             '--fail-fast',
             '--fullscreen',
             '--gui=console', '--gui=curses', '--gui=null', '--gui=qt', '--gui=text',
-            '--ipython',
+            '--ipython',  # Obsolete, but does not cause a crash.
             '--listen-to-log',
             '--maximized', '--minimized',
             '--no-plugins', '--no-splash',
