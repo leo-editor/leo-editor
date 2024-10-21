@@ -1370,7 +1370,6 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             # This can be alarming when using Python's -i option.
             sys.exit(self.qtApp.exec())
-    #@+node:ekr.20110605121601.18483: *3* LeoQtGui.runMainLoop & runWithIpythonKernel
     #@+node:ekr.20180117053546.1: *3* LeoQtGui.show_tips & helpers
     @g.command('show-tips')
     def show_next_tip(self, event: LeoKeyEvent = None) -> None:
