@@ -6,7 +6,6 @@
 from __future__ import annotations
 from collections.abc import Callable
 import re
-import string
 from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
@@ -106,8 +105,10 @@ class ChapterController:
             select_chapter_callback.__doc__ = "Select the main chapter"
         else:
             select_chapter_callback.__doc__ = "Select chapter \"" + chapterName + "\"."
+
+        # 4087: k.registerCommand no longer supports the 'shortcut' kwarg.
         for shortcut in bindings:
-            c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
+            c.k.registerCommand(commandName, select_chapter_callback)
     #@+node:ekr.20070604165126: *3* cc: chapter-select
     @cmd('chapter-select')
     def selectChapter(self, event: LeoKeyEvent = None) -> None:
@@ -277,14 +278,10 @@ class ChapterController:
     #@+node:ekr.20160414183716.1: *4* cc.sanitize
     def sanitize(self, s: str) -> str:
         """Convert s to a safe chapter name."""
-        # Similar to g.sanitize_filename, but simpler.
         result = []
         for ch in s.strip():
-            # pylint: disable=superfluous-parens
-            if ch in (string.ascii_letters + string.digits):
-                result.append(ch)
-            elif ch in ' \t':
-                result.append('-')
+            # #4066: convert *only* blanks and tabs to '-'.
+            result.append('-' if ch in ' \t' else ch)
         s = ''.join(result)
         s = s.replace('--', '-')
         return s[:128]
@@ -416,7 +413,6 @@ class Chapter:
             self.p = p = self.findPositionInChapter(self.p) or root.copy()
             # Careful: c.selectPosition would pop the hoist stack.
             w = self.findEditorInChapter(p)
-            c.frame.body.selectEditor(w)  # Switches text.
             self.p = p  # 2016/04/20: Apparently essential.
         if g.match_word(p.h, 0, '@chapter'):
             if p.hasChildren():
@@ -459,7 +455,7 @@ class Chapter:
     def findEditorInChapter(self, p: Position) -> Wrapper:
         """return w, an editor displaying position p."""
         chapter, c = self, self.c
-        w = c.frame.body.findEditorForChapter(chapter, p)
+        w = c.frame.body.wrapper
         if w:
             w.leo_chapter = chapter
             w.leo_p = p and p.copy()

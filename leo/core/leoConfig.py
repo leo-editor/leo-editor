@@ -1200,8 +1200,11 @@ class GlobalConfigManager:
 
         # List of info (command_p, script, rclicks) for common @buttons nodes.
         # where rclicks is a namedtuple('RClick', 'position,children')
-        self.atCommonButtonsList: list[tuple[Position, str, list[Callable]]] = []  # List of info for common @buttons nodes.
-        self.atCommonCommandsList: list[tuple[Position, str]] = []  # List of info for common @commands nodes.
+
+        # List of info for common @buttons nodes.
+        self.atCommonButtonsList: list[tuple[Position, str, list[Callable]]] = []
+        # List of info for common @commands nodes.
+        self.atCommonCommandsList: list[tuple[Position, str]] = []
         self.atLocalButtonsList: list[Position] = []  # List of positions of @button nodes.
         self.atLocalCommandsList: list[Position] = []  # List of positions of @command nodes.
         self.buttonsFileName = ''

@@ -901,7 +901,7 @@ def find_bound_paragraph(c: Cmdr) -> tuple[str, list[str], str]:
             head_lines.append(s)
     if started:
         head = ''.join(head_lines)
-        tail_lines = para_lines[i:] if ended else []
+        tail_lines = para_lines[i:] if ended else []  # pylint: disable=undefined-loop-variable
         tail = ''.join(tail_lines)
         return head, result, tail  # string, list, string
     return None, None, None

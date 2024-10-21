@@ -453,7 +453,7 @@ class ListDialog(QtWidgets.QDialog):  # type:ignore
     def writeBack(self, event=None):
 
         for n, i in enumerate(self.buttons):
-            self.entries[n][1] = (i.isChecked())
+            self.entries[n][1] = i.isChecked()
         self.accept()
     #@-others
 #@+node:tbrown.20091010211613.5257: ** class editWatcher
