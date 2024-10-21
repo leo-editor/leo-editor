@@ -125,7 +125,6 @@ class LeoApp:
         self.failFast = False  # True: Use the failfast option in unit tests.
         self.gui: LeoGui = None  # The gui class.
         self.guiArgName: str = None  # The gui name given in --gui option.
-        self.ipython_inited: bool = False  # True if leoIpython.py imports succeeded.
         self.isTheme = False  # True: load files as theme files (ignore myLeoSettings.leo).
         self.listen_to_log_flag = False  # True: execute listen-to-log command.
         self.loaded_session = False  # Set by startup logic to True if no files specified on the command line.
@@ -2561,9 +2560,8 @@ class LoadManager:
                 g.app.gui = None  # Enable g.app.createDefaultGui
                 g.app.createDefaultGui(__file__)
             else:
-                pass
-                # This can happen when launching Leo from IPython.
                 # This can also happen when leoID does not exist.
+                pass
         elif gui_option is None:
             if script and not windowFlag:
                 # Always use null gui for scripts.
@@ -2684,7 +2682,7 @@ class LoadManager:
 
                 A comma-separated list. Valid values are:
                 abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx,
-                importers, ipython, keys, layouts, plugins, save, select, sections,
+                importers, keys, layouts, plugins, save, select, sections,
                 shutdown, size, speed, startup, themes, undo, verbose, zoom.
 
           --trace-binding=KEY   trace commands bound to a key
@@ -2815,7 +2813,7 @@ class LoadManager:
             # --trace=option.
             valid = [
                 'abbrev', 'beauty', 'cache', 'coloring', 'drawing', 'events',
-                'focus', 'git', 'gnx', 'importers', 'ipython', 'keys',
+                'focus', 'git', 'gnx', 'importers', 'keys',
                 'layouts', 'plugins', 'save', 'select', 'sections', 'shutdown',
                 'size', 'speed', 'startup', 'themes', 'undo', 'verbose', 'zoom',
             ]
