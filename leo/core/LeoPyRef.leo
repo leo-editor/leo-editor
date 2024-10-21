@@ -277,7 +277,6 @@
 <v t="ekr.20160317054700.1"><vh>@file ../external/make_stub_files.py</vh></v>
 <v t="ekr.20180628055640.1"><vh>@file ../external/pdb_listener.py</vh></v>
 <v t="ekr.20160316091132.1"><vh>@file ../external/py2cs.py</vh></v>
-<v t="ekr.20220823195753.1"><vh>@file ../external/stringlist.py</vh></v>
 <v t="ekr.20170428085201.1"><vh>npyscreen</vh>
 <v t="ekr.20170428084207.3"><vh>@file ../external/npyscreen/apNPSApplication.py</vh></v>
 <v t="ekr.20170428084207.11"><vh>@file ../external/npyscreen/apNPSApplicationAdvanced.py</vh></v>
@@ -557,7 +556,6 @@
 <v t="ekr.20050306081349"><vh>Text formatting</vh>
 <v t="timo.20050213160555"><vh>@file ../plugins/bibtex.py</vh></v>
 <v t="ekr.20070119094733.1"><vh>@file ../plugins/dtest.py</vh></v>
-<v t="ville.20110409151021.5699"><vh>@file ../plugins/jinjarender.py</vh></v>
 <v t="danr7.20060902215215.1"><vh>@file ../plugins/leo_to_html.py</vh></v>
 <v t="tbrown.20130930160706.23451"><vh>@file ../plugins/markup_inline.py</vh></v>
 <v t="vitalije.20180804172140.1"><vh>@file ../plugins/md_docer.py</vh></v>
@@ -582,7 +580,6 @@
 <v t="ville.20090815203828.5235"><vh>@file ../plugins/spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file ../plugins/stickynotes.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file ../plugins/todo.py</vh></v>
-<v t="ville.20110403115003.10348"><vh>@file ../plugins/valuespace.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file ../plugins/viewrendered.py</vh></v>
 <v t="TomP.20191215195433.1"><vh>@file ../plugins/viewrendered3.py</vh></v>
 </v>
