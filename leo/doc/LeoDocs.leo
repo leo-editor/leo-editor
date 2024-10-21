@@ -1048,7 +1048,6 @@
 <v t="ekr.20101113063552.9454"><vh>expfolder.py</vh></v>
 <v t="ekr.20101113063552.9455"><vh>FileActions.py</vh></v>
 <v t="ekr.20101113063552.9456"><vh>geotag.py</vh></v>
-<v t="ekr.20170314091501.1"><vh>injarnder.py</vh></v>
 <v t="ekr.20101113063552.9457"><vh>leocursor.py</vh></v>
 <v t="ekr.20170314091526.1"><vh>leoOPML.py</vh></v>
 <v t="ekr.20101113063552.9458"><vh>mime.py</vh></v>
@@ -1122,7 +1121,6 @@
 <v t="ekr.20101113063552.9408"><vh>stickynotes.py</vh></v>
 <v t="ekr.20170314091127.1"><vh>systray.py</vh></v>
 <v t="ekr.20101113063552.9409"><vh>todo.py</vh></v>
-<v t="ekr.20131009100732.19040"><vh>valuespace.py</vh></v>
 <v t="ekr.20101113063552.9410"><vh>viewrendered.py</vh></v>
 <v t="ekr.20141105055521.7"><vh>viewrendered2.py</vh></v>
 <v t="ekr.20170314091206.1"><vh>wikiview.py</vh></v>
@@ -9083,8 +9081,6 @@ controller(c).run()
     puts the ``__init__`` method (ctor) into the body of the class node.
 ``interact.py``
     Adds buttons so Leo can interact with command line environments.
-``jinjarender.py``
-    Renders ``@jinja`` nodes.
 ``leofeeds.py``
     Reads from rss, atom or other sources.
 ``leo_interface.py``
@@ -9225,8 +9221,6 @@ controller(c).run()
     Traces keystrokes in the outline and body panes.
 ``trace_tags.py``
     Traces most common hooks, but not key, drag or idle hooks.
-``valuespace.py``
-    Supports outline-based calculations similar to spreadsheets.
 ``viewrendered.py``
     Creates a window for *live* rendering of rst, html, etc.
     This plugin uses docutils, http://docutils.sourceforge.net/,
@@ -15023,7 +15017,6 @@ It's even possible to define a context in which abbreviation scripts execute. Se
 .. _`mod_scripting.py`: plugins.html#mod-scripting-py
 .. _`quicksearch.py`:   plugins.html#quicksearch-py
 .. _`todo.py`:          plugins.html#todo-py
-.. _`valuespace.py`:    plugins.html#valuespace-py
 .. _`viewrendered.py`:  plugins.html#viewrendered-py
 
 .. index::
@@ -15036,12 +15029,9 @@ It's even possible to define a context in which abbreviation scripts execute. Se
 - `mod_scripting.py`_ supports @button and @command nodes.
 - `quicksearch.py`_ Adds Nav tab for searching.
 - `todo.py`_ provides to-do list and simple project-management capabilities.
-- `valuespace.py`_ adds outline-oriented spreadsheet capabilities.
 - `viewrendered.py`_ creates the rendering pane and renders content in it.
 </t>
 <t tx="ekr.20131009100732.19039">Open bookmarks in a list, and show bookmarks in a pane.
-</t>
-<t tx="ekr.20131009100732.19040">Supports outline-based calculations similar to spreadsheets.
 </t>
 <t tx="ekr.20131011050613.16815">The LoadManager (LM) class (in leoApp.py) is responsible for initing all objects and settings. This is a complex process. Here is the big picture:
 
@@ -15601,7 +15591,6 @@ run()
     mod_scripting.py:   Supports @button and @command nodes.
     quicksearch.py:     Adds Nav tab for searching.
     todo.py:            To-do lists and simple project management.
-    valuespace.py:      Creates an outline-oriented spreadsheet.
     viewrendered.py:    Creates a rendering pane.
                         Automatically loaded by Leo's help commands.
                         Supports @graphics-script, @image, @html,
@@ -16105,7 +16094,6 @@ these when generators are not flexible enough::
         Create global data structures from in modes/*.py files
         Get all comments from modes (slow)
         Import org mode
-        jinja2 templating
         Recursive import script
 
     By Brian Theado:
@@ -22192,8 +22180,6 @@ The **@all** directive tells Leo to write the nodes of an **@file tree** to the 
 <t tx="ekr.20170314091035.1">Adds the Edit Settings menu tree to the Settings menu.</t>
 <t tx="ekr.20170314091127.1">Adds Leo to the system tray.</t>
 <t tx="ekr.20170314091206.1">Hides/shows parts of urls in the body editor.</t>
-<t tx="ekr.20170314091501.1">Renders ``@jinja`` nodes.
-</t>
 <t tx="ekr.20170314091526.1">Read and write .leo files in ` OPML &lt;https://en.wikipedia.org/wiki/OPML&gt;`_.
 </t>
 <t tx="ekr.20170314091627.1">Edit several nodes at once, in a pannable "notebook" view.</t>
@@ -24128,7 +24114,6 @@ scripts, c.p is the presently selected outline node.
 - mod_scripting.py supports @button and @command nodes.
 - quicksearch.py adds a Nav tab for searching.
 - todo.py handles to-do lists and is a project manager.
-- valuespace.py creates an outline-oriented spreadsheet.
 - viewrendered.py renders content in the rendering pane.
 </t>
 <t tx="ekr.20180126061429.14">.. _`personal settings`: customizing.html#specifying-settings
