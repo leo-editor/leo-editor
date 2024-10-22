@@ -294,11 +294,11 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
 @register_layout('layout-vertical-thirds')
 def vertical_thirds(event: LeoKeyEvent) -> None:
     """Create Leo's vertical-thirds layout:
-        ┌───────────┬────────┬──────┐
-        │  outline  │        │      │
-        ├───────────┤  body  │  VR  │
-        │  log      │        │      │
-        └───────────┴────────┴──────┘
+        ┌───────────┬────────┬────────┐
+        │  outline  │        │        │
+        ├───────────┤  body  │ VR/VR3 │
+        │  log      │        │        │
+        └───────────┴────────┴────────┘
     """
     c = event.get('c')
     dw = c.frame.top
@@ -310,11 +310,11 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
 @register_layout('layout-vertical-thirds2')
 def vertical_thirds2(event: LeoKeyEvent) -> None:
     """Create Leo's vertical-thirds2 layout:
-        ┌───────────┬───────┬───────┐
-        │           │  log  │       │
-        │  outline  ├───────┤  VR   │
-        │           │  body │       │
-        └───────────┴───────┴───────┘
+        ┌───────────┬───────┬─────────┐
+        │           │  log  │         │
+        │  outline  ├───────┤ VR/VR3  │
+        │           │  body │         │
+        └───────────┴───────┴─────────┘
     """
     c = event.get('c')
     dw = c.frame.top
@@ -341,7 +341,7 @@ HORIZONTAL_THIRDS_LAYOUT = {
             ('logFrame', 'secondary_splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('bodyFrame', 'main_splitter'),
-            ('viewrenderedx_pane', 'main_splitter'))
+            (VRX_PLACEHOLDER_NAME, 'main_splitter'))
         ),
     'ORIENTATIONS': {
         'secondary_splitter': Orientation.Horizontal,
@@ -353,7 +353,7 @@ QUADRANT_LAYOUT = {
     'SPLITTERS': OrderedDict(
         (
             ('bodyFrame', 'secondary_splitter'),
-            ('viewrenderedx_pane', 'secondary_splitter'),
+            (VRX_PLACEHOLDER_NAME, 'secondary_splitter'),
             ('outlineFrame', 'outline-log-splitter'),
             ('logFrame', 'outline-log-splitter'),
             ('outline-log-splitter', 'main_splitter'),
@@ -372,7 +372,7 @@ RENDERED_FOCUSED_LAYOUT = {
             (('outlineFrame', 'secondary_splitter'),
             ('bodyFrame', 'secondary_splitter'),
             ('logFrame', 'secondary_splitter'),
-            ('viewrenderedx_pane', 'body-vr-splitter'),
+            (VRX_PLACEHOLDER_NAME, 'body-vr-splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('body-vr-splitter', 'main_splitter'))
         ),
@@ -389,7 +389,7 @@ VERTICAL_THIRDS2_LAYOUT = {
         (('logFrame', 'secondary_splitter'),
         ('bodyFrame', 'secondary_splitter'),
         ('outlineFrame', 'main_splitter'),
-        ('viewrenderedx_pane', 'vr-splitter'),
+        (VRX_PLACEHOLDER_NAME, 'vr-splitter'),
         ('secondary_splitter', 'main_splitter'),
         ('vr-splitter', 'main_splitter')
         )
@@ -407,7 +407,7 @@ VERTICAL_THIRDS_LAYOUT = {
             ('logFrame', 'secondary_splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('bodyFrame', 'main_splitter'),
-            ('viewrenderedx_pane', 'main_splitter'))
+            (VRX_PLACEHOLDER_NAME, 'main_splitter'))
         ),
     'ORIENTATIONS': {
         'secondary_splitter': Orientation.Vertical,
