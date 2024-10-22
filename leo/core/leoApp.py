@@ -355,7 +355,7 @@ class LeoApp:
             "info":     "texinfo",
             "ini":      "ini",
             "io":       "io",
-            # "ipynb":    "jupyter",
+            "ipynb":    "json",  # "jupyter",
             "iss":      "inno_setup",
             "java":     "java",
             "jhtml":    "jhtml",
