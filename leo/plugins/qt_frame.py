@@ -144,7 +144,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # has been populated
         def run_layout():
             c.doCommandByName('layout-restore-to-setting')
-        QtCore.QTimer.singleShot(300, run_layout )
+        QtCore.QTimer.singleShot(300, run_layout)
     #@+node:ekr.20240726074809.1: *4* dw.recreateMainWindow
     def recreateMainWindow(self):
         """
