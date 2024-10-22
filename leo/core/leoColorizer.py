@@ -14,19 +14,18 @@ import string
 import time
 from typing import Any, Generator, Sequence, Optional, Union, TYPE_CHECKING
 import warnings
-#
+
 # Third-party tools.
 try:
     import pygments  # type:ignore
-    from pygments.lexer import DelegatingLexer
+    from pygments.lexer import DelegatingLexer, RegexLexer, _TokenType, Text, Error
 except ImportError:
     pygments = None  # type:ignore
-#
+
 # Leo imports...
 from leo.core import leoGlobals as g
-
 from leo.core.leoColor import leo_color_database
-#
+
 # Qt imports. May fail from the bridge.
 try:  # #1973
     from leo.core.leoQt import Qsci, QtGui, QtWidgets
@@ -3183,7 +3182,7 @@ class PygmentsColorizer(BaseColorizer):
             if trace and language not in self.unknown_languages:
                 self.unknown_languages.append(language)
                 g.trace(f"\nno pygments lexer for {language!r}. Using python 3 lexer\n")
-            lexer = lexers.Python3Lexer()
+            lexer = lexers.Python3Lexer()  # pylint: disable=no-member
         return lexer
     #@+node:ekr.20190322094034.1: *4* pyg_c.patch_lexer
     def patch_lexer(self, language: Any, lexer: Any) -> Any:
@@ -3405,7 +3404,7 @@ class QScintillaColorizer(BaseColorizer):
             class_name = 'QsciLexer' + language_name
             lexer_class = getattr(Qsci, class_name, None)
             if lexer_class:
-                lexer = lexer_class(parent=parent)
+                lexer = lexer_class(parent=parent)  # pylint: disable=not-callable
                 self.configure_lexer(lexer)
                 d[language_name.lower()] = lexer
             elif 0:
@@ -3421,8 +3420,6 @@ if pygments:
     #@+node:ekr.20190320062624.2: *3* RegexLexer.get_tokens_unprocessed
     # Copyright (c) Jupyter Development Team.
     # Distributed under the terms of the Modified BSD License.
-
-    from pygments.lexer import RegexLexer, _TokenType, Text, Error
 
     def get_tokens_unprocessed(self: Any, text: str, stack: Sequence[str] = ('root',)) -> Generator:
         """

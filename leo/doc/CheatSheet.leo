@@ -1639,8 +1639,7 @@ c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
     command = 'my-command-name'
     b = c.undoer.beforeChangeNodeContents(p, oldYScroll=ypos)
     # Change p's body text.
-    c.undoer.afterChangeNodeContents(p,
-        command=command, bunch=b, dirtyVnodeList=[])
+    c.undoer.afterChangeNodeContents(p, command=command, bunch=b)
 </t>
 <t tx="ekr.20190101092129.1">If your command changes multiple nodes, the pattern is::
 
@@ -1655,9 +1654,7 @@ c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
         u.afterChangeNodeContents(p, undoType, bunch)
         changed = True
     if changed:
-        u.afterChangeGroup(c.p, undoType,
-            reportFlag=False,
-            dirtyVnodeList=dirtyVnodeList)
+        u.afterChangeGroup(c.p, undoType, reportFlag=False)
 </t>
 <t tx="ekr.20230716045242.1">Leo syntax colors clickable links in the body pane. For example:
 

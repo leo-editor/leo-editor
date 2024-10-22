@@ -1007,7 +1007,9 @@ class StringFindTabManager:
                 setattr(find, setting_name, val)
                 w.toggle()
 
-            def radio_button_callback(n: int, ivar: str = ivar, setting_name: str = setting_name, w: Wrapper = w) -> None:
+            def radio_button_callback(
+                n: int, ivar: str = ivar, setting_name: str = setting_name, w: Wrapper = w,
+            ) -> None:
                 val = w.isChecked()
                 if ivar:
                     assert hasattr(find, ivar), ivar
@@ -1924,7 +1926,7 @@ class LeoCursesGui(leoGui.LeoGui):
 
             def switch_focus_callback(form: Wrapper = form, i: int = i, w: Wrapper = w) -> None:
                 g.trace(i, w.__class__.__name__)
-                g.trace(g.callers(verbose=True))
+                g.trace(g.callers())
                 w.display()
                 form.display()
 
@@ -3999,8 +4001,6 @@ class TextMixin:
         self.leo_bodyXBar = None
         self.leo_chapter = None
         self.leo_frame = None
-        self.leo_name = '1'
-        self.leo_label = None
         return self
     #@+node:ekr.20170511053143.4: *4* tm.getName
     def getName(self) -> str:
@@ -4133,8 +4133,6 @@ class BodyWrapper(leoFrame.StringTextWrapper):
         self.leo_bodyXBar = None
         self.leo_chapter = None
         self.leo_frame = None
-        self.leo_name = '1'
-        self.leo_label = None
     #@+node:ekr.20170504034655.6: *4* bw.onCursorPositionChanged
     def onCursorPositionChanged(self, event: Event = None) -> None:
         if 0:

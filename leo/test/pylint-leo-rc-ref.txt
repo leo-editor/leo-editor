@@ -1,13 +1,16 @@
-# The new, implified .pylintrc file for Leo itself.
+# The .pylintrc file for Leo itself.
 
-# This file tested on pylint 2.14.4, Python 3.10.5, as reported by `python -m pylint --version`.
+# 9/21/24: All files pass with:
+#   pylint 3.2.7
+#   astroid 3.2.4
+#   Python 3.12.0
 
 [MASTER]
 
 # Add <file or directory> to the black list. A base name, not a path.
 ignore=
     .git
-    
+
 # Files or directories matching regex, in Windows or Posix format.
 ignore-paths=
     leo\external,
@@ -27,35 +30,28 @@ persistent=no
 [MESSAGES CONTROL]
 
 # Enable the message, report, category or checker with the given id(s).
-# enable=
+enable=
+    basic,
+    classes,
+    format,
+    imports,
+    typecheck,
+    variables
 
 # Disable the message, report, category or checker with the given id(s).
 disable=
-
-    # Catagories to disable: expensive or make-work
-
-        basic,  # Check on names. Unimportant.
-        classes,  # Unimportant.
-        design,  # Make work.
-        format,  # Use black
-        imports,  # Creates import graph.  Expensive?
-        similarities,  # Expensive.
-        typecheck,  # Unimportant
-        variables,  # Unimportant.
-        
-    # Checks on option nanes
-        
-        # bad-option-value, # obsolete pylint option.
-        # unrecognized-option,  # newer python.
+    design,  # Make work.
+    similarities,  # Expensive and unhelpful.
     
     # Leo: Standard suppressions.
-        
+        abstract-method,  # 9/21/2024
         arguments-renamed, # cursesGui2.py
         assignment-from-no-return, # Causes problems when base class return None.
         assignment-from-none, # Causes problems when base class return None.
         attribute-defined-outside-init,
         broad-except, # except Exception is justified if followed by g.es_exception.
-        c-extension-no-member,  # Too many errors re pyQt6.
+        c-extension-no-member,  # Suppress errors re pyQt6.
+        cell-var-from-loop,  # 9/21/2024: Seemingly can't be suppressed.
         condition-evals-to-constant,
         consider-iterating-dictionary,
         consider-using-from-import,
@@ -77,9 +73,11 @@ disable=
         global-variable-not-assigned, # not helpful.
         import-error,  # Ignore imports of optional packages.
         import-outside-toplevel, # Requires substantial code changes.
+        invalid-name,  # 9/21/2024
         keyword-arg-before-vararg, # See https://github.com/PyCQA/pylint/issues/2027
         missing-docstring, # Instead, use Leo's find-missing-docstrings command.
         no-else-break, # Possible pylint bug?
+        possibly-used-before-assignment, # 9/21/2024
         protected-access,
         redeclared-assigned-name,
         redefined-argument-from-local, # I do this all the time.
@@ -87,12 +85,14 @@ disable=
         redefined-outer-name,
         too-few-public-methods,
         too-many-branches,
+        too-many-lines,
         too-many-locals,
         too-many-public-methods,
         too-many-statements,
         trailing-whitespace,  # Too picky. No need to constantly do clean-all-lines.
         unnecessary-comprehension,
         unnecessary-dunder-call,  # pylint for python 3.10 only.
+        unnecessary-lambda,
         unnecessary-lambda-assignment,
         unnecessary-pass, # Can be pedantic in some situations.
         unspecified-encoding,  # Huh?
@@ -106,6 +106,9 @@ disable=
         using-constant-test,
 
     # Good warnings. Don't suppress these.
+    
+        # bad-option-value, # obsolete pylint option.
+        # unrecognized-option,  # newer python.
 
         # bad-builtin,
         # bad-continuation,
@@ -113,7 +116,7 @@ disable=
         # chained-comparison,
         # len-as-condition,
         # import-error, # Useful now that we are only using python 3.
-        # line-too-long,
+        # line-too-long,  # Worth doing?
         # literal-comparison,
         # locally-disabled,
         # multiple-statements,
@@ -147,8 +150,6 @@ score=no  # Deactivate the evaluation score.
 # notes=FIXME,XXX,TODO
 notes=
 
-# The following sections are all suppressed above.
-
 [BASIC]
 
 [CLASSES]
@@ -159,6 +160,10 @@ notes=
 max-nested-blocks=10  # Apparently, this can't be suppressed!
 
 [FORMAT]
+
+# Note: the line-too-long suppression must appear before docstrings.
+
+max-line-length=120  # 9/21/2024
 
 [IMPORTS]
 

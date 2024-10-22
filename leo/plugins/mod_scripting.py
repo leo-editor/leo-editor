@@ -430,7 +430,7 @@ class ScriptingController:
                 g.app.scriptDict = {'script_gnx': p.gnx}
                 if 'leoScriptModule' in sys.modules.keys():
                     del sys.modules['leoScriptModule']  # Essential.
-                from leo.core import leoScriptModule
+                from leo.core import leoScriptModule  # pylint: disable=no-name-in-module
                 assert leoScriptModule  # for pyflakes.
             else:
                 g.error('No debugger active')
@@ -599,11 +599,9 @@ class ScriptingController:
         # Register the delete-x-button command.
         deleteCommandName = 'delete-%s-button' % commandName
         c.k.registerCommand(
-            # allowBinding=True,
             commandName=deleteCommandName,
             func=deleteButtonCallback,
             pane='button',
-            shortcut=None,
         )
         # Reporting this command is way too annoying.
         return b
@@ -1036,6 +1034,11 @@ class ScriptingController:
                 if k == -1:
                     k = len(h)
                 shortcut = h[j:k].strip()
+        # #4093: Internally, shortcuts for F-keys must start with an uppercase 'F'.
+        if (shortcut and shortcut.startswith('f')
+            and len(shortcut) <= 3 and shortcut[1:].isdigit()
+        ):
+            shortcut = shortcut.upper()
         return shortcut
     #@+node:ekr.20150402042350.1: *4* sc.getScript
     def getScript(self, p: Position) -> str:
@@ -1091,10 +1094,11 @@ class ScriptingController:
                         g.trace('Already in commandsDict: %r' % commandName2)
                 else:
                     k.registerCommand(
+                        allowBinding=True,
                         commandName=commandName2,
                         func=registerAllCommandsCallback,
                         pane=pane,
-                        shortcut=None,
+                        shortcut=shortcut,
                     )
     #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
     def setButtonColor(self, b: Wrapper, bg: str) -> None:

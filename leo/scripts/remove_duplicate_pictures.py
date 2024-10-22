@@ -67,12 +67,6 @@ except Exception:
     print('remove_duplicate_pictures.py: imagehash required')
     print('pip install imagehash')
 try:
-    import numpy as np
-except Exception:
-    np = None
-    print('remove_duplicate_pictures.py: numpy required')
-    print('pip install numpy')
-try:
     from send2trash import send2trash
 except Exception:
     send2trash = None  # Optional

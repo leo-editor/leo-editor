@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # 4/23/2022: Modified by EKR. Support only Python 3. Fix mypy complaints.
+# type:ignore
 import cgi
 import json
 import os

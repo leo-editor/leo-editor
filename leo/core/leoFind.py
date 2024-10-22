@@ -564,7 +564,7 @@ class LeoFind:
         It's a standalone method for unit tests.
         """
         c = self.c
-        if not word.strip():
+        if not (word and word.strip()):
             return []
         patterns = self._make_patterns(word)
         matches = self._find_all_matches(patterns)
@@ -1343,7 +1343,9 @@ class LeoFind:
     @cmd('clone-find-all-flattened')
     @cmd('find-clone-all-flattened')
     @cmd('cff')
-    def interactive_cff(self, event: LeoKeyEvent = None, preloaded: bool = False) -> None:  # pragma: no cover (interactive)
+    def interactive_cff(
+        self, event: LeoKeyEvent = None, preloaded: bool = False,
+    ) -> None:  # pragma: no cover (interactive)
         """
         clone-find-all-flattened (aka find-clone-all-flattened and cff).
 

@@ -1623,7 +1623,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 progress = i
                 for (kind, pattern, handler) in self.patterns:
                     if m := pattern.match(lines[i]):
-                        j = handler(self, i, lines, m, p)  # May change lines.
+                        j = handler(self, i, lines, m, p)  # May change lines.  # pylint: disable=too-many-function-args
                         break
                 else:
                     kind = 'code'

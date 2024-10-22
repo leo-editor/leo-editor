@@ -38,12 +38,11 @@ import tokenize
 from typing import Any, Generator, Optional, Union
 
 # Leo Imports.
+from leo.core import leoGlobals as g
+assert g
 
 Settings = dict[str, Union[int, bool]]
 #@-<< leoTokens.py: imports & annotations >>
-
-from leo.core import leoGlobals as g
-assert g
 
 #@+others
 #@+node:ekr.20240214065940.1: ** top-level functions (leoTokens.py)
@@ -94,6 +93,20 @@ def input_tokens_to_string(tokens: list[InputToken]) -> str:  # pragma: no cover
         print('')
         return ''
     return ''.join([z.to_string() for z in tokens])
+#@+node:ekr.20240926050431.1: *3* function: beautify_file (leoTokens.py) (new)
+def beautify_file(filename: str) -> bool:
+    """
+    Beautify the given file, writing it if has changed.
+    """
+    settings: dict[str, Any] = {
+        'all': False,  # Don't beautify all files.
+        'beautified': True,  # Report changed files.
+        'diff': False,  # Don't show diffs.
+        'report': True,  # Report changed files.
+        'write': True,  # Write changed files.
+    }
+    tbo = TokenBasedOrange(settings)
+    return tbo.beautify_file(filename)
 #@+node:ekr.20240105140814.121: *3* function: main (leoTokens.py)
 def main() -> None:  # pragma: no cover
     """Run commands specified by sys.argv."""
@@ -150,9 +163,8 @@ def orange_command(
         settings = {}
     for filename in to_be_checked_files:
         if os.path.exists(filename):
-            was_dirty = filename in dirty_files
             tbo = TokenBasedOrange(settings)
-            beautified = tbo.beautify_file(filename, was_dirty)
+            beautified = tbo.beautify_file(filename)
             if beautified:
                 n_beautified += 1
             # n_tokens += len(tbo.input_tokens)
@@ -513,15 +525,17 @@ class ParseState:
 #@+node:ekr.20240128114842.1: *3* class ScanState
 class ScanState:  # leoTokens.py.
     """
-    A class representing t.bo pre_scan's scanning state.
+    A class representing tbo.pre_scan's scanning state.
 
-    Valid kind:value pairs:
+    Valid (kind, value) pairs:
 
-      'args': None
-      'from': None
-    'import': None
-     'slice': list of colon indices
-      'dict': list of colon indices
+       kind  Value
+       ====  =====
+      'args' None
+      'from' None
+    'import' None
+     'slice' list of colon indices
+      'dict' list of colon indices
 
     """
 
@@ -550,13 +564,19 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     **Design**
 
-    The *pre_scan* method is the heart of the algorithm. It sets context for the `:`, `=`, `**` and `.` tokens *without* using the parse tree. *pre_scan* calls three *finishers*.
+    The *pre_scan* method is the heart of the algorithm. It sets context
+    for the `:`, `=`, `**` and `.` tokens *without* using the parse tree.
+    *pre_scan* calls three *finishers*.
 
-    Each finisher uses a list of *relevant earlier tokens* to set the context for one kind of (input) token. Finishers look behind (in the stream of input tokens) with essentially no cost.
+    Each finisher uses a list of *relevant earlier tokens* to set the
+    context for one kind of (input) token. Finishers look behind (in the
+    stream of input tokens) with essentially no cost.
 
-    After the pre-scan, *tbo.beautify* (the main loop) calls *visitors* for each separate type of *input* token.
+    After the pre-scan, *tbo.beautify* (the main loop) calls *visitors*
+    for each separate type of *input* token.
 
-    Visitors call *code generators* to generate strings in the output_list. The code generators and their helpers use *lazy evaluation* to generate whitespace.
+    Visitors call *code generators* to generate strings in the output
+    list, using *lazy evaluation* to generate whitespace.
     """
     #@-<< TokenBasedOrange: docstring >>
     #@+<< TokenBasedOrange: __slots__ >>
@@ -787,7 +807,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(self.internal_error_message(repr(e)))
         return contents
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry) (stats & diffs)
-    def beautify_file(self, filename: str, was_dirty: bool) -> bool:  # pragma: no cover
+    def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
         TokenBasedOrange: Beautify the the given external file.
 
@@ -837,11 +857,19 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         self.indent_level = 0
         self.filename = filename
+        t1 = time.perf_counter_ns()
         contents = g.readFile(filename)
+        t2 = time.perf_counter_ns()
         if not contents:
             self.input_tokens = []
             return '', []
+        t3 = time.perf_counter_ns()
         self.input_tokens = input_tokens = Tokenizer().make_input_tokens(contents)
+        t4 = time.perf_counter_ns()
+        if 0:
+            print(f"       read: {(t2-t1)/1000000:6.2f} ms")
+            print(f"make_tokens: {(t4-t3)/1000000:6.2f} ms")
+            print(f"      total: {(t4-t1)/1000000:6.2f} ms")
         return contents, input_tokens
     #@+node:ekr.20240105140814.12: *5* tbo.regularize_newlines
     def regularize_newlines(self, s: str) -> str:
