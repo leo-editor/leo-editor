@@ -191,7 +191,9 @@ def render_focused(event: LeoKeyEvent) -> None:
     cache.restoreFromLayout(RENDERED_FOCUSED_LAYOUT)
 #@+node:tom.20240930101515.1: *3* command: 'layout-restore-default'
 @g.command('layout-restore-default')
+@g.command('layout-restore-to-setting')
 @register_layout('layout-restore-default')
+@register_layout('layout-restore-to-setting')
 def restoreDefaultLayout(event: LeoKeyEvent) -> None:
     """Restore the default layout specified in @settings, if known.
     
