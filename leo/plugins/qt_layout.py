@@ -155,14 +155,10 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(HORIZONTAL_THIRDS_LAYOUT)
-@register_layout('layout-legacy')
-        ┌───────────┬───────┐
-        │ outline   │ log   │
-        ├───────────┼───────┤
-        │ body      │ VR/VR3│
-        └───────────┴───────┘
 #@+node:ekr.20241008180407.1: *3* command: 'layout-quadrant'
 @g.command('layout-quadrant')
+@g.command('layout-legacy')
+@register_layout('layout-legacy')
 @register_layout('layout-quadrant')
 def quadrants(event: LeoKeyEvent) -> None:
     """Create Leo's quadrant layout:
