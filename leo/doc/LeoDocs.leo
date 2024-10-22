@@ -488,6 +488,17 @@
 <v t="ekr.20240919055407.1"><vh>set-reference-file</vh></v>
 <v t="ekr.20180130094948.1"><vh>Operations on reference .leo files</vh></v>
 <v t="ekr.20150415111549.1"><vh>How can I customize the clone-find-all commands?</vh></v>
+<v t="ekr.20080203101507"><vh>ILeo - the IPython bridge</vh>
+<v t="ekr.20080203101507.1"><vh>@@@rst html\IPythonBridge.html</vh>
+<v t="vivainio.20080302174639.1"><vh>Overview</vh></v>
+<v t="vivainio.20080302174639.2"><vh>Starting ILeo</vh></v>
+<v t="ekr.20131001045038.18981"><vh>Running Leo scripts from IPython</vh></v>
+<v t="ekr.20131001045038.18980"><vh>Running IPython scripts from Leo</vh></v>
+<v t="ekr.20131001045038.18979"><vh>ILeo as an IPython notebook</vh></v>
+<v t="ekr.20131001100236.15927"><vh>ILeo and the valuespace plugin</vh></v>
+<v t="ekr.20131001045038.17448"><vh>Acknowledgements and history</vh></v>
+</v>
+</v>
 </v>
 </v>
 <v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
@@ -1021,7 +1032,6 @@
 <v t="ekr.20101113063552.9438"><vh>trace_tags.py</vh></v>
 </v>
 <v t="ekr.20101113063552.9439"><vh>External programs</vh>
-<v t="ekr.20101113063552.9440"><vh>ipython.py</vh></v>
 <v t="ekr.20101113063552.9442"><vh>open_shell.py</vh></v>
 <v t="ekr.20101113063552.9443"><vh>tomboy_import.py</vh></v>
 <v t="ekr.20101113063552.9444"><vh>vim.py</vh></v>
@@ -1038,7 +1048,6 @@
 <v t="ekr.20101113063552.9454"><vh>expfolder.py</vh></v>
 <v t="ekr.20101113063552.9455"><vh>FileActions.py</vh></v>
 <v t="ekr.20101113063552.9456"><vh>geotag.py</vh></v>
-<v t="ekr.20170314091501.1"><vh>injarnder.py</vh></v>
 <v t="ekr.20101113063552.9457"><vh>leocursor.py</vh></v>
 <v t="ekr.20170314091526.1"><vh>leoOPML.py</vh></v>
 <v t="ekr.20101113063552.9458"><vh>mime.py</vh></v>
@@ -1112,7 +1121,6 @@
 <v t="ekr.20101113063552.9408"><vh>stickynotes.py</vh></v>
 <v t="ekr.20170314091127.1"><vh>systray.py</vh></v>
 <v t="ekr.20101113063552.9409"><vh>todo.py</vh></v>
-<v t="ekr.20131009100732.19040"><vh>valuespace.py</vh></v>
 <v t="ekr.20101113063552.9410"><vh>viewrendered.py</vh></v>
 <v t="ekr.20141105055521.7"><vh>viewrendered2.py</vh></v>
 <v t="ekr.20170314091206.1"><vh>wikiview.py</vh></v>
@@ -1270,17 +1278,6 @@
 <v t="TL.20080804095315.8"><vh>Commands not supported</vh></v>
 <v t="TL.20080804095315.9"><vh>Avoiding changes to 'tag' files</vh></v>
 </v>
-</v>
-</v>
-<v t="ekr.20080203101507"><vh>ILeo - the IPython bridge</vh>
-<v t="ekr.20080203101507.1"><vh>@rst html\IPythonBridge.html</vh>
-<v t="vivainio.20080302174639.1"><vh>Overview</vh></v>
-<v t="vivainio.20080302174639.2"><vh>Starting ILeo</vh></v>
-<v t="ekr.20131001045038.18981"><vh>Running Leo scripts from IPython</vh></v>
-<v t="ekr.20131001045038.18980"><vh>Running IPython scripts from Leo</vh></v>
-<v t="ekr.20131001045038.18979"><vh>ILeo as an IPython notebook</vh></v>
-<v t="ekr.20131001100236.15927"><vh>ILeo and the valuespace plugin</vh></v>
-<v t="ekr.20131001045038.17448"><vh>Acknowledgements and history</vh></v>
 </v>
 </v>
 <v t="ekr.20070317033759"><vh>Embedding Leo with the leoBridge module</vh>
@@ -9084,8 +9081,6 @@ controller(c).run()
     puts the ``__init__`` method (ctor) into the body of the class node.
 ``interact.py``
     Adds buttons so Leo can interact with command line environments.
-``jinjarender.py``
-    Renders ``@jinja`` nodes.
 ``leofeeds.py``
     Reads from rss, atom or other sources.
 ``leo_interface.py``
@@ -9226,8 +9221,6 @@ controller(c).run()
     Traces keystrokes in the outline and body panes.
 ``trace_tags.py``
     Traces most common hooks, but not key, drag or idle hooks.
-``valuespace.py``
-    Supports outline-based calculations similar to spreadsheets.
 ``viewrendered.py``
     Creates a window for *live* rendering of rst, html, etc.
     This plugin uses docutils, http://docutils.sourceforge.net/,
@@ -9772,14 +9765,6 @@ Pudb is a full-screen Python debugger: http://pypi.python.org/pypi/pudb
 
 </t>
 <t tx="ekr.20101113063552.9439"></t>
-<t tx="ekr.20101113063552.9440">Creates a two-way communication (bridge) between Leo scripts and IPython running in the console from which Leo was launched.
-
-Using this bridge, scripts running in Leo can affect IPython, and vice versa. In particular, scripts running in IPython can alter Leo outlines!
-
-.. _`IPython Bridge Guide`: IPythonBridge.html
-
-For full details, see the `IPython Bridge Guide`.
-</t>
 <t tx="ekr.20101113063552.9442">Creates an 'Extensions' menu containing two commands: Open Console Window and Open Explorer.
 
 The Open Console Window command opens xterm on Linux. The Open Explorer command Opens a Windows explorer window.
@@ -14589,9 +14574,7 @@ Leo and Other Programs
    emacs
    vimBindings
    leoBridge
-   IPythonBridge
    leoserver
-
 </t>
 <t tx="ekr.20131008041326.16140">###########
 Running Leo
@@ -14683,7 +14666,8 @@ On Windows, you can run Leo with the console window visible by `associating .leo
 
 Leo puts several files in your HOME/.leo directory: .leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
 </t>
-<t tx="ekr.20131008041326.16156">Leo supports the following command-line options. As usual, you can see the list by typing the following in a console window::
+<t tx="ekr.20131008041326.16156">@nowrap
+Leo supports the following command-line options. As usual, you can see the list by typing the following in a console window::
 
     leo -h
 
@@ -14691,50 +14675,40 @@ or::
 
     leo --help
 
-You will get something like the following::
-
-    usage: launchLeo.py [-h] [-b] [--diff] [--fail-fast] [--fullscreen] [--ipython] [--gui GUI] [--listen-to-log]
-                        [--load-type TYPE] [--maximized] [--minimized] [--no-plugins] [--no-splash] [--quit]
-                        [--screen-shot PATH] [--script PATH] [--script-window] [--select ID] [--silent] [--theme NAME]
-                        [--trace TRACE-KEY] [--trace-binding KEY] [--trace-setting NAME] [--window-size SIZE]
-                        [--window-spot SPOT] [-v]
-                        [FILES ...]
+You will get the following::
 
     usage: launchLeo.py [options] file1, file2, ...
 
-    positional arguments:
-      FILES                 list of files
-
     options:
       -h, --help            show this help message and exit
-      -b, --black-sentinels
-                            write black-compatible sentinel comments
+      -b, --black-sentinels write black-compatible sentinel comments
       --diff                use Leo as an external git diff
       --fail-fast           stop unit tests after the first failure
       --fullscreen          start fullscreen
-      --ipython             enable ipython support
-      --gui GUI             gui to use (qt/console/null)
+      --gui=GUI             specify gui: browser,console,curses,qt,text,null
       --listen-to-log       start log_listener.py on startup
-      --load-type TYPE      @&lt;file&gt; type for non-outlines
       --maximized           start maximized
       --minimized           start minimized
       --no-plugins          disable all plugins
       --no-splash           disable the splash screen
       --quit                quit immediately after loading
-      --screen-shot PATH    take a screen shot and then exit
-      --script PATH         execute a script and then exit
+      --save-session        always save session data when Leo closes
+      --script=PATH         execute a script and then exit
       --script-window       execute script using default gui
-      --select ID           headline or gnx of node to select
+      --select=ID           headline or gnx of node to select
       --silent              disable all log messages
-      --theme NAME          use the named theme file
-      --trace TRACE-KEY     add one or more strings to g.app.debug. One or more of...
-                            abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx
-                            importers, ipython, keys, layouts, plugins, save, select, sections,
-                            shutdown, size, speed, startup, themes, undo, verbose, zoom
-      --trace-binding KEY   trace commands bound to a key
-      --trace-setting NAME  trace where named setting is set
-      --window-size SIZE    initial window size (height x width)
-      --window-spot SPOT    initial window position (top x left)
+      --theme=NAME          use the named theme file
+      --trace=LIST          add one or more strings to g.app.debug
+
+            A comma-separated list. Valid values are:
+            abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx,
+            importers, keys, layouts, plugins, save, select, sections,
+            shutdown, size, speed, startup, themes, undo, verbose, zoom.
+
+      --trace-binding=KEY   trace commands bound to a key
+      --trace-setting=NAME  trace where named setting is set
+      --window-size=SIZE    initial window size: (height x width)
+      --window-spot=SPOT    initial window position: (top x left)
       -v, --version         print version number and exit
 
 **Important**
@@ -15043,7 +15017,6 @@ It's even possible to define a context in which abbreviation scripts execute. Se
 .. _`mod_scripting.py`: plugins.html#mod-scripting-py
 .. _`quicksearch.py`:   plugins.html#quicksearch-py
 .. _`todo.py`:          plugins.html#todo-py
-.. _`valuespace.py`:    plugins.html#valuespace-py
 .. _`viewrendered.py`:  plugins.html#viewrendered-py
 
 .. index::
@@ -15056,12 +15029,9 @@ It's even possible to define a context in which abbreviation scripts execute. Se
 - `mod_scripting.py`_ supports @button and @command nodes.
 - `quicksearch.py`_ Adds Nav tab for searching.
 - `todo.py`_ provides to-do list and simple project-management capabilities.
-- `valuespace.py`_ adds outline-oriented spreadsheet capabilities.
 - `viewrendered.py`_ creates the rendering pane and renders content in it.
 </t>
 <t tx="ekr.20131009100732.19039">Open bookmarks in a list, and show bookmarks in a pane.
-</t>
-<t tx="ekr.20131009100732.19040">Supports outline-based calculations similar to spreadsheets.
 </t>
 <t tx="ekr.20131011050613.16815">The LoadManager (LM) class (in leoApp.py) is responsible for initing all objects and settings. This is a complex process. Here is the big picture:
 
@@ -15621,7 +15591,6 @@ run()
     mod_scripting.py:   Supports @button and @command nodes.
     quicksearch.py:     Adds Nav tab for searching.
     todo.py:            To-do lists and simple project management.
-    valuespace.py:      Creates an outline-oriented spreadsheet.
     viewrendered.py:    Creates a rendering pane.
                         Automatically loaded by Leo's help commands.
                         Supports @graphics-script, @image, @html,
@@ -15795,8 +15764,8 @@ Leo is a fundamentally different way of using and organizing data, programs and 
 - A powerful scripting environment.
 - A tool for organizing and studying computer code.
 - Extensible via a simple plugin architecture.
-- A tool that plays well with  IPython, Vim and Emacs.
-- Written in 100% pure Python
+- A tool that plays well with Vim and Emacs.
+- Written in 100% pure Python.
 
 **Leo's unique features**
 
@@ -16125,7 +16094,6 @@ these when generators are not flexible enough::
         Create global data structures from in modes/*.py files
         Get all comments from modes (slow)
         Import org mode
-        jinja2 templating
         Recursive import script
 
     By Brian Theado:
@@ -16316,36 +16284,39 @@ myDocument.html.txt is the **input** file for sphinx.
 </t>
 <t tx="ekr.20131028213522.17138">::
 
-    Usage: launchLeo.py [options] file1, file2, ...
+    usage: launchLeo.py [options] file1, file2, ...
 
-    Options:
+    options:
       -h, --help            show this help message and exit
-      --debug               enable debug mode
+      -b, --black-sentinels write black-compatible sentinel comments
       --diff                use Leo as an external git diff
-      --fullscreen          start fullscreen
-      --ipython             enable ipython support
       --fail-fast           stop unit tests after the first failure
-      --gui=GUI             gui to use (qt/qttabs)
-      --load-type=LOAD_TYPE
-                            @&lt;file&gt; type for loading non-outlines from command
-                            line
+      --fullscreen          start fullscreen
+      --gui=GUI             specify gui: browser,console,curses,qt,text,null
+      --listen-to-log       start log_listener.py on startup
       --maximized           start maximized
       --minimized           start minimized
-      --no-cache            disable reading of cached files
       --no-plugins          disable all plugins
       --no-splash           disable the splash screen
-      --screen-shot=SCREENSHOT_FN
-                            take a screen shot and then exit
-      --script=SCRIPT       execute a script and then exit
-      --script-window=SCRIPT_WINDOW
-                            open a window for scripts
-      --select=SELECT       headline or gnx of node to select
+      --quit                quit immediately after loading
+      --save-session        always save session data when Leo closes
+      --script=PATH         execute a script and then exit
+      --script-window       execute script using default gui
+      --select=ID           headline or gnx of node to select
       --silent              disable all log messages
-      --trace-plugins       trace imports of plugins
-      -v, --version         print version number and exit
-      --window-size=WINDOW_SIZE
-                            initial window size (height x width)
-</t>
+      --theme=NAME          use the named theme file
+      --trace=LIST          add one or more strings to g.app.debug
+
+            A comma-separated list. Valid values are:
+            abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx,
+            importers, keys, layouts, plugins, save, select, sections,
+            shutdown, size, speed, startup, themes, undo, verbose, zoom.
+
+      --trace-binding=KEY   trace commands bound to a key
+      --trace-setting=NAME  trace where named setting is set
+      --window-size=SIZE    initial window size: (height x width)
+      --window-spot=SPOT    initial window position: (top x left)
+      -v, --version         print version number and exit</t>
 <t tx="ekr.20131028213522.17150"></t>
 <t tx="ekr.20131030082936.17514">s = p.b
 for child in p.children():
@@ -19659,7 +19630,9 @@ So much for the theory.  The following also are important in practice:
 
 - Native scripting in Python, with full access to all of Leo's sources.
 - Leo's plugin architecture.
-- Leo's rst3 command, vim, xemacs and ILeo (IPython bridge), and leoBridge module.
+- Leo's rst3 command.
+- Leo's support for vim and xemacs.
+- Leo's leoBridge module.
 - Leo's minibuffer commands, borrowed shamelessly from Emacs.
 - @button: bringing scripts to data.
 - Leo's outline-oriented directives.
@@ -19670,7 +19643,7 @@ Acknowledgements: Working with Leo's community of Leo's developers and users has
 
 A successful software tool is one that was used to do something undreamed of by its author.' -- Stephen Johnson
 
-Leo is a wild success on this score. I foresaw none of these developments 20 years ago:  Leo's minibuffer, @button, @auto, @clean, Leo's plugin architecture, the rst3 command, the Leo bridge and the IPython bridge.  Surely many other features and uses could be added. None of these would have happened without Leo's community of brilliant people. These features create the Leonine world.  Who knows what will be the result...
+Leo is a wild success on this score. I foresaw none of these developments 20 years ago:  Leo's minibuffer, @button, @auto, @clean, Leo's plugin architecture, the rst3 command, and the Leo's bridge.  Surely many other features and uses could be added. None of these would have happened without Leo's community of brilliant people. These features create the Leonine world.  Who knows what will be the result...
 
 Edward K. Ream
 </t>
@@ -22207,8 +22180,6 @@ The **@all** directive tells Leo to write the nodes of an **@file tree** to the 
 <t tx="ekr.20170314091035.1">Adds the Edit Settings menu tree to the Settings menu.</t>
 <t tx="ekr.20170314091127.1">Adds Leo to the system tray.</t>
 <t tx="ekr.20170314091206.1">Hides/shows parts of urls in the body editor.</t>
-<t tx="ekr.20170314091501.1">Renders ``@jinja`` nodes.
-</t>
 <t tx="ekr.20170314091526.1">Read and write .leo files in ` OPML &lt;https://en.wikipedia.org/wiki/OPML&gt;`_.
 </t>
 <t tx="ekr.20170314091627.1">Edit several nodes at once, in a pannable "notebook" view.</t>
@@ -24143,7 +24114,6 @@ scripts, c.p is the presently selected outline node.
 - mod_scripting.py supports @button and @command nodes.
 - quicksearch.py adds a Nav tab for searching.
 - todo.py handles to-do lists and is a project manager.
-- valuespace.py creates an outline-oriented spreadsheet.
 - viewrendered.py renders content in the rendering pane.
 </t>
 <t tx="ekr.20180126061429.14">.. _`personal settings`: customizing.html#specifying-settings
@@ -33007,6 +32977,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - PR #4033: Add four new layouts and related code and commands.
 - PR #4068: Optionally run pylint when saving changed files.
 - PR #4071: Optionally run Leo's beautifier when saving changed files.
+- PR #4113: Retire ILeo, Leo's IPython bridge. It hasn't worked in years.
 - The usual assortment of small bug fixes and code cleanups.
 
 **Links**
@@ -33030,12 +33001,14 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #4047`: https://github.com/leo-editor/leo-editor/pull/4047
 .. _`PR #4068`: https://github.com/leo-editor/leo-editor/pull/4068
 .. _`PR #4071`: https://github.com/leo-editor/leo-editor/pull/4071
+.. _`PR #4113`: https://github.com/leo-editor/leo-editor/pull/4113
 
 - `PR #4033`_: Add four new layouts and related code and commands.
 - `PR #4038`_: Add reload-outline command.
 - `PR #4047`_: Delete add-editor command and all related code.
 - `PR #4068`_: Optionally run pylint when saving changed files.
 - `PR #4071`_: Optionally run Leo's beautifier when saving changed files.
+- `PR #4113`_: Retire ILeo, Leo's IPython bridge. It hasn't worked in years.
 </t>
 <t tx="ekr.20240919055407.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
@@ -33195,12 +33168,12 @@ If you run into difficulties see https://asciidoc3.org/pypi.html#_asciidoc3_pip_
 
 - Document any new commands with a proper docstring. This allows the minibuffer command `help-for-command` to provide help for the command.
 
-- In ``leo/doc/sphinx-docs/sphinxDocs.leo``, to the node ``@file leo.plugins.rst``, add the following snippet (preferably in alphabetical order), with the name of the plugin modified to the name of your plugin (here `ipython`). This allows the API docs to be automatically updated::
+- In ``leo/doc/sphinx-docs/sphinxDocs.leo``, to the node ``@file leo.plugins.rst``, add the following snippet (preferably in alphabetical order), with the name of the plugin modified to the name of your plugin (here `xxx`). This allows the API docs to be automatically updated::
 
-    :mod:`ipython` Module
-    ---------------------
+    :mod:`xxx` Module
+    -----------------
 
-    .. automodule:: leo.plugins.ipython
+    .. automodule:: leo.plugins.xxx
         :members:
         :undoc-members:
         :show-inheritance:
