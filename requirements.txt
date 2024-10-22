@@ -1,8 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20240201175949.1: * @file ../../requirements.txt
-#@@language python
-#@@nosearch
+# leo-editor/requirements.txt.
 
+# The dependencies here should match those in pyproject.toml.
+
+#@+<< requirements.txt: dependencies >>
+#@+node:ekr.20241022091142.1: ** << requirements.txt: dependencies >>
 # Warning: these dependencies should match those in pyproject.toml.
 
 # For build devs.
@@ -29,6 +32,7 @@ black           # For unit tests.
 docutils        # For Sphinx and rST plugins.
 flexx           # leoflexx.py plugin.
 jedi            # For autocompletion.
+jupytext        # For paired .ipynb/.py files.
 markdown        # VR3 plugin.
 matplotlib      # VR3 plugin.
 meta            # livecode.py plugin.
@@ -50,4 +54,9 @@ PyQt6-QScintilla
 PyQt6-WebEngine
 Send2Trash; platform_system=="Windows"      # picture_viewer plugin.
 windows-curses; platform_system=="Windows"  # cursesGui2 plugin.
+#@-<< requirements.txt: dependencies >>
+
+#@@language python
+#@@nosearch
+
 #@-leo

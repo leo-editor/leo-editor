@@ -18,7 +18,9 @@ import platform
 from leo.core import leoGlobals as g
 from leo.core import leoExternalFiles
 from leo.core.leoCache import GlobalCacher
+from leo.core.leoJupytext import JupytextManager
 from leo.core.leoQt import QCloseEvent
+
 StringIO = io.StringIO
 #@-<< leoApp imports >>
 #@+<< leoApp annotations >>
@@ -192,6 +194,7 @@ class LeoApp:
         self.externalFilesController: ExternalFilesController = None
         self.global_cacher: Union[dict, GlobalCacher] = None
         self.idleTimeManager: IdleTimeManager = None
+        self.jupytextManager: JupytextManager = None
         self.loadManager: LoadManager = None
         self.nodeIndices: NodeIndices = None
         self.pluginsController: LeoPluginsController = None
@@ -2607,6 +2610,7 @@ class LoadManager:
         assert g.app.loadManager
         from leo.core import leoBackground
         from leo.core import leoConfig
+        from leo.core import leoJupytext
         from leo.core import leoNodes
         from leo.core import leoPlugins
         from leo.core import leoSessions
@@ -2619,6 +2623,7 @@ class LoadManager:
         g.app.idleTimeManager = IdleTimeManager()
         g.app.backgroundProcessManager = leoBackground.BackgroundProcessManager()
         g.app.externalFilesController = leoExternalFiles.ExternalFilesController()
+        g.app.jupytextManager = leoJupytext.JupytextManager()
         g.app.recentFilesManager = RecentFilesManager()
         g.app.config = leoConfig.GlobalConfigManager()
         g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
