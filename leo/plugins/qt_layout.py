@@ -320,6 +320,22 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(VERTICAL_THIRDS2_LAYOUT)
+#@+node:tom.20241022170042.1: *3* command: layout-show-layouts
+@g.command('layout-show-layouts')
+def showLayouts(event) -> None:
+    c = event.get('c')
+    if not c:
+        return
+
+    dw = c.frame.top
+    cache = dw.layout_cache
+    layouts = cache.layout_registry
+    listing = ''
+
+    for name, docstr in layouts.items():
+        listing += f'{name}:\n' + '=' * len(name) + f'\n{docstr}\n'
+
+    g.es(listing, tabName='layouts')
 #@+node:ekr.20241008174638.1: ** Layouts
 #@+node:tom.20240923194438.3: *3* FALLBACK_LAYOUT
 FALLBACK_LAYOUT = {
