@@ -33,6 +33,7 @@ VR3_MODULE_NAME = 'viewrendered3.py'
 #@+node:ekr.20241008141246.1: *3* function: init
 def init() -> bool:
     """Return True if this plugin should be enabled."""
+    # qt_layout is not a true plugin.
     return True
 #@+node:ekr.20241008141353.1: *3* function: show_vr3_pane
 def show_vr3_pane(c, w):
@@ -436,10 +437,11 @@ class LayoutCacheWidget(QWidget):
         ORIENTATIONS = layout['ORIENTATIONS']
 
         has_vr3 = is_module_loaded(VR3_MODULE_NAME)
-        if (vr3 := self.find_widget('viewrendered3_pane')) is None:
-            import leo.plugins.viewrendered3 as vr3_mod
-            vr3 = vr3_mod.getVr3({'c': self.c})
-        vr3.setParent(self)
+        if has_vr3:
+            if (vr3 := self.find_widget('viewrendered3_pane')) is None:
+                import leo.plugins.viewrendered3 as vr3_mod
+                vr3 = vr3_mod.getVr3({'c': self.c})
+            vr3.setParent(self)
 
         # A layout might want to use VR3 if it is present, else VR.
         # This is indicated by using the name VRX_PLACEHOLDER_NAME in the layout.
