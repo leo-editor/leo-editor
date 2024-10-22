@@ -139,6 +139,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
         self.layout_cache = LayoutCacheWidget(c, self)
         self.reloadSettings()
+
+        # Delay until DW initialization has ended and c.commandsDict
+        # has been populated
+        def run_layout():
+            c.doCommandByName('layout-restore-to-setting')
+        QtCore.QTimer.singleShot(300, run_layout)
     #@+node:ekr.20240726074809.1: *4* dw.recreateMainWindow
     def recreateMainWindow(self):
         """
@@ -200,164 +206,17 @@ class DynamicWindow(QtWidgets.QMainWindow):
         Return the tuple (main_splitter, Optional[secondary_splitter])
         """
         c = self.leo_c
-        layout_name = self.layout_name
 
-        # Keys are layout names, converted to canonical format.
-        layout_dict = {
-            'big-tree': self.create_big_tree_layout,
-            'horizontal-thirds': self.create_horizontal_thirds_layout,
-            'legacy': self.create_legacy_layout,
-            'render-focused': self.create_render_focused_layout,
-            'vertical-thirds': self.create_vertical_thirds_layout,
-            'vertical-thirds2': self.create_vertical_thirds2_layout,
-        }
+        import leo.plugins.viewrendered as vrm
+        cache = self.layout_cache
+        ms, ss = self.createMainLayout(self.centralwidget)
+        self.createBodyPane(cache)
+        self.createOutlinePane(ss)
+        self.createLogPane(ss)
+        # self.vr_parent_frame = ms
+        _ = vrm.getVr(c=c, parent=ms)
 
-        # Allow plugins to define layouts.
-        g.doHook("after-create-layout-dict", c=c, dw=self, layout_dict=layout_dict)
-
-        if layout_name not in layout_dict:
-            g.es_print('Unknown layout name:', layout_name)
-            g.es_print(f"Valid names: {list(layout_dict.keys())}")
-            return self.create_legacy_layout()
-        try:
-            f = layout_dict.get(layout_name)
-            return f()
-        except Exception as e:
-            g.es_print(f"Exception executing {f.__name__}", color='red')
-            g.es_print(e)
-            g.es_exception()
-            g.es_print('Using legacy layout')
-            return self.create_legacy_layout()
-    #@+node:ekr.20240726071000.1: *5* dw.create_big_tree_layout
-    def create_big_tree_layout(self) -> tuple[QWidget, QWidget]:
-        """
-        Create the layout previously specified by  @bool big-outline-pane:
-            ┌───────────────────┐
-            │  outline          │
-            ├──────────┬────────┤
-            │  body    │  log   │
-            ├──────────┴────────┤
-            │  VR               │
-            └───────────────────┘
-        """
-        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-        self.createBodyPane(secondary_splitter)
-        self.createLogPane(secondary_splitter)
-        treeFrame = self.createOutlinePane(main_splitter)
-        main_splitter.addWidget(treeFrame)
-        main_splitter.addWidget(secondary_splitter)
-        self.vr_parent_frame = main_splitter
-        return main_splitter, secondary_splitter
-    #@+node:ekr.20240726063727.1: *5* dw.create_legacy_layout
-    def create_legacy_layout(self) -> tuple[QWidget, QWidget]:
-        """
-        Create Leo's legacy layout::
-            ┌───────────┬───────┐
-            │  outline  │  log  │
-            ├───────────┼───────┤
-            │  body     │  VR   │
-            └───────────┴───────┘
-        """
-        c = self.leo_c
-        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-        self.createOutlinePane(secondary_splitter)
-        self.createLogPane(secondary_splitter)
-        # Honor the orientation setting *only* for the legacy layout.
-        orientation_s = c.config.getString('initial-split-orientation')
-        self.setSplitDirection(main_splitter, secondary_splitter, orientation_s)
-        if main_splitter.orientation() == Orientation.Vertical:
-            # Share the VR pane with the body pane in a new splitter.
-            self.vr_parent_frame = vr_splitter = QtWidgets.QSplitter()
-            vr_splitter.setObjectName('vr-splitter')
-            self.createBodyPane(vr_splitter)
-            main_splitter.addWidget(vr_splitter)
-        else:
-            self.createBodyPane(main_splitter)
-            # Put the VR pane in the secondary splitter.
-            self.vr_parent_frame = secondary_splitter
-        return main_splitter, secondary_splitter
-    #@+node:ekr.20240822103027.1: *5* dw.create_horizontal_thirds_layout
-    def create_horizontal_thirds_layout(self) -> tuple[QWidget, QWidget]:
-        """Create Leo's horizonatl-thirds layout::
-            ┌───────────┬───────┐
-            │  outline  │  log  │
-            ├───────────┴───────┤
-            │  body             │
-            ├───────────────────┤
-            │  VR               │
-            └───────────────────┘
-        """
-        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-        self.createOutlinePane(secondary_splitter)
-        self.createLogPane(secondary_splitter)
-        self.createBodyPane(main_splitter)
-        self.vr_parent_frame = main_splitter
-        return main_splitter, secondary_splitter
-
-    #@+node:ekr.20240822103044.1: *5* dw.create_render_focused_layout
-    def create_render_focused_layout(self) -> tuple[QWidget, QWidget]:
-        """Create Leo's render-focused layout::
-            ┌───────────┬─────┐
-            │ outline   │     │
-            ├───────────┤     │
-            │ body      │ VR  │
-            ├───────────┤     │
-            │ log       │     │
-            └───────────┴─────┘
-        """
-        # The main splitter contains the secondary splitter and the VR pane.
-        # The secondary splitter contains all the other panes.
-        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-        main_splitter.setOrientation(Orientation.Horizontal)
-        secondary_splitter.setOrientation(Orientation.Vertical)
-        self.createOutlinePane(secondary_splitter)
-        self.createBodyPane(secondary_splitter)
-        self.createLogPane(secondary_splitter)
-        self.vr_parent_frame = main_splitter
-        return main_splitter, secondary_splitter
-    #@+node:ekr.20240822103044.2: *5* dw.create_vertical_thirds_layout
-    def create_vertical_thirds_layout(self) -> tuple[QWidget, QWidget]:
-        """Create Leo's vertical-thirds layout::
-            ┌───────────┬────────┬──────┐
-            │  outline  │        │      │
-            ├───────────┤  body  │  VR  │
-            │  log      │        │      │
-            └───────────┴────────┴──────┘
-        """
-        main_splitter, secondary_splitter = self.createMainLayout(self.centralwidget)
-        main_splitter.setOrientation(Orientation.Horizontal)
-        secondary_splitter.setOrientation(Orientation.Vertical)
-        self.createOutlinePane(secondary_splitter)
-        self.createLogPane(secondary_splitter)
-        self.createBodyPane(main_splitter)
-        self.vr_parent_frame = main_splitter
-        return main_splitter, secondary_splitter
-    #@+node:ekr.20240822103045.1: *5* dw.create_vertical_thirds2_layout
-    def create_vertical_thirds2_layout(self) -> tuple[QWidget, QWidget]:
-        """Create Leo's vertical-thirds2 layout::
-            ┌───────────┬───────┬───────┐
-            │           │  log  │       │
-            │  outline  ├───────┤  VR   │
-            │           │  body │       │
-            └───────────┴───────┴───────┘
-        """
-        parent = self.centralwidget
-        # Create the main splitter.
-        main_splitter = self.createMainSplitter(parent)
-        main_splitter.setOrientation(Orientation.Horizontal)
-        self.verticalLayout = self.createVLayout(parent, 'mainVLayout', margin=3)
-        self.verticalLayout.addWidget(main_splitter)
-        # Add outline pane.
-        self.createOutlinePane(main_splitter)
-        # Add secondary splitte.
-        secondary_splitter = self.createSecondarySplitter(main_splitter)
-        secondary_splitter.setOrientation(Orientation.Vertical)
-        # Add the log and body panes to the secondary splitter.
-        self.createLogPane(secondary_splitter)
-        self.createBodyPane(secondary_splitter)
-        # Add the VR pane to the main splitter.
-        self.vr_parent_frame = main_splitter
-        return main_splitter, secondary_splitter
+        return ms, ss
     #@+node:ekr.20240725073848.1: *4* dw.insert_vr_frame
     def insert_vr_frame(self, vr_frame: QtWidgets.QFrame) -> None:
         """Insert the given frame into the dw.vr_parent_frame."""
@@ -4623,105 +4482,6 @@ def toggleUnlView(event: LeoKeyEvent) -> None:
     if c and c.frame.statusLine:
         # This is not a convenience method.
         c.frame.statusLine.toggleUnlView()
-#@+node:ekr.20240822104556.1: *3* 'use-*-layout'
-#@+node:ekr.20240822063951.1: *4* 'use-big-tree-layout'
-@g.command('use-big-tree-layout')
-def use_big_tree_layout(event: LeoKeyEvent) -> None:
-    """
-    Switch to the big-tree layout::
-        ┌───────────────────┐
-        │  outline          │
-        ├──────────┬────────┤
-        │  body    │  log   │
-        ├──────────┴────────┤
-        │  VR               │
-        └───────────────────┘
-    """
-    c = event.get('c')
-    try:
-        c.frame.top.change_layout('big-tree')
-    except AttributeError:
-        pass
-#@+node:ekr.20240822100439.1: *4* 'use-horizontal-thirds-layout'
-@g.command('use-horizontal-thirds-layout')
-def use_horizontal_thirds_layout(event: LeoKeyEvent) -> None:
-    """Switch to the horizontal-thirds layout::
-        ┌───────────┬───────┐
-        │  outline  │  log  │
-        ├───────────┴───────┤
-        │   body            │
-        ├───────────────────┤
-        │   VR              │
-        └───────────────────┘
-    """
-    c = event.get('c')
-    try:
-        c.frame.top.change_layout('horizontal-thirds')
-    except AttributeError:
-        pass
-#@+node:ekr.20240822063619.1: *4* 'use-legacy-layout'
-@g.command('use-legacy-layout')
-def use_legacy_layout(event: LeoKeyEvent) -> None:
-    """
-    Switch to the legacy layout::
-        ┌───────────┬───────┐
-        │  outline  │  log  │
-        ├───────────┼───────┤
-        │  body     │  VR   │
-        └───────────┴───────┘
-    """
-    c = event.get('c')
-    try:
-        c.frame.top.change_layout('legacy')
-    except AttributeError:
-        pass
-#@+node:ekr.20240822101814.1: *4* 'use-render-focused-layout'
-@g.command('use-render-focused-layout')
-def use_render_focused_layout(event: LeoKeyEvent) -> None:
-    """Switch to the rendered-focused layout::
-        ┌───────────┬───────┐
-        │  outline  │       │
-        ├───────────┤       │
-        │  body     │  VR   │
-        ├───────────┤       │
-        │  log      │       │
-        └───────────┴───────┘
-    """
-    c = event.get('c')
-    try:
-        c.frame.top.change_layout('render-focused')
-    except AttributeError:
-        pass
-#@+node:ekr.20240822100454.1: *4* 'use-vertical-thirds-layout'
-@g.command('use-vertical-thirds-layout')
-def use_vertical_thirds_layout(event: LeoKeyEvent) -> None:
-    """Switch to the rendered-focused layout::
-        ┌───────────┬────────┬──────┐
-        │  outline  │        │      │
-        ├───────────┤  body  │  VR  │
-        │  log      │        │      │
-        └───────────┴────────┴──────┘
-    """
-    c = event.get('c')
-    try:
-        c.frame.top.change_layout('vertical-thirds')
-    except AttributeError:
-        pass
-#@+node:ekr.20240822101753.1: *4* 'use-vertical-thirds2-layout'
-@g.command('use-vertical-thirds2-layout')
-def use_vertical_thirds2_layout(event: LeoKeyEvent) -> None:
-    """Switch to the vertical-thirds2 layout::
-        ┌───────────┬───────┬───────┐
-        │           │  log  │       │
-        │  outline  ├───────┤  VR   │
-        │           │  body │       │
-        └───────────┴───────┴───────┘
-    """
-    c = event.get('c')
-    try:
-        c.frame.top.change_layout('vertical-thirds2')
-    except AttributeError:
-        pass
 #@-others
 #@@language python
 #@@tabwidth -4
