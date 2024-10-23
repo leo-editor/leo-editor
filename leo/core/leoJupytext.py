@@ -31,11 +31,6 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+node:ekr.20241022093215.1: ** class JupytextManager
 class JupytextManager:
 
-    def __init__(self) -> None:
-
-        # Keys are full paths to .ipynb files.
-        self.ipynb_dict: Dict[str, str] = {}
-
     #@+others
     #@+node:ekr.20241023152818.1: *3* jtm.full_path (*** test)
     def full_path(self, c: Cmdr, p: Position) -> str:
@@ -59,8 +54,11 @@ class JupytextManager:
         Return jupytext's conversion of the .ipynb text given by the @jupytext
         node at p.
         """
+        if not has_jupytext:
+            self.warn_no_jupytext()
+            return  ''
         path = self.full_path(c, p)
-        g.trace('exists', os.path.exists(path), path)
+        g.trace('jtm.exists', os.path.exists(path), path)  ###
         if not os.path.exists(path):
             g.trace('Not found', p.h, repr(path))
             return ''
@@ -72,12 +70,23 @@ class JupytextManager:
         """
         Update the @jupytext node at p.
         """
-        ### For now, replace without any prompt.
-        ### contents = c.atFileCommands.readOneAtJupytextNode(p)
         contents = self.read(c, p)
+        if not contents:
+            return
         g.printObj(g.splitLines(contents), tag=f"jtm.update: contents of {p.h}")
         # if contents:
             # p.b = contents
+    #@+node:ekr.20241023161034.1: *3* jtm.warn_no_jupytext
+    warning_given = False
+
+    def warn_no_jupytext(self) -> None:
+        """Warn (once) that jupytext is not available"""
+        if not self.warning_given:
+            self.warning_given = True
+            print('')
+            g.es_print('can not import `jupytext`', color='red')
+            g.es_print('`pip install jupytext`', color='blue')
+            print('')
     #@+node:ekr.20241023155519.1: *3* jtm.write (*** test)
     def write(self, c: Cmdr, p: Position) -> None:
         g.trace('not ready:', p.h)  ###

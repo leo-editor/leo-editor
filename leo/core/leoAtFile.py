@@ -601,7 +601,7 @@ class AtFile:
         p.b = head + g.toUnicode(s, encoding=encoding, reportErrors=True)
         g.doHook('after-edit', p=p)
         g.doHook('after-reading-external-file', c=c, p=p)
-    #@+node:ekr.20241023135739.1: *5* at.readOneAtJupytextNode (*** test)
+    #@+node:ekr.20241023135739.1: *5* at.readOneAtJupytextNode
     def readOneAtJupytextNode(self, p: Position) -> None:  # pragma: no cover
         """
         p must be an @jupytext node.
@@ -1481,7 +1481,7 @@ class AtFile:
                 at.replaceFile(contents, at.encoding, fileName, root)
         except Exception:
             at.writeException(fileName, root)
-    #@+node:ekr.20241023134114.1: *6* at.writeOneJupytextNode (*** test)
+    #@+node:ekr.20241023134114.1: *6* at.writeOneJupytextNode
     def writeOneJupytextNode(self, root: Position) -> None:  # pragma: no cover
         """
         p must be an @jupytext node.
