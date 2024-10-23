@@ -1435,9 +1435,9 @@ def tinker_with_colors(c):
     ARGUMENT
     html -- The HTML to be re-colored.  Must be a string, not a byte array.
     
-    Note that this will not change any other colors, such as the
-    literal box colors. So some of the output colors may not be as well
-    coordinated as before the fg/bg colors were changed.
+    Note that this will not change any other colors. So some of the output
+    colors may not be as well coordinated as before the fg/bg colors
+    were changed.
     """
     # Get fg, bg colors
     wrapper = c.frame.body.wrapper
@@ -1450,7 +1450,10 @@ def tinker_with_colors(c):
 
     css_fragment = f"""
 <style type='text/css'>
-    body {{
+    body, th, td, pre.literal-block, pre.doctest-block, pre.math,
+    pre.code, blockquote, div.topic, blockquote > table,
+    div.topic > table, blockquote p.attribution,
+    div.topic p.attribution {{
         color: {fg};
         background: {bg};
     }}
