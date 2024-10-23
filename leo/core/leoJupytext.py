@@ -9,6 +9,7 @@ https://github.com/mwouts/jupytext
 #@+<< leoJupytext: imports and annotations >>
 #@+node:ekr.20241022093347.1: ** << leoJupytext: imports and annotations >>
 from __future__ import annotations
+import os
 from typing import Dict, TYPE_CHECKING
 
 try:
@@ -36,22 +37,50 @@ class JupytextManager:
         self.ipynb_dict: Dict[str, str] = {}
 
     #@+others
-    #@+node:ekr.20241023073354.1: *3* jtm.update
+    #@+node:ekr.20241023152818.1: *3* jtm.full_path (*** test)
+    def full_path(self, c: Cmdr, p: Position) -> str:
+        """
+        Return the full path in effect for the @jupytext node at p,
+        converting x.py or x to x.ipynb first.
+        """
+        if not p.h.startswith('@jupytext'):
+            g.trace(f"Can not happen: {p.h!r}")
+            return ''
+        path = p.h[len('@jupytext') :].strip()
+        if path.endswith('.ipynb'):
+            return path
+        if path.endswith('.py'):
+            ipynb_path = path[:-3] + '.ipynb'
+            return ipynb_path
+        return path + '.ipynb'
+    #@+node:ekr.20241023155136.1: *3* jtm.read (*** test)
+    def read(self, c: Cmdr, p: Position) -> str:  # pragma: no cover
+        """
+        Return jupytext's conversion of the .ipynb text given by the @jupytext
+        node at p.
+        """
+        path = self.full_path(c, p)
+        g.trace('exists', os.path.exists(path), path)
+        if not os.path.exists(path):
+            g.trace('Not found', p.h, repr(path))
+            return ''
+        # Use jupytext.reads to convert the .ipynb file to a string
+        # representing the jupytext .py file.
+        return ''
+    #@+node:ekr.20241023073354.1: *3* jtm.update (*** test)
     def update(self, c: Cmdr, p: Position, path: str) -> None:
         """
-        Update the @jupytext node.
+        Update the @jupytext node at p.
         """
-        g.trace(p.h)
-
-        # if path.endswith('.ipynb'):
-            # old_c = c.p
-            # c.selectPosition(p)
-            # c.refreshFromDisk()
-            # c.redraw(old_c)
-        # elif path.endwith('.py'):
-            # g.trace('To do. Update:', repr(path))
-        # else:
-            # g.trace('Can not happen: wrong file type:', repr(path))
+        ### For now, replace without any prompt.
+        ### contents = c.atFileCommands.readOneAtJupytextNode(p)
+        contents = self.read(c, p)
+        g.printObj(g.splitLines(contents), tag=f"jtm.update: contents of {p.h}")
+        # if contents:
+            # p.b = contents
+    #@+node:ekr.20241023155519.1: *3* jtm.write (*** test)
+    def write(self, c: Cmdr, p: Position) -> None:
+        g.trace('not ready:', p.h)  ###
     #@-others
 #@-others
 

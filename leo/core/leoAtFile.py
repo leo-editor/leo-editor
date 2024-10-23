@@ -601,9 +601,14 @@ class AtFile:
         p.b = head + g.toUnicode(s, encoding=encoding, reportErrors=True)
         g.doHook('after-edit', p=p)
         g.doHook('after-reading-external-file', c=c, p=p)
-    #@+node:ekr.20241023135739.1: *5* at.readOneAtJupytextNode
+    #@+node:ekr.20241023135739.1: *5* at.readOneAtJupytextNode (*** test)
     def readOneAtJupytextNode(self, p: Position) -> None:  # pragma: no cover
-        g.trace(p.h)  ###
+        """
+        p must be an @jupytext node.
+        set p.b to jupytext's convertion of the .ipynb file to the temp .py file.
+        """
+        c = self.c
+        g.app.jupytextManager.read(c, p)
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
     def readOneAtShadowNode(self, fn: str, p: Position) -> None:  # pragma: no cover
 
@@ -1476,10 +1481,14 @@ class AtFile:
                 at.replaceFile(contents, at.encoding, fileName, root)
         except Exception:
             at.writeException(fileName, root)
-    #@+node:ekr.20241023134114.1: *6* at.writeOneJupytextNode
+    #@+node:ekr.20241023134114.1: *6* at.writeOneJupytextNode (*** test)
     def writeOneJupytextNode(self, root: Position) -> None:  # pragma: no cover
-        h = root.h if root else '<No root>'
-        g.trace(f"root: {h}")
+        """
+        p must be an @jupytext node.
+        Write the corresponding .ipynb file from p and all p's descendants.
+        """
+        c = self.c
+        return g.app.jupytextManager.write(c, root)
     #@+node:ekr.20210501065352.1: *6* at.writeOneAtNosentNode
     def writeOneAtNosentNode(self, root: Position) -> None:  # pragma: no cover
         """Write one @nosent node.
