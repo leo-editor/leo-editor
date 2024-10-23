@@ -1112,6 +1112,7 @@ class AtFile:
             (p.isAtCleanNode, at.writeOneAtCleanNode),
             (p.isAtEditNode, at.writeOneAtEditNode),
             (p.isAtFileNode, at.writeOneAtFileNode),
+            (p.isAtJupytextNode, at.writeOneJupytextNode),
             (p.isAtNoSentFileNode, at.writeOneAtNosentNode),
             (p.isAtShadowFileNode, at.writeOneAtShadowNode),
             (p.isAtThinFileNode, at.writeOneAtFileNode),
@@ -1469,6 +1470,10 @@ class AtFile:
                 at.replaceFile(contents, at.encoding, fileName, root)
         except Exception:
             at.writeException(fileName, root)
+    #@+node:ekr.20241023134114.1: *6* at.writeOneJupytextNode
+    def writeOneJupytextNode(self, root: Position) -> None:  # pragma: no cover
+        h = root.h if root else '<No root>'
+        g.trace(f"root: {h}")
     #@+node:ekr.20210501065352.1: *6* at.writeOneAtNosentNode
     def writeOneAtNosentNode(self, root: Position) -> None:  # pragma: no cover
         """Write one @nosent node.

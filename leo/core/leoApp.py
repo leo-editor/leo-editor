@@ -864,9 +864,11 @@ class LeoApp:
         """Init the app.atFileNames set."""
         self.atFileNames = set([
             "@asis",
+            "@clean",
             "@edit",
             "@file-asis", "@file-thin", "@file-nosent", "@file",
-            "@clean", "@nosent",
+            "@jupytext",
+            "@nosent",
             "@shadow",
             "@thin",
         ])
