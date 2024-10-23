@@ -605,10 +605,14 @@ class AtFile:
     def readOneAtJupytextNode(self, p: Position) -> None:  # pragma: no cover
         """
         p must be an @jupytext node.
-        set p.b to jupytext's convertion of the .ipynb file to the temp .py file.
+        - Convert the .ipynb file to the contents of the corresponding node.
+        - Update p.b's tree using the contents. 
         """
         c = self.c
-        g.app.jupytextManager.read(c, p)
+        contents = g.app.jupytextManager.read(c, p)
+        if contents:
+            p.b = '@language json\n\n' + contents  ### Prototype only.
+
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
     def readOneAtShadowNode(self, fn: str, p: Position) -> None:  # pragma: no cover
 

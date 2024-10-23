@@ -10,17 +10,15 @@ https://github.com/mwouts/jupytext
 #@+node:ekr.20241022093347.1: ** << leoJupytext: imports and annotations >>
 from __future__ import annotations
 import os
-from typing import Dict, TYPE_CHECKING
+from typing import Any, Dict, TYPE_CHECKING
 
 try:
     import jupytext  # pylint: disable=unused-import
     has_jupytext = True
 except Exception:
     has_jupytext = False
-    print('Can not import jupytext')
-    print('pip install jupytext')
 
-from leo.core import leoGlobals as g  # pylint: disable=unused-import
+from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -32,23 +30,39 @@ if TYPE_CHECKING:  # pragma: no cover
 class JupytextManager:
 
     #@+others
-    #@+node:ekr.20241023152818.1: *3* jtm.full_path (*** test)
+    #@+node:ekr.20241023162459.1: *3* jtm.dump_notebook
+    def dump_notebook(self, nb: Any) -> None:
+        """Dump a notebook (class nbformat.notebooknode.NotebookNode)"""
+        # keys are 'cells', 'metadata', 'nbformat', 'nbformat_minor'.
+        if 0:
+            for z in nb:
+                print(f"{z:>20} {nb[z]}")
+        if 1:
+            print('metadata...')
+            d = nb['metadata']
+            for z in d:
+                print(f"{z}: {g.objToString(d[z])}")
+        if 1:
+            print('')
+            print('cells...')
+            for i, cell in enumerate(nb['cells']):
+                print(f"cell {i}: {g.objToString(cell)}")
+    #@+node:ekr.20241023152818.1: *3* jtm.full_path
     def full_path(self, c: Cmdr, p: Position) -> str:
         """
-        Return the full path in effect for the @jupytext node at p,
-        converting x.py or x to x.ipynb first.
+        Return the full path in effect for the `@jupytext x.ipynb` node at p.
+        
+        Return '' on errors.
         """
         if not p.h.startswith('@jupytext'):
-            g.trace(f"Can not happen: {p.h!r}")
+            g.trace(f"Can not happen: not an @jupytext node: {p.h!r}")
             return ''
         path = p.h[len('@jupytext') :].strip()
-        if path.endswith('.ipynb'):
+        if path.endswith('.ipynb') and os.path.exists(path):
             return path
-        if path.endswith('.py'):
-            ipynb_path = path[:-3] + '.ipynb'
-            return ipynb_path
-        return path + '.ipynb'
-    #@+node:ekr.20241023155136.1: *3* jtm.read (*** test)
+        self.warn_bad_at_jupytext_node(p, path)
+        return ''
+    #@+node:ekr.20241023155136.1: *3* jtm.read
     def read(self, c: Cmdr, p: Position) -> str:  # pragma: no cover
         """
         Return jupytext's conversion of the .ipynb text given by the @jupytext
@@ -58,24 +72,37 @@ class JupytextManager:
             self.warn_no_jupytext()
             return  ''
         path = self.full_path(c, p)
-        g.trace('jtm.exists', os.path.exists(path), path)  ###
-        if not os.path.exists(path):
-            g.trace('Not found', p.h, repr(path))
+        if not path:
+            # full_path gives the error.
             return ''
-        # Use jupytext.reads to convert the .ipynb file to a string
-        # representing the jupytext .py file.
-        return ''
+        # Convert the .ipynb file to a string, the contents of the @jupytext node.
+        notebook = jupytext.read(path, fmt='py:percent')
+        contents = jupytext.writes(notebook, fmt="py:percent")
+        # self.dump_notebook(notebook)
+        # g.printObj(notebook, tag='jtm.read: notebook')
+        # g.printObj(contents, tag='jtm.read: contents')
+        return contents
     #@+node:ekr.20241023073354.1: *3* jtm.update (*** test)
     def update(self, c: Cmdr, p: Position, path: str) -> None:
         """
-        Update the @jupytext node at p.
+        Update the @jupytext node at p when the path has changed externally.
         """
         contents = self.read(c, p)
-        if not contents:
-            return
-        g.printObj(g.splitLines(contents), tag=f"jtm.update: contents of {p.h}")
-        # if contents:
-            # p.b = contents
+        g.printObj(g.splitLines(contents), tag=f"jtm.update: contents of {p.h}")  ###
+        if contents:
+            p.b = contents
+    #@+node:ekr.20241023165243.1: *3* jtm.warn_bad_at_jupytext_node
+    bad_paths: Dict[str, bool] = {}
+
+    def warn_bad_at_jupytext_node(self, p: Position, path: str) -> None:
+        """Warn (once) about each bad path"""
+        if path not in self.bad_paths:
+            key = path if path else 'None'
+            self.bad_paths[key] = True
+            print('')
+            g.es_print(f"Bad @jupytext node: {p.h!r}", color='red')
+            g.es_print(f"File not found: {path!r}", color='blue')
+            print('')
     #@+node:ekr.20241023161034.1: *3* jtm.warn_no_jupytext
     warning_given = False
 
