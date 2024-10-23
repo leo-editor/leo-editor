@@ -55,6 +55,9 @@ class JupytextManager:
         
         Return '' on errors.
         """
+        if not has_jupytext:
+            self.warn_no_jupytext()
+            return  ''
         if not p.h.startswith('@jupytext'):
             g.trace(f"Can not happen: not an @jupytext node: {p.h!r}")
             return ''
@@ -69,9 +72,6 @@ class JupytextManager:
         Return jupytext's conversion of the .ipynb text given by the @jupytext
         node at p.
         """
-        if not has_jupytext:
-            self.warn_no_jupytext()
-            return  ''
         path = self.full_path(c, p)  # full_path gives the error.
         if not path:
             return ''
@@ -121,7 +121,7 @@ class JupytextManager:
         """
         path = self.full_path(c, p)  # full_path gives the error.
         if not path:
-            return ''
+            return
         # Write the .ipynb file.
         notebook = jupytext.reads(p.b, fmt='py:percent')
         jupytext.write(notebook, path, fmt="py:percent")
