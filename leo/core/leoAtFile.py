@@ -385,7 +385,8 @@ class AtFile:
                 p.isAtEditNode() or
                 p.isAtShadowFileNode() or
                 p.isAtFileNode() or
-                p.isAtCleanNode()  # 1134.
+                p.isAtCleanNode() or
+                p.isAtJupytextNode()
             ):
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
@@ -412,6 +413,8 @@ class AtFile:
             at.rememberReadPath(c.fullPath(p), p)
         elif p.isAtCleanNode():
             at.readOneAtCleanNode(p)
+        elif p.isAtJupytextNode():
+            at.readOneAtJupytextNode(p)
     #@+node:ekr.20220121052056.1: *5* at.readAllSelected
     def readAllSelected(self, root: Position) -> None:  # pragma: no cover
         """Read all @<file> nodes in root's tree."""
@@ -445,6 +448,27 @@ class AtFile:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+    #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
+    def readOneAtAsisNode(self, p: Position) -> None:  # pragma: no cover
+        """Read one @asis node. Used only by refresh-from-disk"""
+        at, c = self, self.c
+        fn = c.fullPath(p)
+        junk, ext = g.os_path_splitext(fn)
+        # Remember the full fileName.
+        at.rememberReadPath(fn, p)
+        # if not g.unitTesting: g.es("reading: @asis %s" % (g.shortFileName(fn)))
+        s, e = g.readFileIntoString(fn, kind='@edit')
+        if s is None:
+            return
+        encoding = 'utf-8' if e is None else e
+        # Delete all children.
+        while p.hasChildren():
+            p.firstChild().doDelete()
+        old_body = p.b
+        p.b = g.toUnicode(s, encoding=encoding, reportErrors=True)
+        if not c.isChanged() and p.b != old_body:
+            c.setChanged()
+        g.doHook('after-reading-external-file', c=c, p=p)
     #@+node:ekr.20070909100252: *5* at.readOneAtAutoNode
     def readOneAtAutoNode(self, p: Position) -> Position:  # pragma: no cover
         """Read an @auto file into p. Return the *new* position."""
@@ -480,59 +504,6 @@ class AtFile:
             g.doHook('after-auto', c=c, p=p)
             g.doHook('after-reading-external-file', c=c, p=p)
         return p  # For #451: return p.
-    #@+node:ekr.20090225080846.3: *5* at.readOneAtEditNode
-    def readOneAtEditNode(self, p: Position) -> None:  # pragma: no cover
-        at = self
-        c = at.c
-        ic = c.importCommands
-        fn = c.fullPath(p)
-        junk, ext = g.os_path_splitext(fn)
-        # Fix bug 889175: Remember the full fileName.
-        at.rememberReadPath(fn, p)
-        # if not g.unitTesting: g.es("reading: @edit %s" % (g.shortFileName(fn)))
-        s, e = g.readFileIntoString(fn, kind='@edit')
-        if s is None:
-            return
-        encoding = 'utf-8' if e is None else e
-        # Delete all children.
-        while p.hasChildren():
-            p.firstChild().doDelete()
-        head = ''
-        ext = ext.lower()
-        if ext in ('.html', '.htm'):
-            head = '@language html\n'
-        elif ext in ('.txt', '.text'):
-            head = '@nocolor\n'
-        else:
-            language = ic.languageForExtension(ext)
-            if language and language != 'unknown_language':
-                head = f"@language {language}\n"
-            else:
-                head = '@nocolor\n'
-        p.b = head + g.toUnicode(s, encoding=encoding, reportErrors=True)
-        g.doHook('after-edit', p=p)
-        g.doHook('after-reading-external-file', c=c, p=p)
-    #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
-    def readOneAtAsisNode(self, p: Position) -> None:  # pragma: no cover
-        """Read one @asis node. Used only by refresh-from-disk"""
-        at, c = self, self.c
-        fn = c.fullPath(p)
-        junk, ext = g.os_path_splitext(fn)
-        # Remember the full fileName.
-        at.rememberReadPath(fn, p)
-        # if not g.unitTesting: g.es("reading: @asis %s" % (g.shortFileName(fn)))
-        s, e = g.readFileIntoString(fn, kind='@edit')
-        if s is None:
-            return
-        encoding = 'utf-8' if e is None else e
-        # Delete all children.
-        while p.hasChildren():
-            p.firstChild().doDelete()
-        old_body = p.b
-        p.b = g.toUnicode(s, encoding=encoding, reportErrors=True)
-        if not c.isChanged() and p.b != old_body:
-            c.setChanged()
-        g.doHook('after-reading-external-file', c=c, p=p)
     #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
     def readOneAtCleanNode(self, root: Position) -> bool:  # pragma: no cover
         """Update the @clean/@nosent node at root."""
@@ -598,6 +569,41 @@ class AtFile:
         result = at.atFileToString(root, sentinels=True)
         s = g.toUnicode(result, encoding=at.encoding)
         return g.splitLines(s)
+    #@+node:ekr.20090225080846.3: *5* at.readOneAtEditNode
+    def readOneAtEditNode(self, p: Position) -> None:  # pragma: no cover
+        at = self
+        c = at.c
+        ic = c.importCommands
+        fn = c.fullPath(p)
+        junk, ext = g.os_path_splitext(fn)
+        # Fix bug 889175: Remember the full fileName.
+        at.rememberReadPath(fn, p)
+        # if not g.unitTesting: g.es("reading: @edit %s" % (g.shortFileName(fn)))
+        s, e = g.readFileIntoString(fn, kind='@edit')
+        if s is None:
+            return
+        encoding = 'utf-8' if e is None else e
+        # Delete all children.
+        while p.hasChildren():
+            p.firstChild().doDelete()
+        head = ''
+        ext = ext.lower()
+        if ext in ('.html', '.htm'):
+            head = '@language html\n'
+        elif ext in ('.txt', '.text'):
+            head = '@nocolor\n'
+        else:
+            language = ic.languageForExtension(ext)
+            if language and language != 'unknown_language':
+                head = f"@language {language}\n"
+            else:
+                head = '@nocolor\n'
+        p.b = head + g.toUnicode(s, encoding=encoding, reportErrors=True)
+        g.doHook('after-edit', p=p)
+        g.doHook('after-reading-external-file', c=c, p=p)
+    #@+node:ekr.20241023135739.1: *5* at.readOneAtJupytextNode
+    def readOneAtJupytextNode(self, p: Position) -> None:  # pragma: no cover
+        g.trace(p.h)  ###
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
     def readOneAtShadowNode(self, fn: str, p: Position) -> None:  # pragma: no cover
 
