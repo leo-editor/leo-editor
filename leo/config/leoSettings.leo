@@ -215,7 +215,7 @@
 <v t="ekr.20190422173857.1"><vh>@string qt-style-name = None</vh></v>
 <v t="ekr.20210914081311.1"><vh>@bool highlight-body-line = False</vh></v>
 <v t="ekr.20210914081428.1"><vh>@string line-highlight-color = None</vh></v>
-<v t="ekr.20240726065425.1"><vh>@string qt-layout-name = legacy</vh></v>
+<v t="ekr.20240726065425.1"><vh>@string qt-layout-name = vertical-thirds</vh></v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
@@ -1484,6 +1484,7 @@
 <v t="ekr.20131213135427.22362"><vh>@item help-for-&amp;find-commands</vh></v>
 <v t="tom.20220424213334.1"><vh>@item help-for-&amp;highlight-current-line</vh></v>
 <v t="ekr.20180403100839.1"><vh>@item help-for-&amp;keystroke</vh></v>
+<v t="tom.20241023130011.1"><vh>@item help-for-&amp;layouts</vh></v>
 <v t="ekr.20131213135427.22363"><vh>@item help-for-&amp;minibuffer</vh></v>
 <v t="ekr.20180403100900.1"><vh>@item help-for-&amp;python</vh></v>
 <v t="tom.20220424213426.1"><vh>@item help-for-&amp;right-margin-guide</vh></v>
@@ -12411,6 +12412,7 @@ want the visual clutter of repeated class / file names.</t>
 <t tx="tom.20220424213334.1"></t>
 <t tx="tom.20220424213426.1"></t>
 <t tx="tom.20241023123442.1"></t>
+<t tx="tom.20241023130011.1"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

@@ -191,7 +191,7 @@ def render_focused(event: LeoKeyEvent) -> None:
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(RENDERED_FOCUSED_LAYOUT)
-#@+node:tom.20240930101515.1: *3* command: 'layout-restore-default'
+#@+node:tom.20240930101515.1: *3* command: 'layout-restore-to-setting'
 @g.command('layout-restore-default')
 @g.command('layout-restore-to-setting')
 @register_layout('layout-restore-default')
@@ -208,7 +208,7 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
         - does not start with 'layout-', then that prefix is added
           and the result is used as the name of the layout command.
 
-    If the resulting command is not known, then the FALLBACK_LAYOUT
+    If the resulting command is not known, then the 'vertical-thirds'
     is applied.
     """
     c = event.get('c')
@@ -217,23 +217,23 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
     event = g.app.gui.create_key_event(c)
 
     found_layout = False
-    layout = default_layout = c.config.getString('qt-layout-name')
+    default_layout = 'layout-vertical-thirds'
+    layout = c.config.getString('qt-layout-name')
     if not layout:
-        layout = 'layout-fallback-layout'
-    elif default_layout.startswith('layout-'):
-        if default_layout in c.commandsDict:
-            found_layout = True
-    else:
-        layout = 'layout-' + default_layout
+        layout = default_layout
+    elif layout.startswith('layout-'):
         if layout in c.commandsDict:
             found_layout = True
-        elif default_layout in c.commandsDict:
-            layout = default_layout
-            found_layout = True
         else:
-            g.es(f'Cannot find command {layout} or {default_layout}')
-    if found_layout:
-        c.commandsDict[layout](event)
+            layout = default_layout
+    else:
+        layout = 'layout-' + layout
+        if layout in c.commandsDict:
+            found_layout = True
+    if not found_layout:
+        g.es(f'Cannot find command {layout}; Using {default_layout}')
+        layout = default_layout
+    c.commandsDict[layout](event)
 
 #@+node:tom.20241005163724.1: *3* command: 'layout-swap-log-panel'
 @g.command('layout-swap-log-panel')
