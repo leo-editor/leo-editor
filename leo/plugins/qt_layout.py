@@ -45,11 +45,11 @@ def init() -> bool:
     # qt_layout is not a true plugin.
     return True
 #@+node:ekr.20241008141353.1: *3* function: show_vr3_pane
-def show_vr3_pane(c, w):
+def show_vr3_pane(c: Cmdr, w: QW) -> None:
     w.setUpdatesEnabled(True)
     c.doCommandByName('vr3-show')
 #@+node:tom.20241009141223.1: *3* function: is_module_loaded
-def is_module_loaded(module_name):
+def is_module_loaded(module_name:str) -> bool:
     """Return True if the plugins controller has loaded the module.
     """
     controller = g.app.pluginsController
@@ -131,15 +131,6 @@ def big_tree(event: LeoKeyEvent) -> None:
             QtCore.QTimer.singleShot(60, lambda: show_vr3_pane(c, vr))
         else:
             c.doCommandByName('vr-show')
-#@+node:ekr.20241008174424.1: *3* command: 'layout-fallback-layout'
-@g.command('layout-fallback-layout')
-@register_layout('layout-fallback-layout')
-def fallback_layout(event: LeoKeyEvent) -> None:
-    """Apply a workable layout in case the layout setting is invalid."""
-    c = event.get('c')
-    dw = c.frame.top
-    cache = dw.layout_cache
-    cache.restoreFromLayout(FALLBACK_LAYOUT)
 #@+node:ekr.20241008174427.1: *3* command: 'layout-horizontal-thirds'
 @g.command('layout-horizontal-thirds')
 @register_layout('layout-horizontal-thirds')
@@ -159,11 +150,10 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
     cache.restoreFromLayout(HORIZONTAL_THIRDS_LAYOUT)
 #@+node:ekr.20241008180407.1: *3* command: 'layout-quadrant'
 @g.command('layout-quadrant')
-@g.command('layout-legacy')
-@register_layout('layout-legacy')
 @register_layout('layout-quadrant')
 def quadrants(event: LeoKeyEvent) -> None:
-    """Create Leo's quadrant layout. "quadrant" and "legacy" are the same.
+    """Create Leo's quadrant layout.
+
         ┌───────────────┬───────────┐
         │   outline     │   log     │
         ├───────────────┼───────────┤
@@ -194,12 +184,11 @@ def render_focused(event: LeoKeyEvent) -> None:
 #@+node:tom.20240930101515.1: *3* command: 'layout-restore-to-setting'
 @g.command('layout-restore-default')
 @g.command('layout-restore-to-setting')
-@register_layout('layout-restore-default')
 @register_layout('layout-restore-to-setting')
 def restoreDefaultLayout(event: LeoKeyEvent) -> None:
-    """Restore the default layout specified in @settings, if known.
+    """Restore the initial layout specified in @settings.
 
-'layout-restore-default' and 'layout-restore-to-setting' are the same.
+    This command does not specify an actual layout itself.
     
     If the layout name:
         
@@ -242,14 +231,14 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
     """Move Log frame between main and secondary splitters.
 
     This command does not actually create a layout of its own.  It
-    should not be used as the default layout.
+    should not be used as the initial layout.
 
     If the Log frame is contained in a different splitter, possibly with
     some other widget, the entire splitter will be swapped between the main
     and secondary splitters.
 
     The effect of this command depends on the existing layout. For example,
-    if the legacy layout is in effect, this command changes the layout
+    if the quadrant layout is in effect, this command changes the layout
     from:
         ┌───────────┬──────┐
         │ outline   │ log  │
