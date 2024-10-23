@@ -33,6 +33,7 @@ class JupytextManager:
     #@+node:ekr.20241023162459.1: *3* jtm.dump_notebook
     def dump_notebook(self, nb: Any) -> None:
         """Dump a notebook (class nbformat.notebooknode.NotebookNode)"""
+        g.trace(g.callers())
         # keys are 'cells', 'metadata', 'nbformat', 'nbformat_minor'.
         if 0:
             for z in nb:
@@ -71,25 +72,23 @@ class JupytextManager:
         if not has_jupytext:
             self.warn_no_jupytext()
             return  ''
-        path = self.full_path(c, p)
+        path = self.full_path(c, p)  # full_path gives the error.
         if not path:
-            # full_path gives the error.
             return ''
-        # Convert the .ipynb file to a string, the contents of the @jupytext node.
+        # Read .ipynb file.
         notebook = jupytext.read(path, fmt='py:percent')
         contents = jupytext.writes(notebook, fmt="py:percent")
-        # self.dump_notebook(notebook)
-        # g.printObj(notebook, tag='jtm.read: notebook')
-        # g.printObj(contents, tag='jtm.read: contents')
         return contents
-    #@+node:ekr.20241023073354.1: *3* jtm.update (*** test)
+    #@+node:ekr.20241023073354.1: *3* jtm.update
     def update(self, c: Cmdr, p: Position, path: str) -> None:
         """
         Update the @jupytext node at p when the path has changed externally.
         """
         contents = self.read(c, p)
-        g.printObj(g.splitLines(contents), tag=f"jtm.update: contents of {p.h}")  ###
-        if contents:
+        if contents and contents != p.b:
+            print('')
+            g.es_print(f"updated {p.h}", color='blue')
+            print('')
             p.b = contents
     #@+node:ekr.20241023165243.1: *3* jtm.warn_bad_at_jupytext_node
     bad_paths: Dict[str, bool] = {}
@@ -114,9 +113,18 @@ class JupytextManager:
             g.es_print('can not import `jupytext`', color='red')
             g.es_print('`pip install jupytext`', color='blue')
             print('')
-    #@+node:ekr.20241023155519.1: *3* jtm.write (*** test)
+    #@+node:ekr.20241023155519.1: *3* jtm.write
     def write(self, c: Cmdr, p: Position) -> None:
-        g.trace('not ready:', p.h)  ###
+        """
+        - Check that p is an @jupytext node. 
+        - Write the .ipynb file corresponding to p.b
+        """
+        path = self.full_path(c, p)  # full_path gives the error.
+        if not path:
+            return ''
+        # Write the .ipynb file.
+        notebook = jupytext.reads(p.b, fmt='py:percent')
+        jupytext.write(notebook, path, fmt="py:percent")
     #@-others
 #@-others
 
