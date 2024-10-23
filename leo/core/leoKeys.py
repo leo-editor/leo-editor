@@ -2130,13 +2130,13 @@ class KeyHandlerClass:
             return c.openWith(d=d)
 
         # Use k.registerCommand to set the shortcuts in the various binding dicts.
-        # 4087: k.registerCommand no longer supports the 'shortcut' kwarg.
-
         commandName = f"open-with-{name.lower()}"
         k.registerCommand(
+            allowBinding=True,
             commandName=commandName,
             func=openWithCallback,
             pane='all',
+            shortcut=shortcut,
         )
     #@+node:ekr.20061031131434.95: *4* k.checkBindings
     def checkBindings(self) -> None:
@@ -4010,7 +4010,8 @@ class KeyHandlerClass:
         assert isinstance(stroke, str) or g.isStroke(stroke)
         s = stroke.s if g.isStroke(stroke) else stroke
         s = s.lower()
-        return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
+        # 4093.
+        return s.startswith(('f', 'F')) and len(s) <= 3 and s[1:].isdigit()
     #@+node:ekr.20061031131434.182: *4* k.isPlainKey
     def isPlainKey(self, stroke: Stroke) -> bool:
         """Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key."""

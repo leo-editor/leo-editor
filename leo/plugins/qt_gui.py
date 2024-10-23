@@ -1349,8 +1349,7 @@ class LeoQtGui(leoGui.LeoGui):
     def runAtIdle(self, aFunc: Callable) -> None:
         """This can not be called in some contexts."""
         QtCore.QTimer.singleShot(0, aFunc)
-    #@+node:ekr.20110605121601.18483: *3* LeoQtGui.runMainLoop & runWithIpythonKernel
-    #@+node:ekr.20130930062914.16000: *4* LeoQtGui.runMainLoop
+    #@+node:ekr.20130930062914.16000: *3* LeoQtGui.runMainLoop
     def runMainLoop(self) -> None:
         """Start the Qt main loop."""
         try:  # #2127: A crash here hard-crashes Leo: There is no main loop!
@@ -1368,22 +1367,9 @@ class LeoQtGui(leoGui.LeoGui):
                 g.pr('End of batch script')
             else:
                 g.pr('no log, no commander for executeScript in LeoQtGui.runMainLoop')
-        elif g.app.useIpython and g.app.ipython_inited:
-            self.runWithIpythonKernel()
         else:
             # This can be alarming when using Python's -i option.
             sys.exit(self.qtApp.exec())
-    #@+node:ekr.20130930062914.16001: *4* LeoQtGui.runWithIpythonKernel (commands)
-    def runWithIpythonKernel(self) -> None:
-        """Init Leo to run in an IPython shell."""
-        try:
-            from leo.core import leoIPython
-            g.app.ipk = leoIPython.InternalIPKernel()
-            g.app.ipk.run()
-        except Exception:
-            g.es_exception()
-            print('can not init leo.core.leoIPython.py')
-            sys.exit(1)
     #@+node:ekr.20180117053546.1: *3* LeoQtGui.show_tips & helpers
     @g.command('show-tips')
     def show_next_tip(self, event: LeoKeyEvent = None) -> None:
