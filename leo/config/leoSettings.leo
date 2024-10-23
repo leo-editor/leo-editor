@@ -1298,6 +1298,7 @@
 <v t="tbrown.20140814090009.57475"><vh>@menu &amp;Show Settings</vh>
 <v t="ekr.20131213135427.21957"><vh>@item show-&amp;bindings</vh></v>
 <v t="ekr.20131213135427.21958"><vh>@item show-&amp;commands</vh></v>
+<v t="tom.20241023123442.1"><vh>@item layout-show-&amp;layouts</vh></v>
 <v t="ekr.20131213135427.21960"><vh>@item show-&amp;settings</vh></v>
 <v t="ekr.20131213135427.21959"><vh>@item show-&amp;plugins-info</vh></v>
 </v>
@@ -12409,6 +12410,7 @@ want the visual clutter of repeated class / file names.</t>
 <t tx="tom.20210922141748.1"></t>
 <t tx="tom.20220424213334.1"></t>
 <t tx="tom.20220424213426.1"></t>
+<t tx="tom.20241023123442.1"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
